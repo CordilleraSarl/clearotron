@@ -214,6 +214,42 @@ export const CAPABILITIES = Object.freeze({
   // (expandOwnerTerms → assertSearchableTerm → degrade-to-unresolved) applies to the owner value on
   // this path exactly as on a bare owner sweep — resolution stays additive-only.
   ownerTermIntersection: true,
+  // ── CAN THE REGISTER BE ASKED WHAT A FILING COVERS, NOT JUST WHICH BUCKET IT SITS IN? ────────────
+  // `true` — `INT_GOODS_SERVICES_DESCRIPTION` is in the vendor's search-field enum, and it AND-joins
+  // with the mark and class clauses in one request exactly as the owner field does. That is the whole
+  // lever behind narrowing a crowded contains sweep: the Nice class is a filing bucket that holds
+  // headphones and jukeboxes alike, so class-scoping alone cannot cut a crowd on a common word.
+  //
+  // A provider that does not declare this gets a DISCLOSED DEFERRED ROW for any goods-narrowed slice
+  // (register-plan.mjs goodsTextGap → `unsupported`). It must never fall back to the un-narrowed
+  // sweep: that would return the crowd the narrowing exists to avoid and record it under the narrowed
+  // slice's qid — a widened search wearing a narrow slice's name.
+  goodsTextSearch: true,
+  // Does this register match a MULTI-WORD goods term as a phrase? YES, but only through `ADJ`, and the
+  // connector must do the joining. A BARE SPACE ON THIS FIELD IS AN IMPLICIT OR: both word orders
+  // return the same population, that population equals the explicit OR, and the explicit AND is a
+  // fraction of it. So a two-word value sent as written WIDENS the sweep to either word, answers 200
+  // and reads like a filter that worked — a clause meant to narrow doing the opposite, silently.
+  // `A ADJ B` is ordered and is the form core.js emits.
+  // What a MULTI-WORD goods term means on this register, named rather than flagged: the two registers
+  // that accept one do ENTIRELY DIFFERENT THINGS with it, and a shared boolean said only "yes".
+  //   "ordered-phrase"    — the words in that order, adjacent. Here, via the ADJ operator.
+  //   "word-intersection" — filings whose description carries every word, anywhere, in any order.
+  //   null                — unmeasured or unsupported: a multi-word term must not be sent.
+  goodsTextMultiWord: "ordered-phrase",
+  // Several goods terms ride ONE clause joined by OR — this register expresses a list natively.
+  goodsTextListOr: true,
+  // The operator the goods clause rides. `EQUALS` on WHOLE WORDS: `CONTAINS` is a hard 400 here
+  // exactly as it is on APPLICANT_NAME, and so is a mid-word wildcard. Several words are asked for
+  // with `OR` inside the value.
+  //
+  // That makes this field the opposite of the mark field, where every mode is EQUALS with `*TERM*`
+  // infix wildcards. The two are NOT interchangeable, and the vendor's own documentation does not
+  // separate them. Do not "make it consistent" with the mark modes.
+  goodsTextOperator: "EQUALS",
+  // Whole words only: no wildcard may be sent on this field, so core.js splits a multi-word term into
+  // its words and ORs them rather than compiling an adjacency the field would reject.
+  goodsTextWholeWordOnly: true,
   // ── WHICH FORM OF A NON-LATIN MARK DOES THE INDEX HOLD? ──────────────────────────────────────────
   // `false` = the TRANSLITERATION ONLY. The characters are not indexed, so searching them returns 0
   // with no error — the exact false-clean shape a reader calls CLEAN:

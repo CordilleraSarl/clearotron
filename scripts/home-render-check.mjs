@@ -382,6 +382,12 @@ const PROBE = `(() => {
     capNote: (q('.home2-band-note')?.textContent ?? '').trim(),
     firstRun: !!q('.home2-firstrun'),
     notice: (q('.home2-notice')?.textContent ?? '').trim(),
+    // THE WAIT, READ SEPARATELY FROM THE FAULT. The notice above is where this page states a fault, so
+    // a wait drawn into it makes a page with nothing wrong report one — which is how a loading line
+    // reached CI red in both themes. Read as its own thing, the two can be asserted against each other:
+    // the waiting page says it is waiting, and every answered page says nothing at all.
+    // NO BACKTICKS IN THIS BLOCK: it is serialised into a template literal, and one ends the string.
+    waiting: (q('.home2-waiting')?.textContent ?? '').trim(),
     // WHAT THIS CHANGE ADDED, read off the rendered page rather than the source. The quote beside the
     // elapsed time, and the sentence a stopping card carries — both are strings a reader sees, so a
     // source assertion would prove the template obeys and not that anyone asks it to.
@@ -628,6 +634,17 @@ for (const [name, spec] of Object.entries(STATES)) {
       say(spec.expectNotice.test(out.notice), `${name}/${theme}: the fault is stated ("${out.notice.slice(0, 48)}")`)
     } else {
       say(out.notice === '', `${name}/${theme}: no fault notice where there is no fault`)
+    }
+
+    // THE PAGE SAYS IT IS WAITING, AND ONLY WHILE IT IS. A page that treats "not answered yet" as an
+    // answer draws its frame around empty lists, which reads as "you have nothing" rather than "this is
+    // coming" — the defect this probe exists to hold closed. The negative half matters just as much:
+    // a waiting line left on an answered page is a page lying in the other direction.
+    if (spec.holdRunsMs) {
+      say(out.waiting !== '', `${name}/${theme}: the page says it is waiting ("${out.waiting.slice(0, 32)}")`)
+      say(out.notice === '', `${name}/${theme}: the wait is not drawn as a fault`)
+    } else {
+      say(out.waiting === '', `${name}/${theme}: no waiting line once the answer is in ("${out.waiting.slice(0, 32)}")`)
     }
 
     // HOME NEVER RE-LISTS THE ARCHIVE: one finished line, and a way into Clearances.

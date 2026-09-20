@@ -15,6 +15,7 @@
 import { makeLedger } from "../../_shared/ledger.mjs";
 import { nonAnswerBodyError, parseJsonBody, unparsedBodyError } from "../../_shared/http-body.mjs";
 import { normalizeTerritory } from "../../_shared/territory-codes.mjs";
+import { goodsTermsList } from "../../_shared/term-shape.mjs";   // the shared reader for the goods words
 import {
   BATCH_SCREEN_CHUNK, chunk, classifyStatus, isAllClass, normalizeBrandRow, screenVerdict,
 } from "../../_shared/screen.mjs";
@@ -133,6 +134,12 @@ export function assembleQuery(p) {
   if (p.owner)          parts.push(clause("", "owner", p.owner));
   if (Array.isArray(p.owners)) for (const o of p.owners) parts.push(clause("", "owner", o));   // OR-stack of owner names (same-field implicit OR — mirrors `names`)
   if (p.product)        parts.push(clause("", "product", p.product));
+  // The goods-and-services narrowing, in the vocabulary every provider shares. `product:` is this
+  // vendor's name for the same field the others call a goods description, and it was already built
+  // here — nothing passed it until now, which is why the capability declared false.
+  // Several words become several clauses: within one field the clauses implicitly OR, which is the
+  // same "any of these words" the other connectors write with an explicit OR.
+  for (const g of goodsTermsList(p)) parts.push(clause("", "product", g));
   if (p.representative) parts.push(clause("", "representative", p.representative));
 
   // Filters (each value must be backtick-quoted)

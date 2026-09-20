@@ -874,7 +874,7 @@ function actionsPanel(actionsText) {
     if (!body) continue;
     const kind = /answers to your instructions/i.test(label) ? 'ans' : /checks we ran|what we found/i.test(label) ? 'ran' : 'you';
     const ic = kind === 'ans' ? '✎' : kind === 'ran' ? '✓' : '→';
-    parts.push(`<div class="actgrp act-${kind}"><h3><span class="actic">${ic}</span> ${inline(label)}</h3>${renderProse(body)}</div>`);
+    parts.push(`<div class="actgrp act-${kind}"><h3><span class="actic">${ic}</span> ${inline(label)}</h3>${kind === 'ans' ? answersHtml(body) : renderProse(body)}</div>`);
   }
   return parts.length ? `<div class="panel actions" id="actions">${parts.join('')}</div>` : '';
 }
@@ -900,10 +900,62 @@ export function parseActionBuckets(actionsText) {
   }
   return out;
 }
+// ── ONE LINE PER ANSWER, THE REST FOLDED (owner, on the delivered report, 2026-09-20) ────────────────
+//
+// Every answer to a client's instruction printed at full length, one after another, and the section read
+// as a wall of text. The acceptance brief had already ruled the shape — the question and the answer's
+// opening visible, the explanation behind a fold — and it was never built, because no demo run carries
+// intake asks and so no demo and no mock ever rendered this section.
+//
+// NOTHING IS CUT AND NO WORDS ARE WRITTEN. The line is the answer's FIRST SENTENCE, by the same
+// splitFirstSentence the hero caption folds on (one rule, one set of abbreviations), and the remainder is
+// the rest of the same string. `report.md`, `report-data.json` and the workbook are untouched.
+//
+// WHERE THE FOLD MAY NOT GO, and this is the whole care in the function. An internal note runs from its
+// label to the END OF ITS LINE, and a client surface removes it by cutting to the close of the element
+// that contains it (portal-report.mjs). So:
+//   · a wholly internal answer is dropped, exactly as renderProse drops one;
+//   · an answer whose remainder is ONLY an internal tail folds inside a wrapper the client strip takes
+//     whole, so that reader gets the line and no empty disclosure;
+//   · an answer that is internal from its first word takes the whole row with it: the strip would
+//     otherwise leave the question standing over a dangling arrow, which portal-report.mjs names as the
+//     empty-labelled-row defect;
+//   · otherwise the remainder folds, tail included, and the client cut trims it inside the fold's own
+//     paragraph while the public remainder stays.
+// Splitting on the public head alone is what makes that true: the visible line can never carry a label.
+function answersHtml(body) {
+  const lines = stripInternal(String(body ?? ''), { client: false }).split('\n').map((l) => l.trim());
+  const items = [];
+  for (const line of lines) {
+    if (!line) continue;
+    if (/^[-*]\s/.test(line)) items.push(line.replace(/^[-*]\s+/, ''));
+    else if (items.length) items[items.length - 1] += ` ${line}`;
+    else return renderProse(body);   // not the bulleted register — render it as it always was
+  }
+  if (!items.length) return renderProse(body);
+  const rows = [];
+  for (const item of items) {
+    if (isInternalLabelled(item)) continue;
+    const at = item.indexOf('→');
+    const label = at < 0 ? '' : item.slice(0, at + 1).trim();
+    const answer = at < 0 ? item : item.slice(at + 1).trim();
+    const mark = answer.search(/\[internal\]/i);
+    const { first, rest } = splitFirstSentence(mark < 0 ? answer : answer.slice(0, mark));
+    const tail = mark < 0 ? '' : answer.slice(mark).trim();
+    const head = `${label ? `${inline(label)} ` : ''}${inline(first)}`;
+    if (!rest && !tail) { rows.push(`<li>${head}</li>`); continue; }
+    if (!first && !rest) { rows.push(`<li class="int-note">${head}${inline(tail)}</li>`); continue; }
+    const fold = `<details class="ans-more"><summary>More</summary><p>${inline(rest && tail ? `${rest} ${tail}` : rest || tail)}</p></details>`;
+    rows.push(`<li>${head}${rest ? fold : `<div class="int-note">${fold}</div>`}</li>`);
+  }
+  return rows.length ? `<ul class="answers">${rows.join('')}</ul>` : '';
+}
+
 function actionGroup(bucket, kind) {
   if (!bucket || !bucket.body) return '';
   const ic = kind === 'ans' ? '✎' : kind === 'ran' ? '✓' : '→';
-  return `<div class="actgrp act-${kind}"><h3><span class="actic">${ic}</span> ${inline(bucket.label)}</h3>${renderProse(bucket.body)}</div>`;
+  const body = kind === 'ans' ? answersHtml(bucket.body) : renderProse(bucket.body);
+  return `<div class="actgrp act-${kind}"><h3><span class="actic">${ic}</span> ${inline(bucket.label)}</h3>${body}</div>`;
 }
 
 // doc-52 — the "Conditional — subject to:" banner speaks the SAME plain wording as "Only you can close

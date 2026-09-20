@@ -13379,6 +13379,17 @@ async function pipelineInner(job, opts = {}) {
       // rationale lives on the function so the arms can DRIVE it rather than pin this call site's text.
       const { clauses: orderedClauses, reasons: orderedReasons } = orderClausesForLede(clampClauses, clampReasons, guardClauses);
       const reasonsOut = blockingGrounds.length ? [...orderedReasons, ...blockingGrounds] : orderedReasons;
+      // — AND EACH APPENDED GROUND CARRIES AN EXPLICIT NULL CLAUSE, which is what puts it in the
+      // run record ALONE. The block above says "no client surface moves", and that was true of the
+      // statement and the bound recommendation, both fixed strings on BLOCKING. It was never true of the
+      // CONDITIONS LIST: `clientConditions` walks the reasons and prints any reason that has no clause
+      // and no engine token, so on a delivered BLOCKING run the reviewer's own cited correction lines
+      // printed to the client as their conditions — 8 of the 13 conditions on the run this was measured
+      // on (2026-09-20). A stored null is the shipped way to say "recorded, not rendered", and the
+      // arrays stay index-aligned because `orderClausesForLede` returns them the same length.
+      const clausesOut = blockingGrounds.length
+        ? [...orderedClauses, ...blockingGrounds.map(() => null)]
+        : orderedClauses;
       const kindsOut = verdict === "BLOCKING" ? { ...clampKinds, reviewerCited } : clampKinds;
       // The invariant itself, stated over the value that is WRITTEN rather than over the branch that fills
       // it — a guard that only holds while the code above is remembered is not a guard. Unreachable today
@@ -13396,13 +13407,19 @@ async function pipelineInner(job, opts = {}) {
       // CONDITIONAL statement reads "<Tier> — conditional on: <factual open-state> (and N more)." —
       // clampClauses carries the fact-voice clauses; the structured `stance` field is what every
       // consumer keys on (never the statement's wording — the magic-string coupling is retired).
-      const statement = riskStatement({ tier: derived.tier, verdict, reasons: reasonsOut, clauses: orderedClauses,
+      const statement = riskStatement({ tier: derived.tier, verdict, reasons: reasonsOut, clauses: clausesOut,
         basis: isRegisterOnly(ctx.searchPolicy) ? "register-only" : null });
       const tmp = driverDir(run.runDir, "verdict.json.tmp");
-      writeFileSync(tmp, JSON.stringify({ ts: new Date().toISOString(), verdict, reasons: reasonsOut, clauses: orderedClauses, kinds: kindsOut,
+      writeFileSync(tmp, JSON.stringify({ ts: new Date().toISOString(), verdict, reasons: reasonsOut, clauses: clausesOut, kinds: kindsOut,
         tier: derived.tier, badge: derived.badge, gaugeIndex: derived.gaugeIndex, maxComposite: derived.maxComposite,
         band: derived.band ?? null, statement, stance: verdictStance(verdict) }, null, 2));
       renameSync(tmp, driverDir(run.runDir, "verdict.json"));
+      // — THE STATUS RECORD CARRIES THE BAND AND THE SENTENCE, so a reader of the run does not
+      // have to reach for `verdict` to say something about the outcome. `verdict` is the gate's decision
+      // (CLEAR / CONDITIONAL / BLOCKING) and is engine vocabulary; the band and the composed statement are
+      // what every client surface already speaks. Measured 2026-09-20: an assistant summarising a run read
+      // `verdict` and told the client "BLOCKING" beside a Medium rating, because status.json held no band.
+      writeRunStatus(ctx, { tier: derived.tier ?? null, statement: statement ?? null });
       return derived;
     };
     try { writeVerdictSidecar(); }
@@ -15902,11 +15919,17 @@ export function reconstructCtx(job, opts) {   // @internal
   // axes drive which register-unit files placement/digest/skeptic/synthesis reference. Mirror the cold path
   // (pipeline) exactly: decideAxes("") defaults ALL axes ON, so a missing manifest never silently UNDER-spawns.
   ctx.axes = decideAxes(existsSync(P.variantManifest) ? readFileSync(P.variantManifest, "utf8") : "");
-  // …including the cold path's axis-from-plan UNION ( B3): the frozen plan is the search
-  // authority, and the F2 owner lane routinely puts entries on an axis prose decideAxes won't activate
-  // (a watchlist-owners-only manifest has no incumbent alert, yet its owner lane lives on
-  // incumbent-class). Without the union a stale-repair/--experiment of register-digest/placement would
-  // exclude the executed lane from the per-axis unit list and the declared inputs/freshness stamps.
+  // …including the cold path's axis-from-plan UNION ( B3), and the reason is now the plainer one:
+  // THE FROZEN PLAN IS THE SEARCH AUTHORITY, and what it carries need not match what prose activation
+  // would have chosen. `decideAxes` reads the manifest; the plan is what actually ran.
+  //
+  // The two diverge in both directions and each has a live case. A plan frozen before the guessed
+  // owner lane was removed still carries its owner entries on incumbent-class, and a resumed run must
+  // execute the plan it froze rather than the axes today's manifest would activate. Going the other
+  // way, any future lane that mints entries on an axis the manifest does not announce lands here too.
+  //
+  // Without the union a stale-repair/--experiment of register-digest/placement would exclude the
+  // executed lane from the per-axis unit list and the declared inputs/freshness stamps.
   // Best-effort read — a legacy run without a frozen plan reconstructs exactly as before.
   try {
     const plan = JSON.parse(readFileSync(P.registerPlan, "utf8"));

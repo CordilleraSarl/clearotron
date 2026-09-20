@@ -50,7 +50,7 @@ import { REGISTER_AXES } from "./coverage-ledger.mjs";
 import { canonicalJurisdictionCode, isKnownJurisdictionCode } from "./jurisdiction-codes.mjs";   // item 13 — a searched territory traces to an executed query
 import { normalizeTerritory } from "../providers/_shared/territory-codes.mjs";
 import { bindingLayersFor, layerCoverageFor } from "./binding-layers.mjs";
-import { entryTermIssues, hasAnchoredWildcard, termAnnotationIssue, termMarkupIssue, termShapeIssue, termSubstanceIssue } from "../providers/_shared/term-shape.mjs";
+import { entryTermIssues, goodsTermsList, stripGoodsReservedWords, hasAnchoredWildcard, termAnnotationIssue, termMarkupIssue, termShapeIssue, termSubstanceIssue } from "../providers/_shared/term-shape.mjs";
 import { formKey, romanizationSpellings, isNonLatinTerm } from "../providers/_shared/script-form.mjs";
 
 export const PLAN_SCHEMA_VERSION = 1;
@@ -187,6 +187,37 @@ export function ownerIntersectionGap(entry, capabilities) {
   if (capabilities.ownerTermIntersection === true) return null;
   return ownerIntersectionUnsupportedReason(capabilities.id ?? "unknown");
 }
+
+// ── GOODS-TEXT NARROWING: a class is not a specification ───────────────────────────────────────────
+//
+// An entry carrying `goods_text` asks the register to match the goods and services DESCRIPTION, not
+// only the Nice class the slice already carries. Both are needed and they are not the same question:
+// a class is a filing-fee bucket that holds everything from headphones to jukeboxes, so a contains
+// sweep scoped to a class alone comes back a crowd on any crowded word.
+//
+// WHY THIS IS A CAPABILITY AND NOT A PREDICATE. It is a SECOND FIELD on the same request, exactly as
+// the owner scope field is — it composes with the mark clause rather than replacing it. A provider
+// whose connector cannot send it must DEFER the slice: dropping the goods clause and running the
+// sweep anyway would return the crowd this entry exists to avoid, and record it as a searched slice.
+// That is a widened search wearing a narrowed slice's qid, and it is the failure mode the whole
+// `unsupported` lane exists to prevent.
+export const goodsTextUnsupportedReason = (providerId) =>
+  `goods-and-services text narrowing is not supported by the active register provider (${providerId}) — the `
+  + `goods description cannot be searched there, so the narrowed sweep this entry asks for was never run. `
+  + `Running it on the class alone would have returned the crowd the narrowing exists to cut, so the slice `
+  + `is deferred. It is a gap for judgment, never a clean negative.`;
+
+/** Is a goods-narrowed entry executable on the provider? null when it is (or when it asks for no goods text). */
+export function goodsTextGap(entry, capabilities) {
+  if (!capabilities) return null;
+  const goods = goodsTermsList(entry);
+  if (!goods.length) return null;
+  if (capabilities.goodsTextSearch === true) return null;
+  return goodsTextUnsupportedReason(capabilities.id ?? "unknown");
+}
+
+// The reader is `goodsTermsList`, imported from the shared term vocabulary — the compiler, the
+// executor and the connectors all ask the question with the same function.
 
 /**
  * 2026-07-29 hardening — is a VARIANTS-MODEL value un-searchable as a mark term? Returns the
@@ -458,9 +489,19 @@ export function variantsFingerprint(manifest) {
     elements: manifest.elements.map((e) => [e.value, e.kind]),
     variants: manifest.variants.map((v) => [v.value, v.category]),
     incumbent: manifest.incumbent_classes,
-    // Only when SEEDED, so every owner-less manifest keeps its historical fingerprint byte-identical
-    // (nothing compares fingerprints across code versions today, but the cheap invariant costs nothing).
-    ...(manifest.watchlist_owners?.length ? { watchlist_owners: manifest.watchlist_owners } : {}),
+    // ── WHAT BELONGS HERE IS WHAT CHANGES AN ENTRY ─────────────────────────────────────────────
+    //
+    // `watchlist_owners` is GONE from this fingerprint, and its removal follows the same rule that put
+    // it here: a field belongs when a manifest gaining it must not reuse a stored plan byte-identical.
+    // That list no longer compiles anything, so two manifests differing only in it now compile to the
+    // same plan and must fingerprint the same. The one cost is a single re-mint for a matter whose
+    // plan was stored before the owner lane was removed — and that re-mint produces the entries the
+    // compiler would produce today, which is the point of it.
+    //
+    // `goods_words` is here for the mirror-image reason: it DOES change an entry. Added conditionally,
+    // exactly as the romanisations below are, so a manifest carrying none fingerprints byte-identically
+    // to the way it always did and nothing re-mints for a field it never had.
+    ...(manifest.goods_words?.length ? { goods_words: manifest.goods_words } : {}),
     // Same rule for the romanisations: a manifest that carries none fingerprints exactly as it always
     // did, and one that gains them is a DIFFERENT manifest, so a stored plan minted before the
     // romanisations existed is never REUSED byte-identical for a manifest that now carries them.
@@ -994,7 +1035,7 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
     // deferred coverage row is the loud form of "this was never really searchable", and stamping it
     // here keeps the plan byte-identical across compiles (a pure function of the value).
     const gap = allJurisdictionsDeferred ?? substanceGap ?? dropIssue ?? markupGap ?? predicateGap(e.predicate, e.term ?? e.terms?.[0], caps)
-      ?? ownerIntersectionGap(e, caps);
+      ?? ownerIntersectionGap(e, caps) ?? goodsTextGap(e, caps);
     entries.push({ qid, nice_classes: classes, regions, ...romanStamp(e), ...rest,
       ...(gap ? { unsupported: true, unsupported_reason: gap } : {}) });
     return qid;
@@ -1106,6 +1147,140 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   // closed when present, like `provenance`: a frozen pre-2050 plan carries none and its reader falls
   // back to the old rule, so a resumed run does not change its answer because a field arrived.
   const parentQid = push({ axis: "primary-sweep", predicate: "default", term: manifest.dominant_element, expected_kind: "enumerate", provenance: "mark", crowd_gate_parent: true });
+
+  // ── THE SAME SWEEP, NARROWED TO WHAT THE FILINGS COVER ──────────────────────────────────────────
+  //
+  // The parent above is the whole reason this entry exists. On a measured run it asked for the mark's
+  // dominant word, already scoped to the matter's classes across 186 offices, and the register
+  // answered 10,483 — over the 600 enumerate ceiling, so it was recorded as a crowd and NOT ONE
+  // RECORD WAS READ. A class cannot cut that: class 9 holds headphones and jukeboxes alike, so
+  // class-scoping is already spent by the time the crowd appears. The goods and services DESCRIPTION
+  // is the only axis left that narrows the sweep without narrowing the mark.
+  //
+  // IT IS COMPILED ALWAYS, NOT ONLY WHEN THE PARENT CROWDS. A `when` guard here would be a second
+  // crowd-gate mechanism, and it would buy nothing: on an uncrowded matter this entry returns a
+  // SUBSET of the parent's own records, and mergeNamedBands folds them by `record_id` — one row per
+  // record, first occurrence wins, and the survivor carries both qids in `_qids`. So the duplicate
+  // costs one register question and changes no count downstream. Gating it would instead make the
+  // plan's shape depend on a result, which is the property this compiler exists not to have: the same
+  // manifest must compile to the same plan every time.
+  //
+  // The words come from the manifest (`goods_words`) and from nowhere else. Code never invents a
+  // search term, and it never adds a synonym: what this entry can find is exactly what was written
+  // there, which is why the list is the client's wording plus the model's synonyms and is recorded on
+  // the run.
+  // TWO REASONS NOT TO COMPILE IT AT ALL, and neither is a coverage loss.
+  //
+  // No words: the matter stated no goods wording and the profile carries none, so there is nothing to
+  // narrow BY. An entry with an empty clause is the broad sweep under a second name.
+  //
+  // No capability: on a provider whose connector cannot send the clause, this entry would be stamped
+  // `unsupported` and print a deferred coverage gap in every instructed class, on every matter —
+  // "this was not searched" about a slice whose population is a STRICT SUBSET of the broad sweep that
+  // did run. Same term, same classes, one clause more: wherever the parent ran, nothing here went
+  // unsearched. The deferral lane is for coverage genuinely lost, and claiming a loss that did not
+  // happen is the same false statement as hiding one.
+  // A THIRD REASON, and it is a property of the register rather than of the matter: some registers
+  // cannot express a LIST of alternatives on this field at all. Where that is so, a multi-word list
+  // has no honest form — joining it would intersect the words instead of offering them as
+  // alternatives, which asks for filings covering ALL of them and answers 200 with a population that
+  // shrinks as the list grows. So the entry is not compiled; the broad sweep still runs.
+  const goodsWords = Array.isArray(manifest.goods_words) ? manifest.goods_words : [];
+  // A FOURTH REASON, and it is the one the parser deliberately does NOT decide: the list may carry a
+  // short phrase, and only some registers match a phrase as a phrase. Where this one does not, the
+  // connector would refuse the entry at the door — so the entry must not be compiled in the first
+  // place. Checking it here keeps the parser free to accept what the model was told to write, and
+  // keeps each register's behaviour in the one file that describes that register.
+  // A MULTI-WORD ITEM THIS REGISTER CANNOT TAKE DROPS ON ITS OWN, and the single words beside it
+  // still compile. Suppressing the whole entry over one phrase threw away the words that WOULD have
+  // narrowed the sweep, which is the wrong direction to fail in: a narrowing that asks for less than
+  // intended is narrower than intended, never wider, and the class-wide sweep still runs beside it.
+  // What was dropped rides on the entry, so the omission is a fact on the plan rather than a silence.
+  // ── A WORD THE REGISTER READS AS AN OPERATOR COMES OUT OF THE ITEM, NOT THE ITEM OUT OF THE LIST ──
+  //
+  // AND, OR, NOT, ADJ and NEAR are operators inside the value there and the field has no escape
+  // syntax, so "near field communication" is a 400 rather than a narrower search — and since the list
+  // rides one OR-joined value, that one term would take the whole narrowing down for the run.
+  //
+  // The word is removed and the rest of the item is still asked: "field communication" narrows
+  // usefully, and throwing the term away over one word the vendor happens to reserve would lose a
+  // choice the model made. An item that is nothing BUT reserved words has nothing left and goes.
+  // Every removal is disclosed, because a term that reached the wire in a different shape from the
+  // one written must never do so in silence.
+  //
+  // STRIPPED ONCE, HERE, AND THE DISTANCES TRAVEL WITH THE WORDS. The plan stores what will be asked,
+  // so the gap a removal opened has to ride beside the term: the connector receives "controllers
+  // peripherals" with nothing left to strip, and on its own would join it as a plain adjacency — the
+  // query that matches nothing, which is the defect this carriage exists to prevent. A plan that
+  // states the terms but not the distances does not state what will be asked.
+  const goodsRewritten = [];
+  const goodsCleaned = [];
+  const goodsGaps = [];
+  for (const w of goodsWords) {
+    const { cleaned, removed, gaps } = stripGoodsReservedWords(w);
+    if (removed.length) goodsRewritten.push({ term: String(w).trim(), removed, asked: cleaned || null });
+    if (cleaned) { goodsCleaned.push(cleaned); goodsGaps.push(gaps); }
+  }
+  /** the gap list for each SENDABLE term, in the same order — the plan's statement of the distances. */
+  const gapsFor = (terms) => terms.map((t) => goodsGaps[goodsCleaned.indexOf(t)] ?? []);
+  const goodsSendable = caps?.goodsTextMultiWord
+    ? goodsCleaned
+    : goodsCleaned.filter((w) => !/\s/.test(String(w).trim()));
+  // WHAT WAS NOT ASKED, in one list, whichever way it came to be dropped: a whole term this register
+  // cannot express, and a word removed from inside a term because the register reads it as an
+  // operator. Both are the same fact to a reader — the model wrote it and the search did not carry it
+  // — and both make the narrowing ask for LESS than the list it was given, never more.
+  const goodsOmitted = [
+    ...goodsCleaned.filter((w) => !goodsSendable.includes(w)),
+    ...goodsRewritten.flatMap((r) => r.removed),
+  ];
+  const goodsOmittedReason = goodsOmitted.length
+    ? `${goodsOmitted.length} of what the goods list asked for did not reach the register (${caps?.id ?? "unknown"}): `
+      + `a term it cannot express, or a word inside a term that it reads as a search operator and has no `
+      + `escape syntax for. What remained WAS asked — a term keeps its other words, and the adjacency is `
+      + `widened by the gap so the phrase still matches — and the class-wide sweep ran beside it. So the `
+      + `narrowing asked for LESS than the list it was given, never more. A disclosed gap, never a clean `
+      + `negative about those goods.`
+    : null;
+  const omittedStamp = goodsOmitted.length
+    ? { goods_text_omitted: goodsOmitted, goods_text_omitted_reason: goodsOmittedReason }
+    : {};
+
+  if (goodsSendable.length && caps?.goodsTextSearch === true) {
+    if (caps.goodsTextListOr === true) {
+      // The register offers the list as alternatives in one clause: one question, one count — phrases
+      // among them. A phrase compiles to an adjacency and the list to an OR, so the value reads
+      // `a ADJ b OR c`, and that precedence is MEASURED rather than assumed: the mixed clause answers
+      // the union of its alternatives, not the distributed reading `a ADJ (b OR c)`. Were it the
+      // other way the clause would ask a different question and still answer 200.
+      push({ axis: "primary-sweep", predicate: "default", term: manifest.dominant_element,
+        expected_kind: "enumerate", provenance: "mark", goods_text: goodsSendable,
+        goods_text_gaps: gapsFor(goodsSendable), qidSuffix: "+goods", ...omittedStamp });
+    } else {
+      // ── ONE ENTRY PER WORD, where the register has no OR on this field ──────────────────────────
+      //
+      // The alternative shapes were all worse. Joining the words into one value INTERSECTS them
+      // there, so the answer narrows as the list grows and still returns 200 — a false clean that
+      // gets quieter the more thorough the word list is. Merging the calls inside the connector is
+      // not available either: the enumerate kernel drives its own paging and tests the ceiling off
+      // each page's own total, so a fan-out below it would have to invent a total and a page
+      // sequence across several independent streams.
+      //
+      // As separate PLAN entries each word is an ordinary dictated question: its own qid, its own
+      // count, its own ledger row, its own crowd descriptor if it crowds, and the band merge folds
+      // the records by id exactly as it already does across axes. Nothing new has to be trusted.
+      //
+      // The cost is real and it is the reason this is a ruling and not a default: a list of N words
+      // is N questions on such a register, where a register with an OR asks one. The manifest's
+      // 24-word ceiling is what bounds it.
+      goodsSendable.forEach((word, i) => {
+        push({ axis: "primary-sweep", predicate: "default", term: manifest.dominant_element,
+          expected_kind: "enumerate", provenance: "mark", goods_text: [word],
+          goods_text_gaps: gapsFor([word]),
+          qidSuffix: `+goods-${termIdentity(word)}`, ...(i === 0 ? omittedStamp : {}) });
+      });
+    }
+  }
   // — EVERY seeded band, not just the dominant element's (see bandsFor). The wildcard fringe stays
   // on the dominant band alone: it is crowd-gated on the dominant's own contains parent, and no other
   // seed has one to gate against. The oracle does not ask for more — coverageGaps' family arm counts ANY
@@ -1168,55 +1343,29 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
       nice_classes: manifest.incumbent_classes.map(String), provenance: "model", qidSuffix: "+incumbent" });
   }
 
-  // ── the COUNT-FIRST OWNER LANE (F2, 2026-07-29 — the TIKI-class fix, compiled) ──────────────────
-  // The postmortem shape: fifteen watchlist owners shipped as count-only crowds ("one mega-owner
-  // portfolio: 41k records, noted") because the only owner move the plan knew was the bare portfolio
-  // sweep, and every mega-owner portfolio crowds over any ceiling. Both wire vocabularies compose
-  // owner × mark-text × class in ONE call (capabilities.ownerTermIntersection), so a watchlist owner
-  // is answerable record-by-record: per seed, the plan dictates
-  //   1. the owner × formative ENUMERATE slices — the owner's portfolio intersected with the
-  //      dangerous band (the dominant element + every distinctive element, contains predicate,
-  //      in-scope classes). THESE are the coverage: the postmortem run's six mega-owners all collapse
-  //      below any ceiling once intersected with the mark's formatives.
-  //   2. ONE bare-owner COUNT probe (the existing predicate:"owner" count shape) — CROWD CONTEXT
-  //      that sizes the portfolio, stamped `covered_by` with the slice qids so the descriptor's
-  //      reason points at the records that actually answer the owner. Register-count doctrine holds
-  //      verbatim downstream: no model touches the number, a count we could not take is never zero,
-  //      the number is never banded. "Portfolio too large, noted" is not a finding anywhere.
-  // A wide-class owner slice that still crowds is rescued at the EXECUTOR by the per-class split
-  // (providers/_shared/enumerate.mjs classSplitRescue — the per-class rescue: per-class counts make
-  // each leg enumerable). On a provider without ownerTermIntersection the slices are stamped
-  // `unsupported` by push()'s ownerIntersectionGap (→ deferred coverage rows, disclosed, never a
-  // silently widened mark-only search); a provider with no owner field at all defers the count too.
-  if (manifest.watchlist_owners?.length) {
-    const formatives = [];
-    const seenForm = new Set();
-    // Dedup key is SCRIPT-PRESERVING (formKey, not norm): norm() strips everything outside [a-z0-9],
-    // so a Chinese/Cyrillic dominant or distinctive element would key to "" and be silently DROPPED
-    // from every owner's slices — undisclosed recall narrowing on the owner lane only (the primary
-    // sweep still searches them), and a fully non-Latin manifest would compile zero slices. The
-    // pipeline carries 8 transliteration scripts and a Chinese jx lane; non-Latin formatives are a
-    // real shape, not an edge case.
-    for (const t of [manifest.dominant_element, ...manifest.elements.filter((e) => e.kind === "distinctive").map((e) => e.value)]) {
-      const k = formKey(t);
-      if (!k || seenForm.has(k)) continue;
-      seenForm.add(k);
-      formatives.push(t);
-    }
-    for (const owner of manifest.watchlist_owners) {
-      const sliceQids = formatives.map((t) =>
-        push({ axis: "incumbent-class", predicate: "default", term: t, owner, expected_kind: "enumerate", provenance: "model", // — the SAME collapse rode this suffix and the issue did not name it: two different
-        // non-Latin owner names both folded to `+owner-q`, so the incumbent-class rows for two separate
-        // proprietors collided and were told apart by position, exactly as the terms were.
-        qidSuffix: `+owner-${termIdentity(owner)}` }));
-      // No formatives at all (defensive — the manifest model requires a dominant element, but honesty
-      // beats assumption): the bare-owner count compiles WITHOUT covered_by. An empty covered_by array
-      // is a plan the compiler's own parser refuses (register_plan_covered_by_invalid) — a deterministic
-      // freeze kill, the exact class 2becf12 exists to prevent. Absent = honest: no slices exist.
-      push({ axis: "incumbent-class", predicate: "owner", term: owner, expected_kind: "count", provenance: "model",
-        qidSuffix: "+watch", ...(sliceQids.length ? { covered_by: sliceQids } : {}) });
-    }
-  }
+  // ── THE GUESSED OWNER LANE IS GONE (2026-09-20) ────────────────────────────────────────────────
+  //
+  // What stood here compiled, for every name on the variants model's `watchlist_owners` list, one
+  // owner × formative slice per formative plus one bare-owner count. On a measured run that was 54 of
+  // the plan's 129 queries — 42% of everything the plan asked — and it returned 54 of the 2,146
+  // records the run read, 2.5%.
+  //
+  // THE MEASUREMENT THAT ENDED IT, and it is not "the axis was quiet". Every conflict the run placed
+  // rested on a record the close-form sweep found: 1,161 record references across every tier of the
+  // report, all of them from the primary sweep. The owner records were not ineligible — all 2,146
+  // records sat in the selection index the placement stage reads — they were simply never chosen.
+  // And none of the eighteen watched owners appeared in a single live in-class close-form record;
+  // four appeared anywhere in the run at all. The list was a guess about who mattered, made before
+  // any record existed to check it against, and the records did not agree with it.
+  //
+  // WHAT WENT WITH IT, stated because it is a real loss and not a free win: 26 of those 54 queries
+  // crowded out and were disclosed as coverage gaps, one of them explicitly as "never a clean
+  // negative about this owner". Those disclosures go too. The judgment behind the change is that a
+  // disclosure about a guessed owner is worth less than the queries it costs, and that owners are
+  // better found by grouping the records the close forms actually return.
+  //
+  // The axis is NOT gone: the incumbent-class anchor above still compiles, so the coverage skeleton
+  // still carries the axis and no clean is ever claimed over an axis that vanished.
 
   // stable ordering: axis (REGISTER_AXES order) then insertion order within the axis
   const axisRank = new Map(REGISTER_AXES.map((a, i) => [a, i]));
@@ -1252,6 +1401,23 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
     // DEFERRED coverage row for the ledger, never a dropped filter. Absent on a fully-covered plan, so
     // corsearch plans stay byte-identical to the pre-phase-3 compiler.
     ...(deferredJurisdictions.length ? { deferred_coverage: deferredJurisdictions } : {}),
+    // A GOODS TERM THE COMPILER DROPPED IS A DISCLOSURE, NOT A DETAIL. The words in this list are
+    // OR-ed, so removing one makes the clause NARROWER: the search returns fewer records and a
+    // conflict that term would have surfaced is simply never found. The model was asked for these
+    // words and one of them did not reach the wire — if nothing says so, the run is quietly less
+    // thorough than the list it was given, and it is our own compiler doing the dropping.
+    //
+    // It rides the plan rather than only the entry so a reader looking for what this search did NOT
+    // ask does not have to walk the entries to find out. Absent when nothing was dropped, so every
+    // plan that sends its whole list stays byte-identical.
+    ...(goodsOmitted.length ? { goods_text_not_asked: goodsOmitted, goods_text_not_asked_reason: goodsOmittedReason } : {}),
+    // A term the compiler ASKED IN A DIFFERENT SHAPE than it was written. The register reads AND, OR,
+    // NOT, ADJ and NEAR as operators inside the value and has no escape syntax, so the word comes out
+    // and the rest of the item is still asked — "near field communication" goes as "field
+    // communication". That is a narrower ask than the model wrote, and it must be visible: a reader
+    // comparing the word list to what was searched would otherwise find a term that appears to have
+    // been asked and was not, exactly.
+    ...(goodsRewritten.length ? { goods_text_rewritten: goodsRewritten } : {}),
     ...(caps ? { provider: caps.id } : {}),
     entries: ordered,
   };
@@ -1341,9 +1507,17 @@ export function extendRegisterPlan(prev, next) {
   // The key is the question and nothing else — axis, predicate, the term or the OR-stack, and the owner
   // that rides the incumbent-class suffix. Not classes or regions: those are run scope, identical across
   // one compile, and folding them in would make a rescoped re-run duplicate every entry it already had.
+  //
+  // THE GOODS NARROWING IS PART OF THE QUESTION. The narrowed entry shares axis, predicate, term and
+  // owner with the class-wide parent it sits beside — it differs only by asking what the filings
+  // COVER. Left out of this key the extension reads it as a question already carried and appends
+  // nothing, so a matter whose plan was frozen before the narrowing existed would never gain it: no
+  // deferred row, no disclosure, just an entry never minted. A reader of that run could not tell
+  // "the narrowing was never added" from "the narrowing found nothing".
   const questionKey = (e) => [e.axis, e.predicate,
     Array.isArray(e.terms) ? `terms:${e.terms.join("\u0000")}` : `term:${e.term ?? ""}`,
-    e.owner ?? ""].join("\u0001");
+    e.owner ?? "",
+    goodsTermsList(e).join("\u0000")].join("\u0001");
   // THE QUESTION ALONE DECIDES WHAT IS NEW, and the qid deliberately does NOT get a vote here. Keeping
   // `!have.has(e.qid)` as an additional guard looks conservative and re-creates the whole defect: under
   // the old scheme a fresh term and a stored one collide on `q#2` while asking DIFFERENT questions, and

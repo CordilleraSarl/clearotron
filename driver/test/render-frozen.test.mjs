@@ -1790,7 +1790,9 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // http(s)-only. Not licence-only, so this constant moves with it.
 // Advanced again by the comment-only break recorded above the FROZEN constant: six sentences made
 // whole. A comment edit moves these bytes too, so this constant moves with it.
-const FROZEN_BEFORE_SPDX = "0c34c9e80f72e11ee9cf7c2f90ce18c2cb846c70f222d65f0cd9a1c8aea04380";
+// Advanced again by the break recorded above the FROZEN constant: each answer folds to its first
+// sentence. Neither licence-only nor comment-only, so this constant moves with the other one.
+const FROZEN_BEFORE_SPDX = "c6d552b4f3f5fed753f5b3b53aad72618aee3fa42bd3acbdf73037930d162481";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2605,7 +2607,37 @@ const FROZEN_BEFORE_SPDX = "0c34c9e80f72e11ee9cf7c2f90ce18c2cb846c70f222d65f0cd9
 //   1. Reachable from republish? No — a comment never reaches a rendered report.
 //   2. Could it live in report.css or brand.mjs? No: the sentences are comments in this file.
 //   3. Why it had to move here: the broken sentences were here, in a public tree.
-const FROZEN = "42c23b83773feab5c8a9867839f197eabfaf1272a426aa107399cbe2bffd4ef4";
+// ── BREAK (2026-09-20 — one line per answer, the rest folded) ───────────────────────────────────────
+//
+// WHAT MOVED: the "Answers to your instructions" bucket renders through `answersHtml` instead of
+// `renderProse`. Each answer's first sentence stays on the line; the remainder goes behind the page's
+// own disclosure. The other two buckets are untouched, and so is every other section.
+//
+// WHY. The owner read a delivered report and called the section unreadable — every answer at full
+// length, one after another. The acceptance brief had ruled this shape ("the explanation folds under
+// More") and nothing built it, because no demo run carries intake asks, so the section appears in no
+// demo and no mock and nobody saw it until a real matter.
+//
+// NOTHING IS CUT AND NO WORDS ARE WRITTEN. The visible line is the answer's own first sentence, split by
+// the `splitFirstSentence` this file already folds the hero caption with — one rule and one list of
+// abbreviations, so "Matchday, Inc." cannot end a sentence here either. `report.md`, `report-data.json`
+// and the audit workbook carry the same bytes they did.
+//
+// THE INTERNAL NOTE IS THE CARE IN IT. A note runs from its label to the end of its line, and a client
+// surface removes it by cutting to the close of the containing element. The split is taken on the public
+// head alone, so a visible line can never carry a label; a remainder that is only a note folds inside an
+// `int-note` wrapper the strip takes whole; and an answer internal from its first word takes its row with
+// it, rather than leaving the question standing over a dangling arrow.
+//
+// THE THREE QUESTIONS.
+//   1. Reachable from republish? Yes — a republish re-renders the document. It carries the same words in
+//      the same order; what changes is that all but the first sentence of each answer starts folded. A
+//      delivered report re-rendered gets the shorter section, which is the repair.
+//   2. Could it live in report.css or brand.mjs? The look did, and went there: the disclosure's styling
+//      and its print rule are in report.css. The structure could not — a stylesheet cannot put half a
+//      sentence behind a disclosure element that does not exist.
+//   3. Why it had to move here: this section's markup is composed in this file and nowhere else.
+const FROZEN = "fc729e2efc5d60163d71091db98db3895431fd70a02a8747a60c0d45fe85e5d6";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

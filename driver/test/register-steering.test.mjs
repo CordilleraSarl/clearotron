@@ -235,13 +235,23 @@ test("owner/watchlist steering rides the lane only, and states the proposal gram
   // owner with mark text is exactly what killed nine of sixteen owner queries on the 2026-07-28 E2E run
   assert.doesNotMatch(OWNER_SWEEP_STEERING, /never both|REPLACES the name clause/);
   assert.doesNotMatch(OWNER_SWEEP_STEERING, /call register_enumerate|run register_enumerate/i);
-  // PR-7: the compiler now SEEDS this exact lane from the manifest's watchlist_owners, so the steering
-  // must (a) tell the model those slices already exist in the frozen plan and (b) name the qid shapes
-  // the plan mints, so a duplicate proposal is a read-the-band miss, not an invitation.
-  assert.match(OWNER_SWEEP_STEERING, /ALREADY compiled into the frozen plan/);
-  assert.match(OWNER_SWEEP_STEERING, /\+owner-<owner>/);
-  assert.match(OWNER_SWEEP_STEERING, /\+watch/);
-  assert.match(OWNER_SWEEP_STEERING, /covered_by/);
+  // THE COMPILER NO LONGER SEEDS THIS LANE, and the steering had to stop saying it did. It used to
+  // tell the model that the manifest's watchlist owners were "ALREADY compiled into the frozen plan"
+  // as `+owner-<owner>` slices and a `+watch` count, and to read those band blocks before proposing a
+  // duplicate. Nothing mints those qids now, so a model following that sentence would look for band
+  // blocks that do not exist and hold back the proposals this lane depends on.
+  assert.doesNotMatch(OWNER_SWEEP_STEERING, /ALREADY compiled into the frozen plan/,
+    "the steering still promises a plan-seeded owner lane that no longer compiles");
+  assert.doesNotMatch(OWNER_SWEEP_STEERING, /\+owner-<owner>|\+watch/,
+    "the steering still names qid shapes nothing mints");
+  // What replaces it: every owner slice on the run is one the model proposes, from the records the
+  // close forms returned rather than from a list written before any record existed.
+  assert.match(OWNER_SWEEP_STEERING, /does not search a guessed owner list/);
+  assert.match(OWNER_SWEEP_STEERING, /Owners come from the records the searches returned/);
+  // …and the model is told WHEN an owner is worth a slice, so the lane does not simply invert into a
+  // slice per owner the records happen to show.
+  assert.match(OWNER_SWEEP_STEERING, /could change the assessment/);
+  assert.match(OWNER_SWEEP_STEERING, /family of marks sharing the element/);
 });
 
 test("the excluded tool constant names a tool the unit would OTHERWISE be granted (a typo would make the ban a no-op)", () => {

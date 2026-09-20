@@ -249,3 +249,79 @@ export function termSubstanceIssue(term) {
     + `match, under any predicate. Refused at the builder rather than bounced by the provider and `
     + `disclosed as a coverage gap the run could never have closed`;
 }
+
+// ── THE GOODS-AND-SERVICES TERMS AN ENTRY CARRIES ─────────────────────────────────────────────────
+//
+// ONE definition, because three places must agree on what "this entry asks for goods text" means: the
+// plan compiler stamping the capability gap, the executor building the query, and each connector
+// writing the clause. Two hand-rolled readings of the same field is how `filters.status` stayed wrong
+// for two months on one provider while looking right on the other.
+//
+// A scalar and a one-element list are the SAME request. Blanks are dropped and duplicates collapse, so
+// an entry asking for the same term twice compiles byte-identically to one asking once — the plan is a
+// pure function of its input, and that must survive this field like every other. PURE.
+export function goodsTermsList(entry) {
+  const raw = Array.isArray(entry?.goods_text) ? entry.goods_text
+    : (typeof entry?.goods_text === "string" ? [entry.goods_text] : []);
+  const out = [];
+  for (const t of raw) {
+    const s = String(t ?? "").trim();
+    if (s && !out.includes(s)) out.push(s);
+  }
+  return out;
+}
+
+// ── A GOODS TERM CARRYING A WORD THE REGISTER READS AS AN OPERATOR ────────────────────────────────
+//
+// `AND`, `OR`, `NOT`, `ADJ` and `NEAR` are operators INSIDE the value string on the register this
+// engine runs on in production, and that field has no escape syntax. A goods term carrying one is not
+// a narrower search there — it is a 400, and because the list rides ONE OR-joined value, a single bad
+// term takes the whole narrowing down with it for the run.
+//
+// `NEAR` is why this is its own function rather than a reused check: the connector's own term
+// validator tests AND/OR/NOT only, so "near field communication" passes every offline check and fails
+// on the wire — the shape that reads as working right up until it does not.
+//
+// THE WORD IS REMOVED, THE ITEM IS NOT. "near field communication" still narrows usefully as
+// "field communication", and dropping it whole would throw away a term the model chose on account of
+// one word the vendor happens to reserve. Only an item that is NOTHING BUT reserved words disappears.
+// Every removal is reported so the caller can disclose it: a term that reached the wire in a
+// different shape than it was written must never do so silently.
+//
+// PURE.
+const GOODS_RESERVED_WORDS = new Set(["and", "or", "not", "adj", "near"]);
+
+/**
+ * Strip the words this register parses as operators out of a goods term.
+ *
+ * `{ words, gaps, removed, cleaned }`. `gaps[i]` is the distance from `words[i]` to `words[i+1]` — 1
+ * when they were adjacent, 2 when one word was taken out between them, and so on.
+ *
+ * THE GAP IS THE WHOLE POINT and it is the rule the mark field already follows. Removing a word from
+ * the middle of a phrase leaves the survivors further apart than they were written: "controllers and
+ * peripherals" asked as a strict adjacency finds nothing, because no filing says "controllers
+ * peripherals". Widened by the gap it finds what was meant. A word taken off the FRONT or the BACK
+ * changes no distance between the words that remain, so "near field communication" stays a strict
+ * adjacency of "field" and "communication".
+ *
+ * PURE.
+ */
+export function stripGoodsReservedWords(term) {
+  const removed = [];
+  const words = [];
+  const gaps = [];
+  let owed = 1;                       // the distance owed to the NEXT kept word
+  for (const tok of String(term ?? "").trim().split(/\s+/)) {
+    if (!tok) continue;
+    // `ADJ2`/`NEAR3` are the numbered forms of the same operators.
+    if (GOODS_RESERVED_WORDS.has(tok.toLowerCase().replace(/\d+$/, ""))) {
+      removed.push(tok);
+      if (words.length) owed += 1;    // …only widens a gap once there is something to widen it FROM
+      continue;
+    }
+    if (words.length) gaps.push(owed);
+    words.push(tok);
+    owed = 1;
+  }
+  return { words, gaps, removed, cleaned: words.join(" ") };
+}
