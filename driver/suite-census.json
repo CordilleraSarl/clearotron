@@ -849,6 +849,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-reset-off-a-terminal-changes-nothing.test.mjs": {
+          "tests": 3,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "a-retrieval-group-does-not-vote-on-seat-writes.test.mjs": {
           "tests": 5,
           "asserts": 15,
