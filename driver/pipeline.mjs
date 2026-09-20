@@ -13414,6 +13414,12 @@ async function pipelineInner(job, opts = {}) {
         tier: derived.tier, badge: derived.badge, gaugeIndex: derived.gaugeIndex, maxComposite: derived.maxComposite,
         band: derived.band ?? null, statement, stance: verdictStance(verdict) }, null, 2));
       renameSync(tmp, driverDir(run.runDir, "verdict.json"));
+      // — THE STATUS RECORD CARRIES THE BAND AND THE SENTENCE, so a reader of the run does not
+      // have to reach for `verdict` to say something about the outcome. `verdict` is the gate's decision
+      // (CLEAR / CONDITIONAL / BLOCKING) and is engine vocabulary; the band and the composed statement are
+      // what every client surface already speaks. Measured 2026-09-20: an assistant summarising a run read
+      // `verdict` and told the client "BLOCKING" beside a Medium rating, because status.json held no band.
+      writeRunStatus(ctx, { tier: derived.tier ?? null, statement: statement ?? null });
       return derived;
     };
     try { writeVerdictSidecar(); }

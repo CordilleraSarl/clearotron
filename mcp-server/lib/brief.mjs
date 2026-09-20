@@ -74,9 +74,12 @@ export function buildBrief(run) {
   const delivered = run.state === "delivered" || Boolean(run.deliveredAt);
   const lines = [];
 
-  const overall = clearance?.verdict?.band ?? clearance?.verdict?.verdict
+  // THE BAND, AND NEVER THE GATE'S WORD. This chain used to fall through to the delivery verdict — the
+  // sidecar's `verdict`, then the run's — so a run whose report reads Medium could be briefed as BLOCKING.
+  // The band is what the report shows; where no band is recorded the line is not drawn at all.
+  const overall = clearance?.verdict?.band ?? clearance?.verdict?.tier
     ?? (koDocs.length === 1 ? (koDocs[0].overall ?? null) : null)
-    ?? fm.overall_label ?? run.verdict ?? null;
+    ?? fm.overall_label ?? run.tier ?? null;
 
   // headline — the mark, the product THIS run actually is, and the run date. A null product prints
   // nothing rather than a fallback name.
@@ -100,7 +103,10 @@ export function buildBrief(run) {
     const paused = run.state === "postponed" ? ` — paused on a usage-limit cap, auto-resumes ${run.resetsAt ? `at ${String(run.resetsAt).replace("T", " ").slice(0, 16)} UTC` : "when the cap resets"}`
       : run.state === "recovering" ? ` — auto-recovery backoff, resumes ${run.recoveryResumesAt ? `at ${String(run.recoveryResumesAt).replace("T", " ").slice(0, 16)} UTC` : "on its own"}`
       : run.state === "parked-for-human" ? ` — parked by a runner stop (deploy/restart), resumes on the next runner activation` : "";
-    lines.push(`Status: ${run.state}${paused}${run.verdict ? ` (reviewer verdict: ${run.verdict})` : ""}.`);
+    lines.push(`Status: ${run.state}${paused}.`);
+    // The run's own sentence, composed once by the driver and rendered on every client surface. It says
+    // what the gate word used to be reached for, in the words the report itself uses.
+    if (run.statement) lines.push(String(run.statement));
   }
 
   let source = "none";
@@ -198,7 +204,7 @@ export function buildBrief(run) {
   return {
     runId: run.runId, markName: run.markName ?? clearance?.markName ?? fm.title ?? null,
     product,
-    overall, verdict: run.verdict ?? null, state: run.state ?? null, date: run.date ?? null,
+    overall, tier: run.tier ?? null, statement: run.statement ?? null, state: run.state ?? null, date: run.date ?? null,
     source, brief: lines.join("\n"),
   };
 }

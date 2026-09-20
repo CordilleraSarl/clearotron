@@ -1739,8 +1739,17 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
   // the engine clamp reasons (opts.conditions = verdict.json reasons). Machinery-only clamps (no client
   // item authored) degrade to one generic plain line — never raw engine jargon, never truncated mid-sentence.
   const emailConditions = opts?.verdict === 'CONDITIONAL' ? actYouConditions(parseActionBuckets(secs['Actions']).you) : [];
+  // THE BANNER SPEAKS THE RUN'S OWN SENTENCE. It used to print the delivery gate's word — "Delivered as
+  // BLOCKING" — which is engine vocabulary and, beside a Medium rating on the report, reads as a
+  // contradiction the reader cannot resolve (measured 2026-09-20). The statement is composed once by the
+  // sidecar writer and is what the report and the index already show; a run recorded before statements
+  // were persisted keeps the old line, which is all such a run has.
+  const bound = String(opts?.statement ?? '').trim();
+  const boundHead = bound
+    ? esc(bound)
+    : `Delivered as ${esc(opts?.verdict ?? '')}${opts?.verdict === 'CONDITIONAL' ? ' — subject to:' : '.'}`;
   const verdictBound = (opts?.verdict && opts.verdict !== 'CLEAR')
-    ? `<p style="margin:0 0 8px;padding:8px 10px;background:#fdeeee;border:1px solid #c98a86;color:#6e1512"><b>Delivered as ${esc(opts.verdict)}${opts.verdict === 'CONDITIONAL' ? ' — subject to:' : '.'}</b>${opts.verdict === 'CONDITIONAL' ? `<br>${(emailConditions.length ? emailConditions : ['the open items set out in the report, before relying on a clean result']).map((r) => `• ${cell(String(r))}`).join('<br>')}` : ''}</p>`
+    ? `<p style="margin:0 0 8px;padding:8px 10px;background:#fdeeee;border:1px solid #c98a86;color:#6e1512"><b>${boundHead}</b>${opts.verdict === 'CONDITIONAL' ? `<br>${(emailConditions.length ? emailConditions : ['the open items set out in the report, before relying on a clean result']).map((r) => `• ${cell(String(r))}`).join('<br>')}` : ''}</p>`
     : '';
 
   const reviewHeadline = `<div style="${FONT};font-size:11pt;color:#1a1a2e;margin:0 0 14px">`

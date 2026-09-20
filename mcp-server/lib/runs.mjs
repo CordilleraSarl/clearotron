@@ -36,6 +36,14 @@ function findStatusFiles(root, depth, acc) {
  * workspace, lists exactly as before, and an empty list from either still means an empty list. PURE given
  * its inputs.
  */
+// The three words the delivery gate decides in. They are engine vocabulary and never a rating.
+const GATE_WORDS = new Set(["CLEAR", "CONDITIONAL", "BLOCKING"]);
+/** A recorded outcome word read as a rating band, or null where it is the gate's decision. PURE. */
+export const bandWord = (v) => {
+  const w = String(v ?? "").trim();
+  return w && !GATE_WORDS.has(w.toUpperCase()) ? w : null;
+};
+
 export function unreadableRunsReason({ workSet, workRoot, workExists, poolSet }) {
   if (workSet || workExists || poolSet) return null;
   return `no searches can be read here: CLEAROTRON_WORK_DIR is unset and ${workRoot} does not exist, `
@@ -68,7 +76,18 @@ function runFromStatusFile(statusFile, agent) {
     runId: s.runId ?? `${s.slug}-${s.date}-${s.codename}`,
     slug: s.slug, codename: s.codename, date: s.date,
     agent: s.agent ?? agent,
-    state: s.state ?? null, verdict: s.verdict ?? null, url: s.url ?? null,
+    // The BAND and the run's own composed sentence, never the delivery gate's word: `verdict` is
+    // engine vocabulary (CLEAR / CONDITIONAL / BLOCKING) and stays in the run record.
+    //
+    // ONE FIELD, TWO LANES. The knockout lane records its BAND in `verdict` — "High", "Manageable" — and
+    // every archived run of either lane has only that field, so the band is read from it where it is a
+    // band and dropped where it is the gate's word. A clearance run recorded since 2026-09-20 carries
+    // `tier` and needs no such reading.
+    // `verdict` stays on the row for the decision chain, whose subject IS the gate's conclusion and which
+    // pins it (account-audit-chain). What changed is that no SUMMARY has to reach for it: the band and the
+    // sentence are here now.
+    state: s.state ?? null, verdict: s.verdict ?? null,
+    tier: s.tier ?? bandWord(s.verdict), statement: s.statement ?? null, url: s.url ?? null,
     markName: s.markName ?? null, ref: s.ref ?? null, classes: s.classes ?? null,
     stepN: s.stepN ?? null, stepLabel: s.stepLabel ?? null, stepTotal: s.stepTotal ?? null,
     failedStage: s.failedStage ?? null, reason: s.reason ?? null,
