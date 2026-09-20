@@ -23,6 +23,7 @@
 import { readFileSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { goodsTermsList } from "../../_shared/term-shape.mjs";   // the shared reader for the goods words
 
 import { makeLedger } from "../../_shared/ledger.mjs";
 import { nonAnswerBodyError, parseJsonBody, unparsedBodyError } from "../../_shared/http-body.mjs";
@@ -132,6 +133,22 @@ function buildFilters(p) {
   // with a text query in ONE request, and the intersection is a real narrowing rather than one clause
   // being silently ignored — the three populations (term alone, owner alone, both) differ from each other.
   if (typeof p.owner === "string" && p.owner.trim()) f.owner_name = p.owner.trim();
+  // The goods-and-services narrowing. ONE term only: this filter is a single string whose words are
+  // ANDed, and no OR form exists (OR is matched as a literal third word; a pipe and a comma intersect;
+  // an array is refused). So a list of alternatives cannot be expressed, and joining one with spaces
+  // would ask for filings covering EVERY word — a population that shrinks as the list grows while
+  // still answering 200. The compiler does not build a multi-term entry for this provider; this
+  // refusal is the backstop for any path that does not go through it.
+  const goods = goodsTermsList(p);
+  if (goods.length > 1) {
+    throw new Error(
+      `goods_text carries ${goods.length} terms and this register has no OR on its goods filter: the `
+      + `words would be intersected, not offered as alternatives, and the answer would narrow as the `
+      + `list grew with no error. Send one term.`);
+  }
+  // A single term's own words ARE intersected, and that is the nearest honest form of the phrase the
+  // caller asked for — it is sent as written, and nothing here calls it a phrase match.
+  if (goods.length) f.goods_services_text = goods[0];
   return f;
 }
 

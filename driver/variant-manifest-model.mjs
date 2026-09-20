@@ -45,13 +45,16 @@ export const VARIANT_CATEGORIES = ["core", "phonetic", "visual", "transliteratio
   "exact-phrase", "exact-element", "plural-root", "formative-family"];
 
 const short = (v) => String(v ?? "").replace(/\s+/g, " ").trim().slice(0, 40);
-const MODEL_KEYS = ["schema_version", "mark", "dominant_element", "elements", "variants", "incumbent_classes", "watchlist_owners", "search_floor"];
+const MODEL_KEYS = ["schema_version", "mark", "dominant_element", "elements", "variants", "incumbent_classes", "watchlist_owners", "goods_words", "search_floor"];
 // The watchlist-owner seeds the register plan's OWNER LANE compiles from (F2, 2026-07-29): the
 // Step-5 watchlists a run must COVER on the register (aggressive_enforcers ∪ competitors ∪ the
 // matter-context watchlist-owner seeds; never the client). Bounded so a runaway list fails the
 // stage loudly (the corrective ladder trims it) instead of compiling an unbounded query fan-out —
 // the same 24 the supplemental lane caps an axis at; the postmortem run's fifteen owners fit with room.
 export const WATCHLIST_OWNERS_MAX = 24;
+// The goods-words bound. Wider than this is a list that has stopped describing these goods: every word
+// is OR-ed on the wire, so an over-long list restores the very crowd the narrowing exists to cut.
+export const GOODS_WORDS_MAX = 24;
 const ELEMENT_KEYS = ["value", "kind"];
 // `romanization` — the Latin-script form of a NON-LATIN `value`, and the whole reason the
 // transliteration axis can be executed at all (see the doc block on variantRomanizationGaps below).
@@ -158,6 +161,40 @@ export function parseVariantManifestModel(raw) {
       throw new Error(`variantmodel_watchlist_owners_invalid (${watchlist_owners.length} owners exceed the ${WATCHLIST_OWNERS_MAX}-owner bound — keep the NAMED watchlists only: aggressive enforcers, competitors, matter-context seeds)`);
   }
 
+  // ── THE GOODS WORDS THE REGISTER SEARCH IS NARROWED TO ─────────────────────────────────────────
+  //
+  // The client's own goods and services wording plus the words another filing would use for the same
+  // goods. They are AND-ed with the mark on the register, so THIS LIST SETS WHAT THE NARROWED SWEEP
+  // CAN FIND: a word missing from it is a conflict the run will not see.
+  //
+  // NO WILDCARD, REFUSED HERE RATHER THAN ON THE WIRE: a mid-word wildcard is a hard 400 on the field
+  // the provider production runs on, and a value that cannot be sent is cheapest to catch at the door
+  // where the reason can name the word.
+  //
+  // A SHORT PHRASE IS ALLOWED, and what happens to it is the connector's business, not this parser's:
+  // one register matches it as an ordered phrase, another intersects its words, a third is unmeasured
+  // and refuses it. Each says so in its own capability contract, and the compiler declines to build an
+  // entry a register cannot express. Deciding it here would freeze one register's behaviour into a
+  // rule about every register.
+  let goods_words = [];
+  if (m.goods_words != null) {
+    if (!Array.isArray(m.goods_words) || !m.goods_words.every((w) => typeof w === "string"))
+      throw new Error("variantmodel_goods_words_invalid (an array of single-word strings, or omitted)");
+    const seen = new Set();
+    for (const raw of m.goods_words) {
+      const w = String(raw).replace(/\s+/g, " ").trim();
+      if (!w) throw new Error("variantmodel_goods_words_invalid (every goods word is a non-empty string)");
+      if (/[*?]/.test(w))
+        throw new Error(`variantmodel_goods_words_invalid ("${w}" carries a wildcard — a mid-word wildcard is refused by the register on this field)`);
+      const key = w.toLowerCase();
+      if (seen.has(key)) continue;
+      seen.add(key);
+      goods_words.push(w);
+    }
+    if (goods_words.length > GOODS_WORDS_MAX)
+      throw new Error(`variantmodel_goods_words_invalid (${goods_words.length} words exceed the ${GOODS_WORDS_MAX}-word bound — keep the client's own wording and the words a filing would use for the same goods)`);
+  }
+
   // ── — THE SEARCH FLOOR, AS A TYPED DESIGNATION ────────────────────────────────────────────────
   //
   // The axes this mark's search floor obliges: work a `coverage-limited` row may not demote. It replaces
@@ -202,6 +239,7 @@ export function parseVariantManifestModel(raw) {
     variants: outVariants,
     incumbent_classes,
     watchlist_owners,
+    goods_words,
     search_floor,
   };
 }

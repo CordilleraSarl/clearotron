@@ -249,3 +249,24 @@ export function termSubstanceIssue(term) {
     + `match, under any predicate. Refused at the builder rather than bounced by the provider and `
     + `disclosed as a coverage gap the run could never have closed`;
 }
+
+// ── THE GOODS-AND-SERVICES TERMS AN ENTRY CARRIES ─────────────────────────────────────────────────
+//
+// ONE definition, because three places must agree on what "this entry asks for goods text" means: the
+// plan compiler stamping the capability gap, the executor building the query, and each connector
+// writing the clause. Two hand-rolled readings of the same field is how `filters.status` stayed wrong
+// for two months on one provider while looking right on the other.
+//
+// A scalar and a one-element list are the SAME request. Blanks are dropped and duplicates collapse, so
+// an entry asking for the same term twice compiles byte-identically to one asking once — the plan is a
+// pure function of its input, and that must survive this field like every other. PURE.
+export function goodsTermsList(entry) {
+  const raw = Array.isArray(entry?.goods_text) ? entry.goods_text
+    : (typeof entry?.goods_text === "string" ? [entry.goods_text] : []);
+  const out = [];
+  for (const t of raw) {
+    const s = String(t ?? "").trim();
+    if (s && !out.includes(s)) out.push(s);
+  }
+  return out;
+}

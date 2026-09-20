@@ -116,6 +116,11 @@ const errText = (r) => r?.body?.errorMessage ?? r?.body?.message ?? (r?.raw ? St
 // OR-stack — the operator stays EQUALS and the value does the vendor's query-string work.
 export const MARK_FIELD = "WORD_MARK_SPECIFICATION";
 export const OWNER_FIELD = "APPLICANT_NAME";
+// The goods-and-services DESCRIPTION field — the text of what a filing covers, not the Nice class
+// number it was filed under. The two are separate fields here and they answer separate questions.
+export const GOODS_FIELD = "INT_GOODS_SERVICES_DESCRIPTION";
+// Declared in capabilities.js, read here — one constant, so the operator changes in one place.
+export const GOODS_OPERATOR = CAPABILITIES.goodsTextOperator ?? "EQUALS";
 
 /**
  * match_mode → { name, operator, pre, post, … }.
@@ -496,6 +501,18 @@ export function ownerTermsOf(p) {
   return out;
 }
 
+/**
+ * The goods-and-services terms a request carries. Accepts a scalar or a list; a one-element list and
+ * a scalar are the same request. Never an element on its own — see hasAnyElement below.
+ */
+export function goodsTermsOf(p) {
+  const out = [];
+  for (const t of (Array.isArray(p?.goods_text) ? p.goods_text : [p?.goods_text])) {
+    if (t != null && String(t).trim()) out.push(String(t).trim());
+  }
+  return out;
+}
+
 export function hasAnyElement(p) {
   return markTermsOf(p).length > 0 || ownerTermsOf(p).length > 0 || !!p?.representative;
 }
@@ -649,6 +666,75 @@ export function buildSearchRequest(p) {
     .map((c) => String(c).trim()).filter((c) => /^\d+$/.test(c));
   if (classes.length) {
     searchFields.push({ operator: "EQUALS", name: "INT_CLASS_NUMBER", value: joinOrValue([...new Set(classes)]) });
+  }
+
+  // ── the goods-and-services NARROWING ─────────────────────────────────────────────────────────────
+  //
+  // A class is a filing bucket, not a specification: class 9 holds headphones and jukeboxes alike, so
+  // a contains sweep scoped to the class alone crowds out on any common word. This clause asks the
+  // description text instead, and it AND-joins with the mark and class clauses like every other field
+  // here — narrowing the same sweep rather than running a second one.
+  //
+  // THIS FIELD IS NOT THE MARK FIELD, and assuming it was would ship a 400 on every narrowed sweep:
+  //
+  //   EQUALS, whole word            → works
+  //   CONTAINS                      → hard 400, as on APPLICANT_NAME
+  //   a mid-word wildcard (`*foo*`) → hard 400
+  //   `WORD1 OR WORD2`              → works, and is how several words are asked for
+  //
+  // So the value is a list of WHOLE WORDS joined by OR, with no wildcards anywhere — the opposite of
+  // the `*TERM*` infix every mark mode uses. THE CLAUSE MUST NOT ROUTE THROUGH `MATCH_MODE_TO_FIELD`:
+  // every mode there carries `pre:"*", post:"*"`, so a goods clause built through that map would
+  // inherit the wrap, pass every offline test, and 400 on the wire.
+  //
+  // A MULTI-WORD TERM IS REFUSED RATHER THAN SPLIT. Splitting "computer software" into
+  // `computer OR software` would match a filing that only ever says "computer" — a WIDER search than
+  // the caller asked for, arriving silently, which is the one thing this engine never does. The word
+  // list's contract is whole words (the variants manual says so), so a phrase here is a caller defect
+  // and it fails at the door. What the wire does with a two-word value is unprobed, and guessing it
+  // into an OR is the same guess wearing a different hat.
+  //
+  // PLURALS COME FROM THE VENDOR (queryOptions.plurals), SYNONYMS DO NOT. "headphones" does not reach
+  // "earphones" on any documented surface here. Nothing in this file invents one: a synonym list is a
+  // recall decision about what a search is allowed to miss, and it belongs to whoever writes the word
+  // list, never to the connector spending it.
+  const goodsTerms = goodsTermsOf(p);
+  if (goodsTerms.length) {
+    // A NARROWING WITH NOTHING TO NARROW IS NOT A NARROW SEARCH — IT IS A WIDE ONE. Goods text is not
+    // a search element (hasAnyElement excludes it deliberately): on its own it asks for every filing
+    // in these classes whose description carries the word, from every owner, which is far wider than
+    // the sweep it was added to cut. The request would succeed and read as a narrowed slice.
+    if (!markTerms.length && !ownerTermsOf(p).length && !p?.representative) {
+      throw new Error(
+        "goods_text narrows a search and is not one: this request carries no mark term, owner or "
+        + "representative, so the goods clause would be the whole query — every filing in these classes "
+        + "whose description carries the word. Send it alongside the term it narrows.");
+    }
+    const words = [];
+    for (const t of goodsTerms) {
+      // A PHRASE IS NEVER PASSED AS TYPED. A bare space on this field is an implicit OR — both word
+      // orders return the same population, it equals the explicit OR, and the explicit AND is a
+      // fraction of it. So "wireless headphones" sent as written would quietly search for EITHER word:
+      // a WIDER sweep than was asked for, answering 200 and reading like a filter that worked.
+      //
+      // `ADJ` is the operator that expresses a real phrase here, and it is ORDERED. So a multi-word
+      // term becomes its words joined by ADJ, and the list of terms is joined by OR — "either of these
+      // things, and this one is two words in this order".
+      const parts = [];
+      for (const w of String(t).trim().split(/\s+/)) {
+        const safe = assertSearchableTerm(w, { allowWildcard: false });
+        if (safe) parts.push(safe);
+      }
+      if (!parts.length) continue;
+      if (parts.length > 1 && !CAPABILITIES.goodsTextMultiWord) {
+        throw new Error(
+          `goods term ${JSON.stringify(String(t).slice(0, 40))} is more than one word, and this register `
+          + `is not known to match a phrase as a phrase. Send the words you mean, one per entry.`);
+      }
+      const value = parts.join(" ADJ ");
+      if (!words.includes(value)) words.push(value);
+    }
+    if (words.length) searchFields.push({ operator: GOODS_OPERATOR, name: GOODS_FIELD, value: joinOrValue(words) });
   }
 
   const queryOptions = {};
