@@ -232,8 +232,8 @@
           "todos": 0
         },
         "a-crowded-sweep-is-narrowed-by-what-a-filing-covers.test.mjs": {
-          "tests": 21,
-          "asserts": 102,
+          "tests": 22,
+          "asserts": 109,
           "skips": 0,
           "todos": 0
         },

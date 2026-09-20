@@ -263,6 +263,45 @@ test("a word the register reads as an operator comes out of the item, not the it
     "audio ADJ2 video ADJ apparatus");
 });
 
+test("compile then connect: the wire string a planned goods term actually produces", async () => {
+  // THE ARM THAT CATCHES THE COMPOSITION. Both halves were right on their own and the path through
+  // them was wrong: the compiler strips once and stores what will be asked, so the connector received
+  // "controllers peripherals" with nothing left to strip, recomputed every gap as 1, and asked for a
+  // plain adjacency — the query that matches nothing. Testing the connector with the RAW term passed,
+  // and testing the compiler's stored term passed, and neither of them was what runs.
+  //
+  // So this one drives the REAL path: compile the plan, build the entry query the executor would
+  // build, and pin the string that reaches the wire.
+  const { compileRegisterPlan } = await import("../register-plan.mjs");
+  const { defaultBuildEntryQuery, planPredicateParams } = await import("../../providers/_shared/execute-plan.mjs");
+  const base = { schema_version: 1, mark: MARK, dominant_element: MARK,
+    elements: [{ value: MARK, kind: "distinctive" }], variants: [{ value: MARK, category: "core" }],
+    incumbent_classes: [] };
+  const job = { jobKey: "t", classes: ["9"], jurisdictions: [] };
+  const wireFor = (word) => {
+    const plan = compileRegisterPlan({ manifest: { ...base, goods_words: [word] }, job, capabilities: CLARIVATE });
+    const entry = plan.entries.find((e) => Array.isArray(e.goods_text) && e.goods_text.length);
+    const query = defaultBuildEntryQuery(entry, planPredicateParams(entry));
+    return fieldNamed(buildSearchRequest({ ...query, name: MARK, regions: ["US"] }), GOODS_FIELD).value;
+  };
+
+  assert.equal(wireFor("controllers and peripherals"), "controllers ADJ2 peripherals");
+  assert.equal(wireFor("field near communication"), "field ADJ2 communication");
+  assert.equal(wireFor("audio and video apparatus"), "audio ADJ2 video ADJ apparatus");
+  // A leading removal opens no gap between the survivors, so this one stays strict.
+  assert.equal(wireFor("near field communication"), "field ADJ communication");
+  // …and a term with nothing removed is unchanged by any of it.
+  assert.equal(wireFor("wireless headphones"), "wireless ADJ headphones");
+
+  // The plan STATES the distances, which is what makes the frozen artifact a full account of what
+  // will be asked rather than only of which words will be asked.
+  const plan = compileRegisterPlan({ manifest: { ...base, goods_words: ["audio and video apparatus"] },
+    job, capabilities: CLARIVATE });
+  const entry = plan.entries.find((e) => Array.isArray(e.goods_text) && e.goods_text.length);
+  assert.deepEqual(entry.goods_text, ["audio video apparatus"]);
+  assert.deepEqual(entry.goods_text_gaps, [[2, 1]], "the plan does not state the distances it will ask at");
+});
+
 test("a word removed from inside a term is disclosed on the entry and on the plan", async () => {
   // NOTHING EDITS THE CLIENT'S WORDING SILENTLY. The model wrote the term; the register carried less
   // than it says. A reader comparing the goods list to the search must be able to see that.
