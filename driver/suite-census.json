@@ -2127,6 +2127,12 @@
           "skips": 0,
           "todos": 0
         },
+        "doctor-does-not-tick-a-billing-mode-it-cannot-see.test.mjs": {
+          "tests": 5,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "doctor-names-who-is-in-the-store.test.mjs": {
           "tests": 5,
           "asserts": 15,

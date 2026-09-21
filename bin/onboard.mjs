@@ -1923,7 +1923,16 @@ export async function runCheck() {
         } catch (e) { return { say: problem, text: billingRefusalWords(String(e?.message ?? e)) }; }
       };
       const here = billingOf(engineId, envForResolve);
-      here.say(here.text);
+      // A TICK IS A CLAIM ABOUT SOMETHING THAT RESOLVED. Measured on a clean container with no reasoning
+      // CLI and no settings file: the Engine block said demo mode, no program on PATH, nothing to probe —
+      // and this line still printed a green tick for a billing mode. `billingOf` answers from the default
+      // when nothing is set, and the default is not a fact about this machine.
+      //
+      // So where no engine program resolves, the same words are INFORMATION rather than a tick. Nothing
+      // is wrong, which is why it is not a warning either: the rest of that run reads honestly, and this
+      // was the only line claiming a verdict it had not reached.
+      const engineResolved = !!(bin?.path && bin.executable && !bin.relative);
+      (engineResolved || here.say === problem ? here.say : info)(here.text);
       // AND AS THE SERVICES READ IT, when this machine runs them and that reading differs. The line above is
       // this command's configuration; the services read their own file, and a start never replaces a line
       // in it. So a machine whose services pay through a cloud account printed "billing: subscription" here,
