@@ -26,6 +26,14 @@ import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { NO_INSTALLED_ENGINES } from "./drive-env.mjs";   // this doctor's env is composed from nothing
 
+import { ensurePortalBundleIsCurrent } from "./helpers/portal-bundle.mjs";
+
+// The arms below run `doctor` against this checkout for reasons that are not about the portal
+// bundle. A bundle older than its sources is a problem doctor reports and exits 1 for — rightly —
+// so a clone that was built once and then pulled would fail them all on a condition they do not
+// test. This makes that condition untrue, once per process, by building it as an operator would.
+ensurePortalBundleIsCurrent();
+
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
 /** Run the real command and return its status and text together.
