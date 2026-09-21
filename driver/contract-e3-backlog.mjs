@@ -408,7 +408,7 @@ export const E3_BACKLOG = [
   {
     stage: "register-digest",
     kind: "exactly-these-keys",
-    where: "driver/skills/clearance-register/SKILL.md:218-219",
+    where: "driver/skills/clearance-register/SKILL.md:227-228",
     surface: "skill-file",
     evidence: "**The status vocabulary is CLOSED: EXACTLY one bare token of: `confirmed-clean` / `coverage-limited` / `deferred`.** Qualifiers never go in a status cell; they go in the reason.",
     reparsedBy: "driver/coverage-form.mjs / driver/coverage-ledger.mjs. Since the typed-transport conversion the STAGE MESSAGE no longer restates the enum; the surviving copies are SKILL.md (here), digest.md:207, the dispatch brief (coverage-form.mjs coverageFormBrief), the record_coverage schema (coverage-server.mjs) and gateway.mjs's repair hints — still one enum spelled at five sites",
