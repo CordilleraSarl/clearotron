@@ -801,6 +801,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-refused-search-is-not-a-dropped-one.test.mjs": {
+          "tests": 6,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "a-refused-unit-says-what-is-half-started.test.mjs": {
           "tests": 9,
           "asserts": 31,

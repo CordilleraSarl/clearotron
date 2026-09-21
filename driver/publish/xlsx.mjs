@@ -302,7 +302,7 @@ export function searchRows(auditParsed, { findings = [], joinedTerms = null, reg
     const byTerm = new Map();
     for (const n of cl) {
       const key = (n.search_term || '').trim();
-      if (!byTerm.has(key)) { byTerm.set(key, { plats: new Set(), results: new Set(), notes: [], gaps: new Set() }); order.push(key); }
+      if (!byTerm.has(key)) { byTerm.set(key, { plats: new Set(), results: new Set(), notes: [], gaps: new Set(), gapReasons: new Map() }); order.push(key); }
       const g = byTerm.get(key);
       if (n.platform) g.plats.add(n.platform);
       if (n.result) g.results.add(n.result);
@@ -310,7 +310,17 @@ export function searchRows(auditParsed, { findings = [], joinedTerms = null, reg
       // — the surfaces that could NOT be searched are counted separately from the ones that came back
       // empty. The dedup unions results across platforms, so one gapped surface among many used to vanish
       // entirely into a term-level "0 — clean".
-      if (notSearched(n, n.result, n.notes)) g.gaps.add(n.platform || '?');
+      // — THE REGISTER'S OWN WORDS, KEPT. A surface that could not be searched arrives here with the
+      // reason it gave (`audit-from-spine` puts the gap's `error` into `notes`), and this row used to
+      // record only that it was a gap. So a query a provider REFUSED — "content policy (HTTP 400)" —
+      // and one that was simply never run rendered as the same sentence, and the reason was in the
+      // workbook's hand the whole time. `audit.md` kept it; this file dropped it.
+      if (notSearched(n, n.result, n.notes)) {
+        const surface = n.platform || '?';
+        g.gaps.add(surface);
+        const said = plainNote(n.notes || '').trim();
+        if (said) g.gapReasons.set(surface, said);
+      }
     }
     push({ 'Search term / variant': COMMON_LAW_SECTION, Scope: '', Result: '', Outcome: '', Note: '', _section: true });
     for (const term of order) {
@@ -329,7 +339,19 @@ export function searchRows(auditParsed, { findings = [], joinedTerms = null, reg
       // searched at all. The gap count is carried beside the hit flag, never folded into it.
       const gaps = [...g.gaps];
       const ran = Math.max(0, n - gaps.length);
-      const gapNote = gaps.length ? ` ${gaps.length} surface${gaps.length === 1 ? '' : 's'} could not be searched (${gaps.slice(0, 4).join(', ')}${gaps.length > 4 ? ', …' : ''}) — this term is NOT closed across them.` : '';
+      // A REFUSAL AND A DROP ARE DIFFERENT FACTS, and only one of them is about the register. Where the
+      // surface said why, its words are quoted; where nothing was recorded, the row says that instead of
+      // implying a reason it does not have. A reader deciding whether to re-run needs to know which:
+      // a content-policy refusal will refuse again, a query that never ran may simply run.
+      const said = gaps.map((s) => [s, g.gapReasons.get(s)]).filter(([, r]) => r);
+      const silent = gaps.filter((s) => !g.gapReasons.has(s));
+      const reasonNote = said.length
+        ? ` The surface${said.length === 1 ? '' : 's'} gave a reason: ${said.map(([s, r]) => `${s} — ${r}`).join('; ')}.`
+        : '';
+      const silentNote = silent.length && said.length
+        ? ` ${silent.length} recorded no reason (${silent.slice(0, 4).join(', ')}${silent.length > 4 ? ', …' : ''}).`
+        : silent.length ? ' No reason was recorded for any of them.' : '';
+      const gapNote = gaps.length ? ` ${gaps.length} surface${gaps.length === 1 ? '' : 's'} could not be searched (${gaps.slice(0, 4).join(', ')}${gaps.length > 4 ? ', …' : ''}) — this term is NOT closed across them.${reasonNote}${silentNote}` : '';
       const outcome = anyHit ? (joined ? '→ Findings' : 'Reviewed — not carried as a conflict')
         : gaps.length && !ran ? NOT_SEARCHED_OUTCOME          // nothing ran at all: never a closure claim
           : gaps.length ? 'No conflict — partial'             // some ran clean, some never ran: say both
