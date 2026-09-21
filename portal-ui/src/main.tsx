@@ -5,6 +5,8 @@ import { createRoot } from 'react-dom/client'
 import './tokens.css'
 import './base.css'
 import { AppShell, type ShellContext } from './shell/AppShell.tsx'
+import { api } from './contract/api.ts'
+import { startEarly } from './state/useApi.ts'
 import { Home } from './screens/Home.tsx'
 import { Clearances } from './screens/Clearances.tsx'
 import { Result } from './screens/Result.tsx'
@@ -172,6 +174,27 @@ function screen(id: ScreenId, ctx: ShellContext) {
     }
   }
 }
+
+// ── THE LIST IS ASKED FOR NOW, BESIDE THE IDENTITY CALL, NOT AFTER IT ────────────────────────────
+//
+// The shell asks who you are and draws an empty frame until that answers. No screen is mounted behind
+// that frame, so on the two pages that list clearances the list was not even REQUESTED until the
+// identity call had come back — two round trips in series, and whatever one costs paid twice. The
+// portal's own work on this path measures about 25 ms cold and under 10 ms warm, so the wait is the
+// trips, not the work.
+//
+// ONLY THE PAGES THAT WANT IT. A person landing on Preferences or Use your AI would otherwise pay a
+// request they never read, against a rate budget shared across their tabs. Home and Clearances make
+// the identical `runsMine` call, so one early request serves whichever mounts.
+//
+// NOT AN EXTRA CALL: the screen consumes this instead of making its own. See `startEarly`.
+// THE PATHS ARE THE NAV'S OWN, not a guess at them. The first version of this gate read `/portal` for
+// the home page; home is `/portal/home`, so the early request never fired on the page it was written
+// for and the measurement showed the list still arriving after the identity call. A test ties this list
+// to the nav entries so it cannot drift back.
+const EARLY_RUNS_PATHS = ['/portal/home', '/portal/clearances', '/portal']
+const here = window.location.pathname.replace(/[?#].*$/, '').replace(/\/+$/, '') || '/portal'
+if (EARLY_RUNS_PATHS.includes(here)) startEarly('runs:mine', () => api.runsMine())
 
 const root = document.getElementById('root')
 if (!root) throw new Error('#root is missing from index.html')

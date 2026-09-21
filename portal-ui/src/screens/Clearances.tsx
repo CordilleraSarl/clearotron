@@ -150,7 +150,9 @@ export function Clearances({ ctx }: { readonly ctx: ShellContext }) {
   // followed "All clearances" expecting to see more, not less.
   //
   // Deliberately NOT `api.runs('*')` — that wildcard is staff-only and stays that way.
-  const { result, reload } = useLoad(() => api.runsMine(), [])
+  // `runs:mine` — the request main.tsx started before the shell knew who was signed in. Home makes the
+  // identical call, so whichever of the two mounts consumes it; the other asks for itself.
+  const { result, reload } = useLoad(() => api.runsMine(), [], 'runs:mine')
   const allRuns: readonly Run[] = result?.kind === 'ok' ? result.value : []
 
   // THE COMPANY FILTER IS THE SIDEBAR SWITCHER. There is one control, and it is in the nav.

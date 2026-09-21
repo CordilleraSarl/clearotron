@@ -85,7 +85,9 @@ const COMPACT_FROM = 5
 export function Home({ ctx }: { readonly ctx: ShellContext }) {
   // ONE REQUEST, WHOEVER IS ASKING. Staff get every account, a client gets its own, and the request is
   // identical — so this screen never branches on role, and cannot grow a staff layout by accident.
-  const { result, reload } = useLoad(() => api.runsMine(), [])
+  // `runs:mine` — the request main.tsx started before the shell knew who was signed in. Consumed once,
+  // on this first mount; every reload and poll below goes to the fetcher as it always did.
+  const { result, reload } = useLoad(() => api.runsMine(), [], 'runs:mine')
   // THE ALLOWANCE IS PER COMPANY, AND THIS SCREEN SPANS THEM ALL.
   //
   // So it is stated only where there IS one owner to state it for: the one selected, or the only one

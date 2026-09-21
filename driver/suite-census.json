@@ -6607,6 +6607,12 @@
           "skips": 0,
           "todos": 0
         },
+        "theListIsAskedForInParallel.test.ts": {
+          "tests": 3,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "theStopNoticeHasItsOwnRow.test.ts": {
           "tests": 4,
           "asserts": 11,
