@@ -279,19 +279,46 @@ export function fillCoverageForm(runDir, msg) {
   // says so on that axis's own rows too — an axis cannot be simultaneously clean and coverage-limited —
   // and the escalation gate's skip path reads exactly that (skip-if-every-owned-row-is-coverage-limited).
   const limited = process.env.MOCK_LEDGER_LIMITED;
+
+  // THE STATE IS READ FROM THE SKELETON, BECAUSE THE ROW DOES NOT CARRY IT BACK. `coverage-form.mjs`
+  // stamps `skeleton_state` on the axis rows it BUILDS, and the form as read from disk does not have it
+  // — measured: every row here arrives with `kind: "axis"` and `skeleton_state` undefined. So a guard
+  // written against `r.skeleton_state` reads undefined on every row, never fires, and leaves the false
+  // clean exactly where it was. That is why four corrections to this mapping changed nothing.
+  //
+  // `_driver/plan-execution.json` is the source the VALIDATOR itself reads (verify.mjs → exec.skeleton),
+  // so the filler and the gate now answer from one fact instead of two.
+  //
+  // AND IT CLAIMS CLEAN ONLY WHERE THE AXIS EXECUTED. The states are unexecuted, deferred, incomplete,
+  // skipped and executed; only the last one is a search that ran. Guarding the one state that happens to
+  // fail today would leave the same defect for the next state that stops meaning "ran".
+  let axisState = new Map();
+  try {
+    const exec = JSON.parse(readFileSync(driverDir(runDir, "plan-execution.json"), "utf8"));
+    axisState = new Map((exec?.skeleton ?? [])
+      .map((s) => [String(s?.axis ?? "").trim(), String(s?.state ?? "").trim() || null]));
+  } catch { /* no receipt — the plan gate is inactive, and nothing below claims anything about an axis */ }
+  // A row is never cleaner than the axis it belongs to. An axis with no skeleton entry is one nobody
+  // told us ran, so it is not claimed clean either.
+  const skippedAxis = (r) => (axisState.size ? axisState.get(String(r?.axis ?? "").trim()) !== "executed" : false);
   const rulings = rows.filter((r) => r.kind !== "seat").map((r) => ({
     row_id: r.row_id,
-    // A SKIPPED AXIS IS NOT A CLEAN ONE — but this is NOT the place that can tell. `skeleton_state` is
-    // stamped on the axis rows coverage-form.mjs BUILDS and is not carried by the form read back from
-    // disk, so a guard written against `r.skeleton_state` here reads undefined on every row and never
-    // fires. It was tried, in three places, by two people. A guard whose detecting half is dead reads
-    // exactly like a guard that found nothing, which is worse than no guard at all.
+    // A SKIPPED AXIS IS NOT A CLEAN ONE, and a stand-in for judgment must not claim a search nobody
+    // ran. That was true while every axis executed and became a false clean the moment the wider
+    // families began waiting behind a crowded identical question.
     //
-    // The state is read from `_driver/plan-execution.json` instead — the same source the validator
-    // reads — so the filler and the gate answer from one fact rather than two.
-    status: r.open ? "deferred"
+    // WHERE THE STATE COMES FROM IS THE WHOLE OF IT. `skeleton_state` is stamped on the axis rows
+    // coverage-form.mjs BUILDS and is not carried by the form read back from disk, so a guard written
+    // against `r.skeleton_state` reads undefined on every row and never fires. That was tried in three
+    // places by two people before anyone instrumented it: a guard whose detecting half is dead reads
+    // exactly like a guard that found nothing. `skippedAxis` reads the state from the run's
+    // plan-execution record, which is the source the VALIDATOR reads, so the filler and the gate
+    // answer from one fact rather than two.
+    status: skippedAxis(r) ? "withheld-by-judgment"
+      : r.open ? "deferred"
       : r.axis === limited ? "coverage-limited" : r.kind === "block" ? "coverage-limited" : "confirmed-clean",
-    reason: r.open ? "never dispatched — the active register provider cannot express this slice; disclosed as an open question"
+    reason: skippedAxis(r) ? "not opened: the identical question is answered and this family would only widen it"
+      : r.open ? "never dispatched — the active register provider cannot express this slice; disclosed as an open question"
       : r.axis === limited ? "yielded to ring-fenced jurisdiction budget"
       : r.kind === "block" ? "the band left part of this slice unaccounted — a material gap; ships CONDITIONAL"
       : "paged to has_more:false",
