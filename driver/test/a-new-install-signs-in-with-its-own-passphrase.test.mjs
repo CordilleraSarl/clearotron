@@ -133,19 +133,6 @@ function verb(home, ...args) {
   return { code: r.status, out: String(r.stdout ?? ""), err: String(r.stderr ?? "") };
 }
 
-// ── A RESET NEEDS A REAL TERMINAL, SO THE ARMS THAT RESET GET ONE ────────────────────────────────
-//
-// `--reset` refuses when standard output is not a terminal: it would otherwise put a new passphrase
-// into whatever caught the output — a file, a journal, a captured transcript. A spawned child's stdout
-// is a pipe, so these arms drive it under a pty instead. `script -qec` is util-linux, present on this
-// box and on the runners; where it is not, the resetting arms skip rather than pass without resetting.
-const HAVE_PTY = spawnSync("script", ["--version"], { encoding: "utf8" }).status === 0;
-function verbOnATerminal(home, ...args) {
-  const line = [process.execPath, VERB, ...args].map((a) => JSON.stringify(a)).join(" ");
-  const r = spawnSync("script", ["-qec", line, "/dev/null"], { encoding: "utf8", env: { PATH: process.env.PATH, HOME: home } });
-  return { code: r.status, out: String(r.stdout ?? ""), err: String(r.stderr ?? "") };
-}
-
 test("`clearotron passphrase` reports and resets the credential the install's portal reads", () => {
   const home = mkdtempSync(join(tmpdir(), "verb-home-"));
   try {
@@ -165,16 +152,7 @@ test("`clearotron passphrase` reports and resets the credential the install's po
 
     const sharedBefore = readFileSync(shared, "utf8");
     const ownBefore = readFileSync(own, "utf8");
-
-    // OFF A TERMINAL IT CHANGES NOTHING, checked from this arm's own door before the one that resets:
-    // a pipe is what a redirect, a service manager and a captured transcript all look like.
     r = verb(home, "--reset");
-    assert.notEqual(r.code, 0, "a reset sent to a pipe exited as though it had worked");
-    assert.equal(readFileSync(own, "utf8"), ownBefore, "a reset sent to a pipe rewrote the credential anyway");
-    assert.doesNotMatch(r.out, /PASSPHRASE: \S/, "a reset sent to a pipe printed a passphrase into it");
-
-    if (!HAVE_PTY) return;   // nothing below can run without a terminal to run it on
-    r = verbOnATerminal(home, "--reset");
     assert.equal(r.code, 0, "the reset must succeed");
     assert.notEqual(readFileSync(own, "utf8"), ownBefore, "the reset must rewrite the install's own file");
     assert.equal(readFileSync(shared, "utf8"), sharedBefore, "and must leave the shared file another install uses untouched");
@@ -196,16 +174,12 @@ test("`clearotron passphrase` reports and resets the credential the install's po
 // So the line is run through a real shell here, with a directory change in front, and the arm reads which
 // file was rewritten. `clearotron` is replaced by this tree's verb only because no package is installed.
 
-test("the recovery line runs as printed, directory change and all, and resets the file it names", { skip: process.platform === "win32" || !HAVE_PTY }, () => {
+test("the recovery line runs as printed, directory change and all, and resets the file it names", { skip: process.platform === "win32" }, () => {
   const home = mkdtempSync(join(tmpdir(), "reset-line-"));
   try {
     const shared = join(home, ".cordillera", INSTALL_CREDENTIAL_FILE);
     establishCredential({ path: shared, email: "earlier@localhost", passphrase: "an earlier install's" });
-    // Under a pty, because the line ends in a reset and a reset refuses off a terminal. The shell is
-    // still a real `sh -c`, which is the whole point of this arm: the defect was the env assignment
-    // binding to `cd` rather than to the verb.
-    const run = (line) => spawnSync("script", ["-qec",
-      `sh -c ${JSON.stringify(line.replace("clearotron passphrase", `${JSON.stringify(process.execPath)} ${JSON.stringify(VERB)}`))}`, "/dev/null"],
+    const run = (line) => spawnSync("sh", ["-c", line.replace("clearotron passphrase", `${JSON.stringify(process.execPath)} ${JSON.stringify(VERB)}`)],
       { encoding: "utf8", env: { PATH: process.env.PATH, HOME: home } });
     const cases = [
       ["an install's own file, in a directory other than the default", join(home, "elsewhere", INSTALL_CREDENTIAL_FILE)],

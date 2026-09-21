@@ -991,6 +991,17 @@ jobs:
 
   publish:
     name: Publish the release to npm
+    # A DEPRECATE-ONLY DISPATCH IS NOT A REHEARSAL, and the `cut` default is why it looked like one.
+    # `cut` is a choice defaulting to `rehearse`, so an operator who fills in only `deprecate-below`
+    # sends `cut: rehearse` without asking for anything of the sort. This job took that at face value,
+    # ran, and `npm publish --dry-run` contacted the registry and was refused — "cannot publish over the
+    # previously published versions" — because main's version was already out. The deprecations applied
+    # and the run went red for a publish nobody asked for.
+    #
+    # So the rehearsal branch requires that no deprecation was asked for. A genuine rehearsal is
+    # unchanged; a dispatch that also names a real `cut` never reached this branch anyway, and still
+    # publishes through the deciders below.
+    #
     # BOTH DECIDERS ARE NEEDED AND EITHER MAY BE SKIPPED. `version` runs on a push to main and `pending`
     # on the cron, so on any given run one of them did not happen — which is why the condition opens with
     # `!failure() && !cancelled()` rather than relying on the default, and why a skipped decider reads as
@@ -999,7 +1010,7 @@ jobs:
     if: >-
       !failure() && !cancelled()
       && github.repository == 'CordilleraSarl/clearotron'
-      && ((github.event_name == 'workflow_dispatch' && inputs.cut == 'rehearse')
+      && ((github.event_name == 'workflow_dispatch' && inputs.cut == 'rehearse' && inputs.deprecate-below == '')
           || needs.version.outputs.cut == 'true'
           || needs.pending.outputs.cut == 'true')
     runs-on: ubuntu-latest
@@ -1381,7 +1392,7 @@ jobs:
       !failure() && !cancelled()
       && github.repository == 'CordilleraSarl/clearotron'
       && (needs.awaited.outputs.cut == 'true'
-          || (github.event_name == 'workflow_dispatch' && inputs.cut == 'rehearse'))
+          || (github.event_name == 'workflow_dispatch' && inputs.cut == 'rehearse' && inputs.deprecate-below == ''))
     runs-on: ubuntu-latest
     timeout-minutes: 30
     # THIS NAME IS THE REGISTRY'S, AND IT IS ALL IT IS NOW. npm's trusted publisher for this package is
