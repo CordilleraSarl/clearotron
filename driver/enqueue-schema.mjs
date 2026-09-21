@@ -28,7 +28,7 @@ import { productName, productSpec, checkProductScope, checkNativeLanguage, unkno
 import { partitionTerritories } from "./territory-tiers.mjs";
 // — the sidecar field map, from the module that OWNS it. The check below asks whether the prose a
 // manifest declared actually arrived, and a local copy of that list is how the two would drift apart.
-import { PROSE_PARTS } from "./queue-markers.mjs";
+import { PROSE_PARTS, goodsOf } from "./queue-markers.mjs";
 
 // ── per-run scope limits ──────────────────────────────────────────────────────────────────────────────
 // Caps, not policy. They exist so one malformed request cannot mint an unbounded search: every extra
@@ -422,7 +422,7 @@ export function validateJob(job, { atClaim = false } = {}) {
   }
   // §B2: classes OR a goods description — either suffices; both absent ⇒ the subject can't be scoped.
   const hasClasses = requestNamesClasses(job);
-  const hasGoods = Boolean(job.goods || job.use);
+  const hasGoods = goodsOf(job) !== null;   // — the spellings live in queue-markers.mjs, with the fold that keeps every reader on one answer
   if (!hasClasses && !hasGoods) {
     // — THE GATE HAS TO ASK WHAT THE RUN WOULD ASK, not what the request typed.
     //

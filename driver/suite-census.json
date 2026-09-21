@@ -466,8 +466,8 @@
           "todos": 0
         },
         "a-job-on-the-older-goods-spelling-scopes-the-same.test.mjs": {
-          "tests": 5,
-          "asserts": 11,
+          "tests": 10,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },

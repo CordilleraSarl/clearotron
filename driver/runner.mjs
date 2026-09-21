@@ -26,7 +26,7 @@ import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";   // — 
 // The queue's filename vocabulary, in ONE place — the rule, extended by to the prose-sidecar and
 // claim-sidecar names, because a harness check retyped four of them from memory and false-alarmed on the
 // other nine. Behaviour here is unchanged: the same object and the same three suffixes, sourced.
-import { isLiveQueueMarker, PROSE_PARTS, CLAIM_SIDECAR_SUFFIXES, TERMINAL_QUEUE_SUFFIXES } from "./queue-markers.mjs";
+import { isLiveQueueMarker, PROSE_PARTS, CLAIM_SIDECAR_SUFFIXES, TERMINAL_QUEUE_SUFFIXES, withFoldedGoods } from "./queue-markers.mjs";
 import { matterLedgerPath, DEFAULT_CLIENT_DAILY_RUNS } from "./usage-ledger.mjs";   // ONE ledger-path calculation, shared with the portal pre-check
 import { orderTimeRefusal, START_ENV_FILE_FLAG, startEnvFileOf } from "./run-requirements.mjs";   // one authority for what a run needs, and when it is asked for
 import { unitEnvPath, envFileRead } from "../shared/env-local.mjs";   // the file the units read, named by its one author
@@ -79,7 +79,12 @@ function assembleJob(procPath, qdir, base) {
       if (v.trim()) job[field] = v;
     }
   }
-  return job;
+  // AFTER the sidecars, because a goods description can arrive as one and folding before them would
+  // read a field the job did not have yet. Intake accepts the description under either spelling and
+  // every reader in a run asks for the current field, so it is folded once here rather than at each of
+  // the ten places that ask — the seam that let a job on the older spelling scope no goods at all. The
+  // queue file is not touched: what was filed stays as filed.
+  return withFoldedGoods(job);
 }
 
 // Best-effort sweep of a job's prose sidecars once it reaches a terminal state, so a drained queue leaves no

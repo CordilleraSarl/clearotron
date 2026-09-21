@@ -10,6 +10,7 @@ import { readFileSync, existsSync, mkdirSync, writeFileSync, renameSync, copyFil
 import { createHash } from "node:crypto";
 import { join, dirname, basename, resolve } from "node:path";   // resolve: the resume line must work from any cwd
 import { driverDir, driverRel, ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
+import { goodsOf } from "./queue-markers.mjs";   // — one reading of "does this job name goods", shared with the intake gate
 import { terminalClampDecision, orderClausesForLede, clientConditions, clauseForDefect } from "./terminal-clamp.mjs";   // — deliver and clamp, never withhold
 import { recordSpan } from "./attributed-span.mjs";   // — driver work the decomposition can attribute
 import { fileURLToPath } from "node:url";
@@ -8475,8 +8476,10 @@ export function instructedScopeOf(job) {
     marks: markNames,
     classes: job?.classes ?? null,
     jurisdictions: job?.jurisdictions ?? null,
-    // BOTH SPELLINGS, because the intake gate accepts both (enqueue-schema: `job.goods || job.use`).
-    goods: job?.goods ?? job?.use ?? null,
+    // THE GATE'S OWN READING, imported rather than restated. A run's job is folded onto one field at
+    // assembly, so this is normally reading what is already there; it stays for a job handed to this
+    // function directly, and because the gate and the scope disagreeing is the defect it closes.
+    goods: goodsOf(job),
     customer: job?.customer ?? null,
     // the geography stamp (enqueue-schema.mjs, "the GEOGRAPHY STAMP": {mode, origin}) — copied
     // VERBATIM, never recomputed: foldRecipeScope mutates job.jurisdictions on later passes (and

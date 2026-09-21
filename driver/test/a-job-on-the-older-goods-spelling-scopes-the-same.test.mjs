@@ -12,13 +12,22 @@
 // This arm drives the pair: a job that the gate accepts as carrying goods must scope with goods.
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync, readdirSync } from "node:fs";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { instructedScopeOf } from "../pipeline.mjs";
+import { goodsOf, withFoldedGoods, GOODS_FIELDS } from "../queue-markers.mjs";
 
 const JOB = { markName: "INVENTEDMARK", classes: [9] };
 const GOODS = "headphones and audio apparatus";
 
-/** The gate's own reading of "does this job carry a goods description" (enqueue-schema.mjs). */
-const gateSeesGoods = (job) => Boolean(job.goods || job.use);
+// THE GATE'S OWN READING, IMPORTED. It was hand-copied here, which is the same mistake one layer up:
+// a third spelling added to the real gate and not to the copy left this file green while the two sites
+// disagreed about what a job carries. There is one reading now and both sides call it.
+const gateSeesGoods = (job) => goodsOf(job) !== null;
+
+const REPO = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
+const read = (...p) => readFileSync(join(REPO, ...p), "utf8");
 
 test("both spellings reach the gate, and both must reach the scope", () => {
   for (const [label, job] of [
@@ -63,4 +72,71 @@ test("nothing else about the scope moved", () => {
   for (const k of ["marks", "classes", "jurisdictions", "goods", "customer", "geography"]) {
     assert.ok(k in instructedScopeOf({}), `${k} is missing from the scope of an empty job`);
   }
+});
+
+// ── AND THE SCOPE FILE IS NOT THE ONLY READER ─────────────────────────────────────────────────────
+//
+// Fixing the scope stamp alone moved the seam instead of closing it: the clearance and knockout
+// prompts, the pharmaceutical test, the product-context derivation, the portal's row and the plan
+// preview all ask for the current field. A job on the older spelling would have recorded goods in the
+// scope file that the prompts never saw — and the validator comparing frame to scope would report the
+// disagreement as a fault in the frame, which is worse than the defect it replaced.
+
+test("the fold puts the description on the field every reader asks for", () => {
+  const job = { markName: "INVENTEDMARK", classes: [9], use: GOODS };
+  assert.equal(withFoldedGoods(job).goods, GOODS,
+    "a job on the older spelling still reaches the prompts with no goods");
+  assert.equal(job.goods, undefined, "the fold mutated the job it was given");
+});
+
+test("a job already on the current field is handed back untouched, not rebuilt", () => {
+  // Identity, deliberately: every run passes through this, and a caller must never have to ask whether
+  // it got a copy. It is also what keeps a job with no goods at all byte-identical.
+  const current = { markName: "INVENTEDMARK", goods: GOODS };
+  assert.equal(withFoldedGoods(current), current);
+  const none = { markName: "INVENTEDMARK" };
+  assert.equal(withFoldedGoods(none), none);
+  assert.equal(withFoldedGoods({ goods: "current", use: "older" }).goods, "current",
+    "the older spelling overwrote the current field");
+});
+
+test("no dead knob: the assembly that builds a run's job actually folds", () => {
+  // THE HALF THAT SILENTLY REVERTS. A correct fold nobody calls leaves every consumer exactly as it
+  // was, and every arm above stays green. Read from the source because driving it needs a claimed
+  // queue file, and the property is whether the call is there at all.
+  const runner = read("driver", "runner.mjs");
+  assert.match(runner, /return withFoldedGoods\(job\);/,
+    "the job assembly no longer folds the goods spelling, so only the scope file sees it");
+  assert.match(runner, /withFoldedGoods.*from "\.\/queue-markers\.mjs"/,
+    "the fold is not imported from the module that owns the spellings — a second copy will drift");
+});
+
+test("the older spelling is read at the door and nowhere else in the product", () => {
+  // THE ARM THAT WOULD HAVE CAUGHT THIS. Every other reader asking for the current field is the whole
+  // point of folding once; a new site reading the older spelling directly is a second opinion about
+  // what a job carries, and it is how the gate and the scope drifted apart to begin with.
+  const older = GOODS_FIELDS[GOODS_FIELDS.length - 1];
+  const DECLARED = ["queue-markers.mjs"];   // where the spellings are named, and the only place they may be
+  const offenders = [];
+  for (const f of readdirSync(join(REPO, "driver")).filter((n) => n.endsWith(".mjs"))) {
+    if (DECLARED.includes(f)) continue;
+    for (const [i, line] of read("driver", f).split("\n").entries()) {
+      if (line.trimStart().startsWith("//") || line.trimStart().startsWith("*")) continue;
+      if (new RegExp(`\\bjob\\??\\.${older}\\b`).test(line)) offenders.push(`driver/${f}:${i + 1}  ${line.trim().slice(0, 80)}`);
+    }
+  }
+  assert.deepEqual(offenders, [],
+    `the older goods spelling is read outside the module that declares it:\n  ${offenders.join("\n  ")}\n\n`
+    + "Every reader in a run gets the current field from the fold at assembly. A direct read here is a "
+    + "second reading of what a job carries, which is the seam this issue closed.");
+});
+
+test("the intake documentation says which field name is read", () => {
+  // A CONDITION ON THE RELEASE, not a nicety: the ruling that placed this fix attached it, and an
+  // integrator choosing a field name has no other way to learn which one the run reads. Documentation
+  // that nothing checks goes stale at the first rename.
+  const doc = read("docs", "INTAKE.md");
+  assert.match(doc, /Which field name is read/, "the intake documentation does not state which name is read");
+  for (const f of GOODS_FIELDS) assert.ok(doc.includes(`\`${f}\``), `the documentation does not name \`${f}\``);
+  assert.match(doc, /folded onto `goods`/, "the documentation does not say the older spelling is folded, only that it is accepted");
 });
