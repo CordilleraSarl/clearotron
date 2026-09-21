@@ -1035,6 +1035,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-territory-the-engine-cannot-search-is-disclosed-not-wired.test.mjs": {
+          "tests": 4,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "a-test-never-reaches-a-network-it-does-not-need.test.mjs": {
           "tests": 2,
           "asserts": 5,
