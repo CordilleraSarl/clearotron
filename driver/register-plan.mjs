@@ -2063,14 +2063,12 @@ export function joinPlanToBands(plan, bandBlocksByAxis) {
     if (e.when) {
       const parent = byQid.get(e.when.runs_if_enumerated);
       const parentState = String(parent?.state ?? "").toLowerCase();
-      // A PARENT THAT ANSWERED RELEASES ITS CHILDREN, AND AN EMPTY ANSWER IS AN ANSWER. `enumerated`
-      // alone is the state of a parent that came back WITH records; a `verified-zero` parent looked and
-      // found nothing, which is the same question answered. Reading only the first held a family back
-      // behind a clean zero — survivable while the one guarded family was the wildcard fringe, and not
-      // survivable now the wider families wait on the identical question, because a mark nobody has
-      // registered is the case in which the run would then search almost nothing. The CROWD is what is
-      // terminal for a child, and only the crowd.
-      if (parentState !== "enumerated" && parentState !== "verified-zero") { skipped.push({ qid: e.qid, guard: e.when.runs_if_enumerated }); continue; }
+      // A CROWD IS WHAT HOLDS A CHILD BACK, and only a crowd. `enumerated` covers a question answered
+      // with no records as well as one answered with many — `verified-zero` is a per-term disposition,
+      // never a band state (named-band.mjs BAND_STATES), so it cannot appear here. The case where a
+      // clean zero wrongly held its children was the per-term and per-class rescue in enumerate.mjs,
+      // and it is corrected there: a fully resolved stack is a complete band whose answer is zero.
+      if (parentState !== "enumerated") { skipped.push({ qid: e.qid, guard: e.when.runs_if_enumerated }); continue; }
     }
     const b = byQid.get(e.qid);
     if (!b) { missing.push(e.qid); continue; }

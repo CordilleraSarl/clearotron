@@ -576,21 +576,16 @@ export function makeExecutePlan(deps) {
     for (const e of targeted.filter((x) => !x.when)) await runEntry(e);
     const skipped = [];
     for (const e of targeted.filter((x) => x.when)) {
-      // A PARENT THAT ANSWERED RELEASES ITS CHILDREN, and an empty answer IS an answer. The guard read
-      // `=== "enumerated"` alone, which is the state of a parent that came back WITH records; a parent
-      // that came back with a verified zero — the register looked and holds nothing — read as "did not
-      // answer" and held its children back forever.
+      // A CROWD IS WHAT HOLDS A CHILD BACK, and only a crowd. `enumerated` is the state of a question
+      // that was answered — with records or with none: the ordinary search path returns it for a
+      // zero-record answer too, so a clean zero has always released its children here.
       //
-      // That was survivable while the only guarded family was the wildcard fringe. It stops being
-      // survivable now the wider families wait on the identical question: a mark nobody has registered
-      // is the BEST case, and under the old reading it was the case in which the run searched almost
-      // nothing — scripts, neighbours and compounds all skipped behind a clean zero, and the axis
-      // reporting `skipped` rather than a coverage gap. A silent narrowing, on the happiest matter.
-      //
-      // The crowd is what holds a family back, and only the crowd: an `incomplete` parent is a question
-      // nobody has answered yet, and that is terminal for its children until judgment narrows it.
-      const parentState = stateByQid.get(e.when.runs_if_enumerated);
-      if (parentState === "enumerated" || parentState === "verified-zero") await runEntry(e);
+      // Where that stopped being true was the RESCUE paths, and it is fixed there rather than here: a
+      // per-term or per-class stack in which every member came back a verified zero was falling through
+      // to `incomplete`, which says nobody answered. See enumerate.mjs — a fully resolved stack is a
+      // complete band whose answer is zero. `verified-zero` is a per-term DISPOSITION and never a band
+      // state (named-band.mjs BAND_STATES), so a guard testing for it here could never fire.
+      if (stateByQid.get(e.when.runs_if_enumerated) === "enumerated") await runEntry(e);
       else skipped.push(e.qid);   // crowd/failed parent is TERMINAL for the fringe — by design, never an error
     }
 

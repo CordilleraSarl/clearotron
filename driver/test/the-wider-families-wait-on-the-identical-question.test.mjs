@@ -129,35 +129,41 @@ test("the manual tells the model the order of moves, in the shipping tree", () =
   }
 });
 
-test("a clean zero on the identical question releases the families — an empty answer IS an answer", async () => {
-  // THE REGRESSION THIS DESIGN NEARLY SHIPPED. The guard read `=== "enumerated"`, which is the state of
-  // a parent that came back WITH records. A parent that came back with a verified zero — the register
-  // looked and holds nothing — read as "did not answer", so every waiting family was skipped.
+test("a clean zero releases the families — a fully resolved stack is a complete band", async () => {
+  // THE REGRESSION THIS DESIGN NEARLY SHIPPED, and the first fix for it was inert. `verified-zero` is a
+  // per-term DISPOSITION, never a band state (named-band.mjs BAND_STATES is enumerated | incomplete),
+  // so a guard testing the parent for it could never fire. The ordinary search path already returns
+  // `enumerated` for a zero-record answer, and that has always released the children.
   //
-  // On the fringe that was survivable. With the wider families waiting on the identical question it is
-  // not: a mark NOBODY HAS REGISTERED is the best case a matter can have, and it would have been the
-  // case in which the run searched almost nothing, with the axis reporting `skipped` rather than a gap.
-  // A silent narrowing, on the happiest matter, is the exact shape this engine refuses.
+  // The real case is the RESCUE paths. A per-term or per-class stack in which every member came back a
+  // verified zero has nothing unresolved and no records, and it was falling through to `incomplete` —
+  // which says nobody answered the question. With the wider families waiting on the identical question
+  // that is the best case a matter can have, a mark NOBODY HAS REGISTERED, producing a run that
+  // searches almost nothing.
+  const src = readFileSync(join(ROOT, "providers", "_shared", "enumerate.mjs"), "utf8");
+  assert.doesNotMatch(src, /unresolved === 0 && records\.length > 0/,
+    "a fully resolved stack with no records still falls through to incomplete — a clean zero reads as unanswered");
+  assert.equal((src.match(/if \(unresolved === 0\) \{/g) ?? []).length, 2,
+    "both rescue paths must treat a fully resolved stack as a complete band");
+
+  // …and the guard itself releases on the state a parent can actually hold.
   const { joinPlanToBands, deriveCoverageSkeleton } = await import("../register-plan.mjs");
   const plan = planFor();
   const identical = plan.entries.find((e) => !e.when && e.axis === "primary-sweep" && e.predicate !== "default");
-  assert.ok(identical, "no identical question to answer");
-
-  for (const [parentState, released] of [["verified-zero", true], ["enumerated", true], ["incomplete", false]]) {
+  for (const [parentState, released] of [["enumerated", true], ["incomplete", false]]) {
     const blocks = {};
     for (const e of plan.entries) {
       (blocks[e.axis] ??= []).push({ qid: e.qid, total_hits: 0, records: [],
-        state: e.qid === identical.qid ? parentState : "verified-zero" });
+        state: e.qid === identical.qid ? parentState : "enumerated" });
     }
     const join = joinPlanToBands(plan, blocks);
     const waited = plan.entries.filter((e) => e.when?.runs_if_enumerated === identical.qid);
     const skippedQids = new Set(join.skipped.map((x) => x.qid));
-    const anySkipped = waited.some((e) => skippedQids.has(e.qid));
-    assert.equal(!anySkipped, released,
+    assert.equal(!waited.some((e) => skippedQids.has(e.qid)), released,
       `a ${parentState} identical question ${released ? "must release" : "must hold"} the waiting families`);
     if (released) {
       const axis = deriveCoverageSkeleton(plan, join).find((a) => a.axis === "primary-sweep");
-      assert.notEqual(axis.state, "skipped", `a ${parentState} parent left the axis reading skipped`);
+      assert.notEqual(axis.state, "skipped", "an answered parent left the axis reading skipped");
     }
   }
 });
