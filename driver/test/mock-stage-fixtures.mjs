@@ -37,7 +37,7 @@ import { recordKnockoutAssess } from "../knockout-assess-record.mjs";
 import { recordKnockoutFrame } from "../knockout-frame-record.mjs";
 import { recordKnockoutReview } from "../knockout-review-record.mjs";
 import { recordSkeptic } from "../skeptic-record.mjs";   //, same rule: called, not copied
-import { recordSynthesis } from "../synthesis-record.mjs";
+import { recordSynthesis, uncarriedCoverageLimits } from "../synthesis-record.mjs";
 import { recordFrameDiff } from "../frame-diff-record.mjs";   //, third conversion — same rule again
 import { recordMatterFrame } from "../matter-frame-record.mjs";   // conversion 2 — same rule again
 import { recordClearanceVariants } from "../clearance-variants-record.mjs";   // conversion 3 — same rule again
@@ -1638,10 +1638,21 @@ export function applyStageWrites(msg, argv) {
       // clean negative". Driven under MOCK_LEDGER_LIMITED the old fixture claimed clean throughout and
       // was refused, correctly. Deriving the carried row from the ledger rather than hardcoding one
       // keeps the knob meaning what it says: turn the knob, the run carries the limit.
+      //
+      // WHICH ROWS COUNT AS A LIMIT IS THE SHIPPED RULE'S TO DECIDE, not this fixture's. It carried its
+      // own copy of the filter, and the copy went stale the moment the ledger gained a fourth status:
+      // `withheld-by-judgment` is a family the reading turn chose NOT to open, and it sits beside
+      // `confirmed-clean` — nothing to carry — where the copy read it as a limit like any other. The
+      // mock seat then carried a withheld family onto the client's coverage grid, worded "Partially
+      // covered", INSTEAD of the documented limit that run actually had. Two wrongs in one row: a
+      // decision the client is never shown, standing in for a disclosure the client is owed.
+      //
+      // `uncarriedCoverageLimits` is the rule the receiver itself applies, so the filler and the gate
+      // now answer from one definition rather than two.
       try {
         const led = JSON.parse(readFileSync(join(runDir, "register-coverage-ledger.json"), "utf8"));
-        const lim = (Array.isArray(led) ? led : []).filter((r) => r?.status && r.status !== "confirmed-clean" && r.status !== "note");
-        if (lim.length && !(doc.coverage ?? []).some((c) => c?.state && c.state !== "confirmed-clean" && c.state !== "note")) {
+        const lim = uncarriedCoverageLimits(doc.coverage, Array.isArray(led) ? led : []) ?? [];
+        if (lim.length) {
           doc.coverage = [...(doc.coverage ?? []), { area: `register / ${lim[0].axis}`, state: "coverage-limited", note: String(lim[0].reason ?? "recorded limited by the register ledger") }];
         }
       } catch { /* no ledger on this run — the receiver's own could-not-look branch covers it */ }
