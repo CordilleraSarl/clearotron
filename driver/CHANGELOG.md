@@ -1,5 +1,204 @@
 # clearotron-driver
 
+## 0.3.2
+
+### Patch Changes
+
+- Fixed: A demo started in the background with `npx` now stops completely when that `npx` is stopped, freeing its three ports and removing its folder.
+- Fixed: When a mark contains the client's own registered house mark, the search now leaves that part out of the conflict analysis. It does so only once the register shows the client owns it.
+- Fixed: A conditional verdict whose conditions are all kept in the run record no longer shows an empty "conditional on" line. The rating word stands alone.
+- Fixed: A country named in words now reaches its register, and naming one in words and by code no longer counts as two places.
+- Fixed: A search that failed can be picked up again with its codename alone. The command the engine prints when a search stops no longer names a job file that is no longer on the machine.
+- For operators: Resuming a failed search by its codename now works without the original job file, and refuses by name when the run's record is incomplete.
+- Fixed: A knockout report no longer scrolls sideways on a phone when a finding cites a long web address.
+- Fixed: The demo lists the door an assistant uses first, and a key refused at the wrong door is told the right door's address.
+- Fixed: a knockout report's Registers counted row reads "186 registers, on" the register service, without a list of territories folded under it.
+- New: A knockout search now delivers the engine's own assessment and findings alongside the report, as a full clearance already did.
+- Fixed: A knockout no longer asks the model what to do with each name, so each name's read keeps to the findings and the rating.
+- Fixed: A knockout's per-name read no longer carries a next-step section the model wrote. It is removed before delivery instead of the batch being sent back to rewrite it, so knockouts finish sooner.
+- Fixed: A knockout search now covers the territories the form is showing you, rather than searching the whole world instead of them.
+  
+  Fixed: A new clearance recommends and preselects a search when the form is showing your company's own territories. It previously offered none and said no search was picked, beside a summary naming those same countries.
+- Fixed: A report or email now links only to web addresses; anything else shows as plain text. A refused sign-in says why in fixed words, without repeating the sign-in service's own error text.
+- Fixed: A report no longer says the local-language investigation did not run when the run's own record shows it did.
+- Fixed: A meaning search that could not be completed now appears in the report's coverage as an open item. Before, only the audit workbook listed it.
+- Fixed: On a phone, the rights-holder panel now shows a scrollbar when its rows run past the right edge.
+  
+  Fixed: "Web and marketplace names" lists names again. Readings of what a mark means are carried by the connotation section, where they were already stated in full.
+- For operators: The connector access log now records what happened to each call, and records calls that were refused as well as calls that got through. A line also names which door took the call, so a client key and a staff session can be told apart. Before, a call was recorded only as having been made, and a refused one left no line at all. `doctor` now names where that log is being written. It reads that from the service's own settings, not from the shell you are typing in.
+- Fixed: when a register reports only that it holds more than a figure, the knockout counts table and workbook show that figure, not "not available".
+- Fixed: Preliminary searches on one register now report the registered marks the assessment found, instead of a register section left empty.
+  
+  Fixed: A search whose register assessment cannot be recorded now stops with an error instead of delivering a report silent on the register.
+- Fixed: A report's section links now sit in the header and stay on screen while you read, instead of scrolling away.
+- Fixed: A report no longer reads "Case-law research could not be completed for ." when the search covered a register that does not publish per-country records.
+- Fixed: A report opened on a phone fits the screen instead of scrolling sideways.
+- New: A report states whether the local-language investigation ran at the depth configured for the matter.
+- Fixed: On a knockout report, the risk band marker no longer overlaps the words above it.
+- Fixed: A running clearance's card and row show the stage it is in now, including a step back during a correction pass.
+- Fixed: A knockout search that is running says it usually takes 5 to 10 minutes. It previously showed 1.5 to 2.5 hours, which is how long a full clearance takes.
+- Fixed: A running search now reports the stage it is on, not the last one finished, so progress no longer appears to go backwards.
+- Fixed: A running search says which step it is on, such as "Register sweeps", rather than "Register sweeps · 3 of 9". How many steps a search has varies with what it needs to do, so the number did not mean what it looked like.
+- Fixed: A knockout report no longer states, for each name, whether that name should proceed to a full clearance search. It reports what the screen found.
+- New: Each search in your list now says which of the four searches it was.
+- Fixed: A multi-country search no longer refuses to start on a form that is already showing the territories it will search. When you have not chosen territories yourself, the form shows your company's own and the search uses those.
+  
+  Fixed: A new clearance form now opens with one line saying what to do. It no longer shows two warning panels about work you have not started.
+- Fixed: A new clearance now offers only the territories your register can search. Before, it offered countries your register cannot reach, and choosing one stopped the search from starting.
+  
+  Fixed: You can now remove one of your company's default territories on the clearance form. Before, if your register could not search one of them, nothing on that screen let you take it off and carry on.
+- Fixed: A clearance that completed all but one or two of its local-language searches now delivers the report. Before, a single search that did not complete threw the whole clearance away, including the fifty-nine that had run. The report says which term's search was short.
+- Fixed: A report now gives the specific reason each name was set aside. Before, every such name carried the same general sentence, and the reason the search actually recorded for it was not shown.
+- Fixed: A report workbook's source links no longer raise a false vocabulary advisory in the publish log.
+- Fixed: A run's summary and its delivery email now give the rating and the report's own sentence. The internal delivery-check word no longer appears.
+- New: A report table that continues past the right edge now shows a scrollbar, so it is clear there is more to see.
+- Fixed: A search naming a territory your trademark register does not cover is now refused before it starts, and says which territory to remove. Before, the search ran and that territory was reported as not searched at the end.
+- Fixed: When a register search did not finish, the verdict's condition no longer names the engine's internal label for the unfinished part.
+- New: a worldwide search names the register service that searches it, on the New clearance form and on the report's coverage line.
+- Fixed: Worldwide searches on a register that keeps no record archive now show how many register records were read and in which countries.
+- Fixed: A report produced before this version no longer shows a second section menu inside the portal, unreadable in the dark theme.
+- Fixed: A report now lists every part of the search that was left open. One with a short name could be hidden by another line that happened to mention the same word. The overall result was never affected, only the list of what remained open.
+- Fixed: Searches of a named company's own trademark portfolio now run on every register. On one register they were refused before the search was sent, and the report told the reader those holdings could not be reached.
+- Fixed: After upgrading, existing companies, past clearances and queued searches stay visible, with no folder to rename and no company file to edit.
+  
+  Fixed: A company file that cannot be read no longer empties the company list; that company is named with the reason instead.
+- Fixed: A report's answers to your instructions now show one line each, with the rest of each answer behind a fold.
+- Fixed: each finding's "Ask AI about this finding" button in a report now opens Ask AI, with that finding's number in the question.
+- New: Pay for Claude through your own Google Cloud, Microsoft Azure or Amazon Bedrock account with `CLEAROTRON_AI_BILLING=cloud`. Tested on Microsoft Azure; Google Cloud and Amazon Bedrock use the Claude program's own settings.
+  
+  New: Each run records which cloud account paid for it, and `clearotron doctor` names the cloud account it charges.
+  
+  New: Setup asks how Claude is paid for, and for a cloud account asks which cloud and checks it with one turn.
+  
+  New: `clearotron start`, when no billing is set, names a cloud account for Claude beside a subscription and an API key.
+  
+  New: `clearotron start --background` carries the cloud account's settings to the background services.
+  
+  New: `clearotron doctor` says how the background services pay, and warns when your own configuration sets a different way of paying.
+  
+  New: Global config's Engine row names the cloud account that pays, and turns red, naming the setting to change, when searches would be refused.
+  
+  Fixed: An install that pays with an API key and runs as background services now hands the services its key. Before, every search stopped after it was ordered.
+  
+  Fixed: A subscription install signed in with a long-lived token from `claude setup-token` now hands that token to its background services.
+  
+  Fixed: `clearotron start` now reports a billing setting that would stop every search, such as an API key that is not set. `clearotron doctor` also checks the settings the background services read.
+  
+  For operators: `clearotron start --background` names each setting on which `~/.env` and Clearotron's settings disagree, such as a rotated key, without printing values. It adds only settings `~/.env` lacks and never replaces one, so change a setting in both files.
+  
+  Before you upgrade: A billing setting Clearotron does not recognise now stops a search before it starts, where it used to bill the subscription. Run `clearotron doctor` after upgrading.
+  
+  Before you upgrade: On a Claude install, a cloud's own switch left on, such as `CLAUDE_CODE_USE_FOUNDRY`, now stops a search unless `CLEAROTRON_AI_BILLING=cloud`.
+- Fixed: The portal's health check no longer includes an internal error message when the instructions store cannot be read. The message goes to the service log instead.
+- Fixed: The lines for connecting an AI assistant now work when a folder name contains spaces, and the Codex settings block now works on Windows.
+- New: `clearotron connect --base <folder>` connects an assistant to a running demo, minting its key and naming its door in one step.
+- Fixed: Connect your AI now sits last in the sidebar, under Company settings. It used to sit second, directly under Home.
+- Fixed: The demo now opens by saying what it shows, without internal diagnostics or a Node warning, and its knockout sample states the rating it reached.
+- Fixed: `clearotron doctor` and `clearotron start --background` look for Claude Code or the Codex CLI on the PATH the background services use. They used to say every search would be refused on a machine whose searches found the program and ran.
+- Fixed: When a background service's unit and its settings file set the same value, `clearotron doctor` and `clearotron connect` take the file's, as systemd does.
+  
+  Fixed: `clearotron doctor` and `clearotron connect` read a doubled percent sign (`%%`) in a background service's unit as one, as systemd does.
+- Fixed: `doctor` now says the client door's access log has entries, instead of claiming it is being written.
+- Fixed: When the background services found the reasoning program and this machine cannot, `clearotron doctor` now suggests installing it here with setup. It used to suggest installing it where the services could already see it.
+  
+  New: If a restart does not help the background services find the reasoning program, `clearotron doctor` says how to point them at it.
+- Fixed: `doctor` no longer describes another program on the client door's port as this install's door. It says only that a process holds the port.
+- New: `clearotron doctor --probe-engine` tries Claude with the cloud settings in Clearotron's settings file, the Amazon keys included, as a search does.
+- Fixed: After installing, the README, quickstart and install guide run every command through the `clearotron` you installed, so a beta install stays on the beta.
+- New: a register search can now be narrowed to the goods and services a filing actually covers, not only the numbered grouping it was filed under.
+  
+  A common word in a busy grouping returns more filings than any search can read through. Narrowing by what each filing covers reaches the ones that matter.
+  
+  New: searches no longer spend queries on owner portfolios guessed before any filing had been read. Owners now come from the filings a search returns.
+- New: A report can now show how much was searched to reach its answer. It records the names read and cleared, the records read in each country, and the checks made. Countries where nothing was found are included.
+- New: an installation can name its administrator contact, a mail or web address, and Preferences links "Clearotron administrator" to it.
+  
+  New: Preferences carries the top bar's blur button, and the blur now stays as you left it in this browser, reloads included.
+  
+  New: Global config is now Installation settings, with one sign-in row, the engine's own web search under Engine, and providers grouped by category.
+  
+  New: a provider needing action says what it needs in a few words and links its setup guide, instead of naming settings and files.
+  
+  New: About lists its facts in one card, and its source link reads as the repository's name, with the build just above.
+  
+  New: the sign-in page leads with one line, "This Clearotron signs in one person: you.", and keeps the reset and sign-on steps under Administrator help.
+- Fixed: A knockout report ordered for named countries now lists those countries under Registers counted, instead of a count of the provider's registers.
+- New: Searches no longer look up ordinary English words one letter away from the mark that sound different, such as CODE beside CORE.
+- Fixed: The README, quickstart and install guide now give one way to install, and their commands work as written.
+- Fixed: A report made before this summer, reopened today, states its conditions in the same words as a new one.
+- New: a report's header labels both of its dates, searched and issued, with Ask AI and Export beside them as two buttons.
+  
+  New: Ask AI on a report offers four questions, and opens Claude with the one you pick typed in, ready for you to send.
+  
+  New: Use your AI is now Connect your AI, and shows whether your assistant is connected, folding the setup steps away once it is.
+  
+  New: after Set it up on a report's Ask AI, Connect your AI offers a button back to that report once your assistant connects.
+  
+  Fixed: Claude's steps no longer tell you to ignore an authentication warning, and copy the address and the key with separate buttons.
+  
+  New: where your installation offers another way to connect, Connect your AI keeps those steps in a closed fold under the sign-in steps.
+- Before you upgrade: reports left waiting in the delivery folder's old name are found and sent again. Nothing needs moving, and none is sent twice.
+- Before you upgrade: security fixes now go to the current stable as a new stable, and to the current beta on a best-effort basis. Older versions receive none.
+- New: The sign-in command from setup, `clearotron doctor` and a starting search names the copy setup installed, which is not on the PATH.
+- Fixed: Setup's register question offers "None for now", and setup no longer names checkout-only commands or promises a login shell that cannot find `clearotron`.
+- New: Setup's test turn tries Claude with the cloud settings in Clearotron's settings file, the Amazon keys included, as a search does.
+- For operators: the offline test suite runs in four parallel shards, so a change is checked in about a quarter of the time it used to take.
+- Fixed: The sign-in page names the install's one user, and the passphrase reset, key issue and doctor each say what they are for.
+- Fixed: The forward-decisions section of a clearance report is headed "What happens next", as the approved design heads it.
+- New: A clearance report carries a section strip along the top, so a reader can jump to the findings, the next steps or what was searched.
+- New: The new clearance form now offers every country a supported register can search, not a fixed list of 37.
+- Fixed: The new clearance form no longer repeats in paragraphs what each product row and each place already say.
+- Fixed: On a phone, the list of clearances can now be scrolled sideways to read its columns. Before, the risk word was printed on top of the date and names broke in the middle of a word.
+- Fixed: on a phone, the list of clearances made the whole page slide sideways instead of scrolling the table. The table now scrolls on its own and the page stays put.
+- Fixed: on a narrow window the buttons at the end of each clearance row pushed the page sideways, and every date broke onto two lines. The buttons now fit the space they are given and the date stays on one line.
+- Fixed: The conditions listed on a report are now written in plain legal English, matching the summary line above them. One condition could previously appear as an internal engine note with counts and identifiers in it.
+- Fixed: A delivered report's conditions now carry only the conditions written for the client. The reviewer's own notes stay in the run record.
+- Fixed: The connect lines name the exact Node your install runs on, and an older Node gets one plain line instead of a crash.
+- Fixed: On one register the "Filings containing the name" figure counted only identical filings. A report could therefore show a field as far less crowded than it really is. That column now asks the register the question its label promises. Where a register cannot answer a given kind of search, the figure is reported as unavailable rather than filled in from a narrower one.
+- Before you upgrade: the folder a finished report waits in while it is sent has been renamed. If you have never set that folder yourself, nothing needs moving. Reports already waiting in the old folder are still sent.
+- Fixed: The demo no longer leaves copies of its samples in your temp directory, including when it is stopped mid-way.
+- Fixed: In a source checkout without a built portal, `npx clearotron demo` stops and names the build command instead of opening a portal with no pages.
+- Fixed: The demo now removes its folder when you close it, as described. Pass --keep to keep the folder and its reports.
+- Fixed: A search covering a very large number of register records could finish with no findings document at all. Those records are now accounted for in fixed batches instead of all at once. An interrupted attempt resumes from the records still outstanding, rather than starting again.
+- Fixed: Once the client's own registered element is set aside, searches added later in the run no longer search it again.
+- Fixed: Knockout reports no longer print a caveat line under the register counts table.
+- New: A knockout report has an Export button, so anyone who opens the file can save it as a PDF.
+- New: A knockout report carries a section strip along the top, so a reader can jump to the conflicts, the filings or the next steps.
+- New: Claude steps run on the newest Opus and Sonnet as soon as they ship, unless a setting holds a tier at one model.
+- Fixed: `clearotron start` and `demo` no longer write the sign-in passphrase into a log or file; off a terminal they name the reset command.
+- Fixed: the portal now says it is loading while your clearances arrive, instead of showing an empty page that reads as nothing found.
+- Fixed: The exported PDF no longer prints a collapsed arrow above sections that are already fully open.
+- New: Setup offers to install the reasoning program your engine uses. Before it asks, it says how much space the program takes and how to remove it.
+  
+  New: Setup asks which AI should run your searches, Claude or Codex, and says what it found on this computer.
+  
+  New: Claude Code or the Codex CLI already on the machine is still used first. `clearotron update` keeps the installed one current, and `clearotron doctor` says which copy runs, and its version when the program reports one.
+  
+  New: Outside Windows, in demo mode, `clearotron doctor` points to setup to install the reasoning program.
+  
+  New: When the reasoning program cannot be found, Global config's Engine row and the search screen name the setup command that installs it.
+- New: The report a client opens has been redrawn. It opens with what was asked, then the rating with its reasons, then the conflicts. What a search is and is not is no longer narrated at length.
+  
+  New: A finding's full detail shows the goods as the register recorded them, and the record's own dates. This is on a full country search.
+  
+  New: A knockout report closes with what happens next. The paragraph moves out of the long read rather than being repeated.
+- New: A report opened in the portal now follows the portal's light or dark theme, and changes with it straight away.
+- New: Each report names the models that did the work, including those behind the Chinese, Japanese and Korean language steps.
+  
+  New: Through a cloud account, a report names the Claude model or its tier, never your organisation's own name for its deployment.
+- New: When a cloud account refuses the credentials, setup, `clearotron doctor` and a starting search name that cloud and the settings to check.
+  
+  Fixed: When an API key is refused, setup, `clearotron doctor` and a starting search name the key to check, rather than asking for a sign-in.
+- Fixed: When you have used all of today's searches, the screen names the person to ask for another. On an installation with no name set it read "ask your the operator contact to run this one for you".
+- Fixed: Running the test suite no longer leaves demo copies in the machine's temporary directory.
+- Fixed: Running the test suite on a clone whose portal build is out of date no longer rebuilds it and fails the first run.
+- Fixed: Running the test suite no longer writes an access-log line under your home folder, and a stopped demo leaves no empty folders behind.
+- Fixed: A mark whose official record could not be retrieved is no longer listed as a condition on the verdict. The report still names it where the search's coverage is set out.
+- Fixed: A report's verdict now lists every condition it is conditional on. It used to name the first and close with "(and 2 more)". The rest sat in a separate list below it, so a reader could see that conditions existed without reading them.
+- Fixed: On WSL, the Windows connect line names your Linux distribution, or says plainly to fill it in, instead of leaving it out.
+- Fixed: Installs inside WSL now show a second setup command, for an assistant running inside WSL as well as one on Windows.
+- Fixed: a clearance report's "What was searched" section shows register totals, counts per country and a link to the audit workbook, as designed.
+
 ## 0.3.2-beta.15
 
 ### Patch Changes
