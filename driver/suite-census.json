@@ -849,6 +849,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-reset-off-a-terminal-changes-nothing.test.mjs": {
+          "tests": 3,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "a-retrieval-group-does-not-vote-on-seat-writes.test.mjs": {
           "tests": 5,
           "asserts": 15,
@@ -4431,6 +4437,12 @@
           "skips": 0,
           "todos": 0
         },
+        "setup-never-prints-a-piece-of-a-key.test.mjs": {
+          "tests": 3,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "setup-promises-a-login-shell-only-when-one-adds-the-directory.test.mjs": {
           "tests": 3,
           "asserts": 8,
@@ -6592,6 +6604,12 @@
         "territoryCodes.test.ts": {
           "tests": 3,
           "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
+        "theListIsAskedForInParallel.test.ts": {
+          "tests": 3,
+          "asserts": 5,
           "skips": 0,
           "todos": 0
         },

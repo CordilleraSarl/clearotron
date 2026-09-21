@@ -3655,7 +3655,7 @@ const confirmOrKey = async (q, def = true, { key = true, what = "key" } = {}) =>
     if (["n", "no"].includes(a)) return { yes: false, value: null };
     if (key && looksLikeAKey(raw)) {
       info(`that looks like the ${what} itself, so it is taken as the answer. It was not shown.`);
-      info(`received — ${raw.length} characters, ending …${raw.slice(-4)}`);
+      info(`received — ${raw.length} characters`);
       return { yes: true, value: raw };
     }
     say("  Please answer y or n.");
@@ -3688,10 +3688,23 @@ const askValue = async (q, { def = "", secret = false, skippable = false, skippe
     const a = secret ? await askSecretRaw(prompt) : await askRaw(prompt);
     const v = a || def;
     if (present(v)) {
-      // A masked prompt CONFIRMS what it received: the reader cannot see what
-      // they typed, and a paste that half-landed looks identical to one that worked. Length and the
-      // last four characters are the vendor-dashboard convention for naming a key without showing it.
-      if (secret) info(`received — ${v.length} characters, ending …${v.slice(-4)}`);
+      // A masked prompt CONFIRMS what it received: the reader cannot see what they typed, and a paste
+      // that half-landed looks identical to one that worked. The LENGTH is that confirmation now, and
+      // the last four characters are gone.
+      //
+      // THE TAIL WAS FOUR LIVE CHARACTERS OF A KEY ON STDOUT, on every run. The vendor-dashboard
+      // convention it copied is a page you are already signed in to, read once; this is a line that
+      // outlives the moment in a script's output, a CI job, a tee'd install or an assistant's
+      // transcript — ours had to be masked by hand.
+      //
+      // NOT GATED ON A TERMINAL, which is what the passphrase does. That gate is right there and wrong
+      // here: the leak path this closes includes an assistant driving the terminal, and a session like
+      // that has a pty, so `isTTY` is true and the tail would still land in the transcript. A gate that
+      // passes in the case you are defending against is not a defence.
+      //
+      // Length alone still catches the paste this line exists to catch: a truncated paste is a
+      // different number of characters, and that is the failure the reader cannot otherwise see.
+      if (secret) info(`received — ${v.length} characters`);
       return v;
     }
     if (skippable) { if (skipped) info(skipped); return null; }
