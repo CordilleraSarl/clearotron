@@ -69,7 +69,11 @@ function runToForm({ jurisdictions, unavailableOffices }) {
   const bandBlocksByAxis = {};
   for (const e of plan.entries) {
     (bandBlocksByAxis[e.axis ?? "primary-sweep"] ??= [])
-      .push({ qid: e.qid, state: "verified-zero", total_hits: 0, records: [] });
+      // `enumerated` with no records is what a clean zero LOOKS like on the wire — the executor returns
+      // that state unconditionally for a question it answered, with or without records. `verified-zero`
+      // is a per-term disposition on term_counts and is not a band state at all (named-band.mjs
+      // BAND_STATES), so a fixture using it here was modelling a shape the engine never produces.
+      .push({ qid: e.qid, state: "enumerated", total_hits: 0, records: [] });
   }
   const skeleton = deriveCoverageSkeleton(plan, joinPlanToBands(plan, bandBlocksByAxis));
   const activeAxes = [...new Set(plan.entries.map((e) => e.axis).filter(Boolean))];
@@ -167,7 +171,11 @@ test("a row's id says WHAT it is about, not where it sits in the list", () => {
   const bandBlocksByAxis = {};
   for (const e of plan.entries) {
     (bandBlocksByAxis[e.axis ?? "primary-sweep"] ??= [])
-      .push({ qid: e.qid, state: "verified-zero", total_hits: 0, records: [] });
+      // `enumerated` with no records is what a clean zero LOOKS like on the wire — the executor returns
+      // that state unconditionally for a question it answered, with or without records. `verified-zero`
+      // is a per-term disposition on term_counts and is not a band state at all (named-band.mjs
+      // BAND_STATES), so a fixture using it here was modelling a shape the engine never produces.
+      .push({ qid: e.qid, state: "enumerated", total_hits: 0, records: [] });
   }
   const activeAxes = [...new Set(plan.entries.map((e) => e.axis).filter(Boolean))];
   const idOfUS = (deferred) => officeRows(coverageFormRows({

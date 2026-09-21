@@ -181,7 +181,13 @@ export function uncarriedCoverageLimits(rows, ledger) {
   if (!Array.isArray(ledger) || !ledger.length) return null;
   const limited = ledger.filter((r) => {
     const st = String(r?.status ?? "").trim();
-    return st !== "" && st !== "confirmed-clean" && st !== "note";
+    // `withheld-by-judgment` sits beside `confirmed-clean` here, and the reason is the opposite one.
+    // A clean row has nothing to carry. A withheld row is a family the reading turn chose NOT to open,
+    // having read the identical question as a list and found what it needed — that is where the work
+    // was spent, not a slice the run could not clear, and ruling 111 keeps it out of the report
+    // entirely. Demanding it be carried would put a "we did not search this" line in front of a lawyer
+    // about a decision that made the search better.
+    return st !== "" && st !== "confirmed-clean" && st !== "note" && st !== "withheld-by-judgment";
   });
   if (!limited.length) return null;                       // the run records no limit: nothing to carry
   const carried = (rows ?? []).some((r) => {
