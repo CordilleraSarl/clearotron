@@ -281,15 +281,17 @@ export function fillCoverageForm(runDir, msg) {
   const limited = process.env.MOCK_LEDGER_LIMITED;
   const rulings = rows.filter((r) => r.kind !== "seat").map((r) => ({
     row_id: r.row_id,
-    // A SKIPPED AXIS IS NOT A CLEAN ONE, and the row says so itself — `skeleton_state` is on it. This
-    // mapping ended at `confirmed-clean` for anything not open, limited or blocked, which was true
-    // while every axis executed and became a false clean the moment the wider families began waiting
-    // behind a crowded identical question. A stand-in for judgment must not claim a search nobody ran.
+    // A SKIPPED AXIS IS NOT A CLEAN ONE — but this is NOT the place that can tell. `skeleton_state` is
+    // stamped on the axis rows coverage-form.mjs BUILDS and is not carried by the form read back from
+    // disk, so a guard written against `r.skeleton_state` here reads undefined on every row and never
+    // fires. It was tried, in three places, by two people. A guard whose detecting half is dead reads
+    // exactly like a guard that found nothing, which is worse than no guard at all.
+    //
+    // The state is read from `_driver/plan-execution.json` instead — the same source the validator
+    // reads — so the filler and the gate answer from one fact rather than two.
     status: r.open ? "deferred"
-      : r.skeleton_state === "skipped" ? "withheld-by-judgment"
       : r.axis === limited ? "coverage-limited" : r.kind === "block" ? "coverage-limited" : "confirmed-clean",
     reason: r.open ? "never dispatched — the active register provider cannot express this slice; disclosed as an open question"
-      : r.skeleton_state === "skipped" ? "not opened: the identical question is answered and this family would only widen it"
       : r.axis === limited ? "yielded to ring-fenced jurisdiction budget"
       : r.kind === "block" ? "the band left part of this slice unaccounted — a material gap; ships CONDITIONAL"
       : "paged to has_more:false",
