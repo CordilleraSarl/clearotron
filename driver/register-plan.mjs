@@ -359,7 +359,27 @@ export function resolveRegions(jurisdictions, capabilities) {
     // coverage-ledger's TOOL_ABSENCE_RE keys on it to relabel the row `deferred`.
     const code = normalizeTerritory(j);
     if (code === "") { worldwide = true; continue; }   // Worldwide: no region restriction, not a gap
-    if (code === null) {
+    // A CODE THE ENGINE DOES NOT KNOW IS A GAP, NOT A DESTINATION — and `null` is not the only way to
+    // get one. `normalizeTerritory` derives its long tail of display names from the runtime's own region
+    // data, and that data carries entries which are not jurisdictions: the Canary Islands, the Eurozone,
+    // the United Nations, Outlying Oceania, four dependencies with no register of their own, and
+    // `XB` "Pseudo-Bidi", which is a pseudolocale rather than a place. Ten names resolve that way. Each
+    // answers with a CODE, so each skipped the branch above and was carried to the wire as a real
+    // territory.
+    //
+    // A provider that publishes `offices.covered` caught them at the membership test below — five of the
+    // six do. Corsearch does not publish one, and its translate is an ISO passthrough, so for that
+    // provider alone all ten became `region:` clauses. That is the copper-bastion failure this loop was
+    // written to prevent, reached by a different door: a region value no register can answer, which that
+    // provider returns as a server error, which auto-recovery reads as transient and retries until the
+    // park budget is gone. The loop translated a name it should never have accepted, so the guard that
+    // was supposed to stop it never saw a bad value.
+    //
+    // Membership in the known universe is the test, not a roster of the ten: it is the same question
+    // `foldJurisdictionCodes` asks before reporting a code as unknown, and it stays true for whatever
+    // the next runtime's region data adds. Deferring is the loud answer — the gap is disclosed on the
+    // report and can be escalated — where wiring it is the silent one.
+    if (code === null || !isKnownJurisdictionCode(code)) {
       deferred.push({ jurisdiction: String(j).toUpperCase(), reason: uncoveredJurisdictionReason([String(j).toUpperCase()], capabilities?.id ?? "unknown") });
       continue;
     }
