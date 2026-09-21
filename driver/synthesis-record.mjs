@@ -207,6 +207,32 @@ export function uncarriedCoverageLimits(rows, ledger) {
  * could assert either could waive its own contract — the same reason the reviewer's transport takes
  * `receiptPresent` from the driver rather than from the call.
  */
+/**
+ * The coverage rows a client may see, with every withheld family's row removed. PURE.
+ *
+ * `withheld-by-judgment` is the reading turn saying it chose not to open a family — it read the
+ * identical question as a list, found what it needed, and spent the work there. That is a decision
+ * about where effort went, not a gap in the client's search, and ruling 111 keeps it in the run record
+ * and the coverage ledger alone.
+ *
+ * Applied here rather than trusted to the model, because the model is the surface that can get it
+ * wrong: it authors these rows, it has been told the family was withheld, and a row reading "we did
+ * not search this" in front of a lawyer is the sentence ruling 111 forbids — about a decision that
+ * made the search better. The LEDGER is the authority on which families were withheld.
+ *
+ * A row for a family the ledger holds as anything else is untouched, and that direction matters more
+ * than this one: a documented limit dropped by accident is a disclosure the reader is owed and does
+ * not get.
+ */
+export function withoutWithheldRows(rows, ledger) {
+  const withheld = new Set((Array.isArray(ledger) ? ledger : [])
+    .filter((r) => String(r?.status ?? "").trim() === "withheld-by-judgment")
+    .map((r) => String(r?.axis ?? "").trim().toLowerCase()).filter(Boolean));
+  if (!withheld.size) return Array.isArray(rows) ? rows : [];
+  const familyOf = (area) => String(area ?? "").trim().toLowerCase().split(/\s*\/\s*/)[0];
+  return (Array.isArray(rows) ? rows : []).filter((r) => !withheld.has(familyOf(r?.area)));
+}
+
 export function acceptSynthesis(params, { asks = [], ledger = null, manifest = null, owed = null, declined = null } = {}) {
   const doc = params?.findings;
   if (!doc || typeof doc !== "object" || Array.isArray(doc)) {
@@ -234,7 +260,19 @@ export function acceptSynthesis(params, { asks = [], ledger = null, manifest = n
   // Two copies that must agree is a second-authoring defect, so there are not two. The record is the
   // machine contract and the narrative's coverage list is RENDERED from it. Disagreement is not detected;
   // it is impossible.
-  const rows = Array.isArray(doc.coverage) ? doc.coverage : [];
+  // ── RULING 111: A WITHHELD FAMILY NEVER REACHES THE REPORT, WHATEVER THE MODEL WROTE ────────────
+  //
+  // `withheld-by-judgment` is the reading turn saying it chose not to open a family — it read the
+  // identical question as a list, found what it needed, and spent the work there instead. That is a
+  // decision about where effort went, not a gap in the client's search, and it belongs to the run
+  // record and the coverage ledger alone.
+  //
+  // Dropped HERE rather than trusted to the model, because the model is the one surface that can get
+  // it wrong: it writes the coverage rows, it has been told the family was withheld, and a row saying
+  // "we did not search this" in front of a lawyer is exactly the sentence ruling 111 forbids — about a
+  // decision that made the search better. The ledger is the authority on which families were withheld,
+  // so a row whose family it holds as withheld goes, however the row was authored.
+  const rows = withoutWithheldRows(Array.isArray(doc.coverage) ? doc.coverage : [], ledger);
   if (n.coverage?.rows !== undefined) {
     return { ok: false, reason: "synthesis_coverage_rows_misplaced: coverage rows belong in `findings.coverage`, not on the narrative — the driver renders the narrative's coverage list from the record, so there is one authored set and no way for the client's readable statement and the machine record to disagree. Send `narrative.coverage.read` for the prose" };
   }

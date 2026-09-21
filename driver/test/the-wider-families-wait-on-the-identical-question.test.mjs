@@ -223,3 +223,38 @@ test("the doctrine teaches both, in the shipping tree", () => {
     assert.match(manual, /`narrows`/, `${f} does not tell the model to name the crowd it replaced`);
   }
 });
+
+test("a withheld family's row never reaches the client, whatever the model wrote", async () => {
+  // RULING 111, enforced where the model cannot get it wrong. The reading turn AUTHORS the coverage
+  // rows and it has been told the family was withheld — so a row saying "we did not search this" can
+  // reach a lawyer about a decision that made the search better. The ledger is the authority.
+  const { withoutWithheldRows } = await import("../synthesis-record.mjs");
+  const ledger = [
+    { axis: "transliteration-numeric", scope: "worldwide", status: "withheld-by-judgment", reason: "not opened" },
+    { axis: "incumbent-class", scope: "worldwide", status: "coverage-limited", reason: "a documented limit" },
+    { axis: "primary-sweep", scope: "worldwide", status: "confirmed-clean", reason: "read in full" },
+  ];
+  const authored = [
+    { area: "transliteration-numeric / worldwide", state: "not-searched", note: "we did not open this" },
+    { area: "incumbent-class / worldwide", state: "coverage-limited", note: "a documented limit" },
+    { area: "primary-sweep / worldwide", state: "confirmed-clean", note: "read in full" },
+  ];
+  const kept = withoutWithheldRows(authored, ledger).map((r) => r.area);
+
+  assert.ok(!kept.some((a) => a.startsWith("transliteration-numeric")),
+    "a withheld family's row reached the client's coverage list");
+  // THE DIRECTION THAT MATTERS MORE: a documented limit dropped by accident is a disclosure the reader
+  // is owed and does not get. That is the worse error of the two by a long way.
+  assert.ok(kept.some((a) => a.startsWith("incumbent-class")), "a documented limit was dropped");
+  assert.ok(kept.some((a) => a.startsWith("primary-sweep")), "an unrelated row was dropped");
+
+  // A ledger holding nothing withheld changes nothing at all.
+  assert.deepEqual(withoutWithheldRows(authored, ledger.slice(1)), authored);
+  assert.deepEqual(withoutWithheldRows(authored, []), authored);
+  assert.deepEqual(withoutWithheldRows(authored, null), authored);
+
+  // …and the receiver uses it, rather than this rule living only where a test can reach it.
+  const src = readFileSync(join(ROOT, "driver", "synthesis-record.mjs"), "utf8");
+  assert.match(src, /const rows = withoutWithheldRows\(/,
+    "the receiver does not apply the rule — it would hold only in this arm");
+});
