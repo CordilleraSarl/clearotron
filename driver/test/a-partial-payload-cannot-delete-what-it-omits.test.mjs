@@ -163,6 +163,7 @@ const PLANTED = Object.freeze({
       ],
       incumbent_classes: ["9"],
       watchlist_owners: ["BigCo Interactive"],
+      goods_words: ["headphones", "wireless headphones"],
       search_floor: ["primary-sweep"],
       scope_ledger: [
         { layer: "variant", item: "phonetic-family", status: "applied", reason: "sound-alike neighbours are in scope", reopen_trigger: "" },

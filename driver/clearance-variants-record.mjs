@@ -141,6 +141,9 @@ export function renderClearanceVariants(model, scopeRows) {
 
   if (model.incumbent_classes?.length) out.push(`Incumbent classes: ${model.incumbent_classes.join(", ")}`, "");
   if (model.watchlist_owners?.length) out.push("### Watchlists", "", ...model.watchlist_owners.map((o) => `- ${o}`), "");
+  // The prose copy restates exactly what the structured sibling holds — a reader of the manifest must
+  // be able to see which words the register search was narrowed to without opening the JSON.
+  if (model.goods_words?.length) out.push("### Goods words the register search is narrowed to", "", ...model.goods_words.map((w) => `- ${w}`), "");
   // — the search floor, on the human surface because a reader auditing the run has to see what was
   // obliged as well as what was done. Rendered ONLY when designated: an empty section would read as a
   // floor of nothing rather than as no floor, and those are the two states this mechanism must keep apart.
@@ -168,7 +171,7 @@ export function renderClearanceVariants(model, scopeRows) {
  */
 /** The shape this tool declares, at every depth — what the ACCEPTOR enforces. */
 const DECLARED = Object.freeze({
-  "": ["mark", "dominant_element", "elements", "variants", "incumbent_classes", "search_floor", "watchlist_owners", "scope_ledger"],
+  "": ["mark", "dominant_element", "elements", "variants", "incumbent_classes", "search_floor", "watchlist_owners", "goods_words", "scope_ledger"],
   elements: ["value", "kind"],
   variants: ["value", "category", "rationale", "romanization"],
   scope_ledger: ["layer", "item", "status", "reason", "reopen_trigger"],
@@ -204,6 +207,10 @@ export function mergeClearanceVariantsCall(stored, received) {
     incumbent_classes: keepIfAbsent(received?.incumbent_classes, base.incumbent_classes),
     search_floor: keepIfAbsent(received?.search_floor, base.search_floor),
     watchlist_owners: keepIfAbsent(received?.watchlist_owners, base.watchlist_owners),
+    // Keep-if-absent for the same reason as its neighbours: a repair rung that asks the seat to
+    // correct one part, and a seat that sends only that part, would otherwise delete the goods words
+    // — and the loss reads as "this matter has none" rather than as a partial call.
+    goods_words: keepIfAbsent(received?.goods_words, base.goods_words),
   };
 }
 
@@ -216,6 +223,10 @@ export function acceptClearanceVariants(params) {
     variants: params?.variants,
     incumbent_classes: params?.incumbent_classes,
     watchlist_owners: params?.watchlist_owners,
+    // — the words the register search is narrowed to. Carried here because a typed call cannot hand
+    // back a key nothing in this chain declares: the tool's schema offers the slot, and this is what
+    // moves the answer from the call into the manifest the compiler reads.
+    goods_words: params?.goods_words,
     // — the search-floor axes. Validated by the model parser (closed against REGISTER_AXES), not
     // here, so there is ONE definition of what a floor may name.
     search_floor: params?.search_floor,
