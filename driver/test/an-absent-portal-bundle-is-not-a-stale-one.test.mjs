@@ -5,9 +5,9 @@ import assert from "node:assert/strict";
 import { mkdtempSync, rmSync, mkdirSync, writeFileSync, existsSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
-const HELPER = new URL("./helpers/portal-bundle.mjs", import.meta.url).href;
+const HELPER = fileURLToPath(new URL("./helpers/portal-bundle.mjs", import.meta.url));
 const HERE = dirname(fileURLToPath(import.meta.url));
 
 // ── AN ABSENT BUNDLE AND A STALE ONE ARE DIFFERENT QUESTIONS, AND ONLY ONE IS THIS HELPER'S ────────
@@ -25,7 +25,10 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 // EACH CASE GETS ITS OWN MODULE INSTANCE. The helper latches after its first call so a suite builds at
 // most once, which would make the second case here read "already checked" and assert nothing. The
 // query string defeats the module cache, so every case drives a fresh latch.
-const freshHelper = (tag) => import(`${HELPER}?case=${tag}`);
+// A FILE URL, BUILT WHERE THE IMPORT IS. A bare path works here and fails on Windows, and the corpus
+// guard cannot see through a variable that already holds one — so the conversion is written at the
+// call, which is both what the guard reads and what makes the property visible to a reader.
+const freshHelper = (tag) => import(`${pathToFileURL(HELPER).href}?case=${tag}`);
 
 const repoWith = (t, { src = true, dist = null } = {}) => {
   const dir = mkdtempSync(join(tmpdir(), "portal-bundle-"));
