@@ -1,0 +1,219 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
+// the-wider-families-wait-on-the-identical-question.test.mjs — the crowded-field design.
+//
+// MEASURED ON A DENSE MATTER. The identical mark in the instructed classes came back as a COUNT and not
+// a list: 1,289 live records against a 600 fetch ceiling, nine forms of the question, no records
+// released. The run then read 4,805 records from 139 OTHER questions — class slices, compounds, script
+// and digit forms, a 117-term neighbour list — while the one question that matters went unread.
+// Seventeen identical-mark records reached the band, every one through a side door.
+//
+// So the wider families now WAIT on that question, and the reading turn is given a lever to narrow it:
+// the same question limited to the client's goods words. This arm holds the three pieces that make
+// that possible, because each of them was individually absent and the design would have been inert
+// with any one of them missing.
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+import { compileRegisterPlan, entryQuestionKey, foldSupplementalEntries } from "../register-plan.mjs";
+import { mintSupplementalEntries } from "../engine/mcp/supplemental.mjs";
+import { CAPABILITIES as CLARIVATE } from "../../providers/clarivate/src/capabilities.js";
+import { defaultBuildEntryQuery, planPredicateParams } from "../../providers/_shared/execute-plan.mjs";
+import { buildSearchRequest, GOODS_FIELD } from "../../providers/clarivate/src/core.js";
+
+const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
+const MARK = "INVENTEDMARK";
+const manifest = (extra = {}) => ({
+  schema_version: 1, mark: MARK, dominant_element: MARK,
+  elements: [{ value: MARK, kind: "distinctive" }],
+  variants: [{ value: MARK, category: "core" }, { value: `${MARK}LY`, category: "composite" },
+    { value: "インベンテッド", category: "transliteration", romanization: "INBENTEDDO" }],
+  incumbent_classes: [], ...extra,
+});
+const JOB = { jobKey: "t", classes: ["9"], jurisdictions: [] };
+const planFor = (extra) => compileRegisterPlan({ manifest: manifest(extra), job: JOB, capabilities: CLARIVATE });
+
+test("only the identical question and the saturation probe run without waiting", () => {
+  const plan = planFor();
+  const open = plan.entries.filter((e) => !e.when);
+  const waiting = plan.entries.filter((e) => e.when);
+  assert.ok(waiting.length > 0, "nothing waits — the gate did not apply");
+  for (const e of open) {
+    const ok = e.axis === "saturation-probe" || e.predicate !== "default" || e.unsupported === true
+      || (Array.isArray(e.goods_text) && e.goods_text.length);
+    assert.ok(ok, `${e.axis}/${e.predicate} runs in the same breath as a crowded identical question`);
+  }
+  // …and every waiting family names the identical question, not something else.
+  const identical = open.find((e) => e.axis === "primary-sweep" && e.predicate !== "default");
+  assert.ok(identical, "the identical question is not among the entries that run first");
+  for (const e of waiting) {
+    assert.equal(typeof e.when.runs_if_enumerated, "string");
+  }
+});
+
+test("the goods-narrowed contains entry is always on, and never waits", () => {
+  const plan = planFor({ goods_words: ["headphones"] });
+  const narrowed = plan.entries.filter((e) => Array.isArray(e.goods_text) && e.goods_text.length);
+  assert.equal(narrowed.length, 1, "the goods-narrowed entry did not compile");
+  assert.equal(narrowed[0].when, undefined,
+    "the one entry that makes a crowded identical question answerable was made to wait for it");
+});
+
+test("an unsupported entry does not wait — a disclosure is not a search", () => {
+  // Gating it would turn a `deferred` row (this was not searchable) into a `skipped` one (nothing on
+  // the axis ran), which says something different about why a territory went unread. It costs no
+  // reading, so there is nothing for the gate to save.
+  const plan = compileRegisterPlan({ manifest: manifest(), job: JOB,
+    capabilities: { ...CLARIVATE, predicates: { ...CLARIVATE.predicates, phonetic: null } } });
+  for (const e of plan.entries.filter((x) => x.unsupported === true)) {
+    assert.equal(e.when, undefined, `an unsupported slice was made to wait: ${e.qid}`);
+  }
+});
+
+test("a goods-narrowed re-ask of the identical mark is a DIFFERENT question, and survives the fold", () => {
+  // THE TWO LINKS THAT WOULD HAVE MADE THE DESIGN INERT, and both were absent. The first move against a
+  // crowded identical question is to re-ask THAT question limited to the client's goods words: same
+  // axis, same predicate, same term, same classes, same scope. If the goods are not part of the
+  // question's identity, the fold reads the narrowing as the crowd it is replacing and refuses it as a
+  // duplicate — the lever sits in the schema, the manual and the model's proposal, and nothing runs.
+  const plan = planFor();
+  const crowd = { predicate: "exact", term: MARK, nice_classes: [9], regions: ["US"], rationale: "the identical mark" };
+  const narrowed = { ...crowd, goods_words: ["headphones", "wireless headphones"] };
+
+  const minted = mintSupplementalEntries("primary-sweep", [crowd, narrowed], { capabilities: CLARIVATE });
+  assert.equal(minted.rejected.length, 0, `a proposal was rejected: ${JSON.stringify(minted.rejected[0] ?? {})}`);
+  assert.equal(minted.minted.length, 2, "the narrowed re-ask reused the crowd's entry instead of minting its own");
+  const [a, b] = minted.minted;
+  assert.notEqual(a.qid, b.qid, "the narrowing minted the crowd's own qid — it would read as a re-proposal");
+  assert.deepEqual(b.goods_text, ["headphones", "wireless headphones"], "the goods did not reach the entry");
+
+  // …and the two are different questions to the FOLD, which is what lets the narrowing be added at all.
+  assert.notEqual(entryQuestionKey(a, plan), entryQuestionKey(b, plan),
+    "the fold reads the narrowing as the question it is narrowing — it would be refused as a duplicate");
+  const folded = foldSupplementalEntries(plan, minted.minted);
+  assert.equal(folded.added.length, 2, `the fold refused one: ${JSON.stringify(folded.refused)}`);
+});
+
+test("the narrowed re-ask reaches the register as the goods clause it asked for", () => {
+  const minted = mintSupplementalEntries("primary-sweep",
+    [{ predicate: "exact", term: MARK, nice_classes: [9], regions: ["US"], goods_words: ["headphones", "wireless headphones"] }],
+    { capabilities: CLARIVATE });
+  const entry = minted.minted[0];
+  const query = defaultBuildEntryQuery(entry, planPredicateParams(entry));
+  const wire = buildSearchRequest({ ...query, name: MARK, regions: ["US"] })
+    .searchFields.find((f) => f.name === GOODS_FIELD).value;
+  assert.equal(wire, "headphones OR wireless ADJ headphones");
+});
+
+test("a goods narrowing is refused where it would mean nothing", () => {
+  const bad = (p) => mintSupplementalEntries("primary-sweep", [{ predicate: "exact", term: MARK, nice_classes: [9], regions: ["US"], ...p }],
+    { capabilities: CLARIVATE });
+  assert.equal(bad({ goods_words: ["head*"] }).minted.length, 0, "a wildcard goods word was accepted");
+  assert.equal(bad({ goods_words: [] }).minted.length, 0, "an empty goods list was accepted as a narrowing");
+  // On an owner sweep the owner name IS the term; there is no mark text for goods to narrow.
+  assert.equal(mintSupplementalEntries("incumbent-class",
+    [{ predicate: "owner", term: "An Owner", nice_classes: [9], regions: ["US"], goods_words: ["headphones"] }],
+    { capabilities: CLARIVATE }).minted.length, 0, "goods narrowed an owner sweep");
+});
+
+test("the manual tells the model the order of moves, in the shipping tree", () => {
+  for (const f of ["SKILL.md", "unit.md"]) {
+    const manual = readFileSync(join(ROOT, "driver", "skills", "clearance-register", f), "utf8");
+    assert.match(manual, /Look at the count before you read anything/, `${f} does not carry the crowd-narrow doctrine`);
+    assert.match(manual, /limited to the client's goods words/, `${f} does not state the first move`);
+    assert.match(manual, /one question per market/, `${f} does not state the second move`);
+    assert.match(manual, /the crowd it\s+replaces stays on the record with its count/,
+      `${f} does not say a narrowing replaces nothing silently`);
+  }
+});
+
+test("a clean zero on the identical question releases the families — an empty answer IS an answer", async () => {
+  // THE REGRESSION THIS DESIGN NEARLY SHIPPED. The guard read `=== "enumerated"`, which is the state of
+  // a parent that came back WITH records. A parent that came back with a verified zero — the register
+  // looked and holds nothing — read as "did not answer", so every waiting family was skipped.
+  //
+  // On the fringe that was survivable. With the wider families waiting on the identical question it is
+  // not: a mark NOBODY HAS REGISTERED is the best case a matter can have, and it would have been the
+  // case in which the run searched almost nothing, with the axis reporting `skipped` rather than a gap.
+  // A silent narrowing, on the happiest matter, is the exact shape this engine refuses.
+  const { joinPlanToBands, deriveCoverageSkeleton } = await import("../register-plan.mjs");
+  const plan = planFor();
+  const identical = plan.entries.find((e) => !e.when && e.axis === "primary-sweep" && e.predicate !== "default");
+  assert.ok(identical, "no identical question to answer");
+
+  for (const [parentState, released] of [["verified-zero", true], ["enumerated", true], ["incomplete", false]]) {
+    const blocks = {};
+    for (const e of plan.entries) {
+      (blocks[e.axis] ??= []).push({ qid: e.qid, total_hits: 0, records: [],
+        state: e.qid === identical.qid ? parentState : "verified-zero" });
+    }
+    const join = joinPlanToBands(plan, blocks);
+    const waited = plan.entries.filter((e) => e.when?.runs_if_enumerated === identical.qid);
+    const skippedQids = new Set(join.skipped.map((x) => x.qid));
+    const anySkipped = waited.some((e) => skippedQids.has(e.qid));
+    assert.equal(!anySkipped, released,
+      `a ${parentState} identical question ${released ? "must release" : "must hold"} the waiting families`);
+    if (released) {
+      const axis = deriveCoverageSkeleton(plan, join).find((a) => a.axis === "primary-sweep");
+      assert.notEqual(axis.state, "skipped", `a ${parentState} parent left the axis reading skipped`);
+    }
+  }
+});
+
+test("a withheld family is not a clean, and does not fail the run", async () => {
+  // DECISION 8: the run always delivers. With the families gated, a matter whose identical question
+  // crowds leaves them skipped — and a confirmed-clean row over a skipped axis is refused, which ended
+  // the run at the digest rather than delivering it. `withheld-by-judgment` is the word for a family
+  // the reading turn chose not to open under step 5: not clean, because nobody searched it; not
+  // coverage-limited, which says the engine tried and could not finish; not deferred, which says the
+  // provider could not express the question at all.
+  const { COVERAGE_STATUSES } = await import("../coverage-ledger.mjs");
+  const { findUnexecutedCleanClaims, deriveCoverageSkeleton, joinPlanToBands } = await import("../register-plan.mjs");
+  assert.ok(COVERAGE_STATUSES.includes("withheld-by-judgment"), "the ledger has no word for a family nobody opened on purpose");
+
+  const plan = planFor();
+  const identical = plan.entries.find((e) => !e.when && e.axis === "primary-sweep" && e.predicate !== "default");
+  // The identical question crowds; every waiting family is therefore skipped.
+  const blocks = {};
+  for (const e of plan.entries) {
+    (blocks[e.axis] ??= []).push({ qid: e.qid, total_hits: 9999, records: [],
+      state: e.qid === identical.qid ? "incomplete" : "verified-zero" });
+  }
+  const skeleton = deriveCoverageSkeleton(plan, joinPlanToBands(plan, blocks));
+  const axis = skeleton.find((a) => a.axis === "transliteration-numeric") ?? skeleton[0];
+
+  // A clean over it is still impossible — that gate does not soften.
+  assert.ok(findUnexecutedCleanClaims([{ axis: axis.axis, status: "confirmed-clean" }], skeleton).length > 0,
+    "a confirmed-clean row over a family nobody opened stopped being refused");
+  // …and the withheld row passes, so the run delivers with the decision on the record.
+  assert.deepEqual(findUnexecutedCleanClaims([{ axis: axis.axis, status: "withheld-by-judgment" }], skeleton), [],
+    "a withheld family is treated as a clean claim — the run would fail at the digest");
+});
+
+test("a narrowing names the crowd it replaced, and the name survives the fold", () => {
+  const plan = planFor();
+  const crowd = plan.entries.find((e) => !e.when && e.axis === "primary-sweep" && e.predicate !== "default");
+  const minted = mintSupplementalEntries("primary-sweep",
+    [{ predicate: "exact", term: MARK, nice_classes: [9], regions: ["US"], goods_words: ["headphones"], narrows: crowd.qid }],
+    { capabilities: CLARIVATE });
+  assert.equal(minted.minted[0].narrows, crowd.qid, "the narrowing does not name what it replaced");
+  const folded = foldSupplementalEntries(plan, minted.minted);
+  assert.equal(folded.plan.entries.find((e) => e.narrows)?.narrows, crowd.qid,
+    "the pairing was lost in the fold — the crowd reads as a question nobody answered");
+  // A per-market read is the same shape with one region.
+  const perMarket = mintSupplementalEntries("primary-sweep",
+    [{ predicate: "exact", term: MARK, nice_classes: [9], regions: ["DE"], goods_words: ["headphones"], narrows: crowd.qid }],
+    { capabilities: CLARIVATE });
+  assert.deepEqual(perMarket.minted[0].regions, ["DE"]);
+  assert.equal(perMarket.minted[0].narrows, crowd.qid);
+});
+
+test("the doctrine teaches both, in the shipping tree", () => {
+  for (const f of ["SKILL.md", "unit.md"]) {
+    const manual = readFileSync(join(ROOT, "driver", "skills", "clearance-register", f), "utf8");
+    assert.match(manual, /withheld-by-judgment/, `${f} does not name the withheld state`);
+    assert.match(manual, /`narrows`/, `${f} does not tell the model to name the crowd it replaced`);
+  }
+});

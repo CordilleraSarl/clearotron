@@ -45,6 +45,35 @@ You were spawned to run exactly ONE axis named in your task. Read the manifest +
 3. **ENUMERATE the dangerous NAMED band with `register_enumerate` — class-scoped, never manual paginate-then-sample.** For each named query (the exact mark + each specific variant × in-scope class × material/major jurisdiction), call **`register_enumerate`** with the query (`name`/`names`/`match_mode`/`nice_classes`/`regions`/`owner_country`/`in_scope_classes` + the usual `register_search` fields). **MANDATORY: every `register_enumerate` call MUST carry `nice_classes`=<the matter's in-scope Nice set> AND `in_scope_classes`=<the same set>.** An enumerate with `nice_classes` OMITTED runs an all-45-class crowd (the `default` / `starts_with` / `ends_with` / `phonetic` / `fuzzy` modes are unbounded unscoped) — it floods the band and TIMES OUT the stage, and it is **FORBIDDEN**: scope-by-class is breadth the matter instructed, not a "good enough" call. The **only** all-class exception is the exact-IDENTICAL cross-class merch check (`match_mode:exact`, `nice_classes:[25]`). `fuzzy` is **never** an enumerate mode. **The tool owns the page loop and CANNOT return a partial list** — you cannot get a partial result and call it done, and there is no top-N mode. It returns exactly **one of two states**:
    - **`{state:"enumerated", total_hits, count, records:[…]}`** — it paged to `has_more:false`; every named record is carried forward, already batch-screened (each record carries `record_id`, `mark_text`, `classes`, `status`, `owner_name`, `owner_country`, `application_date`, `registration_date`, `expiry_date`, `jurisdictions`, `screen_verdict`). Write this verbatim as an `enumerated` band block.
    - **`{state:"incomplete", total_hits, fetched, sample, reason}`** — it could **not** page to completion (the band is a genuine CROWD over the resource ceiling, the provider 5000-record window was hit, or a provider error occurred). Write this verbatim as an `incomplete` band block. **This is a SIGNAL to judgment, never a clean negative and never something you self-accept.** You do **not** "narrow to tractable and call it clean" — an incomplete result crosses the firewall as an incomplete block; judgment decides whether to command a narrower enumeration or halt.
+
+### Look at the count before you read anything
+
+The register tells you how many filings answer a question before it hands you any. Take a look: how bad is
+it? If the list is one you can read record by record, read it in full. If it is not, do not read it and do
+not leave it: narrow the same question, in this order, until it is, then read that list in full and decide.
+
+1. Ask again for the identical mark, in the instructed classes, limited to the client's goods words. Read
+   that list.
+2. Still a crowd? Ask again limited to the client's main markets, one question per market. Read those lists.
+3. Still a crowd in a market? Ask again with the dominant goods word alone. Read it.
+4. Still a crowd? Ask one class at a time. Read each list.
+5. When the readable list already holds conflicts in the client's field, stop widening. Do not open scripts,
+   neighbours, compounds or guessed owners for this mark. Write which questions you did not ask and why.
+6. When the readable list is thin, widen one step at a time: close variants first, then the owner families
+   of what you found.
+
+Every question you ask is recorded with its count. A narrowing replaces nothing silently: the crowd it
+replaces stays on the record with its count.
+
+When you stop widening under step 5, the families you did not open are recorded `withheld-by-judgment`
+with your reason — not `confirmed-clean`, which would claim a search nobody ran, and not
+`coverage-limited`, which says the engine tried and could not finish. You chose where the work was best
+spent; say so, and say which questions you did not ask.
+
+When you narrow a crowded question, name the crowd it replaces: put its qid on the proposal as
+`narrows`. The record then shows the crowd and the question that answered it side by side, each with
+its own count. A narrowing that does not name what it replaced leaves the crowd looking unanswered.
+
    - **Write each call's result as one block in `register-units/<axis>-band.json`** (the named-band array — see *Named-band artifact* below). One block per `register_enumerate` / count-probe call. An `enumerated` block carries its records; an `incomplete` block is carried forward **verbatim — never dropped, never "accepted", never silently re-narrowed-then-cleaned**.
    - **The completeness contract is UNIFORM — it applies to the named band too.** "The exact mark, in-class, every major+material jurisdiction" is *usually* small and `enumerated` — but that is **not load-bearing**. If it ever runs to a few hundred and `register_enumerate` returns `incomplete`, it stays `incomplete` and crosses to judgment, exactly like the wider crowd. There is exactly **one** way to be done with a search: `enumerated`. Everything else is `incomplete` and the lawyer reads it. **Never self-accept "good enough" anywhere — not even the named band.**
 4. **For a SATURATION CROWD (a genuinely unbounded `contains` / character-indexed pile), write a COUNT-ONLY descriptor — do NOT enumerate it.** A saturated element solo (e.g. the everyday-word meaning token alone, the bare common element) is not a named band — it is noise the lawyer needs *described*, not *piled in*. Run `register_search` with `limit:1` (count-only, capturing `total_hits`) and write the result as an `{state:"incomplete", query, total_hits, fetched:0, sample:[], reason:"crowd descriptor — …"}` block. **Do NOT call `register_enumerate` on a saturation crowd, and do NOT call it clean.** The descriptor (count + why) is what crosses the firewall; the raw character-noise pile does not. Judgment reads the count and decides whether to command a narrower named enumeration inside it.

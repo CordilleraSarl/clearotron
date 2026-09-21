@@ -1112,7 +1112,21 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   //   exact mark, each non-transliteration variant (core/phonetic/visual/composite/other),
   //   the dominant-element contains slice (the crowd-gate PARENT), the machine FORM band
   //   (exact OR-stack + when-guarded wildcard fringe), and the cross-class merch check.
-  push({ axis: "primary-sweep", predicate: markPredicate(manifest.mark), term: manifest.mark, expected_kind: "enumerate", provenance: "mark", ...literalStamp(manifest.mark) });
+  // ── THE IDENTICAL QUESTION, AND WHAT WAITS BEHIND IT ────────────────────────────────────────────
+  //
+  // This is the question the whole crowded-field design turns on: is the client's own mark already
+  // registered? On a dense matter it came back a COUNT rather than a list — 1,289 live records against
+  // a 600 fetch ceiling, nine forms of the question, no records released — and the run then read 4,805
+  // records from 139 OTHER questions while the one that mattered went unread. Seventeen identical-mark
+  // records reached the band, every one of them through a side door.
+  //
+  // So the wider families now WAIT on it. They run when the identical question enumerated, or when
+  // judgment asks for them after narrowing it to a list and reading that list. A crowded identical
+  // question no longer spends the run's reading on scripts, neighbours and compounds before anyone has
+  // looked at the mark itself.
+  const identicalQid = push({ axis: "primary-sweep", predicate: markPredicate(manifest.mark), term: manifest.mark, expected_kind: "enumerate", provenance: "mark", ...literalStamp(manifest.mark) });
+  /** What a decision-10 family carries: it runs only once the identical question came back as a list. */
+  const behindIdentical = { when: { runs_if_enumerated: identicalQid } };
   // — the floor's `spacing-punctuation` family is deliberately NOT pushed here, and the reason is
   // this compiler's own equivalence: `norm` and `formKey` both strip separators, so "BIO VELTRIS",
   // "BIOVELTRIS", "BIO-VELTRIS" and "BIO.VELTRIS" are ONE key. The variant loop below already drops a
@@ -1366,6 +1380,43 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   //
   // The axis is NOT gone: the incumbent-class anchor above still compiles, so the coverage skeleton
   // still carries the axis and no clean is ever claimed over an axis that vanished.
+
+  // ── DECISION 10: THE WIDER FAMILIES WAIT ON THE IDENTICAL QUESTION ──────────────────────────────
+  //
+  // Applied here, in ONE place, rather than at each push site: which families wait is a property of
+  // the plan as a whole, and spreading it across a dozen call sites is how the list and the rule drift
+  // apart. The exceptions are the whole of it:
+  //
+  //   · the identical-mark entries — the question everything else waits on cannot wait on itself
+  //   · the saturation probe — a cheap count that tells judgment how crowded the field is at all, and
+  //     is the other half of "look at the count before you read anything"
+  //   · the goods-narrowed contains entry — always-on by ruling 180, and it is the one entry that
+  //     makes a crowded identical question answerable rather than merely deferred
+  //   · anything already waiting on something else, which keeps its own parent
+  //
+  // Everything else is a widening: scripts and transliterations, neighbour lists, compounds, the
+  // wildcard and phonetic fringes. On the measured dense matter every one of the 4,805 records read
+  // came from these, while the identical question went unread — which is the defect, stated as
+  // arithmetic.
+  const identicalTermKey = formKey(manifest.mark);
+  const isIdenticalQuestion = (e) =>
+    e.provenance === "mark" && !goodsTermsList(e).length
+    && String(e.predicate) !== "default"
+    && formKey(e.term ?? "") === identicalTermKey;
+  for (const e of entries) {
+    if (e.axis === "saturation-probe") continue;
+    if (e.when) continue;                        // already waiting on its own parent
+    if (goodsTermsList(e).length) continue;      // ruling 180 — always-on
+    if (isIdenticalQuestion(e)) continue;
+    // AN UNSUPPORTED ENTRY IS A DISCLOSURE, NOT A SEARCH. It was stamped at compile because this
+    // provider cannot express it, so it costs no reading and answers nothing — gating it would hold
+    // back a coverage gap the run already knows about, and turn a `deferred` row (this was not
+    // searchable) into a `skipped` one (nothing on the axis ran), which says something different
+    // about why a territory went unread. The gate exists to stop the run SPENDING its reading on
+    // widenings before the mark itself is read; it has no business delaying a fact.
+    if (e.unsupported === true) continue;
+    e.when = { runs_if_enumerated: identicalQid };
+  }
 
   // stable ordering: axis (REGISTER_AXES order) then insertion order within the axis
   const axisRank = new Map(REGISTER_AXES.map((a, i) => [a, i]));
@@ -1699,6 +1750,13 @@ export function entryQuestionKey(entry, plan) {
     predicate: String(e.predicate ?? ""),
     terms: [...terms].sort(),
     owner: String(e.owner ?? ""),
+    // THE GOODS NARROWING IS PART OF THE QUESTION, and leaving it out makes the crowd-narrow path
+    // impossible rather than merely imprecise. The first move against a crowded identical mark is to
+    // re-ask THAT question limited to the client's goods words: same axis, same predicate, same terms,
+    // same classes, same regions. Without the goods in this key the fold reads it as the question the
+    // plan already holds — the very crowd it is narrowing — and refuses it as a duplicate. The lever
+    // would be in the schema, in the manual and in the model's proposal, and nothing would ever run.
+    goods: [...goodsTermsList(e)].sort(),
     nice_classes: sorted(e.nice_classes),
     regions: sorted(own),
     term_literal: e.term_literal === true,
@@ -2005,7 +2063,14 @@ export function joinPlanToBands(plan, bandBlocksByAxis) {
     if (e.when) {
       const parent = byQid.get(e.when.runs_if_enumerated);
       const parentState = String(parent?.state ?? "").toLowerCase();
-      if (parentState !== "enumerated") { skipped.push({ qid: e.qid, guard: e.when.runs_if_enumerated }); continue; }
+      // A PARENT THAT ANSWERED RELEASES ITS CHILDREN, AND AN EMPTY ANSWER IS AN ANSWER. `enumerated`
+      // alone is the state of a parent that came back WITH records; a `verified-zero` parent looked and
+      // found nothing, which is the same question answered. Reading only the first held a family back
+      // behind a clean zero — survivable while the one guarded family was the wildcard fringe, and not
+      // survivable now the wider families wait on the identical question, because a mark nobody has
+      // registered is the case in which the run would then search almost nothing. The CROWD is what is
+      // terminal for a child, and only the crowd.
+      if (parentState !== "enumerated" && parentState !== "verified-zero") { skipped.push({ qid: e.qid, guard: e.when.runs_if_enumerated }); continue; }
     }
     const b = byQid.get(e.qid);
     if (!b) { missing.push(e.qid); continue; }

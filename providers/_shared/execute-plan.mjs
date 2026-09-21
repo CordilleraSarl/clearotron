@@ -576,7 +576,21 @@ export function makeExecutePlan(deps) {
     for (const e of targeted.filter((x) => !x.when)) await runEntry(e);
     const skipped = [];
     for (const e of targeted.filter((x) => x.when)) {
-      if (stateByQid.get(e.when.runs_if_enumerated) === "enumerated") await runEntry(e);
+      // A PARENT THAT ANSWERED RELEASES ITS CHILDREN, and an empty answer IS an answer. The guard read
+      // `=== "enumerated"` alone, which is the state of a parent that came back WITH records; a parent
+      // that came back with a verified zero — the register looked and holds nothing — read as "did not
+      // answer" and held its children back forever.
+      //
+      // That was survivable while the only guarded family was the wildcard fringe. It stops being
+      // survivable now the wider families wait on the identical question: a mark nobody has registered
+      // is the BEST case, and under the old reading it was the case in which the run searched almost
+      // nothing — scripts, neighbours and compounds all skipped behind a clean zero, and the axis
+      // reporting `skipped` rather than a coverage gap. A silent narrowing, on the happiest matter.
+      //
+      // The crowd is what holds a family back, and only the crowd: an `incomplete` parent is a question
+      // nobody has answered yet, and that is terminal for its children until judgment narrows it.
+      const parentState = stateByQid.get(e.when.runs_if_enumerated);
+      if (parentState === "enumerated" || parentState === "verified-zero") await runEntry(e);
       else skipped.push(e.qid);   // crowd/failed parent is TERMINAL for the fringe — by design, never an error
     }
 

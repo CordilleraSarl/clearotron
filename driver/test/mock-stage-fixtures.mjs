@@ -240,8 +240,17 @@ function mockCoverageSlices(msg) {
     rows.push({ axis: process.env.MOCK_SEARCH_FLOOR, unit: `${process.env.MOCK_SEARCH_FLOOR} / exact-phrase storefront sweep`,
       status: "coverage-limited", reason: "not executed — sweep interrupted mid-run" });
   const present = new Set(rows.map((r) => r.axis));
+  // AN AXIS THIS MOCK NEVER SAW IS NOT A CLEAN ONE. It filled every missing axis with
+  // `confirmed-clean`, which is the false clean the ledger exists to refuse — and it only ever passed
+  // because every axis used to execute. Now that the wider families WAIT on a crowded identical
+  // question, those axes can legitimately have nothing behind them, and a stand-in for judgment
+  // claiming they came back clean is the one thing judgment may never do.
+  //
+  // `withheld-by-judgment` is what a reading turn writes for a family it did not open: no search is
+  // claimed, the run still delivers, and the reason travels with it.
   for (const ax of ["saturation-probe", "transliteration-numeric", "incumbent-class"])
-    if (!present.has(ax)) rows.push({ axis: ax, unit: `${ax} / worldwide`, status: "confirmed-clean", reason: "paged to has_more:false" });
+    if (!present.has(ax)) rows.push({ axis: ax, unit: `${ax} / worldwide`, status: "withheld-by-judgment",
+      reason: "not opened: the identical question is answered and this family would widen it" });
   return rows;
 }
 
@@ -272,8 +281,15 @@ export function fillCoverageForm(runDir, msg) {
   const limited = process.env.MOCK_LEDGER_LIMITED;
   const rulings = rows.filter((r) => r.kind !== "seat").map((r) => ({
     row_id: r.row_id,
-    status: r.open ? "deferred" : r.axis === limited ? "coverage-limited" : r.kind === "block" ? "coverage-limited" : "confirmed-clean",
+    // A SKIPPED AXIS IS NOT A CLEAN ONE, and the row says so itself — `skeleton_state` is on it. This
+    // mapping ended at `confirmed-clean` for anything not open, limited or blocked, which was true
+    // while every axis executed and became a false clean the moment the wider families began waiting
+    // behind a crowded identical question. A stand-in for judgment must not claim a search nobody ran.
+    status: r.open ? "deferred"
+      : r.skeleton_state === "skipped" ? "withheld-by-judgment"
+      : r.axis === limited ? "coverage-limited" : r.kind === "block" ? "coverage-limited" : "confirmed-clean",
     reason: r.open ? "never dispatched — the active register provider cannot express this slice; disclosed as an open question"
+      : r.skeleton_state === "skipped" ? "not opened: the identical question is answered and this family would only widen it"
       : r.axis === limited ? "yielded to ring-fenced jurisdiction budget"
       : r.kind === "block" ? "the band left part of this slice unaccounted — a material gap; ships CONDITIONAL"
       : "paged to has_more:false",
@@ -687,9 +703,13 @@ export function coverageLedger(dir) {
     status: r.status,
     reason: r.reason,
   }));
+  // An axis with no row of its own is one this mock never saw run, and a clean claimed over it is the
+  // false clean the ledger exists to refuse — see the same fix in the coverage-form filler above. It
+  // only ever passed while every axis executed; the wider families now wait on the identical question.
   for (const ax of ["saturation-probe", "primary-sweep", "transliteration-numeric", "incumbent-class"]) {
     if (!rows.some((r) => r.axis === ax))
-      rows.push({ axis: ax, scope: "worldwide", status: "confirmed-clean", reason: "paged to has_more:false" });
+      rows.push({ axis: ax, scope: "worldwide", status: "withheld-by-judgment",
+        reason: "not opened: the identical question is answered and this family would only widen it" });
   }
   return JSON.stringify(rows);
 }
