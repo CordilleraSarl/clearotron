@@ -1893,6 +1893,12 @@
           "skips": 0,
           "todos": 0
         },
+        "ctrl-c-takes-the-demo-folder-with-it.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "dead-end-passage-is-named-not-blamed.test.mjs": {
           "tests": 8,
           "asserts": 24,
