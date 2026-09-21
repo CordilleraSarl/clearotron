@@ -225,12 +225,46 @@ export function uncarriedCoverageLimits(rows, ledger) {
  * not get.
  */
 export function withoutWithheldRows(rows, ledger) {
-  const withheld = new Set((Array.isArray(ledger) ? ledger : [])
-    .filter((r) => String(r?.status ?? "").trim() === "withheld-by-judgment")
-    .map((r) => String(r?.axis ?? "").trim().toLowerCase()).filter(Boolean));
+  // A FAMILY IS ONLY WITHHELD IF THE LEDGER HOLDS NOTHING ELSE ABOUT IT. A family can be withheld at
+  // the axis level AND still carry a documented limit on one of its slices — measured: an axis whose
+  // whole-axis row is withheld while `primary-sweep (exact: <mark> [cl 25])` is a disclosed limit the
+  // synthesis gate then demands be carried. Dropping by family name alone deleted the carrying row and
+  // the run failed, which is the worse error stated twice over: a disclosure the reader is owed, gone,
+  // and a run that does not deliver.
+  //
+  // So a family qualifies only when EVERY ledger row for it is withheld. One row saying anything else
+  // keeps the whole family's rows, and that is the direction to fail in.
+  const byFamily = new Map();
+  for (const r of (Array.isArray(ledger) ? ledger : [])) {
+    const axis = String(r?.axis ?? "").trim().toLowerCase();
+    if (!axis) continue;
+    const isWithheld = String(r?.status ?? "").trim() === "withheld-by-judgment";
+    byFamily.set(axis, (byFamily.get(axis) ?? true) && isWithheld);
+  }
+  const withheld = new Set([...byFamily.entries()].filter(([, only]) => only).map(([axis]) => axis));
   if (!withheld.size) return Array.isArray(rows) ? rows : [];
-  const familyOf = (area) => String(area ?? "").trim().toLowerCase().split(/\s*\/\s*/)[0];
-  return (Array.isArray(rows) ? rows : []).filter((r) => !withheld.has(familyOf(r?.area)));
+
+  // ── THE AXIS IS NAMED IN A SEGMENT, NOT ALWAYS THE FIRST ONE ──────────────────────────────────
+  //
+  // This read `area.split("/")[0]` and was inert for the two shapes that matter most, failing OPEN —
+  // toward the client, which is the wrong direction for a gate whose whole job is to keep a row off
+  // the page. Measured against the real strings:
+  //
+  //   `incumbent-class (entire axis)`         no slash at all — the whole-axis row a client reads
+  //   `Register / incumbent-class`            the axis is the SECOND segment; the first is a layer
+  //   `incumbent-class / extra script group`  the only shape the first read caught
+  //
+  // So every `/`-separated segment is considered, with a trailing parenthetical stripped, and each is
+  // compared by EQUALITY against the axis names the ledger actually holds.
+  //
+  // Equality on a segment, never `includes`: a substring test over an open vocabulary is how one axis
+  // name once matched two unrelated areas, and here a false match DROPS a row — a documented limit the
+  // reader is owed, gone silently. The failure this gate prevents is a withheld row appearing; the
+  // failure it must not cause is a disclosure disappearing, and that one is worse.
+  const namesIn = (area) => String(area ?? "").toLowerCase().split("/")
+    .map((seg) => seg.replace(/\([^)]*\)/g, " ").trim())
+    .filter(Boolean);
+  return (Array.isArray(rows) ? rows : []).filter((r) => !namesIn(r?.area).some((n) => withheld.has(n)));
 }
 
 export function acceptSynthesis(params, { asks = [], ledger = null, manifest = null, owed = null, declined = null } = {}) {

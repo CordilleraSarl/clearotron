@@ -241,6 +241,29 @@ test("a withheld family's row never reaches the client, whatever the model wrote
   ];
   const kept = withoutWithheldRows(authored, ledger).map((r) => r.area);
 
+  // ── EVERY SHAPE A COVERAGE AREA ACTUALLY TAKES ──────────────────────────────────────────────────
+  //
+  // The first version of this gate read the family as everything before the first slash, and was inert
+  // for the two shapes that matter most — failing OPEN, toward the client, which is the wrong
+  // direction for a gate that exists to keep a row off the page. These are the real strings, taken
+  // from the arms that already assert on them, not invented ones.
+  const dropped = (area, withheldAxis = "incumbent-class") =>
+    withoutWithheldRows([{ area }], [{ axis: withheldAxis, status: "withheld-by-judgment" }]).length === 0;
+
+  assert.ok(dropped("incumbent-class (entire axis)"),
+    "the whole-axis row — no slash at all — reached the client");
+  assert.ok(dropped("Register / incumbent-class"),
+    "the axis is the SECOND segment here, and a first-segment read never saw it");
+  assert.ok(dropped("incumbent-class / extra script group"),
+    "the suffixed row reached the client");
+  // …and the direction that must never fail: equality on a segment, never a substring. A false match
+  // DROPS a row, and a documented limit the reader is owed disappearing is the worse error.
+  assert.ok(!dropped("primary-sweep / worldwide"), "an unrelated axis was dropped");
+  assert.ok(!dropped("Register / incumbent-class-extra"),
+    "a longer name containing the withheld one was dropped — a substring test, and it loses disclosures");
+  assert.ok(!dropped("incumbent-class / worldwide", "transliteration-numeric"),
+    "a row was dropped for a family the ledger does not hold as withheld");
+
   assert.ok(!kept.some((a) => a.startsWith("transliteration-numeric")),
     "a withheld family's row reached the client's coverage list");
   // THE DIRECTION THAT MATTERS MORE: a documented limit dropped by accident is a disclosure the reader
@@ -257,4 +280,26 @@ test("a withheld family's row never reaches the client, whatever the model wrote
   const src = readFileSync(join(ROOT, "driver", "synthesis-record.mjs"), "utf8");
   assert.match(src, /const rows = withoutWithheldRows\(/,
     "the receiver does not apply the rule — it would hold only in this arm");
+});
+
+test("a family withheld at axis level still carries its slice-level disclosure", async () => {
+  // MEASURED, AND IT IS THE WORSE ERROR TWICE OVER. A family can be withheld as a whole and still hold
+  // a documented limit on one of its slices. Dropping by family name alone deleted the row that
+  // carried that limit — so the reader lost a disclosure they are owed, AND the synthesis gate then
+  // refused the run for not carrying it, so the run did not deliver either.
+  //
+  // A family qualifies only when EVERY ledger row for it is withheld. One row saying anything else
+  // keeps the family's rows, and that is the direction to fail in.
+  const { withoutWithheldRows } = await import("../synthesis-record.mjs");
+  const mixed = [
+    { axis: "primary-sweep", scope: "worldwide", status: "withheld-by-judgment", reason: "not opened" },
+    { axis: "primary-sweep", scope: "exact", status: "coverage-limited", reason: "a documented limit" },
+  ];
+  const row = [{ area: "primary-sweep (exact: INVENTEDMARK [cl 25])", state: "coverage-limited", note: "a documented limit" }];
+  assert.equal(withoutWithheldRows(row, mixed).length, 1,
+    "the slice-level disclosure was dropped because its family was withheld elsewhere");
+
+  // …and a family the ledger holds as withheld and nothing else still goes.
+  const wholly = [{ axis: "incumbent-class", scope: "worldwide", status: "withheld-by-judgment", reason: "not opened" }];
+  assert.equal(withoutWithheldRows([{ area: "Register / incumbent-class" }], wholly).length, 0);
 });
