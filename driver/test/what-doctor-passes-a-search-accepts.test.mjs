@@ -34,6 +34,14 @@ import * as probe from "../engine/probe.mjs";
 import { orderTimeRefusal, startEnvFileOf, runRequirements } from "../run-requirements.mjs";
 import { handRunEnv } from "./drive-env.mjs";
 import { ENGINE_BINARIES, DEFAULT_ENGINE_ID, resolveEngineProgram } from "../driver.config.mjs";
+
+import { ensurePortalBundleIsCurrent } from "./helpers/portal-bundle.mjs";
+
+// The arms below run `doctor` against this checkout for reasons that are not about the portal
+// bundle. A bundle older than its sources is a problem doctor reports and exits 1 for — rightly —
+// so a clone that was built once and then pulled would fail them all on a condition they do not
+// test. This makes that condition untrue, once per process, by building it as an operator would.
+ensurePortalBundleIsCurrent();
 const { PROVIDERS } = await import("../../bin/onboard.mjs");
 
 const HERE = dirname(fileURLToPath(import.meta.url));
