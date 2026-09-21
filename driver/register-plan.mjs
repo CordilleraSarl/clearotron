@@ -1185,7 +1185,18 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   // has no honest form — joining it would intersect the words instead of offering them as
   // alternatives, which asks for filings covering ALL of them and answers 200 with a population that
   // shrinks as the list grows. So the entry is not compiled; the broad sweep still runs.
-  const goodsWords = Array.isArray(manifest.goods_words) ? manifest.goods_words : [];
+  // ── ASKED AND UNANSWERED IS NOT THE SAME AS ANSWERED "NONE" ─────────────────────────────────────
+  //
+  // `null` is the stage never answering; `[]` is it answering that no word is worth narrowing by. Both
+  // compile no narrowed entry — there is nothing to narrow BY either way — but only one of them is a
+  // fact about the RUN rather than about the matter, and the plan says which.
+  //
+  // This is the distinction that let a narrowing ship inert for a week: the key could not be sent at
+  // all, the manifest carried an empty list, and the run was indistinguishable from a matter that
+  // genuinely had no goods words. A reader of that plan could not tell "nobody asked" from "nothing
+  // applied", and neither could anyone reading the run after it.
+  const goodsAnswered = Array.isArray(manifest.goods_words);
+  const goodsWords = goodsAnswered ? manifest.goods_words : [];
   // A FOURTH REASON, and it is the one the parser deliberately does NOT decide: the list may carry a
   // short phrase, and only some registers match a phrase as a phrase. Where this one does not, the
   // connector would refuse the entry at the door — so the entry must not be compiled in the first
@@ -1418,6 +1429,11 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
     // comparing the word list to what was searched would otherwise find a term that appears to have
     // been asked and was not, exactly.
     ...(goodsRewritten.length ? { goods_text_rewritten: goodsRewritten } : {}),
+    // THE STAGE WAS ASKED FOR GOODS WORDS AND DID NOT ANSWER. Recorded on the plan because it is a
+    // fact about the run, not about the matter: a matter with no goods words to give answers with an
+    // empty list, and that is a different thing from a stage that never answered at all. Absent when
+    // the stage answered, so every plan whose stage did its job stays byte-identical.
+    ...(goodsAnswered ? {} : { goods_words_unanswered: true }),
     ...(caps ? { provider: caps.id } : {}),
     entries: ordered,
   };

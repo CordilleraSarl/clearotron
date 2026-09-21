@@ -505,8 +505,10 @@ serve({
             "at most 24. Each is matched against the goods and services description of registered " +
             "marks, so use words a specification would contain; a word broader than the goods widens " +
             "the search instead of narrowing it. The register cannot read the words and, or, not, adj " +
-            "or near inside an item — an item containing one is searched without it. Omit the field " +
-            "when the matter has no goods wording.",
+            "or near inside an item — an item containing one is searched without it. Send an EMPTY " +
+            "LIST when you have considered the goods and no word is worth narrowing by; omit the " +
+            "field only when the matter states no goods at all. Those are different answers and the " +
+            "run records which one you gave.",
         },
         scope_ledger: {
           type: "array",

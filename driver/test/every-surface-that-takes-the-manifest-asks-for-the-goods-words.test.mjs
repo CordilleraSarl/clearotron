@@ -77,7 +77,9 @@ test("a call that names no goods words still succeeds — the field is optional"
     scope_ledger: [{ layer: "variant", item: "the mark", status: "applied", reason: "the mark under search" }],
   });
   assert.ok(accepted.ok, `a call with no goods words was refused: ${accepted.reason}`);
-  assert.deepEqual(accepted.model.goods_words, []);
+  // …and it parses to `null`, not `[]`: the stage did not answer. An explicit empty list is the model
+  // saying it considered the goods and none apply, which is a different fact about a different thing.
+  assert.equal(accepted.model.goods_words, null);
 });
 
 test("a repair that sends only part of the call does not delete the goods words", async () => {
@@ -132,14 +134,20 @@ test("the parser takes a written key and never drops it — the answer survives"
     /goods_words_invalid/, "the parser accepts more words than the model is told it may send");
 });
 
-test("an omitted key and an empty answer are indistinguishable — the finding, pinned", () => {
-  // THIS IS WHY THE RUN READ AS A LEGITIMATE SKIP. The parser writes [] for an absent key, so
-  // "no goods words apply here" and "the model never answered" arrive identically, and the compiler
-  // treats both as nothing to narrow by. Pinned as the current behaviour rather than as approval of
-  // it: the distinction is filed as its own issue, and this arm is what will fail when it is fixed.
-  const base = { schema_version: 1, mark: "X", dominant_element: "X",
-    elements: [{ value: "X", kind: "distinctive" }], variants: [{ value: "X", category: "core" }] };
-  assert.deepEqual(parseVariantManifestModel(base).goods_words, [], "the absent key no longer parses to []");
-  assert.deepEqual(parseVariantManifestModel({ ...base, goods_words: [] }).goods_words, []);
-  // Same value, two different facts about the run. Nothing downstream can tell them apart today.
+test("an omitted key and an empty answer are TOLD APART — the finding, closed", () => {
+  // THIS ARM USED TO PIN THE DEFECT. It asserted that both arrive as `[]`, which is why a run whose
+  // stage could not answer read exactly like a matter with no goods words, and why a narrowing shipped
+  // inert for a week with every test green. It was written to fail on the day that changed.
+  //
+  // This is that day. `null` is asked-and-unanswered; `[]` is answered-none-apply.
+  const m = "INVENTEDMARK";
+  const base = { schema_version: 1, mark: m, dominant_element: m,
+    elements: [{ value: m, kind: "distinctive" }], variants: [{ value: m, category: "core" }] };
+  assert.equal(parseVariantManifestModel(base).goods_words, null,
+    "an absent key reads as an answer again");
+  assert.deepEqual(parseVariantManifestModel({ ...base, goods_words: [] }).goods_words, [],
+    "an explicit `none` was thrown away");
+  assert.notDeepEqual(parseVariantManifestModel(base).goods_words,
+    parseVariantManifestModel({ ...base, goods_words: [] }).goods_words,
+    "the two are the same value again — a skipped question would read as a considered one");
 });

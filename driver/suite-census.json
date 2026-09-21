@@ -969,6 +969,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-skipped-question-is-not-an-answer.test.mjs": {
+          "tests": 5,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "a-source-the-classifier-could-not-read-is-not-empty.test.mjs": {
           "tests": 9,
           "asserts": 14,
@@ -2495,7 +2501,7 @@
         },
         "every-surface-that-takes-the-manifest-asks-for-the-goods-words.test.mjs": {
           "tests": 9,
-          "asserts": 20,
+          "asserts": 21,
           "skips": 0,
           "todos": 0
         },
