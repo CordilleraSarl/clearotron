@@ -353,6 +353,19 @@ jobs:
       # correction is a second pull request. Here it is one edit away from the person holding it.
       - run: node scripts/release-notes-lint.mjs
 
+      # THE PACKAGE IS LARGE BY DESIGN — most of it is bundled demo evidence, and that was ruled to be
+      # right. What was missing is not a smaller package but a MEASUREMENT: nothing recorded the size,
+      # so it could double across a few betas and nobody would find out from the repository. This
+      # compares against a recorded baseline, allows a margin, and prints the ten largest paths when
+      # it fails, so growth has a name before anyone argues about it.
+      - run: node scripts/package-size-budget.mjs --check
+
+      # GENERATED EVIDENCE KEEPS TO ITS OWN COMMIT. Regenerating `demo/` rewrites hundreds of
+      # thousands of lines; a source diff inside that is a diff nobody reads, which is how one release
+      # branch came to be reviewed at 2,490 files. The evidence is right to ship and right to change
+      # wholesale — it just must not travel in the same commit as hand-written code.
+      - run: node scripts/demo-evidence.mjs --check --base origin/main
+
   build-and-verify:
     name: Build the portal bundle, verify it in a real browser, and scan for secrets
     runs-on: ubuntu-latest

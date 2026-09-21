@@ -1,0 +1,7 @@
+{
+  "note": "What `npm pack` produced when this was recorded. The budget allows a margin over these; see scripts/package-size-budget.mjs.",
+  "margin": 0.1,
+  "size": 17796819,
+  "unpackedSize": 82320718,
+  "entryCount": 4262
+}

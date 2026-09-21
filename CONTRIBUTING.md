@@ -208,6 +208,18 @@ read at all.
 
 Branch, commit, open a PR. One change per PR.
 
+**Keep regenerated demo evidence in its own commit.** `demo/` holds captured runs. Regenerating them
+rewrites hundreds of thousands of lines, and a source diff inside that is a diff nobody reads — one
+release branch was 2,490 files and 632,089 changed lines, almost all of it evidence. So a commit that
+touches `demo/` touches nothing else, and `demo/MANIFEST.json` records what produced it:
+
+```
+node scripts/demo-evidence.mjs --apply     # in the same commit that regenerates the evidence
+git diff origin/main... -- . ':!demo'      # read a branch WITHOUT the generated evidence
+```
+
+CI checks the first line for you.
+
 The commit **body** is what gets read — not the title. State what changed, why this approach and
 what you rejected, and how to verify it. "How to verify" should be a command someone else can run.
 

@@ -8455,6 +8455,40 @@ function postponeRun(e, run, meta = {}) {
   return { ok: false, postponed: true, resetsAt, codename, fromStage: e.stage, runDir: run?.runDir ?? null };
 }
 
+/**
+ * The instructed scope a job asks for — what the MATTER named, before any model ran.
+ *
+ * Pulled out of the run so it can be driven straight from a job, because the defect it closes lived
+ * exactly in the seam between the intake gate and this object: the gate counts a job as carrying a
+ * goods description under EITHER spelling, and this stamped only the current one. A job written the
+ * older way passed the gate and landed `goods: null` — the scope file saying the matter named no
+ * goods while the request plainly did — and every reader that asks what the matter covers reads this
+ * file. Nothing said so, because nothing compared the two sites.
+ *
+ * PURE: a job in, a plain object out, no IO.
+ */
+export function instructedScopeOf(job) {
+  const markNames = Array.isArray(job?.marks)
+    ? job.marks.map((m) => (typeof m === "string" ? m : m?.name)).filter(Boolean)
+    : (job?.markName ?? job?.name ?? null);
+  return {
+    marks: markNames,
+    classes: job?.classes ?? null,
+    jurisdictions: job?.jurisdictions ?? null,
+    // BOTH SPELLINGS, because the intake gate accepts both (enqueue-schema: `job.goods || job.use`).
+    goods: job?.goods ?? job?.use ?? null,
+    customer: job?.customer ?? null,
+    // the geography stamp (enqueue-schema.mjs, "the GEOGRAPHY STAMP": {mode, origin}) — copied
+    // VERBATIM, never recomputed: foldRecipeScope mutates job.jurisdictions on later passes (and
+    // re-stamps origin "saved-search" when it does), so by read time the stamp is the only surviving
+    // record of where the territories came from. Without it here, the frame reconstructs that
+    // provenance from the request prose — a reconstruction validators.matterContext cannot check.
+    // null = the job predates the stamp ("unrecorded", effective-scope.mjs) — an explicit state,
+    // never a missing key.
+    geography: job?.geography ?? null,
+  };
+}
+
 async function pipelineInner(job, opts = {}) {
   assertTierSanity();
   // The engine binary, first and UNCONDITIONALLY — before the register preflight, which two lanes skip.
@@ -8872,24 +8906,7 @@ async function pipelineInner(job, opts = {}) {
   // frame validator compares against THIS file, never against the frame's own paraphrase) —
   // paraphrase drift between the request and the frame is a defect, not a style choice.
   try {
-    const markNames = Array.isArray(job.marks)
-      ? job.marks.map((m) => (typeof m === "string" ? m : m?.name)).filter(Boolean)
-      : (job.markName ?? job.name ?? null);
-    writeFileSync(P.instructedScope, JSON.stringify({
-      marks: markNames,
-      classes: job.classes ?? null,
-      jurisdictions: job.jurisdictions ?? null,
-      goods: job.goods ?? null,
-      customer: job.customer ?? null,
-      // the geography stamp (enqueue-schema.mjs, "the GEOGRAPHY STAMP": {mode, origin}) — copied
-      // VERBATIM, never recomputed: foldRecipeScope mutates job.jurisdictions on later passes (and
-      // re-stamps origin "saved-search" when it does), so by read time the stamp is the only
-      // surviving record of where the territories came from. Without it here, the frame reconstructs
-      // that provenance from the request prose — a reconstruction validators.matterContext cannot
-      // check. null = the job predates the stamp ("unrecorded", effective-scope.mjs) — an explicit
-      // state, never a missing key.
-      geography: job.geography ?? null,
-    }, null, 2) + "\n");
+    writeFileSync(P.instructedScope, JSON.stringify(instructedScopeOf(job), null, 2) + "\n");
   } catch (e) { note(`instructed-scope write failed (non-fatal): ${e.message}`); }
   // THE STORED DEFAULTS THE ENGINE CANNOT SEARCH — recorded by the run, not only by the plan preview.
   //
