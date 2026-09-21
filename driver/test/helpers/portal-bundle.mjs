@@ -51,7 +51,20 @@ export function ensurePortalBundleIsCurrent({ repo = REPO } = {}) {
   const dist = join(repo, "portal-ui", "dist");
   if (!existsSync(src)) return "no sources — nothing can be stale against them";
   const distAt = newestUnder(dist);
-  if (distAt !== 0 && distAt >= newestUnder(src)) return "already current";
+  // AN ABSENT BUNDLE IS AN ABSENCE, AND DOCTOR ALREADY TREATS IT AS ONE. This helper exists for the
+  // STALE bundle, which doctor reports with `problem` and exits 1 for — a misconfiguration the reader
+  // has no other way to learn about. A bundle that is simply NOT THERE takes doctor's `unbuilt` branch
+  // instead, which is `blocking`: named under "this install cannot do everything yet", and rc-neutral
+  // by the exit contract in bin/onboard.mjs runCheck, where only `problems` and `inert` return 1.
+  // So the twelve arms pass with no bundle at all, and there is nothing here to make current.
+  //
+  // IT IS ALSO THE UNIVERSAL CASE, which is what made this load-bearing. `portal-ui/dist` is untracked,
+  // so it is absent on every fresh clone and every new worktree — CI included. Treating absent as
+  // "needs building" sent every one of those runs into a build that scripts/test-run.mjs refuses by
+  // design, and the refusal is fatal here, so three files failed at IMPORT and 101 assertions did not
+  // run at all. Measured on beta-16 at b9c1433: 3 files, 0 pass, 3 fail, none of them about a bundle.
+  if (distAt === 0) return "no bundle here — doctor reports that as an absence, which fails no arm";
+  if (distAt >= newestUnder(src)) return "already current";
   const r = spawnSync("npm", ["run", "build:ui"], { cwd: repo, encoding: "utf8", timeout: 600_000 });
   if (r.status !== 0) {
     // NOT a silent skip: an arm that needed this and did not get it should fail saying why, rather than
