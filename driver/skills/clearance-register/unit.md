@@ -46,11 +46,21 @@ You were spawned to run exactly ONE axis named in your task. Read the manifest +
    - **`{state:"enumerated", total_hits, count, records:[…]}`** — it paged to `has_more:false`; every named record is carried forward, already batch-screened (each record carries `record_id`, `mark_text`, `classes`, `status`, `owner_name`, `owner_country`, `application_date`, `registration_date`, `expiry_date`, `jurisdictions`, `screen_verdict`). Write this verbatim as an `enumerated` band block.
    - **`{state:"incomplete", total_hits, fetched, sample, reason}`** — it could **not** page to completion (the band is a genuine CROWD over the resource ceiling, the provider 5000-record window was hit, or a provider error occurred). Write this verbatim as an `incomplete` band block. **This is a SIGNAL to judgment, never a clean negative and never something you self-accept.** You do **not** "narrow to tractable and call it clean" — an incomplete result crosses the firewall as an incomplete block; judgment decides whether to command a narrower enumeration or halt.
 
-### Look at the count before you read anything
+### At every step: look at what you have before you work on it
 
-The register tells you how many filings answer a question before it hands you any. Take a look: how bad is
-it? If the list is one you can read record by record, read it in full. If it is not, do not read it and do
-not leave it: narrow the same question, in this order, until it is, then read that list in full and decide.
+Fifty? Read them all. A few hundred? Sort by the client's goods and markets, read the near ones first, list
+the rest. A thousand or more? The field is crowded: read the identical and live ones for the client's
+goods, tell the client it is crowded, and do not write up the rest. Carry forward only what a lawyer would
+raise with the client. Write down what you set aside and why. This applies to the register's answer, to the
+list of records, to the placements, to the off-register sweep and to the write-up alike.
+
+### Read the identical mark first. Look at the count before you read anything
+
+On every matter the identical mark, in the instructed classes, is the first thing you read, and nothing
+wider is asked until you have read it. The register tells you how many filings answer a question before it
+hands you any. Take a look: how bad is it? If the list is one you can read record by record, read it in
+full. If it is not, do not read it and do not leave it: narrow the same question, in this order, until it
+is, then read that list in full and decide.
 
 1. Ask again for the identical mark, in the instructed classes, limited to the client's goods words. Read
    that list.

@@ -875,7 +875,7 @@ test("wherePaths: every distinct path, de-duplicated; the same file at two lines
     ["driver/stages.mjs", "driver/skills/narrative-refutation/SKILL.md"]);
   // The same file twice is one SITE. Counting it as two is how "10 multi-file rows" was over-reported
   // by 2× before this function existed to answer the question.
-  assert.deepEqual(wherePaths("driver/stages.mjs:1054 and driver/stages.mjs:1062"), ["driver/stages.mjs"]);
+  assert.deepEqual(wherePaths("driver/a.mjs:1054 plantedDictation and driver/a.mjs:1062 plantedDictation"), ["driver/a.mjs"]);   // planted path + planted symbol: the datum is the REPETITION, not a claim about any line
   assert.deepEqual(wherePaths("driver/skills/a/SKILL.md:175 (restated at driver/skills/b/rules.md:427)"),
     ["driver/skills/a/SKILL.md", "driver/skills/b/rules.md"]);
   // A bare filename in prose is not a location — a path needs at least one slash.

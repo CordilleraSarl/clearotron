@@ -17,7 +17,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { compileRegisterPlan, entryQuestionKey, foldSupplementalEntries } from "../register-plan.mjs";
+import { compileRegisterPlan, entryQuestionKey, foldSupplementalEntries, awaitsReadingTurn } from "../register-plan.mjs";
 import { mintSupplementalEntries } from "../engine/mcp/supplemental.mjs";
 import { CAPABILITIES as CLARIVATE } from "../../providers/clarivate/src/capabilities.js";
 import { defaultBuildEntryQuery, planPredicateParams } from "../../providers/_shared/execute-plan.mjs";
@@ -35,7 +35,7 @@ const manifest = (extra = {}) => ({
 const JOB = { jobKey: "t", classes: ["9"], jurisdictions: [] };
 const planFor = (extra) => compileRegisterPlan({ manifest: manifest(extra), job: JOB, capabilities: CLARIVATE });
 
-test("only the identical question and the saturation probe run without waiting", () => {
+test("only the three sanctioned kinds run without waiting", () => {
   const plan = planFor();
   const open = plan.entries.filter((e) => !e.when);
   const waiting = plan.entries.filter((e) => e.when);
@@ -43,13 +43,17 @@ test("only the identical question and the saturation probe run without waiting",
   for (const e of open) {
     const ok = e.axis === "saturation-probe" || e.predicate !== "default" || e.unsupported === true
       || (Array.isArray(e.goods_text) && e.goods_text.length);
-    assert.ok(ok, `${e.axis}/${e.predicate} runs in the same breath as a crowded identical question`);
+    assert.ok(ok, `${e.axis}/${e.predicate} runs in the same breath as the identical question`);
   }
-  // …and every waiting family names the identical question, not something else.
+  // …and every waiting family waits for the ASK (ruling 204), not for the identical question's result.
+  // This arm used to assert the opposite — that each guard named the identical question's qid — which
+  // is decision 12, reversed by the owner on 2026-09-21. A family released by an enumerated identical
+  // question is the defect now, not the design.
   const identical = open.find((e) => e.axis === "primary-sweep" && e.predicate !== "default");
   assert.ok(identical, "the identical question is not among the entries that run first");
   for (const e of waiting) {
-    assert.equal(typeof e.when.runs_if_enumerated, "string");
+    assert.equal(awaitsReadingTurn(e.when), true,
+      `a family waits on a result (${JSON.stringify(e.when)}) rather than on the reading turn's ask`);
   }
 });
 
@@ -146,21 +150,29 @@ test("a clean zero releases the families — a fully resolved stack is a complet
   assert.equal((src.match(/if \(unresolved === 0\) \{/g) ?? []).length, 2,
     "both rescue paths must treat a fully resolved stack as a complete band");
 
-  // …and the guard itself releases on the state a parent can actually hold.
+  // …and the crowd gate itself still releases on the state a parent can actually hold.
+  //
+  // DRIVEN OVER A HAND-BUILT PARENT-GATED ENTRY, not over a compiled plan. Ruling 204 moved the wider
+  // families off this guard and onto `awaits_reading_turn`, and the fringe that still uses it — the
+  // wildcard family of the dominant token — does not compile for every manifest, this fixture's
+  // included (measured: zero parent-gated entries). Reaching for the compiler here would have left the
+  // loop with nothing to iterate and the arm green over an empty set. The guard is still live code, so
+  // it is still driven; what changed is that the subject has to be stated rather than found.
   const { joinPlanToBands, deriveCoverageSkeleton } = await import("../register-plan.mjs");
-  const plan = planFor();
-  const identical = plan.entries.find((e) => !e.when && e.axis === "primary-sweep" && e.predicate !== "default");
+  const parent = { qid: "q-parent", axis: "primary-sweep", predicate: "default", term: "INVENTED",
+    expected_kind: "enumerate", nice_classes: ["9"] };
+  const child = { qid: "q-fringe", axis: "primary-sweep", predicate: "wildcard", term: "INVENT*",
+    expected_kind: "enumerate", nice_classes: ["9"], when: { runs_if_enumerated: "q-parent" } };
+  const plan = { entries: [parent, child] };
   for (const [parentState, released] of [["enumerated", true], ["incomplete", false]]) {
-    const blocks = {};
-    for (const e of plan.entries) {
-      (blocks[e.axis] ??= []).push({ qid: e.qid, total_hits: 0, records: [],
-        state: e.qid === identical.qid ? parentState : "enumerated" });
-    }
+    const blocks = { "primary-sweep": [
+      { qid: "q-parent", total_hits: 0, records: [], state: parentState },
+      { qid: "q-fringe", total_hits: 0, records: [], state: "enumerated" },
+    ] };
     const join = joinPlanToBands(plan, blocks);
-    const waited = plan.entries.filter((e) => e.when?.runs_if_enumerated === identical.qid);
     const skippedQids = new Set(join.skipped.map((x) => x.qid));
-    assert.equal(!waited.some((e) => skippedQids.has(e.qid)), released,
-      `a ${parentState} identical question ${released ? "must release" : "must hold"} the waiting families`);
+    assert.equal(!skippedQids.has("q-fringe"), released,
+      `a ${parentState} parent ${released ? "must release" : "must hold"} its crowd-gated fringe`);
     if (released) {
       const axis = deriveCoverageSkeleton(plan, join).find((a) => a.axis === "primary-sweep");
       assert.notEqual(axis.state, "skipped", "an answered parent left the axis reading skipped");

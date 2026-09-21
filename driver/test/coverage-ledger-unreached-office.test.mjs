@@ -64,6 +64,12 @@ function runToForm({ jurisdictions, unavailableOffices }) {
     capabilities: FREE_TIER,
     unavailableOffices,
   });
+  // THE READING TURN ASKED FOR EVERYTHING, which is what makes "every entry executed" a state this
+  // plan can actually be in. Under ruling 204 the wider families wait for that ask, so a compiled plan
+  // left alone always holds entries nobody ran — and this arm is about an unsearched OFFICE, not about
+  // the gate. Dropping the guards here models the matter where judgment asked for every family, and
+  // keeps the premise below literally true rather than weakening it to tolerate waiting entries.
+  for (const e of plan.entries) delete e.when;
   // Every entry executes CLEANLY. Nothing failed, so nothing downstream has an error to notice — the
   // state in which a missing disclosure is invisible.
   const bandBlocksByAxis = {};

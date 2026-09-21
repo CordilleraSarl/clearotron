@@ -212,6 +212,25 @@ export function frameIdentifiedClasses(runDir) {
 }
 
 /**
+ * The same rows WITH THEIR REASONS, for the register plan (decision 18). IMPURE, like its sibling.
+ *
+ * The reason is why the class is here and it is half the row: the bound on this widening is that a
+ * class is added only for goods the CLIENT'S OWN business plainly reaches, and a class carrying no
+ * stated reason cannot be checked against that by anyone. The plan compiler drops such a row rather
+ * than searching it, so the reason is load-bearing and not documentation.
+ *
+ * Kept beside `frameIdentifiedClasses` rather than replacing it: the other caller verifies a proposed
+ * house element against an owner-scoped lookup, where the widest class set is the right one to look in
+ * and a reason would mean nothing.
+ */
+export function frameIdentifiedClassRows(runDir) {
+  const rows = lastAcceptedMatterFrame(runDir)?.identified_classes;
+  return (Array.isArray(rows) ? rows : [])
+    .map((r) => ({ class: String(r?.class ?? "").trim(), reason: String(r?.reason ?? "").trim() }))
+    .filter((r) => r.class);
+}
+
+/**
  * The forms of the name this run's client ratified, as strings. IMPURE (reads the run's own accepted
  * call). Empty or one form is the ordinary answer.
  *

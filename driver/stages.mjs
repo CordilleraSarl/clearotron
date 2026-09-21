@@ -16,6 +16,7 @@
 
 import { join, basename } from "node:path";
 import { driverRel } from "../shared/driver-dir.mjs";   //
+import { awaitsReadingTurn } from "../providers/_shared/plan-guards.mjs";   // — a guard the dictation misreads is a question the model never knows it may ask
 import { validators } from "./verify.mjs";
 import { REGISTER_PROVIDER, PROVIDERS } from "./driver.config.mjs";
 import { REGISTER_AXES, decideAxes } from "./coverage-ledger.mjs";
@@ -1359,7 +1360,7 @@ export const STAGES = {
       // EACH FIELD CARRIES ITS OWN IMPERATIVE IN ITS OWN SENTENCE (: a field phrased outside one was
       // written 0 of 9 times against 74 of 74 when imperative-carried).
       `Hand the frame back by calling the \`record_matter_frame\` tool. Send \`prose_body\` — the commercial read of the matter in full prose: client, sector, product description, customer base, channels of trade, off-field sectors, sector-convergence flags, watchlist-owner seeds, your scope reasoning, the class scope and adjacency call with a one-line reason per class, the applicant's own and affiliated marks, and the campaign shape where you are inferring one (label an inference as an inference).`,
-      `Send \`scope_basis\` as "instructed" or "derived", with \`scope_jurisdictions\` and \`excluded_jurisdictions\` as arrays of territories. Send \`identified_classes\` — the Nice classes you judge NECESSARY that the request did NOT instruct, each as {class, reason}, the class a whole number 1-45 and the reason one line. These are searched for every variant, not only the exact name, so name a class only where you would defend charging for it; omit the field or send an empty array where the instructed classes are the whole scope, which is the ordinary answer and adds nothing.`,
+      `Send \`scope_basis\` as "instructed" or "derived", with \`scope_jurisdictions\` and \`excluded_jurisdictions\` as arrays of territories. Send \`identified_classes\` — the Nice classes you judge NECESSARY that the request did NOT instruct, each as {class, reason}, the class a whole number 1-45 and the reason one line. Add a class only for the client's own goods, never for what a competitor might hold, and give one sentence saying why — a class sent without a reason is not searched. The added class is searched like every other: the identical mark first, and the count looked at before anything is read. Omit the field or send an empty array where the instructed classes are the whole scope, which is the ordinary answer and adds nothing.`,
       // The driver STAMPS the instructed-scope section from _driver/instructed-scope.json, so the seat is
       // not asked to quote back values the driver wrote at intake. That retyping was the stage's
       // `frame_scope_missing` loop and it is gone; see matter-frame-record.mjs.
@@ -2194,7 +2195,7 @@ export const STAGES = {
             // message for transparency and so judgment knows what is already covered.
             `EXECUTE THE FROZEN PLAN VIA THE TOOL: call register_execute_plan ONCE with {"plan_path": "${P.registerPlan}", "axis": "${axis}", "output_path": "${P.registerBand(axis)}"}. The tool runs every dictated entry below ITSELF (paged enumerates; count-only crowd descriptors; a "when"-guarded fringe only if its parent enumerated) and WRITES the band file itself with each block's qid stamped. Do NOT run these dictated entries manually and do NOT write their blocks yourself.`,
             `For your audit context, the dictated entries the tool will run:`,
-            ...planEntries.map((e) => `- qid "${e.qid}": ${e.predicate} ${e.terms ? `names ${JSON.stringify(e.terms)} (one OR-stacked call)` : JSON.stringify(e.term)}${e.owner ? ` · owner ${JSON.stringify(e.owner)}` : ""} · nice_classes ${JSON.stringify(e.nice_classes)}${e.regions?.length ? ` · regions ${JSON.stringify(e.regions)}` : ""}${e.when ? ` · when: "${e.when.runs_if_enumerated}" enumerated` : ""} · expected: ${e.expected_kind}${Array.isArray(e.covered_by) && e.covered_by.length ? ` · crowd context — coverage is ${e.covered_by.join(", ")}` : ""}`),
+            ...planEntries.map((e) => `- qid "${e.qid}": ${e.predicate} ${e.terms ? `names ${JSON.stringify(e.terms)} (one OR-stacked call)` : JSON.stringify(e.term)}${e.owner ? ` · owner ${JSON.stringify(e.owner)}` : ""} · nice_classes ${JSON.stringify(e.nice_classes)}${e.regions?.length ? ` · regions ${JSON.stringify(e.regions)}` : ""}${e.when ? (awaitsReadingTurn(e.when) ? ` · WAITING FOR YOU: not asked unless you ask for it after reading the identical mark's list` : ` · when: "${e.when.runs_if_enumerated}" enumerated`) : ""} · expected: ${e.expected_kind}${Array.isArray(e.covered_by) && e.covered_by.length ? ` · crowd context — coverage is ${e.covered_by.join(", ")}` : ""}`),
             // copper-lattice re-route (supplemental_lane contract): judgment additions stay the model's
             // CALL — which queries the manifest/frame warrant beyond the dictated set — but their
             // EXECUTION and their band blocks are code's (register_propose_supplemental mints qid'd

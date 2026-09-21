@@ -141,6 +141,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-class-the-client-reaches-is-added-and-costs-one-question.test.mjs": {
+          "tests": 5,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
         "a-clean-install-offers-generic-alone.test.mjs": {
           "tests": 9,
           "asserts": 14,
@@ -2993,7 +2999,7 @@
         },
         "matter-frame-record.test.mjs": {
           "tests": 25,
-          "asserts": 88,
+          "asserts": 89,
           "skips": 0,
           "todos": 0
         },
@@ -5451,6 +5457,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-shape-read-prints-counts-and-writes-nothing.test.mjs": {
+          "tests": 5,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
         "the-sign-in-door-folds-its-administrator-help.test.mjs": {
           "tests": 5,
           "asserts": 23,
@@ -5526,6 +5538,12 @@
         "the-verb-table-resolves-to-files-that-ship.test.mjs": {
           "tests": 6,
           "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-wider-families-wait-for-the-reading-turn-on-every-matter.test.mjs": {
+          "tests": 7,
+          "asserts": 23,
           "skips": 0,
           "todos": 0
         },
