@@ -27,7 +27,7 @@
 // facts an operator needs and none of them a secret.
 
 import { existsSync, rmSync } from "node:fs";
-import { defaultInstallBase, establishCredential, installCredential, passphraseWithheldLines, readLocalCredential } from "../driver/portal-local-auth.mjs";
+import { defaultInstallBase, establishCredential, installCredential, readLocalCredential } from "../driver/portal-local-auth.mjs";
 // — the form a reader can actually type, derived from how THIS process started
 // rather than hardcoded. A hardcoded `npx ` tells a global installer their install is somehow lesser;
 // a hardcoded bare name sends an npx reader to `command not found`.
@@ -98,26 +98,6 @@ if (!reset) {
     ? `\n  The passphrase itself cannot be shown: what is stored is a digest, not the secret.\n  To get a working one, run:  ${P}clearotron passphrase --reset${baseAt >= 0 ? ` --base ${base}` : ""}\n`
     : `\n  Nothing to reset yet.\n`);
   process.exit(0);
-}
-
-// ── OFF A TERMINAL, THIS VERB CHANGES NOTHING ────────────────────────────────────────────────────
-//
-// `--reset` removes the credential, mints a new passphrase and prints it. Run as `… --reset > f`, under
-// a service manager, or by an assistant that captures command output, the new value lands in that file
-// or transcript — the leak closed for `start` and `demo`, arriving through the one verb the fixed path
-// NAMES as the way back in.
-//
-// It refuses BEFORE it reads intent from anything else, and above all before `rmSync`: the acceptance is
-// that the credential is byte-identical afterwards, so there must be no branch between here and the
-// removal that could take a different view. An operator who wants a new passphrase types this in a
-// terminal, where the value is seen once and not stored.
-//
-// The first sentence is the shipped one, taken from its own composer rather than copied, so the two
-// places that withhold a passphrase cannot drift into two different reasons for it.
-if (process.stdout.isTTY !== true) {
-  console.error(`\n  ${passphraseWithheldLines({ stream: "stdout" })[0]}`);
-  console.error(`  Nothing was changed. Run this command in a terminal to set a new passphrase and see it.\n`);
-  process.exit(1);
 }
 
 const email = existing?.email || process.env.PORTAL_LOCAL_USER || "";
