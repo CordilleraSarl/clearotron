@@ -149,6 +149,60 @@ export function laidPathVerdict({ laid = 0, laidPaths = [], cutRecordPresent = f
  * than reading as "nothing is laid here", which is the permissive answer and the one that passes.
  */
 /**
+ * — A HALF-FINISHED MERGE CANNOT SAY WHAT ITS SUITE IS, and it does not know that it cannot.
+ *
+ * The refusal above catches one of the two ways a mid-merge tree lies to this script: a path arriving
+ * from the other parent is in the index and not in HEAD, so it is laid, named and refused. It cannot
+ * catch the other. A file both parents changed IS in HEAD, so nothing about it is laid — it is counted,
+ * and what is counted is a working copy holding `<<<<<<<`, `=======` and `>>>>>>>` as though they were
+ * source. Measured 2026-09-21 on a tree conflicted in one test file: the mint read all 980 driver
+ * files, counted the conflicted one, printed "unchanged — no file added, removed, grown, shrunk or
+ * newly skipped", and exited 0. The operator's confirmation and the defect are the same sentence.
+ *
+ * THE STATE IS THE TEST, NOT THE MARKERS. Scanning files for marker lines would find this instance and
+ * would also refuse a test that legitimately contains one in a string, while missing a conflict
+ * resolved into plausible nonsense. Git already publishes the fact: an operation is half-finished, so
+ * no tree it produced is a population anyone should stamp. That covers both mechanisms at once, and
+ * covers a rebase and a cherry-pick, where the same two lies are available for the same reason.
+ *
+ * REFUSES RATHER THAN REPAIRS. Reading the index instead of HEAD would fix the counting and would still
+ * mint over markers, so it is the weaker of the two. There is a correct tree a few seconds away —
+ * finish the operation and mint on the result — and the census is a deliberate act whose whole value is
+ * that somebody looked at the diff.
+ *
+ * Pure, and takes the list rather than reading it, so both branches can be driven without a test
+ * having to conflict a real tree.
+ */
+export const MID_OPERATION_STATES = Object.freeze([
+  ["MERGE_HEAD", "merge"],
+  ["CHERRY_PICK_HEAD", "cherry-pick"],
+  ["REVERT_HEAD", "revert"],
+  ["rebase-merge", "rebase"],
+  ["rebase-apply", "rebase"],
+]);
+
+export function midOperationVerdict({ inProgress = [] } = {}) {
+  if (!inProgress.length) return { refuse: false, message: null };
+  const what = [...new Set(inProgress.map(([, label]) => label))].join(" and a ");
+  return { refuse: true,
+    message: `mint-suite-census: this tree is in the middle of a ${what}, so the files in it are not a\n`
+      + "  population anybody published. A path from the other parent is missing from HEAD and would be\n"
+      + "  dropped from the count; a file both sides changed is in HEAD and would be counted WITH its\n"
+      + "  conflict markers. Either way this would print \"unchanged\" for a population it had just\n"
+      + `  misread. Finish the ${what} and mint on the tree that comes out.` };
+}
+
+/** Which half-finished operations this worktree's own git directory is carrying. */
+export function operationsInProgress(root, exists = existsSync) {
+  let gitDir;
+  try {
+    gitDir = execFileSync("git", ["-C", root, "rev-parse", "--absolute-git-dir"], { encoding: "utf8" }).trim();
+  } catch { return []; }
+  if (!gitDir) return [];
+  return MID_OPERATION_STATES.filter(([name]) => exists(join(gitDir, name)));
+}
+
+/**
  * The paths the private overlay says it laid over this clone, or null where it laid nothing.
  *
  * Read from the clone's own git directory, `info/overlay-laid`, one path per line. Inside `.git` on
@@ -219,6 +273,18 @@ export function buildCensus(root = ROOT) {
 const readManifest = (rel) => { try { return JSON.parse(readFileSync(join(ROOT, rel), "utf8")); } catch { return null; } };
 
 function main() {
+  // ── BEFORE EVEN THAT — IS THIS TREE A POPULATION AT ALL? ────────────────────────────────────
+  //
+  // First, because every check below reads files from this working tree, and mid-merge those files are
+  // not what either parent published. A census that is internally consistent about a tree nobody
+  // committed passes every other refusal in this file, `--check` included.
+  const mid = midOperationVerdict({ inProgress: operationsInProgress(ROOT) });
+  if (mid.refuse) {
+    console.error(`\nREFUSING — ${mid.message}`);
+    process.exitCode = 2;
+    return;
+  }
+
   // ── ITEM 1 — BEFORE ANY COUNTING, DOES THIS CENSUS DESCRIBE WHAT THE RUNNER RUNS? ───────────
   //
   // FIRST, and it refuses rather than warns. Everything below counts files inside a corpus this list
