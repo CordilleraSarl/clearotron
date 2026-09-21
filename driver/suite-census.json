@@ -315,6 +315,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-deprecate-only-dispatch-publishes-nothing.test.mjs": {
+          "tests": 5,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "a-depth-check-that-read-nothing-is-on-the-investigate-list.test.mjs": {
           "tests": 3,
           "asserts": 8,
