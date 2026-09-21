@@ -249,8 +249,13 @@ function mockCoverageSlices(msg) {
   // `withheld-by-judgment` is what a reading turn writes for a family it did not open: no search is
   // claimed, the run still delivers, and the reason travels with it.
   for (const ax of ["saturation-probe", "transliteration-numeric", "incumbent-class"])
-    if (!present.has(ax)) rows.push({ axis: ax, unit: `${ax} / worldwide`, status: "withheld-by-judgment",
-      reason: "not opened: the identical question is answered and this family would widen it" });
+    // …unless the digest judged this axis a DOCUMENTED, ACCEPTED limit, in which case that disclosure
+    // wins. Withheld must never swallow a row with a real gap to report: a withheld row is deliberately
+    // kept off the client's page, so letting it win would delete a disclosure the reader is owed.
+    if (!present.has(ax)) rows.push(ax === process.env.MOCK_LEDGER_LIMITED
+      ? { axis: ax, unit: `${ax} / worldwide`, status: "coverage-limited", reason: "yielded to ring-fenced jurisdiction budget" }
+      : { axis: ax, unit: `${ax} / worldwide`, status: "withheld-by-judgment",
+          reason: "not opened: the identical question is answered and this family would widen it" });
   return rows;
 }
 
@@ -314,13 +319,21 @@ export function fillCoverageForm(runDir, msg) {
     // exactly like a guard that found nothing. `skippedAxis` reads the state from the run's
     // plan-execution record, which is the source the VALIDATOR reads, so the filler and the gate
     // answer from one fact rather than two.
-    status: skippedAxis(r) ? "withheld-by-judgment"
-      : r.open ? "deferred"
-      : r.axis === limited ? "coverage-limited" : r.kind === "block" ? "coverage-limited" : "confirmed-clean",
-    reason: skippedAxis(r) ? "not opened: the identical question is answered and this family would only widen it"
-      : r.open ? "never dispatched — the active register provider cannot express this slice; disclosed as an open question"
+    // ORDER MATTERS, AND WITHHELD GOES LAST OF THE NON-CLEAN STATES. A row can be BOTH: an axis the
+    // skeleton calls skipped and one the digest judged a documented, accepted limit. Testing withheld
+    // first let it swallow the disclosure — and because a withheld family is deliberately kept off the
+    // client report, the net effect was a disclosed gap vanishing from the reader's page.
+    //
+    // Losing a disclosure is the worse of the two errors by a long way. `withheld-by-judgment` says
+    // "we chose not to open this, and that is where the work was spent"; it may only be said about a
+    // row that has nothing else to say. Anything carrying a real disclosure keeps it.
+    status: r.open ? "deferred"
+      : r.axis === limited ? "coverage-limited" : r.kind === "block" ? "coverage-limited"
+      : skippedAxis(r) ? "withheld-by-judgment" : "confirmed-clean",
+    reason: r.open ? "never dispatched — the active register provider cannot express this slice; disclosed as an open question"
       : r.axis === limited ? "yielded to ring-fenced jurisdiction budget"
       : r.kind === "block" ? "the band left part of this slice unaccounted — a material gap; ships CONDITIONAL"
+      : skippedAxis(r) ? "not opened: the identical question is answered and this family would only widen it"
       : "paged to has_more:false",
   }));
   const seat = mockCoverageSlices(msg).map((r) => ({ ...r, kind: "seat" }));
@@ -737,8 +750,10 @@ export function coverageLedger(dir) {
   // only ever passed while every axis executed; the wider families now wait on the identical question.
   for (const ax of ["saturation-probe", "primary-sweep", "transliteration-numeric", "incumbent-class"]) {
     if (!rows.some((r) => r.axis === ax))
-      rows.push({ axis: ax, scope: "worldwide", status: "withheld-by-judgment",
-        reason: "not opened: the identical question is answered and this family would only widen it" });
+      rows.push(ax === process.env.MOCK_LEDGER_LIMITED
+        ? { axis: ax, scope: "worldwide", status: "coverage-limited", reason: "yielded to ring-fenced jurisdiction budget" }
+        : { axis: ax, scope: "worldwide", status: "withheld-by-judgment",
+            reason: "not opened: the identical question is answered and this family would only widen it" });
   }
   return JSON.stringify(rows);
 }
