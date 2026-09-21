@@ -69,6 +69,25 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 
   // --check: every commit in the range keeps its evidence to itself.
   const base = process.argv[process.argv.indexOf("--base") + 1] || "origin/main";
+
+  // ── A BASE THIS CHECKOUT CANNOT RESOLVE IS A FAILURE TO LOOK, AND IT SAYS SO ────────────────────
+  //
+  // A shallow clone fetches one branch, so `origin/main` is not a ref in it and `rev-list base..HEAD`
+  // dies on an ambiguous argument — a stack trace naming a line of this file, which reads as a broken
+  // script rather than as a checkout that cannot answer the question. It is neither a clean range nor
+  // a mixed one: nothing was compared. Falling back to another base would be worse, because a range
+  // measured against something the caller did not ask for reports a clean result for a population it
+  // never examined.
+  try { git("rev-parse", "--verify", "--quiet", `${base}^{commit}`); }
+  catch {
+    console.error(`demo-evidence: this checkout has no "${base}", so no commit was compared.`);
+    console.error("");
+    console.error("Nothing is known about the range either way — this is not a clean result. A shallow");
+    console.error("checkout carries only the branch it fetched; fetch the base ref, or name one this");
+    console.error("clone holds with --base.");
+    process.exit(2);
+  }
+
   const shas = git("rev-list", `${base}..HEAD`).split("\n").filter(Boolean);
   const bad = [];
   for (const sha of shas) {

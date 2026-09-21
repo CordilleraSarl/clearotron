@@ -12,6 +12,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
+import { spawnSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { mixedPaths, products, GENERATOR, MANIFEST } from "../../scripts/demo-evidence.mjs";
@@ -60,4 +61,44 @@ test("the guard is wired into CI, not merely available to run", () => {
   const ci = readFileSync(join(ROOT, ".github", "workflows", "ci.yml"), "utf8");
   assert.match(ci, /demo-evidence\.mjs --check/,
     "nothing checks the convention on a push, so it lasts exactly as long as people remember it");
+});
+
+// ── AND THE RUNNER HAS TO BE ABLE TO ANSWER THE QUESTION IT IS ASKED ──────────────────────────────
+//
+// The check compares a range against the default branch. The default checkout fetches one branch at
+// depth 1, so that branch is not a ref in it: the range died on an ambiguous argument and the job
+// failed on a stack trace naming a line of the script, which reads as a broken script rather than as
+// a checkout that could not answer. Two halves, and both are needed — a script that says which of the
+// two happened, and a fetch that lets it happen at all.
+
+test("a base this checkout does not hold is refused by name, and never reported as a clean range", () => {
+  // DRIVEN, not read: the refusal is worth nothing if the process still exits 0, and only running it
+  // says which. Both directions, because a guard that refuses everything gates nothing.
+  const script = join(ROOT, "scripts", "demo-evidence.mjs");
+  const run = (base) => spawnSync(process.execPath, [script, "--check", "--base", base],
+    { cwd: ROOT, encoding: "utf8" });
+
+  const blind = run("origin/a-ref-no-clone-of-this-repo-holds");
+  assert.notEqual(blind.status, 0, "a range that could not be measured exited clean");
+  assert.match(`${blind.stderr}`, /no commit was compared/,
+    "the refusal does not say that nothing was compared, so it reads as a finding about the commits");
+  assert.doesNotMatch(`${blind.stdout}`, /none mixes generated evidence/,
+    "it reported a clean range for commits it never looked at");
+
+  // THE CONTROL. A base this clone does have must still be measured, or the guard above would pass on
+  // a script that refuses unconditionally.
+  const seeing = run("HEAD");
+  assert.equal(seeing.status, 0, `a resolvable base was refused: ${seeing.stderr}`);
+  assert.match(`${seeing.stdout}`, /commit\(s\) against HEAD/, "the resolvable base was not measured");
+});
+
+test("the CI job that runs it fetches enough history to resolve the base", () => {
+  // The other half. With the script refusing correctly and the checkout still shallow, the job fails
+  // every time and the gate is a permanent red that teaches people to ignore it.
+  const ci = readFileSync(join(ROOT, ".github", "workflows", "ci.yml"), "utf8");
+  const job = ci.slice(ci.indexOf("Lint, licences, tokens and the built bundle"));
+  const firstCheckout = job.slice(job.indexOf("actions/checkout"), job.indexOf("actions/setup-node"));
+  assert.match(firstCheckout, /fetch-depth:\s*0/,
+    "the job that compares a range against the default branch checks out one branch at depth 1, so the "
+    + "base is not a ref in it and the comparison cannot be made");
 });

@@ -2740,8 +2740,8 @@
           "todos": 0
         },
         "generated-evidence-keeps-to-its-own-commit.test.mjs": {
-          "tests": 6,
-          "asserts": 12,
+          "tests": 8,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
