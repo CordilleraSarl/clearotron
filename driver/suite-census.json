@@ -593,7 +593,7 @@
         },
         "a-new-install-signs-in-with-its-own-passphrase.test.mjs": {
           "tests": 10,
-          "asserts": 57,
+          "asserts": 60,
           "skips": 1,
           "todos": 0
         },
