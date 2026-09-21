@@ -2469,6 +2469,12 @@
           "skips": 0,
           "todos": 0
         },
+        "every-surface-that-takes-the-manifest-asks-for-the-goods-words.test.mjs": {
+          "tests": 9,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
         "every-tool-declares-what-it-does.test.mjs": {
           "tests": 3,
           "asserts": 10,

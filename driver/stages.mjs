@@ -1410,7 +1410,7 @@ export const STAGES = {
     contractElements: {
       "The prose manifest's Request / Elements / Variants tables and Watchlists section — the same terms already in variant-manifest.json": {
         class: "mechanical:code-rendered", tokens: ["too_short", "missing"],
-        why: "variant-manifest.json holds mark, dominant_element, elements[], variants[], incumbent_classes[], watchlist_owners[]; the prose tables restate exactly those. Both tokens police the PROSE copy (needs /variant/i + /\\|/ = a markdown table exists)",
+        why: "variant-manifest.json holds mark, dominant_element, elements[], variants[], incumbent_classes[], watchlist_owners[], goods_words[]; the prose tables restate exactly those. Both tokens police the PROSE copy (needs /variant/i + /\\|/ = a markdown table exists)",
       },
       "mark — \"<the mark verbatim>\"": {
         class: "mechanical:pre-bound", tokens: ["variantmodel_mark_missing"],
@@ -1588,6 +1588,12 @@ export const STAGES = {
       `Hand the manifest back by calling the \`record_clearance_variants\` tool. Send \`mark\` verbatim, \`dominant_element\`, and \`elements\` — one \`{value, kind}\` per token, kind from the closed set distinctive | common | saturated-common.`,
       `Send \`variants\` — one \`{value, category, rationale, romanization}\` per search term, category from the closed set the skill names, and \`romanization\` on every non-Latin value and only on those.`,
       `Send \`incumbent_classes\` and \`watchlist_owners\` where Step 5 names them, as arrays; omit or send empty where it does not.`,
+      // ITS OWN SENTENCE, BECAUSE A FIELD WITH NO IMPERATIVE IS A FIELD NOBODY FILLS. A production run
+      // proved it: the manual carried the instruction, the order's goods wording was in the dispatch,
+      // the model discussed the goods eighteen times in its prose — and handed back no goods words at
+      // all, because nothing in what it hands back had a slot for them. The manual asked; the contract
+      // did not.
+      `Send \`goods_words\` — the words the register search is narrowed to, from the matter's own goods and services wording plus the words other filings use for the same goods. Single words or short phrases as a specification would write them, no wildcards, at most 24. Omit it only when the matter states no goods at all: this is what stops a crowded sweep returning more filings than anyone can read, so leaving it out costs the search its narrowing.`,
       // THE SCOPE LEDGER STOPS BEING A TABLE THE DRIVER RE-READS. It used to be dictated as markdown in
       // the skill doc and recovered by parsing those columns back out of the prose (renderScopeLedgerJson
       // over variant-manifest.md). The rows arrive typed now and the driver renders the table AND
