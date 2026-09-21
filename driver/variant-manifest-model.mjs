@@ -176,8 +176,18 @@ export function parseVariantManifestModel(raw) {
   // and refuses it. Each says so in its own capability contract, and the compiler declines to build an
   // entry a register cannot express. Deciding it here would freeze one register's behaviour into a
   // rule about every register.
-  let goods_words = [];
+  // ── AN ABSENT KEY AND AN EMPTY LIST ARE DIFFERENT ANSWERS ───────────────────────────────────────
+  //
+  // `null` means the stage was asked and did not answer. `[]` means it answered: it considered the
+  // goods and there are no words worth narrowing by. They are the same value to a reader who only
+  // checks emptiness, and that is how a production run shipped a narrowing that never ran — the model
+  // could not send the key at all, the manifest carried an empty list, the compiler minted nothing,
+  // and the run looked exactly like a matter that genuinely had no goods words.
+  //
+  // Nothing downstream may treat the two the same. A skipped question is a fact about the run.
+  let goods_words = null;
   if (m.goods_words != null) {
+    goods_words = [];
     if (!Array.isArray(m.goods_words) || !m.goods_words.every((w) => typeof w === "string"))
       throw new Error("variantmodel_goods_words_invalid (an array of single-word strings, or omitted)");
     const seen = new Set();
