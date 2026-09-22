@@ -156,11 +156,17 @@ const engineMaxBufferChars = () => Math.max(1024, Number(process.env.CLEAROTRON_
 // An alias with no claude equivalent now FAILS LOUD, exactly as `openaiModel` has always done for a
 // non-GPT id. That is the issue's requirement in one line: an unhonoured model override is an error,
 // not a substitution.
-const CLAUDE_MODEL = {
-  opus: "opus", sonnet: "sonnet", haiku: "haiku", fable: "fable",
-  "anthropic/claude-opus-5": "claude-opus-5", "anthropic/claude-sonnet-5": "claude-sonnet-5",
-  "anthropic/claude-sonnet-4-6": "sonnet", "anthropic/claude-haiku-4-5": "haiku",
-};
+// THE CATALOG IDS ARE NOT LISTED HERE ANY MORE, and removing them is what makes one rule cover every
+// id. Four sat here and two of them disagreed with the other two: `anthropic/claude-opus-5` and
+// `anthropic/claude-sonnet-5` went over as those models, while `anthropic/claude-sonnet-4-6` and
+// `anthropic/claude-haiku-4-5` went over as their tier's alias. A caller naming an exact model got it
+// or lost it depending on which of the four they happened to name, and nothing said which.
+//
+// The rule below now answers all four the same way, and no run changes: a stage names its TIER, and the
+// tier words above are still the whole of what a run passes. These ids reach this function only when a
+// caller names one — an override or an experiment arm — and there, being given the model you named is
+// the behaviour the rest of this function already promises.
+const CLAUDE_MODEL = { opus: "opus", sonnet: "sonnet", haiku: "haiku", fable: "fable" };
 export function claudeModel(model) {
   if (!model) return undefined;
   if (CLAUDE_MODEL[model]) return CLAUDE_MODEL[model];
