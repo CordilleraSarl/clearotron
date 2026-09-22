@@ -115,7 +115,7 @@ test("the tripwire still fires when the tiers really differ — it must not be s
 });
 
 test("an absent or empty review prints as unreadable, never as agreement", () => {
-  // score.mjs:407 already holds this rule for the carried verdict — "Never a bare (unreadable). An
+  // score.mjs:522 already holds this rule for the carried verdict — "Never a bare (unreadable). An
   // unread verdict is an absence". Silence here would rebuild the hole this issue is about.
   const absent = scoreFixture({ carried: "CONDITIONAL", review: null });
   assert.match(line(absent, "reviewer:"), /NOT READABLE/, "an absent review is an absence, stated");
