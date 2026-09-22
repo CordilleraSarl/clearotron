@@ -691,9 +691,27 @@ test("EXECUTOR: an unsupported entry never builds a query — it emits error:tru
     assert.equal(b.total_hits, 0);
     assert.match(b.reason, /not supported by the active register provider/);
   }
-  // …and NOTHING was sent to the provider for those slices
-  const executedQids = plan.entries.filter((e) => e.axis === "primary-sweep" && !e.unsupported && !e.when).length;
-  assert.equal(calls.length, executedQids, "an unsupported slice must issue ZERO provider calls");
+  // …and NOTHING was sent to the provider for those slices.
+  //
+  // ASSERTED ON THE SLICES THEMSELVES, not on a call TOTAL. This compared `calls.length` against the
+  // count of ungated supported entries, which silently assumed no gated entry ever runs — true only
+  // while the sole gated family was a fringe whose parent had crowded. The enumerate stub here answers
+  // `enumerated`, so a gated entry's parent succeeds and the entry is RELEASED and does call, exactly
+  // as the crowd gate intends. The total then moves for a reason that has nothing to do with this
+  // test's claim, and the arm fails while the property it names still holds.
+  //
+  // The claim is "an unsupported slice issues zero provider calls", so that is what is checked, per
+  // slice, against the terms those calls actually carried.
+  const termsOf = (c) => [c?.name, c?.query, ...(Array.isArray(c?.names) ? c.names : []), c?.owner]
+    .map((t) => String(t ?? "").trim().toLowerCase()).filter(Boolean);
+  const asked = new Set(calls.flatMap(termsOf));
+  for (const qid of unsupportedQids) {
+    const e = plan.entries.find((x) => x.qid === qid);
+    for (const t of (Array.isArray(e.terms) && e.terms.length ? e.terms : [e.term])) {
+      assert.ok(!asked.has(String(t ?? "").trim().toLowerCase()),
+        `${qid}: an unsupported slice reached the provider — its term "${t}" rode a call`);
+    }
+  }
 
   // ── 2026-07-21 review finding 10 — this assertion was CHANGED, and the change IS the fix ──────────
   // It previously demanded `fanIn.missing.includes(qid)` and skeleton state "unexecuted". That was the

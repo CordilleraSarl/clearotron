@@ -69,8 +69,10 @@ You do not write a file. Hand the frame back by calling `record_matter_frame`; t
 - Online platforms / retail / direct sales / partner programmes / developer portals
 - Geographic distribution patterns
 
-### Class scope & adjacency
-- The proposed Nice classes, and — by **reasoning**, not lookup — which *adjacent* classes to search. The test: *"would a consumer encountering both products assume they come from the same or an economically-linked undertaking?"* If yes, that adjacent class is in scope.
+### Which classes to search
+
+Start from the classes the order names. Then look at the client's own goods and business as the order and the company profile describe them. If they plainly reach a class the order did not name, add it, and write one sentence saying why (for example: the franchise sells video game accessories, so class 28). Add a class only for the client's own goods, never for what a competitor might hold. Never remove a class the order named. The added class is searched like every other: the identical mark first, and the count looked at before anything is read.
+
 - Name the classes scoped IN (with a one-line reason each) and any deliberately scoped OUT. Wrong class scope produces a false-clean, so be deliberate — this is a recall lever, not a formality.
 
 ### Scope jurisdictions — search wide, cite narrow (instructed scope honored; worldwide / brand-signalled scope leans wide + discloses)

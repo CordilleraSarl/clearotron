@@ -64,12 +64,22 @@ function runToForm({ jurisdictions, unavailableOffices }) {
     capabilities: FREE_TIER,
     unavailableOffices,
   });
+  // THE READING TURN ASKED FOR EVERYTHING, which is what makes "every entry executed" a state this
+  // plan can actually be in. Under ruling 204 the wider families wait for that ask, so a compiled plan
+  // left alone always holds entries nobody ran — and this arm is about an unsearched OFFICE, not about
+  // the gate. Dropping the guards here models the matter where judgment asked for every family, and
+  // keeps the premise below literally true rather than weakening it to tolerate waiting entries.
+  for (const e of plan.entries) delete e.when;
   // Every entry executes CLEANLY. Nothing failed, so nothing downstream has an error to notice — the
   // state in which a missing disclosure is invisible.
   const bandBlocksByAxis = {};
   for (const e of plan.entries) {
     (bandBlocksByAxis[e.axis ?? "primary-sweep"] ??= [])
-      .push({ qid: e.qid, state: "verified-zero", total_hits: 0, records: [] });
+      // `enumerated` with no records is what a clean zero LOOKS like on the wire — the executor returns
+      // that state unconditionally for a question it answered, with or without records. `verified-zero`
+      // is a per-term disposition on term_counts and is not a band state at all (named-band.mjs
+      // BAND_STATES), so a fixture using it here was modelling a shape the engine never produces.
+      .push({ qid: e.qid, state: "enumerated", total_hits: 0, records: [] });
   }
   const skeleton = deriveCoverageSkeleton(plan, joinPlanToBands(plan, bandBlocksByAxis));
   const activeAxes = [...new Set(plan.entries.map((e) => e.axis).filter(Boolean))];
@@ -167,7 +177,11 @@ test("a row's id says WHAT it is about, not where it sits in the list", () => {
   const bandBlocksByAxis = {};
   for (const e of plan.entries) {
     (bandBlocksByAxis[e.axis ?? "primary-sweep"] ??= [])
-      .push({ qid: e.qid, state: "verified-zero", total_hits: 0, records: [] });
+      // `enumerated` with no records is what a clean zero LOOKS like on the wire — the executor returns
+      // that state unconditionally for a question it answered, with or without records. `verified-zero`
+      // is a per-term disposition on term_counts and is not a band state at all (named-band.mjs
+      // BAND_STATES), so a fixture using it here was modelling a shape the engine never produces.
+      .push({ qid: e.qid, state: "enumerated", total_hits: 0, records: [] });
   }
   const activeAxes = [...new Set(plan.entries.map((e) => e.axis).filter(Boolean))];
   const idOfUS = (deferred) => officeRows(coverageFormRows({

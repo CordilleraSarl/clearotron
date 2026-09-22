@@ -238,7 +238,7 @@ test("the FORM ITSELF carries the allowed axis set — on the pre-dispatch build
       assert.match(form.seat_row_contract.axis_rule, /CLOSED/);
       assert.match(form._provenance, /seat_row_contract/, `${name}'s provenance points at it`);
     }
-    assert.deepEqual(SEAT_ROW_CONTRACT.status, ["confirmed-clean", "coverage-limited", "deferred"]);
+    assert.deepEqual(SEAT_ROW_CONTRACT.status, ["confirmed-clean", "coverage-limited", "deferred", "withheld-by-judgment"]);
   } finally { cleanup(dir); }
 });
 

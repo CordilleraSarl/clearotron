@@ -37,7 +37,7 @@ import { recordKnockoutAssess } from "../knockout-assess-record.mjs";
 import { recordKnockoutFrame } from "../knockout-frame-record.mjs";
 import { recordKnockoutReview } from "../knockout-review-record.mjs";
 import { recordSkeptic } from "../skeptic-record.mjs";   //, same rule: called, not copied
-import { recordSynthesis } from "../synthesis-record.mjs";
+import { recordSynthesis, uncarriedCoverageLimits } from "../synthesis-record.mjs";
 import { recordFrameDiff } from "../frame-diff-record.mjs";   //, third conversion — same rule again
 import { recordMatterFrame } from "../matter-frame-record.mjs";   // conversion 2 — same rule again
 import { recordClearanceVariants } from "../clearance-variants-record.mjs";   // conversion 3 — same rule again
@@ -240,8 +240,22 @@ function mockCoverageSlices(msg) {
     rows.push({ axis: process.env.MOCK_SEARCH_FLOOR, unit: `${process.env.MOCK_SEARCH_FLOOR} / exact-phrase storefront sweep`,
       status: "coverage-limited", reason: "not executed — sweep interrupted mid-run" });
   const present = new Set(rows.map((r) => r.axis));
+  // AN AXIS THIS MOCK NEVER SAW IS NOT A CLEAN ONE. It filled every missing axis with
+  // `confirmed-clean`, which is the false clean the ledger exists to refuse — and it only ever passed
+  // because every axis used to execute. Now that the wider families WAIT on a crowded identical
+  // question, those axes can legitimately have nothing behind them, and a stand-in for judgment
+  // claiming they came back clean is the one thing judgment may never do.
+  //
+  // `withheld-by-judgment` is what a reading turn writes for a family it did not open: no search is
+  // claimed, the run still delivers, and the reason travels with it.
   for (const ax of ["saturation-probe", "transliteration-numeric", "incumbent-class"])
-    if (!present.has(ax)) rows.push({ axis: ax, unit: `${ax} / worldwide`, status: "confirmed-clean", reason: "paged to has_more:false" });
+    // …unless the digest judged this axis a DOCUMENTED, ACCEPTED limit, in which case that disclosure
+    // wins. Withheld must never swallow a row with a real gap to report: a withheld row is deliberately
+    // kept off the client's page, so letting it win would delete a disclosure the reader is owed.
+    if (!present.has(ax)) rows.push(ax === process.env.MOCK_LEDGER_LIMITED
+      ? { axis: ax, unit: `${ax} / worldwide`, status: "coverage-limited", reason: "yielded to ring-fenced jurisdiction budget" }
+      : { axis: ax, unit: `${ax} / worldwide`, status: "withheld-by-judgment",
+          reason: "not opened: the identical question is answered and this family would widen it" });
   return rows;
 }
 
@@ -270,12 +284,56 @@ export function fillCoverageForm(runDir, msg) {
   // says so on that axis's own rows too — an axis cannot be simultaneously clean and coverage-limited —
   // and the escalation gate's skip path reads exactly that (skip-if-every-owned-row-is-coverage-limited).
   const limited = process.env.MOCK_LEDGER_LIMITED;
+
+  // THE STATE IS READ FROM THE SKELETON, BECAUSE THE ROW DOES NOT CARRY IT BACK. `coverage-form.mjs`
+  // stamps `skeleton_state` on the axis rows it BUILDS, and the form as read from disk does not have it
+  // — measured: every row here arrives with `kind: "axis"` and `skeleton_state` undefined. So a guard
+  // written against `r.skeleton_state` reads undefined on every row, never fires, and leaves the false
+  // clean exactly where it was. That is why four corrections to this mapping changed nothing.
+  //
+  // `_driver/plan-execution.json` is the source the VALIDATOR itself reads (verify.mjs → exec.skeleton),
+  // so the filler and the gate now answer from one fact instead of two.
+  //
+  // AND IT CLAIMS CLEAN ONLY WHERE THE AXIS EXECUTED. The states are unexecuted, deferred, incomplete,
+  // skipped and executed; only the last one is a search that ran. Guarding the one state that happens to
+  // fail today would leave the same defect for the next state that stops meaning "ran".
+  let axisState = new Map();
+  try {
+    const exec = JSON.parse(readFileSync(driverDir(runDir, "plan-execution.json"), "utf8"));
+    axisState = new Map((exec?.skeleton ?? [])
+      .map((s) => [String(s?.axis ?? "").trim(), String(s?.state ?? "").trim() || null]));
+  } catch { /* no receipt — the plan gate is inactive, and nothing below claims anything about an axis */ }
+  // A row is never cleaner than the axis it belongs to. An axis with no skeleton entry is one nobody
+  // told us ran, so it is not claimed clean either.
+  const skippedAxis = (r) => (axisState.size ? axisState.get(String(r?.axis ?? "").trim()) !== "executed" : false);
   const rulings = rows.filter((r) => r.kind !== "seat").map((r) => ({
     row_id: r.row_id,
-    status: r.open ? "deferred" : r.axis === limited ? "coverage-limited" : r.kind === "block" ? "coverage-limited" : "confirmed-clean",
+    // A SKIPPED AXIS IS NOT A CLEAN ONE, and a stand-in for judgment must not claim a search nobody
+    // ran. That was true while every axis executed and became a false clean the moment the wider
+    // families began waiting behind a crowded identical question.
+    //
+    // WHERE THE STATE COMES FROM IS THE WHOLE OF IT. `skeleton_state` is stamped on the axis rows
+    // coverage-form.mjs BUILDS and is not carried by the form read back from disk, so a guard written
+    // against `r.skeleton_state` reads undefined on every row and never fires. That was tried in three
+    // places by two people before anyone instrumented it: a guard whose detecting half is dead reads
+    // exactly like a guard that found nothing. `skippedAxis` reads the state from the run's
+    // plan-execution record, which is the source the VALIDATOR reads, so the filler and the gate
+    // answer from one fact rather than two.
+    // ORDER MATTERS, AND WITHHELD GOES LAST OF THE NON-CLEAN STATES. A row can be BOTH: an axis the
+    // skeleton calls skipped and one the digest judged a documented, accepted limit. Testing withheld
+    // first let it swallow the disclosure — and because a withheld family is deliberately kept off the
+    // client report, the net effect was a disclosed gap vanishing from the reader's page.
+    //
+    // Losing a disclosure is the worse of the two errors by a long way. `withheld-by-judgment` says
+    // "we chose not to open this, and that is where the work was spent"; it may only be said about a
+    // row that has nothing else to say. Anything carrying a real disclosure keeps it.
+    status: r.open ? "deferred"
+      : r.axis === limited ? "coverage-limited" : r.kind === "block" ? "coverage-limited"
+      : skippedAxis(r) ? "withheld-by-judgment" : "confirmed-clean",
     reason: r.open ? "never dispatched — the active register provider cannot express this slice; disclosed as an open question"
       : r.axis === limited ? "yielded to ring-fenced jurisdiction budget"
       : r.kind === "block" ? "the band left part of this slice unaccounted — a material gap; ships CONDITIONAL"
+      : skippedAxis(r) ? "not opened: the identical question is answered and this family would only widen it"
       : "paged to has_more:false",
   }));
   const seat = mockCoverageSlices(msg).map((r) => ({ ...r, kind: "seat" }));
@@ -687,9 +745,15 @@ export function coverageLedger(dir) {
     status: r.status,
     reason: r.reason,
   }));
+  // An axis with no row of its own is one this mock never saw run, and a clean claimed over it is the
+  // false clean the ledger exists to refuse — see the same fix in the coverage-form filler above. It
+  // only ever passed while every axis executed; the wider families now wait on the identical question.
   for (const ax of ["saturation-probe", "primary-sweep", "transliteration-numeric", "incumbent-class"]) {
     if (!rows.some((r) => r.axis === ax))
-      rows.push({ axis: ax, scope: "worldwide", status: "confirmed-clean", reason: "paged to has_more:false" });
+      rows.push(ax === process.env.MOCK_LEDGER_LIMITED
+        ? { axis: ax, scope: "worldwide", status: "coverage-limited", reason: "yielded to ring-fenced jurisdiction budget" }
+        : { axis: ax, scope: "worldwide", status: "withheld-by-judgment",
+            reason: "not opened: the identical question is answered and this family would only widen it" });
   }
   return JSON.stringify(rows);
 }
@@ -1574,10 +1638,21 @@ export function applyStageWrites(msg, argv) {
       // clean negative". Driven under MOCK_LEDGER_LIMITED the old fixture claimed clean throughout and
       // was refused, correctly. Deriving the carried row from the ledger rather than hardcoding one
       // keeps the knob meaning what it says: turn the knob, the run carries the limit.
+      //
+      // WHICH ROWS COUNT AS A LIMIT IS THE SHIPPED RULE'S TO DECIDE, not this fixture's. It carried its
+      // own copy of the filter, and the copy went stale the moment the ledger gained a fourth status:
+      // `withheld-by-judgment` is a family the reading turn chose NOT to open, and it sits beside
+      // `confirmed-clean` — nothing to carry — where the copy read it as a limit like any other. The
+      // mock seat then carried a withheld family onto the client's coverage grid, worded "Partially
+      // covered", INSTEAD of the documented limit that run actually had. Two wrongs in one row: a
+      // decision the client is never shown, standing in for a disclosure the client is owed.
+      //
+      // `uncarriedCoverageLimits` is the rule the receiver itself applies, so the filler and the gate
+      // now answer from one definition rather than two.
       try {
         const led = JSON.parse(readFileSync(join(runDir, "register-coverage-ledger.json"), "utf8"));
-        const lim = (Array.isArray(led) ? led : []).filter((r) => r?.status && r.status !== "confirmed-clean" && r.status !== "note");
-        if (lim.length && !(doc.coverage ?? []).some((c) => c?.state && c.state !== "confirmed-clean" && c.state !== "note")) {
+        const lim = uncarriedCoverageLimits(doc.coverage, Array.isArray(led) ? led : []) ?? [];
+        if (lim.length) {
           doc.coverage = [...(doc.coverage ?? []), { area: `register / ${lim[0].axis}`, state: "coverage-limited", note: String(lim[0].reason ?? "recorded limited by the register ledger") }];
         }
       } catch { /* no ledger on this run — the receiver's own could-not-look branch covers it */ }

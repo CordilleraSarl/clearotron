@@ -110,6 +110,45 @@ funnel never converts a resource limit into a clean negative and never re-adds a
 says "searched N, ship clean". (Phoneme at 5 and image at 10 are observed budgets — exceeding them usually
 indicates a worker repeating itself, not finding new content.)
 
+### At every step: look at what you have before you work on it
+
+Fifty? Read them all. A few hundred? Sort by the client's goods and markets, read the near ones first, list
+the rest. A thousand or more? The field is crowded: read the identical and live ones for the client's
+goods, tell the client it is crowded, and do not write up the rest. Carry forward only what a lawyer would
+raise with the client. Write down what you set aside and why. This applies to the register's answer, to the
+list of records, to the placements, to the off-register sweep and to the write-up alike.
+
+### Read the identical mark first. Look at the count before you read anything
+
+On every matter the identical mark, in the instructed classes, is the first thing you read, and nothing
+wider is asked until you have read it. The register tells you how many filings answer a question before it
+hands you any. Take a look: how bad is it? If the list is one you can read record by record, read it in
+full. If it is not, do not read it and do not leave it: narrow the same question, in this order, until it
+is, then read that list in full and decide.
+
+1. Ask again for the identical mark, in the instructed classes, limited to the client's goods words. Read
+   that list.
+2. Still a crowd? Ask again limited to the client's main markets, one question per market. Read those lists.
+3. Still a crowd in a market? Ask again with the dominant goods word alone. Read it.
+4. Still a crowd? Ask one class at a time. Read each list.
+5. When the readable list already holds conflicts in the client's field, stop widening. Do not open scripts,
+   neighbours, compounds or guessed owners for this mark. Write which questions you did not ask and why.
+6. When the readable list is thin, widen one step at a time: close variants first, then the owner families
+   of what you found.
+
+Every question you ask is recorded with its count. A narrowing replaces nothing silently: the crowd it
+replaces stays on the record with its count.
+
+When you stop widening under step 5, the families you did not open are recorded `withheld-by-judgment`
+with your reason — not `confirmed-clean`, which would claim a search nobody ran, and not
+`coverage-limited`, which says the engine tried and could not finish. You chose where the work was best
+spent; say so, and say which questions you did not ask.
+
+When you narrow a crowded question, name the crowd it replaces: put its qid on the proposal as
+`narrows`. The record then shows the crowd and the question that answered it side by side, each with
+its own count. A narrowing that does not name what it replaced leaves the crowd looking unanswered.
+
+
 **The per-major and per-jurisdiction named queries are breadth, not a budgeted sufficiency allowance.** Each
 in-scope major (US/EU/UK/CN/JP) and each material jurisdiction the matter-frame declared is a **named slice
 the funnel COVERS** — and when the region-scoped in-scope sweep (Recipe 1 Step 2) returns `enumerated`

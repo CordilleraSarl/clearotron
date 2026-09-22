@@ -272,7 +272,11 @@ test("completeness: activeAxes=null skips it; full active set over the canonical
 
 test("vocabulary: REGISTER_AXES + COVERAGE_STATUSES + decideAxes moved here intact (stages re-exports)", async () => {
   assert.deepEqual(REGISTER_AXES, ["saturation-probe", "primary-sweep", "transliteration-numeric", "incumbent-class"]);
-  assert.deepEqual(COVERAGE_STATUSES, ["confirmed-clean", "coverage-limited", "deferred"]);
+  // `withheld-by-judgment` joined the set when the crowded-field doctrine gave the reading turn a
+  // reason to stop widening: a family it chose not to open is neither clean (nobody searched it), nor
+  // coverage-limited (the engine did not try and fail), nor deferred (the provider could express it
+  // perfectly well). The gates treat it as strictly as the other two non-clean states.
+  assert.deepEqual(COVERAGE_STATUSES, ["confirmed-clean", "coverage-limited", "deferred", "withheld-by-judgment"]);
   assert.deepEqual(decideAxes("").sort(), [...REGISTER_AXES].sort());
   const ST = await import("../stages.mjs");
   assert.equal(ST.REGISTER_AXES, REGISTER_AXES, "stages.mjs re-export is the SAME binding");

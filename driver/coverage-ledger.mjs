@@ -72,7 +72,22 @@ export function coverageUnitLabel(unit) {
 // The closed status set. BARE tokens only — the prose table may carry suffixed statuses like
 // `coverage-limited (count-only, saturated)` (digest.md teaches one); in the JSON the qualifier
 // moves into `reason`, and the dictation block + correction hint both say so.
-export const COVERAGE_STATUSES = ["confirmed-clean", "coverage-limited", "deferred"];
+// ── `withheld-by-judgment` — A FAMILY NOBODY ASKED FOR, ON PURPOSE ───────────────────────────────
+//
+// The crowded-field doctrine tells the reading turn to stop widening once the readable list already
+// holds conflicts in the client's field: do not open scripts, neighbours, compounds or guessed owners
+// for this mark, and write which questions you did not ask and why. That is a DECISION, and it needs a
+// word of its own.
+//
+// It is not `confirmed-clean`: nobody searched it, and a clean over an unsearched family is the false
+// clean this ledger exists to make impossible. It is not `coverage-limited` either — that says the
+// engine tried and could not finish, which is a different fact and reads to a lawyer as a gap in the
+// work rather than a choice about where the work was best spent. And it is not `deferred`, which says
+// the provider could not express the question at all.
+//
+// So a fourth status, carrying the model's written reason. The clean-claim gates treat it exactly as
+// they treat the other two non-clean states: it can never stand in for a search.
+export const COVERAGE_STATUSES = ["confirmed-clean", "coverage-limited", "deferred", "withheld-by-judgment"];
 
 // — the seat-facing coverage form's file name, owned HERE with the rest of the coverage vocabulary
 // so the four places that need it (paths(), coverage-form-io, the gateway's repair routing and the
@@ -403,7 +418,7 @@ export function parseCoverageLedgerFull(md) {
     // normalize-then-validate at the parse boundary (B): repair markdown/qualifier noise on the
     // left-of-slash axis; if that isn't a known token, scan the whole cell for a transposed axis.
     const axis = normalizeAxis(unit.split("/")[0], unit);
-    const m = cells[1].match(/coverage-limited|deferred|confirmed-clean/i);
+    const m = cells[1].match(/withheld-by-judgment|coverage-limited|deferred|confirmed-clean/i);
     if (!axis || !m) {
       if (axis && !m && REGISTER_AXES.includes(axis)) offEnum.push({ axis, unit, status: cells[1] });
       dropped.push(ln.trim().replace(/\s+/g, " ").slice(0, 120));
