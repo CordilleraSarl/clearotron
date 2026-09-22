@@ -4,6 +4,12 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.3.3-beta.1
+
+### Fixed
+
+- the assistant's run summary names the rating again, where it had printed "[object object]" in its place.
+
 ## 0.3.3-beta.0
 
 ### New

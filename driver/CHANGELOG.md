@@ -1,5 +1,11 @@
 # clearotron-driver
 
+## 0.3.3-beta.1
+
+### Patch Changes
+
+- Fixed: the assistant's run summary names the rating again, where it had printed "[object object]" in its place.
+
 ## 0.3.3-beta.0
 
 ### Patch Changes
