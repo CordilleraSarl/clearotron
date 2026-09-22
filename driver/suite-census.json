@@ -711,6 +711,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-plan-run-that-was-not-answered-is-not-a-drift.test.mjs": {
+          "tests": 5,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
         "a-pool-copy-is-not-a-refusal.test.mjs": {
           "tests": 8,
           "asserts": 28,
@@ -3880,8 +3886,8 @@
           "todos": 0
         },
         "reference-score.test.mjs": {
-          "tests": 63,
-          "asserts": 213,
+          "tests": 65,
+          "asserts": 221,
           "skips": 0,
           "todos": 0
         },
