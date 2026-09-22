@@ -28,6 +28,10 @@
       "why": "no fixture yet; accumulating semantics claimed in the tool description ('Everything already recorded is kept') and not yet planted"
     },
     {
+      "tool": "record_coverage_status",
+      "why": "both declared fields are required, so a call has no top-level key to omit; its accumulation by unit (a later call keeps the units it omits) is pinned in a-common-law-coverage-status-is-read-as-data.test.mjs"
+    },
+    {
       "tool": "record_unit_note",
       "why": "no fixture yet; every field optional, which is the exposed shape — this row is the highest-priority one to close"
     },

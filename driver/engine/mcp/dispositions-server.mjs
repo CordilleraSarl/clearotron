@@ -56,6 +56,9 @@ import { validateGridSpec } from "../../../providers/perplexity/src/core.js";
 // the disk work and disposition-call.mjs owns the decision. One direction of import, no second opinion.
 import { recordDispositions } from "../../disposition-tool.mjs";
 import { MAX_ROWS_PER_CALL } from "../../disposition-call.mjs";
+// The lane's second statement, and a different one: which coverage units were searched to what end. Its
+// own module and its own file, never a row in the disposition form — see record_coverage_status below.
+import { recordCoverageStatus, COMMON_LAW_COVERAGE_STATUSES } from "../../common-law-coverage-status.mjs";
 
 // ── B — THE TYPED DISPOSITION TRANSPORT ─────────────────────────────────────────────────────────────
 //
@@ -68,15 +71,21 @@ import { MAX_ROWS_PER_CALL } from "../../disposition-call.mjs";
 // THE SPEC PATH IS THE SEAT'S ONLY PATH ARGUMENT, and it is the same driver-written file the grid tool
 // was given. That rule: the path is the DRIVER'S, taken from the spec it wrote. Two derivations of one
 // filename is the drift that cost weeks.
-async function record_dispositions(params) {
-  const { grid_spec_path, rows } = params ?? {};
+function specFrom(params) {
+  const { grid_spec_path } = params ?? {};
   if (!grid_spec_path)
-    return { isError: true, text: "ERROR: grid_spec_path is required — it is the same driver-written spec path the grid tool was given. Do not compose a path." };
+    return { error: "ERROR: grid_spec_path is required — it is the same driver-written spec path the grid tool was given. Do not compose a path." };
   let spec;
   try { spec = validateGridSpec(JSON.parse(readFileSync(grid_spec_path, "utf8"))); }
-  catch (err) { return { isError: true, text: `ERROR: grid_spec_path unreadable/invalid (${err.message}). The driver writes this file; do not hand-author it.` }; }
+  catch (err) { return { error: `ERROR: grid_spec_path unreadable/invalid (${err.message}). The driver writes this file; do not hand-author it.` }; }
   if (!/\/studio\/(?:prelim|clearance)-search\//.test(spec.output_path))   // either spelling: an install keeps the studio segment it has
-    return { isError: true, text: `ERROR: grid spec.output_path must be within a studio/clearance-search run dir; got ${spec.output_path}` };
+    return { error: `ERROR: grid spec.output_path must be within a studio/clearance-search run dir; got ${spec.output_path}` };
+  return { spec };
+}
+
+async function record_dispositions(params) {
+  const { spec, error } = specFrom(params);
+  if (error) return { isError: true, text: error };
   // NEVER THROWN PAST THIS POINT. An exception surfaces to the seat as a tool error naming no row, which
   // tells it nothing about what to fix — the failure mode this transport exists to end.
   try {
@@ -94,6 +103,23 @@ async function record_dispositions(params) {
     return { isError: !r.ok, text: r.text };
   } catch (e) {
     return { isError: true, text: `ERROR: the driver could not record this call (${String(e?.message ?? e).slice(0, 200)}). This is a driver fault, not a fault in your rulings — do not re-type them.` };
+  }
+}
+
+// ── THE COVERAGE STATUS, THE LANE'S SECOND TOOL ON ITS OWN KEY ───────────────────────────────────────
+//
+// A sibling of record_dispositions, not a field on it. A meaning ruling is addressed by an obligation's
+// number; a coverage status by a coverage unit. `record_coverage` and `record_register_digest` stay two
+// tools for the same reason. The key is still granted by exactly one lane's group list, so no other seat
+// gains a writer. Both tools resolve the spec through specFrom() above, one resolution for both.
+async function record_coverage_status(params) {
+  const { spec, error } = specFrom(params);
+  if (error) return { isError: true, text: error };
+  try {
+    const r = recordCoverageStatus(spec, params);
+    return { isError: !r.ok, text: r.text };
+  } catch (e) {
+    return { isError: true, text: `ERROR: the driver could not record this call (${String(e?.message ?? e).slice(0, 200)}). This is a driver fault, not a fault in your statuses — do not re-type them.` };
   }
 }
 
@@ -135,5 +161,21 @@ serve({
     } },
     annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     handler: record_dispositions,
+  }, {
+    name: "record_coverage_status",
+    description: "Record the status of each row of your coverage ledger. Send VALUES, not a file: one entry per ledger row, and the driver writes the record. Entries that validate are kept even when others in the same call are refused, and a later entry for the same unit replaces the earlier one.",
+    inputSchema: { type: "object", required: ["grid_spec_path", "rows"], properties: {
+      grid_spec_path: { type: "string", description: "Absolute path to the driver-written grid spec — the same one the grid tool was given." },
+      rows: {
+        type: "array",
+        description: "One entry per coverage ledger row.",
+        items: { type: "object", required: ["unit", "status"], properties: {
+          unit: { type: "string", description: "The coverage unit, exactly as your ledger row names it." },
+          status: { type: "string", enum: [...COMMON_LAW_COVERAGE_STATUSES], description: `EXACTLY one bare token of ${COMMON_LAW_COVERAGE_STATUSES.join(" / ")}. Qualifiers go in the ledger row.` },
+        } },
+      },
+    } },
+    annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+    handler: record_coverage_status,
   }],
 });

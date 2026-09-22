@@ -124,9 +124,14 @@ const PINNED = Object.freeze({
   // server in the config. The token's POSITION is unchanged, which is the part only this file can see:
   // it is still last, because `dispositions` is second in the group list and `allowedToolsFor` walks
   // groups in order.
+  //
+  // — AND ONE TOKEN LONGER, deliberately: `record_coverage_status` joined `dispositions` as the lane's
+  // second tool (the seat's coverage statuses, recorded as values). It lands after `record_dispositions`
+  // because `allowedToolsFor` walks an entry's tools in declared order; the server config is unchanged.
   "common-law": {
     groups: ["perplexity", "dispositions"],
-    allowedTools: "Read Write Edit mcp__perplexity__perplexity_research mcp__dispositions__record_dispositions",
+    allowedTools: "Read Write Edit mcp__perplexity__perplexity_research mcp__dispositions__record_dispositions"
+      + " mcp__dispositions__record_coverage_status",
     mcpConfig: `{"mcpServers":{${local("perplexity", "perplexity-server.mjs")},${local("dispositions", "dispositions-server.mjs")}}}`,
   },
   // register — the dynamic key, mounted from REGISTER_SERVERS at the held provider.

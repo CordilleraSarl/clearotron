@@ -273,7 +273,8 @@ test("dispositions server: handshake + the one tool, under its own server name (
   // "dispositions".
   const r = await mcpSession("dispositions-server.mjs", [INIT, LIST], {});
   assert.equal(r.responses[1]?.result?.serverInfo?.name, "dispositions");
-  assert.deepEqual(toolNames(r), ["record_dispositions"]);
+  // The lane's second tool rides the same key: its coverage statuses, a different statement from a meaning ruling.
+  assert.deepEqual(toolNames(r), ["record_coverage_status", "record_dispositions"]);
 });
 
 test("corsearch server: handshake + 8 tools + creds-missing guard returns clean isError", async () => {

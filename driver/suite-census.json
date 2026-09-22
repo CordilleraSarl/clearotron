@@ -183,6 +183,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-common-law-coverage-status-is-read-as-data.test.mjs": {
+          "tests": 10,
+          "asserts": 39,
+          "skips": 0,
+          "todos": 0
+        },
         "a-company-can-be-given-a-framework-after-it-exists.test.mjs": {
           "tests": 8,
           "asserts": 19,
