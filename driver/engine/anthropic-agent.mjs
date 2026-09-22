@@ -174,7 +174,23 @@ export function claudeModel(model) {
   // it. Measured 2026-09-22: the program accepts that id and reports serving `claude-fable-5-1`.
   const fam = /opus/i.test(model) ? "opus" : /haiku/i.test(model) ? "haiku" : /sonnet/i.test(model) ? "sonnet"
     : /fable/i.test(model) ? "fable" : null;
-  if (fam && /^(?:anthropic\/)?claude-/i.test(model)) return fam;
+  if (fam && /^(?:anthropic\/)?claude-/i.test(model)) {
+    const bare = String(model).replace(/^anthropic\//i, "").toLowerCase();
+    // A CONCRETE ID GOES TO THE PROGRAM AS ITSELF, AND THAT IS WHAT MAKES A PIN A PIN. It used to come
+    // back as the bare family alias, so a caller who named an exact model got whichever model the tier
+    // pointed at — the same model on the day it was written, a different one the day a newer one
+    // shipped, and nothing to read in between. A silent un-pinning is the substitution this function
+    // exists to refuse, in the one form it still allowed.
+    //
+    // A FAMILY WITH NO VERSION IS THE TIER, not a model: `claude-opus` is what an operator types for a
+    // deployment of that tier, and the program has no model by that name. It keeps following the family.
+    //
+    // Measured against the program rather than assumed (2026-09-22): it accepts `claude-sonnet-5`,
+    // `claude-haiku-4-5-20251001` and `claude-fable-5-1` and reports serving each of them, so passing an
+    // exact id through costs nothing that the alias was buying. Where a caller names an id the program
+    // does not know, it says so and the turn fails loudly — which is the honest end of a bad pin.
+    return /^claude-(?:[a-z]+-\d|\d)/.test(bare) ? bare : fam;
+  }
   throw new Error(`anthropic-agent: no claude model mapped for "${model}" — this engine runs claude only. Pass opus/sonnet/haiku/fable or a concrete claude-* id. (It used to substitute sonnet silently and log the alias you asked for: #238 corruption 3.)`);
 }
 

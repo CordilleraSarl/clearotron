@@ -2477,7 +2477,7 @@
         },
         "engine.anthropic.test.mjs": {
           "tests": 65,
-          "asserts": 239,
+          "asserts": 245,
           "skips": 0,
           "todos": 0
         },
@@ -5130,6 +5130,12 @@
         "the-effort-model-predicts-the-run-it-quotes.test.mjs": {
           "tests": 4,
           "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-engine-floor-can-run-the-current-top-tier.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
           "skips": 0,
           "todos": 0
         },
