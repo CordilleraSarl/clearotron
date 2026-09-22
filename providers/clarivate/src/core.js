@@ -90,6 +90,9 @@ export async function clarivateFetch(apiKey, base, path, { body = null, method =
       attempts = i + 1;
       resp = await fetch(url, init);
       if (resp.ok || resp.status < 500 || i === retries) break;
+      // A 500 wrapping the search service's 400 is a refusal of the query as written, not weather: the
+      // same request is refused the same way, so it is not sent again (countFailureReason below).
+      if (WRAPPED_REFUSAL.test(await resp.clone().text().catch(() => ""))) break;
       await new Promise((r) => setTimeout(r, 1500 * (i + 1)));
     }
   } catch (err) {
@@ -1120,6 +1123,38 @@ export async function doSearch(apiKey, base, params, tctx) {
 // the crowd descriptor for judgment.
 
 /** ONE /count round trip over already-resolved params. Returns the kernel's plain probe shape. */
+// ── A REFUSED QUERY IS NAMED AS ONE, with the size of what was sent ─────────────────────────────────
+//
+// The vendor answers a query its search service cannot take with that service's 400, delivered inside
+// its own 500: `INTERNAL_SERVER_ERROR - 400 on POST request for "…/search"`. Passed on as a bare HTTP 500
+// it reads as an outage and names nothing an operator can act on. A query that is too wide is the common
+// case: the service's bound is the number of OR terms in one field, which is about 496, not the query's
+// length.
+// The reason says so: the widest OR stack's term count and characters, and this provider's declared
+// width. It avoids the words `HTTP 400`, which providerRejectedTheQuery reads as a cue to retry an owner
+// stack on the caller's own term; that behaviour is unchanged.
+//
+// AND IT IS A CAPABILITY GAP. The service refused the query as written and will refuse the identical query
+// every time, so the reason carries CAPABILITY_GAP_MARKER: the plan executor defers the slice as a
+// disclosed gap at once, as it does a query buildSearchRequest refuses before sending, instead of sending
+// it round the recovery ladder. On production that ladder re-sent a refused 500-term query and spent a
+// recovery park each time. Every other HTTP failure keeps the transient reading.
+const WRAPPED_REFUSAL = /\b400\s+on\s+POST\s+request\b/;
+const widestOrStack = (body) => (body?.searchFields ?? []).reduce((best, f) => {
+  const v = String(f?.value ?? "");
+  const terms = v ? v.split(" OR ").length : 0;
+  return terms > best.terms ? { terms, chars: v.length } : best;
+}, { terms: 0, chars: 0 });
+export function countFailureReason(status, words, body) {
+  if (status !== 500 || !WRAPPED_REFUSAL.test(String(words ?? ""))) return `HTTP ${status}${words ? `: ${words}` : ""}`;
+  const w = widestOrStack(body);
+  // THE NUMBERS COME LAST. The executor clips a failed slice's reason to its head and tail, and its own
+  // prefixes fill the head, so a count placed early is elided; the tail is what a run's record keeps.
+  return `${CAPABILITY_GAP_MARKER} register_refused_query: the register refused this query as malformed (a 400 inside its `
+    + `HTTP 500). Provider's words: ${words}. Sent ${w.terms} OR terms (${w.chars} characters); this provider's declared `
+    + `width is ${CAPABILITIES.maxOrWidth} terms.`;
+}
+
 async function countOnce(apiKey, base, p, tctx) {
   let body;
   try { body = buildSearchRequest(p); }
@@ -1129,11 +1164,12 @@ async function countOnce(apiKey, base, p, tctx) {
   // Marked as a capability gap so the plan executor DEFERS the slice — a disclosed coverage row the
   // lawyer reads — instead of stamping a transient error and grinding the whole run to a fan-in
   // StageFailure over an answer that will never differ. A real HTTP failure below keeps the transient
-  // reading and rides the repair ladder, exactly as before.
+  // reading and rides the repair ladder, exactly as before, except a query the service refused as written
+  // (countFailureReason above).
   catch (e) { return { ok: false, total: null, per_office: null, reason: `${CAPABILITY_GAP_MARKER} ${e.message}` }; }
 
   const r = await clarivateFetch(apiKey, base, "/count", { body, tctx: { ...tctx, target: String(echoOf(p)).slice(0, 200) } });
-  if (!r.ok) return { ok: false, total: null, per_office: null, reason: `HTTP ${r.status}${errText(r) ? `: ${errText(r)}` : ""}` };
+  if (!r.ok) return { ok: false, total: null, per_office: null, reason: countFailureReason(r.status, errText(r), body) };
   // Named rather than folded into the "no counts{}" branch below: both refuse (total null, never 0),
   // but someone repairing a run needs to know the response was CUT, not that the provider answered in
   // a shape we did not expect.

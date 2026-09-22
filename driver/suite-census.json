@@ -87,6 +87,18 @@
           "skips": 0,
           "todos": 0
         },
+        "a-capability-gap-is-decided-once-per-run.test.mjs": {
+          "tests": 4,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-capability-gap-is-not-reopened.pipeline.test.mjs": {
+          "tests": 1,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "a-capability-is-named-before-the-report-names-it.test.mjs": {
           "tests": 6,
           "asserts": 41,
@@ -6878,6 +6890,12 @@
         "providers/_shared/test/territory-codes.test.mjs": {
           "tests": 15,
           "asserts": 45,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/clarivate/test/a-refused-query-is-named-with-its-size.test.mjs": {
+          "tests": 5,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },

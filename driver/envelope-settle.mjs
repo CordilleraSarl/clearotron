@@ -52,9 +52,10 @@ export const SETTLE_SCHEMA_VERSION = 1;
  *   receipt is final. So `suspect` catches a MIS-STAMPED deferral — an executor bug flagging a transient as
  *   deterministic — and exists so that shape gets one attempt instead of silently becoming permanent.
  *
- * PURE.
+ * STICKY — a qid this run has already accepted as a capability gap, under any plan version, is accepted
+ * again whatever its current reason text says (stickyGaps below). PURE.
  */
-export function partitionReceiptDeferrals(plan, receipt) {
+export function partitionReceiptDeferrals(plan, receipt, { sticky = new Set() } = {}) {
   const axisOf = new Map((plan?.entries ?? []).map((e) => [String(e?.qid ?? ""), String(e?.axis ?? "").toLowerCase()]));
   // An axis the frozen plan says is deferred end to end is accepted whatever its per-qid reason text says:
   // there is no slice of it left for a dispatch to reach.
@@ -67,7 +68,7 @@ export function partitionReceiptDeferrals(plan, receipt) {
     const axis = axisOf.get(qid) ?? "";
     const reason = String(d?.reason ?? "");
     const row = { qid, axis, reason };
-    (isCapabilityGapReason(reason) || fullyDeferred.has(axis) ? accepted : suspect).push(row);
+    (isCapabilityGapReason(reason) || fullyDeferred.has(axis) || sticky.has(qid) ? accepted : suspect).push(row);
   }
   return { accepted, suspect };
 }
@@ -129,7 +130,7 @@ const shallowRow = (d) => ({ qid: String(d?.qid ?? ""), reason: String(d?.reason
  * the one case the file exists to make durable. `supersede()` builds the entry; it is deliberately a
  * summary rather than a full copy, because the qid-level truth is always re-derivable from the receipt.
  */
-export function buildDecisionDoc({ planVersion, deferredTotal, accepted, closed, closeFailed, decidedAt, history = [] }) {
+export function buildDecisionDoc({ planVersion, deferredTotal, accepted, closed, closeFailed, decidedAt, history = [], stickyGaps = [] }) {
   return {
     schema_version: SETTLE_SCHEMA_VERSION,
     plan_version: planVersion ?? null,
@@ -138,8 +139,39 @@ export function buildDecisionDoc({ planVersion, deferredTotal, accepted, closed,
     accepted: accepted ?? [],
     closed: closed ?? [],
     close_failed: closeFailed ?? [],
+    sticky_gaps: stickyGaps ?? [],
     history: history ?? [],
   };
+}
+
+// ── A CAPABILITY GAP IS DECIDED ONCE PER RUN, NOT ONCE PER PLAN VERSION ────────────────────────────────
+//
+// The live `accepted[]` is rebuilt from the current receipt on every settle, and a settle happens again
+// whenever the plan version moves — every supplemental fold bumps it. So an acceptance lasted exactly as
+// long as the version it was made under. On a production run on 2026-09-22 one slice the provider refused
+// was accepted ("never retried"), re-opened, re-proposed, re-executed and accepted again, several times
+// in one run, each pass paying the provider for an answer that could not change.
+//
+// `sticky_gaps` is the run's memory of them: every qid accepted with a reason that states a capability gap
+// (isCapabilityGapReason), with the reason and the plan version it was first accepted under. It is carried
+// forward on every settle and never dropped: not when the plan version moves, not when the receipt stops
+// listing the qid. Only a REASON-MATCHED gap enters it. An axis-level acceptance (the skeleton branch in
+// partitionReceiptDeferrals) and every suspect or close_failed row stay out, so a deferral a later attempt
+// could close keeps today's behaviour.
+export function stickyGapsAfter(prior, accepted, planVersion) {
+  const out = new Map((prior?.sticky_gaps ?? []).map((g) => [String(g?.qid ?? ""), g]));
+  for (const a of accepted ?? []) {
+    const qid = String(a?.qid ?? "");
+    if (!qid || out.has(qid) || !isCapabilityGapReason(a?.reason)) continue;
+    out.set(qid, { qid, axis: String(a?.axis ?? ""), reason: String(a?.reason ?? "").slice(0, 400), since_plan_version: planVersion ?? null });
+  }
+  out.delete("");
+  return [...out.values()];
+}
+
+/** The run's sticky capability gaps, by qid → row. Absent or unreadable decision ⇒ none. */
+export function readStickyGaps(P) {
+  return new Map((readEnvelopeDecision(P)?.sticky_gaps ?? []).map((g) => [String(g?.qid ?? ""), g]).filter(([q]) => q));
 }
 
 /** One history entry per superseded decision. Returns the prior history with the old decision appended. */
@@ -167,7 +199,9 @@ export function supersede(prior, source) {
  */
 export async function settleReceipt({ P, plan, receipt, dispatch = null, rejoin = null, now = null }) {
   const deferred = receipt?.deferred ?? [];
-  let { accepted, suspect } = partitionReceiptDeferrals(plan, receipt);
+  const prior = readEnvelopeDecision(P);
+  const sticky = new Set((prior?.sticky_gaps ?? []).map((g) => String(g?.qid ?? "")));
+  let { accepted, suspect } = partitionReceiptDeferrals(plan, receipt, { sticky });
   const closed = [], closeFailed = [];
   if (suspect.length && dispatch && rejoin) {
     const byAxis = new Map();
@@ -175,7 +209,7 @@ export async function settleReceipt({ P, plan, receipt, dispatch = null, rejoin 
     for (const [axis, qids] of byAxis) { if (axis) await dispatch(axis, qids); }
     const after = await rejoin();
     const stillDeferred = new Map((after?.deferred ?? []).map((d) => [String(d.qid), String(d.reason ?? "")]));
-    const re = partitionReceiptDeferrals(plan, after);
+    const re = partitionReceiptDeferrals(plan, after, { sticky });
     accepted = re.accepted;
     for (const s of suspect) {
       if (!stillDeferred.has(s.qid)) closed.push({ qid: s.qid, axis: s.axis, outcome: "ok" });
@@ -185,12 +219,12 @@ export async function settleReceipt({ P, plan, receipt, dispatch = null, rejoin 
   } else if (suspect.length) {
     for (const s of suspect) closeFailed.push({ qid: s.qid, axis: s.axis, outcome: "no executor lane at this seam" });
   }
-  const prior = readEnvelopeDecision(P);
   return writeEnvelopeDecision(P, buildDecisionDoc({
     planVersion: receipt?.plan_version, deferredTotal: deferred.length,
     accepted: accepted.map((a) => ({ ...a, decision: "accepted-capability-gap" })),
     closed, closeFailed, decidedAt: now ?? new Date().toISOString(),
     history: supersede(prior, prior ? "re-settled" : null),
+    stickyGaps: stickyGapsAfter(prior, accepted, receipt?.plan_version),
   }));
 }
 
