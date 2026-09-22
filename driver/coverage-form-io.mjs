@@ -31,6 +31,7 @@ import { driverDir } from "../shared/driver-dir.mjs";   //
 import { COVERAGE_STATUSES, COVERAGE_FORM_NAME, REGISTER_AXES } from "./coverage-ledger.mjs";
 import { coverageFormSidecarName, parseCoverageForm } from "./coverage-form.mjs";
 import { capabilitiesFor } from "./register-capabilities.mjs";
+import { readWithheldFamilies } from "./withheld-families.mjs";
 
 export { COVERAGE_FORM_NAME };
 
@@ -147,7 +148,8 @@ export function coverageFormInput(runDir) {
   catch { capabilities = null; }   // an unknown provider id reads as unestablished, which discloses
   const orderedTerritories = Array.isArray(plan.ordered_jurisdictions) ? plan.ordered_jurisdictions : [];
   return { input: { skeleton: exec.skeleton, plan, bandBlocksByAxis, deferredReasons, activeAxes,
-    bandsUnreadable, orderedTerritories, capabilities, unknownAxisUnits }, absent: null };
+    bandsUnreadable, orderedTerritories, capabilities, unknownAxisUnits,
+    awaiting: Array.isArray(exec.awaiting) ? exec.awaiting : [], withheld: readWithheldFamilies(runDir) }, absent: null };
 }
 
 /**

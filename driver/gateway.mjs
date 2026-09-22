@@ -2832,7 +2832,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       `The driver computed every obligation and every identifier in it — the coverage unit, the query id, the hit ` +
       `count, the unaccounted classes and terms, each deferred slice's own receipt reason. Record the named row(s) ` +
       `through the \`record_coverage\` tool — {"row_id","status","reason"} per row, never by writing or editing any ` +
-      `file: "status" EXACTLY one bare token of confirmed-clean / coverage-limited / deferred, "reason" the sentence ` +
+      `file: "status" EXACTLY one bare token of confirmed-clean / coverage-limited / deferred / withheld-by-judgment, "reason" the sentence ` +
       `the lawyer reads (qualifiers go in the reason, never in the status). ` +
       `A row marked "open" cannot be confirmed-clean, and its own "open_because" says which of the two kinds ` +
       `it is. A NEVER-SEARCHED slice — the active register provider cannot express it, so nothing can make it run — is ` +

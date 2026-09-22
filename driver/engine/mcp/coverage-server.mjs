@@ -55,7 +55,7 @@ serve({
         description: `Up to ${MAX_ROWS_PER_CALL} rows per call. Send more in a further call; the answer tells you what is left.`,
         items: { type: "object", properties: {
           row_id: { type: "string", description: "A driver row's id, exactly as the dispatch's obligations block lists it. Omit on a seat row you are adding — the driver mints seat row ids." },
-          status: { type: "string", description: "EXACTLY one bare token of confirmed-clean / coverage-limited / deferred. Qualifiers go in the reason." },
+          status: { type: "string", description: "EXACTLY one bare token of confirmed-clean / coverage-limited / deferred / withheld-by-judgment. Qualifiers go in the reason." },
           reason: { type: "string", description: "The sentence the lawyer reads — say what was searched and what was not, in a lawyer's words, never the engine's." },
           kind: { type: "string", description: "\"seat\" on a row you add for a coverage unit the plan does not contain. Never anything else." },
           axis: { type: "string", description: "Seat rows only: EXACTLY one bare token of the closed register-axis vocabulary the dispatch lists." },

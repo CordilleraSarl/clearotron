@@ -14,7 +14,7 @@ import { parseReport, parseAudit, parseSections, parseBlocks, stripInternal, par
 import { renderHtml, parseActionBuckets, actYouConditions } from './render.mjs';
 import { buildAudit } from './xlsx.mjs';
 import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, joinFindingToBlock, CLIENT_TIER_BY_COMPOSITE, projectCoverageJudgment } from '../findings-model.mjs';
-import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.mjs';   // — and why an absence did not close
+import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.mjs'; import { coverageFormStamp, readCoverageForm } from '../coverage-form-io.mjs'; import { coverageUnitLabel } from '../coverage-ledger.mjs';   // — and why an absence did not close
 import { clearanceReportData } from './report-data.mjs';
 import { searchDepthRecord, planTerritoriesOf } from './search-depth.mjs'; import { bandRecords } from '../named-band.mjs';   // how much was read to reach the answer, as counts and tokens
 import { parseFrameworkManifest } from '../framework.mjs';
@@ -872,6 +872,15 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     } catch { /* the workbook row is the record that matters; this line is the second copy */ }
   }
 
+  // ── THE WAITING FAMILIES THE READING TURN WITHHELD (withheld-families.mjs) ───────────────────────
+  //
+  // Ruled 2026-09-22: a family the reading turn chose not to ask is recorded with its reason in the run's
+  // record and in the audit workbook, and NOT in the report. The coverage form keeps these rows out of
+  // the ledger the report is built from, so this sheet is their one reader-facing place. Same builder,
+  // same four columns and the same state as the probes above; the area is the driver's own label and the
+  // words are the reading turn's reason.
+  const withheldFamilies = withheldFamilyRows(runDir ?? dirname(reportMd));
+
   // doc 50 — the run's FROZEN framework manifest (band vocabulary). Present on band-doctrine runs;
   // absent on every archived run (they render byte-identically on the legacy paths).
   let framework = null;
@@ -1134,7 +1143,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
       // the same rule (the workbook's own BANNED gate had already started firing on the raw detail —
       // advisory, so CI stayed green). reviewReceipts.lint keeps its raw detail for the internal
       // readers above (fetchState reads registry-record-coverage's URIs out of it).
-      counts = await buildAudit({ droppedConditions, undispatchedProbes, findings, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null }, auditParsed, join(poolRunDir, auditFile), fm.title, fm);
+      counts = await buildAudit({ droppedConditions, undispatchedProbes, withheldFamilies, findings, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null }, auditParsed, join(poolRunDir, auditFile), fm.title, fm);
       grpRead(join(poolRunDir, auditFile), 0o640);
       if (counts?.gateViolations?.length) console.warn(`[audit-workbook] advisory: ${counts.gateViolations.join(' | ')}`);
     } catch (e) {
@@ -1810,4 +1819,13 @@ function officeLinksFor(findings, recordsByUri, runOrigins) {
   const links = recordLinksFor(findings, recordsByUri, runOrigins);
   if (links) console.log(`[record-links] ${links.summary}`);
   return links;
+}
+
+/** The coverage form's family rows judged withheld, as audit-workbook coverage rows. Never throws. */
+export function withheldFamilyRows(runDir) {
+  try {
+    const { rows } = readCoverageForm(runDir, coverageFormStamp(runDir).formName);
+    return (rows ?? []).filter((r) => r?.kind === 'family' && r.status === 'withheld-by-judgment' && r.reason)
+      .map((r) => ({ area: coverageUnitLabel(r.unit), state: 'not-searched', note: String(r.reason) }));
+  } catch { return []; }
 }

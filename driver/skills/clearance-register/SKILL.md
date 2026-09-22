@@ -232,11 +232,11 @@ one hard stop — the driver fails fan-in on it, so a clean can never ship over 
 writes no `coverage_judgment` and no clean verdict** — it hands up the complete band + honest `incomplete`s and
 lets judgment decide.
 
-### Coverage ledger — which document you owe, and what the three status tokens mean
+### Coverage ledger — which document you owe, and what the four status tokens mean
 
 **The status vocabulary is CLOSED: EXACTLY one bare token of: `confirmed-clean` / `coverage-limited` /
-`deferred`.** Qualifiers never go in a status cell; they go in the reason. The distinction between the last
-two is doctrine, not wording, and the driver relabels a row that gets it wrong:
+`deferred` / `withheld-by-judgment`.** Qualifiers never go in a status cell; they go in the reason. The distinction between
+`coverage-limited` and `deferred` is doctrine, not wording, and the driver relabels a row that gets it wrong:
 
 - **`coverage-limited`** — the search RAN and could not be exhausted: a crowd over the provider window, a
   count-only saturation descriptor, a volume/pagination ceiling. A re-run cannot close it, so the escalation
@@ -246,6 +246,8 @@ two is doctrine, not wording, and the driver relabels a row that gets it wrong:
   disclose — and it clamps the verdict CLEAR→CONDITIONAL. Mislabel one of these `coverage-limited` and a
   fixable hole disappears into an accepted limit.
 - **`confirmed-clean`** — the slice ran to completion and judgment cleared it.
+- **`withheld-by-judgment`** — a waiting family the reading turn chose not to ask, so it was never searched.
+  Only a `family` row takes it, and its reason goes into the audit workbook, not the report.
 
 **HOW those statuses are recorded is not yours to assume — the dispatch states it, and it is one route,
 the `record_coverage` tool.** The driver computes the form before every digest dispatch and enumerates

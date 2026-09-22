@@ -149,7 +149,7 @@ const PINNED = Object.freeze({
       + " mcp__register__register_image_fetch mcp__register__register_expand_phoneme"
       + " mcp__register__register_batch_screen mcp__register__register_enumerate"
       + " mcp__register__register_execute_plan mcp__register__register_propose_supplemental"
-      + " mcp__unit-note__record_unit_note",
+      + " mcp__unit-note__record_unit_note mcp__unit-note__record_withheld_families",
     mcpConfig: `{"mcpServers":{${local("register", "corsearch-server.mjs")},${local("unit-note", "unit-note-server.mjs")}}}`,
   },
   // THREE groups on one stage — the only row that pins server ORDER inside the config across more than

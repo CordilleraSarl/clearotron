@@ -40,6 +40,7 @@
 // for it and this tool never guesses one.
 import { serve } from "./stdio-server.mjs";
 import { recordUnitNote } from "../../register-unit-record.mjs";
+import { recordWithheldFamilies, WITHHELD_REASON_MAX } from "../../withheld-families.mjs";
 
 async function record_unit_note(params) {
   const runDir = String(process.env.CLEAROTRON_BAND_RUN_DIR ?? "");
@@ -66,6 +67,38 @@ async function record_unit_note(params) {
   }
 }
 
+// ── THE FAMILIES THE READING TURN LEAVES UNASKED (withheld-families.mjs) ───────────────────────────
+//
+// Same server, same binding: the axis is the one the driver fanned this seat out for, and a payload
+// naming another is refused. What it records is a judgment only this turn can make — which waiting
+// families were not worth asking, and why — so it lives beside the turn's note rather than on the
+// digest's coverage tool, which never saw the families.
+async function record_withheld_families(params) {
+  const runDir = String(process.env.CLEAROTRON_BAND_RUN_DIR ?? "");
+  if (!runDir) return { isError: true, text: "ERROR: this server was started without a run — the driver wires it per run; there is no parameter for it and this tool never guesses one." };
+  const bound = String(process.env.CLEAROTRON_RECORD_AXIS ?? "").trim();
+  if (!bound) return { isError: true, text: "ERROR: this server was started without a bound axis — the driver binds the axis it fanned out for." };
+  const named = String(params?.axis ?? "").trim();
+  if (named && named !== bound)
+    return { isError: true, text: `ERROR: unit_axis_not_yours:${named} — you are the seat for axis "${bound}". Send "${bound}" or omit the field.` };
+  try {
+    const r = recordWithheldFamilies(runDir, { axis: bound, families: params?.families });
+    if (r.refused) return { isError: true, text: `REFUSED: ${r.refused}` };
+    if (r.write_failed) return { isError: true, text: `ERROR: the driver could not store this record (${r.write_failed}). This is a driver fault — do not re-type it.` };
+    const refused = r.rejected.map((x) => `- ${x.qid || "(no qid)"}: ${x.issue}`);
+    const left = r.still_to_judge;
+    return { isError: !r.recorded.length && refused.length > 0, text: [
+      `Recorded ${r.recorded.length} famil${r.recorded.length === 1 ? "y" : "ies"} as withheld-by-judgment on axis "${r.axis}".`,
+      ...(refused.length ? ["Refused:", ...refused] : []),
+      left.length
+        ? `Still to judge on this axis — waiting, not asked, no reason recorded (${left.length}): ${left.slice(0, 40).join(", ")}${left.length > 40 ? ", …" : ""}`
+        : "Every waiting family on this axis is now asked or recorded.",
+    ].join("\n") };
+  } catch (e) {
+    return { isError: true, text: `ERROR: the driver could not record this call (${String(e?.message ?? e).slice(0, 200)}). This is a driver fault — do not re-type it.` };
+  }
+}
+
 serve({
   name: "unit-note", version: "0.1.0",
   tools: [{
@@ -84,5 +117,22 @@ serve({
     } },
     annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     handler: record_unit_note,
+  }, {
+    name: "record_withheld_families",
+    description:
+      "Record the WAITING families on this axis that you decided NOT to ask, each with your reason. A family you " +
+      "do not ask was never searched: it is recorded withheld-by-judgment, and the reason goes into the run's " +
+      "record and the audit workbook, never into the report. Every waiting family must end this run either asked " +
+      "or recorded here — one nobody judged holds up delivery. One reason may cover several families. The answer " +
+      "lists the waiting families on this axis that are still neither asked nor recorded.",
+    inputSchema: { type: "object", required: ["families"], properties: {
+      families: { type: "array", items: { type: "object", required: ["qids", "reason"], properties: {
+        qids: { type: "array", items: { type: "string" }, description: "The qids of waiting families on this axis, exactly as the dispatch lists them." },
+        reason: { type: "string", description: `Why these were not asked, in a lawyer's words (at most ${WITHHELD_REASON_MAX} characters). The audit workbook prints it.` },
+      } } },
+      axis: { type: "string", description: "Optional, and checked rather than trusted: the driver binds the axis it dispatched you for." },
+    } },
+    annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+    handler: record_withheld_families,
   }],
 });

@@ -207,14 +207,14 @@ ledger` table and its JSON mirror from what you record afterwards. A run that ca
 gets a form — one declaring that, and naming its cause from a closed vocabulary — so "there is no form"
 is not a state you will meet.
 
-The dispatch ENUMERATES the form's rows — one per axis, one per unaccounted crowd block and one per
-deferred slice, each with its `row_id` — and every identifier is computed by the driver from the frozen
+The dispatch ENUMERATES the form's rows — one per axis, one per unaccounted crowd block, one per
+deferred slice and one per waiting family the reading turn did not ask, each with its `row_id` — and every identifier is computed by the driver from the frozen
 register plan and the plan-execution receipt: the coverage unit, the query id, the hit count, the
 unaccounted classes and terms, and each deferred slice's own receipt reason. Rule **every** row by
 calling the **`record_coverage` tool**, one entry per row, with two values of yours:
 
-- `status` — EXACTLY one bare token: `confirmed-clean` / `coverage-limited` / `deferred`. Qualifiers
-  never go in the status; they go in the reason.
+- `status` — EXACTLY one bare token: `confirmed-clean` / `coverage-limited` / `deferred` / `withheld-by-judgment`.
+  Qualifiers never go in the status; they go in the reason. A waiting family's row takes only `withheld-by-judgment`, and most arrive already settled with the reading turn's reason.
 - `reason` — the sentence the lawyer reads.
 
 The driver validates each row as it arrives — a refused row names what to change, and the rest of the
@@ -359,7 +359,7 @@ For example: subject `PHINIA — placed at watchlist-annex, class-match said hea
 decision `ADOPTED`, reason `the cl.12 overlap is auto-parts vs the applicant's software; off-field`.
 
 **Coverage ledger → the `coverage_judgment` contract.** You rule every row of the driver's coverage form
-through `record_coverage` (a `confirmed-clean` / `coverage-limited` / `deferred` status and a reason on
+through `record_coverage` (a `confirmed-clean` / `coverage-limited` / `deferred` / `withheld-by-judgment` status and a reason on
 every row — the driver renders both the `## Coverage ledger` table and `register-coverage-ledger.json`
 from what the tool records), plus the rolled-up sufficiency line. The **synthesis stage** lifts the rolled-up line into `findings.json`
 as the top-level `coverage_judgment` field: `{ "sufficient": <bool>, "reason": "<why>" }`. The FORM is the
