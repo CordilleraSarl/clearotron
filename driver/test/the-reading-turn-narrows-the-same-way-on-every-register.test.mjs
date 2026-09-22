@@ -92,3 +92,18 @@ test("where the register cannot search goods text, the narrowing is recorded as 
   const plain = mintSupplementalEntries("primary-sweep", [{ ...onEuipo, goods_words: undefined }], { capabilities: EUIPO }).minted;
   assert.equal(plain[0].unsupported, undefined);
 });
+
+test("each goods word is one question against the mint's own caps, so a long list cannot run past them", () => {
+  // Where the register has no OR on the goods field, N words are N questions. They draw on the budget every
+  // proposal already draws on (12 new questions per call, 24 per axis for the run), and the words past it
+  // are refused by name, never run.
+  const words = Array.from({ length: 25 }, (_, i) => `goods${i}`);
+  const { minted, rejected } = mintSupplementalEntries("primary-sweep", [{ ...narrowing, goods_words: words }], { capabilities: SIGNA });
+  assert.equal(minted.length, 12);
+  assert.equal(rejected.length, 13);
+  assert.ok(rejected.every((r) => /per-call cap 12/.test(r.issue)));
+  const late = mintSupplementalEntries("primary-sweep", [{ ...narrowing, goods_words: words.slice(0, 3) }], { capabilities: SIGNA, existingCount: 23 });
+  assert.equal(late.minted.length, 1, "the per-axis budget did not bound the split");
+  // THE CONTROL: where the register takes the list in one clause, the same proposal is one question.
+  assert.equal(mintSupplementalEntries("primary-sweep", [{ ...narrowing, goods_words: words }], { capabilities: CLARIVATE }).minted.length, 1);
+});
