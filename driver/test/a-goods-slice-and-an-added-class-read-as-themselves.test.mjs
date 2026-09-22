@@ -4,10 +4,10 @@
 // A GOODS SLICE AND AN ADDED CLASS READ AS THEMSELVES IN THE RUN'S RECORD.
 //
 // Two misreadings on one delivered run, both from what the driver wrote rather than from what ran:
-//   · A goods-narrowed question shares predicate, term and classes with the identical one, and nothing
-//     the digest was shown carried the goods words, so its refused slice was written into the ledger as
-//     the core exact search failing. The words now reach the digest's brief and the executor's query
-//     description; the unit label is also the client's coverage table, so it is left exactly as it was.
+//   · A goods-narrowed question shares predicate, term and classes with the identical one, and neither
+//     its coverage unit nor the executor's query description carried the goods words, so its refused
+//     slice was written into the ledger as the core exact search failing. Both now name them, and the
+//     unit is the label of the client's coverage table and the key the ledger joins on (ruled 2026-09-22).
 //   · The skeptic's coverage block names what was refused and what is open, and nothing that ran, so a
 //     class the frame added beyond the instructed ones was asked and answered and still reported as never
 //     swept.
@@ -17,7 +17,8 @@ import assert from "node:assert/strict";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { coverageFormRows, buildCoverageForm, parseCoverageForm, coverageFormBrief, formLedgerRows } from "../coverage-form.mjs";
+import { coverageFormRows, renderCoverageLedgerJsonFromForm } from "../coverage-form.mjs";
+import { coverageUnitLabel, formRowUnitKey, ledgerUnitKey, parseCoverageLedgerJson } from "../coverage-ledger.mjs";
 import { blockSearchedClasses } from "../close-verify.mjs";
 import { describePlanEntry } from "../../providers/_shared/execute-plan.mjs";
 import { mintSupplementalEntries } from "../engine/mcp/supplemental.mjs";
@@ -36,7 +37,7 @@ const narrowed = () => {
   return minted[0];
 };
 
-test("the digest's brief names a goods slice's words; the unit label, which the client reads, is unchanged", () => {
+test("a goods slice's unit names its goods words, in the client's table and in the ledger key", () => {
   const goods = narrowed();
   const input = {
     skeleton: [{ axis: "primary-sweep", state: "deferred", deferred: [goods.qid, CORE.qid] }],
@@ -45,21 +46,18 @@ test("the digest's brief names a goods slice's words; the unit label, which the 
   };
   const { rows } = coverageFormRows(input);
   const row = (qid) => rows.find((r) => r.kind === "deferred" && r.qid === qid);
-  // The label is today's, byte for byte, on both rows: it is printed in the client's coverage table.
-  assert.equal(row(goods.qid).unit, "primary-sweep / exact: VELTRIN [cl 41]");
+  assert.equal(row(goods.qid).unit, "primary-sweep / exact: VELTRIN [cl 41] goods: entertainment");
+  // THE CONTROL: the identical question's label is today's, byte for byte.
   assert.equal(row(CORE.qid).unit, "primary-sweep / exact: VELTRIN [cl 41]");
-  assert.deepEqual(row(goods.qid).goods_words, ["entertainment"]);
-  assert.equal(row(CORE.qid).goods_words, undefined);
-  // Through the form as written to disk and read back, into what the digest is shown.
-  const parsed = parseCoverageForm(JSON.stringify(buildCoverageForm(input)));
-  assert.equal(parsed.error ?? null, null);
-  const brief = coverageFormBrief(parsed);
-  const line = (qid) => brief.split("\n").find((l) => l.includes(row(qid).row_id)) ?? "";
-  assert.ok(line(goods.qid).includes("narrowed to goods words: entertainment"), `the digest is not told which slice this is:\n${line(goods.qid)}`);
-  assert.ok(!line(CORE.qid).includes("goods words"), "the core question was described as narrowed");
-  // The ledger rows the client's report is built from carry no new field.
-  const settled = parsed.rows.map((r) => ({ ...r, status: "deferred", reason: "r" }));
-  for (const r of formLedgerRows(settled)) assert.deepEqual(Object.keys(r).sort(), ["axis", "reason", "status", "unit"]);
+  // The client's coverage table prints the reader label of the same unit.
+  assert.equal(coverageUnitLabel(row(goods.qid).unit), "main register sweep / exact: VELTRIN [cl 41] goods: entertainment");
+  // The ledger join key follows: two slices, two keys, and each ledger row finds its own form row.
+  assert.notEqual(formRowUnitKey(row(goods.qid)), formRowUnitKey(row(CORE.qid)), "the goods slice and the core question share a join key");
+  const settled = rows.map((r) => ({ ...r, status: "deferred", reason: "the register refused it" }));
+  for (const lr of parseCoverageLedgerJson(renderCoverageLedgerJsonFromForm(settled)).filter((r) => r.axis === "primary-sweep" && r.scope)) {
+    const matches = settled.filter((r) => r.kind === "deferred" && formRowUnitKey(r) === ledgerUnitKey(lr.axis, lr.scope));
+    assert.equal(matches.length, 1, `ledger row "${lr.scope}" joins ${matches.length} form rows`);
+  }
 });
 
 test("the executor's query names the goods words after the class tag, and close-verify still reads the classes", () => {
