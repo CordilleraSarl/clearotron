@@ -69,16 +69,32 @@ export function mintSupplementalEntries(axis, proposals, { existingQids = new Se
   // be intersected and the answer would narrow as the list grew; the connector refuses that shape
   // outright. Each word keeps the proposal's index, so a refusal still names the proposal it came from.
   const perWord = capabilities?.goodsTextSearch === true && capabilities?.goodsTextListOr === false;
+  // ONE QUESTION PER NAME where the register has no OR at all (maxOrWidth 1) — the compiler's own width
+  // for such a register. A batch of names went out as windows of one name each under ONE question, and
+  // the enumerate kernel stopped the whole batch at the first name that crowded or failed, so every name
+  // after it was never sent. Split, each name is its own question: its own count, its own crowd decision
+  // and its own receipt row. The names of one batch still spend ONE slot of the per-call and per-axis
+  // caps between them, as the batch did; `split_of` names the batch so the next call counts it once.
+  const perName = Number(capabilities?.maxOrWidth) === 1;
   const indexed = (proposals ?? []).flatMap((p, i) => {
-    const words = perWord && Array.isArray(p?.goods_words) ? p.goods_words.map((w) => String(w ?? "").trim()).filter(Boolean) : [];
-    return words.length > 1 ? words.map((w) => ({ p: { ...p, goods_words: [w] }, i })) : [{ p: p ?? {}, i }];
+    const names = perName && Array.isArray(p?.terms) ? p.terms.map((t) => String(t ?? "").trim()).filter(Boolean) : [];
+    const splitOf = names.length > 1 && names.length <= PLAN_MAX_OR_WIDTH
+      ? fingerprint({ axis, predicate: String(p?.predicate ?? "default"), names: [...names].sort(), i }) : null;
+    const byName = splitOf ? names.map((t) => { const { terms: _batch, ...rest } = p; return { ...rest, term: t }; }) : [p ?? {}];
+    return byName.flatMap((q) => {
+      const words = perWord && Array.isArray(q?.goods_words) ? q.goods_words.map((w) => String(w ?? "").trim()).filter(Boolean) : [];
+      return words.length > 1
+        ? words.map((w, k) => ({ p: { ...q, goods_words: [w] }, i, slot: `${i}:${k}`, splitOf }))
+        : [{ p: q, i, slot: `${i}:0`, splitOf }];
+    });
   });
+  const slots = new Set();
   const ordered = prio.size
     ? [...indexed.filter(({ p }) => inPriority(p, prio)), ...indexed.filter(({ p }) => !inPriority(p, prio))]
     : indexed;
-  for (const { p, i } of ordered) {
+  for (const { p, i, slot, splitOf } of ordered) {
     const issue = (msg) => rejected.push({ index: i, issue: msg, proposal: compactProposal(p) });
-    if (minted.length >= perCall) { issue(`per-call cap ${perCall} reached`); continue; }
+    if (!slots.has(slot) && slots.size >= perCall) { issue(`per-call cap ${perCall} reached`); continue; }
     const predicate = String(p.predicate ?? "default");
     if (!PLAN_PREDICATES.includes(predicate)) { issue(`unknown predicate "${predicate.slice(0, 20)}" (one of: ${PLAN_PREDICATES.join(", ")})`); continue; }
     const terms = Array.isArray(p.terms) ? p.terms.map((t) => String(t ?? "").trim()).filter(Boolean) : null;
@@ -255,8 +271,11 @@ export function mintSupplementalEntries(axis, proposals, { existingQids = new Se
       if (romanizedTerms && existingQids.has(qid)) enriched.push({ qid, term, romanizedTerms });
       continue;
     }
-    if (budget <= 0) { issue(`per-axis cap ${axisMax} reached — assess whether an existing supplemental already covers this`); continue; }
-    budget -= 1;
+    if (!slots.has(slot)) {
+      if (budget <= 0) { issue(`per-axis cap ${axisMax} reached — assess whether an existing supplemental already covers this`); continue; }
+      budget -= 1;
+    }
+    slots.add(slot);
     const entry = {
       qid, axis, predicate: askedPredicate,
       ...(substituted ? { contains_substituted: substituted } : {}),
@@ -273,6 +292,7 @@ export function mintSupplementalEntries(axis, proposals, { existingQids = new Se
       nice_classes: nice, regions,
       expected_kind: "enumerate",
       origin: "supplemental",
+      ...(splitOf ? { split_of: splitOf } : {}),
       ...(typeof p.rationale === "string" && p.rationale.trim() ? { rationale: p.rationale.trim().slice(0, 200) } : {}),
     };
     // F1 — an owner×term slice on a provider that cannot intersect them is minted as an UNSUPPORTED
@@ -287,6 +307,17 @@ export function mintSupplementalEntries(axis, proposals, { existingQids = new Se
     minted.push(entry);
   }
   return { minted, reused, rejected, enriched, narrowed };
+}
+
+/** The per-axis cap's count of what is already on file: the names of one split batch are one slot. PURE. */
+export function supplementalSlots(entries) {
+  const batches = new Set();
+  let n = 0;
+  for (const e of (entries ?? [])) {
+    if (e?.split_of) { if (!batches.has(e.split_of)) { batches.add(e.split_of); n += 1; } }
+    else n += 1;
+  }
+  return n;
 }
 
 /**
@@ -372,7 +403,7 @@ export async function proposeSupplemental(params, tctx, deps) {
     return { type: "text", text: JSON.stringify({ minted: [], reused: [], rejected: [], excluded_house_element: excludedHouse, executed: false }, null, 2) };
   const existingQids = new Set(supp.entries.map((e) => e.qid));
   const { minted, reused, rejected, enriched, narrowed } = mintSupplementalEntries(axis, offered,
-    { existingQids, perCall, axisMax, existingCount: supp.entries.length, capabilities: deps.capabilities ?? null, priorityClasses: planClasses });
+    { existingQids, perCall, axisMax, existingCount: supplementalSlots(supp.entries), capabilities: deps.capabilities ?? null, priorityClasses: planClasses });
 
   // Field-level romanisation enrichment of a REUSED qid (2026-07-30 review round): the natural retry —
   // a bare non-Latin proposal deferred at the wire, the model re-proposes it WITH the romanisation —
