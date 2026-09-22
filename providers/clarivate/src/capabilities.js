@@ -106,7 +106,8 @@ export const CAPABILITIES = Object.freeze({
   countStatusFilter: "live",
   // JSON body, not a URI: the bound is the parser's own document-nesting cap, which the vendor names in
   // the refusal it answers a stack wider than this with. Not a URI length, so widening is not the fix.
-  maxOrWidth: 500,
+  // A 498-term stack is refused at that cap and a 496-term stack is not, so 496 is the declared width.
+  maxOrWidth: 496,
   // ONE call: INT_CLASS_NUMBER value "9 OR 28 OR 41 OR 42" (or "9,28,41,42") = the deduplicated union.
   classFilter: "native",
   // POST /text, EXACTLY 100 ids per call — a longer list is refused — and the call is BILLED: screening an
@@ -294,7 +295,7 @@ export const CAPABILITIES = Object.freeze({
   // WIRED: providers/clarivate/src/core.js builds its enumerate from
   // makeEnumerate({ capabilities: {...CAPABILITIES.kernel} }) — these values are the LIVE seam settings,
   // no longer a design note. pageGuard is 1 because /search is single-shot: there is no page 2 to
-  // fetch, so the guard can only ever be a backstop. namesChunkDefault = maxOrWidth (500): the kernel
+  // fetch, so the guard can only ever be a backstop. namesChunkDefault = maxOrWidth (496): the kernel
   // chunks a wide OR-stack to the parser's nesting bound before it reaches the wire.
   kernel: Object.freeze({
     countProbe: "endpoint",
@@ -302,7 +303,7 @@ export const CAPABILITIES = Object.freeze({
     pageSize: 100,
     pageGuard: 1,                          // single-shot: there is no page 2
     ceilingDefault: 600,
-    namesChunkDefault: 500,
+    namesChunkDefault: 496,
     providerWindow: "30000-result hard ceiling (tooManyResults, fails loud)",
     // POST /search returns BARE GUIDS — the search row carries no mark text, classes, status or owner.
     // POST /text (the screen call) is therefore the SOLE content source for an enumerated band, which

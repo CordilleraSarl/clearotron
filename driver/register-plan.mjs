@@ -126,7 +126,7 @@ export { AWAITS_READING_TURN, awaitsReadingTurn, guardParentQid };
 // module stays PURE and never imports a vendor):
 //
 //   1. OR-WIDTH  — PLAN_MAX_OR_WIDTH is the corsearch-shaped DEFAULT; the effective width is
-//      capabilities.maxOrWidth (clarivate 500 JSON-nesting, signa 1 — no OR surface at all).
+//      capabilities.maxOrWidth (clarivate 496 JSON-nesting, signa 1 — no OR surface at all).
 //   2. PREDICATES — a predicate with NO mapping on the active provider does NOT compile into a wrong
 //      query. The entry is emitted with `unsupported:true` + a plain-English `unsupported_reason`, and
 //      the executor turns that into an error:true block (→ joins MISSING) instead of a silently weaker
@@ -1420,7 +1420,7 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
     // byte-identical (resolvePlanAgainstStore), so existing matters keep their unsplit shape; only
     // fresh compiles get the split entries. Chunk qids differ naturally (slug of each chunk's first
     // term); the #n dedup above covers collisions.
-    // The split width is PROVIDER-DERIVED (capabilities.maxOrWidth): 80 on corsearch's URI budget, 500
+    // The split width is PROVIDER-DERIVED (capabilities.maxOrWidth): 80 on corsearch's URI budget, 496
     // on clarivate's JSON nesting cap, 1 on signa (no OR surface at all — one term per call).
     // Post-merge audit 2 (e): the partition is BY SCRIPT before it is by width. An OR-stack never
     // carries romanizedTerms (one member's Latin form must never substitute a whole chunk's names —

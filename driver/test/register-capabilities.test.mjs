@@ -123,7 +123,7 @@ test("the probed provider facts are encoded, not the stale core's warts", () => 
   assert.equal(cla.classFilter, "native", "INT_CLASS_NUMBER takes an OR-stack in one call");
   assert.equal(cla.screenSource, "billed-record-fetch");
   assert.equal(cla.resultCeiling, 30000);
-  assert.equal(cla.maxOrWidth, 500, "1000 terms → nesting-depth 500; 500 is the probed safe chunk");
+  assert.equal(cla.maxOrWidth, 496, "a 498-term stack is refused at the parser's nesting cap; 496 is the widest declared");
   assert.equal(cla.oppositions, false);
   assert.equal(cla.phonemeExpansion, false, "/similarity/word/* is not available on this provider (403) — never wired");
   assert.equal(cla.hasPublicRecordUrl, false);
@@ -437,7 +437,7 @@ test("OR-width agreement, PER PROVIDER: the planner's split == the active provid
   // free-tier 25: DERIVED, not measured — the MIN across its members, which is uspto-local's. This is
   // the number the whole pointwise-weakest rule exists for: planning the free tier to euipo's 50 would
   // dictate OR-stacks the US index rejects, on a plan the driver believes it can execute.
-  const expected = { corsearch: 80, clarivate: 500, signa: 1, euipo: 50, "uspto-local": 25, "free-tier": 25 };
+  const expected = { corsearch: 80, clarivate: 496, signa: 1, euipo: 50, "uspto-local": 25, "free-tier": 25 };
   for (const id of PROVIDERS) {
     const caps = capabilitiesFor(id);
     assert.equal(planMaxOrWidth(caps), expected[id], `${id}: declared OR-width`);

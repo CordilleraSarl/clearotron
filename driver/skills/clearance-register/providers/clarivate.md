@@ -82,7 +82,7 @@ An operator word *inside* a phrase is handled for you: "BLACK AND DECKER" goes o
 `*BLACK ADJ A?D ADJ DECKER*` (the `?` stops the parser reading AND as an operator). The one term that
 still defers is a bare two-letter operator word — `OR` alone has no interior character to wildcard.
 
-`names[]` (an OR-stack) becomes ONE value joined with explicit ` OR `. The safe width is **500 terms** —
+`names[]` (an OR-stack) becomes ONE value joined with explicit ` OR `. The safe width is **496 terms** —
 the bound is the JSON parser's document-nesting cap, which the register names in the refusal it answers a
 wider stack with. `register_enumerate` chunks wider stacks for you at that bound.
 
