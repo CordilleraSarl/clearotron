@@ -1971,6 +1971,10 @@ export function foldSupplementalEntries(plan, entries) {
   const asked = new Map();
   for (const e of plan.entries) {
     if (e?.unsupported === true) continue;
+    // Nor does a family WAITING for the reading turn. It stands in the plan as the record of a question
+    // not yet asked; the reading turn's ask of that same question is the answer it waits for, and refusing
+    // the ask as its duplicate left the family recorded as never asked while its question had run.
+    if (awaitsReadingTurn(e?.when)) continue;
     const k = entryQuestionKey(e, plan);
     if (k && !asked.has(k)) asked.set(k, e.qid);
   }
@@ -2232,7 +2236,17 @@ export function joinPlanToBands(plan, bandBlocksByAxis) {
   const byQid = new Map();
   for (const b of blocks) if (typeof b.qid === "string" && b.qid) byQid.set(b.qid, b);
 
-  const executed = [], missing = [], skipped = [], deferred = [], awaiting = [];
+  const executed = [], missing = [], skipped = [], deferred = [], awaiting = [], asked = [];
+  // A WAITING FAMILY THE READING TURN ASKED IS NOT WAITING. Its ask arrives as an ordinary entry — a
+  // supplemental with the same question — and the family's own row stays guarded forever, so without this
+  // link every family asked read as never asked. Matched on the question (entryQuestionKey), against
+  // every entry that is not itself waiting or unsupported; the asker's own state says what it returned.
+  const askedBy = new Map();
+  for (const e of plan.entries) {
+    if (e?.unsupported === true || awaitsReadingTurn(e?.when)) continue;
+    const k = entryQuestionKey(e, plan);
+    if (k && !askedBy.has(k)) askedBy.set(k, e.qid);
+  }
   for (const e of plan.entries) {
     if (e.when) {
       // A RULING-204 WAIT IS ITS OWN BUCKET, NOT A SKIP, and the difference is what the reader is
@@ -2242,7 +2256,12 @@ export function joinPlanToBands(plan, bandBlocksByAxis) {
       // question nobody decided to ask, on a matter where the identical mark may have answered
       // perfectly. Folding the two together would file "not asked, by judgment" under "held back by a
       // crowd", which is a different sentence about a different thing, on every matter.
-      if (awaitsReadingTurn(e.when)) { awaiting.push({ qid: e.qid, axis: e.axis }); continue; }
+      if (awaitsReadingTurn(e.when)) {
+        const by = askedBy.get(entryQuestionKey(e, plan));
+        if (by) asked.push({ qid: e.qid, axis: e.axis, asked_by: by });
+        else awaiting.push({ qid: e.qid, axis: e.axis });
+        continue;
+      }
       const parent = byQid.get(e.when.runs_if_enumerated);
       const parentState = String(parent?.state ?? "").toLowerCase();
       // A CROWD IS WHAT HOLDS A CHILD BACK, and only a crowd. `enumerated` covers a question answered
@@ -2299,7 +2318,7 @@ export function joinPlanToBands(plan, bandBlocksByAxis) {
   const planQids = new Set(plan.entries.map((e) => e.qid));
   const unplanned = blocks.filter((b) => typeof b.qid === "string" && b.qid && !planQids.has(b.qid))
     .map((b) => ({ qid: b.qid, query: String(b.query ?? "").slice(0, 80) }));
-  return { executed, missing, skipped, deferred, awaiting, unplanned };
+  return { executed, missing, skipped, deferred, awaiting, asked, unplanned };
 }
 
 // ──: the slice the provider ACCEPTED and then hard-errored at RUN time ──────────────────────────
@@ -2502,9 +2521,10 @@ export function deriveCoverageSkeleton(plan, join) {
   const skippedQids = new Set(join.skipped.map((x) => x.qid));
   const deferredQids = new Set((join.deferred ?? []).map((x) => x.qid));
   const awaitingQids = new Set((join.awaiting ?? []).map((x) => x.qid));
+  const askedQids = new Set((join.asked ?? []).map((x) => x.qid));
   const axes = new Map();
   for (const e of plan.entries) {
-    if (!axes.has(e.axis)) axes.set(e.axis, { axis: e.axis, entries: 0, executed: 0, crowds: 0, missing: [], skipped: 0, deferred: [], awaiting: 0 });
+    if (!axes.has(e.axis)) axes.set(e.axis, { axis: e.axis, entries: 0, executed: 0, crowds: 0, missing: [], skipped: 0, deferred: [], awaiting: 0, asked: 0 });
     const a = axes.get(e.axis);
     a.entries++;
     // COUNTED BEFORE `skipped`, and separately from it. With the families waiting on every matter this is the ordinary state of
@@ -2512,6 +2532,9 @@ export function deriveCoverageSkeleton(plan, join) {
     // because a parent crowded" the routine reading of a healthy run — and would say it to the model,
     // which reads these states as judgment input.
     if (awaitingQids.has(e.qid)) { a.awaiting++; continue; }
+    // A waiting family the reading turn asked is answered by the entry that asked it, which is counted
+    // where it ran; counting the family as executed too would count one question twice.
+    if (askedQids.has(e.qid)) { a.asked++; continue; }
     if (skippedQids.has(e.qid)) { a.skipped++; continue; }
     if (missing.has(e.qid)) { a.missing.push(e.qid); continue; }
     // a capability gap is NOT executed — it is a disclosed hole in the axis
@@ -2540,6 +2563,7 @@ export function deriveCoverageSkeleton(plan, join) {
             : (a.executed === 0 && a.awaiting > 0 ? "awaiting-judgment" : "executed")))),
     entries: a.entries, executed: a.executed, crowds: a.crowds, skipped: a.skipped, missing: a.missing,
     ...(a.awaiting ? { awaiting: a.awaiting } : {}),
+    ...(a.asked ? { asked: a.asked } : {}),
     ...(a.deferred.length ? { deferred: a.deferred } : {}),
   }));
 }

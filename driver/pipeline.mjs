@@ -6481,8 +6481,13 @@ function planAuditExtra(ctx, { stage = "narrative-refutation" } = {}) {
       `- executed: ${exec.executed.length} entr${exec.executed.length === 1 ? "y" : "ies"} (${crowds.length} crowd/incomplete${crowds.length ? `: ${crowds.slice(0, 4).map((x) => x.qid).join("; ")}` : ""})`,
       `- missing (no band block): ${exec.missing.length}${exec.missing.length ? ` — ${exec.missing.slice(0, 4).join("; ")}` : ""}`,
       `- skipped (crowd-gated fringe): ${exec.skipped.length}`,
+      // The families waiting for the reading turn, and those it asked. Without these lines the table's
+      // own buckets summed to the whole plan less the waiting families, and a reviewer read it as
+      // "no family waiting" while the receipt held 156.
+      `- awaiting the reading turn's ask: ${exec.awaiting?.length ?? 0}`,
+      exec.asked?.length ? `- asked by the reading turn (a waiting family's question, asked by another entry): ${exec.asked.length}` : "",
       exec.unplanned?.length ? `- unplanned qid-stamped blocks: ${exec.unplanned.length}` : "",
-      ...(exec.skeleton ?? []).map((s) => `- axis ${s.axis}: ${s.state} (${s.executed}/${s.entries} executed, ${s.crowds} crowd)`),
+      ...(exec.skeleton ?? []).map((s) => `- axis ${s.axis}: ${s.state} (${s.executed}/${s.entries} executed, ${s.crowds} crowd${s.awaiting ? `, ${s.awaiting} awaiting` : ""})`),
     ];
   } catch (e) { rows = [`- (receipt table unavailable — read + audit the receipt file directly: ${P.planExecution})`]; note(`plan-audit receipt table (non-fatal): ${e.message}`); }
   return lines(
@@ -10483,6 +10488,7 @@ async function pipelineInner(job, opts = {}) {
           { failClass, repairs: fanInRepairs, quantity: joinRes.missing.length });
       }
       runLog(run.runDir, { event: "plan-execution", executed: joinRes.executed.length, skipped: joinRes.skipped.length, unplanned: joinRes.unplanned.length,
+        awaiting: joinRes.awaiting?.length ?? 0, asked: joinRes.asked?.length ?? 0,
         axes: skeleton.map((s) => `${s.axis}:${s.state}`) });
       // Decide the deferrals now — before placement-inquiry, which on the evidence run started one second
       // after this point on inputs the run had just recorded as unfinished.
