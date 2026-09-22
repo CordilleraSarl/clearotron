@@ -116,7 +116,7 @@ const probeWord = (() => {
   if (process.env.MOCK_CLAUDE_TOOLS_UNUSED) return null;
   try {
     const i = argv.indexOf("--mcp-config");
-    return (i >= 0 ? JSON.parse(argv[i + 1]) : null)?.mcpServers?.probe?.env?.CLEAROTRON_PROBE_SENTINEL ?? null;
+    return (i >= 0 ? JSON.parse(argv[i + 1]) : null)?.mcpServers?.probe?.args?.[1] ?? null;
   } catch { return null; }
 })();
 

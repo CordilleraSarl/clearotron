@@ -22,13 +22,14 @@
 // copy it resolves in a temporary folder and empties PATH around it.
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { spawn } from "node:child_process";
 import { chmodSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { classifyProbe, probeEngineTurn, preflightEngineTurn, probeFailureText, probeVerdictLane,
-  PROBE_MODEL, PROBE_THINKING, PROBE_PROMPT } from "../engine/probe.mjs";
+  PROBE_MODEL, PROBE_THINKING, PROBE_PROMPT, probeToolConfig } from "../engine/probe.mjs";
 import { CLOUD_SETTINGS, CLOUD_CREDENTIAL_CHECK } from "../engine/auth.mjs";
 import { ENGINE_BINARIES } from "../driver.config.mjs";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
@@ -44,7 +45,7 @@ const tupleOf = (over = {}) => ({ code: 1, killed: false, wall: 0.4, stdout: "",
 const explode = () => { throw new Error("loadAdapter must not be reached — this suite never spawns a real engine"); };
 
 /** The word the probe handed its tool, read off the tool config it passed, as the tool server reads it. */
-const wordOf = (a) => JSON.parse(a.mcpConfig).mcpServers.probe.env.CLEAROTRON_PROBE_SENTINEL;
+const wordOf = (a) => JSON.parse(a.mcpConfig).mcpServers.probe.args[1];
 /** What a working engine does with the probe's tool: calls it, and answers with the word it returned. */
 const answering = (over = {}) => async (a) => tupleOf({ code: 0, stdout: `${wordOf(a)}`, ...over });
 
@@ -84,6 +85,35 @@ test("the probe asks for the CHEAPEST turn either adapter can build", async () =
   assert.deepEqual(Object.keys(servers), ["probe"], "the probe hands the engine one server, its own");
   assert.match(servers.probe.args[0], /engine\/mcp\/probe-server\.mjs$/);
   assert.match(wordOf(seen), /^probe-[0-9a-f]{8}$/, "the word is minted fresh, so the model cannot supply it");
+});
+
+test("the real probe server, started as the config starts it, returns exactly the word it was given", async () => {
+  // The mocks read the word off the config, so nothing else here runs the server itself. This does: the
+  // command and arguments the engines receive, then one ping.
+  const ping = (server) => new Promise((resolve, reject) => {
+    const p = spawn(server.command, server.args, { stdio: ["pipe", "pipe", "ignore"], env: { ...process.env, ...server.env } });
+    let buf = "";
+    const timer = setTimeout(() => { p.kill(); reject(new Error("probe-server.mjs did not answer ping")); }, 20000);
+    p.stdout.on("data", (d) => {
+      buf += d;
+      for (const line of buf.split("\n")) {
+        let m; try { m = JSON.parse(line); } catch { continue; }
+        if (m?.id !== 2) continue;
+        clearTimeout(timer); p.kill();
+        return resolve(m.result);
+      }
+    });
+    const send = (o) => p.stdin.write(JSON.stringify(o) + "\n");
+    send({ jsonrpc: "2.0", id: 1, method: "initialize", params: { protocolVersion: "2024-11-05", capabilities: {}, clientInfo: { name: "t", version: "0" } } });
+    send({ jsonrpc: "2.0", id: 2, method: "tools/call", params: { name: "ping", arguments: {} } });
+  });
+  const server = JSON.parse(probeToolConfig("probe-0badc0de").mcpConfig).mcpServers.probe;
+  const r = await ping(server);
+  assert.notEqual(r?.isError, true, "the server refused its own ping");
+  assert.equal((r?.content ?? []).map((c) => c.text).join(""), "probe-0badc0de");
+  // Started with no word, it refuses rather than returning something a guess could match.
+  const bare = await ping({ ...server, args: server.args.slice(0, 1) });
+  assert.equal(bare?.isError, true, "a server with no word answered ping");
 });
 
 // ── the tool: three outcomes, never two ──────────────────────────────────────────────────────────────

@@ -104,7 +104,7 @@ const probeWord = (() => {
   if (process.env.MOCK_CODEX_TOOLS_UNUSED || Number(process.env.MOCK_CODEX_MCP_REFUSED || 0) > 0) return null;
   try {
     const toml = readFileSync(join(process.env.CODEX_HOME || "", "config.toml"), "utf8");
-    return toml.match(/\[mcp_servers\.probe\][\s\S]*?CLEAROTRON_PROBE_SENTINEL = "([^"]+)"/)?.[1] ?? null;
+    return toml.match(/\[mcp_servers\.probe\][\s\S]*?args = \["[^"]*", "([^"]+)"\]/)?.[1] ?? null;
   } catch { return null; }
 })();
 

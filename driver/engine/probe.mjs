@@ -80,7 +80,7 @@ const PROBE_SERVER_PATH = fileURLToPath(new URL("./mcp/probe-server.mjs", import
 export function probeToolConfig(sentinel) {
   return {
     mcpConfig: JSON.stringify({ mcpServers: { [PROBE_SERVER]: {
-      command: process.execPath, args: [PROBE_SERVER_PATH], env: { CLEAROTRON_PROBE_SENTINEL: String(sentinel) } } } }),
+      command: process.execPath, args: [PROBE_SERVER_PATH, String(sentinel)], env: {} } } }),
     allowedTools: `mcp__${PROBE_SERVER}__${PROBE_TOOL}`,
   };
 }

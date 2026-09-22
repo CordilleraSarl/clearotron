@@ -8,7 +8,7 @@
 // the turn reports success, and a probe with no tool passed there. So the probe hands the engine this
 // server, asks it to call `ping` once, and passes only when the reply carries what `ping` returned.
 //
-// WHAT IT RETURNS IS THE PROOF. `CLEAROTRON_PROBE_SENTINEL` is a random word the probe mints for each
+// WHAT IT RETURNS IS THE PROOF. Its one argument is a random word the probe mints for each
 // turn and gives only to this process, so a reply that carries it cannot be the model guessing. Read-only;
 // it touches no file, no network and no run.
 import { serve } from "./stdio-server.mjs";
@@ -21,7 +21,7 @@ serve({
     inputSchema: { type: "object", properties: {}, additionalProperties: false },
     annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     handler: async () => {
-      const word = String(process.env.CLEAROTRON_PROBE_SENTINEL ?? "").trim();
+      const word = String(process.argv[2] ?? "").trim();
       return word ? word : { isError: true, text: "ping: this server was started without a word to return" };
     },
   }],
