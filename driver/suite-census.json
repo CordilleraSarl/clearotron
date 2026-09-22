@@ -6983,6 +6983,12 @@
           "skips": 0,
           "todos": 0
         },
+        "providers/signa/test/an-exact-question-rides-the-deterministic-lane.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "providers/signa/test/an-owner-portfolio-sweep-is-a-search.test.mjs": {
           "tests": 4,
           "asserts": 17,
