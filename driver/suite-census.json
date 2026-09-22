@@ -621,6 +621,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-model-of-the-current-generation-is-named-in-every-spelling.test.mjs": {
+          "tests": 4,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "a-name-documented-in-any-example-file-is-documented.test.mjs": {
           "tests": 7,
           "asserts": 16,
@@ -2477,7 +2483,7 @@
         },
         "engine.anthropic.test.mjs": {
           "tests": 65,
-          "asserts": 239,
+          "asserts": 245,
           "skips": 0,
           "todos": 0
         },
@@ -5133,6 +5139,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-engine-floor-can-run-the-current-top-tier.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "the-engine-step-cannot-loop-on-a-menu-nothing-changed.test.mjs": {
           "tests": 17,
           "asserts": 45,
@@ -5237,7 +5249,7 @@
         },
         "the-install-pages-describe-the-install-this-build-performs.test.mjs": {
           "tests": 11,
-          "asserts": 89,
+          "asserts": 90,
           "skips": 0,
           "todos": 0
         },

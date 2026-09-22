@@ -93,10 +93,24 @@ test("tier/alias → claude model alias; a model claude cannot run REFUSES (#238
   assert.equal(claudeModel("sonnet"), "sonnet");
   assert.equal(claudeModel("haiku"), "haiku");
   assert.equal(claudeModel("fable"), "fable");  // registered for the synthesis A/B test (CLEAROTRON_SYNTHESIS_MODEL)
+  // A PINNED FABLE ID RESOLVES. The bare alias on the line above is what hid this: the family reader
+  // below it placed opus, haiku and sonnet only, so the id the vendor's own model page gives for this
+  // tier threw on its way to a program that runs it — measured 2026-09-22, served as claude-fable-5-1.
+  assert.equal(claudeModel("claude-fable-5-1"), "claude-fable-5-1");
+  assert.equal(claudeModel("anthropic/claude-fable-5-1"), "claude-fable-5-1");
   assert.equal(claudeModel("anthropic/claude-opus-5"), "claude-opus-5");  // full catalog id
   assert.equal(claudeModel("anthropic/claude-sonnet-5"), "claude-sonnet-5");  // full catalog id
-  assert.equal(claudeModel("claude-haiku-4-5-20251001"), "haiku");   // a dated bare id is a NAMING form, not a substitution
-  assert.equal(claudeModel("claude-sonnet-5"), "sonnet");   // and so is an undated one: a caller naming it keeps following the family
+  // A CONCRETE ID GOES AS ITSELF. These two returned the bare family alias until 2026-09-22, on the
+  // reasoning that a caller naming a model "keeps following the family". That is the silent un-pinning
+  // this function refuses everywhere else: the caller named a model, and the tier pointed at a different
+  // one the day a newer one shipped. The program accepts both of these ids and reports serving them.
+  assert.equal(claudeModel("claude-haiku-4-5-20251001"), "claude-haiku-4-5-20251001");
+  assert.equal(claudeModel("claude-sonnet-5"), "claude-sonnet-5");
+  assert.equal(claudeModel("anthropic/claude-opus-5-5"), "claude-opus-5-5");
+  assert.equal(claudeModel("claude-opus-5-5"), "claude-opus-5-5");
+  // THE FAMILY WITH NO VERSION IS THE TIER, not a model the program could run.
+  assert.equal(claudeModel("claude-opus"), "opus");
+  assert.equal(claudeModel("anthropic/claude-haiku"), "haiku");
   assert.equal(claudeModel(undefined), undefined);
   // THE CORRUPTION. These four returned an anthropic model and the telemetry logged the alias asked for,
   // so `--model gemini` ran sonnet and every attribution downstream named gemini. They refuse now.

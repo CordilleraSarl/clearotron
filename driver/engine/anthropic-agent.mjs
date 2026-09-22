@@ -156,11 +156,17 @@ const engineMaxBufferChars = () => Math.max(1024, Number(process.env.CLEAROTRON_
 // An alias with no claude equivalent now FAILS LOUD, exactly as `openaiModel` has always done for a
 // non-GPT id. That is the issue's requirement in one line: an unhonoured model override is an error,
 // not a substitution.
-const CLAUDE_MODEL = {
-  opus: "opus", sonnet: "sonnet", haiku: "haiku", fable: "fable",
-  "anthropic/claude-opus-5": "claude-opus-5", "anthropic/claude-sonnet-5": "claude-sonnet-5",
-  "anthropic/claude-sonnet-4-6": "sonnet", "anthropic/claude-haiku-4-5": "haiku",
-};
+// THE CATALOG IDS ARE NOT LISTED HERE ANY MORE, and removing them is what makes one rule cover every
+// id. Four sat here and two of them disagreed with the other two: `anthropic/claude-opus-5` and
+// `anthropic/claude-sonnet-5` went over as those models, while `anthropic/claude-sonnet-4-6` and
+// `anthropic/claude-haiku-4-5` went over as their tier's alias. A caller naming an exact model got it
+// or lost it depending on which of the four they happened to name, and nothing said which.
+//
+// The rule below now answers all four the same way, and no run changes: a stage names its TIER, and the
+// tier words above are still the whole of what a run passes. These ids reach this function only when a
+// caller names one — an override or an experiment arm — and there, being given the model you named is
+// the behaviour the rest of this function already promises.
+const CLAUDE_MODEL = { opus: "opus", sonnet: "sonnet", haiku: "haiku", fable: "fable" };
 export function claudeModel(model) {
   if (!model) return undefined;
   if (CLAUDE_MODEL[model]) return CLAUDE_MODEL[model];
@@ -168,8 +174,29 @@ export function claudeModel(model) {
   // that is a NAMING form of a model claude can actually run, not a substitution of a different one.
   // The family must be named IN the id: a `claude-*` id whose family this build does not recognise
   // throws too, rather than riding the old else-arm into sonnet.
-  const fam = /opus/i.test(model) ? "opus" : /haiku/i.test(model) ? "haiku" : /sonnet/i.test(model) ? "sonnet" : null;
-  if (fam && /^(?:anthropic\/)?claude-/i.test(model)) return fam;
+  // FABLE IS READ HERE TOO, and its absence was a live defect rather than a gap in readiness: the bare
+  // `fable` alias is in the table above, so `CLEAROTRON_SYNTHESIS_MODEL=fable` worked and hid it, while
+  // the pinned id every vendor page names — `claude-fable-5-1` — threw on its way to a program that runs
+  // it. Measured 2026-09-22: the program accepts that id and reports serving `claude-fable-5-1`.
+  const fam = /opus/i.test(model) ? "opus" : /haiku/i.test(model) ? "haiku" : /sonnet/i.test(model) ? "sonnet"
+    : /fable/i.test(model) ? "fable" : null;
+  if (fam && /^(?:anthropic\/)?claude-/i.test(model)) {
+    const bare = String(model).replace(/^anthropic\//i, "").toLowerCase();
+    // A CONCRETE ID GOES TO THE PROGRAM AS ITSELF, AND THAT IS WHAT MAKES A PIN A PIN. It used to come
+    // back as the bare family alias, so a caller who named an exact model got whichever model the tier
+    // pointed at — the same model on the day it was written, a different one the day a newer one
+    // shipped, and nothing to read in between. A silent un-pinning is the substitution this function
+    // exists to refuse, in the one form it still allowed.
+    //
+    // A FAMILY WITH NO VERSION IS THE TIER, not a model: `claude-opus` is what an operator types for a
+    // deployment of that tier, and the program has no model by that name. It keeps following the family.
+    //
+    // Measured against the program rather than assumed (2026-09-22): it accepts `claude-sonnet-5`,
+    // `claude-haiku-4-5-20251001` and `claude-fable-5-1` and reports serving each of them, so passing an
+    // exact id through costs nothing that the alias was buying. Where a caller names an id the program
+    // does not know, it says so and the turn fails loudly — which is the honest end of a bad pin.
+    return /^claude-(?:[a-z]+-\d|\d)/.test(bare) ? bare : fam;
+  }
   throw new Error(`anthropic-agent: no claude model mapped for "${model}" — this engine runs claude only. Pass opus/sonnet/haiku/fable or a concrete claude-* id. (It used to substitute sonnet silently and log the alias you asked for: #238 corruption 3.)`);
 }
 
