@@ -28,6 +28,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, statSync, rmSync }
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { withFreePorts, saidPortWasTaken } from "./helpers/free-port.mjs";
 
 
 // EVERY temp directory this file makes is removed — including ones created inside helpers, and ones
@@ -552,15 +553,11 @@ test("an unreadable token carries the expiry fields too, all null", () => {
 // standalone queue, asking it what the account has spent, and checking it answers from the ledger
 // rather than from nowhere. This is the deployment shape was found on.
 
-/** An ephemeral port, taken and released — PORT=0 never reaches the log line, so it cannot be read back. */
-async function freePort() {
-  const { createServer } = await import("node:net");
-  return await new Promise((resolve, reject) => {
-    const s = createServer();
-    s.once("error", reject);
-    s.listen(0, "127.0.0.1", () => { const { port } = s.address(); s.close(() => resolve(port)); });
-  });
-}
+// An ephemeral port, taken and released — PORT=0 never reaches the log line, so it cannot be read back.
+// Released is not reserved: anything can take the number before the portal binds it, so each boot below
+// runs under `withFreePorts`, which boots again on a fresh number when the portal never answered and said
+// its port was taken.
+const portTaken = (r) => r.status === null && saidPortWasTaken(r);
 
 /**
  * Boot the real service and ask it ONE question. Unlike `boot` above, the child is kept alive past the
@@ -589,13 +586,13 @@ function bootAndGet(overrides, path, { waitMs = 20000, headers = {} } = {}) {
         finish({ status: res.status, json: await res.json(), error: null });
       } catch (e) { finish({ status: null, json: null, error: String(e?.message ?? e) }); }
     });
-    child.on("exit", () => finish({ status: null, json: null, error: "exited before answering" }));
+    // `close`, not `exit`: it fires once stderr is read to the end, so the reason a child died reaches `stderr`.
+    child.on("close", () => finish({ status: null, json: null, error: "exited before answering" }));
     child.on("error", (e) => finish({ status: null, json: null, error: String(e) }));
   });
 }
 
 test("serve() hands the counter the queues the RUNNER drains — the allowance is read, not defaulted (#429)", async () => {
-  const port = await freePort();
   // A standalone queue with the ledger beside it: CLEAROTRON_QUEUE_DIR, no agent workspace anywhere. This is
   // the layout that broke the counter, and the layout the product deploys.
   const inst = tempDir("portal-boot-inst-");
@@ -618,10 +615,10 @@ test("serve() hands the counter the queues the RUNNER drains — the allowance i
   // principal and reads a scoped route over a real socket — the whole, end to end, in the test
   // that was already booting the real process.
   const session = mintSession({ email: "dev@local", secret: BOOT_SECRET });
-  const r = await bootAndGet(
-    bootEnv({ CLEAROTRON_ACCESS_FILE: grantsPath, CLEAROTRON_QUEUE_DIR: qdir, PORTAL_SERVICE_PORT: String(port) }),
+  const r = await withFreePorts(["portal"], ({ portal }) => bootAndGet(
+    bootEnv({ CLEAROTRON_ACCESS_FILE: grantsPath, CLEAROTRON_QUEUE_DIR: qdir, PORTAL_SERVICE_PORT: String(portal) }),
     "/portal/api/usage?account=aurora",
-    { headers: { cookie: `portal_session=${session}`, accept: "application/json" } });
+    { headers: { cookie: `portal_session=${session}`, accept: "application/json" } }), { busy: portTaken });
 
   assert.equal(r.error, null, `the portal never answered: ${r.error}\n${r.stderr}`);
   assert.equal(r.status, 200, `expected an answer; got ${r.status}\n${JSON.stringify(r.json)}`);
@@ -633,13 +630,12 @@ test("serve() hands the counter the queues the RUNNER drains — the allowance i
 test("the same request WITHOUT the cookie is refused by the booted service", async () => {
   // The control for the test above: its 200 is bought by the session, not by a door that lets anything
   // through. Same process, same route, same account — no cookie.
-  const port = await freePort();
   const grantsPath = join(tempDir("portal-boot-grants-"), "grants.json");
   writeFileSync(grantsPath, JSON.stringify({ tenants: { t1: { accounts: ["aurora"], users: { "dev@local": "*" } } } }));
 
-  const r = await bootAndGet(
-    bootEnv({ CLEAROTRON_ACCESS_FILE: grantsPath, PORTAL_SERVICE_PORT: String(port) }),
-    "/portal/api/usage?account=aurora", { headers: { accept: "application/json" } });
+  const r = await withFreePorts(["portal"], ({ portal }) => bootAndGet(
+    bootEnv({ CLEAROTRON_ACCESS_FILE: grantsPath, PORTAL_SERVICE_PORT: String(portal) }),
+    "/portal/api/usage?account=aurora", { headers: { accept: "application/json" } }), { busy: portTaken });
 
   assert.equal(r.error, null, `the portal never answered: ${r.error}\n${r.stderr}`);
   assert.equal(r.status, 401, `a signed-out request must be refused; got ${r.status} ${JSON.stringify(r.json)}`);

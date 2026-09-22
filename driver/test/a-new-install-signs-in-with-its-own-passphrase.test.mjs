@@ -24,6 +24,7 @@ import {
   installCredential, defaultInstallBase, laterStartLines, demoCredentialToReplace,
   establishCredential, credentialPathFor, passphraseResetCommand, INSTALL_CREDENTIAL_FILE,
 } from "../portal-local-auth.mjs";
+import { withFreePorts, saidPortWasTaken } from "./helpers/free-port.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, "..", "..");
@@ -197,20 +198,6 @@ test("the recovery line runs as printed, directory change and all, and resets th
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
-/** `n` distinct ports free right now: each bound on port 0 and read back, all held until every one is chosen, then released. */
-async function freePorts(n) {
-  const { createServer } = await import("node:net");
-  const servers = [];
-  for (let i = 0; i < n; i++) {
-    const server = createServer();
-    await new Promise((resolve, reject) => { server.once("error", reject); server.listen(0, "127.0.0.1", resolve); });
-    servers.push(server);
-  }
-  const ports = servers.map((server) => String(server.address().port));
-  await Promise.all(servers.map((server) => new Promise((resolve) => server.close(resolve))));
-  return ports;
-}
-
 // ── THE REPORTED CASE, AT ITS OWN DOOR: A REAL FIRST START ──────────────────────────────────────────
 //
 // A machine where another install left the shared credential, and a new install that has never started.
@@ -247,24 +234,44 @@ test("the frame's line breaker keeps every line within the width and never split
 test("a real first start, where another install left the shared credential, mints its own and leaves that one alone", { timeout: 120000 }, async () => {
   const home = mkdtempSync(join(tmpdir(), "first-start-"));
   const shared = join(home, ".cordillera", INSTALL_CREDENTIAL_FILE);
-  establishCredential({ path: shared, email: "op@localhost", passphrase: "an earlier install's" });
-  const sharedBefore = readFileSync(shared, "utf8");
+  const stop = async ({ child, closed }) => {
+    child.kill("SIGINT");
+    await Promise.race([closed, new Promise((r) => setTimeout(r, 20000))]);
+    if (child.exitCode === null && child.signalCode === null) child.kill("SIGKILL");
+  };
   // Ports free at the moment it starts, and nothing inherited: the store, the pool and the credential all
   // land under `home`. Not fixed ports: a port something else holds would red this test for a reason that
   // has nothing to do with its name. `start` refuses port 0 itself, so the ports are picked here.
-  const [portal, mcp, client] = await freePorts(3);
-  const child = spawn(process.execPath, [join(REPO, "bin", "start.mjs"), "--no-worker"], {
-    env: { PATH: process.env.PATH, HOME: home, CLEAROTRON_NO_ENV_FILE: "1", PORTAL_LOCAL_USER: "op@localhost",
-      PORTAL_SERVICE_PORT: portal, TRADEMARK_MCP_HTTP_PORT: mcp, CLIENT_MCP_HTTP_PORT: client },
-    stdio: ["ignore", "pipe", "pipe"],
-  });
-  let said = "";
-  child.stdout.on("data", (c) => { said += c; });
-  child.stderr.on("data", (c) => { said += c; });
-  const exited = new Promise((resolve) => child.on("exit", resolve));
-  try {
+  //
+  // Free when read is not free when a door binds, so the start runs under `withFreePorts`: one that never
+  // reached its summary and said a port was taken is stopped, `home` is emptied, and a fresh first start
+  // runs on fresh numbers, the shared credential planted again first.
+  const firstStart = async (ports) => {
+    establishCredential({ path: shared, email: "op@localhost", passphrase: "an earlier install's" });
+    const sharedBefore = readFileSync(shared, "utf8");
+    const child = spawn(process.execPath, [join(REPO, "bin", "start.mjs"), "--no-worker"], {
+      env: { PATH: process.env.PATH, HOME: home, CLEAROTRON_NO_ENV_FILE: "1", PORTAL_LOCAL_USER: "op@localhost",
+        PORTAL_SERVICE_PORT: String(ports.portal), TRADEMARK_MCP_HTTP_PORT: String(ports.mcp),
+        CLIENT_MCP_HTTP_PORT: String(ports.client) },
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    let said = "";
+    child.stdout.on("data", (c) => { said += c; });
+    child.stderr.on("data", (c) => { said += c; });
+    // `close`, not `exit`: it fires once the output is read to the end.
+    const closed = new Promise((resolve) => child.on("close", resolve));
     const deadline = Date.now() + 90000;
     while (!/Sign in as/.test(said) && child.exitCode === null && Date.now() < deadline) await new Promise((r) => setTimeout(r, 250));
+    if (child.exitCode !== null) await closed;
+    return { child, closed, sharedBefore, said: () => said };
+  };
+  const run = await withFreePorts(["portal", "mcp", "client"], firstStart, {
+    busy: (r) => !/Sign in as/.test(r.said()) && saidPortWasTaken(r),
+    discard: async (r) => { await stop(r); rmSync(home, { recursive: true, force: true }); mkdirSync(home); },
+  });
+  const { sharedBefore } = run;
+  const said = run.said();
+  try {
     assert.match(said, /Sign in as/, "start never reached its sign-in summary, so nothing below would be measured");
     assert.ok(existsSync(join(home, "trademark", INSTALL_CREDENTIAL_FILE)),
       "THE REPORTED CASE: the first start did not mint the install's own credential, so it adopted the shared one");
@@ -287,9 +294,7 @@ test("a real first start, where another install left the shared credential, mint
     for (const l of withheld) assert.ok(l.length <= "  │  ".length + 64, `a withheld line runs past the frame's width: ${l}`);
     assert.doesNotMatch(said, /minted on an earlier start/, "a first start must not claim an earlier one");
   } finally {
-    child.kill("SIGINT");
-    await Promise.race([exited, new Promise((r) => setTimeout(r, 20000))]);
-    if (child.exitCode === null && child.signalCode === null) child.kill("SIGKILL");
+    await stop(run);
     rmSync(home, { recursive: true, force: true });
   }
 });

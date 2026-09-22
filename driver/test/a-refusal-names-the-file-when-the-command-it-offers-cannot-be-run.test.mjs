@@ -22,25 +22,16 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { createServer } from "node:net";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { handRunEnv, assertReadItsEnvFile } from "./drive-env.mjs";
+import { withFreePorts } from "./helpers/free-port.mjs";
 
 const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 const START = join(ROOT, "bin", "start.mjs");
 const ONBOARD = join(ROOT, "bin", "onboard.mjs");
-
-/** An ephemeral port, taken and released — this drive must get PAST the port probe to reach its subject. */
-async function freePort() {
-  return await new Promise((resolve, reject) => {
-    const s = createServer();
-    s.once("error", reject);
-    s.listen(0, "127.0.0.1", () => { const { port } = s.address(); s.close(() => resolve(port)); });
-  });
-}
 
 /**
  * Drive the REAL command into its missing-values refusal, in a HOME of its own.
@@ -161,14 +152,19 @@ function readItsEnvFile(d) {
   return assertReadItsEnvFile(d.said, d.envFile);
 }
 
-let PORTS = null;
 let READ = null;      // a drive that read its own .env
 let UNREAD = null;    // the same drive, opted out of .env files
 
+// This drive must get PAST the port probe to reach its subject, and a port read from the operating
+// system can be taken by anything before the child binds it. So each drive runs under `withFreePorts`,
+// which repeats it on fresh numbers when the command says a port was taken, and removes the scratch
+// home of every attempt it throws away.
+const DOORS = ["portal", "mcp", "client"];
+const discard = (d) => d.clean();
+
 test.before(async () => {
-  PORTS = { portal: await freePort(), mcp: await freePort(), client: await freePort() };
-  READ = driveStart(PORTS);
-  UNREAD = driveStart(PORTS, { CLEAROTRON_NO_ENV_FILE: "1" });
+  READ = await withFreePorts(DOORS, (ports) => driveStart(ports), { discard });
+  UNREAD = await withFreePorts(DOORS, (ports) => driveStart(ports, { CLEAROTRON_NO_ENV_FILE: "1" }), { discard });
 });
 test.after(() => { READ?.clean(); UNREAD?.clean(); });
 

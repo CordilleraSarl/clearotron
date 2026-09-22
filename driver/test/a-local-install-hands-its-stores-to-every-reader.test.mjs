@@ -20,28 +20,27 @@ import { fileURLToPath } from "node:url";
 import { handRunEnv, assertReadItsEnvFile } from "./drive-env.mjs";   // the connector and doctor must read the file start wrote
 import { startPaths, storesForOtherReaders } from "../../bin/start.mjs";
 import { makeRecipeService } from "../recipe-service.mjs";
+import { withFreePorts, saidPortWasTaken } from "./helpers/free-port.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, "..", "..");
 const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-/** `n` distinct ports free right now: each bound on port 0 and read back, all held until every one is chosen. */
-async function freePorts(n) {
-  const { createServer } = await import("node:net");
-  const servers = [];
-  for (let i = 0; i < n; i++) {
-    const server = createServer();
-    await new Promise((resolve, reject) => { server.once("error", reject); server.listen(0, "127.0.0.1", resolve); });
-    servers.push(server);
-  }
-  const ports = servers.map((server) => String(server.address().port));
-  await Promise.all(servers.map((server) => new Promise((resolve) => server.close(resolve))));
-  return ports;
-}
-
-/** A real foreground first start in `home`, stopped once it has printed its sign-in summary. */
+/**
+ * A real foreground first start in `home`, stopped once it has printed its sign-in summary.
+ *
+ * The ports are read from the operating system and released, and anything can take one before a door
+ * binds it. So the start runs under `withFreePorts`: one that never reached its summary and said a port
+ * was taken is run again on fresh numbers, in `home` emptied first, so every attempt is a first start.
+ */
 async function firstStart(home) {
-  const [portal, mcp, client] = await freePorts(3);
+  return withFreePorts(["portal", "mcp", "client"], (ports) => firstStartOn(home, ports), {
+    busy: (said) => !/Sign in as/.test(said) && saidPortWasTaken(said),
+    discard: () => { rmSync(home, { recursive: true, force: true }); mkdirSync(home); },
+  });
+}
+async function firstStartOn(home, ports) {
+  const [portal, mcp, client] = [ports.portal, ports.mcp, ports.client].map(String);
   // NOTHING INHERITED, and the opt-out named: `start` must not be configured by a file on this box, and it
   // writes the file under `home` whether or not it reads one.
   const child = spawn(process.execPath, [join(REPO, "bin", "start.mjs"), "--no-worker"], {
@@ -52,7 +51,9 @@ async function firstStart(home) {
   let said = "";
   child.stdout.on("data", (c) => { said += c; });
   child.stderr.on("data", (c) => { said += c; });
-  const exited = new Promise((resolve) => child.on("exit", resolve));
+  // `close`, not `exit`: it fires once the output is read to the end, so a start that refused a port has
+  // said so in `said` before the retry asks.
+  const exited = new Promise((resolve) => child.on("close", resolve));
   try {
     const deadline = Date.now() + 90000;
     while (!/Sign in as/.test(said) && child.exitCode === null && Date.now() < deadline) await new Promise((r) => setTimeout(r, 250));

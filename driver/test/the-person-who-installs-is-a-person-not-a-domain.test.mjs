@@ -38,6 +38,7 @@ import { childEnv, installPaths, installerGrants } from "../../bin/start.mjs";
 import { askSignIn, composeEnvBody, readEnvFile } from "../../bin/onboard.mjs";
 import { assertGrantsShape, resolvePerson } from "../../shared/scope.mjs";
 import { handRunEnv, assertReadItsEnvFile } from "./drive-env.mjs";
+import { withFreePorts } from "./helpers/free-port.mjs";
 
 const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 const START = join(ROOT, "bin", "start.mjs");
@@ -352,30 +353,24 @@ test("an organisation is filed only into a file that holds none", () => {
 
 // ── 5. the same file, written by start itself ──────────────────────────────────────────────────────
 
-/** Ports nobody holds, stated explicitly so the probe checks them and moves none. */
-async function freePorts(n) {
-  const servers = await Promise.all(Array.from({ length: n }, () => new Promise((resolve) => {
-    const s = createServer(() => {});
-    s.listen(0, "127.0.0.1", () => resolve(s));
-  })));
-  const ports = servers.map((s) => String(s.address().port));
-  await Promise.all(servers.map((s) => new Promise((r) => s.close(r))));
-  return ports;
-}
-
 /**
  * Drive start through the grants file and stop it at the very next step: the revocation list, pointed
  * under a regular file so it cannot be created. The grants file is on disk when start exits, nothing has
  * been spawned, and that refusal's wording is the evidence the grants block ran rather than was skipped.
+ *
+ * The ports are stated explicitly so the probe checks them and moves none, and a port read from the
+ * operating system can be taken before the probe asks. So the drive runs under `withFreePorts`, which
+ * repeats it on fresh numbers when start says a port was taken. Repeating it in the same home is safe:
+ * the port probe refuses before start writes anything.
  */
 async function driveThroughTheGrantsFile(home, args) {
-  const [portal, mcp, client] = await freePorts(3);
   const blocker = join(home, "not-a-directory");
   writeFileSync(blocker, "");
-  const run = driveStartIn(home, args, {
-    PORTAL_SERVICE_PORT: portal, TRADEMARK_MCP_HTTP_PORT: mcp, CLIENT_MCP_HTTP_PORT: client,
+  const run = await withFreePorts(["portal", "mcp", "client"], (ports) => driveStartIn(home, args, {
+    PORTAL_SERVICE_PORT: String(ports.portal), TRADEMARK_MCP_HTTP_PORT: String(ports.mcp),
+    CLIENT_MCP_HTTP_PORT: String(ports.client),
     TRADEMARK_MCP_TOKEN_DENYLIST: join(blocker, "token-denylist"),
-  });
+  }));
   assert.match(run.said, /could not use the revocation list/,
     `the drive did not stop at the step after the grants file, so this arm did not measure its subject:\n${run.said}`);
   return run;
