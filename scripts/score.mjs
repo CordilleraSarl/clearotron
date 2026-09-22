@@ -245,9 +245,15 @@ function scopeOf(runDir, ref) {
   const instructed = readJson(driverDir(runDir, "instructed-scope.json"));
   const cls = instructed?.classes ?? instructed?.nice_classes ?? null;
   const terr = instructed?.jurisdictions ?? instructed?.territories ?? null;
+  // A worldwide request is recorded as a MODE, not a list entry: intake takes the word off the territory
+  // list and stamps `geography.mode` (enqueue-schema.mjs, GEOGRAPHY_MODES). So a worldwide run carries no
+  // territories, and falling through to the reference's own scope would score the run against what the
+  // lawyer wrote there instead of what the run was asked. The run's record wins, stated as the mode.
+  const worldwide = instructed?.geography?.mode === "worldwide";
   return {
     classes: Array.isArray(cls) && cls.length ? cls.map(String) : (ref.scope?.classes ?? []).map(String),
-    territories: Array.isArray(terr) && terr.length ? terr.map(String) : (ref.scope?.territories ?? []).map(String),
+    territories: Array.isArray(terr) && terr.length ? terr.map(String)
+      : worldwide ? ["worldwide"] : (ref.scope?.territories ?? []).map(String),
   };
 }
 
