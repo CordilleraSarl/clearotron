@@ -30,7 +30,7 @@
 import { readFileSync, writeFileSync, renameSync, existsSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { driverDir } from "../../../shared/driver-dir.mjs";   //
-import { PLAN_PREDICATES, PLAN_MAX_OR_WIDTH, PLAN_MAX_NAME_LENGTH, fingerprint, ownerIntersectionGap, resolveRegions, houseElementOf, withoutHouseElementTerms } from "../../register-plan.mjs";
+import { PLAN_PREDICATES, PLAN_MAX_OR_WIDTH, PLAN_MAX_NAME_LENGTH, fingerprint, ownerIntersectionGap, resolveRegions, houseElementOf, withoutHouseElementTerms, containsFormSubstitution } from "../../register-plan.mjs";
 import { entryTermIssues } from "../../../providers/_shared/term-shape.mjs";
 import { isNonLatinTerm, romanizationRefusal, romanizationSpellings, nativeScriptIndexGap } from "../../../providers/_shared/script-form.mjs";
 
@@ -214,6 +214,19 @@ export function mintSupplementalEntries(axis, proposals, { existingQids = new Se
         for (const r of covered) regions.push(r);
       }
     }
+    // A CONTAINS-FORM PROPOSAL ON A TERM SHORTER THAN THE REGISTER'S FLOOR is asked on the exact form,
+    // the rule the compiler applies to its own goods-narrowed questions and saturation probes: the
+    // register refuses the contains form for a term that short, so the question as proposed would come
+    // back as an error rather than an answer. Same classes, goods words and scope, one entry for one,
+    // and the entry says so. Decided BEFORE the fingerprint, so the qid names the question actually
+    // asked. A stack is switched only when every member is below the floor; a mixed stack keeps the
+    // form the model chose, and its short members are refused and disclosed on their own.
+    let askedPredicate = predicate;
+    let substituted = null;
+    if (predicate === "default") {
+      const subs = (terms ?? [term]).map((t) => containsFormSubstitution(t, capabilities));
+      if (subs.length && subs.every(Boolean)) { askedPredicate = "exact"; substituted = subs[0]; }
+    }
     const anchor = terms ? terms[0] : term;
     // The fingerprint (⇒ the qid) deliberately EXCLUDES the romanization: the qid names the QUESTION
     // (which term, which predicate, which scope) and the romanisation is carriage, not a different
@@ -226,9 +239,9 @@ export function mintSupplementalEntries(axis, proposals, { existingQids = new Se
     // what the filings must cover. Excluded, it would mint the crowd's own qid and be read as a
     // re-proposal of the question it exists to replace, so the first move against a crowd would
     // silently become no move at all.
-    const fp = String(fingerprint({ predicate, term: term || null, terms: terms || null, nice_classes: nice, regions,
+    const fp = String(fingerprint({ predicate: askedPredicate, term: term || null, terms: terms || null, nice_classes: nice, regions,
       ...(owner ? { owner } : {}), ...(goodsWords.length ? { goods: [...goodsWords].sort() } : {}) })).replace(/^fnv1a:/, "");
-    const qid = `supp:${axis}:${predicate}:${slug(anchor)}:${fp.slice(0, 8)}`;
+    const qid = `supp:${axis}:${askedPredicate}:${slug(anchor)}:${fp.slice(0, 8)}`;
     if (existingQids.has(qid) || minted.some((e) => e.qid === qid)) {
       reused.push(qid);
       if (romanizedTerms && existingQids.has(qid)) enriched.push({ qid, term, romanizedTerms });
@@ -237,7 +250,8 @@ export function mintSupplementalEntries(axis, proposals, { existingQids = new Se
     if (budget <= 0) { issue(`per-axis cap ${axisMax} reached — assess whether an existing supplemental already covers this`); continue; }
     budget -= 1;
     const entry = {
-      qid, axis, predicate,
+      qid, axis, predicate: askedPredicate,
+      ...(substituted ? { contains_substituted: substituted } : {}),
       ...(terms ? { terms } : { term }),
       ...(romanizedTerms ? { romanizedTerms } : {}),
       ...(owner ? { owner } : {}),
