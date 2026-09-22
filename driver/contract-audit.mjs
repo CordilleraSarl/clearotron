@@ -584,7 +584,7 @@ export function anchorWindows(src, anchor, cap = 40) {
 //                                               driver module, and is delivered by perplexity-server.mjs
 //   from an MCP import closure over the paths   over-attributes. Transitively, coverage-form.mjs becomes
 //                                               a "tool response" through coverage-server → coverage-tool
-//                                               → coverage-form, when pipeline.mjs:3553 in fact appends
+//                                               → coverage-form, when pipeline.mjs coverageFormBrief in fact appends
 //                                               its brief to the STAGE MESSAGE
 //
 // Both are wrong on a real row, so neither ships. The surface is DECLARED, and what the code does is

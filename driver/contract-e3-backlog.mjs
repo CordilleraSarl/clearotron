@@ -62,7 +62,7 @@
 // rows before this shape was chosen, and each is wrong on a live row: reading the surface off the file
 // that CONTAINS the anchor calls common-law-half a driver module (connotation-search.mjs authors it;
 // perplexity-server.mjs delivers it), and an MCP import closure calls register-digest's brief a tool
-// response through coverage-server → coverage-tool → coverage-form, when pipeline.mjs:3553 appends it to
+// response through coverage-server → coverage-tool → coverage-form, when pipeline.mjs coverageFormBrief appends it to
 // the stage message. The finding is precisely that authorship and delivery come apart, so no function of
 // the authored path can decide the answer.
 //
@@ -879,7 +879,7 @@ export const E3_EVIDENCE_UNRESOLVED = [
  * multi-witness rows were settled by the site their anchor resolves at (narrative-refutation to its
  * SKILL.md, two synthesis rows to stages.mjs). Two were decided by reading the delivering call site:
  * common-law-half is `tool-response` (perplexity-server.mjs:111), register-digest is `stage-message`
- * (pipeline.mjs:3553 appends coverageFormBrief to the dispatch).
+ * (pipeline.mjs, where coverageFormBrief is appended to the dispatch).
  */
 // 35 -> 32 stage-message. The three rows that left were the send stages' dictated line shapes
 // — `notify`'s verbatim-HTML instruction and the two chat pings' EXACTLY-this-text lines. They were not
