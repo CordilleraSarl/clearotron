@@ -78,6 +78,50 @@ export const PROSE_PARTS = {
   campaignShape: ".campaignShape.txt",   // P2-C (Round-2 §8a): campaign-shape facts — stated launch shape
 };
 
+// ── ONE GOODS DESCRIPTION, TWO SPELLINGS, AND EVERY READER GETS THE SAME ANSWER ────────────────────
+//
+// Intake accepts a goods description under the current field or under the older spelling a forwarding
+// agent may still send. That acceptance was the gate's private knowledge: the scope stamp read the
+// current field alone, so a job written the older way passed intake and recorded that the matter named
+// no goods. Both sites were individually right and nothing compared them.
+//
+// Fixing the scope stamp alone moved the seam rather than closing it. Ten other readers — the clearance
+// and knockout prompts, the pharmaceutical test, the product-context derivation, the portal's own row
+// and the plan preview — still read the current field, so the scope file would carry a value the
+// prompts never saw, and the validator comparing the two would report the disagreement as a fault in
+// the frame.
+//
+// SO THE FOLD HAPPENS ONCE, WHERE THE JOB IS ASSEMBLED FOR A RUN, and every reader downstream sees one
+// field. Nothing is written back to the queue file: the manifest stays exactly as it was filed, which is
+// the same rule the intake gate follows about stamping derived values onto a job.
+//
+// Here, in the module that already owns the queue's own vocabulary, because the gate and the assembly
+// must never hold two opinions about what counts. A hand-copied predicate is how they drifted the first
+// time.
+
+/** The field names a goods description may arrive under, newest first. */
+export const GOODS_FIELDS = ["goods", "use"];
+
+/** The goods description a job carries under any accepted spelling, or null. Pure. */
+export function goodsOf(job) {
+  for (const f of GOODS_FIELDS) {
+    const v = job?.[f];
+    if (v != null && String(v).trim()) return v;
+  }
+  return null;
+}
+
+/**
+ * The same job with its goods description under the current field, whichever spelling it arrived in.
+ * Returns the job unchanged when there is nothing to fold, so a job already on the current field is
+ * byte-identical and no caller has to ask which it got.
+ */
+export function withFoldedGoods(job) {
+  const goods = goodsOf(job);
+  if (goods == null || job?.goods === goods) return job;
+  return { ...job, goods };
+}
+
 /** A consumed claim's sidecars, swept together by runner.mjs cleanupClaimSidecars. */
 export const CLAIM_SIDECAR_SUFFIXES = [".pid", ".meta", ".skips"];
 

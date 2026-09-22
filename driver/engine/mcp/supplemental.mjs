@@ -107,6 +107,15 @@ export function mintSupplementalEntries(axis, proposals, { existingQids = new Se
       if (!isNonLatinTerm(term)) { issue(`a romanization belongs ONLY on a non-Latin term — "${term.slice(0, 40)}" is already Latin script, so this romanization transliterates a DIFFERENT string; drop it or fix the term`); continue; }
       romanizedTerms = romanizationSpellings(romanRaw);
     }
+    // THE GOODS NARROWING, validated where every other field is. Whole words or short phrases as a
+    // specification writes them; a wildcard is a hard refusal on this field at the register, and an
+    // operator word inside an item is stripped downstream by the shared reader, so nothing here needs
+    // to invent a second rule for either.
+    const goodsWords = (Array.isArray(p.goods_words) ? p.goods_words : (typeof p.goods_words === "string" ? [p.goods_words] : []))
+      .map((w) => String(w ?? "").trim()).filter(Boolean);
+    if (p.goods_words != null && !goodsWords.length) { issue("goods_words, when present, must carry at least one word"); continue; }
+    if (goodsWords.some((w) => /[*?]/.test(w))) { issue("a goods word carries a wildcard, which this register refuses on that field"); continue; }
+    if (goodsWords.length && predicate === "owner") { issue("goods_words narrows a MARK-TEXT question; on predicate:owner the owner name is the term"); continue; }
     const term_literal = p.term_literal === true;
     // A1 — the same term-shape/term-predicate lint the plan freeze enforces, at the PROPOSAL seam:
     // the model gets the reason IN-TURN (rejected[]) and can re-propose the mark-shaped term — a
@@ -212,7 +221,13 @@ export function mintSupplementalEntries(axis, proposals, { existingQids = new Se
     // with the Latin form added — the exact wedge shape the regions inheritance above exists to kill.
     // Instead a re-proposal that adds a romanisation to a stored bare qid ENRICHES it (below), the
     // same field-level, never-term-changing merge extendRegisterPlan applies to the dictated plan.
-    const fp = String(fingerprint({ predicate, term: term || null, terms: terms || null, nice_classes: nice, regions, ...(owner ? { owner } : {}) })).replace(/^fnv1a:/, "");
+    // …and it deliberately INCLUDES the goods narrowing, for the opposite reason. A goods-limited
+    // re-ask of a crowded question is the same term, predicate, classes and scope — it differs only by
+    // what the filings must cover. Excluded, it would mint the crowd's own qid and be read as a
+    // re-proposal of the question it exists to replace, so the first move against a crowd would
+    // silently become no move at all.
+    const fp = String(fingerprint({ predicate, term: term || null, terms: terms || null, nice_classes: nice, regions,
+      ...(owner ? { owner } : {}), ...(goodsWords.length ? { goods: [...goodsWords].sort() } : {}) })).replace(/^fnv1a:/, "");
     const qid = `supp:${axis}:${predicate}:${slug(anchor)}:${fp.slice(0, 8)}`;
     if (existingQids.has(qid) || minted.some((e) => e.qid === qid)) {
       reused.push(qid);
@@ -226,6 +241,12 @@ export function mintSupplementalEntries(axis, proposals, { existingQids = new Se
       ...(terms ? { terms } : { term }),
       ...(romanizedTerms ? { romanizedTerms } : {}),
       ...(owner ? { owner } : {}),
+      // Carried as `goods_text`, the field the plan and every connector already speak — the tool calls
+      // it `goods_words` because that is what the manual and the manifest call it to the model.
+      ...(goodsWords.length ? { goods_text: goodsWords } : {}),
+      // What this question REPLACED. The ledger shows the crowd and its narrowing together, each with
+      // its own count, so a crowd never reads as a question nobody answered.
+      ...(typeof p.narrows === "string" && p.narrows.trim() ? { narrows: p.narrows.trim().slice(0, 200) } : {}),
       ...(term_literal ? { term_literal: true } : {}),
       nice_classes: nice, regions,
       expected_kind: "enumerate",

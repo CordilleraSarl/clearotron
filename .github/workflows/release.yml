@@ -267,6 +267,13 @@ jobs:
       - name: Every release note is written for the person who reads it
         run: node scripts/release-notes-lint.mjs
 
+      # THE SIZE OF WHAT IS ABOUT TO BE PUBLISHED, measured here as well as on every push. CI catches
+      # growth as it arrives; this catches the release that carries growth CI never saw — a tag cut
+      # from a branch that skipped it, or a build step that adds weight only in this workflow. The
+      # package is large by design; what this refuses is a change to that nobody decided.
+      - name: The package has not grown past its recorded budget
+        run: node scripts/package-size-budget.mjs --check
+
       # ALSO BEFORE THE VERSION STEP, and for a different failure. The step above judges what a note SAYS;
       # this one judges whether the same note is about to be counted twice. A pre-release consumes a note by
       # moving it into `.changeset/pre/`, and a branch carrying its own copy of work main already has can
@@ -984,6 +991,17 @@ jobs:
 
   publish:
     name: Publish the release to npm
+    # A DEPRECATE-ONLY DISPATCH IS NOT A REHEARSAL, and the `cut` default is why it looked like one.
+    # `cut` is a choice defaulting to `rehearse`, so an operator who fills in only `deprecate-below`
+    # sends `cut: rehearse` without asking for anything of the sort. This job took that at face value,
+    # ran, and `npm publish --dry-run` contacted the registry and was refused — "cannot publish over the
+    # previously published versions" — because main's version was already out. The deprecations applied
+    # and the run went red for a publish nobody asked for.
+    #
+    # So the rehearsal branch requires that no deprecation was asked for. A genuine rehearsal is
+    # unchanged; a dispatch that also names a real `cut` never reached this branch anyway, and still
+    # publishes through the deciders below.
+    #
     # BOTH DECIDERS ARE NEEDED AND EITHER MAY BE SKIPPED. `version` runs on a push to main and `pending`
     # on the cron, so on any given run one of them did not happen — which is why the condition opens with
     # `!failure() && !cancelled()` rather than relying on the default, and why a skipped decider reads as
@@ -992,7 +1010,7 @@ jobs:
     if: >-
       !failure() && !cancelled()
       && github.repository == 'CordilleraSarl/clearotron'
-      && ((github.event_name == 'workflow_dispatch' && inputs.cut == 'rehearse')
+      && ((github.event_name == 'workflow_dispatch' && inputs.cut == 'rehearse' && inputs.deprecate-below == '')
           || needs.version.outputs.cut == 'true'
           || needs.pending.outputs.cut == 'true')
     runs-on: ubuntu-latest
@@ -1374,7 +1392,7 @@ jobs:
       !failure() && !cancelled()
       && github.repository == 'CordilleraSarl/clearotron'
       && (needs.awaited.outputs.cut == 'true'
-          || (github.event_name == 'workflow_dispatch' && inputs.cut == 'rehearse'))
+          || (github.event_name == 'workflow_dispatch' && inputs.cut == 'rehearse' && inputs.deprecate-below == ''))
     runs-on: ubuntu-latest
     timeout-minutes: 30
     # THIS NAME IS THE REGISTRY'S, AND IT IS ALL IT IS NOW. npm's trusted publisher for this package is

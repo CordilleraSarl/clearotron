@@ -1583,7 +1583,7 @@ if (isMain) {
   // Owner, in session, on his first real start: "critical, it started and I still see a demo report in
   // the actual product. Should not be there — should ONLY be in demo. Proper product should have no
   // previous reports." Measured on that box: a fictional clearance sat in
-  // /home/clearotron/trademark/pool — the directory that install publishes REAL CLIENT MATTERS into,
+  // the installed pool directory — the one that install publishes REAL CLIENT MATTERS into,
   // written the moment `start` first ran.
   //
   // DORMANT, NOT DELETED, and that is the ruling's own shape rather than a softer reading of it. His

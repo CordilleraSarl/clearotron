@@ -1923,7 +1923,16 @@ export async function runCheck() {
         } catch (e) { return { say: problem, text: billingRefusalWords(String(e?.message ?? e)) }; }
       };
       const here = billingOf(engineId, envForResolve);
-      here.say(here.text);
+      // A TICK IS A CLAIM ABOUT SOMETHING THAT RESOLVED. Measured on a clean container with no reasoning
+      // CLI and no settings file: the Engine block said demo mode, no program on PATH, nothing to probe —
+      // and this line still printed a green tick for a billing mode. `billingOf` answers from the default
+      // when nothing is set, and the default is not a fact about this machine.
+      //
+      // So where no engine program resolves, the same words are INFORMATION rather than a tick. Nothing
+      // is wrong, which is why it is not a warning either: the rest of that run reads honestly, and this
+      // was the only line claiming a verdict it had not reached.
+      const engineResolved = !!(bin?.path && bin.executable && !bin.relative);
+      (engineResolved || here.say === problem ? here.say : info)(here.text);
       // AND AS THE SERVICES READ IT, when this machine runs them and that reading differs. The line above is
       // this command's configuration; the services read their own file, and a start never replaces a line
       // in it. So a machine whose services pay through a cloud account printed "billing: subscription" here,
@@ -2126,7 +2135,7 @@ export async function runCheck() {
       // One run of this command reported the SAME variable as both set and unset, and concluded a
       // production box was a demo install:
       //
-      //   ✓ CLEAROTRON_CUSTOMERS_DIR=/home/clearotron/trademark/config/profiles (.env)
+      //   ✓ CLEAROTRON_CUSTOMERS_DIR=$HOME/trademark/config/profiles (.env)
       //   · profiles resolve from …/node_modules/clearotron/driver/profiles — THE BUNDLED DEMO ROSTER,
       //     because CLEAROTRON_CUSTOMERS_DIR is unset.
       //
@@ -3655,7 +3664,7 @@ const confirmOrKey = async (q, def = true, { key = true, what = "key" } = {}) =>
     if (["n", "no"].includes(a)) return { yes: false, value: null };
     if (key && looksLikeAKey(raw)) {
       info(`that looks like the ${what} itself, so it is taken as the answer. It was not shown.`);
-      info(`received — ${raw.length} characters, ending …${raw.slice(-4)}`);
+      info(`received — ${raw.length} characters`);
       return { yes: true, value: raw };
     }
     say("  Please answer y or n.");
@@ -3688,10 +3697,23 @@ const askValue = async (q, { def = "", secret = false, skippable = false, skippe
     const a = secret ? await askSecretRaw(prompt) : await askRaw(prompt);
     const v = a || def;
     if (present(v)) {
-      // A masked prompt CONFIRMS what it received: the reader cannot see what
-      // they typed, and a paste that half-landed looks identical to one that worked. Length and the
-      // last four characters are the vendor-dashboard convention for naming a key without showing it.
-      if (secret) info(`received — ${v.length} characters, ending …${v.slice(-4)}`);
+      // A masked prompt CONFIRMS what it received: the reader cannot see what they typed, and a paste
+      // that half-landed looks identical to one that worked. The LENGTH is that confirmation now, and
+      // the last four characters are gone.
+      //
+      // THE TAIL WAS FOUR LIVE CHARACTERS OF A KEY ON STDOUT, on every run. The vendor-dashboard
+      // convention it copied is a page you are already signed in to, read once; this is a line that
+      // outlives the moment in a script's output, a CI job, a tee'd install or an assistant's
+      // transcript — ours had to be masked by hand.
+      //
+      // NOT GATED ON A TERMINAL, which is what the passphrase does. That gate is right there and wrong
+      // here: the leak path this closes includes an assistant driving the terminal, and a session like
+      // that has a pty, so `isTTY` is true and the tail would still land in the transcript. A gate that
+      // passes in the case you are defending against is not a defence.
+      //
+      // Length alone still catches the paste this line exists to catch: a truncated paste is a
+      // different number of characters, and that is the failure the reader cannot otherwise see.
+      if (secret) info(`received — ${v.length} characters`);
       return v;
     }
     if (skippable) { if (skipped) info(skipped); return null; }

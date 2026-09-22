@@ -33,7 +33,38 @@ export type Load<T> = {
  * useCallback would otherwise turn this into an infinite request loop, which is exactly the kind of
  * mistake that only shows up as a rate-limit in production.
  */
-export function useLoad<T>(fetcher: () => Promise<Result<T>>, deps: readonly unknown[]): Load<T> {
+/**
+ * A request started before React mounts anything, for the first screen to consume.
+ *
+ * WHY THIS EXISTS. The shell asks `/portal/api/me` and draws nothing but a frame until it answers; no
+ * screen is mounted behind that frame, so the list a screen wants is not even REQUESTED until the
+ * identity call has come back. The reader therefore waits for two round trips in series, and whatever
+ * one costs is paid twice. Measured on a copy of the production store, the portal's own work on that
+ * path is about 25 ms cold and under 10 ms warm — so almost all of that wait is the trips themselves.
+ *
+ * It is NOT an extra request. The screen consumes this answer instead of making its own, once, on its
+ * first mount; a reload or a poll goes to the fetcher as it always did. The per-identity rate budget is
+ * shared across a person's tabs, so a prefetch that ADDED a call would be paid for on every page load.
+ *
+ * Deliberately keyed and consumed ONCE. A second screen mounting later must ask for itself rather than
+ * be handed an answer from before the shell knew who was signed in.
+ */
+const startedEarly = new Map<string, Promise<unknown>>()
+
+export function startEarly<T>(key: string, fetcher: () => Promise<Result<T>>): void {
+  if (!startedEarly.has(key)) startedEarly.set(key, fetcher())
+}
+
+/** The early answer for this key, if one is still waiting to be claimed. Claiming it removes it. */
+function claimEarly<T>(key: string | undefined): Promise<Result<T>> | null {
+  if (!key) return null
+  const p = startedEarly.get(key)
+  if (!p) return null
+  startedEarly.delete(key)
+  return p as Promise<Result<T>>
+}
+
+export function useLoad<T>(fetcher: () => Promise<Result<T>>, deps: readonly unknown[], early?: string): Load<T> {
   const [result, setResult] = useState<Result<T> | null>(null)
   const [loading, setLoading] = useState(true)
   const [nonce, setNonce] = useState(0)
@@ -60,7 +91,9 @@ export function useLoad<T>(fetcher: () => Promise<Result<T>>, deps: readonly unk
     if (seenKey.current !== null && seenKey.current !== depsKey) setResult(null)
     seenKey.current = depsKey
     setLoading(true)
-    void fetcherRef.current().then((r) => {
+    // The early request, where one was started before this screen existed. Claimed once: a reload or a
+    // poll runs the fetcher, so nothing downstream can be served an answer older than its own question.
+    void (claimEarly<T>(early) ?? fetcherRef.current()).then((r) => {
       // A response that arrives after the account switched away must not overwrite the new one's data.
       if (!live) return
       setResult(r)

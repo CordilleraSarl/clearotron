@@ -181,7 +181,13 @@ export function uncarriedCoverageLimits(rows, ledger) {
   if (!Array.isArray(ledger) || !ledger.length) return null;
   const limited = ledger.filter((r) => {
     const st = String(r?.status ?? "").trim();
-    return st !== "" && st !== "confirmed-clean" && st !== "note";
+    // `withheld-by-judgment` sits beside `confirmed-clean` here, and the reason is the opposite one.
+    // A clean row has nothing to carry. A withheld row is a family the reading turn chose NOT to open,
+    // having read the identical question as a list and found what it needed — that is where the work
+    // was spent, not a slice the run could not clear, and ruling 111 keeps it out of the report
+    // entirely. Demanding it be carried would put a "we did not search this" line in front of a lawyer
+    // about a decision that made the search better.
+    return st !== "" && st !== "confirmed-clean" && st !== "note" && st !== "withheld-by-judgment";
   });
   if (!limited.length) return null;                       // the run records no limit: nothing to carry
   const carried = (rows ?? []).some((r) => {
@@ -201,6 +207,66 @@ export function uncarriedCoverageLimits(rows, ledger) {
  * could assert either could waive its own contract — the same reason the reviewer's transport takes
  * `receiptPresent` from the driver rather than from the call.
  */
+/**
+ * The coverage rows a client may see, with every withheld family's row removed. PURE.
+ *
+ * `withheld-by-judgment` is the reading turn saying it chose not to open a family — it read the
+ * identical question as a list, found what it needed, and spent the work there. That is a decision
+ * about where effort went, not a gap in the client's search, and ruling 111 keeps it in the run record
+ * and the coverage ledger alone.
+ *
+ * Applied here rather than trusted to the model, because the model is the surface that can get it
+ * wrong: it authors these rows, it has been told the family was withheld, and a row reading "we did
+ * not search this" in front of a lawyer is the sentence ruling 111 forbids — about a decision that
+ * made the search better. The LEDGER is the authority on which families were withheld.
+ *
+ * A row for a family the ledger holds as anything else is untouched, and that direction matters more
+ * than this one: a documented limit dropped by accident is a disclosure the reader is owed and does
+ * not get.
+ */
+export function withoutWithheldRows(rows, ledger) {
+  // A FAMILY IS ONLY WITHHELD IF THE LEDGER HOLDS NOTHING ELSE ABOUT IT. A family can be withheld at
+  // the axis level AND still carry a documented limit on one of its slices — measured: an axis whose
+  // whole-axis row is withheld while `primary-sweep (exact: <mark> [cl 25])` is a disclosed limit the
+  // synthesis gate then demands be carried. Dropping by family name alone deleted the carrying row and
+  // the run failed, which is the worse error stated twice over: a disclosure the reader is owed, gone,
+  // and a run that does not deliver.
+  //
+  // So a family qualifies only when EVERY ledger row for it is withheld. One row saying anything else
+  // keeps the whole family's rows, and that is the direction to fail in.
+  const byFamily = new Map();
+  for (const r of (Array.isArray(ledger) ? ledger : [])) {
+    const axis = String(r?.axis ?? "").trim().toLowerCase();
+    if (!axis) continue;
+    const isWithheld = String(r?.status ?? "").trim() === "withheld-by-judgment";
+    byFamily.set(axis, (byFamily.get(axis) ?? true) && isWithheld);
+  }
+  const withheld = new Set([...byFamily.entries()].filter(([, only]) => only).map(([axis]) => axis));
+  if (!withheld.size) return Array.isArray(rows) ? rows : [];
+
+  // ── THE AXIS IS NAMED IN A SEGMENT, NOT ALWAYS THE FIRST ONE ──────────────────────────────────
+  //
+  // This read `area.split("/")[0]` and was inert for the two shapes that matter most, failing OPEN —
+  // toward the client, which is the wrong direction for a gate whose whole job is to keep a row off
+  // the page. Measured against the real strings:
+  //
+  //   `incumbent-class (entire axis)`         no slash at all — the whole-axis row a client reads
+  //   `Register / incumbent-class`            the axis is the SECOND segment; the first is a layer
+  //   `incumbent-class / extra script group`  the only shape the first read caught
+  //
+  // So every `/`-separated segment is considered, with a trailing parenthetical stripped, and each is
+  // compared by EQUALITY against the axis names the ledger actually holds.
+  //
+  // Equality on a segment, never `includes`: a substring test over an open vocabulary is how one axis
+  // name once matched two unrelated areas, and here a false match DROPS a row — a documented limit the
+  // reader is owed, gone silently. The failure this gate prevents is a withheld row appearing; the
+  // failure it must not cause is a disclosure disappearing, and that one is worse.
+  const namesIn = (area) => String(area ?? "").toLowerCase().split("/")
+    .map((seg) => seg.replace(/\([^)]*\)/g, " ").trim())
+    .filter(Boolean);
+  return (Array.isArray(rows) ? rows : []).filter((r) => !namesIn(r?.area).some((n) => withheld.has(n)));
+}
+
 export function acceptSynthesis(params, { asks = [], ledger = null, manifest = null, owed = null, declined = null } = {}) {
   const doc = params?.findings;
   if (!doc || typeof doc !== "object" || Array.isArray(doc)) {
@@ -228,7 +294,19 @@ export function acceptSynthesis(params, { asks = [], ledger = null, manifest = n
   // Two copies that must agree is a second-authoring defect, so there are not two. The record is the
   // machine contract and the narrative's coverage list is RENDERED from it. Disagreement is not detected;
   // it is impossible.
-  const rows = Array.isArray(doc.coverage) ? doc.coverage : [];
+  // ── RULING 111: A WITHHELD FAMILY NEVER REACHES THE REPORT, WHATEVER THE MODEL WROTE ────────────
+  //
+  // `withheld-by-judgment` is the reading turn saying it chose not to open a family — it read the
+  // identical question as a list, found what it needed, and spent the work there instead. That is a
+  // decision about where effort went, not a gap in the client's search, and it belongs to the run
+  // record and the coverage ledger alone.
+  //
+  // Dropped HERE rather than trusted to the model, because the model is the one surface that can get
+  // it wrong: it writes the coverage rows, it has been told the family was withheld, and a row saying
+  // "we did not search this" in front of a lawyer is exactly the sentence ruling 111 forbids — about a
+  // decision that made the search better. The ledger is the authority on which families were withheld,
+  // so a row whose family it holds as withheld goes, however the row was authored.
+  const rows = withoutWithheldRows(Array.isArray(doc.coverage) ? doc.coverage : [], ledger);
   if (n.coverage?.rows !== undefined) {
     return { ok: false, reason: "synthesis_coverage_rows_misplaced: coverage rows belong in `findings.coverage`, not on the narrative — the driver renders the narrative's coverage list from the record, so there is one authored set and no way for the client's readable statement and the machine record to disagree. Send `narrative.coverage.read` for the prose" };
   }

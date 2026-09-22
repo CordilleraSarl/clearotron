@@ -141,6 +141,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-class-the-client-reaches-is-added-and-costs-one-question.test.mjs": {
+          "tests": 5,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
         "a-clean-install-offers-generic-alone.test.mjs": {
           "tests": 9,
           "asserts": 14,
@@ -315,6 +321,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-deprecate-only-dispatch-publishes-nothing.test.mjs": {
+          "tests": 5,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "a-depth-check-that-read-nothing-is-on-the-investigate-list.test.mjs": {
           "tests": 3,
           "asserts": 8,
@@ -456,6 +468,12 @@
         "a-hostile-value-stays-inside-its-attribute.test.mjs": {
           "tests": 6,
           "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-job-on-the-older-goods-spelling-scopes-the-same.test.mjs": {
+          "tests": 10,
+          "asserts": 23,
           "skips": 0,
           "todos": 0
         },
@@ -795,6 +813,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-refused-search-is-not-a-dropped-one.test.mjs": {
+          "tests": 6,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "a-refused-unit-says-what-is-half-started.test.mjs": {
           "tests": 9,
           "asserts": 31,
@@ -951,6 +975,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-skipped-question-is-not-an-answer.test.mjs": {
+          "tests": 5,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "a-source-the-classifier-could-not-read-is-not-empty.test.mjs": {
           "tests": 9,
           "asserts": 14,
@@ -1014,6 +1044,12 @@
         "a-terminal-guard-delivers-and-clamps.test.mjs": {
           "tests": 11,
           "asserts": 40,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-territory-the-engine-cannot-search-is-disclosed-not-wired.test.mjs": {
+          "tests": 4,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },
@@ -1146,6 +1182,12 @@
         "allocation-failure-is-not-a-red-main.test.mjs": {
           "tests": 5,
           "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-absent-portal-bundle-is-not-a-stale-one.test.mjs": {
+          "tests": 4,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
@@ -1875,6 +1917,12 @@
           "skips": 0,
           "todos": 0
         },
+        "ctrl-c-takes-the-demo-folder-with-it.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "dead-end-passage-is-named-not-blamed.test.mjs": {
           "tests": 8,
           "asserts": 24,
@@ -2106,6 +2154,12 @@
         "doctor-and-start-look-where-the-services-look.test.mjs": {
           "tests": 12,
           "asserts": 28,
+          "skips": 0,
+          "todos": 0
+        },
+        "doctor-does-not-tick-a-billing-mode-it-cannot-see.test.mjs": {
+          "tests": 5,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },
@@ -2469,6 +2523,12 @@
           "skips": 0,
           "todos": 0
         },
+        "every-surface-that-takes-the-manifest-asks-for-the-goods-words.test.mjs": {
+          "tests": 9,
+          "asserts": 21,
+          "skips": 0,
+          "todos": 0
+        },
         "every-tool-declares-what-it-does.test.mjs": {
           "tests": 3,
           "asserts": 10,
@@ -2682,6 +2742,12 @@
         "gateway-call-sites-are-pinned.test.mjs": {
           "tests": 5,
           "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "generated-evidence-keeps-to-its-own-commit.test.mjs": {
+          "tests": 8,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
@@ -2963,7 +3029,7 @@
         },
         "matter-frame-record.test.mjs": {
           "tests": 25,
-          "asserts": 88,
+          "asserts": 89,
           "skips": 0,
           "todos": 0
         },
@@ -4431,6 +4497,12 @@
           "skips": 0,
           "todos": 0
         },
+        "setup-never-prints-a-piece-of-a-key.test.mjs": {
+          "tests": 3,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "setup-promises-a-login-shell-only-when-one-adds-the-directory.test.mjs": {
           "tests": 3,
           "asserts": 8,
@@ -4809,6 +4881,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-census-will-not-stamp-a-half-finished-merge.test.mjs": {
+          "tests": 4,
+          "asserts": 13,
+          "skips": 1,
+          "todos": 0
+        },
         "the-citation-strip-removes-openers-and-nothing-else.test.mjs": {
           "tests": 18,
           "asserts": 51,
@@ -5025,6 +5103,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-heartbeat-stays-fresh-while-a-run-is-in-flight.test.mjs": {
+          "tests": 4,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "the-hit-list-owes-one-fate-per-line.test.mjs": {
           "tests": 16,
           "asserts": 55,
@@ -5154,6 +5238,12 @@
         "the-owner-of-a-promoted-filing-is-searched.test.mjs": {
           "tests": 15,
           "asserts": 43,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-package-cannot-grow-unnoticed.test.mjs": {
+          "tests": 6,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
@@ -5403,6 +5493,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-shape-read-prints-counts-and-writes-nothing.test.mjs": {
+          "tests": 5,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
         "the-sign-in-door-folds-its-administrator-help.test.mjs": {
           "tests": 5,
           "asserts": 23,
@@ -5478,6 +5574,18 @@
         "the-verb-table-resolves-to-files-that-ship.test.mjs": {
           "tests": 6,
           "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-wider-families-wait-for-the-reading-turn-on-every-matter.test.mjs": {
+          "tests": 7,
+          "asserts": 23,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-wider-families-wait-on-the-identical-question.test.mjs": {
+          "tests": 13,
+          "asserts": 49,
           "skips": 0,
           "todos": 0
         },
@@ -6592,6 +6700,12 @@
         "territoryCodes.test.ts": {
           "tests": 3,
           "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
+        "theListIsAskedForInParallel.test.ts": {
+          "tests": 3,
+          "asserts": 5,
           "skips": 0,
           "todos": 0
         },

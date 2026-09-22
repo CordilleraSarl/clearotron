@@ -288,7 +288,18 @@ export function makeEnumerate(deps) {
     const tally = { "verified-zero": 0, enumerated: 0, crowd: 0, unenumerated: 0, error: 0 };
     for (const v of Object.values(term_counts)) tally[v.disposition] += 1;
     const unresolved = tally.crowd + tally.unenumerated + tally.error;
-    if (unresolved === 0 && records.length > 0) {
+    // A FULLY RESOLVED STACK IS A COMPLETE BAND, INCLUDING WHEN THE ANSWER IS ZERO. The comment below
+    // states the rule and the code then demanded a record anyway: `records.length > 0`. So a stack in
+    // which EVERY term resolved to verified-zero — nobody has filed any of these names — fell through
+    // to `incomplete`, which says nobody answered the question. The opposite is true: every term was
+    // asked and every one came back empty.
+    //
+    // It matters beyond the label. An `incomplete` parent is terminal for its when-guarded children, so
+    // a clean zero here held back everything waiting on it — and with the wider families now waiting on
+    // the identical question, that is the best case a matter can have (a mark nobody has registered)
+    // producing a run that searches almost nothing. The ordinary search path has always returned
+    // `enumerated` for a zero-record answer; this rescue path was the one place that did not.
+    if (unresolved === 0) {
       // every term resolved to verified-zero or fully-enumerated ⇒ the union of per-term enumerations IS
       // the complete stack (every record matching ≥1 name sits in some term's enumeration) — a true band.
       return { type: "text", text: JSON.stringify({ state: "enumerated", total_hits: stackTotal, count: records.length, records, term_counts }, null, 2) };
@@ -344,7 +355,9 @@ export function makeEnumerate(deps) {
     const tally = { "verified-zero": 0, enumerated: 0, crowd: 0, unenumerated: 0, error: 0 };
     for (const v of Object.values(class_counts)) tally[v.disposition] += 1;
     const unresolved = tally.crowd + tally.unenumerated + tally.error;
-    if (unresolved === 0 && records.length > 0) {
+    // Same rule, same reason, same correction as the OR-stack rescue above: a stack in which every class
+    // came back a verified zero is a complete band whose answer is zero, not a question nobody answered.
+    if (unresolved === 0) {
       // every class resolved to verified-zero or fully-enumerated ⇒ the union of per-class enumerations
       // IS the complete stack (every record carries ≥1 in-filter class) — a true band, the class rescue.
       return { type: "text", text: JSON.stringify({ state: "enumerated", total_hits: stackTotal, count: records.length, records, class_counts }, null, 2) };

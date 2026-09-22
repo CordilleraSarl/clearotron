@@ -10,6 +10,7 @@ import { readFileSync, existsSync, mkdirSync, writeFileSync, renameSync, copyFil
 import { createHash } from "node:crypto";
 import { join, dirname, basename, resolve } from "node:path";   // resolve: the resume line must work from any cwd
 import { driverDir, driverRel, ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
+import { goodsOf } from "./queue-markers.mjs";   // — one reading of "does this job name goods", shared with the intake gate
 import { terminalClampDecision, orderClausesForLede, clientConditions, clauseForDefect } from "./terminal-clamp.mjs";   // — deliver and clamp, never withhold
 import { recordSpan } from "./attributed-span.mjs";   // — driver work the decomposition can attribute
 import { fileURLToPath } from "node:url";
@@ -97,7 +98,7 @@ import { publishReport, composeEmailHtml, deliverySubject } from "./publish/inde
 import { parseCaseLawProfiles, joinCaseLawProfiles } from "./publish/parse.mjs";
 import { buildAuditMd, parseSpineFindingBlocks } from "./publish/audit-from-spine.mjs";
 import { deriveRegisterPresence } from "./publish/register-presence.mjs";   // — the audit stores every live in-scope record
-import { lastAcceptedMatterFrame, frameIdentifiedClasses, frameHouseElementCandidate } from "./matter-frame-record.mjs";   // — the frame's inferred scope, when nothing was instructed; and the classes it judged necessary beyond the instructed ones, which the plan compile unions in
+import { lastAcceptedMatterFrame, frameIdentifiedClasses, frameIdentifiedClassRows, frameHouseElementCandidate } from "./matter-frame-record.mjs";   // — the frame's inferred scope, when nothing was instructed; and the classes it judged necessary beyond the instructed ones, each with its reason, which the plan compile gives one identical-mark question apiece (decision 18)
 import { romanizedTermsFromPlan, mintSupplementalQid } from "./register-plan.mjs";
 import { excludeHouseElement, verifyHouseElementOwnership, resolveRegions as resolvePlanRegions, HOUSE_ELEMENT_RECEIPT } from "./register-plan.mjs";   // 647 — the client's own element leaves the conflict analysis only on a verified receipt
 import { resolveRecordExecutor } from "./register-records.mjs";   // — the stamp the late lanes never met
@@ -2384,7 +2385,12 @@ function attachRegisterPlan(ctx, { frozenOnly = false } = {}) {
       // for the documented normal case. Harmless on corsearch (an absent region clause is a worldwide
       // sweep); fatal on a provider whose regions[] is mandatory, where every entry then errored on its
       // count probe and the whole plan joined MISSING at fan-in (review finding 11).
-      job: { jobKey: ctx.run.slug, classes: [...new Set([...inScopeClassList(ctx.job, ctx.profile).map(String), ...frameIdentifiedClasses(P.runDir)])], jurisdictions: registerJurisdictions(ctx.job, ctx.profile) },
+      // DECISION 18: the frame's added classes are no longer UNIONED into the plan's class scope. They
+      // ride one identical-mark entry each instead, which is what an added class is supposed to cost —
+      // unioning put every added class on every variant and every family. The instructed scope is what
+      // it always was, and `addedClasses` only ever appends.
+      job: { jobKey: ctx.run.slug, classes: inScopeClassList(ctx.job, ctx.profile).map(String), jurisdictions: registerJurisdictions(ctx.job, ctx.profile) },
+      addedClasses: frameIdentifiedClassRows(P.runDir),
       form, skillVersion: "clearance-register@spec48",
       // — WHICH ELEMENT THE EXCLUSION TOOK OUT, so the compile can make its form band unreachable
       // rather than merely unasked-for. Null unless the ownership receipt verified, which is the same
@@ -6401,7 +6407,7 @@ function plainRegisterExtra(ctx) {
   }
 }
 
-// ── THE RECEIPT, AND THE THREE CLASSES, STATED ONCE ────────────────────────────────────────────────
+// ── THE RECEIPT, AND THE GRADED CLASSES, STATED ONCE ────────────────────────────────────────────────
 //
 //. The receipt this block tabulates is the answer to "did that search run", and until now exactly
 // one stage got it: the REVIEWER. `synthesis` — the stage that writes the claim the reviewer then
@@ -6419,7 +6425,7 @@ function plainRegisterExtra(ctx) {
 // out twice, once per seat, is the shape — one rule in two places, drifting from the day the second
 // copy is typed — and the classes are the part that must never drift, because class (1) is the blocking
 // condition.
-// THE HEAD AND THE THREE CLASSES ARE NOT DECLARED HERE. They live in register-plan.mjs, beside the
+// THE HEAD AND THE GRADED CLASSES ARE NOT DECLARED HERE. They live in register-plan.mjs, beside the
 // derivation that assigns the states, because the gateway's corrective hint is a THIRD reader of the
 // same grading and `pipeline.mjs` imports `gateway.mjs` — so a constant declared here could never
 // reach it.
@@ -6716,7 +6722,7 @@ export function readFindingsForReport(P) {
 // The matter's FULL in-scope Nice-class set (incl. services 42/44) — declared classes (top-level OR per-mark)
 // else the profile defaults. The dangerous-band floor + its coverage gate must span ALL of these, never a
 // goods-only subset (the VELTRIPHEN services-class miss). Strings, deduped.
-function inScopeClassList(job, profile) {
+export function inScopeClassList(job, profile) {   // @internal — also read by scripts/register-plan-shape.mjs, which must resolve scope exactly as the run did
   const fromMarks = Array.isArray(job?.marks) ? job.marks.flatMap((m) => (Array.isArray(m?.classes) ? m.classes : [])) : [];
   const declared = [...(Array.isArray(job?.classes) ? job.classes : []), ...fromMarks];
   return [...new Set((declared.length ? declared : (profile?.defaultClasses ?? [])).map(String))];
@@ -7035,7 +7041,14 @@ export function coverageRowAreaLabel(axis, unit) {   // @internal
 export function coverageJudgmentRows(ledgerRows, planExecution) {   // @internal
   const open = [];
   for (const r of ledgerRows ?? []) {
-    if (!r || String(r.status ?? "").toLowerCase() === "confirmed-clean") continue;
+    // `withheld-by-judgment` joins `confirmed-clean` in NOT reaching the reader, and for the opposite
+    // reason. A clean row has nothing to disclose. A withheld one has something to say, and it is
+    // ruled to belong in the run record and the coverage ledger only: nothing is added to the report
+    // (ruling 111). A family the reading turn chose not to open, having read the identical question as
+    // a list and found what it needed, is not a gap in the client's search — it is where the work was
+    // spent — and a row saying otherwise would read to a lawyer as an incomplete job.
+    const status = String(r?.status ?? "").toLowerCase();
+    if (!r || status === "confirmed-clean" || status === "withheld-by-judgment") continue;
     const reason = String(r.reason ?? "").replace(/\s+/g, " ").trim().slice(0, 160);
     const axis = String(r.axis ?? "").toLowerCase();
     open.push({ axis, area: coverageRowArea(axis, r.unit), areaLabel: coverageRowAreaLabel(axis, r.unit),
@@ -8455,6 +8468,42 @@ function postponeRun(e, run, meta = {}) {
   return { ok: false, postponed: true, resetsAt, codename, fromStage: e.stage, runDir: run?.runDir ?? null };
 }
 
+/**
+ * The instructed scope a job asks for — what the MATTER named, before any model ran.
+ *
+ * Pulled out of the run so it can be driven straight from a job, because the defect it closes lived
+ * exactly in the seam between the intake gate and this object: the gate counts a job as carrying a
+ * goods description under EITHER spelling, and this stamped only the current one. A job written the
+ * older way passed the gate and landed `goods: null` — the scope file saying the matter named no
+ * goods while the request plainly did — and every reader that asks what the matter covers reads this
+ * file. Nothing said so, because nothing compared the two sites.
+ *
+ * PURE: a job in, a plain object out, no IO.
+ */
+export function instructedScopeOf(job) {
+  const markNames = Array.isArray(job?.marks)
+    ? job.marks.map((m) => (typeof m === "string" ? m : m?.name)).filter(Boolean)
+    : (job?.markName ?? job?.name ?? null);
+  return {
+    marks: markNames,
+    classes: job?.classes ?? null,
+    jurisdictions: job?.jurisdictions ?? null,
+    // THE GATE'S OWN READING, imported rather than restated. A run's job is folded onto one field at
+    // assembly, so this is normally reading what is already there; it stays for a job handed to this
+    // function directly, and because the gate and the scope disagreeing is the defect it closes.
+    goods: goodsOf(job),
+    customer: job?.customer ?? null,
+    // the geography stamp (enqueue-schema.mjs, "the GEOGRAPHY STAMP": {mode, origin}) — copied
+    // VERBATIM, never recomputed: foldRecipeScope mutates job.jurisdictions on later passes (and
+    // re-stamps origin "saved-search" when it does), so by read time the stamp is the only surviving
+    // record of where the territories came from. Without it here, the frame reconstructs that
+    // provenance from the request prose — a reconstruction validators.matterContext cannot check.
+    // null = the job predates the stamp ("unrecorded", effective-scope.mjs) — an explicit state,
+    // never a missing key.
+    geography: job?.geography ?? null,
+  };
+}
+
 async function pipelineInner(job, opts = {}) {
   assertTierSanity();
   // The engine binary, first and UNCONDITIONALLY — before the register preflight, which two lanes skip.
@@ -8872,24 +8921,7 @@ async function pipelineInner(job, opts = {}) {
   // frame validator compares against THIS file, never against the frame's own paraphrase) —
   // paraphrase drift between the request and the frame is a defect, not a style choice.
   try {
-    const markNames = Array.isArray(job.marks)
-      ? job.marks.map((m) => (typeof m === "string" ? m : m?.name)).filter(Boolean)
-      : (job.markName ?? job.name ?? null);
-    writeFileSync(P.instructedScope, JSON.stringify({
-      marks: markNames,
-      classes: job.classes ?? null,
-      jurisdictions: job.jurisdictions ?? null,
-      goods: job.goods ?? null,
-      customer: job.customer ?? null,
-      // the geography stamp (enqueue-schema.mjs, "the GEOGRAPHY STAMP": {mode, origin}) — copied
-      // VERBATIM, never recomputed: foldRecipeScope mutates job.jurisdictions on later passes (and
-      // re-stamps origin "saved-search" when it does), so by read time the stamp is the only
-      // surviving record of where the territories came from. Without it here, the frame reconstructs
-      // that provenance from the request prose — a reconstruction validators.matterContext cannot
-      // check. null = the job predates the stamp ("unrecorded", effective-scope.mjs) — an explicit
-      // state, never a missing key.
-      geography: job.geography ?? null,
-    }, null, 2) + "\n");
+    writeFileSync(P.instructedScope, JSON.stringify(instructedScopeOf(job), null, 2) + "\n");
   } catch (e) { note(`instructed-scope write failed (non-fatal): ${e.message}`); }
   // THE STORED DEFAULTS THE ENGINE CANNOT SEARCH — recorded by the run, not only by the plan preview.
   //

@@ -176,13 +176,13 @@ test("the graded classes are ONE literal — the author's block, the reviewer's,
   const hint = correctionHint("invalid_file:clearance-search/x/y/senior-eye-review.md:plan_audit_missing");
 
   const classesOf = (t) => {
-    const m = t.match(/THE THREE CLASSES, GRADED:[^\n]*?by itself\./);
+    const m = t.match(/THE FOUR CLASSES, GRADED:[^\n]*?searched-clean\./);
     return m ? m[0] : null;
   };
   const a = classesOf(synth), b = classesOf(refute), c = classesOf(hint);
-  assert.ok(a, "the synthesis block states the three classes");
-  assert.ok(b, "the refutation block states the three classes");
-  assert.ok(c, "the plan_audit_missing repair hint states the three classes");
+  assert.ok(a, "the synthesis block states the graded classes");
+  assert.ok(b, "the refutation block states the graded classes");
+  assert.ok(c, "the plan_audit_missing repair hint states the graded classes");
   assert.equal(a, b, "the two seats must read the SAME classes literal, byte for byte — a second copy is the rule drifting");
   assert.equal(a, c, "and so must the repair turn — a hint that paraphrases the grading is the copy that goes stale first");
   assert.match(a, /a slice listed MISSING NEVER RAN/, "class (1) is the blocking condition and must survive verbatim");
@@ -345,7 +345,7 @@ test("a real dispatch carries both blocks — read out of the recorded synthesis
   const recorded = readFileSync(driverDir(res.runDir, "synthesis.attempt1.dispatch.txt"), "utf8");
   assert.match(recorded, /DETERMINISTIC PLAN-EXECUTION CHECK/,
     "the plan-execution receipt block reached the real synthesis dispatch");
-  assert.match(recorded, /THE THREE CLASSES, GRADED:/,
+  assert.match(recorded, /THE FOUR CLASSES, GRADED:/,
     "the graded classes reached the real synthesis dispatch");
   assert.match(recorded, /ruling over this receipt BEFORE you write/,
     "and in the AUTHOR's frame — not the reviewer's audit-section frame");

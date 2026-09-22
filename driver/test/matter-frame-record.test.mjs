@@ -361,14 +361,24 @@ test("the compile reads the identified classes off the run, and an absent frame 
 });
 
 test("the plan compile actually calls it — the wiring, not the helper", () => {
-  // An exported function nothing calls reads as done. This pins the one call site: the register-plan
-  // compile's own job.classes, unioned with the instructed list. Asserted on the source because the
-  // compile happens inside a stage this file cannot run.
+  // An exported function nothing calls reads as done. This pins the one call site. Asserted on the
+  // source because the compile happens inside a stage this file cannot run.
+  //
+  // REPOINTED FOR DECISION 18. This used to require the job line to UNION the frame's classes into
+  // `classes:`, which is exactly what the bound removed: unioning put every added class on every entry,
+  // where an added class is now one identical-mark question. So the instructed list stays the plan's
+  // class scope, and the frame's rows — with their reasons, which the union threw away — arrive beside
+  // it as `addedClasses`. The arm still answers the same question: is the reader wired in at all.
   const pipeline = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
-  const line = pipeline.split("\n").find((l) => l.includes("jobKey: ctx.run.slug") && l.includes("classes:"));
-  assert.ok(line, "the register-plan compile's job line could not be found — this arm cannot look");
-  assert.match(line, /frameIdentifiedClasses\(/, "the compile does not union the frame's identified classes");
-  assert.match(line, /inScopeClassList\(/, "and it must still carry the instructed ones");
+  const lines = pipeline.split("\n");
+  const i = lines.findIndex((l) => l.includes("jobKey: ctx.run.slug") && l.includes("classes:"));
+  assert.ok(i >= 0, "the register-plan compile's job line could not be found — this arm cannot look");
+  assert.match(lines[i], /inScopeClassList\(/, "the compile must carry the instructed classes");
+  assert.doesNotMatch(lines[i], /frameIdentifiedClasses\(/,
+    "the compile still unions the frame's classes into the plan's scope — an added class costs one question, not every entry");
+  const near = lines.slice(i, i + 3).join("\n");
+  assert.match(near, /addedClasses:\s*frameIdentifiedClassRows\(/,
+    "the frame's added classes never reach the compile, so a class the frame added is never searched");
 });
 
 

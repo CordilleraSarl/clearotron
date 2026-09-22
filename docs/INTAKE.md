@@ -67,6 +67,14 @@ the default agent's workspace queue.
   - an unreadable `deadline` → treated as unset, so no envelope is applied (a date typo must not
     stop a runnable search; a bare `YYYY-MM-DD` is read as the END of that day, UTC)
   - `jurisdictions` naming the same territory twice → deduped, first spelling wins
+  - a goods description under the older spelling `use` → folded onto `goods` when the job is
+    assembled for a run
+
+**Which field name is read.** A goods description is accepted under `goods` or under the older
+spelling `use`, and `goods` is the field everything downstream reads. The older spelling is folded
+onto it once, when a job is assembled for its run; the queue file keeps whatever was filed. Send
+either, and send only one — where both are present, `goods` wins and `use` is ignored. A value that
+is blank or only whitespace counts as no description at all, under either name.
 
 Other consumed fields (see `EXAMPLE_JOB` in `enqueue-schema.mjs` for the full annotated shape):
 `forwarderEmail`, `forwarderDomain`, `provider`, `marks[] = [{ref,name,classes}]`, `customer`

@@ -497,6 +497,19 @@ serve({
         },
         watchlist_owners: { type: "array", items: { type: "string" },
           description: "Real register owners the plan compiles owner lanes from — never sectors or descriptions." },
+        goods_words: { type: "array", items: { type: "string" },
+          description:
+            "The words the register search is narrowed to: the client's own goods and services wording " +
+            "first, then the words other filings use for the same goods that it does not already " +
+            "contain. Single words or short phrases as a specification would write them, no wildcards, " +
+            "at most 24. Each is matched against the goods and services description of registered " +
+            "marks, so use words a specification would contain; a word broader than the goods widens " +
+            "the search instead of narrowing it. The register cannot read the words and, or, not, adj " +
+            "or near inside an item — an item containing one is searched without it. Send an EMPTY " +
+            "LIST when you have considered the goods and no word is worth narrowing by; omit the " +
+            "field only when the matter states no goods at all. Those are different answers and the " +
+            "run records which one you gave.",
+        },
         scope_ledger: {
           type: "array",
           description:

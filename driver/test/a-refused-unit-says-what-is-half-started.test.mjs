@@ -19,7 +19,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { createServer } from "node:net";
+import { freePort, withFreePorts } from "./helpers/free-port.mjs";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync, chmodSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
@@ -30,14 +30,6 @@ import { systemdFailure, CAPTURE_STDERR } from "../../shared/systemd-failure.mjs
 
 const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 const START = join(ROOT, "bin", "start.mjs");
-
-async function freePort() {
-  return await new Promise((resolve, reject) => {
-    const s = createServer();
-    s.once("error", reject);
-    s.listen(0, "127.0.0.1", () => { const { port } = s.address(); s.close(() => resolve(port)); });
-  });
-}
 
 /**
  * Drive `--background` all the way to the enable step, with a `systemctl` that refuses `enable`.
@@ -60,15 +52,19 @@ async function driveToEnable(stderrLine) {
     "CLEAROTRON_DATABASE=corsearch\nCLEAROTRON_AI=claude\nCLEAROTRON_CLAUDE_PATH=/usr/bin/true\n"
     + "CORSEARCH_SESSION_KEY=drive-only-not-a-real-key\n"
     + `CLEAROTRON_REPORTS_DIR=${join(home, "pool")}\n`);
-  const ports = { portal: await freePort(), mcp: await freePort(), client: await freePort() };
-  const r = spawnSync(process.execPath, [START, "--background"], { encoding: "utf8", timeout: 180_000,
+  // The ports are allocated and the drive is run under `withFreePorts`, which repeats it with fresh
+  // numbers if the driver says one was already taken. A port read from the operating system is free
+  // when it is read and can be taken by anything before the child binds it.
+  const r = await withFreePorts(["portal", "mcp", "client"], (ports) =>
+    spawnSync(process.execPath, [START, "--background"], { encoding: "utf8", timeout: 180_000,
     // A hand-run environment from the one definition. Either of the two variables `handRunEnv` clears
     // would make this drive read no .env, so the values written above never arrive and it stops at an
     // earlier refusal — the guard `reachedTheEnable` names rather than lets an arm read past
     //.
     env: handRunEnv({ HOME: home, PATH: `${bin}:${process.env.PATH}`,
       PORTAL_SERVICE_PORT: String(ports.portal), TRADEMARK_MCP_HTTP_PORT: String(ports.mcp),
-      CLIENT_MCP_HTTP_PORT: String(ports.client) }) });
+      CLIENT_MCP_HTTP_PORT: String(ports.client) }) }),
+    { busy: (r) => /is already in use/.test(`${r.stdout ?? ""}${r.stderr ?? ""}`) });
   return { home, unitDir: join(home, ".config", "systemd", "user"),
     said: `${r.stdout ?? ""}${r.stderr ?? ""}`, code: r.status,
     clean: () => rmSync(home, { recursive: true, force: true }) };
@@ -203,12 +199,15 @@ test("the OTHER systemd catch still lands, and now leads with what systemd said"
     "CLEAROTRON_DATABASE=corsearch\nCLEAROTRON_AI=claude\nCLEAROTRON_CLAUDE_PATH=/usr/bin/true\n"
     + "CORSEARCH_SESSION_KEY=drive-only-not-a-real-key\n"
     + `CLEAROTRON_REPORTS_DIR=${join(home, "pool")}\n`);
-  const ports = { portal: await freePort(), mcp: await freePort(), client: await freePort() };
   try {
-    const r = spawnSync(process.execPath, [START, "--background"], { encoding: "utf8", timeout: 180_000,
-      env: handRunEnv({ HOME: home, PATH: `${bin}:${process.env.PATH}`,
-        PORTAL_SERVICE_PORT: String(ports.portal), TRADEMARK_MCP_HTTP_PORT: String(ports.mcp),
-        CLIENT_MCP_HTTP_PORT: String(ports.client) }) });
+    // Repeated with fresh numbers if the driver says a port was taken; this drive is about the
+    // daemon-reload catch, so a number that went stale between allocation and bind is noise.
+    const r = await withFreePorts(["portal", "mcp", "client"], (ports) =>
+      spawnSync(process.execPath, [START, "--background"], { encoding: "utf8", timeout: 180_000,
+        env: handRunEnv({ HOME: home, PATH: `${bin}:${process.env.PATH}`,
+          PORTAL_SERVICE_PORT: String(ports.portal), TRADEMARK_MCP_HTTP_PORT: String(ports.mcp),
+          CLIENT_MCP_HTTP_PORT: String(ports.client) }) }),
+      { busy: (r) => /is already in use/.test(`${r.stdout ?? ""}${r.stderr ?? ""}`) });
     const said = `${r.stdout ?? ""}${r.stderr ?? ""}`;
     assert.match(said, /user manager is not reachable/,
       `this drive did not reach the daemon-reload catch:\n${said.slice(-1200)}`);

@@ -55,6 +55,18 @@ export const BAIL_IS_DECLARED = [
        + "is the line where the parent sets that variable on the child — if the arm stops driving a child, "
        + "the recursion it guards against cannot happen and this declaration must go with it.",
   },
+  {
+    file: "the-census-will-not-stamp-a-half-finished-merge.test.mjs",
+    contains: "git unavailable: ${e.message}",
+    why: "THE SKIP IS REGISTERED ON THE LINE ABOVE THE BAIL. That arm drives a real git directory into a "
+       + "real conflicted merge, because the reader it tests asks git where its directory is and a stubbed "
+       + "path would pass while finding nothing where it is actually run. On a box with no git there is "
+       + "nothing to drive, so the catch skips the arm by name and then returns out of it — the return is "
+       + "the control flow after a skip that already happened, not a silent bail, and converting it would "
+       + "skip twice. The catch re-throws everything else, its own premise failures included, so a broken "
+       + "guard cannot hide here as a missing binary. The `contains` above is the skip's own message: if "
+       + "the arm stops skipping, this declaration fails with it and the site becomes a real bail again.",
+  },
 ];
 
 const declaredFor = (file) => BAIL_IS_DECLARED.find((d) => d.file === file) ?? null;
