@@ -322,6 +322,14 @@ jobs:
           cache: npm
       - run: npm ci
 
+      # THE SECURITY ANSWER AN INSTALL GETS, ASKED ON EVERY CHANGE. `--omit=dev` reads the dependencies
+      # an install actually runs, and at moderate or above the job fails, so a contributor's clone and a
+      # stranger's install give the same answer and a new advisory is found here rather than on
+      # somebody's first `npm install`. Development tooling is left out on purpose: it never reaches an
+      # install, and an advisory in a test runner would block every merge over code nobody ships. It asks
+      # the registry, so a registry outage fails this step too; re-run it rather than skip it.
+      - run: npm audit --omit=dev --audit-level=moderate
+
       - run: npm run lint:driver
 
       # The licence line is a term of the AGPL section 7 notice this project ships under, so a file
