@@ -120,7 +120,7 @@ test("the verdict follows the plan, in both directions", () => {
   assert.equal(held.waiting, 1);
 
   // The bare contains entry on the mark is NOT one of the open kinds — only the goods-narrowed one is.
-  // An entry like this running unasked is the defect ruling 204 names, and it must be reported.
+  // An entry like this running unasked is the defect the reading-turn wait exists to stop, and it must be reported.
   const broken = planShape({ entries: [
     { axis: "primary-sweep", predicate: "default", provenance: "mark" },
   ] });

@@ -45,7 +45,7 @@ test("only the three sanctioned kinds run without waiting", () => {
       || (Array.isArray(e.goods_text) && e.goods_text.length);
     assert.ok(ok, `${e.axis}/${e.predicate} runs in the same breath as the identical question`);
   }
-  // …and every waiting family waits for the ASK (ruling 204), not for the identical question's result.
+  // …and every waiting family waits for the ASK (on every matter, since 2026-09-21), not for the identical question's result.
   // This arm used to assert the opposite — that each guard named the identical question's qid — which
   // is decision 12, reversed by the owner on 2026-09-21. A family released by an enumerated identical
   // question is the defect now, not the design.
@@ -152,7 +152,7 @@ test("a clean zero releases the families — a fully resolved stack is a complet
 
   // …and the crowd gate itself still releases on the state a parent can actually hold.
   //
-  // DRIVEN OVER A HAND-BUILT PARENT-GATED ENTRY, not over a compiled plan. Ruling 204 moved the wider
+  // DRIVEN OVER A HAND-BUILT PARENT-GATED ENTRY, not over a compiled plan. The 2026-09-21 ruling moved the wider
   // families off this guard and onto `awaits_reading_turn`, and the fringe that still uses it — the
   // wildcard family of the dominant token — does not compile for every manifest, this fixture's
   // included (measured: zero parent-gated entries). Reaching for the compiler here would have left the
@@ -237,7 +237,7 @@ test("the doctrine teaches both, in the shipping tree", () => {
 });
 
 test("a withheld family's row never reaches the client, whatever the model wrote", async () => {
-  // RULING 111, enforced where the model cannot get it wrong. The reading turn AUTHORS the coverage
+  // NOTHING ADDED TO THE REPORT, enforced where the model cannot get it wrong. The reading turn AUTHORS the coverage
   // rows and it has been told the family was withheld — so a row saying "we did not search this" can
   // reach a lawyer about a decision that made the search better. The ledger is the authority.
   const { withoutWithheldRows } = await import("../synthesis-record.mjs");
