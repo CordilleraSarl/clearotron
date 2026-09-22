@@ -49,7 +49,9 @@ test("a stamp whose two digests agree, on the tree being checked, passes", () =>
 test("no stamp at all FAILS, and says an absence is the stale-updater case rather than a gap", () => {
   const v = updaterVerdict({ stamp: null, now: NOW, deployClone: CLONE });
   assert.equal(v.state, "fail");
-  assert.match(v.message, /failure to look, never a pass/);
+  // A DRIFT, AND IT SAYS SO. It used to also call itself a failure to look, which is the other verdict:
+  // the check exits 1 on it, so a reader told "could not look" and shown "redeploy" was told both.
+  assert.doesNotMatch(v.message, /failure to look/, "the message still claims the verdict it does not return");
   // The specific reason an absence is loud: the writer shipped IN the updater, so a copy old enough to
   // predate it writes none. An arm that only checked `state` would pass on a message that said
   // "not probed", which is the answer this branch exists to refuse.

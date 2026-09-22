@@ -126,13 +126,6 @@ const ADMITS = /failure to look|failing to look|could not (?:enumerate|ask|read|
 // move the code is a question about the deploy, not about this file.
 const EXCUSED = ["serviceCommitVerdict"];
 
-// ONE BRANCH LEFT OUT, and why. `updaterVerdict` with no stamp at all returns a drift on purpose: the
-// stamp writer shipped inside the updater, so a copy old enough to predate it writes none, and the arm
-// reads that absence as the stale updater it exists to catch. Its message also says "failure to look",
-// which runs two facts together the way the drainer's absent-stamp message once did. Splitting them is a
-// decision about what that arm asserts, not a marker to add, so it is named here rather than changed.
-const EXCUSED_BRANCH = /which is itself the stale-updater case/;
-
 function withoutExcused(text) {
   let out = text;
   for (const name of EXCUSED) {
@@ -150,7 +143,6 @@ function verdictReturns(file) {
   return text.split(/\breturn \{/).slice(1)
     .map((chunk) => chunk.slice(0, chunk.indexOf("};") < 0 ? chunk.length : chunk.indexOf("};")))
     .filter((obj) => /\bstate: "(pass|fail|skip|warn|unknown)"/.test(obj))
-    .filter((obj) => !EXCUSED_BRANCH.test(obj.replace(/"\s*\+\s*"/g, "")))
     .map((obj) => ({ obj, state: /\bstate: "(\w+)"/.exec(obj)[1], admits: ADMITS.test(obj), blocked: /\bblocked: true\b/.test(obj) }));
 }
 
