@@ -165,9 +165,12 @@ export const CAPABILITIES = Object.freeze({
   //
   // The compiler reads this: a goods-narrowed question or a saturation probe whose term is shorter is
   // asked on the exact form instead, with the same class and goods filters, and the plan entry says so.
-  // Exact goes out as the deterministic `match: "exact"`, whose floor is one character, so a two-letter
-  // mark and a one-letter question are both answered.
+  // Exact goes out as the ranked `strategies: ["exact"]`, which `similar`'s 2-character floor governs,
+  // so a two-letter mark is answered; a one-letter mark is below both floors and stays refused.
   containsMinLength: 3,
+  // The ranked shape's floor: "`similar` requires at least 2 folded chars" (same page). An exact question
+  // shorter than this goes out on the deterministic `match`, which takes one; from here up it stays ranked.
+  rankedMinLength: 2,
   // Search rows already carry status / nice_classes / owner_name → screening is inline, zero extra calls.
   screenSource: "search-row",
   // No hard result ceiling, and no total to compare one against.
@@ -183,7 +186,7 @@ export const CAPABILITIES = Object.freeze({
   //   strategies[]  exact | phonetic | fuzzy | prefix                        — ranked, several per call
   //   match         similar | exact | starts_with | ends_with | contains     — deterministic, one only
   predicates: Object.freeze({
-    exact:          "exact",        // match — the deterministic shape: a one-character floor, and a fixed recall
+    exact:          "exact",        // strategies[] — the deterministic shape, the ranked one for audit continuity
     // `contains` IS the unanchored mode this contract said did not exist. The old header
     // was right that `fuzzy` is not a mapping for it — fuzzy is edit distance over the whole term, a
     // contains slice is a substring sweep, and they return different sets. It never needed to be

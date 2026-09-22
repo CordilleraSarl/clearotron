@@ -7019,9 +7019,9 @@
           "skips": 0,
           "todos": 0
         },
-        "providers/signa/test/an-exact-question-rides-the-deterministic-lane.test.mjs": {
-          "tests": 2,
-          "asserts": 5,
+        "providers/signa/test/an-exact-question-stays-ranked-above-the-floor.test.mjs": {
+          "tests": 3,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },
