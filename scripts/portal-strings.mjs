@@ -363,10 +363,14 @@ export function htmlSentences(html) {
   const push = (kind, s) => { const text = clean(s); if (/\p{L}/u.test(text.split(HOLE).join(""))) rows.push({ kind, text }); };
   const title = /<title>([\s\S]*?)<\/title>/i.exec(html);
   if (title) push("title", title[1]);
-  const body = html
-    .replace(/<head>[\s\S]*?<\/head>/i, "")
-    .replace(/<(style|script|svg)\b[\s\S]*?<\/\1>/gi, "")
-    .replace(/<code\b[^>]*>[\s\S]*?<\/code>/gi, SLOT);
+  // STRIPPED UNTIL NOTHING CHANGES. One pass over `<scr<script>…</script>ipt>` removes the inner element
+  // and joins the outer one back together, so the page would still carry a `<script` it then read as text.
+  let body = html;
+  for (let before = null; before !== body;) {
+    before = body;
+    body = body.replace(/<head>[\s\S]*?<\/head>/gi, "").replace(/<(style|script|svg)\b[\s\S]*?<\/\1\s*>/gi, "");
+  }
+  body = body.replace(/<code\b[^>]*>[\s\S]*?<\/code>/gi, SLOT);
   let text = "";
   for (const part of body.split(/(<[^>]+>)/)) {
     if (!part.startsWith("<")) { text += part; continue; }
