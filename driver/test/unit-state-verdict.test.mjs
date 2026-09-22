@@ -242,7 +242,7 @@ test("the arm is dispatched through record(), because ({pass,fail,skip})[state] 
   // and BEFORE the report prints. So the wiring is asserted at source level.
   const src = readFileSync(join(HERE, "..", "..", "scripts", "live-surface-check.mjs"), "utf8");
   const arm = src.slice(src.indexOf("unitsActiveVerdict({"));
-  assert.match(arm, /record\("units active", v\.state, v\.message\)/,
+  assert.match(arm, /record\("units active", v\.state, v\.message, v\.blocked === true\)/,
     "the units-active arm must go through record(), which handles every state including warn");
 });
 

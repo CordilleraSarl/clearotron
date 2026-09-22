@@ -39,9 +39,12 @@ test("a timer that is not on this box is INFORMATION, never a verdict", () => {
 
 test("no session bus is a COULD-NOT-LOOK, not a report about the timers", () => {
   // `systemctl --user` answers nothing when the caller has no session bus, and a two-state verdict
-  // renders that as "stopped". This is the third state.
+  // renders that as "stopped". This is the third state, and it is carried the way the deployment check
+  // carries every could-not-look: a skip with the marker. It was a state of its own, `unknown`, which
+  // the check's report had no row for, so it printed as `[undefined]` and moved no exit code at all.
   const v = timerVerdict(null, { probeFailed: "systemctl --user answered nothing" });
-  assert.equal(v.state, "unknown");
+  assert.equal(v.state, "skip");
+  assert.equal(v.blocked, true, "a timer probe that failed is a could-not-look, and the marker is what moves the code");
   assert.deepEqual(v.stopped, [], "a look that did not happen must accuse nothing");
   assert.match(v.message, /failing to look, not a report/);
 });

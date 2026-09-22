@@ -47,7 +47,7 @@ export function managerGroupsVerdict({ idGroups, managerGroups, user, uid, why =
   // was not established", and saying so is the whole point — the deployment that HAD this fault also
   // had a check that reported nothing wrong.
   if (!Array.isArray(idGroups) || !idGroups.length) {
-    return { state: "skip", message: `could not read the groups of ${user}${why ? ` — ${why}` : ""}. Not checked, not passed.` };
+    return { state: "skip", blocked: true, message: `could not read the groups of ${user}${why ? ` — ${why}` : ""}. Not checked, not passed.` };
   }
   if (!Array.isArray(managerGroups)) {
     return { state: "skip", message: `no readable systemd --user manager for ${user}${why ? ` — ${why}` : ""}. `

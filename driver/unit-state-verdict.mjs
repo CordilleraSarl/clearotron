@@ -100,7 +100,7 @@ export function classifyActiveState(active) {
 export function unitsActiveVerdict({ units, probe }) {
   // — a failure to look is never a finding about the deployment.
   if (!probe?.ok)
-    return { state: "skip", message: `could not enumerate systemd --user units — ${probe?.why ?? "no reason reported"}` };
+    return { state: "skip", blocked: true, message: `could not enumerate systemd --user units — ${probe?.why ?? "no reason reported"}` };
 
   const label = (u) => `${u.unit}=${u.active}`
     + (u.type ? ` (${u.type}${u.since ? `, since ${u.since}` : ""})` : (u.since ? ` (since ${u.since})` : ""));

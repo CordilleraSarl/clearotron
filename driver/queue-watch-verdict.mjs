@@ -91,8 +91,8 @@ export function queueWatchVerdict({ queueDirs, watched, unitPath, unitError = nu
   // anywhere else; a privilege-limited read that answers "fine" is the exact failure this family of
   // checks exists to refuse, and it is the one that would make this guard decoration on the box that
   // matters most.
-  if (unitError) return { state: "skip", message: `the .path unit could not be read — ${unitPath}: ${unitError}` };
-  if (resolveError) return { state: "skip", message: `the queue dirs could not be resolved — ${resolveError}` };
+  if (unitError) return { state: "skip", blocked: true, message: `the .path unit could not be read — ${unitPath}: ${unitError}` };
+  if (resolveError) return { state: "skip", blocked: true, message: `the queue dirs could not be resolved — ${resolveError}` };
 
   const q = Array.isArray(queueDirs) ? queueDirs : null;
   const w = Array.isArray(watched) ? watched : [];

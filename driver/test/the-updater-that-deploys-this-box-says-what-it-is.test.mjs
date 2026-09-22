@@ -73,9 +73,13 @@ for (const [what, over, says, negatedByNeither] of [
   // from the un-negated-verb guard below rather than reworded into a double negative.
   ["both sides", { wrapperSha256: null, masterSha256: null }, /neither the running copy of the updater nor its master could be read as a digest/, true],
 ]) {
-  test(`an unreadable digest on ${what} fails as a failure to look, not as drift`, () => {
+  test(`an unreadable digest on ${what} is a could-not-look, not a drift`, () => {
     const v = updaterVerdict({ stamp: stampOf(over), now: NOW, deployClone: CLONE });
-    assert.equal(v.state, "fail");
+    // A SKIP WITH THE MARKER, which the deployment check counts toward exit 3. It returned `fail` while
+    // saying "failure to look, never a pass", so a reader got a drift's verdict for a digest that was
+    // never taken and would redeploy a box whose files nobody had compared.
+    assert.equal(v.state, "skip");
+    assert.equal(v.blocked, true);
     assert.match(v.message, /failure to look, never a pass/);
     // THE VERB, NOT JUST THE NOUN. Matching "the master" alone passed a sentence that said the master
     // COULD be read — the opposite of the branch it was testing — because the phrase it looked for
@@ -90,7 +94,8 @@ test("an unreadable master carries the reason the updater reported", () => {
   const v = updaterVerdict({
     stamp: stampOf({ masterSha256: null, masterCommitError: "not a git repository" }),
     now: NOW, deployClone: CLONE });
-  assert.equal(v.state, "fail");
+  assert.equal(v.state, "skip");
+  assert.equal(v.blocked, true);
   assert.match(v.message, /not a git repository/);
 });
 

@@ -63,7 +63,7 @@ export function unitBody(text) {
  *                driver/unit-files.mjs wherever it sits, or null when the repo tracks none
  *     dropIns  — array of drop-in paths (may be empty)
  * @param {{ok: boolean, why?: string}} probe — could the caller enumerate at all?
- * @returns {{state: "pass"|"fail"|"skip", message: string, drifted: string[], templated: string[]}}
+ * @returns {{state: "pass"|"fail"|"skip", blocked?: true, message: string, drifted: string[], templated: string[]}}
  *
  * THREE OUTCOMES, and the third is the one this file exists for. "Could not look" is never "nothing is
  * wrong" — the lesson, applied to the arm that has the same failure mode one layer down: a unit
@@ -72,7 +72,7 @@ export function unitBody(text) {
  */
 export function unitFileDriftVerdict({ units = [], probe = { ok: true } } = {}) {
   if (!probe.ok) {
-    return { state: "skip", drifted: [],
+    return { state: "skip", blocked: true, drifted: [],
       message: `could not enumerate systemd units, so no unit file was COMPARED — ${probe.why ?? "no reason given"}. `
         + "This is a failure to look, not a finding about the deployment" };
   }
@@ -80,7 +80,7 @@ export function unitFileDriftVerdict({ units = [], probe = { ok: true } } = {}) 
   const unreadable = units.filter((u) => u && u.live == null);
   const untracked = units.filter((u) => u && u.live != null && u.tracked == null);
   if (!comparable.length) {
-    return { state: "skip", drifted: [],
+    return { state: "skip", blocked: true, drifted: [],
       message: `systemd answered and no unit could be compared to a tracked file (${units.length} unit(s) seen, `
         + `${unreadable.length} with no readable fragment, ${untracked.length} with no tracked unit file `
         + "anywhere in the tree) — nothing was checked" };
