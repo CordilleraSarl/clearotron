@@ -55,7 +55,7 @@ export function rosterVerdict({ keys, onDisk, bundledDemos, expectDemos, caller 
     if (!sameSet(keys, expected) && unreadable)
       // A KEY WHOSE CLAIMS CANNOT BE READ may be narrowing the answer, and a narrowing looks exactly like a
       // door that disagrees with its store. Neither passed nor failed: not compared, and said so.
-      return { state: "skip", message: `the door sees ${keys.length} customer(s) (${keys.join(", ")}), `
+      return { state: "skip", blocked: true, message: `the door sees ${keys.length} customer(s) (${keys.join(", ")}), `
         + `the configured store holds ${onDisk.length} (${onDisk.join(", ")}), and the claims of the key this `
         + "check asked with could not be read — so a narrowing by that key cannot be told from a door that "
         + "disagrees with its store. NOT compared" };

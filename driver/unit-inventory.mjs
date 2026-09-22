@@ -676,7 +676,7 @@ export const CHECKED_TIMERS = Object.freeze(
  * that reports on the service keeps saying `inactive`, which is what it says when the timer is working.
  */
 export function timerVerdict(timers, { probeFailed = null } = {}) {
-  if (probeFailed) return { state: "unknown", stopped: [], absent: [], message: `could not ask systemd about the timers: ${probeFailed}. That is this check failing to look, not a report about them.` };
+  if (probeFailed) return { state: "skip", blocked: true, stopped: [], absent: [], message: `could not ask systemd about the timers: ${probeFailed}. That is this check failing to look, not a report about them.` };
   const rows = timers ?? [];
   if (!rows.length) return { state: "pass", stopped: [], absent: [], message: "no timer is declared for this box" };
   const absent = rows.filter((t) => t.load === "not-found").map((t) => t.unit).sort();
@@ -726,7 +726,7 @@ export function unitInventoryVerdict({
   inventory = UNIT_INVENTORY,
 } = {}) {
   if (!probe.ok) {
-    return { state: "skip", undeclared: [], orphaned: [], absent: [], misdeclared: [],
+    return { state: "skip", blocked: true, undeclared: [], orphaned: [], absent: [], misdeclared: [],
       message: `could not enumerate systemd units, so the inventory was NOT checked — ${probe.why ?? "no reason given"}. `
         + "A failure to look is not a finding about the deployment." };
   }

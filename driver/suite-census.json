@@ -124,8 +124,8 @@
           "todos": 0
         },
         "a-check-that-could-not-look-does-not-report-a-drift.test.mjs": {
-          "tests": 5,
-          "asserts": 10,
+          "tests": 10,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },
@@ -1061,7 +1061,7 @@
         },
         "a-timer-is-asked-about-as-a-timer.test.mjs": {
           "tests": 7,
-          "asserts": 16,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
@@ -2261,7 +2261,7 @@
         },
         "drainer-identity.test.mjs": {
           "tests": 17,
-          "asserts": 50,
+          "asserts": 51,
           "skips": 0,
           "todos": 0
         },
@@ -5567,7 +5567,7 @@
         },
         "the-updater-that-deploys-this-box-says-what-it-is.test.mjs": {
           "tests": 18,
-          "asserts": 59,
+          "asserts": 61,
           "skips": 0,
           "todos": 0
         },

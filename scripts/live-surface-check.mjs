@@ -500,8 +500,8 @@ if (!snapshot) {
     catch { return null; }
   })();
   const { groups: managerGroups, why } = readUserManagerGroups(uid);
-  const { state, message } = managerGroupsVerdict({ idGroups, managerGroups, user, uid, why });
-  ({ pass, fail, skip })[state]("user manager groups are current", message);
+  const v = managerGroupsVerdict({ idGroups, managerGroups, user, uid, why });
+  record("user manager groups are current", v.state, v.message, v.blocked === true);
 }
 
 // 1b. — HOW THIS BOX DIFFERS FROM PRODUCTION on the flags that change output without saying so.
@@ -582,9 +582,9 @@ try {
   try { caller = (await import("../driver/portal-service.mjs")).opsTokenPosture(OPS_TOKEN); }
   catch { /* stays unreadable — the verdict reports what it could not compare */ }
   if (bundledDemos) {
-    const { state, message } = rosterVerdict({ keys, onDisk, bundledDemos, caller,
+    const v = rosterVerdict({ keys, onDisk, bundledDemos, caller,
       expectDemos: process.env.CLEAROTRON_E2E_EXPECT_DEMO_ROSTER === "1" });
-    ({ pass, fail, skip })[state]("roster resolves", message);
+    record("roster resolves", v.state, v.message, v.blocked === true);
   }
   // A COMPANY IN THE STORE THAT THIS KEY CANNOT START is its own finding, not a roster disagreement. A
   // warning, not a failure: the portal re-takes its credential at the start of every call, so a Start for
@@ -639,7 +639,7 @@ try {
       effectiveMode: (process.env.TRADEMARK_MCP_AUTH_MODE || "").trim().toLowerCase() === "token" ? "token" : "cf-access",
       allowedHosts: (process.env.TRADEMARK_MCP_ALLOWED_HOSTS || "").split(",").map((h) => h.trim()).filter(Boolean),
     });
-    record("the ops door's auth mode was chosen for it", posture.state, posture.message);
+    record("the ops door's auth mode was chosen for it", posture.state, posture.message, posture.blocked === true);
   }
 } catch (e) {
   if (e?.message === "__door_unset__") skip("ops-MCP reachable", "this instance does not say where its ops-MCP is — NOT PROBED");
@@ -827,11 +827,12 @@ else {
 // process that is in no unit, so this arm derives from the PROCESS TABLE and from a stamp the drainer
 // writes about itself.
 //
-// IT FAILS ON COULD-NOT-LOOK, and that is deliberate. This script exits non-zero on `fail` only —
-// `skip` does not move the exit code — so recording an absent stamp as a skip would let the deploy
-// report a build live having never established what the executing process holds, which is the exact
-// state the incident's drainer was in. The fourth criterion of that issue is that the deploy does not
-// report a build live until this arm has looked; a skip here would be that criterion silently unmet.
+// A COULD-NOT-LOOK HERE MOVES THE EXIT CODE, and that is deliberate. An ordinary skip does not, so
+// recording an absent stamp as one would let the deploy report a build live having never established
+// what the executing process holds, which is the exact state the incident's drainer was in. It is
+// recorded through `blocked`, which exits 3 rather than the 1 a drift gives: the deploy still does not
+// report a build live until this arm has looked, and the reader is told it could not look rather than
+// that something drifted.
 {
   let workspaceRoot = null, resolveError = null;
   try { workspaceRoot = config.workspaceRoot; }
@@ -937,7 +938,7 @@ else {
       // which tree this deploy is. Reading it twice is how they would come to.
       deployClone,
     });
-    record("the updater that deploys this box is the current one", v.state, v.message);
+    record("the updater that deploys this box is the current one", v.state, v.message, v.blocked === true);
   }
   }
 }
@@ -947,10 +948,10 @@ else {
 // inline string equality over a two-word vocabulary, which is why a `Type=oneshot` doing its job read as
 // a fault on the deploy's final gate. The decision now lives in driver/unit-state-verdict.mjs, where a
 // test can reach it — same move made for the roster arm, for the same reason.
-// `record`, not the ({pass, fail, skip})[state] shorthand used above: `warn` is a real outcome here.
+// `record`, not a ({pass, fail, skip})[state] shorthand: `warn` is a real outcome here.
 {
   const v = unitsActiveVerdict({ units: clones, probe: unitProbe });
-  record("units active", v.state, v.message);
+  record("units active", v.state, v.message, v.blocked === true);
 }
 
 // 10. — THE UNIT A BOX RUNS versus the unit the deployed commit SHIPS. The deploy syncs code, not
@@ -1013,7 +1014,7 @@ else {
     return { unit: fragName ?? c.unit, live, tracked, dropIns };
   });
   const v = unitFileDriftVerdict({ units: rows, probe: unitProbe });
-  record("units match the deployed commit", v.state, v.message);
+  record("units match the deployed commit", v.state, v.message, v.blocked === true);
 }
 
 // 10a. — IS EVERY UNIT THIS BOX RUNS ACCOUNTED FOR AT ALL?
@@ -1082,7 +1083,7 @@ else {
   const box = deploymentBox();   // — the shared rule, so /portal/health cannot disagree with this
   const v = unitInventoryVerdict({ live: liveUnits, files: walk.files, collisions: walk.collisions,
     filesError: walk.error, box, probe, boxNames: DEPLOYMENT_BOXES });
-  record("every live unit is declared", v.state, v.message);
+  record("every live unit is declared", v.state, v.message, v.blocked === true);
 
   // — AND WHETHER ANYTHING STILL STARTS THE TIMER-DRIVEN ONES. Reported separately from the line above
   // because it answers a different question: that one says a declared unit exists and is not adrift,
@@ -1090,7 +1091,7 @@ else {
   // fails the second, and reads `inactive` for both — which is why one line could not carry both.
   const t = declaredTimers();
   const tv = timerVerdict(t.rows, { probeFailed: t.probeFailed });
-  record("every declared timer is still armed", tv.state, tv.message);
+  record("every declared timer is still armed", tv.state, tv.message, tv.blocked === true);
 }
 
 // ── — EVERY QUEUE THIS DEPLOYMENT WOULD DRAIN IS WATCHED BY SOMETHING ──────────────────────────
@@ -1116,7 +1117,7 @@ else {
   // job's life, and two readers of one unit file is how the deploy tick and a door come to different
   // conclusions about the same box. The unit path now has one home.
   const v = probeQueueWatch({ queueDirs, resolveError });
-  record("every queue this deployment would drain is watched", v.state, v.message);
+  record("every queue this deployment would drain is watched", v.state, v.message, v.blocked === true);
 }
 
 // ── report ───────────────────────────────────────────────────────────────────────────────────────────
@@ -1129,8 +1130,14 @@ const couldNotLook = results.filter((r) => r.blocked);
 // — extracted for the reason roster-verdict and unit-state-verdict were: this file is a program, and a
 // decision that can only be reached by running it is a decision nobody can drive.
 
+// ONE DECISION, READ BY BOTH SURFACES. `--json` used to print `ok: failed.length === 0`, so a run that
+// could not look at a surface and found nothing else wrong told a machine reader `ok: true` while the
+// terminal said COULD NOT LOOK and the process exited 3. The human surface was fixed and the one a script
+// believes silently was not. `ok` is now the exit code's own answer, and `exit` carries which of the three.
+const code = exitFor({ failed: failed.length, couldNotLook: couldNotLook.length });
+
 if (asJson) {
-  console.log(JSON.stringify({ ok: failed.length === 0, poolRoot: POOL_ROOT, register: wiredRegister, results }, null, 2));
+  console.log(JSON.stringify({ ok: code === 0, exit: code, poolRoot: POOL_ROOT, register: wiredRegister, results }, null, 2));
 } else {
   const mark = { pass: "  ok  ", fail: " FAIL ", warn: " warn ", skip: " skip " };
   console.log(`\n== live surface check — ${POOL_ROOT} ==\n`);
@@ -1148,4 +1155,4 @@ if (asJson) {
   }
 }
 
-process.exit(exitFor({ failed: failed.length, couldNotLook: couldNotLook.length }));
+process.exit(code);

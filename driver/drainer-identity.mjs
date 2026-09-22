@@ -190,7 +190,7 @@ export function drainerVerdict({ stamp, headCommit, isAlive, processes, ppidOf =
   }
 
   if (!head) {
-    return { state: "fail", message: `drainer pid ${pid} is alive on ${short(held)}${via}, but the checkout's own HEAD `
+    return { state: "skip", blocked: true, message: `drainer pid ${pid} is alive on ${short(held)}${via}, but the checkout's own HEAD `
       + `could not be read, so the two could not be compared.${strayNote}` };
   }
 

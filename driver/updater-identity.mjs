@@ -128,7 +128,7 @@ export function updaterVerdict({ stamp, now = null, deployClone = null, maxAgeSe
       : !wsha ? "the running copy of the updater could NOT be read as a digest"
       : "the master could NOT be read as a digest";
     const why = stamp.masterCommitError ? ` The updater reported: ${stamp.masterCommitError}` : "";
-    return { state: "fail", message:
+    return { state: "skip", blocked: true, message:
       `the updater stamp is present but ${which}, so the running copy was NOT `
       + `compared against its master.${why} This is a failure to look, never a pass.` };
   }

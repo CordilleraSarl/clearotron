@@ -78,3 +78,157 @@ test("every result carries the marker, so a reader of the JSON can tell the two 
   assert.match(SRC, /results\.push\(\{ name, state, detail, blocked \}\)/,
     "…and it is written into the result the --json consumer reads, not only used for the terminal");
 });
+
+// ── THE SAME RULE, ONE LAYER DOWN: A VERDICT COMPUTED ELSEWHERE AND FORWARDED ─────────────────────────
+//
+// The arm above reads `fail(` sites in the check. Most arms do not decide anything there: a verdict
+// module decides, and the check forwards `v.state` and `v.message` through `record`. Two of those
+// verdicts said in their own message that they could not look — "This is a failure to look, not a
+// finding about the deployment", "nothing was checked" — and returned a plain skip, which moves no exit
+// code. The forwarding site dropped the marker as well. So a check that could not compare a single unit
+// file exited 0: a could-not-look wearing a HEALTHY box's verdict, which is the more expensive of the two
+// ways to get this wrong.
+//
+// Two halves, and each is useless without the other: the verdict has to set the marker, and the check
+// has to carry it to the bucket that counts.
+
+const VERDICT_ROOT = join(ROOT, "driver");
+const relImports = (text) => [...text.matchAll(/from "(\.{1,2}\/[^"]+\.mjs)"/g)].map((m) => m[1]);
+
+/** Every module the check imports from the driver and the MCP server, and the modules those import. */
+function verdictModules() {
+  const direct = relImports(SRC)
+    .filter((p) => /^\.\.\/(driver|mcp-server)\//.test(p))
+    .map((p) => join(ROOT, "scripts", p));
+  const all = new Set(direct);
+  for (const f of direct) {
+    for (const p of relImports(readFileSync(f, "utf8"))) {
+      const abs = join(dirname(f), p);
+      if (abs.startsWith(VERDICT_ROOT) || abs.startsWith(join(ROOT, "mcp-server"))) all.add(abs);
+    }
+  }
+  return [...all].sort();
+}
+
+// WORDS A MESSAGE USES TO ADMIT IT DID NOT LOOK. The criterion is the message's own text, not a judgment
+// about what each surface means: an author who wrote one of these was saying the surface was not
+// compared, and the verdict beside it may not be one a reader takes as a pass or as a drift. Deliberate
+// skips — "NOT PROBED", "unscoped for this door", "0 active units" — are not on this list and stay
+// ordinary skips, because they are the resting state of a healthy box somewhere and a code that moved on
+// them would fire every hour.
+const ADMITS = /failure to look|failing to look|could not (?:enumerate|ask|read|be read|be resolved)|nothing was checked|not checked, not passed/i;
+
+// THE ONE VERDICT LEFT OUT, and why. `serviceCommitVerdict` answers "services share one commit", and the
+// hourly deploy excuses that arm's skip by name: on a box whose units carry no WorkingDirectory in the
+// checkout the arm cannot answer, and the deploy logs it and passes. The deploy reads the exit code
+// BEFORE that excuse, so marking this skip
+// would turn every such tick red with no disagreement to name. Whether that arm's could-not-look should
+// move the code is a question about the deploy, not about this file.
+const EXCUSED = ["serviceCommitVerdict"];
+
+// ONE BRANCH LEFT OUT, and why. `updaterVerdict` with no stamp at all returns a drift on purpose: the
+// stamp writer shipped inside the updater, so a copy old enough to predate it writes none, and the arm
+// reads that absence as the stale updater it exists to catch. Its message also says "failure to look",
+// which runs two facts together the way the drainer's absent-stamp message once did. Splitting them is a
+// decision about what that arm asserts, not a marker to add, so it is named here rather than changed.
+const EXCUSED_BRANCH = /which is itself the stale-updater case/;
+
+function withoutExcused(text) {
+  let out = text;
+  for (const name of EXCUSED) {
+    const at = out.indexOf(`export function ${name}(`);
+    if (at < 0) continue;
+    const end = out.indexOf("\n}\n", at);
+    out = out.slice(0, at) + out.slice(end < 0 ? out.length : end + 3);
+  }
+  return out;
+}
+
+/** Each `return { … }` that sets a state, with whether its own message admits it could not look. */
+function verdictReturns(file) {
+  const text = withoutExcused(readFileSync(file, "utf8"));
+  return text.split(/\breturn \{/).slice(1)
+    .map((chunk) => chunk.slice(0, chunk.indexOf("};") < 0 ? chunk.length : chunk.indexOf("};")))
+    .filter((obj) => /\bstate: "(pass|fail|skip|warn|unknown)"/.test(obj))
+    .filter((obj) => !EXCUSED_BRANCH.test(obj.replace(/"\s*\+\s*"/g, "")))
+    .map((obj) => ({ obj, state: /\bstate: "(\w+)"/.exec(obj)[1], admits: ADMITS.test(obj), blocked: /\bblocked: true\b/.test(obj) }));
+}
+
+test("the population the verdict arms read is real, so an empty walk cannot pass", () => {
+  // A cross-file arm over a set it discovered is exactly the shape that passes green having looked at
+  // nothing — the import pattern stops matching, the set comes back empty, every loop below is a no-op.
+  const mods = verdictModules();
+  assert.ok(mods.length >= 15, `only ${mods.length} module(s) found behind the check — the import walk is not reading what it should`);
+  for (const must of ["unit-file-drift.mjs", "unit-state-verdict.mjs", "unit-inventory.mjs", "queue-watch-verdict.mjs",
+    "manager-groups-verdict.mjs", "drainer-identity.mjs"]) {
+    assert.ok(mods.some((m) => m.endsWith(`/${must}`)), `${must} is not in the walk`);
+  }
+  const returns = mods.flatMap(verdictReturns);
+  assert.ok(returns.length >= 40, `only ${returns.length} verdict return(s) read`);
+  assert.ok(returns.filter((r) => r.admits).length >= 8, "the admission pattern matches almost nothing — it has stopped reading the messages");
+});
+
+test("a verdict whose own message admits it could not look returns a MARKED skip", () => {
+  const offenders = [];
+  for (const f of verdictModules()) {
+    for (const r of verdictReturns(f)) {
+      if (!r.admits) continue;
+      if (r.state === "skip" && r.blocked) continue;
+      offenders.push(`${f.slice(ROOT.length + 1)}: state ${r.state}${r.blocked ? "" : ", no marker"} — ${r.obj.replace(/\s+/g, " ").slice(0, 140)}`);
+    }
+  }
+  assert.deepEqual(offenders, [],
+    "a verdict says it could not look and returns something a reader takes as a pass or as a drift. Return "
+    + "`{ state: \"skip\", blocked: true, … }`, which the check counts toward exit 3:\n  " + offenders.join("\n  "));
+});
+
+test("every verdict the check forwards carries its marker to the bucket that counts", () => {
+  // A verdict that sets the marker and a site that drops it is the defect this file was filed about, and
+  // it is the one that survived the first repair: six of seven forwarding sites passed `v.state` and
+  // `v.message` and nothing else.
+  const forwards = [...SRC.matchAll(/\brecord\(\s*("[^"]*"),\s*(\w+)\.state,\s*\2\.message\b([^;]*?)\);/g)];
+  assert.ok(forwards.length >= 8, `only ${forwards.length} forwarding site(s) found — the pattern is not reading the check`);
+  const dropped = forwards.filter(([, , v, rest]) => !new RegExp(`^\\s*,\\s*${v}\\.blocked === true\\s*$`).test(rest))
+    .map(([, name]) => name);
+  assert.deepEqual(dropped, [], `these arms forward a verdict and drop its marker: ${dropped.join(", ")}`);
+  // THE SHORTHAND CANNOT CARRY IT AT ALL. `({ pass, fail, skip })[state](name, message)` has no slot for
+  // the marker, so a verdict routed through it loses the distinction however carefully it was computed.
+  assert.doesNotMatch(SRC, /\(\{\s*pass,\s*fail,\s*skip\s*\}\)\[\w+(?:\.\w+)?\]\(/,
+    "a verdict is forwarded through the ({ pass, fail, skip })[state] shorthand, which drops the marker");
+});
+
+test("each could-not-look branch, driven, comes back marked", async () => {
+  // The static arm above reads the source. This drives the branches the first repair missed, so a
+  // marker that is present in the text and lost on the way out still reds here.
+  const { unitFileDriftVerdict } = await import("../unit-file-drift.mjs");
+  const { unitsActiveVerdict } = await import("../unit-state-verdict.mjs");
+  const { unitInventoryVerdict, timerVerdict } = await import("../unit-inventory.mjs");
+  const { managerGroupsVerdict } = await import("../manager-groups-verdict.mjs");
+  const cases = {
+    "unit files: systemd could not be enumerated": unitFileDriftVerdict({ units: [], probe: { ok: false, why: "no bus" } }),
+    "unit files: systemd answered and nothing could be compared": unitFileDriftVerdict({ units: [{ unit: "a.service", live: null, tracked: null }], probe: { ok: true } }),
+    "units active: systemd could not be enumerated": unitsActiveVerdict({ units: [], probe: { ok: false, why: "no bus" } }),
+    "inventory: systemd could not be enumerated": unitInventoryVerdict({ live: [], files: [], probe: { ok: false, why: "no bus" } }),
+    "timers: systemd could not be asked": timerVerdict(null, { probeFailed: "no bus" }),
+    "manager groups: the user's groups could not be read": managerGroupsVerdict({ idGroups: null, managerGroups: null, user: "u", uid: 1 }),
+  };
+  for (const [what, v] of Object.entries(cases)) {
+    assert.equal(v.state, "skip", `${what}: ${v.state}`);
+    assert.equal(v.blocked, true, `${what}: the marker is missing, so the check would exit 0`);
+  }
+  // AND THE OTHER DIRECTION, which is half of the test. A box with no user manager at all is a legitimate
+  // shape, so that skip stays ordinary; a marker there would fire on every such box.
+  const noManager = managerGroupsVerdict({ idGroups: [1000], managerGroups: null, user: "u", uid: 1 });
+  assert.equal(noManager.state, "skip");
+  assert.notEqual(noManager.blocked, true, "a box with no user manager is not a failure to look");
+});
+
+test("the JSON a script reads gives the exit code's answer, not a second opinion", () => {
+  // `ok: failed.length === 0` printed `ok: true` for a run that could not look at anything and exited 3.
+  // A machine reader is the one that believes a field without reading the prose beside it.
+  assert.doesNotMatch(SRC, /JSON\.stringify\(\{ ok: failed\.length === 0/, "--json still decides `ok` on disagreements alone");
+  assert.match(SRC, /const code = exitFor\(\{ failed: failed\.length, couldNotLook: couldNotLook\.length \}\);/,
+    "the exit code is decided once, where both surfaces read it");
+  assert.match(SRC, /ok: code === 0, exit: code,/, "--json carries the exit code's answer and the code itself");
+  assert.match(SRC, /process\.exit\(code\);/, "the process exits with the same decision the JSON printed");
+});
