@@ -839,6 +839,23 @@ serve({
             },
           },
         },
+        // THE SAME DEFECT TWICE MORE, and the same fix. The dispatch asks for both of these in its own
+        // imperative, the acceptor validates and records them, and the plan compile reads the classes —
+        // and until now neither was a property here, so a frame following its schema could send neither.
+        // A real run's frame carried no added class although the goods reached one. Shape only: the
+        // dispatch already says what to send and why, so no sentence the model reads is added here.
+        identified_classes: {
+          type: "array",
+          items: {
+            type: "object",
+            required: ["class", "reason"],
+            properties: {
+              class: { type: "integer", minimum: 1, maximum: 45 },
+              reason: { type: "string" },
+            },
+          },
+        },
+        ratified_forms: { type: "array", items: { type: "string" } },
         // OFFERED HERE, OR NEVER SENT. The acceptor took this field for a beta and the plan acted on it,
         // and no frame ever proposed one, because the schema a model is given did not offer it. Worded as
         // the owner approved it; it is model-facing prose, so its wording is his.
