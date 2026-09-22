@@ -1275,6 +1275,12 @@
           "skips": 0,
           "todos": 0
         },
+        "an-escape-is-read-the-way-a-lexer-reads-it.test.mjs": {
+          "tests": 3,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
         "an-evidence-demand-that-cannot-be-met.test.mjs": {
           "tests": 9,
           "asserts": 21,
