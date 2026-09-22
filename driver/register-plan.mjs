@@ -231,6 +231,42 @@ export function goodsTextGap(entry, capabilities) {
 // The reader is `goodsTermsList`, imported from the shared term vocabulary — the compiler, the
 // executor and the connectors all ask the question with the same function.
 
+// ── A TERM TOO SHORT FOR THE REGISTER'S CONTAINS FORM IS ASKED ON THE EXACT FORM ───────────────────
+//
+// Measured on a two-letter mark, 2026-09-22: every always-on goods-narrowed question and the saturation
+// probe went out on the contains form, and a register that documents a three-character floor for that
+// form refused all of them with a 400. The identical question on the same mark had crowded, so the one
+// narrowing the matter needed was the one the register would not run.
+//
+// So each register declares the shortest term its contains form accepts (`containsMinLength`), and a
+// shorter term is asked on the exact form with everything else unchanged: the same classes, the same
+// goods words, the same one question in place of one question. Nothing is added and nothing is
+// dropped. The entry carries `contains_substituted`, so the plan says which question was asked in
+// another form and why, and nobody reading it takes an exact count for a containing one.
+//
+// FOLDED LENGTH, because that is what the floor is measured in: case and accents folded, and spaces
+// not counted. Counting a space could let a term the register would still refuse through on the
+// contains form; not counting it at worst asks exactly where contains would have answered.
+export function foldedTermLength(term) {
+  return [...String(term ?? "").normalize("NFKD").replace(/\p{M}/gu, "").toLowerCase().replace(/\s+/g, "")].length;
+}
+
+/**
+ * The substitution a contains-form question needs on this register, or null when it needs none. PURE.
+ * A register that declares no floor (`containsMinLength` absent or null) is sent the contains form at
+ * every length, as it always has been.
+ */
+export function containsFormSubstitution(term, capabilities) {
+  const min = capabilities?.containsMinLength;
+  if (!Number.isInteger(min) || min < 2) return null;
+  const length = foldedTermLength(term);
+  if (length >= min) return null;
+  return { from: "default", to: "exact", min_length: min, term_length: length,
+    reason: `the register (${capabilities.id ?? "unknown"}) answers its contains form only for a term of `
+      + `${min} or more characters, and this term has ${length}, so it was asked on the exact form with the `
+      + `same classes and goods words` };
+}
+
 /**
  * 2026-07-29 hardening — is a VARIANTS-MODEL value un-searchable as a mark term? Returns the
  * plain-English reason, or null. Two classes shipped as silent nil "cleans" on the 2026-07-28 run
@@ -1162,9 +1198,14 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
 
   // saturation-probe — count-only crowd descriptors for every common/saturated element. These
   // enumerate NOTHING (limit:1 probes); they describe the crowd for judgment. Never the anchor.
+  // A term shorter than the register's contains floor is probed on the exact form instead, and the
+  // entry says so (containsFormSubstitution, above): a refused probe describes no crowd at all.
   for (const el of manifest.elements) {
-    if (el.kind === "common" || el.kind === "saturated-common")
-      push({ axis: "saturation-probe", predicate: "default", term: el.value, expected_kind: "count", provenance: "model" });
+    if (el.kind === "common" || el.kind === "saturated-common") {
+      const sub = containsFormSubstitution(el.value, caps);
+      push({ axis: "saturation-probe", predicate: sub ? "exact" : "default", term: el.value, expected_kind: "count",
+        provenance: "model", ...(sub ? { contains_substituted: sub } : {}) });
+    }
   }
 
   // primary-sweep — the dangerous NAMED band, all enumerates:
@@ -1328,6 +1369,11 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
     ? { goods_text_omitted: goodsOmitted, goods_text_omitted_reason: goodsOmittedReason }
     : {};
 
+  // The same floor for the goods-narrowed questions: on a mark shorter than the register's contains
+  // form accepts, each is asked on the exact form with the same classes and goods words, one for one.
+  const goodsSub = containsFormSubstitution(manifest.dominant_element, caps);
+  const goodsPredicate = goodsSub ? "exact" : "default";
+  const goodsSubStamp = goodsSub ? { contains_substituted: goodsSub } : {};
   if (goodsSendable.length && caps?.goodsTextSearch === true) {
     if (caps.goodsTextListOr === true) {
       // The register offers the list as alternatives in one clause: one question, one count — phrases
@@ -1335,9 +1381,9 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
       // `a ADJ b OR c`, and that precedence is MEASURED rather than assumed: the mixed clause answers
       // the union of its alternatives, not the distributed reading `a ADJ (b OR c)`. Were it the
       // other way the clause would ask a different question and still answer 200.
-      push({ axis: "primary-sweep", predicate: "default", term: manifest.dominant_element,
+      push({ axis: "primary-sweep", predicate: goodsPredicate, term: manifest.dominant_element,
         expected_kind: "enumerate", provenance: "mark", goods_text: goodsSendable,
-        goods_text_gaps: gapsFor(goodsSendable), qidSuffix: "+goods", ...omittedStamp });
+        goods_text_gaps: gapsFor(goodsSendable), qidSuffix: "+goods", ...omittedStamp, ...goodsSubStamp });
     } else {
       // ── ONE ENTRY PER WORD, where the register has no OR on this field ──────────────────────────
       //
@@ -1356,10 +1402,10 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
       // is N questions on such a register, where a register with an OR asks one. The manifest's
       // 24-word ceiling is what bounds it.
       goodsSendable.forEach((word, i) => {
-        push({ axis: "primary-sweep", predicate: "default", term: manifest.dominant_element,
+        push({ axis: "primary-sweep", predicate: goodsPredicate, term: manifest.dominant_element,
           expected_kind: "enumerate", provenance: "mark", goods_text: [word],
           goods_text_gaps: gapsFor([word]),
-          qidSuffix: `+goods-${termIdentity(word)}`, ...(i === 0 ? omittedStamp : {}) });
+          qidSuffix: `+goods-${termIdentity(word)}`, ...(i === 0 ? omittedStamp : {}), ...goodsSubStamp });
       });
     }
   }
