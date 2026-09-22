@@ -58,6 +58,10 @@ const SERVERS_GRANTED_TO_NOTHING = Object.freeze({
     "codex-config.mjs, not by gather-config's grant table, so it is correctly absent from LOCAL — the " +
     "codex lane resolves its own surface. NOT a claim that the codex lane is measured: #954 says it is " +
     "not, and the write boundary does not reach it either.",
+  "probe-server.mjs":
+    "The engine probe's own tool, and nobody else's. engine/probe.mjs hands it to the probe turn in its " +
+    "own tool config, so no stage's grant reaches it and none should: its one read-only `ping` proves the " +
+    "engine can make a tool call before a search is paid for, and it touches no run.",
   // closure-server.mjs's row is GONE at conversion 6, and the module with it. Its text said "it arms with
   // the conversion that needs it" — this is that conversion, and it armed by moving rather than by being
   // granted: `record_doubt_closure` now lives on recording-server.mjs with the category's other seven, so

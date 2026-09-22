@@ -43,6 +43,11 @@ const tupleOf = (over = {}) => ({ code: 1, killed: false, wall: 0.4, stdout: "",
 
 const explode = () => { throw new Error("loadAdapter must not be reached — this suite never spawns a real engine"); };
 
+/** The word the probe handed its tool, read off the tool config it passed, as the tool server reads it. */
+const wordOf = (a) => JSON.parse(a.mcpConfig).mcpServers.probe.env.CLEAROTRON_PROBE_SENTINEL;
+/** What a working engine does with the probe's tool: calls it, and answers with the word it returned. */
+const answering = (over = {}) => async (a) => tupleOf({ code: 0, stdout: `${wordOf(a)}`, ...over });
+
 // ── the seam that keeps the suite (and CI) from spending ─────────────────────────────────────────────
 
 test("an injected runTurn means the real adapter is never even loaded", async () => {
@@ -50,7 +55,7 @@ test("an injected runTurn means the real adapter is never even loaded", async ()
   const v = await probeEngineTurn({
     env: { CLEAROTRON_AI: "anthropic-agent" },
     loadAdapter: explode,
-    runTurn: async () => { calls++; return tupleOf({ code: 0 }); },
+    runTurn: async (a) => { calls++; return answering()(a); },
   });
   assert.equal(calls, 1, "the injected turn ran");
   assert.equal(v.ok, true);
@@ -60,9 +65,9 @@ test("an injected runTurn means the real adapter is never even loaded", async ()
 test("the probe asks for the CHEAPEST turn either adapter can build", async () => {
   let seen = null;
   await probeEngineTurn({ env: { CLEAROTRON_AI: "anthropic-agent" }, loadAdapter: explode,
-    runTurn: async (a) => { seen = a; return tupleOf({ code: 0 }); } });
-  // haiku + low are the floor rungs of BOTH tier tables (CONTRACT §3), and nothing heavier is passed:
-  // no mcpConfig, no allowedTools, no skillsDir, no runDir — the smallest argv the adapters produce.
+    runTurn: async (a) => { seen = a; return answering()(a); } });
+  // haiku + low are the floor rungs of BOTH tier tables (CONTRACT §3), and nothing heavier is passed: one
+  // tool on one server, and no skillsDir, no runDir — the smallest argv that still proves a stage's tools.
   assert.equal(seen.model, PROBE_MODEL);
   assert.equal(seen.model, "haiku");
   assert.equal(seen.thinking, PROBE_THINKING);
@@ -70,9 +75,57 @@ test("the probe asks for the CHEAPEST turn either adapter can build", async () =
   assert.equal(seen.message, PROBE_PROMPT);
   assert.ok(seen.timeoutSec > 0 && seen.timeoutSec <= 120, "bounded, because a person is waiting at a wizard");
   assert.ok(seen.stallSec > 0 && seen.stallSec < seen.timeoutSec, "and the stall clock trips well before the wall");
-  for (const k of ["mcpConfig", "allowedTools", "skillsDir", "runDir", "resumeRef"]) {
+  for (const k of ["skillsDir", "runDir", "resumeRef"]) {
     assert.equal(seen[k], undefined, `${k} would make the probe heavier than the thing it protects`);
   }
+  // THE ONE TOOL, and nothing beside it: the probe's own server, granted by the name a stage would use.
+  assert.equal(seen.allowedTools, "mcp__probe__ping");
+  const servers = JSON.parse(seen.mcpConfig).mcpServers;
+  assert.deepEqual(Object.keys(servers), ["probe"], "the probe hands the engine one server, its own");
+  assert.match(servers.probe.args[0], /engine\/mcp\/probe-server\.mjs$/);
+  assert.match(wordOf(seen), /^probe-[0-9a-f]{8}$/, "the word is minted fresh, so the model cannot supply it");
+});
+
+// ── the tool: three outcomes, never two ──────────────────────────────────────────────────────────────
+
+test("a host that refuses every tool call is refused at the door, and the setting that fixes it is named", async () => {
+  // The production shape: codex reported success, every tool call was refused before reaching its
+  // server, and the turn carried no word because no call got through.
+  const refused = { mcpToolCalls: 0, mcpToolCallsRefused: 1,
+    mcpToolCallRefusals: [{ server: "probe", tool: "ping", message: "MCP tool call requires approval, but approval policy is never" }] };
+  const v = await probeEngineTurn({ env: { CLEAROTRON_AI: "openai-agent" }, loadAdapter: explode,
+    runTurn: async () => tupleOf({ code: 0, stdout: "I could not call the tool.", ...refused }) });
+  assert.equal(v.ok, false);
+  assert.equal(v.mode, "tools-refused");
+  assert.equal(probeVerdictLane(v), "configuration", "a host that refuses every tool call is this box's to fix, so the door refuses");
+  assert.match(v.fix, /CLEAROTRON_CODEX_SANDBOX_BYPASS=1/, "the refusal does not name the setting that fixes it");
+  assert.match(v.detail, /requires approval/, "codex's own reason rides the verdict");
+  await assert.rejects(() => preflightEngineTurn({ env: { CLEAROTRON_AI: "openai-agent" }, loadAdapter: explode,
+    runTurn: async () => tupleOf({ code: 0, ...refused }) }), /refused every tool call/);
+});
+
+test("a turn that returns the tool's word passes; one that shows nothing either way warns", async () => {
+  const ok = await probeEngineTurn({ env: { CLEAROTRON_AI: "openai-agent" }, loadAdapter: explode,
+    runTurn: answering({ mcpToolCalls: 1, mcpToolCallsRefused: 0 }) });
+  assert.equal(ok.ok, true, JSON.stringify(ok));
+
+  // THE ABSENCE IS NOT A PASS. A completed turn with no word and no refusal shows nothing about the tools:
+  // the model answered without calling it, or an engine that keeps no tool gauge could not say.
+  const none = await probeEngineTurn({ env: { CLEAROTRON_AI: "anthropic-agent" }, loadAdapter: explode,
+    runTurn: async () => tupleOf({ code: 0, stdout: "ok" }) });
+  assert.equal(none.ok, false, "a turn that never showed the tool's word passed the probe");
+  assert.equal(none.mode, "tools-unproven");
+  assert.equal(probeVerdictLane(none), "weather", "and it is not this box's fault to refuse a run on");
+
+  // A word guessed out of the prompt is not the word: the probe mints it where the model cannot see it.
+  const guessed = await probeEngineTurn({ env: { CLEAROTRON_AI: "anthropic-agent" }, loadAdapter: explode,
+    runTurn: async () => tupleOf({ code: 0, stdout: "probe-00000000" }) });
+  assert.equal(guessed.ok, false);
+
+  // One refused call beside a completed one is not a refusing host.
+  const mixed = await probeEngineTurn({ env: { CLEAROTRON_AI: "openai-agent" }, loadAdapter: explode,
+    runTurn: answering({ mcpToolCalls: 1, mcpToolCallsRefused: 1 }) });
+  assert.equal(mixed.ok, true);
 });
 
 // ── the billing-mode door, which is the one the anthropic adapter does not open for itself ───────────
@@ -414,7 +467,7 @@ test("preflightEngineTurn REFUSES a failing engine and returns a passing one", a
     });
 
   const okv = await preflightEngineTurn({ env: { CLEAROTRON_AI: "anthropic-agent" }, loadAdapter: explode,
-    runTurn: async () => tupleOf({ code: 0 }) });
+    runTurn: answering() });
   assert.equal(okv.ok, true);
 });
 
@@ -493,10 +546,32 @@ test("the real anthropic adapter is driven by its OWN spawn path — mock-claude
     assert.deepEqual(call.argv.slice(0, 5), ["-p", "--output-format", "stream-json", "--verbose", "--include-partial-messages"]);
     assert.deepEqual(call.argv.slice(5, 9), ["--model", "haiku", "--effort", "low"]);
     assert.equal(call.prompt, PROBE_PROMPT, "the prompt rode stdin, never argv");
-    assert.ok(!call.argv.includes("--mcp-config"), "no MCP servers are started for a probe");
+    // ONE MCP SERVER, the probe's own, handed over the way a stage hands over its tools.
+    const cfg = JSON.parse(call.argv[call.argv.indexOf("--mcp-config") + 1]);
+    assert.deepEqual(Object.keys(cfg.mcpServers), ["probe"], "the probe starts its own tool server and no other");
+    assert.equal(call.argv[call.argv.indexOf("--allowedTools") + 1], "mcp__probe__ping");
     assert.ok(!call.argv.includes("--add-dir"), "and no run directory is granted — there is none");
   } finally {
     if (saved === undefined) delete process.env.MOCK_CLAUDE_CALL_LOG; else process.env.MOCK_CLAUDE_CALL_LOG = saved;
+  }
+});
+
+test("through the real codex adapter: a host that refuses every tool call fails the probe, one that does not passes", async () => {
+  // The acceptance, on the engine path a run takes: the probe's server goes into the rendered config.toml,
+  // the mock streams what codex streams, and the adapter's own gauge is what the probe reads.
+  const env = { CLEAROTRON_AI: "openai-agent", CLEAROTRON_CODEX_PATH: join(HERE, "mock-codex.mjs"),
+    CLEAROTRON_AI_BILLING: "api-key", CODEX_API_KEY: "sk-test" };
+  const saved = process.env.MOCK_CODEX_MCP_REFUSED;
+  try {
+    process.env.MOCK_CODEX_MCP_REFUSED = "1";
+    const refused = await probeEngineTurn({ env });
+    assert.equal(refused.mode, "tools-refused", JSON.stringify(refused));
+    assert.equal(probeVerdictLane(refused), "configuration");
+    delete process.env.MOCK_CODEX_MCP_REFUSED;
+    const works = await probeEngineTurn({ env });
+    assert.equal(works.ok, true, `a codex whose tool call completed failed the probe: ${JSON.stringify(works)}`);
+  } finally {
+    if (saved === undefined) delete process.env.MOCK_CODEX_MCP_REFUSED; else process.env.MOCK_CODEX_MCP_REFUSED = saved;
   }
 });
 

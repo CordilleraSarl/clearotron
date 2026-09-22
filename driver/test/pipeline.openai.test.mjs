@@ -71,7 +71,8 @@ test("E2(openai): full pipeline runs on the openai-agent engine (CLEAR, delivere
   assert.equal(doorProbe.argv[0], "exec", "the door's turn is built by the adapter's own buildCodexArgs");
   assert.match(doorProbe.argv.join(" "), /-c model_reasoning_effort=\S+/, "…carrying the floor effort rung, not a hand-rolled argv");
   assert.ok(!doorProbe.argv.includes("--add-dir"), "the door grants no directory — it runs before one exists");
-  assert.ok(!(doorProbe.configToml || "").includes("[mcp_servers"), "and starts no MCP server");
+  assert.deepEqual([...(doorProbe.configToml || "").matchAll(/^\[mcp_servers\.([^\]]+)\]/gm)].map((m) => m[1]), ["probe"],
+    "and starts the probe's own tool server and no stage's");
   const probeRow = events.find((e) => e.event === "engine-turn-probe");
   assert.ok(probeRow?.ok === true && probeRow.basis === "completed-turn", `the door's verdict is on the run record: ${JSON.stringify(probeRow)}`);
   assert.equal(res.verdict, "CLEAR");

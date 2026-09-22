@@ -15,11 +15,20 @@
 //
 // THE CHEAPEST TURN THAT PROVES THE WHOLE PATH
 //
-// One `haiku`-tier turn at `low` effort on a six-word prompt, with no MCP config, no allowed tools, no
-// skills dir and no run dir — the smallest argv either adapter can build. It exercises every link a
-// stage uses: binary → spawn → billing mode → credential → model access → a completed turn parsed by
-// the adapter's own settle path. And it is far lighter than the thing it protects: one register-sweep
-// stage prompt inlines 150 KB of plan and runs for minutes.
+// One `haiku`-tier turn at `low` effort, asked to call one tool, with no skills dir and no run dir. The
+// tool is `ping` on engine/mcp/probe-server.mjs, handed over exactly as a stage hands over its own.
+//
+// WHY IT CALLS A TOOL. It used to call none, and a turn with no tools proves nothing about the tools every
+// search stage is given. On some hosts codex's own sandbox refuses every tool call while the turn reports
+// success; the probe passed there, and every search then failed after real spend. So the probe now passes
+// only when the reply carries the word `ping` returned, a random word minted for this turn and given to
+// that server alone, so the model cannot supply it. Every call refused is a configuration fault, refused at
+// the door; no call and no word shows nothing either way, and warns.
+//
+// It exercises every link a stage uses: binary → spawn → billing mode → credential → model access → a tool
+// call through the stage's own tool path → a completed turn parsed by the adapter's own settle path. And
+// it is far lighter than the thing it protects: one register-sweep stage prompt inlines 150 KB of plan and
+// runs for minutes.
 //
 // WHAT IT DOES NOT PROVE, said out loud. It exercises the CHEAP tier. Both tiers ride one credential on
 // a subscription, so AUTH is proven for all of them; a per-tier model entitlement or a per-tier quota is
@@ -56,9 +65,28 @@
 
 import { ENGINE_BINARIES, DEFAULT_ENGINE_ID, engineAdapterSpecifier, resolveEngineProgram } from "../driver.config.mjs";
 import { resolveAuthMode, CLOUD_SETTINGS, CLOUD_CREDENTIAL_CHECK } from "./auth.mjs";
+import { everyToolCallRefused } from "./tool-refusal.mjs";
+import { randomBytes } from "node:crypto";
+import { fileURLToPath } from "node:url";
 
-/** Six words. Short enough to be free in practice, and it still requires a real completed turn. */
-export const PROBE_PROMPT = "Reply with the single word: ok.";
+/** One tool call and one word back: short enough to be free in practice, and it needs a working tool path. */
+export const PROBE_PROMPT = "Call the ping tool once, then reply with exactly the word it returned.";
+/** The server and tool the probe hands the engine, named as a stage names its own (`mcp__<server>__<tool>`). */
+export const PROBE_SERVER = "probe";
+export const PROBE_TOOL = "ping";
+const PROBE_SERVER_PATH = fileURLToPath(new URL("./mcp/probe-server.mjs", import.meta.url));
+
+/** The tool config for one probe turn, in the shape both adapters take from a stage. */
+export function probeToolConfig(sentinel) {
+  return {
+    mcpConfig: JSON.stringify({ mcpServers: { [PROBE_SERVER]: {
+      command: process.execPath, args: [PROBE_SERVER_PATH], env: { CLEAROTRON_PROBE_SENTINEL: String(sentinel) } } } }),
+    allowedTools: `mcp__${PROBE_SERVER}__${PROBE_TOOL}`,
+  };
+}
+
+/** A word no model would produce unprompted, fresh per turn. */
+export const mintProbeSentinel = () => `probe-${randomBytes(4).toString("hex")}`;
 /** The CHEAP rung of the driver's tier vocabulary on BOTH adapters (engine/CONTRACT.md §3). */
 export const PROBE_MODEL = "haiku";
 /** The floor rung of both EFFORT tables. There is nothing below `low` on anthropic. */
@@ -159,7 +187,7 @@ const capitalised = (s) => s.charAt(0).toUpperCase() + s.slice(1);
  * (`{ source, path }`); both only shape the advice, never the mode, so the run door refuses exactly what it
  * refused before. Absent, the advice is the subscription's, naming the bare program word.
  */
-export function classifyProbe({ engine, tuple = null, error = null, timeoutSec = PROBE_TIMEOUT_SEC, auth = null, program = null } = {}) {
+export function classifyProbe({ engine, tuple = null, error = null, timeoutSec = PROBE_TIMEOUT_SEC, auth = null, program = null, expect = null } = {}) {
   const id = String(engine ?? "").trim().toLowerCase();
   const v = (mode, basis, headline, fix, extra = {}) =>
     ({ ok: false, engine: id, mode, basis, headline, fix, detail: null, ...extra });
@@ -196,6 +224,21 @@ export function classifyProbe({ engine, tuple = null, error = null, timeoutSec =
   // fallback exists so that "the engine said nothing" is a claim about the engine rather than about
   // which pipe this happened to look at.
   const detail = tail(tuple.stderr) ?? tail(tuple.stdout);
+
+  // THE TOOL, ON A TURN THAT COMPLETED. `expect` is the word the probe's tool returns, and only a probe that
+  // handed the engine a tool passes one; without it a completed turn proves what it always proved. With
+  // it, three outcomes, never two. Every call refused is this machine's configuration, read off the
+  // adapter's own gauge, and the run door refuses on it. The word in the reply is the pass. Neither is a
+  // turn that shows nothing about the tools either way: not a pass, and not this box's fault to refuse on.
+  if (tuple.code === 0 && expect != null) {
+    if (everyToolCallRefused(tuple))
+      return v("tools-refused", "tool-gauge", `${id} refused every tool call it was given`, toolsRefusedFix(id),
+        { detail: tail(tuple.mcpToolCallRefusals?.[0]?.message) });
+    if (!String(tuple.stdout ?? "").includes(String(expect)))
+      return v("tools-unproven", "no-tool-answer", `${id} did not return the word its probe tool gives`,
+        "Nothing here shows that the tools a search needs work on this machine. Run this again; if it repeats, a search is likely to fail the same way.",
+        { detail: tail(tuple.stdout) });
+  }
 
   // A completed turn names what served it, the model and the provider as the program reported them, and
   // null where it named neither, so a proof says which model and whose account it proved.
@@ -234,7 +277,7 @@ export function classifyProbe({ engine, tuple = null, error = null, timeoutSec =
     return v("tier-unavailable", "text-match", `${id} cannot reach the model it was asked for`, tierFix(id, text), { detail });
 
   if (tuple.killed || s.stalled || s.hardWall)
-    return v("timed-out", "watchdog", `${id} started but did not finish a six-word turn in ${timeoutSec}s`,
+    return v("timed-out", "watchdog", `${id} started but did not finish its probe turn in ${timeoutSec}s`,
       "The binary runs and the turn produces nothing. Run the CLI by hand once and see what it is waiting for — an unanswered login prompt and a wedged MCP server both look like this.", { detail });
 
   // The anthropic adapter's own diagnosis: the CLI exited without emitting a single stream event, i.e.
@@ -248,6 +291,14 @@ export function classifyProbe({ engine, tuple = null, error = null, timeoutSec =
 
   return v("failed", "nonzero-exit", `${id} ran but the turn failed (exit ${tuple.code})`,
     "The engine's stderr below is the whole story; a turn that starts and fails is not a configuration this check can name.", { detail });
+}
+
+/** What fixes a host that refuses every tool call. On codex it is its own sandbox, and the setting is named. */
+function toolsRefusedFix(engine) {
+  if (engine === "openai-agent")
+    return "Every search stage calls tools, so no search can finish here. codex's own sandbox refuses them on this machine: "
+      + "set CLEAROTRON_CODEX_SANDBOX_BYPASS=1 in this install's environment file, or use the Anthropic engine, then run this again.";
+  return "Every search stage calls tools, so no search can finish here. The engine's stderr below is the place to start.";
 }
 
 /** The one place the tier doctrine is POINTED AT rather than re-authored. */
@@ -290,7 +341,7 @@ export function probeFailureText(verdict) {
 // classify is by definition one the door cannot claim to understand — and the cost of being wrong runs
 // the other way here: refusing wrongly kills a run that would have worked, proceeding wrongly costs the
 // stages before a failure the engine was going to produce anyway.
-const CONFIGURATION_MODES = new Set(["unknown-engine", "auth-misconfigured", "signed-out", "tier-unavailable", "cannot-spawn"]);
+const CONFIGURATION_MODES = new Set(["unknown-engine", "auth-misconfigured", "signed-out", "tier-unavailable", "cannot-spawn", "tools-refused"]);
 
 // …and a mode alone is not enough, because `basis` says HOW WELL the mode is known and the ladder already
 // makes that distinction for its own reasons. `startup-class` is an INFERENCE FROM SILENCE — the CLI died
@@ -299,7 +350,8 @@ const CONFIGURATION_MODES = new Set(["unknown-engine", "auth-misconfigured", "si
 // hosted runner where a hermetic PATH left `env` unable to resolve node, and the probe "correctly reported
 // a startup-class engine death" on a machine whose engine was fine. Refusing a production run on that
 // inference manufactures the outage it was written to prevent, so it warns instead.
-const NAMED_BASES = new Set(["config", "text-match", "spawn-error"]);
+// `tool-gauge` is named, not inferred: the adapter counted each refused call off the engine's own stream.
+const NAMED_BASES = new Set(["config", "text-match", "spawn-error", "tool-gauge"]);
 
 /**
  * "ok" | "configuration" | "weather" — PURE, and the whole of the door's judgment.
@@ -465,8 +517,9 @@ export async function probeEngineTurn({
     // the environment back whatever it does. A resolver that cannot answer leaves the bare word.
     if (knownProgram?.path) program = { source: knownProgram.source ?? null, path: knownProgram.path };
     else try { const r = resolveEngineProgram(id); program = r.resolved ? { source: r.source, path: r.resolved } : null; } catch { /* the bare word */ }
-    const tuple = await turn({ message: PROBE_PROMPT, model: PROBE_MODEL, thinking: PROBE_THINKING, timeoutSec, stallSec });
-    return classifyProbe({ engine: id, tuple, timeoutSec, auth, program });
+    const sentinel = mintProbeSentinel();
+    const tuple = await turn({ message: PROBE_PROMPT, model: PROBE_MODEL, thinking: PROBE_THINKING, timeoutSec, stallSec, ...probeToolConfig(sentinel) });
+    return classifyProbe({ engine: id, tuple, timeoutSec, auth, program, expect: sentinel });
   } catch (e) {
     return classifyProbe({ engine: id, error: e, timeoutSec, auth, program });
   } finally {
@@ -479,7 +532,7 @@ export async function probeEngineTurn({
  *
  * The choice, stated so nobody has to re-decide it. The register-credential precedent refuses because a
  * run whose work is impossible must say so before it costs anything, and the reasoning transfers exactly:
- * every one of the fourteen stages spawns the engine, so an engine that cannot complete a six-word turn
+ * every one of the fourteen stages spawns the engine, so an engine that cannot complete its probe turn
  * cannot complete any of them. A warning would let the run build its directory, freeze its profile and
  * write its status sidecar, then die at stage one leaving a resumable-looking husk and a failure wearing
  * the shape of a model fault — which is the precise outcome preflightEngineBinary exists to prevent, and
