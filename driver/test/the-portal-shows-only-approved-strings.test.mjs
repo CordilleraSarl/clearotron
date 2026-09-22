@@ -234,6 +234,12 @@ test("a served page is read as a browser shows it", () => {
   ]);
 });
 
+test("a script element split around another is removed whole, not rejoined", () => {
+  const rows = htmlSentences("<p>Before.</p><scr<script>x</script>ipt>alert(1)</script><st<style>y</style>yle>p{}</style><p>After.</p>");
+  assert.deepEqual(rows.map((r) => r.text), ["Before.", "After."]);
+  assert.ok(rows.every((r) => !/<|script|style|alert/i.test(r.text)), JSON.stringify(rows));
+});
+
 test("the real sign-in page is read, in every state it is served in", async () => {
   const rows = await serverPageStrings(ROOT);
   const texts = rows.map((r) => r.text);
