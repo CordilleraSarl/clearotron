@@ -211,10 +211,13 @@ export function queryMarkTerms(e, query) {
   return Array.isArray(e?.terms) ? e.terms : e?.term != null ? [e.term] : [];
 }
 
+// The goods words ride after the class tag (close-verify reads that tag): a goods-narrowed question shares
+// predicate, term and classes with the identical one, and without them the two read as the same question.
 export const describePlanEntry = (e) =>
   `${e.predicate} ${e.terms ? e.terms.join(" OR ") : e.term}`
   + `${typeof e.owner === "string" && e.owner.trim() && String(e.predicate ?? "") !== "owner" ? ` owner:${e.owner.trim()}` : ""}`
-  + ` [cl ${(e.nice_classes ?? []).join(",")}]`;
+  + ` [cl ${(e.nice_classes ?? []).join(",")}]`
+  + `${goodsTermsList(e).length ? ` goods:${goodsTermsList(e).join(" OR ")}` : ""}`;
 
 // Compile one plan entry + its predicate params into the provider's query params (corsearch shapes by
 // default: names/name/owners/owner + nice_classes + regions).

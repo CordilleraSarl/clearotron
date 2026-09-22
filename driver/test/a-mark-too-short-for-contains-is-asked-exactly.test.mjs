@@ -71,8 +71,8 @@ test("Signa: the request that goes over the wire is the exact form, with both fi
   for (const e of goodsEntries(plan)) {
     const body = signaWire(e);
     assert.equal(body.query, SHORT);
-    assert.equal(body.match, undefined, "`match: contains` is the 400 this change exists to avoid");
-    assert.deepEqual(body.strategies, ["exact"], "the ranked exact shape, whose floor is two characters");
+    assert.equal(body.match, "exact", "`match: contains` is the 400 this change exists to avoid; exact is the deterministic shape");
+    assert.equal(body.strategies, undefined, "the ranked shape rides beside the deterministic one, which the register refuses");
     assert.deepEqual(body.filters.nice_classes, [9, 42]);
     assert.equal(body.filters.goods_services_text, e.goods_text[0], "the goods word rides the same request");
   }
@@ -135,7 +135,7 @@ test("crowd context: a short term's two counts are asked exactly, and a long one
   for (const e of perTerm) {
     assert.equal(e.predicate, "exact", `${e.qid} still counts on the contains form`);
     assert.equal(e.contains_substituted?.min_length, 3);
-    assert.equal(signaWire(e).match, undefined, "the wire still carries match: contains");
+    assert.equal(signaWire(e).match, "exact", "the wire carries match: contains, or no exact at all");
   }
   assert.equal(short.length, mintSliceCountEntries(SLICE, 0).length, "the substitution changed how many counts are asked");
   const long = mintSliceCountEntries({ ...SLICE, terms: [LONG] }, 0, { capabilities: PROVIDER_CAPABILITIES.signa });
@@ -171,7 +171,7 @@ test("reading turn: a contains proposal on a short term is minted exactly; a lon
   assert.equal(short.contains_substituted?.term_length, 2);
   assert.deepEqual(short.goods_text, ["software"], "the goods narrowing rides the substituted question");
   const wire = signaWire(short);
-  assert.equal(wire.match, undefined);
+  assert.equal(wire.match, "exact", "the substituted question is not the exact one on the wire");
   assert.equal(wire.filters.goods_services_text, "software");
   assert.equal(propose({ predicate: "default", term: LONG }).minted[0].predicate, "default");
   assert.equal(propose({ predicate: "default", term: SHORT }, PROVIDER_CAPABILITIES.clarivate).minted[0].predicate, "default",

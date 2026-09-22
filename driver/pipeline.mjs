@@ -6264,6 +6264,16 @@ export function skepticDeferralExtra(ctx) {   // @internal
     const deferredQids = deferredList.slice(0, 24)
       .map((d) => `- ${d.qid} — ${String(d.reason ?? "").replace(/\s+/g, " ").slice(0, 200)}`);
     const more = deferredList.length > 24 ? [`- …and ${deferredList.length - 24} more (read ${P.planExecution} for the rest)`] : [];
+    // THE CLASSES THE FRAME ADDED, AND WHAT EACH RETURNED. This block names what was refused and what is
+    // open, and nothing that ran, so a class the frame added beyond the instructed ones — asked and
+    // answered with its records listed — was absent from it, and the skeptic reported it as never swept.
+    const addedClassRows = (ctx.registerPlan?.entries ?? []).filter((e) => e?.added_class_reason).map((e) => {
+      const ran = (receipt?.executed ?? []).find((x) => x.qid === e.qid);
+      const answer = ran ? `${ran.state}${Number.isFinite(ran.records) ? `, ${ran.records} records` : ""}`
+        : (receipt?.deferred ?? []).some((d) => d.qid === e.qid) ? "refused (listed above)"
+        : (receipt?.missing ?? []).includes(e.qid) ? "not run (missing)" : "not in the receipt";
+      return `- ${e.qid} (class ${(e.nice_classes ?? []).join(", ")}) — ${answer}`;
+    });
     const ownerNegative = ownerScreenNegative(readOwnerScreen(P));
     return lines(
       `COVERAGE + EXECUTION, DRIVER-COMPUTED — do NOT re-derive any of this from the findings prose. These rows come from ${P.registerCoverageLedger} and ${P.planExecution}, the machine artifacts the driver wrote; both are also yours to read directly, but the answer to "what is still open, and can a re-run close it" is already below.`,
@@ -6274,6 +6284,7 @@ export function skepticDeferralExtra(ctx) {   // @internal
       deferredQids.length
         ? lines(`Plan-execution receipt — queries the ACTIVE PROVIDER REFUSED deterministically (${deferredList.length} of ${(receipt.executed?.length ?? 0) + deferredList.length + (receipt.missing?.length ?? 0)} planned), with the mechanical reason per query:`, ...deferredQids, ...more)
         : "Plan-execution receipt: no query was deterministically refused by the provider this run.",
+      addedClassRows.length ? lines("", "Classes the frame added beyond the instructed ones — each question, and what it returned:", ...addedClassRows) : "",
       "",
       closeable.length
         ? `CLOSEABLE floor obligations (a warm re-run reaches these — escalate them if they are material): ${closeable.join("; ")}.`
@@ -6481,8 +6492,13 @@ function planAuditExtra(ctx, { stage = "narrative-refutation" } = {}) {
       `- executed: ${exec.executed.length} entr${exec.executed.length === 1 ? "y" : "ies"} (${crowds.length} crowd/incomplete${crowds.length ? `: ${crowds.slice(0, 4).map((x) => x.qid).join("; ")}` : ""})`,
       `- missing (no band block): ${exec.missing.length}${exec.missing.length ? ` — ${exec.missing.slice(0, 4).join("; ")}` : ""}`,
       `- skipped (crowd-gated fringe): ${exec.skipped.length}`,
+      // The families waiting for the reading turn, and those it asked. Without these lines the table's
+      // own buckets summed to the whole plan less the waiting families, and a reviewer read it as
+      // "no family waiting" while the receipt held 156.
+      `- awaiting the reading turn's ask: ${exec.awaiting?.length ?? 0}`,
+      exec.asked?.length ? `- asked by the reading turn (a waiting family's question, asked by another entry): ${exec.asked.length}` : "",
       exec.unplanned?.length ? `- unplanned qid-stamped blocks: ${exec.unplanned.length}` : "",
-      ...(exec.skeleton ?? []).map((s) => `- axis ${s.axis}: ${s.state} (${s.executed}/${s.entries} executed, ${s.crowds} crowd)`),
+      ...(exec.skeleton ?? []).map((s) => `- axis ${s.axis}: ${s.state} (${s.executed}/${s.entries} executed, ${s.crowds} crowd${s.awaiting ? `, ${s.awaiting} awaiting` : ""})`),
     ];
   } catch (e) { rows = [`- (receipt table unavailable — read + audit the receipt file directly: ${P.planExecution})`]; note(`plan-audit receipt table (non-fatal): ${e.message}`); }
   return lines(
@@ -10483,6 +10499,7 @@ async function pipelineInner(job, opts = {}) {
           { failClass, repairs: fanInRepairs, quantity: joinRes.missing.length });
       }
       runLog(run.runDir, { event: "plan-execution", executed: joinRes.executed.length, skipped: joinRes.skipped.length, unplanned: joinRes.unplanned.length,
+        awaiting: joinRes.awaiting?.length ?? 0, asked: joinRes.asked?.length ?? 0,
         axes: skeleton.map((s) => `${s.axis}:${s.state}`) });
       // Decide the deferrals now — before placement-inquiry, which on the evidence run started one second
       // after this point on inputs the run had just recorded as unfinished.

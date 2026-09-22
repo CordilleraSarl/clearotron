@@ -472,7 +472,12 @@ function resolveSearchFixture({ query, strategies, match, owner }) {
   }
   const det = typeof match === "string" ? match.trim() : "";
   if (det) {
+    // A deterministic exact capture where one exists; until then, the exact capture of the same term taken
+    // on the ranked shape stands in. Same term, same mode, the shape the request moved from: the mock
+    // serves what that term's exact question returned, and the live run is the proof of the new shape.
+    const exactStandIn = det === "exact" ? (loadFixture(`signa-search-variant-${q}`) || (q === "nike" ? loadFixture("signa-search-exact-nike") : null)) : null;
     return loadFixture(`signa-search-match-${det}-${q}`)
+      || exactStandIn
       || DETERMINISTIC_FALLBACK_TERMS.reduce((hit, t) => hit || loadFixture(`signa-search-match-${det}-${t}`), null);
   }
   const strat = (Array.isArray(strategies) && strategies[0]) || "exact";
@@ -657,12 +662,18 @@ export function toSignaParams(p = {}) {
 
   // `match_mode` is the plan's word for how the term matches. Two request shapes answer it and they
   // are MUTUALLY EXCLUSIVE (see buildSearchRequest): the ranked `strategies[]` and the deterministic
-  // `match`. exact/phonetic stay on strategies, which is what this provider has always sent and what
-  // its fixtures were captured with; the anchored and unanchored modes can only be expressed by
-  // `match`, so they select that shape and drop strategies.
+  // `match`. phonetic and prefix exist only as strategies. The anchored and unanchored modes can only be
+  // expressed by `match`, so they select that shape and drop strategies.
+  //
+  // EXACT RIDES THE DETERMINISTIC `match` TOO. It went out as the ranked `strategies: ["exact"]`, kept
+  // there for continuity with the captures taken on that shape. The vendor documents two differences
+  // that make the ranked shape the wrong one for a clearance question: a ranked query takes `similar`'s
+  // floor of two folded characters, where a deterministic one takes one, so a one-letter exact question
+  // was refused outright; and recall under ranking is not fixed, so a ranked total is not a count a
+  // crowd can be judged by. The deterministic `match: "exact"` answers both.
   const mode = String(p.match_mode ?? "").trim();
-  if (mode === "exact" || mode === "phonetic" || mode === "prefix") out.strategies = [mode];
-  else if (mode === "starts_with" || mode === "ends_with" || mode === "contains") out.match = mode;
+  if (mode === "phonetic" || mode === "prefix") out.strategies = [mode];
+  else if (mode === "exact" || mode === "starts_with" || mode === "ends_with" || mode === "contains") out.match = mode;
   // ── `default` IS THE COUNT LANE'S WORD FOR THE SAME UNANCHORED QUERY THE PLAN LANE CALLS `{}` ────
   //
   // THE DEFECT. The count lane hands `match_mode: "default"` straight through — that is the word

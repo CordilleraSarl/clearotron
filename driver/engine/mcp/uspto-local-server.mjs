@@ -36,6 +36,7 @@ import {
   CAPABILITIES, DEFAULT_DB_ENV, doSearch, doRecordFetch, doBatchScreen, doEnumerate, doExecutePlan,
 } from "../../../providers/uspto-local/src/core.js";
 import { proposeSupplemental } from "./supplemental.mjs";
+import { narrowingFields } from "./proposal-fields.mjs";
 
 const DB_PATH = process.env[DEFAULT_DB_ENV] || "";
 // The auth object IS the index path — see the core's header. Passed as an object rather than a bare
@@ -139,6 +140,7 @@ serve({
           romanization: { type: "string", description: "The Latin-script form of a NON-LATIN term — plain ASCII letters/digits, syllable-separated by single spaces, no tone marks or diacritics. On THIS source it does not rescue the slice: nativeScriptIndex is undeclared, so a non-Latin term defers and is disclosed rather than being answered by its romanisation." },
           owner: { type: "string", description: "OPTIONAL owner scope field on a MARK-TEXT proposal: the query is the owner×term intersection (the owner's filings within the term band). Not allowed on predicate:owner (there the owner name IS the term)." },
           nice_classes: { type: "array", items: {} },
+          ...narrowingFields(),   // the narrowing fields every register serves (proposal-fields.mjs)
           rationale: { type: "string" },
           term_literal: { type: "boolean", description: "TRUE only when the term genuinely IS the mark verbatim (a multi-word slogan mark, a mark carrying an anchored star) — it bypasses the term-shape lint. Never use it to push a label through." },
         } } },

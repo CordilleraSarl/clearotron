@@ -33,6 +33,7 @@ import {
   CAPABILITIES, doSearch, doRecordFetch, doImageFetch, doBatchScreen, doEnumerate, doExecutePlan, DEFAULT_BASE,
 } from "../../../providers/clarivate/src/core.js";
 import { proposeSupplemental } from "./supplemental.mjs";
+import { narrowingFields } from "./proposal-fields.mjs";
 
 const API_KEY = process.env.CLARIVATE_API_KEY || "";
 const BASE = process.env.CLARIVATE_API_BASE || DEFAULT_BASE;
@@ -136,11 +137,9 @@ serve({
           romanization: { type: "string", description: "The Latin-script form of a NON-LATIN term — plain ASCII letters/digits, syllable-separated by single spaces, no tone marks or diacritics (华威豹 → \"HUA WEI BAO\", ティキスラッシュ → \"TIKI SURASSHU\"). MANDATORY beside a non-Latin term: without it this register cannot answer the characters and the slice defers. Single-term proposals only (never an OR-stack, never predicate:owner), and never on a term that is already Latin." },
           owner: { type: "string", description: "OPTIONAL owner scope field on a MARK-TEXT proposal: the query is the owner×term intersection (the owner's filings within the term band). Not allowed on predicate:owner (there the owner name IS the term)." },
           nice_classes: { type: "array", items: {} },
-          goods_words: { type: "array", items: { type: "string" },
-            description: "OPTIONAL goods narrowing on a MARK-TEXT proposal: the same question, limited to filings whose goods and services description carries one of these words. This is the FIRST move when the identical mark comes back as a count instead of a list — the words are the ones the variants stage already wrote for this matter, the client's own wording plus the synonyms. Single words or short phrases as a specification would write them, no wildcards. Not allowed on predicate:owner. One office in this provider's vocabulary refuses the field and fails the whole call, so it is left out of that office's request and recorded as asked-without-goods rather than dropped in silence." },
-          regions: { type: "array", items: { type: "string" },
-            description: "OPTIONAL. Omit to inherit the frozen plan's regions (the matter's territorial scope) — this provider REQUIRES at least one office on every request, so an omitted list is backfilled from the plan, never treated as a worldwide sweep. Supply it only to search a NARROWER set than the matter's scope." },
-          narrows: { type: "string", description: "OPTIONAL: the qid of the CROWDED question this proposal replaces. Put it on a narrowing — the same question limited by goods, by market, by the dominant word or to one class — so the record shows the crowd and the question that answered it side by side, each with its own count. A narrowing that does not name what it replaced leaves the crowd looking unanswered." },
+          // The narrowing fields every register serves (proposal-fields.mjs); this register's two facts ride in.
+          ...narrowingFields({ regions: "OPTIONAL. Omit to inherit the frozen plan's regions (the matter's territorial scope) — this provider REQUIRES at least one office on every request, so an omitted list is backfilled from the plan, never treated as a worldwide sweep. Supply it only to search a NARROWER set than the matter's scope.",
+            goodsNote: "One office in this provider's vocabulary refuses the field and fails the whole call, so it is left out of that office's request and recorded as asked-without-goods rather than dropped in silence." }),
           rationale: { type: "string" },
           term_literal: { type: "boolean", description: "TRUE only when the term genuinely IS the mark verbatim (a multi-word slogan mark, a mark carrying an anchored star) — it bypasses the term-shape lint. Never use it to push a label through." },
         } } },

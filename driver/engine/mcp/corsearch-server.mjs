@@ -9,6 +9,7 @@
 import { serve } from "./stdio-server.mjs";
 import { CAPABILITIES, doSearch, doRecordFetch, doImageFetch, doExpandPhoneme, doBatchScreen, doEnumerate, doExecutePlan } from "../../../providers/corsearch/src/core.js";
 import { proposeSupplemental } from "./supplemental.mjs";
+import { narrowingFields } from "./proposal-fields.mjs";
 
 const COOKIE = process.env.CORSEARCH_SESSION_KEY || "";
 const tctx = (kind) => ({
@@ -118,7 +119,8 @@ serve({
           term: { type: "string" }, terms: { type: "array", items: { type: "string" } },
           romanization: { type: "string", description: "OPTIONAL on this provider (its index holds the characters and answers them directly), but STATE IT anyway for a non-Latin term — the plan is provider-neutral and the entry carries both forms for whichever register expresses it. Latin-script form only: plain ASCII letters/digits, syllable-separated by single spaces, no tone marks or diacritics. Single-term proposals only; never on an already-Latin term." },
           owner: { type: "string", description: "OPTIONAL owner scope field on a MARK-TEXT proposal: the query is the owner×term intersection (the owner's filings within the term band). Not allowed on predicate:owner (there the owner name IS the term)." },
-          nice_classes: { type: "array", items: {} }, regions: { type: "array", items: { type: "string" }, description: "UPPERCASE 2-letter region codes, e.g. ['US','EU','CH'] — never spelled-out names (recognized display names are normalized; unknown values are rejected)" },
+          nice_classes: { type: "array", items: {} },
+          ...narrowingFields(),   // the narrowing fields every register serves (proposal-fields.mjs)
           rationale: { type: "string" },
           term_literal: { type: "boolean", description: "TRUE only when the term genuinely IS the mark verbatim (a multi-word slogan mark, a mark carrying an anchored star) — it bypasses the term-shape lint. Never use it to push a label through." },
         } } },

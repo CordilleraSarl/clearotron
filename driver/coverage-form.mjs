@@ -32,7 +32,7 @@ import { REGISTER_AXES, COVERAGE_STATUSES, normalizeAxis, CROWD_RULING_TOKEN,
   CROWD_RULING_UNIT_GRAMMAR } from "./coverage-ledger.mjs";
 import { shortId } from "./connotation-search.mjs";
 import { openBlocksByAxis } from "./register-plan.mjs";
-import { territoryLayerReport, unsearchedLayerReason } from "./binding-layers.mjs";
+import { territoryLayerReport, unsearchedLayerReason } from "./binding-layers.mjs"; import { goodsTermsList } from "../providers/_shared/term-shape.mjs";
 
 const STATUS_SET = new Set(COVERAGE_STATUSES);
 const DRIVER_KINDS = new Set(["axis", "block", "deferred"]);
@@ -242,7 +242,7 @@ export function seatRows(rows, driverKeys) {
 // same left-of-slash-is-the-axis shape every downstream coverage consumer keys on (coverage-ledger.mjs
 // normalizeAxis, scope-facts, the taint join). Terms are bounded so an OR-stack of forty cannot make one
 // table cell unreadable; the qid rides its own column, so nothing identifying is lost to the cut.
-const MAX_TERMS_IN_LABEL = 4;
+const MAX_TERMS_IN_LABEL = 4; const goodsWordsOf = (entry) => (goodsTermsList(entry).length ? { goods_words: goodsTermsList(entry) } : {});   // model-facing only: the label is the client's coverage table
 function unitLabel(axis, entry) {
   if (!entry) return String(axis);
   const terms = Array.isArray(entry.terms) && entry.terms.length
@@ -346,7 +346,7 @@ export function coverageFormRows({ skeleton = [], activeAxes = null, plan = null
       rows.push({
         row_id: shortId("CB", `block:${b.qid}`),
         axis, kind: "block",
-        unit: unitLabel(axis, entriesByQid.get(b.qid)),
+        unit: unitLabel(axis, entriesByQid.get(b.qid)), ...goodsWordsOf(entriesByQid.get(b.qid)),
         qid: b.qid,
         // BOTH accept-forms of the gate this replaces ride the row, written by the machine: the qid
         // above, and the hit count here. The equivalence the old join had to test for is now structural.
@@ -366,7 +366,7 @@ export function coverageFormRows({ skeleton = [], activeAxes = null, plan = null
       rows.push({
         row_id: shortId("CD", `deferred:${qid}`),
         axis, kind: "deferred",
-        unit: unitLabel(axis, entriesByQid.get(qid)),
+        unit: unitLabel(axis, entriesByQid.get(qid)), ...goodsWordsOf(entriesByQid.get(qid)),
         qid,
         receipt_reason: String(deferredReasons?.[qid] ?? "").replace(/\s+/g, " ").trim(),
         // The active provider cannot express this query at all. It was never searched and nothing can
@@ -635,7 +635,7 @@ export function parseCoverageForm(raw) {
       reason: String(d.reason ?? "").trim(),
       ...(Number.isInteger(d.total_hits) ? { total_hits: d.total_hits } : {}),
       ...(Array.isArray(d.unaccounted_classes) ? { unaccounted_classes: d.unaccounted_classes.map(String) } : {}),
-      ...(Array.isArray(d.unaccounted_terms) ? { unaccounted_terms: d.unaccounted_terms.map(String) } : {}),
+      ...(Array.isArray(d.unaccounted_terms) ? { unaccounted_terms: d.unaccounted_terms.map(String) } : {}), ...(Array.isArray(d.goods_words) ? { goods_words: d.goods_words.map(String) } : {}),
       ...(typeof d.receipt_reason === "string" ? { receipt_reason: d.receipt_reason } : {}),
       // CARRIED, because verify.mjs judges the bytes on disk WITHOUT unioning first, and this string is
       // what makes the failure detail say which kind of `open` a row is — a never-searched slice or a
@@ -965,7 +965,7 @@ function briefRow(r) {
   const facts = [
     Number.isInteger(r.total_hits) ? `${r.total_hits} hits` : "",
     r.unaccounted_classes?.length ? `classes unaccounted: ${r.unaccounted_classes.join(", ")}` : "",
-    r.unaccounted_terms?.length ? `terms unaccounted: ${r.unaccounted_terms.join(", ")}` : "",
+    r.unaccounted_terms?.length ? `terms unaccounted: ${r.unaccounted_terms.join(", ")}` : "", r.goods_words?.length ? `narrowed to goods words: ${r.goods_words.join(", ")}` : "",
     r.receipt_reason ? `receipt: ${String(r.receipt_reason).slice(0, 160)}` : "",
   ].filter(Boolean).join("; ");
   const settled = String(r.status ?? "").trim() ? ` [settled: ${String(r.status).trim()}]` : "";

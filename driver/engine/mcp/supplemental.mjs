@@ -30,7 +30,7 @@
 import { readFileSync, writeFileSync, renameSync, existsSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { driverDir } from "../../../shared/driver-dir.mjs";   //
-import { PLAN_PREDICATES, PLAN_MAX_OR_WIDTH, PLAN_MAX_NAME_LENGTH, fingerprint, ownerIntersectionGap, resolveRegions, houseElementOf, withoutHouseElementTerms, containsFormSubstitution } from "../../register-plan.mjs";
+import { PLAN_PREDICATES, PLAN_MAX_OR_WIDTH, PLAN_MAX_NAME_LENGTH, fingerprint, ownerIntersectionGap, goodsTextGap, resolveRegions, houseElementOf, withoutHouseElementTerms, containsFormSubstitution } from "../../register-plan.mjs";
 import { entryTermIssues } from "../../../providers/_shared/term-shape.mjs";
 import { isNonLatinTerm, romanizationRefusal, romanizationSpellings, nativeScriptIndexGap } from "../../../providers/_shared/script-form.mjs";
 
@@ -64,7 +64,15 @@ export function mintSupplementalEntries(axis, proposals, { existingQids = new Se
   // first, non-priority ones keep their relative order behind them. The cap VALUES are unchanged
   // (no count threshold moves), and with no priorityClasses the order is byte-identical to before.
   const prio = new Set((priorityClasses ?? []).map((c) => String(c).trim()).filter(Boolean));
-  const indexed = (proposals ?? []).map((p, i) => ({ p: p ?? {}, i }));
+  // ONE QUESTION PER GOODS WORD where the register cannot offer alternatives in one goods clause — the
+  // compiler's own rule for such a register (register-plan.mjs, goodsTextListOr). Joined, the words would
+  // be intersected and the answer would narrow as the list grew; the connector refuses that shape
+  // outright. Each word keeps the proposal's index, so a refusal still names the proposal it came from.
+  const perWord = capabilities?.goodsTextSearch === true && capabilities?.goodsTextListOr === false;
+  const indexed = (proposals ?? []).flatMap((p, i) => {
+    const words = perWord && Array.isArray(p?.goods_words) ? p.goods_words.map((w) => String(w ?? "").trim()).filter(Boolean) : [];
+    return words.length > 1 ? words.map((w) => ({ p: { ...p, goods_words: [w] }, i })) : [{ p: p ?? {}, i }];
+  });
   const ordered = prio.size
     ? [...indexed.filter(({ p }) => inPriority(p, prio)), ...indexed.filter(({ p }) => !inPriority(p, prio))]
     : indexed;
@@ -271,8 +279,11 @@ export function mintSupplementalEntries(axis, proposals, { existingQids = new Se
     // entry (→ the executor's deferred lane → a disclosed coverage row), exactly like a missing
     // predicate at compile time. Never rejected (the gap belongs on the record) and never silently
     // widened into an owner-less sweep.
-    const ownerGap = ownerIntersectionGap(entry, capabilities);
-    if (ownerGap) { entry.unsupported = true; entry.unsupported_reason = ownerGap; }
+    // …and a goods narrowing on a register that cannot search goods text is the same kind of gap, with
+    // the compiler's own reason (goodsTextGap): recorded, never run on the class alone, which would ask the
+    // crowd the narrowing exists to cut.
+    const gap = ownerIntersectionGap(entry, capabilities) ?? goodsTextGap(entry, capabilities);
+    if (gap) { entry.unsupported = true; entry.unsupported_reason = gap; }
     minted.push(entry);
   }
   return { minted, reused, rejected, enriched, narrowed };
