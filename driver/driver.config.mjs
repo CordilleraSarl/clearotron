@@ -1976,7 +1976,12 @@ export const ENGINE_BINARIES = {
     // newer", with no ceiling. Setup installs it into the engines folder (enginesFolder, below the table)
     // when the reader picks this engine, and the resolver uses it only when the machine has no copy of its
     // own. The package's own `bin` field names the program, so no path inside it is written down here.
-    package: "@anthropic-ai/claude-code", floor: "2.1.270",
+    // 2.1.280 is the floor because it is the oldest release that can run the current generation of this
+    // vendor's top tier: below it the API refuses the model id outright ("version 2.1.280 or newer is
+    // required"), and the tier alias quietly goes on serving the previous generation. Measured 2026-09-22
+    // on 2.1.263 — the alias returned the older model and the pinned id was refused — so a floor that
+    // only asks for a program that starts is a floor that passes a machine this engine cannot run on.
+    package: "@anthropic-ai/claude-code", floor: "2.1.280",
     // WHAT THE INSTALL TAKES ON DISK, in MB, which setup states before it asks to install. MEASURED, not
     // declared by the vendor: the engines folder after a fresh install of this package into an empty
     // folder, on npm 10.9.8 and on 11.19.1, 2026-09-14. A later release can be larger or smaller, so setup
