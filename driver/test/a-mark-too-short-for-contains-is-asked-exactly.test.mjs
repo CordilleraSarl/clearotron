@@ -176,8 +176,12 @@ test("reading turn: a contains proposal on a short term is minted exactly; a lon
   assert.equal(propose({ predicate: "default", term: LONG }).minted[0].predicate, "default");
   assert.equal(propose({ predicate: "default", term: SHORT }, PROVIDER_CAPABILITIES.clarivate).minted[0].predicate, "default",
     "a register with no declared floor keeps the form the model chose");
-  // A stack is switched only when EVERY member is short: a long member must not be narrowed to exact.
-  assert.equal(propose({ predicate: "default", terms: [SHORT, LONG] }).minted[0]?.predicate ?? "default", "default");
+  // A long member must never be narrowed to exact. Where the register has OR, a mixed stack stays one
+  // question in the model's form; where it has none, the stack is one question per name, so the short
+  // name alone is asked exactly and the long one keeps its form.
+  assert.equal(propose({ predicate: "default", terms: [SHORT, LONG] }, PROVIDER_CAPABILITIES.clarivate).minted[0]?.predicate, "default");
+  assert.deepEqual(propose({ predicate: "default", terms: [SHORT, LONG] }).minted.map((e) => [e.term, e.predicate]),
+    [[SHORT, "exact"], [LONG, "default"]]);
   // The model's own exact and wildcard questions are its choice, and are never touched.
   assert.equal(propose({ predicate: "exact", term: SHORT }).minted[0].contains_substituted, undefined);
 });

@@ -581,7 +581,7 @@
         },
         "a-mark-too-short-for-contains-is-asked-exactly.test.mjs": {
           "tests": 12,
-          "asserts": 56,
+          "asserts": 57,
           "skips": 0,
           "todos": 0
         },
