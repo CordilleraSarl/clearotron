@@ -4006,7 +4006,7 @@ ${signedIn
 <div><a href="/portal">Go to the portal</a></div>
 <form method="post" action="/portal/logout"><button type="submit">Sign out</button></form>`
     : `<p>This ${escHtml(BRAND.name)} has one user: <b class="who">${escHtml(email)}</b>. Enter its passphrase.</p>
-${discarded ? `<p class="hint">A session this portal did not start, from another ${escHtml(BRAND.name)} on this address or an expired one, was set aside. Sign in below.</p>` : ""}
+${discarded ? `<p class="hint">Your earlier sign-in has expired. Sign in again.</p>` : ""}
 ${error ? `<p class="err">${escHtml(error)}</p>` : ""}
 <form method="post" action="/portal/login">
   <label for="passphrase">Passphrase</label>
