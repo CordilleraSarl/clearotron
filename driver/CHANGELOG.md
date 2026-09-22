@@ -1,5 +1,42 @@
 # clearotron-driver
 
+## 0.3.3-beta.0
+
+### Patch Changes
+
+- Fixed: the coverage table names the goods words of a search narrowed by goods, so it no longer reads the same as the main search.
+- Fixed: a list of names searched on Signa is now searched one name at a time, so one crowded name no longer stops the rest.
+- Fixed: a register search the provider refuses as too wide is disclosed at once, with its size, instead of pausing the run to retry it.
+- Fixed: the audit workbook now says when a surface refused a search and why, instead of reading the same as one never run.
+- Fixed: the audit workbook now lists each wider register search the engine chose not to run, with the reason it gave.
+- Fixed: a register search that fails on a provider error is tried once more in the run before it is disclosed as not searched.
+- Fixed: A two-letter mark's register searches, including those narrowed by the client's goods, now run instead of failing where the register's substring search needs three characters.
+- For operators: the run record now distinguishes a question the search step never answered from one it answered with "nothing applies". They previously looked identical, so a step that could not answer looked like a matter with nothing to say.
+- Fixed: a long list of names searched on Clarivate is now split into searches it accepts, not one it refuses as too wide.
+- Fixed: on the OpenAI engine, setup and `doctor --probe-engine` now catch a machine where codex refuses every tool call, before any search is paid for.
+  
+  A search that meets it stops after one attempt and names the setting that fixes it.
+- Fixed: a common-law search no longer repeats a finished stage because its write-up lacked one exact status word.
+  
+  Each coverage status is now recorded as data rather than read from the wording.
+- New: a search whose identical-mark question returns a count rather than a list now narrows that question until the register gives a list, and reads it.
+  
+  It previously left that question unread and searched the wider families instead — compounds, foreign-script forms, neighbour lists — which is where the reading time went.
+  
+  New: the words a search is narrowed to can now be chosen while the search is running, not only when it is first planned.
+- Fixed: doctor no longer ticks a billing mode on a machine where no engine program resolves; it states it as information.
+- Fixed: the identical mark is now read first on every search, before any wider question is asked.
+  
+  New: a search can cover a further category the client's own goods reach, added with a stated reason.
+- Fixed: a search request that describes the goods using the older wording now records those goods. It previously recorded none, so nothing downstream could narrow by what the matter actually covers.
+- Fixed: a search can now be narrowed by what the goods are, which it could not be before. The step that chooses the search words had no way to hand them back, so every search ran without them.
+- Fixed: the worker now reports itself alive throughout a search, not only between searches. Its liveness file went stale for the whole of a long search. A check reading it would call a healthy search dead, and might stop it.
+- For operators: the published package now has a recorded size budget. Nothing about what ships changes; growth past a margin fails the build and names the largest files.
+- Fixed: setup confirms a pasted key by its length alone, so no part of a key reaches a captured install log.
+- Fixed: a territory name that no register can answer is now reported as an uncovered gap instead of being searched.
+- Fixed: the clearance list is now requested at the same time as your sign-in details, instead of waiting for them.
+- Fixed: the delivery email, run list and assistant now give the rating and the report's own conclusion. None of them says a matter is on hold.
+
 ## 0.3.2
 
 ### Patch Changes
