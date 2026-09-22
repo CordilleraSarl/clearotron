@@ -93,6 +93,11 @@ test("tier/alias → claude model alias; a model claude cannot run REFUSES (#238
   assert.equal(claudeModel("sonnet"), "sonnet");
   assert.equal(claudeModel("haiku"), "haiku");
   assert.equal(claudeModel("fable"), "fable");  // registered for the synthesis A/B test (CLEAROTRON_SYNTHESIS_MODEL)
+  // A PINNED FABLE ID RESOLVES. The bare alias on the line above is what hid this: the family reader
+  // below it placed opus, haiku and sonnet only, so the id the vendor's own model page gives for this
+  // tier threw on its way to a program that runs it — measured 2026-09-22, served as claude-fable-5-1.
+  assert.equal(claudeModel("claude-fable-5-1"), "fable");
+  assert.equal(claudeModel("anthropic/claude-fable-5-1"), "fable");
   assert.equal(claudeModel("anthropic/claude-opus-5"), "claude-opus-5");  // full catalog id
   assert.equal(claudeModel("anthropic/claude-sonnet-5"), "claude-sonnet-5");  // full catalog id
   assert.equal(claudeModel("claude-haiku-4-5-20251001"), "haiku");   // a dated bare id is a NAMING form, not a substitution

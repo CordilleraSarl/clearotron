@@ -168,7 +168,12 @@ export function claudeModel(model) {
   // that is a NAMING form of a model claude can actually run, not a substitution of a different one.
   // The family must be named IN the id: a `claude-*` id whose family this build does not recognise
   // throws too, rather than riding the old else-arm into sonnet.
-  const fam = /opus/i.test(model) ? "opus" : /haiku/i.test(model) ? "haiku" : /sonnet/i.test(model) ? "sonnet" : null;
+  // FABLE IS READ HERE TOO, and its absence was a live defect rather than a gap in readiness: the bare
+  // `fable` alias is in the table above, so `CLEAROTRON_SYNTHESIS_MODEL=fable` worked and hid it, while
+  // the pinned id every vendor page names — `claude-fable-5-1` — threw on its way to a program that runs
+  // it. Measured 2026-09-22: the program accepts that id and reports serving `claude-fable-5-1`.
+  const fam = /opus/i.test(model) ? "opus" : /haiku/i.test(model) ? "haiku" : /sonnet/i.test(model) ? "sonnet"
+    : /fable/i.test(model) ? "fable" : null;
   if (fam && /^(?:anthropic\/)?claude-/i.test(model)) return fam;
   throw new Error(`anthropic-agent: no claude model mapped for "${model}" — this engine runs claude only. Pass opus/sonnet/haiku/fable or a concrete claude-* id. (It used to substitute sonnet silently and log the alias you asked for: #238 corruption 3.)`);
 }
