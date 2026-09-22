@@ -2530,8 +2530,8 @@
           "todos": 0
         },
         "every-surface-that-takes-the-manifest-asks-for-the-goods-words.test.mjs": {
-          "tests": 9,
-          "asserts": 21,
+          "tests": 10,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },
