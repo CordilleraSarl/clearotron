@@ -678,7 +678,13 @@ const LOCAL = {
   // `mcp__dispositions__record_dispositions`). That is a real argv-surface change on four stages, so it
   // ships status:merged-awaiting-e2e — the byte pins in recording-grant-preservation.test.mjs move with
   // it and no live run has exercised the new name.
-  dispositions: { script: "dispositions-server.mjs", tools: ["record_dispositions"] },
+  //
+  // ── AND ITS SECOND TOOL, `record_coverage_status` — an allowlist growing by one token on an
+  // ALREADY-TOOLED key that exactly one lane holds, so no other seat gains a writer and no argv-surface
+  // transition fires. It is not a field on `record_dispositions`: a meaning ruling and a coverage status are
+  // two statements, addressed two ways, as `record_coverage` and `record_register_digest` are. Ordered by
+  // driver/skills/clearance-common-law/SKILL.md beside the coverage ledger.
+  dispositions: { script: "dispositions-server.mjs", tools: ["record_dispositions", "record_coverage_status"] },
   // ── UNIT-NOTE: the register unit's audit note, and the first own-key transport that MOVES an artifact ─
   //
   // `coverage`'s and `declination`'s shape, chosen for a reason those two did not have. Those stages keep

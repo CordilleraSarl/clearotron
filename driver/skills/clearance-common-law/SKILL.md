@@ -364,6 +364,8 @@ One row per planned coverage unit (each mandatory platform; the field-scoped gen
 | field-scoped general search (collab / non-gaming goods) | confirmed-clean | run per matter scope |
 | non-Latin platform reach (translit variants) | coverage-limited | marketplace data thin for non-Latin scripts; absence not confirmed clean |
 
+Record the same statuses by calling `record_coverage_status`, passing `grid_spec_path` (the same driver-written spec path the grid tool was given) and one entry per ledger row: its coverage unit, and its status, exactly `confirmed-clean`, `coverage-limited` or `deferred`.
+
 ### Cross-checks suggested (handed to orchestrator for clearance-register dispatch)
 
 | Trigger | Suggested cross-check |

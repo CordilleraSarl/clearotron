@@ -16,7 +16,7 @@ import { matterFrameWasRecorded, frameRatifiedForms } from "./matter-frame-recor
 import { findConnotationViolations, parsePrRiskResults, prRiskPopulation,
   CONNOTATION_UNMATCHED_MARK, CONNOTATION_NO_RESEMBLANCE_MARK, MEANING_ANGLES_RE,
   parseDispositionForm, CONNOTATION_UNRULED_REASONS, queryKey } from "./connotation-search.mjs";
-import { formSidecarName, formSidecarPath } from "./disposition-union.mjs";
+import { formSidecarName, formSidecarPath } from "./disposition-union.mjs"; import { coverageStatusAsData } from "./common-law-coverage-status.mjs";
 // B — the transport's own four failure states. The audit reads the run's records; this file locates them.
 import { auditDispositionCalls, CALL_FAILURE_REASONS } from "./disposition-call-audit.mjs";
 import { callRecordPaths } from "./disposition-tool.mjs";
@@ -481,7 +481,7 @@ function commonLawMeaningSeat(p, c) {
 // — the EVIDENCE chain for `validators.commonLaw`, lifted out verbatim so the unavailability
 // veto can wrap it instead of pre-empting it. Every return token is unchanged.
 function commonLawEvidence(p, c) {
-    const structural = commonLawStructural(c);
+    const structural = commonLawStructural(c, p);
     if (!structural.ok) return structural;
     // The dictated grid spec is the SINGLE source of the grid contract when present (the driver wrote it,
     // the plugin ran it, the plugin wrote the ledger from it): the receipts gate joins the ledger against
@@ -596,7 +596,7 @@ function commonLawHalfEvidence(p, c) {
     if (!half) return fail("half_path_unrecognized");
     // — the meaning seat is judged on the meaning work, because that is all it was dictated.
     if (half === MEANING_SEAT) return commonLawMeaningSeat(p, c);
-    const structural = commonLawStructural(c);
+    const structural = commonLawStructural(c, p);
     if (!structural.ok) return structural;
     const gs = readGridSpecHalf(p, half);
     if (gs.invalid) return fail(`grid_spec_unreadable:_driver/grid-spec.half-${half}.json is corrupt or misshapen (driver-written — this is a bug, not a model defect)`);
@@ -664,7 +664,7 @@ function commonLawHalfEvidence(p, c) {
 // adjacent with exactly one separator between them; it stops rejecting a document that HAS the section
 // under the hyphenated compound the skill itself uses. The failure this removes is a false negative, and
 // its cost was a clearance that had already spent an hour.
-function commonLawStructural(c) {
+function commonLawStructural(c, p = null) {
   return all(
     nonEmpty(c),
     needsSection(c, "findings", [/^#{1,4}\s+[^\n]*\bfindings\b/im], "findings-heading"),
@@ -672,7 +672,7 @@ function commonLawStructural(c) {
     needsSection(c, "coverage-ledger", [/coverage[\s-]ledger/i], "coverage-ledger"),
     needsSection(c, "audit-trail", [/audit[\s-]trail/i], "audit-trail"),
     needs(c, [/\|/], "platform matrix"),
-    hasCoverageLedgerRow(c) ? ok() : fail("no_coverage_status_row"),
+    coverageStatusAsData(p) || hasCoverageLedgerRow(c) ? ok() : fail("no_coverage_status_row"),   // the recorded status first, the word as fallback: coverageStatusAsData() in common-law-coverage-status.mjs
   );
 }
 

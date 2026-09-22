@@ -2999,7 +2999,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     // run the driver stamped as form-required, and the stamp is conditional. On an unstamped run
     // validators.registerFindings demands the table exactly as it did before and emits this label,
     // so dropping the arm left the one lane that can still fire it with a generic hint.
-    hint = "the file has a findings heading plus a Coverage ledger with a status row (confirmed-clean / coverage-limited / deferred)";
+    hint = "the file has a findings heading plus a Coverage ledger with a status row (confirmed-clean / coverage-limited / deferred)" + (/common-law-findings/.test(lastFail) ? ", or each ledger row's status is recorded by calling `record_coverage_status` with `grid_spec_path`, the same spec path the grid tool was given" : "");
   } else if (/negative-results|coverage-ledger|audit-trail|findings-heading/.test(lastFail)) {
     hint = "the findings file carries ALL required sections: a findings heading, the Negative results matrix " +
       "(every variant × platform row), the Coverage ledger with a status row, and the Audit trail call log";
