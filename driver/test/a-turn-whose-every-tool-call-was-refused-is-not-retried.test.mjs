@@ -7,7 +7,8 @@
 // success, the stage fails for want of what its tools would have produced, and the retry ladder bought
 // the same refusal again: three paid attempts per stage on a production run, across every register and
 // common-law stage, before the identical-failure break stopped each one. The next attempt spawns the
-// same sandbox, so it cannot differ. The ladder now stops on the first.
+// same sandbox, so it cannot differ. The ladder now stops on the first, and the failure names the cause
+// and the setting that fixes it instead of the missing file the refusal left behind.
 //
 // Driven through the real codex adapter against the offline mock, which streams refused calls in the
 // shape codex 0.150.1 emits, so the gauge the gateway reads is the adapter's own.
@@ -40,10 +41,13 @@ async function stage(refused) {
   } finally { rmSync(dir, { recursive: true, force: true }); }
 }
 
-test("a stage whose every tool call was refused stops at the first attempt", async () => {
+test("a stage whose every tool call was refused stops at the first attempt, and its failure says why", async () => {
   const r = await stage(3);
   assert.equal(r.ok, false);
   assert.equal(r.attempts, 1, `a turn refused every tool call and the ladder retried it (${r.attempts} attempts)`);
+  // NAMED, as a sign-in that cannot refresh is named: not the missing file the refusal left behind.
+  assert.match(r.fail, /^engine_tools_refused: /, `the failure does not name the refusal: ${r.fail}`);
+  assert.match(r.fail, /CLEAROTRON_CODEX_SANDBOX_BYPASS=1/, "the failure does not say what fixes this host");
 });
 
 test("THE CONTROL: the same failure with no refusal is retried as before", async () => {
@@ -51,6 +55,7 @@ test("THE CONTROL: the same failure with no refusal is retried as before", async
   const r = await stage(0);
   assert.equal(r.ok, false);
   assert.ok(r.attempts >= 2, `a plain missing file was not retried (${r.attempts} attempt)`);
+  assert.match(r.fail, /^missing_file:/, "and it still reads as the missing file it is");
 });
 
 test("only a turn where every call was refused and none completed counts", () => {

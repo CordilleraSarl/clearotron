@@ -23,6 +23,7 @@
 // `--dangerously-bypass-approvals-and-sandbox` — see buildCodexArgs below for why.
 
 import { mkdtempSync, writeFileSync, copyFileSync, existsSync, rmSync, readFileSync, readdirSync, statSync, symlinkSync, lstatSync, realpathSync } from "node:fs";
+import { everyToolCallRefused } from "./tool-refusal.mjs";
 import { writeSecretFile } from "../../shared/secret-file.mjs";   // the rotated login goes back the way every credential is written
 import { tmpdir, homedir } from "node:os";
 import { join } from "node:path";
@@ -531,6 +532,12 @@ function settleTuple({ r, ev, resumeRef }) {
       // The engine's sign-in could not be refreshed: what the operator runs to fix it. The gateway names the
       // stage's failure with it.
       signedOut: signedOut ? "codex sign-in expired — run `codex login`, then start the search again" : undefined,
+      // Every tool call refused and none completed: codex's own sandbox on this host, and what fixes it. The
+      // turn is still `ok` here; when the stage then fails, the gateway names its failure with this, as it
+      // names a sign-in, instead of the missing file the refusal left behind.
+      toolsRefused: everyToolCallRefused(mcpToolGauge(ev))
+        ? "codex refused every tool call this search needs — set CLEAROTRON_CODEX_SANDBOX_BYPASS=1 in this install's environment file, or use the Anthropic engine, then start the search again"
+        : undefined,
       rateLimitBasis: rateLimited ? "text-match" : undefined,
       // resetsAtBasis (2026-08-20): same honesty as rateLimitBasis one line up, for the reset
       // CLOCK rather than the classification. codex states its reset as human prose with NO timezone

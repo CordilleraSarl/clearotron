@@ -115,6 +115,13 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
   **Installed is not usable.** `npx clearotron install` proves the engine can complete a turn before it
   writes anything, and `clearotron doctor --probe-engine` re-proves it on a configured box. Both
   spend one cheap turn; plain `doctor` spends nothing.
+
+  **The check covers tools.** Every search stage calls tools. On some machines codex's own sandbox
+  refuses every one of those calls while the turn reports success, so the check asks the engine to call
+  one tool and passes only when that call comes back. If it reports that codex refused it, set
+  `CLEAROTRON_CODEX_SANDBOX_BYPASS=1` in the environment file, or use `anthropic-agent`. The setting turns
+  off codex's own sandbox, so its tool calls run with the permissions of the user Clearotron runs as, as
+  the Anthropic engine's do; set it only where the check reports the refusal.
 - **A register credential**, and **`PERPLEXITY_API_KEY`**. Both are required for a real run and both
   fail closed at preflight — before a stage has spent, never at the grid after. The one exception is a
   Knockout search, which runs keyless: it returns register filing counts and states on the report that
@@ -429,6 +436,7 @@ CLEAROTRON_AI_BILLING=subscription       # `subscription` (OAuth, default) | `ap
 # ANTHROPIC_DEFAULT_OPUS_MODEL=...       # optional: hold the opus tier at one model (and _SONNET_, _HAIKU_, _FABLE_)
 # CLEAROTRON_AI=openai-agent             # …or the second adapter: headless `codex exec`
 # CLEAROTRON_CODEX_PATH=                 # only to force one copy (default: `codex` on PATH, then the copy setup installed)
+# CLEAROTRON_CODEX_SANDBOX_BYPASS=1      # only where setup or doctor reports that codex refused every tool call
 
 # ── Where this install keeps its data ──────────────────────────────────
 # REQUIRED. CLEAROTRON_REPORTS_DIR has NO default: unset, a run refuses and names it.

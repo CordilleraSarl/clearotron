@@ -225,6 +225,8 @@ export function toolWrittenArtifact(p) {
     ?? null;
 }
 import { buildGatherMcpConfig, allowedToolsFor, toolGroupsForStage, recordAxisFor, seatWritesForGroups } from "./engine/mcp/gather-config.mjs";
+import { everyToolCallRefused } from "./engine/tool-refusal.mjs";   // one definition, shared with the engine probe
+export { everyToolCallRefused };
 // The profiles STORE root, for the write boundary only — read from the module that owns it, never
 // re-derived from CLEAROTRON_CUSTOMERS_DIR here. Acyclic: profiles.mjs imports node builtins + config.
 import { unitRefusalsFor } from "./register-unit-record.mjs";
@@ -299,16 +301,6 @@ export function isTimeout({ killed, code, wall, stderr = "", timeoutSec }) {
   if (/EmbeddedAttemptSessionTakeoverError|request timed out|\bETIMEDOUT\b/i.test(stderr)) return true;
   if (code !== 0 && wall >= timeoutSec) return true;
   return false;
-}
-
-/**
- * Every tool call the turn made was refused, and none completed. Read off the adapter's own gauge
- * (`mcpToolCalls` / `mcpToolCallsRefused`), which counts a refusal only when the call never reached its
- * server — a tool that ran and errored is not one. One refused call beside a completed one is a model
- * asking for something it may not have, not a host that refuses tools, so it does not count. Pure.
- */
-export function everyToolCallRefused(turn) {
-  return Number(turn?.mcpToolCallsRefused ?? 0) > 0 && Number(turn?.mcpToolCalls ?? 0) === 0;
 }
 
 // A LANE WEDGE: a timeout whose turn moved ZERO tokens — the gateway never admitted it to a command lane (the
@@ -1538,6 +1530,11 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // appear: a postponed run resumes on its own, and a signed-out one cannot. The sentence rides after
     // the colon, as `model_mismatch:` carries its detail, so no run-level classifier needs a new token.
     else if (turn.signals?.signedOut && fail) fail = `engine_signed_out: ${turn.signals.signedOut}`;
+    // AND ONE WHOSE TOOLS WERE ALL REFUSED IS NAMED, not left as the missing file the refusal caused. The
+    // turn reported success and the stage failed for want of what its tools would have produced; a
+    // `missing_file` reads as a model that did not write, and sends the reader to the wrong place. The
+    // sentence says what fixes this host. After the sign-in, which is the more basic fault when both appear.
+    else if (turn.signals?.toolsRefused && fail) fail = `engine_tools_refused: ${turn.signals.toolsRefused}`;
     // A6 (addendum 2026-07-30): stop_reason max_tokens with ZERO usable output is a DETECTED FAULT with a
     // name — never a silent paid retry. The turn ran to its output-token ceiling and the artifact never
     // landed (a content fail on a "successful" turn), or the turn itself died at the ceiling (transport

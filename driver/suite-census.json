@@ -1091,7 +1091,7 @@
         },
         "a-turn-whose-every-tool-call-was-refused-is-not-retried.test.mjs": {
           "tests": 3,
-          "asserts": 9,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
@@ -2404,8 +2404,8 @@
           "todos": 0
         },
         "engine-probe.test.mjs": {
-          "tests": 30,
-          "asserts": 143,
+          "tests": 33,
+          "asserts": 163,
           "skips": 0,
           "todos": 0
         },
