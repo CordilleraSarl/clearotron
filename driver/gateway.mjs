@@ -301,6 +301,16 @@ export function isTimeout({ killed, code, wall, stderr = "", timeoutSec }) {
   return false;
 }
 
+/**
+ * Every tool call the turn made was refused, and none completed. Read off the adapter's own gauge
+ * (`mcpToolCalls` / `mcpToolCallsRefused`), which counts a refusal only when the call never reached its
+ * server — a tool that ran and errored is not one. One refused call beside a completed one is a model
+ * asking for something it may not have, not a host that refuses tools, so it does not count. Pure.
+ */
+export function everyToolCallRefused(turn) {
+  return Number(turn?.mcpToolCallsRefused ?? 0) > 0 && Number(turn?.mcpToolCalls ?? 0) === 0;
+}
+
 // A LANE WEDGE: a timeout whose turn moved ZERO tokens — the gateway never admitted it to a command lane (the
 // serial `main` lane saturated by the heartbeat sweep). The real signature (teal-bastion 2026-06-15) is a
 // hard-kill timeout with a NULL usage envelope, so we key on "fail is a timeout AND no tokens moved" rather than
@@ -2025,6 +2035,15 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // same credential and gets the same 401, seconds apart. Break, and let the stage fail with it named.
     if (fail.startsWith("engine_signed_out:")) {
       note(`[${name}] the engine's sign-in could not be refreshed — breaking the ladder (a retry re-sends the same credential)`);
+      break;
+    }
+    // EVERY TOOL CALL THE TURN MADE WAS REFUSED. On some hosts codex's own sandbox refuses the stage's
+    // tool servers while the turn reports success, and the stage then fails for want of what the tools
+    // would have produced. The next attempt spawns the same sandbox and is refused the same way, so a
+    // retry re-buys the refusal: measured at three paid attempts per stage on a production run before the
+    // identical-failure break stopped it. Break on the first. A turn where any call completed is not this.
+    if (everyToolCallRefused(turn)) {
+      note(`[${name}] every tool call this turn made was refused (${turn.mcpToolCallsRefused}) — breaking the ladder (a retry is refused the same way)`);
       break;
     }
     // D3: overload (529 / status_overloaded) — stop the ladder here: an in-ladder re-attempt hammers an

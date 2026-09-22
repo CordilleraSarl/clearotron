@@ -1083,6 +1083,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-turn-whose-every-tool-call-was-refused-is-not-retried.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "a-two-form-matter-owes-a-read-per-form.test.mjs": {
           "tests": 8,
           "asserts": 25,

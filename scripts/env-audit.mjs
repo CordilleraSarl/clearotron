@@ -557,7 +557,7 @@ export function auditEnv(root = ROOT) {
 //                         4  read RIGHT NOW through an idiom no `env`-prefixed regex can reach —
 //                            envValue("CLEAROTRON_MAX_RETRIES") and
 //                            envValue("CLEAROTRON_RATE_LIMIT_DEFAULT_BACKOFF_MS") (driver.config.mjs:486,
-//                            :494), envOn("CLEAROTRON_DUMP_JSON") (gateway.mjs:1423), and
+//                            :494), envOn("CLEAROTRON_DUMP_JSON") (runStageLadder() in gateway.mjs), and
 //                            `export const API_KEY_ENV = "USPTO_API_KEY"` (providers/uspto-local/src/sync.js:77).
 //                            The name is a STRING LITERAL in every one; it just never sits beside an
 //                            `env` token. USPTO_API_KEY is a credential.
