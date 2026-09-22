@@ -729,6 +729,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-press-that-starts-late-is-not-a-page-that-did-not-move.test.mjs": {
+          "tests": 5,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "a-printed-command-runs-from-where-the-reader-stands.test.mjs": {
           "tests": 15,
           "asserts": 62,
