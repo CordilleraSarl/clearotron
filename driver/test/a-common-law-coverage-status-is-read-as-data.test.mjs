@@ -29,6 +29,7 @@ import { driverDir } from "../../shared/driver-dir.mjs";
 import { GRID_HALVES, splitGridTerms, mergeGrids, mergeCommonLawFindings } from "../common-law-receipts.mjs";
 import { validators } from "../verify.mjs";
 import { paths } from "../stages.mjs";
+import { correctionHint } from "../gateway.mjs";
 import { recordCoverageStatus, coverageStatusPath, coverageStatusAsData, findingsPathForSpec, COMMON_LAW_COVERAGE_STATUSES }
   from "../common-law-coverage-status.mjs";
 
@@ -244,4 +245,15 @@ test("the manual orders the tool, and names exactly the values its served schema
   assert.deepEqual(served, [...COMMON_LAW_COVERAGE_STATUSES]);
   for (const s of served) assert.match(ledger, new RegExp(`\`${s}\``), `the manual does not name ${s}`);
   assert.equal(served.length, 3);
+});
+
+test("a retry for the missing status names the tool on a common-law file, and only there", () => {
+  for (const f of ["common-law-findings.half-a.md", "common-law-findings.md"]) {
+    const hint = correctionHint(`invalid_file:${f}:no_coverage_status_row`);
+    assert.match(hint, /status row \(confirmed-clean \/ coverage-limited \/ deferred\)/, "the prose route is gone from the hint");
+    assert.match(hint, /calling `record_coverage_status` with `grid_spec_path`/, `the retry for ${f} does not name the tool`);
+  }
+  // The register stage emits the same token and holds no such tool: its hint is unchanged.
+  const register = correctionHint("invalid_file:register-findings.md:no_coverage_status_row");
+  assert.equal(register, "the file has a findings heading plus a Coverage ledger with a status row (confirmed-clean / coverage-limited / deferred)");
 });

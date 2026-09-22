@@ -132,10 +132,13 @@ async function declaresUntypedObject(tool) {
 function orderedFieldsFor(tool) {
   const found = new Map();
   let orderLines = 0;
+  // THE WHOLE NAME, never a substring: `record_coverage` is a prefix of `record_coverage_status`, and a
+  // substring match read an order for the second as an order for the first.
+  const named = new RegExp(`(?<![a-z0-9_])${tool}(?![a-z0-9_])`);
   for (const file of ORDER_SOURCES) {
     const src = readFileSync(join(DRIVER, file), "utf8");
     src.split("\n").forEach((line, i) => {
-      if (!line.includes(tool)) return;
+      if (!named.test(line)) return;
       if (/^\s*\/\//.test(line)) return;
       orderLines++;
       for (const m of line.matchAll(IDENT)) if (!found.has(m[1])) found.set(m[1], `${file}:${i + 1}`);
