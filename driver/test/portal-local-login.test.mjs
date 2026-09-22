@@ -561,11 +561,11 @@ test("the form clears a session cookie it cannot read, and says an old session w
     const r = await req(port, "/portal/login", { headers: { cookie: `portal_session=${foreign}` } });
     assert.equal(r.status, 200);
     assert.ok(r.cookies.some((c) => /^portal_session=;.*Max-Age=0/.test(c)), `the unreadable cookie was left in place: ${JSON.stringify(r.cookies)}`);
-    assert.match(r.body, /was set aside/);
+    assert.match(r.body, /Your earlier sign-in has expired\. Sign in again\./);
     // THE CONTROL: no cookie, so nothing is cleared and nothing is said.
     const clean = await req(port, "/portal/login");
     assert.deepEqual(clean.cookies, []);
-    assert.doesNotMatch(clean.body, /was set aside/);
+    assert.doesNotMatch(clean.body, /Your earlier sign-in has expired/);
   });
 });
 

@@ -251,7 +251,7 @@ test("the real sign-in page is read, in every state it is served in", async () =
     `A key from ${HOLE} is for an AI assistant, not for this page.`,
   ]) assert.ok(texts.includes(s), `not read from the sign-in page: ${s}\nread: ${texts.join(" | ")}`);
   assert.ok(texts.includes(`You are signed in as ${HOLE}.`), "the signed-in state is not read");
-  assert.ok(texts.some((s) => /was set aside/.test(s)), "the set-aside state is not read");
+  assert.ok(texts.includes("Your earlier sign-in has expired. Sign in again."), "the set-aside state is not read");
   assert.ok(texts.some((s) => /passphrase is not correct/.test(s)), "the handler's error sentences are not read");
 });
 
