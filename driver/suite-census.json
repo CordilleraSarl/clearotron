@@ -1277,7 +1277,7 @@
         },
         "an-archived-run-says-whether-it-was-delivered.test.mjs": {
           "tests": 8,
-          "asserts": 42,
+          "asserts": 44,
           "skips": 0,
           "todos": 0
         },
@@ -3418,8 +3418,8 @@
           "todos": 0
         },
         "pipeline.mock.test.mjs": {
-          "tests": 98,
-          "asserts": 820,
+          "tests": 99,
+          "asserts": 827,
           "skips": 0,
           "todos": 0
         },
@@ -3671,7 +3671,7 @@
         },
         "progress.test.mjs": {
           "tests": 26,
-          "asserts": 96,
+          "asserts": 97,
           "skips": 0,
           "todos": 0
         },
@@ -4139,7 +4139,7 @@
         },
         "report-data.test.mjs": {
           "tests": 5,
-          "asserts": 55,
+          "asserts": 56,
           "skips": 0,
           "todos": 0
         },
@@ -4721,7 +4721,7 @@
         },
         "status-snapshot.test.mjs": {
           "tests": 6,
-          "asserts": 39,
+          "asserts": 40,
           "skips": 0,
           "todos": 0
         },
@@ -5520,6 +5520,12 @@
         "the-retired-azure-settings-are-read-by-nothing.test.mjs": {
           "tests": 3,
           "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-reviewers-sign-off-is-not-the-clearances-answer.test.mjs": {
+          "tests": 3,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },

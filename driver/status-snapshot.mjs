@@ -80,7 +80,7 @@ const slimRun = (r) => ({
   markName: r.markName, ref: r.ref, classes: r.classes,
   state: r.state, stepN: r.stepN, stepTotal: r.stepTotal, stepLabel: r.stepLabel,
   lastStage: r.lastStage,   // spec 64 C — the RAW stage key ("register-unit:primary-sweep"): what the run is actually doing
-  verdict: r.verdict, statement: r.statement, caption: r.caption,   // spec 64 — THE one risk statement (absent on legacy runs); caption — the report's own conclusion
+  tier: r.tier, statement: r.statement, caption: r.caption,   // the rating, never the reviewer's sign-off; spec 64 — THE one risk statement (absent on legacy runs); caption — the report's own conclusion
   url: r.url, failedStage: r.failedStage, reason: r.reason,
   resetsAt: r.resetsAt,   // rate-limit POSTPONE ONLY: when the cap window clears + the run auto-resumes (ISO)
   recoveryResumesAt: r.recoveryResumesAt ?? null,   // recovery park's backoff clock (A4 split — never conflated with a provider cap)
@@ -100,7 +100,7 @@ export function buildRecentActivity({ reports = [], limit = 12 } = {}) {
     // spec 64 — a delivered run's outcome is THE one risk statement when the run carries it (band +
     // stance in one sentence), never a bare disposition word beside a severity word on another page.
     out.push({ kind: "report", ok, when: r.deliveredAt || r.updatedAt || r.startedAt || "", label: r.markName || r.slug || r.runId,
-      outcome: ok ? (r.statement || r.verdict || "delivered") : `failed${r.failedStage ? " · " + r.failedStage : ""}`,
+      outcome: ok ? (r.caption || r.statement || r.tier || "delivered") : `failed${r.failedStage ? " · " + r.failedStage : ""}`,
       url: r.url || (ok && r.runId ? `${r.runId}/report.html` : "") });
   }
   // ONE explicit time key per row: a report's `when` can come from any of three stamps, and they all sort on

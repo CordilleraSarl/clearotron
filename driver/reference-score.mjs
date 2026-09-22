@@ -918,7 +918,8 @@ export function readVerdict({ verdictDoc = null, knockoutFindings = null, status
     const rows = marks
       .map((m) => [m.name, [m.rating, m.ratingQualifier ? `(${m.ratingQualifier})` : null].filter(Boolean).join(" ")].filter(Boolean).join(": "))
       .filter((s) => s.includes(":"));
-    const text = [status?.verdict ? `worst band ${status.verdict}` : null, ...rows].filter(Boolean).join(" · ");
+    const worst = status?.tier ?? status?.verdict ?? null;   // `verdict` on a quick-search record written before the move
+    const text = [worst ? `worst band ${worst}` : null, ...rows].filter(Boolean).join(" · ");
     if (text) return { clean: clean(text), text, source: "knockout-findings.json + status.json — this lane writes no _driver/verdict.json", why: null };
   }
   return { clean: null, text: null, source: null,
@@ -2201,7 +2202,7 @@ export function deliveryLine(run) {
   }
   if (run.poolMeta) {
     const issued = run.poolMeta.issuedAt ? ` published ${run.poolMeta.issuedAt}` : " publication time not recorded";
-    const verdict = run.poolMeta.verdict ?? run.poolMeta.overall;
+    const verdict = run.poolMeta.review?.signoff ?? run.poolMeta.verdict ?? run.poolMeta.overall;
     // NOT PRESERVED stays the honest answer for a pool copy with no stamp — a run archived before the
     // stamp existed, or one whose best-effort write failed. An absent stamp is unknown, not a refusal.
     return `delivered: NOT PRESERVED — this is a pool copy carrying no settle stamp, so the terminal`

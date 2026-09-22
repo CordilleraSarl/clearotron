@@ -55,12 +55,15 @@ export const SETTLE_SCHEMA_VERSION = 1;
  * reads a delivery date (turnaround, an SLA, a client-facing "delivered on") would have inherited it.
  * A backfiller must not compose this value at all: call `backfillSettleStamp`, which reads it.
  */
-export function writeSettleStamp(poolRunDir, { state, verdict = null, deliveredAt = null, runId = null, lane = null } = {}) {
+// The outcome words are named for what they are: the full-search lane's reviewer `signoff` (CLEAR /
+// CONDITIONAL / BLOCKING) and the quick-search lane's rating `tier`. Both once shared one `verdict` field,
+// which read as the clearance's answer and held a different vocabulary on each lane.
+export function writeSettleStamp(poolRunDir, { state, signoff = null, tier = null, deliveredAt = null, runId = null, lane = null } = {}) {
   if (!poolRunDir) return { written: false, reason: "no pool run directory — the run published nowhere" };
   if (!state) return { written: false, reason: "no terminal state given — a stamp with no state is the absence it would be mistaken for" };
   const path = join(poolRunDir, SETTLE_FILE);
   try {
-    writeFileSync(path, `${JSON.stringify({ schema_version: SETTLE_SCHEMA_VERSION, state, verdict, deliveredAt, runId, lane, stampedAt: new Date().toISOString() }, null, 2)}\n`);
+    writeFileSync(path, `${JSON.stringify({ schema_version: SETTLE_SCHEMA_VERSION, state, ...(signoff ? { signoff } : {}), ...(tier ? { tier } : {}), deliveredAt, runId, lane, stampedAt: new Date().toISOString() }, null, 2)}\n`);
     // Group-read like every other pool file. Best-effort on its own: a stamp nobody can chmod is still
     // a stamp, and the set-GID pool already grants the group.
     try { chmodSync(path, 0o640); } catch { /* best-effort, exactly as publish's writeRO does */ }
@@ -116,7 +119,11 @@ export function backfillSettleStamp(poolRunDir, runDir, { readStatus = defaultRe
     return { written: false, reason: "status.json says delivered but carries no deliveredAt — the delivery time this backfill exists to preserve is not recorded" };
   return writeSettleStamp(poolRunDir, {
     state: status.state,
-    verdict: status.verdict ?? null,
+    // A status.json written before the sign-off moved carries it as `verdict`, and on the quick-search
+    // lane that field held the rating; each is read back into the field it always meant.
+    ...((status.lane ?? (status.marks ? "knockout" : "clearance")) === "knockout"
+      ? { tier: status.tier ?? status.verdict ?? null }
+      : { signoff: status.review?.signoff ?? status.verdict ?? null }),
     deliveredAt: status.deliveredAt ?? null,
     runId: status.runId ?? null,
     lane: status.lane ?? (status.marks ? "knockout" : "clearance"),
