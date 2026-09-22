@@ -103,7 +103,7 @@ function isPlumbing(node, child) {
   //
   //     const wrote   = files.length ? files.some(…) : null;              gateway.mjs (by name)
   //     const inScope = scope.size   ? tokens.some(…) : (…);              reasoning-tripwires.mjs:82
-  //     const reached = b.layer === "national" ? (…) : regions.some(…);   register-plan.mjs:357 resolveRegions
+  //     const reached = b.layer === "national" ? (…) : regions.some(…);   resolveRegions() in register-plan.mjs
   //
   // The climb stopped at the ternary and reported "unresolved", which reads as a limit of the pattern
   // and was a missing case. All three are `local` — the boolean is bound and read in the same function.
