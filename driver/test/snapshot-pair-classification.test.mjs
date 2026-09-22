@@ -22,7 +22,7 @@
 // ── THE RULING, ALL TEN ─────────────────────────────────────────────────────────────────────────────
 //
 //  AGREE (9) — both ends read ONE snapshot, and the site says so with its mechanism:
-//   · gateway.mjs:534           the judgement-time union IS the regeneration — "same builder, same
+//   · syncDispositionForm() in gateway.mjs   the judgement-time union IS the regeneration — "same builder, same
 //                               predicate, same arguments as the tool's own fold" — and the counted
 //                               state uses `isRuled`, the predicate the gate judges with.
 //   · disposition-union.mjs:32  PROVENANCE: rows, ids and candidates come from `connotationObligations()`,
