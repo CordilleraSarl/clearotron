@@ -40,8 +40,8 @@ import { parseVerdict, countCitedDefects, parseCorrectionKinds, parseCorrections
 import { readAcceptedFlags } from "./narrative-refutation-record.mjs";   // T3b — the typed flags, not the re-parse
 import { evidenceClaimViolations, evidenceClaimTable } from "./evidence-claim-invariant.mjs";   //
 import { buildCorrectionsApplied, correctionsWorklist, correctionsAppliedTable, correctionScope, scopeDrift, unresolvedFlags, reportLines, linesOf, REPORT_LINE_KEY, REPORT_LINE_LABEL } from "./corrections-feedforward.mjs";
-import { parseCoverageLedgerJson, parseCoverageLedgerFull, deriveCoverageStatus, classTokensFromScopeText, coerceToolAbsenceDeferred, applyTaintDeferred, decideRegisterGap, splitDeferredByCloseability, coverageLedgerTableRows, coverageUnitLabel, NON_MATERIAL_AXES, COVERAGE_STATUSES } from "./coverage-ledger.mjs";
-import { receiptSettled, readEnvelopeDecision, settleReceipt, settledDeferralsSection } from "./envelope-settle.mjs";
+import { parseCoverageLedgerJson, parseCoverageLedgerFull, deriveCoverageStatus, classTokensFromScopeText, coerceToolAbsenceDeferred, applyTaintDeferred, decideRegisterGap, splitDeferredByCloseability, formRowUnitKey, coverageLedgerTableRows, coverageUnitLabel, NON_MATERIAL_AXES, COVERAGE_STATUSES } from "./coverage-ledger.mjs";
+import { receiptSettled, readEnvelopeDecision, settleReceipt, settledDeferralsSection, readStickyGaps } from "./envelope-settle.mjs";
 import { readRegisterTaint, readActiveTaintAxes } from "./register-taint.mjs";
 import { parseNamedBand, mergeNamedBands, findCollapsedBands, quarantineUnknownStates, taintQuarantineCleanBlocks, bandRecords } from "./named-band.mjs";
 import { recordOriginsFor } from "./record-origins.mjs";
@@ -464,8 +464,35 @@ export function readPlanExecution(ctx) {   // @internal
   const p = ctx?.paths?.planExecution;
   try { return p && existsSync(p) ? JSON.parse(readFileSync(p, "utf8")) : null; } catch { return null; }
 }
+/**
+ * A qid this run has accepted as a capability gap (envelope-settle.mjs stickyGapsAfter) leaves `missing`
+ * for `deferred`, with the reason it was accepted under, so no re-join can put it back on the ladder.
+ * Returns the join unchanged when nothing is held. PURE.
+ */
+export function holdStickyGapsIn(join, sticky) {   // @internal
+  const held = (join?.missing ?? []).filter((q) => sticky?.has(q));
+  if (!held.length) return join;
+  return { ...join, missing: join.missing.filter((q) => !sticky.has(q)),
+    deferred: [...(join.deferred ?? []), ...held.map((q) => ({ qid: q, reason: String(sticky.get(q)?.reason ?? "").slice(0, 300) }))] };
+}
+
+/**
+ * The coverage units of this run's sticky capability gaps, as ledgerUnitKey()s, found through the coverage
+ * form's own deferred rows (the driver writes each with its qid). The envelope, the escalation and the
+ * skeptic's ledger split then hold those rows whatever reason the seat wrote for them. A run with no form,
+ * or no sticky gap, holds nothing extra, exactly as before.
+ */
+export function stickyGapUnits(P) {   // @internal
+  const sticky = readStickyGaps(P);
+  if (!sticky.size) return new Set();
+  const stamp = coverageFormStamp(P.runDir);
+  const rows = stamp.required ? (readCoverageForm(P.runDir, stamp.formName).rows ?? []) : [];
+  return new Set(rows.filter((r) => r?.kind === "deferred" && sticky.has(String(r.qid ?? ""))).map(formRowUnitKey));
+}
+
 export function writePlanExecutionReceipt(ctx, joinRes) {   // @internal
   const P = ctx.paths;
+  joinRes = holdStickyGapsIn(joinRes, readStickyGaps(P));
   // — the ONE place the receipt is written is the one place this decision is taken. The
   // reclassification is keyed off the receipt already on disk (ladderExhaustedQids), so every writer
   // agrees without any of them knowing about it: the fan-in, the envelope's re-join after its close
@@ -6225,10 +6252,11 @@ export function skepticDeferralExtra(ctx) {   // @internal
     const gapAxes = capabilityGapAxes(ctx.registerPlan, receipt);
     const fullyDeferred = new Set((ctx.registerPlan ? fullyDeferredAxes(ctx.registerPlan) : []).map((a) => String(a.axis).toLowerCase()));
     const axes = [...new Set(rows.map((r) => String(r.axis ?? "").toLowerCase()).filter(Boolean))];
+    const heldUnits = stickyGapUnits(P);
     const ledgerLines = coverageLedgerTableRows(rows);
     const held = [], closeable = [];
     for (const a of axes) {
-      const s = splitDeferredByCloseability(rows, a, gapAxes, { fullyDeferred: fullyDeferred.has(a) });
+      const s = splitDeferredByCloseability(rows, a, gapAxes, { fullyDeferred: fullyDeferred.has(a), heldUnits });
       for (const r of s.held) held.push(`${a} / ${r.unit} — ${String(r.reason ?? "").replace(/\s+/g, " ").slice(0, 160)}`);
       for (const r of s.closeable) closeable.push(`${a} / ${r.unit} — ${String(r.reason ?? "").replace(/\s+/g, " ").slice(0, 160)}`);
     }
@@ -9852,6 +9880,19 @@ async function pipelineInner(job, opts = {}) {
     const fanInRepairs = [];
     const dispatchPlanQids = async (a, qids, repairId, max = 1) => {
       if (!planExec || !ctx.registerPlan) return null;
+      // A qid this run has accepted as a capability gap is never sent to the provider again, under any plan
+      // version (envelope-settle.mjs stickyGapsAfter). A whole-axis dispatch becomes the axis's other qids;
+      // the executor's qid-ownership merge keeps the gap's own block as it stands.
+      const sticky = readStickyGaps(P);
+      if (sticky.size) {
+        const wanted = qids?.length ? qids : (ctx.registerPlan.entries ?? []).filter((e) => e.axis === a).map((e) => e.qid);
+        const held = wanted.filter((q) => sticky.has(q));
+        if (held.length) {
+          runLog(run.runDir, { event: "plan-qids-sticky-gap", axis: a, qids: held, action: repairId });
+          qids = wanted.filter((q) => !sticky.has(q));
+          if (!qids.length) return null;
+        }
+      }
       if (!repairLedger.canAttempt(repairId, a, { max, epoch: repairEpoch })) return null;
       note(`register-unit ${a}: ${repairId} — direct executor dispatch (code, no agent turn) for ${qids?.length ?? "all"} dictated slice(s)`);
       let outcome;
@@ -10312,7 +10353,15 @@ async function pipelineInner(job, opts = {}) {
         // been a log line. Settling here is idempotent and makes the decision durable.
         if (!receiptSettled(P, priorReceipt).settled) await settleEnvelopeAtReceipt("receipt-reuse");
       } else {
-      let joinRes = joinPlanToBands(ctx.registerPlan, readBands());
+      // A qid this run has accepted as a capability gap does not ride the ladder again. It leaves `missing`
+      // for `deferred` with the reason it was accepted under, before any dispatch or followup reads the
+      // join, so neither the direct executor nor the plan-join followup re-dictates it.
+      const holdStickyGaps = (j) => {
+        const held = holdStickyGapsIn(j, readStickyGaps(P));
+        if (held !== j) runLog(run.runDir, { event: "plan-qids-sticky-gap", qids: j.missing.filter((q) => !held.missing.includes(q)), action: "held-from-missing" });
+        return held;
+      };
+      let joinRes = holdStickyGaps(joinPlanToBands(ctx.registerPlan, readBands()));
       const missingEntriesByAxis = () => {
         const byQid = new Map(ctx.registerPlan.entries.map((e) => [e.qid, e]));
         const m = new Map();
@@ -10334,7 +10383,7 @@ async function pipelineInner(job, opts = {}) {
           runLog(run.runDir, { event: "plan-qids-missing", axis: a, qids, action: "plan-direct-execute" });
           await dispatchPlanQids(a, qids, "plan-direct-execute", 2);
         }
-        joinRes = joinPlanToBands(ctx.registerPlan, readBands());
+        joinRes = holdStickyGaps(joinPlanToBands(ctx.registerPlan, readBands()));
         if (!joinRes.missing.length) deriveNamedBand(ctx);   // dispatch landed blocks — re-merge so Layer B reads them
       }
       if (joinRes.missing.length) {
@@ -10359,7 +10408,7 @@ async function pipelineInner(job, opts = {}) {
           const wf = await stage("register-unit", { ...ctx, axis: a }, { force: true, followup, sessionKey: unitKey[a], trigger: "plan-join" });
           if (!wf.ok) note(`register-unit ${a}: warm plan-join followup failed (${wf.fail}) — the plan-unexecuted StageFailure below holds the line`);
         }
-        joinRes = joinPlanToBands(ctx.registerPlan, readBands());
+        joinRes = holdStickyGaps(joinPlanToBands(ctx.registerPlan, readBands()));
         deriveNamedBand(ctx);   // the followup appended band blocks — re-merge so Layer B reads them
       }
       const skeleton = writeExecution(joinRes);
@@ -11642,7 +11691,7 @@ async function pipelineInner(job, opts = {}) {
       // that designates no floor.
       if (owned.length > 0 && !floorBreachAxes.has(a.toLowerCase())) {
         const split = splitDeferredByCloseability(ledger, a, escalationGapAxes,
-          { fullyDeferred: escalationFullyDeferred.has(a.toLowerCase()) });
+          { fullyDeferred: escalationFullyDeferred.has(a.toLowerCase()), heldUnits: stickyGapUnits(P) });
         const openNonDeferred = owned.some((r) => r.status !== "deferred" && r.status !== "coverage-limited");
         if (split.held.length > 0 && split.closeable.length === 0 && !openNonDeferred) {
           note(`escalation skipped ${a} — capability-gap deferral: the active register provider cannot express those slices, so a re-run re-derives the same refusal (the gap stays open and disclosed)`);
@@ -11718,7 +11767,7 @@ async function pipelineInner(job, opts = {}) {
         // while ALSO carrying held rows — and the resumed unit must not be left to think those are
         // work it failed to do. Name them, exactly as the envelope's close followup does.
         const escHeld = splitDeferredByCloseability(ledger, a, escalationGapAxes,
-          { fullyDeferred: escalationFullyDeferred.has(a.toLowerCase()) }).held;
+          { fullyDeferred: escalationFullyDeferred.has(a.toLowerCase()), heldUnits: stickyGapUnits(P) }).held;
         if (escHeld.length) {
           followup += `\n\nNOT YOURS TO CLOSE — the active register provider cannot express these slices at all, so no re-run can reach them. Leave these Coverage-ledger rows exactly as they are (\`deferred\`, same reason), and do not restate them as searched or clean:\n${escHeld.map((r) => `| ${r.unit} | deferred | ${r.reason} |`).join("\n")}`;
         }
@@ -11794,8 +11843,9 @@ async function pipelineInner(job, opts = {}) {
       // time, still deferred, still an open floor, still disclosed.
       const gapAxes = capabilityGapAxes(ctx.registerPlan, readPlanExecution(ctx));
       const fullyDeferred = new Set((ctx.registerPlan ? fullyDeferredAxes(ctx.registerPlan) : []).map((a) => String(a.axis).toLowerCase()));
+      const stickyUnitsNow = stickyGapUnits(P);   // a gap this run already accepted is held whatever its row's reason says
       const closeabilityByAxis = new Map(deferredAxes.map((a) => [a,
-        splitDeferredByCloseability(ledgerNow, a, gapAxes, { fullyDeferred: fullyDeferred.has(String(a).toLowerCase()) })]));
+        splitDeferredByCloseability(ledgerNow, a, gapAxes, { fullyDeferred: fullyDeferred.has(String(a).toLowerCase()), heldUnits: stickyUnitsNow })]));
       const heldAxes = deferredAxes.filter((a) => {
         const s = closeabilityByAxis.get(a);
         // The `!hasBreach &&` term is retired with the ⭐ floor: it kept an axis carrying a
@@ -11837,6 +11887,10 @@ async function pipelineInner(job, opts = {}) {
             ? `\n\nThese rows on this axis are NOT yours to close and must stay exactly as they are — the active register provider cannot express those slices at all, so no re-run can reach them. Leave them \`deferred\`, keep their reason, and do not restate them as searched or clean:\n${split.held.map((r) => `| ${r.unit} | deferred | ${r.reason} |`).join("\n")}`
             : "";
           note(`envelope: closing deferred coverage on ${a} (deadline permits — ${decision.reason})`);
+          // What the re-opened unit is asked to close, and what it is told to leave: the record of the split
+          // this close acted on, so a gap handed back as work is visible in the run's own log.
+          runLog(run.runDir, { event: "envelope-close-rows", axis: a,
+            closeable: split.closeable.map((r) => String(r.unit ?? "")), held: split.held.map((r) => String(r.unit ?? "")) });
           const followup = repairFollowup("register-unit:envelope-close", { paths: P, axis: a, rows: rows + heldRows,
             supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane });
           const r = await stage("register-unit", { ...ctx, axis: a }, { force: true, followup, sessionKey: unitKey[a], trigger: "envelope" });
