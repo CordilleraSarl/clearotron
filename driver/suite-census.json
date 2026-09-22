@@ -1259,7 +1259,7 @@
         },
         "an-absent-portal-bundle-is-not-a-stale-one.test.mjs": {
           "tests": 4,
-          "asserts": 7,
+          "asserts": 13,
           "skips": 0,
           "todos": 0
         },
