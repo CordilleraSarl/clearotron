@@ -44,6 +44,11 @@ function plainClause(s) {
 }
 
 const titleCase = (w) => (w ? w.charAt(0) + w.slice(1).toLowerCase() : w);
+// A band arrives as its word ("High") or as the derived record publish writes for the run's verdict
+// ({ label, rankFromTop, scale }). Stringifying the record printed "Overall risk: [object object]."
+// on the assistant's summary; every band read here goes through this, so either shape gives the word.
+const bandLabel = (b) => (b && typeof b === "object" ? (typeof b.label === "string" && b.label.trim() ? b.label : null)
+  : (b == null || String(b).trim() === "" ? null : String(b)));
 
 // One clearance finding → one line. NO SECOND FILTER: report-data.json already carries only the live
 // findings (a withdrawn one is not in the file), so the brief's conflicts and the report's findings are
@@ -51,7 +56,7 @@ const titleCase = (w) => (w ? w.charAt(0) + w.slice(1).toLowerCase() : w);
 // shorter list than the document the client was holding.
 function clearanceLine(f) {
   const who = [f.mark, f.owner?.name].filter(Boolean).join(" — ") || "(unnamed finding)";
-  const band = f.band ? ` — ${titleCase(String(f.band))} risk.` : "";
+  const band = bandLabel(f.band) ? ` — ${titleCase(bandLabel(f.band))} risk.` : "";
   return `- **${who}**${band}${f.net ? ` ${f.net}` : ""}`.trimEnd();
 }
 
@@ -77,7 +82,7 @@ export function buildBrief(run) {
   // THE BAND, AND NEVER THE GATE'S WORD. This chain used to fall through to the delivery verdict — the
   // sidecar's `verdict`, then the run's — so a run whose report reads Medium could be briefed as BLOCKING.
   // The band is what the report shows; where no band is recorded the line is not drawn at all.
-  const overall = clearance?.verdict?.band ?? clearance?.verdict?.tier
+  const overall = bandLabel(clearance?.verdict?.band) ?? clearance?.verdict?.tier
     ?? (koDocs.length === 1 ? (koDocs[0].overall ?? null) : null)
     ?? fm.overall_label ?? run.tier ?? null;
 
@@ -135,7 +140,7 @@ export function buildBrief(run) {
     lines.push("", "**Each name screened:**");
     for (const d of koDocs) {
       for (const m of (d.marks ?? [])) {
-        const band = m.band ? `${titleCase(String(m.band))}${m.qualifier ? ` (${m.qualifier})` : ""}` : "unrated";
+        const band = bandLabel(m.band) ? `${titleCase(bandLabel(m.band))}${m.qualifier ? ` (${m.qualifier})` : ""}` : "unrated";
         lines.push(`- **${m.name}** — ${band}.${d.url ? ` Report: ${d.url}` : ""}`);
         for (const f of (m.findings ?? [])) {
           const who = [f.name, f.owner].filter(Boolean).join(" — ");
@@ -149,7 +154,7 @@ export function buildBrief(run) {
           // was: a typed conflict already leads with its own band on the report, and widening this to all
           // findings would change what this briefing says about runs that have no register layer at all.
           if (f.shape === "register") {
-            const rating = f.band ? ` — ${titleCase(String(f.band))} risk.` : "";
+            const rating = bandLabel(f.band) ? ` — ${titleCase(bandLabel(f.band))} risk.` : "";
             const read = f.basis && f.basis !== f.net ? ` ${f.basis}` : "";
             lines.push(`  - ${who}${rating}${f.net ? ` ${f.net}` : ""}${read}`.trimEnd());
             continue;

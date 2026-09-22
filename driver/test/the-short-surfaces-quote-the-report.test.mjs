@@ -64,10 +64,15 @@ test("the assistant's briefing gives the rating and the report's conclusion, and
   mkdirSync(poolDir, { recursive: true });
   writeFileSync(join(poolDir, "report.md"), REPORT);
   writeFileSync(join(poolDir, "report-data.json"), JSON.stringify({ schema: "report-data/1", kind: "clearance", markName: "INVENTED MARK",
-    verdict: { verdict: SIGN_OFF, tier: TIER, band: TIER, statement: OLD_STATEMENT, conditions: [] }, caption: CONCLUSION }));
+    // The band as publish writes it (report-data.mjs → findings-model's derived record), never a bare word:
+    // a string here is the shape that let "Overall risk: [object object]." pass this arm.
+    verdict: { verdict: SIGN_OFF, tier: TIER, band: { label: TIER, rankFromTop: 2, scale: 5 }, statement: OLD_STATEMENT, conditions: [] },
+    caption: CONCLUSION }));
   const b = buildBrief({ runId, P: { report: join(poolDir, "report.md") }, poolDir, state: "delivered", date: "2026-09-22",
     statement: OLD_STATEMENT, caption: CONCLUSION, tier: TIER });
   assert.ok(b.brief.includes(`**Overall risk: ${TIER}.** ${CONCLUSION}`), `the briefing is not the rating and the report's conclusion:\n${b.brief}`);
+  assert.doesNotMatch(b.brief, /\[object /i, "the band record was printed instead of its word");
+  assert.equal(b.overall, TIER);
   noSecondOpinion(b.brief, "the briefing");
   assert.equal(b.caption, CONCLUSION);
   assert.equal(b.statement, undefined, "the briefing record still carries a second summary");

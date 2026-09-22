@@ -5591,7 +5591,7 @@
         },
         "the-short-surfaces-quote-the-report.test.mjs": {
           "tests": 3,
-          "asserts": 7,
+          "asserts": 9,
           "skips": 0,
           "todos": 0
         },
