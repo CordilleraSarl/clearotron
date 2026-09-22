@@ -41,12 +41,12 @@ import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 const readJson = (p) => JSON.parse(readFileSync(p, "utf8"));
 
 /**
- * The three kinds that run without being asked for (decision 10, as ruling 204 leaves it).
+ * The three kinds that run without being asked for (decision 10, as amended 2026-09-21).
  *
  * READ OFF THE ENTRY, deliberately, rather than re-deriving the compiler's own test: this is a
  * measuring instrument, and an instrument that shares the mechanism it measures cannot disagree with
  * it. The subtlety worth stating is the third line — the BARE contains entry on the mark waits, and
- * only the goods-narrowed one is always on (ruling 180), so `provenance === "mark"` alone is not the
+ * only the goods-narrowed one is always on (ruled 2026-09-20), so `provenance === "mark"` alone is not the
  * test and a reader who assumed it were would count a waiting entry as open.
  */
 function openKind(e) {

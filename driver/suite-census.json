@@ -435,6 +435,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-full-country-card-keeps-what-the-multi-country-card-shows.test.mjs": {
+          "tests": 2,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "a-generic-run-is-filed-and-capped-at-the-claim.test.mjs": {
           "tests": 2,
           "asserts": 12,
@@ -2530,8 +2536,8 @@
           "todos": 0
         },
         "every-surface-that-takes-the-manifest-asks-for-the-goods-words.test.mjs": {
-          "tests": 9,
-          "asserts": 21,
+          "tests": 10,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },

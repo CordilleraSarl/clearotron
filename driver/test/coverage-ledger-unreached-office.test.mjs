@@ -65,7 +65,7 @@ function runToForm({ jurisdictions, unavailableOffices }) {
     unavailableOffices,
   });
   // THE READING TURN ASKED FOR EVERYTHING, which is what makes "every entry executed" a state this
-  // plan can actually be in. Under ruling 204 the wider families wait for that ask, so a compiled plan
+  // plan can actually be in. Since 2026-09-21 the wider families wait for that ask on every matter, so a compiled plan
   // left alone always holds entries nobody ran — and this arm is about an unsearched OFFICE, not about
   // the gate. Dropping the guards here models the matter where judgment asked for every family, and
   // keeps the premise below literally true rather than weakening it to tolerate waiting entries.

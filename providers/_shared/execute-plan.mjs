@@ -586,7 +586,7 @@ export function makeExecutePlan(deps) {
       // to `incomplete`, which says nobody answered. See enumerate.mjs — a fully resolved stack is a
       // complete band whose answer is zero. `verified-zero` is a per-term DISPOSITION and never a band
       // state (named-band.mjs BAND_STATES), so a guard testing for it here could never fire.
-      // RULING 204: a family awaiting the reading turn is never released by a RESULT, so there is no
+      // THE READING-TURN WAIT: a family awaiting the reading turn is never released by a RESULT, so there is no
       // state to read here and no seeded prior state that could release it on a warm followup either.
       // The reading turn asks for it by minting a supplemental entry, which arrives as its own
       // ungated entry — this one stands in the plan as the record of a question not asked.

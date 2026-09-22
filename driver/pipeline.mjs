@@ -7044,7 +7044,7 @@ export function coverageJudgmentRows(ledgerRows, planExecution) {   // @internal
     // `withheld-by-judgment` joins `confirmed-clean` in NOT reaching the reader, and for the opposite
     // reason. A clean row has nothing to disclose. A withheld one has something to say, and it is
     // ruled to belong in the run record and the coverage ledger only: nothing is added to the report
-    // (ruling 111). A family the reading turn chose not to open, having read the identical question as
+    // (owner, 2026-09-18). A family the reading turn chose not to open, having read the identical question as
     // a list and found what it needed, is not a gap in the client's search — it is where the work was
     // spent — and a row saying otherwise would read to a lawyer as an incomplete job.
     const status = String(r?.status ?? "").toLowerCase();

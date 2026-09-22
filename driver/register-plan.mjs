@@ -33,7 +33,7 @@
 //     token) carry `when: { runs_if_enumerated: <parent qid> }` — they run ONLY if the parent
 //     contains-slice proved tractable. A crowd parent is TERMINAL for its children, encoded, not
 //     remembered.
-//   - AND A SECOND, DIFFERENT WAIT (ruling 204): the decision-10 families carry
+//   - AND A SECOND, DIFFERENT WAIT (ruled 2026-09-21, on every matter): the decision-10 families carry
 //     `when: { awaits_reading_turn: true }`. No result releases it. They run when the reading turn
 //     ASKS for them after reading the identical mark's own list, and the ask arrives as a
 //     supplemental entry. The two tokens are not interchangeable: one is "your parent was a crowd",
@@ -1179,7 +1179,7 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   // records from 139 OTHER questions while the one that mattered went unread. Seventeen identical-mark
   // records reached the band, every one of them through a side door.
   //
-  // So the wider families now WAIT on it — and under ruling 204 they wait for the READING TURN, not for
+  // So the wider families now WAIT on it — and since 2026-09-21 they wait for the READING TURN, not for
   // the identical question's own result. A question that came back as a comfortable list is still a
   // question nobody has read yet, and releasing the widenings on it spends the run's reading on
   // scripts, neighbours and compounds before anyone has looked at the mark itself.
@@ -1478,7 +1478,7 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   // The axis is NOT gone: the incumbent-class anchor above still compiles, so the coverage skeleton
   // still carries the axis and no clean is ever claimed over an axis that vanished.
 
-  // ── DECISION 10, AS RULING 204 AMENDS IT: THE WIDER FAMILIES WAIT FOR THE READING TURN ──────────
+  // ── DECISION 10, AS AMENDED 2026-09-21: THE WIDER FAMILIES WAIT FOR THE READING TURN ────────────
   //
   // THE WAIT IS NOT ON A RESULT, AND THAT IS THE WHOLE OF THE AMENDMENT. These families used to wait
   // on the identical question ENUMERATING — so a matter whose identical question came back as a
@@ -1501,7 +1501,7 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   //   · the identical-mark entries — the question everything else waits on cannot wait on itself
   //   · the saturation probe — a cheap count that tells judgment how crowded the field is at all, and
   //     is the other half of "look at the count before you read anything"
-  //   · the goods-narrowed contains entry — always-on by ruling 180, and it is the one entry that
+  //   · the goods-narrowed contains entry — on every matter (ruled 2026-09-20), and it is the one entry that
   //     makes a crowded identical question answerable rather than merely deferred
   //   · anything already waiting on something else, which keeps its own parent
   //
@@ -1517,7 +1517,7 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   for (const e of entries) {
     if (e.axis === "saturation-probe") continue;
     if (e.when) continue;                        // already waiting on its own parent
-    if (goodsTermsList(e).length) continue;      // ruling 180 — always-on
+    if (goodsTermsList(e).length) continue;      // compiled on every matter (2026-09-20)
     if (isIdenticalQuestion(e)) continue;
     // AN UNSUPPORTED ENTRY IS A DISCLOSURE, NOT A SEARCH. It was stamped at compile because this
     // provider cannot express it, so it costs no reading and answers nothing — gating it would hold
@@ -2461,7 +2461,7 @@ export function deriveCoverageSkeleton(plan, join) {
     if (!axes.has(e.axis)) axes.set(e.axis, { axis: e.axis, entries: 0, executed: 0, crowds: 0, missing: [], skipped: 0, deferred: [], awaiting: 0 });
     const a = axes.get(e.axis);
     a.entries++;
-    // COUNTED BEFORE `skipped`, and separately from it. Under ruling 204 this is the ordinary state of
+    // COUNTED BEFORE `skipped`, and separately from it. With the families waiting on every matter this is the ordinary state of
     // most axes on most matters, so folding it into `skipped` would make "nothing on this axis ran
     // because a parent crowded" the routine reading of a healthy run — and would say it to the model,
     // which reads these states as judgment input.
@@ -2482,7 +2482,7 @@ export function deriveCoverageSkeleton(plan, join) {
     // so nothing on the axis was ever dispatched) is its OWN state. It used to fall through to "executed"
     // — the arithmetic reads "0 missing, 0 crowds" and the honest reading of that is "nothing ran", not
     // "everything ran clean". Held to the same standard as `deferred` below: a clean cannot rest on it.
-    // RULING 204's STATE, and it is held to the same standard as `skipped` and `deferred`: nothing on
+    // THE READING-TURN WAIT'S STATE, and it is held to the same standard as `skipped` and `deferred`: nothing on
     // the axis ran, so no clean may rest on it. It ranks BELOW those two in urgency because nothing is
     // wrong — the questions were not asked because judgment did not ask for them, which is the design.
     // It is last in the chain so that a real failure on the same axis still wins the label: an axis
@@ -2535,7 +2535,7 @@ export function findUnexecutedCleanClaims(claimedRows, skeleton) {
     // never ran. Same standard as the two above — the slice was not searched, so a clean cannot rest on it.
     else if (s && s.state === "skipped")
       out.push({ axis: s.axis, token: `coverage_clean_skipped:${s.axis}`, missing: [] });
-    // RULING 204: an axis whose families are still waiting for the reading turn's ask did not run
+    // THE READING-TURN WAIT: an axis whose families are still waiting for the reading turn's ask did not run
     // either, so a clean over it has the same absent foundation. The token is its OWN, and that is the
     // point: `skipped` would send the reader to look for a crowd that never happened, where this says
     // the questions were not asked because judgment did not ask for them. Same strictness, true

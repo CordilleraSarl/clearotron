@@ -97,8 +97,7 @@ export const CAPABILITIES = Object.freeze({
   // fails loud with tooManyResults past 30000. There is no partial mode and no cursor.
   pagination: "single-shot",
   // …which is exactly why the enumerate ceiling must be tested BEFORE the search, via the cheap
-  // POST /count — it works at ANY magnitude (209012 returned without complaint) and returns per-office
-  // counts in one call.
+  // POST /count — it works at ANY magnitude and returns per-office counts in one call.
   countProbe: "endpoint",
   // A count CAN be narrowed to live filings here — queryOptions.activeOnly (buildSearchRequest's
   // `active_only`). Declared because it diverges from corsearch, which has no status clause at all;

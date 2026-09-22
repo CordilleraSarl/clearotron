@@ -168,8 +168,6 @@ export const CAPABILITIES = Object.freeze({
   //
   //   strategies[]  exact | phonetic | fuzzy | prefix                        — ranked, several per call
   //   match         similar | exact | starts_with | ends_with | contains     — deterministic, one only
-  //
-  // Every value below was run against the live API with the resulting total recorded.
   predicates: Object.freeze({
     exact:          "exact",        // strategies[] — the deterministic shape, the ranked one for audit continuity
     // `contains` IS the unanchored mode this contract said did not exist. The old header

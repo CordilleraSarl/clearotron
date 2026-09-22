@@ -600,6 +600,27 @@ if (await open('/portal/people', "document.querySelector('table.data tbody tr')"
     };
   })()`
 
+  // The bar's reading, then the two ways a reader moves the table with it: the table moved by a finger
+  // (the thumb follows) and a press at the track's right end (the table follows). The table is put back
+  // at its start afterwards so the screenshots below show it as a reader first meets it.
+  const pinnedBarProbe = `(async () => {
+    window.scrollTo(0, 0); await new Promise((r) => setTimeout(r, 200));
+    const wrap = document.querySelector('.table-wrap'); const bar = document.querySelector('.pinned-bar');
+    const thumb = bar && bar.querySelector('.pinned-thumb'); const track = bar && bar.querySelector('.pinned-track');
+    if (!wrap || !bar || !thumb || !track) return { wrap: !!wrap, bar: !!bar, thumb: !!thumb, track: !!track };
+    const b = bar.getBoundingClientRect(), t0 = thumb.getBoundingClientRect();
+    const out = { bar: true, onScreen: b.top >= 0 && b.bottom <= innerHeight + 1, barH: Math.round(b.height),
+      thumbW: Math.round(t0.width), thumbH: Math.round(t0.height), nativeBarH: wrap.offsetHeight - wrap.clientHeight };
+    wrap.scrollLeft = 200; await new Promise((r) => setTimeout(r, 200));
+    out.thumbFollowed = Math.round(thumb.getBoundingClientRect().left - t0.left);
+    const tr = track.getBoundingClientRect();
+    track.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: tr.right - 2, clientY: tr.top + 4, pointerId: 1 }));
+    await new Promise((r) => setTimeout(r, 200));
+    out.tableAtEnd = Math.round(wrap.scrollWidth - wrap.clientWidth - wrap.scrollLeft);
+    wrap.scrollLeft = 0; await new Promise((r) => setTimeout(r, 200));
+    return out;
+  })()`
+
   for (const [label, width] of [['desktop', 1280], ['phone', 400]]) {
     await cmd('Emulation.setDeviceMetricsOverride', { width, height: 900, deviceScaleFactor: 1, mobile: width < 700 })
     await sleep(350)
@@ -615,6 +636,21 @@ if (await open('/portal/people', "document.querySelector('table.data tbody tr')"
     ok(p.pageScrollsSideways === false,
       `${label}: the page itself does not scroll sideways — the table's overflow stays in the table`)
     console.log(`    ${label}: wrapper ${p.wrapW}px, table ${p.tableW}px, wrapper scrollable: ${p.scrollable}`)
+    // — A TABLE THAT CONTINUES SHOWS ITS SCROLLBAR, on this screen as on the Clearances list. The same
+    // pinned bar is wired on both; the Clearances check asserts it and this one did not, so the bar here
+    // was drawn and unmeasured. Where the table fits there is no bar: a bar with nothing to scroll is a
+    // control that does nothing.
+    const pin = (await evalIn(pinnedBarProbe)) ?? {}
+    console.log(`    ${label}: pinned bar ${JSON.stringify(pin)}`)
+    if (p.scrollable) {
+      ok(pin.bar && pin.onScreen, `${label}: the table continues past its edge, and its sideways bar is on screen`)
+      ok(pin.nativeBarH === 0, `${label}: only the pinned bar is drawn, not the table's own beside it`)
+      ok(pin.barH >= 9 && pin.thumbH >= 8 && pin.thumbW >= 24, `${label}: the pinned bar is drawn at a size a reader can see (${pin.barH}px, thumb ${pin.thumbW}×${pin.thumbH})`)
+      ok(pin.thumbFollowed > 0, `${label}: the thumb follows the table`)
+      ok(pin.tableAtEnd <= 1, `${label}: pressing the end of the track moves the table to its end`)
+    } else {
+      ok(pin.bar === false, `${label}: the table fits, and no sideways bar is drawn`)
+    }
     await cmd('Emulation.clearDeviceMetricsOverride', {})
     for (const theme of ['light', 'dark']) {
       await setTheme(theme)

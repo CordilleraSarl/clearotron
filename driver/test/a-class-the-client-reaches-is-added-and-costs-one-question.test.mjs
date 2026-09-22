@@ -45,7 +45,7 @@ test("a matter that reaches a further class adds it, with its reason, for one qu
     "the widening is not recorded on the plan, so nobody can read back that the bound held");
 
   // It is an identical-mark entry, so it runs without an ask (decision 10) — and being ungated
-  // releases NOTHING. The waiting families still wait for the reading turn (ruling 204).
+  // releases NOTHING. The waiting families still wait for the reading turn, on every matter since 2026-09-21.
   assert.equal(added[0].when, undefined, "the added class waits, so the class would never be searched");
   assert.ok(plan.entries.some((e) => awaitsReadingTurn(e.when)),
     "adding a class released the waiting families — an added class is not an ask");

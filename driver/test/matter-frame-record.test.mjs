@@ -351,7 +351,7 @@ test("the compile reads the identified classes off the run, and an absent frame 
     { class: "42", reason: "the hosted service" },
   ] }, { instructedScope: SCOPE });
   assert.deepEqual(frameIdentifiedClasses(runDir), ["9", "42"],
-    "the numbers the compile unions, as strings, in the order the frame gave them");
+    "the numbers the house-element check unions, as strings, in the order the frame gave them");
 
   // AND A RECORDED FRAME THAT IDENTIFIED NOTHING STILL READS EMPTY, so the union is a no-op rather than
   // an undefined that spreads into the class list as a hole.

@@ -8,7 +8,7 @@
 //   `runs_if_enumerated: <parent qid>` is a fact about a RESULT: this slice runs if its parent question
 //   came back as a list rather than a crowd. A crowd parent is terminal for it.
 //
-//   `awaits_reading_turn: true` is a fact about JUDGMENT NOT YET MADE (ruling 204): this family runs
+//   `awaits_reading_turn: true` is a fact about JUDGMENT NOT YET MADE (ruled 2026-09-21): this family runs
 //   when the reading turn asks for it, having read the identical mark's own list and found it thin. No
 //   result releases it — not the identical question coming back as a comfortable list, not a clean
 //   zero, nothing. The ask arrives as a supplemental entry, so the guarded entry itself never runs: it
@@ -23,7 +23,7 @@
 // would invert it for the whole provider tree. So the meaning lives here, where both sides can read
 // it, and neither side carries a second copy to drift.
 
-/** The guard a decision-10 family carries under ruling 204. Frozen: entries spread a copy. */
+/** The guard a decision-10 family carries while it waits for the reading turn. Frozen: entries spread a copy. */
 export const AWAITS_READING_TURN = Object.freeze({ awaits_reading_turn: true });
 
 /** Is this guard the ruling-204 wait — the one no result can release? */
