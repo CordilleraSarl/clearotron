@@ -118,7 +118,15 @@ test("the older spelling is read at the door and nowhere else in the product", (
   const older = GOODS_FIELDS[GOODS_FIELDS.length - 1];
   const DECLARED = ["queue-markers.mjs"];   // where the spellings are named, and the only place they may be
   const offenders = [];
-  for (const f of readdirSync(join(REPO, "driver")).filter((n) => n.endsWith(".mjs"))) {
+  // THE CORPUS, ASSERTED BEFORE IT IS WALKED. A directory that reads as empty — a moved tree, a wrong
+  // root, a filter that stops matching — walks nothing and reports no offender, which is exactly what
+  // a clean product looks like. The number is a floor rather than a count, so ordinary growth and
+  // ordinary deletion both leave it alone.
+  const modules = readdirSync(join(REPO, "driver")).filter((n) => n.endsWith(".mjs"));
+  assert.ok(modules.length > 50,
+    `only ${modules.length} module(s) found to search — this walked the wrong tree and would report a `
+    + "clean product whatever the product said");
+  for (const f of modules) {
     if (DECLARED.includes(f)) continue;
     for (const [i, line] of read("driver", f).split("\n").entries()) {
       if (line.trimStart().startsWith("//") || line.trimStart().startsWith("*")) continue;
