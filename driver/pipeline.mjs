@@ -6264,6 +6264,16 @@ export function skepticDeferralExtra(ctx) {   // @internal
     const deferredQids = deferredList.slice(0, 24)
       .map((d) => `- ${d.qid} — ${String(d.reason ?? "").replace(/\s+/g, " ").slice(0, 200)}`);
     const more = deferredList.length > 24 ? [`- …and ${deferredList.length - 24} more (read ${P.planExecution} for the rest)`] : [];
+    // THE CLASSES THE FRAME ADDED, AND WHAT EACH RETURNED. This block names what was refused and what is
+    // open, and nothing that ran, so a class the frame added beyond the instructed ones — asked and
+    // answered with its records listed — was absent from it, and the skeptic reported it as never swept.
+    const addedClassRows = (ctx.registerPlan?.entries ?? []).filter((e) => e?.added_class_reason).map((e) => {
+      const ran = (receipt?.executed ?? []).find((x) => x.qid === e.qid);
+      const answer = ran ? `${ran.state}${Number.isFinite(ran.records) ? `, ${ran.records} records` : ""}`
+        : (receipt?.deferred ?? []).some((d) => d.qid === e.qid) ? "refused (listed above)"
+        : (receipt?.missing ?? []).includes(e.qid) ? "not run (missing)" : "not in the receipt";
+      return `- ${e.qid} (class ${(e.nice_classes ?? []).join(", ")}) — ${answer}`;
+    });
     const ownerNegative = ownerScreenNegative(readOwnerScreen(P));
     return lines(
       `COVERAGE + EXECUTION, DRIVER-COMPUTED — do NOT re-derive any of this from the findings prose. These rows come from ${P.registerCoverageLedger} and ${P.planExecution}, the machine artifacts the driver wrote; both are also yours to read directly, but the answer to "what is still open, and can a re-run close it" is already below.`,
@@ -6274,6 +6284,7 @@ export function skepticDeferralExtra(ctx) {   // @internal
       deferredQids.length
         ? lines(`Plan-execution receipt — queries the ACTIVE PROVIDER REFUSED deterministically (${deferredList.length} of ${(receipt.executed?.length ?? 0) + deferredList.length + (receipt.missing?.length ?? 0)} planned), with the mechanical reason per query:`, ...deferredQids, ...more)
         : "Plan-execution receipt: no query was deterministically refused by the provider this run.",
+      addedClassRows.length ? lines("", "Classes the frame added beyond the instructed ones — each question, and what it returned:", ...addedClassRows) : "",
       "",
       closeable.length
         ? `CLOSEABLE floor obligations (a warm re-run reaches these — escalate them if they are material): ${closeable.join("; ")}.`

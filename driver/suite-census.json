@@ -471,6 +471,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-goods-slice-and-an-added-class-read-as-themselves.test.mjs": {
+          "tests": 5,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "a-half-applied-connect-says-so.test.mjs": {
           "tests": 5,
           "asserts": 15,
