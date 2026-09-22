@@ -69,7 +69,7 @@ const FROZEN_FILES = [
   { path: "_driver/senior-rights.json", why: "publish/index.mjs:787 seniorRights" },
   { path: "_driver/verdict.json", why: "publish/index.mjs:792 verdictInfo" },
   { path: "_driver/framework.json", why: "publish/index.mjs, the frozen band vocabulary the run was rated under" },
-  { path: "_driver/register-plan.json", why: "publish/index.mjs:901 scopeBasis" },
+  { path: "_driver/register-plan.json", why: "publish/index.mjs:910 scopeBasis" },
   { path: "_driver/instructed-scope.json", why: "publish/index.mjs:911 searchedJurisdictions, the fallback for register-plan" },
   { path: "_driver/enforcer-signals.json", why: "`esPath` declared in index.mjs" },
   { path: "_driver/predelivery-lint.json", why: "publish/index.mjs:172 lintSink" },

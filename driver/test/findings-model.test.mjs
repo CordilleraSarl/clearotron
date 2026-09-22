@@ -481,7 +481,8 @@ test("bindRecommendation: an unconditional proceed on CONDITIONAL gains its cond
   // already bound → untouched (the validator and the bound share ONE predicate)
   assert.equal(bindRecommendation("Proceed once the CN gap closes.", "CONDITIONAL", ["x"]), "Proceed once the CN gap closes.");
   assert.equal(bindRecommendation("Proceed.", "CLEAR", []), "Proceed.");
-  assert.match(bindRecommendation("Proceed.", "BLOCKING", []), /On hold/);
+  // BLOCKING is the reviewer's sign-off, not a hold: the recommendation stands as the report wrote it.
+  assert.equal(bindRecommendation("Proceed.", "BLOCKING", []), "Proceed.");
   assert.equal(isUnconditionalProceed("Proceed with the launch"), true);
   assert.equal(isUnconditionalProceed("Proceed, subject to the CN check"), false);
   assert.equal(isUnconditionalProceed("Hold pending checks"), false);
@@ -772,7 +773,9 @@ test("spec 64: riskStatement — one coherent sentence per verdict; null on a le
   const long = riskStatement({ tier: "High", verdict: "CONDITIONAL", reasons: ["x".repeat(50) + " " + "y".repeat(200)] });
   assert.ok(long.length < 230, "an unbounded reason is clipped for index cells/email headlines");
   assert.match(long, /…$/);
-  assert.match(riskStatement({ tier: "High", verdict: "BLOCKING" }), /^On hold — /);
+  // Nothing is held on a BLOCKING sign-off, so the band word stands alone and no sentence says "on hold".
+  assert.equal(riskStatement({ tier: "High", verdict: "BLOCKING" }), "High");
+  assert.doesNotMatch(riskStatement({ tier: "High", verdict: "BLOCKING", basis: "register-only" }), /on hold/i);
   assert.equal(riskStatement({ tier: "", verdict: "CLEAR" }), null);
   assert.equal(riskStatement({ tier: "High", verdict: "" }), null);
   assert.equal(riskStatement({ tier: "High", verdict: "CONDITIONAL", reasons: [] }), "High",

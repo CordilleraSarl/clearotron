@@ -102,7 +102,7 @@ function runFromStatusFile(statusFile, agent) {
     // assistant saw the gate's word and nothing beside it, which is the shape this whole item is about.
     // The verdict record holds the band for those runs, so it is read from there.
     state: s.state ?? null,
-    tier: s.tier ?? bandWord(s.verdict) ?? tierFromRecord(runDir), statement: s.statement ?? null, url: s.url ?? null,
+    tier: s.tier ?? bandWord(s.verdict) ?? tierFromRecord(runDir), caption: s.caption ?? null, url: s.url ?? null,   // the report's own conclusion, never a second summary (ruled 2026-09-22)
     markName: s.markName ?? null, ref: s.ref ?? null, classes: s.classes ?? null,
     stepN: s.stepN ?? null, stepLabel: s.stepLabel ?? null, stepTotal: s.stepTotal ?? null,
     failedStage: s.failedStage ?? null, reason: s.reason ?? null,

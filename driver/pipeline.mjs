@@ -15399,7 +15399,7 @@ async function pipelineInner(job, opts = {}) {
     {
       const mark = job.markName ?? job.name ?? job.ref ?? "the matter";
       const ref = job.ref ? ` (${job.ref})` : "";
-      const vtag = verdict ? ` — verdict ${verdict}` : "";
+      const vtag = emailVerdictOpts.tier ? ` Overall risk: ${emailVerdictOpts.tier}.` : "";   // the rating, never the reviewer's sign-off word (ruled 2026-09-22)
       // self-contained packet (the email body HTML is embedded so the courier needs no path resolution
       // across the archive move). The courier sends EXACTLY this — same subject, text and recipient the
       // deleted send stages composed, now composed in code.
@@ -15421,7 +15421,7 @@ async function pipelineInner(job, opts = {}) {
         // stated reason when no number is held. It used to go to AGENT_WHATSAPP[agent], which is the
         // operator on every run because every user shares one agent id.
         ...whatsappRouting(job, agent),
-        whatsappText: `✅ Clearotron search for ${mark}${ref}${vtag} is done. Report: ${published.url}`,
+        whatsappText: `✅ Clearotron search for ${mark}${ref} is done.${vtag} Report: ${published.url}`,
         url: published.url, verdict, markName: job.markName ?? job.name ?? null,
       };
       // A NEW send supersedes any previous one: .sent is PER-SEND idempotence, not per-run-lifetime.
@@ -15468,7 +15468,7 @@ async function pipelineInner(job, opts = {}) {
     // .published + .delivered on disk must never read "7/9" on any status surface (nothing runs after
     // the packet, so no stage transition would ever finish the display sequence). finalStepFields ⇒ 9/9.
     const deliveredAt = new Date().toISOString();
-    writeRunStatus(ctx, { state: "delivered", verdict, statement: emailVerdictOpts.statement ?? undefined, url: published.url, deliveredAt, sendPending: true, ...finalStepFields() });
+    writeRunStatus(ctx, { state: "delivered", verdict, statement: emailVerdictOpts.statement ?? undefined, caption: published.caption ?? undefined, url: published.url, deliveredAt, sendPending: true, ...finalStepFields() });
     // — THE POOL COPY LEARNS ITS OWN TERMINAL STATE, HERE AND NOWHERE ELSE.
     // `meta.json` cannot carry this: it is composed inside publish, before this line runs, so the state
     // did not exist yet when it was written. This is the one moment where the terminal state and the
