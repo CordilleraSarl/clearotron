@@ -62,10 +62,11 @@ test("an accepted capability gap survives a plan-version bump, and the receipt f
 });
 
 test("THE CONTROL: only a reason-matched gap is sticky; a hard error accepted with its axis is not", () => {
-  // The skeleton branch accepts every deferral on an axis marked `deferred`, whatever its reason. That is
-  // an axis-level acceptance of a slice a later attempt might close, so it must not become permanent.
-  const { accepted } = partitionReceiptDeferrals(PLAN(5), receipt(5, [{ qid: OTHER, reason: HARD }]));
-  assert.deepEqual(accepted.map((a) => a.qid), [OTHER], "the fixture no longer reaches the skeleton branch");
+  // An axis the plan defers end to end accepts every deferral on it, whatever the reason. That is an
+  // axis-level acceptance, not a statement about the slice, so it must not become permanent by qid.
+  const allOut = { plan_version: 5, entries: [{ qid: OTHER, axis: "primary-sweep", predicate: "exact", term: "VELTRIN", unsupported: true }] };
+  const { accepted } = partitionReceiptDeferrals(allOut, receipt(5, [{ qid: OTHER, reason: HARD }]));
+  assert.deepEqual(accepted.map((a) => a.qid), [OTHER], "the fixture no longer reaches the axis-level acceptance");
   assert.deepEqual(stickyGapsAfter(null, accepted, 5), [], "a hard error was made permanent");
   assert.deepEqual(stickyGapsAfter(null, [{ qid: WIDE, axis: "primary-sweep", reason: GAP }], 5).map((g) => g.qid), [WIDE]);
   // Without a sticky record, a hard error on an axis the skeleton does not mark is suspect, as today.
