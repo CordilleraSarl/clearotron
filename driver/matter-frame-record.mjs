@@ -195,16 +195,14 @@ export const refuseUndeclared = (params) => refuseUndeclaredShared(params, DECLA
  * The Nice classes the frame judged necessary beyond the instructed ones, as strings. IMPURE (reads
  * the run's own accepted call).
  *
- * THE PLAN COMPILE UNIONS THIS WITH THE INSTRUCTED CLASSES so every variant axis carries both. Before
- * it existed the axes carried the instructed classes alone and a class the frame had identified reached
- * the sweep only if something proposed it as supplemental work — where it competed for capped slots
- * with model-minted extras. A cap was deciding coverage the frame had already judged necessary, and on
- * the run this came from the delivered report said two such classes were "covered for the name and open
- * for its variants" while the reviewing lawyer's scope included one of them throughout.
+ * THE PLAN COMPILE DOES NOT READ THIS. It takes `frameIdentifiedClassRows` below, where each added
+ * class keeps its reason and costs one identical-mark question rather than riding every entry (decision
+ * 18). The one caller left is the house-element check, which unions this list with the instructed
+ * classes because the client's own filings are best looked for across the widest class set.
  *
  * EMPTY IS THE ORDINARY ANSWER and must stay cheap: no frame yet, a legacy or replayed run whose
  * accepted call predates the field, a frame that identified nothing — all of them return `[]`, the
- * union is a no-op, and the plan is exactly what it was.
+ * union is a no-op, and the check looks in the instructed classes alone.
  */
 export function frameIdentifiedClasses(runDir) {
   const rows = lastAcceptedMatterFrame(runDir)?.identified_classes;

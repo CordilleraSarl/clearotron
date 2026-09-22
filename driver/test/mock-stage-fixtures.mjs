@@ -1643,7 +1643,7 @@ export function applyStageWrites(msg, argv) {
       // own copy of the filter, and the copy went stale the moment the ledger gained a fourth status:
       // `withheld-by-judgment` is a family the reading turn chose NOT to open, and it sits beside
       // `confirmed-clean` — nothing to carry — where the copy read it as a limit like any other. The
-      // mock seat then carried a withheld family onto the client's coverage grid, worded "Partially
+      // mock seat then carried that unopened family onto the coverage grid, worded "Partially
       // covered", INSTEAD of the documented limit that run actually had. Two wrongs in one row: a
       // decision the client is never shown, standing in for a disclosure the client is owed.
       //

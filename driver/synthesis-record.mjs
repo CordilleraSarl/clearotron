@@ -294,7 +294,7 @@ export function acceptSynthesis(params, { asks = [], ledger = null, manifest = n
   // Two copies that must agree is a second-authoring defect, so there are not two. The record is the
   // machine contract and the narrative's coverage list is RENDERED from it. Disagreement is not detected;
   // it is impossible.
-  // ── RULING 111: A WITHHELD FAMILY NEVER REACHES THE REPORT, WHATEVER THE MODEL WROTE ────────────
+  // ── RULING 111: A FAMILY THE READING TURN DID NOT OPEN STAYS OFF THE REPORT, WHATEVER THE MODEL WROTE ──
   //
   // `withheld-by-judgment` is the reading turn saying it chose not to open a family — it read the
   // identical question as a list, found what it needed, and spent the work there instead. That is a
