@@ -424,10 +424,12 @@ function lineIn(src, text, from, to, fallback) {
  * is served in. Empty for a tree that carries no portal server (a fixture with only screens).
  */
 export async function serverPageStrings(root = ROOT) {
-  const path = join(root, SERVER_PAGES);
+  // The path is spelled out rather than built from SERVER_PAGES so the import-cycle check can read what
+  // this import reaches; a specifier built from a variable is one it has to report as unknown.
+  const path = join(root, "driver", "portal-service.mjs");
   if (!existsSync(path)) return [];
   const src = readFileSync(path, "utf8");
-  const { loginPage } = await import(pathToFileURL(path).href);
+  const { loginPage } = await import(pathToFileURL(join(root, "driver", "portal-service.mjs")).href);
   if (typeof loginPage !== "function") throw new Error(`${SERVER_PAGES} no longer exports loginPage — the sign-in page could not be read`);
   const start = src.indexOf("export function loginPage(");
   const startLine = src.slice(0, start).split("\n").length;
