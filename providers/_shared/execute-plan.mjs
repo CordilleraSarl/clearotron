@@ -211,10 +211,13 @@ export function queryMarkTerms(e, query) {
   return Array.isArray(e?.terms) ? e.terms : e?.term != null ? [e.term] : [];
 }
 
+// The goods words ride after the class tag (close-verify reads that tag): a goods-narrowed question shares
+// predicate, term and classes with the identical one, and without them the two read as the same question.
 export const describePlanEntry = (e) =>
   `${e.predicate} ${e.terms ? e.terms.join(" OR ") : e.term}`
   + `${typeof e.owner === "string" && e.owner.trim() && String(e.predicate ?? "") !== "owner" ? ` owner:${e.owner.trim()}` : ""}`
-  + ` [cl ${(e.nice_classes ?? []).join(",")}]`;
+  + ` [cl ${(e.nice_classes ?? []).join(",")}]`
+  + `${goodsTermsList(e).length ? ` goods:${goodsTermsList(e).join(" OR ")}` : ""}`;
 
 // Compile one plan entry + its predicate params into the provider's query params (corsearch shapes by
 // default: names/name/owners/owner + nice_classes + regions).
@@ -586,7 +589,7 @@ export function makeExecutePlan(deps) {
       // to `incomplete`, which says nobody answered. See enumerate.mjs — a fully resolved stack is a
       // complete band whose answer is zero. `verified-zero` is a per-term DISPOSITION and never a band
       // state (named-band.mjs BAND_STATES), so a guard testing for it here could never fire.
-      // RULING 204: a family awaiting the reading turn is never released by a RESULT, so there is no
+      // THE READING-TURN WAIT: a family awaiting the reading turn is never released by a RESULT, so there is no
       // state to read here and no seeded prior state that could release it on a warm followup either.
       // The reading turn asks for it by minting a supplemental entry, which arrives as its own
       // ungated entry — this one stands in the plan as the record of a question not asked.

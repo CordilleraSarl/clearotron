@@ -30,7 +30,7 @@
 import { readFileSync, writeFileSync, renameSync, existsSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { driverDir } from "../../../shared/driver-dir.mjs";   //
-import { PLAN_PREDICATES, PLAN_MAX_OR_WIDTH, PLAN_MAX_NAME_LENGTH, fingerprint, ownerIntersectionGap, resolveRegions, houseElementOf, withoutHouseElementTerms } from "../../register-plan.mjs";
+import { PLAN_PREDICATES, PLAN_MAX_OR_WIDTH, PLAN_MAX_NAME_LENGTH, fingerprint, ownerIntersectionGap, goodsTextGap, resolveRegions, houseElementOf, withoutHouseElementTerms, containsFormSubstitution } from "../../register-plan.mjs";
 import { entryTermIssues } from "../../../providers/_shared/term-shape.mjs";
 import { isNonLatinTerm, romanizationRefusal, romanizationSpellings, nativeScriptIndexGap } from "../../../providers/_shared/script-form.mjs";
 
@@ -64,13 +64,37 @@ export function mintSupplementalEntries(axis, proposals, { existingQids = new Se
   // first, non-priority ones keep their relative order behind them. The cap VALUES are unchanged
   // (no count threshold moves), and with no priorityClasses the order is byte-identical to before.
   const prio = new Set((priorityClasses ?? []).map((c) => String(c).trim()).filter(Boolean));
-  const indexed = (proposals ?? []).map((p, i) => ({ p: p ?? {}, i }));
+  // ONE QUESTION PER GOODS WORD where the register cannot offer alternatives in one goods clause — the
+  // compiler's own rule for such a register (register-plan.mjs, goodsTextListOr). Joined, the words would
+  // be intersected and the answer would narrow as the list grew; the connector refuses that shape
+  // outright. Each word keeps the proposal's index, so a refusal still names the proposal it came from.
+  const perWord = capabilities?.goodsTextSearch === true && capabilities?.goodsTextListOr === false;
+  // ONE QUESTION PER NAME where the register has no OR at all (maxOrWidth 1) — the compiler's own width
+  // for such a register. A batch of names went out as windows of one name each under ONE question, and
+  // the enumerate kernel stopped the whole batch at the first name that crowded or failed, so every name
+  // after it was never sent. Split, each name is its own question: its own count, its own crowd decision
+  // and its own receipt row. The names of one batch still spend ONE slot of the per-call and per-axis
+  // caps between them, as the batch did; `split_of` names the batch so the next call counts it once.
+  const perName = Number(capabilities?.maxOrWidth) === 1;
+  const indexed = (proposals ?? []).flatMap((p, i) => {
+    const names = perName && Array.isArray(p?.terms) ? p.terms.map((t) => String(t ?? "").trim()).filter(Boolean) : [];
+    const splitOf = names.length > 1 && names.length <= PLAN_MAX_OR_WIDTH
+      ? fingerprint({ axis, predicate: String(p?.predicate ?? "default"), names: [...names].sort(), i }) : null;
+    const byName = splitOf ? names.map((t) => { const { terms: _batch, ...rest } = p; return { ...rest, term: t }; }) : [p ?? {}];
+    return byName.flatMap((q) => {
+      const words = perWord && Array.isArray(q?.goods_words) ? q.goods_words.map((w) => String(w ?? "").trim()).filter(Boolean) : [];
+      return words.length > 1
+        ? words.map((w, k) => ({ p: { ...q, goods_words: [w] }, i, slot: `${i}:${k}`, splitOf }))
+        : [{ p: q, i, slot: `${i}:0`, splitOf }];
+    });
+  });
+  const slots = new Set();
   const ordered = prio.size
     ? [...indexed.filter(({ p }) => inPriority(p, prio)), ...indexed.filter(({ p }) => !inPriority(p, prio))]
     : indexed;
-  for (const { p, i } of ordered) {
+  for (const { p, i, slot, splitOf } of ordered) {
     const issue = (msg) => rejected.push({ index: i, issue: msg, proposal: compactProposal(p) });
-    if (minted.length >= perCall) { issue(`per-call cap ${perCall} reached`); continue; }
+    if (!slots.has(slot) && slots.size >= perCall) { issue(`per-call cap ${perCall} reached`); continue; }
     const predicate = String(p.predicate ?? "default");
     if (!PLAN_PREDICATES.includes(predicate)) { issue(`unknown predicate "${predicate.slice(0, 20)}" (one of: ${PLAN_PREDICATES.join(", ")})`); continue; }
     const terms = Array.isArray(p.terms) ? p.terms.map((t) => String(t ?? "").trim()).filter(Boolean) : null;
@@ -214,6 +238,19 @@ export function mintSupplementalEntries(axis, proposals, { existingQids = new Se
         for (const r of covered) regions.push(r);
       }
     }
+    // A CONTAINS-FORM PROPOSAL ON A TERM SHORTER THAN THE REGISTER'S FLOOR is asked on the exact form,
+    // the rule the compiler applies to its own goods-narrowed questions and saturation probes: the
+    // register refuses the contains form for a term that short, so the question as proposed would come
+    // back as an error rather than an answer. Same classes, goods words and scope, one entry for one,
+    // and the entry says so. Decided BEFORE the fingerprint, so the qid names the question actually
+    // asked. A stack is switched only when every member is below the floor; a mixed stack keeps the
+    // form the model chose, and its short members are refused and disclosed on their own.
+    let askedPredicate = predicate;
+    let substituted = null;
+    if (predicate === "default") {
+      const subs = (terms ?? [term]).map((t) => containsFormSubstitution(t, capabilities));
+      if (subs.length && subs.every(Boolean)) { askedPredicate = "exact"; substituted = subs[0]; }
+    }
     const anchor = terms ? terms[0] : term;
     // The fingerprint (⇒ the qid) deliberately EXCLUDES the romanization: the qid names the QUESTION
     // (which term, which predicate, which scope) and the romanisation is carriage, not a different
@@ -226,18 +263,22 @@ export function mintSupplementalEntries(axis, proposals, { existingQids = new Se
     // what the filings must cover. Excluded, it would mint the crowd's own qid and be read as a
     // re-proposal of the question it exists to replace, so the first move against a crowd would
     // silently become no move at all.
-    const fp = String(fingerprint({ predicate, term: term || null, terms: terms || null, nice_classes: nice, regions,
+    const fp = String(fingerprint({ predicate: askedPredicate, term: term || null, terms: terms || null, nice_classes: nice, regions,
       ...(owner ? { owner } : {}), ...(goodsWords.length ? { goods: [...goodsWords].sort() } : {}) })).replace(/^fnv1a:/, "");
-    const qid = `supp:${axis}:${predicate}:${slug(anchor)}:${fp.slice(0, 8)}`;
+    const qid = `supp:${axis}:${askedPredicate}:${slug(anchor)}:${fp.slice(0, 8)}`;
     if (existingQids.has(qid) || minted.some((e) => e.qid === qid)) {
       reused.push(qid);
       if (romanizedTerms && existingQids.has(qid)) enriched.push({ qid, term, romanizedTerms });
       continue;
     }
-    if (budget <= 0) { issue(`per-axis cap ${axisMax} reached — assess whether an existing supplemental already covers this`); continue; }
-    budget -= 1;
+    if (!slots.has(slot)) {
+      if (budget <= 0) { issue(`per-axis cap ${axisMax} reached — assess whether an existing supplemental already covers this`); continue; }
+      budget -= 1;
+    }
+    slots.add(slot);
     const entry = {
-      qid, axis, predicate,
+      qid, axis, predicate: askedPredicate,
+      ...(substituted ? { contains_substituted: substituted } : {}),
       ...(terms ? { terms } : { term }),
       ...(romanizedTerms ? { romanizedTerms } : {}),
       ...(owner ? { owner } : {}),
@@ -251,17 +292,32 @@ export function mintSupplementalEntries(axis, proposals, { existingQids = new Se
       nice_classes: nice, regions,
       expected_kind: "enumerate",
       origin: "supplemental",
+      ...(splitOf ? { split_of: splitOf } : {}),
       ...(typeof p.rationale === "string" && p.rationale.trim() ? { rationale: p.rationale.trim().slice(0, 200) } : {}),
     };
     // F1 — an owner×term slice on a provider that cannot intersect them is minted as an UNSUPPORTED
     // entry (→ the executor's deferred lane → a disclosed coverage row), exactly like a missing
     // predicate at compile time. Never rejected (the gap belongs on the record) and never silently
     // widened into an owner-less sweep.
-    const ownerGap = ownerIntersectionGap(entry, capabilities);
-    if (ownerGap) { entry.unsupported = true; entry.unsupported_reason = ownerGap; }
+    // …and a goods narrowing on a register that cannot search goods text is the same kind of gap, with
+    // the compiler's own reason (goodsTextGap): recorded, never run on the class alone, which would ask the
+    // crowd the narrowing exists to cut.
+    const gap = ownerIntersectionGap(entry, capabilities) ?? goodsTextGap(entry, capabilities);
+    if (gap) { entry.unsupported = true; entry.unsupported_reason = gap; }
     minted.push(entry);
   }
   return { minted, reused, rejected, enriched, narrowed };
+}
+
+/** The per-axis cap's count of what is already on file: the names of one split batch are one slot. PURE. */
+export function supplementalSlots(entries) {
+  const batches = new Set();
+  let n = 0;
+  for (const e of (entries ?? [])) {
+    if (e?.split_of) { if (!batches.has(e.split_of)) { batches.add(e.split_of); n += 1; } }
+    else n += 1;
+  }
+  return n;
 }
 
 /**
@@ -347,7 +403,7 @@ export async function proposeSupplemental(params, tctx, deps) {
     return { type: "text", text: JSON.stringify({ minted: [], reused: [], rejected: [], excluded_house_element: excludedHouse, executed: false }, null, 2) };
   const existingQids = new Set(supp.entries.map((e) => e.qid));
   const { minted, reused, rejected, enriched, narrowed } = mintSupplementalEntries(axis, offered,
-    { existingQids, perCall, axisMax, existingCount: supp.entries.length, capabilities: deps.capabilities ?? null, priorityClasses: planClasses });
+    { existingQids, perCall, axisMax, existingCount: supplementalSlots(supp.entries), capabilities: deps.capabilities ?? null, priorityClasses: planClasses });
 
   // Field-level romanisation enrichment of a REUSED qid (2026-07-30 review round): the natural retry —
   // a bare non-Latin proposal deferred at the wire, the model re-proposes it WITH the romanisation —

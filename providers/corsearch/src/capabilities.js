@@ -133,6 +133,10 @@ export const CAPABILITIES = Object.freeze({
   // Several goods terms become several `product:` clauses, and within one field this query language
   // ORs them implicitly — the same "any of these words" the explicit OR writes elsewhere.
   goodsTextListOr: true,
+  // The shortest term the contains form accepts: none known, so none declared. The vendor publishes no
+  // public reference for this API (none was found on 2026-09-22), and no short-term refusal has been
+  // measured here. `null` keeps the contains form at every length; see clarivate/capabilities.js.
+  containsMinLength: null,
   // ── WHICH FORM OF A NON-LATIN MARK DOES THE INDEX HOLD? ──────────────────────────────────────────
   // `true` = the CHARACTERS. A native-script term is a legitimate, productive query here and MUST be
   // sent — the shared executor's script-form refusal (providers/_shared/script-form.mjs) is switched

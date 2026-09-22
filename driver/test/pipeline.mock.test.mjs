@@ -1576,12 +1576,14 @@ test("spec-48 plan mode: a dictated qid with no band block → ONE warm followup
 // ── envelope-settle: a refused slice is DECIDED at the receipt, not two expensive stages later ─────────
 // MOCK_PLAN_DEFERRED makes the executor refuse a dictated slice the way a real capability gap arrives —
 // error:true beside deferred:true, nothing dispatched — so joinPlanToBands routes it to the receipt's
-// `deferred[]` and the run has to decide about it. The pure functions are pinned in envelope-settle.test.mjs;
-// what these pin is the ORDER, the DURABILITY and the reach across digest passes, none of which a pure
-// function can show. The knob targets a PRIMARY-SWEEP slice deliberately: that axis has sixteen other
-// entries, so it is not deferred end to end and `accepted` can only come from the reason text matching
+// `deferred[]` and the run has to decide about it. The pure functions are pinned in
+// provider-hard-error-deferral.test.mjs and a-capability-gap-is-decided-once-per-run.test.mjs; what these
+// pin is the ORDER, the DURABILITY and the reach across digest passes, none of which a pure function can
+// show. The knob targets a PRIMARY-SWEEP slice deliberately: that axis has sixteen other entries, so the
+// plan does not defer it end to end and `accepted` can only come from the reason text matching
 // isCapabilityGapReason — a fully-deferred axis is accepted whatever its reason says, which would let a
-// broken reason string pass.
+// broken reason string pass. (That held only once the partition asked the plan, fullyDeferredAxes, rather
+// than the coverage skeleton, which marks an axis `deferred` for any single deferral.)
 const DEFERRED_SLICE = "+merch";
 
 test("envelope-settle: a provider-refused slice is DECIDED at the fan-in — before placement, before any digest", async () => {

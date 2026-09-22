@@ -154,6 +154,23 @@ export const CAPABILITIES = Object.freeze({
   // So the compiler does not build a multi-term goods entry for this provider, and it must never fall
   // back to a space-joined string. No coverage is lost: the broad class-wide sweep still runs.
   goodsTextListOr: false,
+  // ── THE SHORTEST TERM THE CONTAINS FORM ACCEPTS: 3 folded characters, documented ────────────────
+  //
+  // Signa's API reference, "Search trademarks", section "Match modes" (docs.signa.so/api-reference/
+  // trademarks/search-trademarks, read 2026-09-22): "Deterministic modes accept a single-character `q`
+  // (one non-empty folded char), whereas `similar` requires at least 2 folded chars and `contains`
+  // requires at least 3." The same page's validation rules repeat it. A shorter term on `contains` is a
+  // hard 400 ("match=contains requires q to be at least 3 characters (after case/accent folding) to
+  // avoid an over-broad substring scan").
+  //
+  // The compiler reads this: a goods-narrowed question or a saturation probe whose term is shorter is
+  // asked on the exact form instead, with the same class and goods filters, and the plan entry says so.
+  // Exact goes out as the ranked `strategies: ["exact"]`, which `similar`'s 2-character floor governs,
+  // so a two-letter mark is answered; a one-letter mark is below both floors and stays refused.
+  containsMinLength: 3,
+  // The ranked shape's floor: "`similar` requires at least 2 folded chars" (same page). An exact question
+  // shorter than this goes out on the deterministic `match`, which takes one; from here up it stays ranked.
+  rankedMinLength: 2,
   // Search rows already carry status / nice_classes / owner_name → screening is inline, zero extra calls.
   screenSource: "search-row",
   // No hard result ceiling, and no total to compare one against.
@@ -168,8 +185,6 @@ export const CAPABILITIES = Object.freeze({
   //
   //   strategies[]  exact | phonetic | fuzzy | prefix                        — ranked, several per call
   //   match         similar | exact | starts_with | ends_with | contains     — deterministic, one only
-  //
-  // Every value below was run against the live API with the resulting total recorded.
   predicates: Object.freeze({
     exact:          "exact",        // strategies[] — the deterministic shape, the ranked one for audit continuity
     // `contains` IS the unanchored mode this contract said did not exist. The old header
@@ -177,12 +192,11 @@ export const CAPABILITIES = Object.freeze({
     // contains slice is a substring sweep, and they return different sets. It never needed to be
     // fuzzy; it needed the deterministic shape, which nothing here had.
     //
-    // ONE LIVE CONSTRAINT NOT IN THE PUBLISHED SPECIFICATION: deterministic modes take a
-    // query of 1 character or more. `contains` in fact demands THREE — "match=contains requires q to
-    // be at least 3 characters (after case/accent folding) to avoid an over-broad substring scan."
-    // A one- or two-character element therefore cannot ride this predicate, and it fails loud (400)
-    // rather than quietly returning a narrower set. Recorded because it is the second place in this
-    // file where the document and the wire disagree, and the wire is the one that answers queries.
+    // A LENGTH FLOOR THE VENDOR DOCUMENTS: deterministic modes take a query of 1 character or more,
+    // and `contains` demands THREE — "match=contains requires q to be at least 3 characters (after
+    // case/accent folding) to avoid an over-broad substring scan." A one- or two-character element
+    // therefore cannot ride this predicate, and it fails loud (400) rather than quietly returning a
+    // narrower set. `containsMinLength` above declares it, and the compiler asks such a term exactly.
     default:        "contains",
     // `starts_with`, NOT the `prefix` strategy. Both exist and the executor uses this one:
     // planPredicateParams emits `match_mode: "starts_with"` for a trailing-`*` entry and never emits

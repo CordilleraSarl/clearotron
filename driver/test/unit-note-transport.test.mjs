@@ -49,7 +49,8 @@ test("the register-unit grant gains the record tool and KEEPS Write/Edit", () =>
       + "flag is absent. This stage is not in the RECORDING category for exactly this reason.");
   // …and the transport carries no retrieval of its own, which is the one promise an own key can make.
   const own = allowedToolsFor(["unit-note"]).split(/\s+/).filter((t) => t.startsWith("mcp__"));
-  assert.deepEqual(own, ["mcp__unit-note__record_unit_note"], "the unit-note key widened a retrieval surface");
+  // Two record tools, the note and the waiting families the turn withheld (withheld-families.mjs); still no retrieval.
+  assert.deepEqual(own, ["mcp__unit-note__record_unit_note", "mcp__unit-note__record_withheld_families"], "the unit-note key widened a retrieval surface");
 });
 
 test("the driver binds the axis, and the binding reaches the transport's OWN server", () => {

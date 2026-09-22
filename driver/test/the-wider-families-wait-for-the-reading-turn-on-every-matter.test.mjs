@@ -11,7 +11,7 @@ import { PROVIDER_CAPABILITIES } from "../register-capabilities.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
-// ── RULING 204: THE FAMILIES WAIT FOR THE ASK, NOT FOR A RESULT ────────────────────────────────────
+// ── ON EVERY MATTER (2026-09-21): THE FAMILIES WAIT FOR THE ASK, NOT FOR A RESULT ────────────────────────────────
 //
 // Decision 12 used to release the wider families when the identical question came back as a list. So a
 // matter whose mark was NOT crowded opened scripts, neighbours, compounds and guessed owners in the
@@ -90,7 +90,7 @@ test("every wider family waits, and waits for the ASK rather than for a result",
     for (const e of families) {
       assert.ok(e.when, `${provider}/${label}: family ${e.qid} (${e.axis}) runs with no ask`);
       // THE AMENDMENT ITSELF. A family still gated on the identical question would be released the
-      // moment that question came back as a list — which is decision 12, the thing ruling 204
+      // moment that question came back as a list — which is decision 12, the thing the 2026-09-21 ruling
       // reverses. A guard naming any parent qid at all is the old shape.
       assert.equal(guardParentQid(e.when), null,
         `${provider}/${label}: family ${e.qid} waits on a RESULT (${guardParentQid(e.when)}), not on the reading turn`);

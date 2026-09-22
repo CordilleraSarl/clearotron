@@ -1594,7 +1594,7 @@ export const STAGES = {
       // the model discussed the goods eighteen times in its prose — and handed back no goods words at
       // all, because nothing in what it hands back had a slot for them. The manual asked; the contract
       // did not.
-      `Send \`goods_words\` — the words the register search is narrowed to, from the matter's own goods and services wording plus the words other filings use for the same goods. Single words or short phrases as a specification would write them, no wildcards, at most 24. Omit it only when the matter states no goods at all: this is what stops a crowded sweep returning more filings than anyone can read, so leaving it out costs the search its narrowing.`,
+      `Send \`goods_words\` — the words the register search is narrowed to, from the matter's own goods and services wording plus the words other filings use for the same goods. Single words or short phrases as a specification would write them, no wildcards, at most 24. Send an empty list when you have considered the goods and no word is worth narrowing by. Omit it only when the matter states no goods at all: this is what stops a crowded sweep returning more filings than anyone can read, so leaving it out costs the search its narrowing.`,
       // THE SCOPE LEDGER STOPS BEING A TABLE THE DRIVER RE-READS. It used to be dictated as markdown in
       // the skill doc and recovered by parsing those columns back out of the prose (renderScopeLedgerJson
       // over variant-manifest.md). The rows arrive typed now and the driver renders the table AND
@@ -2270,7 +2270,7 @@ export const STAGES = {
       // is the quiet one: the note says nine enumerated queries, the band holds eight, and nothing compares
       // them. Deriving removes the disagreement rather than detecting it.
       `FILE THIS AXIS'S AUDIT NOTE WITH \`record_unit_note\`. THE DISPATCH NAMES NO PATH FOR IT, deliberately — the driver writes this axis's note from what you send and you never open it, so there is no path here for you to hold. THE COUNTS ARE NOT YOURS TO TYPE: queries enumerated, incomplete blocks and records carried forward are taken from the band, so the note and the band cannot disagree. Send only what the band cannot say — \`null_result\` if this axis genuinely found nothing (refused against a band that carries records), and \`note\`, ONE short observation an auditor would want, in a lawyer's words. Still NO coverage-limited/confirmed-clean/deferred rows and NO clearance verdict: those are judgment's, Layer B. Call it AFTER the band exists — a note over a band that has not been written is refused by name, because an account of a sweep that has not happened is not a short note, it is a wrong one.`,
-      CROSS_CHECK_HANDOFF,
+      CROSS_CHECK_HANDOFF, "WHERE THE PLAN ABOVE HAS WAITING FAMILIES, RECORD EVERY ONE YOU DO NOT ASK with `record_withheld_families`: its qids, as listed above, and why it was not asked. A family you leave unasked was never searched, so it is recorded withheld-by-judgment; one nobody judged holds up delivery. The reason goes into the audit workbook, not the report.",   // withheld-families.mjs
       // THE CLOSING LINE SPLITS WITH THE LANE, because what the seat owes splits with it. Under the
       // supplemental-lane contract the seat writes NOTHING — the band is the tools' and the note is the
       // driver's — so the dispatch names no file and ends the way conversion 9's reviewer does. With the
@@ -2453,7 +2453,7 @@ export const STAGES = {
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
     // CONTRACT DECLARATION above STAGES for the enum and the rules; contract-audit.mjs enforces them.
     contractElements: {
-      "coverage form `status` per row — EXACTLY one bare token of confirmed-clean / coverage-limited / deferred": {
+      "coverage form `status` per row — EXACTLY one bare token of confirmed-clean / coverage-limited / deferred / withheld-by-judgment": {
         class: "judgment", tokens: ["coverage_no_status", "coverage_clean_unexecuted", "coverage_clean_skipped", "coverage_clean_tainted"],
         why: "'Does this un-enumerated slice matter to whether I can sign' — the sufficiency call the funnel is forbidden to make (clearance-register SKILL.md, `## Coverage = the band blocks`). The obligations are driver-computed with every identifier; the status is a VALUE the seat sends through record_coverage (typed transport), validated per row at call time. #850 keeps it J.",
       },

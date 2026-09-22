@@ -92,9 +92,8 @@ export function buildBrief(run) {
   const tail = [product, dateStr ? `run ${dateStr}` : null].filter(Boolean).join(", ");
   lines.push(`**${subject}**${tail ? ` — ${tail}` : ""}.`);
 
-  const caption = clearance
-    ? (clearance.verdict?.statement ?? clearance.caption ?? "")
-    : plainClause(fm.overall_caption ?? "");
+  // The report's own conclusion, verbatim, after the rating (ruled 2026-09-22: the report is the master).
+  const caption = clearance ? (clearance.caption ?? "") : plainClause(fm.overall_caption ?? "");
   if (overall) lines.push(`**Overall risk: ${titleCase(String(overall))}.** ${caption}`.trim());
   if (run.state) {
     // a park is paused, not finished — say so plainly, and name the clock only where one exists
@@ -104,9 +103,8 @@ export function buildBrief(run) {
       : run.state === "recovering" ? ` — auto-recovery backoff, resumes ${run.recoveryResumesAt ? `at ${String(run.recoveryResumesAt).replace("T", " ").slice(0, 16)} UTC` : "on its own"}`
       : run.state === "parked-for-human" ? ` — parked by a runner stop (deploy/restart), resumes on the next runner activation` : "";
     lines.push(`Status: ${run.state}${paused}.`);
-    // The run's own sentence, composed once by the driver and rendered on every client surface. It says
-    // what the gate word used to be reached for, in the words the report itself uses.
-    if (run.statement) lines.push(String(run.statement));
+    // No second summary here: the rating and the report's conclusion above are the run's answer. The
+    // composed statement said "on hold" on runs nothing held.
   }
 
   let source = "none";
@@ -204,7 +202,7 @@ export function buildBrief(run) {
   return {
     runId: run.runId, markName: run.markName ?? clearance?.markName ?? fm.title ?? null,
     product,
-    overall, tier: run.tier ?? null, statement: run.statement ?? null, state: run.state ?? null, date: run.date ?? null,
+    overall, tier: run.tier ?? null, caption: run.caption ?? null, state: run.state ?? null, date: run.date ?? null,
     source, brief: lines.join("\n"),
   };
 }

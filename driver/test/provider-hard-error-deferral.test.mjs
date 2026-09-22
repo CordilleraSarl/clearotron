@@ -57,6 +57,25 @@ const BANDS_SILENT = {
 
 const spent = (qids) => new Set(qids);
 
+// The receipt the driver writes when primary-sweep's slice is deferred with `reason` and everything else
+// enumerated: joined and skeletoned by the shipped functions. The fixtures this replaced hand-wrote a
+// skeleton marking primary-sweep `executed` while it carried a deferral, which no run can produce —
+// deriveCoverageSkeleton marks an axis `deferred` for any deferred qid — and that is why the settle's
+// acceptance of every such deferral went unseen.
+function receiptDeferring(reason) {
+  const join = joinPlanToBands(PLAN, {
+    "incumbent-class": [
+      { qid: "incumbent-class:default:thistle+owner-esri", state: "enumerated", records: [{}] },
+      { qid: "incumbent-class:owner:esri+watch", state: "enumerated", records: [{}] },
+    ],
+    "primary-sweep": [{ qid: "primary-sweep:exact:thistle", error: true, deferred: true, reason }],
+  });
+  const skeleton = deriveCoverageSkeleton(PLAN, join);
+  assert.equal(skeleton.find((x) => x.axis === "primary-sweep").state, "deferred",
+    "the fixture no longer reproduces the skeleton a run writes");
+  return { plan_version: PLAN.plan_version, deferred: join.deferred, missing: join.missing, skeleton };
+}
+
 test("the FIRST fan-in still throws — a hard-errored slice is missing until the ladder is spent", () => {
   const join = joinPlanToBands(PLAN, BANDS_HARD_ERROR);
   assert.equal(join.missing.length, 2, "both hard-errored slices join as missing, exactly as before");
@@ -141,10 +160,7 @@ test("the reason is NOT a capability gap, so the envelope spends one bounded att
   const reason = PROVIDER_HARD_ERROR_PREFIX + HARD_500;
   assert.equal(isCapabilityGapReason(reason), false,
     "a provider that answered with a 500 has the capability — it had a bad day");
-  const { accepted, suspect } = partitionReceiptDeferrals(PLAN, {
-    skeleton: [{ axis: "incumbent-class", state: "deferred" }, { axis: "primary-sweep", state: "executed" }],
-    deferred: [{ qid: "primary-sweep:exact:thistle", reason }],
-  });
+  const { accepted, suspect } = partitionReceiptDeferrals(PLAN, receiptDeferring(reason));
   assert.deepEqual(accepted, [], "not filed as permanent");
   assert.deepEqual(suspect.map((s) => s.qid), ["primary-sweep:exact:thistle"], "filed as worth one attempt");
 });
@@ -270,10 +286,7 @@ test("the permanent reason is still not a capability gap — one bounded attempt
   const reason = PROVIDER_PERMANENT_ERROR_PREFIX + HARD_400;
   assert.equal(isCapabilityGapReason(reason), false,
     "the provider HAS the capability — it rejected this query's syntax, which is not the same thing");
-  const { accepted, suspect } = partitionReceiptDeferrals(PLAN, {
-    skeleton: [{ axis: "incumbent-class", state: "deferred" }, { axis: "primary-sweep", state: "executed" }],
-    deferred: [{ qid: "primary-sweep:exact:thistle", reason }],
-  });
+  const { accepted, suspect } = partitionReceiptDeferrals(PLAN, receiptDeferring(reason));
   assert.deepEqual(accepted, [], "not filed as permanent-and-never-retried");
   assert.deepEqual(suspect.map((s) => s.qid), ["primary-sweep:exact:thistle"], "filed as worth exactly one attempt");
 });

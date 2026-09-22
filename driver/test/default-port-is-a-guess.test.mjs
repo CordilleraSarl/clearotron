@@ -30,6 +30,7 @@ import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { resolvePort, listenOrDie, listenErrorMessage, REQUIRE_EXPLICIT_PORTS } from "../../shared/listen.mjs";
+import { withFreePorts } from "./helpers/free-port.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const code = (f) => readFileSync(join(ROOT, f), "utf8")
@@ -269,18 +270,22 @@ test("a REQUEST to the announced port is answered", async () => {
 test("an explicit port is still reported as itself", async () => {
   // The control. A fix that always reported something OTHER than the request would pass the arm above
   // while breaking every ordinary boot.
-  const server = createServer((_q, r) => r.end());
-  const probe = createServer((_q, r) => r.end());
-  const free = await new Promise((r) => probe.listen(0, "127.0.0.1", () => r(probe.address().port)));
-  probe.close();
-  const seen = await new Promise((resolve) => {
+  //
+  // The requested port is read from the operating system and released before this binds it, and anything
+  // can take it in between. So the bind runs under `withFreePorts`: when `listenOrDie` says the port was
+  // taken, it binds again on a fresh number, and the refusal comes back as a result rather than as an exit.
+  const seen = await withFreePorts(["probe"], ({ probe: free }) => new Promise((resolve) => {
+    const server = createServer((_q, r) => r.end());
+    const said = [];
     listenOrDie(server, {
       port: free, host: "127.0.0.1", what: "an explicit probe", portVar: "PROBE_PORT",
-      log: () => {}, onReady: resolve,
+      log: (m) => said.push(m),
+      // same reason as above: closed before the assertion, never after it
+      onReady: (ready) => { server.close(); resolve({ ...ready, requested: free }); },
+      exit: () => resolve({ requested: free, said: said.join("\n") }),
     });
-  });
-  server.close();   // same reason as above: closed before the assertion, never after it
-  assert.equal(seen.port, free, "an explicitly requested port must be announced as itself");
+  }));
+  assert.equal(seen.port, seen.requested, `an explicitly requested port must be announced as itself${seen.said ? `:\n${seen.said}` : ""}`);
 });
 
 test("no service composes its address line from the port it REQUESTED", () => {

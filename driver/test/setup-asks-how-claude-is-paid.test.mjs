@@ -144,9 +144,11 @@ test("the probe's turn sees the cloud settings its caller passed, they are gone 
   for (const k of Object.keys(env)) if (k !== "CLEAROTRON_AI")
     assert.notEqual(before[k], env[k], `${k} already holds that value in this process, so the arm would prove nothing`);
   let seen = null;
-  const v = await probeEngineTurn({ env, runTurn: async () => {
+  const v = await probeEngineTurn({ env, runTurn: async (a) => {
     seen = Object.fromEntries(Object.keys(env).map((k) => [k, process.env[k]]));
-    return { code: 0, modelWire: "claude-haiku-4-5-20251001", providerWire: "foundry" };
+    // A working engine answers with the word the probe's tool returned.
+    const word = JSON.parse(a.mcpConfig).mcpServers.probe.args[1];
+    return { code: 0, stdout: word, modelWire: "claude-haiku-4-5-20251001", providerWire: "foundry" };
   } });
   assert.equal(v.ok, true, JSON.stringify(v));
   assert.deepEqual(seen, env, "the turn ran without the settings it was meant to prove");

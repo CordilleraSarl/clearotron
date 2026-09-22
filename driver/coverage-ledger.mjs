@@ -269,21 +269,36 @@ export const isCapabilityGapReason = (reason) => CAPABILITY_GAP_REASON_RE.test(S
  * @param capabilityGapAxes axes the plan-execution receipt says carry >=1 deterministic deferral
  * @param opts.fullyDeferred  the plan says EVERY entry on this axis is unsupported (fullyDeferredAxes) —
  *          then there is nothing on the axis a re-run could reach, whatever a row's prose says
+ * @param opts.heldUnits    ledgerUnitKey()s of rows this run already accepted as capability gaps (the
+ *          sticky set, matched through the coverage form's qid) — held whatever the seat wrote in the reason
  * @returns {{closeable: rows[], held: rows[]}} — `held` rows stay `deferred` and stay disclosed:
  *          the coverage floor keeps its right to hold on them (computeOpenFloors → envelope_note,
  *          the registerGap clamp stays armed). They are simply never re-run and never closed by time.
  * PURE.
  */
-export function splitDeferredByCloseability(rows, axis, capabilityGapAxes, { fullyDeferred = false } = {}) {
+export function splitDeferredByCloseability(rows, axis, capabilityGapAxes, { fullyDeferred = false, heldUnits = null } = {}) {
   const ax = String(axis ?? "").toLowerCase();
   const indicted = new Set([...(capabilityGapAxes ?? [])].map((a) => String(a).toLowerCase()));
   const owned = (rows ?? []).filter((r) => r && r.status === "deferred" && String(r.axis ?? "").toLowerCase() === ax);
   if (fullyDeferred) return { closeable: [], held: owned };
-  if (!indicted.has(ax)) return { closeable: owned, held: [] };
-  const held = owned.filter((r) => isCapabilityGapReason(r.reason));
-  const closeable = owned.filter((r) => !isCapabilityGapReason(r.reason));
-  return { closeable, held };
+  const sticky = (r) => Boolean(heldUnits?.has(ledgerUnitKey(r.axis, r.scope)));
+  if (!indicted.has(ax) && !owned.some(sticky)) return { closeable: owned, held: [] };
+  const isHeld = (r) => isCapabilityGapReason(r.reason) || sticky(r);
+  return { closeable: owned.filter((r) => !isHeld(r)), held: owned.filter(isHeld) };
 }
+
+/**
+ * One coverage unit's identity across the form and the ledger: its axis and its scope, the part of the
+ * form's `unit` after the first `/`, which is exactly what renderCoverageLedgerJsonFromForm writes as the
+ * ledger row's `scope`. Case and runs of whitespace do not distinguish two units. PURE.
+ */
+export const ledgerUnitKey = (axis, scope) =>
+  `${String(axis ?? "").trim().toLowerCase()}|${String(scope ?? "").replace(/\s+/g, " ").trim().toLowerCase()}`;
+export const formRowUnitKey = (r) => {
+  const unit = String(r?.unit ?? r?.axis ?? "");
+  const i = unit.indexOf("/");
+  return ledgerUnitKey(r?.axis, i >= 0 ? unit.slice(i + 1) : "");
+};
 
 // ── THE LEDGER AS A TABLE, WRITTEN ONCE ────────────────────────────────────────────────────────────
 //

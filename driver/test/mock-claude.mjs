@@ -25,6 +25,8 @@
 //                           stop_reason is max_tokens, with NO file written (zero usable output)
 //   MOCK_CLAUDE_NOFILE=1  — do not write the output file (drives the missing_file ladder)
 //   MOCK_CLAUDE_RESULT=<text>     — the result text (default "mock claude ok")
+//   MOCK_CLAUDE_TOOLS_UNUSED=1    — handed the engine probe's tool, answer WITHOUT calling it (by default the
+//                                   reply carries the word the probe's tool returns, as a working engine's does)
 //   MOCK_CLAUDE_FILE=<content>    — the output file content (default a tiny valid stub)
 //   MOCK_CLAUDE_COST=<usd>        — total_cost_usd (default 0.0123)
 //   MOCK_CLAUDE_SESSION=<id>      — session_id (default derived); a --resume value echoes back as the session
@@ -105,6 +107,18 @@ const WIRE_MODEL = {
   fable: "fable",
 };
 const wireModel = process.env.MOCK_CLAUDE_WIRE_MODEL || WIRE_MODEL[askedModel] || "claude-haiku-4-5";
+
+// THE ENGINE PROBE'S TOOL. The probe hands the engine one tool, `ping` on the probe server, and passes only
+// when the reply carries the word that server was given. A working engine calls it and answers with that
+// word, so this does too, read off the --mcp-config it was handed; MOCK_CLAUDE_TOOLS_UNUSED=1 answers
+// without it, the shape of a turn that shows nothing about the tools.
+const probeWord = (() => {
+  if (process.env.MOCK_CLAUDE_TOOLS_UNUSED) return null;
+  try {
+    const i = argv.indexOf("--mcp-config");
+    return (i >= 0 ? JSON.parse(argv[i + 1]) : null)?.mcpServers?.probe?.args?.[1] ?? null;
+  } catch { return null; }
+})();
 
 // system:init — mirrors the real shape (apiKeySource etc.)
 // MOCK_CLAUDE_BOOT_MS=<ms> — block for <ms> before ANY output: the shape a STARVED SPAWN has from the
@@ -422,7 +436,7 @@ if (process.env.MOCK_CLAUDE_USAGE_THEN_STALL) {
     const fail = Boolean(process.env.MOCK_CLAUDE_FAIL);
     const obj = {
       type: "result", subtype: fail ? "error_during_execution" : "success", is_error: fail,
-      duration_ms: 12, num_turns: 1, result: process.env.MOCK_CLAUDE_RESULT || "mock claude ok",
+      duration_ms: 12, num_turns: 1, result: process.env.MOCK_CLAUDE_RESULT || probeWord || "mock claude ok",
       stop_reason: fail ? "error" : "end_turn", session_id: session,
       total_cost_usd: process.env.MOCK_CLAUDE_COST != null ? Number(process.env.MOCK_CLAUDE_COST) : 0.0123,
       usage,

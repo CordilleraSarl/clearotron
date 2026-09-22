@@ -24,6 +24,11 @@
 //   MOCK_CODEX_SLOW_STREAM=<ms> [+ MOCK_CODEX_SLOW_COUNT] — a healthy-but-slow turn (a delta every <ms>)
 //   MOCK_CODEX_CALL_LOG=<file> — append {argv, prompt, codexHome, configToml, hasAuth} per call (assert wiring)
 //   MOCK_CODEX_FILE=<content>  — engine-test mode: write <content> to the path parsed from the prompt
+//   MOCK_CODEX_MCP_REFUSED=<n> — emit <n> MCP tool calls refused before reaching their server, in the
+//                            shape codex 0.150.1 streams when its sandbox refuses them, then finish the
+//                            turn as usual (the turn still reports success)
+//   MOCK_CODEX_TOOLS_UNUSED=1 — handed the engine probe's tool, answer WITHOUT calling it (by default the
+//                            probe's `ping` completes and the reply carries its word, as a working codex does)
 // Shared with the corpus (identical semantics to mock-claude, so pipeline.mock runs parametric):
 //   MOCK_FAIL_STAGE=<substr[&&substr]>  — fail (stderr + exit 1) the turns whose prompt contains ALL parts
 //   MOCK_BARRIER_FILE=<path>            — hold the matter-frame turn until the sentinel appears
@@ -91,6 +96,17 @@ if (resumed && process.env.MOCK_CODEX_SESSION_STORE === "1" && !rolloutFor(resum
   process.exit(1);
 }
 const session = process.env.MOCK_CODEX_SESSION || resumed || ("mock-thread-" + Buffer.from(msg).length.toString(36));
+
+// THE ENGINE PROBE'S TOOL, read off the rendered config.toml the way codex reads it. A working codex calls
+// `ping` and answers with its word; a refusing one (MOCK_CODEX_MCP_REFUSED) never reaches the server, so it
+// has no word to give. MOCK_CODEX_TOOLS_UNUSED=1 answers without calling it.
+const probeWord = (() => {
+  if (process.env.MOCK_CODEX_TOOLS_UNUSED || Number(process.env.MOCK_CODEX_MCP_REFUSED || 0) > 0) return null;
+  try {
+    const toml = readFileSync(join(process.env.CODEX_HOME || "", "config.toml"), "utf8");
+    return toml.match(/\[mcp_servers\.probe\][\s\S]*?args = \["[^"]*", "([^"]+)"\]/)?.[1] ?? null;
+  } catch { return null; }
+})();
 
 // Call log: the real argv (flags) + the stdin prompt + the rendered config.toml (read from CODEX_HOME while
 // it still exists — the engine deletes it after) so a test can assert the codex wiring faithfully.
@@ -232,7 +248,19 @@ if (process.env.MOCK_CODEX_STALL) {
     }, gap);
   } else {
     send({ type: "item.updated", item: { id: "item_r", type: "reasoning", text: "…" } });   // a streamed partial (watchdog heartbeat)
+    // Refused MCP calls: started, then failed with the message codex gives, keyed by id as real codex does.
+    for (let i = 0; i < Number(process.env.MOCK_CODEX_MCP_REFUSED || 0); i++) {
+      const item = { id: `mcp_${i}`, type: "mcp_tool_call", server: "register", tool: "register_search" };
+      send({ type: "item.started", item: { ...item, status: "in_progress" } });
+      send({ type: "item.completed", item: { ...item, status: "failed",
+        error: { message: "MCP tool call requires approval, but approval policy is never" } } });
+    }
+    if (probeWord) {
+      const item = { id: "mcp_probe", type: "mcp_tool_call", server: "probe", tool: "ping" };
+      send({ type: "item.started", item: { ...item, status: "in_progress" } });
+      send({ type: "item.completed", item: { ...item, status: "completed", result: { content: [{ type: "text", text: probeWord }] } } });
+    }
     doStageWrites();
-    completeTurn(undefined, { noNewline: Boolean(process.env.MOCK_CODEX_NO_NEWLINE) });
+    completeTurn(probeWord && !process.env.MOCK_CODEX_RESULT ? probeWord : undefined, { noNewline: Boolean(process.env.MOCK_CODEX_NO_NEWLINE) });
   }
 }

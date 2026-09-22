@@ -102,10 +102,10 @@ export function unionCoverageForm(prior, submitted, input, { parkedIds = null } 
   let settled = 0, carried = 0, parked = 0;
   for (const row of form.rows) {
     const p = findPrior(row), s = findSubmitted(row);
-    const sOk = s && rowIsSettled(s, row), pOk = p && rowIsSettled(p, row);
+    const sOk = s && rowIsSettled(s, row), pOk = p && rowIsSettled(p, row), dOk = rowIsSettled(row, row);
     let fields;
     if (sOk) fields = seatFields(s);
-    else if (pOk) fields = seatFields(p);
+    else if (pOk) fields = seatFields(p); else if (dOk) fields = seatFields(row);   // a judgment the driver row arrived with (a family the reading turn withheld)
     else {
       const sf = seatFields(s ?? {}), pf = seatFields(p ?? {});
       fields = { status: sf.status || pf.status, reason: sf.reason || pf.reason };

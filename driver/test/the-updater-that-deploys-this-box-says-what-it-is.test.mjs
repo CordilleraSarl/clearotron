@@ -49,7 +49,9 @@ test("a stamp whose two digests agree, on the tree being checked, passes", () =>
 test("no stamp at all FAILS, and says an absence is the stale-updater case rather than a gap", () => {
   const v = updaterVerdict({ stamp: null, now: NOW, deployClone: CLONE });
   assert.equal(v.state, "fail");
-  assert.match(v.message, /failure to look, never a pass/);
+  // A DRIFT, AND IT SAYS SO. It used to also call itself a failure to look, which is the other verdict:
+  // the check exits 1 on it, so a reader told "could not look" and shown "redeploy" was told both.
+  assert.doesNotMatch(v.message, /failure to look/, "the message still claims the verdict it does not return");
   // The specific reason an absence is loud: the writer shipped IN the updater, so a copy old enough to
   // predate it writes none. An arm that only checked `state` would pass on a message that said
   // "not probed", which is the answer this branch exists to refuse.
@@ -73,9 +75,13 @@ for (const [what, over, says, negatedByNeither] of [
   // from the un-negated-verb guard below rather than reworded into a double negative.
   ["both sides", { wrapperSha256: null, masterSha256: null }, /neither the running copy of the updater nor its master could be read as a digest/, true],
 ]) {
-  test(`an unreadable digest on ${what} fails as a failure to look, not as drift`, () => {
+  test(`an unreadable digest on ${what} is a could-not-look, not a drift`, () => {
     const v = updaterVerdict({ stamp: stampOf(over), now: NOW, deployClone: CLONE });
-    assert.equal(v.state, "fail");
+    // A SKIP WITH THE MARKER, which the deployment check counts toward exit 3. It returned `fail` while
+    // saying "failure to look, never a pass", so a reader got a drift's verdict for a digest that was
+    // never taken and would redeploy a box whose files nobody had compared.
+    assert.equal(v.state, "skip");
+    assert.equal(v.blocked, true);
     assert.match(v.message, /failure to look, never a pass/);
     // THE VERB, NOT JUST THE NOUN. Matching "the master" alone passed a sentence that said the master
     // COULD be read — the opposite of the branch it was testing — because the phrase it looked for
@@ -90,7 +96,8 @@ test("an unreadable master carries the reason the updater reported", () => {
   const v = updaterVerdict({
     stamp: stampOf({ masterSha256: null, masterCommitError: "not a git repository" }),
     now: NOW, deployClone: CLONE });
-  assert.equal(v.state, "fail");
+  assert.equal(v.state, "skip");
+  assert.equal(v.blocked, true);
   assert.match(v.message, /not a git repository/);
 });
 

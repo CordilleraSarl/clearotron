@@ -97,8 +97,7 @@ export const CAPABILITIES = Object.freeze({
   // fails loud with tooManyResults past 30000. There is no partial mode and no cursor.
   pagination: "single-shot",
   // …which is exactly why the enumerate ceiling must be tested BEFORE the search, via the cheap
-  // POST /count — it works at ANY magnitude (209012 returned without complaint) and returns per-office
-  // counts in one call.
+  // POST /count — it works at ANY magnitude and returns per-office counts in one call.
   countProbe: "endpoint",
   // A count CAN be narrowed to live filings here — queryOptions.activeOnly (buildSearchRequest's
   // `active_only`). Declared because it diverges from corsearch, which has no status clause at all;
@@ -107,7 +106,8 @@ export const CAPABILITIES = Object.freeze({
   countStatusFilter: "live",
   // JSON body, not a URI: the bound is the parser's own document-nesting cap, which the vendor names in
   // the refusal it answers a stack wider than this with. Not a URI length, so widening is not the fix.
-  maxOrWidth: 500,
+  // A 498-term stack is refused at that cap and a 496-term stack is not, so 496 is the declared width.
+  maxOrWidth: 496,
   // ONE call: INT_CLASS_NUMBER value "9 OR 28 OR 41 OR 42" (or "9,28,41,42") = the deduplicated union.
   classFilter: "native",
   // POST /text, EXACTLY 100 ids per call — a longer list is refused — and the call is BILLED: screening an
@@ -239,6 +239,16 @@ export const CAPABILITIES = Object.freeze({
   goodsTextMultiWord: "ordered-phrase",
   // Several goods terms ride ONE clause joined by OR — this register expresses a list natively.
   goodsTextListOr: true,
+  // ── THE SHORTEST TERM THE CONTAINS FORM ACCEPTS: none known, so none declared ───────────────────
+  //
+  // No vendor document available to this repository states one: the vendor publishes no public
+  // reference for this search API, and none was found on 2026-09-22. What is measured is narrower and is
+  // handled in core.js: a ONE-character first or last token inside a phrase chain is refused (HTTP
+  // 500), and two characters are answered. A two-letter `*TERM*` on its own is not recorded either way.
+  //
+  // `null` means the compiler keeps asking the contains form at every length, which is what this
+  // register has always been sent. A declared number must come from the vendor, not from a guess.
+  containsMinLength: null,
   // The operator the goods clause rides. `EQUALS` on WHOLE WORDS: `CONTAINS` is a hard 400 here
   // exactly as it is on APPLICANT_NAME, and so is a mid-word wildcard. Several words are asked for
   // with `OR` inside the value.
@@ -285,7 +295,7 @@ export const CAPABILITIES = Object.freeze({
   // WIRED: providers/clarivate/src/core.js builds its enumerate from
   // makeEnumerate({ capabilities: {...CAPABILITIES.kernel} }) — these values are the LIVE seam settings,
   // no longer a design note. pageGuard is 1 because /search is single-shot: there is no page 2 to
-  // fetch, so the guard can only ever be a backstop. namesChunkDefault = maxOrWidth (500): the kernel
+  // fetch, so the guard can only ever be a backstop. namesChunkDefault = maxOrWidth (496): the kernel
   // chunks a wide OR-stack to the parser's nesting bound before it reaches the wire.
   kernel: Object.freeze({
     countProbe: "endpoint",
@@ -293,7 +303,7 @@ export const CAPABILITIES = Object.freeze({
     pageSize: 100,
     pageGuard: 1,                          // single-shot: there is no page 2
     ceilingDefault: 600,
-    namesChunkDefault: 500,
+    namesChunkDefault: 496,
     providerWindow: "30000-result hard ceiling (tooManyResults, fails loud)",
     // POST /search returns BARE GUIDS — the search row carries no mark text, classes, status or owner.
     // POST /text (the screen call) is therefore the SOLE content source for an enumerated band, which

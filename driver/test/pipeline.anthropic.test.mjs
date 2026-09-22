@@ -64,13 +64,14 @@ test("E2: full pipeline runs on the anthropic-agent engine (CLEAR, delivered, al
   assert.equal(res.ok, true, JSON.stringify(res));
 
   // — the engine-turn door fired, FIRST, and it is a probe rather than a stage: the floor tier, the
-  // probe's own six-word prompt, no MCP config and no granted directory (there is no run dir yet — that
+  // probe's own prompt, its one tool server and no granted directory (there is no run dir yet — that
   // is the property the door exists to have). A run that reached stage one without this turn has an
   // engine nobody proved.
   assert.equal(turns[0], doorProbe, "the engine-turn probe is the FIRST turn of the run, ahead of matter-frame");
   assert.deepEqual(doorProbe.argv.slice(5, 9), ["--model", "haiku", "--effort", "low"], "the door spends the cheapest turn either adapter can build");
   assert.ok(!doorProbe.argv.includes("--add-dir"), "the door grants no directory — it runs before one exists");
-  assert.ok(!doorProbe.argv.includes("--mcp-config"), "and starts no MCP server");
+  const doorServers = JSON.parse(doorProbe.argv[doorProbe.argv.indexOf("--mcp-config") + 1]).mcpServers;
+  assert.deepEqual(Object.keys(doorServers), ["probe"], "and starts the probe's own tool server and no stage's");
   const probeRow = events.find((e) => e.event === "engine-turn-probe");
   assert.ok(probeRow?.ok === true && probeRow.basis === "completed-turn", `the door's verdict is on the run record: ${JSON.stringify(probeRow)}`);
   assert.equal(res.verdict, "CLEAR");
@@ -205,7 +206,9 @@ test("E2: full pipeline runs on the anthropic-agent engine (CLEAR, delivered, al
   assert.match(packet.subject, /^Global preliminary search — PROJECT NOVAPULSE$/);
   assert.doesNotMatch(packet.subject, /Preliminary clearance/, "the retired literal is gone from the wire");
   assert.ok(packet.emailBodyHtml && packet.emailBodyHtml.length > 0, "email body embedded for clawdi");
-  assert.match(packet.whatsappText, /Clearotron search for PROJECT NOVAPULSE.*is done\. Report:/);
+  // The rating, never the reviewer's sign-off word (ruled 2026-09-22).
+  assert.match(packet.whatsappText, /Clearotron search for PROJECT NOVAPULSE.*is done\. Overall risk: [A-Za-z ]+\. Report:/);
+  assert.doesNotMatch(packet.whatsappText, /verdict|CLEAR|CONDITIONAL|BLOCKING/);
   // THE NOTICE IS ADDRESSED TO WHOEVER ASKED. This arm asserted
   // `whatsappTo === "+10000000001"` — the AGENT's number from the demo roster — which is precisely the
   // defect: every user of a deployment shares one agent id, so the operator was paged for work somebody

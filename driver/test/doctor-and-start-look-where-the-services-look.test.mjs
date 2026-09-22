@@ -18,7 +18,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { createServer } from "node:net";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname, resolve } from "node:path";
@@ -26,6 +25,7 @@ import { fileURLToPath } from "node:url";
 import { unitEnvironment, unitValue } from "../unit-environment.mjs";
 import { ENGINE_BINARIES } from "../driver.config.mjs";
 import { handRunEnv } from "./drive-env.mjs";
+import { withFreePorts } from "./helpers/free-port.mjs";
 const { PROVIDERS } = await import("../../bin/onboard.mjs");
 const { BACKGROUND_UNITS } = await import("../../bin/start.mjs");
 
@@ -173,23 +173,21 @@ test("with no units, doctor looks on the PATH that `clearotron start` hands its 
 
 // ── START --BACKGROUND ──────────────────────────────────────────────────────────────────────────────
 
-/** An ephemeral port, taken and released, so the drive gets past the port checks to its subject. */
-async function freePort() {
-  return await new Promise((ok, fail) => {
-    const s = createServer();
-    s.once("error", fail);
-    s.listen(0, "127.0.0.1", () => { const { port } = s.address(); s.close(() => ok(port)); });
-  });
-}
-
 /**
  * The real `start --background`, in a scratch home, as far as its announcement of what a run is refused for.
  *
  * NO SYSTEMD CAN BE REACHED FROM HERE. The environment is built over an empty base, so it carries neither
  * XDG_RUNTIME_DIR nor DBUS_SESSION_BUS_ADDRESS, and `systemctl --user` fails before it touches any unit.
  * The command stops there, after the announcement this arm reads. Everything it writes is under `home`.
+ *
+ * The ports are ephemeral ones, taken and released so the drive gets past the port checks to its subject,
+ * and anything can take one before the command probes it. So the drive runs under `withFreePorts`, which
+ * repeats it in a fresh home on fresh numbers when start says a port was taken.
  */
-async function driveStart({ plant, settingsPath = null }) {
+async function driveStart(opts) {
+  return withFreePorts(["portal", "mcp", "client"], (ports) => driveStartOn(ports, opts), { discard: (d) => d.clean() });
+}
+function driveStartOn(ports, { plant, settingsPath = null }) {
   const home = mkdtempSync(join(tmpdir(), "services-path-start-"));
   mkdirSync(join(home, ".config", "clearotron"), { recursive: true });
   writeFileSync(join(home, ".config", "clearotron", ".env"), "PORTAL_LOCAL_USER=drive@localhost\n");
@@ -197,8 +195,8 @@ async function driveStart({ plant, settingsPath = null }) {
   if (settingsPath) writeFileSync(join(home, ".env"), `PATH=${settingsPath}\n`);
   if (plant) plantProgram(join(home, ".local", "bin"));
   const env = handRunEnv({ HOME: home, PATH: "/usr/bin:/bin",
-    PORTAL_SERVICE_PORT: String(await freePort()), TRADEMARK_MCP_HTTP_PORT: String(await freePort()),
-    CLIENT_MCP_HTTP_PORT: String(await freePort()) }, {});
+    PORTAL_SERVICE_PORT: String(ports.portal), TRADEMARK_MCP_HTTP_PORT: String(ports.mcp),
+    CLIENT_MCP_HTTP_PORT: String(ports.client) }, {});
   const r = spawnSync(process.execPath, [join(ROOT, "bin", "start.mjs"), "--background"], { encoding: "utf8", timeout: 180_000, env });
   const said = `${r.stdout ?? ""}${r.stderr ?? ""}`;
   return { said, clean: () => rmSync(home, { recursive: true, force: true }) };

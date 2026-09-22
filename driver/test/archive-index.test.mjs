@@ -251,16 +251,20 @@ test("customer index Run cell is date-only — no internal codename, no time", (
   assert.match(staff, /<code>secret-name<\/code>/);
 });
 
-// ---- spec 64: the index row carries the stance clause beside the (labelled) band pill -------------
-test("spec 64: a meta.json with `statement` renders the stance clause; legacy metas render byte-identically", () => {
-  const withStmt = meta({ runId: "tmp9-s-2026-07-11-copper-causeway", date: "2026-07-11", codename: "copper-causeway", title: "LUMENGARDE",
-    overall: "High", badge: "l4", statement: "High — conditional on: Obtain consent before filing." });
-  const pool = poolWith([withStmt, A]);
+// ---- the index row quotes the report's own conclusion beside the band pill (ruled 2026-09-22) -------
+test("the run list quotes the report's own conclusion, never a second summary, and never an archived statement", () => {
+  const CAPTION = "High risk from one close mark in class 9. The conclusion is conditional because the owner's consent is not yet on file.";
+  const withCaption = meta({ runId: "tmp9-s-2026-07-11-copper-causeway", date: "2026-07-11", codename: "copper-causeway", title: "LUMENGARDE",
+    overall: "High", badge: "l4", statement: "High — conditional on: Obtain consent before filing.", caption: CAPTION });
+  const heldBefore = meta({ runId: "tmp9-h-2026-07-12-slate-harbour", date: "2026-07-12", codename: "slate-harbour", title: "VELTRIS",
+    overall: "High", badge: "l4", statement: "On hold — the reviewing lawyer's open questions must be resolved before any recommendation." });
+  const pool = poolWith([withCaption, heldBefore, A]);
   regenIndex(pool);
   const idx = readFileSync(join(pool, "index.html"), "utf8");
-  assert.match(idx, /<span class="stmt" title="High — conditional on: Obtain consent before filing\.">conditional on: Obtain consent before filing\.<\/span>/,
-    "the clause after the tier word renders beside the pill (full statement in title=)");
-  // the legacy row (A) keeps the bare pill cell with no stmt span
+  assert.ok(idx.includes(`<span class="stmt" title="${CAPTION}">${CAPTION}</span>`), "the report's conclusion does not render beside the pill");
+  assert.doesNotMatch(idx, /conditional on: Obtain consent/, "the composed statement still renders");
+  // A meta written before the caption was kept shows the pill alone: its stored statement said "on hold".
+  assert.doesNotMatch(idx, /On hold/);
   const rowA = idx.split("\n").filter((l) => l.includes("ashen-bastion") || l.includes("b-l3")).join("\n");
   assert.doesNotMatch(rowA, /class="stmt"/);
 });

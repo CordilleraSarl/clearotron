@@ -17,6 +17,7 @@ import { fileURLToPath } from "node:url";
 import { childEnv, resolvePorts, BACKGROUND_UNITS, clientDoorOwner } from "../../bin/start.mjs";
 import { clientDoorPort } from "../../shared/client-door.mjs";
 import { unitsToRestartOnRefresh, unitHealthVerdict } from "../../shared/server-units.mjs";
+import { withFreePorts, saidPortWasTaken } from "./helpers/free-port.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, "..", "..");
@@ -88,22 +89,10 @@ test("the summary names BOTH doors, their ports, and who each is for", () => {
     "the not-running branch must read child.exitCode, which the runtime sets when the process is reaped");
 });
 
-/**
- * A port the kernel says is free right now —.
- *
- * Bind :0, read what was assigned, release it. The window between release and the door's own bind is
- * milliseconds and it is the only race left; a hardcoded port is not a race but a standing appointment,
- * held for as long as any other lane's copy of this suite runs. Where an arm can keep the socket instead
- * of releasing it — the squatter below — it does, and has no window at all.
- */
-async function freePort() {
-  const { createServer } = await import("node:net");
-  const s = createServer();
-  await new Promise((r) => s.listen(0, "127.0.0.1", r));
-  const { port } = s.address();
-  await new Promise((r) => s.close(r));
-  return port;
-}
+// A PORT THE KERNEL SAYS IS FREE, from `withFreePorts`: bind :0, read what was assigned, release it, and
+// start again on a fresh number when the door says it was taken. A hardcoded port is not a race but a
+// standing appointment, held for as long as any other lane's copy of this suite runs. Where an arm can
+// keep the socket instead of releasing it — the squatter below — it does, and has no window at all.
 
 test("THE DOOR ACTUALLY BOOTS on the composed environment — shape is not the same as starting", async () => {
   // THIS ARM EXISTS BECAUSE THE OTHERS PASSED WHILE THE DOOR DIED AT BIRTH. Every assertion above was
@@ -134,31 +123,41 @@ test("THE DOOR ACTUALLY BOOTS on the composed environment — shape is not the s
   //
   // The PRODUCT's fixed default stays untouched — a door that quietly moved to another port would be a
   // worse product, and its refusal here is correct behaviour being reported. What changes is the arm.
-  const PORT = await freePort();
+  //
+  // Released is not reserved, so the boot runs under `withFreePorts`: a door that exited saying its port
+  // was taken is started again on a fresh number. A door that exited for any other reason is not retried,
+  // and the assertion below reports it.
   const base = mkdtempSync(join(tmpdir(), "f26-boot-"));
   writeFileSync(join(base, "grants.json"), `${JSON.stringify({ tenants: {} }, null, 2)}\n`);
-  const envs = childEnv({ ...BASE,
-    ports: { ...BASE.ports, client: PORT },
-    paths: { ...BASE.paths, base, grants: join(base, "grants.json"), denylist: join(base, "denylist") },
-    tokenSecret: "t".repeat(32) });
-
-  const child = spawn(process.execPath, [join(REPO, "mcp-server", "http-server-client.mjs")],
-    { env: { PATH: process.env.PATH, HOME: base, ...envs.client }, stdio: ["ignore", "pipe", "pipe"] });
-  const pid = child.pid;                       // recorded, and the only thing this arm ever kills
-  let out = "";
-  child.stdout.on("data", (d) => { out += d; });
-  child.stderr.on("data", (d) => { out += d; });
-  try {
+  const bootDoor = async ({ client: PORT }) => {
+    const envs = childEnv({ ...BASE,
+      ports: { ...BASE.ports, client: PORT },
+      paths: { ...BASE.paths, base, grants: join(base, "grants.json"), denylist: join(base, "denylist") },
+      tokenSecret: "t".repeat(32) });
+    const child = spawn(process.execPath, [join(REPO, "mcp-server", "http-server-client.mjs")],
+      { env: { PATH: process.env.PATH, HOME: base, ...envs.client }, stdio: ["ignore", "pipe", "pipe"] });
+    let out = "";
+    child.stdout.on("data", (d) => { out += d; });
+    child.stderr.on("data", (d) => { out += d; });
+    const closed = new Promise((r) => child.once("close", r));
     const exited = await Promise.race([
       new Promise((r) => child.once("exit", (c) => r(c))),
       new Promise((r) => setTimeout(() => r(null), 8000)),
     ]);
-    assert.equal(exited, null,
-      `the door exited instead of serving on the environment the foreground path composes:\n${out}`);
+    // A door that exited is read to the end of its output before anyone asks why it exited.
+    if (exited !== null) await closed;
+    return { PORT, pid: child.pid, exited, said: () => out };
+  };
+  const door = await withFreePorts(["client"], bootDoor,
+    { busy: (d) => d.exited !== null && saidPortWasTaken(d) });
+  const { PORT, pid } = door;                  // pid: recorded, and the only thing this arm ever kills
+  try {
+    assert.equal(door.exited, null,
+      `the door exited instead of serving on the environment the foreground path composes:\n${door.said()}`);
     // Alive is not answering. A 401 from a token-only door IS the door answering, and is the state the
     // ruling relies on: reachable, and refusing everyone until a key is issued.
     const res = await fetch(`http://127.0.0.1:${PORT}/mcp`, { method: "GET", signal: AbortSignal.timeout(4000) });
-    assert.ok(res.status < 500, `the door answered ${res.status}; a 5xx is not a door serving:\n${out}`);
+    assert.ok(res.status < 500, `the door answered ${res.status}; a 5xx is not a door serving:\n${door.said()}`);
   } finally { try { process.kill(pid); } catch { /* already gone */ } }
 });
 

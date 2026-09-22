@@ -33,6 +33,7 @@ import {
   doEnumerate, doExecutePlan,
 } from "../../../providers/euipo/src/core.js";
 import { proposeSupplemental } from "./supplemental.mjs";
+import { narrowingFields } from "./proposal-fields.mjs";
 
 // The core resolves credentials from the environment; AUTH stays an object so a future knob (a pinned
 // environment, a second subscription) does not change every call site.
@@ -154,6 +155,7 @@ serve({
           romanization: { type: "string", description: "The Latin-script form of a NON-LATIN term. On THIS source it is NOT used to rescue the slice — nativeScriptIndex is true, so the characters are sent as themselves and the romanisation is carried for the reader only." },
           owner: { type: "string", description: "OPTIONAL owner scope field on a MARK-TEXT proposal: the owner×term intersection. Not allowed on predicate:owner (there the owner name IS the term)." },
           nice_classes: { type: "array", items: {} },
+          ...narrowingFields(),   // the narrowing fields every register serves (proposal-fields.mjs)
           rationale: { type: "string" },
           term_literal: { type: "boolean", description: "TRUE only when the term genuinely IS the mark verbatim (a multi-word slogan mark, a mark carrying an anchored star) — it bypasses the term-shape lint. Never use it to push a label through." },
         } } },

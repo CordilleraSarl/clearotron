@@ -14,7 +14,7 @@ import { parseReport, parseAudit, parseSections, parseBlocks, stripInternal, par
 import { renderHtml, parseActionBuckets, actYouConditions } from './render.mjs';
 import { buildAudit } from './xlsx.mjs';
 import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, joinFindingToBlock, CLIENT_TIER_BY_COMPOSITE, projectCoverageJudgment } from '../findings-model.mjs';
-import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.mjs';   // — and why an absence did not close
+import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.mjs'; import { coverageFormStamp, readCoverageForm } from '../coverage-form-io.mjs'; import { coverageUnitLabel } from '../coverage-ledger.mjs';   // — and why an absence did not close
 import { clearanceReportData } from './report-data.mjs';
 import { searchDepthRecord, planTerritoriesOf } from './search-depth.mjs'; import { bandRecords } from '../named-band.mjs';   // how much was read to reach the answer, as counts and tokens
 import { parseFrameworkManifest } from '../framework.mjs';
@@ -251,11 +251,11 @@ function indexRows(runs, { reportFile, linkPrefix = '', showAudit = true, client
       <td>${anonMark(r.title, { key: ck, run: r.runId })}</td>
       <td>${anonClient(r.client, ck)}</td>
       <td><span class="b b-${attrValue(r.badge)}">${esc(r.overall)}</span>${qcFailed ? ' <span class="hold" title="machine QC checks failed — see the audit workbook">⚠ QC</span>' : ''}${!client && !qcFailed && r.clientGate?.inputsAbsent?.length ? ` <span class="disc" title="${escAttr(`published without ${r.clientGate.inputsAbsent.join(', ')} — each declared optional, so the release stands; the report was built without it`)}">◦ built without an input</span>` : ''}${
-        // spec 64 — the stance clause of THE one risk statement beside the (labelled) band pill, so the
-        // index can never show a bare severity word that reads as the whole answer. The tier word leads
-        // the statement; the pill already shows it, so the cell carries the clause after the first " — ".
-        // Legacy meta.json (no statement) renders this cell byte-identically.
-        r.statement ? `<span class="stmt" title="${escAttr(r.statement)}">${esc(String(r.statement).split(' — ').slice(1).join(' — ') || r.statement)}</span>` : ''}</td>
+        // The report's own conclusion beside the band pill (ruled 2026-09-22: the report is the master),
+        // never a second summary. A meta.json written before the caption was kept shows the pill alone:
+        // its stored statement could say "on hold", which was never true. The pill carries the rating,
+        // the single headline on this short surface.
+        r.caption ? `<span class="stmt" title="${escAttr(r.caption)}">${esc(r.caption)}</span>` : ''}</td>
       <td>${runCell}</td>${showAudit ? `
       <td>${r.auditFile ? `<a ${runAttrs} href="${linkPrefix}${attrValue(r.runId)}/${attrValue(r.auditFile)}">audit.xlsx</a>` : '—'}</td>` : ''}
     </tr>`;
@@ -872,6 +872,15 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     } catch { /* the workbook row is the record that matters; this line is the second copy */ }
   }
 
+  // ── THE WAITING FAMILIES THE READING TURN WITHHELD (withheld-families.mjs) ───────────────────────
+  //
+  // Ruled 2026-09-22: a family the reading turn chose not to ask is recorded with its reason in the run's
+  // record and in the audit workbook, and NOT in the report. The coverage form keeps these rows out of
+  // the ledger the report is built from, so this sheet is their one reader-facing place. Same builder,
+  // same four columns and the same state as the probes above; the area is the driver's own label and the
+  // words are the reading turn's reason.
+  const withheldFamilies = withheldFamilyRows(runDir ?? dirname(reportMd));
+
   // doc 50 — the run's FROZEN framework manifest (band vocabulary). Present on band-doctrine runs;
   // absent on every archived run (they render byte-identically on the legacy paths).
   let framework = null;
@@ -1134,7 +1143,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
       // the same rule (the workbook's own BANNED gate had already started firing on the raw detail —
       // advisory, so CI stayed green). reviewReceipts.lint keeps its raw detail for the internal
       // readers above (fetchState reads registry-record-coverage's URIs out of it).
-      counts = await buildAudit({ droppedConditions, undispatchedProbes, findings, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null }, auditParsed, join(poolRunDir, auditFile), fm.title, fm);
+      counts = await buildAudit({ droppedConditions, undispatchedProbes, withheldFamilies, findings, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null }, auditParsed, join(poolRunDir, auditFile), fm.title, fm);
       grpRead(join(poolRunDir, auditFile), 0o640);
       if (counts?.gateViolations?.length) console.warn(`[audit-workbook] advisory: ${counts.gateViolations.join(' | ')}`);
     } catch (e) {
@@ -1342,6 +1351,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     // writer). Absent on legacy runs — regenIndex re-reads every historical meta.json, so consumers
     // null-guard and old rows render byte-identically.
     statement: verdictInfo?.statement ?? undefined,
+    caption: fm.overall_caption || undefined,   // the report's own conclusion, which the run list quotes
     verdict: verdictInfo?.verdict ?? undefined,
     // doc 50 — which framework rated this run (custom vs Generic default) + its ladder, for the archive
     // card, the email table sort/colour and the per-customer index; absent on archived runs forever.
@@ -1369,7 +1379,8 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // `<origin>/<runId>/report.html` — where the documents sit on disk, which is not an application route.
   // Composed rather than spelled here so the report link is built the same way the audit link always was.
   const url = reportRouteFor(poolUrl, runId);
-  return { runId, auditFile, counts, total, url, poolRunDir, auditError, findingsError, customerKey: customerKey || 'generic', clientGate };
+  return { runId, auditFile, counts, total, url, poolRunDir, auditError, findingsError, customerKey: customerKey || 'generic', clientGate,
+    caption: fm.overall_caption || null };   // the report's own conclusion, for the run record's short surfaces
 }
 
 // Compose the notification email body — MARKDOWN (the mail tool renders markdown→HTML; raw HTML gets escaped).
@@ -1739,17 +1750,13 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
   // the engine clamp reasons (opts.conditions = verdict.json reasons). Machinery-only clamps (no client
   // item authored) degrade to one generic plain line — never raw engine jargon, never truncated mid-sentence.
   const emailConditions = opts?.verdict === 'CONDITIONAL' ? actYouConditions(parseActionBuckets(secs['Actions']).you) : [];
-  // THE BANNER SPEAKS THE RUN'S OWN SENTENCE. It used to print the delivery gate's word — "Delivered as
-  // BLOCKING" — which is engine vocabulary and, beside a Medium rating on the report, reads as a
-  // contradiction the reader cannot resolve (measured 2026-09-20). The statement is composed once by the
-  // sidecar writer and is what the report and the index already show; a run recorded before statements
-  // were persisted keeps the old line, which is all such a run has.
-  const bound = String(opts?.statement ?? '').trim();
-  const boundHead = bound
-    ? esc(bound)
-    : `Delivered as ${esc(opts?.verdict ?? '')}${opts?.verdict === 'CONDITIONAL' ? ' — subject to:' : '.'}`;
-  const verdictBound = (opts?.verdict && opts.verdict !== 'CLEAR')
-    ? `<p style="margin:0 0 8px;padding:8px 10px;background:#fdeeee;border:1px solid #c98a86;color:#6e1512"><b>${boundHead}</b>${opts.verdict === 'CONDITIONAL' ? `<br>${(emailConditions.length ? emailConditions : ['the open items set out in the report, before relying on a clean result']).map((r) => `• ${cell(String(r))}`).join('<br>')}` : ''}</p>`
+  // THE REPORT IS THE MASTER (ruled 2026-09-22). The banner used to print a second summary composed
+  // beside the report — "On hold — …" on a run the report called conditional, although nothing is ever
+  // held — and before that the delivery gate's word. It now quotes the report: the rating, then the
+  // report's own conclusion (below), and where the report names what only the client can close, those
+  // items under the report's own heading. Nothing here composes a sentence of its own.
+  const verdictBound = opts?.verdict === 'CONDITIONAL'
+    ? `<p style="margin:0 0 8px;padding:8px 10px;background:#fdeeee;border:1px solid #c98a86;color:#6e1512"><b>Only you can close these</b><br>${(emailConditions.length ? emailConditions : ['the open items set out in the report, before relying on a clean result']).map((r) => `• ${cell(String(r))}`).join('<br>')}</p>`
     : '';
 
   const reviewHeadline = `<div style="${FONT};font-size:11pt;color:#1a1a2e;margin:0 0 14px">`
@@ -1757,12 +1764,11 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
     + verdictBound
     + `<p style="margin:0 0 8px"><b>${[opts?.productName ? esc(String(opts.productName)) : '', esc(fm.title || '')].filter(Boolean).join(' — ')} (${esc(fm.matter || '')})</b></p>`
     // T2 (H5): the derived tier (verdict sidecar, passed by the driver) outranks the
-    // model-authored fm label — one authority on every surface.
-    // spec 64: with a composed statement the headline reads band + stance as ONE sentence ("High —
-    // conditional on: …"); legacy (no statement) keeps the labelled tier line byte-identically.
-    + (opts?.statement
-      ? `<p style="margin:0 0 6px"><b>${esc(opts.statement)}</b> ${cell(fm.overall_caption || '')}</p>`
-      : ((opts?.tier ?? fm.overall_label) ? `<p style="margin:0 0 6px"><b>Overall risk: ${esc(opts?.tier ?? fm.overall_label)}.</b> ${cell(fm.overall_caption || '')}</p>` : ''))
+    // model-authored fm label — one authority on every surface. The rating leads, then the report's own
+    // conclusion verbatim (ruling 244); with no rating recorded, the conclusion stands alone.
+    + ((opts?.tier ?? fm.overall_label)
+      ? `<p style="margin:0 0 6px"><b>Overall risk: ${esc(opts?.tier ?? fm.overall_label)}.</b> ${cell(fm.overall_caption || '')}</p>`
+      : (fm.overall_caption ? `<p style="margin:0 0 6px">${cell(fm.overall_caption)}</p>` : ''))
     + reportLink
     + (fm.handling_note ? `<p style="margin:0 0 8px;color:#7a2b12"><b>Handling note:</b> ${cell(fm.handling_note)}</p>` : '')
     // T9 (K3): methodology identity — which profile/framework rated this run (+ verifiable sha).
@@ -1810,4 +1816,13 @@ function officeLinksFor(findings, recordsByUri, runOrigins) {
   const links = recordLinksFor(findings, recordsByUri, runOrigins);
   if (links) console.log(`[record-links] ${links.summary}`);
   return links;
+}
+
+/** The coverage form's family rows judged withheld, as audit-workbook coverage rows. Never throws. */
+export function withheldFamilyRows(runDir) {
+  try {
+    const { rows } = readCoverageForm(runDir, coverageFormStamp(runDir).formName);
+    return (rows ?? []).filter((r) => r?.kind === 'family' && r.status === 'withheld-by-judgment' && r.reason)
+      .map((r) => ({ area: coverageUnitLabel(r.unit), state: 'not-searched', note: String(r.reason) }));
+  } catch { return []; }
 }

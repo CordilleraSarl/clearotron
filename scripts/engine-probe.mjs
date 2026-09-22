@@ -10,9 +10,9 @@
 // ── WHY THIS EXISTS ─────────────────────────────────────────────────────────────────────────────────
 //
 // `probeEngineTurn` is the smallest thing that genuinely exercises an engine: one Haiku-tier turn at low
-// effort on a six-word prompt, through the adapter's own spawn path, with no MCP config, no tools, no
-// skills dir and no run dir. It answers the one question an operator asks before spending anything —
-// CAN this box run a turn, and under the billing mode it thinks it is using.
+// effort, through the adapter's own spawn path, asked to call the one tool on the probe's own server, with
+// no skills dir and no run dir. It answers the one question an operator asks before spending anything —
+// CAN this box run a turn that uses a tool, and under the billing mode it thinks it is using.
 //
 // It had no way to be asked. Its only callers were `bin/onboard.mjs` (the setup wizard, which asks it
 // once, inside a flow) and `preflightEngineTurn` in `pipeline.mjs` (which asks it at the start of a run,
@@ -28,8 +28,9 @@
 // ── WHAT A GREEN PROBE DOES NOT PROVE, from the module's own header ─────────────────────────────────
 //
 // The cheap tier only. Both tiers ride one credential, so AUTH is proven for all of them — a per-tier
-// model entitlement or per-tier quota is not. And it sets up no tools, no gather MCP, no skills and no
-// run dir, so none of that path is touched. A probe that says `ok` says the door opens.
+// model entitlement or per-tier quota is not. It calls one tool on its own server, so the tool path is
+// proven and no stage's tool server is; it sets up no skills and no run dir. A probe that says `ok` says
+// the door opens.
 
 // FIRST IMPORT, AND IT HAS TO BE. This entry statically reaches driver.config.mjs, which captures
 // env at module top — and every static import evaluates before this file's own body runs, so applying the

@@ -401,7 +401,7 @@ export const E3_BACKLOG = [
     // values, receiver-validated as they arrive.
     where: "driver/skills/clearance-register/digest.md:216-218",
     surface: "skill-file",
-    evidence: "- `status` — EXACTLY one bare token: `confirmed-clean` / `coverage-limited` / `deferred`. Qualifiers never go in the status; they go in the reason.",
+    evidence: "- `status` — EXACTLY one bare token: `confirmed-clean` / `coverage-limited` / `deferred` / `withheld-by-judgment`. Qualifiers never go in the status; they go in the reason.",
     reparsedBy: "driver/coverage-call.mjs validateCoverageCall (status_invalid at call time) + driver/coverage-form.mjs rowIsSettled via validators.registerFindings; the archived-era prose-table reader (coverage-ledger.mjs parseCoverageLedgerFull) survives for replay only",
     removedByMove: "M6 LANDED and removed the no-form arm this row originally described (both sites). The surviving status-vocabulary dictation (as a typed call) is removed by NOTHING on the #850 plan",
   },
@@ -410,7 +410,7 @@ export const E3_BACKLOG = [
     kind: "exactly-these-keys",
     where: "driver/skills/clearance-register/SKILL.md:237-238",
     surface: "skill-file",
-    evidence: "**The status vocabulary is CLOSED: EXACTLY one bare token of: `confirmed-clean` / `coverage-limited` / `deferred`.** Qualifiers never go in a status cell; they go in the reason.",
+    evidence: "**The status vocabulary is CLOSED: EXACTLY one bare token of: `confirmed-clean` / `coverage-limited` / `deferred` / `withheld-by-judgment`.** Qualifiers never go in a status cell; they go in the reason.",
     reparsedBy: "driver/coverage-form.mjs / driver/coverage-ledger.mjs. Since the typed-transport conversion the STAGE MESSAGE no longer restates the enum; the surviving copies are SKILL.md (here), digest.md:207, the dispatch brief (coverage-form.mjs coverageFormBrief), the record_coverage schema (coverage-server.mjs) and gateway.mjs's repair hints — still one enum spelled at five sites",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },

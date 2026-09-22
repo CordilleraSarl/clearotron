@@ -119,6 +119,27 @@ test("the manual still carries the instruction, in the ruled words", () => {
   assert.match(manual, /cannot read the words and, or, not, adj or near/);
 });
 
+test("every surface asks for an empty list when no goods word applies, in the same sentence", () => {
+  // The parser tells an absent key (never answered) from an empty list (considered, none apply). A
+  // model can only give the second answer on purpose if what it reads asks for it, and it reads three
+  // things: the manual, the recording tool's description and the dispatch. The instruction reached two
+  // of them first and the dispatch said only when to omit the key, so a model working from the dispatch
+  // had no instruction to produce the answer the parser now keeps. One sentence, the manual's, on all
+  // three: delete it from any one and this fails.
+  //
+  // The tool's description and the dispatch are string literals split across lines; joining adjacent
+  // literals reads them as the model receives them.
+  const joined = (src) => src.replace(/"\s*\+\s*"/g, "");
+  const SENTENCE = /send an empty list when you have considered the goods and no word is worth narrowing by/i;
+  for (const [surface, text] of [
+    ["the manual", read("driver", "skills", "clearance-variants", "SKILL.md")],
+    ["the recording tool's description", joined(read("driver", "engine", "mcp", "recording-server.mjs"))],
+    ["the dispatch", read("driver", "stages.mjs")],
+  ]) {
+    assert.match(text, SENTENCE, `${surface} does not ask for an empty list when no goods word applies`);
+  }
+});
+
 test("the parser takes a written key and never drops it — the answer survives", () => {
   // The third thing a reader would want ruled out. It was never the cause, and it must stay that way.
   const base = { schema_version: 1, mark: "X", dominant_element: "X",

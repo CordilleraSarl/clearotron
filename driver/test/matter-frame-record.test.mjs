@@ -351,7 +351,7 @@ test("the compile reads the identified classes off the run, and an absent frame 
     { class: "42", reason: "the hosted service" },
   ] }, { instructedScope: SCOPE });
   assert.deepEqual(frameIdentifiedClasses(runDir), ["9", "42"],
-    "the numbers the compile unions, as strings, in the order the frame gave them");
+    "the numbers the house-element check unions, as strings, in the order the frame gave them");
 
   // AND A RECORDED FRAME THAT IDENTIFIED NOTHING STILL READS EMPTY, so the union is a no-op rather than
   // an undefined that spreads into the class list as a hole.
@@ -436,6 +436,101 @@ test("the frame tool OFFERS the house-element proposal, and a proposal shaped by
   const proposal = Object.fromEntries(Object.keys(h.properties).map((k) => [k, HOUSE[k]]));
   const v = accepted({ house_element_candidate: proposal });
   assert.deepEqual(v.model.house_element_candidate, HOUSE, "a proposal shaped exactly as the schema offers it was not accepted");
+});
+
+// ── EVERY FIELD THE DISPATCH ASKS FOR HAS A SLOT ON THE TOOL, AND THE CLASSES REACH THE PLAN ─────────
+//
+// The house element above was the first field found asked for and accepted but not offered. Two more
+// were the same: the dispatch told the frame to send `identified_classes` and `ratified_forms`, the
+// acceptor validated and recorded both, the plan compile read the classes, and the tool the model hands
+// the frame back through declared neither. A real run's frame carried no added class although its goods
+// reached one. Each end had its test; nothing held the two ends to the tool between them.
+const { STAGES, paths: stagePaths } = await import("../stages.mjs");
+const { refuseUndeclared, frameIdentifiedClassRows } = await import("../matter-frame-record.mjs");
+const { compileRegisterPlan, awaitsReadingTurn } = await import("../register-plan.mjs");
+const { PROVIDER_CAPABILITIES } = await import("../register-capabilities.mjs");
+
+/** A call through the recording server itself, as the model makes it, against a run of its own. */
+async function callFrameTool(runDirPath, args) {
+  const { spawn } = await import("node:child_process");
+  const server = new URL("../engine/mcp/recording-server.mjs", import.meta.url).pathname;
+  return await new Promise((resolve, reject) => {
+    const child = spawn(process.execPath, [server], { stdio: ["pipe", "pipe", "pipe"],
+      env: { ...process.env, CLEAROTRON_BAND_RUN_DIR: runDirPath } });
+    let buf = "";
+    const timer = setTimeout(() => { child.kill("SIGKILL"); reject(new Error("the recording server did not answer the call")); }, 15000);
+    child.stdout.on("data", (d) => {
+      buf += d;
+      for (const line of buf.split("\n")) {
+        let m; try { m = JSON.parse(line); } catch { continue; }
+        if (m.id !== 2) continue;
+        clearTimeout(timer); child.kill("SIGKILL");
+        resolve(m.result ?? null);
+      }
+    });
+    child.stdin.write(JSON.stringify({ jsonrpc: "2.0", id: 1, method: "initialize", params: { protocolVersion: "2025-06-18" } }) + "\n");
+    child.stdin.write(JSON.stringify({ jsonrpc: "2.0", id: 2, method: "tools/call",
+      params: { name: "record_matter_frame", arguments: args } }) + "\n");
+  });
+}
+
+test("every field the frame's dispatch asks for is a slot on the tool, and the acceptor takes every slot", async () => {
+  const ctx = {
+    paths: stagePaths(mkdtempSync(join(tmpdir(), "frame-dispatch-"))),
+    job: { markName: "NOVAPULSE", classes: ["9"], jurisdictions: ["US"], goods: "downloadable game software" },
+    customerUnknown: false, profile: {}, exclusionSeed: [],
+  };
+  const dispatch = String(STAGES["matter-frame"].message(ctx));
+  const asked = [...new Set([...dispatch.matchAll(/Send `([a-z_]+)`/g)].map((m) => m[1]))];
+  assert.ok(asked.length >= 6 && asked.includes("identified_classes") && asked.includes("ratified_forms"),
+    `the dispatch asks for ${JSON.stringify(asked)}: too few read to hold anything, or the two fields this is about are gone`);
+
+  const schema = await frameToolSchema();
+  assert.ok(schema, "the recording server lists no record_matter_frame — this cannot look");
+  const offered = Object.keys(schema.properties ?? {});
+  assert.deepEqual(asked.filter((k) => !offered.includes(k)), [],
+    "the dispatch asks the frame to send a field its tool does not declare, so the model cannot send it");
+
+  // AND THE OTHER END. A call carrying every offered key, nested keys included, is not refused as
+  // undeclared — a slot the acceptor refuses is the same dead field from the other side.
+  const sample = (s) => s?.type === "array" ? [s.items?.type === "object" ? sample(s.items) : "x"]
+    : s?.type === "object" ? Object.fromEntries(Object.entries(s.properties ?? {}).map(([k, v]) => [k, sample(v)]))
+    : "x";
+  assert.equal(refuseUndeclared(sample(schema)), null, "the acceptor refuses a key the tool offers");
+});
+
+test("a class the frame adds through its own tool reaches the plan as one identical-mark question", async () => {
+  // DECISION 18, DRIVEN THROUGH THE WIRE. The call is built from what the tool OFFERS and nothing else,
+  // because a model sends what its schema declares: the server and the acceptor both take an undeclared
+  // key, so a hand-built call passes against a tool that offers no slot at all. It goes to the recording
+  // server as the model sends it, and what the compile receives is read back from what that call
+  // recorded, by the reader the pipeline uses.
+  const schema = await frameToolSchema();
+  const slot = schema?.properties?.identified_classes;
+  assert.ok(slot?.items?.properties, "record_matter_frame offers no identified_classes slot, so a model following it can add no class");
+  const dir = runDir();
+  const reason = "the studio sells branded game controllers";
+  const row = Object.fromEntries(Object.keys(slot.items.properties).map((k) => [k, { class: 28, reason }[k]]));
+  const result = await callFrameTool(dir, { ...PARAMS, identified_classes: [row] });
+  assert.ok(result && !result.isError, `the tool refused the call: ${JSON.stringify(result)}`);
+  assert.deepEqual(frameIdentifiedClassRows(dir), [{ class: "28", reason }],
+    "the class sent through the tool was not recorded where the plan compile reads it");
+
+  const MARK = "NOVAPULSE";
+  const plan = compileRegisterPlan({
+    manifest: { schema_version: 1, mark: MARK, dominant_element: MARK, elements: [{ value: MARK, kind: "distinctive" }],
+      variants: [{ value: MARK, category: "core" }, { value: "NOVAPULS", category: "spelling" }], incumbent_classes: [] },
+    job: { jobKey: "t", classes: SCOPE.classes, jurisdictions: [] },
+    capabilities: PROVIDER_CAPABILITIES.clarivate, addedClasses: frameIdentifiedClassRows(dir) });
+  const inAdded = plan.entries.filter((e) => (e.nice_classes ?? []).includes("28"));
+  assert.equal(inAdded.length, 1, `class 28 reached ${inAdded.length} entries; an added class costs one question`);
+  assert.equal(inAdded[0].term, MARK, "the added class's one question is not the identical mark");
+  assert.ok(!awaitsReadingTurn(inAdded[0].when), "the added class's question waits, so the class would never be searched");
+
+  // THE CONTROL: the same call without the field adds nothing.
+  const bare = runDir();
+  await callFrameTool(bare, PARAMS);
+  assert.deepEqual(frameIdentifiedClassRows(bare), []);
 });
 
 test("the frame PROPOSES a house element, and the document says it is not yet excluded", () => {

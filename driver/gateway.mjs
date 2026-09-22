@@ -225,6 +225,8 @@ export function toolWrittenArtifact(p) {
     ?? null;
 }
 import { buildGatherMcpConfig, allowedToolsFor, toolGroupsForStage, recordAxisFor, seatWritesForGroups } from "./engine/mcp/gather-config.mjs";
+import { everyToolCallRefused } from "./engine/tool-refusal.mjs";   // one definition, shared with the engine probe
+export { everyToolCallRefused };
 // The profiles STORE root, for the write boundary only — read from the module that owns it, never
 // re-derived from CLEAROTRON_CUSTOMERS_DIR here. Acyclic: profiles.mjs imports node builtins + config.
 import { unitRefusalsFor } from "./register-unit-record.mjs";
@@ -1528,6 +1530,11 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // appear: a postponed run resumes on its own, and a signed-out one cannot. The sentence rides after
     // the colon, as `model_mismatch:` carries its detail, so no run-level classifier needs a new token.
     else if (turn.signals?.signedOut && fail) fail = `engine_signed_out: ${turn.signals.signedOut}`;
+    // AND ONE WHOSE TOOLS WERE ALL REFUSED IS NAMED, not left as the missing file the refusal caused. The
+    // turn reported success and the stage failed for want of what its tools would have produced; a
+    // `missing_file` reads as a model that did not write, and sends the reader to the wrong place. The
+    // sentence says what fixes this host. After the sign-in, which is the more basic fault when both appear.
+    else if (turn.signals?.toolsRefused && fail) fail = `engine_tools_refused: ${turn.signals.toolsRefused}`;
     // A6 (addendum 2026-07-30): stop_reason max_tokens with ZERO usable output is a DETECTED FAULT with a
     // name — never a silent paid retry. The turn ran to its output-token ceiling and the artifact never
     // landed (a content fail on a "successful" turn), or the turn itself died at the ceiling (transport
@@ -2025,6 +2032,15 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // same credential and gets the same 401, seconds apart. Break, and let the stage fail with it named.
     if (fail.startsWith("engine_signed_out:")) {
       note(`[${name}] the engine's sign-in could not be refreshed — breaking the ladder (a retry re-sends the same credential)`);
+      break;
+    }
+    // EVERY TOOL CALL THE TURN MADE WAS REFUSED. On some hosts codex's own sandbox refuses the stage's
+    // tool servers while the turn reports success, and the stage then fails for want of what the tools
+    // would have produced. The next attempt spawns the same sandbox and is refused the same way, so a
+    // retry re-buys the refusal: measured at three paid attempts per stage on a production run before the
+    // identical-failure break stopped it. Break on the first. A turn where any call completed is not this.
+    if (everyToolCallRefused(turn)) {
+      note(`[${name}] every tool call this turn made was refused (${turn.mcpToolCallsRefused}) — breaking the ladder (a retry is refused the same way)`);
       break;
     }
     // D3: overload (529 / status_overloaded) — stop the ladder here: an in-ladder re-attempt hammers an
@@ -2816,7 +2832,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       `The driver computed every obligation and every identifier in it — the coverage unit, the query id, the hit ` +
       `count, the unaccounted classes and terms, each deferred slice's own receipt reason. Record the named row(s) ` +
       `through the \`record_coverage\` tool — {"row_id","status","reason"} per row, never by writing or editing any ` +
-      `file: "status" EXACTLY one bare token of confirmed-clean / coverage-limited / deferred, "reason" the sentence ` +
+      `file: "status" EXACTLY one bare token of confirmed-clean / coverage-limited / deferred / withheld-by-judgment, "reason" the sentence ` +
       `the lawyer reads (qualifiers go in the reason, never in the status). ` +
       `A row marked "open" cannot be confirmed-clean, and its own "open_because" says which of the two kinds ` +
       `it is. A NEVER-SEARCHED slice — the active register provider cannot express it, so nothing can make it run — is ` +
@@ -2983,7 +2999,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     // run the driver stamped as form-required, and the stamp is conditional. On an unstamped run
     // validators.registerFindings demands the table exactly as it did before and emits this label,
     // so dropping the arm left the one lane that can still fire it with a generic hint.
-    hint = "the file has a findings heading plus a Coverage ledger with a status row (confirmed-clean / coverage-limited / deferred)";
+    hint = "the file has a findings heading plus a Coverage ledger with a status row (confirmed-clean / coverage-limited / deferred)" + (/common-law-findings/.test(lastFail) ? ", or each ledger row's status is recorded by calling `record_coverage_status` with `grid_spec_path`, the same spec path the grid tool was given" : "");
   } else if (/negative-results|coverage-ledger|audit-trail|findings-heading/.test(lastFail)) {
     hint = "the findings file carries ALL required sections: a findings heading, the Negative results matrix " +
       "(every variant × platform row), the Coverage ledger with a status row, and the Audit trail call log";

@@ -111,8 +111,7 @@ export function updaterVerdict({ stamp, now = null, deployClone = null, maxAgeSe
     return { state: "fail", message:
       `no updater identity stamp at ${UPDATER_STAMP_BASENAME}: the copy of the updater that deploys this `
       + "box did NOT say what it is, so whether it is the current one was not established. A copy old "
-      + "enough to predate the stamp writes none, which is itself the stale-updater case. This is a "
-      + "failure to look, never a pass." };
+      + "enough to predate the stamp writes none, which is itself the stale-updater case." };
   }
 
   // — AN UNREADABLE SIDE IS NOT A MISMATCH. A digest that could not be taken arrives as null, and
@@ -128,7 +127,7 @@ export function updaterVerdict({ stamp, now = null, deployClone = null, maxAgeSe
       : !wsha ? "the running copy of the updater could NOT be read as a digest"
       : "the master could NOT be read as a digest";
     const why = stamp.masterCommitError ? ` The updater reported: ${stamp.masterCommitError}` : "";
-    return { state: "fail", message:
+    return { state: "skip", blocked: true, message:
       `the updater stamp is present but ${which}, so the running copy was NOT `
       + `compared against its master.${why} This is a failure to look, never a pass.` };
   }

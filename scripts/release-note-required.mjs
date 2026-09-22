@@ -53,6 +53,23 @@
 // reach a number, which is the failure this repository has already paid for once. The remaining half is
 // a person reading the diff and asking what a lawyer would want told.
 //
+// ── ONLY A PULL REQUEST'S OWN COMMITS ARE READ, AND THAT IS THE ONLY READING THAT COUNTS ─────────────
+//
+// The per-commit question below does not survive a squash. A squash commit adds every note the branch
+// carried, so it "carries its own note", and any prose release line it inherited from a folded commit is
+// excused. Measured on a simulated squash of an integration branch whose one offending commit this guard
+// refused commit by commit: over the squash it passed. So this guard is a gate only where it reads the
+// commits a pull request brings, one at a time, before they are folded. That is how CI runs it, on the
+// pull request's range; on a push to main the range is empty and it says so rather than passing quietly.
+//
+// AND POINTED AT MAIN'S OWN LINE IT SAYS SO, ON EVERY ANSWER. A range with a commit on `origin/main`'s
+// first-parent history is reading the squashes themselves. That reading still catches a squash that
+// shipped code with no note at all (an arm replays one), so it is not refused. It cannot catch a prose
+// line a squash inherited, and its pass is therefore not the per-commit answer. So every answer over
+// that line carries the sentence that says which of the two it can give. An audit of what shipped
+// reads the pull requests that brought it, never the squashes they became. An arm pins
+// both readings side by side, and that CI runs this on the pull request's range and nowhere else.
+//
 // ── A DECLINATION ANSWERS FOR ITS OWN COMMIT, NOT FOR THE RANGE ──────────────────────────────────────
 //
 // This read one `Release-note: none` anywhere in the range as the answer for all of it, so a pack of
@@ -270,7 +287,7 @@ function main() {
   // have failed, and would have reported the acceptance met for the life of the branch.
   const head = argAfter("--head") || "HEAD";
   const git = (...a) => execFileSync("git", a, { encoding: "utf8", maxBuffer: 1 << 28 });
-  let changed, commits, atHead;
+  let changed, commits, atHead, onMainLine = [];
   try {
     changed = git("diff", "--name-only", `${base}...${head}`).split("\n").filter(Boolean);
     // THE BRANCH'S OWN COMMITS. On a pull request the range can reach commits main already carries, from
@@ -282,6 +299,12 @@ function main() {
       catch { /* no origin/main in this clone: the range as given */ }
     }
     const shas = git("rev-list", "--no-merges", "--reverse", `${base}..${head}`, ...exclude).split("\n").filter(Boolean);
+    // MAIN'S OWN LINE IS NAMED (see the header): a squash there excuses the prose it inherited. Asked
+    // only where main is known; a clone without it keeps the range as given.
+    let mainKnown = false;
+    try { git("rev-parse", "--verify", "-q", "origin/main^{commit}"); mainKnown = true; } catch { /* not known here */ }
+    const mainLine = mainKnown ? new Set(git("rev-list", "--first-parent", "origin/main").split("\n").filter(Boolean)) : new Set();
+    onMainLine = shas.filter((sha) => mainLine.has(sha));
     commits = shas.map((sha) => ({
       sha,
       subject: git("log", "-1", "--format=%s", sha).trim(),
@@ -302,6 +325,14 @@ function main() {
   catch (e) { console.error(`release-note-required: cannot read the shipped file list: ${e.message}`); process.exit(2); }
   if (!files.length) { console.error("release-note-required: package.json names no shipped files, so this cannot look"); process.exit(2); }
 
+  if (!commits.length) {
+    // NOTHING TO READ IS SAID, NOT IMPLIED. On a push to main every commit is already on main, so the range
+    // is empty by construction: the pull request that brought them was read before they were squashed.
+    console.log(`release-note-required: no commit in ${base}..${head} that main does not already hold, so there `
+      + "is nothing here to read. This guard answers for a pull request's own commits, one by one, and main's "
+      + "history is never read.");
+    return;
+  }
   const { visible, notes, declined, withdrawals, owed } = commitVerdicts({ commits, files, atHead });
   console.log(`release-note-required: ${changed.length} changed file(s) against ${base}`
     + `${head === "HEAD" ? "" : ` (head ${head})`}; `
@@ -309,6 +340,12 @@ function main() {
     + `${withdrawals.length ? `; ${withdrawals.length} answered by a note the range withdrew` : ""}`);
   // PER COMMIT, SAID AS PER COMMIT. "no note, declared on purpose" read as a verdict on the range, and beside
   // a range that carries a note it told a reader skimming the output that none went out. Found in review.
+  if (onMainLine.length) {
+    console.log(`  NOT THE GATE'S READING: ${onMainLine.length} commit(s) read here are on main's own line (first `
+      + `${onMainLine[0].slice(0, 7)}), so they are squashes. Over a squash this finds a change that shipped with no `
+      + "note at all; it cannot find a prose release line the squash inherited, so a pass here is not the "
+      + "per-commit answer. The gate is the pull request's own reading, before the squash.");
+  }
   for (const d of declined) console.log(`  ${d.sha.slice(0, 7)} declines a note of its own, on purpose: ${d.reason}`);
   // AN EXCUSED COMMIT IS PRINTED, WITH THE SHA THAT EXCUSED IT. A pass this check reached by reading
   // another commit's decision is one a person may want to disagree with, and they cannot if it is silent.

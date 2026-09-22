@@ -335,14 +335,14 @@ export function isUnconditionalProceed(rec) {
 
 /**
  * Deterministically BIND a recommendation line to the verdict: on a CONDITIONAL verdict an
- * unconditional "proceed" is rewritten to carry the conditions; on BLOCKING any recommendation is
- * replaced (a BLOCKING run does not reach delivery post- — belt-and-braces for legacy paths).
+ * unconditional "proceed" is rewritten to carry the conditions. BLOCKING is the reviewer's sign-off on
+ * the draft, not a hold: a BLOCKING run delivers, so its recommendation stands as the report wrote it.
  * Code derives the bound from the model's OWN verdict + reasons; it never invents a verdict. PURE.
  */
 export function bindRecommendation(rec, verdict, reasons = [], { maxReasons, maxLen } = {}) {
   const r = String(rec ?? "").trim();
   const v = String(verdict || "").toUpperCase();
-  if (v === "BLOCKING") return "On hold — the reviewing lawyer's open questions must be resolved before any recommendation.";
+  // BLOCKING returns the recommendation as written: nothing holds delivery on it, so "on hold" was untrue (ruled 2026-09-22).
   if (v !== "CONDITIONAL" || !r || !isUnconditionalProceed(r)) return r;
   const conds = (reasons ?? []).filter(Boolean);
   if (!conds.length) return r;
@@ -600,7 +600,7 @@ export function riskStatement({ tier, verdict, reasons, basis, clauses } = {}) {
   // CLEAR, so long as it is clear on register findings ALONE).
   const registerOnly = basis === "register-only";
   const basisNote = registerOnly ? " Register findings only — no common-law or marketplace search was run." : "";
-  if (v === "BLOCKING") return `On hold — the reviewing lawyer's open questions must be resolved before any recommendation.${basisNote}`;
+  if (v === "BLOCKING") return `${t}${basisNote ? `.${basisNote}` : ""}`;   // the reviewer's sign-off is not the clearance's answer and nothing is held on it: the band stands alone, as below
   if (v === "CONDITIONAL") {
     // A clause stored as explicit null is a condition ruled to the run record alone: it is not the lede,
     // it is not counted, and its reason is never the fallback text. `undefined` (legacy/short) is not null.

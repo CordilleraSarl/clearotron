@@ -100,7 +100,10 @@ test("an incomplete stamp cannot say who is draining, and is a failure", () => {
 
 test("an unreadable checkout HEAD is a could-not-look, never a pass", () => {
   const v = drainerVerdict({ stamp: stampOf(), headCommit: null, isAlive: ALIVE, processes: [] });
-  assert.equal(v.state, "fail");
+  // Marked, so the check exits 3 rather than the 1 a drift gives: the two commits were never compared,
+  // and redeploying changes nothing about a HEAD this check could not read.
+  assert.equal(v.state, "skip");
+  assert.equal(v.blocked, true);
   assert.match(v.message, /could not be read/);
 });
 

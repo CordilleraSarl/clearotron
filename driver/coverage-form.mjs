@@ -32,10 +32,10 @@ import { REGISTER_AXES, COVERAGE_STATUSES, normalizeAxis, CROWD_RULING_TOKEN,
   CROWD_RULING_UNIT_GRAMMAR } from "./coverage-ledger.mjs";
 import { shortId } from "./connotation-search.mjs";
 import { openBlocksByAxis } from "./register-plan.mjs";
-import { territoryLayerReport, unsearchedLayerReason } from "./binding-layers.mjs";
+import { territoryLayerReport, unsearchedLayerReason } from "./binding-layers.mjs"; import { goodsTermsList } from "../providers/_shared/term-shape.mjs";
 
 const STATUS_SET = new Set(COVERAGE_STATUSES);
-const DRIVER_KINDS = new Set(["axis", "block", "deferred"]);
+const DRIVER_KINDS = new Set(["axis", "block", "deferred", "family"]);
 
 // ── SEAT ROWS — WHAT THE FORM DOES NOT TAKE AWAY ────────────────────────────────────────────────────
 //
@@ -238,7 +238,7 @@ export function seatRows(rows, driverKeys) {
 }
 
 // The coverage unit label, composed by the machine from the plan entry it is about — never a string the
-// seat invents and never one it has to reproduce. `<axis> / <predicate>: <term(s)> [cl <classes>]`, the
+// seat invents and never one it has to reproduce. `<axis> / <predicate>: <term(s)> [cl <classes>] goods: <words>`, the
 // same left-of-slash-is-the-axis shape every downstream coverage consumer keys on (coverage-ledger.mjs
 // normalizeAxis, scope-facts, the taint join). Terms are bounded so an OR-stack of forty cannot make one
 // table cell unreadable; the qid rides its own column, so nothing identifying is lost to the cut.
@@ -256,7 +256,7 @@ function unitLabel(axis, entry) {
     String(entry.predicate ?? "").trim(),
     shown.length ? `${shown.join(" OR ")}${more}` : "",
   ].filter(Boolean).join(": ");
-  return `${axis} / ${scope || String(entry.qid ?? "")}${cls}`;
+  return `${axis} / ${scope || String(entry.qid ?? "")}${cls}${goodsTermsList(entry).length ? ` goods: ${goodsTermsList(entry).join(" OR ")}` : ""}`;   // the goods words are part of the question (ruled for the client's table 2026-09-22): a goods slice shares predicate, term and classes with the identical one
 }
 
 /**
@@ -304,7 +304,7 @@ function unitLabel(axis, entry) {
  */
 export function coverageFormRows({ skeleton = [], activeAxes = null, plan = null,
   bandBlocksByAxis = {}, deferredReasons = {}, bandsUnreadable = [],
-  orderedTerritories = [], capabilities = null } = {}) {
+  orderedTerritories = [], capabilities = null, awaiting = [], withheld = {} } = {}) {
   const skel = Array.isArray(skeleton) ? skeleton.filter((s) => s && typeof s === "object") : [];
   const entriesByQid = new Map((plan?.entries ?? []).map((e) => [e.qid, e]));
   const open = openBlocksByAxis(skel, bandBlocksByAxis, plan);
@@ -374,6 +374,26 @@ export function coverageFormRows({ skeleton = [], activeAxes = null, plan = null
         open: true,
         open_because: "the active register provider cannot express this query — it was never searched and no re-run can reach it",
         status: null, reason: null,
+      });
+    }
+    // ── A WAITING FAMILY THE READING TURN DID NOT ASK (withheld-families.mjs) ─────────────────────
+    //
+    // It was never searched, and the one honest judgment of it is the turn's: withheld, with the reason
+    // it was not asked. The row arrives settled when the turn recorded that, and open when nobody did,
+    // so an unjudged family is an obligation the digest's gate refuses to pass. `family` rows stay out of
+    // the ledger the report is built from; the reason is the run's record and the audit workbook's.
+    for (const f of (Array.isArray(awaiting) ? awaiting : [])) {
+      const qid = String(f?.qid ?? "").trim();
+      if (!qid || String(f?.axis ?? "").trim() !== axis) continue;
+      const w = withheld?.[qid];
+      rows.push({
+        row_id: shortId("CF", `family:${qid}`),
+        axis, kind: "family",
+        unit: unitLabel(axis, entriesByQid.get(qid)),
+        qid,
+        open: true,
+        open_because: "a waiting family the reading turn did not ask — it was never searched, and its only judgment is withheld-by-judgment with the reason it was not asked",
+        status: w?.reason ? "withheld-by-judgment" : null, reason: w?.reason ? String(w.reason) : null,
       });
     }
     // ── AN OFFICE THIS DEPLOYMENT COULD NOT REACH ────────────────────────────────────────
@@ -681,14 +701,14 @@ export function rowIsSettled(row, canonical) {
   // qid and blockIsDisclosed' qid-or-hit-count — because the driver's own row for that obligation IS the
   // naming, so requiring THAT row to be non-clean asks for precisely what "named by a non-clean row on
   // its own axis" asked for. Per row, never per axis: a sibling row's status discharges nothing.
-  if (canonical.open === true && status === "confirmed-clean") return false;
+  if (canonical.open === true && status === "confirmed-clean") return false; if (canonical.kind === "family" && status !== "withheld-by-judgment") return false;   // a waiting family never ran: withheld is its only judgment
   return true;
 }
 
 /** The settled rows of a form, in the shape every coverage consumer reads: {axis, status, unit, reason}. */
 export function formLedgerRows(rows) {
   return (rows ?? [])
-    .filter((r) => r && STATUS_SET.has(String(r.status ?? "").trim().toLowerCase()))
+    .filter((r) => r && r.kind !== "family" && STATUS_SET.has(String(r.status ?? "").trim().toLowerCase()))
     .map((r) => ({
       axis: String(r.axis ?? "").trim().toLowerCase(),
       status: String(r.status).trim().toLowerCase(),
@@ -860,7 +880,7 @@ const cell = (s) => String(s ?? "").replace(/\\/g, "\\\\").replace(/\|/g, "\\|")
 
 /** The `## Coverage ledger` section, rendered from the form's rows. "" when nothing is settled. PURE. */
 export function renderCoverageLedgerSection(rows) {
-  const usable = (rows ?? []).filter((r) => r && STATUS_SET.has(String(r.status ?? "").trim().toLowerCase()));
+  const usable = (rows ?? []).filter((r) => r && r.kind !== "family" && STATUS_SET.has(String(r.status ?? "").trim().toLowerCase()));
   if (!usable.length) return "";
   return [
     "## Coverage ledger",
@@ -936,7 +956,7 @@ export function spliceCoverageLedger(md, section) {
  * @returns {string} a JSON ARRAY string that round-trips through parseCoverageLedgerJson
  */
 export function renderCoverageLedgerJsonFromForm(rows, classTokens) {
-  const usable = (rows ?? []).filter((r) => r && STATUS_SET.has(String(r.status ?? "").trim().toLowerCase()));
+  const usable = (rows ?? []).filter((r) => r && r.kind !== "family" && STATUS_SET.has(String(r.status ?? "").trim().toLowerCase()));
   return JSON.stringify(usable.map((r) => {
     const unit = String(r.unit ?? r.axis ?? "");
     const i = unit.indexOf("/");
@@ -995,19 +1015,26 @@ export function coverageFormBrief(form) {
     "row as it arrives, holds the record itself, and renders the table and the coverage JSON from it —",
     "nothing you write into any file is read.",
     "",
-    `There are ${rows.length} row(s) — one per axis, one per unaccounted crowd block, one per deferred slice —`,
+    `There are ${rows.length} row(s) — one per axis, one per unaccounted crowd block, one per deferred slice, one per waiting family the reading turn did not ask —`,
     "and every identifier is computed: the coverage unit, the query id, the hit count, the unaccounted",
     "classes and terms, and each deferred slice's own receipt reason. This is the complete list: nothing is",
     "abbreviated, truncated or elided, and there is nothing owed that is not a row below.",
     "",
     "For EVERY row, call `record_coverage` with `row_id` (as listed), `status` — exactly one bare token of",
-    "confirmed-clean / coverage-limited / deferred — and `reason`, the sentence the lawyer reads: a",
+    "confirmed-clean / coverage-limited / deferred / withheld-by-judgment — and `reason`, the sentence the lawyer reads: a",
     "lawyer's words, never the engine's (a reason naming primary-sweep, saturation-probe,",
     "transliteration-numeric, incumbent-class or crowd-context is REFUSED, because the coverage unit",
     "already carries the identifier and your sentence is printed on the client's report). A call carries a",
     "batch; refused rows name what to change and the rest of the call is KEPT; statuses accumulate across",
     "attempts, so a row settled once stays settled. The answer lists every obligation still outstanding.",
     "",
+    ...(rows.some((r) => r.kind === "family") ? [
+      "A `family` row is a waiting family the reading turn did not ask. It was never searched, so its only",
+      "status is withheld-by-judgment. Most arrive settled with the reading turn's reason; for any that did",
+      "not, record withheld-by-judgment and why it was not asked. That reason goes into the audit workbook, not",
+      "the report.",
+      "",
+    ] : []),
     "THE ROWS:",
     ...rows.map(briefRow),
     "",

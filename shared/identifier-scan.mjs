@@ -116,14 +116,31 @@ export const ALLOWED_CONTEXT =
  * Escapes become spaces before matching, which fixes the class rather than that one line: `\n`, `\t`,
  * `\r` and `\\` in any quoted source, HTML numeric and named entities, and `%20`-style percent escapes.
  * A boundary in the SOURCE is a boundary in the TEXT, whatever the encoding.
+ *
+ * READ AS A LEXER READS THEM, and two misreadings of Windows paths to Node's executable are why
+ * (2026-09-22). Both reported a three-letter mark, spelled by the letters after the path's last `\n`,
+ * that was not there:
+ *
+ *   - `\\` is consumed as a pair, in the same left-to-right pass as the others. Replaced in a separate
+ *     pass after `\n`, the second backslash of a pair was read as the start of `\n`.
+ *   - A Windows path written raw — drive letter, colon, ONE backslash, as in a comment, a doc or a TOML
+ *     literal — holds no escapes, so its backslashes are left as separators. A separator is already a
+ *     boundary, and reading `\n` there also broke a lowercase name that starts with n, r, t, f or v.
+ *     The escaped form (`C:\\`) is not a raw path, so an escape beside a path in a string is still read.
  */
-export const unescapeBoundaries = (line) =>
-  line
-    .replace(/\\[nrtfv0]/g, " ")
-    .replace(/\\\\/g, " ")
-    .replace(/\\u[0-9a-fA-F]{4}|\\x[0-9a-fA-F]{2}/g, " ")
+const BACKSLASH_ESCAPE = /\\(?:[\\nrtfv0]|u[0-9a-fA-F]{4}|x[0-9a-fA-F]{2})/g;
+const RAW_WINDOWS_PATH = /(?<![A-Za-z0-9])[A-Za-z]:\\(?!\\)[^"'`<>|?*\r\n]*/g;
+
+export const unescapeBoundaries = (line) => {
+  let out = "", at = 0;
+  for (const m of line.matchAll(RAW_WINDOWS_PATH)) {
+    out += line.slice(at, m.index).replace(BACKSLASH_ESCAPE, " ") + m[0];
+    at = m.index + m[0].length;
+  }
+  return (out + line.slice(at).replace(BACKSLASH_ESCAPE, " "))
     .replace(/&(?:#\d+|#x[0-9a-fA-F]+|[a-zA-Z]+);/g, " ")
     .replace(/%[0-9a-fA-F]{2}/g, " ");
+};
 
 /**
  * Does this entry fire on this line?

@@ -34,6 +34,7 @@ import {
   CAPABILITIES, doSearch, doRecordFetch, doBatchScreen, doImageFetch, doEnumerate, doExecutePlan,
 } from "../../../providers/free-tier/src/core.js";
 import { proposeSupplemental } from "./supplemental.mjs";
+import { narrowingFields } from "./proposal-fields.mjs";
 
 // NULL, and it is not a placeholder. Each member core resolves its OWN credentials from the environment
 // — EUIPO its OAuth pair, the index its file path — so there is no single auth object a composite could
@@ -167,6 +168,7 @@ serve({
           romanization: { type: "string" },
           owner: { type: "string" },
           nice_classes: { type: "array", items: {} },
+          ...narrowingFields(),   // the narrowing fields every register serves (proposal-fields.mjs)
           rationale: { type: "string" },
           term_literal: { type: "boolean" },
         } } },

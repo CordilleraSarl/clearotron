@@ -327,10 +327,13 @@ export function fillCoverageForm(runDir, msg) {
     // Losing a disclosure is the worse of the two errors by a long way. `withheld-by-judgment` says
     // "we chose not to open this, and that is where the work was spent"; it may only be said about a
     // row that has nothing else to say. Anything carrying a real disclosure keeps it.
-    status: r.open ? "deferred"
+    // A WAITING FAMILY'S ONLY JUDGMENT IS WITHHELD (withheld-families.mjs): it never ran, so it is
+    // checked before `open`, which every family row carries.
+    status: r.kind === "family" ? "withheld-by-judgment" : r.open ? "deferred"
       : r.axis === limited ? "coverage-limited" : r.kind === "block" ? "coverage-limited"
       : skippedAxis(r) ? "withheld-by-judgment" : "confirmed-clean",
-    reason: r.open ? "never dispatched — the active register provider cannot express this slice; disclosed as an open question"
+    reason: r.kind === "family" ? "not asked: the identical question is answered and this family would only widen it"
+      : r.open ? "never dispatched — the active register provider cannot express this slice; disclosed as an open question"
       : r.axis === limited ? "yielded to ring-fenced jurisdiction budget"
       : r.kind === "block" ? "the band left part of this slice unaccounted — a material gap; ships CONDITIONAL"
       : skippedAxis(r) ? "not opened: the identical question is answered and this family would only widen it"
@@ -1643,7 +1646,7 @@ export function applyStageWrites(msg, argv) {
       // own copy of the filter, and the copy went stale the moment the ledger gained a fourth status:
       // `withheld-by-judgment` is a family the reading turn chose NOT to open, and it sits beside
       // `confirmed-clean` — nothing to carry — where the copy read it as a limit like any other. The
-      // mock seat then carried a withheld family onto the client's coverage grid, worded "Partially
+      // mock seat then carried that unopened family onto the coverage grid, worded "Partially
       // covered", INSTEAD of the documented limit that run actually had. Two wrongs in one row: a
       // decision the client is never shown, standing in for a disclosure the client is owed.
       //

@@ -80,7 +80,7 @@ const slimRun = (r) => ({
   markName: r.markName, ref: r.ref, classes: r.classes,
   state: r.state, stepN: r.stepN, stepTotal: r.stepTotal, stepLabel: r.stepLabel,
   lastStage: r.lastStage,   // spec 64 C — the RAW stage key ("register-unit:primary-sweep"): what the run is actually doing
-  verdict: r.verdict, statement: r.statement,   // spec 64 — THE one risk statement (absent on legacy runs)
+  verdict: r.verdict, statement: r.statement, caption: r.caption,   // spec 64 — THE one risk statement (absent on legacy runs); caption — the report's own conclusion
   url: r.url, failedStage: r.failedStage, reason: r.reason,
   resetsAt: r.resetsAt,   // rate-limit POSTPONE ONLY: when the cap window clears + the run auto-resumes (ISO)
   recoveryResumesAt: r.recoveryResumesAt ?? null,   // recovery park's backoff clock (A4 split — never conflated with a provider cap)

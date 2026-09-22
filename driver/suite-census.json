@@ -51,6 +51,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-batch-of-names-is-one-question-per-name-without-or.test.mjs": {
+          "tests": 4,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
         "a-block-that-ran-and-said-nothing-is-not-a-block-that-never-ran.test.mjs": {
           "tests": 6,
           "asserts": 16,
@@ -84,6 +90,18 @@
         "a-cancelled-run-stays-cancelled.test.mjs": {
           "tests": 14,
           "asserts": 29,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-capability-gap-is-decided-once-per-run.test.mjs": {
+          "tests": 4,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-capability-gap-is-not-reopened.pipeline.test.mjs": {
+          "tests": 1,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },
@@ -124,8 +142,8 @@
           "todos": 0
         },
         "a-check-that-could-not-look-does-not-report-a-drift.test.mjs": {
-          "tests": 5,
-          "asserts": 10,
+          "tests": 10,
+          "asserts": 26,
           "skips": 0,
           "todos": 0
         },
@@ -180,6 +198,12 @@
         "a-command-printed-from-npx-outlives-the-cache.test.mjs": {
           "tests": 3,
           "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-common-law-coverage-status-is-read-as-data.test.mjs": {
+          "tests": 11,
+          "asserts": 42,
           "skips": 0,
           "todos": 0
         },
@@ -435,6 +459,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-full-country-card-keeps-what-the-multi-country-card-shows.test.mjs": {
+          "tests": 2,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "a-generic-run-is-filed-and-capped-at-the-claim.test.mjs": {
           "tests": 2,
           "asserts": 12,
@@ -447,6 +477,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-goods-slice-and-an-added-class-read-as-themselves.test.mjs": {
+          "tests": 5,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
         "a-half-applied-connect-says-so.test.mjs": {
           "tests": 5,
           "asserts": 15,
@@ -456,6 +492,12 @@
         "a-han-mark-is-not-a-longer-mark.test.mjs": {
           "tests": 8,
           "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-hard-error-gets-one-settle-attempt-per-run.test.mjs": {
+          "tests": 5,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
@@ -534,6 +576,12 @@
         "a-mark-name-cannot-lie-about-how-it-reads.test.mjs": {
           "tests": 9,
           "asserts": 37,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-mark-too-short-for-contains-is-asked-exactly.test.mjs": {
+          "tests": 12,
+          "asserts": 57,
           "skips": 0,
           "todos": 0
         },
@@ -1041,6 +1089,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-taken-port-is-retried-whatever-shape-the-result-has.test.mjs": {
+          "tests": 4,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
         "a-terminal-guard-delivers-and-clamps.test.mjs": {
           "tests": 11,
           "asserts": 40,
@@ -1061,13 +1115,19 @@
         },
         "a-timer-is-asked-about-as-a-timer.test.mjs": {
           "tests": 7,
-          "asserts": 16,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
         "a-turn-the-program-answers-itself-names-no-model.test.mjs": {
           "tests": 5,
           "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-turn-whose-every-tool-call-was-refused-is-not-retried.test.mjs": {
+          "tests": 3,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
@@ -1116,6 +1176,12 @@
         "a-wait-the-driver-could-not-measure-says-so.test.mjs": {
           "tests": 3,
           "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-waiting-family-the-reading-turn-asks-is-asked.test.mjs": {
+          "tests": 3,
+          "asserts": 13,
           "skips": 0,
           "todos": 0
         },
@@ -1245,6 +1311,12 @@
           "skips": 0,
           "todos": 0
         },
+        "an-escape-is-read-the-way-a-lexer-reads-it.test.mjs": {
+          "tests": 3,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
         "an-evidence-demand-that-cannot-be-met.test.mjs": {
           "tests": 9,
           "asserts": 21,
@@ -1319,7 +1391,7 @@
         },
         "archive-index.test.mjs": {
           "tests": 15,
-          "asserts": 85,
+          "asserts": 87,
           "skips": 0,
           "todos": 0
         },
@@ -2261,7 +2333,7 @@
         },
         "drainer-identity.test.mjs": {
           "tests": 17,
-          "asserts": 50,
+          "asserts": 51,
           "skips": 0,
           "todos": 0
         },
@@ -2380,8 +2452,8 @@
           "todos": 0
         },
         "engine-probe.test.mjs": {
-          "tests": 30,
-          "asserts": 143,
+          "tests": 34,
+          "asserts": 166,
           "skips": 0,
           "todos": 0
         },
@@ -2524,8 +2596,8 @@
           "todos": 0
         },
         "every-surface-that-takes-the-manifest-asks-for-the-goods-words.test.mjs": {
-          "tests": 9,
-          "asserts": 21,
+          "tests": 10,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },
@@ -2544,6 +2616,12 @@
         "every-verb-answers-help.test.mjs": {
           "tests": 6,
           "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "every-waiting-family-is-asked-or-withheld.test.mjs": {
+          "tests": 8,
+          "asserts": 29,
           "skips": 0,
           "todos": 0
         },
@@ -2633,7 +2711,7 @@
         },
         "findings-model.test.mjs": {
           "tests": 68,
-          "asserts": 258,
+          "asserts": 259,
           "skips": 0,
           "todos": 0
         },
@@ -3028,8 +3106,8 @@
           "todos": 0
         },
         "matter-frame-record.test.mjs": {
-          "tests": 25,
-          "asserts": 89,
+          "tests": 27,
+          "asserts": 100,
           "skips": 0,
           "todos": 0
         },
@@ -3095,7 +3173,7 @@
         },
         "no-client-surface-speaks-the-delivery-gates-word.test.mjs": {
           "tests": 4,
-          "asserts": 17,
+          "asserts": 21,
           "skips": 0,
           "todos": 0
         },
@@ -3317,7 +3395,7 @@
         },
         "pipeline.anthropic.test.mjs": {
           "tests": 3,
-          "asserts": 77,
+          "asserts": 78,
           "skips": 0,
           "todos": 0
         },
@@ -3611,7 +3689,7 @@
         },
         "provider-hard-error-deferral.test.mjs": {
           "tests": 16,
-          "asserts": 55,
+          "asserts": 56,
           "skips": 0,
           "todos": 0
         },
@@ -5343,6 +5421,12 @@
           "skips": 1,
           "todos": 0
         },
+        "the-reading-turn-narrows-the-same-way-on-every-register.test.mjs": {
+          "tests": 5,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
         "the-readmes-commands-run-as-written.test.mjs": {
           "tests": 2,
           "asserts": 5,
@@ -5376,6 +5460,12 @@
         "the-register-probe-reads-the-install-env-file.test.mjs": {
           "tests": 3,
           "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-release-note-guard-reads-a-pull-request-and-never-main.test.mjs": {
+          "tests": 4,
+          "asserts": 13,
           "skips": 0,
           "todos": 0
         },
@@ -5499,6 +5589,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-short-surfaces-quote-the-report.test.mjs": {
+          "tests": 3,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "the-sign-in-door-folds-its-administrator-help.test.mjs": {
           "tests": 5,
           "asserts": 23,
@@ -5567,7 +5663,7 @@
         },
         "the-updater-that-deploys-this-box-says-what-it-is.test.mjs": {
           "tests": 18,
-          "asserts": 59,
+          "asserts": 61,
           "skips": 0,
           "todos": 0
         },
@@ -6839,6 +6935,12 @@
           "skips": 0,
           "todos": 0
         },
+        "providers/clarivate/test/a-refused-query-is-named-with-its-size.test.mjs": {
+          "tests": 6,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
         "providers/clarivate/test/phrase-value.test.mjs": {
           "tests": 6,
           "asserts": 23,
@@ -6914,6 +7016,12 @@
         "providers/signa/test/a-search-row-is-a-band-row.test.mjs": {
           "tests": 3,
           "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/signa/test/an-exact-question-stays-ranked-above-the-floor.test.mjs": {
+          "tests": 3,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },

@@ -33,7 +33,7 @@
 //     token) carry `when: { runs_if_enumerated: <parent qid> }` — they run ONLY if the parent
 //     contains-slice proved tractable. A crowd parent is TERMINAL for its children, encoded, not
 //     remembered.
-//   - AND A SECOND, DIFFERENT WAIT (ruling 204): the decision-10 families carry
+//   - AND A SECOND, DIFFERENT WAIT (ruled 2026-09-21, on every matter): the decision-10 families carry
 //     `when: { awaits_reading_turn: true }`. No result releases it. They run when the reading turn
 //     ASKS for them after reading the identical mark's own list, and the ask arrives as a
 //     supplemental entry. The two tokens are not interchangeable: one is "your parent was a crowd",
@@ -126,7 +126,7 @@ export { AWAITS_READING_TURN, awaitsReadingTurn, guardParentQid };
 // module stays PURE and never imports a vendor):
 //
 //   1. OR-WIDTH  — PLAN_MAX_OR_WIDTH is the corsearch-shaped DEFAULT; the effective width is
-//      capabilities.maxOrWidth (clarivate 500 JSON-nesting, signa 1 — no OR surface at all).
+//      capabilities.maxOrWidth (clarivate 496 JSON-nesting, signa 1 — no OR surface at all).
 //   2. PREDICATES — a predicate with NO mapping on the active provider does NOT compile into a wrong
 //      query. The entry is emitted with `unsupported:true` + a plain-English `unsupported_reason`, and
 //      the executor turns that into an error:true block (→ joins MISSING) instead of a silently weaker
@@ -230,6 +230,42 @@ export function goodsTextGap(entry, capabilities) {
 
 // The reader is `goodsTermsList`, imported from the shared term vocabulary — the compiler, the
 // executor and the connectors all ask the question with the same function.
+
+// ── A TERM TOO SHORT FOR THE REGISTER'S CONTAINS FORM IS ASKED ON THE EXACT FORM ───────────────────
+//
+// Measured on a two-letter mark, 2026-09-22: every always-on goods-narrowed question and the saturation
+// probe went out on the contains form, and a register that documents a three-character floor for that
+// form refused all of them with a 400. The identical question on the same mark had crowded, so the one
+// narrowing the matter needed was the one the register would not run.
+//
+// So each register declares the shortest term its contains form accepts (`containsMinLength`), and a
+// shorter term is asked on the exact form with everything else unchanged: the same classes, the same
+// goods words, the same one question in place of one question. Nothing is added and nothing is
+// dropped. The entry carries `contains_substituted`, so the plan says which question was asked in
+// another form and why, and nobody reading it takes an exact count for a containing one.
+//
+// FOLDED LENGTH, because that is what the floor is measured in: case and accents folded, and spaces
+// not counted. Counting a space could let a term the register would still refuse through on the
+// contains form; not counting it at worst asks exactly where contains would have answered.
+export function foldedTermLength(term) {
+  return [...String(term ?? "").normalize("NFKD").replace(/\p{M}/gu, "").toLowerCase().replace(/\s+/g, "")].length;
+}
+
+/**
+ * The substitution a contains-form question needs on this register, or null when it needs none. PURE.
+ * A register that declares no floor (`containsMinLength` absent or null) is sent the contains form at
+ * every length, as it always has been.
+ */
+export function containsFormSubstitution(term, capabilities) {
+  const min = capabilities?.containsMinLength;
+  if (!Number.isInteger(min) || min < 2) return null;
+  const length = foldedTermLength(term);
+  if (length >= min) return null;
+  return { from: "default", to: "exact", min_length: min, term_length: length,
+    reason: `the register (${capabilities.id ?? "unknown"}) answers its contains form only for a term of `
+      + `${min} or more characters, and this term has ${length}, so it was asked on the exact form with the `
+      + `same classes and goods words` };
+}
 
 /**
  * 2026-07-29 hardening — is a VARIANTS-MODEL value un-searchable as a mark term? Returns the
@@ -1162,9 +1198,14 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
 
   // saturation-probe — count-only crowd descriptors for every common/saturated element. These
   // enumerate NOTHING (limit:1 probes); they describe the crowd for judgment. Never the anchor.
+  // A term shorter than the register's contains floor is probed on the exact form instead, and the
+  // entry says so (containsFormSubstitution, above): a refused probe describes no crowd at all.
   for (const el of manifest.elements) {
-    if (el.kind === "common" || el.kind === "saturated-common")
-      push({ axis: "saturation-probe", predicate: "default", term: el.value, expected_kind: "count", provenance: "model" });
+    if (el.kind === "common" || el.kind === "saturated-common") {
+      const sub = containsFormSubstitution(el.value, caps);
+      push({ axis: "saturation-probe", predicate: sub ? "exact" : "default", term: el.value, expected_kind: "count",
+        provenance: "model", ...(sub ? { contains_substituted: sub } : {}) });
+    }
   }
 
   // primary-sweep — the dangerous NAMED band, all enumerates:
@@ -1179,7 +1220,7 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   // records from 139 OTHER questions while the one that mattered went unread. Seventeen identical-mark
   // records reached the band, every one of them through a side door.
   //
-  // So the wider families now WAIT on it — and under ruling 204 they wait for the READING TURN, not for
+  // So the wider families now WAIT on it — and since 2026-09-21 they wait for the READING TURN, not for
   // the identical question's own result. A question that came back as a comfortable list is still a
   // question nobody has read yet, and releasing the widenings on it spends the run's reading on
   // scripts, neighbours and compounds before anyone has looked at the mark itself.
@@ -1328,6 +1369,11 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
     ? { goods_text_omitted: goodsOmitted, goods_text_omitted_reason: goodsOmittedReason }
     : {};
 
+  // The same floor for the goods-narrowed questions: on a mark shorter than the register's contains
+  // form accepts, each is asked on the exact form with the same classes and goods words, one for one.
+  const goodsSub = containsFormSubstitution(manifest.dominant_element, caps);
+  const goodsPredicate = goodsSub ? "exact" : "default";
+  const goodsSubStamp = goodsSub ? { contains_substituted: goodsSub } : {};
   if (goodsSendable.length && caps?.goodsTextSearch === true) {
     if (caps.goodsTextListOr === true) {
       // The register offers the list as alternatives in one clause: one question, one count — phrases
@@ -1335,9 +1381,9 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
       // `a ADJ b OR c`, and that precedence is MEASURED rather than assumed: the mixed clause answers
       // the union of its alternatives, not the distributed reading `a ADJ (b OR c)`. Were it the
       // other way the clause would ask a different question and still answer 200.
-      push({ axis: "primary-sweep", predicate: "default", term: manifest.dominant_element,
+      push({ axis: "primary-sweep", predicate: goodsPredicate, term: manifest.dominant_element,
         expected_kind: "enumerate", provenance: "mark", goods_text: goodsSendable,
-        goods_text_gaps: gapsFor(goodsSendable), qidSuffix: "+goods", ...omittedStamp });
+        goods_text_gaps: gapsFor(goodsSendable), qidSuffix: "+goods", ...omittedStamp, ...goodsSubStamp });
     } else {
       // ── ONE ENTRY PER WORD, where the register has no OR on this field ──────────────────────────
       //
@@ -1356,10 +1402,10 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
       // is N questions on such a register, where a register with an OR asks one. The manifest's
       // 24-word ceiling is what bounds it.
       goodsSendable.forEach((word, i) => {
-        push({ axis: "primary-sweep", predicate: "default", term: manifest.dominant_element,
+        push({ axis: "primary-sweep", predicate: goodsPredicate, term: manifest.dominant_element,
           expected_kind: "enumerate", provenance: "mark", goods_text: [word],
           goods_text_gaps: gapsFor([word]),
-          qidSuffix: `+goods-${termIdentity(word)}`, ...(i === 0 ? omittedStamp : {}) });
+          qidSuffix: `+goods-${termIdentity(word)}`, ...(i === 0 ? omittedStamp : {}), ...goodsSubStamp });
       });
     }
   }
@@ -1374,7 +1420,7 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
     // byte-identical (resolvePlanAgainstStore), so existing matters keep their unsplit shape; only
     // fresh compiles get the split entries. Chunk qids differ naturally (slug of each chunk's first
     // term); the #n dedup above covers collisions.
-    // The split width is PROVIDER-DERIVED (capabilities.maxOrWidth): 80 on corsearch's URI budget, 500
+    // The split width is PROVIDER-DERIVED (capabilities.maxOrWidth): 80 on corsearch's URI budget, 496
     // on clarivate's JSON nesting cap, 1 on signa (no OR surface at all — one term per call).
     // Post-merge audit 2 (e): the partition is BY SCRIPT before it is by width. An OR-stack never
     // carries romanizedTerms (one member's Latin form must never substitute a whole chunk's names —
@@ -1478,7 +1524,7 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   // The axis is NOT gone: the incumbent-class anchor above still compiles, so the coverage skeleton
   // still carries the axis and no clean is ever claimed over an axis that vanished.
 
-  // ── DECISION 10, AS RULING 204 AMENDS IT: THE WIDER FAMILIES WAIT FOR THE READING TURN ──────────
+  // ── DECISION 10, AS AMENDED 2026-09-21: THE WIDER FAMILIES WAIT FOR THE READING TURN ────────────
   //
   // THE WAIT IS NOT ON A RESULT, AND THAT IS THE WHOLE OF THE AMENDMENT. These families used to wait
   // on the identical question ENUMERATING — so a matter whose identical question came back as a
@@ -1501,7 +1547,7 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   //   · the identical-mark entries — the question everything else waits on cannot wait on itself
   //   · the saturation probe — a cheap count that tells judgment how crowded the field is at all, and
   //     is the other half of "look at the count before you read anything"
-  //   · the goods-narrowed contains entry — always-on by ruling 180, and it is the one entry that
+  //   · the goods-narrowed contains entry — on every matter (ruled 2026-09-20), and it is the one entry that
   //     makes a crowded identical question answerable rather than merely deferred
   //   · anything already waiting on something else, which keeps its own parent
   //
@@ -1517,7 +1563,7 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   for (const e of entries) {
     if (e.axis === "saturation-probe") continue;
     if (e.when) continue;                        // already waiting on its own parent
-    if (goodsTermsList(e).length) continue;      // ruling 180 — always-on
+    if (goodsTermsList(e).length) continue;      // compiled on every matter (2026-09-20)
     if (isIdenticalQuestion(e)) continue;
     // AN UNSUPPORTED ENTRY IS A DISCLOSURE, NOT A SEARCH. It was stamped at compile because this
     // provider cannot express it, so it costs no reading and answers nothing — gating it would hold
@@ -1925,6 +1971,10 @@ export function foldSupplementalEntries(plan, entries) {
   const asked = new Map();
   for (const e of plan.entries) {
     if (e?.unsupported === true) continue;
+    // Nor does a family WAITING for the reading turn. It stands in the plan as the record of a question
+    // not yet asked; the reading turn's ask of that same question is the answer it waits for, and refusing
+    // the ask as its duplicate left the family recorded as never asked while its question had run.
+    if (awaitsReadingTurn(e?.when)) continue;
     const k = entryQuestionKey(e, plan);
     if (k && !asked.has(k)) asked.set(k, e.qid);
   }
@@ -2186,7 +2236,17 @@ export function joinPlanToBands(plan, bandBlocksByAxis) {
   const byQid = new Map();
   for (const b of blocks) if (typeof b.qid === "string" && b.qid) byQid.set(b.qid, b);
 
-  const executed = [], missing = [], skipped = [], deferred = [], awaiting = [];
+  const executed = [], missing = [], skipped = [], deferred = [], awaiting = [], asked = [];
+  // A WAITING FAMILY THE READING TURN ASKED IS NOT WAITING. Its ask arrives as an ordinary entry — a
+  // supplemental with the same question — and the family's own row stays guarded forever, so without this
+  // link every family asked read as never asked. Matched on the question (entryQuestionKey), against
+  // every entry that is not itself waiting or unsupported; the asker's own state says what it returned.
+  const askedBy = new Map();
+  for (const e of plan.entries) {
+    if (e?.unsupported === true || awaitsReadingTurn(e?.when)) continue;
+    const k = entryQuestionKey(e, plan);
+    if (k && !askedBy.has(k)) askedBy.set(k, e.qid);
+  }
   for (const e of plan.entries) {
     if (e.when) {
       // A RULING-204 WAIT IS ITS OWN BUCKET, NOT A SKIP, and the difference is what the reader is
@@ -2196,7 +2256,12 @@ export function joinPlanToBands(plan, bandBlocksByAxis) {
       // question nobody decided to ask, on a matter where the identical mark may have answered
       // perfectly. Folding the two together would file "not asked, by judgment" under "held back by a
       // crowd", which is a different sentence about a different thing, on every matter.
-      if (awaitsReadingTurn(e.when)) { awaiting.push({ qid: e.qid, axis: e.axis }); continue; }
+      if (awaitsReadingTurn(e.when)) {
+        const by = askedBy.get(entryQuestionKey(e, plan));
+        if (by) asked.push({ qid: e.qid, axis: e.axis, asked_by: by });
+        else awaiting.push({ qid: e.qid, axis: e.axis });
+        continue;
+      }
       const parent = byQid.get(e.when.runs_if_enumerated);
       const parentState = String(parent?.state ?? "").toLowerCase();
       // A CROWD IS WHAT HOLDS A CHILD BACK, and only a crowd. `enumerated` covers a question answered
@@ -2253,7 +2318,7 @@ export function joinPlanToBands(plan, bandBlocksByAxis) {
   const planQids = new Set(plan.entries.map((e) => e.qid));
   const unplanned = blocks.filter((b) => typeof b.qid === "string" && b.qid && !planQids.has(b.qid))
     .map((b) => ({ qid: b.qid, query: String(b.query ?? "").slice(0, 80) }));
-  return { executed, missing, skipped, deferred, awaiting, unplanned };
+  return { executed, missing, skipped, deferred, awaiting, asked, unplanned };
 }
 
 // ──: the slice the provider ACCEPTED and then hard-errored at RUN time ──────────────────────────
@@ -2456,16 +2521,20 @@ export function deriveCoverageSkeleton(plan, join) {
   const skippedQids = new Set(join.skipped.map((x) => x.qid));
   const deferredQids = new Set((join.deferred ?? []).map((x) => x.qid));
   const awaitingQids = new Set((join.awaiting ?? []).map((x) => x.qid));
+  const askedQids = new Set((join.asked ?? []).map((x) => x.qid));
   const axes = new Map();
   for (const e of plan.entries) {
-    if (!axes.has(e.axis)) axes.set(e.axis, { axis: e.axis, entries: 0, executed: 0, crowds: 0, missing: [], skipped: 0, deferred: [], awaiting: 0 });
+    if (!axes.has(e.axis)) axes.set(e.axis, { axis: e.axis, entries: 0, executed: 0, crowds: 0, missing: [], skipped: 0, deferred: [], awaiting: 0, asked: 0 });
     const a = axes.get(e.axis);
     a.entries++;
-    // COUNTED BEFORE `skipped`, and separately from it. Under ruling 204 this is the ordinary state of
+    // COUNTED BEFORE `skipped`, and separately from it. With the families waiting on every matter this is the ordinary state of
     // most axes on most matters, so folding it into `skipped` would make "nothing on this axis ran
     // because a parent crowded" the routine reading of a healthy run — and would say it to the model,
     // which reads these states as judgment input.
     if (awaitingQids.has(e.qid)) { a.awaiting++; continue; }
+    // A waiting family the reading turn asked is answered by the entry that asked it, which is counted
+    // where it ran; counting the family as executed too would count one question twice.
+    if (askedQids.has(e.qid)) { a.asked++; continue; }
     if (skippedQids.has(e.qid)) { a.skipped++; continue; }
     if (missing.has(e.qid)) { a.missing.push(e.qid); continue; }
     // a capability gap is NOT executed — it is a disclosed hole in the axis
@@ -2482,7 +2551,7 @@ export function deriveCoverageSkeleton(plan, join) {
     // so nothing on the axis was ever dispatched) is its OWN state. It used to fall through to "executed"
     // — the arithmetic reads "0 missing, 0 crowds" and the honest reading of that is "nothing ran", not
     // "everything ran clean". Held to the same standard as `deferred` below: a clean cannot rest on it.
-    // RULING 204's STATE, and it is held to the same standard as `skipped` and `deferred`: nothing on
+    // THE READING-TURN WAIT'S STATE, and it is held to the same standard as `skipped` and `deferred`: nothing on
     // the axis ran, so no clean may rest on it. It ranks BELOW those two in urgency because nothing is
     // wrong — the questions were not asked because judgment did not ask for them, which is the design.
     // It is last in the chain so that a real failure on the same axis still wins the label: an axis
@@ -2494,6 +2563,7 @@ export function deriveCoverageSkeleton(plan, join) {
             : (a.executed === 0 && a.awaiting > 0 ? "awaiting-judgment" : "executed")))),
     entries: a.entries, executed: a.executed, crowds: a.crowds, skipped: a.skipped, missing: a.missing,
     ...(a.awaiting ? { awaiting: a.awaiting } : {}),
+    ...(a.asked ? { asked: a.asked } : {}),
     ...(a.deferred.length ? { deferred: a.deferred } : {}),
   }));
 }
@@ -2535,7 +2605,7 @@ export function findUnexecutedCleanClaims(claimedRows, skeleton) {
     // never ran. Same standard as the two above — the slice was not searched, so a clean cannot rest on it.
     else if (s && s.state === "skipped")
       out.push({ axis: s.axis, token: `coverage_clean_skipped:${s.axis}`, missing: [] });
-    // RULING 204: an axis whose families are still waiting for the reading turn's ask did not run
+    // THE READING-TURN WAIT: an axis whose families are still waiting for the reading turn's ask did not run
     // either, so a clean over it has the same absent foundation. The token is its OWN, and that is the
     // point: `skipped` would send the reader to look for a crowd that never happened, where this says
     // the questions were not asked because judgment did not ask for them. Same strictness, true

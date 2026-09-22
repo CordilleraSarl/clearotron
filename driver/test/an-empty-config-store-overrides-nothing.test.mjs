@@ -27,6 +27,7 @@ import { fileURLToPath } from "node:url";
 import { pinEnv } from "../../shared/env-aliases.mjs";
 import { establishCredential } from "../portal-local-auth.mjs";
 import { installerGrants } from "../../bin/start.mjs";
+import { withFreePorts, saidPortWasTaken } from "./helpers/free-port.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, "..", "..");
@@ -89,16 +90,14 @@ const safe = (said) => said.split("\n").map((l) => (/passphrase/i.test(l) ? "<a 
 // A port free at the moment of each boot. Not port 0, because a portal asked for port 0 cannot say which
 // one it chose; and not a fixed one, because a port something else holds reds this file for a reason that
 // has nothing to do with its name. Two full suites on one box do exactly that.
-async function freePort() {
-  const { createServer } = await import("node:net");
-  const server = createServer();
-  await new Promise((resolve, reject) => { server.once("error", reject); server.listen(0, "127.0.0.1", resolve); });
-  const { port } = server.address();
-  await new Promise((resolve) => server.close(resolve));
-  return port;
+//
+// Free when it is read is not free when the portal binds it, so the boot runs under `withFreePorts`: a
+// portal that did not come up and said its port was taken is booted again on a fresh number.
+async function boot(env, opts = {}) {
+  return withFreePorts(["portal"], ({ portal }) => bootOn(env, String(portal), opts),
+    { busy: (b) => !b.port && saidPortWasTaken(b), discard: (b) => b.child.kill() });
 }
-async function boot(env, { waitMs = 25000 } = {}) {
-  const port = String(await freePort());
+function bootOn(env, port, { waitMs = 25000 } = {}) {
   return new Promise((resolve) => {
     const child = spawn(process.execPath, [SERVICE], { env: { ...env, PORTAL_SERVICE_PORT: port }, stdio: ["ignore", "pipe", "pipe"] });
     let said = "";
@@ -108,7 +107,9 @@ async function boot(env, { waitMs = 25000 } = {}) {
     const read = (c) => { said += String(c); if (/listening on/.test(said)) finish(true); };
     child.stdout.on("data", read);
     child.stderr.on("data", read);
-    child.on("exit", () => finish(false));
+    // `close`, not `exit`: it fires once the child's output is read to the end, so a portal that died
+    // saying its port was taken is not resolved before the sentence that says so arrives.
+    child.on("close", () => finish(false));
     child.on("error", () => finish(false));
   });
 }

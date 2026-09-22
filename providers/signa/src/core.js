@@ -30,6 +30,9 @@ import { nonAnswerBodyError, parseJsonBody, unparsedBodyError } from "../../_sha
 import { makeEnumerate, isOwnerScoped } from "../../_shared/enumerate.mjs";
 import { makeExecutePlan } from "../../_shared/execute-plan.mjs";
 import CAPABILITIES, { SIGNA_OFFICE_KEYS, OWNER_SCOPED_WINDOW } from "./capabilities.js";
+// The register's own measure of a term's length: case and accents folded, spaces not counted — the same
+// measure its documented floors are stated in (the compiler's foldedTermLength counts the same way).
+const foldedLength = (q) => [...String(q ?? "").normalize("NFKD").replace(/\p{M}/gu, "").toLowerCase().replace(/\s+/g, "")].length;
 import { SIGNA_OFFICE_SNAPSHOT } from "./offices.generated.js";
 
 export const DEFAULT_BASE = "https://api.signa.so";
@@ -660,8 +663,16 @@ export function toSignaParams(p = {}) {
   // `match`. exact/phonetic stay on strategies, which is what this provider has always sent and what
   // its fixtures were captured with; the anchored and unanchored modes can only be expressed by
   // `match`, so they select that shape and drop strategies.
+  //
+  // EXACT BELOW THE RANKED FLOOR ONLY. The ranked shape takes `similar`'s floor of two folded
+  // characters, so a one-letter exact question is refused there. The deterministic `match: "exact"`
+  // takes one, but it asks a narrower question: "`exact` requires the whole mark to equal `q`", where
+  // the ranked `exact` strategy also returns longer marks that contain the term, which is the recall an
+  // identical question relies on. So exact stays ranked from the floor up, and only a term below it
+  // goes deterministic, where it is answered rather than refused.
   const mode = String(p.match_mode ?? "").trim();
-  if (mode === "exact" || mode === "phonetic" || mode === "prefix") out.strategies = [mode];
+  if (mode === "exact" && foldedLength(out.query) < CAPABILITIES.rankedMinLength) out.match = "exact";
+  else if (mode === "exact" || mode === "phonetic" || mode === "prefix") out.strategies = [mode];
   else if (mode === "starts_with" || mode === "ends_with" || mode === "contains") out.match = mode;
   // ── `default` IS THE COUNT LANE'S WORD FOR THE SAME UNANCHORED QUERY THE PLAN LANE CALLS `{}` ────
   //

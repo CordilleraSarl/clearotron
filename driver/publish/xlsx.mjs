@@ -659,7 +659,7 @@ export async function buildAudit(contract, auditParsed, outPath, mark = '', fm =
   // shape and not a new sheet, and the words are the run receipt's own.
   addSheet(wb, 'Coverage & gaps', COVERAGE_COLS,
     [...coverageRows(coverage), ...coverageRows(contract?.droppedConditions || []),
-     ...coverageRows(contract?.undispatchedProbes || [])], (row, _d, kept) => {
+     ...coverageRows(contract?.undispatchedProbes || []), ...coverageRows(contract?.withheldFamilies || [])], (row, _d, kept) => {
     if (!kept.has('State')) return;
     const st = row.getCell('State'); const f = STATE_FILL[String(st.value).trim()];
     if (f) { st.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF' + f } }; st.font = { bold: true }; }

@@ -31,21 +31,37 @@ export async function freePort() {
   });
 }
 
-/** Did this result say a port was taken? Both the driver's sentence and the system's own code. */
-export const saidPortWasTaken = (said) =>
-  /is already in use|EADDRINUSE/i.test(typeof said === "string" ? said : String(said?.said ?? ""));
+/**
+ * Did this result say a port was taken? Both the driver's sentence and the system's own code.
+ *
+ * EVERY SHAPE A CALLER HANDS BACK, not only a string. A `spawnSync` result carries its words on `stdout`
+ * and `stderr`; a drive in these files carries them on `said`, as a string or as a function that reads
+ * the output so far. A default that read one of those and not the others answered "not taken" for the
+ * rest, so a file that imported this helper and trusted the default got no retry at all while looking
+ * protected.
+ */
+export function saidPortWasTaken(said) {
+  if (said == null) return false;
+  const words = typeof said === "string" ? [said]
+    : [said.said, said.stdout, said.stderr].map((v) => (typeof v === "function" ? v() : v));
+  return /is already in use|EADDRINUSE/i.test(words.filter((v) => v != null).map(String).join("\n"));
+}
 
 /**
  * Allocate `names` as free ports, run `run(ports)`, and repeat with fresh numbers while the result says
  * a port was taken. Returns the last result; after `attempts` it returns whatever it got, so the arm
  * reports the real failure rather than this helper hiding it behind a timeout.
+ *
+ * `discard` receives each result this throws away for a retry, so a drive that made a scratch home or
+ * started a child can remove it. The result that is returned is the caller's to clean up.
  */
-export async function withFreePorts(names, run, { attempts = 4, busy = saidPortWasTaken } = {}) {
+export async function withFreePorts(names, run, { attempts = 4, busy = saidPortWasTaken, discard = null } = {}) {
   let result;
   for (let attempt = 1; attempt <= attempts; attempt++) {
     const ports = Object.fromEntries(await Promise.all(names.map(async (n) => [n, await freePort()])));
     result = await run(ports, attempt);
-    if (!busy(result)) return result;
+    if (!busy(result) || attempt === attempts) return result;
+    await discard?.(result);
   }
   return result;
 }

@@ -207,8 +207,9 @@ function runSummary(run) {
     // once. null where the registry cannot name it — the row says nothing rather than guessing, because
     // a hardcoded fallback is how a knockout once announced itself as a product it provably was not.
     product: productIdentityFor(run),
-    // The band and the run's own sentence; the gate's word stays in the run record (824).
-    state: run.state, location: run.location, tier: run.tier, statement: run.statement, url: run.url,
+    // The band and the report's own conclusion; the gate's word stays in the run record (824), and no
+    // second summary rides beside them (ruled 2026-09-22).
+    state: run.state, location: run.location, tier: run.tier, caption: run.caption, url: run.url,
     markName: run.markName, ref: run.ref, classes: run.classes,
     step: s.stepN ? `${s.stepN}/${s.stepTotal} ${s.stepLabel ?? ""}`.trim() : null,
     startedAt: run.startedAt, updatedAt: run.updatedAt, deliveredAt: run.deliveredAt,
