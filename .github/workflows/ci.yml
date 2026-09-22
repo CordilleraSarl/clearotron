@@ -196,7 +196,7 @@ jobs:
 
       - name: Keep this shard's log for the completeness gate
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: suite-log-${{ matrix.shard }}
           path: ${{ runner.temp }}/suite.log
@@ -243,7 +243,7 @@ jobs:
             exit 1
           }
 
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@v8
         with:
           pattern: suite-log-*
           path: logs

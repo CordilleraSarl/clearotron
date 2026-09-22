@@ -1828,7 +1828,7 @@ jobs:
       # OIDC exchange mints for a trusted publish cannot make it: eleven deprecations attempted that way
       # came back 404 while reads through the same credential succeeded. Owner ruling 2026-09-17 — this one
       # job reads a granular token with write on this package alone, and publishing stays credential-less.
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           registry-url: https://registry.npmjs.org
