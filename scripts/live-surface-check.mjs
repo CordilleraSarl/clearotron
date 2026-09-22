@@ -106,6 +106,7 @@ import { processTable } from "../shared/process-table.mjs";                     
 import { envFrom } from "../shared/env-aliases.mjs";
 import { gitTry, treeOf } from "../shared/tree-commit.mjs";   // — a packaged install has no git, and says its commit in build-info.json
 import { exitFor } from "../driver/surface-exit-verdict.mjs";   // — a check that could not look is not a drift, and they want different things done   // — the name a reader is told to set is the one in force
+import { planRunAgreementVerdict } from "../driver/plan-run-agreement-verdict.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const asJson = process.argv.includes("--json");
@@ -735,20 +736,11 @@ if (mcpOptions && built) {
   //
   //     plan_run needs an explicit profileKey: an accounts-scoped session refuses without one. The key
   //     comes from what the door ITSELF resolved (below), so no customer is ever hardcoded here.
-  const planDisagreements = [];
-  for (const key of (probeProfileKey ? seen : [])) {
-    try {
-      const plan = await mcpToolCall({ url: MCP_URL, token: OPS_TOKEN, tool: "plan_run",
-        args: { markName: "SURFACE CHECK", classes: [9], product: key, profileKey: probeProfileKey }, timeoutMs: 20000 });
-      const unavailable = (plan?.blockers ?? []).some((b) => /not part of the current release|not switched on|unavailable/i.test(String(b)));
-      if (unavailable !== !doorSays.get(key)) {
-        planDisagreements.push(`${key}: describe_options=${doorSays.get(key) ? "available" : "unavailable"} plan_run=${unavailable ? "unavailable" : "available"}`);
-      }
-    } catch (e) { planDisagreements.push(`${key}: plan_run errored — ${e.message.slice(0, 120)}`); }
-  }
-  if (!probeProfileKey) skip("describe_options and plan_run agree", "no customer resolved to plan against — see the roster check");
-  else if (planDisagreements.length) fail("describe_options and plan_run agree", planDisagreements.join(" · "));
-  else pass("describe_options and plan_run agree", `${seen.length} products checked through both code paths`);
+  //     A plan_run that throws (a 429, a timeout) compared nothing: a marked skip, exit 3, never a drift.
+  const pv = await planRunAgreementVerdict({ keys: seen, doorSays, probeProfileKey,
+    ask: (key) => mcpToolCall({ url: MCP_URL, token: OPS_TOKEN, tool: "plan_run",
+      args: { markName: "SURFACE CHECK", classes: [9], product: key, profileKey: probeProfileKey }, timeoutMs: 20000 }) });
+  record("describe_options and plan_run agree", pv.state, pv.message, pv.blocked === true);
 }
 
 // 5. Leak scan on what a door actually returned. An env name or a path in a live response is a defect
