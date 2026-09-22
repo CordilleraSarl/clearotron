@@ -1113,8 +1113,8 @@ export async function doSearch(apiKey, base, params, tctx) {
 }
 
 // ── Count ─────────────────────────────────────────────────────────────────────────────────────────
-// POST /count takes the SAME SearchRequest body as /search, is cheap, works at ANY magnitude (209012
-// returned without complaint) and returns PER-OFFICE counts in one call. This is the enumerate
+// POST /count takes the SAME SearchRequest body as /search, is cheap, works at ANY magnitude and
+// returns PER-OFFICE counts in one call. This is the enumerate
 // kernel's countProbe:"endpoint" dependency, so it returns the kernel's plain probe shape
 // { ok, total, reason } — plus `per_office`, which is richer than corsearch can offer and rides into
 // the crowd descriptor for judgment.
@@ -1734,7 +1734,7 @@ export async function doEnumerate(apiKey, base, params, tctx) {
 //     dictated a count instead of an enumerate. POST /search FAILS LOUD past 30000 (tooManyResults),
 //     so routing the count probe through it would return an ERROR string, the executor would stamp the
 //     block error:true, and a SANCTIONED CROWD would be counted MISSING — doctrine 5 inverted. POST
-//     /count never fails on magnitude (209012 returned without complaint) and carries per-office truth.
+//     /count never fails on magnitude and carries per-office truth.
 //     `countParams` is therefore {}: buildSearchRequest has no `limit` knob to honour, and passing a
 //     dead parameter would only imply one exists.
 //

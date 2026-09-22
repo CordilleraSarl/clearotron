@@ -13,8 +13,8 @@
 //
 // SEAM (capabilities.countProbe) — WHERE the number comes from. Same three values enumerate.mjs
 // documents, same meanings:
-//   "endpoint" Clarivate. A real POST /count: cheap, works at ANY magnitude (209012 returned without
-//              complaint), fetches nothing. A true count-only call.
+//   "endpoint" Clarivate. A real POST /count: cheap, works at ANY magnitude, fetches nothing. A true
+//              count-only call.
 //   "cheap"    Corsearch. The count rides page 0 of a normal search (totalHitCount) — so it is one
 //              BILLABLE search with `limit:1 fields:["uri"]`, the smallest response the API will give.
 //              Cheap, not free: every count here is a metered call.
