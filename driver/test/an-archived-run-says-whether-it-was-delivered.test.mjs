@@ -39,7 +39,7 @@ test("an archived run's terminal state is readable WITHOUT the workspace copy", 
   assert.doesNotMatch(before, /delivered: (YES|NO)\b/, "an unstamped pool copy answered a question it cannot answer");
 
   // THE FIX, written by the delivery path at settle with the pool dir in hand.
-  const res = writeSettleStamp(dir, { state: "delivered", verdict: "CONDITIONAL", deliveredAt: "2026-09-01T09:04:11Z", runId: "tmpx1-acme-2026-09-01-jade-anvil", lane: "clearance" });
+  const res = writeSettleStamp(dir, { state: "delivered", signoff: "CONDITIONAL", deliveredAt: "2026-09-01T09:04:11Z", runId: "tmpx1-acme-2026-09-01-jade-anvil", lane: "clearance" });
   assert.equal(res.written, true, res.reason);
   const after = deliveryLine(asScored(dir));
   assert.match(after, /delivered: YES — 2026-09-01T09:04:11Z/);
@@ -117,10 +117,12 @@ test("the stamp can never cost a delivery", () => {
 
 test("the stamp round-trips, and carries what a reader needs to name the run", () => {
   const dir = poolCopy();
-  writeSettleStamp(dir, { state: "delivered", verdict: "CLEAR", deliveredAt: "2026-09-01T09:04:11Z", runId: "tmpx1-acme-2026-09-01-jade-anvil", lane: "knockout" });
+  writeSettleStamp(dir, { state: "delivered", tier: "High", deliveredAt: "2026-09-01T09:04:11Z", runId: "tmpx1-acme-2026-09-01-jade-anvil", lane: "knockout" });
   const s = readSettleStamp(dir);
   assert.equal(s.state, "delivered");
-  assert.equal(s.verdict, "CLEAR");
+  // The quick-search lane's outcome is its rating, named as one; no `verdict` field is written.
+  assert.equal(s.tier, "High");
+  assert.equal(s.verdict, undefined);
   assert.equal(s.deliveredAt, "2026-09-01T09:04:11Z");
   assert.equal(s.runId, "tmpx1-acme-2026-09-01-jade-anvil");
   assert.equal(s.lane, "knockout", "the lane is not recorded — a reader cannot tell which product settled");
@@ -152,7 +154,9 @@ test("a BACKFILL records the delivery time, not the time it was stamped", () => 
   assert.equal(s.deliveredAt, DELIVERED, "the backfill invented a delivery time instead of reading the run's own");
   assert.notEqual(s.stampedAt, s.deliveredAt, "deliveredAt and stampedAt hold one value — on a backfill they cannot");
   assert.ok(Date.parse(s.stampedAt) > Date.parse(s.deliveredAt), "the stamp claims to predate the delivery it records");
-  assert.equal(s.verdict, "CONDITIONAL");
+  // A status.json written before the move carries the sign-off as `verdict`; the stamp names it for what it is.
+  assert.equal(s.signoff, "CONDITIONAL");
+  assert.equal(s.verdict, undefined);
   // And it reads back as the delivery it actually was, at the delivery's own time.
   assert.match(deliveryLine(asScored(pool)), new RegExp(`delivered: YES — ${DELIVERED}`));
   rmSync(ws, { recursive: true, force: true });

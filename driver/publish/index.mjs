@@ -1352,7 +1352,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     // null-guard and old rows render byte-identically.
     statement: verdictInfo?.statement ?? undefined,
     caption: fm.overall_caption || undefined,   // the report's own conclusion, which the run list quotes
-    verdict: verdictInfo?.verdict ?? undefined,
+    review: verdictInfo?.verdict ? { signoff: verdictInfo.verdict } : undefined,   // the reviewer's sign-off, not the clearance's answer (ruled 2026-09-22)
     // doc 50 — which framework rated this run (custom vs Generic default) + its ladder, for the archive
     // card, the email table sort/colour and the per-customer index; absent on archived runs forever.
     framework: framework ? { key: framework.framework_key, title: framework.title,

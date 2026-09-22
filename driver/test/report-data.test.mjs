@@ -74,9 +74,11 @@ test("clearanceReportData: the run as data — shape, level identity, verdict re
   assert.equal(d.kind, "clearance");
   assert.equal(d.level.stageLabel, "Depth 4");
   assert.equal(d.framework.key, "house-default");
-  assert.equal(d.verdict.verdict, "CONDITIONAL");
-  assert.equal(d.verdict.tier, "High");
-  assert.match(d.verdict.statement, /do not rely on this as-is/);
+  // The rating, named as one; the reviewer's sign-off stays in the review stage's record, not the client's.
+  assert.equal(d.verdict, undefined);
+  assert.equal(d.rating.tier, "High");
+  assert.match(d.rating.statement, /do not rely on this as-is/);
+  assert.ok(!JSON.stringify(d).includes("CONDITIONAL"), "the reviewer's sign-off word reached the client's data file");
   assert.equal(d.findings.length, 1, "live findings only");
   const f = d.findings[0];
   assert.equal(f.mark, "VOLTMAX");
@@ -117,7 +119,7 @@ test("report-data.json is not a back door for the internal material the report n
   assert.ok(!json.includes("register mirror was stale"), "labelled internal tail leaked via ask answer");
   // engine-internal narration dies at the sentence filter (the same rule the client HTML applies)
   assert.ok(!json.includes("MCP server did not connect"), "engine-internal sentence leaked via verdict conditions");
-  assert.equal(clearanceReportData(ARGS).verdict.conditions.length, 1, "the legal condition survives; the engine sentence does not");
+  assert.equal(clearanceReportData(ARGS).rating.conditions.length, 1, "the legal condition survives; the engine sentence does not");
 });
 
 // ── — the PLACEMENT key is not client data ─────────────────────────────────────────────────────
@@ -139,7 +141,7 @@ test("clearanceReportData: degenerate inputs (no findings, no verdict, no asks) 
   const d = clearanceReportData({ runId: "x", codename: null });
   assert.equal(d.schema, "report-data/1");
   assert.deepEqual(d.findings, []);
-  assert.equal(d.verdict, null);
+  assert.equal(d.rating, null);
   assert.deepEqual(d.askAnswers, []);
   assert.deepEqual(d.actions, { conditions: [], advisories: [] });
 });

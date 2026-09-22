@@ -79,7 +79,7 @@ test("the report's own client conditions take the clause", () => {
     verdictInfo: { verdict: "CONDITIONAL", tier: "Moderate", statement: "Moderate — conditional on: something.",
       reasons: [TOKEN_REASON, ASK_REASON], clauses: [TOKEN_CLAUSE, ""] },
   });
-  assert.deepEqual(data.verdict.conditions, [TOKEN_CLAUSE, ASK_REASON],
+  assert.deepEqual(data.rating.conditions, [TOKEN_CLAUSE, ASK_REASON],
     "the delivered data file still carries the run-record sentence — the door does not call the helper");
 });
 

@@ -970,7 +970,7 @@ const SWEEP = [
   ["e2e", "the run's own report URL 404s", "sound"],
   ["e2e", "ordered-vs-ran:", "sound"],
   ["e2e", "THE DOORS DISAGREE", "sound"],
-  ["e2e", "verdict=${st.verdict ?? \"-\"}", "sound"],
+  ["e2e", "signoff=${st.review?.signoff ?? st.verdict ?? \"-\"}", "sound"],
 
   // ── the two modules the harness imports ─────────────────────────────────────────────────────────────
   ["mcp", 'const ctype = String(headers["content-type"] ?? "");', "sound"],

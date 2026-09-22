@@ -91,7 +91,7 @@ import { deriveScopeFacts } from "./scope-facts.mjs";
 import { documentGrowth } from "./gate-metrics.mjs";
 import { editRepairTail, abbrev } from "./repair-contract.mjs";
 import { repairFollowup } from "./repair-composers.mjs";
-import { seedRunStatus, recordTransition, writeRunStatus, rollupStatus, atomicWrite, finalStepFields, terminalRunState } from "./progress.mjs";
+import { seedRunStatus, recordTransition, writeRunStatus, rollupStatus, atomicWrite, finalStepFields, terminalRunState, signoffPatch, readSignoff } from "./progress.mjs";
 import { batchMarkName } from "./mark-name.mjs";
 import { writeOutboxPacket } from "./outbox.mjs";
 import { publishReport, composeEmailHtml, deliverySubject } from "./publish/index.mjs";
@@ -12603,7 +12603,7 @@ async function pipelineInner(job, opts = {}) {
         : "failed after retries + fallback (the ladder recorded no condition)");
     let verdict = firstRef.verdict;
     runLog(run.runDir, { event: "verdict", verdict });
-    writeRunStatus(ctx, { verdict });
+    writeRunStatus(ctx, signoffPatch(verdict));
     note(`refutation verdict: ${verdict}`);
     // qw/typed-correction-kinds — TELEMETRY ONLY (data first; the corrective-skip decision is a
     // separate owner-gated build): partition the review's flagged-correction lines by their
@@ -12847,7 +12847,7 @@ async function pipelineInner(job, opts = {}) {
       verdict = rc.ok ? (parseVerdict(readFileSync(P.seniorEyeReview, "utf8")) ?? entryVerdict) : entryVerdict;
       correctiveRecheckOk = rc.ok === true;
       runLog(run.runDir, { event: "verdict-2", verdict });
-      writeRunStatus(ctx, { verdict });
+      writeRunStatus(ctx, signoffPatch(verdict));
     }
     // AD-2 A1 — the completion receipt, written ONLY when the cycle finished with a verified recheck:
     // a fallen-back recheck kept the entry verdict WITHOUT re-verifying, and cementing that would stop
@@ -13089,7 +13089,7 @@ async function pipelineInner(job, opts = {}) {
       if (d.clamped) {
         runLog(run.runDir, { event: "terminal-guard-clamp", defect: d.record.defect, from: verdict, to: d.verdict });
         verdict = d.verdict;
-        writeRunStatus(ctx, { verdict });
+        writeRunStatus(ctx, signoffPatch(verdict));
       }
     };
 
@@ -13223,7 +13223,7 @@ async function pipelineInner(job, opts = {}) {
             runLog(run.runDir, { event: "coverage-floor-clamp", cause: "forward-actions", from: "CLEAR", to: "CONDITIONAL", legalActions: conditions.length });
             note(`deliver-conditional floor: the opinion names ${conditions.length} forward legal action(s) a human must take (${conditions[0].slice(0, 140)}${conditions.length > 1 ? `; +${conditions.length - 1} more` : ""}) — clamping CLEAR→CONDITIONAL (spec 64: the disposition is derived from the findings' named actions).`);
             verdict = "CONDITIONAL";
-            writeRunStatus(ctx, { verdict });
+            writeRunStatus(ctx, signoffPatch(verdict));
           } else if (fresh.length) {
             runLog(run.runDir, { event: "verdict-conditions-recorded", legalActions: fresh.length });
           }
@@ -13261,7 +13261,7 @@ async function pipelineInner(job, opts = {}) {
         if (droppedConditions.length && verdict === "CLEAR") {
           runLog(run.runDir, { event: "coverage-floor-clamp", cause: "dropped-actions", from: "CLEAR", to: "CONDITIONAL", actionsDropped: droppedConditions.length });
           verdict = "CONDITIONAL";
-          writeRunStatus(ctx, { verdict });
+          writeRunStatus(ctx, signoffPatch(verdict));
         }
       }
     } catch (e) { note(`legal-actions floor skipped (${String(e.message).slice(0, 80)}) — never-kill; the predelivery coherence lint is the second net`); }
@@ -13309,7 +13309,7 @@ async function pipelineInner(job, opts = {}) {
         // re-ask can flip a clamped verdict back to CLEAR, and it must meet this floor again with the
         // reason ALREADY recorded. Folding these two into one guard would let the second pass skip on
         // the dedup and deliver CLEAR — the precise defect this issue is about.
-        if (clReason && verdict === "CLEAR") { verdict = "CONDITIONAL"; writeRunStatus(ctx, { verdict }); }
+        if (clReason && verdict === "CLEAR") { verdict = "CONDITIONAL"; writeRunStatus(ctx, signoffPatch(verdict)); }
       }
     } catch (e) { note(`common-law downgrade floor skipped (${String(e.message).slice(0, 80)}) — never-kill`); }
     if (entryVerdict === "CLEAR") {
@@ -13403,7 +13403,7 @@ async function pipelineInner(job, opts = {}) {
         // The reason KINDS distinguish coverage/frame/screen-gate/senior-right/register residue for the
         // report bound line and the client conditions row (merged — legalActions survives).
         clampKinds = { ...clampKinds, coverage: coverageInsufficient || undefined, frame: frameResidual || undefined, screenGate: screenGateGap || undefined, seniorRight: seniorGap || undefined, registerGap: registerGap || undefined, deadlineCarry: deadlineGap || undefined };
-        writeRunStatus(ctx, { verdict });
+        writeRunStatus(ctx, signoffPatch(verdict));
       }
     }
     };
@@ -13591,7 +13591,7 @@ async function pipelineInner(job, opts = {}) {
         if (rr.ok) {
           verdict = parseVerdict(readReview()) ?? "BLOCKING";
           runLog(run.runDir, { event: "verdict-3", verdict, trigger: "degenerate-reask" });
-          writeRunStatus(ctx, { verdict });
+          writeRunStatus(ctx, signoffPatch(verdict));
           applyCoverageFloor();   // a re-asked CLEAR passes the same deliver-conditional floor
           try { writeVerdictSidecar(); }
           catch (e) { throw new StageFailure("verdict", `verdict sidecar write failed (the single label authority): ${String(e.message).slice(0, 120)}`); }
@@ -14616,7 +14616,7 @@ async function pipelineInner(job, opts = {}) {
         applyCoverageFloor();
         try { writeVerdictSidecar(); }
         catch (e) { throw new StageFailure("verdict", `verdict sidecar re-derive failed (spec-64 coherence repair): ${String(e.message).slice(0, 120)}`); }
-        if (verdict !== beforeVerdict) writeRunStatus(ctx, { verdict });
+        if (verdict !== beforeVerdict) writeRunStatus(ctx, signoffPatch(verdict));
         runLog(run.runDir, { event: "verdict-rederive-repair", from: beforeVerdict, to: verdict });
         lint = lintNow();
       }
@@ -14902,7 +14902,7 @@ async function pipelineInner(job, opts = {}) {
                   runLog(run.runDir, { event: "verdict-hardened-by-repair", was: verdict, now: hardened, stage: s2.label, adopted: true });
                   note(`stale-repair: the reviewer returned ${hardened} — adopting it as the run's verdict (the one settled earlier was decided against a review this repair has since rewritten) and rebuilding the label from it`);
                   verdict = hardened;
-                  writeRunStatus(ctx, { verdict });
+                  writeRunStatus(ctx, signoffPatch(verdict));
                   try { writeVerdictSidecar(); }
                   catch (e) { throw new StageFailure("verdict", `verdict sidecar write failed (the single label authority): ${String(e.message).slice(0, 120)}`); }
                   reassemble = true;
@@ -15468,13 +15468,13 @@ async function pipelineInner(job, opts = {}) {
     // .published + .delivered on disk must never read "7/9" on any status surface (nothing runs after
     // the packet, so no stage transition would ever finish the display sequence). finalStepFields ⇒ 9/9.
     const deliveredAt = new Date().toISOString();
-    writeRunStatus(ctx, { state: "delivered", verdict, statement: emailVerdictOpts.statement ?? undefined, caption: published.caption ?? undefined, url: published.url, deliveredAt, sendPending: true, ...finalStepFields() });
+    writeRunStatus(ctx, { state: "delivered", ...signoffPatch(verdict), statement: emailVerdictOpts.statement ?? undefined, caption: published.caption ?? undefined, url: published.url, deliveredAt, sendPending: true, ...finalStepFields() });
     // — THE POOL COPY LEARNS ITS OWN TERMINAL STATE, HERE AND NOWHERE ELSE.
     // `meta.json` cannot carry this: it is composed inside publish, before this line runs, so the state
     // did not exist yet when it was written. This is the one moment where the terminal state and the
     // pool directory are both in hand. Best-effort by construction — the report is already published
     // and the run is already settled, so a failure to stamp is logged and the delivery proceeds.
-    const stamp = writeSettleStamp(published.poolRunDir, { state: "delivered", verdict, deliveredAt, runId: published.runId ?? run.runId, lane: "clearance" });
+    const stamp = writeSettleStamp(published.poolRunDir, { state: "delivered", signoff: verdict, deliveredAt, runId: published.runId ?? run.runId, lane: "clearance" });
     if (!stamp.written) note(`delivery: settle stamp not written (${stamp.reason})`);
     const archived = archive(run);
     rollupStatus(run.studioRoot);
@@ -16043,7 +16043,7 @@ export function reconstructCtx(job, opts) {   // @internal
   } catch { /* no/corrupt frozen plan — prose axes stand, as they always did */ }
   const readJson = (f) => { try { return JSON.parse(readFileSync(join(run.runDir, f), "utf8")); } catch { return null; } };
   const status = readJson("status.json");
-  if (status?.verdict) ctx.verdict = status.verdict;
+  if (readSignoff(status)) ctx.verdict = readSignoff(status);   // `review.signoff`, or `verdict` on a record written before the move
   const pub = readJson(".published");
   if (pub?.url) ctx.publishedUrl = pub.url;
   // ── THE CTX FIELDS THIS USED TO DROP (item) ───────────────────────────────────────────────────

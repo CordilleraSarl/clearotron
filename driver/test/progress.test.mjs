@@ -61,7 +61,7 @@ test("rollupStatus builds STATUS.md: newest-first, running/delivered/failed line
   // delivered (oldest), running (newest), failed (middle) — interleave updatedAt to test sort
   mk("archive/2026-06/tmp2-nebula/2026-06-01-marble-gantry", {
     runId: "tmp2-nebula-2026-06-01-marble-gantry", ref: "TMP8402", markName: "NEBULA",
-    state: "delivered", verdict: "CONDITIONAL", url: "https://trademark.example.com/x/report.html",
+    state: "delivered", tier: "High", review: { signoff: "CONDITIONAL" }, url: "https://trademark.example.com/x/report.html",
     updatedAt: "2026-06-01T10:00:00Z",
   });
   mk("tmp1-novapulse/2026-06-02-teal-spire", {
@@ -88,7 +88,8 @@ test("rollupStatus builds STATUS.md: newest-first, running/delivered/failed line
   const lines = md.split("\n").filter((l) => l.startsWith("- "));
   assert.equal(lines.length, 4);
   assert.match(lines[0], /TMP8439 PROJECT NOVAPULSE — step 5\/9 Synthesis — running/, "newest (running) first");
-  assert.ok(lines.some((l) => /TMP8402 NEBULA — delivered \(CONDITIONAL\) — https:/.test(l)), "delivered line w/ verdict+url");
+  assert.ok(lines.some((l) => /TMP8402 NEBULA — delivered \(High\) — https:/.test(l)), "delivered line w/ rating+url");
+  assert.ok(!lines.some((l) => /CONDITIONAL/.test(l)), "the rollup prints the reviewer's sign-off word where the rating goes");
   assert.ok(lines.some((l) => /TMP8388 ORYX — ⚠️ FAILED at register-digest — timeout/.test(l)), "failed line w/ stage+reason");
   assert.ok(lines.some((l) => /TMP8500 BIOVELTRIN — ⏸ POSTPONED \(usage-limit cap\) at register-digest — resumes 2026-06-22 23:30 UTC/.test(l)), "postponed line w/ pause marker + resume time");
 });

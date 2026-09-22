@@ -140,9 +140,12 @@ test("spec 64: buildRecentActivity speaks the statement over the bare verdict wo
     { state: "delivered", deliveredAt: "2026-07-11T01:15:00Z", markName: "VENZY", runId: "r1", verdict: "CONDITIONAL",
       statement: "High — conditional on: Obtain consent before filing." },
     { state: "delivered", deliveredAt: "2026-07-10T19:28:00Z", markName: "LEGACY", runId: "r2", verdict: "CLEAR" },
+    { state: "delivered", deliveredAt: "2026-07-10T18:00:00Z", markName: "RATED", runId: "r3", tier: "Medium", review: { signoff: "BLOCKING" } },
   ] });
   assert.equal(rows[0].outcome, "High — conditional on: Obtain consent before filing.");
-  assert.equal(rows[1].outcome, "CLEAR", "legacy row (no statement) renders today's word");
+  // A row with no statement falls back to the rating, never the reviewer's sign-off word.
+  assert.equal(rows[1].outcome, "delivered", "a legacy row's sign-off word is shown as its outcome");
+  assert.equal(rows[2].outcome, "Medium", "a row with a rating and no statement does not show it");
 });
 
 test("A5: parked-for-human joins the paused bucket (never invisible), with the split clocks + kinds surfaced", () => {

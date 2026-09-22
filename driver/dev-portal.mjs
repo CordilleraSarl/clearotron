@@ -145,7 +145,7 @@ function scanRuns(workspaceRoot) {
       const s = JSON.parse(readFileSync(join(dir, "status.json"), "utf8"));
       out.push({ runId: s.runId ?? `${slug}-${runName}`, slug: s.slug ?? slug, codename: s.codename ?? null,
         agent: s.agent ?? null, state: s.state ?? null, stepN: s.stepN ?? null, stepLabel: s.stepLabel ?? null,
-        stepTotal: s.stepTotal ?? null, verdict: s.verdict ?? null, sendPending: s.sendPending ?? null,
+        stepTotal: s.stepTotal ?? null, signoff: s.review?.signoff ?? s.verdict ?? null, tier: s.tier ?? null, sendPending: s.sendPending ?? null,
         markName: s.markName ?? null, updatedAt: s.updatedAt ?? null, archived });
     } catch { /* not a run dir / unreadable status — skip */ }
   };
@@ -293,8 +293,8 @@ $("#f").addEventListener("submit",async(e)=>{e.preventDefault();const fd=new For
  const r=await fetch("/dev/enqueue",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(b)});
  $("#fout").textContent=JSON.stringify(await r.json(),null,2);loadRuns();});
 async function loadRuns(){const r=await(await fetch("/dev/runs")).json();
- $("#runs").innerHTML=r.length?"<table><tr><th>run</th><th>state</th><th>step</th><th>verdict</th><th>updated</th></tr>"+r.map(x=>
-  '<tr><td>'+(x.markName??x.slug)+' · '+(x.codename??"?")+'</td><td class="'+(x.state==="delivered"?"ok":x.state==="failed"?"err":"warn")+'">'+(x.state??"?")+(x.sendPending?" (sendPending)":"")+'</td><td>'+(x.stepLabel??"")+'</td><td>'+(x.verdict??"")+'</td><td>'+(x.updatedAt??"").slice(0,19)+'</td></tr>').join("")+"</table>":"no runs yet";}
+ $("#runs").innerHTML=r.length?"<table><tr><th>run</th><th>state</th><th>step</th><th>sign-off</th><th>updated</th></tr>"+r.map(x=>
+  '<tr><td>'+(x.markName??x.slug)+' · '+(x.codename??"?")+'</td><td class="'+(x.state==="delivered"?"ok":x.state==="failed"?"err":"warn")+'">'+(x.state??"?")+(x.sendPending?" (sendPending)":"")+'</td><td>'+(x.stepLabel??"")+'</td><td>'+(x.signoff??"")+'</td><td>'+(x.updatedAt??"").slice(0,19)+'</td></tr>').join("")+"</table>":"no runs yet";}
 async function loadOutbox(){const r=await(await fetch("/dev/outbox")).json();
  $("#outbox").innerHTML=r.length?r.map(x=>'<details><summary>'+x.file+' <span class="warn">'+(x.packet?.kind??(x.legacyAgent?"delivered (legacy)":"?"))+'</span></summary><pre>'+JSON.stringify(x.packet??{legacyAgent:x.legacyAgent},null,2)+'</pre></details>').join(""):"outbox empty";}
 // ── Searches panel (Phase 3a): registry levels + saved recipes via the /recipes/* proxy. EVERY

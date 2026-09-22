@@ -350,7 +350,7 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
         const docs = reportsOf(meta).filter((r) => existsSync(join(poolRoot, name, r.file)));
         const hasReport = docs.length > 0;
         const { bands, toneFor } = ladderOf(meta);
-        const band = meta.overall ?? meta.verdict ?? null;
+        const band = meta.overall ?? null;   // the rating; a meta's retired `verdict` held the reviewer's sign-off on the full-search lane
         out.push({ runId: meta.runId ?? name, account: owner, ...(owner === "generic" ? { organisation: meta.organisation ?? null } : {}),
           title: meta.title ?? meta.matter ?? name, kind: meta.kind ?? "clearance",
           // THE MARK, separate from the report's headline.
@@ -540,7 +540,7 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
         // hide this. Staff only: the client redaction below replaces `reason` and must drop this too,
         // or the redaction would be defeated by the field that carries the raw words.
         reasonDetail: s.reasonDetail ?? null,
-        date: (s.updatedAt ?? "").slice(0, 10), overall: s.verdict ?? null,
+        date: (s.updatedAt ?? "").slice(0, 10), overall: s.tier ?? null,   // the rating, never the reviewer's sign-off word
         // A live run has not been issued, so its last progress write is the honest ordering key — the
         // same role issuedAt plays for a delivered one, never presented as a finish time.
         issuedAt: typeof s.updatedAt === "string" ? s.updatedAt : null,
