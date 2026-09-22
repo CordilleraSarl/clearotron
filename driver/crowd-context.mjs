@@ -36,6 +36,7 @@
 // and the axis bands are never touched — this pass mutates no existing artifact.
 
 import { NON_MATERIAL_AXES } from "./coverage-ledger.mjs";
+import { containsFormSubstitution } from "./register-plan.mjs";
 
 // ── caps — these bound SPEND, never sufficiency ─────────────────────────────────────────────────────
 // Each cap limits how many provider calls / how many fetched records one evidence pass may buy. They
@@ -180,14 +181,22 @@ export function selectCrowdSlices(ledgerRows, planContext = {}) {
 // the counts describe the SAME crowd the ledger row is about. An owner-scoped slice carries its
 // `owner` onto EVERY minted entry for the same reason — un-owned counts would describe the wider
 // formative crowd while claiming to describe the owner's slice.
-export function mintSliceCountEntries(slice, i, { maxTerms = CROWD_MAX_TERMS_PER_SLICE } = {}) {
+//
+// A TERM SHORTER THAN THE REGISTER'S CONTAINS FLOOR is counted on the exact form instead, the same
+// rule the frozen plan's goods-narrowed questions and saturation probes follow: a register that
+// refuses the contains form for a term that short answers no count at all, so the crowd this pass
+// exists to describe would read "count unavailable". Same classes, same two counts per term, and the
+// entry carries `contains_substituted` so the figure is never taken for a containing count.
+export function mintSliceCountEntries(slice, i, { maxTerms = CROWD_MAX_TERMS_PER_SLICE, capabilities = null } = {}) {
   const terms = slice.terms.slice(0, maxTerms);
   const base = { axis: CROWD_CONTEXT_AXIS, regions: slice.regions ?? [], expected_kind: "count",
     ...(typeof slice.owner === "string" && slice.owner ? { owner: slice.owner } : {}) };
   const out = [];
   terms.forEach((t, j) => {
-    out.push({ ...base, qid: `crowdctx:s${i}-t${j}-${slug(t)}-all`, predicate: "default", term: t, nice_classes: [] });
-    out.push({ ...base, qid: `crowdctx:s${i}-t${j}-${slug(t)}-cls`, predicate: "default", term: t, nice_classes: slice.nice_classes ?? [] });
+    const sub = containsFormSubstitution(t, capabilities);
+    const form = sub ? { predicate: "exact", contains_substituted: sub } : { predicate: "default" };
+    out.push({ ...base, qid: `crowdctx:s${i}-t${j}-${slug(t)}-all`, ...form, term: t, nice_classes: [] });
+    out.push({ ...base, qid: `crowdctx:s${i}-t${j}-${slug(t)}-cls`, ...form, term: t, nice_classes: slice.nice_classes ?? [] });
   });
   out.push({
     ...base, qid: `crowdctx:s${i}-exact-count`, predicate: "exact",
@@ -325,10 +334,12 @@ const compactRecord = (r) => ({
  * @param opts.executor     INJECTED: async (entries) => band blocks (tests stub it; the pipeline passes
  *                          the planExec-lane adapter). Null/absent ⇒ no lane ⇒ null (logged, non-fatal).
  * @param opts.caps         { maxSlices?, maxTermsPerSlice?, enumCap? } — spend bounds only.
+ * @param opts.capabilities the active register's declared capabilities, read for the contains floor
+ *                          only (containsMinLength). Absent ⇒ every term is counted on the contains form.
  * @param opts.note / opts.log  observability hooks (default no-ops; pipeline wires note()/runLog).
  * @returns { json, md, stats } | null
  */
-export async function buildCrowdContext({ ledger, planContext = {}, executor, caps = {}, note = () => {}, log = () => {} } = {}) {
+export async function buildCrowdContext({ ledger, planContext = {}, executor, caps = {}, capabilities = null, note = () => {}, log = () => {} } = {}) {
   const maxSlices = caps.maxSlices ?? CROWD_MAX_SLICES;
   const maxTermsPerSlice = caps.maxTermsPerSlice ?? CROWD_MAX_TERMS_PER_SLICE;
   const enumCap = caps.enumCap ?? CROWD_ENUM_CAP;
@@ -344,7 +355,7 @@ export async function buildCrowdContext({ ledger, planContext = {}, executor, ca
   if (selected.length > slices.length) note(`crowd-context: ${selected.length} qualifying slice(s), gathering the first ${slices.length} (spend cap — the rest keep their ledger disclosure unchanged)`);
   try {
     // ── phase 1: one batched executor call for every count probe ─────────────────────────────────
-    const countEntries = slices.flatMap((s, i) => mintSliceCountEntries(s, i, { maxTerms: maxTermsPerSlice }));
+    const countEntries = slices.flatMap((s, i) => mintSliceCountEntries(s, i, { maxTerms: maxTermsPerSlice, capabilities }));
     const byQid = new Map((await executor(countEntries) ?? []).filter((b) => b && b.qid).map((b) => [b.qid, b]));
     // ── phase 2: enumerate each exact subset the count proved tractable (0 < hits ≤ cap) ─────────
     // A verified-zero count needs no call (enumerating an empty subset returns the empty subset);
@@ -366,7 +377,9 @@ export async function buildCrowdContext({ ledger, planContext = {}, executor, ca
         const all = byQid.get(`crowdctx:s${i}-t${j}-${slug(t)}-all`);
         const cls = byQid.get(`crowdctx:s${i}-t${j}-${slug(t)}-cls`);
         const bad = !all || all.error || !cls || cls.error;
-        return { term: t, all_classes: Number(all?.total_hits) || 0, in_scope: Number(cls?.total_hits) || 0, ...(bad ? { error: true } : {}) };
+        const sub = containsFormSubstitution(t, capabilities);
+        return { term: t, all_classes: Number(all?.total_hits) || 0, in_scope: Number(cls?.total_hits) || 0,
+          ...(bad ? { error: true } : {}), ...(sub ? { contains_substituted: sub } : {}) };
       });
       const c = byQid.get(`crowdctx:s${i}-exact-count`);
       const hits = Number(c?.total_hits) || 0;
