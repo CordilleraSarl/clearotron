@@ -238,6 +238,16 @@ export const CAPABILITIES = Object.freeze({
   goodsTextMultiWord: "ordered-phrase",
   // Several goods terms ride ONE clause joined by OR — this register expresses a list natively.
   goodsTextListOr: true,
+  // ── THE SHORTEST TERM THE CONTAINS FORM ACCEPTS: none known, so none declared ───────────────────
+  //
+  // No vendor document available to this repository states one: the vendor publishes no public
+  // reference for this search API, and none was found on 2026-09-22. What is measured is narrower and is
+  // handled in core.js: a ONE-character first or last token inside a phrase chain is refused (HTTP
+  // 500), and two characters are answered. A two-letter `*TERM*` on its own is not recorded either way.
+  //
+  // `null` means the compiler keeps asking the contains form at every length, which is what this
+  // register has always been sent. A declared number must come from the vendor, not from a guess.
+  containsMinLength: null,
   // The operator the goods clause rides. `EQUALS` on WHOLE WORDS: `CONTAINS` is a hard 400 here
   // exactly as it is on APPLICANT_NAME, and so is a mid-word wildcard. Several words are asked for
   // with `OR` inside the value.
