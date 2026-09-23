@@ -66,7 +66,7 @@ test("setup's row names the version and the floor, and says the same thing when 
   // start, and describing this one that way sends the reader to look for a broken install they do not have.
   assert.doesNotMatch(said, /incomplete|won't run|cannot run|isn't there/i,
     `an old copy is described as one that cannot run: "${said}"`);
-  assert.match(said, /on an older Claude model than the one they ask for/,
+  assert.match(said, /newest Claude models need a newer version/,
     `the explanation does not say what actually goes wrong: "${said}"`);
 });
 
@@ -106,7 +106,7 @@ test("an old Codex is named by its version, the floor and the fix, and nothing i
     `Codex on this computer is version ${old}. Clearotron needs ${CODEX.floor} or newer. Update it, or set ${CODEX.env} to a newer copy.`);
   assert.equal(cannotRunLine(CLAUDE, copy(TOO_OLD)),
     `Claude on this computer is version ${TOO_OLD}. Clearotron needs ${FLOOR} or newer. `
-    + `Searches still run, but on an older Claude model than the one they ask for. Update it, or set ${CLAUDE.env} to a newer copy.`);
+    + `The newest Claude models need a newer version. Searches run on an older model instead, or stop at the first step if they name the newest one exactly. Update it, or set ${CLAUDE.env} to a newer copy.`);
   // A copy Clearotron installed moves with `update`; any other copy is used before one setup installs, so
   // installing another is never offered as its fix.
   assert.match(cannotRunLine(CLAUDE, copy(TOO_OLD, { source: "installed" })), /Update it with `[^`]*update`\.$/);
@@ -123,7 +123,7 @@ const ONBOARD = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "bin",
 const plain = (s) => String(s).replace(/\x1b\[[0-9;?]*[A-Za-z]/g, "").replace(/\r/g, "");
 function standIn(name, answer) {
   const dir = mkdtempSync(join(tmpdir(), "floor-standin-"));
-  writeFileSync(join(dir, name), `#!/bin/sh\necho "${answer}"\n`, { mode: 0o755 });
+  writeFileSync(join(dir, name), answer === null ? "#!/bin/sh\nexit 1\n" : `#!/bin/sh\necho "${answer}"\n`, { mode: 0o755 });
   return dir;
 }
 function isolated(dir, extra = {}) {
@@ -137,7 +137,7 @@ test("doctor, run as a person runs it, names an old copy by version and fix, and
   const cases = [
     { eng: CLAUDE, id: "anthropic-agent", name: "claude", answer: `${TOO_OLD} (Claude Code)`, version: TOO_OLD,
       line: (bin) => `✗ ${bin} — on PATH, version ${TOO_OLD}. Clearotron needs ${FLOOR} or newer. `
-        + `Searches still run, but on an older Claude model than the one they ask for. Update it, or set ${CLAUDE.env} to a newer copy.` },
+        + `The newest Claude models need a newer version. Searches run on an older model instead, or stop at the first step if they name the newest one exactly. Update it, or set ${CLAUDE.env} to a newer copy.` },
     { eng: CODEX, id: "openai-agent", name: "codex", answer: "codex-cli 0.150.1", version: "0.150.1",
       line: (bin) => `✗ ${bin} — on PATH, version 0.150.1. Clearotron needs ${CODEX.floor} or newer. Update it, or set ${CODEX.env} to a newer copy.` },
   ];
@@ -151,7 +151,24 @@ test("doctor, run as a person runs it, names an old copy by version and fix, and
       assert.equal(r.status, 1, `doctor did not fail on an old ${c.eng.product}: exit ${r.status}\n${out.slice(-1500)}`);
       const want = c.line(join(dir, c.name));
       assert.ok(out.split("\n").some((l) => l.trim() === want), `doctor did not print\n  ${want}\n${out.slice(-2500)}`);
-      if (c.eng === CODEX) assert.doesNotMatch(out, /older Codex model|refuses the newest model/, "doctor claims something about Codex's models");
+      if (c.eng === CODEX) assert.doesNotMatch(out, /newest Codex models|older model|refuses the newest model/, "doctor claims something about Codex's models");
+    } finally { for (const d of [dir, home]) rmSync(d, { recursive: true, force: true }); }
+  }
+});
+
+test("doctor says when it could not check a copy's version, in one sentence true for either engine", () => {
+  // Two ways to get here: the program gives no answer, or answers in prose, which is kept as said.
+  for (const [id, name, answer, shown] of [["anthropic-agent", "claude", null, "version not read"], ["openai-agent", "codex", null, "version not read"],
+    ["anthropic-agent", "claude", "a build from source", "version a build from source"]]) {
+    const eng = ENGINE_BINARIES[id];
+    const dir = standIn(name, answer);
+    const { home, env } = isolated(dir, { CLEAROTRON_AI: id });
+    try {
+      const r = spawnSync(process.execPath, [ONBOARD, "--check"], { env, encoding: "utf8", timeout: 60000 });
+      const lines = plain(r.stdout).split("\n").map((l) => l.trim().replace(/\s+/g, " "));
+      assert.ok(lines.includes(`✓ ${join(dir, name)} — on PATH, ${shown}`), `doctor did not report the copy as found:\n${lines.join("\n").slice(0, 3000)}`);
+      const want = `· Its version could not be checked against the ${eng.floor} Clearotron needs.`;
+      assert.ok(lines.includes(want), `doctor did not print\n  ${want}\n${lines.join("\n").slice(0, 3000)}`);
     } finally { for (const d of [dir, home]) rmSync(d, { recursive: true, force: true }); }
   }
 });
@@ -174,7 +191,7 @@ test("setup, driven in a terminal, shows the fix for an old copy when that engin
     tick();
   });
   const paragraph = `Claude on this computer is version ${TOO_OLD}. Clearotron needs ${FLOOR} or newer. `
-    + `Searches still run, but on an older Claude model than the one they ask for. Update it, or set ${CLAUDE.env} to a newer copy.`;
+    + `The newest Claude models need a newer version. Searches run on an older model instead, or stop at the first step if they name the newest one exactly. Update it, or set ${CLAUDE.env} to a newer copy.`;
   try {
     await until(/1-\d+ \[1\] $/);
     const menu = plain(out);

@@ -748,8 +748,8 @@
           "todos": 0
         },
         "a-program-already-here-is-checked-against-the-floor.test.mjs": {
-          "tests": 8,
-          "asserts": 36,
+          "tests": 9,
+          "asserts": 38,
           "skips": 1,
           "todos": 0
         },

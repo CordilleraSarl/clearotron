@@ -1119,7 +1119,7 @@ export const floorRefusesNewestModel = (eng) => Boolean(eng?.package) && eng.pac
  * to update it, or to name a newer one in the engine's setting.
  */
 export function belowFloorTail(eng, bin) {
-  const cost = floorRefusesNewestModel(eng) ? `Searches still run, but on an older ${eng.product} model than the one they ask for. ` : "";
+  const cost = floorRefusesNewestModel(eng) ? `The newest ${eng.product} models need a newer version. Searches run on an older model instead, or stop at the first step if they name the newest one exactly. ` : "";
   const fix = bin?.source === "installed" ? `Update it with \`${invoke("update")}\`.` : `Update it, or set ${eng.env} to a newer copy.`;
   return cost + fix;
 }
@@ -1850,7 +1850,7 @@ export async function runCheck() {
     else if (bin.executable && !bin.relative) {
       ok(`${bin.path} — ${copyWords(bin)}`);
       if (olderThanFloor(seen, engSpec.floor) === null)
-        info(`  its version could not be read, so whether it is new enough for the models a run asks for is NOT checked here — this build needs ${engSpec.floor} or newer`);
+        info(`  Its version could not be checked against the ${engSpec.floor} Clearotron needs.`);
     }
     // A copy that is there and cannot run is a broken install, not an absence: the vendor's placeholder
     // left by an install that skipped its step, most often. Named with the reason and the fix.
