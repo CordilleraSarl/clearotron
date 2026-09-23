@@ -688,9 +688,9 @@
           "todos": 0
         },
         "a-new-run-folder-is-closed-to-other-accounts.test.mjs": {
-          "tests": 4,
-          "asserts": 8,
-          "skips": 4,
+          "tests": 5,
+          "asserts": 9,
+          "skips": 5,
           "todos": 0
         },
         "a-next-step-the-model-writes-comes-off-at-publish.test.mjs": {
@@ -5688,6 +5688,12 @@
         "the-shape-read-prints-counts-and-writes-nothing.test.mjs": {
           "tests": 5,
           "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-shipped-services-may-not-gain-privileges.test.mjs": {
+          "tests": 3,
+          "asserts": 4,
           "skips": 0,
           "todos": 0
         },
