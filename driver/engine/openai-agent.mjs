@@ -30,7 +30,7 @@ import { join, dirname, sep } from "node:path";
 import { runStreamingChild, absolutizeSkillRefs, WRITE_DISCIPLINE, buildEnvelope, resolveSpawnCwd } from "./common.mjs";
 import { renderCodexConfigToml } from "./mcp/codex-config.mjs";
 import { resolveAuthMode } from "./auth.mjs";
-import { engineEnv } from "./engine-env.mjs";
+import { engineEnv, codexCommandWithheld } from "./engine-env.mjs";
 import { resolveEngineProgram } from "../driver.config.mjs";   // — the one place that finds the program; it reads every spelling of the setting
 
 // The same one resolver as the claude adapter (driver.config.mjs resolveEngineProgram), for the same reason:
@@ -665,10 +665,15 @@ export const openaiAgentEngine = {
       //
       // — the fence: with the sandbox on, the stage's commands read only the instruction trees, the run
       // folder and the temp folders (codex-config.mjs, `fenceToml`). The same roots claude's file tools get.
+      //
+      // — what those commands inherit: none of the register and research keys the program holds for its
+      // tool servers, and not the Codex key (engine-env.mjs, `codexCommandWithheld`). With the sandbox on
+      // or off, since the bypass builds no fence and a command could otherwise print them.
       const fence = codexSandboxBypassed() ? null
         : { runDir, readRoots: [...(skillsGrantRoots?.length ? skillsGrantRoots : [skillsDir]), codexProgramRoot(codexBin())].filter(Boolean) };
       writeFileSync(join(codexHome, "config.toml"),
-        renderCodexConfigToml({ mcpConfig, allowedTools, developerInstructions: WRITE_DISCIPLINE, toolTimeoutSec: timeoutSec, fence }));
+        renderCodexConfigToml({ mcpConfig, allowedTools, developerInstructions: WRITE_DISCIPLINE, toolTimeoutSec: timeoutSec, fence,
+          withheldFromCommands: codexCommandWithheld() }));
 
       const input = absolutizeSkillRefs(message, skillsDir, resolveSkill);
       const { args } = buildCodexArgs({ model, thinking, resumeRef, runDir });

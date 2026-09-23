@@ -6,8 +6,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
 import {
-  renderCodexConfigToml, parseClaudeMcpServers, enabledToolsByServer, tomlString, CRED_ENV_FORWARD,
+  renderCodexConfigToml, parseClaudeMcpServers, enabledToolsByServer, tomlString, CRED_ENV_FORWARD, FENCE_PROFILE,
 } from "../engine/mcp/codex-config.mjs";
 
 // Neutral register namespace (the real gather-config emits server key `register` + `register_*` tools —
@@ -259,4 +260,47 @@ test("renderCodexConfigToml: a server granted whole and by name is offered whole
   const [a, b] = ["a", "b"].map((s) => serverBlocks(toml).find((x) => x.startsWith(`[mcp_servers.${s}]`)));
   assert.doesNotMatch(a, /^enabled_tools/m);
   assert.match(b, /^enabled_tools = \["y"\]$/m);
+});
+
+// ── what a stage's shell commands inherit ───────────────────────────────────────────────────────────
+// Codex hands a command its whole environment unless its config says otherwise, and the program holds the
+// register keys for its tool servers. Each withheld name is one `exclude` filter. Read back with a real
+// TOML parser, because codex refuses the whole file over one bad line, and a stage whose config does not
+// parse runs nothing.
+
+function parseToml(text) {
+  const r = spawnSync("python3", ["-c", "import json, sys, tomllib; print(json.dumps(tomllib.loads(sys.stdin.read())))"],
+    { input: text, encoding: "utf8" });
+  assert.equal(r.error, undefined, "python3 is not on this machine, and the TOML check needs a real parser");
+  assert.equal(r.status, 0, `the config does not parse as TOML:\n${text}\n${r.stderr}`);
+  return JSON.parse(r.stdout);
+}
+
+test("renderCodexConfigToml: each withheld name is one exclude filter, and the servers still forward it by name", () => {
+  const withheld = ["SIGNA_API_KEY", "CORSEARCH_SESSION_KEY", "signa_api_key", "CODEX_API_KEY"];
+  const toml = renderCodexConfigToml({ mcpConfig: CLAUDE_JSON, allowedTools: ALLOWED, developerInstructions: "WRITE THE FILE.",
+    fence: { runDir: "/run" }, withheldFromCommands: withheld });
+  const cfg = parseToml(toml);
+  // Once per name whatever its case: codex matches filters without regard to case and refuses a file
+  // that names one twice.
+  assert.deepEqual(cfg.shell_environment_policy,
+    { filters: { SIGNA_API_KEY: "exclude", CORSEARCH_SESSION_KEY: "exclude", CODEX_API_KEY: "exclude" } });
+  // Only the filters. Codex refuses `filters` beside the older `exclude` and `include_only` lists, and an
+  // `inherit` here would change what every other name does.
+  assert.doesNotMatch(toml, /^(exclude|include_only|inherit|ignore_default_excludes) =/m);
+  // The top-level settings are still top-level, above the new table.
+  assert.equal(cfg.developer_instructions, "WRITE THE FILE.");
+  assert.equal(cfg.default_permissions, FENCE_PROFILE);
+  // The servers are untouched: codex reads their keys through env_vars, from the program's environment.
+  assert.deepEqual(cfg.mcp_servers.register.env_vars, CRED_ENV_FORWARD);
+  assert.equal(cfg.mcp_servers.register.env.CLEAROTRON_GATHER_SESSION_KEY, "sess-1");
+});
+
+test("renderCodexConfigToml: nothing withheld writes no policy, and the file is otherwise what it was", () => {
+  const before = renderCodexConfigToml({ mcpConfig: CLAUDE_JSON, allowedTools: ALLOWED, developerInstructions: "WRITE THE FILE." });
+  assert.ok(!before.includes("shell_environment_policy"));
+  for (const none of [[], undefined, null, [""]])
+    assert.equal(renderCodexConfigToml({ mcpConfig: CLAUDE_JSON, allowedTools: ALLOWED, developerInstructions: "WRITE THE FILE.", withheldFromCommands: none }), before);
+  const withPolicy = renderCodexConfigToml({ mcpConfig: CLAUDE_JSON, allowedTools: ALLOWED, developerInstructions: "WRITE THE FILE.", withheldFromCommands: ["SIGNA_API_KEY"] });
+  assert.equal(withPolicy.replace(/^\[shell_environment_policy\.filters\]\n"SIGNA_API_KEY" = "exclude"\n\n/m, ""), before);
 });

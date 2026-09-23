@@ -14,17 +14,20 @@
 //   3. every name the tool servers read is either handed to them, written into their own entry by
 //      gather-config, or named below as not needed with the reason; a server that starts reading a new
 //      setting fails this until someone decides which;
-//   4. a real start through each adapter, against the mocks, carries the list and not the secrets.
+//   4. a real start through each adapter, against the mocks, carries the list and not the secrets;
+//   5. on Codex, whose stages keep a shell, the stage's commands are refused what the program holds only
+//      for its tool servers, and the Codex key.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync, mkdtempSync, rmSync, readdirSync } from "node:fs";
+import { spawnSync } from "node:child_process";
 import { join, dirname, resolve, relative } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 
 import {
   engineEnv, toolServerNames, RUNTIME_NAMES, RUNTIME_PREFIXES, NETWORK_NAMES, CLAUDE_PREFIXES, CLAUDE_NAMES,
-  CLOUD_NAMES, CLOUD_PREFIXES, CODEX_NAMES, TOOL_SERVER_SETTINGS, TEST_PREFIXES,
+  CLOUD_NAMES, CLOUD_PREFIXES, CODEX_NAMES, TOOL_SERVER_SETTINGS, TEST_PREFIXES, codexCommandWithheld,
 } from "../engine/engine-env.mjs";
 import { CLOUD_SETTINGS } from "../engine/auth.mjs";
 import { CRED_ENV_FORWARD } from "../engine/mcp/codex-config.mjs";
@@ -299,5 +302,47 @@ test("codex is started with the list: no signing key, and its key only because i
     const call = JSON.parse(readFileSync(log, "utf8").trim().split("\n").pop());
     for (const k of [...Object.keys(SECRETS), "OPENAI_API_KEY"]) assert.ok(!call.envNames.includes(k), `codex was started with ${k}`);
     for (const k of ["PATH", "HOME", "CODEX_HOME", "CODEX_API_KEY"]) assert.ok(call.envNames.includes(k), `codex was started without ${k}`);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+// ── 5. WHAT A CODEX STAGE'S COMMANDS INHERIT ─────────────────────────────────────────────────────────
+//
+// The program holds the register and research keys because its tool servers read them, and codex hands a
+// command its whole environment unless its config says otherwise. So the list above, alone, left every key
+// a command away from the model. The config each turn writes withholds them from commands; codex builds its
+// servers' environments from their own `env_vars`, which this does not touch (codex-config.mjs).
+
+/** The eight register and research keys a Codex program holds for its tool servers. */
+const REGISTER_KEYS = ["SIGNA_API_KEY", "CLARIVATE_API_KEY", "CLARIVATE_CLIENT_SECRET", "CORSEARCH_API_KEY",
+  "CORSEARCH_SESSION_KEY", "PERPLEXITY_API_KEY", "SERPAPI_API_KEY", "EUIPO_CLIENT_SECRET"];
+
+test("what Codex withholds from a stage's commands is every name held for the tool servers, and its key", () => {
+  assert.deepEqual(codexCommandWithheld(), [...toolServerNames(), "CODEX_API_KEY"]);
+  for (const k of REGISTER_KEYS) assert.ok(codexCommandWithheld().includes(k), `${k} would reach a Codex stage's commands`);
+});
+
+test("codex's commands are refused the register keys and its key, while the program keeps them for its servers", async () => {
+  const { openaiAgentEngine } = await import("../engine/openai-agent.mjs");
+  const dir = mkdtempSync(join(tmpdir(), "listed-env-codex-commands-"));
+  const log = join(dir, "calls.jsonl");
+  const keys = Object.fromEntries(REGISTER_KEYS.map((k) => [k, `value-of-${k}`]));
+  try {
+    for (const sandbox of ["on", "bypassed"]) {
+      const t = await withEnv({ ...keys, CLEAROTRON_CODEX_PATH: join(HERE, "mock-codex.mjs"), MOCK_CODEX_CALL_LOG: log,
+        CLEAROTRON_AI_BILLING: "api-key", CODEX_API_KEY: "sk-codex-test", CLEAROTRON_CODEX_SANDBOX_BYPASS: sandbox === "on" ? "" : "1" },
+      () => openaiAgentEngine.runTurn({ message: "reply ok", model: "haiku", thinking: "low", timeoutSec: 60 }));
+      assert.equal(t.code, 0, t.stderr);
+      const call = JSON.parse(readFileSync(log, "utf8").trim().split("\n").pop());
+      // The program still holds them: its servers read them through env_vars.
+      for (const k of [...REGISTER_KEYS, "CODEX_API_KEY"]) assert.ok(call.envNames.includes(k), `sandbox ${sandbox}: codex was started without ${k}`);
+      // The config the turn actually ran with, read by a real TOML parser.
+      const r = spawnSync("python3", ["-c", "import json, sys, tomllib; print(json.dumps(tomllib.loads(sys.stdin.read())))"],
+        { input: call.configToml, encoding: "utf8" });
+      assert.equal(r.error, undefined, "python3 is not on this machine, and the TOML check needs a real parser");
+      assert.equal(r.status, 0, `the turn's config does not parse:\n${call.configToml}\n${r.stderr}`);
+      const filters = JSON.parse(r.stdout).shell_environment_policy?.filters ?? {};
+      const open = codexCommandWithheld().filter((k) => filters[k] !== "exclude");
+      assert.deepEqual(open, [], `sandbox ${sandbox}: a stage's commands would inherit these`);
+    }
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });

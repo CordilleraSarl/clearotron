@@ -100,6 +100,18 @@ export function toolServerNames() {
 }
 
 /**
+ * What a Codex stage's shell commands are refused, though the Codex program itself holds them: every name
+ * on the list only because the tool servers read it, and the Codex key. Codex hands its commands its
+ * whole environment unless its config says otherwise, and a command can print what it was handed, so a
+ * page a stage read could have it print the register keys. The servers are not affected: Codex builds each
+ * server's environment from that server's own `env_vars`, not from what its commands get (codex-config.mjs).
+ * Built from the same list that admits the names, so a credential a provider table adds is withheld too.
+ */
+export function codexCommandWithheld() {
+  return [...toolServerNames(), "CODEX_API_KEY"];
+}
+
+/**
  * The test mocks read their controls from `MOCK_*`. No product setting uses the prefix, and a test holds
  * that true, so the rule admits test controls and nothing an install configures.
  */

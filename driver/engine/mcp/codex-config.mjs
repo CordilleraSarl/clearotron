@@ -106,7 +106,7 @@ export function webFetchRequested(allowedTools) {
 // turn that is awaiting it, so the turn's own budget is the honest ceiling and the child's hard wall
 // stays the backstop. Absent/0/negative ⇒ emit nothing and leave codex's default alone, so this is inert
 // for any caller that does not thread a budget.
-export function renderCodexConfigToml({ mcpConfig, allowedTools, developerInstructions, nodeBin = process.execPath, credEnvForward = CRED_ENV_FORWARD, toolTimeoutSec, fence = null } = {}) {
+export function renderCodexConfigToml({ mcpConfig, allowedTools, developerInstructions, nodeBin = process.execPath, credEnvForward = CRED_ENV_FORWARD, toolTimeoutSec, fence = null, withheldFromCommands = [] } = {}) {
   const servers = parseClaudeMcpServers(mcpConfig);
   const enabled = enabledToolsByServer(allowedTools);
   const toolTimeout = Number(toolTimeoutSec) > 0 ? Math.floor(Number(toolTimeoutSec)) : undefined;
@@ -114,6 +114,7 @@ export function renderCodexConfigToml({ mcpConfig, allowedTools, developerInstru
   if (developerInstructions) lines.push(`developer_instructions = ${tomlString(developerInstructions)}`, "");
   // Top-level, so above the first table: TOML reads a bare key after a table header as that table's.
   if (fence) lines.push(`default_permissions = ${tomlString(FENCE_PROFILE)}`, "");
+  lines.push(...commandEnvToml(withheldFromCommands));
 
   const emitServer = (name, s, { forwardCreds } = {}) => {
     lines.push(`[mcp_servers.${/^[A-Za-z0-9_-]+$/.test(name) ? name : tomlString(name)}]`);
@@ -159,6 +160,25 @@ export function renderCodexConfigToml({ mcpConfig, allowedTools, developerInstru
 
   if (fence) lines.push(...fenceToml(fence));
   return lines.join("\n").trimEnd() + "\n";
+}
+
+// ── what the stage's shell commands inherit ─────────────────────────────────────────────────────────
+// Codex hands a command its own whole environment by default: `inherit` is `all`, and it keeps names
+// containing KEY, SECRET or TOKEN unless told otherwise (the vendor's Advanced Configuration page). The
+// program holds the register and research keys because its tool servers read them, so without this every
+// command a stage ran could print them, with or without the sandbox. Each name the caller withholds is
+// written as an `exclude` filter, which removes it from commands and from nothing else: codex builds a
+// server's environment from its own short default list plus that server's `env_vars`, read from the
+// program's environment, never from what its commands get (codex-rs `create_env_for_mcp_server`, the same
+// in 0.154.0 and 0.156.1).
+//
+// Filter names are matched without regard to case, and codex refuses the whole file if two of them are
+// the same name in different case, so each name is written once whatever its case.
+export function commandEnvToml(withheld = []) {
+  const seen = new Set();
+  const names = (withheld ?? []).filter((n) => n && !seen.has(n.toUpperCase()) && seen.add(n.toUpperCase()));
+  if (!names.length) return [];
+  return ["[shell_environment_policy.filters]", ...names.map((n) => `${tomlString(n)} = "exclude"`), ""];
 }
 
 // ── the stage's permission profile: what its shell commands may read and write ──────────────────────
