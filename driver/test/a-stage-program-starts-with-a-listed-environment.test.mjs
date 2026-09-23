@@ -27,7 +27,7 @@ import { fileURLToPath } from "node:url";
 
 import {
   engineEnv, toolServerNames, RUNTIME_NAMES, RUNTIME_PREFIXES, NETWORK_NAMES, CLAUDE_PREFIXES, CLAUDE_NAMES,
-  CLOUD_NAMES, CLOUD_PREFIXES, CODEX_NAMES, TOOL_SERVER_SETTINGS, TEST_PREFIXES, codexCommandWithheld,
+  CLOUD_NAMES, CLOUD_PREFIXES, CLOUD_ONLY, CODEX_NAMES, TOOL_SERVER_SETTINGS, TEST_PREFIXES, codexCommandWithheld,
 } from "../engine/engine-env.mjs";
 import { CLOUD_SETTINGS } from "../engine/auth.mjs";
 import { CRED_ENV_FORWARD } from "../engine/mcp/codex-config.mjs";
@@ -63,6 +63,9 @@ test("the program's environment list is exactly this, group by group", () => {
   ]);
   assert.deepEqual([...CLOUD_NAMES], [...CLOUD_SETTINGS, "GOOGLE_CLOUD_PROJECT", "GCLOUD_PROJECT", "CLOUD_ML_REGION"]);
   assert.deepEqual([...CLOUD_PREFIXES], ["AWS_", "VERTEX_REGION_", "CLOUDSDK_", "AZURE_"]);
+  // Every cloud setting but the four model pins, which hold a tier still under any billing.
+  assert.deepEqual([...CLOUD_ONLY], CLOUD_SETTINGS.filter((n) => !["ANTHROPIC_DEFAULT_OPUS_MODEL",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL", "ANTHROPIC_DEFAULT_HAIKU_MODEL", "ANTHROPIC_DEFAULT_FABLE_MODEL"].includes(n)));
   assert.deepEqual([...CODEX_NAMES], ["CODEX_CA_CERTIFICATE", "CODEX_SQLITE_HOME", "RUST_LOG"]);
   assert.deepEqual([...TOOL_SERVER_SETTINGS], [
     "CLARIVATE_API_BASE", "SIGNA_BASE_URL", "EUIPO_ENVIRONMENT", "SIGNA_FIXTURES_DIR", "CLAWDI_SIGNA_FIXTURES_DIR",
@@ -86,7 +89,8 @@ function admits(engine, mode) {
     for (const n of [...CODEX_NAMES, ...toolServerNames()]) names.add(n);
     if (mode === "api-key") names.add("CODEX_API_KEY");
   }
-  return (k) => names.has(k) || prefixes.some((p) => k.startsWith(p));
+  const cloudOnlyOut = engine === "anthropic-agent" && mode !== "cloud" ? new Set(CLOUD_ONLY) : new Set();
+  return (k) => !cloudOnlyOut.has(k) && (names.has(k) || prefixes.some((p) => k.startsWith(p)));
 }
 
 /** Every setting the product reads (the env audit's product rows), by name. */
@@ -154,12 +158,26 @@ test("each billing mode keeps its own credential and no other", () => {
   // The headless sign-in token, under the name the engine table gives it, travels in every mode.
   for (const mode of ["subscription", "api-key", "cloud"])
     assert.equal(claude(mode)[ENGINE_BINARIES["anthropic-agent"].headless.tokenEnv], "oauth", mode);
-  // A cloud's own credentials only when this install bills through a cloud.
-  for (const k of ["AWS_ACCESS_KEY_ID", "GOOGLE_APPLICATION_CREDENTIALS", "AZURE_CLIENT_SECRET"]) {
-    assert.equal(claude("cloud")[k], base[k], k);
-    assert.equal(claude("subscription")[k], undefined, k);
-    assert.equal(claude("api-key")[k], undefined, k);
+  // A cloud's own credentials only when this install bills through a cloud, the ones in Claude's own
+  // namespace included, which the prefixes would otherwise let through in every mode.
+  const inClaudeNamespace = ["ANTHROPIC_FOUNDRY_API_KEY", "ANTHROPIC_AUTH_TOKEN", "ANTHROPIC_BASE_URL",
+    "CLAUDE_CODE_USE_FOUNDRY", "CLAUDE_CODE_USE_VERTEX", "CLAUDE_CODE_USE_BEDROCK", "ANTHROPIC_VERTEX_PROJECT_ID", "ANTHROPIC_FOUNDRY_RESOURCE"];
+  // Every cloud setting set, since the product reads some of them only through the list in auth.mjs.
+  const clouded = { ...base, ...Object.fromEntries(CLOUD_SETTINGS.map((n) => [n, `value-of-${n}`])) };
+  const claudeIn = (mode) => engineEnv({ ...clouded, CLEAROTRON_AI_BILLING: mode }, { engine: "anthropic-agent" });
+  for (const k of ["AWS_ACCESS_KEY_ID", "GOOGLE_APPLICATION_CREDENTIALS", "AZURE_CLIENT_SECRET", ...inClaudeNamespace]) {
+    assert.equal(claudeIn("cloud")[k], clouded[k], k);
+    assert.equal(claudeIn("subscription")[k], undefined, k);
+    assert.equal(claudeIn("api-key")[k], undefined, k);
   }
+  // The model pins hold a tier still under any billing, and stay.
+  for (const mode of ["subscription", "api-key", "cloud"])
+    for (const k of ["ANTHROPIC_DEFAULT_OPUS_MODEL", "ANTHROPIC_DEFAULT_SONNET_MODEL", "ANTHROPIC_DEFAULT_HAIKU_MODEL", "ANTHROPIC_DEFAULT_FABLE_MODEL"])
+      assert.equal(claudeIn(mode)[k], clouded[k], `${mode} dropped ${k}`);
+  // On Windows, in any spelling.
+  const win = engineEnv({ anthropic_auth_token: "gw", Anthropic_Foundry_Api_Key: "az", CLEAROTRON_AI_BILLING: "subscription" },
+    { engine: "anthropic-agent", platform: "win32" });
+  assert.deepEqual(Object.keys(win).filter((k) => /anthropic/i.test(k)), [], "a cloud credential in another spelling reached a subscription stage");
   assert.equal(codex("api-key").CODEX_API_KEY, "sk-codex");
   assert.equal(codex("subscription").CODEX_API_KEY, undefined);
   for (const mode of ["subscription", "api-key"]) {
@@ -207,7 +225,8 @@ const NOT_PASSED = Object.freeze(Object.fromEntries([
   "INVOCATION_ID",
 ].map((n) => [n, NOT_A_TOOL_SETTING]).concat([
   ["CLEAROTRON_SUITE_TELEMETRY_DIR", "the driver resolves the ledgers under it and hands each server the resolved path by name"],
-])));
+], ["ANTHROPIC_BASE_URL", "CLAUDE_CODE_USE_BEDROCK", "CLAUDE_CODE_USE_FOUNDRY", "CLAUDE_CODE_USE_VERTEX"].map((n) => [n,
+  "a cloud's setting, read by auth.mjs, which the servers import for its tables; the program has it only under cloud billing, and no tool needs it"]))));
 
 /** The import closure of `entries`: static imports and literal dynamic ones, relative paths only. */
 function closure(entries) {

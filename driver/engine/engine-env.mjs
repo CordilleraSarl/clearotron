@@ -18,7 +18,8 @@
 //   · the program's own settings, in the vendor's namespace (`CLAUDE_*` and `ANTHROPIC_*` for Claude,
 //     the documented `CODEX_*` names for Codex), plus the vendor-named switches that carry no prefix;
 //   · the credential the billing mode keeps: the Anthropic key only under `api-key`, the Codex key only
-//     under `api-key`, and a cloud's own credentials (AWS, Google, Azure) only under `cloud`;
+//     under `api-key`, and a cloud's own credentials and switches (AWS, Google, Azure, a gateway) only
+//     under `cloud`, those in Claude's own namespace included;
 //   · what the stage's tool servers read, because on the Claude engine they inherit this environment:
 //     every register and research credential the provider tables name, and the few settings the servers
 //     read to reach their register.
@@ -76,6 +77,16 @@ export const CLOUD_NAMES = Object.freeze([
   ...CLOUD_SETTINGS, "GOOGLE_CLOUD_PROJECT", "GCLOUD_PROJECT", "CLOUD_ML_REGION",
 ]);
 export const CLOUD_PREFIXES = Object.freeze(["AWS_", "VERTEX_REGION_", "CLOUDSDK_", "AZURE_"]);
+
+/**
+ * Every cloud setting but the model pins, taken back out outside `cloud`. Most never pass there anyway;
+ * the ones in Claude's own namespace would, on the `CLAUDE_*` and `ANTHROPIC_*` prefixes: the switches,
+ * the Foundry key and resource, the Vertex project, and the gateway with its token. A cloud's key or a
+ * gateway's token in a subscription stage is a credential for an account the stage is not billing, and the
+ * gateway address would send the subscription's own sign-in to it. The model pins stay: they hold a tier at
+ * one model under any billing (INSTALL.md).
+ */
+export const CLOUD_ONLY = Object.freeze(CLOUD_SETTINGS.filter((n) => !/^ANTHROPIC_DEFAULT_[A-Z]+_MODEL$/.test(n)));
 
 /** Codex's own documented settings. CODEX_HOME is the adapter's, set per turn; CODEX_API_KEY is billing's. */
 export const CODEX_NAMES = Object.freeze(["CODEX_CA_CERTIFICATE", "CODEX_SQLITE_HOME", "RUST_LOG"]);
@@ -156,6 +167,11 @@ export function engineEnv(base = process.env, { engine, platform = process.platf
   // Under any spelling on Windows: the prefix above admits `anthropic_api_key` there as readily as the key.
   if (engine === "anthropic-agent" && mode !== "api-key")
     for (const k of Object.keys(env)) if ((win ? k.toUpperCase() : k) === "ANTHROPIC_API_KEY") delete env[k];
+  // A cloud's own settings only under `cloud`, the ones the prefixes above let through included.
+  if (engine === "anthropic-agent" && mode !== "cloud") {
+    const cloudOnly = named(CLOUD_ONLY, win);
+    for (const k of Object.keys(env)) if (cloudOnly(k)) delete env[k];
+  }
   if (engine === "openai-agent" && mode === "api-key" && base?.CODEX_API_KEY !== undefined) env.CODEX_API_KEY = base.CODEX_API_KEY;
   return env;
 }

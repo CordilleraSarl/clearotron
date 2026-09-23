@@ -1079,7 +1079,7 @@
         },
         "a-stage-program-starts-with-a-listed-environment.test.mjs": {
           "tests": 11,
-          "asserts": 55,
+          "asserts": 58,
           "skips": 0,
           "todos": 0
         },
