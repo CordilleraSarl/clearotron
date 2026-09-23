@@ -102,6 +102,10 @@ const TAG_SHA = "d571d0ee" + "0".repeat(32);
 const keptBy = (id, over = {}) => ({ id, fork: false, branch: "main", path: ".github/workflows/release.yml", event: "schedule",
   relation: "identical", bytes: null, ...over });
 
+/** The arms below drive the script against a fake `gh`, which only a POSIX machine can run. */
+const FAKE_GH_IS_POSIX = process.platform === "win32"
+  && "the fake `gh` is a `#!/bin/sh` script put first on a `:`-separated PATH; Windows runs neither, and would reach the real GitHub CLI instead";
+
 /**
  * Run the real script in a tree of its own: main's package.json at `version`, the registry check and the
  * notes stubbed, and a fake `gh` on PATH that answers as the arm says GitHub did and logs every call.
@@ -161,7 +165,7 @@ function driveCatchUp({ version, tag = true, entry = false, kept = [keptBy(7)], 
 
 const creates = (log) => log.split("\n").filter((l) => l.startsWith("release create"));
 
-test("a beta npm now serves gets a pre-release entry from the changelog, checked against the bytes its publish kept", () => {
+test("a beta npm now serves gets a pre-release entry from the changelog, checked against the bytes its publish kept", { skip: FAKE_GH_IS_POSIX }, () => {
   const run = driveCatchUp({ version: "9.9.9-beta.3" });
   assert.equal(run.status, 0, run.out);
   assert.match(run.asked, /--version 9\.9\.9-beta\.3 --tag beta --tarball \S+clearotron-9\.9\.9-beta\.3\.tgz .* BYTES=bytes of 9\.9\.9-beta\.3/,
@@ -172,7 +176,7 @@ test("a beta npm now serves gets a pre-release entry from the changelog, checked
   assert.equal(run.notes, NOTES, "the entry does not carry the changelog's section for the version");
 });
 
-test("the parts list kept beside the bytes rides on the entry as an asset", () => {
+test("the parts list kept beside the bytes rides on the entry as an asset", { skip: FAKE_GH_IS_POSIX }, () => {
   const run = driveCatchUp({ version: "9.9.9-beta.3", sbom: true });
   assert.equal(run.status, 0, run.out);
   const made = creates(run.log);
@@ -181,7 +185,7 @@ test("the parts list kept beside the bytes rides on the entry as an asset", () =
     `the entry was written without the parts list its publish kept:\n${made[0]}`);
 });
 
-test("a stable npm now serves gets an ordinary entry, and asks the registry for `latest`", () => {
+test("a stable npm now serves gets an ordinary entry, and asks the registry for `latest`", { skip: FAKE_GH_IS_POSIX }, () => {
   const run = driveCatchUp({ version: "9.9.9" });
   assert.equal(run.status, 0, run.out);
   assert.match(run.asked, /--version 9\.9\.9 --tag latest /);
@@ -190,7 +194,7 @@ test("a stable npm now serves gets an ordinary entry, and asks the registry for 
   assert.doesNotMatch(made[0], /--prerelease/, "a stable was flagged as a pre-release, so GitHub would never name it latest");
 });
 
-test("not served yet inside the bound waits green, and past the bound fails red, with no entry either way", () => {
+test("not served yet inside the bound waits green, and past the bound fails red, with no entry either way", { skip: FAKE_GH_IS_POSIX }, () => {
   const young = driveCatchUp({ version: "9.9.9", visibleExit: 1, ageHours: 1 });
   assert.equal(young.status, 0, young.out);
   assert.match(young.out, /::notice::v9\.9\.9: npm has not served it yet/);
@@ -200,7 +204,7 @@ test("not served yet inside the bound waits green, and past the bound fails red,
   assert.deepEqual([creates(young.log), creates(old.log)], [[], []]);
 });
 
-test("an entry that exists, or a version never tagged, is left alone without reading any bytes", () => {
+test("an entry that exists, or a version never tagged, is left alone without reading any bytes", { skip: FAKE_GH_IS_POSIX }, () => {
   for (const arm of [{ entry: true }, { tag: false }]) {
     const run = driveCatchUp({ version: "9.9.9", ...arm });
     assert.equal(run.status, 0, run.out);
@@ -209,7 +213,7 @@ test("an entry that exists, or a version never tagged, is left alone without rea
   }
 });
 
-test("a tagged version whose bytes were not kept is red and names the hand step", () => {
+test("a tagged version whose bytes were not kept is red and names the hand step", { skip: FAKE_GH_IS_POSIX }, () => {
   const run = driveCatchUp({ version: "9.9.9", kept: [] });
   assert.equal(run.status, 1, run.out);
   assert.match(run.out, /::error::v9\.9\.9: tagged with no release entry, and no kept bytes/);
@@ -217,7 +221,7 @@ test("a tagged version whose bytes were not kept is red and names the hand step"
   assert.deepEqual(creates(run.log), []);
 });
 
-test("a fork's artifact of the same name is refused, even when it is the newer one, and the release run's own is used", () => {
+test("a fork's artifact of the same name is refused, even when it is the newer one, and the release run's own is used", { skip: FAKE_GH_IS_POSIX }, () => {
   const run = driveCatchUp({ version: "9.9.9-beta.3", sbom: true,
     kept: [keptBy(9, { fork: true, bytes: "a stranger's bytes" }), keptBy(7)] });
   assert.equal(run.status, 0, run.out);
@@ -228,7 +232,7 @@ test("a fork's artifact of the same name is refused, even when it is the newer o
   assert.match(run.sbom, /"from":7\}/, `the entry carries a parts list the release run did not keep: ${run.sbom}`);
 });
 
-test("an artifact is used only when the release workflow made it on this repository's main, at the tagged commit or behind it", () => {
+test("an artifact is used only when the release workflow made it on this repository's main, at the tagged commit or behind it", { skip: FAKE_GH_IS_POSIX }, () => {
   const refused = {
     "a fork's pull request": [{ fork: true }, /made by a run from another repository/],
     "a run on another branch": [{ branch: "feature" }, /made by a run on `feature`, not on main/],
@@ -248,13 +252,13 @@ test("an artifact is used only when the release workflow made it on this reposit
   }
 });
 
-test("a cut's publish, which runs on the commit before the version commit it tags, is the release run", () => {
+test("a cut's publish, which runs on the commit before the version commit it tags, is the release run", { skip: FAKE_GH_IS_POSIX }, () => {
   const run = driveCatchUp({ version: "9.9.9-beta.3", kept: [keptBy(7, { event: "workflow_dispatch", relation: "ahead" })] });
   assert.equal(run.status, 0, run.out);
   assert.equal(creates(run.log).length, 1, run.log);
 });
 
-test("GitHub failing to answer is a check that could not look (exit 2), never 'no entry' and never 'past the bound'", () => {
+test("GitHub failing to answer is a check that could not look (exit 2), never 'no entry' and never 'past the bound'", { skip: FAKE_GH_IS_POSIX }, () => {
   for (const arm of [{ tag: "error" }, { entry: "error" }]) {
     const run = driveCatchUp({ version: "9.9.9", ...arm });
     assert.equal(run.status, 2, `${JSON.stringify(arm)}\n${run.out}`);
@@ -262,7 +266,7 @@ test("GitHub failing to answer is a check that could not look (exit 2), never 'n
   }
 });
 
-test("--dry-run runs the check and writes no entry", () => {
+test("--dry-run runs the check and writes no entry", { skip: FAKE_GH_IS_POSIX }, () => {
   const run = driveCatchUp({ version: "9.9.9", args: ["--dry-run"] });
   assert.equal(run.status, 0, run.out);
   assert.notEqual(run.asked, "");
