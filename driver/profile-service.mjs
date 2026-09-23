@@ -176,6 +176,22 @@ function bandsBandRows(deck, manifest) {
   return out;
 }
 
+// NO STORE PATH AND NO LOAD-LOG WORDING REACHES A BROWSER. The profile validator opens every sentence with
+// the file it judged (`profiles/<key>.json: `), which is right in a terminal and in the load log and is a
+// server path on the company page, so the door takes the prefix off. The three marketplace-entry refusals
+// are then worded for the browser too: their load-log words ("the grid program domain-restricts to it",
+// "inflates the floor") are engine vocabulary, and the staff profile editor already carries a sentence for
+// each (profile-page.html's MAP), copied here unchanged. Every other sentence passes as the validator wrote it.
+const BROWSER_WORDING = [
+  [/^platforms must not list "web"/, "Don’t list “web” — the general web is always searched. Remove it."],
+  [/^platforms entry .* must be a bare store DOMAIN/, "One of the marketplaces isn’t a website address — use domains like amazon.com, one per line."],
+  [/^platforms entry .* is duplicated/, "A marketplace is listed twice — remove the duplicate."],
+];
+export const forBrowser = (errors) => (errors ?? []).map((e) => {
+  const bare = String(e).replace(/^profiles\/[^\s:]*\.json: /, "");
+  return BROWSER_WORDING.find(([re]) => re.test(bare))?.[1] ?? bare;
+});
+
 /**
  * A refusal, worded for the person in the browser.
  *
@@ -200,18 +216,14 @@ export function browserRefusal(e) {
       return { error: "refused", code: "domain_claimed", domain: d.domain, heldBy: d.heldBy,
         message: `${d.domain} is already used by another company. An address can only belong to one, `
           + `because the engine uses it to tell them apart. Remove it here, or take it off the other company first.` };
-    case "no_marketplaces":
-      return { error: "refused", code: "no_marketplaces",
-        message: "This installation has no default marketplaces set up, so there is nothing to search. "
-          + "Add at least one marketplace for this company, or ask an administrator to set the defaults." };
     case "framework_missing":
       return { error: "refused", code: "framework_missing",
         message: "The risk framework this company was pointed at is not on this installation, so nothing "
           + "was created. Rating a company under a framework nobody chose is worse than refusing." };
     case "invalid_bundle":
       // The validator collects, so these are already per-field sentences written for a reader.
-      return { error: "refused", code: "invalid_bundle", errors: d.errors ?? [],
-        message: (d.errors ?? []).join(" ") || String(e.message) };
+      return { error: "refused", code: "invalid_bundle", errors: forBrowser(d.errors),
+        message: forBrowser(d.errors).join(" ") || String(e.message) };
     default:
       return { error: "refused", message: String(e.message) };
   }
@@ -439,13 +451,12 @@ export function makeProfileService({
       try { assertProfileKey(wanted); }
       catch (e) { return { status: 400, json: { error: "bad_key", message: String(e.message) } }; }
 
-      const existing = resolveExisting();
       let framework, platforms, profile;
       try {
         // ALWAYS SET, NEVER ABSENT — the company's own when one is supplied, the house default named
         // otherwise. This is the whole reason a create does not go through save.
         framework = resolveFramework(isStr(body?.frameworkPath) ? body.frameworkPath : null);
-        platforms = resolvePlatforms(Array.isArray(body?.platforms) ? body.platforms : null, existing);
+        platforms = resolvePlatforms(Array.isArray(body?.platforms) ? body.platforms : null);
         profile = buildProfile({
           key: wanted, name,
           domains: Array.isArray(body?.matchDomains) ? body.matchDomains : [],
@@ -511,7 +522,8 @@ export function makeProfileService({
         // The receipt reads off THESE, so it can say which framework and how many marketplaces, and
         // whether each was chosen or defaulted, rather than restating what was typed.
         framework: { path: framework.path, defaulted: framework.source === "default" },
-        marketplaces: { count: platforms.platforms.length, defaulted: platforms.source !== "supplied" },
+        // Never defaulted any more: a company created without marketplaces has none (resolvePlatforms).
+        marketplaces: { count: platforms.platforms.length, defaulted: false },
         ...(commitError ? { commitError: `created and LIVE, but the git commit failed (${commitError}) — the audit line records the gap` } : {}),
       } };
     }
@@ -621,14 +633,14 @@ export function makeProfileService({
         const v = validateProfileEdit(errKey, overlayBody, ctx, { sparse: true });
         let keyError = null;
         if (!exists) { try { assertProfileKey(project); } catch (e) { keyError = String(e.message); } }
-        const errors = keyError ? [keyError, ...v.errors] : v.errors;
+        const errors = forBrowser(keyError ? [keyError, ...v.errors] : v.errors);
         return { status: 200, json: { ok: errors.length === 0, errors, isNew: !exists } };
       }
 
       // save — the validated AUTO-COMMIT write (sparse validators; customer-only keys 400 here)
       if (!exists) { try { assertProfileKey(project); } catch (e) { return { status: 400, json: { error: String(e.message) } }; } }
       const v = validateProfileEdit(errKey, overlayBody, ctx, { sparse: true });
-      if (!v.ok) return { status: 400, json: { error: "validation_failed", errors: v.errors } };
+      if (!v.ok) return { status: 400, json: { error: "validation_failed", errors: forBrowser(v.errors) } };
       // The write lands FIRST (atomic temp+rename); a git failure after it must never hide the mutation
       // behind a 500 — the overlay is LIVE the moment it is renamed (every loadProjects door reads
       // force-fresh), so the response says written:true with the commit error named, and the audit line
@@ -670,7 +682,7 @@ export function makeProfileService({
       // a brand-new key must also be a safe slug (it becomes a filename); surface that in the dry run
       let keyError = null;
       if (!exists) { try { assertProfileKey(key); } catch (e) { keyError = String(e.message); } }
-      const errors = keyError ? [keyError, ...v.errors] : v.errors;
+      const errors = forBrowser(keyError ? [keyError, ...v.errors] : v.errors);
       return { status: 200, json: { ok: errors.length === 0, errors, isNew: !exists } };
     }
 
@@ -684,7 +696,7 @@ export function makeProfileService({
     preserveUncontrolled(profile, exists ? profiles.get(key) : null);
     const effective = preserveCodeOwned(profile, exists ? profiles.get(key) : null);
     const v = validateProfileEdit(key, effective, contextPack);
-    if (!v.ok) return { status: 400, json: { error: "validation_failed", errors: v.errors } };
+    if (!v.ok) return { status: 400, json: { error: "validation_failed", errors: forBrowser(v.errors) } };
 
     const { files } = writeProfile({ profileDir, key, profile: effective, contextPack });
     // The write is atomic and LIVE the instant it renames — the next run freezes THIS file. An

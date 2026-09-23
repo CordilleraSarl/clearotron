@@ -52,12 +52,14 @@ test("the advice NEVER narrows a token, for any verb set — the property, not o
   }
 });
 
-test("a FULL-OPS token is offered no --verbs flag at all — null is every verb, not none", () => {
-  // The inversion that would make this advice harmful. `verbs: null` means the claim is absent, which
-  // is the WIDEST posture; naming any list there is the narrowing the whole fix is about.
+test("a FULL-OPS token is re-issued with the two tools the portal calls, because a command without --verbs is refused", () => {
+  // `verbs: null` means the claim is absent, the widest posture. The advice used to leave `--verbs` off so
+  // as not to narrow it, but mint-token now refuses an ops token that names no tools, so that command would
+  // fail when run. The portal calls start_run and stop_run and nothing else, so naming those two narrows
+  // the token to what its holder uses, which is the point of refusing verb-less ops tokens.
   const said = accountCapAdvice(posture({ verbs: null }));
-  assert.doesNotMatch(said, /--verbs/,
-    "a full-ops token was handed a verb list, which would cap a token that currently has no cap");
+  assert.match(said, /--verbs start_run,stop_run(\s|`)/,
+    "a full-ops token was given a command mint-token refuses, or one naming tools the portal does not call");
   assert.match(said, /--accounts <keys>/, "and it still has to say how to add the accounts cap");
 });
 

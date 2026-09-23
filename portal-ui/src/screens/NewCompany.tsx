@@ -11,10 +11,10 @@
 // through the same `Field` — so what you fill in here and what you change afterwards cannot describe the
 // company differently. Two forms agreeing by inspection is the thing this family exists to stop.
 //
-// THE BODY IS BUILT BY OMISSION. Untouched fields contribute no key at all, which is not the same as
-// contributing an empty one: `platforms: []` reads on the wire exactly like "no marketplaces stated",
-// and the company then silently takes the house list while the screen showed an empty box. `typeField`
-// keeps that true by construction — a box nobody touched is not in `edits` and never reaches the draft.
+// THE BODY IS BUILT BY OMISSION. Untouched fields contribute no key at all, and `typeField` keeps that
+// true by construction — a box nobody touched is not in `edits` and never reaches the draft. Marketplaces
+// left empty mean none: a company starts with no marketplaces, and the Generic default's are offered
+// beside the box to add.
 import { useEffect, useMemo, useState } from 'react'
 import { api, isOk } from '../contract/api.ts'
 import { FrameworkGuideLink } from '../components/FrameworkGuideLink.tsx'
@@ -235,6 +235,7 @@ export function NewCompany({ ctx }: { readonly ctx: ShellContext }) {
                         ? typedName
                         : boxValue(state, spec)}
                       choices={null}
+                      suggestions={ctx.me.houseMarketplaces}
                       onChange={(v) => {
                         if (spec.key === 'selfExclusionOwners') setNamesTouched(true)
                         setState((st) => typeField(st, spec, v))

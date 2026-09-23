@@ -111,7 +111,7 @@ export async function runTables() {
   return { registers: PROVIDERS, engines: ENGINE_BINARIES, defaultEngine: RUN_DEFAULT_ENGINE, resolveEngine: resolveEngineProgram };
 }
 import { spawn, spawnSync, execFileSync } from "node:child_process";
-import { storeInRepo, storeOutsideRepoMessage, storeCommitRefusal } from "../shared/store-in-repo.mjs";   //
+import { storeInRepo, storeOutsideRepoMessage, storeCommitRefusal, storeCommitEnv } from "../shared/store-in-repo.mjs";   //
 import { stdioConnectOffer } from "../shared/stdio-connect.mjs";
 import { wslTarget } from "../shared/wsl.mjs";   // — and which distribution a row should start the server in
 import { ensureDemoProgram } from "../shared/permanent-install.mjs";   // — a demo from npx keeps its own copy
@@ -1531,9 +1531,9 @@ if (isMain) {
       err(`  WARNING: could not initialise the saved-search store at ${paths.configStore} (${String(e?.message ?? e)}). Searches will list and run; SAVING one will fail until this is a git repository.`);
     }
   } else {
-    // AN ADOPTED STORE IS ASKED WHETHER IT CAN RECORD A SAVE, HERE, not at the first save. A repository
-    // made by hand has no identity unless somebody gave it one, and on a machine with no global identity
-    // the first company created in the portal is then refused. The one created above sets its own.
+    // AN ADOPTED STORE IS ASKED WHETHER IT CAN RECORD A SAVE, HERE, not at the first save: a directory
+    // that is not a repository this account can use refuses every company created in the portal. A store
+    // with no git identity is not refused; every save supplies the product's own committer.
     const cannot = storeCommitRefusal(paths.configStore);
     if (cannot) err(`  WARNING: ${cannot.message}. Until then, creating a company or saving a search is refused.`);
   }
@@ -1556,7 +1556,7 @@ if (isMain) {
         // and the first save commits them with its own change.
         try {
           execFileSync("git", ["-C", paths.configStore, "add", "-A", "--", "profiles"], { stdio: "ignore" });
-          execFileSync("git", ["-C", paths.configStore, "commit", "-q", "-m", "the demo's company"], { stdio: "ignore" });
+          execFileSync("git", ["-C", paths.configStore, "commit", "-q", "-m", "the demo's company"], { stdio: "ignore", env: storeCommitEnv(paths.configStore) });
         } catch { /* see above */ }
         say(`  demo store     ${paths.profiles} — ${copied.join(", ")}`);
       }
@@ -2298,6 +2298,7 @@ if (isMain) {
   // the `stopping` flag is what stops an orderly stop being reported as a crash.
   process.on("SIGINT", () => { void shutdown(0); });
   process.on("SIGTERM", () => { void shutdown(0); });
+  for (const sig of windowCloseSignals()) process.on(sig, () => { void shutdown(0); });
 
   const healthy = async (url, rec) => {
     const deadline = Date.now() + 30_000;
@@ -2676,6 +2677,20 @@ export function backgroundOfferLines({ demo = false, keep = false, manager = nul
     `  — same product, managed by ${manager}, and it survives logout. It needs ${manager}'s user manager`,
     "  reachable from this session; where it is not, that command says so and changes nothing you use.",
   ];
+}
+
+/**
+ * The signal that means the window was closed, which a foreground start treats as a stop.
+ *
+ * SIGHUP, on every platform. Closing a terminal sends it, and with no handler Node's default ended this
+ * process on the spot: the teardown never ran, and the children, which lead sessions of their own, never
+ * received the hangup. The portal, the door and the worker went on running with nothing supervising them
+ * and a search in flight carried on (measured on Linux, 2026-09-23), while the banner above says closing
+ * the window stops everything this command started. Windows reports closing the console window as SIGHUP
+ * too.
+ */
+export function windowCloseSignals() {
+  return ["SIGHUP"];
 }
 
 /**

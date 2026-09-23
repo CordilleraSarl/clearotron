@@ -37,9 +37,21 @@ test('OMISSION IS NOT CONSENT: a key the page never rendered survives an edit', 
 })
 
 test('clearing a field DELETES the key — absent and empty mean different things', () => {
-  const after = applyField({ platforms: ['amazon'], name: 'Aurora' }, spec('platforms'), '   ')
-  assert.ok(!('platforms' in after), 'an emptied box is not an instruction to search no marketplaces')
+  const after = applyField({ industry: 'Games', name: 'Aurora' }, spec('industry'), '   ')
+  assert.ok(!('industry' in after), 'an emptied box leaves the setting to its default')
   assert.equal(after.name, 'Aurora')
+})
+
+test("a company's emptied Marketplaces box SAVES NONE, and a project's still inherits", () => {
+  // A company may pick no marketplaces (the owner's ruling of 2026-09-23), and the server refuses a
+  // company with no list at all — so on the company form an emptied box is an empty list, not a deleted key.
+  const company = applyField({ platforms: ['amazon.com'], name: 'Aurora' }, spec('platforms'), '   ')
+  assert.deepEqual(company.platforms, [], 'none, stated')
+  // On a project a blank box means "use the company's list": an empty overlay would read as revoking it.
+  const onProject = projectFields().find((f) => f.key === 'platforms')
+  assert.ok(onProject, 'the project form offers marketplaces')
+  const project = applyField({ platforms: ['amazon.com'] }, onProject, '   ')
+  assert.ok(!('platforms' in project), 'a blank project box inherits')
 })
 
 test('applyField never mutates the draft it was given', () => {
