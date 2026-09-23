@@ -135,8 +135,10 @@ jobs:
           const P = join(process.env.RUNNER_TEMP, "case-probe");
           mkdirSync(join(P, "skills"), { recursive: true });
           const settings = JSON.parse(writeBoundarySettings({ skillsRoots: [join(P, "skills")] }));
-          const command = settings.hooks.PreToolUse[0].hooks[0].command;
-          const payload = command.split(" ").pop();
+          // The policy is the hook command's last argument, in either form the settings take: one command
+          // string, or a program with an argument list.
+          const entry = settings.hooks.PreToolUse[0].hooks[0];
+          const payload = entry.args?.at(-1) ?? entry.command.split(" ").pop();
           const hook = join(process.cwd(), "driver", "engine", "deny-authority-write.mjs");
           const denied = (file_path) => {
             const r = spawnSync(process.execPath, [hook, payload], { input: JSON.stringify({ tool_name: "Write", tool_input: { file_path, content: "probe" } }), encoding: "utf8" });
