@@ -60,7 +60,7 @@ const SERVERS_GRANTED_TO_NOTHING = Object.freeze({
     "not, and the write boundary does not reach it either.",
   "probe-server.mjs":
     "The engine probe's own tool, and nobody else's. engine/probe.mjs hands it to the probe turn in its " +
-    "own tool config, so no stage's grant reaches it and none should: its one read-only `ping` proves the " +
+    "own tool config, so no stage's grant reaches it and none should: its one `ping` proves the " +
     "engine can make a tool call before a search is paid for, and it touches no run.",
   // closure-server.mjs's row is GONE at conversion 6, and the module with it. Its text said "it arms with
   // the conversion that needs it" — this is that conversion, and it armed by moving rather than by being

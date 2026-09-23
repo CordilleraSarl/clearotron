@@ -9,8 +9,17 @@
 // server, asks it to call `ping` once, and passes only when the reply carries what `ping` returned.
 //
 // WHAT IT RETURNS IS THE PROOF. Its one argument is a random word the probe mints for each
-// turn and gives only to this process, so a reply that carries it cannot be the model guessing. Read-only;
-// it touches no file, no network and no run.
+// turn and gives only to this process, so a reply that carries it cannot be the model guessing. It touches
+// no file, no network and no run.
+//
+// IT IS DECLARED AS THE REGISTER SEARCH IS DECLARED, NOT AS WHAT IT DOES. codex decides from a tool's
+// annotations whether a call needs approval, and `codex exec` refuses every call that does ("MCP tool call
+// requires approval, but approval policy is never") unless its sandbox is bypassed. A read-only tool never
+// needs approval, so a read-only `ping` passed on hosts where `register_execute_plan` — marked not
+// read-only and open-world on every register server — was refused on every call and no search could run.
+// The probe exists to answer for the tools a search calls, so its tool carries that tool's annotations,
+// and a test keeps the two equal. The rule, in codex's own source, identical from 0.150.1 to 0.156.1:
+// read-only → no approval; otherwise approval when destructive, or open-world, or either left unmarked.
 import { serve } from "./stdio-server.mjs";
 
 serve({
@@ -19,7 +28,7 @@ serve({
     name: "ping",
     description: "Return the word this check is waiting for.",
     inputSchema: { type: "object", properties: {}, additionalProperties: false },
-    annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+    annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: true },
     handler: async () => {
       const word = String(process.argv[2] ?? "").trim();
       return word ? word : { isError: true, text: "ping: this server was started without a word to return" };
