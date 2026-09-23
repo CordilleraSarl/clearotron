@@ -442,9 +442,9 @@ if (process.env.MOCK_CLAUDE_USAGE_THEN_STALL) {
     const traceEnd = () => { if (traceCard) appendFileSync(process.env.MOCK_STAGE_TRACE, JSON.stringify({ card: traceCard, phase: "end", t: Date.now() }) + "\n"); };
     // Engine-test mode: a simple message + explicit MOCK_CLAUDE_FILE content → write it to the named path.
     if (process.env.MOCK_CLAUDE_FILE != null) {
-      const m = msg.match(/ABSOLUTE path[^:]*:\s*(\/\S+)/)
-        || msg.match(/write (?:the COMPLETE corrected file|it) at\s+(\/\S+)/)
-        || msg.match(/OUTPUT_FILE:\s*(\/\S+)/);
+      const m = msg.match(/ABSOLUTE path[^:]*:\s*((?:[A-Za-z]:)?[\\/]\S+)/)
+        || msg.match(/write (?:the COMPLETE corrected file|it) at\s+((?:[A-Za-z]:)?[\\/]\S+)/)
+        || msg.match(/OUTPUT_FILE:\s*((?:[A-Za-z]:)?[\\/]\S+)/);
       if (m) { try { mkdirSync(dirname(m[1]), { recursive: true }); writeFileSync(m[1], process.env.MOCK_CLAUDE_FILE); } catch { /* best-effort */ } }
       traceEnd();
       return;

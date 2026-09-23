@@ -15,7 +15,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { mkdtempSync, mkdirSync, readFileSync, existsSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { join, dirname, resolve } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
@@ -125,8 +125,8 @@ test("the boundary is derived from the SAME roots the grant hands out", () => {
   const policy = JSON.parse(Buffer.from(settings.hooks.PreToolUse[0].hooks[0].args.at(-1), "base64").toString("utf8"));
   const protectedRoots = policy.trees.map((t) => t.path);
   // Every granted root is protected — except the run dir, whose TOP LEVEL must stay writable; it is
-  // represented by its _driver/ subtree.
-  assert.deepEqual(protectedRoots, [OVERLAY, SKILLS, PROFILES, driverDir(RUN)]);
+  // represented by its _driver/ subtree, resolved as the hook compares it (on Windows, with its drive).
+  assert.deepEqual(protectedRoots, [OVERLAY, SKILLS, PROFILES, resolve(driverDir(RUN))]);
   assert.ok(!protectedRoots.includes(RUN));
 });
 

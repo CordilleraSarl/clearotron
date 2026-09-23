@@ -119,6 +119,136 @@ jobs:
           if ($after) { throw "the demo ended and port $env:PORT still answers (http $after)" }
           "stopped: nothing the demo started is running, and port $env:PORT is quiet"
 
+      # CTRL-C, AS A READER PRESSES IT. `start` runs in a console of its own, as it does in the window a
+      # reader types into, with its portal, its two doors and its worker, the worker set on a stand-in
+      # engine program. A second PowerShell joins that console and sends Ctrl-C to it, which Windows
+      # delivers to every program in the console, exactly as the key does. What `start` had running is
+      # read from the process list first, by parent number from its own pid, and must all be gone after.
+      - name: Ctrl-C stops a foreground start, and everything it started
+        working-directory: ${{ runner.temp }}/stranger
+        run: |
+          $home2 = Join-Path $env:RUNNER_TEMP 'start-home'
+          New-Item -ItemType Directory -Force $home2 | Out-Null
+          $log = Join-Path $env:RUNNER_TEMP 'start.log'
+          $env:USERPROFILE = $home2; $env:HOME = $home2
+          $env:CLEAROTRON_NO_ENV_FILE = '1'; $env:PORTAL_LOCAL_USER = 'op@localhost'
+          $env:PORTAL_SERVICE_PORT = '19480'; $env:TRADEMARK_MCP_HTTP_PORT = '19481'; $env:CLIENT_MCP_HTTP_PORT = '19482'
+          $env:CLEAROTRON_AI = 'anthropic-agent'
+          $env:CLEAROTRON_CLAUDE_PATH = Join-Path $env:GITHUB_WORKSPACE 'driver\test\mock-claude.mjs'
+          # No -NoNewWindow: the start gets a console of its own, which is what Ctrl-C is sent to.
+          $start = Start-Process -PassThru -FilePath node `
+            -ArgumentList @('node_modules\clearotron\bin\clearotron.mjs', 'start') `
+            -RedirectStandardOutput $log -RedirectStandardError "$log.err"
+          $up = $false
+          for ($i = 0; $i -lt 90; $i++) {
+            if ((Test-Path $log) -and (Select-String -Quiet -Path $log -Pattern 'Sign in as')) { $up = $true; break }
+            if ($start.HasExited) { break }
+            Start-Sleep -Seconds 2
+          }
+          if (-not $up) {
+            Get-Content $log, "$log.err" -Tail 60 -ErrorAction SilentlyContinue
+            if (-not $start.HasExited) { Stop-Process -Id $start.Id -Force }
+            throw "start never came up, so there was nothing to press Ctrl-C on"
+          }
+          Start-Sleep -Seconds 5
+          # Everything under the start, by parent number, counting only a child that began after its parent.
+          $all = Get-CimInstance Win32_Process
+          $tree = @($all | Where-Object ProcessId -eq $start.Id)
+          for ($i = 0; $i -lt $tree.Count; $i++) {
+            $p = $tree[$i]
+            $tree += @($all | Where-Object { $_.ParentProcessId -eq $p.ProcessId -and $_.CreationDate -ge $p.CreationDate -and $_.ProcessId -notin $tree.ProcessId })
+          }
+          $tree | Format-Table ProcessId, ParentProcessId, Name, CommandLine -AutoSize | Out-String -Width 300
+          $nodes = @($tree | Where-Object Name -eq 'node.exe')
+          if ($nodes.Count -lt 4) { throw "start had $($nodes.Count) node programs running; the launcher, start, the portal, the two doors and the worker were expected" }
+
+          $ctrlc = @'
+          Add-Type -Namespace W -Name Con -MemberDefinition @"
+          [DllImport("kernel32.dll", SetLastError=true)] public static extern bool FreeConsole();
+          [DllImport("kernel32.dll", SetLastError=true)] public static extern bool AttachConsole(uint pid);
+          [DllImport("kernel32.dll", SetLastError=true)] public static extern bool SetConsoleCtrlHandler(System.IntPtr h, bool add);
+          [DllImport("kernel32.dll", SetLastError=true)] public static extern bool GenerateConsoleCtrlEvent(uint ev, uint group);
+          "@
+          [W.Con]::FreeConsole() | Out-Null
+          if (-not [W.Con]::AttachConsole([uint32]$args[0])) { Write-Output "could not join the console of $($args[0])"; exit 3 }
+          [W.Con]::SetConsoleCtrlHandler([System.IntPtr]::Zero, $true) | Out-Null
+          if (-not [W.Con]::GenerateConsoleCtrlEvent(0, 0)) { exit 4 }
+          Start-Sleep -Seconds 2
+          exit 0
+          '@
+          $script = Join-Path $env:RUNNER_TEMP 'ctrl-c.ps1'
+          Set-Content -Path $script -Value $ctrlc -Encoding utf8
+          $sender = Start-Process -PassThru -Wait -NoNewWindow -FilePath powershell.exe `
+            -ArgumentList @('-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-File', $script, $start.Id)
+          if ($sender.ExitCode -ne 0) { throw "Ctrl-C could not be sent to the start's console (exit $($sender.ExitCode))" }
+          "Ctrl-C sent to the console of $($start.Id)"
+
+          if (-not $start.WaitForExit(30000)) { throw "start was still running 30 seconds after Ctrl-C" }
+          $left = $null
+          for ($i = 0; $i -lt 15; $i++) {
+            $now = Get-CimInstance Win32_Process
+            $left = @($tree | Where-Object { $t = $_; $now | Where-Object { $_.ProcessId -eq $t.ProcessId -and $_.CreationDate -eq $t.CreationDate } })
+            if (-not $left.Count) { break }
+            Start-Sleep -Seconds 1
+          }
+          Get-Content $log -Tail 15
+          if ($left.Count) {
+            $left | Format-Table ProcessId, Name, CommandLine -AutoSize | Out-String -Width 300
+            throw "15 seconds after start ended, these programs it started were still running"
+          }
+          "stopped: Ctrl-C ended start and all $($tree.Count) programs it had running"
+
+  # A WHOLE CLEARANCE ON EACH ENGINE, against the stand-in programs the adapter tests use: every stage is
+  # started as Windows starts it, from the program setup would find, and the stand-in replays what the
+  # vendor program sends. Around it: the write boundary refusing a write into a protected tree, the
+  # dispositions and grid paths, every Windows arm, and the stop of a real tree read back from the
+  # process list. A run that skipped the Windows-only arms, or ran nothing, is not a pass.
+  clearances:
+    name: A clearance on each engine, against stand-in programs, on Windows
+    runs-on: windows-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020   # v7
+        with:
+          node-version: '22.23.2'
+          cache: npm
+
+      - run: npm ci
+
+      - name: The clearances, the write boundary, and the Windows stop
+        working-directory: driver
+        run: |
+          $log = Join-Path $env:RUNNER_TEMP 'clearances.log'
+          $files = @('test/pipeline.anthropic.test.mjs', 'test/pipeline.openai.test.mjs',
+            'test/deny-authority-write.test.mjs', 'test/disposition-form-tool.test.mjs', 'test/disposition-tool.test.mjs',
+            'test/audit-grid-log.test.mjs') + @(Get-ChildItem test -Filter 'a-windows-*.test.mjs' | ForEach-Object { "test/$($_.Name)" })
+          node ../scripts/test-run.mjs node --test --test-reporter=tap @files *> $log
+          $status = $LASTEXITCODE
+          Get-Content $log | Select-String -Pattern '^(not ok|# (tests|pass|fail|skipped|cancelled) )' | ForEach-Object { $_.Line }
+          if ($status -ne 0) { Get-Content $log -Tail 200; throw "the suite exited $status" }
+          $tests = [int]((Select-String -Path $log -Pattern '^# tests (\d+)$').Matches[0].Groups[1].Value)
+          if ($tests -lt 100) { throw "only $tests tests ran; the clearance files hold far more, so some never ran" }
+          foreach ($name in @('the immediate stop ends a turn and what it started', 'a turn that goes quiet is stopped by the watchdog',
+                              'the process list holds this program')) {
+            $line = Select-String -Path $log -SimpleMatch "- $name" | Select-Object -First 1
+            if (-not $line -or $line.Line -notmatch '^\s*ok ' -or $line.Line -match '# SKIP') {
+              throw "the Windows-only arm '$name' did not run and pass: $($line.Line)"
+            }
+          }
+          "every clearance arm ran, and the Windows-only arms ran and passed"
+
+      - if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a   # v7
+        with:
+          name: windows-clearances
+          path: ${{ runner.temp }}/clearances.log
+          retention-days: 7
+
   # A FIRST LOOK, TO BE REPLACED. The whole driver suite on Windows, once, to see which tests assume a
   # POSIX machine and which fail for a reason this track has to fix. It does not fail the run.
   survey:
