@@ -514,17 +514,23 @@ test("an engine that CANNOT REPORT tool time records null, never 0 — silence i
 // that reports nothing reports null for it too: "cannot report" and "measured, nothing unmeasurable"
 // (`[]`) are different answers, which is the whole distinction the field exists to draw.
 const NO_GAUGE = { toolCalls: null, toolWaitMs: null, activeMs: null, toolWaitByTool: null,
-  toolWaitUnmeasurable: null };
+  toolWaitUnmeasurable: null, toolCallsRefused: null, commandToolCalls: null, mcpToolCalls: null };
 
 test("toolGauge — an honest zero survives, and every unmeasurable operand returns null", () => {
   assert.deepEqual(toolGauge({ toolCalls: 3, toolWaitMs: 5400, activeMs: 12000, toolWaitByTool: { Read: 5400 } }),
     { toolCalls: 3, toolWaitMs: 5400, activeMs: 12000, toolWaitByTool: { Read: 5400 },
-      toolWaitUnmeasurable: null });
+      toolWaitUnmeasurable: null, toolCallsRefused: null, commandToolCalls: null, mcpToolCalls: null });
   assert.deepEqual(toolGauge({ toolCalls: 0, toolWaitMs: 0, activeMs: 0, toolWaitByTool: {} }),
-    { toolCalls: 0, toolWaitMs: 0, activeMs: 0, toolWaitByTool: {}, toolWaitUnmeasurable: null },
+    { toolCalls: 0, toolWaitMs: 0, activeMs: 0, toolWaitByTool: {}, toolWaitUnmeasurable: null,
+      toolCallsRefused: null, commandToolCalls: null, mcpToolCalls: null },
     "a turn that genuinely called no tools must keep its 0 and its EMPTY map — both are measurements, not silences");
   assert.deepEqual(toolGauge({}), NO_GAUGE, "an engine that reports none of them");
   assert.deepEqual(toolGauge(undefined), NO_GAUGE, "no turn at all");
+  // The per-stage counts a test round reads: an honest zero is kept, and a negative or a string is not a count.
+  assert.deepEqual([toolGauge({ toolCallsRefused: 0, commandToolCalls: 0, mcpToolCalls: 0 })].map((g) => [g.toolCallsRefused, g.commandToolCalls, g.mcpToolCalls])[0], [0, 0, 0],
+    "zero refused, zero command calls and zero server calls are measurements, and must survive as zeros");
+  assert.deepEqual([toolGauge({ toolCallsRefused: 2, commandToolCalls: 1, mcpToolCalls: 7 })].map((g) => [g.toolCallsRefused, g.commandToolCalls, g.mcpToolCalls])[0], [2, 1, 7]);
+  assert.deepEqual(toolGauge({ toolCallsRefused: -1, commandToolCalls: "1", mcpToolCalls: -3 }), NO_GAUGE);
   assert.deepEqual(toolGauge({ toolCalls: -1, toolWaitMs: -1, activeMs: -1 }), NO_GAUGE,
     "a negative count or duration is impossible; recording it would put a wrong number in a comparison");
   assert.deepEqual(toolGauge({ toolCalls: "3", toolWaitMs: "5400", activeMs: "1" }), NO_GAUGE,

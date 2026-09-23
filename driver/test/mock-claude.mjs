@@ -30,7 +30,9 @@
 //   MOCK_CLAUDE_FILE=<content>    — the output file content (default a tiny valid stub)
 //   MOCK_CLAUDE_COST=<usd>        — total_cost_usd (default 0.0123)
 //   MOCK_CLAUDE_SESSION=<id>      — session_id (default derived); a --resume value echoes back as the session
-//   MOCK_CLAUDE_CALL_LOG=<file>   — append each invocation's argv as a JSON line (assert flags/resume)
+//   MOCK_CLAUDE_DENIALS=<n>       — the result carries <n> permission_denials (calls the program refused)
+//   MOCK_CLAUDE_CALL_LOG=<file>   — append each invocation's argv as a JSON line (assert flags/resume), with the
+//                               NAMES of the environment it was started with (never a value)
 //   MOCK_CLAUDE_WIRE_MODEL=<id>   — report <id> as the served model on system:init AND every assistant
 //                               message, whatever --model asked for: the SILENT SUBSTITUTION fixture
 //                               ( corruption 3). Unset, the mock echoes the model it was asked for.
@@ -83,7 +85,7 @@ const msg = (await readStdin()) || positional;
 // Call-log = the REAL argv (flags) + the stdin prompt, so tests can assert both faithfully (the prompt is
 // no longer an argv element). Written after the stdin read so `prompt` is populated.
 if (process.env.MOCK_CLAUDE_CALL_LOG) {
-  try { appendFileSync(process.env.MOCK_CLAUDE_CALL_LOG, JSON.stringify({ argv, prompt: msg }) + "\n"); } catch { /* best-effort */ }
+  try { appendFileSync(process.env.MOCK_CLAUDE_CALL_LOG, JSON.stringify({ argv, prompt: msg, envNames: Object.keys(process.env).sort() }) + "\n"); } catch { /* best-effort */ }
 }
 const resumeIdx = argv.indexOf("--resume");
 const resumed = resumeIdx >= 0 ? (argv[resumeIdx + 1] ?? "") : "";
@@ -447,6 +449,11 @@ if (process.env.MOCK_CLAUDE_USAGE_THEN_STALL) {
       // MOCK_CLAUDE_PROVIDER=<word> — the per-model usage the real program reports, naming its provider
       // ("firstParty", "foundry"). Absent by default, as it was before the provider gauge read it.
       ...(process.env.MOCK_CLAUDE_PROVIDER ? { modelUsage: { [wireModel]: { provider: process.env.MOCK_CLAUDE_PROVIDER } } } : {}),
+      // MOCK_CLAUDE_DENIALS=<n> — the result's `permission_denials`, one entry per call the program refused, in
+      // the shape 2.1.280 reports them. The real program sends the field on every result, empty when it
+      // refused nothing, so the mock does too.
+      permission_denials: Array.from({ length: Number(process.env.MOCK_CLAUDE_DENIALS || 0) },
+        (_, i) => ({ tool_name: "WebSearch", tool_use_id: `toolu_denied_${i}`, tool_input: {} })),
     };
     // MOCK_CLAUDE_NO_NEWLINE=1 — emit the FINAL result event with NO trailing newline (NDJSON last record);
     // the engine MUST flush its buffer on close or the result is dropped (the B1 regression).

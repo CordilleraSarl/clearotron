@@ -713,6 +713,26 @@ export const BACKGROUND_EXCLUDED = Object.freeze({
   "profile-service.service": "the portal constructs the profile service IN-PROCESS (driver/portal-service.mjs); the standalone unit is the separate-editor deployment shape and running both double-serves the store",
 });
 
+/**
+ * The key that signs every access token, and the one it replaces while a rotation is under way. Only the
+ * processes that mint or check keys hold them: the portal and the two doors. The worker holds neither,
+ * because it starts the AI program for every stage.
+ */
+export const SIGNING_KEY_NAMES = Object.freeze(["TRADEMARK_MCP_TOKEN_SECRET", "TRADEMARK_MCP_TOKEN_SECRET_PREVIOUS"]);
+
+/**
+ * A child's environment: this supervisor's, then the child's own block over it. The signing keys are the
+ * exception: a child whose own block does not carry the current key gets neither of them. This process
+ * sets the key on itself to mint the portal's key, so without the exception every child would inherit it,
+ * whatever its block said. A child that is handed the key keeps the previous one too, from this process,
+ * so a rotation under way still checks the keys signed before it.
+ */
+export function childProcessEnv(parent = process.env, own = {}) {
+  const env = { ...parent, ...own };
+  if (!Object.hasOwn(own, SIGNING_KEY_NAMES[0])) for (const k of SIGNING_KEY_NAMES) delete env[k];
+  return env;
+}
+
 export function childEnv({ ports, paths, user, portalSecret, tokenSecret, opsToken, host = HOST, localWorker = false, demo = false, clientFence = null, credential = null, env = process.env }) {
   // ONE AUTHOR FOR THIS EXPRESSION. The hosted install path composes the same
   // origin, and the near-miss is specific: this is an ORIGIN, the portal's client appends `/mcp`
@@ -811,8 +831,10 @@ export function childEnv({ ports, paths, user, portalSecret, tokenSecret, opsTok
       CLIENT_MCP_HTTP_PORT: String(ports.client),
     },
     // The worker needs the install's PATHS and nothing else — no ports, no secrets, no door config. It
-    // talks to the queue and the pool, not to either listener.
-    worker: { ...shared },
+    // talks to the queue and the pool, not to either listener. `shared` carries the signing key for the two
+    // doors and the portal, which mint and check keys; the worker does neither, and it starts the AI program
+    // for every stage, so the key is taken out here and withheld again at the spawn (childProcessEnv).
+    worker: Object.fromEntries(Object.entries(shared).filter(([k]) => !SIGNING_KEY_NAMES.includes(k))),
     // ── THE CLIENT DOOR, ON BOTH PATHS ( — F26) ──────────────────────────────
     //
     // Ruling, restated several times in session: START BOTH. It already held on the systemd path
@@ -2202,7 +2224,7 @@ if (isMain) {
       // progress rendering intact. Piping a stream costs the child its TTY, so only the stream that has to
       // be read is piped.
       stdio: ["ignore", "inherit", "pipe"],
-      env: { ...process.env, ...env },
+      env: childProcessEnv(process.env, env),
     });
     // The last lines of that child's stderr, forwarded on as they arrive so nothing is delayed or
     // swallowed, and kept so the failure can QUOTE them rather than refer to them.

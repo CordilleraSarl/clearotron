@@ -30,6 +30,7 @@ import { join } from "node:path";
 import { runStreamingChild, absolutizeSkillRefs, WRITE_DISCIPLINE, buildEnvelope, resolveSpawnCwd } from "./common.mjs";
 import { renderCodexConfigToml } from "./mcp/codex-config.mjs";
 import { resolveAuthMode } from "./auth.mjs";
+import { engineEnv } from "./engine-env.mjs";
 import { resolveEngineProgram } from "../driver.config.mjs";   // — the one place that finds the program; it reads every spelling of the setting
 
 // The same one resolver as the claude adapter (driver.config.mjs resolveEngineProgram), for the same reason:
@@ -160,19 +161,18 @@ export function mapUsage(u) {
 }
 
 // Apply the billing-mode (auth) toggle to the child env + point CODEX_HOME at the per-run dir. api-key:
-// keep CODEX_API_KEY (the override codex honors over stored creds). subscription: STRIP the keys so codex
-// uses the seeded auth.json (a present key would override it). resolveAuthMode throws loud if api-key mode
-// has no key (W3). Returns { env, mode }.
+// keep CODEX_API_KEY (the override codex honors over stored creds). subscription: no key reaches codex, so
+// it uses the seeded auth.json (a present key would override it). resolveAuthMode throws loud if api-key
+// mode has no key (W3). Returns { env, mode }.
+//
+// THE ENVIRONMENT IS A LIST, NOT A COPY (engine-env.mjs), and the billing rule above is applied there. It
+// matters more on this engine than on the other: codex keeps a shell, and a shell can print its parent's
+// environment, so what is not handed to codex is what its model cannot read from it. OPENAI_API_KEY is
+// not on the list under either mode; codex's key is CODEX_API_KEY.
 export function spawnEnv(base = process.env, codexHome) {
   const { mode } = resolveAuthMode({ engineName: "openai-agent", env: base });
-  const env = { ...base };
+  const env = engineEnv(base, { engine: "openai-agent" });
   if (codexHome) env.CODEX_HOME = codexHome;
-  if (mode === "api-key") {
-    // keep CODEX_API_KEY; do not seed an auth.json
-  } else {
-    delete env.CODEX_API_KEY;
-    delete env.OPENAI_API_KEY;   // codex deprioritizes it when stored creds exist, but strip for a clean subscription bill
-  }
   return { env, mode };
 }
 
@@ -522,6 +522,10 @@ function settleTuple({ r, ev, resumeRef }) {
     // still cannot report a whole-turn tool count, so `toolCalls` stays null, which is the house rule
     // for "this engine does not report" rather than "it called nothing".
     ...mcpToolGauge(ev),
+    // The refused count under the name the attempt row reads on both engines. Codex keeps its shell, and its
+    // stream counts only tool-server calls, so it reports no command-tool count: null, never zero.
+    toolCallsRefused: mcpToolGauge(ev).mcpToolCallsRefused,
+    commandToolCalls: null,
     signals: {
       stalled: stallKill || undefined, hardWall: r.hardWall || undefined,
       // A gather stage that ran with none of its tools produced prose and no instrumented half. The

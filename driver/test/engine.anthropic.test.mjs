@@ -25,11 +25,11 @@ test("auth toggle: subscription (default) strips ANTHROPIC_API_KEY; api-key mode
 });
 
 test("CLAUDE_CODE_OAUTH_TOKEN RIDES THROUGH under subscription — the headless sign-in's whole mechanism", () => {
-  // The setup-token route only works because spawnEnv is a spread that strips exactly one thing: the
-  // token INSTALL.md's headless sign-in produces has to reach the claude subprocess from the env file,
-  // and until this arm nothing declared that. A future spawnEnv that allowlists, or strips OAuth vars
-  // alongside the API key, silently kills every headless server's subscription lane — the failure
-  // arrives ninety minutes into a clearance wearing a model fault's shape.
+  // The setup-token route only works because the token INSTALL.md's headless sign-in produces reaches the
+  // claude subprocess from the env file, and until this arm nothing declared that. spawnEnv is now a list
+  // (engine-env.mjs), and the token rides it in the vendor's `CLAUDE_*` namespace. A list that dropped it,
+  // or a spawnEnv that strips OAuth vars alongside the API key, silently kills every headless server's
+  // subscription lane — the failure arrives ninety minutes into a clearance wearing a model fault's shape.
   const sub = spawnEnv({ CLAUDE_CODE_OAUTH_TOKEN: "tok-x", ANTHROPIC_API_KEY: "sk-x" });
   assert.equal(sub.CLAUDE_CODE_OAUTH_TOKEN, "tok-x", "subscription keeps the OAuth token while stripping the key");
   assert.equal(sub.ANTHROPIC_API_KEY, undefined);

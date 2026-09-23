@@ -22,7 +22,8 @@
 //                            which is the "engine did not report" path.
 //   MOCK_CODEX_NO_NEWLINE=1— emit the final turn.completed with NO trailing newline (B1 final-line flush)
 //   MOCK_CODEX_SLOW_STREAM=<ms> [+ MOCK_CODEX_SLOW_COUNT] — a healthy-but-slow turn (a delta every <ms>)
-//   MOCK_CODEX_CALL_LOG=<file> — append {argv, prompt, codexHome, configToml, hasAuth} per call (assert wiring)
+//   MOCK_CODEX_CALL_LOG=<file> — append {argv, prompt, codexHome, configToml, hasAuth, envNames} per call (assert
+//                            wiring); envNames are the NAMES of the environment it was started with, never a value
 //   MOCK_CODEX_FILE=<content>  — engine-test mode: write <content> to the path parsed from the prompt
 //   MOCK_CODEX_MCP_REFUSED=<n> — emit <n> MCP tool calls refused before reaching their server, in the
 //                            shape codex 0.150.1 streams when its sandbox refuses them, then finish the
@@ -119,7 +120,7 @@ if (process.env.MOCK_CODEX_CALL_LOG) {
       hasAuth = existsSync(join(home, "auth.json"));
     }
   } catch { /* best-effort */ }
-  try { appendFileSync(process.env.MOCK_CODEX_CALL_LOG, JSON.stringify({ argv, prompt: msg, codexHome: process.env.CODEX_HOME || null, configToml, hasAuth }) + "\n"); } catch { /* best-effort */ }
+  try { appendFileSync(process.env.MOCK_CODEX_CALL_LOG, JSON.stringify({ argv, prompt: msg, codexHome: process.env.CODEX_HOME || null, configToml, hasAuth, envNames: Object.keys(process.env).sort() }) + "\n"); } catch { /* best-effort */ }
 }
 
 // ── A LOGIN THAT ROTATES, and a provider that accepts each refresh token ONCE. ──

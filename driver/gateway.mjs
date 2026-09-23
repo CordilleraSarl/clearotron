@@ -388,7 +388,7 @@ export function toolGauge(turn) {
     // really happened. An ARRAY is a measurement (`[]` = measured, nothing unmeasurable); null is "this
     // engine cannot report", the same distinction toolWaitByTool draws one line up. RECORDING ONLY:
     // toolWaitMs and the per-tool split are exactly what they were, because the kill clock reads them.
-    toolWaitUnmeasurable: Array.isArray(turn?.toolWaitUnmeasurable) ? [...turn.toolWaitUnmeasurable] : null,
+    toolWaitUnmeasurable: Array.isArray(turn?.toolWaitUnmeasurable) ? [...turn.toolWaitUnmeasurable] : null, ...toolCallCounts(turn),
   };
 }
 
@@ -3561,3 +3561,17 @@ export function warmPatchMessage(lastFail, expectFile, { supplementalLane = fals
 //
 // Move it to the top the day those citations name symbols instead of numbers — which is what
 // CONTRIBUTING.md asks for, and what makes them checkable at all.
+
+/**
+ * THE COUNTS A TEST ROUND READS PER STAGE, on both engines, spread into `toolGauge`. `toolCallsRefused`:
+ * calls the program refused (Claude's own denials; Codex's tool-server calls refused before reaching their
+ * server). `commandToolCalls`: calls to a tool that runs a command, which no Claude stage is offered, so
+ * zero is the expected reading; Codex keeps its shell and reports null. `mcpToolCalls`: the tool-server
+ * calls Codex completed, its only count of calls made, since its `toolCalls` stays null. Null, as in
+ * `toolGauge`, is "this engine does not report", never zero. RECORDING ONLY. It sits at the end of this
+ * file so that adding it moved no line another file cites.
+ */
+function toolCallCounts(turn) {
+  const n = (v) => (Number.isFinite(v) && v >= 0 ? v : null);
+  return { toolCallsRefused: n(turn?.toolCallsRefused), commandToolCalls: n(turn?.commandToolCalls), mcpToolCalls: n(turn?.mcpToolCalls) };
+}
