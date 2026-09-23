@@ -61,8 +61,33 @@ test("the predicate: Latin mixed with Greek or Cyrillic, and nothing else", () =
     assert.ok(!mixesLatinWithGreekOrCyrillic(t), `${t} does not`);
 });
 
-test("this register declares that it drops the non-Latin letters of a mixed spelling", () => {
+test("Signa and Clarivate declare that they cannot search a mixed spelling as written", () => {
   assert.equal(SIGNA.mixedScriptQuery, false);
+  assert.equal(capabilitiesFor("clarivate").mixedScriptQuery, false);
+});
+
+test("the reason recorded follows what the register's index holds", () => {
+  // Signa's index holds the characters and answers the Latin remainder; Clarivate's holds non-Latin
+  // filings by transliteration only and never takes the spelling. One reason would be false for one of them.
+  const reasonOn = (caps) => JSON.parse(renderFormNeighbourhoodJson("", { mark: "TIMBER",
+    mixedScriptQuery: caps.mixedScriptQuery, nativeScriptIndex: caps.nativeScriptIndex }))
+    .variant_floor.floor_families.find((f) => f.family === "mixed-script-look-alike").dispatch;
+  assert.match(reasonOn(SIGNA), /as if the non-Latin letters were absent/);
+  assert.match(reasonOn(capabilitiesFor("clarivate")), /by their transliteration only, so a mixed-alphabet spelling cannot be searched as written/);
+});
+
+test("on Clarivate the mixed swaps leave the plan instead of compiling into deferrals", () => {
+  const CLARIVATE = capabilitiesFor("clarivate");
+  const model = modelFor("TIMBER");
+  const before = compileOn(CLARIVATE, JSON.parse(renderFormNeighbourhoodJson("", { model, mark: "TIMBER" })), model);
+  const after = compileOn(CLARIVATE, JSON.parse(renderFormNeighbourhoodJson("", { model, mark: "TIMBER",
+    mixedScriptQuery: CLARIVATE.mixedScriptQuery, nativeScriptIndex: CLARIVATE.nativeScriptIndex })), model);
+  assert.equal(mixed(before.entries.flatMap(entryTerms)).length, 2, "before, both compiled — to be deferred as non-Latin forms");
+  assert.deepEqual(mixed(after.entries.flatMap(entryTerms)), []);
+  const key = (e) => JSON.stringify(e);
+  const gone = before.entries.filter((e) => !after.entries.some((x) => key(x) === key(e)));
+  assert.equal(gone.length, 2, "exactly the two mixed spellings leave");
+  assert.equal(after.entries.length, before.entries.length - 2, "and nothing else moves");
 });
 
 test("TIMBER on this register: the two mixed swaps leave the band and are listed with their count", () => {
@@ -91,7 +116,7 @@ test("a wholly Greek or Cyrillic swap still goes out, into the band and onto the
 });
 
 test("the form document says what it left out: its own family, outside the searched floor", () => {
-  const doc = JSON.parse(renderFormNeighbourhoodJson("", { mark: "TIMBER", mixedScriptQuery: SIGNA.mixedScriptQuery }));
+  const doc = JSON.parse(renderFormNeighbourhoodJson("", { mark: "TIMBER", mixedScriptQuery: SIGNA.mixedScriptQuery, nativeScriptIndex: SIGNA.nativeScriptIndex }));
   const fams = doc.variant_floor.floor_families;
   const fam = fams.find((f) => f.family === "mixed-script-look-alike");
   assert.ok(fam, "the dropped spellings are listed");
@@ -128,7 +153,7 @@ test("compiled on this register's contract, no plan entry and no request body mi
 
 test("a register that does not declare it gets the band, and the plan, it got before", () => {
   const others = Object.entries(PROVIDER_CAPABILITIES).filter(([, c]) => c.mixedScriptQuery !== false);
-  assert.ok(others.length >= 5, "every other register is swept");
+  assert.ok(others.length >= 4, "every other register is swept");
   for (const [id, caps] of others) {
     for (const word of ["TIMBER", "BOAT"]) {
       const model = modelFor(word);

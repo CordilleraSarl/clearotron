@@ -51,9 +51,10 @@ export function isNonLatinTerm(term) { return NON_LATIN_RE.test(String(term ?? "
  *
  * The look-alike generator in driver/form-neighbourhood.mjs writes such terms: it swaps every letter
  * that has a Greek or Cyrillic twin and leaves the rest Latin. A register may answer that spelling as
- * if the non-Latin letters were not there, returning marks that share only the Latin remainder.
- * `capabilities.mixedScriptQuery: false` declares that, and the form band leaves these spellings out
- * on that register and lists them as not searched.
+ * if the non-Latin letters were not there, returning marks that share only the Latin remainder, or may
+ * not take it at all. `capabilities.mixedScriptQuery: false` declares that the register cannot search
+ * such a spelling as written, and the form band leaves these spellings out there and lists them as not
+ * searched.
  */
 const LATIN_LETTER_RE = /\p{Script=Latin}/u;
 const GREEK_OR_CYRILLIC_RE = /[\p{Script=Greek}\p{Script=Cyrillic}]/u;

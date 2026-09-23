@@ -2209,9 +2209,10 @@ export function deriveFormNeighbourhood(ctx) {   // @internal — exported for i
     // resolved exactly as every other job-mark consumer resolves it (stages.mjs blind-frame).
     const mark = ctx.job.marks ?? ctx.job.markName ?? ctx.job.name ?? "";
     // The active register's own declaration: `false` leaves the mixed-alphabet look-alike spellings out of
-    // the band and lists them as not searched. Unknown or undeclared changes nothing.
-    const mixedScriptQuery = registerCapabilities()?.mixedScriptQuery ?? null;
-    const ow = loadOrdinaryWords("en"), json = renderFormNeighbourhoodJson(manifestMd, { markets, droppedAxes, model, mark, ordinaryWords: ow.words, mixedScriptQuery });   // an unloadable word list removes nothing
+    // the band and lists them as not searched, with the reason its index gives. Undeclared changes nothing.
+    const caps = registerCapabilities();
+    const mixedScriptQuery = caps?.mixedScriptQuery ?? null;
+    const ow = loadOrdinaryWords("en"), json = renderFormNeighbourhoodJson(manifestMd, { markets, droppedAxes, model, mark, ordinaryWords: ow.words, mixedScriptQuery, nativeScriptIndex: caps?.nativeScriptIndex ?? null });   // an unloadable word list removes nothing
     const tmp = P.formNeighbourhood + ".tmp";
     writeFileSync(tmp, json);
     renameSync(tmp, P.formNeighbourhood);

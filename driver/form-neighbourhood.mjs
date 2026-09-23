@@ -261,10 +261,10 @@ export function transliterations(element, { scripts = SUPPORTED_SCRIPTS } = {}) 
 // droppable: it is the doctrine floor (radiusFor), not a family.
 //
 // `mixedScriptQuery` is the active register's declaration of the same name (capabilities.js). `false`
-// means the register answers a term mixing Latin with Greek or Cyrillic letters as if the non-Latin
-// letters were absent, so the whole-word look-alike swaps that leave some letters Latin are not searched
-// there: they leave the band and are listed in `mixedScriptNotSearched` instead. Anything else — the
-// value of every register that does not declare it — changes nothing, and the band carries no new field.
+// means the register cannot search a term mixing Latin with Greek or Cyrillic letters as written, so the
+// whole-word look-alike swaps that leave some letters Latin are not searched there: they leave the band
+// and are listed in `mixedScriptNotSearched` instead. Anything else — the value of every register that
+// does not declare it — changes nothing, and the band carries no new field.
 export function formNeighbourhood(element, { markets = [], scripts = SUPPORTED_SCRIPTS, droppedAxes = [], ordinaryWords = null, mixedScriptQuery = null } = {}) {
   const radius = radiusFor(element);
   const el = radius.element;
@@ -401,7 +401,7 @@ export function coverageGaps(band, { dispatched = [], explained = [] } = {}) {
 // exhaustive edit-1 neighbourhood: 1,736 junk exact queries on AquaPlus 2026-07-17, 4,524 on the 07-16 run.
 // Measured 2026-07-18: 10 of 20 recent runs carried one of these. The JSON field is a validated scalar and
 // cannot swallow a sentence.
-export function renderFormNeighbourhoodJson(manifestMd, { markets = [], scripts = SUPPORTED_SCRIPTS, droppedAxes = [], model = null, mark = "", ordinaryWords = null, mixedScriptQuery = null } = {}) {
+export function renderFormNeighbourhoodJson(manifestMd, { markets = [], scripts = SUPPORTED_SCRIPTS, droppedAxes = [], model = null, mark = "", ordinaryWords = null, mixedScriptQuery = null, nativeScriptIndex = null } = {}) {
   const { seeds, seededFrom, rejected } = floorSeeds(manifestMd, { model, mark });
   // The reason travels WITH the throw. It used to say only "the job states no mark", which is one
   // of two causes and not the one that actually fires: a non-Latin mark states a mark perfectly well and
@@ -414,7 +414,7 @@ export function renderFormNeighbourhoodJson(manifestMd, { markets = [], scripts 
     throw new Error(`form_neighbourhood_no_element: ${why} — nothing to seed the mechanical form band`);
   }
   const elements = seeds.map(({ element, role }) => ({ element, role, band: formNeighbourhood(element, { markets, scripts, droppedAxes, ordinaryWords, mixedScriptQuery }) }));
-  const families = variantFloorFamilies(elements, { mark, droppedAxes });
+  const families = variantFloorFamilies(elements, { mark, droppedAxes, mixedScriptReason: mixedScriptNotSearchedReason(nativeScriptIndex) });
   return JSON.stringify({
     schema_version: 2,
     generated: "deterministic (model-free) — edit-1 ∪ phonetic-family ∪ visual-confusable ∪ transliteration ∪ spacing-punctuation",
@@ -645,7 +645,19 @@ export function spacingPunctuationForms(mark) {
  * dispatches), assigned to the first family that claims each term — so the family terms sum EXACTLY
  * to what gets searched, never to a parallel list that drifts from it. PURE.
  */
-export function variantFloorFamilies(elements, { mark = "", droppedAxes = [] } = {}) {
+/**
+ * Why the mixed-alphabet look-alikes were not searched, in the terms of what the register's index holds
+ * (`nativeScriptIndex`): a register that indexes the characters answers such a spelling as if its
+ * non-Latin letters were not there; a register that holds non-Latin filings by transliteration only
+ * cannot take the spelling at all. PURE.
+ */
+export function mixedScriptNotSearchedReason(nativeScriptIndex) {
+  return nativeScriptIndex === true
+    ? "not searched — the register answers a mixed-alphabet spelling as if the non-Latin letters were absent (measured 2026-09-23)"
+    : "not searched — the register holds non-Latin filings by their transliteration only, so a mixed-alphabet spelling cannot be searched as written";
+}
+
+export function variantFloorFamilies(elements, { mark = "", droppedAxes = [], mixedScriptReason = mixedScriptNotSearchedReason(true) } = {}) {
   const drop = new Set(droppedAxes ?? []);
   const edit = new Set(), visual = new Set(), translit = new Set(), other = new Set();
   const wildcards = new Set(), keys = new Set(), notSearched = new Set(), mixedNotSearched = new Set();
@@ -703,7 +715,7 @@ export function variantFloorFamilies(elements, { mark = "", droppedAxes = [] } =
     // Present only when the active register declares `mixedScriptQuery: false` (formNeighbourhood).
     ...(mixedNotSearched.size ? [{ family: "mixed-script-look-alike", category: "transliteration", generator: "transliterations",
       enumeration: "whole-word Greek and Cyrillic look-alike swaps whose other letters stay Latin",
-      dispatch: "not searched — the register answers a mixed-alphabet spelling as if the non-Latin letters were absent (measured 2026-09-23)",
+      dispatch: mixedScriptReason,
       searched: false, dropped: true, count: mixedNotSearched.size, terms: sorted(mixedNotSearched) }] : []),
   ];
 }

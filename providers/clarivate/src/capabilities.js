@@ -280,6 +280,11 @@ export const CAPABILITIES = Object.freeze({
   // transliteration is itself a silent zero, where the same term under contains answers). A slice
   // rescued that way is answerable and is never refused; only a native term with no romanisation defers.
   nativeScriptIndex: false,
+  // A term mixing Latin letters with Greek or Cyrillic ones is not searched here. The index holds
+  // non-Latin filings by transliteration only (`nativeScriptIndex` above), so such a term used to be
+  // compiled and then deferred, and a deferred look-alike was counted as a search not completed. `false`
+  // leaves those spellings out of the form band and lists them there as not searched, as on Signa.
+  mixedScriptQuery: false,
   // No phoneme expansion knob: PHONETIC_WORD_MARK_SPECIFICATION is the whole surface; the client cannot
   // hand it a variant list. (/similarity/word/* — which would be the expansion surface — is genuinely
   // not available on this provider; the endpoint answers 403. Do NOT wire it.)

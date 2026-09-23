@@ -131,6 +131,7 @@ test("the probed provider facts are encoded, not the stale core's warts", () => 
   assert.equal(cla.oppositions, false);
   assert.equal(cla.phonemeExpansion, false, "/similarity/word/* is not available on this provider (403) — never wired");
   assert.equal(cla.hasPublicRecordUrl, false);
+  assert.equal(cla.mixedScriptQuery, false, "a mixed-alphabet term is not searched: the index holds non-Latin filings by transliteration only");
   assert.equal(cla.predicates.exact, "EXACT_WORD_MARK_SPECIFICATION");
   assert.equal(cla.predicates.phonetic, "PHONETIC_WORD_MARK_SPECIFICATION");
   assert.equal(cla.predicates.owner, "APPLICANT_NAME");
