@@ -2368,7 +2368,7 @@ export function preflightEngineBinary(env = process.env, { platform = process.pl
 
   if (r.relative) {
     throw new Error(`[preflight] ${where} is the RELATIVE path "${bin}", which cannot work: the engine is `
-      + "spawned with the RUN DIRECTORY as its cwd (#524), not the repo, so a relative command is looked "
+      + "spawned with the RUN DIRECTORY as its cwd, not the repo, so a relative command is looked "
       + `for inside the run. Give an absolute path — e.g. ${join(REPO_ROOT, bin)} — or a bare name on PATH.`);
   }
 

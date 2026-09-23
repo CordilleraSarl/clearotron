@@ -318,9 +318,9 @@ export const DISPATCH_EXTRAS = [
       // measuring the absence of the rows the stage's whole coverage contract now runs through. The
       // same file is on VALIDATOR_SIDECARS, because it is also the copy the gate judges.
       { path: driverDir(P.runDir, "register-coverage-form.form.json"), why: "the accumulator coverageFormBrief enumerates into the dispatch (#476; typed transport)" },
-      { path: P.coverageEnum, why: "the era stamp that says a coverage form is required on this run (#476)" },
+      { path: P.coverageEnum, why: "the era stamp that says a coverage form is required on this run" },
       { path: P.planExecution, why: "the coverage form's skeleton + per-qid deferral reasons (#476; was the A8 deferred-axis hint)" },
-      { path: P.registerPlan, why: "the coverage form's unit labels and open-block join come from the frozen plan (#476)" },
+      { path: P.registerPlan, why: "the coverage form's unit labels and open-block join come from the frozen plan" },
       { path: P.placementModel, why: "the borderline-declaration count row" },
       { path: P.placement, why: "the placement RULINGS TAIL, carried as data on a corrective pass (P5)" },
       { path: P.ownerScreen, why: "the owner×element screen receipt (P2-B)" },

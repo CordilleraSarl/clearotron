@@ -305,7 +305,7 @@ export function retiredGlobalRecordLogNotice(env = process.env) {
   if (announced.has(key)) return null;
   announced.add(key);
   const bytes = sizeOf(r.path);
-  return `[ledger] the box-global record log ${r.path}${bytes === null ? "" : ` (${bytes} bytes)`} is RETIRED (#743) — `
+  return `[ledger] the box-global record log ${r.path}${bytes === null ? "" : ` (${bytes} bytes)`} is RETIRED — `
     + `register response bodies now live in each run's _driver/${RUN_RECORD_LOG_FILE} and are archived and purged with the run. `
     + `Nothing writes to or reads this file any more; archive it once (mv it aside) at your convenience.`;
 }

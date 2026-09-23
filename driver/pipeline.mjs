@@ -12586,7 +12586,7 @@ async function pipelineInner(job, opts = {}) {
       jurisdictions: (() => { try { return JSON.parse(readFileSync(P.instructedScope, "utf8"))?.jurisdictions ?? null; } catch { return null; } })(),
     });
     if (caseLaw.declined)
-      note(`[case-law] the draft narrative turns on "${caseLaw.trigger}", and a ${caseLaw.product ?? "run with no resolved product"} does not carry the case-law reading — recorded, not run (#519)`);
+      note(`[case-law] the draft narrative turns on "${caseLaw.trigger}", and a ${caseLaw.product ?? "run with no resolved product"} does not carry the case-law reading — recorded, not run`);
     if (needCaseLaw) runLog(run.runDir, { event: "case-law-trigger", requested: caseLaw.requested, detected: caseLaw.detected });
     // T7 (E5): feed the finding index so the case-law stage stamps "- ord:" on each grounded
     // profile — the render + report-card joins become deterministic (copper-spire's prompt-fished join
@@ -13529,7 +13529,7 @@ async function pipelineInner(job, opts = {}) {
       // by construction, which is the intended shape: a BLOCKING with an empty reasons array is
       // structurally impossible, and any future path that reintroduces one dies here instead of shipping.
       if (verdict === "BLOCKING" && !reasonsOut.length)
-        throw new Error("verdict BLOCKING with no reasons — a blocking decision without its grounds; verdict.json is the artifact whose whole purpose is carrying them (#1065)");
+        throw new Error("verdict BLOCKING with no reasons — a blocking decision without its grounds; verdict.json is the artifact whose whole purpose is carrying them");
       // doc 50 — a v4 record derives off the run's FROZEN framework (band words); deriveDisplayVerdict
       // fail-louds if banded findings arrive with no manifest (never silently badge a rated matter LOW).
       const derived = deriveDisplayVerdict({ verdict, reasons: reasonsOut, kinds: kindsOut, findings: findingsArr,

@@ -224,7 +224,7 @@ export function writeRunStatus(ctx, patch = {}, runDirOverride = null, { critica
       try {
         note(`[status] NO RUN DIRECTORY — the state write to ${JSON.stringify(patch.state)} did not happen. `
           + `The run's status.json still says whatever it said last, which for a park or a terminal means it `
-          + `says "running". Caller passed neither a runDirOverride nor a ctx.run.runDir (#1159).`);
+          + `says "running". Caller passed neither a runDirOverride nor a ctx.run.runDir.`);
       } catch { /* the note sink is best-effort too — never let reporting a lost write lose the run */ }
     }
     return;

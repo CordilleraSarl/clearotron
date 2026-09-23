@@ -383,7 +383,7 @@ async function main() {
 **Conditions.** warm (one discarded run per probe), median of ${opts.repeats}, page size ${opts.limit}, driven through \`doSearch\`.
 ${buildSeconds === null ? "" : `**Fixture build.** ${buildSeconds.toFixed(1)} s\n`}${opts.synthetic ? `**Row shape.** ${ROW_SHAPE}\n` : ""}**Mark length.** ${lengthProfile(marks)}
 ${backfile ? "" : `
-> This index does not record a complete backfile, so \`count_hits\` refuses on it by design (#547).
+> This index does not record a complete backfile, so \`count_hits\` refuses on it by design.
 > Search still answers — these timings are real — but they are timings over a PARTIAL register.
 `}${ftsBuilt ? "" : `
 > **The FTS shadow tables are not built.** wildcardPrefix and wildcardSuffix narrow through them, so
