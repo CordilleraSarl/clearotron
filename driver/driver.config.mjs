@@ -2052,6 +2052,47 @@ export function enginesFolder({ env = process.env, home = homedir() } = {}) {
   return String(env[ENGINES_DIR_ENV] ?? "").trim() || join(home, ".local", "share", "clearotron", "engines");
 }
 
+/**
+ * Is the copy of an engine's program on this machine older than the version this build asks for?
+ *
+ * THE FLOOR GOVERNED ONE ROUTE OF TWO. Setup passes it to npm, so a program it installs cannot land
+ * under it; a copy already on the machine wins over the installed one by design, and nothing compared
+ * its version to anything. The two routes are not equally common — most machines have their own copy —
+ * so the check that existed covered the case that mostly does not arise.
+ *
+ * What that costs is not a crash. The program carries its own list of the models it accepts, so one
+ * below the floor refuses the model a tier names and serves the previous generation instead: the run
+ * completes, the report is delivered, and the only sign is a model id in the record that nobody chose.
+ * Measured 2026-09-22 on 2.1.263, where the current top tier's id came back a 400 and the tier alias
+ * answered with the generation before it.
+ *
+ * THREE-VALUED, AND THE THIRD VALUE IS THE POINT. `null` means "these two cannot be compared" — no
+ * floor declared, nothing read from the copy, or a version this cannot parse — and it is never "fine".
+ * A caller must say it could not look rather than print a pass, which is the absence-read-as-a-pass
+ * class that the rest of this file keeps naming. Only a version that parses and sorts below the floor
+ * comes back `true`.
+ *
+ * PURE, both arguments injected, so a test drives an old version and a current one without a program.
+ *
+ * @param {string|null|undefined} version  what the copy reports, e.g. "2.1.273"
+ * @param {string|null|undefined} floor    the engine's declared floor, e.g. "2.1.280"
+ * @returns {boolean|null} true = older than the floor; false = at it or newer; null = not comparable
+ */
+export function olderThanFloor(version, floor) {
+  const parts = (v) => {
+    const m = /^\s*v?(\d+)\.(\d+)(?:\.(\d+))?/.exec(String(v ?? ""));
+    return m ? [Number(m[1]), Number(m[2]), Number(m[3] ?? 0)] : null;
+  };
+  const [got, want] = [parts(version), parts(floor)];
+  if (!got || !want) return null;
+  // Part by part, never as text: "2.1.99" sorts above "2.1.280" as a string, and that comparison would
+  // read a machine two hundred releases behind as being ahead of the floor.
+  for (let i = 0; i < 3; i++) {
+    if (got[i] !== want[i]) return got[i] < want[i];
+  }
+  return false;
+}
+
 /** The npm arguments that install, or refresh, an engine's program in `dir`: "this version or newer". */
 export function engineInstallArgs(spec, dir = enginesFolder()) {
   return ["install", "--prefix", dir, "--no-fund", "--no-audit", `${spec.package}@>=${spec.floor}`];

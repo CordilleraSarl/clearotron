@@ -28,6 +28,9 @@ import { ENGINE_BINARIES } from "../driver.config.mjs";
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const src = readFileSync(join(REPO, "bin", "onboard.mjs"), "utf8");
 const ENGINES = Object.keys(ENGINE_BINARIES);
+// The version these arms mean as "fine": the engine's own floor, not a literal — a copy below it is
+// now reported as too old, so a written-out version would fail these arms the next time the floor moves.
+const CURRENT_PROGRAM = ENGINE_BINARIES["anthropic-agent"].floor;
 // An empty directory: a PATH with nothing on it, and an engines folder with nothing installed.
 const NOWHERE = mkdtempSync(join(tmpdir(), "which-ai-nowhere-"));
 after(() => rmSync(NOWHERE, { recursive: true, force: true }));
@@ -59,13 +62,13 @@ const PROBLEM_INCOMPLETE = (eng) => `problem: the copy of ${eng.product} here is
 test("setup's first question prints the approved screen, word for word", () => {
   assert.equal(typeof setup.menuScreen, "function", "setup has no menuScreen, so the screen it prints is asserted nowhere");
   const found = {
-    "anthropic-agent": { executable: true, relative: false, version: "2.1.270", rejected: [] },
+    "anthropic-agent": { executable: true, relative: false, version: CURRENT_PROGRAM, rejected: [] },
     "openai-agent": { executable: false, relative: false, version: null, rejected: [], explicit: false },
   };
   assert.equal(setup.menuScreen(setup.ENGINE_QUESTION, setup.engineOptions(found), 0, setup.PAY_PREAMBLE).join("\n"), [
     "",
     "  Which AI should run your searches?",
-    "    1) Claude, by Anthropic   found on this computer (version 2.1.270)   (default)",
+    `    1) Claude, by Anthropic   found on this computer (version ${CURRENT_PROGRAM})   (default)`,
     "    2) Codex, by OpenAI       not on this computer — setup can install it",
     "    3) None for now",
     "",
@@ -104,12 +107,12 @@ test("setup asks that question on that screen, and prints nothing above it", () 
 test("a row found says so, with the version when the program gives one and without when it does not", () => {
   for (const id of ENGINES) {
     const eng = ENGINE_BINARIES[id];
-    const copy = installed(id, "#!/bin/sh\nexit 1\n", { version: "2.1.270" });
+    const copy = installed(id, "#!/bin/sh\nexit 1\n", { version: CURRENT_PROGRAM });
     const onPath = mkdtempSync(join(tmpdir(), "which-ai-path-"));
     writeFileSync(join(onPath, eng.fallback), "#!/bin/sh\nexit 1\n", { mode: 0o755 });
     try {
       assert.deepEqual((({ who, what }) => ({ who, what }))(said(id, {}, copy.root)),
-        { who: `${eng.product}, by ${eng.vendor}`, what: "found on this computer (version 2.1.270)" });
+        { who: `${eng.product}, by ${eng.vendor}`, what: `found on this computer (version ${CURRENT_PROGRAM})` });
       const quiet = said(id, { PATH: onPath });
       assert.equal(quiet.state.version, null, "fixture precondition: the copy on PATH gave no version");
       assert.equal(quiet.what, "found on this computer");

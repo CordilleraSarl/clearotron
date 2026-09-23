@@ -62,7 +62,11 @@ const argv = process.argv.slice(2);
 // closes, append a line to the call log, and make every attempt count in every arm one higher than the
 // dispatch it is measuring. Faithfulness here is not a courtesy to the probe; it is what keeps the mock
 // a stand-in rather than a different program.
-if (argv.includes("--version")) { process.stdout.write("2.1.241 (Claude Code)\n"); process.exit(0); }
+// THE VERSION IT CLAIMS MUST SATISFY THE ENGINE FLOOR. Doctor and setup now compare a program already
+// on the machine against that floor, so a mock advertising an older build is reported as too old and
+// every arm that drives a healthy install goes red for a reason that is about this string. Held by an
+// arm in a-program-already-here-is-checked-against-the-floor.test.mjs, which names this line.
+if (argv.includes("--version")) { process.stdout.write("2.1.280 (Claude Code)\n"); process.exit(0); }
 
 // The engine now pipes the prompt on STDIN (no `-p` positional) — read it to EOF. Fallback to a positional
 // after `-p` for any direct-CLI caller / TTY (a token starting with `-` is the NEXT flag, not the prompt).

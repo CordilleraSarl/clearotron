@@ -747,6 +747,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-program-already-here-is-checked-against-the-floor.test.mjs": {
+          "tests": 5,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
         "a-project-cannot-break-the-tree-it-joins.test.mjs": {
           "tests": 13,
           "asserts": 37,

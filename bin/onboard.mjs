@@ -98,7 +98,7 @@ import {
 // REGISTER_PROVIDER frozen at first import) is the one `preflightCandidate` below already cache-busts
 // around, and it is cache-busted whether or not this static import happened first.
 import { config, ENGINE_BINARIES, DEFAULT_ENGINE_ID, RESEARCH_PROVIDERS, SERP_PROVIDERS, resolveEngineProgram, ON_A_WINDOWS_DRIVE,
-  enginesFolder, engineInstallArgs, engineInstallCommand } from "../driver/driver.config.mjs";
+  enginesFolder, engineInstallArgs, engineInstallCommand, olderThanFloor } from "../driver/driver.config.mjs";
 import { resolveAuthMode, CLOUD_SWITCH, CLOUD_SETTINGS, CLOUD_SECRETS, cloudsSwitchedOn } from "../driver/engine/auth.mjs";
 import { isInsideCheckout } from "../shared/inside-checkout.mjs";   // — one copy of the rule, and it is testable
 import { packagedBuild as sharedPackagedBuild } from "../shared/packaged-build.mjs";   // — one reader of build-info.json, reachable from the driver
@@ -1113,7 +1113,14 @@ function programProblem(bin, named) {
  */
 export function foundWords(eng, bin) {
   if (!bin) return "";
-  if (bin.executable && !bin.relative) return bin.version ? `found on this computer (version ${bin.version})` : "found on this computer";
+  if (bin.executable && !bin.relative) {
+    // A COPY THAT RUNS IS NOT NECESSARILY ONE THIS BUILD CAN USE. Below the floor the program refuses
+    // the newest model of a tier and serves the one before it, so the row cannot say "found" and leave
+    // it there; it says which problem, and choosing the engine shows the fix, as the other problems do.
+    if (olderThanFloor(bin.version, eng.floor) === true)
+      return `problem: the copy of ${eng.product} here is version ${bin.version}, older than the ${eng.floor} this build needs — choose it to see the fix`;
+    return bin.version ? `found on this computer (version ${bin.version})` : "found on this computer";
+  }
   const p = programProblem(bin, bin.explicit);
   if (p?.kind === "incomplete") return `problem: the copy of ${eng.product} here is incomplete and won't run — choose it to see the fix`;
   if (p?.kind === "setting") return `problem: this computer is set to use a copy of ${eng.product} that isn't there — choose it to see the fix`;
@@ -1129,6 +1136,14 @@ export function foundWords(eng, bin) {
  */
 export function cannotRunLine(eng, bin, setting = "") {
   const set = namedSetting(eng, setting);
+  // ANSWERED BEFORE THE REST, because a copy below the floor RUNS: it is executable, nothing rejected
+  // it, and every clause below is about a copy that cannot start. Left to them it would fall through to
+  // the general clause and be described as unusable, which sends the reader to look for a broken
+  // install they do not have. The fix here is a version, not a repair.
+  if (bin?.executable && !bin?.relative && olderThanFloor(bin.version, eng.floor) === true)
+    return `The copy of ${eng.product} on this computer is version ${bin.version}, and this build needs ${eng.floor} or newer. `
+      + `It starts and runs, so nothing here is broken — but it refuses the newest model of a tier and runs the one before it, `
+      + `which means a search finishes and its report names a model you did not choose. Update that copy, or let setup install one.`;
   const p = programProblem(bin, set);
   if (p?.kind === "incomplete") return `The copy of ${eng.product} at ${p.path} is incomplete: its installation stopped before the program was added. Setup can install a working copy.`;
   if (p?.kind === "setting") return `This computer is set to use ${eng.product} at ${set}, and nothing there can run. Setup can install ${eng.product} and use that instead.`;
@@ -1761,10 +1776,26 @@ export async function runCheck() {
     const bin = resolveEngineBin(binSetting, { engine: engineId });
     // WHICH COPY, AND ITS VERSION, because the machine's own install and the one Clearotron installed
     // are both legitimate and behave differently: the first updates itself, the second moves with
-    // `clearotron update`. The version comes from the copy's own package.json when npm installed it;
-    // doctor spawns nothing to ask (a vendor's own native installer leaves no package.json to read).
+    // `clearotron update`. The version comes from the copy's own package.json when npm installed it.
+    //
+    // AND IS ASKED FOR WHEN THERE IS NONE TO READ, which is the ordinary case for a copy the machine
+    // installed by another route — a vendor's native installer leaves no package.json. Doctor used to
+    // stop there and print "version not read", which was honest and made the floor comparison below
+    // unanswerable on the route most machines take: this command could not tell an operator whether
+    // their own copy was new enough for the models a run asks for, which is the whole of what it was
+    // asked to check.
+    //
+    // It is the same short call setup's engine menu already makes (menuVersion): `--version`, two
+    // seconds, no session and no network. That is within "calls nobody" — what that promises is no
+    // provider call and no spend, not that nothing on this machine may be asked its own version.
+    const versionOf = (b) => {
+      if (b.version) return b.version;
+      if (!b.executable || b.relative || !b.path) return null;
+      try { return menuVersion(b.path) ?? null; } catch { return null; }
+    };
+    const seen = versionOf(bin);
     const copyWords = (b) => `${b.source === "installed" ? "the copy Clearotron installed"
-      : b.source === "explicit" ? `set in ${engSpec.env}` : "on PATH"}${b.version ? `, version ${b.version}` : ", version not read"}`;
+      : b.source === "explicit" ? `set in ${engSpec.env}` : "on PATH"}${seen ? `, version ${seen}` : ", version not read"}`;
     // ── NATIVE WINDOWS IS ANSWERED HERE, BEFORE ANY PATH IS RESOLVED OR REPORTED ──────────────────
     //
     // `resolveEngineBin` tests a candidate with `accessSync(X_OK)` and `isFile()`. Windows has no
@@ -1786,7 +1817,30 @@ export async function runCheck() {
     // and needs no engine, which is why four reports published on that same Windows box.
     const platformRefusal = platformEngineRefusal();
     if (platformRefusal) problem(platformRefusal);
-    else if (bin.executable && !bin.relative) ok(`${bin.path} — ${copyWords(bin)}`);
+    // ── AND WHETHER THAT COPY IS NEW ENOUGH FOR THE MODELS IT WILL BE ASKED FOR ──────────────────
+    //
+    // The floor governed the copy setup INSTALLS and nothing else, and a copy already on the machine
+    // wins over that one — so the route most machines actually take was the unchecked one. A program
+    // below the floor does not fail: it refuses the newest model of a tier and serves the previous one,
+    // and the search still finishes and the report still arrives. This is the cheap place to learn it.
+    //
+    // Three outcomes, because the comparison is three-valued: older, not older, and could not be
+    // compared. The last is said rather than passed over — doctor's own contract is that a failure to
+    // look is not a clean result — and it is the ordinary state for a copy the machine installed by
+    // another route, where there is no package.json to read and doctor spawns nothing to ask.
+    else if (bin.executable && !bin.relative && olderThanFloor(seen, engSpec.floor) === true)
+      problem(`${bin.path} — ${copyWords(bin)}, older than the ${engSpec.floor} this build needs. `
+        + `A copy this old refuses the newest model of a tier and runs the one before it instead, so searches finish `
+        + `and reports arrive naming a model you did not choose. ${bin.source === "installed"
+          ? `Update it with \`${invoke("update")}\`.`
+          : bin.source === "explicit"
+            ? `${engSpec.env} names this copy: update it, or point that setting at a newer one.`
+            : `Update the copy on your PATH, or set ${engSpec.env} to a newer one.`}`);
+    else if (bin.executable && !bin.relative) {
+      ok(`${bin.path} — ${copyWords(bin)}`);
+      if (olderThanFloor(seen, engSpec.floor) === null)
+        info(`  its version could not be read, so whether it is new enough for the models a run asks for is NOT checked here — this build needs ${engSpec.floor} or newer`);
+    }
     // A copy that is there and cannot run is a broken install, not an absence: the vendor's placeholder
     // left by an install that skipped its step, most often. Named with the reason and the fix.
     else if (!binSet && bin.rejected?.length) problem(`no usable \`${engSpec.fallback}\`: ${bin.rejected.map((x) => `${x.path} is ${x.why}`).join("; ")}`);

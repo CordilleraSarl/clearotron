@@ -17,6 +17,8 @@ import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // a fixture pins EVERY spelling
+import { execFileSync } from "node:child_process";
+import { parseVersion } from "../engine/cli-version.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 process.env.CLEAROTRON_RUN_LOCK_DIR = mkdtempSync(join(tmpdir(), "cliver-locks-"));
@@ -29,12 +31,17 @@ function withEnv(env, fn) {
   return (async () => { try { return await fn(); } finally { for (const k of Object.keys(env)) { if (saved[k] === undefined) delete process.env[k]; else pinEnv(process.env, k, saved[k]); } } })();
 }
 
-// The version token is the one each stand-in prints for --version, read off the stand-in itself.
+// The version token is the one each stand-in prints for --version, ASKED OF THE STAND-IN rather than
+// written out beside it. It was a literal, and this comment already claimed otherwise: when the mock's
+// version moved — which it must, because doctor now refuses a program older than the engine floor —
+// this arm failed on the fixture rather than on what it measures. Read through the same parser the
+// driver uses, so the token compared here is the token that path produces.
+const asked = (mock) => parseVersion(execFileSync(process.execPath, [join(HERE, mock), "--version"], { encoding: "utf8" }));
 const ENGINES = {
-  "anthropic-agent": { version: "2.1.241", env: (dir, out) => ({ CLEAROTRON_AI: "anthropic-agent",
+  "anthropic-agent": { version: asked("mock-claude.mjs"), env: (dir, out) => ({ CLEAROTRON_AI: "anthropic-agent",
     CLEAROTRON_CLAUDE_PATH: join(HERE, "mock-claude.mjs"), MOCK_CLAUDE_FILE: "a stub the validator accepts\n",
     MOCK_OUT_FILE: out, MOCK_CLAUDE_CALL_LOG: join(dir, "calls.jsonl"), MOCK_COUNT_FILE: join(dir, "count") }) },
-  "openai-agent": { version: "0.5.0", env: () => ({ CLEAROTRON_AI: "openai-agent",
+  "openai-agent": { version: asked("mock-codex.mjs"), env: () => ({ CLEAROTRON_AI: "openai-agent",
     CLEAROTRON_CODEX_PATH: join(HERE, "mock-codex.mjs"), CLEAROTRON_AI_BILLING: "api-key", CODEX_API_KEY: "sk-dummy",
     MOCK_CODEX_FILE: "# ctx\n" }) },
 };

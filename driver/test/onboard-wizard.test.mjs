@@ -27,6 +27,10 @@ import { probeEngineTurn } from "../engine/probe.mjs";
 import { VERBS } from "../../bin/clearotron.mjs";
 import { USPTO_ARCHIVE_GB, USPTO_INGEST_GB_PER_HOUR, usptoBuildHours } from "../../shared/uspto-index-size.mjs";
 import { config, KNOWN_REGISTER_PROVIDERS, ENGINE_BINARIES, resolveEngineProgram } from "../driver.config.mjs";
+// A PROGRAM VERSION THESE ARMS MEAN AS "FINE", taken from the engine's own floor rather than written
+// out: doctor and setup now report a copy below the floor as too old, so a literal here would turn every
+// healthy-install arm red the next time the floor moves, for a reason that is about the fixture.
+const CURRENT_PROGRAM = ENGINE_BINARIES["anthropic-agent"].floor;
 import { loadEnvLocal } from "../../shared/env-local.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
@@ -507,11 +511,11 @@ test("the engine menu is built from the driver's registry, plus one row that is 
 // setup-asks-which-ai-runs-your-searches.test.mjs):
 test("each row of the engine question says what setup found of that program, in the approved words", () => {
   const opts = engineOptions({
-    "anthropic-agent": { executable: true, relative: false, version: "2.1.270", rejected: [] },
+    "anthropic-agent": { executable: true, relative: false, version: CURRENT_PROGRAM, rejected: [] },
     "openai-agent": { executable: false, relative: false, version: null, rejected: [] },
   });
   assert.deepEqual(opts.map((o) => o.label), [
-    "Claude, by Anthropic   found on this computer (version 2.1.270)",
+    `Claude, by Anthropic   found on this computer (version ${CURRENT_PROGRAM})`,
     "Codex, by OpenAI       not on this computer — setup can install it",
     "None for now",
   ]);
@@ -525,17 +529,17 @@ test("the engine question resolves each program the way a run does: setting, the
   const machine = mkdtempSync(join(tmpdir(), "onboard-menu-path-"));
   const elsewhere = mkdtempSync(join(tmpdir(), "onboard-menu-set-"));
   const silent = mkdtempSync(join(tmpdir(), "onboard-menu-silent-"));
-  sh(machine, "claude", 'echo "2.1.241 (Claude Code)"');
+  sh(machine, "claude", `echo "${CURRENT_PROGRAM} (Claude Code)"`);
   const named = sh(elsewhere, "my-claude", 'echo "3.0.0 (Claude Code)"');
   sh(silent, "claude", "exit 1");
-  const { root } = plantInstalledCopy("#!/bin/sh\nexit 1\n", "2.1.270");
+  const { root } = plantInstalledCopy("#!/bin/sh\nexit 1\n", CURRENT_PROGRAM);
   const labels = (state) => engineOptions(state).map((o) => o.label);
   try {
     // The machine's own copy, on PATH: its version is asked with `--version`.
     const onPath = engineMenuState({ env: { PATH: machine }, enginesDir: NO_ENGINES });
     assert.equal(onPath["anthropic-agent"].path, join(machine, "claude"));
     assert.deepEqual(labels(onPath).slice(0, 2), [
-      "Claude, by Anthropic   found on this computer (version 2.1.241)",
+      `Claude, by Anthropic   found on this computer (version ${CURRENT_PROGRAM})`,
       "Codex, by OpenAI       not on this computer — setup can install it",
     ]);
     // The explicit setting comes before PATH.
@@ -546,7 +550,7 @@ test("the engine question resolves each program the way a run does: setting, the
     // itself exits 1 on `--version`, so the version can only have come from there.
     const installed = engineMenuState({ env: { PATH: "" }, enginesDir: root });
     assert.equal(installed["anthropic-agent"].source, "installed");
-    assert.equal(labels(installed)[0], "Claude, by Anthropic   found on this computer (version 2.1.270)");
+    assert.equal(labels(installed)[0], `Claude, by Anthropic   found on this computer (version ${CURRENT_PROGRAM})`);
     // A program that will not say its version is still found.
     const quiet = engineMenuState({ env: { PATH: silent }, enginesDir: NO_ENGINES });
     assert.equal(labels(quiet)[0], "Claude, by Anthropic   found on this computer");
@@ -602,7 +606,7 @@ test("the line printed with the engine question names every way to pay that the 
 });
 
 test("setup's proof turn pins the path of the copy it proves, and its advice still names the copy setup installed", async () => {
-  const { root, program } = plantInstalledCopy("#!/bin/sh\nexit 0\n", "2.1.270");
+  const { root, program } = plantInstalledCopy("#!/bin/sh\nexit 0\n", CURRENT_PROGRAM);
   const eng = ENGINE_BINARIES["anthropic-agent"];
   const empty = mkdtempSync(join(tmpdir(), "onboard-proof-path-"));
   try {
