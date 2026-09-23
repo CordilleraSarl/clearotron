@@ -3240,6 +3240,28 @@ test("a section that is not drawn takes its strip entry with it", () => {
   for (const id of b) assert.ok(drawn.has(id), `the thinner document's strip points at #${id}, which it does not draw`);
 });
 
+// ── A COMPANY THAT PICKED NO MARKETPLACES (the owner's ruling of 2026-09-23) ─────────────────────────
+//
+// Its marketplaces were still covered by the general web search, and by any stores the engine chose for
+// the matter, so the two lines that would otherwise name a marketplace search say that instead. The flag
+// rides the search-depth record (counts.sweep.noMarketplacesPicked), stamped by publish from the frozen profile.
+test("a company with no marketplaces: the nothing-found line and the search row name the general web", () => {
+  const sd = { counts: { recordsByCountry: { JP: 10 }, localScriptSearched: true,
+    sweep: { spellings: 12, checks: 12, platforms: 1, reputation: 9, noMarketplacesPicked: true } } };
+  const f = [{ ...FINDINGS[0], use_check: { source: NO_RESULT } }];
+  const html = renderHtml(parsedOf(REPORT), f, COVERAGE, { searchDepth: sd });
+  assert.match(html, /<b>Use checked\.<\/b> Nothing found in the general web search or in any store chosen for this matter\./);
+  assert.doesNotMatch(html, /Nothing found in the marketplaces searched/, "no marketplace search was picked, so none is named");
+  const v = (h, k) => (h.match(new RegExp(`<span class="k">${k}</span><span class="v">([\\s\\S]*?)</span></div>`)) || [])[1] ?? null;
+  assert.equal(v(html, "Marketplace and web"), "12 checks: the general web, plus any stores chosen for this matter.");
+  assert.doesNotMatch(html, /checks on 1 platforms/);
+
+  // PER RENDER, never carried over: the next report, for a company that did pick marketplaces, reads as before.
+  const next = renderHtml(parsedOf(REPORT), f, COVERAGE, { searchDepth: { counts: { ...sd.counts, sweep: { ...sd.counts.sweep, noMarketplacesPicked: undefined, platforms: 4 } } } });
+  assert.match(next, /Nothing found in the marketplaces searched\./);
+  assert.equal(v(next, "Marketplace and web"), "12 checks on 4 platforms");
+});
+
 // ── WHAT WAS SEARCHED, AS THE BOARDS DRAW IT ────────────────────────────────────────────────────────
 //
 // The approved boards draw the register row as one line of totals with the per-country counts as chips,

@@ -34,9 +34,9 @@ import { tmpdir } from "node:os";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
 
 const dir = mkdtempSync(join(tmpdir(), "enqueue-unreadable-"));
-// `platforms: []` fails loadProfiles' own shape check ("must be a non-empty array of store-domain
-// strings"), and on `generic.json` it throws for the whole store.
-writeFileSync(join(dir, "generic.json"), JSON.stringify({ name: "House default", platforms: [] }));
+// A `platforms` that is not an array fails loadProfiles' own shape check ("must be an array of
+// store-domain strings"), and on `generic.json` it throws for the whole store.
+writeFileSync(join(dir, "generic.json"), JSON.stringify({ name: "House default", platforms: "amazon.com" }));
 pinEnv(process.env, "CLEAROTRON_CUSTOMERS_DIR", dir);
 
 // No classes, no marks[].classes, no goods, no use — the only shape that reaches the ladder at all.

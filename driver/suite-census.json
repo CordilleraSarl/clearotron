@@ -220,8 +220,14 @@
           "todos": 0
         },
         "a-company-created-in-the-browser-is-a-whole-company.test.mjs": {
-          "tests": 11,
-          "asserts": 61,
+          "tests": 14,
+          "asserts": 75,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-company-with-no-marketplaces-is-described-as-searched.test.mjs": {
+          "tests": 2,
+          "asserts": 4,
           "skips": 0,
           "todos": 0
         },
@@ -3460,8 +3466,8 @@
           "todos": 0
         },
         "pipeline.mock.test.mjs": {
-          "tests": 99,
-          "asserts": 827,
+          "tests": 101,
+          "asserts": 842,
           "skips": 0,
           "todos": 0
         },
@@ -3598,8 +3604,8 @@
           "todos": 0
         },
         "portal-service.test.mjs": {
-          "tests": 131,
-          "asserts": 712,
+          "tests": 132,
+          "asserts": 715,
           "skips": 1,
           "todos": 0
         },
@@ -3706,8 +3712,8 @@
           "todos": 0
         },
         "profiles.test.mjs": {
-          "tests": 48,
-          "asserts": 263,
+          "tests": 49,
+          "asserts": 272,
           "skips": 0,
           "todos": 0
         },
@@ -4120,8 +4126,8 @@
           "todos": 0
         },
         "render.test.mjs": {
-          "tests": 162,
-          "asserts": 675,
+          "tests": 163,
+          "asserts": 681,
           "skips": 0,
           "todos": 0
         },
@@ -5501,7 +5507,7 @@
         },
         "the-record-half-of-an-add-must-reach-git.test.mjs": {
           "tests": 11,
-          "asserts": 39,
+          "asserts": 40,
           "skips": 0,
           "todos": 0
         },
@@ -6758,8 +6764,8 @@
           "todos": 0
         },
         "profileFields.test.ts": {
-          "tests": 54,
-          "asserts": 173,
+          "tests": 55,
+          "asserts": 176,
           "skips": 0,
           "todos": 0
         },
