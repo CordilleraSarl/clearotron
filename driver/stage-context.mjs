@@ -38,7 +38,8 @@ import { existsSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 
-import { STAGES, stageInputs } from "./stages.mjs";
+import { STAGES, stageInputs, REGISTER_AXES } from "./stages.mjs";
+import { withheldFamiliesPath } from "./withheld-families.mjs";
 import { toolGroupsForStage } from "./engine/mcp/gather-config.mjs";
 import { FACTS_FILE as DIGEST_FACTS_FILE, ACCOUNTING_STAMP as DIGEST_ACCOUNTING_STAMP } from "./register-digest-record.mjs";
 
@@ -308,6 +309,16 @@ export const CONTEXT_DERIVATIONS = [
 // bypassed `runDigest` entirely, so an arm ran without the deferred-axis hint, the placement rulings
 // tail and the owner-screen receipt — three blocks the production dispatch carries. Declared here with
 // their read sets so the sandbox manifest covers them like any other edge.
+// Where a waiting family's judgment is on record: the reading turn's per-axis files, and the coverage
+// form (with the stamp that names it). planAuditExtra counts a waiting family as withheld from these, so
+// a sandbox without them would count every such family as still awaiting the reading turn's ask.
+const waitingFamilyJudgmentReads = (P) => [
+  ...REGISTER_AXES.map((a) => ({ path: withheldFamiliesPath(P.runDir, a),
+    why: "planAuditExtra reads the reading turn's record of the families it chose not to ask (readWithheldFamilies)" })),
+  { path: driverDir(P.runDir, "register-coverage-form.form.json"), why: "planAuditExtra counts a family whose form row is settled withheld-by-judgment as withheld" },
+  { path: P.coverageEnum, why: "the stamp that names the coverage form planAuditExtra reads" },
+];
+
 export const DISPATCH_EXTRAS = [
   {
     id: "digest-dispatch-extra", stage: "register-digest",
@@ -360,6 +371,7 @@ export const DISPATCH_EXTRAS = [
     reads: (P) => [
       { path: P.planExecution, why: "planAuditExtra tabulates executed/missing/skipped/unplanned + the per-axis skeleton from this receipt — the whole PLAN-EXECUTION CHECK block is derived from it" },
       { path: P.registerPlan, why: "planAuditExtra returns EMPTY unless ctx.registerPlan is attached, and reconstructCtx attaches it from this frozen sidecar (attachRegisterPlan, frozenOnly)" },
+      ...waitingFamilyJudgmentReads(P),
     ],
   },
   {
@@ -399,6 +411,7 @@ export const DISPATCH_EXTRAS = [
     reads: (P) => [
       { path: P.planExecution, why: "planAuditExtra tabulates executed/missing/skipped/unplanned + the per-axis skeleton from this receipt — the whole PLAN-EXECUTION CHECK block is derived from it" },
       { path: P.registerPlan, why: "planAuditExtra returns EMPTY unless ctx.registerPlan is attached; pipelineInner attaches it at attachRegisterPlan, well upstream of the synthesis dispatch, and reconstructCtx attaches it from this frozen sidecar" },
+      ...waitingFamilyJudgmentReads(P),
     ],
   },
   {

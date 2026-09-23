@@ -73,6 +73,7 @@ import { documentCoverage, renderDocumentCoverageSection, spliceDocumentCoverage
 import { buildCoverageAbsenceForm, coverageAbsenceGaps, coverageFormAbsence, coverageFormBrief, renderCoverageAbsenceSection, renderCoverageLedgerSection, spliceCoverageLedger, renderCoverageLedgerJsonFromForm } from "./coverage-form.mjs";
 import { unionCoverageForm } from "./coverage-union.mjs";
 import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStamp, readCoverageForm, readCoverageFormInput, writeCoverageForm } from "./coverage-form-io.mjs";
+import { readWithheldFamilies, splitWaitingFamilies } from "./withheld-families.mjs";
 import { unionPlacementForm } from "./placement-union.mjs";
 import { readPlacementForm, readPlacementFormInput, writePlacementForm } from "./placement-form-io.mjs";
 import { dictatedPaths, findStrayArtifacts, treeSnapshot, findStrayInTree, matterSiblings, findStrayMatterSiblings } from "./stray-artifacts.mjs";   // — a run dir holds no document no stage dictated; — nor does the doctrine tree
@@ -6494,6 +6495,15 @@ function planAuditExtra(ctx, { stage = "narrative-refutation" } = {}) {
   let rows = [];
   try {
     const crowds = exec.executed.filter((x) => x.state === "incomplete");
+    // By the time this block is read the reading turn is over, and a waiting family it chose not to ask
+    // is a settled judgment with its reason on record, not an open question. Counted as awaiting, a run
+    // whose every waiting family was withheld told the reviewer they all remained open, and it raised a
+    // coverage flag against judgments already made.
+    const { withheld, awaiting } = splitWaitingFamilies(exec.awaiting, {
+      recorded: readWithheldFamilies(P.runDir),
+      formRows: readCoverageForm(P.runDir, coverageFormStamp(P.runDir).formName).rows,
+    });
+    const withheldOn = (axis) => withheld.filter((f) => f?.axis === axis).length;
     rows = [
       `- executed: ${exec.executed.length} entr${exec.executed.length === 1 ? "y" : "ies"} (${crowds.length} crowd/incomplete${crowds.length ? `: ${crowds.slice(0, 4).map((x) => x.qid).join("; ")}` : ""})`,
       `- missing (no band block): ${exec.missing.length}${exec.missing.length ? ` — ${exec.missing.slice(0, 4).join("; ")}` : ""}`,
@@ -6501,10 +6511,14 @@ function planAuditExtra(ctx, { stage = "narrative-refutation" } = {}) {
       // The families waiting for the reading turn, and those it asked. Without these lines the table's
       // own buckets summed to the whole plan less the waiting families, and a reviewer read it as
       // "no family waiting" while the receipt held 156.
-      `- awaiting the reading turn's ask: ${exec.awaiting?.length ?? 0}`,
+      `- withheld by judgment (the reading turn chose not to ask them; each carries its reason on the coverage form): ${withheld.length}`,
+      `- awaiting the reading turn's ask: ${awaiting.length}`,
       exec.asked?.length ? `- asked by the reading turn (a waiting family's question, asked by another entry): ${exec.asked.length}` : "",
       exec.unplanned?.length ? `- unplanned qid-stamped blocks: ${exec.unplanned.length}` : "",
-      ...(exec.skeleton ?? []).map((s) => `- axis ${s.axis}: ${s.state} (${s.executed}/${s.entries} executed, ${s.crowds} crowd${s.awaiting ? `, ${s.awaiting} awaiting` : ""})`),
+      ...(exec.skeleton ?? []).map((s) => {
+        const w = withheldOn(s.axis), a = Math.max(0, (s.awaiting ?? 0) - w);
+        return `- axis ${s.axis}: ${s.state} (${s.executed}/${s.entries} executed, ${s.crowds} crowd${w ? `, ${w} withheld` : ""}${a ? `, ${a} awaiting` : ""})`;
+      }),
     ];
   } catch (e) { rows = [`- (receipt table unavailable — read + audit the receipt file directly: ${P.planExecution})`]; note(`plan-audit receipt table (non-fatal): ${e.message}`); }
   return lines(
