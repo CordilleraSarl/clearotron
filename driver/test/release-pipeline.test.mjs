@@ -1838,6 +1838,10 @@ test("a version the registry does not serve yet keeps its tag, gets NO entry, an
       const blind = driveTagStep({ script: tagStepScript(body, name), version, prerelease, visibleExit: 2 });
       assert.notEqual(blind.status, 0, `${name}, ${version}: a registry check that could not look passed the step\n${blind.out}`);
       assert.doesNotMatch(blind.log, /release create/, `${name}, ${version}: an entry was created over a check that could not look\n${blind.log}`);
+      const wrong = driveTagStep({ script: tagStepScript(body, name), version, prerelease, visibleExit: 3 });
+      assert.notEqual(wrong.status, 0, `${name}, ${version}: a registry serving different bytes passed the step as pending\n${wrong.out}`);
+      assert.doesNotMatch(wrong.out, /scheduled entry job creates/, `${name}, ${version}: different bytes were announced as pending\n${wrong.out}`);
+      assert.doesNotMatch(wrong.log, /release create/, `${name}, ${version}: an entry was created over different bytes\n${wrong.log}`);
     }
   }
 });

@@ -57,6 +57,12 @@ test("still not served past the bound is red, and a check that could not look is
   }
 });
 
+test("a registry serving different bytes is red at once, however young the tag", () => {
+  const d = decide({ tagged: true, entryExists: false, keptBytes: true, visibleExit: 3, ageSec: 60, boundSec: BOUND });
+  assert.deepEqual([d.action, d.exit], ["report", 1], "different bytes were read as pending, which waits six hours on a wrong tarball");
+  assert.match(d.why, /DIFFERENT BYTES/);
+});
+
 test("a tagged version with no kept bytes is reported, never created on a guess", () => {
   const d = decide({ tagged: true, entryExists: false, keptBytes: false, visibleExit: null, ageSec: HOUR, boundSec: BOUND });
   assert.deepEqual([d.action, d.exit], ["report", 1]);

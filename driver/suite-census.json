@@ -1210,8 +1210,8 @@
           "todos": 0
         },
         "a-version-npm-is-still-validating-gets-its-entry-once-served.test.mjs": {
-          "tests": 15,
-          "asserts": 50,
+          "tests": 16,
+          "asserts": 52,
           "skips": 0,
           "todos": 0
         },
@@ -4097,7 +4097,7 @@
         },
         "release-pipeline.test.mjs": {
           "tests": 123,
-          "asserts": 464,
+          "asserts": 467,
           "skips": 0,
           "todos": 0
         },

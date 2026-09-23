@@ -23,7 +23,8 @@
 // (one published before this existed) is reported, never guessed at.
 //
 // Exit 0: nothing to do, the entry was created, or the version is pending inside the bound.
-// Exit 1: the version is still not served past the bound, or its bytes cannot be found to check against.
+// Exit 1: the registry serves different bytes, the version is still not served past the bound, or its bytes
+// cannot be found to check against.
 // Exit 2: could not look.
 import { execFileSync, spawnSync } from "node:child_process";
 import { mkdtempSync, readFileSync, readdirSync, writeFileSync, rmSync } from "node:fs";
@@ -48,6 +49,11 @@ export function decide(s) {
       why: "tagged with no release entry, and no kept bytes to check the registry against: create the entry by hand after checking what the registry serves" };
   }
   if (s.visibleExit === 0) return { action: "create", exit: 0, why: "the registry serves the published bytes" };
+  // DIFFERENT BYTES ARE NEVER PENDING. The registry serves this version and it is not the build that was
+  // published, so it is red at once, however young the tag.
+  if (s.visibleExit === 3) {
+    return { action: "report", exit: 1, why: "the registry serves DIFFERENT BYTES for this version than the publish job kept" };
+  }
   if (s.visibleExit === 1) {
     if (s.ageSec != null && s.ageSec > s.boundSec) {
       return { action: "report", exit: 1,

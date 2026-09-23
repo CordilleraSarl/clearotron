@@ -100,11 +100,12 @@ test("the version alone is not enough: a tag still naming the previous version i
   } finally { await reg.close(); }
 });
 
-test("a registry serving DIFFERENT BYTES under the published version is refused", async () => {
+test("a registry serving DIFFERENT BYTES under the published version is refused with its own code, never 'not served yet'", async () => {
   const reg = await registry({ served: Buffer.from("not what this run built") });
   try {
     const r = await run(reg);
-    assert.equal(r.code, 1, r.out);
+    // 3, not 1: a caller treats 1 as pending and waits for hours, and different bytes are never pending.
+    assert.equal(r.code, 3, r.out);
     assert.match(r.out, /DIFFERENT BYTES/);
   } finally { await reg.close(); }
 });

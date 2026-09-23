@@ -1404,8 +1404,9 @@ jobs:
           # this run published — bounded at fifteen minutes. Past the bound the version is PENDING, not
           # failed: the tag stays, no entry is created here, and the scheduled `entry` job creates it from
           # the bytes kept above once the registry serves them (release-entry-catch-up.mjs). Measured on the
-          # 0.3.3 stable, 2026-09-23: npm listed it as validating for over fifty minutes. Only a check that
-          # could not look (exit 2) fails this step.
+          # 0.3.3 stable, 2026-09-23: npm listed it as validating for over fifty minutes. A check that could
+          # not look (exit 2) fails this step, and so does a registry serving DIFFERENT BYTES (exit 3), which
+          # is never pending.
           served_to_a_stranger() {
             node scripts/release-visible-check.mjs --version "$VERSION" --tag "$DIST_TAG" --tarball "$TARBALL" --timeout 900
           }
@@ -1874,8 +1875,9 @@ jobs:
           # this run published — bounded at fifteen minutes. Past the bound the version is PENDING, not
           # failed: the tag stays, no entry is created here, and the scheduled `entry` job creates it from
           # the bytes kept above once the registry serves them (release-entry-catch-up.mjs). Measured on the
-          # 0.3.3 stable, 2026-09-23: npm listed it as validating for over fifty minutes. Only a check that
-          # could not look (exit 2) fails this step.
+          # 0.3.3 stable, 2026-09-23: npm listed it as validating for over fifty minutes. A check that could
+          # not look (exit 2) fails this step, and so does a registry serving DIFFERENT BYTES (exit 3), which
+          # is never pending.
           served_to_a_stranger() {
             node scripts/release-visible-check.mjs --version "$VERSION" --tag "$DIST_TAG" --tarball "$TARBALL" --timeout 900
           }
