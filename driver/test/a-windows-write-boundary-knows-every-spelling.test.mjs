@@ -11,6 +11,9 @@
 //
 // A short name exists only where the volume generates them, which a machine may turn off. Where the
 // folder has none, that arm says so and skips: the spelling cannot reach the folder there.
+//
+// Measured before the fix, 2026-09-23: the device form and the long name of a folder recorded short both
+// reached the protected folder and were allowed (canonicalWindowsPath now reads every spelling as one).
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -41,7 +44,8 @@ function protectedFolder() {
 
 /** The folder's 8.3 short path, from cmd's own expansion; null where the volume keeps none. */
 function shortPathOf(p) {
-  const r = spawnSync("cmd.exe", ["/d", "/c", `for %I in ("${p}") do @echo %~sI`], { encoding: "utf8", windowsHide: true });
+  // Verbatim, so Node does not escape the quotes cmd.exe needs around the path.
+  const r = spawnSync("cmd.exe", ["/d", "/s", "/c", `"for %I in ("${p}") do @echo %~sI"`], { encoding: "utf8", windowsHide: true, windowsVerbatimArguments: true });
   const s = String(r.stdout ?? "").trim();
   return s && s.toLowerCase() !== p.toLowerCase() && /~\d/.test(s) ? s : null;
 }

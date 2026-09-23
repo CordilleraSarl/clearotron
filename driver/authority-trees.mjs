@@ -44,7 +44,7 @@
 // set-GID scar on the pool root). The existing detect-and-journal sweep STAYS as corroboration; its
 // never-kill-a-run property is sound and survives.
 
-import { statSync } from "node:fs";
+import { realpathSync, statSync } from "node:fs";
 import { resolve, win32, posix } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 
@@ -66,6 +66,33 @@ export function isInside(root, child, { platform = process.platform, foldCase = 
   // `/a/skills-backup` is NOT inside `/a/skills`. A `startsWith` without the separator says it is, and
   // that is the classic form of this check being wrong in the direction that blocks real work.
   return c === r || c.startsWith(r.endsWith(P.sep) ? r : r + P.sep);
+}
+
+/**
+ * The one spelling of a Windows path: no device prefix, and the long names Windows itself reports.
+ *
+ * WINDOWS REACHES ONE FILE BY SEVERAL NAMES, and the boundary compared the one it was handed. Measured on
+ * a Windows runner, 2026-09-23: a write spelled `\\?\C:\…\skills\x.md`, and a write spelled with the
+ * long name of a folder the policy had recorded by its 8.3 short name (`RUNNER~1` against
+ * `runneradmin`), both reached the protected folder and were allowed. The device prefix (`\\?\`,
+ * `\\.\`) is taken off, and the longest part of the path that exists is asked of Windows itself, which
+ * answers with the long names and follows a junction, so a junction pointing into a protected folder is
+ * inside it too. The part that does not exist yet is joined back as written. `realpath` is injected so
+ * this runs on Linux.
+ */
+export function canonicalWindowsPath(p, { realpath = realpathSync.native } = {}) {
+  const bare = String(p ?? "").replace(/^[\\/]{2}[?.][\\/]UNC[\\/]/i, "\\\\").replace(/^[\\/]{2}[?.][\\/]/, "");
+  const abs = win32.resolve(bare);
+  const rest = [];
+  for (let cur = abs; ;) {
+    try { return win32.join(realpath(cur), ...rest); }
+    catch {
+      const parent = win32.dirname(cur);
+      if (parent === cur) return abs;
+      rest.unshift(win32.basename(cur));
+      cur = parent;
+    }
+  }
 }
 
 const swapCase = (s) => [...s].map((ch) => (ch === ch.toLowerCase() ? ch.toUpperCase() : ch.toLowerCase())).join("");
@@ -140,11 +167,13 @@ export function authorityTrees({ skillsRoots = [], profilesDir = null, runDir = 
  * why it is refused, that a retry gets the same answer, and where stage output lives. No second person, no
  * imperative. The seat decides what to do with a fact, which is the whole difference.
  */
-export function denyReason(targetPath, trees, { platform = process.platform, foldsCase = (root) => foldsCaseAt(root, { platform }) } = {}) {
+export function denyReason(targetPath, trees, { platform = process.platform, foldsCase = (root) => foldsCaseAt(root, { platform }),
+  canonical = platform === "win32" ? (p) => canonicalWindowsPath(p) : (p) => p } = {}) {
   const t = String(targetPath ?? "").trim();
   if (!t) return null;
+  const target = canonical(t);
   for (const tree of trees ?? []) {
-    if (!isInside(tree.path, t, { platform, foldCase: foldsCase(tree.path) })) continue;
+    if (!isInside(canonical(tree.path), target, { platform, foldCase: foldsCase(tree.path) })) continue;
     return `REFUSED by the driver's write boundary: ${t} is inside ${tree.why} (${tree.path}). `
       + `That tree is authored at deploy time and never by a running stage, so the refusal is configuration `
       + `rather than a permission prompt, and a retry of the same path returns this same answer. Stage `

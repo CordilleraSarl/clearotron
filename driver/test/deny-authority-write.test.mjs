@@ -19,7 +19,7 @@ import { join, dirname, resolve } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
-import { authorityTrees, denyReason, foldsCaseAt, isInside } from "../authority-trees.mjs";
+import { authorityTrees, canonicalWindowsPath, denyReason, foldsCaseAt, isInside } from "../authority-trees.mjs";
 import { writeBoundarySettings, buildClaudeArgs } from "../engine/anthropic-agent.mjs";
 import { targetOf } from "../engine/deny-authority-write.mjs";
 import { foldsCase } from "./platform-caps.mjs";
@@ -225,4 +225,23 @@ test("on this machine's own disk, a write naming the protected folder in another
   assert.equal(d?.permissionDecision === "deny", folds, folds
     ? "this disk ignores case, so P/SKILLS/probe.md is inside the protected P/skills, and the boundary let the write through"
     : "this disk minds case, so P/SKILLS is a different folder, and the boundary refused a write that could not reach the protected one");
+});
+
+// ── WINDOWS' OTHER SPELLINGS OF ONE FOLDER ──────────────────────────────────────────────────────────────
+//
+// Measured on a Windows runner, 2026-09-23: a device-form path and the long name of a folder recorded by
+// its 8.3 short name both reached a protected folder and were allowed. Driven here with Windows' own answer
+// injected; a-windows-write-boundary-knows-every-spelling asks the real Windows.
+
+test("on Windows a device path, a short name and a long name are one folder to the boundary", () => {
+  const LONG = { "C:\\Users\\RUNNER~1": "C:\\Users\\runneradmin", "C:\\Users\\runneradmin": "C:\\Users\\runneradmin",
+    "C:\\Users\\RUNNER~1\\skills": "C:\\Users\\runneradmin\\skills", "C:\\Users\\runneradmin\\skills": "C:\\Users\\runneradmin\\skills" };
+  const realpath = (p) => { if (LONG[p] || p === "C:\\Users" || p === "C:\\") return LONG[p] ?? p; throw Object.assign(new Error("no"), { code: "ENOENT" }); };
+  const canonical = (p) => canonicalWindowsPath(p, { realpath });
+  const trees = authorityTrees({ skillsRoots: ["C:\\Users\\RUNNER~1\\skills"] });
+  for (const spelling of ["\\\\?\\C:\\Users\\RUNNER~1\\skills\\x.md", "\\\\.\\C:\\Users\\RUNNER~1\\skills\\x.md",
+    "C:\\Users\\runneradmin\\skills\\x.md", "//?/C:/Users/runneradmin/skills/new/x.md"])
+    assert.ok(denyReason(spelling, trees, { platform: "win32", canonical }), `a write spelled ${spelling} reached the protected folder and was allowed`);
+  assert.equal(denyReason("C:\\Users\\runneradmin\\skills-backup\\x.md", trees, { platform: "win32", canonical }), null,
+    "a sibling folder was refused once spellings were read as one");
 });
