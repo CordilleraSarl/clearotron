@@ -149,7 +149,7 @@ import { stampTokenRollup } from "./tokens.mjs";
 import { recordRunConsumption } from "./consumption-ledger.mjs";
 import { quoteForJob, reconcileTurnaround } from "./run-quote.mjs";
 import { assembleRunRecords, readRecordArtifacts, findRegistryArithmeticIssues, findRegistryViolations, applyRegistryCorrections, extractEnforcerSignals, collectOppositionDeadlines, normalizeRecordUri } from "./registry-fidelity.mjs";
-import { readKnownConflictsFor, writeKnownConflictsFor, markKey, acceptedConflicts } from "./known-conflicts.mjs";   // spec 64 — the workspace-level per-mark recall store
+import { readKnownConflictsFor, writeKnownConflictsFor, markKey, acceptedConflicts, recallReceiptForOwnCompany } from "./known-conflicts.mjs";   // spec 64 — the workspace-level per-mark recall store
 import { runLint, flagLines, properNameCandidates } from "./predelivery-lint.mjs";
 import { parsePlacementsJson } from "./placement-model.mjs";   // B2 — the structured tier mirror; the lint reads it only to flag an EMPTY one
 import { readAnchors } from "./anchor-reader.mjs";
@@ -9167,6 +9167,9 @@ async function pipelineInner(job, opts = {}) {
         const candidates = [], candDirectives = [], overflow = [];
         const seen = new Set();
         const mintedQids = new Set();   // qid uniqueness inside the lane — the fold below dedupes on it
+        // term → every company whose delivery remembered it. The searches read every company's rows; the
+        // receipt names whose they were, so an audit lists only its own (recallReceiptForOwnCompany).
+        const companiesOf = new Map();
         for (const r of ranked) {
           const mark = String(r.mark_text).trim();
           if (searchedKeys.has(markKey(mark))) continue;   // the primary sweep already owns the searched mark itself
@@ -9182,13 +9185,17 @@ async function pipelineInner(job, opts = {}) {
             // characters", and it answered both with a silent `continue`. The first is a genuine repeat
             // and is still skipped; the second is a distinct mark and now gets a distinct qid.
             const termKey = `${predicate}:${term.toLowerCase()}`;
+            if (!companiesOf.has(termKey)) companiesOf.set(termKey, new Set());
+            companiesOf.get(termKey).add(r.customer || null);
             if (seen.has(termKey)) continue;
             seen.add(termKey);
             const qid = mintSupplementalQid({ prefix, term, used: mintedQids });
             candidates.push({ qid, axis: "primary-sweep", predicate, term, nice_classes: inScope, regions: [], expected_kind: "enumerate" });
-            candDirectives.push({ qid, uri: r.uri ?? null, mark_text: mark, owner: r.owner ?? null });
+            candDirectives.push({ qid, uri: r.uri ?? null, mark_text: mark, owner: r.owner ?? null, customers: companiesOf.get(termKey) });
           }
         }
+        for (const d of candDirectives) d.customers = [...d.customers];
+        const customersOfQid = new Map(candDirectives.map((d) => [d.qid, d.customers]));
         // ── — THE SAME DEFECT, AND THE OWNER BUDGET IS WHERE IT BITES ───────────
         //
         // The cross-check lane's fix, applied here because this lane has the identical shape: the caps
@@ -9207,7 +9214,7 @@ async function pipelineInner(job, opts = {}) {
         for (const e of screened.entries) {
           const isOwner = e.predicate === "owner";
           if (isOwner ? ownerUsed >= RECALL_CAP_OWNER : markUsed >= RECALL_CAP_MARK) {
-            overflow.push({ qid: e.qid, term: String(e.term).slice(0, 60) }); continue;
+            overflow.push({ qid: e.qid, term: String(e.term).slice(0, 60), customers: customersOfQid.get(e.qid) ?? [] }); continue;
           }
           if (isOwner) ownerUsed++; else markUsed++;
           entries.push(e);
@@ -9240,7 +9247,7 @@ async function pipelineInner(job, opts = {}) {
           note(`recall probes: ${refusedDirectives.length} probe(s) REFUSED as un-searchable terms — recorded in _driver/register-recall.json refused[], never dispatched`);
         }
         if (kept.length || overflow.length || refusedDirectives.length) {
-          writeFileSync(`${receiptPath}.tmp`, JSON.stringify({ schema_version: 2, ts: new Date().toISOString(), cap: { mark: RECALL_CAP_MARK, owner: RECALL_CAP_OWNER }, directives: kept, overflow, ...(refusedDirectives.length ? { refused: refusedDirectives } : {}) }, null, 2) + "\n");
+          writeFileSync(`${receiptPath}.tmp`, JSON.stringify({ schema_version: 2, ts: new Date().toISOString(), customer: ctx.profile?.profileKey || null, cap: { mark: RECALL_CAP_MARK, owner: RECALL_CAP_OWNER }, directives: kept, overflow, ...(refusedDirectives.length ? { refused: refusedDirectives } : {}) }, null, 2) + "\n");
           renameSync(`${receiptPath}.tmp`, receiptPath);
         }
         // The RECEIPT partitions; what the seat is TOLD does not. This feeds the primary-sweep prompt's
@@ -14105,7 +14112,7 @@ async function pipelineInner(job, opts = {}) {
           screenGateUnresolved: readJson(driverDir(run.runDir, "screen-gate-unresolved.json"))?.unresolved ?? null,
           supplementalPlans,
           xcheck: readJson(driverDir(run.runDir, "register-xcheck.json")),
-          recall: readJson(driverDir(run.runDir, "register-recall.json")),
+          recall: recallReceiptForOwnCompany(readJson(driverDir(run.runDir, "register-recall.json"))),   // never another company's recall line
           planExecution: ctx.planExecution ?? readJson(P.planExecution),
         }, { ts: askTs });
       } catch (e) {

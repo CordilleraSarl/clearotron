@@ -1341,6 +1341,12 @@
           "skips": 0,
           "todos": 0
         },
+        "an-audit-lists-only-its-own-companys-recall-checks.test.mjs": {
+          "tests": 4,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
         "an-empty-config-store-overrides-nothing.test.mjs": {
           "tests": 5,
           "asserts": 29,
@@ -3454,8 +3460,8 @@
           "todos": 0
         },
         "pipeline.mock.registergap.test.mjs": {
-          "tests": 6,
-          "asserts": 34,
+          "tests": 7,
+          "asserts": 43,
           "skips": 0,
           "todos": 0
         },

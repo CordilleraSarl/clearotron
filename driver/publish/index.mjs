@@ -15,6 +15,7 @@ import { renderHtml, parseActionBuckets, actYouConditions } from './render.mjs';
 import { buildAudit } from './xlsx.mjs';
 import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, joinFindingToBlock, CLIENT_TIER_BY_COMPOSITE, projectCoverageJudgment } from '../findings-model.mjs';
 import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.mjs'; import { coverageFormStamp, readCoverageForm } from '../coverage-form-io.mjs'; import { coverageUnitLabel } from '../coverage-ledger.mjs';   // — and why an absence did not close
+import { recallReceiptForOwnCompany } from '../known-conflicts.mjs';   // one company's audit and workbook list only its own recall checks
 import { clearanceReportData } from './report-data.mjs';
 import { searchDepthRecord, planTerritoriesOf } from './search-depth.mjs'; import { bandRecords } from '../named-band.mjs';   // how much was read to reach the answer, as counts and tokens
 import { parseFrameworkManifest } from '../framework.mjs';
@@ -852,7 +853,8 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // which publishes without one: the throw left publishReport at `published → null` and the runner
   // exited 1. Reading from the report's own directory is also the right answer for a republish.
   const recallStore = readStore(runDir ?? dirname(reportMd), '_driver/register-recall.json');
-  const undispatchedProbes = (recallStore.value?.overflow ?? [])
+  // another company's remembered conflict is never listed to this one (recallReceiptForOwnCompany)
+  const undispatchedProbes = (recallReceiptForOwnCompany(recallStore.value)?.overflow ?? [])
     .filter((o) => o && (o.term || o.qid))
     .map((o) => ({
       area: String(o.term ?? o.qid),

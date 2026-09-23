@@ -61,6 +61,24 @@ export function canonicalUri(uri) {
   return normalizeRecordUri(uri) || String(uri ?? "").trim();
 }
 
+/**
+ * The recall receipt as ONE company's audit and workbook may list it. Ruled 2026-09-23: the recall
+ * searches keep reading every company's remembered conflicts, so a new company's clearance of a mark
+ * still re-finds them, but no audit or workbook lists a recall check whose source row is another
+ * company's. The line itself says someone cleared this mark before. The receipt names the company the
+ * run is delivered for (`customer`) and each entry the companies whose deliveries remembered it
+ * (`customers`); an entry is listed when one of them is the run's own. A row that names no company
+ * counts only for a run that names none. A receipt written before it named companies lists as it
+ * always did, so an archived run republishes unchanged. Only removes entries; PURE.
+ */
+export function recallReceiptForOwnCompany(receipt) {
+  if (!isPlainObject(receipt) || !Object.hasOwn(receipt, "customer")) return receipt;
+  const own = receipt.customer || null;
+  const mine = (e) => Array.isArray(e?.customers) && e.customers.map((c) => c || null).includes(own);
+  const pick = (xs) => (Array.isArray(xs) ? xs.filter(mine) : xs);
+  return { ...receipt, directives: pick(receipt.directives), overflow: pick(receipt.overflow), refused: pick(receipt.refused) };
+}
+
 const ROW_KEYS = ["uri", "mark_text", "classes", "status", "source", "ts",
   "owner", "jurisdiction", "customer", "opposition_end", "deadline_source_uri", "source_url",
   "terminal"]; // v2 — all optional; v3 adds `terminal` (see acceptedConflicts below)
