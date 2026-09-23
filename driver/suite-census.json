@@ -1079,7 +1079,7 @@
         },
         "a-stage-program-starts-with-a-listed-environment.test.mjs": {
           "tests": 11,
-          "asserts": 54,
+          "asserts": 55,
           "skips": 0,
           "todos": 0
         },
@@ -2537,7 +2537,7 @@
         },
         "engine.codex-config.test.mjs": {
           "tests": 20,
-          "asserts": 69,
+          "asserts": 70,
           "skips": 0,
           "todos": 0
         },

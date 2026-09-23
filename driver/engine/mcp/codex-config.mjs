@@ -172,13 +172,23 @@ export function renderCodexConfigToml({ mcpConfig, allowedTools, developerInstru
 // program's environment, never from what its commands get (codex-rs `create_env_for_mcp_server`, the same
 // in 0.154.0 and 0.156.1).
 //
+// THE FILTERS ALONE DID NOTHING, measured on codex 0.156.1 with the sandbox bypassed: a stage's `env`
+// still listed every key. Codex takes a "shell snapshot" of a login shell once per session and replays it
+// before each command, and it starts that shell with the filtered environment only when a credential
+// broker is configured; otherwise the shell inherits the program's whole environment, the snapshot
+// exports every key in it, and the replay puts them back (codex-rs `run_script_with_timeout` in
+// core/src/shell_snapshot.rs). So the snapshot is turned off wherever names are withheld (`shell_snapshot`,
+// a stable feature on by default since at least 0.154.0). With it off, the same turn listed none of them.
+// A command then starts its login shell afresh, which the snapshot existed to save.
+//
 // Filter names are matched without regard to case, and codex refuses the whole file if two of them are
 // the same name in different case, so each name is written once whatever its case.
 export function commandEnvToml(withheld = []) {
   const seen = new Set();
   const names = (withheld ?? []).filter((n) => n && !seen.has(n.toUpperCase()) && seen.add(n.toUpperCase()));
   if (!names.length) return [];
-  return ["[shell_environment_policy.filters]", ...names.map((n) => `${tomlString(n)} = "exclude"`), ""];
+  return ["[features]", "shell_snapshot = false", "",
+    "[shell_environment_policy.filters]", ...names.map((n) => `${tomlString(n)} = "exclude"`), ""];
 }
 
 // ── the stage's permission profile: what its shell commands may read and write ──────────────────────

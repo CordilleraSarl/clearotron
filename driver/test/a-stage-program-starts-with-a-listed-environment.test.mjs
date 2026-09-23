@@ -309,8 +309,9 @@ test("codex is started with the list: no signing key, and its key only because i
 //
 // The program holds the register and research keys because its tool servers read them, and codex hands a
 // command its whole environment unless its config says otherwise. So the list above, alone, left every key
-// a command away from the model. The config each turn writes withholds them from commands; codex builds its
-// servers' environments from their own `env_vars`, which this does not touch (codex-config.mjs).
+// a command away from the model. The config each turn writes withholds them from commands and turns off
+// the shell snapshot that would replay them; codex builds its servers' environments from their own
+// `env_vars`, which this does not touch (codex-config.mjs).
 
 /** The eight register and research keys a Codex program holds for its tool servers. */
 const REGISTER_KEYS = ["SIGNA_API_KEY", "CLARIVATE_API_KEY", "CLARIVATE_CLIENT_SECRET", "CORSEARCH_API_KEY",
@@ -340,9 +341,13 @@ test("codex's commands are refused the register keys and its key, while the prog
         { input: call.configToml, encoding: "utf8" });
       assert.equal(r.error, undefined, "python3 is not on this machine, and the TOML check needs a real parser");
       assert.equal(r.status, 0, `the turn's config does not parse:\n${call.configToml}\n${r.stderr}`);
-      const filters = JSON.parse(r.stdout).shell_environment_policy?.filters ?? {};
+      const cfg = JSON.parse(r.stdout);
+      const filters = cfg.shell_environment_policy?.filters ?? {};
       const open = codexCommandWithheld().filter((k) => filters[k] !== "exclude");
       assert.deepEqual(open, [], `sandbox ${sandbox}: a stage's commands would inherit these`);
+      // The filters alone were measured to do nothing: codex's shell snapshot is taken from a shell with
+      // the whole environment and replayed before each command (codex-config.mjs, `commandEnvToml`).
+      assert.equal(cfg.features?.shell_snapshot, false, `sandbox ${sandbox}: the shell snapshot would put every filtered name back`);
     }
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });

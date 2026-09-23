@@ -667,8 +667,9 @@ export const openaiAgentEngine = {
       // folder and the temp folders (codex-config.mjs, `fenceToml`). The same roots claude's file tools get.
       //
       // — what those commands inherit: none of the register and research keys the program holds for its
-      // tool servers, and not the Codex key (engine-env.mjs, `codexCommandWithheld`). With the sandbox on
-      // or off, since the bypass builds no fence and a command could otherwise print them.
+      // tool servers, and not the Codex key (engine-env.mjs, `codexCommandWithheld`), with codex's shell
+      // snapshot off because it replays them (codex-config.mjs, `commandEnvToml`). With the sandbox on or
+      // off, since the bypass builds no fence and a command could otherwise print them.
       const fence = codexSandboxBypassed() ? null
         : { runDir, readRoots: [...(skillsGrantRoots?.length ? skillsGrantRoots : [skillsDir]), codexProgramRoot(codexBin())].filter(Boolean) };
       writeFileSync(join(codexHome, "config.toml"),
