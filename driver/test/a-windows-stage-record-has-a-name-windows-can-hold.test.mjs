@@ -15,10 +15,10 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, readdirSync } from "node:fs";
+import { mkdtempSync, readdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { driverDir, driverFileName } from "../../shared/driver-dir.mjs";
+import { driverDir, driverFileName, labelOfDriverFile } from "../../shared/driver-dir.mjs";
 import { stageLog } from "../log.mjs";
 import { recordDispatch } from "../dispatch-record.mjs";
 import { writeStamp, readStamp } from "../stage-freshness.mjs";
@@ -51,4 +51,25 @@ test("two register units' records are two files each, under names this machine c
   const stamps = readdirSync(driverDir(run, "stage-inputs")).sort();
   assert.deepEqual(stamps, labels.map((l) => driverFileName(`${l}.json`)).sort());
   for (const label of labels) assert.equal(readStamp(run, label)?.label, label);
+});
+
+test("a claim's lock file has a name Windows can hold, and an abandoned one is still read back", async () => {
+  const { claimLockPath, sweepAbandonedTakeovers } = await import("../runner.mjs");
+  assert.equal(claimLockPath("q/job.processing", "4242:1790164800000", "win32"), "q/job.processing.claimed-4242%3A1790164800000",
+    "the lock kept the token's colon, so Windows refuses the rename and no queued job is ever claimed");
+  assert.equal(claimLockPath("q/job.processing", "4242:1790164800000", "linux"), "q/job.processing.claimed-4242:1790164800000");
+  const q = mkdtempSync(join(tmpdir(), "claim-lock-"));
+  writeFileSync(join(q, "job.processing.claimed-4242%3A1790164800000"), "{}");
+  const seen = [];
+  sweepAbandonedTakeovers(q, { isAlive: (rec) => { seen.push(rec); return false; } });
+  assert.deepEqual(seen, [{ pid: 4242, starttime: "1790164800000" }], "the Windows lock's token was not read back as the claimer");
+  assert.deepEqual(readdirSync(q), ["job.processing"], "an abandoned Windows lock was not restored to the queue");
+});
+
+test("a record's file name reads back as the stage it was written for, whichever machine wrote it", () => {
+  assert.equal(labelOfDriverFile("register-unit%3Aincumbent-class.jsonl"), "register-unit:incumbent-class",
+    "a record written on Windows was counted under a stage named register-unit%3Aincumbent-class");
+  assert.equal(labelOfDriverFile("register-unit:incumbent-class.jsonl"), "register-unit:incumbent-class");
+  assert.equal(labelOfDriverFile("register-digest.jsonl"), "register-digest");
+  assert.equal(labelOfDriverFile(driverFileName("common-law-half:a.jsonl", "win32")), "common-law-half:a");
 });

@@ -45,7 +45,7 @@
 
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
+import { driverDir, labelOfDriverFile } from "../shared/driver-dir.mjs";   //
 import { resolveModel, modelFamily } from "./driver.config.mjs";
 import { runLog, note } from "./log.mjs";
 import { writeRunStatus } from "./progress.mjs";
@@ -139,7 +139,7 @@ export function rollupTokens(runDir) {
   }
 
   for (const file of files) {
-    const stage = file.replace(/\.jsonl$/, "");
+    const stage = labelOfDriverFile(file);   // a Windows record writes the label's colon %3A
     let raw;
     try { raw = readFileSync(join(dDir, file), "utf8"); } catch { continue; }
     for (const ln of raw.split("\n")) {

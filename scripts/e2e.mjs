@@ -33,7 +33,7 @@ import "../shared/env-local.mjs";   // — FIRST: applies the CLEAROTRON_* trans
 // capture evaluates. Reads no `.env` here — that load is gated on isCliEntry(argv[1]).
 import { readFileSync, writeFileSync, readdirSync, existsSync, mkdtempSync, rmSync, mkdirSync, renameSync, statSync } from "node:fs";
 import { join, dirname, resolve, basename } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
+import { driverDir, labelOfDriverFile } from "../shared/driver-dir.mjs";   //
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
 import { randomBytes } from "node:crypto";
@@ -2746,7 +2746,7 @@ function runLedger(runDir) {
   let files = [];
   try { files = readdirSync(dd).filter((f) => f.endsWith(".jsonl") && f !== "run.jsonl"); } catch { /* no _driver */ }
   for (const f of files) {
-    const stage = f.replace(/\.jsonl$/, "");
+    const stage = labelOfDriverFile(f);   // a Windows record writes the label's colon %3A
     for (const line of readFileSync(join(dd, f), "utf8").split("\n")) {
       if (!line.trim()) continue;
       let e; try { e = JSON.parse(line); } catch { continue; }

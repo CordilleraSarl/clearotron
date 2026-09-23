@@ -1252,14 +1252,14 @@
           "todos": 0
         },
         "a-windows-path-reads-with-either-separator.test.mjs": {
-          "tests": 7,
-          "asserts": 25,
+          "tests": 8,
+          "asserts": 29,
           "skips": 0,
           "todos": 0
         },
         "a-windows-stage-record-has-a-name-windows-can-hold.test.mjs": {
-          "tests": 2,
-          "asserts": 10,
+          "tests": 4,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },

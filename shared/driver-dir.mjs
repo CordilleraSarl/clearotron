@@ -76,6 +76,16 @@ export function driverFileName(name, platform = process.platform) {
 }
 
 /**
+ * The stage label a `_driver/` file was written for: `register-unit%3Aprimary-sweep.jsonl` →
+ * `register-unit:primary-sweep`. Every platform decodes, because no label holds `%`, so a record written
+ * on Windows reads back under its label wherever it is read. `ext` is the suffix to take off.
+ */
+export function labelOfDriverFile(name, ext = ".jsonl") {
+  const base = String(name ?? "");
+  return (base.endsWith(ext) ? base.slice(0, -ext.length) : base).replaceAll("%3A", ":");
+}
+
+/**
  * The path to a run's `_driver/`, or to something inside it.
  *
  * @param {string} base   the run directory — or any run-dir-shaped base, such as an `_experiments/` sandbox
