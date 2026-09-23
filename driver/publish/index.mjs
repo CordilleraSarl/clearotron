@@ -9,7 +9,7 @@
 // (not via runStage). Run identity (runId/codename) comes from the driver's ctx.run; do NOT regenerate it.
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, copyFileSync, chmodSync } from 'node:fs';
 import { join, dirname } from 'node:path';
-import { driverDir } from '../../shared/driver-dir.mjs';   //
+import { driverDir, RUN_DIR_MODE } from '../../shared/driver-dir.mjs';   //
 import { parseReport, parseAudit, parseSections, parseBlocks, stripInternal, parseCaseLawProfiles, parseCaseLawPreamble, joinCaseLawProfiles } from './parse.mjs';
 import { renderHtml, parseActionBuckets, actYouConditions } from './render.mjs';
 import { buildAudit } from './xlsx.mjs';
@@ -667,7 +667,8 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   })();
   const asOf = new Date().toISOString();   // C2 — publish-time clock for the priority-window flag (render stays pure)
   const poolRunDir = join(poolRoot, runId);
-  mkdirSync(poolRunDir, { recursive: true });
+  // Owner and group only: a mode given to mkdir, which keeps the set-GID the pool root passes down.
+  mkdirSync(poolRunDir, { recursive: true, mode: RUN_DIR_MODE });
   // The run dir inherits the web-server group + the set-GID bit AUTOMATICALLY from the set-GID pool root
   // (mode 2750, web-server group) — so files written inside take that group and the web server (Caddy in
   // the reference deployment, mode 0640) can read them. Do NOT chmod this dir: the service account is not

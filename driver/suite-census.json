@@ -663,6 +663,12 @@
           "skips": 1,
           "todos": 0
         },
+        "a-new-run-folder-is-closed-to-other-accounts.test.mjs": {
+          "tests": 4,
+          "asserts": 8,
+          "skips": 4,
+          "todos": 0
+        },
         "a-next-step-the-model-writes-comes-off-at-publish.test.mjs": {
           "tests": 12,
           "asserts": 28,
