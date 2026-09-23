@@ -2961,9 +2961,8 @@ test("a push opens no version pull request, and still asks whether it cut a vers
 // pinned by the commit that carries it.
 test("every action a workflow uses is pinned to a full commit sha, with its version in a comment", () => {
   const dir = join(ROOT, ".github", "workflows");
-  const files = nonEmpty(readdirSync(dir).filter((f) => /\.ya?ml$/.test(f)), "workflow files");
   const uses = [];
-  for (const f of files) {
+  for (const f of nonEmpty(readdirSync(dir).filter((f) => /\.ya?ml$/.test(f)), "workflow files")) {
     readFileSync(join(dir, f), "utf8").split("\n").forEach((line, i) => {
       const m = line.match(/^\s*(?:-\s+)?uses:\s*(\S+)(.*)$/);
       if (m) uses.push({ where: `${f}:${i + 1}`, ref: m[1], rest: m[2] });
