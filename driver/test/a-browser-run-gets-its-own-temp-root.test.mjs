@@ -13,14 +13,17 @@ import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join, dirname, sep } from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import {
   SUN_PATH_MAX, LOCK_SUFFIX, MAX_ROOT_LENGTH, ROOT_PREFIX,
   rootRefusal, assertRootFits, browserEnv, browserRun, browserTempRoot,
 } from "../../shared/browser-temp-root.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+// The child scripts below import the module by URL: a bare Windows path (D:\...) is not an import
+// specifier, and the child would die before it ran a line.
+const MODULE_URL = JSON.stringify(pathToFileURL(join(ROOT, "shared/browser-temp-root.mjs")).href);
 
 test("the budget is the socket field minus what the lock adds, and both terms are real", () => {
   // Not a restatement of the arithmetic: these are the two measured quantities the limit is made of.
@@ -59,7 +62,7 @@ test("an empty or absent root is a refusal, not a pass", () => {
 test("browserRun puts the profile inside the root and exports the root as TMPDIR", () => {
   const { root, profile, env } = browserRun("arm-run-");
   assert.ok(existsSync(profile), "the profile directory must exist before a browser is pointed at it");
-  assert.ok(profile.startsWith(root + "/"), "the profile must be INSIDE the root, so one removal covers both");
+  assert.ok(profile.startsWith(root + sep), "the profile must be INSIDE the root, so one removal covers both");
   assert.equal(env.TMPDIR, root, "TMPDIR is the whole mechanism — the browser reads the lock location from it");
   assert.equal(rootRefusal(root), null, "a root this module made must itself fit the budget");
 });
@@ -85,12 +88,14 @@ test("browserEnv MERGES into the environment rather than replacing it", () => {
   // HOME IS THE ONE REPLACED, ON PURPOSE: a browser writes its font cache, certificate store, desktop
   // settings and crash folder under the home, and a suite run must leave the real one untouched. It is
   // replaced with a home inside the root, never dropped, and the XDG folders follow it.
-  assert.ok(env.HOME.startsWith(root + "/"), "the browser's home is not inside its temp root");
+  assert.ok(env.HOME.startsWith(root + sep), "the browser's home is not inside its temp root");
   for (const k of ["XDG_CONFIG_HOME", "XDG_CACHE_HOME", "XDG_DATA_HOME"])
-    assert.ok(env[k].startsWith(env.HOME + "/") && existsSync(env[k]), `${k} is not a folder inside the browser's own home`);
+    assert.ok(env[k].startsWith(env.HOME + sep) && existsSync(env[k]), `${k} is not a folder inside the browser's own home`);
   // And the default source is the real environment, or every call site that omits the second argument
   // gets an empty one.
-  assert.equal(browserEnv(root).PATH, process.env.PATH,
+  // Windows spells the key Path, and a spread copies the spelling it finds.
+  const pathKey = Object.keys(process.env).find((k) => k.toUpperCase() === "PATH") ?? "PATH";
+  assert.equal(browserEnv(root)[pathKey], process.env[pathKey],
     "browserEnv must default to this process's environment, not to an empty object");
 });
 
@@ -105,7 +110,7 @@ test("the root is removed when the process exits normally", () => {
   const src = join(dir, "child.mjs");
   writeFileSync(src, `
     import { writeFileSync } from "node:fs";
-    import { browserRun } from ${JSON.stringify(join(ROOT, "shared/browser-temp-root.mjs"))};
+    import { browserRun } from ${MODULE_URL};
     const { root } = browserRun("arm-exit-run-");
     writeFileSync(${JSON.stringify(namefile)}, root);
   `);
@@ -115,13 +120,15 @@ test("the root is removed when the process exits normally", () => {
   assert.equal(existsSync(root), false, `the root survived a normal exit: ${root}`);
 });
 
-test("the root is removed on SIGTERM — the exit a cancelled job produces", () => {
+test("the root is removed on SIGTERM — the exit a cancelled job produces", {
+  skip: process.platform === "win32" && "POSIX signals: the arm sends SIGTERM through bash and watches /proc, and Windows has neither",
+}, () => {
   const dir = mkdtempSync(join(tmpdir(), "arm-term-"));
   const namefile = join(dir, "name");
   const src = join(dir, "child.mjs");
   writeFileSync(src, `
     import { writeFileSync } from "node:fs";
-    import { browserRun } from ${JSON.stringify(join(ROOT, "shared/browser-temp-root.mjs"))};
+    import { browserRun } from ${MODULE_URL};
     const { root } = browserRun("arm-term-run-");
     writeFileSync(${JSON.stringify(namefile)}, root);
     setInterval(() => {}, 1000);
@@ -147,7 +154,7 @@ test("keep() leaves the root behind, which is what --keep promises", () => {
   const src = join(dir, "child.mjs");
   writeFileSync(src, `
     import { writeFileSync } from "node:fs";
-    import { browserRun } from ${JSON.stringify(join(ROOT, "shared/browser-temp-root.mjs"))};
+    import { browserRun } from ${MODULE_URL};
     const { root, keep } = browserRun("arm-keep-run-");
     writeFileSync(${JSON.stringify(namefile)}, root);
     keep();
@@ -191,5 +198,5 @@ test("a root is rooted at the ambient temp directory, so it inherits a runner's 
   // Under the suite runner TMPDIR is already this run's root, and a browser root must land INSIDE it
   // rather than beside it — that is what makes the runner's own cleanup carry it away.
   const root = browserTempRoot();
-  assert.ok(root.startsWith(tmpdir() + "/"), `expected a root under ${tmpdir()}, got ${root}`);
+  assert.ok(root.startsWith(tmpdir() + sep), `expected a root under ${tmpdir()}, got ${root}`);
 });

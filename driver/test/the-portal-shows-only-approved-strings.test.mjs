@@ -17,7 +17,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
-import { join, dirname } from "node:path";
+import { join, dirname, sep } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { stringsIn, portalStrings, sourceFiles, backlogFrom, HOLE, BACKLOG, htmlSentences, serverPageStrings, SERVER_PAGES } from "../../scripts/portal-strings.mjs";
@@ -74,7 +74,8 @@ test("prose built in code is read, and a string joined with + is read as one", (
 test("the real tree is read, and every screen yields strings — a parser that stopped reading would not", () => {
   const rows = portalStrings(ROOT);
   assert.ok(rows.length >= 500, `only ${rows.length} strings read from the portal — the extractor has stopped seeing most of it`);
-  const screens = sourceFiles(ROOT).filter((f) => f.startsWith("portal-ui/src/screens/"));
+  // sourceFiles answers with paths relative to the root in the platform's own spelling.
+  const screens = sourceFiles(ROOT).filter((f) => f.startsWith(join("portal-ui", "src", "screens") + sep));
   assert.ok(screens.length >= 10, `only ${screens.length} screen files found — the walk is not reaching portal-ui/src/screens`);
   const silent = screens.filter((f) => !rows.some((r) => r.file === f));
   assert.deepEqual(silent, [], "a screen file yielded no string at all; a screen with no words is a parse that failed quietly");
@@ -103,7 +104,9 @@ const APPROVED = { "Review search": "boards/B.dc.html" };
 test("a string neither list carries is refused, by file and line", () => {
   const r = runCheck({ screen: SCREEN, approved: APPROVED });
   assert.equal(r.code, 1, r.out);
-  assert.match(r.out, /portal-ui\/src\/screens\/A\.tsx:1\s+text\s+"A sentence nobody designed\."/, r.out);
+  // The file is named relative to the root, in the platform's own spelling.
+  const where = join("portal-ui", "src", "screens", "A.tsx").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  assert.match(r.out, new RegExp(`${where}:1\\s+text\\s+"A sentence nobody designed\\."`), r.out);
   assert.doesNotMatch(r.out, /\s"Review search"/, "an approved string was refused");
 });
 
