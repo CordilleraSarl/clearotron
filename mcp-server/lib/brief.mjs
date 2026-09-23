@@ -82,7 +82,8 @@ export function buildBrief(run) {
   // THE BAND, AND NEVER THE GATE'S WORD. This chain used to fall through to the delivery verdict — the
   // sidecar's `verdict`, then the run's — so a run whose report reads Medium could be briefed as BLOCKING.
   // The band is what the report shows; where no band is recorded the line is not drawn at all.
-  const overall = bandLabel(clearance?.verdict?.band) ?? clearance?.verdict?.tier
+  const rating = clearance?.rating ?? clearance?.verdict ?? null;   // `verdict` on a report-data file written before the rename
+  const overall = bandLabel(rating?.band) ?? rating?.tier
     ?? (koDocs.length === 1 ? (koDocs[0].overall ?? null) : null)
     ?? fm.overall_label ?? run.tier ?? null;
 
@@ -123,7 +124,7 @@ export function buildBrief(run) {
     }
     // Conditions gate a clean result; advisories never do, so only the conditions ride the briefing.
     const conditions = [
-      ...(clearance.verdict?.conditions ?? []),
+      ...(rating?.conditions ?? []),
       ...(clearance.actions?.conditions ?? []).map((a) => a?.text),
     ].filter(Boolean);
     if (conditions.length) {

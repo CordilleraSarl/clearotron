@@ -27,21 +27,24 @@ import { probeEngineTurn } from "../engine/probe.mjs";
 import { VERBS } from "../../bin/clearotron.mjs";
 import { USPTO_ARCHIVE_GB, USPTO_INGEST_GB_PER_HOUR, usptoBuildHours } from "../../shared/uspto-index-size.mjs";
 import { config, KNOWN_REGISTER_PROVIDERS, ENGINE_BINARIES, resolveEngineProgram } from "../driver.config.mjs";
+// A PROGRAM VERSION THESE ARMS MEAN AS "FINE", taken from the engine's own floor rather than written
+// out: doctor and setup now report a copy below the floor as too old, so a literal here would turn every
+// healthy-install arm red the next time the floor moves, for a reason that is about the fixture.
+const CURRENT_PROGRAM = ENGINE_BINARIES["anthropic-agent"].floor;
 import { loadEnvLocal } from "../../shared/env-local.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
 
-import { ensurePortalBundleIsCurrent } from "./helpers/portal-bundle.mjs";
+import { doctorRepoRoot } from "./helpers/portal-bundle.mjs";
 
-// The arms below run `doctor` against this checkout for reasons that are not about the portal
-// bundle. A bundle older than its sources is a problem doctor reports and exits 1 for — rightly —
-// so a clone that was built once and then pulled would fail them all on a condition they do not
-// test. This makes that condition untrue, once per process, by building it as an operator would.
-ensurePortalBundleIsCurrent();
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, "..", "..");
-const ONBOARD = join(REPO, "bin", "onboard.mjs");
+// The CLI arms run from a root with no `.git`, so the checkout's portal bundle, stale or not, is not a
+// question they meet: they are not about the bundle (see helpers/portal-bundle.mjs).
+const ONBOARD = join(doctorRepoRoot(), "bin", "onboard.mjs");
+// The root the CLI runs from, and so the one whose `.env` it reads and must not conjure.
+const CLI_ROOT = dirname(dirname(ONBOARD));
 
 /**
  * A directory containing exactly one entry: a `node` symlink to the interpreter running this suite.
@@ -137,12 +140,12 @@ test("--check on an unconfigured machine exits 0 and changes NOTHING on disk", (
   // Both halves of the criterion. Exit 0 alone would pass while the command quietly created a .env.
   const home = mkdtempSync(join(tmpdir(), "onboard-home-"));
   const before = treeStamp(join(REPO, "bin"));
-  const beforeEnv = existsSync(join(REPO, ".env"));
+  const beforeEnv = existsSync(join(CLI_ROOT, ".env"));
   const r = run(["--check"], { HOME: home });
   assert.equal(r.code, 0, r.out);
   assert.match(r.out, /Nothing was written/, r.out);
   assert.deepEqual(treeStamp(join(REPO, "bin")), before, "bin/ untouched");
-  assert.equal(existsSync(join(REPO, ".env")), beforeEnv, "no .env conjured (nor an existing one removed)");
+  assert.equal(existsSync(join(CLI_ROOT, ".env")), beforeEnv, "no .env conjured (nor an existing one removed)");
   rmSync(home, { recursive: true, force: true });
 });
 
@@ -187,7 +190,7 @@ test("--check reads a .env, and says which source each value came from", (t) => 
   // The loader contract is environment-wins. A value read from the wrong place is the whole bug class
   // here, so the report has to name the source rather than just the value.
   const home = mkdtempSync(join(tmpdir(), "onboard-home-"));
-  const envPath = join(REPO, ".env");
+  const envPath = join(CLI_ROOT, ".env");
   // SKIPPED, not failed, when the developer running this has actually used the wizard. Asserting here
   // would mean the tool's success breaks its own suite — `npm run setup` then `npm test` goes red. CI has
   // no .env, so the coverage is unchanged and the reason is stated rather than silently arranged around.
@@ -508,11 +511,11 @@ test("the engine menu is built from the driver's registry, plus one row that is 
 // setup-asks-which-ai-runs-your-searches.test.mjs):
 test("each row of the engine question says what setup found of that program, in the approved words", () => {
   const opts = engineOptions({
-    "anthropic-agent": { executable: true, relative: false, version: "2.1.270", rejected: [] },
+    "anthropic-agent": { executable: true, relative: false, version: CURRENT_PROGRAM, rejected: [] },
     "openai-agent": { executable: false, relative: false, version: null, rejected: [] },
   });
   assert.deepEqual(opts.map((o) => o.label), [
-    "Claude, by Anthropic   found on this computer (version 2.1.270)",
+    `Claude, by Anthropic   found on this computer (version ${CURRENT_PROGRAM})`,
     "Codex, by OpenAI       not on this computer — setup can install it",
     "None for now",
   ]);
@@ -526,17 +529,17 @@ test("the engine question resolves each program the way a run does: setting, the
   const machine = mkdtempSync(join(tmpdir(), "onboard-menu-path-"));
   const elsewhere = mkdtempSync(join(tmpdir(), "onboard-menu-set-"));
   const silent = mkdtempSync(join(tmpdir(), "onboard-menu-silent-"));
-  sh(machine, "claude", 'echo "2.1.241 (Claude Code)"');
+  sh(machine, "claude", `echo "${CURRENT_PROGRAM} (Claude Code)"`);
   const named = sh(elsewhere, "my-claude", 'echo "3.0.0 (Claude Code)"');
   sh(silent, "claude", "exit 1");
-  const { root } = plantInstalledCopy("#!/bin/sh\nexit 1\n", "2.1.270");
+  const { root } = plantInstalledCopy("#!/bin/sh\nexit 1\n", CURRENT_PROGRAM);
   const labels = (state) => engineOptions(state).map((o) => o.label);
   try {
     // The machine's own copy, on PATH: its version is asked with `--version`.
     const onPath = engineMenuState({ env: { PATH: machine }, enginesDir: NO_ENGINES });
     assert.equal(onPath["anthropic-agent"].path, join(machine, "claude"));
     assert.deepEqual(labels(onPath).slice(0, 2), [
-      "Claude, by Anthropic   found on this computer (version 2.1.241)",
+      `Claude, by Anthropic   found on this computer (version ${CURRENT_PROGRAM})`,
       "Codex, by OpenAI       not on this computer — setup can install it",
     ]);
     // The explicit setting comes before PATH.
@@ -547,7 +550,7 @@ test("the engine question resolves each program the way a run does: setting, the
     // itself exits 1 on `--version`, so the version can only have come from there.
     const installed = engineMenuState({ env: { PATH: "" }, enginesDir: root });
     assert.equal(installed["anthropic-agent"].source, "installed");
-    assert.equal(labels(installed)[0], "Claude, by Anthropic   found on this computer (version 2.1.270)");
+    assert.equal(labels(installed)[0], `Claude, by Anthropic   found on this computer (version ${CURRENT_PROGRAM})`);
     // A program that will not say its version is still found.
     const quiet = engineMenuState({ env: { PATH: silent }, enginesDir: NO_ENGINES });
     assert.equal(labels(quiet)[0], "Claude, by Anthropic   found on this computer");
@@ -603,7 +606,7 @@ test("the line printed with the engine question names every way to pay that the 
 });
 
 test("setup's proof turn pins the path of the copy it proves, and its advice still names the copy setup installed", async () => {
-  const { root, program } = plantInstalledCopy("#!/bin/sh\nexit 0\n", "2.1.270");
+  const { root, program } = plantInstalledCopy("#!/bin/sh\nexit 0\n", CURRENT_PROGRAM);
   const eng = ENGINE_BINARIES["anthropic-agent"];
   const empty = mkdtempSync(join(tmpdir(), "onboard-proof-path-"));
   try {
@@ -678,7 +681,7 @@ test("--check --probe-engine proves the engine with one turn, and still writes n
   const dir = mkdtempSync(join(tmpdir(), "onboard-probe-"));
   const log = join(dir, "calls.jsonl");
   const before = treeStamp(join(REPO, "bin"));
-  const beforeEnv = existsSync(join(REPO, ".env"));
+  const beforeEnv = existsSync(join(CLI_ROOT, ".env"));
   try {
     const r = run(["--check", "--probe-engine"], { CLEAROTRON_CLAUDE_PATH: MOCK_CLAUDE, MOCK_CLAUDE_CALL_LOG: log });
     assert.equal(r.code, 0, r.out);
@@ -688,7 +691,7 @@ test("--check --probe-engine proves the engine with one turn, and still writes n
     assert.deepEqual(call.argv.slice(5, 9), ["--model", "haiku", "--effort", "low"],
       "the cheapest rung of both tier tables, built by the adapter's own buildClaudeArgs");
     assert.deepEqual(treeStamp(join(REPO, "bin")), before, "bin/ untouched");
-    assert.equal(existsSync(join(REPO, ".env")), beforeEnv, "no .env conjured");
+    assert.equal(existsSync(join(CLI_ROOT, ".env")), beforeEnv, "no .env conjured");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
@@ -914,7 +917,7 @@ function withEnv(vars, fn) {
 test("--check prints the pool refusal and the workspace default the CONFIG produces, not a copy", (t) => {
   // `effective()` reads the repo .env as well as the environment, so a developer who has really
   // configured this checkout would take the "is set" branch and never reach the text under test.
-  if (existsSync(join(REPO, ".env"))) { t.skip(`a real ${join(REPO, ".env")} is present — it would mask the unset branch`); return; }
+  if (existsSync(join(CLI_ROOT, ".env"))) { t.skip(`a real ${join(CLI_ROOT, ".env")} is present — it would mask the unset branch`); return; }
   const home = mkdtempSync(join(tmpdir(), "onboard-827-"));
   try {
     // `run()` REPLACES the environment, so both variables are genuinely unset in the child.

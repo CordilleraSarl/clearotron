@@ -98,7 +98,7 @@ import {
 // REGISTER_PROVIDER frozen at first import) is the one `preflightCandidate` below already cache-busts
 // around, and it is cache-busted whether or not this static import happened first.
 import { config, ENGINE_BINARIES, DEFAULT_ENGINE_ID, RESEARCH_PROVIDERS, SERP_PROVIDERS, resolveEngineProgram, ON_A_WINDOWS_DRIVE,
-  enginesFolder, engineInstallArgs, engineInstallCommand } from "../driver/driver.config.mjs";
+  enginesFolder, engineInstallArgs, engineInstallCommand, olderThanFloor } from "../driver/driver.config.mjs";
 import { resolveAuthMode, CLOUD_SWITCH, CLOUD_SETTINGS, CLOUD_SECRETS, cloudsSwitchedOn } from "../driver/engine/auth.mjs";
 import { isInsideCheckout } from "../shared/inside-checkout.mjs";   // — one copy of the rule, and it is testable
 import { packagedBuild as sharedPackagedBuild } from "../shared/packaged-build.mjs";   // — one reader of build-info.json, reachable from the driver
@@ -1105,6 +1105,25 @@ function programProblem(bin, named) {
   return null;
 }
 
+// WHAT A COPY BELOW THE FLOOR DOES TO THE MODELS WAS MEASURED ON CLAUDE ALONE (2026-09-22): it refuses the
+// newest model of a tier and serves the one before. Codex's floor records no such measurement, so an old
+// Codex is named by its version, the floor and the fix, and nothing is said about which model it runs.
+export const floorRefusesNewestModel = (eng) => Boolean(eng?.package) && eng.package === ENGINE_BINARIES["anthropic-agent"]?.package;
+
+/**
+ * What doctor and setup say after the version of a copy below the floor: what it costs, where that was
+ * measured, and the fix. ONE COPY FOR BOTH SCREENS, so the two cannot drift apart again (ruling 285).
+ *
+ * The fix follows where the copy came from. A copy Clearotron installed moves with `update`. Any other
+ * copy wins over one setup installs, by design, so installing another does not replace it: the fix is
+ * to update it, or to name a newer one in the engine's setting.
+ */
+export function belowFloorTail(eng, bin) {
+  const cost = floorRefusesNewestModel(eng) ? `The newest ${eng.product} models need a newer version. Searches run on an older model instead, or stop at the first step if they name the newest one exactly. ` : "";
+  const fix = bin?.source === "installed" ? `Update it with \`${invoke("update")}\`.` : `Update it, or set ${eng.env} to a newer copy.`;
+  return cost + fix;
+}
+
 /**
  * What setup found of one engine's program, as its menu row says it; "" when nothing was looked for. A copy
  * that cannot run is a problem, not an absence, and installing another is not always the fix, so the row
@@ -1113,7 +1132,14 @@ function programProblem(bin, named) {
  */
 export function foundWords(eng, bin) {
   if (!bin) return "";
-  if (bin.executable && !bin.relative) return bin.version ? `found on this computer (version ${bin.version})` : "found on this computer";
+  if (bin.executable && !bin.relative) {
+    // A COPY THAT RUNS IS NOT NECESSARILY ONE THIS BUILD CAN USE. Below the floor the program refuses
+    // the newest model of a tier and serves the one before it, so the row cannot say "found" and leave
+    // it there; it says which problem, and choosing the engine shows the fix, as the other problems do.
+    if (olderThanFloor(bin.version, eng.floor) === true)
+      return `problem: the copy of ${eng.product} here is version ${bin.version}; Clearotron needs ${eng.floor} or newer — choose it to see the fix`;
+    return bin.version ? `found on this computer (version ${bin.version})` : "found on this computer";
+  }
   const p = programProblem(bin, bin.explicit);
   if (p?.kind === "incomplete") return `problem: the copy of ${eng.product} here is incomplete and won't run — choose it to see the fix`;
   if (p?.kind === "setting") return `problem: this computer is set to use a copy of ${eng.product} that isn't there — choose it to see the fix`;
@@ -1129,6 +1155,12 @@ export function foundWords(eng, bin) {
  */
 export function cannotRunLine(eng, bin, setting = "") {
   const set = namedSetting(eng, setting);
+  // ANSWERED BEFORE THE REST, because a copy below the floor RUNS: it is executable, nothing rejected
+  // it, and every clause below is about a copy that cannot start. Left to them it would fall through to
+  // the general clause and be described as unusable, which sends the reader to look for a broken
+  // install they do not have. The fix here is a version, not a repair.
+  if (bin?.executable && !bin?.relative && olderThanFloor(bin.version, eng.floor) === true)
+    return `${eng.product} on this computer is version ${bin.version}. Clearotron needs ${eng.floor} or newer. ${belowFloorTail(eng, bin)}`;
   const p = programProblem(bin, set);
   if (p?.kind === "incomplete") return `The copy of ${eng.product} at ${p.path} is incomplete: its installation stopped before the program was added. Setup can install a working copy.`;
   if (p?.kind === "setting") return `This computer is set to use ${eng.product} at ${set}, and nothing there can run. Setup can install ${eng.product} and use that instead.`;
@@ -1761,10 +1793,26 @@ export async function runCheck() {
     const bin = resolveEngineBin(binSetting, { engine: engineId });
     // WHICH COPY, AND ITS VERSION, because the machine's own install and the one Clearotron installed
     // are both legitimate and behave differently: the first updates itself, the second moves with
-    // `clearotron update`. The version comes from the copy's own package.json when npm installed it;
-    // doctor spawns nothing to ask (a vendor's own native installer leaves no package.json to read).
+    // `clearotron update`. The version comes from the copy's own package.json when npm installed it.
+    //
+    // AND IS ASKED FOR WHEN THERE IS NONE TO READ, which is the ordinary case for a copy the machine
+    // installed by another route — a vendor's native installer leaves no package.json. Doctor used to
+    // stop there and print "version not read", which was honest and made the floor comparison below
+    // unanswerable on the route most machines take: this command could not tell an operator whether
+    // their own copy was new enough for the models a run asks for, which is the whole of what it was
+    // asked to check.
+    //
+    // It is the same short call setup's engine menu already makes (menuVersion): `--version`, two
+    // seconds, no session and no network. That is within "calls nobody" — what that promises is no
+    // provider call and no spend, not that nothing on this machine may be asked its own version.
+    const versionOf = (b) => {
+      if (b.version) return b.version;
+      if (!b.executable || b.relative || !b.path) return null;
+      try { return menuVersion(b.path) ?? null; } catch { return null; }
+    };
+    const seen = versionOf(bin);
     const copyWords = (b) => `${b.source === "installed" ? "the copy Clearotron installed"
-      : b.source === "explicit" ? `set in ${engSpec.env}` : "on PATH"}${b.version ? `, version ${b.version}` : ", version not read"}`;
+      : b.source === "explicit" ? `set in ${engSpec.env}` : "on PATH"}${seen ? `, version ${seen}` : ", version not read"}`;
     // ── NATIVE WINDOWS IS ANSWERED HERE, BEFORE ANY PATH IS RESOLVED OR REPORTED ──────────────────
     //
     // `resolveEngineBin` tests a candidate with `accessSync(X_OK)` and `isFile()`. Windows has no
@@ -1786,7 +1834,24 @@ export async function runCheck() {
     // and needs no engine, which is why four reports published on that same Windows box.
     const platformRefusal = platformEngineRefusal();
     if (platformRefusal) problem(platformRefusal);
-    else if (bin.executable && !bin.relative) ok(`${bin.path} — ${copyWords(bin)}`);
+    // ── AND WHETHER THAT COPY IS NEW ENOUGH FOR THE MODELS IT WILL BE ASKED FOR ──────────────────
+    //
+    // The floor governed the copy setup INSTALLS and nothing else, and a copy already on the machine
+    // wins over that one — so the route most machines actually take was the unchecked one. A program
+    // below the floor does not fail: it refuses the newest model of a tier and serves the previous one,
+    // and the search still finishes and the report still arrives. This is the cheap place to learn it.
+    //
+    // Three outcomes, because the comparison is three-valued: older, not older, and could not be
+    // compared. The last is said rather than passed over — doctor's own contract is that a failure to
+    // look is not a clean result — and it is the ordinary state for a copy the machine installed by
+    // another route, where there is no package.json to read and doctor spawns nothing to ask.
+    else if (bin.executable && !bin.relative && olderThanFloor(seen, engSpec.floor) === true)
+      problem(`${bin.path} — ${copyWords(bin)}. Clearotron needs ${engSpec.floor} or newer. ${belowFloorTail(engSpec, bin)}`);
+    else if (bin.executable && !bin.relative) {
+      ok(`${bin.path} — ${copyWords(bin)}`);
+      if (olderThanFloor(seen, engSpec.floor) === null)
+        info(`  Its version could not be checked against the ${engSpec.floor} Clearotron needs.`);
+    }
     // A copy that is there and cannot run is a broken install, not an absence: the vendor's placeholder
     // left by an install that skipped its step, most often. Named with the reason and the fix.
     else if (!binSet && bin.rejected?.length) problem(`no usable \`${engSpec.fallback}\`: ${bin.rejected.map((x) => `${x.path} is ${x.why}`).join("; ")}`);
@@ -3914,6 +3979,15 @@ try {
       if (!bin.executable) { problem(`${bin.path ?? resolve(p)} is ${bin.rejected?.[0]?.why ?? "not an executable file"}.`); continue; }
     }
     ok(`found ${bin.path}${bin.source === "installed" ? `, the copy Clearotron installed${bin.version ? ` (${bin.version})` : ""}` : ""}`);
+    // THE MENU ROW SAID "choose it to see the fix", AND THIS IS WHERE IT IS SHOWN. A copy below the floor
+    // runs, so neither branch above is taken for it, and setup used to print "found" and carry on with the
+    // row's promise unkept. It still carries on — an operator may have a reason to sit below the floor — but
+    // not before saying so. The version is the one the menu already asked for (cached), or the package's.
+    {
+      let seenVersion = bin.version ?? null;
+      if (!seenVersion) { try { seenVersion = menuVersion(bin.path) ?? null; } catch { seenVersion = null; } }
+      if (olderThanFloor(seenVersion, eng.floor) === true) warn(cannotRunLine(eng, { ...bin, version: seenVersion }, process.env[eng.env]));
+    }
     // THE TERMS SENTENCE TRAVELS WITH THE PROGRAM, NOT WITH THE INSTALL OFFER. It was said only when this
     // step offered to install the CLI, and a copy Clearotron installed on an earlier run skips that offer, so it is
     // said here too. Using it, rather than installing it, is what accepts the vendor's terms.

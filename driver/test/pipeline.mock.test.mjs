@@ -452,7 +452,8 @@ test("deliver-conditional: a material coverage gap (coverage_judgment.sufficient
   assert.ok(existsSync(join(res.runDir, ".delivered")) || res.runDir.includes("/archive/"), "delivered, not halted");
   assert.ok(!existsSync(join(res.runDir, ".incomplete-needs-human")), "no halt state exists any more");
   const status = JSON.parse(readFileSync(join(res.runDir, "status.json"), "utf8"));
-  assert.equal(status.verdict, "CONDITIONAL", "delivered status carries the clamp");
+  assert.equal(status.review?.signoff, "CONDITIONAL", "delivered status carries the clamp, as the reviewer's sign-off");
+  assert.equal(status.verdict, undefined, "the sign-off is still at the top of the run record as `verdict`");
 });
 
 test("skeptic escalation: a flagged axis resumes (defend/adjust, same tier) + re-digest", async () => {
@@ -1316,7 +1317,8 @@ test("delivered run → status.json delivered, STATUS.md rollup, .delivered reco
   // status.json rode into the archive with the delivered state
   const s = JSON.parse(readFileSync(join(res.runDir, "status.json"), "utf8"));
   assert.equal(s.state, "delivered");
-  assert.equal(s.verdict, "CLEAR");
+  assert.equal(s.review?.signoff, "CLEAR");
+  assert.equal(s.verdict, undefined);
   // THE RUN'S OWN URL IS THE PORTAL ROUTE. This asserted `/report\.html$` — the
   // pool's directory layout, which is where the documents sit on disk and is not an application route.
   // The link shipped on every delivered report and, on production, opened the portal's own
@@ -1324,7 +1326,7 @@ test("delivered run → status.json delivered, STATUS.md rollup, .delivered reco
   assert.match(s.url, /\/portal\/report\/[^/]+\/$/, "the address a recipient can actually open");
   // STATUS.md (at the stable studio root) shows the delivered run
   const md = readFileSync(join(studioRootOf(res.runDir), "STATUS.md"), "utf8");
-  assert.match(md, /TMP-2201 NOVAPULSE — delivered \(CLEAR\)/);
+  assert.match(md, /TMP-2201 NOVAPULSE — delivered \(High\)/);
   // the delivery sentinel marks the run ready for clawdi's comms watch to send (handoff mode)
   const delivered = JSON.parse(readFileSync(join(res.runDir, ".delivered"), "utf8"));
   assert.equal(delivered.sendPending, true, "sendPending marker set for clawdi's comms watch");
@@ -3016,4 +3018,29 @@ test("a run that dies in a stage says THAT stage is where it was, not the last o
     "synthesis recorded a successful stage event — the fixture is no longer failing where this arm needs it to");
   assert.ok(events.some((e) => e.event === "stage" && e.stage === "synthesis"),
     "synthesis never produced a stage event at all — the run died before reaching it and this arm proves nothing");
+});
+
+// ── THE REVIEWER'S SIGN-OFF LIVES UNDER THE STAGE THAT PRODUCED IT (ruled 2026-09-22) ────────────────
+//
+// At the top of the run record as `verdict` it read as the clearance's answer. It is now `review.signoff`,
+// and a rebuilt run (stale repair, an experiment arm) restores it from there — or, on a record written
+// before the move, from the old field, so an archived run's sign-off is not lost on the way back in.
+test("a rebuilt run restores the reviewer's sign-off from review.signoff, and from a record written before the move", async () => {
+  const { res } = await runPipeline({ MOCK_VERDICT: "CONDITIONAL", MOCK_FAIL_STAGE: "joint synthesis narrative" });
+  assert.equal(res.ok, false);
+  assert.equal(res.failedStage, "synthesis");
+  delete process.env.MOCK_FAIL_STAGE;
+  // The run stopped before the refutation signed, so the sign-off is planted here in each shape; the writer
+  // side is held by the delivered-run arms above, which read review.signoff off the run's own status.
+  const statusPath = join(res.runDir, "status.json");
+  const status = JSON.parse(readFileSync(statusPath, "utf8"));
+  assert.equal(status.verdict, undefined, "a record this run wrote carries the retired top-level field");
+  writeFileSync(statusPath, JSON.stringify({ ...status, review: { signoff: "CONDITIONAL" } }));
+  const codename = res.runDir.split("/").pop().split("-").slice(3).join("-");
+  const { reconstructCtx } = await import(`../pipeline.mjs?bust=${Math.random()}`);
+  assert.equal(reconstructCtx(JOB, { codename }).verdict, "CONDITIONAL", "a rebuilt run lost its sign-off");
+  // A record in the shape every archived run carries.
+  const { review: _new, ...legacy } = status;
+  writeFileSync(statusPath, JSON.stringify({ ...legacy, verdict: "BLOCKING" }));
+  assert.equal(reconstructCtx(JOB, { codename }).verdict, "BLOCKING", "a run recorded before the move lost its sign-off on the way back in");
 });

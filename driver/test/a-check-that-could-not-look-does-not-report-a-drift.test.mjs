@@ -152,7 +152,7 @@ test("the population the verdict arms read is real, so an empty walk cannot pass
   const mods = verdictModules();
   assert.ok(mods.length >= 15, `only ${mods.length} module(s) found behind the check — the import walk is not reading what it should`);
   for (const must of ["unit-file-drift.mjs", "unit-state-verdict.mjs", "unit-inventory.mjs", "queue-watch-verdict.mjs",
-    "manager-groups-verdict.mjs", "drainer-identity.mjs"]) {
+    "manager-groups-verdict.mjs", "drainer-identity.mjs", "plan-run-agreement-verdict.mjs"]) {
     assert.ok(mods.some((m) => m.endsWith(`/${must}`)), `${must} is not in the walk`);
   }
   const returns = mods.flatMap(verdictReturns);

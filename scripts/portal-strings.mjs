@@ -33,10 +33,10 @@
 // token, not a sentence), and arguments to DOM, storage and string methods. A token that slips through
 // is a line a reviewer skips; a sentence that is missed is one nobody reviews, so the rules lean toward
 // reading too much.
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { join, relative, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { createRequire } from "node:module";
 
 // THE PARSER IS LOADED ONLY WHEN SOMETHING IS PARSED, and that is not tidiness. `--backlog-shrinks`
@@ -332,6 +332,128 @@ export function portalStrings(root = ROOT) {
   return sourceFiles(root).flatMap((f) => stringsIn(readFileSync(join(root, f), "utf8"), f));
 }
 
+// ── THE PAGES THE PORTAL SERVER BUILDS ITSELF ───────────────────────────────────────────────────────
+//
+// The sign-in page is not a React screen. `loginPage()` in driver/portal-service.mjs builds it on the
+// server as HTML inside template literals, with more HTML in the conditional values, so the reader above
+// never saw it, and a changed sentence on it passed the check. It is read AS SERVED: the page is rendered
+// in each state the server can send (signed out, signed in, a session set aside, an error), and the
+// sentences are read out of the HTML the way a browser shows them. The product's name therefore arrives
+// as the name, which is how the approved list writes it.
+//
+// Every value the page is handed arrives as a marker and is shown as `{…}`, and so does anything in
+// `<code>`: a command is not a sentence, and the approved list writes one as a hole. The error sentences
+// are the handler's own literals, passed in at its call sites, so they are read from there, each with its
+// own line.
+export const SERVER_PAGES = "driver/portal-service.mjs";
+
+/** The character a value handed to the page arrives as. Private use: never written by the page itself. */
+const SLOT = "";
+
+/** Attributes a reader meets on a server-built page. */
+const HTML_READ = ["title", "aria-label", "placeholder", "alt"];
+
+/**
+ * The sentences a reader meets on one served HTML page: the text of each block, inline elements joined in,
+ * and the reader-facing attributes. `{kind, text}` rows, in page order.
+ */
+export function htmlSentences(html) {
+  const rows = [];
+  const clean = (s) => decode(s).split(SLOT).join(HOLE).replace(/\s+/g, " ").trim();
+  const push = (kind, s) => { const text = clean(s); if (/\p{L}/u.test(text.split(HOLE).join(""))) rows.push({ kind, text }); };
+  const title = /<title>([\s\S]*?)<\/title>/i.exec(html);
+  if (title) push("title", title[1]);
+  // STRIPPED UNTIL NOTHING CHANGES. One pass over `<scr<script>…</script>ipt>` removes the inner element
+  // and joins the outer one back together, so the page would still carry a `<script` it then read as text.
+  let body = html;
+  for (let before = null; before !== body;) {
+    before = body;
+    body = body.replace(/<head>[\s\S]*?<\/head>/gi, "").replace(/<(style|script|svg)\b[\s\S]*?<\/\1\s*>/gi, "");
+  }
+  body = body.replace(/<code\b[^>]*>[\s\S]*?<\/code>/gi, SLOT);
+  let text = "";
+  for (const part of body.split(/(<[^>]+>)/)) {
+    if (!part.startsWith("<")) { text += part; continue; }
+    for (const a of HTML_READ) {
+      const m = new RegExp(`\\s${a}="([^"]*)"`, "i").exec(part);
+      if (m) push(`attr:${a}`, m[1]);
+    }
+    const name = /^<\/?\s*([a-z0-9-]+)/i.exec(part)?.[1]?.toLowerCase();
+    if (name && INLINE.has(name)) continue;
+    push("text", text);
+    text = "";
+  }
+  push("text", text);
+  return rows;
+}
+
+/** The error sentences the handler passes to `loginPage`, each with the line of its literal. */
+export function loginErrors(src) {
+  const lineOf = (i) => src.slice(0, i).split("\n").length;
+  const out = [];
+  for (const m of src.matchAll(/loginPage\(\{[^\n]*?\berror:\s*("(?:[^"\\]|\\.)*"|[A-Z_][A-Z0-9_]*)/g)) {
+    const at = m.index + m[0].length - m[1].length;
+    if (m[1].startsWith('"')) { out.push({ text: JSON.parse(m[1]), line: lineOf(at) }); continue; }
+    const def = new RegExp(`const ${m[1]} = ("(?:[^"\\\\]|\\\\.)*");`).exec(src);
+    // COULD NOT LOOK, never a skip: an error handed over by a name this cannot resolve is a sentence a
+    // reader meets that nothing would check.
+    if (!def) throw new Error(`${SERVER_PAGES}: the sign-in error ${m[1]} is not a string constant this reader can resolve`);
+    out.push({ text: JSON.parse(def[1]), line: lineOf(def.index + def[0].indexOf('"')) });
+  }
+  return out;
+}
+
+/**
+ * The line where `text` is written inside `src[from, to)`, from its longest literal fragment, or `fallback`.
+ * A sentence is split at its values, at the product's name and at sentence ends, since markup can sit
+ * between any two of those in the source.
+ */
+function lineIn(src, text, from, to, fallback) {
+  const body = src.slice(0, to);
+  const frags = text.split(HOLE).flatMap((f) => f.split(/Clearotron/)).flatMap((f) => f.split(/(?<=[.?!])\s+/))
+    .map((f) => f.trim()).filter((f) => /\p{L}/u.test(f)).sort((a, b) => b.length - a.length);
+  for (const f of frags) {
+    const i = body.indexOf(f, from);
+    if (i >= 0) return src.slice(0, i).split("\n").length;
+  }
+  return fallback;
+}
+
+/**
+ * Every reader-facing string on the pages the portal server builds: the sign-in page, in every state it
+ * is served in. Empty for a tree that carries no portal server (a fixture with only screens).
+ */
+export async function serverPageStrings(root = ROOT) {
+  // The path is spelled out rather than built from SERVER_PAGES so the import-cycle check can read what
+  // this import reaches; a specifier built from a variable is one it has to report as unknown.
+  const path = join(root, "driver", "portal-service.mjs");
+  if (!existsSync(path)) return [];
+  const src = readFileSync(path, "utf8");
+  const { loginPage } = await import(pathToFileURL(join(root, "driver", "portal-service.mjs")).href);
+  if (typeof loginPage !== "function") throw new Error(`${SERVER_PAGES} no longer exports loginPage — the sign-in page could not be read`);
+  const start = src.indexOf("export function loginPage(");
+  const startLine = src.slice(0, start).split("\n").length;
+  const end = src.indexOf("\n}\n", start);
+  const seen = new Set();
+  const rows = [];
+  const add = (r) => { const k = `${r.kind}\t${r.text}`; if (!seen.has(k)) { seen.add(k); rows.push({ file: SERVER_PAGES, ...r }); } };
+  for (const state of [
+    { email: SLOT, resetCommand: SLOT },
+    { email: SLOT, resetCommand: SLOT, discarded: true },
+    { email: SLOT, resetCommand: SLOT, error: SLOT },
+    { email: SLOT, signedIn: true },
+  ]) {
+    for (const r of htmlSentences(loginPage(state))) add({ line: lineIn(src, r.text, start, end, startLine), ...r });
+  }
+  for (const e of loginErrors(src)) add({ line: e.line, kind: "text", text: e.text.replace(/\s+/g, " ").trim() });
+  return rows;
+}
+
+/** Every reader-facing string the portal can show: its screens, and the pages its server builds. */
+export async function allPortalStrings(root = ROOT) {
+  return [...portalStrings(root), ...(await serverPageStrings(root))];
+}
+
 // ── THE CHECK: EVERY STRING ON A SCREEN IS APPROVED, OR IN A BACKLOG THAT ONLY SHRINKS ─────────────
 //
 //   node scripts/portal-strings.mjs --check <approved.json>
@@ -385,7 +507,7 @@ export function checkStrings(rows, { approved, backlog }) {
   return { refused, gone };
 }
 
-function check(path, root) {
+async function check(path, root) {
   let approved, backlog;
   try {
     approved = readApproved(path);
@@ -394,9 +516,11 @@ function check(path, root) {
     console.error(`portal-strings: COULD NOT LOOK — ${e.message}. This is not a pass.`);
     return 2;
   }
-  const rows = portalStrings(root);
+  let rows;
+  try { rows = await allPortalStrings(root); }
+  catch (e) { console.error(`portal-strings: COULD NOT LOOK — ${e.message}. This is not a pass.`); return 2; }
   const { refused, gone } = checkStrings(rows, { approved, backlog });
-  console.log(`portal-strings: ${rows.length} strings on the portal's screens; ${approved.size} approved in ${path}, `
+  console.log(`portal-strings: ${rows.length} strings on the portal's screens and server-built pages; ${approved.size} approved in ${path}, `
     + `${backlog.size} in the backlog`);
   if (gone.length) {
     console.log(`portal-strings: ${gone.length} backlog line(s) no screen shows any more — delete them from ${BACKLOG}:`);
@@ -441,14 +565,14 @@ if (isEntrypoint(import.meta.url)) {
   if (process.argv.includes("--check")) {
     const path = argAt("--check");
     if (!path || path.startsWith("--")) { console.error("portal-strings: --check needs the path of the approved list. COULD NOT LOOK."); process.exit(2); }
-    process.exit(check(path, root));
+    process.exit(await check(path, root));
   }
   if (process.argv.includes("--backlog-shrinks")) {
     const base = argAt("--base");
     if (!base || base.startsWith("--")) { console.error("portal-strings: --backlog-shrinks needs --base <ref>. COULD NOT LOOK."); process.exit(2); }
     process.exit(shrinks(base, root));
   }
-  const rows = portalStrings(root);
+  const rows = await allPortalStrings(root);
   if (process.argv.includes("--json")) console.log(JSON.stringify(rows, null, 1));
   else for (const r of rows) console.log([r.file, r.line, r.kind, r.text].join("\t"));
 }

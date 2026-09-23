@@ -11,7 +11,7 @@
 // attribute the red that produces: it surfaces in a file whose diff is empty, on another branch, in
 // another agent's session, and it is intermittent — the three properties that make a defect expensive.
 //
-// `doctor-refuses-what-cannot-run.test.mjs:70` already states the rule in prose: moving the real
+// `doctor-refuses-what-cannot-run.test.mjs` already states the rule in prose: moving the real
 // `portal-ui/dist` aside "would have been shorter and is wrong". Prose is not an instrument. This is.
 //
 // THE RULE IS ABSOLUTE, AND IT IS NOT A QUESTION ABOUT `git`. Tracked, untracked and ignored are the

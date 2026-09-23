@@ -185,10 +185,12 @@ env:
 jobs:
   version:
     name: Open the version pull request, or cut the beta this dispatch asked for
-    # A PUSH KEEPS THE VERSION PULL REQUEST CURRENT; A DISPATCH IS WHAT MERGES IT.
-    # Both events run this job and they leave by different doors: the push updates the standing pull
-    # request and stops there, the `beta` dispatch updates it and then turns on auto-merge. The rehearsal
-    # does not reach this job at all, which is what it has always done.
+    # A DISPATCH OPENS THE VERSION PULL REQUEST AND MERGES IT; A PUSH ONLY ASKS WHETHER IT CUT ONE.
+    # Both events run this job. The push used to update a standing version pull request between cuts
+    # as well, which left one open on the public list for days, doing nothing: versions are cut by
+    # dispatch, and the dispatch runs that same step, so it opens the pull request at the moment it
+    # merges it. The push keeps the note checks and the question below, which is what publishes a
+    # version commit that lands by a push. The rehearsal does not reach this job at all.
     if: >-
       github.repository == 'CordilleraSarl/clearotron'
       && ((github.event_name == 'push' && github.ref == 'refs/heads/main')
@@ -359,6 +361,9 @@ jobs:
 
       - name: Open or update the standing version pull request
         id: changesets
+        # Only a requested cut opens it: see the job's header. Every step that answers for the pull
+        # request is gated on its number, which a push now leaves empty.
+        if: github.event_name == 'workflow_dispatch'
         # PINNED TO A COMMIT, because `v1` and `v2` are BRANCHES here, not tags — there is no tag `v1`
         # at all (measured 2026-09-05), so `@v2` is whatever was last pushed to that branch. This is the
         # step that opens a pull request against `main` with a token; it does not float.
@@ -1828,7 +1833,7 @@ jobs:
       # OIDC exchange mints for a trusted publish cannot make it: eleven deprecations attempted that way
       # came back 404 while reads through the same credential succeeded. Owner ruling 2026-09-17 — this one
       # job reads a granular token with write on this package alone, and publishing stays credential-less.
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           registry-url: https://registry.npmjs.org

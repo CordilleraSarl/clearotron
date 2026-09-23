@@ -350,7 +350,7 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
         const docs = reportsOf(meta).filter((r) => existsSync(join(poolRoot, name, r.file)));
         const hasReport = docs.length > 0;
         const { bands, toneFor } = ladderOf(meta);
-        const band = meta.overall ?? meta.verdict ?? null;
+        const band = meta.overall ?? null;   // the rating; a meta's retired `verdict` held the reviewer's sign-off on the full-search lane
         out.push({ runId: meta.runId ?? name, account: owner, ...(owner === "generic" ? { organisation: meta.organisation ?? null } : {}),
           title: meta.title ?? meta.matter ?? name, kind: meta.kind ?? "clearance",
           // THE MARK, separate from the report's headline.
@@ -540,7 +540,7 @@ export function scanAccountRuns({ poolRoot, workspaceRoot, account = null, gener
         // hide this. Staff only: the client redaction below replaces `reason` and must drop this too,
         // or the redaction would be defeated by the field that carries the raw words.
         reasonDetail: s.reasonDetail ?? null,
-        date: (s.updatedAt ?? "").slice(0, 10), overall: s.verdict ?? null,
+        date: (s.updatedAt ?? "").slice(0, 10), overall: s.tier ?? null,   // the rating, never the reviewer's sign-off word
         // A live run has not been issued, so its last progress write is the honest ordering key — the
         // same role issuedAt plays for a delivered one, never presented as a finish time.
         issuedAt: typeof s.updatedAt === "string" ? s.updatedAt : null,
@@ -4006,7 +4006,7 @@ ${signedIn
 <div><a href="/portal">Go to the portal</a></div>
 <form method="post" action="/portal/logout"><button type="submit">Sign out</button></form>`
     : `<p>This ${escHtml(BRAND.name)} has one user: <b class="who">${escHtml(email)}</b>. Enter its passphrase.</p>
-${discarded ? `<p class="hint">A session this portal did not start, from another ${escHtml(BRAND.name)} on this address or an expired one, was set aside. Sign in below.</p>` : ""}
+${discarded ? `<p class="hint">Your earlier sign-in has expired. Sign in again.</p>` : ""}
 ${error ? `<p class="err">${escHtml(error)}</p>` : ""}
 <form method="post" action="/portal/login">
   <label for="passphrase">Passphrase</label>
@@ -4129,6 +4129,10 @@ async function readFormBody(req, limitBytes = 8192) {
     req.on("error", reject);
   });
 }
+
+// The brief reader's model when PORTAL_READ_MODEL is unset: a TIER, like every stage's. An exact id goes to
+// the program as that model — past a cloud's ANTHROPIC_DEFAULT_SONNET_MODEL — and codex maps tiers only.
+export const PORTAL_READ_MODEL_DEFAULT = "sonnet";
 
 export function makeHttpHandler({ verify, limiter, service, log = () => {}, devIdentity = null, localAuth = null, static: staticHandler = null,
   // item 1 — PASSED IN, because this handler is its own function and the bootstrap that reads
@@ -5211,7 +5215,7 @@ const PORT = PORT_CHOICE.port;
       // two are parameters on the shared runner for exactly this reason: `compose-read.mjs` records that
       // Haiku 4.5 refuses a thinking block outright (400), so inheriting the jx constants here would
       // have been a failure on every press.
-      const model = process.env.PORTAL_READ_MODEL || "claude-sonnet-5";
+      const model = process.env.PORTAL_READ_MODEL || PORTAL_READ_MODEL_DEFAULT;
       const runner = await makeJxTurnRunner({ model, thinking: "off", lane: "the brief reader" });
       if (runner?.error) {
         // NAMES THE CONDITION, on the operator's surface. The client-facing note stays client-facing;

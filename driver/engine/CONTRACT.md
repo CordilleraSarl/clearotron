@@ -153,8 +153,9 @@ and could not be: the telemetry logged the alias that was ASKED FOR, so an arm r
 gemini and ran sonnet. Both tiers are gone — the failover chain was deleted in and both stages
 declare an anthropic tier in `STAGES` — and every engine's model map now **refuses** an alias it cannot
 run (`claudeModel`, `openaiModel`). On the anthropic engine a tier goes as the vendor's alias, a catalog
-id in the table (`anthropic/claude-opus-5`) goes as itself, a bare or dated `claude-*` id goes as its
-family's alias, and anything else throws. To hold a tier on one model, set the vendor's own
+id naming a family and a version (`anthropic/claude-opus-5-5`, `claude-haiku-4-5-20251001`) goes as
+that model so a pin holds, a `claude-*` id naming a family with no version goes as its family's alias
+because the CLI has no model by that name, and anything else throws. To hold a tier on one model, set the vendor's own
 `ANTHROPIC_DEFAULT_OPUS_MODEL` / `_SONNET_MODEL` / `_HAIKU_MODEL`, or `ANTHROPIC_DEFAULT_FABLE_MODEL` for
 `fable`, which no stage asks for unless an override names it, as `CLEAROTRON_SYNTHESIS_MODEL=fable` does; each
 reaches the CLI through the stage's environment.

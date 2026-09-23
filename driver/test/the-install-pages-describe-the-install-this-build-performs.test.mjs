@@ -172,16 +172,30 @@ test("the configuration reference says a tier follows the vendor, as the Claude 
   // WHICH CATALOG IDS GO OVER AS A CONCRETE MODEL, and which as a tier's alias, is the adapter's table, not
   // a rule about catalog ids: the level-1 target of `haiku` goes over as `haiku`. The page names each group;
   // every name in it is held to what the adapter does with it.
+  // WHAT THE PAGE STATES IS A RULE, not a list of catalog ids, and the rule is what is checked: an id
+  // naming a family AND a version goes over as that model, a family with no version is the tier. Every
+  // id the page names is held to it, and so is every tier's own catalog id — derived from the rule
+  // rather than listed, so the page cannot fall out of step by a model being added to the catalog.
   const ids = (list) => [...list.matchAll(/`([^`]+)`/g)].map((m) => m[1]);
-  const said = /The catalog ids (.+?) are passed as those concrete models; (.+?) goe?s? over as the /.exec(ref);
-  assert.ok(said, "the reference no longer says which catalog ids go over as a concrete model and which as an alias");
-  const [concrete, aliased] = [ids(said[1]), ids(said[2])];
-  for (const id of concrete)
-    assert.equal(claudeModel(id), id.replace(/^anthropic\//, ""), `the reference says ${id} is passed as that concrete model; the adapter sends ${claudeModel(id)}`);
-  for (const id of aliased)
-    assert.ok(["opus", "sonnet", "haiku"].includes(claudeModel(id)), `the reference says ${id} goes over as an alias; the adapter sends ${claudeModel(id)}`);
-  for (const tier of ["opus", "sonnet", "haiku"])
-    assert.ok([...concrete, ...aliased].includes(MODELS[tier]), `the reference does not say what happens to ${MODELS[tier]}, the catalog id ${tier} resolves to`);
+  const versioned = /An id that names a family and a version — (.+?) — is passed to the CLI as that\nmodel/.exec(ref)
+    ?? /An id that names a family and a version — (.+?) — is passed to the CLI as that model/.exec(ref);
+  assert.ok(versioned, "the reference no longer says what an id naming a family and a version is passed as");
+  for (const id of ids(versioned[1]))
+    assert.equal(claudeModel(id), id.replace(/^anthropic\//, "").toLowerCase(),
+      `the reference says ${id} is passed as that model; the adapter sends ${claudeModel(id)}`);
+  const tierOnly = /A family with no version\s*\n?\s*\((.+?)\) is the tier/.exec(ref);
+  assert.ok(tierOnly, "the reference no longer says what a family with no version is passed as");
+  for (const id of ids(tierOnly[1]))
+    assert.ok(["opus", "sonnet", "haiku", "fable"].includes(claudeModel(id)),
+      `the reference says ${id} is the tier; the adapter sends ${claudeModel(id)}`);
+  // AND THE CATALOG IDS THEMSELVES, by that same rule rather than by a sentence naming each one.
+  for (const tier of ["opus", "sonnet", "haiku"]) {
+    const id = MODELS[tier];
+    const named = String(id).replace(/^anthropic\//, "").toLowerCase();
+    const hasVersion = /^claude-(?:[a-z]+-\d|\d)/.test(named);
+    assert.equal(claudeModel(id), hasVersion ? named : tier,
+      `${id} is the catalog id for ${tier}; the page's rule makes it ${hasVersion ? named : tier} and the adapter sends ${claudeModel(id)}`);
+  }
 });
 
 test("the licence words name each program's own licence", () => {
@@ -324,7 +338,14 @@ test("the release notes promise what setup does", () => {
     assert.match(installSizeLine(eng), /^It takes about \d+ MB\. To remove it, delete that folder\.$/,
       `setup's install offer for ${eng.product} names no size, which the release note promises`);
     const row = (found) => engineOptions({ [id]: found }).find((o) => o.id === id).label;
-    assert.match(row({ executable: true, version: "1.2.3" }), /found on this computer \(version 1\.2\.3\)/, `the ${eng.product} row does not show the version found`);
+    // The version here stands for "some version" and is taken from the engine's own floor: a row whose
+    // copy is BELOW the floor now says so instead of saying found, which is a different promise than
+    // this arm is about. A literal would have made that arm fail the next time the floor moved.
+    // Escaped through this file's own `escape`, which covers every regex metacharacter. Escaping the dots
+    // alone left a backslash in the value passing through as a backslash in the pattern, so a version
+    // string carrying one would have built a different pattern than the one meant — and the arm would
+    // have gone on passing. The helper was already here; using it is the whole fix.
+    assert.match(row({ executable: true, version: eng.floor }), new RegExp(`found on this computer \\(version ${escape(eng.floor)}\\)`), `the ${eng.product} row does not show the version found`);
     assert.match(row({ executable: false, rejected: [] }), /not on this computer — setup can install it/, `the ${eng.product} row does not say setup can install it`);
   }
   assert.equal(engineOptions().at(-1).label, "None for now");

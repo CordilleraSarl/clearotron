@@ -196,6 +196,24 @@ test("the lawyer's own territory spellings compare against instructed codes", ()
   assert.equal(inScope({ mark: "X", jurisdictions: ["TW / intl"] }, [], ["CN"]), false, "TW is named and is not CN");
 });
 
+test("a worldwide scope excludes nothing on territory, and class still applies", () => {
+  // A Global run compared every entry with the word itself; no entry names it, so the whole reference
+  // was `excluded` and the score came out empty, reading as a clean one.
+  const reference = [
+    { mark: "NAMES THREE OFFICES", jurisdictions: ["US", "EU", "UK"] },
+    { mark: "NAMES ONE OFFICE", jurisdictions: ["DE"] },
+    { mark: "WRONG CLASS", classes: [28], jurisdictions: ["US"] },
+  ];
+  for (const word of ["Global", "worldwide", "Worldwide"]) {
+    const b = scoreRecall({ reference, findings: [], retrieved: [], scopeClasses: ["9"], scopeTerritories: [word] });
+    assert.deepEqual(b.excluded.map((r) => r.mark), ["WRONG CLASS"], `scope ${word}`);
+    assert.match(b.excluded[0].why, /classes 28 outside/);
+    assert.deepEqual(b.lost.map((r) => r.mark).sort(), ["NAMES ONE OFFICE", "NAMES THREE OFFICES"], `scope ${word}`);
+  }
+  // A named scope is unchanged.
+  assert.equal(inScope({ mark: "X", jurisdictions: ["DE"] }, [], ["US", "EU"]), false);
+});
+
 test("class and territory are both required, not either", () => {
   const e = { mark: "X", classes: [9], jurisdictions: ["EU"] };
   assert.equal(inScope(e, ["9"], ["EU"]), true);
@@ -396,6 +414,23 @@ test("exit 0 even when the comparison is unfavourable — the exit code carries 
     const { code, out } = cli(["R3", "--run", run], { CLEAROTRON_E2E_DIR: store });
     assert.equal(code, 0, "a bad result is still exit 0");
     assert.match(out, /lost\s+6/);
+  } finally { rmSync(store, { recursive: true, force: true }); rmSync(run, { recursive: true, force: true }); }
+});
+
+test("a run recorded as worldwide is scored on its own mode, not on the reference's scope", () => {
+  // Intake records a worldwide request as `geography.mode`, with no territory list. The scorer used to
+  // fall back to the reference's own scope ("Global") and exclude every entry naming a territory.
+  const register = R3_REGISTER.map((r) => ({ ...r, jurisdictions: ["US", "EU", "UK"] }));
+  const store = makeReference(mkdtempSync(join(tmpdir(), "score-store-")), { scope: { classes: [32], territories: ["Global"] }, register });
+  const run = makeRun();
+  writeFileSync(driverDir(run, "instructed-scope.json"), JSON.stringify({
+    classes: [32], jurisdictions: null, geography: { mode: "worldwide", origin: "request" } }));
+  try {
+    const { code, out } = cli(["R3", "--run", run], { CLEAROTRON_E2E_DIR: store });
+    assert.equal(code, 0, out);
+    assert.match(out, /territories worldwide/, "the scope line states the run's mode");
+    assert.match(out, /excluded\s+0\b/, `no entry excluded on territory:\n${out}`);
+    assert.match(out, /withheld\s+3/, "the entries are scored, not set aside");
   } finally { rmSync(store, { recursive: true, force: true }); rmSync(run, { recursive: true, force: true }); }
 });
 

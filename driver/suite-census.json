@@ -621,6 +621,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-model-of-the-current-generation-is-named-in-every-spelling.test.mjs": {
+          "tests": 4,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "a-name-documented-in-any-example-file-is-documented.test.mjs": {
           "tests": 7,
           "asserts": 16,
@@ -711,6 +717,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-plan-run-that-was-not-answered-is-not-a-drift.test.mjs": {
+          "tests": 5,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
         "a-pool-copy-is-not-a-refusal.test.mjs": {
           "tests": 8,
           "asserts": 28,
@@ -723,10 +735,22 @@
           "skips": 0,
           "todos": 0
         },
+        "a-press-that-starts-late-is-not-a-page-that-did-not-move.test.mjs": {
+          "tests": 5,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "a-printed-command-runs-from-where-the-reader-stands.test.mjs": {
           "tests": 15,
           "asserts": 62,
           "skips": 0,
+          "todos": 0
+        },
+        "a-program-already-here-is-checked-against-the-floor.test.mjs": {
+          "tests": 9,
+          "asserts": 38,
+          "skips": 1,
           "todos": 0
         },
         "a-project-cannot-break-the-tree-it-joins.test.mjs": {
@@ -930,6 +954,12 @@
         "a-retry-asks-only-for-what-is-unanswered.test.mjs": {
           "tests": 7,
           "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-run-records-the-tier-it-asked-for.test.mjs": {
+          "tests": 5,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
@@ -1253,7 +1283,7 @@
         },
         "an-absent-portal-bundle-is-not-a-stale-one.test.mjs": {
           "tests": 4,
-          "asserts": 7,
+          "asserts": 13,
           "skips": 0,
           "todos": 0
         },
@@ -1271,7 +1301,7 @@
         },
         "an-archived-run-says-whether-it-was-delivered.test.mjs": {
           "tests": 8,
-          "asserts": 42,
+          "asserts": 44,
           "skips": 0,
           "todos": 0
         },
@@ -2452,8 +2482,8 @@
           "todos": 0
         },
         "engine-probe.test.mjs": {
-          "tests": 34,
-          "asserts": 166,
+          "tests": 35,
+          "asserts": 172,
           "skips": 0,
           "todos": 0
         },
@@ -2465,7 +2495,7 @@
         },
         "engine.anthropic.test.mjs": {
           "tests": 65,
-          "asserts": 239,
+          "asserts": 245,
           "skips": 0,
           "todos": 0
         },
@@ -3412,8 +3442,8 @@
           "todos": 0
         },
         "pipeline.mock.test.mjs": {
-          "tests": 98,
-          "asserts": 820,
+          "tests": 99,
+          "asserts": 827,
           "skips": 0,
           "todos": 0
         },
@@ -3665,7 +3695,7 @@
         },
         "progress.test.mjs": {
           "tests": 26,
-          "asserts": 96,
+          "asserts": 97,
           "skips": 0,
           "todos": 0
         },
@@ -3880,8 +3910,8 @@
           "todos": 0
         },
         "reference-score.test.mjs": {
-          "tests": 63,
-          "asserts": 213,
+          "tests": 65,
+          "asserts": 221,
           "skips": 0,
           "todos": 0
         },
@@ -4048,8 +4078,8 @@
           "todos": 0
         },
         "release-pipeline.test.mjs": {
-          "tests": 120,
-          "asserts": 452,
+          "tests": 121,
+          "asserts": 456,
           "skips": 0,
           "todos": 0
         },
@@ -4133,7 +4163,7 @@
         },
         "report-data.test.mjs": {
           "tests": 5,
-          "asserts": 55,
+          "asserts": 56,
           "skips": 0,
           "todos": 0
         },
@@ -4715,7 +4745,7 @@
         },
         "status-snapshot.test.mjs": {
           "tests": 6,
-          "asserts": 39,
+          "asserts": 40,
           "skips": 0,
           "todos": 0
         },
@@ -5121,6 +5151,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-engine-floor-can-run-the-current-top-tier.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "the-engine-step-cannot-loop-on-a-menu-nothing-changed.test.mjs": {
           "tests": 17,
           "asserts": 45,
@@ -5225,7 +5261,7 @@
         },
         "the-install-pages-describe-the-install-this-build-performs.test.mjs": {
           "tests": 11,
-          "asserts": 89,
+          "asserts": 90,
           "skips": 0,
           "todos": 0
         },
@@ -5374,8 +5410,8 @@
           "todos": 0
         },
         "the-portal-shows-only-approved-strings.test.mjs": {
-          "tests": 15,
-          "asserts": 32,
+          "tests": 20,
+          "asserts": 46,
           "skips": 0,
           "todos": 0
         },
@@ -5514,6 +5550,12 @@
         "the-retired-azure-settings-are-read-by-nothing.test.mjs": {
           "tests": 3,
           "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-reviewers-sign-off-is-not-the-clearances-answer.test.mjs": {
+          "tests": 3,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -5717,7 +5759,7 @@
         },
         "tokens.test.mjs": {
           "tests": 10,
-          "asserts": 51,
+          "asserts": 54,
           "skips": 0,
           "todos": 0
         },

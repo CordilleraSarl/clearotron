@@ -23,7 +23,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { chmodSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { chmodSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -628,4 +628,56 @@ test("every engine in the registry names an adapter module that exists and answe
     assert.equal(adapter.name, id, "the adapter's own name is the registry key — a mismatch selects the wrong engine silently");
     assert.equal(typeof adapter.runTurn, "function");
   }
+});
+
+// ── THE PROBE'S TOOL IS DECLARED AS THE REGISTER SEARCH IS ────────────────────────────────────────────
+//
+// codex decides from a tool's annotations whether a call needs approval, and `codex exec` refuses every
+// call that does unless its sandbox is bypassed. A read-only `ping` never needed approval, so the probe
+// passed on a host where `register_execute_plan` was refused on every call. Both are read here from the
+// servers' own `tools/list`, started as a stage starts them, so what is compared is what codex receives.
+const MCP_DIR = join(HERE, "..", "engine", "mcp");
+function toolsOf(command, args, env = {}) {
+  return new Promise((resolve, reject) => {
+    const p = spawn(command, args, { stdio: ["pipe", "pipe", "ignore"], env: { ...process.env, ...env } });
+    let buf = "";
+    const timer = setTimeout(() => { p.kill(); reject(new Error(`${args[0]} did not answer tools/list`)); }, 20000);
+    p.stdout.on("data", (d) => {
+      buf += d;
+      for (const line of buf.split("\n")) {
+        let m; try { m = JSON.parse(line); } catch { continue; }
+        if (m?.id !== 2) continue;
+        clearTimeout(timer); p.kill();
+        return resolve(m.result?.tools ?? []);
+      }
+    });
+    const send = (o) => p.stdin.write(JSON.stringify(o) + "\n");
+    send({ jsonrpc: "2.0", id: 1, method: "initialize", params: { protocolVersion: "2024-11-05", capabilities: {}, clientInfo: { name: "t", version: "0" } } });
+    send({ jsonrpc: "2.0", id: 2, method: "tools/list", params: {} });
+  });
+}
+// codex's own rule for an MCP tool under the default `auto` mode (codex-rs/core/src/mcp_tool_call.rs,
+// `requires_mcp_tool_approval`, the same at 0.150.1, 0.153.4 and 0.156.1), copied to say why the
+// annotations matter, not to stand in for codex.
+const codexWouldAskApproval = (a = {}) => a.destructiveHint === true ? true
+  : a.readOnlyHint === true ? false
+  : (a.destructiveHint ?? true) || (a.openWorldHint ?? true);
+
+test("the probe's tool carries the register search tool's annotations, read from both servers as codex reads them", async () => {
+  const probe = JSON.parse(probeToolConfig("probe-0badc0de").mcpConfig).mcpServers.probe;
+  const [ping] = (await toolsOf(probe.command, probe.args, probe.env)).filter((t) => t.name === "ping");
+  assert.ok(ping, "the probe server lists no ping");
+  const registers = readdirSync(MCP_DIR).filter((f) => f.endsWith("-server.mjs")
+    && readFileSync(join(MCP_DIR, f), "utf8").includes('"register_execute_plan"'));
+  assert.ok(registers.length >= 1, `no register server in ${MCP_DIR} declares register_execute_plan, so nothing was compared`);
+  for (const f of registers) {
+    const search = (await toolsOf(process.execPath, [join(MCP_DIR, f)])).find((t) => t.name === "register_execute_plan");
+    assert.ok(search, `${f} does not list register_execute_plan`);
+    assert.deepEqual(ping.annotations, search.annotations,
+      `${f}'s register_execute_plan is declared ${JSON.stringify(search.annotations)} and the probe's tool ${JSON.stringify(ping.annotations)} — the probe no longer answers for the search`);
+  }
+  // WHAT THAT BUYS: the probe's call now needs approval exactly when the search's does. The read-only
+  // declaration it replaced never did, which is how a probe passed where no search could run.
+  assert.equal(codexWouldAskApproval(ping.annotations), true);
+  assert.equal(codexWouldAskApproval({ readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false }), false);
 });

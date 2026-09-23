@@ -194,6 +194,16 @@ const TERMINAL_STATES = new Set(["delivered", "failed", "cancelled"]);
  * preflight before an unattended run remains the operational guard for that case; this closes the
  * invisibility for every failure short of it, which is the honest claim.
  */
+// ── THE REVIEWER'S SIGN-OFF IS NOT THE CLEARANCE'S ANSWER (ruled 2026-09-22) ─────────────────────────
+//
+// The narrative-refutation stage signs the draft off CLEAR, CONDITIONAL or BLOCKING. At the top of the run
+// record as `verdict` it read as the clearance's answer, competed with the rating, and a BLOCKING one was
+// printed to clients as "on hold" although nothing holds delivery on it. It now lives under the stage
+// that produced it, named for what it is: `review.signoff`. The rating (`tier`) is the run's headline.
+// A record written before the move carries the old field; `readSignoff` reads either.
+export const signoffPatch = (signoff) => ({ review: { signoff: signoff ?? null } });
+export const readSignoff = (s) => s?.review?.signoff ?? s?.verdict ?? null;
+
 export function writeRunStatus(ctx, patch = {}, runDirOverride = null, { critical = false } = {}) {
   const runDir = runDirOverride ?? ctx?.run?.runDir;
   // — A STATE WRITE THAT CANNOT FIND ITS RUN DIRECTORY SAYS SO. It used to `return` here, in
@@ -222,6 +232,7 @@ export function writeRunStatus(ctx, patch = {}, runDirOverride = null, { critica
   const { __stateReset, ...rest } = patch;
   const old = readRunStatus(runDir);
   const merged = { ...old, ...rest, updatedAt: nowISO() };
+  delete merged.verdict;   // the retired top-level field: a record rewritten here carries `review.signoff` alone
   if (typeof rest.stepIndex === "number" && typeof old.stepIndex === "number" && old.stepIndex > rest.stepIndex) {
     // keep the furthest step ever reached (label/n/total move together with the index)
     merged.stepIndex = old.stepIndex;
@@ -378,7 +389,7 @@ export function identitySeed() {
 // first-write-wins makes it the honest wall-clock start across any number of resumes. A resume instead
 // records itself: resumedAt (this resume's clock) + attempts (fresh run = 1, each resume +1), and
 // threads __stateReset because the resume guard has deliberately cleared a terminal sentinel. The
-// verdict/failedStage/reason resets stay (a resumed run owes a fresh outcome);
+// review/failedStage/reason resets stay (a resumed run owes a fresh outcome);
 // recoveryAttempts/recoveryHistory stay OUT of the seed (they are the park budget's memory).
 export function seedRunStatus(ctx, { resume = false } = {}) {
   const { job, run, agent } = ctx;
@@ -412,7 +423,7 @@ export function seedRunStatus(ctx, { resume = false } = {}) {
     stepIndex: first.index, stepLabel: first.label, stepN: first.n, stepTotal: first.total,
     currentStep: currentStepOf(first),
     lastStage: null,
-    verdict: null,
+    review: null,
     url: null,
     failedStage: null,
     reason: null,
@@ -489,7 +500,7 @@ export function lineFor(s) {
   // The rollup now carries the send state loudly; clearotron-deliver flips sendPending:false on send.
   const pending = s.sendPending === true ? " — 📮 SEND PENDING (email/WhatsApp NOT yet out — run clearotron-deliver)" : "";
   if (s.state === "delivered") {
-    const v = s.verdict ? ` (${s.verdict})` : "";
+    const v = s.tier ? ` (${s.tier})` : "";   // the rating, not the reviewer's sign-off word
     return `- ${head} — delivered${v}${s.url ? ` — ${s.url}` : ""}${pending}`;
   }
   if (s.state === "failed") {

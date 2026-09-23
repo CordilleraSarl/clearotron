@@ -45,6 +45,7 @@
 
 import { normalizeElement, consonantSkeleton } from "./form-neighbourhood.mjs";
 import { canonicalJurisdictionCode } from "./jurisdiction-codes.mjs";
+import { territoryTier } from "./territory-tiers.mjs";
 
 export const REFERENCE_SCHEMA_VERSION = 1;
 
@@ -378,6 +379,12 @@ export function inScope(entry, scopeClasses = [], scopeTerritories = []) {
   // that scenario it is five of fifteen entries, which is the difference between a bad round and a fine
   // one. Same shape as the class rule: an entry naming no territory is in scope, and a run that recorded
   // no scope cannot exclude anything.
+  // A WORLDWIDE SCOPE EXCLUDES NOTHING ON TERRITORY, for the reason a missing scope excludes nothing: it
+  // names no territory an entry could fall outside. Without this a worldwide run compared every entry
+  // with the word itself (`GLOBAL`), no entry names that, and the whole reference landed in `excluded`,
+  // an empty score that read as a clean one. Which words mean worldwide is the intake's own list
+  // (`territoryTier`), not a pattern restated here; `canonTerritory` still guesses nothing about `intl`.
+  if (scopeTerritories.some((t) => territoryTier(t) === "worldwide")) return true;
   const terr = (entry?.jurisdictions ?? []).map(canonTerritory).filter(Boolean);
   const scopeTerr = scopeTerritories.map(canonTerritory).filter(Boolean);
   if (scopeTerr.length && terr.length && !terr.some((t) => scopeTerr.includes(t))) return false;
@@ -911,7 +918,8 @@ export function readVerdict({ verdictDoc = null, knockoutFindings = null, status
     const rows = marks
       .map((m) => [m.name, [m.rating, m.ratingQualifier ? `(${m.ratingQualifier})` : null].filter(Boolean).join(" ")].filter(Boolean).join(": "))
       .filter((s) => s.includes(":"));
-    const text = [status?.verdict ? `worst band ${status.verdict}` : null, ...rows].filter(Boolean).join(" · ");
+    const worst = status?.tier ?? status?.verdict ?? null;   // `verdict` on a quick-search record written before the move
+    const text = [worst ? `worst band ${worst}` : null, ...rows].filter(Boolean).join(" · ");
     if (text) return { clean: clean(text), text, source: "knockout-findings.json + status.json — this lane writes no _driver/verdict.json", why: null };
   }
   return { clean: null, text: null, source: null,
@@ -2194,7 +2202,7 @@ export function deliveryLine(run) {
   }
   if (run.poolMeta) {
     const issued = run.poolMeta.issuedAt ? ` published ${run.poolMeta.issuedAt}` : " publication time not recorded";
-    const verdict = run.poolMeta.verdict ?? run.poolMeta.overall;
+    const verdict = run.poolMeta.review?.signoff ?? run.poolMeta.verdict ?? run.poolMeta.overall;
     // NOT PRESERVED stays the honest answer for a pool copy with no stamp — a run archived before the
     // stamp existed, or one whose best-effort write failed. An absent stamp is unknown, not a refusal.
     return `delivered: NOT PRESERVED — this is a pool copy carrying no settle stamp, so the terminal`

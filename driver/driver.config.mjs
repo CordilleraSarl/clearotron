@@ -656,10 +656,29 @@ export const config = {
 // stage definition and the id stamped on a token-rollup row are the same fact rather than two spellings
 // of it. resolveModel below is the only reader that matters; an engine with its own resolveModelId
 // overrides it, and anything already in catalog form passes through untouched.
+// ── A TIER IS WHAT WAS ASKED FOR, SO A TIER IS WHAT IS RECORDED ─────────────────────────────────────
+//
+// These three named a VERSION — `anthropic/claude-opus-5` — and nothing ever asked for one. A stage
+// names a tier, the tier goes to the program as the vendor's own alias, and the vendor answers with its
+// newest model of that tier. The version written here was a claim about a request nobody made, and it
+// was wrong the day a newer model shipped: a delivered run served throughout by the generation after
+// Opus 5 recorded, on every attempt row, a request for Opus 5, and its token line accounted under the
+// name of a model that did not run. Measured on that run, 2026-09-22.
+//
+// Owner's ruling, 2026-09-23: record the tier. What a run asked for is a tier, what it was served is
+// recorded separately and already is, and the report names the model that ran — none of that moves.
+//
+// WHAT IT COSTS, RULED ON AND ACCEPTED RATHER THAN DISCOVERED LATER. Per-model totals are keyed on what
+// was ASKED for, and the direct-API lanes must name a version because they call the API rather than the
+// program — the API takes model ids, not tier words. So one model reached by both routes now lands in
+// two buckets: `anthropic/claude-haiku` from a stage, `anthropic/claude-haiku-4-5` from those lanes.
+// That is a real split in a per-model total and it was accepted with the ruling: the two are genuinely
+// different requests, and keying the totals on what actually SERVED each turn is the change that would
+// fix it properly, which is larger than this and not what was ruled.
 export const MODELS = {
-  haiku: "anthropic/claude-haiku-4-5",
-  sonnet: "anthropic/claude-sonnet-5",
-  opus: "anthropic/claude-opus-5",
+  haiku: "anthropic/claude-haiku",
+  sonnet: "anthropic/claude-sonnet",
+  opus: "anthropic/claude-opus",
   gemini: "google/gemini-3.1-pro-preview",
   "gemini-flash": "google/gemini-3-flash-preview",
   "deepseek-v4-pro": "together/deepseek-ai/DeepSeek-V4-Pro",
@@ -675,11 +694,17 @@ export const MODELS = {
 //
 // A BARE Anthropic id (dated or not — "claude-haiku-4-5-20251001", "claude-opus-5") normalises to the
 // catalog form too. The direct-API lanes (jx completions/judge/nativeread, driver.config JX_PROVIDERS)
-// name their model that way because that is what the Messages API takes, so without this the same model
-// lands in a token rollup under two keys — "anthropic/claude-haiku-4-5" from the gateway's alias rows and
-// "claude-haiku-4-5-20251001" from the jx rows — and a per-model total is silently split. The date suffix
-// is dropped because the catalog ids carry none; anything that does not look like a bare claude id is
-// returned untouched, so a genuinely unknown model still keys as-is rather than being guessed at.
+// name their model that way because that is what the Messages API takes, so without this one model named
+// in two spellings — dated and undated — would key apart in a rollup. The date suffix is dropped;
+// anything that does not look like a bare claude id is returned untouched, so a genuinely unknown model
+// still keys as-is rather than being guessed at.
+//
+// WHAT THIS NO LONGER DOES, SAID PLAINLY BECAUSE THE PARAGRAPH ABOVE USED TO CLAIM IT. It used to unite
+// a stage's rows with those lanes' rows, because the tier resolved to a versioned id and so did they.
+// The tiers now resolve to a tier (MODELS), and these lanes still name a version, so the same model
+// reached both ways keys in two places. That split was ruled on and accepted (see MODELS) — it is not
+// an oversight here, and closing it by collapsing a version to its tier would throw away the one thing
+// these rows can still say about which model was asked for.
 export function resolveModel(model) {
   if (!model) return model;
   if (MODELS[model]) return MODELS[model];
@@ -1976,7 +2001,12 @@ export const ENGINE_BINARIES = {
     // newer", with no ceiling. Setup installs it into the engines folder (enginesFolder, below the table)
     // when the reader picks this engine, and the resolver uses it only when the machine has no copy of its
     // own. The package's own `bin` field names the program, so no path inside it is written down here.
-    package: "@anthropic-ai/claude-code", floor: "2.1.270",
+    // 2.1.280 is the floor because it is the oldest release that can run the current generation of this
+    // vendor's top tier: below it the API refuses the model id outright ("version 2.1.280 or newer is
+    // required"), and the tier alias quietly goes on serving the previous generation. Measured 2026-09-22
+    // on 2.1.263 — the alias returned the older model and the pinned id was refused — so a floor that
+    // only asks for a program that starts is a floor that passes a machine this engine cannot run on.
+    package: "@anthropic-ai/claude-code", floor: "2.1.280",
     // WHAT THE INSTALL TAKES ON DISK, in MB, which setup states before it asks to install. MEASURED, not
     // declared by the vendor: the engines folder after a fresh install of this package into an empty
     // folder, on npm 10.9.8 and on 11.19.1, 2026-09-14. A later release can be larger or smaller, so setup
@@ -2045,6 +2075,47 @@ const ENGINES_FOLDER_TYPED = "~/.local/share/clearotron/engines";
  */
 export function enginesFolder({ env = process.env, home = homedir() } = {}) {
   return String(env[ENGINES_DIR_ENV] ?? "").trim() || join(home, ".local", "share", "clearotron", "engines");
+}
+
+/**
+ * Is the copy of an engine's program on this machine older than the version this build asks for?
+ *
+ * THE FLOOR GOVERNED ONE ROUTE OF TWO. Setup passes it to npm, so a program it installs cannot land
+ * under it; a copy already on the machine wins over the installed one by design, and nothing compared
+ * its version to anything. The two routes are not equally common — most machines have their own copy —
+ * so the check that existed covered the case that mostly does not arise.
+ *
+ * What that costs is not a crash. The program carries its own list of the models it accepts, so one
+ * below the floor refuses the model a tier names and serves the previous generation instead: the run
+ * completes, the report is delivered, and the only sign is a model id in the record that nobody chose.
+ * Measured 2026-09-22 on 2.1.263, where the current top tier's id came back a 400 and the tier alias
+ * answered with the generation before it.
+ *
+ * THREE-VALUED, AND THE THIRD VALUE IS THE POINT. `null` means "these two cannot be compared" — no
+ * floor declared, nothing read from the copy, or a version this cannot parse — and it is never "fine".
+ * A caller must say it could not look rather than print a pass, which is the absence-read-as-a-pass
+ * class that the rest of this file keeps naming. Only a version that parses and sorts below the floor
+ * comes back `true`.
+ *
+ * PURE, both arguments injected, so a test drives an old version and a current one without a program.
+ *
+ * @param {string|null|undefined} version  what the copy reports, e.g. "2.1.273"
+ * @param {string|null|undefined} floor    the engine's declared floor, e.g. "2.1.280"
+ * @returns {boolean|null} true = older than the floor; false = at it or newer; null = not comparable
+ */
+export function olderThanFloor(version, floor) {
+  const parts = (v) => {
+    const m = /^\s*v?(\d+)\.(\d+)(?:\.(\d+))?/.exec(String(v ?? ""));
+    return m ? [Number(m[1]), Number(m[2]), Number(m[3] ?? 0)] : null;
+  };
+  const [got, want] = [parts(version), parts(floor)];
+  if (!got || !want) return null;
+  // Part by part, never as text: "2.1.99" sorts above "2.1.280" as a string, and that comparison would
+  // read a machine two hundred releases behind as being ahead of the floor.
+  for (let i = 0; i < 3; i++) {
+    if (got[i] !== want[i]) return got[i] < want[i];
+  }
+  return false;
 }
 
 /** The npm arguments that install, or refresh, an engine's program in `dir`: "this version or newer". */

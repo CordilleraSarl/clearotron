@@ -639,7 +639,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
       // for reconcile-runs' exact liveness test. The stepper and the identity are separate calls now.
       ...identitySeed(),
       stepIndex: 0, stepLabel: STEPS[0], stepN: 1, stepTotal: STEPS.length,
-      verdict: null, url: null, failedStage: null, reason: null, deliveredAt: null,
+      review: null, url: null, failedStage: null, reason: null, deliveredAt: null,
       // A5/A3: a re-run of a previously-terminal knockout may reopen the state ONLY because the resume
       // guard cleared the sentinel (ctx.stateReset threads that authority); startedAt is no longer
       // seeded anywhere — writeRunStatus backfills it first-write-wins.
@@ -1092,11 +1092,11 @@ export async function knockoutInner(ctx, job, opts = {}) {
     const deliveredAt = new Date().toISOString();
     // `tier` beside `verdict` — the same band word under the name the clearance lane records it by, so a
     // reader of either lane's status finds the rating in one place. `verdict` stays as it was.
-    writeRunStatus(ctx, { state: "delivered", verdict: overall, tier: overall, statement: published.statement, url: published.url, reports: published.reports.map((r) => ({ mark: r.mark, url: r.url })), deliveredAt, sendPending: true, stepIndex: STEPS.length - 1, stepLabel: STEPS[STEPS.length - 1], stepN: STEPS.length, stepTotal: STEPS.length });
+    writeRunStatus(ctx, { state: "delivered", tier: overall, statement: published.statement, url: published.url, reports: published.reports.map((r) => ({ mark: r.mark, url: r.url })), deliveredAt, sendPending: true, stepIndex: STEPS.length - 1, stepLabel: STEPS[STEPS.length - 1], stepN: STEPS.length, stepTotal: STEPS.length });
     // — the knockout lane's pool copy learns its terminal state the same way,
     // for the same reason: publish returns the pool dir, and `state: "delivered"` is decided after it
     // returns. Same seam, same best-effort contract, no lane-specific exception to write down.
-    const stamp = writeSettleStamp(published.poolRunDir, { state: "delivered", verdict: overall, deliveredAt, runId: published.runId ?? run.runId, lane: "knockout" });
+    const stamp = writeSettleStamp(published.poolRunDir, { state: "delivered", tier: overall, deliveredAt, runId: published.runId ?? run.runId, lane: "knockout" });
     if (!stamp.written) note(`delivery: settle stamp not written (${stamp.reason})`);
     const archived = archive(run);
     rollupStatus(run.studioRoot);

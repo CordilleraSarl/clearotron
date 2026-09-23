@@ -3207,7 +3207,7 @@ async function cmdReport(id, { round: requestedToken = null } = {}) {
     // Five test runs did exactly this in the seven days to 2026-08-25. The answer to "was this
     // delivered" is therefore its own line, above, in the words used for a failed order.
     console.log(`  ${deliveryLine(st)}`);
-    console.log(`  state=${st.state ?? "?"} verdict=${st.verdict ?? "-"} sendPending=${st.sendPending}`);
+    console.log(`  state=${st.state ?? "?"} tier=${st.tier ?? "-"} signoff=${st.review?.signoff ?? st.verdict ?? "-"} sendPending=${st.sendPending}`);
 
     // Which skills changed since this run started — the resume question, stated as fact not as a rule.
     // — THE THREE ANSWERS THIS CHECK CAN GIVE, and it used to give one of them silently.

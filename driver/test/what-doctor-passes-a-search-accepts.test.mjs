@@ -35,18 +35,18 @@ import { orderTimeRefusal, startEnvFileOf, runRequirements } from "../run-requir
 import { handRunEnv } from "./drive-env.mjs";
 import { ENGINE_BINARIES, DEFAULT_ENGINE_ID, resolveEngineProgram } from "../driver.config.mjs";
 
-import { ensurePortalBundleIsCurrent } from "./helpers/portal-bundle.mjs";
+import { doctorRepoRoot } from "./helpers/portal-bundle.mjs";
 
-// The arms below run `doctor` against this checkout for reasons that are not about the portal
-// bundle. A bundle older than its sources is a problem doctor reports and exits 1 for — rightly —
-// so a clone that was built once and then pulled would fail them all on a condition they do not
-// test. This makes that condition untrue, once per process, by building it as an operator would.
-ensurePortalBundleIsCurrent();
 const { PROVIDERS } = await import("../../bin/onboard.mjs");
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, "..", "..");
+// The doctor arms run from a root with no `.git`, so the checkout's portal bundle, stale or not, is not
+// a question they meet: they are not about the bundle (see helpers/portal-bundle.mjs).
+const DOCTOR_ROOT = doctorRepoRoot();
 const TABLES = { registers: PROVIDERS, engines: ENGINE_BINARIES, defaultEngine: DEFAULT_ENGINE_ID };
+// The version a stand-in claims: the engine's own floor, so doctor's floor check does not report it as too old.
+const FLOOR_VERSION = ENGINE_BINARIES["anthropic-agent"].floor;
 
 /** A scratch HOME holding only the install's own environment file, with `lines` in it. */
 function homeWith(lines) {
@@ -66,8 +66,8 @@ function homeWith(lines) {
  *  Each drive proves its own file was read by what it asserts — the engine saw the token, or exactly one
  *  name is missing — because doctor loads the file silently and prints no loader line to check. */
 function doctor(home, ...args) {
-  const r = spawnSync(process.execPath, [join(ROOT, "bin", "clearotron.mjs"), "doctor", ...args],
-    { cwd: ROOT, encoding: "utf8", timeout: 120000,
+  const r = spawnSync(process.execPath, [join(DOCTOR_ROOT, "bin", "clearotron.mjs"), "doctor", ...args],
+    { cwd: DOCTOR_ROOT, encoding: "utf8", timeout: 120000,
       env: handRunEnv({ PATH: "/usr/bin:/bin", HOME: home, CLEAROTRON_DOCTOR_ASSUME_PINNED: "1" }, {}) });
   if (r.error || r.signal) throw new Error(`doctor did not come back (signal=${r.signal} error=${r.error?.message}) — a could-not-look, not a verdict`);
   return { status: r.status, out: `${r.stdout ?? ""}${r.stderr ?? ""}` };
@@ -80,6 +80,12 @@ function fakeEngine(dir) {
   const bin = join(dir, "fake-claude.sh");
   writeFileSync(bin, [
     "#!/bin/sh",
+    // `--version` ANSWERS AND EXITS, BEFORE ANYTHING IS RECORDED, as the real program does and as
+    // mock-claude.mjs already did. Doctor asks a found program its version to compare it against the
+    // engine floor, and that question carries no credentials and is not a turn. A stand-in that logged
+    // it put an extra line in front of what these arms measure and read as an engine that ran without
+    // its token. The version it claims is the floor, so doctor does not report the stand-in as too old.
+    `case " $* " in *" --version "*) echo "${FLOOR_VERSION} (stand-in)"; exit 0;; esac`,
     `if [ -n "$CLAUDE_CODE_OAUTH_TOKEN" ]; then echo present >> "${log}"; exec "${process.execPath}" "${join(HERE, "mock-claude.mjs")}" "$@"; fi`,
     `echo absent >> "${log}"`,
     `echo "Invalid API key · Please run /login" >&2`,
@@ -217,7 +223,7 @@ test("doctor counts the copy Clearotron installed as the engine a search needs",
   writeFileSync(join(dir, "bin", "claude.exe"), "#!/bin/sh\nexit 0\n", { mode: 0o755 });
   const home = homeWith([`CLEAROTRON_DATABASE=${REG.id}`, ...REG.credentials.map((k) => `${k}=x`), "CLEAROTRON_AI=anthropic-agent"]);
   try {
-    const r = spawnSync(process.execPath, [join(ROOT, "bin", "clearotron.mjs"), "doctor"], { cwd: ROOT, encoding: "utf8", timeout: 120000,
+    const r = spawnSync(process.execPath, [join(DOCTOR_ROOT, "bin", "clearotron.mjs"), "doctor"], { cwd: DOCTOR_ROOT, encoding: "utf8", timeout: 120000,
       env: handRunEnv({ PATH: "/usr/bin:/bin", HOME: home, CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", CLEAROTRON_ENGINES_DIR: root }, {}) });
     if (r.error || r.signal) throw new Error(`doctor did not come back (signal=${r.signal} error=${r.error?.message}) — a could-not-look, not a verdict`);
     const out = `${r.stdout ?? ""}${r.stderr ?? ""}`;

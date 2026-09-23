@@ -27,6 +27,7 @@ import { fileURLToPath } from 'node:url'
 import { reapOnExit } from '../shared/reap-on-exit.mjs'
 import { browserRun } from '../shared/browser-temp-root.mjs'
 import { prepareReportForEmbed } from '../driver/portal-report.mjs'
+import { scrollAfterPress } from '../shared/scroll-settle.mjs'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const ROOT = join(HERE, '..')
@@ -225,11 +226,14 @@ for (const width of [1440, 400]) {
     const target = 2
     const before = await value('window.scrollY')
     await value(`document.querySelectorAll('nav.report-sections .report-section')[${target}].click()`)
-    let settled = before, last = -1
-    for (let i = 0; i < 40 && settled !== last; i++) { last = settled; await wait(150); settled = await value('window.scrollY') }
+    // The jump is animated and starts on the browser's own schedule, so the page is given a deadline to
+    // START moving before it is read as still. Waiting only for the position to settle answers "it never
+    // moved" for a scroll that had not yet begun — see scroll-settle.mjs.
+    const { moved, y: settled, waitedMs } = await scrollAfterPress({ read: () => value('window.scrollY'), wait, from: before })
     const s = await strip()
     const foot = await atFoot()
-    if (!(settled > before)) fail.push(`${at}: pressing "${SECTIONS[target]}" did not move the page`)
+    if (!moved) fail.push(`${at}: pressing "${SECTIONS[target]}" did not move the page in ${waitedMs}ms`)
+    else if (!(settled > before)) fail.push(`${at}: pressing "${SECTIONS[target]}" left the page at ${settled}, not below ${before}`)
     else if (filled(s) !== (foot ? SECTIONS.length : target + 1)) fail.push(`${at}: after the jump to "${SECTIONS[target]}" the strip reads "${s}"`)
     else ok.push(`${at}: a press jumps to "${SECTIONS[target]}" and marks it — ${s}`)
   }

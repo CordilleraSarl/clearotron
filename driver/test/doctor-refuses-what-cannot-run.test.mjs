@@ -26,13 +26,8 @@ import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { NO_INSTALLED_ENGINES } from "./drive-env.mjs";   // this doctor's env is composed from nothing
 
-import { ensurePortalBundleIsCurrent } from "./helpers/portal-bundle.mjs";
+import { doctorRepoRoot } from "./helpers/portal-bundle.mjs";
 
-// The arms below run `doctor` against this checkout for reasons that are not about the portal
-// bundle. A bundle older than its sources is a problem doctor reports and exits 1 for — rightly —
-// so a clone that was built once and then pulled would fail them all on a condition they do not
-// test. This makes that condition untrue, once per process, by building it as an operator would.
-ensurePortalBundleIsCurrent();
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
@@ -59,7 +54,9 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
  *  this file asks", which is true of every arm below: they are about what the VERDICT says when no
  *  register is selected. It stays overridable through `env` so an arm wanting the unpinned reading can
  *  still have it. */
-function doctor({ env = {}, repo = ROOT } = {}) {
+// The doctor arms run from a root with no `.git`, so the checkout's portal bundle, stale or not, is not
+// a question they meet: they are not about the bundle (see helpers/portal-bundle.mjs).
+function doctor({ env = {}, repo = doctorRepoRoot() } = {}) {
   const home = mkdtempSync(join(tmpdir(), "doctor-home-"));
   try {
     const r = spawnSync(process.execPath, [join(repo, "bin", "clearotron.mjs"), "doctor"],

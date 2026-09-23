@@ -124,13 +124,25 @@ through anything containing `/`):
 
 | Alias | Full catalog id |
 |---|---|
-| haiku | `anthropic/claude-haiku-4-5` |
-| sonnet | `anthropic/claude-sonnet-5` |
-| opus | `anthropic/claude-opus-5` |
+| haiku | `anthropic/claude-haiku` |
+| sonnet | `anthropic/claude-sonnet` |
+| opus | `anthropic/claude-opus` |
 | gemini | `google/gemini-3.1-pro-preview` |
 | gemini-flash | `google/gemini-3-flash-preview` |
 | deepseek-v4-pro | `together/deepseek-ai/DeepSeek-V4-Pro` |
 | azure | `azure-openai/gpt-5.4` |
+
+The three tiers record a **tier, not a version**, because a tier is what a run asks for: the tier goes
+to the program as the vendor's alias and the vendor answers with its newest model of that tier. This
+id is what a dispatch row and a token-rollup row carry as the model *asked for*; what actually served
+the turn is recorded beside it, and the report names that. A version here would be a claim about a
+request nobody made, and wrong the day a newer model of the tier shipped.
+
+One consequence, accepted when this was decided: per-model totals are keyed on what was asked for,
+and the native-language lanes call the API directly, where a model id is required and a tier word is
+not accepted. So one model reached by a stage and by those lanes appears under two keys —
+`anthropic/claude-haiku` and `anthropic/claude-haiku-4-5`. They are different requests, and the split
+says so.
 
 The bottom four are **legacy names that no stage declares and no engine can run** — they resolve at
 level 1 and then throw at level 2 (below). They are catalogue entries, not available tiers.
@@ -140,12 +152,18 @@ level 1 and then throw at level 2 (below). They are catalogue entries, not avail
 as aliases, so each tier follows the vendor's newest model; to hold one still, set
 `ANTHROPIC_DEFAULT_OPUS_MODEL` (or `ANTHROPIC_DEFAULT_SONNET_MODEL`, `ANTHROPIC_DEFAULT_HAIKU_MODEL`,
 `ANTHROPIC_DEFAULT_FABLE_MODEL`).
-The catalog ids `anthropic/claude-opus-5` and `anthropic/claude-sonnet-5` are passed as those
-concrete models; `anthropic/claude-haiku-4-5` goes over as the `haiku` alias, so it follows the
-vendor the same way. A bare or dated Anthropic id (`claude-haiku-4-5-20251001`) still resolves to
-its family — that is a naming form of a model the CLI can run, not a substitution of a different
-one. Telemetry keeps the level-1 catalog id as the model asked for, and the attempt row records the
-id the program reports it served.
+An id that names a family and a version — `anthropic/claude-opus-5-5`, `claude-sonnet-5`, the dated
+`claude-haiku-4-5-20251001` — is passed to the CLI as that model, so naming an exact model runs it
+and keeps running it when a newer model of the tier ships. A family with no version
+(`anthropic/claude-opus`) is the tier, not a model: the CLI has no model by that name, so it follows
+the family like the bare alias. Telemetry keeps the level-1 catalog id as the model asked for, and
+the attempt row records the id the program reports it served.
+
+**The CLI must be new enough for the model.** Each release carries its own list of accepted models,
+and one that predates a model refuses it outright while the tier alias goes on serving the previous
+generation — a 400 at the first turn, or a run that quietly used an older model. Setup installs
+`2.1.280` or newer for this reason; a copy already on the machine is used as it is, so `doctor`'s
+version is the one to read before assuming which model a tier reaches.
 
 **Anything else throws.** There is no regex fall-through to sonnet and no cross-provider
 substitution: the `gemini`/`gemini-flash`/`deepseek-v4-pro`/`azure` mappings are gone with the
@@ -360,7 +378,7 @@ cannot be read as one list.
 | `CLEAROTRON_DISPATCH_RECORD` | **on** | Write the verbatim message of every stage dispatch to `_driver/<stage>.attempt<N>[.repair<M>].dispatch.txt`, with `{file, sha, bytes, chars, kind}` on the attempt row. **Default ON** — `0`/`off`/`false`/`no` disarms it. Unlike `CLEAROTRON_DUMP_JSON` beside it, this is opt-OUT: the question it answers ("was the model given this?") is asked *after* the run that raised it, so a flag someone had to remember would be off on exactly the run that needed it. The files carry the company's identity verbatim and are deliberately not in the artifact table. |
 | `CLEAROTRON_GATHER_SESSION_KEY` / `CLEAROTRON_GATHER_AGENT` / `CLEAROTRON_GATHER_SESSION_ID` | set per stage | Telemetry attribution into the provider-call ledger (set by the gather config; not operator-set). |
 | `CLEAROTRON_RECORD_AXIS` | set per dispatch (unset ⇒ the stage is not fanned out) | Binds one fan-out turn of a recording stage to the single member it may write. `stageOnce` suffixes a fan-out stage's label with its axis, the gather config resolves `<stage>:<axis>` back to the base stage's tool group, and this carries the axis to the recording server. A call whose payload names a different member than the turn is bound to is REFUSED, so a seat cannot write into a sibling's file — without the binding every turn of the fan-out would record over member one. Set by the driver; not operator-set. |
-| `PORTAL_READ_MODEL` | `claude-sonnet-5` | The model the portal's own compose-read turn uses. Distinct from the pipeline's tiers: this is a portal surface, not a stage. |
+| `PORTAL_READ_MODEL` | `sonnet` | The model the portal's own compose-read turn uses. Distinct from the pipeline's tiers: this is a portal surface, not a stage. |
 | `CLEAROTRON_ORDER_PROBE_SEED` | unset | Seed for `scripts/band-shape-probe.mjs`, so an ordering probe can be replayed. A diagnostic script's knob, not a run's. |
 | `PROBE_TERM` | `DELTA` | The mark word `providers/uspto-local/bin/verify-index.mjs` searches when verifying a built local USPTO index. A diagnostic script's knob, not a run's. Change it when a row reports MEASURES NOTHING: that means the term had no exact hit, so the row's timing is not a result. |
 

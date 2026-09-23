@@ -270,7 +270,7 @@ test("T3a: the late-hardening branch adopts the verdict, rewrites the label auth
   assert.match(body, /writeVerdictSidecar\(\)/,
     "verdict.json is 'the single label authority' in its own words; leave it stale and applyVerdictFrontMatter "
     + "re-stamps the report with the verdict the reviewer has since hardened away from");
-  assert.match(body, /writeRunStatus\(ctx, \{ verdict \}\)/, "and the run's own record follows it");
+  assert.match(body, /writeRunStatus\(ctx, signoffPatch\(verdict\)\)/, "and the run's own record follows it, as the reviewer's sign-off");
   assert.match(body, /reassemble = true;/,
     "assembleReportMd must re-run, or the open-points section is built from the review this repair replaced");
   assert.doesNotMatch(body, /throw new StageFailure\("verdict",\s*\n?\s*`reviewer verdict/,

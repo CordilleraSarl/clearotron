@@ -2916,3 +2916,22 @@ test("driven: main carrying an untagged version is published by that path; a tag
   assert.equal(done.code, 0, done.text);
   assert.match(done.output, /^cut=false$/m, "a version already tagged would be published again");
 });
+
+// A PUSH OPENS NO VERSION PULL REQUEST (2026-09-22). Versions are cut by dispatch, and the dispatch runs
+// the same step, so the pull request a push kept current between cuts sat on the public list for days
+// doing nothing. The push still asks the cut question: that is what publishes a version commit landing
+// by a push, and it reads the pushed commit rather than the step this arm gates.
+test("a push opens no version pull request, and still asks whether it cut a version", () => {
+  const version = jobBlock("version");
+  const stepAt = (name) => {
+    const at = version.indexOf(`- name: ${name}`);
+    assert.ok(at >= 0, `the version job has no step "${name}" — this arm could not look, which is not a pass`);
+    const next = version.indexOf("\n      - name:", at + 1);
+    return version.slice(at, next < 0 ? version.length : next);
+  };
+  assert.match(stepAt("Open or update the standing version pull request"), /\n {8}if: github\.event_name == 'workflow_dispatch'\n/,
+    "a push opens or updates the version pull request again, and it sits open between cuts doing nothing");
+  const cut = stepAt("Did this push cut a version");
+  assert.doesNotMatch(cut, /\n {8}if:/, "the cut question is gated, so a version commit landing by a push is never asked about");
+  assert.match(cut, /CLEAROTRON_CUT_REF: \$\{\{ github\.sha \}\}/, "the cut question must read the pushed commit, not the working tree");
+});
