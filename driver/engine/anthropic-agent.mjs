@@ -545,8 +545,11 @@ export const anthropicAgentEngine = {
       // Not on Windows, which has no process groups: there the turn stays attached, and ends as a tree
       // (engine-spawn.mjs says why, and how the program itself is started).
       const run = engineSpawn(claudeBin(), args);
+      const spawnedAt = Date.now();   // before the spawn: what the turn starts is started after this
       try { child = spawn(run.command, run.args, { stdio: ["pipe", "pipe", "pipe"], cwd: spawnCwd, env: spawnEnv(), detached: spawnsDetached() }); }
       catch (e) { return resolve(errResult(t0, e, resumeRef)); }
+      let exitedAt = null;
+      child.once("exit", () => { exitedAt = Date.now(); });
       // THE SECOND SPAWN PATH, and it has to record too. This engine does not go
       // through runStreamingChild; wiring one and assuming the other follows is the exact defect shape
       // 2122 was raised on the same day (the demo banner reached the clearance renderer and not the
@@ -901,8 +904,9 @@ export const anthropicAgentEngine = {
       // only while claude does not setpgid them itself — post-deploy verification item.
       let escalation = null;
       // Windows has no group to signal: the whole tree is ended at once, and the escalation then finds nothing.
+      // Even when claude itself has exited, for the reason runStreamingChild gives (engine/common.mjs).
       const groupKill = process.platform === "win32"
-        ? () => { if (child.exitCode === null && child.signalCode === null) killWindowsTreeNow(child.pid); }
+        ? (sig) => { const n = killWindowsTreeNow({ pid: child.pid, since: spawnedAt, until: exitedAt }); if (!n && sig === "SIGTERM") process.stderr.write(`[engine] the Windows stop found nothing of this turn left to end (program ${child.pid})\n`); }
         : (sig) => { try { process.kill(-child.pid, sig); } catch { try { child.kill(sig); } catch { /* already gone */ } } };
       const killTree = () => {
         if (escalation) return;   // the watchdog polls — arm the escalation exactly once

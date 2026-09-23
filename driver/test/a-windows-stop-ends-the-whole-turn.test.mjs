@@ -125,7 +125,7 @@ test("the watchdog's stop and the start window's stop take the tree on Windows",
     bin: execPath, args: ["-e", "process.stdout.write('{}\\n'); setInterval(() => {}, 1000)"], input: "",
     stallSec: 0.3, platform: "win32",
     // The real tree stop needs Windows; this one ends the real child so the arm cleans up after itself.
-    endTree: (pid) => { ended.push(pid); try { process.kill(pid, "SIGKILL"); } catch { /* gone */ } },
+    endTree: ({ pid, since }) => { ended.push({ pid, since }); try { process.kill(pid, "SIGKILL"); } catch { /* gone */ } return 1; },
   });
   assert.equal(r.stallKill, true);
   assert.equal(ended.length >= 1, true, "the stalled turn was not handed to the tree stop");
@@ -148,14 +148,33 @@ test("several trees end from one listing and one taskkill; with no listing, each
   const table = parseWindowsRows([row(10, 1, T0, 1, "portal"), row(11, 10, T1, 1, "child of portal"), row(20, 1, T0, 1, "worker")].join("\n"));
   const lists = [];
   const kills = [];
-  assert.equal(killWindowsTreesNow([10, 20, 99], { list: () => { lists.push(1); return table; }, taskkill: (p) => kills.push(p) }), true);
+  assert.equal(killWindowsTreesNow([10, 20, 99], { list: () => { lists.push(1); return table; }, taskkill: (p) => kills.push(p) }), 3);
   assert.equal(lists.length, 1, "each child took its own listing, which the seconds after a window closes cannot afford");
   assert.deepEqual(kills, [[10, 11, 20]]);
   const whole = [];
-  assert.equal(killWindowsTreeNow(77, { list: () => null, taskkill: () => {}, taskkillTree: (pid) => whole.push(pid) }), true);
+  assert.equal(killWindowsTreeNow(77, { list: () => null, taskkill: () => {}, taskkillTree: (pid) => whole.push(pid) }), 1);
   assert.deepEqual(whole, [77]);
   const none = [];
-  assert.equal(killWindowsTreeNow(77, { list: () => [], taskkill: (p) => none.push(p), taskkillTree: (p) => none.push(p) }), false,
+  assert.equal(killWindowsTreeNow(77, { list: () => [], taskkill: (p) => none.push(p), taskkillTree: (p) => none.push(p) }), 0,
     "a child already gone from the listing was stopped by number");
   assert.deepEqual(none, []);
+});
+
+test("when the turn's program has exited, the stop still ends the servers it left, and never a stranger's", () => {
+  const since = Date.parse("2026-09-23T12:00:00Z");
+  const until = since + 60_000;
+  // The program (510) is gone. Its tool server (520) and that server's child (530) run on under its number.
+  // A stranger took 510 after the exit and started 540: both started after `until`.
+  const gone = parseWindowsRows([row(520, 510, T0, 1, "server"), row(530, 520, T1, 1, "its child")].join("\n"))
+    .map((p) => ({ ...p, startedAt: p.pid === 520 ? since + 5_000 : since + 6_000 }));
+  const kills = [];
+  assert.equal(killWindowsTreeNow({ pid: 510, since, until }, { list: () => gone, taskkill: (p) => kills.push(p) }), 2);
+  assert.deepEqual(kills, [[520, 530]], "the servers a gone program left behind ran on after the stop");
+
+  const reused = [{ pid: 510, ppid: 4, startedAt: until + 30_000 }, { pid: 540, ppid: 510, startedAt: until + 31_000 }];
+  const none = [];
+  assert.equal(killWindowsTreeNow({ pid: 510, since, until }, { list: () => reused, taskkill: (p) => none.push(p) }), 0);
+  assert.deepEqual(none, [], "a stranger now wearing the gone program's number was stopped");
+  assert.equal(killWindowsTreeNow({ pid: 510, since, until }, { list: () => null, taskkill: () => {}, taskkillTree: (p) => none.push(p) }), 0);
+  assert.deepEqual(none, [], "with no listing, a gone program's number was ended by taskkill /T, whoever wears it now");
 });

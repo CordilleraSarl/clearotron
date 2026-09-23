@@ -123,28 +123,57 @@ export async function endWindowsTree(rootPid, {
  * The same stop from a place that cannot wait: a watchdog timer, or a supervisor's exit. It lists and ends
  * the tree and does not check afterwards. Falls back to `taskkill /T` on the root only when the listing
  * cannot be read, and only for a root the caller holds a handle to (see windowsTree): leaving the tree
- * running is the worse of the two outcomes there.
+ * running is the worse of the two outcomes there. Returns how many processes it handed to taskkill.
+ *
+ * `root` is a pid, or `{ pid, since, until }` from a caller that spawned it. `since` is the moment just
+ * before the spawn, and `until` the moment it was seen to exit, if it has. THEY ARE WHAT LET A STOP END
+ * WHAT A GONE ROOT LEFT BEHIND. When the engine's own program has exited and its tool servers run on, the
+ * listing holds no root to walk from, and a stop keyed on the root ends nothing. Its orphans still carry
+ * its number as their parent, and started between `since` and `until`; a stranger that took the number
+ * later can only have started after `until`, and a live root that started before `since` is a stranger
+ * wearing the number.
  */
-export function killWindowsTreeNow(rootPid, opts = {}) {
-  return killWindowsTreesNow([rootPid], opts);
+export function killWindowsTreeNow(root, opts = {}) {
+  return killWindowsTreesNow([root], opts);
+}
+
+const SLACK_MS = 1000;   // a creation stamp and Date.now() are both the wall clock, read a tick apart
+
+/** The pids to end for one root spec, from one listing. PURE. */
+export function windowsTreeOf(table, root) {
+  const { pid, since = null, until = null } = typeof root === "object" && root ? root : { pid: root };
+  if (!Number.isInteger(pid) || pid <= 0) return [];
+  const row = table.find((p) => p.pid === pid);
+  const ours = row && (since == null || !Number.isFinite(row.startedAt)
+    || (row.startedAt >= since - SLACK_MS && (until == null || row.startedAt <= until + SLACK_MS)));
+  if (ours) return windowsTree(table, pid)?.map((p) => p.pid) ?? [];
+  if (since == null) return [];
+  const orphans = table.filter((p) => p.ppid === pid && p.pid !== pid && Number.isFinite(p.startedAt)
+    && p.startedAt >= since - SLACK_MS && (until == null || p.startedAt <= until + SLACK_MS));
+  return orphans.flatMap((o) => windowsTree(table, o.pid)?.map((p) => p.pid) ?? []);
 }
 
 /**
  * The same for several roots from ONE listing and ONE taskkill: the start window's teardown, which has the
  * seconds Windows allows after the window closes, and a listing takes most of one.
  */
-export function killWindowsTreesNow(rootPids, {
+export function killWindowsTreesNow(roots, {
   list = () => processTable({ platform: "win32", everyUser: true }),
   taskkill = defaultTaskkill,
   taskkillTree = (pid) => spawnSync("taskkill", ["/F", "/T", "/PID", String(pid)], { encoding: "utf8", windowsHide: true, timeout: 30_000 }),
 } = {}) {
-  const roots = (rootPids ?? []).filter((pid) => Number.isInteger(pid) && pid > 0);
-  if (!roots.length) return false;
+  const specs = (roots ?? []).filter((r) => Number.isInteger(typeof r === "object" && r ? r.pid : r) && (r?.pid ?? r) > 0);
+  if (!specs.length) return 0;
   const table = list();
   try {
-    if (!table) { for (const pid of roots) taskkillTree(pid); return true; }
-    const pids = [...new Set(roots.flatMap((pid) => windowsTree(table, pid)?.map((p) => p.pid) ?? []))];
+    if (!table) {
+      // No listing: only a root still running is ended, by the handle the caller holds.
+      const held = specs.filter((r) => !(typeof r === "object" && r?.until != null)).map((r) => r?.pid ?? r);
+      for (const pid of held) taskkillTree(pid);
+      return held.length;
+    }
+    const pids = [...new Set(specs.flatMap((r) => windowsTreeOf(table, r)))];
     if (pids.length) taskkill(pids);
-    return pids.length > 0;
-  } catch { return false; }
+    return pids.length;
+  } catch { return 0; }
 }
