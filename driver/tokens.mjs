@@ -68,27 +68,35 @@ function emptyAcc() {
  * turn (`engine.resolveModelId ?? resolveModel`) and stamps the answer on the row as `modelUsed`. So
  * this reads the stamp rather than re-deriving it — one resolution, at the point that knows.
  */
-function modelKey(rec) {
+export function modelKey(rec) {
   if (typeof rec.modelUsed === "string" && rec.modelUsed) return rec.modelUsed;
 
   // NO STAMP. Two different situations, and guessing the same way for both is what caused the bug.
   const engine = typeof rec.engine === "string" ? rec.engine : "";
 
-  // Rows predating the stamp, and the direct-API jx lanes, are Anthropic — that was the only engine
-  // when they were written, and the jx lanes name a bare claude id that resolveModel exists to
-  // normalise. Resolving keeps every historical rollup keyed exactly as it was.
-  if (!engine || engine === "anthropic-agent") return resolveModel(rec.model);
+  // A TURN THAT NAMED NO MODEL, a native-language row recording `modelActual: null` (see isAttemptRow),
+  // has no id at all. Its tokens still account, under a key that says the model is missing rather than
+  // one built from the absent field. Asked FIRST, so no row keys as `undefined` because the catalog was
+  // handed nothing to resolve.
+  if (typeof rec.model !== "string") return `${engine || "unknown"}/no-model-reported`;
+
+  // Rows predating the stamp are Anthropic — that was the only engine when they were written — and
+  // resolving keeps every historical rollup keyed exactly as it was.
+  //
+  // A NATIVE-LANGUAGE ROW IS STAMPED WITH ITS VENDOR, NOT AN ENGINE (jxBillingStamp in jx-lanes.mjs), and
+  // its `model` is the id that served the turn. An Anthropic one is normalised through the catalog like
+  // any served Claude id, so it keys as `anthropic/claude-haiku-4-5`, apart from a stage's
+  // `anthropic/claude-haiku` — the split ruled on and accepted with recording the tier. It used to fall
+  // to the branch below and key as `anthropic/unstamped:<id>`, a name for a missing stamp on a row that
+  // carries one. An OpenAI one keys as its served id, which is what an openai-agent stage row carries.
+  if (!engine || engine === "anthropic-agent" || engine === "anthropic") return resolveModel(rec.model);
+  if (engine === "openai") return rec.model;
 
   // Any OTHER engine with no stamp. The tier is not a model id and this catalog is not that engine's,
   // so there is no honest id to key under. Name the gap instead: the tokens still account (dropping
   // them would break byModel summing to total, and an invisible gap is the failure this file already
   // fixed once for byEngine), and the key says what is missing rather than asserting an Anthropic
   // model produced them.
-  //
-  // A TURN THAT NAMED NO MODEL, a native-language row recording `modelActual: null` (see isAttemptRow),
-  // has no id at all. Its tokens still account, under a key that says the model is missing rather than
-  // one built from the absent field. Such a row always carries its vendor's stamp, so it reaches here.
-  if (typeof rec.model !== "string") return `${engine || "unknown"}/no-model-reported`;
   return `${engine}/unstamped:${rec.model}`;
 }
 

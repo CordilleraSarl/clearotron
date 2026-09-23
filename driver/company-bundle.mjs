@@ -99,28 +99,21 @@ export function resolveFramework(requested, {
 
 // ── the profile this writes ────────────────────────────────────────────────────────────────────────
 /**
- * Which marketplaces this brand owner's searches cover — supplied, or the Generic default, SAID OUT LOUD.
+ * Which marketplaces this brand owner's searches cover: the ones supplied, or NONE.
  *
- * A customer bundle is a COMPLETE document in this design, not an overlay on generic: every shipped
- * profile carries its own `platforms`, and the loader requires a non-empty array on every file. The
- * command had no way to supply one and set none, so every bundle it wrote failed to load on this field
- * as well as on the `key` field above — two independent invalidities, and onboarding could not produce
- * a loadable brand owner at all.
+ * A customer bundle is a COMPLETE document in this design, not an overlay on generic: every profile
+ * carries its own `platforms` array, and the loader requires one on every file.
  *
- * Defaulting rather than refusing, and naming it, is this command's own established idiom: the same
- * ruling governs the framework one function down. Which marketplaces a client's clearance searches is
- * not a detail to decide silently, so an operator who supplies nothing is TOLD what they got and can
- * refine it in the portal.
+ * NONE, NOT THE GENERIC DEFAULT, by the owner's ruling of 2026-09-23. A company created with only a name
+ * used to be given the Generic default's marketplaces, which no screen listed and which the company page
+ * then refused to let anybody remove. A new company now starts with an empty list and somebody picks
+ * from the Generic default's marketplaces, which the portal offers as suggestions. With an empty list the
+ * general web search and the meaning checks still run, and so do any stores the engine chooses for a matter
+ * (pipeline.mjs deriveGridSpec).
  */
-export function resolvePlatforms(supplied, roster) {
+export function resolvePlatforms(supplied) {
   if (supplied?.length) return { platforms: supplied, source: "supplied" };
-  const house = roster?.get?.("generic")?.platforms ?? [];
-  if (!house.length)
-    throw new Refusal(
-      "no --platforms was given and the Generic default carries none, so there is nothing to onboard this "
-      + "brand owner with. Pass --platforms, or repair the generic profile in the store.",
-      { code: "no_marketplaces" });
-  return { platforms: [...house], source: "house default" };
+  return { platforms: [], source: "none" };
 }
 
 export function buildProfile({ key, name, domains, platforms, framework, industry,

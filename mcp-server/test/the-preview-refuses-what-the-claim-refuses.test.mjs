@@ -43,7 +43,7 @@ test("every company readable: the unkeyed preview runs, and so does the claim", 
 });
 
 test("a company file unreadable: the preview refuses in the claim's own words, as the claim does", () => {
-  writeFileSync(join(store, "wrecked.json"), JSON.stringify({ name: "Wrecked Co", matchDomains: ["wrecked.example"], platforms: [] }));
+  writeFileSync(join(store, "wrecked.json"), JSON.stringify({ name: "Wrecked Co", matchDomains: ["wrecked.example"], platforms: "wrecked.example" }));
   try {
     loadProfiles({ force: true });
     const p = planRun(ORDER);
