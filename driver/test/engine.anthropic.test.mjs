@@ -687,14 +687,20 @@ test("the arm above still DISCRIMINATES — with the grace cut, the defect's tim
 }));
 
 test("a STARVED SPAWN is not ACTIVE time — the hard ceiling measures from the first byte", timed(async () => {
-  // Arm-395's configuration plus 900ms of startup. Before the fix: killed=true, signals.hardWall, wall 1.0s,
-  // toolWaitMs 0, toolCalls 0 — a 500ms ceiling spent entirely on process boot, with nothing to show for it.
+  // Arm-395's shape plus a startup longer than the ceiling. Before the fix, at 900ms of startup against a 500ms
+  // ceiling: killed=true, signals.hardWall, wall 1.0s, toolWaitMs 0, toolCalls 0 — a ceiling spent entirely
+  // on process boot, with nothing to show for it.
+  //
+  // THREE TIMES THOSE NUMBERS, because the driver times a tool wait from when each line ARRIVES. On the
+  // Windows runner a line reached it 0.3 to 0.5s after the stand-in sent it (a 1.2s wait measured 0.69,
+  // 0.78 and 0.88s), and that lag counts as active time. At a 500ms ceiling the lag alone came within a
+  // hair of the kill this arm says must not happen. At 1.5s it cannot decide the arm on any runner.
   const r = await run({ message: "x", model: "sonnet", thinking: "low", timeoutSec: 60 },
-    { MOCK_CLAUDE_BOOT_MS: "900", MOCK_CLAUDE_TOOL_WAIT: JSON.stringify([{ name: "RegisterLookup", ms: 1200 }]),
-      CLEAROTRON_HARD_MS: "500", CLEAROTRON_STALL_MS: "60000", CLEAROTRON_NO_PROGRESS_MS: "60000" });
+    { MOCK_CLAUDE_BOOT_MS: "2700", MOCK_CLAUDE_TOOL_WAIT: JSON.stringify([{ name: "RegisterLookup", ms: 3600 }]),
+      CLEAROTRON_HARD_MS: "1500", CLEAROTRON_STALL_MS: "60000", CLEAROTRON_NO_PROGRESS_MS: "60000" });
   assert.equal(r.killed, false,
     "startup was charged to the ceiling as active time — the turn died having done no work at all" + specimen(r));
-  assert.ok(r.toolWaitMs >= 1000, `the fixture waited ${r.toolWaitMs}ms on a tool — under ~1s the turn never `
+  assert.ok(r.toolWaitMs >= 3000, `the fixture waited ${r.toolWaitMs}ms on a tool — under ~3s the turn never `
     + "reached the elapsed-vs-active gap this arm turns on" + specimen(r));
   assert.equal(r.toolCalls >= 1, true,
     "no tool call was ever opened, so the turn was killed during boot" + specimen(r));

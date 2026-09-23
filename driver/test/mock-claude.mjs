@@ -91,12 +91,6 @@ const resumeIdx = argv.indexOf("--resume");
 const resumed = resumeIdx >= 0 ? (argv[resumeIdx + 1] ?? "") : "";
 const session = process.env.MOCK_CLAUDE_SESSION || resumed || ("mock-sess-" + Buffer.from(msg).length.toString(36));
 
-// A LINE IS ON THE WIRE WHEN IT IS SENT, on Windows too. Node writes to a pipe synchronously on Linux and
-// asynchronously on Windows, so there a fixture that busy-waits after `send` (the tool-wait gap below) held
-// the line back while it waited: the driver received the tool request late and timed a shorter wait than
-// the fixture made (0.7s of 1.2s, twice, on the Windows runner). Blocking writes on Windows give every
-// fixture the ordering and timing it already has on Linux.
-if (process.platform === "win32") process.stdout._handle?.setBlocking?.(true);
 const send = (m) => process.stdout.write(JSON.stringify(m) + "\n");
 
 // ── the WIRE MODEL ( corruption 3) ───────────────────────────────────────────────────────────────
