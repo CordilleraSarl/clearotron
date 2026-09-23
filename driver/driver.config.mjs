@@ -2259,17 +2259,21 @@ function pathOf(env, platform) {
  * or `claude.cmd` and never the extensionless file. An `.exe` or `.com` is the program itself: the
  * vendor's own installer puts `claude.exe` on PATH. A `.cmd` or `.bat` is npm's shim for a global
  * install, and Node refuses to start a batch file without a shell. So the shim is read as what it stands
- * for: the vendor's package in `node_modules` beside it, and the program that package's `bin` names.
+ * for: the vendor's package in `node_modules` beside it, and the program that package's `bin` names. A
+ * name that already ends in one of those extensions, as a setting of `claude.exe` does, is looked for as
+ * written, as Windows looks for it.
  */
 function windowsProgramIn(dir, name, spec, env) {
   const key = Object.keys(env).find((k) => k.toUpperCase() === "PATHEXT");
   const exts = String((key && env[key]) || ".COM;.EXE;.BAT;.CMD").split(";").map((x) => x.trim().toLowerCase())
     .filter((x) => [".com", ".exe", ".bat", ".cmd"].includes(x));
-  for (const ext of exts) {
-    const p = join(dir, `${name}${ext}`);
-    let file = false;
-    try { file = statSync(p).isFile(); } catch { /* not here */ }
-    if (!file) continue;
+  const own = /\.(?:com|exe|bat|cmd)$/i.exec(name)?.[0]?.toLowerCase();
+  const tries = own ? [[name, own]] : exts.map((ext) => [`${name}${ext}`, ext]);
+  for (const [file, ext] of tries) {
+    const p = join(dir, file);
+    let found = false;
+    try { found = statSync(p).isFile(); } catch { /* not here */ }
+    if (!found) continue;
     if (ext === ".exe" || ext === ".com") return p;
     return installedProgram(spec, dir);
   }

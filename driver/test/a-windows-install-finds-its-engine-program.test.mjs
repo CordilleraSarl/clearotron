@@ -50,6 +50,13 @@ test("the vendor's own installer's claude.exe on PATH is found, and the extensio
   assert.equal(r.source, "path");
 });
 
+test("a setting naming the program with its extension is looked for as written, not as claude.exe.exe", () => {
+  const d = dir("named");
+  const exe = file(join(d, "claude.exe"), EXE);
+  const r = resolveEngineProgram("anthropic-agent", { env: { CLEAROTRON_CLAUDE_PATH: "claude.exe", PATH: d }, ...W });
+  assert.equal(r.resolved, exe, "a bare `claude.exe` in the setting found nothing on Windows");
+});
+
 test("npm's claude.cmd stands for the package beside it: the program is its claude.exe", () => {
   const { prefix, program } = npmPrefix("anthropic-agent");
   const r = resolveEngineProgram("anthropic-agent", { env: { PATH: `C:\\Windows;${prefix}` }, ...W });

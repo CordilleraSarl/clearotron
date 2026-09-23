@@ -20,10 +20,10 @@ import { execPath } from "node:process";
 import { processTable, parseWindowsRows, windowsTicksToMs } from "../../shared/process-table.mjs";
 import { procStarttime } from "../claim-liveness.mjs";
 import { drainingState } from "../worker-heartbeat.mjs";
-import { windowsTree, endWindowsTree, killWindowsTreeNow } from "../engine/engine-spawn.mjs";
+import { windowsTree, endWindowsTree, killWindowsTreeNow, killWindowsTreesNow } from "../engine/engine-spawn.mjs";
 import { endEngineChild, procPgid } from "../engine/child-record.mjs";
 import { runStreamingChild } from "../engine/common.mjs";
-import { stopChild, windowCloseSignals } from "../../bin/start.mjs";
+import { stopChildren, windowCloseSignals } from "../../bin/start.mjs";
 
 // 2026-09-23T12:00:00Z as Windows prints it (100 ns ticks since 1601), and a second a minute later.
 const T0 = "134346384000000000";
@@ -130,21 +130,27 @@ test("the watchdog's stop and the start window's stop take the tree on Windows",
   assert.equal(r.stallKill, true);
   assert.equal(ended.length >= 1, true, "the stalled turn was not handed to the tree stop");
 
-  const trees = [];
-  stopChild({ pid: 42, exitCode: null, signalCode: null }, "SIGTERM", { platform: "win32", endTree: (pid) => trees.push(pid),
-    kill: () => { throw new Error("a process group was signalled on Windows"); } });
-  assert.deepEqual(trees, [42]);
-  stopChild({ pid: 43, exitCode: 0, signalCode: null }, "SIGKILL", { platform: "win32", endTree: (pid) => trees.push(pid) });
-  assert.deepEqual(trees, [42], "a child that had already exited was stopped again, by a number it no longer holds");
+  const listings = [];
+  stopChildren([{ pid: 42, exitCode: null, signalCode: null }, { pid: 43, exitCode: 0, signalCode: null }, { pid: 44, exitCode: null, signalCode: null }],
+    "SIGTERM", { platform: "win32", endTrees: (pids) => listings.push(pids),
+      kill: () => { throw new Error("a process group was signalled on Windows"); } });
+  assert.deepEqual(listings, [[42, 44]], "the window's children were not ended together from one listing, or a child "
+    + "that had already exited was stopped again by a number it no longer holds");
   const signalled = [];
-  stopChild({ pid: 44, kill: (s) => signalled.push(["child", s]) }, "SIGTERM", { platform: "linux",
+  stopChildren([{ pid: 45, kill: (s) => signalled.push(["child", s]) }], "SIGTERM", { platform: "linux",
     kill: (pid, s) => { signalled.push([pid, s]); throw Object.assign(new Error("gone"), { code: "ESRCH" }); } });
-  assert.deepEqual(signalled, [[-44, "SIGTERM"], ["child", "SIGTERM"]], "Linux no longer signals the group first");
+  assert.deepEqual(signalled, [[-45, "SIGTERM"], ["child", "SIGTERM"]], "Linux no longer signals the group first");
   assert.deepEqual(windowCloseSignals("win32"), ["SIGHUP"], "closing the window on Windows reaches no teardown");
   assert.deepEqual(windowCloseSignals("linux"), []);
 });
 
-test("with no listing, the stop from a timer still ends the tree of a child it holds", () => {
+test("several trees end from one listing and one taskkill; with no listing, each held child's tree still ends", () => {
+  const table = parseWindowsRows([row(10, 1, T0, 1, "portal"), row(11, 10, T1, 1, "child of portal"), row(20, 1, T0, 1, "worker")].join("\n"));
+  const lists = [];
+  const kills = [];
+  assert.equal(killWindowsTreesNow([10, 20, 99], { list: () => { lists.push(1); return table; }, taskkill: (p) => kills.push(p) }), true);
+  assert.equal(lists.length, 1, "each child took its own listing, which the seconds after a window closes cannot afford");
+  assert.deepEqual(kills, [[10, 11, 20]]);
   const whole = [];
   assert.equal(killWindowsTreeNow(77, { list: () => null, taskkill: () => {}, taskkillTree: (pid) => whole.push(pid) }), true);
   assert.deepEqual(whole, [77]);

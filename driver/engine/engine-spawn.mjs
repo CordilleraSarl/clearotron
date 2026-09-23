@@ -33,10 +33,16 @@ export function engineSpawn(program, args = [], { platform = process.platform, e
  * Whether a turn is spawned detached.
  *
  * YES WHERE IT BUYS A PROCESS GROUP, which is the whole of the Linux and macOS stop. NOT ON WINDOWS,
- * where detaching buys no group and costs the console: a detached child there starts with no console at
- * all, so closing the window the reader started Clearotron in does not reach it, and it goes on running
- * with nobody watching. Attached, it shares that window's console, and Windows ends it with the window.
- * The stop there is by tree (endWindowsTree), which needs no group.
+ * where detaching buys no group and costs two things. A detached child there starts with no console, so
+ * closing the window the reader started Clearotron in does not reach it. And it is left out of the job
+ * object libuv puts every other child in, which Windows ends when the parent exits (libuv
+ * src/win/process.c: "assign to the global job object so windows will kill it when the parent process
+ * dies"). Attached, the child shares the window's console and ends with its parent, however the parent
+ * ends. The job reaches direct children only, so a stop ends the rest by tree (endWindowsTree).
+ *
+ * AND NO `windowsHide`, for the console half of that reason. With every stream piped, Node starts a
+ * hidden child with no console at all, so the window's closing does not reach it. Hiding is for the short
+ * helpers this file and the process list start (taskkill, PowerShell).
  */
 export const spawnsDetached = (platform = process.platform) => platform !== "win32";
 
@@ -119,17 +125,26 @@ export async function endWindowsTree(rootPid, {
  * cannot be read, and only for a root the caller holds a handle to (see windowsTree): leaving the tree
  * running is the worse of the two outcomes there.
  */
-export function killWindowsTreeNow(rootPid, {
+export function killWindowsTreeNow(rootPid, opts = {}) {
+  return killWindowsTreesNow([rootPid], opts);
+}
+
+/**
+ * The same for several roots from ONE listing and ONE taskkill: the start window's teardown, which has the
+ * seconds Windows allows after the window closes, and a listing takes most of one.
+ */
+export function killWindowsTreesNow(rootPids, {
   list = () => processTable({ platform: "win32", everyUser: true }),
   taskkill = defaultTaskkill,
   taskkillTree = (pid) => spawnSync("taskkill", ["/F", "/T", "/PID", String(pid)], { encoding: "utf8", windowsHide: true, timeout: 30_000 }),
 } = {}) {
-  if (!Number.isInteger(rootPid) || rootPid <= 0) return false;
+  const roots = (rootPids ?? []).filter((pid) => Number.isInteger(pid) && pid > 0);
+  if (!roots.length) return false;
   const table = list();
-  const tree = table ? windowsTree(table, rootPid) : null;
   try {
-    if (tree) taskkill(tree.map((p) => p.pid));
-    else if (!table) taskkillTree(rootPid);
-    return Boolean(tree) || !table;
+    if (!table) { for (const pid of roots) taskkillTree(pid); return true; }
+    const pids = [...new Set(roots.flatMap((pid) => windowsTree(table, pid)?.map((p) => p.pid) ?? []))];
+    if (pids.length) taskkill(pids);
+    return pids.length > 0;
   } catch { return false; }
 }

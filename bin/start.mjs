@@ -87,7 +87,7 @@ import { writeSecretFile } from "../shared/secret-file.mjs";   // one atomic wri
 import { runRequiredNames, missingRequirements, CLOUD_ROUTES } from "../driver/run-requirements.mjs";
 import { CLOUD_SWITCH, cloudsSwitchedOn } from "../driver/engine/auth.mjs";   // a switch compared the way the program reads it: on or off
 import { ENGINE_BINARIES, DEFAULT_ENGINE_ID as RUN_DEFAULT_ENGINE, resolveEngineProgram } from "../driver/driver.config.mjs";
-import { spawnsDetached, killWindowsTreeNow } from "../driver/engine/engine-spawn.mjs";   // Windows has no process group to stop
+import { spawnsDetached, killWindowsTreesNow } from "../driver/engine/engine-spawn.mjs";   // Windows has no process group to stop
 import { unitEnvironment, unitValue } from "../driver/unit-environment.mjs";   // the PATH the worker unit will run with, read the way doctor reads it
 
 /**
@@ -2254,7 +2254,6 @@ if (isMain) {
     return rec;
   };
 
-  const signalGroup = (rec, sig) => stopChild(rec.child, sig);
 
   async function shutdown(code) {
     if (stopping) return;
@@ -2262,15 +2261,14 @@ if (isMain) {
     const live = children.filter((c) => c.alive);
     if (live.length) {
       say(`\n  stopping ${live.map((c) => c.name).join(" and ")}…`);
-      for (const c of live) signalGroup(c, "SIGTERM");
+      stopChildren(live.map((c) => c.child), "SIGTERM");
       // A grace window, then the hammer. Nothing this command starts holds unflushed client state, so
       // the window is short; it exists so a service gets to close its listener and log its own line.
       const deadline = Date.now() + 5000;
       while (children.some((c) => c.alive) && Date.now() < deadline) await new Promise((r) => setTimeout(r, 100));
-      for (const c of children.filter((x) => x.alive)) {
-        err(`  ${c.name} did not stop on SIGTERM — killing it.`);
-        signalGroup(c, "SIGKILL");
-      }
+      const stuck = children.filter((x) => x.alive);
+      for (const c of stuck) err(`  ${c.name} did not stop on SIGTERM — killing it.`);
+      stopChildren(stuck.map((c) => c.child), "SIGKILL");
       await new Promise((r) => setTimeout(r, 200));
     }
     // ── THE DEMO TAKES ITS FOLDER WITH IT ───────────────────────────────────────────────────────────
@@ -2694,21 +2692,23 @@ export function windowCloseSignals(platform = process.platform) {
 }
 
 /**
- * Stop one child of this command, and whatever it started.
+ * Stop children of this command, and whatever they started.
  *
- * On Linux and macOS the child leads its own process group, so the signal goes to the group, and to the
+ * On Linux and macOS each child leads its own process group, so the signal goes to the group, and to the
  * child alone when the group is already gone. Windows has neither groups nor signals a Node child can
- * catch, so there the child's process tree is ended at once, the second call finding nothing left.
+ * catch, so there every child's process tree is ended at once, from one process listing: closing the
+ * window leaves only seconds, and a listing takes most of one. The second call finds nothing left.
  * `platform` and the two effects are parameters so both branches run on a Linux CI.
  */
-export function stopChild(child, sig, { platform = process.platform, kill = (pid, s) => process.kill(pid, s),
-  endTree = killWindowsTreeNow } = {}) {
-  if (!child?.pid) return;
+export function stopChildren(children, sig, { platform = process.platform, kill = (pid, s) => process.kill(pid, s),
+  endTrees = killWindowsTreesNow } = {}) {
+  const live = (children ?? []).filter((c) => c?.pid);
   if (platform === "win32") {
-    if (child.exitCode === null && child.signalCode === null) endTree(child.pid);
+    const pids = live.filter((c) => c.exitCode === null && c.signalCode === null).map((c) => c.pid);
+    if (pids.length) endTrees(pids);
     return;
   }
-  try { kill(-child.pid, sig); } catch { try { child.kill(sig); } catch { /* already gone */ } }
+  for (const c of live) { try { kill(-c.pid, sig); } catch { try { c.kill(sig); } catch { /* already gone */ } } }
 }
 
 /**
