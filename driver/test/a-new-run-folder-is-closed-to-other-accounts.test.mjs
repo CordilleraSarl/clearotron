@@ -30,7 +30,7 @@ function underLooseUmask(fn) {
 test("a run folder created for a new run is owner and group only, and so is its record folder", { skip: !POSIX && "Windows has no mode bits" }, (t) => {
   const root = mkdtempSync(join(tmpdir(), "run-mode-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));
-  const runDir = join(root, "some-matter", "2026-09-23-amber-harbor");
+  const runDir = join(root, "some-matter", "2026-09-23-sample-run");
   underLooseUmask(() => ensureDriverDir(runDir));
   assert.equal(RUN_DIR_MODE, 0o750);
   for (const dir of [join(root, "some-matter"), runDir, join(runDir, DRIVER_DIR)]) {
@@ -41,7 +41,7 @@ test("a run folder created for a new run is owner and group only, and so is its 
 test("a folder that already exists keeps its mode: the change is made at creation, never by a chmod", { skip: !POSIX && "Windows has no mode bits" }, (t) => {
   const root = mkdtempSync(join(tmpdir(), "run-mode-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));
-  const runDir = join(root, "2026-09-23-amber-harbor");
+  const runDir = join(root, "2026-09-23-sample-run");
   mkdirSync(runDir); chmodSync(runDir, 0o775);
   underLooseUmask(() => ensureDriverDir(runDir));
   assert.equal(mode(runDir), 0o775, "an existing run folder was changed; a chmod on a set-GID tree is what makes every report 403");
@@ -53,7 +53,7 @@ test("a report folder created under a set-GID pool root keeps the set-GID bit an
   t.after(() => rmSync(pool, { recursive: true, force: true }));
   chmodSync(pool, 0o2775);   // our own temp folder, in our own group: the chmod keeps the bit here
   if (!(mode(pool) & 0o2000)) return t.skip("this filesystem will not hold a set-GID bit on a folder");
-  const reportDir = join(pool, "some-matter-2026-09-23-amber-harbor");
+  const reportDir = join(pool, "some-matter-2026-09-23-sample-run");
   underLooseUmask(() => mkdirSync(reportDir, { recursive: true, mode: RUN_DIR_MODE }));
   assert.equal(mode(reportDir), 0o2750,
     `the report folder was created ${octal(mode(reportDir))}; it must inherit set-GID and keep the group's read, or reports 403`);
