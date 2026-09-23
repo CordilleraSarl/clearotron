@@ -15,7 +15,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync } from "nod
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { driverDir } from "../../shared/driver-dir.mjs";   //
+import { driverDir, driverFileName } from "../../shared/driver-dir.mjs";   //
 import { frozenSnapshot, frozenDiff, describeDrift, isFrozenEntry,
   BY_DESIGN_MUTATORS, byDesignMutator, isSiblingDispatch, stageBlock } from "../run-integrity.mjs";
 import { WITNESS_FILE } from "../methodology-witness.mjs";
@@ -34,10 +34,6 @@ const mk = () => {
   return dir;
 };
 const put = (dir, name, body) => writeFileSync(driverDir(dir, name), body);
-// On Windows a stage label's colon is written `%3A` on disk, and frozenSnapshot keeps the name as it
-// reads it, so a sibling's dispatch record never matches its stage block there and counts as an addition.
-// That is the product's reading of the name, not these arms.
-const SIBLING_WINDOWS_FAULT = { skip: process.platform === "win32" && "a Windows fault in driver/run-integrity.mjs, reported for a fix" };
 const dirs = [];
 const run = () => { const d = mk(); dirs.push(d); return d; };
 test.after?.(() => { for (const d of dirs) { try { rmSync(d, { recursive: true, force: true }); } catch { /* best effort */ } } });
@@ -243,7 +239,7 @@ test("the delivered run's shape produces ZERO faults — the by-design mutators 
     [WITNESS_FILE, "placement-form.form.json", "register-coverage-form.form.json"].sort());
 });
 
-test("report-card:2's eleven sibling dispatches stop being additions", SIBLING_WINDOWS_FAULT, () => {
+test("report-card:2's eleven sibling dispatches stop being additions", () => {
   const dir = run();
   put(dir, "register-findings.json", "{}");
   const before = frozenSnapshot(dir);
@@ -271,14 +267,14 @@ test("a genuine violation still faults LOUDLY, and names the file", () => {
   assert.equal(drift.byDesignCount, 1, "…while the allowed change is still reported beside it");
 });
 
-test("a seat forging a NON-dispatch file during a sibling's turn is still an addition", SIBLING_WINDOWS_FAULT, () => {
+test("a seat forging a NON-dispatch file during a sibling's turn is still an addition", () => {
   const dir = run();
   put(dir, "register-findings.json", "{}");
   const before = frozenSnapshot(dir);
   put(dir, "report-card:9.forged.json", "{}");                     // same block, NOT a dispatch record
   put(dir, dispatchFileName("report-card:9", 1), "msg");           // same block, IS one
   const drift = describeDrift("report-card:2", before, frozenSnapshot(dir));
-  assert.deepEqual(drift.added, ["report-card:9.forged.json"]);
+  assert.deepEqual(drift.added, [driverFileName("report-card:9.forged.json")]);   // named as it is on disk, %3A on Windows
   assert.equal(drift.siblingAddCount, 1);
 });
 

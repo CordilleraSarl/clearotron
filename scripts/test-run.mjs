@@ -794,6 +794,10 @@ child = spawn(argv[0], argv.slice(1), {
   env: {
     ...process.env,
     TMPDIR: root,
+    // Windows' os.tmpdir() reads TEMP and TMP, not TMPDIR, so without these a Windows run's fixtures
+    // landed in the machine's own temp folder.
+    TEMP: root,
+    TMP: root,
     // AND THE REAL BASE, so a NESTED run does not root itself inside this one. The line above hands the
     // child a TMPDIR pointing at this run's own root; `os.tmpdir()` honours it, so a child that starts
     // its own runner would put its root INSIDE the parent's and the parent's cleanup — or its sweep of

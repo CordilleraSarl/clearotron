@@ -58,12 +58,8 @@ const rows = (root) => {
 const roots = [];
 const fresh = (prefix) => { const r = mkdtempSync(join(tmpdir(), prefix)); roots.push(r); mkdirSync(queueFor(r), { recursive: true }); return r; };
 test.after(() => { for (const r of roots) rmSync(r, { recursive: true, force: true }); });
-// The runner claims a queued job by renaming it to `.claimed-<pid>:<starttime>`, and the ledger row and
-// the allowance check both come after that rename. Windows forbids a colon in a file name, so the claim
-// fails and neither is reached. That is the product's lock name, not these arms.
-const CLAIM_WINDOWS_FAULT = { skip: process.platform === "win32" && "a Windows fault in driver/runner.mjs, reported for a fix" };
 
-test("a claimed Generic job is filed under its organisation: the ledger row and the frozen profile both carry it", CLAIM_WINDOWS_FAULT, async () => {
+test("a claimed Generic job is filed under its organisation: the ledger row and the frozen profile both carry it", async () => {
   const root = fresh("generic-claim-");
   writeFileSync(join(queueFor(root), "job-g.json"), JSON.stringify(genericJob("TMP9401", "southbank")));
   const { code, log } = await runToExit(envFor(root));
@@ -78,7 +74,7 @@ test("a claimed Generic job is filed under its organisation: the ledger row and 
   assert.equal(frozen.organisation, "southbank", "the frozen profile names the organisation, which is how the listings place a live run");
 });
 
-test("the wall refuses an organisation's Generic once its day is used, and lets another organisation's through", CLAIM_WINDOWS_FAULT, async () => {
+test("the wall refuses an organisation's Generic once its day is used, and lets another organisation's through", async () => {
   const root = fresh("generic-wall-");
   const now = Date.now();
   for (let i = 0; i < 20; i++) {

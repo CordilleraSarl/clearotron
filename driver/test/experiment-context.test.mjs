@@ -204,7 +204,7 @@ function assertContextByteEqual(stage, canonRunDir, shadowDir) {
 // the path back and the half spec reads as a different context. That is the product's comparison, not
 // this arm's.
 test("--experiment common-law-half — the arm RUNS at all, and its context is byte-equal to the canonical run's",
-  { skip: process.platform === "win32" && "a Windows fault in driver/pipeline.mjs, reported for a fix" }, async () => {
+  async () => {
   const { job, runDir, codename } = await canonicalRun();
   // The precondition the issue names: the half-spec sidecar is DERIVED in pipeline() and DECLARED
   // nowhere, so the old rig copied stageInputs() and the validator then refused for want of it.
@@ -275,11 +275,8 @@ test("band_shape returns ok:true against a sandboxed register-digest (the tier f
 
 // ── 3. AN ABSENCE IS A FINDING ───────────────────────────────────────────────────────────────────────
 
-// sandboxGaps keeps only paths that start with the run dir plus "/", which no Windows path does, so there
-// it reports no gap at all — the absence-as-pass these two arms exist to catch.
-const GAPS_WINDOWS_FAULT = { skip: process.platform === "win32" && "a Windows fault in driver/stage-context.mjs, reported for a fix" };
 
-test("zero semantics: a sandbox that loses a context artefact REFUSES by name, it does not dispatch", GAPS_WINDOWS_FAULT, () => {
+test("zero semantics: a sandbox that loses a context artefact REFUSES by name, it does not dispatch", () => {
   // The unit under test is the gap check itself, over a hand-built canonical/sandbox pair: the runtime
   // integration proves the happy path, this proves the failing one without needing to break a stage.
   const canon = mkdtempSync(join(tmpdir(), "gap-canon-"));
@@ -315,7 +312,7 @@ test("zero semantics: a sandbox that loses a context artefact REFUSES by name, i
   rmSync(canon, { recursive: true, force: true }); rmSync(shadow, { recursive: true, force: true });
 });
 
-test("an empty directory is MISSING, not present (a _records/ with nothing in it serves no record)", GAPS_WINDOWS_FAULT, () => {
+test("an empty directory is MISSING, not present (a _records/ with nothing in it serves no record)", () => {
   const canon = mkdtempSync(join(tmpdir(), "gap-canon2-"));
   const shadow = mkdtempSync(join(tmpdir(), "gap-shadow2-"));
   mkdirSync(join(canon, "_records"), { recursive: true });

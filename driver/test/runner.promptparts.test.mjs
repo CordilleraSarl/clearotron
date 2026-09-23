@@ -38,12 +38,8 @@ process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
 // lands rather than the day someone remembers to retype it.
 const PROSE_SUFFIXES = Object.values(PROSE_PARTS);
 
-// The runner claims a queued job by renaming it to `.claimed-<pid>:<starttime>`. Windows forbids a colon
-// in a file name, so no job here is ever claimed and nothing runs. That is the product's lock name, not
-// this arm.
-const CLAIM_WINDOWS_FAULT = { skip: process.platform === "win32" && "a Windows fault in driver/runner.mjs, reported for a fix" };
 
-test("prose sidecars assemble + run; legacy inline still works; missing-subject & broken-manifest park + ping + cleanup", CLAIM_WINDOWS_FAULT, async () => {
+test("prose sidecars assemble + run; legacy inline still works; missing-subject & broken-manifest park + ping + cleanup", async () => {
   const root = mkdtempSync(join(tmpdir(), "clearotron-promptparts-"));
   const callLog = join(root, "calls.jsonl");
   const claudeLog = join(root, "claude-calls.jsonl");   // {argv, prompt} rows — the stage prompts ride stdin

@@ -894,7 +894,7 @@
         "a-refused-unit-says-what-is-half-started.test.mjs": {
           "tests": 9,
           "asserts": 31,
-          "skips": 0,
+          "skips": 1,
           "todos": 0
         },
         "a-register-card-does-not-argue-with-its-own-chip.test.mjs": {
@@ -1258,8 +1258,8 @@
           "todos": 0
         },
         "a-windows-stage-record-has-a-name-windows-can-hold.test.mjs": {
-          "tests": 4,
-          "asserts": 18,
+          "tests": 5,
+          "asserts": 21,
           "skips": 0,
           "todos": 0
         },
@@ -1416,7 +1416,7 @@
         "an-install-from-npx-moves-out-of-the-cache.test.mjs": {
           "tests": 13,
           "asserts": 79,
-          "skips": 7,
+          "skips": 8,
           "todos": 0
         },
         "an-mcp-route-says-which-challenge-it-answers-with.test.mjs": {
@@ -2724,7 +2724,7 @@
         "exit1-artifact-rescue.test.mjs": {
           "tests": 25,
           "asserts": 101,
-          "skips": 0,
+          "skips": 1,
           "todos": 0
         },
         "experiment-context.test.mjs": {
@@ -4956,7 +4956,7 @@
         "test-run-tmpdir.test.mjs": {
           "tests": 12,
           "asserts": 27,
-          "skips": 0,
+          "skips": 1,
           "todos": 0
         },
         "the-administrator-contact-is-a-link-or-nothing.test.mjs": {
@@ -5994,7 +5994,7 @@
         "update-writes-only-inside-the-checkout.test.mjs": {
           "tests": 8,
           "asserts": 29,
-          "skips": 0,
+          "skips": 1,
           "todos": 0
         },
         "usage-ledger-standalone-queue.test.mjs": {

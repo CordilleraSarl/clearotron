@@ -30,11 +30,8 @@ function withBase(fn) {
 
 const runnerEnv = (base) => ({ ...process.env, CT_TEST_TMP_BASE: base });
 
-// On Windows `os.tmpdir()` reads TEMP and TMP, never TMPDIR, and the runner hands its child only TMPDIR —
-// so there a child's fixtures land in the machine's temp directory, outside any run root.
-const TEMP_WINDOWS_FAULT = { skip: process.platform === "win32" && "a Windows fault in scripts/test-run.mjs, reported for a fix" };
 
-test("a fixture made by the child lands inside the run root, not in the ambient tmpdir", TEMP_WINDOWS_FAULT, () => {
+test("a fixture made by the child lands inside the run root, not in the ambient tmpdir", () => {
   withBase((base) => {
     const script = join(base, "child.mjs");
     writeFileSync(script, `
@@ -58,7 +55,7 @@ test("a fixture made by the child lands inside the run root, not in the ambient 
 // Driven as a real nesting — the runner, running a script, that runs the runner again — because the
 // property is the environment crossing two process boundaries. Asserting it against the exported
 // constant would prove the constant.
-test("a nested run does not root itself inside its parent's root", TEMP_WINDOWS_FAULT, () => {
+test("a nested run does not root itself inside its parent's root", () => {
   withBase((base) => {
     const inner = join(base, "inner.mjs");
     writeFileSync(inner, [

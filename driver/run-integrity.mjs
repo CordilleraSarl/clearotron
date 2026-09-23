@@ -170,7 +170,7 @@ export const stageBlock = (stage) => String(stage ?? "").split(":")[0];
 
 /** Is `name` the dispatch record of a seat in the same stage block as `stage`? */
 export function isSiblingDispatch(name, stage) {
-  const n = String(name ?? "");
+  const n = String(name ?? "").replaceAll("%3A", ":");   // a Windows record writes the label's colon %3A
   const block = stageBlock(stage);
   if (!block || !n.endsWith(`.${DISPATCH_SUFFIX}`)) return false;
   const label = n.slice(0, n.indexOf(".attempt"));
