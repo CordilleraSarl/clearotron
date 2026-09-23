@@ -130,7 +130,7 @@
 //                        `files.some(…)`, and `[].some()` is `false`. A stage declaring no expected
 //                        artifact leaves `files` empty, so the same situation was "wrote nothing" on one
 //                        row and "nothing to write" on the other. The reader is not hypothetical:
-//                        runEconomics in run-economics.mjs:521 bills `wrote === false` to
+//                        runEconomics() in run-economics.mjs bills `wrote === false` to
 //                        `emittedOnDispatchesThatWroteNothing`, so every repair turn on such a stage
 //                        charged its whole output to a waste counter. The `output:` field on the SAME
 //                        row already guarded the same emptiness.
