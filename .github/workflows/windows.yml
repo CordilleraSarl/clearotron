@@ -303,3 +303,48 @@ jobs:
           name: windows-suite-${{ matrix.shard }}
           path: ${{ runner.temp }}/suite.log
           retention-days: 7
+
+  # EVERY SHARD RAN, AND THE GUARDS LOOKED, read across all four logs at once as ci.yml's
+  # `suites-complete` does. A shard proves only that no guard SKIPPED in it; an absent SKIPPED line also
+  # fits a shard that ran nothing, so the affirmative `[repo-guard] ok` is looked for here, in any shard.
+  # `if: always()` with an explicit read of the result, because a skipped dependency skips a plain
+  # `needs:` job, and a skipped check reads as a pass. The logs are read with `grep -a`: a Windows log
+  # can carry a NUL byte, and grep then calls the file binary and prints no line from it.
+  suite-complete:
+    name: Driver suite on Windows, every shard
+    needs: suite
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Every shard ran and passed
+        run: |
+          echo "shards reported: ${{ needs.suite.result }}"
+          [ "${{ needs.suite.result }}" = "success" ] || {
+            echo '::error::the Windows suite did not come back success: it was ${{ needs.suite.result }}. A shard that was skipped or cancelled is not a shard that passed.'
+            exit 1
+          }
+
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c   # v8
+        with:
+          pattern: windows-suite-*
+          path: logs
+
+      - name: All four logs are present, and the guards looked
+        run: |
+          n=$(find logs -name suite.log | wc -l)
+          echo "shard logs found: $n"
+          [ "$n" -eq 4 ] || { echo "::error::expected 4 shard logs and found $n."; exit 1; }
+          if grep -raF '[repo-guard] SKIPPED' logs; then
+            echo '::error::a repository-scoped guard SKIPPED in one of the shards.'
+            exit 1
+          fi
+          grep -rqaF '[repo-guard] ok' logs || {
+            echo '::error::no guard in any shard reported that it read the corpus. An absent SKIPPED line is not a pass on its own: a suite that never ran prints neither marker.'
+            exit 1
+          }
+          if grep -rqaF '[repo-guard] blocklist mode=table' logs; then
+            echo '::error::a shard read the private roster: the identifier sweep reported mode=table on a public runner.'
+            exit 1
+          fi
+          echo "the corpus guards reported ok across the Windows shards, and none skipped."
