@@ -249,37 +249,3 @@ jobs:
           name: windows-clearances
           path: ${{ runner.temp }}/clearances.log
           retention-days: 7
-
-  # A FIRST LOOK, TO BE REPLACED. The whole driver suite on Windows, once, to see which tests assume a
-  # POSIX machine and which fail for a reason this track has to fix. It does not fail the run.
-  survey:
-    name: Driver suite on Windows, shard ${{ matrix.shard }} of 4 (survey)
-    runs-on: windows-latest
-    timeout-minutes: 60
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: [1, 2, 3, 4]
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7
-
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020   # v7
-        with:
-          node-version: '22.23.2'
-          cache: npm
-
-      - run: npm ci
-
-      - name: This shard of the driver suite
-        continue-on-error: true
-        shell: bash
-        run: |
-          set -o pipefail
-          node scripts/test-full.mjs --only driver --shard ${{ matrix.shard }}/4 2>&1 | tee "$RUNNER_TEMP/suite.log"
-
-      - if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a   # v7
-        with:
-          name: windows-suite-${{ matrix.shard }}
-          path: ${{ runner.temp }}/suite.log
-          retention-days: 7

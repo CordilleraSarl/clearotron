@@ -1271,7 +1271,7 @@
         },
         "a-windows-stop-on-windows-itself.test.mjs": {
           "tests": 3,
-          "asserts": 11,
+          "asserts": 12,
           "skips": 3,
           "todos": 0
         },

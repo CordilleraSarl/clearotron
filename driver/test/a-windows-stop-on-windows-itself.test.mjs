@@ -100,12 +100,18 @@ test("the immediate stop ends a turn and what it started, and a later listing ho
 
 test("a turn that goes quiet is stopped by the watchdog, and takes its grandchild with it", { skip: ON_WINDOWS, timeout: 60000 }, async () => {
   const { dir, bin, args } = treeFolder("win-stall-");
-  const seen = pidsIn(dir, 30000);
-  const r = await runStreamingChild({ bin, args, cwd: dir, input: "", stallSec: 3 });
-  const pids = await seen;
+  const run = runStreamingChild({ bin, args, cwd: dir, input: "", stallSec: 3 });
+  const pids = await pidsIn(dir, 30000);
+  // A child the stop missed keeps the turn's output open, so the turn never finishes and this arm would
+  // hang rather than fail. After 30 seconds the arm ends what it recorded itself, and says so.
+  let missed = false;
+  const guard = setTimeout(() => { missed = true; if (pids) endRecorded([pids.child, pids.grand]); }, 30000);
+  const r = await run;
+  clearTimeout(guard);
   try {
-    assert.equal(r.stallKill, true, "the watchdog did not stop the quiet turn");
     assert.ok(pids, "the grandchild never started, so the stop had nothing to prove");
+    assert.equal(missed, false, "30 seconds after the watchdog fired, the turn's programs were still running and holding its output open");
+    assert.equal(r.stallKill, true, "the watchdog did not stop the quiet turn");
     assert.deepEqual(await stillRunning([pids.child, pids.grand]), [], "the watchdog ended the turn and left the programs it started running");
   } finally { if (pids) endRecorded([pids.child, pids.grand]); }
 });
