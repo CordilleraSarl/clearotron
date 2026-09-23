@@ -55,6 +55,12 @@ test("wire: mcpToolCall → real /mcp face → start_run queues with server-stam
     assert.equal(job.profileKey, "aurora");
     assert.equal(job.enqueuedBy, "portal-poc", "attribution = the ops token's sub, stamped by the face");
     assert.equal(job.enqueuedVia, "mcp/start_run");
+    // AND STOPS IT, on the same token over the same wire. The portal calls exactly these two tools, and
+    // the call handler now refuses anything the session's listing hides, so both are asserted here.
+    const id = r.queuePath.split(/[\\/]/).pop().replace(/\.json$/, "");
+    const stopped = await mcpToolCall({ url, token, tool: "stop_run", args: { id } });
+    assert.equal(stopped.action, "dequeued", JSON.stringify(stopped));
+    assert.equal(existsSync(r.queuePath), false, "stop_run answered and the queued job is still there");
     // an account OUTSIDE the token's grant is refused by the face's authorize chokepoint
     await assert.rejects(
       () => mcpToolCall({ url, token, tool: "start_run", args: { profileKey: "zephyr", forwarder: "portal", markName: "X", classes: [9] } }),
@@ -63,6 +69,32 @@ test("wire: mcpToolCall → real /mcp face → start_run queues with server-stam
     await assert.rejects(
       () => mcpToolCall({ url, token, tool: "start_run", args: { forwarder: "portal", forwarderDomain: "acme.example", markName: "X", classes: [9] } }),
       /profileKey explicitly|does not include account "generic"/, "untagged jobs are not available to scoped tokens (refused at the face gate or the ops door)");
+  } finally {
+    for (const [, e] of sessions) { try { e.transport.close(); } catch { /* */ } try { e.server?.close?.(); } catch { /* */ } }
+    srv.closeAllConnections?.();
+    await new Promise((r) => srv.close(r));
+  }
+});
+
+test("wire: an ops token that names no tools cannot start a what-if over the network, through the real transport", async () => {
+  // The listing hides what_if_plan and what_if_run from every ops session on this face; the call handler
+  // used to run them anyway once authorize() passed a verb-less token. The unit arm replaces the tool with
+  // a recorder; this one goes through the SDK transport the connectors use, and reads the answer back.
+  const sessions = new Map();
+  const handler = makeHttpHandler({ verify: null, devMode: true, limiter: new RateLimiter({ perMinute: 200 }),
+    sessions, createSession, ns: "wire-test" });
+  const srv = createServer(handler);
+  await new Promise((r) => srv.listen(0, "127.0.0.1", r));
+  const url = `http://127.0.0.1:${srv.address().port}`;
+  const token = mintToken({ scope: "ops", sub: "wall-wire" });
+  try {
+    for (const tool of ["what_if_plan", "what_if_run"]) {
+      await assert.rejects(() => mcpToolCall({ url, token, tool, args: { runId: "r1", confirmationToken: "x", stage: "report-overview" } }),
+        new RegExp(`unknown tool \\\\?"${tool}`), `${tool} was not refused as a tool this session does not have`);
+    }
+    // The control: a read the listing shows still answers on the same token and wire.
+    const runs = await mcpToolCall({ url, token, tool: "list_runs", args: {} });
+    assert.ok(runs && typeof runs === "object", "a listed read failed, so the refusals above prove nothing about the wall");
   } finally {
     for (const [, e] of sessions) { try { e.transport.close(); } catch { /* */ } try { e.server?.close?.(); } catch { /* */ } }
     srv.closeAllConnections?.();

@@ -15,7 +15,7 @@
 // intake connector never needs stop_run.
 
 import { fileURLToPath } from "node:url";
-import { mintToken, verifyToken, TOOL_SCOPES } from "../shared/scope.mjs";
+import { mintToken, verifyToken } from "../shared/scope.mjs";
 import { homedir } from "node:os";
 import { defaultDenylistPath } from "../shared/client-door.mjs";   // — one owner for the path
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
@@ -25,7 +25,7 @@ function fail(msg, code = 1) { process.stderr.write(`mint-token: ${msg}\n`); pro
 const USAGE = `usage: node mint-token.mjs --scope ops|user|account [options]
   --scope ops        an automation/operator principal (write verbs allowed)
     --sub <name>       REQUIRED for ops: the principal name (rides into the audit log)
-    --verbs a,b        least-privilege write-verb allowlist (recommended; omit = full ops)
+    --verbs a,b        REQUIRED for ops: the write tools this token may call
     --accounts a,b     GRANTS cap: the account keys (profileKeys) this token may see/start (omit = all)
     --ttl-days <n>     default 30
   --scope user       a run-bound report-link token (read-only client layer)
@@ -76,6 +76,12 @@ export function mintFromOptions({ scope, sub = null, runId = null, ttlDays, verb
   // They belong here rather than at either caller for exactly the reason the extraction existed: a rule
   // enforced by one of two callers is a rule the other one does not have.
   if (scope === "ops" && !sub) throw new Error("--sub is required for an ops token — the audit log must name the principal");
+  // AN OPS TOKEN NAMES ITS VERBS. One that named none held every write verb, and over the network that
+  // included starting a what-if; it is the most valuable credential the product issues, so it is no longer
+  // issued. Tokens already out keep working: the door records their use (the audit line's `namesVerbs`) so
+  // they can be found, re-issued with verbs and then refused, in that order.
+  if (scope === "ops" && !(Array.isArray(verbs) && verbs.length))
+    throw new Error("--verbs is required for an ops token — name the write tools it may call, for example --verbs start_run,stop_run");
   if (scope === "user" && !runId) throw new Error("--run is required for a user token (it is bound to exactly one run)");
   if (scope === "account" && !sub) throw new Error("--sub is required for an account key — it names the grants-file identity the key reads its accounts from");
   if (!Number.isFinite(ttlDays) || ttlDays <= 0) throw new Error("--ttl-days must be a positive number");
@@ -110,10 +116,6 @@ export function mintFromOptions({ scope, sub = null, runId = null, ttlDays, verb
   notes.push(`revoke this TOKEN specifically: add "${t.jti}" as a line in ${denylistFile()}`);
   if (scope === "account")
     notes.push(`the grants row IS the reach — an account key reads its accounts from the grants file on every request`);
-  if (scope === "ops" && !verbs) {
-    const writable = Object.keys(TOOL_SCOPES).filter((k) => TOOL_SCOPES[k].write);
-    notes.push(`note: FULL ops authority (${writable.join(", ")}) — consider --verbs for automation principals`);
-  }
   return { token, claims: t, notes };
 }
 
