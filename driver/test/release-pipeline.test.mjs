@@ -2959,6 +2959,21 @@ test("a push opens no version pull request, and still asks whether it cut a vers
 // The version stays readable in a comment beside it, and Dependabot's `github-actions` updates keep
 // bumping the sha. A local reusable workflow (`./.github/...`) is this repository's own file and is
 // pinned by the commit that carries it.
+// THE CLA WORKFLOW'S WRITE TOKEN IS SCOPED TO WHAT ITS ACTION CALLS. It runs on `pull_request_target`,
+// which hands a fork's pull request a token that can write to this repository. Read from the pinned
+// action's source: it commits the signature file (contents), comments on the pull request (pull-requests)
+// and re-runs its own check once the author signs (actions). It sets no commit status; `statuses: write`
+// was granted anyway, with a comment claiming two scopes over a block of four.
+test("the CLA workflow's write token carries exactly the three scopes its pinned action calls", () => {
+  const cla = read(".github/workflows/cla.yml");
+  const block = /^permissions:\n((?: {2}[a-z-]+: \S+.*\n)+)/m.exec(cla)?.[1] ?? "";
+  const scopes = block.split("\n").filter(Boolean).map((l) => l.trim().replace(/\s*#.*$/, "")).sort();
+  assert.deepEqual(scopes, ["actions: write", "contents: write", "pull-requests: write"],
+    "cla.yml's token no longer matches what the pinned action calls; read the action's source at its SHA before changing either");
+  assert.match(cla, /contributor-assistant\/github-action@ca4a40a7d1004f18d9960b404b97e5f30a505a08 # v2\.6\.1/,
+    "the CLA action moved; the scopes above were read from v2.6.1's source and must be read again for the new one");
+});
+
 test("every action a workflow uses is pinned to a full commit sha, with its version in a comment", () => {
   const dir = join(ROOT, ".github", "workflows");
   const uses = [];
