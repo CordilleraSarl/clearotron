@@ -700,7 +700,7 @@ serve({
             type: "object", required: ["text"],
             properties: {
               text: { type: "string", description: "The result, in one line — what was checked and how it came back." },
-              source_link: { type: "string", description: "An http(s) URL for the page it came from. OMIT it when the source is a SEARCH rather than a page — a citation label in a link destination ships a link to nowhere (#875)." },
+              source_link: { type: "string", description: "An http(s) URL for the page it came from. OMIT it when the source is a SEARCH rather than a page — a citation label in a link destination ships a link to nowhere." },
               internal: { type: "boolean", description: "true marks this an INTERNAL reviewer note; the driver renders the ::p:: marker and the client export strips it." },
             },
           },
