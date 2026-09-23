@@ -114,17 +114,22 @@ const WIRE_MODEL = {
 };
 const wireModel = process.env.MOCK_CLAUDE_WIRE_MODEL || WIRE_MODEL[askedModel] || "claude-haiku-4-5";
 
-// THE ENGINE PROBE'S TOOL. The probe hands the engine one tool, `ping` on the probe server, and passes only
-// when the reply carries the word that server was given. A working engine calls it and answers with that
-// word, so this does too, read off the --mcp-config it was handed; MOCK_CLAUDE_TOOLS_UNUSED=1 answers
-// without it, the shape of a turn that shows nothing about the tools.
-const probeWord = (() => {
+// THE ENGINE PROBE'S TOOLS. The probe hands the engine three tools on the probe server, `ping`, `note` and
+// `look`, and passes only when the reply carries the word each was given and the file it asked for holds
+// them. A working engine calls them, writes the file and answers with the words, so this does too, reading
+// the words off the --mcp-config it was handed (the server's arguments after its path) and the file off the
+// prompt. MOCK_CLAUDE_TOOLS_UNUSED=1 answers without them, the shape of a turn that shows nothing about the
+// tools. MOCK_CLAUDE_PROBE_NO_WRITE=1 answers with the words and writes nothing. MOCK_CLAUDE_WRITE_FAILED=1
+// asks to Write the file and gets an error back, as the program reports a write it could not make.
+const probeWords = (() => {
   if (process.env.MOCK_CLAUDE_TOOLS_UNUSED) return null;
   try {
     const i = argv.indexOf("--mcp-config");
-    return (i >= 0 ? JSON.parse(argv[i + 1]) : null)?.mcpServers?.probe?.args?.[1] ?? null;
+    const words = ((i >= 0 ? JSON.parse(argv[i + 1]) : null)?.mcpServers?.probe?.args ?? []).slice(1);
+    return words.length ? words : null;
   } catch { return null; }
 })();
+const probeWord = probeWords ? probeWords.join(" ") : null;
 
 // system:init — mirrors the real shape (apiKeySource etc.)
 // MOCK_CLAUDE_BOOT_MS=<ms> — block for <ms> before ANY output: the shape a STARVED SPAWN has from the
@@ -391,6 +396,20 @@ if (process.env.MOCK_CLAUDE_USAGE_THEN_STALL) {
   // 120s watchdog exists to abort. Hold the process open; the engine SIGKILLs it.
   setInterval(() => {}, 1 << 30);
 } else {
+  // The probe's file: written as the program writes one, or refused as the program reports a failed write.
+  function doProbeWrite() {
+    const target = probeWords ? msg.match(/to the file (.+?), one per line/)?.[1] : null;
+    if (!target || process.env.MOCK_CLAUDE_PROBE_NO_WRITE) return;
+    if (process.env.MOCK_CLAUDE_WRITE_FAILED) {
+      send({ type: "assistant", message: { role: "assistant", model: wireModel,
+        content: [{ type: "tool_use", id: "toolu_probe_write", name: "Write", input: { file_path: target } }],
+        usage: { input_tokens: 1, output_tokens: 1, cache_read_input_tokens: 0, cache_creation_input_tokens: 0 } } });
+      send({ type: "user", message: { role: "user", content: [{ type: "tool_result", tool_use_id: "toolu_probe_write", is_error: true,
+        content: "EACCES: permission denied" }] } });
+      return;
+    }
+    try { writeFileSync(target, probeWords.join("\n") + "\n"); } catch { /* best-effort */ }
+  }
   function doStageWrites() {
     if (process.env.MOCK_CLAUDE_NOFILE) return;
     // The bound card index the driver put into this turn's recording-server env. Read from argv rather
@@ -583,6 +602,7 @@ if (process.env.MOCK_CLAUDE_USAGE_THEN_STALL) {
     // a streamed partial (the watchdog heartbeat) then the final result
     send({ type: "stream_event", event: { type: "content_block_delta", delta: { type: "text_delta", text: "…" } } });
     doStageWrites();
+    doProbeWrite();
     emitResult();
   }
 }

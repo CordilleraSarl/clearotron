@@ -68,3 +68,18 @@ test("systemd: the worker's unit unsets both keys after loading the settings fil
     }
   }
 });
+
+test("systemd: the line survives the renderer that installs the unit", async () => {
+  // `clearotron start --background` and the hosted install both place units through `renderUnit`, which
+  // fills the `${…}` placeholders and leaves every other line as written. So the installed unit carries the
+  // line the tracked one does; this renders the tracked file the way they do and reads the line back.
+  const { renderUnit, placeholdersIn } = await import("../systemd/render-units.mjs");
+  const text = readFileSync(join(ROOT, "driver", "systemd", "clearotron-worker.service"), "utf8");
+  // The worker unit carries no render placeholder today (its `${CLEAROTRON_CHECKOUT_DIR}` is systemd's own
+  // expansion, read from the settings file), so it is installed byte for byte; any it gains later is filled here.
+  const values = Object.fromEntries(placeholdersIn(text).map((n) => [n, `/value-of-${n}`]));
+  const rendered = renderUnit(text, values);
+  if (!Object.keys(values).length) assert.equal(rendered, text, "a unit with no placeholder is not installed as written");
+  const unset = rendered.split("\n").filter((l) => l.startsWith("UnsetEnvironment="));
+  assert.deepEqual(unset, [`UnsetEnvironment=${SIGNING_KEY_NAMES.join(" ")}`]);
+});

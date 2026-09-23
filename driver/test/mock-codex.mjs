@@ -98,16 +98,28 @@ if (resumed && process.env.MOCK_CODEX_SESSION_STORE === "1" && !rolloutFor(resum
 }
 const session = process.env.MOCK_CODEX_SESSION || resumed || ("mock-thread-" + Buffer.from(msg).length.toString(36));
 
-// THE ENGINE PROBE'S TOOL, read off the rendered config.toml the way codex reads it. A working codex calls
-// `ping` and answers with its word; a refusing one (MOCK_CODEX_MCP_REFUSED) never reaches the server, so it
-// has no word to give. MOCK_CODEX_TOOLS_UNUSED=1 answers without calling it.
-const probeWord = (() => {
+// THE ENGINE PROBE'S TOOLS, read off the rendered config.toml the way codex reads it: the probe server's
+// arguments after its path are the words `ping`, `note` and `look` return, in that order. A working codex
+// calls each and answers with the words; a refusing one (MOCK_CODEX_MCP_REFUSED) never reaches the server,
+// so it has no word to give. MOCK_CODEX_TOOLS_UNUSED=1 answers without calling them.
+//   MOCK_CODEX_REFUSE_TOOLS=<tool,…> — refuse only those probe tools, as codex does a tool whose approval
+//                            it will not give; the others complete, and the reply lacks the refused words
+//   MOCK_CODEX_WRITE_FAILED=1 — the probe's file write is a `file_change` that fails, as codex 0.156.1 reports
+//                            it when its sandbox cannot start, and no file appears
+//   MOCK_CODEX_PROBE_NO_WRITE=1 — answer with the words and write nothing, as a model that skipped a step
+const PROBE_TOOL_NAMES = ["ping", "note", "look"];
+const probeWords = (() => {
   if (process.env.MOCK_CODEX_TOOLS_UNUSED || Number(process.env.MOCK_CODEX_MCP_REFUSED || 0) > 0) return null;
   try {
     const toml = readFileSync(join(process.env.CODEX_HOME || "", "config.toml"), "utf8");
-    return toml.match(/\[mcp_servers\.probe\][\s\S]*?args = \["[^"]*", "([^"]+)"\]/)?.[1] ?? null;
+    const args = toml.match(/\[mcp_servers\.probe\][\s\S]*?args = (\[[^\]]*\])/)?.[1];
+    const words = args ? JSON.parse(args).slice(1) : [];
+    return words.length ? words : null;
   } catch { return null; }
 })();
+const refusedProbeTools = new Set(String(process.env.MOCK_CODEX_REFUSE_TOOLS || "").split(",").filter(Boolean));
+/** The words the reply carries: those of the probe tools that were not refused. */
+const probeReplyWords = probeWords ? PROBE_TOOL_NAMES.map((t, i) => (refusedProbeTools.has(t) ? null : probeWords[i])).filter(Boolean) : null;
 
 // Call log: the real argv (flags) + the stdin prompt + the rendered config.toml (read from CODEX_HOME while
 // it still exists — the engine deletes it after) so a test can assert the codex wiring faithfully.
@@ -256,12 +268,29 @@ if (process.env.MOCK_CODEX_STALL) {
       send({ type: "item.completed", item: { ...item, status: "failed",
         error: { message: "MCP tool call requires approval, but approval policy is never" } } });
     }
-    if (probeWord) {
-      const item = { id: "mcp_probe", type: "mcp_tool_call", server: "probe", tool: "ping" };
-      send({ type: "item.started", item: { ...item, status: "in_progress" } });
-      send({ type: "item.completed", item: { ...item, status: "completed", result: { content: [{ type: "text", text: probeWord }] } } });
+    if (probeWords) {
+      PROBE_TOOL_NAMES.forEach((tool, i) => {
+        if (probeWords[i] == null) return;
+        const item = { id: `mcp_probe_${tool}`, type: "mcp_tool_call", server: "probe", tool };
+        send({ type: "item.started", item: { ...item, status: "in_progress" } });
+        if (refusedProbeTools.has(tool))
+          send({ type: "item.completed", item: { ...item, status: "failed", error: { message: "MCP tool call requires approval, but approval policy is never" } } });
+        else
+          send({ type: "item.completed", item: { ...item, status: "completed", result: { content: [{ type: "text", text: probeWords[i] }] } } });
+      });
+      // The probe's file, written as codex writes one: a `file_change` item.
+      const target = msg.match(/to the file (.+?), one per line/)?.[1];
+      if (target && !process.env.MOCK_CODEX_PROBE_NO_WRITE) {
+        const item = { id: "file_probe", type: "file_change", changes: [{ path: target, kind: "add" }] };
+        send({ type: "item.started", item: { ...item, status: "in_progress" } });
+        if (process.env.MOCK_CODEX_WRITE_FAILED) send({ type: "item.completed", item: { ...item, status: "failed" } });
+        else {
+          try { writeFileSync(target, probeReplyWords.join("\n") + "\n"); } catch { /* best-effort */ }
+          send({ type: "item.completed", item: { ...item, status: "completed" } });
+        }
+      }
     }
     doStageWrites();
-    completeTurn(probeWord && !process.env.MOCK_CODEX_RESULT ? probeWord : undefined, { noNewline: Boolean(process.env.MOCK_CODEX_NO_NEWLINE) });
+    completeTurn(probeReplyWords && !process.env.MOCK_CODEX_RESULT ? probeReplyWords.join(" ") : undefined, { noNewline: Boolean(process.env.MOCK_CODEX_NO_NEWLINE) });
   }
 }

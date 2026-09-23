@@ -368,6 +368,8 @@ export function runDirGrant({ runDir, dispatch, seatWrites = null } = {}) {
  * shell the program offered them anyway.
  */
 export const COMMAND_TOOLS = Object.freeze(["Bash", "PowerShell", "Monitor"]);
+/** The program's tools that write a file. A result that comes back an error is a write that failed. */
+const FILE_WRITE_TOOLS = Object.freeze(["Write", "Edit", "MultiEdit", "NotebookEdit"]);
 
 export function buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig, allowedTools, maxBudgetUsd, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null }) {
   const input = absolutizeSkillRefs(message, skillsDir, resolveSkill);
@@ -662,6 +664,11 @@ export const anthropicAgentEngine = {
       // flag in the argv shows what was asked of the program, this shows what the model did. Still a count
       // of calls, never a name or an input.
       let commandToolCalls = 0;
+      // WRITES THE PROGRAM REPORTED AS FAILED: a Write or Edit whose result came back an error. The engine
+      // probe refuses a machine on it, because it is the engine's own word that a file could not be written,
+      // not an inference from a file that is missing. The ids of the write asks, so their results are known.
+      let writesFailed = 0;
+      const writeAsks = new Set();
       let toolWaitMs = 0;
       let toolAskedAt = null;
       // WHAT THE WAIT IS MADE OF, keyed by the tool(s) that caused it.
@@ -803,6 +810,7 @@ export const anthropicAgentEngine = {
           for (const b of Array.isArray(ev.message?.content) ? ev.message.content : []) {
             if (b?.type === "tool_use") toolCalls++;   // #1111 — every tool, not only Read; a COUNT, never a name
             if (b?.type === "tool_use" && COMMAND_TOOLS.includes(b?.name)) commandToolCalls++;
+            if (b?.type === "tool_use" && FILE_WRITE_TOOLS.includes(b?.name) && b?.id != null) writeAsks.add(String(b.id));
             if (b?.type === "tool_use" && b?.name === "Read" && typeof b?.input?.file_path === "string") {
               if (reads.size < READS_CAP) reads.add(b.input.file_path);
               else if (!reads.has(b.input.file_path)) readsTruncated = true;   // a DISTINCT path was dropped
@@ -834,6 +842,8 @@ export const anthropicAgentEngine = {
           progress();
         }
         else if (ev.type === "user") {
+          for (const b of Array.isArray(ev.message?.content) ? ev.message.content : [])
+            if (b?.type === "tool_result" && b?.is_error === true && writeAsks.has(String(b?.tool_use_id))) writesFailed++;
           // the result of the ask above. Only counted when an ask is outstanding, so a `user`
           // event with no preceding tool_use adds nothing rather than charging the turn for a gap it
           // never spent waiting.
@@ -1134,7 +1144,7 @@ export const anthropicAgentEngine = {
           // The two counts a test round reads per stage: calls to a command tool, and calls the program
           // refused. The refusals are the result event's own `permission_denials`, counted; null when the
           // turn settled with no result event, so "not reported" never reads as "none refused".
-          commandToolCalls,
+          commandToolCalls, writesFailed,
           toolCallsRefused: Array.isArray(resultEvent?.permission_denials) ? resultEvent.permission_denials.length : null,
           // ms from spawn to the child's FIRST byte, or null when it never spoke. RECORDING
           // ONLY: nothing branches on it. A recording field is protected by a test or by nothing, so

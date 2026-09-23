@@ -15,7 +15,7 @@ import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { fileURLToPath } from "node:url";
 import { RECORDING_TOOLS, seatWritesForGroups, SEAT_WRITE_FREE_STAGES } from "../engine/mcp/gather-config.mjs";
 import { runDirGrant } from "../engine/anthropic-agent.mjs";
-import { PROBE_PROMPT } from "../engine/probe.mjs";
+import { isProbePrompt } from "../engine/probe.mjs";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -54,7 +54,7 @@ async function runAnthropicPipeline(env = {}) {
   // split out here rather than tolerated inside `claudeCalls`, because every assertion below is about what
   // a COMPUTE STAGE carries and a probe that slipped into that population would weaken all of them. The
   // partition is on the probe's own exported prompt — an identity, not a heuristic over the log's shape.
-  const doorProbe = turns.find((c) => (c.prompt || "").trim() === PROBE_PROMPT) ?? null;
+  const doorProbe = turns.find((c) => isProbePrompt(c.prompt)) ?? null;
   const claudeCalls = turns.filter((c) => c !== doorProbe);
   return { res, events, claudeCalls, doorProbe, turns };
 }
@@ -69,7 +69,12 @@ test("E2: full pipeline runs on the anthropic-agent engine (CLEAR, delivered, al
   // engine nobody proved.
   assert.equal(turns[0], doorProbe, "the engine-turn probe is the FIRST turn of the run, ahead of matter-frame");
   assert.deepEqual(doorProbe.argv.slice(5, 9), ["--model", "haiku", "--effort", "low"], "the door spends the cheapest turn either adapter can build");
-  assert.ok(!doorProbe.argv.includes("--add-dir"), "the door grants no directory — it runs before one exists");
+  // The door grants one folder, the probe's own, made for its turn in the temp folder: never the run's, which
+  // does not exist yet, and never the skills tree.
+  const doorDirs = doorProbe.argv.reduce((acc, a, i) => (a === "--add-dir" ? [...acc, doorProbe.argv[i + 1]] : acc), []);
+  assert.equal(doorDirs.length, 1, `the door granted ${doorDirs.length} folders: ${doorDirs}`);
+  assert.match(doorDirs[0], /clearotron-probe-/, "the folder the door grants is the probe's own");
+  assert.ok(!doorDirs[0].startsWith(res.runDir), "and never the run's");
   const doorServers = JSON.parse(doorProbe.argv[doorProbe.argv.indexOf("--mcp-config") + 1]).mcpServers;
   assert.deepEqual(Object.keys(doorServers), ["probe"], "and starts the probe's own tool server and no stage's");
   const probeRow = events.find((e) => e.event === "engine-turn-probe");

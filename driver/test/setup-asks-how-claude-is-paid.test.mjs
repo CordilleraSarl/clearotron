@@ -29,7 +29,7 @@ import { ENGINE_BINARIES } from "../driver.config.mjs";
 // The version a stand-in claims: the engine's own floor, so doctor's floor check does not report it as too old.
 const FLOOR_VERSION = ENGINE_BINARIES["anthropic-agent"].floor;
 import { resolveAuthMode, CLOUD_SETTINGS, CLOUD_SECRETS, CLOUD_SWITCH } from "../engine/auth.mjs";
-import { probeEngineTurn, classifyProbe, engineEnvKeys } from "../engine/probe.mjs";
+import { probeEngineTurn, classifyProbe, engineEnvKeys, PROBE_FILE } from "../engine/probe.mjs";
 import { CLAUDE_PAY_QUESTION, CLOUD_CHOICES, payQuestion, cloudSettings, servedLine, cloudAccount, shownSetting, signInHandOff,
   proofTurn, readEnvFile, settingsInForce } from "../../bin/onboard.mjs";
 import { payWays } from "../run-requirements.mjs";
@@ -148,9 +148,11 @@ test("the probe's turn sees the cloud settings its caller passed, they are gone 
   let seen = null;
   const v = await probeEngineTurn({ env, runTurn: async (a) => {
     seen = Object.fromEntries(Object.keys(env).map((k) => [k, process.env[k]]));
-    // A working engine answers with the word the probe's tool returned.
-    const word = JSON.parse(a.mcpConfig).mcpServers.probe.args[1];
-    return { code: 0, stdout: word, modelWire: "claude-haiku-4-5-20251001", providerWire: "foundry" };
+    // A working engine calls the probe's tools, writes their words to the file it was asked for, and answers
+    // with them.
+    const words = JSON.parse(a.mcpConfig).mcpServers.probe.args.slice(1);
+    writeFileSync(join(a.runDir, PROBE_FILE), words.join("\n") + "\n");
+    return { code: 0, stdout: words.join(" "), modelWire: "claude-haiku-4-5-20251001", providerWire: "foundry" };
   } });
   assert.equal(v.ok, true, JSON.stringify(v));
   assert.deepEqual(seen, env, "the turn ran without the settings it was meant to prove");
