@@ -7,6 +7,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { execPath } from "node:process";
+import { join } from "node:path";
 import {
   runStreamingChild, absolutizeSkillRefs, buildEnvelope, WRITE_DISCIPLINE,
 } from "../engine/common.mjs";
@@ -46,7 +47,9 @@ test("stall watchdog: a child that goes silent past stallSec is killed as a stal
   assert.equal(r.killed, true);
   assert.equal(r.stallKill, true);
   assert.equal(r.hardWall, false);
-  assert.equal(r.rawCode, null);           // signal-killed → no exit code
+  // signal-killed → no exit code. Windows has no signal to die of: the stop ends the process outright,
+  // and a process ended that way exits 1.
+  assert.equal(r.rawCode, process.platform === "win32" ? 1 : null);
   assert.deepEqual(r.lines, ['{"type":"start"}']);
 });
 
@@ -111,7 +114,8 @@ test("spawn error: a missing binary resolves with { spawnError }, never rejects"
 test("absolutizeSkillRefs: rewrites skills/… refs under dirname(skillsDir), idempotently", () => {
   const skillsDir = "/opt/driver/skills";
   const once = absolutizeSkillRefs("read skills/clearance-register/SKILL.md now", skillsDir);
-  assert.equal(once, "read /opt/driver/skills/clearance-register/SKILL.md now");
+  // Joined with this machine's `join`, so a Windows prompt names the file with its own separator.
+  assert.equal(once, `read ${join("/opt/driver", "skills/clearance-register/SKILL.md")} now`);
   assert.equal(absolutizeSkillRefs(once, skillsDir), once, "already-absolute path must not be double-prefixed");
   assert.equal(absolutizeSkillRefs("no refs here", skillsDir), "no refs here");
 });

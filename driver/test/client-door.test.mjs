@@ -46,7 +46,8 @@ const io = (files = {}) => {
 
 test("THE DOOR IS STANDING ONLY WHEN BOTH HALVES ARE — either alone is a door that does not work", () => {
   const unitDir = "/u";
-  const has = (p) => p === `${unitDir}/${CLIENT_DOOR_UNIT}`;
+  // The unit's path is composed with this machine's `join`, so it is expected the same way.
+  const has = (p) => p === join(unitDir, CLIENT_DOOR_UNIT);
   const none = () => false;
   assert.equal(clientDoorState({ env: { CLIENT_MCP_ACCOUNT_ACCESS: "1" }, unitDir, exists: has }).standing, true);
   // The fence on with nothing listening is a setting with no server; the unit running with the fence off
@@ -727,7 +728,10 @@ test("a standing door that is down, with the port HELD, says what holds it", () 
   assert.equal(said.level, "problem");
   assert.match(said.text, /something IS listening/,
     "the probe was already taken and passed in; asserting an empty port without reading it is the defect");
-  assert.match(said.text, /ss -ltnp/, "and the reader needs the way to find the holder, not just the fact");
+  // The way to find the holder is the platform's own: `ss` on Linux, and on Windows the cmdlet that names
+  // the owning process (shared/os-advice.mjs whatHoldsPort).
+  assert.match(said.text, process.platform === "win32" ? /Get-NetTCPConnection .*Get-Process/ : /ss -ltnp/,
+    "and the reader needs the way to find the holder, not just the fact");
   assert.doesNotMatch(said.text, /re-applies it cleanly/,
     "re-placing the unit onto a port something else holds is not the remedy for this state");
 });

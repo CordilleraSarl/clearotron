@@ -109,13 +109,14 @@ test("gate fail-closed: fabricated bands with NO executor lane kill the run at f
   assert.ok(typeof status.reasonDetail === "string" && status.reasonDetail.length > 0,
     "the payload must reach the record at all; null here is the state this issue was opened on");
   const pointer = status.reasonDetail.split(" — ")[0];
-  assert.match(pointer, /register-units\/.*-band\.json$/,
+  // A native path, so its separators are matched either way, and "no path" below means neither.
+  assert.match(pointer, /register-units[\\/].*-band\.json$/,
     `reasonDetail must LEAD with the band path, so the 600-char abbrev can never sever it: ${status.reasonDetail}`);
   assert.equal(existsSync(pointer), true,
     `the address the record hands a reader must open — this is the ENOENT the issue is about: ${pointer}`);
   // AND THE REASON MUST NOT HAVE KEPT A COPY. Moving the payload while leaving it interpolated too is
   // the fix that passes both arms and changes nothing about the cap.
-  assert.doesNotMatch(String(status.reason), /\//,
+  assert.doesNotMatch(String(status.reason), /[\\/]/,
     `no path may remain in the sentence: ${status.reason}`);
 });
 

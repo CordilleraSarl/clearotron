@@ -27,19 +27,20 @@ import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { tmpdir } from "node:os";
-import { join, relative } from "node:path";
+import { join, relative, sep } from "node:path";
 import { runLog } from "../log.mjs";
 import { WHAT_IF_NOTE } from "../../mcp-server/lib/whatif.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";   // — the aggregate, not the recursion step
 
-/** Every file under dir, as path → sha256. A manifest, which is the instrument this issue asked for. */
+/** Every file under dir, as path → sha256. A manifest, which is the instrument this issue asked for.
+ *  Paths are keyed with "/" whatever the platform, so the expectations below read the same on Windows. */
 function manifest(dir) {
   const out = new Map();
   const walk = (d) => {
     for (const e of readdirSync(d, { withFileTypes: true })) {
       const p = join(d, e.name);
       if (e.isDirectory()) walk(p);
-      else if (e.isFile()) out.set(relative(dir, p), createHash("sha256").update(readFileSync(p)).digest("hex"));
+      else if (e.isFile()) out.set(relative(dir, p).split(sep).join("/"), createHash("sha256").update(readFileSync(p)).digest("hex"));
     }
   };
   walk(dir);

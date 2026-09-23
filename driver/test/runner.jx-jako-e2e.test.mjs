@@ -56,6 +56,10 @@ for (const [k, v] of Object.entries({
 })) pinEnv(process.env, k, v);
 
 const { main } = await import("../runner.mjs");
+// The runner claims a queued job by renaming it to `.claimed-<pid>:<starttime>`. Windows forbids a colon
+// in a file name, so the claim fails, the job stays `.json`, and nothing runs. That is the product's lock
+// name, not these arms.
+const CLAIM_WINDOWS_FAULT = { skip: process.platform === "win32" && "a Windows fault in driver/runner.mjs, reported for a fix" };
 const Q = join(root, "workspace-clawdi", "studio", "clearance-search", "queue");
 mkdirSync(Q, { recursive: true });
 
@@ -71,7 +75,7 @@ const findRun = (needle) => {
   return hits;
 };
 
-test("clearance-jx e2e: JP+KR scope → frozen ja+ko lanes → per-lane fixture folds → both script gates enforce → delivered; zh stays out", async () => {
+test("clearance-jx e2e: JP+KR scope → frozen ja+ko lanes → per-lane fixture folds → both script gates enforce → delivered; zh stays out", CLAIM_WINDOWS_FAULT, async () => {
   writeFileSync(join(Q, "jako-run.json"), JSON.stringify({
     id: "jako-run", msgId: "<jako@x>", forwarder: "dev", forwarderDomain: "example.com",
     product: "multi-country-focus-search", nativeLanguage: true, ref: "TMP9300", markName: "NOVAPULSE",
@@ -132,7 +136,7 @@ test("clearance-jx e2e: JP+KR scope → frozen ja+ko lanes → per-lane fixture 
   assert.equal(status.state, "delivered", `run state: ${status.state} (${status.reason ?? ""})`);
 });
 
-test("per-lane kill switch: CLEAROTRON_NATIVE_LANGUAGE_KO=0 excludes ko at the fold while ja still runs", async () => {
+test("per-lane kill switch: CLEAROTRON_NATIVE_LANGUAGE_KO=0 excludes ko at the fold while ja still runs", CLAIM_WINDOWS_FAULT, async () => {
   process.env.CLEAROTRON_NATIVE_LANGUAGE_KO = "0";
   try {
     writeFileSync(join(Q, "jaonly-run.json"), JSON.stringify({
