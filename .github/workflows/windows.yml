@@ -1,0 +1,154 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
+#
+# Windows: install what a stranger installs, ask it what it sees, open the demo and put it away again,
+# then run a whole clearance on each engine against the stand-in programs the adapter tests use.
+#
+# THE README SAYS WINDOWS, NATIVELY, FROM POWERSHELL, and nothing in ci.yml or release.yml runs there:
+# every other job is ubuntu-latest or macos-latest. This job is the evidence. The install, doctor and demo
+# half is macos.yml's, in PowerShell. The clearance half is what macos.yml does not have and Windows
+# needs: the way a turn is started, located and stopped differs there, so a change made on Linux can
+# break it without any Linux test noticing.
+#
+# IT HOLDS NOTHING AND PUBLISHES NOTHING. A read-only token, no secrets, no environment. The demo serves
+# the package's own frozen example over loopback, and the clearances run against stand-in programs that
+# replay what the vendor programs send: no model, no register, no key.
+#
+# EVERY ACTION IS PINNED BY COMMIT, with its tag beside it, so a moved tag cannot change what runs here.
+name: Windows
+
+on:
+  workflow_dispatch:
+  workflow_call:
+  push:
+    branches:
+      - windows-native
+
+permissions:
+  contents: read
+
+jobs:
+  install:
+    name: Install, doctor and demo on Windows
+    runs-on: windows-latest
+    timeout-minutes: 30
+    env:
+      PORT: '19470'
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020   # v7
+        with:
+          node-version: '22.23.2'
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run build:ui
+
+      - name: Pack and seal the bytes a stranger installs
+        run: |
+          New-Item -ItemType Directory -Force packed | Out-Null
+          $tarball = (npm pack --pack-destination ./packed | Select-Object -Last 1)
+          if ($LASTEXITCODE -ne 0) { throw "npm pack failed" }
+          node scripts/release-artifact-seal.mjs --tarball "./packed/$tarball"
+          if ($LASTEXITCODE -ne 0) { throw "the seal failed" }
+          "TARBALL=$PWD\packed\$tarball" | Out-File -Append -Encoding utf8 $env:GITHUB_ENV
+
+      - name: Install it into an empty folder, as a dependency
+        run: |
+          $dir = Join-Path $env:RUNNER_TEMP 'stranger'
+          New-Item -ItemType Directory -Force $dir | Out-Null
+          Set-Location $dir
+          npm init -y | Out-Null
+          npm install --no-audit --no-fund $env:TARBALL
+          if ($LASTEXITCODE -ne 0) { throw "npm install failed" }
+          if (-not (Test-Path '.\node_modules\.bin\clearotron.cmd')) { throw "npm made no clearotron.cmd" }
+
+      - name: clearotron doctor
+        working-directory: ${{ runner.temp }}/stranger
+        run: |
+          .\node_modules\.bin\clearotron.cmd doctor
+          if ($LASTEXITCODE -ne 0) { throw "doctor exited $LASTEXITCODE" }
+
+      # STOPPED THE WAY WINDOWS STOPS A PROGRAM FROM OUTSIDE: the launcher is ended with no chance to
+      # clean up, as closing its window ends it. What it started must go with it, which is the promise
+      # the README makes, so the port is asked again and the process list is read afterwards.
+      - name: clearotron demo answers on its port, and stops
+        working-directory: ${{ runner.temp }}/stranger
+        run: |
+          $log = Join-Path $env:RUNNER_TEMP 'demo.log'
+          $base = Join-Path $env:RUNNER_TEMP 'demo'
+          $launcher = Start-Process -PassThru -NoNewWindow -FilePath node `
+            -ArgumentList @('node_modules\clearotron\bin\clearotron.mjs', 'demo', '--no-open', '--port', $env:PORT, '--base', $base) `
+            -RedirectStandardOutput $log -RedirectStandardError "$log.err"
+          $health = "http://127.0.0.1:$env:PORT/portal/health"
+          $up = $false
+          for ($i = 0; $i -lt 90; $i++) {
+            try {
+              $r = Invoke-WebRequest -UseBasicParsing -TimeoutSec 5 $health
+              if ($r.StatusCode -eq 200 -and $r.Content -match '"ui":"built"') { $up = $true; break }
+            } catch { }
+            if ($launcher.HasExited) { break }
+            Start-Sleep -Seconds 2
+          }
+          if (-not $up) {
+            Get-Content $log, "$log.err" -Tail 40
+            if (-not $launcher.HasExited) { Stop-Process -Id $launcher.Id -Force }
+            throw "the portal never answered on port $env:PORT with its bundle built"
+          }
+          "the portal answered on port $env:PORT"
+          $tree = Get-CimInstance Win32_Process | Where-Object { $_.Name -eq 'node.exe' -and $_.CommandLine -match 'clearotron' }
+          "running before the stop: $($tree.Count) node programs of this install"
+          Stop-Process -Id $launcher.Id -Force
+          $left = $null
+          for ($i = 0; $i -lt 30; $i++) {
+            $left = Get-CimInstance Win32_Process | Where-Object { $_.ProcessId -in $tree.ProcessId }
+            if (-not $left) { break }
+            Start-Sleep -Seconds 1
+          }
+          if ($left) {
+            $left | Format-Table ProcessId, ParentProcessId, CommandLine -AutoSize | Out-String -Width 400
+            throw "30 seconds after the launcher ended, these programs it started were still running"
+          }
+          $after = $null
+          try { $after = (Invoke-WebRequest -UseBasicParsing -TimeoutSec 5 $health).StatusCode } catch { }
+          if ($after) { throw "the demo ended and port $env:PORT still answers (http $after)" }
+          "stopped: nothing the demo started is running, and port $env:PORT is quiet"
+
+  # A FIRST LOOK, TO BE REPLACED. The whole driver suite on Windows, once, to see which tests assume a
+  # POSIX machine and which fail for a reason this track has to fix. It does not fail the run.
+  survey:
+    name: Driver suite on Windows, shard ${{ matrix.shard }} of 4 (survey)
+    runs-on: windows-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020   # v7
+        with:
+          node-version: '22.23.2'
+          cache: npm
+
+      - run: npm ci
+
+      - name: This shard of the driver suite
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          node scripts/test-full.mjs --only driver --shard ${{ matrix.shard }}/4 2>&1 | tee "$RUNNER_TEMP/suite.log"
+
+      - if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a   # v7
+        with:
+          name: windows-suite-${{ matrix.shard }}
+          path: ${{ runner.temp }}/suite.log
+          retention-days: 7
