@@ -8,10 +8,10 @@ authenticated tunnel. A stage on Claude is offered no tool that runs a command. 
 commands inside Codex's own sandbox, or with the permissions of the account Clearotron runs as where a
 machine sets the bypass. The process that runs everything else is ordinary code, not an agent. Each
 stage's AI program starts with a named list of settings, and the key that signs access keys is handed
-only to the portal and the two doors. On Claude, a stage's file tools read only its run folder, its
+only to the portal and the two doors. On Claude, a stage's file tools can read nothing outside its run folder, its
 instruction folders and any folder the machine's own Claude settings add. On Codex with its sandbox on,
-a stage's commands read only its run folder, its instruction folders, the temporary folders, and the
-system and program files a command needs to run.**
+a stage's commands can read nothing outside its run folder, its instruction folders, the temporary
+folders, and the system and program files a command needs to run.**
 
 ## Trust boundaries
 

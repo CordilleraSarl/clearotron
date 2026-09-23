@@ -189,10 +189,9 @@ remove them.
 **What Clearotron does.** The AI program starts with a named list of settings, and the key that signs
 access keys is not on it. The worker that starts the AI program does not hold that key either, whether
 the install runs in a terminal or under systemd. Access keys are scoped to a run, a company or named
-actions, and one check enforces the scope. On Claude, a stage's file tools read only its run folder, its
-instruction folders and any folder the machine's own Claude settings add. On Codex with its sandbox on, a
-stage's commands read only its run folder, its instruction folders, the temporary folders, and the system
-and program files a command needs to run.
+actions, and one check enforces the scope. On Claude, a stage's file tools can read nothing outside its run folder, its
+instruction folders and any folder the machine's own Claude settings add. On Codex with its sandbox on, a stage's commands can read nothing outside its run folder, its instruction folders, the temporary
+folders, and the system and program files a command needs to run.
 
 **Where.** `driver/engine/engine-env.mjs`, `bin/start.mjs` (`SIGNING_KEY_NAMES`),
 `driver/systemd/clearotron-worker.service`, `shared/scope.mjs`, `driver/engine/anthropic-agent.mjs`
@@ -219,9 +218,8 @@ only the servers granted to that stage. The supply-chain controls under LLM03 ap
 **Here.** A stage is talked into running code.
 
 **What Clearotron does.** A Claude stage has no tool that runs a command: Bash, PowerShell and Monitor
-are removed by name from every stage. A Codex stage runs its commands inside Codex's own sandbox. They
-can read only the stage's own folders, the temporary folders, and the system and program files a command
-needs to run, and write only its run folder and the temporary folders. Before a search is paid for, a
+are removed by name from every stage. A Codex stage runs its commands inside Codex's own sandbox. They can read nothing outside the stage's own folders, the temporary folders, and the system and program
+files a command needs to run, and write nothing outside its run folder and the temporary folders. Before a search is paid for, a
 check runs one turn through the engine with the settings the search will use.
 
 **Where.** `driver/engine/anthropic-agent.mjs` (`COMMAND_TOOLS`), `driver/engine/openai-agent.mjs`
