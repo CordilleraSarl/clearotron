@@ -96,12 +96,13 @@ test("the switch: unset is off, the three words are themselves, anything else is
   assert.deepEqual(answerMemoryMode({}), { mode: "off", unknown: null });
   for (const m of ["off", "watch", "on"]) assert.equal(answerMemoryMode({ CLEAROTRON_SIGNA_ANSWER_MEMORY: m.toUpperCase() }).mode, m);
   assert.deepEqual(answerMemoryMode({ CLEAROTRON_SIGNA_ANSWER_MEMORY: "yes" }), { mode: "off", unknown: "yes" });
+  assert.equal(answerMemoryMode({ CLEAROTRON_SIGNA_ANSWER_MEMORY: "on" }, "corsearch").mode, "off", "another register has no memory");
 });
 
 test("an attempt begins a folder for watch or on, only for this register, and drops what an earlier one held", () => {
   const d = runDir();
   const folder = driverDir(d, ANSWER_MEMORY_DIR);
-  assert.deepEqual(beginAnswerMemory(d, "clarivate", { env: { CLEAROTRON_SIGNA_ANSWER_MEMORY: "on" } }), { mode: "off", unknown: null, applies: false });
+  assert.deepEqual(beginAnswerMemory(d, "corsearch", { env: { CLEAROTRON_SIGNA_ANSWER_MEMORY: "on" } }), { mode: "off", unknown: null, applies: false, switch: null });
   assert.equal(existsSync(folder), false, "another register's run folder is exactly as before");
   assert.equal(beginAnswerMemory(d, "signa", { env: { CLEAROTRON_SIGNA_ANSWER_MEMORY: "watch" } }).mode, "watch");
   writeFileSync(join(folder, "left-by-the-last-attempt.json.gz"), "x");

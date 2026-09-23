@@ -18,8 +18,8 @@
 // ignored, for an attempt that died without cleaning up. A process that finds no folder — a bare
 // probe, a test, a register with no run — asks the register exactly as it always has.
 //
-// THREE MODES, fixed when the attempt starts from CLEAROTRON_SIGNA_ANSWER_MEMORY:
-//   off    nothing is remembered and nothing is written. The default.
+// THREE MODES, fixed when the attempt starts from the register's own switch (ANSWER_MEMORY_PROVIDERS):
+//   off    nothing is remembered and nothing is written.
 //   watch  every request still goes to the register. Per request, the memory records whether it held
 //          an answer to the identical question, and whether the fresh answer has the same total, the
 //          same record ids and the same order as the one it held. This is the evidence the switch to
@@ -41,19 +41,37 @@ import { gunzipSync, gzipSync } from "node:zlib";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { RUN_RECORD_LOG_FILE } from "./ledger-path.mjs";
 
-export const ANSWER_MEMORY_SWITCH = "CLEAROTRON_SIGNA_ANSWER_MEMORY";
 export const ANSWER_MEMORY_MODES = Object.freeze(["off", "watch", "on"]);
+
+/**
+ * The registers whose core consults this memory, the environment switch that sets it for each (`env`, the
+ * table shape the configuration audit reads), and the mode a run takes when that switch is unset. Every other register is `off`, whatever any switch says.
+ *
+ * SIGNA starts `off`: it goes `on` only after a watch round shows no mismatch, by the owner's ruling.
+ * CLARIVATE starts `on`, with no watch round, also by his ruling: the repeated answers of its past runs
+ * were already compared and matched.
+ */
+export const ANSWER_MEMORY_PROVIDERS = Object.freeze({
+  signa: Object.freeze({ env: "CLEAROTRON_SIGNA_ANSWER_MEMORY", defaultMode: "off" }),
+  clarivate: Object.freeze({ env: "CLEAROTRON_CLARIVATE_ANSWER_MEMORY", defaultMode: "on" }),
+});
+export const ANSWER_MEMORY_SWITCH = ANSWER_MEMORY_PROVIDERS.signa.env;
 export const ANSWER_MEMORY_DIR = "register-answers";
 export const ANSWER_WATCH_LOG = "register-answer-watch.jsonl";
 const ATTEMPT_FILE = "attempt.json";
 export const ATTEMPT_MAX_AGE_MS = 24 * 60 * 60 * 1000;
 export const NEXT_PAGE_FRESH_MS = 10 * 60 * 1000;
 
-/** The mode the switch asks for, and the raw value when it named none of the three (read as `off`). */
-export function answerMemoryMode(env = process.env) {
-  const raw = String(env?.[ANSWER_MEMORY_SWITCH] ?? "").trim().toLowerCase();
-  if (!raw) return { mode: "off", unknown: null };
-  return ANSWER_MEMORY_MODES.includes(raw) ? { mode: raw, unknown: null } : { mode: "off", unknown: raw };
+/**
+ * The mode a register's switch asks for. Unset, or naming none of the three, is that register's default,
+ * and a value that named none of them is returned as `unknown` so the run can say so.
+ */
+export function answerMemoryMode(env = process.env, provider = "signa") {
+  const spec = ANSWER_MEMORY_PROVIDERS[String(provider ?? "")];
+  if (!spec) return { mode: "off", unknown: null };
+  const raw = String(env?.[spec.env] ?? "").trim().toLowerCase();
+  if (!raw) return { mode: spec.defaultMode, unknown: null };
+  return ANSWER_MEMORY_MODES.includes(raw) ? { mode: raw, unknown: null } : { mode: spec.defaultMode, unknown: raw };
 }
 
 /**
@@ -71,19 +89,17 @@ export function startAnswerMemory(runDir, mode, { now = Date.now } = {}) {
   } catch { return null; }
 }
 
-/** The providers whose core consults this memory. Every other provider is `off`, whatever the switch says. */
-export const ANSWER_MEMORY_PROVIDERS = Object.freeze(["signa"]);
-
 /**
  * The driver's half of an attempt: the mode this run uses, with the folder begun for it. `applies` is
- * false for a provider that does not use the memory, and then nothing is written at all, so that
- * provider's run folder is exactly what it was. A folder that cannot be made reads as `off`.
+ * false for a register that does not use the memory, and then nothing is written at all, so that
+ * register's run folder is exactly what it was. A folder that cannot be made reads as `off`.
  */
 export function beginAnswerMemory(runDir, provider, { env = process.env, now = Date.now } = {}) {
-  if (!ANSWER_MEMORY_PROVIDERS.includes(String(provider ?? ""))) return { mode: "off", unknown: null, applies: false };
-  const { mode, unknown } = answerMemoryMode(env);
+  const spec = ANSWER_MEMORY_PROVIDERS[String(provider ?? "")];
+  if (!spec) return { mode: "off", unknown: null, applies: false, switch: null };
+  const { mode, unknown } = answerMemoryMode(env, provider);
   const dir = startAnswerMemory(runDir, mode, { now });
-  return { mode: dir ? mode : "off", unknown, applies: true };
+  return { mode: dir ? mode : "off", unknown, applies: true, switch: spec.env };
 }
 
 /** End an attempt. The watch log stays; the held answers go. */

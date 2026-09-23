@@ -135,15 +135,21 @@ export function makeLedger(provider) {
 //
 // Run-scoped ledgers only. The box-wide fallback file holds many runs, and a record one run fetched is not
 // a record another run holds.
-const RUN_INDEXES = new Map();   // dest → { offset, byTarget: Map<key, { hash, refreshed, ts }> }
+const RUN_INDEXES = new Map();   // dest → { offset, byTarget: Map<key, { hash, refreshed, ts, start, len }>, byGuid: Map<guid, key> }
 const targetKey = (t) => String(t ?? "").toLowerCase();   // the key every reader of this file matches on
 const bodyHash = (b) => createHash("sha1").update(JSON.stringify(b ?? null)).digest("hex");
+// The record's own id: the last segment of `/mark/<office>/<id>`. The office segment is a hint that can
+// differ between two answers for the same record, so a lookup by record keys on this and never on it.
+const guidOf = (t) => { const k = targetKey(t); const i = k.lastIndexOf("/"); return i >= 0 ? k.slice(i + 1) : k; };
 
-function indexRow(ix, line) {
+// `start` and `len` are the line's byte range, so one record can be read back without reading the file.
+function indexRow(ix, line, start = null, len = null) {
   if (!line.trim()) return;
   try {
     const r = JSON.parse(line);
-    ix.byTarget.set(targetKey(r?.target), { hash: bodyHash(r?.body), refreshed: r?.refreshed === true, ts: r?.ts ?? null });
+    const key = targetKey(r?.target);
+    ix.byTarget.set(key, { hash: bodyHash(r?.body), refreshed: r?.refreshed === true, ts: r?.ts ?? null, start, len });
+    if (key) ix.byGuid.set(guidOf(key), key);
   } catch { /* a torn or foreign line indexes nothing, and is left where it is */ }
 }
 
@@ -154,7 +160,7 @@ function indexOf(dest) {
   let ix = RUN_INDEXES.get(dest);
   // A replacement elsewhere renames a NEW file over this one: same path, different inode, and an offset
   // into the old file means nothing in the new one. Re-read from the start.
-  if (!ix || size < ix.offset || ix.ino !== ino) { ix = { offset: 0, ino, byTarget: new Map() }; RUN_INDEXES.set(dest, ix); }
+  if (!ix || size < ix.offset || ix.ino !== ino) { ix = { offset: 0, ino, byTarget: new Map(), byGuid: new Map() }; RUN_INDEXES.set(dest, ix); }
   if (size <= ix.offset) return ix;
   const fd = openSync(dest, "r");
   try {
@@ -167,14 +173,50 @@ function indexOf(dest) {
       if (n <= 0) break;
       pos += n;
       const data = carry.length ? Buffer.concat([carry, buf.subarray(0, n)]) : buf.subarray(0, n);
+      const base = pos - data.length;   // the file offset of data[0]
       const last = data.lastIndexOf(0x0a);
       if (last < 0) { carry = data; continue; }
-      for (const line of data.subarray(0, last).toString("utf8").split("\n")) indexRow(ix, line);
+      for (let at = 0; at <= last;) {
+        const nl = data.indexOf(0x0a, at);
+        indexRow(ix, data.subarray(at, nl).toString("utf8"), base + at, nl - at);
+        at = nl + 1;
+      }
       carry = data.subarray(last + 1);   // a line still being written waits for the next look
       ix.offset = pos - carry.length;
     }
   } finally { closeSync(fd); }
   return ix;
+}
+
+/**
+ * The record bodies this run already holds, for the given record ids: Map<id, body>, lowercased ids.
+ *
+ * Read off the run's own record log, which every process that fetches a record for the run writes to,
+ * so a record the driver fetched is held for a tool server and the other way round. A run-scoped log only:
+ * the box-wide fallback file holds many runs, and one run's record is not another's. Anything that cannot
+ * be read reads as not held, which costs a fetch and never an answer.
+ */
+export function heldRecordBodies(dest, ids) {
+  const out = new Map();
+  if (typeof dest !== "string" || basename(dest) !== RUN_RECORD_LOG_FILE) return out;
+  let ix;
+  try { ix = indexOf(dest); } catch { return out; }
+  const wanted = [...new Set((ids ?? []).map((g) => String(g ?? "").toLowerCase()).filter(Boolean))]
+    .map((g) => [g, ix.byTarget.get(ix.byGuid.get(g) ?? "")]).filter(([, e]) => e && Number.isInteger(e.start) && Number.isInteger(e.len));
+  if (!wanted.length) return out;
+  let fd;
+  try {
+    fd = openSync(dest, "r");
+    for (const [g, e] of wanted) {
+      try {
+        const buf = Buffer.alloc(e.len);
+        if (readSync(fd, buf, 0, e.len, e.start) !== e.len) continue;
+        const row = JSON.parse(buf.toString("utf8"));
+        if (row?.body && typeof row.body === "object") out.set(g, row.body);
+      } catch { /* a line that moved under us is simply not held */ }
+    }
+  } catch { /* unreadable: nothing held */ } finally { if (fd !== undefined) try { closeSync(fd); } catch { /* closed */ } }
+  return out;
 }
 
 const sleepMs = (ms) => { try { Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms); } catch { /* no sleep available */ } };

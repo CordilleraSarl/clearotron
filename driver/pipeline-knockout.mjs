@@ -54,7 +54,7 @@ import { capabilitiesFor } from "./register-capabilities.mjs";
 // — the ONE binding of the office split to this box's env, shared with the plan lane.
 import { registerUnavailableOffices } from "./register-unreachable.mjs";
 import { runRecordLogPath } from "../providers/_shared/ledger-path.mjs";
-import { beginAnswerMemory, endAnswerMemory, ANSWER_MEMORY_SWITCH } from "../providers/_shared/answer-memory.mjs";   // — this run's record log
+import { beginAnswerMemory, endAnswerMemory } from "../providers/_shared/answer-memory.mjs";   // — this run's record log
 import { validators as koValidators, validateMergedFindings, worstBand, registerSurfacedFilings, raterCaveats, SURVIVOR_BOUNDARY_RE } from "./verify-knockout.mjs";
 import { reviewAbout, reviewEvidence, reviewEvidenceLines, applyKnockoutReview, knockoutReviewFile } from "./knockout-review-record.mjs";
 import { stripNextStepSections } from "./knockout-next-step.mjs";
@@ -652,7 +652,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
     ctx.answerMemory = beginAnswerMemory(run.runDir, REGISTER_PROVIDER);
     if (ctx.answerMemory.applies)
       runLog(run.runDir, { event: "answer-memory", mode: ctx.answerMemory.mode, ...(ctx.answerMemory.unknown ? { unrecognised: ctx.answerMemory.unknown } : {}) });
-    if (ctx.answerMemory.unknown) note(`answer memory: ${ANSWER_MEMORY_SWITCH}="${ctx.answerMemory.unknown}" is not off, watch or on, so it reads as off`);
+    if (ctx.answerMemory.unknown) note(`answer memory: ${ctx.answerMemory.switch}="${ctx.answerMemory.unknown}" is not off, watch or on, so this register's default applies (${ctx.answerMemory.mode})`);
     note(`=== KNOCKOUT batch (${policy.stageLabel}) — ${markNames.length} mark(s), framework ${ctx.framework.framework_key} ===`);
 
     // 1 — frame

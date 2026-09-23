@@ -101,7 +101,7 @@
         },
         "a-capability-gap-is-not-reopened.pipeline.test.mjs": {
           "tests": 1,
-          "asserts": 6,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },
@@ -156,6 +156,12 @@
         "a-claim-may-not-outlive-its-evidence.test.mjs": {
           "tests": 14,
           "asserts": 46,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-clarivate-run-asks-each-question-and-fetches-each-record-once.test.mjs": {
+          "tests": 8,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
@@ -459,6 +465,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-follow-up-re-runs-only-what-is-missing.test.mjs": {
+          "tests": 4,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "a-full-country-card-keeps-what-the-multi-country-card-shows.test.mjs": {
           "tests": 2,
           "asserts": 12,
@@ -622,8 +634,8 @@
           "todos": 0
         },
         "a-mixed-alphabet-look-alike-is-not-sent-where-the-register-drops-its-letters.test.mjs": {
-          "tests": 8,
-          "asserts": 38,
+          "tests": 10,
+          "asserts": 45,
           "skips": 0,
           "todos": 0
         },
@@ -964,8 +976,8 @@
           "todos": 0
         },
         "a-run-asks-signa-each-question-once.test.mjs": {
-          "tests": 19,
-          "asserts": 86,
+          "tests": 17,
+          "asserts": 77,
           "skips": 0,
           "todos": 0
         },
@@ -3454,8 +3466,8 @@
           "todos": 0
         },
         "pipeline.mock.test.mjs": {
-          "tests": 99,
-          "asserts": 827,
+          "tests": 101,
+          "asserts": 838,
           "skips": 0,
           "todos": 0
         },
@@ -3971,7 +3983,7 @@
         },
         "register-capabilities.test.mjs": {
           "tests": 34,
-          "asserts": 270,
+          "asserts": 272,
           "skips": 0,
           "todos": 0
         },
