@@ -151,7 +151,8 @@ test("the payload is captured BEFORE the decision, so a REFUSED call still leave
 // red is a defect in this harness, not in the transport. An early `return` would be the same lie facing
 // the other way, reporting `ok` for a test that asserted nothing, so the reason is declared on the line.
 test("⛔ a VALID call that cannot be WRITTEN is a write failure, never a refusal",
-  { skip: process.getuid?.() === 0 && "root writes through a 0o500 directory — the fault injection is a no-op" }, () => {
+  { skip: (process.getuid?.() === 0 && "root writes through a 0o500 directory — the fault injection is a no-op")
+    || (process.platform === "win32" && "mode bits: chmod 0o500 does not make a Windows folder unwritable — the fault injection is a no-op") }, () => {
   // Opposite repairs: one is "fix your reasoning", the other is "fix the disk". Same discrimination,
   // same reason, as the blind-frame transport.
   const d = runDir();
@@ -166,7 +167,8 @@ test("⛔ a VALID call that cannot be WRITTEN is a write failure, never a refusa
 });
 
 test("a capture that cannot be written does not cost a valid call its artifact",
-  { skip: process.getuid?.() === 0 && "root writes through a 0o500 directory — the fault injection is a no-op" }, () => {
+  { skip: (process.getuid?.() === 0 && "root writes through a 0o500 directory — the fault injection is a no-op")
+    || (process.platform === "win32" && "mode bits: chmod 0o500 does not make a Windows folder unwritable — the fault injection is a no-op") }, () => {
   const d = runDir();
   mkdirSync(driverDir(d), { recursive: true });
   chmodSync(driverDir(d), 0o500);

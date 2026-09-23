@@ -161,7 +161,9 @@ test("EADDRINUSE on a DEFAULT port says the port was never chosen", () => {
   assert.ok(!/owned by|user \w+/i.test(msg),
     "the message asserted something about who holds the port; Node cannot see another user's process "
     + "without privilege, and a guess there is the same class of lie as the one being fixed");
-  assert.match(msg, /ss -ltnp/, "the instruction that actually works stays");
+  // The instruction is the one this platform's shell has: PowerShell's cmdlet on Windows, `ss` elsewhere.
+  assert.match(msg, process.platform === "win32" ? /Get-NetTCPConnection -LocalPort 18811/ : /ss -ltnp/,
+    "the instruction that actually works stays");
 });
 
 test("EADDRINUSE on a CONFIGURED port keeps #773's original sentence and adds nothing", () => {

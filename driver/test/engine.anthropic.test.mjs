@@ -7,7 +7,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { fileURLToPath } from "node:url";
-import { dirname, join } from "node:path";
+import { dirname, join, sep } from "node:path";
 import { mkdtempSync, existsSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { anthropicAgentEngine, claudeModel, effortFor, mapUsage, buildClaudeArgs, absolutizeSkillRefs, spawnEnv,
@@ -225,22 +225,25 @@ test("STALL-WATCHDOG: a per-stage stallSec OVERRIDES the global CLEAROTRON_STALL
 // the driver-co-located `skills/`; the refs keep their `skills/` prefix, so they are joined onto
 // the PARENT of skillsDir) and grants --add-dir on skillsDir + the run dir. The retired gateway path is untouched.
 
+// The rewritten ref is a file path, joined with this platform's separator; the prose around it is not.
+const nat = (p) => p.split("/").join(sep);
+
 test("absolutizeSkillRefs: rewrites bare skills/…md under skillsDir's parent; no skillsDir = no-op", () => {
   assert.equal(
     absolutizeSkillRefs("First, read and follow exactly: skills/matter-frame/SKILL.md.", "/ws/skills"),
-    "First, read and follow exactly: /ws/skills/matter-frame/SKILL.md.");
+    `First, read and follow exactly: ${nat("/ws/skills/matter-frame/SKILL.md")}.`);
   // multiple refs in one message (synthesis reads three) — each rewritten exactly once
   const m = absolutizeSkillRefs("read skills/clearance-search/synthesis-rules.md, skills/clearance-search/risk-framework.md, skills/clearance-search/worked-examples.md.", "/ws/skills");
-  assert.equal(m, "read /ws/skills/clearance-search/synthesis-rules.md, /ws/skills/clearance-search/risk-framework.md, /ws/skills/clearance-search/worked-examples.md.");
+  assert.equal(m, `read ${nat("/ws/skills/clearance-search/synthesis-rules.md")}, ${nat("/ws/skills/clearance-search/risk-framework.md")}, ${nat("/ws/skills/clearance-search/worked-examples.md")}.`);
   // provider doc stays inside the rewrite
-  assert.equal(absolutizeSkillRefs("read skills/clearance-register/providers/corsearch.md", "/ws/skills"), "read /ws/skills/clearance-register/providers/corsearch.md");
+  assert.equal(absolutizeSkillRefs("read skills/clearance-register/providers/corsearch.md", "/ws/skills"), `read ${nat("/ws/skills/clearance-register/providers/corsearch.md")}`);
   assert.equal(absolutizeSkillRefs("no skill ref here at all", "/ws/skills"), "no skill ref here at all");
   assert.equal(absolutizeSkillRefs("skills/x/y.md", undefined), "skills/x/y.md", "no skillsDir → unchanged");
 });
 
 test("absolutizeSkillRefs: IDEMPOTENT — an already-absolute path containing skills/ is NOT double-prefixed", () => {
   const once = absolutizeSkillRefs("read skills/matter-frame/SKILL.md", "%h/clearotron/driver/skills");
-  assert.equal(once, "read %h/clearotron/driver/skills/matter-frame/SKILL.md");
+  assert.equal(once, `read ${nat("%h/clearotron/driver/skills/matter-frame/SKILL.md")}`);
   // re-running (e.g. a corrective/warm re-wrap of an already-absolutized message) must be a no-op
   assert.equal(absolutizeSkillRefs(once, "%h/clearotron/driver/skills"), once, "no path doubling");
   // a generic absolute path that merely contains 'skills/' mid-path is left alone
@@ -249,7 +252,7 @@ test("absolutizeSkillRefs: IDEMPOTENT — an already-absolute path containing sk
 
 test("buildClaudeArgs: --add-dir grants skills tree + run dir; message absolutized in `input`; both added on resume too", () => {
   const { args: a, input } = buildClaudeArgs({ message: "read skills/matter-frame/SKILL.md then write /run/out.md", model: "opus", thinking: "medium", skillsDir: "/ws/skills", runDir: "/run" });
-  assert.equal(input, "read /ws/skills/matter-frame/SKILL.md then write /run/out.md", "skill ref absolutized in the stdin prompt");
+  assert.equal(input, `read ${nat("/ws/skills/matter-frame/SKILL.md")} then write /run/out.md`, "skill ref absolutized in the stdin prompt");
   const addDirs = a.reduce((acc, x, i) => (x === "--add-dir" ? [...acc, a[i + 1]] : acc), []);
   assert.deepEqual(addDirs, ["/ws/skills", "/run"], "exactly the skills tree + the run dir, in order");
   // resume branch still carries the dirs (a resumed turn re-needs file access)
@@ -894,7 +897,10 @@ test("a turn killed after several completed calls reconstructs the output those 
   } finally { rmSync(dir, { recursive: true, force: true }); }
 }));
 
-test("startup-class death: a CLI exit with NO stream events carries the noStreamEvents signal + a named stderr diagnosis", async () => {
+test("startup-class death: a CLI exit with NO stream events carries the noStreamEvents signal + a named stderr diagnosis", {
+  skip: process.platform === "win32" && "a #!/bin/sh stand-in for the CLI (failingBin): Windows cannot start a shell script, "
+    + "so the engine takes its spawn-error path instead of the startup-death path",
+}, async () => {
   // The 3× register-digest code=1 zero-token shape: claude died before emitting a single stream event.
   // `sh -c 'exit 7'` stands in for the CLI failing at startup (bad arg/auth/MCP). The tuple must name
   // the startup class so the journal's stderrTail is never read as a mid-turn provider fault.

@@ -2741,7 +2741,12 @@ function driveAwait({ requested, pr = "345", ghBody }) {
 
 const GH_ANSWERS_0920 = `echo '${JSON.stringify(PR_AT_0920)}'`;
 
-test("driven: the 09:20:02Z state on a dispatched cut exits non-zero and names the red check", () => {
+// The `gh` above is a #!/bin/sh stub on a colon-joined PATH. Windows runs neither, so the script there
+// reaches whatever real `gh` the machine has, which is not signed in and answers nothing these arms read.
+const NO_SH_GH = process.platform === "win32"
+  && "a #!/bin/sh stand-in for gh: Windows cannot run a shell script, so the real gh answers instead of the stub";
+
+test("driven: the 09:20:02Z state on a dispatched cut exits non-zero and names the red check", { skip: NO_SH_GH }, () => {
   const r = driveAwait({ requested: true, ghBody: GH_ANSWERS_0920 });
   assert.equal(r.code, 1, `a dispatched cut that published nothing exited ${r.code}\n${r.text}`);
   assert.match(r.text, /The offline suites \(2\) \(failure\)/, `the red does not name the check that stopped the merge\n${r.text}`);
@@ -2767,7 +2772,7 @@ test("driven: a pull request that cannot be read is named as unread, not as abse
   assert.doesNotMatch(r.text, /no version pull request was found/, "a failed read was reported as a pull request that does not exist");
 });
 
-test("driven: a red commit status counts as a conclusion, not as nothing concluded", () => {
+test("driven: a red commit status counts as a conclusion, not as nothing concluded", { skip: NO_SH_GH }, () => {
   // The rollup mixes check runs, which carry `conclusion`, with commit statuses, which carry `state`.
   const pr = { merged: false, mergeable: "MERGEABLE", statusCheckRollup: [
     { __typename: "StatusContext", context: "an outside status", state: "FAILURE" },
