@@ -4102,8 +4102,8 @@
           "todos": 0
         },
         "render.test.mjs": {
-          "tests": 162,
-          "asserts": 675,
+          "tests": 163,
+          "asserts": 681,
           "skips": 0,
           "todos": 0
         },
@@ -5483,7 +5483,7 @@
         },
         "the-record-half-of-an-add-must-reach-git.test.mjs": {
           "tests": 11,
-          "asserts": 39,
+          "asserts": 40,
           "skips": 0,
           "todos": 0
         },
