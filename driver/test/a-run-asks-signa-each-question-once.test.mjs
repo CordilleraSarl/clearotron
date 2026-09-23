@@ -115,7 +115,7 @@ test("a process finds the memory from the run's record log, from its environment
   assert.equal(openAnswerMemory(runRecordLogPath(d))?.mode, "on", "the driver passes the path per call");
   assert.equal(openAnswerMemory(null, { env: { CLEAROTRON_REGISTER_RECORD_LOG: runRecordLogPath(d) } })?.mode, "on",
     "a spawned tool server has it in its environment");
-  assert.equal(openAnswerMemory(join(driverDir(d), "register-records.jsonl")), null, "the box-global ledger's name locates no run");
+  assert.equal(openAnswerMemory(join(driverDir(d), "register-records.jsonl")), null, "the machine-wide ledger's name locates no run");
   assert.equal(openAnswerMemory(null, { env: {} }), null);
   assert.equal(openAnswerMemory(runRecordLogPath(d), { now: () => Date.now() + ATTEMPT_MAX_AGE_MS + 1 }), null,
     "an attempt that died without cleaning up is ignored a day later");
@@ -228,7 +228,7 @@ test("on: a record is remembered, and a spawned server finds the memory through 
     if (prior === undefined) delete process.env.CLEAROTRON_REGISTER_RECORD_LOG; else process.env.CLEAROTRON_REGISTER_RECORD_LOG = prior;
   }
   assert.equal(sent.length, 1);
-  assert.ok(watchRows(d).every((r) => r.via === "tool-server"), "a spawned server's rows say so, which is how a round sees it found the run");
+  assert.ok(watchRows(d).every((r) => r.via === "tool-server"), "a spawned server's rows say so, which is how the watch log shows it found the run");
 });
 
 test("a held answer whose next-page cursor is too old is asked again, and the watch says it was held", async () => {

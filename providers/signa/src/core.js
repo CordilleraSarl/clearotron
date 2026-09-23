@@ -95,8 +95,8 @@ export async function signaFetch(apiKey, base, path, { method = "GET", body = nu
   // A held answer too old to trust its next-page cursor is not used, and is replaced by the fresh one.
   const held = recalled && !recalled.stale ? recalled : null;
   // `via` says which kind of process asked: the driver hands its calls the run's record log, and a tool
-  // server a stage spawned finds the run through its environment. A round reads both, because a memory
-  // only one of them can find removes only half the repeats.
+  // server a stage spawned finds the run through its environment. The watch log must show both, because a
+  // memory only one of them can find removes only half the repeats.
   const note = (row) => noteAnswer(mem, { ts: new Date().toISOString(), mode: mem.mode, key, method, path, tool: tctx?.kind ?? null,
     via: tctx?.recordLog ? "driver" : "tool-server", session: tctx?.sessionKey ?? null,
     ...(recalled?.stale ? { held_stale: true, held_age_ms: recalled.age_ms } : {}), ...row });

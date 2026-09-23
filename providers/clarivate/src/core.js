@@ -181,7 +181,7 @@ export function rememberableAnswer(path, status, body, parseError) {
  * hint. A held record therefore yields the row a fresh fetch would, and a record whose office segment
  * differs between two searches is addressed the way this search addresses it.
  *
- * Why no watch round (the owner's ruling): across 38 past runs that fetched the same record twice, every
+ * Why no watch period (the owner's ruling): across 38 past runs that fetched the same record twice, every
  * second copy was byte-identical apart from the order of one list inside the vendor's raw record, and
  * every normalized field matched.
  */

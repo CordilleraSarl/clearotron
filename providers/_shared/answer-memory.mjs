@@ -47,8 +47,8 @@ export const ANSWER_MEMORY_MODES = Object.freeze(["off", "watch", "on"]);
  * The registers whose core consults this memory, the environment switch that sets it for each (`env`, the
  * table shape the configuration audit reads), and the mode a run takes when that switch is unset. Every other register is `off`, whatever any switch says.
  *
- * SIGNA starts `off`: it goes `on` only after a watch round shows no mismatch, by the owner's ruling.
- * CLARIVATE starts `on`, with no watch round, also by his ruling: the repeated answers of its past runs
+ * SIGNA starts `off`: it goes `on` only after runs in watch mode show no mismatch, by the owner's ruling.
+ * CLARIVATE starts `on`, with no watch period, also by his ruling: the repeated answers of its past runs
  * were already compared and matched.
  */
 export const ANSWER_MEMORY_PROVIDERS = Object.freeze({
@@ -135,8 +135,8 @@ export function answerKey(question) {
 
 /**
  * The held answer to a question, or null. An answer that points at a next page is returned `stale`
- * once NEXT_PAGE_FRESH_MS has passed: it is not served, and a watch records that it was held, so a
- * round can show what the rule costs.
+ * once NEXT_PAGE_FRESH_MS has passed: it is not served, and the watch log records that it was held, so
+ * the log shows what the rule costs.
  */
 export function recallAnswer(mem, key, { now = Date.now } = {}) {
   try {
