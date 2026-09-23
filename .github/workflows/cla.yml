@@ -93,7 +93,7 @@ jobs:
       # Pinned to the SHA of v2.6.1, not to the tag: a tag can be moved to point at different code, and
       # this action runs with write access to the repository.
       - name: Check or record the contributor's agreement
-        uses: contributor-assistant/github-action@ca4a40a7d1004f18d9960b404b97e5f30a505a08
+        uses: contributor-assistant/github-action@ca4a40a7d1004f18d9960b404b97e5f30a505a08 # v2.6.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:

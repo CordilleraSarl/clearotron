@@ -15,7 +15,7 @@
 // by the box that ran it and red on the runner. The completeness arms drive synthetic trees instead.
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, mkdtempSync, mkdirSync, writeFileSync, rmSync, existsSync } from "node:fs";
+import { readFileSync, readdirSync, mkdtempSync, mkdirSync, writeFileSync, rmSync, existsSync } from "node:fs";
 import { execFileSync, spawnSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
@@ -1994,8 +1994,9 @@ test("the second publish checks out the commit the wait named, and the wait publ
   assert.match(awaited, /sha: \$\{\{ steps\.awaited\.outputs\.sha \}\}/,
     "the wait no longer publishes the commit it decided about, so the job below has nothing to check out");
   const second = RELEASE_YML.slice(RELEASE_YML.indexOf("\n  publish-awaited:"));
-  const co = second.indexOf("actions/checkout@v7");
+  const co = second.indexOf("actions/checkout@");
   const guard = second.indexOf("The wait named a commit to publish");
+  assert.ok(co > 0, "the second publish checks nothing out — this arm could not look");
   assert.ok(guard > 0, "nothing refuses an absent commit — this arm could not look");
   // BEFORE THE CHECKOUT. `ref:` with an empty value checks out the default branch rather than failing,
   // so a guard after it would certify a tree that was already wrong.
@@ -2934,4 +2935,33 @@ test("a push opens no version pull request, and still asks whether it cut a vers
   const cut = stepAt("Did this push cut a version");
   assert.doesNotMatch(cut, /\n {8}if:/, "the cut question is gated, so a version commit landing by a push is never asked about");
   assert.match(cut, /CLEAROTRON_CUT_REF: \$\{\{ github\.sha \}\}/, "the cut question must read the pushed commit, not the working tree");
+});
+
+// ── EVERY ACTION IS PINNED TO A COMMIT, NOT TO A TAG SOMEBODY CAN MOVE ──────────────────────────────
+//
+// A tag is a pointer its owner can repoint, and a repointed tag runs its new code inside whichever job
+// uses it, next to that job's credentials: in March 2025 a widely used third-party action was retagged
+// to code that printed every secret of every workflow using it. A full commit sha cannot be moved.
+// The version stays readable in a comment beside it, and Dependabot's `github-actions` updates keep
+// bumping the sha. A local reusable workflow (`./.github/...`) is this repository's own file and is
+// pinned by the commit that carries it.
+test("every action a workflow uses is pinned to a full commit sha, with its version in a comment", () => {
+  const dir = join(ROOT, ".github", "workflows");
+  const files = nonEmpty(readdirSync(dir).filter((f) => /\.ya?ml$/.test(f)), "workflow files");
+  const uses = [];
+  for (const f of files) {
+    readFileSync(join(dir, f), "utf8").split("\n").forEach((line, i) => {
+      const m = line.match(/^\s*(?:-\s+)?uses:\s*(\S+)(.*)$/);
+      if (m) uses.push({ where: `${f}:${i + 1}`, ref: m[1], rest: m[2] });
+    });
+  }
+  nonEmpty(uses, "`uses:` lines across the workflows");
+  const remote = uses.filter((u) => !u.ref.startsWith("./"));
+  nonEmpty(remote, "actions pulled from another repository");
+  const floating = remote.filter((u) => !/@[0-9a-f]{40}$/.test(u.ref));
+  assert.deepEqual(floating.map((u) => `${u.where} ${u.ref}`), [],
+    "an action is pinned by a tag or branch that its owner can move");
+  const unlabelled = remote.filter((u) => !/#\s*v?\d/.test(u.rest));
+  assert.deepEqual(unlabelled.map((u) => `${u.where} ${u.ref}`), [],
+    "a pinned sha carries no version comment, so nobody reading it can tell what it is");
 });
