@@ -133,7 +133,6 @@ test("OLD BEHAVIOUR — framediff_severity_invalid costs a paid ladder attempt",
 });
 
 test("shape 1 (bad enum) is repaired IN-DISPATCH and never reaches the ladder", {
-  skip: process.platform === "win32" && "a Windows fault in driver/gateway.mjs, reported for a fix",
 }, async () => {
   const s = frameDiffStage();
   const r = await stage(arm(s, BAD_SEVERITY, CLEAN_DIFF));
@@ -163,7 +162,6 @@ test("OLD BEHAVIOUR — coverage_axis_invalid costs a paid ladder attempt", asyn
 });
 
 test("shape 2 (closed-vocabulary string) is repaired IN-DISPATCH and never reaches the ladder", {
-  skip: process.platform === "win32" && "a Windows fault in driver/gateway.mjs, reported for a fix",
 }, async () => {
   const s = ledgerStage();
   const r = await stage(arm(s, BAD_AXIS, CLEAN_LEDGER));
@@ -188,7 +186,6 @@ test("OLD BEHAVIOUR — framediff_directive_undispatchable costs a paid ladder a
 });
 
 test("shape 3 (undispatchable wildcard) is repaired IN-DISPATCH and never reaches the ladder", {
-  skip: process.platform === "win32" && "a Windows fault in driver/gateway.mjs, reported for a fix",
 }, async () => {
   const r = await stage(arm(frameDiffStage(), BAD_WILDCARD, CLEAN_DIFF));
   assert.equal(r.ok, true);
@@ -202,7 +199,6 @@ test("shape 3 (undispatchable wildcard) is repaired IN-DISPATCH and never reache
 // ── the non-sibling admitted token: a prose cell in the stage's own output ────────────────────────────
 
 test("coverage_status_offenum repairs the DIGEST ITSELF, not a sibling — and still never reaches the ladder", {
-  skip: process.platform === "win32" && "a Windows fault in driver/gateway.mjs, reported for a fix",
 }, async () => {
   process.env.MOCK_OUT_FILE = join(dir, "register-findings.md");
   steps("| primary-sweep | EUIPO | N/A |\n", "| primary-sweep | EUIPO | confirmed-clean |\n");
@@ -219,7 +215,6 @@ test("coverage_status_offenum repairs the DIGEST ITSELF, not a sibling — and s
 // ── the observed CHAIN: one artifact, two form defects, surfaced sequentially by a fail-fast parser ───
 
 test("the 08-02 frame-diff chain (severity → undispatchable) is repaired in ONE dispatch", {
-  skip: process.platform === "win32" && "a Windows fault in driver/gateway.mjs, reported for a fix",
 }, async () => {
   // The round paid for both: attempt 1 hit the severity enum, attempt 2 (warm) fixed it and then failed
   // a DIFFERENT gate, leaving one attempt for everything else. Both are form; both close in-dispatch now.
@@ -236,7 +231,6 @@ test("the 08-02 frame-diff chain (severity → undispatchable) is repaired in ON
 });
 
 test("a form chain DEEPER than the cap falls through to the ladder, visibly", {
-  skip: process.platform === "win32" && "a Windows fault in driver/gateway.mjs, reported for a fix",
 }, async () => {
   // Three ADMITTED defects in one artifact, surfaced one per parse: layer → severity → undispatchable.
   // The cap is 2, so the third is not swallowed — it becomes an ordinary failed dispatch with its own
@@ -252,7 +246,6 @@ test("a form chain DEEPER than the cap falls through to the ladder, visibly", {
 // ── ZERO SEMANTICS 1: a repair turn that writes nothing has NOT repaired anything ────────────────────
 
 test("a repair turn that writes NOTHING is not read as a fix — the original defect reaches the ladder", {
-  skip: process.platform === "win32" && "a Windows fault in driver/gateway.mjs, reported for a fix",
 }, async () => {
   // Issue the shape: the repair turn ends clean and writes nothing at all. Re-judging the same bytes
   // must not be allowed to say "repaired", and the harness's silence must not be reported as the model's
@@ -273,7 +266,6 @@ test("a repair turn that writes NOTHING is not read as a fix — the original de
 });
 
 test("a repair turn that rewrites the SAME defect byte-for-byte stops the repair loop", {
-  skip: process.platform === "win32" && "a Windows fault in driver/gateway.mjs, reported for a fix",
 }, async () => {
   const r = await stage({ ...arm(frameDiffStage(), BAD_SEVERITY, BAD_SEVERITY, CLEAN_DIFF), maxRetries: 0 });
   assert.equal(r.ok, false);
@@ -285,7 +277,6 @@ test("a repair turn that rewrites the SAME defect byte-for-byte stops the repair
 // ── ZERO SEMANTICS 2: a KILLED repair turn's bytes are never stage truth ─────────────────────────────
 
 test("a repair turn that is KILLED after writing is refused, even though the bytes now validate", {
-  skip: process.platform === "win32" && "a Windows fault in driver/gateway.mjs, reported for a fix",
 }, async () => {
   // The strongest form of the rule. The mock writes a PERFECTLY VALID artifact and then dies at 137. A
   // shape validator would pass it; a killed turn's write may be torn and nothing here can prove it whole
@@ -314,7 +305,6 @@ test("a form failure this check does not recognise is never swallowed — it rea
 });
 
 test("a WORK-class failure behaves exactly as before — the warm attempt is still there for it", {
-  skip: process.platform === "win32" && "a Windows fault in driver/gateway.mjs, reported for a fix",
 }, async () => {
   // the connotation tokens are work class and warm-eligible by an explicit 2026-08-01 ruling. A
   // form fix must not consume the warm attempt it is entitled to, so formRepairsUsed is tracked apart
@@ -332,7 +322,6 @@ test("a WORK-class failure behaves exactly as before — the warm attempt is sti
 // ── the census: a repair row must not read as a form-class dispatch retry ────────────────────────────
 
 test("a repair is journalled as a repair, never as an attempt", {
-  skip: process.platform === "win32" && "a Windows fault in driver/gateway.mjs, reported for a fix",
 }, async () => {
   await stage({ ...arm(frameDiffStage(), BAD_SEVERITY, CLEAN_DIFF), model: "haiku" });
   const rows = stageRows();

@@ -66,11 +66,12 @@ test("a live data-plane path REFUSES, and the child never executes", () => {
 });
 
 test("the refusal names the offending variable AND its value's root",
-  { skip: process.platform === "win32" && "a Windows fault in scripts/test-run.mjs, reported for a fix" }, () => {
+  () => {
   const r = runWrapper({ CLEAROTRON_QUEUE_DIR: "/srv/clearotron/queue" });
   assert.match(r.err, /CLEAROTRON_QUEUE_DIR/, "a refusal that does not name the variable teaches nothing");
   assert.match(r.err, /\/srv\/clearotron\/queue/, "the value the operator actually set");
-  assert.match(r.err, /root:\s*\/srv/, "the root is what says 'this is a live estate' at a glance");
+  // On Windows the root carries the drive the path resolved onto: D:\srv.
+  assert.match(r.err, /root:\s*(?:[A-Za-z]:)?[\\/]srv/, "the root is what says 'this is a live estate' at a glance");
 });
 
 test("the home-directory shape the incident actually had is refused", () => {

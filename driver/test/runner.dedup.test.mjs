@@ -151,7 +151,7 @@ test("ledger: reply dedups; same-msgId/different-matter/stale do NOT; a failed r
 });
 
 test("integration: signature + same-mark-thread dedup park .duplicate; distinct-mark thread + dupOverride run",
-  { skip: process.platform === "win32" && "a Windows fault in driver/runner.mjs, reported for a fix" }, async () => {
+  async () => {
   const q = join(root, "workspace-clawdi", "studio", "clearance-search", "queue");
   mkdirSync(q, { recursive: true });
   // (1) SAME matter, two messages (original + "please proceed"), casing/class-order drift, NO conversationId

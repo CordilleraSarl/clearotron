@@ -61,7 +61,7 @@ const waitFor = async (pred, ms = 20000) => {
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 test("SIGTERM mid-drain: no new claims after the signal, in-flight job completes, clean exit, queued .json untouched", 
-  { skip: process.platform === "win32" && "POSIX signals: on Windows a SIGTERM ends the runner outright and no handler runs (its claim also fails there, a Windows fault in driver/runner.mjs, reported for a fix)" }, async () => {
+  { skip: process.platform === "win32" && "POSIX signals: on Windows a SIGTERM ends the runner outright and no handler runs" }, async () => {
   const root = mkdtempSync(join(tmpdir(), "stop-graceful-"));
   const Q = queueFor(root);
   mkdirSync(Q, { recursive: true });
@@ -88,7 +88,7 @@ test("SIGTERM mid-drain: no new claims after the signal, in-flight job completes
 });
 
 test("bounded grace: a stop that can't finish exits anyway; the cut claim RESUMES as the same codename next activation", 
-  { skip: process.platform === "win32" && "POSIX signals: on Windows a SIGTERM ends the runner outright and no handler runs (its claim also fails there, a Windows fault in driver/runner.mjs, reported for a fix)" }, async () => {
+  { skip: process.platform === "win32" && "POSIX signals: on Windows a SIGTERM ends the runner outright and no handler runs" }, async () => {
   const root = mkdtempSync(join(tmpdir(), "stop-grace-cut-"));
   const Q = queueFor(root);
   mkdirSync(Q, { recursive: true });
@@ -157,7 +157,7 @@ function readFileSyncDirs(dir) {
 }
 
 test("second signal exits immediately, well inside the grace window", 
-  { skip: process.platform === "win32" && "POSIX signals: on Windows a SIGTERM ends the runner outright and no handler runs (its claim also fails there, a Windows fault in driver/runner.mjs, reported for a fix)" }, async () => {
+  { skip: process.platform === "win32" && "POSIX signals: on Windows a SIGTERM ends the runner outright and no handler runs" }, async () => {
   const root = mkdtempSync(join(tmpdir(), "stop-second-sig-"));
   const Q = queueFor(root);
   mkdirSync(Q, { recursive: true });

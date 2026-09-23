@@ -57,9 +57,8 @@ const outboxFiles = (root) => { try { return readdirSync(join(root, "outbox")); 
 // On Windows the runner's claim token is `<pid>:<birth stamp>` and it claims a job by renaming it to
 // `<base>.processing.claimed-<token>`. A Windows file name cannot hold a colon, so the rename fails, the
 // runner reads that as a lost race, and no job here is ever claimed. That is the runner's to fix.
-const WINDOWS_LOCK_NAME = process.platform === "win32" && "a Windows fault in driver/runner.mjs, reported for a fix";
 
-test("pre-try throw with a run dir (corrupt _driver/profile.json) → failure packet + outbox marker exactly once", { skip: WINDOWS_LOCK_NAME }, async () => {
+test("pre-try throw with a run dir (corrupt _driver/profile.json) → failure packet + outbox marker exactly once", async () => {
   const root = mkdtempSync(join(tmpdir(), "backstop-profile-"));
   const Q = queueFor(root);
   mkdirSync(Q, { recursive: true });
@@ -99,7 +98,7 @@ test("pre-try throw with a run dir (corrupt _driver/profile.json) → failure pa
   assert.deepEqual(outboxFiles(root), [`${slug}-${date}-copper-anvil.pending`], "STILL exactly one marker — no double-notify");
 });
 
-test("normal pipeline failure (inside the try{}) is NOT double-noticed by the backstop", { skip: WINDOWS_LOCK_NAME }, async () => {
+test("normal pipeline failure (inside the try{}) is NOT double-noticed by the backstop", async () => {
   const root = mkdtempSync(join(tmpdir(), "backstop-normal-"));
   const Q = queueFor(root);
   mkdirSync(Q, { recursive: true });
@@ -210,7 +209,7 @@ test("an UNWRITABLE outbox still leaves the run recorded as owing a notice", {
 // one with a run dir, and `preRunFailNotify` is unchanged. If a future change leaves NO reachable
 // no-run-dir throw at all, that is worth knowing — and it would show up as this arm having no trigger,
 // which is the state I found it in.
-test("a dropped register credential is refused AT ORDER TIME → a QUEUE-level outbox packet, before any spend", { skip: WINDOWS_LOCK_NAME }, async () => {
+test("a dropped register credential is refused AT ORDER TIME → a QUEUE-level outbox packet, before any spend", async () => {
   const root = mkdtempSync(join(tmpdir(), "backstop-nodir-"));
   const Q = queueFor(root);
   mkdirSync(Q, { recursive: true });

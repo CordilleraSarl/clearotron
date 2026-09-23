@@ -137,7 +137,6 @@ test("the retired switches refuse NOTHING at the gate — with the engine's own 
 });
 
 test("a deliveryRoute:'portal' job PARKS AS CLARIFY (no consumer yet — never a silent email-anyway)", {
-  skip: process.platform === "win32" && "a Windows fault in driver/runner.mjs, reported for a fix",
 }, async () => {
   enqueue("dr-1", { deliveryRoute: "portal" });
   await main({ once: true });
@@ -155,7 +154,6 @@ test("a deliveryRoute:'portal' job PARKS AS CLARIFY (no consumer yet — never a
 // (Deliberately asserted only on the refusal — a job that ADMITS here would run the full mock pipeline
 // and break the one-run/one-publish counts the byte-identity test below owns.)
 test("a Full country search over more than one country PARKS AS CLARIFY at the wall", {
-  skip: process.platform === "win32" && "a Windows fault in driver/runner.mjs, reported for a fix",
 }, async () => {
   enqueue("cl-1", { product: "full-country-search", jurisdictions: ["United States", "France"] });
   await main({ once: true });
@@ -177,7 +175,6 @@ test("a Full country search over more than one country PARKS AS CLARIFY at the w
 
 // ── the Stage-1 byte-identity guarantee, proven on a full $0 mock run ───────────────────────────────
 test("a NO-selector job runs the product its SCOPE names, end to end, and the run freezes that", {
-  skip: process.platform === "win32" && "a Windows fault in driver/runner.mjs, reported for a fix",
 }, async () => {
   // Blast-radius regression (review 2026-07-17): a corrupt recipe file ANYWHERE in the store must never
   // affect a default job — the store is consulted only when a job names a recipe.

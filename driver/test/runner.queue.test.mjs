@@ -32,15 +32,11 @@ const job = (forwarder) => ({
   forwarderDomain: "example.com", ref: "TMP9001", markName: "QUEUE PROBE", classes: [9], provider: "corsearch",
 });
 
-// The runner claims a job by renaming it to a lock name that carries the `<pid>:<starttime>` token, and a
-// colon is not allowed in a Windows filename, so no job is claimed there and none reaches `.done`.
-const WINDOWS_CLAIM_FAULT = process.platform === "win32" && "a Windows fault in driver/runner.mjs, reported for a fix";
-
 function queueFor(root, agentId) {
   return join(root, `workspace-${agentId}`, "studio", "clearance-search", "queue");
 }
 
-test("runner drains every agent queue and runs each job as its own agent", { skip: WINDOWS_CLAIM_FAULT }, async () => {
+test("runner drains every agent queue and runs each job as its own agent", async () => {
   const root = mkdtempSync(join(tmpdir(), "clearotron-runner-"));
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"),

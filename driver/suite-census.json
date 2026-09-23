@@ -72,7 +72,7 @@
         "a-browser-run-gets-its-own-temp-root.test.mjs": {
           "tests": 12,
           "asserts": 31,
-          "skips": 0,
+          "skips": 1,
           "todos": 0
         },
         "a-budget-is-recorded-beside-the-band-it-ran-against.test.mjs": {
@@ -192,13 +192,13 @@
         "a-codex-login-survives-its-own-refresh.test.mjs": {
           "tests": 4,
           "asserts": 18,
-          "skips": 0,
+          "skips": 1,
           "todos": 0
         },
         "a-command-printed-from-npx-outlives-the-cache.test.mjs": {
           "tests": 3,
           "asserts": 14,
-          "skips": 0,
+          "skips": 1,
           "todos": 0
         },
         "a-common-law-coverage-status-is-read-as-data.test.mjs": {
@@ -240,7 +240,7 @@
         "a-connect-line-says-where-it-runs.test.mjs": {
           "tests": 11,
           "asserts": 56,
-          "skips": 0,
+          "skips": 1,
           "todos": 0
         },
         "a-correction-to-a-line-that-is-not-a-finding-is-observed.test.mjs": {
@@ -252,7 +252,7 @@
         "a-credential-file-is-written-one-way.test.mjs": {
           "tests": 4,
           "asserts": 13,
-          "skips": 0,
+          "skips": 1,
           "todos": 0
         },
         "a-credential-is-not-a-wired-lane.test.mjs": {
@@ -342,7 +342,7 @@
         "a-demo-stops-when-whatever-started-it-is-gone.test.mjs": {
           "tests": 3,
           "asserts": 11,
-          "skips": 0,
+          "skips": 1,
           "todos": 0
         },
         "a-deprecate-only-dispatch-publishes-nothing.test.mjs": {
@@ -360,7 +360,7 @@
         "a-detached-group-dies-with-its-script.test.mjs": {
           "tests": 14,
           "asserts": 24,
-          "skips": 0,
+          "skips": 6,
           "todos": 0
         },
         "a-directory-over-four-files-has-a-front-door.test.mjs": {
@@ -546,7 +546,7 @@
         "a-killed-browser-takes-its-children.test.mjs": {
           "tests": 2,
           "asserts": 4,
-          "skips": 0,
+          "skips": 2,
           "todos": 0
         },
         "a-knockout-filing-links-to-its-office.test.mjs": {
@@ -690,7 +690,7 @@
         "a-packaged-install-survives-its-own-upgrade.test.mjs": {
           "tests": 18,
           "asserts": 44,
-          "skips": 0,
+          "skips": 6,
           "todos": 0
         },
         "a-park-resume-leaves-a-record.test.mjs": {
@@ -744,13 +744,13 @@
         "a-printed-command-runs-from-where-the-reader-stands.test.mjs": {
           "tests": 15,
           "asserts": 62,
-          "skips": 0,
+          "skips": 9,
           "todos": 0
         },
         "a-program-already-here-is-checked-against-the-floor.test.mjs": {
           "tests": 9,
           "asserts": 38,
-          "skips": 1,
+          "skips": 3,
           "todos": 0
         },
         "a-project-cannot-break-the-tree-it-joins.test.mjs": {
@@ -1038,13 +1038,13 @@
         "a-signal-immune-fixture-is-reaped-by-its-owner.test.mjs": {
           "tests": 10,
           "asserts": 20,
-          "skips": 0,
+          "skips": 1,
           "todos": 0
         },
         "a-signal-reaches-what-the-shim-started.test.mjs": {
           "tests": 3,
           "asserts": 9,
-          "skips": 0,
+          "skips": 1,
           "todos": 0
         },
         "a-skill-that-points-at-a-sibling.test.mjs": {
@@ -1068,7 +1068,7 @@
         "a-stable-is-published-only-over-a-clean-code-scan.test.mjs": {
           "tests": 9,
           "asserts": 19,
-          "skips": 0,
+          "skips": 5,
           "todos": 0
         },
         "a-stage-program-starts-with-a-listed-environment.test.mjs": {
@@ -2304,7 +2304,7 @@
         "doctor-and-start-look-where-the-services-look.test.mjs": {
           "tests": 12,
           "asserts": 28,
-          "skips": 0,
+          "skips": 3,
           "todos": 0
         },
         "doctor-does-not-tick-a-billing-mode-it-cannot-see.test.mjs": {
@@ -2322,7 +2322,7 @@
         "doctor-reads-the-units-not-the-shell.test.mjs": {
           "tests": 40,
           "asserts": 116,
-          "skips": 1,
+          "skips": 3,
           "todos": 0
         },
         "doctor-refuses-what-cannot-run.test.mjs": {
@@ -2544,7 +2544,7 @@
         "engine.anthropic.test.mjs": {
           "tests": 65,
           "asserts": 245,
-          "skips": 0,
+          "skips": 1,
           "todos": 0
         },
         "engine.codex-config.test.mjs": {
@@ -2586,7 +2586,7 @@
         "enqueue-into-an-unwatched-queue-says-so.test.mjs": {
           "tests": 15,
           "asserts": 43,
-          "skips": 0,
+          "skips": 1,
           "todos": 0
         },
         "enqueue-schema-archived-project.test.mjs": {
@@ -2778,7 +2778,7 @@
         "feedback-store.test.mjs": {
           "tests": 6,
           "asserts": 27,
-          "skips": 0,
+          "skips": 1,
           "todos": 0
         },
         "findings-gate-token.test.mjs": {
@@ -3300,7 +3300,7 @@
         "no-test-writes-inside-the-checkout.test.mjs": {
           "tests": 21,
           "asserts": 58,
-          "skips": 0,
+          "skips": 2,
           "todos": 0
         },
         "no-two-dictated-queries-fold-to-one-key.test.mjs": {
@@ -3330,7 +3330,7 @@
         "onboard-wizard.test.mjs": {
           "tests": 77,
           "asserts": 294,
-          "skips": 2,
+          "skips": 4,
           "todos": 0
         },
         "onboarding-sets-the-framework-it-says-it-set.test.mjs": {
@@ -3594,7 +3594,7 @@
         "portal-local-auth.test.mjs": {
           "tests": 20,
           "asserts": 76,
-          "skips": 1,
+          "skips": 3,
           "todos": 0
         },
         "portal-local-login.test.mjs": {
@@ -3630,7 +3630,7 @@
         "portal-service-boot.test.mjs": {
           "tests": 30,
           "asserts": 147,
-          "skips": 0,
+          "skips": 1,
           "todos": 0
         },
         "portal-service.test.mjs": {
@@ -3804,7 +3804,7 @@
         "purge-runs.test.mjs": {
           "tests": 25,
           "asserts": 71,
-          "skips": 0,
+          "skips": 2,
           "todos": 0
         },
         "quarantined-condition-clamp.test.mjs": {
@@ -4134,7 +4134,7 @@
         "release-pipeline.test.mjs": {
           "tests": 121,
           "asserts": 456,
-          "skips": 0,
+          "skips": 2,
           "todos": 0
         },
         "removing-the-demo-is-one-directory.test.mjs": {
@@ -4380,7 +4380,7 @@
         "runner.claim-liveness.test.mjs": {
           "tests": 7,
           "asserts": 34,
-          "skips": 1,
+          "skips": 2,
           "todos": 0
         },
         "runner.claim-sweep.test.mjs": {
@@ -4404,13 +4404,13 @@
         "runner.failure-backstop.test.mjs": {
           "tests": 4,
           "asserts": 29,
-          "skips": 0,
+          "skips": 1,
           "todos": 0
         },
         "runner.graceful-stop.test.mjs": {
           "tests": 3,
           "asserts": 26,
-          "skips": 0,
+          "skips": 3,
           "todos": 0
         },
         "runner.jx-e2e.test.mjs": {
@@ -4650,7 +4650,7 @@
         "setup-asks-how-claude-is-paid.test.mjs": {
           "tests": 14,
           "asserts": 96,
-          "skips": 0,
+          "skips": 4,
           "todos": 0
         },
         "setup-asks-which-ai-runs-your-searches.test.mjs": {
@@ -4770,7 +4770,7 @@
         "start-background-units.test.mjs": {
           "tests": 9,
           "asserts": 26,
-          "skips": 0,
+          "skips": 1,
           "todos": 0
         },
         "start-command.test.mjs": {
@@ -5304,7 +5304,7 @@
         "the-install-can-keep-itself-current.test.mjs": {
           "tests": 8,
           "asserts": 35,
-          "skips": 0,
+          "skips": 1,
           "todos": 0
         },
         "the-install-guide-says-how-to-remove-it.test.mjs": {
@@ -5484,7 +5484,7 @@
         "the-process-table-reads-a-box-with-no-proc.test.mjs": {
           "tests": 7,
           "asserts": 25,
-          "skips": 0,
+          "skips": 5,
           "todos": 0
         },
         "the-prose-cannot-claim-coverage-the-run-never-searched.test.mjs": {
@@ -5514,7 +5514,7 @@
         "the-published-manifest-is-not-the-repos-manifest.test.mjs": {
           "tests": 21,
           "asserts": 82,
-          "skips": 1,
+          "skips": 2,
           "todos": 0
         },
         "the-reading-turn-narrows-the-same-way-on-every-register.test.mjs": {
@@ -5748,7 +5748,7 @@
         "the-trigger-reaches-a-local-socket.test.mjs": {
           "tests": 4,
           "asserts": 24,
-          "skips": 0,
+          "skips": 1,
           "todos": 0
         },
         "the-two-env-files-are-named-where-they-appear.test.mjs": {
@@ -5952,7 +5952,7 @@
         "unit-files.test.mjs": {
           "tests": 8,
           "asserts": 20,
-          "skips": 0,
+          "skips": 1,
           "todos": 0
         },
         "unit-note-transport.test.mjs": {

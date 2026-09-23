@@ -37,7 +37,6 @@ const parkedQueue = (postponedAt, extra = {}) => {
 };
 
 test("a park sleeping on a 2033 reset is claimed once its probe interval elapses — no file touched", {
-  skip: process.platform === "win32" && "a Windows fault in driver/runner.mjs, reported for a fix",
 }, async () => {
   process.env.CLEAROTRON_RATE_LIMIT_PROBE_MS = String(10 * MIN);
   process.env.CLEAROTRON_RATE_LIMIT_PROBE_CEILING_MS = String(40 * MIN);

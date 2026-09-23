@@ -40,7 +40,6 @@ const META = JSON.stringify({ codename: "PROJECT-KESTREL", dateISO: "2026-08-13"
 // On Windows the claim token is `<pid>:<birth stamp>`, and the runner names its lock
 // `<marker>.claimed-<token>`. A Windows file name cannot hold a colon, so every rename into the lock
 // fails and no claim here can be taken, retired or swept. That is the runner's to fix, not this file's.
-const WINDOWS_LOCK_NAME = process.platform === "win32" && "a Windows fault in driver/runner.mjs, reported for a fix";
 
 // The on-disk state `takeoverClaim` leaves a winner in: the marker, the winner's liveness token, the run
 // identity the reclaim scan routes by, and the wedge tally. Written directly rather than driven through
@@ -71,7 +70,7 @@ function capturingStderr(fn) {
   finally { process.stderr.write = real; }
 }
 
-test("a retire lost inside a sibling's takeover window deletes nothing — the claim's bookkeeping survives", { skip: WINDOWS_LOCK_NAME }, () => {
+test("a retire lost inside a sibling's takeover window deletes nothing — the claim's bookkeeping survives", () => {
   const dir = mkdtempSync(join(tmpdir(), "claim-sweep-lost-"));
   const mine = claimToken();
   const proc = claimHeldBy(dir, "job-race", mine);
@@ -115,7 +114,7 @@ test("a retire lost inside a sibling's takeover window deletes nothing — the c
     "and the operator line says the sweep was skipped, in the same breath as the lost rename");
 });
 
-test("the uncontended retire still hands the orphan back and sweeps the claim it held", { skip: WINDOWS_LOCK_NAME }, () => {
+test("the uncontended retire still hands the orphan back and sweeps the claim it held", () => {
   const dir = mkdtempSync(join(tmpdir(), "claim-sweep-plain-"));
   const proc = claimHeldBy(dir, "job-plain", claimToken());
   const queued = join(dir, "job-plain.json");
@@ -129,7 +128,7 @@ test("the uncontended retire still hands the orphan back and sweeps the claim it
   assert.deepEqual(lockResidue(dir), [], "the lock path is not left behind");
 });
 
-test("a legacy claim with no liveness token at all is still returned to the queue", { skip: WINDOWS_LOCK_NAME }, () => {
+test("a legacy claim with no liveness token at all is still returned to the queue", () => {
   const dir = mkdtempSync(join(tmpdir(), "claim-sweep-legacy-"));
   const proc = join(dir, "job-legacy.processing");
   const queued = join(dir, "job-legacy.json");
@@ -148,7 +147,7 @@ test("a legacy claim with no liveness token at all is still returned to the queu
 // reachable interleaving there. It is asserted because the primitive is exported and the next caller may
 // sit somewhere it IS reachable — and because "we hold the lock" and "we hold the claim" are different
 // facts.
-test("a marker covered by another runner's token is neither retired nor swept", { skip: WINDOWS_LOCK_NAME }, () => {
+test("a marker covered by another runner's token is neither retired nor swept", () => {
   const dir = mkdtempSync(join(tmpdir(), "claim-sweep-foreign-"));
   const live = claimToken();                    // the OTHER runner's claim — live, because it is ours
   const proc = claimHeldBy(dir, "job-theirs", live);
@@ -207,7 +206,7 @@ function queueWithClaim(base, token, { meta = META } = {}) {
   return { qdir, proc };
 }
 
-test("the ALREADY-DELIVERED terminal, lost inside a sibling's takeover window, ends nothing and deletes nothing", { skip: WINDOWS_LOCK_NAME }, () => {
+test("the ALREADY-DELIVERED terminal, lost inside a sibling's takeover window, ends nothing and deletes nothing", () => {
   const mine = claimToken();
   const { qdir, proc } = queueWithClaim("job-delivered", mine);
 
@@ -243,7 +242,7 @@ test("the ALREADY-DELIVERED terminal, lost inside a sibling's takeover window, e
   assert.match(log, /left exactly as they are/, "the operator line says which side effects were skipped");
 });
 
-test("the RECLAIM-EXHAUSTED terminal, lost the same way, spends no reclaim and re-opens no dedup gate", { skip: WINDOWS_LOCK_NAME }, () => {
+test("the RECLAIM-EXHAUSTED terminal, lost the same way, spends no reclaim and re-opens no dedup gate", () => {
   const mine = claimToken();
   const { qdir, proc } = queueWithClaim("job-spent", mine, { meta: SPENT });
   writeFileSync(matterLedgerPath(qdir), JSON.stringify(LEDGER_ROW) + "\n");
@@ -286,7 +285,7 @@ test("the RECLAIM-EXHAUSTED terminal, lost the same way, spends no reclaim and r
 // The control, and it is not optional: every assertion above passes for a `finishReclaimedClaim` that
 // simply never does anything. This is the arm that says the guard gates the side effects rather than
 // removing them.
-test("the UNCONTENDED reclaim terminal still ends the job, sweeps the prose, records the result and frees the matter", { skip: WINDOWS_LOCK_NAME }, () => {
+test("the UNCONTENDED reclaim terminal still ends the job, sweeps the prose, records the result and frees the matter", () => {
   const { qdir, proc } = queueWithClaim("job-uncontended", claimToken(), { meta: SPENT });
   writeFileSync(matterLedgerPath(qdir), JSON.stringify(LEDGER_ROW) + "\n");
   const result = { ok: false, failedStage: "queue-reclaim", terminalKind: "reclaim-exhausted", codename: "PROJECT-KESTREL" };

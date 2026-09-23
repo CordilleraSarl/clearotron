@@ -25,11 +25,7 @@ const MANIFEST = JSON.stringify({
   ref: "TMP9401", markName: "POSTPONE PROBE", classes: [9], provider: "corsearch",
 });
 const PAST = new Date(Date.now() - 3600000).toISOString();
-// The two claim arms need the runner to claim a park, and on Windows it cannot: the lock name carries the
-// `<pid>:<starttime>` token, and a colon is not allowed in a Windows filename.
-const WINDOWS_CLAIM_FAULT = process.platform === "win32" && "a Windows fault in driver/runner.mjs, reported for a fix";
-
-test("claimDuePostponed persists the codename to .processing.meta AT CLAIM, before dropping .postponed.meta", { skip: WINDOWS_CLAIM_FAULT }, () => {
+test("claimDuePostponed persists the codename to .processing.meta AT CLAIM, before dropping .postponed.meta", () => {
   const Q = mkdtempSync(join(tmpdir(), "pp-claim-"));
   writeFileSync(join(Q, "job-p.postponed"), MANIFEST);
   writeFileSync(join(Q, "job-p.postponed.meta"), JSON.stringify({
@@ -54,7 +50,7 @@ test("claimDuePostponed persists the codename to .processing.meta AT CLAIM, befo
   assert.equal(readdirSync(Q).filter((f) => f.endsWith(".tmp")).length, 0, "atomic write left no tmp residue");
 });
 
-test("claimDuePostponed on a LEGACY bare .postponed (no meta) fail-opens with no bogus identity", { skip: WINDOWS_CLAIM_FAULT }, () => {
+test("claimDuePostponed on a LEGACY bare .postponed (no meta) fail-opens with no bogus identity", () => {
   const Q = mkdtempSync(join(tmpdir(), "pp-legacy-"));
   writeFileSync(join(Q, "job-l.postponed"), MANIFEST);
   const out = claimDuePostponed(Q);

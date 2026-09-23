@@ -103,7 +103,6 @@ const requireRegisterProvider = () => {
 };
 
 test("a 3-mark knockout batch runs end to end: receipts, degrade, publish stamps, delivery packet, archive", {
-  skip: process.platform === "win32" && "a Windows fault in driver/runner.mjs, reported for a fix",
 }, async () => {
   requireRegisterProvider();
   writeFileSync(join(Q, "ko-batch.json"), JSON.stringify({
@@ -342,7 +341,6 @@ test("no silent substitution: an UNBUILT knockout is refused, a built one is adm
 });
 
 test("STAGE 0.5 end to end: counts measured in code, on the report, in the workbook, never a fabricated zero", {
-  skip: process.platform === "win32" && "a Windows fault in driver/runner.mjs, reported for a fix",
 }, async () => {
   requireRegisterProvider();
   writeFileSync(join(Q, "ko-reg.json"), JSON.stringify({

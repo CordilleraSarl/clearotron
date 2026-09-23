@@ -48,7 +48,7 @@ function runCli(args, env) {
 // agreeing on one value is the documented quiet state ("a half-migrated environment that agrees with
 // itself says nothing"), so this buys the in-process arm correctness at no cost in noise.
 test("enqueue CLI → explicit CLEAROTRON_QUEUE_DIR → runner drains to .done (fully headless intake)",
-  { skip: process.platform === "win32" && "a Windows fault in driver/runner.mjs, reported for a fix" }, async () => {
+  async () => {
   const root = mkdtempSync(join(tmpdir(), "clearotron-encli-"));
   const qdir = join(root, "intake-queue"); // NOT under any workspace-<agent> — the headless product shape
   const env = {

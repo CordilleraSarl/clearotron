@@ -73,7 +73,7 @@ const statusOf = (runDir) => { try { return JSON.parse(readFileSync(join(runDir,
 const queueMarkers = (q) => readdirSync(q).filter((f) => !f.includes(".result") && !f.endsWith(".md") && !f.endsWith(".txt")).sort();
 
 test("stopping a RUNNING run ends it as cancelled — and a second admission pass does not bring it back",
-  { skip: process.platform === "win32" && "a Windows fault in driver/runner.mjs, reported for a fix" }, async () => {
+  async () => {
   const root = mkdtempSync(join(tmpdir(), "clearotron-stop-"));
   const barrier = join(root, "release-barrier");
   for (const [k, v] of Object.entries(envFor(root, { MOCK_BARRIER_FILE: barrier }))) pinEnv(process.env, k, v);
@@ -134,7 +134,7 @@ test("stopping a RUNNING run ends it as cancelled — and a second admission pas
 });
 
 test("a stopped run tells nobody it failed — no outbox run-failed packet",
-  { skip: process.platform === "win32" && "a Windows fault in driver/runner.mjs, reported for a fix" }, async () => {
+  async () => {
   // buildFailurePacket's copy is "❌ Clearotron search for X FAILED at Y", pushed to the customer. Someone
   // who pressed Stop must never receive that.
   const root = mkdtempSync(join(tmpdir(), "clearotron-stop-quiet-"));

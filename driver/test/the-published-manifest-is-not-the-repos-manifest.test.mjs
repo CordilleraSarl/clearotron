@@ -145,7 +145,7 @@ test("a tarball that is not an npm tarball is refused, not quietly sealed", () =
 });
 
 test("the install check refuses in npm's own words when npm refuses",
-  { skip: process.platform === "win32" && "a Windows fault in scripts/release-install-check.mjs, reported for a fix" }, () => {
+  () => {
   const dir = scratch();
   try {
     // A manifest npm rejects without a registry, so this arm is a real npm refusal rather than a
@@ -162,7 +162,7 @@ test("the install check refuses in npm's own words when npm refuses",
 });
 
 test("an install that exits 0 with the command missing is not a pass",
-  { skip: process.platform === "win32" && "a Windows fault in scripts/release-install-check.mjs, reported for a fix" }, () => {
+  () => {
   // MEASURED, and it is why this branch exists: npm exits 0 and creates no `.bin` at all when a
   // declared command's file did not travel. `npx clearotron demo` resolves through `.bin`, so that is
   // the front door still shut behind a green install — the same shape as the release this repairs.
@@ -177,7 +177,7 @@ test("an install that exits 0 with the command missing is not a pass",
 });
 
 test("and it passes an artefact that really installs, with its command in place",
-  { skip: process.platform === "win32" && "a Windows fault in scripts/release-install-check.mjs, reported for a fix" }, () => {
+  () => {
   const dir = scratch();
   try {
     const tgz = packTarball(dir,
@@ -295,7 +295,7 @@ test("the gate is asked on the pull request too, not only at the release", () =>
 });
 
 test("a relative tarball path is the caller's, not the install's",
-  { skip: process.platform === "win32" && "a Windows fault in scripts/release-install-check.mjs, reported for a fix" }, () => {
+  () => {
   // THE MEMBER EVERY ARM ABOVE MISSED, and CI caught it on the first run. Each of them handed the
   // check an absolute temp path; ci.yml hands it `./packed/clearotron-<version>.tgz`. npm resolves a
   // file path against ITS OWN cwd, which is the throwaway consumer project, so it looked for `packed/`
@@ -368,7 +368,7 @@ test("and it answers could-not-look on a real npm that cannot reach anything", (
 });
 
 test("and npm's own refusal is still a refusal, not an excuse",
-  { skip: process.platform === "win32" && "a Windows fault in scripts/release-install-check.mjs, reported for a fix" }, () => {
+  () => {
   // The pair to the arm above, on the same code path: the EINVALIDTAGNAME case must come back as a
   // verdict about the bytes. Without this, widening the could-not-look predicate would go unnoticed —
   // and a package that refuses to install would publish with the gate green.
@@ -390,7 +390,7 @@ test("and npm's own refusal is still a refusal, not an excuse",
 // the check reported a refusal it could not read as a statement about the artefact — exit 1 where 2 is
 // the honest answer. Measured 2026-09-12: three red with the variable set, 18/18 without it, same tree.
 test("npm is made to speak, so the refusal still carries npm's own reason when the parent silenced it",
-  { skip: process.platform === "win32" && "a Windows fault in scripts/release-install-check.mjs, reported for a fix" }, () => {
+  () => {
   const dir = scratch();
   const had = Object.hasOwn(process.env, "npm_config_loglevel");
   const saved = process.env.npm_config_loglevel;
@@ -421,7 +421,7 @@ function withSilentNpm(fn) {
 }
 
 test("an npm that fails without a word is a could-not-look, and the command says so",
-  { skip: process.platform === "win32" && "sh shim: the silent npm is a #!/bin/sh script put first on a colon-joined PATH, and Windows starts neither (the install check also cannot start npm there, a Windows fault in scripts/release-install-check.mjs, reported for a fix)" }, () => {
+  { skip: process.platform === "win32" && "sh shim: the silent npm is a #!/bin/sh script put first on a colon-joined PATH, and Windows starts neither" }, () => {
   // DRIVEN, not inferred from the predicate. Telling npm to speak means this branch cannot be reached
   // through npm's own behaviour any more, and a branch nothing routes to is the same as no branch — which
   // is exactly how it went unnoticed that silence was being reported as a refusal. A stub `npm` that
@@ -463,7 +463,7 @@ test("an npm that says nothing of its own is an absence, never a verdict about t
 });
 
 test("the exit codes CI reads carry the house meanings",
-  { skip: process.platform === "win32" && "a Windows fault in scripts/release-install-check.mjs, reported for a fix" }, () => {
+  () => {
   // THE THREE ANSWERS AS A CALLER SEES THEM. Everything above tests the function; the workflow reads
   // the process's status, and a branch that returns the right object under an exit code nobody set is
   // the same silence one layer down. Driven through the command line, which is how CI invokes it.

@@ -45,7 +45,6 @@ const until = async (pred, { timeoutMs = 8000, stepMs = 50 } = {}) => {
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 test("admission budget: past the budget the drain stops claiming NEW jobs, finishes in-flight work, and leaves the queue for the next activation", {
-  skip: process.platform === "win32" && "a Windows fault in driver/runner.mjs, reported for a fix",
 }, async () => {
   const root = mkdtempSync(join(tmpdir(), "clearotron-budget-"));
   const barrier = join(root, "release-barrier");

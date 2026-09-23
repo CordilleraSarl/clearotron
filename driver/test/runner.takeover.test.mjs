@@ -68,7 +68,7 @@ test("claimAgeMs: the .pid sidecar (claim time) wins over the marker (enqueue ti
 });
 
 test("takeoverClaim: wins on a dead claimer — fresh live token, marker restored, no lock residue", 
-  { skip: process.platform === "win32" && "a Windows fault in driver/runner.mjs, reported for a fix" }, async () => {
+  async () => {
   const dir = mkdtempSync(join(tmpdir(), "takeover-dead-"));
   const proc = join(dir, "j.processing");
   writeFileSync(proc, "{}");
@@ -94,7 +94,7 @@ test("takeoverClaim: STANDS DOWN when a sibling completed its takeover first (li
 });
 
 test("takeoverClaim: the over-age escape hatch still fires under the lock (wedged-but-alive claimer)", 
-  { skip: process.platform === "win32" && "a Windows fault in driver/runner.mjs, reported for a fix" }, () => {
+  () => {
   const dir = mkdtempSync(join(tmpdir(), "takeover-age-"));
   const proc = join(dir, "j.processing");
   writeFileSync(proc, "{}");
@@ -150,7 +150,7 @@ test("sweepAbandonedTakeovers: a dead takeover-er's .claimed- marker is restored
 //
 // No sleeps, no spawns, no load: `isAlive` is called by B while B holds the lock, so it IS the window.
 test("a terminal rename inside a sibling's takeover window strands nobody — the queue stays recoverable", 
-  { skip: process.platform === "win32" && "a Windows fault in driver/runner.mjs, reported for a fix" }, async () => {
+  async () => {
   const dir = mkdtempSync(join(tmpdir(), "takeover-standdown-"));
   const proc = join(dir, "job-race.processing");
   const queued = join(dir, "job-race.json");
@@ -213,7 +213,7 @@ const spawnRunner = (env) => {
 };
 
 test("two concurrent runners over one dead claim → exactly one dispatch, one run dir, one cold start", 
-  { skip: process.platform === "win32" && "a Windows fault in driver/runner.mjs, reported for a fix" }, async () => {
+  async () => {
   const root = mkdtempSync(join(tmpdir(), "takeover-race-"));
   const Q = queueFor(root);
   mkdirSync(Q, { recursive: true });
@@ -276,7 +276,7 @@ test("two concurrent runners over one dead claim → exactly one dispatch, one r
 // stamped `.pid`, so between two syscalls a live claimed job sat on disk with no liveness token. Both
 // takeover guards read the absent sidecar as `rec = null` and neither can tell that from "no claimer".
 test("two runners racing one FRESH job → one dispatch, and no .processing is ever left uncovered", 
-  { skip: process.platform === "win32" && "a Windows fault in driver/runner.mjs, reported for a fix" }, async () => {
+  async () => {
   const root = mkdtempSync(join(tmpdir(), "claim-race-"));
   const Q = queueFor(root);
   mkdirSync(Q, { recursive: true });

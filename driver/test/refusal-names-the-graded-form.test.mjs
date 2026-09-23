@@ -220,7 +220,6 @@ test("arm 8 — the quarantine lane still recognises a finding token after the s
 });
 
 test("arm 9 — the repair anchor did NOT move: `file` is still the stage's own output", {
-  skip: process.platform === "win32" && "a Windows fault in driver/gateway.mjs, reported for a fix",
 }, async () => {
   // The fail STRING names the graded artifact; `file` — the value the draft carry and the write-time
   // repair both anchor on — stays the DECLARED output. Read off best-draft's own score.json, because

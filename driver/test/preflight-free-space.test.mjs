@@ -185,7 +185,7 @@ const runToExit = (env) => {
 };
 
 test("a disk that cannot hold the run refuses BEFORE any run dir exists",
-  { skip: process.platform === "win32" && "a Windows fault in driver/runner.mjs, reported for a fix" }, async () => {
+  async () => {
   const root = tmp("freespace-nodir-");
   const Q = queueFor(root);
   mkdirSync(Q, { recursive: true });

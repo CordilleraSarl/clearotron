@@ -53,7 +53,6 @@ const stage = (over = {}) => runStage("test-stage", {
 // An `invalid_file:` failure carries the output's absolute path, and the warm allow-list reads the reason
 // after the first colon past `invalid_file:`. A Windows path has a colon after its drive letter, so no
 // invalid_file reason is ever warm there and these ladders run cold. That is the gateway's to fix.
-const WINDOWS_DRIVE_COLON = process.platform === "win32" && "a Windows fault in driver/gateway.mjs, reported for a fix";
 
 // A fixture path in this platform's spelling. The patch message names a sibling of the file it is handed,
 // joined with the platform's separator, so the file handed in and the path expected back are both native.
@@ -75,7 +74,7 @@ test("missing_file with a completed turn → ONE warm retry resuming the SAME se
   assert.doesNotMatch(msgOf(c[1]), /BASE TASK/);           // patch-only message, not the full re-run
 });
 
-test("warm-allowlisted invalid_file (use_check_missing) → warm patch fixes it on the same session", { skip: WINDOWS_DRIVE_COLON }, async () => {
+test("warm-allowlisted invalid_file (use_check_missing) → warm patch fixes it on the same session", async () => {
   process.env.MOCK_WARM_MODE = "draft";
   const validate = (_p, c) => (/PATCHED|FRESH/.test(c) ? { ok: true } : { ok: false, reason: "use_check_missing:F1" });
   const r = await stage({ validate });
@@ -130,7 +129,7 @@ test("CLEAROTRON_WARM_RETRY=0 kill-switch → today's fresh behavior exactly", a
 // produced something, which is where it converged 9 of 9.
 const INVALID_EVERY_TURN = { validate: () => ({ ok: false, reason: "use_check_missing:F1" }) };
 
-test("a warm patch that reproduces its own failure ESCALATES to a fresh attempt, not to a park", { skip: WINDOWS_DRIVE_COLON }, async () => {
+test("a warm patch that reproduces its own failure ESCALATES to a fresh attempt, not to a park", async () => {
   process.env.MOCK_WARM_MODE = "draft";                    // writes every turn; the validator rejects it every turn
   const r = await stage(INVALID_EVERY_TURN);
   assert.equal(r.ok, false);
@@ -149,7 +148,7 @@ test("a warm patch that reproduces its own failure ESCALATES to a fresh attempt,
   assert.equal(existsSync(process.env.MOCK_OUT_FILE), true);
 });
 
-test("THE BOUND — exactly one --resume per ladder, however deep the ladder is", { skip: WINDOWS_DRIVE_COLON }, async () => {
+test("THE BOUND — exactly one --resume per ladder, however deep the ladder is", async () => {
   // The unbounded-loop guarantee as an assertion. `warm` requires !warmUsed, and `warm` is the
   // escalation's trigger, so the escalation is structurally capped at one per stage run. Break it by
   // resetting warmUsed on escalation, or by keying the escalation on `attempt > 1` instead of `warm`,

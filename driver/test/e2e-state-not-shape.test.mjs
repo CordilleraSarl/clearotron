@@ -320,7 +320,6 @@ test("a marker with a suffix the drain does not know is REPORTED, not dropped", 
 // cannot create this name there either, which is the runner's to fix. When it changes the name on
 // Windows, this fixture follows it.
 test("the #377 claim lock is an in-flight state, not a stranded marker", {
-  skip: process.platform === "win32" && "a Windows fault in driver/runner.mjs, reported for a fix",
 }, () => {
   scratch((root) => {
     // `<base>.processing.claimed-<pid>:<starttime>` is the job file renamed for the atomic claim. A live

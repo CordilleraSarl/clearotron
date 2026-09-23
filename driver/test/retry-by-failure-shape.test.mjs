@@ -113,7 +113,6 @@ test("arm 2 — a form-era TOTAL token is COLD by ineligibility: the retry does 
 });
 
 test("arm 3 — a PARTIAL defect still warm-patches. R5 closed in 83 seconds this way", {
-  skip: process.platform === "win32" && "a Windows fault in driver/gateway.mjs, reported for a fix",
 }, async () => {
   process.env.MOCK_WARM_MODE = "draft";
   const validate = (_p, c) => (/PATCHED|FRESH/.test(c) ? { ok: true } : { ok: false, reason: REASON("quote_unbound", 3) });
@@ -127,7 +126,6 @@ test("arm 3 — a PARTIAL defect still warm-patches. R5 closed in 83 seconds thi
 });
 
 test("arm 4 — the skip does NOT spend the warm attempt", {
-  skip: process.platform === "win32" && "a Windows fault in driver/gateway.mjs, reported for a fix",
 }, async () => {
   // R6's real shape, one step further: total on attempt 1, and a seat that has now worked on the form
   // on attempt 2. Attempt 3 is the case warm is good at and must still get it.

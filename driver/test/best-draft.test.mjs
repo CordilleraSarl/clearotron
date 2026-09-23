@@ -108,7 +108,7 @@ const hardWallTurn = (timeoutSec) => ({ code: 137, killed: true, wall: timeoutSe
 const connFail = (n) => ({ ok: false, reason: `connotation_no_ruling:no_ruling=${n};Q-ABCDEFGH [DELPHI gang]`, quantity: n });
 
 test("the ladder's BEST rejected draft is preserved — the converged one, not the last one",
-  { skip: process.platform === "win32" && "a Windows fault in driver/gateway.mjs, reported for a fix" }, async () => {
+  async () => {
   const dir = mkdtempSync(join(tmpdir(), "carry-preserve-"));
   const out = join(dir, "common-law-findings.half-b.md");
   mkdirSync(driverDir(dir), { recursive: true });

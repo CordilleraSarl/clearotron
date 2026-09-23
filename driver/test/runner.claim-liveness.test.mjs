@@ -39,9 +39,6 @@ import { HAS_BIRTH_STAMP, NO_PROC_STARTTIME_WHY } from "./platform-caps.mjs";
 // inject their own starttime source and are portable — they stay ungated on purpose, so the parsing
 // and the polarity are still proved everywhere.
 const PROC_GATE = HAS_BIRTH_STAMP ? {} : { skip: NO_PROC_STARTTIME_WHY };
-// The two cross-process arms drive a takeover, and on Windows the runner cannot take one: its lock name
-// carries the `<pid>:<starttime>` token, and a colon is not allowed in a Windows filename.
-const WINDOWS_CLAIM_FAULT = process.platform === "win32" && "a Windows fault in driver/runner.mjs, reported for a fix";
 // code-side saturation-probe (2026-07-14): OFF in this legacy harness — its scenarios script the AGENT
 // member; the dedicated satprobe-codeside tests exercise the code-side path with an injected executor.
 process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
@@ -123,7 +120,7 @@ const spawnRunner = (env) => {
 // A LIVE unrelated process (60s sleeper) — the "reused pid" impostor / the in-flight stand-in.
 const spawnSleeper = () => spawn(process.execPath, ["-e", "setTimeout(()=>{}, 60000)"], { stdio: "ignore" });
 
-test("PID reuse (live foreign pid, WRONG starttime) → re-claimed and run; correct starttime → skipped in-flight with a .skips tally", { skip: PROC_GATE.skip || WINDOWS_CLAIM_FAULT }, async () => {
+test("PID reuse (live foreign pid, WRONG starttime) → re-claimed and run; correct starttime → skipped in-flight with a .skips tally", { skip: PROC_GATE.skip }, async () => {
   const root = mkdtempSync(join(tmpdir(), "liveness-"));
   const Q = queueFor(root);
   mkdirSync(Q, { recursive: true });
@@ -162,7 +159,7 @@ test("PID reuse (live foreign pid, WRONG starttime) → re-claimed and run; corr
   }
 });
 
-test("48h-stale CLAIM (.pid sidecar age) → re-claimed REGARDLESS of a live, starttime-correct claimer", { skip: WINDOWS_CLAIM_FAULT }, async () => {
+test("48h-stale CLAIM (.pid sidecar age) → re-claimed REGARDLESS of a live, starttime-correct claimer", async () => {
   const root = mkdtempSync(join(tmpdir(), "liveness-age-"));
   const Q = queueFor(root);
   mkdirSync(Q, { recursive: true });

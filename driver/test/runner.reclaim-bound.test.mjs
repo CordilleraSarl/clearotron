@@ -33,7 +33,6 @@ const queueFor = (root) => join(studioFor(root), "queue");
 // the marker to `<base>.processing.claimed-<token>`. A Windows file name cannot hold a colon, so the
 // rename fails and the runner reports every takeover as lost to a concurrent runner. That is the runner's
 // to fix.
-const WINDOWS_LOCK_NAME = process.platform === "win32" && "a Windows fault in driver/runner.mjs, reported for a fix";
 
 function envFor(root, extra = {}) {
   return {
@@ -76,7 +75,7 @@ async function seedOrphan(root, { reclaims }) {
   return { Q, runDir, codename, slug, job: J };
 }
 
-test("reclaim bound: at the cap the claim goes TERMINAL — artifacts kept, terminalKind stamped, failure packet on the guaranteed lane", { skip: WINDOWS_LOCK_NAME }, async () => {
+test("reclaim bound: at the cap the claim goes TERMINAL — artifacts kept, terminalKind stamped, failure packet on the guaranteed lane", async () => {
   const root = mkdtempSync(join(tmpdir(), "reclaim-cap-"));
   const { Q, runDir } = await seedOrphan(root, { reclaims: 3 });
   const c = spawnRunner(envFor(root));
@@ -105,7 +104,7 @@ test("reclaim bound: at the cap the claim goes TERMINAL — artifacts kept, term
   assert.ok(outbox.some((f) => f.endsWith(".pending")), `outbox wake marker present (got ${outbox.join(", ")})`);
 });
 
-test("reclaim bound: UNDER the cap the reclaim still resumes (counter incremented and persisted through dispatch)", { skip: WINDOWS_LOCK_NAME }, async () => {
+test("reclaim bound: UNDER the cap the reclaim still resumes (counter incremented and persisted through dispatch)", async () => {
   const root = mkdtempSync(join(tmpdir(), "reclaim-under-"));
   const { Q, codename } = await seedOrphan(root, { reclaims: 1 });
   const c = spawnRunner(envFor(root));

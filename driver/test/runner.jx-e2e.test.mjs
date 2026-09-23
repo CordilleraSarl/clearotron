@@ -66,7 +66,6 @@ const findRun = (needle) => {
 };
 
 test("clearance-jx e2e: frozen zh lane → fixture candidates → fold on transliteration-numeric → unit spawned → delivered", {
-  skip: process.platform === "win32" && "a Windows fault in driver/runner.mjs, reported for a fix",
 }, async () => {
   writeFileSync(join(Q, "jx-run.json"), JSON.stringify({
     id: "jx-run", msgId: "<jx@x>", forwarder: "dev", forwarderDomain: "example.com",
@@ -118,7 +117,6 @@ test("clearance-jx e2e: frozen zh lane → fixture candidates → fold on transl
 });
 
 test("component gate: a clearance without the investigation, in the SAME process (env still on), grows NO jx artifacts", {
-  skip: process.platform === "win32" && "a Windows fault in driver/runner.mjs, reported for a fix",
 }, async () => {
   // TWO countries, one of them CN. The scope still ROUTES a zh lane and the env is still on — so what
   // decides is the PRODUCT's component and nothing else, which is the whole claim of this test.

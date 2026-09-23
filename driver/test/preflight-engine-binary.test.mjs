@@ -196,7 +196,7 @@ const runToExit = (env) => {
 // On Windows the runner never claims the job this arm queues: the claim's lock name carries the
 // `<pid>:<starttime>` token, and a colon is not allowed in a Windows filename.
 test("CLEAROTRON_CLAUDE_PATH=/nope refuses BEFORE any run dir exists",
-  { skip: process.platform === "win32" && "a Windows fault in driver/runner.mjs, reported for a fix" }, async () => {
+  async () => {
   const root = mkdtempSync(join(tmpdir(), "engine-nodir-"));
   const Q = queueFor(root);
   mkdirSync(Q, { recursive: true });

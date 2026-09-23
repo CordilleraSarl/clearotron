@@ -143,7 +143,6 @@ test("A4 scope guard: repeated identical TRANSPORT failures keep the full existi
 const INVALID_EVERY_TURN = { validate: () => ({ ok: false, reason: "findings_unusable" }) };
 
 test("the escalated attempt names itself in the stage log, the spine and the dispatch record", {
-  skip: process.platform === "win32" && "a Windows fault in driver/gateway.mjs, reported for a fix",
 }, async () => {
   process.env.MOCK_WARM_MODE = "draft";
   const r = await stage({ maxRetries: 2, ...INVALID_EVERY_TURN });
@@ -166,7 +165,6 @@ test("the escalated attempt names itself in the stage log, the spine and the dis
 });
 
 test("the mark names ONE dispatch, not every dispatch after it", {
-  skip: process.platform === "win32" && "a Windows fault in driver/gateway.mjs, reported for a fix",
 }, async () => {
   // The journalling trap. `warmEscalatedAt > 0` and `attempt === warmEscalatedAt` agree whenever the
   // escalated attempt is the LAST one, which is the shape of every other test here — so neither can catch
@@ -189,7 +187,6 @@ test("the mark names ONE dispatch, not every dispatch after it", {
 });
 
 test("an escalated attempt that SUCCEEDS still says it was escalated", {
-  skip: process.platform === "win32" && "a Windows fault in driver/gateway.mjs, reported for a fix",
 }, async () => {
   // Without the flag on the success return, a run that converged only because the session was discarded
   // is indistinguishable from one where the warm patch happened to work — and the round has nothing to
@@ -310,7 +307,6 @@ test("wouldHaveBeenAttempt is NULL, and PRESENT, when the ladder was genuinely s
 });
 
 test("a warm repeat that produced SOMETHING still escalates — #460's lane is not traded away", {
-  skip: process.platform === "win32" && "a Windows fault in driver/gateway.mjs, reported for a fix",
 }, async () => {
   process.env.MOCK_WARM_MODE = "draft";              // writes a file every turn; the validator rejects it
   const r = await stage({ maxRetries: 2, ...INVALID_EVERY_TURN });
