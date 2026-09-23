@@ -26,6 +26,10 @@ import { unitEnvironment, unitValue } from "../unit-environment.mjs";
 import { ENGINE_BINARIES } from "../driver.config.mjs";
 import { handRunEnv } from "./drive-env.mjs";
 import { withFreePorts } from "./helpers/free-port.mjs";
+
+/** The arms below that drive the background path, which ends at a refusal on Windows. */
+const NO_BACKGROUND_FORM_ON_WINDOWS = process.platform === "win32"
+  && "on Windows `start --background` stops at its own refusal before this path (a-windows-start-has-no-background-mode.test.mjs): the background form is systemd units, which Windows does not have";
 const { PROVIDERS } = await import("../../bin/onboard.mjs");
 const { BACKGROUND_UNITS } = await import("../../bin/start.mjs");
 
@@ -229,7 +233,7 @@ test("start --background counts a program on the worker unit's PATH, and says a 
   } finally { d.clean(); }
 });
 
-test("start --background searches the PATH in the units' settings file, which wins over the worker unit's own", async () => {
+test("start --background searches the PATH in the units' settings file, which wins over the worker unit's own", { skip: NO_BACKGROUND_FORM_ON_WINDOWS }, async () => {
   // The program is on the unit's PATH and not on the file's, so the worker would not find it.
   const d = await driveStart({ plant: true, settingsPath: "/usr/bin:/bin" });
   try {
@@ -239,7 +243,7 @@ test("start --background searches the PATH in the units' settings file, which wi
   } finally { d.clean(); }
 });
 
-test("THE CONTROL: with no program on the worker unit's PATH, start still announces the engine's path setting", async () => {
+test("THE CONTROL: with no program on the worker unit's PATH, start still announces the engine's path setting", { skip: NO_BACKGROUND_FORM_ON_WINDOWS }, async () => {
   const d = await driveStart({ plant: false });
   try {
     const names = announced(d.said);

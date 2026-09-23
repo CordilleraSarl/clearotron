@@ -28,6 +28,10 @@ import { handRunEnv } from "./drive-env.mjs";
 import { startStands } from "../../bin/start.mjs";
 import { systemdFailure, CAPTURE_STDERR } from "../../shared/systemd-failure.mjs";
 
+/** The arms below that drive the background path, which ends at a refusal on Windows. */
+const NO_BACKGROUND_FORM_ON_WINDOWS = process.platform === "win32"
+  && "on Windows `start --background` stops at its own refusal before this path (a-windows-start-has-no-background-mode.test.mjs): the background form is systemd units, which Windows does not have";
+
 const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 const START = join(ROOT, "bin", "start.mjs");
 
@@ -126,7 +130,7 @@ test("the generic post-write trailer does not double the specific one", SYSTEMD_
     `the generic trailer printed beside the specific one:\n${said.slice(-1500)}`);
 });
 
-test("and the generic trailer still fires where nothing better was said", async () => {
+test("and the generic trailer still fires where nothing better was said", { skip: NO_BACKGROUND_FORM_ON_WINDOWS }, async () => {
   // THE PLANT FOR THE SUPPRESSION. `fatal(msg, { stated: true })` is opt-in, and an opt-in that turned
   // out to be always-on would delete the re-running-is-safe line from every other post-write refusal in
   // this command with nothing going red. So it is driven at a DIFFERENT post-write refusal.

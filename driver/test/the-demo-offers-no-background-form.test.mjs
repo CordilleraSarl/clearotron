@@ -15,6 +15,10 @@ import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { backgroundOfferLines } from "../../bin/start.mjs";
 
+/** The arms below that drive the background path, which ends at a refusal on Windows. */
+const NO_BACKGROUND_FORM_ON_WINDOWS = process.platform === "win32"
+  && "on Windows `start --background` stops at its own refusal before this path (a-windows-start-has-no-background-mode.test.mjs): the background form is systemd units, which Windows does not have";
+
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
 test("a demo is offered no background command", () => {
@@ -45,7 +49,7 @@ test("the banner takes its offer from that one function", () => {
     "a second, unconditional copy of the offer is back in the banner");
 });
 
-test("`start --demo --background` is refused before anything is written", () => {
+test("`start --demo --background` is refused before anything is written", { skip: NO_BACKGROUND_FORM_ON_WINDOWS }, () => {
   const home = mkdtempSync(join(tmpdir(), "demo-bg-home-"));
   try {
     const r = spawnSync(process.execPath, [join(ROOT, "bin", "start.mjs"), "--demo", "--background"], {
