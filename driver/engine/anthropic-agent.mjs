@@ -443,7 +443,9 @@ export function buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig
  * the session's working directories "in every permission mode" (settings reference,
  * `permissions.blockReadsOutsideWorkingDirectories`, Claude Code 2.1.257 or later; the floor is 2.1.280).
  * The working directories are the neutral cwd and the `--add-dir` roots above: the instruction trees and,
- * when granted, the run folder. Every turn carries it, the engine probe's included.
+ * when granted, the run folder. A folder the account's own Claude settings add
+ * (`permissions.additionalDirectories`) is a working directory too, and stays readable: measured, the
+ * refusal on a login with three such folders listed all three. Every turn carries it, the probe's included.
  */
 export const READ_FENCE = Object.freeze({ blockReadsOutsideWorkingDirectories: true });
 
