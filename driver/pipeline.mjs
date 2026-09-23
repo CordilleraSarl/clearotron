@@ -1387,7 +1387,7 @@ function readCoverageJudgment(P) {
 // width would be live: `coverage_no_status` names a judgment the seat has not made, and quarantining a
 // derived artifact cannot make that true. The form tokens are deliberately OUT — a refused judgment
 // fails the stage and rides the corrective ladder, which is the only thing that can fix it.
-const isCoverageLedgerFail = (fail) => /invalid_file:[^:]*:coverage_(ledger|axis|key|mirror|status|classes)_/.test(fail ?? "");
+const isCoverageLedgerFail = (fail) => /invalid_file:.*?:coverage_(ledger|axis|key|mirror|status|classes)_/.test(fail ?? "");
 
 /**
  * Does the case-law grounding stage run? REQUESTED-OR-DETECTED (F4, 2026-07-21).

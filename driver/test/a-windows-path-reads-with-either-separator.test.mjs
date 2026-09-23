@@ -100,3 +100,15 @@ test("the methodology witness sees a Windows skills path as the skills tree", ()
   assert.ok(row, "the witness recorded nothing for the stage");
   assert.equal(row.resolvedOddly, undefined, "a Windows path to the skills tree was flagged as resolved oddly");
 });
+
+test("a failure naming a Windows file is still read for what failed, not stopped at the drive's colon", async () => {
+  const { isFormClassFail, draftCarryEligible } = await import("../gateway.mjs");
+  const { failingTarget } = await import("../repair-contract.mjs");
+  const win = "invalid_file:C:\\Users\\lawyer\\run\\frame-diff.json:framediff_key_unknown";
+  assert.equal(isFormClassFail(win), true, "a form defect in a Windows file was not recognised, so it is never repaired in the dispatch");
+  assert.equal(draftCarryEligible("invalid_file:C:\\Users\\lawyer\\run\\out.md:use_check_missing:F1"), true,
+    "a patchable defect in a Windows file was not recognised, so the warm patch never runs");
+  const files = ["C:\\Users\\lawyer\\run\\frame-diff.json", "C:\\Users\\lawyer\\run\\coverage.json"];
+  assert.equal(failingTarget(win, files), files[0], "the repair did not aim at the Windows file that failed");
+  assert.equal(isFormClassFail("invalid_file:clearance-search/x/frame-diff.json:framediff_key_unknown"), true, "the Linux shape moved");
+});
