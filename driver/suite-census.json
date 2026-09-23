@@ -6819,7 +6819,7 @@
         },
         "profileFields.test.ts": {
           "tests": 55,
-          "asserts": 176,
+          "asserts": 178,
           "skips": 0,
           "todos": 0
         },
