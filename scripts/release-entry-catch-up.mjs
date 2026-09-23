@@ -94,7 +94,7 @@ function catchUp(argv) {
   catch (e) { if (/HTTP 404/.test(String(e.stderr))) tagged = false; else { console.error(`release-entry-catch-up: could not read the tag ${tag}: ${String(e.stderr || e.message).trim()}`); return 2; } }
   const entryExists = tagged ? entryFor(tag, repo) : false;
 
-  let keptBytes = false, visibleExit = null, ageSec = null, work = null;
+  let keptBytes = false, visibleExit = null, ageSec = null, work = null, sbom = null;
   if (tagged && !entryExists) {
     const art = JSON.parse(gh(["api", `repos/${repo}/actions/artifacts?name=published-${version}&per_page=1`]));
     const a = (art.artifacts ?? []).find((x) => !x.expired);
@@ -103,7 +103,10 @@ function catchUp(argv) {
       writeFileSync(join(work, "kept.zip"), execFileSync("gh", ["api", `repos/${repo}/actions/artifacts/${a.id}/zip`],
         { maxBuffer: 256 * 1024 * 1024, stdio: ["ignore", "pipe", "pipe"] }));
       execFileSync("unzip", ["-q", "-o", join(work, "kept.zip"), "-d", join(work, "kept")]);
-      const tgz = readdirSync(join(work, "kept")).find((f) => f.endsWith(".tgz"));
+      const kept = readdirSync(join(work, "kept"));
+      const tgz = kept.find((f) => f.endsWith(".tgz"));
+      const cdx = kept.find((f) => f.endsWith(".cdx.json"));
+      if (cdx) sbom = join(work, "kept", cdx);
       if (tgz) {
         keptBytes = true;
         const r = spawnSync(process.execPath, [join(ROOT, "scripts", "release-visible-check.mjs"), "--version", version,
@@ -125,7 +128,9 @@ function catchUp(argv) {
       // THE SAME ENTRY THE PUBLISH JOB WRITES: the changelog's section for this version, flagged as a
       // pre-release for a beta, and GitHub's own notes only when the changelog has no section.
       const notes = spawnSync(process.execPath, [join(ROOT, "scripts", "release-notes-for.mjs"), version], { encoding: "utf8" }).stdout ?? "";
-      const args = ["release", "create", tag, "--repo", repo, "--verify-tag", "--title", tag];
+      // The parts list the publish job kept beside the bytes rides as an asset, as it does on an entry the
+      // publish job writes itself. A version kept before the list existed has none, and gets none.
+      const args = ["release", "create", tag, ...(sbom ? [sbom] : []), "--repo", repo, "--verify-tag", "--title", tag];
       if (notes.trim()) { const f = join(work ?? mkdtempSync(join(tmpdir(), "entry-notes-")), "notes.md"); writeFileSync(f, notes); args.push("--notes-file", f); }
       else args.push("--generate-notes");
       if (prerelease) args.push("--prerelease");

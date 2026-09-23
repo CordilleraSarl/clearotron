@@ -1699,6 +1699,7 @@ function driveTagStep({ script, version, prerelease, existingTagRef = null, visi
         PRERELEASE_FLAG: prerelease,
         DIST_TAG: prerelease === "true" ? "beta" : "latest",
         TARBALL: "release-artefacts/clearotron-" + version + ".tgz",
+        SBOM: "release-artefacts/clearotron-" + version + ".cdx.json",
       },
     });
     const out = `${res.stdout ?? ""}${res.stderr ?? ""}`;

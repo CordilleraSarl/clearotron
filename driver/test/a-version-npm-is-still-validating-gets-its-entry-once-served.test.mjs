@@ -65,26 +65,32 @@ test("a tagged version with no kept bytes is reported, never created on a guess"
 
 // ── WHAT IT RUNS ────────────────────────────────────────────────────────────────────────────────────
 
-/** A zip holding one file, stored uncompressed: the shape an uploaded single-file artifact downloads as. */
-function zipOf(name, data) {
-  const n = Buffer.from(name), crc = crc32(data);
-  const local = Buffer.alloc(30); local.writeUInt32LE(0x04034b50, 0); local.writeUInt16LE(20, 4);
-  local.writeUInt32LE(crc, 14); local.writeUInt32LE(data.length, 18); local.writeUInt32LE(data.length, 22);
-  local.writeUInt16LE(n.length, 26);
-  const central = Buffer.alloc(46); central.writeUInt32LE(0x02014b50, 0); central.writeUInt16LE(20, 4); central.writeUInt16LE(20, 6);
-  central.writeUInt32LE(crc, 16); central.writeUInt32LE(data.length, 20); central.writeUInt32LE(data.length, 24);
-  central.writeUInt16LE(n.length, 28);
-  const cdOffset = local.length + n.length + data.length, cdSize = central.length + n.length;
-  const end = Buffer.alloc(22); end.writeUInt32LE(0x06054b50, 0); end.writeUInt16LE(1, 8); end.writeUInt16LE(1, 10);
-  end.writeUInt32LE(cdSize, 12); end.writeUInt32LE(cdOffset, 16);
-  return Buffer.concat([local, n, data, central, n, end]);
+/** A zip of `[name, data]` files, stored uncompressed: the shape a downloaded artifact arrives in. */
+function zipOf(files) {
+  const locals = [], centrals = [];
+  let offset = 0;
+  for (const [name, data] of files) {
+    const n = Buffer.from(name), crc = crc32(data);
+    const local = Buffer.alloc(30); local.writeUInt32LE(0x04034b50, 0); local.writeUInt16LE(20, 4);
+    local.writeUInt32LE(crc, 14); local.writeUInt32LE(data.length, 18); local.writeUInt32LE(data.length, 22);
+    local.writeUInt16LE(n.length, 26);
+    const central = Buffer.alloc(46); central.writeUInt32LE(0x02014b50, 0); central.writeUInt16LE(20, 4); central.writeUInt16LE(20, 6);
+    central.writeUInt32LE(crc, 16); central.writeUInt32LE(data.length, 20); central.writeUInt32LE(data.length, 24);
+    central.writeUInt16LE(n.length, 28); central.writeUInt32LE(offset, 42);
+    locals.push(local, n, data); centrals.push(central, n);
+    offset += local.length + n.length + data.length;
+  }
+  const cd = Buffer.concat(centrals);
+  const end = Buffer.alloc(22); end.writeUInt32LE(0x06054b50, 0); end.writeUInt16LE(files.length, 8); end.writeUInt16LE(files.length, 10);
+  end.writeUInt32LE(cd.length, 12); end.writeUInt32LE(offset, 16);
+  return Buffer.concat([...locals, cd, end]);
 }
 
 /**
  * Run the real script in a tree of its own: main's package.json at `version`, the registry check and the
  * notes stubbed, and a fake `gh` on PATH that answers as the arm says GitHub did and logs every call.
  */
-function driveCatchUp({ version, tag = true, entry = false, artifact = true, visibleExit = 0, ageHours = 1, args = [] }) {
+function driveCatchUp({ version, tag = true, entry = false, artifact = true, sbom = false, visibleExit = 0, ageHours = 1, args = [] }) {
   const dir = mkdtempSync(join(DIR, "run-"));
   for (const d of ["scripts", "shared", "bin", "zips"]) mkdirSync(join(dir, d));
   writeFileSync(join(dir, "package.json"), JSON.stringify({ name: "clearotron", version }));
@@ -97,7 +103,9 @@ function driveCatchUp({ version, tag = true, entry = false, artifact = true, vis
     + `appendFileSync(${JSON.stringify(asked)}, a.join(" ") + " BYTES=" + readFileSync(t, "utf8") + "\\n");\n`
     + `process.exit(${visibleExit});\n`);
   writeFileSync(join(dir, "scripts", "release-notes-for.mjs"), `process.stdout.write(${JSON.stringify(NOTES)});\n`);
-  writeFileSync(join(dir, "zips", "kept.zip"), zipOf(`clearotron-${version}.tgz`, Buffer.from(`bytes of ${version}`)));
+  const keptFiles = [[`clearotron-${version}.tgz`, Buffer.from(`bytes of ${version}`)]];
+  if (sbom) keptFiles.push([`clearotron-${version}.cdx.json`, Buffer.from('{"bomFormat":"CycloneDX"}')]);
+  writeFileSync(join(dir, "zips", "kept.zip"), zipOf(keptFiles));
   const when = new Date(Date.now() - ageHours * HOUR * 1000).toISOString();
   const tagAnswer = tag === true ? `printf '%s\\n' refs/tags/v${version}; exit 0`
     : tag === "error" ? `echo 'HTTP 502: Bad Gateway' >&2; exit 1` : `echo 'gh: Not Found (HTTP 404)' >&2; exit 1`;
@@ -133,6 +141,15 @@ test("a beta npm now serves gets a pre-release entry from the changelog, checked
   assert.equal(made.length, 1, run.log);
   assert.match(made[0], /^release create v9\.9\.9-beta\.3 --repo CordilleraSarl\/clearotron --verify-tag --title v9\.9\.9-beta\.3 --notes-file \S+ --prerelease$/);
   assert.equal(run.notes, NOTES, "the entry does not carry the changelog's section for the version");
+});
+
+test("the parts list kept beside the bytes rides on the entry as an asset", () => {
+  const run = driveCatchUp({ version: "9.9.9-beta.3", sbom: true });
+  assert.equal(run.status, 0, run.out);
+  const made = creates(run.log);
+  assert.equal(made.length, 1, run.log);
+  assert.match(made[0], /^release create v9\.9\.9-beta\.3 \S+\/clearotron-9\.9\.9-beta\.3\.cdx\.json --repo /,
+    `the entry was written without the parts list its publish kept:\n${made[0]}`);
 });
 
 test("a stable npm now serves gets an ordinary entry, and asks the registry for `latest`", () => {
@@ -221,7 +238,7 @@ test("each publishing job keeps the exact bytes it published, under the name the
     assert.ok(pub > 0 && keep > pub, `${name}: the bytes are not kept after the publish`);
     const step = text.slice(keep, text.indexOf("\n\n", keep));
     assert.match(step, /name: published-\$\{\{ steps\.what\.outputs\.version \}\}/, `${name}\n${step}`);
-    assert.match(step, /path: \$\{\{ steps\.what\.outputs\.tarball \}\}/, `${name}: the kept file is not the tarball the publish step published`);
+    assert.match(step, /path: \|\n\s+\$\{\{ steps\.what\.outputs\.tarball \}\}\n/, `${name}: the kept file is not the tarball the publish step published`);
     assert.match(step, /if-no-files-found: error/, `${name}: a missing tarball would upload nothing and say nothing`);
     assert.match(text.slice(pub, keep), /npm publish "\.\/\$\{\{ steps\.what\.outputs\.tarball \}\}"/, `${name}: the publish step no longer publishes that tarball`);
   }
