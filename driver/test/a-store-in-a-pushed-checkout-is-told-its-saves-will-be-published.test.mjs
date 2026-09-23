@@ -160,7 +160,7 @@ test("doctor WARNS about a store whose checkout publishes its saves, and its exi
           encoding: "utf8", stdio: "pipe", timeout: 120_000,
           // An empty base, so nothing from the shell running the suite reaches doctor but what is named
           // here; `handRunEnv` also clears the two variables that would make it ignore this home.
-          env: handRunEnv({ HOME: home, PATH: [bin, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1",
+          env: handRunEnv({ HOME: home, USERPROFILE: home, PATH: [bin, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1",
             CLEAROTRON_CUSTOMERS_DIR: store, GIT_CEILING_DIRECTORIES: s.dir, GIT_CONFIG_NOSYSTEM: "1" }, {}),
         });
         return { code: 0, out };

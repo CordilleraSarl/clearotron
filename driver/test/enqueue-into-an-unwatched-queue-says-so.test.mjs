@@ -87,7 +87,7 @@ function enqueue(qdir, home, id) {
     "--mark", "NOVAPULSE WATCH", "--classes", "9", "--goods", "downloadable game software",
     "--forwarder", "jordan", "--forwarder-email", "jordan.lee@example.com",
     "--id", id, "--queue-dir", qdir,
-  ], { env: { ...process.env, HOME: home }, encoding: "utf8" });
+  ], { env: { ...process.env, HOME: home, USERPROFILE: home }, encoding: "utf8" });
   let out = null;
   try { out = JSON.parse(r.stdout); } catch { /* the assertion below prints what came back */ }
   return { code: r.status, out, stdout: r.stdout, stderr: r.stderr };

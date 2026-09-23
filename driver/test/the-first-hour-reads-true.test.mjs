@@ -106,7 +106,7 @@ test("the organisation remedy reaches the terminal and the New company screen in
 const NODE_BIN = dirname(process.execPath);
 function doctor(home, extra = {}) {
   const r = spawnSync(process.execPath, [join(ROOT, "bin", "onboard.mjs"), "--check"], { cwd: ROOT, encoding: "utf8", timeout: 120_000,
-    env: handRunEnv({ HOME: home, PATH: [NODE_BIN, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", ...extra }, {}) });
+    env: handRunEnv({ HOME: home, USERPROFILE: home, PATH: [NODE_BIN, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", ...extra }, {}) });
   assert.equal(r.error, undefined, String(r.error));
   assert.notEqual(r.status, null, `doctor was killed by ${r.signal}`);
   return `${r.stdout}${r.stderr}`.replace(/\x1b\[[0-9;]*m/g, "");

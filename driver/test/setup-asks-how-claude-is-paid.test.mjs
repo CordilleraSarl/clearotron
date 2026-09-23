@@ -35,6 +35,7 @@ import { CLAUDE_PAY_QUESTION, CLOUD_CHOICES, payQuestion, cloudSettings, servedL
 import { payWays } from "../run-requirements.mjs";
 import { loadEnvLocal, envLocalPath } from "../../shared/env-local.mjs";
 import { handRunEnv } from "./drive-env.mjs";
+import { homeAt } from "./helpers/home.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ONBOARD = join(HERE, "..", "..", "bin", "onboard.mjs");
@@ -185,7 +186,7 @@ function doctor(lines) {
   try {
     return execFileSync(process.execPath, [ONBOARD, "--check"], {
       encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], timeout: 60000,
-      env: handRunEnv({ HOME: home, PATH: `${NODE_BIN}:/usr/bin:/bin` }, {}) });
+      env: handRunEnv({ HOME: home, USERPROFILE: home, PATH: `${NODE_BIN}:/usr/bin:/bin` }, {}) });
   } catch (e) {
     return `${e.stdout ?? ""}${e.stderr ?? ""}`;
   }
@@ -225,7 +226,7 @@ function doctorProves(bin, lines) {
   try {
     return execFileSync(process.execPath, [ONBOARD, "--check", "--probe-engine"], {
       encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], timeout: 90000,
-      env: handRunEnv({ HOME: home, PATH: `${NODE_BIN}:/usr/bin:/bin` }, {}) });
+      env: handRunEnv({ HOME: home, USERPROFILE: home, PATH: `${NODE_BIN}:/usr/bin:/bin` }, {}) });
   } catch (e) {
     return `${e.stdout ?? ""}${e.stderr ?? ""}`;
   }
@@ -269,7 +270,7 @@ test("setup's proof turn on an Amazon machine whose keys are only in the setting
   const eng = ENGINE_BINARIES["anthropic-agent"];
   // The shell is composed from nothing and holds no Amazon credential of any kind, so a key can only reach the
   // program from the settings file. The answers are the ones setup takes for Amazon: the region.
-  const shell = handRunEnv({ HOME: mkdtempSync(join(tmpdir(), "setup-pay-proof-home-")), PATH: `${NODE_BIN}:/usr/bin:/bin` }, {});
+  const shell = handRunEnv({ ...homeAt(mkdtempSync(join(tmpdir(), "setup-pay-proof-home-"))), PATH: `${NODE_BIN}:/usr/bin:/bin` }, {});
   const answers = cloudSettings("bedrock", { AWS_REGION: "eu-central-1" });
   const proves = async (lines) => {
     const dir = mkdtempSync(join(tmpdir(), "setup-pay-proof-amazon-"));
@@ -300,7 +301,7 @@ test("setup's proof turn on an install still configured at the old location read
   // used never reached it. A throwaway install folder and home, so neither this checkout nor the suite's home
   // is read.
   const eng = ENGINE_BINARIES["anthropic-agent"];
-  const shell = handRunEnv({ HOME: mkdtempSync(join(tmpdir(), "setup-pay-old-shell-")), PATH: `${NODE_BIN}:/usr/bin:/bin` }, {});
+  const shell = handRunEnv({ ...homeAt(mkdtempSync(join(tmpdir(), "setup-pay-old-shell-"))), PATH: `${NODE_BIN}:/usr/bin:/bin` }, {});
   const answers = cloudSettings("bedrock", { AWS_REGION: "eu-central-1" });
   const install = (lines) => {
     const at = { repoRoot: mkdtempSync(join(tmpdir(), "setup-pay-old-install-")), home: mkdtempSync(join(tmpdir(), "setup-pay-old-home-")) };

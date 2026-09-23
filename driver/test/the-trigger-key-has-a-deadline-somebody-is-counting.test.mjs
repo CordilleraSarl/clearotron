@@ -41,7 +41,7 @@ function doctorWithHomeEnv(body) {
   try {
     if (body !== null) writeFileSync(join(home, ".env"), body, { mode: 0o600 });
     const r = spawnSync(process.execPath, [join(ROOT, "bin", "clearotron.mjs"), "doctor"],
-      { cwd: ROOT, encoding: "utf8", env: { PATH: "/usr/bin:/bin", HOME: home, ...NO_INSTALLED_ENGINES } });
+      { cwd: ROOT, encoding: "utf8", env: { PATH: "/usr/bin:/bin", HOME: home, USERPROFILE: home, ...NO_INSTALLED_ENGINES } });
     return { status: r.status, out: `${r.stdout ?? ""}${r.stderr ?? ""}` };
   } finally {
     rmSync(home, { recursive: true, force: true });

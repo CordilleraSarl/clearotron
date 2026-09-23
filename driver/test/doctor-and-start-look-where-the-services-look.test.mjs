@@ -102,7 +102,7 @@ test("an Environment= value whose %h cannot be expanded is a gap in the reading,
 function doctor(home, shellPath = "/usr/bin:/bin") {
   const r = spawnSync(process.execPath, [join(ROOT, "bin", "clearotron.mjs"), "doctor"], {
     cwd: ROOT, encoding: "utf8", timeout: 120_000,
-    env: handRunEnv({ PATH: shellPath, HOME: home, CLEAROTRON_DOCTOR_ASSUME_PINNED: "1" }, {}) });
+    env: handRunEnv({ PATH: shellPath, HOME: home, USERPROFILE: home, CLEAROTRON_DOCTOR_ASSUME_PINNED: "1" }, {}) });
   if (r.error || r.signal) throw new Error(`doctor did not come back (signal=${r.signal} error=${r.error?.message}), so nothing here was measured`);
   const out = `${r.stdout ?? ""}${r.stderr ?? ""}`;
   assert.match(out, /Will a search run\?/, `doctor never reached the check these arms are about:\n${out.slice(0, 900)}`);
@@ -194,7 +194,7 @@ function driveStartOn(ports, { plant, settingsPath = null }) {
   // A PATH line in `<home>/.env`, the file the units load.
   if (settingsPath) writeFileSync(join(home, ".env"), `PATH=${settingsPath}\n`);
   if (plant) plantProgram(join(home, ".local", "bin"));
-  const env = handRunEnv({ HOME: home, PATH: "/usr/bin:/bin",
+  const env = handRunEnv({ HOME: home, USERPROFILE: home, PATH: "/usr/bin:/bin",
     PORTAL_SERVICE_PORT: String(ports.portal), TRADEMARK_MCP_HTTP_PORT: String(ports.mcp),
     CLIENT_MCP_HTTP_PORT: String(ports.client) }, {});
   const r = spawnSync(process.execPath, [join(ROOT, "bin", "start.mjs"), "--background"], { encoding: "utf8", timeout: 180_000, env });

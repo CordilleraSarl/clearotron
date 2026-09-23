@@ -61,7 +61,7 @@ async function driveToEnable(stderrLine) {
     // would make this drive read no .env, so the values written above never arrive and it stops at an
     // earlier refusal — the guard `reachedTheEnable` names rather than lets an arm read past
     //.
-    env: handRunEnv({ HOME: home, PATH: `${bin}:${process.env.PATH}`,
+    env: handRunEnv({ HOME: home, USERPROFILE: home, PATH: `${bin}:${process.env.PATH}`,
       PORTAL_SERVICE_PORT: String(ports.portal), TRADEMARK_MCP_HTTP_PORT: String(ports.mcp),
       CLIENT_MCP_HTTP_PORT: String(ports.client) }) }),
     { busy: (r) => /is already in use/.test(`${r.stdout ?? ""}${r.stderr ?? ""}`) });
@@ -149,7 +149,7 @@ test("and the generic trailer still fires where nothing better was said", async 
     const r = spawnSync(process.execPath, [START, "--background"], { encoding: "utf8", timeout: 180_000,
       // CLEAROTRON_NO_ENV_FILE is set BACK here on purpose: this drive wants a refusal that comes from
       // the box rather than from a file, and reading one would be a way to accidentally have values.
-      env: handRunEnv({ HOME: home, CLEAROTRON_NO_ENV_FILE: "1",
+      env: handRunEnv({ HOME: home, USERPROFILE: home, CLEAROTRON_NO_ENV_FILE: "1",
         PORTAL_SERVICE_PORT: String(ports.portal), TRADEMARK_MCP_HTTP_PORT: String(ports.mcp),
         CLIENT_MCP_HTTP_PORT: String(ports.client),
         CLEAROTRON_DATABASE: undefined, CLEAROTRON_AI: undefined, CLEAROTRON_CLAUDE_PATH: undefined }) });
@@ -204,7 +204,7 @@ test("the OTHER systemd catch still lands, and now leads with what systemd said"
     // daemon-reload catch, so a number that went stale between allocation and bind is noise.
     const r = await withFreePorts(["portal", "mcp", "client"], (ports) =>
       spawnSync(process.execPath, [START, "--background"], { encoding: "utf8", timeout: 180_000,
-        env: handRunEnv({ HOME: home, PATH: `${bin}:${process.env.PATH}`,
+        env: handRunEnv({ HOME: home, USERPROFILE: home, PATH: `${bin}:${process.env.PATH}`,
           PORTAL_SERVICE_PORT: String(ports.portal), TRADEMARK_MCP_HTTP_PORT: String(ports.mcp),
           CLIENT_MCP_HTTP_PORT: String(ports.client) }) }),
       { busy: (r) => /is already in use/.test(`${r.stdout ?? ""}${r.stderr ?? ""}`) });

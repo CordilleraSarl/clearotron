@@ -148,7 +148,7 @@ function doctor(root) {
   try {
     const out = execFileSync(process.execPath, [join(root, "bin", "onboard.mjs"), "--check"], {
       encoding: "utf8", stdio: ["ignore", "pipe", "pipe"],
-      env: { HOME: home, PATH: [NODE_BIN, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", ...NO_INSTALLED_ENGINES },
+      env: { HOME: home, USERPROFILE: home, PATH: [NODE_BIN, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", ...NO_INSTALLED_ENGINES },
     });
     return { code: 0, out };
   } catch (e) { return { code: e.status ?? -1, out: `${e.stdout ?? ""}${e.stderr ?? ""}` }; }

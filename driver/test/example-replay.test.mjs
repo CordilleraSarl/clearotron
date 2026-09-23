@@ -92,7 +92,7 @@ function runDemo(args, env = {}) {
       encoding: "utf8", stdio: ["ignore", "pipe", "pipe"],
       // TMPDIR IS THE RUN'S OWN, so the demo's temporary copies land where the runner removes them. Without
       // it the child falls back to the machine's temp directory and every run left five behind there.
-      env: { HOME: env.HOME ?? tmpdir(), PATH: "/usr/bin:/bin", TMPDIR: tmpdir(), ...env },
+      env: { HOME: env.HOME ?? tmpdir(), USERPROFILE: env.USERPROFILE ?? env.HOME ?? tmpdir(), PATH: "/usr/bin:/bin", TMPDIR: tmpdir(), ...env },
     });
     return { code: 0, out };
   } catch (e) {
@@ -163,7 +163,7 @@ test("a $HOME symlinked into a real pool does not get past the guard", () => {
   const link = join(root, "home-link");
   execFileSync("ln", ["-s", join(configured, "home"), link]);
   // Default pool is $HOME/trademark-demo/pool — which, through the link, lands inside the real pool.
-  const r = runDemo(["--run-dir", sample, "--once"], { HOME: link, CLEAROTRON_REPORTS_DIR: configured });
+  const r = runDemo(["--run-dir", sample, "--once"], { HOME: link, USERPROFILE: link, CLEAROTRON_REPORTS_DIR: configured });
   assert.equal(r.code, 1, r.out);
   assert.match(r.out, /refusing to publish/, r.out);
   assert.ok(!existsSync(join(configured, "home", "trademark-demo")), "nothing was created through the symlink");

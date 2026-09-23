@@ -135,7 +135,7 @@ test("THE DOOR ACTUALLY BOOTS on the composed environment — shape is not the s
       paths: { ...BASE.paths, base, grants: join(base, "grants.json"), denylist: join(base, "denylist") },
       tokenSecret: "t".repeat(32) });
     const child = spawn(process.execPath, [join(REPO, "mcp-server", "http-server-client.mjs")],
-      { env: { PATH: process.env.PATH, HOME: base, ...envs.client }, stdio: ["ignore", "pipe", "pipe"] });
+      { env: { PATH: process.env.PATH, HOME: base, USERPROFILE: base, ...envs.client }, stdio: ["ignore", "pipe", "pipe"] });
     let out = "";
     child.stdout.on("data", (d) => { out += d; });
     child.stderr.on("data", (d) => { out += d; });
@@ -184,7 +184,7 @@ test("a door that CANNOT bind is reported as not running — driven, not read", 
     paths: { ...BASE.paths, base, grants: join(base, "grants.json"), denylist: join(base, "denylist") },
     tokenSecret: "t".repeat(32) });
   const child = spawn(process.execPath, [join(REPO, "mcp-server", "http-server-client.mjs")],
-    { env: { PATH: process.env.PATH, HOME: base, ...envs.client }, stdio: ["ignore", "pipe", "pipe"] });
+    { env: { PATH: process.env.PATH, HOME: base, USERPROFILE: base, ...envs.client }, stdio: ["ignore", "pipe", "pipe"] });
   let out = "";
   child.stdout.on("data", (d) => { out += d; });
   child.stderr.on("data", (d) => { out += d; });

@@ -209,10 +209,11 @@ test("the setting that moves the lookup is read when no directory is injected", 
 test("the default engines folder is under the home directory, where the lookup finds what setup put there", () => {
   // Under the home, not the install's own tree: an update replaces that tree, and the services run as
   // user units under the same home as the setup that installed the program.
-  const saved = { home: process.env.HOME, dir: process.env[ENGINES_DIR_ENV] };
+  const saved = { home: process.env.HOME, profile: process.env.USERPROFILE, dir: process.env[ENGINES_DIR_ENV] };
   const home = fresh();
   try {
     process.env.HOME = home;
+    process.env.USERPROFILE = home;   // os.homedir() reads this one on Windows
     delete process.env[ENGINES_DIR_ENV];
     const folder = join(home, ".local", "share", "clearotron", "engines");
     assert.equal(enginesFolder(), folder);
@@ -222,6 +223,7 @@ test("the default engines folder is under the home directory, where the lookup f
     assert.equal(r.resolved, installed);
   } finally {
     if (saved.home === undefined) delete process.env.HOME; else process.env.HOME = saved.home;
+    if (saved.profile === undefined) delete process.env.USERPROFILE; else process.env.USERPROFILE = saved.profile;
     if (saved.dir === undefined) delete process.env[ENGINES_DIR_ENV]; else process.env[ENGINES_DIR_ENV] = saved.dir;
   }
 });

@@ -128,7 +128,7 @@ function standIn(name, answer) {
 }
 function isolated(dir, extra = {}) {
   const home = mkdtempSync(join(tmpdir(), "floor-home-"));
-  return { home, env: { PATH: `${dir}:${dirname(process.execPath)}:/usr/bin:/bin`, HOME: home, XDG_CONFIG_HOME: join(home, ".config"),
+  return { home, env: { PATH: `${dir}:${dirname(process.execPath)}:/usr/bin:/bin`, HOME: home, USERPROFILE: home, XDG_CONFIG_HOME: join(home, ".config"),
     CLEAROTRON_ENGINES_DIR: join(home, "engines"), NO_COLOR: "1", TERM: "dumb", ...extra } };
 }
 

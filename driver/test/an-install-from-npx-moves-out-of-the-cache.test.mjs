@@ -99,7 +99,7 @@ test("the published versions are read from npm, and a failed read is an absence,
 test("a connect line composed in npx's cache names the permanent copy once it exists", () => {
   const home = mkdtempSync(join(tmpdir(), "permanent-home-"));
   try {
-    const env = { HOME: home };
+    const env = { HOME: home, USERPROFILE: home };
     assert.equal(stableInstallRoot({ installRoot: NPX, env }), NPX, "no permanent copy yet, so there is nothing else to name");
     const root = join(home, ".local", "lib", "node_modules", "clearotron");
     mkdirSync(join(root, "mcp-server"), { recursive: true });
@@ -116,11 +116,11 @@ test("npm's link into this install is replaced with the launcher; a link into an
     const root = join(home, ".local", "lib", "node_modules", "clearotron");
     mkdirSync(join(root, "bin"), { recursive: true });
     writeFileSync(join(root, "bin", "clearotron.mjs"), "#!/usr/bin/env node\n");
-    const path = shimPath({ HOME: home });
+    const path = shimPath({ HOME: home, USERPROFILE: home });
     mkdirSync(dirname(path), { recursive: true });
     symlinkSync("../lib/node_modules/clearotron/bin/clearotron.mjs", path);
     assert.equal(inspectShim(path, { installDir: root }).kind, "npm-link");
-    const r = installShim({ env: { HOME: home }, installDir: root, nodePath: process.execPath });
+    const r = installShim({ env: { HOME: home, USERPROFILE: home }, installDir: root, nodePath: process.execPath });
     assert.equal(r.ok, true, `npm's own link was treated as somebody else's: ${r.reason} ${r.detail}`);
     assert.equal(lstatSync(path).isSymbolicLink(), false, "the link was left in place of the launcher");
     assert.match(readFileSync(path, "utf8"), new RegExp(SHIM_MARKER));
@@ -132,7 +132,7 @@ test("npm's link into this install is replaced with the launcher; a link into an
     rmSync(path);
     symlinkSync(join(other, "bin", "clearotron.mjs"), path);
     assert.equal(inspectShim(path, { installDir: root }).kind, "foreign");
-    assert.equal(installShim({ env: { HOME: home }, installDir: root }).reason, "occupied");
+    assert.equal(installShim({ env: { HOME: home, USERPROFILE: home }, installDir: root }).reason, "occupied");
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
@@ -182,7 +182,7 @@ test("a demo's services name the demo's own copy first, then the permanent insta
   const home = mkdtempSync(join(tmpdir(), "demo-program-"));
   try {
     const base = join(home, "trademark-demo");
-    const env = { HOME: home, CLEAROTRON_DEMO: "1", CLEAROTRON_WORK_DIR: join(base, "workspace") };
+    const env = { HOME: home, USERPROFILE: home, CLEAROTRON_DEMO: "1", CLEAROTRON_WORK_DIR: join(base, "workspace") };
     const lay = (root) => { mkdirSync(join(root, "mcp-server"), { recursive: true }); writeFileSync(join(root, "mcp-server", "server.mjs"), ""); };
     assert.equal(stableInstallRoot({ installRoot: NPX, env }), NPX, "nothing laid down yet, so there is nothing else to name");
     const permanent = join(home, ".local", "lib", "node_modules", "clearotron");

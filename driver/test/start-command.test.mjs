@@ -430,7 +430,7 @@ test("refused on a held port, `start` has written NOTHING — no env file, no da
       encoding: "utf8", timeout: 60000,
       // A CLEAN environment, built rather than inherited: a dev box's PORTAL_*/CLEAROTRON_* would
       // steer the gates this arm needs to fall through to the probe.
-      env: { PATH: process.env.PATH, HOME: home, PORTAL_SERVICE_PORT: String(held) },
+      env: { PATH: process.env.PATH, HOME: home, USERPROFILE: home, PORTAL_SERVICE_PORT: String(held) },
     });
     assert.ok(!child.error, `the spawn did not come back (${child.error?.message}) — a could-not-look, not a verdict`);
     assert.equal(child.status, 1, `start must refuse on the held port (status=${child.status}, signal=${child.signal})\nstderr: ${child.stderr}`);

@@ -50,7 +50,7 @@ test("`start --demo --background` is refused before anything is written", () => 
   try {
     const r = spawnSync(process.execPath, [join(ROOT, "bin", "start.mjs"), "--demo", "--background"], {
       encoding: "utf8", cwd: ROOT, timeout: 60000,
-      env: { PATH: process.env.PATH, HOME: home, CLEAROTRON_NO_ENV_FILE: "1" },
+      env: { PATH: process.env.PATH, HOME: home, USERPROFILE: home, CLEAROTRON_NO_ENV_FILE: "1" },
     });
     assert.notEqual(r.status, 0, `it did not refuse: ${r.stdout}\n${r.stderr}`);
     assert.match(`${r.stdout}\n${r.stderr}`, /the demo has no background form/);

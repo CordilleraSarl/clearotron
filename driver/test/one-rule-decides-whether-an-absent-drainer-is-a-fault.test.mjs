@@ -238,7 +238,7 @@ function drainerLineFor({ workerEnabled = false, timerEnabled = false } = {}) {
     try {
       out = execFileSync(process.execPath, [join(DRIVER, "..", "scripts", "live-surface-check.mjs")], {
         encoding: "utf8", timeout: 300_000,
-        env: { ...process.env, HOME: join(dir, "home"), CLEAROTRON_REPORTS_DIR: join(dir, "pool"), CLEAROTRON_WORK_DIR: join(dir, "ws") },
+        env: { ...process.env, HOME: join(dir, "home"), USERPROFILE: join(dir, "home"), CLEAROTRON_REPORTS_DIR: join(dir, "pool"), CLEAROTRON_WORK_DIR: join(dir, "ws") },
       });
     } catch (e) { out = `${e.stdout ?? ""}${e.stderr ?? ""}`; }
     // COULD THE ARM EVEN LOOK? The check has a preflight refusal and can die on a throw, and in both

@@ -1687,7 +1687,7 @@ function driveTagStep({ script, version, prerelease, existingTagRef = null, visi
       stdio: "pipe",
       env: {
         PATH: `${bin}:${process.env.PATH}`,
-        HOME: dir,
+        HOME: dir, USERPROFILE: dir,
         GH_TOKEN: "not-a-token",
         GITHUB_REPOSITORY: "CordilleraSarl/clearotron",
         GITHUB_SHA: sha,
@@ -2723,7 +2723,7 @@ function driveAwait({ requested, pr = "345", ghBody }) {
     const out = join(dir, "github-output");
     const env = {
       PATH: `${bin}:${process.env.PATH}`,
-      HOME: dir,
+      HOME: dir, USERPROFILE: dir,
       GITHUB_OUTPUT: out,
       CLEAROTRON_RELEASE_WAIT_MS: "0",
       CLEAROTRON_CUT_REQUESTED: requested ? "true" : "false",
@@ -2900,7 +2900,7 @@ function decide({ version, tagged }) {
     g("update-ref", "refs/remotes/origin/main", "HEAD");
     const out = join(dir, "out");
     const r = spawnSync(process.execPath, [join(REPO, "scripts", "release-cut-decision.mjs")],
-      { cwd: dir, encoding: "utf8", env: { PATH: process.env.PATH, HOME: dir, GITHUB_OUTPUT: out, CLEAROTRON_CUT_REF: "origin/main" } });
+      { cwd: dir, encoding: "utf8", env: { PATH: process.env.PATH, HOME: dir, USERPROFILE: dir, GITHUB_OUTPUT: out, CLEAROTRON_CUT_REF: "origin/main" } });
     return { code: r.status, text: `${r.stdout}${r.stderr}`, output: existsSync(out) ? readFileSync(out, "utf8") : "" };
   } finally { rmSync(dir, { recursive: true, force: true }); }
 }

@@ -111,7 +111,7 @@ function run(args, env = {}) {
       // Neither is spread here, so neither arrives. Recorded rather than left to be re-derived, and
       // measured: this file passes with both set in the parent.
       env: {
-        HOME: env.HOME ?? tmpdir(), PATH: [NODE_BIN, "/usr/bin", "/bin"].join(":"),
+        HOME: env.HOME ?? tmpdir(), USERPROFILE: env.USERPROFILE ?? env.HOME ?? tmpdir(), PATH: [NODE_BIN, "/usr/bin", "/bin"].join(":"),
         CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", CLEAROTRON_ENGINES_DIR: NO_ENGINES, ...env,
       },
     });
@@ -141,7 +141,7 @@ test("--check on an unconfigured machine exits 0 and changes NOTHING on disk", (
   const home = mkdtempSync(join(tmpdir(), "onboard-home-"));
   const before = treeStamp(join(REPO, "bin"));
   const beforeEnv = existsSync(join(CLI_ROOT, ".env"));
-  const r = run(["--check"], { HOME: home });
+  const r = run(["--check"], { HOME: home, USERPROFILE: home });
   assert.equal(r.code, 0, r.out);
   assert.match(r.out, /Nothing was written/, r.out);
   assert.deepEqual(treeStamp(join(REPO, "bin")), before, "bin/ untouched");
@@ -166,7 +166,7 @@ test("--check refuses a CLEAROTRON_CLAUDE_PATH that is relative, naming the run-
   // DIRECTORY, so a relative binary resolves against a directory that did not exist at setup time.
   const dir = mkdtempSync(join(tmpdir(), "onboard-bin-"));
   writeFileSync(join(dir, "claude"), "#!/bin/sh\nexit 0\n", { mode: 0o755 });
-  const r = run(["--check"], { CLEAROTRON_CLAUDE_PATH: "bin/../claude", HOME: dir });
+  const r = run(["--check"], { CLEAROTRON_CLAUDE_PATH: "bin/../claude", HOME: dir, USERPROFILE: dir });
   assert.equal(r.code, 1, r.out);
   assert.match(r.out, /run directory/, r.out);
   rmSync(dir, { recursive: true, force: true });
@@ -197,11 +197,11 @@ test("--check reads a .env, and says which source each value came from", (t) => 
   if (existsSync(envPath)) { t.skip(`a real ${envPath} is present — this test would overwrite it`); return; }
   writeFileSync(envPath, "CLEAROTRON_DATABASE=uspto-local\nUSPTO_LOCAL_DB=/tmp/x.db\n", { mode: 0o600 });
   try {
-    const r = run(["--check"], { HOME: home });
+    const r = run(["--check"], { HOME: home, USERPROFILE: home });
     assert.equal(r.code, 0, r.out);
     assert.match(r.out, /uspto-local .*\(\.env\)/, r.out);
     // and the environment beats it
-    const r2 = run(["--check"], { HOME: home, CLEAROTRON_DATABASE: "euipo", EUIPO_CLIENT_ID: "a", EUIPO_CLIENT_SECRET: "b" });
+    const r2 = run(["--check"], { HOME: home, USERPROFILE: home, CLEAROTRON_DATABASE: "euipo", EUIPO_CLIENT_ID: "a", EUIPO_CLIENT_SECRET: "b" });
     assert.match(r2.out, /euipo .*\(environment\)/, r2.out);
   } finally {
     rmSync(envPath, { force: true });
@@ -398,7 +398,7 @@ test("readEnvFile reads THE FILE IT IS GIVEN, on any machine", () => {
     const out = execFileSync(process.execPath, ["--input-type=module", "-e",
       `import { readEnvFile } from ${JSON.stringify(pathToFileURL(join(REPO, "bin", "onboard.mjs")).href)};`
       + `console.log(JSON.stringify(Object.keys(readEnvFile(${JSON.stringify(join(asked, ".env"))}))));`,
-    ], { encoding: "utf8", env: { ...process.env, HOME: home }, stdio: ["ignore", "pipe", "pipe"] });
+    ], { encoding: "utf8", env: { ...process.env, HOME: home, USERPROFILE: home }, stdio: ["ignore", "pipe", "pipe"] });
 
     assert.deepEqual(JSON.parse(out.trim()), ["FROM_THE_FILE_ASKED_FOR"],
       "readEnvFile was given one path and answered about another — it is inferring a directory and "
@@ -921,7 +921,7 @@ test("--check prints the pool refusal and the workspace default the CONFIG produ
   const home = mkdtempSync(join(tmpdir(), "onboard-827-"));
   try {
     // `run()` REPLACES the environment, so both variables are genuinely unset in the child.
-    const r = run(["--check"], { HOME: home });
+    const r = run(["--check"], { HOME: home, USERPROFILE: home });
     assert.equal(r.code, 0, r.out);
 
     // ── the pool: no default, and the refusal names the variable ──────────────────────────────────
@@ -940,7 +940,7 @@ test("--check prints the pool refusal and the workspace default the CONFIG produ
     // Computed under the same HOME the child ran with — `home()` in driver.config.mjs resolves through
     // homedir(), which honours HOME on POSIX. Pinning the literal would just move the drift here.
     const wsDefault = withEnv(
-      { HOME: home, OPENCLAW_HOME: undefined, CLEAROTRON_WORK_DIR: undefined },
+      { HOME: home, USERPROFILE: home, OPENCLAW_HOME: undefined, CLEAROTRON_WORK_DIR: undefined },
       () => config.workspaceRoot);
     assert.ok(r.out.includes(wsDefault),
       `--check must name the workspace root the driver would really use (${wsDefault}), which is under\n`
@@ -1062,7 +1062,7 @@ test("the wizard's register ladder and the preflight refusal print the SAME orde
 
 test("--check names the MODE on a machine with no engine, and does not send the reader to probe nothing", () => {
   const home = mkdtempSync(join(tmpdir(), "onboard-mode-"));
-  const r = run(["--check"], { HOME: home });
+  const r = run(["--check"], { HOME: home, USERPROFILE: home });
   assert.equal(r.code, 0, r.out);
 
   assert.match(r.out, /MODE: demo/, `--check no longer names the mode:\n${r.out}`);

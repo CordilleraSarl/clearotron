@@ -129,7 +129,7 @@ test("start reads its first-start signal before it writes either file, and asks 
 // ── THE VERB, DRIVEN AT ITS OWN DOOR ─────────────────────────────────────────────────────────────
 
 function verb(home, ...args) {
-  const r = spawnSync(process.execPath, [VERB, ...args], { encoding: "utf8", env: { PATH: process.env.PATH, HOME: home } });
+  const r = spawnSync(process.execPath, [VERB, ...args], { encoding: "utf8", env: { PATH: process.env.PATH, HOME: home, USERPROFILE: home } });
   // The reset prints a passphrase; nothing below puts raw output into a message.
   return { code: r.status, out: String(r.stdout ?? ""), err: String(r.stderr ?? "") };
 }
@@ -181,7 +181,7 @@ test("the recovery line runs as printed, directory change and all, and resets th
     const shared = join(home, ".cordillera", INSTALL_CREDENTIAL_FILE);
     establishCredential({ path: shared, email: "earlier@localhost", passphrase: "an earlier install's" });
     const run = (line) => spawnSync("sh", ["-c", line.replace("clearotron passphrase", `${JSON.stringify(process.execPath)} ${JSON.stringify(VERB)}`)],
-      { encoding: "utf8", env: { PATH: process.env.PATH, HOME: home } });
+      { encoding: "utf8", env: { PATH: process.env.PATH, HOME: home, USERPROFILE: home } });
     const cases = [
       ["an install's own file, in a directory other than the default", join(home, "elsewhere", INSTALL_CREDENTIAL_FILE)],
       ["an operator's own file", join(home, "ops", "creds.json")],
@@ -250,7 +250,7 @@ test("a real first start, where another install left the shared credential, mint
     establishCredential({ path: shared, email: "op@localhost", passphrase: "an earlier install's" });
     const sharedBefore = readFileSync(shared, "utf8");
     const child = spawn(process.execPath, [join(REPO, "bin", "start.mjs"), "--no-worker"], {
-      env: { PATH: process.env.PATH, HOME: home, CLEAROTRON_NO_ENV_FILE: "1", PORTAL_LOCAL_USER: "op@localhost",
+      env: { PATH: process.env.PATH, HOME: home, USERPROFILE: home, CLEAROTRON_NO_ENV_FILE: "1", PORTAL_LOCAL_USER: "op@localhost",
         PORTAL_SERVICE_PORT: String(ports.portal), TRADEMARK_MCP_HTTP_PORT: String(ports.mcp),
         CLIENT_MCP_HTTP_PORT: String(ports.client) },
       stdio: ["ignore", "pipe", "pipe"],

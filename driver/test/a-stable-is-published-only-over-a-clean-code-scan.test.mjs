@@ -67,7 +67,7 @@ if (url.includes("/code-scanning/analyses")) {
 }
 `, { mode: 0o755 });
   const r = spawnSync(process.execPath, [CHECK, "--sha", sha, "--repo", "Owner/name", "--timeout", timeout, "--interval", interval],
-    { encoding: "utf8", env: { PATH: `${bin}:${process.env.PATH}`, HOME: dir } });
+    { encoding: "utf8", env: { PATH: `${bin}:${process.env.PATH}`, HOME: dir, USERPROFILE: dir } });
   return { code: r.status, out: `${r.stdout}${r.stderr}` };
 }
 

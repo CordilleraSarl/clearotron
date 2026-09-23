@@ -55,7 +55,7 @@ function driveStart(port, extra = {}) {
   // descendant of a systemd unit, so on CI the same drive read no .env, met no collision at all, and
   // three arms failed reporting a port they did not hold. The reasoning is in drive-env.mjs
   //.
-  const env = handRunEnv({ HOME: home, ...extra });
+  const env = handRunEnv({ HOME: home, USERPROFILE: home, ...extra });
   const r = spawnSync(process.execPath, [START, "--background"],
     { encoding: "utf8", timeout: 180_000, env });
   return { home, envFile, port, said: `${r.stdout ?? ""}${r.stderr ?? ""}`, code: r.status,

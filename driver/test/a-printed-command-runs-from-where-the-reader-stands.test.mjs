@@ -108,7 +108,7 @@ const tmp = (tag) => mkdtempSync(join(tmpdir(), `reach-${tag}-`));
 /** A home with our shim already in it, as `clearotron install` leaves one. */
 function homeWithShim({ installDir = REPO } = {}) {
   const home = tmp("home");
-  const r = installShim({ env: { HOME: home }, installDir, nodePath: process.execPath });
+  const r = installShim({ env: { HOME: home, USERPROFILE: home }, installDir, nodePath: process.execPath });
   assert.equal(r.ok, true, `the fixture could not write a shim: ${r.reason} ${r.detail}`);
   return { home, dir: r.dir, path: r.path };
 }
@@ -162,11 +162,11 @@ test("the form is decided by the shim and the PATH, never by the working directo
   const { home, dir, path } = homeWithShim();
   const none = () => false;
 
-  const onPath = invocationForm({ HOME: home, PATH: [dir, "/usr/bin"].join(delimiter) }, { exists: none });
+  const onPath = invocationForm({ HOME: home, USERPROFILE: home, PATH: [dir, "/usr/bin"].join(delimiter) }, { exists: none });
   assert.equal(onPath.form, "bare", "our shim is first on PATH — the bare verb reaches this install");
   assert.equal(onPath.prefix, "");
 
-  const offPath = invocationForm({ HOME: home, PATH: "/usr/bin:/bin" }, { exists: none });
+  const offPath = invocationForm({ HOME: home, USERPROFILE: home, PATH: "/usr/bin:/bin" }, { exists: none });
   assert.equal(offPath.form, "shim-path",
     "a login profile adds ~/.local/bin only if it existed when the shell started, so the shim written "
     + "seconds ago is usually absent from THIS terminal's PATH — the absolute path is the only true form");
@@ -174,7 +174,7 @@ test("the form is decided by the shim and the PATH, never by the working directo
 
   // Shadowed: a `clearotron` earlier on PATH is somebody else's, and the bare name would reach it.
   const shadowed = invocationForm(
-    { HOME: home, PATH: ["/opt/other/bin", dir].join(delimiter) },
+    { HOME: home, USERPROFILE: home, PATH: ["/opt/other/bin", dir].join(delimiter) },
     { exists: (p) => p === join("/opt/other/bin", "clearotron") });
   assert.equal(shadowed.form, "shim-path", "an earlier `clearotron` demotes the bare form, never confirms it");
   assert.equal(shadowed.shadowedBy, join("/opt/other/bin", "clearotron"));
@@ -186,9 +186,9 @@ test("the form is decided by the shim and the PATH, never by the working directo
 
   // ✕ THE CASE A `command -v` CHECK GETS WRONG, which is why the shim is READ and not merely found.
   const other = tmp("home");
-  installShim({ env: { HOME: other }, installDir: "/opt/a-different-install", nodePath: process.execPath });
+  installShim({ env: { HOME: other, USERPROFILE: other }, installDir: "/opt/a-different-install", nodePath: process.execPath });
   const wrongInstall = invocationForm(
-    { HOME: other, PATH: [join(other, ".local", "bin"), "/usr/bin"].join(delimiter) }, { exists: none });
+    { HOME: other, USERPROFILE: other, PATH: [join(other, ".local", "bin"), "/usr/bin"].join(delimiter) }, { exists: none });
   assert.equal(wrongInstall.form, "in-place",
     "a shim on PATH that names a DIFFERENT install must not license the bare name: it would send the "
     + "reader to somebody else's copy, which is the exact failure shared/invocation.mjs refuses to make");
@@ -208,12 +208,12 @@ test("the reader who arrived by npx is told the bare verb once their own shim is
   const npxArrival = ["/opt/cache/_npx/a1b2/node_modules/.bin/clearotron", { npm_command: "exec" }];
 
   assert.equal(
-    invocationPrefix(npxArrival[0], { ...npxArrival[1], HOME: home, PATH: [dir, "/usr/bin"].join(delimiter) },
+    invocationPrefix(npxArrival[0], { ...npxArrival[1], HOME: home, USERPROFILE: home, PATH: [dir, "/usr/bin"].join(delimiter) },
       { exists: () => false }),
     "", "the shim is on PATH and names this install, so `npx` is now noise");
 
   assert.equal(
-    invocationPrefix(npxArrival[0], { ...npxArrival[1], HOME: home, PATH: "/usr/bin:/bin" },
+    invocationPrefix(npxArrival[0], { ...npxArrival[1], HOME: home, USERPROFILE: home, PATH: "/usr/bin:/bin" },
       { exists: () => false }),
     `${dir}/`, "…and off PATH it is the absolute shim, never a bare name the shell cannot resolve");
 
@@ -238,7 +238,7 @@ test("the shim the install writes is executable and reaches THIS install", () =>
   // Run it from a directory that is neither the install nor the home — the reader's actual position.
   const out = execFileSync(path, ["--help"], {
     encoding: "utf8", cwd: elsewhere, stdio: ["ignore", "pipe", "pipe"],
-    env: { PATH: `${NODE_DIR}:/usr/bin:/bin`, HOME: home, CLEAROTRON_NO_ENV_FILE: "1" },
+    env: { PATH: `${NODE_DIR}:/usr/bin:/bin`, HOME: home, USERPROFILE: home, CLEAROTRON_NO_ENV_FILE: "1" },
   });
   assert.match(out, /clearotron <verb>/,
     "the shim did not reach the dispatcher — a shim that runs and lands somewhere else is worse than none");
@@ -258,16 +258,16 @@ test("a `clearotron` we did not write is reported, never overwritten", () => {
   // silently would hijack a name we do not own — and would do it during an install they ran for an
   // unrelated reason.
   const home = tmp("home");
-  const path = shimPath({ HOME: home });
+  const path = shimPath({ HOME: home, USERPROFILE: home });
   mkdirSync(dirname(path), { recursive: true });
   const foreign = "#!/bin/sh\necho somebody elses clearotron\n";
   writeFileSync(path, foreign, { mode: 0o755 });
 
-  const r = installShim({ env: { HOME: home }, installDir: REPO });
+  const r = installShim({ env: { HOME: home, USERPROFILE: home }, installDir: REPO });
   assert.equal(r.ok, false);
   assert.equal(r.reason, "occupied");
   assert.equal(readFileSync(path, "utf8"), foreign, "the foreign file was rewritten");
-  assert.equal(invocationForm({ HOME: home, PATH: dirname(path) }, { exists: () => false }).form, "in-place",
+  assert.equal(invocationForm({ HOME: home, USERPROFILE: home, PATH: dirname(path) }, { exists: () => false }).form, "in-place",
     "and the advice falls back to naming this install, rather than trusting a name that is not ours");
 
   rmSync(home, { recursive: true, force: true });
@@ -281,7 +281,7 @@ test("a shim that cannot be written is a warning the install carries, not a fail
   mkdirSync(local, { recursive: true });
   chmodSync(local, 0o500);                     // no write: mkdir of ./bin fails
   try {
-    const r = installShim({ env: { HOME: home }, installDir: REPO });
+    const r = installShim({ env: { HOME: home, USERPROFILE: home }, installDir: REPO });
     assert.equal(r.ok, false, "a read-only ~/.local must not yield a claimed-successful shim");
     assert.equal(r.reason, "unwritable");
     assert.ok(r.detail, "a refusal with no detail leaves the reader nothing to act on");
@@ -366,7 +366,7 @@ test("every command `doctor` prints RUNS from a directory that is not the instal
     ["shim first on PATH", [dir, NODE_DIR, "/usr/bin", "/bin"].join(delimiter)],
     ["shim written but not yet on PATH", `${NODE_DIR}:/usr/bin:/bin`],
   ]) {
-    const { out, commands } = doctorAdvice({ HOME: home, PATH: pathEnv });
+    const { out, commands } = doctorAdvice({ HOME: home, USERPROFILE: home, PATH: pathEnv });
     // ── ANTI-VACUITY, AND IT NO LONGER DEPENDS ON WHAT THIS BOX IS MISSING ───
     //
     // An extractor that finds nothing makes every assertion below a pass, so something must refuse an
@@ -393,7 +393,7 @@ test("every command `doctor` prints RUNS from a directory that is not the instal
       // where one exists, and `node`/`npx`.
       const r = runPrintedCommand(cmd, {
         cwd: elsewhere,
-        env: { PATH: hermetic(name === "shim first on PATH" ? dir : null), HOME: home, CLEAROTRON_NO_ENV_FILE: "1" },
+        env: { PATH: hermetic(name === "shim first on PATH" ? dir : null), HOME: home, USERPROFILE: home, CLEAROTRON_NO_ENV_FILE: "1" },
       });
       assert.match(r, /clearotron/,
         `${name}: doctor printed \`${cmd}\`, and running it from ${elsewhere} did not reach this product`);
@@ -409,7 +409,7 @@ test("with no shim, the advice names the directory — and that line runs too", 
   requireToolchain();
   const home = tmp("home");                       // no shim in it
   const elsewhere = tmp("cwd");
-  const { out, commands } = doctorAdvice({ HOME: home, PATH: `${NODE_DIR}:/usr/bin:/bin` });
+  const { out, commands } = doctorAdvice({ HOME: home, USERPROFILE: home, PATH: `${NODE_DIR}:/usr/bin:/bin` });
 
   assert.ok(commands.some((c) => c.endsWith("clearotron install")),
     `doctor's unset-pool advice always names the install verb, and the extractor did not find it:\n${out.slice(0, 1200)}`);
@@ -426,7 +426,7 @@ test("with no shim, the advice names the directory — and that line runs too", 
     // ~0.6s, which is what this costs.
     const r = runPrintedCommand(cmd, {
       cwd: elsewhere,
-      env: { PATH: hermetic(), HOME: home, CLEAROTRON_NO_ENV_FILE: "1" },   
+      env: { PATH: hermetic(), HOME: home, USERPROFILE: home, CLEAROTRON_NO_ENV_FILE: "1" },   
     });
     assert.match(r, /clearotron/,
       `doctor printed \`${cmd}\` to a reader with no shim, and running it from ${elsewhere} did not `
@@ -457,7 +457,7 @@ test("no verb's --help advertises a command form the reader cannot run", () => {
     try {
       out = execFileSync(process.execPath, [join(REPO, "bin", "clearotron.mjs"), verb, "--help"], {
         encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], cwd: tmp("cwd"), timeout: 60_000,
-        env: { PATH: onPath, HOME: home, CLEAROTRON_NO_ENV_FILE: "1" },
+        env: { PATH: onPath, HOME: home, USERPROFILE: home, CLEAROTRON_NO_ENV_FILE: "1" },
       });
     } catch (e) { out = `${e.stdout ?? ""}${e.stderr ?? ""}`; }
 
@@ -528,7 +528,7 @@ test("a shim whose interpreter is gone is reported, not ticked", () => {
   // leaving the shim, its marker and its install line untouched. It then dies in /bin/sh with
   // `exec: …/node: not found`: not our error, naming no product, one layer below the one the owner hit.
   const home = tmp("home");
-  const r = installShim({ env: { HOME: home }, installDir: REPO, nodePath: "/nowhere/at/all/node" });
+  const r = installShim({ env: { HOME: home, USERPROFILE: home }, installDir: REPO, nodePath: "/nowhere/at/all/node" });
   assert.equal(r.ok, true);
 
   // It is still recognisably ours — the point is that "ours" is not the same question as "it runs".
@@ -536,7 +536,7 @@ test("a shim whose interpreter is gone is reported, not ticked", () => {
   assert.equal(found.kind, "ours");
   assert.equal(found.interpreterMissing, true, "the recorded interpreter does not exist and must be reported");
 
-  const onPath = invocationForm({ HOME: home, PATH: [r.dir, "/usr/bin"].join(delimiter) }, { exists: () => false });
+  const onPath = invocationForm({ HOME: home, USERPROFILE: home, PATH: [r.dir, "/usr/bin"].join(delimiter) }, { exists: () => false });
   assert.equal(onPath.staleInterpreter, "/nowhere/at/all/node",
     "the form must carry the staleness, or doctor ticks a shim nobody checked can run");
 
@@ -551,7 +551,7 @@ test("a shim whose interpreter is gone is reported, not ticked", () => {
 
   // The control: a shim written with THIS interpreter reports no staleness.
   const live = homeWithShim();
-  assert.equal(invocationForm({ HOME: live.home, PATH: [live.dir, "/usr/bin"].join(delimiter) },
+  assert.equal(invocationForm({ HOME: live.home, USERPROFILE: live.home, PATH: [live.dir, "/usr/bin"].join(delimiter) },
     { exists: () => false }).staleInterpreter, null,
     "a working shim must not be reported stale — this arm would pass on a check that always fires");
 
@@ -565,7 +565,7 @@ test("the shim's body is the one this install recognises", () => {
   // silently unable to recognise the shim it had just written.
   const body = shimBody({ installDir: "/opt/x", nodePath: "/usr/bin/node" });
   const home = tmp("home");
-  const path = shimPath({ HOME: home });
+  const path = shimPath({ HOME: home, USERPROFILE: home });
   mkdirSync(dirname(path), { recursive: true });
   writeFileSync(path, body, { mode: 0o755 });
   assert.equal(inspectShim(path, { installDir: "/opt/x" }).kind, "ours");

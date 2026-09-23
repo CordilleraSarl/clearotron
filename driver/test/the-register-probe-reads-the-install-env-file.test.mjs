@@ -32,7 +32,7 @@ function probe({ env = {}, dotenv = {} } = {}) {
       { cwd: ROOT, encoding: "utf8", timeout: 120000,
         // Built on PATH alone, so none of the suite's own variables reaches the child — its register
         // choice above all — and handRunEnv keeps out the two that would make it ignore this drive's file.
-        env: handRunEnv({ HOME: home, CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", ...vars }, { PATH: "/usr/bin:/bin" }) });
+        env: handRunEnv({ HOME: home, USERPROFILE: home, CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", ...vars }, { PATH: "/usr/bin:/bin" }) });
     // The spawn's own fate before its text means anything: a child that never came back prints nothing.
     if (r.error || r.signal) throw new Error(`the child did not come back (signal=${r.signal} error=${r.error?.message}) — a could-not-look, not a verdict`);
     const out = `${r.stdout ?? ""}${r.stderr ?? ""}`;

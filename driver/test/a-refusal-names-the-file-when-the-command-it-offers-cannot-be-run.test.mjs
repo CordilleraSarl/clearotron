@@ -59,7 +59,7 @@ function driveStart(ports, extra = {}) {
   // no error, and `extra` lands after it so the arm ABOUT the service-managed path sets one back
   // deliberately. The engine values go with them: a developer's shell or a CI
   // secret carrying one would clear the refusal, and the arms would measure a run that never refused.
-  const env = handRunEnv({ HOME: home, PORTAL_SERVICE_PORT: String(ports.portal),
+  const env = handRunEnv({ HOME: home, USERPROFILE: home, PORTAL_SERVICE_PORT: String(ports.portal),
     TRADEMARK_MCP_HTTP_PORT: String(ports.mcp), CLIENT_MCP_HTTP_PORT: String(ports.client),
     CLEAROTRON_DATABASE: undefined, CLEAROTRON_AI: undefined, CLEAROTRON_CLAUDE_PATH: undefined,
     CLEAROTRON_REPORTS_DIR: undefined,
@@ -238,7 +238,7 @@ test("the load-bearing premise, driven: `clearotron install` refuses when stdin 
   const home = mkdtempSync(join(tmpdir(), "ct202w-"));
   try {
     const r = spawnSync(process.execPath, [ONBOARD], { encoding: "utf8", timeout: 120_000,
-      stdio: ["ignore", "pipe", "pipe"], env: { ...process.env, HOME: home } });
+      stdio: ["ignore", "pipe", "pipe"], env: { ...process.env, HOME: home, USERPROFILE: home } });
     const said = `${r.stdout ?? ""}${r.stderr ?? ""}`;
     assert.notEqual(r.status, 0, `the wizard did NOT refuse a non-terminal:\n${said.slice(0, 700)}`);
     assert.match(said, /stdin is not a terminal/,

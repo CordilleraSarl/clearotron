@@ -130,7 +130,7 @@ function doctor(home, extraEnv = {}) {
       // `handRunEnv` over an EMPTY base rather than over `process.env`, which is what it usually takes:
       // the empty shell is this file's whole criterion — none of the names doctor reports on may be in
       // this environment — so inheriting the real one would defeat the arms while satisfying the guard.
-      env: handRunEnv({ HOME: home, PATH: [NODE_BIN, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", ...extraEnv }, {}),
+      env: handRunEnv({ HOME: home, USERPROFILE: home, PATH: [NODE_BIN, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", ...extraEnv }, {}),
     });
     return { code: 0, out };
   } catch (e) { return { code: e.status ?? -1, out: `${e.stdout ?? ""}${e.stderr ?? ""}` }; }
@@ -289,7 +289,7 @@ function doctorWithLoginctl(home, script) {
   try {
     const out = execFileSync(process.execPath, [ONBOARD, "--check"], {
       encoding: "utf8", stdio: "pipe", timeout: 120_000,
-      env: { HOME: home, PATH: [shim, NODE_BIN, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1" },
+      env: { HOME: home, USERPROFILE: home, PATH: [shim, NODE_BIN, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1" },
     });
     return { code: 0, out };
   } catch (e) { return { code: e.status ?? -1, out: `${e.stdout ?? ""}${e.stderr ?? ""}` }; }

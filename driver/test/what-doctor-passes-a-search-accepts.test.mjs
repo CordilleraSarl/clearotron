@@ -68,7 +68,7 @@ function homeWith(lines) {
 function doctor(home, ...args) {
   const r = spawnSync(process.execPath, [join(DOCTOR_ROOT, "bin", "clearotron.mjs"), "doctor", ...args],
     { cwd: DOCTOR_ROOT, encoding: "utf8", timeout: 120000,
-      env: handRunEnv({ PATH: "/usr/bin:/bin", HOME: home, CLEAROTRON_DOCTOR_ASSUME_PINNED: "1" }, {}) });
+      env: handRunEnv({ PATH: "/usr/bin:/bin", HOME: home, USERPROFILE: home, CLEAROTRON_DOCTOR_ASSUME_PINNED: "1" }, {}) });
   if (r.error || r.signal) throw new Error(`doctor did not come back (signal=${r.signal} error=${r.error?.message}) — a could-not-look, not a verdict`);
   return { status: r.status, out: `${r.stdout ?? ""}${r.stderr ?? ""}` };
 }
@@ -224,7 +224,7 @@ test("doctor counts the copy Clearotron installed as the engine a search needs",
   const home = homeWith([`CLEAROTRON_DATABASE=${REG.id}`, ...REG.credentials.map((k) => `${k}=x`), "CLEAROTRON_AI=anthropic-agent"]);
   try {
     const r = spawnSync(process.execPath, [join(DOCTOR_ROOT, "bin", "clearotron.mjs"), "doctor"], { cwd: DOCTOR_ROOT, encoding: "utf8", timeout: 120000,
-      env: handRunEnv({ PATH: "/usr/bin:/bin", HOME: home, CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", CLEAROTRON_ENGINES_DIR: root }, {}) });
+      env: handRunEnv({ PATH: "/usr/bin:/bin", HOME: home, USERPROFILE: home, CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", CLEAROTRON_ENGINES_DIR: root }, {}) });
     if (r.error || r.signal) throw new Error(`doctor did not come back (signal=${r.signal} error=${r.error?.message}) — a could-not-look, not a verdict`);
     const out = `${r.stdout ?? ""}${r.stderr ?? ""}`;
     assert.match(out, /nothing a search is refused for at order time is missing/, out);

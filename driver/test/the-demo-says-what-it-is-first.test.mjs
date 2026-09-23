@@ -23,7 +23,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 function demo(entry, args) {
   const home = mkdtempSync(join(tmpdir(), "demo-first-"));
   const base = join(home, "demo");
-  const env = { PATH: process.env.PATH, HOME: home, CLEAROTRON_NO_ENV_FILE: "1" };
+  const env = { PATH: process.env.PATH, HOME: home, USERPROFILE: home, CLEAROTRON_NO_ENV_FILE: "1" };
   const r = spawnSync(process.execPath, [join(ROOT, entry), ...args, "--no-open", "--once", "--base", base], { encoding: "utf8", env });
   let log = null;
   try { log = readFileSync(join(base, "replay.log"), "utf8"); } catch { /* read below as an absence */ }

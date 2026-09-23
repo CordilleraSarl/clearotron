@@ -163,7 +163,7 @@ test("doctor prints that disagreement over a capture the services wrote, and not
     }
     try {
       return { home, out: execFileSync(process.execPath, [ONBOARD, "--check"], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], timeout: 60000,
-        env: handRunEnv({ HOME: home, PATH: `${NODE_BIN}:/usr/bin:/bin`, CLEAROTRON_REPORTS_DIR: pool }, {}) }) };
+        env: handRunEnv({ HOME: home, USERPROFILE: home, PATH: `${NODE_BIN}:/usr/bin:/bin`, CLEAROTRON_REPORTS_DIR: pool }, {}) }) };
     } catch (e) { return { home, out: `${e.stdout ?? ""}${e.stderr ?? ""}` }; }
   };
   const { out } = drive(false);

@@ -87,7 +87,7 @@ test("`stop` on a box running nothing says so plainly and changes nothing", asyn
   const home = mkdtempSync(join(tmpdir(), "stop-home-"));
   try {
     const child = spawnSync(process.execPath, [join(SYSTEMD, "..", "..", "bin", "stop.mjs")], {
-      encoding: "utf8", timeout: 30000, env: { PATH: process.env.PATH, HOME: home },
+      encoding: "utf8", timeout: 30000, env: { PATH: process.env.PATH, HOME: home, USERPROFILE: home },
     });
     assert.ok(!child.error && child.status === 0,
       `stop did not come back clean (status=${child.status} signal=${child.signal} error=${child.error?.message ?? "none"})\n${child.stderr}`);
@@ -170,7 +170,7 @@ function stopWithNoBus(units) {
   const dir = join(home, ".config", "systemd", "user");
   mkdir270(dir, { recursive: true });
   for (const u of units) write270(join(dir, u), "[Unit]\n");
-  const env = { HOME: home, PATH: "/usr/bin:/bin" };
+  const env = { HOME: home, USERPROFILE: home, PATH: "/usr/bin:/bin" };
   try {
     const out = exec270(process.execPath, [STOP], { encoding: "utf8", env, stdio: ["ignore", "pipe", "pipe"] });
     return { code: 0, out, dir };
