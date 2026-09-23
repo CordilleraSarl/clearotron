@@ -113,8 +113,8 @@ test("rollupTokens: output contains no currency-looking fields (/usd|price|$/i)"
 
 // Regression (2026-07-28): the jx lanes bypass the gateway and write their own per-call ledger. Their
 // rows named the counts `tokens` and carried no `model`, so the model gate dropped every one and the
-// lane's spend was counted nowhere — a whole direct-API lane invisible to every per-run total.
-test("rollupTokens: direct-API jx-completions rows are counted, split out under their own stage", () => {
+// lane's spend was counted nowhere — a whole native-language lane invisible to every per-run total.
+test("rollupTokens: native-language jx-completions rows are counted, split out under their own stage", () => {
   const runDir = mkRun({
     "register-digest": [{ attempt: 1, model: "opus", usage: { input: 100, output: 200 } }],
     "jx-completions": [
@@ -130,13 +130,12 @@ test("rollupTokens: direct-API jx-completions rows are counted, split out under 
     assert.equal(r.total.input, 100 + 900 + 10, "jx input tokens reach the run total");
     assert.equal(r.total.output, 200 + 40 + 5);
     assert.equal(r.byStage["jx-completions"].attempts, 2, "the throw row carries no model and is not a call");
-    // TWO SPELLINGS OF THE DIRECT-API LANE'S OWN ID STILL FOLD TOGETHER — dated and undated are one key.
+    // TWO SPELLINGS OF THE MODEL THAT SERVED A NATIVE-LANGUAGE TURN FOLD TOGETHER — dated and undated are one key.
     assert.equal(r.byModel["anthropic/claude-haiku-4-5"].input, 910);
     assert.equal(r.byModel["claude-haiku-4-5-20251001"], undefined, "one model named two ways took two keys");
-    // AND THE STAGE'S TIER KEYS APART FROM IT, WHICH IS RULED AND ACCEPTED, NOT A DEFECT. A stage asks for
-    // a tier and is recorded as having asked for one; these lanes call the API directly, which takes a
-    // model id and not a tier word, so they ask for a version and are recorded as asking for it. The two
-    // requests are genuinely different, and one model reached both ways therefore lands in two buckets.
+    // AND THE STAGE'S TIER KEYS APART FROM IT, WHICH IS RULED AND ACCEPTED, NOT A DEFECT. A stage's row is
+    // keyed on the tier it asked for; a native-language row records the model that served it and is keyed
+    // on that. One model reached both ways therefore lands in two buckets.
     // Pinned so the split reads as a decision to whoever finds it in a total, rather than as a bug.
     assert.equal(r.byModel[MODELS.opus].input, 100, "the stage's tier does not key under what the catalog records for it");
     assert.equal(r.byModel[MODELS.haiku], undefined, "no stage asked for that tier on this run, so nothing may account under it");

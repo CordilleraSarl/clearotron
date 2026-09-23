@@ -13,15 +13,20 @@
 // request; what served the turn is a separate field that already carries it, and the report names the
 // model that ran.
 //
-// THE COST WAS RULED ON, NOT DISCOVERED: per-model totals are keyed on what was ASKED for, and the
-// direct-API lanes must name a version because they call the API rather than the program. One model
-// reached both ways therefore lands in two buckets. Pinned below so it reads as a decision.
+// THE COST WAS RULED ON, NOT DISCOVERED: a stage's rows are keyed on the tier it asked for, and a
+// native-language lane's on the model that served it, so one model reached both ways lands in two
+// buckets. Pinned below so it reads as a decision.
 import test from "node:test";
 import assert from "node:assert/strict";
 import { MODELS, resolveModel, modelFamily } from "../driver.config.mjs";
 import { claudeModel, buildClaudeArgs } from "../engine/anthropic-agent.mjs";
 import { openaiModel } from "../engine/openai-agent.mjs";
 import { PORTAL_READ_MODEL_DEFAULT } from "../portal-service.mjs";
+import { rollupTokens } from "../tokens.mjs";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { driverDir } from "../../shared/driver-dir.mjs";
 
 test("the catalog records a tier, and names no version for a request nobody made", () => {
   for (const tier of ["opus", "sonnet", "haiku"]) {
@@ -68,14 +73,25 @@ test("an exact model named by a caller is still recorded and run as that model",
   }
 });
 
-test("THE COST, PINNED: a tier and a lane's version key apart, by decision", () => {
-  // The lanes that call the API directly must name a model id, because the API takes no tier word. So
-  // the same model reached by a stage and by one of those lanes is two different requests and keys in
-  // two places. If these two ever become equal again, the accepted split has silently closed and the
-  // note in driver.config.mjs that explains it to a reader of a total is no longer true.
-  assert.notEqual(resolveModel("haiku"), resolveModel("claude-haiku-4-5"));
-  assert.equal(resolveModel("claude-haiku-4-5"), "anthropic/claude-haiku-4-5");
-  assert.equal(resolveModel("haiku"), "anthropic/claude-haiku");
+test("THE COST, PINNED: a stage's tier and a native-language lane's served model key apart, by decision", () => {
+  // A stage's row is keyed on the tier it asked for. A native-language lane asks through the same engine
+  // but its row records the model that served the turn, and is keyed on that. So one model reached both
+  // ways lands in two buckets. The rows are written in the shapes the gateway and the jx lanes write. If
+  // the two keys ever become one, the accepted split has closed and the note in driver.config.mjs that
+  // explains it to a reader of a total is no longer true.
+  const runDir = mkdtempSync(join(tmpdir(), "tier-cost-"));
+  try {
+    mkdirSync(driverDir(runDir), { recursive: true });
+    writeFileSync(driverDir(runDir, "synthesis.jsonl"), JSON.stringify(
+      { attempt: 1, model: "haiku", modelUsed: "anthropic/claude-haiku", engine: "anthropic-agent", usage: { input: 10, output: 1 } }) + "\n");
+    writeFileSync(driverDir(runDir, "jx-completions.jsonl"), JSON.stringify(
+      { ts: "t", lane: "zh", mark: "M", ok: true, model: "claude-haiku-4-5-20251001", modelActual: "claude-haiku-4-5-20251001",
+        engine: "anthropic", usage: { input: 20, output: 2 } }) + "\n");
+    const byModel = rollupTokens(runDir).byModel;
+    assert.equal(byModel["anthropic/claude-haiku"]?.input, 10, "the stage keys on the tier it asked for");
+    assert.equal(byModel["anthropic/claude-haiku-4-5"]?.input, 20, "the native-language turn keys on the model that served it");
+    assert.equal(Object.keys(byModel).length, 2, `one model, two keys: ${Object.keys(byModel).join(", ")}`);
+  } finally { rmSync(runDir, { recursive: true, force: true }); }
   // Both still place in the same family, so nothing the gateway refuses changes.
   assert.equal(modelFamily("haiku"), modelFamily("claude-haiku-4-5"));
 });

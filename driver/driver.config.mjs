@@ -668,13 +668,12 @@ export const config = {
 // Owner's ruling, 2026-09-23: record the tier. What a run asked for is a tier, what it was served is
 // recorded separately and already is, and the report names the model that ran — none of that moves.
 //
-// WHAT IT COSTS, RULED ON AND ACCEPTED RATHER THAN DISCOVERED LATER. Per-model totals are keyed on what
-// was ASKED for, and the direct-API lanes must name a version because they call the API rather than the
-// program — the API takes model ids, not tier words. So one model reached by both routes now lands in
-// two buckets: `anthropic/claude-haiku` from a stage, `anthropic/claude-haiku-4-5` from those lanes.
-// That is a real split in a per-model total and it was accepted with the ruling: the two are genuinely
-// different requests, and keying the totals on what actually SERVED each turn is the change that would
-// fix it properly, which is larger than this and not what was ruled.
+// WHAT IT COSTS, RULED ON AND ACCEPTED RATHER THAN DISCOVERED LATER. A stage's rows are keyed on the
+// tier it asked for, and a native-language lane's rows on the model that served them (`modelKey` in
+// tokens.mjs). So one model reached both ways lands in two buckets: `anthropic/claude-haiku` from a
+// stage, `anthropic/claude-haiku-4-5` from a native-language lane. That is a real split in a per-model
+// total and it was accepted with the ruling; keying every row on what served it is the change that
+// would close it, which is larger than this and not what was ruled.
 export const MODELS = {
   haiku: "anthropic/claude-haiku",
   sonnet: "anthropic/claude-sonnet",
