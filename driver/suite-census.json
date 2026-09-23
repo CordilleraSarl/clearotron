@@ -1725,6 +1725,12 @@
           "skips": 0,
           "todos": 0
         },
+        "closing-the-terminal-stops-what-start-started.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
+          "skips": 1,
+          "todos": 0
+        },
         "cn-scope-honesty.test.mjs": {
           "tests": 22,
           "asserts": 96,
