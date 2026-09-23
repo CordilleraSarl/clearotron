@@ -1320,7 +1320,15 @@ export const PROVIDERS = {
         // The office's own numbers come off the full record Signa returns on search, through the
         // provider's own normaliser, so publish can address the office's page for each filing
         // (publish/office-record-links.mjs) instead of showing the handle.
-        return { ok: true, records: (Array.isArray(p.results) ? p.results : []).map((row) => {
+        //
+        // THE TOTAL RIDES THE SAME ANSWER and is carried, not dropped: `include_total` puts the register's
+        // own count for this exact question on every search, so the listing of a term already holds the
+        // figure the count lane would ask for separately. An approximation stays one: no number in
+        // `total`, the floor beside it — the count lane's rule, unchanged.
+        return { ok: true,
+          total: Number.isFinite(p.total_hits) ? p.total_hits : null,
+          ...(p.total_approximate === true ? { approximate: true, floor: Number.isFinite(p.total_floor) ? p.total_floor : null } : {}),
+          records: (Array.isArray(p.results) ? p.results : []).map((row) => {
           const rec = row?.raw && typeof row.raw === "object" ? core.normalizeRecord(row.raw, row.office || null) : null;
           return {
             record_id: row?.record_id ?? null,

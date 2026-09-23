@@ -301,7 +301,7 @@ function cellSettled(cell, predicate, forms = null) {
 export async function countRegisterHits({
   marks, classes = null, jurisdictions = null, provider, capabilities,
   counter, concurrency = 3, ledgerPath = null, prior = null, now = () => new Date(),
-  variantCap = VARIANT_CAP, unreachable = [],
+  variantCap = VARIANT_CAP, unreachable = [], listed = null,
 }) {
   const { regions: coveredRegions, deferred, worldwide } = resolveRegions(jurisdictions, capabilities);
   // — the office split the plan lane does at compile, done here, because this lane compiles no
@@ -318,6 +318,7 @@ export async function countRegisterHits({
     ? { counted: regions, uncounted: dropped.map((d) => ({ office: d.office, memberId: d.memberId, missing: [...(d.missing ?? [])] })) }
     : null;
   const priorByName = new Map((prior?.marks ?? []).map((m) => [String(m.name), m]));
+  const answeredByListing = listingAnswers(listed, { regions });
   const batchClasses = (Array.isArray(classes) ? classes : []).filter((n) => Number.isInteger(n));
 
   const rows = await runBatched(marks ?? [], concurrency, async (m) => {
@@ -326,11 +327,25 @@ export async function countRegisterHits({
     const scoped = own.length ? own : batchClasses;
     const reused = priorByName.get(name);
     const variants = variantForms(name, { cap: variantCap });
+    // The listing's answers for THIS mark, used only when it was asked over the same classes — see
+    // listingAnswers for why a different scope is a different question.
+    const listedForMark = answeredByListing?.get(name.toLowerCase()) ?? null;
+    const fromListing = listedForMark && sameScope(listedForMark.classes, scoped.length ? scoped : null) ? listedForMark.terms : null;
 
     // ONE PROBE = ONE PROVIDER CALL = ONE LEDGER LINE. Extracted so the aggregate predicate below bills,
     // records and degrades through exactly the same path as the two simple ones — a second copy of this
     // for the variant loop is how the two would come to disagree about what a failure means.
     const probe = async (term, p, { form = null } = {}) => {
+      // ANSWERED BY THE LISTING, and not asked again. The listing ran this exact question — the
+      // provider's exact predicate, this term, these classes, these territories — and its answer carried
+      // the register's total. No call is made, so no receipt line is written; the cell says where its
+      // figure came from.
+      const listedAnswer = p.matchMode === "exact" ? fromListing?.get(String(term).trim().toUpperCase()) : null;
+      if (listedAnswer) {
+        return listedAnswer.approximate === true
+          ? { total: null, approximate: true, floor: listedAnswer.floor ?? null, source: "listing" }
+          : { total: listedAnswer.total, source: "listing" };
+      }
       const started = Date.now();
       let r;
       try { r = await counter(term, p, { classes: scoped, regions }); }
@@ -491,6 +506,77 @@ export async function countRegisterHits({
     },
     marks: rows,
   };
+}
+
+/**
+ * The listing's answers, by mark and by term, for the count lane to take instead of asking again.
+ *
+ * WHY A LISTING CAN ANSWER A COUNT. The identical and close columns are the provider's exact predicate
+ * over a term, and the knockout's listing (register-records.mjs) asks that same predicate over the same
+ * terms. On a provider whose search answer carries the register's own total, the listing therefore
+ * already holds the count, and asking again is a second bill for a figure in hand.
+ *
+ * ONLY THE SAME QUESTION. A term is taken only when the listing answered it (asked, answered, with a
+ * total or a disclosed approximation), and only when the territories match here and the classes match
+ * per mark (the caller checks those with `sameScope`). A term the listing did not reach — the cap, a
+ * failure — is counted by the count lane as it always was. `containing` is never answered here: the
+ * listing never asks it. Terms are keyed upper-case, because register-variants.mjs asks them upper-case
+ * and name predicates are case-insensitive on every wired provider.
+ *
+ * Null when there is no listing, which is every provider and every mode but one: the caller passes one
+ * only when the Signa run memory is `on` (pipeline-knockout.mjs). PURE.
+ */
+export function listingAnswers(listed, { regions = [] } = {}) {
+  if (!listed || !Array.isArray(listed.marks)) return null;
+  if (!sameScope(listed.scope?.regions ?? null, regions.length ? regions : null)) return null;
+  const byMark = new Map();
+  for (const m of listed.marks) {
+    const terms = new Map();
+    for (const t of Array.isArray(m?.terms) ? m.terms : []) {
+      if (t?.ok !== true || t.notAsked) continue;
+      if (!Number.isFinite(t.total) && t.approximate !== true) continue;
+      terms.set(String(t.term ?? "").trim().toUpperCase(), t);
+    }
+    byMark.set(String(m?.name ?? "").trim().toLowerCase(), { classes: Array.isArray(m?.classes) ? m.classes : null, terms });
+  }
+  return byMark;
+}
+
+/** Two scopes are the same question when they list the same values in the same order, or are both unset. */
+export function sameScope(a, b) {
+  const norm = (v) => (Array.isArray(v) && v.length ? v.map(String) : null);
+  return JSON.stringify(norm(a)) === JSON.stringify(norm(b));
+}
+
+/**
+ * Do the count lane's identical and close figures equal the listing's totals for the same terms? This
+ * is what the Signa run memory records in `watch`, and what its switch to `on` waits for: in `on` the
+ * listing's totals ARE those figures. Only terms both lanes answered, over the same scope, are compared;
+ * an approximation agrees only with the same approximation. PURE.
+ */
+export function countListingAgreement(counts, listed) {
+  const answers = listingAnswers(listed, { regions: counts?.scope?.regions ?? [] });
+  if (!answers) return { comparable: false, compared: 0, agreed: 0, disagreed: 0, examples: [] };
+  const say = (a) => (Number.isFinite(a?.total) ? a.total
+    : a?.approximate === true ? `at least ${Number.isFinite(a.floor) ? a.floor : "?"}` : null);
+  const out = { comparable: true, compared: 0, agreed: 0, disagreed: 0, examples: [] };
+  for (const m of counts?.marks ?? []) {
+    const l = answers.get(String(m?.name ?? "").trim().toLowerCase());
+    if (!l || !sameScope(l.classes, m.classes)) continue;
+    const cells = [[m.name, m.counts?.identical], ...(m.counts?.close?.forms ?? []).map((f) => [f.form, f])];
+    for (const [term, cell] of cells) {
+      const listing = l.terms.get(String(term ?? "").trim().toUpperCase());
+      const count = say(cell);
+      if (!listing || count === null) continue;
+      out.compared++;
+      if (count === say(listing)) out.agreed++;
+      else {
+        out.disagreed++;
+        if (out.examples.length < 20) out.examples.push({ mark: m.name, term, count, listing: say(listing) });
+      }
+    }
+  }
+  return out;
 }
 
 /** How many marks got at least ONE number. Zero of them means the product did not happen. */

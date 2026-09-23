@@ -247,6 +247,7 @@ export async function listRegisterRecords({
             ts: now().toISOString(), stage: "records", mark: name, term: t.term, basis: t.basis,
             classes: scoped, regions, provider, ok, requested: want, fetched,
             total: Number.isFinite(r?.total) ? r.total : null, took_ms: Date.now() - started,
+            ...(ok && r?.approximate === true ? { approximate: true, floor: Number.isFinite(r?.floor) ? r.floor : null } : {}),
             ...(ok ? {} : { cause: String(r?.reason ?? "unknown").slice(0, 300) }),
           }) + "\n");
         } catch { /* receipts are best-effort, never fatal */ }
@@ -256,6 +257,9 @@ export async function listRegisterRecords({
         // How many the register HOLDS under this term, where it said. `fetched` under `total` is the
         // truncation, and it is stated rather than left for a reader to notice.
         total: Number.isFinite(r?.total) ? r.total : null,
+        // An approximation is carried as one, exactly as the count lane records it: no number in
+        // `total`, the register's floor beside it. Only a provider whose listing states it sets it.
+        ...(ok && r?.approximate === true ? { approximate: true, floor: Number.isFinite(r?.floor) ? r.floor : null } : {}),
         ...(ok ? {} : { reason: String(r?.reason ?? "the filings could not be fetched").slice(0, 300) }),
       };
     });

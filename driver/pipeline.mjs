@@ -138,6 +138,7 @@ import { tallyRegisterCalls, DEFAULT_LEDGER_PATH, fetchedRecordUris, countLaneCa
 // this path, because this process runs several runs' pipelines at once and a global address would file
 // one run's evidence under another.
 import { runRecordLogPath } from "../providers/_shared/ledger-path.mjs";
+import { beginAnswerMemory, endAnswerMemory, ANSWER_MEMORY_SWITCH } from "../providers/_shared/answer-memory.mjs";
 import { findScreenGateViolations, findScreenGateParseGaps, screenGateZeroCause } from "./screen-gate.mjs";
 import { emptyQueue, coerceQueue, mintItem, pendingItems, markFlushed, receiptKeyFor,
   buildFlushFollowup, runPostFlushGateRepair } from "./digest-queue.mjs";   // (t1cd) — the digest-trigger funnel
@@ -9074,6 +9075,12 @@ async function pipelineInner(job, opts = {}) {
   ctx.forceFrom = opts.fromStage != null ? stageOrdinal(opts.fromStage) : null;
   if (opts.fromStage != null && ctx.forceFrom < 0) throw new Error(`--from: unknown stage "${opts.fromStage}"`);
   runLog(run.runDir, { event: "start", agent, resume: isResume, fromStage: opts.fromStage ?? null, job: { id: job.id, slug: run.slug, codename: run.codename, customer: run.customer, forwarder: job.forwarder } });
+  // THE SIGNA RUN MEMORY'S ATTEMPT (providers/_shared/answer-memory.mjs): whatever an earlier attempt held
+  // is dropped, so a resume asks the register again, and the mode is fixed for this attempt.
+  ctx.answerMemory = beginAnswerMemory(run.runDir, REGISTER_PROVIDER);
+  if (ctx.answerMemory.applies)
+    runLog(run.runDir, { event: "answer-memory", mode: ctx.answerMemory.mode, ...(ctx.answerMemory.unknown ? { unrecognised: ctx.answerMemory.unknown } : {}) });
+  if (ctx.answerMemory.unknown) note(`answer memory: ${ANSWER_MEMORY_SWITCH}="${ctx.answerMemory.unknown}" is not off, watch or on, so it reads as off`);
   // item 11 — WHICH ARM DID THIS RUN RUN UNDER? Unconditional and three-valued in the AD-4 sense: the row
   // is always written, `seed: null` meaning the ordinary production ordering. A probe arm that is not on
   // the record is an arm whose result cannot be attributed later, and the probe exists to attribute.
@@ -15480,6 +15487,7 @@ async function pipelineInner(job, opts = {}) {
     // and the run is already settled, so a failure to stamp is logged and the delivery proceeds.
     const stamp = writeSettleStamp(published.poolRunDir, { state: "delivered", signoff: verdict, deliveredAt, runId: published.runId ?? run.runId, lane: "clearance" });
     if (!stamp.written) note(`delivery: settle stamp not written (${stamp.reason})`);
+    endAnswerMemory(run.runDir);   // the held answers do not travel into the archive
     const archived = archive(run);
     rollupStatus(run.studioRoot);
     // `notified: "pending"` and `sendPending: true` unconditionally, which is what the KNOCKOUT lane has
