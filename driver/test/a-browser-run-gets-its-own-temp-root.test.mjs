@@ -39,17 +39,27 @@ test("a root at the limit is accepted and one character more is refused", () => 
   const over = "/" + "x".repeat(MAX_ROOT_LENGTH);
   assert.equal(at.length, MAX_ROOT_LENGTH);
   assert.equal(over.length, MAX_ROOT_LENGTH + 1);
-  assert.equal(rootRefusal(at), null, "a root exactly at the limit must be usable");
-  assert.notEqual(rootRefusal(over), null, "one character past the limit must refuse");
+  for (const platform of ["linux", "darwin"]) {
+    assert.equal(rootRefusal(at, { platform }), null, `${platform}: a root exactly at the limit must be usable`);
+    assert.notEqual(rootRefusal(over, { platform }), null, `${platform}: one character past the limit must refuse`);
+  }
+  // On Windows the browser's singleton is a named pipe, not a socket at a path, so no length binds.
+  assert.equal(rootRefusal(over, { platform: "win32" }), null, "Windows refused a long root it can use");
 });
+
+const NO_SOCKET_LIMIT_ON_WINDOWS = process.platform === "win32"
+  && "the browser's singleton is a named pipe on Windows, so a long root is accepted there (pinned above through the platform parameter)";
 
 test("the refusal names the length it measured, the limit and the path", () => {
   const over = "/" + "y".repeat(MAX_ROOT_LENGTH);
-  const why = rootRefusal(over);
+  const why = rootRefusal(over, { platform: "linux" });
   assert.match(why, new RegExp(String(over.length)), "the measured length is what tells a reader how far over it is");
   assert.match(why, new RegExp(String(MAX_ROOT_LENGTH)), "the limit must be stated, not left to be looked up");
   assert.ok(why.includes(over), "the path is the thing the reader has to change");
-  assert.throws(() => assertRootFits(over), /limit is 66/);
+});
+
+test("the refusal is thrown on this machine too", { skip: NO_SOCKET_LIMIT_ON_WINDOWS }, () => {
+  assert.throws(() => assertRootFits("/" + "y".repeat(MAX_ROOT_LENGTH)), /limit is 66/);
 });
 
 test("an empty or absent root is a refusal, not a pass", () => {
@@ -99,7 +109,7 @@ test("browserEnv MERGES into the environment rather than replacing it", () => {
     "browserEnv must default to this process's environment, not to an empty object");
 });
 
-test("browserEnv refuses a root that cannot work rather than handing it over", () => {
+test("browserEnv refuses a root that cannot work rather than handing it over", { skip: NO_SOCKET_LIMIT_ON_WINDOWS }, () => {
   const over = "/" + "z".repeat(MAX_ROOT_LENGTH);
   assert.throws(() => browserEnv(over), /limit is 66/);
 });

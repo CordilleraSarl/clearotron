@@ -70,9 +70,9 @@
           "todos": 0
         },
         "a-browser-run-gets-its-own-temp-root.test.mjs": {
-          "tests": 12,
-          "asserts": 31,
-          "skips": 1,
+          "tests": 13,
+          "asserts": 32,
+          "skips": 3,
           "todos": 0
         },
         "a-budget-is-recorded-beside-the-band-it-ran-against.test.mjs": {
