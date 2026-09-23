@@ -141,6 +141,8 @@ const EXCEPTIONS = [
       /\bdevelopment\s+account\b/gi,
       /\bOS\s+accounts\b/gi,
       /\baccount's\s+home\b/gi,
+      /\binstall's\s+account\b/gi,
+      /\baccount\s+Clearotron\s+runs\s+as\b/gi,
     ],
     reason: "the operating-system user the product runs as, and that user's home directory — " + ORG_OR_COMPANY,
   },
@@ -151,6 +153,8 @@ const EXCEPTIONS = [
       /\bprovider\s+accounts\b/gi,
       /\bself-serve\s+accounts\b/gi,
       /\bsign\s+in\s+with\s+a\s+account\b/gi,
+      /\bClaude\s+account\b/gi,
+      /\baccount's\s+other\s+sessions\b/gi,
     ],
     reason: "an account with a register, research or model vendor, or the sign-in identity a delivery note "
       + "asks for — " + ORG_OR_COMPANY,

@@ -3,10 +3,15 @@
 > Part of the architecture pack (`docs/architecture/`). The driver's module tree and the headless
 > integrator contract are in [`driver/README.md`](../../driver/README.md).
 
-The security posture in one sentence: **nothing listens on the network except loopback services
-behind an authenticated tunnel; agents that touch the outside world cannot execute anything; the
-process that executes everything is not an agent; and secrets reach exactly the processes that need
-them, by inheritance, never by file-copy into configs.**
+The security posture in brief: **nothing listens on the network except loopback services behind an
+authenticated tunnel. A stage on Claude is offered no tool that runs a command. A stage on Codex runs its
+commands inside Codex's own sandbox, or with the permissions of the account Clearotron runs as where a
+machine sets the bypass. The process that runs everything else is ordinary code, not an agent. Each
+stage's AI program starts with a named list of settings, and the key that signs access keys is handed
+only to the portal and the two doors. On Claude, a stage's file tools read only its run folder, its
+instruction folders and any folder the machine's own Claude settings add. On Codex with its sandbox on,
+a stage's commands read only its run folder, its instruction folders, the temporary folders, and the
+system and program files a command needs to run.**
 
 ## Trust boundaries
 

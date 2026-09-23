@@ -4931,7 +4931,7 @@
         },
         "the-advice-fits-the-machine-it-is-printed-on.test.mjs": {
           "tests": 17,
-          "asserts": 67,
+          "asserts": 68,
           "skips": 0,
           "todos": 0
         },

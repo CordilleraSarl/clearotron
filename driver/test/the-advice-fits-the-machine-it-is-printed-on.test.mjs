@@ -234,6 +234,8 @@ test("the background route is offered only where the product has one", () => {
   // `--background` installs and enables service units. There are none on Windows, so offering it named
   // a flag that cannot succeed and a service manager that cannot be installed.
   assert.equal(backgroundManager({ platform: "win32" }), null);
+  // Nor on a Mac: it has no systemd either, so the offer there named a service manager it lacks.
+  assert.equal(backgroundManager({ platform: "darwin" }), null);
 });
 
 test("the port refusal does not tell a reader to stop the thing they are reading it in", () => {
