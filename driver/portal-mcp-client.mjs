@@ -83,7 +83,7 @@ function post(urlStr, { headers = {}, body = "", wantId = null, timeoutMs = 3000
     });
     // — a timeout got no status and therefore no answer; it is marked at the throw rather than
     // recognised later by its message, so nothing has to keep a regex in step with a sentence.
-    req.setTimeout(timeoutMs, () => { req.destroy(transportError(`MCP request timed out after ${timeoutMs}ms`, null)); });
+    req.setTimeout(timeoutMs, () => { req.destroy(Object.assign(transportError(`MCP request timed out after ${timeoutMs}ms`, null), { timedOut: true })); });
     req.on("error", (e) => reject(isSocketFailure(e) ? transportError(e.message, null) : e));
     req.end(body);
   });

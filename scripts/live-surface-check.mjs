@@ -107,6 +107,7 @@ import { envFrom } from "../shared/env-aliases.mjs";
 import { gitTry, treeOf } from "../shared/tree-commit.mjs";   // — a packaged install has no git, and says its commit in build-info.json
 import { exitFor } from "../driver/surface-exit-verdict.mjs";   // — a check that could not look is not a drift, and they want different things done   // — the name a reader is told to set is the one in force
 import { planRunAgreementVerdict } from "../driver/plan-run-agreement-verdict.mjs";
+import { doorCallVerdict } from "../driver/door-call-verdict.mjs";   // — a refused or unanswered door call compared nothing
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const asJson = process.argv.includes("--json");
@@ -605,7 +606,11 @@ try {
   }
 } catch (e) {
   if (e?.message === "__door_unset__") skip("roster resolves", "this instance does not say where its ops-MCP is, so the roster was NOT PROBED");
-  else fail("roster resolves", `list_profiles failed: ${e.message}`);
+  else {
+    const v = doorCallVerdict(e, { asked: "list_profiles", notCompared: "the roster was not compared" });
+    if (v) record("roster resolves", v.state, v.message, v.blocked === true);
+    else fail("roster resolves", `list_profiles failed: ${e.message}`);
+  }
 }
 
 // 3. THE LOAD-BEARING CHECK — every door's availability answer vs the engine's own, recomputed here
@@ -644,7 +649,11 @@ try {
   }
 } catch (e) {
   if (e?.message === "__door_unset__") skip("ops-MCP reachable", "this instance does not say where its ops-MCP is — NOT PROBED");
-  else fail("ops-MCP reachable", `${MCP_URL}: ${e.message}`);
+  else {
+    const v = doorCallVerdict(e, { asked: `${MCP_URL} for describe_options`, notCompared: "the door's answers were not compared" });
+    if (v) record("ops-MCP reachable", v.state, v.message, v.blocked === true);
+    else fail("ops-MCP reachable", `${MCP_URL}: ${e.message}`);
+  }
 }
 
 // ── 3b. THE TRIGGER LANE, AS ITS OWN SURFACE ─────────────────────────────────────────────────────────

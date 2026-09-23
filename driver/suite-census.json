@@ -142,8 +142,8 @@
           "todos": 0
         },
         "a-check-that-could-not-look-does-not-report-a-drift.test.mjs": {
-          "tests": 10,
-          "asserts": 26,
+          "tests": 13,
+          "asserts": 37,
           "skips": 0,
           "todos": 0
         },
