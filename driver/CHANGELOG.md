@@ -1,5 +1,17 @@
 # clearotron-driver
 
+## 0.3.3-beta.1
+
+### Patch Changes
+
+- Fixed: a run can name a Fable model by its published id, not only by the tier word, which used to fail outright.
+- Fixed: the portal's run list shows a run's rating, never the reviewer's sign-off word, while the run is still in progress.
+- Fixed: naming an exact Claude model now runs that model, instead of quietly following the tier to a newer one.
+- Fixed: a run now records the tier it asked for, not a model version nobody chose. The report still names the model that ran.
+- Fixed: setup and doctor now report a Claude program too old for the models a search asks for, instead of passing it as fine.
+- Fixed: setup installs a version of the Claude program new enough to run the current top-tier model, which older versions refuse.
+- Fixed: the assistant's run summary names the rating again, where it had printed "[object object]" in its place.
+
 ## 0.3.3-beta.0
 
 ### Patch Changes
