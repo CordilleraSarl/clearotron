@@ -248,6 +248,8 @@ deployment may override (verify live values per deployment).
 | `CLEAROTRON_MAX_CLAIM_AGE_MS` | 172800000 (48 h; 0 disables) | Hard ceiling on a claim's age (from the `.pid` sidecar mtime) — beyond it, re-claim regardless of liveness. |
 | `CLEAROTRON_KNOCKOUT_VARIANT_CAP` | unset (⇒ the lane's own cap) | Ceiling on variants a knockout screens per name. Set only to bound an unusually wide batch; absent means the lane decides. |
 | `CLEAROTRON_KNOCKOUT_RECORD_CAP` | unset (⇒ the lane's own cap) | Ceiling on records a knockout fetches per hit. Same shape as the variant cap: absent is the normal state. |
+| `CLEAROTRON_SIGNA_ANSWER_MEMORY` | `off` | On the Signa register, whether a run reuses an answer it already holds instead of asking again. `off` asks every time. `watch` also asks every time, and records whether a held answer would have matched. `on` reuses held answers. |
+| `CLEAROTRON_CLARIVATE_ANSWER_MEMORY` | `on` | On the Clarivate register, whether a run reuses a count, a search, an owner lookup or a record it already holds instead of asking again. `off` asks every time. |
 
 ### Retries, timeouts, watchdogs
 

@@ -54,6 +54,21 @@ test("behind a proxy that rewrites Host, the forwarded host is this portal's nam
     "the forwarded host is a match on this portal's name, not a pass for every origin");
 });
 
+test("a default port is no port: https on 443 and http on 80 are the same origin written two ways", () => {
+  // A proxy or a tunnel that writes the default port into Host must not turn every save into a refusal.
+  assert.equal(crossSiteReason(post({ host: "portal.example:443", origin: "https://portal.example" })), null, "Host with :443, Origin without");
+  assert.equal(crossSiteReason(post({ host: "portal.example", origin: "https://portal.example:443" })), null, "Origin with :443, Host without");
+  assert.equal(crossSiteReason(post({ host: "portal.example:443", origin: "https://portal.example:443" })), null, "both with :443");
+  assert.equal(crossSiteReason(post({ host: "portal.example:80", origin: "http://portal.example" })), null, "http on :80");
+  assert.equal(crossSiteReason(post({ host: "127.0.0.1:18802", "x-forwarded-host": "portal.example:443", origin: "https://portal.example" })), null,
+    "the forwarded host with :443");
+  assert.ok(crossSiteReason(post({ host: "portal.example:443", origin: "http://portal.example" })),
+    "443 is the https default, not the http one: http://portal.example is port 80");
+  assert.ok(crossSiteReason(post({ host: "portal.example:80", origin: "https://portal.example" })), "and 80 is not the https default");
+  assert.ok(crossSiteReason(post({ host: "portal.example:8443", origin: "https://portal.example" })), "a port that is not the default is another port");
+  assert.ok(crossSiteReason(post({ host: "portal.example:443", origin: "https://evil.example" })), "and another site is still another site");
+});
+
 test("with no Origin, Sec-Fetch-Site decides; with neither, the caller is not a browser", () => {
   assert.equal(crossSiteReason(post({ host: "h", "sec-fetch-site": "same-origin" })), null);
   assert.equal(crossSiteReason(post({ host: "h", "sec-fetch-site": "none" })), null, "typed or bookmarked by the person");

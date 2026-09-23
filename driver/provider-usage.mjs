@@ -134,7 +134,8 @@ function emptyTally() {
     ledger: { configured: false, present: false, readable: false, rowsScanned: 0 },
     retries: 0,            // Σ max(0, attempts-1) — wasted retry calls
     errors: 0,             // calls that returned ok:false (incl. transport throws → http_status 0)
-    cache_hits: 0,         // calls served from a dedup cache (0 until Workstream B ships)
+    cache_hits: 0,         // calls served from the run memory instead of the register (providers/_shared/answer-memory.mjs)
+    records_reused: 0,     // records a call took from the run's own store rather than fetching again
     bytes: 0,              // total response bytes (proxy for payload cost)
     // The dedup opportunity, split so Workstream B's scope is decided from data, not guessed:
     duplicate_fetches: 0,               // record_fetch on a URI already fetched this run (real network ones)
@@ -182,6 +183,28 @@ export function tallyRegisterCalls(ledgerPath = DEFAULT_LEDGER_PATH, runPrefix) 
     out.by_tool[toolName] = (out.by_tool[toolName] ?? 0) + 1;
     if (KINDS.includes(row.tool)) out[row.tool]++;
     else out.unclassified++;
+
+    // A ROW THAT NAMES ITS RECORDS IS COUNTED BY RECORD, whatever tool it rode. A register that hydrates
+    // records in batches (Clarivate's /text) logs one row for up to 100 records, under whichever tool asked
+    // — a screen, a plan execution, a listing — so the `record_fetch`-and-one-URI test below never saw
+    // them, and the count read 0 on every such run whatever was fetched twice. Records served from the
+    // run's own store ride a cache-hit row and count as reused, never as fetched.
+    if (Array.isArray(row.records)) {
+      if (isCacheHit) { out.records_reused += row.records.length; continue; }
+      const sess = rowSession(row);
+      for (const id of row.records) {
+        const target = String(id ?? "").toLowerCase();
+        if (!target) continue;
+        if (firstFetchSession.has(target)) {
+          out.duplicate_fetches++;
+          if (firstFetchSession.get(target) === sess) out.duplicate_fetches_same_session++;
+          else out.duplicate_fetches_cross_session++;
+        } else {
+          firstFetchSession.set(target, sess);
+        }
+      }
+      continue;
+    }
 
     // Duplicate detail-fetches = the Workstream-B opportunity. Count only REAL network fetches (a cache
     // hit is already a saved duplicate, not a new one). First network fetch of a URI seeds the map; any

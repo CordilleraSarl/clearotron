@@ -95,6 +95,12 @@ test("every provider declares the SAME capability contract shape — closed voca
     assert.ok(c.nativeScriptIndex === true || c.nativeScriptIndex === false || c.nativeScriptIndex === null,
       `${id}.nativeScriptIndex must be true, false, or an EXPLICIT null (undeclared) — never absent`);
     assert.ok("nativeScriptIndex" in c, `${id}: nativeScriptIndex must be declared, not omitted`);
+    // mixedScriptQuery is OPTIONAL, like queryableStatuses: absent keeps a register's behaviour as it
+    // was. When it is declared it is a plain yes or no.
+    assert.ok(!("mixedScriptQuery" in c) || typeof c.mixedScriptQuery === "boolean",
+      `${id}.mixedScriptQuery, when declared, must be true or false`);
+    assert.ok(!("listingAnswersCount" in c) || typeof c.listingAnswersCount === "boolean",
+      `${id}.listingAnswersCount, when declared, must be true or false`);
     assert.ok(Object.isFrozen(c), `${id}: the contract is frozen`);
   }
   assert.deepEqual(Object.keys(PROVIDER_CAPABILITIES).sort(), [...PROVIDERS].sort());
@@ -127,6 +133,7 @@ test("the probed provider facts are encoded, not the stale core's warts", () => 
   assert.equal(cla.oppositions, false);
   assert.equal(cla.phonemeExpansion, false, "/similarity/word/* is not available on this provider (403) — never wired");
   assert.equal(cla.hasPublicRecordUrl, false);
+  assert.equal(cla.mixedScriptQuery, false, "a mixed-alphabet term is not searched: the index holds non-Latin filings by transliteration only");
   assert.equal(cla.predicates.exact, "EXACT_WORD_MARK_SPECIFICATION");
   assert.equal(cla.predicates.phonetic, "PHONETIC_WORD_MARK_SPECIFICATION");
   assert.equal(cla.predicates.owner, "APPLICANT_NAME");
@@ -155,6 +162,8 @@ test("the probed provider facts are encoded, not the stale core's warts", () => 
     "STILL the gap, and deliberately: the kernel hands the infix case its raw `*foo*` pattern, so a contains sweep would search the punctuation");
   assert.equal(sig.oppositions, true, "opposition_window on the row, proceedings_count on the record, has_proceedings as a filter (18)");
   assert.equal(sig.countStatusFilter, "native", "filters.status_primary narrows a count (685 → 375)");
+  assert.equal(sig.mixedScriptQuery, false,
+    "a term mixing Latin with Greek or Cyrillic letters is answered as if the non-Latin letters were absent");
 
   // ── the script-form declaration: two OPPOSITE probed answers, and one honest unknown ─────────────
   // These three values are the whole point of declaring it as data. corsearch answers the characters

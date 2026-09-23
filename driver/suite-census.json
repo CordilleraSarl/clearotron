@@ -101,7 +101,7 @@
         },
         "a-capability-gap-is-not-reopened.pipeline.test.mjs": {
           "tests": 1,
-          "asserts": 6,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },
@@ -156,6 +156,12 @@
         "a-claim-may-not-outlive-its-evidence.test.mjs": {
           "tests": 14,
           "asserts": 46,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-clarivate-run-asks-each-question-and-fetches-each-record-once.test.mjs": {
+          "tests": 8,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
@@ -465,6 +471,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-follow-up-re-runs-only-what-is-missing.test.mjs": {
+          "tests": 4,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "a-full-country-card-keeps-what-the-multi-country-card-shows.test.mjs": {
           "tests": 2,
           "asserts": 12,
@@ -627,6 +639,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-mixed-alphabet-look-alike-is-not-sent-where-the-register-drops-its-letters.test.mjs": {
+          "tests": 10,
+          "asserts": 45,
+          "skips": 0,
+          "todos": 0
+        },
         "a-model-of-the-current-generation-is-named-in-every-spelling.test.mjs": {
           "tests": 4,
           "asserts": 13,
@@ -667,6 +685,12 @@
           "tests": 10,
           "asserts": 57,
           "skips": 1,
+          "todos": 0
+        },
+        "a-new-run-folder-is-closed-to-other-accounts.test.mjs": {
+          "tests": 5,
+          "asserts": 9,
+          "skips": 5,
           "todos": 0
         },
         "a-next-step-the-model-writes-comes-off-at-publish.test.mjs": {
@@ -921,6 +945,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-release-carries-its-parts-list.test.mjs": {
+          "tests": 5,
+          "asserts": 27,
+          "skips": 0,
+          "todos": 0
+        },
         "a-release-is-announced-only-once-a-stranger-can-install-it.test.mjs": {
           "tests": 8,
           "asserts": 19,
@@ -960,6 +990,12 @@
         "a-retry-asks-only-for-what-is-unanswered.test.mjs": {
           "tests": 7,
           "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-run-asks-signa-each-question-once.test.mjs": {
+          "tests": 18,
+          "asserts": 83,
           "skips": 0,
           "todos": 0
         },
@@ -1096,8 +1132,8 @@
           "todos": 0
         },
         "a-state-change-from-another-site-is-refused.test.mjs": {
-          "tests": 14,
-          "asserts": 61,
+          "tests": 15,
+          "asserts": 70,
           "skips": 0,
           "todos": 0
         },
@@ -1222,8 +1258,8 @@
           "todos": 0
         },
         "a-version-npm-is-still-validating-gets-its-entry-once-served.test.mjs": {
-          "tests": 14,
-          "asserts": 47,
+          "tests": 20,
+          "asserts": 72,
           "skips": 0,
           "todos": 0
         },
@@ -3484,8 +3520,8 @@
           "todos": 0
         },
         "pipeline.mock.test.mjs": {
-          "tests": 101,
-          "asserts": 842,
+          "tests": 103,
+          "asserts": 853,
           "skips": 0,
           "todos": 0
         },
@@ -4001,7 +4037,7 @@
         },
         "register-capabilities.test.mjs": {
           "tests": 34,
-          "asserts": 268,
+          "asserts": 272,
           "skips": 0,
           "todos": 0
         },
@@ -4120,8 +4156,8 @@
           "todos": 0
         },
         "release-pipeline.test.mjs": {
-          "tests": 122,
-          "asserts": 462,
+          "tests": 123,
+          "asserts": 467,
           "skips": 0,
           "todos": 0
         },
@@ -5679,6 +5715,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-shipped-services-may-not-gain-privileges.test.mjs": {
+          "tests": 3,
+          "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
         "the-short-surfaces-quote-the-report.test.mjs": {
           "tests": 3,
           "asserts": 9,
@@ -5981,7 +6023,7 @@
         },
         "update-writes-only-inside-the-checkout.test.mjs": {
           "tests": 8,
-          "asserts": 29,
+          "asserts": 30,
           "skips": 0,
           "todos": 0
         },

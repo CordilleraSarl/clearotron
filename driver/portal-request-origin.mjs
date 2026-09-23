@@ -13,6 +13,12 @@
 // portal never grants), so accepting a match on either is still a match on this portal's own name.
 // Compared with its port: another app on this machine differs only in the port.
 //
+// A DEFAULT PORT IS NO PORT. `https://portal.example` and `https://portal.example:443` are one origin, and
+// so are `http://h` and `http://h:80`. A browser's Origin never writes the default port, but a proxy or a
+// tunnel in front may write it into `Host`, and a plain comparison would then refuse every save the
+// portal's own pages make. So the port the Origin's scheme implies is taken off both sides before they are
+// compared, and only that one: `:443` beside an `http` Origin is still another port.
+//
 // A REQUEST WITH NEITHER `Origin` NOR `Sec-Fetch-Site` IS NOT FROM A BROWSER. Every current browser sends
 // one of them on a POST, and a script or `curl` sends neither. A script cannot be tricked into carrying
 // someone else's session, so there is nothing to refuse, and its own credential still has to pass.
@@ -20,9 +26,18 @@
 const STATE_CHANGING = new Set(["POST", "PUT", "PATCH", "DELETE"]);
 const first = (v) => String(Array.isArray(v) ? v[0] : (v ?? "")).split(",")[0].trim();
 
-/** The hosts this request says it was addressed to, lower-case, with their ports. */
-function ownHosts(headers) {
-  return new Set([first(headers?.host), first(headers?.["x-forwarded-host"])].filter(Boolean).map((h) => h.toLowerCase()));
+const DEFAULT_PORT = { "https:": "443", "http:": "80" };
+
+/** `host` without the port `protocol` implies, when it carries exactly that one. */
+function withoutDefaultPort(host, protocol) {
+  const port = DEFAULT_PORT[protocol];
+  return port && host.endsWith(`:${port}`) ? host.slice(0, -(port.length + 1)) : host;
+}
+
+/** The hosts this request says it was addressed to, lower-case, with their ports, less the default one. */
+function ownHosts(headers, protocol) {
+  return new Set([first(headers?.host), first(headers?.["x-forwarded-host"])].filter(Boolean)
+    .map((h) => withoutDefaultPort(h.toLowerCase(), protocol)));
 }
 
 /**
@@ -36,9 +51,10 @@ export function crossSiteReason(req) {
   const origin = first(headers.origin);
   if (origin) {
     if (origin === "null") return "Origin is null";
-    let host;
-    try { host = new URL(origin).host.toLowerCase(); } catch { return "Origin is not an address"; }
-    const own = ownHosts(headers);
+    let host, protocol;
+    try { ({ host, protocol } = new URL(origin)); } catch { return "Origin is not an address"; }
+    host = withoutDefaultPort(host.toLowerCase(), protocol);
+    const own = ownHosts(headers, protocol);
     return own.has(host) ? null : `Origin ${host} is not this portal (${[...own].join(", ") || "no Host"})`;
   }
   const site = first(headers["sec-fetch-site"]).toLowerCase();

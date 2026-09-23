@@ -247,6 +247,7 @@ export async function listRegisterRecords({
             ts: now().toISOString(), stage: "records", mark: name, term: t.term, basis: t.basis,
             classes: scoped, regions, provider, ok, requested: want, fetched,
             total: Number.isFinite(r?.total) ? r.total : null, took_ms: Date.now() - started,
+            ...(ok && r?.approximate === true ? { approximate: true, floor: Number.isFinite(r?.floor) ? r.floor : null } : {}),
             ...(ok ? {} : { cause: String(r?.reason ?? "unknown").slice(0, 300) }),
           }) + "\n");
         } catch { /* receipts are best-effort, never fatal */ }
@@ -256,6 +257,9 @@ export async function listRegisterRecords({
         // How many the register HOLDS under this term, where it said. `fetched` under `total` is the
         // truncation, and it is stated rather than left for a reader to notice.
         total: Number.isFinite(r?.total) ? r.total : null,
+        // An approximation is carried as one, exactly as the count lane records it: no number in
+        // `total`, the register's floor beside it. Only a provider whose listing states it sets it.
+        ...(ok && r?.approximate === true ? { approximate: true, floor: Number.isFinite(r?.floor) ? r.floor : null } : {}),
         ...(ok ? {} : { reason: String(r?.reason ?? "the filings could not be fetched").slice(0, 300) }),
       };
     });
@@ -269,7 +273,12 @@ export async function listRegisterRecords({
       // The three numbers a reader needs to trust the list: how many are here, how many the register
       // said there are under the listed terms, and whether the cap cut it.
       fetched: records.length,
-      available: termRows.reduce((n, t) => (Number.isFinite(t.total) ? n + t.total : n), 0),
+      // NO SUM WHEN ANY ANSWERED TERM IS APPROXIMATE. An approximation carries a floor and no number, so a
+      // sum around it counts only the exact terms: a name the register answered as more than 10,000 read
+      // "out of 800 hits" beside its two close forms. With no honest total none is stated (recordsLine
+      // drops the clause for a non-number), and the counts line still carries the approximation.
+      available: termRows.some((t) => t.ok && t.approximate === true) ? null
+        : termRows.reduce((n, t) => (Number.isFinite(t.total) ? n + t.total : n), 0),
       capped: capped || records.length >= markCap,
       cap: markCap,
       // — which registers this listing covers, present only when one was dropped. Per-mark for the
