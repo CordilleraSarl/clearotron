@@ -252,7 +252,7 @@ export function candidateRefusal(lane, cand) {
 // have always taken it from jx-lanes.
 export { romanizationRefusal, romanizationSpellings };
 
-// ── Billing path for a direct-API jx ledger row ────────────────────────────────────────────
+// ── Billing path for a jx ledger row ──────────────────────────────────────────────────────
 // The jx model calls (fold completions, serp-judge, nativeread) are the ONLY dispatches in the driver
 // that produce a per-token provider invoice. This comment used to name their executor as a
 // `@anthropic-ai/sdk` Messages call; that has not been true since the lane lost its own destination

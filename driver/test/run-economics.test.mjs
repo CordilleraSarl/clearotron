@@ -310,9 +310,9 @@ test("runEconomics: a run with no terminal timestamp says its wall figure is tim
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-// ── 5. the direct-API lane, the only one that bills per token ─────────────────────────────────────
+// ── 5. a jx lane row billed per token ───────────────────────────────────────────────────────────────
 
-test("runEconomics: the direct-API jx lane is attributed to api-key billing, apart from the subscription stages", () => {
+test("runEconomics: a jx lane row billed per token is attributed to api-key billing, apart from the subscription stages", () => {
   const dir = mkRun({
     "synthesis": [agentRow({ model: "opus", modelUsed: "anthropic/claude-opus-5", usage: { input: 10, output: 100 } })],
     "jx-completions": [
