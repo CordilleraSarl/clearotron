@@ -967,6 +967,18 @@ export function frameDiffModel() {
         observation: "scope-ledger marks 35/38 applied but no query was ever class-pinned to 35 or 38 — surfaced only via 9/28/41/42 co-classification", severity: "dominant-element" }],
       dominant_element_gap: true,
     });
+  // Two class-gap directives, so a re-attempt can be seen to re-send only the one that failed.
+  if (process.env.MOCK_FRAME_DIFF === "field-classgap-two")
+    return JSON.stringify({
+      schema_version: 1,
+      directives: [
+        { layer: "field", item: "Cl. 35 (retail/online-retail) and Cl. 38 (online comms)",
+          observation: "scope-ledger marks 35/38 applied but no query was ever class-pinned to 35 or 38", severity: "dominant-element" },
+        { layer: "field", item: "Cl. 16 (printed matter)",
+          observation: "scope-ledger marks 16 applied but no query was ever class-pinned to 16", severity: "dominant-element" },
+      ],
+      dominant_element_gap: true,
+    });
   return JSON.stringify({ schema_version: 1, directives: [], dominant_element_gap: false });
 }
 

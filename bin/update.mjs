@@ -386,7 +386,12 @@ export async function update(argv = process.argv.slice(2)) {
     return pulled;
   }
 
-  const installed = runInCheckout("npm", ["ci"]);
+  // NO INSTALL SCRIPTS. A dependency's install script runs with everything this account can reach, and an
+  // update fetches whatever the registry serves that day. None is needed here: the only dependency that
+  // carries one is optional and macOS-only, and this package's own two are the Node floor, which the CLI
+  // checks at every start, and a contributor's git hooks. Dev dependencies stay, because the portal
+  // bundle below is rebuilt from them.
+  const installed = runInCheckout("npm", ["ci", "--ignore-scripts"]);
   if (installed !== 0) {
     console.error("\n  npm ci failed. The code is updated; its dependencies are not, so this install is");
     console.error("  in a half-updated state and should not be run until that command succeeds.\n");

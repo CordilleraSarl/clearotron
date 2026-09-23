@@ -15,7 +15,7 @@
 // by the box that ran it and red on the runner. The completeness arms drive synthetic trees instead.
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, mkdtempSync, mkdirSync, writeFileSync, rmSync, existsSync } from "node:fs";
+import { readFileSync, readdirSync, mkdtempSync, mkdirSync, writeFileSync, rmSync, existsSync } from "node:fs";
 import { execFileSync, spawnSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
@@ -908,8 +908,12 @@ test("tracker 97 a version that merged itself still publishes, because that merg
   // NINE NOW. `macos` and `macos-awaited` joined on 2026-09-18: a stable is installed on macOS before
   // either publish job may publish it. Two, because `awaited` needs `publish` and one job serving both
   // publish paths would be a cycle. They call macos.yml and run no step of their own here.
-  assert.deepEqual(jobs, ["version", "stranded", "pending", "awaited", "macos", "publish", "macos-awaited", "publish-awaited", "deprecate"],
-    "the release workflow's jobs are not the nine this file is written about");
+  // TEN NOW. `entry` joined on 2026-09-23: npm accepted the 0.3.3 stable and went on validating it past
+  // the publish job's bound, so the version was published and tagged with no release entry, and nothing
+  // ran again to write one. It publishes nothing; it writes the entry once the registry serves the kept
+  // bytes, and its own arms hold it to that.
+  assert.deepEqual(jobs, ["version", "stranded", "pending", "entry", "awaited", "macos", "publish", "macos-awaited", "publish-awaited", "deprecate"],
+    "the release workflow's jobs are not the ten this file is written about");
 
   // IT DECIDES WITH THE SAME FUNCTION THE PUSH PATH USES. Two answers to one question is how a pipeline
   // publishes on one path what it refuses on the other.
@@ -1695,6 +1699,7 @@ function driveTagStep({ script, version, prerelease, existingTagRef = null, visi
         PRERELEASE_FLAG: prerelease,
         DIST_TAG: prerelease === "true" ? "beta" : "latest",
         TARBALL: "release-artefacts/clearotron-" + version + ".tgz",
+        SBOM: "release-artefacts/clearotron-" + version + ".cdx.json",
       },
     });
     const out = `${res.stdout ?? ""}${res.stderr ?? ""}`;
@@ -1814,15 +1819,29 @@ test("the release entry waits for a stranger's install: the tag, then the check,
   }
 });
 
-test("a version the registry does not serve keeps its tag and gets NO entry, and the step fails", () => {
+// PENDING, NOT FAILED (2026-09-23). npm accepts a publish before it serves it, and the 0.3.3 stable was
+// still validating past this step's bound. The step used to fail there and nothing wrote the entry
+// afterwards; now the version keeps its tag, gets no entry here, and the step says the scheduled `entry`
+// job will write it. A check that could not look is still a failure.
+test("a version the registry does not serve yet keeps its tag, gets NO entry, and is left to the scheduled entry job", () => {
   for (const [name, body] of PUBLISHING) {
     for (const [version, prerelease] of [["9.9.9-beta.3", "true"], ["9.9.9", "false"]]) {
       const run = driveTagStep({ script: tagStepScript(body, name), version, prerelease, visibleExit: 1 });
-      assert.notEqual(run.status, 0, `${name}, ${version}: the step reported success on a version nobody could install\n${run.out}`);
+      assert.equal(run.status, 0, `${name}, ${version}: a version npm accepted and has not served yet failed the step, `
+        + `and nothing would write its entry afterwards\n${run.out}`);
+      assert.match(run.out, /scheduled entry job creates the release entry once the registry serves these bytes/,
+        `${name}, ${version}: the step passed without saying the version is pending, so a reader sees a green run and no entry\n${run.out}`);
       assert.ok(run.log.includes(`-f ref=refs/tags/v${version} `),
         `${name}, ${version}: no tag — the pipeline would read this published version as unpublished and cut it again\n${run.log}`);
       assert.doesNotMatch(run.log, /release create/,
         `${name}, ${version}: an entry was created for a version the registry did not serve\n${run.log}`);
+      const blind = driveTagStep({ script: tagStepScript(body, name), version, prerelease, visibleExit: 2 });
+      assert.notEqual(blind.status, 0, `${name}, ${version}: a registry check that could not look passed the step\n${blind.out}`);
+      assert.doesNotMatch(blind.log, /release create/, `${name}, ${version}: an entry was created over a check that could not look\n${blind.log}`);
+      const wrong = driveTagStep({ script: tagStepScript(body, name), version, prerelease, visibleExit: 3 });
+      assert.notEqual(wrong.status, 0, `${name}, ${version}: a registry serving different bytes passed the step as pending\n${wrong.out}`);
+      assert.doesNotMatch(wrong.out, /scheduled entry job creates/, `${name}, ${version}: different bytes were announced as pending\n${wrong.out}`);
+      assert.doesNotMatch(wrong.log, /release create/, `${name}, ${version}: an entry was created over different bytes\n${wrong.log}`);
     }
   }
 });
@@ -1830,7 +1849,7 @@ test("a version the registry does not serve keeps its tag and gets NO entry, and
 test("planted: a job whose entry does not wait for the check is caught, in each job separately", () => {
   for (const [name, body] of PUBLISHING) {
     const script = tagStepScript(body, name);
-    const broken = script.replace(/\n\s*served_to_a_stranger\n/g, "\n");
+    const broken = script.replace(/SERVED=0; served_to_a_stranger \|\| SERVED=\$\?/g, "SERVED=0");
     assert.notEqual(broken, script, `${name}: the plant changed nothing, so it proves nothing`);
     const run = driveTagStep({ script: broken, version: "9.9.9", prerelease: "false", visibleExit: 1 });
     assert.match(run.log, /release create/, `${name}: the planted step did not create an entry, so this arm cannot tell the difference`);
@@ -1994,8 +2013,9 @@ test("the second publish checks out the commit the wait named, and the wait publ
   assert.match(awaited, /sha: \$\{\{ steps\.awaited\.outputs\.sha \}\}/,
     "the wait no longer publishes the commit it decided about, so the job below has nothing to check out");
   const second = RELEASE_YML.slice(RELEASE_YML.indexOf("\n  publish-awaited:"));
-  const co = second.indexOf("actions/checkout@v7");
+  const co = second.indexOf("actions/checkout@");
   const guard = second.indexOf("The wait named a commit to publish");
+  assert.ok(co > 0, "the second publish checks nothing out — this arm could not look");
   assert.ok(guard > 0, "nothing refuses an absent commit — this arm could not look");
   // BEFORE THE CHECKOUT. `ref:` with an empty value checks out the default branch rather than failing,
   // so a guard after it would certify a tree that was already wrong.
@@ -2939,4 +2959,47 @@ test("a push opens no version pull request, and still asks whether it cut a vers
   const cut = stepAt("Did this push cut a version");
   assert.doesNotMatch(cut, /\n {8}if:/, "the cut question is gated, so a version commit landing by a push is never asked about");
   assert.match(cut, /CLEAROTRON_CUT_REF: \$\{\{ github\.sha \}\}/, "the cut question must read the pushed commit, not the working tree");
+});
+
+// ── EVERY ACTION IS PINNED TO A COMMIT, NOT TO A TAG SOMEBODY CAN MOVE ──────────────────────────────
+//
+// A tag is a pointer its owner can repoint, and a repointed tag runs its new code inside whichever job
+// uses it, next to that job's credentials: in March 2025 a widely used third-party action was retagged
+// to code that printed every secret of every workflow using it. A full commit sha cannot be moved.
+// The version stays readable in a comment beside it, and Dependabot's `github-actions` updates keep
+// bumping the sha. A local reusable workflow (`./.github/...`) is this repository's own file and is
+// pinned by the commit that carries it.
+// THE CLA WORKFLOW'S WRITE TOKEN IS SCOPED TO WHAT ITS ACTION CALLS. It runs on `pull_request_target`,
+// which hands a fork's pull request a token that can write to this repository. Read from the pinned
+// action's source: it commits the signature file (contents), comments on the pull request (pull-requests)
+// and re-runs its own check once the author signs (actions). It sets no commit status; `statuses: write`
+// was granted anyway, with a comment claiming two scopes over a block of four.
+test("the CLA workflow's write token carries exactly the three scopes its pinned action calls", () => {
+  const cla = read(".github/workflows/cla.yml");
+  const block = /^permissions:\n((?: {2}[a-z-]+: \S+.*\n)+)/m.exec(cla)?.[1] ?? "";
+  const scopes = block.split("\n").filter(Boolean).map((l) => l.trim().replace(/\s*#.*$/, "")).sort();
+  assert.deepEqual(scopes, ["actions: write", "contents: write", "pull-requests: write"],
+    "cla.yml's token no longer matches what the pinned action calls; read the action's source at its SHA before changing either");
+  assert.match(cla, /contributor-assistant\/github-action@ca4a40a7d1004f18d9960b404b97e5f30a505a08 # v2\.6\.1/,
+    "the CLA action moved; the scopes above were read from v2.6.1's source and must be read again for the new one");
+});
+
+test("every action a workflow uses is pinned to a full commit sha, with its version in a comment", () => {
+  const dir = join(ROOT, ".github", "workflows");
+  const uses = [];
+  for (const f of nonEmpty(readdirSync(dir).filter((f) => /\.ya?ml$/.test(f)), "workflow files")) {
+    readFileSync(join(dir, f), "utf8").split("\n").forEach((line, i) => {
+      const m = line.match(/^\s*(?:-\s+)?uses:\s*(\S+)(.*)$/);
+      if (m) uses.push({ where: `${f}:${i + 1}`, ref: m[1], rest: m[2] });
+    });
+  }
+  nonEmpty(uses, "`uses:` lines across the workflows");
+  const remote = uses.filter((u) => !u.ref.startsWith("./"));
+  nonEmpty(remote, "actions pulled from another repository");
+  const floating = remote.filter((u) => !/@[0-9a-f]{40}$/.test(u.ref));
+  assert.deepEqual(floating.map((u) => `${u.where} ${u.ref}`), [],
+    "an action is pinned by a tag or branch that its owner can move");
+  const unlabelled = remote.filter((u) => !/#\s*v?\d/.test(u.rest));
+  assert.deepEqual(unlabelled.map((u) => `${u.where} ${u.ref}`), [],
+    "a pinned sha carries no version comment, so nobody reading it can tell what it is");
 });

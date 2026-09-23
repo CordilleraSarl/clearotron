@@ -33,7 +33,7 @@ import { dominantElementFromManifest, formativeRootFromManifest } from "./scope-
 // mark-restatement check already share (providers/_shared/script-form.mjs — itself PURE, no node
 // imports, so this module stays offline-testable). The floor/model merge below keys on it for the
 // same reason those two do: a private second fold is how two definitions of "the same term" drift.
-import { formKey } from "../providers/_shared/script-form.mjs";
+import { formKey, mixesLatinWithGreekOrCyrillic } from "../providers/_shared/script-form.mjs";
 
 const LOWER = "abcdefghijklmnopqrstuvwxyz";
 const AZ = LOWER.split("");
@@ -259,7 +259,13 @@ export function transliterations(element, { scripts = SUPPORTED_SCRIPTS } = {}) 
 // droppedVariantFamilies). The floor stays exhaustive WITHIN the families judgment kept — this is the funnel
 // honouring a scope decision that was already written and, until 2026-07-18, ignored. edit-1 is never
 // droppable: it is the doctrine floor (radiusFor), not a family.
-export function formNeighbourhood(element, { markets = [], scripts = SUPPORTED_SCRIPTS, droppedAxes = [], ordinaryWords = null } = {}) {
+//
+// `mixedScriptQuery` is the active register's declaration of the same name (capabilities.js). `false`
+// means the register cannot search a term mixing Latin with Greek or Cyrillic letters as written, so the
+// whole-word look-alike swaps that leave some letters Latin are not searched there: they leave the band
+// and are listed in `mixedScriptNotSearched` instead. Anything else — the value of every register that
+// does not declare it — changes nothing, and the band carries no new field.
+export function formNeighbourhood(element, { markets = [], scripts = SUPPORTED_SCRIPTS, droppedAxes = [], ordinaryWords = null, mixedScriptQuery = null } = {}) {
   const radius = radiusFor(element);
   const el = radius.element;
   if (!el) return { element: "", radius, exactQueries: [], wildcardPatterns: [], phoneticKeys: [], confusables: [], transliterations: [], ordinaryWordDifferentSound: [], ledger: { disclosed: radius.note, axes: [] } };
@@ -272,7 +278,11 @@ export function formNeighbourhood(element, { markets = [], scripts = SUPPORTED_S
   const skip = new Set(notSearched);
   const edits = generatedEdits.filter((t) => !skip.has(t));
   const confs = drop.has("visual-confusable") ? [] : visualConfusables(el);
-  const trans = drop.has("transliteration") ? [] : transliterations(el, { scripts });
+  const generatedTrans = drop.has("transliteration") ? [] : transliterations(el, { scripts });
+  // Only the transliteration generator can write a mixed-alphabet term: edit-1 works over [a-z] and the
+  // confusable table maps Latin to Latin, digits and `@`.
+  const mixedNotSearched = mixedScriptQuery === false ? generatedTrans.filter(mixesLatinWithGreekOrCyrillic) : [];
+  const trans = generatedTrans.filter((t) => !mixedNotSearched.includes(t));
   const wildcards = drop.has("phonetic-family") ? [] : skeletonPatterns(el);
   const keys = drop.has("phonetic-family") ? [] : doubleMetaphone(el).filter(Boolean);
 
@@ -297,6 +307,7 @@ export function formNeighbourhood(element, { markets = [], scripts = SUPPORTED_S
     confusables: confs,
     transliterations: trans,
     ordinaryWordDifferentSound: notSearched,
+    ...(mixedScriptQuery === false ? { mixedScriptNotSearched: mixedNotSearched } : {}),
     ledger: {
       disclosed: radius.note,
       dropped_axes: [...drop].sort(),
@@ -324,7 +335,9 @@ export function formNeighbourhood(element, { markets = [], scripts = SUPPORTED_S
             : keys.length ? `NO PATTERN — "${el}" has too few consonants to anchor a skeleton wildcard, so the family has no retrieval pattern; Double-Metaphone key(s) [${keys.join(",")}] still verify what the other axes return`
             : `NO PATTERN — "${el}" has too few consonants to anchor a skeleton wildcard and yields no Double-Metaphone key, so this axis contributes nothing for this element and verifies nothing` },
         { axis: "visual-confusable", count: confs.length, mechanism: drop.has("visual-confusable") ? "DROPPED — judgment's variant-layer scope decision" : "Unicode-confusable homoglyph + multigraph table" },
-        { axis: "transliteration", count: trans.length, mechanism: drop.has("transliteration") ? "DROPPED — judgment's variant-layer scope decision" : `scoped scripts: ${scripts.join(", ")}` },
+        { axis: "transliteration", count: trans.length,
+          ...(mixedScriptQuery === false ? { generated: generatedTrans.length, not_searched: mixedNotSearched.length } : {}),
+          mechanism: drop.has("transliteration") ? "DROPPED — judgment's variant-layer scope decision" : `scoped scripts: ${scripts.join(", ")}` },
       ],
       total_exact: exactQueries.length,
     },
@@ -388,7 +401,7 @@ export function coverageGaps(band, { dispatched = [], explained = [] } = {}) {
 // exhaustive edit-1 neighbourhood: 1,736 junk exact queries on AquaPlus 2026-07-17, 4,524 on the 07-16 run.
 // Measured 2026-07-18: 10 of 20 recent runs carried one of these. The JSON field is a validated scalar and
 // cannot swallow a sentence.
-export function renderFormNeighbourhoodJson(manifestMd, { markets = [], scripts = SUPPORTED_SCRIPTS, droppedAxes = [], model = null, mark = "", ordinaryWords = null } = {}) {
+export function renderFormNeighbourhoodJson(manifestMd, { markets = [], scripts = SUPPORTED_SCRIPTS, droppedAxes = [], model = null, mark = "", ordinaryWords = null, mixedScriptQuery = null, nativeScriptIndex = null } = {}) {
   const { seeds, seededFrom, rejected } = floorSeeds(manifestMd, { model, mark });
   // The reason travels WITH the throw. It used to say only "the job states no mark", which is one
   // of two causes and not the one that actually fires: a non-Latin mark states a mark perfectly well and
@@ -400,8 +413,8 @@ export function renderFormNeighbourhoodJson(manifestMd, { markets = [], scripts 
       || "manifest names no Dominant element / Formative root, and the job states no mark";
     throw new Error(`form_neighbourhood_no_element: ${why} — nothing to seed the mechanical form band`);
   }
-  const elements = seeds.map(({ element, role }) => ({ element, role, band: formNeighbourhood(element, { markets, scripts, droppedAxes, ordinaryWords }) }));
-  const families = variantFloorFamilies(elements, { mark, droppedAxes });
+  const elements = seeds.map(({ element, role }) => ({ element, role, band: formNeighbourhood(element, { markets, scripts, droppedAxes, ordinaryWords, mixedScriptQuery }) }));
+  const families = variantFloorFamilies(elements, { mark, droppedAxes, mixedScriptReason: mixedScriptNotSearchedReason(nativeScriptIndex) });
   return JSON.stringify({
     schema_version: 2,
     generated: "deterministic (model-free) — edit-1 ∪ phonetic-family ∪ visual-confusable ∪ transliteration ∪ spacing-punctuation",
@@ -632,14 +645,27 @@ export function spacingPunctuationForms(mark) {
  * dispatches), assigned to the first family that claims each term — so the family terms sum EXACTLY
  * to what gets searched, never to a parallel list that drifts from it. PURE.
  */
-export function variantFloorFamilies(elements, { mark = "", droppedAxes = [] } = {}) {
+/**
+ * Why the mixed-alphabet look-alikes were not searched, in the terms of what the register's index holds
+ * (`nativeScriptIndex`): a register that indexes the characters answers such a spelling as if its
+ * non-Latin letters were not there; a register that holds non-Latin filings by transliteration only
+ * cannot take the spelling at all. PURE.
+ */
+export function mixedScriptNotSearchedReason(nativeScriptIndex) {
+  return nativeScriptIndex === true
+    ? "not searched — the register answers a mixed-alphabet spelling as if the non-Latin letters were absent (measured 2026-09-23)"
+    : "not searched — the register holds non-Latin filings by their transliteration only, so a mixed-alphabet spelling cannot be searched as written";
+}
+
+export function variantFloorFamilies(elements, { mark = "", droppedAxes = [], mixedScriptReason = mixedScriptNotSearchedReason(true) } = {}) {
   const drop = new Set(droppedAxes ?? []);
   const edit = new Set(), visual = new Set(), translit = new Set(), other = new Set();
-  const wildcards = new Set(), keys = new Set(), notSearched = new Set();
+  const wildcards = new Set(), keys = new Set(), notSearched = new Set(), mixedNotSearched = new Set();
   for (const el of elements ?? []) {
     const band = el?.band;
     if (!band) continue;
     for (const t of band.ordinaryWordDifferentSound ?? []) notSearched.add(t);
+    for (const t of band.mixedScriptNotSearched ?? []) mixedNotSearched.add(t);
     const edits = new Set(editNeighbourhood(el.element));
     const confs = new Set(band.confusables ?? []);
     const trans = new Set(band.transliterations ?? []);
@@ -685,6 +711,12 @@ export function variantFloorFamilies(elements, { mark = "", droppedAxes = [] } =
     ...(notSearched.size ? [{ family: "ordinary-word-different-sound", category: "phonetic", generator: "editNeighbourhood",
       enumeration: "edit-1 neighbours that are ordinary English words and share no Double-Metaphone key with the element",
       dispatch: "not searched — ordinary word, different sound", searched: false, dropped: true, terms: sorted(notSearched) }] : []),
+    // NOT SEARCHED ON THIS REGISTER, listed the same way and kept out of the floor for the same reason.
+    // Present only when the active register declares `mixedScriptQuery: false` (formNeighbourhood).
+    ...(mixedNotSearched.size ? [{ family: "mixed-script-look-alike", category: "transliteration", generator: "transliterations",
+      enumeration: "whole-word Greek and Cyrillic look-alike swaps whose other letters stay Latin",
+      dispatch: mixedScriptReason,
+      searched: false, dropped: true, count: mixedNotSearched.size, terms: sorted(mixedNotSearched) }] : []),
   ];
 }
 

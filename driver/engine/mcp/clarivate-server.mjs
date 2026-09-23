@@ -121,6 +121,7 @@ serve({
         plan_path: { type: "string", description: "Absolute path to the frozen _driver/register-plan.json" },
         axis: { type: "string", description: "The register axis to execute (e.g. primary-sweep)" },
         output_path: { type: "string", description: "Absolute path of the named band to write (register-units/<axis>-band.json)" },
+        qids: { type: "array", items: { type: "string" }, description: "Optional: the qids of the plan entries to run. Only those run, and every other block in the band stays as it is. Leave it out only on the axis's first run: without it every entry on the axis runs again." },
       } },
       annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: true },
       handler: guard((a) => doExecutePlan(API_KEY, BASE, a, tctx("execute_plan"))),

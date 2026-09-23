@@ -695,8 +695,7 @@ export const MODELS = {
 // alias → full id; a value that's already a full provider/model id (contains "/") passes through.
 //
 // A BARE Anthropic id (dated or not — "claude-haiku-4-5-20251001", "claude-opus-5") normalises to the
-// catalog form too. The direct-API lanes (jx completions/judge/nativeread, driver.config JX_PROVIDERS)
-// name their model that way because that is what the Messages API takes, so without this one model named
+// catalog form too. Without this, one model named
 // in two spellings — dated and undated — would key apart in a rollup. The date suffix is dropped;
 // anything that does not look like a bare claude id is returned untouched, so a genuinely unknown model
 // still keys as-is rather than being guessed at.
@@ -1322,7 +1321,15 @@ export const PROVIDERS = {
         // The office's own numbers come off the full record Signa returns on search, through the
         // provider's own normaliser, so publish can address the office's page for each filing
         // (publish/office-record-links.mjs) instead of showing the handle.
-        return { ok: true, records: (Array.isArray(p.results) ? p.results : []).map((row) => {
+        //
+        // THE TOTAL RIDES THE SAME ANSWER and is carried, not dropped: `include_total` puts the register's
+        // own count for this exact question on every search, so the listing of a term already holds the
+        // figure the count lane would ask for separately. An approximation stays one: no number in
+        // `total`, the floor beside it — the count lane's rule, unchanged.
+        return { ok: true,
+          total: Number.isFinite(p.total_hits) ? p.total_hits : null,
+          ...(p.total_approximate === true ? { approximate: true, floor: Number.isFinite(p.total_floor) ? p.total_floor : null } : {}),
+          records: (Array.isArray(p.results) ? p.results : []).map((row) => {
           const rec = row?.raw && typeof row.raw === "object" ? core.normalizeRecord(row.raw, row.office || null) : null;
           return {
             record_id: row?.record_id ?? null,

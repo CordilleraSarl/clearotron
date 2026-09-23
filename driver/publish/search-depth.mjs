@@ -275,7 +275,7 @@ export function localScriptSearched(registerPlan) {
  *
  * @returns {{schemaVersion: number, cleared: object, counts: object}}
  */
-export function searchDepthRecord({ auditMd = "", recordIndex = {}, recordFileNames = [], bandRecordIds = null, commonLawGrid = null, caseLawText = "", registerPlan = null, laneDepthVerdicts = null } = {}) {
+export function searchDepthRecord({ auditMd = "", recordIndex = {}, recordFileNames = [], bandRecordIds = null, commonLawGrid = null, caseLawText = "", registerPlan = null, laneDepthVerdicts = null, noMarketplacesPicked = false } = {}) {
   // `recordFileNames: null` travels all the way to the page — see recordsByCountry. The default stays `[]`
   // because that is "the caller said nothing", not "the store is absent"; only the publish path knows the
   // difference and it is the one producer.
@@ -295,7 +295,9 @@ export function searchDepthRecord({ auditMd = "", recordIndex = {}, recordFileNa
     counts: {
       recordsByCountry: recordsByCountry(recordFileNames),
       recordsRead: recordFileNames === null ? null : recordFileNames.length,
-      sweep: sweepCounts(commonLawGrid, auditMd),
+      // The company picked no marketplaces: the report says the general web ran plus any stores chosen for
+      // the matter. Stamped only when true, so every other run's record is unchanged.
+      sweep: { ...sweepCounts(commonLawGrid, auditMd), ...(noMarketplacesPicked ? { noMarketplacesPicked: true } : {}) },
       localScriptSearched: localScriptSearched(registerPlan),
       courtDecisions: courtDecisionsState(caseLawText),
       // `localScriptSearched` above answers whether the spellings were searched; this answers how deep

@@ -135,10 +135,10 @@ export function systemdFailure(e, { step, unit = null } = {}) {
 const UNIT_DIR = join(homedir(), ".config", "systemd", "user");
 const ENV_PATH = join(homedir(), ".env");
 // Where the revocation list lives when this install has never named one — created by connect so the
-// door is BORN consulting it (; measured: no denylist is configured on production,
-// and `isRevoked()` returns false on an UNSET path — still true, and deliberately so: a deployment that
-// never asked for a denylist is not taken down by one. It is an unreadable list that now refuses
-//. Assuming a path nobody set still makes every issued key unrevokable).
+// door is BORN consulting it (; measured: no denylist is configured on production).
+// `isRevoked()` now reads this same default when the setting is unset, and an absent default reads as
+// "nothing revoked"; a list that is there and unreadable refuses. Naming the path is still what makes
+// every door, whatever home it runs under, read the file a revocation is written to.
 // — one owner for this path. It was written out here, in disconnect and twice
 // in start; `start` named it and created nothing, which is how a revoked key kept answering 200.
 const DENYLIST_PATH = defaultDenylistPath(homedir());

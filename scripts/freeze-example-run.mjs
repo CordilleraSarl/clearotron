@@ -237,7 +237,7 @@ const substituteVendorKey = (key) => {
 
 // meta.json keys the freeze is EXPECTED to change, with the reason. Anything else differing is a finding.
 const EXPECTED_META_DELTA = {
-  tokens: "telemetry pruned — _driver/*.jsonl is the only source (driver/tokens.mjs:82)",
+  tokens: "telemetry pruned — _driver/*.jsonl is the only source (rollupTokens in driver/tokens.mjs)",
   servedModels: "telemetry pruned — the attempt rows in _driver/*.jsonl are the only source (servedModels in driver/tokens.mjs)",
 };
 

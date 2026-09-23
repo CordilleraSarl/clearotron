@@ -613,3 +613,31 @@ test("the structured record carries the reconciliation, not only the prose line"
       "a machine reader gets the answer without re-deriving it — and `false` is a defect in this file, not a fact about the run");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
+
+// A native-language turn that NAMED its model. Its row carries the vendor's stamp (`engine: "anthropic"`),
+// not an engine, and the served id as `model`. The token rollup keyed it `anthropic/unstamped:<id>`, a
+// name for a missing stamp, and this census billed it under the raw id: one turn, two names, in one run.
+// It now keys as the catalog form of the id that served it, which is also the key the configuration
+// reference names for the split between a stage's tier and this lane's served model.
+test("a native-language turn that named its model keys as that model, the same in both instruments", () => {
+  const named = { ts: "2026-09-23T10:00:00.000Z", lane: "zh", mark: "M", executor: "engine",
+    engine: "anthropic", authMode: "subscription", cloud: null, took_ms: 4100, ok: true, candidates: 1,
+    model: "claude-haiku-4-5-20251001", modelActual: "claude-haiku-4-5-20251001", usage: { input: 10, output: 20, cacheRead: 0, cacheWrite: 0 } };
+  const codex = { ...named, ts: "2026-09-23T10:00:01.000Z", engine: "openai", model: "gpt-5.6-luna", modelActual: "gpt-5.6-luna" };
+  const stranger = { ...named, ts: "2026-09-23T10:00:02.000Z", engine: "acme-agent", model: "x-1", modelActual: "x-1" };
+  const dir = mkRun({
+    "synthesis": [agentRow({ model: "haiku", modelUsed: "anthropic/claude-haiku", usage: { input: 5, output: 100 } })],
+    "jx-completions": [named, codex, stranger],
+  });
+  try {
+    const t = rollupTokens(dir);
+    const e = runEconomics(dir);
+    const keys = Object.keys(t.byModel).sort();
+    assert.deepEqual(keys, ["acme-agent/unstamped:x-1", "anthropic/claude-haiku", "anthropic/claude-haiku-4-5", "gpt-5.6-luna"],
+      `byModel keys: ${JSON.stringify(keys)}`);
+    assert.equal(t.byModel["anthropic/claude-haiku-4-5"].output, 20, "the named turn's tokens reach its model's key");
+    // ONE NAME PER TURN: every model a billing bucket names is a key of the rollup, and the other way round.
+    const billed = [...new Set(Object.values(e.byBilling).map((b) => b.model))].sort();
+    assert.deepEqual(billed, keys, "run economics bills under names the token rollup does not use");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});

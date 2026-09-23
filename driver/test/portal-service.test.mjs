@@ -2471,6 +2471,28 @@ test("/portal/api/me names the accounts it grants, and never more than it grants
     ["aurora", "zephyr", "secret-client"], "the roster is the staff answer, and it is still staff-only");
 });
 
+// A NEW COMPANY STARTS WITH NO MARKETPLACES (the owner's ruling of 2026-09-23), so the Generic default's list
+// reaches the page as suggestions instead. It is deployment-wide, like concurrentRuns, and read from the store
+// so an install that changed its house list offers its own.
+test("/portal/api/me offers the house marketplaces to everyone, and nothing when the store cannot be read", async () => {
+  const profiles = new Map([
+    ["generic", { key: "generic", name: "Generic default", platforms: ["amazon.com", "etsy.com"] }],
+    ["aurora", { key: "aurora", name: "Aurora Interactive", platforms: ["store.example"] }],
+  ]);
+  const { poolRoot, workspaceRoot } = world();
+  const svc = makePortalService({ poolRoot, workspaceRoot, secret: "test-secret",
+    grants: GRANTS, audit: () => {}, loadProfilesImpl: async () => profiles });
+  for (const who of [CLIENT, STAFF]) {
+    assert.deepEqual((await svc.route("GET", "/portal/api/me", who)).json.houseMarketplaces, ["amazon.com", "etsy.com"],
+      "the Generic default's own list, never a company's");
+  }
+  const broken = makePortalService({ poolRoot, workspaceRoot, secret: "test-secret",
+    grants: GRANTS, audit: () => {}, loadProfilesImpl: async () => { throw new Error("store unreadable"); } });
+  const me = await broken.route("GET", "/portal/api/me", CLIENT);
+  assert.equal(me.status, 200, "a suggestion list is a nicety; the door is not");
+  assert.deepEqual(me.json.houseMarketplaces, []);
+});
+
 // The pick panel tells one company from another by industry, marketplace count and territories. Staff
 // read those off the roster and a client off their own /me, so the two routes have to agree about the
 // same company — and the client route has to stay scoped to what it grants.

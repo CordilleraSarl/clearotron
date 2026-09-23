@@ -110,10 +110,30 @@ test("load: missing generic.json, overlapping matchDomains, and stored floors al
   assert.throws(() => loadProfiles({
     dir: profileDir({ generic: { ...GENERIC, minCellsPerVariant: 7 } }), force: true,
   }), /DERIVED from platforms/);
-  assert.throws(() => loadProfiles({ dir: profileDir({ generic: { ...GENERIC, platforms: [] } }), force: true }), /platforms/);
+  assert.throws(() => loadProfiles({ dir: profileDir({ generic: { ...GENERIC, platforms: "amazon.com" } }), force: true }), /platforms/);
+  // …while an EMPTY list is a company that picked no marketplaces, and loads (the owner's ruling of 2026-09-23).
+  assert.deepEqual(loadProfiles({ dir: profileDir({ generic: { ...GENERIC, platforms: [] } }), force: true }).get("generic").platforms, []);
 });
 
 // ---- derived arithmetic ----------------------------------------------------------------------------
+
+test("a grid batches by the cells it runs, never above the profile's own figure", async () => {
+  const { gridBatchFor, SAFE_GRID_CELLS, DENSE_GRID_CELLS } = await import("../profiles.mjs");
+  // A company that picked no marketplaces: its own figure is the whole budget in terms (98 over the web cell).
+  const none = { platforms: [], batchSize: 98 };
+  assert.equal(gridBatchFor(none, 1), 98, "web only: the profile's own figure");
+  assert.equal(gridBatchFor(none, 2), 49, "web plus one store the matter chose: half, so the call stays inside the budget");
+  assert.ok(gridBatchFor(none, 2) * 2 <= SAFE_GRID_CELLS);
+  // A company with stores: its own figure already fits its own cells, so nothing changes for it…
+  const three = { platforms: ["a.com", "b.com", "c.com"], batchSize: 24 };
+  assert.equal(gridBatchFor(three, 4), 24, "its stores plus web: unchanged");
+  assert.equal(gridBatchFor(three, 1), 24, "never ABOVE the profile's figure, even for a web-only closure");
+  // …and a dense profile sizes against its smaller budget.
+  const dense = { platforms: [], batchSize: 16, marketplaceDensity: "dense" };
+  assert.equal(gridBatchFor(dense, 2), DENSE_GRID_CELLS / 2);
+  assert.equal(gridBatchFor({ batchSize: 3 }, 10), 3, "a figure already inside the budget stands");
+  assert.equal(gridBatchFor(null, 200), 1, "never below one term");
+});
 
 test("derived floor/batch scale with the platform list (the Ember Guard truncation guard)", () => {
   assert.equal(derivedFloor(ACME), 6, "5 store + 1 web");

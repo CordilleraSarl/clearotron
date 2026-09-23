@@ -64,7 +64,7 @@ test("no arm in the check admits a failure to look and then returns a drift", ()
   const failSites = SRC.split(/\bfail\(/).slice(1);
   const offenders = failSites
     .map((chunk) => chunk.slice(0, chunk.indexOf(");") + 1))
-    .filter((chunk) => /failure to look/i.test(chunk));
+    .filter((chunk) => ADMITS.test(chunk));
   assert.deepEqual(offenders, [],
     "an arm says it could not look and returns the verdict a drift returns — use the blocked reporter, "
     + `which is a skip that moves the exit code. Offending text: ${offenders.join(" · ").slice(0, 300)}`);
@@ -224,4 +224,68 @@ test("the JSON a script reads gives the exit code's answer, not a second opinion
     "the exit code is decided once, where both surfaces read it");
   assert.match(SRC, /ok: code === 0, exit: code,/, "--json carries the exit code's answer and the code itself");
   assert.match(SRC, /process\.exit\(code\);/, "the process exits with the same decision the JSON printed");
+});
+
+// ── THE TWO OTHER DOOR CALLS: "roster resolves" AND "ops-MCP reachable" ─────────────────────────────
+//
+// Each FAILed on every error but an unset door, so a 429, a refusal of the check's own key, or a request
+// that got no answer exited 1 although nothing was compared. The plan_run call was repaired first; these
+// are the other two calls to the same door.
+test("a door call refused or unanswered is a marked skip, and a door that answered badly is still a drift", async () => {
+  const { doorCallVerdict } = await import("../door-call-verdict.mjs");
+  const { exitFor } = await import("../surface-exit-verdict.mjs");
+  const said = { asked: "list_profiles", notCompared: "the roster was not compared" };
+  const withStatus = (status, message) => Object.assign(new Error(message), { status, transport: true });
+  for (const [what, e] of [
+    ["rate limit", withStatus(429, 'MCP initialize refused (429): {"error":"ops principal rate limit exceeded — retry shortly"}')],
+    ["the check's key refused", withStatus(401, 'MCP initialize refused (401): {"error":"a key has no door here"}')],
+    ["forbidden", withStatus(403, "MCP tools/call refused (403): forbidden")],
+    ["no answer in time", Object.assign(withStatus(null, "MCP request timed out after 15000ms"), { timedOut: true })],
+  ]) {
+    const v = doorCallVerdict(e, said);
+    assert.equal(v?.state, "skip", `${what}: ${JSON.stringify(v)}`);
+    assert.equal(v.blocked, true, `${what}: the marker is missing, so the check would exit 0`);
+    assert.match(v.message, ADMITS, `${what}: the message does not say the check could not look`);
+    assert.equal(exitFor({ failed: 0, couldNotLook: 1 }), 3);
+  }
+  // AND THE OTHER DIRECTION. A door that answered, badly, is a finding; so, until it is ruled otherwise, is
+  // a door with nothing listening.
+  for (const [what, e] of [
+    ["a 500", withStatus(500, "MCP tools/call refused (500): boom")],
+    ["nothing listening", withStatus(null, "connect ECONNREFUSED 127.0.0.1:1")],
+    ["a malformed answer", new Error("MCP initialize returned no mcp-session-id — transport contract changed")],
+  ]) assert.equal(doorCallVerdict(e, said), null, `${what} was excused as a failure to look`);
+});
+
+test("the real client marks a request that got no answer, and not a door with nothing listening", async () => {
+  const { mcpToolCall } = await import("../portal-mcp-client.mjs");
+  const { doorCallVerdict } = await import("../door-call-verdict.mjs");
+  const { createServer } = await import("node:net");
+  const listen = (onConn) => new Promise((resolve) => { const s = createServer(onConn); s.listen(0, "127.0.0.1", () => resolve(s)); });
+  const silent = await listen(() => { /* accepts, never answers */ });
+  const closed = await listen(() => {});
+  const closedPort = closed.address().port;
+  await new Promise((r) => closed.close(r));
+  const caught = async (url) => { try { await mcpToolCall({ url, token: "t", tool: "list_profiles", args: {}, timeoutMs: 300 }); } catch (e) { return e; } return null; };
+  try {
+    const hung = await caught(`http://127.0.0.1:${silent.address().port}/mcp`);
+    assert.equal(hung?.timedOut, true, `a request with no answer is not marked: ${hung?.message}`);
+    assert.equal(doorCallVerdict(hung, { asked: "list_profiles", notCompared: "x" })?.blocked, true);
+    const refused = await caught(`http://127.0.0.1:${closedPort}/mcp`);
+    assert.ok(refused, "a call to a closed port did not throw");
+    assert.notEqual(refused.timedOut, true, "nothing listening was marked as a request with no answer");
+    assert.equal(doorCallVerdict(refused, { asked: "list_profiles", notCompared: "x" }), null);
+  } finally {
+    silent.close();
+  }
+});
+
+test("both door calls hand a thrown error to the verdict, and forward its marker", () => {
+  // The verdict line and the forward, together: the same `record(name, v.state, …)` shape appears for
+  // other verdicts on these rows, so either line alone could be found somewhere it proves nothing.
+  const esc = (x) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  for (const name of ["roster resolves", "ops-MCP reachable"]) {
+    const pair = new RegExp(`const v = doorCallVerdict\\(e, \\{[^\\n]*\\}\\);\\s*if \\(v\\) ${esc(`record("${name}", v.state, v.message, v.blocked === true);`)}\\s*else fail\\("${esc(name)}"`);
+    assert.match(SRC, pair, `"${name}" does not hand a thrown door call to doorCallVerdict and forward its marker before failing`);
+  }
 });

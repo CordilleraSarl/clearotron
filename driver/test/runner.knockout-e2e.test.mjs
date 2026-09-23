@@ -124,6 +124,25 @@ test("a 3-mark knockout batch runs end to end: receipts, degrade, publish stamps
   refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.knockout-e2e.test.mjs");
   assert.ok(existsSync(join(Q, "ko-batch.done")), "queue entry consumed as .done");
 
+  // ── THE QUEUE IS THE RECORD OF WHAT THIS BOX RAN ────────────────────────────────────────────────
+  //
+  // A delivered run that left no terminal entry would make the queue unable to tell a run that
+  // delivered from one that was never claimed, and the deploy pre-flight and every liveness or audit
+  // read rely on it. A report of exactly that turned out to be an observation error; this pins the
+  // behaviour so it stays one: the real worker, a real delivery, and what the queue holds afterwards.
+  //
+  // WHAT A FINISHED ENTRY DOES NOT CARRY, and it is by design rather than by loss: the claim's `.pid`
+  // and `.meta` are swept at EVERY terminal (cleanupClaimSidecars), so no finished entry on any
+  // version has ever carried a pid. A liveness check wanting one reads the LIVE claim; a finished
+  // entry answers what happened, not who was holding it.
+  for (const gone of [".processing", ".processing.pid", ".processing.meta"]) {
+    assert.ok(!existsSync(join(Q, `ko-batch${gone}`)), `${gone} outlived the terminal`);
+  }
+  const resultPath = join(Q, "ko-batch.done.result");
+  assert.ok(existsSync(resultPath), "the finished entry carries no result — the queue says a job ended and not how");
+  const result = JSON.parse(readFileSync(resultPath, "utf8"));
+  assert.equal(result.ok, true, "a delivered run's result does not read as ok");
+
   const runDirs = findRuns(join(root, "workspace-clawdi", "studio", "clearance-search"));
   assert.equal(runDirs.length, 1);
   const rd = runDirs[0];

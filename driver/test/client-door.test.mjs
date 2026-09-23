@@ -13,7 +13,7 @@ import {
 } from "../../shared/client-door.mjs";
 import { spawnSync, execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
-import { ensureDenylistFile } from "../../shared/client-door.mjs";
+import { ensureDenylistFile, defaultDenylistPath } from "../../shared/client-door.mjs";
 import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";
 const NO_CORPUS = skipReason("2191-F14 denylist path has one owner");
 import { join, dirname } from "node:path";
@@ -362,6 +362,24 @@ test("an install whose env never named a denylist gets one ARMED LATE, and the w
   assert.match(env, /TRADEMARK_MCP_TOKEN_DENYLIST=\/srv\/late-arm\/token-denylist/);
 });
 
+test("the install's DEFAULT list is never armed late: a running door already reads it", () => {
+  // With the setting unset, every door reads the default list (isRevoked), so a revocation written there
+  // reaches the doors that are up now. Calling it late would tell the reader a revoked key still works,
+  // and the portal refuses to strike the record of a key revoked late. The arm above is the control: a
+  // path that is not the default is still late.
+  const home = "/home/late-arm-reader";
+  const onDefault = { denylistPath: defaultDenylistPath(home), home };
+  const p = disablePlan({ env: { CLIENT_MCP_ACCOUNT_ACCESS: "1" }, unitDir: "/u",
+    exists: (q) => q === `/u/${CLIENT_DOOR_UNIT}`, identity: "a@x", recorded: [{ jti: "j1" }], ...onDefault });
+  assert.equal(p.lateArm, false, "a write to the list every door reads was reported as reaching no running door");
+  assert.ok(p.steps.some((s) => s.id === "revoke"), "and the revocation is still written");
+  assert.doesNotMatch(describeClosure(p, { applied: true }).join(" "), /only armed now/i);
+  const all = revokeEveryonePlan({ env: {}, grants: { tenants: {}, connectKeys: { j1: { sub: "a@x" } } }, ...onDefault });
+  assert.equal(all.lateArm, false, "revoking everyone called the default list late");
+  assert.equal(revokeEveryonePlan({ env: {}, grants: { tenants: {}, connectKeys: { j1: { sub: "a@x" } } },
+    denylistPath: "/srv/elsewhere", home }).lateArm, true, "a list that is not the default stopped being late");
+});
+
 test("Q3: --everyone states BOTH counts before acting, and still leaves the service up", () => {
   // The admin act the ruling names: "a separate, deliberate admin act with its own name that states how
   // many people it affects before acting." Two counts, because five keys held by one person and five
@@ -624,7 +642,10 @@ test("the denylist path has exactly one owner in the tree", (ctx) => {
   const files = all.filter((f) => f.endsWith(".mjs"));
   assert.ok(files.length > 20, `only ${files.length} files scanned — this sweep would be free`);
   const owners = files.filter((f) => {
-    if (f === "shared/client-door.mjs") return false;                    // the owner itself
+    // THE OWNERS. The install default moved from client-door.mjs to scope.mjs when the verifier began
+    // reading it without being told its path; client-door re-exports it and still composes the demo's own
+    // list inside the demo's base (denylistFor), the one exception its comment names.
+    if (f === "shared/scope.mjs" || f === "shared/client-door.mjs") return false;
     if (/(^|\/)test\//.test(f) || f.endsWith(".test.mjs")) return false;   // arms may name a path deliberately
     // THE WORKING TREE, not HEAD. An earlier draft read `git show HEAD:<f>` and so judged the last
     // commit rather than the change under review — green on a tree that reintroduces the copies, red on

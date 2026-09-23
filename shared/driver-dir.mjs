@@ -40,15 +40,23 @@
 //
 // ── WHAT THIS DELIBERATELY DOES NOT DO ────────────────────────────────────────────────────────────
 //
-// IT DOES NOT SET A MODE, and this change alters no behaviour on disk. Pinning 0o750 here in the same
-// commit would be a semantic change riding inside a seam, and the seam is the part that has to be
-// reviewable by reading nineteen call sites and agreeing they still mean what they meant. The mode is
-// That business, and when it is taken it is one line in this file.
+// ── THE MODE, TAKEN HERE ONCE (2026-09-23) ────────────────────────────────────────────────────────
 //
-// IT WOULD NOT RESTRAIN THE SEAT IF IT DID. The agent runs as the same account that owns these
-// directories, so owner bits apply whatever the group bits say. A tighter mode removes GROUP write,
-// which is worth having on a box with a shared pool group, and nothing more. Said here because a module
-// named for a boundary invites the stronger reading.
+// A new run folder is created 0750: its owner, and the group the deployment reads reports through, and
+// no other account. It used to take whatever the umask gave, 775 on a real run, so on a machine whose
+// home or data folder other accounts can enter, any of them could read client matter. The folder that
+// holds a run is created by the call below (measured by tracing a whole clearance: `ensureDriverDir` is
+// the first write into a new run folder, and the archive is a rename that keeps the mode), so this one
+// line closes the live run and its archived copy. The published copy takes the same constant.
+//
+// A MODE GIVEN TO mkdir, NEVER A chmod. The kernel sets a new folder's set-GID bit from its parent
+// whatever mode is asked for, which is what the set-GID pool root relies on; a chmod by an account
+// outside that group strips the bit silently and every report then answers 403. So nothing here ever
+// changes an existing folder: a folder that already exists keeps the mode it has.
+//
+// IT DOES NOT RESTRAIN THE SEAT. The agent runs as the same account that owns these directories, so owner
+// bits apply whatever the group bits say. Said here because a module named for a boundary invites the
+// stronger reading.
 //
 // IT IS NOT `driverDirs`. `scripts/seat-retry-report.mjs` exports `driverDirs(root)`, which WALKS a tree
 // to find every `_driver` beneath it. Discovery, not construction — a different concern that happens to
@@ -59,6 +67,9 @@ import { join } from "node:path";
 
 /** The directory's name. The one place the string lives, so renaming it is an edit rather than a sweep. */
 export const DRIVER_DIR = "_driver";
+
+/** The mode a new run folder is created with: owner and group, no other account. See the header. */
+export const RUN_DIR_MODE = 0o750;
 
 /**
  * A name inside `_driver/` as it is written on `platform`.
@@ -116,6 +127,6 @@ export function driverRel(...parts) {
  */
 export function ensureDriverDir(base, ...parts) {
   const dir = driverDir(base, ...parts);
-  mkdirSync(dir, { recursive: true });
+  mkdirSync(dir, { recursive: true, mode: RUN_DIR_MODE });
   return dir;
 }

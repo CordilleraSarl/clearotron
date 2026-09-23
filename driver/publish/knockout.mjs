@@ -9,7 +9,7 @@
 // can never drift and a knockout never reads the clearance composer's module state.
 import { readFileSync, writeFileSync, copyFileSync, mkdirSync, chmodSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { driverDir, ensureDriverDir } from '../../shared/driver-dir.mjs';   //
+import { driverDir, ensureDriverDir, RUN_DIR_MODE } from '../../shared/driver-dir.mjs';   //
 import { riskTier, TONE_TIER, regenIndex, regenSurfaces, auditRouteFor, markReportRouteFor, reportRouteFor } from './index.mjs';
 import { runKnockoutLint, deliveryFlagLines } from '../predelivery-lint.mjs';
 import { note } from '../log.mjs';
@@ -334,7 +334,8 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   // assumed: `urls: 0` in the receipt below means no finding cited anything.
   note(`knockout receipts: ${receipts.checked.urls} citation(s) across ${receipts.checked.findings} finding(s) on ${receipts.checked.citing}/${receipts.checked.marks} mark(s) traced to held evidence`);
   const poolRunDir = join(poolRoot, runId);
-  mkdirSync(poolRunDir, { recursive: true });
+  // Owner and group only: a mode given to mkdir, which keeps the set-GID the pool root passes down.
+  mkdirSync(poolRunDir, { recursive: true, mode: RUN_DIR_MODE });
   const writeRO = (name, data) => { const p = join(poolRunDir, name); writeFileSync(p, data); grpRead(p, 0o640); };
 
   // ── THE RUN'S WORKING RECORD TRAVELS WITH THE REPORT ──────────────────────────────────────────────

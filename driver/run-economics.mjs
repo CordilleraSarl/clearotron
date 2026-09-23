@@ -106,7 +106,7 @@ import { runLog, note } from "./log.mjs";
 import { writeRunStatus } from "./progress.mjs";
 // tokens.mjs imports this module too (isCodeSide, stampRunEconomics). The cycle is safe because each side
 // reads the other's bindings only inside functions, never while the module is loading.
-import { isAttemptRow } from "./tokens.mjs";
+import { isAttemptRow, modelKey } from "./tokens.mjs";
 
 /**
  * The provider's separately-priced token kinds, in the driver's own `usage` vocabulary (gateway.mjs /
@@ -185,23 +185,12 @@ function billingKeyOf(rec) {
   // is rather than dragged into "unknown" beside genuinely unstamped legacy rows.
   const engine = isCodeSide(rec) ? "code" : String(rec.engine ?? "unknown");
   const authMode = isCodeSide(rec) ? "not-provider-billed" : String(rec.authMode ?? "unknown");
-  // A TURN THAT NAMED NO MODEL (a jx row with `modelActual: null` and no `model`) is keyed the way the
-  // token rollup keys it (modelKey in tokens.mjs): `<engine>/no-model-reported`, a name that says the
-  // model is missing. Read through the old `?? "unknown"` it landed beside legacy rows nobody stamped,
-  // and its byBilling bucket named a different model from the rollup's byModel for the same turn.
-  //
-  // A COPY OF modelKey's RULE, NOT A SHARED ONE: tokens.mjs does not export it. So the test for "no stamp"
-  // is modelKey's own, a non-empty string `modelUsed`, and not `modelUsed == null`: under that looser test
-  // a row stamped `modelUsed: ""` keyed its bucket as the empty string while the rollup keyed the same
-  // turn `<engine>/no-model-reported`. Two copies of one rule drifting apart is how the census and the
-  // rollup came to disagree about what an attempt is, so the tests hold these two copies to each other on
-  // the rows the engine writes. They still part on a row no writer produces: no model and no engine, or
-  // engine `anthropic-agent`. This key names the missing model there, while modelKey resolves the absent
-  // model through the catalog before it asks whether one exists, and buckets the row as `undefined`.
-  const stamped = typeof rec.modelUsed === "string" && rec.modelUsed;
-  const model = !stamped && typeof rec.model !== "string"
-    ? `${typeof rec.engine === "string" && rec.engine ? rec.engine : "unknown"}/no-model-reported`
-    : String(rec.modelUsed ?? rec.model ?? "unknown");
+  // THE MODEL IS NAMED BY THE TOKEN ROLLUP'S OWN RULE (modelKey in tokens.mjs), not a copy of it. A copy
+  // lived here while tokens.mjs did not export the rule, and the two drifted: a native-language turn that
+  // named its model was billed under the raw served id while the rollup keyed it `anthropic/unstamped:<id>`,
+  // so one turn had two names in the same run's figures. A code-side row comes back as its own name
+  // (`code:<step>`), which says no model ran.
+  const model = modelKey(rec);
   return { engine, authMode, model, key: `${engine}|${authMode}|${model}` };
 }
 

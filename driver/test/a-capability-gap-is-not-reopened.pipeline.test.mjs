@@ -13,7 +13,7 @@
 // Driven through the whole mock pipeline, so the envelope's decision is the one a run makes.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, chmodSync, readFileSync, mkdirSync, writeFileSync, cpSync } from "node:fs";
+import { mkdtempSync, chmodSync, readFileSync, readdirSync, mkdirSync, writeFileSync, cpSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -39,6 +39,8 @@ pinEnv(process.env, "CLEAROTRON_CUSTOMERS_DIR", PROFILES);
 
 const JOB = { id: "test-job", msgId: "<test@x>", forwarder: "jordan", forwarderDomain: "example.com",
   ref: "TMP-2201", markName: "NOVAPULSE", classes: [9, 41], provider: "corsearch" };
+
+const { PLAN_ENTRY_RERUN_RULE } = await import("../stages.mjs");
 
 async function run(env) {
   const root = mkdtempSync(join(tmpdir(), "clearotron-mock-"));
@@ -66,5 +68,13 @@ test("the envelope never hands an accepted capability gap back as work, whatever
     assert.ok(!close[0].closeable.includes(gapUnit), `the accepted gap was handed back to the seat as work to close: ${JSON.stringify(close[0])}`);
     assert.ok(close[0].held.includes(gapUnit), "the unit was not told to leave the gap as it is");
     assert.ok(close[0].closeable.length >= 1, "the closeable row on the same axis stopped being offered");
+
+    // AND THE RE-OPENED UNIT IS TOLD NOT TO RUN THE WHOLE AXIS AGAIN. Its plan has already run; a
+    // register_execute_plan call without qids asks every entry again and re-fetches every record the axis
+    // holds. Read off the prompt the run actually dispatched, not off the builder.
+    const prompts = readdirSync(driverDir(res.runDir)).filter((f) => /\.dispatch\.txt(\.prev-[0-9a-f]+)?$/.test(f))   // a later dispatch keeps an earlier one as .prev-<hash>
+      .map((f) => readFileSync(driverDir(res.runDir, f), "utf8")).filter((t) => t.includes("records DEFERRED (planned but never run)"));
+    assert.equal(prompts.length, 1, "the envelope's follow-up was dispatched once, and its text was recorded");
+    assert.ok(prompts[0].includes(PLAN_ENTRY_RERUN_RULE), "the follow-up carries the rule against a whole-axis re-run");
   } finally { delete process.env.MOCK_PLAN_DEFERRED; }
 });

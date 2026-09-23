@@ -201,8 +201,20 @@ export type FieldSpec = {
    * no second chance to correct it. So the picker suggests and normalises; the box still accepts anything.
    * Do not "make these consistent" by tightening the second one — that is a client-outcome change and
    * it is the owner's to make.
+   *
+   * `marketplaces` is ASSISTIVE too: it offers the Generic default's marketplaces (served on /me) as
+   * suggestions a person adds one by one, and the box still takes any store domain typed into it. A new
+   * company starts with none, so the suggestions are how the house list reaches somebody who wants it.
    */
-  readonly picker?: 'classes' | 'territories'
+  readonly picker?: 'classes' | 'territories' | 'marketplaces'
+  /**
+   * An emptied box SAVES AN EMPTY LIST instead of deleting the key.
+   *
+   * For a company's `platforms` only. A company may pick no marketplaces, and the server refuses a
+   * company with no list at all, so deleting the key on clear would turn "none" into a refused save. The
+   * project form drops this flag (projectFields): there a blank box means "use the company's list".
+   */
+  readonly clearToEmptyList?: boolean
   /**
    * What the CLEARED option in this field's dropdown is called, when "no value" is a named thing rather
    * than the absence of one.
@@ -336,7 +348,8 @@ export const PROFILE_FIELDS: readonly FieldSpec[] = [
       + 'European Union covers its member states, so there is no need to add them. Anything the engine '
       + 'cannot search is refused rather than stored, because a stored one is a default that quietly '
       + 'does nothing.' },
-  { key: 'platforms', label: 'Marketplaces', kind: 'lines', group: 'defaults',
+  { key: 'platforms', label: 'Marketplaces', kind: 'lines', group: 'defaults', picker: 'marketplaces',
+    clearToEmptyList: true,
     // MIRRORS THE SERVER'S RULE, and this is a COPY because portal-ui cannot import from driver/ — the
     // same constraint the `defaultProduct` note below describes. A copy drifts silently, so
     // driver/test/the-marketplace-rule-is-the-same-on-both-sides.test.mjs reads both sources and fails
@@ -459,6 +472,8 @@ export const PROJECT_EDITABLE = new Set([
  */
 export const projectFields = (): readonly FieldSpec[] =>
   PROFILE_FIELDS.filter((f) => PROJECT_EDITABLE.has(rootKey(f)) && !f.customerOnly)
+    // A blank project box means "use the company's list", never "none": see FieldSpec.clearToEmptyList.
+    .map((f) => (f.clearToEmptyList ? { ...f, clearToEmptyList: false } : f))
 
 /**
  * The human label for a stored value, or null when there isn't one.
@@ -571,6 +586,10 @@ export function applyField(draft: Record<string, unknown>, spec: FieldSpec, raw:
   const trimmed = raw.trim()
 
   if (!trimmed) {
+    if (spec.clearToEmptyList) {
+      next[spec.key] = []
+      return next
+    }
     // A field whose server reads three states writes the cleared sentinel rather than dropping the key.
     // See FieldSpec.clearWith: for defaultProduct, an ABSENT key means "preserve", so deleting it
     // would leave the old depth in force while the page showed an empty box.

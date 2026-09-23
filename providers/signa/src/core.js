@@ -27,6 +27,7 @@ import { goodsTermsList } from "../../_shared/term-shape.mjs";   // the shared r
 
 import { makeLedger } from "../../_shared/ledger.mjs";
 import { nonAnswerBodyError, parseJsonBody, unparsedBodyError } from "../../_shared/http-body.mjs";
+import { answerKey, compareAnswers, noteAnswer, openAnswerMemory, recallAnswer, rememberAnswer } from "../../_shared/answer-memory.mjs";
 import { makeEnumerate, isOwnerScoped } from "../../_shared/enumerate.mjs";
 import { makeExecutePlan } from "../../_shared/execute-plan.mjs";
 import CAPABILITIES, { SIGNA_OFFICE_KEYS, OWNER_SCOPED_WINDOW } from "./capabilities.js";
@@ -76,6 +77,11 @@ export function refToOffice(ref) {
 }
 
 // ── HTTP helper (Bearer auth + the metered chokepoint) ─────────────────────────────────────────────
+//
+// THE RUN MEMORY sits here because every request this provider makes passes through here — see
+// providers/_shared/answer-memory.mjs. The question is the base address, the method, the path and the
+// whole body, and never the credential; the base is in it so a test server and the register never share
+// an answer. With no memory for the run (the default), this is the plain fetch it always was.
 export async function signaFetch(apiKey, base, path, { method = "GET", body = null, retries = 1, tctx = null } = {}) {
   const url = `${base}${path}`;
   const headers = { Authorization: `Bearer ${apiKey}`, Accept: "application/json" };
@@ -83,6 +89,26 @@ export async function signaFetch(apiKey, base, path, { method = "GET", body = nu
   if (body !== null) { headers["Content-Type"] = "application/json"; init.body = JSON.stringify(body); }
 
   const t0 = Date.now();
+  const mem = openAnswerMemory(tctx?.recordLog);
+  const key = mem ? answerKey({ base, method, path, body }) : null;
+  const recalled = mem ? recallAnswer(mem, key) : null;
+  // A held answer too old to trust its next-page cursor is not used, and is replaced by the fresh one.
+  const held = recalled && !recalled.stale ? recalled : null;
+  // `via` says which kind of process asked: the driver hands its calls the run's record log, and a tool
+  // server a stage spawned finds the run through its environment. The watch log must show both, because a
+  // memory only one of them can find removes only half the repeats.
+  const note = (row) => noteAnswer(mem, { ts: new Date().toISOString(), mode: mem.mode, key, method, path, tool: tctx?.kind ?? null,
+    via: tctx?.recordLog ? "driver" : "tool-server", session: tctx?.sessionKey ?? null,
+    ...(recalled?.stale ? { held_stale: true, held_age_ms: recalled.age_ms } : {}), ...row });
+  if (held && mem.mode === "on") {
+    // Served from the memory: nothing goes to the register. The ledger still gets its line, marked as a
+    // cache hit, so the run's usage shows the request was made and was not paid for.
+    const { body: parsed, parseError } = parseJsonBody(held.raw);
+    const ok = held.status >= 200 && held.status < 300;
+    logCall(tctx, { http_status: held.status, ok, attempts: 0, took_ms: Date.now() - t0, bytes: held.raw.length, cache_hit: true });
+    note({ held: true, served: true, status: held.status });
+    return { status: held.status, ok, url, body: parsed, raw: held.raw, parseError };
+  }
   let attempts = 0, resp;
   try {
     for (let i = 0; i <= retries; i++) {
@@ -93,13 +119,53 @@ export async function signaFetch(apiKey, base, path, { method = "GET", body = nu
     }
   } catch (err) {
     logCall(tctx, { http_status: 0, ok: false, attempts, took_ms: Date.now() - t0, bytes: 0, cache_hit: false });
+    if (mem) note({ held: Boolean(held), status: 0 });
     throw err;
   }
   const raw = await resp.text();
   // The parse failure travels on `parseError` instead of being swallowed — providers/_shared/http-body.mjs.
   const { body: parsed, parseError } = parseJsonBody(raw);
   logCall(tctx, { http_status: resp.status, ok: resp.ok, attempts, took_ms: Date.now() - t0, bytes: raw.length, cache_hit: false });
+  if (mem) {
+    // In `watch` every request reaches this line, held or not, and the line says what the memory would
+    // have done. The FIRST answer is the one kept: a later identical request is compared against it
+    // and never replaces it, so every comparison in a run is against the answer that would be served.
+    const summary = rememberableAnswer(method, resp.status, parsed, parseError);
+    const row = { held: Boolean(held), status: resp.status, rememberable: Boolean(summary) };
+    if (held && summary) Object.assign(row, compareAnswers(held.summary, summary));
+    if (recalled?.stale && summary) Object.assign(row, compareAnswers(recalled.summary, summary));
+    if (summary && !held) row.stored = rememberAnswer(mem, key, { status: resp.status, raw, summary });
+    note(row);
+  }
   return { status: resp.status, ok: resp.ok, url, body: parsed, raw, parseError };
+}
+
+/**
+ * What the run memory may keep, as the short summary a watch compares — or null when the answer must
+ * be asked again next time.
+ *
+ * KEPT: a search page that is a whole answer (it parsed, it carries `data[]` — isSearchResponseBody —
+ * and it carries its total); a record that parsed and names itself; and a `validation_error`, which is
+ * the register saying the question itself is malformed and will say so every time.
+ *
+ * NEVER KEPT: a body that did not parse, a 200 without `data[]`, an authentication, payment, permission
+ * or rate refusal, a cursor refusal, a server error, and anything else. Those are exactly the answers
+ * doSearch and doRecordFetch refuse or report as failures, and remembering one would turn a passing
+ * fault into the run's permanent answer.
+ */
+export function rememberableAnswer(method, status, body, parseError) {
+  if (parseError || body == null || typeof body !== "object" || Array.isArray(body)) return null;
+  if (status === 200 && method === "POST") {
+    if (!isSearchResponseBody(body) || !Number.isFinite(body.pagination?.total_count)) return null;
+    return { total: body.pagination.total_count, ids: body.data.map((row) => row?.id ?? null), next_page: body.has_more === true };
+  }
+  if (status === 200 && method === "GET") {
+    const rec = body.data ?? body;
+    if (!rec || typeof rec !== "object" || Array.isArray(rec) || !rec.id) return null;
+    return { total: null, ids: [rec.id], next_page: false };
+  }
+  if (status === 400 && body.error?.type === "validation_error") return { total: null, ids: [], next_page: false, refusal: "validation_error" };
+  return null;
 }
 
 // ── Search-request assembly ────────────────────────────────────────────────────────────────────────

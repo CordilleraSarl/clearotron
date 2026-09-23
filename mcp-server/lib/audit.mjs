@@ -50,7 +50,7 @@ export function summarize(body) {
  */
 export const UNNAMED_DOOR = "unnamed";
 
-export function appendAudit({ email, sub, body, status, transport, door, path = DEFAULT_AUDIT_PATH }) {
+export function appendAudit({ email, sub, kind = null, namesVerbs = null, body, status, transport, door, path = DEFAULT_AUDIT_PATH }) {
   // `sub` = the inner-token PRINCIPAL (ops-token issuance, INSTALL.md §8) — distinguishes
   // two automations sharing a transport identity. null for internal/user sessions without a sub claim.
   //
@@ -69,7 +69,14 @@ export function appendAudit({ email, sub, body, status, transport, door, path = 
   // WRITTEN ONLY WHEN GIVEN, the same rule as `transport` and for the same reason: the existing log
   // shape must not move for records that have no answer to this. A door that does not name itself is a
   // record with no `door` key, not a record claiming to be from nowhere.
-  const line = JSON.stringify({ ts: new Date().toISOString(), email: email ?? null, sub: sub ?? null, ...summarize(body), status: status ?? null, ...(transport ? { transport } : {}), door: door || UNNAMED_DOOR }) + "\n";
+  //
+  // `kind` is the principal's kind (ops, user, account, internal), and `namesVerbs` says, for an ops token
+  // only, whether it names its write verbs. An ops token that names none is being retired: re-issued with
+  // verbs, then refused once this log shows none in use. So the log must be able to count them. Written
+  // only when given, by the same rule as `transport`: a caller that never knew writes no claim.
+  const line = JSON.stringify({ ts: new Date().toISOString(), email: email ?? null, sub: sub ?? null,
+    ...(kind ? { kind } : {}), ...(typeof namesVerbs === "boolean" ? { namesVerbs } : {}),
+    ...summarize(body), status: status ?? null, ...(transport ? { transport } : {}), door: door || UNNAMED_DOOR }) + "\n";
   try { mkdirSync(dirname(path), { recursive: true }); appendFileSync(path, line); } catch { /* best-effort */ }
 }
 
