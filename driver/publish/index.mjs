@@ -667,8 +667,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   })();
   const asOf = new Date().toISOString();   // C2 — publish-time clock for the priority-window flag (render stays pure)
   const poolRunDir = join(poolRoot, runId);
-  // Owner and group only: a mode given to mkdir, which keeps the set-GID the pool root passes down.
-  mkdirSync(poolRunDir, { recursive: true, mode: RUN_DIR_MODE });
+  mkdirSync(poolRunDir, { recursive: true, mode: RUN_DIR_MODE });   // owner and group only; mkdir keeps the pool root's set-GID
   // The run dir inherits the web-server group + the set-GID bit AUTOMATICALLY from the set-GID pool root
   // (mode 2750, web-server group) — so files written inside take that group and the web server (Caddy in
   // the reference deployment, mode 0640) can read them. Do NOT chmod this dir: the service account is not
