@@ -13,9 +13,9 @@
 // record whose process is gone is read as absent, and `status` asks the portal itself before saying the
 // product is up. Three answers, all honest: up; started but not answering; not running.
 
-import { mkdirSync, readdirSync, readFileSync, renameSync, rmSync, rmdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readdirSync, readFileSync, realpathSync, renameSync, rmSync, rmdirSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
-import { dirname, join } from "node:path";
+import { dirname, isAbsolute, join, relative, sep } from "node:path";
 
 /**
  * Where the records live: one file per serving process, beside the settings and the revocation list.
@@ -34,6 +34,20 @@ export function pidAlive(pid) {
   try { process.kill(pid, 0); return true; } catch (e) { return e?.code === "EPERM"; }
 }
 
+/** `dir` and its parents up to and including `made`, deepest first; [] when `dir` is not inside `made`. */
+export function madeChain(dir, made, { realpath = realpathSync.native } = {}) {
+  if (!made) return [];
+  let steps;
+  try {
+    const r = relative(realpath(made), realpath(dir));
+    if (r.startsWith("..") || isAbsolute(r)) return [];
+    steps = r ? r.split(sep).length : 0;
+  } catch { return []; }
+  const out = [];
+  for (let d = dir, i = 0; i <= steps; i++, d = dirname(d)) out.push(d);
+  return out;
+}
+
 /**
  * Record one serving start. Returns the function that removes the record; calling it twice is harmless,
  * so the caller can hang it on both its own shutdown and the process's `exit`.
@@ -49,16 +63,19 @@ export function recordRunning(rec, { dir = runningDir() } = {}) {
   const tmp = `${file}.tmp`;
   writeFileSync(tmp, `${JSON.stringify(rec, null, 2)}\n`, { mode: 0o600 });
   renameSync(tmp, file);
+  // THE FOLDERS TO TRY, WORKED OUT NOW AND BOUNDED BY WHAT mkdirSync MADE. The walk used to stop when a
+  // parent's spelling equalled `made`'s, and on Windows it never did, so it went on up and removed every
+  // empty folder to the drive's root: seen on a Windows runner, 2026-09-23, where it took the home the
+  // test had made. Both ends are asked of the machine itself, which spells them one way, and a record that
+  // is not inside what was made has nothing of its own to remove.
+  const chain = madeChain(dir, made);
   let gone = false;
   return () => {
     if (gone) return;
     gone = true;
     try { rmSync(file, { force: true }); } catch { /* already gone */ }
-    if (made) {
-      for (let d = dir; ; d = dirname(d)) {
-        try { rmdirSync(d); } catch { break; }   // not empty, or gone: either way, not ours to take
-        if (d === made) break;
-      }
+    for (const d of chain) {
+      try { rmdirSync(d); } catch { break; }   // not empty, or gone: either way, not ours to take
     }
   };
 }

@@ -73,3 +73,17 @@ test("a record's file name reads back as the stage it was written for, whichever
   assert.equal(labelOfDriverFile("register-digest.jsonl"), "register-digest");
   assert.equal(labelOfDriverFile(driverFileName("common-law-half:a.jsonl", "win32")), "common-law-half:a");
 });
+
+test("a stop removes only the folders its record made, however the machine spells them", async () => {
+  const { madeChain } = await import("../../shared/running-start.mjs");
+  const home = mkdtempSync(join(tmpdir(), "made-chain-"));
+  const dir = join(home, ".config", "clearotron", "running");
+  const made = join(home, ".config");
+  // The machine spells the made folder its own way (on Windows, the long name of a short-named temp folder).
+  const realpath = (p) => (p === made ? join(home, "LONG", ".config") : p.replace(home, join(home, "LONG")));
+  assert.deepEqual(madeChain(dir, made, { realpath }), [dir, join(home, ".config", "clearotron"), made],
+    "the folders the record made were not the ones the stop would remove");
+  assert.deepEqual(madeChain(dir, join(home, "elsewhere"), { realpath: (p) => p }), [],
+    "a record outside the folder that was made would have had folders above it removed");
+  assert.deepEqual(madeChain(dir, undefined), [], "a record whose folders were all there already removed some");
+});
