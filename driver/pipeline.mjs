@@ -76,7 +76,7 @@ import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStam
 import { unionPlacementForm } from "./placement-union.mjs";
 import { readPlacementForm, readPlacementFormInput, writePlacementForm } from "./placement-form-io.mjs";
 import { dictatedPaths, findStrayArtifacts, treeSnapshot, findStrayInTree, matterSiblings, findStrayMatterSiblings } from "./stray-artifacts.mjs";   // — a run dir holds no document no stage dictated; — nor does the doctrine tree
-import { resolveProfile, resolveEffectiveProfile, derivedFloor, derivedBatchSize, applicantMatchesProfile, NEUTRAL_DELIVERY, deliveryForRun, recipeProseGuard, withRunPlatforms, profileStoreResolution } from "./profiles.mjs";   // adds profileStoreResolution — the CONFIG store's identity, beside the doctrine tree's
+import { resolveProfile, resolveEffectiveProfile, derivedFloor, derivedBatchSize, gridCellBudget, applicantMatchesProfile, NEUTRAL_DELIVERY, deliveryForRun, recipeProseGuard, withRunPlatforms, profileStoreResolution } from "./profiles.mjs";   // adds profileStoreResolution — the CONFIG store's identity, beside the doctrine tree's
 import { resolveSearchPolicy, gateResolvedPolicy, loadRecipes, policyFor, isRegisterOnly, reportIdentityFor, depthFor } from "./search-policy.mjs";
 import { profileOrdinals } from "./profile-selection.mjs";   // lever 3 — driver selection
 // THE OFFERING'S own sentence about where the native-language investigation can be bought. It reaches a
@@ -979,7 +979,12 @@ function deriveGridSpec(ctx) {
     terms: null,
     spec_inputs: { registerOnly: Boolean(ctx.registerOnly), gridVariants: ctx.gridVariants?.length ?? 0, profilePlatforms: ctx.profile?.platforms?.length ?? 0 },
   };
-  if (!ctx.registerOnly && ctx.gridVariants?.length && ctx.profile?.platforms?.length) {
+  // AN EMPTY MARKETPLACE LIST STILL WRITES A GRID. A company may search no marketplace (the owner's ruling of
+  // 2026-09-23), and the general-web cell and the meaning sweep ride in this spec: gating it on a non-empty
+  // list switched both off with the stores, and the downgrade clamp then read the missing spec as a failed
+  // sweep. The spec below is then the web cell plus whatever channels the matter frame names. Only a profile
+  // with no list at all (legacy) takes the spec-less path.
+  if (!ctx.registerOnly && ctx.gridVariants?.length && Array.isArray(ctx.profile?.platforms)) {
     const gridSpecPath = P.gridSpec;
     // #5 — required channels: a NAMED profile's curated platforms are authoritative. The GENERIC fallback
     // derives the channels from the MATTER FRAME's industry/goods reasoning (its "Search channels:" line) so
@@ -1041,7 +1046,12 @@ function deriveGridSpec(ctx) {
       terms: ctx.gridVariants,
       platforms: [...channels, "web"], // the dictated channels + the general-web cell
       output_path: P.commonLawGrid,
-      batch: ctx.profile?.batchSize ?? 14,
+      // SIZED BY THE CELLS THIS GRID RUNS, never larger than the profile's own figure. The profile's
+      // figure divides the cell budget by its stores plus the web cell, so it is too large whenever the
+      // matter frame adds channels, and for a company with no stores it would put every term in one call
+      // whatever the frame added. One oversized call truncates (the 224-cell incident above profiles.mjs).
+      batch: Math.max(1, Math.min(ctx.profile?.batchSize ?? 14,
+        Math.floor(gridCellBudget(ctx.profile) / (channels.length + 1)))),
       // disposition_required (P2-C §8b leg 2): the receipt-presence stamp arming the commonLaw validator's
       // receipts-disposition arm (the D1 ledger_required pattern — every fresh spec carries it; pre-P2-C
       // archived specs lack it, so replay verdicts never flip). splitGridSpec spreads the connotation

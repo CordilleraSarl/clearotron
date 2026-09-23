@@ -180,8 +180,8 @@ export function derivedBatchSize(profile) {
 // under it), a job CLARIFIES (one request, answerable by asking). Same rules either way — a domain that is
 // a foot-gun in a profile is the same foot-gun arriving on a job.
 //
-// SHAPE stays with the caller deliberately: a profile REQUIRES a non-empty platforms array, while a job's
-// platforms are optional and additive. Only the per-entry vocabulary is shared.
+// SHAPE stays with the caller deliberately: a profile REQUIRES a platforms array (possibly empty), while a
+// job's platforms are optional and additive. Only the per-entry vocabulary is shared.
 export function platformEntryErrors(list, { label = "platforms" } = {}) {
   const errs = [];
   const seen = new Set();
@@ -518,9 +518,13 @@ function validateProfileShape(key, p, { sparse = false } = {}) {
   }
   // platforms is REQUIRED on a whole profile but OPTIONAL on an overlay; the foot-gun guards below run whenever
   // it is present (a project that re-states its marketplaces must state them just as carefully).
+  //
+  // AN EMPTY LIST IS VALID, by the owner's ruling of 2026-09-23: a company may search no marketplace, and a
+  // new one starts that way. What stays required is the ARRAY — an absent key is not "none", it is a
+  // profile nobody finished (derivedFloor reads absent as the historical default of six).
   if (!sparse || p.platforms != null) {
-    if (!Array.isArray(p.platforms) || !p.platforms.length || !p.platforms.every((x) => typeof x === "string" && x.trim()))
-      die("platforms must be a non-empty array of store-domain strings");
+    if (!Array.isArray(p.platforms) || !p.platforms.every((x) => typeof x === "string" && x.trim()))
+      die("platforms must be an array of store-domain strings (empty searches no marketplace)");
     // a one-character authoring slip here bricks every run under the profile (the floor counts entries
     // verbatim while the grid dedupes) — reject the known foot-guns at load time. Shared with the job
     // doors via platformEntryErrors so a domain rule can never drift between where it is stored and

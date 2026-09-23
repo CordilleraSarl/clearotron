@@ -160,11 +160,10 @@ export async function add(argv, {
     contextPack = readFileSync(packFile, "utf8");
   }
 
-  // THE ROSTER IS READ BEFORE THE CANDIDATE IS BUILT, because the Generic default lives in it. The
-  // candidate is still judged as a member of the roster and not alone — see assertRosterAccepts.
+  // The candidate is judged as a member of the roster and not alone — see assertRosterAccepts.
   const { loadProfiles } = await import("../driver/profiles.mjs");
   const load = loadProfilesFn ?? loadProfiles;
-  const platforms = resolvePlatforms(args.platforms, rosterAsItStands(store, load));
+  const platforms = resolvePlatforms(args.platforms);
 
   const profile = buildProfile({
     key: args.key, name: args.name.trim(), domains: args.domains,

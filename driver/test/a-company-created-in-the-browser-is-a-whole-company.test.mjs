@@ -13,7 +13,7 @@ import { mkdtempSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { makeProfileService, browserRefusal } from "../profile-service.mjs";
+import { makeProfileService, browserRefusal, forBrowser } from "../profile-service.mjs";
 import { makeStoreCommit, makeCommittableAudit } from "../../shared/store-in-repo.mjs";
 import { makeUpstream } from "../portal-upstream.mjs";
 import { Refusal } from "../../shared/onboarding-store.mjs";
@@ -51,9 +51,21 @@ test("a company created from the browser always carries a framework, and says wh
 
   // And the receipt can say which one and whether it was a default, without restating what was typed.
   assert.equal(r.json.framework.defaulted, true);
-  assert.equal(r.json.marketplaces.defaulted, true);
-  assert.equal(r.json.marketplaces.count, 3, "the house default list, read from generic — never hardcoded");
-  assert.deepEqual(written.platforms, ["amazon.com", "apps.apple.com", "play.google.com"]);
+  // A COMPANY STARTS WITH NO MARKETPLACES (the owner's ruling of 2026-09-23). It used to be given the
+  // Generic default's three, which no screen listed; now it has none until somebody picks, and nothing
+  // on the receipt calls that a default.
+  assert.equal(r.json.marketplaces.defaulted, false);
+  assert.equal(r.json.marketplaces.count, 0);
+  assert.deepEqual(written.platforms, [], "none, written as an empty list rather than absent");
+});
+
+test("marketplaces a person picked are the company's, exactly", async () => {
+  const { service, writeCalls } = svc();
+  const r = await service.route("POST", "/profiles", STAFF, { name: "Harbour Goods", platforms: ["etsy.com"] });
+  assert.equal(r.status, 201);
+  assert.deepEqual(writeCalls.at(-1).profile.platforms, ["etsy.com"], "nothing of the house list is added");
+  assert.equal(r.json.marketplaces.count, 1);
+  assert.equal(r.json.marketplaces.defaulted, false);
 });
 
 test("the key comes from the name, and a name that yields none is refused rather than invented", async () => {
@@ -219,6 +231,21 @@ test("a refused create files no grant: the organisation's grant rides a 201 only
   }
 }));
 
+// NO STORE PATH AND NO LOAD-LOG WORDING REACHES A BROWSER. The validator's sentences open with the file they
+// judged and speak the engine's vocabulary; the door takes the path off and words the marketplace entries.
+test("a refused marketplace reaches the browser in plain words, with no file path", async () => {
+  const { service } = svc();
+  const r = await service.route("POST", "/profiles", STAFF, { name: "Harbour Goods", platforms: ["Amazon"] });
+  assert.equal(r.status, 400, JSON.stringify(r.json));
+  const text = [r.json.message, ...(r.json.errors ?? [])].join(" ");
+  assert.match(text, /One of the marketplaces isn’t a website address — use domains like amazon\.com, one per line\./);
+  assert.doesNotMatch(text, /profiles\/|\.json|grid program|DOMAIN/, "a path or the load log's words reached a browser");
+  // Every other sentence passes as the validator wrote it, minus the path.
+  assert.deepEqual(forBrowser(["profiles/acme.json: name (string) is required"]), ["name (string) is required"]);
+  assert.deepEqual(forBrowser(["profiles/acme/launch.json: platforms must not list \"web\" — the general-web cell is implicit"]),
+    ["Don’t list “web” — the general web is always searched. Remove it."]);
+});
+
 test("a name is required, and the refusal is the one a person can act on", async () => {
   const { service } = svc();
   const r = await service.route("POST", "/profiles", STAFF, {});
@@ -238,9 +265,8 @@ test("NO REFUSAL SENDS TERMINAL VOCABULARY TO A BROWSER", () => {
   const cases = [
     { code: "key_exists", detail: { key: "acme" } },
     { code: "domain_claimed", detail: { domain: "acme.example", heldBy: "other" } },
-    { code: "no_marketplaces", detail: {} },
     { code: "framework_missing", detail: { path: "own/deck.md" } },
-    { code: "invalid_bundle", detail: { errors: ["profiles/acme.json: name is required"] } },
+    { code: "invalid_bundle", detail: { errors: ["profiles/acme.json: name (string) is required"] } },
   ];
 
   // FLOOR: every code the create path actually raises is covered above. A silently shrinking list is how

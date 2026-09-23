@@ -109,7 +109,9 @@ test("load: missing generic.json, overlapping matchDomains, and stored floors al
   assert.throws(() => loadProfiles({
     dir: profileDir({ generic: { ...GENERIC, minCellsPerVariant: 7 } }), force: true,
   }), /DERIVED from platforms/);
-  assert.throws(() => loadProfiles({ dir: profileDir({ generic: { ...GENERIC, platforms: [] } }), force: true }), /platforms/);
+  assert.throws(() => loadProfiles({ dir: profileDir({ generic: { ...GENERIC, platforms: "amazon.com" } }), force: true }), /platforms/);
+  // …while an EMPTY list is a company that searches no marketplace, and loads (the owner's ruling of 2026-09-23).
+  assert.deepEqual(loadProfiles({ dir: profileDir({ generic: { ...GENERIC, platforms: [] } }), force: true }).get("generic").platforms, []);
 });
 
 // ---- derived arithmetic ----------------------------------------------------------------------------
