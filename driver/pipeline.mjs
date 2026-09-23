@@ -5837,7 +5837,13 @@ const UPSTREAM_STALE_REPAIR = {
   // repairs. The measurement inverts it: the repair dispatch came out 3,017 bytes THINNER than the
   // fresh one, so composing the same blocks is what makes the two passes identical rather than what
   // makes them differ.
-  synthesis: repairStage("synthesis"),
+  //
+  // THE LIST OF RECORDS IT MUST ANSWER IS RE-PREPARED FIRST, as the corrective pass re-prepares it. This
+  // repair runs because an input moved, register-findings.md among them, and that file is what the list
+  // is read from. Skipped, the repair was dispatched with no DECLINATIONS block at all, while the
+  // recorder still held the seat to the list the fresh pass had written: the order missing from the
+  // prompt, and enforced against records the digest may since have moved.
+  synthesis: (ctx) => { prepareDeclinationSpec(ctx, ctx.paths); return repairStage("synthesis")(ctx); },
   // — composed NEITHER of its two declared blocks; see the dispatcher comment above.
   "narrative-refutation": repairStage("narrative-refutation"),
   // — placement declares register-named-band.json and the per-axis register-units/*.md, and the

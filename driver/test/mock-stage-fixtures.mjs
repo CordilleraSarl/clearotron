@@ -1715,24 +1715,27 @@ export function applyStageWrites(msg, argv) {
           coverage: { read: reco },
       };
       let r = recordSynthesis(runDir, { findings: doc, narrative: sections });
-      if (r && r.refused) {
-        // The refusal names the family. Re-derive with that family's heal phrase and restate once —
-        // the phrase per knob is the one `synthesisFindings` keys on, so this drives the SAME heal the
-        // driver's named composer used to drive, from the seat's side of the same defect.
-        // SPECIFIC FAMILIES FIRST, AND THAT ORDER IS THE WHOLE CORRECTNESS OF IT. The parser names an
-        // ask_answers defect `finding_ask_answer_key_unknown` and an action defect `finding_action_*` —
-        // BOTH match a generic `finding_..._key_unknown` test, so a generic-first ladder swallows its
-        // two neighbours and hands them the wrong heal phrase. Measured: the finding arm healed and
-        // these two exhausted, which is the same failure the arms started with and reads identically.
-        const heal = /ask_answer/.test(r.refused) ? 'the "ask_answers" array'
-          : /action/.test(r.refused) ? 'the "actions" register'
-          : /finding_|findings_/.test(r.refused) ? "failed the strict parse"
-          : null;
-        if (heal) {
-          try { doc = build(`${msg}\n${heal}`); } catch { /* keep the first doc; the refusal below stands */ }
-          r = recordSynthesis(runDir, { findings: doc, narrative: sections });
-        }
-      }
+      // The refusal names the family. Re-derive with that family's heal phrase and restate once —
+      // the phrase per knob is the one `synthesisFindings` keys on, so this drives the SAME heal the
+      // driver's named composer used to drive, from the seat's side of the same defect.
+      // SPECIFIC FAMILIES FIRST, AND THAT ORDER IS THE WHOLE CORRECTNESS OF IT. The parser names an
+      // ask_answers defect `finding_ask_answer_key_unknown` and an action defect `finding_action_*` —
+      // BOTH match a generic `finding_..._key_unknown` test, so a generic-first ladder swallows its
+      // two neighbours and hands them the wrong heal phrase. Measured: the finding arm healed and
+      // these two exhausted, which is the same failure the arms started with and reads identically.
+      const healFor = (refused) => /ask_answer/.test(refused) ? 'the "ask_answers" array'
+        : /action/.test(refused) ? 'the "actions" register'
+        : /finding_|findings_/.test(refused) ? "failed the strict parse"
+        : null;
+      let healed = false;
+      const heal = () => {
+        const phrase = r && r.refused ? healFor(r.refused) : null;
+        if (!phrase) return;
+        healed = true;
+        try { doc = build(`${msg}\n${phrase}`); } catch { /* keep the first doc; the refusal below stands */ }
+        r = recordSynthesis(runDir, { findings: doc, narrative: sections });
+      };
+      heal();
       // ── THE DECLINATION RUNG: what a compliant seat does when the duty refuses ──────────────────
       //
       // — a record that reached the findings surface leaves as a finding or as a
@@ -1764,6 +1767,10 @@ export function applyStageWrites(msg, argv) {
           if (declinations.length) recordDeclinations({ runDir, rows, scope: spec?.scope ?? {} }, { declinations });
         } catch { /* the restate below stands; its refusal is what a seat would see */ }
         r = recordSynthesis(runDir, { findings: doc, narrative: sections });
+        // THE RECORDER ASKS FOR THE DECLINES BEFORE IT PARSES THE FINDINGS, so a seat owed records AND
+        // carrying a defect meets the duty first and the defect only on the restate. A seat that answered
+        // the first and ignored the second is not the seat these knobs model. Each fix is still made once.
+        if (!healed) heal();
       }
       if (r && r.refused) return `mock synthesis REFUSED by record_synthesis: ${r.refused}`;
       if (r && r.write_failed) return `mock synthesis: record_synthesis could not store the call (${r.write_failed})`;
