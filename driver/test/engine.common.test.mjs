@@ -230,7 +230,7 @@ test("a slow spawn is not charged to the hard wall", async () => {
   //
   // ── ✕ THE NUMBERS ARE PINNED BY TWO BOUNDS, AND THE ARM USED TO SIT ON ONE OF THEM ──
   //
-  // The wall starts at the child's first OUTPUT (driver/engine/common.mjs:224 — `Date.now() -
+  // The wall starts at the child's first OUTPUT (driver/engine/common.mjs:239 — `Date.now() -
   // firstOutputAt >= hardMs`), so the child's life after that byte is what the ceiling is measured
   // against. Two bounds are live at once:
   //

@@ -305,7 +305,7 @@ export function paths(runDir) {
     reportCard: (ord) => p(join("report-cards", `${ord}.md`)),  // B1 — LLM (report-card): ONE card from finding[ord]'s own record
     audit: p("audit.md"),         // CODE (buildAuditMd from the spine) — full audit record
     // THE SEAT WRITES THIS ONE, so it cannot live in `_driver/`. That write boundary makes
-    // `<runDir>/_driver/**` a tree a seat may NEVER write into (authority-trees.mjs:70, `live: true`) —
+    // `<runDir>/_driver/**` a tree a seat may NEVER write into (authority-trees.mjs:151, `live: true`) —
     // and this stage's dispatch handed the seat a path inside it. The deny fires, the seat writes the
     // only place it can (the run root), the validator looks in `_driver/` and reports `missing_file`,
     // and the escalation ladder burns out on an artifact that exists. Two consecutive rounds died this
@@ -2527,7 +2527,7 @@ export const STAGES = {
       },
       "adopt-or-override each placement by engaging its reason, and the `### Disagreement resolutions` rows (one per surfaced disagreement and per borderline:true, each ADOPTED/OVERRODE in writing)": {
         class: "judgment", tokens: ["registerdigest_adjudication_invalid", "registerdigest_adjudication_incomplete"],
-        why: "Answering the promotion question the other way, in writing, against a reason another stage authored. #850 keeps it J. The row's SUBJECT is handed over as data (the driver appends the PLACEMENT RULINGS TAIL block, pipeline.mjs:3584), so nothing here is a fetch. [citation unverified]",
+        why: "Answering the promotion question the other way, in writing, against a reason another stage authored. #850 keeps it J. The row's SUBJECT is handed over as data (the driver appends the PLACEMENT RULINGS TAIL block, pipeline.mjs:3839), so nothing here is a fetch.",
       },
       // ── REWRITTEN, NEVER DELETED (the ruling) — AND THE ROW THAT COST THIS CONVERSION A DESIGN ──
       //
