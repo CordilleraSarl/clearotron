@@ -179,7 +179,7 @@ function recallEnding(name, qid, join, ts) {
   if (discharges) return { ending, handoff: null };
   return {
     ending: null,
-    handoff: `the probe ran and ${why} — a recall probe discharges on what came back, not on having run (#1349). `
+    handoff: `the probe ran and ${why} — a recall probe discharges on what came back, not on having run. `
       + `Ships OPEN in the audit's ask ledger for the reviewing lawyer.`,
   };
 }
