@@ -30,9 +30,9 @@ import {
   CLOUD_NAMES, CLOUD_PREFIXES, CLOUD_ONLY, CODEX_NAMES, TOOL_SERVER_SETTINGS, TEST_PREFIXES, codexCommandWithheld,
 } from "../engine/engine-env.mjs";
 import { CLOUD_SETTINGS } from "../engine/auth.mjs";
-import { CRED_ENV_FORWARD } from "../engine/mcp/codex-config.mjs";
+import { CRED_ENV_FORWARD, renderCodexConfigToml } from "../engine/mcp/codex-config.mjs";
 import { PROVIDERS, RESEARCH_PROVIDERS, SERP_PROVIDERS, ENGINE_BINARIES } from "../driver.config.mjs";
-import { buildGatherMcpConfig, toolGroupsForStage } from "../engine/mcp/gather-config.mjs";
+import { buildGatherMcpConfig, toolGroupsForStage, allowedToolsFor } from "../engine/mcp/gather-config.mjs";
 import { auditEnv, namesRead, envNameBindings, mergeEnvNameBindings } from "../../scripts/env-audit.mjs";
 import { pinEnv } from "../../shared/env-aliases.mjs";
 
@@ -249,7 +249,10 @@ function closure(entries) {
   return [...seen];
 }
 
-test("every setting a tool server reads is passed to it, written into its entry, or named as not needed", () => {
+/** What the tool servers' import closure reads, and what gather-config writes into each server's own entry. */
+let serverReadsMemo = null;
+function serverReads() {
+  if (serverReadsMemo) return serverReadsMemo;
   const mcp = join(ROOT, "driver", "engine", "mcp");
   const servers = readdirSync(mcp).filter((f) => f.endsWith("-server.mjs")).map((f) => join(mcp, f));
   const entries = [...servers, join(ROOT, "providers", "oauth-mcp-bridge", "bridge.mjs")];
@@ -276,13 +279,52 @@ test("every setting a tool server reads is passed to it, written into its entry,
   } finally { for (const [k, v] of Object.entries(saved)) { if (v === undefined) delete process.env[k]; else process.env[k] = v; } }
   assert.ok(perServer.has("CLEAROTRON_BAND_RUN_DIR") && perServer.has("CLEAROTRON_GATHER_SESSION_KEY"),
     `gather-config wrote no per-run names: ${[...perServer]}`);
+  serverReadsMemo = { read, perServer };
+  return serverReadsMemo;
+}
 
+test("every setting a tool server reads is passed to it, written into its entry, or named as not needed", () => {
+  const { read, perServer } = serverReads();
   const passed = admits("anthropic-agent", "subscription");
   const unaccounted = [...read.keys()].filter((n) => !passed(n) && !perServer.has(n) && !(n in NOT_PASSED)).sort();
   assert.deepEqual(unaccounted, [], `tool servers read names nobody decided about: ${unaccounted.map((n) => `${n} (${read.get(n)})`).join(", ")}`);
   // Both directions: an entry below that no server reads any more, or that the list now passes, is stale.
   const stale = Object.keys(NOT_PASSED).filter((n) => !read.has(n) || passed(n)).sort();
   assert.deepEqual(stale, [], "entries in NOT_PASSED that no server reads, or that the list passes anyway");
+});
+
+/** Names in the servers' import closure that no server acts on, so Codex need not forward them. */
+const NO_SERVER_USES_IT = Object.freeze({
+  SERPAPI_API_KEY: "driver.config.mjs reads it inside the SerpApi search, which only the driver's grid units call (jx-units.mjs); the servers import that module for its tables",
+});
+
+test("on Codex, every setting a tool server reads that the Claude engine hands it reaches the server too", () => {
+  // Codex hands a server only its own entry and its `env_vars`, so a name the Claude engine's servers
+  // inherit and the Codex config does not forward is a setting that works on one engine and silently not
+  // on the other. Read off the configs the renderer actually writes for real stages, not off the lists.
+  const { read } = serverReads();
+  const forServers = new Set(toolServerNames());
+  const reachesCodex = new Set();
+  for (const stage of ["register-unit:primary-sweep", "common-law", "case-law", "register-digest"]) {
+    const groups = toolGroupsForStage(stage);
+    const cfg = buildGatherMcpConfig(groups, { sessionKey: "s", agent: "a", runDir: "/run", recordAxis: "x" });
+    const toml = renderCodexConfigToml({ mcpConfig: JSON.stringify(cfg), allowedTools: allowedToolsFor(groups) });
+    for (const block of toml.split(/^(?=\[)/m).filter((b) => b.startsWith("[mcp_servers.") && !b.startsWith("[mcp_servers.fetch]"))) {
+      const vars = /^env_vars = (\[.*\])$/m.exec(block);
+      for (const n of vars ? JSON.parse(vars[1]) : []) reachesCodex.add(n);
+      const env = /^env = \{ (.*) \}$/m.exec(block);
+      for (const m of env ? env[1].matchAll(/([A-Za-z_][A-Za-z0-9_]*) = /g) : []) reachesCodex.add(m[1]);
+    }
+  }
+  assert.ok(reachesCodex.has("SIGNA_API_KEY") && reachesCodex.has("CLEAROTRON_GATHER_SESSION_KEY"),
+    `the rendered configs forwarded almost nothing, so the reading is broken: ${[...reachesCodex].join(", ")}`);
+  const readForServers = [...read.keys()].filter((n) => forServers.has(n));
+  assert.ok(readForServers.length >= 10, `the servers read only ${readForServers.length} of the names held for them`);
+  const claudeOnly = readForServers.filter((n) => !reachesCodex.has(n) && !(n in NO_SERVER_USES_IT)).sort();
+  assert.deepEqual(claudeOnly, [], "settings the tool servers read that reach them on Claude and never on Codex");
+  // Both directions: an entry that no server reads any more, or that Codex now forwards, is stale.
+  const stale = Object.keys(NO_SERVER_USES_IT).filter((n) => !read.has(n) || reachesCodex.has(n));
+  assert.deepEqual(stale, [], "entries in NO_SERVER_USES_IT that no server reads, or that Codex forwards anyway");
 });
 
 // ── 4. A REAL START, THROUGH EACH ADAPTER ────────────────────────────────────────────────────────────

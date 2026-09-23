@@ -29,7 +29,7 @@
 
 import { PROVIDERS, RESEARCH_PROVIDERS, SERP_PROVIDERS } from "../driver.config.mjs";
 import { billingMode, CLOUD_SETTINGS } from "./auth.mjs";
-import { CRED_ENV_FORWARD } from "./mcp/codex-config.mjs";
+import { CRED_ENV_FORWARD, TOOL_SERVER_SETTINGS } from "./mcp/codex-config.mjs";
 
 /** Paths, home, user, shell, locale and temp: what any program needs to start and find its own files. */
 export const RUNTIME_NAMES = Object.freeze([
@@ -94,15 +94,12 @@ export const CODEX_NAMES = Object.freeze(["CODEX_CA_CERTIFICATE", "CODEX_SQLITE_
 /**
  * What the stage's tool servers read that the driver does not already hand each of them by name. Every
  * credential the provider tables name (so a register added to a table is covered by construction), the
- * names Codex forwards to them, and the settings they read to reach a register. Per-run values (the run
- * folder, the session, the ledgers) are not here: gather-config writes those into each server's own entry.
+ * names Codex forwards to them, and the settings they read to reach a register (`TOOL_SERVER_SETTINGS`,
+ * kept in codex-config.mjs beside the credentials Codex forwards, so both engines' servers get one list).
+ * Per-run values (the run folder, the session, the ledgers) are not here: gather-config writes those into
+ * each server's own entry.
  */
-export const TOOL_SERVER_SETTINGS = Object.freeze([
-  "CLARIVATE_API_BASE", "SIGNA_BASE_URL", "EUIPO_ENVIRONMENT", "SIGNA_FIXTURES_DIR", "CLAWDI_SIGNA_FIXTURES_DIR",
-  "CLEAROTRON_HTTP_TIMEOUT_MS", "CLEAROTRON_BAND_RESPONSE_CHARS", "CLEAROTRON_ENUMERATE_NAMES_CHUNK",
-  // The case-law bridges: where their sign-in lives, and the name they register under.
-  "OAUTH_BRIDGE_CREDS_DIR", "OAUTH_BRIDGE_CLIENT_NAME",
-]);
+export { TOOL_SERVER_SETTINGS };
 export function toolServerNames() {
   const tables = [PROVIDERS, RESEARCH_PROVIDERS, SERP_PROVIDERS]
     .flatMap((t) => Object.values(t ?? {}))

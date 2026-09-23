@@ -1114,8 +1114,8 @@
           "todos": 0
         },
         "a-stage-program-starts-with-a-listed-environment.test.mjs": {
-          "tests": 11,
-          "asserts": 58,
+          "tests": 12,
+          "asserts": 62,
           "skips": 0,
           "todos": 0
         },
