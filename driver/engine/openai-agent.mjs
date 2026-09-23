@@ -276,6 +276,10 @@ export function parseCodexEvent(line, ev) {
     case "error":          ev.streamError = e.message || "stream error"; break;
     case "item.completed":
       if (e.item?.type === "agent_message" && typeof e.item.text === "string") ev.agentText = e.item.text;
+      // A FILE CHANGE CODEX ITSELF REPORTS AS FAILED. Measured on codex-cli 0.156.1 with its sandbox unable
+      // to start: `{"type":"file_change","changes":[{"path":…,"kind":"add"}],"status":"failed"}`, and no file.
+      // It is the engine's own word that a write failed, which is what the engine probe refuses on.
+      if (e.item?.type === "file_change" && e.item.status === "failed") ev.writesFailed = (ev.writesFailed ?? 0) + 1;
       noteMcpToolCall(e.item, ev);
       break;
     // ── — AN MCP CALL THAT WAS REFUSED IS NOT A CALL NOBODY MADE ──────────
@@ -536,6 +540,7 @@ function settleTuple({ r, ev, resumeRef }) {
     // stream counts only tool-server calls, so it reports no command-tool count: null, never zero.
     toolCallsRefused: mcpToolGauge(ev).mcpToolCallsRefused,
     commandToolCalls: null,
+    writesFailed: ev.writesFailed ?? 0,
     signals: {
       stalled: stallKill || undefined, hardWall: r.hardWall || undefined,
       // A gather stage that ran with none of its tools produced prose and no instrumented half. The
