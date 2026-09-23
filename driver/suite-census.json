@@ -579,6 +579,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-whose-counts-all-fail-pays-for-no-owner-lookup.test.mjs": {
+          "tests": 3,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "a-link-in-the-workbook-is-not-banned-vocabulary.test.mjs": {
           "tests": 2,
           "asserts": 5,
