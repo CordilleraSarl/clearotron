@@ -109,19 +109,27 @@ function entryFor(tag, repo) {
 }
 
 // The first unexpired `published-<version>` artifact the release run made, or null. Every other one is
-// named in a warning with the reason it was refused.
+// named in a warning with the reason it was refused. EVERY PAGE OF THE LIST IS READ, NOT THE FIRST: any
+// run can upload an artifact of that name, so a hundred uploads made after the release run's would push
+// its own off a single page, and the version would be reported as having no kept bytes.
 function keptArtifact(repo, version, tagSha) {
   const repoId = Number(gh(["api", `repos/${repo}`, "--jq", ".id"]).trim());
-  const list = JSON.parse(gh(["api", `repos/${repo}/actions/artifacts?name=published-${version}&per_page=100`]));
-  for (const artifact of (list.artifacts ?? []).filter((x) => !x.expired && x.name === `published-${version}`)) {
-    let why = notTheReleaseRun({ artifact, repoId });
-    if (!why) {
-      const run = JSON.parse(gh(["api", `repos/${repo}/actions/runs/${artifact.workflow_run.id}`]));
-      const relation = gh(["api", `repos/${repo}/compare/${run.head_sha}...${tagSha}`, "--jq", ".status"]).trim();
-      why = notTheReleaseRun({ artifact, repoId, run, relation });
+  for (let page = 1, seen = 0, total = 1; seen < total; page++) {
+    const list = JSON.parse(gh(["api", `repos/${repo}/actions/artifacts?name=published-${version}&per_page=100&page=${page}`]));
+    const artifacts = list.artifacts ?? [];
+    if (!artifacts.length) break;   // the count named more than the pages hold: nothing further to read
+    total = list.total_count ?? 0;
+    seen += artifacts.length;
+    for (const artifact of artifacts.filter((x) => !x.expired && x.name === `published-${version}`)) {
+      let why = notTheReleaseRun({ artifact, repoId });
+      if (!why) {
+        const run = JSON.parse(gh(["api", `repos/${repo}/actions/runs/${artifact.workflow_run.id}`]));
+        const relation = gh(["api", `repos/${repo}/compare/${run.head_sha}...${tagSha}`, "--jq", ".status"]).trim();
+        why = notTheReleaseRun({ artifact, repoId, run, relation });
+      }
+      if (!why) return artifact;
+      console.log(`::warning::release-entry-catch-up: refused artifact ${artifact.id} named published-${version}: ${why}.`);
     }
-    if (!why) return artifact;
-    console.log(`::warning::release-entry-catch-up: refused artifact ${artifact.id} named published-${version}: ${why}.`);
   }
   return null;
 }
