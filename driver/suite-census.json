@@ -130,8 +130,8 @@
           "todos": 0
         },
         "a-change-a-reader-can-see-arrives-with-something-to-read.test.mjs": {
-          "tests": 31,
-          "asserts": 79,
+          "tests": 32,
+          "asserts": 82,
           "skips": 1,
           "todos": 0
         },

@@ -343,10 +343,13 @@ export function commitVerdicts({ commits = [], files = [], atHead = null, isAnce
     owed.push({ ...at, why: "no-note", paths: ships });
   }
   // AN ANSWER THAT ANSWERED NOTHING IS REFUSED, NOT IGNORED (see the header).
+  const owing = new Set(owed.map((o) => o.sha));
   for (const [sha, a] of answers) {
     if (used.has(sha)) continue;
     refusedAnswers.push({ sha: a.by, subject: a.subject, text: a.text,
-      problem: `names ${sha.slice(0, 7)}, which owes no answer: it ships no code, carries a note, or gives its own reason` });
+      problem: owing.has(sha)
+        ? `names ${sha.slice(0, 7)}, which owes a note this line cannot give: an answer covers only a bare \`none\``
+        : `names ${sha.slice(0, 7)}, which owes no answer: it ships no code, carries a note, or gives its own reason` });
   }
   return { visible, notes, declined, withdrawals, owed, answered, refusedAnswers };
 }

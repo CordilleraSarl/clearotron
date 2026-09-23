@@ -551,6 +551,20 @@ test("an answer naming a commit that owes none is refused as stale, never ignore
   }
 });
 
+test("an answer naming a commit that owes a note of another kind is refused, and says what it owes", () => {
+  const silent = { changes: { "bin/thing.mjs": "export const a = 4;\n" }, message: "A change" };
+  const prose = { changes: { "bin/thing.mjs": "export const a = 5;\n" }, message: "A change\n\nRelease-note: things got better.\n" };
+  for (const named of [silent, prose]) {
+    const repo = repoWithSteps([named, answering(0)]);
+    try {
+      const r = run(repo);
+      assert.equal(r.code, 1, `an answer excused a commit that owes a note:\n${r.said}`);
+      assert.match(r.said, /owes a note this line cannot give: an answer covers only a bare `none`/);
+      assert.doesNotMatch(r.said, /owes no answer/, "the refusal says the commit owes nothing when it owes a note");
+    } finally { repo.clean(); }
+  }
+});
+
 test("an ambiguous prefix is refused against the range's own commits only", async () => {
   const { readAnswers } = await import("../../scripts/release-note-required.mjs");
   const commits = [
