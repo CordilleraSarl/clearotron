@@ -103,7 +103,7 @@ export const SELECT_ROW_CONTRACT = Object.freeze({
   unresolved: "A `select` the band does not hold is reported back to you by id, never silently dropped.",
 });
 
-const PROVENANCE = "driver-written form (#562). You SELECT and you JUDGE; the driver COPIES. For each "
+const PROVENANCE = "driver-written form. You SELECT and you JUDGE; the driver COPIES. For each "
   + "register candidate you are placing, add a row naming one of its record ids in `select` plus your "
   + "`tier` and `reason` (and `borderline` if the call is close) — the driver resolves the id against the "
   + "register's own exact-identity fold and fills mark, owner, records, territories and classes from it, "
