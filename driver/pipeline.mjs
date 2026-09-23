@@ -72,8 +72,7 @@ import { classifyGroundsNote } from "./grounds-grammar.mjs";   // — a charged 
 import { documentCoverage, renderDocumentCoverageSection, spliceDocumentCoverage } from "./document-coverage.mjs";   //
 import { buildCoverageAbsenceForm, coverageAbsenceGaps, coverageFormAbsence, coverageFormBrief, renderCoverageAbsenceSection, renderCoverageLedgerSection, spliceCoverageLedger, renderCoverageLedgerJsonFromForm } from "./coverage-form.mjs";
 import { unionCoverageForm } from "./coverage-union.mjs";
-import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStamp, readCoverageForm, readCoverageFormInput, writeCoverageForm } from "./coverage-form-io.mjs";
-import { readWithheldFamilies, splitWaitingFamilies } from "./withheld-families.mjs";
+import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStamp, readCoverageForm, readCoverageFormInput, waitingFamilyStates, writeCoverageForm } from "./coverage-form-io.mjs";
 import { unionPlacementForm } from "./placement-union.mjs";
 import { readPlacementForm, readPlacementFormInput, writePlacementForm } from "./placement-form-io.mjs";
 import { dictatedPaths, findStrayArtifacts, treeSnapshot, findStrayInTree, matterSiblings, findStrayMatterSiblings } from "./stray-artifacts.mjs";   // — a run dir holds no document no stage dictated; — nor does the doctrine tree
@@ -6499,10 +6498,7 @@ function planAuditExtra(ctx, { stage = "narrative-refutation" } = {}) {
     // is a settled judgment with its reason on record, not an open question. Counted as awaiting, a run
     // whose every waiting family was withheld told the reviewer they all remained open, and it raised a
     // coverage flag against judgments already made.
-    const { withheld, awaiting } = splitWaitingFamilies(exec.awaiting, {
-      recorded: readWithheldFamilies(P.runDir),
-      formRows: readCoverageForm(P.runDir, coverageFormStamp(P.runDir).formName).rows,
-    });
+    const { withheld, awaiting } = waitingFamilyStates(P.runDir, exec.awaiting);
     const withheldOn = (axis) => withheld.filter((f) => f?.axis === axis).length;
     rows = [
       `- executed: ${exec.executed.length} entr${exec.executed.length === 1 ? "y" : "ies"} (${crowds.length} crowd/incomplete${crowds.length ? `: ${crowds.slice(0, 4).map((x) => x.qid).join("; ")}` : ""})`,
@@ -13913,11 +13909,13 @@ async function pipelineInner(job, opts = {}) {
       const plan = ctx.registerPlan ?? readJson(P.registerPlan);
       const instructed = readJson(P.instructedScope);
       if (!plan && !Array.isArray(instructed?.classes)) return null;   // a run with no register layer and no instructed classes has no scope fact to state
+      const planExecution = ctx.planExecution ?? readJson(P.planExecution);
       const facts = deriveScopeFacts({
         instructedScope: instructed,
         plan,
-        planExecution: ctx.planExecution ?? readJson(P.planExecution),
+        planExecution,
         coverageRows: loadCoverageLedger(run.runDir).rows,
+        withheldQids: waitingFamilyStates(run.runDir, planExecution?.awaiting).withheld.map((f) => f.qid),
       });
       facts.derived_from = Object.fromEntries([
         ["instructed_scope", P.instructedScope], ["register_plan", P.registerPlan],
