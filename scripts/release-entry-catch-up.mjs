@@ -22,6 +22,15 @@
 // created over bytes the registry serves and this pipeline published. A tagged version with no kept bytes
 // (one published before this existed) is reported, never guessed at.
 //
+// THE RELEASE RUN'S ARTIFACT, NEVER ANY ARTIFACT OF THAT NAME. Any run in the repository can upload an
+// artifact called `published-<version>`, a fork's pull request included, and GitHub lists same-named
+// artifacts highest id first, so a name alone takes the last upload: its parts list would ride on the
+// official entry, and its tarball would report a sound release as different bytes. An artifact is used only
+// when the run that made it is this repository's release workflow, on `main`, at the tagged commit or
+// behind it. Behind it is the ordinary case for a cut: its publish runs on the commit it was dispatched
+// from, and the version commit it tags lands on `main` after (0.3.3-beta.1: run on `1d7722ac`, tag on
+// `d571d0ee`).
+//
 // Exit 0: nothing to do, the entry was created, or the version is pending inside the bound.
 // Exit 1: the registry serves different bytes, the version is still not served past the bound, or its bytes
 // cannot be found to check against.
@@ -64,6 +73,30 @@ export function decide(s) {
   return { action: "report", exit: 2, why: "the registry check could not look" };
 }
 
+export const RELEASE_WORKFLOW = ".github/workflows/release.yml";
+const RELEASE_EVENTS = new Set(["push", "workflow_dispatch", "schedule"]);
+
+/**
+ * Why a kept artifact is NOT the release run's own, or null when it is. PURE. Called first with the
+ * artifact alone, which reads only what the artifact list already says, so a fork's upload costs no further
+ * call; then with the run that made it and how that run's commit relates to the tagged one (the compare
+ * API's `status` from the run's commit to the tag: "identical" or "ahead" means at the tag or behind it).
+ * @param {{ artifact: object, repoId: number, run?: object, relation?: string }} s
+ * @returns {string|null}
+ */
+export function notTheReleaseRun({ artifact, repoId, run, relation }) {
+  const w = artifact.workflow_run ?? {};
+  if (w.repository_id !== repoId || w.head_repository_id !== repoId) return "it was made by a run from another repository, such as a fork's pull request";
+  if (w.head_branch !== "main") return `it was made by a run on ${w.head_branch ? `\`${w.head_branch}\`` : "no branch"}, not on main`;
+  if (run === undefined) return null;
+  if (run.id !== w.id) return "the run read back is not the run the artifact names";
+  if (run.path !== RELEASE_WORKFLOW) return `it was made by ${run.path ?? "an unnamed workflow"}, not the release workflow`;
+  if (!RELEASE_EVENTS.has(run.event)) return `it was made by a ${run.event ?? "nameless"} run, which never publishes`;
+  if (run.head_repository?.id !== repoId || run.head_branch !== "main") return "the run that made it is not on this repository's main";
+  if (relation !== "identical" && relation !== "ahead") return `it was made on a commit that is not the tagged commit or behind it (${relation ?? "unknown"})`;
+  return null;
+}
+
 const arg = (argv, flag, dflt = null) => { const i = argv.indexOf(flag); return i === -1 ? dflt : argv[i + 1]; };
 const gh = (args, opts = {}) => execFileSync("gh", args, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], ...opts });
 
@@ -73,6 +106,24 @@ function entryFor(tag, repo) {
   if (r.status === 0) return true;
   if (/release not found/i.test(r.stderr ?? "")) return false;
   throw Object.assign(new Error(`could not read the release entry for ${tag}`), { stderr: r.stderr || r.error?.message });
+}
+
+// The first unexpired `published-<version>` artifact the release run made, or null. Every other one is
+// named in a warning with the reason it was refused.
+function keptArtifact(repo, version, tagSha) {
+  const repoId = Number(gh(["api", `repos/${repo}`, "--jq", ".id"]).trim());
+  const list = JSON.parse(gh(["api", `repos/${repo}/actions/artifacts?name=published-${version}&per_page=100`]));
+  for (const artifact of (list.artifacts ?? []).filter((x) => !x.expired && x.name === `published-${version}`)) {
+    let why = notTheReleaseRun({ artifact, repoId });
+    if (!why) {
+      const run = JSON.parse(gh(["api", `repos/${repo}/actions/runs/${artifact.workflow_run.id}`]));
+      const relation = gh(["api", `repos/${repo}/compare/${run.head_sha}...${tagSha}`, "--jq", ".status"]).trim();
+      why = notTheReleaseRun({ artifact, repoId, run, relation });
+    }
+    if (!why) return artifact;
+    console.log(`::warning::release-entry-catch-up: refused artifact ${artifact.id} named published-${version}: ${why}.`);
+  }
+  return null;
 }
 
 function main() {
@@ -102,8 +153,9 @@ function catchUp(argv) {
 
   let keptBytes = false, visibleExit = null, ageSec = null, work = null, sbom = null;
   if (tagged && !entryExists) {
-    const art = JSON.parse(gh(["api", `repos/${repo}/actions/artifacts?name=published-${version}&per_page=1`]));
-    const a = (art.artifacts ?? []).find((x) => !x.expired);
+    const [tagSha, when] = gh(["api", `repos/${repo}/commits/${tag}`, "--jq", `.sha + " " + .commit.committer.date`]).trim().split(" ");
+    ageSec = Math.max(0, (Date.now() - Date.parse(when)) / 1000);
+    const a = keptArtifact(repo, version, tagSha);
     if (a) {
       work = mkdtempSync(join(tmpdir(), "entry-catch-up-"));
       writeFileSync(join(work, "kept.zip"), execFileSync("gh", ["api", `repos/${repo}/actions/artifacts/${a.id}/zip`],
@@ -122,8 +174,6 @@ function catchUp(argv) {
         visibleExit = r.status;
       }
     }
-    const when = gh(["api", `repos/${repo}/commits/${tag}`, "--jq", ".commit.committer.date"]).trim();
-    ageSec = Math.max(0, (Date.now() - Date.parse(when)) / 1000);
   }
 
   const d = decide({ tagged, entryExists, keptBytes, visibleExit, ageSec, boundSec });
