@@ -1,5 +1,23 @@
 # clearotron-driver
 
+## 0.4.0-beta.0
+
+### Minor Changes
+
+- Before you upgrade: a new operator key must now name the tools it may use, for example `--verbs start_run,stop_run`. Keys already issued keep working.
+  
+  For operators: a revoked key stops working even where no revocation list was set up, because every connector now reads the install's own list.
+  
+  Fixed: over the network, an operator key can no longer start a what-if that its assistant is not shown.
+  
+  Fixed: the portal refuses a change sent from another website, or from another app on the same computer, including a sign-in.
+
+### Patch Changes
+
+- Fixed: closing the window that runs `clearotron start` now stops Clearotron. Before, it kept running in the background.
+- Fixed: Creating a company in the portal no longer stops with a request to run a git command.
+- Fixed: A new company starts with no marketplaces. The company page offers the usual ones to add, and a company with none is still searched on the general web.
+
 ## 0.3.3
 
 ### Patch Changes
