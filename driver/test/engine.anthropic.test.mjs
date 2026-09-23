@@ -176,13 +176,17 @@ test("buildClaudeArgs: print + stream-json + model/effort/permission, and the op
   assert.equal(b[b.indexOf("--allowedTools") + 1], "mcp__a__b");
 });
 
-test("buildClaudeArgs: never emits --settings (fast mode REMOVED — it ~2.5x'd subscription usage, tripped the 5h cap 2026-06-17)", () => {
+test("buildClaudeArgs: --settings never carries fast mode (REMOVED — it ~2.5x'd subscription usage, tripped the 5h cap 2026-06-17)", () => {
   // Full revert: no stage sets fastMode and the engine no longer threads it. A stray/legacy fastMode arg must
-  // NOT resurrect --settings (the flag is gone from the signature; this guards against silent reintroduction).
-  const { args: a } = buildClaudeArgs({ message: "hi", model: "opus", thinking: "high", fastMode: true });
-  assert.ok(!a.includes("--settings"), "fast mode removed -> no --settings even if a fastMode arg is passed");
-  const { args: b } = buildClaudeArgs({ message: "hi", model: "opus", thinking: "high" });
-  assert.ok(!b.includes("--settings"), "no --settings on a plain opus stage");
+  // NOT resurrect it (the flag is gone from the signature; this guards against silent reintroduction). Every
+  // turn now carries one --settings, the read fence (READ_FENCE), so the guard reads what it carries.
+  for (const extra of [{ fastMode: true }, {}]) {
+    const { args } = buildClaudeArgs({ message: "hi", model: "opus", thinking: "high", ...extra });
+    const at = args.indexOf("--settings");
+    assert.ok(at > 0 && args.indexOf("--settings", at + 1) < 0, "one --settings, the read fence");
+    assert.ok(!/fastMode/i.test(args[at + 1]), `fast mode came back: ${args[at + 1]}`);
+    assert.deepEqual(JSON.parse(args[at + 1]), { permissions: { blockReadsOutsideWorkingDirectories: true } }, "a plain stage's settings are the fence alone");
+  }
 });
 
 test("rate-limit / session-cap: rejected rate_limit_event + 429 result -> signals.rateLimited + resetsAt (ISO of epoch-seconds)", async () => {

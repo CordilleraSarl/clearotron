@@ -153,7 +153,7 @@ test("renderCodexConfigToml: the approval rides the servers a real stage is gran
     assert.match(b, /^default_tools_approval_mode = "approve"$/m, `no approval line in:\n${b}`);
 });
 
-test("buildCodexArgs: the sandbox stays on unless the bypass is set to 1, and no approval flag rides the command line", async () => {
+test("buildCodexArgs: the sandbox stays on unless the bypass is set to 1, and neither --sandbox nor an approval flag rides the command line", async () => {
   const { buildCodexArgs } = await import("../engine/openai-agent.mjs");
   const before = process.env.CLEAROTRON_CODEX_SANDBOX_BYPASS;
   const argvWith = (v) => {
@@ -163,8 +163,8 @@ test("buildCodexArgs: the sandbox stays on unless the bypass is set to 1, and no
   try {
     for (const v of [undefined, "", "0", "true"]) {
       const args = argvWith(v);
-      const at = args.indexOf("--sandbox");
-      assert.ok(at > 0 && args[at + 1] === "workspace-write", `bypass=${JSON.stringify(v)}: ${args.join(" ")}`);
+      // The sandbox is the stage's permission profile in the config; `--sandbox` here would switch it off.
+      assert.ok(!args.includes("--sandbox"), `bypass=${JSON.stringify(v)}: ${args.join(" ")}`);
       assert.ok(!args.includes("--dangerously-bypass-approvals-and-sandbox"), `bypass=${JSON.stringify(v)} dropped the sandbox`);
       // The approval is the config file's, per server. A policy on the command line would reach shell commands.
       assert.ok(!args.some((a) => /approval|full-auto/i.test(a)), `bypass=${JSON.stringify(v)}: ${args.join(" ")}`);

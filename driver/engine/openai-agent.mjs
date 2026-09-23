@@ -16,17 +16,17 @@
 //   {"type":"item.completed","item":{"type":"agent_message","text":…}}                  → payload text
 //   {"type":"turn.failed","error":{"message":…}} / {"type":"error","message":…}         → failure
 // Invocation is pinned from the flag corpus: prompt on STDIN via the `-` placeholder, `--json`,
-// `--skip-git-repo-check` (neutral non-repo cwd), `--sandbox workspace-write --add-dir <runDir>` for the
+// `--skip-git-repo-check` (neutral non-repo cwd), `--add-dir <runDir>` for the
 // stage output, `-m <model>`, `-c model_reasoning_effort=<effort>`, and a per-run `CODEX_HOME` holding a
-// rendered config.toml (mcp_servers + developer_instructions) + (subscription) a seeded auth.json.
-// CLEAROTRON_CODEX_SANDBOX_BYPASS=1 swaps that `--sandbox workspace-write` for
-// `--dangerously-bypass-approvals-and-sandbox` — see buildCodexArgs below for why.
+// rendered config.toml (mcp_servers + developer_instructions + the stage's permission profile, which is
+// codex's sandbox here) + (subscription) a seeded auth.json. CLEAROTRON_CODEX_SANDBOX_BYPASS=1 swaps that
+// profile for `--dangerously-bypass-approvals-and-sandbox` — see buildCodexArgs below for why.
 
 import { mkdtempSync, writeFileSync, copyFileSync, existsSync, rmSync, readFileSync, readdirSync, statSync, symlinkSync, lstatSync, realpathSync } from "node:fs";
 import { everyToolCallRefused } from "./tool-refusal.mjs";
 import { writeSecretFile } from "../../shared/secret-file.mjs";   // the rotated login goes back the way every credential is written
 import { tmpdir, homedir } from "node:os";
-import { join } from "node:path";
+import { join, dirname, sep } from "node:path";
 import { runStreamingChild, absolutizeSkillRefs, WRITE_DISCIPLINE, buildEnvelope, resolveSpawnCwd } from "./common.mjs";
 import { renderCodexConfigToml } from "./mcp/codex-config.mjs";
 import { resolveAuthMode } from "./auth.mjs";
@@ -225,7 +225,7 @@ export function returnAuth(masterPath, codexHome, seeded) {   // @internal
 // register prompt). Global flags precede the `resume` subcommand (flag-corpus ordering). config.toml
 // (mcp_servers + developer_instructions) rides CODEX_HOME, not argv.
 //
-// CLEAROTRON_CODEX_SANDBOX_BYPASS=1 (default off) swaps `--sandbox workspace-write` for
+// CLEAROTRON_CODEX_SANDBOX_BYPASS=1 (default off) swaps the stage's permission profile for
 // `--dangerously-bypass-approvals-and-sandbox`, so codex runs shell commands directly under the invoking
 // account's own OS-level permissions instead of building its own internal jail first — the same trust
 // model anthropic-agent already runs under (claude -p has no equivalent internal sandbox layer). Exists
@@ -236,10 +236,34 @@ export function returnAuth(masterPath, codexHome, seeded) {   // @internal
 // on that host — a kernel/container sandboxing primitive codex's helper needs is unavailable there. Kept
 // OFF by default: a host where codex's own sandbox works keeps that as a genuine second safety layer: an
 // unconditional flip here would remove it everywhere, including hosts that never had this problem.
+//
+// With the sandbox on, the stage's permission profile in the per-turn config is the sandbox, and no
+// `--sandbox` may ride the command line: codex takes the older sandbox settings over the profile whenever
+// it is passed (codex-config.mjs, `fenceToml`).
+export const codexSandboxBypassed = (env = process.env) => String(env.CLEAROTRON_CODEX_SANDBOX_BYPASS || "") === "1";
+
+/**
+ * The folder holding codex's own programs, which the stage's profile must let it read. codex runs every
+ * shell command through a helper of its own inside the sandbox, so a profile that cannot read the helper
+ * fails every command before it starts ("bwrap: execvp …/vendor/…/bin/codex-code-mode-host", measured on
+ * 0.156.1 with an install under the account's home) while its file edits, made outside the shell, go
+ * through. An npm install keeps the helper in a platform package, nested inside `@openai/codex` or beside
+ * it, so the whole `@openai` scope is granted: program files only. Any other install: the program's folder,
+ * unless that folder is the account's home or holds it, which would hand the fence's whole point back.
+ */
+export function codexProgramRoot(bin, home = homedir()) {
+  let real;
+  try { real = realpathSync(bin); } catch { return null; }
+  const scope = `${sep}node_modules${sep}@openai${sep}`;
+  const at = real.lastIndexOf(`${scope}codex${sep}`);
+  if (at >= 0) return real.slice(0, at + scope.length - 1);
+  const dir = dirname(real);
+  return dir === home || home.startsWith(dir.endsWith(sep) ? dir : dir + sep) ? null : dir;
+}
 export function buildCodexArgs({ model, thinking, resumeRef, runDir } = {}) {
-  const bypassSandbox = String(process.env.CLEAROTRON_CODEX_SANDBOX_BYPASS || "") === "1";
+  const bypassSandbox = codexSandboxBypassed();
   const base = ["exec", "--json", "--skip-git-repo-check",
-    ...(bypassSandbox ? ["--dangerously-bypass-approvals-and-sandbox"] : ["--sandbox", "workspace-write"])];
+    ...(bypassSandbox ? ["--dangerously-bypass-approvals-and-sandbox"] : [])];
   if (runDir) base.push("--add-dir", runDir);                     // writable root for the stage's absolute output path
   const m = openaiModel(model); if (m) base.push("-m", m);
   base.push("-c", `model_reasoning_effort=${effortFor(thinking)}`);
@@ -570,8 +594,8 @@ export const openaiAgentEngine = {
   name: "openai-agent",
   // — WHAT THIS ENGINE GUARANTEES ABOUT SEAT WRITES: NOTHING, and the record now says so.
   // The boundary is a `claude -p` PreToolUse hook and codex has no PreToolUse — an absence by
-  // construction, not a misconfiguration. `--sandbox workspace-write --add-dir <runDir>` grants; it
-  // cannot subtract, so the sandbox cannot express the denial either. A seat on this engine writing into
+  // construction, not a misconfiguration. The stage's permission profile grants the whole run folder,
+  // `_driver/` included, and nothing on this path refuses the write either. A seat on this engine writing into
   // `_driver/` meets no boundary at all. `run-integrity.mjs` DETECTS drift across a turn and logs it,
   // which is a different thing from refusing the write and must not be read as this field being "some".
   writeBoundary: "none",
@@ -623,8 +647,13 @@ export const openaiAgentEngine = {
       // shape of R5's `register-unit:incumbent-class` failure on 2026-08-12 (stage timeoutSec 1500,
       // tool dead at 300). The same `timeoutSec` also arms the child's hard wall below, which stays the
       // backstop if a tool consumes the lot.
+      //
+      // — the fence: with the sandbox on, the stage's commands read only the instruction trees, the run
+      // folder and the temp folders (codex-config.mjs, `fenceToml`). The same roots claude's file tools get.
+      const fence = codexSandboxBypassed() ? null
+        : { runDir, readRoots: [...(skillsGrantRoots?.length ? skillsGrantRoots : [skillsDir]), codexProgramRoot(codexBin())].filter(Boolean) };
       writeFileSync(join(codexHome, "config.toml"),
-        renderCodexConfigToml({ mcpConfig, allowedTools, developerInstructions: WRITE_DISCIPLINE, toolTimeoutSec: timeoutSec }));
+        renderCodexConfigToml({ mcpConfig, allowedTools, developerInstructions: WRITE_DISCIPLINE, toolTimeoutSec: timeoutSec, fence }));
 
       const input = absolutizeSkillRefs(message, skillsDir, resolveSkill);
       const { args } = buildCodexArgs({ model, thinking, resumeRef, runDir });
@@ -634,8 +663,8 @@ export const openaiAgentEngine = {
       const ev = { threadId: null, usage: null, agentText: "", turnCompleted: false, turnFailed: null, streamError: null, model: null, mcpCalls: new Map() };
       const r = await runStreamingChild({
         bin: codexBin(), args, input, runDir,
-        // — the run dir, not a shared tmpdir. codex's workspace-write sandbox makes cwd a writable
-        // root, so this tightens the writable surface onto the run rather than widening it.
+        // — the run dir, not a shared tmpdir. codex makes cwd a workspace root, writable under the
+        // stage's profile, so this tightens the writable surface onto the run rather than widening it.
         cwd: resolveSpawnCwd({ cwd, runDir }),
         env, stallSec, timeoutSec,
         onStdoutLine: (line) => parseCodexEvent(line, ev),

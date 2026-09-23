@@ -4,8 +4,8 @@
 //
 // `deny-authority-write.mjs` calls itself "THE WRITE BOUNDARY, enforced at the moment of the write". It
 // is a `claude -p` PreToolUse hook, wired into the anthropic adapter and referenced from nowhere else, so
-// on the codex path it does not exist. Codex has no PreToolUse to attach to and its sandbox can only GRANT
-// (`--sandbox workspace-write --add-dir`), never subtract — the gap is structural, not a wiring mistake.
+// on the codex path it does not exist. Codex has no PreToolUse to attach to, and the stage's permission
+// profile grants the whole run folder, `_driver/` included: nothing on that path refuses the write.
 //
 // e2e stated the consequence on 2026-08-18: "the same job, run on a different engine, gets a different
 // write guarantee, and nothing in the run record says so." That silence is the defect this file closes. A

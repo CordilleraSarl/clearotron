@@ -16,7 +16,7 @@ import { tomlString } from "../../../shared/toml-string.mjs";
 // TOML, like the repo's other MCP glue); every value is escaped.
 //
 // Live-unverified (grounded in the codex docs/flag corpus, 2026-07): the exact
-// `env_vars` forward semantics and MCP-server network under `--sandbox workspace-write`. The mapping is
+// `env_vars` forward semantics and MCP-server network under codex's sandbox. The mapping is
 // designed to mirror the claude path — creds reach the servers by ENV INHERITANCE (never written into the
 // config); only the non-secret per-run values (session key, ledger paths) ride `env`.
 
@@ -106,12 +106,14 @@ export function webFetchRequested(allowedTools) {
 // turn that is awaiting it, so the turn's own budget is the honest ceiling and the child's hard wall
 // stays the backstop. Absent/0/negative ⇒ emit nothing and leave codex's default alone, so this is inert
 // for any caller that does not thread a budget.
-export function renderCodexConfigToml({ mcpConfig, allowedTools, developerInstructions, nodeBin = process.execPath, credEnvForward = CRED_ENV_FORWARD, toolTimeoutSec } = {}) {
+export function renderCodexConfigToml({ mcpConfig, allowedTools, developerInstructions, nodeBin = process.execPath, credEnvForward = CRED_ENV_FORWARD, toolTimeoutSec, fence = null } = {}) {
   const servers = parseClaudeMcpServers(mcpConfig);
   const enabled = enabledToolsByServer(allowedTools);
   const toolTimeout = Number(toolTimeoutSec) > 0 ? Math.floor(Number(toolTimeoutSec)) : undefined;
   const lines = [];
   if (developerInstructions) lines.push(`developer_instructions = ${tomlString(developerInstructions)}`, "");
+  // Top-level, so above the first table: TOML reads a bare key after a table header as that table's.
+  if (fence) lines.push(`default_permissions = ${tomlString(FENCE_PROFILE)}`, "");
 
   const emitServer = (name, s, { forwardCreds } = {}) => {
     lines.push(`[mcp_servers.${/^[A-Za-z0-9_-]+$/.test(name) ? name : tomlString(name)}]`);
@@ -143,7 +145,7 @@ export function renderCodexConfigToml({ mcpConfig, allowedTools, developerInstru
     // WHAT IT REACHES: only the servers in this per-turn file, which are the ones the stage is granted
     // plus the fetch server, each narrowed by its enabled_tools list, except a server granted whole, which
     // offers every tool it serves, as it does on claude. WHAT IT DOES NOT: shell commands.
-    // Those stay under `--sandbox workspace-write` (buildCodexArgs), and under the policy `never` a
+    // Those stay under the stage's permission profile (`fenceToml`, below), and under the policy `never` a
     // command that asks to leave the sandbox is still refused.
     lines.push(`default_tools_approval_mode = "approve"`);
     lines.push("");
@@ -155,5 +157,30 @@ export function renderCodexConfigToml({ mcpConfig, allowedTools, developerInstru
   if (webFetchRequested(allowedTools))
     emitServer("fetch", { command: nodeBin, args: [FETCH_SERVER], env: {}, enabledTools: ["fetch_url"] }, { forwardCreds: false });
 
+  if (fence) lines.push(...fenceToml(fence));
   return lines.join("\n").trimEnd() + "\n";
+}
+
+// ── the stage's permission profile: what its shell commands may read and write ──────────────────────
+// codex's `workspace-write` sandbox confines where a command WRITES and lets it read the whole disk, the
+// install's settings files and the program's own sign-in included. A permission profile confines reading
+// too (the vendor's Permissions guide, a beta feature since 0.138.0; the floor is 0.154.0): a stage's
+// commands read the platform's own paths, the instruction trees and the temp folders, and write the run
+// folder, their working folder and the temp folders. Nothing else is readable, so a page a stage fetched
+// cannot get a command to print the account's files. The temp folders stay writable because
+// `workspace-write` let commands use them and stages write their output through the shell.
+//
+// ONLY WITH THE SANDBOX ON. Under the bypass codex builds no sandbox, so a profile would enforce nothing;
+// the caller passes no `fence` then, and the file stays what it was. With the sandbox on the command line
+// must carry no `--sandbox`, or codex "uses those older sandbox settings instead of default_permissions"
+// (Permissions guide) and the fence is off without a word; `buildCodexArgs` holds that.
+export const FENCE_PROFILE = "clearotron-stage";
+export function fenceToml({ runDir = null, readRoots = [] } = {}) {
+  const key = (p) => tomlString(p);
+  const out = [`[permissions.${FENCE_PROFILE}.filesystem]`,
+    `":minimal" = "read"`, `":tmpdir" = "write"`, `":slash_tmp" = "write"`];
+  for (const r of [...new Set(readRoots.filter(Boolean))]) out.push(`${key(r)} = "read"`);
+  if (runDir) out.push(`${key(runDir)} = "write"`);
+  out.push("", `[permissions.${FENCE_PROFILE}.filesystem.":workspace_roots"]`, `"." = "write"`, "");
+  return out;
 }

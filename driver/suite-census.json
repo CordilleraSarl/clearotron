@@ -1077,6 +1077,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-stage-reads-only-its-own-folders.test.mjs": {
+          "tests": 8,
+          "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
         "a-stale-classification-names-the-rows-that-moved.test.mjs": {
           "tests": 6,
           "asserts": 24,
@@ -2093,7 +2099,7 @@
         },
         "deny-authority-write.test.mjs": {
           "tests": 17,
-          "asserts": 34,
+          "asserts": 35,
           "skips": 0,
           "todos": 0
         },
@@ -2501,7 +2507,7 @@
         },
         "engine.anthropic.test.mjs": {
           "tests": 65,
-          "asserts": 245,
+          "asserts": 246,
           "skips": 0,
           "todos": 0
         },

@@ -311,7 +311,7 @@ export function absolutizeSkillRefs(message, skillsDir, resolve = null) {
 // ANTHROPIC-ONLY, AND MEASURED RATHER THAN ASSUMED. The obvious next step is to apply the same rule to
 // openai-agent's `--add-dir` (buildCodexArgs pushes the identical root), and it would accomplish nothing:
 // that engine spawns with `cwd = resolveSpawnCwd({cwd, runDir})` — the RUN DIR (deliberately) —
-// under `--sandbox workspace-write`, which makes cwd a writable root on its own. Dropping the flag there
+// under its sandbox, which makes cwd a writable root on its own. Dropping the flag there
 // would remove a grant the seat still holds by another door and let this comment claim an isolation the
 // engine does not have. Codex-side isolation is a cwd question, and a separate decision.
 /**
@@ -371,7 +371,7 @@ export const COMMAND_TOOLS = Object.freeze(["Bash", "PowerShell", "Monitor"]);
 /** The program's tools that write a file. A result that comes back an error is a write that failed. */
 const FILE_WRITE_TOOLS = Object.freeze(["Write", "Edit", "MultiEdit", "NotebookEdit"]);
 
-export function buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig, allowedTools, maxBudgetUsd, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null }) {
+export function buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig, allowedTools, maxBudgetUsd, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null }) {
   const input = absolutizeSkillRefs(message, skillsDir, resolveSkill);
   const args = ["-p", "--output-format", "stream-json", "--verbose", "--include-partial-messages"];
   const m = claudeModel(model); if (m) args.push("--model", m);
@@ -401,7 +401,7 @@ export function buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig
   const cap = maxBudgetUsd ?? (process.env.CLEAROTRON_MAX_BUDGET_USD ? Number(process.env.CLEAROTRON_MAX_BUDGET_USD) : null);
   if (cap != null && Number.isFinite(cap)) args.push("--max-budget-usd", String(cap));
   // FILE ACCESS: claude's Read/Write/Edit tools are confined to cwd + --add-dir roots even under
-  // acceptEdits (cwd is a neutral tmpdir here), so the compute-skills tree (skillsDir — the
+  // acceptEdits (cwd is a neutral tmpdir here; reads only since READ_FENCE, below), so the compute-skills tree (skillsDir — the
   // driver-co-located skills/) and THIS run's dir are added here — every stage output and prior-stage artifact
   // is absolute under runDir. Two NARROW roots (least-privilege; the skills tree is a leaf, NOT an agent
   // workspace — no SOUL.md/MEMORY.md/memory/*). Neither root has a CLAUDE.md/AGENTS.md at its head AND we do
@@ -424,12 +424,32 @@ export function buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig
   // boundary cannot drift from what was granted", and that property is what makes dropping the root
   // safe: a boundary still describing a root that was never handed out would be the sibling defect,
   // created by the fix for this one. `granted` is that single value.
-  const rd = runDirGrant({ runDir, dispatch: input, seatWrites });
+  // A RESUMED TURN KEEPS THE GRANT ITS STAGE WAS DISPATCHED WITH. The warm patch names its files through
+  // rel(), so judged on its own text a stage that writes nothing itself would lose the run folder on the
+  // retry. That cost nothing while reads were unconfined; under READ_FENCE it would take away the folder
+  // the stage has been reading. The gateway passes the stage's own dispatch as `grantDispatch`.
+  const rd = runDirGrant({ runDir, dispatch: grantDispatch ?? input, seatWrites });
   const granted = rd.grant ? runDir : null;
   if (granted) args.push("--add-dir", granted);
   const boundary = writeBoundarySettings({ skillsRoots: grantRoots, profilesDir, runDir: granted });
-  if (boundary) args.push("--settings", boundary);
+  args.push("--settings", stageSettings(boundary));
   return { args, input, grantNote: rd.note };
+}
+
+/**
+ * THE FILE TOOLS READ ONLY THE STAGE'S OWN FOLDERS. Without this, Read, Grep and Glob open any path the
+ * account can open, the install's settings file and the key that signs access keys included, and a page
+ * a stage fetched can ask for exactly that. The vendor's setting makes those tools refuse any path outside
+ * the session's working directories "in every permission mode" (settings reference,
+ * `permissions.blockReadsOutsideWorkingDirectories`, Claude Code 2.1.257 or later; the floor is 2.1.280).
+ * The working directories are the neutral cwd and the `--add-dir` roots above: the instruction trees and,
+ * when granted, the run folder. Every turn carries it, the engine probe's included.
+ */
+export const READ_FENCE = Object.freeze({ blockReadsOutsideWorkingDirectories: true });
+
+/** The one `--settings` value a turn carries: the read fence, and the write boundary's hook when there is one. */
+export function stageSettings(boundary) {
+  return JSON.stringify({ permissions: { ...READ_FENCE }, ...(boundary ? JSON.parse(boundary) : {}) });
 }
 
 /** POSIX single-quoting — the hook `command` is run through a shell, and a checkout path may hold spaces. */
@@ -499,9 +519,9 @@ export const anthropicAgentEngine = {
   // doctrine tree, the profile store and `<runDir>/_driver/` at the moment of the write. That is a real
   // boundary and this engine has it.
   writeBoundary: "enforced",
-  async runTurn({ message, model, thinking, timeoutSec, resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, stallSec, progressFiles } = {}) {
+  async runTurn({ message, model, thinking, timeoutSec, resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null, stallSec, progressFiles } = {}) {
     if (!message) throw new Error("anthropic-agent.runTurn: message is required");
-    const { args, input, grantNote } = buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites });
+    const { args, input, grantNote } = buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites, grantDispatch });
     // the cross-check speaks. Driver stderr is what an operator reads, and it is where the other
     // drift notices in this engine already land ([ledger], [env-aliases], [queue-watch]).
     if (grantNote) process.stderr.write(`${grantNote}\n`);
