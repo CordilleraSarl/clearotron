@@ -1,5 +1,5 @@
 ---
-"clearotron-driver": patch
+"clearotron-driver": minor
 ---
 
 Before you upgrade: a new operator key must now name the tools it may use, for example `--verbs start_run,stop_run`. Keys already issued keep working.
