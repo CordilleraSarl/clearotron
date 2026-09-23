@@ -63,6 +63,7 @@ import { fileURLToPath } from "node:url";
 import { isScannable, EXCLUDED } from "./strip-tracker-citations.mjs";
 import { publishedOf } from "../shared/reference-guard-classes.mjs";
 import { newBareCitations } from "./citation-line-check.mjs";
+import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const APPLY = process.argv.includes("--apply");
@@ -357,7 +358,7 @@ export function surveyOf(files, read) {
 
 const total = (o) => Object.values(o).reduce((a, n) => a + n, 0);
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (isEntrypoint(import.meta.url)) {
   // THE PUBLISHED POPULATION, NOT THE INDEX — the same helper, for the same reason, as the opener sweep.
   const all = execFileSync("git", ["-C", ROOT, "ls-files"], { encoding: "utf8", maxBuffer: 1 << 28 }).split("\n").filter(Boolean);
   const pub = publishedOf(all, ROOT);

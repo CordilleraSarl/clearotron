@@ -105,6 +105,7 @@ import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -384,4 +385,4 @@ function main() {
   process.exit(1);
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) main();
+if (isEntrypoint(import.meta.url)) main();

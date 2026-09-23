@@ -42,6 +42,7 @@
 import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { CLASSES, fileOffences, isExempt } from "../shared/writing-standard-classes.mjs";
+import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 
 const baseArg = () => {
   const i = process.argv.indexOf("--base");
@@ -119,4 +120,4 @@ function main() {
   process.exit(1);
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) main();
+if (isEntrypoint(import.meta.url)) main();
