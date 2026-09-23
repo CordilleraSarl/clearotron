@@ -2611,8 +2611,7 @@ if (isMain) {
   // `--background` installs and enables service units. There are none on Windows, so both the offer
   // and the sentence naming what manages them were wrong there — a reader was told to run a flag that
   // cannot succeed and given a service manager that is not on the machine and cannot be put there.
-  // Reported from a real run. Same rule as the engine refusal above: do not name a route this platform
-  // does not have.
+  // Reported from a real run. The rule: do not name a route this platform does not have.
   for (const line of backgroundOfferLines({ demo: DEMO, keep: DEMO_KEEP || READER_BASE, manager: backgroundManager(), start: invoke("start") })) say(line);
   say("");
 }

@@ -3646,8 +3646,8 @@
           "todos": 0
         },
         "preflight-engine-binary.test.mjs": {
-          "tests": 14,
-          "asserts": 40,
+          "tests": 13,
+          "asserts": 39,
           "skips": 0,
           "todos": 0
         },
@@ -4948,8 +4948,8 @@
           "todos": 0
         },
         "the-advice-fits-the-machine-it-is-printed-on.test.mjs": {
-          "tests": 17,
-          "asserts": 67,
+          "tests": 15,
+          "asserts": 61,
           "skips": 0,
           "todos": 0
         },
@@ -5303,7 +5303,7 @@
         },
         "the-install-pages-describe-the-install-this-build-performs.test.mjs": {
           "tests": 11,
-          "asserts": 90,
+          "asserts": 87,
           "skips": 0,
           "todos": 0
         },
@@ -5902,8 +5902,8 @@
           "todos": 0
         },
         "under-wsl-the-windows-binary-on-path-is-not-the-engine.test.mjs": {
-          "tests": 9,
-          "asserts": 31,
+          "tests": 8,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },

@@ -124,26 +124,3 @@ test("the production pattern matches a Windows drive and not an ordinary /mnt di
   for (const p of ["/mnt/datadisk1/x/claude", "/mnt/data/claude", "/opt/tools/claude", "/usr/bin/claude", "/mnt/claude"])
     assert.ok(!ON_A_WINDOWS_DRIVE.test(p), `${p} is not a Windows drive`);
 });
-
-test("the wizard states the platform refusal BEFORE it resolves a candidate, and offers the way out", () => {
-  // A SOURCE READ, AND IT IS THE SECOND-BEST ANSWER. The wizard is a loop inside `runCli`, not a
-  // function anything can call with a platform, and the existing wizard checks drive it as a real
-  // child process — so a Linux runner cannot make it take the win32 branch without threading a
-  // platform through a CLI entry point, which is a larger change than this defect warrants.
-  //
-  // WHAT THIS CANNOT CATCH, stated rather than left for someone to discover: it proves the call is
-  // written and where it sits, not that the branch behaves. `platformEngineRefusal` is driven
-  // directly elsewhere, and the ORDER is what is checked here, because the order is the whole defect
-  // — the wizard's own no-engine escapes sit behind "no usable binary", and on Windows that test is
-  // false, so a refusal placed after resolution would be reached only after the proof turn is spent.
-  const src = readFileSync(new URL("../../bin/onboard.mjs", import.meta.url), "utf8");
-  const step = src.slice(src.indexOf("engine: for (;;)"));
-  const refusal = step.indexOf("platformEngineRefusal()");
-  const resolveCall = step.indexOf("resolveEngineBin(process.env[eng.env]");
-  assert.ok(refusal > 0, "the wizard does not state the platform refusal at all");
-  assert.ok(resolveCall > 0, "the engine step no longer resolves a candidate the way this reads it");
-  assert.ok(refusal < resolveCall,
-    "the refusal is stated AFTER a candidate is resolved, so a Windows reader still meets found-then-failed");
-  assert.match(step.slice(refusal, refusal + 400), /Finish setup with no engine configured\?/,
-    "finishing with no engine is not OFFERED, so the way out is a menu row the reader has to notice");
-});

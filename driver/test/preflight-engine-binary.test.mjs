@@ -230,42 +230,26 @@ test("CLEAROTRON_CLAUDE_PATH=/nope refuses BEFORE any run dir exists", async () 
   assert.ok(!existsSync(join(root, "pool")) || readdirSync(join(root, "pool")).length === 0, "and nothing was published");
 });
 
-// ── item 3 — native Windows refuses by PLATFORM, before anything reads PATH ────────────────────
+// ── NATIVE WINDOWS IS NOT REFUSED BY PLATFORM ─────────────────────────────────────────────────────
 //
-// INSTALL.md has promised since launch that a native-Windows run "refuses at preflight" and names the
-// reason. Nothing implemented it. What a Windows user actually reached was the PATH resolver, which
-// splits on ":" — so `C:\Users\…` is cut at the drive letter, and the refusal told them their
-// `claude.cmd` was not on PATH while printing a PATH it had just mangled. A true sentence about a false
-// premise.
+// The door refused native Windows by name, on three grounds: a stage was stopped by signalling its
+// process group, the immediate stop read start times from /proc or ps, and the write-boundary hook was
+// quoted for a POSIX shell. Each has a Windows answer now, so Windows takes the same door as every other
+// platform: the program is looked for, and the door refuses only what it would refuse anywhere.
 //
-// `platform` is injectable precisely because the population this protects cannot run this suite to find
-// out: asserting it on win32 only would mean asserting it nowhere.
+// `platform` stays injectable because the population this serves cannot run this suite to find out.
 
-test("item 3: native Windows refuses by name, and never blames PATH", () => {
-  assert.throws(() => preflightEngineBinary({}, { platform: "win32" }),
-    /does not run on native Windows/,
-    "a native-Windows run still falls through to the PATH resolver INSTALL.md says it does not reach");
-
+test("native Windows takes the ordinary door: a program it can start is found, not refused by platform", () => {
+  const dir = mkdtempSync(join(tmpdir(), "engine-win-"));
+  const exe = join(dir, "claude.exe");
+  writeFileSync(exe, Buffer.concat([Buffer.from("MZ"), Buffer.alloc(62)]));
+  const r = preflightEngineBinary({ Path: dir, PATHEXT: ".COM;.EXE;.BAT;.CMD" }, { platform: "win32", enginesDir: null });
+  assert.equal(r.resolved, exe, "native Windows was refused, or its program was not found where Windows would find it");
   let msg = "";
-  try { preflightEngineBinary({}, { platform: "win32" }); } catch (e) { msg = e.message; }
-  assert.ok(!/PATH=/.test(msg),
-    "the win32 refusal quotes a PATH — on win32 that value has been torn at the drive letter by the "
-    + "':' split, so quoting it sends the reader after a path they never set");
-  assert.match(msg, /WSL2|devcontainer/, "the refusal must name the route that does work, or it is a dead end");
-});
-
-test("item 3: every other platform is unchanged — the guard is a refusal, not a new default", () => {
-  // The property is NOT "linux never throws" — with an unresolvable binary it throws for good reasons,
-  // and asserting otherwise was wrong in the first draft of this test. The property is that no platform
-  // other than win32 can ever reach the PLATFORM refusal, i.e. the guard did not become a second engine
-  // selection path.
-  for (const platform of ["linux", "darwin", "freebsd"]) {
-    let msg = "";
-    try { preflightEngineBinary({ CLEAROTRON_CLAUDE_PATH: "definitely-not-a-real-binary" }, { platform }); }
-    catch (e) { msg = e.message; }
-    assert.ok(!/does not run on native Windows/.test(msg),
-      `${platform} reached the win32 refusal — the platform guard is firing on platforms it does not describe`);
-  }
+  try { preflightEngineBinary({ Path: mkdtempSync(join(tmpdir(), "engine-win-empty-")) }, { platform: "win32", enginesDir: null }); }
+  catch (e) { msg = e.message; }
+  assert.match(msg, /not on PATH/, "a Windows machine with no program was not told the ordinary reason");
+  assert.doesNotMatch(msg, /does not run on native Windows|WSL2/, "the platform refusal is back");
 });
 
 // ── SECOND FINDING — HALF A'S LEDGER WAS A PLAN, AND I RELAYED IT AS A RECORD ───────────────

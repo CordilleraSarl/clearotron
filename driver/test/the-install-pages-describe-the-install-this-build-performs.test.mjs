@@ -17,7 +17,7 @@ import { fileURLToPath } from "node:url";
 import { ENGINE_BINARIES, MODELS, resolveEngineProgram } from "../driver.config.mjs";
 import { CLOUD_SETTINGS, CLOUD_SWITCH, BILLING_MODES, resolveAuthMode } from "../engine/auth.mjs";
 import { claudeModel } from "../engine/anthropic-agent.mjs";
-import { platformEngineRefusal, installSizeLine, engineOptions, leaveDemoAdvice } from "../../bin/onboard.mjs";
+import { installSizeLine, engineOptions, leaveDemoAdvice } from "../../bin/onboard.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const read = (p) => readFileSync(join(ROOT, p), "utf8");
@@ -85,9 +85,10 @@ test("the install pages leave installing the reasoning program to setup", () => 
     + "short, unattended session of Claude Code or the Codex CLI. Setup installs the one your engine uses, for this "
     + "machine, when you say yes. A copy already on the machine is used instead and keeps updating itself."),
   "INSTALL.md §1 no longer opens the reasoning program with the approved paragraph");
-  // "Offers": setup asks before it installs anything, and says first how much space the program takes.
-  assert.match(one, /^\s*npx clearotron install {2}# offers to install the reasoning program if the machine has none, and shows you how to sign it in$/m,
-    "the Windows steps no longer end in the one install line");
+  // "Offers": setup asks before it installs anything, and says first how much space the program takes. The
+  // line lived in INSTALL.md's WSL2 steps until native Windows ran; the quickstart carries it now.
+  assert.match(read("QUICKSTART.md"), /^\s*npx clearotron install {2}# offers to install the reasoning program if the machine has none, and shows you how to sign it in$/m,
+    "the quickstart's install line no longer says that setup offers to install the program");
   assert.match(flat(one), /the program setup installed \(doctor prints its path\), or `claude` if the machine has its own/,
     "the sign-in table still sends the reader to a `claude` command that setup's copy does not put on PATH");
   // The quickstart's table sends the reader to the same sign-in, for the same reason: setup's copy is not on PATH.
@@ -105,14 +106,20 @@ test("the install pages leave installing the reasoning program to setup", () => 
     "the README names two of the three ways a turn is paid for");
 });
 
-test("the root pages give the native-Windows reason the run door gives", () => {
-  const said = platformEngineRefusal({ platform: "win32" });
-  assert.match(said, /POSIX path and process semantics/, "the run door's reason changed; the pages below must follow it");
-  // AGENTS.md is read by whoever works on this repository, and it gave its own reason until it was held here.
-  for (const f of ["README.md", "INSTALL.md", "QUICKSTART.md", "AGENTS.md"]) {
+test("the root pages say native Windows runs, and none still says it is refused", () => {
+  // The run door no longer refuses native Windows, so a page that says a clearance is refused there, or
+  // gives the old reason for it, describes a build that no longer exists.
+  const said = {
+    "README.md": "On Windows it runs natively, from PowerShell: no WSL2, no Git and no administrator rights.",
+    "INSTALL.md": "On Windows everything runs natively in PowerShell, with no WSL2, no Git and no administrator rights",
+    "QUICKSTART.md": "On Windows everything runs natively in PowerShell, with no WSL2, no Git and no administrator rights",
+    "AGENTS.md": "It runs on macOS, Linux and native Windows.",
+  };
+  for (const [f, line] of Object.entries(said)) {
     const doc = flat(read(f));
-    assert.ok(doc.includes("POSIX path and process semantics"), `${f} does not give the run door's reason`);
-    assert.doesNotMatch(doc, /the POSIX way/, `${f} still says the engine finds the program "the POSIX way", which the code no longer says`);
+    assert.ok(doc.replace(/\*\*/g, "").includes(line), `${f} does not say what native Windows now does`);
+    assert.doesNotMatch(doc, /POSIX path and process semantics|refused (?:there )?before it\s+starts|WSL2 for a clearance/,
+      `${f} still says a clearance is refused on native Windows`);
   }
 });
 
@@ -149,14 +156,13 @@ test("the cloud-account section says a gateway alone is accepted, as the billing
     "§3b does not say that a background start carries the cloud settings, adds only what the file lacks, or that both files must change");
 });
 
-test("the quickstart's install line says what it installs, as the reference's does", () => {
-  const comment = /^\s*npx clearotron install {2}(# .+)$/m.exec(section(read("INSTALL.md"), "1. Prerequisites"));
-  assert.ok(comment, "INSTALL.md §1's install line carries no comment to hold the quickstart to");
+test("the quickstart's install line says what it installs", () => {
   const block = /\n## Install\n\n```bash\n([\s\S]*?)```/.exec(read("QUICKSTART.md"));
   assert.ok(block, "QUICKSTART.md has no bash block under ## Install");
-  // The same line as INSTALL.md §1, route and comment both: one install route in every document.
-  assert.ok(block[1].split("\n").includes(`npx clearotron install  ${comment[1]}`),
-    "QUICKSTART.md's install block does not say, as INSTALL.md §1 does, that the install command installs the reasoning program");
+  // INSTALL.md §1 carried the same line in its WSL2 steps, and the two were held together. Those steps
+  // went when native Windows ran, so the line is held here, route and comment both.
+  assert.ok(block[1].split("\n").includes("npx clearotron install  # offers to install the reasoning program if the machine has none, and shows you how to sign it in"),
+    "QUICKSTART.md's install block does not say that the install command installs the reasoning program");
   // Still a block a reader can paste: every line is a command, with at most a comment after it.
   for (const line of block[1].trim().split("\n"))
     assert.match(line, /^(?:npm|npx clearotron|clearotron) [^#]+?(?: {2}# .+)?$/, `QUICKSTART.md's install block has a line that is not a command: ${line}`);
@@ -356,16 +362,15 @@ test("the release notes promise what setup does", () => {
 test("the release notes say which machines a sentence holds on, where the code decides it by machine", () => {
   // One entry of a note: each paragraph reaches the releases page on its own (.changeset/README.md).
   const entry = (note, re) => releaseNote(note).split(/\n\s*\n/).map(flat).find((p) => re.test(p));
-  // DEMO MODE NAMES SETUP ONLY OFF WINDOWS. On native Windows the run door refuses on the platform, so the
-  // advice names WSL2 and the devcontainer, and a note saying demo mode points to setup is false there.
+  // DEMO MODE NAMES SETUP. The note below says so of every machine outside Windows, which stays true.
   const claude = ENGINE_BINARIES["anthropic-agent"];
   assert.match(leaveDemoAdvice(claude, { platform: "linux", command: "clearotron install" }).join(" "), /clearotron install/,
     "demo mode's advice off Windows no longer names setup; the note below must change with it");
-  assert.doesNotMatch(leaveDemoAdvice(claude, { platform: "win32", command: "clearotron install" }).join(" "), /clearotron install|setup/i,
-    "demo mode's advice on Windows now names setup; the note below can drop its qualifier");
+  // On Windows it names setup too now. The note's "Outside Windows" was written while Windows was refused; it
+  // stays true, and the note is not rewritten after it has shipped in a beta.
   const demo = entry("the-reasoning-program-comes-with-the-install", /demo mode/);
   assert.ok(demo, "the install note no longer says what demo mode points to");
-  assert.match(demo, /Outside Windows/, "the note says demo mode points to setup on every machine, and on Windows it names WSL2 instead");
+  assert.match(demo, /Outside Windows/, "the shipped note lost the qualifier it shipped with");
   // A CLOUD'S OWN SWITCH STOPS ONLY A CLAUDE SEARCH. The Codex engine never reads the switches, so on a Codex
   // install one left on stops nothing, and the upgrade warning is true on a Claude install alone.
   const env = { CLAUDE_CODE_USE_FOUNDRY: "1" };

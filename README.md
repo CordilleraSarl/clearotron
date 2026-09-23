@@ -42,14 +42,14 @@ exits, and keeps the folder the same way.
 npx clearotron install
 ```
 
-Node 22.13 or newer, on macOS or Linux. It needs no root: it puts the program under `~/.local`, with the
+Node 22.13 or newer, on macOS, Linux or Windows. It needs no root: it puts the program under `~/.local`, with the
 `clearotron` command in `~/.local/bin`, then asks one question at a time and checks each credential
 before it saves it. Every command below uses the `clearotron` it installed — the same channel you
 installed from — so if `~/.local/bin` is not on your `PATH` yet, type the full path,
-`~/.local/bin/clearotron`, instead. **On Windows the demo above runs natively; a
-real clearance needs WSL2.** Native Windows clearances are planned for a later release. Until then the
-engine does not run on native Windows: it spawns each stage with POSIX path and process semantics, so
-a clearance is refused there before it starts.
+`~/.local/bin/clearotron`, instead. **On Windows it runs natively, from PowerShell: no WSL2, no Git and
+no administrator rights.** Install it with `npm install --global clearotron`, then run `clearotron install`.
+It runs in the window you start it from, as on a Mac: closing the window stops a search, and the next
+`clearotron start` picks it up again.
 
 Installing with npm's own global form instead is covered in [INSTALL.md](INSTALL.md) §2.
 

@@ -2282,8 +2282,13 @@ function windowsProgramIn(dir, name, spec, env) {
 }
 
 /** Can this candidate be spawned as the engine? `{ok: true, version}` or `{ok: false, why}`. */
+/** Why a candidate the lookup cannot start is refused, in the platform's own terms: Windows has no execute bit. */
+const notStartable = (platform) => platform === "win32"
+  ? "not a program Windows can start (it is missing, is a folder, or is not an .exe file)"
+  : "not an executable file (it is missing, is a directory, or lacks the execute bit for this user)";
+
 function engineCandidate(p, spec, platform = process.platform) {
-  if (!isExecFile(p, platform)) return { ok: false, why: "not an executable file (it is missing, is a directory, or lacks the execute bit for this user)" };
+  if (!isExecFile(p, platform)) return { ok: false, why: notStartable(platform) };
   const own = owningPackage(p);
   const vendor = Boolean(spec.package) && own?.name === spec.package;
   if (vendor && !runsDirectly(p)) {
@@ -2366,26 +2371,11 @@ export function resolveEngineProgram(engine, { env = process.env, enginesDir = u
  * registry's.
  */
 export function preflightEngineBinary(env = process.env, { platform = process.platform, enginesDir = undefined, wsl = null, onWindowsDrive = null } = {}) {
-  // item 3 — NATIVE WINDOWS REFUSES BY NAME, BEFORE ANYTHING READS PATH.
-  //
-  // INSTALL.md promises a native-Windows run "refuses at preflight". Nothing implemented it, so what a
-  // Windows user actually got was a PATH walk that split on ":", tore `C:\Users\…` in half at the drive
-  // letter, and reported their `claude.cmd` as "not on PATH". The walk now splits on the platform's own
-  // delimiter, and the refusal stands anyway, because its real grounds were never the lookup: a stage runs
-  // as its own process group and is stopped by signalling that group, an immediate stop identifies the
-  // process from /proc or ps, and the write-boundary hook is quoted for a POSIX shell. Native Windows has
-  // none of that, and where the program is found changes none of it.
-  //
-  // This fires FIRST so that no message about a PATH reaches a reader whose platform is the answer.
-  //
-  // `platform` is injectable so the refusal is testable off win32 — the population this protects is the
-  // one that cannot run this suite to find out.
-  if (platform === "win32") {
-    throw new Error("[preflight] this engine does not run on native Windows. Each stage runs as its own process "
-      + "group and is stopped by signalling that group, which native Windows cannot do, so a stopped stage would "
-      + "leave the tools it started still running. Run it under WSL2, or in the devcontainer (.devcontainer/), "
-      + "where the documented install path applies unchanged.");
-  }
+  // NATIVE WINDOWS RUNS. This door refused it by name, on three grounds, and each now has a Windows
+  // answer: a stage is stopped as a process tree rather than a group (engine/engine-spawn.mjs), the
+  // immediate stop reads start times through PowerShell (claim-liveness.mjs), and the write-boundary hook
+  // runs with no shell (anthropic-agent.mjs, writeBoundarySettings). `platform` stays a parameter, because
+  // the lookup below answers by it.
   const engine = (env.CLEAROTRON_AI || DEFAULT_ENGINE_ID).trim().toLowerCase();
   const spec = ENGINE_BINARIES[engine];
   if (!spec) return { engine, binEnv: null, bin: null, resolved: null };   // selectEngine owns this refusal
@@ -2429,7 +2419,7 @@ export function preflightEngineBinary(env = process.env, { platform = process.pl
       ? `. Passed over because they sit on a Windows drive, and a Windows build cannot run a stage here: ${r.skipped.join(", ")}` : "";
     throw new Error(`[preflight] the ${engine} engine cannot run: ${where} names "${bin}", which is `
       + (hasSep(bin, platform)
-        ? (r.rejected[0]?.why ?? "not an executable file (it is missing, is a directory, or lacks the execute bit for this user)")
+        ? (r.rejected[0]?.why ?? notStartable(platform))
         : `not on PATH as an executable file (PATH=${env.PATH || "(empty)"})`
           + (r.explicit || installedRefused ? "" : ", and Clearotron has not installed one")
           + (passedOver ? `. Passed over: ${passedOver}` : "")
