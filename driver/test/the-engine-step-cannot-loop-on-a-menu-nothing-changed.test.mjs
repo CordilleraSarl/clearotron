@@ -92,14 +92,12 @@ test("what 'no engine' means is said in ONE place, so the two routes cannot drif
     `the no-engine wording appears ${hits} times; the menu's last row and the loop's escape must both `
     + "route through sayNoEngine(), or one of them will be reworded alone");
   assert.match(src, /const sayNoEngine = \(\) => \{/, "…and that one place is a named helper");
-  // THREE ROUTES NOW, and the count is kept exact rather than relaxed to "at least". The third is the
-  // native-Windows refusal at the top of the engine step: no engine can run there, so setup offers
-  // finishing without one instead of resolving a binary it cannot start. It reaches the same ending as
-  // the other two and must reach it through the same helper — a route that re-worded the sentence
-  // locally is exactly what this counts.
+  // TWO ROUTES, and the count is kept exact rather than relaxed to "at least". A third, the native-Windows
+  // refusal at the top of the engine step, went when native Windows began to run searches. A route that
+  // re-worded the sentence locally is exactly what this counts.
   const calls = src.split("sayNoEngine()").length - 1;
-  assert.equal(calls, 3, `sayNoEngine() is called ${calls} time(s); every route out must use it — `
-    + "the menu's last row, the loop's escape, and the platform refusal");
+  assert.equal(calls, 2, `sayNoEngine() is called ${calls} time(s); every route out must use it — `
+    + "the menu's last row and the loop's escape");
 });
 
 test("the fix did NOT move which engine Enter selects", () => {

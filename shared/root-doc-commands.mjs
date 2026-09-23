@@ -39,7 +39,7 @@ export const NPX = /npx clearotron [a-z]/g;
  * fresh `npx`, which resolves whichever channel npm picks at that moment — the stable, for a reader who
  * installed the beta (owner ruling, 2026-09-18).
  */
-export const GLOBAL_INSTALL = /npm install -g clearotron|npx clearotron(?:@[\w.-]+)? install\b/;
+export const GLOBAL_INSTALL = /npm install (?:-g|--global) clearotron|npx clearotron(?:@[\w.-]+)? install\b/;
 /** The paragraph that is ABOUT the shim, where the short form is the point. */
 export const SHIM_PARAGRAPH = /short form|on your `PATH`|stop typing/;
 
@@ -53,6 +53,9 @@ export function commandSites(file, text) {
   const lines = String(text ?? "").split("\n");
   const installedAt = lines.findIndex((l) => GLOBAL_INSTALL.test(l));
   const globalFrom = installedAt === -1 ? Infinity : installedAt + 1;
+  // A sentence can install and then use the command on one line ("`npm install --global clearotron`, then
+  // `clearotron install`"): a bare site on the install's own line counts as after it when it comes later.
+  const installCol = installedAt === -1 ? Infinity : lines[installedAt].search(GLOBAL_INSTALL);
   const para = [];
   let n = 0;
   for (const line of lines) { if (line.trim() === "") n++; para.push(n); }
@@ -60,7 +63,8 @@ export function commandSites(file, text) {
   const bare = [], npx = [];
   lines.forEach((line, i) => {
     if (BARE.test(line)) {
-      bare.push({ file, line: i + 1, text: line.trim(), paragraph: textOf(para[i]), afterGlobalInstall: i + 1 > globalFrom });
+      const afterGlobalInstall = i + 1 > globalFrom || (i === installedAt && line.search(BARE) > installCol);
+      bare.push({ file, line: i + 1, text: line.trim(), paragraph: textOf(para[i]), afterGlobalInstall });
     }
     npx.push(...(line.match(NPX) ?? []).map(() => ({ file, line: i + 1 })));
   });
