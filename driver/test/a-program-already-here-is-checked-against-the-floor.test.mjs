@@ -19,10 +19,12 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { olderThanFloor, ENGINE_BINARIES } from "../driver.config.mjs";
-import { readFileSync } from "node:fs";
+import { readFileSync, mkdtempSync, writeFileSync, rmSync } from "node:fs";
 import { dirname, join } from "node:path";
+import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
-import { foundWords, cannotRunLine } from "../../bin/onboard.mjs";
+import { spawn, spawnSync } from "node:child_process";
+import { foundWords, cannotRunLine, floorRefusesNewestModel } from "../../bin/onboard.mjs";
 
 const CLAUDE = ENGINE_BINARIES["anthropic-agent"];
 const FLOOR = CLAUDE.floor;
@@ -64,7 +66,7 @@ test("setup's row names the version and the floor, and says the same thing when 
   // start, and describing this one that way sends the reader to look for a broken install they do not have.
   assert.doesNotMatch(said, /incomplete|won't run|cannot run|isn't there/i,
     `an old copy is described as one that cannot run: "${said}"`);
-  assert.match(said, /refuses the newest model|runs the one before it/i,
+  assert.match(said, /newest Claude models need a newer version/,
     `the explanation does not say what actually goes wrong: "${said}"`);
 });
 
@@ -88,4 +90,124 @@ test("a current copy reads as found, and one whose version was never read is not
   const unread = foundWords(CLAUDE, copy(null));
   assert.equal(unread, "found on this computer");
   assert.doesNotMatch(unread, /problem|older/, `a copy whose version could not be read is accused of being old: "${unread}"`);
+});
+
+test("an old Codex is named by its version, the floor and the fix, and nothing is claimed about its models", () => {
+  // The model sentence was measured on Claude alone. Codex below its floor gets the same facts and the same
+  // fix, and no sentence about which model it runs.
+  const CODEX = ENGINE_BINARIES["openai-agent"];
+  const old = "0.150.1";
+  assert.equal(olderThanFloor(old, CODEX.floor), true, `${old} no longer sorts below Codex's floor ${CODEX.floor}`);
+  assert.equal(floorRefusesNewestModel(CLAUDE), true);
+  assert.equal(floorRefusesNewestModel({ ...CLAUDE }), true, "a copy of Claude's table entry is not read as Claude");
+  assert.equal(floorRefusesNewestModel(CODEX), false);
+  assert.equal(floorRefusesNewestModel(null), false);
+  assert.equal(cannotRunLine(CODEX, copy(old, { path: "/somewhere/bin/codex" })),
+    `Codex on this computer is version ${old}. Clearotron needs ${CODEX.floor} or newer. Update it, or set ${CODEX.env} to a newer copy.`);
+  assert.equal(cannotRunLine(CLAUDE, copy(TOO_OLD)),
+    `Claude on this computer is version ${TOO_OLD}. Clearotron needs ${FLOOR} or newer. `
+    + `The newest Claude models need a newer version. Searches run on an older model instead, or stop at the first step if they name the newest one exactly. Update it, or set ${CLAUDE.env} to a newer copy.`);
+  // A copy Clearotron installed moves with `update`; any other copy is used before one setup installs, so
+  // installing another is never offered as its fix.
+  assert.match(cannotRunLine(CLAUDE, copy(TOO_OLD, { source: "installed" })), /Update it with `[^`]*update`\.$/);
+  for (const eng of [CLAUDE, CODEX]) assert.doesNotMatch(cannotRunLine(eng, copy("0.0.1")), /install/i);
+});
+
+// ── THE REAL PATHS, NOT THE FUNCTIONS ─────────────────────────────────────────────────────────────────
+//
+// The arms above call the sentence builders directly, and that is how setup came to promise "choose it to
+// see the fix" on a menu row while the path behind the choice never showed it: an old copy runs, so it
+// skipped both branches that print the paragraph. These drive doctor and setup as a person does, with a
+// stand-in program on PATH that answers `--version` with a version below the floor and does nothing else.
+const ONBOARD = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "bin", "onboard.mjs");
+const plain = (s) => String(s).replace(/\x1b\[[0-9;?]*[A-Za-z]/g, "").replace(/\r/g, "");
+function standIn(name, answer) {
+  const dir = mkdtempSync(join(tmpdir(), "floor-standin-"));
+  writeFileSync(join(dir, name), answer === null ? "#!/bin/sh\nexit 1\n" : `#!/bin/sh\necho "${answer}"\n`, { mode: 0o755 });
+  return dir;
+}
+function isolated(dir, extra = {}) {
+  const home = mkdtempSync(join(tmpdir(), "floor-home-"));
+  return { home, env: { PATH: `${dir}:${dirname(process.execPath)}:/usr/bin:/bin`, HOME: home, XDG_CONFIG_HOME: join(home, ".config"),
+    CLEAROTRON_ENGINES_DIR: join(home, "engines"), NO_COLOR: "1", TERM: "dumb", ...extra } };
+}
+
+test("doctor, run as a person runs it, names an old copy by version and fix, and claims nothing about Codex's models", () => {
+  const CODEX = ENGINE_BINARIES["openai-agent"];
+  const cases = [
+    { eng: CLAUDE, id: "anthropic-agent", name: "claude", answer: `${TOO_OLD} (Claude Code)`, version: TOO_OLD,
+      line: (bin) => `✗ ${bin} — on PATH, version ${TOO_OLD}. Clearotron needs ${FLOOR} or newer. `
+        + `The newest Claude models need a newer version. Searches run on an older model instead, or stop at the first step if they name the newest one exactly. Update it, or set ${CLAUDE.env} to a newer copy.` },
+    { eng: CODEX, id: "openai-agent", name: "codex", answer: "codex-cli 0.150.1", version: "0.150.1",
+      line: (bin) => `✗ ${bin} — on PATH, version 0.150.1. Clearotron needs ${CODEX.floor} or newer. Update it, or set ${CODEX.env} to a newer copy.` },
+  ];
+  for (const c of cases) {
+    const dir = standIn(c.name, c.answer);
+    const { home, env } = isolated(dir, { CLEAROTRON_AI: c.id });
+    try {
+      assert.equal(olderThanFloor(c.version, c.eng.floor), true, `fixture precondition: ${c.version} is not below ${c.eng.floor}`);
+      const r = spawnSync(process.execPath, [ONBOARD, "--check"], { env, encoding: "utf8", timeout: 60000 });
+      const out = plain(r.stdout);
+      assert.equal(r.status, 1, `doctor did not fail on an old ${c.eng.product}: exit ${r.status}\n${out.slice(-1500)}`);
+      const want = c.line(join(dir, c.name));
+      assert.ok(out.split("\n").some((l) => l.trim() === want), `doctor did not print\n  ${want}\n${out.slice(-2500)}`);
+      if (c.eng === CODEX) assert.doesNotMatch(out, /newest Codex models|older model|refuses the newest model/, "doctor claims something about Codex's models");
+    } finally { for (const d of [dir, home]) rmSync(d, { recursive: true, force: true }); }
+  }
+});
+
+test("doctor says when it could not check a copy's version, in one sentence true for either engine", () => {
+  // Two ways to get here: the program gives no answer, or answers in prose, which is kept as said.
+  for (const [id, name, answer, shown] of [["anthropic-agent", "claude", null, "version not read"], ["openai-agent", "codex", null, "version not read"],
+    ["anthropic-agent", "claude", "a build from source", "version a build from source"]]) {
+    const eng = ENGINE_BINARIES[id];
+    const dir = standIn(name, answer);
+    const { home, env } = isolated(dir, { CLEAROTRON_AI: id });
+    try {
+      const r = spawnSync(process.execPath, [ONBOARD, "--check"], { env, encoding: "utf8", timeout: 60000 });
+      const lines = plain(r.stdout).split("\n").map((l) => l.trim().replace(/\s+/g, " "));
+      assert.ok(lines.includes(`✓ ${join(dir, name)} — on PATH, ${shown}`), `doctor did not report the copy as found:\n${lines.join("\n").slice(0, 3000)}`);
+      const want = `· Its version could not be checked against the ${eng.floor} Clearotron needs.`;
+      assert.ok(lines.includes(want), `doctor did not print\n  ${want}\n${lines.join("\n").slice(0, 3000)}`);
+    } finally { for (const d of [dir, home]) rmSync(d, { recursive: true, force: true }); }
+  }
+});
+
+// `script` gives setup the terminal it insists on. It is util-linux's, which CI's runners carry; where it is
+// missing or is another `script`, the arm says so as a skip, never as a pass.
+const hasScript = spawnSync("script", ["--version"], { encoding: "utf8" }).stdout?.includes("util-linux");
+
+test("setup, driven in a terminal, shows the fix for an old copy when that engine is picked, then carries on", { skip: hasScript ? false : "no util-linux `script` here to give setup a terminal" }, async () => {
+  const dir = standIn("claude", `${TOO_OLD} (Claude Code)`);
+  const { home, env } = isolated(dir);
+  const child = spawn("script", ["-qfec", `${JSON.stringify(process.execPath)} ${JSON.stringify(ONBOARD)}`, "/dev/null"],
+    { env, stdio: ["pipe", "pipe", "pipe"] });
+  let out = "";
+  child.stdout.on("data", (d) => { out += d; });
+  const until = (re, ms = 30000) => new Promise((resolve, reject) => {
+    const t0 = Date.now();
+    const tick = () => (re.test(plain(out)) ? resolve() : Date.now() - t0 > ms
+      ? reject(new Error(`setup never printed ${re}:\n${plain(out).slice(-2500)}`)) : setTimeout(tick, 50));
+    tick();
+  });
+  const paragraph = `Claude on this computer is version ${TOO_OLD}. Clearotron needs ${FLOOR} or newer. `
+    + `The newest Claude models need a newer version. Searches run on an older model instead, or stop at the first step if they name the newest one exactly. Update it, or set ${CLAUDE.env} to a newer copy.`;
+  try {
+    await until(/1-\d+ \[1\] $/);
+    const menu = plain(out);
+    assert.ok(menu.includes(`Claude, by Anthropic   problem: the copy of Claude here is version ${TOO_OLD}; Clearotron needs ${FLOOR} or newer — choose it to see the fix`),
+      `the menu row does not name the old copy:\n${menu.slice(-1500)}`);
+    const before = menu.length;
+    child.stdin.write("1\r");
+    // It carries on: the next question arrives after the fix is shown.
+    await until(new RegExp(`${paragraph.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}[\\s\\S]*(\\[[Yy]/[Nn]\\]|1-\\d+ \\[\\d+\\]) $`));
+    const after = plain(out).slice(before);
+    assert.ok(after.includes(`found ${join(dir, "claude")}`), `setup did not take the copy it found:\n${after}`);
+    assert.ok(after.split("\n").some((l) => l.trim() === `! ${paragraph}`), `setup did not show the fix as its own line:\n${after}`);
+  } finally {
+    child.stdin.end();
+    child.kill("SIGTERM");
+    await new Promise((r) => (child.exitCode !== null || child.signalCode !== null ? r() : child.once("close", r)));
+    for (const d of [dir, home]) rmSync(d, { recursive: true, force: true });
+  }
 });
