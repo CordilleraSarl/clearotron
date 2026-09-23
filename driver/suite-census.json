@@ -732,7 +732,7 @@
         "a-port-refusal-names-the-file-it-reads.test.mjs": {
           "tests": 7,
           "asserts": 16,
-          "skips": 0,
+          "skips": 4,
           "todos": 0
         },
         "a-press-that-starts-late-is-not-a-page-that-did-not-move.test.mjs": {
@@ -858,7 +858,7 @@
         "a-refusal-names-the-file-when-the-command-it-offers-cannot-be-run.test.mjs": {
           "tests": 8,
           "asserts": 16,
-          "skips": 0,
+          "skips": 7,
           "todos": 0
         },
         "a-refusal-names-what-resolves-it.test.mjs": {
@@ -894,7 +894,7 @@
         "a-refused-unit-says-what-is-half-started.test.mjs": {
           "tests": 9,
           "asserts": 31,
-          "skips": 1,
+          "skips": 2,
           "todos": 0
         },
         "a-register-card-does-not-argue-with-its-own-chip.test.mjs": {
@@ -2310,7 +2310,7 @@
         "doctor-and-start-look-where-the-services-look.test.mjs": {
           "tests": 12,
           "asserts": 28,
-          "skips": 3,
+          "skips": 5,
           "todos": 0
         },
         "doctor-does-not-tick-a-billing-mode-it-cannot-see.test.mjs": {
@@ -5142,7 +5142,7 @@
         "the-demo-offers-no-background-form.test.mjs": {
           "tests": 5,
           "asserts": 19,
-          "skips": 0,
+          "skips": 1,
           "todos": 0
         },
         "the-demo-says-what-it-is-first.test.mjs": {
