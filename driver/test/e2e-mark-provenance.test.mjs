@@ -15,8 +15,8 @@
 //
 // FIXTURES ARE REAL SHAPES. The count and record documents below carry the field names and nesting
 // that driver/register-count.mjs and driver/register-records.mjs actually write, including the
-// `total: null` + `unavailable` pair and the per-term `ok`/`reason` pair. The mark names are the
-// corpus's own or plainly invented; no production matter appears here.
+// `total: null` + `unavailable` pair and the per-term `ok`/`reason` pair. The mark names are plainly
+// invented or ordinary words; no matter appears here.
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -62,7 +62,7 @@ test("a label that is neither word is UNSTATED and quotes what it found", () => 
 // ── the run's own corroboration ──────────────────────────────────────────────────────────────────────
 
 test("an UNTAKEN count is not a zero — the witness counts the two separately", () => {
-  const d = runDirWith({ "register-counts.json": counts([{ name: "ORBIT",
+  const d = runDirWith({ "register-counts.json": counts([{ name: "PROBEMARK",
     counts: { identical: { total: null, unavailable: "the credential was refused" }, containing: { total: 0 } } }]) });
   const w = registerCountsWitness([d]);
   assert.equal(w.cells, 2);
@@ -81,9 +81,9 @@ test("the witness reports no sidecar rather than an empty register", () => {
 // ── register-count-floor ─────────────────────────────────────────────────────────────────────────────
 
 test("register-count-floor passes ABOVE the floor and reports what it saw", () => {
-  const d = runDirWith({ "register-counts.json": counts([{ name: "ORBIT",
+  const d = runDirWith({ "register-counts.json": counts([{ name: "PROBEMARK",
     counts: { identical: { total: 97 }, containing: { total: 601 } } }]) });
-  const r = evalAssertion({ op: "register-count-floor", path: "_driver/register-counts.json:ORBIT",
+  const r = evalAssertion({ op: "register-count-floor", path: "_driver/register-counts.json:PROBEMARK",
     value: { identical: 45, containing: 250 } }, d);
   assert.equal(r.ok, true);
   assert.match(r.saw, /identical=97/);
@@ -91,8 +91,8 @@ test("register-count-floor passes ABOVE the floor and reports what it saw", () =
 });
 
 test("register-count-floor FAILS below the floor without proposing a lower one", () => {
-  const d = runDirWith({ "register-counts.json": counts([{ name: "ORBIT", counts: { identical: { total: 12 } } }]) });
-  const r = evalAssertion({ op: "register-count-floor", path: "_driver/register-counts.json:ORBIT",
+  const d = runDirWith({ "register-counts.json": counts([{ name: "PROBEMARK", counts: { identical: { total: 12 } } }]) });
+  const r = evalAssertion({ op: "register-count-floor", path: "_driver/register-counts.json:PROBEMARK",
     value: { identical: 45 } }, d);
   assert.equal(r.ok, false);
   assert.match(r.saw, /below the floor/);
@@ -100,9 +100,9 @@ test("register-count-floor FAILS below the floor without proposing a lower one",
 });
 
 test("AN UNTAKEN COUNT FAILS AS UNTAKEN, never as a number below the floor", () => {
-  const d = runDirWith({ "register-counts.json": counts([{ name: "ORBIT",
+  const d = runDirWith({ "register-counts.json": counts([{ name: "PROBEMARK",
     counts: { identical: { total: null, unavailable: "no register credential in scope" } } }]) });
-  const r = evalAssertion({ op: "register-count-floor", path: "_driver/register-counts.json:ORBIT",
+  const r = evalAssertion({ op: "register-count-floor", path: "_driver/register-counts.json:PROBEMARK",
     value: { identical: 45 } }, d);
   assert.equal(r.ok, false);
   assert.match(r.saw, /NOT TAKEN/);
@@ -114,7 +114,7 @@ test("AN UNTAKEN COUNT FAILS AS UNTAKEN, never as a number below the floor", () 
 
 test("register-count-floor fails when the sidecar is absent — nothing written is not nothing found", () => {
   const d = mkdtempSync(join(tmpdir(), "e2e-markprov-"));
-  const r = evalAssertion({ op: "register-count-floor", path: "_driver/register-counts.json:ORBIT", value: { identical: 45 } }, d);
+  const r = evalAssertion({ op: "register-count-floor", path: "_driver/register-counts.json:PROBEMARK", value: { identical: 45 } }, d);
   assert.equal(r.ok, false);
   assert.match(r.saw, /absent/);
   rmSync(d, { recursive: true, force: true });
@@ -122,7 +122,7 @@ test("register-count-floor fails when the sidecar is absent — nothing written 
 
 test("register-count-floor names the marks it did count when the asked-for one is missing", () => {
   const d = runDirWith({ "register-counts.json": counts([{ name: "SOMETHING ELSE", counts: { identical: { total: 9 } } }]) });
-  const r = evalAssertion({ op: "register-count-floor", path: "_driver/register-counts.json:ORBIT", value: { identical: 45 } }, d);
+  const r = evalAssertion({ op: "register-count-floor", path: "_driver/register-counts.json:PROBEMARK", value: { identical: 45 } }, d);
   assert.equal(r.ok, false);
   assert.match(r.saw, /SOMETHING ELSE/);
   rmSync(d, { recursive: true, force: true });
@@ -130,13 +130,13 @@ test("register-count-floor names the marks it did count when the asked-for one i
 
 // ── register-records-floor ───────────────────────────────────────────────────────────────────────────
 
-const rec = (territory, n) => Array.from({ length: n }, (_, i) => ({ recordId: `/mark/${territory}/${i}`, territory, mark: "ORBIT" }));
+const rec = (territory, n) => Array.from({ length: n }, (_, i) => ({ recordId: `/mark/${territory}/${i}`, territory, mark: "PROBEMARK" }));
 
 test("register-records-floor passes on enough rows across enough offices", () => {
-  const d = runDirWith({ "register-records.json": records({ marks: [{ name: "ORBIT",
-    terms: [{ term: "ORBIT", basis: "identical", ok: true, fetched: 33, total: 97 }],
+  const d = runDirWith({ "register-records.json": records({ marks: [{ name: "PROBEMARK",
+    terms: [{ term: "PROBEMARK", basis: "identical", ok: true, fetched: 33, total: 97 }],
     records: [...rec("us", 17), ...rec("em", 22), ...rec("wo", 1)] }] }) });
-  const r = evalAssertion({ op: "register-records-floor", path: "_driver/register-records.json:ORBIT",
+  const r = evalAssertion({ op: "register-records-floor", path: "_driver/register-records.json:PROBEMARK",
     value: { records: 20, offices: 2 } }, d);
   assert.equal(r.ok, true);
   assert.match(r.saw, /3 office\(s\)/);
@@ -144,9 +144,9 @@ test("register-records-floor passes on enough rows across enough offices", () =>
 });
 
 test("ENOUGH ROWS FROM ONE OFFICE IS NOT ENOUGH — the office span is its own floor", () => {
-  const d = runDirWith({ "register-records.json": records({ marks: [{ name: "ORBIT",
-    terms: [{ term: "ORBIT", basis: "identical", ok: true, fetched: 40, total: 97 }], records: rec("us", 40) }] }) });
-  const r = evalAssertion({ op: "register-records-floor", path: "_driver/register-records.json:ORBIT",
+  const d = runDirWith({ "register-records.json": records({ marks: [{ name: "PROBEMARK",
+    terms: [{ term: "PROBEMARK", basis: "identical", ok: true, fetched: 40, total: 97 }], records: rec("us", 40) }] }) });
+  const r = evalAssertion({ op: "register-records-floor", path: "_driver/register-records.json:PROBEMARK",
     value: { records: 20, offices: 2 } }, d);
   assert.equal(r.ok, false, "one office satisfying a total would let the dedup property lapse in silence");
   rmSync(d, { recursive: true, force: true });
@@ -155,7 +155,7 @@ test("ENOUGH ROWS FROM ONE OFFICE IS NOT ENOUGH — the office span is its own f
 test("A REFUSED LISTING FAILS AS A REFUSAL, never as a register holding nothing", () => {
   const d = runDirWith({ "register-records.json": records({
     unavailable: "this run counted from fixtures and no record fixtures are configured", marks: [] }) });
-  const r = evalAssertion({ op: "register-records-floor", path: "_driver/register-records.json:ORBIT",
+  const r = evalAssertion({ op: "register-records-floor", path: "_driver/register-records.json:PROBEMARK",
     value: { records: 20, offices: 2 } }, d);
   assert.equal(r.ok, false);
   assert.match(r.saw, /never listed/);
@@ -164,11 +164,11 @@ test("A REFUSED LISTING FAILS AS A REFUSAL, never as a register holding nothing"
 });
 
 test("a failed term is named even when the floor is MET — it is reduced coverage either way", () => {
-  const d = runDirWith({ "register-records.json": records({ marks: [{ name: "ORBIT",
-    terms: [{ term: "ORBIT", basis: "identical", ok: true, fetched: 40, total: 97 },
+  const d = runDirWith({ "register-records.json": records({ marks: [{ name: "PROBEMARK",
+    terms: [{ term: "PROBEMARK", basis: "identical", ok: true, fetched: 40, total: 97 },
             { term: "ORBYT", basis: "close", ok: false, reason: "the register timed out" }],
     records: [...rec("us", 20), ...rec("em", 20)] }] }) });
-  const r = evalAssertion({ op: "register-records-floor", path: "_driver/register-records.json:ORBIT",
+  const r = evalAssertion({ op: "register-records-floor", path: "_driver/register-records.json:PROBEMARK",
     value: { records: 20, offices: 2 } }, d);
   assert.equal(r.ok, true);
   assert.match(r.saw, /ORBYT/, "a pass that hides a refused term is how reduced coverage reads as full coverage");
@@ -176,9 +176,9 @@ test("a failed term is named even when the floor is MET — it is reduced covera
 });
 
 test("a shortfall alongside a failed term says the fetch may be the cause", () => {
-  const d = runDirWith({ "register-records.json": records({ marks: [{ name: "ORBIT",
-    terms: [{ term: "ORBIT", basis: "identical", ok: false, reason: "HTTP 503" }], records: [] }] }) });
-  const r = evalAssertion({ op: "register-records-floor", path: "_driver/register-records.json:ORBIT",
+  const d = runDirWith({ "register-records.json": records({ marks: [{ name: "PROBEMARK",
+    terms: [{ term: "PROBEMARK", basis: "identical", ok: false, reason: "HTTP 503" }], records: [] }] }) });
+  const r = evalAssertion({ op: "register-records-floor", path: "_driver/register-records.json:PROBEMARK",
     value: { records: 20, offices: 2 } }, d);
   assert.equal(r.ok, false);
   assert.match(r.saw, /FAILED to fetch/);
@@ -196,7 +196,7 @@ test("a shortfall alongside a failed term says the fetch may be the cause", () =
 // `floors.in_class_identical_or_near` is the narrower live in-class list. Every arm below states which
 // one it is about, because an arm that reads a number off the wrong population passes for the wrong reason.
 
-const bandShape = ({ targets = ["CORE", "KORE"], records = 1554, byTier = {}, floors = [], blindSpots = [], ...rest } = {}) => ({
+const bandShape = ({ targets = ["CANE", "KANE"], records = 1554, byTier = {}, floors = [], blindSpots = [], ...rest } = {}) => ({
   schema_version: 1,
   targets,
   in_scope_classes: ["9"],
@@ -209,12 +209,12 @@ const bandShape = ({ targets = ["CORE", "KORE"], records = 1554, byTier = {}, fl
 });
 
 const floorRows = (registry, n, from = 0) => Array.from({ length: n }, (_, i) => ({
-  record_id: `/mark/${registry.toLowerCase()}/FIXTURE${from + i}`, mark_text: "CORE", tier: "identical",
-  matched_target: "CORE", basis: "normalized-equal", classes: ["9"], status: "REGISTERED", live: true,
+  record_id: `/mark/${registry.toLowerCase()}/FIXTURE${from + i}`, mark_text: "CANE", tier: "identical",
+  matched_target: "CANE", basis: "normalized-equal", classes: ["9"], status: "REGISTERED", live: true,
   owner_name: "An Owner", registry,
 }));
 
-const P = "_driver/band-shape.json:CORE";
+const P = "_driver/band-shape.json:CANE";
 const drive = (op, value, doc, path = P) => {
   const d = runDirWith({ "band-shape.json": doc });
   try { return evalAssertion({ op, path, value }, d); } finally { rmSync(d, { recursive: true, force: true }); }
@@ -244,7 +244,7 @@ test("AN UNSIZED BAND IS NOT A SMALL ONE — four ways it can be unsized, four r
   assert.match(absent.saw, /not a register that holds nothing/);
   rmSync(d, { recursive: true, force: true });
 
-  const noTotals = drive("band-count-floor", { records: 1000 }, { schema_version: 1, targets: ["CORE"], floors: { in_class_identical_or_near: [] } });
+  const noTotals = drive("band-count-floor", { records: 1000 }, { schema_version: 1, targets: ["CANE"], floors: { in_class_identical_or_near: [] } });
   assert.equal(noTotals.ok, false);
   assert.match(noTotals.saw, /never sized/);
 
@@ -253,7 +253,7 @@ test("AN UNSIZED BAND IS NOT A SMALL ONE — four ways it can be unsized, four r
   assert.match(nullTotal.saw, /NOT TAKEN/);
 
   const noTiers = drive("band-count-floor", { by_tier: { identical: 54 } },
-    { schema_version: 1, targets: ["CORE"], totals: { records: 1554 }, floors: { in_class_identical_or_near: [] } });
+    { schema_version: 1, targets: ["CANE"], totals: { records: 1554 }, floors: { in_class_identical_or_near: [] } });
   assert.equal(noTiers.ok, false);
   assert.match(noTiers.saw, /never tiered/);
 });
@@ -322,7 +322,7 @@ test("A MISSING FLOOR LIST IS NOT AN EMPTY ONE", () => {
 
 test("the office comes off the row, from the registry or the record id, and a row with neither is counted", () => {
   const rows = [...floorRows("EM", 3), ...floorRows("US", 3).map((r) => ({ ...r, registry: "unknown" })),
-    { record_id: null, mark_text: "CORE", tier: "identical", registry: null }];
+    { record_id: null, mark_text: "CANE", tier: "identical", registry: null }];
   const r = drive("band-records-floor", { records: 5, offices: 2 }, bandShape({ floors: rows }));
   assert.equal(r.ok, true, "the id carries the office the registry field lost");
   assert.match(r.saw, /\[em, us\]/);
@@ -355,11 +355,11 @@ test("THE MARK IS CHECKED AGAINST THE SHAPE'S TARGETS, and a mismatch says so in
   // "the store's mark moved" and "the register thinned" need opposite answers, so they must not share
   // a sentence. Membership, not position: the driver puts the job's mark in the list and the variant
   // lane owns the order, so pinning to the first entry would fire when only the ordering moved.
-  const later = drive("band-count-floor", { records: 1000 }, bandShape({ targets: ["KORE", "CORE"] }));
+  const later = drive("band-count-floor", { records: 1000 }, bandShape({ targets: ["KANE", "CANE"] }));
   assert.equal(later.ok, true, "the mark is in the list; where the variant lane put it is not this op's business");
-  const other = drive("band-count-floor", { records: 1000 }, bandShape({ targets: ["ORBIT"] }));
+  const other = drive("band-count-floor", { records: 1000 }, bandShape({ targets: ["PROBEMARK"] }));
   assert.equal(other.ok, false);
-  assert.match(other.saw, /targets that do not include "CORE"/);
+  assert.match(other.saw, /targets that do not include "CANE"/);
   assert.doesNotMatch(other.saw, /below the floor/);
   const none = drive("band-count-floor", { records: 1000 }, bandShape({ targets: [] }));
   assert.equal(none.ok, false);

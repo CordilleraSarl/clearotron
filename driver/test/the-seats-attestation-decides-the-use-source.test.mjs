@@ -14,18 +14,18 @@ import assert from "node:assert/strict";
 import { joinEvidenceStatus, classifyUseSource } from "../registry-fidelity.mjs";
 
 const finding = (owner, source, quality) => ({
-  mark: "PROPER", owner: { name: owner },
+  mark: "ACME", owner: { name: owner },
   use_check: { source, ...(quality ? { quality } : {}) },
   meters: { use: { token: "confirmed", basis: "verified-from-record", source } },
 });
 
-test("the five real rows: four move to owner-site, the independent one stays independent", () => {
+test("five rows: the four attested owner-site move to owner-site, the independent one stays independent", () => {
   const rows = [
-    ["ARTONE HOLDINGS II LTD", "https://www.musicweek.com/labels/read/artone-and-drew-hill-acquire-proper-music", "independent", "independent"],
-    ["Proper Hospitality, LLC", "https://www.properhotel.com/santa-monica/proper-hundred/", "owner-site", "owner-site"],
-    ["PROPPERDOCS, INC.", "https://propper.ai/", "owner-site", "owner-site"],
-    ["William Shelley", "https://propa.co.uk/", "owner-site", "owner-site"],
-    ["Shenyang Puri Software", "https://propersoft-cn.github.io/showcase/201606/index", "owner-site", "owner-site"],
+    ["ACME RECORDS HOLDINGS II LTD", "https://www.news.example/labels/read/acme-records-acquires-a-label", "independent", "independent"],
+    ["Acme Hospitality, LLC", "https://www.acmehotel.example/harbour/acme-hundred/", "owner-site", "owner-site"],
+    ["ACMEDOCS, INC.", "https://acmedocs.example/", "owner-site", "owner-site"],
+    ["A. N. Owner", "https://acma.example/", "owner-site", "owner-site"],
+    ["Example Software Co.", "https://acmesoft.example/showcase/201606/index", "owner-site", "owner-site"],
   ];
   for (const [owner, url, attested, expected] of rows) {
     const f = finding(owner, url, attested);
