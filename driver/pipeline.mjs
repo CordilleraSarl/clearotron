@@ -2179,7 +2179,7 @@ function deriveScopeLedgerJson(ctx) {
 // 2026-08-03 — the SEED SET is the union of every distinctive element the manifest names, and falls
 // back to the job's own mark when it names none, so the floor stops moving with the model's choice of anchor
 // and can no longer be empty. See the VARIANT FLOOR section of form-neighbourhood.mjs.
-function deriveFormNeighbourhood(ctx) {
+export function deriveFormNeighbourhood(ctx) {   // @internal — exported for its call-site test
   const P = ctx.paths;
   // — an ABSENT prose manifest no longer returns without an artifact. It used to, and that was the
   // zero-semantics hole at its widest: no manifest ⇒ no form-neighbourhood.json ⇒ compileRegisterPlan's
@@ -2207,14 +2207,18 @@ function deriveFormNeighbourhood(ctx) {
     // The MARK is the floor's fallback seed and the only input to it that is not model output —
     // resolved exactly as every other job-mark consumer resolves it (stages.mjs blind-frame).
     const mark = ctx.job.marks ?? ctx.job.markName ?? ctx.job.name ?? "";
-    const ow = loadOrdinaryWords("en"), json = renderFormNeighbourhoodJson(manifestMd, { markets, droppedAxes, model, mark, ordinaryWords: ow.words });   // an unloadable word list removes nothing
+    // The active register's own declaration: `false` leaves the mixed-alphabet look-alike spellings out of
+    // the band and lists them as not searched. Unknown or undeclared changes nothing.
+    const mixedScriptQuery = registerCapabilities()?.mixedScriptQuery ?? null;
+    const ow = loadOrdinaryWords("en"), json = renderFormNeighbourhoodJson(manifestMd, { markets, droppedAxes, model, mark, ordinaryWords: ow.words, mixedScriptQuery });   // an unloadable word list removes nothing
     const tmp = P.formNeighbourhood + ".tmp";
     writeFileSync(tmp, json);
     renameSync(tmp, P.formNeighbourhood);
-    let exact = 0, floor = 0, added = 0, seededFrom = "", seeds = [], notSearched = 0;
+    let exact = 0, floor = 0, added = 0, seededFrom = "", seeds = [], notSearched = 0, mixedNotSearched = 0;
     try {
       const o = JSON.parse(json);
       exact = o.elements.reduce((a, e) => a + (e.band?.exactQueries?.length ?? 0), 0); notSearched = o.elements.reduce((a, e) => a + (e.band?.ordinaryWordDifferentSound?.length ?? 0), 0);
+      mixedNotSearched = o.elements.reduce((a, e) => a + (e.band?.mixedScriptNotSearched?.length ?? 0), 0);
       floor = o.variant_floor?.counts?.floor ?? 0;
       added = o.variant_floor?.counts?.model_added ?? 0;
       seededFrom = String(o.seeded_from ?? "");
@@ -2222,7 +2226,7 @@ function deriveFormNeighbourhood(ctx) {
     } catch { /* counts are telemetry only */ }
     // The SEED SET is logged by name, because it is the input that decides whether two runs of the same
     // matter can produce the same floor — a floor count alone cannot tell a stable run from a re-anchored one.
-    runLog(P.runDir, { event: "form-neighbourhood-derived", exact, floor, modelAdded: added, droppedAxes, seeds, seededFrom, ordinaryWordNotSearched: notSearched, ...(ow.error ? { ordinaryWordListError: ow.error } : {}) });
+    runLog(P.runDir, { event: "form-neighbourhood-derived", exact, floor, modelAdded: added, droppedAxes, seeds, seededFrom, ordinaryWordNotSearched: notSearched, ...(mixedScriptQuery === false ? { mixedScriptNotSearched: mixedNotSearched } : {}), ...(ow.error ? { ordinaryWordListError: ow.error } : {}) });
     // The fallback is not a quiet degrade: it means this run's variant floor rests on the mark alone
     // because the stage named no usable element. Loud, so the absence is a finding and not a shrug.
     if (seededFrom.startsWith("job mark"))
