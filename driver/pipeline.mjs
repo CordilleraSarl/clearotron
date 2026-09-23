@@ -36,7 +36,7 @@ import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveT
 import { IDENTITY_FILE as REPORT_IDENTITY_FILE } from "./report-overview-record.mjs";
 import { dispatchRows, clearedSignatures } from "./seat-attempts.mjs";
 import { CONTEXT_DERIVATIONS, DISPATCH_EXTRAS, INLINE_CONTEXT, sandboxManifest, sandboxGaps, derivationsFor } from "./stage-context.mjs";   // — what a stage is actually handed
-import { parseVerdict, countCitedDefects, parseCorrectionKinds, parseCorrections, validators, findReviewerCoherenceFlags, verdictHardenedTo } from "./verify.mjs";
+import { parseVerdict, countCitedDefects, parseCorrectionKinds, parseCorrections, validators, findReviewerCoherenceFlags, lateReviewAgainst } from "./verify.mjs";
 import { readAcceptedFlags } from "./narrative-refutation-record.mjs";   // T3b — the typed flags, not the re-parse
 import { evidenceClaimViolations, evidenceClaimTable } from "./evidence-claim-invariant.mjs";   //
 import { buildCorrectionsApplied, correctionsWorklist, correctionsAppliedTable, correctionScope, scopeDrift, unresolvedFlags, reportLines, linesOf, REPORT_LINE_KEY, REPORT_LINE_LABEL } from "./corrections-feedforward.mjs";
@@ -14879,14 +14879,13 @@ async function pipelineInner(job, opts = {}) {
               // way, so a review that softened during the repair cannot lift a clamp.
               if (s2.label === "narrative-refutation") {
                 const reviewNow = existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "";
-                const hardened = verdictHardenedTo(verdict, reviewNow);
+                const { hardened, softened: reviewSays } = lateReviewAgainst(verdict, reviewNow);
                 // A REVIEW THAT SOFTENED IS NOT ADOPTED, AND THE RUN SAYS SO. The ratchet below only
                 // tightens, so a re-review that comes back softer leaves the settled verdict in force while
                 // senior-eye-review.md, rewritten by this repair, opens with the softer word. That is the
                 // design; recording nothing was the defect: a reader of the run found two answers and no
-                // line saying which one governs (E2E-R2, 2026-09-23: BLOCKING recorded, CONDITIONAL on disk).
-                const reviewSays = hardened ? null : parseVerdict(reviewNow);
-                if (reviewSays && reviewSays !== verdict) {
+                // line saying which one governs (measured in testing, 2026-09-23: BLOCKING recorded, CONDITIONAL on disk).
+                if (reviewSays) {
                   runLog(run.runDir, { event: "verdict-softening-not-adopted", was: verdict, reviewSays, stage: s2.label });
                   note(`stale-repair: the reviewer now returns ${reviewSays}; the run keeps ${verdict}, because a late re-review may only harden the verdict — senior-eye-review.md now disagrees with verdict.json, and verdict.json governs`);
                 }

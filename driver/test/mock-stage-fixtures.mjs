@@ -1770,8 +1770,6 @@ export function applyStageWrites(msg, argv) {
       // MOCK_VERDICT_DEFECTS      bullet lines that make a BLOCKING reasoned rather than degenerate
       // MOCK_DEGENERATE_HEALS     this seat CORRECTS when the tool tells it what is wrong
       // MOCK_REVIEW_BLOCKS_AFTER_VERDICT   the  late hardening, keyed on verdict.json existing
-      // MOCK_REVIEW_SOFTENS_AFTER_VERDICT  its mirror: the late re-review comes back softer — the knob's value
-      //                                   (CLEAR or CONDITIONAL; anything else reads as CONDITIONAL)
       //
       // ✕ `plan_audit`, NOT `planAudit`. `acceptRefutation` reads the TOOL SCHEMA's spelling. Handing it
       // the camelCase name leaves the field undefined and the call is refused as
@@ -1799,19 +1797,6 @@ export function applyStageWrites(msg, argv) {
             text: "the registration date printed in the narrative contradicts the fetched record (mock)" }] });
         return bad(r) ? `mock reviewer REFUSED by record_narrative_refutation: ${bad(r)}`
           : "mock reviewer recorded a late BLOCKING through record_narrative_refutation";
-      }
-
-      if (process.env.MOCK_REVIEW_SOFTENS_AFTER_VERDICT && runDir && existsSync(driverDir(runDir, "verdict.json"))) {
-        // The mirror of the late hardening above: the re-review a stale repair runs comes back SOFTER than
-        // the settled verdict. The ratchet does not adopt it; the run must say so. Audit unconditional, for
-        // the same reason as above.
-        const late = process.env.MOCK_REVIEW_SOFTENS_AFTER_VERDICT === "CLEAR" ? "CLEAR" : "CONDITIONAL";
-        const r = send({ verdict: late,
-          plan_audit: planAudit.length ? planAudit
-            : ["Audited the execution receipt — no clean claim rests on a missing/incomplete slice."],
-          flags: late === "CLEAR" ? [] : [{ kind: "narrative", text: "one sentence in the overview still reads as engine wording (mock)" }] });
-        return bad(r) ? `mock reviewer REFUSED by record_narrative_refutation: ${bad(r)}`
-          : `mock reviewer recorded a late ${late} through record_narrative_refutation`;
       }
 
       const verdict = process.env.MOCK_VERDICT ?? "CLEAR";
