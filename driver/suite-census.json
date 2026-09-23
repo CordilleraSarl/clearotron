@@ -160,8 +160,8 @@
           "todos": 0
         },
         "a-clarivate-run-asks-each-question-and-fetches-each-record-once.test.mjs": {
-          "tests": 8,
-          "asserts": 24,
+          "tests": 9,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },

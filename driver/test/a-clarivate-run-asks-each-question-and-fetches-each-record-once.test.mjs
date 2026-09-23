@@ -138,6 +138,26 @@ test("a held record is addressed the way the request addresses it", async () => 
   assert.equal(again.records[0].uri, "/mark/em/G1", "the office segment is this request's, as a fresh fetch would give it");
 });
 
+// The screen gate reads the record log by exact address. A record first fetched under one office's
+// address and then reused under another's was logged only under the first, so a drop citing the second
+// read as a record nobody examined, and the gate's recovery re-fetch was served from memory without a
+// line, so the violation survived it.
+test("a held record reused under another address is logged under that address too, and only once", async () => {
+  const { d, tctx } = run(null);
+  const sent = register();
+  await doBatchScreen("key", BASE, { uris: ["/mark/us/G1"], in_scope_classes: [9] }, tctx);
+  await doBatchScreen("key", BASE, { uris: ["/mark/em/G1"], in_scope_classes: [9] }, tctx);
+  await doRecordFetch("key", BASE, { record_ids: ["/mark/ch/G1"] }, tctx);
+  await doBatchScreen("key", BASE, { uris: ["/mark/em/G1"], in_scope_classes: [9] }, tctx);
+  assert.equal(sent.filter((x) => x.path === "/text").length, 1, "the record was fetched once");
+  const { collectRecordBodies } = await import("../registry-fidelity.mjs");
+  const examined = collectRecordBodies(runRecordLogPath(d), tctx.sessionKey.split("-register-unit")[0]);
+  assert.deepEqual([...examined.keys()].sort(), ["/mark/ch/g1", "/mark/em/g1", "/mark/us/g1"],
+    "every address the run screened or fetched it under is on record for the gate");
+  const logged = readFileSync(runRecordLogPath(d), "utf8").trim().split("\n").map((l) => JSON.parse(l).target);
+  assert.equal(logged.length, 3, "a held record already logged under an address writes nothing more");
+});
+
 test("the run's usage counts a record fetched twice, and the records reused", async () => {
   for (const mode of ["off", null]) {
     const { tctx } = run(mode);
