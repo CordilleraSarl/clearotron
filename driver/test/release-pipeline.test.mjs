@@ -912,8 +912,13 @@ test("tracker 97 a version that merged itself still publishes, because that merg
   // the publish job's bound, so the version was published and tagged with no release entry, and nothing
   // ran again to write one. It publishes nothing; it writes the entry once the registry serves the kept
   // bytes, and its own arms hold it to that.
-  assert.deepEqual(jobs, ["version", "stranded", "pending", "entry", "awaited", "macos", "publish", "macos-awaited", "publish-awaited", "deprecate"],
-    "the release workflow's jobs are not the ten this file is written about");
+  // FOURTEEN NOW. The four Windows jobs joined with the Windows check: every cut is installed on Windows,
+  // a red run holds a stable (`windows`, `windows-awaited`, needed by the publish jobs as the macOS jobs
+  // are), and a beta runs the same check without being held by it (`windows-beta`,
+  // `windows-awaited-beta`, which nothing needs). They call windows.yml and run no step of their own.
+  assert.deepEqual(jobs, ["version", "stranded", "pending", "entry", "awaited", "macos", "windows", "windows-beta", "publish",
+    "macos-awaited", "windows-awaited", "windows-awaited-beta", "publish-awaited", "deprecate"],
+    "the release workflow's jobs are not the fourteen this file is written about");
 
   // IT DECIDES WITH THE SAME FUNCTION THE PUSH PATH USES. Two answers to one question is how a pipeline
   // publishes on one path what it refuses on the other.
@@ -2899,6 +2904,45 @@ test("a stable is installed on macOS before it is published, on every path a sta
     assert.match(block, /^ {4}if: >-\n {6}!failure\(\) && !cancelled\(\)$/m,
       `${publish} no longer opens with \`!failure() && !cancelled()\` — a skipped macOS job would then hold every beta`);
   }
+});
+
+test("every cut is installed on Windows: a red run holds a stable, and a beta runs the check without being held", () => {
+  const STABLE_V = "0.4.0", BETA_V = "0.4.0-beta.3";
+  // THE HOLDING JOBS START FOR A STABLE ON EVERY PATH THAT CAN PUBLISH ONE, AND NEVER FOR A BETA…
+  for (const [job, decider, run] of [["windows", "version", { event: "push" }], ["windows", "pending", { event: "schedule" }],
+    ["windows", "pending", { event: "workflow_dispatch", cut: "publish" }], ["windows-awaited", "awaited", { event: "workflow_dispatch", cut: "stable" }]]) {
+    assert.equal(jobRuns(job, { ...run, needs: { [decider]: "true" }, versions: { [decider]: STABLE_V } }), true,
+      `${job} did not start for a stable cut through ${decider}, so a stable would publish untried on Windows`);
+    assert.equal(jobRuns(job, { ...run, needs: { [decider]: "true" }, versions: { [decider]: BETA_V } }), false,
+      `${job} started for a beta through ${decider}, and a red run there would hold the beta`);
+  }
+  // …AND THE BETA JOBS ARE THE MIRROR IMAGE: every beta, never a stable, never a run that cut nothing.
+  for (const [job, decider, run] of [["windows-beta", "version", { event: "workflow_dispatch", cut: "beta" }],
+    ["windows-beta", "pending", { event: "schedule" }], ["windows-awaited-beta", "awaited", { event: "workflow_dispatch", cut: "beta" }]]) {
+    assert.equal(jobRuns(job, { ...run, needs: { [decider]: "true" }, versions: { [decider]: BETA_V } }), true,
+      `${job} did not start for a beta cut through ${decider}, so a beta would ship with no Windows check`);
+    assert.equal(jobRuns(job, { ...run, needs: { [decider]: "true" }, versions: { [decider]: STABLE_V } }), false,
+      `${job} started for a stable through ${decider}; the stable's check is the holding job`);
+    assert.equal(jobRuns(job, { ...run, needs: { [decider]: "false" }, versions: { [decider]: BETA_V } }), false,
+      `${job} started for a run through ${decider} that cut nothing`);
+  }
+  // THE PUBLISH JOBS NEED THE HOLDING JOB AND NOT THE BETA ONE. Needing the beta job would let a red
+  // Windows run hold a beta, which is the owner's call and has not been made.
+  for (const [publish, holds, runsBeside] of [["publish", "windows", "windows-beta"], ["publish-awaited", "windows-awaited", "windows-awaited-beta"]]) {
+    const needsList = (/^ {4}needs: \[([^\]]*)\]$/m.exec(executableText(jobBlock(publish)))?.[1] ?? "").split(",").map((n) => n.trim());
+    assert.ok(needsList.includes(holds), `${publish} does not need ${holds}, so a red Windows install would not hold a stable`);
+    assert.ok(!needsList.includes(runsBeside), `${publish} needs ${runsBeside}, so a red Windows run would hold a beta`);
+  }
+  // ALL FOUR CALL THE SAME CHECK THE SCHEDULE RUNS, and that check runs daily and on its own change.
+  for (const job of ["windows", "windows-beta", "windows-awaited", "windows-awaited-beta"]) {
+    assert.match(jobBlock(job), /^ {4}uses: \.\/\.github\/workflows\/windows\.yml$/m, `${job} does not call windows.yml`);
+  }
+  const on = executableText(read(".github/workflows/windows.yml")).match(/^on:\n((?: .*\n|\n)+?)^\S/m)?.[1] ?? "";
+  assert.match(on, /^ {2}schedule:\n {4}- cron: /m, "windows.yml no longer runs on its own schedule");
+  assert.match(on, /^ {2}workflow_call:$/m, "windows.yml can no longer be called by the release");
+  assert.match(on, /^ {2}push:\n {4}paths:\n {6}- \.github\/workflows\/windows\.yml$/m,
+    "windows.yml does not run when it changes, so a broken change would first be found at a release");
+  assert.doesNotMatch(on, /branches:/, "windows.yml runs on pushes to a branch again, rather than when it changes");
 });
 
 /** The decider the `pending` job runs, over a repository whose main is at `version`, tagged or not. */

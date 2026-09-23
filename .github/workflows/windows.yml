@@ -18,11 +18,15 @@
 name: Windows
 
 on:
+  schedule:
+    - cron: '41 5 * * *'
   workflow_dispatch:
   workflow_call:
+  # AND ON A PUSH THAT CHANGES THIS FILE, on any branch, as macos.yml does: GitHub dispatches a workflow
+  # only once it is on the default branch, so a change to this job could otherwise first run at a release.
   push:
-    branches:
-      - windows-native
+    paths:
+      - .github/workflows/windows.yml
 
 permissions:
   contents: read
@@ -38,9 +42,9 @@ jobs:
       run:
         shell: pwsh
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020   # v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: '22.23.2'
           cache: npm
@@ -211,9 +215,9 @@ jobs:
       run:
         shell: pwsh
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020   # v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: '22.23.2'
           cache: npm
@@ -244,7 +248,7 @@ jobs:
           "every clearance arm ran, and the Windows-only arms ran and passed"
 
       - if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a   # v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: windows-clearances
           path: ${{ runner.temp }}/clearances.log
