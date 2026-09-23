@@ -89,3 +89,13 @@ export const chdirPrefix = (dir, { platform = process.platform } = {}) =>
  */
 export const backgroundManager = ({ platform = process.platform } = {}) =>
   (isWindows(platform) ? null : "systemd");
+
+/**
+ * What `start --background` answers on Windows, where it has nothing to install: the background form is
+ * systemd units, and Windows has no systemd. Printed as it stands and nothing else, before `start` writes
+ * anything or calls systemctl (owner's ruling, 2026-09-23). `null` elsewhere. Asked of Windows by name
+ * rather than of `backgroundManager`, which answers `null` on other machines too, and a Mac must not be
+ * told it is Windows.
+ */
+export const backgroundRefusal = ({ platform = process.platform } = {}) =>
+  (isWindows(platform) ? "Background mode isn't available on Windows. Run `clearotron start` and keep its window open." : null);

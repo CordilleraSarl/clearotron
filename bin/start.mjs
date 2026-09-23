@@ -150,7 +150,7 @@ import { addressRefusal } from "../shared/staff-domain.mjs";
 // entry is written through them, so this command cannot produce a shape of its own.
 import { withPerson, withOrganisation, withCompany } from "../shared/grants-edit.mjs";
 import { assertGrantsShape, resolvePerson } from "../shared/scope.mjs";
-import { backgroundManager } from "../shared/os-advice.mjs";
+import { backgroundManager, backgroundRefusal } from "../shared/os-advice.mjs";
 import { recordRunning } from "../shared/running-start.mjs";
 import { frontingVariablesSet } from "../shared/install-auth.mjs";   // — one owner for what counts as a proxy in front of a door
 
@@ -999,6 +999,9 @@ if (isMain) {
   // exactly how to drain when they do.
   const wantWorker = !argv.includes("--no-worker");
   const wantBackground = argv.includes("--background");
+  // ON WINDOWS THERE IS NO BACKGROUND FORM: it is systemd units. Answered here, before anything is written
+  // or systemctl is called, in the owner's sentence and nothing else, so no `start:` prefix either.
+  if (wantBackground && backgroundRefusal()) { err(backgroundRefusal()); process.exit(1); }
 
   // A flag with its value forgotten is a MISTAKE, not a request for the default. `--base` swallowing the
   // next flag, or falling through to ~/trademark, would put an install somewhere nobody asked for.

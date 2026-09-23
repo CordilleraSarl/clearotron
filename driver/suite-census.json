@@ -1263,6 +1263,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-windows-start-has-no-background-mode.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
+          "skips": 1,
+          "todos": 0
+        },
         "a-windows-stop-ends-the-whole-turn.test.mjs": {
           "tests": 9,
           "asserts": 50,
