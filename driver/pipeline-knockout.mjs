@@ -725,42 +725,6 @@ export async function knockoutInner(ctx, job, opts = {}) {
             listedDoc = recDoc;
             runLog(run.runDir, { event: "knockout-register-records", provider: REGISTER_PROVIDER, executor: recExec.source,
               marks: recDoc.marks.length, listed: listedMarks(recDoc), records: recDoc.marks.reduce((n, m) => n + m.records.length, 0) });
-
-            // ── THE OWNER LOOKUP, HERE BECAUSE HERE IS WHERE THE OWNER BECOMES KNOWN ──────────────────────
-            //
-            // On the run that produced the issue, the owner's name was on disk 48 seconds before the sweep
-            // started and no pass ever searched it: every sweep keys on the TERM, and nothing re-swept on an
-            // OWNER once the register named one. The assessment then inferred what the owner sold from the
-            // owner's name, and deferred the real answer to a document the run did not hold.
-            //
-            // Bounded to promoted filings and deduplicated per owner — on the issue's own run that is ONE
-            // extra query. Never throws: a failure produces rows saying the lookup did not answer, and the
-            // run publishes (ruling A, 2026-09-07).
-            try {
-              const owed = ownersOwedACheck(recDoc);
-              if (owed.length) {
-                const checks = await runOwnerChecks({
-                  owners: owed, exec: sweep.exec, runDir: run.runDir, ledgerPath: K.ownerCheckLedger,
-                  preset: process.env.CLEAROTRON_KNOCKOUT_PRESET || "pro-search",
-                });
-                atomicWrite(K.ownerChecks, JSON.stringify({ schema: 1, checks }, null, 2) + "\n");
-                runLog(run.runDir, {
-                  event: "knockout-owner-checks", owners: owed.length,
-                  answered: checks.filter((c) => c.ok).length,
-                  // The count is logged because the ruling is about COST: one promoted filing on the
-                  // issue's run means one query. A number climbing here is the bound having widened.
-                  unanswered: checks.filter((c) => !c.ok).length,
-                });
-              } else {
-                runLog(run.runDir, { event: "knockout-owner-checks", owners: 0, answered: 0, unanswered: 0,
-                  detail: "no promoted filing names a proprietor to search" });
-              }
-            } catch (e) {
-              // Structural only — runOwnerChecks itself never throws. Non-fatal by the same rule as the
-              // listing above: a report is never withheld for a check that could not run.
-              note(`owner use-check failed (non-fatal): ${e.message}`);
-              runLog(run.runDir, { event: "knockout-owner-checks-failed", cause: String(e?.message ?? e).slice(0, 300) });
-            }
           } catch (e) {
             // The lane does not throw per mark, so reaching here means something structural broke. It
             // still must not take the counts down with it — but it must not vanish either.
@@ -769,6 +733,48 @@ export async function knockoutInner(ctx, job, opts = {}) {
           }
         }
         return listedDoc;
+      };
+
+      // ── THE OWNER LOOKUP, ONCE THE LISTING HAS NAMED THE OWNER AND A COUNT HAS LANDED ──────────────
+      //
+      // Run after the count gate below, whichever lane went first. A batch where not one mark got a
+      // number stops at that gate; on a register that lists first the lookups used to run before it,
+      // research calls the batch paid for and then threw away.
+      const checkOwners = async (recDoc) => {
+        if (!recDoc) return;
+        // On the run that produced the issue, the owner's name was on disk 48 seconds before the sweep
+        // started and no pass ever searched it: every sweep keys on the TERM, and nothing re-swept on an
+        // OWNER once the register named one. The assessment then inferred what the owner sold from the
+        // owner's name, and deferred the real answer to a document the run did not hold.
+        //
+        // Bounded to promoted filings and deduplicated per owner — on the issue's own run that is ONE
+        // extra query. Never throws: a failure produces rows saying the lookup did not answer, and the
+        // run publishes (ruling A, 2026-09-07).
+        try {
+          const owed = ownersOwedACheck(recDoc);
+          if (owed.length) {
+            const checks = await runOwnerChecks({
+              owners: owed, exec: sweep.exec, runDir: run.runDir, ledgerPath: K.ownerCheckLedger,
+              preset: process.env.CLEAROTRON_KNOCKOUT_PRESET || "pro-search",
+            });
+            atomicWrite(K.ownerChecks, JSON.stringify({ schema: 1, checks }, null, 2) + "\n");
+            runLog(run.runDir, {
+              event: "knockout-owner-checks", owners: owed.length,
+              answered: checks.filter((c) => c.ok).length,
+              // The count is logged because the ruling is about COST: one promoted filing on the
+              // issue's run means one query. A number climbing here is the bound having widened.
+              unanswered: checks.filter((c) => !c.ok).length,
+            });
+          } else {
+            runLog(run.runDir, { event: "knockout-owner-checks", owners: 0, answered: 0, unanswered: 0,
+              detail: "no promoted filing names a proprietor to search" });
+          }
+        } catch (e) {
+          // Structural only — runOwnerChecks itself never throws. Non-fatal by the same rule as the
+          // listing above: a report is never withheld for a check that could not run.
+          note(`owner use-check failed (non-fatal): ${e.message}`);
+          runLog(run.runDir, { event: "knockout-owner-checks-failed", cause: String(e?.message ?? e).slice(0, 300) });
+        }
       };
 
       // ── THE LISTING FIRST, ON A REGISTER WHOSE LISTING HOLDS THE COUNT ──────────────────────────────
@@ -819,7 +825,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
       runLog(run.runDir, { event: "knockout-register-counts", provider: REGISTER_PROVIDER, executor: countExec.source, marks: doc.marks.length, counted, regions: doc.scope.regions ?? "worldwide" });
       if (counted < doc.marks.length) note(`register counts: ${doc.marks.length - counted}/${doc.marks.length} mark(s) unavailable — the batch continues (they publish as "not available", never as zero)`);
 
-      if (!listFirst) await listFilings();
+      await checkOwners(listFirst ? listedFirst : await listFilings());
     }
 
     // 2 — the sweep: ONE broad code-side research call per mark, receipted, per-mark degrade
