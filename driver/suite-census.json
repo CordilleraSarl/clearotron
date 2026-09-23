@@ -4379,7 +4379,7 @@
         },
         "runner.knockout-e2e.test.mjs": {
           "tests": 3,
-          "asserts": 115,
+          "asserts": 118,
           "skips": 0,
           "todos": 0
         },
