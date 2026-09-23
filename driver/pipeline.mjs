@@ -16422,6 +16422,12 @@ async function runExperimentInner(job, opts) {
     // so a run with no case-law layer must arrive as null here too, never as an absent key.
     for (const f of inlineDecl.fields) shadowCtx[f] = resolved[f] ?? null;
   }
+  // A SYNTHESIS ARM IS HANDED THE LIST OF RECORDS IT MUST ANSWER, exactly as production hands it, or it
+  // replays a different stage. The spec file alone reached the sandbox: the list the dispatch prints
+  // rides `ctx.findingsSurface`, which only `prepareDeclinationSpec` sets, so every synthesis arm ran
+  // with no DECLINATIONS block while the recorder held it to the copied list. Built from the sandbox's
+  // own copies, so the canonical run is not touched.
+  if (name === "synthesis") prepareDeclinationSpec(shadowCtx, shadowCtx.paths);
   const sessionKey = `clearance-exp-${ctx.run.slug}-${ctx.run.codename}-${name}${axis ? `-${axis}` : ""}-${ts}`;
   let { text: extra, ids: extraIds } = experimentExtra(shadowCtx, name, opts);
 
