@@ -82,7 +82,9 @@ export function NewCompany({ ctx }: { readonly ctx: ShellContext }) {
   // the same values on the same path, so this is not the only thing standing between a person and a bad
   // profile — it is the half that stops them pressing a button that cannot work, and says which entry.
   const refusedEntries = specs().flatMap((spec) => {
-    if (!spec.item?.strict) return []
+    // Not Marketplaces: the sentence below says an entry "cannot be searched", and "web" is refused
+    // there because the web is always searched. The server's own refusal names each case truly.
+    if (!spec.item?.strict || spec.key === 'platforms') return []
     const raw = boxValue(state, spec)
     if (!raw.trim()) return []
     return parseLines(raw, spec.commaSeparated ?? false).filter((e) => !spec.item!.ok(e))
