@@ -166,12 +166,12 @@ test("A REFUSED LISTING FAILS AS A REFUSAL, never as a register holding nothing"
 test("a failed term is named even when the floor is MET — it is reduced coverage either way", () => {
   const d = runDirWith({ "register-records.json": records({ marks: [{ name: "PROBEMARK",
     terms: [{ term: "PROBEMARK", basis: "identical", ok: true, fetched: 40, total: 97 },
-            { term: "ORBYT", basis: "close", ok: false, reason: "the register timed out" }],
+            { term: "PROBEMARC", basis: "close", ok: false, reason: "the register timed out" }],
     records: [...rec("us", 20), ...rec("em", 20)] }] }) });
   const r = evalAssertion({ op: "register-records-floor", path: "_driver/register-records.json:PROBEMARK",
     value: { records: 20, offices: 2 } }, d);
   assert.equal(r.ok, true);
-  assert.match(r.saw, /ORBYT/, "a pass that hides a refused term is how reduced coverage reads as full coverage");
+  assert.match(r.saw, /PROBEMARC/, "a pass that hides a refused term is how reduced coverage reads as full coverage");
   rmSync(d, { recursive: true, force: true });
 });
 

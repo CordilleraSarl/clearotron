@@ -7,8 +7,8 @@
 // The measured defect: on one delivered report the seat attested `owner-site` on four of five
 // use-check rows and the render called every one "from an independent source", because the join read
 // the attestation only for register-mirror and the heuristic needs the full de-suffixed owner token
-// inside the host ("propperdocs" is not inside "propperai"). The one row the heuristic got right was
-// the one where it did not matter. These five rows are that report's, verbatim.
+// inside the host ("acmedocs" is not inside "acmeai"). The one row the heuristic got right was
+// the one where it did not matter. These five rows keep that report's shape, with invented owners and hosts.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { joinEvidenceStatus, classifyUseSource } from "../registry-fidelity.mjs";
@@ -23,11 +23,15 @@ test("five rows: the four attested owner-site move to owner-site, the independen
   const rows = [
     ["ACME RECORDS HOLDINGS II LTD", "https://www.news.example/labels/read/acme-records-acquires-a-label", "independent", "independent"],
     ["Acme Hospitality, LLC", "https://www.acmehotel.example/harbour/acme-hundred/", "owner-site", "owner-site"],
-    ["ACMEDOCS, INC.", "https://acmedocs.example/", "owner-site", "owner-site"],
+    ["ACMEDOCS, INC.", "https://acmeai.example/", "owner-site", "owner-site"],
     ["A. N. Owner", "https://acma.example/", "owner-site", "owner-site"],
     ["Example Software Co.", "https://acmesoft.example/showcase/201606/index", "owner-site", "owner-site"],
   ];
   for (const [owner, url, attested, expected] of rows) {
+    if (attested === "owner-site") {
+      assert.notEqual(classifyUseSource(url, owner), "owner-site",
+        `${owner} / ${url}: the host rule already finds this owner, so this row does not test the attestation`);
+    }
     const f = finding(owner, url, attested);
     joinEvidenceStatus([f], new Map());
     assert.equal(f.meters.use._useSourceClass, expected,
@@ -58,13 +62,13 @@ test("no attestation → the heuristic is the fallback, in both of its direction
   const ownerSite = finding("MERIDIAN Sports LLC", "https://www.meridiansports.example/products/matchday", null);
   joinEvidenceStatus([ownerSite], new Map());
   assert.equal(ownerSite.meters.use._useSourceClass, "owner-site", "the heuristic still classifies when the seat said nothing");
-  const indep = finding("PROPPERDOCS, INC.", "https://somereview.example/article", null);
+  const indep = finding("ACMEDOCS, INC.", "https://somereview.example/article", null);
   joinEvidenceStatus([indep], new Map());
   assert.equal(indep.meters.use._useSourceClass, "independent");
 });
 
 test("an attested value outside the vocabulary is ignored, not written through", () => {
-  const f = finding("PROPPERDOCS, INC.", "https://somereview.example/article", "definitely-legit");
+  const f = finding("ACMEDOCS, INC.", "https://somereview.example/article", "definitely-legit");
   joinEvidenceStatus([f], new Map());
   assert.equal(f.meters.use._useSourceClass, "independent",
     "an unknown attestation value must fall back to the heuristic, never land verbatim on a client field");
