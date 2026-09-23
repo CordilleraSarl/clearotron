@@ -15,7 +15,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { dirname, join, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { installPaths } from "../../bin/start.mjs";
 import { SERVER_INSTALL_SET } from "../../shared/server-units.mjs";
@@ -29,6 +29,9 @@ import { envLocalPath, unitEnvPath } from "../../shared/env-local.mjs";
 const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 const INSTALL = readFileSync(join(ROOT, "INSTALL.md"), "utf8");
 const HOME = "~";
+// The resolvers join natively, and the guide spells every path with `/`, so a derived path is read in the
+// guide's spelling. On Linux and macOS this changes nothing.
+const asWritten = (p) => p.split(sep).join("/");
 
 /** The section, by its own heading — an arm that read the whole file would pass on a mention anywhere. */
 function removalSection(text = INSTALL) {
@@ -50,13 +53,13 @@ test("the removal section names every path an install writes", () => {
   // A FLOOR ON THE POPULATION, not just on the matches: a resolver that answered nothing would make every
   // assertion below vacuous, and an empty list reads exactly like a complete one.
   assert.ok(wanted.length >= 13, `only ${wanted.length} paths derived — the readers answered nothing`);
-  const missing = wanted.filter((p) => !section.includes(p));
+  const missing = wanted.map(asWritten).filter((p) => !section.includes(p));
   assert.deepEqual(missing, [], `paths an install writes that the removal section does not name: ${missing.join(", ")}`);
 });
 
 test("it says which directory holds the reports, and what deleting it costs", () => {
   const section = removalSection();
-  const pool = installPaths(join(HOME, "trademark")).pool;
+  const pool = asWritten(installPaths(join(HOME, "trademark")).pool);
   const line = section.split("\n").find((l) => l.includes(pool) && /report/i.test(l));
   assert.ok(line, `the line naming ${pool} does not say it holds the reports`);
   assert.match(section, /Deleting the pool deletes the clearances/,
@@ -67,7 +70,7 @@ test("it says how to remove the background services, and names each unit", () =>
   const section = removalSection();
   for (const unit of SERVER_INSTALL_SET) assert.ok(section.includes(unit), `the removal section does not name ${unit}`);
   assert.ok(SERVER_INSTALL_SET.length >= 4, "the unit set answered with too few members to be the real one");
-  assert.ok(section.includes(join(HOME, ".config", "systemd", "user")), "nor where the units live");
+  assert.ok(section.includes(asWritten(join(HOME, ".config", "systemd", "user"))), "nor where the units live");
   assert.match(section, /clearotron stop/, "nor the command that removes them");
 });
 

@@ -95,7 +95,7 @@ test("the probe asks for the CHEAPEST turn either adapter can build", async () =
   assert.equal(seen.allowedTools, "Read Write Edit mcp__probe__ping mcp__probe__note mcp__probe__look");
   const servers = JSON.parse(seen.mcpConfig).mcpServers;
   assert.deepEqual(Object.keys(servers), ["probe"], "the probe hands the engine one server, its own");
-  assert.match(servers.probe.args[0], /engine\/mcp\/probe-server\.mjs$/);
+  assert.ok(servers.probe.args[0].endsWith(join("engine", "mcp", "probe-server.mjs")), servers.probe.args[0]);
   const words = wordsOf(seen);
   assert.equal(words.length, PROBE_TOOLS.length, "one word per tool");
   for (const w of words) assert.match(w, /^probe-[0-9a-f]{8}$/, "each word is minted fresh, so the model cannot supply it");
@@ -705,9 +705,12 @@ test("a refusal the model wandered into, on a server that is not the probe's, is
 test("a binary that exits silently is diagnosed, not shrugged at", async () => {
   // The startup-class shape for real: a program on PATH that runs, says nothing and exits nonzero. It
   // passes every filesystem check preflightEngineBinary makes, which is exactly why this probe exists.
+  // Windows cannot start a `#!/bin/sh` script, so there the mute program is a Node script, which the
+  // engine starts through the Node running now. It is just as silent.
   const dir = mkdtempSync(join(tmpdir(), "probe-mute-"));
-  const mute = join(dir, "claude");
-  writeFileSync(mute, "#!/bin/sh\nexit 1\n", { mode: 0o755 });
+  const win = process.platform === "win32";
+  const mute = join(dir, win ? "claude.mjs" : "claude");
+  writeFileSync(mute, win ? "process.exit(1);\n" : "#!/bin/sh\nexit 1\n", { mode: 0o755 });
   chmodSync(mute, 0o755);
   const v = await probeEngineTurn({ env: { CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: mute } });
   assert.equal(v.ok, false);

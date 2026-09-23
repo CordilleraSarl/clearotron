@@ -128,6 +128,8 @@ test("every production package npm resolves has a notices entry", (ctx) => {
       // SEALED: `ls` answers from the installed tree on disk and needs no registry, but npm reaches for
       // one anyway — and that reach can BLOCK rather than fail, which is a hang instead of a red.
       env: { ...process.env, npm_config_offline: "true" },
+      // On Windows `npm` is `npm.cmd`, a batch file, which Node starts only through a shell.
+      shell: process.platform === "win32",
     });
   } catch (e) {
     // npm exits non-zero for any tree problem while still printing the whole tree.

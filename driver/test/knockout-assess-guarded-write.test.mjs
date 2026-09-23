@@ -19,7 +19,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { dirname, join, resolve, sep } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { fileURLToPath } from "node:url";
 import { KO_STAGES, koPaths } from "../stages-knockout.mjs";
@@ -27,9 +27,14 @@ import { STAGES, paths } from "../stages.mjs";
 import { authorityTrees, denyReason } from "../authority-trees.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const RUN = "/RUN";
+// RESOLVED, because the boundary resolves its run dir: on Windows that adds the current drive, and a run
+// dir without one would build every stage path on a different root from the tree it is checked against.
+// On Linux and macOS this is "/RUN" exactly.
+const RUN = resolve("/RUN");
 const K = koPaths(RUN);
 const TREES = authorityTrees({ runDir: RUN });
+// Every path below is built with `join`, so "inside the guarded tree" is a prefix ending in this
+// platform's separator, not in `/`.
 
 // ── THE FIX, AGAINST THE REAL BOUNDARY ──────────────────────────────────────────────────────────────
 
@@ -44,8 +49,8 @@ test("the boundary REFUSES the old path and ALLOWS the new one — asserted agai
 
 test("the new path is outside the guarded tree, the legacy one inside — by construction, not by string", () => {
   const guarded = driverDir(resolve(RUN));
-  assert.ok(!K.assessChunk(0).startsWith(guarded + "/"), "the chunk must not live under _driver/");
-  assert.ok(K.assessChunkLegacy(0).startsWith(guarded + "/"), "the legacy path is the pre-relocation one and must still name _driver/");
+  assert.ok(!K.assessChunk(0).startsWith(guarded + sep), "the chunk must not live under _driver/");
+  assert.ok(K.assessChunkLegacy(0).startsWith(guarded + sep), "the legacy path is the pre-relocation one and must still name _driver/");
   assert.equal(K.assessChunk(3), join(RUN, "knockout-assess-3.json"), "the run root, with the chunk number preserved");
 });
 
@@ -106,14 +111,14 @@ test("NO stage in EITHER lane writes its output into the guarded tree", () => {
     let out = null;
     try { out = typeof def.out === "function" ? def.out(K, 0) : def.out; } catch { /* reported below */ }
     if (out == null) { offenders.push(`${name}: out: did not resolve — NOT CHECKED, which is not the same as clean`); continue; }
-    if (String(out).startsWith(guarded + "/")) offenders.push(`${name} -> ${out}`);
+    if (String(out).startsWith(guarded + sep)) offenders.push(`${name} -> ${out}`);
   }
   const P = paths(RUN);
   for (const [name, def] of Object.entries(STAGES)) {
     let out = null;
     try { out = typeof def.out === "function" ? def.out(P, "1") : def.out; } catch { /* reported below */ }
     if (out == null) { offenders.push(`${name}: out: did not resolve — NOT CHECKED`); continue; }
-    if (String(out).startsWith(guarded + "/")) offenders.push(`${name} -> ${out}`);
+    if (String(out).startsWith(guarded + sep)) offenders.push(`${name} -> ${out}`);
   }
   assert.deepEqual(offenders, [],
     "a stage's dictated output lands inside the deny-hook's tree. The seat will be refused on Write AND on Bash and its corrective ladder will exhaust. Move the WORK out of the guarded tree (#991), or give the stage a driver-written transport — never weaken the hook.");
@@ -126,7 +131,7 @@ test("VOID CONTROL: that sweep really did examine both lanes", () => {
   assert.ok(Object.keys(STAGES).length >= 15, `the main lane has ${Object.keys(STAGES).length} stages`);
   // …and the guard can fail: a synthetic stage pointed at the guarded tree must be caught by the same test.
   const planted = join(driverDir(resolve(RUN)), "planted.json");
-  assert.ok(planted.startsWith(driverDir(resolve(RUN)) + "/"), "the predicate the sweep uses must match a guarded path");
+  assert.ok(planted.startsWith(driverDir(resolve(RUN)) + sep), "the predicate the sweep uses must match a guarded path");
   assert.ok(denyReason(planted, TREES), "…and the boundary must refuse it");
 });
 

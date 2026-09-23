@@ -17,17 +17,21 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, chmodSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { delimiter, join } from "node:path";
 
 import { resolveEngineBin, isWsl, windowsShimNote, ON_A_WINDOWS_DRIVE } from "../../bin/onboard.mjs";
 
 // A real executable file, because the resolver tests X_OK and isFile() and a fixture that only names
-// a path would prove the skip over candidates the resolver would have rejected anyway.
+// a path would prove the skip over candidates the resolver would have rejected anyway. On Windows a
+// program is found on PATH by its extension, so there the fixture is `claude.exe`, and the PATH is
+// joined with that platform's delimiter.
+const EXE = process.platform === "win32" ? ".exe" : "";
+const CLAUDE = `claude${EXE}`;
 const root = mkdtempSync(join(tmpdir(), "wsl-path-"));
 const binIn = (rel) => {
   const dir = join(root, rel);
   mkdirSync(dir, { recursive: true });
-  const p = join(dir, "claude");
+  const p = join(dir, CLAUDE);
   writeFileSync(p, "#!/bin/sh\nexit 0\n");
   chmodSync(p, 0o755);
   return dir;
@@ -36,14 +40,14 @@ const WINDOWS = binIn("mnt/c/nvm4w/nodejs");     // stands in for /mnt/c/…
 const LINUX = binIn("opt/node/v22/bin");
 // The predicate the production pattern would answer for a real /mnt/c path.
 const onWindowsDrive = (p) => p.startsWith(join(root, "mnt", "c"));
-const PATH_BOTH = `${WINDOWS}:${LINUX}`;
+const PATH_BOTH = [WINDOWS, LINUX].join(delimiter);
 const resolve = (PATH, opts) => resolveEngineBin("claude", { env: { PATH }, onWindowsDrive, ...opts });
 
 test("under WSL the Linux install wins, even when the Windows one comes first on PATH", () => {
   const r = resolve(PATH_BOTH, { wsl: true });
-  assert.equal(r.path, join(LINUX, "claude"), "the Windows binary was taken");
+  assert.equal(r.path, join(LINUX, CLAUDE), "the Windows binary was taken");
   assert.ok(r.executable);
-  assert.deepEqual(r.skipped, [join(WINDOWS, "claude")], "the skip is not recorded, so nothing can say why");
+  assert.deepEqual(r.skipped, [join(WINDOWS, CLAUDE)], "the skip is not recorded, so nothing can say why");
 });
 
 test("with only the Windows one there, the engine reports as MISSING rather than as found", () => {
@@ -51,7 +55,7 @@ test("with only the Windows one there, the engine reports as MISSING rather than
   const r = resolve(WINDOWS, { wsl: true });
   assert.equal(r.path, null);
   assert.equal(r.executable, false);
-  assert.deepEqual(r.skipped, [join(WINDOWS, "claude")]);
+  assert.deepEqual(r.skipped, [join(WINDOWS, CLAUDE)]);
 });
 
 test("a reader is told what was passed over, and where", () => {
@@ -69,14 +73,14 @@ test("OFF WSL nothing changes — an ordinary Linux box resolves exactly as befo
   // The control that stops this from being a change of behaviour everywhere. A /mnt path on a plain
   // Linux box is an ordinary mount and its binary is an ordinary binary.
   const r = resolve(PATH_BOTH, { wsl: false });
-  assert.equal(r.path, join(WINDOWS, "claude"), "first on PATH still wins off WSL");
+  assert.equal(r.path, join(WINDOWS, CLAUDE), "first on PATH still wins off WSL");
   assert.deepEqual(r.skipped, []);
 });
 
 test("a path the reader typed is reported, never overruled", () => {
   // The same rule the launcher applies to a port somebody stated: a stated address is not moved. It is
   // flagged, so the caller can say what it is, and it is still the path that was asked for.
-  const typed = join(WINDOWS, "claude");
+  const typed = join(WINDOWS, CLAUDE);
   const r = resolveEngineBin(typed, { env: { PATH: "" }, wsl: true, onWindowsDrive });
   assert.equal(r.path, typed, "a typed path was silently replaced");
   assert.equal(r.windowsShim, true, "and nothing marks it as the Windows build");
