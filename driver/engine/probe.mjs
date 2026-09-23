@@ -299,7 +299,7 @@ export function classifyProbe({ engine, tuple = null, error = null, timeoutSec =
     if (typeof expect === "object" && expect.command) {
       if (!String(tuple.stdout ?? "").includes(expect.command)) {
         const ours = expect.commandFile
-          ? (tuple.commandFailures ?? []).find((f) => String(f?.command ?? "").includes(expect.commandFile)) : null;
+          ? (tuple.commandFailures ?? []).find((f) => namesPathWhole(String(f?.command ?? ""), expect.commandFile)) : null;
         if (ours)
           return v("cannot-run-commands", "command-gauge", `${id} could not run a command where a search runs its commands`, cannotRunFix(id),
             { detail: tail(ours.output) ?? tail(tuple.stderr) ?? tail(tuple.stdout) });
@@ -391,6 +391,19 @@ function cannotWriteFix(engine) {
     return "Every search stage writes its results to a file, so no search can finish here. codex's own sandbox cannot write on this machine: "
       + "set CLEAROTRON_CODEX_SANDBOX_BYPASS=1 in this install's environment file, or use the Anthropic engine, then run this again.";
   return "Every search stage writes its results to a file, so no search can finish here. The engine's stderr below is the place to start.";
+}
+
+/**
+ * Whether a command line names `path` as a whole: followed by a quote, a space or the end of the line. A
+ * `cat` of `…/probe-command-word.txtt` contains the planted path but names another file, and fails on a
+ * working machine as any path that is not there does.
+ */
+export function namesPathWhole(command, path) {
+  for (let at = command.indexOf(path); at >= 0; at = command.indexOf(path, at + 1)) {
+    const next = command[at + path.length];
+    if (next === undefined || next === "\"" || next === "'" || /\s/.test(next)) return true;
+  }
+  return false;
 }
 
 /** What fixes a host where the engine cannot run a command. On codex it is its own sandbox, and the setting is named. */

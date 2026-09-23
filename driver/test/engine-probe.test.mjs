@@ -30,7 +30,7 @@ import { fileURLToPath } from "node:url";
 
 import { classifyProbe, probeEngineTurn, preflightEngineTurn, probeFailureText, probeVerdictLane,
   PROBE_MODEL, PROBE_THINKING, PROBE_TOOLS, PROBE_FILE, probePrompt, isProbePrompt, probeToolConfig,
-  ENGINES_WITH_A_SHELL, PROBE_COMMAND_FILE } from "../engine/probe.mjs";
+  ENGINES_WITH_A_SHELL, PROBE_COMMAND_FILE, namesPathWhole } from "../engine/probe.mjs";
 import { parseCodexEvent } from "../engine/openai-agent.mjs";
 import { CLOUD_SETTINGS, CLOUD_CREDENTIAL_CHECK } from "../engine/auth.mjs";
 import { ENGINE_BINARIES } from "../driver.config.mjs";
@@ -717,6 +717,16 @@ test("a failed cat of the planted file is refused at the door; a word simply mis
   assert.equal(mistyped.mode, "commands-unproven", JSON.stringify(mistyped));
   assert.equal(probeVerdictLane(mistyped), "weather", "a working machine was refused at the door for a mistyped name");
 
+  // Nor is the planted path with a character added after it: that command names another file.
+  const lengthened = await probeEngineTurn({ env: { CLEAROTRON_AI: "openai-agent" }, loadAdapter: explode,
+    runTurn: async (a) => {
+      const planted = /Run the shell command cat "(.+?)"\./.exec(a.message)?.[1];
+      return answering({ commandsFailed: 1, commandFailures: [{ command: `/bin/bash -lc 'cat ${planted}t'`,
+        output: `cat: ${planted}t: No such file or directory\n` }] }, { command: false })(a);
+    } });
+  assert.equal(lengthened.mode, "commands-unproven", JSON.stringify(lengthened));
+  assert.equal(probeVerdictLane(lengthened), "weather", "a working machine was refused at the door for a path with a character added");
+
   // A failed command whose word still came back is a command that ran: the model retried, or ran another.
   const retried = await probeEngineTurn({ env: { CLEAROTRON_AI: "openai-agent" }, loadAdapter: explode,
     runTurn: answering({ commandsFailed: 1, commandFailures: [{ command: "cat nope", output: "" }] }) });
@@ -725,6 +735,14 @@ test("a failed cat of the planted file is refused at the door; a word simply mis
   // Claude's stages have no shell, so its probe asks for no command and passes without one.
   const claude = await probeEngineTurn({ env: { CLEAROTRON_AI: "anthropic-agent" }, loadAdapter: explode, runTurn: answering({}, { command: false }) });
   assert.equal(claude.ok, true, JSON.stringify(claude));
+});
+
+test("a command names the planted path only where the path ends", () => {
+  const p = "/tmp/clearotron-probe-x/probe-command-word.txt";
+  for (const cmd of [`/bin/bash -lc 'cat ${p}'`, `cat "${p}"`, `cat ${p}`, `cat ${p} 2>&1`])
+    assert.equal(namesPathWhole(cmd, p), true, cmd);
+  for (const cmd of [`cat ${p}t`, `cat ${p}.bak`, `cat /tmp/clearotron-probe-x/probe-comand-word.txt`, "cat nothing"])
+    assert.equal(namesPathWhole(cmd, p), false, cmd);
 });
 
 test("the codex adapter counts a command codex reports as failed, and keeps each one's command line and output", () => {
