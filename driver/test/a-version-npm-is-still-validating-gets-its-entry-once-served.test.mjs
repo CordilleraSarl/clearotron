@@ -142,7 +142,12 @@ function driveCatchUp({ version, tag = true, entry = false, kept = [keptBy(7)], 
     return { id: k.id, name: `published-${version}`, expired: false,
       workflow_run: { id: runId, repository_id: REPO_ID, head_repository_id: headRepo, head_branch: k.branch, head_sha: headSha } };
   });
-  const list = JSON.stringify({ total_count: listed.length, artifacts: listed });
+  // GitHub's pages of 100, each carrying the whole count, and an empty page past the end.
+  const pages = [];
+  for (let i = 0; i === 0 || i < listed.length; i += 100) pages.push(listed.slice(i, i + 100));
+  pages.push([]);
+  const pageAnswers = pages.map((p, n) =>
+    `  "${api}/actions/artifacts?name=published-${version}&per_page=100&page=${n + 1}") printf '%s' '${JSON.stringify({ total_count: listed.length, artifacts: p })}'; exit 0 ;;`);
   writeFileSync(join(dir, "bin", "gh"),
     `#!/bin/sh\nprintf '%s\\n' "$*" >> ${JSON.stringify(log)}\n`
     + `if [ "$1" = release ] && [ "$2" = create ]; then\n`
@@ -151,7 +156,7 @@ function driveCatchUp({ version, tag = true, entry = false, kept = [keptBy(7)], 
     + `  "release view") ${viewAnswer} ;;\n`
     + `  "${api}") printf '%s\\n' ${REPO_ID}; exit 0 ;;\n`
     + `  "${api}/git/ref/tags/v${version}") ${tagAnswer} ;;\n`
-    + `  "${api}/actions/artifacts?name=published-${version}&per_page=100") printf '%s' '${list}'; exit 0 ;;\n`
+    + `${pageAnswers.join("\n")}\n`
     + `${answers.join("\n")}\n`
     + `  "${api}/commits/v${version}") printf '%s %s\\n' ${TAG_SHA} ${when}; exit 0 ;;\n`
     + `esac\necho "fake gh: nothing answers $*" >&2\nexit 1\n`, { mode: 0o755 });
@@ -250,6 +255,17 @@ test("an artifact is used only when the release workflow made it on this reposit
     assert.doesNotMatch(run.log, /actions\/artifacts\/7\/zip/, `${arm}: the refused artifact was downloaded`);
     assert.deepEqual(creates(run.log), [], arm);
   }
+});
+
+test("a hundred uploads under the same name do not push the release run's own artifact out of reach", { skip: FAKE_GH_IS_POSIX }, () => {
+  const flood = Array.from({ length: 100 }, (_, i) => keptBy(1000 - i, { fork: true, bytes: "a stranger's bytes" }));
+  const run = driveCatchUp({ version: "9.9.9-beta.3", kept: [...flood, keptBy(7)] });
+  assert.equal(run.status, 0, run.out.slice(-2000));
+  assert.match(run.log, /per_page=100&page=2/, "the second page of the list was never read");
+  assert.match(run.asked, /BYTES=bytes of 9\.9\.9-beta\.3\n$/, "the registry check was not handed the release run's bytes");
+  assert.equal((run.out.match(/::warning::release-entry-catch-up: refused artifact/g) ?? []).length, 100);
+  assert.doesNotMatch(run.log, /artifacts\/(9\d\d|1000)\/zip/, "an upload from a fork was downloaded");
+  assert.equal(creates(run.log).length, 1, run.log.slice(-2000));
 });
 
 test("a cut's publish, which runs on the commit before the version commit it tags, is the release run", { skip: FAKE_GH_IS_POSIX }, () => {

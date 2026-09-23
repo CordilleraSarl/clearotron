@@ -15,6 +15,7 @@ import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { ensureDriverDir, RUN_DIR_MODE, DRIVER_DIR } from "../../shared/driver-dir.mjs";
+import { runLog } from "../log.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const mode = (p) => statSync(p).mode & 0o7777;
@@ -30,7 +31,7 @@ function underLooseUmask(fn) {
 test("a run folder created for a new run is owner and group only, and so is its record folder", { skip: !POSIX && "Windows has no mode bits" }, (t) => {
   const root = mkdtempSync(join(tmpdir(), "run-mode-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));
-  const runDir = join(root, "some-matter", "2026-09-23-amber-harbor");
+  const runDir = join(root, "some-matter", "2026-09-23-sample-run");
   underLooseUmask(() => ensureDriverDir(runDir));
   assert.equal(RUN_DIR_MODE, 0o750);
   for (const dir of [join(root, "some-matter"), runDir, join(runDir, DRIVER_DIR)]) {
@@ -38,10 +39,22 @@ test("a run folder created for a new run is owner and group only, and so is its 
   }
 });
 
+test("a first log line that creates the run folder creates it owner and group only as well", { skip: !POSIX && "Windows has no mode bits" }, (t) => {
+  // The run log can be written before anything calls ensureDriverDir, and it creates the folders it
+  // writes into. Without the mode, that one early line made the run folder 0775 again.
+  const root = mkdtempSync(join(tmpdir(), "run-mode-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const runDir = join(root, "some-matter", "2026-09-23-sample-run");
+  underLooseUmask(() => runLog(runDir, { event: "started" }));
+  for (const dir of [join(root, "some-matter"), runDir, join(runDir, DRIVER_DIR)]) {
+    assert.equal(mode(dir), 0o750, `${dir.slice(root.length)} was created ${octal(mode(dir))} by the run log, so another account can read it`);
+  }
+});
+
 test("a folder that already exists keeps its mode: the change is made at creation, never by a chmod", { skip: !POSIX && "Windows has no mode bits" }, (t) => {
   const root = mkdtempSync(join(tmpdir(), "run-mode-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));
-  const runDir = join(root, "2026-09-23-amber-harbor");
+  const runDir = join(root, "2026-09-23-sample-run");
   mkdirSync(runDir); chmodSync(runDir, 0o775);
   underLooseUmask(() => ensureDriverDir(runDir));
   assert.equal(mode(runDir), 0o775, "an existing run folder was changed; a chmod on a set-GID tree is what makes every report 403");
@@ -53,7 +66,7 @@ test("a report folder created under a set-GID pool root keeps the set-GID bit an
   t.after(() => rmSync(pool, { recursive: true, force: true }));
   chmodSync(pool, 0o2775);   // our own temp folder, in our own group: the chmod keeps the bit here
   if (!(mode(pool) & 0o2000)) return t.skip("this filesystem will not hold a set-GID bit on a folder");
-  const reportDir = join(pool, "some-matter-2026-09-23-amber-harbor");
+  const reportDir = join(pool, "some-matter-2026-09-23-sample-run");
   underLooseUmask(() => mkdirSync(reportDir, { recursive: true, mode: RUN_DIR_MODE }));
   assert.equal(mode(reportDir), 0o2750,
     `the report folder was created ${octal(mode(reportDir))}; it must inherit set-GID and keep the group's read, or reports 403`);
