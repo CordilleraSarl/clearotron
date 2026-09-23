@@ -26,6 +26,8 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
 import { ENGINE_BINARIES } from "../driver.config.mjs";
+// The version a stand-in claims: the engine's own floor, so doctor's floor check does not report it as too old.
+const FLOOR_VERSION = ENGINE_BINARIES["anthropic-agent"].floor;
 import { resolveAuthMode, CLOUD_SETTINGS, CLOUD_SECRETS, CLOUD_SWITCH } from "../engine/auth.mjs";
 import { probeEngineTurn, classifyProbe, engineEnvKeys } from "../engine/probe.mjs";
 import { CLAUDE_PAY_QUESTION, CLOUD_CHOICES, payQuestion, cloudSettings, servedLine, cloudAccount, shownSetting, signInHandOff,
@@ -197,6 +199,12 @@ function amazonProgram(dir) {
   const bin = join(dir, "claude-on-amazon.sh");
   writeFileSync(bin, [
     "#!/bin/sh",
+    // `--version` ANSWERS AND EXITS, BEFORE ANYTHING IS RECORDED, as the real program does and as
+    // mock-claude.mjs already did. Doctor asks a found program its version to compare it against the
+    // engine floor, and that question carries no credentials and is not a turn. A stand-in that logged
+    // it put an extra line in front of what these arms measure and read as an engine that ran without
+    // its token. The version it claims is the floor, so doctor does not report the stand-in as too old.
+    `case " $* " in *" --version "*) echo "${FLOOR_VERSION} (stand-in)"; exit 0;; esac`,
     `if [ -n "$AWS_ACCESS_KEY_ID" ] && [ -n "$AWS_SECRET_ACCESS_KEY" ]; then echo present >> "${log}"; exec "${process.execPath}" "${MOCK}" "$@"; fi`,
     `echo absent >> "${log}"`,
     `echo "API Error: 403 The security token included in the request is invalid." >&2`,

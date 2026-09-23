@@ -338,7 +338,10 @@ test("the release notes promise what setup does", () => {
     assert.match(installSizeLine(eng), /^It takes about \d+ MB\. To remove it, delete that folder\.$/,
       `setup's install offer for ${eng.product} names no size, which the release note promises`);
     const row = (found) => engineOptions({ [id]: found }).find((o) => o.id === id).label;
-    assert.match(row({ executable: true, version: "1.2.3" }), /found on this computer \(version 1\.2\.3\)/, `the ${eng.product} row does not show the version found`);
+    // The version here stands for "some version" and is taken from the engine's own floor: a row whose
+    // copy is BELOW the floor now says so instead of saying found, which is a different promise than
+    // this arm is about. A literal would have made that arm fail the next time the floor moved.
+    assert.match(row({ executable: true, version: eng.floor }), new RegExp(`found on this computer \\(version ${eng.floor.replace(/\./g, "\\.")}\\)`), `the ${eng.product} row does not show the version found`);
     assert.match(row({ executable: false, rejected: [] }), /not on this computer — setup can install it/, `the ${eng.product} row does not say setup can install it`);
   }
   assert.equal(engineOptions().at(-1).label, "None for now");

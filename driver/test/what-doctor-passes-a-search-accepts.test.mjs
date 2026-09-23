@@ -45,6 +45,8 @@ const ROOT = resolve(HERE, "..", "..");
 // a question they meet: they are not about the bundle (see helpers/portal-bundle.mjs).
 const DOCTOR_ROOT = doctorRepoRoot();
 const TABLES = { registers: PROVIDERS, engines: ENGINE_BINARIES, defaultEngine: DEFAULT_ENGINE_ID };
+// The version a stand-in claims: the engine's own floor, so doctor's floor check does not report it as too old.
+const FLOOR_VERSION = ENGINE_BINARIES["anthropic-agent"].floor;
 
 /** A scratch HOME holding only the install's own environment file, with `lines` in it. */
 function homeWith(lines) {
@@ -78,6 +80,12 @@ function fakeEngine(dir) {
   const bin = join(dir, "fake-claude.sh");
   writeFileSync(bin, [
     "#!/bin/sh",
+    // `--version` ANSWERS AND EXITS, BEFORE ANYTHING IS RECORDED, as the real program does and as
+    // mock-claude.mjs already did. Doctor asks a found program its version to compare it against the
+    // engine floor, and that question carries no credentials and is not a turn. A stand-in that logged
+    // it put an extra line in front of what these arms measure and read as an engine that ran without
+    // its token. The version it claims is the floor, so doctor does not report the stand-in as too old.
+    `case " $* " in *" --version "*) echo "${FLOOR_VERSION} (stand-in)"; exit 0;; esac`,
     `if [ -n "$CLAUDE_CODE_OAUTH_TOKEN" ]; then echo present >> "${log}"; exec "${process.execPath}" "${join(HERE, "mock-claude.mjs")}" "$@"; fi`,
     `echo absent >> "${log}"`,
     `echo "Invalid API key · Please run /login" >&2`,
