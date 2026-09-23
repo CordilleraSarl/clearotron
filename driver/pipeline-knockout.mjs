@@ -53,8 +53,8 @@ import { recordsPreflight, listRegisterRecords, listedMarks, resolveRecordExecut
 import { capabilitiesFor } from "./register-capabilities.mjs";
 // — the ONE binding of the office split to this box's env, shared with the plan lane.
 import { registerUnavailableOffices } from "./register-unreachable.mjs";
-import { runRecordLogPath } from "../providers/_shared/ledger-path.mjs";
-import { beginAnswerMemory, endAnswerMemory } from "../providers/_shared/answer-memory.mjs";   // — this run's record log
+import { runRecordLogPath } from "../providers/_shared/ledger-path.mjs";   // — this run's record log
+import { beginAnswerMemory, endAnswerMemory } from "../providers/_shared/answer-memory.mjs";
 import { validators as koValidators, validateMergedFindings, worstBand, registerSurfacedFilings, raterCaveats, SURVIVOR_BOUNDARY_RE } from "./verify-knockout.mjs";
 import { reviewAbout, reviewEvidence, reviewEvidenceLines, applyKnockoutReview, knockoutReviewFile } from "./knockout-review-record.mjs";
 import { stripNextStepSections } from "./knockout-next-step.mjs";

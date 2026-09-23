@@ -982,8 +982,8 @@
           "todos": 0
         },
         "a-run-asks-signa-each-question-once.test.mjs": {
-          "tests": 17,
-          "asserts": 77,
+          "tests": 18,
+          "asserts": 83,
           "skips": 0,
           "todos": 0
         },

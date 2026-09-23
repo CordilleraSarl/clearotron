@@ -273,7 +273,12 @@ export async function listRegisterRecords({
       // The three numbers a reader needs to trust the list: how many are here, how many the register
       // said there are under the listed terms, and whether the cap cut it.
       fetched: records.length,
-      available: termRows.reduce((n, t) => (Number.isFinite(t.total) ? n + t.total : n), 0),
+      // NO SUM WHEN ANY ANSWERED TERM IS APPROXIMATE. An approximation carries a floor and no number, so a
+      // sum around it counts only the exact terms: a name the register answered as more than 10,000 read
+      // "out of 800 hits" beside its two close forms. With no honest total none is stated (recordsLine
+      // drops the clause for a non-number), and the counts line still carries the approximation.
+      available: termRows.some((t) => t.ok && t.approximate === true) ? null
+        : termRows.reduce((n, t) => (Number.isFinite(t.total) ? n + t.total : n), 0),
       capped: capped || records.length >= markCap,
       cap: markCap,
       // — which registers this listing covers, present only when one was dropped. Per-mark for the

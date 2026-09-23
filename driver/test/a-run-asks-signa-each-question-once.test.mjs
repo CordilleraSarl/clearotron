@@ -252,32 +252,38 @@ test("a held answer whose next-page cursor is too old is asked again, and the wa
 // The territories as both lanes hold them after translation into this register's office keys.
 const { resolveRegions } = await import("../register-plan.mjs");
 const EU = resolveRegions(["EU"], SIGNA).regions;
+// THE FORMS ARE THE GENERATOR'S OWN. This fixture named forms `variantForms` never produces for its word,
+// so every close-form check sat behind an `if` that never ran. COPPER's four forms are COPER, KOPPER,
+// COPPAR and CUPPER; each case below is one of them, and the arm asserts the forms exist before reading them.
 const LISTED = {
   scope: { regions: EU },
-  marks: [{ name: "TIMBER", classes: [9], terms: [
-    { term: "TIMBER", basis: "identical", ok: true, fetched: 5, total: 12 },
-    { term: "TIMBERR", basis: "close", ok: true, fetched: 0, total: 0 },
-    { term: "TIMBRE", basis: "close", ok: true, fetched: 5, total: null, approximate: true, floor: 10000 },
-    { term: "TMBER", basis: "close", ok: false, fetched: 0, total: null, reason: "failed" },
-    { term: "TIMBEER", basis: "close", ok: false, fetched: 0, total: null, notAsked: true },
+  marks: [{ name: "COPPER", classes: [9], terms: [
+    { term: "COPPER", basis: "identical", ok: true, fetched: 5, total: 12 },
+    { term: "COPER", basis: "close", ok: true, fetched: 0, total: 0 },
+    { term: "KOPPER", basis: "close", ok: true, fetched: 5, total: null, approximate: true, floor: 10000 },
+    { term: "COPPAR", basis: "close", ok: false, fetched: 0, total: null, reason: "failed" },
+    { term: "CUPPER", basis: "close", ok: false, fetched: 0, total: null, notAsked: true },
   ] }],
 };
 
 test("the count lane takes the identical and close figures the listing answered, and asks the rest", async () => {
   const asked = [];
   const counter = async (term, p) => { asked.push(`${p.key}:${term}`); return { ok: true, total: 7 }; };
-  const doc = await countRegisterHits({ marks: [{ name: "TIMBER", classes: [9] }], jurisdictions: ["EU"], provider: "signa",
+  const doc = await countRegisterHits({ marks: [{ name: "COPPER", classes: [9] }], jurisdictions: ["EU"], provider: "signa",
     capabilities: SIGNA, counter, variantCap: 12, listed: LISTED });
   const m = doc.marks[0];
   assert.equal(m.counts.identical.total, 12);
   assert.equal(m.counts.identical.source, "listing");
-  assert.ok(asked.includes("containing:TIMBER"), "the listing never asks `containing`, so the count lane does");
-  assert.ok(!asked.includes("identical:TIMBER"));
+  assert.ok(asked.includes("containing:COPPER"), "the listing never asks `containing`, so the count lane does");
+  assert.ok(!asked.includes("identical:COPPER"));
   const forms = Object.fromEntries(m.counts.close.forms.map((f) => [f.form, f]));
-  if (forms.TIMBERR) { assert.equal(forms.TIMBERR.source, "listing"); assert.equal(forms.TIMBERR.total, 0); }
-  if (forms.TIMBRE) { assert.equal(forms.TIMBRE.approximate, true); assert.equal(forms.TIMBRE.floor, 10000); }
-  for (const f of ["TMBER", "TIMBEER"]) if (forms[f]) assert.ok(asked.includes(`close:${f}`), `${f} was not answered by the listing, so it is counted`);
-  assert.ok(asked.some((a) => a.startsWith("close:")), "the fixture reaches forms the listing did not answer");
+  for (const f of ["COPER", "KOPPER", "COPPAR", "CUPPER"]) assert.ok(forms[f], `${f} is a form the count lane generated`);
+  assert.equal(forms.COPER.source, "listing");
+  assert.equal(forms.COPER.total, 0);
+  assert.equal(forms.KOPPER.approximate, true, "an approximate listing total stays an approximation");
+  assert.equal(forms.KOPPER.floor, 10000);
+  assert.ok(!asked.includes("close:COPER") && !asked.includes("close:KOPPER"), "what the listing answered is not asked again");
+  for (const f of ["COPPAR", "CUPPER"]) assert.ok(asked.includes(`close:${f}`), `${f} was not answered by the listing, so it is counted`);
 });
 
 test("a listing over a different scope answers nothing", async () => {
@@ -285,9 +291,31 @@ test("a listing over a different scope answers nothing", async () => {
   assert.equal(listingAnswers({ ...LISTED, scope: { regions: resolveRegions(["US"], SIGNA).regions } }, { regions: EU }), null);
   const asked = [];
   const counter = async (term, p) => { asked.push(`${p.key}:${term}`); return { ok: true, total: 1 }; };
-  await countRegisterHits({ marks: [{ name: "TIMBER", classes: [25] }], jurisdictions: ["EU"], provider: "signa",
+  await countRegisterHits({ marks: [{ name: "COPPER", classes: [25] }], jurisdictions: ["EU"], provider: "signa",
     capabilities: SIGNA, counter, listed: LISTED });
-  assert.ok(asked.includes("identical:TIMBER"), "class 25 was not the question the listing asked");
+  assert.ok(asked.includes("identical:COPPER"), "class 25 was not the question the listing asked");
+});
+
+// NO "OUT OF N HITS" WHEN ANY TERM IS APPROXIMATE. The name at the register's approximation (floor 10,000)
+// and two close forms at 400 each read "out of 800 hits": the sum counted only the exact terms. Driven
+// through the real listing and the real filings line.
+test("the filings line states no hit total when any listed term's total is approximate", async () => {
+  const { listRegisterRecords, recordsLine } = await import("../register-records.mjs");
+  const lister = (answers) => async (term) => {
+    const a = answers[term] ?? { total: 0 };
+    return { ok: true, records: [{ record_id: `/mark/eu/${term}-1`, mark_text: term, owner_name: "Owner", classes: [9], status: "Registered" }],
+      total: a.total ?? null, ...(a.approximate ? { approximate: true, floor: a.floor } : {}) };
+  };
+  const run = (answers) => listRegisterRecords({ marks: [{ name: "COPPER", classes: [9] }], jurisdictions: ["EU"], provider: "signa",
+    capabilities: SIGNA, lister: lister(answers), variantCap: 2 });
+  const approx = (await run({ COPPER: { approximate: true, floor: 10000 }, COPER: { total: 400 }, KOPPER: { total: 400 } })).marks[0];
+  assert.ok(approx.terms.some((t) => t.approximate === true), "premise: the name's total is an approximation");
+  assert.equal(approx.available, null, "no honest sum exists, so none is carried");
+  assert.doesNotMatch(recordsLine(approx), /out of \d/, "and none is printed");
+  // THE CONTROL: every total exact, and the sum is stated as before.
+  const exact = (await run({ COPPER: { total: 12 }, COPER: { total: 400 }, KOPPER: { total: 400 } })).marks[0];
+  assert.equal(exact.available, 812);
+  assert.match(recordsLine(exact), /out of 812 hits across the searches run/);
 });
 
 test("the Signa listing carries the register's total and its approximation", async () => {
