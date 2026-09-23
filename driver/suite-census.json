@@ -1246,8 +1246,8 @@
           "todos": 0
         },
         "a-version-npm-is-still-validating-gets-its-entry-once-served.test.mjs": {
-          "tests": 19,
-          "asserts": 66,
+          "tests": 20,
+          "asserts": 72,
           "skips": 0,
           "todos": 0
         },
