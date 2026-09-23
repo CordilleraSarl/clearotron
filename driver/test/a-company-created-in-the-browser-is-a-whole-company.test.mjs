@@ -14,7 +14,7 @@ import { execFileSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { makeProfileService, browserRefusal } from "../profile-service.mjs";
-import { makeStoreCommit, makeCommittableAudit } from "../../shared/store-in-repo.mjs";
+import { makeStoreCommit, makeCommittableAudit, STORE_COMMITTER } from "../../shared/store-in-repo.mjs";
 import { makeUpstream } from "../portal-upstream.mjs";
 import { Refusal } from "../../shared/onboarding-store.mjs";
 import { readFileSync } from "node:fs";
@@ -166,18 +166,38 @@ test("THE CONTROL: a healthy store creates the company, commits it and its audit
   assert.deepEqual(s.git("show", "--name-only", "--format=", "HEAD").split("\n").sort(), [`profiles/${KEY}.json`, "profiles/_audit.log"].sort());
   assert.deepEqual(s.rows(), ["profile-create"]);
   assert.equal(s.staged(), "");
+  assert.equal(s.git("log", "-1", "--format=%cn <%ce>"), "store <store@example.test>", "a store with an identity of its own keeps it");
 }));
 
-test("a fresh store with no git identity refuses the create, names the store and the command, and writes nothing", () => withNoGuessedIdentity(async () => {
+// A STORE WITH NO GIT IDENTITY IS NOT A REFUSAL. It was: every company created on a service account nobody
+// had run `git config` for was refused with a message telling the person to run git. The product now names
+// its own committer on such a store, and the person stays the author.
+test("a fresh store with no git identity creates the company, committed by the product with the person as author", () => withNoGuessedIdentity(async () => {
   const s = realStore("no-identity");
   const r = await create(s);
-  assert.equal(r.status, 409, JSON.stringify(r.json));
-  assert.equal(r.json.code, "store_no_identity");
-  assert.match(r.json.error, /^No company was created: .*has no git identity/);
-  assert.ok(r.json.error.includes(s.root) && r.json.error.includes(`git -C ${s.root} config user.email`), r.json.error);
-  assert.doesNotMatch(r.json.error, /Please tell me who you are|Committer identity unknown/, "the operator's terms, not git's");
-  assert.ok(!existsSync(s.file), "no profile on disk");
-  assert.deepEqual(s.rows(), [], "nothing happened, so the audit trail records nothing");
+  assert.equal(r.status, 201, JSON.stringify(r.json));
+  assert.match(r.json.commit, /^[0-9a-f]{40}$/);
+  assert.equal(r.json.commitError, undefined);
+  assert.ok(existsSync(s.file), "the profile is on disk");
+  assert.equal(s.git("log", "-1", "--format=%cn <%ce>"), `${STORE_COMMITTER.name} <${STORE_COMMITTER.email}>`);
+  assert.equal(s.git("log", "-1", "--format=%ae"), STAFF.email, "the person who created it is the author");
+  assert.deepEqual(s.git("show", "--name-only", "--format=", "HEAD").split("\n").sort(), [`profiles/${KEY}.json`, "profiles/_audit.log"].sort());
+  assert.deepEqual(s.rows(), ["profile-create"]);
+  assert.equal(s.staged(), "");
+  assert.throws(() => s.git("config", "--local", "user.email"), "the repository's own configuration is left as it was");
+}));
+
+test("on a store with no git identity, paths an earlier failed save left staged are completed by the next save", () => withNoGuessedIdentity(async () => {
+  const s = realStore("no-identity");
+  writeFileSync(join(s.root, "profiles", "left.json"), "{}\n");
+  s.git("add", "profiles/left.json");
+  const commit = makeStoreCommit({ repoRoot: s.root });
+  writeFileSync(join(s.root, "profiles", "now.json"), "{}\n");
+  commit({ files: ["profiles/now.json"], message: "the save happening now", author: STAFF.email });
+  assert.deepEqual(s.git("log", "--format=%s|%cn", "--reverse").split("\n"), [
+    `Complete a store save left staged by an earlier failure (1 path(s))|${STORE_COMMITTER.name}`,
+    `the save happening now|${STORE_COMMITTER.name}`,
+  ]);
   assert.equal(s.staged(), "");
 }));
 
@@ -206,7 +226,7 @@ test("a commit refused after the write is withdrawn: the file is gone, nothing i
 test("a refused create files no grant: the organisation's grant rides a 201 only", () => withNoGuessedIdentity(async () => {
   const filed = [];
   const principal = { email: STAFF.email, genericOrgs: ["firm"], everything: true, permissions: { run: true, manage: true } };
-  for (const [state, status, grants] of [["no-identity", 409, 0], ["healthy", 201, 1]]) {
+  for (const [state, status, grants] of [["no-repository", 409, 0], ["no-identity", 201, 1], ["healthy", 201, 1]]) {
     const s = realStore(state);
     filed.length = 0;
     const upstream = makeUpstream({
