@@ -1305,6 +1305,12 @@
           "skips": 1,
           "todos": 0
         },
+        "a-windows-path-in-a-tool-call-is-valid-json.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "a-windows-path-reads-with-either-separator.test.mjs": {
           "tests": 8,
           "asserts": 29,
