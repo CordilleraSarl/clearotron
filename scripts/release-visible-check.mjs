@@ -7,9 +7,11 @@
 //        [--timeout 900] [--interval 15] [--registry https://registry.npmjs.org] [--name clearotron]
 //
 // Exit 0: the registry serves <v>, the <dist-tag> names it, and the tarball it serves is byte for byte
-// the one at <file> — the bytes this run published. Exit 1: not within the bound, or the registry serves
-// different bytes; the caller creates no release entry. Exit 2: could not look — bad arguments, or the
-// local tarball cannot be read.
+// the one at <file> — the bytes this run published. Exit 1: not served within the bound, which is PENDING:
+// npm accepts a publish before it serves it. Exit 3: the registry serves DIFFERENT BYTES for <v>, which is
+// never pending and must go red at once, so it has a code of its own; it used to share 1, and a caller
+// that waits on 1 then waited six hours on a wrong tarball. Exit 2: could not look — bad arguments, or the
+// local tarball cannot be read. In every case but 0 the caller creates no release entry.
 //
 // ── WHY THIS RUNS BEFORE THE RELEASE ENTRY ─────────────────────────────────────────────────────────
 //
@@ -89,7 +91,7 @@ async function main() {
       console.error(`\nrelease-visible-check: after ${waited}s an unauthenticated client still cannot get ${name}@${version} `
         + `under \`${tag}\`. The publish was accepted and is not yet served, so no release entry is created: `
         + "the page would name a version nobody can install. The tag is already written, so the pipeline "
-        + "knows this version is published; re-run this job to create the entry once the registry serves it.");
+        + "knows this version is published; the scheduled entry job creates the entry once the registry serves it.");
       process.exit(1);
     }
     await sleep(intervalSec * 1000);
@@ -108,7 +110,7 @@ async function main() {
     console.error(`release-visible-check: the registry serves DIFFERENT BYTES for ${name}@${version}.\n`
       + `  published by this run: ${local}\n  served:                ${served}\n  recorded integrity:    ${seen.integrity ?? "none"}\n`
       + "No release entry is created for a version whose install is not the build this run verified.");
-    process.exit(1);
+    process.exit(3);
   }
   console.log(`release-visible-check: a stranger can install ${name}@${version} under \`${tag}\`, `
     + `and the tarball served is the one this run published (${served.slice(0, 22)}…).`);

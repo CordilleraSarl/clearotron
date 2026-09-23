@@ -669,6 +669,12 @@
           "skips": 1,
           "todos": 0
         },
+        "a-new-run-folder-is-closed-to-other-accounts.test.mjs": {
+          "tests": 4,
+          "asserts": 8,
+          "skips": 4,
+          "todos": 0
+        },
         "a-next-step-the-model-writes-comes-off-at-publish.test.mjs": {
           "tests": 12,
           "asserts": 28,
@@ -918,6 +924,12 @@
         "a-register-with-no-record-page-is-cited-not-linked.test.mjs": {
           "tests": 2,
           "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-release-carries-its-parts-list.test.mjs": {
+          "tests": 5,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },
@@ -1210,8 +1222,8 @@
           "todos": 0
         },
         "a-version-npm-is-still-validating-gets-its-entry-once-served.test.mjs": {
-          "tests": 14,
-          "asserts": 47,
+          "tests": 19,
+          "asserts": 66,
           "skips": 0,
           "todos": 0
         },
@@ -4102,8 +4114,8 @@
           "todos": 0
         },
         "release-pipeline.test.mjs": {
-          "tests": 122,
-          "asserts": 462,
+          "tests": 123,
+          "asserts": 467,
           "skips": 0,
           "todos": 0
         },
@@ -5951,7 +5963,7 @@
         },
         "update-writes-only-inside-the-checkout.test.mjs": {
           "tests": 8,
-          "asserts": 29,
+          "asserts": 30,
           "skips": 0,
           "todos": 0
         },

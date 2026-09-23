@@ -1227,6 +1227,11 @@ jobs:
           npm pack --pack-destination ./release-artefacts
           test -f "${{ steps.what.outputs.tarball }}"
 
+      # THE PARTS LIST THIS RELEASE CARRIES: CycloneDX, the runtime packages in the lock these bytes were
+      # packed from, attached to the release entry. `npm sbom` refuses this tree; the script says why.
+      - name: Write the parts list this release carries
+        run: node scripts/release-sbom.mjs --out "release-artefacts/clearotron-${{ steps.what.outputs.version }}.cdx.json"
+
       # THE PUBLISHED MANIFEST IS NOT THIS REPOSITORY'S MANIFEST, AND FIVE RELEASES SHIPPED AS THOUGH IT
       # WERE. `overrides: { "buffers": "$buffers" }` pins the clean-room replacement
       # for the unlicensed `buffers@0.1.1` while resolving THIS tree; npm's `$name` syntax resolves only
@@ -1340,7 +1345,9 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: published-${{ steps.what.outputs.version }}
-          path: ${{ steps.what.outputs.tarball }}
+          path: |
+            ${{ steps.what.outputs.tarball }}
+            release-artefacts/clearotron-${{ steps.what.outputs.version }}.cdx.json
           retention-days: 14
           if-no-files-found: error
 
@@ -1365,6 +1372,7 @@ jobs:
           PRERELEASE_FLAG: ${{ steps.what.outputs.prerelease }}
           DIST_TAG: ${{ steps.what.outputs.dist_tag }}
           TARBALL: ${{ steps.what.outputs.tarball }}
+          SBOM: release-artefacts/clearotron-${{ steps.what.outputs.version }}.cdx.json
         run: |
           set -euo pipefail
           TARGET="$GITHUB_SHA"
@@ -1396,8 +1404,9 @@ jobs:
           # this run published — bounded at fifteen minutes. Past the bound the version is PENDING, not
           # failed: the tag stays, no entry is created here, and the scheduled `entry` job creates it from
           # the bytes kept above once the registry serves them (release-entry-catch-up.mjs). Measured on the
-          # 0.3.3 stable, 2026-09-23: npm listed it as validating for over fifty minutes. Only a check that
-          # could not look (exit 2) fails this step.
+          # 0.3.3 stable, 2026-09-23: npm listed it as validating for over fifty minutes. A check that could
+          # not look (exit 2) fails this step, and so does a registry serving DIFFERENT BYTES (exit 3), which
+          # is never pending.
           served_to_a_stranger() {
             node scripts/release-visible-check.mjs --version "$VERSION" --tag "$DIST_TAG" --tarball "$TARBALL" --timeout 900
           }
@@ -1421,9 +1430,9 @@ jobs:
             NOTES=$(node scripts/release-notes-for.mjs "$VERSION" || true)
             if [ -n "$NOTES" ]; then
               printf '%s\n' "$NOTES" > release-notes.md
-              gh release create "v$VERSION" --target "$TARGET" --title "v$VERSION" --notes-file release-notes.md --prerelease
+              gh release create "v$VERSION" "$SBOM" --target "$TARGET" --title "v$VERSION" --notes-file release-notes.md --prerelease
             else
-              gh release create "v$VERSION" --target "$TARGET" --title "v$VERSION" --generate-notes --prerelease
+              gh release create "v$VERSION" "$SBOM" --target "$TARGET" --title "v$VERSION" --generate-notes --prerelease
             fi
             echo "Released v$VERSION as a pre-release, marked Pre-release on the Releases page."
             exit 0
@@ -1443,9 +1452,9 @@ jobs:
           NOTES=$(node scripts/release-notes-for.mjs "$VERSION" || true)
           if [ -n "$NOTES" ]; then
             printf '%s\n' "$NOTES" > release-notes.md
-            gh release create "v$VERSION" --target "$TARGET" --title "v$VERSION" --notes-file release-notes.md
+            gh release create "v$VERSION" "$SBOM" --target "$TARGET" --title "v$VERSION" --notes-file release-notes.md
           else
-            gh release create "v$VERSION" --target "$TARGET" --title "v$VERSION" --generate-notes
+            gh release create "v$VERSION" "$SBOM" --target "$TARGET" --title "v$VERSION" --generate-notes
           fi
 
   # THE SAME INSTALL, for the stable a dispatch cut and `awaited` saw merge. See `macos` for why it is a
@@ -1689,6 +1698,11 @@ jobs:
           npm pack --pack-destination ./release-artefacts
           test -f "${{ steps.what.outputs.tarball }}"
 
+      # THE PARTS LIST THIS RELEASE CARRIES: CycloneDX, the runtime packages in the lock these bytes were
+      # packed from, attached to the release entry. `npm sbom` refuses this tree; the script says why.
+      - name: Write the parts list this release carries
+        run: node scripts/release-sbom.mjs --out "release-artefacts/clearotron-${{ steps.what.outputs.version }}.cdx.json"
+
       # THE PUBLISHED MANIFEST IS NOT THIS REPOSITORY'S MANIFEST, AND FIVE RELEASES SHIPPED AS THOUGH IT
       # WERE. `overrides: { "buffers": "$buffers" }` pins the clean-room replacement
       # for the unlicensed `buffers@0.1.1` while resolving THIS tree; npm's `$name` syntax resolves only
@@ -1802,7 +1816,9 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: published-${{ steps.what.outputs.version }}
-          path: ${{ steps.what.outputs.tarball }}
+          path: |
+            ${{ steps.what.outputs.tarball }}
+            release-artefacts/clearotron-${{ steps.what.outputs.version }}.cdx.json
           retention-days: 14
           if-no-files-found: error
 
@@ -1827,6 +1843,7 @@ jobs:
           PRERELEASE_FLAG: ${{ steps.what.outputs.prerelease }}
           DIST_TAG: ${{ steps.what.outputs.dist_tag }}
           TARBALL: ${{ steps.what.outputs.tarball }}
+          SBOM: release-artefacts/clearotron-${{ steps.what.outputs.version }}.cdx.json
         run: |
           set -euo pipefail
           TARGET="$(git rev-parse HEAD)"
@@ -1858,8 +1875,9 @@ jobs:
           # this run published — bounded at fifteen minutes. Past the bound the version is PENDING, not
           # failed: the tag stays, no entry is created here, and the scheduled `entry` job creates it from
           # the bytes kept above once the registry serves them (release-entry-catch-up.mjs). Measured on the
-          # 0.3.3 stable, 2026-09-23: npm listed it as validating for over fifty minutes. Only a check that
-          # could not look (exit 2) fails this step.
+          # 0.3.3 stable, 2026-09-23: npm listed it as validating for over fifty minutes. A check that could
+          # not look (exit 2) fails this step, and so does a registry serving DIFFERENT BYTES (exit 3), which
+          # is never pending.
           served_to_a_stranger() {
             node scripts/release-visible-check.mjs --version "$VERSION" --tag "$DIST_TAG" --tarball "$TARBALL" --timeout 900
           }
@@ -1883,9 +1901,9 @@ jobs:
             NOTES=$(node scripts/release-notes-for.mjs "$VERSION" || true)
             if [ -n "$NOTES" ]; then
               printf '%s\n' "$NOTES" > release-notes.md
-              gh release create "v$VERSION" --target "$TARGET" --title "v$VERSION" --notes-file release-notes.md --prerelease
+              gh release create "v$VERSION" "$SBOM" --target "$TARGET" --title "v$VERSION" --notes-file release-notes.md --prerelease
             else
-              gh release create "v$VERSION" --target "$TARGET" --title "v$VERSION" --generate-notes --prerelease
+              gh release create "v$VERSION" "$SBOM" --target "$TARGET" --title "v$VERSION" --generate-notes --prerelease
             fi
             echo "Released v$VERSION as a pre-release, marked Pre-release on the Releases page."
             exit 0
@@ -1905,9 +1923,9 @@ jobs:
           NOTES=$(node scripts/release-notes-for.mjs "$VERSION" || true)
           if [ -n "$NOTES" ]; then
             printf '%s\n' "$NOTES" > release-notes.md
-            gh release create "v$VERSION" --target "$TARGET" --title "v$VERSION" --notes-file release-notes.md
+            gh release create "v$VERSION" "$SBOM" --target "$TARGET" --title "v$VERSION" --notes-file release-notes.md
           else
-            gh release create "v$VERSION" --target "$TARGET" --title "v$VERSION" --generate-notes
+            gh release create "v$VERSION" "$SBOM" --target "$TARGET" --title "v$VERSION" --generate-notes
           fi
 
   # ── THE DEPRECATION SWEEP ─────────────────────────────────────────────────────────────────────────
