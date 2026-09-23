@@ -52,7 +52,7 @@ const JOB = {
 
 const MOCK_KNOBS = ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE",
   "MOCK_ACTIONS", "MOCK_LINT_REPAIR_TOUCH_FINDINGS", "MOCK_LINT_REPAIR_TOUCH_FINDING",
-  "MOCK_REVIEW_BLOCKS_AFTER_VERDICT", "MOCK_NARRATIVE_OVER_CAP"];
+  "MOCK_REVIEW_BLOCKS_AFTER_VERDICT", "MOCK_REVIEW_SOFTENS_AFTER_VERDICT", "MOCK_NARRATIVE_OVER_CAP", "MOCK_VERDICT_DEFECTS"];
 
 async function runPipeline(env, jobPatch = {}, opts = {}) {
   const root = tempDir("clearotron-mock-adc-");
@@ -340,4 +340,28 @@ test("T3a/#1674: a review that flips to BLOCKING during the delivery stale-repai
   // the badge and still prints no open points has heard the reviewer and told nobody.
   assert.match(readFileSync(join(res.runDir, "report.md"), "utf8"), /^###\s+Reviewer's open questions/m,
     "the section is built from the review THIS repair wrote, which is why the reassembly must re-run");
+});
+
+// ── THE MIRROR: A LATE REVIEW THAT SOFTENS IS NOT ADOPTED, AND THE RUN SAYS SO ─────────────────────────
+//
+// E2E-R2 on 2026-09-23: the reviewer said BLOCKING at the gate and at the recheck, and the run recorded
+// BLOCKING. A stale repair then re-ran it, and senior-eye-review.md came back opening CONDITIONAL. The
+// ratchet (verdictHardenedTo) only tightens, so BLOCKING rightly stood — but nothing said so, and a reader of
+// the run found two answers. The late softening is now logged beside the verdict it did not change.
+test("a review that softens during the delivery stale-repair is not adopted, and the run records that it was not", async () => {
+  const { res, events } = await runPipeline({ MOCK_VERDICT: "CONDITIONAL", MOCK_SKEPTIC: "no flags surfaced",
+    MOCK_VERDICT_DEFECTS: "- one open point the narrative has not yet stated (mock)",
+    MOCK_NARRATIVE_OVER_CAP: "1", MOCK_REVIEW_SOFTENS_AFTER_VERDICT: "CLEAR" });
+  // CONTROL — the repair re-ran the reviewer and it succeeded, so the claim below is reached the way R2 reached it.
+  assert.ok(events.some((e) => e.event === "stage" && e.stage === "narrative-refutation" && e.trigger === "stale-repair" && e.ok === true),
+    "the stale repair re-ran the reviewer, successfully");
+  assert.match(readFileSync(join(res.runDir, "senior-eye-review.md"), "utf8"), /^CONDITIONAL/, "and the review on disk is the softer one");
+
+  const sidecar = JSON.parse(readFileSync(driverDir(res.runDir, "verdict.json"), "utf8"));
+  assert.equal(sidecar.verdict, "BLOCKING", "the settled verdict stands: a late re-review may only harden it");
+  assert.ok(!events.some((e) => e.event === "verdict-hardened-by-repair"), "nothing was hardened");
+  const soft = events.filter((e) => e.event === "verdict-softening-not-adopted");
+  assert.equal(soft.length, 1, "the softening is recorded, once");
+  assert.deepEqual({ was: soft[0].was, reviewSays: soft[0].reviewSays, stage: soft[0].stage },
+    { was: "BLOCKING", reviewSays: "CONDITIONAL", stage: "narrative-refutation" });
 });

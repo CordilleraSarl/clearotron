@@ -14869,7 +14869,18 @@ async function pipelineInner(job, opts = {}) {
               // stays where it is; this restores the input it was denied. `verdictHardenedTo` ratchets one
               // way, so a review that softened during the repair cannot lift a clamp.
               if (s2.label === "narrative-refutation") {
-                const hardened = verdictHardenedTo(verdict, existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "");
+                const reviewNow = existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "";
+                const hardened = verdictHardenedTo(verdict, reviewNow);
+                // A REVIEW THAT SOFTENED IS NOT ADOPTED, AND THE RUN SAYS SO. The ratchet below only
+                // tightens, so a re-review that comes back softer leaves the settled verdict in force while
+                // senior-eye-review.md, rewritten by this repair, opens with the softer word. That is the
+                // design; recording nothing was the defect: a reader of the run found two answers and no
+                // line saying which one governs (E2E-R2, 2026-09-23: BLOCKING recorded, CONDITIONAL on disk).
+                const reviewSays = hardened ? null : parseVerdict(reviewNow);
+                if (reviewSays && reviewSays !== verdict) {
+                  runLog(run.runDir, { event: "verdict-softening-not-adopted", was: verdict, reviewSays, stage: s2.label });
+                  note(`stale-repair: the reviewer now returns ${reviewSays}; the run keeps ${verdict}, because a late re-review may only harden the verdict — senior-eye-review.md now disagrees with verdict.json, and verdict.json governs`);
+                }
                 if (hardened) {
                   // ── T3a — THE LATE VERDICT IS ADOPTED, NOT THROWN, AND ADOPTION IS THE WHOLE JOB ──
                   //
