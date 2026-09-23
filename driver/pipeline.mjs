@@ -138,6 +138,7 @@ import { tallyRegisterCalls, DEFAULT_LEDGER_PATH, fetchedRecordUris, countLaneCa
 // this path, because this process runs several runs' pipelines at once and a global address would file
 // one run's evidence under another.
 import { runRecordLogPath } from "../providers/_shared/ledger-path.mjs";
+import { beginAnswerMemory, endAnswerMemory } from "../providers/_shared/answer-memory.mjs";
 import { findScreenGateViolations, findScreenGateParseGaps, screenGateZeroCause } from "./screen-gate.mjs";
 import { emptyQueue, coerceQueue, mintItem, pendingItems, markFlushed, receiptKeyFor,
   buildFlushFollowup, runPostFlushGateRepair } from "./digest-queue.mjs";   // (t1cd) — the digest-trigger funnel
@@ -2185,7 +2186,7 @@ function deriveScopeLedgerJson(ctx) {
 // 2026-08-03 — the SEED SET is the union of every distinctive element the manifest names, and falls
 // back to the job's own mark when it names none, so the floor stops moving with the model's choice of anchor
 // and can no longer be empty. See the VARIANT FLOOR section of form-neighbourhood.mjs.
-function deriveFormNeighbourhood(ctx) {
+export function deriveFormNeighbourhood(ctx) {   // @internal — exported for its call-site test
   const P = ctx.paths;
   // — an ABSENT prose manifest no longer returns without an artifact. It used to, and that was the
   // zero-semantics hole at its widest: no manifest ⇒ no form-neighbourhood.json ⇒ compileRegisterPlan's
@@ -2213,14 +2214,19 @@ function deriveFormNeighbourhood(ctx) {
     // The MARK is the floor's fallback seed and the only input to it that is not model output —
     // resolved exactly as every other job-mark consumer resolves it (stages.mjs blind-frame).
     const mark = ctx.job.marks ?? ctx.job.markName ?? ctx.job.name ?? "";
-    const ow = loadOrdinaryWords("en"), json = renderFormNeighbourhoodJson(manifestMd, { markets, droppedAxes, model, mark, ordinaryWords: ow.words });   // an unloadable word list removes nothing
+    // The active register's own declaration: `false` leaves the mixed-alphabet look-alike spellings out of
+    // the band and lists them as not searched, with the reason its index gives. Undeclared changes nothing.
+    const caps = registerCapabilities();
+    const mixedScriptQuery = caps?.mixedScriptQuery ?? null;
+    const ow = loadOrdinaryWords("en"), json = renderFormNeighbourhoodJson(manifestMd, { markets, droppedAxes, model, mark, ordinaryWords: ow.words, mixedScriptQuery, nativeScriptIndex: caps?.nativeScriptIndex ?? null });   // an unloadable word list removes nothing
     const tmp = P.formNeighbourhood + ".tmp";
     writeFileSync(tmp, json);
     renameSync(tmp, P.formNeighbourhood);
-    let exact = 0, floor = 0, added = 0, seededFrom = "", seeds = [], notSearched = 0;
+    let exact = 0, floor = 0, added = 0, seededFrom = "", seeds = [], notSearched = 0, mixedNotSearched = 0;
     try {
       const o = JSON.parse(json);
       exact = o.elements.reduce((a, e) => a + (e.band?.exactQueries?.length ?? 0), 0); notSearched = o.elements.reduce((a, e) => a + (e.band?.ordinaryWordDifferentSound?.length ?? 0), 0);
+      mixedNotSearched = o.elements.reduce((a, e) => a + (e.band?.mixedScriptNotSearched?.length ?? 0), 0);
       floor = o.variant_floor?.counts?.floor ?? 0;
       added = o.variant_floor?.counts?.model_added ?? 0;
       seededFrom = String(o.seeded_from ?? "");
@@ -2228,7 +2234,7 @@ function deriveFormNeighbourhood(ctx) {
     } catch { /* counts are telemetry only */ }
     // The SEED SET is logged by name, because it is the input that decides whether two runs of the same
     // matter can produce the same floor — a floor count alone cannot tell a stable run from a re-anchored one.
-    runLog(P.runDir, { event: "form-neighbourhood-derived", exact, floor, modelAdded: added, droppedAxes, seeds, seededFrom, ordinaryWordNotSearched: notSearched, ...(ow.error ? { ordinaryWordListError: ow.error } : {}) });
+    runLog(P.runDir, { event: "form-neighbourhood-derived", exact, floor, modelAdded: added, droppedAxes, seeds, seededFrom, ordinaryWordNotSearched: notSearched, ...(mixedScriptQuery === false ? { mixedScriptNotSearched: mixedNotSearched } : {}), ...(ow.error ? { ordinaryWordListError: ow.error } : {}) });
     // The fallback is not a quiet degrade: it means this run's variant floor rests on the mark alone
     // because the stage named no usable element. Loud, so the absence is a finding and not a shrug.
     if (seededFrom.startsWith("job mark"))
@@ -9076,6 +9082,12 @@ async function pipelineInner(job, opts = {}) {
   ctx.forceFrom = opts.fromStage != null ? stageOrdinal(opts.fromStage) : null;
   if (opts.fromStage != null && ctx.forceFrom < 0) throw new Error(`--from: unknown stage "${opts.fromStage}"`);
   runLog(run.runDir, { event: "start", agent, resume: isResume, fromStage: opts.fromStage ?? null, job: { id: job.id, slug: run.slug, codename: run.codename, customer: run.customer, forwarder: job.forwarder } });
+  // THE SIGNA RUN MEMORY'S ATTEMPT (providers/_shared/answer-memory.mjs): whatever an earlier attempt held
+  // is dropped, so a resume asks the register again, and the mode is fixed for this attempt.
+  ctx.answerMemory = beginAnswerMemory(run.runDir, REGISTER_PROVIDER);
+  if (ctx.answerMemory.applies)
+    runLog(run.runDir, { event: "answer-memory", mode: ctx.answerMemory.mode, ...(ctx.answerMemory.unknown ? { unrecognised: ctx.answerMemory.unknown } : {}) });
+  if (ctx.answerMemory.unknown) note(`answer memory: ${ctx.answerMemory.switch}="${ctx.answerMemory.unknown}" is not off, watch or on, so this register's default applies (${ctx.answerMemory.mode})`);
   // item 11 — WHICH ARM DID THIS RUN RUN UNDER? Unconditional and three-valued in the AD-4 sense: the row
   // is always written, `seed: null` meaning the ordinary production ordering. A probe arm that is not on
   // the record is an arm whose result cannot be attributed later, and the probe exists to attribute.
@@ -10416,7 +10428,7 @@ async function pipelineInner(job, opts = {}) {
             // plan-unexecuted StageFailure below still holds the line for a genuine hole.
             runLog(run.runDir, { event: "plan-qids-missing", axis: a, qids: entries.map((e) => e.qid), action: "fresh-execute-plan" });
             note(`register-unit ${a}: ${entries.length} dictated plan entr${entries.length === 1 ? "y" : "ies"} unexecuted on a resumed-past axis — one fresh execute_plan-only call`);
-            const freshMsg = repairFollowup("register-unit:plan-join-fresh", { axis: a, registerPlan: P.registerPlan, bandPath: P.registerBand(a) });
+            const freshMsg = repairFollowup("register-unit:plan-join-fresh", { axis: a, registerPlan: P.registerPlan, bandPath: P.registerBand(a), entries });
             const rf = await stage("register-unit", { ...ctx, axis: a }, { force: true, freshMessage: freshMsg, sessionKey: `clearance-${ctx.run.slug}-${ctx.run.codename}-register-unit-${a}-plan-join-fresh`, trigger: "plan-join-fresh" });
             if (!rf.ok) note(`register-unit ${a}: fresh execute_plan call failed (${rf.fail}) — the plan-unexecuted StageFailure below holds the line`);
             continue;
@@ -11161,8 +11173,8 @@ async function pipelineInner(job, opts = {}) {
               }
               // Dispatch → derive band → VERIFY per directive (qid-landed + non-collapse + class-scope).
               // A byte-changed band with only a wrong-scope/empty/error block closes NOTHING.
-              const dispatchAndVerify = async () => {
-                const outcome = await dispatchPlanQids(a, added, "frame-reopen-sweep", 2);
+              const dispatchAndVerify = async (qids) => {
+                const outcome = await dispatchPlanQids(a, qids, "frame-reopen-sweep", 2);
                 refreshSupplementalExecution(ctx);
                 try { deriveNamedBand(ctx); } catch (e) { regMechFail = `named-band:${String(e.message).slice(0, 80)}`; }
                 const bands = readRegisterBands(P, axes);
@@ -11175,7 +11187,7 @@ async function pipelineInner(job, opts = {}) {
                 executedQids: ev.executedQids, blocksByQid: ev.blocksByQid,
               });
               const mintedDirectives = regDirectives.filter((d) => (directiveQids.get(reopenKey(d)) ?? []).length);
-              let ev = await dispatchAndVerify();
+              let ev = await dispatchAndVerify(added);
               regLastJoin = ev;
               let outcome = ev.outcome;
               const retryTargets = [];
@@ -11188,16 +11200,24 @@ async function pipelineInner(job, opts = {}) {
               // correct scope from attempt 1, so this recovers a transient (an error / collapsed / unlanded
               // slice), never re-runs a wrong query. dispatchPlanQids' own repair ledger (max 2) refuses a
               // third — so this cannot loop or thrash the paid pass.
+              //
+              // ONLY THE FAILING DIRECTIVES' OWN ENTRIES GO AGAIN. A directive that verified closed on the first
+              // attempt is not asked twice: re-sending its qids re-fetches records the run already holds, and
+              // on a register that bills per request it pays for them again.
               if (retryTargets.length) {
-                note(`frame-reopen: ${retryTargets.length} directive(s) not verified-closed — ONE re-attempt with the same structured remedy`);
-                runLog(run.runDir, { event: "frame-reopen-reattempt", directives: retryTargets.map(reopenKey) });
-                ev = await dispatchAndVerify();
-                regLastJoin = ev;
-                outcome = ev.outcome ?? outcome;
-                for (const d of retryTargets) {
-                  const v = verifyOne(d, ev);
-                  if (v.closed) { regSwept.add(reopenKey(d)); regDeferReason.delete(reopenKey(d)); }
-                  else regDeferReason.set(reopenKey(d), v.reason);
+                const retryQids = [...new Set(retryTargets.flatMap((d) => directiveQids.get(reopenKey(d)) ?? []))]
+                  .filter((q) => added.includes(q));
+                note(`frame-reopen: ${retryTargets.length} directive(s) not verified-closed — ONE re-attempt of their own ${retryQids.length} entr${retryQids.length === 1 ? "y" : "ies"} with the same structured remedy`);
+                runLog(run.runDir, { event: "frame-reopen-reattempt", directives: retryTargets.map(reopenKey), qids: retryQids });
+                if (retryQids.length) {
+                  ev = await dispatchAndVerify(retryQids);
+                  regLastJoin = ev;
+                  outcome = ev.outcome ?? outcome;
+                  for (const d of retryTargets) {
+                    const v = verifyOne(d, ev);
+                    if (v.closed) { regSwept.add(reopenKey(d)); regDeferReason.delete(reopenKey(d)); }
+                    else regDeferReason.set(reopenKey(d), v.reason);
+                  }
                 }
               }
               const afterBand = existsSync(P.registerBand(a)) ? readFileSync(P.registerBand(a), "utf8") : null;
@@ -15485,6 +15505,7 @@ async function pipelineInner(job, opts = {}) {
     // and the run is already settled, so a failure to stamp is logged and the delivery proceeds.
     const stamp = writeSettleStamp(published.poolRunDir, { state: "delivered", signoff: verdict, deliveredAt, runId: published.runId ?? run.runId, lane: "clearance" });
     if (!stamp.written) note(`delivery: settle stamp not written (${stamp.reason})`);
+    endAnswerMemory(run.runDir);   // the held answers do not travel into the archive
     const archived = archive(run);
     rollupStatus(run.studioRoot);
     // `notified: "pending"` and `sendPending: true` unconditionally, which is what the KNOCKOUT lane has

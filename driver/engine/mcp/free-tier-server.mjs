@@ -151,7 +151,7 @@ serve({
       description: `Execute the frozen register plan for ONE axis across ${CAPABILITY_OFFICES} and write the named band. One qid per plan entry, spanning both offices — the execution-receipt shape is identical to a single-source provider's.`,
       inputSchema: { type: "object", required: ["plan_path", "axis", "output_path"], properties: {
         plan_path: { type: "string" }, axis: { type: "string" }, output_path: { type: "string" },
-        qids: { type: "array", items: { type: "string" } },
+        qids: { type: "array", items: { type: "string" }, description: "Optional: the qids of the plan entries to run. Only those run, and every other block in the band stays as it is. Leave it out only on the axis's first run: without it every entry on the axis runs again." },
       } },
       annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: true },
       handler: guard((a) => doExecutePlan(AUTH, a, tctx("execute_plan"))),
