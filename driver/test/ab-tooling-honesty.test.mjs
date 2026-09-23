@@ -17,6 +17,7 @@
 // Fully offline ($0): the mock `claude` binary and the mock pipeline, same harness uses.
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { MODELS } from "../driver.config.mjs";   // — a tier is recorded as what the catalog says, not a second copy
 import { mkdtempSync, chmodSync, readFileSync, writeFileSync, mkdirSync, rmSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname, basename } from "node:path";
@@ -272,7 +273,7 @@ test("corruption 3: a turn that runs a DIFFERENT model than it was told to FAILS
   assert.equal(r.ok, false, "a turn served by the wrong model must not be accepted");
   assert.match(r.fail, /^model_mismatch:haiku->sonnet$/, `the failure NAMES both sides: ${r.fail}`);
   const row = rows[rows.length - 1];
-  assert.equal(row.modelUsed, "anthropic/claude-haiku-4-5", "modelUsed keeps its meaning: the requested resolution (run-economics.mjs and tokens.mjs read it)");
+  assert.equal(row.modelUsed, MODELS.haiku, "modelUsed keeps its meaning: the requested resolution (run-economics.mjs and tokens.mjs read it)");
   assert.equal(row.modelActual, "claude-sonnet-5", "…and modelActual is the WIRE's answer, beside it");
   assert.equal(row.modelBasis, "actual");
   assert.equal(row.modelMismatch, true);
@@ -356,7 +357,7 @@ test("corruption 3 zero semantics: a wire that reports NO model records `unknown
   assert.equal(row.modelActual, null, "no wire answer ⇒ null, NEVER the requested alias wearing the word actual");
   assert.equal(row.modelBasis, "unknown", "two states, never one");
   assert.equal(row.modelMismatch, null, "an unknown comparison is null — it is not a match");
-  assert.equal(row.modelUsed, "anthropic/claude-haiku-4-5", "the requested resolution is still recorded, honestly labelled");
+  assert.equal(row.modelUsed, MODELS.haiku, "the requested resolution is still recorded, honestly labelled");
 });
 
 test("corruption 3: the refusal is a default-ON gate; disarming it silences the REFUSAL, never the record", async () => {

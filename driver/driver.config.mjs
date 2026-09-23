@@ -656,10 +656,29 @@ export const config = {
 // stage definition and the id stamped on a token-rollup row are the same fact rather than two spellings
 // of it. resolveModel below is the only reader that matters; an engine with its own resolveModelId
 // overrides it, and anything already in catalog form passes through untouched.
+// ── A TIER IS WHAT WAS ASKED FOR, SO A TIER IS WHAT IS RECORDED ─────────────────────────────────────
+//
+// These three named a VERSION — `anthropic/claude-opus-5` — and nothing ever asked for one. A stage
+// names a tier, the tier goes to the program as the vendor's own alias, and the vendor answers with its
+// newest model of that tier. The version written here was a claim about a request nobody made, and it
+// was wrong the day a newer model shipped: a delivered run served throughout by the generation after
+// Opus 5 recorded, on every attempt row, a request for Opus 5, and its token line accounted under the
+// name of a model that did not run. Measured on that run, 2026-09-22.
+//
+// Owner's ruling, 2026-09-23: record the tier. What a run asked for is a tier, what it was served is
+// recorded separately and already is, and the report names the model that ran — none of that moves.
+//
+// WHAT IT COSTS, RULED ON AND ACCEPTED RATHER THAN DISCOVERED LATER. Per-model totals are keyed on what
+// was ASKED for, and the direct-API lanes must name a version because they call the API rather than the
+// program — the API takes model ids, not tier words. So one model reached by both routes now lands in
+// two buckets: `anthropic/claude-haiku` from a stage, `anthropic/claude-haiku-4-5` from those lanes.
+// That is a real split in a per-model total and it was accepted with the ruling: the two are genuinely
+// different requests, and keying the totals on what actually SERVED each turn is the change that would
+// fix it properly, which is larger than this and not what was ruled.
 export const MODELS = {
-  haiku: "anthropic/claude-haiku-4-5",
-  sonnet: "anthropic/claude-sonnet-5",
-  opus: "anthropic/claude-opus-5",
+  haiku: "anthropic/claude-haiku",
+  sonnet: "anthropic/claude-sonnet",
+  opus: "anthropic/claude-opus",
   gemini: "google/gemini-3.1-pro-preview",
   "gemini-flash": "google/gemini-3-flash-preview",
   "deepseek-v4-pro": "together/deepseek-ai/DeepSeek-V4-Pro",
@@ -675,11 +694,17 @@ export const MODELS = {
 //
 // A BARE Anthropic id (dated or not — "claude-haiku-4-5-20251001", "claude-opus-5") normalises to the
 // catalog form too. The direct-API lanes (jx completions/judge/nativeread, driver.config JX_PROVIDERS)
-// name their model that way because that is what the Messages API takes, so without this the same model
-// lands in a token rollup under two keys — "anthropic/claude-haiku-4-5" from the gateway's alias rows and
-// "claude-haiku-4-5-20251001" from the jx rows — and a per-model total is silently split. The date suffix
-// is dropped because the catalog ids carry none; anything that does not look like a bare claude id is
-// returned untouched, so a genuinely unknown model still keys as-is rather than being guessed at.
+// name their model that way because that is what the Messages API takes, so without this one model named
+// in two spellings — dated and undated — would key apart in a rollup. The date suffix is dropped;
+// anything that does not look like a bare claude id is returned untouched, so a genuinely unknown model
+// still keys as-is rather than being guessed at.
+//
+// WHAT THIS NO LONGER DOES, SAID PLAINLY BECAUSE THE PARAGRAPH ABOVE USED TO CLAIM IT. It used to unite
+// a stage's rows with those lanes' rows, because the tier resolved to a versioned id and so did they.
+// The tiers now resolve to a tier (MODELS), and these lanes still name a version, so the same model
+// reached both ways keys in two places. That split was ruled on and accepted (see MODELS) — it is not
+// an oversight here, and closing it by collapsing a version to its tier would throw away the one thing
+// these rows can still say about which model was asked for.
 export function resolveModel(model) {
   if (!model) return model;
   if (MODELS[model]) return MODELS[model];

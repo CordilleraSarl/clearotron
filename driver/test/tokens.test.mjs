@@ -10,6 +10,7 @@ import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { tmpdir } from "node:os";
 import { rollupTokens } from "../tokens.mjs";
+import { MODELS } from "../driver.config.mjs";   // — what a tier is recorded as, rather than a second copy of it
 
 // Build a temp runDir with _driver/<stage>.jsonl files (one record per line); caller cleans up.
 function mkRun(stages) {
@@ -43,8 +44,8 @@ test("rollupTokens: sums EVERY attempt (retries included) across stages; per-sta
     assert.equal(r.total.attempts, 3);
     assert.equal(r.byStage["register-digest"].attempts, 2);
     assert.equal(r.byStage["register-digest"].output, 2e6);
-    assert.equal(r.byModel["anthropic/claude-opus-5"].output, 2e6);   // alias resolved to the full id
-    assert.equal(r.byModel["anthropic/claude-haiku-4-5"].input, 1e6);
+    assert.equal(r.byModel[MODELS.opus].output, 2e6);   // the alias resolved to what the catalog records
+    assert.equal(r.byModel[MODELS.haiku].input, 1e6);
     assert.equal(r.byStage["run"], undefined); // run.jsonl excluded by name
   } finally {
     rmSync(runDir, { recursive: true, force: true });
@@ -129,9 +130,17 @@ test("rollupTokens: direct-API jx-completions rows are counted, split out under 
     assert.equal(r.total.input, 100 + 900 + 10, "jx input tokens reach the run total");
     assert.equal(r.total.output, 200 + 40 + 5);
     assert.equal(r.byStage["jx-completions"].attempts, 2, "the throw row carries no model and is not a call");
-    // the dated direct-API id folds onto the SAME catalog key the gateway's `haiku` alias resolves to
+    // TWO SPELLINGS OF THE DIRECT-API LANE'S OWN ID STILL FOLD TOGETHER — dated and undated are one key.
     assert.equal(r.byModel["anthropic/claude-haiku-4-5"].input, 910);
-    assert.equal(r.byModel["claude-haiku-4-5-20251001"], undefined, "no second key for one model");
+    assert.equal(r.byModel["claude-haiku-4-5-20251001"], undefined, "one model named two ways took two keys");
+    // AND THE STAGE'S TIER KEYS APART FROM IT, WHICH IS RULED AND ACCEPTED, NOT A DEFECT. A stage asks for
+    // a tier and is recorded as having asked for one; these lanes call the API directly, which takes a
+    // model id and not a tier word, so they ask for a version and are recorded as asking for it. The two
+    // requests are genuinely different, and one model reached both ways therefore lands in two buckets.
+    // Pinned so the split reads as a decision to whoever finds it in a total, rather than as a bug.
+    assert.equal(r.byModel[MODELS.opus].input, 100, "the stage's tier does not key under what the catalog records for it");
+    assert.equal(r.byModel[MODELS.haiku], undefined, "no stage asked for that tier on this run, so nothing may account under it");
+    assert.notEqual(MODELS.haiku, "anthropic/claude-haiku-4-5", "a tier resolves to a version again — the split this arm describes is no longer the shape of things");
   } finally {
     rmSync(runDir, { recursive: true, force: true });
   }
@@ -203,6 +212,8 @@ test("rollupTokens: byModel names the model the ENGINE served, not the tier reso
       assert.equal(r.byModel["gpt-5.6-sol"][k], r.byEngine["openai-agent"][k],
         `byModel and byEngine agree on the codex share of ${k}`);
     }
+    // The literal here is the STAMP the row carries, not a resolution: a stamped row keys by what it
+    // says served it, which is why changing what a tier resolves to does not touch this arm.
     assert.deepEqual(Object.keys(r.byModel).sort(), ["anthropic/claude-opus-5", "gpt-5.6-sol"],
       "two turns, two honestly-named models — and no third key invented by re-resolving a tier");
   } finally {
@@ -222,9 +233,14 @@ test("rollupTokens: a non-anthropic row with NO modelUsed accounts under a named
     const r = rollupTokens(runDir);
     assert.equal(r.byModel["openai-agent/unstamped:opus"].output, 4,
       "the tokens still account, under a key that says what is missing");
-    assert.equal(r.byModel["anthropic/claude-opus-5"].output, 202,
-      "an unstamped anthropic row and a legacy row with no engine both resolve as before — history stays keyed as it was");
-    assert.equal(r.byModel["anthropic/claude-opus-5"].attempts, 2);
+    // AND THEY KEY UNDER WHAT THE CATALOG RECORDS TODAY, which is the one visible cost of recording a
+    // tier rather than a version. A row that carries no served stamp — a legacy row, or one of these —
+    // is keyed by resolving its tier, so re-reading an archived run keys it as a tier where it once
+    // read as a version. Nothing already published moves; what changes is how an old run reads when it
+    // is read again. Ruled and accepted 2026-09-23, and pinned here so it is a decision on the record.
+    assert.equal(r.byModel[MODELS.opus].output, 202,
+      "an unstamped anthropic row and a legacy row with no engine both resolve through the catalog, as they always have");
+    assert.equal(r.byModel[MODELS.opus].attempts, 2);
 
     // byModel must sum to total, exactly as byEngine and byAuthMode already do. Without this a future
     // 'drop the ones we cannot name' would look like a tidy-up and silently shrink the run's economics.

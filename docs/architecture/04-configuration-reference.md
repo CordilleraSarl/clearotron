@@ -124,13 +124,25 @@ through anything containing `/`):
 
 | Alias | Full catalog id |
 |---|---|
-| haiku | `anthropic/claude-haiku-4-5` |
-| sonnet | `anthropic/claude-sonnet-5` |
-| opus | `anthropic/claude-opus-5` |
+| haiku | `anthropic/claude-haiku` |
+| sonnet | `anthropic/claude-sonnet` |
+| opus | `anthropic/claude-opus` |
 | gemini | `google/gemini-3.1-pro-preview` |
 | gemini-flash | `google/gemini-3-flash-preview` |
 | deepseek-v4-pro | `together/deepseek-ai/DeepSeek-V4-Pro` |
 | azure | `azure-openai/gpt-5.4` |
+
+The three tiers record a **tier, not a version**, because a tier is what a run asks for: the tier goes
+to the program as the vendor's alias and the vendor answers with its newest model of that tier. This
+id is what a dispatch row and a token-rollup row carry as the model *asked for*; what actually served
+the turn is recorded beside it, and the report names that. A version here would be a claim about a
+request nobody made, and wrong the day a newer model of the tier shipped.
+
+One consequence, accepted when this was decided: per-model totals are keyed on what was asked for,
+and the native-language lanes call the API directly, where a model id is required and a tier word is
+not accepted. So one model reached by a stage and by those lanes appears under two keys —
+`anthropic/claude-haiku` and `anthropic/claude-haiku-4-5`. They are different requests, and the split
+says so.
 
 The bottom four are **legacy names that no stage declares and no engine can run** — they resolve at
 level 1 and then throw at level 2 (below). They are catalogue entries, not available tiers.
