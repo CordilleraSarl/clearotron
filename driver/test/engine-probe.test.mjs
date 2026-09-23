@@ -689,9 +689,15 @@ test("only an engine whose stages keep a shell is asked for a command, and Claud
   assert.match(withCommand, /Run the shell command cat "\/p\/probe-command-word\.txt"\./);
 });
 
-test("a command the engine reports as failed is refused at the door; a word simply missing warns", async () => {
+/** A failed `cat` of the file the turn's prompt planted, as codex reports it when its sandbox cannot start one. */
+const failedCatOfPlanted = (output) => async (a) => {
+  const planted = /Run the shell command cat "(.+?)"\./.exec(a.message)?.[1];
+  return answering({ commandsFailed: 1, commandFailures: [{ command: `/bin/bash -lc 'cat ${planted}'`, output }] }, { command: false })(a);
+};
+
+test("a failed cat of the planted file is refused at the door; a word simply missing warns", async () => {
   const failed = await probeEngineTurn({ env: { CLEAROTRON_AI: "openai-agent" }, loadAdapter: explode,
-    runTurn: answering({ commandsFailed: 2, commandFailure: "bwrap: execvp /x/codex: No such file or directory\n" }, { command: false }) });
+    runTurn: failedCatOfPlanted("bwrap: execvp /x/codex: No such file or directory\n") });
   assert.equal(failed.mode, "cannot-run-commands", JSON.stringify(failed));
   assert.equal(failed.basis, "command-gauge");
   assert.equal(probeVerdictLane(failed), "configuration", "a machine whose commands cannot start is this box's to fix");
@@ -703,9 +709,17 @@ test("a command the engine reports as failed is refused at the door; a word simp
   assert.equal(skipped.mode, "commands-unproven", JSON.stringify(skipped));
   assert.equal(probeVerdictLane(skipped), "weather", "a model that skipped a step is not this box's fault");
 
+  // A MISTYPED NAME ON A WORKING MACHINE IS NOT A BROKEN MACHINE. Codex marks any non-zero exit failed, so a
+  // `cat` of the wrong path reads exactly like one the sandbox refused, except for the path it names.
+  const mistyped = await probeEngineTurn({ env: { CLEAROTRON_AI: "openai-agent" }, loadAdapter: explode,
+    runTurn: answering({ commandsFailed: 1, commandFailures: [{ command: "/bin/bash -lc 'cat /tmp/clearotron-probe-x/probe-comand-word.txt'",
+      output: "cat: /tmp/clearotron-probe-x/probe-comand-word.txt: No such file or directory\n" }] }, { command: false }) });
+  assert.equal(mistyped.mode, "commands-unproven", JSON.stringify(mistyped));
+  assert.equal(probeVerdictLane(mistyped), "weather", "a working machine was refused at the door for a mistyped name");
+
   // A failed command whose word still came back is a command that ran: the model retried, or ran another.
   const retried = await probeEngineTurn({ env: { CLEAROTRON_AI: "openai-agent" }, loadAdapter: explode,
-    runTurn: answering({ commandsFailed: 1 }) });
+    runTurn: answering({ commandsFailed: 1, commandFailures: [{ command: "cat nope", output: "" }] }) });
   assert.equal(retried.ok, true, JSON.stringify(retried));
 
   // Claude's stages have no shell, so its probe asks for no command and passes without one.
@@ -713,7 +727,7 @@ test("a command the engine reports as failed is refused at the door; a word simp
   assert.equal(claude.ok, true, JSON.stringify(claude));
 });
 
-test("the codex adapter counts a command codex reports as failed, and keeps its first output", () => {
+test("the codex adapter counts a command codex reports as failed, and keeps each one's command line and output", () => {
   const ev = {};
   const item = (status, out) => JSON.stringify({ type: "item.completed", item: { id: "c", type: "command_execution",
     command: "/bin/bash -lc 'cat x'", aggregated_output: out, exit_code: status === "failed" ? 1 : 0, status } });
@@ -722,7 +736,8 @@ test("the codex adapter counts a command codex reports as failed, and keeps its 
   parseCodexEvent(item("failed", "bwrap: first\n"), ev);
   parseCodexEvent(item("failed", "bwrap: second\n"), ev);
   assert.equal(ev.commandsFailed, 2);
-  assert.equal(ev.commandFailure, "bwrap: first\n");
+  assert.deepEqual(ev.commandFailures, [{ command: "/bin/bash -lc 'cat x'", output: "bwrap: first\n" },
+    { command: "/bin/bash -lc 'cat x'", output: "bwrap: second\n" }]);
 });
 
 test("through the real codex adapter: the probe's command runs, fails as codex reports it, or is skipped", async () => {
@@ -734,6 +749,9 @@ test("through the real codex adapter: the probe's command runs, fails as codex r
   assert.match(failed.detail, /bwrap: execvp/);
   const skipped = await probeWith(CODEX, { MOCK_CODEX_COMMAND_SKIPPED: "1" });
   assert.equal(skipped.mode, "commands-unproven", JSON.stringify(skipped));
+  const mistyped = await probeWith(CODEX, { MOCK_CODEX_COMMAND_MISTYPED: "1" });
+  assert.equal(mistyped.mode, "commands-unproven", JSON.stringify(mistyped));
+  assert.equal(probeVerdictLane(mistyped), "weather", "a mistyped name on a working machine reached the door as a refusal");
   // And the run door refuses on the failed command, before a run directory exists.
   process.env.MOCK_CODEX_COMMAND_FAILED = "1";
   try {

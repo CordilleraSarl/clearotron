@@ -112,6 +112,8 @@ const session = process.env.MOCK_CODEX_SESSION || resumed || ("mock-thread-" + B
 //   MOCK_CODEX_COMMAND_FAILED=1 — the command is a `command_execution` that fails the way codex 0.158.0-alpha.2
 //                            reports it when its sandbox cannot start a command, and the reply lacks the word
 //   MOCK_CODEX_COMMAND_SKIPPED=1 — no command runs and the reply lacks the word, as a model that skipped a step
+//   MOCK_CODEX_COMMAND_MISTYPED=1 — the model runs `cat` of a mistyped path on a working machine: codex reports
+//                            the command failed (it marks any non-zero exit so), and the reply lacks the word
 const PROBE_TOOL_NAMES = ["ping", "note", "look"];
 const probeWords = (() => {
   if (process.env.MOCK_CODEX_TOOLS_UNUSED || Number(process.env.MOCK_CODEX_MCP_REFUSED || 0) > 0) return null;
@@ -293,6 +295,11 @@ if (process.env.MOCK_CODEX_STALL) {
         if (process.env.MOCK_CODEX_COMMAND_FAILED)
           send({ type: "item.completed", item: { ...item, status: "failed", exit_code: 1,
             aggregated_output: "bwrap: execvp /opt/codex/vendor/x86_64-unknown-linux-musl/bin/codex: No such file or directory\n" } });
+        else if (process.env.MOCK_CODEX_COMMAND_MISTYPED) {
+          const typo = commandFile.replace(/probe-command-word/, "probe-comand-word");
+          send({ type: "item.completed", item: { ...item, command: `/bin/bash -lc 'cat ${typo}'`, status: "failed", exit_code: 1,
+            aggregated_output: `cat: ${typo}: No such file or directory\n` } });
+        }
         else {
           let printed = "";
           try { printed = readFileSync(commandFile, "utf8"); } catch { /* the command fails below, as cat would */ }

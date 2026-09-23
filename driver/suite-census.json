@@ -2555,7 +2555,7 @@
         },
         "engine-probe.test.mjs": {
           "tests": 45,
-          "asserts": 232,
+          "asserts": 236,
           "skips": 0,
           "todos": 0
         },

@@ -292,14 +292,17 @@ export function classifyProbe({ engine, tuple = null, error = null, timeoutSec =
         "Nothing here shows that the tools a search needs work on this machine. Run this again; if it repeats, a search is likely to fail the same way.",
         { detail: tail(tuple.stdout) });
     // THE COMMAND, where the engine's stages keep a shell. The word is the probe's own, planted in its own
-    // folder, so only a command that ran can have read it. A command the ENGINE reports as failed is this
-    // machine's, and the door refuses on it; a word simply missing shows nothing either way, because a cheap
-    // model can skip a step, so that warns.
+    // folder, so only a command that ran can have read it. The door refuses only when the engine reports as
+    // failed a command naming that file's exact path: the file is there, so only the machine can fail that
+    // `cat`. Codex marks any non-zero exit failed, so a failure naming another path is a model that mistyped
+    // it, and that, like a word simply missing, shows nothing either way and warns.
     if (typeof expect === "object" && expect.command) {
       if (!String(tuple.stdout ?? "").includes(expect.command)) {
-        if (Number(tuple.commandsFailed ?? 0) > 0)
+        const ours = expect.commandFile
+          ? (tuple.commandFailures ?? []).find((f) => String(f?.command ?? "").includes(expect.commandFile)) : null;
+        if (ours)
           return v("cannot-run-commands", "command-gauge", `${id} could not run a command where a search runs its commands`, cannotRunFix(id),
-            { detail: tail(tuple.commandFailure) ?? tail(tuple.stderr) ?? tail(tuple.stdout) });
+            { detail: tail(ours.output) ?? tail(tuple.stderr) ?? tail(tuple.stdout) });
         return v("commands-unproven", "no-command-answer", `${id} did not return the word its probe command prints`,
           "Nothing here shows that a search can run its commands on this machine. Run this again; if it repeats, a search is likely to fail the same way.",
           { detail: tail(tuple.stdout) });
@@ -635,7 +638,7 @@ export async function probeEngineTurn({
     const tuple = await turn({ message: probePrompt(file, commandFile), model: PROBE_MODEL, thinking: PROBE_THINKING, timeoutSec, stallSec, runDir, ...probeToolConfig(words) });
     let written = null;
     try { written = readFileSync(file, "utf8"); } catch { /* not written: classifyProbe says what that means */ }
-    return classifyProbe({ engine: id, tuple, timeoutSec, auth, program, expect: { words, written, ...(command ? { command } : {}) } });
+    return classifyProbe({ engine: id, tuple, timeoutSec, auth, program, expect: { words, written, ...(command ? { command, commandFile } : {}) } });
   } catch (e) {
     return classifyProbe({ engine: id, error: e, timeoutSec, auth, program });
   } finally {

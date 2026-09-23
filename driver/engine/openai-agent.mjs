@@ -309,13 +309,15 @@ export function parseCodexEvent(line, ev) {
       // to start: `{"type":"file_change","changes":[{"path":…,"kind":"add"}],"status":"failed"}`, and no file.
       // It is the engine's own word that a write failed, which is what the engine probe refuses on.
       if (e.item?.type === "file_change" && e.item.status === "failed") ev.writesFailed = (ev.writesFailed ?? 0) + 1;
-      // A COMMAND CODEX ITSELF REPORTS AS FAILED. Measured on codex 0.158.0-alpha.2 with its sandbox unable to
-      // start a command: `{"type":"command_execution","status":"failed","exit_code":1,"aggregated_output":
-      // "bwrap: execvp …: No such file or directory\n"}`. A stage's own command can fail for its own reasons,
-      // so only the engine probe, whose command is a `cat` of a file it planted, reads this as the machine's.
+      // A COMMAND CODEX ITSELF REPORTS AS FAILED, kept with its command line. Measured on codex 0.158.0-alpha.2
+      // with its sandbox unable to start a command: `{"type":"command_execution","command":"/bin/bash -lc 'cat
+      // …'","status":"failed","exit_code":1,"aggregated_output":"bwrap: execvp …: No such file or directory\n"}`.
+      // Codex marks ANY non-zero exit failed, a mistyped path included, so a failure alone says nothing about
+      // the machine. Only the engine probe reads these, and only a failed `cat` of the exact file it planted.
       if (e.item?.type === "command_execution" && e.item.status === "failed") {
         ev.commandsFailed = (ev.commandsFailed ?? 0) + 1;
-        if (ev.commandFailure == null) ev.commandFailure = String(e.item.aggregated_output ?? "");
+        if ((ev.commandFailures ??= []).length < 5)
+          ev.commandFailures.push({ command: String(e.item.command ?? ""), output: String(e.item.aggregated_output ?? "") });
       }
       noteMcpToolCall(e.item, ev);
       break;
@@ -579,7 +581,7 @@ function settleTuple({ r, ev, resumeRef }) {
     commandToolCalls: null,
     writesFailed: ev.writesFailed ?? 0,
     commandsFailed: ev.commandsFailed ?? 0,
-    commandFailure: ev.commandFailure ?? null,
+    commandFailures: ev.commandFailures ?? [],
     signals: {
       stalled: stallKill || undefined, hardWall: r.hardWall || undefined,
       // A gather stage that ran with none of its tools produced prose and no instrumented half. The
