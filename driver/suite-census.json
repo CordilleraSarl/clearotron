@@ -2831,7 +2831,7 @@
         },
         "flag-snapshot.test.mjs": {
           "tests": 24,
-          "asserts": 82,
+          "asserts": 81,
           "skips": 0,
           "todos": 0
         },
@@ -3467,7 +3467,7 @@
         },
         "park-tells-the-truth.test.mjs": {
           "tests": 8,
-          "asserts": 20,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },

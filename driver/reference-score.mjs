@@ -783,7 +783,7 @@ export function withheldScope({ reference = [], retrieved = [], registerOnly = f
     : !marks.length
       ? `${scopeOf} — and the retrieved corpus is EMPTY, so this number rests on nothing; it is not a clean result`
       : outside
-        ? `${scopeOf} — ${outside} other retrieved mark${outside === 1 ? "" : "s"} are outside this measure entirely (#1322)`
+        ? `${scopeOf} — ${outside} other retrieved mark${outside === 1 ? "" : "s"} are outside this measure entirely`
         : `${scopeOf} — all ${marks.length} retrieved mark${marks.length === 1 ? " is" : "s are"} named by the reference, so nothing sits outside it`;
   return { referenceEntries: n, retrievedMarks: marks.length, outside, note };
 }

@@ -112,7 +112,6 @@ test("a lost STATE write is reported — 'it never happened' stops looking like 
   const out = seen.join("");
   assert.match(out, /NO RUN DIRECTORY/, "a state write that evaporated said nothing at all");
   assert.match(out, /"recovering"/, "and it must name the state that was lost, or the line is unactionable");
-  assert.match(out, /#1159/);
 });
 
 test("a ROUTINE write is still silent — the existing argument for silence is untouched", () => {

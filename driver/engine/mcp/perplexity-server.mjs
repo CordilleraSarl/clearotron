@@ -122,7 +122,7 @@ function tellObligations(spec, ledgerJson) {
   writeFileSync(
     obligationsSidecarPath(spec.output_path),
     JSON.stringify({
-      _provenance: `what the seat was TOLD it owed, computed by connotationObligations() from ${basename(spec.output_path)} at the moment the grid tool returned — the same calculation the validator judges with (#426)`,
+      _provenance: `what the seat was TOLD it owed, computed by connotationObligations() from ${basename(spec.output_path)} at the moment the grid tool returned — the same calculation the validator judges with`,
       floor: ob.floor,
       queriesOwed: ob.queries.map((e) => e.query),
       rowsTold,

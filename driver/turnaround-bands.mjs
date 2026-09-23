@@ -62,7 +62,7 @@ export const TURNAROUND_BANDS = Object.freeze({
   }),
   clearance: Object.freeze({
     minutes: 120,
-    source: "owner benchmark 2026-08-04, corrected 2026-08-08 (#523) after three scenarios were found carrying their own estimates instead",
+    source: "owner benchmark 2026-08-04, corrected 2026-08-08 after three scenarios were found carrying their own estimates instead",
   }),
 });
 
