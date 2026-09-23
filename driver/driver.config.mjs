@@ -2420,7 +2420,7 @@ export function preflightEngineBinary(env = process.env, { platform = process.pl
     throw new Error(`[preflight] the ${engine} engine cannot run: ${where} names "${bin}", which is `
       + (hasSep(bin, platform)
         ? (r.rejected[0]?.why ?? notStartable(platform))
-        : `not on PATH as an executable file (PATH=${env.PATH || "(empty)"})`
+        : `not on PATH as an executable file (PATH=${pathOf(env, platform) || "(empty)"})`
           + (r.explicit || installedRefused ? "" : ", and Clearotron has not installed one")
           + (passedOver ? `. Passed over: ${passedOver}` : "")
           + windows)

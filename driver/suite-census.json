@@ -1246,8 +1246,8 @@
           "todos": 0
         },
         "a-windows-install-finds-its-engine-program.test.mjs": {
-          "tests": 9,
-          "asserts": 26,
+          "tests": 10,
+          "asserts": 28,
           "skips": 1,
           "todos": 0
         },
@@ -1264,8 +1264,8 @@
           "todos": 0
         },
         "a-windows-stop-ends-the-whole-turn.test.mjs": {
-          "tests": 8,
-          "asserts": 44,
+          "tests": 9,
+          "asserts": 50,
           "skips": 0,
           "todos": 0
         },

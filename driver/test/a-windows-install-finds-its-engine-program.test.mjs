@@ -17,7 +17,7 @@ import assert from "node:assert/strict";
 import { chmodSync, mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { resolveEngineProgram, ENGINE_BINARIES } from "../driver.config.mjs";
+import { resolveEngineProgram, ENGINE_BINARIES, preflightEngineBinary } from "../driver.config.mjs";
 import { engineSpawn, spawnsDetached } from "../engine/engine-spawn.mjs";
 import { npmInvocation } from "../../shared/npm-cli.mjs";
 import { resolveEngineBin } from "../../bin/onboard.mjs";
@@ -125,4 +125,13 @@ test("npm runs on Windows as npm-cli.js through the Node running now, and as `np
   assert.equal(pnpm.args[0], "C:\\n\\node_modules\\npm\\bin\\npm-cli.js", "another package manager was run as npm");
   assert.deepEqual(npmInvocation(["ci"], { platform: "linux", env: { npm_execpath: "/x/npm-cli.js" }, exists }), { command: "npm", args: ["ci"] },
     "Linux stopped running `npm`");
+});
+
+test("a Windows refusal quotes the Path Windows spells, not an empty PATH", () => {
+  const folder = dir("nothing");
+  assert.throws(() => preflightEngineBinary({ Path: folder, CLEAROTRON_AI: "anthropic-agent" }, { platform: "win32", enginesDir: null }), (e) => {
+    assert.match(e.message, new RegExp(`PATH=${folder.replace(/[\\^$.*+?()[\]{}|/]/g, "\\$&")}\\)`),
+      `the refusal said PATH was empty on a machine whose Path names a folder: ${e.message}`);
+    return true;
+  });
 });
