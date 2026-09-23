@@ -111,13 +111,13 @@ test("E2: full pipeline runs on the anthropic-agent engine (CLEAR, delivered, al
   // agent's skills tree + this run's dir (claude -p file tools are confined to cwd+add-dir) — and (b) have
   // its skill refs absolutized: no bare `skills/…md` token survives into the prompt (claude -p
   // cwd=tmpdir cannot resolve workspace-relative paths; that was the matter-frame blocker).
-  const BARE_SKILL_REF = /(?<![\w/.])skills\/[A-Za-z0-9._/-]+\.md/;
-  const RUN_DIR_RE = /\/studio\/clearance-search\//;
+  const BARE_SKILL_REF = /(?<![\w\\/.])skills[\\/][A-Za-z0-9._\\/-]+\.md/;
+  const RUN_DIR_RE = /[\\/]studio[\\/]clearance-search[\\/]/;
   for (const call of claudeCalls) {
     const msg = call.prompt || "";
     assert.ok(!BARE_SKILL_REF.test(msg), `a stage prompt kept a workspace-relative skills ref: ${msg.match(BARE_SKILL_REF)?.[0]}`);
     const addDirs = call.argv.reduce((acc, a, i) => (a === "--add-dir" ? [...acc, call.argv[i + 1]] : acc), []);
-    assert.ok(addDirs.some((d) => d && d.endsWith("/skills")), "compute turn grants --add-dir on the skills tree");
+    assert.ok(addDirs.some((d) => d && /[\\/]skills$/.test(d)), "compute turn grants --add-dir on the skills tree");
     // — THE RUN-DIR GRANT IS EARNED NOW, so this asserts the RULE rather than a constant. A turn
     // whose tool groups ALL declare `seatWrites:false` records through its MCP server and authors no file,
     // so it is handed no writable run root; every other turn still gets one. Both sides are read off the
@@ -145,7 +145,7 @@ test("E2: full pipeline runs on the anthropic-agent engine (CLEAR, delivered, al
     assert.equal(hasRunDir, expected,
       `run-dir grant disagrees with the declaration for groups [${groups.join(", ")}]: argv granted=${hasRunDir}, rule says=${expected}`);
   }
-  assert.match(first.prompt, /\/driver\/skills\/matter-frame\/SKILL\.md/, "matter-frame skill ref absolutized to the driver's skills tree (config.skillsDir; Phase-3 repoint off the agent workspace)");
+  assert.match(first.prompt, /[\\/]driver[\\/]skills[\\/]matter-frame[\\/]SKILL\.md/, "matter-frame skill ref absolutized to the driver's skills tree (config.skillsDir; Phase-3 repoint off the agent workspace)");
 
   // E3: per-stage tool selection — gather stages get the MCP servers + allowedTools; judgment stages stay
   // lean (no MCP, no tool-def bloat).
@@ -245,7 +245,7 @@ test("PR-8 e2e: band tools wired per stage, register dropped from synthesis, sha
   const allowedOf = (c) => { const i = c.argv.indexOf("--allowedTools"); return i >= 0 ? (c.argv[i + 1] || "") : ""; };
 
   const digest = stageCall(/register DIGEST mode/);
-  const placement = stageCall(/placement-inquiry\/SKILL\.md/);
+  const placement = stageCall(/placement-inquiry[\\/]SKILL\.md/);
   const synthesis = stageCall(/MACHINE FINDINGS \(MANDATORY\)/);
   const refutation = stageCall(/Adversarially refute the narrative/);
   assert.ok(digest && placement && synthesis && refutation, "all four band-consuming stages ran");

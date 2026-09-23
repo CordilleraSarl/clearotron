@@ -11,7 +11,7 @@
 
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { join, basename, isAbsolute } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
+import { driverDir, driverFileName } from "../shared/driver-dir.mjs";   //
 import { fileURLToPath } from "node:url";
 import { STAGES, paths } from "./stages.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
@@ -141,7 +141,7 @@ function outPath(dir, stage, axis) {
 // last JSONL line of a stage's telemetry, tried at <dir>/<label>.jsonl (snapshot) and <dir>/_driver/<label>.jsonl.
 function readTel(dir, stage, axis) {
   const label = labelFor(stage, axis);
-  for (const p of [join(dir, `${label}.jsonl`), driverDir(dir, `${label}.jsonl`)]) {
+  for (const p of [join(dir, driverFileName(`${label}.jsonl`)), driverDir(dir, `${label}.jsonl`)]) {
     try {
       const lines = readFileSync(p, "utf8").trim().split("\n").filter(Boolean);
       if (lines.length) return JSON.parse(lines[lines.length - 1]);
