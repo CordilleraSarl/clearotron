@@ -1072,14 +1072,14 @@
           "todos": 0
         },
         "a-stage-program-starts-with-a-listed-environment.test.mjs": {
-          "tests": 8,
-          "asserts": 42,
+          "tests": 9,
+          "asserts": 47,
           "skips": 0,
           "todos": 0
         },
         "a-stage-reads-only-its-own-folders.test.mjs": {
-          "tests": 8,
-          "asserts": 24,
+          "tests": 9,
+          "asserts": 31,
           "skips": 0,
           "todos": 0
         },

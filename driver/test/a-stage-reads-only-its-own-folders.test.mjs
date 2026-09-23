@@ -14,9 +14,9 @@
 // the run folder its stage was dispatched with, which the fence would otherwise take from it.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, readFileSync, rmSync, mkdirSync, writeFileSync, symlinkSync, realpathSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, mkdirSync, writeFileSync, symlinkSync, realpathSync, statSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, dirname } from "node:path";
+import { join, dirname, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { buildGatherMcpConfig, allowedToolsFor, toolGroupsForStage, PER_AXIS_STAGES, PER_CHUNK_STAGES } from "../engine/mcp/gather-config.mjs";
@@ -172,4 +172,24 @@ test("codex: the profile reads codex's own programs, which its sandbox runs ever
     // Nothing to resolve: nothing granted.
     assert.equal(codexProgramRoot(join(dir, "missing")), null);
   } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("codex: every Codex home is made in the account's cache folder, which the profile never names", async () => {
+  const { codexHomesRoot } = await import("../engine/openai-agent.mjs");
+  const dir = realpathSync(mkdtempSync(join(tmpdir(), "codex-homes-root-")));
+  try {
+    // Linux and macOS: the cache folder XDG names, else ~/.cache. Windows: LOCALAPPDATA. Private to the account.
+    const cache = codexHomesRoot({ XDG_CACHE_HOME: join(dir, "cache") }, { platform: "linux", home: dir });
+    assert.equal(cache, join(dir, "cache", "clearotron", "codex-homes"));
+    assert.equal(statSync(cache).mode & 0o777, 0o700, "another account on the machine can open the Codex homes");
+    assert.equal(codexHomesRoot({}, { platform: "linux", home: dir }), join(dir, ".cache", "clearotron", "codex-homes"));
+    assert.equal(codexHomesRoot({ LOCALAPPDATA: join(dir, "Local") }, { platform: "win32", home: dir }),
+      join(dir, "Local", "clearotron", "codex-homes"));
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+  // The turn's own home and the stage's are made there, never in the temp folder the profile grants.
+  const { codexHome } = await codexTurn(undefined);
+  assert.ok(codexHome.startsWith(codexHomesRoot() + sep), `the turn's Codex home is outside the cache folder: ${codexHome}`);
+  const gateway = readFileSync(join(ROOT, "driver", "gateway.mjs"), "utf8");
+  assert.match(gateway, /stageCodexHome = mkdtempSync\(join\(codexHomesRoot\(\), `stage-/, "the stage's Codex home is made somewhere else");
+  assert.doesNotMatch(readFileSync(join(ROOT, "driver", "engine", "openai-agent.mjs"), "utf8"), /mkdtempSync\(join\(tmpdir\(\), "codex-home-"\)\)/);
 });

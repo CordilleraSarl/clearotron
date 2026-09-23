@@ -44,6 +44,7 @@ test("the program's environment list is exactly this, group by group", () => {
     "WSL_DISTRO_NAME", "WSL_INTEROP",
     "SYSTEMROOT", "WINDIR", "SYSTEMDRIVE", "COMSPEC", "PATHEXT", "USERPROFILE", "HOMEDRIVE", "HOMEPATH",
     "APPDATA", "LOCALAPPDATA", "PROGRAMDATA", "PROGRAMFILES",
+    "NUMBER_OF_PROCESSORS", "PROCESSOR_ARCHITECTURE", "OS", "USERNAME", "COMPUTERNAME",
   ]);
   assert.deepEqual([...RUNTIME_PREFIXES], ["LC_"]);
   assert.deepEqual([...NETWORK_NAMES], [
@@ -103,6 +104,27 @@ function wholeInstall() {
 }
 
 // ── 2. NOTHING OUTSIDE THE LIST, UNDER ANY ENGINE OR BILLING MODE ─────────────────────────────────────
+test("on Windows the list matches in any case and keeps each name as Windows spelled it", () => {
+  // Windows passes `Path`, `SystemRoot` and friends in mixed case, and a program started without
+  // SYSTEMROOT cannot open a socket there. Pinned here on Linux through the platform parameter.
+  const base = {
+    Path: "C:\\Windows\\system32", SystemRoot: "C:\\Windows", windir: "C:\\Windows", PATHEXT: ".COM;.EXE",
+    USERPROFILE: "C:\\Users\\lawyer", ComSpec: "C:\\Windows\\system32\\cmd.exe", NUMBER_OF_PROCESSORS: "8",
+    PROCESSOR_ARCHITECTURE: "AMD64", OS: "Windows_NT", USERNAME: "lawyer", COMPUTERNAME: "LAPTOP",
+    Trademark_MCP_Token_Secret: "the-signing-key", anthropic_api_key: "sk-ant-stray", CLEAROTRON_AI_BILLING: "subscription",
+  };
+  const win = engineEnv(base, { engine: "anthropic-agent", platform: "win32" });
+  for (const k of ["Path", "SystemRoot", "windir", "PATHEXT", "USERPROFILE", "ComSpec", "NUMBER_OF_PROCESSORS",
+    "PROCESSOR_ARCHITECTURE", "OS", "USERNAME", "COMPUTERNAME"])
+    assert.equal(win[k], base[k], `${k} did not reach the program under its own spelling`);
+  assert.equal(win.Trademark_MCP_Token_Secret, undefined, "the signing key reached the program under another spelling");
+  assert.equal(win.anthropic_api_key, undefined, "a stray key in another spelling billed a subscription install");
+  // On Linux the same names are other names: `Path` is not PATH there, and nothing is widened.
+  const linux = engineEnv(base, { engine: "anthropic-agent", platform: "linux" });
+  assert.equal(linux.Path, undefined);
+  assert.equal(linux.SystemRoot, undefined);
+});
+
 test("under every engine and billing mode the program gets the list and nothing else, and never the signing key", () => {
   const base = wholeInstall();
   assert.ok(Object.keys(base).length > 150, `the product reads too few names for this to mean anything: ${Object.keys(base).length}`);

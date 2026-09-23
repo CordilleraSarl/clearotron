@@ -40,6 +40,7 @@ export const RUNTIME_NAMES = Object.freeze([
   // `Path` and `SystemRoot` as it likes and a program started without SYSTEMROOT cannot open a socket.
   "SYSTEMROOT", "WINDIR", "SYSTEMDRIVE", "COMSPEC", "PATHEXT", "USERPROFILE", "HOMEDRIVE", "HOMEPATH",
   "APPDATA", "LOCALAPPDATA", "PROGRAMDATA", "PROGRAMFILES",
+  "NUMBER_OF_PROCESSORS", "PROCESSOR_ARCHITECTURE", "OS", "USERNAME", "COMPUTERNAME",
 ]);
 /** `LC_ALL`, `LC_CTYPE` and the rest of the locale family. */
 export const RUNTIME_PREFIXES = Object.freeze(["LC_"]);
@@ -104,13 +105,12 @@ export function toolServerNames() {
  */
 export const TEST_PREFIXES = Object.freeze(["MOCK_"]);
 
-const onWindows = process.platform === "win32";
 /** A lookup that ignores case on Windows, where the environment does too. */
-const named = (list) => {
-  const set = new Set(onWindows ? list.map((n) => n.toUpperCase()) : list);
-  return (k) => set.has(onWindows ? k.toUpperCase() : k);
+const named = (list, win) => {
+  const set = new Set(win ? list.map((n) => n.toUpperCase()) : list);
+  return (k) => set.has(win ? k.toUpperCase() : k);
 };
-const prefixed = (list) => (k) => list.some((p) => (onWindows ? k.toUpperCase() : k).startsWith(p));
+const prefixed = (list, win) => (k) => list.some((p) => (win ? k.toUpperCase() : k).startsWith(p));
 
 /**
  * The environment for one start of an engine program. PURE: `base` in, a new object out, nothing read
@@ -121,14 +121,17 @@ const prefixed = (list) => (k) => list.some((p) => (onWindows ? k.toUpperCase() 
  * validated here: the doors that validate it (the top of a stage, the probe, the jx runner) have already
  * run, and a function that builds a child's environment must not throw.
  */
-export function engineEnv(base = process.env, { engine } = {}) {
+//
+// `platform` is a parameter so the Windows rule, names matched in any case, is pinned on a Linux CI.
+export function engineEnv(base = process.env, { engine, platform = process.platform } = {}) {
+  const win = platform === "win32";
   const mode = billingMode(base);
-  const checks = [named(RUNTIME_NAMES), prefixed(RUNTIME_PREFIXES), named(NETWORK_NAMES), prefixed(TEST_PREFIXES)];
+  const checks = [named(RUNTIME_NAMES, win), prefixed(RUNTIME_PREFIXES, win), named(NETWORK_NAMES, win), prefixed(TEST_PREFIXES, win)];
   if (engine === "anthropic-agent") {
-    checks.push(prefixed(CLAUDE_PREFIXES), named(CLAUDE_NAMES), named(toolServerNames()));
-    if (mode === "cloud") checks.push(named(CLOUD_NAMES), prefixed(CLOUD_PREFIXES));
+    checks.push(prefixed(CLAUDE_PREFIXES, win), named(CLAUDE_NAMES, win), named(toolServerNames(), win));
+    if (mode === "cloud") checks.push(named(CLOUD_NAMES, win), prefixed(CLOUD_PREFIXES, win));
   } else if (engine === "openai-agent") {
-    checks.push(named(CODEX_NAMES), named(toolServerNames()));
+    checks.push(named(CODEX_NAMES, win), named(toolServerNames(), win));
   }
   const env = {};
   for (const [k, v] of Object.entries(base ?? {})) {
@@ -138,7 +141,9 @@ export function engineEnv(base = process.env, { engine } = {}) {
   // The billing credential, by mode. The Anthropic key rides only under `api-key`: a present key overrides
   // the subscription and bills per token, and under `cloud` a leftover key must never be what bills.
   // Codex's key rides only under `api-key` too; under the subscription the adapter seeds the sign-in file.
-  if (engine === "anthropic-agent" && mode !== "api-key") delete env.ANTHROPIC_API_KEY;
+  // Under any spelling on Windows: the prefix above admits `anthropic_api_key` there as readily as the key.
+  if (engine === "anthropic-agent" && mode !== "api-key")
+    for (const k of Object.keys(env)) if ((win ? k.toUpperCase() : k) === "ANTHROPIC_API_KEY") delete env[k];
   if (engine === "openai-agent" && mode === "api-key" && base?.CODEX_API_KEY !== undefined) env.CODEX_API_KEY = base.CODEX_API_KEY;
   return env;
 }

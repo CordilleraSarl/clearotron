@@ -21,7 +21,7 @@ import { DISPOSITIONS, POSITION_REQUIRED_DISPOSITIONS } from "./findings-model.m
 import { frozenSnapshot, describeDrift } from "./run-integrity.mjs";   // — the frozen judged-by set across a seat turn
 import { isCancelled, readCancel, RunCancelled } from "./cancel.mjs";
 import { anthropicAgentEngine } from "./engine/anthropic-agent.mjs";
-import { openaiAgentEngine } from "./engine/openai-agent.mjs";
+import { openaiAgentEngine, codexHomesRoot } from "./engine/openai-agent.mjs";
 import { resolveAuthMode } from "./engine/auth.mjs";
 // ABBREVIATED_VALUE_NOTE is no longer imported: it explained the "…" marker on a value the model
 // had to reproduce EXACTLY, and the only messages that rendered one were the connotation arms telling a
@@ -788,7 +788,7 @@ export async function runStage(name, opts) {
   const engineForHome = selectEngine();
   let stageCodexHome = null;
   if (engineForHome?.name === "openai-agent") {
-    try { stageCodexHome = mkdtempSync(join(tmpdir(), `codex-stage-${String(name).replace(/[^a-z0-9-]/gi, "_")}-`)); }
+    try { stageCodexHome = mkdtempSync(join(codexHomesRoot(), `stage-${String(name).replace(/[^a-z0-9-]/gi, "_")}-`)); }
     catch { stageCodexHome = null; }   // fall back to the engine's own per-turn home rather than fail a stage
   }
   try {

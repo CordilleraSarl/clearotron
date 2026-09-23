@@ -22,7 +22,7 @@
 // codex's sandbox here) + (subscription) a seeded auth.json. CLEAROTRON_CODEX_SANDBOX_BYPASS=1 swaps that
 // profile for `--dangerously-bypass-approvals-and-sandbox` — see buildCodexArgs below for why.
 
-import { mkdtempSync, writeFileSync, copyFileSync, existsSync, rmSync, readFileSync, readdirSync, statSync, symlinkSync, lstatSync, realpathSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, copyFileSync, existsSync, rmSync, readFileSync, readdirSync, statSync, symlinkSync, lstatSync, realpathSync } from "node:fs";
 import { everyToolCallRefused } from "./tool-refusal.mjs";
 import { writeSecretFile } from "../../shared/secret-file.mjs";   // the rotated login goes back the way every credential is written
 import { tmpdir, homedir } from "node:os";
@@ -241,6 +241,21 @@ export function returnAuth(masterPath, codexHome, seeded) {   // @internal
 // `--sandbox` may ride the command line: codex takes the older sandbox settings over the profile whenever
 // it is passed (codex-config.mjs, `fenceToml`).
 export const codexSandboxBypassed = (env = process.env) => String(env.CLEAROTRON_CODEX_SANDBOX_BYPASS || "") === "1";
+
+/**
+ * The folder every Codex home Clearotron makes sits in: the account's own cache folder, never the temp
+ * folder. A home holds the turn's sign-in, a link to the saved one or a copy where Windows refuses links,
+ * and its session record. The stage's permission profile grants the temp folder, so a home there was
+ * readable by every stage's commands, and on Windows that included the sign-in; the profile never names
+ * this folder. It is also the account's own, where anyone on the machine can make a folder in the temp
+ * folder first. `env`, `platform` and `home` are parameters so every branch runs on a Linux CI.
+ */
+export function codexHomesRoot(env = process.env, { platform = process.platform, home = homedir() } = {}) {
+  const base = platform === "win32" ? (env.LOCALAPPDATA || join(home, "AppData", "Local")) : (env.XDG_CACHE_HOME || join(home, ".cache"));
+  const dir = join(base, "clearotron", "codex-homes");
+  mkdirSync(dir, { recursive: true, mode: 0o700 });
+  return dir;
+}
 
 /**
  * The folder holding codex's own programs, which the stage's profile must let it read. codex runs every
@@ -622,7 +637,7 @@ export const openaiAgentEngine = {
     // A home we were GIVEN is never deleted here — the stage that owns the session chain owns the
     // directory, or the next resume in that chain has nothing to resume from again.
     const ownHome = !providedHome;
-    try { codexHome = providedHome ?? mkdtempSync(join(tmpdir(), "codex-home-")); }
+    try { codexHome = providedHome ?? mkdtempSync(join(codexHomesRoot(), "turn-")); }
     catch (e) { return errResult(t0, e, resumeRef); }
     let authMaster = null, seeded = null;
     try {

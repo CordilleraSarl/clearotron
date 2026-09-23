@@ -174,6 +174,13 @@ export function renderCodexConfigToml({ mcpConfig, allowedTools, developerInstru
 // the caller passes no `fence` then, and the file stays what it was. With the sandbox on the command line
 // must carry no `--sandbox`, or codex "uses those older sandbox settings instead of default_permissions"
 // (Permissions guide) and the fence is off without a word; `buildCodexArgs` holds that.
+//
+// CLEAROTRON'S OWN CODEX FOLDERS ARE NOT IN THE TEMP FOLDER, so nothing here grants them. Each turn's
+// CODEX_HOME holds its sign-in (a link to the saved one, or a copy where Windows refuses links) and its
+// session record; they live in the account's own cache folder (openai-agent.mjs, `codexHomesRoot`), which
+// this profile never names. Not a refusal of their names inside the temp folder: codex scans a folder
+// before it applies a wildcard refusal there, and in a shared temp folder one entry the account cannot
+// read fails the whole turn (measured, 0.156.1).
 export const FENCE_PROFILE = "clearotron-stage";
 export function fenceToml({ runDir = null, readRoots = [] } = {}) {
   const key = (p) => tomlString(p);
