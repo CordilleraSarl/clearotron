@@ -23,7 +23,7 @@ import { drainingState } from "../worker-heartbeat.mjs";
 import { windowsTree, endWindowsTree, killWindowsTreeNow } from "../engine/engine-spawn.mjs";
 import { endEngineChild, procPgid } from "../engine/child-record.mjs";
 import { runStreamingChild } from "../engine/common.mjs";
-import { stopChild, stopSignals } from "../../bin/start.mjs";
+import { stopChild, windowCloseSignals } from "../../bin/start.mjs";
 
 // 2026-09-23T12:00:00Z as Windows prints it (100 ns ticks since 1601), and a second a minute later.
 const T0 = "134346384000000000";
@@ -140,8 +140,8 @@ test("the watchdog's stop and the start window's stop take the tree on Windows",
   stopChild({ pid: 44, kill: (s) => signalled.push(["child", s]) }, "SIGTERM", { platform: "linux",
     kill: (pid, s) => { signalled.push([pid, s]); throw Object.assign(new Error("gone"), { code: "ESRCH" }); } });
   assert.deepEqual(signalled, [[-44, "SIGTERM"], ["child", "SIGTERM"]], "Linux no longer signals the group first");
-  assert.deepEqual(stopSignals("win32"), ["SIGINT", "SIGTERM", "SIGHUP"], "closing the window on Windows reaches no teardown");
-  assert.deepEqual(stopSignals("linux"), ["SIGINT", "SIGTERM"]);
+  assert.deepEqual(windowCloseSignals("win32"), ["SIGHUP"], "closing the window on Windows reaches no teardown");
+  assert.deepEqual(windowCloseSignals("linux"), []);
 });
 
 test("with no listing, the stop from a timer still ends the tree of a child it holds", () => {

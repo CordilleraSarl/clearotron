@@ -40,8 +40,8 @@ test("the grid's output path is inside a run directory on Windows, in either spe
 });
 
 test("on Linux the grid check reads exactly as it did: \"/\" only", () => {
-  assert.equal(underStudioSegment("/home/x/studio/clearance-search/acme/grid.json", "linux"), true);
-  assert.equal(underStudioSegment("/home/x\\studio\\clearance-search\\acme/grid.json", "linux"), false,
+  assert.equal(underStudioSegment("/srv/clearotron/studio/clearance-search/acme/grid.json", "linux"), true);
+  assert.equal(underStudioSegment("/srv/clearotron\\studio\\clearance-search\\acme/grid.json", "linux"), false,
     "a Linux name holding \"\\\" was read as a run directory: \"\\\" is a file name character there");
   assert.equal(lastSegment("a\\b", "linux"), "a\\b");
   assert.equal(hasSep("a\\b", "linux"), false);
@@ -55,7 +55,7 @@ test("the agent a Windows queue and studio root belong to is read from the path"
   assert.equal(agentFromStudioRoot(win32.join(ws, "studio", "clearance-search"), { platform: W }), "clawdi",
     "the status rollup would show \"?\" for every Windows run");
   // Linux: unchanged, and a "\" is part of a name there.
-  const lws = join("/home/x", `${config.workspacePrefix}clawdi`);
+  const lws = join("/srv/clearotron", `${config.workspacePrefix}clawdi`);
   assert.equal(config.agentIdFromQueueDir(join(lws, "studio", "clearance-search", "queue"), { platform: "linux" }), "clawdi");
   assert.equal(config.agentIdFromQueueDir(win32.join(ws, "studio", "clearance-search", "queue"), { platform: "linux" }), null);
 });

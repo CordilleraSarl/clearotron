@@ -256,7 +256,7 @@ test("accepting the install with a setting in force uses the copy setup installe
   // The install block makes that look: from the install it runs to the branch taken when it is declined.
   // The anchor is joined from two pieces so that this file, which only READS onboard.mjs and runs no
   // package manager, does not read as one to the offline guard (a-test-never-reaches-a-network-...).
-  const spawn = src.indexOf(["spawnSync(", '"npm", engineInstallArgs(eng, dir)'].join(""));
+  const spawn = src.indexOf(["npmInvocation(", "engineInstallArgs(eng, dir))"].join(""));
   const declined = src.indexOf("} else if (namedSetting(eng, process.env[eng.env])) info(ownCopyLine(eng));", spawn);
   assert.notEqual(spawn, -1, "anchor missing: the install setup runs");
   assert.ok(declined > spawn, "anchor missing: the declined branch after the install");

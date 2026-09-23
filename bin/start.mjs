@@ -2298,7 +2298,9 @@ if (isMain) {
 
   // Ctrl-C, and whatever a terminal or a parent supervisor sends. Both land on the same teardown, and
   // the `stopping` flag is what stops an orderly stop being reported as a crash.
-  for (const sig of stopSignals()) process.on(sig, () => { void shutdown(0); });
+  process.on("SIGINT", () => { void shutdown(0); });
+  process.on("SIGTERM", () => { void shutdown(0); });
+  for (const sig of windowCloseSignals()) process.on(sig, () => { void shutdown(0); });
 
   const healthy = async (url, rec) => {
     const deadline = Date.now() + 30_000;
@@ -2680,14 +2682,15 @@ export function backgroundOfferLines({ demo = false, keep = false, manager = nul
 }
 
 /**
- * The signals that stop a foreground start: Ctrl-C, and whatever a terminal or a parent supervisor sends.
+ * The signal that means the window was closed, where a foreground start must treat it as a stop.
  *
- * AND CLOSING THE WINDOW, ON WINDOWS. Node reports it there as SIGHUP, and Windows ends this process
- * about ten seconds later whatever it is doing, so the teardown gets that long. The children share the
- * window's console there and Windows ends them with it; the teardown is what reaches whatever they started.
+ * ON WINDOWS, SIGHUP. Node reports closing the console window as SIGHUP there, and Windows ends this
+ * process about ten seconds later whatever it is doing, so the teardown gets that long. The children share
+ * the window's console there and Windows ends them with it; the teardown is what reaches whatever they
+ * started.
  */
-export function stopSignals(platform = process.platform) {
-  return platform === "win32" ? ["SIGINT", "SIGTERM", "SIGHUP"] : ["SIGINT", "SIGTERM"];
+export function windowCloseSignals(platform = process.platform) {
+  return platform === "win32" ? ["SIGHUP"] : [];
 }
 
 /**

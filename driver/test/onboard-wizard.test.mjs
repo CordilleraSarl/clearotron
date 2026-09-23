@@ -1246,13 +1246,15 @@ test("the wizard offers the install, and does NOT take the installer's exit code
     + "sentence — the gap #1720 measured");
   // The command shown and the argv spawned are made from the same parts for the same folder; that the
   // shown command parses back to that argv is driven in the last-resort test file.
-  assert.match(src, /spawnSync\("npm", engineInstallArgs\(eng, dir\)/,
+  // npm is started through npmInvocation, which on Windows runs npm-cli.js through Node rather than
+  // npm.cmd through a shell; the argv is still the parts the reader was shown.
+  assert.match(src, /npmInvocation\(engineInstallArgs\(eng, dir\)\);\s*const r = spawnSync\(npm\.command, npm\.args, \{ stdio: "inherit" \}\)/,
     "the install is not spawned as argv from the parts the reader was shown — a shell here would make the table's contents shell input");
 
   // The rule, asserted as an ORDER: the binary is re-resolved AFTER the spawn, and the probe still
   // gates what gets written. A wizard that wrote an engine on a zero exit code would be claiming a
   // working engine from a package manager's opinion.
-  const spawnAt = src.search(/spawnSync\("npm", engineInstallArgs\(eng, dir\)/);
+  const spawnAt = src.search(/npmInvocation\(engineInstallArgs\(eng, dir\)\)/);
   assert.ok(spawnAt > 0, "no install spawn to reason about — this arm has lost its subject");
   // WITHIN THE INSTALL BLOCK, not "anywhere after it". Searching the rest of the file finds the
   // give-me-a-path branch's own resolve and passes with the re-resolve deleted — planted exactly that
