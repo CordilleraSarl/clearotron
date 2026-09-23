@@ -170,6 +170,11 @@ export function rememberAnswer(mem, key, entry, { now = Date.now } = {}) {
   }
 }
 
+/** Drop a held answer, so the next identical question goes to the register. Never throws. */
+export function forgetAnswer(mem, key) {
+  try { rmSync(join(mem.dir, `${key}.json.gz`), { force: true }); return true; } catch { return false; }
+}
+
 /** One line per request in the watch log. Small, so concurrent appends from two processes stay whole. */
 export function noteAnswer(mem, row) {
   try { appendFileSync(mem.watchLog, JSON.stringify(row) + "\n"); } catch { /* the log is evidence, never a gate */ }
