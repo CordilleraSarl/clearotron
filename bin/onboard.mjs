@@ -3453,10 +3453,8 @@ export async function runCheck() {
       if (r.state === "valid") ok(line);
       else info(line);
     }
-    if (report.valid && !String(process.env.TRADEMARK_MCP_TOKEN_DENYLIST ?? "").trim()) {
-      problem("a valid key is on record but NO revocation list is configured (TRADEMARK_MCP_TOKEN_DENYLIST unset) "
-        + `— \`${invoke("disconnect")}\` could not actually revoke it. \`${invoke("connect")}\` arms one; set the variable or reconnect.`);
-    }
+    // No "revocation list not configured" problem any more: with TRADEMARK_MCP_TOKEN_DENYLIST unset, every
+    // door reads the install's default list (isRevoked, shared/scope.mjs), which is where disconnect writes.
     // THE PUBLISHED ADDRESS, AND WHETHER IT ANSWERS (acceptance 2). Reported here
     // rather than beside the unit, because the unit running and the address being reachable are
     // different facts and the second is the one a client depends on.

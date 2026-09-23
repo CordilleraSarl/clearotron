@@ -142,8 +142,8 @@
           "todos": 0
         },
         "a-check-that-could-not-look-does-not-report-a-drift.test.mjs": {
-          "tests": 10,
-          "asserts": 26,
+          "tests": 13,
+          "asserts": 37,
           "skips": 0,
           "todos": 0
         },
@@ -1089,6 +1089,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-state-change-from-another-site-is-refused.test.mjs": {
+          "tests": 14,
+          "asserts": 61,
+          "skips": 0,
+          "todos": 0
+        },
         "a-stop-is-read-once-more-before-anything-is-published.test.mjs": {
           "tests": 4,
           "asserts": 12,
@@ -1207,6 +1213,12 @@
           "tests": 3,
           "asserts": 19,
           "skips": 2,
+          "todos": 0
+        },
+        "a-version-npm-is-still-validating-gets-its-entry-once-served.test.mjs": {
+          "tests": 14,
+          "asserts": 47,
+          "skips": 0,
           "todos": 0
         },
         "a-visible-line-is-written-for-the-client.test.mjs": {
@@ -1720,8 +1732,8 @@
           "todos": 0
         },
         "client-door.test.mjs": {
-          "tests": 39,
-          "asserts": 168,
+          "tests": 40,
+          "asserts": 173,
           "skips": 1,
           "todos": 0
         },
@@ -1735,6 +1747,12 @@
           "tests": 9,
           "asserts": 18,
           "skips": 0,
+          "todos": 0
+        },
+        "closing-the-terminal-stops-what-start-started.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
+          "skips": 1,
           "todos": 0
         },
         "cn-scope-honesty.test.mjs": {
@@ -4096,8 +4114,8 @@
           "todos": 0
         },
         "release-pipeline.test.mjs": {
-          "tests": 121,
-          "asserts": 456,
+          "tests": 122,
+          "asserts": 462,
           "skips": 0,
           "todos": 0
         },
@@ -4294,8 +4312,8 @@
           "todos": 0
         },
         "run-economics.test.mjs": {
-          "tests": 25,
-          "asserts": 158,
+          "tests": 26,
+          "asserts": 161,
           "skips": 0,
           "todos": 0
         },
@@ -4397,7 +4415,7 @@
         },
         "runner.knockout-e2e.test.mjs": {
           "tests": 3,
-          "asserts": 115,
+          "asserts": 118,
           "skips": 0,
           "todos": 0
         },
@@ -5404,8 +5422,8 @@
           "todos": 0
         },
         "the-people-page-can-change-and-remove-a-person.test.mjs": {
-          "tests": 16,
-          "asserts": 80,
+          "tests": 17,
+          "asserts": 85,
           "skips": 0,
           "todos": 0
         },
@@ -6164,6 +6182,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-tool-the-listing-hides-cannot-be-called-by-name.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "account-audit-chain.test.mjs": {
           "tests": 10,
           "asserts": 48,
@@ -6297,8 +6321,8 @@
           "todos": 0
         },
         "http-handler.test.mjs": {
-          "tests": 20,
-          "asserts": 47,
+          "tests": 23,
+          "asserts": 58,
           "skips": 0,
           "todos": 0
         },
@@ -6346,7 +6370,7 @@
         },
         "ops-token.test.mjs": {
           "tests": 8,
-          "asserts": 39,
+          "asserts": 41,
           "skips": 0,
           "todos": 0
         },
@@ -6375,8 +6399,8 @@
           "todos": 0
         },
         "portal-trigger-wire.test.mjs": {
-          "tests": 1,
-          "asserts": 7,
+          "tests": 2,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },
@@ -6405,8 +6429,8 @@
           "todos": 0
         },
         "scope.test.mjs": {
-          "tests": 27,
-          "asserts": 114,
+          "tests": 30,
+          "asserts": 121,
           "skips": 0,
           "todos": 0
         },

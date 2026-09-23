@@ -273,9 +273,9 @@ test("clientSafe is declared on exactly the plain-language client tools", () => 
 
 // ── Revocation is refusal ON SIGHT, and the record is an ID, never the key ────
 
-import { tokenId, isRevoked } from "../lib/scope.mjs";
-import { mkdtempSync, writeFileSync, appendFileSync, rmSync } from "node:fs";
-import { join } from "node:path";
+import { tokenId, isRevoked, defaultDenylistPath } from "../lib/scope.mjs";
+import { mkdtempSync, mkdirSync, writeFileSync, appendFileSync, rmSync } from "node:fs";
+import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 
 const withDenylist = (fn) => {
@@ -342,13 +342,53 @@ test("an unreadable denylist REFUSES the token instead of assuming it is good", 
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("an UNSET denylist is still not a refusal — that path is the documented single-tenant trust", () => {
-  // The two absences are different and must stay different. No denylist configured is a deployment that
-  // never asked for one; a denylist configured and unreadable is one that asked and cannot look. Making
-  // both refuse would break every install that has never touched the variable.
-  assert.equal(isRevoked("some-jti", { denylistPath: undefined }), false);
-  assert.equal(isRevoked("some-jti", { denylistPath: "" }), false);
-});
+// ── WITH THE SETTING UNSET, THE DEFAULT LIST IS STILL READ ──────────────────────────────────────────
+//
+// An unset TRADEMARK_MCP_TOKEN_DENYLIST used to turn revocation off: every token read as not revoked,
+// while connect, disconnect and `key` all write to the default file when the setting is unset. So a key
+// revoked on an install whose door was started without the variable kept answering. Each arm below runs
+// against a home made for it, never the real one.
+
+const withHome = (fn) => {
+  const home = mkdtempSync(join(tmpdir(), "denylist-home-"));
+  const listAt = join(home, ".config", "clearotron", "token-denylist");
+  try { return fn({ home, listAt, env: {} }); } finally { rmSync(home, { recursive: true, force: true }); }
+};
+
+test("with the setting unset, a jti on the DEFAULT list is revoked", () => withHome(({ home, listAt, env }) => {
+  mkdirSync(dirname(listAt), { recursive: true });
+  writeFileSync(listAt, "# revoked by disconnect\nrevoked-jti\n");
+  assert.equal(isRevoked("revoked-jti", { env, home }), true,
+    "a key written to the default list by a revoker still verified, because the setting was unset");
+  assert.equal(isRevoked("other-jti", { env, home }), false, "and an id not on it is not revoked");
+  assert.equal(isRevoked("revoked-jti", { denylistPath: "", env, home }), true, "an empty setting is an unset one");
+  assert.equal(defaultDenylistPath(home), listAt, "the verifier reads the file the revokers write");
+}));
+
+test("with the setting unset, an ABSENT default list means nothing has been revoked", () => withHome(({ home, env }) => {
+  // The one absence read as a negative: every revocation creates the file it writes to, and with the
+  // setting unset that is this file, so a missing file is proof that nothing was ever revoked.
+  assert.equal(isRevoked("some-jti", { env, home }), false);
+  assert.equal(isRevoked("some-jti", { denylistPath: undefined, env, home }), false);
+}));
+
+test("a default list that EXISTS and cannot be read refuses, like a named one", () => withHome(({ home, listAt, env }) => {
+  // A directory where the file should be: present, and unreadable as a list, under every user including root.
+  mkdirSync(listAt, { recursive: true });
+  let e = null;
+  try { isRevoked("some-jti", { env, home }); } catch (caught) { e = caught; }
+  assert.equal(e?.code, "REVOCATION_UNCHECKABLE", "a default list that is there but unreadable was read as empty");
+}));
+
+test("a NAMED list still wins over the default", () => withHome(({ home, listAt, env }) => {
+  mkdirSync(dirname(listAt), { recursive: true });
+  writeFileSync(listAt, "on-the-default\n");
+  const named = join(home, "named-list");
+  writeFileSync(named, "on-the-named\n");
+  assert.equal(isRevoked("on-the-named", { env: { TRADEMARK_MCP_TOKEN_DENYLIST: named }, home }), true);
+  assert.equal(isRevoked("on-the-default", { env: { TRADEMARK_MCP_TOKEN_DENYLIST: named }, home }), false,
+    "the default list was read although the setting names another");
+}));
 
 test("a readable denylist still answers both ways — the refusal is not unconditional", () => withDenylist((path) => {
   assert.equal(isRevoked("not-listed", { denylistPath: path }), false, "an id that is not on the list is not revoked");
