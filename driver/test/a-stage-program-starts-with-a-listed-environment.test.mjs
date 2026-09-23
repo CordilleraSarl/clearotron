@@ -226,7 +226,9 @@ const NOT_PASSED = Object.freeze(Object.fromEntries([
 ].map((n) => [n, NOT_A_TOOL_SETTING]).concat([
   ["CLEAROTRON_SUITE_TELEMETRY_DIR", "the driver resolves the ledgers under it and hands each server the resolved path by name"],
 ], ["ANTHROPIC_BASE_URL", "CLAUDE_CODE_USE_BEDROCK", "CLAUDE_CODE_USE_FOUNDRY", "CLAUDE_CODE_USE_VERTEX"].map((n) => [n,
-  "a cloud's setting, read by auth.mjs, which the servers import for its tables; the program has it only under cloud billing, and no tool needs it"]))));
+  "a cloud's setting, read by auth.mjs, which the servers import for its tables; the program has it only under cloud billing, and no tool needs it"]),
+["CLEAROTRON_SIGNA_ANSWER_MEMORY", "CLEAROTRON_CLARIVATE_ANSWER_MEMORY"].map((n) => [n,
+  "the driver reads it when an attempt starts and writes the mode into the run folder; a server reads that mode (answer-memory.mjs `openAnswerMemory`), never the switch"]))));
 
 /** The import closure of `entries`: static imports and literal dynamic ones, relative paths only. */
 function closure(entries) {
