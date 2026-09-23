@@ -249,11 +249,11 @@ jobs:
       version: ${{ steps.cut.outputs.version }}
       pr_number: ${{ steps.changesets.outputs.pr-number }}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0      # tags included: the cut decision below reads them
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: ${{ env.NODE_VERSION }}
 
@@ -690,7 +690,7 @@ jobs:
       #
       # It also closes the narrower half: `ref: main` re-resolved at checkout time, so a commit landing
       # between the run starting and this step decided from a tree that did not trigger it.
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.sha }}
           fetch-depth: 0      # tags included: the cut decision reads them, and refuses without them
@@ -700,7 +700,7 @@ jobs:
       # behaviour that makes this safe to change.
       - name: Make `origin/main` resolvable — it is the subject, not the instrument
         run: git fetch --no-tags --prune origin +refs/heads/main:refs/remotes/origin/main
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: ${{ env.NODE_VERSION }}
       # EVERY JOB IN THIS FILE RUNS THIS, and an arm counts them. The guard refuses if a credential, a
@@ -788,7 +788,7 @@ jobs:
       #
       # It also closes the narrower half: `ref: main` re-resolved at checkout time, so a commit landing
       # between the run starting and this step decided from a tree that did not trigger it.
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.sha }}
           fetch-depth: 0      # tags included: the cut decision reads them, and refuses without them
@@ -799,7 +799,7 @@ jobs:
       - name: Make `origin/main` resolvable — it is the subject, not the instrument
         run: git fetch --no-tags --prune origin +refs/heads/main:refs/remotes/origin/main
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: ${{ env.NODE_VERSION }}
 
@@ -898,7 +898,7 @@ jobs:
       #
       # It also closes the narrower half: `ref: main` re-resolved at checkout time, so a commit landing
       # between the run starting and this step decided from a tree that did not trigger it.
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.sha }}
           fetch-depth: 0      # tags included: the cut decision reads them, and refuses without them
@@ -909,7 +909,7 @@ jobs:
       - name: Make `origin/main` resolvable — it is the subject, not the instrument
         run: git fetch --no-tags --prune origin +refs/heads/main:refs/remotes/origin/main
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: ${{ env.NODE_VERSION }}
 
@@ -1040,11 +1040,11 @@ jobs:
       id-token: write     # the OIDC token npm exchanges for a short-lived publish credential
       security-events: read   # the code-scanning verdict a stable is published over
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: ${{ env.NODE_VERSION }}
 
@@ -1448,12 +1448,12 @@ jobs:
       # and between the wait's last read and this checkout it can move on to a commit that changes no
       # version: an instrument fix with no note passes the tip check below untouched, because that check
       # compares VERSIONS. Naming the commit is what makes the two ends talk about one tree.
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ needs.awaited.outputs.sha }}
           fetch-depth: 0
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: ${{ env.NODE_VERSION }}
 
@@ -1823,7 +1823,7 @@ jobs:
     permissions:
       id-token: write     # the OIDC token npm exchanges for a short-lived credential
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       # `registry-url:` HERE AND NOWHERE ELSE IN THIS FILE, and the comment it replaces said the opposite
       # for a good reason that has since been ruled on. It writes the .npmrc that authenticates with
       # NODE_AUTH_TOKEN, and trusted publishing needs no registry configured at all — so anywhere else its
@@ -1833,7 +1833,7 @@ jobs:
       # OIDC exchange mints for a trusted publish cannot make it: eleven deprecations attempted that way
       # came back 404 while reads through the same credential succeeded. Owner ruling 2026-09-17 — this one
       # job reads a granular token with write on this package alone, and publishing stays credential-less.
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 22
           registry-url: https://registry.npmjs.org
