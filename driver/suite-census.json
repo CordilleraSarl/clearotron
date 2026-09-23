@@ -2758,8 +2758,8 @@
           "todos": 0
         },
         "experiment-context.test.mjs": {
-          "tests": 20,
-          "asserts": 67,
+          "tests": 21,
+          "asserts": 70,
           "skips": 0,
           "todos": 0
         },
@@ -4907,7 +4907,7 @@
         },
         "synthesis-structural-input.test.mjs": {
           "tests": 8,
-          "asserts": 59,
+          "asserts": 61,
           "skips": 0,
           "todos": 0
         },
