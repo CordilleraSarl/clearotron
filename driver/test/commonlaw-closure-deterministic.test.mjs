@@ -171,7 +171,7 @@ async function runNonSplitClosure(id) {
   writeFileSync(manifestPath, rows.filter((_, i) => !dataRows.slice(1).includes(i)).join("\n"));
 
   delete process.env.MOCK_FAIL_STAGE;
-  const codename = seed.runDir.split("/").pop().split("-").slice(3).join("-");
+  const codename = seed.runDir.split(/[\\/]/).pop().split("-").slice(3).join("-");
   const { pipeline: resumePipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
   const res = await resumePipeline({ ...JOB, id }, { codename });
   for (const k of [...KNOBS, "MOCK_CALL_LOG", "MOCK_CLAUDE_CALL_LOG"]) delete process.env[k];

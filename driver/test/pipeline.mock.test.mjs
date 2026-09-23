@@ -653,7 +653,7 @@ test("WS-A: --from register-digest re-run drops the stale JSON, then the driver 
   // run 2: resume --from register-digest; the drop must still fire (forceFromActive, no followup) and the
   // driver must RE-DERIVE a fresh JSON from the re-emitted prose (Map #3 — no model save, no save-followup).
   delete process.env.MOCK_FAIL_STAGE;
-  const codename = r1.runDir.split("/").pop().split("-").slice(3).join("-");
+  const codename = r1.runDir.split(/[\\/]/).pop().split("-").slice(3).join("-");
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
   const r2 = await pipeline(JOB, { codename, fromStage: "register-digest" });
   assert.equal(r2.ok, true, JSON.stringify(r2));
@@ -690,7 +690,7 @@ test("Map A e2e: a finding citing a fetched record renders its registry IDs FROM
   const poolRoot = join(res.runDir.split("/workspace-")[0], "pool");
   // the pool dir name is the runId `${slug}-${date}-${codename}`; res.runDir basename is `${date}-${codename}`.
   // Match THIS run's pool dir by that suffix (the shared pool may hold other tests' novapulse runs).
-  const suffix = res.runDir.split("/").pop();   // <date>-<codename>
+  const suffix = res.runDir.split(/[\\/]/).pop();   // <date>-<codename>
   const poolDir = readdirSync(poolRoot, { withFileTypes: true }).find((d) => d.isDirectory() && d.name.endsWith(suffix));
   assert.ok(poolDir, `published run dir for ${suffix} present in the pool`);
   const html = readFileSync(join(poolRoot, poolDir.name, "report.html"), "utf8");
@@ -941,7 +941,7 @@ test("WS-B sidecar is authoritative on resume: a planted sidecar wins (write-if-
   const { writeFileSync: wf } = await import("node:fs");
   wf(sidecarPath, JSON.stringify(planted, null, 2));
   delete process.env.MOCK_FAIL_STAGE;
-  const codename = r1.runDir.split("/").pop().split("-").slice(3).join("-");
+  const codename = r1.runDir.split(/[\\/]/).pop().split("-").slice(3).join("-");
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
   const r2 = await pipeline(JOB, { codename });
   assert.equal(r2.ok, true, JSON.stringify(r2));
@@ -961,7 +961,7 @@ test("WS-B corrupt sidecar: resume fails LOUDLY and never silently re-derives th
   const { writeFileSync: wf } = await import("node:fs");
   wf(sidecarPath, "{corrupt");
   delete process.env.MOCK_FAIL_STAGE;
-  const codename = r1.runDir.split("/").pop().split("-").slice(3).join("-");
+  const codename = r1.runDir.split(/[\\/]/).pop().split("-").slice(3).join("-");
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
   await assert.rejects(() => pipeline(JOB, { codename }), /profile\.json is corrupt/);
   assert.equal(readFileSync(sidecarPath, "utf8"), "{corrupt", "the corrupt sidecar is evidence — never overwritten");
@@ -974,7 +974,7 @@ test("WS-B pre-WS-B resume: a sidecar-less run resumes LEGACY end to end — no 
   const { rmSync } = await import("node:fs");
   rmSync(driverDir(r1.runDir, "profile.json"));
   delete process.env.MOCK_FAIL_STAGE;
-  const codename = r1.runDir.split("/").pop().split("-").slice(3).join("-");
+  const codename = r1.runDir.split(/[\\/]/).pop().split("-").slice(3).join("-");
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
   const r2 = await pipeline(JOB, { codename });
   assert.equal(r2.ok, true, JSON.stringify(r2));
@@ -1676,7 +1676,7 @@ test("envelope-settle: a resume that finds no decision on disk re-settles the re
   assert.ok(state.unsettled[0].reason, "with the reason, not just the qid");
 
   delete process.env.MOCK_FAIL_STAGE;
-  const codename = r1.runDir.split("/").pop().split("-").slice(3).join("-");
+  const codename = r1.runDir.split(/[\\/]/).pop().split("-").slice(3).join("-");
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
   const r2 = await pipeline(JOB, { codename });
   assert.equal(r2.ok, true, JSON.stringify(r2));
@@ -2069,7 +2069,7 @@ test("doc-50: a resume backfills a missing framework.json sidecar, and is a no-o
   // simulate a pre-doc-50 frozen run: the framework sidecar never existed
   const { rmSync } = await import("node:fs");
   rmSync(fwPath);
-  const codename = r1.runDir.split("/").pop().split("-").slice(3).join("-");
+  const codename = r1.runDir.split(/[\\/]/).pop().split("-").slice(3).join("-");
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
   const { parseFrameworkManifest } = await import(`../framework.mjs?bust=${Math.random()}`);
 
@@ -2096,7 +2096,7 @@ test("doc-50: a resume backfills a missing framework.json sidecar, and is a no-o
 test("reconstructCtx: axes union the frozen plan's axes — a plan-only axis survives stage surgery", async () => {
   const { res: r1 } = await runPipeline({ MOCK_FAIL_STAGE: "matter-frame", MOCK_VERDICT: "CLEAR" });
   assert.equal(r1.ok, false);
-  const codename = r1.runDir.split("/").pop().split("-").slice(3).join("-");
+  const codename = r1.runDir.split(/[\\/]/).pop().split("-").slice(3).join("-");
   // a prose manifest with NONE of the decideAxes markers: prose alone activates only the two defaults
   writeFileSync(join(r1.runDir, "variant-manifest.md"),
     "# Variant manifest\n\n- NOVAPULSE (exact)\n- NOVA PULSE (visual spacing)\n");
@@ -2279,7 +2279,7 @@ async function resumedUnsplitRun(extra = {}) {
   const journalAt = (dir) => readFileSync(driverDir(dir, "run.jsonl"), "utf8").trim().split("\n").filter(Boolean).map((l) => JSON.parse(l));
   const seedEvents = journalAt(seed.runDir);
   delete process.env.MOCK_FAIL_STAGE;
-  const codename = seed.runDir.split("/").pop().split("-").slice(3).join("-");
+  const codename = seed.runDir.split(/[\\/]/).pop().split("-").slice(3).join("-");
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
   const res = await pipeline(JOB, { codename });
   // The journal is APPENDED to across the resume, so the seed's own `grid-split` and `common-law-path`
@@ -2429,7 +2429,7 @@ test("A1 split quarantine: the MEANING SEAT's dictated queries are NEVER silentl
     "classified transient at the throw site — the park loop owns convergence");
   // resume: half a's artifacts stand (skip), ONLY half b re-runs; the re-merge restores the full receipt set
   delete process.env.MOCK_FAIL_STAGE;
-  const codename = r1.runDir.split("/").pop().split("-").slice(3).join("-");
+  const codename = r1.runDir.split(/[\\/]/).pop().split("-").slice(3).join("-");
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
   const r2 = await pipeline(JOB, { codename });
   assert.equal(r2.ok, true, JSON.stringify(r2));
@@ -2809,7 +2809,7 @@ test("a no-grid-spec downgrade on a variant-carrying manifest clamps CLEAR→CON
   const { rmSync } = await import("node:fs");
   rmSync(driverDir(r1.runDir, "profile.json"));
   delete process.env.MOCK_FAIL_STAGE;
-  const codename = r1.runDir.split("/").pop().split("-").slice(3).join("-");
+  const codename = r1.runDir.split(/[\\/]/).pop().split("-").slice(3).join("-");
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
   const r2 = await pipeline(JOB, { codename });
   assert.equal(r2.ok, true, JSON.stringify(r2));
@@ -3036,7 +3036,7 @@ test("a rebuilt run restores the reviewer's sign-off from review.signoff, and fr
   const status = JSON.parse(readFileSync(statusPath, "utf8"));
   assert.equal(status.verdict, undefined, "a record this run wrote carries the retired top-level field");
   writeFileSync(statusPath, JSON.stringify({ ...status, review: { signoff: "CONDITIONAL" } }));
-  const codename = res.runDir.split("/").pop().split("-").slice(3).join("-");
+  const codename = res.runDir.split(/[\\/]/).pop().split("-").slice(3).join("-");
   const { reconstructCtx } = await import(`../pipeline.mjs?bust=${Math.random()}`);
   assert.equal(reconstructCtx(JOB, { codename }).verdict, "CONDITIONAL", "a rebuilt run lost its sign-off");
   // A record in the shape every archived run carries.

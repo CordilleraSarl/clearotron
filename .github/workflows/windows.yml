@@ -38,6 +38,11 @@ jobs:
       run:
         shell: pwsh
     steps:
+      # LINE ENDINGS AS THEY SHIP. Git on the Windows runner turns LF into CRLF on checkout, which no
+      # installed copy ever sees: the package is packed on Linux. It breaks every check that reads source
+      # text, and would pack a CRLF tarball here, so the checkout keeps LF.
+      - run: git config --global core.autocrlf false
+
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7
 
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020   # v7
@@ -211,6 +216,11 @@ jobs:
       run:
         shell: pwsh
     steps:
+      # LINE ENDINGS AS THEY SHIP. Git on the Windows runner turns LF into CRLF on checkout, which no
+      # installed copy ever sees: the package is packed on Linux. It breaks every check that reads source
+      # text, and would pack a CRLF tarball here, so the checkout keeps LF.
+      - run: git config --global core.autocrlf false
+
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7
 
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020   # v7
@@ -262,6 +272,11 @@ jobs:
       matrix:
         shard: [1, 2, 3, 4]
     steps:
+      # LINE ENDINGS AS THEY SHIP. Git on the Windows runner turns LF into CRLF on checkout, which no
+      # installed copy ever sees: the package is packed on Linux. It breaks every check that reads source
+      # text, and would pack a CRLF tarball here, so the checkout keeps LF.
+      - run: git config --global core.autocrlf false
+
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7
 
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020   # v7

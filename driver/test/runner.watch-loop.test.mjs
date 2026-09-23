@@ -17,6 +17,7 @@ import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
+import { fileURLToPath } from "node:url";
 
 // freeze config.workspaceRoot to an empty temp dir BEFORE the import below, so nothing here can see a
 // real queue even if a tick were to run for real.
@@ -99,7 +100,7 @@ test("a mistyped --watch is refused, not silently one-shotted", async () => {
   // `--wach` running one tick and exiting 0 would leave someone believing a watcher is running while
   // nothing re-invokes anything — the same silence this change exists to remove.
   const { execFileSync } = await import("node:child_process");
-  const runner = new URL("../runner.mjs", import.meta.url).pathname;
+  const runner = fileURLToPath(new URL("../runner.mjs", import.meta.url));
   let out = "", code = 0;
   try {
     execFileSync(process.execPath, [runner, "--wach"], { encoding: "utf8", stdio: "pipe",

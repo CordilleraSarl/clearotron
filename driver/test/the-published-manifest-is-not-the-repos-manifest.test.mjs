@@ -301,7 +301,7 @@ test("a relative tarball path is the caller's, not the install's", () => {
       { name: "relative-probe", version: "1.0.0", bin: { "rel-cmd": "bin/cli.mjs" } },
       { "bin/cli.mjs": "#!/usr/bin/env node\nconsole.log('ok')\n" });
     process.chdir(dir);
-    const r = offline(() => installsAsADependency(`./${tgz.split("/").pop()}`));
+    const r = offline(() => installsAsADependency(`./${tgz.split(/[\\/]/).pop()}`));
     assert.equal(r.ok, true,
       `a tarball named by a path relative to the CALLER was refused: ${r.why}`);
     assert.equal(r.installed.name, "relative-probe");

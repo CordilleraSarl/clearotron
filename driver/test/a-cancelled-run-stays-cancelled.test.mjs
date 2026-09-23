@@ -25,6 +25,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync } from 
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
+import { fileURLToPath } from "node:url";
 
 // Set the workspace root BEFORE driver.config.mjs loads (via the dynamic imports below), so
 // config.workspaceRoot and config.queueDirs freeze to our temp tree and never see the real box.
@@ -293,5 +294,5 @@ test("item 4 WIRING: the resume path re-stamps, and does so AFTER the stop refus
 });
 
 function dirnameOf(url) {
-  return new URL(".", url).pathname;
+  return fileURLToPath(new URL(".", url));
 }
