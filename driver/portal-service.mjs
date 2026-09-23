@@ -4130,6 +4130,10 @@ async function readFormBody(req, limitBytes = 8192) {
   });
 }
 
+// The brief reader's model when PORTAL_READ_MODEL is unset: a TIER, like every stage's. An exact id goes to
+// the program as that model — past a cloud's ANTHROPIC_DEFAULT_SONNET_MODEL — and codex maps tiers only.
+export const PORTAL_READ_MODEL_DEFAULT = "sonnet";
+
 export function makeHttpHandler({ verify, limiter, service, log = () => {}, devIdentity = null, localAuth = null, static: staticHandler = null,
   // item 1 — PASSED IN, because this handler is its own function and the bootstrap that reads
   // the environment is another. The default is the Cloudflare Access header, so a caller that does
@@ -5211,7 +5215,7 @@ const PORT = PORT_CHOICE.port;
       // two are parameters on the shared runner for exactly this reason: `compose-read.mjs` records that
       // Haiku 4.5 refuses a thinking block outright (400), so inheriting the jx constants here would
       // have been a failure on every press.
-      const model = process.env.PORTAL_READ_MODEL || "claude-sonnet-5";
+      const model = process.env.PORTAL_READ_MODEL || PORTAL_READ_MODEL_DEFAULT;
       const runner = await makeJxTurnRunner({ model, thinking: "off", lane: "the brief reader" });
       if (runner?.error) {
         // NAMES THE CONDITION, on the operator's surface. The client-facing note stays client-facing;

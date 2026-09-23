@@ -19,7 +19,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { MODELS, resolveModel, modelFamily } from "../driver.config.mjs";
-import { claudeModel } from "../engine/anthropic-agent.mjs";
+import { claudeModel, buildClaudeArgs } from "../engine/anthropic-agent.mjs";
+import { openaiModel } from "../engine/openai-agent.mjs";
+import { PORTAL_READ_MODEL_DEFAULT } from "../portal-service.mjs";
 
 test("the catalog records a tier, and names no version for a request nobody made", () => {
   for (const tier of ["opus", "sonnet", "haiku"]) {
@@ -43,6 +45,17 @@ test("what reaches the program is still the vendor's alias, so the tier follows 
     assert.equal(claudeModel(tier), tier);
     assert.equal(claudeModel(MODELS[tier]), tier, `the catalog id for ${tier} reaches the program as something other than the alias`);
   }
+});
+
+test("the portal's brief reader asks for a tier too, so it reaches a model on either engine", () => {
+  // Its turn goes through the engine's program like a stage's. An exact id as the default pinned it on
+  // claude, bypassed a cloud's deployment mapping, and was refused outright by codex, which maps tiers only.
+  assert.equal(PORTAL_READ_MODEL_DEFAULT, "sonnet");
+  assert.equal(claudeModel(PORTAL_READ_MODEL_DEFAULT), "sonnet");
+  const { args } = buildClaudeArgs({ message: "m", model: PORTAL_READ_MODEL_DEFAULT, thinking: "off" });
+  assert.equal(args[args.indexOf("--model") + 1], "sonnet");
+  assert.doesNotThrow(() => openaiModel(PORTAL_READ_MODEL_DEFAULT));
+  assert.throws(() => openaiModel("claude-sonnet-5"), /no GPT tier mapped/);
 });
 
 test("an exact model named by a caller is still recorded and run as that model", () => {
