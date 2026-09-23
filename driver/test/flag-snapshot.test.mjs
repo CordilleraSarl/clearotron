@@ -205,7 +205,8 @@ test("staleness is reported, never acted on", () => {
 });
 
 test("the snapshot lives beside the pool, so it shares its lifecycle", () => {
-  assert.match(snapshotPath("/srv/trademark-archive"), /^\/srv\/trademark-archive\/_state\//);
+  // A native path, so its separators are matched either way.
+  assert.match(snapshotPath("/srv/trademark-archive"), /^[\\/]srv[\\/]trademark-archive[\\/]_state[\\/]/);
 });
 
 // ── — the posture delta ──────────────────────────────────────────────────────────────────────

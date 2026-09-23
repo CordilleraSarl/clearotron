@@ -63,7 +63,7 @@
 import { test } from "node:test";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
 import assert from "node:assert/strict";
-import { dirname, join } from "node:path";
+import { dirname, join, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { ledgerPath } from "../../providers/_shared/ledger-path.mjs";
 
@@ -88,9 +88,15 @@ const SUBSTITUTIONS = [
   [process.execPath, "<NODE>"],
 ];
 
+// ONE SEPARATOR. On Windows every path in the config is native, and JSON doubles its backslashes, so a
+// substitution of the raw path matches nothing and the pin's "/" joins read as a moved grant. Both sides
+// are brought to "/" first: the measured string's escaped backslashes, and each value substituted. On
+// Linux neither step changes a byte.
+const slashed = (p) => p.split(sep).join("/");
+
 function normalise(s) {
-  let out = s;
-  for (const [from, to] of SUBSTITUTIONS) out = out.split(from).join(to);
+  let out = s.split("\\\\").join("/");
+  for (const [from, to] of SUBSTITUTIONS) out = out.split(slashed(from)).join(to);
   return out;
 }
 

@@ -79,6 +79,11 @@ function reachedTheEnable(d) {
   return d.said;
 }
 
+// The arms that read a systemd refusal need two things Windows has neither of: a `#!/bin/sh` stand-in
+// on PATH, which Windows cannot execute, and systemd's user units, which `--background` enables.
+const SYSTEMD_SHIM = { skip: process.platform === "win32"
+  && "systemd units and a #!/bin/sh systemctl stand-in: Windows has no systemd and cannot run a shebang shim" };
+
 let REFUSED = null;    // systemd declines for a reason that is not the bus
 let NOBUS = null;      // systemd declines because there is no session bus
 
@@ -88,7 +93,7 @@ test.before(async () => {
 });
 test.after(() => { REFUSED?.clean(); NOBUS?.clean(); });
 
-test("a systemd refusal arrives as a sentence, and no stack trace reaches the operator", () => {
+test("a systemd refusal arrives as a sentence, and no stack trace reaches the operator", SYSTEMD_SHIM, () => {
   const said = reachedTheEnable(REFUSED);
   assert.match(said, /^start: /m, "the refusal did not come out of this command's own failure path");
   for (const trace of [/node:internal\/errors/, /at genericNodeError/, /at checkExecSyncError/, /^\s+at .*\(node:/m]) {
@@ -97,13 +102,13 @@ test("a systemd refusal arrives as a sentence, and no stack trace reaches the op
   assert.equal(REFUSED.code, 1, "it must still exit non-zero — a sentence is not a success");
 });
 
-test("systemd's own words are printed, not discarded by `stdio: ignore`", () => {
+test("systemd's own words are printed, not discarded by `stdio: ignore`", SYSTEMD_SHIM, () => {
   const said = reachedTheEnable(REFUSED);
   assert.match(said, /Failed to enable unit: Unit file clearotron-portal\.service does not exist\./,
     `the reason systemd gave was thrown away before anyone could read it:\n${said.slice(-1500)}`);
 });
 
-test("the reader is told which unit refused and what is running", () => {
+test("the reader is told which unit refused and what is running", SYSTEMD_SHIM, () => {
   const said = reachedTheEnable(REFUSED);
   assert.match(said, /HALF STARTED/, `no statement of what happened to the install:\n${said.slice(-1500)}`);
   assert.match(said, /was NOT enabled/, "the refusing unit is not named");
@@ -112,7 +117,7 @@ test("the reader is told which unit refused and what is running", () => {
   assert.match(said, /clearotron stop/, "nothing tells the reader how to take back down what is up");
 });
 
-test("the generic post-write trailer does not double the specific one", () => {
+test("the generic post-write trailer does not double the specific one", SYSTEMD_SHIM, () => {
   // Both were printed at first, and the pair read as two answers to one question. The generic line is
   // still right on every OTHER post-write refusal — the arm below holds it there — so this is about
   // suppression at one site, not deletion.
@@ -161,7 +166,7 @@ test("and the generic trailer still fires where nothing better was said", async 
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
-test("the bus branch and the not-the-bus branch give DIFFERENT remedies", () => {
+test("the bus branch and the not-the-bus branch give DIFFERENT remedies", SYSTEMD_SHIM, () => {
   // The defect this half inherits: one remedy appended to every failure, so a
   // unit that would not start for a bound port told the reader to export XDG_RUNTIME_DIR. A confident
   // remedy for a cause that is not the reader's costs more than no remedy.
@@ -177,7 +182,7 @@ test("the bus branch and the not-the-bus branch give DIFFERENT remedies", () => 
   for (const said of [refused, nobus]) assert.match(said, /HALF STARTED/);
 });
 
-test("the OTHER systemd catch still lands, and now leads with what systemd said", async () => {
+test("the OTHER systemd catch still lands, and now leads with what systemd said", SYSTEMD_SHIM, async () => {
   // NOTHING DRIVES THIS PATH ANYWHERE ELSE — `reachedTheEnable` above excludes it by name, so the
   // daemon-reload catch was changed with no arm over it. It keeps its own two-cause remedy, which is
   // right and is not the shared one: at that point the question is whether this session can reach a

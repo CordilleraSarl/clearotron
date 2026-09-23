@@ -232,7 +232,8 @@ test("the walk finds live and archived runs and skips the queue and the driver s
       writeFileSync(join(studio, "novapulse", "r1", skip, "status.json"), "{}");
     }
     const found = findRunDirs(studio).map((d) => d.slice(studio.length + 1)).sort();
-    assert.deepEqual(found, ["archive/2026-07/oldmark/r9", "novapulse/r1"]);
+    // Relative paths in this machine's own spelling, as the walk returns them.
+    assert.deepEqual(found, [join("archive", "2026-07", "oldmark", "r9"), join("novapulse", "r1")]);
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
