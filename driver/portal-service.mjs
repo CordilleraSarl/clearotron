@@ -1615,6 +1615,7 @@ export function makePortalService({
         // identity gets {} here exactly as it does for names and keeps reading the staff-only roster.
         let accountNames = {};
         let accountFacts = {};
+        let meRoster = null;   // read once for this answer: the names below and the house marketplaces
         // GENERIC IS NAMED TOO when the person sees an organisation's Generic. It is not a company, so it is
         // never in `accounts`, and without a name here the switcher printed the raw key at everyone below
         // everything. An organisation with no company yet is the case with an empty `accounts`, so the
@@ -1624,7 +1625,7 @@ export function makePortalService({
         if (named.length) {
           try {
             const { companyFactsOf } = await import("./profiles.mjs");
-            const profiles = await loadProfilesImpl();
+            const profiles = meRoster = await loadProfilesImpl();
             for (const key of named) {
               const profile = profiles.get(key);
               const name = profile?.name;
@@ -1663,9 +1664,19 @@ export function makePortalService({
         // READ ONCE. The payload names it and the program reading below is gated on it; two calls to
         // `flagView` here would be two reads of the same file that could disagree with each other.
         const meEngineMode = flagView(poolRoot).engineMode;
+        // THE HOUSE MARKETPLACES, offered as suggestions wherever a company's marketplaces are edited. A new
+        // company starts with none (the owner's ruling of 2026-09-23) and somebody picks; these are the
+        // Generic default's own list, read from the store so an install that changed it offers its own.
+        // Deployment-wide and the same for everyone, like concurrentRuns. [] when the store cannot be read:
+        // the box still takes any marketplace typed into it.
+        let houseMarketplaces = [];
+        try {
+          const house = (meRoster ?? await loadProfilesImpl()).get("generic")?.platforms;
+          if (Array.isArray(house)) houseMarketplaces = house.filter((d) => typeof d === "string" && d.trim());
+        } catch { /* a suggestion list is a nicety; the door is not */ }
         return { status: 200, json: { email: principal.email, ...principalView(principal, grantsHere, accountNames),
           accounts: principal.accounts, accountNames, accountFacts,
-          concurrentRuns: concurrentRunsCap(), brand: ORGANISATION_NAME, engineMode: meEngineMode,
+          concurrentRuns: concurrentRunsCap(), brand: ORGANISATION_NAME, engineMode: meEngineMode, houseMarketplaces,
           // WHERE A PERSON ASKS FOR A CHANGE TO THEIR SIGN-IN, beside the brand and read where it is read:
           // an href Preferences links "Clearotron administrator" to, or null, and then the words are plain.
           administratorContact: ADMINISTRATOR_CONTACT,

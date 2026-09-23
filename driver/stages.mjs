@@ -2527,7 +2527,7 @@ export const STAGES = {
       },
       "adopt-or-override each placement by engaging its reason, and the `### Disagreement resolutions` rows (one per surfaced disagreement and per borderline:true, each ADOPTED/OVERRODE in writing)": {
         class: "judgment", tokens: ["registerdigest_adjudication_invalid", "registerdigest_adjudication_incomplete"],
-        why: "Answering the promotion question the other way, in writing, against a reason another stage authored. #850 keeps it J. The row's SUBJECT is handed over as data (the driver appends the PLACEMENT RULINGS TAIL block, pipeline.mjs:3584), so nothing here is a fetch. [citation unverified]",
+        why: "Answering the promotion question the other way, in writing, against a reason another stage authored. #850 keeps it J. The row's SUBJECT is handed over as data (the driver appends the PLACEMENT RULINGS TAIL block, digestDispatchExtra() in pipeline.mjs), so nothing here is a fetch.",
       },
       // ── REWRITTEN, NEVER DELETED (the ruling) — AND THE ROW THAT COST THIS CONVERSION A DESIGN ──
       //

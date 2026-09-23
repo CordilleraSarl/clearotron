@@ -1792,7 +1792,9 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // whole. A comment edit moves these bytes too, so this constant moves with it.
 // Advanced again by the break recorded above the FROZEN constant: each answer folds to its first
 // sentence. Neither licence-only nor comment-only, so this constant moves with the other one.
-const FROZEN_BEFORE_SPDX = "c6d552b4f3f5fed753f5b3b53aad72618aee3fa42bd3acbdf73037930d162481";
+// Advanced again by the break recorded above the FROZEN constant: two lines for a company that picked no
+// marketplaces. Not licence-only, so this constant moves with the other one.
+const FROZEN_BEFORE_SPDX = "e94f0b150827bb12e7266039508a62a2bc4e0ec52ef74cabc6f77aa3dec74d4d";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2637,7 +2639,25 @@ const FROZEN_BEFORE_SPDX = "c6d552b4f3f5fed753f5b3b53aad72618aee3fa42bd3acbdf730
 //      and its print rule are in report.css. The structure could not — a stylesheet cannot put half a
 //      sentence behind a disclosure element that does not exist.
 //   3. Why it had to move here: this section's markup is composed in this file and nowhere else.
-const FROZEN = "fc729e2efc5d60163d71091db98db3895431fd70a02a8747a60c0d45fe85e5d6";
+// ── BREAK (2026-09-23 — two lines for a company that picked no marketplaces) ───────────────────────
+//
+// WHAT MOVED: two sentences gain a second form, chosen by one flag. A company may now pick no marketplaces
+// (the owner's ruling of 2026-09-23), and its marketplaces are still covered by the general web search and
+// by any stores the engine chose for the matter. So the use check's nothing-found line reads "Nothing found
+// in the general web search or in any store chosen for this matter." instead of naming "the marketplaces
+// searched", and the search row reads "N checks: the general web, plus any stores chosen for this matter."
+// instead of "N checks on P platforms". Both sentences are the owner's, approved as written. The flag is
+// `counts.sweep.noMarketplacesPicked` on the search-depth record, which publish stamps only when the run's
+// frozen profile carries an empty list, and it is read once per render like COURT_DECISIONS.
+//
+// THE THREE QUESTIONS.
+//   1. Reachable from republish? Yes, and it changes no delivered report: an empty marketplace list was
+//      refused on save and on load until this change, so no delivered run's frozen profile carries one, the
+//      flag is false on every republish, and both lines render the bytes they did. Every existing render
+//      test passes unchanged, and the new arm pins that the next render after a flagged one reads as before.
+//   2. Could it live in report.css or brand.mjs? No: these are sentences, not a look.
+//   3. Why it had to move here: both sentences are composed in this file and nowhere else.
+const FROZEN = "8f44a773d32a62b68a1a39a9ef27dca88bc9088f263034c8f9d1e312d3a8d3f0";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

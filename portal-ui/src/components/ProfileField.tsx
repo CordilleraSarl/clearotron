@@ -31,12 +31,15 @@ export function Field({
   value,
   choices,
   onChange,
+  suggestions,
 }: {
   readonly spec: FieldSpec
   readonly value: string
   /** null while the options are still loading, or if loading them failed. */
   readonly choices: readonly { readonly value: string; readonly label: string }[] | null
   readonly onChange: (v: string) => void
+  /** Entries the field's picker offers to add (the Generic default's marketplaces, for `platforms`). */
+  readonly suggestions?: readonly string[]
 }) {
   const picker = spec.kind === 'choice' || spec.kind === 'boolean'
   // A paragraph gets a taller box than a list does. Both are textareas; only `lines` parses to an array.
@@ -90,7 +93,7 @@ export function Field({
       <FieldNotices notices={fieldNotices(spec, value)} />
       {/* The picker edits the same raw text the box does, so there is one write path and the notices
           above keep describing exactly what is in the box. */}
-      <FieldPicker spec={spec} value={value} onChange={onChange} />
+      <FieldPicker spec={spec} value={value} onChange={onChange} {...(suggestions ? { suggestions } : {})} />
     </Wrapper>
   )
 }

@@ -13,8 +13,8 @@ import { mkdtempSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { makeProfileService, browserRefusal } from "../profile-service.mjs";
-import { makeStoreCommit, makeCommittableAudit } from "../../shared/store-in-repo.mjs";
+import { makeProfileService, browserRefusal, forBrowser } from "../profile-service.mjs";
+import { makeStoreCommit, makeCommittableAudit, STORE_COMMITTER } from "../../shared/store-in-repo.mjs";
 import { makeUpstream } from "../portal-upstream.mjs";
 import { Refusal } from "../../shared/onboarding-store.mjs";
 import { readFileSync } from "node:fs";
@@ -51,9 +51,21 @@ test("a company created from the browser always carries a framework, and says wh
 
   // And the receipt can say which one and whether it was a default, without restating what was typed.
   assert.equal(r.json.framework.defaulted, true);
-  assert.equal(r.json.marketplaces.defaulted, true);
-  assert.equal(r.json.marketplaces.count, 3, "the house default list, read from generic — never hardcoded");
-  assert.deepEqual(written.platforms, ["amazon.com", "apps.apple.com", "play.google.com"]);
+  // A COMPANY STARTS WITH NO MARKETPLACES (the owner's ruling of 2026-09-23). It used to be given the
+  // Generic default's three, which no screen listed; now it has none until somebody picks, and nothing
+  // on the receipt calls that a default.
+  assert.equal(r.json.marketplaces.defaulted, false);
+  assert.equal(r.json.marketplaces.count, 0);
+  assert.deepEqual(written.platforms, [], "none, written as an empty list rather than absent");
+});
+
+test("marketplaces a person picked are the company's, exactly", async () => {
+  const { service, writeCalls } = svc();
+  const r = await service.route("POST", "/profiles", STAFF, { name: "Harbour Goods", platforms: ["etsy.com"] });
+  assert.equal(r.status, 201);
+  assert.deepEqual(writeCalls.at(-1).profile.platforms, ["etsy.com"], "nothing of the house list is added");
+  assert.equal(r.json.marketplaces.count, 1);
+  assert.equal(r.json.marketplaces.defaulted, false);
 });
 
 test("the key comes from the name, and a name that yields none is refused rather than invented", async () => {
@@ -166,18 +178,38 @@ test("THE CONTROL: a healthy store creates the company, commits it and its audit
   assert.deepEqual(s.git("show", "--name-only", "--format=", "HEAD").split("\n").sort(), [`profiles/${KEY}.json`, "profiles/_audit.log"].sort());
   assert.deepEqual(s.rows(), ["profile-create"]);
   assert.equal(s.staged(), "");
+  assert.equal(s.git("log", "-1", "--format=%cn <%ce>"), "store <store@example.test>", "a store with an identity of its own keeps it");
 }));
 
-test("a fresh store with no git identity refuses the create, names the store and the command, and writes nothing", () => withNoGuessedIdentity(async () => {
+// A STORE WITH NO GIT IDENTITY IS NOT A REFUSAL. It was: every company created on a service account nobody
+// had run `git config` for was refused with a message telling the person to run git. The product now names
+// its own committer on such a store, and the person stays the author.
+test("a fresh store with no git identity creates the company, committed by the product with the person as author", () => withNoGuessedIdentity(async () => {
   const s = realStore("no-identity");
   const r = await create(s);
-  assert.equal(r.status, 409, JSON.stringify(r.json));
-  assert.equal(r.json.code, "store_no_identity");
-  assert.match(r.json.error, /^No company was created: .*has no git identity/);
-  assert.ok(r.json.error.includes(s.root) && r.json.error.includes(`git -C ${s.root} config user.email`), r.json.error);
-  assert.doesNotMatch(r.json.error, /Please tell me who you are|Committer identity unknown/, "the operator's terms, not git's");
-  assert.ok(!existsSync(s.file), "no profile on disk");
-  assert.deepEqual(s.rows(), [], "nothing happened, so the audit trail records nothing");
+  assert.equal(r.status, 201, JSON.stringify(r.json));
+  assert.match(r.json.commit, /^[0-9a-f]{40}$/);
+  assert.equal(r.json.commitError, undefined);
+  assert.ok(existsSync(s.file), "the profile is on disk");
+  assert.equal(s.git("log", "-1", "--format=%cn <%ce>"), `${STORE_COMMITTER.name} <${STORE_COMMITTER.email}>`);
+  assert.equal(s.git("log", "-1", "--format=%ae"), STAFF.email, "the person who created it is the author");
+  assert.deepEqual(s.git("show", "--name-only", "--format=", "HEAD").split("\n").sort(), [`profiles/${KEY}.json`, "profiles/_audit.log"].sort());
+  assert.deepEqual(s.rows(), ["profile-create"]);
+  assert.equal(s.staged(), "");
+  assert.throws(() => s.git("config", "--local", "user.email"), "the repository's own configuration is left as it was");
+}));
+
+test("on a store with no git identity, paths an earlier failed save left staged are completed by the next save", () => withNoGuessedIdentity(async () => {
+  const s = realStore("no-identity");
+  writeFileSync(join(s.root, "profiles", "left.json"), "{}\n");
+  s.git("add", "profiles/left.json");
+  const commit = makeStoreCommit({ repoRoot: s.root });
+  writeFileSync(join(s.root, "profiles", "now.json"), "{}\n");
+  commit({ files: ["profiles/now.json"], message: "the save happening now", author: STAFF.email });
+  assert.deepEqual(s.git("log", "--format=%s|%cn", "--reverse").split("\n"), [
+    `Complete a store save left staged by an earlier failure (1 path(s))|${STORE_COMMITTER.name}`,
+    `the save happening now|${STORE_COMMITTER.name}`,
+  ]);
   assert.equal(s.staged(), "");
 }));
 
@@ -206,7 +238,7 @@ test("a commit refused after the write is withdrawn: the file is gone, nothing i
 test("a refused create files no grant: the organisation's grant rides a 201 only", () => withNoGuessedIdentity(async () => {
   const filed = [];
   const principal = { email: STAFF.email, genericOrgs: ["firm"], everything: true, permissions: { run: true, manage: true } };
-  for (const [state, status, grants] of [["no-identity", 409, 0], ["healthy", 201, 1]]) {
+  for (const [state, status, grants] of [["no-repository", 409, 0], ["no-identity", 201, 1], ["healthy", 201, 1]]) {
     const s = realStore(state);
     filed.length = 0;
     const upstream = makeUpstream({
@@ -218,6 +250,21 @@ test("a refused create files no grant: the organisation's grant rides a 201 only
     assert.equal(filed.length, grants, `${state}: grants filed`);
   }
 }));
+
+// NO STORE PATH AND NO LOAD-LOG WORDING REACHES A BROWSER. The validator's sentences open with the file they
+// judged and speak the engine's vocabulary; the door takes the path off and words the marketplace entries.
+test("a refused marketplace reaches the browser in plain words, with no file path", async () => {
+  const { service } = svc();
+  const r = await service.route("POST", "/profiles", STAFF, { name: "Harbour Goods", platforms: ["Amazon"] });
+  assert.equal(r.status, 400, JSON.stringify(r.json));
+  const text = [r.json.message, ...(r.json.errors ?? [])].join(" ");
+  assert.match(text, /One of the marketplaces isn’t a website address — use domains like amazon\.com, one per line\./);
+  assert.doesNotMatch(text, /profiles\/|\.json|grid program|DOMAIN/, "a path or the load log's words reached a browser");
+  // Every other sentence passes as the validator wrote it, minus the path.
+  assert.deepEqual(forBrowser(["profiles/acme.json: name (string) is required"]), ["name (string) is required"]);
+  assert.deepEqual(forBrowser(["profiles/acme/launch.json: platforms must not list \"web\" — the general-web cell is implicit"]),
+    ["Don’t list “web” — the general web is always searched. Remove it."]);
+});
 
 test("a name is required, and the refusal is the one a person can act on", async () => {
   const { service } = svc();
@@ -238,9 +285,8 @@ test("NO REFUSAL SENDS TERMINAL VOCABULARY TO A BROWSER", () => {
   const cases = [
     { code: "key_exists", detail: { key: "acme" } },
     { code: "domain_claimed", detail: { domain: "acme.example", heldBy: "other" } },
-    { code: "no_marketplaces", detail: {} },
     { code: "framework_missing", detail: { path: "own/deck.md" } },
-    { code: "invalid_bundle", detail: { errors: ["profiles/acme.json: name is required"] } },
+    { code: "invalid_bundle", detail: { errors: ["profiles/acme.json: name (string) is required"] } },
   ];
 
   // FLOOR: every code the create path actually raises is covered above. A silently shrinking list is how

@@ -295,6 +295,12 @@ export type Me = {
    */
   readonly concurrentRuns: number | null
   /**
+   * The Generic default's marketplaces, offered as suggestions wherever a company's marketplaces are
+   * edited. A new company starts with none and somebody picks. Empty when the server sends none: the box
+   * still takes any marketplace typed into it.
+   */
+  readonly houseMarketplaces: readonly string[]
+  /**
    * WHICH MODE THIS INSTALL IS IN, as far as starting a NEW search goes.
    *
    *   'demo'             nothing to spawn. The example report, its audit trail and the MCP connection
@@ -1899,6 +1905,7 @@ export const api = {
         Object.entries(asRecord(b['accountFacts'])).map(([k, v]) => [k, asCompanyFacts(v)]),
       ) as Readonly<Record<string, CompanyFacts>>,
       concurrentRuns: asNumber(b['concurrentRuns']),
+      houseMarketplaces: asStrings(b['houseMarketplaces']),
       // Only the two values a caller may act on survive. Anything else — 'engine-ready' from a future
       // server, a typo, a missing field on an older portal-service — lands as null, which every caller
       // treats as "leave the button alone". Widening this to pass strings through would let an
@@ -2217,10 +2224,9 @@ export const api = {
    * The body is FLAT. `saveProfile` sends `{profile: {…}}` and this route reads the fields at the top
    * level; sending the nested shape here creates a company called nothing.
    *
-   * Send only the fields somebody actually filled in. An untouched box that contributes `platforms: []`
-   * is not "no marketplaces" — it is the same input as omitting the key, and the company silently
-   * inherits the house list. Build the draft with the profile field contract's own `applyField`, which
-   * omits rather than empties, and this stays true without anyone remembering it.
+   * Send only the fields somebody actually filled in, built with the profile field contract's own
+   * `applyField`. Marketplaces sent empty or not sent at all are the same answer: the company starts
+   * with none. Nothing is inherited from the house list; the page offers it as suggestions instead.
    */
   createCompany: (body: Readonly<Record<string, unknown>>): Promise<Result<CreatedCompany>> =>
     call('/portal/api/config/companies', (b) => ({
