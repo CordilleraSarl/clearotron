@@ -26,7 +26,7 @@
   --border-hairline: #E4DACA;  /* brand --line */
   --border-strong: #D8CCB8;  /* brand --line2 */
   --focus-ring: #860F09;  /* brand --crimson */
-  --font-body: 'Satoshi','Helvetica Neue',system-ui,sans-serif;  /* brand --font */
+  --font-body: 'Plus Jakarta Sans','Helvetica Neue',system-ui,sans-serif;  /* brand --font */
   --font-mono: 'Fira Code',ui-monospace,monospace;  /* brand --mono */
   --shadow-lg: 0 1px 2px rgba(37,9,2,.05), 0 10px 30px rgba(37,9,2,.07);  /* brand --shadow */
   --ease-out: cubic-bezier(.25,.72,.3,1);  /* JUDGED: specified by the design pack itself (README:235) — not a colour, no brand source exists */
@@ -64,7 +64,7 @@
   --border-hairline: #322c24;  /* brand --line */
   --border-strong: #3d362c;  /* brand --line2 */
   --focus-ring: #860F09;  /* brand --crimson */
-  --font-body: 'Satoshi','Helvetica Neue',system-ui,sans-serif;  /* brand --font */
+  --font-body: 'Plus Jakarta Sans','Helvetica Neue',system-ui,sans-serif;  /* brand --font */
   --font-mono: 'Fira Code',ui-monospace,monospace;  /* brand --mono */
   --shadow-lg: 0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.55);  /* brand --shadow */
   --ease-out: cubic-bezier(.25,.72,.3,1);  /* JUDGED: specified by the design pack itself (README:235) — not a colour, no brand source exists */

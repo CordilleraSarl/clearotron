@@ -9,7 +9,7 @@ import { writeFileSync, mkdtempSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import {
-  PALETTE, FONT_LINK, WARM_ROOT, REPORT_ROOT,
+  PALETTE, WARM_ROOT, REPORT_ROOT,
   WARM_ROOT_DARK, WARM_ROOT_DARK_EXPLICIT, REPORT_ROOT_DARK, REPORT_ROOT_DARK_EXPLICIT,
   THEME_INIT, THEME_INIT_EXPLICIT, themeButton, THEME_BTN_CSS,
 } from "../../shared/brand.mjs";
@@ -34,7 +34,7 @@ test("the shared palette is the only strong-accent crimson and carries no blue s
   assert.equal(PALETTE.ink.toLowerCase(), "#250902");
   assert.doesNotMatch(WARM_ROOT, BLUE_SKIN);
   assert.doesNotMatch(REPORT_ROOT, BLUE_SKIN);
-  assert.match(FONT_LINK, /api\.fontshare\.com.*satoshi/i);
+  assert.match(REPORT_ROOT, /--font:'Plus Jakarta Sans'/);
 });
 
 test("report and warm :root agree on every shared brand colour", () => {
@@ -167,14 +167,15 @@ test("themeButton + THEME_BTN_CSS: toggle markup and its nav styling", () => {
   assert.doesNotMatch(THEME_BTN_CSS, BLUE_SKIN);
 });
 
-test("a rendered report carries the brand :root + Satoshi and no blue skin", () => {
+test("a rendered report carries the brand :root, its own fonts and no blue skin", () => {
   const dir = mkdtempSync(join(tmpdir(), "brand-render-"));
   const path = join(dir, "f.report.md");
   writeFileSync(path, "---\ntype: clearance-clearance\nmatter: b1\ntitle: BRAND CHECK\noverall_label: LOW\noverall_badge: l2\nrun: 2026-06-14\n---\n# Summary\nx\n");
   try {
     const html = renderHtml(parseReport(path), [], [], { runId: "b1" });
     assert.match(html, /--crimson:#860F09/i);
-    assert.match(html, /api\.fontshare\.com.*satoshi/i);
+    assert.match(html, /@font-face\{font-family:'Plus Jakarta Sans'[^}]*src:url\(data:font\/woff2;base64,/);
+    assert.doesNotMatch(html, /fontshare|googleapis|gstatic/, "a report still names a font service");
     assert.doesNotMatch(html, BLUE_SKIN);
   } finally {
     rmSync(dir, { recursive: true, force: true });

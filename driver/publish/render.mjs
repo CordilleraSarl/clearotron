@@ -34,6 +34,7 @@ import { registrationSystem } from '../jurisdiction-systems.mjs';
 import { READ_LEAD_RE } from '../report-card-record.mjs';   // D3 — the dedupe gate and the card's acceptance are ONE predicate
 import { REPORT_ROOT, REPORT_ROOT_DARK_EXPLICIT, THEME_INIT_EXPLICIT, FAVICON_LINK, logoLockup, BRAND, confPosture, sectionStrip } from '../../shared/brand.mjs';
 import { NAV_CSS } from '../../shared/site-nav.mjs';
+import { REPORT_FONT_STYLE } from '../../shared/brand-fonts.mjs';   // the typefaces travel inside the report; it fetches nothing to draw its text
 import { isEntrypoint } from "../../shared/is-entrypoint.mjs";   // — realpath both sides, or a symlinked invocation exits 0 silently
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -307,7 +308,7 @@ const escAttr = s => esc(s).replace(/"/g, '&quot;');
 export function homeButton(href, label = '← All reports') {
   if (!href) return '';
   const style = "position:fixed;left:14px;bottom:14px;z-index:9999;display:inline-flex;align-items:center;"
-    + "background:#4E030F;color:#f0e8d8;font:600 12px/1 'Satoshi','Helvetica Neue',Helvetica,Arial,sans-serif;"
+    + "background:#4E030F;color:#f0e8d8;font:600 12px/1 'Plus Jakarta Sans','Helvetica Neue',Helvetica,Arial,sans-serif;"
     + "letter-spacing:.04em;padding:9px 14px;border-radius:999px;text-decoration:none;box-shadow:0 3px 10px rgba(37,9,2,.25)";
   // — THE CHROME LINK MEANS "LEAVE THE REPORT", SO IT MUST LEAVE THE FRAME.
   //
@@ -798,7 +799,7 @@ function headScope(fm, coverage = [], findings = []) {
   if (!fm.classes && !codes.length && !worldwide) return '';
   const cls = fm.classes ? `<span>Cl.&nbsp;${esc(fm.classes)}</span>` : '';
   const jur = codes.map(c => `<span title="${escAttr(regionName(c))}">${esc(c)}</span>`).join(' ');
-  const style = "margin:4px 0 0;font:600 13px/1.5 'Satoshi','Helvetica Neue',Helvetica,Arial,sans-serif;"
+  const style = "margin:4px 0 0;font:600 13px/1.5 'Plus Jakarta Sans','Helvetica Neue',Helvetica,Arial,sans-serif;"
     + "letter-spacing:.05em;opacity:.75";
   // wp50: a worldwide sweep leads the scope line; the codes read as the focus set, never as the
   // whole scope ("Cl. 5 · US EU UK CH JP" under a worldwide search reads as a narrow search).
@@ -1420,7 +1421,7 @@ function quadrant(findings) {
     return `<a href="#c${f.ordinal}"><title>#${f.ordinal}</title>${inner}</a>`;
   }).join('');
   return `<div class="panel land">
-      <svg viewBox="0 0 560 430" xmlns="http://www.w3.org/2000/svg" font-family="Satoshi, sans-serif">
+      <svg viewBox="0 0 560 430" xmlns="http://www.w3.org/2000/svg" font-family="Plus Jakarta Sans, sans-serif">
         <defs><linearGradient id="rz" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#860F09" stop-opacity="0"/><stop offset="1" stop-color="#860F09" stop-opacity=".09"/></linearGradient></defs>
         <rect x="70" y="30" width="460" height="342" fill="url(#rz)"/>
         <g stroke="#E4DACA" stroke-width="1"><line x1="70" y1="30" x2="70" y2="372"/><line x1="300" y1="30" x2="300" y2="372" stroke-dasharray="3 4"/><line x1="530" y1="30" x2="530" y2="372"/><line x1="70" y1="372" x2="530" y2="372"/><line x1="70" y1="201" x2="530" y2="201" stroke-dasharray="3 4"/><line x1="70" y1="30" x2="530" y2="30"/></g>
@@ -2736,9 +2737,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   const doc = `<!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${productName ? `${esc(productName)} — ` : ''}${esc(fm.title || '')} · ${esc(BRAND.name)}</title>
-<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
-<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@500;600&display=swap" rel="stylesheet">${FAVICON_LINK}${themeInitScript}
+${REPORT_FONT_STYLE}${FAVICON_LINK}${themeInitScript}
 <style>${cssInline}${darkCss}${PRINT_LIGHT}</style>${chromeLinkTag}</head><body class="has-glow">
 <div class="rep-stickyhead no-print">
 <div class="topbar no-print">

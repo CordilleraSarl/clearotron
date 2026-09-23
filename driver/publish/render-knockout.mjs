@@ -42,6 +42,7 @@ import {
   REPORT_ROOT, REPORT_ROOT_DARK_EXPLICIT, THEME_INIT_EXPLICIT, themeButton,
   THEME_BTN_CSS, CHROME_CSS, FAVICON_LINK, logoLockup, BRAND, confPosture, sectionStrip,
 } from '../../shared/brand.mjs';
+import { REPORT_FONT_STYLE } from '../../shared/brand-fonts.mjs';   // the typefaces travel inside the report; it fetches nothing to draw its text
 import { SUMMARY_BLOCK_LINE, parseSummaryBlocks } from '../../shared/summary-blocks.mjs';
 
 // THIS BOARD'S FOUR ENTRIES, in its order. Its third reads "Also considered" and resolves at the filings
@@ -195,7 +196,7 @@ const KO_CSS = `
      live — a wrapper would leave a stray line on those reports.
      The gutter matches the topbar's, so the first entry lines up under the back button. */
   .strip{display:flex;gap:4px;align-items:center;padding:4px max(26px,calc((100% - 1120px)/2)) 6px;
-    border-top:1px solid var(--line);font:600 12px/1 'Satoshi','Helvetica Neue',Arial,sans-serif;
+    border-top:1px solid var(--line);font:600 12px/1 'Plus Jakarta Sans','Helvetica Neue',Arial,sans-serif;
     letter-spacing:.04em;overflow-x:auto;scrollbar-width:none}
   .strip::-webkit-scrollbar{display:none}
   .strip a{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;color:#6b5d50;text-decoration:none;white-space:nowrap}
@@ -358,11 +359,11 @@ const KO_CSS = `
   .kbar{position:relative;height:8px;border-radius:4px}
   .kmarker{position:absolute;top:-30px;text-align:center}
   .kpill{display:inline-block;padding:5px 12px;border-radius:999px;color:#fff;
-    font:700 13px/1 'Satoshi','Helvetica Neue',Arial,sans-serif;white-space:nowrap}
+    font:700 13px/1 'Plus Jakarta Sans','Helvetica Neue',Arial,sans-serif;white-space:nowrap}
   .kneedle{width:3px;height:14px;margin:4px auto 0;border-radius:2px}
   .kticks{position:relative;height:16px;margin-top:8px}
   .kticks span{position:absolute;transform:translateX(-50%);color:var(--faint);white-space:nowrap;
-    font:700 10.5px/1 'Satoshi','Helvetica Neue',Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase}
+    font:700 10.5px/1 'Plus Jakarta Sans','Helvetica Neue',Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase}
   .kticks span.on{font-weight:800}
   .terr{margin-top:4px}
   .terr summary{cursor:pointer;color:var(--rose,var(--faint));font-size:12px;font-weight:600;list-style:none}
@@ -1890,9 +1891,7 @@ ${filings}`
   const doc = `<!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${productName ? `${esc(productName)} — ` : ''}${esc(title)} · ${esc(BRAND.name)}</title>
-<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
-<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@500;600&display=swap" rel="stylesheet">${FAVICON_LINK}${THEME_INIT_EXPLICIT}
+${REPORT_FONT_STYLE}${FAVICON_LINK}${THEME_INIT_EXPLICIT}
 <style>${cssInline}${REPORT_ROOT_DARK_EXPLICIT}${PRINT_LIGHT}</style>${chromeLinkTag}</head><body class="has-glow">
 <div class="rep-stickyhead no-print">
 <div class="topbar no-print">

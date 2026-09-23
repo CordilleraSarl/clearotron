@@ -1792,7 +1792,9 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // whole. A comment edit moves these bytes too, so this constant moves with it.
 // Advanced again by the break recorded above the FROZEN constant: each answer folds to its first
 // sentence. Neither licence-only nor comment-only, so this constant moves with the other one.
-const FROZEN_BEFORE_SPDX = "c6d552b4f3f5fed753f5b3b53aad72618aee3fa42bd3acbdf73037930d162481";
+// Advanced again by the break recorded above the FROZEN constant: the report carries its own fonts.
+// Neither licence-only nor comment-only, so this constant moves with the other one.
+const FROZEN_BEFORE_SPDX = "e99bfd13caa3823ad1b3dd0240655b061f6e1498f47c38df6e311bd360ab706b";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2637,7 +2639,27 @@ const FROZEN_BEFORE_SPDX = "c6d552b4f3f5fed753f5b3b53aad72618aee3fa42bd3acbdf730
 //      and its print rule are in report.css. The structure could not — a stylesheet cannot put half a
 //      sentence behind a disclosure element that does not exist.
 //   3. Why it had to move here: this section's markup is composed in this file and nowhere else.
-const FROZEN = "fc729e2efc5d60163d71091db98db3895431fd70a02a8747a60c0d45fe85e5d6";
+// ── BREAK (2026-09-23 — the report carries its own fonts) ──────────────────────────────────────────
+//
+// WHAT MOVED: the three <link> lines in the document head, which fetched Satoshi from Fontshare and Fira
+// Code from Google Fonts, become one `${REPORT_FONT_STYLE}` imported from shared/brand-fonts.mjs, which
+// embeds both faces as data with each licence text beside it. The face the stylesheet names moves from
+// Satoshi to Plus Jakarta Sans in the three places this file names it inline: the demo banner, one
+// caption and the quadrant chart's SVG.
+//
+// WHY. Opening a report told two font services the reader's address and that a report had been opened,
+// from the portal, from disk or from an email. The owner ruled the replacement face (Satoshi's licence
+// allows neither shipping the file nor embedding it where it can be copied out; Plus Jakarta Sans and
+// Fira Code are under the OFL).
+//
+// THE THREE QUESTIONS.
+//   1. Reachable from republish? Yes. A republished report carries the embedded fonts and is drawn in
+//      Plus Jakarta Sans; its words and structure are the same bytes as before.
+//   2. Could it live in report.css or brand.mjs? The faces themselves now do, in brand-fonts.mjs, so the
+//      next font change does not touch this file. The link tags could not: they were written into this
+//      file's own document head.
+//   3. Why it had to move here: the head is composed in this file and nowhere else.
+const FROZEN = "abd4f3c7b8d20066ceef6d5ccec5e0e14ef077e5c4edabbb15400363573c88d2";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));
