@@ -908,8 +908,12 @@ test("tracker 97 a version that merged itself still publishes, because that merg
   // NINE NOW. `macos` and `macos-awaited` joined on 2026-09-18: a stable is installed on macOS before
   // either publish job may publish it. Two, because `awaited` needs `publish` and one job serving both
   // publish paths would be a cycle. They call macos.yml and run no step of their own here.
-  assert.deepEqual(jobs, ["version", "stranded", "pending", "awaited", "macos", "publish", "macos-awaited", "publish-awaited", "deprecate"],
-    "the release workflow's jobs are not the nine this file is written about");
+  // TEN NOW. `entry` joined on 2026-09-23: npm accepted the 0.3.3 stable and went on validating it past
+  // the publish job's bound, so the version was published and tagged with no release entry, and nothing
+  // ran again to write one. It publishes nothing; it writes the entry once the registry serves the kept
+  // bytes, and its own arms hold it to that.
+  assert.deepEqual(jobs, ["version", "stranded", "pending", "entry", "awaited", "macos", "publish", "macos-awaited", "publish-awaited", "deprecate"],
+    "the release workflow's jobs are not the ten this file is written about");
 
   // IT DECIDES WITH THE SAME FUNCTION THE PUSH PATH USES. Two answers to one question is how a pipeline
   // publishes on one path what it refuses on the other.
@@ -1814,15 +1818,25 @@ test("the release entry waits for a stranger's install: the tag, then the check,
   }
 });
 
-test("a version the registry does not serve keeps its tag and gets NO entry, and the step fails", () => {
+// PENDING, NOT FAILED (2026-09-23). npm accepts a publish before it serves it, and the 0.3.3 stable was
+// still validating past this step's bound. The step used to fail there and nothing wrote the entry
+// afterwards; now the version keeps its tag, gets no entry here, and the step says the scheduled `entry`
+// job will write it. A check that could not look is still a failure.
+test("a version the registry does not serve yet keeps its tag, gets NO entry, and is left to the scheduled entry job", () => {
   for (const [name, body] of PUBLISHING) {
     for (const [version, prerelease] of [["9.9.9-beta.3", "true"], ["9.9.9", "false"]]) {
       const run = driveTagStep({ script: tagStepScript(body, name), version, prerelease, visibleExit: 1 });
-      assert.notEqual(run.status, 0, `${name}, ${version}: the step reported success on a version nobody could install\n${run.out}`);
+      assert.equal(run.status, 0, `${name}, ${version}: a version npm accepted and has not served yet failed the step, `
+        + `and nothing would write its entry afterwards\n${run.out}`);
+      assert.match(run.out, /scheduled entry job creates the release entry once the registry serves these bytes/,
+        `${name}, ${version}: the step passed without saying the version is pending, so a reader sees a green run and no entry\n${run.out}`);
       assert.ok(run.log.includes(`-f ref=refs/tags/v${version} `),
         `${name}, ${version}: no tag — the pipeline would read this published version as unpublished and cut it again\n${run.log}`);
       assert.doesNotMatch(run.log, /release create/,
         `${name}, ${version}: an entry was created for a version the registry did not serve\n${run.log}`);
+      const blind = driveTagStep({ script: tagStepScript(body, name), version, prerelease, visibleExit: 2 });
+      assert.notEqual(blind.status, 0, `${name}, ${version}: a registry check that could not look passed the step\n${blind.out}`);
+      assert.doesNotMatch(blind.log, /release create/, `${name}, ${version}: an entry was created over a check that could not look\n${blind.log}`);
     }
   }
 });
@@ -1830,7 +1844,7 @@ test("a version the registry does not serve keeps its tag and gets NO entry, and
 test("planted: a job whose entry does not wait for the check is caught, in each job separately", () => {
   for (const [name, body] of PUBLISHING) {
     const script = tagStepScript(body, name);
-    const broken = script.replace(/\n\s*served_to_a_stranger\n/g, "\n");
+    const broken = script.replace(/SERVED=0; served_to_a_stranger \|\| SERVED=\$\?/g, "SERVED=0");
     assert.notEqual(broken, script, `${name}: the plant changed nothing, so it proves nothing`);
     const run = driveTagStep({ script: broken, version: "9.9.9", prerelease: "false", visibleExit: 1 });
     assert.match(run.log, /release create/, `${name}: the planted step did not create an entry, so this arm cannot tell the difference`);
@@ -2947,9 +2961,8 @@ test("a push opens no version pull request, and still asks whether it cut a vers
 // pinned by the commit that carries it.
 test("every action a workflow uses is pinned to a full commit sha, with its version in a comment", () => {
   const dir = join(ROOT, ".github", "workflows");
-  const files = nonEmpty(readdirSync(dir).filter((f) => /\.ya?ml$/.test(f)), "workflow files");
   const uses = [];
-  for (const f of files) {
+  for (const f of nonEmpty(readdirSync(dir).filter((f) => /\.ya?ml$/.test(f)), "workflow files")) {
     readFileSync(join(dir, f), "utf8").split("\n").forEach((line, i) => {
       const m = line.match(/^\s*(?:-\s+)?uses:\s*(\S+)(.*)$/);
       if (m) uses.push({ where: `${f}:${i + 1}`, ref: m[1], rest: m[2] });
