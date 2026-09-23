@@ -215,7 +215,7 @@ test("onboarding a brand owner then a project leaves a store that still loads", 
 
   const roster = loadProfiles({ dir: store, force: true });
   assert.ok(roster.has("acme"), "the onboarded owner is not in the roster the store loads");
-  // A brand owner onboarded with no --platforms searches no marketplace until someone picks them (the
+  // A brand owner onboarded with no --platforms has no marketplaces until someone picks them (the
   // owner's ruling of 2026-09-23) — an empty list the loader accepts, never an absent key it would refuse.
   assert.deepEqual(roster.get("acme").platforms, [], "the onboarded owner starts with an empty marketplace list");
 });

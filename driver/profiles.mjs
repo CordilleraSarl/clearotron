@@ -175,6 +175,15 @@ export function derivedBatchSize(profile) {
   return Math.max(1, Math.floor(gridCellBudget(profile) / derivedFloor(profile)));
 }
 
+// THE TERMS ONE GRID CALL MAY CARRY when each term runs `cellsPerTerm` cells: the cell budget divided by the
+// cells the grid actually runs, never more than the profile's own figure. The profile's figure assumes its
+// own stores plus the web cell, so it is too large for a grid that runs more per term: a matter frame's
+// channels, or a closure over a store the matter chose for a company that picked no marketplaces, whose
+// figure is the whole budget in terms. One oversized call truncates (the 224-cell note above).
+export function gridBatchFor(profile, cellsPerTerm) {
+  return Math.max(1, Math.min(profile?.batchSize ?? 14, Math.floor(gridCellBudget(profile) / Math.max(1, cellsPerTerm))));
+}
+
 // The per-entry platform rules as DATA rather than as throws, so every door applies the identical checks
 // and phrases the failure in its own register: a profile load DIES (a broken profile bricks every run
 // under it), a job CLARIFIES (one request, answerable by asking). Same rules either way — a domain that is
@@ -519,12 +528,12 @@ function validateProfileShape(key, p, { sparse = false } = {}) {
   // platforms is REQUIRED on a whole profile but OPTIONAL on an overlay; the foot-gun guards below run whenever
   // it is present (a project that re-states its marketplaces must state them just as carefully).
   //
-  // AN EMPTY LIST IS VALID, by the owner's ruling of 2026-09-23: a company may search no marketplace, and a
+  // AN EMPTY LIST IS VALID, by the owner's ruling of 2026-09-23: a company may pick no marketplaces, and a
   // new one starts that way. What stays required is the ARRAY — an absent key is not "none", it is a
   // profile nobody finished (derivedFloor reads absent as the historical default of six).
   if (!sparse || p.platforms != null) {
     if (!Array.isArray(p.platforms) || !p.platforms.every((x) => typeof x === "string" && x.trim()))
-      die("platforms must be an array of store-domain strings (empty searches no marketplace)");
+      die("platforms must be an array of store-domain strings");
     // a one-character authoring slip here bricks every run under the profile (the floor counts entries
     // verbatim while the grid dedupes) — reject the known foot-guns at load time. Shared with the job
     // doors via platformEntryErrors so a domain rule can never drift between where it is stored and

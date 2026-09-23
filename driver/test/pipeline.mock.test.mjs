@@ -2369,6 +2369,26 @@ test("A1 split pre-split resume: the single-member assembly is restored VERBATIM
       assert.ok(!existsSync(join(res.runDir, f)), `no half artifact ${f}`);
 });
 
+test("a company with no marketplaces: every grid spec the run writes, closure included, fits the cell budget", async () => {
+  // Its profile's own batch figure divides the budget by the web cell alone, so it is the whole budget in
+  // terms. Both grids size by the cells they run (profiles.mjs gridBatchFor, whose arithmetic
+  // profiles.test.mjs pins for the web-plus-store case this mock's web-only closure cannot reach).
+  const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_CL_GAPS: "translit" },
+    { profileKey: "harbour-goods" });
+  assert.equal(res.ok, true, JSON.stringify(res));
+  const { SAFE_GRID_CELLS } = await import("../profiles.mjs");
+  const sidecar = JSON.parse(readFileSync(driverDir(res.runDir, "profile.json"), "utf8"));
+  const specs = readdirSync(driverDir(res.runDir)).filter((f) => /^grid-spec(\.half-[a-z]+)?(\.supp-closure)?\.json$/.test(f));
+  assert.ok(specs.some((f) => f.includes("supp-closure")), `the closure ran and wrote its spec: ${specs.join(", ")}`);
+  assert.ok(events.some((e) => e.event === "coverage-closure" && e.requested > 0), "a closure was asked for");
+  for (const f of specs) {
+    const spec = JSON.parse(readFileSync(driverDir(res.runDir, f), "utf8"));
+    assert.ok(spec.batch <= sidecar.batchSize, `${f}: never larger than the profile's own figure`);
+    assert.ok(spec.batch * spec.platforms.length <= SAFE_GRID_CELLS,
+      `${f}: ${spec.batch} terms × ${spec.platforms.length} cells is over the ${SAFE_GRID_CELLS}-cell budget`);
+  }
+});
+
 test("A1 split repair BALANCE (item 25): the closable set is partitioned EVENLY across the usable halves, and the partition is recorded", async () => {
   // This test used to assert the opposite — that closable cells on a half-B term went to half B's
   // session and half A stayed untouched — because the reopen routed every cell through halfOfTerm.

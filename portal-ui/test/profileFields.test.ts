@@ -43,7 +43,7 @@ test('clearing a field DELETES the key — absent and empty mean different thing
 })
 
 test("a company's emptied Marketplaces box SAVES NONE, and a project's still inherits", () => {
-  // A company may search no marketplace (the owner's ruling of 2026-09-23), and the server refuses a
+  // A company may pick no marketplaces (the owner's ruling of 2026-09-23), and the server refuses a
   // company with no list at all — so on the company form an emptied box is an empty list, not a deleted key.
   const company = applyField({ platforms: ['amazon.com'], name: 'Aurora' }, spec('platforms'), '   ')
   assert.deepEqual(company.platforms, [], 'none, stated')

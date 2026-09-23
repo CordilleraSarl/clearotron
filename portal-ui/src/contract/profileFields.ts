@@ -210,7 +210,7 @@ export type FieldSpec = {
   /**
    * An emptied box SAVES AN EMPTY LIST instead of deleting the key.
    *
-   * For a company's `platforms` only. A company may search no marketplace, and the server refuses a
+   * For a company's `platforms` only. A company may pick no marketplaces, and the server refuses a
    * company with no list at all, so deleting the key on clear would turn "none" into a refused save. The
    * project form drops this flag (projectFields): there a blank box means "use the company's list".
    */

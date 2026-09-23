@@ -107,8 +107,9 @@ export function resolveFramework(requested, {
  * NONE, NOT THE GENERIC DEFAULT, by the owner's ruling of 2026-09-23. A company created with only a name
  * used to be given the Generic default's marketplaces, which no screen listed and which the company page
  * then refused to let anybody remove. A new company now starts with an empty list and somebody picks
- * from the Generic default's marketplaces, which the portal offers as suggestions. An empty list searches
- * no marketplace; the general web and the meaning checks run regardless (pipeline.mjs deriveGridSpec).
+ * from the Generic default's marketplaces, which the portal offers as suggestions. With an empty list the
+ * general web search and the meaning checks still run, and so do any stores the engine chooses for a matter
+ * (pipeline.mjs deriveGridSpec).
  */
 export function resolvePlatforms(supplied) {
   if (supplied?.length) return { platforms: supplied, source: "supplied" };
