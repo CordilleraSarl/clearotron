@@ -658,7 +658,7 @@ export function joinEvidenceStatus(findings, recordsByUri = new Map(), fetchFail
         // weight, and it happened silently over the seat's correct answer on four of five rows of one
         // delivered report: classifyUseSource needs the full de-suffixed owner token as a contiguous
         // substring of the host, and real brand domains are shorter than corporate names
-        // ("propperdocs" is not inside "propperai"). What survives exactly: the register-mirror
+        // ("acmedocs" is not inside "acmeai"). What survives exactly: the register-mirror
         // demotion's precedence — attested OR host-detected, a mirror wins over everything, because
         // that direction can only weaken the evidence.
         const host = /^https?:\/\//i.test(f.use_check.source) ? classifyUseSource(f.use_check.source, f.owner?.name) : null;

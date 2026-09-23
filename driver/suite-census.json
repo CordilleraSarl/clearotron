@@ -5687,7 +5687,7 @@
         },
         "the-seats-attestation-decides-the-use-source.test.mjs": {
           "tests": 5,
-          "asserts": 9,
+          "asserts": 10,
           "skips": 0,
           "todos": 0
         },

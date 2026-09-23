@@ -26,13 +26,13 @@ test("RF-15 v3 — the register estimate is required only where the run fetched 
     const d = mkdtempSync(join(tmpdir(), "ko-rf15-"));
     mkdirSync(join(d, "_driver"), { recursive: true });
     mkdirSync(join(d, "research"), { recursive: true });
-    writeFileSync(join(d, "research", "frozen.md"), "# research payload for FROZEN\n\nSome findings.\n");
+    writeFileSync(join(d, "research", "testmark.md"), "# research payload for TESTMARK\n\nSome findings.\n");
     writeFileSync(join(d, "_driver", "framework.json"), JSON.stringify(FW));
     if (withRecords) writeFileSync(join(d, "_driver", "register-records.json"), "{}");
     return join(d, "knockout-assess-0.json");
   };
   const mark = {
-    name: "FROZEN", rating: "High", classesDriving: [9], basis: "The name is close to a known property.",
+    name: "TESTMARK", rating: "High", classesDriving: [9], basis: "The name is close to a known property.",
     factors: ["A first load-bearing observation.", "A second load-bearing observation."],
     counterFactors: ["What holds it at this band."], mitigation: "",
     bullets: ["One honest evidence bullet."], findings: [], purpleNotes: [],
@@ -71,14 +71,14 @@ test("registerReads[].band: optional, and refused when it is not a ladder word",
   const d = mkdtempSync(join(tmpdir(), "ko-readband-"));
   mkdirSync(join(d, "_driver"), { recursive: true });
   mkdirSync(join(d, "research"), { recursive: true });
-  writeFileSync(join(d, "research", "frozen.md"), "# research payload for FROZEN\n\nSome findings.\n");
+  writeFileSync(join(d, "research", "testmark.md"), "# research payload for TESTMARK\n\nSome findings.\n");
   writeFileSync(join(d, "_driver", "framework.json"), JSON.stringify(FW));
   writeFileSync(join(d, "_driver", "register-records.json"), JSON.stringify({
-    marks: [{ name: "FROZEN", records: [{ recordId: RECORD_ID, mark: "FROZEN", owner: "Lumenreed GmbH" }] }],
+    marks: [{ name: "TESTMARK", records: [{ recordId: RECORD_ID, mark: "TESTMARK", owner: "Lumenreed GmbH" }] }],
   }));
   const file = join(d, "knockout-assess-0.json");
   const mark = {
-    name: "FROZEN", rating: "High", classesDriving: [9], basis: "The name is close to a known property.",
+    name: "TESTMARK", rating: "High", classesDriving: [9], basis: "The name is close to a known property.",
     factors: ["A first load-bearing observation.", "A second load-bearing observation."],
     counterFactors: ["What holds it at this band."], mitigation: "",
     bullets: ["One honest evidence bullet."], findings: [], purpleNotes: [],

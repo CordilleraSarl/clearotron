@@ -1752,7 +1752,7 @@ test("doc-54: one footer — the full provenance line rides the document; serve-
 //   · drop the fixed line entirely                   → a finding carrying neither renders no reason, arm 2 red
 //   · print "Class" or shout the register's status   → arm 3 red
 test("a ruled-out card leads with the finding's own reason, and keeps the fixed line only as a last resort", () => {
-  const withNet = [{ ...BAND_FINDINGS[0], ordinal: 9, ruled_out: true, mark: "QORE",
+  const withNet = [{ ...BAND_FINDINGS[0], ordinal: 9, ruled_out: true, mark: "ACMEQ",
     net: "NXP's registrations cover microprocessors and do not reach a water-quality app.",
     legal_position: "The specification is semiconductors.", practical_position: "NXP is a large proprietor." }];
   const html = renderHtml(parsedOf(REPORT), withNet, [], {});
@@ -1761,7 +1761,7 @@ test("a ruled-out card leads with the finding's own reason, and keeps the fixed 
   assert.match(html, /The specification is semiconductors/, "the longer argument stays in the fold");
 
   // A finding carrying neither still states something rather than nothing.
-  const bare = [{ ...BAND_FINDINGS[0], ordinal: 9, ruled_out: true, mark: "QORE", net: "", legal_position: "" }];
+  const bare = [{ ...BAND_FINDINGS[0], ordinal: 9, ruled_out: true, mark: "ACMEQ", net: "", legal_position: "" }];
   assert.match(renderHtml(parsedOf(REPORT), bare, [], {}), /a different name in a related field/,
     "the fixed line is the last resort, not a dead branch");
 });

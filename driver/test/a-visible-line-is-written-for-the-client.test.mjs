@@ -64,15 +64,15 @@ test("…but the same word IS flagged when it is not what the run is about", () 
   // Without this the control above is satisfied by a check that never fires, which would pass every
   // arm here while doing nothing on the page.
   const line = "The earlier owner would prevail on the comparison.";
-  const terms = plainRegisterFlags(line, { mark: "NORTHWIND" }).map((f) => f.term);
+  const terms = plainRegisterFlags(line, { mark: "PROBEMARK" }).map((f) => f.term);
   assert.ok(terms.includes("prevail"), "excluding the run's own terms must not disarm the check");
 });
 
 test("a visible sentence over the limit is flagged, with its length and the remedy", () => {
-  const long = "ORBIT is a suggestive and already widely adopted term in the satellite and sky observation field, "
-    + "and identically named tracking software sits in the client's own app store channel beside an established "
-    + "communications business of the same name, so an earlier owner is likely to win a dispute over this name.";
-  const flag = plainRegisterFlags(long, { mark: "ORBIT" }).find((f) => f.kind === "length");
+  const long = "PROBEMARK is a suggestive and already widely adopted term in the weather and sea forecasting field, "
+    + "and identically named forecasting software sits in the client's own app store channel beside an established "
+    + "shipping business of the same name, so an earlier owner is likely to win a dispute over this name.";
+  const flag = plainRegisterFlags(long, { mark: "PROBEMARK" }).find((f) => f.kind === "length");
   assert.ok(flag, "a 50-word visible sentence was not flagged");
   assert.ok(flag.words > SENTENCE_WORD_LIMIT);
   assert.match(flag.say, /Do not shorten it by dropping the reason/,
