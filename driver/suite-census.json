@@ -1084,8 +1084,8 @@
           "todos": 0
         },
         "a-state-change-from-another-site-is-refused.test.mjs": {
-          "tests": 14,
-          "asserts": 61,
+          "tests": 15,
+          "asserts": 70,
           "skips": 0,
           "todos": 0
         },
