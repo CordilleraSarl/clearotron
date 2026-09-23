@@ -278,7 +278,11 @@ export function makeHttpHandler({ verify, limiter, opsLimiter = null, sessions, 
               : send(res, 401, { error: `invalid trademark token: ${e.message}` });
           }
           const transport = await createSession(sessions, scope, user.email);
-          entry = { transport, sub: scope.sub ?? null, kind: scope.kind ?? null };
+          // `namesVerbs` rides with the session so EVERY call it makes is audited with it, not only the
+          // first: an ops token that names no verbs is being retired (re-issued with verbs, then refused),
+          // and the audit is how the live ones are found. Whether it names verbs, never which, never the token.
+          const namesVerbs = scope.kind === "ops" ? Array.isArray(scope.verbs) && scope.verbs.length > 0 : null;
+          entry = { transport, sub: scope.sub ?? null, kind: scope.kind ?? null, namesVerbs };
           // STAMP THE SCOPE'S OWN FACTS ONTO THE STORED ENTRY, HERE, AND AFTER THE HANDSHAKE.
           //
           // `createSession` is injected, and every caller carries its own copy of the entry shape — two
@@ -293,7 +297,7 @@ export function makeHttpHandler({ verify, limiter, opsLimiter = null, sessions, 
           // and left the gate reading a field nobody had set — green, and doing nothing.
           stampScope = () => {
             const stored = transport.sessionId ? sessions.get(transport.sessionId) : null;
-            if (stored) { stored.sub = scope.sub ?? null; stored.kind = scope.kind ?? null; }
+            if (stored) { stored.sub = scope.sub ?? null; stored.kind = scope.kind ?? null; stored.namesVerbs = namesVerbs; }
           };
         } else {
           if (entry.email && entry.email !== user.email) {
@@ -328,7 +332,7 @@ export function makeHttpHandler({ verify, limiter, opsLimiter = null, sessions, 
         // `finish` fires once the response is fully sent, which is when `res.statusCode` is the answer
         // the caller got rather than the default it started as.
         res.once("finish", () => {
-          try { appendAudit({ email: user.email, sub: entry.sub ?? null, body, status: res.statusCode, door }); }
+          try { appendAudit({ email: user.email, sub: entry.sub ?? null, kind: entry.kind ?? null, namesVerbs: entry.namesVerbs ?? null, body, status: res.statusCode, door }); }
           catch { /* best-effort */ }
         });
         const answered = entry.transport.handleRequest(req, res, body);

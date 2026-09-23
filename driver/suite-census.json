@@ -1077,6 +1077,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-state-change-from-another-site-is-refused.test.mjs": {
+          "tests": 14,
+          "asserts": 61,
+          "skips": 0,
+          "todos": 0
+        },
         "a-stop-is-read-once-more-before-anything-is-published.test.mjs": {
           "tests": 4,
           "asserts": 12,
@@ -1708,8 +1714,8 @@
           "todos": 0
         },
         "client-door.test.mjs": {
-          "tests": 39,
-          "asserts": 168,
+          "tests": 40,
+          "asserts": 173,
           "skips": 1,
           "todos": 0
         },
@@ -5380,8 +5386,8 @@
           "todos": 0
         },
         "the-people-page-can-change-and-remove-a-person.test.mjs": {
-          "tests": 16,
-          "asserts": 80,
+          "tests": 17,
+          "asserts": 85,
           "skips": 0,
           "todos": 0
         },
@@ -6134,6 +6140,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-tool-the-listing-hides-cannot-be-called-by-name.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "account-audit-chain.test.mjs": {
           "tests": 10,
           "asserts": 48,
@@ -6267,8 +6279,8 @@
           "todos": 0
         },
         "http-handler.test.mjs": {
-          "tests": 20,
-          "asserts": 47,
+          "tests": 23,
+          "asserts": 58,
           "skips": 0,
           "todos": 0
         },
@@ -6316,7 +6328,7 @@
         },
         "ops-token.test.mjs": {
           "tests": 8,
-          "asserts": 39,
+          "asserts": 41,
           "skips": 0,
           "todos": 0
         },
@@ -6345,8 +6357,8 @@
           "todos": 0
         },
         "portal-trigger-wire.test.mjs": {
-          "tests": 1,
-          "asserts": 7,
+          "tests": 2,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },
@@ -6375,8 +6387,8 @@
           "todos": 0
         },
         "scope.test.mjs": {
-          "tests": 27,
-          "asserts": 114,
+          "tests": 30,
+          "asserts": 121,
           "skips": 0,
           "todos": 0
         },
