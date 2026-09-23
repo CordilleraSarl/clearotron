@@ -278,7 +278,7 @@ function parseToml(text) {
 }
 
 test("renderCodexConfigToml: each withheld name is one exclude filter, and the servers still forward it by name", () => {
-  const withheld = ["SIGNA_API_KEY", "CORSEARCH_SESSION_KEY", "signa_api_key", "CODEX_API_KEY"];
+  const withheld = ["SIGNA_API_KEY", "CORSEARCH_SESSION_KEY", "Signa_Api_Key", "CODEX_API_KEY"];
   const toml = renderCodexConfigToml({ mcpConfig: CLAUDE_JSON, allowedTools: ALLOWED, developerInstructions: "WRITE THE FILE.",
     fence: { runDir: "/run" }, withheldFromCommands: withheld });
   const cfg = parseToml(toml);
