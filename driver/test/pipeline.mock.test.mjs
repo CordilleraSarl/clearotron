@@ -2379,6 +2379,7 @@ test("a company with no marketplaces: every grid spec the run writes, closure in
   const { SAFE_GRID_CELLS } = await import("../profiles.mjs");
   const sidecar = JSON.parse(readFileSync(driverDir(res.runDir, "profile.json"), "utf8"));
   const specs = readdirSync(driverDir(res.runDir)).filter((f) => /^grid-spec(\.half-[a-z]+)?(\.supp-closure)?\.json$/.test(f));
+  assert.ok(specs.length > 1, `the main grid and the closure each wrote a spec: ${specs.join(", ")}`);
   assert.ok(specs.some((f) => f.includes("supp-closure")), `the closure ran and wrote its spec: ${specs.join(", ")}`);
   assert.ok(events.some((e) => e.event === "coverage-closure" && e.requested > 0), "a closure was asked for");
   for (const f of specs) {

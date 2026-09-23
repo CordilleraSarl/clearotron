@@ -3449,7 +3449,7 @@
         },
         "pipeline.mock.test.mjs": {
           "tests": 101,
-          "asserts": 841,
+          "asserts": 842,
           "skips": 0,
           "todos": 0
         },
