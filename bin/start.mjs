@@ -2298,6 +2298,7 @@ if (isMain) {
   // the `stopping` flag is what stops an orderly stop being reported as a crash.
   process.on("SIGINT", () => { void shutdown(0); });
   process.on("SIGTERM", () => { void shutdown(0); });
+  for (const sig of windowCloseSignals()) process.on(sig, () => { void shutdown(0); });
 
   const healthy = async (url, rec) => {
     const deadline = Date.now() + 30_000;
@@ -2676,6 +2677,20 @@ export function backgroundOfferLines({ demo = false, keep = false, manager = nul
     `  — same product, managed by ${manager}, and it survives logout. It needs ${manager}'s user manager`,
     "  reachable from this session; where it is not, that command says so and changes nothing you use.",
   ];
+}
+
+/**
+ * The signal that means the window was closed, which a foreground start treats as a stop.
+ *
+ * SIGHUP, on every platform. Closing a terminal sends it, and with no handler Node's default ended this
+ * process on the spot: the teardown never ran, and the children, which lead sessions of their own, never
+ * received the hangup. The portal, the door and the worker went on running with nothing supervising them
+ * and a search in flight carried on (measured on Linux, 2026-09-23), while the banner above says closing
+ * the window stops everything this command started. Windows reports closing the console window as SIGHUP
+ * too.
+ */
+export function windowCloseSignals() {
+  return ["SIGHUP"];
 }
 
 /**
