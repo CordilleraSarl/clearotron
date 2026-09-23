@@ -136,7 +136,8 @@ test("a capture written BEFORE the work means a payload with no verdict is a FAC
 // receiver's. An early `return` would report `ok` for a test that asserted nothing, so the reason is
 // declared on the line where a reader of the output can see it.
 test("a capture that cannot be written does not cost the seat its call",
-  { skip: process.getuid?.() === 0 && "root writes through a 0o500 directory — the fault injection is a no-op" }, () => {
+  { skip: (process.getuid?.() === 0 && "root writes through a 0o500 directory — the fault injection is a no-op")
+      || (process.platform === "win32" && "Windows ignores a directory's mode bits — the fault injection is a no-op") }, () => {
   // Best-effort by construction, and REPORTED rather than swallowed: "captured" and "capture failed" are
   // different facts. The rows are real work either way.
   const f = fixture();

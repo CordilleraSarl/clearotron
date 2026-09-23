@@ -96,7 +96,9 @@ test("a Windows path in the setting is a path, absolute or relative, not a bare 
   assert.match(wizard.path, /claude\.exe$/, "setup did not report the path the reader typed");
 });
 
-test("Linux still finds the extensionless program, and reads \"\\\" as part of a name", () => {
+// Not on Windows itself: a Linux PATH is split on ":", and a Windows folder's drive letter holds one.
+test("Linux still finds the extensionless program, and reads \"\\\" as part of a name",
+  { skip: process.platform === "win32" && "a Linux PATH cannot hold a Windows folder: its drive letter's colon is the separator" }, () => {
   const d = dir("linux");
   const p = file(join(d, "claude"), "#!/bin/sh\nexit 0\n", 0o755);
   const r = resolveEngineProgram("anthropic-agent", { env: { PATH: d }, platform: "linux", enginesDir: null });

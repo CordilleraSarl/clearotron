@@ -16,7 +16,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, win32 } from "node:path";
+import { join, posix, win32 } from "node:path";
 import { underStudioSegment, lastSegment, hasSep } from "../../shared/path-seps.mjs";
 import { config } from "../driver.config.mjs";
 import { agentFromStudioRoot } from "../progress.mjs";
@@ -55,8 +55,8 @@ test("the agent a Windows queue and studio root belong to is read from the path"
   assert.equal(agentFromStudioRoot(win32.join(ws, "studio", "clearance-search"), { platform: W }), "clawdi",
     "the status rollup would show \"?\" for every Windows run");
   // Linux: unchanged, and a "\" is part of a name there.
-  const lws = join("/srv/clearotron", `${config.workspacePrefix}clawdi`);
-  assert.equal(config.agentIdFromQueueDir(join(lws, "studio", "clearance-search", "queue"), { platform: "linux" }), "clawdi");
+  const lws = posix.join("/srv/clearotron", `${config.workspacePrefix}clawdi`);
+  assert.equal(config.agentIdFromQueueDir(posix.join(lws, "studio", "clearance-search", "queue"), { platform: "linux" }), "clawdi");
   assert.equal(config.agentIdFromQueueDir(win32.join(ws, "studio", "clearance-search", "queue"), { platform: "linux" }), null);
 });
 
