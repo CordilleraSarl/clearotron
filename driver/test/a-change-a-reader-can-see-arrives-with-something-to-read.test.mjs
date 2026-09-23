@@ -433,3 +433,143 @@ test("a note a PRE-RELEASE has consumed still answers for the commit that wrote 
     assert.equal(r.code, 1, `a note deleted outright answered for its commit:\n${r.said}`);
   } finally { deleted.clean(); }
 });
+
+// ── A LATER COMMIT MAY ANSWER A BARE `none` FOR ONE NAMED COMMIT ──────────────────────────────────────
+// A bare `none` merged into an integration branch that a second branch was already built on: the only fix
+// the check offered was a rewrite of the shared branch. The answer is a later commit's
+// `Release-note-for: <sha> none — <reason>`, held to the rules in the script's header.
+
+/** Steps on top of a base commit; a message may be a function of the shas so far; `empty` commits nothing. */
+function repoWithSteps(steps) {
+  const dir = mkdtempSync(join(tmpdir(), "ctnote-"));
+  const git = (...a) => execFileSync("git", ["-c", "user.email=a@b.c", "-c", "user.name=t", ...a],
+    { cwd: dir, encoding: "utf8" });
+  git("init", "-q", "-b", "main");
+  writeFileSync(join(dir, "seed.txt"), "seed\n");
+  git("add", "-A"); git("commit", "-qm", "base");
+  const base = git("rev-parse", "HEAD").trim();
+  const shas = [];
+  for (const step of steps) {
+    if (step.checkout) { git("checkout", "-q", ...step.checkout); continue; }
+    if (step.merge) { git("merge", "-q", "--no-ff", "-m", "merge", step.merge); continue; }
+    for (const [path, body] of Object.entries(step.changes ?? {})) {
+      mkdirSync(join(dir, dirname(path)), { recursive: true });
+      writeFileSync(join(dir, path), body);
+    }
+    const message = typeof step.message === "function" ? step.message(shas) : step.message;
+    git("add", "-A"); git("commit", "-q", ...(step.empty ? ["--allow-empty"] : []), "-m", message);
+    shas.push(git("rev-parse", "HEAD").trim());
+  }
+  return { dir, base, shas, git, clean: () => rmSync(dir, { recursive: true, force: true }) };
+}
+const BARE = { changes: { "bin/thing.mjs": "export const a = 1;\n" }, message: "A change\n\nRelease-note: none\n" };
+const answering = (i, reason = "only a comment's wording changed; nothing a user sees.") =>
+  ({ empty: true, message: (s) => `Answer the note owed by the change\n\nRelease-note-for: ${s[i].slice(0, 7)} none — ${reason}\n` });
+
+test("a later commit answers a bare `none` for the commit it names, prints who answered, and owes nothing itself", () => {
+  const repo = repoWithSteps([BARE, answering(0)]);
+  try {
+    const r = run(repo);
+    assert.equal(r.code, 0, `a named answer from a later commit was not taken:\n${r.said}`);
+    assert.match(r.said, new RegExp(`${repo.shas[0].slice(0, 7)} said a bare \`none\`, which ${repo.shas[1].slice(0, 7)} answers: only a comment's wording changed`),
+      `the pass is silent about which commit answered:\n${r.said}`);
+    assert.doesNotMatch(r.said, /owe a release note/, "the empty answering commit was asked for a note of its own");
+  } finally { repo.clean(); }
+});
+
+test("an answer naming a commit outside the range is refused, and names the commit that carries it", () => {
+  const repo = repoWithSteps([BARE, { empty: true, message: "Answer\n\nRelease-note-for: PLACEHOLDER none — a reason.\n" }]);
+  try {
+    // re-point the answer at the base commit, which is outside base..head
+    repo.git("commit", "-q", "--amend", "--allow-empty", "-m", `Answer\n\nRelease-note-for: ${repo.base.slice(0, 9)} none — a reason.\n`);
+    const r = run(repo);
+    assert.equal(r.code, 1, `an answer naming a commit outside the range was taken:\n${r.said}`);
+    assert.match(r.said, /is not a commit in this range/);
+    assert.match(r.said, /owe a release note/, "the bare commit is still owed");
+  } finally { repo.clean(); }
+});
+
+test("an answer with no reason, or only a dash, is refused, read by the same rule as an inline `none`", () => {
+  for (const tail of ["none", "none —", "none -"]) {
+    const repo = repoWithSteps([BARE, { empty: true, message: (s) => `Answer\n\nRelease-note-for: ${s[0].slice(0, 7)} ${tail}\n` }]);
+    try {
+      const r = run(repo);
+      assert.equal(r.code, 1, `"${tail}" was taken as an answer:\n${r.said}`);
+      assert.match(r.said, /gives no reason/);
+    } finally { repo.clean(); }
+  }
+});
+
+test("an answer from a commit the named one is not an ancestor of is refused: ancestry, never order", () => {
+  // the bare commit sits on a side branch; the answer is on main before the side branch is merged in
+  const repo = repoWithSteps([
+    { checkout: ["-b", "side"] }, BARE,
+    { checkout: ["main"] },
+    { empty: true, message: (s) => `Answer early\n\nRelease-note-for: ${s[0].slice(0, 7)} none — a reason given too soon.\n` },
+    { merge: "side" },
+  ]);
+  try {
+    const r = run(repo);
+    assert.equal(r.code, 1, `an answer from off the named commit's history was taken:\n${r.said}`);
+    assert.match(r.said, /not an earlier commit on this commit's own history/);
+  } finally { repo.clean(); }
+});
+
+test("one line answers one commit, and one commit takes one answer", () => {
+  const two = repoWithSteps([BARE, { ...BARE, changes: { "bin/other.mjs": "export const b = 1;\n" } },
+    { empty: true, message: (s) => `Answer both\n\nRelease-note-for: ${s[0].slice(0, 7)} ${s[1].slice(0, 7)} none — a reason.\n` }]);
+  try {
+    const r = run(two);
+    assert.equal(r.code, 1, `one line answered two commits:\n${r.said}`);
+    assert.match(r.said, /one line answers one commit/);
+  } finally { two.clean(); }
+  const twice = repoWithSteps([BARE, answering(0, "the first reason."), answering(0, "the first reason.")]);
+  try {
+    const r = run(twice);
+    assert.equal(r.code, 1, `two answers for one commit were taken:\n${r.said}`);
+    assert.match(r.said, /one of 2 answers naming/);
+  } finally { twice.clean(); }
+  const one = repoWithSteps([BARE, { ...BARE, changes: { "bin/other.mjs": "export const b = 2;\n" } }, answering(0)]);
+  try {
+    const r = run(one);
+    assert.equal(r.code, 1, `one answer covered two bare commits:\n${r.said}`);
+    assert.match(r.said, new RegExp(`${one.shas[1].slice(0, 7)} A change`), "the unanswered commit is not the one named as owing");
+    assert.match(r.said, new RegExp(`${one.shas[0].slice(0, 7)} said a bare`), "the answered one is not printed as answered");
+  } finally { one.clean(); }
+});
+
+test("an answer naming a commit that owes none is refused as stale, never ignored", () => {
+  const reasoned = { changes: { "bin/thing.mjs": "export const a = 3;\n" }, message: "A change\n\nRelease-note: none — only a comment.\n" };
+  const quiet = { changes: { "docs/notes.txt": "words\n" }, message: "A document" };
+  for (const named of [reasoned, quiet]) {
+    const repo = repoWithSteps([named, answering(0)]);
+    try {
+      const r = run(repo);
+      assert.equal(r.code, 1, `an answer to a commit that owed none passed in silence:\n${r.said}`);
+      assert.match(r.said, /which owes no answer/);
+    } finally { repo.clean(); }
+  }
+});
+
+test("an ambiguous prefix is refused against the range's own commits only", async () => {
+  const { readAnswers } = await import("../../scripts/release-note-required.mjs");
+  const commits = [
+    { sha: "abcdef1000000000000000000000000000000000", subject: "one", message: "one" },
+    { sha: "abcdef1999999999999999999999999999999999", subject: "two", message: "two" },
+    { sha: "0123456789012345678901234567890123456789", subject: "answer", message: "Release-note-for: abcdef1 none — a reason.\n" },
+  ];
+  const { answers, refused } = readAnswers(commits);
+  assert.equal(answers.size, 0);
+  assert.match(refused[0].problem, /matches 2 commits in this range/);
+  const unique = readAnswers([commits[0], { ...commits[2], message: "Release-note-for: abcdef10 none — a reason.\n" }]);
+  assert.equal(unique.answers.get(commits[0].sha)?.reason, "a reason.", "a longer prefix that is unique in the range resolves");
+});
+
+test("on an empty range the answer form changes nothing: it still says there is nothing to read", () => {
+  const repo = repoWithSteps([BARE, answering(0)]);
+  try {
+    const r = run(repo, repo.shas[1]);
+    assert.equal(r.code, 0, r.said);
+    assert.match(r.said, /nothing here to read/);
+  } finally { repo.clean(); }
+});
