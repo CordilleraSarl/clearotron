@@ -127,7 +127,8 @@ function driveWhatStep(script, { event, cut, ref = "refs/heads/main", plan }) {
   writeFileSync(join(dir, "scripts", "release-rehearsal-version.mjs"),
     `import { writeFileSync } from "node:fs";\nwriteFileSync(${JSON.stringify(called)}, "yes");\n`
     + (plan === "stamp" ? `writeFileSync("package.json", JSON.stringify({ name: "clearotron", version: ${JSON.stringify(NEXT_BETA)} }));\nconsole.log("publish_dry_run=true");\n`
-      : plan === "nothing" ? `console.log("publish_dry_run=false");\n` : `process.exit(1);\n`));
+      : plan === "nothing" ? `console.log("publish_dry_run=false");\n`
+      : plan === "stray" ? `console.log("publish_dry_run=true");\nconsole.log("dry_flag=");\n` : `process.exit(1);\n`));
   writeFileSync(join(dir, "scripts", "release-dist-tag.mjs"), `console.log(process.argv.includes("--prerelease") ? "true" : "beta");\n`);
   writeFileSync(join(dir, "step.sh"), filled);
   const out = join(dir, "github-output");
@@ -169,6 +170,16 @@ test("a rehearsal whose version script refuses fails the step", () => {
   }
 });
 
+test("an answer in any other shape is refused whole, so a stray line cannot become an output of the step", () => {
+  for (const [name, text] of PUBLISHING) {
+    const r = driveWhatStep(stepScript(text, WHAT), { event: "workflow_dispatch", cut: "rehearse", plan: "stray" });
+    assert.notEqual(r.status, 0, `${name}: a two-line answer was accepted\n${r.log}`);
+    assert.equal(r.outputs.publish_dry_run, undefined, `${name}: part of a malformed answer was kept`);
+    assert.equal(r.outputs.dry_flag, "--dry-run", `${name}: a stray line overwrote the dry-run flag`);
+    assert.match(r.log, /::error::The rehearsal's version script did not answer/, name);
+  }
+});
+
 test("a real cut never runs the rehearsal script and never sets the output that could skip its publish", () => {
   for (const [name, text] of PUBLISHING) {
     for (const [event, cut] of [["workflow_dispatch", "beta"], ["schedule", ""], ["push", ""]]) {
@@ -189,10 +200,12 @@ test("the publish step is skipped only by that output, and nothing else in the w
     assert.match(head, /\n {8}if: steps\.what\.outputs\.publish_dry_run != 'false'$/, `${name}: the publish step's condition is not the rehearsal's alone`);
   }
   const writers = WORKFLOW.split("\n").filter((l) => !l.trim().startsWith("#") && /publish_dry_run/.test(l));
-  assert.deepEqual(writers.map((l) => l.trim()), [
+  const perJob = [
+    'publish_dry_run=true|publish_dry_run=false) echo "$PLAN" >> "$GITHUB_OUTPUT" ;;',
+    '*) echo "::error::The rehearsal\'s version script did not answer publish_dry_run=true or publish_dry_run=false, so nothing it printed is kept."; exit 1 ;;',
     'if [ "$PLAN" = "publish_dry_run=false" ]; then',
     "if: steps.what.outputs.publish_dry_run != 'false'",
-    'if [ "$PLAN" = "publish_dry_run=false" ]; then',
-    "if: steps.what.outputs.publish_dry_run != 'false'",
-  ], "publish_dry_run is read or written somewhere other than the rehearsal branch and the publish step");
+  ];
+  assert.deepEqual(writers.map((l) => l.trim()), [...perJob, ...perJob],
+    "publish_dry_run is read or written somewhere other than the rehearsal branch and the publish step");
 });

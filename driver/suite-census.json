@@ -922,8 +922,8 @@
           "todos": 0
         },
         "a-rehearsal-dry-runs-the-version-a-cut-would-publish.test.mjs": {
-          "tests": 9,
-          "asserts": 37,
+          "tests": 10,
+          "asserts": 41,
           "skips": 0,
           "todos": 0
         },

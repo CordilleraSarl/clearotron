@@ -1147,7 +1147,11 @@ jobs:
             # went red with nothing wrong. The script stamps this checkout as a `cut: beta` would; with no
             # note pending there is nothing to cut, and only the publish dry run is skipped.
             PLAN=$(node scripts/release-rehearsal-version.mjs)
-            echo "$PLAN" >> "$GITHUB_OUTPUT"
+            # One of two answers or none: anything else printed would become an output of this step.
+            case "$PLAN" in
+              publish_dry_run=true|publish_dry_run=false) echo "$PLAN" >> "$GITHUB_OUTPUT" ;;
+              *) echo "::error::The rehearsal's version script did not answer publish_dry_run=true or publish_dry_run=false, so nothing it printed is kept."; exit 1 ;;
+            esac
             VERSION=$(node -p "require('./package.json').version")
             if [ "$PLAN" = "publish_dry_run=false" ]; then
               echo "::notice::Nothing to cut: no release note is pending, so clearotron@$VERSION is already out and there is no new version to dry-run publish. Every check before the publish step still runs on its bytes."
@@ -1632,7 +1636,11 @@ jobs:
             # went red with nothing wrong. The script stamps this checkout as a `cut: beta` would; with no
             # note pending there is nothing to cut, and only the publish dry run is skipped.
             PLAN=$(node scripts/release-rehearsal-version.mjs)
-            echo "$PLAN" >> "$GITHUB_OUTPUT"
+            # One of two answers or none: anything else printed would become an output of this step.
+            case "$PLAN" in
+              publish_dry_run=true|publish_dry_run=false) echo "$PLAN" >> "$GITHUB_OUTPUT" ;;
+              *) echo "::error::The rehearsal's version script did not answer publish_dry_run=true or publish_dry_run=false, so nothing it printed is kept."; exit 1 ;;
+            esac
             VERSION=$(node -p "require('./package.json').version")
             if [ "$PLAN" = "publish_dry_run=false" ]; then
               echo "::notice::Nothing to cut: no release note is pending, so clearotron@$VERSION is already out and there is no new version to dry-run publish. Every check before the publish step still runs on its bytes."
