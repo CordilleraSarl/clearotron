@@ -2128,8 +2128,8 @@
           "todos": 0
         },
         "deny-authority-write.test.mjs": {
-          "tests": 18,
-          "asserts": 41,
+          "tests": 21,
+          "asserts": 51,
           "skips": 0,
           "todos": 0
         },

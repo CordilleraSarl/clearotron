@@ -44,6 +44,7 @@
 // set-GID scar on the pool root). The existing detect-and-journal sweep STAYS as corroboration; its
 // never-kill-a-run property is sound and survives.
 
+import { statSync } from "node:fs";
 import { resolve, win32, posix } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 
@@ -53,17 +54,60 @@ import { driverDir } from "../shared/driver-dir.mjs";   //
  * ON WINDOWS BY WINDOWS RULES. There a path may use either separator and a name matches in any case, so
  * `c:/users/x/SKILLS/a.md` is a file inside `C:\Users\x\skills`. Compared as Linux compares, the
  * write lands in the protected tree and the boundary lets it through. `platform` is a parameter so that
- * branch runs on a Linux CI.
+ * branch runs on a Linux CI. `foldCase` says whether to ignore letter case: always on Windows, and
+ * elsewhere as foldsCaseAt finds the protected folder's disk, which denyReason asks for each tree.
  */
-export function isInside(root, child, { platform = process.platform } = {}) {
+export function isInside(root, child, { platform = process.platform, foldCase = platform === "win32" } = {}) {
   const P = platform === "win32" ? win32 : posix;
-  const fold = platform === "win32" ? (s) => s.toLowerCase() : (s) => s;
+  const fold = foldCase ? (s) => s.toLowerCase() : (s) => s;
   const r = fold(P.resolve(String(root ?? "")));
   const c = fold(P.resolve(String(child ?? "")));
   if (!r || r === "." || !c) return false;
   // `/a/skills-backup` is NOT inside `/a/skills`. A `startsWith` without the separator says it is, and
   // that is the classic form of this check being wrong in the direction that blocks real work.
   return c === r || c.startsWith(r.endsWith(P.sep) ? r : r + P.sep);
+}
+
+const swapCase = (s) => [...s].map((ch) => (ch === ch.toLowerCase() ? ch.toUpperCase() : ch.toLowerCase())).join("");
+const foldMemo = new Map();
+
+/**
+ * Does the disk holding `root` ignore letter case? Asked of THAT folder, never of the platform.
+ *
+ * A Mac's default volume ignores case, so `P/SKILLS/x.md` is a file inside `P/skills`, and a boundary
+ * comparing letter for letter let the write through: measured on the macOS runner, 2026-09-23. But a Mac
+ * volume can be formatted to mind case, and a Linux folder can be set to ignore it, so the platform does
+ * not answer. The folder is stat'ed under its own name and under that name with every letter's case
+ * swapped: the same file under both means this disk ignores case. It writes nothing, so it adds nothing to
+ * a protected tree.
+ *
+ * WINDOWS ALWAYS FOLDS, as it did before this was asked, because NTFS ignores case unless a folder is set
+ * otherwise. Where the question cannot be put (the folder does not exist yet, or its name has no letters)
+ * the answer is the platform's default disk, Windows and macOS folding, so a Mac errs toward refusing. The
+ * answer is kept per folder for the life of the process. `stat` is injected so every branch runs on Linux.
+ */
+export function foldsCaseAt(root, { platform = process.platform, stat = statSync } = {}) {
+  if (platform === "win32") return true;
+  const abs = posix.resolve(String(root ?? ""));
+  const key = `${platform}|${abs}`;
+  if (foldMemo.has(key) && stat === statSync) return foldMemo.get(key);
+  const byDefault = platform === "darwin";
+  const name = posix.basename(abs);
+  let answer = byDefault;
+  const other = swapCase(name);
+  if (name && other !== name) {
+    try {
+      const own = stat(abs);
+      try {
+        const swapped = stat(posix.join(posix.dirname(abs), other));
+        answer = own.dev === swapped.dev && own.ino === swapped.ino;
+      } catch (e) {
+        answer = e?.code === "ENOENT" || e?.code === "ENOTDIR" ? false : byDefault;
+      }
+    } catch { answer = byDefault; }
+  }
+  if (stat === statSync) foldMemo.set(key, answer);
+  return answer;
 }
 
 /**
@@ -96,11 +140,11 @@ export function authorityTrees({ skillsRoots = [], profilesDir = null, runDir = 
  * why it is refused, that a retry gets the same answer, and where stage output lives. No second person, no
  * imperative. The seat decides what to do with a fact, which is the whole difference.
  */
-export function denyReason(targetPath, trees, { platform = process.platform } = {}) {
+export function denyReason(targetPath, trees, { platform = process.platform, foldsCase = (root) => foldsCaseAt(root, { platform }) } = {}) {
   const t = String(targetPath ?? "").trim();
   if (!t) return null;
   for (const tree of trees ?? []) {
-    if (!isInside(tree.path, t, { platform })) continue;
+    if (!isInside(tree.path, t, { platform, foldCase: foldsCase(tree.path) })) continue;
     return `REFUSED by the driver's write boundary: ${t} is inside ${tree.why} (${tree.path}). `
       + `That tree is authored at deploy time and never by a running stage, so the refusal is configuration `
       + `rather than a permission prompt, and a retry of the same path returns this same answer. Stage `

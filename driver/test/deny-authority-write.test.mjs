@@ -19,9 +19,10 @@ import { join, dirname, resolve } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
-import { authorityTrees, denyReason, isInside } from "../authority-trees.mjs";
+import { authorityTrees, denyReason, foldsCaseAt, isInside } from "../authority-trees.mjs";
 import { writeBoundarySettings, buildClaudeArgs } from "../engine/anthropic-agent.mjs";
 import { targetOf } from "../engine/deny-authority-write.mjs";
+import { foldsCase } from "./platform-caps.mjs";
 
 const HOOK = join(dirname(fileURLToPath(import.meta.url)), "..", "engine", "deny-authority-write.mjs");
 const SKILLS = "/srv/app/driver/skills";
@@ -186,4 +187,42 @@ test("nothing to protect ⇒ no settings flag at all", () => {
   assert.equal(writeBoundarySettings({}), null);
   const { args } = buildClaudeArgs({ message: "hi" });
   assert.equal(args.includes("--settings"), false);
+});
+
+// ── LETTER CASE, DECIDED BY THE PROTECTED FOLDER'S OWN DISK ─────────────────────────────────────────────
+//
+// Measured on the macOS runner, 2026-09-23: a Write to P/SKILLS/probe.md was allowed while P/skills was
+// protected, and the file landed in P/skills, because that disk ignores case and the boundary compared
+// letter for letter.
+
+test("a folder's disk ignores case when its own name, case swapped, is the same file", () => {
+  const same = () => ({ dev: 1, ino: 7 });
+  assert.equal(foldsCaseAt("/p/skills", { platform: "darwin", stat: same }), true);
+  assert.equal(foldsCaseAt("/p/skills", { platform: "linux", stat: same }), true, "a Linux folder set to ignore case was read as minding it");
+  const minds = (p) => { if (p.endsWith("SKILLS")) throw Object.assign(new Error("no"), { code: "ENOENT" }); return { dev: 1, ino: 7 }; };
+  assert.equal(foldsCaseAt("/p/skills", { platform: "darwin", stat: minds }), false, "a case-sensitive Mac volume was folded, which refuses real sibling folders");
+  const blind = () => { throw Object.assign(new Error("no"), { code: "EACCES" }); };
+  assert.equal(foldsCaseAt("/p/skills", { platform: "darwin", stat: blind }), true, "a Mac that could not look did not err toward refusing");
+  assert.equal(foldsCaseAt("/p/skills", { platform: "linux", stat: blind }), false);
+  assert.equal(foldsCaseAt("C:\\p\\skills", { platform: "win32", stat: minds }), true, "Windows stopped folding");
+});
+
+test("the boundary ignores case exactly where the protected folder's disk does", () => {
+  const trees = authorityTrees({ skillsRoots: ["/p/skills"] });
+  assert.ok(denyReason("/p/SKILLS/merge.sh", trees, { platform: "darwin", foldsCase: () => true }),
+    "a write naming the protected folder in another case got past the boundary on a disk that ignores case");
+  assert.equal(denyReason("/p/SKILLS/merge.sh", trees, { platform: "linux", foldsCase: () => false }), null,
+    "a real sibling folder on a disk that minds case was refused");
+});
+
+test("on this machine's own disk, a write naming the protected folder in another case is refused if and only if it lands there", () => {
+  const P = mkdtempSync(join(tmpdir(), "case-boundary-"));
+  mkdirSync(join(P, "skills"));
+  const trees = authorityTrees({ skillsRoots: [join(P, "skills")] });
+  assert.equal(hook("Write", join(P, "skills", "probe.md"), { trees }).decision?.permissionDecision, "deny", "the control, the exact spelling, was not refused");
+  const folds = foldsCase(P);
+  const d = hook("Write", join(P, "SKILLS", "probe.md"), { trees }).decision;
+  assert.equal(d?.permissionDecision === "deny", folds, folds
+    ? "this disk ignores case, so P/SKILLS/probe.md is inside the protected P/skills, and the boundary let the write through"
+    : "this disk minds case, so P/SKILLS is a different folder, and the boundary refused a write that could not reach the protected one");
 });
