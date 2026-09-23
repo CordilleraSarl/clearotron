@@ -817,6 +817,55 @@ jobs:
           CLEAROTRON_CUT_REF: origin/main
         run: node scripts/release-cut-decision.mjs
 
+  # ── FINISH A RELEASE NPM WAS STILL VALIDATING ──────────────────────────────────────────────────────
+  #
+  # npm accepts a publish before it serves it, and the publish job's wait for the registry is bounded.
+  # When the bound passes first the version is published and tagged with no release entry, and nothing ran
+  # again to write one: the 0.3.3 stable (2026-09-23) sat as "Validating" on npmjs.com for over fifty
+  # minutes while GitHub named 0.3.2 as the latest release. So every scheduled run looks for a tagged
+  # version at main's head with no entry, and writes the entry once the registry serves the bytes the
+  # publish job kept. Past six hours unserved it goes red, so a version npm never serves is seen.
+  #
+  # IT PUBLISHES NOTHING: no npm credential, no install. It needs the repository's contents to create a
+  # release entry, and read access to Actions to fetch the kept bytes.
+  # ── THE ENTRY NPM WAS STILL VALIDATING ─────────────────────────────────────────────────────────────
+  #
+  # npm accepts a publish before it serves it, and how long it takes to serve is not bounded. The publish
+  # jobs wait for a stranger to get the exact bytes before they write the release entry, and that wait
+  # ends somewhere. Measured 2026-09-23: the 0.3.3 stable was still "Validating" on npmjs.com well past
+  # the bound, the job failed, and nothing ever ran again to write the entry, so the releases page went
+  # on naming 0.3.2 as the latest.
+  #
+  # A VERSION THAT IS TAGGED WITH NO ENTRY IS PENDING, NOT FAILED. Every scheduled run asks whether main's
+  # version is in that state. If it is, the run hands the bytes its publish job kept to the same
+  # registry check and writes the entry that job would have written. Past six hours it says so in red.
+  #
+  # SCHEDULED ONLY, AND IT PUBLISHES NOTHING. There is no registry credential and no `id-token`, and it
+  # installs nothing, so no package script runs beside the write token. The concurrency group above
+  # queues it behind any release run on main, so it cannot race the publish job for the same entry.
+  entry:
+    name: Write the release entry once npm serves a tagged version
+    if: github.repository == 'CordilleraSarl/clearotron' && github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: This pipeline publishes only the way it was authorised to
+        run: node scripts/release-publish-guard.mjs
+      - name: Write the entry for a tagged version the registry now serves
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/release-entry-catch-up.mjs
+
+
   # ── THE WAIT, AS ITS OWN JOB SO IT CAN ACTUALLY ARM ────────────────────────────────────────────────
   #
   # It lived inside `version`, conditioned on `cut != 'true'`, and could not arm in the rhythm this
@@ -1282,6 +1331,19 @@ jobs:
       - name: Publish to npm through Trusted Publishing
         run: npm publish "./${{ steps.what.outputs.tarball }}" --provenance --access public --tag "${{ steps.what.outputs.dist_tag }}" ${{ steps.what.outputs.dry_flag }}
 
+      # KEEP THE PUBLISHED BYTES FOR AN ENTRY THAT COMES LATER. npm accepts a publish before it serves it,
+      # and the wait below is bounded. When the bound passes first, the scheduled `entry` job finishes the
+      # release, and it compares what the registry serves against these exact bytes before it writes the
+      # entry, so they are kept for a fortnight.
+      - name: Keep the published bytes for the scheduled entry job
+        if: steps.what.outputs.dry_flag == ''
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: published-${{ steps.what.outputs.version }}
+          path: ${{ steps.what.outputs.tarball }}
+          retention-days: 14
+          if-no-files-found: error
+
       # The tag and the release come AFTER the publish: a tag naming a version that is not on the
       # registry is a worse lie than a publish that is not yet tagged, and this order means the failure
       # leaves the tag unwritten rather than pointing at nothing.
@@ -1331,8 +1393,11 @@ jobs:
           # served: on 0.3.2-beta.10 the entry went up nine minutes before an unauthenticated client could
           # install the version, and the run was green in between. So the entry is created only once the
           # registry answers a client with no credential — the version, its channel, and the very bytes
-          # this run published — bounded at fifteen minutes. Past the bound this step fails, the tag stays,
-          # and no entry is created; re-running the job creates it once the registry serves the version.
+          # this run published — bounded at fifteen minutes. Past the bound the version is PENDING, not
+          # failed: the tag stays, no entry is created here, and the scheduled `entry` job creates it from
+          # the bytes kept above once the registry serves them (release-entry-catch-up.mjs). Measured on the
+          # 0.3.3 stable, 2026-09-23: npm listed it as validating for over fifty minutes. Only a check that
+          # could not look (exit 2) fails this step.
           served_to_a_stranger() {
             node scripts/release-visible-check.mjs --version "$VERSION" --tag "$DIST_TAG" --tarball "$TARBALL" --timeout 900
           }
@@ -1346,7 +1411,13 @@ jobs:
               echo "The GitHub release v$VERSION already exists."
               exit 0
             fi
-            served_to_a_stranger
+            SERVED=0; served_to_a_stranger || SERVED=$?
+            if [ "$SERVED" = 1 ]; then
+              echo "::notice::npm accepted v$VERSION and does not serve it yet. The tag stays, and the scheduled entry job creates the release entry once the registry serves these bytes."
+              exit 0
+            elif [ "$SERVED" != 0 ]; then
+              exit "$SERVED"
+            fi
             NOTES=$(node scripts/release-notes-for.mjs "$VERSION" || true)
             if [ -n "$NOTES" ]; then
               printf '%s\n' "$NOTES" > release-notes.md
@@ -1362,7 +1433,13 @@ jobs:
             echo "The GitHub release v$VERSION already exists."
             exit 0
           fi
-          served_to_a_stranger
+          SERVED=0; served_to_a_stranger || SERVED=$?
+          if [ "$SERVED" = 1 ]; then
+            echo "::notice::npm accepted v$VERSION and does not serve it yet. The tag stays, and the scheduled entry job creates the release entry once the registry serves these bytes."
+            exit 0
+          elif [ "$SERVED" != 0 ]; then
+            exit "$SERVED"
+          fi
           NOTES=$(node scripts/release-notes-for.mjs "$VERSION" || true)
           if [ -n "$NOTES" ]; then
             printf '%s\n' "$NOTES" > release-notes.md
@@ -1716,6 +1793,19 @@ jobs:
       - name: Publish to npm through Trusted Publishing
         run: npm publish "./${{ steps.what.outputs.tarball }}" --provenance --access public --tag "${{ steps.what.outputs.dist_tag }}" ${{ steps.what.outputs.dry_flag }}
 
+      # KEEP THE PUBLISHED BYTES FOR AN ENTRY THAT COMES LATER. npm accepts a publish before it serves it,
+      # and the wait below is bounded. When the bound passes first, the scheduled `entry` job finishes the
+      # release, and it compares what the registry serves against these exact bytes before it writes the
+      # entry, so they are kept for a fortnight.
+      - name: Keep the published bytes for the scheduled entry job
+        if: steps.what.outputs.dry_flag == ''
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: published-${{ steps.what.outputs.version }}
+          path: ${{ steps.what.outputs.tarball }}
+          retention-days: 14
+          if-no-files-found: error
+
       # The tag and the release come AFTER the publish: a tag naming a version that is not on the
       # registry is a worse lie than a publish that is not yet tagged, and this order means the failure
       # leaves the tag unwritten rather than pointing at nothing.
@@ -1765,8 +1855,11 @@ jobs:
           # served: on 0.3.2-beta.10 the entry went up nine minutes before an unauthenticated client could
           # install the version, and the run was green in between. So the entry is created only once the
           # registry answers a client with no credential — the version, its channel, and the very bytes
-          # this run published — bounded at fifteen minutes. Past the bound this step fails, the tag stays,
-          # and no entry is created; re-running the job creates it once the registry serves the version.
+          # this run published — bounded at fifteen minutes. Past the bound the version is PENDING, not
+          # failed: the tag stays, no entry is created here, and the scheduled `entry` job creates it from
+          # the bytes kept above once the registry serves them (release-entry-catch-up.mjs). Measured on the
+          # 0.3.3 stable, 2026-09-23: npm listed it as validating for over fifty minutes. Only a check that
+          # could not look (exit 2) fails this step.
           served_to_a_stranger() {
             node scripts/release-visible-check.mjs --version "$VERSION" --tag "$DIST_TAG" --tarball "$TARBALL" --timeout 900
           }
@@ -1780,7 +1873,13 @@ jobs:
               echo "The GitHub release v$VERSION already exists."
               exit 0
             fi
-            served_to_a_stranger
+            SERVED=0; served_to_a_stranger || SERVED=$?
+            if [ "$SERVED" = 1 ]; then
+              echo "::notice::npm accepted v$VERSION and does not serve it yet. The tag stays, and the scheduled entry job creates the release entry once the registry serves these bytes."
+              exit 0
+            elif [ "$SERVED" != 0 ]; then
+              exit "$SERVED"
+            fi
             NOTES=$(node scripts/release-notes-for.mjs "$VERSION" || true)
             if [ -n "$NOTES" ]; then
               printf '%s\n' "$NOTES" > release-notes.md
@@ -1796,7 +1895,13 @@ jobs:
             echo "The GitHub release v$VERSION already exists."
             exit 0
           fi
-          served_to_a_stranger
+          SERVED=0; served_to_a_stranger || SERVED=$?
+          if [ "$SERVED" = 1 ]; then
+            echo "::notice::npm accepted v$VERSION and does not serve it yet. The tag stays, and the scheduled entry job creates the release entry once the registry serves these bytes."
+            exit 0
+          elif [ "$SERVED" != 0 ]; then
+            exit "$SERVED"
+          fi
           NOTES=$(node scripts/release-notes-for.mjs "$VERSION" || true)
           if [ -n "$NOTES" ]; then
             printf '%s\n' "$NOTES" > release-notes.md
