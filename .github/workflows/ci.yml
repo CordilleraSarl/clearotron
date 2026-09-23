@@ -137,9 +137,9 @@ jobs:
       # SKIP, and the run goes green having checked nothing. Running this suite from an unpacked source
       # archive produces exactly that: a clean result from checks that never looked. A shallow clone is
       # fine; `git ls-files` needs an index, not history.
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           # Pinned rather than '22', so a Node patch release cannot change what a green run means.
           # package.json requires >=22.13.0.
@@ -196,7 +196,7 @@ jobs:
 
       - name: Keep this shard's log for the completeness gate
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: suite-log-${{ matrix.shard }}
           path: ${{ runner.temp }}/suite.log
@@ -243,7 +243,7 @@ jobs:
             exit 1
           }
 
-      - uses: actions/download-artifact@v8
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           pattern: suite-log-*
           path: logs
@@ -297,8 +297,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: '22.23.2'
           cache: npm
@@ -313,10 +313,10 @@ jobs:
       # default checkout fetches a single branch at depth 1, so `main` is not a ref in it and the
       # range cannot be resolved — the check then reports that it could not look and refuses, which
       # is correct of it and useless as a gate. This is the fetch that lets it answer.
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: '22.23.2'
           cache: npm
@@ -385,9 +385,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: '22.23.2'
           cache: npm
@@ -588,7 +588,7 @@ jobs:
       # commit, so `git diff base...HEAD` fails to resolve it — and the way that fails is the shape this
       # repository cares about: an unresolvable base is an error, but a guard wired to swallow it would
       # report a clean diff over a change it never read.
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
 

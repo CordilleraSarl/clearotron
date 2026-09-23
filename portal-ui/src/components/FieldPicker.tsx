@@ -30,12 +30,14 @@ const suggestionStyle: React.CSSProperties = {
 }
 
 export function FieldPicker({
-  spec, value, onChange,
+  spec, value, onChange, suggestions = [],
 }: {
   readonly spec: FieldSpec
   /** The raw box text — the picker's chosen state is read from it, never held beside it. */
   readonly value: string
   readonly onChange: (next: string) => void
+  /** For `marketplaces`: the entries offered to add, the Generic default's list off /me. */
+  readonly suggestions?: readonly string[]
 }) {
   const [query, setQuery] = useState('')
   const addId = useId()
@@ -97,8 +99,41 @@ export function FieldPicker({
     )
   }
 
+  // MARKETPLACES: the house list offered one button per store, and every store in the box as a chip. A
+  // company starts with none, so this is how the Generic default's marketplaces reach somebody who wants
+  // them. Three or so entries need no search box; anything else is typed into the box above.
+  if (spec.picker === 'marketplaces') {
+    const have = new Set(chosen.map((c) => c.trim().toLowerCase()))
+    const offered = suggestions.filter((d) => !have.has(d.trim().toLowerCase()))
+    return (
+      <div style={{ marginTop: 6 }}>
+        {offered.length ? (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+            {offered.map((d) => (
+              <button key={d} type="button" onClick={() => toggle(d)} style={suggestionStyle}>
+                + {d}
+              </button>
+            ))}
+          </div>
+        ) : null}
+        {chosen.length ? (
+          <div className="chip-row" style={{ marginTop: 8 }}>
+            {chosen.map((d) => (
+              <span key={d} className="chip chip-own">
+                {d}
+                <button type="button" className="chip-x" onClick={() => toggle(d)} aria-label={`Remove ${d}`}>
+                  <Icon name="x" size={13} />
+                </button>
+              </span>
+            ))}
+          </div>
+        ) : null}
+      </div>
+    )
+  }
+
   // Assistive: a search over the vocabulary, and nothing here can remove what the box holds.
-  const suggestions = matchTerritoriesIn(TERRITORIES, query, chosen, 8)
+  const found = matchTerritoriesIn(TERRITORIES, query, chosen, 8)
   return (
     <div style={{ marginTop: 6 }}>
       <input
@@ -112,9 +147,9 @@ export function FieldPicker({
           color: 'var(--text-strong)', fontFamily: 'inherit',
         }}
       />
-      {suggestions.length ? (
+      {found.length ? (
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 5 }}>
-          {suggestions.map((t) => (
+          {found.map((t) => (
             <button key={t} type="button" onClick={() => { toggle(t); setQuery('') }} style={suggestionStyle}>
               + {t}
             </button>

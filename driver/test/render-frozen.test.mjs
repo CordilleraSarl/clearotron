@@ -1792,9 +1792,11 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // whole. A comment edit moves these bytes too, so this constant moves with it.
 // Advanced again by the break recorded above the FROZEN constant: each answer folds to its first
 // sentence. Neither licence-only nor comment-only, so this constant moves with the other one.
+// Advanced again by the break recorded above the FROZEN constant: two lines for a company that picked no
+// marketplaces. Not licence-only, so this constant moves with the other one.
 // Advanced again by the break recorded above the FROZEN constant: the report carries its own fonts.
 // Neither licence-only nor comment-only, so this constant moves with the other one.
-const FROZEN_BEFORE_SPDX = "e99bfd13caa3823ad1b3dd0240655b061f6e1498f47c38df6e311bd360ab706b";
+const FROZEN_BEFORE_SPDX = "23e9427c8c6a05e1b8f625ba100c422cea67142821ce23323be44dd43f712800";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2639,6 +2641,24 @@ const FROZEN_BEFORE_SPDX = "e99bfd13caa3823ad1b3dd0240655b061f6e1498f47c38df6e31
 //      and its print rule are in report.css. The structure could not — a stylesheet cannot put half a
 //      sentence behind a disclosure element that does not exist.
 //   3. Why it had to move here: this section's markup is composed in this file and nowhere else.
+// ── BREAK (2026-09-23 — two lines for a company that picked no marketplaces) ───────────────────────
+//
+// WHAT MOVED: two sentences gain a second form, chosen by one flag. A company may now pick no marketplaces
+// (the owner's ruling of 2026-09-23), and its marketplaces are still covered by the general web search and
+// by any stores the engine chose for the matter. So the use check's nothing-found line reads "Nothing found
+// in the general web search or in any store chosen for this matter." instead of naming "the marketplaces
+// searched", and the search row reads "N checks: the general web, plus any stores chosen for this matter."
+// instead of "N checks on P platforms". Both sentences are the owner's, approved as written. The flag is
+// `counts.sweep.noMarketplacesPicked` on the search-depth record, which publish stamps only when the run's
+// frozen profile carries an empty list, and it is read once per render like COURT_DECISIONS.
+//
+// THE THREE QUESTIONS.
+//   1. Reachable from republish? Yes, and it changes no delivered report: an empty marketplace list was
+//      refused on save and on load until this change, so no delivered run's frozen profile carries one, the
+//      flag is false on every republish, and both lines render the bytes they did. Every existing render
+//      test passes unchanged, and the new arm pins that the next render after a flagged one reads as before.
+//   2. Could it live in report.css or brand.mjs? No: these are sentences, not a look.
+//   3. Why it had to move here: both sentences are composed in this file and nowhere else.
 // ── BREAK (2026-09-23 — the report carries its own fonts) ──────────────────────────────────────────
 //
 // WHAT MOVED: the three <link> lines in the document head, which fetched Satoshi from Fontshare and Fira
@@ -2659,7 +2679,7 @@ const FROZEN_BEFORE_SPDX = "e99bfd13caa3823ad1b3dd0240655b061f6e1498f47c38df6e31
 //      next font change does not touch this file. The link tags could not: they were written into this
 //      file's own document head.
 //   3. Why it had to move here: the head is composed in this file and nowhere else.
-const FROZEN = "abd4f3c7b8d20066ceef6d5ccec5e0e14ef077e5c4edabbb15400363573c88d2";
+const FROZEN = "78ca62dc383ee3419323696d8094d6cae3dfe28857e0f3747ab5d26b72ec7949";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

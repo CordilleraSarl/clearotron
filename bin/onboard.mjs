@@ -3453,10 +3453,8 @@ export async function runCheck() {
       if (r.state === "valid") ok(line);
       else info(line);
     }
-    if (report.valid && !String(process.env.TRADEMARK_MCP_TOKEN_DENYLIST ?? "").trim()) {
-      problem("a valid key is on record but NO revocation list is configured (TRADEMARK_MCP_TOKEN_DENYLIST unset) "
-        + `— \`${invoke("disconnect")}\` could not actually revoke it. \`${invoke("connect")}\` arms one; set the variable or reconnect.`);
-    }
+    // No "revocation list not configured" problem any more: with TRADEMARK_MCP_TOKEN_DENYLIST unset, every
+    // door reads the install's default list (isRevoked, shared/scope.mjs), which is where disconnect writes.
     // THE PUBLISHED ADDRESS, AND WHETHER IT ANSWERS (acceptance 2). Reported here
     // rather than beside the unit, because the unit running and the address being reachable are
     // different facts and the second is the one a client depends on.
@@ -4496,9 +4494,9 @@ try {
   candidate.PROFILE_REPO_ROOT = cfg;   // no alias row — this name is current
   for (const k of ["CLEAROTRON_CUSTOMERS_DIR", "PROFILE_REPO_ROOT"]) ok(`${k}=${candidate[k]}`);
   // A REPOSITORY ALREADY THERE IS ASKED NOW, while the operator is still here, whether it can record a
-  // save. `clearotron start` gives a store it creates an identity of its own; one made by hand has none
-  // unless somebody set it, and on a machine with no global identity the first company created in the
-  // portal is refused. Said here, with the command, rather than discovered on that first company.
+  // save: one this account cannot use refuses the first company created in the portal. Said here, with
+  // the command, rather than discovered on that first company. A missing git identity is not asked
+  // about, because every save supplies the product's own committer.
   if (existsSync(join(cfgAbs, ".git"))) {
     const cannot = storeCommitRefusal(cfgAbs);
     if (cannot) warn(`${cannot.message}. Until then, creating a company in the portal is refused.`);

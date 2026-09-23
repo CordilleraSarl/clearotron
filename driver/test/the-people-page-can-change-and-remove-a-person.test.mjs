@@ -21,6 +21,7 @@ import assert from "node:assert/strict";
 import { mkdtempSync, readFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { defaultDenylistPath, isRevoked } from "../../shared/scope.mjs";
 import { makePortalService, makeConnectorKeyRevoker } from "../portal-service.mjs";
 
 const FILE = () => ({
@@ -200,13 +201,18 @@ test("THE REAL SEAM writes the revocation list and leaves the record standing", 
   assert.ok(grants.connectKeys["jti-dana-1"], "and it mutated the grants it was handed");
 });
 
-test("the real seam says so, and writes nothing, where no revocation list is named", async () => {
+test("with no revocation list named, the real seam revokes through the install's default list", async () => {
+  // This used to report the key as live: a door with no list named checked none. Every door now reads the
+  // install's default list when none is named (isRevoked), so writing there calls the key back.
   const home = mkdtempSync(join(tmpdir(), "revoke-home-"));
   const revoke = makeConnectorKeyRevoker({ env: {}, home });
   const r = await revoke({ email: DANA, grants: FILE() });
-  assert.equal(r.lateArm, true, "a door with no list named must report that it cannot call the key back");
-  assert.equal(r.revoked, 0);
-  assert.ok(r.grants.connectKeys["jti-dana-1"], "the record of a key that was NOT revoked was struck");
+  assert.equal(r.lateArm, false, "a write to the list every door reads was reported as reaching no door");
+  assert.equal(r.revoked, 1);
+  const list = defaultDenylistPath(home);
+  assert.match(readFileSync(list, "utf8"), /jti-dana-1/, "the key id did not reach the default list");
+  assert.equal(isRevoked("jti-dana-1", { env: {}, home }), true, "the verifier does not read the list the revoker wrote");
+  assert.ok(r.grants.connectKeys["jti-dana-1"], "the portal struck a key record, which it never does");
 });
 
 test("a person with no key at all is not a revocation", async () => {
@@ -302,4 +308,21 @@ test("somebody who is not on the guest list is a not-found, not an empty success
     assert.equal(r.status, 404, what);
   }
   assert.equal(state.writes, 0);
+});
+
+test("the access page says keys can be withdrawn whenever the portal can withdraw them, list named or not", async () => {
+  // This used to also require a revocation list named in the portal's environment, because a door with
+  // none named checked none. Every door now reads the install's default list, so naming one is not the
+  // question any more. The page stopped saying "keys stay live" on an install where they no longer do.
+  const saved = process.env.TRADEMARK_MCP_TOKEN_DENYLIST;
+  delete process.env.TRADEMARK_MCP_TOKEN_DENYLIST;
+  try {
+    const withRevoker = await on().view(KRZYS);
+    assert.equal(withRevoker.status, 200, JSON.stringify(withRevoker.json));
+    assert.equal(withRevoker.json.keysRevocable, true, "a portal that can revoke says it cannot, because no list is named");
+    // The control: a portal built without a revoker still says it cannot.
+    assert.equal((await on(FILE(), { revoke: null }).view(KRZYS)).json.keysRevocable, false);
+  } finally {
+    if (saved !== undefined) process.env.TRADEMARK_MCP_TOKEN_DENYLIST = saved;
+  }
 });

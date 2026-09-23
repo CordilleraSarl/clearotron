@@ -160,11 +160,10 @@ export async function add(argv, {
     contextPack = readFileSync(packFile, "utf8");
   }
 
-  // THE ROSTER IS READ BEFORE THE CANDIDATE IS BUILT, because the Generic default lives in it. The
-  // candidate is still judged as a member of the roster and not alone — see assertRosterAccepts.
+  // The candidate is judged as a member of the roster and not alone — see assertRosterAccepts.
   const { loadProfiles } = await import("../driver/profiles.mjs");
   const load = loadProfilesFn ?? loadProfiles;
-  const platforms = resolvePlatforms(args.platforms, rosterAsItStands(store, load));
+  const platforms = resolvePlatforms(args.platforms);
 
   const profile = buildProfile({
     key: args.key, name: args.name.trim(), domains: args.domains,
@@ -180,10 +179,11 @@ export async function add(argv, {
     : `framework: ${framework.path} — THE GENERIC DEFAULT, applied because none was supplied. `
       + `Their matters will be rated under it until they give us theirs.`;
 
+  // NONE, when none was supplied (the owner's ruling of 2026-09-23): the brand owner starts with no
+  // marketplaces, and the line says what their searches still cover.
   const platformsLine = platforms.source === "supplied"
     ? `platforms: ${platforms.platforms.join(", ")} — as supplied`
-    : `platforms: ${platforms.platforms.join(", ")} — THE GENERIC DEFAULT, applied because none was supplied. `
-      + `Their searches cover these marketplaces until someone changes them in the portal.`;
+    : `platforms: none — searches use the general web, plus any stores chosen for each matter.`;
 
   if (args.dryRun) {
     out(`would create ${join(store, `${args.key}.json`)}`);

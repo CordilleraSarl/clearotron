@@ -71,6 +71,9 @@ let CASE_LAW_BY_ORD = new Map();   // E5: ordinal → grounded case-law profile
 // is full-country only), so suppressing there would take case-law off the page with nothing left
 // saying so. Absence of a state is not a statement that nothing was found.
 let COURT_DECISIONS = null;
+// The company picked no marketplaces (search-depth counts.sweep): the use-check's nothing-found line names the
+// general web and the stores chosen for the matter instead of a marketplace search. Set per render.
+let NO_MARKETPLACES_PICKED = false;
 let ENFORCER_SIGNALS = new Map();  // E6: registration uri (lowercase) → {aggression, oppositions, owner}
 // WP-receipts W2 — per-render provider record-link origin + label, resolved by publish from the run's
 // OWN _driver/receipts.json provider (never the currently-configured provider — a re-published archive
@@ -553,6 +556,9 @@ const useEvidence = (m) => [USE_EVIDENCE_LABEL[m?._status], USE_SOURCE_LABEL[m?.
 // runs carry the old value forever and a fourth spelling of it would have to be accepted everywhere.
 const USE_CHECK_NO_RESULT = 'perplexity_research — no result';
 const USE_CHECK_NO_RESULT_CITE = 'Nothing found in the marketplaces searched.';
+// The same "searched, nothing found" line for a run whose company picked no marketplaces (the owner's
+// ruling of 2026-09-23): there was no marketplace search to name, and the general web still ran.
+const USE_CHECK_NO_RESULT_CITE_NO_MARKETPLACES = 'Nothing found in the general web search or in any store chosen for this matter.';
 // — MATCHED ON NORMALISED PUNCTUATION, NOT ONE SPELLING. The constant itself does not
 // move (archived runs carry it forever, the validators name it), but the SEAT emitted a hyphen where
 // the doctrine writes an em dash, and exact equality let the raw tool name through to a delivered
@@ -1223,7 +1229,9 @@ function whatWasSearchedSection(opts, coverage = [], findings = [], recordsByUri
   }
   const sw = c.sweep || {};
   if (sw.spellings) rows.push(['Spellings searched', String(sw.spellings)]);
-  if (sw.checks) rows.push(['Marketplace and web', `${sw.checks.toLocaleString('en-GB')} checks on ${sw.platforms} platforms`]);
+  if (sw.checks) rows.push(['Marketplace and web', sw.noMarketplacesPicked
+    ? `${sw.checks.toLocaleString('en-GB')} checks: the general web, plus any stores chosen for this matter.`
+    : `${sw.checks.toLocaleString('en-GB')} checks on ${sw.platforms} platforms`]);
   if (sw.reputation) rows.push(['Reputation and meaning', `${sw.reputation.toLocaleString('en-GB')} checks`]);
   rows.push(['Local-script spellings', c.localScriptSearched ? 'Searched' : 'Not searched']);
   // HOW DEEP THE LOCAL-LANGUAGE INVESTIGATION WENT, which is a different question from the row above it.
@@ -1804,7 +1812,9 @@ function fullDetail(f, card, recordsByUri = new Map()) {
   const useStatus = useEvidence(f.meters?.use);
   // D7 — the code-owned "searched, nothing found" sentinel becomes client words HERE, by exact
   // equality against the one constant. Any other value is a source string and rides through untouched.
-  const useSrc = isUseCheckNoResult(f.use_check?.source) ? USE_CHECK_NO_RESULT_CITE : f.use_check?.source;
+  const useSrc = isUseCheckNoResult(f.use_check?.source)
+    ? (NO_MARKETPLACES_PICKED ? USE_CHECK_NO_RESULT_CITE_NO_MARKETPLACES : USE_CHECK_NO_RESULT_CITE)
+    : f.use_check?.source;
   // NO EVIDENCE TAG ON AN EMPTY RESULT. The line read "Use checked. Marketplace search run — no result
   // found. Evidence: inferred", and "inferred" beside "no result" reads as a contradiction: it qualifies
   // how a FINDING was established, and there is no finding here. Nothing was found, and that is the
@@ -2512,6 +2522,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   SCOPE_WORLDWIDE = opts.scopeBasis === 'worldwide' ? true : null;   // the plan's scope_basis; null ⇒ fall back to the ledger-prose sniff
   CASE_LAW_BY_ORD = opts.caseLawByOrdinal instanceof Map ? opts.caseLawByOrdinal : new Map();   // T7 (E5)
   COURT_DECISIONS = opts.searchDepth?.counts?.courtDecisions ?? null;   // gates the card's case-law strand
+  NO_MARKETPLACES_PICKED = opts.searchDepth?.counts?.sweep?.noMarketplacesPicked === true;
   ENFORCER_SIGNALS = new Map((Array.isArray(opts.enforcerSignals) ? opts.enforcerSignals : []).map((e) => [String(e.uri ?? '').toLowerCase(), e]));   // T7 (E6)
   RECORD_ORIGIN = opts.recordOrigin ?? null;       // WP-receipts W2
   // — `null` and `` mean DIFFERENT things and the render must not collapse them. `` is an

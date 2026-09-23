@@ -60,6 +60,10 @@ writeFileSync(join(PROFILES_SEED, "projects", "aurora", "console-ecosystem.json"
   platforms: ["store.steampowered.com", "store.epicgames.com", "play.google.com", "apps.apple.com",
     "gog.com", "itch.io", "mobygames.com", "humblebundle.com", "gamejolt.com"],
 }, null, 2) + "\n");
+// A company that picked no marketplaces (the owner's ruling of 2026-09-23): an empty list, which loads.
+writeFileSync(join(PROFILES_SEED, "harbour-goods.json"), JSON.stringify({
+  name: "Harbour Goods", matchDomains: ["harbour-goods.example"], platforms: [],
+}, null, 2) + "\n");
 pinEnv(process.env, "CLEAROTRON_CUSTOMERS_DIR", PROFILES_SEED);
 
 const JOB = {
@@ -1575,6 +1579,23 @@ test("spec-48 plan mode: a dictated qid with no band block → ONE warm followup
   assert.ok(exec.executed.some((x) => x.qid.endsWith("+merch")), "the dropped slice now owns a block");
 });
 
+test("the plan-join follow-up hands the tool only the missing qids", async () => {
+  // Without qids, register_execute_plan runs every entry on the axis again and re-fetches every record the
+  // axis already holds; the follow-up exists for one missing slice. Read off the prompt the run dispatched.
+  const { res } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
+    MOCK_PLAN_DROP_QID: "+merch" });
+  assert.equal(res.ok, true, JSON.stringify(res));
+  const prompts = readdirSync(driverDir(res.runDir)).filter((f) => /\.dispatch\.txt(\.prev-[0-9a-f]+)?$/.test(f))   // a later dispatch keeps an earlier one as .prev-<hash>
+    .map((f) => readFileSync(driverDir(res.runDir, f), "utf8")).filter((t) => t.includes("have no band block yet"));
+  assert.equal(prompts.length, 1, "one warm plan-join follow-up was dispatched, and its text recorded");
+  const m = prompts[0].match(/register_execute_plan ONCE with (\{[^\n]*?\]\})/);
+  assert.ok(m, `the follow-up gives the call with its qids: ${prompts[0].slice(0, 600)}`);
+  const call = JSON.parse(m[1]);
+  assert.equal(call.qids.length, 1, `exactly the missing slice: ${JSON.stringify(call.qids)}`);
+  assert.ok(call.qids[0].endsWith("+merch"));
+  assert.match(prompts[0], /do not call it without qids/);
+});
+
 // ── envelope-settle: a refused slice is DECIDED at the receipt, not two expensive stages later ─────────
 // MOCK_PLAN_DEFERRED makes the executor refuse a dictated slice the way a real capability gap arrives —
 // error:true beside deferred:true, nothing dispatched — so joinPlanToBands routes it to the receipt's
@@ -1838,6 +1859,43 @@ test("Fix2 #1: the re-attempt with the correct classes CLOSES the gap — attemp
   assert.equal(fr.domClosed, true, "the correctly-scoped re-attempt closed the dominant-element gap");
   assert.ok(fr.swept >= 1, "the field directive was swept once genuinely searched");
   assert.equal(res.verdict, "CLEAR", "a genuinely-closed gap does not clamp");
+});
+
+test("the re-attempt re-sends only the directives that failed, never one that already closed", async () => {
+  // Two class-gap directives. The Cl.16 one closes on the first dispatch; the Cl.35/38 one comes back
+  // wrong-scoped the first time. Re-sending the closed directive's entries would ask the register again
+  // for records the run already holds, and on a register that bills per request pay for them twice.
+  const calls = [];
+  const planExecutor = async ({ planPath, axis, outputPath, qids }) => {
+    const n = calls.length + 1;
+    const plan = JSON.parse(readFileSync(planPath, "utf8"));
+    const intendedOf = new Map(plan.entries.map((e) => [e.qid, (e.nice_classes ?? []).map(String)]));
+    calls.push({ n, axis, qids: [...qids] });
+    const blocks = existsSync(outputPath) ? JSON.parse(readFileSync(outputPath, "utf8")) : [];
+    for (const qid of qids) {
+      const intended = intendedOf.get(qid) ?? [];
+      const wrong = n === 1 && intended.includes("35");
+      const cls = wrong ? ["9", "28", "41", "42"] : intended;
+      const block = { state: "enumerated", qid, query: `exact NOVAPULSE [cl ${cls.join(",")}]`, total_hits: wrong ? 0 : 2,
+        records: wrong ? [] : [{ record_id: `/mark/us/${qid.slice(-6)}`, mark_text: "NOVAPULSE", classes: cls.map(Number), status: "Registered", owner_name: "Owner", owner_country: "US", screen_verdict: "surface:in-scope-live" }] };
+      const i = blocks.findIndex((b) => b && b.qid === qid);
+      if (i >= 0) blocks[i] = block; else blocks.push(block);
+    }
+    writeFileSync(outputPath, JSON.stringify(blocks, null, 2) + "\n");
+    return { ok: true, states: {} };
+  };
+  const { res, events } = await runPipeline(
+    { MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FRAME_DIFF: "field-classgap-two" }, {}, { planExecutor });
+  assert.equal(res.ok, true, JSON.stringify(res));
+  assert.equal(calls.length, 2, `one dispatch and one re-attempt: ${JSON.stringify(calls)}`);
+  const plan = JSON.parse(readFileSync(driverDir(res.runDir, "register-plan.json"), "utf8"));
+  const classesOf = (q) => (plan.entries.find((e) => e.qid === q)?.nice_classes ?? []).map(String);
+  assert.ok(calls[0].qids.some((q) => classesOf(q).includes("16")) && calls[0].qids.some((q) => classesOf(q).includes("35")),
+    `the first dispatch carried both directives: ${JSON.stringify(calls[0].qids)}`);
+  assert.ok(calls[1].qids.length > 0 && calls[1].qids.every((q) => classesOf(q).includes("35")),
+    `the re-attempt carried only the failing directive: ${JSON.stringify(calls[1].qids)}`);
+  const re = events.find((e) => e.event === "frame-reopen-reattempt");
+  assert.deepEqual(re?.qids, calls[1].qids, "the log names what was re-sent");
 });
 
 test("Fix2 #1: a genuine close on the FIRST dispatch sweeps with NO re-attempt (no over-fire, no infinite re-open)", async () => {
@@ -2365,6 +2423,27 @@ test("A1 split pre-split resume: the single-member assembly is restored VERBATIM
       assert.ok(!existsSync(join(res.runDir, f)), `no half artifact ${f}`);
 });
 
+test("a company with no marketplaces: every grid spec the run writes, closure included, fits the cell budget", async () => {
+  // Its profile's own batch figure divides the budget by the web cell alone, so it is the whole budget in
+  // terms. Both grids size by the cells they run (profiles.mjs gridBatchFor, whose arithmetic
+  // profiles.test.mjs pins for the web-plus-store case this mock's web-only closure cannot reach).
+  const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_CL_GAPS: "translit" },
+    { profileKey: "harbour-goods" });
+  assert.equal(res.ok, true, JSON.stringify(res));
+  const { SAFE_GRID_CELLS } = await import("../profiles.mjs");
+  const sidecar = JSON.parse(readFileSync(driverDir(res.runDir, "profile.json"), "utf8"));
+  const specs = readdirSync(driverDir(res.runDir)).filter((f) => /^grid-spec(\.half-[a-z]+)?(\.supp-closure)?\.json$/.test(f));
+  assert.ok(specs.length > 1, `the main grid and the closure each wrote a spec: ${specs.join(", ")}`);
+  assert.ok(specs.some((f) => f.includes("supp-closure")), `the closure ran and wrote its spec: ${specs.join(", ")}`);
+  assert.ok(events.some((e) => e.event === "coverage-closure" && e.requested > 0), "a closure was asked for");
+  for (const f of specs) {
+    const spec = JSON.parse(readFileSync(driverDir(res.runDir, f), "utf8"));
+    assert.ok(spec.batch <= sidecar.batchSize, `${f}: never larger than the profile's own figure`);
+    assert.ok(spec.batch * spec.platforms.length <= SAFE_GRID_CELLS,
+      `${f}: ${spec.batch} terms × ${spec.platforms.length} cells is over the ${SAFE_GRID_CELLS}-cell budget`);
+  }
+});
+
 test("A1 split repair BALANCE (item 25): the closable set is partitioned EVENLY across the usable halves, and the partition is recorded", async () => {
   // This test used to assert the opposite — that closable cells on a half-B term went to half B's
   // session and half A stayed untouched — because the reopen routed every cell through halfOfTerm.
@@ -2798,10 +2877,9 @@ test("the record can never explain a path the run did not take", async () => {
 // THE LEVER, and it is a real production shape rather than a synthetic one: a resume of a run with no
 // `_driver/profile.json`. attachProfile deliberately stays legacy on a sidecar-less resume (ctx.profile
 // = null), so profile.platforms is 0, no grid spec is authored, and a variant-carrying non-register-only
-// matter takes the spec-less path. The sweep report for this issue proposed seeding a zero-platform
-// profile instead; that is impossible — profiles.mjs validateProfileShape refuses a whole profile whose
-// platforms array is empty OR absent ("platforms must be a non-empty array of store-domain strings"),
-// and loadProfiles validates at load, so no such profile can exist to be selected.
+// matter takes the spec-less path. A zero-platform profile is NOT this lever: an empty marketplace list
+// is valid now and still writes a grid of the general-web cell and the meaning sweep — the arm after this
+// one pins that it does, and that it delivers without this clamp.
 test("a no-grid-spec downgrade on a variant-carrying manifest clamps CLEAR→CONDITIONAL and names the gap", async () => {
   const { res: r1 } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FAIL_STAGE: "joint synthesis narrative" });
   assert.equal(r1.ok, false);
@@ -2839,6 +2917,28 @@ test("a no-grid-spec downgrade on a variant-carrying manifest clamps CLEAR→CON
   assert.ok(clamp[0].gridVariants > 0);
 });
 
+
+test("a company with no marketplaces still searches the web and the meanings, and is not clamped for it", async () => {
+  // THE DEFECT THIS PINS AGAINST: the grid spec was gated on a NON-EMPTY marketplace list, and the
+  // general-web cell and the meaning sweep ride in that spec. An empty list would have switched both off
+  // with the stores, and the clamp above would then have downgraded every CLEAR for a sweep that "did
+  // not run". None means no store cells — never no web and no meanings.
+  const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced" }, { profileKey: "harbour-goods" });
+  assert.equal(res.ok, true, JSON.stringify(res));
+  const sidecar = JSON.parse(readFileSync(driverDir(res.runDir, "profile.json"), "utf8"));
+  assert.equal(sidecar.profileKey, "harbour-goods");
+  assert.deepEqual(sidecar.platforms, [], "the company's own list is empty");
+  const spec = JSON.parse(readFileSync(driverDir(res.runDir, "grid-spec.json"), "utf8"));
+  const added = events.find((e) => e.event === "commonlaw-channels-added")?.added ?? [];
+  assert.deepEqual(spec.platforms, [...added, "web"], "the web cell, plus only what the matter frame named — no store from any house list");
+  assert.ok(spec.terms.length > 0, "every variant still gets its web search");
+  assert.ok((spec.connotation?.queries ?? []).length > 0, "the meaning sweep is still dictated");
+  const rec = readPathRecord(res.runDir);
+  assert.notEqual(rec.reason, "no-grid-spec", "not the spec-less path");
+  const v = JSON.parse(readFileSync(driverDir(res.runDir, "verdict.json"), "utf8"));
+  assert.equal(v.kinds?.commonLawDowngrade ?? false, false, "no downgrade for a sweep that ran");
+  assert.ok(!events.some((e) => e.event === "common-law-downgrade-clamp"), "and none was recorded");
+});
 test("a legitimate unsplit path is NOT a failure: a pre-split resume still delivers CLEAR", async () => {
   // "Deliberately NOT proposed: making the unsplit path itself a failure. It is the legitimate rollback
   // path." The flag was one legitimate reason to be unsplit and is deleted; resumed-unsplit is another,

@@ -282,6 +282,7 @@ export function commitWithAuditRow({ audit, gitCommit, files, message, by, row }
 // That makes the failure resumable, and it makes "a concurrent editor's staged work survives" true by
 // construction rather than by a careful reset that has to guess whose paths are whose.
 import { execFileSync } from "node:child_process";
+import { BRAND } from "./brand.mjs";
 
 // Lock contention is TRANSIENT and worth retrying. A hook rejection and a full disk are not: retrying
 // them turns one named failure into several and delays the report. The distinction is the reason this
@@ -289,17 +290,39 @@ import { execFileSync } from "node:child_process";
 export const isTransientGitFault = (detail) =>
   /index\.lock|another git process seems to be running|Unable to create/i.test(String(detail ?? ""));
 
+// ── THE PRODUCT NAMES ITS OWN COMMITTER WHEN GIT HAS NONE ───────────────────────────────────────────
+//
+// A save names its author, the person who asked for it. Git also records a COMMITTER, taken from the
+// repository's or the account's configuration, and refuses the commit when it finds none. That is the
+// default state of a service account nobody ran `git config` for, and of a fresh Windows install: every
+// company created in the portal was refused there, with a message telling the person to run git. The
+// person creating a company cannot act on that, and nothing about the save needs them to.
+//
+// So a commit into the store is given the product's own committer whenever git cannot name one, on every
+// commit rather than once: `-c` or an environment variable configures one invocation, not the repository.
+// A store or account that already has an identity keeps it, so a configured install records exactly what
+// it recorded before, signing included.
+export const STORE_COMMITTER = Object.freeze({ name: BRAND.name, email: "store@localhost" });
+
+/** The environment a commit into `repoRoot` runs with: `env` itself when git can name a committer, else `env` plus the product's. */
+export function storeCommitEnv(repoRoot, { env = process.env } = {}) {
+  requireRepoRootPath(repoRoot, "storeCommitEnv");
+  try {
+    execFileSync("git", ["-C", repoRoot, "var", "GIT_COMMITTER_IDENT"], { stdio: ["ignore", "pipe", "pipe"], env });
+    return env;
+  } catch {
+    return { ...env, GIT_COMMITTER_NAME: STORE_COMMITTER.name, GIT_COMMITTER_EMAIL: STORE_COMMITTER.email };
+  }
+}
+
 /**
  * Why a commit into `repoRoot` would be refused, asked BEFORE anything is written; null when it would not
- * be. Read-only: `rev-parse` and `git var` change nothing. `{ code, detail, message }`, where `message` names
- * the store and the command that clears it, in terms an operator acts on rather than git's own words:
+ * be. Read-only: `rev-parse` changes nothing. `{ code, detail, message }`, where `message` names the store
+ * and the command that clears it, in terms an operator acts on rather than git's own words:
  *
- *   not-a-repository — the store is not inside a git repository this process can use;
- *   no-identity      — git has no committer identity here. That is the default state of any machine where
- *                      nobody ran `git config user.email`, a fresh Windows install among them. A save names
- *                      its author; the COMMITTER is the machine's, and git refuses a commit it cannot name
- *                      one for. `git -c user.email=…` on a one-off seed commit does not help: `-c` configures
- *                      that invocation, not the repository, so every save after it fails the same way.
+ *   not-a-repository — the store is not inside a git repository this process can use.
+ *
+ * A missing committer identity is not a refusal: every commit into the store supplies one (storeCommitEnv).
  */
 export function storeCommitRefusal(repoRoot, { env = process.env } = {}) {
   requireRepoRootPath(repoRoot, "storeCommitRefusal");
@@ -313,18 +336,13 @@ export function storeCommitRefusal(repoRoot, { env = process.env } = {}) {
       : `run \`git init\` in ${repoRoot}, or point PROFILE_REPO_ROOT at the repository that holds the store`;
     return { code: "not-a-repository", detail, message: `the store at ${repoRoot} is not a git repository this install can record into (${detail}) — ${fix}` };
   }
-  try { ask("var", "GIT_COMMITTER_IDENT"); }
-  catch (e) {
-    return { code: "no-identity", detail: said(e).pop()?.slice(0, 200) ?? "",
-      message: `the store at ${repoRoot} has no git identity, so nothing saved to it can be recorded — run `
-        + `\`git -C ${repoRoot} config user.email "you@example.com"\` and \`git -C ${repoRoot} config user.name "Your Name"\`` };
-  }
   return null;
 }
 
 export function makeStoreCommit({ repoRoot, log = () => {}, what = "store", retries = 3, waitMs = 50 }) {
   requireRepoRootPath(repoRoot, "makeStoreCommit");
-  const git = (...args) => execFileSync("git", ["-C", repoRoot, ...args], { encoding: "utf8" }).toString().trim();
+  const run = (env, args) => execFileSync("git", ["-C", repoRoot, ...args], { encoding: "utf8", ...(env ? { env } : {}) }).toString().trim();
+  const git = (...args) => run(null, args);
   // ── IS THIS A REPOSITORY WE CAN USE? ASKED FIRST ─────────────────────────────
   //
   // Outside a repository git falls back to `--no-index` mode, which has no `--cached` — so the very
@@ -351,13 +369,16 @@ export function makeStoreCommit({ repoRoot, log = () => {}, what = "store", retr
       log(`${what}: the store is not a usable git repository, so this save CANNOT be committed — ${refusal}`);
       throw new Error(`the store at ${repoRoot} is not a usable git repository: ${refusal}`);
     }
+    // Asked per commit, so an identity somebody configures while the service runs is used from then on.
+    const committing = storeCommitEnv(repoRoot);
+    const gitCommit = (...args) => run(committing, args);
     // (1) Complete what an earlier failed save left staged. BEST EFFORT: if this fails too — the same
     // hook is still rejecting, the disk is still full — it must not stop the save that is happening now,
     // and it must not touch the index either. The paths simply stay staged for the next attempt.
     try {
       const found = git("diff", "--cached", "--name-only").split("\n").filter(Boolean);
       if (found.length) {
-        git("commit", "-m", `Complete a store save left staged by an earlier failure (${found.length} path(s))`,
+        gitCommit("commit", "-m", `Complete a store save left staged by an earlier failure (${found.length} path(s))`,
             "--author", `${author} <${author}>`);
         log(`${what}: completed a commit left staged by an earlier failed save — ${found.join(", ")}`);
       }
@@ -369,7 +390,7 @@ export function makeStoreCommit({ repoRoot, log = () => {}, what = "store", retr
     git("add", ...files);
     for (let attempt = 1; ; attempt++) {
       try {
-        git("commit", "-m", message, "--author", `${author} <${author}>`);
+        gitCommit("commit", "-m", message, "--author", `${author} <${author}>`);
         return git("rev-parse", "HEAD");
       } catch (e) {
         const detail = detailOf(e);

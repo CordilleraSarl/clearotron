@@ -4,6 +4,69 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.4.0-beta.0
+
+### Before you upgrade
+
+- a new operator key must now name the tools it may use, for example `--verbs start_run,stop_run`. Keys already issued keep working.
+
+### Fixed
+
+- over the network, an operator key can no longer start a what-if that its assistant is not shown.
+- the portal refuses a change sent from another website, or from another app on the same computer, including a sign-in.
+- closing the window that runs `clearotron start` now stops Clearotron. Before, it kept running in the background.
+- Creating a company in the portal no longer stops with a request to run a git command.
+- A new company starts with no marketplaces. The company page offers the usual ones to add, and a company with none is still searched on the general web.
+
+### For operators
+
+- a revoked key stops working even where no revocation list was set up, because every connector now reads the install's own list.
+
+## 0.3.3
+
+### New
+
+- a search whose identical-mark question returns a count rather than a list now narrows that question until the register gives a list, and reads it.
+- It previously left that question unread and searched the wider families instead — compounds, foreign-script forms, neighbour lists — which is where the reading time went.
+- the words a search is narrowed to can now be chosen while the search is running, not only when it is first planned.
+- a search can cover a further category the client's own goods reach, added with a stated reason.
+
+### Fixed
+
+- a run can name a Fable model by its published id, not only by the tier word, which used to fail outright.
+- the coverage table names the goods words of a search narrowed by goods, so it no longer reads the same as the main search.
+- the portal's run list shows a run's rating, never the reviewer's sign-off word, while the run is still in progress.
+- naming an exact Claude model now runs that model, instead of quietly following the tier to a newer one.
+- a list of names searched on Signa is now searched one name at a time, so one crowded name no longer stops the rest.
+- a register search the provider refuses as too wide is disclosed at once, with its size, instead of pausing the run to retry it.
+- the audit workbook now says when a surface refused a search and why, instead of reading the same as one never run.
+- the audit workbook now lists each wider register search the engine chose not to run, with the reason it gave.
+- a register search that fails on a provider error is tried once more in the run before it is disclosed as not searched.
+- a run now records the tier it asked for, not a model version nobody chose. The report still names the model that ran.
+- A two-letter mark's register searches, including those narrowed by the client's goods, now run instead of failing where the register's substring search needs three characters.
+- a long list of names searched on Clarivate is now split into searches it accepts, not one it refuses as too wide.
+- setup and doctor now report a Claude program too old for the models a search asks for, instead of passing it as fine.
+- on the OpenAI engine, setup and `doctor --probe-engine` now catch a machine where codex refuses every tool call, before any search is paid for.
+- A search that meets it stops after one attempt and names the setting that fixes it.
+- a common-law search no longer repeats a finished stage because its write-up lacked one exact status word.
+- Each coverage status is now recorded as data rather than read from the wording.
+- doctor no longer ticks a billing mode on a machine where no engine program resolves; it states it as information.
+- the identical mark is now read first on every search, before any wider question is asked.
+- a search request that describes the goods using the older wording now records those goods. It previously recorded none, so nothing downstream could narrow by what the matter actually covers.
+- a search can now be narrowed by what the goods are, which it could not be before. The step that chooses the search words had no way to hand them back, so every search ran without them.
+- the worker now reports itself alive throughout a search, not only between searches. Its liveness file went stale for the whole of a long search. A check reading it would call a healthy search dead, and might stop it.
+- setup confirms a pasted key by its length alone, so no part of a key reaches a captured install log.
+- setup installs a version of the Claude program new enough to run the current top-tier model, which older versions refuse.
+- a territory name that no register can answer is now reported as an uncovered gap instead of being searched.
+- the assistant's run summary names the rating again, where it had printed "[object object]" in its place.
+- the clearance list is now requested at the same time as your sign-in details, instead of waiting for them.
+- the delivery email, run list and assistant now give the rating and the report's own conclusion. None of them says a matter is on hold.
+
+### For operators
+
+- the run record now distinguishes a question the search step never answered from one it answered with "nothing applies". They previously looked identical, so a step that could not answer looked like a matter with nothing to say.
+- the published package now has a recorded size budget. Nothing about what ships changes; growth past a margin fails the build and names the largest files.
+
 ## 0.3.3-beta.1
 
 ### Fixed

@@ -168,6 +168,7 @@ import { engineCommit } from "./engine-build.mjs";                  // — the S
 import { engineCommitDate, engineProvenance } from "./engine-build.mjs";
 import { classifySkillsStore } from "./skills-store-provenance.mjs";
 import { makeStaticHandler, reportCsp, docCsp } from "./portal-static.mjs";
+import { crossSiteReason, bodyNotJson } from "./portal-request-origin.mjs";
 import { bundleVerdict, healthUi } from "../shared/bundle-freshness.mjs";   // one definition of a usable bundle, shared with `doctor`
 import { readReport, reportsOf, resolveReportFile, batchSummaryOf } from "./portal-report.mjs";
 import { readArchivedSet, updateArchived } from "./publish/archive-tags.mjs";
@@ -1143,7 +1144,7 @@ export function makeConnectorKeyRevoker({ env = process.env, home = null } = {})
     const base = home ?? homedir();
     const recorded = recordedKeysFor(g, email);
     const plan = disablePlan({ env, unitDir: join(base, ".config", "systemd", "user"), exists: existsSync,
-      identity: email, recorded, denylistPath: denylistPathFor(env, base) });
+      identity: email, recorded, denylistPath: denylistPathFor(env, base), home: base });
     if (!plan.possible) return { grants: g, revoked: 0, jtis: [], lateArm: false, says: plan.says };
     if (plan.lateArm) return { grants: g, revoked: 0, jtis: plan.jtis, lateArm: true, says: plan.says ?? [] };
     // THE RECORD IS NEVER STRUCK FROM HERE, and the ledger step is dropped rather than no-opped.
@@ -1615,6 +1616,7 @@ export function makePortalService({
         // identity gets {} here exactly as it does for names and keeps reading the staff-only roster.
         let accountNames = {};
         let accountFacts = {};
+        let meRoster = null;   // read once for this answer: the names below and the house marketplaces
         // GENERIC IS NAMED TOO when the person sees an organisation's Generic. It is not a company, so it is
         // never in `accounts`, and without a name here the switcher printed the raw key at everyone below
         // everything. An organisation with no company yet is the case with an empty `accounts`, so the
@@ -1624,7 +1626,7 @@ export function makePortalService({
         if (named.length) {
           try {
             const { companyFactsOf } = await import("./profiles.mjs");
-            const profiles = await loadProfilesImpl();
+            const profiles = meRoster = await loadProfilesImpl();
             for (const key of named) {
               const profile = profiles.get(key);
               const name = profile?.name;
@@ -1663,9 +1665,19 @@ export function makePortalService({
         // READ ONCE. The payload names it and the program reading below is gated on it; two calls to
         // `flagView` here would be two reads of the same file that could disagree with each other.
         const meEngineMode = flagView(poolRoot).engineMode;
+        // THE HOUSE MARKETPLACES, offered as suggestions wherever a company's marketplaces are edited. A new
+        // company starts with none (the owner's ruling of 2026-09-23) and somebody picks; these are the
+        // Generic default's own list, read from the store so an install that changed it offers its own.
+        // Deployment-wide and the same for everyone, like concurrentRuns. [] when the store cannot be read:
+        // the box still takes any marketplace typed into it.
+        let houseMarketplaces = [];
+        try {
+          const house = (meRoster ?? await loadProfilesImpl()).get("generic")?.platforms;
+          if (Array.isArray(house)) houseMarketplaces = house.filter((d) => typeof d === "string" && d.trim());
+        } catch { /* a suggestion list is a nicety; the door is not */ }
         return { status: 200, json: { email: principal.email, ...principalView(principal, grantsHere, accountNames),
           accounts: principal.accounts, accountNames, accountFacts,
-          concurrentRuns: concurrentRunsCap(), brand: ORGANISATION_NAME, engineMode: meEngineMode,
+          concurrentRuns: concurrentRunsCap(), brand: ORGANISATION_NAME, engineMode: meEngineMode, houseMarketplaces,
           // WHERE A PERSON ASKS FOR A CHANGE TO THEIR SIGN-IN, beside the brand and read where it is read:
           // an href Preferences links "Clearotron administrator" to, or null, and then the words are plain.
           administratorContact: ADMINISTRATOR_CONTACT,
@@ -3268,15 +3280,12 @@ async function connectorDoorKind(url) {
             const p = envFrom(process.env, "CLEAROTRON_ACCESS_FILE");
             if (p) grantsFile = { name: basename(p), modifiedAt: new Date(statSync(p).mtimeMs).toISOString() };
           } catch { /* reported as unknown; a failed stat must not take down the page that explains access */ }
-          // WHETHER AN ISSUED KEY CAN BE WITHDRAWN AT ALL, read the same way `disablePlan` reads it: the
-          // door loaded a revocation list at start, or it did not and never will for the keys already
-          // out. The variable's PRESENCE is the whole question — its value is a path, and this route
-          // must not say where.
-          // WHETHER A REVOCATION LIST IS NAMED FOR THIS PROCESS AT ALL — which is not the same question
-          // as whether the connector loaded one, and the page's words are careful about the difference.
-          // The connector is a separate unit with its own environment; this answers only for here.
-          const keysRevocable = Boolean(revokeConnectorKeys)
-            && String(process.env.TRADEMARK_MCP_TOKEN_DENYLIST ?? "").trim() !== "";
+          // WHETHER AN ISSUED KEY CAN BE WITHDRAWN AT ALL. This used to be whether a revocation list was
+          // named in this process's environment, because a door with none named checked no list. Every door
+          // now reads the install's default list when none is named (isRevoked, shared/scope.mjs), and that
+          // is where a revocation from here is written, so keys can be withdrawn whenever this process has
+          // a revoker at all.
+          const keysRevocable = Boolean(revokeConnectorKeys);
           return { status: 200, json: accessView({ grants: grantsHere, viewer: principal, companies, grantsFile, localSignIn, keysRevocable }) };
         }
         // /portal/admin/people — give someone access. Manage-gated above; everything else is decided here.
@@ -3642,9 +3651,10 @@ export function accountCapAdvice(posture) {
   }
   return "Re-mint with `mcp-server/mint-token.mjs --scope ops"
     + `${posture.sub ? ` --sub ${posture.sub}` : ""}`
-    // NO `--verbs` FLAG AT ALL when the token is full-ops: `verbs: null` means EVERY verb, and naming a
-    // list there would be the narrowing this whole function exists to stop.
-    + `${posture.verbs ? ` --verbs ${posture.verbs.join(",")}` : ""}`
+    // A FULL-OPS TOKEN (`verbs: null`) IS RE-ISSUED WITH THE PORTAL'S OWN VERBS. It used to get no
+    // `--verbs` at all, so as not to narrow it; mint-token now refuses an ops token that names none, so that
+    // command would fail, and re-issuing verb-less tokens with verbs is the point. The portal calls these two.
+    + ` --verbs ${(posture.verbs ?? ["start_run", "stop_run"]).join(",")}`
     + " --accounts <keys>` to make it two walls.";
 }
 
@@ -4289,6 +4299,18 @@ export function makeHttpHandler({ verify, limiter, service, log = () => {}, devI
         });
       }
 
+      // ── A STATE CHANGE FROM ANOTHER SITE IS REFUSED BEFORE ANYTHING ELSE LOOKS AT IT ────────────────
+      //
+      // Before identity, so the sign-in and sign-out forms are covered as well as the API: a page elsewhere
+      // that signs a browser in to an account of its choosing is the same attack as one that acts under the
+      // browser's own session. The rule and why it compares hosts is in portal-request-origin.mjs.
+      const crossSite = crossSiteReason(req);
+      if (crossSite) {
+        log(`refused a ${req.method} to ${url.pathname} from another site: ${crossSite}`);
+        journal(403, "cross-site request");
+        return send(res, 403, { error: "cross_site" });
+      }
+
       // ──: THE LOCAL SIGN-IN DOOR — before identity, because it is how identity is obtained ─────
       //
       // Mounted only when the local identity provider is running. On a Cloudflare-fronted instance
@@ -4420,6 +4442,12 @@ export function makeHttpHandler({ verify, limiter, service, log = () => {}, devI
       if (limiter && !limiter.take(identity.email)) {
         journal(429, "rate_limited", identity?.email);
         return send(res, 429, { error: "rate_limited" });
+      }
+      // A BODY THAT DOES NOT SAY IT IS JSON IS NOT READ AS JSON. A form post is the one body another site
+      // can send without asking first; the portal's own pages always declare JSON when they send a body.
+      if (bodyNotJson(req)) {
+        journal(415, "body is not JSON", identity?.email);
+        return send(res, 415, { error: "unsupported_media_type" });
       }
       // A FIXED reason, not `e.message`. The parser's message is about the bytes it was given, and this
       // row must not become a place a caller can write into by sending a body that fails to parse.

@@ -9,7 +9,7 @@
 // (not via runStage). Run identity (runId/codename) comes from the driver's ctx.run; do NOT regenerate it.
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, copyFileSync, chmodSync } from 'node:fs';
 import { join, dirname } from 'node:path';
-import { driverDir } from '../../shared/driver-dir.mjs';   //
+import { driverDir, RUN_DIR_MODE } from '../../shared/driver-dir.mjs';   //
 import { parseReport, parseAudit, parseSections, parseBlocks, stripInternal, parseCaseLawProfiles, parseCaseLawPreamble, joinCaseLawProfiles } from './parse.mjs';
 import { renderHtml, parseActionBuckets, actYouConditions } from './render.mjs';
 import { buildAudit } from './xlsx.mjs';
@@ -667,7 +667,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   })();
   const asOf = new Date().toISOString();   // C2 — publish-time clock for the priority-window flag (render stays pure)
   const poolRunDir = join(poolRoot, runId);
-  mkdirSync(poolRunDir, { recursive: true });
+  mkdirSync(poolRunDir, { recursive: true, mode: RUN_DIR_MODE });   // owner and group only; mkdir keeps the pool root's set-GID
   // The run dir inherits the web-server group + the set-GID bit AUTOMATICALLY from the set-GID pool root
   // (mode 2750, web-server group) — so files written inside take that group and the web server (Caddy in
   // the reference deployment, mode 0640) can read them. Do NOT chmod this dir: the service account is not
@@ -1071,12 +1071,23 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // the copy. The register-only LEVEL is retired, so no new run reaches this true; a run that already
   // did still must, or its workbook would claim a sweep that never ran.
   const registerOnly = isRegisterOnly(searchPolicy);
+  // A RUN WHOSE COMPANY PICKED NO MARKETPLACES (the owner's ruling of 2026-09-23). Marketplaces were still
+  // covered by the general web search, and by any stores the engine chose for the matter, so the lines that
+  // describe the common-law layer say that instead of naming a marketplace search nobody picked. Read from
+  // the frozen profile, which is the list the run actually searched; absent (a legacy run) reads as picked.
+  let noMarketplacesPicked = false;
+  try {
+    const frozenProfile = runDir ? JSON.parse(readFileSync(driverDir(runDir, 'profile.json'), 'utf8')) : null;
+    noMarketplacesPicked = Array.isArray(frozenProfile?.platforms) && frozenProfile.platforms.length === 0;
+  } catch { /* no frozen profile — a legacy run keeps its wording */ }
 
   // Jurisdiction line for the Summary — searched register scope + the common-law surface layer.
   const regScope = (searchedJurisdictions && searchedJurisdictions.length) ? searchedJurisdictions.join('/') : 'Worldwide';
   const jurisdiction = registerOnly
     ? `${regScope} (register only — no common-law / marketplace search)`
-    : `${regScope} (register) + common-law (Western web / marketplace / social)`;
+    : noMarketplacesPicked
+      ? `${regScope} (register) + common-law (Western web / social, plus any stores chosen for this matter)`
+      : `${regScope} (register) + common-law (Western web / marketplace / social)`;
 
   // Common-law URL-join: a grid hit whose candidate URL resolves to a finding's own link PROVES that search
   // term became a finding (rescues an anchor term whose finding wears a different name). Best-effort; absent
@@ -1224,6 +1235,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
       caseLawText: rdText(join(dirname(reportMd), 'case-law-findings.md')),
       registerPlan: rdJson(driverDir(runBase, 'register-plan.json')),
       laneDepthVerdicts,
+      noMarketplacesPicked,
     });
     writeRO('search-depth.json', JSON.stringify(searchDepth, null, 2));
   } catch { /* the depth record is additive — a publish never fails for want of it */ }
