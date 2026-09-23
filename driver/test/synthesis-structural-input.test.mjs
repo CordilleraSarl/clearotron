@@ -409,3 +409,40 @@ test("review: the stale-repair re-dispatch of synthesis carries the structural b
   assert.ok(repaired.length >= fresh.length - 200,
     `the repair prompt is no longer the thinner one — fresh ${fresh.length}, repair ${repaired.length}`);
 });
+
+// ── AN EMPTIED FINDINGS SURFACE TAKES ITS LIST AWAY ──────────────────────────────────────────────────
+//
+// A repair or corrective pass re-prepares the list because the findings may have moved. When they moved
+// to nothing, the list the earlier pass wrote must go too: the recorder holds the seat to whatever the
+// spec file carries, and a pass whose prompt carries no list must not be bound by an old one.
+test("a findings surface that empties between passes removes the list the earlier pass wrote", () => {
+  const runDir = mkdtempSync(join(tmpdir(), "emptied-surface-"));
+  const P = paths(runDir);
+  writeFileSync(P.placementModel, JSON.stringify({ schema_version: 1, placements: [
+    { mark: "QUILLMERE", owner: "Quill Holdings SA", jurisdiction: "EU", tier: "sheet-2", reason: "Near-identical mark, cl 5, EU, registered", records: ["/mark/eu/tm_quillmere-eu"] },
+  ] }));
+  const carried = "# Register findings\n\n### Incumbent-context (orchestrator: Sheet 2 candidates)\n\n| /mark/eu/tm_quillmere-eu | QUILLMERE | Completes the record. |\n";
+  const dropped = "# Register findings\n\n### Negative results (orchestrator: Sheet \"Negative Results\")\n\n| QUILLMERE | Different goods. | URI /mark/eu/tm_quillmere-eu |\n";
+  const spec = driverDir(runDir, "declination-spec.json");
+  const ctx = {};
+
+  writeFileSync(P.registerFindings, carried);
+  PL.prepareDeclinationSpec(ctx, P);
+  assert.equal(JSON.parse(readFileSync(spec, "utf8")).rows.length, 1, "CONTROL: a carried record is listed");
+  assert.equal(ctx.findingsSurface?.length, 1, "CONTROL: and the prompt is handed it");
+
+  writeFileSync(P.registerFindings, dropped);
+  PL.prepareDeclinationSpec(ctx, P);
+  assert.throws(() => readFileSync(spec, "utf8"), /ENOENT/, "the earlier pass's list no longer binds the seat");
+  assert.equal(ctx.findingsSurface, undefined, "and the prompt carries no list");
+});
+
+test("the stale-repair and corrective passes both rebuild the list before they dispatch synthesis", () => {
+  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  assert.match(src, /synthesis: \(ctx\) => \{ prepareDeclinationSpec\(ctx, ctx\.paths\); return repairStage\("synthesis"\)\(ctx\); \}/,
+    "the stale-repair arm rebuilds it, so an emptied surface empties its list");
+  const corrective = src.slice(src.indexOf("const preCorrective = snapshotFindingsForCorrections("),
+    src.indexOf('trigger: "corrective" });'));
+  assert.match(corrective, /prepareDeclinationSpec\(ctx, P\);\s*\n\s*const correctivePass = await stage\("synthesis"/,
+    "the corrective pass rebuilds it immediately before its dispatch");
+});

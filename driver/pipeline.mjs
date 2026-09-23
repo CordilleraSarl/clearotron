@@ -3100,9 +3100,17 @@ function findingsSurfaceRows(P) {
  * `scope` is instructed-scope.json, JOB-authored before any model ran. It is the only thing the
  * contradiction refusals rest on, which is why it is read here rather than accepted from the seat.
  */
-function prepareDeclinationSpec(ctx, P) {
+export function prepareDeclinationSpec(ctx, P) {   // @internal
   const rows = findingsSurfaceRows(P);
-  if (!rows.length) return;
+  if (!rows.length) {
+    // AN EMPTY LIST REPLACES THE LAST ONE; it does not leave it standing. The recorder holds the seat to
+    // whatever list the spec file carries, and a repair or corrective pass re-prepares because the
+    // findings may have moved. Left in place, a list from an earlier pass would bind a pass whose own
+    // prompt carries none: the order enforced, and missing from the prompt.
+    try { rmSync(driverDir(P.runDir, "declination-spec.json"), { force: true }); } catch { /* absent is the goal */ }
+    delete ctx.findingsSurface;
+    return;
+  }
   let scope = {};
   try { scope = JSON.parse(readFileSync(P.instructedScope, "utf8")) ?? {}; } catch { scope = {}; }
   try {
