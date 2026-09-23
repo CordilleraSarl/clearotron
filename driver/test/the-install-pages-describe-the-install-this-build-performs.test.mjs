@@ -341,7 +341,11 @@ test("the release notes promise what setup does", () => {
     // The version here stands for "some version" and is taken from the engine's own floor: a row whose
     // copy is BELOW the floor now says so instead of saying found, which is a different promise than
     // this arm is about. A literal would have made that arm fail the next time the floor moved.
-    assert.match(row({ executable: true, version: eng.floor }), new RegExp(`found on this computer \\(version ${eng.floor.replace(/\./g, "\\.")}\\)`), `the ${eng.product} row does not show the version found`);
+    // Escaped through this file's own `escape`, which covers every regex metacharacter. Escaping the dots
+    // alone left a backslash in the value passing through as a backslash in the pattern, so a version
+    // string carrying one would have built a different pattern than the one meant — and the arm would
+    // have gone on passing. The helper was already here; using it is the whole fix.
+    assert.match(row({ executable: true, version: eng.floor }), new RegExp(`found on this computer \\(version ${escape(eng.floor)}\\)`), `the ${eng.product} row does not show the version found`);
     assert.match(row({ executable: false, rejected: [] }), /not on this computer — setup can install it/, `the ${eng.product} row does not say setup can install it`);
   }
   assert.equal(engineOptions().at(-1).label, "None for now");
