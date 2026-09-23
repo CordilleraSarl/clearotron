@@ -215,7 +215,9 @@ test("onboarding a brand owner then a project leaves a store that still loads", 
 
   const roster = loadProfiles({ dir: store, force: true });
   assert.ok(roster.has("acme"), "the onboarded owner is not in the roster the store loads");
-  assert.ok((roster.get("acme").platforms ?? []).length, "the onboarded owner carries no platforms");
+  // A brand owner onboarded with no --platforms has no marketplaces until someone picks them (the
+  // owner's ruling of 2026-09-23) — an empty list the loader accepts, never an absent key it would refuse.
+  assert.deepEqual(roster.get("acme").platforms, [], "the onboarded owner starts with an empty marketplace list");
 });
 
 test("an operator who supplies no platforms is TOLD which they got", () => {
@@ -223,9 +225,12 @@ test("an operator who supplies no platforms is TOLD which they got", () => {
   const r = runAdd("brandowner.mjs", ["add", "acme", "--name", "Acme Ltd"], store);
   assert.equal(r.status, 0, r.stderr);
   // Which marketplaces a client's clearance searches is not a thing to decide silently, and this is the
-  // command's own idiom — the framework line one above it says exactly the same thing.
-  assert.match(r.stdout, /platforms: .*GENERIC DEFAULT/,
-    "the default was applied without saying so, which is how nobody notices what was chosen for them");
+  // command's own idiom — the framework line one above it says exactly the same thing. None is the
+  // answer now (the owner's ruling of 2026-09-23), and the line says what the searches still cover.
+  assert.ok(r.stdout.includes("platforms: none — searches use the general web, plus any stores chosen for each matter."),
+    `the operator was not told the brand owner starts with none: ${r.stdout}`);
+  assert.doesNotMatch(r.stdout, /GENERIC DEFAULT, applied because none was supplied\. Their searches cover/,
+    "no house list is applied, so no line may say one was");
 });
 
 test("supplied platforms are recorded as supplied, and are what lands in the file", () => {

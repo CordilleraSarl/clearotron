@@ -76,7 +76,7 @@ import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStam
 import { unionPlacementForm } from "./placement-union.mjs";
 import { readPlacementForm, readPlacementFormInput, writePlacementForm } from "./placement-form-io.mjs";
 import { dictatedPaths, findStrayArtifacts, treeSnapshot, findStrayInTree, matterSiblings, findStrayMatterSiblings } from "./stray-artifacts.mjs";   // — a run dir holds no document no stage dictated; — nor does the doctrine tree
-import { resolveProfile, resolveEffectiveProfile, derivedFloor, derivedBatchSize, applicantMatchesProfile, NEUTRAL_DELIVERY, deliveryForRun, recipeProseGuard, withRunPlatforms, profileStoreResolution } from "./profiles.mjs";   // adds profileStoreResolution — the CONFIG store's identity, beside the doctrine tree's
+import { resolveProfile, resolveEffectiveProfile, derivedFloor, derivedBatchSize, gridBatchFor, applicantMatchesProfile, NEUTRAL_DELIVERY, deliveryForRun, recipeProseGuard, withRunPlatforms, profileStoreResolution } from "./profiles.mjs";   // adds profileStoreResolution — the CONFIG store's identity, beside the doctrine tree's
 import { resolveSearchPolicy, gateResolvedPolicy, loadRecipes, policyFor, isRegisterOnly, reportIdentityFor, depthFor } from "./search-policy.mjs";
 import { profileOrdinals } from "./profile-selection.mjs";   // lever 3 — driver selection
 // THE OFFERING'S own sentence about where the native-language investigation can be bought. It reaches a
@@ -980,7 +980,12 @@ function deriveGridSpec(ctx) {
     terms: null,
     spec_inputs: { registerOnly: Boolean(ctx.registerOnly), gridVariants: ctx.gridVariants?.length ?? 0, profilePlatforms: ctx.profile?.platforms?.length ?? 0 },
   };
-  if (!ctx.registerOnly && ctx.gridVariants?.length && ctx.profile?.platforms?.length) {
+  // AN EMPTY MARKETPLACE LIST STILL WRITES A GRID. A company may pick no marketplaces (the owner's ruling of
+  // 2026-09-23), and the general-web cell and the meaning sweep ride in this spec: gating it on a non-empty
+  // list switched both off with the stores, and the downgrade clamp then read the missing spec as a failed
+  // sweep. The spec below is then the web cell plus whatever channels the matter frame names. Only a profile
+  // with no list at all (legacy) takes the spec-less path.
+  if (!ctx.registerOnly && ctx.gridVariants?.length && Array.isArray(ctx.profile?.platforms)) {
     const gridSpecPath = P.gridSpec;
     // #5 — required channels: a NAMED profile's curated platforms are authoritative. The GENERIC fallback
     // derives the channels from the MATTER FRAME's industry/goods reasoning (its "Search channels:" line) so
@@ -1042,7 +1047,8 @@ function deriveGridSpec(ctx) {
       terms: ctx.gridVariants,
       platforms: [...channels, "web"], // the dictated channels + the general-web cell
       output_path: P.commonLawGrid,
-      batch: ctx.profile?.batchSize ?? 14,
+      // SIZED BY THE CELLS THIS GRID RUNS, never larger than the profile's own figure (gridBatchFor).
+      batch: gridBatchFor(ctx.profile, channels.length + 1),
       // disposition_required (P2-C §8b leg 2): the receipt-presence stamp arming the commonLaw validator's
       // receipts-disposition arm (the D1 ledger_required pattern — every fresh spec carries it; pre-P2-C
       // archived specs lack it, so replay verdicts never flip). splitGridSpec spreads the connotation
@@ -10603,10 +10609,13 @@ async function pipelineInner(job, opts = {}) {
         // back-compat: a pre-doc-35 receipt keyed only on the cell set (no source channels)
         (priorReceipt.sig == null && !sourceChannels.length &&
           JSON.stringify((priorReceipt.requested ?? []).map(cellKey).sort()) === JSON.stringify(closable.map(cellKey).sort())));
+      // SIZED BY THE CELLS A CLOSURE GRID RUNS, as the main grid is (gridBatchFor): its spec carries only the
+      // platforms of the cells it closes.
+      const closureBatch = (cells) => gridBatchFor(ctx.profile, new Set(cells.map((c) => c.platform)).size);
       if ((closable.length || sourceChannels.length) && !alreadyAttempted) {
         const requested = closable;
         const variants = [...new Set(closable.map((c) => c.variant))];
-        const batchSize = ctx.profile?.batchSize ?? 14;   // WS-B: derived from the profile's platform count
+        const batchSize = closureBatch(closable);
         const batches = Math.max(1, Math.ceil(variants.length / batchSize));
         const gridCalls = batches + (sourceChannels.length ? 1 : 0);   // grid call(s) + a channel-sweep call (tokens-only: no $ estimate)
         note(`coverage closure: ${closable.length} machine-closable cell(s)${sourceChannels.length ? ` + ${sourceChannels.length} un-swept in-scope channel(s) [${sourceChannels.join(", ")}]` : ""} — one supplementary grid pass (${gridCalls} grid call(s))`);
@@ -10719,7 +10728,7 @@ async function pipelineInner(job, opts = {}) {
       }
       if (closable.length || exempt.length) {
         // Tokens-only (owner directive 2026-07-11): the offer names the work (grid calls), never a $ figure.
-        const batchesLeft = Math.max(1, Math.ceil([...new Set(closable.map((c) => c.variant))].length / (ctx.profile?.batchSize ?? 14)));
+        const batchesLeft = Math.max(1, Math.ceil([...new Set(closable.map((c) => c.variant))].length / closureBatch(closable)));
         const offer = ` — closable on instruction (${batchesLeft} supplementary grid call(s))`;
         ctx.coverageNote = `marketplace cells not executed: ${[...closable, ...exempt].map(cellKey).join("; ")}` +
           (closable.length ? ` — attempted in-loop and still unreachable${offer}` : "") +

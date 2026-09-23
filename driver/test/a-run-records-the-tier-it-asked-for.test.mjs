@@ -68,7 +68,7 @@ test("an exact model named by a caller is still recorded and run as that model",
   }
 });
 
-test("THE COST, PINNED: a tier and a direct-API lane's version key apart, by decision", () => {
+test("THE COST, PINNED: a tier and a lane's version key apart, by decision", () => {
   // The lanes that call the API directly must name a model id, because the API takes no tier word. So
   // the same model reached by a stage and by one of those lanes is two different requests and keys in
   // two places. If these two ever become equal again, the accepted split has silently closed and the

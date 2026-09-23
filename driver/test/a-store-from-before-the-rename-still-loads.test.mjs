@@ -38,7 +38,7 @@ function oldStore({ brokenGeneric = false } = {}) {
   const store = mkdtempSync(join(tmpdir(), "pre-rename-store-"));
   mkdirSync(join(store, "profiles"), { recursive: true });
   mkdirSync(join(store, "skills", "prelim-search"), { recursive: true });
-  writeFileSync(join(store, "profiles", "generic.json"), JSON.stringify(brokenGeneric ? { ...GENERIC, platforms: [] } : GENERIC));
+  writeFileSync(join(store, "profiles", "generic.json"), JSON.stringify(brokenGeneric ? { ...GENERIC, platforms: "amazon.com" } : GENERIC));
   writeFileSync(join(store, "profiles", "invented.json"), JSON.stringify({
     ...GENERIC, name: "Invented Company", matchDomains: ["invented.example"],
     frameworkPath: "skills/prelim-search/risk-framework-invented.md",

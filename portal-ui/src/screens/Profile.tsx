@@ -209,6 +209,7 @@ export function Profile({ ctx }: { readonly ctx: ShellContext }) {
                     value={boxValue({ draft, edits }, spec)}
                     choices={spec.key === 'defaultProduct' ? productChoices : (spec.choices ?? null)}
                     onChange={(v) => edit(spec, v)}
+                    suggestions={ctx.me.houseMarketplaces}
                   />
                   {/* Beside the field it is about: an entry the engine cannot search, named. */}
                   {spec.key === 'defaultJurisdictions' ? <UnsearchableTerritories derived={loaded.derived} /> : null}

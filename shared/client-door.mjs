@@ -40,8 +40,10 @@
 // a door — which is now the difference between a box that installs and a box that crash-loops one.
 
 import { join } from "node:path";
+import { homedir } from "node:os";
 import { challengeVerdict, blockedByAccessChallenge, challengeNote } from "./mcp-challenge.mjs";   // — F57
 import { whatHoldsPort } from "./os-advice.mjs";
+import { defaultDenylistPath } from "./scope.mjs";   // — the verifier owns the path; see the re-export below
 
 /** The unit that runs the client door. Installed like any other; started only by this module. */
 export const CLIENT_DOOR_UNIT = "clearotron-client-mcp.service";
@@ -59,7 +61,9 @@ export const CLIENT_DOOR_UNIT = "clearotron-client-mcp.service";
  * file no verifier could read, and a revoked key kept answering 200. The guard existed; one of the two
  * doors was outside it.
  */
-export const defaultDenylistPath = (home) => join(home, ".config", "clearotron", "token-denylist");
+// ONE definition, owned by the verifier (scope.mjs): the file a door reads when the setting is unset is,
+// by construction, the file every revoker here writes.
+export { defaultDenylistPath } from "./scope.mjs";
 
 /**
  * The denylist path a door should be given — the operator's, if they set one.
@@ -617,9 +621,10 @@ export function enablePlan({ env = {}, address, identity, accessFile = null, por
   // ── THE DENYLIST PATH IS NAMED AND CREATED HERE, NEVER ASSUMED ───────────
   //
   // Measured on production, owner 2026-08-31: no denylist is configured anywhere — the variable is
-  // empty in one example env and commented out in the other, and `isRevoked()` returns false when the
-  // path is unset. So a key minted by a connect that assumed a denylist would be UNREVOKABLE, silently:
-  // `disconnect` would write a jti into a file no verifier reads, and every check would look done.
+  // empty in one example env and commented out in the other, and `isRevoked()` then returned false for
+  // every token. So a key minted by a connect that assumed a denylist was UNREVOKABLE, silently:
+  // `disconnect` wrote a jti into a file no verifier read, and every check looked done. `isRevoked()`
+  // now reads the default list when the path is unset; naming it here still pins every door to one file.
   //
   // Armed AT CONNECT TIME, deliberately, not at disconnect: a process reads its environment once, at
   // start. A variable first written when someone disconnects is one the already-running door never
@@ -917,7 +922,7 @@ export function connectKeyReport(grants, { now = Date.now(), revoked = () => fal
  * were recorded".
  */
 export function disablePlan({ env = {}, unitDir, exists, identity = null, recorded = [],
-  denylistPath = null } = {}) {
+  denylistPath = null, home = homedir() } = {}) {
   const door = clientDoorState({ env, unitDir, exists });
   const jtis = (recorded ?? []).map((r) => r.jti).filter(Boolean);
   // The path the running verifiers were BORN with wins; the caller's default only covers the install
@@ -926,7 +931,9 @@ export function disablePlan({ env = {}, unitDir, exists, identity = null, record
   // a revocation the environment cannot deliver retroactively.
   const existing = String(env.TRADEMARK_MCP_TOKEN_DENYLIST ?? "").trim();
   const armedPath = existing || (jtis.length && denylistPath ? String(denylistPath) : null);
-  const lateArm = Boolean(jtis.length && !existing && armedPath);
+  // NOT LATE WHEN IT IS THE DEFAULT LIST: a door with the setting unset reads the install's default list
+  // (isRevoked, shared/scope.mjs), so writing there reaches the running doors now, not from their next start.
+  const lateArm = Boolean(jtis.length && !existing && armedPath && armedPath !== defaultDenylistPath(home));
 
   if (!jtis.length) {
     return { possible: false, nothingOpen: true, door,
@@ -965,7 +972,7 @@ export function disablePlan({ env = {}, unitDir, exists, identity = null, record
  * everything. Stopping the unit would additionally break the stdio-free local route for readers who
  * hold no key at all, and would be undone by the next install.
  */
-export function revokeEveryonePlan({ env = {}, grants = null, denylistPath = null } = {}) {
+export function revokeEveryonePlan({ env = {}, grants = null, denylistPath = null, home = homedir() } = {}) {
   const rows = Object.entries(grants?.connectKeys ?? {}).map(([jti, r]) => ({ jti, sub: r?.sub ?? null }));
   const jtis = rows.map((r) => r.jti);
   const people = [...new Set(rows.map((r) => r.sub).filter(Boolean))];
@@ -980,7 +987,7 @@ export function revokeEveryonePlan({ env = {}, grants = null, denylistPath = nul
   return {
     possible: true, nothingOpen: false, jtis, people,
     denylistPath: armedPath,
-    lateArm: Boolean(!existing && armedPath),
+    lateArm: Boolean(!existing && armedPath && armedPath !== defaultDenylistPath(home)),   // see disablePlan
     // THE COUNT IS THE FIRST THING SAID, and it names both dimensions: five keys held by one person and
     // five keys held by five people are the same number and not the same act.
     says: [`This revokes ${jtis.length} issued key(s) held by ${people.length} ${people.length === 1 ? "person" : "people"}`

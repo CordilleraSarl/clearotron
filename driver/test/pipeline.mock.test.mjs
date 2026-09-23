@@ -60,6 +60,10 @@ writeFileSync(join(PROFILES_SEED, "projects", "aurora", "console-ecosystem.json"
   platforms: ["store.steampowered.com", "store.epicgames.com", "play.google.com", "apps.apple.com",
     "gog.com", "itch.io", "mobygames.com", "humblebundle.com", "gamejolt.com"],
 }, null, 2) + "\n");
+// A company that picked no marketplaces (the owner's ruling of 2026-09-23): an empty list, which loads.
+writeFileSync(join(PROFILES_SEED, "harbour-goods.json"), JSON.stringify({
+  name: "Harbour Goods", matchDomains: ["harbour-goods.example"], platforms: [],
+}, null, 2) + "\n");
 pinEnv(process.env, "CLEAROTRON_CUSTOMERS_DIR", PROFILES_SEED);
 
 const JOB = {
@@ -2419,6 +2423,27 @@ test("A1 split pre-split resume: the single-member assembly is restored VERBATIM
       assert.ok(!existsSync(join(res.runDir, f)), `no half artifact ${f}`);
 });
 
+test("a company with no marketplaces: every grid spec the run writes, closure included, fits the cell budget", async () => {
+  // Its profile's own batch figure divides the budget by the web cell alone, so it is the whole budget in
+  // terms. Both grids size by the cells they run (profiles.mjs gridBatchFor, whose arithmetic
+  // profiles.test.mjs pins for the web-plus-store case this mock's web-only closure cannot reach).
+  const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_CL_GAPS: "translit" },
+    { profileKey: "harbour-goods" });
+  assert.equal(res.ok, true, JSON.stringify(res));
+  const { SAFE_GRID_CELLS } = await import("../profiles.mjs");
+  const sidecar = JSON.parse(readFileSync(driverDir(res.runDir, "profile.json"), "utf8"));
+  const specs = readdirSync(driverDir(res.runDir)).filter((f) => /^grid-spec(\.half-[a-z]+)?(\.supp-closure)?\.json$/.test(f));
+  assert.ok(specs.length > 1, `the main grid and the closure each wrote a spec: ${specs.join(", ")}`);
+  assert.ok(specs.some((f) => f.includes("supp-closure")), `the closure ran and wrote its spec: ${specs.join(", ")}`);
+  assert.ok(events.some((e) => e.event === "coverage-closure" && e.requested > 0), "a closure was asked for");
+  for (const f of specs) {
+    const spec = JSON.parse(readFileSync(driverDir(res.runDir, f), "utf8"));
+    assert.ok(spec.batch <= sidecar.batchSize, `${f}: never larger than the profile's own figure`);
+    assert.ok(spec.batch * spec.platforms.length <= SAFE_GRID_CELLS,
+      `${f}: ${spec.batch} terms × ${spec.platforms.length} cells is over the ${SAFE_GRID_CELLS}-cell budget`);
+  }
+});
+
 test("A1 split repair BALANCE (item 25): the closable set is partitioned EVENLY across the usable halves, and the partition is recorded", async () => {
   // This test used to assert the opposite — that closable cells on a half-B term went to half B's
   // session and half A stayed untouched — because the reopen routed every cell through halfOfTerm.
@@ -2852,10 +2877,9 @@ test("the record can never explain a path the run did not take", async () => {
 // THE LEVER, and it is a real production shape rather than a synthetic one: a resume of a run with no
 // `_driver/profile.json`. attachProfile deliberately stays legacy on a sidecar-less resume (ctx.profile
 // = null), so profile.platforms is 0, no grid spec is authored, and a variant-carrying non-register-only
-// matter takes the spec-less path. The sweep report for this issue proposed seeding a zero-platform
-// profile instead; that is impossible — profiles.mjs validateProfileShape refuses a whole profile whose
-// platforms array is empty OR absent ("platforms must be a non-empty array of store-domain strings"),
-// and loadProfiles validates at load, so no such profile can exist to be selected.
+// matter takes the spec-less path. A zero-platform profile is NOT this lever: an empty marketplace list
+// is valid now and still writes a grid of the general-web cell and the meaning sweep — the arm after this
+// one pins that it does, and that it delivers without this clamp.
 test("a no-grid-spec downgrade on a variant-carrying manifest clamps CLEAR→CONDITIONAL and names the gap", async () => {
   const { res: r1 } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FAIL_STAGE: "joint synthesis narrative" });
   assert.equal(r1.ok, false);
@@ -2893,6 +2917,28 @@ test("a no-grid-spec downgrade on a variant-carrying manifest clamps CLEAR→CON
   assert.ok(clamp[0].gridVariants > 0);
 });
 
+
+test("a company with no marketplaces still searches the web and the meanings, and is not clamped for it", async () => {
+  // THE DEFECT THIS PINS AGAINST: the grid spec was gated on a NON-EMPTY marketplace list, and the
+  // general-web cell and the meaning sweep ride in that spec. An empty list would have switched both off
+  // with the stores, and the clamp above would then have downgraded every CLEAR for a sweep that "did
+  // not run". None means no store cells — never no web and no meanings.
+  const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced" }, { profileKey: "harbour-goods" });
+  assert.equal(res.ok, true, JSON.stringify(res));
+  const sidecar = JSON.parse(readFileSync(driverDir(res.runDir, "profile.json"), "utf8"));
+  assert.equal(sidecar.profileKey, "harbour-goods");
+  assert.deepEqual(sidecar.platforms, [], "the company's own list is empty");
+  const spec = JSON.parse(readFileSync(driverDir(res.runDir, "grid-spec.json"), "utf8"));
+  const added = events.find((e) => e.event === "commonlaw-channels-added")?.added ?? [];
+  assert.deepEqual(spec.platforms, [...added, "web"], "the web cell, plus only what the matter frame named — no store from any house list");
+  assert.ok(spec.terms.length > 0, "every variant still gets its web search");
+  assert.ok((spec.connotation?.queries ?? []).length > 0, "the meaning sweep is still dictated");
+  const rec = readPathRecord(res.runDir);
+  assert.notEqual(rec.reason, "no-grid-spec", "not the spec-less path");
+  const v = JSON.parse(readFileSync(driverDir(res.runDir, "verdict.json"), "utf8"));
+  assert.equal(v.kinds?.commonLawDowngrade ?? false, false, "no downgrade for a sweep that ran");
+  assert.ok(!events.some((e) => e.event === "common-law-downgrade-clamp"), "and none was recorded");
+});
 test("a legitimate unsplit path is NOT a failure: a pre-split resume still delivers CLEAR", async () => {
   // "Deliberately NOT proposed: making the unsplit path itself a failure. It is the legitimate rollback
   // path." The flag was one legitimate reason to be unsplit and is deleted; resumed-unsplit is another,

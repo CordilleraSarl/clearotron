@@ -350,3 +350,70 @@ test("a refusal BEFORE any identity is established names nobody, rather than inv
   assert.equal(rec.email, null, `it must name NOBODY, not the handler's placeholder: ${JSON.stringify(rec)}`);
   assert.equal(rec.sub, null, "and no principal either");
 });
+
+// ── AN OPS TOKEN THAT NAMES NO TOOLS CAN BE FOUND IN THE LOG, ON EVERY CALL IT MAKES ───────────────
+//
+// Ops tokens that name no tools are being retired: re-issued with the tools they call, then refused once
+// the log shows none in use. So the line says the principal's kind and, for an ops token, whether it
+// names its tools, and says it on a reused session as well as on the call that opened it, because a
+// long-lived connector makes most of its calls on a session it opened days earlier.
+const { mintToken } = await import("../../shared/scope.mjs");
+
+async function opsSessionLines(verbs) {
+  const saved = process.env.TRADEMARK_MCP_TOKEN_SECRET;
+  process.env.TRADEMARK_MCP_TOKEN_SECRET = "audit-kind-test-secret";
+  try {
+    const sessions = new Map();
+    const createSession = async (map, _scope, email) => {
+      const transport = {
+        sessionId: null,
+        async handleRequest(_req, res) {
+          if (!this.sessionId) { this.sessionId = "audit-kind-sid"; map.set(this.sessionId, { transport, email, lastSeen: Date.now() }); }
+          res.writeHead(200); res.end("{}");
+        },
+      };
+      return transport;
+    };
+    const h = makeHttpHandler({ limiter: new RateLimiter({ perMinute: 100 }), sessions, createSession, verify: mkVerify() });
+    const token = mintToken({ scope: "ops", sub: "audit-kind-arm", ...(verbs ? { verbs } : {}), ttlSec: 600 });
+    const jwt = await mint("a@example.com");
+    const call = (headers, body) => ({ method: "POST", url: "/mcp", headers: { "cf-access-jwt-assertion": jwt, ...headers },
+      async *[Symbol.asyncIterator]() { yield Buffer.from(JSON.stringify(body)); } });
+    const before = auditLines().length;
+    await h(call({ "x-trademark-token": token }, initBody), mockRes());
+    assert.ok(sessions.has("audit-kind-sid"), "the session was never opened, so the second call below would measure nothing");
+    await h(call({ "mcp-session-id": "audit-kind-sid" }, { jsonrpc: "2.0", id: 2, method: "tools/call", params: { name: "list_runs" } }), mockRes());
+    return auditLines().slice(before);
+  } finally {
+    if (saved === undefined) delete process.env.TRADEMARK_MCP_TOKEN_SECRET; else process.env.TRADEMARK_MCP_TOKEN_SECRET = saved;
+  }
+}
+
+test("an ops token that names no tools is marked on every line, the reused session's included", async () => {
+  const lines = await opsSessionLines(null);
+  assert.equal(lines.length, 2, `one line per call, got ${lines.length}`);
+  for (const rec of lines) {
+    assert.equal(rec.kind, "ops", `the principal's kind is missing: ${JSON.stringify(rec)}`);
+    assert.equal(rec.namesVerbs, false, `a verb-less ops token is not findable from this line: ${JSON.stringify(rec)}`);
+  }
+  assert.equal(lines[1].tool, "list_runs", "the second line is the reused session's call");
+});
+
+test("an ops token that names its tools says so, and the line never lists which", async () => {
+  const lines = await opsSessionLines(["start_run", "stop_run"]);
+  assert.equal(lines.length, 2);
+  for (const rec of lines) {
+    assert.equal(rec.namesVerbs, true, `a scoped ops token read as verb-less: ${JSON.stringify(rec)}`);
+    assert.doesNotMatch(JSON.stringify(rec), /start_run|stop_run/, "the line carries the token's tool list");
+  }
+});
+
+test("a line for a principal that is not ops carries no names-verbs claim", () => {
+  const before = auditLines().length;
+  appendAudit({ email: "a@example.com", sub: null, kind: "internal", body: null, status: 200, door: "staff" });
+  appendAudit({ email: "a@example.com", sub: null, body: null, status: 200, door: "staff" });
+  const [withKind, without] = auditLines().slice(before);
+  assert.equal(withKind.kind, "internal");
+  assert.ok(!("namesVerbs" in withKind), "a staff line claimed something about ops tools");
+  assert.ok(!("kind" in without) && !("namesVerbs" in without), "a caller that knew nothing wrote a claim anyway");
+});

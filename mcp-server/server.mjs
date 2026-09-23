@@ -851,6 +851,16 @@ export function attachHandlers(server, { scope = { kind: "ops", runId: null }, l
     let authedArgs;
     try { authedArgs = authorize(scope, name, args); }
     catch (e) { log(`authz deny ${name} [${scope.kind}]: ${e.message}`); return { isError: true, content: [{ type: "text", text: `FORBIDDEN (${name}): ${e.message}` }] }; }
+    // THE LISTING IS THE WALL. A tool this session's audience is not shown is one it cannot call: this
+    // used to filter only the listing, and a hidden tool called by name ran anyway once authorize()
+    // passed it. That is how an ops token reached what_if_run over HTTP, where the listing hides it and
+    // the engine starts. After authorize(), so a caller it already refuses keeps the refusal it names;
+    // this catches only what it lets through. Same answer as a name that does not exist, because to this
+    // session it does not.
+    if (!allow(name)) {
+      log(`listing deny ${name} [${scope.kind}${local ? "" : ", http"}]: not offered to this session`);
+      return { isError: true, content: [{ type: "text", text: `unknown tool "${name}"` }] };
+    }
     // ACCOUNT GATE (GRANTS, INSTALL.md §8): a run-addressed call from an account-scoped session must
     // target a run inside the grant. Enforced BEFORE dispatch so a denied run leaks nothing — not even
     // its existence (the deny message names the account, never the run's contents).
