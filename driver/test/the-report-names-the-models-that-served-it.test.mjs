@@ -280,12 +280,14 @@ for (const product of ["clearance", "knockout"]) {
 // refused), and a row naming no model used to be read as a call never made. A run made only of such a
 // turn then read null, "nothing was looked at", and its tokens were in no total.
 
+// The stand-in's controls carry the MOCK_ prefix: the program's environment is a list, and that prefix is
+// how a test control reaches it (driver/engine/engine-env.mjs).
 const STANDIN = join(ROOT, "standin-claude.mjs");
 writeFileSync(STANDIN, `#!/usr/bin/env node
 if (process.argv.includes("--version")) { process.stdout.write("2.1.270 (Claude Code)\\n"); process.exit(0); }
 if (!process.stdin.isTTY) { process.stdin.resume(); for await (const _ of process.stdin) { /* the prompt */ } }
-for (const ev of JSON.parse(process.env.STANDIN_EVENTS || "[]")) process.stdout.write(JSON.stringify(ev) + "\\n");
-process.exit(Number(process.env.STANDIN_EXIT || 0));
+for (const ev of JSON.parse(process.env.MOCK_STANDIN_EVENTS || "[]")) process.stdout.write(JSON.stringify(ev) + "\\n");
+process.exit(Number(process.env.MOCK_STANDIN_EXIT || 0));
 `);
 chmodSync(STANDIN, 0o755);
 
@@ -312,7 +314,7 @@ async function readingThroughTheDoor(runDir, turn, engine = "anthropic-agent") {
   mkdirSync(join(runDir, "register-units"), { recursive: true });
   writeFileSync(join(runDir, "register-units", "transliteration-numeric.md"), "| 诺瓦脉冲 | https://reg.example/tm/555 | live |");
   const env = { CLEAROTRON_AI: engine, CLEAROTRON_AI_BILLING: "subscription",
-    STANDIN_EVENTS: JSON.stringify(turn.events), STANDIN_EXIT: String(turn.exit) };
+    MOCK_STANDIN_EVENTS: JSON.stringify(turn.events), MOCK_STANDIN_EXIT: String(turn.exit) };
   const saved = Object.fromEntries([...Object.keys(env), ...HELD_OFF].map((k) => [k, process.env[k]]));
   const savedPath = envFrom(process.env, "CLEAROTRON_CLAUDE_PATH");
   for (const k of HELD_OFF) delete process.env[k];

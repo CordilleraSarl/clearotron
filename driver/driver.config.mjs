@@ -2027,9 +2027,10 @@ export const ENGINE_BINARIES = {
     // npm, NOT the vendor's shell installer: a command this product executes on someone's box has to be
     // one they can read in full before they answer, and a piped remote script is not.
     // — the documented headless ending. `claude setup-token` walks the sign-in and
-    // prints a long-lived token; the stage subprocess env is a spread of the driver's — spawnEnv
-    // strips ONLY the API key under subscription — so a token in the env file reaches the CLI
-    // untouched, and that inheritance is the whole mechanism (armed in engine.anthropic.test.mjs). The wizard
+    // prints a long-lived token; the stage subprocess env is a list (engine/engine-env.mjs) that carries the
+    // vendor's own `CLAUDE_*` names — the API key is the one name it keeps only under `api-key` — so a token
+    // in the env file reaches the CLI untouched, and that is the whole mechanism (armed in
+    // engine.anthropic.test.mjs). The wizard
     // captures it by paste: the vendor's stream layout is not ours to guess at, and a paste works
     // whatever it prints where.
     headless: { cmd: "claude setup-token", tokenEnv: "CLAUDE_CODE_OAUTH_TOKEN" },

@@ -24,7 +24,7 @@ import { resolveSpawnCwd, spawnGraceMs } from "./common.mjs";
 import { resolveEngineProgram } from "../driver.config.mjs";   // — the one place that finds the program; it reads every spelling of the setting
 import { authorityTrees } from "../authority-trees.mjs";
 import { recordEngineChild, clearEngineChild } from "./child-record.mjs";   //
-import { billingMode } from "./auth.mjs";   // — the one parse of the billing word (see spawnEnv)
+import { engineEnv } from "./engine-env.mjs";   // — the program's environment, by list (see spawnEnv)
 
 // Read per-call (not module-level) so tests can drive a short stall timeout / a mock binary.
 // ONE place knows how to find the program (driver.config.mjs resolveEngineProgram): the explicit setting,
@@ -43,13 +43,15 @@ const claudeBin = () => { const r = resolveEngineProgram("anthropic-agent"); ret
 //
 // `cloud` strips it too, as that mode's acceptance asks: a key has no part in a turn the vendor's switches
 // send to the reader's cloud account, and dropping it means a leftover key can never be what bills. A
-// gateway's credential is its own ANTHROPIC_AUTH_TOKEN, which rides through like every other name. The
+// gateway's credential is its own ANTHROPIC_AUTH_TOKEN, which rides through in the vendor's namespace. The
 // word is parsed by auth.mjs (billingMode), the one place that reads it. This never validates and never
 // throws, because the doors that do (the top of runStage, the probe, the jx runner) have already run.
+//
+// THE REST OF THE ENVIRONMENT IS A LIST, NOT A COPY. The program and every tool server it starts get what
+// engine-env.mjs names and nothing else, so the key that signs access tokens and the portal's secrets
+// never reach a stage. The billing rule above is applied there, with the rest of the list.
 export function spawnEnv(base = process.env) {
-  const env = { ...base };
-  if (billingMode(base) !== "api-key") delete env.ANTHROPIC_API_KEY;   // subscription and cloud
-  return env;
+  return engineEnv(base, { engine: "anthropic-agent" });
 }
 // 120s of ZERO streamed output = the silent-provider-stall abort. A healthy turn
 // streams thinking + output deltas continuously, so this never clips a slow-but-working turn.
@@ -131,8 +133,8 @@ const engineMaxBufferChars = () => Math.max(1024, Number(process.env.CLEAROTRON_
 // a cloud with no deployment of that exact name refuses the turn. The cost is that a model can move under a
 // clearance without a test; the witness is the id the CLI reports, recorded on every attempt row
 // (`modelActual`) and on the published run. To hold a tier still, set the vendor's variable in the env file
-// (ANTHROPIC_DEFAULT_OPUS_MODEL=<id>): the stage's environment is the driver's, so it reaches the CLI
-// with no setting of Clearotron's own. ANTHROPIC_DEFAULT_FABLE_MODEL holds fable, which no stage asks for
+// (ANTHROPIC_DEFAULT_OPUS_MODEL=<id>): the stage's environment carries the vendor's `ANTHROPIC_*` names
+// (engine-env.mjs), so it reaches the CLI with no setting of Clearotron's own. ANTHROPIC_DEFAULT_FABLE_MODEL holds fable, which no stage asks for
 // unless an override names it, as CLEAROTRON_SYNTHESIS_MODEL=fable does. A catalog id a caller names
 // (anthropic/claude-opus-5) still goes as that exact id. The non-anthropic tiers (gemini skeptic, deepseek refutation, azure) have no claude equivalent →
 // substituted with an anthropic model (also GRADE-MOVING, A/B-only); their bare-alias substitutes
@@ -357,6 +359,16 @@ export function runDirGrant({ runDir, dispatch, seatWrites = null } = {}) {
   return { grant, names, note };
 }
 
+/**
+ * The program's tools that run a command, removed from every stage by name. From the vendor's tools
+ * reference: `Bash` "Executes shell commands", `PowerShell` "Executes PowerShell commands natively" (the
+ * shell it offers on Windows, and on other systems when switched on), and `Monitor` "Runs a command in the
+ * background". Stages read and write their files through Read, Write and Edit and call their tool
+ * servers. No stage is granted a shell in the grant table (gather-config.mjs); what this removes is the
+ * shell the program offered them anyway.
+ */
+export const COMMAND_TOOLS = Object.freeze(["Bash", "PowerShell", "Monitor"]);
+
 export function buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig, allowedTools, maxBudgetUsd, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null }) {
   const input = absolutizeSkillRefs(message, skillsDir, resolveSkill);
   const args = ["-p", "--output-format", "stream-json", "--verbose", "--include-partial-messages"];
@@ -377,6 +389,13 @@ export function buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig
   if (resumeRef) args.push("--resume", resumeRef);          // warm-resume → reuses the prompt cache
   if (mcpConfig) { args.push("--mcp-config", mcpConfig, "--strict-mcp-config"); }
   if (allowedTools) args.push("--allowedTools", allowedTools);
+  // NO TOOL THAT RUNS A COMMAND, ON ANY STAGE, WHATEVER THE MACHINE'S OWN SETTINGS SAY. `--allowedTools`
+  // lists tools that run without asking; it removes nothing, and the program runs a command it classes as
+  // read-only (`cat`, `ls`) without asking at all. Measured on 2.1.280 with this argv: the model ran `echo`
+  // through Bash on a login with no rule allowing it. A bare name here "removes the matching tools from
+  // Claude's context" (the vendor's CLI reference, `--disallowedTools`), on every call, the resumed one
+  // included, so the model is never offered them. See COMMAND_TOOLS for the three names.
+  args.push("--disallowedTools", COMMAND_TOOLS.join(" "));
   const cap = maxBudgetUsd ?? (process.env.CLEAROTRON_MAX_BUDGET_USD ? Number(process.env.CLEAROTRON_MAX_BUDGET_USD) : null);
   if (cap != null && Number.isFinite(cap)) args.push("--max-budget-usd", String(cap));
   // FILE ACCESS: claude's Read/Write/Edit tools are confined to cwd + --add-dir roots even under
@@ -448,9 +467,10 @@ export function writeBoundarySettings({ skillsRoots = [], profilesDir = null, ru
   return JSON.stringify({
     hooks: {
       PreToolUse: [{
-        // Bash is in the matcher because seats have it and it walked past this hook entirely.
-        // What the Bash arm can and cannot do is stated at its declaration in deny-authority-write.mjs;
-        // it is a detector, and naming it here does not make it a boundary.
+        // Bash is in the matcher because seats had it and it walked past this hook entirely. The command
+        // tools are now removed from every stage (COMMAND_TOOLS, above), and the arm stays for a program
+        // that does not honour the removal. What it can and cannot do is stated at its declaration in
+        // deny-authority-write.mjs; it is a detector, and naming it here does not make it a boundary.
         matcher: "Write|Edit|MultiEdit|NotebookEdit|Bash",
         hooks: [{ type: "command", command: `${shq(process.execPath)} ${shq(hook)} ${payload}` }],
       }],
@@ -637,6 +657,11 @@ export const anthropicAgentEngine = {
       // ("a completed tool result = the agent loop advanced", below). The gap between them is the turn
       // waiting on tools rather than generating.
       let toolCalls = 0;
+      // HOW MANY OF THOSE ASKED FOR A COMMAND TOOL. The command tools are removed from every stage
+      // (COMMAND_TOOLS), so the number a test round expects here is zero, and a count is what proves it: a
+      // flag in the argv shows what was asked of the program, this shows what the model did. Still a count
+      // of calls, never a name or an input.
+      let commandToolCalls = 0;
       let toolWaitMs = 0;
       let toolAskedAt = null;
       // WHAT THE WAIT IS MADE OF, keyed by the tool(s) that caused it.
@@ -777,6 +802,7 @@ export const anthropicAgentEngine = {
           // Same belt-and-braces as the thinking gauge's `?.some?.()` on the line above.
           for (const b of Array.isArray(ev.message?.content) ? ev.message.content : []) {
             if (b?.type === "tool_use") toolCalls++;   // #1111 — every tool, not only Read; a COUNT, never a name
+            if (b?.type === "tool_use" && COMMAND_TOOLS.includes(b?.name)) commandToolCalls++;
             if (b?.type === "tool_use" && b?.name === "Read" && typeof b?.input?.file_path === "string") {
               if (reads.size < READS_CAP) reads.add(b.input.file_path);
               else if (!reads.has(b.input.file_path)) readsTruncated = true;   // a DISTINCT path was dropped
@@ -1105,6 +1131,11 @@ export const anthropicAgentEngine = {
           // from this list is unreliable and the consumer must downgrade it to "not observed").
           reads: [...reads], readsTruncated,
           toolCalls, toolWaitMs: settledToolWaitMs,   // #1111 — two integers, no content
+          // The two counts a test round reads per stage: calls to a command tool, and calls the program
+          // refused. The refusals are the result event's own `permission_denials`, counted; null when the
+          // turn settled with no result event, so "not reported" never reads as "none refused".
+          commandToolCalls,
+          toolCallsRefused: Array.isArray(resultEvent?.permission_denials) ? resultEvent.permission_denials.length : null,
           // ms from spawn to the child's FIRST byte, or null when it never spoke. RECORDING
           // ONLY: nothing branches on it. A recording field is protected by a test or by nothing, so
           // engine.anthropic.test.mjs pins it — deleting it must red something.

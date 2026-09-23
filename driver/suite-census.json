@@ -1071,6 +1071,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-stage-program-starts-with-a-listed-environment.test.mjs": {
+          "tests": 8,
+          "asserts": 42,
+          "skips": 0,
+          "todos": 0
+        },
         "a-stale-classification-names-the-rows-that-moved.test.mjs": {
           "tests": 6,
           "asserts": 24,
@@ -2518,8 +2524,8 @@
           "todos": 0
         },
         "engine.codex-config.test.mjs": {
-          "tests": 12,
-          "asserts": 34,
+          "tests": 15,
+          "asserts": 45,
           "skips": 0,
           "todos": 0
         },
@@ -2530,8 +2536,8 @@
           "todos": 0
         },
         "engine.fetch-server.test.mjs": {
-          "tests": 2,
-          "asserts": 4,
+          "tests": 3,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },
@@ -2945,7 +2951,7 @@
         },
         "instrumentation-house-rule.test.mjs": {
           "tests": 17,
-          "asserts": 113,
+          "asserts": 116,
           "skips": 0,
           "todos": 0
         },
@@ -3253,6 +3259,12 @@
           "tests": 6,
           "asserts": 13,
           "skips": 4,
+          "todos": 0
+        },
+        "no-stage-is-offered-a-command-tool.test.mjs": {
+          "tests": 6,
+          "asserts": 17,
+          "skips": 0,
           "todos": 0
         },
         "no-test-account-reaches-the-package.test.mjs": {
@@ -5199,6 +5211,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-fetch-tool-reaches-public-addresses-only.test.mjs": {
+          "tests": 7,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
         "the-first-hour-reads-true.test.mjs": {
           "tests": 8,
           "asserts": 42,
@@ -5742,6 +5760,12 @@
         "the-wider-families-wait-on-the-identical-question.test.mjs": {
           "tests": 13,
           "asserts": 49,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-worker-holds-no-signing-key.test.mjs": {
+          "tests": 5,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },

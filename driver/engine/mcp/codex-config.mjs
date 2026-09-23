@@ -125,6 +125,19 @@ export function renderCodexConfigToml({ mcpConfig, allowedTools, developerInstru
     // the turn's budget, not to any one server's reputation for being slow.
     if (toolTimeout) lines.push(`tool_timeout_sec = ${toolTimeout}`);
     if (s.enabledTools?.length) lines.push(`enabled_tools = ${tomlStringArray(s.enabledTools)}`);
+    // APPROVED, ON EVERY BLOCK THIS FUNCTION WRITES. `codex exec` runs with the approval policy `never`,
+    // and under the default per-server mode (`auto`) a tool that is not read-only needs approval when it
+    // is open-world, or when destructive or open-world is left unmarked. The register search tool is
+    // marked open-world, so with the sandbox on every call to it was refused ("MCP tool call requires
+    // approval, but approval policy is never") and the register was never queried. `approve` is the
+    // documented value that lets a server's tools through
+    // (https://learn.chatgpt.com/docs/config-file/config-reference, `default_tools_approval_mode`).
+    //
+    // WHAT IT REACHES: only the servers in this per-turn file, which are the ones the stage is granted
+    // plus the fetch server, each narrowed by its enabled_tools list. WHAT IT DOES NOT: shell commands.
+    // Those stay under `--sandbox workspace-write` (buildCodexArgs), and under the policy `never` a
+    // command that asks to leave the sandbox is still refused.
+    lines.push(`default_tools_approval_mode = "approve"`);
     lines.push("");
   };
 

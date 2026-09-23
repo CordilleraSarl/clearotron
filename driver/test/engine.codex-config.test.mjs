@@ -115,6 +115,71 @@ test("renderCodexConfigToml: the cap is the caller's number, not a constant in t
   assert.ok(!/tool_timeout_sec = \d/.test(src), "tool_timeout_sec must never be emitted from a literal");
 });
 
+// ── Clearotron's own tool servers are approved, and the sandbox stays on for shell commands ───────────
+// `codex exec` runs with the approval policy `never`. Under the default per-server mode a tool marked
+// open-world and not read-only (the register search) needs approval, so with the sandbox on every call was
+// refused and the register was never queried. The config this module writes approves the servers it names;
+// the command line keeps the sandbox. Either half alone is a different product: without the first no search
+// runs, and without the second the approval would travel with shell commands out of the sandbox.
+
+/** Every `[mcp_servers.*]` block of a rendered config, heading included. */
+const serverBlocks = (toml) => toml.split(/^(?=\[)/m).filter((b) => b.startsWith("[mcp_servers."));
+
+test("renderCodexConfigToml: every server block approves its own tools, the fetch server's included", () => {
+  const toml = renderCodexConfigToml({ mcpConfig: CLAUDE_JSON, allowedTools: ALLOWED, developerInstructions: "WRITE THE FILE." });
+  const blocks = serverBlocks(toml);
+  // register + courtlistener + the fetch server WebFetch brings in. A floor, so a renderer that wrote no
+  // server at all cannot pass by having nothing to check.
+  assert.equal(blocks.length, 3, `expected three server blocks, got ${blocks.length}`);
+  for (const b of blocks)
+    assert.match(b, /^default_tools_approval_mode = "approve"$/m, `no approval line in:\n${b}`);
+  // One per block and nowhere else: not a top-level key, which would reach servers this file does not name.
+  assert.equal((toml.match(/default_tools_approval_mode/g) || []).length, blocks.length);
+  const top = toml.slice(0, toml.indexOf("[mcp_servers."));
+  assert.ok(!top.includes("approval"), "an approval key above the first server block is global");
+});
+
+test("renderCodexConfigToml: the approval rides the servers a real stage is granted", async () => {
+  // The config a register-unit stage is built from, through the same two builders the gateway calls, so a
+  // stage whose servers the fixture above does not model still carries the line.
+  const { buildGatherMcpConfig, allowedToolsFor, toolGroupsForStage } = await import("../engine/mcp/gather-config.mjs");
+  const groups = toolGroupsForStage("register-unit:identical");
+  const before = process.env.CLEAROTRON_DATABASE;
+  process.env.CLEAROTRON_DATABASE = "euipo";
+  let cfg;
+  try { cfg = buildGatherMcpConfig(groups, { sessionKey: "s", agent: "a", runDir: "/tmp/run-x" }); }
+  finally { if (before === undefined) delete process.env.CLEAROTRON_DATABASE; else process.env.CLEAROTRON_DATABASE = before; }
+  const toml = renderCodexConfigToml({ mcpConfig: JSON.stringify(cfg), allowedTools: allowedToolsFor(groups) });
+  const blocks = serverBlocks(toml);
+  assert.ok(blocks.some((b) => b.startsWith("[mcp_servers.register]")), `no register server in:\n${toml}`);
+  for (const b of blocks)
+    assert.match(b, /^default_tools_approval_mode = "approve"$/m, `no approval line in:\n${b}`);
+});
+
+test("buildCodexArgs: the sandbox stays on unless the bypass is set to 1, and no approval flag rides the command line", async () => {
+  const { buildCodexArgs } = await import("../engine/openai-agent.mjs");
+  const before = process.env.CLEAROTRON_CODEX_SANDBOX_BYPASS;
+  const argvWith = (v) => {
+    if (v === undefined) delete process.env.CLEAROTRON_CODEX_SANDBOX_BYPASS; else process.env.CLEAROTRON_CODEX_SANDBOX_BYPASS = v;
+    return buildCodexArgs({ model: "haiku", thinking: "low", runDir: "/tmp/run-x" }).args;
+  };
+  try {
+    for (const v of [undefined, "", "0", "true"]) {
+      const args = argvWith(v);
+      const at = args.indexOf("--sandbox");
+      assert.ok(at > 0 && args[at + 1] === "workspace-write", `bypass=${JSON.stringify(v)}: ${args.join(" ")}`);
+      assert.ok(!args.includes("--dangerously-bypass-approvals-and-sandbox"), `bypass=${JSON.stringify(v)} dropped the sandbox`);
+      // The approval is the config file's, per server. A policy on the command line would reach shell commands.
+      assert.ok(!args.some((a) => /approval|full-auto/i.test(a)), `bypass=${JSON.stringify(v)}: ${args.join(" ")}`);
+    }
+    const bypassed = argvWith("1");
+    assert.ok(bypassed.includes("--dangerously-bypass-approvals-and-sandbox"));
+    assert.ok(!bypassed.includes("--sandbox"));
+  } finally {
+    if (before === undefined) delete process.env.CLEAROTRON_CODEX_SANDBOX_BYPASS; else process.env.CLEAROTRON_CODEX_SANDBOX_BYPASS = before;
+  }
+});
+
 test("renderCodexConfigToml: a fractional budget is floored to a whole second (TOML integer)", () => {
   const toml = renderCodexConfigToml({ mcpConfig: CLAUDE_JSON, allowedTools: ALLOWED, toolTimeoutSec: 1500.7 });
   assert.match(toml, /^tool_timeout_sec = 1500$/m);
