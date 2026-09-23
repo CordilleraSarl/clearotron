@@ -188,7 +188,10 @@ test("a stop that could not reach systemd leaves the unit files in place", () =>
     + `running service with no unit file cannot be stopped by any ordinary means.\n${r.out}`);
 });
 
-test("it says it could not, rather than that it did", () => {
+test("it says it could not, rather than that it did", {
+  skip: process.platform === "win32" && "systemd's user bus: the XDG_RUNTIME_DIR remedy is for a systemctl that runs and cannot reach "
+    + "its bus, and Windows has no systemctl, so the call fails as a missing program that remedy would not mend",
+}, () => {
   const r = stopWithNoBus(["clearotron-portal.service"]);
   assert.ok(!/stopped and removed/.test(r.out),
     `it reported "stopped and removed" for a unit it did not stop\n${r.out}`);

@@ -64,6 +64,32 @@ symlinkSync(process.execPath, join(NODE_BIN, "node"));
  */
 const NO_ENGINES = mkdtempSync(join(tmpdir(), "onboard-no-engines-"));
 
+/**
+ * The file name a fixture program needs to be FOUND on PATH. Windows finds a program there only under an
+ * extension it starts itself (driver.config.mjs, windowsProgramIn), so the extensionless name is passed
+ * over; the fixtures named with this are found and never run, so their body does not matter.
+ */
+const onPathName = (name) => (process.platform === "win32" ? `${name}.exe` : name);
+
+/** Why the arms that ASK a program found on PATH for its version cannot hold on Windows. */
+const NO_SCRIPT_ON_PATH = process.platform === "win32"
+  && "a `#!` script on PATH answering `--version`: Windows finds a program on PATH only as an .exe, or as npm's "
+   + ".cmd shim for the vendor's package, whose version is read from that package and never asked, so a fake "
+   + "program that answers the question can only be a real .exe";
+
+/** A program that runs, says nothing and exits 1, at a path to set in the engine's setting. Windows starts
+ *  no `#!` script, and a JavaScript program is started there through Node (engine/engine-spawn.mjs). */
+function muteProgram(dir) {
+  if (process.platform !== "win32") {
+    const p = join(dir, "claude");
+    writeFileSync(p, "#!/bin/sh\nexit 1\n", { mode: 0o755 });
+    return p;
+  }
+  const p = join(dir, "claude.mjs");
+  writeFileSync(p, "process.exit(1);\n");
+  return p;
+}
+
 /** Run the CLI with the ambient environment stripped — the shell this test runs in has real credentials. */
 function run(args, env = {}) {
   try {
@@ -462,14 +488,14 @@ test("reading a .env for the report does not APPLY it — --check must not confi
 
 test("resolveEngineBin finds a binary on PATH and flags a relative one", () => {
   const dir = mkdtempSync(join(tmpdir(), "onboard-bin-"));
-  writeFileSync(join(dir, "codex"), "#!/bin/sh\nexit 0\n", { mode: 0o755 });
+  writeFileSync(join(dir, onPathName("codex")), "#!/bin/sh\nexit 0\n", { mode: 0o755 });
   const savedPath = process.env.PATH;
   process.env.PATH = dir;
   try {
     // Driven on `codex` on purpose: the function was called resolveClaudeBin and its body never had
     // anything claude-specific in it. The name was the last place this file assumed one engine.
     const found = resolveEngineBin("codex");
-    assert.equal(found.path, join(dir, "codex"));
+    assert.equal(found.path, join(dir, onPathName("codex")));
     assert.equal(found.executable, true);
     assert.equal(found.relative, false);
     const rel = resolveEngineBin("./codex");
@@ -524,7 +550,7 @@ test("each row of the engine question says what setup found of that program, in 
     "Claude, by Anthropic   found on this computer");
 });
 
-test("the engine question resolves each program the way a run does: setting, then PATH, then the copy setup installed", () => {
+test("the engine question resolves each program the way a run does: setting, then PATH, then the copy setup installed", { skip: NO_SCRIPT_ON_PATH }, () => {
   const sh = (dir, name, body) => { const p = join(dir, name); writeFileSync(p, `#!/bin/sh\n${body}\n`, { mode: 0o755 }); return p; };
   const machine = mkdtempSync(join(tmpdir(), "onboard-menu-path-"));
   const elsewhere = mkdtempSync(join(tmpdir(), "onboard-menu-set-"));
@@ -568,7 +594,7 @@ test("the engine question resolves each program the way a run does: setting, the
   }
 });
 
-test("the engine question shows a version only when the program answers with one, and waits at most two seconds for it", () => {
+test("the engine question shows a version only when the program answers with one, and waits at most two seconds for it", { skip: NO_SCRIPT_ON_PATH }, () => {
   const sh = (body) => { const d = mkdtempSync(join(tmpdir(), "onboard-menu-version-")); writeFileSync(join(d, "claude"), `#!/bin/sh\n${body}\n`, { mode: 0o755 }); return d; };
   const prose = sh('echo "Welcome to a wrapper that prints a banner and never names a version"');
   const hung = sh("exec sleep 30");
@@ -699,8 +725,7 @@ test("the probe reports a signed-out engine as signed out, not as 'cannot run'",
   // A binary that runs, says nothing and exits nonzero — the startup-class shape. It passes every
   // filesystem check preflightEngineBinary makes, which is the entire reason this probe exists.
   const dir = mkdtempSync(join(tmpdir(), "onboard-mute-"));
-  const mute = join(dir, "claude");
-  writeFileSync(mute, "#!/bin/sh\nexit 1\n", { mode: 0o755 });
+  const mute = muteProgram(dir);
   try {
     const r = run(["--check", "--probe-engine"], { CLEAROTRON_CLAUDE_PATH: mute });
     assert.equal(r.code, 1, r.out);
@@ -770,7 +795,7 @@ test("an unmeasurable disk is reported, never read as room", () => {
 test("the background build is detached, logged, and not waited on", () => {
   const spec = backgroundSyncSpec({ repo: "/srv/dev-instance/repo", dbPath: "/data/us.db", logFd: 7 });
   assert.equal(spec.command, process.execPath);
-  assert.deepEqual(spec.args, ["/srv/dev-instance/repo/bin/uspto-sync.mjs", "--db", "/data/us.db"],
+  assert.deepEqual(spec.args, [join("/srv/dev-instance/repo", "bin", "uspto-sync.mjs"), "--db", "/data/us.db"],
     "the index path is passed explicitly — the sync script's own default is not what the reader chose");
   assert.equal(spec.options.detached, true);
   assert.deepEqual(spec.options.stdio, ["ignore", 7, 7],
@@ -780,7 +805,7 @@ test("the background build is detached, logged, and not waited on", () => {
 test("the wizard still points at the same script the docs do", () => {
   const src = readFileSync(join(REPO, "bin", "onboard.mjs"), "utf8");
   const spec = backgroundSyncSpec({ repo: "/r", dbPath: "/d.db", logFd: 1 });
-  assert.ok(spec.args[0].endsWith("bin/uspto-sync.mjs"));
+  assert.match(spec.args[0], /[\\/]bin[\\/]uspto-sync\.mjs$/);
   // THE LINE THE READER IS SHOWN, not a mention in the wizard's comments: the build command is composed
   // for however this install is reached, so a package install is not handed a checkout-only script.
   const uspto = PROVIDERS.find((p) => (p.credentials ?? []).includes("USPTO_LOCAL_DB"));
@@ -1660,7 +1685,7 @@ test("setup writes the installed copy as the engine's default word, which replac
     assert.equal(now.source, "installed", `what setup wrote does not reach the installed copy: ${JSON.stringify(now)}`);
     assert.equal(now.resolved, program);
     const machine = mkdtempSync(join(tmpdir(), "onboard-machine-copy-"));
-    writeFileSync(join(machine, eng.fallback), "#!/bin/sh\nexit 0\n", { mode: 0o755 });
+    writeFileSync(join(machine, onPathName(eng.fallback)), "#!/bin/sh\nexit 0\n", { mode: 0o755 });
     const later = resolveEngineProgram("anthropic-agent", { env: { PATH: machine, [eng.env]: written }, enginesDir: root });
     rmSync(machine, { recursive: true, force: true });
     assert.equal(later.source, "path", "a copy this machine gets later must win over what setup wrote");

@@ -49,7 +49,8 @@ test("a queue the unit DOES glob is silent — no warning on a correctly wired b
   assert.equal(probeQueueWatch({ queueDirs: ["/srv/second/"], home }).state, "pass");
 });
 
-test("`%h` in the unit resolves against the SAME home the probe was asked about", () => {
+test("`%h` in the unit resolves against the SAME home the probe was asked about",
+  { skip: process.platform === "win32" && "no systemd on Windows: a `.path` unit and its `%h` specifier join with \"/\", which can never spell a native Windows queue folder, and a Windows install has no such unit to read" }, () => {
   const home = mkdtempSync(join(tmpdir(), "qw-home-"));
   const unit = pathUnitFor(home);
   mkdirSync(dirname(unit), { recursive: true });
@@ -224,7 +225,8 @@ test("an UNREADABLE drop-in is SKIP and never a pass — the same rule as an unr
   const v = probeQueueWatch({
     queueDirs: ["/srv/anything"], home: "/home/nobody",
     readUnit: (p) => {
-      if (p.endsWith(".d/locked.conf")) { const e = new Error("permission denied"); e.code = "EACCES"; throw e; }
+      // Either separator: the probe joins the drop-in path natively, and Windows joins it with backslashes.
+      if (/\.d[\\/]locked\.conf$/.test(p)) { const e = new Error("permission denied"); e.code = "EACCES"; throw e; }
       return "[Path]\nPathExistsGlob=/srv/anything/*.json\n";
     },
     listDropIns: () => ["locked.conf"],

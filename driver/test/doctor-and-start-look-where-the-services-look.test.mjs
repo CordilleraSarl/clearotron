@@ -20,7 +20,7 @@ import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, dirname, resolve } from "node:path";
+import { join, dirname, resolve, delimiter } from "node:path";
 import { fileURLToPath } from "node:url";
 import { unitEnvironment, unitValue } from "../unit-environment.mjs";
 import { ENGINE_BINARIES } from "../driver.config.mjs";
@@ -40,11 +40,17 @@ const REG = PROVIDERS.find((p) => (p.credentials ?? []).length);
 /** Everything the gate asks for except the engine's program. */
 const CONFIGURED = [`CLEAROTRON_DATABASE=${REG?.id}`, ...(REG?.credentials ?? []).map((k) => `${k}=x`), "CLEAROTRON_AI=anthropic-agent"];
 
-/** An executable file under the name the engine runs, in `dir`. */
+/** An executable file under the name the engine runs, in `dir`. Windows finds a program on PATH only under
+ *  an extension it starts, so there it is `claude.exe`; it is found and never run. */
 function plantProgram(dir) {
   mkdirSync(dir, { recursive: true });
-  writeFileSync(join(dir, PROGRAM), "#!/bin/sh\nexit 0\n", { mode: 0o755 });
+  writeFileSync(join(dir, process.platform === "win32" ? `${PROGRAM}.exe` : PROGRAM), "#!/bin/sh\nexit 0\n", { mode: 0o755 });
 }
+
+/** Why the arms that plant the program on the background units' PATH cannot hold on Windows. */
+const NO_UNITS = process.platform === "win32"
+  && "systemd user units: the units' PATH is a Linux PATH of `%h/...` folders joined by \":\", which the "
+   + "Windows lookup reads as one folder, and no Windows machine runs these units";
 
 test("the shipped worker unit sets its PATH with %h, so the arms below measure its expansion", () => {
   // THE PRECONDITION. If the unit stopped writing `%h` into its PATH, the plants below would still pass
@@ -122,7 +128,7 @@ function hostedHome({ plant, settingsPath = null }) {
   return home;
 }
 
-test("doctor counts a program on the units' PATH as the engine a search needs", () => {
+test("doctor counts a program on the units' PATH as the engine a search needs", { skip: NO_UNITS }, () => {
   const home = hostedHome({ plant: true });
   try {
     const out = doctor(home);
@@ -139,7 +145,7 @@ test("THE CONTROL: the same units with no program anywhere still refuse for the 
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
-test("a PATH in the units' settings file is the one doctor searches, since on systemd it wins over the unit's", () => {
+test("a PATH in the units' settings file is the one doctor searches, since on systemd it wins over the unit's", { skip: NO_UNITS }, () => {
   // Every shipped unit writes its PATH after its EnvironmentFile= line, and systemd still gives the service
   // the file's PATH. So a program only on the unit's PATH is not found by the services, and doctor must not
   // count it; and a program only on the file's PATH is found, and doctor must count it.
@@ -164,7 +170,7 @@ test("with no units, doctor looks on the PATH that `clearotron start` hands its 
     writeFileSync(join(home, ".config", "clearotron", ".env"), CONFIGURED.join("\n") + "\n");
     const bin = join(home, "bin");
     plantProgram(bin);
-    const found = doctor(home, `${bin}:/usr/bin:/bin`);
+    const found = doctor(home, [bin, "/usr/bin", "/bin"].join(delimiter));
     assert.match(found, /nothing a search is refused for at order time is missing from your environment file/, found);
     const control = doctor(home);
     assert.match(control, new RegExp(`a search is refused until this is set in your environment file: ${PATH_SETTING}\\s*$`, "m"), control);
@@ -211,7 +217,7 @@ function announced(said) {
   return [...said.slice(from, to).matchAll(/^\s+([A-Z][A-Z0-9_]+) — /gm)].map((m) => m[1]);
 }
 
-test("start --background counts a program on the worker unit's PATH, and says a run is refused only for what is missing", async () => {
+test("start --background counts a program on the worker unit's PATH, and says a run is refused only for what is missing", { skip: NO_UNITS }, async () => {
   const d = await driveStart({ plant: true });
   try {
     const names = announced(d.said);

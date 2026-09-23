@@ -13,7 +13,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, rmSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, basename } from "node:path";
 import { drainerVerdict, writeDrainerStamp, readDrainerStamp, drainerStampPath, DRAINER_CMD, STAMP_BASENAME, defaultPpidOf }
   from "../drainer-identity.mjs";
 
@@ -143,7 +143,8 @@ test("the stamp round-trips through a real file, and a torn or absent one reads 
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-const basenameOf = (p) => p.split("/").pop();
+// node:path, not a split on "/": the stamp path is native, and Windows joins it with backslashes.
+const basenameOf = (p) => basename(p);
 
 test("Refs tracker issue 1977 criterion 2 — an UNSUPERVISED drainer is named even when every commit agrees", () => {
   // PPID 1 is the incident's own shape: an orphan of a start whose supervisor exited, in a `closing`
