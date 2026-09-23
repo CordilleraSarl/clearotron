@@ -692,16 +692,19 @@ test("a STARVED SPAWN is not ACTIVE time — the hard ceiling measures from the 
   // on process boot, with nothing to show for it.
   //
   // THREE TIMES THOSE NUMBERS, because the driver times a tool wait from when each line ARRIVES. On the
-  // Windows runner a line reached it 0.3 to 0.5s after the stand-in sent it (a 1.2s wait measured 0.69,
-  // 0.78 and 0.88s), and that lag counts as active time. At a 500ms ceiling the lag alone came within a
-  // hair of the kill this arm says must not happen. At 1.5s it cannot decide the arm on any runner.
+  // Windows runner lines arrived late (a 1.2s wait measured 0.69, 0.78 and 0.88s; a 3.6s one, 2.8s), and
+  // that lag counts as active time. At a 500ms ceiling the lag alone came within a hair of the kill this
+  // arm says must not happen.
   const r = await run({ message: "x", model: "sonnet", thinking: "low", timeoutSec: 60 },
     { MOCK_CLAUDE_BOOT_MS: "2700", MOCK_CLAUDE_TOOL_WAIT: JSON.stringify([{ name: "RegisterLookup", ms: 3600 }]),
       CLEAROTRON_HARD_MS: "1500", CLEAROTRON_STALL_MS: "60000", CLEAROTRON_NO_PROGRESS_MS: "60000" });
   assert.equal(r.killed, false,
     "startup was charged to the ceiling as active time — the turn died having done no work at all" + specimen(r));
-  assert.ok(r.toolWaitMs >= 3000, `the fixture waited ${r.toolWaitMs}ms on a tool — under ~3s the turn never `
-    + "reached the elapsed-vs-active gap this arm turns on" + specimen(r));
+  // The wait only has to outlast the ceiling: then the turn lived past 1.5s after its first byte, and only
+  // an uncounted wait kept it alive. Asking for the whole 3.6s failed on the Windows runner, where it was
+  // measured at 2.8s: that runner hands lines over late, and the more so the longer the wait.
+  assert.ok(r.toolWaitMs > 1500, `the fixture waited ${r.toolWaitMs}ms on a tool — no longer than the ceiling, `
+    + "so the turn never reached the elapsed-vs-active gap this arm turns on" + specimen(r));
   assert.equal(r.toolCalls >= 1, true,
     "no tool call was ever opened, so the turn was killed during boot" + specimen(r));
 }));

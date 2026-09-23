@@ -274,11 +274,23 @@ test("CLEAROTRON_HARD_MS is a pin, never a way to switch the wall off", async ()
   // unparseable value falls through to the derivation; reading either as "a ceiling of zero" would kill
   // every turn at the first watchdog tick, and reading it as "no ceiling" would remove the last backstop
   // on a real box. THE TURN MUST OUTLIVE A TICK or the arm proves nothing: stallSec 1.0 polls at 500ms.
-  for (const bad of ["0", "-1", "not-a-number", ""]) {
-    const r = await withHardPin(bad, () => runNode(lateSpeaker(100, 1600), { stallSec: 1.0 }));
-    assert.ok(r.wall > 1.0, `CLEAROTRON_HARD_MS=${JSON.stringify(bad)}: the turn ran ${r.wall}s, under two polls — `
-      + "the watchdog barely ticked, so this says nothing about the ceiling");
-    assert.equal(r.killed, false,
-      `CLEAROTRON_HARD_MS=${JSON.stringify(bad)} was read as a ceiling rather than falling through to the derivation`);
+  //
+  // THE STARTUP GETS AMPLE GRACE, because this arm is about the ceiling and not the stall clock. With the
+  // default 2s before a first byte, a runner slow to start Node (1.7s measured on the Windows runner) could
+  // stall-kill the child first, and the arm then blamed the ceiling for it.
+  const hadGrace = Object.prototype.hasOwnProperty.call(process.env, "CLEAROTRON_SPAWN_GRACE_MS");
+  const graceBefore = process.env.CLEAROTRON_SPAWN_GRACE_MS;
+  process.env.CLEAROTRON_SPAWN_GRACE_MS = "20000";
+  try {
+    for (const bad of ["0", "-1", "not-a-number", ""]) {
+      const r = await withHardPin(bad, () => runNode(lateSpeaker(100, 1600), { stallSec: 1.0 }));
+      const how = ` (killed ${r.killed}, by the ceiling ${r.hardWall}, as a stall ${r.stallKill}, ran ${r.wall}s)`;
+      assert.ok(r.wall > 1.0, `CLEAROTRON_HARD_MS=${JSON.stringify(bad)}: the turn ran ${r.wall}s, under two polls — `
+        + "the watchdog barely ticked, so this says nothing about the ceiling" + how);
+      assert.equal(r.killed, false,
+        `CLEAROTRON_HARD_MS=${JSON.stringify(bad)} was read as a ceiling rather than falling through to the derivation` + how);
+    }
+  } finally {
+    if (hadGrace) process.env.CLEAROTRON_SPAWN_GRACE_MS = graceBefore; else delete process.env.CLEAROTRON_SPAWN_GRACE_MS;
   }
 });
