@@ -2506,8 +2506,8 @@
           "todos": 0
         },
         "engine.codex-config.test.mjs": {
-          "tests": 15,
-          "asserts": 45,
+          "tests": 18,
+          "asserts": 58,
           "skips": 0,
           "todos": 0
         },

@@ -68,6 +68,8 @@ export function parseClaudeMcpServers(mcpConfigJson) {
 // claude tools are namespaced `mcp__<server>__<tool>`; codex filters per server with `enabled_tools`
 // naming the BARE tool. A bare (non-`mcp__`) entry like `WebFetch` is a claude built-in with no codex
 // server equivalent — it is dropped here and handled separately (the engine-local fetch server below).
+// A whole-server grant, `mcp__<server>__*`, comes through as the tool `*`; the renderer writes no list
+// for it (see `emitServer`).
 export function enabledToolsByServer(allowedTools) {
   const out = {};
   if (!allowedTools) return out;
@@ -124,7 +126,12 @@ export function renderCodexConfigToml({ mcpConfig, allowedTools, developerInstru
     // Per-call, and deliberately on EVERY server including the engine-local fetch one: the cap belongs to
     // the turn's budget, not to any one server's reputation for being slow.
     if (toolTimeout) lines.push(`tool_timeout_sec = ${toolTimeout}`);
-    if (s.enabledTools?.length) lines.push(`enabled_tools = ${tomlStringArray(s.enabledTools)}`);
+    // A SERVER GRANTED WHOLE GETS NO LIST. On claude `mcp__<server>__*` means every tool that server
+    // serves, and the case-law step's two bridges are granted that way (gather-config's `allowedToolsFor`).
+    // codex matches `enabled_tools` by exact name, so the `["*"]` this once wrote named no tool, both
+    // bridges came up offering nothing, and on this engine the case-law step read EUR-Lex alone. With no
+    // list, codex offers every tool the server serves, which is what the grant says.
+    if (s.enabledTools?.length && !s.enabledTools.includes("*")) lines.push(`enabled_tools = ${tomlStringArray(s.enabledTools)}`);
     // APPROVED, ON EVERY BLOCK THIS FUNCTION WRITES. `codex exec` runs with the approval policy `never`,
     // and under the default per-server mode (`auto`) a tool that is not read-only needs approval when it
     // is open-world, or when destructive or open-world is left unmarked. The register search tool is
@@ -134,7 +141,8 @@ export function renderCodexConfigToml({ mcpConfig, allowedTools, developerInstru
     // (https://learn.chatgpt.com/docs/config-file/config-reference, `default_tools_approval_mode`).
     //
     // WHAT IT REACHES: only the servers in this per-turn file, which are the ones the stage is granted
-    // plus the fetch server, each narrowed by its enabled_tools list. WHAT IT DOES NOT: shell commands.
+    // plus the fetch server, each narrowed by its enabled_tools list, except a server granted whole, which
+    // offers every tool it serves, as it does on claude. WHAT IT DOES NOT: shell commands.
     // Those stay under `--sandbox workspace-write` (buildCodexArgs), and under the policy `never` a
     // command that asks to leave the sandbox is still refused.
     lines.push(`default_tools_approval_mode = "approve"`);
