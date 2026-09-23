@@ -1406,7 +1406,7 @@ export async function doRecordFetch(apiKey, base, params, tctx) {
   const records = [];
   const fetched = [];
   const errors = [];
-  for (const rec of held.values()) records.push(normalizeRecord(rec, rec?.id ? officeByGuid[rec.id] : null));
+  for (const rec of held.values()) { const nr = normalizeRecord(rec, rec?.id ? officeByGuid[rec.id] : null); records.push(nr); fetched.push(nr); }
   for (const group of groups) {
     const { ok, raw, error } = await fetchText(apiKey, base, group, params.test_mode, tctx);
     if (!ok) { errors.push(error); continue; }
@@ -1417,6 +1417,10 @@ export async function doRecordFetch(apiKey, base, params, tctx) {
   }
   // A1: persist each normalized record keyed by its synthetic ref so the driver can field-verify
   // registry identifiers and archive the record into the run. (test_mode bodies are obfuscated — skip.)
+  // A HELD RECORD IS WRITTEN TOO, under the address this request gives it. The screen gate matches exact
+  // addresses against this log, and a record first fetched under another office's address was otherwise
+  // absent under this one, so a drop citing it read as a record nobody examined. The log keeps one row per
+  // address (writeRecordOnce), so a held record already logged under this address writes nothing.
   if (!params.test_mode) {
     for (const nr of fetched) if (nr?.uri) logRecordBody({ ...tctx, kind: "record_fetch" }, nr.uri, nr);
   }
@@ -1446,11 +1450,12 @@ export async function doBatchScreen(apiKey, base, params, tctx) {
   const normalized = [];
   const answers = held.size ? [{ ok: true, raw: [...held.values()], held: true }] : [];
   for (const group of groups) answers.push({ ...(await fetchText(apiKey, base, group, params.test_mode, tctx)), held: false });
-  for (const { ok, raw, error, held: fromStore } of answers) {
+  for (const { ok, raw, error } of answers) {
     if (!ok) { errors.push(error); continue; }
     for (const rec of raw) {
       const nr = normalizeRecord(rec, rec?.id ? officeByGuid[rec.id] : null);
-      if (!fromStore) normalized.push(nr);
+      // A held record is logged as well, under this request's address, for the reason doRecordFetch gives.
+      normalized.push(nr);
       const row = {
         uri: nr.uri,
         guid: nr.guid,
