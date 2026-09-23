@@ -2,4 +2,4 @@
 "clearotron-driver": patch
 ---
 
-For operators: on the Anthropic engine, a search step refuses to read files outside its own folders and any folders the machine's Claude settings add.
+For operators: on the Anthropic engine, a search can no longer read the install's settings or other private files.
