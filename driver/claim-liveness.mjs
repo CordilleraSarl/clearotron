@@ -35,6 +35,7 @@ import { readFileSync, readdirSync, statSync } from "node:fs";
 import { spawnSync } from "node:child_process";   // — the birth stamp where there is no /proc
 import { join } from "node:path";
 import { config } from "./driver.config.mjs";
+import { windowsProcessScript, parseWindowsRows, defaultRunPowerShell } from "../shared/process-table.mjs";   // the birth stamp on Windows
 
 // ── B2 — fail-safe claim liveness ────────────────────────────────────────────────────────────────────
 // The .pid sidecar records "<pid>:<starttime>" (starttime = field 22 of /proc/<pid>/stat, the kernel's
@@ -42,7 +43,7 @@ import { config } from "./driver.config.mjs";
 // impersonate a dead claimer and rot its `.processing` forever. Legacy bare-pid sidecars still parse
 // (starttime null → pid-aliveness is all we have, today's behavior). All exported for unit tests.
 export function procStarttime(pid, readStat = undefined,
-  { platform = process.platform, readPsStart = defaultReadPsStart } = {}) {
+  { platform = process.platform, readPsStart = defaultReadPsStart, runPowerShell = defaultRunPowerShell } = {}) {
   // AN INJECTED READER IS THE CALLER'S STATEMENT ABOUT HOW TO READ, and it outranks the platform.
   //
   // Measured on macOS (the verification run): the arm that pins the field-22
@@ -61,6 +62,7 @@ export function procStarttime(pid, readStat = undefined,
       return stat.slice(stat.lastIndexOf(")") + 2).trim().split(/\s+/)[19] ?? null;
     } catch { return null; }
   }
+  if (platform === "win32") return windowsStarttime(pid, runPowerShell);
   // ── — THE SAME DEFENCE WHERE THERE IS NO /proc ─────────────────────────
   //
   // Returning null here was not a neutral degradation. `claimToken` announces it and falls back to a
@@ -80,6 +82,33 @@ export function procStarttime(pid, readStat = undefined,
     const ms = Date.parse(String(readPsStart(pid)).trim());
     return Number.isFinite(ms) ? String(ms) : null;
   } catch { return null; }
+}
+
+// ── WINDOWS: NEITHER /proc NOR ps ────────────────────────────────────────────────────────────────────
+//
+// Without a stamp on Windows the portal said nothing was draining the queue while the worker ran, which
+// is the false alarm described above, and a claim held by a dead runner stayed held until the max-claim-age
+// ceiling. That second cost is larger on Windows than anywhere else, because Windows hands a freed pid to
+// the next process soon after. So the stamp is read from the system's process list, through PowerShell:
+// the creation time as epoch milliseconds, the same reader `processTable` uses, so a stamp written from
+// one is compared with a stamp read by the same code.
+//
+// ONE PROCESS IS REMEMBERED: this one. Its start cannot change while it runs, and the heartbeat and the
+// status stamp ask for it on every tick, each a PowerShell start. Every other pid is read afresh, for the
+// reason above: a remembered stamp is the dead process's, handed to whatever now wears its number.
+let ownWindowsStamp;
+function windowsStarttime(pid, runPowerShell) {
+  if (!Number.isInteger(pid) || pid <= 0) return null;
+  const own = pid === process.pid && runPowerShell === defaultRunPowerShell;
+  if (own && ownWindowsStamp) return ownWindowsStamp;
+  let row = null;
+  try {
+    const r = runPowerShell(windowsProcessScript(pid));
+    if (r && r.status === 0) row = parseWindowsRows(r.stdout).find((p) => p.pid === pid) ?? null;
+  } catch { return null; }
+  const stamp = row && Number.isFinite(row.startedAt) ? String(row.startedAt) : null;
+  if (own && stamp) ownWindowsStamp = stamp;
+  return stamp;
 }
 
 /** `ps` is POSIX and is on macOS. Empty stdout (no such pid) parses to NaN above, which is `null`. */

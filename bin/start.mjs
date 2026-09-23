@@ -87,6 +87,7 @@ import { writeSecretFile } from "../shared/secret-file.mjs";   // one atomic wri
 import { runRequiredNames, missingRequirements, CLOUD_ROUTES } from "../driver/run-requirements.mjs";
 import { CLOUD_SWITCH, cloudsSwitchedOn } from "../driver/engine/auth.mjs";   // a switch compared the way the program reads it: on or off
 import { ENGINE_BINARIES, DEFAULT_ENGINE_ID as RUN_DEFAULT_ENGINE, resolveEngineProgram } from "../driver/driver.config.mjs";
+import { spawnsDetached, killWindowsTreeNow } from "../driver/engine/engine-spawn.mjs";   // Windows has no process group to stop
 import { unitEnvironment, unitValue } from "../driver/unit-environment.mjs";   // the PATH the worker unit will run with, read the way doctor reads it
 
 /**
@@ -2187,8 +2188,9 @@ if (isMain) {
       cwd: REPO,
       // Its OWN process group, so Ctrl-C reaches this supervisor alone and teardown is one ordered
       // sequence rather than a race between the terminal's signal and ours. It also means the group
-      // kill below reaches anything a child spawns, not just the child.
-      detached: true,
+      // kill below reaches anything a child spawns, not just the child. NOT ON WINDOWS, where a detached
+      // child has no console and outlives the window it was started from (engine/engine-spawn.mjs).
+      detached: spawnsDetached(),
       // — STDERR IS TEED RATHER THAN INHERITED, AND ONLY STDERR.
       //
       // These children announce a refusal as one FATAL line on stderr and exit 1. With `inherit` the
@@ -2252,7 +2254,7 @@ if (isMain) {
     return rec;
   };
 
-  const signalGroup = (rec, sig) => { try { process.kill(-rec.child.pid, sig); } catch { /* already gone */ } };
+  const signalGroup = (rec, sig) => stopChild(rec.child, sig);
 
   async function shutdown(code) {
     if (stopping) return;
@@ -2296,8 +2298,7 @@ if (isMain) {
 
   // Ctrl-C, and whatever a terminal or a parent supervisor sends. Both land on the same teardown, and
   // the `stopping` flag is what stops an orderly stop being reported as a crash.
-  process.on("SIGINT", () => { void shutdown(0); });
-  process.on("SIGTERM", () => { void shutdown(0); });
+  for (const sig of stopSignals()) process.on(sig, () => { void shutdown(0); });
 
   const healthy = async (url, rec) => {
     const deadline = Date.now() + 30_000;
@@ -2676,6 +2677,35 @@ export function backgroundOfferLines({ demo = false, keep = false, manager = nul
     `  — same product, managed by ${manager}, and it survives logout. It needs ${manager}'s user manager`,
     "  reachable from this session; where it is not, that command says so and changes nothing you use.",
   ];
+}
+
+/**
+ * The signals that stop a foreground start: Ctrl-C, and whatever a terminal or a parent supervisor sends.
+ *
+ * AND CLOSING THE WINDOW, ON WINDOWS. Node reports it there as SIGHUP, and Windows ends this process
+ * about ten seconds later whatever it is doing, so the teardown gets that long. The children share the
+ * window's console there and Windows ends them with it; the teardown is what reaches whatever they started.
+ */
+export function stopSignals(platform = process.platform) {
+  return platform === "win32" ? ["SIGINT", "SIGTERM", "SIGHUP"] : ["SIGINT", "SIGTERM"];
+}
+
+/**
+ * Stop one child of this command, and whatever it started.
+ *
+ * On Linux and macOS the child leads its own process group, so the signal goes to the group, and to the
+ * child alone when the group is already gone. Windows has neither groups nor signals a Node child can
+ * catch, so there the child's process tree is ended at once, the second call finding nothing left.
+ * `platform` and the two effects are parameters so both branches run on a Linux CI.
+ */
+export function stopChild(child, sig, { platform = process.platform, kill = (pid, s) => process.kill(pid, s),
+  endTree = killWindowsTreeNow } = {}) {
+  if (!child?.pid) return;
+  if (platform === "win32") {
+    if (child.exitCode === null && child.signalCode === null) endTree(child.pid);
+    return;
+  }
+  try { kill(-child.pid, sig); } catch { try { child.kill(sig); } catch { /* already gone */ } }
 }
 
 /**

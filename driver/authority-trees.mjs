@@ -44,17 +44,26 @@
 // set-GID scar on the pool root). The existing detect-and-journal sweep STAYS as corroboration; its
 // never-kill-a-run property is sound and survives.
 
-import { resolve, sep } from "node:path";
+import { resolve, win32, posix } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 
-/** Is `child` inside `root` — by path segment, never by string prefix? PURE. */
-export function isInside(root, child) {
-  const r = resolve(String(root ?? ""));
-  const c = resolve(String(child ?? ""));
+/**
+ * Is `child` inside `root` — by path segment, never by string prefix? PURE.
+ *
+ * ON WINDOWS BY WINDOWS RULES. There a path may use either separator and a name matches in any case, so
+ * `c:/users/x/SKILLS/a.md` is a file inside `C:\Users\x\skills`. Compared as Linux compares, the
+ * write lands in the protected tree and the boundary lets it through. `platform` is a parameter so that
+ * branch runs on a Linux CI.
+ */
+export function isInside(root, child, { platform = process.platform } = {}) {
+  const P = platform === "win32" ? win32 : posix;
+  const fold = platform === "win32" ? (s) => s.toLowerCase() : (s) => s;
+  const r = fold(P.resolve(String(root ?? "")));
+  const c = fold(P.resolve(String(child ?? "")));
   if (!r || r === "." || !c) return false;
   // `/a/skills-backup` is NOT inside `/a/skills`. A `startsWith` without the separator says it is, and
   // that is the classic form of this check being wrong in the direction that blocks real work.
-  return c === r || c.startsWith(r.endsWith(sep) ? r : r + sep);
+  return c === r || c.startsWith(r.endsWith(P.sep) ? r : r + P.sep);
 }
 
 /**
@@ -87,11 +96,11 @@ export function authorityTrees({ skillsRoots = [], profilesDir = null, runDir = 
  * why it is refused, that a retry gets the same answer, and where stage output lives. No second person, no
  * imperative. The seat decides what to do with a fact, which is the whole difference.
  */
-export function denyReason(targetPath, trees) {
+export function denyReason(targetPath, trees, { platform = process.platform } = {}) {
   const t = String(targetPath ?? "").trim();
   if (!t) return null;
   for (const tree of trees ?? []) {
-    if (!isInside(tree.path, t)) continue;
+    if (!isInside(tree.path, t, { platform })) continue;
     return `REFUSED by the driver's write boundary: ${t} is inside ${tree.why} (${tree.path}). `
       + `That tree is authored at deploy time and never by a running stage, so the refusal is configuration `
       + `rather than a permission prompt, and a retry of the same path returns this same answer. Stage `

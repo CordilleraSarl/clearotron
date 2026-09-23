@@ -103,6 +103,8 @@ import { resolveAuthMode, CLOUD_SWITCH, CLOUD_SETTINGS, CLOUD_SECRETS, cloudsSwi
 import { isInsideCheckout } from "../shared/inside-checkout.mjs";   // — one copy of the rule, and it is testable
 import { packagedBuild as sharedPackagedBuild } from "../shared/packaged-build.mjs";   // — one reader of build-info.json, reachable from the driver
 import { processTable } from "../shared/process-table.mjs";   // — /proc is not the only box
+import { hasSep } from "../shared/path-seps.mjs";   // a Windows path is written with "\"
+import { npmInvocation } from "../shared/npm-cli.mjs";   // npm without a shell, which Windows needs
 import { programsFromAnotherCheckout } from "../shared/checkout-move.mjs";
 import { entrypointOf } from "../driver/systemd/install-census.mjs";         // one ExecStart parser
 import { overlayReport, renderOverlayReport } from "../shared/doctrine-overlay.mjs";   // — the doctor reports the overlay
@@ -790,7 +792,8 @@ export async function askSignIn(io, { localAccount = "user", existing = null } =
  * Was `resolveClaudeBin`. The body never had anything claude-specific in it; the NAME was the last place
  * this file still assumed one engine, and a name that lies is how the second adapter stayed invisible.
  */
-export function resolveEngineBin(bin, { env = process.env, wsl = null, onWindowsDrive = null, engine = null, enginesDir = undefined } = {}) {
+export function resolveEngineBin(bin, { env = process.env, wsl = null, onWindowsDrive = null, engine = null, enginesDir = undefined,
+  platform = process.platform } = {}) {
   // A VIEW OVER THE DRIVER'S ONE RESOLVER (driver.config.mjs resolveEngineProgram), which every other
   // reader asks too: the run door, the inventory the portal reads, and both adapters. This used to be a
   // second PATH walk of its own, and it was the only one that knew to pass over a Windows copy under WSL;
@@ -803,14 +806,14 @@ export function resolveEngineBin(bin, { env = process.env, wsl = null, onWindows
   // Linux runner without root, so an arm that could only supply a PATH could never drive the skip.
   const id = engine ?? Object.keys(ENGINE_BINARIES).find((k) => ENGINE_BINARIES[k].fallback === bin) ?? DEFAULT_ENGINE_ID;
   const spec = ENGINE_BINARIES[id];
-  const r = resolveEngineProgram(id, { env: { ...env, [spec.env]: bin }, wsl, onWindowsDrive, enginesDir });
+  const r = resolveEngineProgram(id, { env: { ...env, [spec.env]: bin }, wsl, onWindowsDrive, enginesDir, platform });
   const found = { source: r.source, version: r.version, rejected: r.rejected, skipped: r.skipped, windowsShim: r.windowsShim };
   // A RELATIVE path is the trap for both adapters: stage subprocesses run with cwd set to the RUN
   // DIRECTORY (driver/engine/common.mjs resolveSpawnCwd), so it resolves against a directory that did not
   // exist at setup time. Reported with its absolute form from here, which is what the wizard then uses.
   if (r.relative) { const abs = resolve(bin); return { path: abs, executable: isExec(abs), relative: true, ...found }; }
   // A PATH SOMEBODY TYPED IS NOT OVERRULED, only reported: the resolver never falls through from it.
-  if (!r.resolved && r.explicit && bin.includes("/")) return { path: resolve(bin), executable: false, relative: false, ...found };
+  if (!r.resolved && r.explicit && hasSep(bin, platform)) return { path: resolve(bin), executable: false, relative: false, ...found };
   return { path: r.resolved, executable: Boolean(r.resolved), relative: false, ...found };
 }
 
@@ -3931,7 +3934,8 @@ try {
       say("");
       if (await confirm(`Run \`${engineInstallCommand(eng, dir)}\` now?`, false)) {
         say(`  $ ${engineInstallCommand(eng, dir)}`);
-        const r = spawnSync("npm", engineInstallArgs(eng, dir), { stdio: "inherit" });
+        const npm = npmInvocation(engineInstallArgs(eng, dir));
+        const r = spawnSync(npm.command, npm.args, { stdio: "inherit" });
         // THE EXIT CODE IS NOT THE ANSWER, and this is the issue's own rule. An install that exits 0 may
         // have left the vendor's placeholder (npm told to skip install scripts), and one that exits
         // non-zero may still have left a usable program. So what decides is the same resolution the

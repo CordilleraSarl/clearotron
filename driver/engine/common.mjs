@@ -22,6 +22,7 @@ import { spawn } from "node:child_process";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { recordEngineChild, clearEngineChild } from "./child-record.mjs";   //
+import { engineSpawn, spawnsDetached, killWindowsTreeNow } from "./engine-spawn.mjs";   // one answer to how a turn starts and ends, on every platform
 
 // ── Shared env-tunable knobs (same names + defaults the anthropic engine already documents) ──────────
 // 120s of ZERO streamed output = the silent-provider-stall abort. A healthy turn streams continuously,
@@ -150,6 +151,8 @@ export function runStreamingChild({
   stallSec, timeoutSec,
   onStdoutLine,
   stderrIsLiveness = true,
+  platform = process.platform,
+  endTree = killWindowsTreeNow,
 } = {}) {
   const t0 = Date.now();
   const STALL = (Number(stallSec) > 0 ? Number(stallSec) * 1000 : stallMs());
@@ -171,7 +174,9 @@ export function runStreamingChild({
     // orphans them (a bridge orphan ran 3.5 days, still billing). Detached → the child leads its own
     // process group, so the watchdog's group kills reach the whole tree. stdin is a PIPE (not "ignore"):
     // the prompt rides stdin, never a `-p`/argv element, so it is never subject to MAX_ARG_STRLEN (E2BIG).
-    try { child = spawn(bin, args, { stdio: ["pipe", "pipe", "pipe"], cwd: spawnCwd, env: env || process.env, detached: true }); }
+    // Windows: not detached, and ended as a tree instead (engine-spawn.mjs says why).
+    const run = engineSpawn(bin, args, { platform });
+    try { child = spawn(run.command, run.args, { stdio: ["pipe", "pipe", "pipe"], cwd: spawnCwd, env: env || process.env, detached: spawnsDetached(platform) }); }
     catch (e) { return resolve({ spawnError: e, wall: (Date.now() - t0) / 1000 }); }
     // — WRITE THE CHILD DOWN, so a stop can target this run's turn rather than hunt
     // for it. Best effort and never fatal: a dispatch that cannot write this must still run, because
@@ -199,7 +204,11 @@ export function runStreamingChild({
     // timer is unref'd and NOT cleared on settle — the direct child exiting on SIGTERM must not save a
     // SIGTERM-immune MCP straggler from the group SIGKILL.
     let escalation = null;
-    const groupKill = (sig) => { try { process.kill(-child.pid, sig); } catch { try { child.kill(sig); } catch { /* already gone */ } } };
+    // Windows has no group to signal: the whole tree is ended at once, and the escalation below then finds
+    // nothing left to end.
+    const groupKill = platform === "win32"
+      ? () => { if (child.exitCode === null && child.signalCode === null) endTree(child.pid); }
+      : (sig) => { try { process.kill(-child.pid, sig); } catch { try { child.kill(sig); } catch { /* already gone */ } } };
     const killTree = () => {
       if (escalation) return;   // the watchdog polls — arm the escalation exactly once
       groupKill("SIGTERM");

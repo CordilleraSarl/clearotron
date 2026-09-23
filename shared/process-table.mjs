@@ -55,10 +55,19 @@ import { spawnSync } from "node:child_process";
  * how a portability fix ships broken on the platform it was written for.
  */
 export function processTable({ platform = process.platform, runPs = defaultRunPs,
-  everyUser = false, uid = currentUid() } = {}) {
-  const all = platform === "linux" ? fromProc() : fromPs(runPs);
+  runPowerShell = defaultRunPowerShell, everyUser = false, uid = currentUid(), selfPid = process.pid } = {}) {
+  const all = platform === "linux" ? fromProc() : platform === "win32" ? fromWindows(runPowerShell) : fromPs(runPs);
   if (all == null) return null;                       // could not look, and that survives the filter
   if (everyUser) return all;
+  // WINDOWS HAS NO UID, so "this user's own" is asked of the logon SESSION instead: each user signed in
+  // to a machine has their own, and services run in session 0. It is the nearest thing Windows answers
+  // without an administrator, and it keeps doctor off another account's programs, which is the second
+  // half of the contract above. A listing that does not hold this process cannot say which session is
+  // ours, so it is returned whole, as the no-uid case below returns it.
+  if (platform === "win32") {
+    const me = all.find((p) => p.pid === selfPid);
+    return me && me.session != null ? all.filter((p) => p.session === me.session) : all;
+  }
   // A box with no uid to compare against (a platform with no getuid) cannot answer "is this mine", and
   // guessing would hand back either everything or nothing. Everything is the honest one: the caller
   // gets what it always got, and the row carries `uid: null` so it can see the question was unanswered.
@@ -119,7 +128,66 @@ function fromPs(runPs) {
   return out.length ? out : null;
 }
 
+// ── WINDOWS: THE SAME CONTRACT, READ THROUGH POWERSHELL ─────────────────────────────────────────────────
+//
+// Windows has neither /proc nor ps. What it has on every supported version, with no administrator, is
+// Windows PowerShell and the process list it reads from the system (Win32_Process). One row per process,
+// fields separated by "|", the command line last because it is the only field that can hold a "|".
+//
+// THE START TIME IS PRINTED AS A NUMBER, never as a date: PowerShell writes dates in the machine's own
+// locale, and a parse of that would read one day as another on half the machines it met. `ToFileTimeUtc`
+// is the count of 100-nanosecond ticks since 1601, the same on every machine, and `windowsTicksToMs`
+// turns it into the epoch milliseconds the rest of this file uses.
+//
+// The script holds no double quote, so no rule about quoting an argument can change what PowerShell
+// receives. The output encoding is asked for inside a try: a machine locked to PowerShell's constrained
+// mode refuses that line, and only a command line with non-ASCII characters in it suffers for it.
+export function windowsProcessScript(pid = null) {
+  const only = Number.isInteger(pid) && pid > 0 ? ` -Filter 'ProcessId=${pid}'` : "";
+  return "try { [Console]::OutputEncoding = [Text.Encoding]::UTF8 } catch {}; "
+    + `Get-CimInstance Win32_Process${only} | ForEach-Object { $c = $_.CreationDate; `
+    + "'{0}|{1}|{2}|{3}|{4}' -f $_.ProcessId, $_.ParentProcessId, $(if ($c) { $c.ToFileTimeUtc() } else { '' }), "
+    + "$_.SessionId, ($_.CommandLine -replace '\\s+', ' ') }";
+}
+
+/** Windows file time (100 ns ticks since 1601-01-01 UTC) to epoch milliseconds; NaN for anything else. */
+export function windowsTicksToMs(ticks) {
+  const t = String(ticks ?? "").trim();
+  if (!/^\d{15,19}$/.test(t)) return NaN;
+  return Number((BigInt(t) - 116444736000000000n) / 10000n);
+}
+
+/** The rows `windowsProcessScript` printed: `{pid, ppid, startedAt, session, cmd}`. Unparseable lines are skipped. */
+export function parseWindowsRows(stdout) {
+  const out = [];
+  for (const line of String(stdout ?? "").split(/\r?\n/)) {
+    const m = /^(\d+)\|(\d*)\|(\d*)\|(\d*)\|(.*)$/.exec(line.trim());
+    if (!m) continue;
+    out.push({ pid: Number(m[1]), ppid: m[2] === "" ? null : Number(m[2]), startedAt: windowsTicksToMs(m[3]),
+      session: m[4] === "" ? null : Number(m[4]), uid: null, cmd: m[5].trim() });
+  }
+  return out;
+}
+
+/** Windows: every process, or null when PowerShell could not be run or printed nothing it could parse. */
+function fromWindows(runPowerShell) {
+  const r = runPowerShell(windowsProcessScript());
+  if (!r || r.status !== 0 || typeof r.stdout !== "string") return null;
+  const out = parseWindowsRows(r.stdout);
+  // As for `ps`: this process is in the listing, so an empty parse is an instrument that broke.
+  return out.length ? out : null;
+}
+
+/**
+ * Run one PowerShell script and capture what it prints. `windowsHide` because this is started from the
+ * portal and the worker many times an hour, and a console program started by a process without a
+ * console of its own opens a window.
+ */
+const defaultRunPowerShell = (script) =>
+  spawnSync("powershell.exe", ["-NoProfile", "-NonInteractive", "-Command", script],
+    { encoding: "utf8", windowsHide: true, timeout: 30_000, maxBuffer: 16 * 1024 * 1024 });
+
 const defaultRunPs = () =>
   spawnSync("ps", ["-Ao", "pid=,uid=,lstart=,command="], { encoding: "utf8", maxBuffer: 8 * 1024 * 1024 });
 
-export { defaultRunPs };
+export { defaultRunPs, defaultRunPowerShell };

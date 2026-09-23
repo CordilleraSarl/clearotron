@@ -7,13 +7,14 @@
 // Every value is env-overridable so the identical code runs from a developer's shell and from the
 // systemd unit on a deployed host.
 
-import { join, dirname, basename, isAbsolute, delimiter } from "node:path";
+import { join, dirname, basename, isAbsolute, win32 } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { readdirSync, existsSync, accessSync, statSync, statfsSync, readFileSync, realpathSync, openSync, readSync, closeSync, constants as FS } from "node:fs";
 import { homedir } from "node:os";
 import { isWsl } from "../shared/wsl.mjs";   // — the one answer to "is this Linux under Windows", which decides the /mnt/<drive> skip
 import { envFrom } from "../shared/env-aliases.mjs";   // — an operator-facing name is the one an operator sets, and it has to work where they set it; — envFrom is the resolver that reads every spelling of it
 import { invoke } from "../shared/invocation.mjs";   // — name a command the reader can actually type
+import { sepClass, notSepClass, hasSep } from "../shared/path-seps.mjs";   // a Windows path is built with "\"
 import { envFileRead } from "../shared/env-local.mjs";   // — WHICH file to set it in, measured; null for a service that read none
 import { numericSetting, resolveNumericSetting } from "./numeric-setting.mjs"; import { STUDIO_SEGMENTS, STUDIO_SEGMENT_RE, studioSegmentFor } from "../shared/pre-rename-spellings.mjs"; export { STUDIO_SEGMENTS, STUDIO_SEGMENT_RE, studioSegmentFor };   // the studio segment an install keeps its runs under   // — a number, or a refusal that names the variable; never NaN
 
@@ -339,9 +340,10 @@ export const config = {
     return join(this.studioRootForAgent(agentId), "archive");
   },
   // …/<prefix><id>/studio/<segment>/queue → "<id>"; null if the path isn't an agent queue dir. Either
-  // spelling of the segment, because an install keeps the one it has.
-  agentIdFromQueueDir(qdir) {
-    const m = new RegExp(`(?:^|/)${this.workspacePrefixRe}([^/]+)/studio/${STUDIO_SEGMENT_RE}/queue/?$`).exec(qdir);
+  // spelling of the segment, because an install keeps the one it has, and either separator on Windows.
+  agentIdFromQueueDir(qdir, { platform = process.platform } = {}) {
+    const [S, N] = [sepClass(platform), notSepClass(platform)];
+    const m = new RegExp(`(?:^|${S})${this.workspacePrefixRe}(${N}+)${S}studio${S}${STUDIO_SEGMENT_RE}${S}queue${S}?$`).exec(qdir);
     return m ? m[1] : null;
   },
   // Every agent workspace's clearotron queue. The systemd `.path` watches these and the runner drains ALL of
@@ -2172,7 +2174,17 @@ export function engineAdapterSpecifier(engine) {
 /** A path on a Windows drive as WSL mounts it. */
 export const ON_A_WINDOWS_DRIVE = /^\/mnt\/[a-z]\//i;
 
-const isExecFile = (p) => { try { return statSync(p).isFile() && (accessSync(p, X_OK), true); } catch { return false; } };
+// ON WINDOWS THE EXECUTE BIT DOES NOT EXIST: `X_OK` there answers whether the file exists, so npm's
+// extensionless `claude` shim, a shell script Windows cannot start, passed this check and the spawn failed
+// with ENOENT (seen on a real Windows run, 2026-09-09). There a program is what Windows starts itself, an
+// `.exe` or `.com`, or a JavaScript file, which runs through the Node running now (engine/engine-spawn.mjs).
+const WINDOWS_PROGRAM = /\.(?:exe|com|[cm]?js)$/i;
+const isExecFile = (p, platform = process.platform) => {
+  try {
+    if (!statSync(p).isFile()) return false;
+    return platform === "win32" ? WINDOWS_PROGRAM.test(p) : (accessSync(p, X_OK), true);
+  } catch { return false; }
+};
 const realOrNull = (p) => { try { return realpathSync(p); } catch { return null; } };
 const readPackage = (dir) => { try { return JSON.parse(readFileSync(join(dir, "package.json"), "utf8")); } catch { return null; } };
 
@@ -2230,9 +2242,43 @@ function installedProgram(spec, root) {
   return rel ? join(dir, rel) : null;
 }
 
+/**
+ * PATH as Windows spells it. Windows names are not case-sensitive, and Node copies the environment with
+ * the case the system gave it, which is `Path`. A lookup of `PATH` alone reads nothing there.
+ */
+function pathOf(env, platform) {
+  if (platform !== "win32") return env.PATH;
+  const key = Object.keys(env).find((k) => k.toUpperCase() === "PATH");
+  return key ? env[key] : undefined;
+}
+
+/**
+ * The program a PATH directory holds under `name` on Windows, or null.
+ *
+ * WINDOWS FINDS A PROGRAM BY ITS EXTENSION, in the order PATHEXT lists them, so `claude` is `claude.exe`
+ * or `claude.cmd` and never the extensionless file. An `.exe` or `.com` is the program itself: the
+ * vendor's own installer puts `claude.exe` on PATH. A `.cmd` or `.bat` is npm's shim for a global
+ * install, and Node refuses to start a batch file without a shell. So the shim is read as what it stands
+ * for: the vendor's package in `node_modules` beside it, and the program that package's `bin` names.
+ */
+function windowsProgramIn(dir, name, spec, env) {
+  const key = Object.keys(env).find((k) => k.toUpperCase() === "PATHEXT");
+  const exts = String((key && env[key]) || ".COM;.EXE;.BAT;.CMD").split(";").map((x) => x.trim().toLowerCase())
+    .filter((x) => [".com", ".exe", ".bat", ".cmd"].includes(x));
+  for (const ext of exts) {
+    const p = join(dir, `${name}${ext}`);
+    let file = false;
+    try { file = statSync(p).isFile(); } catch { /* not here */ }
+    if (!file) continue;
+    if (ext === ".exe" || ext === ".com") return p;
+    return installedProgram(spec, dir);
+  }
+  return null;
+}
+
 /** Can this candidate be spawned as the engine? `{ok: true, version}` or `{ok: false, why}`. */
-function engineCandidate(p, spec) {
-  if (!isExecFile(p)) return { ok: false, why: "not an executable file (it is missing, is a directory, or lacks the execute bit for this user)" };
+function engineCandidate(p, spec, platform = process.platform) {
+  if (!isExecFile(p, platform)) return { ok: false, why: "not an executable file (it is missing, is a directory, or lacks the execute bit for this user)" };
   const own = owningPackage(p);
   const vendor = Boolean(spec.package) && own?.name === spec.package;
   if (vendor && !runsDirectly(p)) {
@@ -2259,7 +2305,8 @@ function engineCandidate(p, spec) {
  * way, because the services run as user units under the same home. `wsl` and `onWindowsDrive` are
  * injectable for the reason shared/wsl.mjs gives.
  */
-export function resolveEngineProgram(engine, { env = process.env, enginesDir = undefined, wsl = null, onWindowsDrive = null } = {}) {
+export function resolveEngineProgram(engine, { env = process.env, enginesDir = undefined, wsl = null, onWindowsDrive = null,
+  platform = process.platform } = {}) {
   const id = String(engine ?? "").trim().toLowerCase();
   const spec = ENGINE_BINARIES[id];
   const out = { engine: id, binEnv: spec?.env ?? null, bin: null, explicit: false, relative: false,
@@ -2271,14 +2318,14 @@ export function resolveEngineProgram(engine, { env = process.env, enginesDir = u
   const underWsl = wsl ?? isWsl({ env });
   const onDrive = onWindowsDrive ?? ((p) => ON_A_WINDOWS_DRIVE.test(p));
   const take = (p, source) => {
-    const c = engineCandidate(p, spec);
+    const c = engineCandidate(p, spec, platform);
     if (!c.ok) { out.rejected.push({ path: p, why: c.why, source }); return false; }
     Object.assign(out, { resolved: p, source, version: c.version });
     return true;
   };
 
-  if (out.explicit && out.bin.includes("/")) {
-    if (!isAbsolute(out.bin)) { out.relative = true; return out; }
+  if (out.explicit && hasSep(out.bin, platform)) {
+    if (!(platform === "win32" ? win32.isAbsolute(out.bin) : isAbsolute(out.bin))) { out.relative = true; return out; }
     out.windowsShim = underWsl && onDrive(out.bin);
     take(out.bin, "explicit");
     return out;
@@ -2288,9 +2335,9 @@ export function resolveEngineProgram(engine, { env = process.env, enginesDir = u
   // tears a Windows PATH at every drive letter; the wizard's walk already used the delimiter.
   const installed = out.explicit ? null : installedProgram(spec, enginesDir !== undefined ? enginesDir : enginesFolder());
   const installedReal = installed ? realOrNull(installed) : null;
-  for (const dir of String(env.PATH ?? "").split(delimiter).filter(Boolean)) {
-    const p = join(dir, out.bin);
-    if (!isExecFile(p)) continue;
+  for (const dir of String(pathOf(env, platform) ?? "").split(platform === "win32" ? ";" : ":").filter(Boolean)) {
+    const p = platform === "win32" ? windowsProgramIn(dir, out.bin, spec, env) : join(dir, out.bin);
+    if (!p || !isExecFile(p, platform)) continue;
     // UNDER WSL THE WINDOWS PATH IS APPENDED TO THIS ONE, so `claude` on a fresh WSL2 Ubuntu resolves to the
     // Windows build before any Linux install. It is executable, and it fails the proof turn as "not signed
     // in" because the credential it looks for is the Linux one. Passed over, and named for the caller to say.
@@ -2353,7 +2400,7 @@ export function preflightEngineBinary(env = process.env, { platform = process.pl
   // `envFrom` is therefore BELT-AND-BRACES, not the repair: it makes this site correct on its own terms
   // rather than correct because something upstream normalised the environment first — a coupling
   // nothing at this site declares and nothing here could notice breaking.
-  const r = resolveEngineProgram(engine, { env, enginesDir, wsl, onWindowsDrive });   // injectable for the reason it gives
+  const r = resolveEngineProgram(engine, { env, enginesDir, wsl, onWindowsDrive, platform });   // injectable for the reason it gives
   const bin = r.bin;
   const setTo = String(envFrom(env, spec.env) ?? "").trim();
   const where = `${spec.env}${r.explicit ? "" : setTo
@@ -2376,7 +2423,7 @@ export function preflightEngineBinary(env = process.env, { platform = process.pl
     const windows = r.skipped.length
       ? `. Passed over because they sit on a Windows drive, and a Windows build cannot run a stage here: ${r.skipped.join(", ")}` : "";
     throw new Error(`[preflight] the ${engine} engine cannot run: ${where} names "${bin}", which is `
-      + (bin.includes("/")
+      + (hasSep(bin, platform)
         ? (r.rejected[0]?.why ?? "not an executable file (it is missing, is a directory, or lacks the execute bit for this user)")
         : `not on PATH as an executable file (PATH=${env.PATH || "(empty)"})`
           + (r.explicit || installedRefused ? "" : ", and Clearotron has not installed one")
