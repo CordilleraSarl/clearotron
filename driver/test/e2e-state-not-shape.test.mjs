@@ -23,8 +23,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync, existsSync, readdirSync } from "node:fs";
-import { join } from "node:path";
+import { basename, join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
+import { claimLockPath } from "../runner.mjs";
 import { tmpdir } from "node:os";
 
 import {
@@ -327,7 +328,8 @@ test("the #377 claim lock is an in-flight state, not a stranded marker", {
     // suffix nothing drains would put a false INVESTIGATE line on every claim race — this issue's own
     // defect, re-authored by its fix.
     const { q, ob } = deployment(root, {
-      queue: { [`${QUEUE_BASE}.processing.claimed-4172:88431`]: { id: QUEUE_BASE, ref: "E2E-R2-token1" } },
+      // Named as the runner names it, which on Windows writes the token's colon %3A.
+      queue: { [basename(claimLockPath(`${QUEUE_BASE}.processing`, "4172:88431"))]: { id: QUEUE_BASE, ref: "E2E-R2-token1" } },
     });
     withEnv({ CLEAROTRON_OUTBOX_DIR: ob }, () => {
       const [row] = queueOutcomes("E2E-R2", q);

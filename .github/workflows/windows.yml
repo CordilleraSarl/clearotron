@@ -260,9 +260,9 @@ jobs:
           path: ${{ runner.temp }}/clearances.log
           retention-days: 7
 
-  # THE WHOLE DRIVER SUITE ON WINDOWS. Not yet failing the run: it is being brought to green file by file,
-  # each test that assumes a POSIX machine skipped by name with its reason, each Windows fault fixed. When it
-  # is green, `continue-on-error` goes and this job gates like the others.
+  # THE WHOLE DRIVER SUITE ON WINDOWS. Every test that assumes a POSIX machine is skipped there by name,
+  # with the mechanism Windows lacks as its reason; every other arm runs and must pass. A repository guard
+  # that could not read its corpus prints `[repo-guard] SKIPPED` and fails the shard, as in ci.yml.
   suite:
     name: Driver suite on Windows, shard ${{ matrix.shard }} of 4
     runs-on: windows-latest
@@ -287,14 +287,15 @@ jobs:
       - run: npm ci
 
       - name: This shard of the driver suite
-        continue-on-error: true
         shell: pwsh
         run: |
           $log = Join-Path $env:RUNNER_TEMP 'suite.log'
           node scripts/test-full.mjs --only driver --shard ${{ matrix.shard }}/4 *> $log
           $status = $LASTEXITCODE
           Get-Content $log | Select-String -Pattern '^(# (tests|pass|fail|skipped|cancelled) |  (FAILED|ok) )' | ForEach-Object { $_.Line }
-          if ($status -ne 0) { throw "this shard exited $status" }
+          $skipped = Select-String -Path $log -SimpleMatch '[repo-guard] SKIPPED'
+          if ($skipped) { $skipped | ForEach-Object { $_.Line }; throw "a repository guard SKIPPED on a runner that has a checkout, so its green means nothing" }
+          if ($status -ne 0) { Select-String -Path $log -Pattern '^not ok' | ForEach-Object { $_.Line }; throw "this shard exited $status" }
 
       - if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a   # v7

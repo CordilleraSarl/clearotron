@@ -103,7 +103,7 @@ test("HANDOFF (default): intake rejects park + write outbox packets with ZERO ga
   assert.ok(existsSync(join(q, "job-refless.done")), "refless job must RUN, not fail at intake");
   const res = JSON.parse(readFileSync(join(q, "job-refless.done.result"), "utf8"));
   assert.equal(res.ok, true, JSON.stringify(res));
-  assert.match(res.runDir, /\/noref[0-9a-f]{6}-roadtrip-probe\//, `runDir carries the noref slug: ${res.runDir}`);
+  assert.match(res.runDir, /[\\/]noref[0-9a-f]{6}-roadtrip-probe[\\/]/, `runDir carries the noref slug: ${res.runDir}`);
 
   // Delivered outbox marker (docs/DELIVERY.md): <runId>.pending, legacy plain-text body = the agent id.
   // runId = the CANONICAL dated `<slug>-<date>-<codename>` (charter P1 §3 — one form across every

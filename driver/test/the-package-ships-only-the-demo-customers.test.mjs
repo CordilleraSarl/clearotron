@@ -101,7 +101,7 @@ test("94/F13 and the artifact itself carries none of them", { timeout: 300_000 }
     const tarballs = readdirSync(out).filter((f) => f.endsWith(".tgz"));
     assert.equal(tarballs.length, 1, `expected exactly one tarball, got: ${tarballs.join(", ") || "none"}`);
     const entries = execFileSync("tar", ["-tzf", join(out, tarballs[0])], { encoding: "utf8" })
-      .split("\n").filter(Boolean).map((p) => p.replace(/^package\//, ""));
+      .split(/\r?\n/).filter(Boolean).map((p) => p.replace(/^package\//, ""));   // Windows' tar ends its lines \r\n
     // A TARBALL THAT LISTED NOTHING WOULD SATISFY EVERY LINE BELOW.
     nonEmpty(entries, "the entries in the packed tarball");
 

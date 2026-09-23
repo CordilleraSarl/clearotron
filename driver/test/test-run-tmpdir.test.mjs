@@ -83,7 +83,8 @@ test("a nested run does not root itself inside its parent's root", () => {
     // inside ITS root, which is neither of these runs' base, so the nested runner would refuse on
     // containment before it ever chose a root — a refusal about a different property wearing this
     // arm's name.
-    const env = { ...process.env, TMPDIR: base, NESTED_RUNNER: RUNNER, NESTED_SCRIPT: inner };
+    // TEMP and TMP too, because they are what os.tmpdir() reads on Windows.
+    const env = { ...process.env, TMPDIR: base, TEMP: base, TMP: base, NESTED_RUNNER: RUNNER, NESTED_SCRIPT: inner };
     delete env.CT_TEST_TMP_BASE;
     for (const v of ["CLEAROTRON_QUEUE_DIR", "CLEAROTRON_REPORTS_DIR", "CLEAROTRON_WORK_DIR"]) delete env[v];
     const out = execFileSync("node", [RUNNER, "node", outer], { encoding: "utf8", env }).trim();

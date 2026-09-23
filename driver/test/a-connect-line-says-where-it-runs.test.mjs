@@ -47,7 +47,9 @@ test("the Claude Code line registers for the user, and quotes its separator on W
   assert.match(win, / "--" \/opt\/node22\/bin\/node /, "Windows PowerShell 5.1 drops a bare --, and the line fails there");
   // THE NODE THIS INSTALL RUNS ON, NEVER A BARE `node` (owner, 2026-09-19). A bare `node` ran whatever the
   // assistant's own PATH found: the distribution's Node 18 through wsl.exe, which died on a syntax error.
-  assert.ok(stdioConnectCommand({ workDir: "/w", platform: "linux" }).includes(` ${process.execPath} `), "the line does not name the Node it is composed on");
+  // On Windows this Node's path holds backslashes, so the POSIX line single-quotes it as a shell word.
+  const own = stdioConnectCommand({ workDir: "/w", platform: "linux" });
+  assert.ok(own.includes(` ${process.execPath} `) || own.includes(` '${process.execPath}' `), "the line does not name the Node it is composed on");
   assert.doesNotMatch(stdioConnectCommand({ workDir: "/w", platform: "linux" }), / node \S+serve\.mjs$/, "a bare node is back");
 });
 

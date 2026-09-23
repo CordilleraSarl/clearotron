@@ -127,7 +127,7 @@ test("a 3-mark knockout batch runs end to end: receipts, degrade, publish stamps
   const runDirs = findRuns(join(root, "workspace-clawdi", "studio", "clearance-search"));
   assert.equal(runDirs.length, 1);
   const rd = runDirs[0];
-  assert.ok(rd.includes("/archive/"), "the delivered run was archived");
+  assert.ok(/[\\/]archive[\\/]/.test(rd), "the delivered run was archived");
   assert.ok(existsSync(join(rd, ".delivered")), ".delivered sentinel");
 
   // frozen identity + framework: knockout level, house-triage fallback ladder
