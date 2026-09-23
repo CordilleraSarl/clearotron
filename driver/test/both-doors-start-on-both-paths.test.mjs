@@ -367,7 +367,7 @@ test("both doors get the operator's denylist when one is set", () => {
   // AND UNSET: the fallback is the documented default, or this fix would have traded one mismatch for
   // a door with no denylist at all. That half is what the previous arm was missing.
   const none = childEnv({ ...base, env: {} });
-  assert.match(none.client.TRADEMARK_MCP_TOKEN_DENYLIST, /\.config\/clearotron\/token-denylist$/,
+  assert.match(none.client.TRADEMARK_MCP_TOKEN_DENYLIST, /\.config[\\/]clearotron[\\/]token-denylist$/,
     "with nothing set, the client door still gets the documented default");
 });
 

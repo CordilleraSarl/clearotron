@@ -113,6 +113,17 @@ function homeWithShim({ installDir = REPO } = {}) {
   return { home, dir: r.dir, path: r.path };
 }
 
+// WHAT WINDOWS DOES NOT HAVE, named once per mechanism. The install writes no shim there, so every arm
+// about the shim, or about the forms a shim decides between, has nothing to drive.
+const NO_SHIM_ON_WINDOWS = process.platform === "win32"
+  && "the POSIX shim: installShim refuses Windows before writing anything, since a #!/bin/sh file cannot run there";
+const NO_SH_ON_WINDOWS = process.platform === "win32"
+  && "running a #!/bin/sh file: Windows has no shell to read the #! line, and the install writes no shim there";
+const NO_MODE_BITS_ON_WINDOWS = process.platform === "win32"
+  && "directory mode bits: chmod does not make a folder unwritable on Windows, and installShim refuses Windows before any write";
+const NO_POSIX_ROUND_TRIP_ON_WINDOWS = process.platform === "win32"
+  && "a /bin/sh round trip: doctor's advice on Windows is written for PowerShell, which neither /bin/sh nor this file's extractor reads";
+
 // ── THE THREE FORMS, AND WHAT DECIDES BETWEEN THEM ─────────────────────────────────────────────────
 //
 // Every one of these drives a real shim on a real temp filesystem. The `exists` probe is injected only
@@ -158,7 +169,7 @@ function runPrintedCommand(cmd, { cwd, env }) {
   }
 }
 
-test("the form is decided by the shim and the PATH, never by the working directory", () => {
+test("the form is decided by the shim and the PATH, never by the working directory", { skip: NO_SHIM_ON_WINDOWS }, () => {
   const { home, dir, path } = homeWithShim();
   const none = () => false;
 
@@ -199,7 +210,7 @@ test("the form is decided by the shim and the PATH, never by the working directo
   assert.equal(inspectShim(path).kind, "absent-or-unreadable", "the fixture cleaned up after itself");
 });
 
-test("the reader who arrived by npx is told the bare verb once their own shim is on PATH", () => {
+test("the reader who arrived by npx is told the bare verb once their own shim is on PATH", { skip: NO_SHIM_ON_WINDOWS }, () => {
   // THE PAYOFF, stated as the one thing that must be different from before. That arms
   // pin that this reader is never told the bare name; that was right when the bare name reached
   // nothing. The install now makes it reach this checkout, and the whole point of putting the verb on
@@ -231,7 +242,7 @@ test("arriving BY the bare name needs no filesystem at all", () => {
 });
 
 // ── THE SHIM ITSELF ────────────────────────────────────────────────────────────────────────────────
-test("the shim the install writes is executable and reaches THIS install", () => {
+test("the shim the install writes is executable and reaches THIS install", { skip: NO_SH_ON_WINDOWS }, () => {
   const { home, path } = homeWithShim();
   const elsewhere = tmp("cwd");
 
@@ -253,7 +264,7 @@ test("the shim the install writes is executable and reaches THIS install", () =>
   rmSync(elsewhere, { recursive: true, force: true });
 });
 
-test("a `clearotron` we did not write is reported, never overwritten", () => {
+test("a `clearotron` we did not write is reported, never overwritten", { skip: NO_SHIM_ON_WINDOWS }, () => {
   // Somebody else's `clearotron` on this operator's PATH is a fact about their machine. Replacing it
   // silently would hijack a name we do not own — and would do it during an install they ran for an
   // unrelated reason.
@@ -273,7 +284,7 @@ test("a `clearotron` we did not write is reported, never overwritten", () => {
   rmSync(home, { recursive: true, force: true });
 });
 
-test("a shim that cannot be written is a warning the install carries, not a failure it dies of", () => {
+test("a shim that cannot be written is a warning the install carries, not a failure it dies of", { skip: NO_MODE_BITS_ON_WINDOWS }, () => {
   // The install's deliverable is a working install. The verb on PATH is a convenience, and refusing a
   // finished configuration over a convenience turns a working install into no install at all.
   const home = tmp("home");
@@ -357,7 +368,7 @@ function doctorAdvice(env) {
   return { out, commands: commandsIn(out) };
 }
 
-test("every command `doctor` prints RUNS from a directory that is not the install", () => {
+test("every command `doctor` prints RUNS from a directory that is not the install", { skip: NO_SHIM_ON_WINDOWS }, () => {
   requireToolchain();
   const { home, dir } = homeWithShim();
   const elsewhere = tmp("cwd");
@@ -403,7 +414,7 @@ test("every command `doctor` prints RUNS from a directory that is not the instal
   rmSync(elsewhere, { recursive: true, force: true });
 });
 
-test("with no shim, the advice names the directory — and that line runs too", () => {
+test("with no shim, the advice names the directory — and that line runs too", { skip: NO_POSIX_ROUND_TRIP_ON_WINDOWS }, () => {
   // The fallback, and the half of the issue's requirement that says "either states the directory, or is
   // a command that works from anywhere". A reader with no shim must still get something runnable.
   requireToolchain();
@@ -446,7 +457,7 @@ test("with no shim, the advice names the directory — and that line runs too", 
 // command the owner actually typed when he found this.
 //
 // This arm reads the RENDERED output instead of the source, so no exemption reaches it.
-test("no verb's --help advertises a command form the reader cannot run", () => {
+test("no verb's --help advertises a command form the reader cannot run", { skip: NO_SHIM_ON_WINDOWS }, () => {
   const { home, dir } = homeWithShim();
   const onPath = [dir, NODE_DIR, "/usr/bin", "/bin"].join(delimiter);
   const verbs = ["install", "start", "demo", "doctor", "passphrase", "update"];
@@ -516,13 +527,16 @@ test("the sign-in page's reset line reaches a demo run from npx, and the demo's 
   // THE CASE THE PAGE GOT WRONG, measured on a published beta: `npx clearotron demo`, nothing on the
   // PATH, the credential inside `~/trademark-demo`. The bare line ran nothing, and would have reset the
   // shared default if it had.
-  const line = signInResetCommand({ credentialPath: "/srv/someone/trademark-demo/portal-local-credential.json", home: "/srv/someone", npxVersion: "0.3.0-beta.5" });
+  // Joined, not spelled with `/`: the product compares the credential's folder against its default,
+  // which it joins with this host's separator.
+  const home = "/srv/someone";
+  const line = signInResetCommand({ credentialPath: join(home, "trademark-demo", "portal-local-credential.json"), home, npxVersion: "0.3.0-beta.5" });
   assert.equal(line, "npx clearotron@0.3.0-beta.5 passphrase --reset --base $HOME/trademark-demo");
   // The default install needs neither half.
-  assert.equal(signInResetCommand({ credentialPath: "/srv/someone/trademark/portal-local-credential.json", home: "/srv/someone" }), "clearotron passphrase --reset");
+  assert.equal(signInResetCommand({ credentialPath: join(home, "trademark", "portal-local-credential.json"), home }), "clearotron passphrase --reset");
 });
 
-test("a shim whose interpreter is gone is reported, not ticked", () => {
+test("a shim whose interpreter is gone is reported, not ticked", { skip: NO_SHIM_ON_WINDOWS }, () => {
   // THE FAILURE THIS ISSUE'S OWN FIX COULD HAVE INTRODUCED. The shim records the interpreter it was
   // written with, so an nvm upgrade — and `.nvmrc` ships in this package — removes that path while
   // leaving the shim, its marker and its install line untouched. It then dies in /bin/sh with

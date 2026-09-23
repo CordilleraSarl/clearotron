@@ -22,6 +22,9 @@ import { join } from "node:path";
 
 const alive = (pid) => { try { process.kill(pid, 0); return true; } catch { return false; } };
 const settle = (ms) => new Promise((r) => setTimeout(r, ms));
+// Both arms are about POSIX process groups: a detached child leads one, and a negative pid signals it.
+const NO_GROUPS = process.platform === "win32"
+  && "no process groups on Windows: a negative pid names no group, so the cure these arms measure does not exist there";
 
 /** A parent that outlives nothing and a CHILD that writes a file for 30s — Chrome's shape, in `sh`. */
 function parentWithChild(dir) {
@@ -46,7 +49,7 @@ async function childPidFrom(marker) {
   return null;
 }
 
-test("killing the PROCESS leaves the child running — the control, and the bug", async () => {
+test("killing the PROCESS leaves the child running — the control, and the bug", { skip: NO_GROUPS }, async () => {
   const dir = mkdtempSync(join(tmpdir(), "grp-control-"));
   const { proc, marker } = parentWithChild(dir);
   const child = await childPidFrom(marker);
@@ -65,7 +68,7 @@ test("killing the PROCESS leaves the child running — the control, and the bug"
   try { process.kill(-proc.pid, "SIGKILL"); } catch { /* group already gone */ }
 });
 
-test("killing the GROUP takes the child with it", async () => {
+test("killing the GROUP takes the child with it", { skip: NO_GROUPS }, async () => {
   const dir = mkdtempSync(join(tmpdir(), "grp-cure-"));
   const { proc, marker } = parentWithChild(dir);
   const child = await childPidFrom(marker);

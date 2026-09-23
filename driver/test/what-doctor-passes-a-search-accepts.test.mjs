@@ -76,6 +76,10 @@ function doctor(home, ...args) {
 /** A fake engine that SUCCEEDS ONLY IF the headless token reaches it, and writes down what it saw — the
  *  witness is the spawned process itself, not anything the command under test says about it. */
 function fakeEngine(dir) {
+  return process.platform === "win32" ? fakeEngineInNode(dir) : fakeEngineInShell(dir);
+}
+
+function fakeEngineInShell(dir) {
   const log = join(dir, "engine-saw.log");
   const bin = join(dir, "fake-claude.sh");
   writeFileSync(bin, [
@@ -90,6 +94,30 @@ function fakeEngine(dir) {
     `echo absent >> "${log}"`,
     `echo "Invalid API key · Please run /login" >&2`,
     "exit 1",
+  ].join("\n") + "\n");
+  chmodSync(bin, 0o755);
+  return { bin, saw: () => (existsSync(log) ? readFileSync(log, "utf8").trim().split("\n") : []) };
+}
+
+/** The same fake, as a JavaScript program: Windows starts no `#!` script, and starts a JavaScript program
+ *  through Node (engine/engine-spawn.mjs). It does what the shell one does, line for line. */
+function fakeEngineInNode(dir) {
+  const log = join(dir, "engine-saw.log");
+  const bin = join(dir, "fake-claude.mjs");
+  writeFileSync(bin, [
+    "#!/usr/bin/env node",
+    'import { appendFileSync } from "node:fs";',
+    'import { spawnSync } from "node:child_process";',
+    "const args = process.argv.slice(2);",
+    `if (args.includes("--version")) { process.stdout.write(${JSON.stringify(`${FLOOR_VERSION} (stand-in)\n`)}); process.exit(0); }`,
+    "if (process.env.CLAUDE_CODE_OAUTH_TOKEN) {",
+    `  appendFileSync(${JSON.stringify(log)}, "present\\n");`,
+    `  const r = spawnSync(${JSON.stringify(process.execPath)}, [${JSON.stringify(join(HERE, "mock-claude.mjs"))}, ...args], { stdio: "inherit" });`,
+    "  process.exit(r.status ?? 1);",
+    "}",
+    `appendFileSync(${JSON.stringify(log)}, "absent\\n");`,
+    'process.stderr.write("Invalid API key · Please run /login\\n");',
+    "process.exit(1);",
   ].join("\n") + "\n");
   chmodSync(bin, 0o755);
   return { bin, saw: () => (existsSync(log) ? readFileSync(log, "utf8").trim().split("\n") : []) };

@@ -58,7 +58,9 @@ function windowsArgv(line) {
 
 /** The block as a real TOML parser reads it. */
 function parseToml(text) {
-  const r = spawnSync("python3", ["-c", "import json, sys, tomllib; print(json.dumps(tomllib.loads(sys.stdin.read())))"],
+  // The bytes are decoded as UTF-8 by name: Python on Windows reads stdin in the ANSI code page, which
+  // turns every non-ASCII value into something the block never said.
+  const r = spawnSync("python3", ["-c", "import json, sys, tomllib; print(json.dumps(tomllib.loads(sys.stdin.buffer.read().decode('utf-8'))))"],
     { input: text, encoding: "utf8" });
   assert.equal(r.error, undefined, "python3 is not on this machine, and the TOML check needs a real parser");
   assert.equal(r.status, 0, `the block does not parse as TOML:\n${text}\n${r.stderr}`);
@@ -90,13 +92,20 @@ test("the stand-in can tell a split line from a whole one", () => {
   assert.notDeepEqual(argvIn("bash", naive), [...HEAD, "--", c.node, serverOf(c.installRoot)]);
 });
 
+// The server's path is joined from the install root with this host's separator, as the product joins it.
+// On a Windows host that path carries backslashes, which a POSIX shell word needs single-quoted and a TOML
+// string needs doubled; everywhere else it is the bare path it always was.
+const ORDINARY_SERVER = process.platform === "win32" ? "\\opt\\clearotron\\mcp-server\\serve.mjs" : "/opt/clearotron/mcp-server/serve.mjs";
+const ORDINARY_SERVER_WORD = process.platform === "win32" ? `'${ORDINARY_SERVER}'` : ORDINARY_SERVER;
+const ORDINARY_SERVER_TOML = process.platform === "win32" ? "\\\\opt\\\\clearotron\\\\mcp-server\\\\serve.mjs" : ORDINARY_SERVER;
+
 test("an ordinary install's line reads exactly as it always has", () => {
   assert.equal(stdioConnectFor("claude-cli", { installRoot: "/opt/clearotron", node: "/usr/bin/node", workDir: "/w", reportsDir: "/p", platform: "linux" }).text,
-    `claude mcp add ${STDIO_SERVER_NAME} --scope user -e CLEAROTRON_WORK_DIR=/w -e CLEAROTRON_REPORTS_DIR=/p -- /usr/bin/node /opt/clearotron/mcp-server/serve.mjs`);
+    `claude mcp add ${STDIO_SERVER_NAME} --scope user -e CLEAROTRON_WORK_DIR=/w -e CLEAROTRON_REPORTS_DIR=/p -- /usr/bin/node ${ORDINARY_SERVER_WORD}`);
   assert.equal(stdioConnectFor("codex-toml", { installRoot: "/opt/clearotron", node: "/usr/bin/node", workDir: "/w", platform: "linux" }).text, [
     `[mcp_servers.${STDIO_SERVER_NAME}]`,
     `command = "/usr/bin/node"`,
-    `args = ["/opt/clearotron/mcp-server/serve.mjs"]`,
+    `args = ["${ORDINARY_SERVER_TOML}"]`,
     `env = { CLEAROTRON_WORK_DIR = "/w" }`,
   ].join("\n"));
 });

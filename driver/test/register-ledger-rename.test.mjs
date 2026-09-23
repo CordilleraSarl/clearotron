@@ -14,7 +14,7 @@ import { pinEnv, envFrom } from "../../shared/env-aliases.mjs";   // — a fixtu
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, rmSync, writeFileSync, appendFileSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, relative } from "node:path";
+import { join, relative, sep } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { fileURLToPath } from "node:url";
 
@@ -268,7 +268,8 @@ test("no product module names a vendor for the shared register ledger", () => {
     const entries = modulesUnder(join(REPO, root), root);
     walkedCounts[root] = entries.length;
     for (const file of entries) {
-      const rel = relative(REPO, file);
+      // `/`-separated on every platform, the spelling RESOLVER and the allowlist are written in
+      const rel = relative(REPO, file).split(sep).join("/");
       if (rel === RESOLVER) continue;
       const text = readFileSync(file, "utf8");
       text.split("\n").forEach((line, i) => {

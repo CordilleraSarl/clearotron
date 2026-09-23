@@ -97,6 +97,8 @@ test("94 the revocation list's path is composed once, so the door and the superv
     + "nobody reads. It has one owner, `shared/client-door.mjs`.");
 
   // The resolver itself still answers both questions.
-  assert.equal(denylistFor({ paths: installPaths("/srv/example/trademark-demo"), demo: true }), "/srv/example/trademark-demo/token-denylist");
-  assert.notEqual(denylistFor({ paths: installPaths("/srv/operator/trademark"), demo: false, env: {}, home: "/srv/operator" }), "/srv/operator/trademark/token-denylist");
+  // Joined, because the resolver joins with this host's separator; a `/` literal would make the
+  // notEqual below pass on Windows without comparing anything.
+  assert.equal(denylistFor({ paths: installPaths("/srv/example/trademark-demo"), demo: true }), join("/srv/example/trademark-demo", "token-denylist"));
+  assert.notEqual(denylistFor({ paths: installPaths("/srv/operator/trademark"), demo: false, env: {}, home: "/srv/operator" }), join("/srv/operator/trademark", "token-denylist"));
 });

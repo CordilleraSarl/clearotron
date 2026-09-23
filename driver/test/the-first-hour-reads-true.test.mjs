@@ -18,6 +18,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { browserCommand, invoke, reachableCommand } from "../../shared/invocation.mjs";
 import { handRunEnv } from "./drive-env.mjs";
+import { npmInvocation } from "../../shared/npm-cli.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const read = (f) => readFileSync(join(ROOT, f), "utf8");
@@ -37,7 +38,10 @@ test("the example clearance the install prints names its job by a path that exis
   assert.ok(existsSync(join(ROOT, "examples", "job.euipo.json")), "the example job the install names is not in this tree");
   // IN THE PACKAGE, not only in this tree: the line is printed by an install, which holds what npm packed.
   // Offline: a dry-run pack resolves on disk, and npm reaching for a registry it does not need can block.
-  const out = execFileSync("npm", ["pack", "--dry-run", "--json", "--ignore-scripts"], { cwd: ROOT, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"],
+  // Through npmInvocation: on Windows `npm` is a batch file Node will not start without a shell, so npm
+  // runs there as npm-cli.js through this Node. Elsewhere it is `npm`, as it always was.
+  const npm = npmInvocation(["pack", "--dry-run", "--json", "--ignore-scripts"]);
+  const out = execFileSync(npm.command, npm.args, { cwd: ROOT, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"],
     maxBuffer: 64 * 1024 * 1024, env: { ...process.env, npm_config_offline: "true" } });
   const files = (JSON.parse(out)[0]?.files ?? []).map((f) => f.path);
   assert.ok(files.length > 500, `npm listed ${files.length} file(s); this arm needs the real list`);

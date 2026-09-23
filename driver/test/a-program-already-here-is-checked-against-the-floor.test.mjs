@@ -126,13 +126,17 @@ function standIn(name, answer) {
   writeFileSync(join(dir, name), answer === null ? "#!/bin/sh\nexit 1\n" : `#!/bin/sh\necho "${answer}"\n`, { mode: 0o755 });
   return dir;
 }
+/** Why the arms that ask a stand-in on PATH for its version cannot hold on Windows. */
+const NO_SCRIPT_ON_PATH = process.platform === "win32"
+  && "a `#!` script on PATH answering `--version`: the stand-ins here are extensionless shell scripts, Windows "
+   + "finds a program on PATH only under an extension it starts, and it cannot run a `#!` script";
 function isolated(dir, extra = {}) {
   const home = mkdtempSync(join(tmpdir(), "floor-home-"));
   return { home, env: { PATH: `${dir}:${dirname(process.execPath)}:/usr/bin:/bin`, HOME: home, USERPROFILE: home, XDG_CONFIG_HOME: join(home, ".config"),
     CLEAROTRON_ENGINES_DIR: join(home, "engines"), NO_COLOR: "1", TERM: "dumb", ...extra } };
 }
 
-test("doctor, run as a person runs it, names an old copy by version and fix, and claims nothing about Codex's models", () => {
+test("doctor, run as a person runs it, names an old copy by version and fix, and claims nothing about Codex's models", { skip: NO_SCRIPT_ON_PATH }, () => {
   const CODEX = ENGINE_BINARIES["openai-agent"];
   const cases = [
     { eng: CLAUDE, id: "anthropic-agent", name: "claude", answer: `${TOO_OLD} (Claude Code)`, version: TOO_OLD,
@@ -156,7 +160,7 @@ test("doctor, run as a person runs it, names an old copy by version and fix, and
   }
 });
 
-test("doctor says when it could not check a copy's version, in one sentence true for either engine", () => {
+test("doctor says when it could not check a copy's version, in one sentence true for either engine", { skip: NO_SCRIPT_ON_PATH }, () => {
   // Two ways to get here: the program gives no answer, or answers in prose, which is kept as said.
   for (const [id, name, answer, shown] of [["anthropic-agent", "claude", null, "version not read"], ["openai-agent", "codex", null, "version not read"],
     ["anthropic-agent", "claude", "a build from source", "version a build from source"]]) {

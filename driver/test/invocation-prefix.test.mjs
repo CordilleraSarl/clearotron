@@ -40,7 +40,9 @@ const NOTHING_ON_DISK = Object.freeze({
   exists: () => false,
   read: () => { throw Object.assign(new Error("ENOENT"), { code: "ENOENT" }); },
 });
-const IN_PLACE = `cd ${INSTALL_DIR} && npx `;
+// THE SHELL THE READER IS IN decides the separator: on Windows PowerShell 5.1 has no `&&`, so the
+// product quotes the directory and uses `;` there (shared/os-advice.mjs, chdirPrefix).
+const IN_PLACE = process.platform === "win32" ? `cd "${INSTALL_DIR}"; npx ` : `cd ${INSTALL_DIR} && npx `;
 
 test("the four routes a reader can arrive by, and npx is two of them", () => {
   // ✕ EACH DRIVE ISOLATES ONE SIGNAL, AND THE FIRST CUT DID NOT. It paired an `_npx` path WITH
@@ -89,7 +91,7 @@ test("the dispatcher's own argv still wins for the verbs it spawns", () => {
 test("invoke() composes the whole line, not just the prefix", () => {
   assert.equal(invoke("install", "/usr/local/bin/clearotron", NO_SHIM, NOTHING_ON_DISK), "clearotron install");
   assert.equal(invoke("install", "/opt/checkout/bin/clearotron.mjs", NO_SHIM, NOTHING_ON_DISK),
-    `cd ${INSTALL_DIR} && npx clearotron install`);
+    `${IN_PLACE}clearotron install`);
 });
 
 // ── CRITERION 2: ONE TREATMENT, NOT THREE ─────────────────────────────────────────────────────────
@@ -141,8 +143,10 @@ test("a `progname: message` diagnostic is not a command and keeps the bare name"
 // npm puts the executable in `<project>/node_modules/.bin` and npx resolves it from the PROJECT ROOT —
 // driven on a real packaged tree in review, 2026-08: `npx clearotron doctor` from the root exits 0.
 
+// standFrom reads a real install directory, so it splits on this host's separator; the fixtures are
+// joined for the same reason.
 test("a packaged install sends the reader to the project, not into node_modules", () => {
-  assert.equal(standFrom("/srv/example/app/node_modules/clearotron"), "/srv/example/app");
+  assert.equal(standFrom(join("/srv", "example", "app", "node_modules", "clearotron")), join("/srv", "example", "app"));
 });
 
 test("a git checkout is unchanged — there is no node_modules segment to step out of", () => {
@@ -155,9 +159,9 @@ test("a git checkout is unchanged — there is no node_modules segment to step o
 test("the NEAREST project root wins, and a lookalike directory is not one", () => {
   // A project may itself sit under someone else's node_modules; the root we want is the one directly
   // above this copy, not the outermost in the string.
-  assert.equal(standFrom("/a/node_modules/@s/x/node_modules/clearotron"), "/a/node_modules/@s/x");
+  assert.equal(standFrom(join("/a", "node_modules", "@s", "x", "node_modules", "clearotron")), join("/a", "node_modules", "@s", "x"));
   // Separator-delimited, so a directory that merely starts with the name is left alone.
-  assert.equal(standFrom("/srv/node_modules_backup/clearotron"), "/srv/node_modules_backup/clearotron");
+  assert.equal(standFrom(join("/srv", "node_modules_backup", "clearotron")), join("/srv", "node_modules_backup", "clearotron"));
 });
 
 // ── which route the reader installed by ─────────────────────────────────────────────────────────────
@@ -168,15 +172,15 @@ test("the NEAREST project root wins, and a lookalike directory is not one", () =
 // handed the one command they could not type — at the one moment they had nothing else to go on.
 
 test("a package is 'packaged' — local or global — and a checkout is 'checkout'", () => {
-  assert.equal(installRoute("/srv/example/app/node_modules/clearotron"), "packaged",
+  assert.equal(installRoute(join("/srv", "example", "app", "node_modules", "clearotron")), "packaged",
     "an ordinary package install");
   // A GLOBAL INSTALL IS A PACKAGE TOO, and it is the case a `node_modules`-free rule would get wrong.
   // npm unpacks it at <prefix>/lib/node_modules/clearotron, so the same test answers it.
-  assert.equal(installRoute("/opt/tools/lib/node_modules/clearotron"), "packaged");
+  assert.equal(installRoute(join("/opt", "tools", "lib", "node_modules", "clearotron")), "packaged");
   // A package that itself sits under somebody else's node_modules is still a package.
-  assert.equal(installRoute("/a/node_modules/b/node_modules/clearotron"), "packaged");
-  assert.equal(installRoute("/srv/example/clearotron-checkout"), "checkout");
-  assert.equal(installRoute("/opt/src/clearotron"), "checkout");
+  assert.equal(installRoute(join("/a", "node_modules", "b", "node_modules", "clearotron")), "packaged");
+  assert.equal(installRoute(join("/srv", "example", "clearotron-checkout")), "checkout");
+  assert.equal(installRoute(join("/opt", "src", "clearotron")), "checkout");
 });
 
 test("the answer is always one of the two words, and never a path", () => {
