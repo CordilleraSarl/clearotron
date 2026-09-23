@@ -142,8 +142,8 @@
           "todos": 0
         },
         "a-check-that-could-not-look-does-not-report-a-drift.test.mjs": {
-          "tests": 10,
-          "asserts": 26,
+          "tests": 13,
+          "asserts": 37,
           "skips": 0,
           "todos": 0
         },
@@ -4276,8 +4276,8 @@
           "todos": 0
         },
         "run-economics.test.mjs": {
-          "tests": 25,
-          "asserts": 158,
+          "tests": 26,
+          "asserts": 161,
           "skips": 0,
           "todos": 0
         },
@@ -4379,7 +4379,7 @@
         },
         "runner.knockout-e2e.test.mjs": {
           "tests": 3,
-          "asserts": 115,
+          "asserts": 118,
           "skips": 0,
           "todos": 0
         },
