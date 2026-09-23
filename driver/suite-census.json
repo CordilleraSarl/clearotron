@@ -1239,6 +1239,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-windows-codex-turn-keeps-its-sandbox-and-sign-in.test.mjs": {
+          "tests": 4,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "a-windows-install-finds-its-engine-program.test.mjs": {
           "tests": 9,
           "asserts": 26,
@@ -2110,8 +2116,8 @@
           "todos": 0
         },
         "deny-authority-write.test.mjs": {
-          "tests": 17,
-          "asserts": 34,
+          "tests": 18,
+          "asserts": 41,
           "skips": 0,
           "todos": 0
         },

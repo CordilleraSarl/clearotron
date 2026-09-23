@@ -189,15 +189,25 @@ const authFilePath = (env = process.env) => env.CLEAROTRON_OPENAI_AUTH_FILE || j
 // So the stage home LINKS to the master: a refresh codex writes in place lands where the next stage
 // reads, including a ladder running beside this one. If codex replaces the link with a file of its own,
 // `returnAuth` writes that file back.
+//
+// WHERE A LINK IS REFUSED, A COPY. Windows lets a user make a symbolic link only with Developer Mode on or
+// as an administrator, and refuses otherwise (EPERM). A copy is then what the stage reads, and a refresh
+// codex writes into it goes back to the master through `returnAuth`, which handles a plain file already.
+const LINK_REFUSED = new Set(["EPERM", "EACCES", "ENOTSUP"]);
 
 /** Point `<codexHome>/auth.json` at the master login. Returns what the master held, for `returnAuth`. */
-function seedAuth(masterPath, codexHome) {
+export function seedAuth(masterPath, codexHome, { link = symlinkSync } = {}) {   // @internal
   const seat = join(codexHome, "auth.json");
   // A LINK LEFT BY THIS LADDER'S PREVIOUS TURN is removed first: copying the master onto a link to
   // itself would truncate the one file the login lives in.
   rmSync(seat, { force: true });
-  symlinkSync(masterPath, seat);
-  return readFileSync(masterPath, "utf8");
+  const held = readFileSync(masterPath, "utf8");
+  try { link(masterPath, seat); }
+  catch (e) {
+    if (!LINK_REFUSED.has(e?.code)) throw e;
+    writeSecretFile(seat, held);
+  }
+  return held;
 }
 
 /**

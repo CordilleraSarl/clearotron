@@ -122,8 +122,7 @@ test("the boundary is derived from the SAME roots the grant hands out", () => {
   const granted = args.filter((a, i) => args[i - 1] === "--add-dir");
   assert.deepEqual(granted, [OVERLAY, SKILLS, RUN]);
   const settings = JSON.parse(args[args.indexOf("--settings") + 1]);
-  const cmd = settings.hooks.PreToolUse[0].hooks[0].command;
-  const policy = JSON.parse(Buffer.from(cmd.split(" ").at(-1), "base64").toString("utf8"));
+  const policy = JSON.parse(Buffer.from(settings.hooks.PreToolUse[0].hooks[0].args.at(-1), "base64").toString("utf8"));
   const protectedRoots = policy.trees.map((t) => t.path);
   // Every granted root is protected — except the run dir, whose TOP LEVEL must stay writable; it is
   // represented by its _driver/ subtree.
@@ -131,11 +130,31 @@ test("the boundary is derived from the SAME roots the grant hands out", () => {
   assert.ok(!protectedRoots.includes(RUN));
 });
 
-test("the hook command survives a checkout path with a space in it", () => {
+test("the hook is launched with no shell: the running Node, then the script and its policy as arguments", () => {
+  // EXEC FORM. A command string quoted for a POSIX shell does not parse where the CLI runs hooks in
+  // PowerShell (Windows without Git Bash), and a hook that cannot start lets the write through. With
+  // `args` set, the CLI spawns `command` directly and each element is one argument, whatever it holds.
   const s = JSON.parse(writeBoundarySettings({ skillsRoots: ["/a b/skills"], runDir: "/r" }));
-  const cmd = s.hooks.PreToolUse[0].hooks[0].command;
-  assert.match(cmd, /^'[^']*node[^']*' '.*deny-authority-write\.mjs' [A-Za-z0-9+/=]+$/);
-  assert.ok(cmd.startsWith(`'${process.execPath}'`));   // absolute node: the hook shell's PATH is not ours
+  const h = s.hooks.PreToolUse[0].hooks[0];
+  assert.equal(h.command, process.execPath, "not the Node running the driver: a bare `node` depends on a PATH that is not ours");
+  assert.equal(h.args.length, 2);
+  assert.match(h.args[0], /deny-authority-write\.mjs$/);
+  assert.match(h.args[1], /^[A-Za-z0-9+/=]+$/);
+  assert.ok(!/['"]/.test(h.command + h.args.join("")), "shell quoting survived into exec form, where it would be passed literally");
+});
+
+test("the hook, spawned exactly as the CLI spawns it, refuses a write into a protected tree", () => {
+  // The CLI's side of exec form, reproduced: `command` with `args`, no shell, the tool call on stdin.
+  const { args } = buildClaudeArgs({ message: "hi", skillsDir: SKILLS, skillsGrantRoots: [SKILLS], runDir: RUN });
+  const h = JSON.parse(args[args.indexOf("--settings") + 1]).hooks.PreToolUse[0].hooks[0];
+  const call = (file_path) => spawnSync(h.command, h.args, { input: JSON.stringify({ tool_name: "Write", tool_input: { file_path } }), encoding: "utf8" });
+  const denied = call(join(SKILLS, "planted.md"));
+  assert.equal(denied.status, 0);
+  assert.equal(JSON.parse(denied.stdout.trim()).hookSpecificOutput.permissionDecision, "deny",
+    "the hook as the CLI would start it let a write into the skills tree through");
+  const allowed = call(join(RUN, "findings.json"));
+  assert.equal(allowed.status, 0);
+  assert.equal(allowed.stdout.trim(), "", "a write to the run's own top level was refused");
 });
 
 test("FAIL CLOSED: a policy that decoded but names no tree is a policy that did not arrive", () => {
