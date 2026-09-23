@@ -48,7 +48,7 @@ import { RunCancelled, assertNotCancelledBeforePublish } from "./cancel.mjs";   
 import { loadFrameworkManifest, parseFrameworkManifest, frameworkFor, DEFAULT_FRAMEWORK } from "./framework.mjs";
 import { KO_STAGES, KO_STEPS, KO_STEP_REGISTER_COUNT, koSteps, koPaths, kebab, knockoutPrompt, koChunks } from "./stages-knockout.mjs";
 import { kebabCollisions, reportIdentityFor, CAPABILITY_SKIPPED_CAUSE, CAPABILITY_SKIPPED_NOTE } from "./search-policy.mjs";
-import { countPreflight, countRegisterHits, countedMarks, resolveCountExecutor, countListingAgreement } from "./register-count.mjs";
+import { countPreflight, countRegisterHits, countedMarks, resolveCountExecutor } from "./register-count.mjs";
 import { recordsPreflight, listRegisterRecords, listedMarks, resolveRecordExecutor } from "./register-records.mjs";
 import { capabilitiesFor } from "./register-capabilities.mjs";
 // — the ONE binding of the office split to this box's env, shared with the plan lane.
@@ -771,15 +771,15 @@ export async function knockoutInner(ctx, job, opts = {}) {
         return listedDoc;
       };
 
-      // ── THE LISTING FIRST, WHEN SIGNA'S RUN MEMORY IS ON ─────────────────────────────────────────
+      // ── THE LISTING FIRST, ON A REGISTER WHOSE LISTING HOLDS THE COUNT ──────────────────────────────
       //
       // The identical and close columns are the exact predicate over a term, and the listing asks exactly
-      // that, with the register's total on the answer. So when the listing runs first, the count lane
-      // takes those two columns from it (register-count.mjs listingAnswers) instead of paying for them
-      // again, and asks only what the listing never asks: `containing`, and any term the listing did not
-      // reach. In `watch` and `off` the order is the one it always was; `watch` then records whether the
-      // two lanes' figures agree, which is the evidence the switch to `on` waits for.
-      const listFirst = ctx.answerMemory?.mode === "on";
+      // that. On a register that declares its listing carries the register's own total for that question
+      // (`listingAnswersCount`), the listing runs first and the count lane takes those two columns from it
+      // (register-count.mjs listingAnswers) instead of paying for them again. It still asks what the
+      // listing never asks — `containing` — and any term the listing did not answer. Every other register
+      // counts first and lists second, as it always has.
+      const listFirst = ctx.registerCaps?.listingAnswersCount === true;
       const listedFirst = listFirst ? await listFilings() : null;
       // resume: a settled prior sidecar is reused cell by cell, so a re-run never re-bills a count that
       // already landed — including across a build that ADDED a predicate, where only the new column is
@@ -819,9 +819,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
       runLog(run.runDir, { event: "knockout-register-counts", provider: REGISTER_PROVIDER, executor: countExec.source, marks: doc.marks.length, counted, regions: doc.scope.regions ?? "worldwide" });
       if (counted < doc.marks.length) note(`register counts: ${doc.marks.length - counted}/${doc.marks.length} mark(s) unavailable — the batch continues (they publish as "not available", never as zero)`);
 
-      const listed = listFirst ? listedFirst : await listFilings();
-      if (ctx.answerMemory?.mode === "watch" && listed)
-        runLog(run.runDir, { event: "knockout-count-listing-agreement", ...countListingAgreement(doc, listed) });
+      if (!listFirst) await listFilings();
     }
 
     // 2 — the sweep: ONE broad code-side research call per mark, receipted, per-mark degrade

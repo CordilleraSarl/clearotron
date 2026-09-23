@@ -352,6 +352,15 @@ export const CAPABILITIES = Object.freeze({
   // OPTIONAL, like `queryableStatuses`: a provider that does not declare it keeps sending these terms,
   // as every provider did before the field existed.
   mixedScriptQuery: false,
+  // ── A KNOCKOUT'S LISTING ALREADY HOLDS ITS COUNT ─────────────────────────────────────────────────
+  //
+  // The knockout listing asks the count lane's exact question (the same term, classes and territories)
+  // and `include_total` puts the register's own total on the answer. So a knockout lists first and takes
+  // the identical and close counts from those totals (driver/register-count.mjs listingAnswers), rather
+  // than asking each of them twice. A term the listing did not answer is counted as before.
+  //
+  // OPTIONAL: a provider that does not declare it counts first and lists second, as before.
+  listingAnswersCount: true,
   // Opposition data IS on the record, and in three places: `opposition_window` on every search row,
   // `proceedings_count` on the full record, and the filters `has_proceedings`,
   // `opposition_status` and `opposition_closes_before/after`. GET /v1/trademarks/{id}/proceedings

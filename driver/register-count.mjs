@@ -523,8 +523,8 @@ export async function countRegisterHits({
  * listing never asks it. Terms are keyed upper-case, because register-variants.mjs asks them upper-case
  * and name predicates are case-insensitive on every wired provider.
  *
- * Null when there is no listing, which is every provider and every mode but one: the caller passes one
- * only when the Signa run memory is `on` (pipeline-knockout.mjs). PURE.
+ * Null when there is no listing: the caller passes one only on a register that declares
+ * `listingAnswersCount` (pipeline-knockout.mjs). PURE.
  */
 export function listingAnswers(listed, { regions = [] } = {}) {
   if (!listed || !Array.isArray(listed.marks)) return null;
@@ -546,37 +546,6 @@ export function listingAnswers(listed, { regions = [] } = {}) {
 export function sameScope(a, b) {
   const norm = (v) => (Array.isArray(v) && v.length ? v.map(String) : null);
   return JSON.stringify(norm(a)) === JSON.stringify(norm(b));
-}
-
-/**
- * Do the count lane's identical and close figures equal the listing's totals for the same terms? This
- * is what the Signa run memory records in `watch`, and what its switch to `on` waits for: in `on` the
- * listing's totals ARE those figures. Only terms both lanes answered, over the same scope, are compared;
- * an approximation agrees only with the same approximation. PURE.
- */
-export function countListingAgreement(counts, listed) {
-  const answers = listingAnswers(listed, { regions: counts?.scope?.regions ?? [] });
-  if (!answers) return { comparable: false, compared: 0, agreed: 0, disagreed: 0, examples: [] };
-  const say = (a) => (Number.isFinite(a?.total) ? a.total
-    : a?.approximate === true ? `at least ${Number.isFinite(a.floor) ? a.floor : "?"}` : null);
-  const out = { comparable: true, compared: 0, agreed: 0, disagreed: 0, examples: [] };
-  for (const m of counts?.marks ?? []) {
-    const l = answers.get(String(m?.name ?? "").trim().toLowerCase());
-    if (!l || !sameScope(l.classes, m.classes)) continue;
-    const cells = [[m.name, m.counts?.identical], ...(m.counts?.close?.forms ?? []).map((f) => [f.form, f])];
-    for (const [term, cell] of cells) {
-      const listing = l.terms.get(String(term ?? "").trim().toUpperCase());
-      const count = say(cell);
-      if (!listing || count === null) continue;
-      out.compared++;
-      if (count === say(listing)) out.agreed++;
-      else {
-        out.disagreed++;
-        if (out.examples.length < 20) out.examples.push({ mark: m.name, term, count, listing: say(listing) });
-      }
-    }
-  }
-  return out;
 }
 
 /** How many marks got at least ONE number. Zero of them means the product did not happen. */

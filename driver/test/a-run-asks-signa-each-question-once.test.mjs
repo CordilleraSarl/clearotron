@@ -11,8 +11,8 @@
 //     servers share it; one attempt long; `off` by default, `watch` asks every time and records whether
 //     the held answer matched (total, id set and id order apart), `on` answers from it;
 //   · only complete answers are kept, and never a failure;
-//   · a knockout with the memory on lists first and takes the identical and close counts from the
-//     listing's totals; in `watch` the order is unchanged and the two lanes' figures are compared.
+//   · a knockout lists first and takes the identical and close counts from the listing's totals, because
+//     this register declares that its listing carries them; the memory switch does not decide that.
 //
 // The marks are neutral dictionary words on purpose.
 //
@@ -55,7 +55,7 @@ const { runRecordLogPath } = await import("../../providers/_shared/ledger-path.m
 const { driverDir } = await import("../../shared/driver-dir.mjs");
 const { signaFetch, rememberableAnswer } = await import("../../providers/signa/src/core.js");
 const { capabilitiesFor } = await import("../register-capabilities.mjs");
-const { countRegisterHits, countListingAgreement, listingAnswers } = await import("../register-count.mjs");
+const { countRegisterHits, listingAnswers } = await import("../register-count.mjs");
 const { PROVIDERS } = await import("../driver.config.mjs");
 const { knockoutInner } = await import("../pipeline-knockout.mjs");
 
@@ -289,17 +289,6 @@ test("a listing over a different scope answers nothing", async () => {
   assert.ok(asked.includes("identical:TIMBER"), "class 25 was not the question the listing asked");
 });
 
-test("watch compares the two lanes term by term", () => {
-  const counts = { scope: { regions: EU }, marks: [{ name: "TIMBER", classes: [9], counts: {
-    identical: { total: 12 }, close: { forms: [{ form: "TIMBERR", total: 1 }, { form: "TIMBRE", total: null, approximate: true, floor: 10000 }] } } }] };
-  const r = countListingAgreement(counts, LISTED);
-  assert.equal(r.comparable, true);
-  assert.equal(r.compared, 3);
-  assert.equal(r.agreed, 2);
-  assert.equal(r.disagreed, 1);
-  assert.deepEqual(r.examples[0], { mark: "TIMBER", term: "TIMBERR", count: 1, listing: 0 });
-});
-
 test("the Signa listing carries the register's total and its approximation", async () => {
   const prior = process.env.SIGNA_API_KEY;
   process.env.SIGNA_API_KEY = "key";
@@ -348,7 +337,7 @@ async function knockout(mode, codename) {
 }
 const events = (d) => readFileSync(driverDir(d, "run.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l));
 
-test("a knockout with the memory on lists first and counts only what the listing never asks", async () => {
+test("a knockout lists first and counts only what the listing never asks", async () => {
   const { res, order } = await knockout("on", "birch-beacon");
   assert.equal(res?.ok, true, `the knockout did not deliver: ${JSON.stringify(res)}`);
   const firstCount = order.findIndex((o) => o.startsWith("count:"));
@@ -360,25 +349,12 @@ test("a knockout with the memory on lists first and counts only what the listing
   assert.equal(existsSync(driverDir(res.runDir, ANSWER_MEMORY_DIR)), false, "the held answers did not travel into the archive");
 });
 
-test("a knockout in watch keeps the order it always had, and records whether the two lanes agree", async () => {
-  const { res, order } = await knockout("watch", "teal-harbour");
-  assert.equal(res?.ok, true, `the knockout did not deliver: ${JSON.stringify(res)}`);
-  const lastCount = order.map((o) => o.startsWith("count:")).lastIndexOf(true);
-  const firstList = order.findIndex((o) => o.startsWith("list:"));
-  assert.ok(lastCount < firstList, `counts first, as before: ${order.join(" → ")}`);
-  assert.ok(order.includes("count:identical:TIMBER"), "watch asks every count as before");
-  const agreement = events(res.runDir).find((e) => e.event === "knockout-count-listing-agreement");
-  assert.ok(agreement, "the comparison is recorded");
-  assert.equal(agreement.disagreed, 0);
-  assert.ok(agreement.compared > 0);
-});
-
-test("with the switch off a knockout asks and records exactly what it did before", async () => {
+test("with the memory switch off the knockout still lists first, and the run holds no memory", async () => {
   const { res, order } = await knockout("off", "teal-quill");
-  assert.equal(res?.ok, true);
-  assert.ok(order.includes("count:identical:TIMBER"));
+  assert.equal(res?.ok, true, `the knockout did not deliver: ${JSON.stringify(res)}`);
+  assert.deepEqual(order.filter((o) => o.startsWith("count:")), ["count:containing:TIMBER"],
+    "the register's declaration decides the order, not the memory switch");
   const ev = events(res.runDir);
   assert.ok(ev.some((e) => e.event === "answer-memory" && e.mode === "off"));
-  assert.equal(ev.some((e) => e.event === "knockout-count-listing-agreement"), false);
   assert.deepEqual(readdirSync(driverDir(res.runDir)).filter((f) => f.startsWith("register-answer")), []);
 });

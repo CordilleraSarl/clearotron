@@ -99,6 +99,8 @@ test("every provider declares the SAME capability contract shape — closed voca
     // was. When it is declared it is a plain yes or no.
     assert.ok(!("mixedScriptQuery" in c) || typeof c.mixedScriptQuery === "boolean",
       `${id}.mixedScriptQuery, when declared, must be true or false`);
+    assert.ok(!("listingAnswersCount" in c) || typeof c.listingAnswersCount === "boolean",
+      `${id}.listingAnswersCount, when declared, must be true or false`);
     assert.ok(Object.isFrozen(c), `${id}: the contract is frozen`);
   }
   assert.deepEqual(Object.keys(PROVIDER_CAPABILITIES).sort(), [...PROVIDERS].sort());
