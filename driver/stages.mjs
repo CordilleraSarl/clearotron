@@ -4143,6 +4143,12 @@ const directiveLine = (d) => `- [${d.layer}${d.severity === "dominant-element" ?
 export const supplementalLaneResumeLine = (P, axis) =>
   `Any ADDITIONAL register sub-query this needs: PROPOSE it via register_propose_supplemental ({"axis": "${axis}", "output_path": "${P.registerBand(axis)}", "proposals": […]}) — the tool executes it and merges the band itself. You never run register coverage via register_enumerate and never author band blocks. ${SUPPLEMENTAL_LANE_STEERING}`;
 
+// A follow-up to a unit whose axis has already run. Without `qids`, register_execute_plan runs every entry on
+// the axis again and re-fetches every record the axis holds; on a register that bills per request the run
+// pays for all of it twice. Measured on production follow-ups that closed deferred rows: 39 of the 45
+// questions they sent had been asked before in the same run.
+export const PLAN_ENTRY_RERUN_RULE = `This axis's plan has already run. Do not call register_execute_plan without "qids": that runs every entry on the axis again. To ask one plan entry again, name only that entry in "qids".`;
+
 // Step-2.6 skeptic escalated this axis → resume its session to defend or adjust.
 export function buildEscalationFollowup({ paths: P, axis, flags, supplementalLane = false }) {
   return lines(
@@ -4150,6 +4156,7 @@ export function buildEscalationFollowup({ paths: P, axis, flags, supplementalLan
     supplementalLane ? supplementalLaneResumeLine(P, axis) : "",
     `Do NOT restart the search from scratch. The Step-2.6 skeptic raised the concerns below. For EACH concern relevant to THIS axis: either (a) defend your existing finding using evidence already in your context, or (b) run ONLY the narrow additional sub-query the concern requires, then revise.`,
     `Every finding the concerns do not touch stays exactly as it is.`,
+    PLAN_ENTRY_RERUN_RULE,
     ``,
     `Skeptic concerns:`,
     flags,
@@ -4167,6 +4174,7 @@ export function buildEnvelopeCloseFollowup({ paths: P, axis, rows, supplementalL
     supplementalLane ? supplementalLaneResumeLine(P, axis) : "",
     `The Coverage ledger records DEFERRED (planned but never run) work owned by this axis — the deadline envelope permits closing it NOW, before the analysis is written:`,
     rows || `(deferred row(s) for ${axis} — see the Coverage ledger)`,
+    PLAN_ENTRY_RERUN_RULE,
     `Run ONLY those deferred sub-queries and update each closed row to confirmed-clean or coverage-limited with the honest reason. Nothing else in the digest changes.`,
     UNIT_NOTE_REPAIR_TAIL,
   );

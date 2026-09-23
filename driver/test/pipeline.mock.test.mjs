@@ -1575,6 +1575,23 @@ test("spec-48 plan mode: a dictated qid with no band block → ONE warm followup
   assert.ok(exec.executed.some((x) => x.qid.endsWith("+merch")), "the dropped slice now owns a block");
 });
 
+test("the plan-join follow-up hands the tool only the missing qids", async () => {
+  // Without qids, register_execute_plan runs every entry on the axis again and re-fetches every record the
+  // axis already holds; the follow-up exists for one missing slice. Read off the prompt the run dispatched.
+  const { res } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
+    MOCK_PLAN_DROP_QID: "+merch" });
+  assert.equal(res.ok, true, JSON.stringify(res));
+  const prompts = readdirSync(driverDir(res.runDir)).filter((f) => /\.dispatch\.txt(\.prev-[0-9a-f]+)?$/.test(f))   // a later dispatch keeps an earlier one as .prev-<hash>
+    .map((f) => readFileSync(driverDir(res.runDir, f), "utf8")).filter((t) => t.includes("have no band block yet"));
+  assert.equal(prompts.length, 1, "one warm plan-join follow-up was dispatched, and its text recorded");
+  const m = prompts[0].match(/register_execute_plan ONCE with (\{[^\n]*?\]\})/);
+  assert.ok(m, `the follow-up gives the call with its qids: ${prompts[0].slice(0, 600)}`);
+  const call = JSON.parse(m[1]);
+  assert.equal(call.qids.length, 1, `exactly the missing slice: ${JSON.stringify(call.qids)}`);
+  assert.ok(call.qids[0].endsWith("+merch"));
+  assert.match(prompts[0], /do not call it without qids/);
+});
+
 // ── envelope-settle: a refused slice is DECIDED at the receipt, not two expensive stages later ─────────
 // MOCK_PLAN_DEFERRED makes the executor refuse a dictated slice the way a real capability gap arrives —
 // error:true beside deferred:true, nothing dispatched — so joinPlanToBands routes it to the receipt's
@@ -1838,6 +1855,43 @@ test("Fix2 #1: the re-attempt with the correct classes CLOSES the gap — attemp
   assert.equal(fr.domClosed, true, "the correctly-scoped re-attempt closed the dominant-element gap");
   assert.ok(fr.swept >= 1, "the field directive was swept once genuinely searched");
   assert.equal(res.verdict, "CLEAR", "a genuinely-closed gap does not clamp");
+});
+
+test("the re-attempt re-sends only the directives that failed, never one that already closed", async () => {
+  // Two class-gap directives. The Cl.16 one closes on the first dispatch; the Cl.35/38 one comes back
+  // wrong-scoped the first time. Re-sending the closed directive's entries would ask the register again
+  // for records the run already holds, and on a register that bills per request pay for them twice.
+  const calls = [];
+  const planExecutor = async ({ planPath, axis, outputPath, qids }) => {
+    const n = calls.length + 1;
+    const plan = JSON.parse(readFileSync(planPath, "utf8"));
+    const intendedOf = new Map(plan.entries.map((e) => [e.qid, (e.nice_classes ?? []).map(String)]));
+    calls.push({ n, axis, qids: [...qids] });
+    const blocks = existsSync(outputPath) ? JSON.parse(readFileSync(outputPath, "utf8")) : [];
+    for (const qid of qids) {
+      const intended = intendedOf.get(qid) ?? [];
+      const wrong = n === 1 && intended.includes("35");
+      const cls = wrong ? ["9", "28", "41", "42"] : intended;
+      const block = { state: "enumerated", qid, query: `exact NOVAPULSE [cl ${cls.join(",")}]`, total_hits: wrong ? 0 : 2,
+        records: wrong ? [] : [{ record_id: `/mark/us/${qid.slice(-6)}`, mark_text: "NOVAPULSE", classes: cls.map(Number), status: "Registered", owner_name: "Owner", owner_country: "US", screen_verdict: "surface:in-scope-live" }] };
+      const i = blocks.findIndex((b) => b && b.qid === qid);
+      if (i >= 0) blocks[i] = block; else blocks.push(block);
+    }
+    writeFileSync(outputPath, JSON.stringify(blocks, null, 2) + "\n");
+    return { ok: true, states: {} };
+  };
+  const { res, events } = await runPipeline(
+    { MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FRAME_DIFF: "field-classgap-two" }, {}, { planExecutor });
+  assert.equal(res.ok, true, JSON.stringify(res));
+  assert.equal(calls.length, 2, `one dispatch and one re-attempt: ${JSON.stringify(calls)}`);
+  const plan = JSON.parse(readFileSync(driverDir(res.runDir, "register-plan.json"), "utf8"));
+  const classesOf = (q) => (plan.entries.find((e) => e.qid === q)?.nice_classes ?? []).map(String);
+  assert.ok(calls[0].qids.some((q) => classesOf(q).includes("16")) && calls[0].qids.some((q) => classesOf(q).includes("35")),
+    `the first dispatch carried both directives: ${JSON.stringify(calls[0].qids)}`);
+  assert.ok(calls[1].qids.length > 0 && calls[1].qids.every((q) => classesOf(q).includes("35")),
+    `the re-attempt carried only the failing directive: ${JSON.stringify(calls[1].qids)}`);
+  const re = events.find((e) => e.event === "frame-reopen-reattempt");
+  assert.deepEqual(re?.qids, calls[1].qids, "the log names what was re-sent");
 });
 
 test("Fix2 #1: a genuine close on the FIRST dispatch sweeps with NO re-attempt (no over-fire, no infinite re-open)", async () => {

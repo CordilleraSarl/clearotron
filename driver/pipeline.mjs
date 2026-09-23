@@ -10422,7 +10422,7 @@ async function pipelineInner(job, opts = {}) {
             // plan-unexecuted StageFailure below still holds the line for a genuine hole.
             runLog(run.runDir, { event: "plan-qids-missing", axis: a, qids: entries.map((e) => e.qid), action: "fresh-execute-plan" });
             note(`register-unit ${a}: ${entries.length} dictated plan entr${entries.length === 1 ? "y" : "ies"} unexecuted on a resumed-past axis — one fresh execute_plan-only call`);
-            const freshMsg = repairFollowup("register-unit:plan-join-fresh", { axis: a, registerPlan: P.registerPlan, bandPath: P.registerBand(a) });
+            const freshMsg = repairFollowup("register-unit:plan-join-fresh", { axis: a, registerPlan: P.registerPlan, bandPath: P.registerBand(a), entries });
             const rf = await stage("register-unit", { ...ctx, axis: a }, { force: true, freshMessage: freshMsg, sessionKey: `clearance-${ctx.run.slug}-${ctx.run.codename}-register-unit-${a}-plan-join-fresh`, trigger: "plan-join-fresh" });
             if (!rf.ok) note(`register-unit ${a}: fresh execute_plan call failed (${rf.fail}) — the plan-unexecuted StageFailure below holds the line`);
             continue;
@@ -11164,8 +11164,8 @@ async function pipelineInner(job, opts = {}) {
               }
               // Dispatch → derive band → VERIFY per directive (qid-landed + non-collapse + class-scope).
               // A byte-changed band with only a wrong-scope/empty/error block closes NOTHING.
-              const dispatchAndVerify = async () => {
-                const outcome = await dispatchPlanQids(a, added, "frame-reopen-sweep", 2);
+              const dispatchAndVerify = async (qids) => {
+                const outcome = await dispatchPlanQids(a, qids, "frame-reopen-sweep", 2);
                 refreshSupplementalExecution(ctx);
                 try { deriveNamedBand(ctx); } catch (e) { regMechFail = `named-band:${String(e.message).slice(0, 80)}`; }
                 const bands = readRegisterBands(P, axes);
@@ -11178,7 +11178,7 @@ async function pipelineInner(job, opts = {}) {
                 executedQids: ev.executedQids, blocksByQid: ev.blocksByQid,
               });
               const mintedDirectives = regDirectives.filter((d) => (directiveQids.get(reopenKey(d)) ?? []).length);
-              let ev = await dispatchAndVerify();
+              let ev = await dispatchAndVerify(added);
               regLastJoin = ev;
               let outcome = ev.outcome;
               const retryTargets = [];
@@ -11191,16 +11191,24 @@ async function pipelineInner(job, opts = {}) {
               // correct scope from attempt 1, so this recovers a transient (an error / collapsed / unlanded
               // slice), never re-runs a wrong query. dispatchPlanQids' own repair ledger (max 2) refuses a
               // third — so this cannot loop or thrash the paid pass.
+              //
+              // ONLY THE FAILING DIRECTIVES' OWN ENTRIES GO AGAIN. A directive that verified closed on the first
+              // attempt is not asked twice: re-sending its qids re-fetches records the run already holds, and
+              // on a register that bills per request it pays for them again.
               if (retryTargets.length) {
-                note(`frame-reopen: ${retryTargets.length} directive(s) not verified-closed — ONE re-attempt with the same structured remedy`);
-                runLog(run.runDir, { event: "frame-reopen-reattempt", directives: retryTargets.map(reopenKey) });
-                ev = await dispatchAndVerify();
-                regLastJoin = ev;
-                outcome = ev.outcome ?? outcome;
-                for (const d of retryTargets) {
-                  const v = verifyOne(d, ev);
-                  if (v.closed) { regSwept.add(reopenKey(d)); regDeferReason.delete(reopenKey(d)); }
-                  else regDeferReason.set(reopenKey(d), v.reason);
+                const retryQids = [...new Set(retryTargets.flatMap((d) => directiveQids.get(reopenKey(d)) ?? []))]
+                  .filter((q) => added.includes(q));
+                note(`frame-reopen: ${retryTargets.length} directive(s) not verified-closed — ONE re-attempt of their own ${retryQids.length} entr${retryQids.length === 1 ? "y" : "ies"} with the same structured remedy`);
+                runLog(run.runDir, { event: "frame-reopen-reattempt", directives: retryTargets.map(reopenKey), qids: retryQids });
+                if (retryQids.length) {
+                  ev = await dispatchAndVerify(retryQids);
+                  regLastJoin = ev;
+                  outcome = ev.outcome ?? outcome;
+                  for (const d of retryTargets) {
+                    const v = verifyOne(d, ev);
+                    if (v.closed) { regSwept.add(reopenKey(d)); regDeferReason.delete(reopenKey(d)); }
+                    else regDeferReason.set(reopenKey(d), v.reason);
+                  }
                 }
               }
               const afterBand = existsSync(P.registerBand(a)) ? readFileSync(P.registerBand(a), "utf8") : null;
