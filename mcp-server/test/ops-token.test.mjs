@@ -68,9 +68,13 @@ test("mint CLI: mints a verifiable token; fails closed on missing sub/run/secret
   assert.notEqual(run(["--scope", "ops"]).status, 0, "ops without --sub refused (audit must name the principal)");
   assert.notEqual(run(["--scope", "user"]).status, 0, "user without --run refused");
   assert.notEqual(run(["--scope", "ops", "--sub", "x"], { ...env, TRADEMARK_MCP_TOKEN_SECRET: "" }).status, 0, "no secret → fail closed");
+  // AN OPS TOKEN NAMES ITS TOOLS OR IS NOT MINTED. This used to mint a token with every write tool and
+  // print a warning; a warning is read once, and the token went on holding every tool for its whole life.
   const full = run(["--scope", "ops", "--sub", "admin"]);
-  assert.equal(full.status, 0);
-  assert.match(full.stderr, /FULL ops authority/, "un-scoped ops mint warns loudly");
+  assert.notEqual(full.status, 0, "an ops token naming no tools was minted");
+  assert.equal(full.stdout.trim(), "", "a refused mint still printed a token");
+  assert.match(full.stderr, /--verbs is required for an ops token/, "the refusal does not say which flag is missing");
+  assert.notEqual(run(["--scope", "ops", "--sub", "admin", "--verbs", ""]).status, 0, "an empty --verbs list counted as naming tools");
 });
 
 // ---- jti revocation + two-secret rotation (INSTALL.md §8) --------------------------------------

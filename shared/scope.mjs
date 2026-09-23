@@ -19,6 +19,8 @@
 
 import { createHmac, timingSafeEqual, randomBytes } from "node:crypto";
 import { readFileSync, statSync } from "node:fs";
+import { join } from "node:path";
+import { homedir } from "node:os";
 import { envFrom } from "./env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
 
 const SECRET = () => process.env.TRADEMARK_MCP_TOKEN_SECRET || "";
@@ -29,16 +31,29 @@ const SECRETS = () => [process.env.TRADEMARK_MCP_TOKEN_SECRET, process.env.TRADE
   .filter((s) => typeof s === "string" && s.length > 0);
 const b64u = (buf) => Buffer.from(buf).toString("base64url");
 
-// Emergency revocation: a plain-text denylist file (one `jti` per line, `#` comments), path in
-// TRADEMARK_MCP_TOKEN_DENYLIST. Checked on every token verification. Short TTLs remain the primary
-// control; a missing/unreadable file means "nothing revoked yet" (the denylist must never be able
-// to take ALL token auth down on an fs blip). Legacy tokens carry no jti and are killed by secret
-// rotation instead.
-export function isRevoked(jti, { denylistPath = process.env.TRADEMARK_MCP_TOKEN_DENYLIST } = {}) {
-  if (!jti || !denylistPath) return false;
+// Emergency revocation: a plain-text denylist file (one `jti` per line, `#` comments). Checked on every
+// token verification, ALWAYS: the path is TRADEMARK_MCP_TOKEN_DENYLIST when it is set, and otherwise the
+// install's default below, the same file every revoker writes when the setting is unset (connect,
+// disconnect, `key`, mint-token's own note). Short TTLs remain the primary control. Legacy tokens carry
+// no jti and are killed by secret rotation instead.
+//
+// REVOCATION USED TO BE OFF WHEN THE SETTING WAS UNSET: this returned "not revoked" for every token, so a
+// door started without the variable (by hand, or by a unit that never loaded it) ignored a revocation
+// written to the default file. Now:
+//   - a NAMED list that cannot be read refuses every token (below), as it already did;
+//   - a list that EXISTS and cannot be read refuses every token, named or default;
+//   - the DEFAULT list being ABSENT means nothing has been revoked. Every revocation creates the file
+//     it writes to, and with the setting unset that is this file, so its absence is the proof, not a
+//     gap. It is the one absence read as a negative here, and only for that reason.
+export const defaultDenylistPath = (home) => join(home, ".config", "clearotron", "token-denylist");
+export function isRevoked(jti, { denylistPath = undefined, env = process.env, home = homedir() } = {}) {
+  if (!jti) return false;
+  const named = String(denylistPath ?? env.TRADEMARK_MCP_TOKEN_DENYLIST ?? "").trim();
+  const path = named || defaultDenylistPath(home);
   let text;
-  try { text = readFileSync(denylistPath, "utf8"); }
+  try { text = readFileSync(path, "utf8"); }
   catch (e) {
+    if (!named && e?.code === "ENOENT") return false;   // the default list, never written: nothing revoked
     // FAIL CLOSED (found in review; ruled and recorded for the owner's
     // review with the reversal path, which is this function).
     //
@@ -50,10 +65,10 @@ export function isRevoked(jti, { denylistPath = process.env.TRADEMARK_MCP_TOKEN_
     // The cost is now a VISIBLE outage that names its own cause, rather than an invisible hole. `start`
     // creates this file before any door starts, so reaching this branch means someone removed or
     // unreadable-ified it while the door was running — rare, and worth stopping for.
-    const err = new Error(`revocation could not be checked: the denylist at ${denylistPath} is unreadable `
+    const err = new Error(`revocation could not be checked: the denylist at ${path} is unreadable `
       + `(${e.code ?? e.message}). Refusing the token rather than assuming it was never revoked.`);
     err.code = "REVOCATION_UNCHECKABLE";
-    err.denylistPath = denylistPath;
+    err.denylistPath = path;
     throw err;
   }
   return text.split("\n").map((l) => l.trim()).filter((l) => l && !l.startsWith("#")).includes(jti);

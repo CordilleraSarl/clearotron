@@ -695,8 +695,7 @@ export const MODELS = {
 // alias → full id; a value that's already a full provider/model id (contains "/") passes through.
 //
 // A BARE Anthropic id (dated or not — "claude-haiku-4-5-20251001", "claude-opus-5") normalises to the
-// catalog form too. The direct-API lanes (jx completions/judge/nativeread, driver.config JX_PROVIDERS)
-// name their model that way because that is what the Messages API takes, so without this one model named
+// catalog form too. Without this, one model named
 // in two spellings — dated and undated — would key apart in a rollup. The date suffix is dropped;
 // anything that does not look like a bare claude id is returned untouched, so a genuinely unknown model
 // still keys as-is rather than being guessed at.

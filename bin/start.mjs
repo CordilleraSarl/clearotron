@@ -2701,15 +2701,17 @@ export function backgroundOfferLines({ demo = false, keep = false, manager = nul
 }
 
 /**
- * The signal that means the window was closed, where a foreground start must treat it as a stop.
+ * The signal that means the window was closed, which a foreground start treats as a stop.
  *
- * ON WINDOWS, SIGHUP. Node reports closing the console window as SIGHUP there, and Windows ends this
- * process about ten seconds later whatever it is doing, so the teardown gets that long. The children share
- * the window's console there and Windows ends them with it; the teardown is what reaches whatever they
- * started.
+ * SIGHUP, on every platform. Closing a terminal sends it, and with no handler Node's default ended this
+ * process on the spot: the teardown never ran, and the children, which lead sessions of their own, never
+ * received the hangup. The portal, the door and the worker went on running with nothing supervising them
+ * and a search in flight carried on (measured on Linux, 2026-09-23), while the banner above says closing
+ * the window stops everything this command started. Windows reports closing the console window as SIGHUP
+ * too.
  */
-export function windowCloseSignals(platform = process.platform) {
-  return platform === "win32" ? ["SIGHUP"] : [];
+export function windowCloseSignals() {
+  return ["SIGHUP"];
 }
 
 /**
