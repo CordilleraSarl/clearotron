@@ -20,7 +20,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { join, dirname, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { exitFor } from "../surface-exit-verdict.mjs";
 
@@ -153,7 +153,8 @@ test("the population the verdict arms read is real, so an empty walk cannot pass
   assert.ok(mods.length >= 15, `only ${mods.length} module(s) found behind the check — the import walk is not reading what it should`);
   for (const must of ["unit-file-drift.mjs", "unit-state-verdict.mjs", "unit-inventory.mjs", "queue-watch-verdict.mjs",
     "manager-groups-verdict.mjs", "drainer-identity.mjs", "plan-run-agreement-verdict.mjs"]) {
-    assert.ok(mods.some((m) => m.endsWith(`/${must}`)), `${must} is not in the walk`);
+    // `sep`, because the walk hands back paths in this platform's spelling.
+    assert.ok(mods.some((m) => m.endsWith(`${sep}${must}`)), `${must} is not in the walk`);
   }
   const returns = mods.flatMap(verdictReturns);
   assert.ok(returns.length >= 40, `only ${returns.length} verdict return(s) read`);

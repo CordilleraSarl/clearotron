@@ -15,7 +15,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, chmodSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, sep } from "node:path";
 
 const { checkRunCaps, matterLedgerPath: fromRunner } = await import("../runner.mjs");
 const { accountUsage, matterLedgerPath: fromLeaf } = await import("../usage-ledger.mjs");
@@ -34,6 +34,11 @@ function standalone(rows = null) {
   return { root, qdir };
 }
 const usage = (queueDirs) => accountUsage({ queueDirs, account: "petcary", now: NOW });
+const nat = (p) => p.split("/").join(sep);
+
+// chmod 000 does not make a Windows file unreadable, so the two arms that need a ledger nobody can read
+// have no denial to observe there.
+const NO_MODE_BITS = process.platform === "win32" && "mode bits: chmod 000 does not make a Windows file unreadable, so there is no denial to observe";
 
 // ── One calculation, not two that agree today ──────────────────────────────────────────────────────
 
@@ -44,10 +49,11 @@ test("the wall and the pre-check share ONE ledger-path function — the SAME fun
 });
 
 test("the ledger path is derived from the QUEUE dir, wherever the queue lives", () => {
-  assert.equal(matterLedgerPath("/srv/tm/queue"), "/srv/tm/.matter-ledger.jsonl");
+  // Spelled with this platform's separator, because the ledger path is joined with it.
+  assert.equal(matterLedgerPath(nat("/srv/tm/queue")), nat("/srv/tm/.matter-ledger.jsonl"));
   // the workspace-embedded layout still resolves the way it always did
-  assert.equal(matterLedgerPath("/h/agentplatform/workspace-clawdi/studio/clearance-search/queue"),
-    "/h/agentplatform/workspace-clawdi/studio/clearance-search/.matter-ledger.jsonl");
+  assert.equal(matterLedgerPath(nat("/h/agentplatform/workspace-clawdi/studio/clearance-search/queue")),
+    nat("/h/agentplatform/workspace-clawdi/studio/clearance-search/.matter-ledger.jsonl"));
 });
 
 // ── The count, on the shape that broke ─────────────────────────────────────────────────────────────
@@ -138,7 +144,7 @@ test("MISSING dir: a queue dir named but not on disk is `complete:false` — the
 // assert — and a test that quietly asserts nothing reports `ok`, which is the shape of pass this whole
 // file exists to refuse.
 test("an UNREADABLE ledger is `complete:false` — a low number is not the same as no number",
-  { skip: process.getuid?.() === 0 ? "root reads through mode 000 — no denial to observe" : false }, () => {
+  { skip: (process.getuid?.() === 0 ? "root reads through mode 000 — no denial to observe" : false) || NO_MODE_BITS }, () => {
     const { qdir } = standalone([row()]);
     const p = matterLedgerPath(qdir);
     chmodSync(p, 0o000);
@@ -160,7 +166,7 @@ test("EVERY queue given is counted — a ledger read anywhere in the list is a c
 
 // SKIPPED under root for the same reason as the read test above.
 test("one unreadable ledger among readable ones is BLIND — a floor must not go out as a total",
-  { skip: process.getuid?.() === 0 ? "root reads through mode 000 — no denial to observe" : false }, () => {
+  { skip: (process.getuid?.() === 0 ? "root reads through mode 000 — no denial to observe" : false) || NO_MODE_BITS }, () => {
     const a = standalone([row()]), b = standalone([row()]);
     chmodSync(matterLedgerPath(b.qdir), 0o000);
     const u = usage([a.qdir, b.qdir]);

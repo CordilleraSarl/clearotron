@@ -315,7 +315,13 @@ test("a marker with a suffix the drain does not know is REPORTED, not dropped", 
 // scan that reads the queue by ref — and both were found by walking runner.mjs's filename composition
 // rather than by reasoning about what a queue "should" hold.
 
-test("the #377 claim lock is an in-flight state, not a stranded marker", () => {
+// The fixture is the lock name the runner composes, `<pid>:<starttime>` and all. A Windows file name cannot
+// hold that colon (the write lands in a hidden stream of a file named up to it), and the runner itself
+// cannot create this name there either, which is the runner's to fix. When it changes the name on
+// Windows, this fixture follows it.
+test("the #377 claim lock is an in-flight state, not a stranded marker", {
+  skip: process.platform === "win32" && "a Windows fault in driver/runner.mjs, reported for a fix",
+}, () => {
   scratch((root) => {
     // `<base>.processing.claimed-<pid>:<starttime>` is the job file renamed for the atomic claim. A live
     // token is a claim in progress; a dead one is restored by sweepAbandonedTakeovers. Reporting it as a

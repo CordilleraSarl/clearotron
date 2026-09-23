@@ -61,7 +61,9 @@ test("a supplied passphrase is honoured and reported as NOT generated", () => {
   assert.equal(checkPassphrase(readLocalCredential(path), "correct horse battery staple"), true);
 });
 
-test("the credential file is written 0600, and its directory 0700", () => {
+test("the credential file is written 0600, and its directory 0700", {
+  skip: process.platform === "win32" && "mode bits: Windows has no owner-only mode, and the credential read back 0666 there",
+}, () => {
   // A credential a second account on the box can read is not a credential. The mode is asserted rather
   // than assumed because `mode:` on writeFileSync is masked by the process umask and applies only on
   // create — which is why establishCredential also chmods, and why this checks the result.
@@ -121,7 +123,8 @@ test("readLocalCredential: MISSING is null, BROKEN throws — an absence is a fi
 // reads straight through mode 000, so there is no denial to observe — which is a fact about the reader,
 // not about the credential, and the run should say so by name rather than by a silent pass.
 test("readLocalCredential: a file that exists and cannot be read throws rather than reading as absent",
-  { skip: process.getuid?.() === 0 && "root reads through mode 000 — no denial to observe" }, () => {
+  { skip: (process.getuid?.() === 0 && "root reads through mode 000 — no denial to observe")
+    || (process.platform === "win32" && "mode bits: chmod 000 does not make a Windows file unreadable, so there is no denial to observe") }, () => {
   // Distinct from a malformed file: same wrong answer (a new passphrase minted over a working one), a
   // different cause.
   const path = tmp("unreadable.json");
@@ -132,7 +135,9 @@ test("readLocalCredential: a file that exists and cannot be read throws rather t
   } finally { chmodSync(path, 0o600); }
 });
 
-test("a hand-created directory is left at the mode its owner chose", () => {
+test("a hand-created directory is left at the mode its owner chose", {
+  skip: process.platform === "win32" && "mode bits: a Windows folder reads back 0666 whatever mode it was made with, so a chosen 0755 cannot be seen",
+}, () => {
   // establishCredential tightens only what it created. Re-permissioning a directory the operator
   // already had would be a side effect nobody asked for, and the file's own 0600 is the wall that
   // matters.

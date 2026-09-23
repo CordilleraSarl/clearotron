@@ -18,7 +18,9 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { administratorContact } from "../../shared/brand.mjs";
 
-const brandModule = fileURLToPath(new URL("../../shared/brand.mjs", import.meta.url));
+// A file URL, not a path: the program below imports it, and on Windows an absolute path is not an
+// import specifier (its drive letter reads as a URL scheme).
+const brandModule = new URL("../../shared/brand.mjs", import.meta.url).href;
 
 /** Evaluate shared/brand.mjs in a fresh process under a given environment. */
 function contactUnder(env) {

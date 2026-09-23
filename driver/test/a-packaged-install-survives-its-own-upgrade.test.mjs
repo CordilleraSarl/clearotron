@@ -19,7 +19,7 @@ import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { mkdtempSync, mkdirSync, rmSync, statSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, sep } from "node:path";
+import { delimiter, join, sep } from "node:path";
 
 import { globalBinDirFrom, invocationForm, invocationPrefix, standFrom } from "../../shared/invocation.mjs";
 import { ENV_LOCAL_LOCATION, envLocalPath, loadEnvLocal } from "../../shared/env-local.mjs";
@@ -45,9 +45,16 @@ const machine = ({ files = [], path = [] }) => ({
   env: { HOME: "/srv/example/home", PATH: path.join(":") },
 });
 
+// The layout above is npm's POSIX one. On Windows npm puts a global package at <prefix>\node_modules with
+// a .cmd beside it, and `globalBinDirFrom` answers null there by design (the arm below asserts it), so
+// the arms about the global form have no layout to run against.
+const NO_POSIX_GLOBAL_LAYOUT = process.platform === "win32"
+  && "npm's POSIX global layout (<prefix>/lib/node_modules, <prefix>/bin): Windows lays a global install "
+    + "out differently, and globalBinDirFrom answers null there by design";
+
 // ── the derivation ──────────────────────────────────────────────────────────────────────────────────
 
-test("the global executable is DERIVED from this install's own path, never looked up by name", () => {
+test("the global executable is DERIVED from this install's own path, never looked up by name", { skip: NO_POSIX_GLOBAL_LAYOUT }, () => {
   // The whole point of the fix. `shared/invocation.mjs` carries an explicit prohibition against
   // answering this with `which`/`command -v`, because a PATH lookup finds SOME clearotron and the
   // question is whether the name reaches THIS one. So the derivation is pure and takes no PATH at all.
@@ -57,9 +64,10 @@ test("the global executable is DERIVED from this install's own path, never looke
 test("a LOCAL install derives no global executable — npm never put one on a PATH", () => {
   // <project>/node_modules/clearotron has no `lib` segment. npm links those into
   // <project>/node_modules/.bin, which is on nobody's PATH, and `standFrom` already answers that case.
-  const local = "/srv/example/project/node_modules/clearotron";
+  // Spelled with this platform's separator, because `standFrom` reads a path the install really has.
+  const local = join(sep, "srv", "example", "project", "node_modules", "clearotron");
   assert.equal(globalBinDirFrom(local), null);
-  assert.equal(standFrom(local), "/srv/example/project", "and the case it DOES answer still answers");
+  assert.equal(standFrom(local), join(sep, "srv", "example", "project"), "and the case it DOES answer still answers");
 });
 
 test("the derivation refuses layouts that are not ours, so it cannot name a stranger's executable", () => {
@@ -80,7 +88,7 @@ test("the derivation refuses layouts that are not ours, so it cannot name a stra
 
 // ── what doctor is told ─────────────────────────────────────────────────────────────────────────────
 
-test("a global install on PATH is the BARE form, and the shim is npm's executable", () => {
+test("a global install on PATH is the BARE form, and the shim is npm's executable", { skip: NO_POSIX_GLOBAL_LAYOUT }, () => {
   const m = machine({ files: [GLOBAL_EXE], path: [`${PREFIX}/bin`, "/usr/bin"] });
   const form = invocationForm(m.env, m, GLOBAL_INSTALL);
   assert.equal(form.form, "bare", JSON.stringify(form));
@@ -89,7 +97,7 @@ test("a global install on PATH is the BARE form, and the shim is npm's executabl
   assert.equal(form.via, "global", "and it says which mechanism answered, so the next reader is not left inferring it");
 });
 
-test("invocationPrefix and invocationForm AGREE about a global install", () => {
+test("invocationPrefix and invocationForm AGREE about a global install", { skip: NO_POSIX_GLOBAL_LAYOUT }, () => {
   // THE DISCRIMINATING ARM. Both surfaces were already self-consistent; they disagreed with each other.
   // invocationPrefix returns bare for a global install off its basename branch — it always did — while
   // invocationForm reported no clearotron on PATH, so `doctor` printed a bare command in one paragraph
@@ -102,7 +110,7 @@ test("invocationPrefix and invocationForm AGREE about a global install", () => {
     "and the form derived from the install must say the same thing");
 });
 
-test("a global install NOT on PATH names its executable in full — never `cd <prefix>/lib && npx`", () => {
+test("a global install NOT on PATH names its executable in full — never `cd <prefix>/lib && npx`", { skip: NO_POSIX_GLOBAL_LAYOUT }, () => {
   // The half that was actively wrong rather than merely silent. Falling through to `in-place` handed
   // back `cd ${standFrom(installDir)} && npx clearotron`, and for this layout standFrom names
   // <prefix>/lib — a directory with no package.json, where npx reports "could not determine executable
@@ -116,7 +124,7 @@ test("a global install NOT on PATH names its executable in full — never `cd <p
   assert.ok(!form.prefix.includes(`${sep}lib`), `advice named <prefix>/lib: ${form.prefix}`);
 });
 
-test("a clearotron earlier on PATH DEMOTES the global form rather than confirming it", () => {
+test("a clearotron earlier on PATH DEMOTES the global form rather than confirming it", { skip: NO_POSIX_GLOBAL_LAYOUT }, () => {
   // Availability would say yes here. Identity says: something else answers that name first, so name
   // ours in full. The prohibition at the top of shared/invocation.mjs is exactly about this case.
   const m = machine({ files: [GLOBAL_EXE, "/usr/local/bin/clearotron"], path: ["/usr/local/bin", `${PREFIX}/bin`] });
@@ -125,7 +133,10 @@ test("a clearotron earlier on PATH DEMOTES the global form rather than confirmin
   assert.equal(form.shadowedBy, "/usr/local/bin/clearotron");
 });
 
-test("OUR OWN shim still wins — the global branch is asked second, and only second", () => {
+test("OUR OWN shim still wins — the global branch is asked second, and only second", {
+  skip: process.platform === "win32" && "a #!/bin/sh shim in ~/.local/bin weighed against npm's POSIX global layout: "
+    + "the product writes no such shim on Windows, and the global branch answers null there",
+}, () => {
   // ~/.local/bin is where this product writes its shim, and a shim that names this install is stronger
   // evidence than a layout derivation. The new branch must not have quietly taken precedence over it.
   const shim = "/srv/example/home/.local/bin/clearotron";
@@ -140,6 +151,8 @@ test("OUR OWN shim still wins — the global branch is asked second, and only se
 });
 
 // ── the .env that an upgrade ate ────────────────────────────────────────────────────────────────────
+
+const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 /** Real existence, for the temp directories the fixtures actually create. */
 const existsOnDisk = (p) => { try { statSync(p); return true; } catch { return false; } };
@@ -207,16 +220,17 @@ test("the signature is ALL FIVE directories — any one of them alone is somebod
 test("every candidate location RESOLVES, including the ones nobody has chosen", () => {
   // Wiring whose unchosen branches never execute is wiring that asserts itself. The owner's ruling has
   // to be a one-line flip, and this is what makes that claim testable before the ruling exists.
-  const repoRoot = "/p/node_modules/clearotron";
-  const home = "/srv/example/home";
+  // Spelled with this platform's separator, because the resolver joins with it.
+  const repoRoot = join(sep, "p", "node_modules", "clearotron");
+  const home = join(sep, "srv", "example", "home");
   const resolved = {
     "package-root": envLocalPath({ repoRoot, home, location: "package-root" }),
     "project-root": envLocalPath({ repoRoot, home, location: "project-root" }),
     "xdg-config": envLocalPath({ repoRoot, home, location: "xdg-config" }),
   };
-  assert.equal(resolved["package-root"], "/p/node_modules/clearotron/.env");
-  assert.equal(resolved["project-root"], "/p/.env", "option 1 — outside the tree npm replaces");
-  assert.equal(resolved["xdg-config"], "/srv/example/home/.config/clearotron/.env", "option 2b");
+  assert.equal(resolved["package-root"], join(sep, "p", "node_modules", "clearotron", ".env"));
+  assert.equal(resolved["project-root"], join(sep, "p", ".env"), "option 1 — outside the tree npm replaces");
+  assert.equal(resolved["xdg-config"], join(sep, "srv", "example", "home", ".config", "clearotron", ".env"), "option 2b");
   assert.equal(new Set(Object.values(resolved)).size, 3,
     "on a PACKAGED install the three candidates are three different files — which is the whole subject of 2177");
 });
@@ -234,13 +248,13 @@ test("the WRITER and the READER resolve to the same file under a candidate that 
   // THE FAILURE THIS PREVENTS IS SILENT. Nine sites used to compute this path themselves; a flip that
   // moved the writer and left the reader would lose an operator's configuration while every command
   // still exited 0. Driven against `project-root` precisely BECAUSE it is not the one in force.
-  const repoRoot = "/p/node_modules/clearotron";
+  const repoRoot = join(sep, "p", "node_modules", "clearotron");
   // DRIVEN AT `project-root`, WHICH IS NOT IN FORCE, and that is the only spelling of this arm that can
   // fail. `package-root` resolves to exactly the string the nine sites used to compose by hand, so a
   // reader that ignored the resolver entirely would still agree with it today — and would still agree
   // on the day the flip landed and the configuration went missing.
   const want = envLocalPath({ repoRoot, location: "project-root" });
-  assert.equal(want, "/p/.env", "option 1 puts it above the tree npm replaces");
+  assert.equal(want, join(sep, "p", ".env"), "option 1 puts it above the tree npm replaces");
   const seen = loadEnvLocal({ env: {}, repoRoot, location: "project-root", note: () => {} });
   assert.equal(seen.path, want,
     "the reader asks the resolver rather than composing the path, so it follows the constant wherever it goes");
@@ -262,7 +276,7 @@ function doctor(root, home) {
   try {
     const out = execFileSync(process.execPath, [join(root, "bin", "onboard.mjs"), "--check"], {
       encoding: "utf8", stdio: ["ignore", "pipe", "pipe"],
-      env: { HOME: home, USERPROFILE: home, PATH: [NODE_BIN, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", ...NO_INSTALLED_ENGINES },
+      env: { HOME: home, USERPROFILE: home, PATH: [NODE_BIN, "/usr/bin", "/bin"].join(delimiter), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", ...NO_INSTALLED_ENGINES },
     });
     return { code: 0, out };
   } catch (e) { return { code: e.status ?? -1, out: `${e.stdout ?? ""}${e.stderr ?? ""}` }; }
@@ -280,7 +294,8 @@ test("doctor REPORTS the upgrade as the cause, at rc 1, on a real packaged tree"
     assert.match(r.out, /no \.env at .*\.config[/\\]clearotron[/\\]\.env/, r.out);
     assert.match(r.out, /it cannot happen again/, r.out);
     assert.match(r.out, /replaced the package tree and took the configuration with it/, r.out);
-    assert.match(r.out, new RegExp(`Nothing in ${join(home, "trademark")} was touched`), r.out);
+    // Escaped, because a Windows temp path is full of backslashes and `\t` in `\trademark` is a tab.
+    assert.match(r.out, new RegExp(`Nothing in ${esc(join(home, "trademark"))} was touched`), r.out);
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 

@@ -197,6 +197,11 @@ function doctor(lines) {
  * key variables reach it, and otherwise answers the way Bedrock refuses a request without credentials. It
  * writes down which it saw, so the witness is the spawned process, not what doctor says about it.
  */
+// The stand-in below is a #!/bin/sh script, because it has to test its own environment before handing
+// over to the mock. Windows starts no shell script as the engine program, so these arms have nothing to run.
+const NO_SH_STAND_IN = process.platform === "win32"
+  && "a #!/bin/sh stand-in for the engine program: Windows cannot start a shell script as the program";
+
 function amazonProgram(dir) {
   const log = join(dir, "program-saw.log");
   const bin = join(dir, "claude-on-amazon.sh");
@@ -235,7 +240,7 @@ function doctorProves(bin, lines) {
 const AMAZON = ["CLEAROTRON_AI_BILLING=cloud", "CLAUDE_CODE_USE_BEDROCK=1", "AWS_REGION=eu-central-1"];
 const AWS_KEYS = { AWS_ACCESS_KEY_ID: "AKIA-TEST-NOT-REAL", AWS_SECRET_ACCESS_KEY: "secret-test-not-real", AWS_SESSION_TOKEN: "session-test-not-real" };
 
-test("an Amazon machine whose keys are only in the settings file is proved by doctor the way its searches run", () => {
+test("an Amazon machine whose keys are only in the settings file is proved by doctor the way its searches run", { skip: NO_SH_STAND_IN }, () => {
   // Doctor's environment is composed from nothing (doctorProves), so a key can only reach the program from the file.
   const dir = mkdtempSync(join(tmpdir(), "setup-pay-amazon-"));
   const program = amazonProgram(dir);
@@ -253,7 +258,7 @@ test("an Amazon machine whose keys are only in the settings file is proved by do
   assert.doesNotMatch(refused, /completed a turn/, refused);
 });
 
-test("doctor on an Amazon machine whose credentials are refused names Amazon and what to check, not the subscription's sign-in", () => {
+test("doctor on an Amazon machine whose credentials are refused names Amazon and what to check, not the subscription's sign-in", { skip: NO_SH_STAND_IN }, () => {
   const program = amazonProgram(mkdtempSync(join(tmpdir(), "setup-pay-amazon-refused-")));
   const out = doctorProves(program.bin, AMAZON);
   assert.deepEqual(program.saw(), ["absent"], out);
@@ -266,7 +271,7 @@ test("doctor on an Amazon machine whose credentials are refused names Amazon and
   assert.doesNotMatch(signedOut, /refused the credentials/, signedOut);
 });
 
-test("setup's proof turn on an Amazon machine whose keys are only in the settings file runs with them, as a search does", async () => {
+test("setup's proof turn on an Amazon machine whose keys are only in the settings file runs with them, as a search does", { skip: NO_SH_STAND_IN }, async () => {
   const eng = ENGINE_BINARIES["anthropic-agent"];
   // The shell is composed from nothing and holds no Amazon credential of any kind, so a key can only reach the
   // program from the settings file. The answers are the ones setup takes for Amazon: the region.
@@ -295,7 +300,7 @@ test("setup's proof turn on an Amazon machine whose keys are only in the setting
   assert.match(readFileSync(ONBOARD, "utf8"), /probeEngineTurn\(proofTurn\(\{ engineId: pick\.id, eng, bin, authEnv, settings: settingsInForce\(\) \}\)\)/);
 });
 
-test("setup's proof turn on an install still configured at the old location reads the file a search reads there", async () => {
+test("setup's proof turn on an install still configured at the old location reads the file a search reads there", { skip: NO_SH_STAND_IN }, async () => {
   // An install configured before the settings file moved keeps it at the old location, in the install folder,
   // and the loader still reads it there. The proof turn read only the new location, so the keys every search
   // used never reached it. A throwaway install folder and home, so neither this checkout nor the suite's home

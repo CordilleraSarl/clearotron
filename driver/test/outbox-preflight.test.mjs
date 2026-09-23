@@ -14,7 +14,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { join, dirname } from "node:path";
+import { basename, join, dirname } from "node:path";
 
 import {
   watchedQueueDirs, compareWatches, outboxBacklog, backlogFinding, ageLabel,
@@ -70,7 +70,8 @@ test("agreement reports nothing", () => {
 const fakeIo = (files, mtimes) => ({
   readdirSync: () => files,
   statSync: (p) => {
-    const name = p.slice(p.lastIndexOf("/") + 1);
+    // basename, because the reader joins the outbox and the file with this platform's separator.
+    const name = basename(p);
     if (!(name in mtimes)) throw new Error(`no such file: ${p}`);
     return { mtimeMs: mtimes[name] };
   },

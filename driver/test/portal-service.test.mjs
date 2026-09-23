@@ -253,7 +253,10 @@ test("/portal/api/about answers the §13 source offer, and answers it to a STRAN
   assert.equal(r.json.license, pkg.license);
 });
 
-test("an unreadable saved-search store empties the saved searches, never the product menu", { skip: process.getuid?.() === 0 && "root reads through any file mode" }, async () => {
+test("an unreadable saved-search store empties the saved searches, never the product menu", {
+  skip: (process.getuid?.() === 0 && "root reads through any file mode")
+    || (process.platform === "win32" && "mode bits: chmod 000 does not make a Windows folder unreadable, so the store cannot be shut"),
+}, async () => {
   const { service, recipesDir } = world();
   try {
     chmodSync(recipesDir, 0o000);
