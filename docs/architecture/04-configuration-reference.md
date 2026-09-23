@@ -138,12 +138,6 @@ id is what a dispatch row and a token-rollup row carry as the model *asked for*;
 the turn is recorded beside it, and the report names that. A version here would be a claim about a
 request nobody made, and wrong the day a newer model of the tier shipped.
 
-One consequence, accepted when this was decided: per-model totals are keyed on what was asked for,
-and the native-language lanes call the API directly, where a model id is required and a tier word is
-not accepted. So one model reached by a stage and by those lanes appears under two keys —
-`anthropic/claude-haiku` and `anthropic/claude-haiku-4-5`. They are different requests, and the split
-says so.
-
 The bottom four are **legacy names that no stage declares and no engine can run** — they resolve at
 level 1 and then throw at level 2 (below). They are catalogue entries, not available tiers.
 
