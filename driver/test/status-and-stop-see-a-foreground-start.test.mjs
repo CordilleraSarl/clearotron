@@ -51,8 +51,7 @@ test("a record is read while its process lives, ignored once it is gone, and rem
 });
 
 // On Windows the stop's walk up the folders it made did not end at the first one it made: it removed the
-// home above it as well. The walk stops on a string comparison with what mkdirSync returned, so the
-// likely cause is the two spellings of one folder disagreeing there. That is the product's walk.
+// home above it as well, which was there before the record. That is the product's walk, not this arm.
 test("a stop leaves no folder it made behind, and never one that was already there or is still in use",
   { skip: process.platform === "win32" && "a Windows fault in shared/running-start.mjs, reported for a fix" }, () => {
   // The demo on a home that had none: its record created `.config/clearotron/running` and its parent, and a
