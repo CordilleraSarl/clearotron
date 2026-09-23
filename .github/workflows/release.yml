@@ -257,7 +257,8 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - run: npm ci
+      # No install scripts in a job that holds a write token: see the first publish job.
+      - run: npm ci --ignore-scripts
 
       - name: This pipeline publishes only the way it was authorised to
         run: node scripts/release-publish-guard.mjs
@@ -1054,7 +1055,12 @@ jobs:
           npm install -g "npm@${NPM_VERSION}"
           npm --version
 
-      - run: npm ci
+      # NO INSTALL SCRIPTS BESIDE THE PUBLISH CREDENTIAL. A dependency's install script runs with whatever
+      # the job holds, and the npm worms of 2025 spread exactly that way. The lock carries one install script,
+      # fsevents (macOS only, optional), and this repository's own preinstall and postinstall only check the
+      # Node version and wire local git hooks, so skipping them costs nothing here. `npm pack` below still
+      # runs `prepack` (build-info): that is a pack step, not an install one.
+      - run: npm ci --ignore-scripts
 
       - name: This pipeline publishes only the way it was authorised to
         run: node scripts/release-publish-guard.mjs
@@ -1463,7 +1469,8 @@ jobs:
           npm install -g "npm@${NPM_VERSION}"
           npm --version
 
-      - run: npm ci
+      # No install scripts beside the publish credential: see the first publish job.
+      - run: npm ci --ignore-scripts
 
       - name: This pipeline publishes only the way it was authorised to
         run: node scripts/release-publish-guard.mjs
@@ -1835,9 +1842,10 @@ jobs:
       # job reads a granular token with write on this package alone, and publishing stays credential-less.
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version: 22
+          node-version: ${{ env.NODE_VERSION }}
           registry-url: https://registry.npmjs.org
-      - run: npm ci
+      # No install scripts beside a credential: see the first publish job.
+      - run: npm ci --ignore-scripts
       # EVERY JOB IN THIS FILE RUNS IT, and an arm counts the jobs so a new one cannot quietly skip it.
       # That arm caught this job on its first draft — which is the guard working, since a job that can
       # reach the registry with a credential is exactly what it exists to hold.
@@ -1846,9 +1854,20 @@ jobs:
       # A DEPRECATION IS NOT HELD TO `main` the way a publish is. It changes no code and stamps no
       # version; it puts a message on versions that are already out, and the message names a stable that
       # must already be published or the script refuses. There is nothing a branch could poison.
+      # THE INPUT ARRIVES AS DATA, NEVER AS SCRIPT TEXT. Interpolated into `run:`, a free-text input is
+      # pasted into the shell line before the shell reads it, so a value carrying a quote and a command
+      # would run that command in the one job holding a registry token. Through `env:` it is a variable's
+      # value, and it must read as a stable version before anything uses it.
       - name: Deprecate everything below the named stable
-        run: node scripts/deprecate-below.mjs --below "${{ inputs.deprecate-below }}"
+        run: |
+          set -euo pipefail
+          if ! [[ "$DEPRECATE_BELOW" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::deprecate-below must be a stable version such as 0.3.1."
+            exit 1
+          fi
+          node scripts/deprecate-below.mjs --below "$DEPRECATE_BELOW"
         # ON THE STEP, NEVER ON THE JOB. A job-level `env:` hands the token to every step in the job,
         # including the guard above whose whole purpose is to find one. The guard refuses that spelling.
         env:
+          DEPRECATE_BELOW: ${{ inputs.deprecate-below }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_DEPRECATE_TOKEN }}
