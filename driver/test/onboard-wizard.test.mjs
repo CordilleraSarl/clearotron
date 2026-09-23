@@ -73,9 +73,8 @@ const onPathName = (name) => (process.platform === "win32" ? `${name}.exe` : nam
 
 /** Why the arms that ASK a program found on PATH for its version cannot hold on Windows. */
 const NO_SCRIPT_ON_PATH = process.platform === "win32"
-  && "a `#!` script on PATH answering `--version`: Windows finds a program on PATH only as an .exe, or as npm's "
-   + ".cmd shim for the vendor's package, whose version is read from that package and never asked, so a fake "
-   + "program that answers the question can only be a real .exe";
+  && "a `#!` script on PATH answering `--version`: the fake programs here are extensionless shell scripts, Windows "
+   + "finds a program on PATH only under an extension it starts, and it cannot run a `#!` script";
 
 /** A program that runs, says nothing and exits 1, at a path to set in the engine's setting. Windows starts
  *  no `#!` script, and a JavaScript program is started there through Node (engine/engine-spawn.mjs). */

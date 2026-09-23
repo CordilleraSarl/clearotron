@@ -128,9 +128,8 @@ function standIn(name, answer) {
 }
 /** Why the arms that ask a stand-in on PATH for its version cannot hold on Windows. */
 const NO_SCRIPT_ON_PATH = process.platform === "win32"
-  && "a `#!` script on PATH answering `--version`: Windows finds a program on PATH only as an .exe, or as npm's "
-   + ".cmd shim for the vendor's package, whose version is read from that package and never asked, so a stand-in "
-   + "that answers the question can only be a real .exe";
+  && "a `#!` script on PATH answering `--version`: the stand-ins here are extensionless shell scripts, Windows "
+   + "finds a program on PATH only under an extension it starts, and it cannot run a `#!` script";
 function isolated(dir, extra = {}) {
   const home = mkdtempSync(join(tmpdir(), "floor-home-"));
   return { home, env: { PATH: `${dir}:${dirname(process.execPath)}:/usr/bin:/bin`, HOME: home, USERPROFILE: home, XDG_CONFIG_HOME: join(home, ".config"),
