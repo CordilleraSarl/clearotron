@@ -60,7 +60,10 @@ export const ANSWER_MEMORY_DIR = "register-answers";
 export const ANSWER_WATCH_LOG = "register-answer-watch.jsonl";
 const ATTEMPT_FILE = "attempt.json";
 export const ATTEMPT_MAX_AGE_MS = 24 * 60 * 60 * 1000;
-export const NEXT_PAGE_FRESH_MS = 10 * 60 * 1000;
+// One hour: a next-page link has been seen to work an hour after the register gave it, and nothing says it
+// works for longer. A held answer older than this is simply asked again. A park ends the attempt anyway,
+// and a resumed run starts with an empty memory, so no link survives a park.
+export const NEXT_PAGE_FRESH_MS = 60 * 60 * 1000;
 
 /**
  * The mode a register's switch asks for. Unset, or naming none of the three, is that register's default,
