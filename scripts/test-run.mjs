@@ -399,8 +399,11 @@ const isContained = (value) => {
 // The acceptance asks the refusal to name the value's ROOT, because that is the part that says "this is
 // somebody's live estate" at a glance, where a long path does not.
 const rootOf = (value) => {
-  const parts = resolve(value).split(sep).filter(Boolean);
-  return parts.length ? sep + parts[0] : sep;
+  // From the path's own root, so a Windows path names its drive and first folder (D:\a), not "\D:".
+  const p = resolve(value);
+  const { root } = parsePath(p);
+  const first = p.slice(root.length).split(sep).find(Boolean);
+  return first ? root + first : root;
 };
 
 // A guard with no way through gets deleted the first time somebody genuinely needs it, and then nothing
