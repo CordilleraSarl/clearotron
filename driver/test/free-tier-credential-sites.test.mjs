@@ -165,7 +165,7 @@ test("tracker 2018 the walk refuses an empty corpus, and an empty leaf is not on
     mkdirSync(root, { recursive: true });
     writeFileSync(join(root, "one.mjs"), "export const one = 1;\n");
     const baseline = sources([root]).map((f) => relative(tree, f)).sort();
-    assert.deepEqual(baseline, ["driver/one.mjs"], "the laid-out tree is not the tree the walk reads — this arm would prove nothing");
+    assert.deepEqual(baseline, [join("driver", "one.mjs")], "the laid-out tree is not the tree the walk reads — this arm would prove nothing");
     mkdirSync(leaf, { recursive: true });
     assert.deepEqual(sources([root]).map((f) => relative(tree, f)).sort(), baseline,
       "an empty directory under a walked root changed the set of files this sweep reads");
