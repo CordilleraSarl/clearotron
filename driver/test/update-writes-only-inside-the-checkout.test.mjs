@@ -140,6 +140,7 @@ test("THE CONTROL: with configuration outside the checkout the stubs DO record â
   const ran = readFileSync(log, "utf8");
   assert.match(ran, /git pull --ff-only/, `git was not run as --ff-only:\n${ran}`);
   assert.match(ran, /npm ci/, `dependencies were not reinstalled after the pull:\n${ran}`);
+  assert.match(ran, /npm ci --ignore-scripts/, `the reinstall ran the downloaded packages' install scripts:\n${ran}`);
   assert.ok(ran.indexOf("git pull") < ran.indexOf("npm ci"),
     `npm ci ran before the pull, so it installed the OLD dependency set:\n${ran}`);
   assert.equal(r.code, 0, `expected success, got ${r.code}. Output:\n${r.out}`);

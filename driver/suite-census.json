@@ -5933,7 +5933,7 @@
         },
         "update-writes-only-inside-the-checkout.test.mjs": {
           "tests": 8,
-          "asserts": 29,
+          "asserts": 30,
           "skips": 0,
           "todos": 0
         },
