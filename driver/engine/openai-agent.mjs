@@ -309,6 +309,14 @@ export function parseCodexEvent(line, ev) {
       // to start: `{"type":"file_change","changes":[{"path":…,"kind":"add"}],"status":"failed"}`, and no file.
       // It is the engine's own word that a write failed, which is what the engine probe refuses on.
       if (e.item?.type === "file_change" && e.item.status === "failed") ev.writesFailed = (ev.writesFailed ?? 0) + 1;
+      // A COMMAND CODEX ITSELF REPORTS AS FAILED. Measured on codex 0.158.0-alpha.2 with its sandbox unable to
+      // start a command: `{"type":"command_execution","status":"failed","exit_code":1,"aggregated_output":
+      // "bwrap: execvp …: No such file or directory\n"}`. A stage's own command can fail for its own reasons,
+      // so only the engine probe, whose command is a `cat` of a file it planted, reads this as the machine's.
+      if (e.item?.type === "command_execution" && e.item.status === "failed") {
+        ev.commandsFailed = (ev.commandsFailed ?? 0) + 1;
+        if (ev.commandFailure == null) ev.commandFailure = String(e.item.aggregated_output ?? "");
+      }
       noteMcpToolCall(e.item, ev);
       break;
     // ── — AN MCP CALL THAT WAS REFUSED IS NOT A CALL NOBODY MADE ──────────
@@ -565,11 +573,13 @@ function settleTuple({ r, ev, resumeRef }) {
     // still cannot report a whole-turn tool count, so `toolCalls` stays null, which is the house rule
     // for "this engine does not report" rather than "it called nothing".
     ...mcpToolGauge(ev),
-    // The refused count under the name the attempt row reads on both engines. Codex keeps its shell, and its
-    // stream counts only tool-server calls, so it reports no command-tool count: null, never zero.
+    // The refused count under the name the attempt row reads on both engines. Codex keeps its shell, and this
+    // adapter reads its commands only for failures (below), so it reports no command-tool count: null, never zero.
     toolCallsRefused: mcpToolGauge(ev).mcpToolCallsRefused,
     commandToolCalls: null,
     writesFailed: ev.writesFailed ?? 0,
+    commandsFailed: ev.commandsFailed ?? 0,
+    commandFailure: ev.commandFailure ?? null,
     signals: {
       stalled: stallKill || undefined, hardWall: r.hardWall || undefined,
       // A gather stage that ran with none of its tools produced prose and no instrumented half. The

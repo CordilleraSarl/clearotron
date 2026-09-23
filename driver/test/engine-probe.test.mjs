@@ -29,7 +29,9 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { classifyProbe, probeEngineTurn, preflightEngineTurn, probeFailureText, probeVerdictLane,
-  PROBE_MODEL, PROBE_THINKING, PROBE_TOOLS, PROBE_FILE, probePrompt, isProbePrompt, probeToolConfig } from "../engine/probe.mjs";
+  PROBE_MODEL, PROBE_THINKING, PROBE_TOOLS, PROBE_FILE, probePrompt, isProbePrompt, probeToolConfig,
+  ENGINES_WITH_A_SHELL, PROBE_COMMAND_FILE } from "../engine/probe.mjs";
+import { parseCodexEvent } from "../engine/openai-agent.mjs";
 import { CLOUD_SETTINGS, CLOUD_CREDENTIAL_CHECK } from "../engine/auth.mjs";
 import { ENGINE_BINARIES } from "../driver.config.mjs";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
@@ -51,9 +53,15 @@ const wordOf = (a) => wordsOf(a)[0];
  * What a working engine does with the probe's turn: calls each tool, writes their words to the file the
  * instruction names, in the run folder it was handed, and answers with the words.
  */
-const answering = (over = {}, { write = true } = {}) => async (a) => {
+/** The word the probe's command prints, read off the file its prompt names, or null when it asks for none. */
+const commandWordOf = (a) => {
+  const f = /Run the shell command cat "(.+?)"\./.exec(a.message)?.[1];
+  try { return f ? readFileSync(f, "utf8").trim() : null; } catch { return null; }
+};
+const answering = (over = {}, { write = true, command = true } = {}) => async (a) => {
   if (write) writeFileSync(join(a.runDir, PROBE_FILE), wordsOf(a).join("\n") + "\n");
-  return tupleOf({ code: 0, stdout: wordsOf(a).join(" "), ...over });
+  const said = [...wordsOf(a), ...(command && commandWordOf(a) ? [commandWordOf(a)] : [])];
+  return tupleOf({ code: 0, stdout: said.join(" "), ...over });
 };
 
 // ── the seam that keeps the suite (and CI) from spending ─────────────────────────────────────────────
@@ -665,6 +673,73 @@ test("through the real codex adapter: a write codex reports as failed is refused
     await assert.rejects(preflightEngineTurn({ env: CODEX }),
       /\[preflight\] openai-agent could not write a file where a search writes its results/, "the run door did not refuse");
   } finally { delete process.env.MOCK_CODEX_WRITE_FAILED; }
+});
+
+// ── THE COMMAND: where a stage keeps a shell, the probe proves one runs ───────────────────────────────
+// Measured on codex 0.158.0-alpha.2 with a permission profile that could not read codex's own helper: every
+// tool call completed and the patch tool wrote the file, while every shell command failed before it
+// started. The probe passed there. Now a Codex probe also runs `cat` of a word it planted in its own folder.
+
+test("only an engine whose stages keep a shell is asked for a command, and Claude's probe reads as it always did", () => {
+  assert.deepEqual([...ENGINES_WITH_A_SHELL], ["openai-agent"]);
+  assert.equal(probePrompt("/p/probe-words.txt"),
+    "Call the ping, note and look tools once each. Write the three words they returned to the file /p/probe-words.txt, one per line. Then reply with the same three words.");
+  const withCommand = probePrompt("/p/probe-words.txt", `/p/${PROBE_COMMAND_FILE}`);
+  assert.ok(isProbePrompt(withCommand), "the command form is no longer recognised as the probe");
+  assert.match(withCommand, /Run the shell command cat "\/p\/probe-command-word\.txt"\./);
+});
+
+test("a command the engine reports as failed is refused at the door; a word simply missing warns", async () => {
+  const failed = await probeEngineTurn({ env: { CLEAROTRON_AI: "openai-agent" }, loadAdapter: explode,
+    runTurn: answering({ commandsFailed: 2, commandFailure: "bwrap: execvp /x/codex: No such file or directory\n" }, { command: false }) });
+  assert.equal(failed.mode, "cannot-run-commands", JSON.stringify(failed));
+  assert.equal(failed.basis, "command-gauge");
+  assert.equal(probeVerdictLane(failed), "configuration", "a machine whose commands cannot start is this box's to fix");
+  assert.match(failed.fix, /^Every search stage reads its instructions through commands, so no search can finish here\. codex's own sandbox cannot run commands on this machine: set CLEAROTRON_CODEX_SANDBOX_BYPASS=1/);
+  assert.match(failed.detail, /bwrap: execvp/, "codex's own reason rides the verdict");
+
+  const skipped = await probeEngineTurn({ env: { CLEAROTRON_AI: "openai-agent" }, loadAdapter: explode,
+    runTurn: answering({}, { command: false }) });
+  assert.equal(skipped.mode, "commands-unproven", JSON.stringify(skipped));
+  assert.equal(probeVerdictLane(skipped), "weather", "a model that skipped a step is not this box's fault");
+
+  // A failed command whose word still came back is a command that ran: the model retried, or ran another.
+  const retried = await probeEngineTurn({ env: { CLEAROTRON_AI: "openai-agent" }, loadAdapter: explode,
+    runTurn: answering({ commandsFailed: 1 }) });
+  assert.equal(retried.ok, true, JSON.stringify(retried));
+
+  // Claude's stages have no shell, so its probe asks for no command and passes without one.
+  const claude = await probeEngineTurn({ env: { CLEAROTRON_AI: "anthropic-agent" }, loadAdapter: explode, runTurn: answering({}, { command: false }) });
+  assert.equal(claude.ok, true, JSON.stringify(claude));
+});
+
+test("the codex adapter counts a command codex reports as failed, and keeps its first output", () => {
+  const ev = {};
+  const item = (status, out) => JSON.stringify({ type: "item.completed", item: { id: "c", type: "command_execution",
+    command: "/bin/bash -lc 'cat x'", aggregated_output: out, exit_code: status === "failed" ? 1 : 0, status } });
+  parseCodexEvent(item("completed", "probe-1\n"), ev);
+  assert.equal(ev.commandsFailed ?? 0, 0, "a command that ran was counted as failed");
+  parseCodexEvent(item("failed", "bwrap: first\n"), ev);
+  parseCodexEvent(item("failed", "bwrap: second\n"), ev);
+  assert.equal(ev.commandsFailed, 2);
+  assert.equal(ev.commandFailure, "bwrap: first\n");
+});
+
+test("through the real codex adapter: the probe's command runs, fails as codex reports it, or is skipped", async () => {
+  const works = await probeWith(CODEX, {});
+  assert.equal(works.ok, true, JSON.stringify(works));
+  const failed = await probeWith(CODEX, { MOCK_CODEX_COMMAND_FAILED: "1" });
+  assert.equal(failed.mode, "cannot-run-commands", JSON.stringify(failed));
+  assert.equal(probeVerdictLane(failed), "configuration");
+  assert.match(failed.detail, /bwrap: execvp/);
+  const skipped = await probeWith(CODEX, { MOCK_CODEX_COMMAND_SKIPPED: "1" });
+  assert.equal(skipped.mode, "commands-unproven", JSON.stringify(skipped));
+  // And the run door refuses on the failed command, before a run directory exists.
+  process.env.MOCK_CODEX_COMMAND_FAILED = "1";
+  try {
+    await assert.rejects(preflightEngineTurn({ env: CODEX }),
+      /\[preflight\] openai-agent could not run a command where a search runs its commands/, "the run door did not refuse");
+  } finally { delete process.env.MOCK_CODEX_COMMAND_FAILED; }
 });
 
 test("through the real claude adapter: a write the program reports as failed is refused; a file simply not written warns", async () => {
