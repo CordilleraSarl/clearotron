@@ -165,6 +165,7 @@ test("watch: every request goes to the register, and each says whether the held 
   assert.deepEqual([rows[2].same_total, rows[2].same_ids, rows[2].same_order], [true, true, false], "a reorder alone");
   assert.deepEqual([rows[3].same_total, rows[3].same_ids], [false, false], "a different answer is a mismatch");
   assert.ok(rows.every((r) => r.mode === "watch" && r.key === rows[0].key), "one question, one key");
+  assert.ok(rows.every((r) => r.via === "driver"), "the driver's calls carry the run's record log");
 });
 
 test("on: a held answer is returned and the register is not asked; the ledger marks it a cache hit", async () => {
@@ -226,6 +227,7 @@ test("on: a record is remembered, and a spawned server finds the memory through 
     if (prior === undefined) delete process.env.CLEAROTRON_REGISTER_RECORD_LOG; else process.env.CLEAROTRON_REGISTER_RECORD_LOG = prior;
   }
   assert.equal(sent.length, 1);
+  assert.ok(watchRows(d).every((r) => r.via === "tool-server"), "a spawned server's rows say so, which is how a round sees it found the run");
 });
 
 test("a held answer whose next-page cursor is too old is asked again, and the watch says it was held", async () => {
