@@ -247,6 +247,11 @@ async function withEnv(env, fn) {
   finally { for (const k of Object.keys(env)) { if (saved[k] === undefined) delete process.env[k]; else pinEnv(process.env, k, saved[k]); } }
 }
 const SECRETS = { TRADEMARK_MCP_TOKEN_SECRET: "the-signing-key", PORTAL_SECRET: "portal", A_SETTING_ADDED_NEXT_YEAR: "x" };
+// WHAT A CHILD MUST START WITH, in its platform's own names. Windows spells PATH `Path` and ignores the
+// case of every name, and its home directory is USERPROFILE, not HOME.
+const onWindows = process.platform === "win32";
+const HOME_NAME = onWindows ? "USERPROFILE" : "HOME";
+const startedWith = (names, k) => (onWindows ? names.some((n) => n.toUpperCase() === k) : names.includes(k));
 
 test("claude is started with the list: no signing key, and no command tool offered", async () => {
   const { anthropicAgentEngine } = await import("../engine/anthropic-agent.mjs");
@@ -258,7 +263,7 @@ test("claude is started with the list: no signing key, and no command tool offer
     assert.equal(t.code, 0, t.stderr);
     const call = JSON.parse(readFileSync(log, "utf8").trim().split("\n").pop());
     for (const k of Object.keys(SECRETS)) assert.ok(!call.envNames.includes(k), `claude was started with ${k}`);
-    for (const k of ["PATH", "HOME", "MOCK_CLAUDE_CALL_LOG"]) assert.ok(call.envNames.includes(k), `claude was started without ${k}`);
+    for (const k of ["PATH", HOME_NAME, "MOCK_CLAUDE_CALL_LOG"]) assert.ok(startedWith(call.envNames, k), `claude was started without ${k}`);
     const at = call.argv.indexOf("--disallowedTools");
     assert.ok(at > 0, `no --disallowedTools on: ${call.argv.join(" ")}`);
     assert.deepEqual(call.argv[at + 1].split(/[\s,]+/).sort(), ["Bash", "Monitor", "PowerShell"]);
@@ -276,6 +281,6 @@ test("codex is started with the list: no signing key, and its key only because i
     assert.equal(t.code, 0, t.stderr);
     const call = JSON.parse(readFileSync(log, "utf8").trim().split("\n").pop());
     for (const k of [...Object.keys(SECRETS), "OPENAI_API_KEY"]) assert.ok(!call.envNames.includes(k), `codex was started with ${k}`);
-    for (const k of ["PATH", "HOME", "CODEX_HOME", "CODEX_API_KEY"]) assert.ok(call.envNames.includes(k), `codex was started without ${k}`);
+    for (const k of ["PATH", HOME_NAME, "CODEX_HOME", "CODEX_API_KEY"]) assert.ok(startedWith(call.envNames, k), `codex was started without ${k}`);
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });

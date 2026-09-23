@@ -114,9 +114,11 @@ test("supervising but no lock dir ⇒ null — a supervisor that named no dir kn
 });
 
 test("supervising WITH a lock dir ⇒ the liveness answer, and only then may a row be relabelled", () => {
+  // A fresh memo for each answer: on Windows the producer keeps an answer per lock dir for 15 seconds,
+  // so the second call would otherwise read the first call's `true` back rather than ask again.
   const env = { PORTAL_LOCAL_WORKER: "1", CLEAROTRON_RUN_LOCK_DIR: "/tmp/x" };
-  assert.equal(drainingState(env, { alive: () => true }), true);
-  assert.equal(drainingState(env, { alive: () => false }), false,
+  assert.equal(drainingState(env, { alive: () => true, memo: new Map() }), true);
+  assert.equal(drainingState(env, { alive: () => false, memo: new Map() }), false,
     "the ONLY path that may produce false — a supervising install whose worker is not beating");
 });
 

@@ -57,6 +57,11 @@ setTimeout(() => process.exit(9), 30000);
 
 const settle = (ms) => new Promise((r) => setTimeout(r, ms));
 
+// The five harness arms below test the reaper's POSIX mechanism: a detached child leads a process
+// group, and the reaper signals the whole group by negative pid. Windows has no process groups and no
+// POSIX signals, and the harness's grandchild is an `sh` job whose `$!` is not a Windows pid, so each
+// of the five is skipped there by name.
+
 // — THIS LINE IS WHY THE FIRST macOS NIGHTLY REDDED ALL FIVE ARMS BELOW.
 //
 // It read `existsSync("/proc/<pid>")`. `/proc` is a Linux filesystem, so on darwin every live pid read
@@ -115,7 +120,7 @@ async function runHarness(mode, after) {
 
 // ── the exits nobody wrote a branch for ─────────────────────────────────────────────────────────────
 
-test("a CANCELLED script (SIGTERM) takes its detached group with it", async () => {
+test("a CANCELLED script (SIGTERM) takes its detached group with it", { skip: process.platform === "win32" && "process groups: the reaper kills a detached group by negative pid, and Windows has no process groups or POSIX signals" }, async () => {
   // The measured case: a cancelled CI job. With no handler, SIGTERM terminates without running exit
   // handlers at all — so a reaper on `exit` alone would never fire on the one exit this issue is about.
   const { kid } = await runHarness("signal", async (proc) => {
@@ -125,7 +130,7 @@ test("a CANCELLED script (SIGTERM) takes its detached group with it", async () =
   assertLiveness(kid, false, "the grandchild outlived the cancelled script — this is the defect");
 });
 
-test("a Ctrl-C (SIGINT) takes it too", async () => {
+test("a Ctrl-C (SIGINT) takes it too", { skip: process.platform === "win32" && "process groups: the reaper kills a detached group by negative pid, and Windows has no process groups or POSIX signals" }, async () => {
   const { kid } = await runHarness("signal", async (proc) => {
     proc.kill("SIGINT");
     await new Promise((r) => proc.once("exit", r));
@@ -133,19 +138,19 @@ test("a Ctrl-C (SIGINT) takes it too", async () => {
   assertLiveness(kid, false, "an interrupted operator leaves a server holding fixed ports");
 });
 
-test("a THROW somewhere else in the script takes it", async () => {
+test("a THROW somewhere else in the script takes it", { skip: process.platform === "win32" && "process groups: the reaper kills a detached group by negative pid, and Windows has no process groups or POSIX signals" }, async () => {
   // Node runs `exit` handlers after an uncaught throw, so this needs no handler of its own — asserted
   // rather than assumed, because the whole design rests on it.
   const { kid } = await runHarness("throw", (proc) => new Promise((r) => proc.once("exit", r)));
   assertLiveness(kid, false, "an unrelated throw stranded the group");
 });
 
-test("CONTROL: an ordinary exit still reaps, as the planned paths always did", async () => {
+test("CONTROL: an ordinary exit still reaps, as the planned paths always did", { skip: process.platform === "win32" && "process groups: the reaper kills a detached group by negative pid, and Windows has no process groups or POSIX signals" }, async () => {
   const { kid } = await runHarness("exit", (proc) => new Promise((r) => proc.once("exit", r)));
   assertLiveness(kid, false, "the ordinary path must keep working, or this fix broke the normal case");
 });
 
-test("the SIGTERM exit code is preserved — CI reads it to tell a cancellation from a failure", async () => {
+test("the SIGTERM exit code is preserved — CI reads it to tell a cancellation from a failure", { skip: process.platform === "win32" && "process groups: the reaper kills a detached group by negative pid, and Windows has no process groups or POSIX signals" }, async () => {
   // A reaper that swallowed the signal and exited 0 would turn every cancelled job green, which is a
   // worse defect than the orphan: a green that means "nobody ran this".
   const { code } = await runHarness("signal", async (proc) => {
@@ -264,7 +269,8 @@ test("a pid that cannot name a process is could-not-look, not a dead one", () =>
     assert.strictEqual(pidAlive(bad), null, `pidAlive(${String(bad)}) must refuse to answer, not answer "dead"`);
 });
 
-test("the box's own init is alive — the cross-user pid the runbook warns about, on a real process", () => {
+test("the box's own init is alive — the cross-user pid the runbook warns about, on a real process",
+  { skip: process.platform === "win32" && "init: pid 1 is init on POSIX, and on Windows no process holds pid 1" }, () => {
   // pid 1 exists on every box this suite runs on, and it is the runbook's case in the flesh: owned by
   // root, so an unprivileged runner gets EPERM and a privileged one gets no throw. Both are life, and
   // the arm holds either way — which is the point, since it is the naive reader that disagrees with
