@@ -1163,10 +1163,10 @@ jobs:
       #    refuses rather than reconciling: two spellings disagreeing means somebody's intention is
       #    unrecorded, and guessing which they meant is how the wrong one wins.
       #  · the channel is derived, never defaulted. `npm publish` with no `--tag` publishes to `latest`,
-      #    and a version reaching `latest` by default rather than by decision is the failure. DURING THE
-      #    PRE-RELEASE PHASE `latest` IS the pre-release, by the owner's ruling — "latest has all our
-      #    fixes" — and `beta` is deliberately not also set: npm exchanges its OIDC token inside
-      #    `npm publish` and nowhere else, so a second tag would need a long-lived credential in this
+      #    and a version reaching `latest` by default rather than by decision is the failure. A
+      #    pre-release goes to the channel its version names (`beta` for a beta), a stable to `latest`
+      #    (scripts/release-dist-tag.mjs), and neither moves a second tag: npm exchanges its OIDC token
+      #    inside `npm publish` and nowhere else, so a second tag would need a long-lived credential in this
       #    repository, which is the one thing this design forbids. One publish, one tag.
       - name: What is being published, and whether this run may publish it
         id: what
@@ -1647,10 +1647,10 @@ jobs:
       #    refuses rather than reconciling: two spellings disagreeing means somebody's intention is
       #    unrecorded, and guessing which they meant is how the wrong one wins.
       #  · the channel is derived, never defaulted. `npm publish` with no `--tag` publishes to `latest`,
-      #    and a version reaching `latest` by default rather than by decision is the failure. DURING THE
-      #    PRE-RELEASE PHASE `latest` IS the pre-release, by the owner's ruling — "latest has all our
-      #    fixes" — and `beta` is deliberately not also set: npm exchanges its OIDC token inside
-      #    `npm publish` and nowhere else, so a second tag would need a long-lived credential in this
+      #    and a version reaching `latest` by default rather than by decision is the failure. A
+      #    pre-release goes to the channel its version names (`beta` for a beta), a stable to `latest`
+      #    (scripts/release-dist-tag.mjs), and neither moves a second tag: npm exchanges its OIDC token
+      #    inside `npm publish` and nowhere else, so a second tag would need a long-lived credential in this
       #    repository, which is the one thing this design forbids. One publish, one tag.
       # ── IT PUBLISHES THE VERSION IT AWAITED, OR NOTHING ────────────────────────────────────────────
       #
