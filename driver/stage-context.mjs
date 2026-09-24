@@ -541,7 +541,8 @@ const holds = (path, dir) => {
 export function sandboxGaps(manifest, canonicalRunDir, shadowRunDir) {
   const gaps = [];
   for (const e of manifest) {
-    if (!String(e.path).startsWith(`${canonicalRunDir}/`)) continue;   // not a run-dir artifact
+    const p = String(e.path);   // joined with this machine's separator, so a Windows path has "\\" here
+    if (!p.startsWith(canonicalRunDir) || !/[\\/]/.test(p[canonicalRunDir.length] ?? "")) continue;   // not a run-dir artifact
     const rel = e.path.slice(canonicalRunDir.length + 1);
     if (!holds(e.path, e.dir)) continue;                                // the canonical run has no such thing
     if (!holds(join(shadowRunDir, rel), e.dir)) gaps.push({ rel, kind: e.kind, via: e.via ?? null, why: e.why ?? null });

@@ -84,9 +84,20 @@ export function workerAlive(dir, { now = Date.now(), staleMs = 3 * 90_000, start
  *   false  we supervise one and it is not beating  → the only state that may relabel a row
  *   null   not a supervising install, or it named no lock dir
  */
-export function drainingState(env = process.env, { alive = workerAlive } = {}) {
+export function drainingState(env = process.env, { alive = workerAlive, platform = process.platform, now = Date.now(),
+  memo = DRAINING_MEMO } = {}) {
   if (env.PORTAL_LOCAL_WORKER !== "1") return null;
   const dir = env.CLEAROTRON_RUN_LOCK_DIR;
   if (!dir) return null;
-  return alive(dir);
+  // ON WINDOWS THE ANSWER IS KEPT FOR 15 SECONDS. Reading the worker's start time there starts PowerShell,
+  // which holds the portal for the better part of a second, and the portal asks on every refresh of a list,
+  // every five seconds while something runs. A label up to 15 seconds old is well inside the heartbeat's
+  // own three-tick window; nothing is stopped or claimed on this answer.
+  if (platform !== "win32") return alive(dir);
+  const kept = memo.get(dir);
+  if (kept && now - kept.at < 15_000) return kept.value;
+  const value = alive(dir);
+  memo.set(dir, { at: now, value });
+  return value;
 }
+const DRAINING_MEMO = new Map();

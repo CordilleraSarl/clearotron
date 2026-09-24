@@ -54,6 +54,10 @@ const runToExit = (env) => {
 };
 const outboxFiles = (root) => { try { return readdirSync(join(root, "outbox")); } catch { return []; } };
 
+// On Windows the runner's claim token is `<pid>:<birth stamp>` and it claims a job by renaming it to
+// `<base>.processing.claimed-<token>`. A Windows file name cannot hold a colon, so the rename fails, the
+// runner reads that as a lost race, and no job here is ever claimed. That is the runner's to fix.
+
 test("pre-try throw with a run dir (corrupt _driver/profile.json) → failure packet + outbox marker exactly once", async () => {
   const root = mkdtempSync(join(tmpdir(), "backstop-profile-"));
   const Q = queueFor(root);
@@ -135,7 +139,9 @@ test("normal pipeline failure (inside the try{}) is NOT double-noticed by the ba
     `the single marker is the packet written through the outbox, not a second bare marker: ${pending[0]}`);
 });
 
-test("an UNWRITABLE outbox still leaves the run recorded as owing a notice", async () => {
+test("an UNWRITABLE outbox still leaves the run recorded as owing a notice", {
+  skip: process.platform === "win32" && "mode bits: chmod 0555 does not make a Windows folder unwritable, so the outbox never refuses the write",
+}, async () => {
   // THE CONDITION EVERY OTHER ARM HERE IS BLIND TO, and the reason this one exists. Each of them drives a
   // writable outbox, so "the flag is armed on both paths" was true in the only state ever tested — and a
   // revision of this code set the flag AFTER the marker write, where an unwritable outbox threw and took

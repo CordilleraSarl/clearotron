@@ -134,7 +134,8 @@ test("a unit whose call RETURNED still fails as named_band_missing", () => {
 test("the repair aims at the same band file and the warm lane still applies", () => {
   const md = "/run/register-units/incumbent-class.md";
   const fail = "invalid_file:incumbent-class.md:tool_timeout:register_execute_plan:incumbent-class";
-  assert.equal(repairTarget(fail, md), "/run/register-units/incumbent-class-band.json",
+  // The band file is joined beside the unit's notes with this machine's `join`, so it is expected that way.
+  assert.equal(repairTarget(fail, md), join("/run/register-units", "incumbent-class-band.json"),
     "same absent artifact, reached the other way");
   assert.equal(warmEligible(fail, { status: "ok" }), true,
     "the session completed cleanly and the repair is one tool call — the named_band_missing argument, unchanged");

@@ -184,7 +184,8 @@ const runToExit = (env) => {
   return new Promise((r) => c.on("exit", (code) => r({ code, log: c.log })));
 };
 
-test("a disk that cannot hold the run refuses BEFORE any run dir exists", async () => {
+test("a disk that cannot hold the run refuses BEFORE any run dir exists",
+  async () => {
   const root = tmp("freespace-nodir-");
   const Q = queueFor(root);
   mkdirSync(Q, { recursive: true });

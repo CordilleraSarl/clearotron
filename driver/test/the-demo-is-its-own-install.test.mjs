@@ -197,7 +197,7 @@ test("through the real entry: `start --demo` leaves the planted `.env` alone, `s
     mkdirSync(dirname(file), { recursive: true });
     writeFileSync(file, "CLEAROTRON_REPORTS_DIR=/a/real/install/pool\n");
     const run = (args) => spawnSync(process.execPath, [join(REPO, "bin", "start.mjs"), ...args, "--license"],
-      { encoding: "utf8", timeout: 60000, env: { PATH: process.env.PATH, HOME: home, TMPDIR: tmpdir() } });
+      { encoding: "utf8", timeout: 60000, env: { PATH: process.env.PATH, HOME: home, USERPROFILE: home, TMPDIR: tmpdir() } });
     const demo = run(["--demo"]);
     assert.equal(demo.status, 0, `start --demo --license did not exit cleanly: ${demo.stderr}`);
     assert.match(demo.stderr, /\[env-local\] not reading/, "the demo did not say it left the file alone");
@@ -322,7 +322,7 @@ test("the demo, booted beside a real install, lists Demo Brand Owner and Generic
       ports = [base, base + 1, base + 2];
       // THE SHELL EXPORTS TWO OF THE SAME PATHS, so the environment half is driven as well as the file.
       run = launch([join(REPO, "bin", "clearotron.mjs"), "demo", "--no-open", "--port", String(base)],
-        { PATH: process.env.PATH, HOME: home, CLEAROTRON_REPORTS_DIR: join(real, "pool"), CLEAROTRON_CUSTOMERS_DIR: store });
+        { PATH: process.env.PATH, HOME: home, USERPROFILE: home, CLEAROTRON_REPORTS_DIR: join(real, "pool"), CLEAROTRON_CUSTOMERS_DIR: store });
       assert.ok(await portalUp(base, run), `the demo's portal never answered:\n${safe(run.said()).slice(-3000)}`);
 
       demoCredential(home);
@@ -403,7 +403,7 @@ test("a demo first, then a real start in the same home: the real install carries
       demoCredential(home);
       const base = await freePorts(3);
       ports = [base, base + 1, base + 2];
-      run = launch([join(REPO, "bin", "clearotron.mjs"), "demo", "--no-open", "--port", String(base)], { PATH: process.env.PATH, HOME: home });
+      run = launch([join(REPO, "bin", "clearotron.mjs"), "demo", "--no-open", "--port", String(base)], { PATH: process.env.PATH, HOME: home, USERPROFILE: home });
       assert.ok(await portalUp(base, run), `the demo's portal never answered:\n${safe(run.said()).slice(-3000)}`);
       await stop(run, ports);
 
@@ -414,7 +414,7 @@ test("a demo first, then a real start in the same home: the real install carries
       const live = await freePorts(3);
       ports = [live, live + 1, live + 2];
       run = launch([join(REPO, "bin", "start.mjs"), "--no-open", "--no-worker"], {
-        PATH: process.env.PATH, HOME: home,
+        PATH: process.env.PATH, HOME: home, USERPROFILE: home,
         PORTAL_SERVICE_PORT: String(live), TRADEMARK_MCP_HTTP_PORT: String(live + 1), CLIENT_MCP_HTTP_PORT: String(live + 2),
       });
       assert.ok(await portalUp(live, run), `the real install's portal never answered:\n${safe(run.said()).slice(-3000)}`);

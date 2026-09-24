@@ -120,7 +120,8 @@ export function webFetchRequested(allowedTools) {
 // turn that is awaiting it, so the turn's own budget is the honest ceiling and the child's hard wall
 // stays the backstop. Absent/0/negative ⇒ emit nothing and leave codex's default alone, so this is inert
 // for any caller that does not thread a budget.
-export function renderCodexConfigToml({ mcpConfig, allowedTools, developerInstructions, nodeBin = process.execPath, credEnvForward = [...CRED_ENV_FORWARD, ...TOOL_SERVER_SETTINGS], toolTimeoutSec, fence = null, withheldFromCommands = [] } = {}) {
+export function renderCodexConfigToml({ mcpConfig, allowedTools, developerInstructions, nodeBin = process.execPath, credEnvForward = [...CRED_ENV_FORWARD, ...TOOL_SERVER_SETTINGS], toolTimeoutSec, fence = null, withheldFromCommands = [],
+  platform = process.platform } = {}) {
   const servers = parseClaudeMcpServers(mcpConfig);
   const enabled = enabledToolsByServer(allowedTools);
   const toolTimeout = Number(toolTimeoutSec) > 0 ? Math.floor(Number(toolTimeoutSec)) : undefined;
@@ -173,6 +174,15 @@ export function renderCodexConfigToml({ mcpConfig, allowedTools, developerInstru
     emitServer("fetch", { command: nodeBin, args: [FETCH_SERVER], env: {}, enabledTools: ["fetch_url"] }, { forwardCreds: false });
 
   if (fence) lines.push(...fenceToml(fence));
+  // ON WINDOWS, CODEX'S SANDBOX IS ON ONLY WHEN THIS NAMES IT. With no `[windows] sandbox` and no feature
+  // switch, codex 0.156.1 picks no Windows sandbox at all (`WindowsSandboxLevel::Disabled`,
+  // codex-rs/core/src/windows_sandbox.rs, `from_features`), so `--sandbox workspace-write` would hold
+  // nothing there. `unelevated` is the mode that needs no administrator: a restricted token made from the
+  // user's own. `elevated` is not offered, even on a machine set up for it: codex records that setup under
+  // its home folder (`<CODEX_HOME>/.sandbox/setup_marker.json`, windows-sandbox-rs/src/setup.rs), and every
+  // turn here runs with a fresh CODEX_HOME, so each turn would try the administrator setup again.
+  if (platform === "win32") lines.push("[windows]", `sandbox = "unelevated"`, "");
+
   return lines.join("\n").trimEnd() + "\n";
 }
 

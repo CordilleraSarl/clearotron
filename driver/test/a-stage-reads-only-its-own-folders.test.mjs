@@ -181,7 +181,10 @@ test("codex: every Codex home is made in the account's cache folder, which the p
     // Linux and macOS: the cache folder XDG names, else ~/.cache. Windows: LOCALAPPDATA. Private to the account.
     const cache = codexHomesRoot({ XDG_CACHE_HOME: join(dir, "cache") }, { platform: "linux", home: dir });
     assert.equal(cache, join(dir, "cache", "clearotron", "codex-homes"));
-    assert.equal(statSync(cache).mode & 0o777, 0o700, "another account on the machine can open the Codex homes");
+    // A mode is a POSIX answer. On Windows node reports no owner, group or other bits and sets none (node's
+    // fs.chmod: "on Windows only the write permission can be changed"), so every folder reads 0o666 there
+    // and this cannot be asked through a mode. The Windows folder is the account's own LOCALAPPDATA, below.
+    if (process.platform !== "win32") assert.equal(statSync(cache).mode & 0o777, 0o700, "another account on the machine can open the Codex homes");
     assert.equal(codexHomesRoot({}, { platform: "linux", home: dir }), join(dir, ".cache", "clearotron", "codex-homes"));
     assert.equal(codexHomesRoot({ LOCALAPPDATA: join(dir, "Local") }, { platform: "win32", home: dir }),
       join(dir, "Local", "clearotron", "codex-homes"));

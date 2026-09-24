@@ -252,9 +252,9 @@ if (process.env.MOCK_CODEX_STALL) {
   function doStageWrites() {
     if (process.env.MOCK_CODEX_NOFILE) return;
     if (process.env.MOCK_CODEX_FILE != null) {
-      const m = msg.match(/ABSOLUTE path[^:]*:\s*(\/\S+)/)
-        || msg.match(/write (?:the COMPLETE corrected file|it) at\s+(\/\S+)/)
-        || msg.match(/OUTPUT_FILE:\s*(\/\S+)/);
+      const m = msg.match(/ABSOLUTE path[^:]*:\s*((?:[A-Za-z]:)?[\\/]\S+)/)
+        || msg.match(/write (?:the COMPLETE corrected file|it) at\s+((?:[A-Za-z]:)?[\\/]\S+)/)
+        || msg.match(/OUTPUT_FILE:\s*((?:[A-Za-z]:)?[\\/]\S+)/);
       if (m) { try { mkdirSync(dirname(m[1]), { recursive: true }); writeFileSync(m[1], process.env.MOCK_CODEX_FILE); } catch { /* best-effort */ } }
       return;
     }

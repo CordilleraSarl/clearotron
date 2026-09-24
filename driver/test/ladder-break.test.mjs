@@ -142,7 +142,8 @@ test("A4 scope guard: repeated identical TRANSPORT failures keep the full existi
 // that produced something, which is where it converged 9 of 9.
 const INVALID_EVERY_TURN = { validate: () => ({ ok: false, reason: "findings_unusable" }) };
 
-test("the escalated attempt names itself in the stage log, the spine and the dispatch record", async () => {
+test("the escalated attempt names itself in the stage log, the spine and the dispatch record", {
+}, async () => {
   process.env.MOCK_WARM_MODE = "draft";
   const r = await stage({ maxRetries: 2, ...INVALID_EVERY_TURN });
   assert.equal(r.attempts, 3);
@@ -163,7 +164,8 @@ test("the escalated attempt names itself in the stage log, the spine and the dis
   assert.equal(spine[0].warmEscalated, undefined);
 });
 
-test("the mark names ONE dispatch, not every dispatch after it", async () => {
+test("the mark names ONE dispatch, not every dispatch after it", {
+}, async () => {
   // The journalling trap. `warmEscalatedAt > 0` and `attempt === warmEscalatedAt` agree whenever the
   // escalated attempt is the LAST one, which is the shape of every other test here — so neither can catch
   // a cumulative flag. This ladder deliberately continues past the escalation: attempts 1 and 2 repeat
@@ -184,7 +186,8 @@ test("the mark names ONE dispatch, not every dispatch after it", async () => {
     "and still exactly one warm resume in a four-deep ladder");
 });
 
-test("an escalated attempt that SUCCEEDS still says it was escalated", async () => {
+test("an escalated attempt that SUCCEEDS still says it was escalated", {
+}, async () => {
   // Without the flag on the success return, a run that converged only because the session was discarded
   // is indistinguishable from one where the warm patch happened to work — and the round has nothing to
   // evidence the change with. This is the arm that fails if the field is dropped from the ok:true return.
@@ -303,7 +306,8 @@ test("wouldHaveBeenAttempt is NULL, and PRESENT, when the ladder was genuinely s
   assert.ok("wouldHaveBeenAttempt" in rows[0], "and the key must be PRESENT, or a spent ladder reads as a record predating the field");
 });
 
-test("a warm repeat that produced SOMETHING still escalates — #460's lane is not traded away", async () => {
+test("a warm repeat that produced SOMETHING still escalates — #460's lane is not traded away", {
+}, async () => {
   process.env.MOCK_WARM_MODE = "draft";              // writes a file every turn; the validator rejects it
   const r = await stage({ maxRetries: 2, ...INVALID_EVERY_TURN });
   assert.equal(r.attempts, 3,

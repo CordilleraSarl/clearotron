@@ -4,6 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { isLiveQueueMarker } from "../queue-markers.mjs";
+import { fileURLToPath } from "node:url";
 
 test("a PARKED run is live — the state the test deploy guard counted as zero", () => {
   // The guard refused correctly twice while R1 executed, then deployed ten seconds after the run parked
@@ -34,8 +35,8 @@ test("the driver and the deploy guard read ONE definition", async () => {
   const { join } = await import("node:path");
   const q = mkdtempSync(join(tmpdir(), "qm-"));
   for (const n of ["a.json", "b.processing", "c.postponed", "d.done", "e.failed", "b.processing.pid"]) writeFileSync(join(q, n), "");
-  const out = execFileSync(process.execPath, [new URL("../../scripts/queue-inflight.mjs", import.meta.url).pathname, q], { encoding: "utf8" }).trim();
+  const out = execFileSync(process.execPath, [fileURLToPath(new URL("../../scripts/queue-inflight.mjs", import.meta.url)), q], { encoding: "utf8" }).trim();
   assert.equal(out, "3", "queued + in-flight + parked");
-  const names = execFileSync(process.execPath, [new URL("../../scripts/queue-inflight.mjs", import.meta.url).pathname, "--names", q], { encoding: "utf8" }).trim().split("\n").sort();
+  const names = execFileSync(process.execPath, [fileURLToPath(new URL("../../scripts/queue-inflight.mjs", import.meta.url)), "--names", q], { encoding: "utf8" }).trim().split("\n").sort();
   assert.deepEqual(names, ["a.json", "b.processing", "c.postponed"]);
 });

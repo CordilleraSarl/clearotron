@@ -13,7 +13,7 @@ import { execFileSync } from "node:child_process";
 import { mkdtempSync, mkdirSync, copyFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { pathToFileURL } from "node:url";
+import { pathToFileURL, fileURLToPath } from "node:url";
 import { productIdentity, runningCommit, resetProductIdentity, SOURCE_REPO } from "../../shared/product-identity.mjs";
 import { skipReason } from "../../shared/tracked-files.mjs";
 
@@ -28,7 +28,7 @@ test("the commit is the one this checkout is actually on", (ctx) => {
   // case was "covered by the degraded case below" — it was not: that arm asserted a hand-built object.
   if (sha === null) return ctx.skip(skipReason(GUARD));
   assert.match(sha, /^[0-9a-f]{40}$/, "a sha that is not a full sha is a wrong answer, not a missing one");
-  const actual = execFileSync("git", ["-C", new URL("../..", import.meta.url).pathname, "rev-parse", "HEAD"],
+  const actual = execFileSync("git", ["-C", fileURLToPath(new URL("../..", import.meta.url)), "rev-parse", "HEAD"],
     { encoding: "utf8" }).trim();
   assert.equal(sha, actual, "resolved a different commit than the checkout is on");
 });
@@ -100,7 +100,7 @@ test("the licence is read from the manifest, never restated here", () => {
   // rather than asserting a value, is what keeps this test true on both sides of that change.
   resetProductIdentity();
   const declared = JSON.parse(
-    execFileSync("git", ["show", "HEAD:package.json"], { encoding: "utf8", cwd: new URL("../..", import.meta.url).pathname }),
+    execFileSync("git", ["show", "HEAD:package.json"], { encoding: "utf8", cwd: fileURLToPath(new URL("../..", import.meta.url)) }),
   ).license ?? null;
   assert.equal(productIdentity().license, declared,
     "the source offer names a different licence than package.json declares");

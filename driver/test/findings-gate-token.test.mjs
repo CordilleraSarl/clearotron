@@ -27,6 +27,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { warmEligible, repairTarget, correctionHint } from "../gateway.mjs";
 
 // The token exactly as validateNetShape throws it, and the wire shape gateway.mjs:525 mints it into:
@@ -65,12 +66,13 @@ test("gate token — property 1: WARM_ELIGIBLE_RE admits it, so the repair stays
 });
 
 test("gate token — property 2: the repair turn is aimed at findings.json, not the coverage ledger", () => {
-  assert.equal(repairTarget(WIRE, "/run/narrative.md"), "/run/findings.json",
+  // The target is joined beside the stage's own file, so it carries this platform's separator.
+  assert.equal(repairTarget(WIRE, "/run/narrative.md"), join("/run", "findings.json"),
     "the `/findings?_/` branch is a bare family-prefix test — it routes with no gateway edit");
   // The collision this name exists to avoid: `coverage_*` is tested FIRST in the same ternary, so a
   // plausible alternative spelling would send the model to rewrite the wrong file entirely.
   assert.equal(repairTarget("invalid_file:findings.json:findings_net_coverage_key_chained", "/run/narrative.md"),
-    "/run/register-coverage-ledger.json",
+    join("/run", "register-coverage-ledger.json"),
     "demonstrated, not assumed: a coverage_* substring wins the ternary and the repair is aimed at a file that cannot fix this");
   const coverageFirst = literalRegex(GATEWAY_SRC, "return /coverage_(ledger|axis|key|mirror|status_invalid)/", "repairSiblingName coverage arm");
   for (const forbidden of ["coverage_ledger", "coverage_axis", "coverage_key", "coverage_mirror", "coverage_status_invalid"])

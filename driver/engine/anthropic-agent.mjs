@@ -25,6 +25,7 @@ import { resolveEngineProgram } from "../driver.config.mjs";   // — the one pl
 import { authorityTrees } from "../authority-trees.mjs";
 import { recordEngineChild, clearEngineChild } from "./child-record.mjs";   //
 import { engineEnv } from "./engine-env.mjs";   // — the program's environment, by list (see spawnEnv)
+import { engineSpawn, spawnsDetached, killWindowsTreeNow } from "./engine-spawn.mjs";   // one answer to how a turn starts and ends, on every platform
 
 // Read per-call (not module-level) so tests can drive a short stall timeout / a mock binary.
 // ONE place knows how to find the program (driver.config.mjs resolveEngineProgram): the explicit setting,
@@ -454,18 +455,20 @@ export function stageSettings(boundary) {
   return JSON.stringify({ permissions: { ...READ_FENCE }, ...(boundary ? JSON.parse(boundary) : {}) });
 }
 
-/** POSIX single-quoting — the hook `command` is run through a shell, and a checkout path may hold spaces. */
-const shq = (s) => `'${String(s).replace(/'/g, `'\\''`)}'`;
-
 /**
  * The `--settings` JSON that installs the write boundary, or null when there is nothing to protect.
  *
- * The policy travels in the hook's OWN argv (base64 — the alphabet is shell-safe, so no quoting question
- * survives into the command string). That is deliberate: hook and policy are ONE object, so "installed but
- * unconfigured" — the silent half-state that would leave a boundary reporting nothing — cannot occur.
+ * The policy travels in the hook's OWN argv (base64). That is deliberate: hook and policy are ONE object, so
+ * "installed but unconfigured" — the silent half-state that would leave a boundary reporting nothing —
+ * cannot occur.
  *
- * `process.execPath`, never a bare `node`: the hook command runs through a shell whose PATH under systemd
- * need not carry the node the driver is running on.
+ * NO SHELL, ON ANY PLATFORM. The hook is written in exec form, `command` plus `args`, which the CLI
+ * spawns directly with each element as one argument (the vendor's hooks reference; the form arrived in
+ * 2.1.139, below this engine's floor). It used to be one command string quoted for a POSIX shell. On
+ * Windows without Git Bash the CLI runs a hook string in PowerShell instead, where POSIX quoting does not
+ * parse, and a hook that fails to start lets the write through (below). Exec form needs `command` to be a
+ * real program, which `process.execPath` is: the Node running the driver, never a bare `node` whose PATH
+ * under a service manager need not carry it.
  *
  * NOTE for whoever next edits the flag list: `--bare` disables hooks. Adding it removes this boundary
  * silently, exactly as `--add-dir` silently granted write.
@@ -496,7 +499,7 @@ export function writeBoundarySettings({ skillsRoots = [], profilesDir = null, ru
         // that does not honour the removal. What it can and cannot do is stated at its declaration in
         // deny-authority-write.mjs; it is a detector, and naming it here does not make it a boundary.
         matcher: "Write|Edit|MultiEdit|NotebookEdit|Bash",
-        hooks: [{ type: "command", command: `${shq(process.execPath)} ${shq(hook)} ${payload}` }],
+        hooks: [{ type: "command", command: process.execPath, args: [hook, payload] }],
       }],
     },
   });
@@ -561,8 +564,14 @@ export const anthropicAgentEngine = {
       // the direct pid orphaned them for days (a bridge.mjs --server legaldatahunter orphan, PPID 1, ran
       // 3.5 days — still holding its upstream transport, still able to bill and race *-band.json writes).
       // Detached makes claude its own process-group leader, so the watchdog's kills reach the whole tree.
-      try { child = spawn(claudeBin(), args, { stdio: ["pipe", "pipe", "pipe"], cwd: spawnCwd, env: spawnEnv(), detached: true }); }
+      // Not on Windows, which has no process groups: there the turn stays attached, and ends as a tree
+      // (engine-spawn.mjs says why, and how the program itself is started).
+      const run = engineSpawn(claudeBin(), args);
+      const spawnedAt = Date.now();   // before the spawn: what the turn starts is started after this
+      try { child = spawn(run.command, run.args, { stdio: ["pipe", "pipe", "pipe"], cwd: spawnCwd, env: spawnEnv(), detached: spawnsDetached() }); }
       catch (e) { return resolve(errResult(t0, e, resumeRef)); }
+      let exitedAt = null;
+      child.once("exit", () => { exitedAt = Date.now(); });
       // THE SECOND SPAWN PATH, and it has to record too. This engine does not go
       // through runStreamingChild; wiring one and assuming the other follows is the exact defect shape
       // 2122 was raised on the same day (the demo banner reached the clearance renderer and not the
@@ -916,7 +925,11 @@ export const anthropicAgentEngine = {
       // a SIGTERM-immune MCP straggler from the group SIGKILL. Caveat: the group kill reaps MCP children
       // only while claude does not setpgid them itself — post-deploy verification item.
       let escalation = null;
-      const groupKill = (sig) => { try { process.kill(-child.pid, sig); } catch { try { child.kill(sig); } catch { /* already gone */ } } };
+      // Windows has no group to signal: the whole tree is ended at once, and the escalation then finds nothing.
+      // Even when claude itself has exited, for the reason runStreamingChild gives (engine/common.mjs).
+      const groupKill = process.platform === "win32"
+        ? (sig) => { const n = killWindowsTreeNow({ pid: child.pid, since: spawnedAt, until: exitedAt }); if (!n && sig === "SIGTERM") process.stderr.write(`[engine] the Windows stop found nothing of this turn left to end (program ${child.pid})\n`); }
+        : (sig) => { try { process.kill(-child.pid, sig); } catch { try { child.kill(sig); } catch { /* already gone */ } } };
       const killTree = () => {
         if (escalation) return;   // the watchdog polls — arm the escalation exactly once
         groupKill("SIGTERM");

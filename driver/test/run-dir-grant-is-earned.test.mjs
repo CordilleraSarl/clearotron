@@ -26,13 +26,12 @@ const SKILLS = mkdtempSync(join(tmpdir(), "rdg-skills-"));
 const args = (o) => buildClaudeArgs({ model: "sonnet", skillsDir: SKILLS, skillsGrantRoots: [SKILLS], runDir: RUN, ...o });
 const granted = (a) => { const i = a.indexOf(RUN); return i > 0 && a[i - 1] === "--add-dir"; };
 // THE BOUNDARY IS DECODED, NOT GREPPED. `writeBoundarySettings` base64-encodes the tree list into the
-// deny-hook's command line, so a substring search for the path finds nothing and would pass whatever the
+// deny-hook's arguments, so a substring search for the path finds nothing and would pass whatever the
 // policy said. This reads the policy the hook will actually enforce.
 const boundaryTrees = (a) => {
   const i = a.indexOf("--settings");
   if (i < 0) return [];
-  const cmd = JSON.parse(a[i + 1])?.hooks?.PreToolUse?.[0]?.hooks?.[0]?.command ?? "";
-  const b64 = (cmd.trim().split(/\s+/).pop() ?? "").replace(/'/g, "");
+  const b64 = JSON.parse(a[i + 1])?.hooks?.PreToolUse?.[0]?.hooks?.[0]?.args?.at(-1) ?? "";
   try { return JSON.parse(Buffer.from(b64, "base64").toString("utf8")).trees ?? []; } catch { return []; }
 };
 const boundaryCovers = (a, root) => boundaryTrees(a).some((t) => String(t.path).startsWith(root));

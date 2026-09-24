@@ -120,7 +120,7 @@ const spawnRunner = (env) => {
 // A LIVE unrelated process (60s sleeper) — the "reused pid" impostor / the in-flight stand-in.
 const spawnSleeper = () => spawn(process.execPath, ["-e", "setTimeout(()=>{}, 60000)"], { stdio: "ignore" });
 
-test("PID reuse (live foreign pid, WRONG starttime) → re-claimed and run; correct starttime → skipped in-flight with a .skips tally", PROC_GATE, async () => {
+test("PID reuse (live foreign pid, WRONG starttime) → re-claimed and run; correct starttime → skipped in-flight with a .skips tally", { skip: PROC_GATE.skip }, async () => {
   const root = mkdtempSync(join(tmpdir(), "liveness-"));
   const Q = queueFor(root);
   mkdirSync(Q, { recursive: true });

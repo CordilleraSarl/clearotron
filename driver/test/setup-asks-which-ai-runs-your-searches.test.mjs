@@ -36,14 +36,22 @@ const NOWHERE = mkdtempSync(join(tmpdir(), "which-ai-nowhere-"));
 after(() => rmSync(NOWHERE, { recursive: true, force: true }));
 const PLACEHOLDER = 'echo "Error: the native binary is not installed." >&2\nexit 1\n';   // no #!, as the vendor ships it
 
+// Windows starts a program by its extension and has no execute bit, so there a copy that can start is
+// named as the vendor ships it, `claude.exe`, and a copy that cannot is one with no extension. On Linux
+// the file is the bare command word and the execute bit decides, as it always did.
+const WIN = process.platform === "win32";
+const programFile = (spec, startable = true) => (WIN && startable ? `${spec.fallback}.exe` : spec.fallback);
+const NOT_STARTABLE = WIN ? /not a program Windows can start/ : /not an executable file/;
+
 /** A copy of an engine's program installed where setup installs one, its program file holding `content`. */
 function installed(engineId, content, { mode = 0o755, version = "9.9.9" } = {}) {
   const spec = ENGINE_BINARIES[engineId];
   const root = mkdtempSync(join(tmpdir(), "which-ai-installed-"));
   const dir = join(root, "node_modules", ...spec.package.split("/"));
   mkdirSync(join(dir, "bin"), { recursive: true });
-  writeFileSync(join(dir, "package.json"), JSON.stringify({ name: spec.package, version, bin: { [spec.fallback]: `bin/${spec.fallback}` } }));
-  const program = join(dir, "bin", spec.fallback);
+  const file = programFile(spec, (mode & 0o111) !== 0);
+  writeFileSync(join(dir, "package.json"), JSON.stringify({ name: spec.package, version, bin: { [spec.fallback]: `bin/${file}` } }));
+  const program = join(dir, "bin", file);
   writeFileSync(program, content, { mode });
   return { root, program };
 }
@@ -109,7 +117,7 @@ test("a row found says so, with the version when the program gives one and witho
     const eng = ENGINE_BINARIES[id];
     const copy = installed(id, "#!/bin/sh\nexit 1\n", { version: CURRENT_PROGRAM });
     const onPath = mkdtempSync(join(tmpdir(), "which-ai-path-"));
-    writeFileSync(join(onPath, eng.fallback), "#!/bin/sh\nexit 1\n", { mode: 0o755 });
+    writeFileSync(join(onPath, programFile(eng)), "#!/bin/sh\nexit 1\n", { mode: 0o755 });
     try {
       assert.deepEqual((({ who, what }) => ({ who, what }))(said(id, {}, copy.root)),
         { who: `${eng.product}, by ${eng.vendor}`, what: `found on this computer (version ${CURRENT_PROGRAM})` });
@@ -175,7 +183,7 @@ test("any other copy refused is a problem row that says it won't run", () => {
     const { root } = installed(id, "#!/bin/sh\nexit 0\n", { mode: 0o644 });
     try {
       const row = said(id, {}, root);
-      assert.match(row.state.rejected?.[0]?.why ?? "", /not an executable file/, "fixture precondition: the copy was refused as not executable");
+      assert.match(row.state.rejected?.[0]?.why ?? "", NOT_STARTABLE, "fixture precondition: the copy was refused as not executable");
       assert.equal(row.what, `problem: the copy of ${eng.product} here won't run — choose it to see the fix`);
     } finally { rmSync(root, { recursive: true, force: true }); }
   }
@@ -256,7 +264,7 @@ test("accepting the install with a setting in force uses the copy setup installe
   // The install block makes that look: from the install it runs to the branch taken when it is declined.
   // The anchor is joined from two pieces so that this file, which only READS onboard.mjs and runs no
   // package manager, does not read as one to the offline guard (a-test-never-reaches-a-network-...).
-  const spawn = src.indexOf(["spawnSync(", '"npm", engineInstallArgs(eng, dir)'].join(""));
+  const spawn = src.indexOf(["npmInvocation(", "engineInstallArgs(eng, dir))"].join(""));
   const declined = src.indexOf("} else if (namedSetting(eng, process.env[eng.env])) info(ownCopyLine(eng));", spawn);
   assert.notEqual(spawn, -1, "anchor missing: the install setup runs");
   assert.ok(declined > spawn, "anchor missing: the declined branch after the install");

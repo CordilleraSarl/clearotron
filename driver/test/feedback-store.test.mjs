@@ -86,7 +86,9 @@ test("listFlags is newest-first and SKIPS a corrupt file — one bad record must
   rmSync(d, { recursive: true, force: true });
 });
 
-test("the store is group-readable but not world-readable, and lives BESIDE the pool, not inside a run", () => {
+test("the store is group-readable but not world-readable, and lives BESIDE the pool, not inside a run", {
+  skip: process.platform === "win32" && "mode bits: the arm reads the store file's 0o640 permission, and Windows keeps no group or world mode on a file",
+}, () => {
   const d = dir();
   const { path } = appendFlag(d, FULL);
   assert.equal(statSync(path).mode & 0o777, 0o640);

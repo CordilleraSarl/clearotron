@@ -5,7 +5,7 @@
 import { test, beforeEach } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, readFileSync, rmSync, existsSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { join, dirname, sep } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
@@ -49,6 +49,15 @@ const stage = (over = {}) => runStage("test-stage", {
   agent: "clawdi", message: "BASE TASK", sessionKey: "clearotron-test-base",
   timeoutSec: 30, expectFile: process.env.MOCK_OUT_FILE, maxRetries: 2, ...over,
 });
+
+// An `invalid_file:` failure carries the output's absolute path, and the warm allow-list reads the reason
+// after the first colon past `invalid_file:`. A Windows path has a colon after its drive letter, so no
+// invalid_file reason is ever warm there and these ladders run cold. That is the gateway's to fix.
+
+// A fixture path in this platform's spelling. The patch message names a sibling of the file it is handed,
+// joined with the platform's separator, so the file handed in and the path expected back are both native.
+const nat = (p) => p.split("/").join(sep);
+const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 test("missing_file with a completed turn → ONE warm retry resuming the SAME session key", async () => {
   process.env.MOCK_WARM_MODE = "flake";
@@ -287,10 +296,10 @@ test("connotation defects warm, and the patch orders the TOOL — not the .md, a
   // can take — a `record_dispositions` call aimed at the FAILING MEMBER's own spec — and no file edit of
   // any kind. A patch naming a file here would be the two halves of one message disagreeing about where
   // the work lands, the exact defect class the routing fix closed.
-  const md = "/r/clearance-search/x/common-law-findings.half-b.md";
+  const md = nat("/r/clearance-search/x/common-law-findings.half-b.md");
   const m = warmPatchMessage(half, [md]);
   assert.match(m, /record_dispositions/, "the tool is the route");
-  assert.match(m, /\/r\/clearance-search\/x\/_driver\/grid-spec\.half-b\.json/, "aimed at the half's OWN spec");
+  assert.match(m, new RegExp(esc(nat("/r/clearance-search/x/_driver/grid-spec.half-b.json"))), "aimed at the half's OWN spec");
   assert.doesNotMatch(m, /EDIT that file|Re-save the COMPLETE corrected JSON/,
     "no file edit of any kind — the seat cannot affect the accumulator by writing");
   assert.match(m, /Do NOT redo the sweep and do NOT rewrite \S*common-law-findings\.half-b\.md \(its own checks passed\)/,
@@ -374,9 +383,9 @@ test("spec-49 warm patch: a named_band defect targets the BAND sibling, never th
 
 // ── A1 split review fix (2026-07-12): the retry ladder targets the HALF member's OWN grid ledger ───────
 test("A1 split: a half member's grid_* warm patch targets common-law-grid.half-<h>.json — NEVER the canonical merged ledger", () => {
-  const files = ["/r/clearance-search/x/common-law-findings.half-a.md"];
+  const files = [nat("/r/clearance-search/x/common-law-findings.half-a.md")];
   const m = warmPatchMessage("invalid_file:common-law-findings.half-a.md:grid_join_missing:novapulse:3/15", files);
-  assert.match(m, /Re-save the COMPLETE corrected JSON at \/r\/clearance-search\/x\/common-law-grid\.half-a\.json/,
+  assert.match(m, new RegExp(`Re-save the COMPLETE corrected JSON at ${esc(nat("/r/clearance-search/x/common-law-grid.half-a.json"))}`),
     "the repair is aimed at the file validators.commonLawHalf re-judges");
   assert.doesNotMatch(m, /common-law-grid\.json/, "the canonical (driver-derived) ledger is never dictated to a half member");
   assert.match(m, /common-law-grid\.half-a\.json must account for EVERY dictated/, "the hint prose names the half ledger too");

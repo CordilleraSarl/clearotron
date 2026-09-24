@@ -14,6 +14,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
@@ -25,7 +26,11 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 // ONE `npm ls` for the whole file, and collect() called INSIDE the arms rather than here. A throw at
 // module top level takes the whole FILE — which is exactly how presented: TAP printed the filename,
 // no reason, and every licence arm went with it. Memoised, so it still resolves the tree once.
-const tree = npmTree(ROOT);
+//
+// On Windows `npm` is `npm.cmd`, a batch file that Node starts only through a shell, so there the tree is
+// read through one. Everywhere else npmTree runs npm exactly as it always has.
+const tree = npmTree(ROOT, process.platform === "win32"
+  ? (cmd, args, opts) => execFileSync(cmd, args, { ...opts, shell: true }) : undefined);
 let collected = null;
 const rows = () => (collected ??= collect(ROOT, tree));
 

@@ -47,7 +47,7 @@ const withDemo = (fn) => {
   const base = join(home, "trademark-demo");
   mkdirSync(base, { recursive: true });
   const run = (args, env = {}) => spawnSync(process.execPath, [CONNECT, ...args], {
-    encoding: "utf8", env: { PATH: process.env.PATH, HOME: home, CLEAROTRON_NO_ENV_FILE: "1", ...env } });
+    encoding: "utf8", env: { PATH: process.env.PATH, HOME: home, USERPROFILE: home, CLEAROTRON_NO_ENV_FILE: "1", ...env } });
   try { return fn({ home, base, run }); } finally { rmSync(home, { recursive: true, force: true }); }
 };
 const record = (home, rec) => {

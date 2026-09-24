@@ -183,7 +183,12 @@ const scratch = async (fn) => {
   try { return await fn(dir); } finally { rmSync(dir, { recursive: true, force: true }); }
 };
 
-test("SIGTERM does not reap these fixtures — which is why the owner must escalate", async () => {
+// Skipped on Windows, where SIGTERM is a hard terminate that no handler can refuse, so no fixture there is
+// immune to it. Not skipped in the child run the wiring arm below starts with a red forced: that red is
+// this arm's, and the wiring arm needs it on every platform.
+test("SIGTERM does not reap these fixtures — which is why the owner must escalate",
+  { skip: process.platform === "win32" && !process.env.REAP_1847_FORCE_PREMISE_RED
+    && "POSIX signals: on Windows SIGTERM terminates a process outright, and no handler can make one immune to it" }, async () => {
   await scratch(async () => {
     const c = immuneChild();
     // READY, NOT MERELY ALIVE. `alive` was here and it is the wrong question: it says the pid exists,

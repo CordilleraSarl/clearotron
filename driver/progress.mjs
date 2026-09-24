@@ -15,6 +15,7 @@
 
 import { readFileSync, writeFileSync, renameSync, unlinkSync, readdirSync, statSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path"; import { STUDIO_SEGMENT_RE } from "../shared/pre-rename-spellings.mjs";
+import { sepClass, notSepClass } from "../shared/path-seps.mjs";   // a Windows path is built with "\"
 import { DRIVER_DIR } from "../shared/driver-dir.mjs";   //
 import { config } from "./driver.config.mjs";
 import { batchMarkName } from "./mark-name.mjs";
@@ -480,8 +481,9 @@ function findStatusFiles(root, depth, acc) {
   }
 }
 
-function agentFromStudioRoot(studioRoot) {
-  const m = new RegExp(`${config.workspacePrefixRe}([^/]+)/studio/${STUDIO_SEGMENT_RE}/?$`).exec(studioRoot ?? "");
+export function agentFromStudioRoot(studioRoot, { platform = process.platform } = {}) {
+  const [S, N] = [sepClass(platform), notSepClass(platform)];
+  const m = new RegExp(`${config.workspacePrefixRe}(${N}+)${S}studio${S}${STUDIO_SEGMENT_RE}${S}?$`).exec(studioRoot ?? "");
   return m ? m[1] : "";
 }
 

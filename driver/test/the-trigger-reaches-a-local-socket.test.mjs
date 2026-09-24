@@ -58,7 +58,10 @@ test("the URL-ish spellings of a socket address normalise to one path", () => {
   assert.equal(of("unix:/var/run/deep/nested/x.sock"), "/var/run/deep/nested/x.sock");
 });
 
-test("a whole tool call completes over a real unix socket", async () => {
+test("a whole tool call completes over a real unix socket", {
+  skip: process.platform === "win32" && "a Unix socket at a file path: Node on Windows listens only on named pipes "
+    + "(\\\\.\\pipe\\…), and a listen at a temp-folder path is refused with EACCES",
+}, async () => {
   const dir = mkdtempSync(join(tmpdir(), "trigger-sock-"));
   const path = join(dir, "engine.sock");
   const seen = [];

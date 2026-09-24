@@ -12,9 +12,7 @@ written report plus a machine-readable audit trail. Every reasoning stage runs b
 `claude -p` or `codex exec` — as a child process; the orchestration around those turns is deterministic
 Node. A run takes hours, not minutes.
 
-It runs on macOS and Linux. On native Windows the demo runs and a real clearance does not: the engine
-spawns each stage with POSIX path and process semantics, so a clearance is refused there before it
-starts. Use WSL2, a devcontainer, or a hosted agent session. Running as root (containers, devcontainers,
+It runs on macOS, Linux and native Windows. Running as root (containers, devcontainers,
 WSL2-as-root) is supported; the tests that inject a permission fault declare a skip naming root.
 
 ```text

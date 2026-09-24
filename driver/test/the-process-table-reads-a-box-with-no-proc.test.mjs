@@ -30,7 +30,12 @@ const psStamp = (pid) => procStarttime(pid, undefined, { platform: "darwin" });
 // one this issue added, and the one every non-Linux box depends on.
 const HAS_PROC = existsSync("/proc/self/stat");
 
-test("both readers list this very process — the instrument is proved, not assumed", () => {
+// The arms that run the REAL `ps` need a `ps` to run. Windows has none, and its own reader (PowerShell)
+// is driven by injection in the Windows process-list arms; the injected-output arms here still run there.
+const NO_PS = process.platform === "win32"
+  && "no `ps` on Windows: these arms run the real ps program, which Windows does not ship";
+
+test("both readers list this very process — the instrument is proved, not assumed", { skip: NO_PS }, () => {
   // ONE SITE, BOTH DIRECTIONS, EXECUTED ON EVERY BOX. Written as an if/else this was an `else` no
   // Linux run can take, and the coverage census refused it by name — correctly: a branch no
   // population reaches is a guess wearing an assertion. Stated as an equality it asserts the same
@@ -51,7 +56,7 @@ test("both readers list this very process — the instrument is proved, not assu
   }
 });
 
-test("the ps reader dates a process to a moment, and it is this process's own", () => {
+test("the ps reader dates a process to a moment, and it is this process's own", { skip: NO_PS }, () => {
   const self = processTable({ platform: "darwin" }).find((p) => p.pid === process.pid);
   assert.ok(Number.isFinite(self.startedAt), `no start time on the ps branch: ${self.startedAt}`);
   // Bounded on both sides: after this suite's own process could possibly have begun, and not in the
@@ -88,7 +93,7 @@ test("a command line beginning with a number is not mistaken for a pid", () => {
   assert.equal(row.startedAt, Date.parse("Mon Sep  1 08:21:53 2026"));
 });
 
-test("the birth stamp survives where there is no /proc, and still refuses a dead pid", () => {
+test("the birth stamp survives where there is no /proc, and still refuses a dead pid", { skip: NO_PS }, () => {
   const st = psStamp(process.pid);
   assert.ok(st, "the ps branch produced no birth stamp for this process");
   assert.doesNotMatch(String(st), /:/,
@@ -97,7 +102,7 @@ test("the birth stamp survives where there is no /proc, and still refuses a dead
     "a pid that cannot exist produced a birth stamp — the reader is inventing one");
 });
 
-test("a worker's own beat reads as alive on a box with no /proc", () => {
+test("a worker's own beat reads as alive on a box with no /proc", { skip: NO_PS }, () => {
   // THE PRODUCT DEFECT, driven end to end: `workerAlive` answered false here for a beat written a
   // millisecond earlier, so a macOS reader was told nothing was draining their queue while it drained.
   const dir = mkdtempSync(join(tmpdir(), "ct-hb-noproc-"));
@@ -115,7 +120,7 @@ test("a worker's own beat reads as alive on a box with no /proc", () => {
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("the real ps invocation is the one the parser was written for", () => {
+test("the real ps invocation is the one the parser was written for", { skip: NO_PS }, () => {
   // The seam above means every arm could pass over a `ps` nobody ever runs. This one runs the real
   // default, so the flags and the parse are proved together.
   const parsed = processTable({ platform: "darwin", runPs: defaultRunPs });

@@ -72,13 +72,38 @@ export const DRIVER_DIR = "_driver";
 export const RUN_DIR_MODE = 0o750;
 
 /**
+ * A name inside `_driver/` as it is written on `platform`.
+ *
+ * ON WINDOWS A COLON CANNOT BE IN A FILE NAME, and a stage's label carries one (`register-unit:primary-
+ * sweep`, `common-law-half:a`, `report-card:1`), which names its attempt log, its dispatch record and its
+ * input stamp. NTFS does not refuse the name: it reads `register-unit:primary-sweep.jsonl` as a hidden
+ * stream of a file called `register-unit`, so every register unit's log lands in that one file, reading it
+ * back by the same name appears to work, and the copy into an experiment's sandbox fails with EINVAL.
+ * Measured on a Windows runner, 2026-09-23. There the colon is written `%3A`, which no label contains, so
+ * the name still reads back to its label. Everywhere else the name is left exactly as it was.
+ */
+export function driverFileName(name, platform = process.platform) {
+  return platform === "win32" ? String(name).replaceAll(":", "%3A") : name;
+}
+
+/**
+ * The stage label a `_driver/` file was written for: `register-unit%3Aprimary-sweep.jsonl` →
+ * `register-unit:primary-sweep`. Every platform decodes, because no label holds `%`, so a record written
+ * on Windows reads back under its label wherever it is read. `ext` is the suffix to take off.
+ */
+export function labelOfDriverFile(name, ext = ".jsonl") {
+  const base = String(name ?? "");
+  return (base.endsWith(ext) ? base.slice(0, -ext.length) : base).replaceAll("%3A", ":");
+}
+
+/**
  * The path to a run's `_driver/`, or to something inside it.
  *
  * @param {string} base   the run directory — or any run-dir-shaped base, such as an `_experiments/` sandbox
  * @param {...string} parts  optional path segments beneath it
  */
 export function driverDir(base, ...parts) {
-  return join(base, DRIVER_DIR, ...parts);
+  return join(base, DRIVER_DIR, ...parts.map((part) => driverFileName(part)));
 }
 
 /**
@@ -90,7 +115,7 @@ export function driverDir(base, ...parts) {
  * reaching this directory by one.
  */
 export function driverRel(...parts) {
-  return join(DRIVER_DIR, ...parts);
+  return join(DRIVER_DIR, ...parts.map((part) => driverFileName(part)));
 }
 
 /**

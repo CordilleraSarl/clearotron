@@ -15,6 +15,10 @@ import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { backgroundOfferLines } from "../../bin/start.mjs";
 
+/** The arms below that drive the background path, which ends at a refusal on Windows. */
+const NO_BACKGROUND_FORM_ON_WINDOWS = process.platform === "win32"
+  && "on Windows `start --background` stops at its own refusal before this path (a-windows-start-has-no-background-mode.test.mjs): the background form is systemd units, which Windows does not have";
+
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
 test("a demo is offered no background command", () => {
@@ -45,12 +49,12 @@ test("the banner takes its offer from that one function", () => {
     "a second, unconditional copy of the offer is back in the banner");
 });
 
-test("`start --demo --background` is refused before anything is written", () => {
+test("`start --demo --background` is refused before anything is written", { skip: NO_BACKGROUND_FORM_ON_WINDOWS }, () => {
   const home = mkdtempSync(join(tmpdir(), "demo-bg-home-"));
   try {
     const r = spawnSync(process.execPath, [join(ROOT, "bin", "start.mjs"), "--demo", "--background"], {
       encoding: "utf8", cwd: ROOT, timeout: 60000,
-      env: { PATH: process.env.PATH, HOME: home, CLEAROTRON_NO_ENV_FILE: "1" },
+      env: { PATH: process.env.PATH, HOME: home, USERPROFILE: home, CLEAROTRON_NO_ENV_FILE: "1" },
     });
     assert.notEqual(r.status, 0, `it did not refuse: ${r.stdout}\n${r.stderr}`);
     assert.match(`${r.stdout}\n${r.stderr}`, /the demo has no background form/);

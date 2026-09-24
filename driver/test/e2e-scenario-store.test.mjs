@@ -110,7 +110,8 @@ test("set: the external store is read whole and named in the output", () => {
     const { code, out } = runCli(["list"], { CLEAROTRON_E2E_DIR: root });
     assert.equal(code, 0, out);
     assert.match(out, /EXTERNAL STORE MARKER/, "the store's R1 answered");
-    assert.match(out, new RegExp(`store: CLEAROTRON_E2E_DIR=${root}`), "the store is named in the output");
+    // Escaped, as the arm below does: a Windows temp path is full of backslashes a pattern reads as escapes.
+    assert.match(out, new RegExp(`store: CLEAROTRON_E2E_DIR=${root.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`), "the store is named in the output");
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
@@ -131,7 +132,9 @@ test("set to a directory that is not there: refuses loudly", () => {
   const { code, out } = runCli(["list"], { CLEAROTRON_E2E_DIR: "/nonexistent/config/e2e" });
   assert.equal(code, 2, out);
   assert.match(out, /store unreadable/);
-  assert.match(out, /\/nonexistent\/config\/e2e\/scenarios/, "names the resolved path, not just the env var");
+  // The resolved path is joined, so on Windows it comes back with the platform's separator.
+  assert.match(out, new RegExp(join("/nonexistent/config/e2e", "scenarios").replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
+    "names the resolved path, not just the env var");
   assert.match(out, /CLEAROTRON_E2E_DIR/, "names the variable to fix");
 });
 

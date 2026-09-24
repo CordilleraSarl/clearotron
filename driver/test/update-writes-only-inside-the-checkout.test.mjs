@@ -84,6 +84,12 @@ function stubPath(dir) {
   return log;
 }
 
+// The two arms that need a stub to RECORD. The stubs are `#!/bin/sh` scripts, which Windows cannot start,
+// and a spawn without a shell does not start a `.cmd` either, so on Windows nothing records and these
+// arms read that silence as the verb not running.
+const SHEBANG_STUBS = { skip: process.platform === "win32"
+  && "#!/bin/sh stubs for git and npm: Windows cannot start a shebang script, so the stub log can never record there" };
+
 function runUpdate({ config = {}, path, argv = [] }) {
   const env = { ...process.env, PATH: `${path}:${process.env.PATH}` };
   // pinEnvAll writes EVERY spelling, so no alias of these names can answer from somewhere else and
@@ -126,7 +132,7 @@ test("configuration INSIDE the checkout is refused, and nothing is run", (t) => 
     + "must come before anything is touched, or the damage is done by the time it is described.");
 });
 
-test("THE CONTROL: with configuration outside the checkout the stubs DO record — so the empty log above means something", (t) => {
+test("THE CONTROL: with configuration outside the checkout the stubs DO record — so the empty log above means something", SHEBANG_STUBS, (t) => {
   const dir = mkdtempSync(join(tmpdir(), "upd-ok-"));
   t.after(() => rmSync(dir, { recursive: true, force: true }));
   const log = stubPath(dir);
@@ -191,7 +197,7 @@ test("an unrecognised argument is REFUSED, not swallowed — fixing only --help 
     `an unknown flag RAN something: ${existsSync(log) ? readFileSync(log, "utf8") : ""}`);
 });
 
-test("a sibling named after the checkout is NOT inside it — the separator is the whole rule", (t) => {
+test("a sibling named after the checkout is NOT inside it — the separator is the whole rule", SHEBANG_STUBS, (t) => {
   const dir = mkdtempSync(join(tmpdir(), "upd-sib-"));
   t.after(() => rmSync(dir, { recursive: true, force: true }));
   const log = stubPath(dir);

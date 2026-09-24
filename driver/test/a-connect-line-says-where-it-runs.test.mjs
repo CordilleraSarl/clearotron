@@ -12,6 +12,7 @@ import assert from "node:assert/strict";
 import { connectOffers, WSL_STEP } from "../../shared/connect-clients.mjs";
 import { stdioConnectFor, stdioConnectCommand, STDIO_SHAPES, WSL_ROW_HEADINGS } from "../../shared/stdio-connect.mjs";
 import { isWsl } from "../../shared/wsl.mjs";
+import { join, sep } from "node:path";
 
 const routes = (o = {}) => Object.fromEntries(Object.keys(STDIO_SHAPES).map((s) => [s, stdioConnectFor(s, { workDir: "/w", ...o })]));
 
@@ -38,12 +39,17 @@ test("WSL is read from WSL_DISTRO_NAME, WSL_INTEROP or the kernel's own name, an
 test("the Claude Code line registers for the user, and quotes its separator on Windows", () => {
   const posix = stdioConnectCommand({ workDir: "/w", platform: "linux", node: "/opt/node22/bin/node" });
   assert.match(posix, /^claude mcp add trademark-artifacts --scope user /, "the server would be registered for one directory only");
-  assert.match(posix, / -- \/opt\/node22\/bin\/node \S+serve\.mjs$/);
+  // The entry is joined under this checkout, so on Windows it holds backslashes, which a POSIX shell word
+  // must quote.
+  const entry = sep === "/" ? "\\S+serve\\.mjs" : "'\\S+serve\\.mjs'";
+  assert.match(posix, new RegExp(` -- \\/opt\\/node22\\/bin\\/node ${entry}$`));
   const win = stdioConnectCommand({ workDir: "C:\\w", platform: "win32", node: "/opt/node22/bin/node" });
   assert.match(win, / "--" \/opt\/node22\/bin\/node /, "Windows PowerShell 5.1 drops a bare --, and the line fails there");
   // THE NODE THIS INSTALL RUNS ON, NEVER A BARE `node` (owner, 2026-09-19). A bare `node` ran whatever the
   // assistant's own PATH found: the distribution's Node 18 through wsl.exe, which died on a syntax error.
-  assert.ok(stdioConnectCommand({ workDir: "/w", platform: "linux" }).includes(` ${process.execPath} `), "the line does not name the Node it is composed on");
+  // On Windows this Node's path holds backslashes, so the POSIX line single-quotes it as a shell word.
+  const own = stdioConnectCommand({ workDir: "/w", platform: "linux" });
+  assert.ok(own.includes(` ${process.execPath} `) || own.includes(` '${process.execPath}' `), "the line does not name the Node it is composed on");
   assert.doesNotMatch(stdioConnectCommand({ workDir: "/w", platform: "linux" }), / node \S+serve\.mjs$/, "a bare node is back");
 });
 
@@ -63,7 +69,8 @@ test("every shape carries the reports folder when it is known, and invents none 
 //
 // Driven on the composed strings, which is what this box can see. Criterion 4 — the row pasted into
 // Claude Desktop and Claude Code on a real Windows machine — is the owner's, and is not claimed here.
-test("every on-this-computer shape starts the server INSIDE the distribution when the install is on WSL", async () => {
+test("every on-this-computer shape starts the server INSIDE the distribution when the install is on WSL",
+  { skip: process.platform === "win32" && "WSL: the install this composes for lives inside a Linux distribution, and native Windows joins its entry with backslashes" }, async () => {
   const { STDIO_SHAPES, stdioConnectFor } = await import("../../shared/stdio-connect.mjs");
   const wsl = { distro: "Ubuntu" };
   const opts = { installRoot: "/opt/clearotron", workDir: "/srv/clearotron/work", wsl, node: "/srv/op/.nvm/versions/node/v22.17.0/bin/node" };
@@ -87,7 +94,9 @@ test("off WSL no shape is wrapped, and every shape names the absolute Node this 
     const text = stdioConnectFor(shape, { installRoot: "/opt/app", workDir: "/w", node: "/usr/local/bin/node22" }).text;
     assert.doesNotMatch(text, /wsl\.exe/, `${shape} wrapped a reader who is not on WSL`);
     assert.ok(text.includes("/usr/local/bin/node22"), `${shape} does not name the Node this install runs on`);
-    assert.ok(text.includes("/opt/app/mcp-server/serve.mjs"), `${shape} does not start the entry that checks the Node first`);
+    // The entry is joined natively, and a JSON or TOML shape escapes the backslashes a Windows path holds.
+    const entry = join("/opt/app", "mcp-server", "serve.mjs");
+    assert.ok([entry, JSON.stringify(entry).slice(1, -1)].some((e) => text.includes(e)), `${shape} does not start the entry that checks the Node first`);
   }
 });
 

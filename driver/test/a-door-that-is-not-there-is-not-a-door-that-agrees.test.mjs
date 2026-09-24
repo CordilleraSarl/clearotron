@@ -245,7 +245,7 @@ async function runDoctor(home) {
       // `handRunEnv` over an EMPTY base: `CLEAROTRON_NO_ENV_FILE` and `INVOCATION_ID` each make the
       // command ignore the file this test just wrote, silently, and inheriting the real environment
       // would let the fixture's own values arrive by a second route.
-      env: handRunEnv({ HOME: home, PATH: [NODE_BIN, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1" }, {}),
+      env: handRunEnv({ HOME: home, USERPROFILE: home, PATH: [NODE_BIN, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1" }, {}),
     });
     return stdout;
   } catch (e) { return `${e.stdout ?? ""}${e.stderr ?? ""}`; }

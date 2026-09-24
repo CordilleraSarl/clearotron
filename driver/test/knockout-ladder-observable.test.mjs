@@ -137,7 +137,8 @@ test("PRE-EXISTING: loud, and the run is NOT stopped — a replayed archive must
 // assertion that no row exists correctly fails. That is a defect in this harness, not in the branch. An
 // early `return` would report `ok` for a test that asserted nothing, so the reason is declared on the line.
 test("PRE-EXISTING: an unwritable run log does NOT take down the run it exists to spare",
-  { skip: process.getuid?.() === 0 && "root writes through a 0o500 directory — the fault injection is a no-op" }, () => {
+  { skip: (process.getuid?.() === 0 && "root writes through a 0o500 directory — the fault injection is a no-op")
+    || (process.platform === "win32" && "mode bits: chmod 0o500 does not make a folder unwritable on Windows, so the fault injection is a no-op there too") }, () => {
   // runLog -> appendLine (log.mjs:11) is an unguarded mkdirSync + appendFileSync, so it throws on EACCES
   // or a full disk. Accepted behaviour everywhere else in the driver; not here, where the whole point of
   // this branch is that a pre-existing file keeps its run alive. Driven by making _driver/ unwritable —

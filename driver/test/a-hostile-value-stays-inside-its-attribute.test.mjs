@@ -110,8 +110,11 @@ test("the staff index: a client key, run id or badge carrying quotes stays insid
   const pool = mkdtempSync(join(tmpdir(), "hostile-index-"));
   try {
     const runId = `tmp1-x-2026-06-15-quote"onmouseover="alert(1)`;
-    mkdirSync(join(pool, runId));
-    writeFileSync(join(pool, runId, "meta.json"), JSON.stringify({
+    // A Windows folder name cannot hold a double quote. The index takes the run id from meta.json, not
+    // from the folder, so there the folder gets a plain name and the hostile id still reaches the page.
+    const folder = process.platform === "win32" ? "tmp1-x-2026-06-15-quote-run" : runId;
+    mkdirSync(join(pool, folder));
+    writeFileSync(join(pool, folder, "meta.json"), JSON.stringify({
       runId, matter: "TMP", title: "INVENTED", client: "Invented", overall: "MEDIUM", date: "2026-06-15",
       badge: `l3"><script>alert(1)</script>`, customerKey: `key'onmouseover='alert(1)`, codename: "quote-run",
     }));

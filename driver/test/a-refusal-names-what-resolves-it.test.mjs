@@ -98,7 +98,7 @@ test("/ 2191-F13 `grant add` CREATES the first tenant instead of refusing", () =
   const run = (args) => {
     try {
       return execFileSync(process.execPath, [join(REPO, "bin", "grant.mjs"), ...args],
-        { encoding: "utf8", stdio: "pipe", env: { ...process.env, HOME: home, CLEAROTRON_ACCESS_FILE: file } });
+        { encoding: "utf8", stdio: "pipe", env: { ...process.env, HOME: home, USERPROFILE: home, CLEAROTRON_ACCESS_FILE: file } });
     } catch (e) { return `${e.stdout ?? ""}${e.stderr ?? ""}`; }
   };
 

@@ -58,8 +58,18 @@ function harness(env = {}) {
   };
 }
 
-/** A binary that runs, says <stderr> and exits 1 — every filesystem preflight passes it. */
+/**
+ * A binary that runs, says <stderr> and exits 1 — every filesystem preflight passes it. Windows cannot
+ * start a `#!/bin/sh` script, so there it is a Node script doing the same three things, which the engine
+ * starts through the Node running now.
+ */
 function stubEngine(root, name, stderr) {
+  if (process.platform === "win32") {
+    const p = join(root, `${name}.mjs`);
+    writeFileSync(p, "process.stdin.resume();\nprocess.stdin.on(\"end\", () => {\n"
+      + `  process.stderr.write(${JSON.stringify(`${stderr}\n`)});\n  process.exit(1);\n});\n`);
+    return p;
+  }
   const p = join(root, name);
   writeFileSync(p, `#!/bin/sh\ncat >/dev/null\nprintf '%s\\n' ${JSON.stringify(stderr)} >&2\nexit 1\n`, { mode: 0o755 });
   chmodSync(p, 0o755);

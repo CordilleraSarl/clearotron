@@ -25,6 +25,10 @@ import { fileURLToPath } from "node:url";
 import { listenErrorMessage } from "../../shared/listen.mjs";
 import { handRunEnv, assertReadItsEnvFile } from "./drive-env.mjs";   // tracker issue 204
 
+/** The arms below that drive the background path, which ends at a refusal on Windows. */
+const NO_BACKGROUND_FORM_ON_WINDOWS = process.platform === "win32"
+  && "on Windows `start --background` stops at its own refusal before this path (a-windows-start-has-no-background-mode.test.mjs): the background form is systemd units, which Windows does not have";
+
 const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 const START = join(ROOT, "bin", "start.mjs");
 
@@ -55,7 +59,7 @@ function driveStart(port, extra = {}) {
   // descendant of a systemd unit, so on CI the same drive read no .env, met no collision at all, and
   // three arms failed reporting a port they did not hold. The reasoning is in drive-env.mjs
   //.
-  const env = handRunEnv({ HOME: home, ...extra });
+  const env = handRunEnv({ HOME: home, USERPROFILE: home, ...extra });
   const r = spawnSync(process.execPath, [START, "--background"],
     { encoding: "utf8", timeout: 180_000, env });
   return { home, envFile, port, said: `${r.stdout ?? ""}${r.stderr ?? ""}`, code: r.status,
@@ -82,7 +86,7 @@ function refusedOurPort(d) {
 }
 
 test("the port refusal names the file this command reads, and it is the file it said it read",
-  { timeout: 300_000 }, async () => {
+  { timeout: 300_000, skip: NO_BACKGROUND_FORM_ON_WINDOWS }, async () => {
     const held = await heldPort();
     const d = driveStart(held.port);
     await held.release();
@@ -99,7 +103,7 @@ test("the port refusal names the file this command reads, and it is the file it 
   });
 
 test("the refusal says the units' file is NOT the one it reads, so the reader stops writing there",
-  { timeout: 300_000 }, async () => {
+  { timeout: 300_000, skip: NO_BACKGROUND_FORM_ON_WINDOWS }, async () => {
     const held = await heldPort();
     const d = driveStart(held.port);
     await held.release();
@@ -113,7 +117,7 @@ test("the refusal says the units' file is NOT the one it reads, so the reader st
   });
 
 test("a refused run writes nothing — the probe is before the first state change",
-  { timeout: 300_000 }, async () => {
+  { timeout: 300_000, skip: NO_BACKGROUND_FORM_ON_WINDOWS }, async () => {
     const held = await heldPort();
     const d = driveStart(held.port);
     await held.release();
@@ -147,7 +151,7 @@ test("a caller that read no env file names none, and its refusal is unchanged", 
   assert.match(without, /set PORTAL_SERVICE_PORT=<free port>/);
 });
 
-test("a service-managed process names no file, because it did not read one", { timeout: 300_000 },
+test("a service-managed process names no file, because it did not read one", { timeout: 300_000, skip: NO_BACKGROUND_FORM_ON_WINDOWS },
   async () => {
     // CLEAROTRON_NO_ENV_FILE=1 is what the units set. env-local then reports `service-managed` and
     // applies nothing, so there is no file to send the reader to and the refusal must not invent one.

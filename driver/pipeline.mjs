@@ -1326,8 +1326,12 @@ export const DISPATCH_TRIGGERS = ["fresh", "escalation", "envelope", "late-bind"
 function canonicalisedSha(file, shadowDir, runDir) {
   try {
     const buf = readFileSync(file);
-    if (buf.indexOf(shadowDir) === -1) return fileMeta(file).sha;
-    return createHash("sha256").update(buf.toString("utf8").split(shadowDir).join(runDir)).digest("hex").slice(0, 12);
+    // A spec names its output_path inside JSON, where a Windows path's backslashes are doubled, so the
+    // sandbox is looked for in that spelling too. A Linux path is the same in both.
+    const inJson = (p) => JSON.stringify(p).slice(1, -1);
+    if (buf.indexOf(shadowDir) === -1 && buf.indexOf(inJson(shadowDir)) === -1) return fileMeta(file).sha;
+    const text = buf.toString("utf8").split(inJson(shadowDir)).join(inJson(runDir)).split(shadowDir).join(runDir);
+    return createHash("sha256").update(text).digest("hex").slice(0, 12);
   } catch { return null; }
 }
 
@@ -1394,7 +1398,7 @@ function readCoverageJudgment(P) {
 // width would be live: `coverage_no_status` names a judgment the seat has not made, and quarantining a
 // derived artifact cannot make that true. The form tokens are deliberately OUT — a refused judgment
 // fails the stage and rides the corrective ladder, which is the only thing that can fix it.
-const isCoverageLedgerFail = (fail) => /invalid_file:[^:]*:coverage_(ledger|axis|key|mirror|status|classes)_/.test(fail ?? "");
+const isCoverageLedgerFail = (fail) => /invalid_file:.*?:coverage_(ledger|axis|key|mirror|status|classes)_/.test(fail ?? "");
 
 /**
  * Does the case-law grounding stage run? REQUESTED-OR-DETECTED (F4, 2026-07-21).

@@ -37,6 +37,10 @@ import { claimToken, takeoverClaim, retireClaimAndSweep, finishReclaimedClaim, r
 
 const META = JSON.stringify({ codename: "PROJECT-KESTREL", dateISO: "2026-08-13", agentId: "clawdi" }) + "\n";
 
+// On Windows the claim token is `<pid>:<birth stamp>`, and the runner names its lock
+// `<marker>.claimed-<token>`. A Windows file name cannot hold a colon, so every rename into the lock
+// fails and no claim here can be taken, retired or swept. That is the runner's to fix, not this file's.
+
 // The on-disk state `takeoverClaim` leaves a winner in: the marker, the winner's liveness token, the run
 // identity the reclaim scan routes by, and the wedge tally. Written directly rather than driven through
 // a dead-pid fixture — the state is the fixture, and a dead pid is a source of flakes, not of

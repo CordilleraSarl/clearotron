@@ -37,6 +37,7 @@ import { meaningAnglesFromMatterContext } from "../connotation-search.mjs";
 import { parseIntakeAsks } from "../pipeline.mjs";
 import { findSeedNeutralityViolations } from "../reasoning-tripwires.mjs";
 import { validators } from "../verify.mjs";
+import { fileURLToPath } from "node:url";
 
 const SCOPE = Object.freeze({
   marks: ["PROJECT NOVAPULSE"], classes: ["9", "41"],
@@ -401,7 +402,7 @@ const HOUSE = Object.freeze({ element: "NOVAPULSE", remainder: "SOUND OF TOMORRO
 // model is actually sent, by asking the recording server for its tool list, not what a source file says.
 async function frameToolSchema() {
   const { spawn } = await import("node:child_process");
-  const server = new URL("../engine/mcp/recording-server.mjs", import.meta.url).pathname;
+  const server = fileURLToPath(new URL("../engine/mcp/recording-server.mjs", import.meta.url));
   return await new Promise((resolve, reject) => {
     const child = spawn(process.execPath, [server], { stdio: ["pipe", "pipe", "pipe"] });
     let buf = "";
@@ -453,7 +454,7 @@ const { PROVIDER_CAPABILITIES } = await import("../register-capabilities.mjs");
 /** A call through the recording server itself, as the model makes it, against a run of its own. */
 async function callFrameTool(runDirPath, args) {
   const { spawn } = await import("node:child_process");
-  const server = new URL("../engine/mcp/recording-server.mjs", import.meta.url).pathname;
+  const server = fileURLToPath(new URL("../engine/mcp/recording-server.mjs", import.meta.url));
   return await new Promise((resolve, reject) => {
     const child = spawn(process.execPath, [server], { stdio: ["pipe", "pipe", "pipe"],
       env: { ...process.env, CLEAROTRON_BAND_RUN_DIR: runDirPath } });

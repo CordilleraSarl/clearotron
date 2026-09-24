@@ -15,7 +15,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, dirname } from "node:path";
+import { join, dirname, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { childEnv, installPaths, mergeEnvFile, resolvePorts } from "../../bin/start.mjs";
@@ -430,7 +430,7 @@ test("refused on a held port, `start` has written NOTHING — no env file, no da
       encoding: "utf8", timeout: 60000,
       // A CLEAN environment, built rather than inherited: a dev box's PORTAL_*/CLEAROTRON_* would
       // steer the gates this arm needs to fall through to the probe.
-      env: { PATH: process.env.PATH, HOME: home, PORTAL_SERVICE_PORT: String(held) },
+      env: { PATH: process.env.PATH, HOME: home, USERPROFILE: home, PORTAL_SERVICE_PORT: String(held) },
     });
     assert.ok(!child.error, `the spawn did not come back (${child.error?.message}) — a could-not-look, not a verdict`);
     assert.equal(child.status, 1, `start must refuse on the held port (status=${child.status}, signal=${child.signal})\nstderr: ${child.stderr}`);
@@ -485,7 +485,9 @@ test("the ops token start mints carries EVERY write verb the portal actually cal
 // flag was set.
 
 test("the demo posture reaches the portal and changes nothing about either door", () => {
-  const paths = installPaths("/srv/demo-base");
+  // The base is joined like every path installPaths builds from it, so on Windows it shares their
+  // separators and "inside the base" is a plain prefix test on either platform.
+  const paths = installPaths(join("/srv", "demo-base"));
   const common = { ports: { portal: 18802, mcp: 18790 }, paths, user: "demo@localhost",
     portalSecret: "p", tokenSecret: "t", opsToken: "o" };
   const demo = childEnv({ ...common, demo: true });
@@ -588,7 +590,7 @@ test("the demo posture reaches the portal and changes nothing about either door"
 // the portal is handed, so the next such name is caught without anyone adding it here. Both postures are
 // driven, because the second defect lived only in a live install.
 test("every location the portal is handed inside the install's base is handed to every child, demo or live", () => {
-  const paths = installPaths("/srv/install-base");
+  const paths = installPaths(join("/srv", "install-base"));   // joined, as the demo arm above says why
   // The portal's own files. Each is read by the portal alone, so no other child is handed it.
   const PORTAL_OWN = {
     PORTAL_AUDIT: "the portal's audit log, which only the portal writes or reads",
@@ -599,7 +601,7 @@ test("every location the portal is handed inside the install's base is handed to
   for (const [posture, demo, credential, floor] of [["a demo", true, null, 10], ["a live install", false, paths.credential, 8]]) {
     const env = childEnv({ ports: { portal: 18802, mcp: 18790, client: 18811 }, paths, user: "someone@localhost",
       portalSecret: "p", tokenSecret: "t", opsToken: "o", demo, credential });
-    const inside = Object.keys(env.portal).filter((k) => String(env.portal[k]).startsWith(`${paths.base}/`));
+    const inside = Object.keys(env.portal).filter((k) => String(env.portal[k]).startsWith(`${paths.base}${sep}`));
     assert.ok(inside.length >= floor,
       `${posture}: only ${inside.length} name(s) point inside the base, so this arm would check almost nothing`);
     for (const k of Object.keys(PORTAL_OWN))

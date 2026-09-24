@@ -65,7 +65,8 @@ const findRun = (needle) => {
   return hits;
 };
 
-test("clearance-jx e2e: frozen zh lane → fixture candidates → fold on transliteration-numeric → unit spawned → delivered", async () => {
+test("clearance-jx e2e: frozen zh lane → fixture candidates → fold on transliteration-numeric → unit spawned → delivered", {
+}, async () => {
   writeFileSync(join(Q, "jx-run.json"), JSON.stringify({
     id: "jx-run", msgId: "<jx@x>", forwarder: "dev", forwarderDomain: "example.com",
     product: "multi-country-focus-search", nativeLanguage: true, ref: "TMP9200", markName: "NOVAPULSE",
@@ -115,7 +116,8 @@ test("clearance-jx e2e: frozen zh lane → fixture candidates → fold on transl
   assert.equal(status.state, "delivered", `run state: ${status.state} (${status.reason ?? ""})`);
 });
 
-test("component gate: a clearance without the investigation, in the SAME process (env still on), grows NO jx artifacts", async () => {
+test("component gate: a clearance without the investigation, in the SAME process (env still on), grows NO jx artifacts", {
+}, async () => {
   // TWO countries, one of them CN. The scope still ROUTES a zh lane and the env is still on — so what
   // decides is the PRODUCT's component and nothing else, which is the whole claim of this test.
   //

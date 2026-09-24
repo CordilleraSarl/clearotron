@@ -155,7 +155,10 @@ test("the gate holds at CLAIM as well as at intake — same ladder both times", 
 
 // A saved-search store that cannot be read throws now, where it used to read as empty. A job that names no
 // saved search never needed it, so it must still inherit its account's classes rather than be refused.
-test("an unreadable saved-search store does not refuse a job that names no saved search", { skip: process.getuid?.() === 0 && "root reads through any file mode" }, () => {
+test("an unreadable saved-search store does not refuse a job that names no saved search", {
+  skip: (process.getuid?.() === 0 && "root reads through any file mode")
+    || (process.platform === "win32" && "mode bits: chmod 000 does not make a Windows folder unreadable, so the store cannot be shut"),
+}, () => {
   const shut = mkdtempSync(join(tmpdir(), "enqueue-recipes-shut-"));
   const before = process.env.CLEAROTRON_RECIPES_DIR;
   try {

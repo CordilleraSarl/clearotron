@@ -110,7 +110,7 @@ export function fullWriteTail(target) {
 // against. Returns the matching absolute path from `files` when the token's path identifies one (the token
 // carries a display path, so match on suffix), else null.
 export function failingTarget(lastFail, files = []) {
-  const m = /^invalid_file:([^:]*):/.exec(String(lastFail ?? ""));
+  const m = /^invalid_file:((?:[A-Za-z]:)?[^:]*):/.exec(String(lastFail ?? ""));
   if (!m || !m[1]) return null;
   const named = m[1];
   if (!named) return null;

@@ -135,7 +135,7 @@ function driveStartIn(home, args, extra = {}) {
   // drive's HOME, and an arm checking that HOME holds nothing would be checking a question it had moved
   // out of range. The organisation's name is cleared for the same reason.
   const env = handRunEnv({
-    HOME: home, PORTAL_LOCAL_USER: undefined, CLEAROTRON_ORGANISATION_NAME: undefined,
+    HOME: home, USERPROFILE: home, PORTAL_LOCAL_USER: undefined, CLEAROTRON_ORGANISATION_NAME: undefined,
     CLEAROTRON_REPORTS_DIR: undefined, CLEAROTRON_WORK_DIR: undefined, CLEAROTRON_QUEUE_DIR: undefined,
     CLEAROTRON_OUTBOX_DIR: undefined, CLEAROTRON_RUN_LOCK_DIR: undefined, CLEAROTRON_ACCESS_FILE: undefined,
     ...extra,

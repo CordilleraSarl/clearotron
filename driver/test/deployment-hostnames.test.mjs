@@ -14,7 +14,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, dirname, relative } from "node:path";
+import { join, dirname, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { preflightDeploymentUrls } from "../driver.config.mjs";
 import { accessNoteMd, accessNoteHtml } from "../publish/index.mjs";
@@ -80,7 +80,9 @@ const guardedFiles = (roots = ROOTS) => nonEmpty(
   roots.filter((d) => { try { return statSync(d).isDirectory(); } catch { return false; } })
     .flatMap((d) => sourceFiles(d)),
   "the walked source corpus");
-const rel = (f) => f.replace(`${REPO}/`, "");
+// Repo-relative with `/` separators on every platform, so the allowlist and the tree prefixes below
+// compare against one spelling. Every walked file sits under REPO, so on Linux this is the old prefix strip.
+const rel = (f) => relative(REPO, f).split(sep).join("/");
 // A `//` or `*` line is PROSE ABOUT the rule, and eleven of them document the 2026-07-19 ledger-split
 // incident by naming the very paths this guard forbids. The policy has said so since the guard was
 // written; widening the walker must not turn into a blanket path scrub.

@@ -439,7 +439,7 @@ function doctor(home, shell = {}) {
   let out;
   try {
     out = execFileSync(process.execPath, [join(REPO, "bin", "onboard.mjs"), "--check"], { encoding: "utf8", stdio: "pipe", timeout: 120_000,
-      env: handRunEnv({ HOME: home, PATH: [NODE_BIN, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", ...shell }, {}) });
+      env: handRunEnv({ HOME: home, USERPROFILE: home, PATH: [NODE_BIN, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", ...shell }, {}) });
   } catch (e) {
     if (e.status == null) throw new Error(`doctor did not come back (${e.signal ?? e.message}) — nothing was checked, so this is not a verdict`);
     out = `${e.stdout ?? ""}${e.stderr ?? ""}`;

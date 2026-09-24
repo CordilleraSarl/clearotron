@@ -46,6 +46,7 @@ import { writeFileSync, readFileSync, rmSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { procStarttime, parseClaimSidecar } from "../claim-liveness.mjs";
+import { endWindowsTree } from "./engine-spawn.mjs";   // Windows has no process group to signal
 
 export const ENGINE_CHILD_FILE = "engine-child.pid";
 
@@ -120,6 +121,7 @@ export function engineChildIsLive(rec, { starttimeOf = procStarttime } = {}) {
  */
 export function procPgid(pid, readStat = undefined, { platform = process.platform, readPsPgid = defaultReadPsPgid } = {}) {
   if (!Number.isInteger(pid) || pid <= 0) return null;
+  if (platform === "win32" && !readStat) return null;   // Windows has no process groups: a turn ends as a tree there
   let v = NaN;
   try {
     if (readStat || platform === "linux") {
@@ -166,9 +168,18 @@ export async function endEngineChild(rec, {
   pgidOf = (pid) => procPgid(pid),
   sleep = (ms) => new Promise((res) => setTimeout(res, ms)),
   now = () => Date.now(),
+  platform = process.platform,
+  endTree = endWindowsTree,
 } = {}) {
   if (!rec || !Number.isInteger(rec.pid) || rec.pid <= 1)
     return { signalled: null, escalated: null, group: false, ended: false, error: "no process to signal" };
+  // WINDOWS ENDS THE TREE, by number, from one listing, and only when the listing still shows the root as
+  // the process this record names: the start time is checked there too, because Windows hands a freed
+  // number to the next process soon after. The TERM-then-KILL grace below does not exist there.
+  if (platform === "win32") {
+    if (!rec.starttime) return { signalled: null, escalated: null, group: false, ended: false, error: "no start time recorded for this process" };
+    return endTree(rec.pid, { rootStart: rec.starttime, settleMs: Math.max(settleMs, 5000) });
+  }
   const group = pgidOf(rec.pid) === rec.pid;
   const target = group ? -rec.pid : rec.pid;
   const send = (sig) => { try { kill(target, sig); return null; } catch (e) { return e?.code ?? String(e?.message ?? e); } };

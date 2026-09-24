@@ -103,6 +103,8 @@ import { resolveAuthMode, CLOUD_SWITCH, CLOUD_SETTINGS, CLOUD_SECRETS, cloudsSwi
 import { isInsideCheckout } from "../shared/inside-checkout.mjs";   // — one copy of the rule, and it is testable
 import { packagedBuild as sharedPackagedBuild } from "../shared/packaged-build.mjs";   // — one reader of build-info.json, reachable from the driver
 import { processTable } from "../shared/process-table.mjs";   // — /proc is not the only box
+import { hasSep } from "../shared/path-seps.mjs";   // a Windows path is written with "\"
+import { npmInvocation } from "../shared/npm-cli.mjs";   // npm without a shell, which Windows needs
 import { programsFromAnotherCheckout } from "../shared/checkout-move.mjs";
 import { entrypointOf } from "../driver/systemd/install-census.mjs";         // one ExecStart parser
 import { overlayReport, renderOverlayReport } from "../shared/doctrine-overlay.mjs";   // — the doctor reports the overlay
@@ -790,7 +792,8 @@ export async function askSignIn(io, { localAccount = "user", existing = null } =
  * Was `resolveClaudeBin`. The body never had anything claude-specific in it; the NAME was the last place
  * this file still assumed one engine, and a name that lies is how the second adapter stayed invisible.
  */
-export function resolveEngineBin(bin, { env = process.env, wsl = null, onWindowsDrive = null, engine = null, enginesDir = undefined } = {}) {
+export function resolveEngineBin(bin, { env = process.env, wsl = null, onWindowsDrive = null, engine = null, enginesDir = undefined,
+  platform = process.platform } = {}) {
   // A VIEW OVER THE DRIVER'S ONE RESOLVER (driver.config.mjs resolveEngineProgram), which every other
   // reader asks too: the run door, the inventory the portal reads, and both adapters. This used to be a
   // second PATH walk of its own, and it was the only one that knew to pass over a Windows copy under WSL;
@@ -803,14 +806,14 @@ export function resolveEngineBin(bin, { env = process.env, wsl = null, onWindows
   // Linux runner without root, so an arm that could only supply a PATH could never drive the skip.
   const id = engine ?? Object.keys(ENGINE_BINARIES).find((k) => ENGINE_BINARIES[k].fallback === bin) ?? DEFAULT_ENGINE_ID;
   const spec = ENGINE_BINARIES[id];
-  const r = resolveEngineProgram(id, { env: { ...env, [spec.env]: bin }, wsl, onWindowsDrive, enginesDir });
+  const r = resolveEngineProgram(id, { env: { ...env, [spec.env]: bin }, wsl, onWindowsDrive, enginesDir, platform });
   const found = { source: r.source, version: r.version, rejected: r.rejected, skipped: r.skipped, windowsShim: r.windowsShim };
   // A RELATIVE path is the trap for both adapters: stage subprocesses run with cwd set to the RUN
   // DIRECTORY (driver/engine/common.mjs resolveSpawnCwd), so it resolves against a directory that did not
   // exist at setup time. Reported with its absolute form from here, which is what the wizard then uses.
   if (r.relative) { const abs = resolve(bin); return { path: abs, executable: isExec(abs), relative: true, ...found }; }
   // A PATH SOMEBODY TYPED IS NOT OVERRULED, only reported: the resolver never falls through from it.
-  if (!r.resolved && r.explicit && bin.includes("/")) return { path: resolve(bin), executable: false, relative: false, ...found };
+  if (!r.resolved && r.explicit && hasSep(bin, platform)) return { path: resolve(bin), executable: false, relative: false, ...found };
   return { path: r.resolved, executable: Boolean(r.resolved), relative: false, ...found };
 }
 
@@ -927,30 +930,11 @@ export function windowsShimNote(skipped, bin) {
 const isExec = (p) => { try { accessSync(p, constants.X_OK); return statSync(p).isFile(); } catch { return false; } };
 
 /**
- * What doctor says about the engine on a platform the run door refuses outright, or `null` where the
- * ordinary binary checks apply.
+ * How to leave demo mode. The first line is the same everywhere; the second differs by whether the
+ * machine has a background form. Windows has none, so there it names closing the window and starting
+ * again, where elsewhere it names restarting the services and the file background services read.
  *
- * `platform` IS INJECTABLE, and for the reason `preflightEngineBinary` gives at its own refusal: the
- * population this protects is the one that cannot run this suite to find out. An arm on a Linux runner
- * has to be able to ask what a Windows reader is shown, or the Windows text is asserted by nobody —
- * and reading `process.platform` inside the caller would make that arm read source instead of driving
- * the answer.
- */
-export function platformEngineRefusal({ platform = process.platform } = {}) {
-  if (platform !== "win32") return null;
-  return "this engine does not run on native Windows — stage subprocesses are spawned with POSIX path "
-    + "and process semantics, so the run door refuses before it reads PATH. Run it under WSL2, or in "
-    + "the devcontainer. The demo works here as it is: it replays finished reports and needs no engine.";
-}
-
-/**
- * How to leave demo mode, which is not the same instruction everywhere.
- *
- * On the platform the run door refuses, the standard advice is a loop: install a CLI the reader may
- * already have, then restart a service — neither of which can change the answer, because the refusal
- * is about the platform rather than the program. Naming WSL2 is the only instruction that ends it.
- *
- * ELSEWHERE IT NAMES SETUP, WHICH DOES THE WORK NOW. This used to say to install the CLI by hand with
+ * IT NAMES SETUP, WHICH DOES THE WORK NOW. This used to say to install the CLI by hand with
  * `npm install -g`, then run `claude` to sign in, and to restart the engine service so it re-read its PATH.
  * Setup offers to install the program itself, into a folder that is not on PATH, so the bare `claude` it
  * named was a command the reader's shell does not have; and a run finds that copy without re-reading PATH.
@@ -961,16 +945,16 @@ export function platformEngineRefusal({ platform = process.platform } = {}) {
  */
 export function leaveDemoAdvice(engSpec, { platform = process.platform, command = reachableCommand("install"),
   startCommand = reachableCommand("start") } = {}) {
+  const first = `To leave demo: run \`${command}\`. It offers to install ${engSpec.vendor}'s CLI if this machine has none, `
+    + "asks how it is paid for, and proves it with one turn; if the CLI is not signed in, it names the command that signs it in.";
+  // WINDOWS HAS NO BACKGROUND FORM, so the second line there names the one restart it has: the window.
   if (platform === "win32") {
-    return [`To leave demo on Windows: run the product under WSL2, or in the devcontainer. Installing `
-      + `${engSpec.vendor}'s CLI natively will not change this — the run door refuses on the platform, `
-      + "not on the program."];
+    return [first, "If Clearotron is already running, close its window and start it again: it reads the settings setup writes when it starts."];
   }
   // BACKGROUND SERVICES ARE THE EXCEPTION to "restart them": they read `~/.env`, which setup does not write,
   // and `start --background` only adds lines to it (see programDisagreement below, which says the same).
   return [
-    `To leave demo: run \`${command}\`. It offers to install ${engSpec.vendor}'s CLI if this machine has none, `
-      + "asks how it is paid for, and proves it with one turn; if the CLI is not signed in, it names the command that signs it in.",
+    first,
     "If Clearotron's services are already running, restart them afterwards: they read the settings setup writes "
       + "when they start, and the portal reports what the engine saw when it last started. Background services "
       + `read \`~/.env\` instead, which setup does not write, and \`${startCommand} --background\` adds to it only the `
@@ -1813,27 +1797,6 @@ export async function runCheck() {
     const seen = versionOf(bin);
     const copyWords = (b) => `${b.source === "installed" ? "the copy Clearotron installed"
       : b.source === "explicit" ? `set in ${engSpec.env}` : "on PATH"}${seen ? `, version ${seen}` : ", version not read"}`;
-    // ── NATIVE WINDOWS IS ANSWERED HERE, BEFORE ANY PATH IS RESOLVED OR REPORTED ──────────────────
-    //
-    // `resolveEngineBin` tests a candidate with `accessSync(X_OK)` and `isFile()`. Windows has no
-    // execute bit, so X_OK is satisfied by any file that exists — and an npm global install writes
-    // BOTH `claude`, an extensionless shell script for Git Bash, and `claude.cmd`. The POSIX test
-    // passes on the shell script, so this line reported the engine FOUND at a path CreateProcess
-    // cannot start, and the probe then failed with `spawn claude ENOENT`. Reported from a real
-    // Windows run, 2026-09-09.
-    //
-    // RESOLVING `claude.cmd` INSTEAD WOULD MOVE THE CONTRADICTION, NOT REMOVE IT.
-    // `preflightEngineBinary` refuses native Windows by name, and the run door calls it
-    // unconditionally — so a clearance cannot run here whatever this line finds. Making the probe
-    // succeed would produce a doctor that says ready, a probe that passes, and a run that refuses
-    // anyway: the same disagreement one step later, and more convincing for having spawned something.
-    //
-    // So doctor says what the run door says. That is the property — the two agree — and the reader
-    // gets one refusal they can act on instead of a found-then-failed sequence that sends them
-    // looking for a PATH problem they do not have. The demo is unaffected: it replays finished runs
-    // and needs no engine, which is why four reports published on that same Windows box.
-    const platformRefusal = platformEngineRefusal();
-    if (platformRefusal) problem(platformRefusal);
     // ── AND WHETHER THAT COPY IS NEW ENOUGH FOR THE MODELS IT WILL BE ASKED FOR ──────────────────
     //
     // The floor governed the copy setup INSTALLS and nothing else, and a copy already on the machine
@@ -1845,7 +1808,7 @@ export async function runCheck() {
     // compared. The last is said rather than passed over — doctor's own contract is that a failure to
     // look is not a clean result — and it is the ordinary state for a copy the machine installed by
     // another route, where there is no package.json to read and doctor spawns nothing to ask.
-    else if (bin.executable && !bin.relative && olderThanFloor(seen, engSpec.floor) === true)
+    if (bin.executable && !bin.relative && olderThanFloor(seen, engSpec.floor) === true)
       problem(`${bin.path} — ${copyWords(bin)}. Clearotron needs ${engSpec.floor} or newer. ${belowFloorTail(engSpec, bin)}`);
     else if (bin.executable && !bin.relative) {
       ok(`${bin.path} — ${copyWords(bin)}`);
@@ -3872,26 +3835,6 @@ try {
     if (!pick.id) { sayNoEngine(); break; }
     const eng = ENGINE_BINARIES[pick.id];
 
-    // ── NATIVE WINDOWS IS ANSWERED HERE TOO, AND THE ESCAPE IS OFFERED RATHER THAN LEFT ON A MENU ──
-    //
-    // Doctor learned this and the wizard did not, and the gap is worse than it sounds: the two "no
-    // engine" escapes below both sit behind "no usable binary", and on Windows that is FALSE. X_OK is
-    // satisfied by any file that exists, so the wizard says "found C:\...\claude", walks past both
-    // escapes, asks which lane pays, spends a proof turn, and meets `spawn claude ENOENT`. The only
-    // prompt left then defaults to No and returns to the engine menu — with nothing changed between
-    // iterations, on either lane. Reported from a real Windows run: the menu's last row was the one
-    // way out and nothing on screen said so.
-    //
-    // So the refusal is stated before a candidate is resolved, and finishing with no engine is OFFERED
-    // rather than being a row the reader has to notice. Declining leaves them on the menu exactly as
-    // before, which is the branch that was already there.
-    const wizardRefusal = platformEngineRefusal();
-    if (wizardRefusal) {
-      problem(wizardRefusal);
-      if (await confirm("Finish setup with no engine configured?", true)) { sayNoEngine(); break engine; }
-      continue;
-    }
-
     let bin = resolveEngineBin(process.env[eng.env] || eng.fallback, { engine: pick.id });
     // Under WSL the Windows build on the appended PATH has been passed over. Said before the install
     // offer below, because otherwise a reader whose Linux install is genuinely missing is asked to
@@ -3929,7 +3872,8 @@ try {
       say("");
       if (await confirm(`Run \`${engineInstallCommand(eng, dir)}\` now?`, false)) {
         say(`  $ ${engineInstallCommand(eng, dir)}`);
-        const r = spawnSync("npm", engineInstallArgs(eng, dir), { stdio: "inherit" });
+        const npm = npmInvocation(engineInstallArgs(eng, dir));
+        const r = spawnSync(npm.command, npm.args, { stdio: "inherit" });
         // THE EXIT CODE IS NOT THE ANSWER, and this is the issue's own rule. An install that exits 0 may
         // have left the vendor's placeholder (npm told to skip install scripts), and one that exits
         // non-zero may still have left a usable program. So what decides is the same resolution the

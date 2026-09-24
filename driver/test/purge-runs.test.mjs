@@ -351,7 +351,9 @@ test("--delete-owed-notices is what removes it, and the receipt records that it 
   assert.ok(log[0].at && log[0].pool === env.poolRoot, "when, and from where");
 });
 
-test("an outbox that cannot be READ refuses too — a blind check is not a passed one", () => {
+test("an outbox that cannot be READ refuses too — a blind check is not a passed one", {
+  skip: process.platform === "win32" && "mode bits: the arm makes the outbox unreadable with chmod 000, and chmod on Windows cannot take read access from a folder",
+}, () => {
   const env = pool([["alpha", "acme"]]);
   const ob = outbox(env, []);
   chmodSync(ob, 0o000);
@@ -376,7 +378,9 @@ test("an outbox that was never created is EMPTY, not unknown — or every fresh 
   assert.ok(!existsSync(join(env.poolRoot, "alpha")), "a never-created outbox does not block a purge");
 });
 
-test("a receipt that cannot be written STOPS the delete", () => {
+test("a receipt that cannot be written STOPS the delete", {
+  skip: process.platform === "win32" && "mode bits: the arm makes the pool root unwritable with chmod 555, and chmod on Windows does not make a folder read-only",
+}, () => {
   // Otherwise the record is decorative: the one tool that removes bytes would carry on removing them
   // with no way to reconstruct what went, which is the state this was filed about.
   const env = pool([["alpha", "acme"]]);

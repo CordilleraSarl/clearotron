@@ -162,7 +162,8 @@ test("the detector can SEE a real process from this checkout — a zero here is 
   }
 });
 
-test("the deployment scan sees a program on this checkout where there is no /proc", async () => {
+test("the deployment scan sees a program on this checkout where there is no /proc",
+  { skip: process.platform === "win32" && "no `ps` on Windows: this arm runs the real ps program, which Windows does not ship" }, async () => {
   // That scan read `/proc` directly, so on macOS it returned null and doctor told every reader on
   // that platform "the process table could not be read" — permanently. The listing now comes from
   // shared/process-table.mjs, and this arm drives the branch macOS takes, on a box that has /proc.

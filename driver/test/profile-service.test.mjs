@@ -604,7 +604,7 @@ test("THE DEPLOYMENT SHAPE, no injection — a real empty store, the real loader
   // on a loaded box must say "the child did not come back", never a verdict about the roster.
   const store = mkdtempSync(join(tmpdir(), "empty-store-"));
   const child = spawnSync(process.execPath, ["--input-type=module", "-e", `
-    import { makeProfileService } from ${JSON.stringify(fileURLToPath(new URL("../profile-service.mjs", import.meta.url)))};
+    import { makeProfileService } from ${JSON.stringify(new URL("../profile-service.mjs", import.meta.url).href)};
     const svc = makeProfileService({ profileDir: process.env.CLEAROTRON_CUSTOMERS_DIR, readLayered: true });
     const r = await svc.route("GET", "/profiles", { email: "staff@example-firm.com" });
     console.log(JSON.stringify({ status: r.status, keys: (r.json.profiles ?? []).map((p) => p.key) }));

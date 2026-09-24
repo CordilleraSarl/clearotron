@@ -18,22 +18,12 @@ The register is the one with a real choice in it. EUIPO and a local USPTO index 
 reach one office each; Signa is the recommended paid route and the fastest to a real clearance.
 [The six, and what each reaches](providers/README.md).
 
-**macOS, Linux, or native Windows for the demo; WSL2 for a clearance.** `npx clearotron demo` runs
-anywhere Node does, native Windows included. A real clearance does not: the engine spawns each stage
-with POSIX path and process semantics, so on native Windows a clearance is refused before it
-starts, even with the program installed. On Windows, `wsl --install -d Ubuntu`, then
-`wsl -d Ubuntu`, and work through this page from **inside** that distribution. Name it: plain `wsl`
-can open a minimal image with no apt, no curl and no bash, and everything below assumes Ubuntu. A
-fresh Ubuntu has no Node, and apt's package is below what this needs, so `npx` answers "not found"
-before anything of ours runs. From the Ubuntu prompt:
+**macOS, Linux or Windows.** On Windows everything runs natively in PowerShell, with no WSL2, no Git and no
+administrator rights: `npm install --global clearotron`, then `clearotron install`, which installs the AI
+program you choose into your own user folder. On Windows and macOS Clearotron runs in the window you start
+it from, and closing the window stops it.
 
-```bash
-sudo apt update && sudo apt install -y curl
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
-. "$HOME/.nvm/nvm.sh" && nvm install 22
-```
-
-Then carry on below. [INSTALL.md](INSTALL.md) §1 has the exact version floor and why it is one.
+[INSTALL.md](INSTALL.md) §1 has the exact version floor and why it is one.
 
 ## Install
 

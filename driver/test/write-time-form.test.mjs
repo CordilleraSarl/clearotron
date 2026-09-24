@@ -106,12 +106,15 @@ const spine = () => readFileSync(driverDir(dir, "run.jsonl"), "utf8").trim().spl
 // ── the routing itself: the file a repair is aimed at is the file the message names ──────────────────
 
 test("repairTarget names the SIBLING for every sibling-routed token, and the expectFile otherwise", () => {
-  const md = "/r/clearance-search/x/frame-diff.md";
+  // The sibling is joined onto the output's folder, so the expected paths are joined too: on Windows
+  // that folder comes back with the platform's separator.
+  const X = join("/r", "clearance-search", "x");
+  const md = join(X, "frame-diff.md");
   assert.equal(repairTarget("invalid_file:x/frame-diff.md:framediff_severity_invalid:major", [md]),
-    "/r/clearance-search/x/frame-diff.json", "a framediff_ repair writes frame-diff.json, never the .md");
-  const dg = "/r/clearance-search/x/register-findings.md";
+    join(X, "frame-diff.json"), "a framediff_ repair writes frame-diff.json, never the .md");
+  const dg = join(X, "register-findings.md");
   assert.equal(repairTarget("invalid_file:x/register-findings.md:coverage_axis_invalid:all axes", [dg]),
-    "/r/clearance-search/x/register-coverage-ledger.json");
+    join(X, "register-coverage-ledger.json"));
   // the one admitted token that is NOT sibling-routed: a prose cell in the digest itself
   assert.equal(repairTarget("invalid_file:x/register-findings.md:coverage_status_offenum:N/A", [dg]), dg);
   assert.equal(repairTarget("missing_file:x/frame-diff.md", [md]), md);
@@ -129,7 +132,8 @@ test("OLD BEHAVIOUR — framediff_severity_invalid costs a paid ladder attempt",
   assert.equal(r.formRepairs, 0);
 });
 
-test("shape 1 (bad enum) is repaired IN-DISPATCH and never reaches the ladder", async () => {
+test("shape 1 (bad enum) is repaired IN-DISPATCH and never reaches the ladder", {
+}, async () => {
   const s = frameDiffStage();
   const r = await stage(arm(s, BAD_SEVERITY, CLEAN_DIFF));
   assert.equal(r.ok, true);
@@ -157,7 +161,8 @@ test("OLD BEHAVIOUR — coverage_axis_invalid costs a paid ladder attempt", asyn
   assert.match(r.attemptFails[0], /coverage_axis_invalid:all axes \(not in: saturation-probe, primary-sweep, transliteration-numeric, incumbent-class\)/);
 });
 
-test("shape 2 (closed-vocabulary string) is repaired IN-DISPATCH and never reaches the ladder", async () => {
+test("shape 2 (closed-vocabulary string) is repaired IN-DISPATCH and never reaches the ladder", {
+}, async () => {
   const s = ledgerStage();
   const r = await stage(arm(s, BAD_AXIS, CLEAN_LEDGER));
   assert.equal(r.ok, true);
@@ -180,7 +185,8 @@ test("OLD BEHAVIOUR — framediff_directive_undispatchable costs a paid ladder a
   assert.match(r.attemptFails[0], /framediff_directive_undispatchable:KIN\*/);
 });
 
-test("shape 3 (undispatchable wildcard) is repaired IN-DISPATCH and never reaches the ladder", async () => {
+test("shape 3 (undispatchable wildcard) is repaired IN-DISPATCH and never reaches the ladder", {
+}, async () => {
   const r = await stage(arm(frameDiffStage(), BAD_WILDCARD, CLEAN_DIFF));
   assert.equal(r.ok, true);
   assert.equal(r.attempts, 1);
@@ -192,7 +198,8 @@ test("shape 3 (undispatchable wildcard) is repaired IN-DISPATCH and never reache
 
 // ── the non-sibling admitted token: a prose cell in the stage's own output ────────────────────────────
 
-test("coverage_status_offenum repairs the DIGEST ITSELF, not a sibling — and still never reaches the ladder", async () => {
+test("coverage_status_offenum repairs the DIGEST ITSELF, not a sibling — and still never reaches the ladder", {
+}, async () => {
   process.env.MOCK_OUT_FILE = join(dir, "register-findings.md");
   steps("| primary-sweep | EUIPO | N/A |\n", "| primary-sweep | EUIPO | confirmed-clean |\n");
   const validate = (_p, c) => (/confirmed-clean/.test(c) ? { ok: true }
@@ -207,7 +214,8 @@ test("coverage_status_offenum repairs the DIGEST ITSELF, not a sibling — and s
 
 // ── the observed CHAIN: one artifact, two form defects, surfaced sequentially by a fail-fast parser ───
 
-test("the 08-02 frame-diff chain (severity → undispatchable) is repaired in ONE dispatch", async () => {
+test("the 08-02 frame-diff chain (severity → undispatchable) is repaired in ONE dispatch", {
+}, async () => {
   // The round paid for both: attempt 1 hit the severity enum, attempt 2 (warm) fixed it and then failed
   // a DIFFERENT gate, leaving one attempt for everything else. Both are form; both close in-dispatch now.
   const r = await stage(arm(frameDiffStage(), frameDiff("major", "KIN*"), BAD_WILDCARD, CLEAN_DIFF));
@@ -222,7 +230,8 @@ test("the 08-02 frame-diff chain (severity → undispatchable) is repaired in ON
   assert.ok(resumed(c[1]) && resumed(c[2]), "both repairs stay in the same session");
 });
 
-test("a form chain DEEPER than the cap falls through to the ladder, visibly", async () => {
+test("a form chain DEEPER than the cap falls through to the ladder, visibly", {
+}, async () => {
   // Three ADMITTED defects in one artifact, surfaced one per parse: layer → severity → undispatchable.
   // The cap is 2, so the third is not swallowed — it becomes an ordinary failed dispatch with its own
   // name, exactly as it would today. An absence of budget is a finding, not a pass.
@@ -236,7 +245,8 @@ test("a form chain DEEPER than the cap falls through to the ladder, visibly", as
 
 // ── ZERO SEMANTICS 1: a repair turn that writes nothing has NOT repaired anything ────────────────────
 
-test("a repair turn that writes NOTHING is not read as a fix — the original defect reaches the ladder", async () => {
+test("a repair turn that writes NOTHING is not read as a fix — the original defect reaches the ladder", {
+}, async () => {
   // Issue the shape: the repair turn ends clean and writes nothing at all. Re-judging the same bytes
   // must not be allowed to say "repaired", and the harness's silence must not be reported as the model's
   // answer. The ORIGINAL token is what the ladder gets.
@@ -255,7 +265,8 @@ test("a repair turn that writes NOTHING is not read as a fix — the original de
   assert.equal(calls().length, 2, "and no SECOND repair is bought once a repair turn writes nothing");
 });
 
-test("a repair turn that rewrites the SAME defect byte-for-byte stops the repair loop", async () => {
+test("a repair turn that rewrites the SAME defect byte-for-byte stops the repair loop", {
+}, async () => {
   const r = await stage({ ...arm(frameDiffStage(), BAD_SEVERITY, BAD_SEVERITY, CLEAN_DIFF), maxRetries: 0 });
   assert.equal(r.ok, false);
   assert.equal(r.formRepairs, 1, "one repair reproduced its own failure — a second cannot converge");
@@ -265,7 +276,8 @@ test("a repair turn that rewrites the SAME defect byte-for-byte stops the repair
 
 // ── ZERO SEMANTICS 2: a KILLED repair turn's bytes are never stage truth ─────────────────────────────
 
-test("a repair turn that is KILLED after writing is refused, even though the bytes now validate", async () => {
+test("a repair turn that is KILLED after writing is refused, even though the bytes now validate", {
+}, async () => {
   // The strongest form of the rule. The mock writes a PERFECTLY VALID artifact and then dies at 137. A
   // shape validator would pass it; a killed turn's write may be torn and nothing here can prove it whole
   // (the exit-1 rescue's doctrine, gateway.mjs). So it is not re-judged, and the original defect stands.
@@ -292,7 +304,8 @@ test("a form failure this check does not recognise is never swallowed — it rea
   assert.match(r.attemptFails[0], /framediff_unparseable/);
 });
 
-test("a WORK-class failure behaves exactly as before — the warm attempt is still there for it", async () => {
+test("a WORK-class failure behaves exactly as before — the warm attempt is still there for it", {
+}, async () => {
   // the connotation tokens are work class and warm-eligible by an explicit 2026-08-01 ruling. A
   // form fix must not consume the warm attempt it is entitled to, so formRepairsUsed is tracked apart
   // from warmUsed. Attempt 2 must still be a WARM resume.
@@ -308,7 +321,8 @@ test("a WORK-class failure behaves exactly as before — the warm attempt is sti
 
 // ── the census: a repair row must not read as a form-class dispatch retry ────────────────────────────
 
-test("a repair is journalled as a repair, never as an attempt", async () => {
+test("a repair is journalled as a repair, never as an attempt", {
+}, async () => {
   await stage({ ...arm(frameDiffStage(), BAD_SEVERITY, CLEAN_DIFF), model: "haiku" });
   const rows = stageRows();
   assert.equal(rows.length, 2);

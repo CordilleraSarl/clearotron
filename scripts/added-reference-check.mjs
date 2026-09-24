@@ -44,6 +44,7 @@
 // "what a public tree must not acquire" is one definition and one imitation of it, and the imitation
 // is whichever the reader did not run.
 import { execFileSync } from "node:child_process";
+import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 import {
   CLASSES, offendingClasses, isProse, isScannable,
   withoutColourValues, withoutLinkTargets,
@@ -110,4 +111,4 @@ function main() {
   process.exit(1);
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) main();
+if (isEntrypoint(import.meta.url)) main();

@@ -21,7 +21,9 @@ import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
-const brandModule = fileURLToPath(new URL("../../shared/brand.mjs", import.meta.url));
+// A file URL, not a path: the child imports it, and an import of a Windows path reads its drive letter
+// as a URL scheme.
+const brandModule = new URL("../../shared/brand.mjs", import.meta.url).href;
 
 /** Evaluate shared/brand.mjs in a fresh process under a given environment. */
 function brandUnder(env) {

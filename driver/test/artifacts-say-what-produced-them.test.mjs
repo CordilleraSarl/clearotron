@@ -19,6 +19,7 @@ import { tmpdir } from "node:os";
 import { seedRunStatus, writeRunStatus } from "../progress.mjs";
 import { engineCommit } from "../engine-build.mjs";
 import { gridProvenancePath, gridProvenanceRecord, writeGridProvenance } from "../engine/mcp/grid-provenance.mjs";
+import { fileURLToPath } from "node:url";
 
 const scratch = (fn) => {
   const root = mkdtempSync(join(tmpdir(), "prov-1846-"));
@@ -112,7 +113,7 @@ test("a sidecar that cannot be written never costs a completed grid", () => {
 
 // ── 3. the score names the scorer that produced it ────────────────────────────────────────────────
 test("the HUMAN score output names the scorer version and the run's engine", () => {
-  const src = readFileSync(join(dirname(dirname(dirname(new URL(import.meta.url).pathname))), "scripts", "score.mjs"), "utf8");
+  const src = readFileSync(join(dirname(dirname(dirname(fileURLToPath(import.meta.url)))), "scripts", "score.mjs"), "utf8");
   // `--json` has carried `scorer_version` since this file shipped. The gap was the HUMAN path, which is
   // the one whose numbers get pasted into an issue: the body states 6/9 for a run that re-scores
   // 5/2/2 today, across two scorer changes, so every delta quoted from it crosses an unmarked boundary.

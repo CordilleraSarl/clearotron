@@ -26,6 +26,7 @@
 // keeps ONE definition of which seats a split run has.
 import { GRID_SEATS } from "./common-law-receipts.mjs";
 import { gridProvenancePath } from "./engine/mcp/grid-provenance.mjs";   // — the sidecar's name comes from its writer, never a second spelling
+import { lastSegment, hasSep } from "../shared/path-seps.mjs";   // a Windows path is built with "\"
 
 /**
  * Every artifact path the driver dictates, from the paths() factory itself — which IS the dictated
@@ -42,7 +43,7 @@ import { gridProvenancePath } from "./engine/mcp/grid-provenance.mjs";   // — 
  * and a detector that is wrong four times a run becomes the detector nobody reads, which is the exact
  * outcome its own doc block argues against.
  */
-export function dictatedPaths(P, { halves = GRID_SEATS, axes = [] } = {}) {
+export function dictatedPaths(P, { halves = GRID_SEATS, axes = [], platform = process.platform } = {}) {
   const out = new Set();
   for (const [key, value] of Object.entries(P ?? {})) {
     if (key === "runDir") continue;
@@ -67,7 +68,7 @@ export function dictatedPaths(P, { halves = GRID_SEATS, axes = [] } = {}) {
       try {
         const ledger = P.commonLawGridHalf?.(h);
         if (typeof ledger === "string") {
-          const base = ledger.slice(ledger.lastIndexOf("/") + 1).replace(/\.json$/, "");
+          const base = lastSegment(ledger, platform).replace(/\.json$/, "");
           out.add(`${P.runDir}/connotation-obligations.${base}.json`);
         }
       } catch { /* no half ledger on this run shape */ }
@@ -122,14 +123,17 @@ const JUDGED_EXT_RE = /\.(md|json|csv|xlsx|html|pdf|docx)$/;
  * @param {{runDir?: string}} opts
  * @returns {Array<{name:string, why:string}>} empty ⇒ nothing undictated. PURE.
  */
-export function findStrayArtifacts(entries, dictated, { runDir = "" } = {}) {
+export function findStrayArtifacts(entries, dictated, { runDir = "", platform = process.platform } = {}) {
   const names = new Set();
+  // On Windows the dictated paths arrive with either separator: `join` writes "\", and the named root
+  // files above are written with "/". Both mean the run's root there, and neither does on Linux.
+  const underRoot = (s) => Boolean(runDir) && s.startsWith(runDir) && hasSep(s.charAt(runDir.length), platform);
   for (const p of dictated ?? []) {
     const s = String(p ?? "");
     // Root-level basename only: a dictated path inside _driver/ can never collide with a root entry,
     // and treating it as if it could would let a stray root file borrow a sidecar's name.
-    const rel = runDir && s.startsWith(`${runDir}/`) ? s.slice(runDir.length + 1) : s;
-    if (rel && !rel.includes("/")) names.add(rel);
+    const rel = underRoot(s) ? s.slice(runDir.length + 1) : s;
+    if (rel && !hasSep(rel, platform)) names.add(rel);
   }
   const out = [];
   for (const name of entries ?? []) {

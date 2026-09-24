@@ -12,7 +12,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, readFileSync, readdirSync, writeFileSync, rmSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir } from "../../shared/driver-dir.mjs";   //
+import { driverDir, driverFileName } from "../../shared/driver-dir.mjs";   //
 import { tmpdir } from "node:os";
 import { recordDispatch, dispatchFileName, DISPATCH_SUFFIX } from "../dispatch-record.mjs";
 
@@ -86,7 +86,8 @@ test("a re-dispatch of the same attempt PRESERVES the superseded record — an e
     const second = recordDispatch(dir, "common-law-half:b", { attempt: 1, message: "the carried draft correction" });
     assert.equal(second.superseded, first.sha, "the return names what it displaced");
     const files = readdirSync(driverDir(dir));
-    assert.ok(files.includes(`common-law-half:b.attempt1.${DISPATCH_SUFFIX}`));
+    // The listing is of names on disk, where a label's colon is spelled the way this platform can hold it.
+    assert.ok(files.includes(driverFileName(`common-law-half:b.attempt1.${DISPATCH_SUFFIX}`)));
     assert.ok(files.some((f) => f.endsWith(`.prev-${first.sha}`)), "and the displaced text is still on disk");
     assert.equal(readFileSync(driverDir(dir, `common-law-half:b.attempt1.${DISPATCH_SUFFIX}.prev-${first.sha}`), "utf8"),
       "the cold commission");

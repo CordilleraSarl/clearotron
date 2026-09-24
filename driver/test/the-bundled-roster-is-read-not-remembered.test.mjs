@@ -22,8 +22,9 @@ import { join } from "node:path";
 
 import { bundledDemoKeys, GENERIC_KEY } from "../bundled-demos.mjs";
 import { rosterVerdict } from "../roster-verdict.mjs";
+import { fileURLToPath } from "node:url";
 
-const REPO_PROFILES = new URL("../profiles/", import.meta.url).pathname;
+const REPO_PROFILES = fileURLToPath(new URL("../profiles/", import.meta.url));
 
 const storeOf = (names) => {
   const d = mkdtempSync(join(tmpdir(), "bundled-demos-"));

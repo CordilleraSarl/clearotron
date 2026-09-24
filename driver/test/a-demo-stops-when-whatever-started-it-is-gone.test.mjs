@@ -43,7 +43,10 @@ test("fires once, only when the parent pid changes, and never for a process star
   assert.deepEqual(underInit, [], "a process whose parent was init from the start has lost nothing");
 });
 
-test("a real sh that dies on TERM without passing it on: the process under it notices and stops", { timeout: 30000 }, async () => {
+// The watch reads a change of parent pid, which is reparenting: Linux and macOS hand an orphan to init or a
+// subreaper. Windows reparents nothing and leaves a process's parent pid naming the parent that died.
+test("a real sh that dies on TERM without passing it on: the process under it notices and stops", { timeout: 30000,
+  skip: process.platform === "win32" && "no reparenting on Windows: an orphan keeps its dead parent's pid, so there is no change for the watch to see" }, async () => {
   const dir = mkdtempSync(join(tmpdir(), "parent-watch-"));
   const marker = join(dir, "gone.json");
   const ready = join(dir, "ready");

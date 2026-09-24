@@ -29,6 +29,11 @@ chmodSync(CLAUDE, 0o755);
 const studioFor = (root) => join(root, "workspace-clawdi", "studio", "clearance-search");
 const queueFor = (root) => join(studioFor(root), "queue");
 
+// On Windows the runner's claim token is `<pid>:<birth stamp>` and it takes over a dead claim by renaming
+// the marker to `<base>.processing.claimed-<token>`. A Windows file name cannot hold a colon, so the
+// rename fails and the runner reports every takeover as lost to a concurrent runner. That is the runner's
+// to fix.
+
 function envFor(root, extra = {}) {
   return {
     ...process.env,

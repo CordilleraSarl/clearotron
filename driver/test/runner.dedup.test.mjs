@@ -150,7 +150,8 @@ test("ledger: reply dedups; same-msgId/different-matter/stale do NOT; a failed r
   assert.equal(findDuplicateMatter(q, { sig, conversationId: "CONV-A", msgId: "<reply@x>" }, now + 60_000), null, "a dropped entry no longer blocks a re-send (neither matter nor thread)");
 });
 
-test("integration: signature + same-mark-thread dedup park .duplicate; distinct-mark thread + dupOverride run", async () => {
+test("integration: signature + same-mark-thread dedup park .duplicate; distinct-mark thread + dupOverride run",
+  async () => {
   const q = join(root, "workspace-clawdi", "studio", "clearance-search", "queue");
   mkdirSync(q, { recursive: true });
   // (1) SAME matter, two messages (original + "please proceed"), casing/class-order drift, NO conversationId

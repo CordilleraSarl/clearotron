@@ -109,14 +109,14 @@ test("E2(openai): full pipeline runs on the openai-agent engine (CLEAR, delivere
 
   // Skill refs absolutized in every prompt (codex cwd = tmpdir cannot resolve workspace-relative paths); and
   // each compute turn grants --add-dir on THIS run's dir (the writable root for the stage's output file).
-  const BARE_SKILL_REF = /(?<![\w/.])skills\/[A-Za-z0-9._/-]+\.md/;
+  const BARE_SKILL_REF = /(?<![\w\\/.])skills[\\/][A-Za-z0-9._\\/-]+\.md/;
   for (const call of codexCalls) {
     const msg = call.prompt || "";
     assert.ok(!BARE_SKILL_REF.test(msg), `a stage prompt kept a workspace-relative skills ref: ${msg.match(BARE_SKILL_REF)?.[0]}`);
     const addDirs = call.argv.reduce((acc, a, i) => (a === "--add-dir" ? [...acc, call.argv[i + 1]] : acc), []);
-    assert.ok(addDirs.some((d) => d && /\/studio\/clearance-search\//.test(d)), "compute turn grants --add-dir on the run dir");
+    assert.ok(addDirs.some((d) => d && /[\\/]studio[\\/]clearance-search[\\/]/.test(d)), "compute turn grants --add-dir on the run dir");
   }
-  assert.match(first.prompt, /\/driver\/skills\/matter-frame\/SKILL\.md/, "matter-frame skill ref absolutized to the driver's skills tree");
+  assert.match(first.prompt, /[\\/]driver[\\/]skills[\\/]matter-frame[\\/]SKILL\.md/, "matter-frame skill ref absolutized to the driver's skills tree");
 
   // Every turn carries the WRITE_DISCIPLINE via config.toml's developer_instructions (codex's
   // append-system-prompt equivalent) — the shared stage prompts are never mutated.
@@ -237,7 +237,7 @@ test("E2(openai): full pipeline runs on the openai-agent engine (CLEAR, delivere
   // record server under the neutral key" from "blind-frame mounts nothing" — the second produces one
   // fewer recording turn, not a failure. This names the stage INDEPENDENTLY, by the skill doc only its
   // own dispatch reads, and then requires the key.
-  const blindFrameTurn = codexCalls.find((c) => /\/driver\/skills\/blind-frame\/SKILL\.md/.test(c.prompt || ""));
+  const blindFrameTurn = codexCalls.find((c) => /[\\/]driver[\\/]skills[\\/]blind-frame[\\/]SKILL\.md/.test(c.prompt || ""));
   assert.ok(blindFrameTurn, "blind-frame ran on the openai engine");
   assert.ok(recordingTurns.includes(blindFrameTurn), "blind-frame's turn mounts a recording server and nothing else");
   assert.match(blindFrameTurn.configToml, /^\[mcp_servers\.recording-blind-frame\]$/m,

@@ -22,6 +22,7 @@ import { spawn } from "node:child_process";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { recordEngineChild, clearEngineChild } from "./child-record.mjs";   //
+import { engineSpawn, spawnsDetached, killWindowsTreeNow } from "./engine-spawn.mjs";   // one answer to how a turn starts and ends, on every platform
 
 // ── Shared env-tunable knobs (same names + defaults the anthropic engine already documents) ──────────
 // 120s of ZERO streamed output = the silent-provider-stall abort. A healthy turn streams continuously,
@@ -150,6 +151,8 @@ export function runStreamingChild({
   stallSec, timeoutSec,
   onStdoutLine,
   stderrIsLiveness = true,
+  platform = process.platform,
+  endTree = killWindowsTreeNow,
 } = {}) {
   const t0 = Date.now();
   const STALL = (Number(stallSec) > 0 ? Number(stallSec) * 1000 : stallMs());
@@ -171,8 +174,13 @@ export function runStreamingChild({
     // orphans them (a bridge orphan ran 3.5 days, still billing). Detached → the child leads its own
     // process group, so the watchdog's group kills reach the whole tree. stdin is a PIPE (not "ignore"):
     // the prompt rides stdin, never a `-p`/argv element, so it is never subject to MAX_ARG_STRLEN (E2BIG).
-    try { child = spawn(bin, args, { stdio: ["pipe", "pipe", "pipe"], cwd: spawnCwd, env: env || process.env, detached: true }); }
+    // Windows: not detached, and ended as a tree instead (engine-spawn.mjs says why).
+    const run = engineSpawn(bin, args, { platform });
+    const spawnedAt = Date.now();   // before the spawn: what the turn starts is started after this
+    try { child = spawn(run.command, run.args, { stdio: ["pipe", "pipe", "pipe"], cwd: spawnCwd, env: env || process.env, detached: spawnsDetached(platform) }); }
     catch (e) { return resolve({ spawnError: e, wall: (Date.now() - t0) / 1000 }); }
+    let exitedAt = null;
+    child.once("exit", () => { exitedAt = Date.now(); });
     // — WRITE THE CHILD DOWN, so a stop can target this run's turn rather than hunt
     // for it. Best effort and never fatal: a dispatch that cannot write this must still run, because
     // failing here costs a stop that falls back to the boundary, and throwing here costs the run.
@@ -199,7 +207,14 @@ export function runStreamingChild({
     // timer is unref'd and NOT cleared on settle — the direct child exiting on SIGTERM must not save a
     // SIGTERM-immune MCP straggler from the group SIGKILL.
     let escalation = null;
-    const groupKill = (sig) => { try { process.kill(-child.pid, sig); } catch { try { child.kill(sig); } catch { /* already gone */ } } };
+    // Windows has no group to signal: the whole tree is ended at once, and the escalation below then finds
+    // nothing left to end.
+    // EVEN WHEN THE PROGRAM ITSELF HAS EXITED: its tool servers may run on, and only the stop that knows
+    // when the turn was spawned and ended can tell them from a stranger (killWindowsTreeNow). The first
+    // stop that ends nothing says so; the escalation after it expects to find nothing.
+    const groupKill = platform === "win32"
+      ? (sig) => { const n = endTree({ pid: child.pid, since: spawnedAt, until: exitedAt }); if (!n && sig === "SIGTERM") process.stderr.write(`[engine] the Windows stop found nothing of this turn left to end (program ${child.pid})\n`); }
+      : (sig) => { try { process.kill(-child.pid, sig); } catch { try { child.kill(sig); } catch { /* already gone */ } } };
     const killTree = () => {
       if (escalation) return;   // the watchdog polls — arm the escalation exactly once
       groupKill("SIGTERM");
