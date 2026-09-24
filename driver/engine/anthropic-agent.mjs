@@ -24,7 +24,7 @@ import { resolveSpawnCwd, spawnGraceMs } from "./common.mjs";
 import { resolveEngineProgram } from "../driver.config.mjs";   // — the one place that finds the program; it reads every spelling of the setting
 import { authorityTrees } from "../authority-trees.mjs";
 import { recordEngineChild, clearEngineChild } from "./child-record.mjs";   //
-import { billingMode } from "./auth.mjs";   // — the one parse of the billing word (see spawnEnv)
+import { engineEnv } from "./engine-env.mjs";   // — the program's environment, by list (see spawnEnv)
 
 // Read per-call (not module-level) so tests can drive a short stall timeout / a mock binary.
 // ONE place knows how to find the program (driver.config.mjs resolveEngineProgram): the explicit setting,
@@ -43,13 +43,15 @@ const claudeBin = () => { const r = resolveEngineProgram("anthropic-agent"); ret
 //
 // `cloud` strips it too, as that mode's acceptance asks: a key has no part in a turn the vendor's switches
 // send to the reader's cloud account, and dropping it means a leftover key can never be what bills. A
-// gateway's credential is its own ANTHROPIC_AUTH_TOKEN, which rides through like every other name. The
+// gateway's credential is its own ANTHROPIC_AUTH_TOKEN, which rides through in the vendor's namespace. The
 // word is parsed by auth.mjs (billingMode), the one place that reads it. This never validates and never
 // throws, because the doors that do (the top of runStage, the probe, the jx runner) have already run.
+//
+// THE REST OF THE ENVIRONMENT IS A LIST, NOT A COPY. The program and every tool server it starts get what
+// engine-env.mjs names and nothing else, so the key that signs access tokens and the portal's secrets
+// never reach a stage. The billing rule above is applied there, with the rest of the list.
 export function spawnEnv(base = process.env) {
-  const env = { ...base };
-  if (billingMode(base) !== "api-key") delete env.ANTHROPIC_API_KEY;   // subscription and cloud
-  return env;
+  return engineEnv(base, { engine: "anthropic-agent" });
 }
 // 120s of ZERO streamed output = the silent-provider-stall abort. A healthy turn
 // streams thinking + output deltas continuously, so this never clips a slow-but-working turn.
@@ -131,8 +133,8 @@ const engineMaxBufferChars = () => Math.max(1024, Number(process.env.CLEAROTRON_
 // a cloud with no deployment of that exact name refuses the turn. The cost is that a model can move under a
 // clearance without a test; the witness is the id the CLI reports, recorded on every attempt row
 // (`modelActual`) and on the published run. To hold a tier still, set the vendor's variable in the env file
-// (ANTHROPIC_DEFAULT_OPUS_MODEL=<id>): the stage's environment is the driver's, so it reaches the CLI
-// with no setting of Clearotron's own. ANTHROPIC_DEFAULT_FABLE_MODEL holds fable, which no stage asks for
+// (ANTHROPIC_DEFAULT_OPUS_MODEL=<id>): the stage's environment carries the vendor's `ANTHROPIC_*` names
+// (engine-env.mjs), so it reaches the CLI with no setting of Clearotron's own. ANTHROPIC_DEFAULT_FABLE_MODEL holds fable, which no stage asks for
 // unless an override names it, as CLEAROTRON_SYNTHESIS_MODEL=fable does. A catalog id a caller names
 // (anthropic/claude-opus-5) still goes as that exact id. The non-anthropic tiers (gemini skeptic, deepseek refutation, azure) have no claude equivalent →
 // substituted with an anthropic model (also GRADE-MOVING, A/B-only); their bare-alias substitutes
@@ -309,7 +311,7 @@ export function absolutizeSkillRefs(message, skillsDir, resolve = null) {
 // ANTHROPIC-ONLY, AND MEASURED RATHER THAN ASSUMED. The obvious next step is to apply the same rule to
 // openai-agent's `--add-dir` (buildCodexArgs pushes the identical root), and it would accomplish nothing:
 // that engine spawns with `cwd = resolveSpawnCwd({cwd, runDir})` — the RUN DIR (deliberately) —
-// under `--sandbox workspace-write`, which makes cwd a writable root on its own. Dropping the flag there
+// under its sandbox, which makes cwd a writable root on its own. Dropping the flag there
 // would remove a grant the seat still holds by another door and let this comment claim an isolation the
 // engine does not have. Codex-side isolation is a cwd question, and a separate decision.
 /**
@@ -357,7 +359,19 @@ export function runDirGrant({ runDir, dispatch, seatWrites = null } = {}) {
   return { grant, names, note };
 }
 
-export function buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig, allowedTools, maxBudgetUsd, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null }) {
+/**
+ * The program's tools that run a command, removed from every stage by name. From the vendor's tools
+ * reference: `Bash` "Executes shell commands", `PowerShell` "Executes PowerShell commands natively" (the
+ * shell it offers on Windows, and on other systems when switched on), and `Monitor` "Runs a command in the
+ * background". Stages read and write their files through Read, Write and Edit and call their tool
+ * servers. No stage is granted a shell in the grant table (gather-config.mjs); what this removes is the
+ * shell the program offered them anyway.
+ */
+export const COMMAND_TOOLS = Object.freeze(["Bash", "PowerShell", "Monitor"]);
+/** The program's tools that write a file. A result that comes back an error is a write that failed. */
+const FILE_WRITE_TOOLS = Object.freeze(["Write", "Edit", "MultiEdit", "NotebookEdit"]);
+
+export function buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig, allowedTools, maxBudgetUsd, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null }) {
   const input = absolutizeSkillRefs(message, skillsDir, resolveSkill);
   const args = ["-p", "--output-format", "stream-json", "--verbose", "--include-partial-messages"];
   const m = claudeModel(model); if (m) args.push("--model", m);
@@ -377,10 +391,17 @@ export function buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig
   if (resumeRef) args.push("--resume", resumeRef);          // warm-resume → reuses the prompt cache
   if (mcpConfig) { args.push("--mcp-config", mcpConfig, "--strict-mcp-config"); }
   if (allowedTools) args.push("--allowedTools", allowedTools);
+  // NO TOOL THAT RUNS A COMMAND, ON ANY STAGE, WHATEVER THE MACHINE'S OWN SETTINGS SAY. `--allowedTools`
+  // lists tools that run without asking; it removes nothing, and the program runs a command it classes as
+  // read-only (`cat`, `ls`) without asking at all. Measured on 2.1.280 with this argv: the model ran `echo`
+  // through Bash on a login with no rule allowing it. A bare name here "removes the matching tools from
+  // Claude's context" (the vendor's CLI reference, `--disallowedTools`), on every call, the resumed one
+  // included, so the model is never offered them. See COMMAND_TOOLS for the three names.
+  args.push("--disallowedTools", COMMAND_TOOLS.join(" "));
   const cap = maxBudgetUsd ?? (process.env.CLEAROTRON_MAX_BUDGET_USD ? Number(process.env.CLEAROTRON_MAX_BUDGET_USD) : null);
   if (cap != null && Number.isFinite(cap)) args.push("--max-budget-usd", String(cap));
   // FILE ACCESS: claude's Read/Write/Edit tools are confined to cwd + --add-dir roots even under
-  // acceptEdits (cwd is a neutral tmpdir here), so the compute-skills tree (skillsDir — the
+  // acceptEdits (cwd is a neutral tmpdir here; reads only since READ_FENCE, below), so the compute-skills tree (skillsDir — the
   // driver-co-located skills/) and THIS run's dir are added here — every stage output and prior-stage artifact
   // is absolute under runDir. Two NARROW roots (least-privilege; the skills tree is a leaf, NOT an agent
   // workspace — no SOUL.md/MEMORY.md/memory/*). Neither root has a CLAUDE.md/AGENTS.md at its head AND we do
@@ -403,12 +424,34 @@ export function buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig
   // boundary cannot drift from what was granted", and that property is what makes dropping the root
   // safe: a boundary still describing a root that was never handed out would be the sibling defect,
   // created by the fix for this one. `granted` is that single value.
-  const rd = runDirGrant({ runDir, dispatch: input, seatWrites });
+  // A RESUMED TURN KEEPS THE GRANT ITS STAGE WAS DISPATCHED WITH. The warm patch names its files through
+  // rel(), so judged on its own text a stage that writes nothing itself would lose the run folder on the
+  // retry. That cost nothing while reads were unconfined; under READ_FENCE it would take away the folder
+  // the stage has been reading. The gateway passes the stage's own dispatch as `grantDispatch`.
+  const rd = runDirGrant({ runDir, dispatch: grantDispatch ?? input, seatWrites });
   const granted = rd.grant ? runDir : null;
   if (granted) args.push("--add-dir", granted);
   const boundary = writeBoundarySettings({ skillsRoots: grantRoots, profilesDir, runDir: granted });
-  if (boundary) args.push("--settings", boundary);
+  args.push("--settings", stageSettings(boundary));
   return { args, input, grantNote: rd.note };
+}
+
+/**
+ * THE FILE TOOLS READ ONLY THE STAGE'S OWN FOLDERS. Without this, Read, Grep and Glob open any path the
+ * account can open, the install's settings file and the key that signs access keys included, and a page
+ * a stage fetched can ask for exactly that. The vendor's setting makes those tools refuse any path outside
+ * the session's working directories "in every permission mode" (settings reference,
+ * `permissions.blockReadsOutsideWorkingDirectories`, Claude Code 2.1.257 or later; the floor is 2.1.280).
+ * The working directories are the neutral cwd and the `--add-dir` roots above: the instruction trees and,
+ * when granted, the run folder. A folder the account's own Claude settings add
+ * (`permissions.additionalDirectories`) is a working directory too, and stays readable: measured, the
+ * refusal on a login with three such folders listed all three. Every turn carries it, the probe's included.
+ */
+export const READ_FENCE = Object.freeze({ blockReadsOutsideWorkingDirectories: true });
+
+/** The one `--settings` value a turn carries: the read fence, and the write boundary's hook when there is one. */
+export function stageSettings(boundary) {
+  return JSON.stringify({ permissions: { ...READ_FENCE }, ...(boundary ? JSON.parse(boundary) : {}) });
 }
 
 /** POSIX single-quoting — the hook `command` is run through a shell, and a checkout path may hold spaces. */
@@ -448,9 +491,10 @@ export function writeBoundarySettings({ skillsRoots = [], profilesDir = null, ru
   return JSON.stringify({
     hooks: {
       PreToolUse: [{
-        // Bash is in the matcher because seats have it and it walked past this hook entirely.
-        // What the Bash arm can and cannot do is stated at its declaration in deny-authority-write.mjs;
-        // it is a detector, and naming it here does not make it a boundary.
+        // Bash is in the matcher because seats had it and it walked past this hook entirely. The command
+        // tools are now removed from every stage (COMMAND_TOOLS, above), and the arm stays for a program
+        // that does not honour the removal. What it can and cannot do is stated at its declaration in
+        // deny-authority-write.mjs; it is a detector, and naming it here does not make it a boundary.
         matcher: "Write|Edit|MultiEdit|NotebookEdit|Bash",
         hooks: [{ type: "command", command: `${shq(process.execPath)} ${shq(hook)} ${payload}` }],
       }],
@@ -477,9 +521,9 @@ export const anthropicAgentEngine = {
   // doctrine tree, the profile store and `<runDir>/_driver/` at the moment of the write. That is a real
   // boundary and this engine has it.
   writeBoundary: "enforced",
-  async runTurn({ message, model, thinking, timeoutSec, resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, stallSec, progressFiles } = {}) {
+  async runTurn({ message, model, thinking, timeoutSec, resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null, stallSec, progressFiles } = {}) {
     if (!message) throw new Error("anthropic-agent.runTurn: message is required");
-    const { args, input, grantNote } = buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites });
+    const { args, input, grantNote } = buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites, grantDispatch });
     // the cross-check speaks. Driver stderr is what an operator reads, and it is where the other
     // drift notices in this engine already land ([ledger], [env-aliases], [queue-watch]).
     if (grantNote) process.stderr.write(`${grantNote}\n`);
@@ -637,6 +681,16 @@ export const anthropicAgentEngine = {
       // ("a completed tool result = the agent loop advanced", below). The gap between them is the turn
       // waiting on tools rather than generating.
       let toolCalls = 0;
+      // HOW MANY OF THOSE ASKED FOR A COMMAND TOOL. The command tools are removed from every stage
+      // (COMMAND_TOOLS), so the number a test round expects here is zero, and a count is what proves it: a
+      // flag in the argv shows what was asked of the program, this shows what the model did. Still a count
+      // of calls, never a name or an input.
+      let commandToolCalls = 0;
+      // WRITES THE PROGRAM REPORTED AS FAILED: a Write or Edit whose result came back an error. The engine
+      // probe refuses a machine on it, because it is the engine's own word that a file could not be written,
+      // not an inference from a file that is missing. The ids of the write asks, so their results are known.
+      let writesFailed = 0;
+      const writeAsks = new Set();
       let toolWaitMs = 0;
       let toolAskedAt = null;
       // WHAT THE WAIT IS MADE OF, keyed by the tool(s) that caused it.
@@ -777,6 +831,8 @@ export const anthropicAgentEngine = {
           // Same belt-and-braces as the thinking gauge's `?.some?.()` on the line above.
           for (const b of Array.isArray(ev.message?.content) ? ev.message.content : []) {
             if (b?.type === "tool_use") toolCalls++;   // #1111 — every tool, not only Read; a COUNT, never a name
+            if (b?.type === "tool_use" && COMMAND_TOOLS.includes(b?.name)) commandToolCalls++;
+            if (b?.type === "tool_use" && FILE_WRITE_TOOLS.includes(b?.name) && b?.id != null) writeAsks.add(String(b.id));
             if (b?.type === "tool_use" && b?.name === "Read" && typeof b?.input?.file_path === "string") {
               if (reads.size < READS_CAP) reads.add(b.input.file_path);
               else if (!reads.has(b.input.file_path)) readsTruncated = true;   // a DISTINCT path was dropped
@@ -808,6 +864,8 @@ export const anthropicAgentEngine = {
           progress();
         }
         else if (ev.type === "user") {
+          for (const b of Array.isArray(ev.message?.content) ? ev.message.content : [])
+            if (b?.type === "tool_result" && b?.is_error === true && writeAsks.has(String(b?.tool_use_id))) writesFailed++;
           // the result of the ask above. Only counted when an ask is outstanding, so a `user`
           // event with no preceding tool_use adds nothing rather than charging the turn for a gap it
           // never spent waiting.
@@ -1105,6 +1163,11 @@ export const anthropicAgentEngine = {
           // from this list is unreliable and the consumer must downgrade it to "not observed").
           reads: [...reads], readsTruncated,
           toolCalls, toolWaitMs: settledToolWaitMs,   // #1111 — two integers, no content
+          // The two counts a test round reads per stage: calls to a command tool, and calls the program
+          // refused. The refusals are the result event's own `permission_denials`, counted; null when the
+          // turn settled with no result event, so "not reported" never reads as "none refused".
+          commandToolCalls, writesFailed,
+          toolCallsRefused: Array.isArray(resultEvent?.permission_denials) ? resultEvent.permission_denials.length : null,
           // ms from spawn to the child's FIRST byte, or null when it never spoke. RECORDING
           // ONLY: nothing branches on it. A recording field is protected by a test or by nothing, so
           // engine.anthropic.test.mjs pins it — deleting it must red something.

@@ -12,7 +12,7 @@ import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { fileURLToPath } from "node:url";
-import { PROBE_PROMPT } from "../engine/probe.mjs";
+import { isProbePrompt } from "../engine/probe.mjs";
 // — the RECORDING category's MEMBERSHIP, so a converted stage's own `mcp_servers.recording-<stage>`
 // key is admitted without this file naming the stages. Only the membership: see the key-spelling note below.
 import { RECORDING_STAGES } from "../engine/mcp/gather-config.mjs";
@@ -56,7 +56,7 @@ async function runOpenaiPipeline(env = {}) {
   // MCP servers, floor tier). Split out by the probe's own exported prompt so the per-stage assertions
   // below keep judging only compute stages; the sibling comment in pipeline.anthropic.test.mjs has the
   // reasoning, and both files carry the split because both engines pay the same door.
-  const doorProbe = turns.find((c) => (c.prompt || "").trim() === PROBE_PROMPT) ?? null;
+  const doorProbe = turns.find((c) => isProbePrompt(c.prompt)) ?? null;
   const codexCalls = turns.filter((c) => c !== doorProbe);
   return { res, events, codexCalls, doorProbe, turns };
 }
@@ -70,7 +70,12 @@ test("E2(openai): full pipeline runs on the openai-agent engine (CLEAR, delivere
   assert.equal(turns[0], doorProbe, "the engine-turn probe is the FIRST turn of the run, ahead of matter-frame");
   assert.equal(doorProbe.argv[0], "exec", "the door's turn is built by the adapter's own buildCodexArgs");
   assert.match(doorProbe.argv.join(" "), /-c model_reasoning_effort=\S+/, "…carrying the floor effort rung, not a hand-rolled argv");
-  assert.ok(!doorProbe.argv.includes("--add-dir"), "the door grants no directory — it runs before one exists");
+  // The door grants one folder, the probe's own, made for its turn in the temp folder: never the run's, which
+  // does not exist yet, and never the skills tree.
+  const doorDirs = doorProbe.argv.reduce((acc, a, i) => (a === "--add-dir" ? [...acc, doorProbe.argv[i + 1]] : acc), []);
+  assert.equal(doorDirs.length, 1, `the door granted ${doorDirs.length} folders: ${doorDirs}`);
+  assert.match(doorDirs[0], /clearotron-probe-/, "the folder the door grants is the probe's own");
+  assert.ok(!doorDirs[0].startsWith(res.runDir), "and never the run's");
   assert.deepEqual([...(doorProbe.configToml || "").matchAll(/^\[mcp_servers\.([^\]]+)\]/gm)].map((m) => m[1]), ["probe"],
     "and starts the probe's own tool server and no stage's");
   const probeRow = events.find((e) => e.event === "engine-turn-probe");

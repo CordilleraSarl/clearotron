@@ -214,9 +214,9 @@ mode via `CLEAROTRON_AI_BILLING=api-key` — the scale setting ([04](04-configur
 
 **The second engine** (`engine/openai-agent.mjs`) spawns `codex exec` per stage on the shared
 `engine/common.mjs` substrate: prompt on stdin, `--json` event stream, `--skip-git-repo-check` with a neutral non-repo
-cwd, `--sandbox workspace-write --add-dir <runDir>`, and a per-run `CODEX_HOME` holding a rendered
-`config.toml` (MCP servers + developer instructions) plus, under subscription billing, a seeded
-`auth.json`. It is single-provider like the anthropic engine — one run's stages all execute as GPT —
+cwd, `--add-dir <runDir>`, and a per-run `CODEX_HOME` holding a rendered `config.toml` (MCP servers,
+developer instructions and, with Codex's sandbox on, a permission profile that limits what the stage's
+commands can read and write) plus, under subscription billing, a seeded `auth.json`. It is single-provider like the anthropic engine — one run's stages all execute as GPT —
 so telemetry's model provenance needs no cross-provider bookkeeping. Its abstract tiers all resolve
 to one model id by default; [04](04-configuration-reference.md) records why, and why lowering them
 is not a cost saving.

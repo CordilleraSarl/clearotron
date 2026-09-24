@@ -85,7 +85,9 @@ export const chdirPrefix = (dir, { platform = process.platform } = {}) =>
  *
  * `null` where this platform has no such mechanism in the product, so a caller prints nothing rather
  * than naming a service manager the reader does not have. Windows was told the background form was
- * "managed by systemd", which is not on the machine and cannot be installed onto it.
+ * "managed by systemd", which is not on the machine and cannot be installed onto it, and a Mac was told
+ * the same: `--background` installs systemd units, and of the platforms the product runs on only Linux
+ * has systemd.
  */
 export const backgroundManager = ({ platform = process.platform } = {}) =>
-  (isWindows(platform) ? null : "systemd");
+  (platform === "linux" ? "systemd" : null);

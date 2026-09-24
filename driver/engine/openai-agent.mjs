@@ -16,20 +16,21 @@
 //   {"type":"item.completed","item":{"type":"agent_message","text":…}}                  → payload text
 //   {"type":"turn.failed","error":{"message":…}} / {"type":"error","message":…}         → failure
 // Invocation is pinned from the flag corpus: prompt on STDIN via the `-` placeholder, `--json`,
-// `--skip-git-repo-check` (neutral non-repo cwd), `--sandbox workspace-write --add-dir <runDir>` for the
+// `--skip-git-repo-check` (neutral non-repo cwd), `--add-dir <runDir>` for the
 // stage output, `-m <model>`, `-c model_reasoning_effort=<effort>`, and a per-run `CODEX_HOME` holding a
-// rendered config.toml (mcp_servers + developer_instructions) + (subscription) a seeded auth.json.
-// CLEAROTRON_CODEX_SANDBOX_BYPASS=1 swaps that `--sandbox workspace-write` for
-// `--dangerously-bypass-approvals-and-sandbox` — see buildCodexArgs below for why.
+// rendered config.toml (mcp_servers + developer_instructions + the stage's permission profile, which is
+// codex's sandbox here) + (subscription) a seeded auth.json. CLEAROTRON_CODEX_SANDBOX_BYPASS=1 swaps that
+// profile for `--dangerously-bypass-approvals-and-sandbox` — see buildCodexArgs below for why.
 
-import { mkdtempSync, writeFileSync, copyFileSync, existsSync, rmSync, readFileSync, readdirSync, statSync, symlinkSync, lstatSync, realpathSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, copyFileSync, existsSync, rmSync, readFileSync, readdirSync, statSync, symlinkSync, lstatSync, realpathSync } from "node:fs";
 import { everyToolCallRefused } from "./tool-refusal.mjs";
 import { writeSecretFile } from "../../shared/secret-file.mjs";   // the rotated login goes back the way every credential is written
 import { tmpdir, homedir } from "node:os";
-import { join } from "node:path";
+import { join, dirname, sep } from "node:path";
 import { runStreamingChild, absolutizeSkillRefs, WRITE_DISCIPLINE, buildEnvelope, resolveSpawnCwd } from "./common.mjs";
 import { renderCodexConfigToml } from "./mcp/codex-config.mjs";
 import { resolveAuthMode } from "./auth.mjs";
+import { engineEnv, codexCommandWithheld } from "./engine-env.mjs";
 import { resolveEngineProgram } from "../driver.config.mjs";   // — the one place that finds the program; it reads every spelling of the setting
 
 // The same one resolver as the claude adapter (driver.config.mjs resolveEngineProgram), for the same reason:
@@ -160,19 +161,18 @@ export function mapUsage(u) {
 }
 
 // Apply the billing-mode (auth) toggle to the child env + point CODEX_HOME at the per-run dir. api-key:
-// keep CODEX_API_KEY (the override codex honors over stored creds). subscription: STRIP the keys so codex
-// uses the seeded auth.json (a present key would override it). resolveAuthMode throws loud if api-key mode
-// has no key (W3). Returns { env, mode }.
+// keep CODEX_API_KEY (the override codex honors over stored creds). subscription: no key reaches codex, so
+// it uses the seeded auth.json (a present key would override it). resolveAuthMode throws loud if api-key
+// mode has no key (W3). Returns { env, mode }.
+//
+// THE ENVIRONMENT IS A LIST, NOT A COPY (engine-env.mjs), and the billing rule above is applied there. It
+// matters more on this engine than on the other: codex keeps a shell, and a shell can print its parent's
+// environment, so what is not handed to codex is what its model cannot read from it. OPENAI_API_KEY is
+// not on the list under either mode; codex's key is CODEX_API_KEY.
 export function spawnEnv(base = process.env, codexHome) {
   const { mode } = resolveAuthMode({ engineName: "openai-agent", env: base });
-  const env = { ...base };
+  const env = engineEnv(base, { engine: "openai-agent" });
   if (codexHome) env.CODEX_HOME = codexHome;
-  if (mode === "api-key") {
-    // keep CODEX_API_KEY; do not seed an auth.json
-  } else {
-    delete env.CODEX_API_KEY;
-    delete env.OPENAI_API_KEY;   // codex deprioritizes it when stored creds exist, but strip for a clean subscription bill
-  }
   return { env, mode };
 }
 
@@ -225,7 +225,7 @@ export function returnAuth(masterPath, codexHome, seeded) {   // @internal
 // register prompt). Global flags precede the `resume` subcommand (flag-corpus ordering). config.toml
 // (mcp_servers + developer_instructions) rides CODEX_HOME, not argv.
 //
-// CLEAROTRON_CODEX_SANDBOX_BYPASS=1 (default off) swaps `--sandbox workspace-write` for
+// CLEAROTRON_CODEX_SANDBOX_BYPASS=1 (default off) swaps the stage's permission profile for
 // `--dangerously-bypass-approvals-and-sandbox`, so codex runs shell commands directly under the invoking
 // account's own OS-level permissions instead of building its own internal jail first — the same trust
 // model anthropic-agent already runs under (claude -p has no equivalent internal sandbox layer). Exists
@@ -236,10 +236,49 @@ export function returnAuth(masterPath, codexHome, seeded) {   // @internal
 // on that host — a kernel/container sandboxing primitive codex's helper needs is unavailable there. Kept
 // OFF by default: a host where codex's own sandbox works keeps that as a genuine second safety layer: an
 // unconditional flip here would remove it everywhere, including hosts that never had this problem.
+//
+// With the sandbox on, the stage's permission profile in the per-turn config is the sandbox, and no
+// `--sandbox` may ride the command line: codex takes the older sandbox settings over the profile whenever
+// it is passed (codex-config.mjs, `fenceToml`).
+export const codexSandboxBypassed = (env = process.env) => String(env.CLEAROTRON_CODEX_SANDBOX_BYPASS || "") === "1";
+
+/**
+ * The folder every Codex home Clearotron makes sits in: the account's own cache folder, never the temp
+ * folder. A home holds the turn's sign-in, a link to the saved one or a copy where Windows refuses links,
+ * and its session record. The stage's permission profile grants the temp folder, so a home there was
+ * readable by every stage's commands, and on Windows that included the sign-in; the profile never names
+ * this folder. It is also the account's own, where anyone on the machine can make a folder in the temp
+ * folder first. `env`, `platform` and `home` are parameters so every branch runs on a Linux CI.
+ */
+export function codexHomesRoot(env = process.env, { platform = process.platform, home = homedir() } = {}) {
+  const base = platform === "win32" ? (env.LOCALAPPDATA || join(home, "AppData", "Local")) : (env.XDG_CACHE_HOME || join(home, ".cache"));
+  const dir = join(base, "clearotron", "codex-homes");
+  mkdirSync(dir, { recursive: true, mode: 0o700 });
+  return dir;
+}
+
+/**
+ * The folder holding codex's own programs, which the stage's profile must let it read. codex runs every
+ * shell command through a helper of its own inside the sandbox, so a profile that cannot read the helper
+ * fails every command before it starts ("bwrap: execvp …/vendor/…/bin/codex-code-mode-host", measured on
+ * 0.156.1 with an install under the account's home) while its file edits, made outside the shell, go
+ * through. An npm install keeps the helper in a platform package, nested inside `@openai/codex` or beside
+ * it, so the whole `@openai` scope is granted: program files only. Any other install: the program's folder,
+ * unless that folder is the account's home or holds it, which would hand the fence's whole point back.
+ */
+export function codexProgramRoot(bin, home = homedir()) {
+  let real;
+  try { real = realpathSync(bin); } catch { return null; }
+  const scope = `${sep}node_modules${sep}@openai${sep}`;
+  const at = real.lastIndexOf(`${scope}codex${sep}`);
+  if (at >= 0) return real.slice(0, at + scope.length - 1);
+  const dir = dirname(real);
+  return dir === home || home.startsWith(dir.endsWith(sep) ? dir : dir + sep) ? null : dir;
+}
 export function buildCodexArgs({ model, thinking, resumeRef, runDir } = {}) {
-  const bypassSandbox = String(process.env.CLEAROTRON_CODEX_SANDBOX_BYPASS || "") === "1";
+  const bypassSandbox = codexSandboxBypassed();
   const base = ["exec", "--json", "--skip-git-repo-check",
-    ...(bypassSandbox ? ["--dangerously-bypass-approvals-and-sandbox"] : ["--sandbox", "workspace-write"])];
+    ...(bypassSandbox ? ["--dangerously-bypass-approvals-and-sandbox"] : [])];
   if (runDir) base.push("--add-dir", runDir);                     // writable root for the stage's absolute output path
   const m = openaiModel(model); if (m) base.push("-m", m);
   base.push("-c", `model_reasoning_effort=${effortFor(thinking)}`);
@@ -266,6 +305,10 @@ export function parseCodexEvent(line, ev) {
     case "error":          ev.streamError = e.message || "stream error"; break;
     case "item.completed":
       if (e.item?.type === "agent_message" && typeof e.item.text === "string") ev.agentText = e.item.text;
+      // A FILE CHANGE CODEX ITSELF REPORTS AS FAILED. Measured on codex-cli 0.156.1 with its sandbox unable
+      // to start: `{"type":"file_change","changes":[{"path":…,"kind":"add"}],"status":"failed"}`, and no file.
+      // It is the engine's own word that a write failed, which is what the engine probe refuses on.
+      if (e.item?.type === "file_change" && e.item.status === "failed") ev.writesFailed = (ev.writesFailed ?? 0) + 1;
       noteMcpToolCall(e.item, ev);
       break;
     // ── — AN MCP CALL THAT WAS REFUSED IS NOT A CALL NOBODY MADE ──────────
@@ -522,6 +565,11 @@ function settleTuple({ r, ev, resumeRef }) {
     // still cannot report a whole-turn tool count, so `toolCalls` stays null, which is the house rule
     // for "this engine does not report" rather than "it called nothing".
     ...mcpToolGauge(ev),
+    // The refused count under the name the attempt row reads on both engines. Codex keeps its shell, and its
+    // stream counts only tool-server calls, so it reports no command-tool count: null, never zero.
+    toolCallsRefused: mcpToolGauge(ev).mcpToolCallsRefused,
+    commandToolCalls: null,
+    writesFailed: ev.writesFailed ?? 0,
     signals: {
       stalled: stallKill || undefined, hardWall: r.hardWall || undefined,
       // A gather stage that ran with none of its tools produced prose and no instrumented half. The
@@ -561,8 +609,8 @@ export const openaiAgentEngine = {
   name: "openai-agent",
   // — WHAT THIS ENGINE GUARANTEES ABOUT SEAT WRITES: NOTHING, and the record now says so.
   // The boundary is a `claude -p` PreToolUse hook and codex has no PreToolUse — an absence by
-  // construction, not a misconfiguration. `--sandbox workspace-write --add-dir <runDir>` grants; it
-  // cannot subtract, so the sandbox cannot express the denial either. A seat on this engine writing into
+  // construction, not a misconfiguration. The stage's permission profile grants the whole run folder,
+  // `_driver/` included, and nothing on this path refuses the write either. A seat on this engine writing into
   // `_driver/` meets no boundary at all. `run-integrity.mjs` DETECTS drift across a turn and logs it,
   // which is a different thing from refusing the write and must not be read as this field being "some".
   writeBoundary: "none",
@@ -589,7 +637,7 @@ export const openaiAgentEngine = {
     // A home we were GIVEN is never deleted here — the stage that owns the session chain owns the
     // directory, or the next resume in that chain has nothing to resume from again.
     const ownHome = !providedHome;
-    try { codexHome = providedHome ?? mkdtempSync(join(tmpdir(), "codex-home-")); }
+    try { codexHome = providedHome ?? mkdtempSync(join(codexHomesRoot(), "turn-")); }
     catch (e) { return errResult(t0, e, resumeRef); }
     let authMaster = null, seeded = null;
     try {
@@ -614,8 +662,19 @@ export const openaiAgentEngine = {
       // shape of R5's `register-unit:incumbent-class` failure on 2026-08-12 (stage timeoutSec 1500,
       // tool dead at 300). The same `timeoutSec` also arms the child's hard wall below, which stays the
       // backstop if a tool consumes the lot.
+      //
+      // — the fence: with the sandbox on, the stage's commands read only the instruction trees, the run
+      // folder and the temp folders (codex-config.mjs, `fenceToml`). The same roots claude's file tools get.
+      //
+      // — what those commands inherit: none of the register and research keys the program holds for its
+      // tool servers, and not the Codex key (engine-env.mjs, `codexCommandWithheld`), with codex's shell
+      // snapshot off because it replays them (codex-config.mjs, `commandEnvToml`). With the sandbox on or
+      // off, since the bypass builds no fence and a command could otherwise print them.
+      const fence = codexSandboxBypassed() ? null
+        : { runDir, readRoots: [...(skillsGrantRoots?.length ? skillsGrantRoots : [skillsDir]), codexProgramRoot(codexBin())].filter(Boolean) };
       writeFileSync(join(codexHome, "config.toml"),
-        renderCodexConfigToml({ mcpConfig, allowedTools, developerInstructions: WRITE_DISCIPLINE, toolTimeoutSec: timeoutSec }));
+        renderCodexConfigToml({ mcpConfig, allowedTools, developerInstructions: WRITE_DISCIPLINE, toolTimeoutSec: timeoutSec, fence,
+          withheldFromCommands: codexCommandWithheld() }));
 
       const input = absolutizeSkillRefs(message, skillsDir, resolveSkill);
       const { args } = buildCodexArgs({ model, thinking, resumeRef, runDir });
@@ -625,8 +684,8 @@ export const openaiAgentEngine = {
       const ev = { threadId: null, usage: null, agentText: "", turnCompleted: false, turnFailed: null, streamError: null, model: null, mcpCalls: new Map() };
       const r = await runStreamingChild({
         bin: codexBin(), args, input, runDir,
-        // — the run dir, not a shared tmpdir. codex's workspace-write sandbox makes cwd a writable
-        // root, so this tightens the writable surface onto the run rather than widening it.
+        // — the run dir, not a shared tmpdir. codex makes cwd a workspace root, writable under the
+        // stage's profile, so this tightens the writable surface onto the run rather than widening it.
         cwd: resolveSpawnCwd({ cwd, runDir }),
         env, stallSec, timeoutSec,
         onStdoutLine: (line) => parseCodexEvent(line, ev),

@@ -47,6 +47,11 @@ Type=simple
 EnvironmentFile=%h/.env
 Environment=PATH=%h/.local/bin:%h/.npm-global/bin:/usr/local/bin:/usr/bin:/bin
 Environment=CLEAROTRON_NO_ENV_FILE=1
+# NOT THE SIGNING KEY. The file above is the whole install's configuration, so it holds the key that signs
+# every access token, and the one it replaces during a rotation. The portal and the doors mint and check
+# keys; this worker does neither, and it starts the AI program for every stage. systemd applies
+# UnsetEnvironment= last, after EnvironmentFile=, so neither name reaches this process or anything it starts.
+UnsetEnvironment=TRADEMARK_MCP_TOKEN_SECRET TRADEMARK_MCP_TOKEN_SECRET_PREVIOUS
 ExecStart=/usr/bin/node ${CLEAROTRON_CHECKOUT_DIR}/driver/runner.mjs --watch
 # ── REFRESH THE CAPABILITY PAGE'S CAPTURE AT EVERY START ─────────────────────────────────────────────
 # The capability page renders `pool/_state/clearance-flag-snapshot.json`, and until this line its only

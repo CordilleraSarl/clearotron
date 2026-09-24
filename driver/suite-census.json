@@ -1155,6 +1155,18 @@
           "skips": 0,
           "todos": 0
         },
+        "a-stage-program-starts-with-a-listed-environment.test.mjs": {
+          "tests": 11,
+          "asserts": 58,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-stage-reads-only-its-own-folders.test.mjs": {
+          "tests": 9,
+          "asserts": 31,
+          "skips": 0,
+          "todos": 0
+        },
         "a-stale-classification-names-the-rows-that-moved.test.mjs": {
           "tests": 6,
           "asserts": 24,
@@ -2195,7 +2207,7 @@
         },
         "deny-authority-write.test.mjs": {
           "tests": 17,
-          "asserts": 34,
+          "asserts": 35,
           "skips": 0,
           "todos": 0
         },
@@ -2590,8 +2602,8 @@
           "todos": 0
         },
         "engine-probe.test.mjs": {
-          "tests": 35,
-          "asserts": 172,
+          "tests": 41,
+          "asserts": 210,
           "skips": 0,
           "todos": 0
         },
@@ -2603,13 +2615,13 @@
         },
         "engine.anthropic.test.mjs": {
           "tests": 65,
-          "asserts": 245,
+          "asserts": 246,
           "skips": 0,
           "todos": 0
         },
         "engine.codex-config.test.mjs": {
-          "tests": 12,
-          "asserts": 34,
+          "tests": 20,
+          "asserts": 70,
           "skips": 0,
           "todos": 0
         },
@@ -2620,8 +2632,8 @@
           "todos": 0
         },
         "engine.fetch-server.test.mjs": {
-          "tests": 2,
-          "asserts": 4,
+          "tests": 3,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },
@@ -3035,7 +3047,7 @@
         },
         "instrumentation-house-rule.test.mjs": {
           "tests": 17,
-          "asserts": 113,
+          "asserts": 116,
           "skips": 0,
           "todos": 0
         },
@@ -3345,6 +3357,12 @@
           "skips": 4,
           "todos": 0
         },
+        "no-stage-is-offered-a-command-tool.test.mjs": {
+          "tests": 6,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
         "no-test-account-reaches-the-package.test.mjs": {
           "tests": 17,
           "asserts": 31,
@@ -3533,7 +3551,7 @@
         },
         "pipeline.anthropic.test.mjs": {
           "tests": 3,
-          "asserts": 78,
+          "asserts": 80,
           "skips": 0,
           "todos": 0
         },
@@ -3557,7 +3575,7 @@
         },
         "pipeline.openai.test.mjs": {
           "tests": 2,
-          "asserts": 52,
+          "asserts": 54,
           "skips": 0,
           "todos": 0
         },
@@ -5021,7 +5039,7 @@
         },
         "the-advice-fits-the-machine-it-is-printed-on.test.mjs": {
           "tests": 17,
-          "asserts": 67,
+          "asserts": 68,
           "skips": 0,
           "todos": 0
         },
@@ -5286,6 +5304,12 @@
         "the-family-tag-is-writable-and-sweeps-contains.test.mjs": {
           "tests": 4,
           "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-fetch-tool-reaches-public-addresses-only.test.mjs": {
+          "tests": 7,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
@@ -5838,6 +5862,12 @@
         "the-wider-families-wait-on-the-identical-question.test.mjs": {
           "tests": 13,
           "asserts": 49,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-worker-holds-no-signing-key.test.mjs": {
+          "tests": 6,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },

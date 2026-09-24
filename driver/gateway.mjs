@@ -21,7 +21,7 @@ import { DISPOSITIONS, POSITION_REQUIRED_DISPOSITIONS } from "./findings-model.m
 import { frozenSnapshot, describeDrift } from "./run-integrity.mjs";   // — the frozen judged-by set across a seat turn
 import { isCancelled, readCancel, RunCancelled } from "./cancel.mjs";
 import { anthropicAgentEngine } from "./engine/anthropic-agent.mjs";
-import { openaiAgentEngine } from "./engine/openai-agent.mjs";
+import { openaiAgentEngine, codexHomesRoot } from "./engine/openai-agent.mjs";
 import { resolveAuthMode } from "./engine/auth.mjs";
 // ABBREVIATED_VALUE_NOTE is no longer imported: it explained the "…" marker on a value the model
 // had to reproduce EXACTLY, and the only messages that rendered one were the connotation arms telling a
@@ -388,7 +388,7 @@ export function toolGauge(turn) {
     // really happened. An ARRAY is a measurement (`[]` = measured, nothing unmeasurable); null is "this
     // engine cannot report", the same distinction toolWaitByTool draws one line up. RECORDING ONLY:
     // toolWaitMs and the per-tool split are exactly what they were, because the kill clock reads them.
-    toolWaitUnmeasurable: Array.isArray(turn?.toolWaitUnmeasurable) ? [...turn.toolWaitUnmeasurable] : null,
+    toolWaitUnmeasurable: Array.isArray(turn?.toolWaitUnmeasurable) ? [...turn.toolWaitUnmeasurable] : null, ...toolCallCounts(turn),
   };
 }
 
@@ -788,7 +788,7 @@ export async function runStage(name, opts) {
   const engineForHome = selectEngine();
   let stageCodexHome = null;
   if (engineForHome?.name === "openai-agent") {
-    try { stageCodexHome = mkdtempSync(join(tmpdir(), `codex-stage-${String(name).replace(/[^a-z0-9-]/gi, "_")}-`)); }
+    try { stageCodexHome = mkdtempSync(join(codexHomesRoot(), `stage-${String(name).replace(/[^a-z0-9-]/gi, "_")}-`)); }
     catch { stageCodexHome = null; }   // fall back to the engine's own per-turn home rather than fail a stage
   }
   try {
@@ -1071,7 +1071,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // written to disk before the comparison, so the thing being watched cannot reach it. See
     // run-integrity.mjs for why it is not a manifest file and why the append-only journals are excluded.
     const integrityBefore = frozenSnapshot(runDir);
-    const turn = await engine.runTurn({ agent, sessionKey: key, message: effMessage, model, thinking, timeoutSec: effTimeout, resumeRef: warm ? lastSessionRef : undefined, codexHome: stageCodexHome, mcpConfig: gatherMcpConfig, allowedTools: gatherAllowedTools, seatWrites: gatherSeatWrites, skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
+    const turn = await engine.runTurn({ agent, sessionKey: key, message: effMessage, grantDispatch: base, model, thinking, timeoutSec: effTimeout, resumeRef: warm ? lastSessionRef : undefined, codexHome: stageCodexHome, mcpConfig: gatherMcpConfig, allowedTools: gatherAllowedTools, seatWrites: gatherSeatWrites, skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
       progressFiles: files });   // the no-progress watchdog's artifact-advance signal (anthropic-agent; other adapters ignore it)
     const settledAt = Date.now();   //: zero point of the wall-rescue quiescence clock, read before anything else
     // LOG-ONLY. Nothing here can fail a turn: the claim that the frozen set does not change across a seat
@@ -3561,3 +3561,17 @@ export function warmPatchMessage(lastFail, expectFile, { supplementalLane = fals
 //
 // Move it to the top the day those citations name symbols instead of numbers — which is what
 // CONTRIBUTING.md asks for, and what makes them checkable at all.
+
+/**
+ * THE COUNTS A TEST ROUND READS PER STAGE, on both engines, spread into `toolGauge`. `toolCallsRefused`:
+ * calls the program refused (Claude's own denials; Codex's tool-server calls refused before reaching their
+ * server). `commandToolCalls`: calls to a tool that runs a command, which no Claude stage is offered, so
+ * zero is the expected reading; Codex keeps its shell and reports null. `mcpToolCalls`: the tool-server
+ * calls Codex completed, its only count of calls made, since its `toolCalls` stays null. Null, as in
+ * `toolGauge`, is "this engine does not report", never zero. RECORDING ONLY. It sits at the end of this
+ * file so that adding it moved no line another file cites.
+ */
+function toolCallCounts(turn) {
+  const n = (v) => (Number.isFinite(v) && v >= 0 ? v : null);
+  return { toolCallsRefused: n(turn?.toolCallsRefused), commandToolCalls: n(turn?.commandToolCalls), mcpToolCalls: n(turn?.mcpToolCalls) };
+}

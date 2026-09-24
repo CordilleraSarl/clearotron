@@ -25,11 +25,11 @@ test("auth toggle: subscription (default) strips ANTHROPIC_API_KEY; api-key mode
 });
 
 test("CLAUDE_CODE_OAUTH_TOKEN RIDES THROUGH under subscription — the headless sign-in's whole mechanism", () => {
-  // The setup-token route only works because spawnEnv is a spread that strips exactly one thing: the
-  // token INSTALL.md's headless sign-in produces has to reach the claude subprocess from the env file,
-  // and until this arm nothing declared that. A future spawnEnv that allowlists, or strips OAuth vars
-  // alongside the API key, silently kills every headless server's subscription lane — the failure
-  // arrives ninety minutes into a clearance wearing a model fault's shape.
+  // The setup-token route only works because the token INSTALL.md's headless sign-in produces reaches the
+  // claude subprocess from the env file, and until this arm nothing declared that. spawnEnv is now a list
+  // (engine-env.mjs), and the token rides it in the vendor's `CLAUDE_*` namespace. A list that dropped it,
+  // or a spawnEnv that strips OAuth vars alongside the API key, silently kills every headless server's
+  // subscription lane — the failure arrives ninety minutes into a clearance wearing a model fault's shape.
   const sub = spawnEnv({ CLAUDE_CODE_OAUTH_TOKEN: "tok-x", ANTHROPIC_API_KEY: "sk-x" });
   assert.equal(sub.CLAUDE_CODE_OAUTH_TOKEN, "tok-x", "subscription keeps the OAuth token while stripping the key");
   assert.equal(sub.ANTHROPIC_API_KEY, undefined);
@@ -176,13 +176,17 @@ test("buildClaudeArgs: print + stream-json + model/effort/permission, and the op
   assert.equal(b[b.indexOf("--allowedTools") + 1], "mcp__a__b");
 });
 
-test("buildClaudeArgs: never emits --settings (fast mode REMOVED — it ~2.5x'd subscription usage, tripped the 5h cap 2026-06-17)", () => {
+test("buildClaudeArgs: --settings never carries fast mode (REMOVED — it ~2.5x'd subscription usage, tripped the 5h cap 2026-06-17)", () => {
   // Full revert: no stage sets fastMode and the engine no longer threads it. A stray/legacy fastMode arg must
-  // NOT resurrect --settings (the flag is gone from the signature; this guards against silent reintroduction).
-  const { args: a } = buildClaudeArgs({ message: "hi", model: "opus", thinking: "high", fastMode: true });
-  assert.ok(!a.includes("--settings"), "fast mode removed -> no --settings even if a fastMode arg is passed");
-  const { args: b } = buildClaudeArgs({ message: "hi", model: "opus", thinking: "high" });
-  assert.ok(!b.includes("--settings"), "no --settings on a plain opus stage");
+  // NOT resurrect it (the flag is gone from the signature; this guards against silent reintroduction). Every
+  // turn now carries one --settings, the read fence (READ_FENCE), so the guard reads what it carries.
+  for (const extra of [{ fastMode: true }, {}]) {
+    const { args } = buildClaudeArgs({ message: "hi", model: "opus", thinking: "high", ...extra });
+    const at = args.indexOf("--settings");
+    assert.ok(at > 0 && args.indexOf("--settings", at + 1) < 0, "one --settings, the read fence");
+    assert.ok(!/fastMode/i.test(args[at + 1]), `fast mode came back: ${args[at + 1]}`);
+    assert.deepEqual(JSON.parse(args[at + 1]), { permissions: { blockReadsOutsideWorkingDirectories: true } }, "a plain stage's settings are the fence alone");
+  }
 });
 
 test("rate-limit / session-cap: rejected rate_limit_event + 429 result -> signals.rateLimited + resetsAt (ISO of epoch-seconds)", async () => {

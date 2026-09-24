@@ -1,6 +1,6 @@
 # Extends the default ruleset — this file only ever ADDS allowlist entries, never removes rules.
-# CI runs `gitleaks detect --source=/repo --no-git` (ci.yml); gitleaks picks this file up from the
-# scan root automatically.
+# CI runs `gitleaks dir` over the tree and over the built bundle, passing this file with `--config`
+# (ci.yml).
 [extend]
 useDefault = true
 
