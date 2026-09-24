@@ -17,7 +17,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
 import { pickingExits, webExits, notesExits, knockoutCarry, knockoutExits, exitsForLog } from "../driver/hand-off-exits.mjs";
-import { normalizeUrl } from "../driver/verify-knockout.mjs";
+import { normalizeUrl, registerRecordIdsFor } from "../driver/verify-knockout.mjs";
 import { kebab } from "../driver/search-policy.mjs";
 import { readDeclinations } from "../driver/declination-tool.mjs";
 
@@ -43,7 +43,7 @@ if (koFindings && Array.isArray(koFindings.marks)) {
     derived = true;
     carry = knockoutCarry(koFindings.marks, (name) => {
       try { return readFileSync(join(runDir, "research", `${kebab(name)}.md`), "utf8"); } catch { return null; }
-    });
+    }, (name) => [...registerRecordIdsFor(runDir, name)]);
   }
   exits = { knockout: knockoutExits(carry) };
 } else {
@@ -62,7 +62,8 @@ if (needle) {
   explained = [];
   for (const [handOff, e] of Object.entries(exits)) {
     for (const r of e.rows ?? []) {
-      if ((r.uri && String(r.uri).toLowerCase() === n) || (page && r.url && normalizeUrl(r.url) === page)) explained.push({ handOff, ...r });
+      if ((r.uri && String(r.uri).toLowerCase() === n) || (r.recordId && String(r.recordId).toLowerCase() === n)
+        || (page && r.url && normalizeUrl(r.url) === page)) explained.push({ handOff, ...r });
     }
   }
 }
@@ -78,7 +79,7 @@ if (asJson) {
   }
   if (explained) {
     console.log(explained.length
-      ? explained.map((x) => `  EXIT at ${x.handOff}: ${x.uri ?? x.url}`).join("\n")
+      ? explained.map((x) => `  EXIT at ${x.handOff}: ${x.uri ?? x.recordId ?? x.url}`).join("\n")
       : `  ${needle}: not among the exits with no ground`);
   }
 }

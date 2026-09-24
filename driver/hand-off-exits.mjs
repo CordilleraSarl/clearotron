@@ -14,11 +14,12 @@
 //   web       commonlaw-carry.json — a grid row that stopped at findings with no reason (`absent`, the
 //             `findings:silent-drop` class). The jx zh slice's carry counts beside the main one.
 //   notes     common-law-findings.md against the delivered findings — a page the web notes surfaced that
-//             no delivered finding cites. The carry above ends where the notes begin, so a page the notes
-//             called a conflict and the findings then left out was invisible to it.
-//   knockout  knockout-carry.json — a page a mark's research payload named that no finding cited and no
-//             ground covers. The trace is derived here, from the payload and the findings, because the
-//             lane wrote none before.
+//             no delivered finding cites and synthesis did not decline. The carry above ends where the notes
+//             begin, so a page the notes called a conflict and the findings then left out was invisible to it.
+//   knockout  knockout-carry.json — a page a mark's research payload named, or a filing the mark was
+//             handed, that no finding cites or weighs, no read or absence covers, and no set-aside ground
+//             covers. The trace is derived here, from the payload, the filings and the findings, because
+//             the lane wrote none before.
 //
 // IT REPORTS AND NEVER GATES. Nothing here changes what is searched, carried or delivered. A count of
 // exits is a fact about the run for the reviewing lawyer and for the replay, not a threshold.
@@ -28,7 +29,7 @@
 import { normalizeUrl, knockoutCitedUrls } from "./verify-knockout.mjs";
 import { parseFindingsSurfaces } from "./commonlaw-carry.mjs";
 
-export const KNOCKOUT_CARRY_SCHEMA_VERSION = 1;
+export const KNOCKOUT_CARRY_SCHEMA_VERSION = 2;   // 2: filings are traced beside pages, and a ground in setAside is a stated exit
 
 const notComputable = (reason) => ({ computable: false, reason, exits: 0, rows: [] });
 
@@ -99,39 +100,63 @@ export function payloadPages(payload) {
 }
 
 /**
- * The knockout's notes-to-findings trace: one row per page each mark's research payload named, saying
- * whether a finding cited it. A page a scoped absence names as its source was used too, so it counts as
- * reached. `payloadFor(name)` returns the mark's payload text, or null when the mark has none (a degraded
- * mark named no page, so it contributes no row and is listed by name). PURE.
+ * The knockout's notes-to-findings trace: one row per page each mark's research payload named, and one
+ * per filing the mark was handed, saying how each left. A page left cited by a finding or by a scoped
+ * absence's source, or set aside with a ground in the mark's `setAside`; a filing left weighed by a
+ * finding, read in `registerReads`, or set aside the same way. Anything else left with no ground.
+ * `payloadFor(name)` returns the mark's payload text, or null when it has none (a degraded mark named no
+ * page, so it contributes no page row and is listed by name); `filingsFor(name)` returns the record ids
+ * the run holds for the mark. A set-aside row naming a page or filing the mark was not handed matches
+ * nothing and grounds nothing. PURE.
  */
-export function knockoutCarry(marks = [], payloadFor = () => null) {
+export function knockoutCarry(marks = [], payloadFor = () => null, filingsFor = () => []) {
   const rows = [];
   const withoutPayload = [];
   for (const m of Array.isArray(marks) ? marks : []) {
+    const findings = Array.isArray(m?.findings) ? m.findings : [];
+    const setAside = Array.isArray(m?.setAside) ? m.setAside : [];
+    const grounded = (r) => typeof r?.ground === "string" && r.ground.trim().length > 0;
+    const setAsidePages = new Set(setAside.filter(grounded).map((r) => normalizeUrl(r?.page)).filter(Boolean));
+    const setAsideFilings = new Set(setAside.filter(grounded).map((r) => String(r?.recordId ?? "").trim()).filter(Boolean));
     const payload = payloadFor(m?.name);
-    if (payload == null) { withoutPayload.push(m?.name ?? null); continue; }
-    const cited = new Set([...(Array.isArray(m?.findings) ? m.findings : []).flatMap((f) => knockoutCitedUrls(f)),
-      ...(Array.isArray(m?.negatives) ? m.negatives : []).flatMap((n) => payloadPages(n?.source).map((x) => x.url))]
-      .map((u) => normalizeUrl(u)).filter(Boolean));
-    for (const { page, url } of payloadPages(payload)) {
-      rows.push(cited.has(page)
-        ? { mark: m.name, page, url, reach: "finding", stopped_at: null, reason: null, reason_source: null }
-        : { mark: m.name, page, url, reach: "named", stopped_at: "findings", reason: "notes:silent-drop", reason_source: "absent" });
+    if (payload == null) withoutPayload.push(m?.name ?? null);
+    else {
+      const cited = new Set([...findings.flatMap((f) => knockoutCitedUrls(f)),
+        ...(Array.isArray(m?.negatives) ? m.negatives : []).flatMap((n) => payloadPages(n?.source).map((x) => x.url))]
+        .map((u) => normalizeUrl(u)).filter(Boolean));
+      for (const { page, url } of payloadPages(payload)) {
+        rows.push(cited.has(page)
+          ? { kind: "page", mark: m.name, page, url, reach: "finding", stopped_at: null, reason: null, reason_source: null }
+          : setAsidePages.has(page)
+            ? { kind: "page", mark: m.name, page, url, reach: "set-aside", stopped_at: "findings", reason: "notes:set-aside", reason_source: "step-stated" }
+            : { kind: "page", mark: m.name, page, url, reach: "named", stopped_at: "findings", reason: "notes:silent-drop", reason_source: "absent" });
+      }
+    }
+    const weighed = new Set([...findings.flatMap((f) => (Array.isArray(f?.weighedFilings) ? f.weighedFilings : [])),
+      ...(Array.isArray(m?.registerReads) ? m.registerReads : []).map((r) => r?.recordId)].map((x) => String(x ?? "").trim()).filter(Boolean));
+    for (const recordId of filingsFor(m?.name) ?? []) {
+      rows.push(weighed.has(recordId)
+        ? { kind: "filing", mark: m.name, recordId, reach: "finding", stopped_at: null, reason: null, reason_source: null }
+        : setAsideFilings.has(recordId)
+          ? { kind: "filing", mark: m.name, recordId, reach: "set-aside", stopped_at: "findings", reason: "filings:set-aside", reason_source: "step-stated" }
+          : { kind: "filing", mark: m.name, recordId, reach: "handed", stopped_at: "findings", reason: "filings:silent-drop", reason_source: "absent" });
     }
   }
-  const finding = rows.filter((r) => r.reach === "finding").length;
+  const count = (kind, reach) => rows.filter((r) => r.kind === kind && (!reach || r.reach === reach)).length;
   return { schema_version: KNOCKOUT_CARRY_SCHEMA_VERSION, rows,
-    totals: { marks: (marks ?? []).length, pages: rows.length, finding, unreasoned: rows.length - finding },
+    totals: { marks: (marks ?? []).length, pages: count("page"), filings: count("filing"),
+      finding: rows.filter((r) => r.reach === "finding").length, set_aside: rows.filter((r) => r.reach === "set-aside").length,
+      unreasoned: rows.filter((r) => r.reason_source === "absent").length },
     marks_without_payload: withoutPayload };
 }
 
-/** Pages that left the knockout's notes with no ground. PURE. */
+/** Pages and filings that left the knockout's assessment with no ground. PURE. */
 export function knockoutExits(carry) {
   if (!carry || !Array.isArray(carry.rows)) {
     return notComputable("no knockout carry trace — nothing records how the research payload's pages left for the findings");
   }
   const rows = carry.rows.filter((r) => r?.reason_source === "absent")
-    .map((r) => ({ mark: r.mark ?? null, url: r.url ?? null }));
+    .map((r) => (r.kind === "filing" ? { mark: r.mark ?? null, recordId: r.recordId ?? null } : { mark: r.mark ?? null, url: r.url ?? null }));
   return { computable: true, reason: null, exits: rows.length, rows };
 }
 

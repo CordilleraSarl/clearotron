@@ -68,7 +68,7 @@ test("the knockout trace follows every page a payload named to a finding, or cou
     [["example.com/near", "finding"], ["apps.example.org/app/7", "named"], ["shop.example.net/s", "finding"]],
     "a page a scoped absence names as its source was used, not dropped");
   assert.deepEqual(carry.marks_without_payload, ["TWO"], "a mark with no payload named no page, and is listed");
-  assert.deepEqual(carry.totals, { marks: 2, pages: 3, finding: 2, unreasoned: 1 });
+  assert.deepEqual(carry.totals, { marks: 2, pages: 3, filings: 0, finding: 2, set_aside: 0, unreasoned: 1 });
   const e = knockoutExits(carry);
   assert.equal(e.exits, 1);
   assert.deepEqual(e.rows, [{ mark: "ONE", url: "https://apps.example.org/app/7" }]);
@@ -120,4 +120,33 @@ test("both pipelines call the check where their traces are written, and log it",
   assert.match(knockout, /event: "reasonless-exits", lane: "knockout"/);
   assert.ok(knockout.indexOf("knockoutCarry(merged.marks") > knockout.indexOf("merged = await knockoutReviewingPass("),
     "the knockout trace describes the record before its reviewing pass, not the one that ships");
+});
+
+test("a knockout page or filing set aside with a ground is a stated exit; a filing nobody weighed, read or set aside is not", () => {
+  const payload = "- **Near** https://apps.example.org/app/7 and https://dict.example/word/near.\n";
+  const marks = [{
+    name: "ONE",
+    findings: [{ ordinal: 1, name: "Near", evidence: ["https://apps.example.org/app/7"], weighedFilings: ["R-1"] }],
+    registerReads: [{ recordId: "R-2", read: "a stationery registration; nothing electronic" }],
+    setAside: [
+      { page: "https://dict.example/word/near", ground: "a dictionary entry for the word's meaning, not a use" },
+      { recordId: "R-3", ground: "class 16 paper goods only" },
+      { recordId: "R-9", ground: "a filing this mark was never handed" },
+      { recordId: "R-4", ground: "   " },
+    ],
+  }];
+  const carry = knockoutCarry(marks, () => payload, () => ["R-1", "R-2", "R-3", "R-4"]);
+  assert.deepEqual(carry.rows.map((r) => [r.kind, r.page ?? r.recordId, r.reach, r.reason_source]), [
+    ["page", "apps.example.org/app/7", "finding", null],
+    ["page", "dict.example/word/near", "set-aside", "step-stated"],
+    ["filing", "R-1", "finding", null],
+    ["filing", "R-2", "finding", null],
+    ["filing", "R-3", "set-aside", "step-stated"],
+    ["filing", "R-4", "handed", "absent"],
+  ], "a blank ground grounds nothing, and a set-aside row for a filing not handed matches nothing");
+  assert.deepEqual(carry.totals, { marks: 1, pages: 2, filings: 4, finding: 3, set_aside: 2, unreasoned: 1 });
+  assert.deepEqual(knockoutExits(carry).rows, [{ mark: "ONE", recordId: "R-4" }]);
+  const noPayload = knockoutCarry([{ name: "TWO", findings: [] }], () => null, () => ["R-7"]);
+  assert.deepEqual(noPayload.rows.map((r) => [r.kind, r.recordId, r.reach]), [["filing", "R-7", "handed"]],
+    "a mark with no research still owes its filings a ground");
 });

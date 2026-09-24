@@ -147,6 +147,9 @@ const DECLARED = Object.freeze({
     // conflict. Rows of { recordId, read }; the recordId is JOINED against the run's own register record
     // store, so it is a fact and not an echo.
     "registerReads",
+    // — what the rater read and did not carry, each with its ground: an address from the mark's page
+    // list, or a filing it was handed. Joined by the hand-off count, which is what reads it.
+    "setAside",
   ],
   // A finding's closed keys are the VALIDATOR'S OWN LIST, imported rather than restated. This allowlist
   // and that list were two spellings of one closed set, and they disagreed: this one allowed
@@ -163,6 +166,7 @@ const DECLARED = Object.freeze({
   // arrive banded and land unbanded with nothing saying why.
   "marks.registerReads": ["recordId", "read", "band"],
   "marks.negatives": ["term", "source", "note"],
+  "marks.setAside": ["page", "recordId", "ground"],
 });
 
 /**

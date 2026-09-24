@@ -138,7 +138,7 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
   const noteRows = [];
   for (const m of findings.marks ?? []) {
     for (const n of m.purpleNotes ?? []) noteRows.push({ 'Mark': m.name, 'Type': 'Internal note', 'Note': n });
-    if (m.registerEstimate) noteRows.push({ 'Mark': m.name, 'Type': 'Register estimate (model)', 'Note': m.registerEstimate });
+    if (m.registerEstimate) noteRows.push({ 'Mark': m.name, 'Type': 'Register estimate (model)', 'Note': m.registerEstimate }); for (const s of m.setAside ?? []) if (String(s?.ground ?? '').trim()) noteRows.push({ 'Mark': m.name, 'Type': 'Set aside', 'Note': setAsideNote(s, m.name, registerRecords) });
   }
   if (noteRows.length) addSheet(wb, 'Working Notes', ['Mark', 'Type', 'Note'], noteRows);
 
@@ -790,3 +790,19 @@ export function knockoutDocumentRoutes(reports, { auditFile = null } = {}) {
 // line the rest of the tree cites by number.
 import { addressListedFilings, reasonCellFor } from './office-record-links.mjs';
 import { declaredRecordOrigins } from '../record-origins.mjs';
+
+/**
+ * One set-aside row as the Working Notes sheet prints it: what was set aside, then the rater's ground. A
+ * page is its address; a filing is its trademark and owner from the run's own record store, or its id
+ * where the store does not hold it. Set-aside grounds live in the audit workbook and never in the report.
+ */
+export function setAsideNote(row, markName, registerRecords = null) {
+  const ground = String(row?.ground ?? '').trim();
+  if (row?.page) return `${String(row.page).trim()}: ${ground}`;
+  const id = String(row?.recordId ?? '').trim();
+  const want = String(markName ?? '').trim().toLowerCase();
+  const entry = (registerRecords?.marks ?? []).find((e) => String(e?.name ?? '').trim().toLowerCase() === want);
+  const rec = (entry?.records ?? []).find((r) => String(r?.recordId ?? '').trim() === id);
+  const label = rec ? [rec.mark, rec.owner].filter((v) => typeof v === 'string' && v.trim()).join(' — ') : '';
+  return `${label || id}: ${ground}`;
+}

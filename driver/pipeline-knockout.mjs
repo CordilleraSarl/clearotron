@@ -55,7 +55,7 @@ import { capabilitiesFor } from "./register-capabilities.mjs";
 import { registerUnavailableOffices } from "./register-unreachable.mjs";
 import { runRecordLogPath } from "../providers/_shared/ledger-path.mjs";   // — this run's record log
 import { beginAnswerMemory, endAnswerMemory } from "../providers/_shared/answer-memory.mjs";
-import { validators as koValidators, validateMergedFindings, worstBand, registerSurfacedFilings, raterCaveats, SURVIVOR_BOUNDARY_RE } from "./verify-knockout.mjs";
+import { validators as koValidators, validateMergedFindings, worstBand, registerSurfacedFilings, raterCaveats, SURVIVOR_BOUNDARY_RE, registerRecordIdsFor } from "./verify-knockout.mjs";
 import { reviewAbout, reviewEvidence, reviewEvidenceLines, applyKnockoutReview, knockoutReviewFile } from "./knockout-review-record.mjs";
 import { stripNextStepSections } from "./knockout-next-step.mjs";
 import { publishKnockout, composeKnockoutEmail } from "./publish/knockout.mjs";
@@ -1048,7 +1048,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
     try {
       const carry = knockoutCarry(merged.marks, (name) => {
         try { return readFileSync(K.research(kebab(name)), "utf8"); } catch { return null; }
-      });
+      }, (name) => [...registerRecordIdsFor(run.runDir, name)]);
       atomicWrite(K.knockoutCarry, JSON.stringify(carry, null, 2) + "\n");
       runLog(run.runDir, { event: "reasonless-exits", lane: "knockout", ...exitsForLog({ knockout: knockoutExits(carry) }) });
     } catch { /* never mask a delivery */ }

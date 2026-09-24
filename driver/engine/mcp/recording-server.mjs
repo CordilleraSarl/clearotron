@@ -1201,6 +1201,19 @@ serve({
                   },
                 },
               },
+              setAside: {
+                type: "array",
+                description: "Rows of { page, ground } or { recordId, ground }: each address in this mark's page list, and each filing you were given, that you did not carry into a finding, an absence or a read. Goes to the audit workbook, never the report.",
+                items: {
+                  type: "object", additionalProperties: false,
+                  required: ["ground"],
+                  properties: {
+                    page: { type: "string", description: "An address copied from this mark's page list." },
+                    recordId: { type: "string", description: "Copied VERBATIM from the filings you were given." },
+                    ground: { type: "string", description: "Why THIS page or filing does not earn a finding, in one line." },
+                  },
+                },
+              },
               classesSearched: { type: "array", items: { type: "integer", minimum: 1, maximum: 45 } },
               classesDriving: { type: "array", items: { type: "integer", minimum: 1, maximum: 45 }, description: "Mandatory at a material band — class-specific ratings." },
               beltAndBraces: { type: "array", items: { type: "integer", minimum: 1, maximum: 45 } },
