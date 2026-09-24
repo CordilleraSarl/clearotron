@@ -41,12 +41,12 @@ function world(runs) {
     const dir = join(workspaceRoot, `workspace-${runId}`, "studio", "clearance-search", "runs", runId);
     mkdirSync(driverDir(dir), { recursive: true });
     writeFileSync(join(dir, "status.json"), JSON.stringify({ runId, state, markName: runId.toUpperCase(), slug: runId }));
-    writeFileSync(driverDir(dir, "profile.json"), JSON.stringify({ profileKey: "aurora" }));
+    writeFileSync(driverDir(dir, "profile.json"), JSON.stringify({ profileKey: "demo-brand-owner" }));
   }
   const audits = [];
   const service = makePortalService({ poolRoot, workspaceRoot, secret: "s",
     // STAFF is a person with access to everything — the /portal/admin gate the retire route sits behind.
-    grants: () => ({ tenants: { aurora: { accounts: ["aurora"], users: {} } },
+    grants: () => ({ tenants: { "demo-brand-owner": { accounts: ["demo-brand-owner"], users: {} } },
       people: { "k@staff.example": { run: true, manage: true, everything: true } } }),
     audit: (row) => audits.push(row) });
   return { poolRoot, workspaceRoot, service, audits };
@@ -61,7 +61,7 @@ test("arm 1 — a run that was stopped resolves, so Retire answers instead of re
   const { poolRoot, workspaceRoot, service } = world({ stopped: "cancelled", died: "failed", alive: "running" });
   // The premise the defect turned on: the LIST can see it and the pool cannot.
   assert.deepEqual(await listed(service), ["alive", "died", "stopped"]);
-  assert.equal(resolveRunAccount({ poolRoot, workspaceRoot, runId: "stopped" })?.account, "aurora",
+  assert.equal(resolveRunAccount({ poolRoot, workspaceRoot, runId: "stopped" })?.account, "demo-brand-owner",
     "the resolver cannot see a run that never published, which is the whole defect");
 
   const r = await service.route("POST", "/portal/admin/retired", STAFF, { runIds: ["stopped"] }, {});
@@ -98,7 +98,7 @@ test("arm 4 — an id no surface lists is still refused, and the tenancy rule is
   assert.equal(r.json.error, "unknown run");
   // The account still comes from the RUN, never from the body — a body-supplied owner is a
   // body-supplied tenancy claim, and widening the resolver must not have widened that.
-  assert.equal(resolveRunAccount({ poolRoot, workspaceRoot, runId: "stopped" })?.account, "aurora");
+  assert.equal(resolveRunAccount({ poolRoot, workspaceRoot, runId: "stopped" })?.account, "demo-brand-owner");
 });
 
 test("arm 5 — a refusal on a state-changing route leaves a line, with the server's own reason", async () => {
@@ -127,7 +127,7 @@ test("arm 5 — a refusal on a state-changing route leaves a line, with the serv
     ["POST", "/portal/api/run/plan"],           // prices a request, changes nothing
     ["POST", "/portal/login"],                  // the credential-carrying doors stay outside, as before
     ["POST", "/portal/logout"],
-    ["POST", "/portal/report/tmp1-aurora/"],
+    ["POST", "/portal/report/tmp1-demo-brand-owner/"],
     ["POST", "/portal/apix/ack"],               // prefix, not substring
     ["POST", ""],
     ["POST", undefined],

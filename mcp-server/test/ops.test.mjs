@@ -48,17 +48,17 @@ test("start_run: enqueues a valid job into the agent's queue", () => {
 });
 
 test("start_run: passes a spec-62 projectKey through to the queued job (real overlay resolves ⇒ run)", () => {
-  const r = startRun({ markName: "NOVAWING", forwarder: "requester", classes: [9, 28, 41], profileKey: "aurora", projectKey: "console-ecosystem" });
+  const r = startRun({ markName: "NOVAWING", forwarder: "requester", classes: [9, 28, 41], profileKey: "demo-brand-owner", projectKey: "japan-and-korea-app-launch" });
   assert.equal(r.ok, true);
   assert.equal(r.classify, "run", "a real project under its customer resolves — no clarify");
   const job = JSON.parse(readFileSync(r.queuePath, "utf8"));
-  assert.equal(job.profileKey, "aurora");
-  assert.equal(job.projectKey, "console-ecosystem", "projectKey survives into the queue file the runner drains");
+  assert.equal(job.profileKey, "demo-brand-owner");
+  assert.equal(job.projectKey, "japan-and-korea-app-launch", "projectKey survives into the queue file the runner drains");
 });
 
 test("start_run: an unknown projectKey under a real customer is rejected at the boundary (clarify, no queue write)", () => {
   assert.throws(
-    () => startRun({ markName: "NOVAWING", forwarder: "requester", classes: [9], profileKey: "aurora", projectKey: "no-such-project" }),
+    () => startRun({ markName: "NOVAWING", forwarder: "requester", classes: [9], profileKey: "demo-brand-owner", projectKey: "no-such-project" }),
     /no known project under this customer/,
     "the D4.1 clarify-gate fires before any spend — a typo'd/unscoped project never silently drops to the customer profile",
   );
@@ -66,7 +66,7 @@ test("start_run: an unknown projectKey under a real customer is rejected at the 
 
 test("start_run: full \u00a7B3 intake-fidelity passthrough (spec-62 projectKey, posture fields, flags)", () => {
   const r = startRun({
-    markName: "PARITY", forwarder: "jordan", classes: [9], profileKey: "aurora", projectKey: "console-ecosystem",
+    markName: "PARITY", forwarder: "jordan", classes: [9], profileKey: "demo-brand-owner", projectKey: "japan-and-korea-app-launch",
     deliverableSpec: "excel only", commercialFlexibility: "locked", priorUse: "in use since 2020",
     campaignShape: "flavour sub-brand under the house mark; seasonal, one quarter",
     deadline: "2026-08-01T12:00:00Z", customerUnknown: true, dupOverride: true, forwarderDomain: "firm.example",
@@ -74,7 +74,7 @@ test("start_run: full \u00a7B3 intake-fidelity passthrough (spec-62 projectKey, 
   });
   assert.equal(r.ok, true);
   const job = JSON.parse(readFileSync(r.queuePath, "utf8"));
-  assert.equal(job.projectKey, "console-ecosystem");
+  assert.equal(job.projectKey, "japan-and-korea-app-launch");
   assert.equal(job.deliverableSpec, "excel only");
   assert.equal(job.commercialFlexibility, "locked");
   assert.equal(job.priorUse, "in use since 2020");
@@ -420,9 +420,9 @@ test("start_run stamps the VERIFIED principal (scope.sub) as enqueuedBy; no scop
 });
 
 test("stop_run (queue-id form): scoped sessions get 'not-found' for foreign jobs (existence never leaks); granted dequeues; full-grant unrestricted", async () => {
-  const mine = startRun({ markName: "MINE", forwarder: "req", classes: [9], profileKey: "aurora" });
+  const mine = startRun({ markName: "MINE", forwarder: "req", classes: [9], profileKey: "demo-brand-owner" });
   const foreign = startRun({ markName: "THEIRS", forwarder: "req", classes: [9], profileKey: "zephyr" });
-  const scoped = { kind: "ops", sub: "portal-poc", accounts: ["aurora"] };
+  const scoped = { kind: "ops", sub: "portal-poc", accounts: ["demo-brand-owner"] };
   const denied = await stopRun({ id: foreign.id }, { scope: scoped });
   assert.equal(denied.action, "not-found", "a foreign queued job answers EXACTLY like a nonexistent one (review 2026-07-18: the old deny named the owning account)");
   assert.ok(existsSync(foreign.queuePath), "the foreign job survives the probe untouched");
@@ -449,7 +449,7 @@ test("stop_run (queue-id form): scoped sessions get 'not-found' for foreign jobs
 // Driven through the door rather than against the helper, and read out of the QUEUE FILE, because what
 // matters is the account the runner is handed — not what the door returned to the caller.
 test("start_run: an accounts-scoped session whose access covers the neutral profile may omit profileKey — the job goes out TAGGED generic", () => {
-  const holdsGeneric = { kind: "ops", sub: "connector", accounts: ["aurora", "generic"] };
+  const holdsGeneric = { kind: "ops", sub: "connector", accounts: ["demo-brand-owner", "generic"] };
   const r = startRun({ markName: "NEWCLIENTA", forwarder: "req", classes: [9] }, { scope: holdsGeneric });
   assert.equal(r.ok, true, JSON.stringify(r));
   const job = JSON.parse(readFileSync(r.queuePath, "utf8"));
@@ -458,13 +458,13 @@ test("start_run: an accounts-scoped session whose access covers the neutral prof
 
   // CONTROL, and it is the half that proves the arm is measuring the grant rather than the omission: the
   // same call on a session that does NOT hold the neutral profile is still refused.
-  const noGeneric = { kind: "ops", sub: "connector", accounts: ["aurora"] };
+  const noGeneric = { kind: "ops", sub: "connector", accounts: ["demo-brand-owner"] };
   assert.throws(() => startRun({ markName: "NEWCLIENTB", forwarder: "req", classes: [9] }, { scope: noGeneric }),
     /portal/, "a refusal with no next step in it is what stopped the search this arm is named for");
 
   // And naming a key the session does not hold is untouched by any of it — that gate is the face's.
-  const named = startRun({ markName: "NEWCLIENTC", forwarder: "req", classes: [9], profileKey: "aurora" }, { scope: holdsGeneric });
-  assert.equal(JSON.parse(readFileSync(named.queuePath, "utf8")).profileKey, "aurora",
+  const named = startRun({ markName: "NEWCLIENTC", forwarder: "req", classes: [9], profileKey: "demo-brand-owner" }, { scope: holdsGeneric });
+  assert.equal(JSON.parse(readFileSync(named.queuePath, "utf8")).profileKey, "demo-brand-owner",
     "an explicitly named account is never rewritten to the neutral profile");
 });
 

@@ -443,7 +443,7 @@ test("units whose environment cannot be read withhold the verdict rather than gu
 //   ✓ the settings surface serves the same store as the runs (…/driver/profiles)
 //
 // Every line honest about its own source and none of them saying what it was. The deployment served
-// zephyr, aurora and generic throughout. The last `✓` endorsed the wrong half.
+// zephyr, demo-brand-owner and generic throughout. The last `✓` endorsed the wrong half.
 
 function hostedHomeWith(envLines, extraDirs = []) {
   const home = installedHome("");

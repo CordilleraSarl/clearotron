@@ -10,7 +10,7 @@ import { makeUpstream, STORE_REFUSAL_FOR_MANAGERS, STORE_FAULT_FOR_MANAGERS } fr
 import { makePrincipal, mayManage, seesEverything } from "../portal-access.mjs";
 
 const GRANTS = {
-  tenants: { celta: { accounts: ["aurora"], users: { "boss@celta.example": "*" } } },
+  tenants: { celta: { accounts: ["demo-brand-owner"], users: { "boss@celta.example": "*" } } },
   people: {
     "boss@celta.example": { run: true, manage: true },
     "staff@example-firm.com": { run: true, manage: true, everything: true },

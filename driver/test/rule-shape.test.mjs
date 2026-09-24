@@ -24,8 +24,8 @@ test("does NOT flag base-rate counts / the firm formula (the engine ENCOURAGES c
     "545 live JELLY filings worldwide; the element is heavily diluted",
     "127k overwhelmingly positive Steam reviews; 1m+ downloads",
     "75% of the class-9 filings are dead",
-    "Level 3 Risk = C + Horse Trade",
-    "Level 5 Risk = E + Classic",
+    "Level 3 Risk = C + Bargain",
+    "Level 5 Risk = E + Head-on",
     "8,575 live BR(E)AKER filings (2,317 claim gaming)",
     "the registration is revocable for non-use after 5 years",
   ]) assert.deepEqual(findRuleShapeFlags(t), [], `must NOT flag: ${t}`);
@@ -51,16 +51,27 @@ test("does NOT flag matrix-citation (Appendix B — the customer's risk matrix i
 });
 
 test("doc-27 Item 3: the matrix DERIVATION 'Level C + <DisputeType>' is exempt; a bare '+' cutoff still flags", () => {
+  // The dispute types are the run's own framework's, handed in by the caller — never a list written here.
+  const disputeTypes = ["Bargain", "Register-only", "Head-on"];
   for (const t of [
-    "Level C + Horse Trade",                       // the "+" joins a Dispute Type → matrix derivation
-    "Composite 3 + Paper Conflict",
-    "we graded it Level C + Classic for that owner",
-  ]) assert.deepEqual(findRuleShapeFlags(t), [], `full matrix-derivation citation must NOT flag: ${t}`);
+    "Level C + Bargain",                       // the "+" joins a Dispute Type → matrix derivation
+    "Composite 3 + Register-only",
+    "we graded it Level C + head-on for that owner",   // the framework's word, in any case
+  ]) assert.deepEqual(findRuleShapeFlags(t, { disputeTypes }), [], `full matrix-derivation citation must NOT flag: ${t}`);
+  for (const t of [
+    "We treat Level C+ Findings as High.",     // a capitalised word that is not one of the framework's types
+    "Composite 3+ Conflicts are escalated.",
+  ]) assert.ok(findRuleShapeFlags(t, { disputeTypes }).length > 0, `a shortcut followed by a capitalised word still flags: ${t}`);
+  assert.ok(findRuleShapeFlags("Level C + Bargain").length > 0, "with no framework types handed in, nothing is exempt by name");
+  // The caller hands in every input's values, so the level letters arrive too; a letter is never a type.
+  const withLevels = ["A", "B", "C", "D", "E", ...disputeTypes];
+  assert.ok(findRuleShapeFlags("We treat Level C+ a finding as High.", { disputeTypes: withLevels }).length > 0, "a level letter after the \"+\" does not exempt a cutoff");
+  assert.deepEqual(findRuleShapeFlags("Level C + Bargain", { disputeTypes: withLevels }), [], "the framework's own types still exempt beside its level letters");
   for (const t of [
     "we treat Level C + as the hold line",         // bare "+" cutoff, no Dispute Type follows
     "anything Composite 3 + is escalated",
-    "Level C +\nHorse Trade is a separate finding", // EOL guard: the "+" does NOT join the next-line word
-  ]) assert.ok(findRuleShapeFlags(t).length > 0, `bare "+" cutoff (or cross-line) must still flag: ${t}`);
+    "Level C +\nBargain is a separate finding", // EOL guard: the "+" does NOT join the next-line word
+  ]) assert.ok(findRuleShapeFlags(t, { disputeTypes }).length > 0, `bare "+" cutoff (or cross-line) must still flag: ${t}`);
 });
 
 // Map C — the reworded synthesis USE-CHECK guidance is per-finding ("regardless of its Composite

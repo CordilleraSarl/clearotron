@@ -6,7 +6,7 @@
 // NOT connect a transport, so calling tools.list_profiles() is a plain function call. Needs the MCP deps
 // installed (npm ci — @modelcontextprotocol/sdk / jose), like cf-access / http-handler / delivery-state.
 // Profiles/overlays load from the module-relative profiles dir (profiles.mjs PROFILE_DIR), so the first
-// shipped overlay aurora/console-ecosystem is the fixture — no temp workspace needed.
+// shipped overlay demo-brand-owner/japan-and-korea-app-launch is the fixture — no temp workspace needed.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { tools } from "../server.mjs";
@@ -24,9 +24,9 @@ test("list_profiles: nests each customer's spec-62 projects so intake can resolv
     assert.ok("industry" in c, `client "${c.key}" surfaces industry (null when unset)`);
   }
 
-  const aurora = out.clients.find((c) => c.key === "aurora");
-  assert.ok(aurora, "aurora is on the roster");
-  const overlay = aurora.projects.find((p) => p.key === "console-ecosystem");
-  assert.ok(overlay, "the console-ecosystem overlay is nested under its customer");
-  assert.equal(overlay.name, "Console ecosystem", "the display name (projectName) is surfaced for intake, not the slug");
+  const demo = out.clients.find((c) => c.key === "demo-brand-owner");
+  assert.ok(demo, "demo-brand-owner is on the roster");
+  const overlay = demo.projects.find((p) => p.key === "japan-and-korea-app-launch");
+  assert.ok(overlay, "the japan-and-korea-app-launch overlay is nested under its customer");
+  assert.equal(overlay.name, "Japan and Korea app launch", "the display name (projectName) is surfaced for intake, not the slug");
 });

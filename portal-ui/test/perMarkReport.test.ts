@@ -39,9 +39,9 @@ const BATCH = {
 // shape the fix could quietly break while every existing test kept passing, so it is asserted beside
 // the new behaviour rather than assumed.
 const SINGLE = {
-  runId: 'tmp1-aurora-run',
-  report: '/portal/report/tmp1-aurora-run/',
-  reports: [{ mark: 'AquaPlus', slug: null, path: '/portal/report/tmp1-aurora-run/' }],
+  runId: 'tmp1-demo-brand-owner-run',
+  report: '/portal/report/tmp1-demo-brand-owner-run/',
+  reports: [{ mark: 'AquaPlus', slug: null, path: '/portal/report/tmp1-demo-brand-owner-run/' }],
 } as unknown as Run
 
 // ── reading the URL ──────────────────────────────────────────────────────────────────────────────────
@@ -61,13 +61,13 @@ test('THE DEFECT: a two-argument result URL yields the RUN, not the last thing o
 })
 
 test('the one-argument form is unchanged', () => {
-  assert.deepEqual(resultRoute('/portal/result/tmp1-aurora-run'), {
-    runId: 'tmp1-aurora-run',
+  assert.deepEqual(resultRoute('/portal/result/tmp1-demo-brand-owner-run'), {
+    runId: 'tmp1-demo-brand-owner-run',
     markSlug: null,
   })
   // A trailing slash is the same URL, not a URL with an empty second argument.
-  assert.deepEqual(resultRoute('/portal/result/tmp1-aurora-run/'), {
-    runId: 'tmp1-aurora-run',
+  assert.deepEqual(resultRoute('/portal/result/tmp1-demo-brand-owner-run/'), {
+    runId: 'tmp1-demo-brand-owner-run',
     markSlug: null,
   })
 })
@@ -83,8 +83,8 @@ test('a URL with no run in it says so, rather than inventing one', () => {
 test('query and hash are not arguments', () => {
   // Same rule as screenForPath, and the same reason: the path decides, and a screen that treated `?x=1`
   // as part of the run id would fail to find a run on every link that carried one.
-  assert.deepEqual(resultRoute('/portal/result/tmp1-aurora-run?from=email'), {
-    runId: 'tmp1-aurora-run',
+  assert.deepEqual(resultRoute('/portal/result/tmp1-demo-brand-owner-run?from=email'), {
+    runId: 'tmp1-demo-brand-owner-run',
     markSlug: null,
   })
   assert.deepEqual(resultRoute('/portal/result/tmp1-ironwhisk-batch/ironwhisk#findings'), {
@@ -117,7 +117,7 @@ test('both forms still resolve to the result screen', () => {
   // permission range: a view-only person landing on a path that resolves only with a permission gets
   // "That page does not exist."
   for (const who of [{ permissions: { run: false, manage: false } }, { permissions: { run: true, manage: true } }]) {
-    assert.equal(screenForPath('/portal/result/tmp1-aurora-run', who)?.id, 'result')
+    assert.equal(screenForPath('/portal/result/tmp1-demo-brand-owner-run', who)?.id, 'result')
     assert.equal(screenForPath('/portal/result/tmp1-ironwhisk-batch/ironwhisk', who)?.id, 'result')
   }
 })
@@ -157,7 +157,7 @@ test('REGRESSION: a single-document run still frames its own document', () => {
   // and all of them would keep passing against a version that framed a ROUTE here — the frame would
   // load the portal inside itself and no assertion in this suite would notice.
   assert.deepEqual(openDocument(SINGLE, null), {
-    doc: '/portal/report/tmp1-aurora-run/',
+    doc: '/portal/report/tmp1-demo-brand-owner-run/',
     mark: null,
     missing: false,
   })

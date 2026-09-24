@@ -58,7 +58,7 @@ const svcOn = ({ root, ws }) =>
   makePortalService({
     poolRoot: root, workspaceRoot: ws, secret: "s",
     // Both staff readers are people with access to everything; the client is view-only.
-    grants: () => ({ tenants: { aurora: { accounts: ["aurora"], users: { "c@aurora.example": ["aurora"] } } },
+    grants: () => ({ tenants: { "demo-brand-owner": { accounts: ["demo-brand-owner"], users: { "c@demo-brand-owner.example": ["demo-brand-owner"] } } },
       people: {
         "k@staff.example": { run: true, manage: true, everything: true },
         "j@staff.example": { run: true, manage: true, everything: true },
@@ -71,7 +71,7 @@ const rowsFor = async (svc, who) => (await svc.route("GET", "/portal/api/runs", 
 const ackedIds = (rows) => rows.filter((r) => r.acked).map((r) => r.runId).sort();
 
 test("arm 1 — acknowledging a failed run marks it for this viewer, and only that", async () => {
-  const pool = poolWith({ dead: ["aurora", "failed"], alive: ["aurora", "running"] });
+  const pool = poolWith({ dead: ["demo-brand-owner", "failed"], alive: ["demo-brand-owner", "running"] });
   const svc = svcOn(pool);
   assert.deepEqual((await rowsFor(svc, STAFF)).map((r) => r.runId).sort(), ["alive", "dead"], "premise: both are on the wire");
   assert.deepEqual(ackedIds(await rowsFor(svc, STAFF)), [], "and nothing is acknowledged yet");
@@ -85,7 +85,7 @@ test("arm 1 — acknowledging a failed run marks it for this viewer, and only th
 
 test("arm 2 — one person clearing their dashboard does not clear a colleague's", async () => {
   // The requirement, and the reason the store is per viewer rather than pool-wide.
-  const pool = poolWith({ dead: ["aurora", "failed"] });
+  const pool = poolWith({ dead: ["demo-brand-owner", "failed"] });
   const svc = svcOn(pool);
   await svc.route("POST", "/portal/api/ack", STAFF, { runId: "dead", state: "failed", acknowledged: true });
   assert.deepEqual(ackedIds(await rowsFor(svc, STAFF)), ["dead"]);
@@ -98,7 +98,7 @@ test("arm 2 — one person clearing their dashboard does not clear a colleague's
 
 test("arm 3 — the run is unchanged: not its state, not its record, not #611's tag", async () => {
   // "A dismissed run is still in Clearances with its status intact. Nothing about the record changes."
-  const pool = poolWith({ dead: ["aurora", "failed"] });
+  const pool = poolWith({ dead: ["demo-brand-owner", "failed"] });
   const svc = svcOn(pool);
   const before = (await rowsFor(svc, STAFF))[0];
   await svc.route("POST", "/portal/api/ack", STAFF, { runId: "dead", state: "failed", acknowledged: true });
@@ -111,7 +111,7 @@ test("arm 3 — the run is unchanged: not its state, not its record, not #611's 
 
 test("arm 4 — a paused or recovering run offers no acknowledge, and cannot be forced into one", async () => {
   // "A run that is paused or recovering must not be dismissible; that is a run someone still needs to see."
-  const pool = poolWith({ waiting: ["aurora", "postponed"] });
+  const pool = poolWith({ waiting: ["demo-brand-owner", "postponed"] });
   const svc = svcOn(pool);
   const row = (await rowsFor(svc, STAFF))[0];
   assert.equal(row.state, "paused", "premise: the engine's postponed maps to paused on the wire");
@@ -128,7 +128,7 @@ test("arm 4 — a paused or recovering run offers no acknowledge, and cannot be 
 test("arm 5 — the key carries the STATE, so a run that moves on comes back", async () => {
   // THE TRAP. Keyed on runId alone, a run dismissed while it briefly read `failed` stays hidden for
   // ever — including after a resume. The dismissal is of a FACT, not of a name.
-  const pool = poolWith({ dead: ["aurora", "failed"] });
+  const pool = poolWith({ dead: ["demo-brand-owner", "failed"] });
   setAck(pool.root, STAFF.email, { runId: "dead", state: "failed" });
   assert.deepEqual([...readAcks(pool.root, STAFF.email)], [["dead", "failed"]]);
 
@@ -141,7 +141,7 @@ test("arm 5 — the key carries the STATE, so a run that moves on comes back", a
 });
 
 test("arm 6 — the count is reachable and one click undoes it", async () => {
-  const pool = poolWith({ dead: ["aurora", "failed"] });
+  const pool = poolWith({ dead: ["demo-brand-owner", "failed"] });
   const svc = svcOn(pool);
   await svc.route("POST", "/portal/api/ack", STAFF, { runId: "dead", state: "failed", acknowledged: true });
   const back = await svc.route("POST", "/portal/api/ack", STAFF, { runId: "dead", state: "failed", acknowledged: false });
@@ -168,7 +168,7 @@ test("arm 6 — the count is reachable and one click undoes it", async () => {
 });
 
 test("arm 7 — the file is named by hash; an address is never a path component", async () => {
-  const pool = poolWith({ dead: ["aurora", "failed"] });
+  const pool = poolWith({ dead: ["demo-brand-owner", "failed"] });
   setAck(pool.root, "Owner+test@Staff.EXAMPLE", { runId: "dead", state: "failed" });
   const [name] = readdirSync(join(pool.root, ACKS_DIR));
   assert.match(name, /^[0-9a-f]{32}\.json$/, "hex, fixed length — no '/', no '..', no case, nothing to escape");
@@ -198,7 +198,7 @@ test("arm 9 — the SERVED BUNDLE carries it; portal-ui/dist is what the browser
 });
 
 test("arm 8 — the door is the only gate, and a junk id cannot become a path", async () => {
-  const pool = poolWith({ dead: ["aurora", "failed"] });
+  const pool = poolWith({ dead: ["demo-brand-owner", "failed"] });
   const svc = svcOn(pool);
   for (const runId of ["../../etc/passwd", "a/b", "", ".."]) {
     const r = await svc.route("POST", "/portal/api/ack", STAFF, { runId, state: "failed", acknowledged: true });
@@ -208,7 +208,7 @@ test("arm 8 — the door is the only gate, and a junk id cannot become a path", 
   // A client CAN acknowledge, and that is deliberate: this is the one curation act on the service that
   // changes nothing anybody else can see. It hangs off /portal/api, not /portal/admin, which is what
   // keeps it out of the staff-only surfaces — asserted here rather than left to the reader.
-  const ok = await svc.route("POST", "/portal/api/ack", { email: "c@aurora.example" },
+  const ok = await svc.route("POST", "/portal/api/ack", { email: "c@demo-brand-owner.example" },
     { runId: "dead", state: "failed", acknowledged: true });
   assert.equal(ok.status, 200);
   const route = live("driver/portal-service.mjs");
@@ -218,6 +218,6 @@ test("arm 8 — the door is the only gate, and a junk id cannot become a path", 
   // THE CONTRAST IS THE ARGUMENT. That retire hides a run from everyone including the brand owner, so
   // it is staff-only and audited; this one hides nothing from anybody else, so it is neither. Asserting
   // both here is what stops the next reader from "tidying" them into one control.
-  assert.equal((await svc.route("POST", "/portal/admin/retired", { email: "c@aurora.example" },
+  assert.equal((await svc.route("POST", "/portal/admin/retired", { email: "c@demo-brand-owner.example" },
     { action: "retire", runIds: ["dead"] })).status, 404, "the pool-wide one stays staff-only");
 });

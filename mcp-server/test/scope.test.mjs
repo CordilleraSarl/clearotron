@@ -68,8 +68,8 @@ test("resolveScope is POSITIVE + fail-closed: NOT firm-staff and NO token ⇒ re
   assert.throws(() => resolveScope({ firmStaff: false }), /forbidden:/);
   // The "edge config is wrong" case: a customer wrongly admitted to the STAFF CF app presents a non-firm
   // domain, so firmStaff is false and they are refused — the AUD that admitted them is irrelevant.
-  assert.equal(isFirmDomain("alice@aurora-interactive.com", ["example.com"]), false);
-  assert.throws(() => resolveScope({ firmStaff: isFirmDomain("alice@aurora-interactive.com", ["example.com"]) }), /forbidden:/);
+  assert.equal(isFirmDomain("alice@demo-brand-owner-interactive.com", ["example.com"]), false);
+  assert.throws(() => resolveScope({ firmStaff: isFirmDomain("alice@demo-brand-owner-interactive.com", ["example.com"]) }), /forbidden:/);
 }));
 
 test("resolveScope client surface: ONLY a run-bound user token; no-token/ops/internal all refused", () => withSecret(() => {

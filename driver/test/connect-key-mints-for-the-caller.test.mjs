@@ -54,7 +54,7 @@ test("an unenrolled identity is refused BEFORE anything is minted", async () => 
   // than read off its source, because the expression that used to do this job is gone.
   const { makePortalService } = await import("../portal-service.mjs");
   const grants = { tenants: {
-    celta: { accounts: ["aurora"], users: { "cli@celta.example": ["aurora"] } },
+    celta: { accounts: ["demo-brand-owner"], users: { "cli@celta.example": ["demo-brand-owner"] } },
     // An organisation that holds no company yet: its person reaches only its Generic.
     evaluation: { accounts: [], users: { "org@evaluation.example": "*" } },
   } };

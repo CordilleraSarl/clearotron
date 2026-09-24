@@ -192,14 +192,14 @@ test("parseNamedBand: a class-split crowd surfaces class_counts + covered_by on 
       records: [{ record_id: "/mark/eu/000123456", mark_text: "GLIMMERTONIC", classes: [32], status: "Registered", owner_name: "Aurora Beverages Holding GmbH & Co. KG" }] },
     { state: "incomplete", qid: "incumbent-class:owner:aurora+watch", query: "owner Aurora Beverages (portfolio count)", total_hits: 41235, fetched: 0,
       sample: [], reason: "count-only owner-portfolio descriptor (plan-dictated)",
-      covered_by: ["incumbent-class:default:glimmer+owner-aurora", "incumbent-class:default:lumengarde+owner-aurora"] },
+      covered_by: ["incumbent-class:default:glimmer+owner-demo-brand-owner", "incumbent-class:default:lumengarde+owner-demo-brand-owner"] },
   ]));
   const crowds = bandCrowds(band);
   assert.equal(crowds[0].class_counts["30"].disposition, "unenumerated", "the open class leg is NAMED, not an anonymous tally");
   assert.equal(crowds[0].class_counts["5"].total_hits, 700);
   assert.equal(crowds[0].covered_by, undefined, "no key invented where the block carries none");
   assert.deepEqual(crowds[1].covered_by,
-    ["incumbent-class:default:glimmer+owner-aurora", "incumbent-class:default:lumengarde+owner-aurora"],
+    ["incumbent-class:default:glimmer+owner-demo-brand-owner", "incumbent-class:default:lumengarde+owner-demo-brand-owner"],
     "the count descriptor's slice pointers survive intact, never only inside reason.slice(0,400)");
   assert.equal(crowds[1].class_counts, undefined);
   assert.equal(bandRecords(band).length, 1, "rescue-carried records still join the enumerated stream");

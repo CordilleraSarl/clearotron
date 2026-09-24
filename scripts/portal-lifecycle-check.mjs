@@ -1197,7 +1197,7 @@ const SETTINGS_STATES = [
       topbar: (document.querySelector('.topbar h1') || {}).textContent };
   ` },
   { name: 'new-company-named', script: `
-    set(fieldControl('Legal name'), 'Aurora Botanicals');
+    set(fieldControl('Legal name'), 'Burrowell');
     await mustSettle(() => [...document.querySelectorAll('.main .row-foot button')].some((b) => b.textContent === 'Create' && !b.disabled), 3000, 'Create stayed disabled with a name');
     window.scrollTo(0, 0);
     const create = [...document.querySelectorAll('.main .row-foot button')].find((b) => b.textContent === 'Create');
@@ -1915,7 +1915,7 @@ if (blank) {
 const named = said('new-company-named')
 if (named) {
   ok(!named.create.disabled && named.unmet === null, `New company: with a name, Create reads ${JSON.stringify(named)}`)
-  ok(named.tradingNames === 'Aurora Botanicals', `New company: Own trading names does not follow the name — ${JSON.stringify(named.tradingNames)}`)
+  ok(named.tradingNames === 'Burrowell', `New company: Own trading names does not follow the name — ${JSON.stringify(named.tradingNames)}`)
 }
 
 // ── what reached the wire ───────────────────────────────────────────────────────────────────────────

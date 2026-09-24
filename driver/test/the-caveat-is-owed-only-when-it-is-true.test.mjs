@@ -42,7 +42,7 @@ test("THE DEFECT: a rater's own caveats no longer fail the merge", () => {
   // The R13 shape — three sensible matter-specific caveats, none of them the standing sentence.
   const dir = runWith([]);
   const f = validateMergedFindings(dir, merged([
-    "Triage, not clearance.", "Class- and manner-specific.", "Aurora advisory only.",
+    "Triage, not clearance.", "Class- and manner-specific.", "Demo Brand Owner advisory only.",
   ]), { marks: [] });
   assert.equal(caveatFailure(f), undefined,
     "a run whose rater supplied its own caveats still fails the lint — this is the defect, and it killed "

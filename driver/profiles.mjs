@@ -1079,11 +1079,11 @@ export function resolveEffectiveProfile(job, { profiles = loadProfiles(), projec
       // The customer's platforms are CLIENT-MANDATED — the account asked for those marketplaces to be
       // searched, and a project may add to that instruction but never revoke it. Replace semantics meant a
       // project that stated its own marketplaces silently DELETED the customer's: one test account
-      // names 7 games storefronts, its console-ecosystem project names 9 mostly-retail sites, and every run
-      // of that project searched the 9 — dropping store.epicgames.com, itch.io, apps.microsoft.com and
-      // mobygames.com. The report still read as clean coverage, because the sweep faithfully covered the
-      // list it was handed. Both lists are wanted and both are reasoned: the customer's cover the software
-      // side, the project's cover the console-accessory retail surface its context pack argues for.
+      // names 7 storefronts, one of its projects names 9 mostly-retail sites, and every run of that
+      // project searched the 9 — dropping all 7 of the account's own storefronts. The report still read
+      // as clean coverage, because the sweep faithfully covered the
+      // list it was handed. Both lists are wanted and both are reasoned: the customer's cover its own
+      // trade, the project's cover the surface its context pack argues for.
       //
       // Replace stays correct for the other keys — classes, jurisdictions, delivery, risk posture and depth
       // legitimately DIFFER per engagement rather than accumulating. Only `platforms` is an instruction the

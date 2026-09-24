@@ -91,7 +91,7 @@ test("D2: customerUnknown runs the same with OR without instructions (applicant 
 });
 
 test("D4.1 profileKey: a known customer ACCOUNT runs; a typo/unknown key clarifies; omitted is fine (⇒ generic)", () => {
-  assert.equal(validateJob({ ...FULL, profileKey: "aurora" }).classify, "run", "a real customer key resolves");
+  assert.equal(validateJob({ ...FULL, profileKey: "demo-brand-owner" }).classify, "run", "a real customer key resolves");
   assert.equal(validateJob({ ...FULL, profileKey: "zephyr" }).classify, "run");
   const v = validateJob({ ...FULL, profileKey: "zeffyr" });   // misspelling the intake AI should not produce
   assert.equal(v.classify, "clarify");
@@ -109,25 +109,25 @@ test("D4.1: the refusal NAMES the roster it checked, so a wrong profiles directo
   assert.equal(v.classify, "clarify");
   const msg = v.errors.join(" ");
   assert.match(msg, /the roster this process can see is \[/);
-  assert.match(msg, /aurora/, "the roster is enumerated, not merely alluded to");
+  assert.match(msg, /demo-brand-owner/, "the roster is enumerated, not merely alluded to");
   assert.match(msg, /CLEAROTRON_CUSTOMERS_DIR/, "and the variable to check is named");
 });
 
 test("spec 62 projectKey: a known project under its customer runs; unknown/unscoped/wrong-customer clarifies; omitted runs on the customer profile", () => {
-  // the shipped aurora/console-ecosystem overlay resolves under its customer
-  assert.equal(validateJob({ ...FULL, profileKey: "aurora", projectKey: "console-ecosystem" }).classify, "run", "a real project under its customer resolves");
+  // the shipped demo-brand-owner/japan-and-korea-app-launch overlay resolves under its customer
+  assert.equal(validateJob({ ...FULL, profileKey: "demo-brand-owner", projectKey: "japan-and-korea-app-launch" }).classify, "run", "a real project under its customer resolves");
   // absent ⇒ runs on the customer profile, no project warning ("nothing in between")
-  const none = validateJob({ ...FULL, profileKey: "aurora" });
+  const none = validateJob({ ...FULL, profileKey: "demo-brand-owner" });
   assert.equal(none.classify, "run");
   assert.ok(!none.warnings.some((w) => /project/i.test(w)), "absent projectKey adds no warning");
   // a valid-but-unknown project under a real customer ⇒ clarify (never a silent drop to the customer on a paid run)
-  const bad = validateJob({ ...FULL, profileKey: "aurora", projectKey: "no-such-project" });
+  const bad = validateJob({ ...FULL, profileKey: "demo-brand-owner", projectKey: "no-such-project" });
   assert.equal(bad.classify, "clarify");
   assert.match(bad.errors.join(" "), /no known project under this customer/);
   // a projectKey with no named customer (⇒ generic) ⇒ clarify (a project needs a customer to scope it)
-  assert.equal(validateJob({ ...FULL, projectKey: "console-ecosystem" }).classify, "clarify");
-  // the console-ecosystem project belongs to aurora, not zephyr ⇒ clarify under the wrong customer
-  assert.equal(validateJob({ ...FULL, profileKey: "zephyr", projectKey: "console-ecosystem" }).classify, "clarify");
+  assert.equal(validateJob({ ...FULL, projectKey: "japan-and-korea-app-launch" }).classify, "clarify");
+  // the japan-and-korea-app-launch project belongs to demo-brand-owner, not zephyr ⇒ clarify under the wrong customer
+  assert.equal(validateJob({ ...FULL, profileKey: "zephyr", projectKey: "japan-and-korea-app-launch" }).classify, "clarify");
 });
 
 test("missing id / forwarder / non-object → reject; reject outranks clarify", () => {

@@ -173,7 +173,7 @@
         },
         "a-clean-install-offers-generic-alone.test.mjs": {
           "tests": 9,
-          "asserts": 14,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },
@@ -1438,8 +1438,8 @@
           "todos": 0
         },
         "alias-rule-owner-gate.test.mjs": {
-          "tests": 8,
-          "asserts": 13,
+          "tests": 9,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
@@ -2927,7 +2927,7 @@
         },
         "findings-model.test.mjs": {
           "tests": 68,
-          "asserts": 259,
+          "asserts": 260,
           "skips": 0,
           "todos": 0
         },
@@ -3863,7 +3863,7 @@
         },
         "profile-service.test.mjs": {
           "tests": 32,
-          "asserts": 162,
+          "asserts": 158,
           "skips": 0,
           "todos": 0
         },
@@ -4000,8 +4000,8 @@
           "todos": 0
         },
         "reasoning-tripwires.test.mjs": {
-          "tests": 17,
-          "asserts": 83,
+          "tests": 15,
+          "asserts": 71,
           "skips": 0,
           "todos": 0
         },
@@ -4089,6 +4089,12 @@
           "skips": 0,
           "todos": 0
         },
+        "reference-score-joins-by-owner-and-country.test.mjs": {
+          "tests": 10,
+          "asserts": 27,
+          "skips": 0,
+          "todos": 0
+        },
         "reference-score-mark-coverage.test.mjs": {
           "tests": 25,
           "asserts": 110,
@@ -4103,7 +4109,7 @@
         },
         "reference-score.test.mjs": {
           "tests": 65,
-          "asserts": 221,
+          "asserts": 222,
           "skips": 0,
           "todos": 0
         },
@@ -4445,7 +4451,7 @@
         },
         "rule-shape.test.mjs": {
           "tests": 8,
-          "asserts": 16,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },

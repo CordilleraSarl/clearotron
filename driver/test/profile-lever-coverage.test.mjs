@@ -31,7 +31,7 @@ const DIR = join(HERE, "..", "profiles");
 // (rather than dropping them from the audit) is the point: an exemption should have to be written down
 // and justified, so the next person can disagree with it.
 const NON_JSON_LEVERS = {
-  // a sibling <key>.context.md file, not a key — aurora.context.md and petcary.context.md carry it
+  // a sibling <key>.context.md file, not a key — demo-brand-owner.context.md and petcary.context.md carry it
   contextPack: (keys) => keys.some((k) => existsSync(join(DIR, `${k}.context.md`))),
   // overlay-only META (profiles.mjs: `if (sparse && (k === "projectName" || k === "archived")) continue`)
   // so it is set on a PROJECT overlay, never on a customer

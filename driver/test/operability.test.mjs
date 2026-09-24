@@ -786,7 +786,7 @@ test("frontMatterIdentity hands the shell the intake facts, names no file, and s
   const partial = ST.frontMatterIdentity({ job: { markName: "NOVAPULSE" } });
   assert.ok(!/matter:/.test(partial) && /NOVAPULSE/.test(partial) && !/undefined/.test(partial), `a refless run must omit the matter row, not print undefined: ${partial}`);
   // profile name is the client fallback when intake named no customer
-  assert.match(ST.frontMatterIdentity({ job: { ref: "T1" }, profile: { name: "Aurora" } }), /- client: Aurora/);
+  assert.match(ST.frontMatterIdentity({ job: { ref: "T1" }, profile: { name: "Demo Brand Owner" } }), /- client: Demo Brand Owner/);
   // knows nothing ⇒ emits NOTHING (an absence must not arrive as a header inviting invention)
   assert.equal(ST.frontMatterIdentity({ job: {}, profile: {} }), "");
   assert.equal(ST.frontMatterIdentity(), "");

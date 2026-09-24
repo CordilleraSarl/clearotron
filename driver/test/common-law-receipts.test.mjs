@@ -142,10 +142,10 @@ test("parseManifestVariants: (inherit) / em-dash annotation rows are NOT grid va
     "## Variants — Mark 2",
     "| Category | Value | Rationale | Verify? |",
     "|---|---|---|---|",
-    "| exact-phrase | Aurora Conquest II: Oak & Ember | full prefixed mark | |",
+    "| exact-phrase | Demo Brand Owner: Oak & Ember | full prefixed mark | |",
     "| (inherit) | — all SATIN & STEEL variants from Mark 1 — | the clearable element is identical | |",
   ].join("\n");
-  assert.deepEqual(parseManifestVariants(m), ["Aurora Conquest II: Oak & Ember"]);
+  assert.deepEqual(parseManifestVariants(m), ["Demo Brand Owner: Oak & Ember"]);
 });
 
 test("commonLaw validator: honest 'deferred to Step 3 (not executed in this run)' prose no longer false-fails", async () => {
@@ -177,7 +177,7 @@ test("alternates: a ' / '-packed manifest cell is satisfied when EVERY alternate
 });
 
 test("substring coverage: a fully-receipted variant covers a LONGER manifest variant containing it", () => {
-  const m = "## Variants\n| Category | Value |\n|---|---|\n| exact | Oak & Ember |\n| exact-phrase | Aurora Conquest II: Oak & Ember |\n";
+  const m = "## Variants\n| Category | Value |\n|---|---|\n| exact | Oak & Ember |\n| exact-phrase | Demo Brand Owner: Oak & Ember |\n";
   const sub = findings(matrixRows("Oak & Ember", 7));
   assert.deepEqual(findReceiptViolations(m, sub), [], "the substring sweep surfaces every superstring listing");
   const neither = findings(matrixRows("Oak & Ember", 3));
