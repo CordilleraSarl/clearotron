@@ -126,7 +126,7 @@ test("a slug the portal could not match is refused, never percent-encoded into a
   // portal-service matches the RAW segment off path.split("/") and never decodes it, so encoding a slug
   // would produce a link that cannot match the run's own list — the same silent defect as, one
   // level down. kebab() emits [a-z0-9-] and nothing else, so nothing legitimate is refused here today.
-  for (const bad of ["Coral Freeze", "coral/freeze", "coral%2ffreeze", "CORAL-FREEZE", "-leading", "色度", ".."]) {
+  for (const bad of ["Coral Freeze", "coral/freeze", "coral%2ffreeze", "CORAL-FREEZE", "-leading", "澜珀", ".."]) {
     assert.equal(markReportRouteFor(POOL, RUN, bad), null, `slug ${JSON.stringify(bad)} is refused, not encoded`);
   }
   for (const good of ["coral-freeze", "cinder-lantern", "mark", "a1"]) {

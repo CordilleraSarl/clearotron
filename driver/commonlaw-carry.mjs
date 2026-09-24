@@ -39,7 +39,7 @@
 // ── THE NON-LATIN TRAP IS ANSWERED, NOT AVOIDED ──────────────────────────────────────────────────────
 //
 // `normalizeJoinText` folds every non-[A-Za-z0-9] run to a space, so it returns the EMPTY STRING for
-// 色度, 冰沙, 瓦波冰沙, ワボスラッシュ and 와보 슬러시. A mark-keyed trace is structurally blind to
+// 澜珀, 冰沙, 瓦波冰沙, ワボスラッシュ and 와보 슬러시. A mark-keyed trace is structurally blind to
 // every one of them.
 //
 // NOTHING HERE TOUCHES IT. A Han-script candidate joins on its ASCII/percent-encoded URL. A Han-script

@@ -10,7 +10,7 @@
 // existed — can still be interrogated. It NEVER writes to the run directory.
 //
 //   node scripts/record-carry-probe.mjs <run-dir>
-//   node scripts/record-carry-probe.mjs <run-dir> --explain 色度
+//   node scripts/record-carry-probe.mjs <run-dir> --explain 澜珀
 //   node scripts/record-carry-probe.mjs <run-dir> --json > trace.json
 //
 // --explain takes a mark text or a /mark uri and prints one line per matching record.

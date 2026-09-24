@@ -324,8 +324,8 @@ to `has_more:false` and returns `enumerated` or `incomplete`; write the block ve
 goods-vocabulary terms into the search text (that drops in-class-live records on a goods guess — banned;
 goods-relevance is judged by the lawyer at SELECTION, after reading the in-class band), and do **NOT** switch to
 exact-standalone mode as the enumeration instrument (exact-standalone is *narrower* than the class-scoped
-substring query and drops composite / word+device marks — e.g. a live CN Cl.9 "computer game programs" 色度 mark
-that default mode surfaces but `match_mode:exact` 色度 misses; a narrower query's result can never override the
+substring query and drops composite / word+device marks — e.g. a live CN Cl.9 "computer game programs" 澜珀 mark
+that default mode surfaces but `match_mode:exact` 澜珀 misses; a narrower query's result can never override the
 broader query's band). "Field-intersected" here means scoped to the goods/services **classes**, not text-filtered
 by goods **words**. The everyday-word saturation is the trigger to **scope the named enumeration to the field (by
 class)** — never to drop the token, re-narrow it to a more specific concept, or swap it for the phonetic form. The

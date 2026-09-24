@@ -178,12 +178,12 @@ const MIN_SKELETON = 4;
  *     WHOLE MARK, NOT CONTAINMENT. This rule was containment in both directions and unowned,
  *     which is rule 4's test WITHOUT rule 4's guard — on the one path where the guard matters most,
  *     because a Han mark carries no aliases and no skeleton to catch the error further down. Measured
- *     live: gold 色度 (class 9) scored as RETRIEVED because the run held 色度花间 (class 41, a different
+ *     live: gold 澜珀 (class 9) scored as RETRIEVED because the run held 澜珀花间 (class 41, a different
  *     proprietor). Every CJK found/withheld verdict in every R1/R6 score was decided that way, in both
  *     directions, so the recall numbers were unquotable rather than merely wrong.
  *
  *     The engine's own classifier had already ruled this and said why: band-shape.mjs takes equality
- *     only for a Han mark and states that "色度計 contains 色度 and is a different mark", and whether
+ *     only for a Han mark and states that "澜珀計 contains 澜珀 and is a different mark", and whether
  *     that matters is judgment's call. The scorer was the looser of the two. It is now the same rule,
  *     with the same containment escape the Latin path has and on the same condition — an owner the
  *     CALLER established, never one this function guessed — reported as `script-contained` so a report
@@ -1503,8 +1503,8 @@ export function concludeDepth({ instructed = [], rows = [], resolved = true, why
 //
 // THE SELECTOR IS A SCRIPT SEGMENT, NOT AN EMPTY ALIAS LIST. The first cut selected entries whose
 // `labelAliases` came back empty, which is the same property one step too coarse: the gold set is
-// lawyer-maintained prose, and `色度 / SEDU`, `色度 (SEDU)` and `色度 SEDU` all fold to the single alias
-// `sedu`. The target would drop out of the selection and the line would then print a CONFIDENT FALSE
+// lawyer-maintained prose, and `澜珀 / LANPO`, `澜珀 (LANPO)` and `澜珀 LANPO` all fold to the single alias
+// `lanpo`. The target would drop out of the selection and the line would then print a CONFIDENT FALSE
 // claim — "the reference names no register entry outside the Latin script". was itself an edit to
 // that mark string, so an annotation arriving there is not hypothetical. `scriptSegments` reads the
 // property directly: a run of letters outside the Latin script, which no Latin-variant sweep can reach
@@ -1516,7 +1516,7 @@ export function concludeDepth({ instructed = [], rows = [], resolved = true, why
  * Common and Inherited are excluded from the run and every run must contain a real LETTER, so an
  * accented Latin mark in NFD (`CAFE` + U+0301, whose combining mark is Inherited) is not a script
  * segment, and neither is punctuation, a device note or a digit. `LUMIVANE / & Device` yields nothing;
- * `色度 / SEDU` yields the segment the jx lane has to generate. PURE.
+ * `澜珀 / LANPO` yields the segment the jx lane has to generate. PURE.
  */
 export function scriptSegments(label) {
   const runs = String(label ?? "").match(/(?:(?![\p{Script=Latin}\p{Script=Common}\p{Script=Inherited}])[\p{L}\p{M}])+/gu) ?? [];
@@ -1859,7 +1859,7 @@ export function scoreScriptTargets({ reference = [], buckets = {}, findings = []
 
     // What came back. THE BUCKETS' RULE FIRST, so the two can never disagree about what IS the mark —
     // then a disclosed widening. stopped the buckets scoring a longer Han mark that merely
-    // CONTAINS the target (gold 色度 was being scored off a different proprietor's 色度花间), and that is
+    // CONTAINS the target (gold 澜珀 was being scored off a different proprietor's 澜珀花间), and that is
     // right for a recall verdict and wrong for this list: a script-lane target's reader needs to see
     // that the lane came back with a neighbour rather than with nothing, which is the difference
     // between a lane that did not fire and one that fired and missed.

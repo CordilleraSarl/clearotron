@@ -381,7 +381,7 @@ A mark with semantic content collides in a non-Latin market through the **word a
 - **Never collapse the set to one technical guess** — one "precise/specific" rendering is the old single-guess miss. Generate the set.
 - **Never drop the everyday member because its count looks saturated or "descriptive"** — that is the Step-4 generation boundary violation. Saturation is narrowed downstream by class-scoped enumeration in the register layer ([transliteration-scripts.md](transliteration-scripts.md) · [register-recipes.md](../clearance-register/register-recipes.md)), never by abandoning the word here.
 - Tag CJK meaning rows `translit-zh-meaning` (the downstream class-scope gate keys on the `-meaning` sense); flag `Verify? ✅`.
-- *Illustration of the principle (NOT a fixed list — derive the set from the concept):* COLORA → CN **色彩 / 颜色** (everyday "colour") → **色度** (technical "chromaticity") → **彩度 / 色相** (adjacent). What generalises is the market-realistic question above — to any market (a German `FARBE`-type everyday form; a "descriptive" compound the model would otherwise drop), not these characters. The full script reference is [transliteration-scripts.md](transliteration-scripts.md), now read alongside this skill.
+- *Illustration of the principle (NOT a fixed list — derive the set from the concept):* COLORA → CN **色彩 / 颜色** (everyday "colour") → **色域** (technical "gamut") → **彩度 / 色相** (adjacent). What generalises is the market-realistic question above — to any market (a German `FARBE`-type everyday form; a "descriptive" compound the model would otherwise drop), not these characters. The full script reference is [transliteration-scripts.md](transliteration-scripts.md), now read alongside this skill.
 
 **Rules:**
 

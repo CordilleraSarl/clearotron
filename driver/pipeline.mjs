@@ -2990,7 +2990,7 @@ function placedUriRows(P) {
 /**
  * PLACEMENT. Everything in the band was in front of this pass; what it placed is in placements.json.
  * Recorded whether the pass completed or not — an incomplete pass discards nothing, and its rows say so
- * with `placement:stage-incomplete`, which is the ruling on the 色度 run made structural.
+ * with `placement:stage-incomplete`, which is the ruling on the 澜珀 run made structural.
  */
 function recordPlacementSeam(ctx, r, trigger = null) {
   const P = ctx.paths;

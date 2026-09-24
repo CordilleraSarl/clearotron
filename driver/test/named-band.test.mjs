@@ -58,7 +58,7 @@ test("mergeNamedBands: unions across axes, de-dups enumerated by record_id, keep
   const b = parseNamedBand(JSON.stringify([
     { state: "enumerated", query: "exact NOVAPULSE cl.9 region:EU", total_hits: 1,
       records: [{ record_id: "/mark/gb/UK00911505377", mark_text: "NOVAPULSE" }, { record_id: "/mark/eu/NEW", mark_text: "NOVAPULSE" }] },
-    { state: "incomplete", query: "色度 contains cl.9 CN", total_hits: 363, sample: [], reason: "character-indexed crowd descriptor" },
+    { state: "incomplete", query: "澜珀 contains cl.9 CN", total_hits: 363, sample: [], reason: "character-indexed crowd descriptor" },
   ]));
   const merged = mergeNamedBands([a, b]);
   const ids = bandRecords(merged).map((r) => r.record_id);

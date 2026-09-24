@@ -5,7 +5,7 @@
 // back to the retrieval by canonical `/mark` uri.
 //
 // THE DEFECT. R1 PROJECT SABLE (2026-08-04, codename stripped) retrieved the jx lane's own target — the
-// Chinese token 色度 — ten times: ten exact-match CN registrations, four REGISTERED, three in the
+// Chinese token 澜珀 — ten times: ten exact-match CN registrations, four REGISTERED, three in the
 // matter's own class 9. All ten sit in `_driver/register-positions.json` and in
 // `register-named-band.json`, all ten screened `surface:in-scope-live`, and not one of them appears in
 // `placements.json` or in `findings.json`. The delivered report never names the token. The record was
@@ -16,14 +16,14 @@
 //
 // WHY THE EXISTING JOINS CANNOT CATCH IT. placement-carry.mjs joins placements.json →
 // register-findings.md, so it starts one seam too late: it can only speak about the 106 candidates
-// placement ALREADY selected. The seam 色度 died at is the one before — 5,410 banded records to 106
+// placement ALREADY selected. The seam 澜珀 died at is the one before — 5,410 banded records to 106
 // placements — and no artifact in the driver joins those two. recall-reconciliation and
 // presence-reconciliation both key off findings-side endings, so a record that never reached a
 // placement is invisible to them too. This module is the missing left half, and it CONSUMES
 // placement-carry's classes for the right half rather than re-deciding them: one carry vocabulary.
 //
 // WHY THE JOIN IS URI-ONLY. The house text matcher is structurally blind to Han script —
-// `normalizeJoinText("色度")` is the EMPTY STRING (it folds every non-[A-Za-z0-9] run to a space), so
+// `normalizeJoinText("澜珀")` is the EMPTY STRING (it folds every non-[A-Za-z0-9] run to a space), so
 // `hasToken` cannot match it and `distinct` puts it below the floor. A mark-token join would therefore
 // have reported the one record class this issue exists for as unjoinable. Every join here is on the
 // canonical `/mark` uri, which is script-neutral by construction, and every artifact on the register
@@ -280,7 +280,7 @@ export function placementIndex(placements, registerFindingsText) {
  * FIXED PRECEDENCE, and the order is the correctness condition of the whole module. Reach is decided
  * first (furthest wins), then the reason for the seam it did not cross — and within that,
  * `stage-incomplete` ALWAYS outranks `not-selected`. If "the judging step ran and did not pick it"
- * could swallow "the judging step never finished", then on that run all ten 色度 records would
+ * could swallow "the judging step never finished", then on that run all ten 澜珀 records would
  * read as a judgment call, which is precisely the wrong answer: placement-inquiry never completed.
  *
  * The wording of `stage-incomplete` is deliberate. placements.json on that run holds 106 VALID
@@ -459,8 +459,8 @@ const SLICE_REASON = {
  * Slices for which NO per-record trace is possible, stated rather than left silent.
  *
  * A crowd descriptor is a hit COUNT the run never fetched records for, so those hits are not records
- * and can never appear in `rows` — and a trace that only reported the fetched ten 色度 records would
- * imply the run retrieved ten, when the plan also carries `exact 色度 [cl 9,28,41,42]` at 1,066 hits
+ * and can never appear in `rows` — and a trace that only reported the fetched ten 澜珀 records would
+ * imply the run retrieved ten, when the plan also carries `exact 澜珀 [cl 9,28,41,42]` at 1,066 hits
  * with 215 fetched. An uninstrumented region that reads as "no drops" is the failure this whole issue
  * is about, so it gets a row saying so. Not made per-record on purpose: fetching them is a RECALL
  * change and out of scope. PURE.
@@ -688,8 +688,8 @@ export function mintRecordCarryDoubts(artifact, { max = 25 } = {}) {
 
 /**
  * The one-line reader answer to "where did this record stop, and why". Takes the artifact and a mark
- * text or uri; returns the matching rows. The acceptance question for — "does it say why 色度 did
- * not become a finding?" — is this function with `"色度"`. Substring, not the house token matcher, for
+ * text or uri; returns the matching rows. The acceptance question for — "does it say why 澜珀 did
+ * not become a finding?" — is this function with `"澜珀"`. Substring, not the house token matcher, for
  * the Han-script reason in the header. PURE.
  */
 export function explainRecords(artifact, needle) {
