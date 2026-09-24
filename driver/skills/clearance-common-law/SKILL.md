@@ -178,12 +178,12 @@ For game-title rows, the `developer_of_record` and `publisher_of_record` columns
 ### PR / reputational risk
 
 Covers the core element(s) **and their plausible near-forms** (the connotation hazard often rides a
-near-form — `sureña` ("southerner") → `Sureño` = a gang term — not the literal mark). `(None identified)` may be written
+near-form — `mara` ("crowd") → `Mara` = a gang name — not the literal mark). `(None identified)` may be written
 **only when the searched social/subcultural web came back empty** — never on a dictionary gloss. "It just
 means *southern*" is context, not a clearance: a connotation reads clean only when Urban-Dictionary / Wikipedia
 / news / forums were searched (on the near-forms too) and surfaced nothing.
 
-**Surface what the meaning search actually returned — a receipt is not a read.** Even when your call is clean, do **not** collapse the meaning sweep to a bare `(None identified)`: for the mark **and each near-form**, name the actual readings the search surfaced and label each benign or loaded (e.g. `sureña → "southerner" (geographic, benign); Sureño → a Southern-California street gang (loaded)`). You are an extraction worker — lay out what the social/subcultural web actually returned per form; you do **not** make the final clearance call. The strong synthesis layer reads that material and decides whether a loaded secondary reading needs pulling. A row that only says "searched, nothing found" hands synthesis a verdict instead of the evidence it needs to look past the obvious gloss.
+**Surface what the meaning search actually returned — a receipt is not a read.** Even when your call is clean, do **not** collapse the meaning sweep to a bare `(None identified)`: for the mark **and each near-form**, name the actual readings the search surfaced and label each benign or loaded (e.g. `mara → "crowd" (colloquial, benign); Mara → a Central American street gang (loaded)`). You are an extraction worker — lay out what the social/subcultural web actually returned per form; you do **not** make the final clearance call. The strong synthesis layer reads that material and decides whether a loaded secondary reading needs pulling. A row that only says "searched, nothing found" hands synthesis a verdict instead of the evidence it needs to look past the obvious gloss.
 
 | Finding | Source | Notes |
 |---|---|---|

@@ -398,7 +398,7 @@ export function compilePhraseValue(term, { pre = "", post = "", dropReserved = f
   const last = kept.length - 1;
   const tailWrap = (kept.length > 1 && kept[last].length === 1) ? "" : post;
   // THE WILDCARD PREDICATE CARRIES ITS OWN STAR, so `post` is empty there and the two rules above
-  // cannot reach it: the caller writes `STEAL A*` and the star is part of the token. Same shape, same
+  // cannot reach it: the caller writes `FOLD A*` and the star is part of the token. Same shape, same
   // refusal, so the same subtraction — the star comes off a one-character final token. Nothing else is
   // touched: a longer final token keeps the caller's pattern exactly as written, and a `?` is a
   // single-character class rather than a sub-query, so it is not this.
