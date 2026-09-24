@@ -1225,6 +1225,25 @@ test("T3a: persistent BLOCKING after corrective + re-check → the run DELIVERS,
   assert.doesNotMatch(report, /Reviewer's open questions|did not sign this report off/,
     "the refusal reached the client page as added text");
 
+  // …AND THE REVIEWING LAWYER STILL READS THEM, on the delivered audit workbook's Summary tab. The path a
+  // run takes, not a unit's: the pipeline's record, publish's read, the workbook in the pool.
+  const { config: poolCfg } = await import("../driver.config.mjs");
+  const { dirname: pdir, basename: pbase } = await import("node:path");
+  const poolDir = join(poolCfg.poolRoot, `${pbase(pdir(res.runDir))}-${pbase(res.runDir)}`);
+  const xlsxName = readdirSync(poolDir).find((f) => f.endsWith("-audit.xlsx"));
+  assert.ok(xlsxName, "the run delivered no audit workbook to read the open points from");
+  const { default: ExcelJS } = await import("exceljs");
+  const wb = new ExcelJS.Workbook();
+  await wb.xlsx.readFile(join(poolDir, xlsxName));
+  const cells = [];
+  wb.getWorksheet("Summary").eachRow((r) => cells.push(`${r.getCell(1).value ?? ""} | ${r.getCell(2).value ?? ""}`));
+  assert.ok(cells.some((c) => /^Reviewer's open questions \| .*did not sign this report off/.test(c)),
+    "the delivered workbook does not carry the reviewer's open points for the reviewing lawyer");
+  assert.ok(cells.some((c) => /the phonetic axis ran; the receipt shows it never did/.test(c)),
+    "the reviewer's cited defect is not in the delivered workbook");
+  assert.doesNotMatch(readFileSync(join(poolDir, "report.html"), "utf8"), /Reviewer&#39;s open questions|Reviewer's open questions|did not sign this report off/,
+    "the published page carries the reviewer's notes");
+
   // The corrective ladder is still the fix arm and still runs FIRST: original + blocking re-synth.
   assert.ok(stageOrder(events).filter((s) => s.startsWith("synthesis")).length >= 2,
     "delivering at the bound must not skip the repair that tries to avoid reaching it");

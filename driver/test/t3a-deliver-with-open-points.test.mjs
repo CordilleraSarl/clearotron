@@ -16,7 +16,8 @@ import { readFileSync, writeFileSync, mkdirSync, mkdtempSync, rmSync } from "nod
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { join, dirname } from "node:path";
-import { buildReviewerOpenPointsSection, assembleReportMd, REVIEWER_OPEN_QUESTIONS_FILE } from "../pipeline.mjs";
+import { buildReviewerOpenPointsSection, assembleReportMd } from "../pipeline.mjs";
+import { REVIEWER_OPEN_QUESTIONS_FILE } from "../reviewer-open-points.mjs";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { paths as stagePaths } from "../stages.mjs";
 

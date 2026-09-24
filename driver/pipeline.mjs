@@ -9,7 +9,8 @@ import "./engine/mcp/http-dispatcher.mjs";   // side effect: raise undici header
 import { readFileSync, existsSync, mkdirSync, writeFileSync, renameSync, copyFileSync, readdirSync, rmSync, statSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join, dirname, basename, resolve } from "node:path";   // resolve: the resume line must work from any cwd
-import { driverDir, driverRel, ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
+import { driverDir, driverRel, ensureDriverDir } from "../shared/driver-dir.mjs";
+import { REVIEWER_OPEN_QUESTIONS_FILE } from "./reviewer-open-points.mjs";   // the run-record file the reviewer's open points go to   // — one definition of where `_driver/` is
 import { goodsOf } from "./queue-markers.mjs";   // — one reading of "does this job name goods", shared with the intake gate
 import { terminalClampDecision, orderClausesForLede, clientConditions, clauseForDefect } from "./terminal-clamp.mjs";   // — deliver and clamp, never withhold
 import { recordSpan } from "./attributed-span.mjs";   // — driver work the decomposition can attribute
@@ -7852,9 +7853,6 @@ export function buildOnlyYouSection(actions, findings, { nowMs = Date.now(), wit
 // impossible, and rendering nothing would ship a report whose body reads as reviewed while the reviewer
 // refused. Silence is the one thing the section exists to prevent. The wording is the sidecar's own,
 // already carried at the degenerate branch above — one sentence for one fact, in both places.
-/** The run-record file the reviewer's open points are written to, under the run's `_driver/`. Never published. */
-export const REVIEWER_OPEN_QUESTIONS_FILE = "reviewer-open-questions.md";   // @internal
-
 export function buildReviewerOpenPointsSection(reviewMd, appliedRows = null) {   // @internal
   const blocking = parseVerdict(reviewMd) === "BLOCKING";
   const cited = blocking ? parseCorrections(reviewMd) : [];
@@ -13684,7 +13682,7 @@ async function pipelineInner(job, opts = {}) {
           citedDefects: countCitedDefects(readReview()),
           degenerate: isDegenerate(readReview()),
         });
-        note(`verdict: BLOCKING stands after the corrective pass + re-check — the report DELIVERS with the reviewer's open points printed (${countCitedDefects(readReview())} cited defect(s)); the reviewing lawyer is the backstop`);
+        note(`verdict: BLOCKING stands after the corrective pass + re-check — the report DELIVERS, with the reviewer's open points recorded for the reviewing lawyer (${countCitedDefects(readReview())} cited defect(s)); the reviewing lawyer is the backstop`);
       }
     }
 
