@@ -128,3 +128,14 @@ export function requiredScriptsFor(jurisdictions) {
   }
   return Object.fromEntries([...out.entries()].sort(([a], [b]) => a.localeCompare(b)));
 }
+
+/**
+ * The markets, of those given, that register marks in a script `value` is written in — a Latin script
+ * excepted, since every market files Latin. A value in a script no given market files answers `[]`:
+ * that script's question has no market to be asked in.
+ */
+export function marketsFilingScriptOf(value, markets) {
+  const scripts = Object.keys(SCRIPT_TESTS).filter((s) => s !== "latin" && isInScript(value, s));
+  return (markets ?? []).map((m) => String(m ?? "").trim().toUpperCase())
+    .filter((m, i, all) => m && all.indexOf(m) === i && (REGISTRABLE_SCRIPTS[m] ?? []).some((s) => scripts.includes(s)));
+}

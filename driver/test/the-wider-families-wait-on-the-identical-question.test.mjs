@@ -191,7 +191,10 @@ test("a withheld family is not a clean, and does not fail the run", async () => 
   const { findUnexecutedCleanClaims, deriveCoverageSkeleton, joinPlanToBands } = await import("../register-plan.mjs");
   assert.ok(COVERAGE_STATUSES.includes("withheld-by-judgment"), "the ledger has no word for a family nobody opened on purpose");
 
-  const plan = planFor();
+  // A numeric spelling waits on the transliteration axis on every register. The katakana one does not:
+  // this register files non-Latin marks by their romanised form, so it is not asked here at all.
+  const plan = planFor({ variants: [...manifest().variants, { value: "INVENT3DMARK", category: "numeric" }] });
+  assert.ok(plan.entries.some((e) => e.axis === "transliteration-numeric" && e.when), "no family waits on the transliteration axis");
   const identical = plan.entries.find((e) => !e.when && e.axis === "primary-sweep" && e.predicate !== "default");
   // The identical question crowds; every waiting family is therefore skipped.
   const blocks = {};

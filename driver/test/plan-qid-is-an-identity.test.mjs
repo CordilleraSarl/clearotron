@@ -141,7 +141,8 @@ const MODEL = (variants) => JSON.stringify({
   variants,
   incumbent_classes: ["9"],
 });
-const JOB = { jobKey: "TMP9999-lumengarde", classes: ["9"], jurisdictions: ["EU"] };
+// Bulgaria files in Cyrillic, so the Cyrillic variants below are questions this matter asks.
+const JOB = { jobKey: "TMP9999-lumengarde", classes: ["9"], jurisdictions: ["EU", "BG"] };
 const compileWith = (variants) => compileRegisterPlan({
   manifest: parseVariantManifestModel(MODEL(variants)), job: JOB, skillVersion: "clearance-register@spec48",
 });

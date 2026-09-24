@@ -58,7 +58,7 @@ import { normalizeTerritory } from "../providers/_shared/territory-codes.mjs";
 import { bindingLayersFor, layerCoverageFor } from "./binding-layers.mjs";
 import { entryTermIssues, goodsTermsList, stripGoodsReservedWords, hasAnchoredWildcard, termAnnotationIssue, termMarkupIssue, termShapeIssue, termSubstanceIssue } from "../providers/_shared/term-shape.mjs";
 import { AWAITS_READING_TURN, awaitsReadingTurn, guardParentQid } from "../providers/_shared/plan-guards.mjs";
-import { formKey, romanizationSpellings, isNonLatinTerm } from "../providers/_shared/script-form.mjs";
+import { formKey, romanizationSpellings, isNonLatinTerm } from "../providers/_shared/script-form.mjs"; import { marketsFilingScriptOf } from "./registration-scripts.mjs";
 
 export const PLAN_SCHEMA_VERSION = 1;
 export const EXPECTED_KINDS = ["enumerate", "count"];
@@ -911,7 +911,7 @@ export function withoutHouseElementTerms(entry, house) {
   return isHouseElementTerm(entry.term, house) ? null : entry;
 }
 
-export function compileRegisterPlan({ manifest, job, form = null, skillVersion = "", capabilities = null, unavailableOffices = [], houseElement = null, addedClasses = [] }) {
+export function compileRegisterPlan({ manifest, job, form = null, skillVersion = "", capabilities = null, unavailableOffices = [], houseElement = null, addedClasses = [], frameMarkets = null }) {
   // ── AN EXCLUDED ELEMENT'S FORM BAND MUST BE UNREACHABLE, NOT MERELY UNASKED-FOR ─────────────────
   //
   // THE DEFECT THIS CLOSES, found by following the seam rather than by a failing arm. `bandFor` falls
@@ -1489,9 +1489,38 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   // transliteration-numeric — the non-Latin / digit-substitution family, exact enumerates. push()
   // stamps each non-Latin term with the manifest's romanisation of it (romanStamp, above); a `numeric`
   // variant is Latin and the manifest carries none for it, so the axis is unchanged for that member.
+  //
+  // ONE SCRIPT QUESTION PER MARKET, AND NONE WHERE THE REGISTER FILES THE ROMANISED FORM. A variant in
+  // another script is a question for the markets that register marks in that script, so it is asked there
+  // and nowhere else, and not at all when none of the markets the matter frame names files in it. A
+  // register that declares it indexes non-Latin marks by their transliteration only (`nativeScriptIndex:
+  // false`) answers the Latin question for them already, so no non-Latin question is compiled for it: on
+  // such a register each script's question went out as its romanised form and came back as the same
+  // answer. Latin transliterations and numeric variants are asked as before. With no frame on record and a
+  // worldwide scope there is no market to scope to, and the variant compiles as it always did.
+  const romanisedFiling = caps?.nativeScriptIndex === false;
+  const canon = (list) => (Array.isArray(list) ? list : []).map((j) => normalizeTerritory(String(j ?? "").trim())).filter(Boolean);
+  // The markets: the frame's, within the instructed ones where the client named territories (the
+  // instructed ones if the two do not meet); the frame's alone on a worldwide scope; none known, none used.
+  const instructedMarkets = scopeIsWorldwide ? [] : canon(job?.jurisdictions);
+  const named = canon(frameMarkets);
+  const both = instructedMarkets.filter((m) => named.includes(m));
+  const scriptMarkets = instructedMarkets.length ? (both.length ? both : instructedMarkets) : (named.length ? named : null);
   for (const v of manifest.variants) {
     if (v.category !== "transliteration" && v.category !== "numeric") continue;
-    push({ axis: "transliteration-numeric", predicate: markPredicate(v.value), term: v.value, expected_kind: "enumerate", provenance: "model", dropIssue: variantTermIssue(v.value) });
+    const entry = { axis: "transliteration-numeric", predicate: markPredicate(v.value), term: v.value, expected_kind: "enumerate", provenance: "model", dropIssue: variantTermIssue(v.value) };
+    if (v.category === "transliteration" && isNonLatinTerm(v.value)) {
+      if (romanisedFiling) continue;
+      if (scriptMarkets) {
+        const markets = marketsFilingScriptOf(v.value, scriptMarkets);
+        if (!markets.length) continue;
+        // A market this register cannot reach keeps the entry as it was, so its deferral is still disclosed.
+        const scoped = resolveRegions(markets, caps).regions.filter((r) => !regions.length || regions.includes(r));
+        push(scoped.length ? { ...entry, regions: scoped } : entry);
+        continue;
+      }
+    }
+    push(entry);
   }
 
   // incumbent-class — the industry-incumbent shadow: the anchor enumerated in the incumbent's classes.
