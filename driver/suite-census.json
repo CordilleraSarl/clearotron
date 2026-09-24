@@ -585,6 +585,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-is-scored-on-the-channels-it-cites.test.mjs": {
+          "tests": 4,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-whose-counts-all-fail-pays-for-no-owner-lookup.test.mjs": {
           "tests": 3,
           "asserts": 12,
