@@ -2219,7 +2219,7 @@ export function applyStageWrites(msg, argv) {
       catch { /* a row whose address will not parse is not one this mock can answer */ }
     }
     if (!declined.length) return "mock knockout-review: the dispatch carried no address to answer — the driver measures them and puts them in the message";
-    const verdict = recordKnockoutReview(runDir, { declined });
+    const verdict = recordKnockoutReview(runDir, { first_question: "mock review: the report answers the client's question", declined });
     if (!verdict.written) return `mock knockout-review: the transport refused the composed call — ${verdict.refused ?? verdict.write_failed}`;
     return "mock knockout review ok";
   }

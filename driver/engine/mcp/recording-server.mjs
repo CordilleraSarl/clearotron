@@ -1259,6 +1259,10 @@ serve({
       additionalProperties: false,
       properties: {
         schema_version: { type: "integer", description: "Accepted and ignored — the driver stamps its own." },
+        first_question: {
+          type: "string",
+          description: "Your answer to the question the dispatch opens with, in your own words.",
+        },
         rewrites: {
           type: "array",
           description:
