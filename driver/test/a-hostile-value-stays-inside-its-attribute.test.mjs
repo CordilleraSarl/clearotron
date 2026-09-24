@@ -80,7 +80,7 @@ const REPORT = [
 const meter = (token) => ({ token, basis: "verified-from-record" });
 const finding = (link) => ({
   ordinal: 1, mark: "INVENTED", owner: { name: "Invented Owner", country: "US", registrations: [] },
-  composite: 2, level: "B", dispute_type: "paper-conflict",
+  composite: 2, level: "B", dispute_type: "register-only",
   meters: { mark_similarity: meter("medium"), goods_proximity: meter("high"), use: meter("confirmed"), enforcer: meter("medium") },
   quadrant: { x: 0.5, y: 0.5 }, source: { source_type: "common-law-marketplace", resolved_link: link },
 });

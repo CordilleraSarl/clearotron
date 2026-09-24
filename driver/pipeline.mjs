@@ -176,7 +176,7 @@ import { recordedScopeLedgerRows } from "./clearance-variants-record.mjs";
 import { parseFrameDiff, applyDominantBackstop, firingDirectives, reopenKey, alreadyAttemptedReopen, partitionFiring, frameResidualGaps, jurisdictionScopeFlags, deriveDirectiveRemedy, firingDirectivesLenient } from "./frame-diff-model.mjs";
 import { verifyRegisterDirectiveClose } from "./close-verify.mjs";
 import { renderFormNeighbourhoodJson, parseFormNeighbourhoodJson, dispatchedQueriesFromBand, formGapDirectives, markText } from "./form-neighbourhood.mjs"; import { loadOrdinaryWords } from "./ordinary-words.mjs";
-import { findRecallFloorViolations, findReviewFreshnessViolation, findSeedNeutralityViolations, findProbativeGradingViolations, findStatusHonestyViolation, findMatrixCeilingViolations, findDeadlineUrgencyMiss, findUnresolvedDisagreements, findOrphanVerificationFlags, findUncrossCheckedDemotions, findRecallRegressionViolations, findDeadlineCarryViolations, formatRecallRegression } from "./reasoning-tripwires.mjs";
+import { findRecallFloorViolations, findReviewFreshnessViolation, findSeedNeutralityViolations, findProbativeGradingViolations, findStatusHonestyViolation, findDeadlineUrgencyMiss, findUnresolvedDisagreements, findOrphanVerificationFlags, findUncrossCheckedDemotions, findRecallRegressionViolations, findDeadlineCarryViolations, formatRecallRegression } from "./reasoning-tripwires.mjs";
 import { findRuleShapeFlags } from "./rule-shape.mjs";
 import { failureSignature, classifyFailureReason, decideRecovery, createRepairLedger, countTrailingStageStrikes, countRecoveryLanes, weatherCeilingFor, TRANSIENT_RE, REFUSAL_TERMINAL_KIND, fanInMissingEvidence, retryCannotHelpWith, unnamedStructuredFailure, classificationSource, isCapPark, capParkSchedule, capWaitFrom, humanWait } from "./repairs.mjs";
 import { caseLawInventory } from "./config-inventory.mjs";   // — the deployment's own case-law sources
@@ -15018,7 +15018,7 @@ async function pipelineInner(job, opts = {}) {
         });
         const receipts = findEngagementReceipts(narrativeMd, anchors);
         const bland = receipts.filter((r) => !r.citesOwnAnchor);
-        const ruleShape = findRuleShapeFlags(`${narrativeMd}\n${reportMd}`);
+        const ruleShape = findRuleShapeFlags(`${narrativeMd}\n${reportMd}`, { disputeTypes: (ctx.frameworkMethod?.inputs ?? []).flatMap((i) => i.values) });   // the run's own dispute types, where its framework states a method
         const reviewMd = existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "";
         // B2b — reviewer self-coherence over senior-eye-review.md (same internal sidecar/banner).
         const reviewerCoherence = findReviewerCoherenceFlags(reviewMd);
@@ -15094,7 +15094,7 @@ async function pipelineInner(job, opts = {}) {
           reviewFreshness: findReviewFreshnessViolation(reviewMd, { upstreamTexts: [registerFindingsMd, commonLawMd, placementMd] }), // U2
           seedNeutrality: findSeedNeutralityViolations([{ name: "matter-context", text: matterContextMd }, { name: "placements", text: placementMd }]), // S2
           probativeGrading: parsedFindings ? findProbativeGradingViolations(parsedFindings) : [],   // U3
-          matrixCeiling: (parsedFindings && (parsedFindings.schemaVersion ?? 1) < 4) ? findMatrixCeilingViolations(parsedFindings) : [],   // legacy (v≤3) only — a v4 framework states its own ceilings in its deck prose
+          // The matrix-ceiling tripwire is retired: a framework that states a table now holds each rating to it (framework-method.mjs).
           // U1 (surface backstop). The scan surface NARROWS to report.md on 2026-08-01: client-summary.md
           // was the second half of this concat and no longer exists. The report is the one delivered
           // document, so nothing a reader sees escapes the check — it just has one surface to read now.
@@ -15128,7 +15128,6 @@ async function pipelineInner(job, opts = {}) {
           // inputs"), a process metric not a matter fact — dropped from the reviewer surface.
           ...tripwires.seedNeutrality.map((v) => `seed-neutrality: ${v.where} carries ${v.why}`),
           ...tripwires.probativeGrading.map((v) => `probative-grading: ${v.why}`),
-          ...tripwires.matrixCeiling.map((v) => `matrix-ceiling: ${v.why}`),
           ...(tripwires.statusHonesty && !tripwires.statusHonesty.pass ? [`status-honesty: ${tripwires.statusHonesty.detail}`] : []),
           ...tripwires.deadlineUrgency.map((v) => `deadline-urgency: ${v.why}`),
           ...tripwires.deadlineCarry.map((v) => `${v.why.startsWith("deadline-carry:") ? v.why : `deadline-carry: ${v.why}`}`),

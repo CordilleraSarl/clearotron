@@ -33,11 +33,11 @@
 
 // ── closed vocabularies (owned here; exported for the render/Excel + tests) ───────────────────────────
 // Reconciled to the real domain vocabulary at Phase-1 population (the Phase-0 placeholders were a guess):
-// dispute_type = the five risk-framework.md §Dispute Types; meters = the REPORT-DESIGN-SPEC §5 3-pip model
+// dispute_type = the rating framework's own dispute type, one lowercase hyphenated word; meters = the REPORT-DESIGN-SPEC §5 3-pip model
 // (high/medium/low for the risk meters; the FINE position lives in quadrant.{x,y}, the meter is the coarse
 // pip). use is confirmed/green per the spec. enforcer keeps the verified/inferred basis (B1).
 export const LEVELS = ["A", "B", "C", "D", "E"];                                   // legal exposure, net of merits defences
-export const DISPUTE_TYPES = ["classic", "horse-trade", "paper-conflict", "descriptive-terms", "nuisance-claim"];
+export const DISPUTE_TYPE_RE = /^[a-z]+(?:-[a-z]+)*$/;   // shape only: the words belong to the customer framework that named them
 export const METERS = ["mark_similarity", "goods_proximity", "use", "enforcer"];   // the four strength meters
 export const METER_TOKENS = {
   mark_similarity: ["high", "medium", "low"],
@@ -1356,8 +1356,8 @@ function validateFinding(f, idx, seenOrdinals, mode = { v4: false, manifest: nul
     if (!Number.isInteger(f.composite) || f.composite < 1 || f.composite > 5)
       throw new Error(`finding_composite_invalid:${short(f.composite)} (composite must be an integer 1-5)`);
     if (!LEVELS.includes(f.level)) throw new Error(`finding_level_invalid:${short(f.level)} (level must be one of: ${LEVELS.join(", ")})`);
-    if (!DISPUTE_TYPES.includes(f.dispute_type))
-      throw new Error(`finding_dispute_type_invalid:${short(f.dispute_type)} (dispute_type must be one of: ${DISPUTE_TYPES.join(", ")})`);
+    if (typeof f.dispute_type !== "string" || !DISPUTE_TYPE_RE.test(f.dispute_type))
+      throw new Error(`finding_dispute_type_invalid:${short(f.dispute_type)} (dispute_type must be one lowercase hyphenated word)`);
 
     // CHANGE 2 — OPTIONAL placement token. ABSENT is allowed (legacy/archived runs fall back to composite
     // banding). When present it must be a closed-enum value; an unknown value throws token-FIRST so the

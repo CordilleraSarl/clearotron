@@ -125,7 +125,7 @@ const meters = {
 };
 const finding = (ordinal, owner, country, uris, extra = {}) => ({
   ordinal, mark: `NORTHWIND ${ordinal}`, band: "Manageable", disposition: "distinguished", meters,
-  composite: 3, level: "B", dispute_type: "paper-conflict", quadrant: { x: 0.6, y: 0.5 },
+  composite: 3, level: "B", dispute_type: "register-only", quadrant: { x: 0.6, y: 0.5 },
   owner: { name: owner, country, registrations: uris.map((uri) => ({ uri, classes: ["9"], status: "Registered", filed: "2020-01-01", jurisdiction: country })) },
   source: { source_type: "register-vendor", resolved_link: "" }, ...extra,
 });

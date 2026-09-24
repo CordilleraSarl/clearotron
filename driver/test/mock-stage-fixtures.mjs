@@ -544,7 +544,7 @@ export function fixture(name, msg, dir = null) {
     const cite = process.env.MOCK_REPORT_URI
       ? `\n## CITED MARK — Owner LLC, US\n- tier: 3\n- label: Level 3\n- group: on-field\n- one: cited-record card\n### Audit\n- **Source:** [Corsearch · ${process.env.MOCK_REPORT_URI}](https://tm.corsearch.com${process.env.MOCK_REPORT_URI})\n`
       : "";
-    return `---\ntype: clearance-clearance\nmatter: TMP8439\ntitle: PROJECT NOVAPULSE\nclient: ACME Interactive\nuse: codename\nclasses: 9, 41\nrun: 2026-01-01 · corsearch + common-law\noverall_label: MEDIUM\noverall_badge: l3\noverall_caption: mock composite 3\n---\n\n# Summary\nMock curated summary for the wiring test.\n\n# Recommendation\nProceed with caution.\n\n# Drivers\n- mock driver bullet\n\n# Marks\n## LUMENGARDE — NOVAPULSE, EU\n- tier: 3\n- label: Level 3 · C + Classic\n- group: on-field\n- one: mock one-line takeaway\n- open: true\n### Filings\nMock filing detail.\n### Audit\n[Provider · /m/1](#)\n::p:: internal note\n${cite}\n# Coverage\nMock coverage panel.\n${permProse}\n# Methodology\nMock methodology paragraph for the wiring test.\n`;
+    return `---\ntype: clearance-clearance\nmatter: TMP8439\ntitle: PROJECT NOVAPULSE\nclient: ACME Interactive\nuse: codename\nclasses: 9, 41\nrun: 2026-01-01 · corsearch + common-law\noverall_label: MEDIUM\noverall_badge: l3\noverall_caption: mock composite 3\n---\n\n# Summary\nMock curated summary for the wiring test.\n\n# Recommendation\nProceed with caution.\n\n# Drivers\n- mock driver bullet\n\n# Marks\n## LUMENGARDE — NOVAPULSE, EU\n- tier: 3\n- label: Level 3 · C + Head-on\n- group: on-field\n- one: mock one-line takeaway\n- open: true\n### Filings\nMock filing detail.\n### Audit\n[Provider · /m/1](#)\n::p:: internal note\n${cite}\n# Coverage\nMock coverage panel.\n${permProse}\n# Methodology\nMock methodology paragraph for the wiring test.\n`;
   }
   // report-overview.md HAS NO FIXTURE BRANCH ANY MORE (conversion 4). The driver writes it off the
   // `record_report_overview` call, so a body here would be the mock taking exactly the path this
@@ -998,7 +998,7 @@ export function reportCardFixture(out) {
   // report.md fixture) so the record-less happy path stays registry-coverage-clean.
   const citeUri = process.env.MOCK_REPORT_URI || (process.env.MOCK_WRITE_RECORD ? uri : null);
   const src = citeUri ? `[Provider · ${citeUri}](https://tm.corsearch.com${citeUri})` : `[Provider · card${ord}](#)`;
-  return `## ${owner} — ${mark}, US\n- ord: ${ord}\n- tier: 3\n- label: Level B · Composite 4 · Paper Conflict\n- group: on-field\n- source: Register\n### Full detail\n- Mock filing detail.\n- Source: ${src}\n`;
+  return `## ${owner} — ${mark}, US\n- ord: ${ord}\n- tier: 3\n- label: Level B · Composite 4 · Register-only\n- group: on-field\n- source: Register\n### Full detail\n- Mock filing detail.\n- Source: ${src}\n`;
 }
 
 // judgment-relocation (2026-06-24): the funnel's load-bearing artifact is the COMPLETE NAMED BAND

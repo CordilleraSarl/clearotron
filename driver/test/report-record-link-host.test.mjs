@@ -137,7 +137,7 @@ const findingsDoc = (origins) => {
             ...(own ? [{ uri: own, classes: ["9"], status: "Registered", jurisdiction: "EU" }] : []),
           ],
         },
-        composite: 4, level: "B", dispute_type: "paper-conflict",
+        composite: 4, level: "B", dispute_type: "register-only",
         meters: {
           mark_similarity: { token: "high", basis: "verified-from-record" },
           goods_proximity: { token: "medium", basis: "verified-from-record" },
@@ -153,7 +153,7 @@ const findingsDoc = (origins) => {
         ordinal: 2,
         mark: "KOLEMMA",
         owner: { name: "Kolemma Trading", country: "SG", registrations: [] },
-        composite: 2, level: "C", dispute_type: "paper-conflict",
+        composite: 2, level: "C", dispute_type: "register-only",
         meters: {
           mark_similarity: { token: "medium", basis: "inferred-from-signal" },
           goods_proximity: { token: "low", basis: "inferred-from-signal" },
