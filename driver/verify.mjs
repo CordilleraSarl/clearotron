@@ -2679,3 +2679,20 @@ function placementAccountVerdict(dir) {
 export function variantsStageContract(marker) {
   return marker?.["clearance-variants"] ?? marker?.["prelim-variants"] ?? null;
 }
+
+/**
+ * A late review read against the carried verdict (beside `verdictHardenedTo` in meaning; it sits at the
+ * end of the file so no line cited above it moves). `hardened` is `verdictHardenedTo`'s answer, the only
+ * one the caller adopts. `softened` is the review's verdict when it is milder than the one carried: it
+ * is never adopted, and the caller records it, because the review on disk then disagrees with the run's
+ * verdict and a reader needs to be told which one governs. Both null when the review is the same, or
+ * unparseable. PURE.
+ */
+export function lateReviewAgainst(carried, reviewMd) {
+  const hardened = verdictHardenedTo(carried, reviewMd);
+  const now = parseVerdict(reviewMd);
+  const a = VERDICT_RANK[String(carried ?? "").toUpperCase()];
+  const b = VERDICT_RANK[now];
+  const softened = !hardened && Number.isInteger(a) && Number.isInteger(b) && b < a ? now : null;
+  return { hardened, softened };
+}

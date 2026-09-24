@@ -36,7 +36,7 @@ import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveT
 import { IDENTITY_FILE as REPORT_IDENTITY_FILE } from "./report-overview-record.mjs";
 import { dispatchRows, clearedSignatures } from "./seat-attempts.mjs";
 import { CONTEXT_DERIVATIONS, DISPATCH_EXTRAS, INLINE_CONTEXT, sandboxManifest, sandboxGaps, derivationsFor } from "./stage-context.mjs";   // — what a stage is actually handed
-import { parseVerdict, countCitedDefects, parseCorrectionKinds, parseCorrections, validators, findReviewerCoherenceFlags, verdictHardenedTo } from "./verify.mjs";
+import { parseVerdict, countCitedDefects, parseCorrectionKinds, parseCorrections, validators, findReviewerCoherenceFlags, lateReviewAgainst } from "./verify.mjs";
 import { readAcceptedFlags } from "./narrative-refutation-record.mjs";   // T3b — the typed flags, not the re-parse
 import { evidenceClaimViolations, evidenceClaimTable } from "./evidence-claim-invariant.mjs";   //
 import { buildCorrectionsApplied, correctionsWorklist, correctionsAppliedTable, correctionScope, scopeDrift, unresolvedFlags, reportLines, linesOf, REPORT_LINE_KEY, REPORT_LINE_LABEL } from "./corrections-feedforward.mjs";
@@ -72,7 +72,7 @@ import { classifyGroundsNote } from "./grounds-grammar.mjs";   // — a charged 
 import { documentCoverage, renderDocumentCoverageSection, spliceDocumentCoverage } from "./document-coverage.mjs";   //
 import { buildCoverageAbsenceForm, coverageAbsenceGaps, coverageFormAbsence, coverageFormBrief, renderCoverageAbsenceSection, renderCoverageLedgerSection, spliceCoverageLedger, renderCoverageLedgerJsonFromForm } from "./coverage-form.mjs";
 import { unionCoverageForm } from "./coverage-union.mjs";
-import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStamp, readCoverageForm, readCoverageFormInput, writeCoverageForm } from "./coverage-form-io.mjs";
+import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStamp, readCoverageForm, readCoverageFormInput, waitingFamilyStates, writeCoverageForm } from "./coverage-form-io.mjs";
 import { unionPlacementForm } from "./placement-union.mjs";
 import { readPlacementForm, readPlacementFormInput, writePlacementForm } from "./placement-form-io.mjs";
 import { dictatedPaths, findStrayArtifacts, treeSnapshot, findStrayInTree, matterSiblings, findStrayMatterSiblings } from "./stray-artifacts.mjs";   // — a run dir holds no document no stage dictated; — nor does the doctrine tree
@@ -6514,6 +6514,12 @@ function planAuditExtra(ctx, { stage = "narrative-refutation" } = {}) {
   let rows = [];
   try {
     const crowds = exec.executed.filter((x) => x.state === "incomplete");
+    // By the time this block is read the reading turn is over, and a waiting family it chose not to ask
+    // is a settled judgment with its reason on record, not an open question. Counted as awaiting, a run
+    // whose every waiting family was withheld told the reviewer they all remained open, and it raised a
+    // coverage flag against judgments already made.
+    const { withheld, awaiting } = waitingFamilyStates(P.runDir, exec.awaiting);
+    const withheldOn = (axis) => withheld.filter((f) => f?.axis === axis).length;
     rows = [
       `- executed: ${exec.executed.length} entr${exec.executed.length === 1 ? "y" : "ies"} (${crowds.length} crowd/incomplete${crowds.length ? `: ${crowds.slice(0, 4).map((x) => x.qid).join("; ")}` : ""})`,
       `- missing (no band block): ${exec.missing.length}${exec.missing.length ? ` — ${exec.missing.slice(0, 4).join("; ")}` : ""}`,
@@ -6521,10 +6527,14 @@ function planAuditExtra(ctx, { stage = "narrative-refutation" } = {}) {
       // The families waiting for the reading turn, and those it asked. Without these lines the table's
       // own buckets summed to the whole plan less the waiting families, and a reviewer read it as
       // "no family waiting" while the receipt held 156.
-      `- awaiting the reading turn's ask: ${exec.awaiting?.length ?? 0}`,
+      `- withheld by judgment (the reading turn chose not to ask them; each carries its reason on the coverage form): ${withheld.length}`,
+      `- awaiting the reading turn's ask: ${awaiting.length}`,
       exec.asked?.length ? `- asked by the reading turn (a waiting family's question, asked by another entry): ${exec.asked.length}` : "",
       exec.unplanned?.length ? `- unplanned qid-stamped blocks: ${exec.unplanned.length}` : "",
-      ...(exec.skeleton ?? []).map((s) => `- axis ${s.axis}: ${s.state} (${s.executed}/${s.entries} executed, ${s.crowds} crowd${s.awaiting ? `, ${s.awaiting} awaiting` : ""})`),
+      ...(exec.skeleton ?? []).map((s) => {
+        const w = withheldOn(s.axis), a = Math.max(0, (s.awaiting ?? 0) - w);
+        return `- axis ${s.axis}: ${s.state} (${s.executed}/${s.entries} executed, ${s.crowds} crowd${w ? `, ${w} withheld` : ""}${a ? `, ${a} awaiting` : ""})`;
+      }),
     ];
   } catch (e) { rows = [`- (receipt table unavailable — read + audit the receipt file directly: ${P.planExecution})`]; note(`plan-audit receipt table (non-fatal): ${e.message}`); }
   return lines(
@@ -13940,11 +13950,13 @@ async function pipelineInner(job, opts = {}) {
       const plan = ctx.registerPlan ?? readJson(P.registerPlan);
       const instructed = readJson(P.instructedScope);
       if (!plan && !Array.isArray(instructed?.classes)) return null;   // a run with no register layer and no instructed classes has no scope fact to state
+      const planExecution = ctx.planExecution ?? readJson(P.planExecution);
       const facts = deriveScopeFacts({
         instructedScope: instructed,
         plan,
-        planExecution: ctx.planExecution ?? readJson(P.planExecution),
+        planExecution,
         coverageRows: loadCoverageLedger(run.runDir).rows,
+        withheldQids: waitingFamilyStates(run.runDir, planExecution?.awaiting).withheld.map((f) => f.qid),
       });
       facts.derived_from = Object.fromEntries([
         ["instructed_scope", P.instructedScope], ["register_plan", P.registerPlan],
@@ -14919,7 +14931,17 @@ async function pipelineInner(job, opts = {}) {
               // stays where it is; this restores the input it was denied. `verdictHardenedTo` ratchets one
               // way, so a review that softened during the repair cannot lift a clamp.
               if (s2.label === "narrative-refutation") {
-                const hardened = verdictHardenedTo(verdict, existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "");
+                const reviewNow = existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "";
+                const { hardened, softened: reviewSays } = lateReviewAgainst(verdict, reviewNow);
+                // A REVIEW THAT SOFTENED IS NOT ADOPTED, AND THE RUN SAYS SO. The ratchet below only
+                // tightens, so a re-review that comes back softer leaves the settled verdict in force while
+                // senior-eye-review.md, rewritten by this repair, opens with the softer word. That is the
+                // design; recording nothing was the defect: a reader of the run found two answers and no
+                // line saying which one governs (measured in testing, 2026-09-23: BLOCKING recorded, CONDITIONAL on disk).
+                if (reviewSays) {
+                  runLog(run.runDir, { event: "verdict-softening-not-adopted", was: verdict, reviewSays, stage: s2.label });
+                  note(`stale-repair: the reviewer now returns ${reviewSays}; the run keeps ${verdict}, because a late re-review may only harden the verdict — senior-eye-review.md now disagrees with verdict.json, and verdict.json governs`);
+                }
                 if (hardened) {
                   // ── T3a — THE LATE VERDICT IS ADOPTED, NOT THROWN, AND ADOPTION IS THE WHOLE JOB ──
                   //

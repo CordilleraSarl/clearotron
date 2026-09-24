@@ -465,6 +465,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-family-withheld-by-judgment-is-not-read-as-awaiting.test.mjs": {
+          "tests": 6,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "a-finding-the-digest-ended-cannot-vanish-in-silence.test.mjs": {
           "tests": 11,
           "asserts": 30,
@@ -580,6 +586,12 @@
           "todos": 0
         },
         "a-knockout-whose-counts-all-fail-pays-for-no-owner-lookup.test.mjs": {
+          "tests": 3,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-late-review-that-softens-is-recorded-not-adopted.test.mjs": {
           "tests": 3,
           "asserts": 12,
           "skips": 0,
@@ -1063,6 +1075,12 @@
           "tests": 21,
           "asserts": 55,
           "skips": 4,
+          "todos": 0
+        },
+        "a-search-the-engine-chose-not-to-run-is-not-reported-as-unfinished.test.mjs": {
+          "tests": 5,
+          "asserts": 13,
+          "skips": 0,
           "todos": 0
         },
         "a-secret-file-is-compared-not-printed.test.mjs": {
