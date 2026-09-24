@@ -14,7 +14,7 @@ import { parseReport, parseAudit, parseSections, parseBlocks, stripInternal, par
 import { renderHtml, parseActionBuckets, actYouConditions } from './render.mjs';
 import { buildAudit } from './xlsx.mjs';
 import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, joinFindingToBlock, CLIENT_TIER_BY_COMPOSITE, projectCoverageJudgment } from '../findings-model.mjs';
-import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.mjs'; import { coverageFormStamp, readCoverageForm } from '../coverage-form-io.mjs'; import { coverageUnitLabel } from '../coverage-ledger.mjs'; import { recallReceiptForOwnCompany } from '../known-conflicts.mjs';   // — and why an absence did not close; whose recall checks an audit lists
+import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.mjs'; import { coverageFormStamp, readCoverageForm } from '../coverage-form-io.mjs'; import { readReleasedFamilies } from '../withheld-families.mjs'; import { unitLabel } from '../coverage-form.mjs'; import { coverageUnitLabel } from '../coverage-ledger.mjs'; import { recallReceiptForOwnCompany } from '../known-conflicts.mjs';   // — and why an absence did not close; whose recall checks an audit lists
 import { clearanceReportData } from './report-data.mjs';
 import { searchDepthRecord, planTerritoriesOf } from './search-depth.mjs'; import { bandRecords } from '../named-band.mjs';   // how much was read to reach the answer, as counts and tokens
 import { parseFrameworkManifest } from '../framework.mjs';
@@ -1154,7 +1154,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
       // the same rule (the workbook's own BANNED gate had already started firing on the raw detail —
       // advisory, so CI stayed green). reviewReceipts.lint keeps its raw detail for the internal
       // readers above (fetchState reads registry-record-coverage's URIs out of it).
-      counts = await buildAudit({ droppedConditions, undispatchedProbes, withheldFamilies, findings, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null }, auditParsed, join(poolRunDir, auditFile), fm.title, fm);
+      counts = await buildAudit({ droppedConditions, undispatchedProbes, withheldFamilies, releasedFamilies: releasedFamilyRows(runDir ?? dirname(reportMd)), findings, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null }, auditParsed, join(poolRunDir, auditFile), fm.title, fm);
       grpRead(join(poolRunDir, auditFile), 0o640);
       if (counts?.gateViolations?.length) console.warn(`[audit-workbook] advisory: ${counts.gateViolations.join(' | ')}`);
     } catch (e) {
@@ -1835,6 +1835,23 @@ export function withheldFamilyRows(runDir) {
   try {
     const { rows } = readCoverageForm(runDir, coverageFormStamp(runDir).formName);
     return (rows ?? []).filter((r) => r?.kind === 'family' && r.status === 'withheld-by-judgment' && r.reason)
-      .map((r) => ({ area: coverageUnitLabel(r.unit), state: 'not-searched', note: String(r.reason) }));
+      .map((r) => ({ area: coverageUnitLabel(r.unit), state: 'not-searched', note: String(r.reason), done: '', left: String(r.reason) }));
+  } catch { return []; }
+}
+
+/**
+ * The waiting families the reading turn RELEASED, as Coverage & gaps rows beside the withheld ones: the
+ * driver's label for the family, the shipped `Note` state, and the turn's reason, why looking wider would
+ * change what the client is told. They ran, so their records are in the findings and the search log; this
+ * row is where the reason is read. The label is the one a withheld family's row
+ * carries, composed from the frozen plan's entry; with no plan it falls back to the axis.
+ */
+export function releasedFamilyRows(runDir) {
+  try {
+    const released = readReleasedFamilies(runDir);
+    let entries = [];
+    try { entries = JSON.parse(readFileSync(driverDir(runDir, 'register-plan.json'), 'utf8'))?.entries ?? []; } catch { /* no frozen plan */ }
+    const byQid = new Map((Array.isArray(entries) ? entries : []).map((e) => [e?.qid, e]));
+    return Object.entries(released).map(([qid, r]) => ({ area: coverageUnitLabel(unitLabel(r.axis, byQid.get(qid))), state: 'note', note: String(r.reason), done: String(r.reason), left: '' }));
   } catch { return []; }
 }

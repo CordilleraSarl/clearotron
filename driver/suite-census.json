@@ -1006,8 +1006,8 @@
           "todos": 0
         },
         "a-released-family-runs-and-a-withheld-one-does-not.test.mjs": {
-          "tests": 5,
-          "asserts": 30,
+          "tests": 6,
+          "asserts": 38,
           "skips": 0,
           "todos": 0
         },

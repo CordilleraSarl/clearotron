@@ -167,7 +167,7 @@ export function recordWithheldFamilies(runDir, { axis, families } = {}) {
  */
 export function recordReleasedFamilies(runDir, { axis, families } = {}) {
   const plan = readJson(driverDir(runDir, "register-plan.json"));
-  if (!plan || !Array.isArray(plan.entries)) return { refused: "no frozen register plan in this run — there are no waiting families to release" };
+  if (!plan || !Array.isArray(plan.entries)) return { refused: "no frozen register plan in this run — there are no waiting families to record against" };
   if (!Array.isArray(families) || !families.length) return { refused: "families must list at least one { qids, reason }" };
   const supp = readJson(join(runDir, "register-units", `${axis}-supplemental-plan.json`));
   const path = releasedFamiliesPath(runDir, axis);
