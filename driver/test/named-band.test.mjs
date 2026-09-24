@@ -13,7 +13,7 @@ const BAND = JSON.stringify([
       { record_id: "/mark/gb/X2", mark_text: "NOVAPULSE", classes: [9], status: "Registered", owner_name: "Other", screen_verdict: "surface:in-scope-live" },
     ] },
   { state: "incomplete", query: "contains NOVAPULSE cl.9 worldwide", total_hits: 768, fetched: 100,
-    sample: [{ record_id: "/mark/eu/1", mark_text: "RAZER NOVAPULSE" }], reason: "crowd over ceiling — descriptor only, judgment to command/halt" },
+    sample: [{ record_id: "/mark/eu/1", mark_text: "KORVANE NOVAPULSE" }], reason: "crowd over ceiling — descriptor only, judgment to command/halt" },
 ]);
 
 test("parseNamedBand: flattens enumerated records (with _query provenance) + collects crowd descriptors", () => {

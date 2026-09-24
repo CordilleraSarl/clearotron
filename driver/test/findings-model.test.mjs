@@ -357,12 +357,12 @@ test("dispatch: invalid JSON → fail(token), and the validator NEVER throws on 
 
 // ---- A1/A2/A3 fix: context_notes, URI-guard regression, lenient quarantine, corrective hints -----
 
-const NOTE = { type: "famous-neighbour-ungrounded", mark: "CHROME", owner: "Google LLC", context: "one keystroke from NOVAPULSE; famous mark; no fetched record; off-field" };
+const NOTE = { type: "famous-neighbour-ungrounded", mark: "NOVAPULSO", owner: "Zentrova LLC", context: "one keystroke from NOVAPULSE; famous mark; no fetched record; off-field" };
 
 test("context_notes: a valid famous-neighbour note parses and is returned", () => {
   const out = parseFindingsJson(raw({ ...DOC, context_notes: [NOTE] }));
   assert.equal(out.contextNotes.length, 1);
-  assert.equal(out.contextNotes[0].mark, "CHROME");
+  assert.equal(out.contextNotes[0].mark, "NOVAPULSO");
   assert.deepEqual(CONTEXT_NOTE_TYPES, ["famous-neighbour-ungrounded"]);
 });
 
@@ -387,13 +387,13 @@ test("A1 guard INTACT: a famous neighbour faked as an empty-uri registration is 
 });
 
 test("A3 lenient: quarantines the malformed finding, keeps the valid remainder + records the mark", () => {
-  const bad = clone(FINDING); bad.ordinal = 2; bad.mark = "CHROME";
+  const bad = clone(FINDING); bad.ordinal = 2; bad.mark = "NOVAPULSO";
   bad.owner.registrations = [{ uri: "" }];
   const out = parseFindingsJsonLenient(raw({ ...DOC, findings: [FINDING, bad] }));
   assert.equal(out.findings.length, 1, "valid finding kept");
   assert.equal(out.findings[0].ordinal, 1);
   assert.equal(out.quarantined.length, 1, "malformed finding quarantined");
-  assert.equal(out.quarantined[0].mark, "CHROME");
+  assert.equal(out.quarantined[0].mark, "NOVAPULSO");
   assert.match(out.quarantined[0].error, /finding_registration_invalid/);
 });
 

@@ -117,7 +117,7 @@ export function labelTokens(label) {
  *
  * The two separator classes do different work and conflating them is the bug worth stating. `/ , · & |`
  * separate ALTERNATIVES for the same record: `VENZAL / VENZALMONO / VENZALKOMB` is one relabelled entry,
- * and `CHROMA / & Device` is one mark plus a device note. Whitespace and hyphens separate WORDS WITHIN
+ * and `LUMIVANE / & Device` is one mark plus a device note. Whitespace and hyphens separate WORDS WITHIN
  * one name: `TIKI TWIST` is not `TIKI`.
  *
  * Treating a word separator as an alias separator makes every multi-word mark match its own first word —
@@ -1515,7 +1515,7 @@ export function concludeDepth({ instructed = [], rows = [], resolved = true, why
  *
  * Common and Inherited are excluded from the run and every run must contain a real LETTER, so an
  * accented Latin mark in NFD (`CAFE` + U+0301, whose combining mark is Inherited) is not a script
- * segment, and neither is punctuation, a device note or a digit. `CHROMA / & Device` yields nothing;
+ * segment, and neither is punctuation, a device note or a digit. `LUMIVANE / & Device` yields nothing;
  * `色度 / SEDU` yields the segment the jx lane has to generate. PURE.
  */
 export function scriptSegments(label) {

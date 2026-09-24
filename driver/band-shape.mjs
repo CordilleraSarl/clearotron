@@ -65,7 +65,7 @@ const tokensOf = (s) => String(s ?? "").split(/[^\p{L}\p{N}]+/u).map((t) => norm
 
 /**
  * The ALTERNATIVE NAMES a label carries — `VENZAL / VENZALMONO / VENZALKOMB` is one relabelled entry,
- * `CHROMA & Device` is one mark plus a device note.
+ * `LUMIVANE & Device` is one mark plus a device note.
  *
  * The separator class is reference-score's `labelAliases`, character for character, and the two are
  * meant to stay that way: the scorer and the engine must agree about what a relabelling is, or a record
@@ -175,7 +175,7 @@ export function classifyRecord(markText, targets) {
 
   // ── member 2 — A RELABELLED RECORD IS THE SAME MARK, AND IT WAS TIERING BELOW THE FLOOR ────────
   //
-  // Measured against the scorer on `origin/main`: `VENZAL / VENZALMONO / VENZALKOMB` and `CHROMA &
+  // Measured against the scorer on `origin/main`: `VENZAL / VENZALMONO / VENZALKOMB` and `LUMIVANE &
   // Device` are `alias` to reference-score and `same-family / token-identical` here. Not dropped —
   // tiered BELOW the line. The floors take `identical` and `near-identical` only, so a register record
   // that IS the mark under a relabelling never became a row a lawyer had to answer. Same consequence as

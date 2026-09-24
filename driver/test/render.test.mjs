@@ -668,8 +668,8 @@ test("no findings.json (legacy / model miss) → renders without crashing, no fi
 
 // ---- A1/A3 fix: context_notes block + quarantine banner ------------------------------------------
 
-const CTX_NOTE = { type: "famous-neighbour-ungrounded", mark: "CHROME", owner: "Google LLC", context: "one keystroke from NOVAPULSE; famous mark; no fetched record; off-field" };
-const QUAR = [{ index: 8, mark: "CHROME", error: "finding_registration_invalid: (registration.uri must be a non-empty string)" }];
+const CTX_NOTE = { type: "famous-neighbour-ungrounded", mark: "NOVAPULSO", owner: "Zentrova LLC", context: "one keystroke from NOVAPULSE; famous mark; no fetched record; off-field" };
+const QUAR = [{ index: 8, mark: "NOVAPULSO", error: "finding_registration_invalid: (registration.uri must be a non-empty string)" }];
 
 test("spec-49 T4: the quarantine banner is dead on every variant (a quarantined finding fails the run upstream)", () => {
   const parsed = parsedOf(FM);
@@ -2265,14 +2265,14 @@ test("charter ruling 1: opts.depthNote renders as a NAME-LED masthead depth stri
 });
 
 test("§L: disposition mode absorbs the famous-mark notes into 03 Notable but manageable (out of Scope)", () => {
-  const ctx = { type: "famous-neighbour-ungrounded", mark: "CHROME", owner: "Google LLC", context: "famous neighbour; no fetched record; off-field" };
+  const ctx = { type: "famous-neighbour-ungrounded", mark: "NOVAPULSO", owner: "Zentrova LLC", context: "famous neighbour; no fetched record; off-field" };
   const html = renderHtml(parsedOf(FM_NOVAPULSE), DISP_FINDINGS, [], { runId: "fm-demo", contextNotes: [ctx] });
   assert.match(html, /<p class="fold-lead"><b>Famous-mark neighbours\.<\/b>/, "the famous-mark lead-in renders inside 03");
   assert.doesNotMatch(html, /<h2>Famous-mark neighbours noted<\/h2>/, "the standalone heading is gone in disposition mode");
-  const i03 = html.indexOf("Notable but manageable"), iCHROME = html.indexOf("CHROME");
-  assert.ok(i03 >= 0 && i03 < iCHROME, "the note renders under 03");
+  const i03 = html.indexOf("Notable but manageable"), iNOVAPULSO = html.indexOf("NOVAPULSO");
+  assert.ok(i03 >= 0 && i03 < iNOVAPULSO, "the note renders under 03");
   const scope = html.slice(html.indexOf('<details class="scope">'));
-  assert.doesNotMatch(scope, /CHROME/, "and NOT inside Scope any more");
+  assert.doesNotMatch(scope, /NOVAPULSO/, "and NOT inside Scope any more");
 });
 
 test("§L: a same-element mark (token containment ≥4 chars) is NEVER silently ruled out — every numbered finding plots", () => {

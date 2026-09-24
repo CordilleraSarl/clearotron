@@ -23,11 +23,11 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const floor = (id, over = {}) => ({
-  record_id: id, mark_text: "CHROME", owner_name: "Someone Ltd", registry: "CN",
+  record_id: id, mark_text: "NOVAPULSO", owner_name: "Someone Ltd", registry: "CN",
   basis: "normalized-equal", status: "REGISTERED", live: true, ...over,
 });
 const placed = (uris, over = {}) => ({
-  mark: "CHROME", owner: "Someone Ltd", jurisdiction: "CN", records: uris,
+  mark: "NOVAPULSO", owner: "Someone Ltd", jurisdiction: "CN", records: uris,
   tier: "sheet-2", reason: "same field, real overlap", ...over,
 });
 
@@ -46,7 +46,7 @@ test("a floor no placement names is UNANSWERED — the defect this exists to see
   assert.equal(a.totals.accounted, 0);
   assert.equal(a.rows[0].disposition, "unanswered");
   assert.equal(a.rows[0].tier, null, "an unanswered floor has no tier to report");
-  assert.equal(a.rows[0].mark, "CHROME", "…and the row still carries what a reader needs to chase it");
+  assert.equal(a.rows[0].mark, "NOVAPULSO", "…and the row still carries what a reader needs to chase it");
   assert.equal(a.rows[0].live, true);
 });
 
