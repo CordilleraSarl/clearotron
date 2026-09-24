@@ -1133,7 +1133,7 @@ const RECURRENT_MIN = 4;
 // IT WAS BUILT, MEASURED AGAINST THE THREE PRESERVED RUNS, AND REFUTED BY THEM. Making the floor read
 // the reason scale inverts the signal it exists to read:
 //   - The 2026-07 evidence run (test/fixtures/coral-freeze-pr-risk.json, 54 recorded queries): the floor's
-//     obligation set goes 7 → 0. `punchdrink.com/articles/problem-with-tiki-bars-cultural-appropriation`
+//     obligation set goes 7 → 0. `punchdrink.com/articles/problem-with-wavo-bars-cultural-appropriation`
 //     — THE receipt this floor was invented to force onto the page — is surfaced by four queries that are
 //     all shape "offensive", so it scores ONE reason and drops out. The gate stops firing on the run it
 //     was designed for.

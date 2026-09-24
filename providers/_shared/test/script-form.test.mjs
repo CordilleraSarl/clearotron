@@ -199,10 +199,10 @@ test("a builder that spells mark text some OTHER way still trips the guard — t
 });
 
 test("an OWNER sweep is exempt — a non-Latin owner name is a different question, and this is the mark rule", async () => {
-  const owners = [entry({ qid: "own", predicate: "owner", term: "株式会社ティキ" })];
+  const owners = [entry({ qid: "own", predicate: "owner", term: "株式会社ワボ" })];
   const { band, wire } = await execute(owners, { id: "roman", nativeScriptIndex: false });
   assert.equal(wire.length, 1, "the owner slice is dispatched — term-shape.mjs exempts owner names identically");
-  assert.equal(wire[0].owner, "株式会社ティキ");
+  assert.equal(wire[0].owner, "株式会社ワボ");
   assert.ok(!band[0].deferred);
 });
 
@@ -233,7 +233,7 @@ test("the refusal SHAPE is identical whichever provider produces it — scope-fa
   // …and it is the SAME shape the pre-existing capability gaps already emit (the owner×term refusal),
   // so scope-facts, joinPlanToBands and the coverage skeleton need no second vocabulary.
   const { band: ownerBand } = await execute(
-    [entry({ qid: "q0", term: "GRANITA", owner: "TIKI HOLDINGS SA" })],
+    [entry({ qid: "q0", term: "GRANITA", owner: "WAVO HOLDINGS SA" })],
     { id: "no-intersection", nativeScriptIndex: true, ownerTermIntersection: false });
   assert.deepEqual(shapeOf(ownerBand[0]), shapes[0],
     "the owner×term gap and the script-form gap are ONE deferral shape");

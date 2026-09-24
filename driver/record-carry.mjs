@@ -10,7 +10,7 @@
 // `register-named-band.json`, all ten screened `surface:in-scope-live`, and not one of them appears in
 // `placements.json` or in `findings.json`. The delivered report never names the token. The record was
 // retrieved, screened and banded, and then it was gone, and NOTHING anywhere recorded why. The same
-// shape had already been paid for four times (TIKI TWIST / TIKI TROPICS on R3, KORPHIC / HALVER KORPHI
+// shape had already been paid for four times (WAVO TWIST / WAVO TROPICS on R3, KORPHIC / HALVER KORPHI
 // on R2). A capability that retrieves and cannot deliver is indistinguishable, in the report, from one
 // that was never built — and the two have completely different fixes.
 //
