@@ -50,7 +50,7 @@ const FRAMEWORK = { framework_key: "house-triage", title: "t", bands: [
   { label: "Manageable", tone: "low" }, { label: "Low", tone: "minimal" }] };
 const markDoc = (name) => ({
   name, rating: "Medium", bullets: ["Synthetic fixture for the 2134 demo-surface sweep."],
-  findings: [{ ordinal: 1, name: "Look-alike listing", owner: "Kurena SA", band: "Medium",
+  findings: [{ ordinal: 1, name: "Look-alike listing", owner: "Kolema SA", band: "Medium",
     net: "A listing under a closely similar name is live on a marketplace.", type: "Active Business", evidence: [] }],
 });
 
@@ -58,7 +58,7 @@ const markDoc = (name) => ({
 function runFixture(tag, { demo }) {
   const runDir = join(ROOT, `run-${tag}`);
   mkdirSync(driverDir(runDir), { recursive: true });
-  writeFileSync(join(runDir, "status.json"), JSON.stringify({ runId: `fixture-${tag}`, markName: "KURENA" }));
+  writeFileSync(join(runDir, "status.json"), JSON.stringify({ runId: `fixture-${tag}`, markName: "KOLEMA" }));
   writeFileSync(join(runDir, "report.md"), "# Clearance report\n\nBody text.\n");
   writeFileSync(join(runDir, "findings.json"), JSON.stringify({ schema_version: 6, findings: [] }));
   writeFileSync(driverDir(runDir, "profile.json"), JSON.stringify({ key: `${tag}-key`, demoData: demo === true }));
@@ -66,7 +66,7 @@ function runFixture(tag, { demo }) {
 }
 
 /** Publish through a REAL publisher and return every file that landed, with whether it is marked. */
-async function surfacesOf(tag, { demo, product, marks = ["KURENA"] }) {
+async function surfacesOf(tag, { demo, product, marks = ["KOLEMA"] }) {
   const runDir = runFixture(tag, { demo });
   const poolRoot = join(ROOT, `pool-${tag}`);
   mkdirSync(poolRoot, { recursive: true });
@@ -86,9 +86,9 @@ async function surfacesOf(tag, { demo, product, marks = ["KURENA"] }) {
 }
 
 const CASES = [
-  { tag: "clearance", product: "clearance", marks: ["KURENA"] },
-  { tag: "knockout-one", product: "knockout", marks: ["KURENA"] },
-  { tag: "knockout-many", product: "knockout", marks: ["KURENA", "VELTRIPHEN"] },
+  { tag: "clearance", product: "clearance", marks: ["KOLEMA"] },
+  { tag: "knockout-one", product: "knockout", marks: ["KOLEMA"] },
+  { tag: "knockout-many", product: "knockout", marks: ["KOLEMA", "VELTRIPHEN"] },
 ];
 
 for (const c of CASES) {

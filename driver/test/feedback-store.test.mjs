@@ -18,7 +18,7 @@ const FULL = {
   verdict: "bad",
   why: "The citation does not show use of the cited mark on these goods.",
   capturedBy: "lawyer@example.test",
-  locator: { ordinal: 3, mark: "KURENA", band: "Manageable", disposition: "rebuttable", section: "03 Notable but manageable" },
+  locator: { ordinal: 3, mark: "KOLEMA", band: "Manageable", disposition: "rebuttable", section: "03 Notable but manageable" },
   excerpt: "Distinguished as wholes on the filed goods.",
   run: { account: "petcary", matter: "m", markName: "VENZY", product: "global-preliminary-search", issuedAt: "2026-08-04T06:54:58.017Z", engineCommit: "abc123", runDir: "/pool/x" },
 };
@@ -32,7 +32,7 @@ test("a flag records WHERE it was raised in four ways, not one — the ordinal c
   // The ordinal is renumbered contiguously on EVERY publish (findings-model.mjs), so on its own it
   // silently re-points. These three are what let a reader tell a moved finding from the right one.
   assert.deepEqual(rec.locator, {
-    ordinal: 3, ref: null, searchedMark: null, mark: "KURENA", band: "Manageable", disposition: "rebuttable",
+    ordinal: 3, ref: null, searchedMark: null, mark: "KOLEMA", band: "Manageable", disposition: "rebuttable",
     section: "03 Notable but manageable",
   });
   assert.equal(rec.excerpt, "Distinguished as wholes on the filed goods.");

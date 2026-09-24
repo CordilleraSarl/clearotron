@@ -791,9 +791,9 @@ export function mergeVariantFloor(floorFamilies, modelVariants, { rejectedSeeds 
 /**
  * Is `root` a plausible formative root, or a prose-parse artifact?
  *
- * A stem is never LONGER than the element it stems from — SUREN(5) for ZURENA(6), HYDR(4) for HYDRA(5),
+ * A stem is never LONGER than the element it stems from — VOLEM(5) for ZOLEMA(6), HYDR(4) for HYDRA(5),
  * VELTRI(6) for VELTRIN(7). Substring containment is NOT the test: a real root can differ in its leading
- * character (ZURENA → SUREN reaches the ARBORA family), which is exactly the widening the root exists for.
+ * character (ZOLEMA → VOLEM reaches the VOLEMA family), which is exactly the widening the root exists for.
  * The swallowed-sentence artifacts are always the element PLUS a clause — 32-36 characters against a 5-char
  * element — so length alone separates them cleanly without narrowing any legitimate root. PURE.
  */

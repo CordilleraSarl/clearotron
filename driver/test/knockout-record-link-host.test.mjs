@@ -61,7 +61,7 @@ const { kebab } = await import("../stages-knockout.mjs");
 const ENV_ORIGIN = recordOriginsFor(ENV_PROVIDER)[0];
 assert.ok(ENV_ORIGIN, `precondition: ${ENV_PROVIDER} must declare a record origin for this fixture to mean anything`);
 
-const MARK = "KURENA";
+const MARK = "KOLEMA";
 const EVIDENCE = "https://storefront-somewhere.invalid/listing/EVIDENCELISTING";
 const RECORD_ID = "/mark/eu/RECORDCANONICAL0001";
 const FOREIGN_URL = `${ENV_ORIGIN}/mark/eu/RECORDFOREIGN0002`;
@@ -77,7 +77,7 @@ const FINDINGS = {
   marks: [{
     name: MARK, rating: "Medium", bullets: ["Synthetic fixture for the #810 record-link host invariant."],
     findings: [{
-      ordinal: 1, name: "Look-alike listing", owner: "Kurena SA", band: "Medium",
+      ordinal: 1, name: "Look-alike listing", owner: "Kolema SA", band: "Medium",
       net: "A listing under a closely similar name is live on a marketplace.",
       type: "Active Business", evidence: [EVIDENCE],
     }],
@@ -98,9 +98,9 @@ const recordsDoc = (providerId) => {
       // already on a host it legitimately publishes. The second exists so "no foreign anchors" cannot be
       // satisfied by a render that emits no record links whatsoever.
       records: [
-        { recordId: RECORD_ID, mark: MARK, owner: "Kurena SA", status: "Registered", classes: [9],
+        { recordId: RECORD_ID, mark: MARK, owner: "Kolema SA", status: "Registered", classes: [9],
           territory: "EU", matchedForm: MARK, matchedBasis: "identical", url: FOREIGN_URL },
-        ...(own ? [{ recordId: "/mark/eu/RECORDOWNHOST0003", mark: MARK, owner: "Kurena SA", status: "Registered",
+        ...(own ? [{ recordId: "/mark/eu/RECORDOWNHOST0003", mark: MARK, owner: "Kolema SA", status: "Registered",
           classes: [9], territory: "EU", matchedForm: MARK, matchedBasis: "identical", url: own }] : []),
       ],
       fetched: own ? 2 : 1, available: own ? 2 : 1, capped: false, cap: 100,

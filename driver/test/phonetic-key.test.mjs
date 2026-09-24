@@ -110,11 +110,11 @@ test("empty / non-letter input -> ['', '']", () => {
 
 test("usage invariants for the form-neighbourhood key", () => {
   // case-insensitive
-  assert.equal(phoneticKey("ZURENA"), phoneticKey("zurena"));
-  // vowel-substitution family shares a key (the whole point: ZURENA/ZIRENA collapse)
-  assert.equal(phoneticKey("ZURENA"), phoneticKey("ZIRENA"));
-  // onset (s vs k) differs -> different key
-  assert.notEqual(phoneticKey("ZURENA"), phoneticKey("KURENA"));
+  assert.equal(phoneticKey("ZOLEMA"), phoneticKey("zolema"));
+  // vowel-substitution family shares a key (the whole point: ZOLEMA/ZILEMA collapse)
+  assert.equal(phoneticKey("ZOLEMA"), phoneticKey("ZILEMA"));
+  // onset (z vs k) differs -> different key
+  assert.notEqual(phoneticKey("ZOLEMA"), phoneticKey("KOLEMA"));
 });
 
 test("tolerant of mixed case, digits, punctuation and Latin diacritics", () => {
@@ -133,7 +133,7 @@ test("tolerant of mixed case, digits, punctuation and Latin diacritics", () => {
 
 test("doubleMetaphone(word).filter(Boolean) — the form-neighbourhood consumer shape — yields keys", () => {
   // form-neighbourhood.mjs does: doubleMetaphone(el).filter(Boolean)
-  const keys = doubleMetaphone("ZURENA").filter(Boolean);
+  const keys = doubleMetaphone("ZOLEMA").filter(Boolean);
   assert.ok(keys.length >= 1, "at least one non-empty key");
   for (const k of keys) assert.match(k, /^[A-Z0]+$/);
 });

@@ -268,7 +268,7 @@ test("band_record: a document that genuinely cannot be opened stays a recorded d
   const r = await mcpSession([INIT,
     call(2, "band_record", { record_id: "/mark/de/999" }),          // never fetched: a dead link / no fetch
     call(3, "band_record", { record_id: "/mark/us/90000001" }),     // on file, cannot be read
-    call(4, "band_record", { record_id: "the SIRENA cluster" }),    // names no record at all
+    call(4, "band_record", { record_id: "the ZILEMA cluster" }),    // names no record at all
     call(5, "band_record", { record_id: "" }),
   ], ENV(runDir));
   for (const id of [2, 3, 4, 5]) assert.equal(isErr(r, id), true, `call ${id} errors — never an empty success`);
