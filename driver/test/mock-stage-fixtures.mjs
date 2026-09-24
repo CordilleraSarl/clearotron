@@ -929,7 +929,7 @@ export function blindFrameModel() {
     schema_version: 1, dominant_element: "NOVAPULSE",
     variants: [
       { value: "NOVAPULSE", direction: "drop", rationale: "the bare element" },
-      { value: "KROMA", direction: "phonetic", rationale: "sound-alike" },
+      { value: "SAYBEL", direction: "phonetic", rationale: "sound-alike" },
     ],
     fields: [{ goods: "game software", on_field: true, rationale: "goods-overlap with the product" }],
     sources: [{ channel: "developer ecosystem", rationale: "B2D product" }],

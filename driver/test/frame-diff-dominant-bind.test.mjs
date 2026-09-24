@@ -116,7 +116,7 @@ test("NEGATIVE CONTROL — the same plant under the OLD precedence DOES move the
 });
 
 test("the bind reads the driver's own artifacts in the stated order", () => {
-  const both = runDirWith({ blind: blindModel(SPINE), manifest: "Dominant element: KROMA\n" });
+  const both = runDirWith({ blind: blindModel(SPINE), manifest: "Dominant element: SAYBEL\n" });
   assert.deepEqual(boundDominantElement(both), { value: SPINE, source: "blind-frame-model.json" },
     "the blind model wins: it is the document the diff IS a diff of");
 
@@ -126,11 +126,11 @@ test("the bind reads the driver's own artifacts in the stated order", () => {
   // so a run whose blind model is unreadable stores a lowercased spine where it used to store the seat's
   // cased echo. Asserting the real shape rather than the flattering one: inventing a case transform over a
   // MARK to make a display line prettier is the kind of quiet normalisation this repo bans everywhere else.
-  const manifestOnly = runDirWith({ manifest: "# Manifest\n\nDominant element: KROMA\n" });
-  assert.deepEqual(boundDominantElement(manifestOnly), { value: "kroma", source: "variant-manifest.md" },
+  const manifestOnly = runDirWith({ manifest: "# Manifest\n\nDominant element: SAYBEL\n" });
+  assert.deepEqual(boundDominantElement(manifestOnly), { value: "saybel", source: "variant-manifest.md" },
     "with no blind model, the manifest's prose line is the fallback — unchanged from the old chain");
 
-  const unparseable = runDirWith({ blind: "{not json", manifest: "Dominant element: KROMA\n" });
+  const unparseable = runDirWith({ blind: "{not json", manifest: "Dominant element: SAYBEL\n" });
   assert.equal(boundDominantElement(unparseable).source, "variant-manifest.md",
     "an UNPARSEABLE blind model falls through rather than throwing — the stage must still be able to record");
 
