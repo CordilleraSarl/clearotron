@@ -57,7 +57,7 @@ test("the separator class is reference-score's, character for character", () => 
 });
 
 test("member 1 and the existing tiers are untouched", () => {
-  assert.equal(classifyRecord("色度", ["PROJECT SABLE", "色度"]).basis, "script-exact");
+  assert.equal(classifyRecord("澜珀", ["PROJECT SABLE", "澜珀"]).basis, "script-exact");
   assert.equal(classifyRecord("PROJECT SABLE", ["PROJECT SABLE"]).basis, "normalized-equal");
   assert.equal(classifyRecord("PROJECT SABLES", ["PROJECT SABLE"]).tier, "near-identical");
   assert.equal(classifyRecord("ZEBRA WIDGET", ["PROJECT SABLE"]).tier, "other");

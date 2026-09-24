@@ -30,7 +30,7 @@ test("the message is written BYTE-FOR-BYTE and is never truncated at any size", 
     // (the jx lane's real content), and a message far past any sane display bound.
     const msg = [
       "Read the ledger and dispose every recorded receipt.",
-      "", "```markdown", "| query | result | ruling |", "| 色度 meaning | … | benign |", "```", "",
+      "", "```markdown", "| query | result | ruling |", "| 澜珀 meaning | … | benign |", "```", "",
       `Q-SYNTH-1: provider cannot express`, "", "x".repeat(300_000),
     ].join("\n");
     const r = recordDispatch(dir, "register-digest", { attempt: 1, message: msg });

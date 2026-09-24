@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // a-han-mark-is-not-a-longer-mark.test.mjs —.
 //
-// THE LIVE PAIR. Gold 色度 (class 9) scored as RETRIEVED because the run held 色度花间 (class 41, a
+// THE LIVE PAIR. Gold 澜珀 (class 9) scored as RETRIEVED because the run held 澜珀花间 (class 41, a
 // different proprietor). matchesReference's script rule was containment in both directions with no
 // owner gate — rule 4's test without rule 4's guard, on the one path where the guard matters most: a
 // Han mark carries no aliases and no consonant skeleton, so nothing further down the ladder catches the
@@ -10,7 +10,7 @@
 // directions, which made the recall numbers unquotable rather than merely wrong.
 //
 // The engine's own classifier had already ruled it and said why (band-shape.mjs): equality only for a
-// Han mark, because "色度計 contains 色度 and is a different mark". The scorer was the looser of the two.
+// Han mark, because "澜珀計 contains 澜珀 and is a different mark". The scorer was the looser of the two.
 //
 // Run:  cd driver && node ../scripts/test-run.mjs node --test test/a-han-mark-is-not-a-longer-mark.test.mjs
 
@@ -23,10 +23,10 @@ import { matchesReference, scoreRecall, scoreScriptTargets } from "../reference-
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
-const GOLD = "色度";
-const OTHER = "色度花间";          // the run's mark, class 41, a DIFFERENT proprietor
-const GOLD_OWNER = "Hangzhou Chromatic Instruments Co., Ltd.";
-const OTHER_OWNER = "Shanghai Blossom Interiors Co., Ltd.";
+const GOLD = "澜珀";
+const OTHER = "澜珀花间";          // the run's mark, class 41, a DIFFERENT proprietor
+const GOLD_OWNER = "Ningbo Keltara Instruments Co., Ltd.";
+const OTHER_OWNER = "Suzhou Pellmire Interiors Co., Ltd.";
 
 test("the fixture is the defect's own shape — void control", () => {
   assert.notEqual(GOLD, OTHER, "two different marks, or the arms below prove nothing");
@@ -35,7 +35,7 @@ test("the fixture is the defect's own shape — void control", () => {
 });
 
 test("a different proprietor's longer Han mark is NOT the reference's mark", () => {
-  assert.equal(matchesReference(GOLD, OTHER), null, "this is the live miss: 色度 scored off 色度花间");
+  assert.equal(matchesReference(GOLD, OTHER), null, "this is the live miss: 澜珀 scored off 澜珀花间");
   assert.equal(matchesReference(OTHER, GOLD), null, "both directions — the rule was symmetric");
   assert.equal(matchesReference(GOLD, OTHER, { sameOwner: false }), null, "explicit false, same answer");
 });
@@ -49,8 +49,8 @@ test("the mark still matches itself", () => {
 test("NFKC folds a compatibility rendering, so one mark typed two ways is one mark", () => {
   // ＡＢＣ (full-width) and ABC are the same characters; a reference typed on a CJK IME must not read as
   // a different mark from the same string typed on a Latin one. Both sides fold before comparison.
-  assert.equal(matchesReference("色度／ＡＢＣ", "色度/ABC"), "script");
-  assert.equal("色度／ＡＢＣ".normalize("NFKC"), "色度/ABC", "…and this is why — the fold, stated");
+  assert.equal(matchesReference("澜珀／ＡＢＣ", "澜珀/ABC"), "script");
+  assert.equal("澜珀／ＡＢＣ".normalize("NFKC"), "澜珀/ABC", "…and this is why — the fold, stated");
 });
 
 test("one proprietor rendering one record long and short still joins — under the owner, as everywhere else", () => {
