@@ -4,6 +4,19 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.4.0-beta.1
+
+### Fixed
+
+- Clarivate clearances no longer count look-alike spellings that mix Latin with Greek or Cyrillic letters as searches that could not be completed.
+- Knockouts on the Signa register now say how many register hits the listed filings were drawn from.
+- Clearances on the Signa register no longer search look-alike spellings that mix Latin with Greek or Cyrillic letters; those searches found only unrelated marks.
+
+### For operators
+
+- Clarivate clearances no longer fetch a record, or repeat a count, search or owner lookup, that the same run already made.
+- Knockouts on Signa and Clarivate take their name and close-variation counts from the listing, so each is asked of the register once.
+
 ## 0.4.0-beta.0
 
 ### Before you upgrade
