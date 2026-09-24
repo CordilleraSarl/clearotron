@@ -16371,8 +16371,8 @@ const RETIRED_ENV = {
 
   // Both switched off parts of the recall store, which is gone: no run reads or writes remembered
   // conflicts any more, so a box that set either to 0 loses nothing and one that left them on gains nothing.
-  CLEAROTRON_RECALL_PROBES: ["2026-09-24", "the recall searches were removed with the recall store"],
-  CLEAROTRON_RECALL_TRIPWIRE: ["2026-09-24", "the recall check was removed with the recall store"],
+  CLEAROTRON_RECALL_PROBES: ["2026-09-24", "the feature was removed"],
+  CLEAROTRON_RECALL_TRIPWIRE: ["2026-09-24", "the feature was removed"],
 };
 
 /** One warning line per retired variable still set in `env`. Pure; [] when the environment is clean. */
