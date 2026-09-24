@@ -267,7 +267,7 @@ test("A MISSING CF VALUE CANNOT SELECT LOCAL MODE — it is still a refusal", as
 });
 
 test("LOCAL MODE BOOTS, and says which door it opened", async () => {
-  const r = await boot(bootEnv({ CLEAROTRON_ACCESS_FILE: grantsFile({ t1: { accounts: ["aurora"], users: { "dev@local": "*" } } }) }));
+  const r = await boot(bootEnv({ CLEAROTRON_ACCESS_FILE: grantsFile({ t1: { accounts: ["demo-brand-owner"], users: { "dev@local": "*" } } }) }));
   assert.equal(r.listened, true, `local mode must reach a listening socket; code=${r.code}\n${r.stderr}`);
   assert.match(r.stderr, /auth ON — local sign-in, one user \(dev@local\), loopback only/);
   assert.match(r.stderr, /auth ON \(local sign-in\)/, "the listening line names the door, and never says AUTH OFF again");
@@ -288,7 +288,7 @@ test("/ 1960 FIRST RUN mints a credential; off a terminal the passphrase is not 
   // disguise. An env override that forced the terminal branch would be worse still: a knob that makes
   // the service print a credential is the defect with a switch on it.
   const credential = join(tempDir("portal-bootcred-"), "credential.json");
-  const grants = grantsFile({ t1: { accounts: ["aurora"], users: { "dev@local": "*" } } });
+  const grants = grantsFile({ t1: { accounts: ["demo-brand-owner"], users: { "dev@local": "*" } } });
 
   const first = await boot(bootEnv({ PORTAL_LOCAL_CREDENTIAL: credential, CLEAROTRON_ACCESS_FILE: grants }));
   assert.equal(first.listened, true, first.stderr);
@@ -329,7 +329,7 @@ test("A CORRUPT CREDENTIAL IS FATAL — it must never read as 'no user configure
 });
 
 test("local mode's own fail-closed exits: no user, a non-address, a non-loopback host, an unknown mode", async () => {
-  const grants = grantsFile({ t1: { accounts: ["aurora"], users: { "dev@local": "*" } } });
+  const grants = grantsFile({ t1: { accounts: ["demo-brand-owner"], users: { "dev@local": "*" } } });
 
   const noUser = await boot(bootEnv({ PORTAL_LOCAL_USER: undefined, CLEAROTRON_ACCESS_FILE: grants }));
   assert.equal(noUser.listened, false);
@@ -365,7 +365,7 @@ test("PORTAL_SECRET IS REQUIRED IN BOTH MODES — the shipped default secret is 
   // `PORTAL_SECRET || (DEV ? "dev-secret-not-for-prod" : "")` shipped a signing key in the source tree
   // and the only thing between it and production was one variable being read correctly. It signs the
   // confirmation tokens and, now, the session cookie; there is no default for either.
-  const grants = grantsFile({ t1: { accounts: ["aurora"], users: { "dev@local": "*" } } });
+  const grants = grantsFile({ t1: { accounts: ["demo-brand-owner"], users: { "dev@local": "*" } } });
   for (const [what, env] of [["local", bootEnv({ PORTAL_SECRET: undefined, CLEAROTRON_ACCESS_FILE: grants })],
     ["cf-access", cfEnv({ PORTAL_SECRET: undefined, CLEAROTRON_ACCESS_FILE: grants })]]) {
     const r = await boot(env);
@@ -391,7 +391,7 @@ test("THE DELETED SWITCHES ARE UNREACHABLE — not merely unused", async () => {
 
   const r = await boot(bootEnv({
     PORTAL_AUTH_DISABLED: "1", PORTAL_DEV: "1", PORTAL_DEV_EMAIL: "ghost@nowhere.example",
-    CLEAROTRON_ACCESS_FILE: grantsFile({ t1: { accounts: ["aurora"], users: { "dev@local": "*" } } }),
+    CLEAROTRON_ACCESS_FILE: grantsFile({ t1: { accounts: ["demo-brand-owner"], users: { "dev@local": "*" } } }),
   }));
   assert.equal(r.listened, true, r.stderr);
   assert.match(r.stderr, /auth ON — local sign-in, one user \(dev@local\)/, "the old names buy nothing");
@@ -407,13 +407,13 @@ test("THE DELETED SWITCHES ARE UNREACHABLE — not merely unused", async () => {
 test("opsTokenPosture reports the REAL posture of a real minted token, and agrees with the verifier", () => {
   // Real artifacts: minted through the one issuance path (mcp-server/mint-token.mjs calls exactly this),
   // not a hand-written blob that could encode a shape mintToken never produces.
-  const capped = mintToken({ scope: "ops", sub: "portal", verbs: ["start_run"], accounts: ["aurora", "zephyr"] });
+  const capped = mintToken({ scope: "ops", sub: "portal", verbs: ["start_run"], accounts: ["demo-brand-owner", "zephyr"] });
   const p = opsTokenPosture(capped);
   assert.equal(p.readable, true);
   assert.equal(p.scope, "ops");
   assert.equal(p.sub, "portal");
   assert.deepEqual(p.verbs, ["start_run"]);
-  assert.deepEqual(p.accounts, ["aurora", "zephyr"]);
+  assert.deepEqual(p.accounts, ["demo-brand-owner", "zephyr"]);
   assert.equal(p.accountCapped, true);
 
   // The posture is DECODED, never verified — so the thing that must be true is that it never claims a cap
@@ -604,11 +604,11 @@ test("serve() hands the counter the queues the RUNNER drains — the allowance i
   // move this row out of "today". A sub-millisecond window once a day, recorded rather than engineered
   // around — the wiring assertion below is `complete`, which no clock can move.
   writeFileSync(join(inst, ".matter-ledger.jsonl"),
-    JSON.stringify({ profileKey: "aurora", ts: Date.now(), clientPrincipal: true, msgId: "boot-1" }) + "\n");
+    JSON.stringify({ profileKey: "demo-brand-owner", ts: Date.now(), clientPrincipal: true, msgId: "boot-1" }) + "\n");
 
   // dev@local is a CLIENT: its domain is not in PORTAL_STAFF_DOMAINS, and the roster grants it one account.
   const grantsPath = join(tempDir("portal-boot-grants-"), "grants.json");
-  writeFileSync(grantsPath, JSON.stringify({ tenants: { t1: { accounts: ["aurora"], users: { "dev@local": "*" } } } }));
+  writeFileSync(grantsPath, JSON.stringify({ tenants: { t1: { accounts: ["demo-brand-owner"], users: { "dev@local": "*" } } } }));
 
   // — THE REQUEST NOW CARRIES A REAL SESSION, and that is an upgrade rather than a workaround.
   // This used to reach the route on the deleted bypass, which proved nothing about identity because
@@ -619,7 +619,7 @@ test("serve() hands the counter the queues the RUNNER drains — the allowance i
   const session = mintSession({ email: "dev@local", secret: BOOT_SECRET });
   const r = await withFreePorts(["portal"], ({ portal }) => bootAndGet(
     bootEnv({ CLEAROTRON_ACCESS_FILE: grantsPath, CLEAROTRON_QUEUE_DIR: qdir, PORTAL_SERVICE_PORT: String(portal) }),
-    "/portal/api/usage?account=aurora",
+    "/portal/api/usage?account=demo-brand-owner",
     { headers: { cookie: `portal_session=${session}`, accept: "application/json" } }), { busy: portTaken });
 
   assert.equal(r.error, null, `the portal never answered: ${r.error}\n${r.stderr}`);
@@ -633,11 +633,11 @@ test("the same request WITHOUT the cookie is refused by the booted service", asy
   // The control for the test above: its 200 is bought by the session, not by a door that lets anything
   // through. Same process, same route, same account — no cookie.
   const grantsPath = join(tempDir("portal-boot-grants-"), "grants.json");
-  writeFileSync(grantsPath, JSON.stringify({ tenants: { t1: { accounts: ["aurora"], users: { "dev@local": "*" } } } }));
+  writeFileSync(grantsPath, JSON.stringify({ tenants: { t1: { accounts: ["demo-brand-owner"], users: { "dev@local": "*" } } } }));
 
   const r = await withFreePorts(["portal"], ({ portal }) => bootAndGet(
     bootEnv({ CLEAROTRON_ACCESS_FILE: grantsPath, PORTAL_SERVICE_PORT: String(portal) }),
-    "/portal/api/usage?account=aurora", { headers: { accept: "application/json" } }), { busy: portTaken });
+    "/portal/api/usage?account=demo-brand-owner", { headers: { accept: "application/json" } }), { busy: portTaken });
 
   assert.equal(r.error, null, `the portal never answered: ${r.error}\n${r.stderr}`);
   assert.equal(r.status, 401, `a signed-out request must be refused; got ${r.status} ${JSON.stringify(r.json)}`);

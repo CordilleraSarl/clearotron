@@ -45,7 +45,7 @@ test("house default (generic/petcary) dictation: Moderate ladder, 'the company',
 });
 
 test("anti-resurrection: the retired universal scale is never re-taught by the prompts", () => {
-  for (const key of [null, "zephyr", "aurora"]) {
+  for (const key of [null, "zephyr", "demo-brand-owner"]) {
     const msg = STAGES.synthesis.message(ctxFor(key));
     assert.doesNotMatch(msg, /REQUIRE level D or E/i, "the old hardcoded ceiling text is dead");
     assert.doesNotMatch(msg, /composite: integer 1-5/, "the old composite dictation is dead");
@@ -56,10 +56,10 @@ test("anti-resurrection: the retired universal scale is never re-taught by the p
   }
 });
 
-test("aurora dictation carries ITS five bands incl. Low (the matrix deck's own output words)", () => {
-  const msg = STAGES.synthesis.message(ctxFor("aurora"));
+test("demo dictation carries ITS five bands incl. Low (the matrix deck's own output words)", () => {
+  const msg = STAGES.synthesis.message(ctxFor("demo-brand-owner"));
   assert.match(msg, /Very High \/ High \/ Medium \/ Manageable \/ Low/);
-  assert.match(msg, /"rated_under_framework":"aurora"/);
+  assert.match(msg, /"rated_under_framework":"demo"/);
 });
 
 // The client-summary dictation test that stood here is deleted with the stage (2026-08-01). The

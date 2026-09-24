@@ -27,7 +27,7 @@ process.env.TRADEMARK_MCP_TOKEN_SECRET ||= "test-secret-run-list";
 
 // Two clients of one firm, and a third run whose own record cannot be read.
 const CLIENTS = {
-  aurora: "Aurora Botanicals",
+  "demo-brand-owner": "Demo Brand Owner",
   celta: "Celta Foods",
 };
 
@@ -48,8 +48,8 @@ function workspace() {
       ...(project ? { projectKey: project.key, projectName: project.name } : {}),
     }));
   };
-  mk("tmp1-lumen", "run-a", "aurora", "LUMEN");
-  mk("tmp2-verdant", "run-b", "aurora", "VERDANT", { key: "rebrand-26", name: "Rebrand 2026" });
+  mk("tmp1-lumen", "run-a", "demo-brand-owner", "LUMEN");
+  mk("tmp2-verdant", "run-b", "demo-brand-owner", "VERDANT", { key: "rebrand-26", name: "Rebrand 2026" });
   mk("tmp3-pellar", "run-c", "celta", "PELLAR");
   mk("tmp4-orphan", "run-d", null, "ORPHAN");   // its own record is unreadable
   return ws;
@@ -70,22 +70,22 @@ async function withWorkspace(fn) {
 
 test("THE LAWYER'S QUESTION, in one call: a session holding two clients asks for one by NAME", async () => {
   await withWorkspace(({ tools, filterByAccounts }) => {
-    const scope = { kind: "ops", accounts: ["aurora", "celta"] };
+    const scope = { kind: "ops", accounts: ["demo-brand-owner", "celta"] };
 
     // The question as asked — the client's name, not the mark's, and not an identifier the lawyer has
     // never seen. This is the call that used to come back empty.
-    const asked = filterByAccounts(scope, "list_runs", tools.list_runs({ mark: "Aurora Botanicals" }));
+    const asked = filterByAccounts(scope, "list_runs", tools.list_runs({ mark: "Demo Brand Owner" }));
     assert.deepEqual(asked.map((r) => r.markName).sort(), ["LUMEN", "VERDANT"],
       "asking for a client by name returned something other than that client's searches");
     for (const row of asked) {
       // THE FIELD FIRST, then its value. Dereferencing a missing `client` throws, and a stack trace is a
       // worse answer than a sentence when the thing that broke is "the row stopped naming its client".
       assert.ok(row.client, `the row for ${row.markName} carries no client at all`);
-      assert.equal(row.client.key, "aurora", "a row for another client came back");
+      assert.equal(row.client.key, "demo-brand-owner", "a row for another client came back");
     }
 
     // PART OF THE NAME, because nobody types a client's registered spelling into a chat window.
-    assert.deepEqual(tools.list_runs({ mark: "aurora bot" }).map((r) => r.markName).sort(), ["LUMEN", "VERDANT"]);
+    assert.deepEqual(tools.list_runs({ mark: "demo brand" }).map((r) => r.markName).sort(), ["LUMEN", "VERDANT"]);
     assert.deepEqual(tools.list_runs({ mark: "celta" }).map((r) => r.markName), ["PELLAR"]);
 
     // THE OTHER TWO NAMES A QUESTION ARRIVES WITH, and the one it always could. The mark filter is one
@@ -108,7 +108,7 @@ test("EVERY ROW NAMES ITS CLIENT, and a run whose record cannot be read SAYS SO"
 
     for (const mark of ["LUMEN", "PELLAR", "VERDANT", "ORPHAN"])
       assert.ok(by(mark)?.client, `the row for ${mark} carries no client field at all`);
-    assert.deepEqual(by("LUMEN").client, { key: "aurora", name: "Aurora Botanicals" });
+    assert.deepEqual(by("LUMEN").client, { key: "demo-brand-owner", name: "Demo Brand Owner" });
     assert.deepEqual(by("PELLAR").client, { key: "celta", name: "Celta Foods" });
     assert.deepEqual(by("VERDANT").project, { key: "rebrand-26", name: "Rebrand 2026" },
       "a run started under a project does not name it");
@@ -125,14 +125,14 @@ test("EVERY ROW NAMES ITS CLIENT, and a run whose record cannot be read SAYS SO"
 
 test("THE NEW FIELD RIDES BEHIND THE ACCOUNT GATE — it never widens who sees what", async () => {
   await withWorkspace(({ tools, filterByAccounts }) => {
-    const scoped = { kind: "ops", accounts: ["aurora"] };
+    const scoped = { kind: "ops", accounts: ["demo-brand-owner"] };
 
     // A session granted ONE client gets only its own runs, each naming its own client.
     const mine = filterByAccounts(scoped, "list_runs", tools.list_runs({}));
     assert.deepEqual(mine.map((r) => r.markName).sort(), ["LUMEN", "VERDANT"]);
     for (const row of mine) {
       assert.ok(row.client, `the row for ${row.markName} carries no client at all`);
-      assert.equal(row.client.name, "Aurora Botanicals");
+      assert.equal(row.client.name, "Demo Brand Owner");
     }
 
     // AND NAMING ANOTHER FIRM'S CLIENT TEACHES IT NOTHING. The filter widened what is FOUND; the gate
@@ -206,7 +206,7 @@ test("EVERY ROW SAYS WHICH SEARCH IT WAS, so one mark on one day is not two indi
       schema: 1, runId: `${slug}-${run}`, slug, codename: run, agent: "test",
       state: "delivered", markName, updatedAt: "2026-01-01T00:00:00Z",
     }));
-    writeFileSync(driverDir(d, "profile.json"), JSON.stringify({ profileKey: "aurora", name: CLIENTS.aurora }));
+    writeFileSync(driverDir(d, "profile.json"), JSON.stringify({ profileKey: "demo-brand-owner", name: CLIENTS["demo-brand-owner"] }));
     // The frozen LEVEL — the product's id, in the sidecar the resolver reads. The run records which
     // search ran; what that search is CALLED is the registry's answer at read time, so an archived run
     // is named the way the product is named today.

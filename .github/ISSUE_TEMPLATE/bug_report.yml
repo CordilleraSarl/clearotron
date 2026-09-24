@@ -10,7 +10,7 @@ body:
         numbers. Once posted here they are public and cannot be recalled.
 
         Reproduce against the repo's own synthetic fixtures instead — the demo customers
-        (`aurora`, `zephyr`, `petcary`) and the $0 mock recipe in
+        (`demo-brand-owner`, `zephyr`, `petcary`) and the $0 mock recipe in
         `docs/E2E.md` (§ Tier 1) exercise the whole pipeline with no client data in
         sight. If a stack trace or a log line is the evidence, paste that line, with any mark, party
         or matter number replaced by `REDACTED`.

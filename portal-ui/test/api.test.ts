@@ -36,8 +36,8 @@ const withFetch = async <T>(
 }
 
 test('403 and 404 both decode to states with no "forbidden" in them', async () => {
-  const forbidden = await withFetch(403, { error: 'no access' }, () => api.runs('aurora'))
-  const missing = await withFetch(404, { error: 'not_found' }, () => api.runs('aurora'))
+  const forbidden = await withFetch(403, { error: 'no access' }, () => api.runs('demo-brand-owner'))
+  const missing = await withFetch(404, { error: 'not_found' }, () => api.runs('demo-brand-owner'))
 
   assert.equal(forbidden.kind, 'noAccess')
   assert.equal(missing.kind, 'notFound')
@@ -55,7 +55,7 @@ test('422 with classify is a question; 422 without is a collision', async () => 
   const asking = await withFetch(
     422,
     { classify: { questions: ['Which classes should this cover?'] } },
-    () => api.runs('aurora'),
+    () => api.runs('demo-brand-owner'),
   )
   assert.equal(asking.kind, 'clarify')
   assert.deepEqual(asking.kind === 'clarify' ? asking.questions : null, ['Which classes should this cover?'])
@@ -63,7 +63,7 @@ test('422 with classify is a question; 422 without is a collision', async () => 
   const colliding = await withFetch(
     422,
     { errors: ['LUMEN and lumen resolve to the same run'] },
-    () => api.runs('aurora'),
+    () => api.runs('demo-brand-owner'),
   )
   assert.equal(colliding.kind, 'collision', 'no classify ⇒ mark-batch dedupe, not a question')
   assert.deepEqual(colliding.kind === 'collision' ? colliding.errors : null, ['LUMEN and lumen resolve to the same run'])
@@ -73,7 +73,7 @@ test('409 splits: the confirmation gate is rendered verbatim, a version conflict
   const gate = await withFetch(
     409,
     { error: 'the request changed after confirmation — review the plan again and re-confirm' },
-    () => api.runs('aurora'),
+    () => api.runs('demo-brand-owner'),
   )
   assert.equal(gate.kind, 'gate')
   // Verbatim. These seven strings are written to be read by a human; paraphrasing a precise
@@ -83,7 +83,7 @@ test('409 splits: the confirmation gate is rendered verbatim, a version conflict
     'the request changed after confirmation — review the plan again and re-confirm',
   )
 
-  const conflict = await withFetch(409, { error: 'version_conflict: expected 4, found 5' }, () => api.runs('aurora'))
+  const conflict = await withFetch(409, { error: 'version_conflict: expected 4, found 5' }, () => api.runs('demo-brand-owner'))
   assert.equal(conflict.kind, 'conflict', 'an optimistic-concurrency clash is a save problem, not a gate refusal')
 })
 
@@ -144,7 +144,7 @@ test('an internal refusal CODE never reaches the reader as page copy', async () 
   // THE CONTROL: a 409 that carries no code is still rendered exactly as the server wrote it. This must
   // not become "every 409 gets a general sentence" — most of them ARE the sentence.
   const prose = 'Choose at least one organisation or company this person may see.'
-  const plain = await withFetch(409, { error: prose }, () => api.runs('aurora'))
+  const plain = await withFetch(409, { error: prose }, () => api.runs('demo-brand-owner'))
   assert.equal(saveFailureText(plain), prose, 'a refusal written as prose still reaches the reader whole')
 })
 
@@ -182,11 +182,11 @@ test('a staff identity granted everything is not a client with no accounts', asy
     assert.deepEqual(staff.value.accounts, [])
   }
 
-  const client = await withFetch(200, { role: 'client', email: 'a@b.example', accounts: ['aurora'] }, () => api.me())
+  const client = await withFetch(200, { role: 'client', email: 'a@b.example', accounts: ['demo-brand-owner'] }, () => api.me())
   assert.ok(isOk(client))
   if (isOk(client)) {
     assert.equal(client.value.allAccounts, false)
-    assert.deepEqual(client.value.accounts, ['aurora'])
+    assert.deepEqual(client.value.accounts, ['demo-brand-owner'])
   }
 })
 
@@ -218,7 +218,7 @@ test('run rows never gain a tone or a band the server did not send', async () =>
         { title: 'no id — dropped entirely' },
       ],
     },
-    () => api.runs('aurora'),
+    () => api.runs('demo-brand-owner'),
   )
   assert.ok(isOk(r))
   if (!isOk(r)) return
@@ -238,7 +238,7 @@ test('run rows never gain a tone or a band the server did not send', async () =>
 })
 
 test('an unknown run state is treated as in flight, never as finished', async () => {
-  const r = await withFetch(200, { runs: [{ runId: 'x', state: 'reticulating' }] }, () => api.runs('aurora'))
+  const r = await withFetch(200, { runs: [{ runId: 'x', state: 'reticulating' }] }, () => api.runs('demo-brand-owner'))
   assert.ok(isOk(r))
   // Erring toward "finished" would invite someone to go and read a report that does not exist yet.
   if (isOk(r)) assert.equal(r.value[0]!.state, 'running')
@@ -254,7 +254,7 @@ test("the engine's park vocabulary decodes to paused (the mid-upgrade belt), and
     { runId: 'c', state: 'parked-for-human' },
     { runId: 'd', state: 'paused', pausedKind: 'operator' },
     { runId: 'e', state: 'paused', pausedKind: 'made-up-kind' },
-  ] }, () => api.runs('aurora'))
+  ] }, () => api.runs('demo-brand-owner'))
   assert.ok(isOk(r))
   if (isOk(r)) {
     for (const row of r.value.slice(0, 4)) assert.equal(row.state, 'paused', `${row.runId} decodes paused`)
@@ -269,7 +269,7 @@ test('a network failure is distinguishable from a server failure', async () => {
     throw new TypeError('Failed to fetch')
   }) as typeof fetch
   try {
-    const r = await api.runs('aurora')
+    const r = await api.runs('demo-brand-owner')
     // Nothing reached the server, so a retry is free of side effects — which is why this is not lumped
     // in with a 5xx.
     assert.equal(r.kind, 'upstream')
@@ -285,7 +285,7 @@ test('the projects mapper carries `archived` through, and an absent flag means n
   const r = await withFetch(200, { projects: [
     { key: 'live-one', name: 'Live one' },
     { key: 'retired-one', name: 'Retired one', archived: true },
-  ] }, () => api.projects('aurora'))
+  ] }, () => api.projects('demo-brand-owner'))
 
   assert.ok(isOk(r))
   assert.deepEqual(r.value, [
@@ -297,7 +297,7 @@ test('the projects mapper carries `archived` through, and an absent flag means n
 test('adminObserved decodes a populated feed', async () => {
   const r = await withFetch(200, {
     available: true, truncated: true, note: null,
-    people: [{ email: 'reviewer@cordillera.ch', events: { plan: 2, trigger: 1 }, accounts: ['aurora'],
+    people: [{ email: 'reviewer@cordillera.ch', events: { plan: 2, trigger: 1 }, accounts: ['demo-brand-owner'],
       firstSeen: '2026-07-18T09:00:00.000Z', lastSeen: '2026-07-20T09:00:00.000Z', count: 3 }],
   }, () => api.adminObserved())
   assert.equal(r.kind, 'ok')
@@ -422,7 +422,7 @@ test('engineProgramDisputed decodes to three values, and the third is not false'
   // THE WHOLE POINT OF THE FIELD IS THAT IT HAS THREE ANSWERS. Collapsing "could not check" into
   // "no disagreement" would print the remedy for an empty machine — install a CLI — at a reader whose
   // machine already has one, which is the defect this field exists to end, arriving by another route.
-  const base = { role: 'client', email: 'a@b.example', accounts: ['aurora'] }
+  const base = { role: 'client', email: 'a@b.example', accounts: ['demo-brand-owner'] }
   for (const [wire, want] of [[true, true], [false, false]] as const) {
     const r = await withFetch(200, { ...base, engineProgramDisputed: wire }, () => api.me())
     assert.ok(isOk(r))
@@ -442,16 +442,16 @@ test('engineMode decodes to demo or unproven, and EVERYTHING else is null', asyn
   // The two values a caller may act on survive; anything else lands as null, which every caller treats
   // as "leave the button alone". The direction that matters is the one that takes a working install's
   // button away: an unrecognised value must never read as demo.
-  const demo = await withFetch(200, { role: 'client', email: 'a@b.example', accounts: ['aurora'], engineMode: 'demo' }, () => api.me())
+  const demo = await withFetch(200, { role: 'client', email: 'a@b.example', accounts: ['demo-brand-owner'], engineMode: 'demo' }, () => api.me())
   assert.ok(isOk(demo))
   if (isOk(demo)) assert.equal(demo.value.engineMode, 'demo')
 
-  const unproven = await withFetch(200, { role: 'client', email: 'a@b.example', accounts: ['aurora'], engineMode: 'engine-unproven' }, () => api.me())
+  const unproven = await withFetch(200, { role: 'client', email: 'a@b.example', accounts: ['demo-brand-owner'], engineMode: 'engine-unproven' }, () => api.me())
   assert.ok(isOk(unproven))
   if (isOk(unproven)) assert.equal(unproven.value.engineMode, 'engine-unproven')
 
   for (const wire of [undefined, null, '', 'engine-ready', 'DEMO', 'no-engine', 42, {}]) {
-    const r = await withFetch(200, { role: 'client', email: 'a@b.example', accounts: ['aurora'], engineMode: wire }, () => api.me())
+    const r = await withFetch(200, { role: 'client', email: 'a@b.example', accounts: ['demo-brand-owner'], engineMode: wire }, () => api.me())
     assert.ok(isOk(r))
     if (isOk(r)) {
       assert.equal(r.value.engineMode, null,
@@ -467,7 +467,7 @@ test('setupRoute decodes to one of the two routes, and EVERYTHING else is null',
   // off the wire, so it gets the same closed-set treatment engineMode gets above: a string this build
   // does not recognise must not reach a screen and be rendered as a command.
   const me = (wire: unknown) => withFetch(
-    200, { role: 'client', email: 'a@b.example', accounts: ['aurora'], setupRoute: wire }, () => api.me())
+    200, { role: 'client', email: 'a@b.example', accounts: ['demo-brand-owner'], setupRoute: wire }, () => api.me())
 
   for (const good of ['packaged', 'checkout'] as const) {
     const r = await me(good)
@@ -493,7 +493,7 @@ test('the administrator contact decodes to a mail or web href, and everything el
   // second check, at the hop, so a value from an older or a misbehaving server cannot become a link that
   // runs something.
   const me = (wire: unknown) => withFetch(
-    200, { role: 'client', email: 'a@b.example', accounts: ['aurora'], administratorContact: wire }, () => api.me())
+    200, { role: 'client', email: 'a@b.example', accounts: ['demo-brand-owner'], administratorContact: wire }, () => api.me())
 
   for (const good of ['mailto:it@northwind.example', 'https://help.northwind.example/access', 'http://intranet.example/it']) {
     const r = await me(good)
@@ -517,7 +517,7 @@ test('the administrator contact decodes to a mail or web href, and everything el
 // not pointed at its own store — existed only in a boot log. These arms pin the three-way distinction.
 
 test('the surface refusing to construct decodes apart from "not yours"', async () => {
-  const unbuilt = await withFetch(404, { error: 'config_surface_unavailable' }, () => api.profile('aurora'))
+  const unbuilt = await withFetch(404, { error: 'config_surface_unavailable' }, () => api.profile('demo-brand-owner'))
   assert.equal(unbuilt.kind, 'surfaceUnavailable')
   assert.notEqual(unbuilt.kind, 'notFound', 'a deployment fault must never wear the words of a denial')
   assert.notEqual(unbuilt.kind, 'noAccess')
@@ -527,7 +527,7 @@ test('every OTHER 404 stays deliberately indistinguishable', async () => {
   // THE CONTROL, and it is the load-bearing one. Without it the arm above passes just as well against a
   // rule that made EVERY 404 self-describing — which is precisely the existence oracle the
   // 404-never-403 rule exists to prevent. A foreign resource must still say nothing about itself.
-  const foreign = await withFetch(404, { error: 'not_found' }, () => api.profile('aurora'))
+  const foreign = await withFetch(404, { error: 'not_found' }, () => api.profile('demo-brand-owner'))
   assert.equal(foreign.kind, 'notFound')
   assert.equal('message' in foreign, false, 'a tenancy answer must carry nothing a component could print')
 })
@@ -559,8 +559,8 @@ test('both settings screens answer three ways, not two', () => {
 // — which sends that person to the one thing that is not wrong. The cause was stated only in a boot log.
 
 test('the two refusals decode apart, and 403 is the door refusing the identity itself', async () => {
-  const forbidden = await withFetch(403, { error: 'no access' }, () => api.profile('aurora'))
-  const missing = await withFetch(404, { error: 'not_found' }, () => api.profile('aurora'))
+  const forbidden = await withFetch(403, { error: 'no access' }, () => api.profile('demo-brand-owner'))
+  const missing = await withFetch(404, { error: 'not_found' }, () => api.profile('demo-brand-owner'))
   assert.equal(forbidden.kind, 'noAccess')
   assert.equal(missing.kind, 'notFound')
   assert.notEqual(forbidden.kind, missing.kind, 'if these decoded the same, no screen could tell them apart')
@@ -670,7 +670,7 @@ test('a 401 decodes to signedOut, on every route, and not to upstream', async ()
   // THE CLASS, not one route. A kind that only some calls produce is a kind screens cannot rely on.
   for (const [name, call] of [
     ['me', () => api.me()],
-    ['runs', () => api.runs('aurora')],
+    ['runs', () => api.runs('demo-brand-owner')],
     ['runsMine', () => api.runsMine()],
   ] as const) {
     const r = await withFetch(401, { error: 'not signed in' }, call)
@@ -699,8 +699,8 @@ test('a 401 is NOT confused with the tenancy answers it sits beside', async () =
   // The funnel that produced the false message is right for these and wrong for a 401, so the three
   // must stay distinguishable at the contract. 403 and 404 keep their own arm above; this one pins that
   // none of them collapsed into the new kind.
-  const forbidden = await withFetch(403, { error: 'no access' }, () => api.runs('aurora'))
-  const missing = await withFetch(404, { error: 'not_found' }, () => api.runs('aurora'))
+  const forbidden = await withFetch(403, { error: 'no access' }, () => api.runs('demo-brand-owner'))
+  const missing = await withFetch(404, { error: 'not_found' }, () => api.runs('demo-brand-owner'))
   assert.equal(forbidden.kind, 'noAccess')
   assert.equal(missing.kind, 'notFound')
 })
@@ -718,7 +718,7 @@ test('any 401, from any request, announces that the session has gone', async () 
   const stop = onSessionEnded(() => seen.push('ended'))
   try {
     // A LOAD, long after mount.
-    const load = await withFetch(401, { error: 'not signed in' }, () => api.runs('aurora'))
+    const load = await withFetch(401, { error: 'not signed in' }, () => api.runs('demo-brand-owner'))
     assert.equal(load.kind, 'signedOut', 'a 401 no longer decodes to the kind the shell answers')
     assert.deepEqual(seen, ['ended'], 'a 401 on a screen load announced nothing, so only that screen hears it')
 
@@ -738,7 +738,7 @@ test('any 401, from any request, announces that the session has gone', async () 
 
   // Nothing is announced once the subscriber has gone — the unsubscribe is what keeps a remounted shell
   // from waking a dead closure.
-  const after = await withFetch(401, { error: 'not signed in' }, () => api.runs('aurora'))
+  const after = await withFetch(401, { error: 'not signed in' }, () => api.runs('demo-brand-owner'))
   assert.equal(after.kind, 'signedOut')
   assert.equal(seen.length, 2, 'the unsubscribe did not take, so a dead subscriber is still being called')
 })
@@ -750,7 +750,7 @@ test('a response that is NOT a 401 announces nothing', async () => {
     // EVERY OTHER REFUSAL, not a token one: an announcement on any of these would blank the whole app
     // over a failure the reader can act on where they are.
     for (const [status, body] of [[403, { error: 'no' }], [404, { error: 'not_found' }], [429, {}], [500, { error: 'boom' }], [200, { runs: [] }]] as const) {
-      await withFetch(status, body, () => api.runs('aurora'))
+      await withFetch(status, body, () => api.runs('demo-brand-owner'))
     }
     assert.deepEqual(seen, [], 'a status other than 401 told the shell the session had ended')
   } finally {

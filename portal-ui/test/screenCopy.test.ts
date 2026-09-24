@@ -714,7 +714,7 @@ test('the band pill carries no margin of its own — the grid places it', () => 
 
 test('a custom framework that will not load is NEVER reported as the house default', () => {
   // The defect: `custom && title ? custom : house` collapsed two different states into one answer.
-  // Aurora Interactive has frameworkPath set (custom === true) but its manifest lives in the config store, which
+  // Demo Brand Owner has frameworkPath set (custom === true) but its manifest lives in the config store, which
   // profile-service could not reach — so title was null and the page told a lawyer their client was
   // rated under Cordillera's house framework. A settings page may render nothing it cannot
   // substantiate; it may never substitute a confident wrong answer for a missing one.

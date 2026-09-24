@@ -42,7 +42,7 @@ test("legal/practical: optional (absent parses clean — archived runs), valid s
 test("legal/practical: v4-only keys — a v3 (composite) doc carrying them rejects as unknown keys", () => {
   const v3 = {
     schema_version: 3,
-    findings: [{ ordinal: 1, mark: "VOLTMAX", composite: 4, level: "B", dispute_type: "classic", owner: FINDING.owner, meters: FINDING.meters, quadrant: FINDING.quadrant, source: FINDING.source, legal_position: "x" }],
+    findings: [{ ordinal: 1, mark: "VOLTMAX", composite: 4, level: "B", dispute_type: "head-on", owner: FINDING.owner, meters: FINDING.meters, quadrant: FINDING.quadrant, source: FINDING.source, legal_position: "x" }],
     coverage: [{ area: "register / EU", state: "confirmed-clean", note: "" }],
   };
   assert.throws(() => parseFindingsJson(JSON.stringify(v3)), /finding_key_unknown:legal_position/);

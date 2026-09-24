@@ -216,7 +216,7 @@ test("ONE SECRET, TWO FAMILIES: a confirmation signature cannot open a session, 
 
 test("a real confirmation token cannot be replayed as a session, and a real session cannot be replayed as a confirmation", () => {
   // The whole-token direction, against the LIVE mint/verify pair on both sides.
-  const account = "aurora";
+  const account = "demo-brand-owner";
   const jobHash = jobHashOf({ markName: "vantor", classes: [9], goods: "software" });
   const conf = mintConfirmation({ secret: SECRET, account, email: USER, jobHash });
   const [cBody, cSig] = conf.split(".");
@@ -241,22 +241,22 @@ test("a local sign-in reaches makePrincipal with the SAME { email } shape the CF
   // out of verifySession goes into makePrincipal untouched and is judged by the roster exactly as a
   // Cloudflare-verified address is — by that address's own entry in the grants file, and a stranger gets
   // nothing.
-  const grants = { tenants: { celta: { accounts: ["aurora"], users: { [USER]: ["aurora"] } } },
+  const grants = { tenants: { celta: { accounts: ["demo-brand-owner"], users: { [USER]: ["demo-brand-owner"] } } },
     people: { "lawyer@example-firm.com": { run: true, manage: true, everything: true } } };
 
   const client = verifySession({ token: mintSession({ email: USER, secret: SECRET }), secret: SECRET });
   assert.deepEqual(Object.keys(client), ["email"], "an identity is an email and nothing else — no role, no accounts, no claims");
   assert.deepEqual(makePrincipal({ email: client.email, grants }),
     { email: USER, everything: false, permissions: { run: false, manage: false },
-      access: [{ kind: "company", key: "aurora", org: "celta" }], accounts: ["aurora"],
-      organisations: ["celta"], genericOrgs: [], accountOrgs: { aurora: "celta" } },
+      access: [{ kind: "company", key: "demo-brand-owner", org: "celta" }], accounts: ["demo-brand-owner"],
+      organisations: ["celta"], genericOrgs: [], accountOrgs: { "demo-brand-owner": "celta" } },
     "a granted address resolves to its company, and no entry under people holds both switches off");
 
   const staff = verifySession({ token: mintSession({ email: "lawyer@example-firm.com", secret: SECRET }), secret: SECRET });
   assert.deepEqual(makePrincipal({ email: staff.email, grants }),
     { email: "lawyer@example-firm.com", everything: true, permissions: { run: true, manage: true },
       access: [{ kind: "everything" }], accounts: "*",
-      organisations: ["celta"], genericOrgs: ["celta"], accountOrgs: { aurora: "celta" } },
+      organisations: ["celta"], genericOrgs: ["celta"], accountOrgs: { "demo-brand-owner": "celta" } },
     "an address whose own entry holds everything resolves to everything");
   // …and it is that address's entry, not its domain: a colleague on the same domain holds nothing.
   const colleague = verifySession({ token: mintSession({ email: "colleague@example-firm.com", secret: SECRET }), secret: SECRET });

@@ -28,7 +28,7 @@ const PARTY = "Aurora Therapeutics SA";
 
 /** A grid holding the party's OWN description — the corpus a party fact may rest on. */
 const GRID = { cells: [
-  { term: "aurora therapeutics", platform: "web", status: "searched", candidates: [
+  { term: "demo-brand-owner therapeutics", platform: "web", status: "searched", candidates: [
     { title: "Aurora Therapeutics SA — EPFL spin-off, Lausanne", url: "https://example.test/a" },
     { title: "Aurora Therapeutics develops protease inhibitors for autoimmune and bone disease", url: "https://example.test/b" },
     { title: "Has strategic investments — Aurora Therapeutics", url: "https://example.test/c" },
@@ -433,7 +433,7 @@ test("an unrelated mention of the same word does NOT silence a contradiction", (
   //
   // The pooled corpus is the right question for an INVENTED claim ("does this run hold the word at
   // all") and the wrong one here, where both sides are about what the run says CONCERNING this party.
-  const withNoise = { cells: [{ term: "aurora", platform: "web", status: "searched", candidates: [
+  const withNoise = { cells: [{ term: "demo-brand-owner", platform: "web", status: "searched", candidates: [
     ...GRID.cells[0].candidates,
     { title: "Contract manufacturing services — Unrelated Pharma GmbH", url: "https://example.test/z" },
   ] }], extras: [], gaps: [] };
@@ -448,7 +448,7 @@ test("an unrelated mention of the same word does NOT silence a contradiction", (
 test("a mention ABOUT THE PARTY is a source, and correctly stops the flag", () => {
   // The other direction, and the arm that keeps the fix from being 'flag everything'. If the run's own
   // material says this party HAS a manufacturing agreement, saying so is sourced, not contradicted.
-  const supported = { cells: [{ term: "aurora", platform: "web", status: "searched", candidates: [
+  const supported = { cells: [{ term: "demo-brand-owner", platform: "web", status: "searched", candidates: [
     ...GRID.cells[0].candidates,
     { title: `${PARTY} signs manufacturing agreement with a contract partner`, url: "https://example.test/y" },
   ] }], extras: [], gaps: [] };

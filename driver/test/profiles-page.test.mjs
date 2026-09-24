@@ -75,7 +75,7 @@ test("PR-2: framework box renders axes + prominent source deck + the band-meanin
 
 test("PR-2: roster sub-line truncates, key is a mono slug, and the anon spans still cover name and key+industry", () => {
   const src = readFileSync(TEMPLATE, "utf8");
-  assert.match(src, /-webkit-line-clamp:2/, "the sub-line clamps (aurora's ~110-char industry must not overflow)");
+  assert.match(src, /-webkit-line-clamp:2/, "the sub-line clamps (demo-brand-owner's ~110-char industry must not overflow)");
   assert.ok(src.includes('<code class="slug">${esc(p.key)}</code>'), "the key renders as a muted mono slug");
   assert.ok(src.includes('data-anon="client" data-anon-key="${esc(p.key)}">${esc(p.name||p.key)}'),
     "the client span still exactly covers the name (the overlay swaps its textContent)");

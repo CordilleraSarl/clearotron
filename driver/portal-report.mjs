@@ -285,10 +285,10 @@ function dropLabelledInternalTails(html, onUnbalanced = () => {}) {
 // ── the pre-v4 reviewer shorthand: "Level C · Composite 3" ───────────────────────────────────────────
 //
 // render.mjs riskChip ( T6, wp50): the internal chip reads
-// `MEDIUM · <span class="lv">Level C</span>Composite 3 · Horse trade`, and the raw Level/Composite codes
+// `MEDIUM · <span class="lv">Level C</span>Composite 3 · Bargain`, and the raw Level/Composite codes
 // were never meant to reach a client — the renderer's own comment says so, and the pre-v4 footer calls
 // them "the internal legal shorthand" by name. The retired client export carried the same chip as
-// `MEDIUM risk · Horse trade`; serving the one report, the codes come out and the tier word and dispute
+// `MEDIUM risk · Bargain`; serving the one report, the codes come out and the tier word and dispute
 // type — which that export always showed — stay.
 //
 // Pre-v4 archives ONLY, by construction: "No Level/Composite shorthand exists on a v4 record"
@@ -298,7 +298,7 @@ function dropLabelledInternalTails(html, onUnbalanced = () => {}) {
 //
 // Three rendered shapes, each anchored on the renderer's exact output rather than on the words alone:
 //   • the chip, taking ONE adjoining "·" separator with it (leading when a tier word precedes, else
-//     trailing) so no chip is left reading "MEDIUM · · Horse trade";
+//     trailing) so no chip is left reading "MEDIUM · · Bargain";
 //   • oneFallback's parenthesised form "(Level C · Composite 3)" in a one-line summary;
 //   • the footer legend that NAMES the codes — the clause and the "Internal notes are review-only"
 //     sentence go, and the client-vocabulary sentence around them closes on its own full stop.

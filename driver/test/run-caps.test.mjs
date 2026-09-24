@@ -29,12 +29,12 @@ function queueWith({ queued = [], ledger = [] } = {}) {
 test("checkRunCaps: maxQueued counts tagged backlog across queues; the in-hand job rides on top; under-cap passes", () => {
   const NOW = Date.parse("2026-07-18T12:00:00Z");
   const q1 = queueWith({ queued: [
-    { state: "a", profileKey: "aurora" }, { state: "b", profileKey: "aurora", ext: "processing" },
+    { state: "a", profileKey: "demo-brand-owner" }, { state: "b", profileKey: "demo-brand-owner", ext: "processing" },
     { state: "c", profileKey: "zephyr" }, { state: "d" } /* untagged */ ] });
-  const q2 = queueWith({ queued: [{ state: "e", profileKey: "aurora", ext: "postponed" }] });
-  // aurora tagged backlog = 3 (a, b, e). cap 3 ⇒ 3 >= 3+1 is false ⇒ passes; cap 2 ⇒ 3 >= 3 ⇒ refuses.
-  assert.equal(checkRunCaps({ account: "aurora", caps: { maxQueued: 3 }, queueDirs: [q1, q2], now: NOW }), null);
-  const msg = checkRunCaps({ account: "aurora", caps: { maxQueued: 2 }, queueDirs: [q1, q2], now: NOW });
+  const q2 = queueWith({ queued: [{ state: "e", profileKey: "demo-brand-owner", ext: "postponed" }] });
+  // demo-brand-owner tagged backlog = 3 (a, b, e). cap 3 ⇒ 3 >= 3+1 is false ⇒ passes; cap 2 ⇒ 3 >= 3 ⇒ refuses.
+  assert.equal(checkRunCaps({ account: "demo-brand-owner", caps: { maxQueued: 3 }, queueDirs: [q1, q2], now: NOW }), null);
+  const msg = checkRunCaps({ account: "demo-brand-owner", caps: { maxQueued: 2 }, queueDirs: [q1, q2], now: NOW });
   assert.match(msg, /runCaps\.maxQueued=2/);
   assert.match(msg, /re-send/, "over-cap clarifies with a recoverable instruction, never a silent drop");
   assert.equal(checkRunCaps({ account: "zephyr", caps: { maxQueued: 2 }, queueDirs: [q1, q2], now: NOW }), null,
@@ -45,19 +45,19 @@ test("checkRunCaps: monthlyRuns counts THIS month's ledger entries for the accou
   const NOW = Date.parse("2026-07-18T12:00:00Z");
   const lastMonth = Date.parse("2026-06-30T12:00:00Z");
   const q = queueWith({ ledger: [
-    { msgId: "1", ts: NOW - 1000, profileKey: "aurora" },
-    { msgId: "2", ts: NOW - 2000, profileKey: "aurora" },
-    { msgId: "3", ts: lastMonth, profileKey: "aurora" },   // outside the month — never counts
+    { msgId: "1", ts: NOW - 1000, profileKey: "demo-brand-owner" },
+    { msgId: "2", ts: NOW - 2000, profileKey: "demo-brand-owner" },
+    { msgId: "3", ts: lastMonth, profileKey: "demo-brand-owner" },   // outside the month — never counts
     { msgId: "4", ts: NOW - 3000, profileKey: "zephyr" },
     { msgId: "5", ts: NOW - 4000 },                        // untagged — never counts
   ] });
-  assert.equal(checkRunCaps({ account: "aurora", caps: { monthlyRuns: 3 }, queueDirs: [q], now: NOW }), null, "2 this month + this one = 3 ≤ 3");
-  const msg = checkRunCaps({ account: "aurora", caps: { monthlyRuns: 2 }, queueDirs: [q], now: NOW });
+  assert.equal(checkRunCaps({ account: "demo-brand-owner", caps: { monthlyRuns: 3 }, queueDirs: [q], now: NOW }), null, "2 this month + this one = 3 ≤ 3");
+  const msg = checkRunCaps({ account: "demo-brand-owner", caps: { monthlyRuns: 2 }, queueDirs: [q], now: NOW });
   assert.match(msg, /started 2 run\(s\) this month/);
   assert.match(msg, /resets at month end/);
   assert.equal(checkRunCaps({ account: "generic", caps: { monthlyRuns: 1 }, queueDirs: [q], now: NOW }), null, "generic is never capped");
   assert.equal(checkRunCaps({ account: null, caps: { monthlyRuns: 1 }, queueDirs: [q], now: NOW }), null);
-  assert.equal(checkRunCaps({ account: "aurora", caps: null, queueDirs: [q], now: NOW }), null, "no caps configured = no gate");
+  assert.equal(checkRunCaps({ account: "demo-brand-owner", caps: null, queueDirs: [q], now: NOW }), null, "no caps configured = no gate");
 });
 
 test("profiles: runCaps validates as a customer-only closed object (ints 1–10000, at least one cap)", () => {
@@ -75,15 +75,15 @@ test("profiles: runCaps validates as a customer-only closed object (ints 1–100
 test("review 2026-07-18: untagged in-hand rides +1 (never one-over-cap); failed ledger rows count monthly but never dedup; recordMatter is msgId-idempotent", async () => {
   const NOW = Date.parse("2026-07-18T12:00:00Z");
   // untagged in-hand: tagged backlog 2, cap 2 → a TAGGED in-hand (inside the count) passes at exactly cap…
-  const q1 = queueWith({ queued: [{ state: "a", profileKey: "aurora" }, { state: "b", profileKey: "aurora", ext: "processing" }] });
-  assert.equal(checkRunCaps({ account: "aurora", caps: { maxQueued: 2 }, queueDirs: [q1], inHandTagged: true, now: NOW }), null);
+  const q1 = queueWith({ queued: [{ state: "a", profileKey: "demo-brand-owner" }, { state: "b", profileKey: "demo-brand-owner", ext: "processing" }] });
+  assert.equal(checkRunCaps({ account: "demo-brand-owner", caps: { maxQueued: 2 }, queueDirs: [q1], inHandTagged: true, now: NOW }), null);
   // …but an UNTAGGED (domain-resolved) in-hand is +1 on top → refused (the old uniform +1 admitted it)
-  assert.match(checkRunCaps({ account: "aurora", caps: { maxQueued: 2 }, queueDirs: [q1], inHandTagged: false, now: NOW }), /maxQueued=2/);
+  assert.match(checkRunCaps({ account: "demo-brand-owner", caps: { maxQueued: 2 }, queueDirs: [q1], inHandTagged: false, now: NOW }), /maxQueued=2/);
   // ledger semantics through the REAL runner helpers
   const { recordMatter, dropMatter, findDuplicateMatter, readMatterLedger } = await import("../runner.mjs");
   const q = queueWith({});
-  recordMatter(q, { sig: "f|MARKX|9||-|level:clearotron", conversationId: "c1", msgId: "m1", id: "j1", ts: NOW, profileKey: "aurora" });
-  recordMatter(q, { sig: "f|MARKX|9||-|level:clearotron", conversationId: "c1", msgId: "m1", id: "j1", ts: NOW + 1, profileKey: "aurora" });
+  recordMatter(q, { sig: "f|MARKX|9||-|level:clearotron", conversationId: "c1", msgId: "m1", id: "j1", ts: NOW, profileKey: "demo-brand-owner" });
+  recordMatter(q, { sig: "f|MARKX|9||-|level:clearotron", conversationId: "c1", msgId: "m1", id: "j1", ts: NOW + 1, profileKey: "demo-brand-owner" });
   assert.equal(readMatterLedger(q).length, 1, "a crash re-claim (same msgId) never double-counts the month");
   dropMatter(q, "m1");
   const rows = readMatterLedger(q);
@@ -91,7 +91,7 @@ test("review 2026-07-18: untagged in-hand rides +1 (never one-over-cap); failed 
   assert.equal(rows[0].failed, true);
   assert.equal(findDuplicateMatter(q, { sig: "f|MARKX|9||-|level:clearotron", conversationId: "c1", msgId: "m2" }, NOW + 1000), null,
     "a failed row never blocks a genuine re-send");
-  assert.match(checkRunCaps({ account: "aurora", caps: { monthlyRuns: 1 }, queueDirs: [q], now: NOW }) ?? "",
+  assert.match(checkRunCaps({ account: "demo-brand-owner", caps: { monthlyRuns: 1 }, queueDirs: [q], now: NOW }) ?? "",
     /monthlyRuns=1/, "…but the failed run still counts as spend for the monthly cap");
 });
 
@@ -106,40 +106,40 @@ const staffRow = (profileKey, ts) => ({ profileKey, ts });
 
 test("dailyRuns: a client run over the allowance is refused, and the message says when it resets", () => {
   const q = queueWith({ ledger: [
-    clientRow("aurora", DAY), clientRow("aurora", DAY), clientRow("aurora", DAY),
+    clientRow("demo-brand-owner", DAY), clientRow("demo-brand-owner", DAY), clientRow("demo-brand-owner", DAY),
   ] });
-  const msg = checkRunCaps({ account: "aurora", caps: { dailyRuns: 3 }, queueDirs: [q], now: DAY, clientRun: true });
+  const msg = checkRunCaps({ account: "demo-brand-owner", caps: { dailyRuns: 3 }, queueDirs: [q], now: DAY, clientRun: true });
   assert.match(msg, /daily allowance/);
   assert.match(msg, /started 3 search\(es\) today/);
   assert.match(msg, /resets at midnight UTC/);
 });
 
 test("dailyRuns: under the allowance passes", () => {
-  const q = queueWith({ ledger: [clientRow("aurora", DAY), clientRow("aurora", DAY)] });
-  assert.equal(checkRunCaps({ account: "aurora", caps: { dailyRuns: 3 }, queueDirs: [q], now: DAY, clientRun: true }), null);
+  const q = queueWith({ ledger: [clientRow("demo-brand-owner", DAY), clientRow("demo-brand-owner", DAY)] });
+  assert.equal(checkRunCaps({ account: "demo-brand-owner", caps: { dailyRuns: 3 }, queueDirs: [q], now: DAY, clientRun: true }), null);
 });
 
 test("dailyRuns: STAFF runs never consume the allowance, and a staff run is never refused by it", () => {
   // three staff runs today: they are real runs, but none of them is the client's to pay for
-  const q = queueWith({ ledger: [staffRow("aurora", DAY), staffRow("aurora", DAY), staffRow("aurora", DAY)] });
+  const q = queueWith({ ledger: [staffRow("demo-brand-owner", DAY), staffRow("demo-brand-owner", DAY), staffRow("demo-brand-owner", DAY)] });
   // the client still has their full allowance
-  assert.equal(checkRunCaps({ account: "aurora", caps: { dailyRuns: 3 }, queueDirs: [q], now: DAY, clientRun: true }), null);
+  assert.equal(checkRunCaps({ account: "demo-brand-owner", caps: { dailyRuns: 3 }, queueDirs: [q], now: DAY, clientRun: true }), null);
   // and a staff run is uncapped even when the client's allowance IS exhausted
-  const spent = queueWith({ ledger: [clientRow("aurora", DAY), clientRow("aurora", DAY), clientRow("aurora", DAY)] });
-  assert.equal(checkRunCaps({ account: "aurora", caps: { dailyRuns: 3 }, queueDirs: [spent], now: DAY, clientRun: false }), null);
+  const spent = queueWith({ ledger: [clientRow("demo-brand-owner", DAY), clientRow("demo-brand-owner", DAY), clientRow("demo-brand-owner", DAY)] });
+  assert.equal(checkRunCaps({ account: "demo-brand-owner", caps: { dailyRuns: 3 }, queueDirs: [spent], now: DAY, clientRun: false }), null);
 });
 
 test("dailyRuns: yesterday's client runs do not count against today", () => {
   const YESTERDAY = Date.parse("2026-07-19T23:59:00Z");
   const q = queueWith({ ledger: [
-    clientRow("aurora", YESTERDAY), clientRow("aurora", YESTERDAY), clientRow("aurora", YESTERDAY),
+    clientRow("demo-brand-owner", YESTERDAY), clientRow("demo-brand-owner", YESTERDAY), clientRow("demo-brand-owner", YESTERDAY),
   ] });
-  assert.equal(checkRunCaps({ account: "aurora", caps: { dailyRuns: 3 }, queueDirs: [q], now: DAY, clientRun: true }), null);
+  assert.equal(checkRunCaps({ account: "demo-brand-owner", caps: { dailyRuns: 3 }, queueDirs: [q], now: DAY, clientRun: true }), null);
 });
 
 test("dailyRuns: another account's client runs do not count against this one", () => {
   const q = queueWith({ ledger: [clientRow("zephyr", DAY), clientRow("zephyr", DAY), clientRow("zephyr", DAY)] });
-  assert.equal(checkRunCaps({ account: "aurora", caps: { dailyRuns: 3 }, queueDirs: [q], now: DAY, clientRun: true }), null);
+  assert.equal(checkRunCaps({ account: "demo-brand-owner", caps: { dailyRuns: 3 }, queueDirs: [q], now: DAY, clientRun: true }), null);
 });
 
 test("profile validation: dailyRuns is a known cap, bounded, and one cap alone is enough", () => {

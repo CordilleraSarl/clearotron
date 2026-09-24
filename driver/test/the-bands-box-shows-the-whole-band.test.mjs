@@ -32,11 +32,10 @@ const deckOf = (f) => readFileSync(join(SKILLS, f), "utf8");
 const manifestOf = (f) => loadFrameworkManifest(DRIVER_ROOT, `skills/clearance-search/${f}`);
 const rowsFor = (f) => extractBandMeanings(deckOf(f), manifestOf(f));
 
-// The four shipped decks the issue names. Verified on one is verified on nothing: this function has a
+// The shipped decks the issue names. Verified on one is verified on nothing: this function has a
 // branch per deck SHAPE, and the shapes differ.
 const HOUSE = "risk-framework.md";
 const ZEPHYR = "risk-framework-zephyr.md";
-const AURORA = "risk-framework-aurora.md";
 const DEMO = "risk-framework-demo.md";
 
 test("a bands deck reaches the screen with EVERY rung it states, in the deck's own order", () => {
@@ -78,10 +77,13 @@ test("a band that states NO rungs is still a garbled deck, and still blanks the 
 });
 
 test("MATRIX decks are untouched — they carry their own summary and no rungs", () => {
-  const aurora = rowsFor(AURORA);
-  assert.ok(Array.isArray(aurora) && aurora.length === 5, "aurora stopped rendering");
-  for (const r of aurora) {
-    assert.ok(r.meaning, "aurora lost the meaning it lifts from its own Band-meanings table");
+  // No shipped matrix deck carries a Band-meanings table, so the demo deck's manifest reads an invented one.
+  const table = ["## Band meanings", "", "| Band | Meaning | Typical Response |", "|---|---|---|",
+    ...manifestOf(DEMO).bands.map((b) => `| **${b.label}** | meaning of ${b.label} | response to ${b.label} |`)].join("\n");
+  const matrix = extractBandMeanings(table, manifestOf(DEMO));
+  assert.ok(Array.isArray(matrix) && matrix.length === 5, "a matrix deck's Band-meanings table stopped rendering");
+  for (const r of matrix) {
+    assert.ok(r.meaning, "a matrix deck lost the meaning it lifts from its own Band-meanings table");
     assert.equal(r.rungs, undefined, "a matrix deck grew rungs — that shape is the bands branch's");
   }
 });
@@ -136,7 +138,7 @@ test("the shared reasoning file carries NO ONE CLIENT's ladder", () => {
   for (const phrase of ["more likely than not to win", "the client has the better of it"]) {
     assert.ok(!shared.includes(phrase),
       `synthesis-rules.md still spells out one framework's ladder ("${phrase}"). It is shared by every `
-      + "client, so a concrete ladder here contradicts three of the four shipped decks");
+      + "client, so a concrete ladder here contradicts every other shipped deck");
   }
   assert.match(shared, /THE FRAMEWORK IN FORCE/, "the neutral instruction that replaced it is gone too");
 });

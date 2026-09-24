@@ -40,8 +40,8 @@ const MACHINE_STAGES = ["matter-frame", "clearance-variants", "register-digest",
 
 const P = new Proxy({}, { get: (_t, k) => (k === "reportCard" ? (a) => `/r/card-${String(a)}.md` : `/r/${String(k)}`) });
 const CUSTOM = {
-  frameworkPath: "skills/clearance-search/risk-framework-aurora.md",
-  workedExamplesPath: "skills/clearance-search/worked-examples-aurora.md",
+  frameworkPath: "skills/clearance-search/risk-framework-demo.md",
+  workedExamplesPath: "skills/clearance-search/worked-examples-demo.md",
 };
 // The three ctx shapes the resolvers actually branch on.
 const CTXS = [

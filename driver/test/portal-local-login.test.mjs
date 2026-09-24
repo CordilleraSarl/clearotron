@@ -36,11 +36,11 @@ const { establishCredential, readLocalCredential, mintSession, makeAttemptLimite
 
 const SECRET = "local-login-test-secret";
 const USER = "one@laptop.example";
-const GRANTS = { tenants: { celta: { accounts: ["aurora", "zephyr"], users: { [USER]: ["aurora"] } } } };
+const GRANTS = { tenants: { celta: { accounts: ["demo-brand-owner", "zephyr"], users: { [USER]: ["demo-brand-owner"] } } } };
 
 /**
  * A portal in local mode: the real service, the real handler, the real credential file, one user who
- * is granted `aurora` and NOT `zephyr`.
+ * is granted `demo-brand-owner` and NOT `zephyr`.
  */
 async function withLocalPortal(fn, { attempts = makeAttemptLimiter({ max: 10, windowMs: 5 * 60 * 1000 }), resetCommand } = {}) {
   const dir = mkdtempSync(join(tmpdir(), "portal-login-"));
@@ -254,19 +254,19 @@ test("signed in, the scoped route answers; the SAME request signed out is refuse
     const login = await postForm(port, "/portal/login", { passphrase });
     const cookie = cookieHeader(login.cookies);
 
-    const inn = await req(port, "/portal/api/runs?account=aurora", { headers: { cookie, accept: "application/json" } });
+    const inn = await req(port, "/portal/api/runs?account=demo-brand-owner", { headers: { cookie, accept: "application/json" } });
     assert.equal(inn.status, 200, `the granted account is readable when signed in: ${inn.body}`);
 
     // THE REFUSAL, unchanged. 401 with a JSON body is what the Cloudflare path produces for a missing
     // JWT (cf-access.mjs AuthError(401)), and it is what an API client and the SPA's own fetches get
     // here — one refusal shape whichever identity source the instance runs.
-    const out = await req(port, "/portal/api/runs?account=aurora", { headers: { accept: "application/json" } });
+    const out = await req(port, "/portal/api/runs?account=demo-brand-owner", { headers: { accept: "application/json" } });
     assert.equal(out.status, 401);
     assert.match(out.headers["content-type"], /application\/json/);
     assert.deepEqual(JSON.parse(out.body), { error: "not signed in" });
 
     // No Accept at all — a curl, a script, a health probe — gets the JSON too, never an HTML page.
-    const bare = await req(port, "/portal/api/runs?account=aurora");
+    const bare = await req(port, "/portal/api/runs?account=demo-brand-owner");
     assert.equal(bare.status, 401);
     assert.deepEqual(JSON.parse(bare.body), { error: "not signed in" });
   });
@@ -297,13 +297,13 @@ test("A CROSS-ACCOUNT PROBE STILL READS AS 404, NOT 403 — existence must not l
     }
     // The control: the granted account is not 404, so the assertions above are about the grant and not
     // about a route that refuses everything.
-    assert.equal((await req(port, "/portal/api/runs?account=aurora", { headers: { cookie, accept: "application/json" } })).status, 200);
+    assert.equal((await req(port, "/portal/api/runs?account=demo-brand-owner", { headers: { cookie, accept: "application/json" } })).status, 200);
   });
 });
 
 test("a session for another address, a tampered cookie and an expired one all fail closed", async () => {
   await withLocalPortal(async ({ port }) => {
-    const ask = (cookie) => req(port, "/portal/api/runs?account=aurora", { headers: { cookie, accept: "application/json" } });
+    const ask = (cookie) => req(port, "/portal/api/runs?account=demo-brand-owner", { headers: { cookie, accept: "application/json" } });
 
     // Correctly signed with THIS instance's secret, but naming somebody else. The handler checks the
     // session's address against the configured one, so a valid signature is not enough — otherwise the
@@ -330,12 +330,12 @@ test("a malformed cookie header is a refusal, never a 500", async () => {
     const good = cookieHeader((await postForm(port, "/portal/login", { passphrase })).cookies);
     for (const cookie of ["portal_session=%zz", "=;;;", "portal_session", "portal_session=", "a=b; portal_session=%E0%A4%A",
       `portal_session=${"x".repeat(5000)}`]) {
-      const r = await req(port, "/portal/api/runs?account=aurora", { headers: { cookie, accept: "application/json" } });
+      const r = await req(port, "/portal/api/runs?account=demo-brand-owner", { headers: { cookie, accept: "application/json" } });
       assert.equal(r.status, 401, `cookie ${JSON.stringify(cookie.slice(0, 40))} must refuse, not crash`);
     }
     // FIRST WINS on a duplicate name, which is what a browser sends for the most specific path — and
     // the shape cookie-shadowing attacks are written against if it were last-wins.
-    assert.equal((await req(port, "/portal/api/runs?account=aurora",
+    assert.equal((await req(port, "/portal/api/runs?account=demo-brand-owner",
       { headers: { cookie: `${good}; portal_session=forged`, accept: "application/json" } })).status, 200);
   });
 });
@@ -430,7 +430,7 @@ test("an injected devIdentity still reaches the roster — the in-process seam t
   await new Promise((r) => srv.listen(0, "127.0.0.1", r));
   try {
     const port = srv.address().port;
-    assert.equal((await req(port, "/portal/api/runs?account=aurora", { headers: { accept: "application/json" } })).status, 200);
+    assert.equal((await req(port, "/portal/api/runs?account=demo-brand-owner", { headers: { accept: "application/json" } })).status, 200);
     // …and it buys no more than a signed-in local user does: the boundary is the roster, not the door.
     assert.equal((await req(port, "/portal/api/runs?account=zephyr", { headers: { accept: "application/json" } })).status, 404);
     // With no localAuth there is no sign-in door either — an injected identity does not mount one.
@@ -508,7 +508,7 @@ test("a SIGNED-IN caller's refusal is journalled WITH the address", async () => 
     const cookie = cookieHeader(login.cookies);
     audits.length = 0;
 
-    // This user is granted `aurora` and is not staff, so a staff-only surface is 404 for them.
+    // This user is granted `demo-brand-owner` and is not staff, so a staff-only surface is 404 for them.
     const r = await req(port, "/portal/admin/retired", {
       method: "POST", headers: { accept: "application/json", "content-type": "application/json", cookie },
       body: JSON.stringify({ action: "retire", runIds: ["anything"] }),
