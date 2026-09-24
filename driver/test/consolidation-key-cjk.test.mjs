@@ -6,9 +6,9 @@
 // `consolidationKey` folds owner and mark with `[^a-z0-9]`, which reduces any CJK, Cyrillic or Arabic
 // value to the EMPTY STRING. Measured on origin/main before this fix:
 //
-//   Shanghai Qingmiao + 澜珀  →  "shanghai qingmiao|"   ┐ SAME KEY — two different marks, one owner
-//   Shanghai Qingmiao + 色彩  →  "shanghai qingmiao|"   ┘
-//   上海青苗          + 澜珀  →  "|"                     ← both halves empty
+//   Shanghai Jiongwei + 澜珀  →  "shanghai jiongwei|"   ┐ SAME KEY — two different marks, one owner
+//   Shanghai Jiongwei + 色彩  →  "shanghai jiongwei|"   ┘
+//   上海炯薇          + 澜珀  →  "|"                     ← both halves empty
 //
 // The second is the severe one: a Chinese owner with a Chinese mark keys to the empty string, so every
 // such finding in a run — across unrelated owners — shares one key. consolidateFindings keeps the
@@ -26,7 +26,7 @@ const f = (owner, mark, ordinal) => ({
 });
 
 test("TWO DIFFERENT CJK MARKS UNDER ONE OWNER STAY TWO FINDINGS", () => {
-  const out = consolidateFindings([f("Shanghai Qingmiao", "澜珀", 1), f("Shanghai Qingmiao", "色彩", 2)]);
+  const out = consolidateFindings([f("Shanghai Jiongwei", "澜珀", 1), f("Shanghai Jiongwei", "色彩", 2)]);
   assert.equal(out.findings.length, 2, "different marks are different conflicts");
   assert.deepEqual(out.merges, [], "and nothing was merged away");
 });
@@ -34,7 +34,7 @@ test("TWO DIFFERENT CJK MARKS UNDER ONE OWNER STAY TWO FINDINGS", () => {
 test("A CJK OWNER WITH A CJK MARK DOES NOT KEY TO THE EMPTY STRING", () => {
   // The severe case: before the fix every such finding, across unrelated owners, shared one key.
   const out = consolidateFindings([
-    f("上海青苗", "澜珀", 1), f("北京华方", "商标", 2), f("株式会社デルフィ", "デルフィ", 3),
+    f("上海炯薇", "澜珀", 1), f("北京华方", "商标", 2), f("株式会社デルフィ", "デルフィ", 3),
   ]);
   assert.equal(out.findings.length, 3, "three unrelated owners, three findings");
   assert.deepEqual(out.merges, []);
@@ -48,7 +48,7 @@ test("A GENUINE DUPLICATE STILL CONSOLIDATES — the fix must not stop the funct
 });
 
 test("A CJK DUPLICATE CONSOLIDATES TOO — the fix is a key, not an exemption", () => {
-  const out = consolidateFindings([f("上海青苗", "澜珀", 1), f("上海青苗", "澜珀", 2)]);
+  const out = consolidateFindings([f("上海炯薇", "澜珀", 1), f("上海炯薇", "澜珀", 2)]);
   assert.equal(out.findings.length, 1, "the same mark and the same owner is still one conflict");
 });
 

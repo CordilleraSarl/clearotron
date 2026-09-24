@@ -1233,9 +1233,9 @@ export function parseFindingsJsonLenient(raw, opts = {}) {
 // `[^a-z0-9]` folds a CJK, Cyrillic or Arabic value to the EMPTY STRING, and this key is built from two
 // of them. Measured on origin/main before the fix:
 //
-//   Shanghai Qingmiao + 澜珀   →  "shanghai qingmiao|"     ┐ same key: two DIFFERENT marks, one owner,
-//   Shanghai Qingmiao + 色彩   →  "shanghai qingmiao|"     ┘ consolidated, and the loser's prose dropped
-//   上海青苗          + 澜珀   →  "|"                       ← BOTH halves empty
+//   Shanghai Jiongwei + 澜珀   →  "shanghai jiongwei|"     ┐ same key: two DIFFERENT marks, one owner,
+//   Shanghai Jiongwei + 色彩   →  "shanghai jiongwei|"     ┘ consolidated, and the loser's prose dropped
+//   上海炯薇          + 澜珀   →  "|"                       ← BOTH halves empty
 //
 // The second line is the severe one and it is not what I expected to find. A Chinese owner with a
 // Chinese mark keys to the empty string, so EVERY such finding in a run — across unrelated owners —
