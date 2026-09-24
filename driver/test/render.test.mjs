@@ -66,11 +66,11 @@ const FINDINGS = [
   { ordinal: 1, mark: "MATCHDAY", owner: { name: "Matchday, Inc.", country: "US", registrations: [
       { uri: "https://tm.example/us/3396572", classes: ["41"], status: "Registered", filed: "2008-03-11", expiry: "2028-03-11", jurisdiction: "US" },
       { uri: "https://tm.example/us/8036850", classes: ["41"], status: "Registered", filed: "2025-11-25", expiry: "2035-11-25", jurisdiction: "US" } ] },
-    composite: 3, level: "B", dispute_type: "paper-conflict",
+    composite: 3, level: "B", dispute_type: "register-only",
     meters: { mark_similarity: meter("medium"), goods_proximity: meter("high"), use: meter("confirmed"), enforcer: meter("medium", "inferred-from-signal") },
     quadrant: { x: 0.72, y: 0.55 }, source: { source_type: "register-vendor", resolved_link: "https://tm.example/us/3396572" } },
   { ordinal: 2, mark: "MATCH DAY", owner: { name: "MAN Sports", country: "US", registrations: [] },
-    composite: 2, level: "B", dispute_type: "descriptive-terms",
+    composite: 2, level: "B", dispute_type: "weak-term",
     meters: { mark_similarity: meter("high"), goods_proximity: meter("high"), use: meter("confirmed"), enforcer: meter("low", "inferred-from-signal") },
     quadrant: { x: 0.9, y: 0.8 }, source: { source_type: "common-law-marketplace", resolved_link: "https://mansports.example/match-day" } },
 ];
@@ -166,7 +166,7 @@ test("data-driven: gauge, quadrant, key panel, on-field + secondary cards, cover
   assert.match(html, /href="#c1"[\s\S]*MATCHDAY/);              // key panel / marker drill-through to c1
   assert.match(html, /id="c1"/);                               // on-field finding card
   assert.match(html, /Level B/);
-  assert.match(html, /Composite 3 · Paper conflict/);          // decomposed + humanized dispute type
+  assert.match(html, /Composite 3 · Register only/);          // decomposed + humanized dispute type
   assert.match(html, /class="meters"/);                        // the four strength meters
   assert.match(html, /class="cov"/);                           // coverage grid
   assert.match(html, /confirmed-clean|✓/);
@@ -236,7 +236,7 @@ test("spec-49 T6 (H6/I8): the risk chip is CODE-BUILT from the record — a mode
   assert.doesNotMatch(internal, /55% likelihood — negotiate/, "a model-authored label never renders");
   // wp50: the internal chip leads with the SAME client tier word as every other surface, with the
   // Level/Composite legal shorthand beside it — one vocabulary, reviewer detail preserved.
-  assert.match(internal, /class="tier med">MEDIUM · <span class="lv">Level B<\/span>Composite 3 · Paper conflict/, "internal chip = tier word + reviewer shorthand from the record");
+  assert.match(internal, /class="tier med">MEDIUM · <span class="lv">Level B<\/span>Composite 3 · Register only/, "internal chip = tier word + reviewer shorthand from the record");
   assert.match(internal, /class="tier med"/, "colour/structure from the canonical composite");
   // ONE report (spec 2026-07-30 §5): there is no client variant — a stale opts.client is INERT and the
   // chip above (tier word + reviewer shorthand) is THE chip on the one document.
@@ -289,9 +289,9 @@ test("C1: each on-field card joins to its OWN ordinal's prose — no copy-paste 
   const mtr = { mark_similarity: mP("high"), goods_proximity: mP("high"), use: mP("confirmed"), enforcer: mP("low", "inferred-from-signal") };
   const own = (name) => ({ name, country: "CH", registrations: [] });
   const FP = [
-    { ordinal: 1, mark: "KANION", owner: own("Kanion Animal Health AB"), composite: 4, level: "D", dispute_type: "paper-conflict", meters: mtr, quadrant: { x: 0.6, y: 0.7 }, source: { source_type: "register-vendor" } },
-    { ordinal: 2, mark: "PETCARY", owner: own("Project Management Limited"), composite: 3, level: "C", dispute_type: "paper-conflict", meters: mtr, quadrant: { x: 0.6, y: 0.8 }, source: { source_type: "register-vendor" } },
-    { ordinal: 3, mark: "PETCARY", owner: own("Project Management Limited"), composite: 3, level: "C", dispute_type: "paper-conflict", meters: mtr, quadrant: { x: 0.6, y: 0.8 }, source: { source_type: "register-vendor" } },
+    { ordinal: 1, mark: "KANION", owner: own("Kanion Animal Health AB"), composite: 4, level: "D", dispute_type: "register-only", meters: mtr, quadrant: { x: 0.6, y: 0.7 }, source: { source_type: "register-vendor" } },
+    { ordinal: 2, mark: "PETCARY", owner: own("Project Management Limited"), composite: 3, level: "C", dispute_type: "register-only", meters: mtr, quadrant: { x: 0.6, y: 0.8 }, source: { source_type: "register-vendor" } },
+    { ordinal: 3, mark: "PETCARY", owner: own("Project Management Limited"), composite: 3, level: "C", dispute_type: "register-only", meters: mtr, quadrant: { x: 0.6, y: 0.8 }, source: { source_type: "register-vendor" } },
   ];
   const html = renderHtml(parsedOf(`${FM_P}\n${CARDS_P}`), FP, [], {});
   const count = (s) => (html.match(new RegExp(s, "g")) || []).length;
@@ -711,12 +711,12 @@ const reg = (jur, status = "Registered", uri) => ({ owner: { name: `${jur} Holde
 // US on-field (registered) + US on-field PENDING sharing coords with F1 (forces de-overlap) + EU on-field;
 // JP secondary; common-law secondary (empty registrations → region CL); GB secondary (→ UK via alias).
 const REGION_FINDINGS = [
-  { ordinal: 1, mark: "AURA", ...reg("US"), composite: 3, level: "C", dispute_type: "paper-conflict", meters: RMETERS, quadrant: { x: 0.7, y: 0.6 }, source: { source_type: "register-vendor" } },
-  { ordinal: 2, mark: "AURA", ...reg("US", "Pending"), composite: 3, level: "C", dispute_type: "paper-conflict", meters: RMETERS, quadrant: { x: 0.7, y: 0.6 }, source: { source_type: "register-vendor" } },
-  { ordinal: 3, mark: "AURA", ...reg("EU"), composite: 4, level: "B", dispute_type: "horse-trade", meters: RMETERS, quadrant: { x: 0.5, y: 0.8 }, source: { source_type: "register-vendor" } },
-  { ordinal: 4, mark: "AURA", ...reg("JP"), composite: 2, level: "B", dispute_type: "paper-conflict", meters: RMETERS, quadrant: { x: 0.3, y: 0.4 }, source: { source_type: "register-vendor" } },
-  { ordinal: 5, mark: "AURA", owner: { name: "Marketplace seller", registrations: [] }, composite: 2, level: "B", dispute_type: "nuisance-claim", meters: RMETERS, quadrant: { x: 0.2, y: 0.2 }, source: { source_type: "common-law-marketplace" } },
-  { ordinal: 6, mark: "AURA", ...reg("GB", "Registered", "/mark/gb/UK00001"), composite: 2, level: "B", dispute_type: "descriptive-terms", meters: RMETERS, quadrant: { x: 0.6, y: 0.3 }, source: { source_type: "register-vendor" } },
+  { ordinal: 1, mark: "AURA", ...reg("US"), composite: 3, level: "C", dispute_type: "register-only", meters: RMETERS, quadrant: { x: 0.7, y: 0.6 }, source: { source_type: "register-vendor" } },
+  { ordinal: 2, mark: "AURA", ...reg("US", "Pending"), composite: 3, level: "C", dispute_type: "register-only", meters: RMETERS, quadrant: { x: 0.7, y: 0.6 }, source: { source_type: "register-vendor" } },
+  { ordinal: 3, mark: "AURA", ...reg("EU"), composite: 4, level: "B", dispute_type: "bargain", meters: RMETERS, quadrant: { x: 0.5, y: 0.8 }, source: { source_type: "register-vendor" } },
+  { ordinal: 4, mark: "AURA", ...reg("JP"), composite: 2, level: "B", dispute_type: "register-only", meters: RMETERS, quadrant: { x: 0.3, y: 0.4 }, source: { source_type: "register-vendor" } },
+  { ordinal: 5, mark: "AURA", owner: { name: "Marketplace seller", registrations: [] }, composite: 2, level: "B", dispute_type: "opportunist", meters: RMETERS, quadrant: { x: 0.2, y: 0.2 }, source: { source_type: "common-law-marketplace" } },
+  { ordinal: 6, mark: "AURA", ...reg("GB", "Registered", "/mark/gb/UK00001"), composite: 2, level: "B", dispute_type: "weak-term", meters: RMETERS, quadrant: { x: 0.6, y: 0.3 }, source: { source_type: "register-vendor" } },
 ];
 const REGION_COVERAGE = [
   { area: "register / US", state: "confirmed-clean", note: "exact sweep" },
@@ -825,10 +825,10 @@ const dreg = (jur, uri) => ({ name: `${jur} Holder`, country: jur, registrations
 // correctly treats them as "ruled out". The shared FM title ("THIS IS MY MATCHDAY") is a fixture artifact.
 const FM_NOVAPULSE = FM.replace("THIS IS MY MATCHDAY", "NOVAPULSE");
 const DISP_FINDINGS = [
-  { ordinal: 1, mark: "NOVAPULSE", owner: dreg("US", "/mark/us/auralis"), composite: 3, level: "C", dispute_type: "classic", disposition: "adversarial", meters: DMETERS, quadrant: { x: 0.8, y: 0.9 }, source: { source_type: "register-vendor" } },
-  { ordinal: 2, mark: "NOVAPULSE", owner: dreg("US", "/mark/us/nordwave"), composite: 3, level: "C", dispute_type: "paper-conflict", disposition: "coexistence-partner", meters: DMETERS, quadrant: { x: 0.6, y: 0.5 }, source: { source_type: "register-vendor" } },
-  { ordinal: 3, mark: "NOVAPULSE HOUSE", owner: dreg("EU", "/mark/eu/house"), composite: 3, level: "C", dispute_type: "horse-trade", disposition: "distinguished", meters: DMETERS, quadrant: { x: 0.4, y: 0.4 }, source: { source_type: "register-vendor" } },
-  { ordinal: 4, mark: "NOVAPULSE", owner: dreg("US", "/mark/us/paint"), composite: 2, level: "B", dispute_type: "nuisance-claim", disposition: "off-field", meters: DMETERS, quadrant: { x: 0.2, y: 0.2 }, source: { source_type: "register-vendor" } },
+  { ordinal: 1, mark: "NOVAPULSE", owner: dreg("US", "/mark/us/auralis"), composite: 3, level: "C", dispute_type: "head-on", disposition: "adversarial", meters: DMETERS, quadrant: { x: 0.8, y: 0.9 }, source: { source_type: "register-vendor" } },
+  { ordinal: 2, mark: "NOVAPULSE", owner: dreg("US", "/mark/us/nordwave"), composite: 3, level: "C", dispute_type: "register-only", disposition: "coexistence-partner", meters: DMETERS, quadrant: { x: 0.6, y: 0.5 }, source: { source_type: "register-vendor" } },
+  { ordinal: 3, mark: "NOVAPULSE HOUSE", owner: dreg("EU", "/mark/eu/house"), composite: 3, level: "C", dispute_type: "bargain", disposition: "distinguished", meters: DMETERS, quadrant: { x: 0.4, y: 0.4 }, source: { source_type: "register-vendor" } },
+  { ordinal: 4, mark: "NOVAPULSE", owner: dreg("US", "/mark/us/paint"), composite: 2, level: "B", dispute_type: "opportunist", disposition: "off-field", meters: DMETERS, quadrant: { x: 0.2, y: 0.2 }, source: { source_type: "register-vendor" } },
 ];
 
 function sectionOrder(html) {
@@ -1045,7 +1045,7 @@ test("the card header shows the contentious MARK + the classes it matched in (no
 // ---- A1: a review-killed (withdrawn) finding renders NOWHERE; internal bar notes the kill ----
 test("spec-48 A1 + spec-49 T4: a withdrawn finding appears NOWHERE on either report variant (receipt lives on the audit workbook)", () => {
   const killed = { ordinal: 3, mark: "KESTRELION", owner: { name: "Kestrel Lifesciences", country: "IN", registrations: [] },
-    composite: 4, level: "D", dispute_type: "classic", disposition: "withdrawn",
+    composite: 4, level: "D", dispute_type: "head-on", disposition: "withdrawn",
     withdrawn_reason: "review flag: confabulated attribution",
     meters: { mark_similarity: meter("high"), goods_proximity: meter("high"), use: meter("unknown", "inferred-from-signal"), enforcer: meter("unknown", "inferred-from-signal") },
     quadrant: { x: 0.9, y: 0.9 }, source: { source_type: "common-law-web", resolved_link: "" } };
@@ -1147,7 +1147,7 @@ test("spec-48 A5: a WO registration renders 'designating: …' from the fetched 
 // ---- A5: common-law gets its own section; on-field common-law cards are cross-linked ----
 test("spec-48 A5: on-field common-law stays in On-field (full card) and is cross-linked from the Common-law section", () => {
   const clOn = { ordinal: 7, mark: "AURA", owner: { name: "Big Marketplace Seller", registrations: [] },
-    composite: 4, level: "D", dispute_type: "classic", meters: RMETERS, quadrant: { x: 0.85, y: 0.85 },
+    composite: 4, level: "D", dispute_type: "head-on", meters: RMETERS, quadrant: { x: 0.85, y: 0.85 },
     source: { source_type: "common-law-marketplace" } };
   const html = renderHtml(parsedOf(FM), [...REGION_FINDINGS, clOn], REGION_COVERAGE, {});
   assert.equal(bandOfCard(html, 7), "Conflicts", "the on-field CL card drives the read from On-field");
@@ -1161,7 +1161,7 @@ test("spec-48 A5: on-field common-law stays in On-field (full card) and is cross
 
 test("spec-48 A5: disposition mode — common-law leaves the bands for its own section, numbered sequentially", () => {
   const clOff = { ordinal: 5, mark: "NOVAPULSE", owner: { name: "Marketplace Seller", registrations: [] },
-    composite: 2, level: "B", dispute_type: "nuisance-claim", disposition: "off-field",
+    composite: 2, level: "B", dispute_type: "opportunist", disposition: "off-field",
     meters: DMETERS, quadrant: { x: 0.15, y: 0.15 }, source: { source_type: "common-law-marketplace" } };
   const html = renderHtml(parsedOf(FM_NOVAPULSE), [...DISP_FINDINGS, clOff], [], { runId: "novapulse-demo" });
   // The 2026-09-16 report redesign — same as above: the cards outlive their heading. An off-field common-law card
@@ -1264,8 +1264,8 @@ test("report-xss: markdown link hrefs are attribute-escaped and scheme-allowlist
 test("spec 47: an actual Chilean registration groups under CL = Chile, distinct from common-law C/L", () => {
   const chilean = [
     { ordinal: 1, mark: "AURA", owner: { name: "CL Holder", country: "CL", registrations: [{ uri: "/mark/cl/1", classes: ["32"], status: "Registered", jurisdiction: "CL" }] },
-      composite: 3, level: "C", dispute_type: "paper-conflict", meters: RMETERS, quadrant: { x: 0.7, y: 0.6 }, source: { source_type: "register-vendor" } },
-    { ordinal: 2, mark: "AURA", owner: { name: "Marketplace seller", registrations: [] }, composite: 2, level: "B", dispute_type: "nuisance-claim", meters: RMETERS, quadrant: { x: 0.2, y: 0.2 }, source: { source_type: "common-law-marketplace" } },
+      composite: 3, level: "C", dispute_type: "register-only", meters: RMETERS, quadrant: { x: 0.7, y: 0.6 }, source: { source_type: "register-vendor" } },
+    { ordinal: 2, mark: "AURA", owner: { name: "Marketplace seller", registrations: [] }, composite: 2, level: "B", dispute_type: "opportunist", meters: RMETERS, quadrant: { x: 0.2, y: 0.2 }, source: { source_type: "common-law-marketplace" } },
   ];
   const html = renderHtml(parsedOf(FM), chilean, [], {});
   assert.match(html, /<span class="rcode">CL<\/span><span class="rname">Chile<\/span>/);
@@ -1392,8 +1392,8 @@ test("doc-52: reading order + plain banner (from only-you) + ruled-out routing +
   ].join("\n");
   const md = `${FM_NOVAPULSE}\n${ACTIONS}\n\n# Marks\n`;
   const F = [
-    { ordinal: 1, mark: "NOVAPULSE", owner: dreg("US", "/mark/us/1"), composite: 3, level: "C", dispute_type: "classic", disposition: "adversarial", meters: DMETERS, quadrant: { x: 0.8, y: 0.9 }, source: { source_type: "register-vendor" } },
-    { ordinal: 2, mark: "UNTAMED", owner: dreg("US", "/mark/us/2"), composite: 2, level: "B", dispute_type: "nuisance-claim", disposition: "off-field", meters: DMETERS, quadrant: { x: 0.2, y: 0.1 }, source: { source_type: "register-vendor" } },
+    { ordinal: 1, mark: "NOVAPULSE", owner: dreg("US", "/mark/us/1"), composite: 3, level: "C", dispute_type: "head-on", disposition: "adversarial", meters: DMETERS, quadrant: { x: 0.8, y: 0.9 }, source: { source_type: "register-vendor" } },
+    { ordinal: 2, mark: "UNTAMED", owner: dreg("US", "/mark/us/2"), composite: 2, level: "B", dispute_type: "opportunist", disposition: "off-field", meters: DMETERS, quadrant: { x: 0.2, y: 0.1 }, source: { source_type: "register-vendor" } },
   ];
   const COV = [{ area: "register / CN slice", state: "coverage-limited", note: "35 records crossed into the band with null class/owner/status — unadjudicable" }];
   const vi = { verdict: "CONDITIONAL", reasons: ["engine: the slice crossed into the band"], kinds: { coverage: true }, tier: "MANAGEABLE", badge: "l2" };
@@ -1501,10 +1501,10 @@ test("wp50: script rows are skipped, worldwide leads the scope, and every leg of
     { area: "register / material jurisdictions US·EU·UK·CH·JP", state: "confirmed-clean", note: "" },
   ];
   const findings = [
-    { ordinal: 1, mark: "VENZY", composite: 5, level: "E", dispute_type: "classic", meters: {}, owner: { name: "Doruk", registrations: [
+    { ordinal: 1, mark: "VENZY", composite: 5, level: "E", dispute_type: "head-on", meters: {}, owner: { name: "Doruk", registrations: [
       { uri: "https://tm.corsearch.com/mark/tr/2009-53984" }, { uri: "https://tm.corsearch.com/mark/ae/229552" },
       { uri: "https://tm.corsearch.com/mark/sa/1435019984" } ] }, source: { source_type: "register-vendor" } },
-    { ordinal: 2, mark: "VENZ", composite: 2, level: "B", dispute_type: "classic", meters: {}, owner: { name: "SAMI", registrations: [
+    { ordinal: 2, mark: "VENZ", composite: 2, level: "B", dispute_type: "head-on", meters: {}, owner: { name: "SAMI", registrations: [
       { uri: "https://tm.corsearch.com/mark/pk/444492" } ] }, source: { source_type: "register-vendor" } },
   ];
   const html = renderHtml(parsedOf(FM), findings, coverage, { runId: "scope-demo" });
@@ -1558,8 +1558,8 @@ test("B3: provenance once in Scope — no per-card coherence line, index entries
 // ── wp50/wi8: common-law leaves the by-jurisdiction grouping in the rights-holders panel ───────────────
 test("wp50: the C/L group renders AFTER the region list, labelled and cross-linked; no-CL runs unchanged", () => {
   const findings = [
-    { ordinal: 1, mark: "AAA", composite: 3, level: "C", dispute_type: "classic", meters: {}, owner: { name: "X", registrations: [{ uri: "/mark/us/1", jurisdiction: "US" }] }, source: { source_type: "register-vendor" } },
-    { ordinal: 2, mark: "BBB", composite: 2, level: "B", dispute_type: "classic", meters: {}, owner: { name: "Y", registrations: [] }, source: { source_type: "common-law-marketplace" } },
+    { ordinal: 1, mark: "AAA", composite: 3, level: "C", dispute_type: "head-on", meters: {}, owner: { name: "X", registrations: [{ uri: "/mark/us/1", jurisdiction: "US" }] }, source: { source_type: "register-vendor" } },
+    { ordinal: 2, mark: "BBB", composite: 2, level: "B", dispute_type: "head-on", meters: {}, owner: { name: "Y", registrations: [] }, source: { source_type: "common-law-marketplace" } },
   ];
   const html = renderHtml(parsedOf(REPORT), findings, COVERAGE, {});
   assert.match(html, /Common-law \/ marketplace — unregistered use, not register rights/, "labelled block");
@@ -1897,7 +1897,7 @@ test("leftovers: the C/L rights-holder group is collapsed by default; geographic
   const mixed = [
     { ...FINDINGS[0] },   // on-field US register finding (composite 4 in fixture)
     { ordinal: 2, mark: "CLMARK", owner: { name: "Seller", registrations: [] }, composite: 4, level: "D",
-      dispute_type: "paper-conflict", meters: {}, quadrant: { x: 0.7, y: 0.7 }, source: { source_type: "common-law-marketplace" } },
+      dispute_type: "register-only", meters: {}, quadrant: { x: 0.7, y: 0.7 }, source: { source_type: "common-law-marketplace" } },
   ];
   const html = renderHtml(parsedOf(REPORT), mixed, COVERAGE, {});
   const cl = html.match(/<details class="rrow"[^>]*><summary><span class="rcode">C\/L<\/span>[\s\S]*?<\/summary>/)[0];
@@ -1918,9 +1918,9 @@ test("doc-55 A1: card-anchor navigation opens collapsed <details> ancestors and 
 
 test("doc-55 A2: the rights-holder panel opens ONLY the highest-risk region; other on-field regions collapse", () => {
   const F = [
-    { ordinal: 1, mark: "ALPHA", composite: 4, level: "B", dispute_type: "classic", meters: {}, owner: { name: "A Inc", registrations: [{ uri: "https://tm.example/mark/us/1", jurisdiction: "US" }] }, source: { source_type: "register-vendor" } },
-    { ordinal: 2, mark: "BETA", composite: 4, level: "B", dispute_type: "classic", meters: {}, owner: { name: "B GmbH", registrations: [{ uri: "https://tm.example/mark/eu/2", jurisdiction: "EU" }] }, source: { source_type: "register-vendor" } },
-    { ordinal: 3, mark: "GAMMA", composite: 1, level: "D", dispute_type: "classic", meters: {}, owner: { name: "G KK", registrations: [{ uri: "https://tm.example/mark/jp/3", jurisdiction: "JP" }] }, source: { source_type: "register-vendor" } },
+    { ordinal: 1, mark: "ALPHA", composite: 4, level: "B", dispute_type: "head-on", meters: {}, owner: { name: "A Inc", registrations: [{ uri: "https://tm.example/mark/us/1", jurisdiction: "US" }] }, source: { source_type: "register-vendor" } },
+    { ordinal: 2, mark: "BETA", composite: 4, level: "B", dispute_type: "head-on", meters: {}, owner: { name: "B GmbH", registrations: [{ uri: "https://tm.example/mark/eu/2", jurisdiction: "EU" }] }, source: { source_type: "register-vendor" } },
+    { ordinal: 3, mark: "GAMMA", composite: 1, level: "D", dispute_type: "head-on", meters: {}, owner: { name: "G KK", registrations: [{ uri: "https://tm.example/mark/jp/3", jurisdiction: "JP" }] }, source: { source_type: "register-vendor" } },
   ];
   const html = renderHtml(parsedOf(FM), F, COVERAGE, { runId: "a2" });
   const openRegions = (html.match(/<details class="rrow" open>/g) || []).length;
@@ -2028,7 +2028,7 @@ test("doc-55 A3 (safety): legitimate client legal prose that merely mentions 'MC
 
 test("doc-55 B: a worldwide sweep ALWAYS shows WO (WIPO/Madrid) + the national/regional/international source note; INT→WO; targeted runs unforced", () => {
   const coverage = [{ area: "register / worldwide sweep", state: "confirmed-clean", note: "exact + near-form enumerated worldwide" }];
-  const F = [{ ordinal: 1, mark: "ZED", composite: 3, level: "B", dispute_type: "classic", meters: {}, owner: { name: "Z", registrations: [{ uri: "https://tm.example/mark/us/1", jurisdiction: "US" }] }, source: { source_type: "register-vendor" } }];
+  const F = [{ ordinal: 1, mark: "ZED", composite: 3, level: "B", dispute_type: "head-on", meters: {}, owner: { name: "Z", registrations: [{ uri: "https://tm.example/mark/us/1", jurisdiction: "US" }] }, source: { source_type: "register-vendor" } }];
   const html = renderHtml(parsedOf(FM), F, coverage, { runId: "b" });
   assert.match(html, /Where searched<\/span><span class="v">[^<]*WIPO \(Madrid\)/, "WIPO shows even with no Madrid conflict — the worldwide sweep covers that register");
   // a Madrid record (jurisdiction INT / uri /mark/int/) normalizes to WO, never a raw 'INT' chip
@@ -2280,9 +2280,9 @@ test("§L: a same-element mark (token containment ≥4 chars) is NEVER silently 
   // it to "Also considered — ruled out" and off the conflict-landscape chart (a numbering gap).
   const FM_WAVO = FM.replace("THIS IS MY MATCHDAY", "CORAL FREEZE");
   const F = [
-    { ordinal: 1, mark: "CORAL", owner: dreg("US", "/mark/us/1"), composite: 3, level: "C", dispute_type: "classic", disposition: "adversarial", meters: DMETERS, quadrant: { x: 0.8, y: 0.9 }, source: { source_type: "register-vendor" } },
-    { ordinal: 2, mark: "FREEZEIV", owner: dreg("US", "/mark/us/2"), composite: 2, level: "B", dispute_type: "nuisance-claim", disposition: "off-field", meters: DMETERS, quadrant: { x: 0.9, y: 0.25 }, source: { source_type: "register-vendor" } },
-    { ordinal: 3, mark: "UNTAMED", owner: dreg("US", "/mark/us/3"), composite: 2, level: "B", dispute_type: "nuisance-claim", disposition: "off-field", meters: DMETERS, quadrant: { x: 0.2, y: 0.1 }, source: { source_type: "register-vendor" } },
+    { ordinal: 1, mark: "CORAL", owner: dreg("US", "/mark/us/1"), composite: 3, level: "C", dispute_type: "head-on", disposition: "adversarial", meters: DMETERS, quadrant: { x: 0.8, y: 0.9 }, source: { source_type: "register-vendor" } },
+    { ordinal: 2, mark: "FREEZEIV", owner: dreg("US", "/mark/us/2"), composite: 2, level: "B", dispute_type: "opportunist", disposition: "off-field", meters: DMETERS, quadrant: { x: 0.9, y: 0.25 }, source: { source_type: "register-vendor" } },
+    { ordinal: 3, mark: "UNTAMED", owner: dreg("US", "/mark/us/3"), composite: 2, level: "B", dispute_type: "opportunist", disposition: "off-field", meters: DMETERS, quadrant: { x: 0.2, y: 0.1 }, source: { source_type: "register-vendor" } },
   ];
   const html = renderHtml(parsedOf(FM_WAVO), F, [], { runId: "plot-demo" });
   // ANCHOR ON THE CHART, not on the first svg in the document: the report bar carries the brand lockup,
@@ -2663,7 +2663,7 @@ test("D5: the INTERNAL legacy Level/Composite chip is untouched — this is the 
   // shorthand and keeps its own separator; narrowing the fix to the client chip is deliberate, and a
   // change here would be a different decision on a different surface.
   const html = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, {});
-  assert.match(html, /<span class="lv">Level B<\/span>Composite 3 · Paper conflict/,
+  assert.match(html, /<span class="lv">Level B<\/span>Composite 3 · Register only/,
     "the legacy chip still carries Level/Composite and its dispute type");
 });
 

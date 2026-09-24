@@ -7,7 +7,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   findRecallFloorViolations, findReviewFreshnessViolation, findSeedNeutralityViolations,
-  findProbativeGradingViolations, findStatusHonestyViolation, acpCeiling, findMatrixCeilingViolations,
+  findProbativeGradingViolations, findStatusHonestyViolation,
   findDeadlineUrgencyMiss, findUnresolvedDisagreements, findOrphanVerificationFlags,
 } from "../reasoning-tripwires.mjs";
 
@@ -63,6 +63,11 @@ test("seed-neutrality: a graded / 'do not soften' seed trips; placement vocabula
     { name: "placements", text: "Korvane NOVAPULSE — placement: headline-candidate. Partner-ecosystem owner; facts only." },
   ]);
   assert.equal(ok.length, 0, JSON.stringify(ok));
+  // a Level grade on a seed is a grade, whatever the framework calls the level; a hyphenated word is not
+  assert.ok(findSeedNeutralityViolations([{ name: "matter-context", text: "Seed #2: rated Level C by the prior search." }])
+    .some((v) => /Level/.test(v.why)), "a Level grade on a seed trips");
+  assert.equal(findSeedNeutralityViolations([{ name: "matter-context", text: "A board-level C-suite owner; an enterprise-level E-commerce seller." }]).length, 0,
+    "a letter that starts a hyphenated word is not a grade");
 });
 
 test("probative-grading: enforcer=high without bears_on trips when adopted; legacy v1 is exempt", () => {
@@ -141,36 +146,6 @@ test("#8 orphan-finding: a register-sourced finding with no grounding registrati
   assert.equal(findOrphanVerificationFlags({ findings: [mk({ source: { source_type: "case-law" } })] }).length, 0);
 });
 
-test("acpCeiling: the matrix ceilings (Appendix B)", () => {
-  assert.equal(acpCeiling("A", "classic"), 1);
-  assert.equal(acpCeiling("B", "horse-trade"), 2);
-  assert.equal(acpCeiling("C", "classic"), 3, "C tops out at Medium regardless of dispute type");
-  assert.equal(acpCeiling("C", "horse-trade"), 3);
-  assert.equal(acpCeiling("D", "classic"), 5);
-  assert.equal(acpCeiling("E", "classic"), 5);
-  assert.equal(acpCeiling("D", "horse-trade"), 4);
-  assert.equal(acpCeiling("D", "nuisance-claim"), 4);
-  assert.equal(acpCeiling("D", "paper-conflict"), 3);
-  assert.equal(acpCeiling("E", "descriptive-terms"), 3);
-});
-
-test("matrix-ceiling: the KORVANE NOVAPULSE defect (Level C → Composite 4) trips; matrix-faithful ratings pass", () => {
-  // KORVANE NOVAPULSE: "Level C legal read" rated Composite 4/HIGH on an aggressive-enforcer adjustment
-  const korvane = findMatrixCeilingViolations({ findings: [{ ordinal: 1, mark: "KORVANE NOVAPULSE", composite: 4, level: "C", dispute_type: "horse-trade" }] });
-  assert.equal(korvane.length, 1, JSON.stringify(korvane));
-  assert.match(korvane[0].why, /caps it at 3/);
-  // matrix-faithful: Ember Guard C + horse-trade = 3; a genuine 5 = E + classic; B = 2 → all pass
-  const ok = findMatrixCeilingViolations({ findings: [
-    { ordinal: 1, mark: "EMBER GUARD", composite: 3, level: "C", dispute_type: "horse-trade" },
-    { ordinal: 2, mark: "DEPTH SENSE", composite: 5, level: "E", dispute_type: "classic" },
-    { ordinal: 3, mark: "X", composite: 2, level: "B", dispute_type: "nuisance-claim" },
-  ] });
-  assert.equal(ok.length, 0, JSON.stringify(ok));
-  // a below-ceiling rating (extra conservatism) does NOT trip
-  assert.equal(findMatrixCeilingViolations({ findings: [{ ordinal: 1, mark: "Y", composite: 2, level: "D", dispute_type: "paper-conflict" }] }).length, 0);
-});
-
-// ── copper-lattice: the two new S1 siblings ─────────────────────────────────────────────────────────────
 test("findUncrossCheckedDemotions: owner signal with no executed receipt flags; carried/executed suppress; no receipt ⇒ []", async () => {
   const { findUncrossCheckedDemotions } = await import("../reasoning-tripwires.mjs");
   const signals = [

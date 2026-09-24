@@ -73,7 +73,7 @@ export function buildFixture() {
     "classes: 9, 42", "overall_label: MEDIUM", "overall_badge: l3",
     "rated_under: House default (generic) · house default framework · profile d37721cda899", "---", "",
     "# Marks", "",
-    "## Beta Inc — ACME, US", "- tier: 1", "- label: Level A · Composite 4 · Classic", "- group: on-field",
+    "## Beta Inc — ACME, US", "- tier: 1", "- label: Level A · Composite 4 · Head-on", "- group: on-field",
     "- one: Live US registration by Beta Inc in class 9.", "- open: true",
     "### The read", "A direct, live, in-class conflict. Net: change or clear before launch.",
     // The LABELLED internal form is what a PUBLISHED report.md actually carries — publish already consumed

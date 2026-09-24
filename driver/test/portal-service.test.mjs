@@ -736,11 +736,11 @@ const KO_DATA = {
   schema: "report-data/1", runId: "tmp1-aurora-run",
   marks: [
     { name: "AURORA", band: "High", findings: [
-      { ref: "AURORA #1", ordinal: 1, name: "AURORA LABS", owner: "Aurora Labs GmbH", band: "Severe", type: "paper-conflict", net: "Identical word mark in the filed class." },
+      { ref: "AURORA #1", ordinal: 1, name: "AURORA LABS", owner: "Aurora Labs GmbH", band: "Severe", type: "register-only", net: "Identical word mark in the filed class." },
     ] },
     { name: "AURORA BLUE", band: "Manageable", findings: [
-      { ref: "AURORA BLUE #1", ordinal: 1, name: "BLUE AURORA", owner: "Blue Aurora SA", band: "Manageable", type: "descriptive-terms", net: "Distinguished as wholes." },
-      { ref: "AURORA BLUE #2", ordinal: 2, name: "AURORABLU", owner: "Aurorablu Srl", band: "Watch", type: "paper-conflict", net: "Lapsed registration, no live rights." },
+      { ref: "AURORA BLUE #1", ordinal: 1, name: "BLUE AURORA", owner: "Blue Aurora SA", band: "Manageable", type: "weak-term", net: "Distinguished as wholes." },
+      { ref: "AURORA BLUE #2", ordinal: 2, name: "AURORABLU", owner: "Aurorablu Srl", band: "Watch", type: "register-only", net: "Lapsed registration, no live rights." },
     ] },
   ],
 };
