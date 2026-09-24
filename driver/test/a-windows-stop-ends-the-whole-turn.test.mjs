@@ -140,8 +140,8 @@ test("the watchdog's stop and the start window's stop take the tree on Windows",
   stopChildren([{ pid: 45, kill: (s) => signalled.push(["child", s]) }], "SIGTERM", { platform: "linux",
     kill: (pid, s) => { signalled.push([pid, s]); throw Object.assign(new Error("gone"), { code: "ESRCH" }); } });
   assert.deepEqual(signalled, [[-45, "SIGTERM"], ["child", "SIGTERM"]], "Linux no longer signals the group first");
-  // Closing the window is a stop on every platform, Windows included (closing-the-terminal-stops-what-start-started).
-  assert.ok(windowCloseSignals().includes("SIGHUP"), "closing the window on Windows reaches no teardown");
+  // Closing the window is a stop on every platform: Windows reports it as SIGHUP, as a terminal does.
+  assert.deepEqual(windowCloseSignals(), ["SIGHUP"], "closing the window reaches no teardown");
 });
 
 test("several trees end from one listing and one taskkill; with no listing, each held child's tree still ends", () => {

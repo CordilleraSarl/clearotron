@@ -18,11 +18,23 @@
 name: Windows
 
 on:
+  schedule:
+    - cron: '41 5 * * *'
   workflow_dispatch:
   workflow_call:
+    inputs:
+      # FROM THE RELEASE, ONLY THE PRODUCT CHECKS. The release passes nothing, so this reads true there and
+      # the two suite jobs are skipped: a stable waits on the install, doctor, demo, Ctrl-C and clearance
+      # jobs alone. On a push, the schedule or by hand there is no such input, a missing input reads as an
+      # empty string, and the suite runs.
+      product_checks_only:
+        type: boolean
+        default: true
+  # AND ON A PUSH THAT CHANGES THIS FILE, on any branch, as macos.yml does: GitHub dispatches a workflow
+  # only once it is on the default branch, so a change to this job could otherwise first run at a release.
   push:
-    branches:
-      - windows-native
+    paths:
+      - .github/workflows/windows.yml
 
 permissions:
   contents: read
@@ -43,9 +55,9 @@ jobs:
       # text, and would pack a CRLF tarball here, so the checkout keeps LF.
       - run: git config --global core.autocrlf false
 
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020   # v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: '22.23.2'
           cache: npm
@@ -221,9 +233,9 @@ jobs:
       # text, and would pack a CRLF tarball here, so the checkout keeps LF.
       - run: git config --global core.autocrlf false
 
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020   # v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: '22.23.2'
           cache: npm
@@ -254,7 +266,7 @@ jobs:
           "every clearance arm ran, and the Windows-only arms ran and passed"
 
       - if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a   # v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: windows-clearances
           path: ${{ runner.temp }}/clearances.log
@@ -265,6 +277,7 @@ jobs:
   # that could not read its corpus prints `[repo-guard] SKIPPED` and fails the shard, as in ci.yml.
   suite:
     name: Driver suite on Windows, shard ${{ matrix.shard }} of 4
+    if: ${{ !inputs.product_checks_only }}
     runs-on: windows-latest
     timeout-minutes: 60
     strategy:
@@ -313,7 +326,7 @@ jobs:
   suite-complete:
     name: Driver suite on Windows, every shard
     needs: suite
-    if: always()
+    if: ${{ always() && !inputs.product_checks_only }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
