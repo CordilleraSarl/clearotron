@@ -288,9 +288,12 @@ window.addEventListener('message',function(e){var d=e.data;
 // Every wait below is a real wait for a named condition, and each one RECORDS which way it ended. A
 // deadline that fires is a fact about the page, not a silent substitute for the condition.
 function after(ms,cb){setTimeout(cb,ms);}
+// QUIET NEEDS SOMETHING TO GO QUIET. Timed from the shell's own start, 400ms with no post passed on a
+// starved runner before the frame had posted once (0 height posts, content 0), and the read found the
+// frame's default height. Every passing run has at least one post; none by the cap is named for itself.
 function whenQuiet(ms,cap,cb){var t0=Date.now();(function w(){
-  if(Date.now()-lastHeightAt>=ms)return cb('quiet');
-  if(Date.now()-t0>=cap)return cb('still-posting');
+  if(st.heightMsgs>0&&Date.now()-lastHeightAt>=ms)return cb('quiet');
+  if(Date.now()-t0>=cap)return cb(st.heightMsgs?'still-posting':'no-height-post');
   after(25,w);})();}
 function whenLaidOut(cb){var done=false,how='';
   var go=function(w){if(done)return;done=true;how=w;cb(w);};

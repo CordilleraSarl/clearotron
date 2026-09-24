@@ -52,7 +52,7 @@ test("a public-looking name is refused by the address it resolves to, including 
   const names = { "innocent.example": ["127.0.0.1"], "metadata.example": ["169.254.169.254"], "both.example": ["93.184.215.14", "10.0.0.7"] };
   for (const [host, [addr]] of Object.entries({ "innocent.example": ["127.0.0.1"], "metadata.example": ["169.254.169.254"] })) {
     const r = await fetchPublic(`http://${host}/`, { lookup: lookup(names) });
-    assert.match(r.refused ?? "", new RegExp(`${host} resolves to ${addr.replace(/\./g, "\\.")}`), JSON.stringify(r));
+    assert.ok((r.refused ?? "").includes(`${host} resolves to ${addr}`), JSON.stringify(r));
   }
   const both = await fetchPublic("http://both.example/", { lookup: lookup(names) });
   assert.match(both.refused ?? "", /resolves to 10\.0\.0\.7, a private address/, "one internal address among several is enough");
