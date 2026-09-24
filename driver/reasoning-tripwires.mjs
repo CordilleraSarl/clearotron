@@ -14,13 +14,6 @@
 // layer; a review that only re-read its own inputs; a seed pre-graded as the answer; a risk-raising
 // fact with no "why it bears on this conflict").
 
-// canonicalUri (recall-regression class fix, 2026-07-22): the store contract says rows hold canonical
-// /mark paths, but a human-edited/legacy row may hold the FULL provider URL — and the carried side
-// arrives canonicalized (pipeline normalizeRecordUri), so an uncanonicalized store side false-positives
-// forever ("https://tm.corsearch.com/mark/int/1054099" never equals "/mark/int/1054099"). Canonicalize
-// BOTH sides. Pure at call time (no I/O) — the import keeps the offline tests offline.
-import { canonicalUri } from "./known-conflicts.mjs";
-
 // Normalisation shared with the rest of the lint family: fold diacritics, "&"≡"and", case-insensitive,
 // punctuation-insensitive, whitespace-collapsed. Mirrors predelivery-lint.mjs `norm`.
 const norm = (s) => String(s ?? "").normalize("NFD").replace(/[̀-ͯ]/g, "")
@@ -213,57 +206,6 @@ export function findStatusHonestyViolation(materialGaps = [], surfaceText = "") 
  * @param {{nowMs?:number, withinDays?:number, graceDays?:number}} opts
  * @returns {Array<{ordinal:number, mark:string, kind:string, date:string, daysUntil:number, why:string}>}
  */
-/**
- * spec 64 (B3) — deadline CARRY-FORWARD (the DEMVENZY shape): a remembered conflict row whose recorded
- * opposition window is IN the action window must resurface on the delivered findings WITH its structured
- * deadline. recall-regression cannot catch this — the uri WAS carried; only its date silently vanished
- * (copper-causeway ran two days before the CH window closed and delivered no urgency at all). Scope split:
- * an UNCARRIED remembered conflict already belongs to findRecallRegressionViolations; THIS check judges
- * only carried-without-deadline rows, so the two tripwires never double-clamp one uri. All violations
- * are material (an in-window deadline is inherently material). PURE — caller supplies the clock; absent
- * ledger/fields/clock ⇒ [] (replay purity).
- *
- * @returns {Array<{uri:string, mark_text:string|null, opposition_end:string, ordinal:number|null, material:boolean, why:string}>}
- */
-export function findDeadlineCarryViolations({ knownConflicts = null, searchedNames = [], parsedFindings = {}, nowMs = 0, withinDays = 60, graceDays = 14 } = {}) {
-  if (!nowMs || !knownConflicts || typeof knownConflicts !== "object") return [];
-  const marks = knownConflicts.marks && typeof knownConflicts.marks === "object" && !Array.isArray(knownConflicts.marks) ? knownConflicts.marks : {};
-  const searched = new Set((searchedNames ?? []).map(norm).filter(Boolean));
-  // canonical uri → the finding that carries it (for the deadline check + the ordinal in the why).
-  // review fix: findings carry FULL provider URLs while store rows are canonical /mark paths — fold
-  // both sides to the path form (raw-lowercase fallback for non-record uris) or a genuinely carried
-  // row would read as uncarried and the check would silently skip it.
-  const canonUri = (u) => {
-    const m = String(u ?? "").trim().match(/\/mark\/[a-z]{2,6}\/[a-z0-9][a-z0-9_-]*/i);
-    return (m ? m[0] : String(u ?? "").trim()).toLowerCase();
-  };
-  const carrier = new Map();
-  for (const f of parsedFindings?.findings ?? [])
-    for (const r of (Array.isArray(f?.owner?.registrations) ? f.owner.registrations : []))
-      if (r?.uri) carrier.set(canonUri(r.uri), f);
-  const out = [];
-  for (const [markKey, entries] of Object.entries(marks)) {
-    if (searched.size && !searched.has(norm(markKey))) continue;
-    for (const e of Array.isArray(entries) ? entries : []) {
-      const end = typeof e?.opposition_end === "string" ? e.opposition_end.slice(0, 10) : null;
-      if (!end) continue;
-      const due = Date.parse(end);
-      if (!Number.isFinite(due)) continue;
-      const days = Math.round((due - nowMs) / 86400000);
-      if (days > withinDays || days < -graceDays) continue;             // outside the action window
-      const uri = canonUri(e?.uri);
-      if (!uri || !carrier.has(uri)) continue;                          // uncarried → recall-regression owns it
-      const f = carrier.get(uri);
-      if (f?.deadline?.date) continue;                                  // carried WITH its deadline — pass
-      out.push({
-        uri: e.uri, mark_text: e?.mark_text ?? null, opposition_end: end, ordinal: f?.ordinal ?? null, material: true,
-        why: `deadline-carry: the remembered opposition window on ${e.uri}${e?.mark_text ? ` ("${e.mark_text}")` : ""} closes ${end} (${days < 0 ? `${-days} day(s) ago` : days === 0 ? "TODAY" : `in ${days} day(s)`}) and the conflict is carried this run WITHOUT its structured deadline — a recorded deadline must never silently disappear between runs`,
-      });
-    }
-  }
-  return out;
-}
-
 export function findDeadlineUrgencyMiss(parsedFindings = {}, { nowMs = 0, withinDays = 60, graceDays = 14 } = {}) {
   if (!nowMs) return [];                                  // no clock supplied → cannot judge urgency
   const out = [];
@@ -385,59 +327,4 @@ export function findUncrossCheckedDemotions(signals = [], { carriedOwners = [], 
     });
   }
   return out;
-}
-
-/**
- * Recall-regression tripwire (copper-lattice — the fixture-seeded S1 sibling). The slug's
- * _known-conflicts.json remembers every prior-confirmed live registered conflict per mark (auto-appended
- * at delivery, human-editable; the VIBRANTE FROSTPLUM anchor row is us/90491258). A re-run that
- * neither CARRIES a remembered uri as a finding nor JUSTIFIES it (the uri was record-fetched AND a
- * negative-results drop row cites it — a reasoned dead/irrelevant call over the real record) trips.
- * `material` = live ∧ class∩in-scope — the pipeline routes material regressions into the registerGap
- * clamp (the tripwire itself stays FLAG-ONLY). Absent/malformed fixture ⇒ [] — replay purity.
- *
- * @returns {Array<{uri:string, mark_text:string|null, classes:any, material:boolean, why:string}>}
- */
-export function findRecallRegressionViolations({ knownConflicts = null, searchedNames = [], carriedUris = [], fetchedUris = [], registerFindingsMd = "", inScopeClasses = [] } = {}) {
-  if (!knownConflicts || typeof knownConflicts !== "object") return [];
-  const marks = knownConflicts.marks && typeof knownConflicts.marks === "object" && !Array.isArray(knownConflicts.marks) ? knownConflicts.marks : {};
-  const searched = new Set((searchedNames ?? []).map(norm).filter(Boolean));
-  const carried = new Set((carriedUris ?? []).map((u) => String(u).toLowerCase()));
-  const fetched = new Set((fetchedUris ?? []).map((u) => String(u).toLowerCase()));
-  const dropUris = new Set(parseDropRows(registerFindingsMd).map((r) => r.uri).filter(Boolean).map((u) => u.toLowerCase()));
-  const scope = new Set((inScopeClasses ?? []).flatMap(classTokens));
-  const out = [];
-  for (const [markKey, entries] of Object.entries(marks)) {
-    if (searched.size && !searched.has(norm(markKey))) continue;   // fixture rows for the slug's OTHER marks
-    for (const e of Array.isArray(entries) ? entries : []) {
-      // class fix (2026-07-22): canonicalize the STORE side too — the carried/fetched/drop sides all
-      // arrive as canonical /mark paths, so a full-URL store row compared raw can never match.
-      const uri = canonicalUri(e?.uri).toLowerCase();
-      if (!uri) continue;
-      if (carried.has(uri)) continue;                              // resurfaced — pass
-      if (fetched.has(uri) && dropUris.has(uri)) continue;         // justified against the fetched record
-      const material = String(e?.status ?? "live").toLowerCase() === "live"
-        && (!scope.size || classTokens((Array.isArray(e?.classes) ? e.classes : []).join(",")).some((c) => scope.has(c)));
-      out.push({
-        uri: e.uri, mark_text: e?.mark_text ?? null, classes: e?.classes ?? null,
-        owner: e?.owner ?? null, material,   // owner rides along so the clamp reason can NAME the row
-        why: `recall-regression: prior-confirmed live registered conflict ${e.uri}${e?.mark_text ? ` ("${e.mark_text}")` : ""} was neither carried as a finding nor justified against its fetched record this run`,
-      });
-    }
-  }
-  return out;
-}
-
-/**
- * The clamp-reason NAME for one recall regression: `<MARK> (<owner> — <canonical uri>)`. A real run
- * shipped "…neither carried nor justified this run: ION, ION, ION" — three indistinguishable strings
- * over three different registrations; the owner + canonical uri make each one identifiable. Front-loads
- * the mark (the clamp statement truncates from the tail) and bounds the owner at 40 chars. PURE.
- */
-export function formatRecallRegression(v) {
-  const canon = canonicalUri(v?.uri);
-  const owner = String(v?.owner ?? "").replace(/\s+/g, " ").trim().slice(0, 40);
-  const id = [owner, canon].filter(Boolean).join(" — ");
-  if (!v?.mark_text) return id || String(v?.uri ?? "");
-  return id ? `${v.mark_text} (${id})` : v.mark_text;
 }

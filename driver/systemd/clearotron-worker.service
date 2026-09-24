@@ -100,7 +100,7 @@ SystemCallArchitectures=native
 #
 # ── WHAT THIS SERVICE CREATES IS CLOSED TO OTHER ACCOUNTS ─────────────────────────────────────────────
 # Every file and folder this service or the engine creates comes out with no access for accounts outside
-# its group: run records, known-conflicts, outbox packets, archive folders, and whatever a later writer
+# its group: run records, outbox packets, archive folders, and whatever a later writer
 # adds, without a mode at each write site. Group write is kept on purpose: a store shared by a group, as
 # a set-group-ID checkout that several accounts pull into, must stay writable by that group, and 0027
 # would make each new folder there closed to the others. Measured 2026-09-23 with 0027: a knockout was

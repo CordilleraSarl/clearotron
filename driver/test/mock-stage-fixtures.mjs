@@ -2436,8 +2436,8 @@ export function applyStageWrites(msg, argv) {
     // mirrors the TOOL's merge (judgment/no-qid blocks survive; missing dictated qids land).
     // J6 — the FRESH execute_plan call (resumed-past axis, no live session) carries the same
     // tool instruction but NO per-qid listing: the real tool reads the frozen plan itself. Mirror
-    // that too — P2-A's failed-at-verdict store write makes resume runs mint recall probes, which
-    // land on exactly this path in the offline harness.
+    // that too — a resumed run whose frozen plan gained entries after its first pass lands on exactly
+    // this path in the offline harness.
     const bandPath = fromJsonText(msg.match(/"output_path": "((?:[A-Za-z]:)?[\\/]\S+-band\.json)"/)[1]);
     let blocks = [];
     try { blocks = JSON.parse(readFileSync(bandPath, "utf8")); } catch { blocks = []; }

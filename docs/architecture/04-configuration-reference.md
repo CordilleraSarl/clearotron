@@ -277,10 +277,9 @@ unrecognised policy value that leaves the default behaviour standing.
 
 | Var | Gates |
 |---|---|
-| `CLEAROTRON_RECALL_PROBES` / `CLEAROTRON_RECALL_TRIPWIRE` | Prior-confirmed-conflict plan probes / recall store reads + regression check. |
 | `CLEAROTRON_PLAN_DISPATCH` (`0` or `off` disables) | Pure-code provider `executePlan` repairs at fan-in and reopen. **Never silently inert:** every entry in `PROVIDERS` ships an `executePlan` adapter, and `preflightCredentials` refuses the run before any spend under one that does not — a credential is not a capability. §5.4 of [05-config-governance.md](05-config-governance.md) still lists `signa` as the exception to that and has not been updated since its two missing tools were mounted. |
 | `CLEAROTRON_FRAME_REOPEN` (+ `CLEAROTRON_FRAME_REOPEN_MAX`, default 1) | The bounded frame-diff reopen. |
-| `CLEAROTRON_REGISTER_GAP_CLAMP` | The registerGap + deadline-carry verdict clamp arms. |
+| `CLEAROTRON_REGISTER_GAP_CLAMP` | The registerGap verdict clamp arm. |
 | `CLEAROTRON_REOPEN_MAX_FETCH` (default 150) | Detail-fetch ceiling inside the reopen closure pass. |
 | `CLEAROTRON_UNREACHABLE_SENIOR` (`open-item` \| `clamp`, default `open-item`) | Policy when a verdict-driving senior right can't be retrieved. |
 

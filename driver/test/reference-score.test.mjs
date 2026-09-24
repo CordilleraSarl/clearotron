@@ -877,7 +877,7 @@ test("where every record of the name belongs to another proprietor, the entry is
   assert.equal(b.withheld.find((r) => r.mark === "VELTHYS"), undefined, "not withheld on another company's record");
   const row = b.lost.find((r) => r.mark === "VELTHYS");
   assert.ok(row, "lost — its own record was never retrieved");
-  assert.match(row.why, /held by another proprietor or filed elsewhere/, "…in words a reader can act on");
+  assert.match(row.why, /held by another proprietor, filed elsewhere, or recorded with no owner/, "…in words a reader can act on");
   assert.match(row.why, /VELTHOS|VELTHYS/, "…naming what it did match, so the reader can judge it");
 
   // The disclosure still fires where the join is by country alone: the record is the entry's by where it

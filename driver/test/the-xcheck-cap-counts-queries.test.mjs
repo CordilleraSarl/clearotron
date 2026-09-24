@@ -123,35 +123,20 @@ test("a cap larger than the candidate list leaves no overflow, and an empty list
   assert.deepEqual(screenThenCap(planWith([]), null, CAP).entries, []);
 });
 
-// ── the CLASS: both supplemental lanes, not just the measured one ───────────────────────────────────
+// ── the CLASS: every supplemental lane, not just the measured one ───────────────────────────────────
 
-test("BOTH lanes screen before they count — the recall lane has the identical shape", () => {
-  // The issue measured the cross-check lane. The recall lane mints supplemental rows the same way,
-  // caps them the same way, and folded them afterwards the same way — so fixing one would have left
-  // the class half-done and the next reader looking at two patterns.
-  //
-  // Its OWNER budget is five, rationed by the material-first order deliberately, so a slot spent on a
-  // row nobody dispatches is a fifth of that lane's portfolio reach.
+test("the cross-check lane screens before it counts, and it is the only supplemental lane left", () => {
+  // There were two: the recall lane minted supplemental rows the same way and screened through the same
+  // helper, and it went with the recall store. A second call appearing is a new lane, and it must be
+  // read for the same defect before this number moves.
   const calls = [...PIPELINE.matchAll(/screenThenCap\(/g)];
-  assert.equal(calls.length, 2, `both supplemental lanes must screen through one helper, found ${calls.length}`);
+  assert.equal(calls.length, 1, `the supplemental lane must screen through the one helper, found ${calls.length}`);
 });
 
-test("neither lane caps inside its mint loop any more", () => {
-  // THE ORDER IS THE FIX, and these two conditions are what it removed. A cap tested while candidates
+test("the cross-check lane no longer caps inside its mint loop", () => {
+  // THE ORDER IS THE FIX, and this condition is what it removed. A cap tested while candidates
   // are still being built is the defect by definition, whichever lane regrows it.
   assert.ok(!/entries\.length >= XCHECK_CAP/.test(PIPELINE),
     "the cross-check lane is counting candidates into its cap again");
-  assert.ok(!/ownerUsed >= RECALL_CAP_OWNER : markUsed >= RECALL_CAP_MARK\) \{\n\s*overflow\.push\(\{ qid, term: term\.slice/.test(PIPELINE),
-    "the recall lane is counting candidates into its budgets again");
 });
 
-test("the recall lane screens BEFORE it spends either budget", () => {
-  // Order assertion, stated as one: the two behaviours it separates are a helper call and a budget
-  // loop in the same function, and no return value distinguishes them.
-  const lane = PIPELINE.slice(PIPELINE.indexOf("const RECALL_CAP_MARK"));
-  const screen = lane.indexOf("screenThenCap(");
-  const budget = lane.indexOf("ownerUsed >= RECALL_CAP_OWNER");
-  assert.ok(screen > 0 && budget > 0, "the recall lane stopped screening or stopped budgeting");
-  assert.ok(screen < budget,
-    "the budget must be spent on rows that already survived the screen, or a duplicate takes one of five");
-});

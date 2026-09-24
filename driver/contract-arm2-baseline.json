@@ -11,7 +11,7 @@
     "the baseline tracks named elements, and a rename is a new name. Regenerate rather than work around it.",
     "Measured 139 of 287 declared elements."
   ],
-  "total": 104,
+  "total": 103,
   "byStage": {
     "matter-frame": [
       "### Intake asks line shape — rendered by the driver from intake_asks[]",
@@ -79,7 +79,6 @@
       "proposal class scoping — pass nice_classes:[...] AND in_scope_classes:[...] on every proposal/call",
       "proposal envelope — predicate enum {exact, default, wildcard, phonetic, owner}, term vs terms, rationale",
       "reading the band back and judging it — keep proposing until the axis's dangerous named band is covered",
-      "recall carry-or-justify — for each prior-confirmed conflict, a reasoned drop row written over the fetched record (primary-sweep only)",
       "supplemental proposals — WHICH queries the manifest/frame warrant beyond the dictated set",
       "the dictated entry list — qid, predicate, terms, owner, nice_classes, regions, when-guard, expected_kind, covered_by"
     ],

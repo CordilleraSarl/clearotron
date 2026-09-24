@@ -254,7 +254,7 @@ primitive is a filesystem primitive chosen for its atomicity:
 | pid+starttime sidecars | claim liveness, slot ownership | survives pid reuse; positive-evidence death only |
 
 The run directory ([03 §7](03-run-lifecycle.md#7--run-directory-anatomy)) is the unit of truth;
-the queue dirs, the known-conflicts store, the outbox, and the publish pool are the only shared
+the queue dirs, the outbox, and the publish pool are the only shared
 locations, and each has a single writer role. This is why horizontal
 scaling is credible: a second driver on a second host needs sharded queues and a shared pool,
 nothing else.
@@ -286,7 +286,7 @@ All paths relative to [`driver/`](../../driver/). The load-bearing seven are mar
 | `rule-shape.mjs` · `reasoning-tripwires.mjs` · `gate-metrics.mjs` | Anti-threshold guard, integrity tripwires (observe-only), gate telemetry. |
 | `predelivery-lint.mjs` · `close-verify.mjs` · `screen-gate.mjs` | Pre-delivery checks, envelope close verification, screen-gate detection. |
 | `common-law-receipts.mjs` · `engagement-receipt.mjs` · `scope-ledger.mjs` | Receipt models for the marketplace grid, engagement, scope. |
-| `senior-rights.mjs` · `own-rights.mjs` · `use-check.mjs` · `known-conflicts.mjs` | Rights closure, self-exclusion, use analysis, recall store. |
+| `senior-rights.mjs` · `own-rights.mjs` · `use-check.mjs` | Rights closure, self-exclusion, use analysis. |
 | `publish/` | Deterministic publication: HTML render, Excel audit workbook, pool admin, regions. |
 | `repairs.mjs` · `repair-digest.mjs` | Recovery decisions, repair budgets, repair digests. |
 | `tokens.mjs` · `provider-usage.mjs` · `progress.mjs` · `status-snapshot.mjs` · `run-activity.mjs` | Token rollup (successor to the deleted `cost.mjs`), billing-grade provider ledger, status surfaces. |

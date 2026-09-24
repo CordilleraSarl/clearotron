@@ -70,7 +70,7 @@ const FROZEN_FILES = [
   { path: "_driver/verdict.json", why: "publish/index.mjs:792 verdictInfo" },
   { path: "_driver/framework.json", why: "publish/index.mjs, the frozen band vocabulary the run was rated under" },
   { path: "_driver/register-plan.json", why: "publish/index.mjs:910 scopeBasis" },
-  { path: "_driver/instructed-scope.json", why: "publish/index.mjs:911 searchedJurisdictions, the fallback for register-plan" },
+  { path: "_driver/instructed-scope.json", why: "publish/index.mjs:914 searchedJurisdictions, the fallback for register-plan" },
   { path: "_driver/enforcer-signals.json", why: "`esPath` declared in index.mjs" },
   { path: "_driver/predelivery-lint.json", why: "publish/index.mjs:172 lintSink" },
   { path: "_driver/escalation-state.json", why: "publish/index.mjs:173 escSink" },
@@ -118,7 +118,7 @@ const KNOCKOUT_FILES = [
   // knockout report render empty (publish/knockout.mjs:140-155). Named by stages-knockout.mjs:32,41.
   { path: "_driver/register-counts.json", why: "publish/knockout.mjs:140-155 counted figures + the Register column" },
   { path: "_driver/register-records.json", why: "stages-knockout.mjs:41 the terms behind the close-variation axis" },
-  { path: "_driver/instructed-scope.json", why: "publish/index.mjs:911 searchedJurisdictions, the fallback for register-plan" },
+  { path: "_driver/instructed-scope.json", why: "publish/index.mjs:914 searchedJurisdictions, the fallback for register-plan" },
 ];
 
 /** The allowlist for a template. One place, so a new template cannot half-exist. */

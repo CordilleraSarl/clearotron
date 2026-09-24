@@ -2124,10 +2124,6 @@ export const STAGES = {
         class: "judgment", tokens: [],
         why: "Sufficiency of coverage against the manifest is the model's read. No token: registerUnit checks the band parses, never that it is complete (fan-in in pipeline.mjs is a different gate).",
       },
-      "recall carry-or-justify — for each prior-confirmed conflict, a reasoned drop row written over the fetched record (primary-sweep only)": {
-        class: "judgment", tokens: [],
-        why: "The drop reasoning is judgment; the conflict list beside it is pre-bound (the driver holds recallDirectives and the plan's recall-* probes). No registerUnit token — the recall tripwire lives downstream.",
-      },
       "layer-execution declaration — whether the prose says the register layer / provider tools were not executed or not bound": {
         class: "mechanical:code-extracted", tokens: ["declared_not_executed"],
         why: "_driver/plan-execution.json and the tool-call log already hold whether the call ran — registerPlanCallKilled (verify.mjs:1291) reads exactly that to settle the same question one arm below. This arm still decides it from the model's sentence. [citation unverified]",
@@ -2145,7 +2141,7 @@ export const STAGES = {
         why: "The path is `out: (P, axis) => P.registerUnit(axis)`, pre-bound by the driver; all three counts are aggregates over the band the tool wrote. No token speaks about the return message.",
       },
     },
-    message: ({ paths: P, axis, job, registerPlan, recallDirectives }) => {
+    message: ({ paths: P, axis, job, registerPlan }) => {
     // Lever-1 data plane (2026-06-24): hand the funnel a COPYABLE in-scope Nice-class array. The NOVA PULSE timeout
     // proved skill prose alone is not enough — the funnel HAD [9,28,41,42] in matter-context and still ran
     // all-class enumerations (10k-record flood) because nice_classes read as optional. Pin it in the task.
@@ -2181,12 +2177,6 @@ export const STAGES = {
         ? ` Read and follow ${PROVIDER_META.skillDoc} for THIS provider's exact tool names + operator vocabulary; use only that provider's register tools. There is exactly ONE register in this run — if its coverage does not reach a territory the matter needs, that is a DEFERRED coverage row you disclose, never a gap you fill from somewhere else.`
         : " NO provider vocabulary doc is registered for it, so there is nothing to read for its tool names — treat that as a fault and say so rather than improvising an operator vocabulary."),
       `Inputs: variant manifest ${P.variantManifest}; matter frame ${P.matterContext}.`,
-      // spec 64 (B2) — recall context: the plan carries deterministic recall-* probes re-fetching the
-      // mark's prior-confirmed conflicts; the funnel writes its drop reasoning OVER the fetched record,
-      // never cold (the recall tripwire demands carried-or-justified for each remembered conflict).
-      (axis === "primary-sweep" && (recallDirectives?.length))
-        ? `PRIOR-CONFIRMED CONFLICTS (recall context): earlier delivered runs of this mark confirmed live conflicts — ${[...new Set(recallDirectives.map((d) => d.mark_text).filter(Boolean))].slice(0, 10).join(", ")} — and the dictated plan carries "recall-*" probes re-fetching them. If a probe's record surfaces and your judgment DROPS it, write the reasoned drop row over the fetched record (never silence): each remembered conflict must be carried as a finding or reasoned away.`
-        : "",
       planEntries.length
         ? lines(
             // (2026-07-03, the senior lawyer): the TOOL executes the plan — the model never runs

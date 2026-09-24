@@ -14,7 +14,7 @@ import { parseReport, parseAudit, parseSections, parseBlocks, stripInternal, par
 import { renderHtml, parseActionBuckets, actYouConditions } from './render.mjs';
 import { buildAudit } from './xlsx.mjs'; import { readDeclinations } from '../declination-tool.mjs';   // — what synthesis set aside, with its grounds
 import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, joinFindingToBlock, CLIENT_TIER_BY_COMPOSITE, projectCoverageJudgment } from '../findings-model.mjs';
-import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.mjs'; import { coverageFormStamp, readCoverageForm } from '../coverage-form-io.mjs'; import { coverageUnitLabel } from '../coverage-ledger.mjs'; import { recallReceiptForOwnCompany } from '../known-conflicts.mjs';   // — and why an absence did not close; whose recall checks an audit lists
+import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.mjs'; import { coverageFormStamp, readCoverageForm } from '../coverage-form-io.mjs'; import { coverageUnitLabel } from '../coverage-ledger.mjs'; import { recallReceiptForOwnCompany } from '../recall-receipt.mjs';   // — and why an absence did not close; whose recall checks an audit lists
 import { clearanceReportData } from './report-data.mjs';
 import { searchDepthRecord, planTerritoriesOf } from './search-depth.mjs'; import { bandRecords } from '../named-band.mjs';   // how much was read to reach the answer, as counts and tokens
 import { parseFrameworkManifest } from '../framework.mjs';
@@ -819,8 +819,10 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   }
   // ── THE CHECKS THE RUN DECIDED ON AND DID NOT MAKE ─────────────────────────────────────────────
   //
-  // The recall net mints a probe per remembered conflict and a probe per owner behind one, then
-  // dispatches at most five owner probes. The excess is recorded in the run's own receipt and nothing
+  // A run from before the recall store's removal (2026-09-24) carries its recall receipt; a newer run
+  // writes none, so on it this reads nothing. The recall net minted a probe per remembered conflict and
+  // a probe per owner behind one, then dispatched at most five owner probes. The excess was recorded in
+  // the run's own receipt and nothing
   // downstream carried it to a reader, so a search that decided on nineteen ownership checks, made five
   // and said nothing about the other fourteen read as a search that made the checks it wanted.
   //
@@ -835,7 +837,8 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // Nothing here composes a sentence, and the note carries no seam, so the gaps sheet's own splitter
   // leaves "What was done" empty — which is the fact: nothing was done.
   // READ THROUGH THE DECLARED HELPER, three states and not two. An absent receipt is a run whose recall
-  // net minted nothing — env-gated off, or a matter with no remembered conflict — and there is nothing
+  // net minted nothing — env-gated off, a matter with no remembered conflict, or any run after the
+  // removal — and there is nothing
   // to disclose. A DAMAGED one is a different fact: the probes may have overflowed and this publish
   // cannot tell, so it says so in the run record instead of shipping the same empty sheet an
   // everything-dispatched run ships. Collapsing those two is the defect publish-inputs.mjs exists for.

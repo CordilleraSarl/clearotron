@@ -84,9 +84,13 @@
 // make sure one was written and that it is not the reason token typed twice.
 //
 // PURE — no node imports, so it tests offline, exactly like doubt-closure-call.mjs and disposition-call.mjs.
-// It imports the house normalizer and known-conflicts.mjs does not import it: the dependency runs ONE WAY,
-// so there is no second opinion about what an identical mark is.
-import { markKey } from "./known-conflicts.mjs";
+// The house mark normalizer lives here, so there is no second opinion about what an identical mark is:
+// fold diacritics, drop punctuation and trademark symbols, lowercase.
+// \p{L}\p{N}: a Cyrillic, Greek or CJK mark must not fold to "". Diacritics still fold for Latin.
+function markKey(name) {
+  return String(name ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
+}
 
 // One call carries a BATCH. A tool that is tedious at N rows gets routed around — 17 of 23 recorded runs
 // hand-wrote a program rather than author the disposition form — and 102 declines is squarely in the
