@@ -1170,17 +1170,20 @@ test("repair-first A5: a REASONED BLOCKING (cited defects) is never re-asked —
   assert.equal(res.ok, true, JSON.stringify(res));
   assert.ok(!existsSync(join(res.runDir, ".failed")), "a reasoned BLOCKING no longer ends the run");
 
-  // AND THE REVIEWER'S OWN GROUND REACHES THE CLIENT DOCUMENT. Delivering while dropping the cited defect
-  // would satisfy every assertion above and be precisely the failure the old doctrine was protecting
-  // against, so the text itself is asserted rather than the section's presence.
+  // AND THE REVIEWER'S OWN GROUND REACHES THE RUN RECORD, NEVER THE CLIENT PAGE. Delivering while dropping
+  // the cited defect would satisfy every assertion above, so the text itself is asserted in the record the
+  // reviewing lawyer reads. Owner ruling 2026-09-24: reviewer notes never reach the client page.
+  const record = readFileSync(driverDir(res.runDir, "reviewer-open-questions.md"), "utf8");
+  assert.match(record, /^###\s+Reviewer's open questions/m, "the section is recorded");
+  assert.match(record, /overclaimed CLEAR on the narrative/,
+    "the reviewer's cited defect must be the thing the lawyer reads — a record without the ground it was "
+    + "raised on is a heading, not a hand-off");
   const report = readFileSync(res.runDir + "/report.md", "utf8");
-  assert.match(report, /^###\s+Reviewer's open questions/m, "the section is rendered");
-  assert.match(report, /overclaimed CLEAR on the narrative/,
-    "the reviewer's cited defect must be the thing the lawyer reads — a section that renders without the "
-    + "ground it was raised on is a heading, not a hand-off");
+  assert.doesNotMatch(report, /Reviewer's open questions|overclaimed CLEAR on the narrative/,
+    "a reviewer's note reached the client page");
 });
 
-test("T3a: persistent BLOCKING after corrective + re-check → the run DELIVERS, with the open points printed", async () => {
+test("T3a: persistent BLOCKING after corrective + re-check → the run DELIVERS, with the open points recorded off the client page", async () => {
   // Ruling 2026-08-26, verbatim: "Deliver always, with open points printed. The refusal on a
   // blocking review goes." This REVERSES spec-49 T3, whose flip to fail-on-BLOCKING is itself recorded in
   // itself an owner-approved decision. Both are his; this is the standing one. This arm is the
@@ -1210,14 +1213,17 @@ test("T3a: persistent BLOCKING after corrective + re-check → the run DELIVERS,
   const sidecar = JSON.parse(readFileSync(driverDir(res.runDir, "verdict.json"), "utf8"));
   assert.equal(sidecar.verdict, "BLOCKING", "the verdict is delivered WITH, never softened by delivering");
 
-  // THE SECTION IS THE POINT. A delivered BLOCKING whose body does not say the reviewer refused is
-  // precisely copper-spire, and it would pass every assertion above.
+  // THE RECORD IS THE POINT, AND THE CLIENT PAGE CARRIES NOTHING ADDED. Owner ruling 2026-09-24: a report
+  // the reviewer still refuses ships with its rating and nothing added, and reviewer notes never reach the
+  // client page. The refusal stays honest where the reviewing lawyer reads it: the sidecar above still says
+  // BLOCKING, and the run record says so in words a reading lawyer acts on.
+  const record = readFileSync(driverDir(res.runDir, "reviewer-open-questions.md"), "utf8");
+  assert.match(record, /^###\s+Reviewer's open questions/m, "the open points are recorded for the reviewing lawyer");
+  assert.match(record, /did not sign this report off/,
+    "and the record says so in words a reading lawyer acts on, not by a heading alone");
   const report = readFileSync(res.runDir + "/report.md", "utf8");
-  assert.match(report, /^###\s+Reviewer's open questions/m,
-    "the open points must reach the client document, not only the run log — a report that delivers "
-    + "silently on a refused review is the failure the old doctrine existed to prevent");
-  assert.match(report, /did not sign this report off/,
-    "and it must say so in words a reading lawyer acts on, not by a heading alone");
+  assert.doesNotMatch(report, /Reviewer's open questions|did not sign this report off/,
+    "the refusal reached the client page as added text");
 
   // The corrective ladder is still the fix arm and still runs FIRST: original + blocking re-synth.
   assert.ok(stageOrder(events).filter((s) => s.startsWith("synthesis")).length >= 2,

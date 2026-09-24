@@ -336,8 +336,11 @@ test("T3a/#1674: a review that flips to BLOCKING during the delivery stale-repai
     `the report is badged ${label} while the label authority says ${sidecar.tier} — the reassembly did not `
     + "re-stamp the front matter from the adopted verdict, which is exactly the silent half of this defect");
 
-  // AND THE LATE REVIEWER'S OWN WORDS REACH THE CLIENT DOCUMENT. A run that adopts the verdict, rebuilds
-  // the badge and still prints no open points has heard the reviewer and told nobody.
-  assert.match(readFileSync(join(res.runDir, "report.md"), "utf8"), /^###\s+Reviewer's open questions/m,
-    "the section is built from the review THIS repair wrote, which is why the reassembly must re-run");
+  // AND THE LATE REVIEWER'S OWN WORDS REACH THE RUN RECORD, NEVER THE CLIENT PAGE. A run that adopts the
+  // verdict, rebuilds the badge and still records no open points has heard the reviewer and told nobody.
+  // Owner ruling 2026-09-24: reviewer notes never reach the client page.
+  assert.match(readFileSync(driverDir(res.runDir, "reviewer-open-questions.md"), "utf8"), /^###\s+Reviewer's open questions/m,
+    "the record is built from the review THIS repair wrote, which is why the reassembly must re-run");
+  assert.doesNotMatch(readFileSync(join(res.runDir, "report.md"), "utf8"), /Reviewer's open questions/,
+    "a reviewer's note reached the client page");
 });
