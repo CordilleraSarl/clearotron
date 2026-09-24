@@ -187,16 +187,16 @@ test("the clearance lane's buckets are untouched by any of this", () => {
   // Same assertions the shipped withheld/lost split makes, with a coverage object in hand. If exclusion
   // ever ran when the roll is null, the withheld/lost split moves and this goes red.
   const reference = [
-    { mark: "TIKI", owner: "Tiki Corporation", classes: [32] },
-    { mark: "TIKI TWIST", classes: [32] },
+    { mark: "WAVO", owner: "Wavo Corporation", classes: [32] },
+    { mark: "WAVO TWIST", classes: [32] },
     { mark: "E2E LOST PROBE", classes: [32] },
   ];
-  const findings = [{ subject: null, mark: "TIKI", owner: "Tiki Corporation" }];
-  const retrieved = [{ mark: "TIKI TWIST", record_id: "/mark/us/d074651d-d49a-46c1-9c95-8b6a6f0880f0" }];
+  const findings = [{ subject: null, mark: "WAVO", owner: "Wavo Corporation" }];
+  const retrieved = [{ mark: "WAVO TWIST", record_id: "/mark/us/d074651d-d49a-46c1-9c95-8b6a6f0880f0" }];
   const coverage = referenceCoverage({ coversMarks: [WAVO], subjects: null });
   const b = scoreRecall({ reference, findings, retrieved, scopeClasses: ["32"], coverage });
-  assert.deepEqual(b.found.map((r) => r.mark), ["TIKI"]);
-  assert.deepEqual(b.withheld.map((r) => r.mark), ["TIKI TWIST"]);
+  assert.deepEqual(b.found.map((r) => r.mark), ["WAVO"]);
+  assert.deepEqual(b.withheld.map((r) => r.mark), ["WAVO TWIST"]);
   assert.deepEqual(b.lost.map((r) => r.mark), ["E2E LOST PROBE"]);
   assert.deepEqual(b.uncovered, []);
 });
@@ -262,7 +262,7 @@ test("the knockout lane's structural `found` 0 is stated, so it is not filed as 
 // ── the reference contract ────────────────────────────────────────────────────────────────────────
 
 test("covers_marks is optional, and malformed refuses rather than reading as a clean sweep", () => {
-  const base = { schema_version: 1, scenario: "R3", source: "x", register: [{ mark: "TIKI" }] };
+  const base = { schema_version: 1, scenario: "R3", source: "x", register: [{ mark: "WAVO" }] };
   assert.deepEqual(validateReference(base), [], "ABSENT is valid — that is the whole migration");
   assert.deepEqual(validateReference({ ...base, covers_marks: [WAVO] }), []);
   assert.match(validateReference({ ...base, covers_marks: WAVO }).join(" "), /covers_marks/, "a bare string is refused");

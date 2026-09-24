@@ -9,7 +9,7 @@
 //
 // ── the loss this exists to catch ────────────────────────────────────────────────────────────────────
 //
-// TIKI TWIST and TIKI TROPICS. Both sat in R3's own common-law records and reached no findings list, and
+// WAVO TWIST and WAVO TROPICS. Both sat in R3's own common-law records and reached no findings list, and
 // nothing anywhere said why. `common-law-receipts.mjs`'s `findGridCandidateOmissions` already reports one
 // class of this — a hit cell denied by the Negative-results matrix — but it is CELL-granular, and a cell
 // carries up to eight candidates. This is the per-candidate half.

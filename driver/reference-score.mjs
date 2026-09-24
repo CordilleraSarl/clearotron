@@ -118,10 +118,10 @@ export function labelTokens(label) {
  * The two separator classes do different work and conflating them is the bug worth stating. `/ , · & |`
  * separate ALTERNATIVES for the same record: `VENZAL / VENZALMONO / VENZALKOMB` is one relabelled entry,
  * and `CHROMA / & Device` is one mark plus a device note. Whitespace and hyphens separate WORDS WITHIN
- * one name: `TIKI TWIST` is not `TIKI`.
+ * one name: `WAVO TWIST` is not `WAVO`.
  *
  * Treating a word separator as an alias separator makes every multi-word mark match its own first word —
- * so a reference `TIKI` would claim the run's `TIKI TWIST`, and a genuinely withheld mark would be
+ * so a reference `WAVO` would claim the run's `WAVO TWIST`, and a genuinely withheld mark would be
  * reported as found. That is a false clean on the exact pair this scorer was built for.
  */
 /*
@@ -151,7 +151,7 @@ export function labelAliases(label) {
     .filter(Boolean);
 }
 
-/** The consonant skeleton is only discriminating once there is enough of it. TIKI and TIKA are both "tk". */
+/** The consonant skeleton is only discriminating once there is enough of it. WAVO and WAVA are both "wv". */
 const MIN_SKELETON = 4;
 
 // asked for a minimum ALIAS length, or a stated reason there is none. THERE IS NONE, deliberately.
@@ -190,9 +190,9 @@ const MIN_SKELETON = 4;
  *     can tell an exact CJK match from an owner-gated one.
  *  2. ALIAS. Any alias of one label equals any alias of the other, compared as whole names. This is what
  *     makes `VENZAL` match `VENZAL / VENZALMONO / VENZALKOMB` — the relabelling an exact diff misreads
- *     as a drop plus a find — while keeping `TIKI` and `TIKI TWIST` apart.
+ *     as a drop plus a find — while keeping `WAVO` and `WAVO TWIST` apart.
  *  3. SKELETON. Consonant skeletons of 4+ characters agree. Reaches the one-vowel spelling pairs a variant
- *     sweep must not split, without letting short marks collide — 4 is the floor because TIKI and TIKA
+ *     sweep must not split, without letting short marks collide — 4 is the floor because WAVO and WAVA
  *     both skeletonise to "tk".
  *  4. CONTAINED — ONLY when the caller has established that both sides carry the SAME OWNER.
  *     One label's word sequence sits contiguously inside the other's. Rules 2 and 3 handle a reference
@@ -201,9 +201,9 @@ const MIN_SKELETON = 4;
  *     one record — were filed as a `lost` and a `noise` on the same run. A record cannot be both never
  *     retrieved and surfaced-but-unknown, and the entry it split was the reference's highest-risk one.
  *
- *     READ WITH RULE 2, NOT AGAINST IT (2026-08-14). Rule 2's block says the alias rule "keeps `TIKI`
- *     and `TIKI TWIST` apart", and this rule joins exactly that pair under a matched owner —
- *     `matchesReference("TIKI", "TIKI TWIST", {sameOwner:true})` returns `contained`. Both are right
+ *     READ WITH RULE 2, NOT AGAINST IT (2026-08-14). Rule 2's block says the alias rule "keeps `WAVO`
+ *     and `WAVO TWIST` apart", and this rule joins exactly that pair under a matched owner —
+ *     `matchesReference("WAVO", "WAVO TWIST", {sameOwner:true})` returns `contained`. Both are right
  *     and they read as contradictory side by side. Rule 2 asks whether two labels are the SAME NAME,
  *     where a word separator must never collapse a longer mark into its first word. Rule 4 asks a
  *     different question that only an established owner match makes answerable: whether ONE PROPRIETOR
@@ -1911,7 +1911,7 @@ export function scoreScriptTargets({ reference = [], buckets = {}, findings = []
 // ── — A KNOCKOUT IS GRADED ON WHAT A KNOCKOUT PROMISES ─────────────────────────────────────────
 //
 // R3 and R4 are knockout scenarios and their gold sets are clearance-grade lawyer reviews listing
-// SIMILAR marks — TIKI PUNCH, TIKI TROPICS — which a count of the exact string and its close variations
+// SIMILAR marks — WAVO PUNCH, WAVO TROPICS — which a count of the exact string and its close variations
 // can never retrieve. The 2026-08-12 round scored them 0/8 and 0/9 on BOTH free-tier and clarivate, same
 // day, same engine. That zero is baked in by the product definition, and it costs twice: the two
 // cheapest scenarios cannot detect a recall regression because they are already at the floor, and every

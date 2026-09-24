@@ -71,7 +71,7 @@ const isSepRow = (t) => /^\|[\s:|-]+\|$/.test(t);
  * BOTH reach every line of the section, prose included, and that is deliberate. The first cut held
  * the text path to pipe-TABLE rows only, on the theory that digest.md puts carried candidates in
  * tables. Run against the real 2026-07-29 findings it manufactured a loss: the watchlist annex there
- * is written as `- **W-1 · TIKI Brand outdoor-living portfolio — …**` bullets, so a candidate the
+ * is written as `- **W-1 · WAVO Brand outdoor-living portfolio — …**` bullets, so a candidate the
  * digest had plainly carried came back `uncarried`. A join that invents losses is worth nothing, and
  * the section shape is the digest's to choose. So the reach is the same as parseFindingsEndings
  * (recall-reconciliation.mjs), which has always counted a prose mention as an ending — one
@@ -216,7 +216,7 @@ export function adjudicationOf(entry, surfaces) {
   // Measured on `placement-carry-2026-07-29`, whose delivered digest discharges its one borderline
   // entry in as many words —
   //
-  //     | R-8 (my override) — placement-inquiry placed `TIKI LOVERS` at sheet-2 (S2-C) while flagging
+  //     | R-8 (my override) — placement-inquiry placed `WAVO LOVERS` at sheet-2 (S2-C) while flagging
   //       it as a borderline headline call | OVERRODE — promoted to headline. …
   //
   // — and names no URI anywhere in that row. A URI-only branch reports that discharged obligation as

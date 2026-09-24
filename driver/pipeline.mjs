@@ -3336,7 +3336,7 @@ export function deriveRecordCarry(ctx, trigger, { findings = null } = {}) {   //
 // DIFFERENT Play Store apps. That collision concentrates in the non-Latin population this exists for,
 // because a Han-script marketplace query returns `?q=…` search URLs.
 //
-// This is the path that lost TIKI TWIST and TIKI TROPICS on R3 — both sat in the run's own records and
+// This is the path that lost WAVO TWIST and WAVO TROPICS on R3 — both sat in the run's own records and
 // reached no findings list. It has already cost a round.
 //
 // Derived at publish, like the register trace and for the same reason: everything it joins is final by

@@ -435,7 +435,7 @@ function scoreOne(run, ref) {
   //
   // Refusing the unshaped pairing was only half of it. A gold set that gains a `counts` block usually
   // KEEPS its lawyer sheet — it is a real answer to a real matter and deleting it loses history — and
-  // scoring both prints `LOST · TIKI PUNCH` beside the count that measures the product. That is the same
+  // scoring both prints `LOST · WAVO PUNCH` beside the count that measures the product. That is the same
   // structural zero the issue is about, one row smaller, and it lands in the bucket table a reader
   // scans first.
   //
