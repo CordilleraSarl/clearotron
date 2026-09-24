@@ -109,10 +109,8 @@ test("no mid-run lane composes a qid from kebab — asserted against the source,
   for (const lane of ["xcheck-owner", "house"]) {
     assert.ok(minted.includes(lane), `the ${lane} mid-run mint lane is gone — a deleted lane passes the kebab half of this arm`);
   }
-  // The recall lane passes its prefix through a variable, so it is asserted by its call site instead.
-  assert.match(src, /const qid = mintSupplementalQid\(\{ prefix, term, used: mintedQids \}\)/,
-    "the recall mid-run mint lane is gone");
-  assert.equal(byPrefix, 3, "every mid-run mint site is one of the three named lanes above");
+  // A third lane, the recall searches, went with the recall store; nothing may mint in its place.
+  assert.equal(byPrefix, 2, "every mid-run mint site is one of the two named lanes above");
 });
 
 // ── and if a collision is ever constructed anyway, it is named rather than dropped ────────────────

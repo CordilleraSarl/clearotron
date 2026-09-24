@@ -27,8 +27,6 @@
 // history is not rewritten to tidy a citation, so the wrong number stands in the log forever; the
 // references in this file are corrected and this comment is the reconciliation. A reader who greps the
 // history for 1886 and lands here is in the right place and the number that brought them is not.
-//   - no known-conflicts writes — triage hits are unverified; the recall ledger is read-only territory
-//     for this lane (review 2026-07-17 doctrine).
 import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync, rmSync, renameSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is

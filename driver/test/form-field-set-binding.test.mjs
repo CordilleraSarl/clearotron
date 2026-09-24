@@ -42,7 +42,7 @@ const dispatchOf = (stage) => {
     return STAGES[stage].message({
       paths: paths(dir), profile: {}, half: "a", axis: "primary-sweep", axes: ["primary-sweep"],
       job: { classes: [9], goods: "software", marks: ["LUMEN"], jurisdictions: ["US"], mark: "LUMEN" },
-      marks: ["LUMEN"], registerPlan: null, recallDirectives: [], lateBind: null,
+      marks: ["LUMEN"], registerPlan: null, lateBind: null,
       intakeAsks: [], ownedAsks: [], registerOnly: true,
     });
   } finally { rmSync(dir, { recursive: true, force: true }); }

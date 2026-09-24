@@ -4,11 +4,11 @@
 // Copy every agent's recall store into the archive pool, so the engine's memory of confirmed
 // conflicts survives the loss of a workspace.
 //
-// WHY THIS EXISTS. `<studioRoot>/_known-conflicts/<mark>.json` is what stops the engine re-litigating
-// a conflict a lawyer already confirmed, and what carries a remembered opposition window into the
-// deadline-carry clamp. It lives only in the live workspace: no code copies it anywhere, and the
-// agent-state git backup does not reach it. One lost disk and every prior confirmed conflict is
-// forgotten silently — the next run on that mark reads clean and nothing says a memory used to exist.
+// WHY THIS EXISTS. `<studioRoot>/_known-conflicts/<mark>.json` was the engine's memory of conflicts
+// its delivered reports confirmed. No run reads or writes it since the recall store was removed
+// (2026-09-24), and the files were left on disk untouched, so what they hold is now a record rather
+// than an input. It lives only in the live workspace: no code copies it anywhere, and the agent-state
+// git backup does not reach it. One lost disk and that record is gone with nothing saying it existed.
 //
 // WHY THE POOL AND NOT GIT. These files name real client matters. The agent-state repo is pushed to
 // GitHub nightly, so backing them up THERE would widen exactly the exposure the 2026-07 audit found

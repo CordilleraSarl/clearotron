@@ -178,7 +178,7 @@ seeding. Frozen sidecars are never silently re-derived; a corrupt one crashes lo
 flowchart TD
     subgraph HEAD["Phase 1-2 head (fatal)"]
         MF[matter-frame] --> PV[clearance-variants]
-        PV --> DER["code derivations:<br/>scope ledger · form neighbourhood ·<br/>register plan freeze · recall probes"]
+        PV --> DER["code derivations:<br/>scope ledger · form neighbourhood ·<br/>register plan freeze"]
     end
     DER --> GRID["grid spec dictated by code<br/>(terms × platforms × connotation; A1 split)"]
     subgraph GATHER["Gather fan-out (concurrency = CLEAROTRON_GATHER_CONCURRENCY)"]
@@ -222,8 +222,7 @@ Reading order for the phases, with what code decides at each:
    generates the complete mechanical variant floor), freezes the register plan
    (`_driver/register-plan.json`, frozen for the life of *this run* — a resume never re-plans, and a
    fresh run always mints; reproducibility comes from the compiler being pure, not from a store of
-   prior plans), and folds in **recall probes** — prior confirmed conflicts for this mark from the
-   workspace store become deterministic plan entries (cap 10).
+   prior plans).
 2. **Grid dictation** — code writes `_driver/grid-spec.json`: exact terms × platforms, connotation
    queries, batch size, `ledger_required: true`. With ≥2 terms the grid is split across three
    seats — unconditionally since  item 8 deleted the rollback switch: halves`a` and `b` take
@@ -279,8 +278,8 @@ Reading order for the phases, with what code decides at each:
     is retired.
 13. **Code clamps** — the coverage floor (`applyCoverageFloor`) only ever *raises* CLEAR to
     CONDITIONAL: typed condition actions, the lawyer's explicit `coverage_judgment.sufficient ===
-    false`, frame residuals, screen-gate gaps, register gaps (from the taint-relabelled ledger),
-    deadline-carry gaps. Execution facts clamp in code regardless of the model's self-report. The
+    false`, frame residuals, screen-gate gaps, register gaps (from the taint-relabelled ledger).
+    Execution facts clamp in code regardless of the model's self-report. The
     **verdict sidecar** (`_driver/verdict.json`) then becomes the single verdict authority for
     everything downstream; failing to write it is fatal.
 14. **Delivery phase** — report overview (fatal), per-finding report cards (fan-out, individually
@@ -292,7 +291,7 @@ Reading order for the phases, with what code decides at each:
     reasoning-integrity receipt (observability only, never a gate — an explicit Goodhart guard).
 15. **Client-gate + publish + handoff** — the client gate is evaluated fail-closed *before*
     anything touches the pool. Publish is deterministic code, idempotent via `.published`. Then the
-    delivery handoff (§4), known-conflicts store upsert, `status.json` flip to `delivered`,
+    delivery handoff (§4), `status.json` flip to `delivered`,
     archive (the run dir is renamed into the archive tree), and the `.delivered` sentinel.
 
 **Fatal vs note-and-continue.** The full lists live in `pipeline.mjs` (the outer catch), but the shape is:
@@ -465,7 +464,7 @@ needs is in it:
 │   ├── profile.json · framework.json · register-plan.json     # frozen per-run config (never re-derived)
 │   ├── grid-spec.json (+ .half-a/b, .supp-*)                  # code-dictated search specs
 │   ├── coverage-enum.json · plan-execution.json               # fail-closed enum sentinel · execution receipt
-│   ├── register-recall.json · register-xcheck.json            # recall probes · cross-check receipts
+│   ├── register-xcheck.json                                   # cross-check receipt (a run before 2026-09-24 may also carry register-recall.json, its recall-search receipt)
 │   ├── register-taint.json · escalation-state.json            # taint chain · escalation/envelope outcome
 │   ├── coverage-closure.json · frame-reopen.json              # closure + reopen receipts
 │   ├── intake-asks.json · instructed-scope.json               # intake derivations (code-authoritative scope)
@@ -486,7 +485,4 @@ needs is in it:
 └── (delivered runs move whole to <archive>/<YYYY-MM>/<slug>/)
 ```
 
-Outside the run dir, a run touches the workspace known-conflicts store
-(`_known-conflicts/<mark>.json` — human-editable; code only adds
-rows, and rewrites exactly one machine field, `terminal`, when a delivered run confirms a leg an
-earlier failed attempt recorded), the outbox (`<runId>.pending`), and the publish pool.
+Outside the run dir, a run touches the outbox (`<runId>.pending`) and the publish pool.

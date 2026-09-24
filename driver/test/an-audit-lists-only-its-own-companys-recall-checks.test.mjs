@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// @tier fast — drives the pure receipt filter over receipts shaped like the ones the recall lane writes
+// @tier fast — drives the pure receipt filter over receipts shaped like the ones the recall lane wrote
 //
-// The recall searches read every company's remembered conflicts, so a new company's clearance of a mark
-// still re-finds them. Measured 2026-09-23 on a test run for one company: its published audit listed
-// "prior-confirmed conflict recall probe: …" for a conflict another company's clearance had recorded —
+// The recall store and its searches were removed on 2026-09-24; a run from before then still carries its
+// recall receipt, and its audit still lists it. Those searches read every company's remembered conflicts,
+// so a new company's clearance of a mark re-found them. Measured 2026-09-23 on a test run for one
+// company: its published audit listed "prior-confirmed conflict recall probe: …" for a conflict another
+// company's clearance had recorded —
 // a line that tells one client another has cleared the same mark. Ruled the same day: keep the
 // searches, stop naming them. The audit's ask ledger and the workbook's over-the-cap rows both read the
 // receipt through recallReceiptForOwnCompany.
@@ -17,7 +19,7 @@
 //   · a receipt written before companies were named changes   → arm 4 red (an archived run would republish differently)
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { recallReceiptForOwnCompany } from "../known-conflicts.mjs";
+import { recallReceiptForOwnCompany } from "../recall-receipt.mjs";
 
 const entry = (qid, customers) => ({ qid, uri: `/mark/us/${qid}`, mark_text: qid.toUpperCase(), owner: null, customers });
 const receipt = (customer, extra = {}) => ({

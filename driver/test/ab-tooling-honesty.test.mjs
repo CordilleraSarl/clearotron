@@ -40,7 +40,6 @@ process.env.CLEAROTRON_MAX_RETRIES = "0";
 process.env.CLEAROTRON_RECOVERY_MAX = "0";
 process.env.CLEAROTRON_AGENT = "clawdi";
 process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
-process.env.CLEAROTRON_RECALL_PROBES ||= "0";
 
 const PL = await import("../pipeline.mjs");
 const ST = await import("../stages.mjs");

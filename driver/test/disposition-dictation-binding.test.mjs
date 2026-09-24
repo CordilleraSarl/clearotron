@@ -34,7 +34,7 @@ function synthesisText() {
   const P = { findings: "/run/findings.json", runDir: "/run" };
   return String(def.message({
     paths: P, profile: {}, half: null, axes: [], job: { classes: [9], goods: "software", marks: ["LUMEN"], mark: "LUMEN", jurisdictions: ["US"] },
-    registerPlan: null, recallDirectives: [], lateBind: null, intakeAsks: [], ownedAsks: [], marks: ["LUMEN"],
+    registerPlan: null, lateBind: null, intakeAsks: [], ownedAsks: [], marks: ["LUMEN"],
   }) ?? "");
 }
 
