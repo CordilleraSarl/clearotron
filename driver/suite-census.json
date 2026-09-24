@@ -2081,7 +2081,7 @@
         },
         "corrective-cycle.test.mjs": {
           "tests": 8,
-          "asserts": 75,
+          "asserts": 76,
           "skips": 0,
           "todos": 0
         },
@@ -3635,7 +3635,7 @@
         },
         "pipeline.mock.test.mjs": {
           "tests": 103,
-          "asserts": 853,
+          "asserts": 855,
           "skips": 0,
           "todos": 0
         },
@@ -5027,7 +5027,7 @@
         },
         "t3a-deliver-with-open-points.test.mjs": {
           "tests": 12,
-          "asserts": 41,
+          "asserts": 42,
           "skips": 0,
           "todos": 0
         },
@@ -5748,6 +5748,12 @@
         "the-retired-azure-settings-are-read-by-nothing.test.mjs": {
           "tests": 3,
           "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-reviewer-asks-the-clients-question-first.test.mjs": {
+          "tests": 3,
+          "asserts": 5,
           "skips": 0,
           "todos": 0
         },
