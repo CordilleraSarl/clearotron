@@ -55,7 +55,11 @@ test("sentence 2 is in the register unit's manual as written, and nothing there 
   assert.ok(unit.includes(SENTENCE_2), "sentence 2 is not in unit.md word for word");
   assert.doesNotMatch(unit, /searched exhaustively, never a subset/);
   assert.doesNotMatch(unit, /whether you have searched \*enough\* breadth/);
-  assert.ok(read("skills/clearance-register/digest.md").includes(READER_SENTENCE), "the reader's sentence is not in digest.md");
+  const digest = read("skills/clearance-register/digest.md").replace(/\s+/g, " ");
+  assert.ok(digest.includes(READER_SENTENCE), "the reader's sentence is not in digest.md");
+  // The gate's two absolute sentences point at it, so the manual does not say field-irrelevance is the only drop.
+  assert.ok(digest.includes("genuine field-irrelevance (the goods/services are commercially unrelated), or a near spelling's sign (below);"));
+  assert.ok(digest.includes("drop only genuine field-irrelevance, or a near spelling on its sign (below) —"));
 });
 
 test("the digest's tool offers the sign ground the record accepts, and says what it means", () => {
@@ -80,6 +84,19 @@ test("a live near spelling in the client's classes is set aside on its sign, wit
   const goods = acceptRegisterDigest({ ...CALL, negative_rows: [{ ...CALL.negative_rows[0], ground: "off-field", drop_reason: "dropped — off-field (relevance gate): other goods" }] }, facts());
   assert.ok(goods.ok, goods.reason);
   assert.equal(findScreenGateViolations(goods.content, new Set()).length, 1, "the control goods drop was not held to the fetch check");
+});
+
+test("the searched mark itself is never set aside on its sign", () => {
+  const same = acceptRegisterDigest({ findings_rows: [], negative_rows: [{ uri: IDENTICAL.record_id, drop_reason: REASON, ground: "sign", variant: "VELTRIS" }] }, facts());
+  assert.equal(same.ok, false, "a sign drop of the searched mark itself was accepted");
+  assert.match(same.reason, /^registerdigest_drop_ground_contradicted:sign on \/mark\/eu\/018777001, whose mark is the searched mark itself/);
+  // Folded as a form, so case, spacing and accents do not make it a near spelling.
+  const cased = facts();
+  cased.recordsByUri.set(joinKey(IDENTICAL.record_id), { ...IDENTICAL, mark_text: "Véltris" });
+  assert.equal(acceptRegisterDigest({ findings_rows: [], negative_rows: [{ uri: IDENTICAL.record_id, drop_reason: REASON, ground: "sign" }] }, cased).ok, false,
+    "an accented spelling of the searched mark was set aside on its sign");
+  // …and the same record may still be dropped on its goods.
+  assert.ok(acceptRegisterDigest({ findings_rows: [], negative_rows: [{ uri: IDENTICAL.record_id, drop_reason: "dropped — off-field (relevance gate): other goods", ground: "off-field" }] }, facts()).ok);
 });
 
 test("the set-aside spelling reaches the audit workbook's search log with its reason", async () => {

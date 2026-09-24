@@ -420,14 +420,14 @@ filed it (a multinational, a one-person studio, a tail-market individual) and **
 looks (dormant, revocable, within the non-use grace period) are NOT gate criteria — they are Stage-2
 mitigants the digest/synthesis weighs later. A small or individual filer of an in-class identical mark
 is a *paper conflict to characterise*, not noise to drop. The only thing that takes a candidate below
-the line is genuine field-irrelevance (the goods/services are commercially unrelated); filer size,
+the line is genuine field-irrelevance (the goods/services are commercially unrelated), or a near spelling's sign (below); filer size,
 entity-vs-individual status, and apparent dormancy never do.
 
 With that posture fixed, the question is simply: **could an examiner or court plausibly find confusion here —
 is this worth keeping for the Stage-2 confusion test to assess?** **Cast wide; Stage-2 / synthesis
 discriminates.** The archetype table below is a **sanity-aid for that question, not a lookup to run first** —
 read it after you've asked the field-relevance question, and where it conflicts with your read, follow the
-read. Keep if plausibly on-point; drop only genuine field-irrelevance — and **log every drop as a row in the
+read. Keep if plausibly on-point; drop only genuine field-irrelevance, or a near spelling on its sign (below) — and **log every drop as a row in the
 `### Negative results` table** (mark, surfacing variant, `Result: dropped — off-field (relevance gate)`, and
 `Notes: URI <uri>; <one-line why>`) so it reaches the published `# Negative Results` audit, per the
 *Relevance-gate drops* format above. Units did NOT pre-gate — this is the only relevance judge. The spelling band is read differently: carry a near spelling only where a buyer in this market could take it for the mark by sound, by look or by meaning, and record each other one as a drop on the ground `sign`, with your reason.
