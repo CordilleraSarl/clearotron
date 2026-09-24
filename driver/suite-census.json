@@ -700,8 +700,8 @@
           "todos": 0
         },
         "a-near-spelling-no-buyer-could-confuse-is-set-aside-with-its-reason.test.mjs": {
-          "tests": 4,
-          "asserts": 19,
+          "tests": 5,
+          "asserts": 25,
           "skips": 0,
           "todos": 0
         },
