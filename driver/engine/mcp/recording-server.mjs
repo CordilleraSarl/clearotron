@@ -600,15 +600,16 @@ serve({
               drop_reason: { type: "string", description: "The one-line WHY — the judgment about THIS record. Never a bare status word." },
               ground: {
                 type: "string",
-                enum: ["off-field", "goods-distance", "duplicate-of-surfaced", "dead-status", "out-of-class"],
+                enum: ["off-field", "goods-distance", "duplicate-of-surfaced", "sign", "dead-status", "out-of-class"],
                 description:
                   "REQUIRED. EXACTLY one bare token saying under WHICH RULE the drop is made — the prose " +
                   "in drop_reason says why this record, the token says under which rule. `off-field` " +
                   "(the relevance gate, on the record's own goods), `goods-distance`, " +
-                  "`duplicate-of-surfaced` (the same right already has a row). `dead-status` and " +
+                  "`duplicate-of-surfaced` (the same right already has a row), `sign` (a near spelling a buyer in " +
+                  "this market could not take for the mark, by sound, by look or by meaning). `dead-status` and " +
                   "`out-of-class` name the SCREEN's own verdict and are checked against it: a record " +
                   "the band screened as a live in-scope candidate cannot be dropped on status or class, " +
-                  "and that call is refused — decide it on its goods or carry it.",
+                  "and that call is refused — decide it on its goods or its sign, or carry it.",
               },
               variant: { type: "string", description: "OPTIONAL — the search term / variant this candidate came back on." },
             },

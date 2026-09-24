@@ -611,6 +611,14 @@ export const DIGEST_DROP_REASONS = Object.freeze({
     rules: "digest.md — one row per POSITION, never one per registration of the same right",
     gloss: "the same right already has a row under another constituent record",
   },
+  // The spelling band is read like any list (unit.md step 2): a near spelling a buyer could not take for
+  // the mark is set aside with its reason. Without this token a live in-class near spelling had nowhere
+  // to go but the findings, because every other ground a seat may judge is about the goods.
+  sign: {
+    seatJudged: true,
+    rules: "digest.md — the relevance gate: the spelling band is read differently",
+    gloss: "a near spelling a buyer in this market could not take for the mark, by sound, by look or by meaning",
+  },
   "dead-status": {
     seatJudged: false, verdict: "drop:dead",
     rules: "digest.md — the status filter; the screen's own verdict",

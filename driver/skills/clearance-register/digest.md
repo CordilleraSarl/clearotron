@@ -430,7 +430,7 @@ read it after you've asked the field-relevance question, and where it conflicts 
 read. Keep if plausibly on-point; drop only genuine field-irrelevance — and **log every drop as a row in the
 `### Negative results` table** (mark, surfacing variant, `Result: dropped — off-field (relevance gate)`, and
 `Notes: URI <uri>; <one-line why>`) so it reaches the published `# Negative Results` audit, per the
-*Relevance-gate drops* format above. Units did NOT pre-gate — this is the only relevance judge.
+*Relevance-gate drops* format above. Units did NOT pre-gate — this is the only relevance judge. The spelling band is read differently: carry a near spelling only where a buyer in this market could take it for the mark by sound, by look or by meaning, and record each other one as a drop on the ground `sign`, with your reason.
 
 | Archetype | Keep when | Drop when |
 |---|---|---|
