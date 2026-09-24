@@ -319,7 +319,7 @@ export function variantTermIssue(value) {
   // over marks that may exist. Worse, the disclosure rides on THIS verdict — a null here means no
   // deferred row either, so the nil search shipped as a clean with nothing saying otherwise.
   //
-  // The floor is still doing real work and stays: `DOLPHIN DEVICE` is two words and a perfectly good
+  // The floor is still doing real work and stays: `PANGOLIN DEVICE` is two words and a perfectly good
   // term, and refusing ordinary two-word marks is the failure this arm must not cause. What separates
   // them is not length, it is the ANNOTATION — and an annotation always has a remedy (delete the
   // note, keep the term), which is why hoisting THIS arm is safe where hoisting the length arm above
@@ -1067,8 +1067,8 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   //     lookup collapses to one entry and hands every term the first romanisation in the manifest.
   //   - the PREVIOUS formKey (NFKD + strip ALL combining marks) was subtler and worse (2026-07-30
   //     review, proven by repro): in most non-Latin scripts a combining mark selects WHICH LETTER
-  //     this is, so mark-distinguished siblings — ティキスラッシュ (TIKI SURASSHU) and ディキスラッシュ
-  //     (DIKI SURASSHU), Thai vowel signs, Devanagari matras, Arabic diacritics — keyed identically
+  //     this is, so mark-distinguished siblings — ワボスラッシュ (WABO SURASSHU) and ワホスラッシュ
+  //     (WAHO SURASSHU), Thai vowel signs, Devanagari matras, Arabic diacritics — keyed identically
   //     and a variant silently received its SIBLING's romanisation. The provider then executed a
   //     look-alike query and recorded state:enumerated while the dictated form was never searched
   //     anywhere: the exact silent-wrong-query false-clean class this carriage fix exists to kill,
@@ -1137,8 +1137,8 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   };
 
   // ── A1, fixed at the EMITTER (the freeze-lint below must never refuse the compiler's own output) ──
-  // The 2026-07-28 plan carried {predicate:"exact", term:"TIKI*"} ×4: wildcard-shaped VARIANT values
-  // (`TIKI*`, `*TIKI`, `SLUSH*`, `*SLUSH`) paired with the hardcoded exact — dispatched literally,
+  // The 2026-07-28 plan carried {predicate:"exact", term:"WAVO*"} ×4: wildcard-shaped VARIANT values
+  // (`WAVO*`, `*WAVO`, `SLUSH*`, `*SLUSH`) paired with the hardcoded exact — dispatched literally,
   // returned 0, shipped as schema-level confident cleans. A manifest value with an ANCHORED star is a
   // wildcard pattern and compiles to the wildcard predicate (whose per-anchor capability check then
   // stamps `unsupported` on a provider that lacks that anchor — the honest deferred row, decided by the

@@ -52,13 +52,15 @@ on:
   pull_request_target:
     types: [opened, synchronize, reopened]
 
-# `pull_request_target` runs with a token that can write to this repository, so it is scoped to the two
-# things the action actually needs and nothing else.
+# `pull_request_target` runs with a token that can write to this repository, so it is scoped to the three
+# things the pinned action calls and nothing else. Read from its source at that SHA: it commits the
+# signature file through the contents API, comments on the pull request through the issues API, and
+# re-runs this workflow's last run on a pull request once its author signs. It sets no commit status, so
+# `statuses: write`, which this block used to grant, is gone.
 permissions:
-  actions: write
+  actions: write         # re-running the check on the pull request once its author has signed
   contents: write        # the signature file is committed to this repo
-  pull-requests: write   # the bot comments on the PR and updates its status
-  statuses: write
+  pull-requests: write   # the bot comments on the pull request
 
 jobs:
   cla:

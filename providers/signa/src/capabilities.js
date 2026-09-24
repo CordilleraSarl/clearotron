@@ -337,6 +337,30 @@ export const CAPABILITIES = Object.freeze({
   // search rows therefore finds no scripts anywhere and reads as "the index holds none" — which is
   // how this probe failed on its first attempt, and it failed by returning an empty set, not an error.
   nativeScriptIndex: true,
+  // ── A TERM THAT MIXES ALPHABETS IS NOT SEARCHED AS WRITTEN ──────────────────────────────────────
+  //
+  // A term mixing Latin letters with Greek or Cyrillic ones, such as `τιmbεr`, is answered as if the
+  // non-Latin letters were absent: the rows that come back share only the Latin remainder, so none of
+  // them is the spelling asked for. The form band's whole-word look-alike swap writes exactly these
+  // terms, because it leaves every letter without a Greek or Cyrillic twin in Latin, and on a common
+  // remainder the unrelated rows arrive as a crowd that a report then reads as unread coverage.
+  //
+  // `false` says so. driver/form-neighbourhood.mjs then leaves those spellings out of the form band on
+  // this register and lists them there as not searched. A wholly Greek or Cyrillic term is a different
+  // question, answered by `nativeScriptIndex` above, and still goes out.
+  //
+  // OPTIONAL, like `queryableStatuses`: a provider that does not declare it keeps sending these terms,
+  // as every provider did before the field existed.
+  mixedScriptQuery: false,
+  // ── A KNOCKOUT'S LISTING ALREADY HOLDS ITS COUNT ─────────────────────────────────────────────────
+  //
+  // The knockout listing asks the count lane's exact question (the same term, classes and territories)
+  // and `include_total` puts the register's own total on the answer. So a knockout lists first and takes
+  // the identical and close counts from those totals (driver/register-count.mjs listingAnswers), rather
+  // than asking each of them twice. A term the listing did not answer is counted as before.
+  //
+  // OPTIONAL: a provider that does not declare it counts first and lists second, as before.
+  listingAnswersCount: true,
   // Opposition data IS on the record, and in three places: `opposition_window` on every search row,
   // `proceedings_count` on the full record, and the filters `has_proceedings`,
   // `opposition_status` and `opposition_closes_before/after`. GET /v1/trademarks/{id}/proceedings

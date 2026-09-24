@@ -689,7 +689,7 @@ export function gridLedger(msg, dir = null) {
     .map((pl) => ({ term: t, platform: pl, status: "no_hit", results: [] })));
   const gaps = variants.flatMap((t) => PLATFORMS.filter((pl) => isGap(t, pl)).map((pl) => `${t} | ${pl} | ${gapErr}`));
   // The real plugin records every DICTATED connotation query verbatim into extras.pr_risk[] (the
-  // ZURENA receipt) — mirror that: echo the message's spec queries (full spec on the single member, the
+  // ZOLEMA receipt) — mirror that: echo the message's spec queries (full spec on the single member, the
   // half's partition on a half member; merged pair restores the union). No spec in the message (legacy
   // prose path) keeps the historical empty list.
   // P2-C (§8b leg 2): MOCK_PR_RESULTS arms recorded RESULTS on the receipts — "1" arms every dictated
@@ -929,7 +929,7 @@ export function blindFrameModel() {
     schema_version: 1, dominant_element: "NOVAPULSE",
     variants: [
       { value: "NOVAPULSE", direction: "drop", rationale: "the bare element" },
-      { value: "KROMA", direction: "phonetic", rationale: "sound-alike" },
+      { value: "SAYBEL", direction: "phonetic", rationale: "sound-alike" },
     ],
     fields: [{ goods: "game software", on_field: true, rationale: "goods-overlap with the product" }],
     sources: [{ channel: "developer ecosystem", rationale: "B2D product" }],
@@ -965,6 +965,18 @@ export function frameDiffModel() {
       schema_version: 1,
       directives: [{ layer: "field", item: "Cl. 35 (retail/online-retail) and Cl. 38 (online comms)",
         observation: "scope-ledger marks 35/38 applied but no query was ever class-pinned to 35 or 38 — surfaced only via 9/28/41/42 co-classification", severity: "dominant-element" }],
+      dominant_element_gap: true,
+    });
+  // Two class-gap directives, so a re-attempt can be seen to re-send only the one that failed.
+  if (process.env.MOCK_FRAME_DIFF === "field-classgap-two")
+    return JSON.stringify({
+      schema_version: 1,
+      directives: [
+        { layer: "field", item: "Cl. 35 (retail/online-retail) and Cl. 38 (online comms)",
+          observation: "scope-ledger marks 35/38 applied but no query was ever class-pinned to 35 or 38", severity: "dominant-element" },
+        { layer: "field", item: "Cl. 16 (printed matter)",
+          observation: "scope-ledger marks 16 applied but no query was ever class-pinned to 16", severity: "dominant-element" },
+      ],
       dominant_element_gap: true,
     });
   return JSON.stringify({ schema_version: 1, directives: [], dominant_element_gap: false });

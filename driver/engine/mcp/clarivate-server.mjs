@@ -121,6 +121,7 @@ serve({
         plan_path: { type: "string", description: "Absolute path to the frozen _driver/register-plan.json" },
         axis: { type: "string", description: "The register axis to execute (e.g. primary-sweep)" },
         output_path: { type: "string", description: "Absolute path of the named band to write (register-units/<axis>-band.json)" },
+        qids: { type: "array", items: { type: "string" }, description: "Optional: the qids of the plan entries to run. Only those run, and every other block in the band stays as it is. Leave it out only on the axis's first run: without it every entry on the axis runs again." },
       } },
       annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: true },
       handler: guard((a) => doExecutePlan(API_KEY, BASE, a, tctx("execute_plan"))),
@@ -134,7 +135,7 @@ serve({
         proposals: { type: "array", minItems: 1, items: { type: "object", properties: {
           predicate: { type: "string", enum: ["exact", "default", "wildcard", "phonetic", "owner"] },
           term: { type: "string" }, terms: { type: "array", items: { type: "string" } },
-          romanization: { type: "string", description: "The Latin-script form of a NON-LATIN term — plain ASCII letters/digits, syllable-separated by single spaces, no tone marks or diacritics (华威豹 → \"HUA WEI BAO\", ティキスラッシュ → \"TIKI SURASSHU\"). MANDATORY beside a non-Latin term: without it this register cannot answer the characters and the slice defers. Single-term proposals only (never an OR-stack, never predicate:owner), and never on a term that is already Latin." },
+          romanization: { type: "string", description: "The Latin-script form of a NON-LATIN term — plain ASCII letters/digits, syllable-separated by single spaces, no tone marks or diacritics (华威豹 → \"HUA WEI BAO\", ワボスラッシュ → \"WABO SURASSHU\"). MANDATORY beside a non-Latin term: without it this register cannot answer the characters and the slice defers. Single-term proposals only (never an OR-stack, never predicate:owner), and never on a term that is already Latin." },
           owner: { type: "string", description: "OPTIONAL owner scope field on a MARK-TEXT proposal: the query is the owner×term intersection (the owner's filings within the term band). Not allowed on predicate:owner (there the owner name IS the term)." },
           nice_classes: { type: "array", items: {} },
           // The narrowing fields every register serves (proposal-fields.mjs); this register's two facts ride in.

@@ -51,7 +51,7 @@ Dominant element: VELTRI (the distinctive anchor).
 | Category | Value | Rationale | Verify? |
 |---|---|---|---|
 | exact | VELTRIN | the applied-for mark | yes |
-| phonetic | DELFIS | sound-alike | yes |
+| phonetic | VELTRYN | sound-alike | yes |
 
 ### Scope ledger
 
@@ -119,7 +119,7 @@ test("NON-COLLISION: parseManifestVariants ignores the `### Scope ledger` table"
   // (else it would demand storefront cells for 'phonetic', 'plural-root', 'RGB lighting control'…).
   const variants = parseManifestVariants(PROSE);
   assert.ok(variants.includes("VELTRIN"), "real variant term picked up");
-  assert.ok(variants.includes("DELFIS"));
+  assert.ok(variants.includes("VELTRYN"));
   assert.equal(variants.length, 2, "exactly the two Variants-table rows, no Scope-ledger rows");
   for (const leak of ["phonetic", "plural-root", "RGB lighting control", "consumer storefronts", "B2D developer ecosystem"]) {
     assert.ok(!variants.includes(leak), `Scope-ledger item '${leak}' must not leak into grid terms`);

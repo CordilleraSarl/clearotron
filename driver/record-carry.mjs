@@ -10,7 +10,7 @@
 // `register-named-band.json`, all ten screened `surface:in-scope-live`, and not one of them appears in
 // `placements.json` or in `findings.json`. The delivered report never names the token. The record was
 // retrieved, screened and banded, and then it was gone, and NOTHING anywhere recorded why. The same
-// shape had already been paid for four times (TIKI TWIST / TIKI TROPICS on R3, DELPHIC / OSLER DELPHI
+// shape had already been paid for four times (WAVO TWIST / WAVO TROPICS on R3, KORPHIC / HALVER KORPHI
 // on R2). A capability that retrieves and cannot deliver is indistinguishable, in the report, from one
 // that was never built — and the two have completely different fixes.
 //
@@ -842,10 +842,10 @@ export function silentlyLostFindings({ reconciliation = null, carryRows = null, 
  *
  * MEASURED ON A DELIVERED R2 RUN, 2026-09-06. The sibling ran and reported
  * `{checked:5, matched:5, lost:0}` — correctly. On that same delivery two marks from the lawyer's final
- * list, `OSLER DELPHI` and `DELFITY`, one rated HIGH, are absent from `findings.json`. They were dropped
+ * list, `HALVER KORPHI` and `KORFITY`, one rated HIGH, are absent from `findings.json`. They were dropped
  * WITH a reason, so they sat outside the sibling's population by design:
  *
- *   IMMATERIAL ask:recall:recall-osler-delphi: … — OSLER DELPHI / Osler Diagnostics Limited is
+ *   IMMATERIAL ask:recall:recall-halver-korphi: … — HALVER KORPHI / Halver Diagnostics Limited is
  *   already reasoned on the incumbent sheet in register-findings.md.
  *
  * WHY THE STATED CASE IS THE MORE DANGEROUS ONE. A silent drop leaves a hole. A stated drop leaves a
@@ -886,11 +886,11 @@ export function statedDivergenceFindings({ reconciliation = null, carryRows = nu
   //   statedDivergenceFindings   checked=5 matched=5 diverged=0   ← should have named two marks
   //
   // The reconciliation names five finding-ended positions and they are five OTHER marks — VELTRIN
-  // bioenergetische Kosmetik, DELPHIC HSE, DELPHI, DELPHIN & EMERENCE, DELPHI DIAGNOSTICS. The two that
+  // bioenergetische Kosmetik, KORPHIC HSE, KORPHI, DELPHIN & EMERENCE, KORPHI DIAGNOSTICS. The two that
   // were lost sit in the CARRY rows and the reconciliation never mentions them:
   //
-  //   OSLER DELPHI  reach=placed stopped_at=digest reason_source=step-stated reason=digest:reasoned-negative
-  //   DELFITY       reach=placed stopped_at=digest reason_source=step-stated reason=digest:reasoned-negative
+  //   HALVER KORPHI  reach=placed stopped_at=digest reason_source=step-stated reason=digest:reasoned-negative
+  //   KORFITY       reach=placed stopped_at=digest reason_source=step-stated reason=digest:reasoned-negative
   //
   // The unit arms all passed because their fixtures put the mark in BOTH populations, which the real run
   // does not. That is the lesson worth keeping: a fixture that satisfies two joins at once cannot tell

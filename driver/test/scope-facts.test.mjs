@@ -154,7 +154,7 @@ test("spec B4: a mostly-searched class reads the proportion + the script-form re
   for (let i = 1; i <= 76; i++)
     entries.push({ qid: `primary-sweep:exact:t${i}`, axis: "primary-sweep", predicate: "exact", term: `TERM${i}`, nice_classes: ["5"], regions: ["us"] });
   for (let i = 1; i <= 23; i++)
-    entries.push({ qid: `translit:exact:s${i}`, axis: "transliteration", predicate: "exact", term: `提基${i}`, nice_classes: ["5"], regions: ["us"] });
+    entries.push({ qid: `translit:exact:s${i}`, axis: "transliteration", predicate: "exact", term: `瓦波${i}`, nice_classes: ["5"], regions: ["us"] });
   const plan = { schema_version: 1, plan_version: 1, nice_classes: ["5"], regions: ["us"], entries };
   const exec = {
     executed: entries.slice(0, 76).map((e) => ({ qid: e.qid, state: "enumerated" })),

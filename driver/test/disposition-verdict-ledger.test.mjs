@@ -301,7 +301,7 @@ test("THE AUDIT READS THE LEDGER: the written artifact carries the calls and the
   // transform is ever reintroduced on this path.
   writeFileSync(P.commonLawGrid, JSON.stringify({ cells: [], extras: { pr_risk: [
     { query: '"Project Sable" video game controversy', results: [] },
-    { query: "chroma meaning slang", results: [] },
+    { query: "sable meaning slang", results: [] },
   ] } }));
 
   // The ledger the R5 seat would have left: one row refused repeatedly, its ruling moving under it.
@@ -342,7 +342,7 @@ test("THE AUDIT READS THE LEDGER: the written artifact carries the calls and the
   // lost; the file a reviewer opens simply did not carry them. The phrase-quoted entry rides verbatim —
   // that is the shape was about, and a peel anywhere on this path breaks this assertion.
   assert.deepEqual(artifact.queries,
-    ['"Project Sable" video game controversy', "chroma meaning slang"],
+    ['"Project Sable" video game controversy', "sable meaning slang"],
     "the audit counts queries it does not name — a reviewer cannot certify #862 from the artifact it writes");
   assert.equal(artifact.queries.length, artifact.recordedQueries,
     "the count and the list are the same fact, or one of them is wrong");

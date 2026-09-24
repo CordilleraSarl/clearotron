@@ -6,10 +6,10 @@
 import { appendFileSync, mkdirSync, readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { dirname, join, basename } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
+import { driverDir, RUN_DIR_MODE } from "../shared/driver-dir.mjs";   //
 
 function appendLine(file, obj) {
-  mkdirSync(dirname(file), { recursive: true });
+  mkdirSync(dirname(file), { recursive: true, mode: RUN_DIR_MODE });   // a first log line can be what creates the run folder
   appendFileSync(file, JSON.stringify({ ts: new Date().toISOString(), ...obj }) + "\n");
 }
 

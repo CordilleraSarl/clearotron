@@ -182,3 +182,36 @@ test("tracker 636 every coverage-floor-clamp site carries its own cause, and no 
   assert.equal((src.match(/event: "coverage-floor-clamp"/g) ?? []).length, 3,
     "the event keeps one name — three names would break an aggregate counter");
 });
+
+// ── ANOTHER COMPANY'S RECALL CHECK RUNS, AND IS NEVER LISTED IN THIS COMPANY'S AUDIT ──────────────────
+// Ruled 2026-09-23: keep the searches, stop naming them. The store is kept per mark, so a second
+// company's delivery of this name sits in the same file; its conflicts are still searched (a new
+// company's clearance re-finds them), and the audit lists only this company's own recall checks.
+test("a second company's remembered conflict is still searched, and this company's audit never names it", async () => {
+  const storeDir = join(ROOT, "workspace-clawdi", "studio", "clearance-search", "_known-conflicts");
+  mkdirSync(storeDir, { recursive: true });
+  const row = (uri, mark_text, owner, customer) => ({ uri, mark_text, classes: [45], status: "live", owner, customer,
+    source: "auto:delivery earlier-run", ts: "2026-07-01T00:00:00Z", terminal: "delivered" });
+  writeFileSync(join(storeDir, "project-novapulse.json"), JSON.stringify({ schema_version: 2, marks: { "project novapulse": [
+    row("/mark/us/97777777", "OWNCO LUMEN", "Ownco Partners LLC", "generic"),          // the mock run's own company
+    row("/mark/us/98888888", "OTHERCO VANTA", "Otherco Holdings LLC", "another-company"),
+  ] } }, null, 2));
+  const { res } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced" }, { ref: null, id: "second-company-recall-scenario" });
+  assert.equal(res.ok, true, JSON.stringify(res));
+  // the searches are unchanged: both remembered conflicts are probed, and the receipt says whose each was
+  const receipt = JSON.parse(readFileSync(driverDir(res.runDir, "register-recall.json"), "utf8"));
+  assert.equal(receipt.customer, "generic");
+  const byMark = Object.fromEntries(receipt.directives.map((d) => [d.mark_text, d.customers]));
+  assert.deepEqual(byMark["OWNCO LUMEN"], ["generic"]);
+  assert.deepEqual(byMark["OTHERCO VANTA"], ["another-company"]);
+  const plan = JSON.parse(readFileSync(driverDir(res.runDir, "register-plan.json"), "utf8"));
+  assert.ok(plan.entries.some((e) => e.term === "OTHERCO VANTA"), "another company's conflict is still searched");
+  // the ask ledger and the audit list only this company's own recall check
+  const asks = JSON.parse(readFileSync(driverDir(res.runDir, "asks.json"), "utf8"));
+  const askText = JSON.stringify(asks);
+  assert.ok(askText.includes("prior-confirmed conflict recall probe: OWNCO LUMEN"), "this company's own check is listed");
+  assert.ok(!askText.includes("OTHERCO VANTA") && !askText.includes("Otherco Holdings"), "another company's is not");
+  const audit = readFileSync(join(res.runDir, "audit.md"), "utf8");
+  assert.ok(audit.includes("prior-confirmed conflict recall probe: OWNCO LUMEN"));
+  assert.ok(!/recall probe[^\n]*(OTHERCO VANTA|Otherco Holdings)/.test(audit), "no audit line names another company's recall check");
+});

@@ -101,6 +101,27 @@
 // A deletion that gives no reason still refuses, and names the deleting commit as where the reason goes.
 // The move a pre-release makes — `.changeset/<name>.md` deleted and `.changeset/pre/<name>.md` added in
 // one commit — is not a withdrawal: the note still reaches a reader, and a version commit is that shape.
+// ── A LATER COMMIT MAY ANSWER A BARE `none` FOR ONE NAMED COMMIT ───────────────────────────────────────
+//
+// A commit carried `Release-note: none` with no reason and was merged into an integration branch before
+// anyone read it, and a second branch was already built on that merge. The only fix this check offered was
+// the commit's own message, so the answer was a rewrite of a shared branch. A later commit may therefore
+// answer for it, in its own message:
+//
+//     Release-note-for: <sha> none — <why a reader would see no difference>
+//
+// Held tight, because a loose one excuses by accident:
+//   - one line names one commit, by its full sha or a prefix of at least 7 characters, resolved against
+//     THIS range's commits only. A prefix that matches none of them, or several, is refused;
+//   - the named commit must be an ANCESTOR of the answering one (git ancestry, never timestamps), and a
+//     commit cannot answer for itself;
+//   - the reason is read by NO_NOTE itself, so the two forms cannot drift. Empty, or a dash, is refused;
+//   - one commit takes one answer: two lines naming the same commit are both refused, even when they agree;
+//   - an answer naming a commit that owes none (it ships no code, carries a note, or gives its own reason)
+//     is refused as stale. An answer ignored in silence reads as though it did something.
+// Every answer taken is printed with the sha that gave it, and every refused answer fails the check and
+// names the commit that carries it. The answering commit is read like any other: one that ships no code,
+// such as an empty commit, owes nothing of its own.
 import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -163,6 +184,51 @@ export const NEVER_A_NOTE = [/(^|\/)CHANGELOG\.md$/, /(^|\/)package(-lock)?\.jso
 const NOTE_LINE = /^\s*Release-note:[ \t]*(?<value>.*?)[ \t]*$/gim;
 /** A note named in a `Release-note:` line: `.changeset/<name>.md`, or the bare `<name>.md`. */
 const NAMED_NOTE = /^(?:\.changeset\/)?(?<name>[\w.-]+\.md)$/;
+/** `Release-note-for: <sha> none — <reason>`: a later commit answering a bare `none` (see the header). */
+const ANSWER_LINE = /^[ \t]*Release-note-for:[ \t]*(?<rest>.*?)[ \t]*$/gim;
+const ANSWER_HEAD = /^(?<sha>[0-9a-f]{7,40})(?<tail>(?:[ \t].*)?)$/i;
+
+/**
+ * PURE. Every `Release-note-for:` line in the range, judged. `isAncestor(a, b)` says whether commit `a` is
+ * an ancestor of commit `b`; without one, range order stands in for it (the range is read oldest first).
+ * @returns {{answers: Map<string, {by:string, subject:string, reason:string}>,
+ *   refused: Array<{sha:string, subject:string, text:string, problem:string}>}}
+ */
+export function readAnswers(commits = [], isAncestor = null) {
+  const refused = [];
+  const claims = new Map();
+  commits.forEach((c, at) => {
+    for (const m of String(c.message ?? "").matchAll(ANSWER_LINE)) {
+      const text = m[0].trim();
+      const bad = (problem) => refused.push({ sha: c.sha, subject: c.subject, text, problem });
+      const head = ANSWER_HEAD.exec(m.groups.rest);
+      if (!head) { bad("names no commit: the form is `Release-note-for: <sha> none — <reason>`"); continue; }
+      const none = NO_NOTE.exec(`Release-note:${head.groups.tail}`);
+      if (!none) { bad("does not say `none` straight after one sha: one line answers one commit"); continue; }
+      if (!none.groups?.reason) { bad("gives no reason, and the reason is the whole point of the line"); continue; }
+      const prefix = head.groups.sha.toLowerCase();
+      const hits = commits.filter((k) => String(k.sha).toLowerCase().startsWith(prefix));
+      if (!hits.length) { bad(`names ${prefix}, which is not a commit in this range`); continue; }
+      if (hits.length > 1) { bad(`names ${prefix}, which matches ${hits.length} commits in this range`); continue; }
+      const target = hits[0];
+      const later = target.sha !== c.sha
+        && (isAncestor ? isAncestor(target.sha, c.sha) : commits.indexOf(target) < at);
+      if (!later) { bad(`names ${prefix}, which is not an earlier commit on this commit's own history`); continue; }
+      if (!claims.has(target.sha)) claims.set(target.sha, []);
+      claims.get(target.sha).push({ by: c.sha, subject: c.subject, text, reason: none.groups.reason });
+    }
+  });
+  const answers = new Map();
+  for (const [sha, list] of claims) {
+    if (list.length > 1) {
+      for (const a of list) refused.push({ sha: a.by, subject: a.subject, text: a.text,
+        problem: `is one of ${list.length} answers naming ${sha.slice(0, 7)}; one commit takes one answer` });
+      continue;
+    }
+    answers.set(sha, list[0]);
+  }
+  return { answers, refused };
+}
 
 const isNotePath = (p) => p.startsWith(".changeset/") && p.endsWith(".md") && !p.endsWith("README.md");
 const shipped = (paths, files) => paths.filter((p) => !NEVER_A_NOTE.some((re) => re.test(p)) && shipsCode(p, files));
@@ -181,12 +247,15 @@ const shipped = (paths, files) => paths.filter((p) => !NEVER_A_NOTE.some((re) =>
  *   non-merge, oldest first; `added` and `deleted` are the paths the commit adds and removes, when the caller read them
  * @param {string[]} o.files  the package's own `files` list
  * @param {string[]|null} [o.atHead]  every path the head carries under `.changeset/`, when the caller read it
+ * @param {((a:string, b:string) => boolean)|null} [o.isAncestor]  git ancestry for `Release-note-for:` answers; range order without it
  * @returns {{visible:string[], notes:string[], declined:Array<{sha:string, subject:string, reason:string}>,
  *   withdrawals:Array<{sha:string, subject:string, note:string, by:string, reason:string}>,
+ *   answered:Array<{sha:string, subject:string, by:string, reason:string}>,
+ *   refusedAnswers:Array<{sha:string, subject:string, text:string, problem:string}>,
  *   owed:Array<{sha:string, subject:string, why:"no-note"|"prose"|"bare-none"|"names-a-missing-note"|"note-withdrawn-unsaid",
  *   paths?:string[], text?:string, by?:string}>}}
  */
-export function commitVerdicts({ commits = [], files = [], atHead = null } = {}) {
+export function commitVerdicts({ commits = [], files = [], atHead = null, isAncestor = null } = {}) {
   // `added` and `atHead` are what the command reads from git; a caller that passes neither keeps the older
   // reading of every changed path, which is what a pure table of paths means.
   // MATCHED ON THE NAME, NOT THE PATH, BECAUSE A PRE-RELEASE MOVES A NOTE IT CONSUMES.
@@ -234,7 +303,9 @@ export function commitVerdicts({ commits = [], files = [], atHead = null } = {})
   });
   // AND A NAME THE HEAD STILL CARRIES WAS NEVER WITHDRAWN AT ALL: the release assembles what the head has.
   if (presentNames) for (const name of [...withdrawn.keys()]) if (presentNames.has(name)) withdrawn.delete(name);
-  const declined = [], owed = [], withdrawals = [];
+  const declined = [], owed = [], withdrawals = [], answered = [];
+  const { answers, refused: refusedAnswers } = readAnswers(commits, isAncestor);
+  const used = new Set();
   for (const [i, c] of commits.entries()) {
     const ships = shipped(c.paths, files);
     if (!ships.length) continue;                              // nothing a reader could see in this commit
@@ -247,7 +318,10 @@ export function commitVerdicts({ commits = [], files = [], atHead = null } = {})
     const none = NO_NOTE.exec(String(c.message ?? ""));
     if (none) {
       const reason = none.groups?.reason;
-      if (reason) declined.push({ ...at, reason }); else owed.push({ ...at, why: "bare-none" });
+      const answer = reason ? null : answers.get(c.sha);
+      if (reason) declined.push({ ...at, reason });
+      else if (answer) { answered.push({ ...at, by: answer.by, reason: answer.reason }); used.add(c.sha); }
+      else owed.push({ ...at, why: "bare-none" });
       continue;
     }
     if (addsNote) continue;                                   // it carries its own note
@@ -268,7 +342,16 @@ export function commitVerdicts({ commits = [], files = [], atHead = null } = {})
     if (notes.length) continue;                               // a note in the range answers for it
     owed.push({ ...at, why: "no-note", paths: ships });
   }
-  return { visible, notes, declined, withdrawals, owed };
+  // AN ANSWER THAT ANSWERED NOTHING IS REFUSED, NOT IGNORED (see the header).
+  const owing = new Set(owed.map((o) => o.sha));
+  for (const [sha, a] of answers) {
+    if (used.has(sha)) continue;
+    refusedAnswers.push({ sha: a.by, subject: a.subject, text: a.text,
+      problem: owing.has(sha)
+        ? `names ${sha.slice(0, 7)}, which owes a note this line cannot give: an answer covers only a bare \`none\``
+        : `names ${sha.slice(0, 7)}, which owes no answer: it ships no code, carries a note, or gives its own reason` });
+  }
+  return { visible, notes, declined, withdrawals, owed, answered, refusedAnswers };
 }
 
 const argAfter = (flag) => {
@@ -333,7 +416,9 @@ function main() {
       + "history is never read.");
     return;
   }
-  const { visible, notes, declined, withdrawals, owed } = commitVerdicts({ commits, files, atHead });
+  // ANCESTRY FROM GIT, NEVER TIMESTAMPS: an answer must come from a commit the named one is an ancestor of.
+  const isAncestor = (a, b) => { try { git("merge-base", "--is-ancestor", a, b); return true; } catch { return false; } };
+  const { visible, notes, declined, withdrawals, owed, answered, refusedAnswers } = commitVerdicts({ commits, files, atHead, isAncestor });
   console.log(`release-note-required: ${changed.length} changed file(s) against ${base}`
     + `${head === "HEAD" ? "" : ` (head ${head})`}; `
     + `${visible.length} ship as code; ${notes.length} release note(s) in the range; ${commits.length} commit(s) read`
@@ -352,7 +437,18 @@ function main() {
   for (const w of withdrawals) {
     console.log(`  ${w.sha.slice(0, 7)} answered with ${w.note}, which ${w.by.slice(0, 7)} withdrew: ${w.reason}`);
   }
-  if (!owed.length) return;
+  for (const a of answered) {
+    console.log(`  ${a.sha.slice(0, 7)} said a bare \`none\`, which ${a.by.slice(0, 7)} answers: ${a.reason}`);
+  }
+  if (!owed.length && !refusedAnswers.length) return;
+  if (refusedAnswers.length) {
+    console.error(`\n${refusedAnswers.length} Release-note-for answer(s) refused:\n`);
+    for (const r of refusedAnswers) {
+      console.error(`  ${r.sha.slice(0, 7)} ${r.subject}`);
+      console.error(`      "${r.text.slice(0, 120)}" ${r.problem}.`);
+    }
+  }
+  if (!owed.length) process.exit(1);
 
   console.error(`\n${owed.length} commit(s) that ship as code owe a release note:\n`);
   for (const o of owed) {

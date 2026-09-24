@@ -20,7 +20,7 @@ const FLAG = {
   why: "The citation does not show use of the cited mark on these goods.",
   capturedBy: "lawyer@example.test",
   capturedAt: "2026-08-04T09:00:00.000Z",
-  locator: { ordinal: 3, mark: "KURENA", band: "Manageable", disposition: "rebuttable", section: "03 Notable but manageable" },
+  locator: { ordinal: 3, mark: "KOLEMA", band: "Manageable", disposition: "rebuttable", section: "03 Notable but manageable" },
   excerpt: "Distinguished as wholes on the filed goods.",
   run: {
     runId: "noref000036-petcary-2026-08-04-fixture", account: "petcary", matter: "m",
@@ -31,7 +31,7 @@ const FLAG = {
 
 test("from the issue alone, a person finds the exact finding and its run evidence", () => {
   const { title, body } = issueForFlag(FLAG);
-  assert.match(title, /^\[wrong\] KURENA · finding 3 — The citation does not show use/);
+  assert.match(title, /^\[wrong\] KOLEMA · finding 3 — The citation does not show use/);
   assert.ok(title.length <= 120, "a title long enough to scan, short enough to list");
   // the lawyer's words, VERBATIM and first — a triager should be able to stop reading after this
   assert.ok(body.indexOf(FLAG.why) < body.indexOf("Debug handles"), "what the lawyer said comes first");
@@ -89,7 +89,7 @@ test("the area label is CONSTANT, because choosing a narrower one per flag would
 test("the locator table warns that the ordinal moves — a triager must not trust it silently", () => {
   const { body } = issueForFlag(FLAG);
   assert.match(body, /\| Finding \| 3 \|/);
-  assert.match(body, /\| Mark \| KURENA \|/);
+  assert.match(body, /\| Mark \| KOLEMA \|/);
   assert.match(body, /\| Band \| Manageable \|/);
   assert.match(body, /\| Disposition \| rebuttable \|/);
   assert.match(body, /renumbered on every republish/, "and says why the other three rows are there");

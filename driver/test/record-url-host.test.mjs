@@ -20,7 +20,7 @@ import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 
 const meter = (token, basis = "verified-from-record") => ({ token, basis });
 const finding = (over = {}) => ({
-  ordinal: 1, mark: "KURENA", owner: { name: "Kurena SA", country: "CH", registrations: [] },
+  ordinal: 1, mark: "KOLEMA", owner: { name: "Kolema SA", country: "CH", registrations: [] },
   composite: 4, level: "B", dispute_type: "paper-conflict",
   meters: { mark_similarity: meter("high"), goods_proximity: meter("medium"), use: meter("confirmed"), enforcer: meter("high") },
   quadrant: { x: 0.5, y: 0.5 },
@@ -104,7 +104,7 @@ test("a provider that publishes NO record page refuses an absolute link and says
 
 test("registration.uri is gated too — the URL COLUMN is the surface the issue is about", () => {
   const f = finding({
-    owner: { name: "Kurena SA", country: "CH", registrations: [{ uri: "https://tm.corsearch.com/mark/eu/018553557" }] },
+    owner: { name: "Kolema SA", country: "CH", registrations: [{ uri: "https://tm.corsearch.com/mark/eu/018553557" }] },
   });
   assert.throws(() => parse(f, recordOriginsFor("euipo")), /finding_record_url_foreign_host/);
   assert.equal(parse(f, recordOriginsFor("corsearch")).findings.length, 1);
@@ -116,7 +116,7 @@ test("A RELATIVE uri PASSES — the path fragment IS the canonical record identi
   // `/mark/<cc>/<number>` is what this system stores and what the composition rule starts from. Only a
   // value that parses as an absolute http(s) URL is making a host claim worth checking. Refusing the
   // path would break every provider at once, including the ones with no public page at all.
-  const f = finding({ owner: { name: "Kurena SA", country: "CH", registrations: [{ uri: "/mark/eu/018553557" }] } });
+  const f = finding({ owner: { name: "Kolema SA", country: "CH", registrations: [{ uri: "/mark/eu/018553557" }] } });
   // — EVERY provider in the table, so the one added next cannot be the one nobody checked.
   const ids = Object.keys(PROVIDERS);
   assert.ok(ids.length >= 6, `the provider table holds ${ids.length} entries — it did not load`);

@@ -123,7 +123,7 @@ test("naming the request clears it, and a note about the NAME never trips it", (
     "Check the request. We were asked to screen Class 9 software, and the client is described as a beverages business.",
   ] }), "reviewer-note-subject").pass, true, "it names the request, so it prints at the top");
   assert.equal(flagged(FINDINGS({ purpleNotes: [
-    "Pull EG Tech's full goods list at clearance. It is the record most likely to change the picture.",
+    "Pull Acme Mapping's full goods list at clearance. It is the record most likely to change the picture.",
   ] }), "reviewer-note-subject").pass, true, "a note about the name is not about the asking");
 });
 

@@ -205,7 +205,7 @@ export function agreementFindings({ stage, granted, artifacts, union, toolUniver
     if (!PHASES.includes(m.phase)) {
       throw new Error(`recording-agreement: instruction member "${m.surface}" carries phase `
         + `${JSON.stringify(m.phase)} — every INSTRUCTION member must declare ${ATTEMPT_1} or ${REPAIR}, `
-        + "because direction (a) counts only what the seat reads on attempt 1 (#1190)");
+        + "because direction (a) counts only what the seat reads on attempt 1");
     }
   }
   const attempt1 = instructions.filter((m) => m.phase === ATTEMPT_1);
@@ -240,7 +240,7 @@ export function agreementFindings({ stage, granted, artifacts, union, toolUniver
       why: `${stage} holds ${tool} and no attempt-1 instruction names it. The seat is not told the `
         + "capability exists, so it reaches for whatever the doctrine DOES name — which after a "
         + "conversion is a tool its grant no longer carries. Name it in the dispatch or in the skill doc, "
-        + "or drop it from the grant. A repair rung naming it does NOT count (#1190): the seat that "
+        + "or drop it from the grant. A repair rung naming it does NOT count: the seat that "
         + "needed to know had already acted by the time it read one.",
     });
   }

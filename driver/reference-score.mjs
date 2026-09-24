@@ -117,11 +117,11 @@ export function labelTokens(label) {
  *
  * The two separator classes do different work and conflating them is the bug worth stating. `/ , · & |`
  * separate ALTERNATIVES for the same record: `VENZAL / VENZALMONO / VENZALKOMB` is one relabelled entry,
- * and `CHROMA / & Device` is one mark plus a device note. Whitespace and hyphens separate WORDS WITHIN
- * one name: `TIKI TWIST` is not `TIKI`.
+ * and `LUMIVANE / & Device` is one mark plus a device note. Whitespace and hyphens separate WORDS WITHIN
+ * one name: `WAVO TWIST` is not `WAVO`.
  *
  * Treating a word separator as an alias separator makes every multi-word mark match its own first word —
- * so a reference `TIKI` would claim the run's `TIKI TWIST`, and a genuinely withheld mark would be
+ * so a reference `WAVO` would claim the run's `WAVO TWIST`, and a genuinely withheld mark would be
  * reported as found. That is a false clean on the exact pair this scorer was built for.
  */
 /*
@@ -151,7 +151,7 @@ export function labelAliases(label) {
     .filter(Boolean);
 }
 
-/** The consonant skeleton is only discriminating once there is enough of it. TIKI and TIKA are both "tk". */
+/** The consonant skeleton is only discriminating once there is enough of it. WAVO and WAVA are both "wv". */
 const MIN_SKELETON = 4;
 
 // asked for a minimum ALIAS length, or a stated reason there is none. THERE IS NONE, deliberately.
@@ -190,20 +190,20 @@ const MIN_SKELETON = 4;
  *     can tell an exact CJK match from an owner-gated one.
  *  2. ALIAS. Any alias of one label equals any alias of the other, compared as whole names. This is what
  *     makes `VENZAL` match `VENZAL / VENZALMONO / VENZALKOMB` — the relabelling an exact diff misreads
- *     as a drop plus a find — while keeping `TIKI` and `TIKI TWIST` apart.
+ *     as a drop plus a find — while keeping `WAVO` and `WAVO TWIST` apart.
  *  3. SKELETON. Consonant skeletons of 4+ characters agree. Reaches the one-vowel spelling pairs a variant
- *     sweep must not split, without letting short marks collide — 4 is the floor because TIKI and TIKA
+ *     sweep must not split, without letting short marks collide — 4 is the floor because WAVO and WAVA
  *     both skeletonise to "tk".
  *  4. CONTAINED — ONLY when the caller has established that both sides carry the SAME OWNER.
  *     One label's word sequence sits contiguously inside the other's. Rules 2 and 3 handle a reference
  *     mark being an ALIAS of, or a spelling neighbour of, a surfaced one; neither handles it being
- *     CONTAINED in one, and that is how `DELPHI GENETICS` and `DG DELPHI GENETICS` — identical owner,
+ *     CONTAINED in one, and that is how `KORPHI GENETICS` and `DG KORPHI GENETICS` — identical owner,
  *     one record — were filed as a `lost` and a `noise` on the same run. A record cannot be both never
  *     retrieved and surfaced-but-unknown, and the entry it split was the reference's highest-risk one.
  *
- *     READ WITH RULE 2, NOT AGAINST IT (2026-08-14). Rule 2's block says the alias rule "keeps `TIKI`
- *     and `TIKI TWIST` apart", and this rule joins exactly that pair under a matched owner —
- *     `matchesReference("TIKI", "TIKI TWIST", {sameOwner:true})` returns `contained`. Both are right
+ *     READ WITH RULE 2, NOT AGAINST IT (2026-08-14). Rule 2's block says the alias rule "keeps `WAVO`
+ *     and `WAVO TWIST` apart", and this rule joins exactly that pair under a matched owner —
+ *     `matchesReference("WAVO", "WAVO TWIST", {sameOwner:true})` returns `contained`. Both are right
  *     and they read as contradictory side by side. Rule 2 asks whether two labels are the SAME NAME,
  *     where a word separator must never collapse a longer mark into its first word. Rule 4 asks a
  *     different question that only an established owner match makes answerable: whether ONE PROPRIETOR
@@ -211,7 +211,7 @@ const MIN_SKELETON = 4;
  *     resolving the apparent conflict by narrowing either one would break the case it was built for.
  *
  *     OWNER IDENTITY IS THE DISCRIMINATOR, and it is the whole reason this rule is safe. Containment on
- *     its own would pull `Delphi Pharmaceuticals` and `Delphi Laboratories` into `found` and manufacture
+ *     its own would pull `Korphi Pharmaceuticals` and `Korphi Laboratories` into `found` and manufacture
  *     recall the run does not have — five such marks sit in this very scenario's own results. Gated on
  *     `ownersMatch`, it reaches exactly the case it is for: one proprietor, one record, two renderings.
  *     The caller establishes the owner agreement; this function never guesses it.
@@ -577,8 +577,8 @@ export function scoreRecall({ reference, findings = [], retrieved = [], scopeCla
     // This was `retrieved.find(heldRule)` — the FIRST match in band order, with nothing preferring the
     // entry's own proprietor. Measured on a 2026-08-27 test run against its lawyer reference: of eight entries,
     // five matched more than one band record and three cited the wrong company. For two of those three
-    // the RIGHT record was already in the match set and was passed over on position alone — DELPHIC's at
-    // index 1, DELPHYS's at index 3.
+    // the RIGHT record was already in the match set and was passed over on position alone — KORPHIC's at
+    // index 1, VELTRYS's at index 3.
     //
     // The looseness of the matcher is NOT the fault here and is deliberately left alone. Only one of the
     // three wrong citations came from a skeleton collision; the other two were `alias` matches — the
@@ -598,8 +598,8 @@ export function scoreRecall({ reference, findings = [], retrieved = [], scopeCla
     const entryNamesOwner = Boolean(ownerKey(e?.owner));
     if (heldAll.length) {
       // AMONG THE OWNER'S OWN RECORDS, PREFER THE CLOSEST NAME. `heldOwned[0]` is band order again, one
-      // level down: DELPHIC's owner holds several records and the first is `DELPHIC ADAPTABLE`, while the
-      // lawyer named plain `DELPHIC`. Right proprietor, wrong record of theirs. An `alias` rule is an
+      // level down: KORPHIC's owner holds several records and the first is `KORPHIC ADAPTABLE`, while the
+      // lawyer named plain `KORPHIC`. Right proprietor, wrong record of theirs. An `alias` rule is an
       // identity match on the name; `skeleton` and `contained` are near-forms. Take an identity match
       // when the owner has one.
       const strongest = (rows) => rows.find((r) => heldRule(r) === "alias") ?? rows.find((r) => heldRule(r) === "script") ?? rows[0] ?? null;
@@ -681,7 +681,7 @@ export function scoreRecall({ reference, findings = [], retrieved = [], scopeCla
   // proprietor with more than one mark. A large filer can perfectly well have one mark the run withheld
   // and a DIFFERENT mark, not in the reference, that it surfaced. Both rows are true.
   //
-  // It fired on a delivered R2 run: `<large filer>: reference "DELFITY" is withheld, surfaced "DELPHINA"
+  // It fired on a delivered R2 run: `<large filer>: reference "KORFITY" is withheld, surfaced "KORPHINA"
   // is noise`. Different marks, different records, one proprietor that files a great many. And because
   // score.mjs prints a collision as "do not read the recall numbers above", ONE such proprietor
   // suppressed the whole run's recall measurement — a real 88% → 63% movement went unquoted on the
@@ -701,10 +701,10 @@ export function scoreRecall({ reference, findings = [], retrieved = [], scopeCla
   //
   // So the predicate is deliberately weaker than the matcher and stronger than the owner: same owner
   // AND one mark contained in the other once normalised. That is the shape of the case this check was
-  // built for — `DELPHI GENETICS` in LOST beside `DG DELPHI GENETICS` in NOISE — and it is not the
-  // shape of `DELFITY` beside `DELPHINA`.
+  // built for — `KORPHI GENETICS` in LOST beside `DG KORPHI GENETICS` in NOISE — and it is not the
+  // shape of `KORFITY` beside `KORPHINA`.
   const collisionKey = (s) => String(s ?? "").normalize("NFKC").toUpperCase().replace(/[^A-Z0-9]/g, "");
-  // A FLOOR, because containment on a short string matches everything. `DEL` inside `DELPHINA` is not
+  // A FLOOR, because containment on a short string matches everything. `KOR` inside `KORPHINA` is not
   // evidence of a shared record; four characters is the shortest reference mark shape worth trusting
   // here, and a pair below it drops to the advisory rather than being dropped entirely.
   const CONTAIN_FLOOR = 4;
@@ -783,7 +783,7 @@ export function withheldScope({ reference = [], retrieved = [], registerOnly = f
     : !marks.length
       ? `${scopeOf} — and the retrieved corpus is EMPTY, so this number rests on nothing; it is not a clean result`
       : outside
-        ? `${scopeOf} — ${outside} other retrieved mark${outside === 1 ? "" : "s"} are outside this measure entirely (#1322)`
+        ? `${scopeOf} — ${outside} other retrieved mark${outside === 1 ? "" : "s"} are outside this measure entirely`
         : `${scopeOf} — all ${marks.length} retrieved mark${marks.length === 1 ? " is" : "s are"} named by the reference, so nothing sits outside it`;
   return { referenceEntries: n, retrievedMarks: marks.length, outside, note };
 }
@@ -859,7 +859,7 @@ export function scoreField({ reference = [], findings = [] }) {
     if (e.on_field !== true) continue;
     const label = e.mark ?? e.name ?? "";
     // — the SAME question axis A asks, owner agreement included. Left out, this axis reported
-    // `DELPHI GENETICS` as "not-surfaced — cannot be scored on field" on the very run where axis A had
+    // `KORPHI GENETICS` as "not-surfaced — cannot be scored on field" on the very run where axis A had
     // just matched it. One record, two axes, two answers is the defect this issue names, and the axis
     // that cannot see the finding is the one that decides whether its GOODS were routed correctly.
     const f = findings.find((x) => matchesReference(label, x.mark, { sameOwner: ownersMatch(e?.owner, x?.owner) }));
@@ -1515,7 +1515,7 @@ export function concludeDepth({ instructed = [], rows = [], resolved = true, why
  *
  * Common and Inherited are excluded from the run and every run must contain a real LETTER, so an
  * accented Latin mark in NFD (`CAFE` + U+0301, whose combining mark is Inherited) is not a script
- * segment, and neither is punctuation, a device note or a digit. `CHROMA / & Device` yields nothing;
+ * segment, and neither is punctuation, a device note or a digit. `LUMIVANE / & Device` yields nothing;
  * `色度 / SEDU` yields the segment the jx lane has to generate. PURE.
  */
 export function scriptSegments(label) {
@@ -1534,8 +1534,8 @@ export function scriptSegments(label) {
 /**
  * CORPORATE LEGAL FORMS, DROPPED FROM AN OWNER KEY ONLY —.
  *
- * `NOISE_TOKENS` covers US, UK and German forms and almost nothing else, so `BePharBel Manufacturing`
- * and `BePharBel Manufacturing, Société anonyme` read as two companies. Measured: of twenty common forms
+ * `NOISE_TOKENS` covers US, UK and German forms and almost nothing else, so `DuPharVel Manufacturing`
+ * and `DuPharVel Manufacturing, Société anonyme` read as two companies. Measured: of twenty common forms
  * appended to an otherwise identical name, NINETEEN broke the match — only `S.A.` survived, and only
  * because `sa` happens to be on that list.
  *
@@ -1608,11 +1608,11 @@ export function ownerKey(owner) {
   const n = ownerName(owner);
   if (!n) return null;
   // — DROP A TRAILING PARENTHETICAL ANNOTATION. A gold set is lawyer-typed, and the convention in
-  // it is a jurisdiction hint after the name: `Delphi Genetics S.A. (BX)`, `Delphi Diagnostics, Inc.
+  // it is a jurisdiction hint after the name: `Korphi Genetics S.A. (BX)`, `Korphi Diagnostics, Inc.
   // (US)` — three of R2's nine entries carry one and six do not, which is what makes it an annotation
   // rather than part of any name. A run finding carries the typed owner object and never one of these,
   // so the strict token-set equality below could not match the two sides of the SAME proprietor, and
-  // `Delphi Genetics S.A.` scored against `Delphi Genetics S.A. (BX)` as a different company.
+  // `Korphi Genetics S.A.` scored against `Korphi Genetics S.A. (BX)` as a different company.
   //
   // ONE trailing group, and only at the end. This is not a general parenthesis fold: a parenthetical
   // inside a name is part of the name, and `Shanghai <A> Network Technology` vs `Shanghai <B> Network
@@ -1911,7 +1911,7 @@ export function scoreScriptTargets({ reference = [], buckets = {}, findings = []
 // ── — A KNOCKOUT IS GRADED ON WHAT A KNOCKOUT PROMISES ─────────────────────────────────────────
 //
 // R3 and R4 are knockout scenarios and their gold sets are clearance-grade lawyer reviews listing
-// SIMILAR marks — TIKI PUNCH, TIKI TROPICS — which a count of the exact string and its close variations
+// SIMILAR marks — WAVO PUNCH, WAVO TROPICS — which a count of the exact string and its close variations
 // can never retrieve. The 2026-08-12 round scored them 0/8 and 0/9 on BOTH free-tier and clarivate, same
 // day, same engine. That zero is baked in by the product definition, and it costs twice: the two
 // cheapest scenarios cannot detect a recall regression because they are already at the floor, and every

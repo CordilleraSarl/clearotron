@@ -112,7 +112,7 @@ export function mintSupplementalEntries(axis, proposals, { existingQids = new Se
     // rather than guessed about.
     const owner = typeof p.owner === "string" ? p.owner.trim() : "";
     if (p.owner != null && !owner) { issue("owner, when present, must be a non-empty string"); continue; }
-    if (owner && predicate === "owner") { issue(`predicate "owner" carries the owner name as its term — the owner scope field rides a MARK-TEXT predicate ({predicate:"default", term:"TIKI", owner:"…"})`); continue; }
+    if (owner && predicate === "owner") { issue(`predicate "owner" carries the owner name as its term — the owner scope field rides a MARK-TEXT predicate ({predicate:"default", term:"WAVO", owner:"…"})`); continue; }
     // ── romanization (2026-07-30 review round — the enforcement-without-invitation fix) ────────────
     // Half the live incident's non-Latin deferrals were supp: entries, because the guard's remediation
     // ("supply the romanisation on the entry's romanizedTerms") pointed at a field this proposing

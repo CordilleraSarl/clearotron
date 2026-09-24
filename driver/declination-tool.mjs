@@ -116,7 +116,7 @@ export function appendDeclinations(runDir, accepted, { now = () => new Date().to
     }
     ensureDriverDir(runDir);
     writeFileSync(ledger, JSON.stringify({
-      _provenance: "synthesis's own stated decision not to deliver a record that reached the findings surface (#1117). "
+      _provenance: "synthesis's own stated decision not to deliver a record that reached the findings surface. "
         + "Written by the driver from typed calls — never hand-authored, never parsed out of prose.",
       ts: now(), count: byUri.size, declinations: [...byUri.values()],
     }, null, 2) + "\n");

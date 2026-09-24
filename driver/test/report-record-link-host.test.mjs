@@ -96,7 +96,7 @@ const IS_EVIDENCE = /EVIDENCE(USE|OWN|CL|PROSE)/;
 const REPORT_MD = `---
 type: clearance-clearance
 matter: TMP0775
-title: KURENA
+title: KOLEMA
 client: House default
 use: synthetic fixture for the record-link host invariant
 classes: 9
@@ -125,9 +125,9 @@ const findingsDoc = (origins) => {
     findings: [
       {
         ordinal: 1,
-        mark: "KURENA",
+        mark: "KOLEMA",
         owner: {
-          name: "Kurena SA", country: "CH",
+          name: "Kolema SA", country: "CH",
           // Three record uris: the canonical path, one absolute on another register's host, and — where
           // the provider declares one at all — one already on a host it legitimately publishes. The last
           // exists so "no foreign anchors" cannot be satisfied by rendering no links whatsoever.
@@ -151,8 +151,8 @@ const findingsDoc = (origins) => {
       },
       {
         ordinal: 2,
-        mark: "KURENNA",
-        owner: { name: "Kurenna Trading", country: "SG", registrations: [] },
+        mark: "KOLEMMA",
+        owner: { name: "Kolemma Trading", country: "SG", registrations: [] },
         composite: 2, level: "C", dispute_type: "paper-conflict",
         meters: {
           mark_similarity: { token: "medium", basis: "inferred-from-signal" },
@@ -179,7 +179,7 @@ async function publishAs(providerId, { findings = null, records = null, tag = pr
     mkdirSync(join(runDir, "_records"), { recursive: true });
     for (const [file, body] of Object.entries(records)) writeFileSync(join(runDir, "_records", file), JSON.stringify(body));
   }
-  writeFileSync(join(runDir, "status.json"), JSON.stringify({ runId: `fixture-${tag}`, markName: "KURENA" }));
+  writeFileSync(join(runDir, "status.json"), JSON.stringify({ runId: `fixture-${tag}`, markName: "KOLEMA" }));
   writeFileSync(join(runDir, "report.md"), REPORT_MD);
   writeFileSync(join(runDir, "findings.json"), findings ?? findingsDoc(recordOriginsFor(providerId)));
   // The register a run searched is a fact about THE RUN, recorded here at fetch time.
@@ -328,8 +328,8 @@ test("reducing a record uri to its path RE-BINDS it to the record the run actual
         _uri: KEY, uri: KEY, provider: "clarivate", office: "EU",
         applicationNumber: "RECORDBOUND0001", registrationNumber: "RECORDBOUND0001",
         applicationDate: "2019-03-04", registrationDate: "2019-11-08",
-        statusClass: "live", statusText: "REGISTERED", markText: "KURENA", niceClasses: ["9"],
-        owner: "Kurena SA", _receipt: { fetched_at: "2026-08-12T09:00:00.000Z", context: "fixture" },
+        statusClass: "live", statusText: "REGISTERED", markText: "KOLEMA", niceClasses: ["9"],
+        owner: "Kolema SA", _receipt: { fetched_at: "2026-08-12T09:00:00.000Z", context: "fixture" },
       },
     },
   });

@@ -118,7 +118,7 @@ const FRAMEWORK = { framework_key: "house-triage", title: "t", bands: [
   { label: "Manageable", tone: "low" }, { label: "Low", tone: "minimal" }] };
 const markDoc = (name) => ({
   name, rating: "Medium", bullets: ["Synthetic fixture for the served-model record."],
-  findings: [{ ordinal: 1, name: "Look-alike listing", owner: "Kurena SA", band: "Medium",
+  findings: [{ ordinal: 1, name: "Look-alike listing", owner: "Kolema SA", band: "Medium",
     net: "A listing under a closely similar name is live on a marketplace.", type: "Active Business", evidence: [] }],
 });
 const ROWS = [
@@ -129,7 +129,7 @@ const ROWS = [
 async function publish(tag, product, rows, prepare = null) {
   const runDir = join(ROOT, `pub-${tag}`);
   mkdirSync(driverDir(runDir), { recursive: true });
-  writeFileSync(join(runDir, "status.json"), JSON.stringify({ runId: `fixture-${tag}`, markName: "KURENA" }));
+  writeFileSync(join(runDir, "status.json"), JSON.stringify({ runId: `fixture-${tag}`, markName: "KOLEMA" }));
   writeFileSync(join(runDir, "report.md"), "# Clearance report\n\nBody text.\n");
   writeFileSync(join(runDir, "findings.json"), JSON.stringify({ schema_version: 6, findings: [] }));
   writeFileSync(driverDir(runDir, "profile.json"), JSON.stringify({ key: `${tag}-key` }));
@@ -140,7 +140,7 @@ async function publish(tag, product, rows, prepare = null) {
   const runId = `tmp0775-2026-09-14-${tag}`;
   const common = { runId, codename: tag, runDir, poolRoot, poolUrl: "https://trademark.test", customerKey: `${tag}-key`, skipRegen: true };
   if (product === "clearance") await publishReport({ ...common, reportMd: join(runDir, "report.md"), findingsJson: join(runDir, "findings.json") });
-  else await publishKnockout({ ...common, findings: { marks: [markDoc("KURENA")] }, framework: FRAMEWORK, overall: "Medium" });
+  else await publishKnockout({ ...common, findings: { marks: [markDoc("KOLEMA")] }, framework: FRAMEWORK, overall: "Medium" });
   const read = (name) => readFileSync(join(poolRoot, runId, name), "utf8");
   return { meta: JSON.parse(read("meta.json")), data: JSON.parse(read("report-data.json")), html: read("report.html") };
 }

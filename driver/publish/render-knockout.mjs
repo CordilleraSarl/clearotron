@@ -536,7 +536,7 @@ function countsSection(marks, registerCounts, positions = '') {
   // Close variations — did not say what they counted, so the definition had to go somewhere. Put it in
   // the header and the paragraph has nothing left to do.
   //
-  // ONE NAME ⇒ THE HEADER NAMES IT, because "Exactly ORBIT" needs no gloss at all. Several names share
+  // ONE NAME ⇒ THE HEADER NAMES IT, because "Exactly ACME" needs no gloss at all. Several names share
   // one table and no header can name one of them, so they keep the general form and each row's own
   // forms line (already rendered, unchanged) carries that row's near-spellings.
   const single = marks.length === 1 ? String(marks[0]?.name ?? '').trim() : '';

@@ -31,7 +31,8 @@
 //     `register-records.jsonl`; providers/_shared/ledger-path.mjs still resolves the older
 //     `corsearch-*` names on a box that already has them.)
 
-import { makeLedger } from "../../_shared/ledger.mjs";
+import { makeLedger, heldRecordBodies } from "../../_shared/ledger.mjs";
+import { answerKey, compareAnswers, forgetAnswer, noteAnswer, openAnswerMemory, recallAnswer, rememberAnswer } from "../../_shared/answer-memory.mjs";
 import { nonAnswerBodyError, parseJsonBody, unparsedBodyError } from "../../_shared/http-body.mjs";
 import {
   BATCH_SCREEN_CHUNK, chunk, isAllClass, makeClassifyStatus, screenVerdict,
@@ -76,13 +77,36 @@ export function refToOffice(ref) {
 }
 
 // ── HTTP helper (with the metered chokepoint) ──────────────────────────────────────────────────────
-export async function clarivateFetch(apiKey, base, path, { body = null, method = "POST", retries = 1, tctx = null } = {}) {
+//
+// THE RUN MEMORY (providers/_shared/answer-memory.mjs) answers an identical count, search or owner lookup
+// from what this run already asked: the question is the base address, the path and the whole body, never
+// the key. Records are held by id instead (heldRecords, below), because a record is the same whichever
+// search found it. Images and filing dates are not repeated in a run and go to the register every time.
+// With no memory for the run, this is the plain fetch it always was.
+//
+// `ledgerExtra` rides on the call ledger's row: a /text call names the record ids it fetched, which is
+// what lets a run's usage count a record fetched twice (driver/provider-usage.mjs).
+const REMEMBERED_PATHS = new Set(["/count", "/search", "/resolution/company"]);
+
+export async function clarivateFetch(apiKey, base, path, { body = null, method = "POST", retries = 1, tctx = null, ledgerExtra = null } = {}) {
   const url = `${base}${path}`;
   const headers = { "X-ApiKey": apiKey, "Accept": "application/json" };
   const init = { method, headers };
   if (body !== null) { headers["Content-Type"] = "application/json"; init.body = JSON.stringify(body); }
 
   const t0 = Date.now();
+  const mem = REMEMBERED_PATHS.has(path) ? openAnswerMemory(tctx?.recordLog) : null;
+  const key = mem ? answerKey({ base, method, path, body }) : null;
+  const held = mem ? recallAnswer(mem, key) : null;
+  const note = (row) => noteAnswer(mem, { ts: new Date().toISOString(), mode: mem.mode, key, method, path, tool: tctx?.kind ?? null,
+    via: tctx?.recordLog ? "driver" : "tool-server", session: tctx?.sessionKey ?? null, ...row });
+  if (held && mem.mode === "on") {
+    const { body: parsed, parseError } = parseJsonBody(held.raw);
+    const ok = held.status >= 200 && held.status < 300;
+    logCall(tctx, { http_status: held.status, ok, attempts: 0, took_ms: Date.now() - t0, bytes: held.raw.length, cache_hit: true });
+    note({ held: true, served: true, status: held.status });
+    return { status: held.status, ok, url, body: parsed, raw: held.raw, parseError };
+  }
   let attempts = 0;
   let resp;
   try {
@@ -96,15 +120,84 @@ export async function clarivateFetch(apiKey, base, path, { body = null, method =
       await new Promise((r) => setTimeout(r, 1500 * (i + 1)));
     }
   } catch (err) {
-    logCall(tctx, { http_status: 0, ok: false, attempts, took_ms: Date.now() - t0, bytes: 0, cache_hit: false });
+    logCall(tctx, { http_status: 0, ok: false, attempts, took_ms: Date.now() - t0, bytes: 0, cache_hit: false, ...(ledgerExtra ?? {}) });
+    if (mem) note({ held: Boolean(held), status: 0 });
     throw err;
   }
 
   const raw = await resp.text();
   // The parse failure travels on `parseError` instead of being swallowed — providers/_shared/http-body.mjs.
   const { body: parsed, parseError } = parseJsonBody(raw);
-  logCall(tctx, { http_status: resp.status, ok: resp.ok, attempts, took_ms: Date.now() - t0, bytes: raw.length, cache_hit: false });
+  logCall(tctx, { http_status: resp.status, ok: resp.ok, attempts, took_ms: Date.now() - t0, bytes: raw.length, cache_hit: false, ...(ledgerExtra ?? {}) });
+  if (mem) {
+    const summary = rememberableAnswer(path, resp.status, parsed, parseError);
+    const row = { held: Boolean(held), status: resp.status, rememberable: Boolean(summary) };
+    if (held && summary) Object.assign(row, compareAnswers(held.summary, summary));
+    if (summary && !held) row.stored = rememberAnswer(mem, key, { status: resp.status, raw, summary });
+    note(row);
+  }
   return { status: resp.status, ok: resp.ok, url, body: parsed, raw, parseError };
+}
+
+/**
+ * What the run memory may keep from a count, a search or an owner lookup, as the short summary a watch
+ * compares — or null when the question must be asked again next time.
+ *
+ * KEPT: a 200 that parsed into the answer its path gives — `counts{}` for /count, `ids{}` for /search
+ * (isSearchResponseBody), `companies[]` for /resolution/company.
+ *
+ * NEVER KEPT: anything else, the refusals included — a result past the ceiling, a query the service
+ * refused as written, an error envelope served with a 200, a body that did not parse. Those are the
+ * answers this core reports as failures, and remembering one would turn a passing fault into the run's
+ * permanent answer. No answer here points at a next page: /search returns the whole set at once.
+ */
+export function rememberableAnswer(path, status, body, parseError) {
+  if (status !== 200 || parseError || body == null || typeof body !== "object" || Array.isArray(body)) return null;
+  if (path === "/count") {
+    if (!body.counts || typeof body.counts !== "object" || Array.isArray(body.counts)) return null;
+    const entries = Object.entries(body.counts).filter(([, n]) => Number.isFinite(Number(n)));
+    return { total: entries.reduce((t, [, n]) => t + Number(n), 0), ids: entries.map(([o, n]) => `${o}:${Number(n)}`).sort(), next_page: false };
+  }
+  if (path === "/search") {
+    if (!isSearchResponseBody(body)) return null;
+    const ids = Object.entries(body.ids).flatMap(([o, gs]) => (Array.isArray(gs) ? gs : []).map((g) => `${o}/${g}`));
+    return { total: ids.length, ids, next_page: false };
+  }
+  if (path === "/resolution/company") {
+    if (!Array.isArray(body.companies)) return null;
+    const ids = body.companies.map((c) => `${c?.applicantName ?? ""}|${c?.registrationOfficeCode ?? ""}|${c?.confidenceScore ?? ""}`);
+    return { total: ids.length, ids, next_page: false };
+  }
+  return null;
+}
+
+/**
+ * THE RECORDS THIS RUN ALREADY HOLDS, by id, for a /text call about to be made — Map<lowercased guid, raw
+ * record>. Read off the run's record log, which every process that fetches a record for the run writes
+ * to (providers/_shared/ledger.mjs heldRecordBodies), and only while the run memory is `on`.
+ *
+ * The raw vendor record is what comes back, not the normalized one stored beside it, so the caller runs
+ * it through exactly the normalization and screening a fetched record gets, with this request's own office
+ * hint. A held record therefore yields the row a fresh fetch would, and a record whose office segment
+ * differs between two searches is addressed the way this search addresses it.
+ *
+ * Why no watch period (the owner's ruling): across 38 past runs that fetched the same record twice, every
+ * second copy was byte-identical apart from the order of one list inside the vendor's raw record, and
+ * every normalized field matched.
+ */
+function heldRecords(tctx, guids) {
+  const out = new Map();
+  if (openAnswerMemory(tctx?.recordLog)?.mode !== "on") return out;
+  const log = typeof tctx?.recordLog === "string" && tctx.recordLog.trim()
+    ? tctx.recordLog.trim() : String(process.env.CLEAROTRON_REGISTER_RECORD_LOG ?? "").trim();
+  for (const [g, body] of heldRecordBodies(log, guids)) if (body?._raw && typeof body._raw === "object") out.set(g, body._raw);
+  return out;
+}
+
+/** The one ledger row for records served from the run's own store: no call made, none paid for. */
+function logHeldRecords(tctx, held) {
+  if (!held.size) return;
+  logCall({ ...tctx, target: `held:${held.size}` }, { http_status: 200, ok: true, attempts: 0, took_ms: 0, bytes: 0, cache_hit: true, records: [...held.keys()] });
 }
 
 const errText = (r) => r?.body?.errorMessage ?? r?.body?.message ?? (r?.raw ? String(r.raw).slice(0, 200) : "");
@@ -192,7 +285,7 @@ const PHRASE_OPERATOR = "ADJ";
 // once `exact`:
 //   "SLUSH FREEZE, SLUSH ICE, SLUSH POP"                     three terms crammed into one
 //   "TIKTOK / TIK- famous-neighbour family"                  a description of a family, not a name
-//   "TIKE, TIPI one-keystroke neighbours of TIKI"
+//   "WAVU, WAPO one-keystroke neighbours of WAVO"
 //
 // Searched, they return 0 — and a 0 here reads as CLEAN, which is the one outcome this contract must
 // never produce by accident. On that run the `default` twins deferred loudly while the `exact` twins
@@ -305,7 +398,7 @@ export function compilePhraseValue(term, { pre = "", post = "", dropReserved = f
   const last = kept.length - 1;
   const tailWrap = (kept.length > 1 && kept[last].length === 1) ? "" : post;
   // THE WILDCARD PREDICATE CARRIES ITS OWN STAR, so `post` is empty there and the two rules above
-  // cannot reach it: the caller writes `STEAL A*` and the star is part of the token. Same shape, same
+  // cannot reach it: the caller writes `FOLD A*` and the star is part of the token. Same shape, same
   // refusal, so the same subtraction — the star comes off a one-character final token. Nothing else is
   // touched: a longer final token keeps the caller's pattern exactly as written, and a `?` is a
   // single-character class rather than a sub-query, so it is not this.
@@ -1107,12 +1200,29 @@ export async function doSearch(apiKey, base, params, tctx) {
   if (!isSearchResponseBody(r.body)) {
     return { type: "text", text: nonAnswerBodyError("clarivate_search", r, "a search response (no ids{} — the one key POST /search answers with)", ` query=${String(echo).slice(0, 200)}`) };
   }
+  forgetContradictedAnswers(base, body, r.body, tctx);
   const out = normalizeSearchResponse(r.body, echo, p.match_mode || "default");
   // The resolution note rides on the answer, exactly as it does on the enumerate result: a reader has
   // to be able to see WHICH applicant styling this sweep actually asked for, and a zero over an owner
   // whose styling was never found is a different fact from a zero over one whose styling was.
   if (ownerResolution) out.owner_resolution = ownerResolution;
   return { type: "text", text: JSON.stringify(out, null, 2) };
+}
+
+// A SEARCH SHORTER THAN ITS OWN COUNT IS NOT KEPT, AND NEITHER IS THE COUNT. The enumerate kernel reads the
+// shortfall as the register contradicting itself and hands the slice to the repair ladder to ask again
+// (the count/search reconciliation in providers/_shared/enumerate.mjs). Kept, both answers would be served
+// again on every retry, and the slice could not be cured within the attempt. The two share one body, so
+// the count held for this search is found under the same question.
+function forgetContradictedAnswers(base, body, searchBody, tctx) {
+  const mem = openAnswerMemory(tctx?.recordLog);
+  if (!mem) return;
+  const countKey = answerKey({ base, method: "POST", path: "/count", body });
+  const counted = recallAnswer(mem, countKey)?.summary?.total;
+  const returned = rememberableAnswer("/search", 200, searchBody, null)?.total;
+  if (!Number.isFinite(counted) || !Number.isFinite(returned) || returned >= counted) return;
+  forgetAnswer(mem, countKey);
+  forgetAnswer(mem, answerKey({ base, method: "POST", path: "/search", body }));
 }
 
 // ── Count ─────────────────────────────────────────────────────────────────────────────────────────
@@ -1269,7 +1379,7 @@ async function fetchText(apiKey, base, group, testMode, tctx) {
   const body = { ids: group };
   if (testMode) body.test = true;
   const target = group.slice(0, 5).join(",") + (group.length > 5 ? `+${group.length - 5}` : "");
-  const r = await clarivateFetch(apiKey, base, "/text", { body, tctx: { ...tctx, target } });
+  const r = await clarivateFetch(apiKey, base, "/text", { body, tctx: { ...tctx, target }, ledgerExtra: { records: group.map((g) => String(g).toLowerCase()) } });
   if (!r.ok) return { ok: false, raw: [], error: `HTTP ${r.status} for a ${group.length}-id chunk: ${errText(r)}` };
   // On this provider /text is the ONLY source of mark text, classes, status and owner (the search
   // returns bare guids), and the kernel's contentFromScreen seam reads a chunk error to decide whether
@@ -1305,21 +1415,31 @@ export async function doRecordFetch(apiKey, base, params, tctx) {
   if (inputs.length === 0) return { type: "text", text: "ERROR: clarivate_record_fetch — record_ids is required (non-empty array of refs or guids)." };
 
   const { officeByGuid, guids } = splitRefs(inputs);
-  const groups = chunk(guids, TEXT_BATCH_MAX);
+  // A record this run already holds is not fetched again (heldRecords); test-mode bodies are obfuscated
+  // and are never held.
+  const held = params.test_mode ? new Map() : heldRecords(tctx, guids);
+  logHeldRecords(tctx, held);
+  const groups = chunk(guids.filter((g) => !held.has(String(g).toLowerCase())), TEXT_BATCH_MAX);
   const records = [];
+  const fetched = [];
   const errors = [];
+  for (const rec of held.values()) { const nr = normalizeRecord(rec, rec?.id ? officeByGuid[rec.id] : null); records.push(nr); fetched.push(nr); }
   for (const group of groups) {
     const { ok, raw, error } = await fetchText(apiKey, base, group, params.test_mode, tctx);
     if (!ok) { errors.push(error); continue; }
-    for (const rec of raw) records.push(normalizeRecord(rec, rec?.id ? officeByGuid[rec.id] : null));
+    for (const rec of raw) { const nr = normalizeRecord(rec, rec?.id ? officeByGuid[rec.id] : null); records.push(nr); fetched.push(nr); }
   }
   if (!records.length && errors.length) {
     return { type: "text", text: `ERROR: clarivate_record_fetch — ${errors.join("; ")}` };
   }
   // A1: persist each normalized record keyed by its synthetic ref so the driver can field-verify
   // registry identifiers and archive the record into the run. (test_mode bodies are obfuscated — skip.)
+  // A HELD RECORD IS WRITTEN TOO, under the address this request gives it. The screen gate matches exact
+  // addresses against this log, and a record first fetched under another office's address was otherwise
+  // absent under this one, so a drop citing it read as a record nobody examined. The log keeps one row per
+  // address (writeRecordOnce), so a held record already logged under this address writes nothing.
   if (!params.test_mode) {
-    for (const nr of records) if (nr?.uri) logRecordBody({ ...tctx, kind: "record_fetch" }, nr.uri, nr);
+    for (const nr of fetched) if (nr?.uri) logRecordBody({ ...tctx, kind: "record_fetch" }, nr.uri, nr);
   }
   return { type: "text", text: JSON.stringify({ count: records.length, records, errors: errors.length ? errors : undefined }, null, 2) };
 }
@@ -1337,15 +1457,21 @@ export async function doBatchScreen(apiKey, base, params, tctx) {
     ? params.in_scope_classes.map(Number).filter(Number.isFinite) : [];
 
   const { officeByGuid, guids } = splitRefs(inputs);
-  const groups = chunk(guids, TEXT_BATCH_MAX);
+  // A record this run already holds is screened from its stored raw copy and not fetched again
+  // (heldRecords); only the rest go to /text. Test-mode bodies are obfuscated and are never held.
+  const held = params.test_mode ? new Map() : heldRecords(tctx, guids);
+  logHeldRecords(tctx, held);
+  const groups = chunk(guids.filter((g) => !held.has(String(g).toLowerCase())), TEXT_BATCH_MAX);
   const rows = [];
   const errors = [];
   const normalized = [];
-  for (const group of groups) {
-    const { ok, raw, error } = await fetchText(apiKey, base, group, params.test_mode, tctx);
+  const answers = held.size ? [{ ok: true, raw: [...held.values()], held: true }] : [];
+  for (const group of groups) answers.push({ ...(await fetchText(apiKey, base, group, params.test_mode, tctx)), held: false });
+  for (const { ok, raw, error } of answers) {
     if (!ok) { errors.push(error); continue; }
     for (const rec of raw) {
       const nr = normalizeRecord(rec, rec?.id ? officeByGuid[rec.id] : null);
+      // A held record is logged as well, under this request's address, for the reason doRecordFetch gives.
       normalized.push(nr);
       const row = {
         uri: nr.uri,
@@ -1398,6 +1524,7 @@ export async function doBatchScreen(apiKey, base, params, tctx) {
   for (const row of rows) verdict_summary[row.screen_verdict] = (verdict_summary[row.screen_verdict] ?? 0) + 1;
   return { type: "text", text: JSON.stringify({
     requested: inputs.length, returned: rows.length, chunks: groups.length,
+    ...(held.size ? { held: held.size } : {}),
     in_scope_classes: inScopeClasses.length ? inScopeClasses : "NOT PROVIDED — live marks fail-safe to surface:in-scope-live (no class-drop)",
     errors: errors.length ? errors : undefined,
     note: "Per-row `screen_verdict` (CLOSED SET) is the keep/drop authority — NOT the mark name or owner. drop:dead = a confidently dead status; drop:out-of-class = live but no in-scope-class overlap and not all_class — these two are batch-screen-authoritative drops. surface:in-scope-live and surface:all-class = a real in-scope candidate: decide it on the record's goods & services (this provider returns them on this very call). deepfetch:ambiguous = status unrecognised, never auto-drop.",

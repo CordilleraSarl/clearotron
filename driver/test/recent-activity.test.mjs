@@ -16,7 +16,7 @@ test("reports only, newest-first, kind-tagged; retired sources are ignored rathe
     ],
     //: a stale caller still passing these gets them DROPPED, not rendered with a dead hub link.
     checks: [{ ts: "2026-06-24T12:00:00Z", kind: "quality-check", label: "NOVAPULSE", state: "done" }],
-    fixes: [{ ts: "2026-06-24T09:00:00Z", clusterKey: "client-a|RAZER", outcome: { packaged: true, prUrl: "https://x/pull/9" } }],
+    fixes: [{ ts: "2026-06-24T09:00:00Z", clusterKey: "client-a|KORVANE", outcome: { packaged: true, prUrl: "https://x/pull/9" } }],
     overnight: [{ at: "2026-06-24T04:00:00Z", skektech: { state: "ran", prs: ["a"] } }],
   });
   assert.deepEqual(rows.map((r) => r.kind), ["report", "report"], "only reports reach the feed");

@@ -42,7 +42,7 @@ watchlists come from in any case, and is why this file was never authority.
 - **Nordwave** — `aggressive_enforcers`. NOVAPULSE (lighting / peripheral ecosystem);
   a dynamic-lighting ecosystem partner, so name with the partnership context when
   the client is in the PC-gaming hardware lane. Surface NOVAPULSE and the
-  near-exact / phonetic fringe (NORDWAVE NOVAPULSE, KROMA) on lighting / peripheral
+  near-exact / phonetic fringe (NORDWAVE NOVAPULSE, NOVAPULZE) on lighting / peripheral
   marks.
 
 ## Cross-sector

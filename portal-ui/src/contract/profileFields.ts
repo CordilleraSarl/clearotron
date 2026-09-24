@@ -176,10 +176,12 @@ export type FieldSpec = {
    * A per-entry check for a `lines` field.
    *
    * `strict` decides what happens to an entry that fails it, and the two answers are both correct for
-   * different fields. Domains and marketplaces are DELIBERATELY tolerant: this build does not know which
-   * suffixes exist, and a validator that rejects a real domain stops somebody recording something true,
-   * which is worse than admitting a fake one. Territories are the opposite — the engine holds a closed
-   * list, so an entry outside it is not "possibly right", it is a setting that will silently do nothing.
+   * different fields. Domains are DELIBERATELY tolerant: this build does not know which suffixes exist,
+   * and a validator that rejects a real domain stops somebody recording something true, which is worse
+   * than admitting a fake one. Territories are the opposite — the engine holds a closed list, so an entry
+   * outside it is not "possibly right", it is a setting that will silently do nothing. Marketplaces are
+   * strict for a third reason: the server refuses the entry, so nothing the check turns away could have
+   * been saved.
    */
   readonly item?: {
     readonly ok: (entry: string) => boolean
@@ -358,9 +360,11 @@ export const PROFILE_FIELDS: readonly FieldSpec[] = [
     // `driver/profiles.mjs platformEntryErrors` requires a bare store domain and REFUSES anything else —
     // a broken profile bricks every run under it. Typing "Amazon" here was accepted in silence by the
     // page and refused by the server, which is what "validation is bollox" describes (
-    // items 4 and 7). The notice is a `check` rather than a refusal because this file never refuses.
+    // items 4 and 7). STRICT, because the server refuses the same entry: a notice that said "Saved, but
+    // check" beside a save the server had refused told the person the opposite of what happened.
     item: { ok: (e) => { const d = e.trim().toLowerCase()
                          return d !== 'web' && !/\s/.test(d) && /^[a-z0-9][a-z0-9.-]*\.[a-z]{2,}$/.test(d) },
+            strict: true,
             expected: 'a bare store domain like amazon.com' },
     hint: 'One per line. A project can add to this list; it can never remove one.' },
   { key: 'riskAppetite', label: 'Risk appetite', kind: 'prose', group: 'defaults',

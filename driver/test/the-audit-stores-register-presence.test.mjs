@@ -20,7 +20,7 @@ const rec = (over = {}) => ({
 });
 const band = (...records) => ({ enumerated: records, crowds: [] });
 const derive = (records, opts = {}) => deriveRegisterPresence(band(...records),
-  { dominantElement: "PROPER", scopeClasses: ["9", "35", "42"], scopeTerritories: ["US", "EU"], ...opts });
+  { dominantElement: "ACME", scopeClasses: ["9", "35", "42"], scopeTerritories: ["US", "EU"], ...opts });
 const ids = (p) => p.rows.map((r) => r.record_id);
 
 test("liveness gates the store — and every dead spelling of the class, not one", () => {
@@ -80,9 +80,9 @@ test("an empty or absent territory scope restricts nothing — worldwide is the 
 });
 
 test("the dominant-element column speaks band-shape's own ladder, and noise reads null", () => {
-  const tok = rec({ record_id: "/d/tok", mark_text: "PROPER DATA" });
-  const edit1 = rec({ record_id: "/d/edit", mark_text: "PROPPER" });
-  const concat = rec({ record_id: "/d/concat", mark_text: "PROPERLY PRESSED" });
+  const tok = rec({ record_id: "/d/tok", mark_text: "ACME DATA" });
+  const edit1 = rec({ record_id: "/d/edit", mark_text: "ACMME" });
+  const concat = rec({ record_id: "/d/concat", mark_text: "ACMELY PRESSED" });
   const noise = rec({ record_id: "/d/noise", mark_text: "ZEBRA" });
   const p = derive([tok, edit1, concat, noise]);
   const basis = Object.fromEntries(p.rows.map((r) => [r.record_id, r.dominant_element]));
@@ -117,7 +117,7 @@ test("buildAuditMd: no registerPresence input → no section, and the count is N
 
 test("buildAuditMd renders the store: every row lands in the table, and the count agrees", () => {
   const presence = derive([
-    rec({ record_id: "/p/one", mark_text: "PROPER ONE" }),
+    rec({ record_id: "/p/one", mark_text: "ACME ONE" }),
     rec({ record_id: "/p/two", mark_text: "OTHER | PIPED" }),
   ]);
   const { md, counts } = buildAuditMd(SPINE, "", { registerPresence: presence });

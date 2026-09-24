@@ -703,7 +703,7 @@ export function syncCoverageForm(files) {
     // was ever observed; this is the report. The axis set is UNCHANGED — filtering it would silently
     // shrink the form, which is worse than the row it would avoid.
     for (const a of (input.unknownAxisUnits ?? []))
-      note(`[coverage-form] register-units carries ${a}.md, which is not one of the register axes — its row is DRIVER-written and a seat cannot repair it. This is a driver fault, not a seat one (#1100).`);
+      note(`[coverage-form] register-units carries ${a}.md, which is not one of the register axes — its row is DRIVER-written and a seat cannot repair it. This is a driver fault, not a seat one.`);
     const prior = readCoverageForm(runDir, formName).rows;
     const u = unionCoverageForm({ rows: prior }, { rows: null }, input);
     // Said out loud on failure rather than swallowed — but UNLIKE this is not the fail-open leg:
@@ -1567,7 +1567,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // silences the REFUSAL, never the record — `modelActual`/`modelMismatch` keep landing on every row.
     if (modelMismatch === true && !fail && envGateOn("CLEAROTRON_MODEL_WIRE_CHECK")) {
       fail = `model_mismatch:${famRequested}->${famActual}`;
-      note(`[${name}] MODEL MISMATCH: asked for ${modelRequested} (${famRequested}), the wire says ${modelActual} (${famActual}) — failing the turn. An unhonoured model override is an error, not a substitution (#238); every number attributed to this turn would name the wrong model.`);
+      note(`[${name}] MODEL MISMATCH: asked for ${modelRequested} (${famRequested}), the wire says ${modelActual} (${famActual}) — failing the turn. An unhonoured model override is an error, not a substitution; every number attributed to this turn would name the wrong model.`);
     }
 
     // AD-4 house rule — both computed UNCONDITIONALLY, three-valued on purpose:
@@ -1987,7 +1987,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // falls into the break below, and two rows for one decision would double every count taken off them.
     const cutFired = identicalContent && producedNothing && warm && attempt < maxRetries + 1;
     if (cutFired) {
-      note(`[${name}] attempt ${attempt} [warm patch] reproduced attempt ${attempt - 1}'s failure byte-for-byte and the seat produced NOTHING either time (${fail.slice(0, 140)}) — NOT escalating to a fresh attempt ${attempt + 1}: measured 0 of 6 convergences on this shape (#1062). A seat whose output was merely wrong still escalates.`);
+      note(`[${name}] attempt ${attempt} [warm patch] reproduced attempt ${attempt - 1}'s failure byte-for-byte and the seat produced NOTHING either time (${fail.slice(0, 140)}) — NOT escalating to a fresh attempt ${attempt + 1}: measured 0 of 6 convergences on this shape. A seat whose output was merely wrong still escalates.`);
       // THE CUT IS RECORDED, NOT JUST NOTED. `note` is stderr only (log.mjs) and reaches no artifact, so
       // the run record held no trace of a decision that PREVENTS an attempt — and because the cut
       // returns, the prevented attempt never runs. n=6 would therefore be permanent: a seat or model
@@ -2255,7 +2255,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     if (/finding_registration_invalid/.test(lastFail)) {
       extra = ` SPECIFIC FIX: a registration.uri is NEVER empty. If this finding has a fetched register record, ` +
         `put its real record URI. If it has NO fetched record (a common-law finding, or a famous mark known only ` +
-        `from general knowledge — e.g. CHROME on a NOVAPULSE clearance), it is NOT a register finding: set ` +
+        `from general knowledge — e.g. KODAK on a CODAK clearance), it is NOT a register finding: set ` +
         `"registrations":[]. And if it is a famous one-keystroke/homophone NEIGHBOUR kept only for diligence, move ` +
         `it OUT of findings[] into the top-level "context_notes" array ({"type":"famous-neighbour-ungrounded",` +
         `"mark","owner","context"}). NEVER invent an empty-uri registration to satisfy the schema.`;
@@ -2675,7 +2675,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       "Run the CONNOTATION / MEANING sweep — the mark AND its near-forms on the general web (Urban Dictionary, " +
       "Wikipedia, news), query shapes \"[name] gang/slang/offensive/meaning\" — record EVERY query (even " +
       "zero-result ones) into extras.pr_risk, and cite a `Connotation-search source:` line in the PR section. A " +
-      "dictionary gloss is never a clearance (a mark can read as a benign given name yet sit one letter off \"Sureño\", a street-gang label). You may " +
+      "dictionary gloss is never a clearance (a mark can read as a benign given name yet sit one letter off \"Mara\", a street-gang label). You may " +
       "instead report a real connotation hit — but a clean claim needs the search behind it";
   } else if (/named_band_collapsed/.test(lastFail)) {
     const slices = (lastFail.match(/named_band_collapsed:(.+)$/s) || [])[1] || "";

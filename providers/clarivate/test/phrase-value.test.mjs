@@ -39,40 +39,40 @@ test("a one-character LAST word loses the trailing wrap — the shape the provid
 test("the leading rule is unchanged, and a one-character MIDDLE word is untouched", () => {
   // The mirror that already existed. Pinned here because this file is where somebody will come to
   // change one of the two, and a pair of rules with only one of them tested is how this defect began.
-  assert.equal(compilePhraseValue("A MOB", DEFAULT_MODE), "A ADJ MOB*");
+  assert.equal(compilePhraseValue("A KITE", DEFAULT_MODE), "A ADJ KITE*");
   // MIDDLE TOKENS ARE NOT THIS. A one-character word inside the chain is not a sub-query at either
   // boundary — the main sweep carrying one ran fine — so the wraps stay exactly where they were.
-  assert.equal(compilePhraseValue("STEAL A MOB", DEFAULT_MODE), "*STEAL ADJ A ADJ MOB*");
-  assert.equal(compilePhraseValue("STEAL A MOB 2", DEFAULT_MODE), "*STEAL ADJ A ADJ MOB ADJ 2");
+  assert.equal(compilePhraseValue("FOLD A KITE", DEFAULT_MODE), "*FOLD ADJ A ADJ KITE*");
+  assert.equal(compilePhraseValue("FOLD A KITE 2", DEFAULT_MODE), "*FOLD ADJ A ADJ KITE ADJ 2");
 });
 
 test("an ordinary multi-word term is compiled exactly as before", () => {
   // THE CONTROL, and it is the half that says the fix is a subtraction rather than a narrowing: a term
   // with no one-character word at either end must be byte-identical to what this provider has always
   // been sent, or the change costs recall on every search that was working.
-  assert.equal(compilePhraseValue("MOB SQUAD", DEFAULT_MODE), "*MOB ADJ SQUAD*");
+  assert.equal(compilePhraseValue("KITE SQUAD", DEFAULT_MODE), "*KITE ADJ SQUAD*");
   assert.equal(compilePhraseValue("BLACK AND DECKER", DEFAULT_MODE), "*BLACK ADJ2 DECKER*");
   assert.equal(compilePhraseValue("SOLO", DEFAULT_MODE), "*SOLO*", "a single token is not a phrase and keeps both wraps");
 });
 
 test("the rule follows the wrap, not the predicate name: begins-with and ends-with each lose only their own", () => {
   assert.equal(compilePhraseValue("PLAN B", STARTS_WITH), "PLAN ADJ B", "the only wrap it has is the one that would be refused");
-  assert.equal(compilePhraseValue("MOB SQUAD", STARTS_WITH), "MOB ADJ SQUAD*");
+  assert.equal(compilePhraseValue("KITE SQUAD", STARTS_WITH), "KITE ADJ SQUAD*");
   // ends_with wraps at the FRONT, so a one-character last word costs it nothing — its wrap is not on
   // that token. The leading rule still applies to it, as it always did.
   assert.equal(compilePhraseValue("PLAN B", ENDS_WITH), "*PLAN ADJ B");
-  assert.equal(compilePhraseValue("A MOB", ENDS_WITH), "A ADJ MOB");
+  assert.equal(compilePhraseValue("A KITE", ENDS_WITH), "A ADJ KITE");
 });
 
 test("the wildcard predicate carries its own star, and it comes off the same one-character token", () => {
   // On this predicate the caller writes the metacharacters, so `post` is empty and the two wrap rules
   // cannot reach the star at all — it is part of the token. Same shape reaching the provider, same
   // refusal, so the same subtraction.
-  assert.equal(compilePhraseValue("STEAL A*", WILDCARD), "STEAL ADJ A");
+  assert.equal(compilePhraseValue("FOLD A*", WILDCARD), "FOLD ADJ A");
   // AND NOTHING ELSE IS TOUCHED. A longer final token keeps the caller's pattern exactly as written —
   // this is not the compiler deciding what a caller meant.
-  assert.equal(compilePhraseValue("STEAL AB*", WILDCARD), "STEAL ADJ AB*");
-  assert.equal(compilePhraseValue("STEAL A?", WILDCARD), "STEAL ADJ A?",
+  assert.equal(compilePhraseValue("FOLD AB*", WILDCARD), "FOLD ADJ AB*");
+  assert.equal(compilePhraseValue("FOLD A?", WILDCARD), "FOLD ADJ A?",
     "a `?` matches one character rather than opening a sub-query, so it is not this defect");
 });
 

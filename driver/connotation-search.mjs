@@ -4,7 +4,7 @@
 // searched-not-asserted enforcement (validator side). Sister of use-check.mjs (spec 11): a "clean" claim
 // is sayable ONLY when a search produced it.
 //
-// The bug this closes (live incident: a mark reading as a benign given name one letter off the Sureño
+// The bug this closes (live incident: a mark reading as a benign given name one letter off the Mara
 // street-gang label): the deterministic grid runs term×platform marketplace cells only — it asks
 // "who SELLS this name?", never "what does this name MEAN?". A marketplace grid that finds no listing for
 // the mark is SILENT on the street-gang association; only a MEANING search surfaces it. With no machine slot
@@ -30,7 +30,7 @@
 
 // The meaning query shapes. NOT a banned-word list — these are SEARCH directions ("what does this name mean,
 // and to whom?"). Perplexity surfaces foreign-language / gang / slang meanings from English query shapes
-// (a benign given name one letter off "Sureño" → the gang label surfaces from "<mark> gang" / "<mark> urban dictionary").
+// (a benign given name one letter off "Mara" → the gang label surfaces from "<mark> gang" / "<mark> urban dictionary").
 
 export const CONNOTATION_SHAPES = ["meaning slang", "gang", "offensive", "urban dictionary", "wikipedia"];
 
@@ -1125,7 +1125,7 @@ const RECURRENT_MIN = 4;
 // ── — THE REASON SCALE IS MEASURED HERE AND DELIBERATELY DOES NOT DECIDE ────────────────────────
 // was ruled "recurrence counts independent reasons, not query strings": a dictated query is
 // "<term> <shape>", the sweep asks every shape of every mark variant, so the seven queries reading
-// BIODELFIN/BIODELFINO/BIODOLPHIN/ΒΙΟΔΕΛΦΙΣ/ΔΕΛΦΙΣ/ΜΠΙΟΔΕΛΦΙΣ/Дельфис + "offensive meaning" that all
+// BIOVELTRYN/BIOVELTRINO/BIOVELTRINE/ΒΙΟΒΕΛΤΡΙΝ/ΒΕΛΤΡΙΝ/ΜΠΙΟΒΕΛΤΡΙΝ/Вельтрин + "offensive meaning" that all
 // return the dictionary definition of the word "offensive" are one reason asked seven ways. That
 // reasoning is sound and the shape is the right way to express it. It is implemented below as
 // connotationReasonKey, and it is RECORDED on every run — but it is NOT what clears the floor.
@@ -1133,7 +1133,7 @@ const RECURRENT_MIN = 4;
 // IT WAS BUILT, MEASURED AGAINST THE THREE PRESERVED RUNS, AND REFUTED BY THEM. Making the floor read
 // the reason scale inverts the signal it exists to read:
 //   - The 2026-07 evidence run (test/fixtures/coral-freeze-pr-risk.json, 54 recorded queries): the floor's
-//     obligation set goes 7 → 0. `punchdrink.com/articles/problem-with-tiki-bars-cultural-appropriation`
+//     obligation set goes 7 → 0. `punchdrink.com/articles/problem-with-wavo-bars-cultural-appropriation`
 //     — THE receipt this floor was invented to force onto the page — is surfaced by four queries that are
 //     all shape "offensive", so it scores ONE reason and drops out. The gate stops firing on the run it
 //     was designed for.

@@ -21,7 +21,7 @@ documents both: `countProbe` (`"endpoint"` / `"cheap"` / `"none"`) says where a 
 | `transport-guard.mjs` | Converts a network REJECTION into the tool-error shape at the dependency seam, so one timeout degrades one query rather than killing the stage. |
 | `result-shape.mjs` | Declares the neutral tools' result vocabulary. Imported by its gate test and deliberately by no core — a tool result is the model's prompt surface. |
 | `script-form.mjs` | Which script a term is written in, and whether the active provider's index holds that form of it. |
-| `term-shape.mjs` | Whether a string is a searchable mark term and agrees with its predicate (`{ predicate: "exact", term: "TIKI*" }` is a silent clean). |
+| `term-shape.mjs` | Whether a string is a searchable mark term and agrees with its predicate (`{ predicate: "exact", term: "WAVO*" }` is a silent clean). |
 | `territory-codes.mjs` | Display name → ISO 3166 / WIPO ST.3 code. `""` means worldwide, `null` means unknown — and never goes to the wire. |
 | `provider-text.mjs` | Clips a vendor message from the MIDDLE, because the word that classifies a refusal sits at the end of the sentence. |
 | `test/` | Twelve files, provider-agnostic by design — several drive every adapter's real code rather than fixtures of what we believe it returns. |

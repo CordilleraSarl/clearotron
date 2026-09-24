@@ -51,8 +51,8 @@ test("a real owner name is untouched — the exemption this preserves is the poi
   // shape rules would maul them. Substance runs first and lets every one of these through.
   for (const owner of [
     "MONSTER ENERGY COMPANY, SOCIÉTÉ ORGANISÉE SELON LES LOIS DE L ETAT DU DELAWARE",
-    "Delphi Technologies (BorgWarner Inc.)",
-    "QUANTALX NEUROSCIENCE LTD",
+    "Korphi Technologies (BorgWarner Inc.)",
+    "VECTALX NEUROSCIENCE LTD",
     "AKTIESELSKABET LAGERMAN, JUNR.",
   ]) assert.deepEqual(entryTermIssues({ predicate: "owner", term: owner }), [], owner);
 });
@@ -66,7 +66,7 @@ test("`term_literal` DOES NOT SHIELD IT — the same reasoning that stops markup
 test("a mark-shaped term still reaches the shape rules below — the floor did not swallow them", () => {
   // Guarding the guard: an early return that answered for everything would silently disable
   // markup/predicate/shape screening, which is a bigger hole than the one being closed.
-  assert.equal(entryTermIssues({ predicate: "exact", term: "TIKI*" }).length, 1, "wildcard-under-literal still fires");
+  assert.equal(entryTermIssues({ predicate: "exact", term: "WAVO*" }).length, 1, "wildcard-under-literal still fires");
   assert.equal(entryTermIssues({ predicate: "wildcard", term: "VELTRI" }).length, 1, "wildcard-with-no-star still fires");
   assert.deepEqual(entryTermIssues({ predicate: "exact", term: "BIOVELTRIN" }), [], "and a plain mark passes");
 });

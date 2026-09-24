@@ -23,6 +23,30 @@ EnvironmentFile=%h/.env
 Environment=PATH=%h/.local/bin:%h/.npm-global/bin:/usr/local/bin:/usr/bin:/bin
 Environment=CLEAROTRON_NO_ENV_FILE=1
 ExecStart=/usr/bin/node ${CLEAROTRON_CHECKOUT_DIR}/mcp-server/http-server.mjs
+# ── WHAT THIS SERVICE MAY NOT DO ─────────────────────────────────────────────────────────────────────
+# Neither this service nor any program the engine starts under it needs to gain privileges, create a
+# set-user-ID or set-group-ID file, switch its execution domain, take real-time scheduling or make a
+# system call of another architecture. These five are what a user unit applies on a machine that refuses
+# unprivileged user namespaces. PrivateTmp, ProtectSystem and ProtectHome are skipped there without a
+# word, so they are not written here, where they would read as protection that is not in force.
+# Measured 2026-09-23 with all five set: the process reads NoNewPrivs 1 and Seccomp 2, a knockout on each
+# engine is delivered, and a report folder created inside a set-group-ID pool still inherits the bit,
+# because the kernel sets it from the parent and RestrictSUIDSGID refuses only a mode that asks for it.
+NoNewPrivileges=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+RestrictRealtime=yes
+SystemCallArchitectures=native
+#
+# ── WHAT THIS SERVICE CREATES IS CLOSED TO OTHER ACCOUNTS ─────────────────────────────────────────────
+# Every file and folder this service or the engine creates comes out with no access for accounts outside
+# its group: run records, known-conflicts, outbox packets, archive folders, and whatever a later writer
+# adds, without a mode at each write site. Group write is kept on purpose: a store shared by a group, as
+# a set-group-ID checkout that several accounts pull into, must stay writable by that group, and 0027
+# would make each new folder there closed to the others. Measured 2026-09-23 with 0027: a knockout was
+# delivered and its report served, every new folder 750 and file 640, and a saved search on a shared
+# checkout would have created a folder the group could no longer write into.
+UMask=0007
 Restart=on-failure
 RestartSec=10
 

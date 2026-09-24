@@ -9,7 +9,7 @@
 //
 // ── the loss this exists to catch ────────────────────────────────────────────────────────────────────
 //
-// TIKI TWIST and TIKI TROPICS. Both sat in R3's own common-law records and reached no findings list, and
+// WAVO TWIST and WAVO TROPICS. Both sat in R3's own common-law records and reached no findings list, and
 // nothing anywhere said why. `common-law-receipts.mjs`'s `findGridCandidateOmissions` already reports one
 // class of this — a hit cell denied by the Negative-results matrix — but it is CELL-granular, and a cell
 // carries up to eight candidates. This is the per-candidate half.
@@ -39,7 +39,7 @@
 // ── THE NON-LATIN TRAP IS ANSWERED, NOT AVOIDED ──────────────────────────────────────────────────────
 //
 // `normalizeJoinText` folds every non-[A-Za-z0-9] run to a space, so it returns the EMPTY STRING for
-// 色度, 冰沙, 提基冰沙, ティキスラッシュ and 티키 슬러시. A mark-keyed trace is structurally blind to
+// 色度, 冰沙, 瓦波冰沙, ワボスラッシュ and 와보 슬러시. A mark-keyed trace is structurally blind to
 // every one of them.
 //
 // NOTHING HERE TOUCHES IT. A Han-script candidate joins on its ASCII/percent-encoded URL. A Han-script

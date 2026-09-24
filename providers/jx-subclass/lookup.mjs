@@ -83,7 +83,7 @@ export function subclassesFor(db, { country, term, niceClass }) {
                  cn_goods_code: row.group_code,   // what the 12th says, kept even when the 13th governs
                })),
                source: from13 === ruled.length
-                 ? "NCL 13-2026 concordance — the 13th edition governs the group code (#1391); CNIPA's 区分表 found the good"
+                 ? "NCL 13-2026 concordance — the 13th edition governs the group code; CNIPA's 区分表 found the good"
                  : from13 === 0
                    ? "CNIPA 区分表, 12th edition (2023 text) — the 13th edition holds no group for this good, so there is nothing it disagrees with"
                    : `mixed: ${from13} of ${ruled.length} matched goods take the 13th edition's group, the rest have no 13th-edition group at all`,

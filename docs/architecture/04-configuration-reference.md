@@ -138,12 +138,6 @@ id is what a dispatch row and a token-rollup row carry as the model *asked for*;
 the turn is recorded beside it, and the report names that. A version here would be a claim about a
 request nobody made, and wrong the day a newer model of the tier shipped.
 
-One consequence, accepted when this was decided: per-model totals are keyed on what was asked for,
-and the native-language lanes call the API directly, where a model id is required and a tier word is
-not accepted. So one model reached by a stage and by those lanes appears under two keys —
-`anthropic/claude-haiku` and `anthropic/claude-haiku-4-5`. They are different requests, and the split
-says so.
-
 The bottom four are **legacy names that no stage declares and no engine can run** — they resolve at
 level 1 and then throw at level 2 (below). They are catalogue entries, not available tiers.
 
@@ -248,6 +242,8 @@ deployment may override (verify live values per deployment).
 | `CLEAROTRON_MAX_CLAIM_AGE_MS` | 172800000 (48 h; 0 disables) | Hard ceiling on a claim's age (from the `.pid` sidecar mtime) — beyond it, re-claim regardless of liveness. |
 | `CLEAROTRON_KNOCKOUT_VARIANT_CAP` | unset (⇒ the lane's own cap) | Ceiling on variants a knockout screens per name. Set only to bound an unusually wide batch; absent means the lane decides. |
 | `CLEAROTRON_KNOCKOUT_RECORD_CAP` | unset (⇒ the lane's own cap) | Ceiling on records a knockout fetches per hit. Same shape as the variant cap: absent is the normal state. |
+| `CLEAROTRON_SIGNA_ANSWER_MEMORY` | `off` | On the Signa register, whether a run reuses an answer it already holds instead of asking again. `off` asks every time. `watch` also asks every time, and records whether a held answer would have matched. `on` reuses held answers. |
+| `CLEAROTRON_CLARIVATE_ANSWER_MEMORY` | `on` | On the Clarivate register, whether a run reuses a count, a search, an owner lookup or a record it already holds instead of asking again. `off` asks every time. |
 
 ### Retries, timeouts, watchdogs
 

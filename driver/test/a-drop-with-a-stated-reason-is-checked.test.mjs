@@ -15,18 +15,18 @@ import { statedDivergenceFindings, silentlyLostFindings } from "../record-carry.
 
 const URI = "/mark/us/USAFI298B5701456D11E9B841005056B74373";
 const recon = (uris = [URI]) => ({ computable: true,
-  top_slice: [{ ending: "finding", mark_text: "OSLER DELPHI", position_records: uris }], residual: [] });
+  top_slice: [{ ending: "finding", mark_text: "HALVER KORPHI", position_records: uris }], residual: [] });
 
 // The real shape: the digest ended it as a finding, it did not reach the findings, and the reason names
 // a DIFFERENT artifact than the one the absence is about.
-const STATED_ROW = { uri: URI, mark: "OSLER DELPHI", reach: "placed", stopped_at: "digest",
+const STATED_ROW = { uri: URI, mark: "HALVER KORPHI", reach: "placed", stopped_at: "digest",
   reason: "already reasoned on the incumbent sheet in register-findings.md", reason_source: "step-stated" };
 
 test("DRIVEN: a finding-ended position dropped with a stated reason is REPORTED", () => {
   const r = statedDivergenceFindings({ reconciliation: recon(), carryRows: [STATED_ROW], digestFindingUris: [URI] });
   assert.equal(r.computable, true);
   assert.equal(r.diverged.length, 1, "this is the class nothing checked, and it is the one that shipped");
-  assert.equal(r.diverged[0].mark, "OSLER DELPHI");
+  assert.equal(r.diverged[0].mark, "HALVER KORPHI");
 });
 
 test("DRIVEN: it names the artifact the reason points at — the substitution is the defect", () => {
@@ -105,13 +105,13 @@ test("an empty population is its own state, not a pass", () => {
 // caught it.
 test("REGRESSION: a stated drop the reconciliation never mentions is still reported", () => {
   const reconciliationNamesOtherMarks = { computable: true, residual: [],
-    top_slice: [{ ending: "finding", mark_text: "DELPHIC HSE", position_records: ["/mark/ch/SOMETHING-ELSE"] }] };
+    top_slice: [{ ending: "finding", mark_text: "KORPHIC HSE", position_records: ["/mark/ch/SOMETHING-ELSE"] }] };
   const r = statedDivergenceFindings({ reconciliation: reconciliationNamesOtherMarks,
     carryRows: [STATED_ROW], digestFindingUris: null });
   assert.equal(r.diverged.length, 1,
     "the reconciliation's SILENCE about a position is not evidence the position is fine — gating on it "
     + "is what made this check inert on the delivery it was written for");
-  assert.equal(r.diverged[0].mark, "OSLER DELPHI");
+  assert.equal(r.diverged[0].mark, "HALVER KORPHI");
   assert.equal(r.diverged[0].reconciliation_agrees, false,
     "and the row says the reconciliation did not corroborate it, rather than hiding that");
   assert.equal(r.matched, 0, "`matched` now counts corroboration; zero is a fact about the reconciliation");

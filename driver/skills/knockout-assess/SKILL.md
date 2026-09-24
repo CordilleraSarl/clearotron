@@ -171,7 +171,7 @@ are worked examples of the one failure, not its boundary:
 | subsisting | live |
 | senior | earlier, or came first |
 | specification | goods list |
-| DELPH-formative | names built on DELPH- |
+| VELTR-formative | names built on VELTR- |
 | prevail | win |
 | citable prior rights | earlier marks the office can raise against you |
 | vulnerable to a non-use attack | could be cancelled for not being used |
@@ -185,15 +185,15 @@ are worked examples of the one failure, not its boundary:
 
 The target is the level of these, each the standard for its line:
 
-> **Basis.** "ORBIT is already the name of two satellite-tracking apps on the same app stores, and of an
-> established satellite-communications company. Any of them would likely win a dispute over this name
+> **Basis.** "WAYPOINT is already the name of two navigation apps on the same app stores, and of an
+> established mapping company. Any of them would likely win a dispute over this name
 > for this software. The word is a weak mark for these goods, which is why this is High and not Very
 > High."
 
 > **A finding's `net`.** "Same name, same goods, and their filing came first in every territory we
 > searched. We see no argument against it."
 
-> **The batch opener.** "One name screened: ORBIT, rated High."
+> **The batch opener.** "One name screened: WAYPOINT, rated High."
 
 **Shortening by dropping the reason is not the fix.** The "why" stays, in plain words. A visible
 line that is short because it no longer says why is worse than the long one it replaced, and it
@@ -214,19 +214,19 @@ A note about the request NAMES the request in the note — "the request", or "wh
 not a formality: the report sorts the two kinds by what the note talks about, so a request note that
 never mentions the request is filed under the name and prints in the wrong place.
 
-> "Check the request. The client is described as a beverages and supplements business, but we were asked
-> to screen satellite-tracking software in Class 9. We screened the software. If beverages is the real
+> "Check the request. The client is described as a bakery business, but we were asked
+> to screen navigation software in Class 9. We screened the software. If baking is the real
 > business, this screen looked at the wrong market."
 
-> "Ask the client whether it already uses ORBIT. The request does not say, and the client's own earlier
+> "Ask the client whether it already uses WAYPOINT. The request does not say, and the client's own earlier
 > use would change the picture."
 
 A note about the name opens on what the lawyer should do about the name:
 
-> "Pull EG Tech's full goods list at clearance. It is the record most likely to change the picture in
+> "Pull Acme Mapping's full goods list at clearance. It is the record most likely to change the picture in
 > either direction."
 
-> "Search Classes 42 and 38 in their own right. Both carry live ORBIT filings, not spillover from
+> "Search Classes 42 and 39 in their own right. Both carry live WAYPOINT filings, not spillover from
 > Class 9."
 
 A note that restates a finding already on the page is not a note. Cut it.

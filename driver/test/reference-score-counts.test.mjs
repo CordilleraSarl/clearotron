@@ -25,7 +25,7 @@ const SIMILAR_MARKS_SHEET = {
   schema_version: REFERENCE_SCHEMA_VERSION,
   scenario: "R3",
   source: "lawyer review, synthetic fixture",
-  register: [{ mark: "TIKI PUNCH", classes: ["30"] }, { mark: "TIKI TROPICS", classes: ["30"] }],
+  register: [{ mark: "WAVO PUNCH", classes: ["30"] }, { mark: "WAVO TROPICS", classes: ["30"] }],
 };
 
 const COUNT_SHEET = {

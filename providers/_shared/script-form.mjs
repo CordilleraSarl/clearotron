@@ -45,6 +45,25 @@ export const NON_LATIN_RE = /[^\p{Script=Latin}\p{Script=Common}\p{Script=Inheri
 export function isNonLatinTerm(term) { return NON_LATIN_RE.test(String(term ?? "")); }
 
 /**
+ * Does the term MIX Latin letters with Greek or Cyrillic ones? `τιmbεr` does; `timber`, `τιμβερ` and
+ * `тимбер` do not, and neither does a term whose only other characters are digits or punctuation, which
+ * belong to no script of their own.
+ *
+ * The look-alike generator in driver/form-neighbourhood.mjs writes such terms: it swaps every letter
+ * that has a Greek or Cyrillic twin and leaves the rest Latin. A register may answer that spelling as
+ * if the non-Latin letters were not there, returning marks that share only the Latin remainder, or may
+ * not take it at all. `capabilities.mixedScriptQuery: false` declares that the register cannot search
+ * such a spelling as written, and the form band leaves these spellings out there and lists them as not
+ * searched.
+ */
+const LATIN_LETTER_RE = /\p{Script=Latin}/u;
+const GREEK_OR_CYRILLIC_RE = /[\p{Script=Greek}\p{Script=Cyrillic}]/u;
+export function mixesLatinWithGreekOrCyrillic(term) {
+  const s = String(term ?? "");
+  return LATIN_LETTER_RE.test(s) && GREEK_OR_CYRILLIC_RE.test(s);
+}
+
+/**
  * The declaration-driven policy. Given a provider's capability contract and the MARK TERMS a query is
  * about to carry, return the plain-English gap reason — or null when the slice may be dispatched.
  *
@@ -121,15 +140,15 @@ export function romanizationSpellings(value) {
  *
  * Two folds fused, and the seam between them is the whole point:
  *   - LATIN text is accent-folded: lowercase, NFKD, then combining marks stripped — but ONLY the
- *     marks sitting on a Latin base letter — then punctuation/whitespace dropped. "Tikí-Slush" and
- *     "CORAL FREEZE" collide, exactly as the owner-formative dedup has always wanted.
+ *     marks sitting on a Latin base letter — then punctuation/whitespace dropped. "Wavó-Slush" and
+ *     "WAVO SLUSH" collide, exactly as the owner-formative dedup has always wanted.
  *   - NON-LATIN text keeps every combining mark. In most non-Latin scripts a combining mark is not
  *     an accent, it is part of WHICH LETTER this is: Japanese dakuten/handakuten (タ=ta vs ダ=da),
  *     Thai vowel signs, Devanagari matras, Arabic diacritics. A fold that strips them (the previous
  *     shape of this function: bare NFKD + strip all \p{M}) collapses MARK-DISTINGUISHED SIBLINGS
- *     into one key: ティキスラッシュ
- *     (TIKI SURASSHU) and ディキスラッシュ (DIKI SURASSHU) keyed identically, so the romanisation
- *     lookup handed one sibling the OTHER's romanisation and the dictated DIKI form was never
+ *     into one key: ワボスラッシュ
+ *     (WABO SURASSHU) and ワホスラッシュ (WAHO SURASSHU) keyed identically, so the romanisation
+ *     lookup handed one sibling the OTHER's romanisation and the dictated WAHO form was never
  *     searched anywhere — a silent wrong-query false clean, the exact class the carriage fix exists
  *     to kill. NFKD is kept for its width folding (half-width ｶﾞ and full-width ガ are the same
  *     letter); only the mark-stripping is script-scoped.

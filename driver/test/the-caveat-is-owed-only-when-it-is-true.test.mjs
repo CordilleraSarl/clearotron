@@ -61,7 +61,7 @@ test("the caveat is still OWED when the rater supplied none and the register sur
 });
 
 test("a register that surfaced filings does not owe the caveat — it would be FALSE", () => {
-  const dir = runWith({ records: [{ mark: "FROZEN" }] });
+  const dir = runWith({ records: [{ mark: "TESTMARK" }] });
   const f = validateMergedFindings(dir, merged(undefined), { marks: [] });
   assert.equal(caveatFailure(f), undefined,
     "the register surfaced filings, so 'register analysis MAY adjust' describes work that already "
