@@ -51,9 +51,10 @@ test("a mid-run register-sweep 429 POSTPONES the run (resumable) — never write
     CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"), CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_AGENT: "clawdi",
     MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
     // 429 ONLY on the register-unit sweeps (they read clearance-register/unit.md). matter-frame + clearance-variants
-    // run and succeed first, so this is a genuine MID-RUN rate-limit — the incident's shape.
+    // run and succeed first, so this is a genuine MID-RUN rate-limit — the incident's shape. The engine
+    // rewrites the skill reference to an absolute native path, so the match uses this platform's separator.
     MOCK_CLAUDE_RATELIMIT: String(RESET_EPOCH_SEC),
-    MOCK_CLAUDE_RATELIMIT_MATCH: "clearance-register/unit.md",
+    MOCK_CLAUDE_RATELIMIT_MATCH: join("clearance-register", "unit.md"),
   })) pinEnv(process.env, k, v);
 
   try {

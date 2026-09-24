@@ -87,11 +87,11 @@ export function editNeighbourhood(element) {
 // ── A one-letter neighbour that is an ordinary word with a DIFFERENT SOUND is not searched ────────────
 //
 // THE REVIEWING LAWYER'S TEST IS CONFUSING SIMILARITY, and edit-1 over a short ordinary word is mostly other
-// ordinary words: CARE, CODE, CORD, BORE, MORE beside CORE, each a common mark with its own crowd. Measured
+// ordinary words: BANE, CAGE, CAKE, CAME, LANE beside CANE, each a common mark with its own crowd. Measured
 // on a delivered four-letter run, 2026-09-18: 1,037 of 2,098 records (49%) were reached only by the one-letter
 // lists; on the dense production matter of 2026-09-16, 1,154 of 2,146 (54%). Conceptually different words are
 // not confused by consumers, so fetching them is cost and not coverage. A respelling that sounds the same —
-// KORE for CORE — is exactly what a search must find, and so is every neighbour of a made-up word, because two
+// KANE for CANE — is exactly what a search must find, and so is every neighbour of a made-up word, because two
 // unknown words that sound alike have nothing conceptual to keep them apart (MALENA beside VALENA).
 //
 // So a neighbour is dropped only when BOTH hold: it is in the ordinary-word list, AND no Double-Metaphone key
@@ -101,8 +101,8 @@ export function editNeighbourhood(element) {
 // missing from it is searched: over-search is the safe direction.
 //
 // DOUBLE METAPHONE KEEPS VOWELS ONLY AT THE START, so a vowel change inside the word does not change the key:
-// CARE, CURE and GORE all key KR, as CORE does, and are KEPT. That is the rule as specified erring towards the
-// search, and it is recorded here so nobody reads those three as a defect of the list.
+// CONE and CANOE both key KN, as CANE does, and are KEPT. That is the rule as specified erring towards the
+// search, and it is recorded here so nobody reads those two as a defect of the list.
 //
 // `ordinaryWords` is a Set of lowercase words, or null. Null drops nothing — the behaviour before this rule —
 // so a caller that does not load the list (every test that predates it) is unchanged. PURE.
@@ -791,9 +791,9 @@ export function mergeVariantFloor(floorFamilies, modelVariants, { rejectedSeeds 
 /**
  * Is `root` a plausible formative root, or a prose-parse artifact?
  *
- * A stem is never LONGER than the element it stems from — SUREN(5) for ZURENA(6), HYDR(4) for HYDRA(5),
+ * A stem is never LONGER than the element it stems from — VOLEM(5) for ZOLEMA(6), HYDR(4) for HYDRA(5),
  * VELTRI(6) for VELTRIN(7). Substring containment is NOT the test: a real root can differ in its leading
- * character (ZURENA → SUREN reaches the ARBORA family), which is exactly the widening the root exists for.
+ * character (ZOLEMA → VOLEM reaches the VOLEMA family), which is exactly the widening the root exists for.
  * The swallowed-sentence artifacts are always the element PLUS a clause — 32-36 characters against a 5-char
  * element — so length alone separates them cleanly without narrowing any legitimate root. PURE.
  */

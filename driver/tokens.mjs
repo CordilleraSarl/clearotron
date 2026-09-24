@@ -6,13 +6,14 @@
 // Each stage writes one record PER ATTEMPT to _driver/<stage>.jsonl with {model, usage, ...} (gateway.mjs).
 // This sums token counts across EVERY attempt (so retry waste is included) directly from `usage` —
 //
-// …and across every DIRECT-API call too. The jx lanes do not go through the gateway (they are
-// non-agentic Messages calls) and write their own `_driver/jx-completions.jsonl`; until 2026-07-28 those
-// rows named their counts `tokens` and carried no `model`, so the model gate below dropped every one of
-// them and a whole lane's spend was counted NOWHERE. They now write {model, usage} like any other row.
-// The `byStage` split keys off the filename, so the direct-API share stays recoverable as
+// …and across every native-language call too. The jx lanes do not go through the gateway (each turn runs
+// through the engine's own runTurn, engine/jx-turn.mjs) and write their own `_driver/jx-completions.jsonl`;
+// until 2026-07-28 those rows named their counts `tokens` and carried no `model`, so the model gate below
+// dropped every one of them and a whole lane's spend was counted NOWHERE. They now write {model, usage}
+// like any other row.
+// The `byStage` split keys off the filename, so the native-language share stays recoverable as
 // `byStage["jx-completions"]` — worth knowing when reading `attempts`, which counts model invocations
-// (agent turns AND single API calls), not gateway retries alone.
+// (stage turns AND single native-language turns), not gateway retries alone.
 // self-contained, so it also works on historical runs (their rows may carry a legacy costUsd; it is
 // ignored, never re-emitted). The run-level event log (_driver/run.jsonl) is skipped (it holds runLog
 // events, not stage-attempt usage). Best-effort by contract: an unreadable dir / bad line never throws —
@@ -45,7 +46,7 @@
 
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
+import { driverDir, labelOfDriverFile } from "../shared/driver-dir.mjs";   //
 import { resolveModel, modelFamily } from "./driver.config.mjs";
 import { runLog, note } from "./log.mjs";
 import { writeRunStatus } from "./progress.mjs";
@@ -147,7 +148,7 @@ export function rollupTokens(runDir) {
   }
 
   for (const file of files) {
-    const stage = file.replace(/\.jsonl$/, "");
+    const stage = labelOfDriverFile(file);   // a Windows record writes the label's colon %3A
     let raw;
     try { raw = readFileSync(join(dDir, file), "utf8"); } catch { continue; }
     for (const ln of raw.split("\n")) {
@@ -162,7 +163,7 @@ export function rollupTokens(runDir) {
       // (different tokenizers, different accounting). Rolled up per engine, these stay comparable to
       // themselves over time, which is what a margin question actually needs.
       //
-      // A row carrying no stamp — one predating it, or a direct-API lane like jx-completions — buckets as
+      // A row carrying no stamp — one written before the stamps existed, jx-completions rows included — buckets as
       // "unknown" rather than being dropped, so `byEngine` always sums to `total` and the unattributed
       // share is VISIBLE. Dropping it would make the gap look like it did not exist.
       //

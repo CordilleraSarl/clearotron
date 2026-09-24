@@ -12,7 +12,7 @@ import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { fileURLToPath } from "node:url";
-import { PROBE_PROMPT } from "../engine/probe.mjs";
+import { isProbePrompt } from "../engine/probe.mjs";
 // — the RECORDING category's MEMBERSHIP, so a converted stage's own `mcp_servers.recording-<stage>`
 // key is admitted without this file naming the stages. Only the membership: see the key-spelling note below.
 import { RECORDING_STAGES } from "../engine/mcp/gather-config.mjs";
@@ -56,7 +56,7 @@ async function runOpenaiPipeline(env = {}) {
   // MCP servers, floor tier). Split out by the probe's own exported prompt so the per-stage assertions
   // below keep judging only compute stages; the sibling comment in pipeline.anthropic.test.mjs has the
   // reasoning, and both files carry the split because both engines pay the same door.
-  const doorProbe = turns.find((c) => (c.prompt || "").trim() === PROBE_PROMPT) ?? null;
+  const doorProbe = turns.find((c) => isProbePrompt(c.prompt)) ?? null;
   const codexCalls = turns.filter((c) => c !== doorProbe);
   return { res, events, codexCalls, doorProbe, turns };
 }
@@ -70,7 +70,12 @@ test("E2(openai): full pipeline runs on the openai-agent engine (CLEAR, delivere
   assert.equal(turns[0], doorProbe, "the engine-turn probe is the FIRST turn of the run, ahead of matter-frame");
   assert.equal(doorProbe.argv[0], "exec", "the door's turn is built by the adapter's own buildCodexArgs");
   assert.match(doorProbe.argv.join(" "), /-c model_reasoning_effort=\S+/, "…carrying the floor effort rung, not a hand-rolled argv");
-  assert.ok(!doorProbe.argv.includes("--add-dir"), "the door grants no directory — it runs before one exists");
+  // The door grants one folder, the probe's own, made for its turn in the temp folder: never the run's, which
+  // does not exist yet, and never the skills tree.
+  const doorDirs = doorProbe.argv.reduce((acc, a, i) => (a === "--add-dir" ? [...acc, doorProbe.argv[i + 1]] : acc), []);
+  assert.equal(doorDirs.length, 1, `the door granted ${doorDirs.length} folders: ${doorDirs}`);
+  assert.match(doorDirs[0], /clearotron-probe-/, "the folder the door grants is the probe's own");
+  assert.ok(!doorDirs[0].startsWith(res.runDir), "and never the run's");
   assert.deepEqual([...(doorProbe.configToml || "").matchAll(/^\[mcp_servers\.([^\]]+)\]/gm)].map((m) => m[1]), ["probe"],
     "and starts the probe's own tool server and no stage's");
   const probeRow = events.find((e) => e.event === "engine-turn-probe");
@@ -104,14 +109,14 @@ test("E2(openai): full pipeline runs on the openai-agent engine (CLEAR, delivere
 
   // Skill refs absolutized in every prompt (codex cwd = tmpdir cannot resolve workspace-relative paths); and
   // each compute turn grants --add-dir on THIS run's dir (the writable root for the stage's output file).
-  const BARE_SKILL_REF = /(?<![\w/.])skills\/[A-Za-z0-9._/-]+\.md/;
+  const BARE_SKILL_REF = /(?<![\w\\/.])skills[\\/][A-Za-z0-9._\\/-]+\.md/;
   for (const call of codexCalls) {
     const msg = call.prompt || "";
     assert.ok(!BARE_SKILL_REF.test(msg), `a stage prompt kept a workspace-relative skills ref: ${msg.match(BARE_SKILL_REF)?.[0]}`);
     const addDirs = call.argv.reduce((acc, a, i) => (a === "--add-dir" ? [...acc, call.argv[i + 1]] : acc), []);
-    assert.ok(addDirs.some((d) => d && /\/studio\/clearance-search\//.test(d)), "compute turn grants --add-dir on the run dir");
+    assert.ok(addDirs.some((d) => d && /[\\/]studio[\\/]clearance-search[\\/]/.test(d)), "compute turn grants --add-dir on the run dir");
   }
-  assert.match(first.prompt, /\/driver\/skills\/matter-frame\/SKILL\.md/, "matter-frame skill ref absolutized to the driver's skills tree");
+  assert.match(first.prompt, /[\\/]driver[\\/]skills[\\/]matter-frame[\\/]SKILL\.md/, "matter-frame skill ref absolutized to the driver's skills tree");
 
   // Every turn carries the WRITE_DISCIPLINE via config.toml's developer_instructions (codex's
   // append-system-prompt equivalent) — the shared stage prompts are never mutated.
@@ -232,7 +237,7 @@ test("E2(openai): full pipeline runs on the openai-agent engine (CLEAR, delivere
   // record server under the neutral key" from "blind-frame mounts nothing" — the second produces one
   // fewer recording turn, not a failure. This names the stage INDEPENDENTLY, by the skill doc only its
   // own dispatch reads, and then requires the key.
-  const blindFrameTurn = codexCalls.find((c) => /\/driver\/skills\/blind-frame\/SKILL\.md/.test(c.prompt || ""));
+  const blindFrameTurn = codexCalls.find((c) => /[\\/]driver[\\/]skills[\\/]blind-frame[\\/]SKILL\.md/.test(c.prompt || ""));
   assert.ok(blindFrameTurn, "blind-frame ran on the openai engine");
   assert.ok(recordingTurns.includes(blindFrameTurn), "blind-frame's turn mounts a recording server and nothing else");
   assert.match(blindFrameTurn.configToml, /^\[mcp_servers\.recording-blind-frame\]$/m,

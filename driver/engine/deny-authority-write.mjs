@@ -63,7 +63,9 @@ const WRITE_TOOLS = new Set(["Write", "Edit", "MultiEdit", "NotebookEdit"]);
 // including the `extra` escape, and nowhere in its history either. THE CONCLUSION WAS FALSE. The flag
 // carrying that table is passed only when set and does not restrain BUILT-IN tools at all. Seats have
 // Bash — 4,593 calls across 567 recorded sessions, naming absolute paths outside the granted roots,
-// including the seat at the centre of the 2026-08-15 failure.
+// including the seat at the centre of the 2026-08-15 failure. Since then every stage's argv removes the
+// command tools by name (anthropic-agent.mjs, COMMAND_TOOLS); this arm stays as a detector for a program
+// that does not honour the removal.
 //
 // Three readers checked that premise at source in one day and all three were satisfied, and it came
 // within one review of putting a claim of impossibility into a design. NO SENTENCE REPLACES IT: the

@@ -189,9 +189,12 @@ test("the boot decision, driven over every shape it can meet", async () => {
     explicit: null, profileRepoRoot: "/srv/cfg", readdir: () => ["house-notes.md"], exists: () => true, posture: null, ...o,
   });
 
+  // The overlay is joined onto the store, so on Windows it is spelled with backslashes.
+  const SKILLS = join("/srv/cfg", "skills");
+  const SKILLS_RE = SKILLS.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   let r = at({});
-  assert.equal(r.pin, "/srv/cfg/skills", "a folder that holds something is the overlay");
-  assert.match(r.line, /skills overlay derived from PROFILE_REPO_ROOT: \/srv\/cfg\/skills/);
+  assert.equal(r.pin, SKILLS, "a folder that holds something is the overlay");
+  assert.match(r.line, new RegExp(`skills overlay derived from PROFILE_REPO_ROOT: ${SKILLS_RE}`));
 
   for (const [shape, readdir, says] of [["absent", fails("ENOENT"), /does not exist/], ["empty", () => [], /is empty/]]) {
     r = at({ readdir });
@@ -206,8 +209,8 @@ test("the boot decision, driven over every shape it can meet", async () => {
   // a suite run as root reads through any mode.
   for (const code of ["EACCES", "ENOTDIR"]) {
     r = at({ readdir: fails(code) });
-    assert.equal(r.pin, "/srv/cfg/skills", `${code}: an unreadable folder must stay the overlay, so reading it fails loudly`);
-    assert.match(r.line, new RegExp(`^WARNING: skills overlay /srv/cfg/skills exists and cannot be read \\(${code}\\)`));
+    assert.equal(r.pin, SKILLS, `${code}: an unreadable folder must stay the overlay, so reading it fails loudly`);
+    assert.match(r.line, new RegExp(`^WARNING: skills overlay ${SKILLS_RE} exists and cannot be read \\(${code}\\)`));
   }
 
   r = at({ profileRepoRoot: null });

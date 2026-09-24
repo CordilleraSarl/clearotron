@@ -29,8 +29,9 @@
 
 import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync, existsSync, renameSync } from "node:fs";
-import { basename } from "node:path";
+import { basename, win32 } from "node:path";
 import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
+import { sepClass } from "../shared/path-seps.mjs";   // a Windows path is built with "\"
 
 export const WITNESS_FILE = "methodology-read.json";
 
@@ -57,8 +58,10 @@ export function skillRefsIn(message) {
  * change visible, and a run dying because the bookkeeping failed would be a strictly worse outcome than
  * the invisibility it is fixing.
  */
-export function witnessStageMethodology(runDir, stage, message, resolveSkill) {
+export function witnessStageMethodology(runDir, stage, message, resolveSkill, { platform = process.platform } = {}) {
   const out = { drift: [], fellBackToBase: [], recorded: 0 };
+  const underSkills = new RegExp(`${sepClass(platform)}skills${sepClass(platform)}`);
+  const nameOf = platform === "win32" ? win32.basename : basename;
   try {
     const refs = skillRefsIn(message);
     if (!refs.length || !runDir) return out;
@@ -76,7 +79,7 @@ export function witnessStageMethodology(runDir, stage, message, resolveSkill) {
       const row = { ref, path: abs, sha: sha(abs) };
       // The overlay→base fall-through. `ref` ends in the same basename under either root, so a resolved
       // path that does NOT sit under the overlay means the customer's copy was not there.
-      if (!String(abs).includes("/skills/") || basename(abs) !== basename(ref)) row.resolvedOddly = true;
+      if (!underSkills.test(String(abs)) || nameOf(abs) !== nameOf(ref)) row.resolvedOddly = true;
       seen.push(row);
 
       // Compare against the most recent EARLIER reading of the same ref.

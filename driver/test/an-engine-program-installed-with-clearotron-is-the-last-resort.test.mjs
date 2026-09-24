@@ -40,10 +40,13 @@ chmodSync(MOCK_CODEX, 0o755);
 /** The shape the Claude package leaves in place when its install step did not run: a shell script with no `#!`. */
 const PLACEHOLDER = 'echo "Error: the native binary is not installed." >&2\nexit 1\n';
 
+/** What Windows starts a bare program name as: it looks a name up on PATH with an extension, never without. */
+const EXE = process.platform === "win32" ? ".exe" : "";
+
 /** An npm install of `spec.package` under `root`; its program is copied `from`, symlinked to `link`, or written as `content`. */
-function plant(root, spec, { from = null, link = null, content = null, version = "9.9.9" } = {}) {
+function plant(root, spec, { from = null, link = null, content = null, version = "9.9.9", rel = null } = {}) {
   const dir = join(root, "node_modules", ...spec.package.split("/"));
-  const rel = `bin/${spec.fallback === "claude" ? "claude.exe" : "codex.js"}`;
+  rel ??= `bin/${spec.fallback === "claude" ? "claude.exe" : "codex.js"}`;
   mkdirSync(join(dir, "bin"), { recursive: true });
   writeFileSync(join(dir, "package.json"), JSON.stringify({ name: spec.package, version, bin: { [spec.fallback]: rel } }));
   const p = join(dir, rel);
@@ -57,7 +60,7 @@ function plant(root, spec, { from = null, link = null, content = null, version =
 /** A directory holding one executable named `name`, so a PATH decides the lookup rather than inheriting one. */
 function onPath(name) {
   const dir = mkdtempSync(join(tmpdir(), "machine-copy-"));
-  const p = join(dir, name);
+  const p = join(dir, `${name}${EXE}`);
   writeFileSync(p, "#!/bin/sh\nexit 0\n");
   chmodSync(p, 0o755);
   return { dir, p };
@@ -89,7 +92,7 @@ test("a PATH entry that IS the installed copy is taken for what it is, and a mac
   const installed = plant(root, CLAUDE);
   const npmBin = join(root, "node_modules", ".bin");
   mkdirSync(npmBin, { recursive: true });
-  symlinkSync(installed, join(npmBin, "claude"));
+  symlinkSync(installed, join(npmBin, `claude${EXE}`));
   const machine = onPath("claude");
   const both = resolveEngineProgram("anthropic-agent", { env: { PATH: [npmBin, machine.dir].join(delimiter) }, enginesDir: root });
   assert.equal(both.source, "path");
@@ -130,13 +133,13 @@ test("a placeholder on PATH, inside an npm install of the vendor's package, is p
   const broken = fresh();
   const stub = plant(broken, CLAUDE, { content: PLACEHOLDER });
   const globalBin = mkdtempSync(join(tmpdir(), "global-bin-"));
-  symlinkSync(stub, join(globalBin, "claude"));
+  symlinkSync(stub, join(globalBin, `claude${EXE}`));
   const root = fresh();
   const installed = plant(root, CLAUDE);
   const r = resolveEngineProgram("anthropic-agent", { env: { PATH: globalBin }, enginesDir: root });
   assert.equal(r.resolved, installed, "the copy Clearotron installed serves instead");
   assert.equal(r.rejected.length, 1, "and the placeholder is named as passed over");
-  assert.equal(r.rejected[0].path, join(globalBin, "claude"));
+  assert.equal(r.rejected[0].path, join(globalBin, `claude${EXE}`));
 });
 
 /** What the run door says when it refuses, or "" when it does not. */
@@ -209,10 +212,11 @@ test("the setting that moves the lookup is read when no directory is injected", 
 test("the default engines folder is under the home directory, where the lookup finds what setup put there", () => {
   // Under the home, not the install's own tree: an update replaces that tree, and the services run as
   // user units under the same home as the setup that installed the program.
-  const saved = { home: process.env.HOME, dir: process.env[ENGINES_DIR_ENV] };
+  const saved = { home: process.env.HOME, profile: process.env.USERPROFILE, dir: process.env[ENGINES_DIR_ENV] };
   const home = fresh();
   try {
     process.env.HOME = home;
+    process.env.USERPROFILE = home;   // os.homedir() reads this one on Windows
     delete process.env[ENGINES_DIR_ENV];
     const folder = join(home, ".local", "share", "clearotron", "engines");
     assert.equal(enginesFolder(), folder);
@@ -222,6 +226,7 @@ test("the default engines folder is under the home directory, where the lookup f
     assert.equal(r.resolved, installed);
   } finally {
     if (saved.home === undefined) delete process.env.HOME; else process.env.HOME = saved.home;
+    if (saved.profile === undefined) delete process.env.USERPROFILE; else process.env.USERPROFILE = saved.profile;
     if (saved.dir === undefined) delete process.env[ENGINES_DIR_ENV]; else process.env[ENGINES_DIR_ENV] = saved.dir;
   }
 });
@@ -276,8 +281,10 @@ for (const [engine, { spec, mock, env }] of Object.entries(DISPATCH)) {
     const dir = mkdtempSync(join(tmpdir(), "installed-dispatch-"));
     const root = fresh();
     try {
-      // Linked, not copied: the stand-in imports its neighbours by relative path.
-      plant(root, spec, { link: mock });
+      // Linked, not copied: the stand-in imports its neighbours by relative path. On Windows the Claude
+      // stand-in is named as the Node script it is, because Windows starts an `.exe` itself and the mock
+      // is not a native program; a script there runs through the Node running now.
+      plant(root, spec, { link: mock, rel: process.platform === "win32" && spec === CLAUDE ? "bin/claude.mjs" : null });
       mkdirSync(driverDir(dir), { recursive: true });
       forgetCliVersions();
       const out = join(dir, "out.md");

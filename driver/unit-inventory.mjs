@@ -516,7 +516,7 @@ export const UNIT_INVENTORY = Object.freeze([
     // `untrackedReason` above is kept in the PAST tense of its own finding on purpose: it records how
     // this unit was discovered — by enumerating production, not by reading a list — and that is history
     // the stop does not erase.
-    orphanReason: "STOPPED AND DISABLED ON PRODUCTION 2026-08-20 on the owner's word (#1437), so it runs "
+    orphanReason: "STOPPED AND DISABLED ON PRODUCTION 2026-08-20 on the owner's word, so it runs "
       + "on no box and `runsOn` is empty. It is not deleted: the unit file, scripts/feedback-mint.mjs and "
       + "the whole capture path are intact, and `systemctl --user enable --now feedback-mint.timer` as "
       + "the service account puts it back. It drained a store that never existed — /srv/trademark-archive/_feedback "
@@ -524,8 +524,8 @@ export const UNIT_INVENTORY = Object.freeze([
       + "flag was ever captured, so stopping it dropped nothing. The decision owed, if any, is whether the "
       + "feedback machinery is removed rather than parked; driver/run-activity.mjs still carries a note "
       + "addressed to whoever picks that up, and it is still unclaimed.",
-    note: "STOPPED. Production ran it every 30 minutes against an input nothing writes to any more "
-      + "(#1437); the owner's word came 2026-08-20 and it was disabled the same evening.",
+    note: "STOPPED. Production ran it every 30 minutes against an input nothing writes to any more"
+      + "; the owner's word came 2026-08-20 and it was disabled the same evening.",
   },
   // ── OTHER REPOS' UNITS, SHARING THE BOX ───────────────────────────────────────────────────────────
   // Declared, not adopted. A unit this repo does not own is still a unit the arm enumerates, and an

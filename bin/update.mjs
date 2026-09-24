@@ -53,6 +53,7 @@ import { fileURLToPath } from "node:url";
 
 import { config, ENGINE_BINARIES, enginesFolder, engineInstallArgs } from "../driver/driver.config.mjs";
 import { isInsideCheckout } from "../shared/inside-checkout.mjs";   // — one copy of the rule
+import { npmInvocation } from "../shared/npm-cli.mjs";   // npm without a shell, which Windows needs
 import { overlayReport, renderOverlayReport, treeFiles } from "../shared/doctrine-overlay.mjs";
 import { liveRunHolds } from "../driver/deploy-live-run-guard.mjs";   // — one live-run test, shared with deploy-preflight
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
@@ -210,7 +211,9 @@ function refreshEngines(engines, dir = enginesFolder()) {
 
 function runInCheckout(cmd, args) {
   say(`\n  $ ${cmd} ${args.join(" ")}`);
-  const r = spawnSync(cmd, args, { cwd: REPO, stdio: "inherit" });
+  // npm is a batch file on Windows, which Node will not start without a shell (shared/npm-cli.mjs).
+  const run = cmd === "npm" ? npmInvocation(args) : { command: cmd, args };
+  const r = spawnSync(run.command, run.args, { cwd: REPO, stdio: "inherit" });
   if (r.error) { console.error(`  could not run ${cmd}: ${r.error.message}`); return 70; }
   if (r.signal) { console.error(`  ${cmd} was killed by ${r.signal}`); return 70; }
   return r.status ?? 0;

@@ -60,7 +60,7 @@ function doctor({ env = {}, repo = doctorRepoRoot() } = {}) {
   const home = mkdtempSync(join(tmpdir(), "doctor-home-"));
   try {
     const r = spawnSync(process.execPath, [join(repo, "bin", "clearotron.mjs"), "doctor"],
-      { cwd: repo, encoding: "utf8", env: { PATH: "/usr/bin:/bin", HOME: home, CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", ...NO_INSTALLED_ENGINES, ...env } });
+      { cwd: repo, encoding: "utf8", env: { PATH: "/usr/bin:/bin", HOME: home, USERPROFILE: home, CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", ...NO_INSTALLED_ENGINES, ...env } });
     // The spawn's own fate before its text means anything (2064): a child that never came back returns
     // empty output, and every assert below would then fire naming the SUBJECT instead of the child.
     if (r.error || r.signal) throw new Error(`the child did not come back (signal=${r.signal} error=${r.error?.message}) — a could-not-look, not a verdict`);

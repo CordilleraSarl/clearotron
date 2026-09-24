@@ -632,7 +632,10 @@ test("a hard-wall kill that never wrote its artifact is refused as ABSENT, names
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("a stat that fails for any reason but absence stays UNREADABLE, with its error code", async () => {
+// The fixture reaches a non-absence failure by statting a path THROUGH a file, which POSIX answers
+// ENOTDIR. Windows answers that same path ENOENT, so there the arm would be asking about absence.
+test("a stat that fails for any reason but absence stays UNREADABLE, with its error code",
+  { skip: process.platform === "win32" && "POSIX ENOTDIR: Windows reports a path through a file as ENOENT, so this fixture cannot produce a stat failure other than absence there" }, async () => {
   const dir = mkdtempSync(join(tmpdir(), "wall-notdir-"));
   writeFileSync(join(dir, "blocker"), "a file where a directory belongs\n");
   const out = join(dir, "blocker", "out.md");   // stat of this path fails ENOTDIR, not ENOENT

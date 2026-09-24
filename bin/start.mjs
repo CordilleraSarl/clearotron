@@ -87,6 +87,7 @@ import { writeSecretFile } from "../shared/secret-file.mjs";   // one atomic wri
 import { runRequiredNames, missingRequirements, CLOUD_ROUTES } from "../driver/run-requirements.mjs";
 import { CLOUD_SWITCH, cloudsSwitchedOn } from "../driver/engine/auth.mjs";   // a switch compared the way the program reads it: on or off
 import { ENGINE_BINARIES, DEFAULT_ENGINE_ID as RUN_DEFAULT_ENGINE, resolveEngineProgram } from "../driver/driver.config.mjs";
+import { spawnsDetached, killWindowsTreesNow } from "../driver/engine/engine-spawn.mjs";   // Windows has no process group to stop
 import { unitEnvironment, unitValue } from "../driver/unit-environment.mjs";   // the PATH the worker unit will run with, read the way doctor reads it
 
 /**
@@ -149,7 +150,7 @@ import { addressRefusal } from "../shared/staff-domain.mjs";
 // entry is written through them, so this command cannot produce a shape of its own.
 import { withPerson, withOrganisation, withCompany } from "../shared/grants-edit.mjs";
 import { assertGrantsShape, resolvePerson } from "../shared/scope.mjs";
-import { backgroundManager } from "../shared/os-advice.mjs";
+import { backgroundManager, backgroundRefusal } from "../shared/os-advice.mjs";
 import { recordRunning } from "../shared/running-start.mjs";
 import { frontingVariablesSet } from "../shared/install-auth.mjs";   // — one owner for what counts as a proxy in front of a door
 
@@ -713,6 +714,26 @@ export const BACKGROUND_EXCLUDED = Object.freeze({
   "profile-service.service": "the portal constructs the profile service IN-PROCESS (driver/portal-service.mjs); the standalone unit is the separate-editor deployment shape and running both double-serves the store",
 });
 
+/**
+ * The key that signs every access token, and the one it replaces while a rotation is under way. Only the
+ * processes that mint or check keys hold them: the portal and the two doors. The worker holds neither,
+ * because it starts the AI program for every stage.
+ */
+export const SIGNING_KEY_NAMES = Object.freeze(["TRADEMARK_MCP_TOKEN_SECRET", "TRADEMARK_MCP_TOKEN_SECRET_PREVIOUS"]);
+
+/**
+ * A child's environment: this supervisor's, then the child's own block over it. The signing keys are the
+ * exception: a child whose own block does not carry the current key gets neither of them. This process
+ * sets the key on itself to mint the portal's key, so without the exception every child would inherit it,
+ * whatever its block said. A child that is handed the key keeps the previous one too, from this process,
+ * so a rotation under way still checks the keys signed before it.
+ */
+export function childProcessEnv(parent = process.env, own = {}) {
+  const env = { ...parent, ...own };
+  if (!Object.hasOwn(own, SIGNING_KEY_NAMES[0])) for (const k of SIGNING_KEY_NAMES) delete env[k];
+  return env;
+}
+
 export function childEnv({ ports, paths, user, portalSecret, tokenSecret, opsToken, host = HOST, localWorker = false, demo = false, clientFence = null, credential = null, env = process.env }) {
   // ONE AUTHOR FOR THIS EXPRESSION. The hosted install path composes the same
   // origin, and the near-miss is specific: this is an ORIGIN, the portal's client appends `/mcp`
@@ -811,8 +832,10 @@ export function childEnv({ ports, paths, user, portalSecret, tokenSecret, opsTok
       CLIENT_MCP_HTTP_PORT: String(ports.client),
     },
     // The worker needs the install's PATHS and nothing else — no ports, no secrets, no door config. It
-    // talks to the queue and the pool, not to either listener.
-    worker: { ...shared },
+    // talks to the queue and the pool, not to either listener. `shared` carries the signing key for the two
+    // doors and the portal, which mint and check keys; the worker does neither, and it starts the AI program
+    // for every stage, so the key is taken out here and withheld again at the spawn (childProcessEnv).
+    worker: Object.fromEntries(Object.entries(shared).filter(([k]) => !SIGNING_KEY_NAMES.includes(k))),
     // ── THE CLIENT DOOR, ON BOTH PATHS ( — F26) ──────────────────────────────
     //
     // Ruling, restated several times in session: START BOTH. It already held on the systemd path
@@ -976,6 +999,9 @@ if (isMain) {
   // exactly how to drain when they do.
   const wantWorker = !argv.includes("--no-worker");
   const wantBackground = argv.includes("--background");
+  // ON WINDOWS THERE IS NO BACKGROUND FORM: it is systemd units. Answered here, before anything is written
+  // or systemctl is called, in the owner's sentence and nothing else, so no `start:` prefix either.
+  if (wantBackground && backgroundRefusal()) { err(backgroundRefusal()); process.exit(1); }
 
   // A flag with its value forgotten is a MISTAKE, not a request for the default. `--base` swallowing the
   // next flag, or falling through to ~/trademark, would put an install somewhere nobody asked for.
@@ -2187,8 +2213,9 @@ if (isMain) {
       cwd: REPO,
       // Its OWN process group, so Ctrl-C reaches this supervisor alone and teardown is one ordered
       // sequence rather than a race between the terminal's signal and ours. It also means the group
-      // kill below reaches anything a child spawns, not just the child.
-      detached: true,
+      // kill below reaches anything a child spawns, not just the child. NOT ON WINDOWS, where a detached
+      // child has no console and outlives the window it was started from (engine/engine-spawn.mjs).
+      detached: spawnsDetached(),
       // — STDERR IS TEED RATHER THAN INHERITED, AND ONLY STDERR.
       //
       // These children announce a refusal as one FATAL line on stderr and exit 1. With `inherit` the
@@ -2202,7 +2229,7 @@ if (isMain) {
       // progress rendering intact. Piping a stream costs the child its TTY, so only the stream that has to
       // be read is piped.
       stdio: ["ignore", "inherit", "pipe"],
-      env: { ...process.env, ...env },
+      env: childProcessEnv(process.env, env),
     });
     // The last lines of that child's stderr, forwarded on as they arrive so nothing is delayed or
     // swallowed, and kept so the failure can QUOTE them rather than refer to them.
@@ -2252,7 +2279,6 @@ if (isMain) {
     return rec;
   };
 
-  const signalGroup = (rec, sig) => { try { process.kill(-rec.child.pid, sig); } catch { /* already gone */ } };
 
   async function shutdown(code) {
     if (stopping) return;
@@ -2260,15 +2286,14 @@ if (isMain) {
     const live = children.filter((c) => c.alive);
     if (live.length) {
       say(`\n  stopping ${live.map((c) => c.name).join(" and ")}…`);
-      for (const c of live) signalGroup(c, "SIGTERM");
+      stopChildren(live.map((c) => c.child), "SIGTERM");
       // A grace window, then the hammer. Nothing this command starts holds unflushed client state, so
       // the window is short; it exists so a service gets to close its listener and log its own line.
       const deadline = Date.now() + 5000;
       while (children.some((c) => c.alive) && Date.now() < deadline) await new Promise((r) => setTimeout(r, 100));
-      for (const c of children.filter((x) => x.alive)) {
-        err(`  ${c.name} did not stop on SIGTERM — killing it.`);
-        signalGroup(c, "SIGKILL");
-      }
+      const stuck = children.filter((x) => x.alive);
+      for (const c of stuck) err(`  ${c.name} did not stop on SIGTERM — killing it.`);
+      stopChildren(stuck.map((c) => c.child), "SIGKILL");
       await new Promise((r) => setTimeout(r, 200));
     }
     // ── THE DEMO TAKES ITS FOLDER WITH IT ───────────────────────────────────────────────────────────
@@ -2589,8 +2614,7 @@ if (isMain) {
   // `--background` installs and enables service units. There are none on Windows, so both the offer
   // and the sentence naming what manages them were wrong there — a reader was told to run a flag that
   // cannot succeed and given a service manager that is not on the machine and cannot be put there.
-  // Reported from a real run. Same rule as the engine refusal above: do not name a route this platform
-  // does not have.
+  // Reported from a real run. The rule: do not name a route this platform does not have.
   for (const line of backgroundOfferLines({ demo: DEMO, keep: DEMO_KEEP || READER_BASE, manager: backgroundManager(), start: invoke("start") })) say(line);
   say("");
 }
@@ -2691,6 +2715,26 @@ export function backgroundOfferLines({ demo = false, keep = false, manager = nul
  */
 export function windowCloseSignals() {
   return ["SIGHUP"];
+}
+
+/**
+ * Stop children of this command, and whatever they started.
+ *
+ * On Linux and macOS each child leads its own process group, so the signal goes to the group, and to the
+ * child alone when the group is already gone. Windows has neither groups nor signals a Node child can
+ * catch, so there every child's process tree is ended at once, from one process listing: closing the
+ * window leaves only seconds, and a listing takes most of one. The second call finds nothing left.
+ * `platform` and the two effects are parameters so both branches run on a Linux CI.
+ */
+export function stopChildren(children, sig, { platform = process.platform, kill = (pid, s) => process.kill(pid, s),
+  endTrees = killWindowsTreesNow } = {}) {
+  const live = (children ?? []).filter((c) => c?.pid);
+  if (platform === "win32") {
+    const pids = live.filter((c) => c.exitCode === null && c.signalCode === null).map((c) => c.pid);
+    if (pids.length) endTrees(pids);
+    return;
+  }
+  for (const c of live) { try { kill(-c.pid, sig); } catch { try { c.kill(sig); } catch { /* already gone */ } } }
 }
 
 /**

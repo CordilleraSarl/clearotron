@@ -454,7 +454,7 @@ export function retireMarker(procPath, destPath, what = "") {   // exported for 
  * retire — and that nothing on disk was touched.
  */
 export function retireClaimAndSweep(procPath, destPath, what = "", { token = claimToken() } = {}) {   // exported for the race test
-  const lockPath = `${procPath}.claimed-${token}`;
+  const lockPath = claimLockPath(procPath, token);
   try { renameSync(procPath, lockPath); }
   catch (e) {
     if (e?.code !== "ENOENT") throw e;
@@ -573,6 +573,18 @@ export function claimToken(pid = process.pid) {
       "ceiling instead. Linux and macOS both supply the stamp — README.md, 'Where it runs'.");
   }
   return st ? `${pid}:${st}` : String(pid);
+}
+
+/**
+ * The lock a claim renames its marker to: `<procPath>.claimed-<token>`, spelled so the file can exist.
+ *
+ * ON WINDOWS A COLON CANNOT BE IN A FILE NAME, and a token is `pid:starttime`. Windows refused every claim's
+ * rename, the claim's own `catch` read the refusal as a lost race, and no queued job was ever claimed:
+ * measured on a Windows runner, 2026-09-23. There the colon is written `%3A`, as the stage records under
+ * `_driver/` write it (shared/driver-dir.mjs). Elsewhere the name is exactly what it was.
+ */
+export function claimLockPath(procPath, token, platform = process.platform) {
+  return `${procPath}.claimed-${platform === "win32" ? String(token).replaceAll(":", "%3A") : token}`;
 }
 
 
@@ -817,7 +829,7 @@ async function claimAndPrep(jsonFile, qdir, agentId) {
   // sweepAbandonedTakeovers already restores and the idle fast-path already counts as work. No new
   // machinery, and one recovery path rather than two.
   const token = claimToken();
-  const lockPath = `${procPath}.claimed-${token}`;
+  const lockPath = claimLockPath(procPath, token);
   try {
     renameSync(join(qdir, jsonFile), lockPath); // atomic claim — only one runner wins
   } catch {
@@ -1497,7 +1509,7 @@ export function claimDuePostponed(qdir) {
     // moment its marker says `.processing`, so it must be covered by its liveness token before the marker
     // is visible. This path had the identical gap.
     const token = claimToken();
-    const lockPath = `${procPath}.claimed-${token}`;
+    const lockPath = claimLockPath(procPath, token);
     try { renameSync(join(qdir, f), lockPath); } catch { continue; }   // lost the claim race to another runner
     try {
       writeFileSync(`${procPath}.pid.tmp`, token);
@@ -1942,7 +1954,7 @@ export function findRunDirFor({ codename, slug, dateISO = null, studioRoot, arch
 // claimDuePostponed, a competing takeover) first needs a rename win on a marker that isn't there.
 export function takeoverClaim(procPath, { maxClaimAgeMs = config.maxClaimAgeMs, isAlive = claimerIsAlive } = {}) {
   const token = claimToken();
-  const lockPath = `${procPath}.claimed-${token}`;
+  const lockPath = claimLockPath(procPath, token);
   try { renameSync(procPath, lockPath); } catch { return false; }   // a sibling holds the lock (or the marker moved on)
   try {
     let rec = null;
@@ -1968,7 +1980,7 @@ export function sweepAbandonedTakeovers(qdir, { isAlive = claimerIsAlive } = {})
   for (const f of files) {
     const m = /^(.+\.processing)\.claimed-(\S+)$/.exec(f);
     if (!m) continue;
-    const rec = parseClaimSidecar(m[2]);
+    const rec = parseClaimSidecar(m[2].replaceAll("%3A", ":"));   // a Windows lock writes its colon %3A
     if (rec && isAlive(rec)) continue;
     note(`[runner] restoring ${m[1]} from an abandoned takeover (token ${m[2]})`);
     try { renameSync(join(qdir, f), join(qdir, m[1])); } catch { /* raced another sweeper — fine */ }

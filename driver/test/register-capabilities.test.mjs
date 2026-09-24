@@ -764,10 +764,10 @@ test("EXECUTOR (A1): a plan-defect entry is REFUSED at dispatch — error:true, 
 
   // a hand-shaped frozen plan carrying the 2026-07-28 defect classes, plus one clean entry
   const plan = { entries: [
-    { qid: "primary-sweep:exact:tiki-star", axis: "primary-sweep", predicate: "exact", term: "TIKI*", nice_classes: ["5"], regions: [], expected_kind: "enumerate" },
-    { qid: "primary-sweep:exact:label", axis: "primary-sweep", predicate: "exact", term: "TIKE, TIPI one-keystroke neighbours of TIKI", nice_classes: ["5"], regions: [], expected_kind: "enumerate" },
+    { qid: "primary-sweep:exact:wavo-star", axis: "primary-sweep", predicate: "exact", term: "WAVO*", nice_classes: ["5"], regions: [], expected_kind: "enumerate" },
+    { qid: "primary-sweep:exact:label", axis: "primary-sweep", predicate: "exact", term: "WAVU, WAPO one-keystroke neighbours of WAVO", nice_classes: ["5"], regions: [], expected_kind: "enumerate" },
     { qid: "primary-sweep:exact:slogan", axis: "primary-sweep", predicate: "exact", term: "I CAN'T BELIEVE IT'S NOT BUTTER", term_literal: true, nice_classes: ["29"], regions: [], expected_kind: "enumerate" },
-    { qid: "primary-sweep:exact:clean", axis: "primary-sweep", predicate: "exact", term: "TIKI", nice_classes: ["5"], regions: [], expected_kind: "enumerate" },
+    { qid: "primary-sweep:exact:clean", axis: "primary-sweep", predicate: "exact", term: "WAVO", nice_classes: ["5"], regions: [], expected_kind: "enumerate" },
   ] };
   const dir = mkdtempSync(join(tmpdir(), "plan-defect-"));
   const planPath = join(dir, "register-plan.json");
@@ -783,7 +783,7 @@ test("EXECUTOR (A1): a plan-defect entry is REFUSED at dispatch — error:true, 
   assert.ok(!String(res.text).startsWith("ERROR"), res.text);
   const band = JSON.parse(readFileSync(outPath, "utf8"));
 
-  for (const qid of ["primary-sweep:exact:tiki-star", "primary-sweep:exact:label"]) {
+  for (const qid of ["primary-sweep:exact:wavo-star", "primary-sweep:exact:label"]) {
     const b = band.find((x) => x.qid === qid);
     assert.equal(b.error, true, `${qid}: a plan defect is an ERROR block`);
     assert.notEqual(b.deferred, true, `${qid}: NOT deferred — this is a defect in the plan, not a capability the provider honestly lacks`);
@@ -799,9 +799,9 @@ test("EXECUTOR (A1): a plan-defect entry is REFUSED at dispatch — error:true, 
   assert.equal(calls.length, 2, "defective slices issue ZERO provider calls");
   // fan-in: the defective slices join MISSING (the honest-fail lane), never executed
   const fanIn = joinPlanToBands(plan, { "primary-sweep": band });
-  assert.ok(fanIn.missing.includes("primary-sweep:exact:tiki-star"));
+  assert.ok(fanIn.missing.includes("primary-sweep:exact:wavo-star"));
   assert.ok(fanIn.missing.includes("primary-sweep:exact:label"));
-  assert.ok(!fanIn.executed.some((x) => x.qid === "primary-sweep:exact:tiki-star"));
+  assert.ok(!fanIn.executed.some((x) => x.qid === "primary-sweep:exact:wavo-star"));
 });
 
 test("EXECUTOR (F1): the owner scope field rides the query on a capable provider; a declared-incapable one defers, never widens", async () => {
@@ -811,7 +811,7 @@ test("EXECUTOR (F1): the owner scope field rides the query on a capable provider
   const { join } = await import("node:path");
 
   const plan = { entries: [
-    { qid: "supp:primary-sweep:default:tiki:owner1", axis: "primary-sweep", predicate: "default", term: "TIKI",
+    { qid: "supp:primary-sweep:default:wavo:owner1", axis: "primary-sweep", predicate: "default", term: "WAVO",
       owner: "Kestrel Beverages Inc.", nice_classes: ["32"], regions: [], expected_kind: "enumerate" },
   ] };
   const dir = mkdtempSync(join(tmpdir(), "owner-scope-"));
@@ -828,7 +828,7 @@ test("EXECUTOR (F1): the owner scope field rides the query on a capable provider
   const outA = join(dir, "band-able.json");
   await able("k", { plan_path: planPath, axis: "primary-sweep", output_path: outA }, {});
   assert.equal(seen.length, 1);
-  assert.equal(seen[0].name, "TIKI", "the mark clause survives");
+  assert.equal(seen[0].name, "WAVO", "the mark clause survives");
   assert.equal(seen[0].owner, "Kestrel Beverages Inc.", "…AND the owner filter rides beside it (the intersection)");
   const ableBlock = JSON.parse(readFileSync(outA, "utf8"))[0];
   assert.equal(ableBlock.state, "enumerated");
@@ -866,9 +866,9 @@ test("EXECUTOR (script form): a native-script slice on a romanisation-indexed pr
 
   const plan = { entries: [
     { qid: "transliteration-numeric:exact:native", axis: "transliteration-numeric", predicate: "exact",
-      term: "ティキスラッシュ", nice_classes: ["32"], regions: [], expected_kind: "enumerate" },
+      term: "ワボスラッシュ", nice_classes: ["32"], regions: [], expected_kind: "enumerate" },
     { qid: "transliteration-numeric:exact:latin", axis: "transliteration-numeric", predicate: "exact",
-      term: "TIKI GRANIZADO", nice_classes: ["32"], regions: [], expected_kind: "enumerate" },
+      term: "WAVO GRANIZADO", nice_classes: ["32"], regions: [], expected_kind: "enumerate" },
   ] };
   const dir = mkdtempSync(join(tmpdir(), "script-form-"));
   const planPath = join(dir, "register-plan.json");
@@ -926,7 +926,7 @@ test("EXECUTOR (script form): a native-script slice on a romanisation-indexed pr
   await charIndexed("k", { plan_path: planPath, axis: "transliteration-numeric", output_path: outChars }, {});
   const charBand = JSON.parse(readFileSync(outChars, "utf8"));
   assert.equal(charCalls.length, 2, "both members searched — banning native script here would DELETE real coverage");
-  assert.equal(charCalls[0].name, "ティキスラッシュ", "the characters go to the wire verbatim");
+  assert.equal(charCalls[0].name, "ワボスラッシュ", "the characters go to the wire verbatim");
   assert.equal(charBand.filter((b) => b.deferred).length, 0);
   const charSkeleton = deriveCoverageSkeleton(parsed, joinPlanToBands(parsed, { "transliteration-numeric": charBand }));
   assert.notEqual(charSkeleton.find((s) => s.axis === "transliteration-numeric").state, "deferred");

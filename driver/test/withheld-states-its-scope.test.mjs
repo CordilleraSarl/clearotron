@@ -44,12 +44,12 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
 // The round's own shape, scaled down. Two retrieved-then-dropped marks the reference does not name —
 // the population `withheld` is structurally blind to.
-const REFERENCE = [{ mark: "MIRANTHEAA" }, { mark: "DELPHI GENETICS" }];
+const REFERENCE = [{ mark: "MIRANTHEAA" }, { mark: "KORPHI GENETICS" }];
 const RETRIEVED = [
   { mark: "MIRANTHEAA", record_id: "r1" },
-  { mark: "DELPHIC RESEARCH", record_id: "r2" },
+  { mark: "KORPHIC RESEARCH", record_id: "r2" },
   { mark: "DELPHIN & EMERENCE", record_id: "r3" },
-  { mark: "DELPHIC RESEARCH", record_id: "r4" },   // same mark, second record
+  { mark: "KORPHIC RESEARCH", record_id: "r4" },   // same mark, second record
 ];
 
 // ── the defect, restated as a measurement ────────────────────────────────────────────────────────────
@@ -64,7 +64,7 @@ test("THE BLIND SPOT IS REAL: withheld stays 0 while two retrieved marks never r
     "the fixture no longer reproduces the round — withheld rose, so the blind spot is not what is being measured");
   const seen = new Set([...buckets.found, ...buckets.withheld, ...buckets.lost, ...buckets.excluded]
     .map((e) => e.mark ?? e.name));
-  for (const m of ["DELPHIC RESEARCH", "DELPHIN & EMERENCE"])
+  for (const m of ["KORPHIC RESEARCH", "DELPHIN & EMERENCE"])
     assert.equal(seen.has(m), false, `${m} reached a bucket — the loop is no longer reference-driven`);
 });
 
@@ -76,7 +76,7 @@ test("…and the scope measure NAMES them, on the same inputs", () => {
 });
 
 test("DISTINCT MARKS, not records — one mark on six records is one thing unseen", () => {
-  // `DELPHIC RESEARCH` appears on two records above. Counting records would inflate the blind spot by
+  // `KORPHIC RESEARCH` appears on two records above. Counting records would inflate the blind spot by
   // the register's own duplication, and a number that moves with record volume invites a conclusion.
   const ws = withheldScope({ reference: REFERENCE, retrieved: RETRIEVED });
   assert.equal(ws.retrievedMarks, 3, "distinct mark texts, not record rows");

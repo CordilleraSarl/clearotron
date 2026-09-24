@@ -14,7 +14,7 @@
 
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { join, basename } from "node:path";
-import { driverDir } from "../../shared/driver-dir.mjs";   //
+import { driverDir, driverFileName } from "../../shared/driver-dir.mjs";   //
 import { STAGES, STAGE_ORDER, stageInputs, stageOrdinal, REGISTER_AXES, fileMeta, parseVerdict } from "./driver.mjs";
 import { loadFindings } from "./findings.mjs";
 import { providerUsage } from "./usage.mjs";
@@ -178,7 +178,8 @@ function rawEnvelopeAvailable(runDir, label) {
   try {
     const files = readdirSync(driverDir(runDir));
     const stem = label.replace(":", "-"); // attempt files use the label form written by the gateway
-    return files.some((f) => (f.startsWith(`${label}.attempt`) || f.startsWith(`${stem}.attempt`)) && f.endsWith(".rawjson.json"));
+    const written = driverFileName(label);   // on Windows the label's colon is written %3A
+    return files.some((f) => (f.startsWith(`${written}.attempt`) || f.startsWith(`${stem}.attempt`)) && f.endsWith(".rawjson.json"));
   } catch { return false; }
 }
 

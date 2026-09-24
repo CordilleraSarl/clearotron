@@ -25,7 +25,7 @@ import { execFileSync } from "node:child_process";
 
 import { whatHoldsPort, stopThatProcess, removeDirectory, chdirPrefix, envPrefix, backgroundManager } from "../../shared/os-advice.mjs";
 import { listenErrorMessage, nextFreePort } from "../../shared/listen.mjs";
-import { platformEngineRefusal, leaveDemoAdvice, programDisagreement } from "../../bin/onboard.mjs";
+import { leaveDemoAdvice, programDisagreement } from "../../bin/onboard.mjs";
 import { ENGINE_BINARIES } from "../driver.config.mjs";
 import { reachableCommand } from "../../shared/invocation.mjs";
 import { buildFlagSnapshot, snapshotPath } from "../flag-snapshot.mjs";
@@ -71,38 +71,16 @@ test("on Windows the advice names commands that exist there, and none that do no
   }
 });
 
-test("doctor states the platform refusal instead of resolving a path it cannot start", () => {
-  // `resolveEngineBin` tests with accessSync(X_OK), and Windows has no execute bit — so the
-  // extensionless shell script an npm global install writes for Git Bash passes a POSIX executability
-  // test while CreateProcess cannot start it. That is how doctor said FOUND and the probe said ENOENT.
-  const said = platformEngineRefusal({ platform: "win32" });
-  assert.ok(said, "native Windows must be answered before any path is resolved or reported");
-  assert.match(said, /does not run on native Windows/);
-  assert.match(said, /WSL2/, "a refusal with no way out is half an answer");
-  assert.match(said, /demo works here/, "the demo IS supported on this platform and must not read as broken");
-  // AND IT MUST NOT QUOTE A PATH. Naming one is what sent the reader looking for a PATH problem they
-  // did not have.
-  assert.doesNotMatch(said, /[A-Za-z]:\\|\/usr\/|PATH=/, "the refusal quotes a path again");
-});
-
-test("and on every other platform it stands aside, so the ordinary checks still run", () => {
-  // Without this the arm above is satisfied by a function that refuses everywhere, which would report
-  // a working Linux install as unable to run.
-  for (const platform of POSIX) {
-    assert.equal(platformEngineRefusal({ platform }), null, `${platform} was refused as if it were Windows`);
-  }
-});
-
 test("the way out of demo mode is the one that can work on that platform", () => {
   const spec = { vendor: "Anthropic", fallback: "claude", install: "npm i -g claude", signIn: "sign in" };
 
-  const win = leaveDemoAdvice(spec, { platform: "win32" });
-  assert.equal(win.length, 1);
-  assert.match(win[0], /WSL2/);
-  // THE LOOP THIS CLOSES. Telling a Windows reader to install the CLI is advice they may have already
-  // followed, and following it again cannot change the answer — the refusal is about the platform.
-  assert.doesNotMatch(win[0], /install .*CLI \(/, "Windows is told to install a CLI again");
-  assert.doesNotMatch(win[0], /Restart any running engine service/, "and to restart a service that cannot help");
+  // WINDOWS TAKES THE SAME FIRST LINE: setup is the way out there too. Its second line names the one
+  // restart Windows has, the window, because it has no background services and no `~/.env` they read.
+  const win = leaveDemoAdvice(spec, { platform: "win32", command: "clearotron install" });
+  assert.equal(win.length, 2);
+  assert.match(win[0], /^To leave demo: run `clearotron install`\. It offers to install Anthropic's CLI/);
+  assert.equal(win[1], "If Clearotron is already running, close its window and start it again: it reads the settings setup writes when it starts.");
+  assert.doesNotMatch(win.join(" "), /--background|~\/\.env|WSL2/, "Windows was named a route it does not have");
 
   for (const platform of POSIX) {
     const posix = leaveDemoAdvice(spec, { platform, command: "npx clearotron install" });
@@ -185,7 +163,7 @@ test("doctor prints that disagreement over a capture the services wrote, and not
     }
     try {
       return { home, out: execFileSync(process.execPath, [ONBOARD, "--check"], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], timeout: 60000,
-        env: handRunEnv({ HOME: home, PATH: `${NODE_BIN}:/usr/bin:/bin`, CLEAROTRON_REPORTS_DIR: pool }, {}) }) };
+        env: handRunEnv({ HOME: home, USERPROFILE: home, PATH: `${NODE_BIN}:/usr/bin:/bin`, CLEAROTRON_REPORTS_DIR: pool }, {}) }) };
     } catch (e) { return { home, out: `${e.stdout ?? ""}${e.stderr ?? ""}` }; }
   };
   const { out } = drive(false);
@@ -234,6 +212,8 @@ test("the background route is offered only where the product has one", () => {
   // `--background` installs and enables service units. There are none on Windows, so offering it named
   // a flag that cannot succeed and a service manager that cannot be installed.
   assert.equal(backgroundManager({ platform: "win32" }), null);
+  // Nor on a Mac: it has no systemd either, so the offer there named a service manager it lacks.
+  assert.equal(backgroundManager({ platform: "darwin" }), null);
 });
 
 test("the port refusal does not tell a reader to stop the thing they are reading it in", () => {

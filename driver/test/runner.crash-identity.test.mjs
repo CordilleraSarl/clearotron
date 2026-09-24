@@ -25,6 +25,7 @@ process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
 // production call ledger can never evidence their bands; the dedicated band-truth-gate tests turn it ON.
 process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
 
+
 const HERE = dirname(fileURLToPath(import.meta.url));
 const RUNNER = join(HERE, "..", "runner.mjs");
 const CLAUDE = join(HERE, "mock-claude.mjs");

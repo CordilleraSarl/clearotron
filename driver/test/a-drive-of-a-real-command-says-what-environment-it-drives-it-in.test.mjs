@@ -89,7 +89,7 @@ test("a file is in the class only when it does BOTH, because either alone is not
 });
 
 test("a file decides by naming both, or by taking the helper that does", () => {
-  assert.equal(decides("const env = handRunEnv({ HOME: home });"), true);
+  assert.equal(decides("const env = handRunEnv({ HOME: home, USERPROFILE: home });"), true);
   assert.equal(decides("delete env.CLEAROTRON_NO_ENV_FILE;\ndelete env.INVOCATION_ID;"), true);
   assert.equal(decides("delete env.CLEAROTRON_NO_ENV_FILE;"), false,
     "half the question answered read as the whole of it — the CI half is the one that goes unnoticed");

@@ -268,7 +268,7 @@ test("band_record: a document that genuinely cannot be opened stays a recorded d
   const r = await mcpSession([INIT,
     call(2, "band_record", { record_id: "/mark/de/999" }),          // never fetched: a dead link / no fetch
     call(3, "band_record", { record_id: "/mark/us/90000001" }),     // on file, cannot be read
-    call(4, "band_record", { record_id: "the SIRENA cluster" }),    // names no record at all
+    call(4, "band_record", { record_id: "the ZILEMA cluster" }),    // names no record at all
     call(5, "band_record", { record_id: "" }),
   ], ENV(runDir));
   for (const id of [2, 3, 4, 5]) assert.equal(isErr(r, id), true, `call ${id} errors — never an empty success`);
@@ -328,18 +328,18 @@ test("band_lookup: qid filter is an EXACT join to the plan-execution ledger", as
 // records" self-diagnosis, → a printed negative over a screen it had disowned) answers 6.
 test("band_lookup: the qid join matches EVERY slice that surfaced a record, not just the first", async () => {
   const runDir = seedRun();
-  const OWNER_QID = "incumbent-class:default:tiki+owner-candlewick-farms-incorporated";
+  const OWNER_QID = "incumbent-class:default:wavo+owner-candlewick-farms-incorporated";
   const band = JSON.parse(readFileSync(join(runDir, "register-named-band.json"), "utf8"));
   // the merged shape mergeNamedBands now writes: first-seen `_qid` intact, the union in `_qids`.
   band.enumerated = band.enumerated.map((rec, i) => (i === 0
-    ? { ...rec, _qid: "primary-sweep:exact:tiki", _qids: ["primary-sweep:exact:tiki", OWNER_QID],
-        _query: "exact TIKI [cl 5,32]", _queries: ["exact TIKI [cl 5,32]", "exact TIKI owner:Candlewick Farms Incorporated [cl 5,32]"] }
+    ? { ...rec, _qid: "primary-sweep:exact:wavo", _qids: ["primary-sweep:exact:wavo", OWNER_QID],
+        _query: "exact WAVO [cl 5,32]", _queries: ["exact WAVO [cl 5,32]", "exact WAVO owner:Candlewick Farms Incorporated [cl 5,32]"] }
     : rec));
   writeFileSync(join(runDir, "register-named-band.json"), JSON.stringify(band, null, 2));
   const r = await mcpSession([INIT,
     call(2, "band_lookup", { qid: OWNER_QID }),
-    call(3, "band_lookup", { qid: "primary-sweep:exact:tiki" }),
-    call(4, "band_lookup", { qid: "incumbent-class:default:tiki+owner-someone-else" }),
+    call(3, "band_lookup", { qid: "primary-sweep:exact:wavo" }),
+    call(4, "band_lookup", { qid: "incumbent-class:default:wavo+owner-someone-else" }),
     call(5, "band_lookup", { query: "owner:Candlewick Farms Incorporated" }),
   ], ENV(runDir));
   assert.equal(JSON.parse(textOf(r, 2)).matched, 1, "the owner slice's own qid now finds the record it surfaced");
@@ -353,27 +353,27 @@ test("band_lookup: the qid join matches EVERY slice that surfaced a record, not 
 // 2,596-record band, serving both arrays unconditionally cost ~10% of a limit:100 lookup's rows.
 test("band_lookup: a single-slice record serialises exactly as before; a multi-slice one carries its union", async () => {
   const runDir = seedRun();
-  const OWNER_QID = "incumbent-class:default:tiki+owner-candlewick-farms-incorporated";
+  const OWNER_QID = "incumbent-class:default:wavo+owner-candlewick-farms-incorporated";
   const band = JSON.parse(readFileSync(join(runDir, "register-named-band.json"), "utf8"));
   band.enumerated = band.enumerated.map((rec, i) => ({
     ...rec,
-    _qid: "primary-sweep:exact:tiki", _query: "exact TIKI [cl 32]",
-    _qids: i === 0 ? ["primary-sweep:exact:tiki", OWNER_QID] : ["primary-sweep:exact:tiki"],
-    _queries: i === 0 ? ["exact TIKI [cl 32]", "exact TIKI owner:Candlewick [cl 32]"] : ["exact TIKI [cl 32]"],
+    _qid: "primary-sweep:exact:wavo", _query: "exact WAVO [cl 32]",
+    _qids: i === 0 ? ["primary-sweep:exact:wavo", OWNER_QID] : ["primary-sweep:exact:wavo"],
+    _queries: i === 0 ? ["exact WAVO [cl 32]", "exact WAVO owner:Candlewick [cl 32]"] : ["exact WAVO [cl 32]"],
   }));
   writeFileSync(join(runDir, "register-named-band.json"), JSON.stringify(band, null, 2));
   const r = await mcpSession([INIT, call(2, "band_lookup", { limit: 100 })], ENV(runDir));
   const out = JSON.parse(textOf(r, 2));
   const multi = out.records.find((x) => x.record_id === band.enumerated[0].record_id);
   const single = out.records.find((x) => x.record_id === band.enumerated[1].record_id);
-  assert.deepEqual(multi._qids, ["primary-sweep:exact:tiki", OWNER_QID], "where the union answers 'which slice found this', it ships");
+  assert.deepEqual(multi._qids, ["primary-sweep:exact:wavo", OWNER_QID], "where the union answers 'which slice found this', it ships");
   assert.equal(single._qids, undefined, "and where it only repeats `_qid`, it costs nothing");
   assert.equal(single._queries, undefined);
-  assert.equal(single._qid, "primary-sweep:exact:tiki", "the first-seen stamp is always served");
+  assert.equal(single._qid, "primary-sweep:exact:wavo", "the first-seen stamp is always served");
 });
 
 // ── bounded serving: the transport cap is MAX_MCP_OUTPUT_TOKENS (~25k tokens), NOT the 256KB Read cap ──
-// Floors are unconditional, so a crowded-dominant-element band (TIKI-class) pushes the md past the MCP
+// Floors are unconditional, so a crowded-dominant-element band (WAVO-class) pushes the md past the MCP
 // cap and the tool call would ERROR in the engine. band_shape therefore serves parts, split at line
 // boundaries, with an explicit part-N/M continuation contract; concatenating the parts restores the
 // artifact byte-for-byte, so the floors stay complete across parts.

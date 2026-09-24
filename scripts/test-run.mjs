@@ -399,8 +399,11 @@ const isContained = (value) => {
 // The acceptance asks the refusal to name the value's ROOT, because that is the part that says "this is
 // somebody's live estate" at a glance, where a long path does not.
 const rootOf = (value) => {
-  const parts = resolve(value).split(sep).filter(Boolean);
-  return parts.length ? sep + parts[0] : sep;
+  // From the path's own root, so a Windows path names its drive and first folder (D:\a), not "\D:".
+  const p = resolve(value);
+  const { root } = parsePath(p);
+  const first = p.slice(root.length).split(sep).find(Boolean);
+  return first ? root + first : root;
 };
 
 // A guard with no way through gets deleted the first time somebody genuinely needs it, and then nothing
@@ -791,6 +794,10 @@ child = spawn(argv[0], argv.slice(1), {
   env: {
     ...process.env,
     TMPDIR: root,
+    // Windows' os.tmpdir() reads TEMP and TMP, not TMPDIR, so without these a Windows run's fixtures
+    // landed in the machine's own temp folder.
+    TEMP: root,
+    TMP: root,
     // AND THE REAL BASE, so a NESTED run does not root itself inside this one. The line above hands the
     // child a TMPDIR pointing at this run's own root; `os.tmpdir()` honours it, so a child that starts
     // its own runner would put its root INSIDE the parent's and the parent's cleanup — or its sweep of

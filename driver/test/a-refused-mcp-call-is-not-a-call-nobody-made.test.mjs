@@ -25,7 +25,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { parseCodexEvent, mcpToolGauge, noteMcpToolCall } from "../engine/openai-agent.mjs";
 
-/** codex-cli 0.150.1, today's `buildCodexArgs`: `--sandbox workspace-write`, no approval policy. */
+/** codex-cli 0.150.1, `buildCodexArgs` before per-server approval: `--sandbox workspace-write`, no approval policy. */
 const REFUSED = [
   `{"type":"item.started","item":{"id":"item_1","type":"mcp_tool_call","server":"probe","tool":"ping","arguments":{},"result":null,"error":null,"status":"in_progress"}}`,
   `{"type":"item.completed","item":{"id":"item_1","type":"mcp_tool_call","server":"probe","tool":"ping","arguments":{},"result":null,"error":{"message":"MCP tool call requires approval, but approval policy is never"},"status":"failed"}}`,

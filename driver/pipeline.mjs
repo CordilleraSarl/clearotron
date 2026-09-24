@@ -36,7 +36,7 @@ import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveT
 import { IDENTITY_FILE as REPORT_IDENTITY_FILE } from "./report-overview-record.mjs";
 import { dispatchRows, clearedSignatures } from "./seat-attempts.mjs";
 import { CONTEXT_DERIVATIONS, DISPATCH_EXTRAS, INLINE_CONTEXT, sandboxManifest, sandboxGaps, derivationsFor } from "./stage-context.mjs";   // — what a stage is actually handed
-import { parseVerdict, countCitedDefects, parseCorrectionKinds, parseCorrections, validators, findReviewerCoherenceFlags, verdictHardenedTo } from "./verify.mjs";
+import { parseVerdict, countCitedDefects, parseCorrectionKinds, parseCorrections, validators, findReviewerCoherenceFlags, lateReviewAgainst } from "./verify.mjs";
 import { readAcceptedFlags } from "./narrative-refutation-record.mjs";   // T3b — the typed flags, not the re-parse
 import { evidenceClaimViolations, evidenceClaimTable } from "./evidence-claim-invariant.mjs";   //
 import { buildCorrectionsApplied, correctionsWorklist, correctionsAppliedTable, correctionScope, scopeDrift, unresolvedFlags, reportLines, linesOf, REPORT_LINE_KEY, REPORT_LINE_LABEL } from "./corrections-feedforward.mjs";
@@ -72,7 +72,7 @@ import { classifyGroundsNote } from "./grounds-grammar.mjs";   // — a charged 
 import { documentCoverage, renderDocumentCoverageSection, spliceDocumentCoverage } from "./document-coverage.mjs";   //
 import { buildCoverageAbsenceForm, coverageAbsenceGaps, coverageFormAbsence, coverageFormBrief, renderCoverageAbsenceSection, renderCoverageLedgerSection, spliceCoverageLedger, renderCoverageLedgerJsonFromForm } from "./coverage-form.mjs";
 import { unionCoverageForm } from "./coverage-union.mjs";
-import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStamp, readCoverageForm, readCoverageFormInput, writeCoverageForm } from "./coverage-form-io.mjs";
+import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStamp, readCoverageForm, readCoverageFormInput, waitingFamilyStates, writeCoverageForm } from "./coverage-form-io.mjs";
 import { unionPlacementForm } from "./placement-union.mjs";
 import { readPlacementForm, readPlacementFormInput, writePlacementForm } from "./placement-form-io.mjs";
 import { dictatedPaths, findStrayArtifacts, treeSnapshot, findStrayInTree, matterSiblings, findStrayMatterSiblings } from "./stray-artifacts.mjs";   // — a run dir holds no document no stage dictated; — nor does the doctrine tree
@@ -150,7 +150,7 @@ import { stampTokenRollup } from "./tokens.mjs";
 import { recordRunConsumption } from "./consumption-ledger.mjs";
 import { quoteForJob, reconcileTurnaround } from "./run-quote.mjs";
 import { assembleRunRecords, readRecordArtifacts, findRegistryArithmeticIssues, findRegistryViolations, applyRegistryCorrections, extractEnforcerSignals, collectOppositionDeadlines, normalizeRecordUri } from "./registry-fidelity.mjs";
-import { readKnownConflictsFor, writeKnownConflictsFor, markKey, acceptedConflicts } from "./known-conflicts.mjs";   // spec 64 — the workspace-level per-mark recall store
+import { readKnownConflictsFor, writeKnownConflictsFor, markKey, acceptedConflicts, recallReceiptForOwnCompany } from "./known-conflicts.mjs";   // spec 64 — the workspace-level per-mark recall store
 import { runLint, flagLines, properNameCandidates } from "./predelivery-lint.mjs";
 import { parsePlacementsJson } from "./placement-model.mjs";   // B2 — the structured tier mirror; the lint reads it only to flag an EMPTY one
 import { readAnchors } from "./anchor-reader.mjs";
@@ -1326,8 +1326,12 @@ export const DISPATCH_TRIGGERS = ["fresh", "escalation", "envelope", "late-bind"
 function canonicalisedSha(file, shadowDir, runDir) {
   try {
     const buf = readFileSync(file);
-    if (buf.indexOf(shadowDir) === -1) return fileMeta(file).sha;
-    return createHash("sha256").update(buf.toString("utf8").split(shadowDir).join(runDir)).digest("hex").slice(0, 12);
+    // A spec names its output_path inside JSON, where a Windows path's backslashes are doubled, so the
+    // sandbox is looked for in that spelling too. A Linux path is the same in both.
+    const inJson = (p) => JSON.stringify(p).slice(1, -1);
+    if (buf.indexOf(shadowDir) === -1 && buf.indexOf(inJson(shadowDir)) === -1) return fileMeta(file).sha;
+    const text = buf.toString("utf8").split(inJson(shadowDir)).join(inJson(runDir)).split(shadowDir).join(runDir);
+    return createHash("sha256").update(text).digest("hex").slice(0, 12);
   } catch { return null; }
 }
 
@@ -1394,7 +1398,7 @@ function readCoverageJudgment(P) {
 // width would be live: `coverage_no_status` names a judgment the seat has not made, and quarantining a
 // derived artifact cannot make that true. The form tokens are deliberately OUT — a refused judgment
 // fails the stage and rides the corrective ladder, which is the only thing that can fix it.
-const isCoverageLedgerFail = (fail) => /invalid_file:[^:]*:coverage_(ledger|axis|key|mirror|status|classes)_/.test(fail ?? "");
+const isCoverageLedgerFail = (fail) => /invalid_file:.*?:coverage_(ledger|axis|key|mirror|status|classes)_/.test(fail ?? "");
 
 /**
  * Does the case-law grounding stage run? REQUESTED-OR-DETECTED (F4, 2026-07-21).
@@ -3100,9 +3104,17 @@ function findingsSurfaceRows(P) {
  * `scope` is instructed-scope.json, JOB-authored before any model ran. It is the only thing the
  * contradiction refusals rest on, which is why it is read here rather than accepted from the seat.
  */
-function prepareDeclinationSpec(ctx, P) {
+export function prepareDeclinationSpec(ctx, P) {   // @internal
   const rows = findingsSurfaceRows(P);
-  if (!rows.length) return;
+  if (!rows.length) {
+    // AN EMPTY LIST REPLACES THE LAST ONE; it does not leave it standing. The recorder holds the seat to
+    // whatever list the spec file carries, and a repair or corrective pass re-prepares because the
+    // findings may have moved. Left in place, a list from an earlier pass would bind a pass whose own
+    // prompt carries none: the order enforced, and missing from the prompt.
+    try { rmSync(driverDir(P.runDir, "declination-spec.json"), { force: true }); } catch { /* absent is the goal */ }
+    delete ctx.findingsSurface;
+    return;
+  }
   let scope = {};
   try { scope = JSON.parse(readFileSync(P.instructedScope, "utf8")) ?? {}; } catch { scope = {}; }
   try {
@@ -3146,7 +3158,7 @@ function recordSynthesisSeam(ctx, r, trigger = null) {
     evidence: r?.fail ? String(r.fail).slice(0, 80) : "",
     reasonFor: (rec, uri) => {
       // — THE 102. This callback used to be zero-arity and constant: every record this pass
-      // discarded got the same sentence and `step-silent`, whatever it was. One of them was DELPHIC,
+      // discarded got the same sentence and `step-silent`, whatever it was. One of them was KORPHIC,
       // a lawyer-named gold mark placed on sheet-2 and stamped `carry: "carried"`, and the trace could
       // say only that synthesis had not delivered it. The sibling seam one stage earlier
       // (`recordDigestSeam`) has read its stage's own output per record since it was written; this one
@@ -3336,7 +3348,7 @@ export function deriveRecordCarry(ctx, trigger, { findings = null } = {}) {   //
 // DIFFERENT Play Store apps. That collision concentrates in the non-Latin population this exists for,
 // because a Han-script marketplace query returns `?q=…` search URLs.
 //
-// This is the path that lost TIKI TWIST and TIKI TROPICS on R3 — both sat in the run's own records and
+// This is the path that lost WAVO TWIST and WAVO TROPICS on R3 — both sat in the run's own records and
 // reached no findings list. It has already cost a round.
 //
 // Derived at publish, like the register trace and for the same reason: everything it joins is final by
@@ -5837,7 +5849,13 @@ const UPSTREAM_STALE_REPAIR = {
   // repairs. The measurement inverts it: the repair dispatch came out 3,017 bytes THINNER than the
   // fresh one, so composing the same blocks is what makes the two passes identical rather than what
   // makes them differ.
-  synthesis: repairStage("synthesis"),
+  //
+  // THE LIST OF RECORDS IT MUST ANSWER IS RE-PREPARED FIRST, as the corrective pass re-prepares it. This
+  // repair runs because an input moved, register-findings.md among them, and that file is what the list
+  // is read from. Skipped, the repair was dispatched with no DECLINATIONS block at all, while the
+  // recorder still held the seat to the list the fresh pass had written: the order missing from the
+  // prompt, and enforced against records the digest may since have moved.
+  synthesis: (ctx) => { prepareDeclinationSpec(ctx, ctx.paths); return repairStage("synthesis")(ctx); },
   // — composed NEITHER of its two declared blocks; see the dispatcher comment above.
   "narrative-refutation": repairStage("narrative-refutation"),
   // — placement declares register-named-band.json and the per-axis register-units/*.md, and the
@@ -6500,6 +6518,12 @@ function planAuditExtra(ctx, { stage = "narrative-refutation" } = {}) {
   let rows = [];
   try {
     const crowds = exec.executed.filter((x) => x.state === "incomplete");
+    // By the time this block is read the reading turn is over, and a waiting family it chose not to ask
+    // is a settled judgment with its reason on record, not an open question. Counted as awaiting, a run
+    // whose every waiting family was withheld told the reviewer they all remained open, and it raised a
+    // coverage flag against judgments already made.
+    const { withheld, awaiting } = waitingFamilyStates(P.runDir, exec.awaiting);
+    const withheldOn = (axis) => withheld.filter((f) => f?.axis === axis).length;
     rows = [
       `- executed: ${exec.executed.length} entr${exec.executed.length === 1 ? "y" : "ies"} (${crowds.length} crowd/incomplete${crowds.length ? `: ${crowds.slice(0, 4).map((x) => x.qid).join("; ")}` : ""})`,
       `- missing (no band block): ${exec.missing.length}${exec.missing.length ? ` — ${exec.missing.slice(0, 4).join("; ")}` : ""}`,
@@ -6507,10 +6531,14 @@ function planAuditExtra(ctx, { stage = "narrative-refutation" } = {}) {
       // The families waiting for the reading turn, and those it asked. Without these lines the table's
       // own buckets summed to the whole plan less the waiting families, and a reviewer read it as
       // "no family waiting" while the receipt held 156.
-      `- awaiting the reading turn's ask: ${exec.awaiting?.length ?? 0}`,
+      `- withheld by judgment (the reading turn chose not to ask them; each carries its reason on the coverage form): ${withheld.length}`,
+      `- awaiting the reading turn's ask: ${awaiting.length}`,
       exec.asked?.length ? `- asked by the reading turn (a waiting family's question, asked by another entry): ${exec.asked.length}` : "",
       exec.unplanned?.length ? `- unplanned qid-stamped blocks: ${exec.unplanned.length}` : "",
-      ...(exec.skeleton ?? []).map((s) => `- axis ${s.axis}: ${s.state} (${s.executed}/${s.entries} executed, ${s.crowds} crowd${s.awaiting ? `, ${s.awaiting} awaiting` : ""})`),
+      ...(exec.skeleton ?? []).map((s) => {
+        const w = withheldOn(s.axis), a = Math.max(0, (s.awaiting ?? 0) - w);
+        return `- axis ${s.axis}: ${s.state} (${s.executed}/${s.entries} executed, ${s.crowds} crowd${w ? `, ${w} withheld` : ""}${a ? `, ${a} awaiting` : ""})`;
+      }),
     ];
   } catch (e) { rows = [`- (receipt table unavailable — read + audit the receipt file directly: ${P.planExecution})`]; note(`plan-audit receipt table (non-fatal): ${e.message}`); }
   return lines(
@@ -9179,6 +9207,9 @@ async function pipelineInner(job, opts = {}) {
         const candidates = [], candDirectives = [], overflow = [];
         const seen = new Set();
         const mintedQids = new Set();   // qid uniqueness inside the lane — the fold below dedupes on it
+        // term → every company whose delivery remembered it. The searches read every company's rows; the
+        // receipt names whose they were, so an audit lists only its own (recallReceiptForOwnCompany).
+        const companiesOf = new Map();
         for (const r of ranked) {
           const mark = String(r.mark_text).trim();
           if (searchedKeys.has(markKey(mark))) continue;   // the primary sweep already owns the searched mark itself
@@ -9194,13 +9225,17 @@ async function pipelineInner(job, opts = {}) {
             // characters", and it answered both with a silent `continue`. The first is a genuine repeat
             // and is still skipped; the second is a distinct mark and now gets a distinct qid.
             const termKey = `${predicate}:${term.toLowerCase()}`;
+            if (!companiesOf.has(termKey)) companiesOf.set(termKey, new Set());
+            companiesOf.get(termKey).add(r.customer || null);
             if (seen.has(termKey)) continue;
             seen.add(termKey);
             const qid = mintSupplementalQid({ prefix, term, used: mintedQids });
             candidates.push({ qid, axis: "primary-sweep", predicate, term, nice_classes: inScope, regions: [], expected_kind: "enumerate" });
-            candDirectives.push({ qid, uri: r.uri ?? null, mark_text: mark, owner: r.owner ?? null });
+            candDirectives.push({ qid, uri: r.uri ?? null, mark_text: mark, owner: r.owner ?? null, customers: companiesOf.get(termKey) });
           }
         }
+        for (const d of candDirectives) d.customers = [...d.customers];
+        const customersOfQid = new Map(candDirectives.map((d) => [d.qid, d.customers]));
         // ── — THE SAME DEFECT, AND THE OWNER BUDGET IS WHERE IT BITES ───────────
         //
         // The cross-check lane's fix, applied here because this lane has the identical shape: the caps
@@ -9219,7 +9254,7 @@ async function pipelineInner(job, opts = {}) {
         for (const e of screened.entries) {
           const isOwner = e.predicate === "owner";
           if (isOwner ? ownerUsed >= RECALL_CAP_OWNER : markUsed >= RECALL_CAP_MARK) {
-            overflow.push({ qid: e.qid, term: String(e.term).slice(0, 60) }); continue;
+            overflow.push({ qid: e.qid, term: String(e.term).slice(0, 60), customers: customersOfQid.get(e.qid) ?? [] }); continue;
           }
           if (isOwner) ownerUsed++; else markUsed++;
           entries.push(e);
@@ -9252,7 +9287,7 @@ async function pipelineInner(job, opts = {}) {
           note(`recall probes: ${refusedDirectives.length} probe(s) REFUSED as un-searchable terms — recorded in _driver/register-recall.json refused[], never dispatched`);
         }
         if (kept.length || overflow.length || refusedDirectives.length) {
-          writeFileSync(`${receiptPath}.tmp`, JSON.stringify({ schema_version: 2, ts: new Date().toISOString(), cap: { mark: RECALL_CAP_MARK, owner: RECALL_CAP_OWNER }, directives: kept, overflow, ...(refusedDirectives.length ? { refused: refusedDirectives } : {}) }, null, 2) + "\n");
+          writeFileSync(`${receiptPath}.tmp`, JSON.stringify({ schema_version: 2, ts: new Date().toISOString(), customer: ctx.profile?.profileKey || null, cap: { mark: RECALL_CAP_MARK, owner: RECALL_CAP_OWNER }, directives: kept, overflow, ...(refusedDirectives.length ? { refused: refusedDirectives } : {}) }, null, 2) + "\n");
           renameSync(`${receiptPath}.tmp`, receiptPath);
         }
         // The RECEIPT partitions; what the seat is TOLD does not. This feeds the primary-sweep prompt's
@@ -11081,7 +11116,7 @@ async function pipelineInner(job, opts = {}) {
                 directiveQids.set(key, []);
                 // Per-case wording (A2): the variant fallback now also DISCLOSES a label-shaped item
                 // (term-shape lint) — dispatching the display label verbatim was the 2026-07-28
-                // nil-search class ("Reverse-order TIKI composites (…)" searched as exact → 0 → read
+                // nil-search class ("Reverse-order WAVO composites (…)" searched as exact → 0 → read
                 // as clean). The remedy contract (SKILL.md) is the fix the wording points at.
                 regDeferReason.set(key, String(d.layer ?? "").toLowerCase() === "field"
                   ? "no-code-remedy: a field class-gap with no searchable term×class pair (closing it in the matter's own classes only re-runs the primary sweep — disclosed)"
@@ -12586,7 +12621,7 @@ async function pipelineInner(job, opts = {}) {
       jurisdictions: (() => { try { return JSON.parse(readFileSync(P.instructedScope, "utf8"))?.jurisdictions ?? null; } catch { return null; } })(),
     });
     if (caseLaw.declined)
-      note(`[case-law] the draft narrative turns on "${caseLaw.trigger}", and a ${caseLaw.product ?? "run with no resolved product"} does not carry the case-law reading — recorded, not run (#519)`);
+      note(`[case-law] the draft narrative turns on "${caseLaw.trigger}", and a ${caseLaw.product ?? "run with no resolved product"} does not carry the case-law reading — recorded, not run`);
     if (needCaseLaw) runLog(run.runDir, { event: "case-law-trigger", requested: caseLaw.requested, detected: caseLaw.detected });
     // T7 (E5): feed the finding index so the case-law stage stamps "- ord:" on each grounded
     // profile — the render + report-card joins become deterministic (copper-spire's prompt-fished join
@@ -13529,7 +13564,7 @@ async function pipelineInner(job, opts = {}) {
       // by construction, which is the intended shape: a BLOCKING with an empty reasons array is
       // structurally impossible, and any future path that reintroduces one dies here instead of shipping.
       if (verdict === "BLOCKING" && !reasonsOut.length)
-        throw new Error("verdict BLOCKING with no reasons — a blocking decision without its grounds; verdict.json is the artifact whose whole purpose is carrying them (#1065)");
+        throw new Error("verdict BLOCKING with no reasons — a blocking decision without its grounds; verdict.json is the artifact whose whole purpose is carrying them");
       // doc 50 — a v4 record derives off the run's FROZEN framework (band words); deriveDisplayVerdict
       // fail-louds if banded findings arrive with no manifest (never silently badge a rated matter LOW).
       const derived = deriveDisplayVerdict({ verdict, reasons: reasonsOut, kinds: kindsOut, findings: findingsArr,
@@ -13919,11 +13954,13 @@ async function pipelineInner(job, opts = {}) {
       const plan = ctx.registerPlan ?? readJson(P.registerPlan);
       const instructed = readJson(P.instructedScope);
       if (!plan && !Array.isArray(instructed?.classes)) return null;   // a run with no register layer and no instructed classes has no scope fact to state
+      const planExecution = ctx.planExecution ?? readJson(P.planExecution);
       const facts = deriveScopeFacts({
         instructedScope: instructed,
         plan,
-        planExecution: ctx.planExecution ?? readJson(P.planExecution),
+        planExecution,
         coverageRows: loadCoverageLedger(run.runDir).rows,
+        withheldQids: waitingFamilyStates(run.runDir, planExecution?.awaiting).withheld.map((f) => f.qid),
       });
       facts.derived_from = Object.fromEntries([
         ["instructed_scope", P.instructedScope], ["register_plan", P.registerPlan],
@@ -14125,7 +14162,7 @@ async function pipelineInner(job, opts = {}) {
           screenGateUnresolved: readJson(driverDir(run.runDir, "screen-gate-unresolved.json"))?.unresolved ?? null,
           supplementalPlans,
           xcheck: readJson(driverDir(run.runDir, "register-xcheck.json")),
-          recall: readJson(driverDir(run.runDir, "register-recall.json")),
+          recall: recallReceiptForOwnCompany(readJson(driverDir(run.runDir, "register-recall.json"))),   // never another company's recall line
           planExecution: ctx.planExecution ?? readJson(P.planExecution),
         }, { ts: askTs });
       } catch (e) {
@@ -14898,7 +14935,17 @@ async function pipelineInner(job, opts = {}) {
               // stays where it is; this restores the input it was denied. `verdictHardenedTo` ratchets one
               // way, so a review that softened during the repair cannot lift a clamp.
               if (s2.label === "narrative-refutation") {
-                const hardened = verdictHardenedTo(verdict, existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "");
+                const reviewNow = existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "";
+                const { hardened, softened: reviewSays } = lateReviewAgainst(verdict, reviewNow);
+                // A REVIEW THAT SOFTENED IS NOT ADOPTED, AND THE RUN SAYS SO. The ratchet below only
+                // tightens, so a re-review that comes back softer leaves the settled verdict in force while
+                // senior-eye-review.md, rewritten by this repair, opens with the softer word. That is the
+                // design; recording nothing was the defect: a reader of the run found two answers and no
+                // line saying which one governs (measured in testing, 2026-09-23: BLOCKING recorded, CONDITIONAL on disk).
+                if (reviewSays) {
+                  runLog(run.runDir, { event: "verdict-softening-not-adopted", was: verdict, reviewSays, stage: s2.label });
+                  note(`stale-repair: the reviewer now returns ${reviewSays}; the run keeps ${verdict}, because a late re-review may only harden the verdict — senior-eye-review.md now disagrees with verdict.json, and verdict.json governs`);
+                }
                 if (hardened) {
                   // ── T3a — THE LATE VERDICT IS ADOPTED, NOT THROWN, AND ADOPTION IS THE WHOLE JOB ──
                   //
@@ -16416,6 +16463,12 @@ async function runExperimentInner(job, opts) {
     // so a run with no case-law layer must arrive as null here too, never as an absent key.
     for (const f of inlineDecl.fields) shadowCtx[f] = resolved[f] ?? null;
   }
+  // A SYNTHESIS ARM IS HANDED THE LIST OF RECORDS IT MUST ANSWER, exactly as production hands it, or it
+  // replays a different stage. The spec file alone reached the sandbox: the list the dispatch prints
+  // rides `ctx.findingsSurface`, which only `prepareDeclinationSpec` sets, so every synthesis arm ran
+  // with no DECLINATIONS block while the recorder held it to the copied list. Built from the sandbox's
+  // own copies, so the canonical run is not touched.
+  if (name === "synthesis") prepareDeclinationSpec(shadowCtx, shadowCtx.paths);
   const sessionKey = `clearance-exp-${ctx.run.slug}-${ctx.run.codename}-${name}${axis ? `-${axis}` : ""}-${ts}`;
   let { text: extra, ids: extraIds } = experimentExtra(shadowCtx, name, opts);
 

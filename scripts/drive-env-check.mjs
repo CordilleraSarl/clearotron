@@ -54,6 +54,7 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join, dirname, basename } from "node:path";
 import { fileURLToPath } from "node:url";
+import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const TEST_DIR = join(ROOT, "driver", "test");
@@ -138,7 +139,7 @@ export function scan(dir = TEST_DIR, read = (p) => readFileSync(p, "utf8"), list
   return { scanned: files.length, inClass };
 }
 
-if (import.meta.url === `file://${process.argv[1]}` || basename(process.argv[1] ?? "") === "drive-env-check.mjs") {
+if (isEntrypoint(import.meta.url) || basename(process.argv[1] ?? "") === "drive-env-check.mjs") {
   let r;
   try { r = scan(); }
   catch (e) {

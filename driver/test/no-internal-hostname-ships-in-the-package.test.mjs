@@ -19,6 +19,7 @@ import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { npmInvocation } from "../../shared/npm-cli.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
@@ -30,7 +31,10 @@ function shippedFiles() {
   // --ignore-scripts: a `prepack` build must not run inside a test. The list is npm's, so `files`,
   // negations and `.npmignore` are applied exactly as a publish applies them. Offline: a dry-run pack
   // resolves on disk, and npm reaching for a registry it does not need can block rather than fail.
-  const out = execFileSync("npm", ["pack", "--dry-run", "--json", "--ignore-scripts"], { cwd: ROOT, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], maxBuffer: 64 * 1024 * 1024,
+  // npm as this machine starts it: on Windows npm is a batch file a spawn without a shell cannot start,
+  // so there it is npm-cli.js through this Node.
+  const npm = npmInvocation(["pack", "--dry-run", "--json", "--ignore-scripts"]);
+  const out = execFileSync(npm.command, npm.args, { cwd: ROOT, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], maxBuffer: 64 * 1024 * 1024,
     env: { ...process.env, npm_config_offline: "true" } });
   const [pack] = JSON.parse(out);
   // AND ONLY WHAT THE COMMIT CARRIES. The package is packed from a clean checkout of a commit, so a file

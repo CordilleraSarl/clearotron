@@ -357,12 +357,12 @@ test("dispatch: invalid JSON → fail(token), and the validator NEVER throws on 
 
 // ---- A1/A2/A3 fix: context_notes, URI-guard regression, lenient quarantine, corrective hints -----
 
-const NOTE = { type: "famous-neighbour-ungrounded", mark: "CHROME", owner: "Google LLC", context: "one keystroke from NOVAPULSE; famous mark; no fetched record; off-field" };
+const NOTE = { type: "famous-neighbour-ungrounded", mark: "NOVAPULSO", owner: "Zentrova LLC", context: "one keystroke from NOVAPULSE; famous mark; no fetched record; off-field" };
 
 test("context_notes: a valid famous-neighbour note parses and is returned", () => {
   const out = parseFindingsJson(raw({ ...DOC, context_notes: [NOTE] }));
   assert.equal(out.contextNotes.length, 1);
-  assert.equal(out.contextNotes[0].mark, "CHROME");
+  assert.equal(out.contextNotes[0].mark, "NOVAPULSO");
   assert.deepEqual(CONTEXT_NOTE_TYPES, ["famous-neighbour-ungrounded"]);
 });
 
@@ -387,13 +387,13 @@ test("A1 guard INTACT: a famous neighbour faked as an empty-uri registration is 
 });
 
 test("A3 lenient: quarantines the malformed finding, keeps the valid remainder + records the mark", () => {
-  const bad = clone(FINDING); bad.ordinal = 2; bad.mark = "CHROME";
+  const bad = clone(FINDING); bad.ordinal = 2; bad.mark = "NOVAPULSO";
   bad.owner.registrations = [{ uri: "" }];
   const out = parseFindingsJsonLenient(raw({ ...DOC, findings: [FINDING, bad] }));
   assert.equal(out.findings.length, 1, "valid finding kept");
   assert.equal(out.findings[0].ordinal, 1);
   assert.equal(out.quarantined.length, 1, "malformed finding quarantined");
-  assert.equal(out.quarantined[0].mark, "CHROME");
+  assert.equal(out.quarantined[0].mark, "NOVAPULSO");
   assert.match(out.quarantined[0].error, /finding_registration_invalid/);
 });
 
@@ -537,12 +537,12 @@ test("joinFindingToBlock: the VENZY fixture — exact mark beats containment; am
   // the real ashen-vault shape: VENZY (C5), DEMVENZY (C3), VENZY-India (C3), VENZ (C3)
   const findings = [
     { ordinal: 1, mark: "VENZY", owner: { name: "Doruk İlkay" }, composite: 5 },
-    { ordinal: 2, mark: "DEMVENZY", owner: { name: "Novartis Pharma AG" }, composite: 3 },
+    { ordinal: 2, mark: "DEMVENZY", owner: { name: "Norvanta Pharma AG" }, composite: 3 },
     { ordinal: 3, mark: "VENZY", owner: { name: "not extracted" }, composite: 3 },
     { ordinal: 4, mark: "VENZ", owner: { name: "SAMI Pharmaceuticals" }, composite: 3 },
   ];
   // the old containment join bound this to ordinal 1 (head contains "venzy") → enforced VERY HIGH
-  assert.equal(joinFindingToBlock({ ord: null, head: "DEMVENZY — Novartis Pharma AG" }, findings)?.ordinal, 2);
+  assert.equal(joinFindingToBlock({ ord: null, head: "DEMVENZY — Norvanta Pharma AG" }, findings)?.ordinal, 2);
   assert.equal(joinFindingToBlock({ ord: null, head: "VENZ — SAMI Pharmaceuticals (Pakistan)" }, findings)?.ordinal, 4);
   // two live VENZY findings → head "VENZY — …" is ambiguous without an ord line: honest null, never a guess
   assert.equal(joinFindingToBlock({ ord: null, head: "VENZY — Owner not identified (India)" }, findings), null);
@@ -550,7 +550,7 @@ test("joinFindingToBlock: the VENZY fixture — exact mark beats containment; am
   assert.equal(joinFindingToBlock({ ord: 3, head: "VENZY — Owner not identified (India)" }, findings)?.ordinal, 3);
   // withdrawn findings never join
   const withdrawn = findings.map((f) => f.ordinal === 2 ? { ...f, disposition: "withdrawn" } : f);
-  assert.equal(joinFindingToBlock({ ord: 2, head: "DEMVENZY — Novartis" }, withdrawn), null);
+  assert.equal(joinFindingToBlock({ ord: 2, head: "DEMVENZY — Norvanta" }, withdrawn), null);
   // unique containment still works when nothing collides (legacy summaries without ord lines)
   assert.equal(joinFindingToBlock({ ord: null, head: "OPTIVENZY tablets — Laboratoires Majorelle" },
     [{ ordinal: 6, mark: "OPTIVENZY", composite: 2 }])?.ordinal, 6);

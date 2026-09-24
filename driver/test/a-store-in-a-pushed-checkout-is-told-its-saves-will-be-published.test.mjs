@@ -13,9 +13,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, rmSync, symlinkSync } from "node:fs";
+import { existsSync, mkdtempSync, mkdirSync, rmSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, dirname } from "node:path";
+import { delimiter, join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { whereSavesGo } from "../../shared/store-in-repo.mjs";
 import { handRunEnv } from "./drive-env.mjs";
@@ -154,14 +154,20 @@ test("doctor WARNS about a store whose checkout publishes its saves, and its exi
     mkdirSync(home);
     mkdirSync(bin);
     symlinkSync(process.execPath, join(bin, "node"));
+    // Windows keeps git under Program Files rather than /usr/bin, so there the folder git answers from is
+    // named too, with SystemRoot, which Windows programs expect to find. Elsewhere nothing is added.
+    const windows = process.platform === "win32"
+      ? { dirs: String(process.env.PATH ?? "").split(delimiter).filter((d) => d && existsSync(join(d, "git.exe"))).slice(0, 1),
+        env: { SystemRoot: process.env.SystemRoot } }
+      : { dirs: [], env: {} };
     const doctor = (store) => {
       try {
         const out = execFileSync(process.execPath, [ONBOARD, "--check"], {
           encoding: "utf8", stdio: "pipe", timeout: 120_000,
           // An empty base, so nothing from the shell running the suite reaches doctor but what is named
           // here; `handRunEnv` also clears the two variables that would make it ignore this home.
-          env: handRunEnv({ HOME: home, PATH: [bin, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1",
-            CLEAROTRON_CUSTOMERS_DIR: store, GIT_CEILING_DIRECTORIES: s.dir, GIT_CONFIG_NOSYSTEM: "1" }, {}),
+          env: handRunEnv({ HOME: home, USERPROFILE: home, PATH: [bin, "/usr/bin", "/bin", ...windows.dirs].join(delimiter), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1",
+            CLEAROTRON_CUSTOMERS_DIR: store, GIT_CEILING_DIRECTORIES: s.dir, GIT_CONFIG_NOSYSTEM: "1", ...windows.env }, {}),
         });
         return { code: 0, out };
       } catch (e) { return { code: e.status ?? -1, out: `${e.stdout ?? ""}${e.stderr ?? ""}` }; }

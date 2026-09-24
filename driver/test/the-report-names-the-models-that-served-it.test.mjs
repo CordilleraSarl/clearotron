@@ -118,7 +118,7 @@ const FRAMEWORK = { framework_key: "house-triage", title: "t", bands: [
   { label: "Manageable", tone: "low" }, { label: "Low", tone: "minimal" }] };
 const markDoc = (name) => ({
   name, rating: "Medium", bullets: ["Synthetic fixture for the served-model record."],
-  findings: [{ ordinal: 1, name: "Look-alike listing", owner: "Kurena SA", band: "Medium",
+  findings: [{ ordinal: 1, name: "Look-alike listing", owner: "Kolema SA", band: "Medium",
     net: "A listing under a closely similar name is live on a marketplace.", type: "Active Business", evidence: [] }],
 });
 const ROWS = [
@@ -129,7 +129,7 @@ const ROWS = [
 async function publish(tag, product, rows, prepare = null) {
   const runDir = join(ROOT, `pub-${tag}`);
   mkdirSync(driverDir(runDir), { recursive: true });
-  writeFileSync(join(runDir, "status.json"), JSON.stringify({ runId: `fixture-${tag}`, markName: "KURENA" }));
+  writeFileSync(join(runDir, "status.json"), JSON.stringify({ runId: `fixture-${tag}`, markName: "KOLEMA" }));
   writeFileSync(join(runDir, "report.md"), "# Clearance report\n\nBody text.\n");
   writeFileSync(join(runDir, "findings.json"), JSON.stringify({ schema_version: 6, findings: [] }));
   writeFileSync(driverDir(runDir, "profile.json"), JSON.stringify({ key: `${tag}-key` }));
@@ -140,7 +140,7 @@ async function publish(tag, product, rows, prepare = null) {
   const runId = `tmp0775-2026-09-14-${tag}`;
   const common = { runId, codename: tag, runDir, poolRoot, poolUrl: "https://trademark.test", customerKey: `${tag}-key`, skipRegen: true };
   if (product === "clearance") await publishReport({ ...common, reportMd: join(runDir, "report.md"), findingsJson: join(runDir, "findings.json") });
-  else await publishKnockout({ ...common, findings: { marks: [markDoc("KURENA")] }, framework: FRAMEWORK, overall: "Medium" });
+  else await publishKnockout({ ...common, findings: { marks: [markDoc("KOLEMA")] }, framework: FRAMEWORK, overall: "Medium" });
   const read = (name) => readFileSync(join(poolRoot, runId, name), "utf8");
   return { meta: JSON.parse(read("meta.json")), data: JSON.parse(read("report-data.json")), html: read("report.html") };
 }
@@ -280,12 +280,14 @@ for (const product of ["clearance", "knockout"]) {
 // refused), and a row naming no model used to be read as a call never made. A run made only of such a
 // turn then read null, "nothing was looked at", and its tokens were in no total.
 
+// The stand-in's controls carry the MOCK_ prefix: the program's environment is a list, and that prefix is
+// how a test control reaches it (driver/engine/engine-env.mjs).
 const STANDIN = join(ROOT, "standin-claude.mjs");
 writeFileSync(STANDIN, `#!/usr/bin/env node
 if (process.argv.includes("--version")) { process.stdout.write("2.1.270 (Claude Code)\\n"); process.exit(0); }
 if (!process.stdin.isTTY) { process.stdin.resume(); for await (const _ of process.stdin) { /* the prompt */ } }
-for (const ev of JSON.parse(process.env.STANDIN_EVENTS || "[]")) process.stdout.write(JSON.stringify(ev) + "\\n");
-process.exit(Number(process.env.STANDIN_EXIT || 0));
+for (const ev of JSON.parse(process.env.MOCK_STANDIN_EVENTS || "[]")) process.stdout.write(JSON.stringify(ev) + "\\n");
+process.exit(Number(process.env.MOCK_STANDIN_EXIT || 0));
 `);
 chmodSync(STANDIN, 0o755);
 
@@ -312,7 +314,7 @@ async function readingThroughTheDoor(runDir, turn, engine = "anthropic-agent") {
   mkdirSync(join(runDir, "register-units"), { recursive: true });
   writeFileSync(join(runDir, "register-units", "transliteration-numeric.md"), "| 诺瓦脉冲 | https://reg.example/tm/555 | live |");
   const env = { CLEAROTRON_AI: engine, CLEAROTRON_AI_BILLING: "subscription",
-    STANDIN_EVENTS: JSON.stringify(turn.events), STANDIN_EXIT: String(turn.exit) };
+    MOCK_STANDIN_EVENTS: JSON.stringify(turn.events), MOCK_STANDIN_EXIT: String(turn.exit) };
   const saved = Object.fromEntries([...Object.keys(env), ...HELD_OFF].map((k) => [k, process.env[k]]));
   const savedPath = envFrom(process.env, "CLEAROTRON_CLAUDE_PATH");
   for (const k of HELD_OFF) delete process.env[k];

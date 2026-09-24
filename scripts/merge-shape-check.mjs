@@ -59,6 +59,7 @@
 import { execFileSync } from "node:child_process";
 import { dirname, basename } from "node:path";
 import { fileURLToPath } from "node:url";
+import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
@@ -203,7 +204,7 @@ export function parseArgs(args, here = HERE) {
   return { repo, commit };
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (isEntrypoint(import.meta.url)) {
   const { repo, commit } = parseArgs(process.argv.slice(2));
 
   const shape = mergeShape({ repo, commit });

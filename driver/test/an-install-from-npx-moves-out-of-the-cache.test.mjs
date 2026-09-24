@@ -20,13 +20,18 @@ import { installShim, inspectShim, shimPath, SHIM_MARKER } from "../../shared/ve
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const NPX = "/srv/op/.npm/_npx/0a1b2c/node_modules/clearotron";
+// The layouts below are Linux's, asked for with `platform: "linux"`, but the functions compose them with
+// this machine's own `join`. So the expected paths are composed the same way: on Linux they are the
+// literal paths they always were, and on Windows they carry the separator the functions produce there.
+const LOCAL = join("/srv/op", ".local");
+const DEMO_PREFIX = join("/srv/op/trademark-demo", "program");
 
 test("an install in npx's cache plans a move to ~/.local, at its own version", () => {
   const plan = relocationPlan({ installDir: NPX, env: { HOME: "/srv/op" }, platform: "linux", version: "0.3.0-beta.5" });
-  assert.equal(plan.prefix, "/srv/op/.local");
-  assert.equal(plan.root, "/srv/op/.local/lib/node_modules/clearotron");
-  assert.equal(plan.entry, "/srv/op/.local/lib/node_modules/clearotron/bin/clearotron.mjs");
-  assert.deepEqual(plan.npmArgs.slice(0, 4), ["install", "--global", "--prefix", "/srv/op/.local"]);
+  assert.equal(plan.prefix, LOCAL);
+  assert.equal(plan.root, join(LOCAL, "lib", "node_modules", "clearotron"));
+  assert.equal(plan.entry, join(LOCAL, "lib", "node_modules", "clearotron", "bin", "clearotron.mjs"));
+  assert.deepEqual(plan.npmArgs.slice(0, 4), ["install", "--global", "--prefix", LOCAL]);
   assert.equal(plan.npmArgs.at(-1), "clearotron@0.3.0-beta.5", "the move must install THIS version, never whatever is newest");
   // THE CONTROL: anywhere else, there is nothing to move.
   for (const dir of [ROOT, "/srv/op/.local/lib/node_modules/clearotron", "/usr/lib/node_modules/clearotron"])
@@ -49,7 +54,14 @@ test("versions order the way npm orders them, a prerelease below its release", (
   assert.equal(compareVersions(undefined, "0.3.0"), null);
 });
 
-test("an update installs the newest published version its channel may reach", () => {
+// npm's global layout on Linux and macOS is `<prefix>/lib/node_modules` beside `<prefix>/bin`, and it is
+// the one the update prefix and the full command are read back from. npm on Windows lays a global install
+// out as `<prefix>/node_modules` with its launchers in the prefix itself, and globalBinDirFrom names no
+// bin directory there, so these two arms describe a layout Windows does not have.
+const POSIX_NPM_LAYOUT = { skip: process.platform === "win32"
+  && "npm's POSIX global layout (<prefix>/lib/node_modules and <prefix>/bin): Windows npm has neither, so no update prefix or bin directory is derived there" };
+
+test("an update installs the newest published version its channel may reach", POSIX_NPM_LAYOUT, () => {
   assert.equal(channelOf("0.3.0-beta.5"), "beta");
   assert.equal(channelOf("0.3.0"), "latest");
   assert.equal(channelOf("1.2.3-rc.1"), "rc");
@@ -99,7 +111,7 @@ test("the published versions are read from npm, and a failed read is an absence,
 test("a connect line composed in npx's cache names the permanent copy once it exists", () => {
   const home = mkdtempSync(join(tmpdir(), "permanent-home-"));
   try {
-    const env = { HOME: home };
+    const env = { HOME: home, USERPROFILE: home };
     assert.equal(stableInstallRoot({ installRoot: NPX, env }), NPX, "no permanent copy yet, so there is nothing else to name");
     const root = join(home, ".local", "lib", "node_modules", "clearotron");
     mkdirSync(join(root, "mcp-server"), { recursive: true });
@@ -116,11 +128,11 @@ test("npm's link into this install is replaced with the launcher; a link into an
     const root = join(home, ".local", "lib", "node_modules", "clearotron");
     mkdirSync(join(root, "bin"), { recursive: true });
     writeFileSync(join(root, "bin", "clearotron.mjs"), "#!/usr/bin/env node\n");
-    const path = shimPath({ HOME: home });
+    const path = shimPath({ HOME: home, USERPROFILE: home });
     mkdirSync(dirname(path), { recursive: true });
     symlinkSync("../lib/node_modules/clearotron/bin/clearotron.mjs", path);
     assert.equal(inspectShim(path, { installDir: root }).kind, "npm-link");
-    const r = installShim({ env: { HOME: home }, installDir: root, nodePath: process.execPath });
+    const r = installShim({ env: { HOME: home, USERPROFILE: home }, installDir: root, nodePath: process.execPath });
     assert.equal(r.ok, true, `npm's own link was treated as somebody else's: ${r.reason} ${r.detail}`);
     assert.equal(lstatSync(path).isSymbolicLink(), false, "the link was left in place of the launcher");
     assert.match(readFileSync(path, "utf8"), new RegExp(SHIM_MARKER));
@@ -132,7 +144,7 @@ test("npm's link into this install is replaced with the launcher; a link into an
     rmSync(path);
     symlinkSync(join(other, "bin", "clearotron.mjs"), path);
     assert.equal(inspectShim(path, { installDir: root }).kind, "foreign");
-    assert.equal(installShim({ env: { HOME: home }, installDir: root }).reason, "occupied");
+    assert.equal(installShim({ env: { HOME: home, USERPROFILE: home }, installDir: root }).reason, "occupied");
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
@@ -163,11 +175,11 @@ test("the move comes before any question or write, update runs npm only after th
 test("a demo run from npx plans its own copy inside its base, and runs no npm when that copy is current", () => {
   const at = (o) => demoProgramPlan({ base: "/srv/op/trademark-demo", installDir: NPX, platform: "linux", version: "0.3.0-beta.6", exists: () => false, ...o });
   const plan = at();
-  assert.equal(plan.prefix, "/srv/op/trademark-demo/program", "the copy is outside the demo's base, so removing the demo would not remove it");
-  assert.equal(plan.root, "/srv/op/trademark-demo/program/lib/node_modules/clearotron");
+  assert.equal(plan.prefix, DEMO_PREFIX, "the copy is outside the demo's base, so removing the demo would not remove it");
+  assert.equal(plan.root, join(DEMO_PREFIX, "lib", "node_modules", "clearotron"));
   assert.equal(plan.current, false);
   assert.equal(plan.npmArgs.at(-1), "clearotron@0.3.0-beta.6", "the copy must be THIS version");
-  assert.deepEqual(plan.npmArgs.slice(0, 4), ["install", "--global", "--prefix", "/srv/op/trademark-demo/program"]);
+  assert.deepEqual(plan.npmArgs.slice(0, 4), ["install", "--global", "--prefix", DEMO_PREFIX]);
   // Current: the copy is there at this version, so a second start runs no npm.
   const read = (p) => (p.endsWith("package.json") ? JSON.stringify({ version: "0.3.0-beta.6" }) : "");
   assert.equal(at({ exists: () => true, read }).current, true);
@@ -182,7 +194,7 @@ test("a demo's services name the demo's own copy first, then the permanent insta
   const home = mkdtempSync(join(tmpdir(), "demo-program-"));
   try {
     const base = join(home, "trademark-demo");
-    const env = { HOME: home, CLEAROTRON_DEMO: "1", CLEAROTRON_WORK_DIR: join(base, "workspace") };
+    const env = { HOME: home, USERPROFILE: home, CLEAROTRON_DEMO: "1", CLEAROTRON_WORK_DIR: join(base, "workspace") };
     const lay = (root) => { mkdirSync(join(root, "mcp-server"), { recursive: true }); writeFileSync(join(root, "mcp-server", "server.mjs"), ""); };
     assert.equal(stableInstallRoot({ installRoot: NPX, env }), NPX, "nothing laid down yet, so there is nothing else to name");
     const permanent = join(home, ".local", "lib", "node_modules", "clearotron");
@@ -223,7 +235,7 @@ test("the demo's copy is made only when missing, and a failed copy is said and n
   assert.equal(drive({ laid: false }).root, null, "an npm exit 0 with no program on disk was taken as a copy");
 });
 
-test("services started from the demo's copy print commands that name the copy, not npm's cache", () => {
+test("services started from the demo's copy print commands that name the copy, not npm's cache", POSIX_NPM_LAYOUT, () => {
   const prefix = "/srv/op/trademark-demo/program";
   const root = join(prefix, "lib", "node_modules", "clearotron");
   const npxEnv = { HOME: "/srv/op/nobody-home", PATH: "/usr/bin:/bin", npm_command: "exec", npm_lifecycle_event: "npx",

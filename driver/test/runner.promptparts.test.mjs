@@ -38,6 +38,7 @@ process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
 // lands rather than the day someone remembers to retype it.
 const PROSE_SUFFIXES = Object.values(PROSE_PARTS);
 
+
 test("prose sidecars assemble + run; legacy inline still works; missing-subject & broken-manifest park + ping + cleanup", async () => {
   const root = mkdtempSync(join(tmpdir(), "clearotron-promptparts-"));
   const callLog = join(root, "calls.jsonl");

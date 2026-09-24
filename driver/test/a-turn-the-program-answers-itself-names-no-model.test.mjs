@@ -35,13 +35,15 @@ const { anthropicAgentEngine } = await import("../engine/anthropic-agent.mjs");
 const { runStage } = await import("../gateway.mjs");
 
 // A stand-in for the Claude program: it answers --version, reads the prompt, then prints the events it is
-// handed in STANDIN_EVENTS as the program's stream and exits with STANDIN_EXIT.
+// handed in MOCK_STANDIN_EVENTS as the program's stream and exits with MOCK_STANDIN_EXIT.
+// Its controls carry the MOCK_ prefix because the program's environment is a list, and that prefix is how a
+// test control reaches it (driver/engine/engine-env.mjs).
 const STANDIN = join(ROOT, "standin-claude.mjs");
 writeFileSync(STANDIN, `#!/usr/bin/env node
 if (process.argv.includes("--version")) { process.stdout.write("2.1.270 (Claude Code)\\n"); process.exit(0); }
 if (!process.stdin.isTTY) { process.stdin.resume(); for await (const _ of process.stdin) { /* the prompt */ } }
-for (const ev of JSON.parse(process.env.STANDIN_EVENTS || "[]")) process.stdout.write(JSON.stringify(ev) + "\\n");
-process.exit(Number(process.env.STANDIN_EXIT || 0));
+for (const ev of JSON.parse(process.env.MOCK_STANDIN_EVENTS || "[]")) process.stdout.write(JSON.stringify(ev) + "\\n");
+process.exit(Number(process.env.MOCK_STANDIN_EXIT || 0));
 `);
 chmodSync(STANDIN, 0o755);
 
@@ -63,7 +65,7 @@ const STREAMS = {
 /** Run `fn` with the stand-in in place of the program, printing `stream`. */
 async function withStandin(stream, fn) {
   const env = { CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_AI_BILLING: "subscription",
-    STANDIN_EVENTS: JSON.stringify(stream.events), STANDIN_EXIT: String(stream.exit) };
+    MOCK_STANDIN_EVENTS: JSON.stringify(stream.events), MOCK_STANDIN_EXIT: String(stream.exit) };
   const saved = Object.fromEntries(Object.keys(env).map((k) => [k, process.env[k]]));
   const savedPath = envFrom(process.env, "CLEAROTRON_CLAUDE_PATH");
   Object.assign(process.env, env);

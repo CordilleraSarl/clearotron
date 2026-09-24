@@ -87,7 +87,10 @@ test("the EADDRINUSE sentence names the port, the likely cause, the way to look,
   assert.match(m, /127\.0\.0\.1:18794/, "the full address, not just the number");
   assert.match(m, /already in use/i);
   assert.match(m, /second copy of profile-service/i, "what is probably holding it — the first-run cause");
-  assert.match(m, /ss -ltnp|lsof/, "how to find out what actually holds it");
+  // The way to look is written for this machine's shell: PowerShell's cmdlet on Windows, `ss`/`lsof`
+  // elsewhere (shared/os-advice.mjs, whatHoldsPort).
+  assert.match(m, process.platform === "win32" ? /Get-NetTCPConnection -LocalPort 18794/ : /ss -ltnp|lsof/,
+    "how to find out what actually holds it");
   assert.match(m, /PROFILE_PORT/, "the variable that moves it, NAMED — not 'the port variable'");
   assert.doesNotMatch(m, STACK_FRAME);
 });

@@ -332,7 +332,7 @@ export function variantRomanizationGaps(model) {
  *   which is also where the incident string came from.
  *
  *   `watchlist_owners` — those compile to `predicate:"owner"`, exempt from every term rule because
- *   owner names are prose by nature ("Delphi Technologies (BorgWarner Inc.)").
+ *   owner names are prose by nature ("Korphi Technologies (BorgWarner Inc.)").
  */
 // — `termAnnotationIssue` moved to term-shape.mjs, the ONE term vocabulary, so the plan
 // compiler applies the SAME predicate this gate does rather than a second copy of it.

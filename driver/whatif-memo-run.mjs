@@ -97,7 +97,7 @@ export function movedArtifacts(before = {}, after = {}) {
  *
  * ✕ EVERYTHING ELSE IS THE SEAT WRITING WHERE IT WAS NOT INVITED, and it is refused by name. The seat
  * has a real file-write grant on the run directory, and on a delivered run it used it: an archived
- * client run carries `memo-osler-coexistence.json` at its root, which is the seat's reply written to a
+ * client run carries `memo-halver-coexistence.json` at its root, which is the seat's reply written to a
  * path of its own choosing instead of to the `expectFile` it was given. That also explains the retry
  * that preceded it — the harness looked for the reply where it had asked for it and did not find it.
  *

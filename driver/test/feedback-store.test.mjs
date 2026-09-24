@@ -18,7 +18,7 @@ const FULL = {
   verdict: "bad",
   why: "The citation does not show use of the cited mark on these goods.",
   capturedBy: "lawyer@example.test",
-  locator: { ordinal: 3, mark: "KURENA", band: "Manageable", disposition: "rebuttable", section: "03 Notable but manageable" },
+  locator: { ordinal: 3, mark: "KOLEMA", band: "Manageable", disposition: "rebuttable", section: "03 Notable but manageable" },
   excerpt: "Distinguished as wholes on the filed goods.",
   run: { account: "petcary", matter: "m", markName: "VENZY", product: "global-preliminary-search", issuedAt: "2026-08-04T06:54:58.017Z", engineCommit: "abc123", runDir: "/pool/x" },
 };
@@ -32,7 +32,7 @@ test("a flag records WHERE it was raised in four ways, not one — the ordinal c
   // The ordinal is renumbered contiguously on EVERY publish (findings-model.mjs), so on its own it
   // silently re-points. These three are what let a reader tell a moved finding from the right one.
   assert.deepEqual(rec.locator, {
-    ordinal: 3, ref: null, searchedMark: null, mark: "KURENA", band: "Manageable", disposition: "rebuttable",
+    ordinal: 3, ref: null, searchedMark: null, mark: "KOLEMA", band: "Manageable", disposition: "rebuttable",
     section: "03 Notable but manageable",
   });
   assert.equal(rec.excerpt, "Distinguished as wholes on the filed goods.");
@@ -86,7 +86,9 @@ test("listFlags is newest-first and SKIPS a corrupt file — one bad record must
   rmSync(d, { recursive: true, force: true });
 });
 
-test("the store is group-readable but not world-readable, and lives BESIDE the pool, not inside a run", () => {
+test("the store is group-readable but not world-readable, and lives BESIDE the pool, not inside a run", {
+  skip: process.platform === "win32" && "mode bits: the arm reads the store file's 0o640 permission, and Windows keeps no group or world mode on a file",
+}, () => {
   const d = dir();
   const { path } = appendFlag(d, FULL);
   assert.equal(statSync(path).mode & 0o777, 0o640);

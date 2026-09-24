@@ -160,7 +160,8 @@ test("e2e: a unit that NEVER writes its band fails AT THE STAGE, naming the band
   assert.match(why, /unit_band_unreadable/, `fails naming the BAND as the cause, not merely the absent note: ${JSON.stringify({ fail: res.fail, reason: res.reason, stage: res.failedStage })}`);
   // AND THE ABSENCE IS STILL REPORTED, so the two halves cannot drift apart into a reason that names a
   // cause for an artifact nobody said was missing.
-  assert.match(why, /missing_file:.*register-units\/transliteration-numeric\.md/,
+  // Either separator: the named path is native, and Windows joins it with backslashes.
+  assert.match(why, /missing_file:.*register-units[\\/]transliteration-numeric\.md/,
     "the absent artifact is named beside its cause");
   assert.notEqual(res.failedStage, "fan-in", "the failure is at the unit, where a retry CAN help — not the fan-in terminal");
   const ev = events.find((e) => e.event === "stage" && e.stage === "register-unit:transliteration-numeric");

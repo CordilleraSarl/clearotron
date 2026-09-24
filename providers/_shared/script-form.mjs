@@ -140,15 +140,15 @@ export function romanizationSpellings(value) {
  *
  * Two folds fused, and the seam between them is the whole point:
  *   - LATIN text is accent-folded: lowercase, NFKD, then combining marks stripped — but ONLY the
- *     marks sitting on a Latin base letter — then punctuation/whitespace dropped. "Tikí-Slush" and
- *     "CORAL FREEZE" collide, exactly as the owner-formative dedup has always wanted.
+ *     marks sitting on a Latin base letter — then punctuation/whitespace dropped. "Wavó-Slush" and
+ *     "WAVO SLUSH" collide, exactly as the owner-formative dedup has always wanted.
  *   - NON-LATIN text keeps every combining mark. In most non-Latin scripts a combining mark is not
  *     an accent, it is part of WHICH LETTER this is: Japanese dakuten/handakuten (タ=ta vs ダ=da),
  *     Thai vowel signs, Devanagari matras, Arabic diacritics. A fold that strips them (the previous
  *     shape of this function: bare NFKD + strip all \p{M}) collapses MARK-DISTINGUISHED SIBLINGS
- *     into one key: ティキスラッシュ
- *     (TIKI SURASSHU) and ディキスラッシュ (DIKI SURASSHU) keyed identically, so the romanisation
- *     lookup handed one sibling the OTHER's romanisation and the dictated DIKI form was never
+ *     into one key: ワボスラッシュ
+ *     (WABO SURASSHU) and ワホスラッシュ (WAHO SURASSHU) keyed identically, so the romanisation
+ *     lookup handed one sibling the OTHER's romanisation and the dictated WAHO form was never
  *     searched anywhere — a silent wrong-query false clean, the exact class the carriage fix exists
  *     to kill. NFKD is kept for its width folding (half-width ｶﾞ and full-width ガ are the same
  *     letter); only the mark-stripping is script-scoped.

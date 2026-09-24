@@ -49,7 +49,9 @@ test("an unreadable root is an ERROR, not an empty list", () => {
   assert.ok(w.error && w.files.length === 0, "empty AND explained, so a caller can tell which zero it has");
 });
 
-test("an unreadable subtree is recorded, so a hole cannot pass as an absence", () => {
+test("an unreadable subtree is recorded, so a hole cannot pass as an absence", {
+  skip: process.platform === "win32" && "mode bits: chmod 000 does not make a Windows folder unreadable, so there is no hole to record",
+}, () => {
   const root = scratch();
   try {
     mkdirSync(join(root, "open"));

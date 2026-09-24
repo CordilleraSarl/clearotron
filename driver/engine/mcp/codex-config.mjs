@@ -16,7 +16,7 @@ import { tomlString } from "../../../shared/toml-string.mjs";
 // TOML, like the repo's other MCP glue); every value is escaped.
 //
 // Live-unverified (grounded in the codex docs/flag corpus, 2026-07): the exact
-// `env_vars` forward semantics and MCP-server network under `--sandbox workspace-write`. The mapping is
+// `env_vars` forward semantics and MCP-server network under codex's sandbox. The mapping is
 // designed to mirror the claude path — creds reach the servers by ENV INHERITANCE (never written into the
 // config); only the non-secret per-run values (session key, ledger paths) ride `env`.
 
@@ -35,6 +35,20 @@ export const CRED_ENV_FORWARD = [
   // from this list simply is not inherited. A path is not a secret, but it is just as load-bearing.
   "USPTO_LOCAL_DB",
 ];
+
+// The settings the gather servers read to reach a register, which are not credentials: its address, its
+// fixtures, the case-law bridges' sign-in folder and name, and three tuning values. On the Claude engine
+// a server inherits them from the program; codex hands a server only its own entry and its `env_vars`, so
+// until these were forwarded a Codex server never saw them and ran on its defaults whatever the install
+// set. One list for both engines: engine-env.mjs passes these names to
+// the program, and every server block below forwards them. `EUIPO_ENVIRONMENT` is also written into the
+// EUIPO server's own entry by gather-config; forwarding it as well changes nothing, since `env` wins.
+export const TOOL_SERVER_SETTINGS = Object.freeze([
+  "CLARIVATE_API_BASE", "SIGNA_BASE_URL", "EUIPO_ENVIRONMENT", "SIGNA_FIXTURES_DIR", "CLAWDI_SIGNA_FIXTURES_DIR",
+  "CLEAROTRON_HTTP_TIMEOUT_MS", "CLEAROTRON_BAND_RESPONSE_CHARS", "CLEAROTRON_ENUMERATE_NAMES_CHUNK",
+  // The case-law bridges: where their sign-in lives, and the name they register under.
+  "OAUTH_BRIDGE_CREDS_DIR", "OAUTH_BRIDGE_CLIENT_NAME",
+]);
 
 // ── TOML value escaping (basic strings) ──────────────────────────────────────────────────────────────
 // One encoder for every TOML block the product writes; re-exported so this module's callers keep their import.
@@ -68,6 +82,8 @@ export function parseClaudeMcpServers(mcpConfigJson) {
 // claude tools are namespaced `mcp__<server>__<tool>`; codex filters per server with `enabled_tools`
 // naming the BARE tool. A bare (non-`mcp__`) entry like `WebFetch` is a claude built-in with no codex
 // server equivalent — it is dropped here and handled separately (the engine-local fetch server below).
+// A whole-server grant, `mcp__<server>__*`, comes through as the tool `*`; the renderer writes no list
+// for it (see `emitServer`).
 export function enabledToolsByServer(allowedTools) {
   const out = {};
   if (!allowedTools) return out;
@@ -104,12 +120,16 @@ export function webFetchRequested(allowedTools) {
 // turn that is awaiting it, so the turn's own budget is the honest ceiling and the child's hard wall
 // stays the backstop. Absent/0/negative ⇒ emit nothing and leave codex's default alone, so this is inert
 // for any caller that does not thread a budget.
-export function renderCodexConfigToml({ mcpConfig, allowedTools, developerInstructions, nodeBin = process.execPath, credEnvForward = CRED_ENV_FORWARD, toolTimeoutSec } = {}) {
+export function renderCodexConfigToml({ mcpConfig, allowedTools, developerInstructions, nodeBin = process.execPath, credEnvForward = [...CRED_ENV_FORWARD, ...TOOL_SERVER_SETTINGS], toolTimeoutSec, fence = null, withheldFromCommands = [],
+  platform = process.platform } = {}) {
   const servers = parseClaudeMcpServers(mcpConfig);
   const enabled = enabledToolsByServer(allowedTools);
   const toolTimeout = Number(toolTimeoutSec) > 0 ? Math.floor(Number(toolTimeoutSec)) : undefined;
   const lines = [];
   if (developerInstructions) lines.push(`developer_instructions = ${tomlString(developerInstructions)}`, "");
+  // Top-level, so above the first table: TOML reads a bare key after a table header as that table's.
+  if (fence) lines.push(`default_permissions = ${tomlString(FENCE_PROFILE)}`, "");
+  lines.push(...commandEnvToml(withheldFromCommands));
 
   const emitServer = (name, s, { forwardCreds } = {}) => {
     lines.push(`[mcp_servers.${/^[A-Za-z0-9_-]+$/.test(name) ? name : tomlString(name)}]`);
@@ -124,7 +144,26 @@ export function renderCodexConfigToml({ mcpConfig, allowedTools, developerInstru
     // Per-call, and deliberately on EVERY server including the engine-local fetch one: the cap belongs to
     // the turn's budget, not to any one server's reputation for being slow.
     if (toolTimeout) lines.push(`tool_timeout_sec = ${toolTimeout}`);
-    if (s.enabledTools?.length) lines.push(`enabled_tools = ${tomlStringArray(s.enabledTools)}`);
+    // A SERVER GRANTED WHOLE GETS NO LIST. On claude `mcp__<server>__*` means every tool that server
+    // serves, and the case-law step's two bridges are granted that way (gather-config's `allowedToolsFor`).
+    // codex matches `enabled_tools` by exact name, so the `["*"]` this once wrote named no tool, both
+    // bridges came up offering nothing, and on this engine the case-law step read EUR-Lex alone. With no
+    // list, codex offers every tool the server serves, which is what the grant says.
+    if (s.enabledTools?.length && !s.enabledTools.includes("*")) lines.push(`enabled_tools = ${tomlStringArray(s.enabledTools)}`);
+    // APPROVED, ON EVERY BLOCK THIS FUNCTION WRITES. `codex exec` runs with the approval policy `never`,
+    // and under the default per-server mode (`auto`) a tool that is not read-only needs approval when it
+    // is open-world, or when destructive or open-world is left unmarked. The register search tool is
+    // marked open-world, so with the sandbox on every call to it was refused ("MCP tool call requires
+    // approval, but approval policy is never") and the register was never queried. `approve` is the
+    // documented value that lets a server's tools through
+    // (https://learn.chatgpt.com/docs/config-file/config-reference, `default_tools_approval_mode`).
+    //
+    // WHAT IT REACHES: only the servers in this per-turn file, which are the ones the stage is granted
+    // plus the fetch server, each narrowed by its enabled_tools list, except a server granted whole, which
+    // offers every tool it serves, as it does on claude. WHAT IT DOES NOT: shell commands.
+    // Those stay under the stage's permission profile (`fenceToml`, below), and under the policy `never` a
+    // command that asks to leave the sandbox is still refused.
+    lines.push(`default_tools_approval_mode = "approve"`);
     lines.push("");
   };
 
@@ -134,5 +173,75 @@ export function renderCodexConfigToml({ mcpConfig, allowedTools, developerInstru
   if (webFetchRequested(allowedTools))
     emitServer("fetch", { command: nodeBin, args: [FETCH_SERVER], env: {}, enabledTools: ["fetch_url"] }, { forwardCreds: false });
 
+  if (fence) lines.push(...fenceToml(fence));
+  // ON WINDOWS, CODEX'S SANDBOX IS ON ONLY WHEN THIS NAMES IT. With no `[windows] sandbox` and no feature
+  // switch, codex 0.156.1 picks no Windows sandbox at all (`WindowsSandboxLevel::Disabled`,
+  // codex-rs/core/src/windows_sandbox.rs, `from_features`), so `--sandbox workspace-write` would hold
+  // nothing there. `unelevated` is the mode that needs no administrator: a restricted token made from the
+  // user's own. `elevated` is not offered, even on a machine set up for it: codex records that setup under
+  // its home folder (`<CODEX_HOME>/.sandbox/setup_marker.json`, windows-sandbox-rs/src/setup.rs), and every
+  // turn here runs with a fresh CODEX_HOME, so each turn would try the administrator setup again.
+  if (platform === "win32") lines.push("[windows]", `sandbox = "unelevated"`, "");
+
   return lines.join("\n").trimEnd() + "\n";
+}
+
+// ── what the stage's shell commands inherit ─────────────────────────────────────────────────────────
+// Codex hands a command its own whole environment by default: `inherit` is `all`, and it keeps names
+// containing KEY, SECRET or TOKEN unless told otherwise (the vendor's Advanced Configuration page). The
+// program holds the register and research keys because its tool servers read them, so without this every
+// command a stage ran could print them, with or without the sandbox. Each name the caller withholds is
+// written as an `exclude` filter, which removes it from commands and from nothing else: codex builds a
+// server's environment from its own short default list plus that server's `env_vars`, read from the
+// program's environment, never from what its commands get (codex-rs `create_env_for_mcp_server`, the same
+// in 0.154.0 and 0.156.1).
+//
+// THE FILTERS ALONE DID NOTHING, measured on codex 0.156.1 with the sandbox bypassed: a stage's `env`
+// still listed every key. Codex takes a "shell snapshot" of a login shell once per session and replays it
+// before each command, and it starts that shell with the filtered environment only when a credential
+// broker is configured; otherwise the shell inherits the program's whole environment, the snapshot
+// exports every key in it, and the replay puts them back (codex-rs `run_script_with_timeout` in
+// core/src/shell_snapshot.rs). So the snapshot is turned off wherever names are withheld (`shell_snapshot`,
+// a stable feature on by default since at least 0.154.0). With it off, the same turn listed none of them.
+// A command then starts its login shell afresh, which the snapshot existed to save.
+//
+// Filter names are matched without regard to case, and codex refuses the whole file if two of them are
+// the same name in different case, so each name is written once whatever its case.
+export function commandEnvToml(withheld = []) {
+  const seen = new Set();
+  const names = (withheld ?? []).filter((n) => n && !seen.has(n.toUpperCase()) && seen.add(n.toUpperCase()));
+  if (!names.length) return [];
+  return ["[features]", "shell_snapshot = false", "",
+    "[shell_environment_policy.filters]", ...names.map((n) => `${tomlString(n)} = "exclude"`), ""];
+}
+
+// ── the stage's permission profile: what its shell commands may read and write ──────────────────────
+// codex's `workspace-write` sandbox confines where a command WRITES and lets it read the whole disk, the
+// install's settings files and the program's own sign-in included. A permission profile confines reading
+// too (the vendor's Permissions guide, a beta feature since 0.138.0; the floor is 0.154.0): a stage's
+// commands read the platform's own paths, the instruction trees and the temp folders, and write the run
+// folder, their working folder and the temp folders. Nothing else is readable, so a page a stage fetched
+// cannot get a command to print the account's files. The temp folders stay writable because
+// `workspace-write` let commands use them and stages write their output through the shell.
+//
+// ONLY WITH THE SANDBOX ON. Under the bypass codex builds no sandbox, so a profile would enforce nothing;
+// the caller passes no `fence` then, and the file stays what it was. With the sandbox on the command line
+// must carry no `--sandbox`, or codex "uses those older sandbox settings instead of default_permissions"
+// (Permissions guide) and the fence is off without a word; `buildCodexArgs` holds that.
+//
+// CLEAROTRON'S OWN CODEX FOLDERS ARE NOT IN THE TEMP FOLDER, so nothing here grants them. Each turn's
+// CODEX_HOME holds its sign-in (a link to the saved one, or a copy where Windows refuses links) and its
+// session record; they live in the account's own cache folder (openai-agent.mjs, `codexHomesRoot`), which
+// this profile never names. Not a refusal of their names inside the temp folder: codex scans a folder
+// before it applies a wildcard refusal there, and in a shared temp folder one entry the account cannot
+// read fails the whole turn (measured, 0.156.1).
+export const FENCE_PROFILE = "clearotron-stage";
+export function fenceToml({ runDir = null, readRoots = [] } = {}) {
+  const key = (p) => tomlString(p);
+  const out = [`[permissions.${FENCE_PROFILE}.filesystem]`,
+    `":minimal" = "read"`, `":tmpdir" = "write"`, `":slash_tmp" = "write"`];
+  for (const r of [...new Set(readRoots.filter(Boolean))]) out.push(`${key(r)} = "read"`);
+  if (runDir) out.push(`${key(runDir)} = "write"`);
+  out.push("", `[permissions.${FENCE_PROFILE}.filesystem.":workspace_roots"]`, `"." = "write"`, "");
+  return out;
 }

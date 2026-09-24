@@ -28,7 +28,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync, statSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { join, dirname, posix } from "node:path";
 import { fileURLToPath } from "node:url";
 import { STAGES, resolveSkillReads, resolveAlsoReads, SKILL_COMPANIONS } from "../stages.mjs";
 
@@ -52,8 +52,9 @@ function declared() {
   return out;
 }
 
-/** `skills/<dir>/<link>` with `..` resolved, so a cross-skill link is comparable to a declaration. */
-const normalise = (dir, link) => `skills/${join(dir, link).split("/")
+/** `skills/<dir>/<link>` with `..` resolved, so a cross-skill link is comparable to a declaration.
+ *  POSIX-joined on every platform: the declarations are written with `/`, and a markdown link is too. */
+const normalise = (dir, link) => `skills/${posix.join(dir, link).split("/")
   .reduce((a, p) => (p === ".." ? a.slice(0, -1) : p === "." ? a : [...a, p]), []).join("/")}`;
 
 /** Markdown links out of the SKILL.md files some dispatch actually reads. */

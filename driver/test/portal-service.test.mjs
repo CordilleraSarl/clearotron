@@ -253,7 +253,10 @@ test("/portal/api/about answers the §13 source offer, and answers it to a STRAN
   assert.equal(r.json.license, pkg.license);
 });
 
-test("an unreadable saved-search store empties the saved searches, never the product menu", { skip: process.getuid?.() === 0 && "root reads through any file mode" }, async () => {
+test("an unreadable saved-search store empties the saved searches, never the product menu", {
+  skip: (process.getuid?.() === 0 && "root reads through any file mode")
+    || (process.platform === "win32" && "mode bits: chmod 000 does not make a Windows folder unreadable, so the store cannot be shut"),
+}, async () => {
   const { service, recipesDir } = world();
   try {
     chmodSync(recipesDir, 0o000);
@@ -688,10 +691,10 @@ test("feedback: the LOCATOR is read from the run, never from the request — a c
   const { service, poolRoot } = world({ feedbackCapture: true });
   writeFileSync(join(poolRoot, "tmp1-aurora-run", "report-data.json"), JSON.stringify({
     schema: "report-data/1", runId: "tmp1-aurora-run", engineCommit: "cafe1234",
-    findings: [{ ordinal: 1, mark: "KURENA", band: "Manageable", net: "Distinguished as wholes." }],
+    findings: [{ ordinal: 1, mark: "KOLEMA", band: "Manageable", net: "Distinguished as wholes." }],
   }));
   writeFileSync(join(poolRoot, "tmp1-aurora-run", "findings.json"), JSON.stringify({
-    findings: [{ ordinal: 1, mark: "KURENA", disposition: "rebuttable" }],
+    findings: [{ ordinal: 1, mark: "KOLEMA", disposition: "rebuttable" }],
   }));
   const fbDir = tempDir("portal-fb-");
   const prev = process.env.CLEAROTRON_FEEDBACK_DIR;
@@ -708,7 +711,7 @@ test("feedback: the LOCATOR is read from the run, never from the request — a c
     const rows = listFlags(fbDir);
     assert.equal(rows.length, 1);
     const rec = rows[0];
-    assert.equal(rec.locator.mark, "KURENA", "the mark is READ FROM THE RUN, not taken from the body");
+    assert.equal(rec.locator.mark, "KOLEMA", "the mark is READ FROM THE RUN, not taken from the body");
     assert.equal(rec.locator.band, "Manageable");
     assert.equal(rec.locator.disposition, "rebuttable",
       "#831 — from findings.json beside the report data, which no longer serves the placement key");
@@ -797,10 +800,10 @@ test("feedback: the clearance lane is untouched — a top-level findings[] still
   const { service, poolRoot } = world({ feedbackCapture: true });
   writeFileSync(join(poolRoot, "tmp1-aurora-run", "report-data.json"), JSON.stringify({
     schema: "report-data/1", runId: "tmp1-aurora-run",
-    findings: [{ ordinal: 2, mark: "KURENA", band: "Manageable", net: "Distinguished as wholes." }],
+    findings: [{ ordinal: 2, mark: "KOLEMA", band: "Manageable", net: "Distinguished as wholes." }],
   }));
   writeFileSync(join(poolRoot, "tmp1-aurora-run", "findings.json"), JSON.stringify({
-    findings: [{ ordinal: 2, mark: "KURENA", disposition: "rebuttable" }],
+    findings: [{ ordinal: 2, mark: "KOLEMA", disposition: "rebuttable" }],
   }));
   const fbDir = tempDir("portal-fb-cl-");
   const prev = process.env.CLEAROTRON_FEEDBACK_DIR;
@@ -811,7 +814,7 @@ test("feedback: the clearance lane is untouched — a top-level findings[] still
     });
     assert.equal(r.status, 201);
     const rec = listFlags(fbDir)[0];
-    assert.equal(rec.locator.mark, "KURENA");
+    assert.equal(rec.locator.mark, "KOLEMA");
     assert.equal(rec.locator.disposition, "rebuttable");
     assert.equal(rec.locator.ref, null, "the clearance lane has no per-mark composite key");
   } finally {
@@ -840,7 +843,7 @@ test("feedback: a clearance run with NO findings.json still saves the flag, with
   const { service, poolRoot } = world({ feedbackCapture: true });
   writeFileSync(join(poolRoot, "tmp1-aurora-run", "report-data.json"), JSON.stringify({
     schema: "report-data/1", runId: "tmp1-aurora-run",
-    findings: [{ ordinal: 1, mark: "KURENA", band: "Manageable", net: "Distinguished as wholes." }],
+    findings: [{ ordinal: 1, mark: "KOLEMA", band: "Manageable", net: "Distinguished as wholes." }],
   }));
   await withFeedbackDir("portal-fb-831a-", async (fbDir) => {
     const r = await service.route("POST", "/portal/api/feedback", CLIENT, {
@@ -848,7 +851,7 @@ test("feedback: a clearance run with NO findings.json still saves the flag, with
     });
     assert.equal(r.status, 201, "an absent artifact never costs a lawyer their words");
     const rec = listFlags(fbDir)[0];
-    assert.equal(rec.locator.mark, "KURENA", "everything report-data.json answers still resolves");
+    assert.equal(rec.locator.mark, "KOLEMA", "everything report-data.json answers still resolves");
     assert.equal(rec.locator.band, "Manageable");
     assert.equal(rec.excerpt, "Distinguished as wholes.");
     assert.equal(rec.locator.disposition, null, "the one fact the missing file carried, and nothing invented for it");
@@ -859,7 +862,7 @@ test("feedback: findings.json disagreeing about the mark resolves NO posture rat
   const { service, poolRoot } = world({ feedbackCapture: true });
   writeFileSync(join(poolRoot, "tmp1-aurora-run", "report-data.json"), JSON.stringify({
     schema: "report-data/1", runId: "tmp1-aurora-run",
-    findings: [{ ordinal: 1, mark: "KURENA", band: "Manageable", net: "Distinguished as wholes." }],
+    findings: [{ ordinal: 1, mark: "KOLEMA", band: "Manageable", net: "Distinguished as wholes." }],
   }));
   // A stale copy: ordinal 1 is a DIFFERENT mark. That ruling, one field over — the wrong answer on a
   // lawyer's flag is worse than no answer, and a flag is evidence a revert cannot repair.
@@ -872,7 +875,7 @@ test("feedback: findings.json disagreeing about the mark resolves NO posture rat
     });
     assert.equal(r.status, 201);
     const rec = listFlags(fbDir)[0];
-    assert.equal(rec.locator.mark, "KURENA", "the flag still points where the reader was looking");
+    assert.equal(rec.locator.mark, "KOLEMA", "the flag still points where the reader was looking");
     assert.equal(rec.locator.disposition, null, "…and carries no posture read off a finding that is not it");
   });
 });

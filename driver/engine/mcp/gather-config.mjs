@@ -4,7 +4,7 @@
 // gather stages. A stage names abstract TOOL GROUPS (perplexity | register | band | caselaw); this maps
 // them to the wrapped MCP servers (the active register provider + perplexity) + the already-MCP case-law bridge servers
 // (courtlistener/legaldatahunter via oauth-mcp-bridge) + claude's built-in WebFetch (EUR-Lex). Creds reach
-// the servers by ENV INHERITANCE from the engine process (no secrets written to the config); only the
+// the servers by ENV INHERITANCE from the engine's listed env (engine-env.mjs), never via the config; only the
 // per-stage run session key + telemetry ledger paths ride the config env (so the $0 provider-usage diff
 // still attributes calls to the run).
 import { fileURLToPath } from "node:url";
@@ -903,7 +903,7 @@ export function buildGatherMcpConfig(groups = [], { sessionKey, agent, runDir, r
     localEntry("register");
     if (!runDir) {
       throw new Error("gather-config: a register server needs the run it is fetching for — record bodies "
-        + "belong to their run since #743, and the box-global ledger is retired (#1390). Pass runDir.");
+        + "belong to their run, and the box-global ledger is retired. Pass runDir.");
     }
   }
   const env = serverEnv({ sessionKey, agent, runDir, recordAxis });
@@ -1333,6 +1333,8 @@ export const RECORDING_TOOLS = Object.freeze({
 // `if (groups.length)` (gateway.mjs) and the flags are pushed only when truthy (anthropic-agent.mjs) — so
 // what a tool-free seat actually holds is the agent's AMBIENT defaults, Bash included. O3c measured seven
 // of the eight measurable ones CALLING BASH, which is what a promise nobody enforces is worth.
+// Every stage's argv now removes the command tools by name (anthropic-agent.mjs, COMMAND_TOOLS), so the
+// ambient defaults no longer include a shell.
 //
 // So each row now says what the driver DOES (mounts no retrieval server) and, separately, what the seat
 // can still reach anyway — a reader can tell an enforced constraint from a dictated one without leaving
@@ -1340,16 +1342,18 @@ export const RECORDING_TOOLS = Object.freeze({
 export const TOOL_FREE_STAGES = {
   // report-overview's row RETIRED at conversion 4 — its reason moved to RECORDING, the same move
   // skeptic's row made. The stage is no longer tool-free: it holds `Read` and its record tool, and the
-  // ambient Bash this row used to record as REACHABLE is now denied by an allowlist it can see.
+  // ambient Bash this row used to record as REACHABLE is now removed from it by name (anthropic-agent.mjs,
+  // COMMAND_TOOLS).
   // report-card's row RETIRED at conversion 5 — its reason moved to RECORDING. It is no longer tool-free:
   // it holds `Read` and its record tool, and the ambient Bash this row recorded as reachable (O3c
-  // measured 91 calls, the heaviest in the corpus) is now denied by an allowlist it can see.
+  // measured 91 calls, the heaviest in the corpus) is now removed from it by name (anthropic-agent.mjs,
+  // COMMAND_TOOLS).
   // doubt-closure's row RETIRED at conversion 6 — its reason moved to RECORDING, the same move the two
   // above made. It is no longer tool-free: it holds `Read` and its record tool, and the ambient Bash this
-  // row recorded as reachable (O3c: 72 calls, 9 writes, second-heaviest of the eleven) is now denied by an
-  // allowlist it can see. The measurement is preserved in the RECORDING row rather than deleted — it is
-  // the historical fact the argv baseline treats as unmovable, and the reason it no longer BLOCKS the
-  // conversion is that the calls reach only the three files `Read` serves.
+  // row recorded as reachable (O3c: 72 calls, 9 writes, second-heaviest of the eleven) is now removed from
+  // it by name (anthropic-agent.mjs, COMMAND_TOOLS). The measurement is preserved in the RECORDING row
+  // rather than deleted — it is the historical fact the argv baseline treats as unmovable, and the reason
+  // it no longer BLOCKS the conversion is that the calls reach only the three files `Read` serves.
   //
   // WITH THIS ROW GONE, THE MECHANICAL SCOPE IS EMPTY: 8 of 11 converted. The three that remained were
   // the owner-held notify stages, and DELETED them rather than converting them — the delivery mode

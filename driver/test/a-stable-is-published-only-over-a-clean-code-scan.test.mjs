@@ -67,36 +67,46 @@ if (url.includes("/code-scanning/analyses")) {
 }
 `, { mode: 0o755 });
   const r = spawnSync(process.execPath, [CHECK, "--sha", sha, "--repo", "Owner/name", "--timeout", timeout, "--interval", interval],
-    { encoding: "utf8", env: { PATH: `${bin}:${process.env.PATH}`, HOME: dir } });
+    { encoding: "utf8", env: { PATH: `${bin}:${process.env.PATH}`, HOME: dir, USERPROFILE: dir } });
   return { code: r.status, out: `${r.stdout}${r.stderr}` };
 }
 
-test("a commit analysed in every category with nothing open passes", () => {
+test("a commit analysed in every category with nothing open passes", {
+  skip: process.platform === "win32" && "a #! shim: the stub gh is a script with a #! line, which Windows cannot start by name, so the runner's real gh answers instead",
+}, () => {
   const r = drive({ analysesPages: [[an(SHA, JS), an(SHA, ACTIONS)]] });
   assert.equal(r.code, 0, r.out);
   assert.match(r.out, /no alert open/);
 });
 
-test("open alerts refuse the stable, and each is named by number, rule and place", () => {
+test("open alerts refuse the stable, and each is named by number, rule and place", {
+  skip: process.platform === "win32" && "a #! shim: the stub gh is a script with a #! line, which Windows cannot start by name, so the runner's real gh answers instead",
+}, () => {
   const r = drive({ analysesPages: [[an(SHA, JS)]], open: [alert(70, "js/incomplete-sanitization", "driver/x.mjs", 182)] });
   assert.equal(r.code, 1, r.out);
   assert.match(r.out, /#70\s+js\/incomplete-sanitization\s+driver\/x\.mjs:182/);
   assert.match(r.out, /dismiss it on the alert with a written reason/, "the refusal does not say how it is lifted");
 });
 
-test("an analysis that arrives late is waited for, not refused", () => {
+test("an analysis that arrives late is waited for, not refused", {
+  skip: process.platform === "win32" && "a #! shim: the stub gh is a script with a #! line, which Windows cannot start by name, so the runner's real gh answers instead",
+}, () => {
   const r = drive({ analysesPages: [[an(OTHER, JS)], [an(OTHER, JS)], [an(SHA, JS)]] });
   assert.equal(r.code, 0, r.out);
   assert.match(r.out, /no analysis of aaaaaaaa yet/, "the looks that found no analysis are not reported");
 });
 
-test("an analysis that never arrives within the bound refuses — a verdict nobody reached is not clean", () => {
+test("an analysis that never arrives within the bound refuses — a verdict nobody reached is not clean", {
+  skip: process.platform === "win32" && "a #! shim: the stub gh is a script with a #! line, which Windows cannot start by name, so the runner's real gh answers instead",
+}, () => {
   const r = drive({ analysesPages: [[an(OTHER, JS)]], timeout: "1" });
   assert.equal(r.code, 1, r.out);
   assert.match(r.out, /not published/);
 });
 
-test("a branch that moved past the commit refuses rather than answer about another tree", () => {
+test("a branch that moved past the commit refuses rather than answer about another tree", {
+  skip: process.platform === "win32" && "a #! shim: the stub gh is a script with a #! line, which Windows cannot start by name, so the runner's real gh answers instead",
+}, () => {
   const r = drive({ analysesPages: [[an(OTHER, JS), an(SHA, JS)]] });
   assert.equal(r.code, 1, r.out);
   assert.match(r.out, /another commit/);

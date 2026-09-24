@@ -56,7 +56,7 @@ const ARGS = {
     { area: "register / EU", state: "confirmed-clean", note: "enumerated in full" },
     { area: "marketplace", state: "open", note: "sweep pending ::p:: internal: rerun after quota reset" },
   ],
-  contextNotes: [{ type: "famous-neighbour-ungrounded", mark: "CHROME", context: "famous neighbour, no register record — not a conflict" }],
+  contextNotes: [{ type: "famous-neighbour-ungrounded", mark: "NOVAPULSO", context: "famous neighbour, no register record — not a conflict" }],
   markAssessment: {
     distinctiveness: { spectrum: "Suggestive", per_class: [{ class: "32", note: "distinctive for soft drinks" }] },
     connotation: "no adverse readings across EN/DE",

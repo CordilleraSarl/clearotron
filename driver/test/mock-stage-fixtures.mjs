@@ -133,8 +133,8 @@ const GAMING_FALLBACK = ["store.steampowered.com", "store.epicgames.com", "play.
 // spec a routed followup names ("your half-grid spec: …"). Null when the message carries none (legacy
 // prose path / single-member followups) — callers fall back to the historical hardcoded fixture terms.
 export function gridSpecFromMsg(msg) {
-  const gp = msg.match(/grid_spec_path:\s*(\/\S+grid-spec[^\s]*\.json)/)?.[1];
-  const hp = msg.match(/half-grid spec:\s*(\/\S+grid-spec\.half-[a-z0-9]+\.json)/)?.[1];
+  const gp = msg.match(/grid_spec_path:\s*((?:[A-Za-z]:)?[\\/]\S+grid-spec[^\s]*\.json)/)?.[1];
+  const hp = msg.match(/half-grid spec:\s*((?:[A-Za-z]:)?[\\/]\S+grid-spec\.half-[a-z0-9]+\.json)/)?.[1];
   // Fix-1: a closure followup names BOTH a SUPPLEMENTARY grid_spec_path AND (on the split) the half spec.
   // The FINDINGS/main-ledger fixtures must key on the full half/canonical spec, never the supplementary
   // subset — so a supp path (…supp-<tag>.json) is skipped here; suppSpecFromMsg reads it for the supp write.
@@ -147,7 +147,7 @@ export function gridSpecFromMsg(msg) {
 // supplementary LEDGER at that output_path — never the canonical/half ledger, which stays exactly the
 // fresh-gather plugin output. Returns the parsed spec (with output_path) or null.
 export function suppSpecFromMsg(msg) {
-  const p = msg.match(/grid_spec_path:\s*(\/\S+supp-\w+\.json)/)?.[1];
+  const p = msg.match(/grid_spec_path:\s*((?:[A-Za-z]:)?[\\/]\S+supp-\w+\.json)/)?.[1];
   if (!p) return null;
   try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; }
 }
@@ -163,10 +163,10 @@ function dictatedStoreDomains(msg) {
   try {
     // Same no-extension-filter rule as the write mandate below: this only needs the path so it can
     // read the profile.json beside it, and an unrecognised extension silently fell back to GAMING_FALLBACK.
-    const path = (msg.match(/ABSOLUTE path[^:]*:\s*(\/\S+)/)
-      || msg.match(/TARGETED EDITS to\s+(\/\S+)/)
-      || msg.match(/re-emit the COMPLETE updated\s+(\/\S+)/)
-      || msg.match(/(\/\S+common-law-grid\.json)/))?.[1];
+    const path = (msg.match(/ABSOLUTE path[^:]*:\s*((?:[A-Za-z]:)?[\\/]\S+)/)
+      || msg.match(/TARGETED EDITS to\s+((?:[A-Za-z]:)?[\\/]\S+)/)
+      || msg.match(/re-emit the COMPLETE updated\s+((?:[A-Za-z]:)?[\\/]\S+)/)
+      || msg.match(/((?:[A-Za-z]:)?[\\/]\S+common-law-grid\.json)/))?.[1];
     if (path) {
       const p = JSON.parse(readFileSync(driverDir(dirname(path), "profile.json"), "utf8"));
       if (Array.isArray(p.platforms) && p.platforms.length) return p.platforms;
@@ -619,7 +619,7 @@ export function fixture(name, msg, dir = null) {
 export function doubtClosureFixture(msg) {
   const mode = process.env.MOCK_CLOSURE_MODE || "";
   // The stage may cite only these three; register-findings.md is markdown, so its lines quote cleanly.
-  const citePath = msg.match(/^- register-findings\.md:\s*(\/\S+)$/m)?.[1];
+  const citePath = msg.match(/^- register-findings\.md:\s*((?:[A-Za-z]:)?[\\/]\S+)$/m)?.[1];
   let quote = null;
   try {
     quote = readFileSync(citePath, "utf8").split("\n")
@@ -689,7 +689,7 @@ export function gridLedger(msg, dir = null) {
     .map((pl) => ({ term: t, platform: pl, status: "no_hit", results: [] })));
   const gaps = variants.flatMap((t) => PLATFORMS.filter((pl) => isGap(t, pl)).map((pl) => `${t} | ${pl} | ${gapErr}`));
   // The real plugin records every DICTATED connotation query verbatim into extras.pr_risk[] (the
-  // ZURENA receipt) — mirror that: echo the message's spec queries (full spec on the single member, the
+  // ZOLEMA receipt) — mirror that: echo the message's spec queries (full spec on the single member, the
   // half's partition on a half member; merged pair restores the union). No spec in the message (legacy
   // prose path) keeps the historical empty list.
   // P2-C (§8b leg 2): MOCK_PR_RESULTS arms recorded RESULTS on the receipts — "1" arms every dictated
@@ -929,7 +929,7 @@ export function blindFrameModel() {
     schema_version: 1, dominant_element: "NOVAPULSE",
     variants: [
       { value: "NOVAPULSE", direction: "drop", rationale: "the bare element" },
-      { value: "KROMA", direction: "phonetic", rationale: "sound-alike" },
+      { value: "SAYBEL", direction: "phonetic", rationale: "sound-alike" },
     ],
     fields: [{ goods: "game software", on_field: true, rationale: "goods-overlap with the product" }],
     sources: [{ channel: "developer ecosystem", rationale: "B2D product" }],
@@ -1342,6 +1342,10 @@ function mockRegisterRecordWrite(runDir, argv = []) {
   }) + "\n");
 }
 
+// A path read out of JSON quoted in the prompt. On Windows its separators arrive escaped (`C:\\Users\\…`),
+// and the file is at the unescaped path. A Linux path has no backslashes, so there it is unchanged.
+const fromJsonText = (p) => (p == null ? p : p.replace(/\\\\/g, "\\"));
+
 export function applyStageWrites(msg, argv) {
   let summary = "mock stage ok";
   // — BLIND-FRAME IS FIRST BECAUSE IT NAMES NO PATH. Every branch below matches an absolute output
@@ -1715,24 +1719,27 @@ export function applyStageWrites(msg, argv) {
           coverage: { read: reco },
       };
       let r = recordSynthesis(runDir, { findings: doc, narrative: sections });
-      if (r && r.refused) {
-        // The refusal names the family. Re-derive with that family's heal phrase and restate once —
-        // the phrase per knob is the one `synthesisFindings` keys on, so this drives the SAME heal the
-        // driver's named composer used to drive, from the seat's side of the same defect.
-        // SPECIFIC FAMILIES FIRST, AND THAT ORDER IS THE WHOLE CORRECTNESS OF IT. The parser names an
-        // ask_answers defect `finding_ask_answer_key_unknown` and an action defect `finding_action_*` —
-        // BOTH match a generic `finding_..._key_unknown` test, so a generic-first ladder swallows its
-        // two neighbours and hands them the wrong heal phrase. Measured: the finding arm healed and
-        // these two exhausted, which is the same failure the arms started with and reads identically.
-        const heal = /ask_answer/.test(r.refused) ? 'the "ask_answers" array'
-          : /action/.test(r.refused) ? 'the "actions" register'
-          : /finding_|findings_/.test(r.refused) ? "failed the strict parse"
-          : null;
-        if (heal) {
-          try { doc = build(`${msg}\n${heal}`); } catch { /* keep the first doc; the refusal below stands */ }
-          r = recordSynthesis(runDir, { findings: doc, narrative: sections });
-        }
-      }
+      // The refusal names the family. Re-derive with that family's heal phrase and restate once —
+      // the phrase per knob is the one `synthesisFindings` keys on, so this drives the SAME heal the
+      // driver's named composer used to drive, from the seat's side of the same defect.
+      // SPECIFIC FAMILIES FIRST, AND THAT ORDER IS THE WHOLE CORRECTNESS OF IT. The parser names an
+      // ask_answers defect `finding_ask_answer_key_unknown` and an action defect `finding_action_*` —
+      // BOTH match a generic `finding_..._key_unknown` test, so a generic-first ladder swallows its
+      // two neighbours and hands them the wrong heal phrase. Measured: the finding arm healed and
+      // these two exhausted, which is the same failure the arms started with and reads identically.
+      const healFor = (refused) => /ask_answer/.test(refused) ? 'the "ask_answers" array'
+        : /action/.test(refused) ? 'the "actions" register'
+        : /finding_|findings_/.test(refused) ? "failed the strict parse"
+        : null;
+      let healed = false;
+      const heal = () => {
+        const phrase = r && r.refused ? healFor(r.refused) : null;
+        if (!phrase) return;
+        healed = true;
+        try { doc = build(`${msg}\n${phrase}`); } catch { /* keep the first doc; the refusal below stands */ }
+        r = recordSynthesis(runDir, { findings: doc, narrative: sections });
+      };
+      heal();
       // ── THE DECLINATION RUNG: what a compliant seat does when the duty refuses ──────────────────
       //
       // — a record that reached the findings surface leaves as a finding or as a
@@ -1764,6 +1771,10 @@ export function applyStageWrites(msg, argv) {
           if (declinations.length) recordDeclinations({ runDir, rows, scope: spec?.scope ?? {} }, { declinations });
         } catch { /* the restate below stands; its refusal is what a seat would see */ }
         r = recordSynthesis(runDir, { findings: doc, narrative: sections });
+        // THE RECORDER ASKS FOR THE DECLINES BEFORE IT PARSES THE FINDINGS, so a seat owed records AND
+        // carrying a defect meets the duty first and the defect only on the restate. A seat that answered
+        // the first and ignored the second is not the seat these knobs model. Each fix is still made once.
+        if (!healed) heal();
       }
       if (r && r.refused) return `mock synthesis REFUSED by record_synthesis: ${r.refused}`;
       if (r && r.write_failed) return `mock synthesis: record_synthesis could not store the call (${r.write_failed})`;
@@ -2068,7 +2079,7 @@ export function applyStageWrites(msg, argv) {
     const runDir = runDirFromWiring(argv);
     if (!runDir) return "mock knockout-frame: no run dir in the engine wiring — the driver wires CLEAROTRON_BAND_RUN_DIR per run and this branch refuses rather than guessing one";
     recordMockToolCall(runDir, "record_knockout_frame", "recording-knockout-frame");
-    const scopePath = msg.match(/quote mark names verbatim from it\):\s*(\/\S+instructed-scope\.json)/)?.[1];
+    const scopePath = msg.match(/quote mark names verbatim from it\):\s*((?:[A-Za-z]:)?[\\/]\S+instructed-scope\.json)/)?.[1];
     let names = ["MOCKMARK"];
     try { const sc = JSON.parse(readFileSync(scopePath, "utf8")); if (Array.isArray(sc.marks) && sc.marks.length) names = sc.marks; } catch { /* fallback */ }
     const plan = {
@@ -2127,7 +2138,7 @@ export function applyStageWrites(msg, argv) {
     try { const fw = JSON.parse(readFileSync(driverDir(runDir, "framework.json"), "utf8")); ladder = fw.bands.map((b) => b.label); fwKey = fw.framework_key; } catch { /* default */ }
     const listM = msg.match(/names verbatim\):\s*([^\n]+)\./);
     const rows = (listM ? listM[1].split("·").map((x) => x.trim()) : ["MOCKMARK"]).filter(Boolean);
-    const degradedSet = new Set([...msg.matchAll(/^- (.+?):\s+\/\S+\s+\(DEGRADED/gm)].map((m) => m[1]));
+    const degradedSet = new Set([...msg.matchAll(/^- (.+?):\s+(?:[A-Za-z]:)?[\\/]\S+\s+\(DEGRADED/gm)].map((m) => m[1]));
     const band = process.env.MOCK_KO_BAND || ladder[ladder.length - 2] || ladder[0];   // second-lowest by default
     const chunk = {
       ...(Number(boundChunk) === 0 ? {
@@ -2218,7 +2229,7 @@ export function applyStageWrites(msg, argv) {
   // writes whole files because that is all a fixture can do; the PROMPT is what changed, and the file the
   // prompt names is still extracted from it — now from the repair tail rather than a re-emit sentence.
   const a4 = /failed the strict parse/.test(msg)
-    && (msg.match(/TARGETED EDITS to\s+(\/\S+findings\.json)/) || msg.match(/re-emit the complete\s+(\/\S+findings\.json)/));
+    && (msg.match(/TARGETED EDITS to\s+((?:[A-Za-z]:)?[\\/]\S+findings\.json)/) || msg.match(/re-emit the complete\s+((?:[A-Za-z]:)?[\\/]\S+findings\.json)/));
   if (a4) {
     mkdirSync(dirname(a4[1]), { recursive: true });
     writeFileSync(a4[1], synthesisFindings(dirname(a4[1]), msg));
@@ -2227,7 +2238,7 @@ export function applyStageWrites(msg, argv) {
   // spec 64: the actions-missing re-demand touches ONLY findings.json (add ONE top-level "actions" key,
   // then the shared repair tail aimed at <findings.json>) — synthesisFindings sees the demand marker and heals.
   const act = /no top-level "actions" array/.test(msg)
-    && (msg.match(/TARGETED EDITS to\s+(\/\S+findings\.json)/) || msg.match(/Re-emit the COMPLETE\s+(\/\S+findings\.json)/));
+    && (msg.match(/TARGETED EDITS to\s+((?:[A-Za-z]:)?[\\/]\S+findings\.json)/) || msg.match(/Re-emit the COMPLETE\s+((?:[A-Za-z]:)?[\\/]\S+findings\.json)/));
   if (act) {
     mkdirSync(dirname(act[1]), { recursive: true });
     writeFileSync(act[1], synthesisFindings(dirname(act[1]), msg));
@@ -2264,7 +2275,7 @@ export function applyStageWrites(msg, argv) {
   // extraction, which would otherwise find the findings .md named in the "do NOT rewrite" clause and
   // re-emit a whole document the real seat is told not to touch.
   const connRepair = /record_dispositions/.test(msg) && new RegExp(CONNOTATION_FORM_TOKEN_SRC).test(msg)
-    && msg.match(/grid_spec_path[ =:]+\s*(\/\S+grid-spec[^\s]*\.json)/);
+    && msg.match(/grid_spec_path[ =:]+\s*((?:[A-Za-z]:)?[\\/]\S+grid-spec[^\s]*\.json)/);
   if (connRepair) {
     const specPath = connRepair[1];
     const half = basename(specPath).match(/^grid-spec\.half-([a-z0-9]+)\.json$/)?.[1] ?? null;
@@ -2272,14 +2283,14 @@ export function applyStageWrites(msg, argv) {
     return made ? `recorded the outstanding rulings via record_dispositions (spec ${specPath})`
       : `mock owed nothing to record for ${specPath}`;
   }
-  const m = msg.match(/ABSOLUTE path[^:]*:\s*(\/\S+)/)
+  const m = msg.match(/ABSOLUTE path[^:]*:\s*((?:[A-Za-z]:)?[\\/]\S+)/)
     // `TARGETED EDITS to <path> using the Edit tool` is the repair tail every converted corrective followup
     // ends with (repair-contract.mjs), and it is also the ONLY target a WARM PATCH names — that dispatch
     // shape has no base prompt behind it, so it carries no "ABSOLUTE path" sentence at all. The tail states
     // the path once more ("If <path> does not exist…"), which is harmless: .match returns the first hit.
-    || msg.match(/TARGETED EDITS to\s+(\/\S+)/)
-    || msg.match(/re-emit the COMPLETE updated\s+(\/\S+)/)
-    || msg.match(/re-emit\s+(\/\S+)\s+with ONLY those rows corrected/);
+    || msg.match(/TARGETED EDITS to\s+((?:[A-Za-z]:)?[\\/]\S+)/)
+    || msg.match(/re-emit the COMPLETE updated\s+((?:[A-Za-z]:)?[\\/]\S+)/)
+    || msg.match(/re-emit\s+((?:[A-Za-z]:)?[\\/]\S+)\s+with ONLY those rows corrected/);
   if (m) {
     const out = m[1];
     mkdirSync(dirname(out), { recursive: true });
@@ -2309,7 +2320,7 @@ export function applyStageWrites(msg, argv) {
       // suppresses a write, under-matching fabricates a pass).
       const resuming = /RESUMING your own common-law session/.test(msg) || /^You are RESUMING your own session for this stage/.test(msg);
       if (process.env.MOCK_CL_APPEND_MALFORMED && /APPEND the supplementary call/.test(msg)) {
-        const target = msg.match(/APPEND the supplementary call's stdout JSON to (\/\S+common-law-grid[^\s]*\.json)/)?.[1] ?? mainLedger;
+        const target = msg.match(/APPEND the supplementary call's stdout JSON to ((?:[A-Za-z]:)?[\\/]\S+common-law-grid[^\s]*\.json)/)?.[1] ?? mainLedger;
         writeFileSync(target, malformedAppend(msg, dirname(out)));
       } else if (supp) {
         mkdirSync(dirname(supp.output_path), { recursive: true });
@@ -2324,7 +2335,7 @@ export function applyStageWrites(msg, argv) {
         recordMockToolCall(dirname(out), "perplexity_research");
       }
     }
-    let content = /\/report-cards\//.test(out) ? reportCardFixture(out) : fixture(basename(out), msg, dirname(out));
+    let content = /[\\/]report-cards[\\/]/.test(out) ? reportCardFixture(out) : fixture(basename(out), msg, dirname(out));
     // A null fixture is a SUPPRESSION knob (MOCK_NO_BLIND_MODEL) — the turn "completes" and writes no
     // file, which is the shape the stage's file-truth gate exists to refuse. Returned BEFORE any append
     // below, so a suppressed artifact can never land as the string "null" plus a marker: present-and-
@@ -2406,12 +2417,12 @@ export function applyStageWrites(msg, argv) {
       mockRegisterRecordWrite(dirname(out), argv);
     }
     summary = `wrote ${out}`;
-  } else if (/was NEVER WRITTEN/.test(msg) && /output_path = (\/\S+-band\.json)/.test(msg)) {
+  } else if (/was NEVER WRITTEN/.test(msg) && /output_path = ((?:[A-Za-z]:)?[\\/]\S+-band\.json)/.test(msg)) {
     // named_band_missing warm patch (gateway.warmPatchMessage): the band is ABSENT and the repair is ONE
     // register_execute_plan call that writes the whole band. The claude-shaped mock has no --session-key
     // argv to derive the stage from, so mirror the TOOL here off the patch message's own band path.
     // MOCK_NO_BAND (persistent) keeps failing — a model that never makes the tool call.
-    const bandPath = msg.match(/output_path = (\/\S+-band\.json)/)[1];
+    const bandPath = msg.match(/output_path = ((?:[A-Za-z]:)?[\\/]\S+-band\.json)/)[1];
     const axis = basename(bandPath, "-band.json");
     if (process.env.MOCK_NO_BAND === axis) {
       summary = `execute_plan withheld (MOCK_NO_BAND=${axis})`;
@@ -2420,14 +2431,14 @@ export function applyStageWrites(msg, argv) {
       writeFileSync(bandPath, namedBand(axis, msg));
       summary = `execute_plan wrote ${bandPath}`;
     }
-  } else if (/register_execute_plan ONCE/.test(msg) && /"output_path": "(\/\S+-band\.json)"/.test(msg)) {
+  } else if (/register_execute_plan ONCE/.test(msg) && /"output_path": "((?:[A-Za-z]:)?[\\/]\S+-band\.json)"/.test(msg)) {
     // — the plan-join warm followup instructs ONE register_execute_plan call; the mock
     // mirrors the TOOL's merge (judgment/no-qid blocks survive; missing dictated qids land).
     // J6 — the FRESH execute_plan call (resumed-past axis, no live session) carries the same
     // tool instruction but NO per-qid listing: the real tool reads the frozen plan itself. Mirror
     // that too — P2-A's failed-at-verdict store write makes resume runs mint recall probes, which
     // land on exactly this path in the offline harness.
-    const bandPath = msg.match(/"output_path": "(\/\S+-band\.json)"/)[1];
+    const bandPath = fromJsonText(msg.match(/"output_path": "((?:[A-Za-z]:)?[\\/]\S+-band\.json)"/)[1]);
     let blocks = [];
     try { blocks = JSON.parse(readFileSync(bandPath, "utf8")); } catch { blocks = []; }
     // MOCK_PLAN_DROP_STICKY: the followup ALSO fails to close the dropped qid — drives the
@@ -2441,7 +2452,7 @@ export function applyStageWrites(msg, argv) {
       wanted.push({ qid: dm[1], kind: dm[2] ?? "enumerate", terms });
     }
     if (!wanted.length) {
-      const planPath = msg.match(/"plan_path": "(\/\S+?)"/)?.[1];
+      const planPath = fromJsonText(msg.match(/"plan_path": "((?:[A-Za-z]:)?[\\/]\S+?)"/)?.[1]);
       const axis = msg.match(/"axis": "([^"]+)"/)?.[1];
       try {
         const plan = JSON.parse(readFileSync(planPath, "utf8"));
@@ -2463,7 +2474,7 @@ export function applyStageWrites(msg, argv) {
     // naming it as an INPUT (the skeptic's machine-truth line), so the mock writes nothing here.
     summary = "acknowledged (driver derives the machine ledger)";
   } else if (/common-law-grid\.json/.test(msg) && (/VERBATIM/.test(msg) || /grid_spec_path/.test(msg))) {
-    const gm = msg.match(/(\/\S+common-law-grid\.json)/);
+    const gm = msg.match(/((?:[A-Za-z]:)?[\\/]\S+common-law-grid\.json)/);
     if (gm && process.env.MOCK_NO_GRID_LEDGER !== "2") {
       mkdirSync(dirname(gm[1]), { recursive: true });
       writeFileSync(gm[1], gridLedger(msg, dirname(gm[1])));

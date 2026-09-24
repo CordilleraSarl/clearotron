@@ -136,7 +136,8 @@ test("the retired switches refuse NOTHING at the gate — with the engine's own 
   }
 });
 
-test("a deliveryRoute:'portal' job PARKS AS CLARIFY (no consumer yet — never a silent email-anyway)", async () => {
+test("a deliveryRoute:'portal' job PARKS AS CLARIFY (no consumer yet — never a silent email-anyway)", {
+}, async () => {
   enqueue("dr-1", { deliveryRoute: "portal" });
   await main({ once: true });
   // — BEFORE the assertions below. A run that never started leaves its
@@ -152,7 +153,8 @@ test("a deliveryRoute:'portal' job PARKS AS CLARIFY (no consumer yet — never a
 // never stand in for it. Nothing runs and nothing is published: the requester is asked a question.
 // (Deliberately asserted only on the refusal — a job that ADMITS here would run the full mock pipeline
 // and break the one-run/one-publish counts the byte-identity test below owns.)
-test("a Full country search over more than one country PARKS AS CLARIFY at the wall", async () => {
+test("a Full country search over more than one country PARKS AS CLARIFY at the wall", {
+}, async () => {
   enqueue("cl-1", { product: "full-country-search", jurisdictions: ["United States", "France"] });
   await main({ once: true });
   // — BEFORE the assertions below. A run that never started leaves its
@@ -172,7 +174,8 @@ test("a Full country search over more than one country PARKS AS CLARIFY at the w
 });
 
 // ── the Stage-1 byte-identity guarantee, proven on a full $0 mock run ───────────────────────────────
-test("a NO-selector job runs the product its SCOPE names, end to end, and the run freezes that", async () => {
+test("a NO-selector job runs the product its SCOPE names, end to end, and the run freezes that", {
+}, async () => {
   // Blast-radius regression (review 2026-07-17): a corrupt recipe file ANYWHERE in the store must never
   // affect a default job — the store is consulted only when a job names a recipe.
   mkdirSync(join(RECIPES, "othercorp"), { recursive: true });

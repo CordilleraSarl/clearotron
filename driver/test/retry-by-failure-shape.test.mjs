@@ -112,7 +112,8 @@ test("arm 2 — a form-era TOTAL token is COLD by ineligibility: the retry does 
   assert.match(c[1].prompt ?? "", /BASE TASK/, "a fresh dispatch must carry the whole task");
 });
 
-test("arm 3 — a PARTIAL defect still warm-patches. R5 closed in 83 seconds this way", async () => {
+test("arm 3 — a PARTIAL defect still warm-patches. R5 closed in 83 seconds this way", {
+}, async () => {
   process.env.MOCK_WARM_MODE = "draft";
   const validate = (_p, c) => (/PATCHED|FRESH/.test(c) ? { ok: true } : { ok: false, reason: REASON("quote_unbound", 3) });
   const r = await stage({ validate });
@@ -124,7 +125,8 @@ test("arm 3 — a PARTIAL defect still warm-patches. R5 closed in 83 seconds thi
   assert.match(c[1].prompt ?? "", /RESUMING your own session/);
 });
 
-test("arm 4 — the skip does NOT spend the warm attempt", async () => {
+test("arm 4 — the skip does NOT spend the warm attempt", {
+}, async () => {
   // R6's real shape, one step further: total on attempt 1, and a seat that has now worked on the form
   // on attempt 2. Attempt 3 is the case warm is good at and must still get it.
   process.env.MOCK_WARM_MODE = "draft";
@@ -152,7 +154,8 @@ test("arm 5 — the LIVE family stays WARM-ELIGIBLE, because that allowlist rout
   assert.equal(warmEligible(f, { status: "ok" }), true);
   const patch = warmPatchMessage(f, ["/run/common-law-findings.half-m.md"]);
   assert.match(patch, /record_dispositions/, "the repair names the recording tool");
-  assert.match(patch, /\/run\/_driver\/grid-spec\.half-m\.json/, "…aimed at the failing member's own spec");
+  // The spec path is joined from the output's folder, so it carries the platform's separator.
+  assert.ok(patch.includes(join("/run", "_driver", "grid-spec.half-m.json")), "…aimed at the failing member's own spec");
   assert.equal(warmEligible(FAIL("call_never_made", 75), { status: "ok" }), true,
     "eligibility is not the veto — see vetoResumeRuledNone for what refuses the ruled-none resume");
 });

@@ -16,7 +16,7 @@
 // ── WHAT A "DISPATCH" IS ──────────────────────────────────────────────────────────────────────────
 // One model invocation: one row in `_driver/<stage>.jsonl` that tokens.mjs's `isAttemptRow` counts as
 // a provider attempt (gateway.mjs writes one per ATTEMPT, so retries are separate dispatches and retry
-// waste is counted, not averaged away). The direct-API jx lanes bypass the gateway and write
+// waste is counted, not averaged away). The native-language jx lanes do not go through the gateway and write
 // `_driver/jx-completions.jsonl` in the same {model, usage} shape; they are dispatches too, under stage
 // `jx-completions`. `run.jsonl` is skipped (run events, not dispatches) — same file selection as
 // tokens.mjs, deliberately, and the SAME ROW TEST as tokens.mjs, imported rather than copied: a jx row
@@ -101,7 +101,7 @@
 
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
+import { driverDir, labelOfDriverFile } from "../shared/driver-dir.mjs";   //
 import { runLog, note } from "./log.mjs";
 import { writeRunStatus } from "./progress.mjs";
 // tokens.mjs imports this module too (isCodeSide, stampRunEconomics). The cycle is safe because each side
@@ -478,7 +478,7 @@ export function runEconomics(runDir, { now = null, bytesPerOutputToken = BYTES_P
   catch { files = null; }
 
   for (const file of files ?? []) {
-    const stage = file.replace(/\.jsonl$/, "");
+    const stage = labelOfDriverFile(file);   // a Windows record writes the label's colon %3A
     const rows = readRows(join(dDir, file));
     if (!rows) continue;
     const st = (byStage[stage] ??= emptyStage());

@@ -155,11 +155,11 @@ test("pipeline fold: per-axis supplemental plans join the RUN plan (version bump
 
 test("mint (A1): term-shape/term-predicate lint at the proposal seam — the model gets the reason in-turn", () => {
   const { minted, rejected } = mintSupplementalEntries("primary-sweep", [
-    { predicate: "exact", term: "TIKI*", nice_classes: [5] },                                       // wildcard under literal
-    { predicate: "wildcard", term: "TIKI", nice_classes: [5] },                                     // star-less pattern
-    { predicate: "exact", term: "Reverse-order TIKI composites (TROPICAL TIKI, ISLAND TIKI)", nice_classes: [5] },  // label
+    { predicate: "exact", term: "WAVO*", nice_classes: [5] },                                       // wildcard under literal
+    { predicate: "wildcard", term: "WAVO", nice_classes: [5] },                                     // star-less pattern
+    { predicate: "exact", term: "Reverse-order WAVO composites (TROPICAL WAVO, ISLAND WAVO)", nice_classes: [5] },  // label
     { predicate: "default", term: "SLUSH FREEZE, SLUSH ICE, SLUSH POP", nice_classes: [32] },       // the prose family
-    { predicate: "wildcard", term: "TIKI*", nice_classes: [5] },                                    // agreeing pair — minted
+    { predicate: "wildcard", term: "WAVO*", nice_classes: [5] },                                    // agreeing pair — minted
     { predicate: "exact", term: "I CAN'T BELIEVE IT'S NOT BUTTER", term_literal: true, nice_classes: [29] },  // escape hatch
     { predicate: "owner", term: "KESTREL BEVERAGES INC., SOCIÉTÉ ORGANISÉE SELON LES LOIS DE L'ETAT DU DELAWARE", nice_classes: [32] },  // owner names exempt
   ]);
@@ -173,7 +173,7 @@ test("mint (A1): term-shape/term-predicate lint at the proposal seam — the mod
 });
 
 test("mint (F1): the owner scope field — accepted on a mark-text proposal, part of the qid identity, refused on predicate:owner", () => {
-  const base = { predicate: "default", term: "TIKI", nice_classes: [32] };
+  const base = { predicate: "default", term: "WAVO", nice_classes: [32] };
   const plain = mintSupplementalEntries("primary-sweep", [base]);
   const scoped = mintSupplementalEntries("primary-sweep", [{ ...base, owner: "Kestrel Beverages Inc." }]);
   assert.equal(scoped.minted.length, 1);
@@ -191,7 +191,7 @@ test("mint (F1): the owner scope field — accepted on a mark-text proposal, par
 });
 
 test("mint (F1): owner×term on a provider WITHOUT the intersection is minted UNSUPPORTED — a disclosed deferred row, never an owner-less sweep", () => {
-  const p = { predicate: "default", term: "TIKI", owner: "Kestrel Beverages Inc.", nice_classes: [32] };
+  const p = { predicate: "default", term: "WAVO", owner: "Kestrel Beverages Inc.", nice_classes: [32] };
   const thin = mintSupplementalEntries("primary-sweep", [p], { capabilities: { id: "signa", ownerTermIntersection: false } });
   assert.equal(thin.minted.length, 1, "the gap belongs ON the record, so it mints");
   assert.equal(thin.minted[0].unsupported, true);
@@ -267,16 +267,16 @@ test("PR-6 proposeSupplemental: rejected proposals PERSIST to the sidecar's reje
 
 test("mint: romanization threads to romanizedTerms; orphans, OR-stacks, owner sweeps and non-ASCII forms are rejected in-turn", () => {
   const { minted, rejected } = mintSupplementalEntries("transliteration-numeric", [
-    { predicate: "exact", term: "ティキスラッシュ", nice_classes: [30], romanization: "TIKI SURASSHU" },
+    { predicate: "exact", term: "ワボスラッシュ", nice_classes: [30], romanization: "WABO SURASSHU" },
     { predicate: "exact", term: "FROSTBERRY", nice_classes: [32], romanization: "FROSTBERRY" },      // orphan: already Latin
     { predicate: "exact", terms: ["冰沙", "沙冰"], nice_classes: [30], romanization: "BING SHA" },    // OR-stack never substitutes
     { predicate: "owner", term: "冰沙公司", nice_classes: [30], romanization: "BING SHA GONG SI" },   // owner names ride their own rules
     { predicate: "exact", term: "华威豹", nice_classes: [30], romanization: "HUÁ WĒI BÀO" },          // tone marks are not a romanisation
   ]);
   assert.equal(minted.length, 1, "only the well-formed pair mints");
-  assert.deepEqual(minted[0].romanizedTerms, ["TIKI SURASSHU", "TIKISURASSHU"],
+  assert.deepEqual(minted[0].romanizedTerms, ["WABO SURASSHU", "WABOSURASSHU"],
     "both spellings, from the SAME shared helper the dictated plan uses (script-form.mjs)");
-  assert.equal(minted[0].term, "ティキスラッシュ", "the native characters stay the searched term");
+  assert.equal(minted[0].term, "ワボスラッシュ", "the native characters stay the searched term");
   assert.equal(rejected.length, 4);
   assert.ok(rejected.some((r) => /already Latin script/.test(r.issue)), "orphan");
   assert.ok(rejected.some((r) => /OR-stack proposal cannot carry a romanization/.test(r.issue)), "or-stack");
@@ -377,15 +377,15 @@ test("A5: owner names ride their own rules — a non-Latin OWNER sweep is never 
 });
 
 test("mint: the qid ignores the romanization — re-proposing a stored bare qid WITH it ENRICHES instead of duplicating", () => {
-  const bareP = { predicate: "exact", term: "ティキスラッシュ", nice_classes: [30] };
+  const bareP = { predicate: "exact", term: "ワボスラッシュ", nice_classes: [30] };
   const a = mintSupplementalEntries("transliteration-numeric", [bareP]);
-  const b = mintSupplementalEntries("transliteration-numeric", [{ ...bareP, romanization: "TIKI SURASSHU" }]);
+  const b = mintSupplementalEntries("transliteration-numeric", [{ ...bareP, romanization: "WABO SURASSHU" }]);
   assert.equal(a.minted[0].qid, b.minted[0].qid, "carriage is not a different question — same qid either way");
-  const again = mintSupplementalEntries("transliteration-numeric", [{ ...bareP, romanization: "TIKI SURASSHU" }],
+  const again = mintSupplementalEntries("transliteration-numeric", [{ ...bareP, romanization: "WABO SURASSHU" }],
     { existingQids: new Set([a.minted[0].qid]) });
   assert.equal(again.minted.length, 0);
   assert.deepEqual(again.reused, [a.minted[0].qid]);
-  assert.deepEqual(again.enriched, [{ qid: a.minted[0].qid, term: "ティキスラッシュ", romanizedTerms: ["TIKI SURASSHU", "TIKISURASSHU"] }]);
+  assert.deepEqual(again.enriched, [{ qid: a.minted[0].qid, term: "ワボスラッシュ", romanizedTerms: ["WABO SURASSHU", "WABOSURASSHU"] }]);
 });
 
 test("proposeSupplemental: the natural retry — re-proposing WITH the romanization — persists the enrichment and re-executes the slice", async () => {
@@ -401,7 +401,7 @@ test("proposeSupplemental: the natural retry — re-proposing WITH the romanizat
     return { type: "text", text: JSON.stringify({ written: bandPath, blocks: blocks.length }) };
   };
   const p1 = await proposeSupplemental({ axis: "transliteration-numeric", output_path: bandPath,
-    proposals: [{ predicate: "exact", term: "ティキスラッシュ", nice_classes: [30] }] }, tctx, { executePlan });
+    proposals: [{ predicate: "exact", term: "ワボスラッシュ", nice_classes: [30] }] }, tctx, { executePlan });
   const first = JSON.parse(p1.text);
   assert.equal(first.minted.length, 1);
   const suppPath = join(dir, "register-units", "transliteration-numeric-supplemental-plan.json");
@@ -409,19 +409,19 @@ test("proposeSupplemental: the natural retry — re-proposing WITH the romanizat
   assert.ok(!("romanizedTerms" in doc.entries[0]), "the first, bare proposal persisted bare");
 
   const p2 = await proposeSupplemental({ axis: "transliteration-numeric", output_path: bandPath,
-    proposals: [{ predicate: "exact", term: "ティキスラッシュ", nice_classes: [30], romanization: "TIKI SURASSHU" }] }, tctx, { executePlan });
+    proposals: [{ predicate: "exact", term: "ワボスラッシュ", nice_classes: [30], romanization: "WABO SURASSHU" }] }, tctx, { executePlan });
   const second = JSON.parse(p2.text);
   assert.deepEqual(second.minted, [], "no duplicate qid");
   assert.deepEqual(second.enriched, [doc.entries[0].qid], "the response names the enrichment");
   assert.equal(second.executed, true, "the reused qid re-executes — now answerable");
   doc = JSON.parse(readFileSync(suppPath, "utf8"));
   assert.equal(doc.entries.length, 1, "still one entry");
-  assert.deepEqual(doc.entries[0].romanizedTerms, ["TIKI SURASSHU", "TIKISURASSHU"],
+  assert.deepEqual(doc.entries[0].romanizedTerms, ["WABO SURASSHU", "WABOSURASSHU"],
     "the persisted entry carries the field the executor threads to romanized_names");
   // additive only: a third call with a DIFFERENT romanisation never re-rolls the stored one
   await proposeSupplemental({ axis: "transliteration-numeric", output_path: bandPath,
-    proposals: [{ predicate: "exact", term: "ティキスラッシュ", nice_classes: [30], romanization: "DIKI SURASSHU" }] }, tctx, { executePlan });
-  assert.deepEqual(JSON.parse(readFileSync(suppPath, "utf8")).entries[0].romanizedTerms, ["TIKI SURASSHU", "TIKISURASSHU"]);
+    proposals: [{ predicate: "exact", term: "ワボスラッシュ", nice_classes: [30], romanization: "WAHO SURASSHU" }] }, tctx, { executePlan });
+  assert.deepEqual(JSON.parse(readFileSync(suppPath, "utf8")).entries[0].romanizedTerms, ["WABO SURASSHU", "WABOSURASSHU"]);
 });
 
 // ── post-merge audit 2 (b): a corrected romanisation on a reused qid — monotone, but never silent ───
@@ -493,7 +493,7 @@ test("pipeline fold: a model-shielded markup entry is REFUSED at the fold and la
     entries: [
       { qid: "supp:primary-sweep:exact:core:aaaa1111", axis: "primary-sweep", predicate: "exact",
         term: "**BIOVELTRIN**", term_literal: true, nice_classes: ["9"], regions: [], expected_kind: "enumerate", origin: "supplemental" },
-      { qid: "supp:primary-sweep:exact:biodelfis:bbbb2222", axis: "primary-sweep", predicate: "exact",
+      { qid: "supp:primary-sweep:exact:bioveltryn:bbbb2222", axis: "primary-sweep", predicate: "exact",
         term: "BIOVELTRYN", nice_classes: ["9"], regions: [], expected_kind: "enumerate", origin: "supplemental" },
     ] }));
   const ctx = { registerPlan: runPlan, axes: ["primary-sweep"], paths: { runDir: dir,
@@ -501,7 +501,7 @@ test("pipeline fold: a model-shielded markup entry is REFUSED at the fold and la
     registerBand: (a) => join(dir, "register-units", `${a}-band.json`) } };
 
   const added = foldSupplementalProposals(ctx);
-  assert.deepEqual(added, ["supp:primary-sweep:exact:biodelfis:bbbb2222"], "the clean proposal still folds");
+  assert.deepEqual(added, ["supp:primary-sweep:exact:bioveltryn:bbbb2222"], "the clean proposal still folds");
   const persisted = JSON.parse(rf(driverDir(dir, "register-plan.json"), "utf8"));
   assert.ok(!persisted.entries.some((e) => e.term === "**BIOVELTRIN**"),
     "the shielded entry never reaches the plan, so nothing dispatches it");

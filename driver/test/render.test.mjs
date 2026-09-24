@@ -563,13 +563,13 @@ test("doc-31 no-invent: record set present + a cited uri NOT in it + model field
 // ── doc-31 step 4: owner DISPLAY is bound from the record, so an invented variant never reaches the card. ──
 test("doc-31 owner binding: the card owner is the RECORD's proprietor, not the model's invented variant", () => {
   const recordsByUri = new Map([["https://tm.example/us/3396572", {
-    _uri: "https://tm.example/us/3396572", applicationNumber: "77999111", owner: "Lo.Li. Pharma S.r.l.", jurisdiction: "US",
+    _uri: "https://tm.example/us/3396572", applicationNumber: "77999111", owner: "Be.Ma. Pharma S.r.l.", jurisdiction: "US",
   }]]);
-  const f = [{ ...FINDINGS[0], owner: { name: "Lo.Li. Pharma International", country: "US", registrations: [
+  const f = [{ ...FINDINGS[0], owner: { name: "Be.Ma. Pharma International", country: "US", registrations: [
     { uri: "https://tm.example/us/3396572", classes: ["41"], jurisdiction: "US" } ] } }];
   const html = renderHtml(parsedOf(REPORT), f, COVERAGE, { recordsByUri });
-  assert.match(html, /Lo\.Li\. Pharma S\.r\.l\./);             // bound from the record
-  assert.doesNotMatch(html, /Lo\.Li\. Pharma International/);  // the invented variant never reaches the card owner/oneline
+  assert.match(html, /Be\.Ma\. Pharma S\.r\.l\./);             // bound from the record
+  assert.doesNotMatch(html, /Be\.Ma\. Pharma International/);  // the invented variant never reaches the card owner/oneline
 });
 
 test("doc-31 owner binding: no record owner → falls back to the model's finding.owner.name (back-compat)", () => {
@@ -668,8 +668,8 @@ test("no findings.json (legacy / model miss) → renders without crashing, no fi
 
 // ---- A1/A3 fix: context_notes block + quarantine banner ------------------------------------------
 
-const CTX_NOTE = { type: "famous-neighbour-ungrounded", mark: "CHROME", owner: "Google LLC", context: "one keystroke from NOVAPULSE; famous mark; no fetched record; off-field" };
-const QUAR = [{ index: 8, mark: "CHROME", error: "finding_registration_invalid: (registration.uri must be a non-empty string)" }];
+const CTX_NOTE = { type: "famous-neighbour-ungrounded", mark: "NOVAPULSO", owner: "Zentrova LLC", context: "one keystroke from NOVAPULSE; famous mark; no fetched record; off-field" };
+const QUAR = [{ index: 8, mark: "NOVAPULSO", error: "finding_registration_invalid: (registration.uri must be a non-empty string)" }];
 
 test("spec-49 T4: the quarantine banner is dead on every variant (a quarantined finding fails the run upstream)", () => {
   const parsed = parsedOf(FM);
@@ -1201,14 +1201,14 @@ test("spec 47: a reasoned Enforcer prose bullet suppresses the templated meter l
     "# Marks",
     "## Matchday, Inc.", "- ord: 1", "- one: The dominant MATCHDAY holder.",
     "### The read", "Distinguished as wholes.",
-    "### Full detail", "- **Enforcement.** Novartis-scale portfolio; appears likely to monitor and oppose.",
+    "### Full detail", "- **Enforcement.** Norvanta-scale portfolio; appears likely to monitor and oppose.",
     "## MAN Sports", "- ord: 2", "- one: Identical anchor on core supplement goods.",
     "### The read", "Common-law only.",
   ].join("\n");
   const html = renderHtml(parsedOf(`${FM}\n${CARDS_E}`), FINDINGS, COVERAGE, {});
   // card 1 carries the reasoned prose bullet — the templated inferred-appetite line is suppressed
   const card1 = html.slice(html.indexOf('id="c1"'), html.indexOf('id="c2"'));
-  assert.match(card1, /<b>Enforcement\.<\/b> Novartis-scale portfolio/);
+  assert.match(card1, /<b>Enforcement\.<\/b> Norvanta-scale portfolio/);
   assert.doesNotMatch(card1, /appetite <i>inferred<\/i>/, "the templated meter line never doubles a reasoned prose bullet");
   // card 2 has no prose enforcer bullet — the templated meter line still renders (inferred, honest)
   const card2 = html.slice(html.indexOf('id="c2"'));
@@ -1752,7 +1752,7 @@ test("doc-54: one footer — the full provenance line rides the document; serve-
 //   · drop the fixed line entirely                   → a finding carrying neither renders no reason, arm 2 red
 //   · print "Class" or shout the register's status   → arm 3 red
 test("a ruled-out card leads with the finding's own reason, and keeps the fixed line only as a last resort", () => {
-  const withNet = [{ ...BAND_FINDINGS[0], ordinal: 9, ruled_out: true, mark: "QORE",
+  const withNet = [{ ...BAND_FINDINGS[0], ordinal: 9, ruled_out: true, mark: "ACMEQ",
     net: "NXP's registrations cover microprocessors and do not reach a water-quality app.",
     legal_position: "The specification is semiconductors.", practical_position: "NXP is a large proprietor." }];
   const html = renderHtml(parsedOf(REPORT), withNet, [], {});
@@ -1761,7 +1761,7 @@ test("a ruled-out card leads with the finding's own reason, and keeps the fixed 
   assert.match(html, /The specification is semiconductors/, "the longer argument stays in the fold");
 
   // A finding carrying neither still states something rather than nothing.
-  const bare = [{ ...BAND_FINDINGS[0], ordinal: 9, ruled_out: true, mark: "QORE", net: "", legal_position: "" }];
+  const bare = [{ ...BAND_FINDINGS[0], ordinal: 9, ruled_out: true, mark: "ACMEQ", net: "", legal_position: "" }];
   assert.match(renderHtml(parsedOf(REPORT), bare, [], {}), /a different name in a related field/,
     "the fixed line is the last resort, not a dead branch");
 });
@@ -2220,7 +2220,7 @@ test("the hero names the product the run resolved to — one name, no rung, and 
 test("spec 2026-07-30 §3: structured mark_assessment renders the `read` sentence and collapses the typed rows behind toggles", () => {
   const ma = {
     distinctiveness: {
-      read: "A weak name to own. SLUSH is simply what the product is, so the whole mark rests on TIKI.",
+      read: "A weak name to own. SLUSH is simply what the product is, so the whole mark rests on WAVO.",
       spectrum: "descriptive-leaning suggestive",
       per_class: [{ class: "5", note: "descriptive for supplements" }, { class: "32", note: "suggestive for drinks" }],
       per_market: [{ market: "CN", note: "descriptive once translated" }],
@@ -2265,26 +2265,26 @@ test("charter ruling 1: opts.depthNote renders as a NAME-LED masthead depth stri
 });
 
 test("§L: disposition mode absorbs the famous-mark notes into 03 Notable but manageable (out of Scope)", () => {
-  const ctx = { type: "famous-neighbour-ungrounded", mark: "CHROME", owner: "Google LLC", context: "famous neighbour; no fetched record; off-field" };
+  const ctx = { type: "famous-neighbour-ungrounded", mark: "NOVAPULSO", owner: "Zentrova LLC", context: "famous neighbour; no fetched record; off-field" };
   const html = renderHtml(parsedOf(FM_NOVAPULSE), DISP_FINDINGS, [], { runId: "fm-demo", contextNotes: [ctx] });
   assert.match(html, /<p class="fold-lead"><b>Famous-mark neighbours\.<\/b>/, "the famous-mark lead-in renders inside 03");
   assert.doesNotMatch(html, /<h2>Famous-mark neighbours noted<\/h2>/, "the standalone heading is gone in disposition mode");
-  const i03 = html.indexOf("Notable but manageable"), iCHROME = html.indexOf("CHROME");
-  assert.ok(i03 >= 0 && i03 < iCHROME, "the note renders under 03");
+  const i03 = html.indexOf("Notable but manageable"), iNOVAPULSO = html.indexOf("NOVAPULSO");
+  assert.ok(i03 >= 0 && i03 < iNOVAPULSO, "the note renders under 03");
   const scope = html.slice(html.indexOf('<details class="scope">'));
-  assert.doesNotMatch(scope, /CHROME/, "and NOT inside Scope any more");
+  assert.doesNotMatch(scope, /NOVAPULSO/, "and NOT inside Scope any more");
 });
 
 test("§L: a same-element mark (token containment ≥4 chars) is NEVER silently ruled out — every numbered finding plots", () => {
   // FREEZEIV shares the FREEZE element of CORAL FREEZE but equals no token — the old equality check routed
   // it to "Also considered — ruled out" and off the conflict-landscape chart (a numbering gap).
-  const FM_TIKI = FM.replace("THIS IS MY MATCHDAY", "CORAL FREEZE");
+  const FM_WAVO = FM.replace("THIS IS MY MATCHDAY", "CORAL FREEZE");
   const F = [
     { ordinal: 1, mark: "CORAL", owner: dreg("US", "/mark/us/1"), composite: 3, level: "C", dispute_type: "classic", disposition: "adversarial", meters: DMETERS, quadrant: { x: 0.8, y: 0.9 }, source: { source_type: "register-vendor" } },
     { ordinal: 2, mark: "FREEZEIV", owner: dreg("US", "/mark/us/2"), composite: 2, level: "B", dispute_type: "nuisance-claim", disposition: "off-field", meters: DMETERS, quadrant: { x: 0.9, y: 0.25 }, source: { source_type: "register-vendor" } },
     { ordinal: 3, mark: "UNTAMED", owner: dreg("US", "/mark/us/3"), composite: 2, level: "B", dispute_type: "nuisance-claim", disposition: "off-field", meters: DMETERS, quadrant: { x: 0.2, y: 0.1 }, source: { source_type: "register-vendor" } },
   ];
-  const html = renderHtml(parsedOf(FM_TIKI), F, [], { runId: "plot-demo" });
+  const html = renderHtml(parsedOf(FM_WAVO), F, [], { runId: "plot-demo" });
   // ANCHOR ON THE CHART, not on the first svg in the document: the report bar carries the brand lockup,
   // which is an svg and comes first. Slicing from the landscape wrapper reads the chart whatever else
   // the page draws above it.

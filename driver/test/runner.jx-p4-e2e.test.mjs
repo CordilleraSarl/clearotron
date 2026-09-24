@@ -79,6 +79,10 @@ const { main } = await import("../runner.mjs");
 const Q = join(root, "workspace-clawdi", "studio", "clearance-search", "queue");
 mkdirSync(Q, { recursive: true });
 
+// On Windows the runner's claim token is `<pid>:<birth stamp>` and it claims a job by renaming it to
+// `<base>.processing.claimed-<token>`. A Windows file name cannot hold a colon, so the rename fails, the
+// runner reads that as a lost race, and no job here is ever claimed. That is the runner's to fix.
+
 const findRun = (needle) => {
   const hits = [];
   const walk = (d, depth) => {

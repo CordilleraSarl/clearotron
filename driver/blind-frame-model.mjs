@@ -13,7 +13,7 @@
 // PURE (no node imports) → tests offline. Mirrors coverage-ledger.mjs / findings-model.mjs.
 
 // add/drop = the both-directions element neighbours (VELTRIN→VELTRI is "drop"); phonetic/homophone =
-// sound-alikes; neighbour = a one-keystroke real-word / famous-mark neighbour (CHROME on NOVAPULSE);
+// sound-alikes; neighbour = a one-keystroke real-word / famous-mark neighbour (NOVAPULSO on NOVAPULSE);
 // composite = the element inside a larger mark (VELTRI-composite cluster).
 export const VARIANT_DIRECTIONS = ["add", "drop", "phonetic", "homophone", "neighbour", "composite"];
 // the spine is ranked by goods-overlap with the actual product, not by class number + registration status.

@@ -5,7 +5,7 @@
 //
 // THE EXPOSURE. built a `PreToolUse` deny-hook that refuses a seat's writes into `<runDir>/_driver/`.
 // It is a `claude -p` mechanism, so it covers the anthropic engine only. On the codex engine the seat
-// gets `--add-dir <runDir>` under `workspace-write` and cwd IS the run dir — and on the host this
+// gets `--add-dir <runDir>` under its sandbox and cwd IS the run dir — and on the host this
 // deployment actually runs codex on, `CLEAROTRON_CODEX_SANDBOX_BYPASS=1` is set (measured), because codex's
 // own sandbox helper cannot spawn there. Net: no sandbox at all, one account, the run dir owned by the
 // same user the seat runs as. A seat can author the record its own round is judged by.
@@ -170,7 +170,7 @@ export const stageBlock = (stage) => String(stage ?? "").split(":")[0];
 
 /** Is `name` the dispatch record of a seat in the same stage block as `stage`? */
 export function isSiblingDispatch(name, stage) {
-  const n = String(name ?? "");
+  const n = String(name ?? "").replaceAll("%3A", ":");   // a Windows record writes the label's colon %3A
   const block = stageBlock(stage);
   if (!block || !n.endsWith(`.${DISPATCH_SUFFIX}`)) return false;
   const label = n.slice(0, n.indexOf(".attempt"));

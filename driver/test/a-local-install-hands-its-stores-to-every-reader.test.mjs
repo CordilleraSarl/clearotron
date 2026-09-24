@@ -44,7 +44,7 @@ async function firstStartOn(home, ports) {
   // NOTHING INHERITED, and the opt-out named: `start` must not be configured by a file on this box, and it
   // writes the file under `home` whether or not it reads one.
   const child = spawn(process.execPath, [join(REPO, "bin", "start.mjs"), "--no-worker"], {
-    env: { PATH: process.env.PATH, HOME: home, CLEAROTRON_NO_ENV_FILE: "1", PORTAL_LOCAL_USER: "op@localhost",
+    env: { PATH: process.env.PATH, HOME: home, USERPROFILE: home, CLEAROTRON_NO_ENV_FILE: "1", PORTAL_LOCAL_USER: "op@localhost",
       PORTAL_SERVICE_PORT: portal, TRADEMARK_MCP_HTTP_PORT: mcp, CLIENT_MCP_HTTP_PORT: client },
     stdio: ["ignore", "pipe", "pipe"],
   });
@@ -71,7 +71,7 @@ const readEnv = (path) => Object.fromEntries(readFileSync(path, "utf8").split("\
 /** `describe_options` for each key, asked of the stdio connector an assistant launches, in a clean shell. */
 async function connectorSavedSearches(home, keys) {
   const child = spawn(process.execPath, [join(REPO, "mcp-server", "server.mjs")], {
-    env: handRunEnv({ HOME: home, PATH: process.env.PATH }, {}), stdio: ["pipe", "pipe", "pipe"],
+    env: handRunEnv({ HOME: home, USERPROFILE: home, PATH: process.env.PATH }, {}), stdio: ["pipe", "pipe", "pipe"],
   });
   let stderr = "", buf = "";
   const replies = new Map();
@@ -160,7 +160,7 @@ test("after a real first start, the connector and doctor read the saved searches
     let out;
     try {
       out = execFileSync(process.execPath, [join(REPO, "bin", "onboard.mjs"), "--check"], { encoding: "utf8", stdio: "pipe", timeout: 120000,
-        env: handRunEnv({ HOME: home, PATH: [nodeDir, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1" }, {}) });
+        env: handRunEnv({ HOME: home, USERPROFILE: home, PATH: [nodeDir, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1" }, {}) });
     } catch (e) { out = `${e.stdout ?? ""}${e.stderr ?? ""}`; }
     assert.match(out, new RegExp(`saved searches are read from ${esc(handed.CLEAROTRON_RECIPES_DIR)}, and saves are committed in ${esc(handed.RECIPE_REPO_ROOT)}`),
       `doctor did not report the store start recorded:\n${out}`);

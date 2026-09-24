@@ -40,6 +40,7 @@ the vendor flags approximate is UNKNOWN, never a number.
 | [`E2E.md`](E2E.md) | Proving a deployment works end to end |
 | [`GLOSSARY.md`](GLOSSARY.md) | The words this codebase uses in a particular way — one line each, for a contributor meeting them for the first time |
 | [`SECURITY.md`](SECURITY.md) | The security envelope — what protects what, and where it is enforced in code. To report a vulnerability, use [`../SECURITY.md`](../SECURITY.md) |
+| [`SECURITY-OWASP.md`](SECURITY-OWASP.md) | Each risk on OWASP's two lists for AI systems, what Clearotron does about it, and the file on `main` where that lives |
 
 Access control is stated once, in [`SECURITY.md`](SECURITY.md): who may see which runs, what an unset
 guest list means on each face, and which door proves identity. Issuing and rotating grants and ops

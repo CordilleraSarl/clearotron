@@ -6,7 +6,7 @@
 //
 // `record-carry.json` on a full clearance test run read `unreasoned: 0` and was telling the truth in the weak
 // sense only: every drop had a LABEL, and on 102 of them the label was inferred from where the record
-// stopped rather than stated by the step that stopped it. One of those 102 was DELPHIC — a lawyer-named
+// stopped rather than stated by the step that stopped it. One of those 102 was KORPHIC — a lawyer-named
 // gold mark, REGISTERED, placed on sheet-2, stamped `carry: "carried"`, carried onto the findings
 // surface, and then absent from the delivered report with nothing anywhere saying why.
 //

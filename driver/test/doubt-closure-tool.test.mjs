@@ -78,7 +78,8 @@ test("a call that dies before it decides still leaves its index line — absence
 // harness's, not the recorder's. An early `return` would report `ok` for a test that asserted nothing, so
 // the reason is declared on the line where a reader of the output can see it.
 test("a capture that CANNOT be written is reported, never swallowed",
-  { skip: process.getuid?.() === 0 && "root writes through a 0o500 directory — the fault injection is a no-op" }, () => {
+  { skip: (process.getuid?.() === 0 && "root writes through a 0o500 directory — the fault injection is a no-op")
+    || (process.platform === "win32" && "directory mode bits: chmod 0o500 does not make a folder unwritable on Windows, so the fault injection is a no-op") }, () => {
   // The rows are still valid work, so the call is not lost — but "captured" and "capture failed" are
   // different facts, and an answer that reported only success would make a lost payload invisible.
   const d = runDir();

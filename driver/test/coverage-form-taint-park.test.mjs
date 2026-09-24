@@ -162,6 +162,6 @@ test("the park's artifact list NAMES the form, both copies, under the stamped fo
       form_required: true, form_path: "register-coverage-form.v2.json" }));
     const renamed = taintParkJudgmentArtifacts(P, dir);
     assert.ok(renamed[2].endsWith("register-coverage-form.v2.json"));
-    assert.ok(renamed[3].endsWith("_driver/register-coverage-form.v2.form.json"));
+    assert.ok(renamed[3].endsWith(join("_driver", "register-coverage-form.v2.form.json")));   // joined: Windows separates it with a backslash
   } finally { cleanup(dir); }
 });

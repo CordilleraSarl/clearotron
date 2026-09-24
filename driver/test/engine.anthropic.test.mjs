@@ -7,7 +7,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { fileURLToPath } from "node:url";
-import { dirname, join } from "node:path";
+import { dirname, join, sep } from "node:path";
 import { mkdtempSync, existsSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { anthropicAgentEngine, claudeModel, effortFor, mapUsage, buildClaudeArgs, absolutizeSkillRefs, spawnEnv,
@@ -25,11 +25,11 @@ test("auth toggle: subscription (default) strips ANTHROPIC_API_KEY; api-key mode
 });
 
 test("CLAUDE_CODE_OAUTH_TOKEN RIDES THROUGH under subscription — the headless sign-in's whole mechanism", () => {
-  // The setup-token route only works because spawnEnv is a spread that strips exactly one thing: the
-  // token INSTALL.md's headless sign-in produces has to reach the claude subprocess from the env file,
-  // and until this arm nothing declared that. A future spawnEnv that allowlists, or strips OAuth vars
-  // alongside the API key, silently kills every headless server's subscription lane — the failure
-  // arrives ninety minutes into a clearance wearing a model fault's shape.
+  // The setup-token route only works because the token INSTALL.md's headless sign-in produces reaches the
+  // claude subprocess from the env file, and until this arm nothing declared that. spawnEnv is now a list
+  // (engine-env.mjs), and the token rides it in the vendor's `CLAUDE_*` namespace. A list that dropped it,
+  // or a spawnEnv that strips OAuth vars alongside the API key, silently kills every headless server's
+  // subscription lane — the failure arrives ninety minutes into a clearance wearing a model fault's shape.
   const sub = spawnEnv({ CLAUDE_CODE_OAUTH_TOKEN: "tok-x", ANTHROPIC_API_KEY: "sk-x" });
   assert.equal(sub.CLAUDE_CODE_OAUTH_TOKEN, "tok-x", "subscription keeps the OAuth token while stripping the key");
   assert.equal(sub.ANTHROPIC_API_KEY, undefined);
@@ -176,13 +176,17 @@ test("buildClaudeArgs: print + stream-json + model/effort/permission, and the op
   assert.equal(b[b.indexOf("--allowedTools") + 1], "mcp__a__b");
 });
 
-test("buildClaudeArgs: never emits --settings (fast mode REMOVED — it ~2.5x'd subscription usage, tripped the 5h cap 2026-06-17)", () => {
+test("buildClaudeArgs: --settings never carries fast mode (REMOVED — it ~2.5x'd subscription usage, tripped the 5h cap 2026-06-17)", () => {
   // Full revert: no stage sets fastMode and the engine no longer threads it. A stray/legacy fastMode arg must
-  // NOT resurrect --settings (the flag is gone from the signature; this guards against silent reintroduction).
-  const { args: a } = buildClaudeArgs({ message: "hi", model: "opus", thinking: "high", fastMode: true });
-  assert.ok(!a.includes("--settings"), "fast mode removed -> no --settings even if a fastMode arg is passed");
-  const { args: b } = buildClaudeArgs({ message: "hi", model: "opus", thinking: "high" });
-  assert.ok(!b.includes("--settings"), "no --settings on a plain opus stage");
+  // NOT resurrect it (the flag is gone from the signature; this guards against silent reintroduction). Every
+  // turn now carries one --settings, the read fence (READ_FENCE), so the guard reads what it carries.
+  for (const extra of [{ fastMode: true }, {}]) {
+    const { args } = buildClaudeArgs({ message: "hi", model: "opus", thinking: "high", ...extra });
+    const at = args.indexOf("--settings");
+    assert.ok(at > 0 && args.indexOf("--settings", at + 1) < 0, "one --settings, the read fence");
+    assert.ok(!/fastMode/i.test(args[at + 1]), `fast mode came back: ${args[at + 1]}`);
+    assert.deepEqual(JSON.parse(args[at + 1]), { permissions: { blockReadsOutsideWorkingDirectories: true } }, "a plain stage's settings are the fence alone");
+  }
 });
 
 test("rate-limit / session-cap: rejected rate_limit_event + 429 result -> signals.rateLimited + resetsAt (ISO of epoch-seconds)", async () => {
@@ -225,22 +229,25 @@ test("STALL-WATCHDOG: a per-stage stallSec OVERRIDES the global CLEAROTRON_STALL
 // the driver-co-located `skills/`; the refs keep their `skills/` prefix, so they are joined onto
 // the PARENT of skillsDir) and grants --add-dir on skillsDir + the run dir. The retired gateway path is untouched.
 
+// The rewritten ref is a file path, joined with this platform's separator; the prose around it is not.
+const nat = (p) => p.split("/").join(sep);
+
 test("absolutizeSkillRefs: rewrites bare skills/…md under skillsDir's parent; no skillsDir = no-op", () => {
   assert.equal(
     absolutizeSkillRefs("First, read and follow exactly: skills/matter-frame/SKILL.md.", "/ws/skills"),
-    "First, read and follow exactly: /ws/skills/matter-frame/SKILL.md.");
+    `First, read and follow exactly: ${nat("/ws/skills/matter-frame/SKILL.md")}.`);
   // multiple refs in one message (synthesis reads three) — each rewritten exactly once
   const m = absolutizeSkillRefs("read skills/clearance-search/synthesis-rules.md, skills/clearance-search/risk-framework.md, skills/clearance-search/worked-examples.md.", "/ws/skills");
-  assert.equal(m, "read /ws/skills/clearance-search/synthesis-rules.md, /ws/skills/clearance-search/risk-framework.md, /ws/skills/clearance-search/worked-examples.md.");
+  assert.equal(m, `read ${nat("/ws/skills/clearance-search/synthesis-rules.md")}, ${nat("/ws/skills/clearance-search/risk-framework.md")}, ${nat("/ws/skills/clearance-search/worked-examples.md")}.`);
   // provider doc stays inside the rewrite
-  assert.equal(absolutizeSkillRefs("read skills/clearance-register/providers/corsearch.md", "/ws/skills"), "read /ws/skills/clearance-register/providers/corsearch.md");
+  assert.equal(absolutizeSkillRefs("read skills/clearance-register/providers/corsearch.md", "/ws/skills"), `read ${nat("/ws/skills/clearance-register/providers/corsearch.md")}`);
   assert.equal(absolutizeSkillRefs("no skill ref here at all", "/ws/skills"), "no skill ref here at all");
   assert.equal(absolutizeSkillRefs("skills/x/y.md", undefined), "skills/x/y.md", "no skillsDir → unchanged");
 });
 
 test("absolutizeSkillRefs: IDEMPOTENT — an already-absolute path containing skills/ is NOT double-prefixed", () => {
   const once = absolutizeSkillRefs("read skills/matter-frame/SKILL.md", "%h/clearotron/driver/skills");
-  assert.equal(once, "read %h/clearotron/driver/skills/matter-frame/SKILL.md");
+  assert.equal(once, `read ${nat("%h/clearotron/driver/skills/matter-frame/SKILL.md")}`);
   // re-running (e.g. a corrective/warm re-wrap of an already-absolutized message) must be a no-op
   assert.equal(absolutizeSkillRefs(once, "%h/clearotron/driver/skills"), once, "no path doubling");
   // a generic absolute path that merely contains 'skills/' mid-path is left alone
@@ -249,7 +256,7 @@ test("absolutizeSkillRefs: IDEMPOTENT — an already-absolute path containing sk
 
 test("buildClaudeArgs: --add-dir grants skills tree + run dir; message absolutized in `input`; both added on resume too", () => {
   const { args: a, input } = buildClaudeArgs({ message: "read skills/matter-frame/SKILL.md then write /run/out.md", model: "opus", thinking: "medium", skillsDir: "/ws/skills", runDir: "/run" });
-  assert.equal(input, "read /ws/skills/matter-frame/SKILL.md then write /run/out.md", "skill ref absolutized in the stdin prompt");
+  assert.equal(input, `read ${nat("/ws/skills/matter-frame/SKILL.md")} then write /run/out.md`, "skill ref absolutized in the stdin prompt");
   const addDirs = a.reduce((acc, x, i) => (x === "--add-dir" ? [...acc, a[i + 1]] : acc), []);
   assert.deepEqual(addDirs, ["/ws/skills", "/run"], "exactly the skills tree + the run dir, in order");
   // resume branch still carries the dirs (a resumed turn re-needs file access)
@@ -684,15 +691,24 @@ test("the arm above still DISCRIMINATES — with the grace cut, the defect's tim
 }));
 
 test("a STARVED SPAWN is not ACTIVE time — the hard ceiling measures from the first byte", timed(async () => {
-  // Arm-395's configuration plus 900ms of startup. Before the fix: killed=true, signals.hardWall, wall 1.0s,
-  // toolWaitMs 0, toolCalls 0 — a 500ms ceiling spent entirely on process boot, with nothing to show for it.
+  // Arm-395's shape plus a startup longer than the ceiling. Before the fix, at 900ms of startup against a 500ms
+  // ceiling: killed=true, signals.hardWall, wall 1.0s, toolWaitMs 0, toolCalls 0 — a ceiling spent entirely
+  // on process boot, with nothing to show for it.
+  //
+  // THREE TIMES THOSE NUMBERS, because the driver times a tool wait from when each line ARRIVES. On the
+  // Windows runner lines arrived late (a 1.2s wait measured 0.69, 0.78 and 0.88s; a 3.6s one, 2.8s), and
+  // that lag counts as active time. At a 500ms ceiling the lag alone came within a hair of the kill this
+  // arm says must not happen.
   const r = await run({ message: "x", model: "sonnet", thinking: "low", timeoutSec: 60 },
-    { MOCK_CLAUDE_BOOT_MS: "900", MOCK_CLAUDE_TOOL_WAIT: JSON.stringify([{ name: "RegisterLookup", ms: 1200 }]),
-      CLEAROTRON_HARD_MS: "500", CLEAROTRON_STALL_MS: "60000", CLEAROTRON_NO_PROGRESS_MS: "60000" });
+    { MOCK_CLAUDE_BOOT_MS: "2700", MOCK_CLAUDE_TOOL_WAIT: JSON.stringify([{ name: "RegisterLookup", ms: 3600 }]),
+      CLEAROTRON_HARD_MS: "1500", CLEAROTRON_STALL_MS: "60000", CLEAROTRON_NO_PROGRESS_MS: "60000" });
   assert.equal(r.killed, false,
     "startup was charged to the ceiling as active time — the turn died having done no work at all" + specimen(r));
-  assert.ok(r.toolWaitMs >= 1000, `the fixture waited ${r.toolWaitMs}ms on a tool — under ~1s the turn never `
-    + "reached the elapsed-vs-active gap this arm turns on" + specimen(r));
+  // The wait only has to outlast the ceiling: then the turn lived past 1.5s after its first byte, and only
+  // an uncounted wait kept it alive. Asking for the whole 3.6s failed on the Windows runner, where it was
+  // measured at 2.8s: that runner hands lines over late, and the more so the longer the wait.
+  assert.ok(r.toolWaitMs > 1500, `the fixture waited ${r.toolWaitMs}ms on a tool — no longer than the ceiling, `
+    + "so the turn never reached the elapsed-vs-active gap this arm turns on" + specimen(r));
   assert.equal(r.toolCalls >= 1, true,
     "no tool call was ever opened, so the turn was killed during boot" + specimen(r));
 }));
@@ -894,7 +910,10 @@ test("a turn killed after several completed calls reconstructs the output those 
   } finally { rmSync(dir, { recursive: true, force: true }); }
 }));
 
-test("startup-class death: a CLI exit with NO stream events carries the noStreamEvents signal + a named stderr diagnosis", async () => {
+test("startup-class death: a CLI exit with NO stream events carries the noStreamEvents signal + a named stderr diagnosis", {
+  skip: process.platform === "win32" && "a #!/bin/sh stand-in for the CLI (failingBin): Windows cannot start a shell script, "
+    + "so the engine takes its spawn-error path instead of the startup-death path",
+}, async () => {
   // The 3× register-digest code=1 zero-token shape: claude died before emitting a single stream event.
   // `sh -c 'exit 7'` stands in for the CLI failing at startup (bad arg/auth/MCP). The tuple must name
   // the startup class so the journal's stderrTail is never read as a mid-turn provider fault.

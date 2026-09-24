@@ -718,7 +718,7 @@ export const CHROME_CSS = `
    thing. The three body elements that carried the class drop it too, and --wm-alpha goes with them:
    a token nothing reads is a knob somebody re-wires.
    NOTE FOR ANY FUTURE DECORATION ON body: the rule here pinned right:0 and never a negative inset,
-   because right:-2% put 26px of horizontal scrollbar on a 1280px report (#485) and pointer-events:none
+   because right:-2% put 26px of horizontal scrollbar on a 1280px report and pointer-events:none
    does not exempt a box from scrollable overflow. That is a property of the position, not of this
    rule, and scripts/report-overflow-check.mjs still measures it. */
 /* Floating settings stack (theme + privacy) — pinned bottom-right, OUT of the nav bar. Icon-only: the toggle keeps its .tt-lbl/.anon-lbl text for screen readers but clips it visually.

@@ -29,6 +29,10 @@ import { fileURLToPath } from "node:url";
 import { handRunEnv, assertReadItsEnvFile } from "./drive-env.mjs";
 import { withFreePorts } from "./helpers/free-port.mjs";
 
+/** The arms below that drive the background path, which ends at a refusal on Windows. */
+const NO_BACKGROUND_FORM_ON_WINDOWS = process.platform === "win32"
+  && "on Windows `start --background` stops at its own refusal before this path (a-windows-start-has-no-background-mode.test.mjs): the background form is systemd units, which Windows does not have";
+
 const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 const START = join(ROOT, "bin", "start.mjs");
 const ONBOARD = join(ROOT, "bin", "onboard.mjs");
@@ -59,7 +63,7 @@ function driveStart(ports, extra = {}) {
   // no error, and `extra` lands after it so the arm ABOUT the service-managed path sets one back
   // deliberately. The engine values go with them: a developer's shell or a CI
   // secret carrying one would clear the refusal, and the arms would measure a run that never refused.
-  const env = handRunEnv({ HOME: home, PORTAL_SERVICE_PORT: String(ports.portal),
+  const env = handRunEnv({ HOME: home, USERPROFILE: home, PORTAL_SERVICE_PORT: String(ports.portal),
     TRADEMARK_MCP_HTTP_PORT: String(ports.mcp), CLIENT_MCP_HTTP_PORT: String(ports.client),
     CLEAROTRON_DATABASE: undefined, CLEAROTRON_AI: undefined, CLEAROTRON_CLAUDE_PATH: undefined,
     CLEAROTRON_REPORTS_DIR: undefined,
@@ -168,13 +172,13 @@ test.before(async () => {
 });
 test.after(() => { READ?.clean(); UNREAD?.clean(); });
 
-test("the refusal names the file this command actually read, and that file is the one it reported reading", () => {
+test("the refusal names the file this command actually read, and that file is the one it reported reading", { skip: NO_BACKGROUND_FORM_ON_WINDOWS }, () => {
   const block = remedy(reachedTheRefusal(READ));
   const file = readItsEnvFile(READ);
   assert.ok(block.includes(file), `the refusal named no path this command read. It said:\n${block}`);
 });
 
-test("it names the units' file too, because at THIS site a value set there also reaches the check", () => {
+test("it names the units' file too, because at THIS site a value set there also reaches the check", { skip: NO_BACKGROUND_FORM_ON_WINDOWS }, () => {
   const said = reachedTheRefusal(READ);
   // Not the issue's proposed sentence, and this arm is why. That text — "`~/.env` is loaded by the
   // units and is not read here" — is true at the port refusals and FALSE here: `start --background`
@@ -187,14 +191,14 @@ test("it names the units' file too, because at THIS site a value set there also 
     "the two files resolved to the same path, so 'both are named' proves nothing about either");
 });
 
-test("the sentence that named no file is gone", () => {
+test("the sentence that named no file is gone", { skip: NO_BACKGROUND_FORM_ON_WINDOWS }, () => {
   const said = reachedTheRefusal(READ);
   assert.ok(!/Set these where this command can see them/.test(said),
     `the refusal still tells the reader to set them "where this command can see them" — the one thing `
     + `they cannot work out, and the reason this issue exists:\n${said.slice(0, 900)}`);
 });
 
-test("`install` is still offered, and is described as the terminal-only route it is", () => {
+test("`install` is still offered, and is described as the terminal-only route it is", { skip: NO_BACKGROUND_FORM_ON_WINDOWS }, () => {
   const block = remedy(reachedTheRefusal(READ));
   assert.ok(/clearotron install/.test(block),
     "the wizard is the right primary remedy for an operator at a terminal and must not have been dropped");
@@ -203,7 +207,7 @@ test("`install` is still offered, and is described as the terminal-only route it
     + `route it has:\n${block}`);
 });
 
-test("a command that read no env file of its own names none — it does not compose one", () => {
+test("a command that read no env file of its own names none — it does not compose one", { skip: NO_BACKGROUND_FORM_ON_WINDOWS }, () => {
   // THE PLANT FOR THE OTHER BRANCH. `envFileRead()` exists so a systemd-started service, configured by
   // its EnvironmentFile, names nothing rather than naming the CLI's file. CLEAROTRON_NO_ENV_FILE=1 is
   // the same state reached the other way, and it is the state this suite's own runner puts children in.
@@ -215,7 +219,7 @@ test("a command that read no env file of its own names none — it does not comp
     `it named no file at all. The units' file is still an honest address here and must be given:\n${block}`);
 });
 
-test("the pool-root refusal on the same screen names the file too — the class is not one site", () => {
+test("the pool-root refusal on the same screen names the file too — the class is not one site", { skip: NO_BACKGROUND_FORM_ON_WINDOWS }, () => {
   // THE DIFFERENT MEMBER. This message comes from `driver.config.mjs`, not from `start`, and reaches
   // this screen as a warning two lines above the refusal the issue names. It offered `install` and
   // nothing else, so its reader had the identical dead end.
@@ -224,7 +228,7 @@ test("the pool-root refusal on the same screen names the file too — the class 
     `the pool-root refusal still offers only the wizard, which its reader here cannot run:\n${warn}`);
 });
 
-test("and it names none of its own when the process read no file", () => {
+test("and it names none of its own when the process read no file", { skip: NO_BACKGROUND_FORM_ON_WINDOWS }, () => {
   const warn = poolWarning(reachedTheRefusal(UNREAD));
   assert.ok(!warn.includes(UNREAD.envFile),
     `it named a file this process never read:\n${warn}`);
@@ -238,7 +242,7 @@ test("the load-bearing premise, driven: `clearotron install` refuses when stdin 
   const home = mkdtempSync(join(tmpdir(), "ct202w-"));
   try {
     const r = spawnSync(process.execPath, [ONBOARD], { encoding: "utf8", timeout: 120_000,
-      stdio: ["ignore", "pipe", "pipe"], env: { ...process.env, HOME: home } });
+      stdio: ["ignore", "pipe", "pipe"], env: { ...process.env, HOME: home, USERPROFILE: home } });
     const said = `${r.stdout ?? ""}${r.stderr ?? ""}`;
     assert.notEqual(r.status, 0, `the wizard did NOT refuse a non-terminal:\n${said.slice(0, 700)}`);
     assert.match(said, /stdin is not a terminal/,

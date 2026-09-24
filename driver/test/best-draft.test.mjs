@@ -12,7 +12,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir } from "../../shared/driver-dir.mjs";   //
+import { driverDir, driverFileName } from "../../shared/driver-dir.mjs";   //
 import { tmpdir } from "node:os";
 import { beatsBest, readBestDraft, recordBestDraft, bestDraftDir } from "../best-draft.mjs";
 import { runStage, registerEngine, draftCarryEligible } from "../gateway.mjs";
@@ -50,7 +50,8 @@ test("record/read round-trip — the best draft survives, and a worse one never 
     assert.equal(readFileSync(best.path, "utf8"), "# draft at 4\n", "the bytes kept are the converged ones");
     // the two halves are separate stores and never collide
     assert.equal(readBestDraft(dir, "common-law-half:a"), null);
-    assert.ok(bestDraftDir(dir, "common-law-half:b").includes("common-law-half:b"));
+    // Under `_driver/` a stage label's colon is written the way this platform allows in a file name.
+    assert.ok(bestDraftDir(dir, "common-law-half:b").includes(driverFileName("common-law-half:b")));
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
@@ -104,9 +105,10 @@ const hardWallTurn = (timeoutSec) => ({ code: 137, killed: true, wall: timeoutSe
   laneWaitMs: 0, json: { status: "timeout", result: { meta: { agentMeta: {} }, payloads: [{ text: "" }] } },
   usage: null, sessionRef: null, signals: { hardWall: true } });
 // the shape the connotation gate throws: a count that falls attempt over attempt
-const connFail = (n) => ({ ok: false, reason: `connotation_no_ruling:no_ruling=${n};Q-ABCDEFGH [DELPHI gang]`, quantity: n });
+const connFail = (n) => ({ ok: false, reason: `connotation_no_ruling:no_ruling=${n};Q-ABCDEFGH [KORPHI gang]`, quantity: n });
 
-test("the ladder's BEST rejected draft is preserved — the converged one, not the last one", async () => {
+test("the ladder's BEST rejected draft is preserved — the converged one, not the last one",
+  async () => {
   const dir = mkdtempSync(join(tmpdir(), "carry-preserve-"));
   const out = join(dir, "common-law-findings.half-b.md");
   mkdirSync(driverDir(dir), { recursive: true });

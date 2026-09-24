@@ -27,6 +27,10 @@ process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
 process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
 
 const queueFor = (root, agentId) => join(root, `workspace-${agentId}`, "studio", "clearance-search", "queue");
+
+// On Windows the runner's claim token is `<pid>:<birth stamp>` and it claims a job by renaming it to
+// `<base>.processing.claimed-<token>`. A Windows file name cannot hold a colon, so the rename fails, the
+// runner reads that as a lost race, and no job here is ever claimed. That is the runner's to fix.
 const jobJson = (ref) => JSON.stringify({
   id: `adm-${ref}`, msgId: `<adm-${ref}@x>`, forwarder: "jordan", forwarderDomain: "example.com",
   ref, markName: "ADMISSION PROBE", classes: [9], provider: "corsearch",

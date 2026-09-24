@@ -48,3 +48,11 @@ test("fetch server: a non-url arg returns a clean isError (guard, no network)", 
   assert.equal(responses[3]?.result?.isError, true);
   assert.match(responses[3]?.result?.content?.[0]?.text ?? "", /valid absolute http\(s\) url/);
 });
+
+test("fetch server: an address on this machine is refused through the tool, by name, before any request", async () => {
+  const CALL = { jsonrpc: "2.0", id: 4, method: "tools/call", params: { name: "fetch_url", arguments: { url: "http://127.0.0.1:9/admin" } } };
+  const { responses } = await mcpSession("fetch-server.mjs", [INIT, CALL]);
+  assert.equal(responses[4]?.result?.isError, true);
+  assert.match(responses[4]?.result?.content?.[0]?.text ?? "",
+    /^fetch_url refused http:\/\/127\.0\.0\.1:9\/admin: 127\.0\.0\.1 is a loopback address\. This tool fetches public addresses only\.$/);
+});

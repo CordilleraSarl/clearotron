@@ -30,7 +30,7 @@
 // The first cut had two contracts joined only by prose: digest.md told the digest to write ONE
 // Sheet-1 row per POSITION (the exact-identity collapse), while this join credited an ending only to
 // the URIs literally cited, with no notion of positions. Proven on real records: /mark/cn/CHINIC4DC…
-// and /mark/cn/CHINIC7788… (both TIKI TWIST, NORTHCOMEX USA LLC, class 32, REGISTERED) are ONE
+// and /mark/cn/CHINIC7788… (both WAVO TWIST, NORTHCOMEX USA LLC, class 32, REGISTERED) are ONE
 // position AND both sit in the code-ranked top slice — a compliant digest writing one position row
 // citing the senior URI left the other unended and the delivery died. The only thing standing
 // between a correct report and a blocked run was a prose clause ("the URI cell listing EVERY

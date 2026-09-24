@@ -177,7 +177,7 @@ test("each other class behaves as its classification says, with every path varia
     for (const value of [undefined, "", "   ", "\t"]) {
       // Apply the blank to every variable at once: a class that only holds because some OTHER variable
       // happened to be set is not holding.
-      const env = { ...cleared, HOME: home };
+      const env = { ...cleared, HOME: home, USERPROFILE: home };
       if (value !== undefined) for (const v of PATH_VARS) env[v] = value;
 
       withEnv(env, () => {

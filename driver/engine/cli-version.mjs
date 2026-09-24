@@ -55,6 +55,7 @@
 // the call site.
 import { execFileSync } from "node:child_process";
 import { statSync } from "node:fs";
+import { engineSpawn } from "./engine-spawn.mjs";   // a JavaScript program runs through Node on Windows
 
 /** Live for the process, keyed by resolved path. A run is one process; a probe is one spawn. */
 const CACHE = new Map();
@@ -81,9 +82,9 @@ export function probeCliVersion(bin, { run = null, timeoutMs = 5000, cache = CAC
   let key = null;
   try { const st = stat(bin); key = `${bin}\u0000${st.mtimeMs}:${st.size}`; } catch { /* not cacheable */ }
   if (key && cache.has(key)) return cache.get(key);
-  const spawn = run ?? ((b) => execFileSync(b, ["--version"], {
-    encoding: "utf8", timeout: timeoutMs, stdio: ["ignore", "pipe", "ignore"],
-  }));
+  const spawn = run ?? ((b) => { const r = engineSpawn(b, ["--version"]); return execFileSync(r.command, r.args, {
+    encoding: "utf8", timeout: timeoutMs, stdio: ["ignore", "pipe", "ignore"], windowsHide: true,
+  }); });
   let result;
   try {
     const version = parseVersion(spawn(bin));

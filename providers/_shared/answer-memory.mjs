@@ -18,6 +18,12 @@
 // ignored, for an attempt that died without cleaning up. A process that finds no folder — a bare
 // probe, a test, a register with no run — asks the register exactly as it always has.
 //
+// EXCEPT A RECORD, WHICH IS HELD FOR THE WHOLE RUN. Clarivate's record reuse (`heldRecords` in its core)
+// reads the run's record log, not this folder, and that log keeps every attempt's records. So a run
+// resumed days later screens a record from the copy an earlier attempt fetched, and its row says what the
+// register said then. That is the ruling on this memory, that a run never fetches the same record twice;
+// the questions above are asked again on a resume, the records are not.
+//
 // THREE MODES, fixed when the attempt starts from the register's own switch (ANSWER_MEMORY_PROVIDERS):
 //   off    nothing is remembered and nothing is written.
 //   watch  every request still goes to the register. Per request, the memory records whether it held
@@ -162,6 +168,11 @@ export function rememberAnswer(mem, key, entry, { now = Date.now } = {}) {
     try { rmSync(tmp, { force: true }); } catch { /* nothing written */ }
     return false;
   }
+}
+
+/** Drop a held answer, so the next identical question goes to the register. Never throws. */
+export function forgetAnswer(mem, key) {
+  try { rmSync(join(mem.dir, `${key}.json.gz`), { force: true }); return true; } catch { return false; }
 }
 
 /** One line per request in the watch log. Small, so concurrent appends from two processes stay whole. */

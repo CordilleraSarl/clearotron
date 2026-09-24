@@ -12,7 +12,7 @@
 // either — the nil search shipped as a clean with nothing anywhere saying otherwise. That is the
 // class, and this is its silent half.
 //
-// THE FLOOR IS DOING REAL WORK AND STAYS. `DOLPHIN DEVICE` is two words and a perfectly good term, and
+// THE FLOOR IS DOING REAL WORK AND STAYS. `PANGOLIN DEVICE` is two words and a perfectly good term, and
 // refusing ordinary two-word marks is the failure this arm must not cause. What separates the two is
 // not length, it is the ANNOTATION — and an annotation always has a remedy (delete the note, keep the
 // term), which is why this arm may sit above the floor where the LENGTH arm may not. Same reasoning
@@ -43,15 +43,15 @@ test("a two-word annotated variant is refused instead of dispatched", () => {
 test("THE CONTROL — an ordinary short mark still compiles", () => {
   // If any of these flip, the arm has started refusing real marks, which is strictly worse than the
   // defect it fixes: a nil search is one slice, a refused manifest is the whole matter.
-  for (const t of ["DOLPHIN DEVICE", "NOVA PULSE", "ZEPHYR", "E*TRADE", "COCA COLA", "ZORVIL 9"]) {
+  for (const t of ["PANGOLIN DEVICE", "NOVA PULSE", "ZEPHYR", "E*TRADE", "COCA COLA", "ZORVIL 9"]) {
     assert.equal(variantTermIssue(t), null, `${JSON.stringify(t)} — an ordinary mark was refused`);
   }
-  // `DOLPHIN DEVICE` is the residue of the real incident string `DOLPHIN DEVICE (VIENNA 03.09.14)`:
+  // `PANGOLIN DEVICE` is the residue of the real incident string `PANGOLIN DEVICE (VIENNA 03.06.25)`:
   // the annotated form is refused, and what remains after the remedy — delete the note, keep the
   // term — must compile. Both halves asserted together, because the remedy is what makes hoisting
   // this arm safe.
-  assert.ok(variantTermIssue("DOLPHIN DEVICE (VIENNA 03.09.14)"));
-  assert.equal(variantTermIssue("DOLPHIN DEVICE"), null);
+  assert.ok(variantTermIssue("PANGOLIN DEVICE (VIENNA 03.06.25)"));
+  assert.equal(variantTermIssue("PANGOLIN DEVICE"), null);
 });
 
 test("nothing already refused changes the reason it gives", () => {
@@ -59,7 +59,7 @@ test("nothing already refused changes the reason it gives", () => {
   // the annotation arm had gone first, every archived >4-word parenthetical would silently start
   // reporting a different reason — a disclosed row changing its text for no reason a reader can see.
   assert.match(variantTermIssue("A B C D E F (x)"), /\(7 words\)/);
-  assert.match(variantTermIssue("ORVELLA (formative root DELPH-)"), /parenthetical/);
+  assert.match(variantTermIssue("ORVELLA (formative root ORVEL-)"), /parenthetical/);
   assert.match(variantTermIssue("PLAY * WAY"), /infix-star/, "markup and infix-star still outrank everything");
 });
 

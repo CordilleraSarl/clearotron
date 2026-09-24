@@ -20,12 +20,16 @@ import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, dirname, resolve } from "node:path";
+import { join, dirname, resolve, delimiter } from "node:path";
 import { fileURLToPath } from "node:url";
 import { unitEnvironment, unitValue } from "../unit-environment.mjs";
 import { ENGINE_BINARIES } from "../driver.config.mjs";
 import { handRunEnv } from "./drive-env.mjs";
 import { withFreePorts } from "./helpers/free-port.mjs";
+
+/** The arms below that drive the background path, which ends at a refusal on Windows. */
+const NO_BACKGROUND_FORM_ON_WINDOWS = process.platform === "win32"
+  && "on Windows `start --background` stops at its own refusal before this path (a-windows-start-has-no-background-mode.test.mjs): the background form is systemd units, which Windows does not have";
 const { PROVIDERS } = await import("../../bin/onboard.mjs");
 const { BACKGROUND_UNITS } = await import("../../bin/start.mjs");
 
@@ -40,11 +44,17 @@ const REG = PROVIDERS.find((p) => (p.credentials ?? []).length);
 /** Everything the gate asks for except the engine's program. */
 const CONFIGURED = [`CLEAROTRON_DATABASE=${REG?.id}`, ...(REG?.credentials ?? []).map((k) => `${k}=x`), "CLEAROTRON_AI=anthropic-agent"];
 
-/** An executable file under the name the engine runs, in `dir`. */
+/** An executable file under the name the engine runs, in `dir`. Windows finds a program on PATH only under
+ *  an extension it starts, so there it is `claude.exe`; it is found and never run. */
 function plantProgram(dir) {
   mkdirSync(dir, { recursive: true });
-  writeFileSync(join(dir, PROGRAM), "#!/bin/sh\nexit 0\n", { mode: 0o755 });
+  writeFileSync(join(dir, process.platform === "win32" ? `${PROGRAM}.exe` : PROGRAM), "#!/bin/sh\nexit 0\n", { mode: 0o755 });
 }
+
+/** Why the arms that plant the program on the background units' PATH cannot hold on Windows. */
+const NO_UNITS = process.platform === "win32"
+  && "systemd user units: the units' PATH is a Linux PATH of `%h/...` folders joined by \":\", which the "
+   + "Windows lookup reads as one folder, and no Windows machine runs these units";
 
 test("the shipped worker unit sets its PATH with %h, so the arms below measure its expansion", () => {
   // THE PRECONDITION. If the unit stopped writing `%h` into its PATH, the plants below would still pass
@@ -102,7 +112,7 @@ test("an Environment= value whose %h cannot be expanded is a gap in the reading,
 function doctor(home, shellPath = "/usr/bin:/bin") {
   const r = spawnSync(process.execPath, [join(ROOT, "bin", "clearotron.mjs"), "doctor"], {
     cwd: ROOT, encoding: "utf8", timeout: 120_000,
-    env: handRunEnv({ PATH: shellPath, HOME: home, CLEAROTRON_DOCTOR_ASSUME_PINNED: "1" }, {}) });
+    env: handRunEnv({ PATH: shellPath, HOME: home, USERPROFILE: home, CLEAROTRON_DOCTOR_ASSUME_PINNED: "1" }, {}) });
   if (r.error || r.signal) throw new Error(`doctor did not come back (signal=${r.signal} error=${r.error?.message}), so nothing here was measured`);
   const out = `${r.stdout ?? ""}${r.stderr ?? ""}`;
   assert.match(out, /Will a search run\?/, `doctor never reached the check these arms are about:\n${out.slice(0, 900)}`);
@@ -122,7 +132,7 @@ function hostedHome({ plant, settingsPath = null }) {
   return home;
 }
 
-test("doctor counts a program on the units' PATH as the engine a search needs", () => {
+test("doctor counts a program on the units' PATH as the engine a search needs", { skip: NO_UNITS }, () => {
   const home = hostedHome({ plant: true });
   try {
     const out = doctor(home);
@@ -139,7 +149,7 @@ test("THE CONTROL: the same units with no program anywhere still refuse for the 
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
-test("a PATH in the units' settings file is the one doctor searches, since on systemd it wins over the unit's", () => {
+test("a PATH in the units' settings file is the one doctor searches, since on systemd it wins over the unit's", { skip: NO_UNITS }, () => {
   // Every shipped unit writes its PATH after its EnvironmentFile= line, and systemd still gives the service
   // the file's PATH. So a program only on the unit's PATH is not found by the services, and doctor must not
   // count it; and a program only on the file's PATH is found, and doctor must count it.
@@ -164,7 +174,7 @@ test("with no units, doctor looks on the PATH that `clearotron start` hands its 
     writeFileSync(join(home, ".config", "clearotron", ".env"), CONFIGURED.join("\n") + "\n");
     const bin = join(home, "bin");
     plantProgram(bin);
-    const found = doctor(home, `${bin}:/usr/bin:/bin`);
+    const found = doctor(home, [bin, "/usr/bin", "/bin"].join(delimiter));
     assert.match(found, /nothing a search is refused for at order time is missing from your environment file/, found);
     const control = doctor(home);
     assert.match(control, new RegExp(`a search is refused until this is set in your environment file: ${PATH_SETTING}\\s*$`, "m"), control);
@@ -194,7 +204,7 @@ function driveStartOn(ports, { plant, settingsPath = null }) {
   // A PATH line in `<home>/.env`, the file the units load.
   if (settingsPath) writeFileSync(join(home, ".env"), `PATH=${settingsPath}\n`);
   if (plant) plantProgram(join(home, ".local", "bin"));
-  const env = handRunEnv({ HOME: home, PATH: "/usr/bin:/bin",
+  const env = handRunEnv({ HOME: home, USERPROFILE: home, PATH: "/usr/bin:/bin",
     PORTAL_SERVICE_PORT: String(ports.portal), TRADEMARK_MCP_HTTP_PORT: String(ports.mcp),
     CLIENT_MCP_HTTP_PORT: String(ports.client) }, {});
   const r = spawnSync(process.execPath, [join(ROOT, "bin", "start.mjs"), "--background"], { encoding: "utf8", timeout: 180_000, env });
@@ -211,7 +221,7 @@ function announced(said) {
   return [...said.slice(from, to).matchAll(/^\s+([A-Z][A-Z0-9_]+) — /gm)].map((m) => m[1]);
 }
 
-test("start --background counts a program on the worker unit's PATH, and says a run is refused only for what is missing", async () => {
+test("start --background counts a program on the worker unit's PATH, and says a run is refused only for what is missing", { skip: NO_UNITS }, async () => {
   const d = await driveStart({ plant: true });
   try {
     const names = announced(d.said);
@@ -223,7 +233,7 @@ test("start --background counts a program on the worker unit's PATH, and says a 
   } finally { d.clean(); }
 });
 
-test("start --background searches the PATH in the units' settings file, which wins over the worker unit's own", async () => {
+test("start --background searches the PATH in the units' settings file, which wins over the worker unit's own", { skip: NO_BACKGROUND_FORM_ON_WINDOWS }, async () => {
   // The program is on the unit's PATH and not on the file's, so the worker would not find it.
   const d = await driveStart({ plant: true, settingsPath: "/usr/bin:/bin" });
   try {
@@ -233,7 +243,7 @@ test("start --background searches the PATH in the units' settings file, which wi
   } finally { d.clean(); }
 });
 
-test("THE CONTROL: with no program on the worker unit's PATH, start still announces the engine's path setting", async () => {
+test("THE CONTROL: with no program on the worker unit's PATH, start still announces the engine's path setting", { skip: NO_BACKGROUND_FORM_ON_WINDOWS }, async () => {
   const d = await driveStart({ plant: false });
   try {
     const names = announced(d.said);

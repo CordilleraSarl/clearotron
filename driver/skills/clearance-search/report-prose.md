@@ -55,7 +55,7 @@ the rest of a lawyer's sentence standing around it.
 | subsisting | live |
 | senior | earlier, or came first |
 | specification | goods list |
-| DELPH-formative | names built on DELPH- |
+| VELTR-formative | names built on VELTR- |
 | prevail | win |
 | citable prior rights | earlier marks the office can raise against you |
 | vulnerable to a non-use attack | could be cancelled for not being used |
@@ -69,19 +69,19 @@ the rest of a lawyer's sentence standing around it.
 
 ### The standard, in full sentences
 
-A basis line, rewritten: *"ORBIT is already the name of two satellite-tracking apps on the same app
-stores, and of an established satellite-communications company. Any of them would likely win a dispute
+A basis line, rewritten: *"WAYPOINT is already the name of two navigation apps on the same app
+stores, and of an established mapping company. Any of them would likely win a dispute
 over this name for this software. The word is a weak mark for these goods, which is why this is High and
 not Very High."*
 
 An answer, rewritten: *"Blocked. An identical earlier mark for the same goods stops registration in
-Switzerland, the EU and the US. Below that, earlier DELPH- marks in EU class 5 and US class 42 can be
+Switzerland, the EU and the US. Below that, earlier VELTR- marks in EU class 5 and US class 42 can be
 raised against the application."*
 
 A card's detail — allowed the fold's vocabulary, still written plainly: *"Same name, same goods, and
 their Swiss filing came first in every territory we searched. We see no argument against it."*
 
-A note, rewritten: *"Ask the client whether it already uses ORBIT. Its own earlier use would change the
+A note, rewritten: *"Ask the client whether it already uses WAYPOINT. Its own earlier use would change the
 picture and is not reflected here."*
 
 **Shortening by dropping the reason is not the fix.** The "why" stays, in plain words. A visible line

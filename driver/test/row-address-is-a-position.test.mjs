@@ -34,7 +34,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { join, dirname, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   obligationRows, connotationObligations, renderConnotationObligations,
@@ -161,6 +161,7 @@ test("the driver records the order at the moment it renders the page", () => {
     "the sidecar no longer records the row order — a `row_index` would then count off a page nobody kept");
   assert.match(server, /obligationsSidecarPath\(spec\.output_path\)/,
     "the writer re-derives the sidecar filename instead of importing the one derivation of it");
-  assert.equal(obligationsSidecarPath("/run/pr-risk-a.json"),
-    "/run/connotation-obligations.pr-risk-a.json");
+  // Native paths: the sidecar is joined beside its spec with this platform's separator.
+  assert.equal(obligationsSidecarPath(join(sep, "run", "pr-risk-a.json")),
+    join(sep, "run", "connotation-obligations.pr-risk-a.json"));
 });

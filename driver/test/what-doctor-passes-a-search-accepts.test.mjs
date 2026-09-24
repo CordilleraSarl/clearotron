@@ -68,7 +68,7 @@ function homeWith(lines) {
 function doctor(home, ...args) {
   const r = spawnSync(process.execPath, [join(DOCTOR_ROOT, "bin", "clearotron.mjs"), "doctor", ...args],
     { cwd: DOCTOR_ROOT, encoding: "utf8", timeout: 120000,
-      env: handRunEnv({ PATH: "/usr/bin:/bin", HOME: home, CLEAROTRON_DOCTOR_ASSUME_PINNED: "1" }, {}) });
+      env: handRunEnv({ PATH: "/usr/bin:/bin", HOME: home, USERPROFILE: home, CLEAROTRON_DOCTOR_ASSUME_PINNED: "1" }, {}) });
   if (r.error || r.signal) throw new Error(`doctor did not come back (signal=${r.signal} error=${r.error?.message}) — a could-not-look, not a verdict`);
   return { status: r.status, out: `${r.stdout ?? ""}${r.stderr ?? ""}` };
 }
@@ -76,6 +76,10 @@ function doctor(home, ...args) {
 /** A fake engine that SUCCEEDS ONLY IF the headless token reaches it, and writes down what it saw — the
  *  witness is the spawned process itself, not anything the command under test says about it. */
 function fakeEngine(dir) {
+  return process.platform === "win32" ? fakeEngineInNode(dir) : fakeEngineInShell(dir);
+}
+
+function fakeEngineInShell(dir) {
   const log = join(dir, "engine-saw.log");
   const bin = join(dir, "fake-claude.sh");
   writeFileSync(bin, [
@@ -90,6 +94,30 @@ function fakeEngine(dir) {
     `echo absent >> "${log}"`,
     `echo "Invalid API key · Please run /login" >&2`,
     "exit 1",
+  ].join("\n") + "\n");
+  chmodSync(bin, 0o755);
+  return { bin, saw: () => (existsSync(log) ? readFileSync(log, "utf8").trim().split("\n") : []) };
+}
+
+/** The same fake, as a JavaScript program: Windows starts no `#!` script, and starts a JavaScript program
+ *  through Node (engine/engine-spawn.mjs). It does what the shell one does, line for line. */
+function fakeEngineInNode(dir) {
+  const log = join(dir, "engine-saw.log");
+  const bin = join(dir, "fake-claude.mjs");
+  writeFileSync(bin, [
+    "#!/usr/bin/env node",
+    'import { appendFileSync } from "node:fs";',
+    'import { spawnSync } from "node:child_process";',
+    "const args = process.argv.slice(2);",
+    `if (args.includes("--version")) { process.stdout.write(${JSON.stringify(`${FLOOR_VERSION} (stand-in)\n`)}); process.exit(0); }`,
+    "if (process.env.CLAUDE_CODE_OAUTH_TOKEN) {",
+    `  appendFileSync(${JSON.stringify(log)}, "present\\n");`,
+    `  const r = spawnSync(${JSON.stringify(process.execPath)}, [${JSON.stringify(join(HERE, "mock-claude.mjs"))}, ...args], { stdio: "inherit" });`,
+    "  process.exit(r.status ?? 1);",
+    "}",
+    `appendFileSync(${JSON.stringify(log)}, "absent\\n");`,
+    'process.stderr.write("Invalid API key · Please run /login\\n");',
+    "process.exit(1);",
   ].join("\n") + "\n");
   chmodSync(bin, 0o755);
   return { bin, saw: () => (existsSync(log) ? readFileSync(log, "utf8").trim().split("\n") : []) };
@@ -224,7 +252,7 @@ test("doctor counts the copy Clearotron installed as the engine a search needs",
   const home = homeWith([`CLEAROTRON_DATABASE=${REG.id}`, ...REG.credentials.map((k) => `${k}=x`), "CLEAROTRON_AI=anthropic-agent"]);
   try {
     const r = spawnSync(process.execPath, [join(DOCTOR_ROOT, "bin", "clearotron.mjs"), "doctor"], { cwd: DOCTOR_ROOT, encoding: "utf8", timeout: 120000,
-      env: handRunEnv({ PATH: "/usr/bin:/bin", HOME: home, CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", CLEAROTRON_ENGINES_DIR: root }, {}) });
+      env: handRunEnv({ PATH: "/usr/bin:/bin", HOME: home, USERPROFILE: home, CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", CLEAROTRON_ENGINES_DIR: root }, {}) });
     if (r.error || r.signal) throw new Error(`doctor did not come back (signal=${r.signal} error=${r.error?.message}) — a could-not-look, not a verdict`);
     const out = `${r.stdout ?? ""}${r.stderr ?? ""}`;
     assert.match(out, /nothing a search is refused for at order time is missing/, out);

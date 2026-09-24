@@ -14,7 +14,7 @@ import { pinEnv, envFrom } from "../../shared/env-aliases.mjs";   // — a fixtu
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, rmSync, writeFileSync, appendFileSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, relative } from "node:path";
+import { join, relative, sep } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { fileURLToPath } from "node:url";
 
@@ -35,6 +35,7 @@ const ROW = (target, body) => JSON.stringify({
 }) + "\n";
 
 const HOME_WAS = process.env.HOME;
+const PROFILE_WAS = process.env.USERPROFILE;
 // moved the telemetry DIRECTORY as well (the platform dot-directory -> ~/trademark/telemetry), and the
 // resolver answers over both. `files` land in the LEGACY directory because that is what these tests are
 // about — an upgraded box, which is production; pass `neutralFiles` for the current-home cases.
@@ -47,6 +48,7 @@ function fakeHome(files = {}, neutralFiles = {}) {
   for (const [name, body] of Object.entries(files)) writeFileSync(join(tel, name), body);
   for (const [name, body] of Object.entries(neutralFiles)) writeFileSync(join(cur, name), body);
   process.env.HOME = h;
+  process.env.USERPROFILE = h;   // os.homedir() reads this one on Windows
   // — THE SUITE REDIRECT IS LIFTED FOR THE LIFE OF THE FAKE HOME, and that is the point of it
   // rather than a workaround. `npm test` exports CLEAROTRON_SUITE_TELEMETRY_DIR so a suite run's ledgers
   // land in its own temp root instead of the box's; these tests exist to walk the BOX ladder, and a
@@ -60,6 +62,7 @@ function fakeHome(files = {}, neutralFiles = {}) {
 let SUITE_WAS;
 const restoreHome = () => {
   if (HOME_WAS === undefined) delete process.env.HOME; else process.env.HOME = HOME_WAS;
+  if (PROFILE_WAS === undefined) delete process.env.USERPROFILE; else process.env.USERPROFILE = PROFILE_WAS;
   if (SUITE_WAS === undefined) delete process.env[SUITE_TELEMETRY_DIR_ENV];
   else pinEnv(process.env, SUITE_TELEMETRY_DIR_ENV, SUITE_WAS);
 };
@@ -265,7 +268,8 @@ test("no product module names a vendor for the shared register ledger", () => {
     const entries = modulesUnder(join(REPO, root), root);
     walkedCounts[root] = entries.length;
     for (const file of entries) {
-      const rel = relative(REPO, file);
+      // `/`-separated on every platform, the spelling RESOLVER and the allowlist are written in
+      const rel = relative(REPO, file).split(sep).join("/");
       if (rel === RESOLVER) continue;
       const text = readFileSync(file, "utf8");
       text.split("\n").forEach((line, i) => {

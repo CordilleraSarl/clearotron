@@ -15,7 +15,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync } from "nod
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { driverDir } from "../../shared/driver-dir.mjs";   //
+import { driverDir, driverFileName } from "../../shared/driver-dir.mjs";   //
 import { frozenSnapshot, frozenDiff, describeDrift, isFrozenEntry,
   BY_DESIGN_MUTATORS, byDesignMutator, isSiblingDispatch, stageBlock } from "../run-integrity.mjs";
 import { WITNESS_FILE } from "../methodology-witness.mjs";
@@ -274,7 +274,7 @@ test("a seat forging a NON-dispatch file during a sibling's turn is still an add
   put(dir, "report-card:9.forged.json", "{}");                     // same block, NOT a dispatch record
   put(dir, dispatchFileName("report-card:9", 1), "msg");           // same block, IS one
   const drift = describeDrift("report-card:2", before, frozenSnapshot(dir));
-  assert.deepEqual(drift.added, ["report-card:9.forged.json"]);
+  assert.deepEqual(drift.added, [driverFileName("report-card:9.forged.json")]);   // named as it is on disk, %3A on Windows
   assert.equal(drift.siblingAddCount, 1);
 });
 

@@ -92,7 +92,8 @@ test("the payload is captured BEFORE the decision, so a REFUSED call still leave
 // red is a defect in this harness, not in the transport. An early `return` would be the same lie facing
 // the other way, reporting `ok` for a test that asserted nothing, so the reason is declared on the line.
 test("⛔ a VALID model that cannot be WRITTEN is a write failure, never a refusal",
-  { skip: process.getuid?.() === 0 && "root writes through a 0o500 directory — the fault injection is a no-op" }, () => {
+  { skip: (process.getuid?.() === 0 && "root writes through a 0o500 directory — the fault injection is a no-op")
+    || (process.platform === "win32" && "mode bits: chmod 0o500 does not make a Windows folder unwritable — the fault injection is a no-op") }, () => {
   // The two have opposite repairs. Reporting an unwritable disk as a rejected model would send the seat
   // to re-reason a model that was already correct — and, worse, would land in the corrective ladder as a
   // reasoning defect, which is the substitution that bought two months in the other direction.
@@ -108,7 +109,8 @@ test("⛔ a VALID model that cannot be WRITTEN is a write failure, never a refus
 });
 
 test("a capture that cannot be written does not cost a valid call its model",
-  { skip: process.getuid?.() === 0 && "root writes through a 0o500 directory — the fault injection is a no-op" }, () => {
+  { skip: (process.getuid?.() === 0 && "root writes through a 0o500 directory — the fault injection is a no-op")
+    || (process.platform === "win32" && "mode bits: chmod 0o500 does not make a Windows folder unwritable — the fault injection is a no-op") }, () => {
   // Capture is evidence, not a gate. But "captured" and "capture failed" are different facts and the
   // answer says which — an answer reporting only success makes a lost payload invisible.
   const d = runDir();

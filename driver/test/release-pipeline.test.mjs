@@ -912,8 +912,13 @@ test("tracker 97 a version that merged itself still publishes, because that merg
   // the publish job's bound, so the version was published and tagged with no release entry, and nothing
   // ran again to write one. It publishes nothing; it writes the entry once the registry serves the kept
   // bytes, and its own arms hold it to that.
-  assert.deepEqual(jobs, ["version", "stranded", "pending", "entry", "awaited", "macos", "publish", "macos-awaited", "publish-awaited", "deprecate"],
-    "the release workflow's jobs are not the ten this file is written about");
+  // FOURTEEN NOW. The four Windows jobs joined with the Windows check: every cut is installed on Windows,
+  // a red run holds a stable (`windows`, `windows-awaited`, needed by the publish jobs as the macOS jobs
+  // are), and a beta runs the same check without being held by it (`windows-beta`,
+  // `windows-awaited-beta`, which nothing needs). They call windows.yml and run no step of their own.
+  assert.deepEqual(jobs, ["version", "stranded", "pending", "entry", "awaited", "macos", "windows", "windows-beta", "publish",
+    "macos-awaited", "windows-awaited", "windows-awaited-beta", "publish-awaited", "deprecate"],
+    "the release workflow's jobs are not the fourteen this file is written about");
 
   // IT DECIDES WITH THE SAME FUNCTION THE PUSH PATH USES. Two answers to one question is how a pipeline
   // publishes on one path what it refuses on the other.
@@ -1691,7 +1696,7 @@ function driveTagStep({ script, version, prerelease, existingTagRef = null, visi
       stdio: "pipe",
       env: {
         PATH: `${bin}:${process.env.PATH}`,
-        HOME: dir,
+        HOME: dir, USERPROFILE: dir,
         GH_TOKEN: "not-a-token",
         GITHUB_REPOSITORY: "CordilleraSarl/clearotron",
         GITHUB_SHA: sha,
@@ -2743,7 +2748,7 @@ function driveAwait({ requested, pr = "345", ghBody }) {
     const out = join(dir, "github-output");
     const env = {
       PATH: `${bin}:${process.env.PATH}`,
-      HOME: dir,
+      HOME: dir, USERPROFILE: dir,
       GITHUB_OUTPUT: out,
       CLEAROTRON_RELEASE_WAIT_MS: "0",
       CLEAROTRON_CUT_REQUESTED: requested ? "true" : "false",
@@ -2761,7 +2766,12 @@ function driveAwait({ requested, pr = "345", ghBody }) {
 
 const GH_ANSWERS_0920 = `echo '${JSON.stringify(PR_AT_0920)}'`;
 
-test("driven: the 09:20:02Z state on a dispatched cut exits non-zero and names the red check", () => {
+// The `gh` above is a #!/bin/sh stub on a colon-joined PATH. Windows runs neither, so the script there
+// reaches whatever real `gh` the machine has, which is not signed in and answers nothing these arms read.
+const NO_SH_GH = process.platform === "win32"
+  && "a #!/bin/sh stand-in for gh: Windows cannot run a shell script, so the real gh answers instead of the stub";
+
+test("driven: the 09:20:02Z state on a dispatched cut exits non-zero and names the red check", { skip: NO_SH_GH }, () => {
   const r = driveAwait({ requested: true, ghBody: GH_ANSWERS_0920 });
   assert.equal(r.code, 1, `a dispatched cut that published nothing exited ${r.code}\n${r.text}`);
   assert.match(r.text, /The offline suites \(2\) \(failure\)/, `the red does not name the check that stopped the merge\n${r.text}`);
@@ -2787,7 +2797,7 @@ test("driven: a pull request that cannot be read is named as unread, not as abse
   assert.doesNotMatch(r.text, /no version pull request was found/, "a failed read was reported as a pull request that does not exist");
 });
 
-test("driven: a red commit status counts as a conclusion, not as nothing concluded", () => {
+test("driven: a red commit status counts as a conclusion, not as nothing concluded", { skip: NO_SH_GH }, () => {
   // The rollup mixes check runs, which carry `conclusion`, with commit statuses, which carry `state`.
   const pr = { merged: false, mergeable: "MERGEABLE", statusCheckRollup: [
     { __typename: "StatusContext", context: "an outside status", state: "FAILURE" },
@@ -2906,6 +2916,45 @@ test("a stable is installed on macOS before it is published, on every path a sta
   }
 });
 
+test("every cut is installed on Windows: a red run holds a stable, and a beta runs the check without being held", () => {
+  const STABLE_V = "0.4.0", BETA_V = "0.4.0-beta.3";
+  // THE HOLDING JOBS START FOR A STABLE ON EVERY PATH THAT CAN PUBLISH ONE, AND NEVER FOR A BETA…
+  for (const [job, decider, run] of [["windows", "version", { event: "push" }], ["windows", "pending", { event: "schedule" }],
+    ["windows", "pending", { event: "workflow_dispatch", cut: "publish" }], ["windows-awaited", "awaited", { event: "workflow_dispatch", cut: "stable" }]]) {
+    assert.equal(jobRuns(job, { ...run, needs: { [decider]: "true" }, versions: { [decider]: STABLE_V } }), true,
+      `${job} did not start for a stable cut through ${decider}, so a stable would publish untried on Windows`);
+    assert.equal(jobRuns(job, { ...run, needs: { [decider]: "true" }, versions: { [decider]: BETA_V } }), false,
+      `${job} started for a beta through ${decider}, and a red run there would hold the beta`);
+  }
+  // …AND THE BETA JOBS ARE THE MIRROR IMAGE: every beta, never a stable, never a run that cut nothing.
+  for (const [job, decider, run] of [["windows-beta", "version", { event: "workflow_dispatch", cut: "beta" }],
+    ["windows-beta", "pending", { event: "schedule" }], ["windows-awaited-beta", "awaited", { event: "workflow_dispatch", cut: "beta" }]]) {
+    assert.equal(jobRuns(job, { ...run, needs: { [decider]: "true" }, versions: { [decider]: BETA_V } }), true,
+      `${job} did not start for a beta cut through ${decider}, so a beta would ship with no Windows check`);
+    assert.equal(jobRuns(job, { ...run, needs: { [decider]: "true" }, versions: { [decider]: STABLE_V } }), false,
+      `${job} started for a stable through ${decider}; the stable's check is the holding job`);
+    assert.equal(jobRuns(job, { ...run, needs: { [decider]: "false" }, versions: { [decider]: BETA_V } }), false,
+      `${job} started for a run through ${decider} that cut nothing`);
+  }
+  // THE PUBLISH JOBS NEED THE HOLDING JOB AND NOT THE BETA ONE. Needing the beta job would let a red
+  // Windows run hold a beta, which is the owner's call and has not been made.
+  for (const [publish, holds, runsBeside] of [["publish", "windows", "windows-beta"], ["publish-awaited", "windows-awaited", "windows-awaited-beta"]]) {
+    const needsList = (/^ {4}needs: \[([^\]]*)\]$/m.exec(executableText(jobBlock(publish)))?.[1] ?? "").split(",").map((n) => n.trim());
+    assert.ok(needsList.includes(holds), `${publish} does not need ${holds}, so a red Windows install would not hold a stable`);
+    assert.ok(!needsList.includes(runsBeside), `${publish} needs ${runsBeside}, so a red Windows run would hold a beta`);
+  }
+  // ALL FOUR CALL THE SAME CHECK THE SCHEDULE RUNS, and that check runs daily and on its own change.
+  for (const job of ["windows", "windows-beta", "windows-awaited", "windows-awaited-beta"]) {
+    assert.match(jobBlock(job), /^ {4}uses: \.\/\.github\/workflows\/windows\.yml$/m, `${job} does not call windows.yml`);
+  }
+  const on = executableText(read(".github/workflows/windows.yml")).match(/^on:\n((?: .*\n|\n)+?)^\S/m)?.[1] ?? "";
+  assert.match(on, /^ {2}schedule:\n {4}- cron: /m, "windows.yml no longer runs on its own schedule");
+  assert.match(on, /^ {2}workflow_call:$/m, "windows.yml can no longer be called by the release");
+  assert.match(on, /^ {2}push:\n {4}paths:\n {6}- \.github\/workflows\/windows\.yml$/m,
+    "windows.yml does not run when it changes, so a broken change would first be found at a release");
+  assert.doesNotMatch(on, /branches:/, "windows.yml runs on pushes to a branch again, rather than when it changes");
+});
+
 /** The decider the `pending` job runs, over a repository whose main is at `version`, tagged or not. */
 function decide({ version, tagged }) {
   const dir = mkdtempSync(join(tmpdir(), "pending-decide-"));
@@ -2920,7 +2969,7 @@ function decide({ version, tagged }) {
     g("update-ref", "refs/remotes/origin/main", "HEAD");
     const out = join(dir, "out");
     const r = spawnSync(process.execPath, [join(REPO, "scripts", "release-cut-decision.mjs")],
-      { cwd: dir, encoding: "utf8", env: { PATH: process.env.PATH, HOME: dir, GITHUB_OUTPUT: out, CLEAROTRON_CUT_REF: "origin/main" } });
+      { cwd: dir, encoding: "utf8", env: { PATH: process.env.PATH, HOME: dir, USERPROFILE: dir, GITHUB_OUTPUT: out, CLEAROTRON_CUT_REF: "origin/main" } });
     return { code: r.status, text: `${r.stdout}${r.stderr}`, output: existsSync(out) ? readFileSync(out, "utf8") : "" };
   } finally { rmSync(dir, { recursive: true, force: true }); }
 }

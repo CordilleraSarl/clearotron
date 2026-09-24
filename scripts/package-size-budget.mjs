@@ -28,6 +28,7 @@ import { execFileSync } from "node:child_process";
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 
 const ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
 const BASELINE = join(ROOT, "package-size-baseline.json");
@@ -76,7 +77,7 @@ export function compare(now, was, { margin = MARGIN } = {}) {
   return { over, rows };
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (isEntrypoint(import.meta.url)) {
   const apply = process.argv.includes("--apply");
   const check = process.argv.includes("--check");
   const now = measure();

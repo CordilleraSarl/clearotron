@@ -29,12 +29,13 @@ import { ENGINE_BINARIES } from "../driver.config.mjs";
 // The version a stand-in claims: the engine's own floor, so doctor's floor check does not report it as too old.
 const FLOOR_VERSION = ENGINE_BINARIES["anthropic-agent"].floor;
 import { resolveAuthMode, CLOUD_SETTINGS, CLOUD_SECRETS, CLOUD_SWITCH } from "../engine/auth.mjs";
-import { probeEngineTurn, classifyProbe, engineEnvKeys } from "../engine/probe.mjs";
+import { probeEngineTurn, classifyProbe, engineEnvKeys, PROBE_FILE } from "../engine/probe.mjs";
 import { CLAUDE_PAY_QUESTION, CLOUD_CHOICES, payQuestion, cloudSettings, servedLine, cloudAccount, shownSetting, signInHandOff,
   proofTurn, readEnvFile, settingsInForce } from "../../bin/onboard.mjs";
 import { payWays } from "../run-requirements.mjs";
 import { loadEnvLocal, envLocalPath } from "../../shared/env-local.mjs";
 import { handRunEnv } from "./drive-env.mjs";
+import { homeAt } from "./helpers/home.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ONBOARD = join(HERE, "..", "..", "bin", "onboard.mjs");
@@ -148,9 +149,11 @@ test("the probe's turn sees the cloud settings its caller passed, they are gone 
   let seen = null;
   const v = await probeEngineTurn({ env, runTurn: async (a) => {
     seen = Object.fromEntries(Object.keys(env).map((k) => [k, process.env[k]]));
-    // A working engine answers with the word the probe's tool returned.
-    const word = JSON.parse(a.mcpConfig).mcpServers.probe.args[1];
-    return { code: 0, stdout: word, modelWire: "claude-haiku-4-5-20251001", providerWire: "foundry" };
+    // A working engine calls the probe's tools, writes their words to the file it was asked for, and answers
+    // with them.
+    const words = JSON.parse(a.mcpConfig).mcpServers.probe.args.slice(1);
+    writeFileSync(join(a.runDir, PROBE_FILE), words.join("\n") + "\n");
+    return { code: 0, stdout: words.join(" "), modelWire: "claude-haiku-4-5-20251001", providerWire: "foundry" };
   } });
   assert.equal(v.ok, true, JSON.stringify(v));
   assert.deepEqual(seen, env, "the turn ran without the settings it was meant to prove");
@@ -183,7 +186,7 @@ function doctor(lines) {
   try {
     return execFileSync(process.execPath, [ONBOARD, "--check"], {
       encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], timeout: 60000,
-      env: handRunEnv({ HOME: home, PATH: `${NODE_BIN}:/usr/bin:/bin` }, {}) });
+      env: handRunEnv({ HOME: home, USERPROFILE: home, PATH: `${NODE_BIN}:/usr/bin:/bin` }, {}) });
   } catch (e) {
     return `${e.stdout ?? ""}${e.stderr ?? ""}`;
   }
@@ -194,6 +197,11 @@ function doctor(lines) {
  * key variables reach it, and otherwise answers the way Bedrock refuses a request without credentials. It
  * writes down which it saw, so the witness is the spawned process, not what doctor says about it.
  */
+// The stand-in below is a #!/bin/sh script, because it has to test its own environment before handing
+// over to the mock. Windows starts no shell script as the engine program, so these arms have nothing to run.
+const NO_SH_STAND_IN = process.platform === "win32"
+  && "a #!/bin/sh stand-in for the engine program: Windows cannot start a shell script as the program";
+
 function amazonProgram(dir) {
   const log = join(dir, "program-saw.log");
   const bin = join(dir, "claude-on-amazon.sh");
@@ -223,7 +231,7 @@ function doctorProves(bin, lines) {
   try {
     return execFileSync(process.execPath, [ONBOARD, "--check", "--probe-engine"], {
       encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], timeout: 90000,
-      env: handRunEnv({ HOME: home, PATH: `${NODE_BIN}:/usr/bin:/bin` }, {}) });
+      env: handRunEnv({ HOME: home, USERPROFILE: home, PATH: `${NODE_BIN}:/usr/bin:/bin` }, {}) });
   } catch (e) {
     return `${e.stdout ?? ""}${e.stderr ?? ""}`;
   }
@@ -232,7 +240,7 @@ function doctorProves(bin, lines) {
 const AMAZON = ["CLEAROTRON_AI_BILLING=cloud", "CLAUDE_CODE_USE_BEDROCK=1", "AWS_REGION=eu-central-1"];
 const AWS_KEYS = { AWS_ACCESS_KEY_ID: "AKIA-TEST-NOT-REAL", AWS_SECRET_ACCESS_KEY: "secret-test-not-real", AWS_SESSION_TOKEN: "session-test-not-real" };
 
-test("an Amazon machine whose keys are only in the settings file is proved by doctor the way its searches run", () => {
+test("an Amazon machine whose keys are only in the settings file is proved by doctor the way its searches run", { skip: NO_SH_STAND_IN }, () => {
   // Doctor's environment is composed from nothing (doctorProves), so a key can only reach the program from the file.
   const dir = mkdtempSync(join(tmpdir(), "setup-pay-amazon-"));
   const program = amazonProgram(dir);
@@ -250,7 +258,7 @@ test("an Amazon machine whose keys are only in the settings file is proved by do
   assert.doesNotMatch(refused, /completed a turn/, refused);
 });
 
-test("doctor on an Amazon machine whose credentials are refused names Amazon and what to check, not the subscription's sign-in", () => {
+test("doctor on an Amazon machine whose credentials are refused names Amazon and what to check, not the subscription's sign-in", { skip: NO_SH_STAND_IN }, () => {
   const program = amazonProgram(mkdtempSync(join(tmpdir(), "setup-pay-amazon-refused-")));
   const out = doctorProves(program.bin, AMAZON);
   assert.deepEqual(program.saw(), ["absent"], out);
@@ -263,11 +271,11 @@ test("doctor on an Amazon machine whose credentials are refused names Amazon and
   assert.doesNotMatch(signedOut, /refused the credentials/, signedOut);
 });
 
-test("setup's proof turn on an Amazon machine whose keys are only in the settings file runs with them, as a search does", async () => {
+test("setup's proof turn on an Amazon machine whose keys are only in the settings file runs with them, as a search does", { skip: NO_SH_STAND_IN }, async () => {
   const eng = ENGINE_BINARIES["anthropic-agent"];
   // The shell is composed from nothing and holds no Amazon credential of any kind, so a key can only reach the
   // program from the settings file. The answers are the ones setup takes for Amazon: the region.
-  const shell = handRunEnv({ HOME: mkdtempSync(join(tmpdir(), "setup-pay-proof-home-")), PATH: `${NODE_BIN}:/usr/bin:/bin` }, {});
+  const shell = handRunEnv({ ...homeAt(mkdtempSync(join(tmpdir(), "setup-pay-proof-home-"))), PATH: `${NODE_BIN}:/usr/bin:/bin` }, {});
   const answers = cloudSettings("bedrock", { AWS_REGION: "eu-central-1" });
   const proves = async (lines) => {
     const dir = mkdtempSync(join(tmpdir(), "setup-pay-proof-amazon-"));
@@ -292,13 +300,13 @@ test("setup's proof turn on an Amazon machine whose keys are only in the setting
   assert.match(readFileSync(ONBOARD, "utf8"), /probeEngineTurn\(proofTurn\(\{ engineId: pick\.id, eng, bin, authEnv, settings: settingsInForce\(\) \}\)\)/);
 });
 
-test("setup's proof turn on an install still configured at the old location reads the file a search reads there", async () => {
+test("setup's proof turn on an install still configured at the old location reads the file a search reads there", { skip: NO_SH_STAND_IN }, async () => {
   // An install configured before the settings file moved keeps it at the old location, in the install folder,
   // and the loader still reads it there. The proof turn read only the new location, so the keys every search
   // used never reached it. A throwaway install folder and home, so neither this checkout nor the suite's home
   // is read.
   const eng = ENGINE_BINARIES["anthropic-agent"];
-  const shell = handRunEnv({ HOME: mkdtempSync(join(tmpdir(), "setup-pay-old-shell-")), PATH: `${NODE_BIN}:/usr/bin:/bin` }, {});
+  const shell = handRunEnv({ ...homeAt(mkdtempSync(join(tmpdir(), "setup-pay-old-shell-"))), PATH: `${NODE_BIN}:/usr/bin:/bin` }, {});
   const answers = cloudSettings("bedrock", { AWS_REGION: "eu-central-1" });
   const install = (lines) => {
     const at = { repoRoot: mkdtempSync(join(tmpdir(), "setup-pay-old-install-")), home: mkdtempSync(join(tmpdir(), "setup-pay-old-home-")) };

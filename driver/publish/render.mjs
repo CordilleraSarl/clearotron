@@ -2287,7 +2287,7 @@ ${EXPORT_MENU_JS}`;
 // Render a parsed report + findings.json to a full self-contained HTML string.
 // A1 — famous-neighbour context notes: knowledge-cited references kept for diligence (digest.md's "never
 // dropped" rule) that carry NO fetched register record, so they are NOT findings and do NOT score. Rendered
-// on BOTH the internal and client report (legitimate completeness — "we checked CHROME, it isn't a
+// on BOTH the internal and client report (legitimate completeness — "we checked NOVAPULSO, it isn't a
 // conflict"), clearly marked as not-a-conflict so a famous neighbour is surfaced, never silently lost.
 // WP-56 B2 — the standing "mark itself" section: typed mark_assessment (findings-model, both parsers) →
 // code render at the TOP of the page (after the hero, before the conflict landscape), on THE report.

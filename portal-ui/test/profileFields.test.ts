@@ -670,24 +670,29 @@ test('a stored territory the engine cannot search is REFUSED, not flagged and ke
   assert.equal(fieldNotices(jur, 'US').length, 0, 'and so does the code form of the same place')
 })
 
-test('marketplaces stay ASSISTIVE, because the two fields are not the same question', () => {
-  // The ruling covers territories. It must not be read as a general move to strictness: this build does
-  // not know which domain suffixes exist, and a validator that rejects a real marketplace stops somebody
-  // recording something true — which is worse than admitting a fake one. Territories are the opposite,
-  // because the engine holds a closed list.
+test('marketplaces say NOT SAVED, because the server refuses what this check flags', () => {
+  // Marketplaces were assistive while the server kept whatever was typed: a check that turned away a real
+  // marketplace would then have stopped somebody recording something true. The server now refuses any
+  // entry that is not a bare store domain (driver/profiles.mjs platformEntryErrors), and
+  // driver/test/the-marketplace-rule-is-the-same-on-both-sides.test.mjs holds this check to that rule. So
+  // an entry flagged here is never saved, and a notice that said "Saved, but check" said the opposite.
   const plat = spec('platforms')
   const notice = fieldNotices(plat, 'not a domain')[0]
-  assert.equal(notice?.tone, 'check', 'flagged')
-  assert.match(notice!.message, /Saved, but check/, 'and kept')
+  assert.equal(notice?.tone, 'dropped', 'refused')
+  assert.match(notice!.message, /^Not saved: not a domain — /, 'and says so')
+  assert.doesNotMatch(notice!.message, /Saved, but check/, 'never the assistive wording beside a refused save')
+
+  // Domains stay assistive: the server keeps what is typed there, so "Saved, but check" is still true.
+  assert.equal(fieldNotices(spec('matchDomains'), 'not a domain')[0]?.tone, 'check')
 })
 
 test('a marketplace that the SERVER would refuse is called out here first', () => {
   const plat = spec('platforms')
-  const named = fieldNotices(plat, 'Amazon').find((x) => x.tone === 'check')
+  const named = fieldNotices(plat, 'Amazon').find((x) => x.tone === 'dropped')
   assert.ok(named, '"Amazon" is not a bare domain and driver/profiles.mjs refuses it outright')
   assert.match(named!.message, /amazon\.com/, 'and the notice shows the shape that works')
 
-  assert.ok(fieldNotices(plat, 'web').some((x) => x.tone === 'check'),
+  assert.ok(fieldNotices(plat, 'web').some((x) => x.tone === 'dropped'),
     '"web" is refused by name server-side — the general-web cell is implicit')
   assert.equal(fieldNotices(plat, 'amazon.com\netsy.com').length, 0, 'two real domains say nothing')
 })

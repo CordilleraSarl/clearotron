@@ -9,6 +9,7 @@ import { mkdtempSync, writeFileSync, mkdirSync, readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { tmpdir } from "node:os";
+import { driverDir } from "../../shared/driver-dir.mjs";
 import { loadProfiles, resolveProfile, derivedFloor, derivedBatchSize, applicantMatchesProfile, SAFE_GRID_CELLS,
   DENSE_GRID_CELLS, assertAppetitePosture, FIELD_CONSUMERS, KNOWN_PROFILE_KEYS, NEUTRAL_DELIVERY,
   PROJECT_KEYS, CUSTOMER_ONLY_KEYS, loadProjects, resolveEffectiveProfile, validateProfileEdit,
@@ -215,9 +216,13 @@ test("the unrun channel becomes an OPEN ledger row, and the run still delivers",
   const { openChannelRows } = await import("../common-law-receipts.mjs");
   const dictated = ACME.platforms;
   const deferred = dictated[dictated.length - 1];
+  // Keyed as the reader joins them on this machine: "/run/_driver/grid-spec.json" on Linux, with
+  // backslashes on Windows.
+  const SPEC = driverDir("/run", "grid-spec.json");
+  const GRID = join("/run", "common-law-grid.json");
   const files = {
-    "/run/_driver/grid-spec.json": JSON.stringify({ terms: ["novapulse"], platforms: [...dictated, "web"] }),
-    "/run/common-law-grid.json": ledgerFor([...dictated.slice(0, dictated.length - 1), "web"]),
+    [SPEC]:JSON.stringify({ terms: ["novapulse"], platforms: [...dictated, "web"] }),
+    [GRID]: ledgerFor([...dictated.slice(0, dictated.length - 1), "web"]),
   };
   const io = { exists: (p) => Object.hasOwn(files, p), read: (p) => files[p] };
 
@@ -230,7 +235,7 @@ test("the unrun channel becomes an OPEN ledger row, and the run still delivers",
   assert.match(rows[0].reason, /not a receipt/, "the reason does not say why a pass's say-so did not count");
 
   // A FULL GRID PRODUCES NOTHING, which is what keeps this from putting an open row on every run.
-  const full = { ...files, "/run/common-law-grid.json": ledgerFor([...dictated, "web"]) };
+  const full = { ...files, [GRID]: ledgerFor([...dictated, "web"]) };
   assert.deepEqual(openChannelRows("/run", { exists: (p) => Object.hasOwn(full, p), read: (p) => full[p] }), []);
 
   // AND AN UNREADABLE RUN PRODUCES NOTHING RATHER THAN A GAP NOBODY CAN CLOSE: no spec, no merged

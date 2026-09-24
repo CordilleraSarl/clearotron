@@ -129,7 +129,7 @@ test("start reads its first-start signal before it writes either file, and asks 
 // ── THE VERB, DRIVEN AT ITS OWN DOOR ─────────────────────────────────────────────────────────────
 
 function verb(home, ...args) {
-  const r = spawnSync(process.execPath, [VERB, ...args], { encoding: "utf8", env: { PATH: process.env.PATH, HOME: home } });
+  const r = spawnSync(process.execPath, [VERB, ...args], { encoding: "utf8", env: { PATH: process.env.PATH, HOME: home, USERPROFILE: home } });
   // The reset prints a passphrase; nothing below puts raw output into a message.
   return { code: r.status, out: String(r.stdout ?? ""), err: String(r.stderr ?? "") };
 }
@@ -181,7 +181,7 @@ test("the recovery line runs as printed, directory change and all, and resets th
     const shared = join(home, ".cordillera", INSTALL_CREDENTIAL_FILE);
     establishCredential({ path: shared, email: "earlier@localhost", passphrase: "an earlier install's" });
     const run = (line) => spawnSync("sh", ["-c", line.replace("clearotron passphrase", `${JSON.stringify(process.execPath)} ${JSON.stringify(VERB)}`)],
-      { encoding: "utf8", env: { PATH: process.env.PATH, HOME: home } });
+      { encoding: "utf8", env: { PATH: process.env.PATH, HOME: home, USERPROFILE: home } });
     const cases = [
       ["an install's own file, in a directory other than the default", join(home, "elsewhere", INSTALL_CREDENTIAL_FILE)],
       ["an operator's own file", join(home, "ops", "creds.json")],
@@ -209,6 +209,13 @@ test("the recovery line runs as printed, directory change and all, and resets th
 // `\b` here failed this test one run in 64 while the frame had handed the passphrase over (measured on two
 // failing runs, 2026-09-10). The lookahead says what was meant: no further passphrase character follows.
 const FRAME_PASSPHRASE = /│  Passphrase  [A-Za-z0-9_-]{24}(?![A-Za-z0-9_-])/;
+
+// THE SUMMARY IS READ WHEN IT HAS ENDED. `start` writes it a line at a time, so a line in the middle of the
+// frame can reach this process one read before the lines under it. Waiting for "Sign in as" and reading at
+// once took the output mid-frame: in CI on 2026-09-23 the capture ended on the "Sign in as" line, and the
+// withheld sentence and reset command below it had not arrived. The line after the frame closes the
+// summary, and start prints it on every path, so the wait is for that.
+const SUMMARY_ENDED = /Ordering a clearance from the portal/;
 
 test("the frame's passphrase pattern holds for a passphrase ending in any base64url character", () => {
   const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
@@ -250,7 +257,7 @@ test("a real first start, where another install left the shared credential, mint
     establishCredential({ path: shared, email: "op@localhost", passphrase: "an earlier install's" });
     const sharedBefore = readFileSync(shared, "utf8");
     const child = spawn(process.execPath, [join(REPO, "bin", "start.mjs"), "--no-worker"], {
-      env: { PATH: process.env.PATH, HOME: home, CLEAROTRON_NO_ENV_FILE: "1", PORTAL_LOCAL_USER: "op@localhost",
+      env: { PATH: process.env.PATH, HOME: home, USERPROFILE: home, CLEAROTRON_NO_ENV_FILE: "1", PORTAL_LOCAL_USER: "op@localhost",
         PORTAL_SERVICE_PORT: String(ports.portal), TRADEMARK_MCP_HTTP_PORT: String(ports.mcp),
         CLIENT_MCP_HTTP_PORT: String(ports.client) },
       stdio: ["ignore", "pipe", "pipe"],
@@ -261,18 +268,19 @@ test("a real first start, where another install left the shared credential, mint
     // `close`, not `exit`: it fires once the output is read to the end.
     const closed = new Promise((resolve) => child.on("close", resolve));
     const deadline = Date.now() + 90000;
-    while (!/Sign in as/.test(said) && child.exitCode === null && Date.now() < deadline) await new Promise((r) => setTimeout(r, 250));
+    while (!SUMMARY_ENDED.test(said) && child.exitCode === null && Date.now() < deadline) await new Promise((r) => setTimeout(r, 250));
     if (child.exitCode !== null) await closed;
     return { child, closed, sharedBefore, said: () => said };
   };
   const run = await withFreePorts(["portal", "mcp", "client"], firstStart, {
-    busy: (r) => !/Sign in as/.test(r.said()) && saidPortWasTaken(r),
+    busy: (r) => !SUMMARY_ENDED.test(r.said()) && saidPortWasTaken(r),
     discard: async (r) => { await stop(r); rmSync(home, { recursive: true, force: true }); mkdirSync(home); },
   });
   const { sharedBefore } = run;
   const said = run.said();
   try {
     assert.match(said, /Sign in as/, "start never reached its sign-in summary, so nothing below would be measured");
+    assert.match(said, SUMMARY_ENDED, "start's summary had not ended when it was read, so the frame below may be partial");
     assert.ok(existsSync(join(home, "trademark", INSTALL_CREDENTIAL_FILE)),
       "THE REPORTED CASE: the first start did not mint the install's own credential, so it adopted the shared one");
     assert.equal(readFileSync(shared, "utf8"), sharedBefore, "the first start changed the shared credential another install uses");

@@ -22,7 +22,8 @@
 //                            which is the "engine did not report" path.
 //   MOCK_CODEX_NO_NEWLINE=1— emit the final turn.completed with NO trailing newline (B1 final-line flush)
 //   MOCK_CODEX_SLOW_STREAM=<ms> [+ MOCK_CODEX_SLOW_COUNT] — a healthy-but-slow turn (a delta every <ms>)
-//   MOCK_CODEX_CALL_LOG=<file> — append {argv, prompt, codexHome, configToml, hasAuth} per call (assert wiring)
+//   MOCK_CODEX_CALL_LOG=<file> — append {argv, prompt, codexHome, configToml, hasAuth, envNames} per call (assert
+//                            wiring); envNames are the NAMES of the environment it was started with, never a value
 //   MOCK_CODEX_FILE=<content>  — engine-test mode: write <content> to the path parsed from the prompt
 //   MOCK_CODEX_MCP_REFUSED=<n> — emit <n> MCP tool calls refused before reaching their server, in the
 //                            shape codex 0.150.1 streams when its sandbox refuses them, then finish the
@@ -97,16 +98,37 @@ if (resumed && process.env.MOCK_CODEX_SESSION_STORE === "1" && !rolloutFor(resum
 }
 const session = process.env.MOCK_CODEX_SESSION || resumed || ("mock-thread-" + Buffer.from(msg).length.toString(36));
 
-// THE ENGINE PROBE'S TOOL, read off the rendered config.toml the way codex reads it. A working codex calls
-// `ping` and answers with its word; a refusing one (MOCK_CODEX_MCP_REFUSED) never reaches the server, so it
-// has no word to give. MOCK_CODEX_TOOLS_UNUSED=1 answers without calling it.
-const probeWord = (() => {
+// THE ENGINE PROBE'S TOOLS, read off the rendered config.toml the way codex reads it: the probe server's
+// arguments after its path are the words `ping`, `note` and `look` return, in that order. A working codex
+// calls each and answers with the words; a refusing one (MOCK_CODEX_MCP_REFUSED) never reaches the server,
+// so it has no word to give. MOCK_CODEX_TOOLS_UNUSED=1 answers without calling them.
+//   MOCK_CODEX_REFUSE_TOOLS=<tool,…> — refuse only those probe tools, as codex does a tool whose approval
+//                            it will not give; the others complete, and the reply lacks the refused words
+//   MOCK_CODEX_WRITE_FAILED=1 — the probe's file write is a `file_change` that fails, as codex 0.156.1 reports
+//                            it when its sandbox cannot start, and no file appears
+//   MOCK_CODEX_PROBE_NO_WRITE=1 — answer with the words and write nothing, as a model that skipped a step
+// THE PROBE'S COMMAND: a probe prompt that asks for `cat "<file>"` gets a `command_execution` item that reads
+// the file, and the word it holds joins the reply, as a working codex answers it.
+//   MOCK_CODEX_COMMAND_FAILED=1 — the command is a `command_execution` that fails the way codex 0.158.0-alpha.2
+//                            reports it when its sandbox cannot start a command, and the reply lacks the word
+//   MOCK_CODEX_COMMAND_SKIPPED=1 — no command runs and the reply lacks the word, as a model that skipped a step
+//   MOCK_CODEX_COMMAND_MISTYPED=1 — the model runs `cat` of a mistyped path on a working machine: codex reports
+//                            the command failed (it marks any non-zero exit so), and the reply lacks the word
+const PROBE_TOOL_NAMES = ["ping", "note", "look"];
+const probeWords = (() => {
   if (process.env.MOCK_CODEX_TOOLS_UNUSED || Number(process.env.MOCK_CODEX_MCP_REFUSED || 0) > 0) return null;
   try {
     const toml = readFileSync(join(process.env.CODEX_HOME || "", "config.toml"), "utf8");
-    return toml.match(/\[mcp_servers\.probe\][\s\S]*?args = \["[^"]*", "([^"]+)"\]/)?.[1] ?? null;
+    const args = toml.match(/\[mcp_servers\.probe\][\s\S]*?args = (\[[^\]]*\])/)?.[1];
+    const words = args ? JSON.parse(args).slice(1) : [];
+    return words.length ? words : null;
   } catch { return null; }
 })();
+const refusedProbeTools = new Set(String(process.env.MOCK_CODEX_REFUSE_TOOLS || "").split(",").filter(Boolean));
+/** The words the reply carries: those of the probe tools that were not refused. */
+const probeReplyWords = probeWords ? PROBE_TOOL_NAMES.map((t, i) => (refusedProbeTools.has(t) ? null : probeWords[i])).filter(Boolean) : null;
+/** The word the probe's command printed, once it has run; it joins the reply. */
+let probeCommandWord = null;
 
 // Call log: the real argv (flags) + the stdin prompt + the rendered config.toml (read from CODEX_HOME while
 // it still exists — the engine deletes it after) so a test can assert the codex wiring faithfully.
@@ -119,7 +141,7 @@ if (process.env.MOCK_CODEX_CALL_LOG) {
       hasAuth = existsSync(join(home, "auth.json"));
     }
   } catch { /* best-effort */ }
-  try { appendFileSync(process.env.MOCK_CODEX_CALL_LOG, JSON.stringify({ argv, prompt: msg, codexHome: process.env.CODEX_HOME || null, configToml, hasAuth }) + "\n"); } catch { /* best-effort */ }
+  try { appendFileSync(process.env.MOCK_CODEX_CALL_LOG, JSON.stringify({ argv, prompt: msg, codexHome: process.env.CODEX_HOME || null, configToml, hasAuth, envNames: Object.keys(process.env).sort() }) + "\n"); } catch { /* best-effort */ }
 }
 
 // ── A LOGIN THAT ROTATES, and a provider that accepts each refresh token ONCE. ──
@@ -230,9 +252,9 @@ if (process.env.MOCK_CODEX_STALL) {
   function doStageWrites() {
     if (process.env.MOCK_CODEX_NOFILE) return;
     if (process.env.MOCK_CODEX_FILE != null) {
-      const m = msg.match(/ABSOLUTE path[^:]*:\s*(\/\S+)/)
-        || msg.match(/write (?:the COMPLETE corrected file|it) at\s+(\/\S+)/)
-        || msg.match(/OUTPUT_FILE:\s*(\/\S+)/);
+      const m = msg.match(/ABSOLUTE path[^:]*:\s*((?:[A-Za-z]:)?[\\/]\S+)/)
+        || msg.match(/write (?:the COMPLETE corrected file|it) at\s+((?:[A-Za-z]:)?[\\/]\S+)/)
+        || msg.match(/OUTPUT_FILE:\s*((?:[A-Za-z]:)?[\\/]\S+)/);
       if (m) { try { mkdirSync(dirname(m[1]), { recursive: true }); writeFileSync(m[1], process.env.MOCK_CODEX_FILE); } catch { /* best-effort */ } }
       return;
     }
@@ -255,12 +277,49 @@ if (process.env.MOCK_CODEX_STALL) {
       send({ type: "item.completed", item: { ...item, status: "failed",
         error: { message: "MCP tool call requires approval, but approval policy is never" } } });
     }
-    if (probeWord) {
-      const item = { id: "mcp_probe", type: "mcp_tool_call", server: "probe", tool: "ping" };
-      send({ type: "item.started", item: { ...item, status: "in_progress" } });
-      send({ type: "item.completed", item: { ...item, status: "completed", result: { content: [{ type: "text", text: probeWord }] } } });
+    if (probeWords) {
+      PROBE_TOOL_NAMES.forEach((tool, i) => {
+        if (probeWords[i] == null) return;
+        const item = { id: `mcp_probe_${tool}`, type: "mcp_tool_call", server: "probe", tool };
+        send({ type: "item.started", item: { ...item, status: "in_progress" } });
+        if (refusedProbeTools.has(tool))
+          send({ type: "item.completed", item: { ...item, status: "failed", error: { message: "MCP tool call requires approval, but approval policy is never" } } });
+        else
+          send({ type: "item.completed", item: { ...item, status: "completed", result: { content: [{ type: "text", text: probeWords[i] }] } } });
+      });
+      // The probe's command, where the prompt asks for one: a `command_execution` item, as codex reports it.
+      const commandFile = msg.match(/Run the shell command cat "(.+?)"\./)?.[1];
+      if (commandFile && !process.env.MOCK_CODEX_COMMAND_SKIPPED) {
+        const item = { id: "cmd_probe", type: "command_execution", command: `/bin/bash -lc 'cat ${commandFile}'` };
+        send({ type: "item.started", item: { ...item, aggregated_output: "", exit_code: null, status: "in_progress" } });
+        if (process.env.MOCK_CODEX_COMMAND_FAILED)
+          send({ type: "item.completed", item: { ...item, status: "failed", exit_code: 1,
+            aggregated_output: "bwrap: execvp /opt/codex/vendor/x86_64-unknown-linux-musl/bin/codex: No such file or directory\n" } });
+        else if (process.env.MOCK_CODEX_COMMAND_MISTYPED) {
+          const typo = commandFile.replace(/probe-command-word/, "probe-comand-word");
+          send({ type: "item.completed", item: { ...item, command: `/bin/bash -lc 'cat ${typo}'`, status: "failed", exit_code: 1,
+            aggregated_output: `cat: ${typo}: No such file or directory\n` } });
+        }
+        else {
+          let printed = "";
+          try { printed = readFileSync(commandFile, "utf8"); } catch { /* the command fails below, as cat would */ }
+          send({ type: "item.completed", item: { ...item, status: printed ? "completed" : "failed", exit_code: printed ? 0 : 1, aggregated_output: printed } });
+          if (printed.trim()) probeCommandWord = printed.trim();
+        }
+      }
+      // The probe's file, written as codex writes one: a `file_change` item.
+      const target = msg.match(/to the file (.+?), one per line/)?.[1];
+      if (target && !process.env.MOCK_CODEX_PROBE_NO_WRITE) {
+        const item = { id: "file_probe", type: "file_change", changes: [{ path: target, kind: "add" }] };
+        send({ type: "item.started", item: { ...item, status: "in_progress" } });
+        if (process.env.MOCK_CODEX_WRITE_FAILED) send({ type: "item.completed", item: { ...item, status: "failed" } });
+        else {
+          try { writeFileSync(target, probeReplyWords.join("\n") + "\n"); } catch { /* best-effort */ }
+          send({ type: "item.completed", item: { ...item, status: "completed" } });
+        }
+      }
     }
     doStageWrites();
-    completeTurn(probeWord && !process.env.MOCK_CODEX_RESULT ? probeWord : undefined, { noNewline: Boolean(process.env.MOCK_CODEX_NO_NEWLINE) });
+    completeTurn(probeReplyWords && !process.env.MOCK_CODEX_RESULT ? [...probeReplyWords, ...(probeCommandWord ? [probeCommandWord] : [])].join(" ") : undefined, { noNewline: Boolean(process.env.MOCK_CODEX_NO_NEWLINE) });
   }
 }

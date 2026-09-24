@@ -336,7 +336,7 @@ const NEGATIVE_COLUMNS = Object.freeze(["Mark", "Search Term / Variant", "Result
  *
  * The office comes from the record uri (`/mark/wo/…` -> `WO`); every uri in the archived corpus carries
  * a two-letter office in that position. When it cannot be read the BARE MARK is printed rather than a
- * broken qualifier — a missing qualifier is a smaller defect than "OSLER DELPHI — UNDEFINED record".
+ * broken qualifier — a missing qualifier is a smaller defect than "HALVER KORPHI — UNDEFINED record".
  */
 export function negativeMarkCell(row) {
   const mark = String(row?.cells?.mark ?? "").trim();

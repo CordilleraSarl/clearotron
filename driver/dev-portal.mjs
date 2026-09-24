@@ -32,7 +32,7 @@
 import { envFileRead } from "../shared/env-local.mjs";   // side effect: apply this install's .env when THIS file is the CLI entry (never on library import)
 import { createServer, request as httpRequest } from "node:http";
 import { readFileSync, existsSync, statSync, readdirSync, writeFileSync, renameSync, mkdirSync } from "node:fs";
-import { join, resolve, extname, dirname } from "node:path"; import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
+import { join, resolve, extname, dirname, sep } from "node:path"; import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
 import { fileURLToPath } from "node:url";
 import { config } from "./driver.config.mjs";
 import { BRAND } from "../shared/brand.mjs";
@@ -78,7 +78,7 @@ export const DEV_COCKPIT_JOB_FIELDS = Object.freeze({
       + "is a form for composing REAL dev runs; a fixture run is declared by the job file that wants one, so "
       + "the fact travels with the run rather than with whoever filled in a form.",
     promptParts: "the requester's declaration that the prose rides as SIDECAR files. The cockpit composes a job "
-      + "from its own form and writes no sidecars, so it may not claim that shape (#1085).",
+      + "from its own form and writes no sidecars, so it may not claim that shape.",
     forwarderDomain: "the cockpit's assembler defaults it; a dev form has no forwarding domain to state.",
     provider: "which register vendor answers is the dev instance's own configuration, not a form field.",
     name: "the pre-markName spelling of the search subject. The form posts `mark`.",
@@ -470,7 +470,7 @@ export function startPortal({ poolRoot = null, port = 18899, host = "127.0.0.1",
       // Static pool files. decodeURIComponent + resolve + prefix check = traversal-guarded.
       let p;
       try { p = resolve(root, "." + decodeURIComponent(url.pathname)); } catch { res.writeHead(400); return res.end(); }
-      if (p !== root && !p.startsWith(root + "/")) { res.writeHead(400); return res.end("bad path"); }
+      if (p !== root && !p.startsWith(root + sep)) { res.writeHead(400); return res.end("bad path"); }   // resolve() gives this machine's separator
       if (existsSync(p) && statSync(p).isDirectory()) p = join(p, "index.html");
       if (!existsSync(p)) { res.writeHead(404, { "content-type": "text/plain" }); return res.end("not found in the dev pool"); }
       sendFile(res, p);

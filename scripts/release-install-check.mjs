@@ -58,6 +58,7 @@ import { mkdtempSync, writeFileSync, readFileSync, rmSync, existsSync } from "no
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";
+import { npmInvocation } from "../shared/npm-cli.mjs";
 
 /**
  * Is this npm failure about reaching the world, rather than about the artefact?
@@ -146,7 +147,9 @@ export function installsAsADependency(tarballPath, { keep = false, timeoutMs = 9
       // beneath it. Silenced, npm exits non-zero and prints nothing, and this file then reports a refusal
       // it could not read as a statement about the artefact. Measured 2026-09-12: the same three tests
       // red under `npm run -s` and green without it, on the same tree, in three seconds either way.
-      execFileSync("npm", ["install", abs, "--no-audit", "--no-fund", "--loglevel", "error"],
+      // Through npmInvocation: on Windows npm is npm.cmd, which needs a shell, so it runs as npm-cli.js.
+      const npm = npmInvocation(["install", abs, "--no-audit", "--no-fund", "--loglevel", "error"]);
+      execFileSync(npm.command, npm.args,
         { cwd: consumer, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], timeout: timeoutMs,
           env: { ...process.env, npm_config_loglevel: "error" } });
     } catch (e) {

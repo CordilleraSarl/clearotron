@@ -12,7 +12,7 @@
 
 ## DEMVENZY
 - source_layer: Register
-- owner: Novartis Pharma AG
+- owner: Norvanta Pharma AG
 - owner_country: CH (owner)
 - classes: 5
 - status: Registered (Valid, reg 847082)

@@ -5,6 +5,9 @@
 What protects what, where it is enforced in code, and what the operator must do. Every statement
 here corresponds to shipped behavior; when hardening changes, change this file in the same PR.
 
+Each risk on OWASP's two lists for AI systems, and what Clearotron does about it:
+[SECURITY-OWASP.md](SECURITY-OWASP.md).
+
 ## Surfaces
 
 | Surface | Trust | Guard |
@@ -12,7 +15,7 @@ here corresponds to shipped behavior; when hardening changes, change this file i
 | stdio MCP (`mcp-server/server.mjs`) | local/full ("ops") | OS user boundary — run it AS the operator account; it is the only surface on which `what_if_run` EXECUTES (`visibleTools` keeps what-if out of the HTTP listing for ops, but the CallTool chokepoint gates on `authorize()` alone, which admits it for any ops token not `--verbs`-scoped) |
 | Client MCP (`mcp-server/http-server-client.mjs`) | a company's signed-in person / their access key | `what_if_run` from an `account` principal ENQUEUES rather than executes (ruling 2026-08-27) — it never imports the engine, and `driver/whatif-worker.mjs` spawns the sandbox from an OS service process. A confirmation token is unsigned, so the call must ALSO name its `runId`: the grant check keys on it, and `whatIfEnqueue` refuses a token naming a different run. The `model` argument is refused on this face. |
 | HTTP MCP (`mcp-server/http-server.mjs`) | authenticated remote | auth-BEFORE-data; fail-closed construction; inner scoped tokens |
-| Report "Ask your AI" links | external report recipients | run-bound `user` tokens minted at publish; the plain-language report tools (`clientSafe`) only |
+| Run-bound keys | a report recipient an operator issues one to | a `user` key from `mint-token.mjs`, read-only and bound to one run; the plain-language report tools (`clientSafe`) only |
 | Dev portal (`driver/dev-portal.mjs`) | dev only | loopback-only (throws on any other host); never production serving |
 
 ## Authentication (the outer gate — both faces)
@@ -121,10 +124,9 @@ with access to everything.
 what the mechanism guarantees.*
 
 - One OPERATOR issuance path: `mint-token.mjs` (prints once, stores nothing; `sub` names the
-  principal in every audit line; the `jti` printed at mint time is the revocation handle). Two
-  automatic minters sit beside it on the same `mintToken`: the clearance publisher mints the report
-  link's run-bound `user` token at publish, and `clearotron start` mints the portal's verb-scoped,
-  company-capped ops token in memory at every start. Neither prints, and neither is written down.
+  principal in every audit line; the `jti` printed at mint time is the revocation handle). Three other callers share the same `mintToken`: `clearotron start` mints the portal's verb-scoped,
+company-capped ops token in memory at every start, and neither prints nor stores it; `clearotron connect`
+and the portal's connect screen each mint a person's key for their own assistant.
 - **Revocation**: denylist file checked on every verification; missing file = nothing revoked (the
   denylist can never take all auth down). **Rotation**: two-secret window, flag-day-free.
 - **Rate limits**: per-identity bucket on every request plus a separate lower per-principal bucket
@@ -132,9 +134,10 @@ what the mechanism guarantees.*
 
 ## Audit
 
-Every HTTP tool call appends `{ts, email, sub, tool, args-summary}` to an append-only JSONL
-(`TRADEMARK_MCP_AUDIT_LOG`). Audit is written after scope resolution (so the line names the
-principal) and before dispatch; it is best-effort and never blocks a request.
+Every HTTP tool call appends one line to an append-only JSONL (`TRADEMARK_MCP_AUDIT_LOG`) when the call
+finishes: `{ts, email, sub, method, tool, runId, status, door}`, where `status` is the outcome. It is
+written after scope resolution, so it names the principal. A request refused before any tool runs is
+written too, with the status `refused`. Writing it is best-effort and never blocks a request.
 
 ## Data plane
 
@@ -143,7 +146,8 @@ principal) and before dispatch; it is best-effort and never blocks a request.
   companies only. Run data lives in operator-owned directories outside git (`CLEAROTRON_REPORTS_DIR`,
   workspace root, outbox), backed up by the operator, never committed.
 - Secrets enter only via environment (`.env` on the host); the repo carries `.env*.example` files
-  with placeholders. CI runs a secret scan (gitleaks) on every push.
+  with placeholders. CI runs a secret scan (gitleaks) over the tree and the built bundle on every pull request and every
+push to `main`.
 - Dev instances are isolated by CONFIGURATION and nothing else: a test instance and a live one are the
   same code with different environment — no build flag, no profile constant, no mode switch in the
   source — so the separation holds exactly as far as the operator gives it its own
@@ -160,7 +164,9 @@ Each pipeline stage shells the configured engine binary as the operator account 
 picks the adapter install-wide (`anthropic-agent` spawns `claude -p`, `openai-agent` spawns
 `codex exec` with a per-run `CODEX_HOME`), with no per-stage engine and no fallback between them —
 with run-scoped `--add-dir` access and per-provider gather MCP servers whose credentials come from the
-environment. Stage outputs are judged by file-truth validators — the engine's own success claims
+environment. The program starts with a named list of settings rather than the whole environment, so the
+key that signs access keys never reaches it (`driver/engine/engine-env.mjs`). A stage on Claude is
+offered no tool that runs a command; a stage on Codex runs its commands inside Codex's own sandbox. Stage outputs are judged by file-truth validators — the engine's own success claims
 are never trusted. Delivery is a self-contained packet couriered by the integrator; the engine sends
 no messages and holds no channel credentials.
 
@@ -178,9 +184,8 @@ no messages and holds no channel credentials.
 ## Reporting
 
 **[`../SECURITY.md`](../SECURITY.md) is the disclosure path** — the channel, what is in scope, and
-what to expect. It is the only file that names the channel — a monitored `security@` mailbox and
-GitHub's private vulnerability reporting, either one — so there is one place to change if a channel
-ever moves.
+what to expect. It is the only file that names the channels, so there is one place to change if one ever
+moves.
 
 If you run your own deployment, reports about *your* configuration — your auth proxy, your TLS, your
 keys — go to you. This file describes what the code guarantees; it cannot speak for how a given

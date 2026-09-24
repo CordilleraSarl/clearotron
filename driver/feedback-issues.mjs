@@ -26,7 +26,7 @@ export const BASE_LABELS = ["source:report-feedback", "area:report"];
  * describe, which is triage — the thing this issue forbids. A human adds the real area during triage.
  */
 export const REQUIRED_LABELS = [
-  { name: "source:report-feedback", color: "c5def5", description: "Raised by a reviewing lawyer on a delivered report (#260)." },
+  { name: "source:report-feedback", color: "c5def5", description: "Raised by a reviewing lawyer on a delivered report." },
   { name: "feedback:good", color: "0e8a16", description: "A lawyer marked this finding RIGHT. Not a defect — a confirmation worth keeping." },
   { name: "feedback:bad", color: "b60205", description: "A lawyer marked this finding WRONG. Input for triage, not yet buildable work." },
   { name: "area:report", color: "d4c5f9", description: "The delivered report and what it says." },

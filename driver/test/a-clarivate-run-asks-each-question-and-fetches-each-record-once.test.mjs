@@ -35,7 +35,7 @@ import assert from "node:assert/strict";
 const { beginAnswerMemory, answerMemoryMode, ANSWER_WATCH_LOG } = await import("../../providers/_shared/answer-memory.mjs");
 const { runRecordLogPath } = await import("../../providers/_shared/ledger-path.mjs");
 const { driverDir } = await import("../../shared/driver-dir.mjs");
-const { clarivateFetch, doBatchScreen, doRecordFetch, resolveCompany, rememberableAnswer } = await import("../../providers/clarivate/src/core.js");
+const { buildSearchRequest, clarivateFetch, doBatchScreen, doRecordFetch, doSearch, resolveCompany, rememberableAnswer } = await import("../../providers/clarivate/src/core.js");
 const { tallyRegisterCalls } = await import("../provider-usage.mjs");
 
 const BASE = "https://register.test";
@@ -43,14 +43,14 @@ const raw = (id, office = "US") => ({ id, registrationOfficeCode: office,
   wordMarkSpecification: { markVerbalElementText: `MARK ${id}` }, markCurrentStatus: "Registered", niceClassifications: [9] });
 
 /** A stand-in register: answers by path, and records every request it was sent. */
-function register({ refuse = null } = {}) {
+function register({ refuse = null, counts = { US: 3, EM: 1 } } = {}) {
   const sent = [];
   globalThis.fetch = async (url, init) => {
     const path = new URL(url).pathname;
     const body = init.body ? JSON.parse(init.body) : null;
     sent.push({ path, body });
     if (refuse && refuse.path === path) return new Response(JSON.stringify(refuse.body), { status: refuse.status });
-    if (path === "/count") return new Response(JSON.stringify({ counts: { US: 3, EM: 1 } }), { status: 200 });
+    if (path === "/count") return new Response(JSON.stringify({ counts }), { status: 200 });
     if (path === "/search") return new Response(JSON.stringify({ ids: { US: ["G1", "G2"] } }), { status: 200 });
     if (path === "/resolution/company") return new Response(JSON.stringify({ companies: [{ applicantName: "TIMBER WORKS LTD", registrationOfficeCode: "US", confidenceScore: 90, numberOfTrademarksFound: 4 }] }), { status: 200 });
     if (path === "/text") return new Response(JSON.stringify({ trademarks: body.ids.map((id) => raw(id)), nonTrademarks: [] }), { status: 200 });
@@ -84,6 +84,24 @@ test("an identical count or search is answered from memory; a different one is a
   assert.deepEqual(second.body, { counts: { US: 3, EM: 1 } }, "the remembered answer is the register's own");
   await clarivateFetch("key", BASE, "/count", { body: { ...COUNT_BODY, registrationOfficeCodes: ["EM"] }, tctx });
   assert.equal(sent.length, 3, "a different question is a different answer");
+});
+
+// The enumerate kernel reads a search shorter than its own count as the register contradicting itself,
+// and hands the slice to the repair ladder to ask again. Kept, the two answers were served on every
+// retry, so the slice stayed missing for the whole attempt.
+test("a search shorter than its own count is not kept, and neither is the count, so a retry asks again", async () => {
+  const params = { query: "TIMBER", regions: ["US"] };
+  const body = buildSearchRequest(params);
+  for (const [counts, askedAgain] of [[{ US: 3 }, true], [{ US: 2 }, false]]) {
+    const { tctx } = run(null);
+    const sent = register({ counts });
+    await clarivateFetch("key", BASE, "/count", { body, tctx });
+    await doSearch("key", BASE, params, tctx);
+    await clarivateFetch("key", BASE, "/count", { body, tctx });
+    await doSearch("key", BASE, params, tctx);
+    assert.deepEqual(sent.map((x) => x.path), askedAgain ? ["/count", "/search", "/count", "/search"] : ["/count", "/search"],
+      askedAgain ? "a count of 3 over a search of 2: both asked again" : "THE CONTROL: a count of 2 over a search of 2: both answered from memory");
+  }
 });
 
 test("an owner name looked up again is answered from memory", async () => {
@@ -136,6 +154,26 @@ test("a held record is addressed the way the request addresses it", async () => 
   const again = JSON.parse((await doRecordFetch("key", BASE, { record_ids: ["/mark/em/G1"] }, tctx)).text);
   assert.equal(sent.filter((x) => x.path === "/text").length, 1, "the record was not fetched twice");
   assert.equal(again.records[0].uri, "/mark/em/G1", "the office segment is this request's, as a fresh fetch would give it");
+});
+
+// The screen gate reads the record log by exact address. A record first fetched under one office's
+// address and then reused under another's was logged only under the first, so a drop citing the second
+// read as a record nobody examined, and the gate's recovery re-fetch was served from memory without a
+// line, so the violation survived it.
+test("a held record reused under another address is logged under that address too, and only once", async () => {
+  const { d, tctx } = run(null);
+  const sent = register();
+  await doBatchScreen("key", BASE, { uris: ["/mark/us/G1"], in_scope_classes: [9] }, tctx);
+  await doBatchScreen("key", BASE, { uris: ["/mark/em/G1"], in_scope_classes: [9] }, tctx);
+  await doRecordFetch("key", BASE, { record_ids: ["/mark/ch/G1"] }, tctx);
+  await doBatchScreen("key", BASE, { uris: ["/mark/em/G1"], in_scope_classes: [9] }, tctx);
+  assert.equal(sent.filter((x) => x.path === "/text").length, 1, "the record was fetched once");
+  const { collectRecordBodies } = await import("../registry-fidelity.mjs");
+  const examined = collectRecordBodies(runRecordLogPath(d), tctx.sessionKey.split("-register-unit")[0]);
+  assert.deepEqual([...examined.keys()].sort(), ["/mark/ch/g1", "/mark/em/g1", "/mark/us/g1"],
+    "every address the run screened or fetched it under is on record for the gate");
+  const logged = readFileSync(runRecordLogPath(d), "utf8").trim().split("\n").map((l) => JSON.parse(l).target);
+  assert.equal(logged.length, 3, "a held record already logged under an address writes nothing more");
 });
 
 test("the run's usage counts a record fetched twice, and the records reused", async () => {
