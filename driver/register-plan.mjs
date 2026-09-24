@@ -862,7 +862,8 @@ function namesAnyWord(text, words) {
  * The house element a plan was compiled without, read off the plan itself, or null.
  *
  * WHY THE PLAN CARRIES IT. The compile is not the only writer. After it, the common-law cross-check,
- * the recall lane, the frame reopen and the jurisdiction candidates fold entries in, and the register
+ * the frame reopen and the jurisdiction candidates fold entries in (the recall lane did too, until the
+ * recall store was removed), and the register
  * session proposes its own. On the first live run that proposed an exclusion (2026-09-19) the compile
  * dropped the element and two later writers put it straight back: a contains query from the cross-check
  * and an exact query the register session proposed, both on the bare element. Those writers hold the

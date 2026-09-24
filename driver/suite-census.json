@@ -483,6 +483,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-frozen-recall-search-runs-as-an-ordinary-search.test.mjs": {
+          "tests": 2,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "a-full-country-card-keeps-what-the-multi-country-card-shows.test.mjs": {
           "tests": 2,
           "asserts": 12,

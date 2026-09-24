@@ -5,8 +5,9 @@
 // in pipelineInner (after attachRegisterPlan, before decideAxes) — everything here degrades and
 // logs; only the pipeline's own plan-write is load-bearing.
 //
-// The fold contract (the recall-probes pattern, verbatim): deterministic qids ⇒ resume-idempotent;
-// capped with logged overflow; run-local plan write only (NEVER the slug store); receipt sidecar
+// The fold contract (the pattern the recall probes used until the recall store was removed):
+// deterministic qids ⇒ resume-idempotent; capped with logged overflow; run-local plan write only
+// (NEVER the slug store); receipt sidecar
 // `_driver/jx-lanes.json`; per-call ledger `_driver/jx-completions.jsonl` (tokens/counts only — the
 // owner rule: no currency anywhere). Candidates ride the EXISTING transliteration-numeric axis, so
 // the unit spawn (axis-from-plan), coverage skeleton, taint chain and clean gates all inherit with
