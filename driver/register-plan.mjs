@@ -319,7 +319,7 @@ export function variantTermIssue(value) {
   // over marks that may exist. Worse, the disclosure rides on THIS verdict — a null here means no
   // deferred row either, so the nil search shipped as a clean with nothing saying otherwise.
   //
-  // The floor is still doing real work and stays: `DOLPHIN DEVICE` is two words and a perfectly good
+  // The floor is still doing real work and stays: `PANGOLIN DEVICE` is two words and a perfectly good
   // term, and refusing ordinary two-word marks is the failure this arm must not cause. What separates
   // them is not length, it is the ANNOTATION — and an annotation always has a remedy (delete the
   // note, keep the term), which is why hoisting THIS arm is safe where hoisting the length arm above

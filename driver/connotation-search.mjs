@@ -1125,7 +1125,7 @@ const RECURRENT_MIN = 4;
 // ── — THE REASON SCALE IS MEASURED HERE AND DELIBERATELY DOES NOT DECIDE ────────────────────────
 // was ruled "recurrence counts independent reasons, not query strings": a dictated query is
 // "<term> <shape>", the sweep asks every shape of every mark variant, so the seven queries reading
-// BIODELFIN/BIODELFINO/BIODOLPHIN/ΒΙΟΔΕΛΦΙΣ/ΔΕΛΦΙΣ/ΜΠΙΟΔΕΛΦΙΣ/Дельфис + "offensive meaning" that all
+// BIOVELTRYN/BIOVELTRINO/BIOVELTRINE/ΒΙΟΒΕΛΤΡΙΝ/ΒΕΛΤΡΙΝ/ΜΠΙΟΒΕΛΤΡΙΝ/Вельтрин + "offensive meaning" that all
 // return the dictionary definition of the word "offensive" are one reason asked seven ways. That
 // reasoning is sound and the shape is the right way to express it. It is implemented below as
 // connotationReasonKey, and it is RECORDED on every run — but it is NOT what clears the floor.

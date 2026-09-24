@@ -493,7 +493,7 @@ test("pipeline fold: a model-shielded markup entry is REFUSED at the fold and la
     entries: [
       { qid: "supp:primary-sweep:exact:core:aaaa1111", axis: "primary-sweep", predicate: "exact",
         term: "**BIOVELTRIN**", term_literal: true, nice_classes: ["9"], regions: [], expected_kind: "enumerate", origin: "supplemental" },
-      { qid: "supp:primary-sweep:exact:biodelfis:bbbb2222", axis: "primary-sweep", predicate: "exact",
+      { qid: "supp:primary-sweep:exact:bioveltryn:bbbb2222", axis: "primary-sweep", predicate: "exact",
         term: "BIOVELTRYN", nice_classes: ["9"], regions: [], expected_kind: "enumerate", origin: "supplemental" },
     ] }));
   const ctx = { registerPlan: runPlan, axes: ["primary-sweep"], paths: { runDir: dir,
@@ -501,7 +501,7 @@ test("pipeline fold: a model-shielded markup entry is REFUSED at the fold and la
     registerBand: (a) => join(dir, "register-units", `${a}-band.json`) } };
 
   const added = foldSupplementalProposals(ctx);
-  assert.deepEqual(added, ["supp:primary-sweep:exact:biodelfis:bbbb2222"], "the clean proposal still folds");
+  assert.deepEqual(added, ["supp:primary-sweep:exact:bioveltryn:bbbb2222"], "the clean proposal still folds");
   const persisted = JSON.parse(rf(driverDir(dir, "register-plan.json"), "utf8"));
   assert.ok(!persisted.entries.some((e) => e.term === "**BIOVELTRIN**"),
     "the shielded entry never reaches the plan, so nothing dispatches it");
