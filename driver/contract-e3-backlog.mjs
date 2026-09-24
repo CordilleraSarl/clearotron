@@ -274,7 +274,7 @@ export const E3_BACKLOG = [
   {
     stage: "register-unit",
     kind: "literal-json-skeleton",
-    where: "driver/skills/clearance-register/unit.md:122-136",
+    where: "driver/skills/clearance-register/unit.md:120-134",
     surface: "skill-file",
     evidence: "Two block shapes (no third):\\n```json\\n[\\n { \"state\":\"enumerated\", \"query\":\"…\", \"total_hits\": 12, \"records\": [ { \"record_id\":\"/mark/eu/018…\", \"mark_text\":\"…\", … } ] },\\n { \"state\":\"incomplete\", \"query\":\"…\", \"total_hits\": 2416, \"fetched\": 1, \"sample\":[ … ], \"reason\":\"…\" }\\n]\\n```",
     reparsedBy: "driver/named-band.mjs parseNamedBand — named in the skill file itself at unit.md:60-62",
@@ -408,7 +408,7 @@ export const E3_BACKLOG = [
   {
     stage: "register-digest",
     kind: "exactly-these-keys",
-    where: "driver/skills/clearance-register/SKILL.md:237-238",
+    where: "driver/skills/clearance-register/SKILL.md:235-236",
     surface: "skill-file",
     evidence: "**The status vocabulary is CLOSED: EXACTLY one bare token of: `confirmed-clean` / `coverage-limited` / `deferred` / `withheld-by-judgment`.** Qualifiers never go in a status cell; they go in the reason.",
     reparsedBy: "driver/coverage-form.mjs / driver/coverage-ledger.mjs. Since the typed-transport conversion the STAGE MESSAGE no longer restates the enum; the surviving copies are SKILL.md (here), digest.md:207, the dispatch brief (coverage-form.mjs coverageFormBrief), the record_coverage schema (coverage-server.mjs) and gateway.mjs's repair hints — still one enum spelled at five sites",
