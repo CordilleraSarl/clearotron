@@ -17,7 +17,7 @@ import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, join
 import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.mjs'; import { coverageFormStamp, readCoverageForm } from '../coverage-form-io.mjs'; import { coverageUnitLabel } from '../coverage-ledger.mjs'; import { recallReceiptForOwnCompany } from '../recall-receipt.mjs';   // — and why an absence did not close; whose recall checks an audit lists
 import { clearanceReportData } from './report-data.mjs';
 import { searchDepthRecord, planTerritoriesOf } from './search-depth.mjs'; import { bandRecords } from '../named-band.mjs';   // how much was read to reach the answer, as counts and tokens
-import { parseFrameworkManifest } from '../framework.mjs';
+import { parseFrameworkManifest } from '../framework.mjs'; import { readFrozenMethod, FROZEN_METHOD_FILE } from '../framework-method.mjs';
 import { rollupTokens, servedModels } from '../tokens.mjs';
 import { reportIdentityFor, productCoverageNote, isRegisterOnly } from '../search-policy.mjs';
 import { readRecordArtifacts, bindFindingsToRecords, joinEvidenceStatus } from '../registry-fidelity.mjs';
@@ -886,8 +886,8 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
 
   // doc 50 — the run's FROZEN framework manifest (band vocabulary). Present on band-doctrine runs;
   // absent on every archived run (they render byte-identically on the legacy paths).
-  let framework = null;
-  try { framework = parseFrameworkManifest(readFileSync(driverDir(runDir, 'framework.json'), 'utf8')); } catch { /* legacy run */ }
+  let framework = null, frameworkMethod = null;   // + the frozen method, where the framework states one (framework-method.mjs): the card and workbook show its inputs
+  try { framework = parseFrameworkManifest(readFileSync(driverDir(runDir, 'framework.json'), 'utf8')); frameworkMethod = readFrozenMethod(driverDir(runDir, FROZEN_METHOD_FILE), framework).method ?? null; } catch { /* legacy run */ }
   // T2 (H5): a pre-49 sidecar ({verdict,reasons,kinds} — copper-spire's shape) gains the derived
   // display fields HERE, so a re-published archived run joins the same single authority as a fresh one.
   // No sidecar at all (pre-A2 runs) ⇒ legacy fm rendering, byte-stable.
@@ -1157,7 +1157,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
       // the same rule (the workbook's own BANNED gate had already started firing on the raw detail —
       // advisory, so CI stayed green). reviewReceipts.lint keeps its raw detail for the internal
       // readers above (fetchState reads registry-record-coverage's URIs out of it).
-      counts = await buildAudit({ droppedConditions, undispatchedProbes, withheldFamilies, findings, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null }, auditParsed, join(poolRunDir, auditFile), fm.title, fm);
+      counts = await buildAudit({ droppedConditions, undispatchedProbes, withheldFamilies, findings, frameworkMethod, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null }, auditParsed, join(poolRunDir, auditFile), fm.title, fm);
       grpRead(join(poolRunDir, auditFile), 0o640);
       if (counts?.gateViolations?.length) console.warn(`[audit-workbook] advisory: ${counts.gateViolations.join(' | ')}`);
     } catch (e) {
@@ -1243,7 +1243,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     writeRO('search-depth.json', JSON.stringify(searchDepth, null, 2));
   } catch { /* the depth record is additive — a publish never fails for want of it */ }
 
-  writeRO('report.html', renderHtml(parsed, findings, coverage, { demoData, servedModels: served, productName, depthNote, scopeBasis, auditFile: auditFile || undefined, runId, delivery: deliv, recordsByUri, contextNotes, coverageJudgment: coverageJudgmentDisplay, markAssessment, fourAnswers, homeHref: '../index.html', nav: reportNav, chromeHref: '../assets/chrome.css', issued, asOf, verdictInfo, framework, searchedJurisdictions, planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals, recordOrigin, recordOrigins: runOrigins, recordCitation: runProviderConf?.recordCitation ?? null, recordLinks: officeLinks?.byUri ?? null, providerLabel, seniorRights, findingsSchemaVersion, searchDepth }));
+  writeRO('report.html', renderHtml(parsed, findings, coverage, { demoData, frameworkMethod, servedModels: served, productName, depthNote, scopeBasis, auditFile: auditFile || undefined, runId, delivery: deliv, recordsByUri, contextNotes, coverageJudgment: coverageJudgmentDisplay, markAssessment, fourAnswers, homeHref: '../index.html', nav: reportNav, chromeHref: '../assets/chrome.css', issued, asOf, verdictInfo, framework, searchedJurisdictions, planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals, recordOrigin, recordOrigins: runOrigins, recordCitation: runProviderConf?.recordCitation ?? null, recordLinks: officeLinks?.byUri ?? null, providerLabel, seniorRights, findingsSchemaVersion, searchDepth }));
   // ONE report (spec 2026-07-30 §5): report.client.html is no longer written. The knockout lane's own
   // collapse note is the precedent: "two renderings of one run is how the wrong link gets sent". The
   // client host serves the same report.html through the portal's readReport() (cleaning built in) — its

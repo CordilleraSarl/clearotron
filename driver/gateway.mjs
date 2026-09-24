@@ -2273,10 +2273,19 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
         `record; it carries no band/registration and never moves the rating.`;
     } else if (/finding_legacy_scale_forbidden/.test(lastFail)) {
       // doc 50 — the reversion repair: years of Composite/Level habit pull the model back to the retired
-      // scale; the fix is stated in the framework's own terms, never as a mapping.
-      extra = ` SPECIFIC FIX: schema_version 4 carries NO composite/level/dispute_type — delete those keys. ` +
-        `The rating is "band": the band WORD your reasoning under the framework you read yields (EXACTLY one of ` +
-        `its band words, as written in the framework). Your reasoning trail stays in the narrative prose.`;
+      // scale; the fix is stated in the framework's own terms, never as a mapping. Under a framework that
+      // states a method the refusal itself says so, and the retired keys have a home: the framework's own
+      // inputs (framework-method.mjs).
+      extra = /own inputs under "inputs"/.test(lastFail)
+        ? ` SPECIFIC FIX: delete composite/level/dispute_type and record the framework's own inputs under ` +
+          `"inputs", then give the band the framework's table yields for them.`
+        : ` SPECIFIC FIX: schema_version 4 carries NO composite/level/dispute_type — delete those keys. ` +
+          `The rating is "band": the band WORD your reasoning under the framework you read yields (EXACTLY one of ` +
+          `its band words, as written in the framework). Your reasoning trail stays in the narrative prose.`;
+    } else if (/finding_(inputs_[a-z]+|band_off_table|borderline_off_table):/.test(lastFail)) {
+      // The framework's method (framework-method.mjs). Each refusal already names its fix — the value list,
+      // or the band the table gives — so no addendum: the generic band hint below would point elsewhere.
+      extra = "";
     } else if (/finding_band_|findings_rated_under_|finding_disposition_missing/.test(lastFail)) {
       extra = ` SPECIFIC FIX: every finding carries "disposition"; adversarial / coexistence-partner / ` +
         `distinguished findings are RATED and carry "band" = EXACTLY one of the framework's band words (as ` +

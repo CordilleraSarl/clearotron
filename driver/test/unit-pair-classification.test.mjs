@@ -61,7 +61,7 @@
 //                               `rs`. A reader holding the position holds both.
 //   · commonlaw-carry.mjs:386   `completed` folds ALL THREE stage labels from one `outcomes` read and is
 //                               handed to `classifyCandidate` for every candidate in the same call.
-//   · findings-model.mjs:475    `boundLost` and `names` both come off the one `index` argument.
+//   · findings-model.mjs:476 actionPartyReferences `boundLost` and `names` both come off the one `index` argument.
 //   · `familyDispatched` declared in `form-neighbourhood.mjs`  feeds BOTH the returned
 //                               `phoneticFamilyDispatched` and the `complete` verdict beside it — the
 //                               good shape: two ends, one computation, no second derivation to drift.

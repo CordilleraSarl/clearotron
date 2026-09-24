@@ -44,6 +44,7 @@ import {
 } from "./repairs.mjs";
 import { RunCancelled, assertNotCancelledBeforePublish } from "./cancel.mjs";   // stop-by-user: never the failure lane below
 import { loadFrameworkManifest, parseFrameworkManifest, frameworkFor, DEFAULT_FRAMEWORK } from "./framework.mjs";
+import { attachFrameworkMethod, methodPathFor, FROZEN_METHOD_FILE } from "./framework-method.mjs";
 import { KO_STAGES, KO_STEPS, KO_STEP_REGISTER_COUNT, koSteps, koPaths, kebab, knockoutPrompt, koChunks } from "./stages-knockout.mjs";
 import { kebabCollisions, reportIdentityFor, CAPABILITY_SKIPPED_CAUSE, CAPABILITY_SKIPPED_NOTE } from "./search-policy.mjs";
 import { countPreflight, countRegisterHits, countedMarks, resolveCountExecutor } from "./register-count.mjs";
@@ -115,12 +116,23 @@ function attachKnockoutFramework(ctx) {
     try { ctx.framework = parseFrameworkManifest(raw); }
     catch (e) { throw new Error(`_driver/framework.json is corrupt (${e.message}) — investigate; the frozen framework is never silently re-derived`); }
     readBackLadder(ctx, sidecarPath, { minted: false });
+    // The method is read back with the manifest it was frozen beside, never loaded fresh on a resume.
+    ctx.frameworkMethod = attachFrameworkMethod({ frozenPath: driverDir(ctx.paths.runDir, FROZEN_METHOD_FILE),
+      resolve: (rel) => config.resolveSkillPath(rel), fwPath, manifest: ctx.framework, minted: false });
     return;
   }
   const manifest = loadFrameworkManifest((rel) => config.resolveSkillPath(rel), fwPath);   // see pipeline.mjs attachFramework
   ctx.framework = manifest;
+  // THE FRAMEWORK'S METHOD, frozen when the framework states one (framework-method.mjs): every rated card
+  // on a knockout page then records the framework's inputs and takes its table's band. Frozen BEFORE the
+  // manifest, as the clearance lane does: a run interrupted between the two writes has no manifest, so its
+  // resume mints both again. The other order would leave a manifest with no method beside it, which the
+  // resume branch above reads as a framework that states none.
+  ctx.frameworkMethod = attachFrameworkMethod({ frozenPath: driverDir(ctx.paths.runDir, FROZEN_METHOD_FILE),
+    resolve: (rel) => config.resolveSkillPath(rel), fwPath, manifest, minted: true });
   atomicWrite(sidecarPath, JSON.stringify(manifest, null, 2) + "\n");
-  runLog(ctx.paths.runDir, { event: "framework", key: manifest.framework_key, custom: fwPath !== TRIAGE_FRAMEWORK, lane: "knockout", bands: manifest.bands.map((b) => b.label).join("/") });
+  runLog(ctx.paths.runDir, { event: "framework", key: manifest.framework_key, custom: fwPath !== TRIAGE_FRAMEWORK, lane: "knockout", bands: manifest.bands.map((b) => b.label).join("/"),
+    method: ctx.frameworkMethod ? methodPathFor(fwPath) : null });
   readBackLadder(ctx, sidecarPath, { minted: true });
 }
 
@@ -933,7 +945,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
       }
     }
     for (let c = 0; c < chunks.length; c++) {
-      await koStage("knockout-assess", ctx, { chunkNo: c, msgCtx: { chunkMarks: chunks[c], chunkTotal: chunks.length, framework: ctx.framework } });
+      await koStage("knockout-assess", ctx, { chunkNo: c, msgCtx: { chunkMarks: chunks[c], chunkTotal: chunks.length, framework: ctx.framework, frameworkMethod: ctx.frameworkMethod ?? null } });
     }
     // `let`, because the reviewing pass below returns a REWRITTEN record rather than editing this one:
     // the original has to survive intact as the thing that ships if the pass cannot finish cleanly.

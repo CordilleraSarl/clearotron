@@ -37,7 +37,7 @@ import { registerPlanCallKilled } from "./tool-calls.mjs";   // — did the dict
 import { parseFindingsJson, parseFindingsJsonLenient, CLIENT_TIER_BY_COMPOSITE, isUnconditionalProceed, joinFindingToBlock, parseBlockOrd } from "./findings-model.mjs";
 import { parsePlacementsJson } from "./placement-model.mjs"; import { placementFormSidecarName, parsePlacementForm, placementRenderAccount } from "./placement-form.mjs";
 import { parseCaseLawLedger, findCaseLawLedgerViolations, caseLawLedgerFail } from "./case-law-ledger.mjs";
-import { parseFrameworkManifest, aboveLowestBand, normalizeBand } from "./framework.mjs";
+import { parseFrameworkManifest, aboveLowestBand, normalizeBand } from "./framework.mjs"; import { readFrozenMethod, FROZEN_METHOD_FILE } from "./framework-method.mjs";
 import { parseNamedBand, findCollapsedBands } from "./named-band.mjs";
 import { parseBlindFrameModel } from "./blind-frame-model.mjs";
 import { parseFrameDiff } from "./frame-diff-model.mjs";
@@ -70,9 +70,9 @@ function readRunProfile(p) {
 function readRunFramework(p) {
   for (const dir of [dirname(p), dirname(dirname(p))]) {
     const f = driverDir(dir, "framework.json");
-    if (!existsSync(f)) continue;
-    try { return { manifest: parseFrameworkManifest(readFileSync(f, "utf8")), invalid: false }; }
-    catch { return { manifest: null, invalid: true }; }
+    if (!existsSync(f)) continue; let manifest;
+    try { manifest = parseFrameworkManifest(readFileSync(f, "utf8")); } catch { return { manifest: null, invalid: true }; }
+    const m = readFrozenMethod(driverDir(dir, FROZEN_METHOD_FILE), manifest); return { manifest, method: m.method, methodInvalid: m.invalid ?? null, invalid: false };   // + the frozen method beside it (framework-method.mjs): null when none, `methodInvalid` when it does not read back
   }
   return { manifest: null, invalid: false };
 }
@@ -1177,7 +1177,7 @@ function checkFindingsSibling(p, c) {
   // material-band line). A v4 record with no frozen manifest is a driver bug: fail LOUD, never judge a
   // rated matter without its vocabulary. Legacy (v≤3) records never look for one — replay never flips.
   const fw = readRunFramework(p);
-  if (fw.invalid) return fail("framework_manifest_unreadable: _driver/framework.json is corrupt (driver-written — this is a bug, not a model defect)");
+  if (fw.invalid) return fail("framework_manifest_unreadable: _driver/framework.json is corrupt (driver-written — this is a bug, not a model defect)"); if (fw.methodInvalid) return fail(`framework_method_unreadable: _driver/${FROZEN_METHOD_FILE} is corrupt (driver-written — this is a bug, not a model defect)`);
   let parsed;
   // — the gate on the model-written URL column. `recordOriginsFor` resolves a COMPOSITE through
   // its members, so a free-tier run allows both EUIPO and USPTO hosts rather than neither. With no
@@ -1186,7 +1186,7 @@ function checkFindingsSibling(p, c) {
   const recordOrigins = activeRecordOrigins();
   try {
     parsed = parseFindingsJson(raw, {
-      ...(fw.manifest ? { manifest: fw.manifest } : {}),
+      ...(fw.manifest ? { manifest: fw.manifest, method: fw.method } : {}),
       ...(recordOrigins ? { recordOrigins } : {}),
     });
   }

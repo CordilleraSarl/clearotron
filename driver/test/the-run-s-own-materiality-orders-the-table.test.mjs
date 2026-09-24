@@ -214,6 +214,10 @@ test("the findings key count in the schema's own description matches its propert
   const props = block.slice(block.indexOf("properties: {"));
   const names = new Set([...props.slice(0, props.indexOf("\n                },")).matchAll(/^\s{20}(\w+):/gm)].map((m) => m[1]));
   const WORDS = { seven: 7, eight: 8, nine: 9, ten: 10 };
-  assert.equal(WORDS[said], names.size,
-    `the description claims ${said} keys and the object declares ${names.size}: ${[...names].join(", ")}`);
+  // A key the description names as owed only where the framework states a method is counted beside the
+  // closed set, never inside it: "all nine, no others, and "inputs" where the framework states a method".
+  const conditional = [...block.slice(0, block.indexOf("items:")).matchAll(/and \\"(\w+)\\" where the framework states a method/g)].map((m) => m[1]);
+  for (const k of conditional) assert.ok(names.has(k), `the description names ${k} and the object does not declare it`);
+  assert.equal(WORDS[said] + conditional.length, names.size,
+    `the description claims ${said} keys${conditional.length ? ` and ${conditional.join(", ")}` : ""} and the object declares ${names.size}: ${[...names].join(", ")}`);
 });

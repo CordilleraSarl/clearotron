@@ -25,6 +25,7 @@ import { fileURLToPath } from 'node:url';
 // its own split, which is how the two rules diverged. It calls stripTelemetry now, so the renderer holds
 // no copy of the RULE either, only a call to it.
 import { parseReport, stripInternal, stripTelemetry } from './parse.mjs';
+import { inputsLine } from '../framework-method.mjs';
 import { clientConditions } from '../terminal-clamp.mjs'; import { hrefAttr } from './attr.mjs';   // an href is attribute-safe and http(s), or not a link
 import { EXPORT_TOGGLE, exportPopover, EXPORT_MENU_JS } from './report-topbar.mjs';   // the export menu's shell and behaviour, shared with the knockout template   // the reader's clause per condition, shared with the cover note
 import { COMMON_LAW, normRegion, regionName, REGION_NAMES } from './regions.mjs';
@@ -100,6 +101,7 @@ let NEGATIVES_GROUPED = false;
 // present the report speaks ITS band words: chips/one-liners read f.band, the gauge ticks show its
 // ladder, the footer names it. Absent ⇒ every legacy (composite) surface renders byte-identically.
 let FRAMEWORK = null;
+let FRAMEWORK_METHOD = null;   // the frozen method (framework-method.mjs), where the framework states one
 // The 2026-09-16 report redesign — the depth rule, as one flag. The same sections render at every depth; what grows
 // is what a finding's Full detail fold carries, and the goods as registered and the record's dates are
 // the two blocks the design gives the full country alone. Module-level for the same reason FRAMEWORK is:
@@ -1977,7 +1979,10 @@ function riskChip(f) {
   // every card in it — and "Adversarial" reads to a client as a claim about the owner's temper.
   if (FRAMEWORK && f.composite == null) {
     if (f.band == null) return 'Not rated — awareness';
-    return esc(f.band);
+    // A framework that states a method shows its inputs beside the band, in its own labels and order:
+    // "High · Claim Grade R · Harbour". Every other framework's chip is the band alone.
+    const line = inputsLine(FRAMEWORK_METHOD, f.inputs);
+    return line ? `${esc(f.band)} · ${esc(line)}` : esc(f.band);
   }
   const dt = f.dispute_type ? ' · ' + humanize(f.dispute_type) : '';
   // wp50: the internal chip leads with the SAME tier word every other surface uses — the reader can
@@ -2517,6 +2522,7 @@ export function renderHtml(parsed, findings = [], coverage = [], opts = {}) {
   AS_OF = opts.asOf ?? null;   // C2
   VERDICT_INFO = (opts.verdictInfo && opts.verdictInfo.tier != null) ? opts.verdictInfo : null;   // T2 — only an enriched sidecar is an authority
   FRAMEWORK = opts.framework ?? null;   // doc 50 — the frozen manifest; null on archived/legacy runs
+  FRAMEWORK_METHOD = opts.frameworkMethod ?? null;
   FULL_COUNTRY = isFullCountry(opts);   // The 2026-09-16 report redesign — the depth rule for the Full detail fold
   SEARCHED_JUR = Array.isArray(opts.searchedJurisdictions) && opts.searchedJurisdictions.length ? opts.searchedJurisdictions : null;   // T6 (D4)
   SCOPE_WORLDWIDE = opts.scopeBasis === 'worldwide' ? true : null;   // the plan's scope_basis; null ⇒ fall back to the ledger-prose sniff

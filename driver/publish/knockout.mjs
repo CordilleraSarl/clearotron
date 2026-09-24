@@ -19,6 +19,7 @@ import { RECORD_BASIS, recordsForMark, recordsLine, listedMarks, normalizeRegist
 import { reportIdentityFor, productCoverageNote, kebab } from '../search-policy.mjs';
 import { batchMarkName } from '../mark-name.mjs';
 import { renderKnockoutHtml, knockoutReportData } from './render-knockout.mjs';
+import { readFrozenMethod, inputsLine, FROZEN_METHOD_FILE } from '../framework-method.mjs';
 import { resolveDemoData, demoBannerMd } from './demo-marking.mjs';   //
 import { engineCommit } from '../engine-build.mjs';
 import { servedModels } from '../tokens.mjs';
@@ -96,7 +97,7 @@ export const knockoutStatement = (framework, marks) =>
 // than "never asked for". 'Impact' goes with them: it was the second rating scale. What replaces them is
 // what the typed record actually carries. A `—` means the shape that produced the row never had the
 // field (an archived prose finding), which is a different fact from an empty cell.
-export async function buildKnockoutWorkbook(findings, receipts, outPath, registerCounts = null, qcFlags = [], framework = null, registerRecords = null) {
+export async function buildKnockoutWorkbook(findings, receipts, outPath, registerCounts = null, qcFlags = [], framework = null, registerRecords = null, frameworkMethod = null) {
   const ExcelJS = (await import('exceljs')).default;
   const wb = new ExcelJS.Workbook();
   const findingRows = [];
@@ -108,7 +109,9 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
     for (const v of knockoutFindingViews(m, { manifest: framework })) {
       findingRows.push({
         'Mark': m.name, 'Finding Reference': v.ref, 'Finding Name': v.name ?? '—', 'Owner': v.owner ?? '—',
-        'Band': v.band ?? '—', 'Type': v.type ?? '—', 'Net': v.lead ?? '—', 'Basis': v.detail ?? '—',
+        // where the framework states a method, its inputs ride beside the band, as on the report card
+        'Band': v.band ? [v.band, inputsLine(frameworkMethod, v.inputs)].filter(Boolean).join(' · ') : '—',
+        'Type': v.type ?? '—', 'Net': v.lead ?? '—', 'Basis': v.detail ?? '—',
         'Evidence': v.evidence.join('\n') || '—',
       });
     }
@@ -403,6 +406,10 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   let instructedScope = null;
   try { instructedScope = JSON.parse(readFileSync(driverDir(runDir, 'instructed-scope.json'), 'utf8')); }
   catch { instructedScope = null; }
+  // The run's frozen method, where its framework states one (framework-method.mjs): the report card and
+  // the workbook's band cell show the framework's inputs beside the band. A run that froze none — every
+  // run before the method existed among them — renders the band alone, as it was delivered.
+  const frameworkMethod = readFrozenMethod(driverDir(runDir, FROZEN_METHOD_FILE), framework).method ?? null;
 
   // ── — THIS LANE HAD NO RECORD-ORIGIN LOGIC AT ALL ─────────────────────────────────────────────
   //
@@ -475,7 +482,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   } catch (e) { note(`knockout predelivery lint skipped (non-fatal): ${e.message}`); }
 
   const auditFile = `knockout-audit-${codename ?? runId}.xlsx`;
-  await buildKnockoutWorkbook(findings, sweepReceipts, join(poolRunDir, auditFile), registerCounts, qcFlags, framework, registerRecords);
+  await buildKnockoutWorkbook(findings, sweepReceipts, join(poolRunDir, auditFile), registerCounts, qcFlags, framework, registerRecords, frameworkMethod);
   grpRead(join(poolRunDir, auditFile), 0o640);
 
   // The run's report identity, off the SAME registry row that chose its machinery (search-policy.mjs
@@ -590,6 +597,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
       searchPolicy: searchPolicy ?? null,
       delivery,
       servedModels: served,
+      frameworkMethod,
     }));
     // The run as data — what the assistant drafts client-facing mail from, and the shape the portal's
     // native-render path has been reading for since before anything wrote it. One per report, so the

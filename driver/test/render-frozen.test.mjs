@@ -1798,7 +1798,9 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // Neither licence-only nor comment-only, so this constant moves with the other one.
 // Advanced again by the comment-only break recorded above the FROZEN constant: one example name replaced.
 // A comment edit moves these bytes too, so this constant moves with it.
-const FROZEN_BEFORE_SPDX = "2a50555f3a0530c9585b6c21c5e50a1353fe9907ad452ab559703fca701e02e0";
+// Advanced again by the break recorded above the FROZEN constant: a framework's own inputs beside the band.
+// Not licence-only, so this constant moves with the other one.
+const FROZEN_BEFORE_SPDX = "a4728c8f6b9ed2b7cc32b120e23b6d87ef8aa724a3702f415fc52cf7f85f7458";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2697,7 +2699,25 @@ const FROZEN_BEFORE_SPDX = "2a50555f3a0530c9585b6c21c5e50a1353fe9907ad452ab55970
 //   1. Reachable from republish? No — a comment never reaches a rendered report.
 //   2. Could it live in report.css or brand.mjs? No: the example is a comment in this file.
 //   3. Why it had to move here: the example was here, in a public tree.
-const FROZEN = "2679328e5ac3df4440783c093e62bb41a846fc877fb7a4039abe670c0151a268";
+// ── BREAK (2026-09-24 — a framework's own inputs beside the band) ─────────────────────────────────
+//
+// WHAT MOVED: the band chip. Where the run froze a framework method (framework-method.mjs) and a finding
+// records that framework's inputs, the chip reads the band and then the inputs, in the framework's own
+// labels and order: "High · Claim Grade R · Harbour". Three lines carry it: the import of
+// `inputsLine`, the FRAMEWORK_METHOD module state set from `opts.frameworkMethod` beside FRAMEWORK, and
+// the chip. Everywhere else the chip is the band word alone, as before.
+//
+// WHY. A framework that rates through named inputs and a table used to reach the report as its band
+// words only; the inputs a reader needs to check the band against the framework had nowhere to go.
+//
+// THE THREE QUESTIONS.
+//   1. Reachable from republish? Yes, and it renders the same bytes: publish passes a method only when
+//      the run froze one, and no archived run did. Measured by rendering the same banded findings through
+//      the previous file and this one, with a framework and without one, and comparing: identical in both
+//      modes (212,751 and 212,604 bytes).
+//   2. Could it live in report.css or brand.mjs? No: it is the chip's text, not its look.
+//   3. Why it had to move here: the chip is composed in this file and nowhere else.
+const FROZEN = "4c19e303c7e08f6dbb50e59c47e4c67b4be32393d9593920eb4b6ffdb9af6714";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

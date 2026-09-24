@@ -47,6 +47,7 @@ import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join, dirname } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
 import { parseFindingsJson, COVERAGE_AREA_STATES } from "./findings-model.mjs";
+import { readFrozenMethod, FROZEN_METHOD_FILE } from "./framework-method.mjs";
 import { findCoverageRecommendations } from "./verify.mjs";
 import { declinationCallPaths, readDeclinations } from "./declination-tool.mjs";   // — the seat's own declines, read by the driver never asserted by the seat
 import { reconcileDeclinationDuty, declinationDutyRefusal } from "./declination-duty.mjs";
@@ -267,7 +268,7 @@ export function withoutWithheldRows(rows, ledger) {
   return (Array.isArray(rows) ? rows : []).filter((r) => !namesIn(r?.area).some((n) => withheld.has(n)));
 }
 
-export function acceptSynthesis(params, { asks = [], ledger = null, manifest = null, owed = null, declined = null } = {}) {
+export function acceptSynthesis(params, { asks = [], ledger = null, manifest = null, method = undefined, methodInvalid = null, owed = null, declined = null } = {}) {
   const doc = params?.findings;
   if (!doc || typeof doc !== "object" || Array.isArray(doc)) {
     return { ok: false, reason: "synthesis_findings_missing: `findings` must be the findings document object { schema_version, rated_under_framework, findings, coverage, … } — this is the record the report and the workbook are built from, and there is no path that renders without it" };
@@ -370,15 +371,26 @@ export function acceptSynthesis(params, { asks = [], ledger = null, manifest = n
     coverage: { read: n.coverage?.read, rows },
     calibration: n.calibration, askAnswers: doc.ask_answers,
   });
-  const findings = renderFindings(doc);
+  let findings = renderFindings(doc);
 
   // ── THE ROUND-TRIP. Rendered bytes → the shipped parsers → exactly what was asked for. ───────────
   // With the refusals above most of these cannot fire, which is the point: they are the assertion that
   // this renderer and verify.mjs still agree, kept where a drift surfaces as a refusal the seat sees
   // rather than as a verdict the driver misreads.
-  try { parseFindingsJson(findings, manifest ? { manifest } : {}); }
+  // The frozen method rides beside the manifest: absent (undefined) only where a caller never said, as in
+  // the unit arms; null when the run froze none. A frozen copy that does not read back is the driver's
+  // own file gone wrong, and the seat cannot fix it — so it is refused by name, never read as "no method".
+  if (methodInvalid) return { ok: false, reason: `framework_method_unreadable: _driver/${FROZEN_METHOD_FILE} does not read back (${String(methodInvalid).slice(0, 160)}) — a driver fault, not the writer's` };
+  let parsedDoc;
+  try { parsedDoc = parseFindingsJson(findings, manifest ? { manifest, ...(method !== undefined ? { method } : {}) } : {}); }
   catch (e) {
     return { ok: false, reason: `synthesis_findings_invalid: ${String(e?.message ?? e).slice(0, 300)}` };
+  }
+  // The framework's inputs are written as the framework writes them — its labels, its values, its order —
+  // the form the parse normalised them to. Every reader after this one then matches them exactly.
+  if (method && Array.isArray(parsedDoc?.findings) && parsedDoc.findings.some((f) => f?.inputs)) {
+    const canon = new Map(parsedDoc.findings.filter((f) => f?.inputs).map((f) => [f.ordinal, f.inputs]));
+    findings = renderFindings({ ...doc, findings: doc.findings.map((f) => (canon.has(f?.ordinal) ? { ...f, inputs: canon.get(f.ordinal) } : f)) });
   }
   if (narrative.length < 300) {
     return { ok: false, reason: `synthesis_narrative_too_short:${narrative.length} — the rendered narrative is under the 300-character floor the validator applies. The sections you sent do not add up to a cross-finding read` };
@@ -481,6 +493,14 @@ export function mergeSynthesisPatch(stored, patch) {
  * turns the check that depends on it OFF — it never yields a passing verdict. `acceptSynthesis` knows
  * the difference and records it as `clean_claims_checked`.
  */
+// The run's frozen method, read against its frozen manifest. No manifest: nothing to rate against, and
+// the method stays unsaid (undefined) exactly as the manifest does.
+function frozenMethodFor(dir0, manifest) {
+  if (!manifest) return {};
+  const r = readFrozenMethod(driverDir(dir0, FROZEN_METHOD_FILE), manifest);
+  return r.invalid ? { method: null, methodInvalid: r.invalid } : { method: r.method };
+}
+
 export function driverReadsFor(runDir) {
   const dir0 = String(runDir ?? "");
   const read = (name) => {
@@ -526,6 +546,7 @@ export function driverReadsFor(runDir) {
     asks: Array.isArray(asksRaw) ? asksRaw : [],
     ledger: readLedger(dir0),
     manifest: read("framework.json"),
+    ...frozenMethodFor(dir0, read("framework.json")),
     owed: Array.isArray(specRows) ? specRows : null,
     declined,
   };
@@ -585,6 +606,7 @@ export function recordSynthesis(runDir, received, opts = {}) {
   // learned the same lesson one lane over.
   const auto = driverReadsFor(dir0);
   const { asks = auto.asks, ledger = auto.ledger, manifest = auto.manifest,
+    method = auto.method, methodInvalid = auto.methodInvalid ?? null,
     owed = auto.owed, declined = auto.declined,
     now = () => new Date().toISOString() } = opts;
   const { dir, payload, accepted, refusals } = synthesisCallPaths(dir0);
@@ -621,7 +643,7 @@ export function recordSynthesis(runDir, received, opts = {}) {
     call = merged.merged;
   }
 
-  const v = acceptSynthesis(call, { asks, ledger, manifest, owed, declined });
+  const v = acceptSynthesis(call, { asks, ledger, manifest, method, methodInvalid, owed, declined });
   if (!v.ok) {
     noteRefusal(v.reason);
     return { written: null, refused: v.reason,

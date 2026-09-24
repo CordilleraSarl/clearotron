@@ -19,6 +19,7 @@
 
 import { BRAND } from '../../shared/brand.mjs';
 import { projectAssessmentField } from '../findings-model.mjs';
+import { inputsLine } from '../framework-method.mjs';
 import { deliveryVocabViolations } from '../predelivery-lint.mjs';
 
 const HEAD_FILL = '11132A';
@@ -179,7 +180,7 @@ const FINDING_COLS = ['#', 'Conflicting mark', 'Owner', 'Country', 'Source', 'Cl
   'Status & key dates', 'Record retrieved?', 'Risk band', 'How we treated it',
   'Mark similarity', 'Goods proximity', 'Use', 'Enforcer', 'Link'];
 
-function findingRows(findings, fetchState, recordLinks = null) {
+function findingRows(findings, fetchState, recordLinks = null, method = null) {
   return (findings || []).map(f => {
     const regs = f?.owner?.registrations || [];
     const ctx = !!f.isContextNote;
@@ -193,7 +194,8 @@ function findingRows(findings, fetchState, recordLinks = null) {
       'Registration(s)': regs.length ? regs.map(r => recordLinks?.get(String(r.uri || '').toLowerCase())?.label || regLabel(r.uri)).join('; ') : (ctx ? '—' : '— (common-law)'),
       'Status & key dates': statusDatesCell(f),
       'Record retrieved?': ctx ? 'n/a — noted only' : retrievedCell(f, fetchState),
-      'Risk band': f.band || '—',
+      // where the framework states a method, its inputs ride beside the band, as on the report card
+      'Risk band': f.band ? [f.band, inputsLine(method, f.inputs)].filter(Boolean).join(' · ') : '—',
       'How we treated it': treatmentCell(f),
       // context notes are NOT rated conflicts — the four drivers read n/a and the four-drivers gate skips them.
       'Mark similarity': ctx ? 'n/a' : meterCell(f.meters?.mark_similarity),
@@ -620,7 +622,7 @@ export async function buildAudit(contract, auditParsed, outPath, mark = '', fm =
     (row, _d, kept) => { if (kept.has('Field')) row.getCell('Field').font = { bold: true }; });
 
   // 2 · Findings — one row per conflict; registrations joined; provenance folded into the driver tags.
-  addSheet(wb, 'Findings', FINDING_COLS, findingRows(findings, fetchState, contract?.recordLinks instanceof Map ? contract.recordLinks : null), (row, _d, kept) => {
+  addSheet(wb, 'Findings', FINDING_COLS, findingRows(findings, fetchState, contract?.recordLinks instanceof Map ? contract.recordLinks : null, contract?.frameworkMethod ?? null), (row, _d, kept) => {
     if (kept.has('Link')) {
       const link = row.getCell('Link');
       const url = String(link.value || '').trim();

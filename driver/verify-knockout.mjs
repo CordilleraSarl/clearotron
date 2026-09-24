@@ -13,6 +13,8 @@ import { join, dirname, basename } from "node:path";
 import { DRIVER_DIR, driverDir } from "../shared/driver-dir.mjs";   //
 import { kebab, kebabCollisions, CAPABILITY_SKIPPED_NOTE } from "./search-policy.mjs";
 import { validateKnockoutFindings } from "./findings-model.mjs";
+import { checkRatingInputs, readFrozenMethod, FROZEN_METHOD_FILE } from "./framework-method.mjs";
+import { normalizeBand } from "./framework.mjs";
 import { runLog } from "./log.mjs";   // — the empty-ladder observable; validators are already disk-reading, this adds the record
 // PR-5 — the permission-prose check (ION/copper-foundry: a false "tool was blocked" claim excusing
 // missing coverage) now covers the knockout findings text too. These validators are this lane's HARD
@@ -224,6 +226,31 @@ export function normalizeKnockoutQualifier(v) {
 // ── Ladder helpers over the frozen framework manifest ────────────────────────────────────────────────
 const readJson = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
 const ladderOf = (fw) => (Array.isArray(fw?.bands) ? fw.bands.map((b) => String(b.label)) : []);
+
+// ── THE FRAMEWORK'S METHOD, READ THE WAY THE LADDER IS ──────────────────────────────────────────────
+// A run whose framework states a method froze it beside the manifest (framework-method.mjs). Read here,
+// against the run's own frozen manifest. `{ method: null }` is a run with no method, judged as always;
+// `{ invalid }` is a frozen file that does not parse, which the freeze refuses before any dispatch, so
+// it can only be a driver fault.
+function frozenMethodOf(runDir, fw) {
+  if (!fw || !Array.isArray(fw.bands) || !fw.bands.length) return { method: null };
+  return readFrozenMethod(driverDir(runDir, FROZEN_METHOD_FILE), fw);
+}
+
+/**
+ * A register read's inputs, checked like a finding's. A read that carries a band is a rated conflict, so
+ * under a method it records the framework's inputs and its band must be the table's; a read without a band
+ * rates nothing and carries none. Returns { reason } for the first defect, else { inputs } (canonical) —
+ * the caller writes them back only on the artifact that ships.
+ */
+export function checkRegisterReadInputs(method, fw, row) {
+  const banded = row?.band != null && String(row.band).trim() !== "";
+  const band = banded && fw ? normalizeBand(fw, row.band) : null;
+  if (banded && !band) return {};             // an unknown band is knockout_band_unknown's to name
+  const r = checkRatingInputs(method, { inputs: row?.inputs, band, rated: banded });
+  if (r.issue) return { reason: `knockout_finding_${r.issue.code}:${String(row?.recordId ?? "").trim()} (${r.issue.detail})` };
+  return { inputs: r.inputs };
+}
 const bandIdx = (ladder, word) => ladder.findIndex((l) => l.toLowerCase() === String(word ?? "").trim().toLowerCase());
 // classesDriving is mandatory ABOVE the two lowest bands ("the material bands" — MEDIUM+ on a 5-tier
 // ladder, the interactive skill's rule, generalized by position); registerEstimate above the lowest.
@@ -296,6 +323,12 @@ export const validators = {
     const runDir = basename(chunkDir) === DRIVER_DIR ? dirname(chunkDir) : chunkDir;
     const fw = readJson(driverDir(runDir, "framework.json"));
     const ladder = ladderOf(fw);
+    // The frozen method, when the framework states one. A corrupt copy is a driver fault, as an unreadable
+    // ladder is below: recorded, and its checks left to the merged gate, which refuses to publish on it —
+    // never a re-ask of a seat that cannot repair it.
+    const fm = frozenMethodOf(runDir, fw);
+    if (fm.invalid) runLog(runDir, { event: "knockout-method-checks-inert", stage: "knockout-assess", chunk: file, detail: fm.invalid });
+    const method = fm.invalid ? undefined : fm.method;
     // Whether this batch has more than one mark — the DRIVER's read off the frozen plan, never counted
     // from this chunk. A chunk is a slice: a two-chunk run has chunks of one mark each, and counting
     // locally would call a real multi-mark batch single and waive the per-mark assessment on exactly the
@@ -459,6 +492,10 @@ export const validators = {
             if (ladder.length && bandIdx(ladder, row.band) < 0)
               return { ok: false, reason: `knockout_band_unknown:${m.name}: registerReads row "${id}" carries band "${row.band}", which is not in the frozen ladder (${ladder.join(" / ")}) — rate the filing in the framework's own vocabulary, or omit the band and let the read stand alone` };
           }
+          if (method !== undefined) {
+            const ri = checkRegisterReadInputs(method, fw, row);
+            if (ri.reason) return { ok: false, reason: `mark "${m.name}": ${ri.reason}` };
+          }
         }
       }
       for (const f of (Array.isArray(m.findings) ? m.findings : [])) {
@@ -506,7 +543,7 @@ export const validators = {
       // chunk file and is thrown away, so the file on disk keeps the numbers the model wrote, which is
       // what an audit of the turn wants to read. The numbering that ships is written once, on the merged
       // artifact (validateMergedFindings below), which is the object every surface renders from.
-      try { validateKnockoutFindings(m.findings, { manifest: fw }); }
+      try { validateKnockoutFindings(m.findings, method === undefined ? { manifest: fw } : { manifest: fw, method }); }
       catch (e) { return { ok: false, reason: `mark "${m.name}": ${e.message}` }; }
       // URL-receipts gate: every cited URL ∈ that mark's raw payload (one function, three doors)
       const rec = knockoutReceipts(runDir, [m]);
@@ -655,6 +692,11 @@ export function validateMergedFindings(runDir, merged, plan) {
   // while the chunk gate discards it: a chunk file is the audit record of what the model wrote, and
   // nothing publishes from it. Everything a reader sees is rendered from `merged`.
   const manifest = readJson(driverDir(runDir, "framework.json"));
+  // The frozen method, as the chunk gate reads it. Here a corrupt copy refuses: this is the artifact that
+  // ships, and a method nobody could read has checked nothing.
+  const fm = frozenMethodOf(runDir, manifest);
+  if (fm.invalid) failures.push(`knockout_method_unreadable: _driver/${FROZEN_METHOD_FILE} does not parse against this run's frozen framework (${fm.invalid})`);
+  const method = fm.method;
   for (const m of marks) {
     // the second axis, canonicalised into the artifact — see KNOCKOUT_RATING_QUALIFIERS
     if (m.ratingQualifier != null) {
@@ -666,8 +708,14 @@ export function validateMergedFindings(runDir, merged, plan) {
     // list. Within a mark the first bad finding still wins (the validator throws token-first).
     // Assigned back only when the mark HAD an array: writing [] onto a mark that carried no findings key
     // would put a field in the artifact the stage never emitted.
-    try { const ranked = validateKnockoutFindings(m.findings, { manifest }); if (Array.isArray(m.findings)) m.findings = ranked; }
+    try { const ranked = validateKnockoutFindings(m.findings, { manifest, method }); if (Array.isArray(m.findings)) m.findings = ranked; }
     catch (e) { failures.push(`mark "${m.name}": ${e.message}`); }
+    // The register reads' inputs, canonicalised into the artifact as the findings' are.
+    for (const row of (Array.isArray(m.registerReads) ? m.registerReads : [])) {
+      const ri = checkRegisterReadInputs(method, manifest, row);
+      if (ri.reason) failures.push(`mark "${m.name}": ${ri.reason}`);
+      else if (ri.inputs) row.inputs = ri.inputs;
+    }
     const above = markRatedAboveItsCards(manifest, m);
     if (above) failures.push(above);
   }

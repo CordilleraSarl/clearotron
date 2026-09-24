@@ -14,6 +14,7 @@ import { kebab } from "./search-policy.mjs";
 // re-deriving it. A third copy is what put the knockout frame a class behind the intake.
 import { requestNamesClasses } from "./enqueue-schema.mjs";
 import { knockoutAssessChunkFile } from "./knockout-assess-record.mjs";
+import { methodDictation, inputsShape } from "./framework-method.mjs";
 import { knockoutReviewFile, validateKnockoutReviewFile } from "./knockout-review-record.mjs";
 export { kebab };   // one definition (search-policy) — re-exported for the lane's existing imports
 
@@ -293,7 +294,7 @@ export const KO_STAGES = {
     // out/validate are per-CHUNK; the merged knockout-findings.json is validated separately in code.
     out: (K, chunkNo) => K.assessChunk(chunkNo),
     validate: koValidators.knockoutAssessChunk,
-    message: ({ K, chunkNo, chunkMarks, chunkTotal, framework, frameworkPath, probeNote }) => lines(
+    message: ({ K, chunkNo, chunkMarks, chunkTotal, framework, frameworkPath, probeNote, frameworkMethod }) => lines(
       // The deck path comes from ctx (attachKnockoutFramework resolves it once, on the fresh and the
       // resume path both) — never recomputed here, because "which deck" is one decision.
       reads(["skills/knockout-assess/SKILL.md", frameworkPath, "skills/clearance-search/firm-wide-reasoning.md"].filter(Boolean)),
@@ -358,7 +359,7 @@ export const KO_STAGES = {
       // a finding with no register evidence. Omitting either field is always safe: the card keeps its
       // neutral line, which describes the card and is true.
       existsSync(K.registerRecords)
-        ? `WHEN YOU WEIGH ONE OF THOSE FILINGS, SAY SO BY ITS OWN ID — copy "recordId" verbatim from the file above. "registerReads" on the MARK: rows of {recordId, read, band?} for a filing you weighed that did NOT become a findings[] record; "read" is what you concluded about THAT filing — whether it bears on the rating and why — and it prints on that filing's card in the reader's own report. "band" is OPTIONAL and is your rating of THAT filing on its own, in the framework's band words: send it whenever you formed a view on the filing itself, because a registered right left unbanded is the only card on the page with no rating while softer uses beside it carry one, which reads as though the registration mattered least. Omit it and your read still prints, claiming no rating. "weighedFilings" on a FINDING: the recordIds whose evidence your reasoning for that conflict actually used, because the report derives that finding's source labelling from it. Both are optional and both are joined against the filings you were given, so an id we do not hold is refused by name. A filing you did not weigh simply gets no row: do not invent a read to fill one, and never write "not weighed" as a read.`
+        ? `WHEN YOU WEIGH ONE OF THOSE FILINGS, SAY SO BY ITS OWN ID — copy "recordId" verbatim from the file above. "registerReads" on the MARK: rows of ${frameworkMethod ? "{recordId, read, band?, inputs?}" : "{recordId, read, band?}"} for a filing you weighed that did NOT become a findings[] record; "read" is what you concluded about THAT filing — whether it bears on the rating and why — and it prints on that filing's card in the reader's own report. "band" is OPTIONAL and is your rating of THAT filing on its own, in the framework's band words: send it whenever you formed a view on the filing itself, because a registered right left unbanded is the only card on the page with no rating while softer uses beside it carry one, which reads as though the registration mattered least. Omit it and your read still prints, claiming no rating.${frameworkMethod ? ' A row that carries "band" also carries "inputs", the framework\'s own inputs for that filing; a row with no band carries none.' : ""} "weighedFilings" on a FINDING: the recordIds whose evidence your reasoning for that conflict actually used, because the report derives that finding's source labelling from it. Both are optional and both are joined against the filings you were given, so an id we do not hold is refused by name. A filing you did not weigh simply gets no row: do not invent a read to fill one, and never write "not weighed" as a read.`
         : "",
       `A DEGRADED mark's row must carry degraded:true and the purple "Manual verification recommended"`,
       `note; a mark WITH a payload must never claim degraded (the validator joins both against the disk).`,
@@ -372,12 +373,17 @@ export const KO_STAGES = {
       // is what breaks ties inside a band. The shape itself is the skill's (SKILL.md "The finding
       // record"); this says the two things that are per-TURN — that the ladder named on the line above
       // is also the per-finding vocabulary, and that the numbering restarts at each mark.
-      `EVERY conflicting name is a typed findings[] record — {ordinal, name, owner, band, net, type,`,
+      `EVERY conflicting name is a typed findings[] record — {ordinal, name, owner, band, ${frameworkMethod ? "inputs, " : ""}net, type,`,
       `evidence[], basis}, closed keys. Its "band" is a word from the SAME ladder as the mark's rating`,
       `(never HIGH/MEDIUM/LOW and never a number), and "ordinal" restarts at 1 for EACH mark, most`,
       `blocking first. The code re-ranks on the band and renumbers, so your order decides ties inside a`,
       `band — never cite a finding by its number in prose. A named conflict belongs in findings[], not`,
       `in bullets — write it once.`,
+      // — where the customer's framework states a method (framework-method.mjs), the band is its
+      // table's answer to inputs the seat records on each finding, and the driver checks the two
+      // agree. With no method both lines are empty and the message reads exactly as before.
+      frameworkMethod ? methodDictation(frameworkMethod) : "",
+      frameworkMethod ? `- inputs: ${inputsShape(frameworkMethod)} — the framework's own inputs for this finding, each one of the values it lists, reasoned in its order before the band. On every rated finding.` : "",
       // A seam for a note about Depth 2, and it stays UNUSED on purpose (2026-07-22). The counts
       // are code-measured and code-rendered; showing them to this turn would let a rating be argued
       // from register data a knockout has not analysed, and would put a figure the report prints

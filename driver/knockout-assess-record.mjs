@@ -161,7 +161,9 @@ const DECLARED = Object.freeze({
   // declared here as well as in the tool schema because this allowlist — not the schema — is what the
   // driver validates against: a key the seat sends and this list omits is refused, so the read would
   // arrive banded and land unbanded with nothing saying why.
-  "marks.registerReads": ["recordId", "read", "band"],
+  // `inputs` rides with a band: under a framework that states a method, a banded read is a rated conflict
+  // and records the framework's inputs, as a finding does (verify-knockout.mjs checkRegisterReadInputs).
+  "marks.registerReads": ["recordId", "read", "band", "inputs"],
   "marks.negatives": ["term", "source", "note"],
 });
 

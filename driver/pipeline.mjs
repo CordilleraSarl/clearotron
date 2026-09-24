@@ -161,6 +161,7 @@ import { foldCaption, foldCardRead } from "./card-budget.mjs";
 // S2 — the report card's mechanical frame, composed from the record instead of dictated (see below).
 import { carriesOwnFrame, composeCard } from "./card-frame.mjs";
 import { parseFrameworkManifest, loadFrameworkManifest, frameworkFor, manifestPathFor, DEFAULT_FRAMEWORK } from "./framework.mjs";
+import { attachFrameworkMethod, loadFrameworkMethod, methodPathFor, FROZEN_METHOD_FILE } from "./framework-method.mjs";
 import { renderScopeLedgerJson, scopeLedgerJsonFromRows, gridChannels, parseScopeLedgerJson, scopeJurisdictions, droppedVariantFamilies } from "./scope-ledger.mjs";
 // qw/cn-scope-honesty — the zh-lane capability tables + the requested-scope resolver, for the plain-clearotron
 // honesty row/note. jx-lanes.mjs is a PURE zero-import leaf (data + decisions, no env/fs), so a static
@@ -1668,9 +1669,12 @@ function attachFramework(ctx, { write = true } = {}) {
   const sidecarPath = driverDir(ctx.paths.runDir, "framework.json");
   let raw = null;
   try { raw = readFileSync(sidecarPath, "utf8"); } catch { /* ENOENT — genuinely absent */ }
+  const methodPath = driverDir(ctx.paths.runDir, FROZEN_METHOD_FILE);
   if (raw != null) {
     try { ctx.framework = parseFrameworkManifest(raw); }
     catch (e) { throw new Error(`_driver/framework.json is corrupt (${e.message}) — investigate; the frozen framework is never silently re-derived`); }
+    // The method the run froze, or none: a run frozen without one is never given one on resume.
+    ctx.frameworkMethod = attachFrameworkMethod({ frozenPath: methodPath, manifest: ctx.framework, minted: false });
     return;
   }
   // No frozen profile (a pre-WS-B resume, or a codename re-dispatch into a dir with no sidecar): the
@@ -1681,12 +1685,17 @@ function attachFramework(ctx, { write = true } = {}) {
   // store (CLEAROTRON_INSTRUCTIONS_DIR), which is also the root the AGENT resolves the same path against.
   const manifest = loadFrameworkManifest((rel) => config.resolveSkillPath(rel), fwPath);   // throws framework_manifest_missing — a deploy defect, loud
   ctx.framework = manifest;
-  if (!write) return;
+  if (!write) { ctx.frameworkMethod = loadFrameworkMethod((rel) => config.resolveSkillPath(rel), fwPath, manifest); return; }
+  // The method is frozen BEFORE the manifest: a run interrupted between the two writes has no manifest,
+  // so its resume mints both again. The other order would leave a manifest with no method beside it,
+  // which the resume branch above reads as a framework that states none.
+  ctx.frameworkMethod = attachFrameworkMethod({ frozenPath: methodPath, resolve: (rel) => config.resolveSkillPath(rel), fwPath, manifest, minted: true });
   const tmp = `${sidecarPath}.tmp`;
   writeFileSync(tmp, JSON.stringify(manifest, null, 2) + "\n");
   renameSync(tmp, sidecarPath);
   runLog(ctx.paths.runDir, { event: "framework", key: manifest.framework_key,
-    custom: fwPath !== DEFAULT_FRAMEWORK, bands: manifest.bands.map((b) => b.label).join("/"), file: manifestPathFor(fwPath) });
+    custom: fwPath !== DEFAULT_FRAMEWORK, bands: manifest.bands.map((b) => b.label).join("/"), file: manifestPathFor(fwPath),
+    method: ctx.frameworkMethod ? methodPathFor(fwPath) : null });
 }
 
 // ── Search-depth spine — freeze the resolved SEARCH POLICY beside the profile ────────────────────────

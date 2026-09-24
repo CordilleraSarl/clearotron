@@ -1198,6 +1198,9 @@ serve({
                     // means an undeclared key is a contradiction between the prose and the schema, and the
                     // seat resolves it whichever way it happens to trust.
                     band: { type: "string", description: "OPTIONAL — how you rate THIS filing, in the framework's own band words. Send it when you formed a view on the filing itself; the card prints it as that filing's rating. Omit it and your read still prints, with no rating claimed." },
+                    // The framework's inputs behind that band, when the framework states a method; the driver
+                    // checks them against its table (verify-knockout.mjs checkRegisterReadInputs).
+                    inputs: { type: "object", additionalProperties: { type: "string" }, description: "The framework's own inputs for this filing, beside its band." },
                   },
                 },
               },
@@ -1213,7 +1216,7 @@ serve({
               },
               findings: {
                 type: "array",
-                description: "CLOSED KEYS, all nine, no others.",
+                description: "CLOSED KEYS, all nine, no others, and \"inputs\" where the framework states a method.",
                 items: {
                   type: "object", additionalProperties: false,
                   required: ["ordinal", "name"],
@@ -1222,6 +1225,9 @@ serve({
                     name: { type: "string", description: "The CONFLICTING name, verbatim." },
                     owner: { type: "string" },
                     band: { type: "string" },
+                    // The framework's inputs behind the band, when the framework states a method: required on
+                    // every finding then, refused otherwise (findings-model.mjs validateKnockoutFinding).
+                    inputs: { type: "object", additionalProperties: { type: "string" }, description: "The framework's own inputs for this finding, keyed by its labels, each one of the values it lists." },
                     net: { type: "string", description: "One conclusion sentence." },
                     type: { type: "string" },
                     evidence: { type: "array", items: { type: "string" } },

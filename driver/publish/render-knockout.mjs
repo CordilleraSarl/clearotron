@@ -55,6 +55,7 @@ import { COUNT_BASIS, COUNT_PREDICATES, countsForMark, countLine, variantFormsLi
 import { RECORD_BASIS, recordsForMark, recordsLine } from '../register-records.mjs';
 import { officeLinkSentences } from './office-record-links.mjs';
 import { knockoutFindingViews, splitKnockoutNotes } from '../findings-model.mjs';
+import { inputsLine } from '../framework-method.mjs';
 import { demoBannerHtml, servedModelsLine } from './render.mjs';   // — the SAME banner the clearance template renders, not a second wording
 import { EXPORT_TOGGLE, exportPopover, EXPORT_MENU_JS } from './report-topbar.mjs';   // — the export menu's shell and behaviour, shared with the clearance template   // — the SAME banner the clearance template renders, not a second wording
 // — the two facts the register card is allowed to read off a raw record, and NEITHER is minted
@@ -818,7 +819,18 @@ function whyBandFold(inner) {
 /** The card fold's own word. Stated once so the renderer and its tests read the same string. */
 const WHY_BAND_LABEL = 'Why this band';
 
-function findingBlock(v, framework, markIndex) {
+/**
+ * The band chip's text. A framework that states a method shows its inputs beside the band, in its own
+ * labels and order ("Medium · Tier 2 · Contested"); every other framework's chip is the
+ * band alone, exactly as before. The finding card and the register card both print through here, so a
+ * rated conflict reads the same whichever kind of card carries it.
+ */
+function bandChipText(band, method, inputs) {
+  const line = inputsLine(method, inputs);
+  return line ? `${esc(band)} · ${esc(line)}` : esc(band);
+}
+
+function findingBlock(v, framework, markIndex, method = null) {
   const meta = [v.type, v.owner].filter(Boolean).map((s) => esc(s)).join(' · ');
   const ev = v.evidence.map((u) => linkOrText(u)).join(' · ');
   // THE CLEARANCE REPORT'S CARD, AND THE KNOCKOUT'S LOCATOR — both classes, deliberately. report.css
@@ -846,7 +858,7 @@ function findingBlock(v, framework, markIndex) {
           <div class="body">
             <div class="cardhead">
               <span class="fnum">${esc(v.ref)}</span><span class="who">${esc(v.name ?? 'Unnamed finding')}</span>${
-    v.band ? `<span class="ko-findband" style="background:var(${stop})">${esc(v.band)}</span>` : ''}${sourceChips(v)}
+    v.band ? `<span class="ko-findband" style="background:var(${stop})">${bandChipText(v.band, method, v.inputs)}</span>` : ''}${sourceChips(v)}
               <button class="ask-fi no-print">\u2726 Ask AI about this finding</button>
             </div>
             ${meta ? `<p class="ko-findmeta">${meta}</p>` : ''}
@@ -1302,14 +1314,14 @@ function reviewerNotesBlock(m) {
   return '';
 }
 
-function registerFindingBlock(v, markIndex, reads = null, framework = null, ownerChecks = []) {
+function registerFindingBlock(v, markIndex, reads = null, framework = null, ownerChecks = [], method = null) {
   const r = v.record;
   // — THE RATER'S OWN READ OF THIS FILING, when it recorded one. `registerReads` is
   // joined to the record store by the validator, so a row that reaches here names a filing this run
   // actually holds. With no row the neutral line stands, and the neutral line is TRUE: it describes the
   // card. That is why the field can be optional without the page ever asserting something false.
   const row = (Array.isArray(reads) ? reads : [])
-    .map((x) => ({ id: String(x?.recordId ?? '').trim(), text: String(x?.read ?? '').trim(), band: String(x?.band ?? '').trim() }))
+    .map((x) => ({ id: String(x?.recordId ?? '').trim(), text: String(x?.read ?? '').trim(), band: String(x?.band ?? '').trim(), inputs: x?.inputs ?? null }))
     .find((x) => x.id && x.id === String(r?.recordId ?? '').trim());
   const read = row?.text;
   // The band rides the SAME row as the read and is independently optional: a read with no band prints
@@ -1337,7 +1349,7 @@ function registerFindingBlock(v, markIndex, reads = null, framework = null, owne
           <div class="body">
             <div class="cardhead">
               <span class="fnum">${esc(v.ref)}</span><span class="who">${esc(r.mark ?? 'Unnamed filing')}</span>${
-    band ? `<span class="ko-findband" style="background:var(${stop})">${esc(band)}</span>` : ''}<span class="src reg">Register</span>
+    band ? `<span class="ko-findband" style="background:var(${stop})">${bandChipText(band, method, row?.inputs)}</span>` : ''}<span class="src reg">Register</span>
               <button class="ask-fi no-print">\u2726 Ask AI about this finding</button>
             </div>
             <p class="ko-findmeta">${meta}</p>
@@ -1610,7 +1622,7 @@ function readBlock(m, framework) {
   ].filter(Boolean).join('');
 }
 
-function analysisSection(marks, framework, { registerCounts = null, probeRan = false, registerRecords = null, ownerChecks = [] } = {}) {
+function analysisSection(marks, framework, { registerCounts = null, probeRan = false, registerRecords = null, ownerChecks = [], frameworkMethod = null } = {}) {
   const cards = marks.map((m, markIndex) => {
     const stop = bandStop(framework, m.rating);
     const bullets = readBlock(m, framework);
@@ -1620,7 +1632,7 @@ function analysisSection(marks, framework, { registerCounts = null, probeRan = f
     // that has no rung, not a new one invented for the register.
     const reg = registerCardViews(m, framework, registerRecords);
     const drawn = registerCardsOnPage(reg.cards, m, framework);
-    const regBlocks = drawn.map((v) => registerFindingBlock(v, markIndex, m?.registerReads, framework, ownerChecks)).join('');
+    const regBlocks = drawn.map((v) => registerFindingBlock(v, markIndex, m?.registerReads, framework, ownerChecks, frameworkMethod)).join('');
     // The overflow counts what is NOT on the page against what met the promotion test — cards held back
     // by the cap and cards the rater put on the lowest rung alike, because from the reader's side they
     // are the same fact: further filings for this name, all of them listed below.
@@ -1633,7 +1645,7 @@ function analysisSection(marks, framework, { registerCounts = null, probeRan = f
     // were all typed fell to the fallback below: "No adverse signals recorded for this name on this
     // screen." A MARK WITH CONFLICTS RENDERED AS A CLEAN MARK, on the client-facing document, with
     // nothing anywhere saying so. findings-model.mjs's view reads both shapes and drops nothing.
-    const finds = knockoutFindingViews(m, { manifest: framework }).map((v) => findingBlock(v, framework, markIndex)).join('');
+    const finds = knockoutFindingViews(m, { manifest: framework }).map((v) => findingBlock(v, framework, markIndex, frameworkMethod)).join('');
     // — THE REGISTER CARDS ARE INSIDE `body`, and that is the fall-through guard. A mark whose only
     // conflict is a filing on the register used to reach the sentence below and be published as clean.
     // The guard is deliberately TIGHT: a listed filing that is dead or out of the counted classes does
@@ -1783,6 +1795,9 @@ export function renderKnockoutHtml(findings, framework, {
   // has carried the banner since 2013; the knockout path was assumed to follow and did not.
   // Defaults FALSE, so every existing fixture and both render-check scripts render exactly as before.
   demoData = false,
+  // The run's frozen method (framework-method.mjs), where its framework states one: each rated card
+  // then shows the framework's inputs beside its band. Defaults to null — the band alone, as before.
+  frameworkMethod = null,
 } = {}) {
   const marks = findings?.marks ?? [];
   const title = batchTitle(marks);
@@ -1850,7 +1865,7 @@ export function renderKnockoutHtml(findings, framework, {
   // a disclosure, which is the one failure that would matter on a client-facing page. A similarity score
   // could; that is why there isn't one.
   const newCaveats = caveats.filter((c) => saysSomethingNew(c, SCOPE_BLOCK_TEXT));
-  const analysis = analysisSection(marks, framework, { registerCounts, probeRan, registerRecords, ownerChecks });
+  const analysis = analysisSection(marks, framework, { registerCounts, probeRan, registerRecords, ownerChecks, frameworkMethod });
   // The request-level notes, gathered across every mark on the document and rendered ONCE at the top.
   // They are about the asking, not about a name, so a batch repeating them per mark would be the same
   // sentence three times. reviewerNotesBlock renders the rest, under that mark's own cards.
@@ -2109,6 +2124,8 @@ export function knockoutReportData(findings, framework, { runId, codename, overa
           recordId: x?.recordId ?? null,
           read: x?.read ?? null,
           band: String(x?.band ?? '').trim() || null,
+          // the framework's own inputs, where it states a method — absent otherwise, so every other run's data is unchanged
+          ...(x?.inputs ? { inputs: x.inputs } : {}),
         })),
         // — the typed finding, ranked, with the reference the report prints. The old key was
         // `evidence[]` and it was `(m.findings ?? []).filter((f) => f?.url)`: a typed finding has no
@@ -2119,6 +2136,7 @@ export function knockoutReportData(findings, framework, { runId, codename, overa
           ...knockoutFindingViews(m, { manifest: framework }).map((v) => ({
             ref: v.ref, ordinal: v.ordinal, name: v.name, owner: v.owner, band: v.band, type: v.type,
             net: v.lead, basis: v.detail, evidence: v.evidence, shape: v.shape,
+            ...(v.inputs ? { inputs: v.inputs } : {}),
           })),
           // — the promoted register filings, in the SAME array, from the SAME projection the page
           // renders from (registerCardViews). Two reasons it cannot live under its own key:
@@ -2154,6 +2172,7 @@ export function knockoutReportData(findings, framework, { runId, codename, overa
             const oc = ownerCheckFor(ownerChecks, v.record?.recordId);
             return {
               ref: v.ref, ordinal: v.ordinal, name: v.record.mark, owner: v.record.owner, band,
+              ...(band && row?.inputs ? { inputs: row.inputs } : {}),
               type: 'Register filing',
               net: read ? v.statement : `${v.statement} It was ${NOT_WEIGHED}.`,
               basis: read ?? NOT_WEIGHED,

@@ -153,6 +153,11 @@ test("the tool schema declares exactly the validator's keys for a finding", () =
 });
 
 test("the tool schema declares exactly the doctrine's keys for a register read, band among them", () => {
-  assert.deepEqual(schemaProperties("registerReads: {").sort(), Object.keys(TAUGHT_READ).sort());
+  // Plus `inputs`, and only it: the framework's own inputs beside a band, which a run is asked for only
+  // where its framework states a method. The doctrine's worked example is written under a framework that
+  // states none, so it cannot carry the key; the dispatch teaches it on the runs that owe it
+  // (a-knockout-conflict-carries-its-framework-inputs.test.mjs, arm 5).
+  assert.deepEqual(schemaProperties("registerReads: {").sort(), [...Object.keys(TAUGHT_READ), "inputs"].sort());
+  assert.ok(!("inputs" in TAUGHT_READ), "the doctrine's example now carries inputs: drop the addition above");
   assert.ok(Object.keys(TAUGHT_READ).includes("band"), "the doctrine no longer teaches a register read's band");
 });

@@ -115,9 +115,9 @@ const KNOCKOUT_FILES = [
   // THE COUNT SIDECARS, AND THE PROOF IS WHAT FOUND THEM. Without register-counts.json the republished
   // meta carries `registerCounts: undefined` where the source carried the provider, the taken-at stamp
   // and the per-mark counts — so the workbook's Register column and every counted figure in the
-  // knockout report render empty (publish/knockout.mjs:140-155). Named by stages-knockout.mjs:32,41.
-  { path: "_driver/register-counts.json", why: "publish/knockout.mjs:140-155 counted figures + the Register column" },
-  { path: "_driver/register-records.json", why: "stages-knockout.mjs:41 the terms behind the close-variation axis" },
+  // knockout report render empty (`buildKnockoutWorkbook` in publish/knockout.mjs). Named by `koPaths` in stages-knockout.mjs.
+  { path: "_driver/register-counts.json", why: "buildKnockoutWorkbook in publish/knockout.mjs: counted figures + the Register column" },
+  { path: "_driver/register-records.json", why: "koPaths in stages-knockout.mjs: the terms behind the close-variation axis" },
   { path: "_driver/instructed-scope.json", why: "publish/index.mjs:914 searchedJurisdictions, the fallback for register-plan" },
 ];
 
@@ -135,7 +135,7 @@ const FROZEN_DIRS = [
 //
 // research/ IS REQUIRED AND THE PROOF IS WHAT FOUND IT. publish/knockout.mjs
 // traces every finding citation back to the run's own research payload — `research/<mark>.md`, read from
-// the workspace (publish/knockout.mjs:317) — and REFUSES the publish when a citation cannot be traced. The first
+// the workspace (`knockoutReceipts`, called by `publishKnockout` in publish/knockout.mjs) — and REFUSES the publish when a citation cannot be traced. The first
 // knockout freeze copied nine files, left research/ behind, and the republish proof threw:
 //
 //   knockout publish REFUSED: 2 finding citation(s) could not be traced to this run's own research
@@ -145,7 +145,7 @@ const FROZEN_DIRS = [
 // A code read of the allowlist would not have found that; publishing both sides and diffing did, which
 // is the whole reason step 5 exists.
 const KNOCKOUT_DIRS = [
-  { path: "research", ext: ".md", why: "publish/knockout.mjs:317 receipt tracing — research/<mark>.md" },
+  { path: "research", ext: ".md", why: "publishKnockout in publish/knockout.mjs: receipt tracing — research/<mark>.md" },
   { path: "register-units", ext: ".json", why: "the per-unit register evidence the lane writes beside research/" },
 ];
 
