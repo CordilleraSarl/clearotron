@@ -130,12 +130,23 @@ export function requiredScriptsFor(jurisdictions) {
 }
 
 /**
+ * Scripts a territory's register also holds marks in, beyond the ones its row above demands of every
+ * matter. Read only to scope a question the plan already asks, never to demand a rendering: Japan's
+ * register holds kanji marks (see its row), so a kanji question on a matter that names Japan is asked
+ * there as well as in the Han-script markets.
+ */
+export const ALSO_REGISTERED_IN = Object.freeze({
+  JP: ["han"],
+});
+
+/**
  * The markets, of those given, that register marks in a script `value` is written in — a Latin script
  * excepted, since every market files Latin. A value in a script no given market files answers `[]`:
  * that script's question has no market to be asked in.
  */
 export function marketsFilingScriptOf(value, markets) {
   const scripts = Object.keys(SCRIPT_TESTS).filter((s) => s !== "latin" && isInScript(value, s));
+  const files = (m) => [...(REGISTRABLE_SCRIPTS[m] ?? []), ...(ALSO_REGISTERED_IN[m] ?? [])];
   return (markets ?? []).map((m) => String(m ?? "").trim().toUpperCase())
-    .filter((m, i, all) => m && all.indexOf(m) === i && (REGISTRABLE_SCRIPTS[m] ?? []).some((s) => scripts.includes(s)));
+    .filter((m, i, all) => m && all.indexOf(m) === i && files(m).some((s) => scripts.includes(s)));
 }

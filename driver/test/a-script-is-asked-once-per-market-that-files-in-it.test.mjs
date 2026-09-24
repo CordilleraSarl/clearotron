@@ -17,7 +17,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { compileRegisterPlan, awaitsReadingTurn } from "../register-plan.mjs";
 import { PROVIDER_CAPABILITIES } from "../register-capabilities.mjs";
-import { marketsFilingScriptOf } from "../registration-scripts.mjs";
+import { marketsFilingScriptOf, requiredScriptsFor } from "../registration-scripts.mjs";
 import { isNonLatinTerm } from "../../providers/_shared/script-form.mjs";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -62,7 +62,9 @@ test("sentence 3 is in the register unit's manual as written, and the meaning-to
 
 test("the markets that file in a script are the ones that register marks in it", () => {
   assert.deepEqual(marketsFilingScriptOf(KATAKANA, ["US", "EU", "CN", "JP"]), ["JP"]);
-  assert.deepEqual(marketsFilingScriptOf(HAN, ["US", "EU", "CN", "JP", "TW"]), ["CN", "TW"]);
+  // Japan's register holds kanji marks, so it counts for a Han question's scope; its floor still demands only katakana.
+  assert.deepEqual(marketsFilingScriptOf(HAN, ["US", "EU", "CN", "JP", "TW"]), ["CN", "JP", "TW"]);
+  assert.deepEqual(Object.keys(requiredScriptsFor(["JP"])), ["katakana"], "scoping changed what a Japan matter must render");
   assert.deepEqual(marketsFilingScriptOf(HANGUL, ["US", "EU", "CN", "JP"]), [], "a script no named market files in was given a market");
   assert.deepEqual(marketsFilingScriptOf("VELTRIS", ["CN", "JP"]), [], "a Latin value was treated as another script");
 });
@@ -85,6 +87,8 @@ test("a script question is scoped to the named markets that file in it, and kept
   const worldwide = byTerm(axis("corsearch", ["Global"], ["US", "EU", "CN", "JP"]));
   assert.ok(worldwide.get(KATAKANA).regions.includes("JP") && !worldwide.get(KATAKANA).regions.includes("CN"), "the katakana question is not scoped to Japan");
   assert.ok(worldwide.get(HAN).regions.includes("CN") && !worldwide.get(HAN).regions.includes("US"), "the Chinese question is not scoped to China");
+  // Naming China beside Japan keeps Japan in the kanji question's regions, as a Japan-only matter does.
+  assert.ok(worldwide.get(HAN).regions.includes("JP"), "naming China took Japan out of the kanji question");
   // No named market's row lists Korean, Cyrillic or Greek, so those keep the plan's regions.
   const whole = axis("corsearch", ["Global"], null).find((e) => e.term === "VELTR1S").regions;
   for (const t of [HANGUL, CYRILLIC, GREEK]) assert.deepEqual(worldwide.get(t).regions, whole, `a question with no filing market among those named was narrowed`);
