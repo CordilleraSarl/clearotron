@@ -3100,9 +3100,17 @@ function findingsSurfaceRows(P) {
  * `scope` is instructed-scope.json, JOB-authored before any model ran. It is the only thing the
  * contradiction refusals rest on, which is why it is read here rather than accepted from the seat.
  */
-function prepareDeclinationSpec(ctx, P) {
+export function prepareDeclinationSpec(ctx, P) {   // @internal
   const rows = findingsSurfaceRows(P);
-  if (!rows.length) return;
+  if (!rows.length) {
+    // AN EMPTY LIST REPLACES THE LAST ONE; it does not leave it standing. The recorder holds the seat to
+    // whatever list the spec file carries, and a repair or corrective pass re-prepares because the
+    // findings may have moved. Left in place, a list from an earlier pass would bind a pass whose own
+    // prompt carries none: the order enforced, and missing from the prompt.
+    try { rmSync(driverDir(P.runDir, "declination-spec.json"), { force: true }); } catch { /* absent is the goal */ }
+    delete ctx.findingsSurface;
+    return;
+  }
   let scope = {};
   try { scope = JSON.parse(readFileSync(P.instructedScope, "utf8")) ?? {}; } catch { scope = {}; }
   try {
@@ -5837,7 +5845,13 @@ const UPSTREAM_STALE_REPAIR = {
   // repairs. The measurement inverts it: the repair dispatch came out 3,017 bytes THINNER than the
   // fresh one, so composing the same blocks is what makes the two passes identical rather than what
   // makes them differ.
-  synthesis: repairStage("synthesis"),
+  //
+  // THE LIST OF RECORDS IT MUST ANSWER IS RE-PREPARED FIRST, as the corrective pass re-prepares it. This
+  // repair runs because an input moved, register-findings.md among them, and that file is what the list
+  // is read from. Skipped, the repair was dispatched with no DECLINATIONS block at all, while the
+  // recorder still held the seat to the list the fresh pass had written: the order missing from the
+  // prompt, and enforced against records the digest may since have moved.
+  synthesis: (ctx) => { prepareDeclinationSpec(ctx, ctx.paths); return repairStage("synthesis")(ctx); },
   // — composed NEITHER of its two declared blocks; see the dispatcher comment above.
   "narrative-refutation": repairStage("narrative-refutation"),
   // — placement declares register-named-band.json and the per-axis register-units/*.md, and the
@@ -16423,6 +16437,12 @@ async function runExperimentInner(job, opts) {
     // so a run with no case-law layer must arrive as null here too, never as an absent key.
     for (const f of inlineDecl.fields) shadowCtx[f] = resolved[f] ?? null;
   }
+  // A SYNTHESIS ARM IS HANDED THE LIST OF RECORDS IT MUST ANSWER, exactly as production hands it, or it
+  // replays a different stage. The spec file alone reached the sandbox: the list the dispatch prints
+  // rides `ctx.findingsSurface`, which only `prepareDeclinationSpec` sets, so every synthesis arm ran
+  // with no DECLINATIONS block while the recorder held it to the copied list. Built from the sandbox's
+  // own copies, so the canonical run is not touched.
+  if (name === "synthesis") prepareDeclinationSpec(shadowCtx, shadowCtx.paths);
   const sessionKey = `clearance-exp-${ctx.run.slug}-${ctx.run.codename}-${name}${axis ? `-${axis}` : ""}-${ts}`;
   let { text: extra, ids: extraIds } = experimentExtra(shadowCtx, name, opts);
 

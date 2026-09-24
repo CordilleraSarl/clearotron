@@ -341,6 +341,18 @@ test("a sandboxed register-digest carries the driver-computed prompt blocks runD
   assert.ok(!/PLACEMENT RULINGS TAIL/.test(String(skipped ?? "")), "a pass that will not re-run carries no rulings tail");
 });
 
+test("a sandboxed synthesis is handed the same list of records to answer as the canonical pass", async () => {
+  const { job, runDir, codename } = await canonicalRun();
+  const DECLINATIONS = /DECLINATIONS \(MANDATORY\): the register digest carried (\d+) record\(s\)/;
+  const canonical = readFileSync(driverDir(runDir, "synthesis.attempt1.dispatch.txt"), "utf8").match(DECLINATIONS);
+  assert.ok(canonical, "the canonical synthesis pass must carry a list for this to be testing anything");
+
+  const ex = await PL.runExperiment(job, { codename, experiment: "synthesis", label: "declinations" });
+  const arm = readFileSync(driverDir(ex.shadowDir, "synthesis.attempt1.dispatch.txt"), "utf8").match(DECLINATIONS);
+  assert.ok(arm, "the arm's dispatch carries no list: it replays a synthesis production never runs");
+  assert.equal(arm[1], canonical[1], "and the list is the canonical pass's, record for record");
+});
+
 // ── 5. THE DECLARATION CANNOT DRIFT AWAY FROM verify.mjs ─────────────────────────────────────────────
 
 test("drift guard: every _driver sidecar verify.mjs resolves is declared for some stage", () => {

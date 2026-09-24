@@ -1011,6 +1011,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-right-kept-on-a-sheet-is-not-dropped-by-its-copies.test.mjs": {
+          "tests": 7,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "a-run-asks-signa-each-question-once.test.mjs": {
           "tests": 18,
           "asserts": 83,
@@ -2764,8 +2770,8 @@
           "todos": 0
         },
         "experiment-context.test.mjs": {
-          "tests": 20,
-          "asserts": 67,
+          "tests": 21,
+          "asserts": 70,
           "skips": 0,
           "todos": 0
         },
@@ -4912,8 +4918,8 @@
           "todos": 0
         },
         "synthesis-structural-input.test.mjs": {
-          "tests": 8,
-          "asserts": 59,
+          "tests": 10,
+          "asserts": 67,
           "skips": 0,
           "todos": 0
         },
