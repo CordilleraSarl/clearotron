@@ -4,7 +4,7 @@
 // searched-not-asserted enforcement (validator side). Sister of use-check.mjs (spec 11): a "clean" claim
 // is sayable ONLY when a search produced it.
 //
-// The bug this closes (live incident: a mark reading as a benign given name one letter off the Sureño
+// The bug this closes (live incident: a mark reading as a benign given name one letter off the Mara
 // street-gang label): the deterministic grid runs term×platform marketplace cells only — it asks
 // "who SELLS this name?", never "what does this name MEAN?". A marketplace grid that finds no listing for
 // the mark is SILENT on the street-gang association; only a MEANING search surfaces it. With no machine slot
@@ -30,7 +30,7 @@
 
 // The meaning query shapes. NOT a banned-word list — these are SEARCH directions ("what does this name mean,
 // and to whom?"). Perplexity surfaces foreign-language / gang / slang meanings from English query shapes
-// (a benign given name one letter off "Sureño" → the gang label surfaces from "<mark> gang" / "<mark> urban dictionary").
+// (a benign given name one letter off "Mara" → the gang label surfaces from "<mark> gang" / "<mark> urban dictionary").
 
 export const CONNOTATION_SHAPES = ["meaning slang", "gang", "offensive", "urban dictionary", "wikipedia"];
 

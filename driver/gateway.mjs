@@ -2675,7 +2675,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       "Run the CONNOTATION / MEANING sweep — the mark AND its near-forms on the general web (Urban Dictionary, " +
       "Wikipedia, news), query shapes \"[name] gang/slang/offensive/meaning\" — record EVERY query (even " +
       "zero-result ones) into extras.pr_risk, and cite a `Connotation-search source:` line in the PR section. A " +
-      "dictionary gloss is never a clearance (a mark can read as a benign given name yet sit one letter off \"Sureño\", a street-gang label). You may " +
+      "dictionary gloss is never a clearance (a mark can read as a benign given name yet sit one letter off \"Mara\", a street-gang label). You may " +
       "instead report a real connotation hit — but a clean claim needs the search behind it";
   } else if (/named_band_collapsed/.test(lastFail)) {
     const slices = (lastFail.match(/named_band_collapsed:(.+)$/s) || [])[1] || "";
