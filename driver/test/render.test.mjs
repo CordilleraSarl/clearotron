@@ -1576,8 +1576,8 @@ test("wp50: the C/L group renders AFTER the region list, labelled and cross-link
 // ---- doc-54: the dynamic framework band ladder (one tick per band; Clear = zero-state, not a tick) ----
 import { parseFrameworkManifest } from "../framework.mjs";
 const AURORA_MANIFEST = parseFrameworkManifest(JSON.stringify({
-  schema_version: 1, framework_key: "aurora", title: "Aurora Interactive ACP risk framework",
-  source_deck: "ACP Risk Assessment Framework (test fixture)", entity_label: "Aurora Interactive",
+  schema_version: 1, framework_key: "aurora", title: "Aurora Interactive risk framework",
+  source_deck: "Risk Assessment Framework (test fixture)", entity_label: "Aurora Interactive",
   bands: [
     { label: "Very High", tone: "severe" }, { label: "High", tone: "high" }, { label: "Medium", tone: "medium" },
     { label: "Manageable", tone: "low" }, { label: "Low", tone: "minimal" },
@@ -1672,18 +1672,18 @@ test("the verdict lists every condition under its own lede, and no count stands 
 test("the gauge names the framework whose ladder it is printing, right above the ticks", () => {
   const html = renderHtml(parsedOf(REPORT), BAND_FINDINGS, [], { framework: AURORA_MANIFEST, runId: "r" });
   const label = html.match(/<div class="label">Overall risk[\s\S]*?<\/div>/)[0];
-  assert.match(label, /<span class="gauge-fw">Aurora Interactive ACP risk framework<\/span>/,
+  assert.match(label, /<span class="gauge-fw">Aurora Interactive risk framework<\/span>/,
     "the manifest's own name for itself, in the gauge's heading");
   // BESIDE the ticks, not merely somewhere on the page: the whole complaint is distance.
   const gauge = html.match(/<div class="panel gauge">[\s\S]*?<div class="ticks">/)[0];
   assert.match(gauge, /<span class="gauge-fw">/, "the name sits inside the gauge panel, above the scale and the ticks");
   // ONE name for one framework. A second, composed short form here would rebuild in another corner.
   // ONE NAME FOR ONE FRAMEWORK, and the count moved when the footer stopped restating it. The footer
-  // carried "Risk bands (Aurora Interactive ACP risk framework): …" plus a sentence explaining the
+  // carried "Risk bands (Aurora Interactive risk framework): …" plus a sentence explaining the
   // vocabulary to a developer; both are gone. The name now sits in the gauge, and on the "Rated under"
   // line when the run records one — this fixture records none, which is why the count here is one.
   // What the arm holds is unchanged: the name is never rebuilt in another corner of the page.
-  assert.equal((html.match(/Aurora Interactive ACP risk framework/g) ?? []).length, 1,
+  assert.equal((html.match(/Aurora Interactive risk framework/g) ?? []).length, 1,
     "named once — the gauge; the footer no longer restates it");
 });
 
