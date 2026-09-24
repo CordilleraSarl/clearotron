@@ -317,7 +317,7 @@ The staff lawyer makes the final determination. The skill's role is to surface t
 
 Per-finding output (added to a unified row in the Findings sheet):
 - Advisory Risk Level (A–E)
-- Advisory Dispute Type (Classic / Horse Trade / Paper Conflict / Descriptive / Nuisance)
+- Advisory Dispute Type
 - Advisory Composite Score (1–5)
 - Key Factors (elevation + mitigation factors observed)
 - Cross-Mark Reference (if applicable)
