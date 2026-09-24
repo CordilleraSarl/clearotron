@@ -271,6 +271,17 @@ function searchedTextOf(runDir) {
     const d = driverDir(runDir);
     for (const f of readdirSync(d)) if (/^grid-spec.*\.json$/.test(f)) parts.push(readText(join(d, f)));
   } catch { /* no _driver — reported by the caller */ }
+  // THE KNOCKOUT LANE WRITES NONE OF THE ABOVE. It keeps no plan-execution record and no grid ledger:
+  // where it looked is recorded in what it cites, the evidence addresses on each finding in
+  // knockout-findings.json and the pages its research notes name, one file per mark under research/.
+  // Read only the files above, a knockout printed every channel ABSENT while its findings cited the
+  // very store the reference names. Neither file exists on the clearance lane, so its reading is
+  // unchanged.
+  parts.push(readText(join(runDir, "knockout-findings.json")));
+  try {
+    const r = join(runDir, "research");
+    for (const f of readdirSync(r)) if (/\.md$/.test(f)) parts.push(readText(join(r, f)));
+  } catch { /* no research/ — a clearance run, or a knockout that wrote no notes */ }
   return parts.join("\n");
 }
 
