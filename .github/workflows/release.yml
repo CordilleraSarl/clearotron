@@ -159,10 +159,17 @@ on:
       # script refuses a version that is not published, because pointing readers at a version that does
       # not exist is worse than leaving them unwarned.
       deprecate-below:
-        description: 'Deprecate every published version below this one (e.g. 0.3.1). Leave blank to do nothing.'
+        description: 'Deprecate every published version below this stable (e.g. 0.3.1), or a named range (e.g. 0.2.0..0.4.0-beta.0 except 0.3.3). Leave blank to do nothing.'
         type: string
         required: false
         default: ''
+      # A RANGE IS WRITTEN ONCE AS A DRY RUN AND READ, THEN FOR REAL. The dry run lists every version it
+      # would touch and the message each carries now, and writes nothing.
+      deprecate-dry-run:
+        description: 'With deprecate-below: list what would be deprecated and write nothing.'
+        type: boolean
+        required: false
+        default: false
 
 concurrency:
   group: release-${{ github.ref }}
@@ -2017,16 +2024,25 @@ jobs:
       # pasted into the shell line before the shell reads it, so a value carrying a quote and a command
       # would run that command in the one job holding a registry token. Through `env:` it is a variable's
       # value, and it must read as a stable version before anything uses it.
-      - name: Deprecate everything below the named stable
+      #
+      # A RANGE ("<from>..<through> except <v>") is handed to the script whole, as one argument, and the
+      # script parses it strictly and refuses anything else before it writes; its sentence is fixed there.
+      - name: Deprecate everything below the named stable, or the named range
         run: |
           set -euo pipefail
-          if ! [[ "$DEPRECATE_BELOW" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "::error::deprecate-below must be a stable version such as 0.3.1."
+          DRY=()
+          if [ "$DEPRECATE_DRY_RUN" = "true" ]; then DRY=(--dry-run); fi
+          if [[ "$DEPRECATE_BELOW" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            node scripts/deprecate-below.mjs --below "$DEPRECATE_BELOW" "${DRY[@]}"
+          elif [[ "$DEPRECATE_BELOW" == *..* ]]; then
+            node scripts/deprecate-below.mjs --range "$DEPRECATE_BELOW" "${DRY[@]}"
+          else
+            echo "::error::deprecate-below must be a stable version such as 0.3.1, or a range such as 0.2.0..0.4.0-beta.0 except 0.3.3."
             exit 1
           fi
-          node scripts/deprecate-below.mjs --below "$DEPRECATE_BELOW"
         # ON THE STEP, NEVER ON THE JOB. A job-level `env:` hands the token to every step in the job,
         # including the guard above whose whole purpose is to find one. The guard refuses that spelling.
         env:
           DEPRECATE_BELOW: ${{ inputs.deprecate-below }}
+          DEPRECATE_DRY_RUN: ${{ inputs.deprecate-dry-run }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_DEPRECATE_TOKEN }}
