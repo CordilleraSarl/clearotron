@@ -19,6 +19,7 @@ import { driverDir } from "../shared/driver-dir.mjs";
 import { pickingExits, webExits, notesExits, knockoutCarry, knockoutExits, exitsForLog } from "../driver/hand-off-exits.mjs";
 import { normalizeUrl } from "../driver/verify-knockout.mjs";
 import { kebab } from "../driver/search-policy.mjs";
+import { readDeclinations } from "../driver/declination-tool.mjs";
 
 const args = process.argv.slice(2);
 const runDir = args.find((a) => !a.startsWith("--"));
@@ -49,7 +50,8 @@ if (koFindings && Array.isArray(koFindings.marks)) {
   exits = {
     picking: pickingExits(readJson(driverDir(runDir, "record-carry.json"))),
     web: webExits([driverDir(runDir, "commonlaw-carry.json"), driverDir(runDir, "jx", "zh-carry.json")].map(readJson).filter(Boolean)),
-    notes: notesExits(readText(join(runDir, "common-law-findings.md")), readJson(join(runDir, "findings.json"))?.findings ?? null),
+    notes: notesExits(readText(join(runDir, "common-law-findings.md")), readJson(join(runDir, "findings.json"))?.findings ?? null,
+      readDeclinations(runDir).byPage),
   };
 }
 
@@ -71,7 +73,7 @@ if (asJson) {
   for (const [handOff, e] of Object.entries(exits)) {
     if (!e.computable) { console.log(`${handOff}: not computable — ${e.reason}`); continue; }
     const extra = "owners" in e ? `, ${e.owners} owner(s)` : "pages" in e ? `, ${e.pages} page(s), ${e.cells} cell(s)`
-      : "surfaced" in e ? ` of ${e.surfaced} page(s) the notes surfaced` : "";
+      : "surfaced" in e ? ` of ${e.surfaced} page(s) the notes surfaced${e.declined ? `, ${e.declined} declined with a ground` : ""}` : "";
     console.log(`${handOff}: ${e.exits} left with no ground${extra}${handOff === "knockout" && derived ? " (trace derived here: the run wrote none)" : ""}`);
   }
   if (explained) {

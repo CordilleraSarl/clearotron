@@ -12,7 +12,7 @@ import { join, dirname } from 'node:path';
 import { driverDir, RUN_DIR_MODE } from '../../shared/driver-dir.mjs';   //
 import { parseReport, parseAudit, parseSections, parseBlocks, stripInternal, parseCaseLawProfiles, parseCaseLawPreamble, joinCaseLawProfiles } from './parse.mjs';
 import { renderHtml, parseActionBuckets, actYouConditions } from './render.mjs';
-import { buildAudit } from './xlsx.mjs';
+import { buildAudit } from './xlsx.mjs'; import { readDeclinations } from '../declination-tool.mjs';   // — what synthesis set aside, with its grounds
 import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, joinFindingToBlock, CLIENT_TIER_BY_COMPOSITE, projectCoverageJudgment } from '../findings-model.mjs';
 import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.mjs'; import { coverageFormStamp, readCoverageForm } from '../coverage-form-io.mjs'; import { coverageUnitLabel } from '../coverage-ledger.mjs'; import { recallReceiptForOwnCompany } from '../known-conflicts.mjs';   // — and why an absence did not close; whose recall checks an audit lists
 import { clearanceReportData } from './report-data.mjs';
@@ -879,7 +879,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // the ledger the report is built from, so this sheet is their one reader-facing place. Same builder,
   // same four columns and the same state as the probes above; the area is the driver's own label and the
   // words are the reading turn's reason.
-  const withheldFamilies = withheldFamilyRows(runDir ?? dirname(reportMd));
+  const withheldFamilies = withheldFamilyRows(runDir ?? dirname(reportMd)); const setAside = setAsideRows(runDir ?? dirname(reportMd));
 
   // doc 50 — the run's FROZEN framework manifest (band vocabulary). Present on band-doctrine runs;
   // absent on every archived run (they render byte-identically on the legacy paths).
@@ -1154,7 +1154,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
       // the same rule (the workbook's own BANNED gate had already started firing on the raw detail —
       // advisory, so CI stayed green). reviewReceipts.lint keeps its raw detail for the internal
       // readers above (fetchState reads registry-record-coverage's URIs out of it).
-      counts = await buildAudit({ droppedConditions, undispatchedProbes, withheldFamilies, findings, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null }, auditParsed, join(poolRunDir, auditFile), fm.title, fm);
+      counts = await buildAudit({ droppedConditions, undispatchedProbes, withheldFamilies, setAside, findings, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null }, auditParsed, join(poolRunDir, auditFile), fm.title, fm);
       grpRead(join(poolRunDir, auditFile), 0o640);
       if (counts?.gateViolations?.length) console.warn(`[audit-workbook] advisory: ${counts.gateViolations.join(' | ')}`);
     } catch (e) {
@@ -1836,5 +1836,22 @@ export function withheldFamilyRows(runDir) {
     const { rows } = readCoverageForm(runDir, coverageFormStamp(runDir).formName);
     return (rows ?? []).filter((r) => r?.kind === 'family' && r.status === 'withheld-by-judgment' && r.reason)
       .map((r) => ({ area: coverageUnitLabel(r.unit), state: 'not-searched', note: String(r.reason) }));
+  } catch { return []; }
+}
+
+/**
+ * What synthesis set aside, record or page, each with the ground it wrote — as audit-workbook coverage
+ * rows. Set-aside reasons live in the audit workbook and never in the report, so this sheet is their one
+ * reader-facing place. The label is the driver's; the ground is the AI's own words. Never throws.
+ */
+export function setAsideRows(runDir) {
+  try {
+    const d = readDeclinations(runDir);
+    if (!d.present) return [];
+    const label = (x) => [x.mark, x.owner].filter((v) => typeof v === 'string' && v.trim()).join(' — ') || x.uri;
+    return [
+      ...[...d.byUri.values()].map((x) => ({ area: `Set aside: ${label(x)}`, note: String(x.grounds ?? '') })),
+      ...[...d.byPage.values()].map((x) => ({ area: `Set aside: ${x.url ?? x.page}`, note: String(x.grounds ?? '') })),
+    ];
   } catch { return []; }
 }

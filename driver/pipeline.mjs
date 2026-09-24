@@ -119,7 +119,7 @@ import { escalatedAxes } from "./skeptic-record.mjs";   // THE escalation parse 
 import { PLACEMENT_CARRY_SCHEMA_VERSION, reconcilePlacementCarry, placementCarryEvent, mintPlacementCarryDoubts, entryUris } from "./placement-carry.mjs";
 import { FLOOR_DUTY_SCHEMA_VERSION, reconcileFloorDuty, floorDutyEvent, armFloorDuty, floorDutyArmed, floorDutyBlock, floorDutyBlocksSkip } from "./floor-duty.mjs";   // — the era stamp that turns disclosure into a delivery floor
 import { synthesisDutyForRun } from "./synthesis-record.mjs";   // — the duty checked against the DELIVERED document
-import { RECORD_CARRY_SCHEMA_VERSION, traceRecordCarry, parseStageOutcomes, recordCarryEvent, mintRecordCarryDoubts, bandRecordUri, placementIndex, findingUris , silentlyLostFindings, statedDivergenceFindings } from "./record-carry.mjs"; import { pickingExits, webExits, notesExits, exitsForLog } from "./hand-off-exits.mjs";
+import { RECORD_CARRY_SCHEMA_VERSION, traceRecordCarry, parseStageOutcomes, recordCarryEvent, mintRecordCarryDoubts, bandRecordUri, placementIndex, findingUris , silentlyLostFindings, statedDivergenceFindings } from "./record-carry.mjs"; import { pickingExits, webExits, notesExits, notesPageRows, exitsForLog } from "./hand-off-exits.mjs";
 import { reconcileSurfaceDuty, surfaceDutyNote } from "./surface-duty.mjs";   // item 3 — silence at the findings surface, read off the rows above
 import { DISCARD_LEDGER_NAME, seamRows, appendDiscardRows, foldDiscardLedger } from "./record-discard.mjs";
 import { readDeclinations } from "./declination-tool.mjs";   // — synthesis's own stated declines
@@ -3105,7 +3105,7 @@ function findingsSurfaceRows(P) {
  * contradiction refusals rest on, which is why it is read here rather than accepted from the seat.
  */
 export function prepareDeclinationSpec(ctx, P) {   // @internal
-  const rows = findingsSurfaceRows(P);
+  const rows = [...findingsSurfaceRows(P), ...notesPageRows(existsSync(P.commonLaw) ? readFileSync(P.commonLaw, "utf8") : null)];   // records, then the web notes' pages
   if (!rows.length) {
     // AN EMPTY LIST REPLACES THE LAST ONE; it does not leave it standing. The recorder holds the seat to
     // whatever list the spec file carries, and a repair or corrective pass re-prepares because the
@@ -14121,7 +14121,7 @@ async function pipelineInner(job, opts = {}) {
       try {
         const exits = { picking: pickingExits(safeReadJson(P.recordCarry)),
           web: webExits([P.commonLawCarry, P.jxZhCarry].map((f) => safeReadJson(f)).filter(Boolean)),
-          notes: notesExits(existsSync(P.commonLaw) ? readFileSync(P.commonLaw, "utf8") : null, auditRunFindings) };
+          notes: notesExits(existsSync(P.commonLaw) ? readFileSync(P.commonLaw, "utf8") : null, auditRunFindings, readDeclinations(P.runDir).byPage) };
         runLog(P.runDir, { event: "reasonless-exits", lane: "clearance", ...exitsForLog(exits) });
         if (exits.picking.exits || exits.web.exits || exits.notes.exits) {
           note(`hand-offs: ${exits.picking.exits} record(s) of ${exits.picking.owners ?? 0} owner(s) left the picking step `

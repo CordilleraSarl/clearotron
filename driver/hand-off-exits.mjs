@@ -58,14 +58,31 @@ export function webExits(carries = []) {
     cells: new Set(rows.map((r) => JSON.stringify(r.cell))).size, rows };
 }
 
-/** Pages the web notes surfaced that no delivered finding cites. PURE. */
-export function notesExits(notesText, findings) {
+/**
+ * Pages the web notes surfaced that no delivered finding cites and synthesis did not decline with a
+ * ground. `declinedPages` is the decline ledger's pages (a Map or Set keyed by normalised address); a
+ * page it holds left by a stated decision and is not an exit. PURE.
+ */
+export function notesExits(notesText, findings, declinedPages = null) {
   if (notesText == null) return notComputable("no web notes on this run — nothing records which pages the web step surfaced");
   if (findings == null) return notComputable("no delivered findings — the web notes cannot be followed to them");
   const { urls } = parseFindingsSurfaces(notesText);
   const cited = new Set([...parseFindingsSurfaces(JSON.stringify(findings)).urls.keys()]);
-  const rows = [...urls].filter(([page]) => !cited.has(page)).map(([page, url]) => ({ page, url }));
-  return { computable: true, reason: null, exits: rows.length, surfaced: urls.size, rows };
+  const declined = declinedPages instanceof Map || declinedPages instanceof Set ? declinedPages : new Set();
+  const left = [...urls].filter(([page]) => !cited.has(page));
+  const rows = left.filter(([page]) => !declined.has(page)).map(([page, url]) => ({ page, url }));
+  return { computable: true, reason: null, exits: rows.length, surfaced: urls.size, declined: left.length - rows.length, rows };
+}
+
+/**
+ * The web notes' pages as rows on synthesis's offered list, after the register records: the seat
+ * declines a page by its position there, exactly as it declines a record. `page` is the normalised
+ * address the notes and the findings are joined on; `url` is the address as the notes printed it.
+ * No notes, no rows. PURE.
+ */
+export function notesPageRows(notesText) {
+  if (notesText == null) return [];
+  return [...parseFindingsSurfaces(notesText).urls].map(([page, url]) => ({ kind: "page", page, url }));
 }
 
 const URL_RE = /https?:\/\/[^\s<>"'`)\]]+/g;
@@ -125,7 +142,7 @@ export function exitsForLog(exits = {}) {
     if (!e) continue;
     out[handOff] = e.computable
       ? { computable: true, exits: e.exits, ...("owners" in e ? { owners: e.owners } : {}),
-        ...("pages" in e ? { pages: e.pages, cells: e.cells } : {}), ...("surfaced" in e ? { surfaced: e.surfaced } : {}) }
+        ...("pages" in e ? { pages: e.pages, cells: e.cells } : {}), ...("surfaced" in e ? { surfaced: e.surfaced, declined: e.declined ?? 0 } : {}) }
       : { computable: false, reason: e.reason };
   }
   return out;
