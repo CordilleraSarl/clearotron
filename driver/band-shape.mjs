@@ -130,7 +130,7 @@ export function classifyRecord(markText, targets) {
   if (!norm) {
     // ── — A MARK WITH NO LATIN SKELETON CAN STILL BE IDENTICAL, AND IT WAS (2026-08-14) ──────────
     //
-    // R1 retrieved TEN exact-match 色度 registrations — four REGISTERED, three in class 9, all in the
+    // R1 retrieved TEN exact-match 澜珀 registrations — four REGISTERED, three in class 9, all in the
     // matter's own classes — and the delivered report did not mention the token once. This line is
     // where they went. `normalizeElement` keeps only Latin characters, so a Han mark normalises to the
     // empty string, fell straight to `unclassifiable`, and `unclassifiable` is not one of the two tiers
@@ -139,7 +139,7 @@ export function classifyRecord(markText, targets) {
     // weighed. Retrieved, banded, positioned, and never an obligation.
     //
     // The classifier could not COMPARE them; that is true, and it is not the same as could not MATCH
-    // them. 色度 equals 色度 by inspection. The precedent is in this repo already: reference-score's
+    // them. 澜珀 equals 澜珀 by inspection. The precedent is in this repo already: reference-score's
     // matchesReference makes RAW comparison its rule 1 for exactly this case, because normalizeElement
     // keeps only [a-z0-9] and a CJK mark folds to the empty string that every Latin rule would match
     // against everything. The scorer has had that rule since R1's Chinese registration was specced. The
@@ -147,13 +147,13 @@ export function classifyRecord(markText, targets) {
     //
     // EQUALITY ONLY, DELIBERATELY. The floors are mechanical obligations a lawyer must answer row by
     // row, so every member has to be defensible without judgment: raw-equal after NFKC (which folds
-    // full-width and compatibility forms of the same characters) is that. Containment is not — 色度計
-    // contains 色度 and is a different mark — and whether it matters is judgment's call, reached
+    // full-width and compatibility forms of the same characters) is that. Containment is not — 澜珀計
+    // contains 澜珀 and is a different mark — and whether it matters is judgment's call, reached
     // through the same-family tiers and the crowd descriptors, not by widening a floor.
     //
     // THIS PARAGRAPH USED TO SAY "narrower than the scorer's rule", and it was right when it was
     // written: matchesReference's script rule was unowned containment in both directions until,
-    // which scored gold 色度 as retrieved off a different proprietor's 色度花间. The scorer now takes
+    // which scored gold 澜珀 as retrieved off a different proprietor's 澜珀花间. The scorer now takes
     // equality too, with one owner-gated containment escape the floors deliberately do not have. The
     // two agree; neither is the looser one any more.
     const raw = text.normalize("NFKC").trim();

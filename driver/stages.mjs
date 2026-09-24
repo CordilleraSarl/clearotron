@@ -223,7 +223,7 @@ export function paths(runDir) {
     // — the RETRIEVAL→findings trace, one row per retrieved register record: did it become a
     // finding, and if not, which seam it stopped at, on what ground, and WHERE THAT GROUND WAS
     // AUTHORED. The carry join above starts one seam too late — it can only speak about candidates
-    // placement already selected — and the seam that lost the jx lane's own target (ten banded 色度
+    // placement already selected — and the seam that lost the jx lane's own target (ten banded 澜珀
     // registrations, four REGISTERED, none reaching any placement) is the one before it. Disclosure
     // only: it never re-retrieves, never keeps a record the funnel dropped, and never gates.
     recordCarry: p(driverRel("record-carry.json")),
