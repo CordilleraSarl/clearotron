@@ -74,7 +74,7 @@ rendered as clean is a delivery failure the `narrative-refutation` skeptic block
 **Say which negative you hold — and say it once (P6).** The two readings are different facts and must never
 both attach to the same source in one report: *"searched — none found"* for a source this run actually
 queried, *"not searched this run"* / *"could not be searched — <reason>"* for one it did not reach. (The
-delivered TIKI report said both about TTAB decisions, which **are** searchable — the reader could not tell
+delivered WAVO report said both about TTAB decisions, which **are** searchable — the reader could not tell
 which had happened.) Coverage prose is also the **longest-running prose in the report** — two of its four
 longest sentences were coverage/gap prose — so it is held to the house budgets like everything else:
 ~20–25 words a sentence, each coverage fact stated **once**, in one place (an area's state in its
@@ -282,7 +282,7 @@ rules govern it:
 
 **Crowding is per-market only.** Every crowd / dilution statement — narrative, per-finding reasoning,
 `legal_position`, coverage prose — names the jurisdiction × goods lane it was counted in ("the US
-class-32 register carries ~N live TIKI-formative marks"). That lane is the only one where the dilution
+class-32 register carries ~N live WAVO-formative marks"). That lane is the only one where the dilution
 is earned (see *Volume is not a risk multiplier* and the use-meets-use rule); a global crowd sentence
 ("the field is crowded", "diluted worldwide") is forbidden on every surface.
 

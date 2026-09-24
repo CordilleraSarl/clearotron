@@ -142,7 +142,7 @@ descriptive-compound risk theory retains DAWN-only hits only in gaming, and this
 
 The driver joins, after EVERY digest pass (including flush rewrites), the set of **live, in-scope,
 screen-surfaced records whose mark carries the dominant element** — as a standalone token, an edit-1
-token, or concatenated inside a longer word (`TIKITONK`-class) — against your endings. **The unit is
+token, or concatenated inside a longer word (`WAVOTONK`-class) — against your endings. **The unit is
 the POSITION, the same collapse Sheet-1 rows follow**: the driver groups those records by
 `_driver/register-positions.json` and an ending on ANY ONE constituent URI ends the whole position.
 A position with NO ending is a hard discrepancy: one warm follow-up, then the run **blocks

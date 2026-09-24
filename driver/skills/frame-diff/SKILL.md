@@ -44,7 +44,7 @@ Be honest and conservative: a clean diff (the run scoped what the blind model de
 A directive may carry a structured `remedy`:
 
 ```json
-"remedy": { "terms": ["TROPICAL TIKI", "ISLAND TIKI"], "nice_classes": ["5", "32"], "regions": [] }
+"remedy": { "terms": ["TROPICAL WAVO", "ISLAND WAVO"], "nice_classes": ["5", "32"], "regions": [] }
 ```
 
 - `terms` — the exact MARK-SHAPED search term(s) the re-search should dispatch. Each term is something a register would hold as a mark: a word, a short composite. Never a description of a family.
@@ -57,7 +57,7 @@ A directive may carry a structured `remedy`:
 1. its `item` is *itself* a single mark-shaped search term (`TAKIS`, `AXIOS`, `CORAL MAGIC`), **or**
 2. it carries `remedy.terms` naming the mark-shaped term(s) to search.
 
-A label-shaped `item` — more than 4 words, a parenthetical, an enumeration ("TAKIS (famous CPG snack, one-keystroke neighbour)", "Reverse-order TIKI composites (TROPICAL TIKI, ISLAND TIKI)") — is **never dispatched as a search term**: dispatched verbatim it is a nil search that comes back 0 and reads as a clean, which is worse than no search. So a firing `variant` directive whose item is a label **and which carries no remedy is a PARSE DEFECT** — the driver refuses the file and asks you to restate it, in this same turn, while restating is still free. Every term you put in `remedy.terms` is linted the same way: a remedy that is itself a label is refused exactly like the item was.
+A label-shaped `item` — more than 4 words, a parenthetical, an enumeration ("TAKIS (famous CPG snack, one-keystroke neighbour)", "Reverse-order WAVO composites (TROPICAL WAVO, ISLAND WAVO)") — is **never dispatched as a search term**: dispatched verbatim it is a nil search that comes back 0 and reads as a clean, which is worse than no search. So a firing `variant` directive whose item is a label **and which carries no remedy is a PARSE DEFECT** — the driver refuses the file and asks you to restate it, in this same turn, while restating is still free. Every term you put in `remedy.terms` is linted the same way: a remedy that is itself a label is refused exactly like the item was.
 
 The refusal names **every** offending directive at once, and it arrives as the tool's answer to your call — in this turn, while restating is still free. Fix them **all** in one further call: the repair ladder counts attempts, not directives, so repairing only the first one loses the rest. A call replaces the stored diff, so send the whole thing again, not only the corrected directives.
 
