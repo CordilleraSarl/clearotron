@@ -18,6 +18,7 @@ The axis is *what the script assumes exists*, not where it happens to be run.
 | `composer-render-check.mjs` | Lays out the New Clearance composer and checks the levers reach the wire. Run by CI. |
 | `clearances-render-check.mjs` | Checks the `/portal/clearances` columns hold together. Run by CI. |
 | `report-print-check.mjs` | Shows what the exported PDF actually renders under print media. Run by CI. |
+| `report-offline-render-check.mjs` | Opens every demo report, from disk and served under the portal's report policy, and every pool index, and fails on any request to another machine or an embedded font that did not load. Run by CI. |
 | `report-overflow-check.mjs` | Checks the same two kinds of report for sideways overflow on screen — the print check cannot see a width, because print sets the watermark to `display:none` and the watermark was the overflow. Run by CI. |
 | `portal-lifecycle-check.mjs` | Asks whether the portal names a brand owner and whether a person can manage their searches. Run by CI. |
 | `portal-strings.mjs` | Reads every string the portal can show out of its source, as a reader meets it. `--check <approved list>` refuses a string on a screen that is neither approved nor in `portal-ui/strings-backlog.json`; `--backlog-shrinks --base <ref>` refuses a backlog line the base did not have. The approved list is kept with the designs, outside this repository. CI runs the backlog half. |
@@ -33,7 +34,7 @@ The axis is *what the script assumes exists*, not where it happens to be run.
 | `mint-suite-census.mjs` | Re-stamps `driver/suite-census.json` — the persisted expectation that makes a DELETED, RENAMED or GUTTED test file visible. Dry-run by default;`--apply` writes it, and it prints removals and shrinkage first because a silently lowered ceiling is how a gutting gets laundered into a green suite. |
 | `merge-presence-check.mjs` | Re-states every merge in a window against the tree: did the merged content reach `main` and is it STILL there (proved by content, never by ancestry), and did the branch carry work the merge never took. Deliberately not a CI gate — it reads the forge. A branch that is simply gone makes the second question unanswerable, which is a non-zero exit, waived only by an explicit dated flag that is itself invalid once it covers nothing. |
 
-The six checks marked "Run by CI" are portable by demonstration: CI runs them on a stock GitHub
+The checks marked "Run by CI" are portable by demonstration: CI runs them on a stock GitHub
 runner. They spawn the literal binary name `google-chrome`, so a machine that installs it as `chrome`
 needs a symlink — which is what the CI job does before it runs them. A `ulimit -v` makes Chrome dump
 core, so a box that sets one cannot run any of them; the CI runner does not.

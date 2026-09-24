@@ -487,6 +487,12 @@ jobs:
       # disclosure fails until somebody rules it. It needs the browser this job already has.
       - run: node scripts/report-print-check.mjs
 
+      # OPENING A REPORT CONTACTS NO ONE. Every demo report, from disk and served under the portal's report
+      # policy, and every pool index, with each request the page makes recorded: one to another machine
+      # fails, and so does an embedded face that did not load. It proves it can see both first, on a report
+      # with a font service put back and one with its faces taken out.
+      - run: node scripts/report-offline-render-check.mjs
+
       # DRIVEN IN BOTH DIRECTIONS, because a refusal that only ever runs on a supported Node has never
       # been shown to refuse. The runner is always above the floor, so the second half raises the floor
       # in a COPY of the manifest and requires exit 1 — the guard's own reason for existing, exercised

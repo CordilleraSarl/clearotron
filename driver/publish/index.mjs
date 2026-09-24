@@ -29,7 +29,7 @@ import { declaredRecordOrigins } from '../record-origins.mjs';
 import { NEUTRAL_DELIVERY, loadProfiles } from '../profiles.mjs';
 import { resolveDemoData, demoBannerMd } from './demo-marking.mjs';   // — one demo question, every product; 2134 — every SURFACE
 import { engineCommit } from '../engine-build.mjs';
-import { WARM_ROOT, WARM_ROOT_DARK, WARM_ROOT_DARK_EXPLICIT, THEME_INIT, THEME_INIT_EXPLICIT, FONT_LINK, FAVICON_LINK, BRAND } from '../../shared/brand.mjs';
+import { WARM_ROOT, WARM_ROOT_DARK, WARM_ROOT_DARK_EXPLICIT, THEME_INIT, THEME_INIT_EXPLICIT, FAVICON_LINK, BRAND } from '../../shared/brand.mjs'; import { TEXT_FONT_STYLE } from '../../shared/brand-fonts.mjs';   // the text face, carried in the page rather than fetched
 import { NAV_CSS, siteNav, siteFab } from '../../shared/site-nav.mjs';
 import { anonAssets, anonClient, anonMark } from '../../shared/anon-overlay.mjs';
 
@@ -183,13 +183,13 @@ export function assembleReleaseInputs(reportMdPath, findingsJsonPath) {
   };
 }
 
-// Cordillera brand pack (locked): limestone-cream + crimson, Satoshi. Crimson is the only strong accent;
+// Cordillera brand pack (locked): limestone-cream + crimson, Plus Jakarta Sans. Crimson is the only strong accent;
 // health states use warm-palette tones. Brand tokens come from the shared brand.mjs module.
 const INDEX_CSS = `
  ${WARM_ROOT}
  ${NAV_CSS}
  *{box-sizing:border-box}
- body{margin:0;font:15px/1.6 'Satoshi','Helvetica Neue',Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+ body{margin:0;font:15px/1.6 'Plus Jakarta Sans','Helvetica Neue',Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg)}
  .wrap{max-width:1000px;margin:0 auto;padding:24px 22px 60px}
  header.rep{background:transparent;color:var(--ink);border-bottom:1px solid var(--line);border-radius:0;padding:6px 0 20px;margin-bottom:22px}
  header.rep .tag{display:inline-flex;align-items:center;gap:10px;font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--crimson-mid)}
@@ -354,7 +354,7 @@ function indexPage({ heading, sub, rows, auditCol, filter = '', archive = '', na
   return `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex, nofollow"><title>${esc(heading)}</title>
-${FONT_LINK}${FAVICON_LINK}${client ? THEME_INIT_EXPLICIT : THEME_INIT}
+${TEXT_FONT_STYLE}${FAVICON_LINK}${client ? THEME_INIT_EXPLICIT : THEME_INIT}
 <style>${INDEX_CSS}${client ? WARM_ROOT_DARK_EXPLICIT : WARM_ROOT_DARK}</style>${anon.head}</head><body class="has-glow">${nav}<div class="wrap">
   <header class="rep"><div class="tag">${esc(BRAND.name)} · ${esc(BRAND.product)}</div><h1>${esc(heading)}</h1><div class="meta">${sub}</div></header>${client ? siteFab({ anon: false }) : ''}
   ${SEARCH_BAR}

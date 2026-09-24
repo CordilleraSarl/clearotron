@@ -21,6 +21,7 @@ import { fileURLToPath } from "node:url";
 import { anonAssets } from "../../shared/anon-overlay.mjs";
 import { NAV_CSS, siteNav } from "../../shared/site-nav.mjs";
 import { WARM_ROOT, WARM_ROOT_DARK, THEME_INIT, FAVICON_LINK, BRAND } from "../../shared/brand.mjs";
+import { TEXT_FONT_STYLE } from "../../shared/brand-fonts.mjs";   // the text face, carried in the page rather than fetched
 import { config } from "../driver.config.mjs";
 import { isEntrypoint } from "../../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 
@@ -47,6 +48,7 @@ export function writeProfilesPage({ poolDir, template = TEMPLATE } = {}) {
   // case-sensitive and keyed on the DEFAULT name rather than on any firm's, leaves it alone.)
   html = html.replace("Clearotron · Trademark clearance", () => `${BRAND.name} · ${BRAND.product}`);
   html = html.replaceAll("Clearotron", () => BRAND.name);
+  html = fill(html, "<!--FONTS-->", TEXT_FONT_STYLE);
   html = fill(html, "<!--FAVICON-->", FAVICON_LINK);
   html = fill(html, "<!--THEME-INIT-->", THEME_INIT);          // staff page: OS-aware pre-paint init
   html = fill(html, "/*BRAND-ROOT*/", WARM_ROOT);

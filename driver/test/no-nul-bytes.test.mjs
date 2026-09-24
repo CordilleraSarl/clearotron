@@ -49,6 +49,9 @@ const BINARY_EXTENSIONS = new Set([
   // first JPEG ever tracked in this repository failed a guard written when every image was a PNG —
   // caught by the export's private suite, which is the only thing that runs the whole corpus.
   ".jpg",
+  // shared/fonts/*.woff2 — TWO files, the report's and the portal's own typefaces, added 2026-09-23 so a
+  // report fetches no font from a font service. A compressed font is binary by construction.
+  ".woff2",
 ]);
 
 /**

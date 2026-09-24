@@ -2,6 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import './fonts.css'
 import './tokens.css'
 import './base.css'
 import { AppShell, type ShellContext } from './shell/AppShell.tsx'
