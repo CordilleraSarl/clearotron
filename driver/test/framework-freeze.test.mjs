@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // Regression (2026-06-19): the per-customer reasoning framework must survive the run-sidecar freeze
 // (freezeProfile). The stages call frameworkFor()/workedExamplesFor() on the FROZEN ctx.profile, NOT the raw
-// resolved profile — so a frameworkPath dropped by the freeze means aurora.json/zephyr.json's configured
+// resolved profile — so a frameworkPath dropped by the freeze means demo-brand-owner.json/zephyr.json's configured
 // frameworks are silently never applied (every run falls back to the firm-neutral default). This test feeds
 // the REAL frozen shape into the synthesis stage exactly as production does.
 import { test } from "node:test";
@@ -18,12 +18,12 @@ const frozenSyn = (profiles, key) =>
 
 test("freezeProfile carries the per-customer framework, so it is ACTUALLY applied (not silently defaulted)", () => {
   const profiles = loadProfiles({ force: true });
-  const fz = freezeProfile(resolveProfile({ profileKey: "aurora" }, { profiles }));
-  assert.equal(fz.frameworkPath, "skills/clearance-search/risk-framework-aurora.md", "the frozen sidecar MUST carry frameworkPath (dropping it is the bug)");
-  assert.equal(fz.workedExamplesPath, "skills/clearance-search/worked-examples-aurora.md");
+  const fz = freezeProfile(resolveProfile({ profileKey: "demo-brand-owner" }, { profiles }));
+  assert.equal(fz.frameworkPath, "skills/clearance-search/risk-framework-demo.md", "the frozen sidecar MUST carry frameworkPath (dropping it is the bug)");
+  assert.equal(fz.workedExamplesPath, "skills/clearance-search/worked-examples-demo.md");
   // and the synthesis stage, fed the FROZEN profile (as production does), reads the customer's framework
-  assert.match(frozenSyn(profiles, "aurora"), /risk-framework-aurora\.md/);
-  assert.match(frozenSyn(profiles, "aurora"), /worked-examples-aurora\.md/);
+  assert.match(frozenSyn(profiles, "demo-brand-owner"), /risk-framework-demo\.md/);
+  assert.match(frozenSyn(profiles, "demo-brand-owner"), /worked-examples-demo\.md/);
   assert.match(frozenSyn(profiles, "zephyr"), /risk-framework-zephyr\.md/);
 });
 
@@ -32,7 +32,7 @@ test("a profile with no per-customer framework still defaults to the firm-neutra
   for (const key of [null, "petcary"]) {     // generic + petcary ship no framework
     const syn = frozenSyn(profiles, key);
     assert.match(syn, /skills\/clearance-search\/risk-framework\.md/, `${key ?? "generic"} ⇒ firm-neutral default`);
-    assert.doesNotMatch(syn, /risk-framework-(aurora|zephyr)\.md/, `${key ?? "generic"} must NOT read a per-customer framework`);
+    assert.doesNotMatch(syn, /risk-framework-(demo-brand-owner|zephyr)\.md/, `${key ?? "generic"} must NOT read a per-customer framework`);
   }
 });
 
@@ -54,7 +54,7 @@ test("profileShaOf: canonical (key-order-independent), self-excluding, recomputa
 // ── spec 62: the project overlay survives (or is absent from) the freeze ────────────────────────────────
 test("spec 62: a NO-PROJECT freeze is byte-identical to the pre-62 one-arg freeze (regression anchor + existing shas preserved)", () => {
   const profiles = loadProfiles({ force: true });
-  for (const key of ["aurora", "zephyr", "petcary", null]) {
+  for (const key of ["demo-brand-owner", "zephyr", "petcary", null]) {
     const job = key ? { profileKey: key } : {};
     const legacy = freezeProfile(resolveProfile(job, { profiles }));                 // the pre-62 one-arg call
     const eff = resolveEffectiveProfile(job, { profiles });                          // no projectKey ⇒ no project
@@ -68,17 +68,17 @@ test("spec 62: a NO-PROJECT freeze is byte-identical to the pre-62 one-arg freez
 test("spec 62: a project-bearing freeze carries projectKey/projectName/origins; sha differs from the customer-only freeze; the project floor is applied", () => {
   const profiles = loadProfiles({ force: true });
   const projects = loadProjects({ profiles, force: true });
-  const eff = resolveEffectiveProfile({ profileKey: "aurora", projectKey: "console-ecosystem" }, { profiles, projects });
+  const eff = resolveEffectiveProfile({ profileKey: "demo-brand-owner", projectKey: "japan-and-korea-app-launch" }, { profiles, projects });
   const fzProj = freezeProfile(eff.profile, { projectKey: eff.projectKey, projectName: eff.projectName, origins: eff.origins });
-  assert.equal(fzProj.profileKey, "aurora", "profileKey stays the CUSTOMER");
-  assert.equal(fzProj.projectKey, "console-ecosystem");
-  assert.equal(fzProj.projectName, "Console ecosystem");
+  assert.equal(fzProj.profileKey, "demo-brand-owner", "profileKey stays the CUSTOMER");
+  assert.equal(fzProj.projectKey, "japan-and-korea-app-launch");
+  assert.equal(fzProj.projectName, "Japan and Korea app launch");
   assert.equal(fzProj.origins.platforms, "customer+project");
-  assert.equal(fzProj.frameworkPath, "skills/clearance-search/risk-framework-aurora.md", "the customer's framework still rates the matter");
+  assert.equal(fzProj.frameworkPath, "skills/clearance-search/risk-framework-demo.md", "the customer's framework still rates the matter");
   // the frozen floor is DERIVED from the resolved (project) platforms — a field dropped from freezeProfile would
   // be the exact silent-fallback bug that bit frameworkPath in June.
   assert.equal(fzProj.minCellsPerVariant, eff.profile.platforms.length + 1, "the project's marketplace floor is frozen");
-  const fzCust = freezeProfile(resolveProfile({ profileKey: "aurora" }, { profiles }));
+  const fzCust = freezeProfile(resolveProfile({ profileKey: "demo-brand-owner" }, { profiles }));
   assert.notEqual(profileShaOf(fzProj), profileShaOf(fzCust), "which project rated this run is sha-verifiable, not merely asserted");
 });
 
@@ -86,7 +86,7 @@ test("spec 62: a project-bearing freeze carries projectKey/projectName/origins; 
 // 2026-07-19: `loadFrameworkManifest(DRIVER_DIR, ...)` read manifests out of the driver's BUNDLED
 // skills/ while CLEAROTRON_INSTRUCTIONS_DIR pointed the AGENT at the deployment's config store. A customer whose
 // framework ships only in that store hard-failed at attachFramework with `framework_manifest_missing` —
-// the first Aurora Interactive run died there before a single stage ran. The pre-flight "does the file exist?"
+// the first Demo Brand Owner run died there before a single stage ran. The pre-flight "does the file exist?"
 // check passed, because it did exist; just not where the driver looked. Assert the ROOT, not the file.
 import { mkdtempSync, mkdirSync as mkdirp, writeFileSync as writeF } from "node:fs";
 import { tmpdir } from "node:os";
@@ -113,7 +113,7 @@ test("config.skillsRoot follows CLEAROTRON_INSTRUCTIONS_DIR — the driver reads
     const { config } = await import(`../driver.config.mjs?skillsroot=${Math.random()}`);
     assert.equal(config.skillsRoot, store, "skillsRoot is the PARENT of skillsDir — the base a profile's relative path joins against");
     assert.equal(loadFrameworkManifest(config.skillsRoot, fwPath).framework_key, "tenant-only",
-      "a framework present ONLY in the deployment store loads — the Aurora Interactive shape");
+      "a framework present ONLY in the deployment store loads — the Demo Brand Owner shape");
   } finally {
     pinEnv(process.env, "CLEAROTRON_INSTRUCTIONS_DIR", prev);
   }

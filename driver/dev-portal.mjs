@@ -253,7 +253,7 @@ function cockpitHtml() {
   <label>Extra marketplaces (comma — ADDED to the account's own)</label><input name="platforms" placeholder="gnc.com">
   <label><input type="checkbox" name="worldwide" style="width:auto"> worldwide (search everywhere; NOT the same as leaving countries blank)</label>
   <label><input type="checkbox" name="nativeLanguage" style="width:auto"> native-language investigation (multi-country focus search only)</label>
-  <label>Saved search (recipe key — leave the product blank)</label><input name="recipeKey" id="f_recipe" placeholder="quarterly-screen">
+  <label>Saved search (recipe key — leave the product blank)</label><input name="recipeKey" id="f_recipe" placeholder="standard-clearance">
   <label>Batch marks (knockout — one per line, optional "NAME [9, 42]")</label><textarea name="marks" placeholder="IRONWHISK [8, 21]&#10;CLUVENDRA&#10;SUNDAY ROAST CLUB [21, 35]"></textarea>
   <label>Classes (comma)</label><input name="classes" placeholder="9,42">
   <label>Goods / services</label><textarea name="goods"></textarea>
@@ -271,7 +271,7 @@ function cockpitHtml() {
  <div id="searches" style="margin-top:8px">loading…</div></section>
 <section><h2>Compose a saved search</h2>
  <form id="sf">
-  <label>Slug (filename + trigger key) *</label><input name="slug" placeholder="quarterly-screen" required>
+  <label>Slug (filename + trigger key) *</label><input name="slug" placeholder="standard-clearance" required>
   <label>Label (display name) *</label><input name="label" placeholder="Quarterly product-name screen" required>
   <label>Base search (the product this saved search runs) *</label><select name="base" id="sf_base"></select>
   <label><input type="checkbox" name="registerProbe" style="width:auto"> + register filing counts (knockout bases only)</label>

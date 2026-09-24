@@ -108,7 +108,7 @@ function poolWith(metas) {
 test("regenIndex: one report — every index links report.html; a failed-QC run is LISTED and LINKED, with a staff-only QC pill", () => {
   const pool = poolWith([
     { runId: "run-zep", matter: "TMP-C", title: "Aurora", client: "Aurora Labs", customerKey: "zephyr", overall: "LOW", badge: "l2", date: "2026-06-10", codename: "a1", clientGate: { released: true, reasons: [] } },
-    { runId: "run-aur", matter: "TMP-M", title: "Phoenix", client: "Phoenix Studio", customerKey: "aurora", overall: "HIGH", badge: "l4", date: "2026-06-11", codename: "b2", clientGate: { released: false, reasons: ["a core search layer was not run (register / EU)"] } },
+    { runId: "run-aur", matter: "TMP-M", title: "Phoenix", client: "Phoenix Studio", customerKey: "demo-brand-owner", overall: "HIGH", badge: "l4", date: "2026-06-11", codename: "b2", clientGate: { released: false, reasons: ["a core search layer was not run (register / EU)"] } },
     { runId: "run-old", matter: "TMP-O", title: "Legacy", client: "Legacy Co", overall: "LOW", badge: "l2", date: "2026-06-09", codename: "c3" }, // no customerKey → 'generic'
   ]);
   const n = regenIndex(pool);
@@ -118,7 +118,7 @@ test("regenIndex: one report — every index links report.html; a failed-QC run 
   const staff = readFileSync(join(pool, "index.html"), "utf8");
   for (const r of ["run-zep/report.html", "run-aur/report.html", "run-old/report.html"]) assert.match(staff, new RegExp(r.replace("/", "\\/")));
 
-  // zephyr index: ONLY the zephyr run, linking THE report two levels up; the aurora run is absent
+  // zephyr index: ONLY the zephyr run, linking THE report two levels up; the demo-brand-owner run is absent
   const zep = readFileSync(join(pool, "customer", "zephyr", "index.html"), "utf8");
   assert.match(zep, /\.\.\/\.\.\/run-zep\/report\.html/);
   assert.doesNotMatch(zep, /run-aur/);
@@ -132,7 +132,7 @@ test("regenIndex: one report — every index links report.html; a failed-QC run 
   // ONE report (spec 2026-07-30 §5): a run you have rights to is always listed and always linked — the
   // old clientGate suppression is gone. The machine-QC result is a STAFF-index pill pointing at the
   // audit workbook; the customer page carries no QC/delivery language at all.
-  const aur = readFileSync(join(pool, "customer", "aurora", "index.html"), "utf8");
+  const aur = readFileSync(join(pool, "customer", "demo-brand-owner", "index.html"), "utf8");
   assert.match(aur, /\.\.\/\.\.\/run-aur\/report\.html/, "the failed-QC run is listed AND linked on its customer page");
   assert.doesNotMatch(aur, /on hold|⛔|⚠ QC/, "no hold/QC language on a customer surface");
   assert.match(aur, /1 report\(s\) for this account/, "the page count includes every run the customer owns");

@@ -32,9 +32,9 @@ process.env.CLEAROTRON_REGISTER_GAP_CLAMP ||= "0";
 process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
 const PROFILES = mkdtempSync(join(tmpdir(), "clearotron-profiles-"));
 cpSync(join(HERE, "..", "profiles"), PROFILES, { recursive: true });
-mkdirSync(join(PROFILES, "projects", "aurora"), { recursive: true });
-writeFileSync(join(PROFILES, "projects", "aurora", "console-ecosystem.json"),
-  JSON.stringify({ projectName: "Console ecosystem", platforms: ["store.steampowered.com"] }, null, 2) + "\n");
+mkdirSync(join(PROFILES, "projects", "demo-brand-owner"), { recursive: true });
+writeFileSync(join(PROFILES, "projects", "demo-brand-owner", "japan-and-korea-app-launch.json"),
+  JSON.stringify({ projectName: "Japan and Korea app launch", platforms: ["store.steampowered.com"] }, null, 2) + "\n");
 pinEnv(process.env, "CLEAROTRON_CUSTOMERS_DIR", PROFILES);
 
 const JOB = { id: "test-job", msgId: "<test@x>", forwarder: "jordan", forwarderDomain: "example.com",

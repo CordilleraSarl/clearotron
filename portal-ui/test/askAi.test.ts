@@ -41,7 +41,7 @@ test('the question is a sentence a person could have typed: the mark, the date, 
   // THE RUN CODE IS THE REGRESSION TO CATCH, so say so rather than only asserting the whole string. A
   // future edit that appends "(run noref4d19…)" would fail the equality above with a message about a
   // sentence; this one fails with a message about the thing that was ruled out.
-  for (const runId of ['noref000001-acme-2026-09-14-amber-harbour', 'tmp4-aurora-batch']) {
+  for (const runId of ['noref000001-acme-2026-09-14-amber-harbour', 'tmp4-demo-brand-owner-batch']) {
     assert.ok(!askAiPrompt('ACME', '2026-09-14').includes(runId), 'no run identifier in the visible question')
   }
 })

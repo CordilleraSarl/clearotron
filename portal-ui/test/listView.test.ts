@@ -71,7 +71,7 @@ test('THE AQUAPLUS CASE: one name under two owners is flagged', () => {
   const a = ambiguousTitles([
     { title: 'AquaPlus', account: 'zephyr' },
     { title: 'AquaPlus', account: 'generic' },
-    { title: 'Drivers Haven', account: 'aurora' },
+    { title: 'Drivers Haven', account: 'demo-brand-owner' },
   ])
   assert.ok(a.has('aquaplus'), 'the shared name is ambiguous')
   assert.ok(!a.has('drivers haven'), 'a name only one owner uses is not')

@@ -14,7 +14,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { rosterVerdict } from "../roster-verdict.mjs";
 
-const DEMOS = ["aurora", "petcary", "zephyr"];          // as list_profiles reports them — no `generic`
+const DEMOS = ["demo-brand-owner", "petcary", "zephyr"];          // as list_profiles reports them — no `generic`
 // `stranger-co` / `other-co` below stand for "a customer that must never reach the test box". They are
 // INVENTED. This repo is de-identified by design and carries no client identity; the guard in
 // no-client-identifiers.test.mjs enforces it, and it correctly refused a first draft of this file that
@@ -24,8 +24,8 @@ const v = (o) => rosterVerdict({ bundledDemos: DEMOS, ...o });
 // ── the regression this issue exists for ─────────────────────────────────────────────────────────────
 
 test("a four-bundle store on a test box PASSES — it must not read as leaked client config", () => {
-  // The store holds aurora/generic/petcary/zephyr; list_profiles reports the three clients.
-  const r = v({ keys: ["aurora", "petcary", "zephyr"], onDisk: ["aurora", "petcary", "zephyr"], expectDemos: true });
+  // The store holds demo-brand-owner/generic/petcary/zephyr; list_profiles reports the three clients.
+  const r = v({ keys: ["demo-brand-owner", "petcary", "zephyr"], onDisk: ["demo-brand-owner", "petcary", "zephyr"], expectDemos: true });
   assert.equal(r.state, "pass", `a correctly configured test store must not fail: ${r.message}`);
   assert.match(r.message, /matching the configured store/);
 });
@@ -33,20 +33,20 @@ test("a four-bundle store on a test box PASSES — it must not read as leaked cl
 test("the pre-fix behaviour is what would have failed — expectDemos must not blanket-refuse a configured store", () => {
   // Exactly the state the test instance is in once CLEAROTRON_CUSTOMERS_DIR is set. Before the fix this
   // reported "real client config has reached an instance that must not have it", which was untrue.
-  const r = v({ keys: ["aurora", "petcary", "zephyr"], onDisk: ["aurora", "petcary", "zephyr"], expectDemos: true });
+  const r = v({ keys: ["demo-brand-owner", "petcary", "zephyr"], onDisk: ["demo-brand-owner", "petcary", "zephyr"], expectDemos: true });
   assert.doesNotMatch(r.message, /real client config has reached/);
 });
 
 // ── the property the guard actually protects ─────────────────────────────────────────────────────────
 
 test("a real customer reaching the door FAILS, even on a box that declares itself a test box", () => {
-  const r = v({ keys: ["aurora", "petcary", "stranger-co", "zephyr"], onDisk: ["aurora", "petcary", "zephyr"], expectDemos: true });
+  const r = v({ keys: ["demo-brand-owner", "petcary", "stranger-co", "zephyr"], onDisk: ["demo-brand-owner", "petcary", "zephyr"], expectDemos: true });
   assert.equal(r.state, "fail");
   assert.match(r.message, /disagree/);
 });
 
 test("a store holding a customer the door does not serve also FAILS — disagreement in either direction", () => {
-  const r = v({ keys: ["aurora"], onDisk: ["aurora", "petcary", "zephyr"], expectDemos: true });
+  const r = v({ keys: ["demo-brand-owner"], onDisk: ["demo-brand-owner", "petcary", "zephyr"], expectDemos: true });
   assert.equal(r.state, "fail");
 });
 
@@ -63,7 +63,7 @@ test("a configured store the door is NOT serving fails, and reports BOTH lists",
   //
   // What it holds now is what the check actually measured: it fails, it prints both lists, and it offers
   // both readings instead of picking one.
-  const r = v({ keys: DEMOS, onDisk: ["aurora", "petcary", "stranger-co", "zephyr"], expectDemos: false });
+  const r = v({ keys: DEMOS, onDisk: ["demo-brand-owner", "petcary", "stranger-co", "zephyr"], expectDemos: false });
   assert.equal(r.state, "fail");
   assert.match(r.message, new RegExp(`${DEMOS.length}[^.]*4`),
     "the verdict no longer prints both counts — which is the only thing it measured");
@@ -98,7 +98,7 @@ test("no configured store, non-demo customers, test box: still a real leak and s
 // ── the zero-ish answers mean opposite things ────────────────────────────────────────────────────────
 
 test("an unscoped probe is SKIPPED, never failed — it is a statement about the caller", () => {
-  for (const onDisk of [null, ["aurora"]])
+  for (const onDisk of [null, ["demo-brand-owner"]])
     for (const expectDemos of [true, false]) {
       const r = v({ keys: [], onDisk, expectDemos });
       assert.equal(r.state, "skip", "zero accounts is the caller being unscoped, not the deployment being wrong");
@@ -117,7 +117,7 @@ test("production: ten clients against a ten-client store passes, with no test-bo
 // ── ordering is not part of the contract ─────────────────────────────────────────────────────────────
 
 test("both sides are compared as SETS — the caller sorts, and equal sets in any input order agree", () => {
-  const r = v({ keys: ["aurora", "petcary"].sort(), onDisk: ["petcary", "aurora"].sort(), expectDemos: true });
+  const r = v({ keys: ["demo-brand-owner", "petcary"].sort(), onDisk: ["petcary", "demo-brand-owner"].sort(), expectDemos: true });
   assert.equal(r.state, "pass");
 });
 
@@ -135,7 +135,7 @@ test("a company outside the asking key's cap is not a disagreement — the store
 });
 
 test("within the cap, a door that disagrees with its store still FAILS", () => {
-  const r = v({ keys: ["aurora"], onDisk: [...DEMOS, "newco"].sort(), expectDemos: true,
+  const r = v({ keys: ["demo-brand-owner"], onDisk: [...DEMOS, "newco"].sort(), expectDemos: true,
     caller: { readable: true, accounts: DEMOS } });
   assert.equal(r.state, "fail");
   assert.match(r.message, /3 of them within the cap/);
@@ -149,7 +149,7 @@ test("a customer the store does not hold still FAILS, whatever the key's cap all
 
 test("an uncapped key, and no key given at all, are compared against the whole store", () => {
   for (const caller of [undefined, { readable: true, accounts: null }]) {
-    assert.equal(v({ keys: ["aurora", "petcary"], onDisk: DEMOS, expectDemos: true, caller }).state, "fail",
+    assert.equal(v({ keys: ["demo-brand-owner", "petcary"], onDisk: DEMOS, expectDemos: true, caller }).state, "fail",
       "a door missing a company passed — an absent cap was read as a narrowing one");
     assert.equal(v({ keys: DEMOS, onDisk: DEMOS, expectDemos: true, caller }).state, "pass",
       "a door serving its whole store failed — an absent cap was read as an EMPTY one, the inversion trigger-cap.mjs warns about");
@@ -158,7 +158,7 @@ test("an uncapped key, and no key given at all, are compared against the whole s
 
 test("a key whose claims cannot be read: a difference is NOT compared, and agreement still passes", () => {
   const unreadable = { readable: false, accounts: null };
-  const r = v({ keys: ["aurora"], onDisk: DEMOS, expectDemos: true, caller: unreadable });
+  const r = v({ keys: ["demo-brand-owner"], onDisk: DEMOS, expectDemos: true, caller: unreadable });
   assert.equal(r.state, "skip", "a difference that may be the key's own narrowing was judged as if the cap were known");
   assert.match(r.message, /could not be read/);
   assert.equal(v({ keys: DEMOS, onDisk: DEMOS, expectDemos: true, caller: unreadable }).state, "pass",

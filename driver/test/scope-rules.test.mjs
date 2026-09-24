@@ -76,7 +76,7 @@ test("the guard and the previews resolve scope through ONE ladder — a saved se
   // does this guard, deliberately — plan_run reports "territories: China (from the saved search)" from
   // that ladder, and a blocker in the SAME payload saying the scope has no routing territory is the
   // two-rulers failure this codebase already rejected for validateJob.
-  const resolved = { ...JX, recipe: { key: "aurora/quarterly" }, recipeScope: { jurisdictions: ["China", "France"] } };
+  const resolved = { ...JX, recipe: { key: "demo-brand-owner/quarterly" }, recipeScope: { jurisdictions: ["China", "France"] } };
   assert.deepEqual(resolveEffectiveScope({}, null, resolved).jurisdictions, ["China", "France"],
     "the ladder reads the recipe — and the guard measures the same ladder");
   // …and it is not merely un-refused: foldRecipeScope writes the saved search's territories into the job
@@ -88,7 +88,7 @@ test("the guard and the previews resolve scope through ONE ladder — a saved se
     { errors: [], warnings: [] });
   // and the ladder feeds the PRODUCT rule too: a recipe carrying two territories on a one-country
   // product is a two-country Full country search, and the refusal counts what the ladder resolved.
-  const two = { ...FULL_COUNTRY, recipe: { key: "aurora/quarterly" }, recipeScope: { jurisdictions: ["United States", "France"] } };
+  const two = { ...FULL_COUNTRY, recipe: { key: "demo-brand-owner/quarterly" }, recipeScope: { jurisdictions: ["United States", "France"] } };
   const d1 = errs({ job: {}, profile: null, resolved: two });
   assert.equal(d1.length, 1, JSON.stringify(d1));
   assert.match(d1[0], /this request names 2 \("United States", "France"\)/,
@@ -258,7 +258,7 @@ test("worldwide WINS over the account's default territories — it is not a gap 
   // The shape that sold "everywhere" and ran seven countries: an account with default territories, and a
   // request whose worldwide instruction had nowhere to live. The stamp is where it lives now, and the
   // ladder short-circuits on it before the account rung is ever reached.
-  const seven = { defaultJurisdictions: ["NZ", "PH", "IN", "RU", "ID", "ZA", "TR"] };
+  const seven = { defaultJurisdictions: ["BR", "MX", "CL", "AR", "PE", "CO", "UY"] };
   const out = errs({ job: { geography: { mode: "worldwide", origin: "request" } }, profile: seven, resolved: FULL_COUNTRY });
   assert.equal(out.length, 1, JSON.stringify(out));
   assert.match(out[0], /no territory \(worldwide\)/, "measured as worldwide, not as the account's seven");

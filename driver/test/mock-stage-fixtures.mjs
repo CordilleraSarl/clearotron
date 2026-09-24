@@ -127,7 +127,7 @@ export function mockRecordDispositions(dir, half) {
 // validates. Source order: the common-law task message's dictated PLATFORMS block → the deterministic
 // grid-spec.json the driver wrote (which can DIFFER from the profile when channels are class-derived, D) →
 // the frozen profile sidecar → the historical gaming default.
-const GAMING_FALLBACK = ["store.steampowered.com", "store.epicgames.com", "play.google.com", "apps.apple.com", "apps.aurora.com", "itch.io"];
+const GAMING_FALLBACK = ["store.steampowered.com", "store.epicgames.com", "play.google.com", "apps.apple.com", "apps.demo-brand-owner.example", "itch.io"];
 // A1 split: the dictated spec a message points at — the canonical grid-spec.json (single-member sweep),
 // a HALF spec (grid_spec_path: …grid-spec.half-<h>.json on the half member's fresh sweep), or the half
 // spec a routed followup names ("your half-grid spec: …"). Null when the message carries none (legacy

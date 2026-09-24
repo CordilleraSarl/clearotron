@@ -24,7 +24,7 @@
 // does.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readdirSync, readFileSync, mkdtempSync, copyFileSync } from "node:fs";
+import { readdirSync, readFileSync, mkdtempSync, copyFileSync, mkdirSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
@@ -34,7 +34,7 @@ import { loadProfiles, loadProjects } from "../profiles.mjs";
 const PROFILES = join(dirname(fileURLToPath(import.meta.url)), "..", "profiles");
 const OFFERED = ["generic"];
 const DEMO = ["demo-brand-owner"];
-const FIXTURES = ["aurora", "petcary", "zephyr"];
+const FIXTURES = ["petcary", "zephyr"];
 
 const onDisk = () => readdirSync(PROFILES).filter((f) => f.endsWith(".json")).map((f) => f.replace(/\.json$/, "")).sort();
 const marked = (key) => JSON.parse(readFileSync(join(PROFILES, `${key}.json`), "utf8"))?.testFixture === true;
@@ -126,8 +126,18 @@ test("the demo's own projects are skipped when hidden, and reachable when asked 
 });
 
 test("the fixtures' own projects ARE reachable when the fixtures are", () => {
-  const roster = loadProfiles({ force: true, includeTestFixtures: true });
-  const keys = [...loadProjects({ force: true, profiles: roster }).keys()];
-  assert.ok(keys.some((k) => k.startsWith("aurora/")),
+  // No shipped fixture carries a project, so a store of its own holds one: a fixture account and a project under it.
+  const store = mkdtempSync(join(tmpdir(), "fixture-store-"));
+  copyFileSync(join(PROFILES, "generic.json"), join(store, "generic.json"));
+  copyFileSync(join(PROFILES, "zephyr.json"), join(store, "fixture.json"));
+  mkdirSync(join(store, "projects", "fixture"), { recursive: true });
+  copyFileSync(join(PROFILES, "projects", "demo-brand-owner", "japan-and-korea-app-launch.json"), join(store, "projects", "fixture", "launch.json"));
+  const roster = loadProfiles({ dir: store, force: true, includeTestFixtures: true });
+  assert.ok(roster.has("fixture"), "the store's fixture account is on the roster it was asked for");
+  const keys = [...loadProjects({ dir: store, force: true, profiles: roster }).keys()];
+  assert.ok(keys.some((k) => k.startsWith("fixture/")),
     "skipping a fixture's projects must be conditional on the fixture being absent, not unconditional");
+  const hidden = new Map([...roster].filter(([k]) => k !== "fixture"));
+  assert.deepEqual([...loadProjects({ dir: store, force: true, profiles: hidden }).keys()], [],
+    "with the fixture hidden its project is skipped, not refused as a project with no customer");
 });

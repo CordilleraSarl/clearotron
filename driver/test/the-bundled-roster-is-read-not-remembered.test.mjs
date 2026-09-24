@@ -33,8 +33,8 @@ const storeOf = (names) => {
 };
 
 test("the keys come from the directory, so a bundle added to the tree is in the roster the same day", () => {
-  const dir = storeOf([GENERIC_KEY, "zephyr", "aurora", "newcomer"]);
-  assert.deepEqual(bundledDemoKeys({ profilesDir: dir }), ["aurora", "newcomer", "zephyr"],
+  const dir = storeOf([GENERIC_KEY, "zephyr", "demo-brand-owner", "newcomer"]);
+  assert.deepEqual(bundledDemoKeys({ profilesDir: dir }), ["demo-brand-owner", "newcomer", "zephyr"],
     "a file present in the directory did not reach the derived roster — this is the staleness the "
     + "hand-maintained list had");
 });

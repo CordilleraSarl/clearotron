@@ -77,13 +77,13 @@ test("an EMPTY configuration store is a working install, not a refusal", () => {
 test("the overlay wins PER KEY, and bundled CUSTOMERS never join a configured roster", () => {
   const dir = mkdtempSync(join(tmpdir(), "cfg-overlay-"));
   try {
-    const bundled = JSON.parse(readFileSync(join(BUNDLED, "aurora.json"), "utf8"));
+    const bundled = JSON.parse(readFileSync(join(BUNDLED, "demo-brand-owner.json"), "utf8"));
     bundled.matchDomains = ["overlaid-example.test"];
-    writeFileSync(join(dir, "aurora.json"), JSON.stringify(bundled));
+    writeFileSync(join(dir, "demo-brand-owner.json"), JSON.stringify(bundled));
     const got = loadWith(dir);
     assert.equal(got.error, undefined, got.error);
     assert.ok(got.keys.includes("generic"), "the universal fallback is always reachable");
-    assert.ok(got.keys.includes("aurora"), "the store's own file is there");
+    assert.ok(got.keys.includes("demo-brand-owner"), "the store's own file is there");
     assert.ok(!got.keys.includes("petcary"),
       "and a BUNDLED customer the deployment never configured must NOT appear in its roster — "
       + "otherwise a typo'd customer key gets checked against our demo fixtures");
@@ -201,7 +201,7 @@ test("an EXPLICIT dir ignores the env overlay entirely — the boundary, in the 
     // A customer that exists ONLY in the env store. If the boundary fails, it appears in the roster
     // that an explicit `dir` asked for — which is how profile-service's write path and every fixture
     // that builds its own roster would start seeing customers they never created.
-    const leaked = JSON.parse(readFileSync(join(BUNDLED, "aurora.json"), "utf8"));
+    const leaked = JSON.parse(readFileSync(join(BUNDLED, "demo-brand-owner.json"), "utf8"));
     leaked.matchDomains = ["leaked-1777.example"];
     writeFileSync(join(envDir, "leaked.json"), JSON.stringify(leaked));
 

@@ -6,9 +6,9 @@
 //   1. every shipped risk-framework*.md has a parsing .manifest.json sidecar (vocabulary for code);
 //   2. the prose deck and its manifest agree — one heading per band label, the entity named in the prose;
 //   3. the shipped decks carry the doc-50 facts (house 4 bands w/ Moderate + "the company"; zephyr the two
-//      deltas — Medium + Zephyr/Volt/Kaskade; aurora matrix-shaped, 5 bands incl. Low);
+//      deltas — Medium + Zephyr/Volt/Kaskade; demo matrix-shaped, 5 bands incl. Low);
 //   4. bands-shaped decks carry NO residual Composite/Level rating machinery (that mechanism now lives only
-//      in matrix-shaped frameworks that state it as their own — e.g. Aurora Interactive's);
+//      in matrix-shaped frameworks that state it as their own — e.g. Demo Brand Owner's);
 //   5. the manifest layer itself rejects rule-shaped content (digit labels, thresholds) — vocabulary only.
 //
 // ── IT USED TO CHECK ONLY THE FOUR DECKS THIS REPOSITORY SHIPS ─────────────────────────────────────────
@@ -159,8 +159,8 @@ test("every reachable framework the renderer can draw, and the ones it cannot ar
 //
 // The silent case is NOT a missing file — that resolves to a base path nothing holds and the read throws
 // by name. It is a deck ABSENT FROM THE STORE and PRESENT IN THE REPOSITORY: readable, valid, and not the
-// customer's. `risk-framework-aurora.md` and `risk-framework-zephyr.md` ship under the names customers use
-// for their own, so this is reachable by deleting one file.
+// customer's. Every deck the repository ships answers for a store that lacks it, `risk-framework-zephyr.md`
+// under the name a customer uses for its own, so this is reachable by deleting one file.
 test("a deck the store does not hold, answered by the repository's file of the same name, is reported", () => {
   const store = mkdtempSync(join(tmpdir(), "fw-store-"));
   const before = process.env.CLEAROTRON_INSTRUCTIONS_DIR;
@@ -174,15 +174,15 @@ test("a deck the store does not hold, answered by the repository's file of the s
     const held = config.resolveSkillPathReport("skills/clearance-search/risk-framework-zephyr.md");
     assert.equal(held.layer, "overlay", "the store's own deck is served from the store");
 
-    const swapped = config.resolveSkillPathReport("skills/clearance-search/risk-framework-aurora.md");
+    const swapped = config.resolveSkillPathReport("skills/clearance-search/risk-framework-demo.md");
     assert.equal(swapped.layer, "base", "a deck the store does not hold is served by the repository's copy");
-    assert.equal(swapped.path, join(SKILL_DIR, "risk-framework-aurora.md"));
+    assert.equal(swapped.path, join(SKILL_DIR, "risk-framework-demo.md"));
 
     const absent = config.resolveSkillPathReport("skills/clearance-search/risk-framework-nobody-wrote.md");
     assert.equal(absent.layer, "missing", "held by neither root — the read that follows reports it");
 
     // and the pre-flight a person runs says it in a sentence rather than leaving them the layer word
-    const r = preflightFramework("skills/clearance-search/risk-framework-aurora.md");
+    const r = preflightFramework("skills/clearance-search/risk-framework-demo.md");
     assert.equal(r.substitutions.length, 2, "the deck AND its manifest both came from the repository");
     assert.match(r.substitutions[0].say, /not the configured store/);
     assert.equal(preflightFramework("skills/clearance-search/risk-framework-zephyr.md").substitutions.length, 0,
@@ -214,14 +214,14 @@ test("zephyr: the house default with exactly the two deck deltas (band 3 'Medium
   assert.equal(m.structure.kind, "bands");
 });
 
-test("aurora: matrix-shaped, 5 bands ending in Low (its Level-A output), entity Aurora Interactive", () => {
-  const m = loadFrameworkManifest(ROOT, "skills/clearance-search/risk-framework-aurora.md");
-  assert.equal(m.framework_key, "aurora");
+test("demo: matrix-shaped, 5 bands ending in Low (its Level-A output), entity Demo Brand Owner", () => {
+  const m = loadFrameworkManifest(ROOT, "skills/clearance-search/risk-framework-demo.md");
+  assert.equal(m.framework_key, "demo");
   assert.deepEqual(m.bands.map((b) => b.label), ["Very High", "High", "Medium", "Manageable", "Low"]);
-  assert.equal(m.entity_label, "Aurora Interactive");
+  assert.equal(m.entity_label, "Demo Brand Owner");
   assert.equal(m.structure.kind, "matrix");
-  const prose = readFileSync(join(SKILL_DIR, "risk-framework-aurora.md"), "utf8");
-  assert.match(prose, /ceilings are hard/i, "the matrix framework states its own ceilings in the deck prose");
+  const prose = readFileSync(join(SKILL_DIR, "risk-framework-demo.md"), "utf8");
+  assert.match(prose, /ceilings are honoured as written/i, "the matrix framework states its own ceilings in the deck prose");
 });
 
 // ── 4: bands-shaped decks carry no residual score machinery ─────────────────────────────────────────────

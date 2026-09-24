@@ -141,10 +141,10 @@ test("rollupStatus still shows runs that carry retired:false or no flag at all",
 
 test("seed + recordTransition write an answerable status from the first moment", () => {
   const studioRoot = mkdtempSync(join(tmpdir(), "prog-seed-"));
-  const runDir = join(studioRoot, "tmp9-aurora", "2026-06-02-copper-spire");
+  const runDir = join(studioRoot, "tmp9-demo-brand-owner", "2026-06-02-copper-spire");
   mkdirSync(runDir, { recursive: true });
   const ctx = {
-    run: { runDir, studioRoot, slug: "tmp9-aurora", codename: "copper-spire", date: "2026-06-02" },
+    run: { runDir, studioRoot, slug: "tmp9-demo-brand-owner", codename: "copper-spire", date: "2026-06-02" },
     job: { id: "j9", forwarder: "requester", ref: "TMP9001", markName: "AURORA", classes: [9] },
     agent: "clawdi",
   };
@@ -441,10 +441,10 @@ test("…and the first write still lands, so hardening never becomes silence", (
 // whole of blind-frame, frame-diff or doubt-closure every surface went on naming the stage before it.
 test("an unmapped stage records what the run is doing, and still moves no step", () => {
   const studioRoot = mkdtempSync(join(tmpdir(), "prog-unmapped-"));
-  const runDir = join(studioRoot, "tmp9-aurora", "2026-06-02-copper-spire");
+  const runDir = join(studioRoot, "tmp9-demo-brand-owner", "2026-06-02-copper-spire");
   mkdirSync(runDir, { recursive: true });
   const ctx = {
-    run: { runDir, studioRoot, slug: "tmp9-aurora", codename: "copper-spire", date: "2026-06-02" },
+    run: { runDir, studioRoot, slug: "tmp9-demo-brand-owner", codename: "copper-spire", date: "2026-06-02" },
     job: { id: "j9", forwarder: "requester", ref: "TMP9002", markName: "AURORA", classes: [9] },
     agent: "clawdi",
   };
@@ -473,9 +473,9 @@ test("an unmapped stage cannot pull the displayed step backwards", () => {
   // The monotonic guard covers a mapped stage. This pins that the unmapped write does not reach the step
   // fields at all: it passes no stepIndex, so there is nothing for the guard to have to catch.
   const studioRoot = mkdtempSync(join(tmpdir(), "prog-unmapped-back-"));
-  const runDir = join(studioRoot, "tmp9-aurora", "2026-06-02-copper-spire");
+  const runDir = join(studioRoot, "tmp9-demo-brand-owner", "2026-06-02-copper-spire");
   mkdirSync(runDir, { recursive: true });
-  const ctx = { run: { runDir, studioRoot, slug: "tmp9-aurora", codename: "copper-spire", date: "2026-06-02" },
+  const ctx = { run: { runDir, studioRoot, slug: "tmp9-demo-brand-owner", codename: "copper-spire", date: "2026-06-02" },
     job: { id: "j9", forwarder: "requester", ref: "TMP9003", markName: "AURORA", classes: [9] }, agent: "clawdi" };
   seedRunStatus(ctx);
   recordTransition(ctx, "publish");                 // the furthest step this run reaches

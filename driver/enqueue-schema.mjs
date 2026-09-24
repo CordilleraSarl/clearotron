@@ -1002,7 +1002,7 @@ export const EXAMPLE_JOB = {
                                         // native-language investigation. It is AUTOMATIC on a Full
                                         // country search and not offered elsewhere — asking for it there
                                         // clarifies rather than being recorded and ignored.
-  // recipeKey: "quarterly-screen",     // OPTIONAL alternative selector: a customer's SAVED search (its
+  // recipeKey: "standard-clearance",   // OPTIONAL alternative selector: a customer's SAVED search (its
                                         // base product + component toggles). Mutually exclusive with
                                         // product. Always honored (the switch that could shut this door
                                         // was retired 2026-07-27).
@@ -1010,7 +1010,7 @@ export const EXAMPLE_JOB = {
                                         // is mark_sent by the courier WITHOUT an email send.
   // parentRunId: "novapulse-cedar",    // OPTIONAL escalation lineage: the run this one escalates from
                                         // (e.g. a knockout HIGH mark → this clearotron). Recorded, not yet resolved.
-  projectKey: "console-ecosystem",      // spec 62 (OPTIONAL): the PROJECT/engagement under the customer whose
+  projectKey: "japan-and-korea-app-launch", // spec 62 (OPTIONAL): the PROJECT/engagement under the customer whose
                                         // overlay (its own marketplaces/classes/sector/posture) rates this
                                         // matter; omit ⇒ runs on the customer profile. Unknown key ⇒ clarify.
   customer: "Demo Brand Owner",                  // applicant/owner → affiliate self-exclusion set (§B3.2)

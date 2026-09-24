@@ -37,7 +37,8 @@ const { describeOptions } = await import("../lib/options.mjs");
 // — the wall's default, read rather than restated. These arms are about the
 // allowance being the LEDGER's number and the wall's own; a literal here pins the value instead, and
 // went red on a ruled change to the number rather than on a defect.
-const { DEFAULT_CLIENT_DAILY_RUNS } = await import("../../driver/usage-ledger.mjs");
+// The demo account sets its own runCaps; the wall's default for an account with none is pinned in runcaps-default.test.mjs.
+const DEMO_DAILY_RUNS = JSON.parse(readFileSync(new URL("../../driver/profiles/demo-brand-owner.json", import.meta.url), "utf8")).runCaps.dailyRuns;
 const { authorize } = await import("../lib/scope.mjs");
 const { ORDERABLE_PRODUCTS } = await import("../../driver/search-policy.mjs");
 const { maxNamesFor, productSpec } = await import("../../driver/products.mjs");
@@ -46,13 +47,13 @@ const { maxNamesFor, productSpec } = await import("../../driver/products.mjs");
 const { TOOL_DEFS, tools, presentForPrincipal } = await import("../server.mjs");
 const { TOOL_SCOPES } = await import("../lib/scope.mjs");
 
-const CLIENT = { kind: "account", runId: null, sub: "lawyer@aurora.example", accounts: ["aurora"] };
+const CLIENT = { kind: "account", runId: null, sub: "lawyer@demo-brand-owner.example", accounts: ["demo-brand-owner"] };
 
 // ---- 1. the leak scan ---------------------------------------------------------------------------
 
 test("NOTHING staff-facing reaches a client's assistant — the whole response is scanned", () => {
   // every principal shape, so no branch escapes the scan
-  for (const scope of [CLIENT, { kind: "account", accounts: ["aurora", "zephyr"], sub: "l@x.example" },
+  for (const scope of [CLIENT, { kind: "account", accounts: ["demo-brand-owner", "zephyr"], sub: "l@x.example" },
     { kind: "ops", accounts: "*", sub: "local" }, { kind: "internal", accounts: "*", sub: "staff@firm.example" }]) {
     const blob = JSON.stringify(describeOptions({}, { scope }));
     assert.doesNotMatch(blob, /(CLEAROTRON|PORTAL|CF_ACCESS|MCP)_[A-Z_]+/,
@@ -206,15 +207,15 @@ test("an OMITTED profileKey is legal and answers from the session's own grant", 
   // exact dead end it exists to close.
   assert.doesNotThrow(() => authorize(CLIENT, "describe_options", {}));
   const out = describeOptions({}, { scope: CLIENT });
-  assert.equal(out.account.profileKey, "aurora");
-  assert.equal(out.account.name, "Aurora Interactive");
+  assert.equal(out.account.profileKey, "demo-brand-owner");
+  assert.equal(out.account.name, "Demo Brand Owner");
 });
 
 test("a session holding SEVERAL accounts and naming none is given the list, not a guess", () => {
-  const multi = { kind: "account", accounts: ["aurora", "zephyr"], sub: "l@vendor.example" };
+  const multi = { kind: "account", accounts: ["demo-brand-owner", "zephyr"], sub: "l@vendor.example" };
   const out = describeOptions({}, { scope: multi });
   assert.equal(out.account, null, "guessing which of two accounts they meant would be worse than asking");
-  assert.deepEqual(out.accountsGranted.map((a) => a.profileKey), ["aurora", "zephyr"]);
+  assert.deepEqual(out.accountsGranted.map((a) => a.profileKey), ["demo-brand-owner", "zephyr"]);
   assert.ok(out.accountsGranted.every((a) => a.name), "the keys alone are not a question a user can answer");
   // …and naming one resolves it
   assert.equal(describeOptions({ profileKey: "zephyr" }, { scope: multi }).account.profileKey, "zephyr");
@@ -222,8 +223,8 @@ test("a session holding SEVERAL accounts and naming none is given the list, not 
 
 test("a NAMED account is grant-gated exactly like plan_run/start_run", () => {
   assert.throws(() => authorize(CLIENT, "describe_options", { profileKey: "zephyr" }),
-    /grant \[aurora\] does not include account "zephyr"/);
-  const opsScoped = { kind: "ops", accounts: ["aurora"], sub: "connector" };
+    /grant \[demo-brand-owner\] does not include account "zephyr"/);
+  const opsScoped = { kind: "ops", accounts: ["demo-brand-owner"], sub: "connector" };
   assert.throws(() => authorize(opsScoped, "describe_options", { profileKey: "celta" }), /does not include account "celta"/);
   assert.doesNotThrow(() => authorize(opsScoped, "describe_options", {}), "the ops branch keeps the same omission rule");
 });
@@ -254,8 +255,8 @@ test("saved searches: a store whose directory refuses to be read is not reported
   // The walked case: a store holding a real saved search, made unreadable by its permissions. It came back
   // as the empty list with no note, which is what an account with none gets.
   const dir = mkdtempSync(join(tmpdir(), "options-recipes-shut-"));
-  mkdirSync(join(dir, "aurora"), { recursive: true });
-  writeFileSync(join(dir, "aurora", "quarterly.json"), JSON.stringify({ version: 1, label: "Quarterly screen", base: "knockout-search" }));
+  mkdirSync(join(dir, "demo-brand-owner"), { recursive: true });
+  writeFileSync(join(dir, "demo-brand-owner", "quarterly.json"), JSON.stringify({ version: 1, label: "Quarterly screen", base: "knockout-search" }));
   const before = process.env.CLEAROTRON_RECIPES_DIR;
   process.env.CLEAROTRON_RECIPES_DIR = dir;
   try {
@@ -264,14 +265,14 @@ test("saved searches: a store whose directory refuses to be read is not reported
     assert.deepEqual(client.savedSearches, []);
     assert.match(client.savedSearchesNote ?? "", /could not be read/, "an unreadable store read as one with none");
     assert.doesNotMatch(client.savedSearchesNote, /CLEAROTRON_|\/|EACCES/, "a client was shown the store's path or error");
-    const staff = describeOptions({ profileKey: "aurora" }, { scope: { kind: "ops", accounts: "*" } }).account;
+    const staff = describeOptions({ profileKey: "demo-brand-owner" }, { scope: { kind: "ops", accounts: "*" } }).account;
     assert.match(staff.savedSearchesNote ?? "", /could not be read/);
     assert.ok(staff.savedSearchesNote.includes(dir), `the people who run the installation were not told which store: ${staff.savedSearchesNote}`);
     // Staff who came in through the account door see everything, and are told the same.
     const lead = describeOptions({}, { scope: { ...CLIENT, everything: true } }).account;
     assert.ok(lead.savedSearchesNote?.includes(dir), `a person with access to everything was not told which store: ${lead.savedSearchesNote}`);
     // A caller with no scope at all is not assumed to run the installation.
-    const nobody = describeOptions({ profileKey: "aurora" }, {}).account;
+    const nobody = describeOptions({ profileKey: "demo-brand-owner" }, {}).account;
     assert.doesNotMatch(nobody?.savedSearchesNote ?? "could not be read", /\/|EACCES/, "a session with no scope was shown the store's path");
     // THE CONTROL: readable again, the saved search is listed and nothing is claimed.
     chmodSync(dir, 0o700);
@@ -289,8 +290,8 @@ test("saved searches: a store that cannot be READ is not reported as having none
   // The same empty list an account with none gets, and that was the defect: an assistant told "none"
   // tells the client so. A store that fails to load carries a note now, and the note names no variable.
   const dir = mkdtempSync(join(tmpdir(), "options-recipes-"));
-  mkdirSync(join(dir, "aurora"), { recursive: true });
-  writeFileSync(join(dir, "aurora", "broken.json"), "{ this is not json");
+  mkdirSync(join(dir, "demo-brand-owner"), { recursive: true });
+  writeFileSync(join(dir, "demo-brand-owner", "broken.json"), "{ this is not json");
   const before = process.env.CLEAROTRON_RECIPES_DIR;
   process.env.CLEAROTRON_RECIPES_DIR = dir;
   try {
@@ -299,7 +300,7 @@ test("saved searches: a store that cannot be READ is not reported as having none
     assert.match(out.account.savedSearchesNote ?? "", /could not be read/, "a failed store must say so rather than read as none");
     assert.doesNotMatch(out.account.savedSearchesNote, /CLEAROTRON_|\//, "the note may reach a client, so it names no variable and no path");
     // THE CONTROL: the same store with the unreadable file gone. The note goes with it.
-    rmSync(join(dir, "aurora", "broken.json"));
+    rmSync(join(dir, "demo-brand-owner", "broken.json"));
     assert.equal(describeOptions({}, { scope: CLIENT }).account.savedSearchesNote, null, "the same store, readable, carries no note");
   } finally {
     if (before === undefined) delete process.env.CLEAROTRON_RECIPES_DIR; else process.env.CLEAROTRON_RECIPES_DIR = before;
@@ -314,19 +315,19 @@ test("the allowance is the LEDGER's number — the same one the admission wall c
   mkdirSync(studio, { recursive: true });
   const now = Date.now();
   writeFileSync(join(studio, ".matter-ledger.jsonl"), [
-    { profileKey: "aurora", ts: now, clientPrincipal: true },
-    { profileKey: "aurora", ts: now, clientPrincipal: true, failed: true },   // a failure does not spend the day
+    { profileKey: "demo-brand-owner", ts: now, clientPrincipal: true },
+    { profileKey: "demo-brand-owner", ts: now, clientPrincipal: true, failed: true },   // a failure does not spend the day
     { profileKey: "zephyr", ts: now, clientPrincipal: true },                 // another account's row
   ].map((r) => JSON.stringify(r)).join("\n") + "\n");
   const a = describeOptions({}, { scope: CLIENT, now }).account.allowance;
-  assert.equal(a.dailyRuns, DEFAULT_CLIENT_DAILY_RUNS, "aurora sets no runCaps — the wall's own default");
+  assert.equal(a.dailyRuns, DEMO_DAILY_RUNS, "demo-brand-owner's own runCaps, the figure the wall counts for it");
   assert.equal(a.usedToday, 1, "the failed row was counted against the client's day");
-  assert.equal(a.remainingToday, DEFAULT_CLIENT_DAILY_RUNS - 1);
+  assert.equal(a.remainingToday, DEMO_DAILY_RUNS - 1);
   assert.equal(a.usedThisMonth, 2, "a failed run still spent, and the monthly figure says so");
   assert.equal(a.capped, true);
   assert.match(a.note, /resets at midnight UTC/);
   // STAFF are not capped, and are told that rather than shown a limit that does not bind them
-  assert.equal(describeOptions({ profileKey: "aurora" }, { scope: { kind: "ops", accounts: "*" }, now }).account.allowance.capped, false);
+  assert.equal(describeOptions({ profileKey: "demo-brand-owner" }, { scope: { kind: "ops", accounts: "*" }, now }).account.allowance.capped, false);
 });
 
 test("a ledger the menu could not read reports NO FIGURES and says so — never a full day (#429)", () => {
@@ -349,11 +350,10 @@ test("a ledger the menu could not read reports NO FIGURES and says so — never 
     assert.equal(a.usedToday, null, "a count nobody took went out as a number");
     assert.equal(a.remainingToday, null);
     assert.equal(a.usedThisMonth, null);
-    // The limit is the WALL'S DEFAULT here, not the profile's — aurora sets no runCaps. (The note this
-    // line used to carry said "came off the profile", which was never true of this fixture.) The point
+    // The limit is the PROFILE's here — demo-brand-owner sets its own runCaps. The point
     // stands either way: an unreadable ledger loses the COUNTS and keeps the LIMIT, because the limit is
     // known without reading anything.
-    assert.equal(a.dailyRuns, DEFAULT_CLIENT_DAILY_RUNS, "the LIMIT is knowable without the ledger and is still a fact");
+    assert.equal(a.dailyRuns, DEMO_DAILY_RUNS, "the LIMIT is knowable without the ledger and is still a fact");
     assert.equal(a.capped, true);
     assert.match(a.note, /could not be read/, "the one thing an assistant reliably relays is the sentence");
   } finally {
@@ -369,7 +369,7 @@ test("a ledger that WAS read says complete:true beside its figures", () => {
   mkdirSync(studio, { recursive: true });
   const now = Date.now();
   writeFileSync(join(studio, ".matter-ledger.jsonl"),
-    JSON.stringify({ profileKey: "aurora", ts: now, clientPrincipal: true }) + "\n");
+    JSON.stringify({ profileKey: "demo-brand-owner", ts: now, clientPrincipal: true }) + "\n");
   const a = describeOptions({}, { scope: CLIENT, now }).account.allowance;
   assert.equal(a.complete, true);
   assert.equal(a.usedToday, 1);

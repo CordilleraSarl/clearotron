@@ -27,7 +27,7 @@ const LADDER: readonly Band[] = [
 ]
 
 const run = (over: Partial<Run> & { runId: string }): Run => ({
-  account: 'aurora',
+  account: 'demo-brand-owner',
   title: 'AquaPlus',
   markName: 'AquaPlus',
   product: null,
@@ -93,7 +93,7 @@ test('a mark in flight reports no band rather than its previous one', () => {
 
 test('marks are keyed by ACCOUNT as well as name — one client never sees another’s reads', () => {
   const marks = marksOf([
-    run({ runId: 'ours', account: 'aurora' }),
+    run({ runId: 'ours', account: 'demo-brand-owner' }),
     run({ runId: 'theirs', account: 'borealis' }),
   ])
   assert.equal(marks.length, 2, 'the same word for two companies is two marks')
