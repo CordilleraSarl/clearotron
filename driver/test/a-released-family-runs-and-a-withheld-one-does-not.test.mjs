@@ -20,6 +20,9 @@ import { recordReleasedFamilies, recordWithheldFamilies, readWithheldFamilies, r
   releasedFamiliesPath, splitWaitingFamilies } from "../withheld-families.mjs";
 import { coverageFormRows, findCoverageFormViolations } from "../coverage-form.mjs";
 import { makeExecutePlan } from "../../providers/_shared/execute-plan.mjs";
+import ExcelJS from "exceljs";
+import { buildAudit } from "../publish/xlsx.mjs";
+import { releasedFamilyRows } from "../publish/index.mjs";
 
 const MARK = "VELTRIS";
 const manifest = {
@@ -166,5 +169,33 @@ test("the turn's latest decision on a family stands: a release replaces a withho
     assert.ok(!releasedFamilyQids(dir).has(q) && readWithheldFamilies(dir)[q], "the withholding did not replace the release");
     const again = await execute(dir, [q]);
     assert.deepEqual(again.wire, [], "a family withheld after its release still reached the provider");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("the audit workbook's coverage sheet carries each released family and its reason", async () => {
+  const dir = runDir();
+  const book = join(dir, "audit.xlsx");
+  try {
+    decideAll(dir);
+    const rows = releasedFamilyRows(dir);
+    assert.equal(rows.length, 2, "not one row per released family");
+    assert.ok(rows.every((r) => r.note === RELEASE && r.state === "note"));
+    assert.ok(rows.every((r) => /^main register sweep \/ /.test(r.area)), "the area is not the driver's reader label for the family");
+    // A withheld family's reason stays whole too, in the cell that says what was not done.
+    const withheldRow = { area: "main register sweep / exact: WELTRIS", state: "not-searched", note: WITHHOLD, done: "", left: WITHHOLD };
+    await buildAudit({ findings: [], coverage: [], fetchState: {}, releasedFamilies: rows, withheldFamilies: [withheldRow] }, null, book, MARK, {});
+    const wb = new ExcelJS.Workbook();
+    await wb.xlsx.readFile(book);
+    const ws = wb.getWorksheet("Coverage & gaps");
+    assert.ok(ws, "the workbook has no Coverage & gaps sheet");
+    const text = [];
+    ws.eachRow((row) => text.push(row.values.slice(1).map((v) => String(v ?? "")).join(" | ")));
+    const released = text.filter((t) => t.includes(RELEASE));
+    assert.equal(released.length, 2, `the release reasons did not reach the sheet:\n${text.join("\n")}`);
+    assert.ok(released.every((t) => / \| Note \| /.test(t)), "a released family's row does not read Note");
+    // The reason is one cell: cut at its ";" it read as half done and half left.
+    assert.ok(released.every((t) => t.endsWith(`| ${RELEASE} | —`)), `a release reason was split across two cells:\n${released.join("\n")}`);
+    const withheld = text.filter((t) => t.includes(WITHHOLD));
+    assert.deepEqual(withheld, [`main register sweep / exact: WELTRIS | Open |  | ${WITHHOLD}`], "the withheld family's reason was split, or claimed as done");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
