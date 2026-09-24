@@ -446,7 +446,7 @@ export const E3_BACKLOG = [
     kind: "literal-json-skeleton",
     where: "driver/skills/frame-diff/SKILL.md:44-48",
     surface: "skill-file",
-    evidence: "A directive may carry a structured `remedy`:\\n```json\\n\"remedy\": { \"terms\": [\"TROPICAL TIKI\", \"ISLAND TIKI\"], \"nice_classes\": [\"5\", \"32\"], \"regions\": [] }\\n```",
+    evidence: "A directive may carry a structured `remedy`:\\n```json\\n\"remedy\": { \"terms\": [\"TROPICAL WAVO\", \"ISLAND WAVO\"], \"nice_classes\": [\"5\", \"32\"], \"regions\": [] }\\n```",
     reparsedBy: "driver/pipeline.mjs runSupplementalSweeps — the remedy lint refuses a label-shaped term; stages.mjs:2809 restates the same shape in the message (\"THE ASK CONTRACT, stated at BOTH levels\")",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },

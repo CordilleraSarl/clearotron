@@ -26,7 +26,7 @@ Work each layer from the actual product the instruction describes — not from c
 Decompose the mark into its element(s) and name the **dominant element** (the spine the analysis will turn on). Then enumerate the neighbours that a searcher must not miss, in **both directions**:
 
 - **Drop** characters: shorten the element (VELTRIN → VELTRI). A dropped letter is the commonest missed-cluster cause — the shorter root is its own crowded field.
-- **Add** characters / **composite**: the element living inside a larger mark (DELPHI Diagnostics, Osler Delphi, Delphic). A composite that shares your dominant element is on the board.
+- **Add** characters / **composite**: the element living inside a larger mark (VELTRI Diagnostics, Osler Veltri, Veltric). A composite that shares your dominant element is on the board.
 - **Phonetic / homophone**: sound-alikes (PHAROLIS / FAROLIS / PHAROLLIS). Carry the `ph`/`f` pair in particular: it sounds identical, files under a different letter, and survives no letter-distance measure — which is the whole reason this class is separate from the two above.
 - **Neighbour**: a one-keystroke real-word or famous-mark neighbour (CHROME on a NOVAPULSE clearance). A famous neighbour is carried for diligence even when off-field.
 

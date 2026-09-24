@@ -171,7 +171,7 @@ are worked examples of the one failure, not its boundary:
 | subsisting | live |
 | senior | earlier, or came first |
 | specification | goods list |
-| DELPH-formative | names built on DELPH- |
+| VELTR-formative | names built on VELTR- |
 | prevail | win |
 | citable prior rights | earlier marks the office can raise against you |
 | vulnerable to a non-use attack | could be cancelled for not being used |

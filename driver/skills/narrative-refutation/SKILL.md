@@ -79,7 +79,7 @@ in the file:
   that means "no finding"; the absence is the statement.
 
 Use the finding's **ordinal**, the number the narrative and `findings.json` already agree on — not the
-mark, not the owner. You are writing them anyway ("Finding 9 — DELPHIC…"); the token is the same fact
+mark, not the owner. You are writing them anyway ("Finding 9 — VELTRIC…"); the token is the same fact
 where a machine can read it.
 
 **What it buys, and it is not bookkeeping.** When every flag carries one, the author is told to change
