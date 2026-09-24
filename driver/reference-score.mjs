@@ -85,7 +85,9 @@ export const REFERENCE_SCHEMA_VERSION = 1;
 // (WHOSE RECORD, below). At 7 a same-name finding or record of a different proprietor filed elsewhere
 // was credited as the lawyer's, and one finding could credit two entries, so v7 recall reads HIGH on a
 // crowded name and v7 noise reads LOW by the findings that credit moved. Not comparable across 7 and 8.
-export const SCORER_VERSION = 8;
+// 9 — an entry named with the searched mark alone is no longer withheld on a same-country record that
+// records no owner: nothing ties that record to the lawyer's. v8 could read such an entry withheld.
+export const SCORER_VERSION = 9;
 
 /**
  * The owner as a person reads it.
@@ -397,7 +399,7 @@ export function satisfiesReference(entry, candidate) {
 // on a matter about a common word, every company in the crowd holds that exact name, several of them in
 // the same country. For it the owner must agree, strictly or with the lawyer's owner name contained
 // whole in the register's (she shortens the company; the register spells it out), and the country only
-// chooses between candidates.
+// chooses between candidates. A candidate with no owner recorded cannot join it by country either.
 //
 // EACH SIDE IS ASKED ONLY WHAT BOTH SIDES CARRY. The owner is compared when the entry and the candidate
 // both name one, the country when both carry one. When neither can be asked — an entry naming neither,
@@ -446,17 +448,19 @@ const IDENTITY_RULES = new Set(["alias", "script"]);
 
 /**
  * How a candidate joins a gold entry beyond its name: a `JOIN` rank, higher is stronger, 0 for no join.
- * When neither the owner nor the country can be asked of this pair, it joins as `unasked`. Pass the
- * name `rule` that matched and a country-only join refuses a near-form. PURE.
+ * When neither the owner nor the country can be asked of this pair, it joins as `unasked`, except an
+ * entry named with the searched mark alone, which joins on its owner or not at all. Pass the name `rule`
+ * that matched and a country-only join refuses a near-form. PURE.
  */
 export function joinRank(entry, candidate, { searchedMark = false, rule = "alias" } = {}) {
   const byOwner = Boolean(ownerKey(entry?.owner) && ownerKey(candidate?.owner));
   const byCountry = (entry?.jurisdictions ?? []).some((j) => territoryKey(j)) && candidateTerritories(candidate).size > 0;
+  if (searchedMark && ownerKey(entry?.owner) && !byOwner) return 0;
   if (!byOwner && !byCountry) return JOIN.unasked;
   const country = byCountry && territoriesMeet(entry, candidate);
   if (byOwner && ownersMatch(entry?.owner, candidate?.owner)) return JOIN.owner;
   if (byOwner && ownerContained(entry?.owner, candidate?.owner)) return searchedMark || country ? JOIN.ownerContained : 0;
-  if (searchedMark && byOwner) return 0;
+  if (searchedMark && ownerKey(entry?.owner)) return 0;
   return country && IDENTITY_RULES.has(rule) ? JOIN.country : 0;
 }
 
@@ -745,8 +749,8 @@ export function scoreRecall({ reference, findings = [], retrieved = [], scopeCla
       ...(registerOnly
         ? { why: collapseReason ?? "withheld could not be computed for this run" }
         : elsewhere.length
-          ? { why: `retrieved ${elsewhere.length} record(s) of this name held by another proprietor or filed `
-            + `elsewhere, none of them this entry's: ${elsewhere.slice(0, 4).map((r) => `${r.mark} (${r.owner ?? "owner unrecorded"})`).join("; ")}` }
+          ? { why: `retrieved ${elsewhere.length} record(s) of this name held by another proprietor, filed `
+            + `elsewhere, or recorded with no owner, none of them this entry's: ${elsewhere.slice(0, 4).map((r) => `${r.mark} (${r.owner ?? "owner unrecorded"})`).join("; ")}` }
           : {}) });
   }
 
