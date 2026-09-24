@@ -109,7 +109,7 @@ test("the diagnosis is WIRED into the fallback — not merely exported", () => {
 // a run actually reached has to be stated by the run, never inferred from an absence of findings.
 test("a named profile keeps its own platforms AND gains the ones the frame named", () => {
   const md = "Search channels: forge.example, plugins.example.org, amazon.com\n";
-  const r = gridChannels({ profilePlatforms: ["amazon.com", "etsy.com"], profileKey: "aurora", matterMd: md });
+  const r = gridChannels({ profilePlatforms: ["amazon.com", "etsy.com"], profileKey: "demo-brand-owner", matterMd: md });
 
   assert.deepEqual(r.channels, ["amazon.com", "etsy.com", "forge.example", "plugins.example.org"],
     "the client's mandate stands and the matter's channels run beside it");
@@ -134,7 +134,7 @@ test("the generic profile still REPLACES, which is the branch that keeps a regul
 test("a frame that named nothing changes nothing, on either profile", () => {
   // THE CONTROL. Back-compatible in the direction that matters: a run whose frame says nothing gets
   // exactly the platforms it got before, and the four silences keep their own diagnosis.
-  for (const profileKey of ["aurora", "generic"]) {
+  for (const profileKey of ["demo-brand-owner", "generic"]) {
     const r = gridChannels({ profilePlatforms: ["amazon.com"], profileKey, matterMd: "" });
     assert.deepEqual(r.channels, ["amazon.com"], `${profileKey} lost its platforms when the frame was silent`);
     assert.deepEqual(r.added, []);

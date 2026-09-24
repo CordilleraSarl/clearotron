@@ -31,22 +31,20 @@ const ACME = { name: "Acme Industrial", matchDomains: ["acme.example"], industry
 
 // ---- shipped data files (the regression anchor) ---------------------------------------------------
 
-// The shipped aurora grid as edited via the config UI 2026-07-04 (cea0ca2f): +mobygames.com, explicit
-// sparse density, +class 35, "Global" jurisdictions, +Activision/Blizzard/King, summary delivery.
+// The shipped demo account is the regression anchor for a dense grid: its platforms, the floor and batch
+// derived from them, and its own classes, territories, self-exclusions and delivery.
 
-test("shipped profile: aurora — gaming grid (floor 7, batch 14) + its own classes/jurisdictions/self-exclusions", () => {
-  const au = loadProfiles({ force: true }).get("aurora");
-  assert.ok(au, "aurora.json exists");
-  assert.deepEqual(au.platforms, GAMING_DOMAINS, "the 6 gaming store domains, verbatim");
-  assert.equal(derivedFloor(au), 7, "6 store + 1 web");
-  assert.equal(derivedBatchSize(au), 14, `the shipped ≤14-variant batch (${SAFE_GRID_CELLS}/7)`);
-  assert.deepEqual(au.matchDomains, ["aurora-interactive.example"]);
-  // Aurora defaults moved OUT of the skill prose INTO the profile (lossless extraction, this PR):
-  assert.deepEqual(au.defaultClasses, [9, 28, 41, 42], "gaming classes, now explicit in the profile");
-  assert.deepEqual(au.defaultJurisdictions, ["NZ", "PH", "IN", "RU", "ID", "ZA", "TR"], "the tail-market bias, moved out of matter-frame into the profile");
-  assert.ok(au.selfExclusionOwners.includes("Aurora Interactive") && au.selfExclusionOwners.includes("Northwind Studios"),
-    "self-exclusion seed includes Aurora Interactive + acquired studios (fires only when the applicant is Aurora Interactive)");
-  assert.deepEqual(au.delivery, { email: "table", privileged: true });
+test("shipped profile: demo-brand-owner — dense grid (floor 12, batch 1) + its own classes/jurisdictions/self-exclusions", () => {
+  const demo = loadProfiles({ force: true, includeDemo: true }).get("demo-brand-owner");
+  assert.ok(demo, "demo-brand-owner.json exists");
+  assert.equal(demo.platforms.length, 11, "the demo's 11 platforms, as shipped");
+  assert.equal(derivedFloor(demo), 12, "11 platforms + 1 web");
+  assert.equal(derivedBatchSize(demo), 1, `the dense budget (${DENSE_GRID_CELLS}/12) leaves one variant a batch`);
+  assert.deepEqual(demo.matchDomains, ["demo-brand-owner.example"]);
+  assert.deepEqual(demo.defaultClasses, [9, 41]);
+  assert.deepEqual(demo.defaultJurisdictions, ["EU", "US", "JP"]);
+  assert.deepEqual(demo.selfExclusionOwners, ["Demo Brand Owner", "Demo Brand Owner Ltd"]);
+  assert.deepEqual(demo.delivery, { email: "summary", privileged: false });
 });
 
 test("shipped profile: generic — neutral boilerplate (cross-vertical, dense, no gaming, no industry)", () => {
@@ -146,12 +144,12 @@ test("derived floor/batch scale with the platform list (the Ember Guard truncati
 // ---- applicant gate (clearance-corruption guard) ---------------------------------------------------
 
 test("applicantMatchesProfile: word-boundary identity, never fuzzy — third-party applicants never inherit exclusions", () => {
-  const au = { name: "Aurora Interactive" };
-  assert.equal(applicantMatchesProfile(au, "Aurora Interactive"), true);
-  assert.equal(applicantMatchesProfile(au, "Aurora Interactive Corporation"), true);
-  assert.equal(applicantMatchesProfile(au, "aurora interactive corp."), true);
+  const au = { name: "Demo Brand Owner" };
+  assert.equal(applicantMatchesProfile(au, "Demo Brand Owner"), true);
+  assert.equal(applicantMatchesProfile(au, "Demo Brand Owner Corporation"), true);
+  assert.equal(applicantMatchesProfile(au, "demo brand owner corp."), true);
   assert.equal(applicantMatchesProfile(au, "ACME Interactive"), false);
-  assert.equal(applicantMatchesProfile(au, "Aurora Interactives Ltd"), false, "substring without word boundary must not match");
+  assert.equal(applicantMatchesProfile(au, "Demo Brand Owners Ltd"), false, "substring without word boundary must not match");
   assert.equal(applicantMatchesProfile(au, ""), false);
   assert.equal(applicantMatchesProfile(au, undefined), false);
 });
@@ -448,25 +446,25 @@ test("F8 appetite is a LIVE consumer in delivery curation (report-overview), NEV
 // message() at the static default and silently breaking per-customer framework selection.
 test("framework selection is profile-driven in the live message (synthesis + report-overview); absent ⇒ firm-neutral default", () => {
   const P = { narrative: "/r/n.md", registerFindings: "/r/rf.md", commonLaw: "/r/cl.md", placement: "/r/p.md", seniorEyeReview: "/r/le.md", matterContext: "/r/mc.md", report: "/r/report.md", reportOverview: "/r/ro.md", findings: "/r/findings.json", variantManifest: "/r/vm.md" };
-  const msProfile = { frameworkPath: "skills/clearance-search/risk-framework-aurora.md", workedExamplesPath: "skills/clearance-search/worked-examples-aurora.md" };
+  const customerProfile = { frameworkPath: "skills/clearance-search/risk-framework-demo.md", workedExamplesPath: "skills/clearance-search/worked-examples-demo.md" };
   for (const stage of ["synthesis", "report-overview"]) {
-    const withMs = STAGES[stage].message({ paths: P, job: {}, profile: msProfile });
-    assert.match(withMs, /risk-framework-aurora\.md/, `${stage}: a profile framework must be read in the live message`);
+    const withCustomer = STAGES[stage].message({ paths: P, job: {}, profile: customerProfile });
+    assert.match(withCustomer, /risk-framework-demo\.md/, `${stage}: a profile framework must be read in the live message`);
     const bare = STAGES[stage].message({ paths: P, job: {}, profile: {} });
     assert.match(bare, /skills\/clearance-search\/risk-framework\.md/, `${stage}: no profile framework ⇒ the firm-neutral default`);
-    assert.doesNotMatch(bare, /risk-framework-aurora\.md/, `${stage}: a profile-less run must NOT read a per-customer framework`);
+    assert.doesNotMatch(bare, /risk-framework-demo\.md/, `${stage}: a profile-less run must NOT read a per-customer framework`);
   }
   // worked-examples is the synthesis depth target and is likewise profile-driven (default ⇒ worked-examples.md).
-  const synMs = STAGES["synthesis"].message({ paths: P, job: {}, profile: msProfile });
-  assert.match(synMs, /worked-examples-aurora\.md/);
+  const synCustomer = STAGES["synthesis"].message({ paths: P, job: {}, profile: customerProfile });
+  assert.match(synCustomer, /worked-examples-demo\.md/);
   const synBare = STAGES["synthesis"].message({ paths: P, job: {}, profile: {} });
   assert.match(synBare, /skills\/clearance-search\/worked-examples\.md/);
-  assert.doesNotMatch(synBare, /worked-examples-aurora\.md/);
+  assert.doesNotMatch(synBare, /worked-examples-demo\.md/);
 });
 
 // The delivery safety-net: an UNBOUND run (no account resolved) falls to the generic profile, whose
 // delivery is the NEUTRAL overlay — so it can never be presented as a customer-FRAMED deliverable (no
-// Aurora Interactive table, no Privileged header). A run BOUND to a customer keeps that customer's
+// Demo Brand Owner table, no Privileged header). A run BOUND to a customer keeps that customer's
 // overlay. The stronger W-3 client-export gate is a separate refusal, in driver/publish/index.mjs.
 test("delivery safety-net: an unbound run resolves to generic and is never customer-framed; a bound run keeps its overlay", () => {
   const dir = profileDir({
@@ -523,10 +521,11 @@ function withProjects(customers, projects = {}, contexts = {}) {
   }
   return dir;
 }
-const MSPROJ = { name: "Aurora Interactive Corporation", matchDomains: ["aurora.com"], platforms: GAMING_DOMAINS,
-  marketplaceDensity: "sparse", defaultClasses: [9, 28, 41, 42, 35], defaultJurisdictions: ["Global"],
-  selfExclusionOwners: ["Aurora Interactive"], delivery: { email: "summary", privileged: true }, industry: "tech",
-  riskAppetite: "conservative posture", frameworkPath: "skills/clearance-search/risk-framework-aurora.md" };
+const DEMO_PLATFORMS = ["g2.com", "capterra.com", "aquatechtrade.com", "wateronline.com", "udemy.com", "apps.apple.com", "play.google.com"];
+const CUSTOMER = { name: "Demo Brand Owner Ltd", matchDomains: ["demo-brand-owner.example"], platforms: DEMO_PLATFORMS,
+  marketplaceDensity: "sparse", defaultClasses: [9, 41, 42], defaultJurisdictions: ["EU", "US", "JP"],
+  selfExclusionOwners: ["Demo Brand Owner"], delivery: { email: "summary", privileged: true }, industry: "tech",
+  riskAppetite: "conservative posture", frameworkPath: "skills/clearance-search/risk-framework-demo.md" };
 
 test("spec 62 + search spine: the key split partitions KNOWN_PROFILE_KEYS exactly (8 project + 10 customer-only = 18)", () => {
   // `demoData` joined CUSTOMER_ONLY, and the level was the decision rather than a
@@ -553,7 +552,7 @@ test("spec 62 sparse validation: an overlay REJECTS each customer-only key (iden
       : k === "jxPolicy" ? { providerStance: "default" }
       : k === "runCaps" ? { maxQueued: 3 }
       : "skills/clearance-search/x.md";
-    const v = validateProfileEdit("projects/aurora/p", { [k]: val }, "", { sparse: true });
+    const v = validateProfileEdit("projects/demo-brand-owner/p", { [k]: val }, "", { sparse: true });
     assert.equal(v.ok, false, `${k} must be rejected on an overlay`);
     assert.match(v.errors.join(" "), /customer-only/, `${k} error cites customer-only`);
   }
@@ -561,7 +560,7 @@ test("spec 62 sparse validation: an overlay REJECTS each customer-only key (iden
 
 test("spec 62 sparse: PROJECT_KEYS optional but fully guarded when present; projectName allowed; F8/D1 guards fire", () => {
   assert.ok(validateProfileEdit("projects/m/p", { defaultClasses: [9] }, "", { sparse: true }).ok, "deltas-only: platforms may be omitted");
-  assert.ok(validateProfileEdit("projects/m/p", { projectName: "Console ecosystem", industry: "gaming" }, "", { sparse: true }).ok, "projectName is the one extra allowed key");
+  assert.ok(validateProfileEdit("projects/m/p", { projectName: "Japan and Korea app launch", industry: "gaming" }, "", { sparse: true }).ok, "projectName is the one extra allowed key");
   assert.equal(validateProfileEdit("projects/m/p", { platforms: ["web"] }, "", { sparse: true }).ok, false, "present platforms keep every foot-gun guard");
   assert.equal(validateProfileEdit("projects/m/p", { riskAppetite: "block anything above Level C" }, "", { sparse: true }).ok, false, "F8 threshold-shape rejected on an overlay");
   assert.equal(validateProfileEdit("projects/m/p", { industry: "gaming" }, "always rate lookalikes as High", { sparse: true }).ok, false, "D1 rule-shape rejected in an overlay context pack");
@@ -570,19 +569,19 @@ test("spec 62 sparse: PROJECT_KEYS optional but fully guarded when present; proj
 
 test("spec 62 loadProjects: attaches projectName + context; projectName defaults to the slug; unknown customer hard-fails", () => {
   const dir = withProjects(
-    { generic: GENERIC, aurora: MSPROJ },
-    { "aurora/console": { projectName: "Console ecosystem", platforms: ["amazon.com", "walmart.com", "ebay.com"], defaultClasses: [9, 28] },
-      "aurora/cloud": { industry: "cloud services" } },
-    { "aurora/console": "# ctx\nConsole peripherals landscape." },
+    { generic: GENERIC, "demo-brand-owner": CUSTOMER },
+    { "demo-brand-owner/launch": { projectName: "Japan and Korea app launch", platforms: ["rakuten.co.jp", "kakaku.com", "line.me"], defaultClasses: [9, 42] },
+      "demo-brand-owner/cloud": { industry: "cloud services" } },
+    { "demo-brand-owner/launch": "# ctx\nApp-store launch landscape." },
   );
   const profiles = loadProfiles({ dir, force: true });
   const projects = loadProjects({ dir, profiles, force: true });
-  const ov = projects.get("aurora/console");
-  assert.equal(ov.projectName, "Console ecosystem");
-  assert.equal(ov.customerKey, "aurora");
-  assert.equal(ov.projectKey, "console");
-  assert.ok(ov.contextPack.includes("Console peripherals"), "sibling .context.md attached");
-  assert.equal(projects.get("aurora/cloud").projectName, "cloud", "projectName defaults to the slug");
+  const ov = projects.get("demo-brand-owner/launch");
+  assert.equal(ov.projectName, "Japan and Korea app launch");
+  assert.equal(ov.customerKey, "demo-brand-owner");
+  assert.equal(ov.projectKey, "launch");
+  assert.ok(ov.contextPack.includes("App-store launch"), "sibling .context.md attached");
+  assert.equal(projects.get("demo-brand-owner/cloud").projectName, "cloud", "projectName defaults to the slug");
 
   const bad = withProjects({ generic: GENERIC }, { "ghost/p": { platforms: ["amazon.com"] } });
   assert.throws(() => loadProjects({ dir: bad, profiles: loadProfiles({ dir: bad, force: true }), force: true }),
@@ -590,31 +589,31 @@ test("spec 62 loadProjects: attaches projectName + context; projectName defaults
 });
 
 test("spec 62 resolveEffectiveProfile: per-field merge + origins; identity + framework stay whole-customer; derived floor follows resolved platforms", () => {
-  const consolePlatforms = ["amazon.com", "walmart.com", "bestbuy.com", "ebay.com", "target.com", "newegg.com", "store.steampowered.com", "apps.apple.com", "play.google.com"];
+  const projectPlatforms = ["rakuten.co.jp", "kakaku.com", "naver.com", "coupang.com", "line.me", "amazon.co.jp", "udemy.com", "apps.apple.com", "play.google.com"];
   const dir = withProjects(
-    { generic: GENERIC, aurora: MSPROJ },
-    { "aurora/console": { projectName: "Console ecosystem", platforms: consolePlatforms, defaultClasses: [9, 28, 41], industry: "console gaming" } },
+    { generic: GENERIC, "demo-brand-owner": CUSTOMER },
+    { "demo-brand-owner/launch": { projectName: "Japan and Korea app launch", platforms: projectPlatforms, defaultClasses: [9, 42], industry: "consumer mobile app" } },
   );
   const profiles = loadProfiles({ dir, force: true });
   const projects = loadProjects({ dir, profiles, force: true });
-  const { profile, projectKey, projectName, origins } = resolveEffectiveProfile({ profileKey: "aurora", projectKey: "console" }, { profiles, projects });
-  assert.equal(profile.key, "aurora", "resolved customer key is unchanged (a project never becomes the customer)");
-  assert.equal(profile.name, "Aurora Interactive Corporation", "identity / self-exclusion anchor stays whole-customer");
-  assert.equal(profile.frameworkPath, "skills/clearance-search/risk-framework-aurora.md", "customer-only framework untouched by the overlay");
-  assert.deepEqual(profile.defaultClasses, [9, 28, 41], "project overrides classes");
-  assert.deepEqual(profile.defaultJurisdictions, ["Global"], "unset-by-project field inherited from the customer");
-  assert.equal(projectKey, "console");
-  assert.equal(projectName, "Console ecosystem");
+  const { profile, projectKey, projectName, origins } = resolveEffectiveProfile({ profileKey: "demo-brand-owner", projectKey: "launch" }, { profiles, projects });
+  assert.equal(profile.key, "demo-brand-owner", "resolved customer key is unchanged (a project never becomes the customer)");
+  assert.equal(profile.name, "Demo Brand Owner Ltd", "identity / self-exclusion anchor stays whole-customer");
+  assert.equal(profile.frameworkPath, "skills/clearance-search/risk-framework-demo.md", "customer-only framework untouched by the overlay");
+  assert.deepEqual(profile.defaultClasses, [9, 42], "project overrides classes");
+  assert.deepEqual(profile.defaultJurisdictions, ["EU", "US", "JP"], "unset-by-project field inherited from the customer");
+  assert.equal(projectKey, "launch");
+  assert.equal(projectName, "Japan and Korea app launch");
   assert.equal(origins.platforms, "customer+project");
   assert.equal(origins.industry, "project");
   assert.equal(origins.defaultClasses, "project");
   assert.equal(origins.defaultJurisdictions, "customer");
   assert.equal(origins.marketplaceDensity, "customer");
   // platforms UNION: the customer's client-mandated storefronts survive the overlay, the project's retail
-  // marketplaces are added. 6 customer ∪ 9 project, 3 shared ⇒ 12 distinct.
-  for (const p of MSPROJ.platforms) assert.ok(profile.platforms.includes(p), `client-mandated ${p} survives the project overlay`);
-  for (const p of consolePlatforms) assert.ok(profile.platforms.includes(p), `project-added ${p} is searched`);
-  assert.equal(profile.platforms.length, new Set([...MSPROJ.platforms, ...consolePlatforms]).size, "union, deduped");
+  // marketplaces are added. 7 customer ∪ 9 project, 3 shared ⇒ 13 distinct.
+  for (const p of CUSTOMER.platforms) assert.ok(profile.platforms.includes(p), `client-mandated ${p} survives the project overlay`);
+  for (const p of projectPlatforms) assert.ok(profile.platforms.includes(p), `project-added ${p} is searched`);
+  assert.equal(profile.platforms.length, new Set([...CUSTOMER.platforms, ...projectPlatforms]).size, "union, deduped");
   assert.equal(derivedFloor(profile), profile.platforms.length + 1, "floor follows the UNIONED platform set + web");
   assert.equal(derivedBatchSize(profile), Math.max(1, Math.floor(SAFE_GRID_CELLS / (profile.platforms.length + 1))), "batch follows the resolved union floor");
 
@@ -632,13 +631,13 @@ test("spec 62 resolveEffectiveProfile: per-field merge + origins; identity + fra
   assert.equal(r2.origins.riskAppetite, "house");
 
   // no projectKey ⇒ customer profile unchanged, origins null (freeze then stays byte-identical to pre-62)
-  const bare = resolveEffectiveProfile({ profileKey: "aurora" }, { profiles, projects });
+  const bare = resolveEffectiveProfile({ profileKey: "demo-brand-owner" }, { profiles, projects });
   assert.equal(bare.projectKey, null);
   assert.equal(bare.origins, null);
-  assert.equal(bare.profile.key, "aurora");
+  assert.equal(bare.profile.key, "demo-brand-owner");
 
   // an unknown projectKey ⇒ falls back to the customer profile (intake's validateJob clarifies it first)
-  const ghost = resolveEffectiveProfile({ profileKey: "aurora", projectKey: "nope" }, { profiles, projects });
+  const ghost = resolveEffectiveProfile({ profileKey: "demo-brand-owner", projectKey: "nope" }, { profiles, projects });
   assert.equal(ghost.projectKey, null, "unknown project ⇒ deleted-mid-flight safe fallback to the customer profile");
 });
 
@@ -646,23 +645,23 @@ test("spec 62 resolveEffectiveProfile: per-field merge + origins; identity + fra
 
 test("archive: `archived` is overlay META — lifted out of the field set, present only when true", () => {
   const dir = withProjects(
-    { generic: GENERIC, aurora: MSPROJ },
-    { "aurora/retired": { archived: true, projectName: "Retired", platforms: ["amazon.com"] },
-      "aurora/live": { projectName: "Live", platforms: ["walmart.com"] },
-      "aurora/explicit-false": { archived: false, projectName: "Explicitly live", platforms: ["ebay.com"] } },
+    { generic: GENERIC, "demo-brand-owner": CUSTOMER },
+    { "demo-brand-owner/retired": { archived: true, projectName: "Retired", platforms: ["amazon.com"] },
+      "demo-brand-owner/live": { projectName: "Live", platforms: ["walmart.com"] },
+      "demo-brand-owner/explicit-false": { archived: false, projectName: "Explicitly live", platforms: ["ebay.com"] } },
   );
   const profiles = loadProfiles({ dir, force: true });
   const projects = loadProjects({ dir, profiles, force: true });
 
-  assert.equal(projects.get("aurora/retired").archived, true, "the flag survives load as meta");
+  assert.equal(projects.get("demo-brand-owner/retired").archived, true, "the flag survives load as meta");
   // PRESENT ONLY WHEN TRUE. This is the contract the un-archive semantics rest on: the editor seeds its
   // draft from the loaded overlay, so an always-present `archived:false` would ride every partial save
   // back and there would be no way to tell "left alone" from "deliberately un-archived".
-  assert.ok(!("archived" in projects.get("aurora/live")), "absent ⇒ the key is not on the loaded overlay");
-  assert.ok(!("archived" in projects.get("aurora/explicit-false")), "archived:false ⇒ the key is not on the loaded overlay either");
+  assert.ok(!("archived" in projects.get("demo-brand-owner/live")), "absent ⇒ the key is not on the loaded overlay");
+  assert.ok(!("archived" in projects.get("demo-brand-owner/explicit-false")), "archived:false ⇒ the key is not on the loaded overlay either");
   // lifted OUT of the field set, so it cannot be mistaken for a settings value — and the rest of the
   // overlay still merges normally around it.
-  assert.deepEqual(projects.get("aurora/retired").platforms, ["amazon.com"], "an archived overlay still carries its settings");
+  assert.deepEqual(projects.get("demo-brand-owner/retired").platforms, ["amazon.com"], "an archived overlay still carries its settings");
 });
 
 test("archive: resolveEffectiveProfile STILL resolves an archived overlay — the queued-job safety property", () => {
@@ -672,25 +671,25 @@ test("archive: resolveEffectiveProfile STILL resolves an archived overlay — th
   // admission clarify), never what an in-flight run resolves to. Because `archived` is meta and is not a
   // PROJECT_KEY, resolution cannot even see it — this test guards that by assertion rather than by trust.
   const dir = withProjects(
-    { generic: GENERIC, aurora: MSPROJ },
-    { "aurora/console": { archived: true, projectName: "Console ecosystem", defaultClasses: [9, 28], platforms: ["amazon.com"] } },
+    { generic: GENERIC, "demo-brand-owner": CUSTOMER },
+    { "demo-brand-owner/launch": { archived: true, projectName: "Japan and Korea app launch", defaultClasses: [9, 42], platforms: ["amazon.com"] } },
   );
   const profiles = loadProfiles({ dir, force: true });
   const projects = loadProjects({ dir, profiles, force: true });
-  const r = resolveEffectiveProfile({ profileKey: "aurora", projectKey: "console" }, { profiles, projects });
+  const r = resolveEffectiveProfile({ profileKey: "demo-brand-owner", projectKey: "launch" }, { profiles, projects });
 
-  assert.equal(r.projectKey, "console", "an archived project still resolves for an already-queued job");
-  assert.equal(r.projectName, "Console ecosystem");
+  assert.equal(r.projectKey, "launch", "an archived project still resolves for an already-queued job");
+  assert.equal(r.projectName, "Japan and Korea app launch");
   assert.equal(r.origins.defaultClasses, "project", "its overlay values still win");
-  assert.deepEqual(r.profile.defaultClasses, [9, 28]);
+  assert.deepEqual(r.profile.defaultClasses, [9, 42]);
   assert.ok(r.profile.platforms.some((d) => d === "amazon.com"), "and its platforms still union onto the customer floor");
   assert.ok(!("archived" in r.profile), "the flag never reaches the effective profile — it is meta, not a setting");
 });
 
 test("archive: the sparse validator allows a boolean `archived` and rejects a non-boolean", () => {
-  const ok = withProjects({ generic: GENERIC, aurora: MSPROJ }, { "aurora/proj": { archived: true, platforms: ["amazon.com"] } });
+  const ok = withProjects({ generic: GENERIC, "demo-brand-owner": CUSTOMER }, { "demo-brand-owner/proj": { archived: true, platforms: ["amazon.com"] } });
   assert.doesNotThrow(() => loadProjects({ dir: ok, profiles: loadProfiles({ dir: ok, force: true }), force: true }));
-  const bad = withProjects({ generic: GENERIC, aurora: MSPROJ }, { "aurora/proj": { archived: "yes", platforms: ["amazon.com"] } });
+  const bad = withProjects({ generic: GENERIC, "demo-brand-owner": CUSTOMER }, { "demo-brand-owner/proj": { archived: "yes", platforms: ["amazon.com"] } });
   assert.throws(
     () => loadProjects({ dir: bad, profiles: loadProfiles({ dir: bad, force: true }), force: true }),
     /archived must be a boolean/,
@@ -699,25 +698,25 @@ test("archive: the sparse validator allows a boolean `archived` and rejects a no
 });
 
 test("spec 62: a project may not reach profile.name — a name-bearing overlay hard-fails at load", () => {
-  const dir = withProjects({ generic: GENERIC, aurora: MSPROJ }, { "aurora/evil": { name: "Console ecosystem", platforms: ["amazon.com"] } });
+  const dir = withProjects({ generic: GENERIC, "demo-brand-owner": CUSTOMER }, { "demo-brand-owner/evil": { name: "Japan and Korea app launch", platforms: ["amazon.com"] } });
   assert.throws(() => loadProjects({ dir, profiles: loadProfiles({ dir, force: true }), force: true }), /customer-only/);
 });
 
-test("spec 62: the shipped console-ecosystem overlay loads and merges under aurora", () => {
+test("spec 62: the shipped japan-and-korea-app-launch overlay loads and merges under demo-brand-owner", () => {
   // the real profiles/ dir (default) — loadProfiles' .json glob ignores the projects/ subdir, so the customer roster is unchanged
-  const profiles = loadProfiles({ force: true });
+  const profiles = loadProfiles({ force: true, includeDemo: true });
   const projects = loadProjects({ profiles, force: true });
-  const ov = projects.get("aurora/console-ecosystem");
+  const ov = projects.get("demo-brand-owner/japan-and-korea-app-launch");
   assert.ok(ov, "the shipped overlay is discovered");
-  assert.equal(ov.projectName, "Console ecosystem");
-  const { profile, origins } = resolveEffectiveProfile({ profileKey: "aurora", projectKey: "console-ecosystem" }, { profiles, projects });
-  assert.equal(profile.name, "Aurora Interactive");
+  assert.equal(ov.projectName, "Japan and Korea app launch");
+  const { profile, origins } = resolveEffectiveProfile({ profileKey: "demo-brand-owner", projectKey: "japan-and-korea-app-launch" }, { profiles, projects });
+  assert.equal(profile.name, "Demo Brand Owner");
   assert.equal(origins.platforms, "customer+project");
   // the shipped case, on real data: the customer's storefronts are a floor the overlay may add to, never replace
-  for (const p of profiles.get("aurora").platforms)
+  for (const p of profiles.get("demo-brand-owner").platforms)
     assert.ok(profile.platforms.includes(p), `customer platform ${p} survives the shipped overlay`);
   for (const p of ov.platforms) assert.ok(profile.platforms.includes(p), `overlay platform ${p} is added`);
-  assert.deepEqual(profile.defaultClasses, [9, 28, 41]);
+  assert.deepEqual(profile.defaultClasses, [9, 42], "the overlay's own classes replace the customer's");
 });
 
 // ---- search-depth spine: defaultProduct / allowedRecipes / jxPolicy ----
@@ -749,56 +748,56 @@ test("spine: allowedRecipes is a slug list; jxPolicy has closed keys + enums and
 });
 
 // ── Client-mandated platforms are a FLOOR, not a default ────────────────────────────────────────────────
-// Regression pin for the live Aurora Interactive account (2026-07-18). Its 7 storefronts are a client instruction;
-// the console-ecosystem project adds 6 retail marketplaces for the third-party-accessory surface its context
-// pack argues for. Before the union fix the project's list REPLACED the account's and four client-mandated
-// platforms — store.epicgames.com, itch.io, apps.microsoft.com, mobygames.com — went unsearched on every run
-// of that project, with the report still reading as clean coverage of the list it was handed.
-const MS_CLIENT_PLATFORMS = ["store.steampowered.com", "store.epicgames.com", "itch.io", "apps.apple.com",
-  "play.google.com", "apps.microsoft.com", "mobygames.com"];
-const MS_CONSOLE_PROJECT = ["amazon.com", "walmart.com", "bestbuy.com", "target.com", "newegg.com", "ebay.com",
-  "store.steampowered.com", "apps.apple.com", "play.google.com"];
+// Regression pin for a live account (2026-07-18), shown here on the demo's own lists. The account's 7
+// platforms are a client instruction; one of its projects adds its own marketplaces for the surface its
+// context pack argues for. Before the union fix the project's list REPLACED the account's and the four
+// platforms only the account named went unsearched on every run of that project, with the report still
+// reading as clean coverage of the list it was handed.
+const CLIENT_PLATFORMS = ["g2.com", "capterra.com", "aquatechtrade.com", "wateronline.com", "udemy.com",
+  "apps.apple.com", "play.google.com"];
+const PROJECT_PLATFORMS = ["rakuten.co.jp", "kakaku.com", "naver.com", "coupang.com", "line.me", "amazon.co.jp",
+  "udemy.com", "apps.apple.com", "play.google.com"];
 
-test("client-mandated platforms survive a project overlay — the live Aurora Interactive/console-ecosystem case", () => {
+test("client-mandated platforms survive a project overlay — the live-account case", () => {
   const dir = withProjects(
-    { generic: GENERIC, aurora: { ...MSPROJ, name: "Aurora Interactive", matchDomains: ["aurora.com"], platforms: MS_CLIENT_PLATFORMS } },
-    { "aurora/console-ecosystem": { projectName: "Console ecosystem", platforms: MS_CONSOLE_PROJECT } },
+    { generic: GENERIC, "demo-brand-owner": { ...CUSTOMER, name: "Demo Brand Owner", matchDomains: ["demo-brand-owner.example"], platforms: CLIENT_PLATFORMS } },
+    { "demo-brand-owner/japan-and-korea-app-launch": { projectName: "Japan and Korea app launch", platforms: PROJECT_PLATFORMS } },
   );
   const profiles = loadProfiles({ dir, force: true });
   const projects = loadProjects({ dir, profiles, force: true });
-  const { profile, origins } = resolveEffectiveProfile({ profileKey: "aurora", projectKey: "console-ecosystem" }, { profiles, projects });
+  const { profile, origins } = resolveEffectiveProfile({ profileKey: "demo-brand-owner", projectKey: "japan-and-korea-app-launch" }, { profiles, projects });
 
   // every platform the CLIENT asked for is searched — this is the instruction the bug revoked
-  for (const p of MS_CLIENT_PLATFORMS) assert.ok(profile.platforms.includes(p), `client-mandated ${p} is searched`);
+  for (const p of CLIENT_PLATFORMS) assert.ok(profile.platforms.includes(p), `client-mandated ${p} is searched`);
   // the four the overlay used to delete, named explicitly so a regression is unmistakable
-  for (const p of ["store.epicgames.com", "itch.io", "apps.microsoft.com", "mobygames.com"])
+  for (const p of ["g2.com", "capterra.com", "aquatechtrade.com", "wateronline.com"])
     assert.ok(profile.platforms.includes(p), `${p} was dropped by the pre-union merge — it must never be again`);
   // the project's own reasoning is preserved too: both lists are wanted, neither replaces the other
-  for (const p of MS_CONSOLE_PROJECT) assert.ok(profile.platforms.includes(p), `project-added ${p} is searched`);
+  for (const p of PROJECT_PLATFORMS) assert.ok(profile.platforms.includes(p), `project-added ${p} is searched`);
   assert.equal(profile.platforms.length, 13, "7 client ∪ 9 project, 3 shared");
   assert.equal(origins.platforms, "customer+project", "provenance stays visible, never flattened to one side");
 });
 
 test("a project that states NO platforms still inherits the client's, untouched", () => {
   const dir = withProjects(
-    { generic: GENERIC, aurora: { ...MSPROJ, name: "Aurora Interactive", matchDomains: ["aurora.com"], platforms: MS_CLIENT_PLATFORMS } },
-    { "aurora/quiet": { projectName: "Quiet project", defaultClasses: [9] } },
+    { generic: GENERIC, "demo-brand-owner": { ...CUSTOMER, name: "Demo Brand Owner", matchDomains: ["demo-brand-owner.example"], platforms: CLIENT_PLATFORMS } },
+    { "demo-brand-owner/quiet": { projectName: "Quiet project", defaultClasses: [9] } },
   );
   const profiles = loadProfiles({ dir, force: true });
   const projects = loadProjects({ dir, profiles, force: true });
-  const { profile, origins } = resolveEffectiveProfile({ profileKey: "aurora", projectKey: "quiet" }, { profiles, projects });
-  assert.deepEqual(profile.platforms, MS_CLIENT_PLATFORMS);
+  const { profile, origins } = resolveEffectiveProfile({ profileKey: "demo-brand-owner", projectKey: "quiet" }, { profiles, projects });
+  assert.deepEqual(profile.platforms, CLIENT_PLATFORMS);
   assert.equal(origins.platforms, "customer");
 });
 
 test("only `platforms` unions — every other project key still REPLACES", () => {
   const dir = withProjects(
-    { generic: GENERIC, aurora: { ...MSPROJ, name: "Aurora Interactive", matchDomains: ["aurora.com"], platforms: MS_CLIENT_PLATFORMS, defaultClasses: [9, 41], defaultJurisdictions: ["US", "EU"] } },
-    { "aurora/narrow": { projectName: "Narrow", defaultClasses: [28], defaultJurisdictions: ["JP"] } },
+    { generic: GENERIC, "demo-brand-owner": { ...CUSTOMER, name: "Demo Brand Owner", matchDomains: ["demo-brand-owner.example"], platforms: CLIENT_PLATFORMS, defaultClasses: [9, 41], defaultJurisdictions: ["US", "EU"] } },
+    { "demo-brand-owner/narrow": { projectName: "Narrow", defaultClasses: [28], defaultJurisdictions: ["JP"] } },
   );
   const profiles = loadProfiles({ dir, force: true });
   const projects = loadProjects({ dir, profiles, force: true });
-  const { profile } = resolveEffectiveProfile({ profileKey: "aurora", projectKey: "narrow" }, { profiles, projects });
+  const { profile } = resolveEffectiveProfile({ profileKey: "demo-brand-owner", projectKey: "narrow" }, { profiles, projects });
   assert.deepEqual(profile.defaultClasses, [28], "classes REPLACE — an engagement legitimately runs different classes");
   assert.deepEqual(profile.defaultJurisdictions, ["JP"], "jurisdictions REPLACE");
 });
@@ -853,17 +852,17 @@ test("config nulls: an explicit null in a project overlay says NOTHING, it does 
   //
   // The invariant: a null-valued overlay key must resolve EXACTLY as an absent one.
   const nulls = withProjects(
-    { generic: GENERIC, aurora: MSPROJ },
-    { "aurora/proj": { projectName: "P", platforms: null, delivery: null, defaultProduct: null, defaultClasses: null } },
+    { generic: GENERIC, "demo-brand-owner": CUSTOMER },
+    { "demo-brand-owner/proj": { projectName: "P", platforms: null, delivery: null, defaultProduct: null, defaultClasses: null } },
   );
   const absent = withProjects(
-    { generic: GENERIC, aurora: MSPROJ },
-    { "aurora/proj": { projectName: "P" } },
+    { generic: GENERIC, "demo-brand-owner": CUSTOMER },
+    { "demo-brand-owner/proj": { projectName: "P" } },
   );
   const resolve = (dir) => {
     const profiles = loadProfiles({ dir, force: true });
     const projects = loadProjects({ dir, profiles, force: true });
-    return resolveEffectiveProfile({ profileKey: "aurora", projectKey: "proj" }, { profiles, projects });
+    return resolveEffectiveProfile({ profileKey: "demo-brand-owner", projectKey: "proj" }, { profiles, projects });
   };
   const a = resolve(nulls), b = resolve(absent);
   assert.deepEqual(a.profile, b.profile, "null keys resolve exactly as absent keys do");
@@ -873,12 +872,12 @@ test("config nulls: an explicit null in a project overlay says NOTHING, it does 
 
   // a REAL overlay value still replaces, and platforms still union — the fix is about null only
   const real = withProjects(
-    { generic: GENERIC, aurora: MSPROJ },
-    { "aurora/real-proj": { projectName: "R", platforms: ["etsy.com"], defaultClasses: [25] } },
+    { generic: GENERIC, "demo-brand-owner": CUSTOMER },
+    { "demo-brand-owner/real-proj": { projectName: "R", platforms: ["etsy.com"], defaultClasses: [25] } },
   );
   const profiles = loadProfiles({ dir: real, force: true });
   const projects = loadProjects({ dir: real, profiles, force: true });
-  const r = resolveEffectiveProfile({ profileKey: "aurora", projectKey: "real-proj" }, { profiles, projects });
+  const r = resolveEffectiveProfile({ profileKey: "demo-brand-owner", projectKey: "real-proj" }, { profiles, projects });
   assert.deepEqual(r.profile.defaultClasses, [25], "a stated class list replaces");
   assert.ok(r.profile.platforms.some((d) => d === "etsy.com"), "the project's own store is added");
   assert.equal(r.origins.platforms, "customer+project", "and the union is recorded honestly");

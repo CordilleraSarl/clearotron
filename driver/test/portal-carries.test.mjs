@@ -34,8 +34,8 @@ import { makePortalService, PORTAL_JOB_FIELDS } from "../portal-service.mjs";
 
 // Generic is exempt from the daily cap, so ordering it stays with a person who has access to everything —
 // which this principal holds by its own entry.
-// `aurora` is here for the one arm that needs a COMPANY run: `tenant` is stamped only on a Generic one.
-const GRANTS = { tenants: { celta: { accounts: ["generic", "aurora"], users: {} } },
+// `demo-brand-owner` is here for the one arm that needs a COMPANY run: `tenant` is stamped only on a Generic one.
+const GRANTS = { tenants: { celta: { accounts: ["generic", "demo-brand-owner"], users: {} } },
   people: { "staff@example-firm.com": { run: true, manage: true, everything: true } } };
 const PRINCIPAL = { email: "staff@example-firm.com" };
 
@@ -188,9 +188,9 @@ test("a stamped field takes the DOOR's value and ignores the body's — the tena
 
   // A COMPANY run, with all six lies at once. `tenant` says which organisation's Generic a run is filed
   // under, so on a company run the door's value is ABSENT — and the body's must not take its place.
-  const company = await storedJob({ ...lies, account: "aurora" });
+  const company = await storedJob({ ...lies, account: "demo-brand-owner" });
   assert.ok(company.sent, `the request was refused, so nothing was measured — ${JSON.stringify(company.refused)}`);
-  doorWon(company.sent, "aurora");
+  doorWon(company.sent, "demo-brand-owner");
   assert.ok(!("tenant" in company.sent), `a body tenant reached a company run's job as ${JSON.stringify(company.sent.tenant)}`);
 
   // A GENERIC run: the stored job carries the organisation resolved from the principal — celta, the one

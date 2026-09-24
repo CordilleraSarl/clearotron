@@ -202,7 +202,7 @@ const server = createServer((req, res) => {
   // THE ROSTER, as the server answers it in three shapes: whole, with a company file it could not read, and
   // failed. The last two used to draw exactly like the first with fewer companies.
   if (p === '/portal/admin/roster' && rosterMode === 'fail') { res.writeHead(500, { 'content-type': 'application/json' }); return res.end('{"error":"store unreadable"}') }
-  if (p === '/portal/admin/roster' && rosterMode === 'unreadable') return json(res, { customers: [{ key: KEY, name: NAME }], unreadable: [{ key: 'aurora', reason: 'frameworkPath must be a path of the form …' }] })
+  if (p === '/portal/admin/roster' && rosterMode === 'unreadable') return json(res, { customers: [{ key: KEY, name: NAME }], unreadable: [{ key: 'petcary', reason: 'frameworkPath must be a path of the form …' }] })
   if (p === '/portal/admin/roster') return json(res, { customers: [{ key: KEY, name: NAME }, { key: KEY2, name: NAME2 }] })
   if (p === '/portal/admin/families') return json(res, FAMILIES)
   if (p === '/portal/api/usage') return json(res, usageNow)
@@ -811,7 +811,7 @@ for (const [width, f] of Object.entries(stubs)) {
   ok(f && f.riskOverDate.length === 0, `stub rows at ${width}px: text runs into the next cell on ${JSON.stringify(f?.riskOverDate)}`)
   ok(f && f.riskMidWord.length === 0, `stub rows at ${width}px: a risk word breaks inside itself — ${JSON.stringify(f?.riskMidWord)}`)
 }
-ok(rosterPartial?.text?.some((t) => /aurora This company’s framework could not be read\. This needs an administrator to look at it\./.test(t)),
+ok(rosterPartial?.text?.some((t) => /petcary This company’s framework could not be read\. This needs an administrator to look at it\./.test(t)),
   `a company file the roster could not read is not named on the page — ${JSON.stringify(rosterPartial)}`)
 ok(!rosterPartial?.text?.some((t) => /frameworkPath/.test(t)), 'the server\'s own reason reached the page')
 // A ROSTER THAT FAILED WHOLE: no sentence of its own (owner, 2026-09-18), and no silent narrowing — the

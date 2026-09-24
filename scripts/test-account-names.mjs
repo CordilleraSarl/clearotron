@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// THE THREE ACCOUNT NAMES THE TEST FIXTURES USE, AND THE ONE PLACE THEY ARE WRITTEN DOWN.
+// THE TWO ACCOUNT NAMES THE TEST FIXTURES USE, AND THE ONE PLACE THEY ARE WRITTEN DOWN.
 //
 // These are invented. They name no company, and they exist so the suite can exercise a multi-account
 // install without inventing one per test. They are listed here in the open because a list of made-up
@@ -15,9 +15,9 @@
 // WHAT IT IS NOT FOR. Real customer names are not here and must never be added — this file is public.
 // They are covered before a merge by the private checks, which is where a name nobody may publish
 // belongs. Adding one here would put it in exactly the place it must not be.
-export const TEST_ACCOUNT_NAMES = Object.freeze(["aurora", "petcary", "zephyr"]);
+export const TEST_ACCOUNT_NAMES = Object.freeze(["petcary", "zephyr"]);
 
-// ── ONE OF THE THREE IS ALSO AN ORDINARY ENGLISH WORD ────────────────────────────────────────────
+// ── ONE OF THE TWO IS ALSO AN ORDINARY ENGLISH WORD ──────────────────────────────────────────────
 //
 // `zephyr` is a lightweight cloth, and the shipped register reference data carries it as a goods term
 // in Nice class 24 — `providers/jx-subclass/public/goods.jsonl`, one line, measured 2026-09-08:
@@ -45,6 +45,6 @@ export const ALLOWED_CONTEXTS = Object.freeze(["zephyr [cloth]"]);
 // A LINE THAT IS EXACTLY THE NAME, IN ONE OF THESE FILES, IS THE FILE LISTING THE WORD. Anything else on
 // the line is still a refusal, so a leak written into the same file — a name with any other text beside
 // it — is caught as before. The list's bytes are pinned by sha256 elsewhere in the tree, so it cannot
-// drift into cover for anything. `aurora` and `petcary` are not in it, and neither is invented cover:
+// drift into cover for anything. `petcary` is not in it, and neither is invented cover:
 // the exemption is per line, not per file.
 export const ALLOWED_WORD_LISTS = Object.freeze(["driver/wordlists/en.txt"]);

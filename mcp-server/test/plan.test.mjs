@@ -5,7 +5,7 @@
 // config reads it at module load) so any accidental write would land in a throwaway tree and be visible.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, existsSync, readdirSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { mkdtempSync, existsSync, readdirSync, mkdirSync, writeFileSync, rmSync, readFileSync, cpSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
@@ -16,6 +16,15 @@ pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
 // the pool: unpinned it defaults to the real /srv/trademark-archive, and a unit test whose answers depend
 // on the deployment's own snapshot is the CI trap this repo has already been bitten by.
 pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", join(ROOT, "pool"));
+// THE ACCOUNT SHAPE THESE ARMS NEED, IN A STORE OF THEIR OWN. The shipped demo account names a default
+// product, a daily cap and a region; the arms below drive the account with none of those and seven
+// single countries, none of which routes a native-script lane. Its shipped name and framework stay.
+const STORE = join(ROOT, "profiles");
+cpSync(new URL("../../driver/profiles/", import.meta.url), STORE, { recursive: true });
+const demo = JSON.parse(readFileSync(join(STORE, "demo-brand-owner.json"), "utf8"));
+delete demo.defaultProduct; delete demo.runCaps;
+writeFileSync(join(STORE, "demo-brand-owner.json"), JSON.stringify({ ...demo, defaultJurisdictions: ["BR", "MX", "CL", "AR", "PE", "CO", "UY"] }));
+pinEnv(process.env, "CLEAROTRON_CUSTOMERS_DIR", STORE);
 // The RETIRED switches are cleared so this process looks exactly like the ops-MCP, which carries no
 // EnvironmentFile. A built depth must preview as runnable anyway — that is the regression test for the
 // bug that retired them (plan_run telling clients three shipped depths were "not switched on").
@@ -30,20 +39,20 @@ const { startRun, buildJob } = await import("../lib/ops.mjs");
 const { PORTAL_ROUTE_UNAVAILABLE } = await import("../../driver/enqueue-schema.mjs");
 const { TOOL_DEFS } = await import("../server.mjs");
 
-// `aurora` is a suite fixture, and every suite fixture is DEMO DATA. The claim runs a demo account only on a
+// `demo-brand-owner` is a suite fixture, and every suite fixture is DEMO DATA. The claim runs a demo account only on a
 // demo order, and the preview now asks that question too, so the base order is the honest pair.
-const BASE = { forwarder: "ops", markName: "NOVAPULSE", classes: [9, 41], profileKey: "aurora", demoRun: true };
+const BASE = { forwarder: "ops", markName: "NOVAPULSE", classes: [9, 41], profileKey: "demo-brand-owner", demoRun: true };
 
 // The FREE preview is the first call an assistant makes for a new client, so it has to answer the same
 // way the door does: an omitted account resolves to the neutral profile where the session's access
 // covers it, and the preview then describes the job start_run would build rather than refusing it.
 test("plan_run: a new client with no account previews under the neutral profile instead of being refused", () => {
   const { profileKey: _drop, demoRun: _demo, ...noKey } = BASE;   // a new client is a real one: no demo order
-  const holdsGeneric = { kind: "ops", sub: "connector", accounts: ["aurora", "generic"] };
+  const holdsGeneric = { kind: "ops", sub: "connector", accounts: ["demo-brand-owner", "generic"] };
   const p = planRun({ ...noKey }, { scope: holdsGeneric });
   assert.equal(p.ok, true, JSON.stringify(p));
   assert.equal(p.wouldRun, true, "the preview of a new client's search must not come back as a blocker");
-  const noGeneric = { kind: "ops", sub: "connector", accounts: ["aurora"] };
+  const noGeneric = { kind: "ops", sub: "connector", accounts: ["demo-brand-owner"] };
   assert.throws(() => planRun({ ...noKey }, { scope: noGeneric }), /portal/,
     "and where the access does not cover it, the refusal still says what the requester can do next");
 });
@@ -122,7 +131,7 @@ test("plan_run states the scope that would ACTUALLY be searched, and where each 
   assert.equal(req.scope.jurisdictionsFrom, "this request");
   const dflt = planRun({ ...BASE });
   assert.equal(dflt.scope.jurisdictionsFrom, "the account's default territories");
-  assert.ok(dflt.scope.jurisdictions.length, "aurora has defaults, and the preview shows them rather than an empty list");
+  assert.ok(dflt.scope.jurisdictions.length, "demo-brand-owner has defaults, and the preview shows them rather than an empty list");
 });
 
 test("plan_run shows an added marketplace widening the grid — the part a requester cannot infer", () => {
@@ -153,7 +162,7 @@ test("plan_run refuses an unrunnable combination up front rather than at the run
   // Not an availability refusal (the switches went 2026-07-27): a REQUESTED native-language
   // investigation with no routing territory in scope is refused by the scope rules, because it routes
   // on jurisdiction and would otherwise be billed and run zero lanes. The preview is where a requester
-  // should learn that. Aurora's seven default territories carry no routing one.
+  // should learn that. Demo Brand Owner's seven default territories carry no routing one.
   const p = planRun({ ...BASE, product: "multi-country-focus-search", nativeLanguage: true });
   assert.equal(p.wouldRun, false);
   assert.match(p.blockers.join(" "), /routing territor/);
@@ -172,7 +181,7 @@ test("plan_run carries the legal caveat verbatim, never paraphrased", () => {
 
 test("plan_run names rating authority but offers no way to touch it", () => {
   const p = planRun({ ...BASE });
-  assert.equal(p.account.profileKey, "aurora");
+  assert.equal(p.account.profileKey, "demo-brand-owner");
   assert.match(p.account.framework, /risk framework/);
   // A search says WHERE to look. What rates the findings belongs to the customer's profile, and no job
   // field reaches it — the plan reports it so a requester can see which framework applies, not change it.
@@ -213,7 +222,7 @@ test("what the requester sets survives the trigger hop — buildJob carries what
 // red, and plan_run would go back to answering wouldRun:true about a request the runner refuses — the
 // exact dishonesty this gate exists to close.
 test("plan_run refuses the combinations the runner refuses, on the SAME ruler it prints the scope with", () => {
-  // aurora's default territories are the scope this request would actually run at, so the product rule
+  // demo-brand-owner's default territories are the scope this request would actually run at, so the product rule
   // counts them — an account default is not an exemption from a one-country product.
   const many = planRun({ ...BASE, product: "full-country-search" });
   assert.equal(many.wouldRun, false);
@@ -257,7 +266,7 @@ test("the PREVIEW says whether the case-law pass is part of what was ordered —
 });
 
 test("the ONE-COUNTRY rule reaches the requester through the preview, as a question", () => {
-  // aurora's account default is seven territories, so a Full country search ordered without a territory
+  // demo-brand-owner's account default is seven territories, so a Full country search ordered without a territory
   // of its own silently resolves to seven — and seven territories is a Multi-country focus search. The
   // preview is where that is learned, before the spend.
   const spread = planRun({ ...BASE, product: "full-country-search" });
@@ -307,7 +316,7 @@ test("the allowance is REPORTED for a readable account, and never invented for o
   mkdirSync(STUDIO, { recursive: true });
   writeFileSync(join(STUDIO, ".matter-ledger.jsonl"), "");
   const p = planRun({ ...BASE });
-  assert.equal(p.account.dailyRunsEffective, DEFAULT_CLIENT_DAILY_RUNS, "aurora sets no runCaps — the wall's own default applies");
+  assert.equal(p.account.dailyRunsEffective, DEFAULT_CLIENT_DAILY_RUNS, "demo-brand-owner sets no runCaps — the wall's own default applies");
   assert.deepEqual(Object.keys(p.account.usage ?? {}).sort(), ["queued", "thisMonth", "today"]);
   assert.equal(p.account.usageComplete, true);
   assert.equal(p.account.allowanceApplies, false, "a staff preview is not capped, and says so");
@@ -326,8 +335,8 @@ test("an exhausted CLIENT account is told before start_run, not by the runner af
   // grants rather than a count that has to be edited whenever the allowance is ruled on.
   writeFileSync(join(STUDIO, ".matter-ledger.jsonl"),
     Array.from({ length: DEFAULT_CLIENT_DAILY_RUNS },
-      () => ({ profileKey: "aurora", ts: today, clientPrincipal: true })).map((r) => JSON.stringify(r)).join("\n") + "\n");
-  const client = { kind: "account", runId: null, sub: "lawyer@aurora.example", accounts: ["aurora"] };
+      () => ({ profileKey: "demo-brand-owner", ts: today, clientPrincipal: true })).map((r) => JSON.stringify(r)).join("\n") + "\n");
+  const client = { kind: "account", runId: null, sub: "lawyer@demo-brand-owner.example", accounts: ["demo-brand-owner"] };
   const p = planRun({ ...BASE }, { scope: client, now: today });
   assert.equal(p.wouldRun, false);
   assert.match(p.blockers.join(" "), new RegExp(`used all ${DEFAULT_CLIENT_DAILY_RUNS} of today's client-started searches`));
@@ -351,7 +360,7 @@ test("a ledger the preview could not read yields NO allowance, never a full one 
   pinEnv(process.env, "CLEAROTRON_WORK_DIR", blind);   // no queue, no ledger, nothing to count
   pinEnv(process.env, "CLEAROTRON_QUEUE_DIR", undefined);         // …and nothing ambient to count from either
   try {
-    const client = { kind: "account", runId: null, sub: "lawyer@aurora.example", accounts: ["aurora"] };
+    const client = { kind: "account", runId: null, sub: "lawyer@demo-brand-owner.example", accounts: ["demo-brand-owner"] };
     const p = planRun({ ...BASE }, { scope: client, now: Date.now() });
     assert.equal(p.account.usage, null, "a count nobody took was reported as a count");
     assert.equal(p.account.remainingToday, null, "an allowance was promised off an unread ledger");
@@ -360,7 +369,7 @@ test("a ledger the preview could not read yields NO allowance, never a full one 
     assert.equal(p.account.usageComplete, false, "blind was indistinguishable from uncapped");
     assert.equal(planRun({ ...BASE, profileKey: "generic" }).account.usageComplete, null,
       "…and \"no allowance applies\" must not borrow the blind shape either");
-    // Same correction as its sibling in describe-options: aurora sets no runCaps, so the limit here is
+    // Same correction as its sibling in describe-options: demo-brand-owner sets no runCaps, so the limit here is
     // the WALL'S DEFAULT and never came off a profile. The property being asserted is unchanged — an
     // unreadable ledger loses the COUNTS and keeps the LIMIT, because the limit needs no ledger.
     assert.equal(p.account.dailyRunsEffective, DEFAULT_CLIENT_DAILY_RUNS,
@@ -429,9 +438,9 @@ test("a real saved search previews as RUNNABLE — the door has no shut state an
   // refused with "Saved searches are not switched on for this account yet". A client's own saved search,
   // refused because a web service has no environment file. Retired 2026-07-27.
   const store = join(ROOT, "recipes-ok");
-  mkdirSync(join(store, "aurora"), { recursive: true });
-  writeFileSync(join(store, "aurora", "quarterly-screen.json"), JSON.stringify({
-    // The base must be a product whose geography this ACCOUNT's own territories satisfy: aurora holds
+  mkdirSync(join(store, "demo-brand-owner"), { recursive: true });
+  writeFileSync(join(store, "demo-brand-owner", "quarterly-screen.json"), JSON.stringify({
+    // The base must be a product whose geography this ACCOUNT's own territories satisfy: demo-brand-owner holds
     // seven, which is a Multi-country focus search. A Global preliminary base would resolve to those
     // seven and be refused — correctly, and for a reason that has nothing to do with saved searches.
     version: 1, label: "Quarterly product-name screen", base: "multi-country-focus-search", archived: false,
@@ -441,7 +450,7 @@ test("a real saved search previews as RUNNABLE — the door has no shut state an
   try {
     const p = planRun({ ...BASE, recipeKey: "quarterly-screen" });
     assert.equal(p.wouldRun, true, "a saved search is honoured wherever it resolves");
-    assert.equal(p.search.savedSearch?.key, "aurora/quarterly-screen", "and the preview names the search it resolved");
+    assert.equal(p.search.savedSearch?.key, "demo-brand-owner/quarterly-screen", "and the preview names the search it resolved");
     const blob = JSON.stringify(p);
     assert.doesNotMatch(blob, /CLEAROTRON_/, "no environment variable name reaches a client's assistant");
     assert.doesNotMatch(blob, /Saved searches are not switched on/);
@@ -498,7 +507,7 @@ test("a can't-count register blocks the Knockout search with the provider cause 
 // declared TYPE invites — both booleans, every enum member — and put each through plan_run. A value the
 // preview blocks on EVERY scope is refused by its nature rather than by this request's geography, and the
 // property's DESCRIPTION has to say so. Testing on one scope would flag `product: "full-country-search"`,
-// which is refused here only because aurora holds seven territories, and that is a scope answer, not an
+// which is refused here only because demo-brand-owner holds seven territories, and that is a scope answer, not an
 // invitation defect.
 const SCOPES = [
   { worldwide: true },

@@ -151,7 +151,7 @@ import { stampTokenRollup } from "./tokens.mjs";
 import { recordRunConsumption } from "./consumption-ledger.mjs";
 import { quoteForJob, reconcileTurnaround } from "./run-quote.mjs";
 import { assembleRunRecords, readRecordArtifacts, findRegistryArithmeticIssues, findRegistryViolations, applyRegistryCorrections, extractEnforcerSignals, collectOppositionDeadlines, normalizeRecordUri } from "./registry-fidelity.mjs";
-import { readKnownConflictsFor, writeKnownConflictsFor, markKey, acceptedConflicts, recallReceiptForOwnCompany } from "./known-conflicts.mjs";   // spec 64 — the workspace-level per-mark recall store
+import { recallReceiptForOwnCompany } from "./recall-receipt.mjs";   // a past run's recall receipt, as one company's audit may list it
 import { runLint, flagLines, properNameCandidates } from "./predelivery-lint.mjs";
 import { parsePlacementsJson } from "./placement-model.mjs";   // B2 — the structured tier mirror; the lint reads it only to flag an EMPTY one
 import { readAnchors } from "./anchor-reader.mjs";
@@ -177,7 +177,7 @@ import { recordedScopeLedgerRows } from "./clearance-variants-record.mjs";
 import { parseFrameDiff, applyDominantBackstop, firingDirectives, reopenKey, alreadyAttemptedReopen, partitionFiring, frameResidualGaps, jurisdictionScopeFlags, deriveDirectiveRemedy, firingDirectivesLenient } from "./frame-diff-model.mjs";
 import { verifyRegisterDirectiveClose } from "./close-verify.mjs";
 import { renderFormNeighbourhoodJson, parseFormNeighbourhoodJson, dispatchedQueriesFromBand, formGapDirectives, markText } from "./form-neighbourhood.mjs"; import { loadOrdinaryWords } from "./ordinary-words.mjs";
-import { findRecallFloorViolations, findReviewFreshnessViolation, findSeedNeutralityViolations, findProbativeGradingViolations, findStatusHonestyViolation, findMatrixCeilingViolations, findDeadlineUrgencyMiss, findUnresolvedDisagreements, findOrphanVerificationFlags, findUncrossCheckedDemotions, findRecallRegressionViolations, findDeadlineCarryViolations, formatRecallRegression } from "./reasoning-tripwires.mjs";
+import { findRecallFloorViolations, findReviewFreshnessViolation, findSeedNeutralityViolations, findProbativeGradingViolations, findStatusHonestyViolation, findDeadlineUrgencyMiss, findUnresolvedDisagreements, findOrphanVerificationFlags, findUncrossCheckedDemotions } from "./reasoning-tripwires.mjs";
 import { findRuleShapeFlags } from "./rule-shape.mjs";
 import { failureSignature, classifyFailureReason, decideRecovery, createRepairLedger, countTrailingStageStrikes, countRecoveryLanes, weatherCeilingFor, TRANSIENT_RE, REFUSAL_TERMINAL_KIND, fanInMissingEvidence, retryCannotHelpWith, unnamedStructuredFailure, classificationSource, isCapPark, capParkSchedule, capWaitFrom, humanWait } from "./repairs.mjs";
 import { caseLawInventory } from "./config-inventory.mjs";   // — the deployment's own case-law sources
@@ -2721,93 +2721,6 @@ export const recallFollowupMaxFor = (ctx) => {   // @internal
   const n = ctx?.depth?.recallFollowupMax;
   return Number.isInteger(n) && n > 0 ? n : RECALL_FOLLOWUP_MAX;
 };
-
-// ── P2-A — the recall-store upsert, extracted and LOUD BOTH WAYS ────────────────────────────────────
-// One writer for every terminal that owns ratings: the DELIVERED terminal (as before) AND a run that
-// wrote findings.json but died at/after verdict (the failed-at-verdict class) — so the next attempt
-// on the same matter can see this attempt's ratings instead of re-running the recall no-op. The
-// Round-2 finding was wider than "failed runs don't write": a DELIVERED run once wrote nothing and
-// the cause died inside a swallowed best-effort catch, deleted with the run dir. So the outcome is
-// now an ASSERTED run.jsonl event in every branch — `known-conflicts-upsert` with the added count
-// (0 is asserted, not absent), or `known-conflicts-upsert-skipped` with the reason — mirrored to the
-// driver journal via note(). Still best-effort: a store failure must never mask a delivery OR a
-// failure notice; loudness is the fix, never blocking.
-// ── P2-A round 3 — a store file that cannot be parsed is an EVENT, never a silence ─────────────────
-// known-conflicts.mjs skips a file it cannot use, and at the return value a skipped file is
-// indistinguishable from "this mark has no store yet": null. Those are opposite facts — the first
-// means a live mark's recall memory is not being read, and the recall probes, the pre-clamp read and
-// the reviewer pack all quietly become no-ops. The concrete way to get there is a ROLLBACK: a driver
-// that predates a row key this one writes throws `known_conflicts_row_key_unknown:<key>` on every
-// file, and the whole recall spine goes quiet with nothing in any log. So: report the file, always.
-function storeFileUnusable(run, surface, path, err) {
-  const why = String(err?.message ?? err).slice(0, 160);
-  try { runLog(run.runDir, { event: "known-conflicts-file-unusable", surface, file: basename(String(path)), reason: why }); } catch { /* observability only */ }
-  note(`known-conflicts store file UNUSABLE (${surface}): ${basename(String(path))} — ${why} — that mark's recall memory is NOT being read this run`);
-}
-
-// The one read path for the store. `accepted:true` is the verdict-surface filter (review problem 3);
-// the recall probes read unfiltered. Either way the count of unusable files is asserted.
-function readRecallStore(run, names, surface, { accepted = false } = {}) {
-  let unreadable = 0;
-  const doc = readKnownConflictsFor(run.studioRoot, names, {
-    legacyPath: join(dirname(run.runDir), "_known-conflicts.json"),
-    onError: (path, err) => { unreadable++; storeFileUnusable(run, surface, path, err); },
-  });
-  try {
-    runLog(run.runDir, { event: "known-conflicts-read", surface, accepted, unreadable,
-      found: !!doc, marks: Object.keys(doc?.marks ?? {}).length });
-  } catch { /* observability only */ }
-  return accepted ? acceptedConflicts(doc) : doc;
-}
-
-function upsertRecallStore(ctx, trigger) {
-  const { run, job } = ctx;
-  const P = ctx.paths;
-  const skip = (reason) => {
-    try { runLog(run.runDir, { event: "known-conflicts-upsert-skipped", trigger, reason: String(reason).slice(0, 160) }); } catch { /* observability only */ }
-    note(`known-conflicts store upsert skipped (${trigger}): ${String(reason).slice(0, 120)} — never blocks the terminal`);
-  };
-  try {
-    if (!existsSync(P.findings)) return skip("no findings.json — the run never reached ratings");
-    let pf = null;
-    try { pf = parseFindingsJsonLenient(readFileSync(P.findings, "utf8")); }
-    catch (e) { return skip(`findings.json unparseable even leniently: ${String(e?.message ?? e).slice(0, 80)}`); }
-    // spec 64 (B3) — stamp each leg's recorded opposition window from the run's own register
-    // substrates, so the NEXT run of this mark can judge deadline carry-forward.
-    let oppositionByUri = new Map();
-    try { oppositionByUri = collectOppositionDeadlines(run.runDir); } catch { /* best-effort */ }
-    const legs = (pf?.findings ?? []).flatMap((f) =>
-      (Array.isArray(f?.owner?.registrations) ? f.owner.registrations : [])
-        .filter((r) => r?.uri && !/dead|expired|lapsed|cancelled/i.test(String(r?.status ?? "")))
-        .map((r) => {
-          const canon = normalizeRecordUri(r?.uri ?? "");
-          const oppositionEnd = (canon && oppositionByUri.get(canon)) || null;
-          return { uri: r.uri, mark_text: f?.mark ?? null, classes: r?.classes ?? f?.classes ?? null, status: "live",
-            owner: f?.owner?.name ?? null, jurisdiction: r?.jurisdiction ?? null,
-            opposition_end: oppositionEnd, deadline_source_uri: oppositionEnd ? canon : null };
-        }));
-    if (!legs.length) return skip("findings carry no live register legs");
-    const names = [...new Set([job.markName, job.name,
-      ...(Array.isArray(job.marks) ? job.marks.map((m) => m?.name) : [])].filter(Boolean))];
-    if (!names.length) return skip("job carries no mark names to key the store on");
-    // ROUND-2 FIX (review problem 3) — the rows carry their TERMINAL. `trigger` is "delivered" or
-    // "failed:<stage>", and known-conflicts.acceptedConflicts() is what every verdict surface reads:
-    // a run that never shipped can seed CONTEXT for the next attempt on this matter but can never
-    // clamp a later delivered report CLEAR→CONDITIONAL or be quoted in one.
-    const w = writeKnownConflictsFor(run.studioRoot, {
-      names, legs, codename: run.codename, ts: new Date().toISOString(),
-      customer: ctx.profile?.profileKey ?? null, terminal: trigger,
-      onError: (path, err) => storeFileUnusable(run, "upsert", path, err),
-    });
-    // ASSERTED every way: added:0 (every leg already known — the healthy steady state on a re-run) is
-    // a real answer a later investigation must be able to see, never an absent row. `upgraded` is the
-    // round-3 arm and the one that proves the modal recovery worked: this delivery CONFIRMED legs a
-    // failed attempt had recorded, so they are visible to the recall tripwire again.
-    runLog(run.runDir, { event: "known-conflicts-upsert", trigger, added: w.added, upgraded: w.upgraded,
-      unreadable: w.unreadable, legs: legs.length, marks: names.length, accepted: trigger === "delivered" });
-    note(`known-conflicts store upsert (${trigger}): ${w.added} row(s) added, ${w.upgraded} prior row(s) upgraded to a delivered terminal, ${w.unreadable} file(s) unusable, across ${names.length} mark file(s) (${legs.length} live leg(s) seen)${trigger === "delivered" ? "" : " — CONTEXT ONLY: an unaccepted run's legs never clamp a later delivered verdict"}`);
-  } catch (e) { skip(String(e?.message ?? e)); }
-}
 
 const safeReadJson = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
 const safeReadText = (p) => { try { return readFileSync(p, "utf8"); } catch { return ""; } };
@@ -9144,165 +9057,6 @@ async function pipelineInner(job, opts = {}) {
     await verifyAndRecordHouseElement(ctx, opts);   // ask the register who owns the frame's proposed house element, BEFORE the plan is compiled from it
     attachRegisterPlan(ctx);      // WS2 (B3): compile/freeze/reuse the deterministic register plan (flag-gated; frozen plan wins on resume; never-kill on mint)
 
-    // spec 64 (B2) — proactive recall probes: prior-confirmed conflicts for THIS mark (the workspace
-    // per-mark store) are re-searched BY NAME as deterministic plan entries, not merely re-flagged at
-    // delivery. The production drop this closes: teal-conduit's plan carried a named-incumbent
-    // watchlist (VENERET, KINRIX); copper-causeway's regenerated plan proposed no owner/named probes, so
-    // VENERET (no "VENZ" substring) never entered the register band — the delivery tripwire could only
-    // have caught the loss post-hoc, after the run had wasted its chance. A deterministic exact probe
-    // makes the fetch structural, converting the tripwire's justified-arm (fetched ∧ drop-row-cited)
-    // into a verifier of a reasoned negative: a remembered conflict resurfaces as a finding or a
-    // reasoned drop row — never as nothing. xcheck pattern throughout: fold run-local (no slug-store
-    // write-back — senior lawyer 2026-07-10), deterministic qids ⇒ resume-idempotent fold, capped with logged
-    // overflow, receipt _driver/register-recall.json, env-gated for rollback. NEVER-KILL.
-    ctx.recallDirectives = [];
-    if (ctx.registerPlan && process.env.CLEAROTRON_RECALL_PROBES !== "0" && process.env.CLEAROTRON_RECALL_TRIPWIRE !== "0") {
-      try {
-        const receiptPath = driverDir(run.runDir, "register-recall.json");
-        const prior = existsSync(receiptPath) ? JSON.parse(readFileSync(receiptPath, "utf8")) : null;
-        const namesForRecall = [...new Set([job.markName, job.name,
-          ...(Array.isArray(job.marks) ? job.marks.map((m) => m?.name) : [])].filter(Boolean))];
-        // CONTEXT surface (review problem 3): the recall PROBES read the store UNFILTERED, failed-run
-        // rows included — telling the next attempt on this matter where to look again is exactly what
-        // the failed-terminal write exists for, and a probe cannot rate anything. The verdict surfaces
-        // (the pre-clamp read and the reviewer tripwire pack) read acceptedConflicts() instead.
-        const known = readRecallStore(run, namesForRecall, "recall-probes");
-        const searchedKeys = new Set(namesForRecall.map(markKey));
-        const rows = Object.entries(known?.marks ?? {})
-          .filter(([mark]) => searchedKeys.has(markKey(mark)))
-          .flatMap(([, rs]) => (Array.isArray(rs) ? rs : []))
-          .filter((r) => String(r?.status ?? "live").toLowerCase() === "live" && String(r?.mark_text ?? "").trim());
-        // material-first ranking (mirror the tripwire's material arm): class-overlapping rows lead.
-        const inScope = inScopeClassList(job, ctx.profile).map(String);
-        const inScopeSet = new Set(inScope);
-        const material = (r) => (Array.isArray(r.classes) ? r.classes : []).some((c) => inScopeSet.has(String(c)));
-        const ranked = [...rows.filter(material), ...rows.filter((r) => !material(r))];
-        // — TWO CAPS, BECAUSE THIS IS TWO INSTRUMENTS SHARING ONE BUDGET.
-        //
-        // Measured on a test run, 2026-08-23: the shared cap of 10 spent itself as 5 mark probes and 5
-        // owner probes, perfectly alternating, because each row mints both and both drew from one
-        // counter in row order. A remembered conflict sat at generated position 74 of 114 while an
-        // owner's 87-record portfolio dispatched ahead of it.
-        //
-        // They answer different questions. A MARK probe returns the remembered conflict: 5 probes
-        // returned 7 records, four of the five returning exactly one — a clean hit on what this lane is
-        // for. An OWNER probe returns a portfolio: 5 probes returned 141 records, one of them 87. No
-        // single number is right for both, which is why this is a split and not a larger cap.
-        //
-        // MARK 50 is the measured generated population — all of them. At ~1.4 records per probe the
-        // whole mark lane costs ~70 records, so no volume argument cuts it anywhere, and a cap below
-        // the population is the defect this issue was filed on.
-        //
-        // OWNER 5 is today's ACTUAL dispatch, so portfolio behaviour is unchanged. The old `10` was
-        // never ten owner probes — it was a shared budget that yielded five, and reading it as an owner
-        // cap of 10 would DOUBLE this lane (a further ~141 records) rather than hold it.
-        //
-        // NOT A RANKING, and deliberately so: two ranking keys were measured on this issue and both are
-        // refuted. Phonetic proximity to the subject selects FOR redundancy with the primary sweep (40%
-        // of high-proximity terms were already in the band, against 20% of low-proximity ones), and
-        // promoting mark probes over owner probes costs ~95% of the lane's retrieval. With the whole
-        // mark population dispatched there is nothing left to rank. The material-first `ranked` order
-        // above is untouched and still decides WHICH five rows get a portfolio sweep.
-        const RECALL_CAP_MARK = 50;
-        const RECALL_CAP_OWNER = 5;
-        const candidates = [], candDirectives = [], overflow = [];
-        const seen = new Set();
-        const mintedQids = new Set();   // qid uniqueness inside the lane — the fold below dedupes on it
-        // term → every company whose delivery remembered it. The searches read every company's rows; the
-        // receipt names whose they were, so an audit lists only its own (recallReceiptForOwnCompany).
-        const companiesOf = new Map();
-        for (const r of ranked) {
-          const mark = String(r.mark_text).trim();
-          if (searchedKeys.has(markKey(mark))) continue;   // the primary sweep already owns the searched mark itself
-          // THE SAME DEFECT AS THE CROSS-CHECK LANE, and worse here: this loop's `seen` keys on the QID
-          // rather than on the term, so two marks that collapse to one identity are dropped in the mint
-          // itself, before the fold, with nothing refused and nothing recorded. `kebab()` is a display
-          // slug; identity belongs to termIdentity, and the 40-char truncation gets the same net.
-          const probes = [["recall", "exact", mark]];
-          if (String(r.owner ?? "").trim()) probes.push(["recall-owner", "owner", String(r.owner).trim()]);
-          for (const [prefix, predicate, term] of probes) {
-            // DEDUPE ON THE TERM, NOT ON THE IDENTITY STRING. Keyed on the qid, this skip could not tell
-            // "this exact probe again" from "a different term whose identity truncated to the same 40
-            // characters", and it answered both with a silent `continue`. The first is a genuine repeat
-            // and is still skipped; the second is a distinct mark and now gets a distinct qid.
-            const termKey = `${predicate}:${term.toLowerCase()}`;
-            if (!companiesOf.has(termKey)) companiesOf.set(termKey, new Set());
-            companiesOf.get(termKey).add(r.customer || null);
-            if (seen.has(termKey)) continue;
-            seen.add(termKey);
-            const qid = mintSupplementalQid({ prefix, term, used: mintedQids });
-            candidates.push({ qid, axis: "primary-sweep", predicate, term, nice_classes: inScope, regions: [], expected_kind: "enumerate" });
-            candDirectives.push({ qid, uri: r.uri ?? null, mark_text: mark, owner: r.owner ?? null, customers: companiesOf.get(termKey) });
-          }
-        }
-        for (const d of candDirectives) d.customers = [...d.customers];
-        const customersOfQid = new Map(candDirectives.map((d) => [d.qid, d.customers]));
-        // ── — THE SAME DEFECT, AND THE OWNER BUDGET IS WHERE IT BITES ───────────
-        //
-        // The cross-check lane's fix, applied here because this lane has the identical shape: the caps
-        // counted CANDIDATES and the duplicate screen ran after them, so a row the fold was going to
-        // discard still spent a slot.
-        //
-        // UNMEASURED HERE, and said plainly — the run evidence on the tracker is the cross-check lane's.
-        // The reasoning that carries it over is the budget: the note above records that the whole mark
-        // population is normally dispatched, so RECALL_CAP_MARK rarely binds and the OWNER cap of five
-        // is the one that does. Those five are rationed by the material-first order deliberately, which
-        // makes a slot spent on a row nobody dispatches a fifth of the lane's portfolio reach, not a
-        // rounding error. Screened before counting, the five go to five real owner sweeps.
-        const screened = screenThenCap(ctx.registerPlan, candidates, Infinity);   // screen only; budgets below
-        const entries = [], directives = [];
-        let markUsed = 0, ownerUsed = 0;
-        for (const e of screened.entries) {
-          const isOwner = e.predicate === "owner";
-          if (isOwner ? ownerUsed >= RECALL_CAP_OWNER : markUsed >= RECALL_CAP_MARK) {
-            overflow.push({ qid: e.qid, term: String(e.term).slice(0, 60), customers: customersOfQid.get(e.qid) ?? [] }); continue;
-          }
-          if (isOwner) ownerUsed++; else markUsed++;
-          entries.push(e);
-        }
-        const keepQids = new Set(entries.map((e) => e.qid));
-        for (const d of candDirectives) if (keepQids.has(d.qid)) directives.push(d);
-        // — screen BEFORE dirKey. The fold's resume-idempotence guard compares this key against
-        // the prior receipt's; computed over the post-screen directive set it is stable across attempts,
-        // computed before the screen it would differ from what the receipt records and re-fold forever.
-        const folded = foldSupplementalEntries(ctx.registerPlan, entries);   // PURE — safe above the guard
-        const { kept } = partitionFoldDirectives(directives, folded.refused);
-        // Refusals recorded over the WHOLE candidate list, as in the cross-check lane: they render as
-        // asks a reader adjudicates, and screening further must not disclose less.
-        const { refused: refusedDirectives } = partitionFoldDirectives(candDirectives, screened.refused);
-        const dirKey = kept.map((d) => d.qid).sort().join(",");
-        const priorKey = Array.isArray(prior?.directives) ? prior.directives.map((d) => d.qid).sort().join(",") : null;
-        if (candidates.length && dirKey !== priorKey) {
-          const { plan, added } = folded;
-          if (added.length) {
-            writeFileSync(`${P.registerPlan}.tmp`, JSON.stringify(plan, null, 2) + "\n");
-            renameSync(`${P.registerPlan}.tmp`, P.registerPlan);
-            ctx.registerPlan = plan;   // run-local only — no slug-store write-back (senior lawyer 2026-07-10)
-            runLog(run.runDir, { event: "register-recall-probes", minted: added.length, overflow: overflow.length });
-            note(`recall probes: ${added.length} prior-confirmed conflict quer${added.length === 1 ? "y" : "ies"} folded into the frozen plan (caps: mark ${RECALL_CAP_MARK}, owner ${RECALL_CAP_OWNER}${overflow.length ? `; ${overflow.length} over-cap logged` : ""})`);
-          }
-        }
-        if (refusedDirectives.length) {
-          runLog(run.runDir, { event: "register-recall-refused", refused: refusedDirectives.length,
-            qids: refusedDirectives.map((d) => d.qid).slice(0, 6) });
-          note(`recall probes: ${refusedDirectives.length} probe(s) REFUSED as un-searchable terms — recorded in _driver/register-recall.json refused[], never dispatched`);
-        }
-        if (kept.length || overflow.length || refusedDirectives.length) {
-          writeFileSync(`${receiptPath}.tmp`, JSON.stringify({ schema_version: 2, ts: new Date().toISOString(), customer: ctx.profile?.profileKey || null, cap: { mark: RECALL_CAP_MARK, owner: RECALL_CAP_OWNER }, directives: kept, overflow, ...(refusedDirectives.length ? { refused: refusedDirectives } : {}) }, null, 2) + "\n");
-          renameSync(`${receiptPath}.tmp`, receiptPath);
-        }
-        // The RECEIPT partitions; what the seat is TOLD does not. This feeds the primary-sweep prompt's
-        // prior-confirmed-conflict list, and a refused probe is still a real conflict an earlier
-        // delivered run confirmed. Narrowing it here would stop naming that conflict to the one seat
-        // that could carry it as a finding — a coverage change this issue did not ask for, and the
-        // wrong direction under "an absence is a finding". The refusal is surfaced in the receipt's
-        // refused[] and as an OPEN ask; it is not surfaced by removing a name from a prompt.
-        ctx.recallDirectives = directives;
-      } catch (e) {
-        note(`recall probes skipped (${String(e.message).slice(0, 100)}) — never-kill; the delivery tripwire remains the net`);
-      }
-    }
-
     // Phase 2b slice 1 — the jx candidate fold (the native-language investigation): native-script
     // register candidates for the
     // frozen policy's jxLanes component, folded run-local onto the transliteration-numeric axis so the
@@ -13024,59 +12778,9 @@ async function pipelineInner(job, opts = {}) {
       }
     }
 
-    // Recall-regression check (copper-lattice, re-keyed by spec 64): the MARK's prior-confirmed live
-    // conflicts must RESURFACE as findings or be JUSTIFIED against their fetched record — computed
-    // BEFORE the deliver-conditional floor so a MATERIAL regression joins the registerGap clamp; the
-    // tripwire in the delivery block re-reads the same pure check for the flag surface. spec 64: the
-    // store is WORKSPACE-LEVEL per mark (a refless re-run mints a new matter id — copper-causeway could
-    // not see teal-conduit's VENERET in a matter-dir ledger); the legacy matter-sibling file is still
-    // merged (human edits there keep winning for that matter). Absent store ⇒ no-op. NEVER-KILL.
-    ctx.recallRegressionMaterial = [];
-    ctx.recallRegressions = [];
-    ctx.deadlineCarryMaterial = [];
-    try {
-      const namesForRecall = [...new Set([job.markName, job.name,
-        ...(Array.isArray(job.marks) ? job.marks.map((m) => m?.name) : [])].filter(Boolean))];
-      // ACCEPTED rows only (review problem 3): this read feeds recallRegressionMaterial →
-      // decideRegisterGap → the deliver-conditional floor, i.e. it can set verdict = "CONDITIONAL"
-      // and push its sentence into the delivered report. Only a run someone accepted may do that;
-      // the failed-run legs stay visible to the recall PROBES above (context, not verdict).
-      const knownConflicts = process.env.CLEAROTRON_RECALL_TRIPWIRE !== "0"
-        ? readRecallStore(run, namesForRecall, "pre-clamp", { accepted: true })
-        : null;
-      // spec 64 (B3) — the register's own opposition windows reach the findings BEFORE any deadline
-      // judgment (the bands are settled by now; the corrective ladder above re-emitted findings last).
-      enrichFindingDeadlines(P, run.runDir, note);
-      if (knownConflicts) {
-        let pf = null;
-        try { pf = existsSync(P.findings) ? parseFindingsJsonLenient(readFileSync(P.findings, "utf8")) : null; }
-        catch { /* malformed findings.json is a validator fail upstream */ }
-        // (the old top-level f.registrations spread was DEAD — the schema keys registrations under owner)
-        // review fix: findings arrive with FULL provider URLs while store rows are canonical /mark
-        // paths — normalize the carried side too, or every store row reads as "not carried" forever.
-        const carriedUris = (pf?.findings ?? []).flatMap((f) =>
-          Array.isArray(f?.owner?.registrations) ? f.owner.registrations : []
-        ).map((r) => r?.uri && (normalizeRecordUri(r.uri) || String(r.uri).trim())).filter(Boolean);
-        const fetchedUris = [...assembleRunRecords(run.runDir, `clearance-${run.slug}-${run.codename}-`).records.keys()];
-        const rfMd = existsSync(P.registerFindings) ? readFileSync(P.registerFindings, "utf8") : "";
-        const violations = findRecallRegressionViolations({
-          knownConflicts, searchedNames: namesForRecall, carriedUris, fetchedUris,
-          registerFindingsMd: rfMd, inScopeClasses: inScopeClassList(job, ctx.profile),
-        });
-        ctx.recallRegressions = violations;
-        ctx.recallRegressionMaterial = violations.filter((v) => v.material);
-        // spec 64 (B3) — carried-without-deadline rows (uncarried ones belong to recall-regression above)
-        ctx.deadlineCarryMaterial = findDeadlineCarryViolations({ knownConflicts, searchedNames: namesForRecall, parsedFindings: pf, nowMs: Date.now() });
-        if (ctx.deadlineCarryMaterial.length) {
-          runLog(run.runDir, { event: "deadline-carry", n: ctx.deadlineCarryMaterial.length, uris: ctx.deadlineCarryMaterial.map((v) => v.uri).slice(0, 6) });
-          note(`deadline-carry: ${ctx.deadlineCarryMaterial.length} remembered in-window opposition deadline(s) carried WITHOUT their date — the registerGap floor carries the clamp`);
-        }
-        if (violations.length) {
-          runLog(run.runDir, { event: "recall-regression", total: violations.length, material: ctx.recallRegressionMaterial.length, uris: violations.map((v) => v.uri).slice(0, 6) });
-          note(`recall-regression: ${violations.length} prior-confirmed conflict(s) neither carried nor justified this run (${ctx.recallRegressionMaterial.length} material — the registerGap floor carries the clamp)`);
-        }
-      }
-    } catch (e) { note(`recall-regression check skipped (${String(e.message).slice(0, 80)}) — never-kill`); }
+    // The register's own opposition windows reach the findings BEFORE any deadline judgment (the bands
+    // are settled by now; the corrective ladder above re-emitted findings last).
+    enrichFindingDeadlines(P, run.runDir, note);
 
     // ── P2-A pre-verdict floor: the reconciliation's hard discrepancy list BLOCKS delivery ──────────
     // screened-live dominant-element candidates ∖ endings must be EMPTY before a report ships. The
@@ -13260,7 +12964,7 @@ async function pipelineInner(job, opts = {}) {
     const applyCoverageFloor = () => {
     // review fix: the machinery arm below must judge the verdict AS IT ENTERED the floor —
     // when the legalActions arm clamps CLEAR→CONDITIONAL first, the machinery gaps (coverage, frame,
-    // screen-gate, senior, registerGap, deadlineCarry) must still be computed and APPENDED, or a run
+    // screen-gate, senior, registerGap) must still be computed and APPENDED, or a run
     // with both a condition action and an unfinished register slice would disclose only the condition.
     const entryVerdict = verdict;
     // spec 64 — the legalActions arm: the opinion's OWN typed condition actions (findings.json
@@ -13397,16 +13101,13 @@ async function pipelineInner(job, opts = {}) {
       // Unfinished-register clamp (copper-lattice 2026-07-08; ON by default, CLEAROTRON_REGISTER_GAP_CLAMP=0
       // is rollback-only): a MATERIAL register slice that never (fully) ran is an EXECUTION fact, not a
       // sufficiency judgment — the screenGateGap class ("could not examine"), read deterministically from
-      // the taint-relabelled ledger + the taint receipt + the recall tripwire, independent of the LLM's
+      // the taint-relabelled ledger + the taint receipt, independent of the LLM's
       // coverage_judgment (whose absent-⇒-sufficient default is the hole this closes). deferred rows only;
       // coverage-limited stays an accepted limit.
       const regGap = process.env.CLEAROTRON_REGISTER_GAP_CLAMP !== "0"
-        ? decideRegisterGap(loadCoverageLedger(run.runDir).rows, { taintAxes: readActiveTaintAxes(run.runDir), recallRegressions: ctx.recallRegressionMaterial ?? [] })
-        : { gap: false, deferred: [], taintAxes: [], recallRegressions: [] };
+        ? decideRegisterGap(loadCoverageLedger(run.runDir).rows, { taintAxes: readActiveTaintAxes(run.runDir) })
+        : { gap: false, deferred: [], taintAxes: [] };
       const registerGap = regGap.gap === true;
-      // spec 64 (B3) — a remembered in-window opposition deadline delivered without its date is client
-      // harm of the VENERET class; a healthy run self-heals via enrichFindingDeadlines and never trips.
-      const deadlineGap = process.env.CLEAROTRON_REGISTER_GAP_CLAMP !== "0" && (ctx.deadlineCarryMaterial ?? []).length > 0;
       // T3 (H4, an owner-approved doctrine flip): the D1 `artifactInvalid`
       // clamp input + kinds.artifact are DELETED — a compromised machine artifact now FAILS the run
       // upstream (deriveNamedBand / the register-digest terminals) instead of shipping a
@@ -13414,7 +13115,7 @@ async function pipelineInner(job, opts = {}) {
       // sanctioned clamps: the lawyer's own sufficiency call, a disclosed frame residual, a
       // could-not-examine record, and an unfinished register slice — CONDITIONAL carries
       // lawyer-judged/disclosed residue only.
-      if (coverageInsufficient || frameResidual || screenGateGap || seniorGap || registerGap || deadlineGap) {
+      if (coverageInsufficient || frameResidual || screenGateGap || seniorGap || registerGap) {
         // THESE SENTENCES REACH A CLIENT AND THEY ARE NOT OURS TO WRITE (owner, 2026-09-17). One of
         // them — the screen-gate line, which says a mark "could not be record_fetched" — carried an
         // engine identifier into the list a client reads as the conditions on their result, by a route
@@ -13432,13 +13133,8 @@ async function pipelineInner(job, opts = {}) {
         if (registerGap) {
           for (const { reason, clause } of registerGapConditions(regGap)) machinery(reason, clause);
           // (the deferred and cut-down register lines: registerGapConditions, at the end of this file)
-          // Named regressions (2026-07-22): `<MARK> (<owner> — <canonical uri>)` — a bare mark name
-          // shipped "ION, ION, ION" (three indistinguishable strings); the identity is front-loaded
-          // because the delivered statement truncates from the tail.
-          if (regGap.recallRegressions.length) machinery(`a prior-confirmed live conflict was neither carried nor justified this run: ${regGap.recallRegressions.slice(0, 3).map(formatRecallRegression).join(", ")}`);
         }
-        if (deadlineGap) machinery(`a recorded opposition deadline was delivered without its date: ${ctx.deadlineCarryMaterial.map((v) => `${v.mark_text ?? v.uri} (window closes ${v.opposition_end})`).slice(0, 3).join(", ")}`);
-        // ── THE THIRD CLAMP SITE NAMES ITSELF, AND NAMES WHICH OF ITS SEVEN INPUTS FIRED ────────────────
+        // ── THE THIRD CLAMP SITE NAMES ITSELF, AND NAMES WHICH OF ITS SIX INPUTS FIRED ────────────────
         //
         // All three clamp sites emitted this event under one name with the same from/to, distinguishable
         // only by which optional payload key happened to be present. Two of them fired three milliseconds
@@ -13450,14 +13146,14 @@ async function pipelineInner(job, opts = {}) {
         // was clamped — and something downstream may already count clamps in aggregate. A discriminator is
         // additive; three names would not be.
         //
-        // This site is itself seven causes under one name, so it also lists WHICH fired rather than
+        // This site is itself six causes under one name, so it also lists WHICH fired rather than
         // leaving a reader to key on field presence and guess.
         const clampInputs = Object.entries({
           coverageInsufficient, frameGap, frameDeferred: frameDeferrals.length,
           screenGate: screenGateGap ? sgUnresolved.length : 0, seniorRight: seniorGap,
-          registerGap, deadlineCarry: deadlineGap ? ctx.deadlineCarryMaterial.length : 0,
+          registerGap,
         }).filter(([, v]) => Boolean(v)).map(([k]) => k);
-        runLog(run.runDir, { event: "coverage-floor-clamp", cause: "coverage", causes: clampInputs, from: "CLEAR", to: "CONDITIONAL", coverageInsufficient: coverageInsufficient || undefined, frameGap: frameGap || undefined, frameDeferred: frameDeferrals.length || undefined, screenGate: screenGateGap ? sgUnresolved.length : undefined, seniorRight: seniorGap || undefined, registerGap: registerGap ? { deferred: regGap.deferred.length, taint: regGap.taintAxes.length, recall: regGap.recallRegressions.length } : undefined, deadlineCarry: deadlineGap ? ctx.deadlineCarryMaterial.length : undefined });
+        runLog(run.runDir, { event: "coverage-floor-clamp", cause: "coverage", causes: clampInputs, from: "CLEAR", to: "CONDITIONAL", coverageInsufficient: coverageInsufficient || undefined, frameGap: frameGap || undefined, frameDeferred: frameDeferrals.length || undefined, screenGate: screenGateGap ? sgUnresolved.length : undefined, seniorRight: seniorGap || undefined, registerGap: registerGap ? { deferred: regGap.deferred.length, taint: regGap.taintAxes.length } : undefined });
         note(`deliver-conditional floor: ${reasons.join("; ")} — clamping CLEAR→CONDITIONAL so the delivered status carries the gap (never withheld, never halted).`);
         verdict = "CONDITIONAL";
         // APPEND (dedup by exact text) — the legalActions arm may already have recorded conditions,
@@ -13467,7 +13163,7 @@ async function pipelineInner(job, opts = {}) {
         clampReasons.push(...freshMachinery);
         // The reason KINDS distinguish coverage/frame/screen-gate/senior-right/register residue for the
         // report bound line and the client conditions row (merged — legalActions survives).
-        clampKinds = { ...clampKinds, coverage: coverageInsufficient || undefined, frame: frameResidual || undefined, screenGate: screenGateGap || undefined, seniorRight: seniorGap || undefined, registerGap: registerGap || undefined, deadlineCarry: deadlineGap || undefined };
+        clampKinds = { ...clampKinds, coverage: coverageInsufficient || undefined, frame: frameResidual || undefined, screenGate: screenGateGap || undefined, seniorRight: seniorGap || undefined, registerGap: registerGap || undefined };
         writeRunStatus(ctx, signoffPatch(verdict));
       }
     }
@@ -15059,7 +14755,7 @@ async function pipelineInner(job, opts = {}) {
         });
         const receipts = findEngagementReceipts(narrativeMd, anchors);
         const bland = receipts.filter((r) => !r.citesOwnAnchor);
-        const ruleShape = findRuleShapeFlags(`${narrativeMd}\n${reportMd}`);
+        const ruleShape = findRuleShapeFlags(`${narrativeMd}\n${reportMd}`, { disputeTypes: (ctx.frameworkMethod?.inputs ?? []).flatMap((i) => i.values) });   // the run's own dispute types, where its framework states a method
         const reviewMd = existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "";
         // B2b — reviewer self-coherence over senior-eye-review.md (same internal sidecar/banner).
         const reviewerCoherence = findReviewerCoherenceFlags(reviewMd);
@@ -15095,22 +14791,11 @@ async function pipelineInner(job, opts = {}) {
         // the dominant-element crowd is unfinished (and the caption is promoted to disclose it, below).
         let frameReopenReceipt = null;
         try { const rp = driverDir(run.runDir, "frame-reopen.json"); frameReopenReceipt = existsSync(rp) ? JSON.parse(readFileSync(rp, "utf8")) : null; } catch { /* best-effort */ }
-        // copper-lattice net #3 + recall fixture — the two new tripwires' substrates (all only-if-present)
+        // copper-lattice net #3 — the cross-check tripwire's substrate (only-if-present)
         let xcheckReceipt = null;
         try { const xp = driverDir(run.runDir, "register-xcheck.json"); xcheckReceipt = existsSync(xp) ? JSON.parse(readFileSync(xp, "utf8")) : null; } catch { /* best-effort */ }
-        let knownConflicts = null;
-        // spec 64 — same workspace-level per-mark read as the pre-clamp site (legacy sibling merged),
-        // and the same ACCEPTED-rows-only filter (review problem 3): this pack is a VERDICT surface —
-        // it hands the reviewer "prior-confirmed live conflict …" flags that shape the run's own
-        // verdict — so an unaccepted run's legs must not appear here either.
-        try { knownConflicts = readRecallStore(run, searchedNames, "reviewer-pack", { accepted: true }); } catch { /* best-effort */ }
         const carriedOwners = (parsedFindings?.findings ?? []).flatMap((f) => [f?.owner, f?.owner_name, f?.owner?.name]).filter((x) => typeof x === "string" && x);
-        // review fix: canonical /mark path form — must match the store rows (see the pre-clamp site).
-        const carriedUris = (parsedFindings?.findings ?? []).flatMap((f) =>
-          Array.isArray(f?.owner?.registrations) ? f.owner.registrations : []
-        ).map((r) => r?.uri && (normalizeRecordUri(r.uri) || String(r.uri).trim())).filter(Boolean);
         const executedQids = (ctx.planExecution?.executed ?? []).map((x) => x.qid);
-        const fetchedUrisForRecall = [...assembleRunRecords(run.runDir, `clearance-${run.slug}-${run.codename}-`).records.keys()];
         const regLedgerRows = loadCoverageLedger(run.runDir).rows;
         // judgment-relocation (2026-06-23): the search-shape gate (findFloorShapeGaps) was DELETED here too —
         // sufficiency is judgment's call (coverage_judgment), not a re-parse of the ledger at the surface. This
@@ -15135,7 +14820,7 @@ async function pipelineInner(job, opts = {}) {
           reviewFreshness: findReviewFreshnessViolation(reviewMd, { upstreamTexts: [registerFindingsMd, commonLawMd, placementMd] }), // U2
           seedNeutrality: findSeedNeutralityViolations([{ name: "matter-context", text: matterContextMd }, { name: "placements", text: placementMd }]), // S2
           probativeGrading: parsedFindings ? findProbativeGradingViolations(parsedFindings) : [],   // U3
-          matrixCeiling: (parsedFindings && (parsedFindings.schemaVersion ?? 1) < 4) ? findMatrixCeilingViolations(parsedFindings) : [],   // legacy (v≤3) only — a v4 framework states its own ceilings in its deck prose
+          // The matrix-ceiling tripwire is retired: a framework that states a table now holds each rating to it (framework-method.mjs).
           // U1 (surface backstop). The scan surface NARROWS to report.md on 2026-08-01: client-summary.md
           // was the second half of this concat and no longer exists. The report is the one delivered
           // document, so nothing a reader sees escapes the check — it just has one surface to read now.
@@ -15150,12 +14835,6 @@ async function pipelineInner(job, opts = {}) {
           // register cross-check receipt (S1 sibling; receipt-gated ⇒ replay-pure).
           crosscheckMissing: findUncrossCheckedDemotions(commonLawMd ? findSimilarListingSignals(commonLawMd) : [],
             { carriedOwners, carriedMarks, xcheckReceipt, executedQids }),
-          // copper-lattice recall anchor — a prior-confirmed conflict that neither resurfaced nor was
-          // justified (fixture-gated ⇒ replay-pure; the MATERIAL arm already clamped via registerGap).
-          recallRegression: findRecallRegressionViolations({ knownConflicts, searchedNames, carriedUris,
-            fetchedUris: fetchedUrisForRecall, registerFindingsMd, inScopeClasses }),
-          // spec 64 (B3) — carried-without-deadline (the DEMVENZY shape); uncarried rows ride recallRegression
-          deadlineCarry: findDeadlineCarryViolations({ knownConflicts, searchedNames, parsedFindings, nowMs: Date.now() }),
           // PR-4 — document-growth trips off the append-only spine (the stage choke point logs them; both
           // the lint-repair and corrective loops are covered because the trip keys on TRIGGER). Internal
           // observability like every tripwire: the reviewer sees which repair pass ADDED material.
@@ -15164,15 +14843,12 @@ async function pipelineInner(job, opts = {}) {
         const tripFlags = [
           ...tripwires.recallFloor.map((v) => `recall-floor: ${v.why}`),
           ...tripwires.crosscheckMissing.map((v) => `crosscheck-missing: ${v.why.replace(/^crosscheck-missing:\s*/, "")}`),
-          ...tripwires.recallRegression.map((v) => `recall-regression: ${v.why.replace(/^recall-regression:\s*/, "")}`),
           // doc-35 T4: review-freshness (U2) grades the engine's own QC RITUAL ("the review re-read its own
           // inputs"), a process metric not a matter fact — dropped from the reviewer surface.
           ...tripwires.seedNeutrality.map((v) => `seed-neutrality: ${v.where} carries ${v.why}`),
           ...tripwires.probativeGrading.map((v) => `probative-grading: ${v.why}`),
-          ...tripwires.matrixCeiling.map((v) => `matrix-ceiling: ${v.why}`),
           ...(tripwires.statusHonesty && !tripwires.statusHonesty.pass ? [`status-honesty: ${tripwires.statusHonesty.detail}`] : []),
           ...tripwires.deadlineUrgency.map((v) => `deadline-urgency: ${v.why}`),
-          ...tripwires.deadlineCarry.map((v) => `${v.why.startsWith("deadline-carry:") ? v.why : `deadline-carry: ${v.why}`}`),
           ...tripwires.unresolvedDisagreements.map((v) => `disagreement-unresolved: ${v.why}`),
           ...tripwires.orphanFindings.map((v) => `orphan-finding: ${v.why}`),
           ...tripwires.documentGrowth.map((t) => `document-growth: ${t.stage} grew ${t.growthPct}% (${t.before} → ${t.after} bytes) under trigger "${t.trigger}" — a repair defends or corrects, it does not add; review what the pass appended`),
@@ -15526,15 +15202,6 @@ async function pipelineInner(job, opts = {}) {
       }
     }
 
-    // Recall store upsert (copper-lattice, re-keyed by spec 64; P2-A: extracted + loud both ways):
-    // every carried finding's LIVE register legs are remembered in the WORKSPACE per-mark store
-    // (<studioRoot>/_known-conflicts/<mark>.json) — the substrate the recall-regression tripwire +
-    // registerGap clamp read on ANY later run of this mark, whatever matter id the re-run mints.
-    // Keyed by each searched mark name, deduped by canonical uri, human-editable (the file wins —
-    // code only ever ADDS). The outcome is now an ASSERTED event either way (see upsertRecallStore);
-    // still best-effort — a store write failure must never mask a delivery.
-    upsertRecallStore(ctx, "delivered");
-
     // Final status BEFORE archive so the renamed status.json carries the delivered state into the archive;
     // then rebuild STATUS.md (which scans the archive too).
     // spec 64 — the delivered status carries THE one risk statement too, so the run-status surface can
@@ -15857,14 +15524,6 @@ async function pipelineInner(job, opts = {}) {
     }
     sentinel(run.runDir, ".failed", { stage: failedStage, reason, recoveryAttempts: priorAttempts, sig: failSig.sig, class: failClass, terminalKind });
     runLog(run.runDir, { event: "failed", stage: failedStage, reason, sig: failSig.sig, class: failClass, terminalKind });
-    // P2-A — the FAILED-RUN store write (Round-2 disagreement 3, binding): the recall store used to
-    // learn only at the DELIVERED terminal, so a run that produced findings.json and then died at or
-    // after verdict left the next attempt recall-blind — the recall probes and the recall-regression
-    // tripwire were structural no-ops on the very re-run that needed them. A terminal failure that
-    // reached ratings writes its legs too (upsertRecallStore no-ops loudly when findings.json never
-    // existed); parks/postpones deliberately do NOT write — the run is still alive and its delivered
-    // or failed terminal will own the write. Best-effort: never masks the failure record.
-    try { upsertRecallStore(ctx, `failed:${failedStage}`); } catch { /* the .failed sentinel stands */ }
     logTurnaroundReconciliation(run.runDir, ctx?.quote, "failed");   // a run that never delivered still burned wall
     // Record the failure in status FIRST (so the on-demand STATUS.md surfaces it even if the ping can't fire —
     // e.g. a gateway-wide outage where the agent send itself would also fail). reason is truncated for the ping.
@@ -16134,7 +15793,7 @@ export function reconstructCtx(job, opts) {   // @internal
   // read-only postures, and the sidecar writes are skipped).
   //
   // Dispatch-scoped fields are deliberately NOT here — ctx.finding, ctx.openDoubts/openAsks,
-  // ctx.failInfo, ctx.lateBind and ctx.recallDirectives belong to one dispatch inside one loop, not to
+  // ctx.failInfo and ctx.lateBind belong to one dispatch inside one loop, not to
   // the run. --experiment resolves those through stage-context.mjs INLINE_CONTEXT and REFUSES rather
   // than dispatching against an undefined.
   //
@@ -16710,6 +16369,11 @@ const RETIRED_ENV = {
   CLEAROTRON_EXEC_SIGKILL_GRACE_MS: ["2026-08-20", "SIGTERM-to-SIGKILL grace of the gateway exec; the engine's own is CLEAROTRON_KILL_ESCALATE_MS and is unchanged"],
   CLEAROTRON_PREFLIGHT_TIMEOUT_MS: ["2026-08-20", "wall on a gateway agent-listing preflight that no longer runs — nothing is asked to be reachable before a job is claimed"],
   CLEAROTRON_PREFLIGHT_FAIL_DELAY_MS: ["2026-08-20", "the hold after that preflight failed"],
+
+  // Both switched off parts of the recall store, which is gone: no run reads or writes remembered
+  // conflicts any more, so a box that set either to 0 loses nothing and one that left them on gains nothing.
+  CLEAROTRON_RECALL_PROBES: ["2026-09-24", "the feature was removed"],
+  CLEAROTRON_RECALL_TRIPWIRE: ["2026-09-24", "the feature was removed"],
 };
 
 /** One warning line per retired variable still set in `env`. Pure; [] when the environment is clean. */

@@ -22,9 +22,9 @@ const STAFF = { email: "staff@example-firm.com" };
 // One tenant, two brand owners, and a user who holds BOTH — the law-firm-with-several-clients shape. STAFF
 // has access to everything by its own entry.
 const GRANTS = { tenants: {
-  celta: { accounts: ["aurora", "zephyr"], users: {
-    "multi@celta.example": ["aurora", "zephyr"],
-    "solo@celta.example": ["aurora"],
+  celta: { accounts: ["demo-brand-owner", "zephyr"], users: {
+    "multi@celta.example": ["demo-brand-owner", "zephyr"],
+    "solo@celta.example": ["demo-brand-owner"],
   } },
 }, people: { "staff@example-firm.com": { run: true, manage: true, everything: true } } };
 const MULTI = { email: "multi@celta.example" };
@@ -54,40 +54,40 @@ test("queued rows come back in the runner's admission order, numbered densely fr
   // being honoured can produce c,b,a — which is the same guarantee the runner test makes about which
   // one actually RUNS next, asserted here on what the screen will show.
   const { poolRoot, workspaceRoot } = queueWorld([
-    { id: "q-a", mark: "ALPHA", account: "aurora", at: "2026-07-28T10:01:00.000Z" },
-    { id: "q-b", mark: "BRAVO", account: "aurora", at: "2026-07-28T10:02:00.000Z" },
-    { id: "q-c", mark: "CHARLIE", account: "aurora", at: "2026-07-28T10:03:00.000Z" },
+    { id: "q-a", mark: "ALPHA", account: "demo-brand-owner", at: "2026-07-28T10:01:00.000Z" },
+    { id: "q-b", mark: "BRAVO", account: "demo-brand-owner", at: "2026-07-28T10:02:00.000Z" },
+    { id: "q-c", mark: "CHARLIE", account: "demo-brand-owner", at: "2026-07-28T10:03:00.000Z" },
   ], ["q-c", "q-b", "q-a"]);
 
-  const rows = queuedOf(scanAccountRuns({ poolRoot, workspaceRoot, account: "aurora" }));
+  const rows = queuedOf(scanAccountRuns({ poolRoot, workspaceRoot, account: "demo-brand-owner" }));
   assert.deepEqual(rows.map((r) => r.runId), ["q-c", "q-b", "q-a"], "shown in admission order");
   assert.deepEqual(rows.map((r) => r.queuePos), [1, 2, 3], "and numbered 1..N with no gaps");
 });
 
 test("with no order file the portal shows oldest-first, matching what the runner will do", () => {
   const { poolRoot, workspaceRoot } = queueWorld([
-    { id: "q-a", mark: "ALPHA", account: "aurora", at: "2026-07-28T10:40:00.000Z" },
-    { id: "q-b", mark: "BRAVO", account: "aurora", at: "2026-07-28T10:20:00.000Z" },
-    { id: "q-c", mark: "CHARLIE", account: "aurora", at: "2026-07-28T10:30:00.000Z" },
+    { id: "q-a", mark: "ALPHA", account: "demo-brand-owner", at: "2026-07-28T10:40:00.000Z" },
+    { id: "q-b", mark: "BRAVO", account: "demo-brand-owner", at: "2026-07-28T10:20:00.000Z" },
+    { id: "q-c", mark: "CHARLIE", account: "demo-brand-owner", at: "2026-07-28T10:30:00.000Z" },
   ]);
-  const rows = queuedOf(scanAccountRuns({ poolRoot, workspaceRoot, account: "aurora" }));
+  const rows = queuedOf(scanAccountRuns({ poolRoot, workspaceRoot, account: "demo-brand-owner" }));
   assert.deepEqual(rows.map((r) => r.runId), ["q-b", "q-c", "q-a"], "oldest enqueuedAt leads");
 });
 
 test("the ordinal never publishes another tenant's queue depth", () => {
-  // Four jobs interleaved between two brand owners. Aurora's own two sit at lane positions 2 and 4.
-  // Showing "2" and "4" would tell aurora that two jobs it cannot see are queued ahead of it — the
+  // Four jobs interleaved between two brand owners. Demo Brand Owner's own two sit at lane positions 2 and 4.
+  // Showing "2" and "4" would tell demo-brand-owner that two jobs it cannot see are queued ahead of it — the
   // same fact the 404-not-403 rule exists to withhold.
   const { poolRoot, workspaceRoot } = queueWorld([
     { id: "q-z1", mark: "ZED ONE", account: "zephyr" },
-    { id: "q-a1", mark: "AURORA ONE", account: "aurora" },
+    { id: "q-a1", mark: "AURORA ONE", account: "demo-brand-owner" },
     { id: "q-z2", mark: "ZED TWO", account: "zephyr" },
-    { id: "q-a2", mark: "AURORA TWO", account: "aurora" },
+    { id: "q-a2", mark: "AURORA TWO", account: "demo-brand-owner" },
   ], ["q-z1", "q-a1", "q-z2", "q-a2"]);
 
-  const rows = queuedOf(scanAccountRuns({ poolRoot, workspaceRoot, account: "aurora" }));
-  assert.deepEqual(rows.map((r) => r.runId), ["q-a1", "q-a2"], "only aurora's own jobs");
-  assert.deepEqual(rows.map((r) => r.queuePos), [1, 2], "dense over what aurora can see, NOT lane indexes 2 and 4");
+  const rows = queuedOf(scanAccountRuns({ poolRoot, workspaceRoot, account: "demo-brand-owner" }));
+  assert.deepEqual(rows.map((r) => r.runId), ["q-a1", "q-a2"], "only demo-brand-owner's own jobs");
+  assert.deepEqual(rows.map((r) => r.queuePos), [1, 2], "dense over what demo-brand-owner can see, NOT lane indexes 2 and 4");
 
   // Staff read every row, so for them the dense numbering IS the lane depth.
   const all = queuedOf(scanAccountRuns({ poolRoot, workspaceRoot, account: null }));
@@ -96,12 +96,12 @@ test("the ordinal never publishes another tenant's queue depth", () => {
 
 test("scanAccountRuns takes an ARRAY of accounts — the union of what that caller could fetch one at a time", () => {
   const { poolRoot, workspaceRoot } = queueWorld([
-    { id: "q-a1", mark: "AURORA ONE", account: "aurora" },
+    { id: "q-a1", mark: "AURORA ONE", account: "demo-brand-owner" },
     { id: "q-z1", mark: "ZED ONE", account: "zephyr" },
     { id: "q-o1", mark: "OTHER", account: "othercorp" },
   ], ["q-a1", "q-z1", "q-o1"]);
 
-  const rows = queuedOf(scanAccountRuns({ poolRoot, workspaceRoot, account: ["aurora", "zephyr"] }));
+  const rows = queuedOf(scanAccountRuns({ poolRoot, workspaceRoot, account: ["demo-brand-owner", "zephyr"] }));
   assert.deepEqual(rows.map((r) => r.runId), ["q-a1", "q-z1"], "both held accounts, and nothing else");
   // An EMPTY array must match nothing. Falling through to "every account" here would turn a caller
   // who holds no brand owners into a caller who holds all of them.
@@ -122,7 +122,7 @@ test("?scope=mine : one request shape, and everyone gets exactly the brand owner
   //
   // Staff and client send the IDENTICAL request. There is no role branch in the UI, which is the rule.
   const world = queueWorld([
-    { id: "q-a1", mark: "AURORA ONE", account: "aurora" },
+    { id: "q-a1", mark: "AURORA ONE", account: "demo-brand-owner" },
     { id: "q-z1", mark: "ZED ONE", account: "zephyr" },
     { id: "q-o1", mark: "OTHER", account: "othercorp" },
   ], ["q-a1", "q-z1", "q-o1"]);
@@ -149,7 +149,7 @@ test("?scope=mine does NOT relax the wildcard — `*` still means every account,
   // "mine" would teach the browser that `*` is a harmless default worth sending everywhere, and the
   // next path that forgets to re-check it becomes a cross-tenant read. Two capabilities, two names.
   const world = queueWorld([
-    { id: "q-a1", mark: "AURORA ONE", account: "aurora" },
+    { id: "q-a1", mark: "AURORA ONE", account: "demo-brand-owner" },
     { id: "q-o1", mark: "OTHER", account: "othercorp" },
   ], ["q-a1", "q-o1"]);
   const service = serviceFor(world);
@@ -165,7 +165,7 @@ test("?scope=mine : the grants-absent '*' sentinel is NOT a list and is never ex
   // did: with no grants, makePrincipal answers NO PRINCIPAL AT ALL, so the door refuses (403) before any
   // scoping question is asked — where it used to admit the identity as "*" and 404 the scope.
   const world = queueWorld([
-    { id: "q-a1", mark: "AURORA ONE", account: "aurora" },
+    { id: "q-a1", mark: "AURORA ONE", account: "demo-brand-owner" },
     { id: "q-o1", mark: "OTHER", account: "othercorp" },
   ], ["q-a1", "q-o1"]);
   const service = serviceFor(world, null);
@@ -177,7 +177,7 @@ test("?scope=mine : the grants-absent '*' sentinel is NOT a list and is never ex
 });
 
 test("?scope=mine : an unenrolled identity is still refused at the door", async () => {
-  const world = queueWorld([{ id: "q-a1", mark: "AURORA ONE", account: "aurora" }]);
+  const world = queueWorld([{ id: "q-a1", mark: "AURORA ONE", account: "demo-brand-owner" }]);
   const service = serviceFor(world);
   const res = await service.route("GET", "/portal/api/runs", { email: "who@nowhere.example" }, null, { scope: "mine" });
   assert.equal(res.status, 403, "no principal at all ⇒ the door refuses before any scoping question");

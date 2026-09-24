@@ -68,7 +68,7 @@ test("tagged runs collapse into a count-only Archive fold; names hidden until ex
 });
 
 test("one report: no version pills anywhere; staff nav links each client view; customer index links report.html with no staff chrome", () => {
-  const pool = poolWith([A, B, meta({ runId: "tmp4-d-2026-06-07-x", date: "2026-06-07", codename: "x", customerKey: "aurora" })]);
+  const pool = poolWith([A, B, meta({ runId: "tmp4-d-2026-06-07-x", date: "2026-06-07", codename: "x", customerKey: "demo-brand-owner" })]);
   regenIndex(pool);
   const staff = readFileSync(join(pool, "index.html"), "utf8");
   // ONE report (spec 2026-07-30 §5): the "Review & iteration / Clean final" version pills — the split
@@ -79,7 +79,7 @@ test("one report: no version pills anywhere; staff nav links each client view; c
   assert.match(staff, /<nav class="sitenav">/);
   assert.match(staff, /<a href="index.html" class="active">Clearance reports<\/a>/);
   assert.match(staff, /class="cli"[^>]*href="customer\/acme\/"/);        // demo-anon adds data-anon-href before href
-  assert.match(staff, /class="cli"[^>]*href="customer\/aurora\/"/);
+  assert.match(staff, /class="cli"[^>]*href="customer\/demo-brand-owner\/"/);
 
   // customer index — no pill, NO staff nav, and it links THE report (report.html, the one document)
   const acme = readFileSync(join(pool, "customer", "acme", "index.html"), "utf8");
@@ -117,15 +117,15 @@ test("garbled archive-tags.json degrades to all-visible (no throw)", () => {
 });
 
 test("client filter: a dropdown per distinct client + every row tagged data-client; single-client pools omit it", () => {
-  const A2 = meta({ runId: "t-au-2026-06-15-a", date: "2026-06-15", codename: "a", customerKey: "aurora", client: "Aurora Interactive" });
+  const A2 = meta({ runId: "t-au-2026-06-15-a", date: "2026-06-15", codename: "a", customerKey: "demo-brand-owner", client: "Demo Brand Owner" });
   const B2 = meta({ runId: "t-zep-2026-06-14-b", date: "2026-06-14", codename: "b", customerKey: "zephyr", client: "Zephyr Beverages" });
   const idx = (() => { const p = poolWith([A2, B2]); regenIndex(p); return readFileSync(join(p, "index.html"), "utf8"); })();
   assert.match(idx, /id="clientFilter"/);                          // the filter control renders
-  assert.match(idx, /<option value="aurora"[^>]*>Aurora Interactive<\/option>/);
+  assert.match(idx, /<option value="demo-brand-owner"[^>]*>Demo Brand Owner<\/option>/);
   assert.match(idx, /<option value="zephyr"[^>]*>Zephyr Beverages<\/option>/);
-  assert.match(idx, /<option value="aurora" data-anon="client" data-anon-key="aurora">/);  // demo overlay aliases the label
-  assert.ok(idx.indexOf('value="aurora"') < idx.indexOf('value="zephyr"'), "options sorted by label");
-  assert.match(idx, /<tr data-client="aurora">/);                  // rows carry the client key for filtering
+  assert.match(idx, /<option value="demo-brand-owner" data-anon="client" data-anon-key="demo-brand-owner">/);  // demo overlay aliases the label
+  assert.ok(idx.indexOf('value="demo-brand-owner"') < idx.indexOf('value="zephyr"'), "options sorted by label");
+  assert.match(idx, /<tr data-client="demo-brand-owner">/);                  // rows carry the client key for filtering
   assert.match(idx, /querySelectorAll\("tr\[data-client\]"\)/);    // the inline filter script is present
 
   // one client ⇒ nothing to filter ⇒ no control (but the pager + script still ship — see the pager test)
@@ -134,7 +134,7 @@ test("client filter: a dropdown per distinct client + every row tagged data-clie
 });
 
 test("pager: emitted unconditionally (staff, single-client, customer index); one combined filter+page script; fcount is gone", () => {
-  const A2 = meta({ runId: "t-au-2026-06-15-a", date: "2026-06-15", codename: "a", customerKey: "aurora", client: "Aurora Interactive" });
+  const A2 = meta({ runId: "t-au-2026-06-15-a", date: "2026-06-15", codename: "a", customerKey: "demo-brand-owner", client: "Demo Brand Owner" });
   const B2 = meta({ runId: "t-zep-2026-06-14-b", date: "2026-06-14", codename: "b", customerKey: "zephyr", client: "Zephyr Beverages" });
   const pool = poolWith([A2, B2]);
   regenIndex(pool);
@@ -154,17 +154,17 @@ test("pager: emitted unconditionally (staff, single-client, customer index); one
   assert.match(single, /querySelectorAll\("tr\[data-client\]"\)/);
 
   // customer index: pager yes (customer/generic holds >20 runs live), staff filter never
-  const au = readFileSync(join(pool, "customer", "aurora", "index.html"), "utf8");
+  const au = readFileSync(join(pool, "customer", "demo-brand-owner", "index.html"), "utf8");
   assert.match(au, /id="pager" hidden/);
   assert.doesNotMatch(au, /id="clientFilter"/);
 });
 
 test("report search: a hidden search box + query-aware pager on staff AND per-customer indexes (scales to many reports)", () => {
-  const A2 = meta({ runId: "t-au-2026-06-15-a", date: "2026-06-15", codename: "a", customerKey: "aurora", client: "Aurora Interactive" });
+  const A2 = meta({ runId: "t-au-2026-06-15-a", date: "2026-06-15", codename: "a", customerKey: "demo-brand-owner", client: "Demo Brand Owner" });
   const pool = poolWith([A2]);
   regenIndex(pool);
   const staff = readFileSync(join(pool, "index.html"), "utf8");
-  const cust = readFileSync(join(pool, "customer", "aurora", "index.html"), "utf8");
+  const cust = readFileSync(join(pool, "customer", "demo-brand-owner", "index.html"), "utf8");
   for (const html of [staff, cust]) {
     assert.match(html, /id="repSearchBar" hidden/);                            // ships hidden ⇒ no-JS shows the full table
     assert.match(html, /<input id="repSearch" type="search"/);                 // the search control
@@ -207,7 +207,7 @@ test("same-day runs order by issuedAt (newest first), beating the matter tiebrea
 });
 
 test("theme gating: staff index full (auto-dark @media + init + nav toggle); customer index explicit-light (init + toggle, NO @media)", () => {
-  const au = meta({ runId: "t-au-2026-06-15-a", date: "2026-06-15", codename: "a", customerKey: "aurora", client: "Aurora Interactive" });
+  const au = meta({ runId: "t-au-2026-06-15-a", date: "2026-06-15", codename: "a", customerKey: "demo-brand-owner", client: "Demo Brand Owner" });
   const pool = poolWith([au]);
   regenIndex(pool);
 
@@ -220,7 +220,7 @@ test("theme gating: staff index full (auto-dark @media + init + nav toggle); cus
   assert.match(staff, /class="theme-toggle"/);
 
   // CUSTOMER: toggle + explicit choice ONLY — dark block present but NO @media auto-dark anywhere
-  const cust = readFileSync(join(pool, "customer", "aurora", "index.html"), "utf8");
+  const cust = readFileSync(join(pool, "customer", "demo-brand-owner", "index.html"), "utf8");
   assert.doesNotMatch(cust, /prefers-color-scheme/, "client page must never auto-dark (explicit-light decision)");
   assert.match(cust, /:root\[data-theme="dark"\]/, "explicit dark block so the toggle works");
   assert.match(cust, /localStorage\.getItem\('cordillera-theme'\)/);
@@ -231,18 +231,18 @@ test("theme gating: staff index full (auto-dark @media + init + nav toggle); cus
 });
 
 test("staff nav Clients dropdown speaks the display label (the runs' client string), not the raw key", () => {
-  const au = meta({ runId: "t-au-2026-06-15-a", date: "2026-06-15", codename: "a", customerKey: "aurora", client: "Aurora Interactive" });
+  const au = meta({ runId: "t-au-2026-06-15-a", date: "2026-06-15", codename: "a", customerKey: "demo-brand-owner", client: "Demo Brand Owner" });
   const pool = poolWith([au]);
   regenIndex(pool);
   const staff = readFileSync(join(pool, "index.html"), "utf8");
-  assert.match(staff, /href="customer\/aurora\/"><span data-anon="client"[^>]*>Aurora Interactive<\/span><\/a>/);
+  assert.match(staff, /href="customer\/demo-brand-owner\/"><span data-anon="client"[^>]*>Demo Brand Owner<\/span><\/a>/);
 });
 
 test("customer index Run cell is date-only — no internal codename, no time", () => {
-  const withTime = meta({ runId: "t-au-2026-06-15-secret-name", date: "2026-06-15", codename: "secret-name", customerKey: "aurora", client: "Aurora Interactive", issuedAt: "2026-06-15T14:32:00.000Z" });
+  const withTime = meta({ runId: "t-au-2026-06-15-secret-name", date: "2026-06-15", codename: "secret-name", customerKey: "demo-brand-owner", client: "Demo Brand Owner", issuedAt: "2026-06-15T14:32:00.000Z" });
   const pool = poolWith([withTime]);
   regenIndex(pool);
-  const au = readFileSync(join(pool, "customer", "aurora", "index.html"), "utf8");
+  const au = readFileSync(join(pool, "customer", "demo-brand-owner", "index.html"), "utf8");
   assert.match(au, /<td>2026-06-15<\/td>/);
   assert.doesNotMatch(au, /<code>secret-name<\/code>/, "run codenames are internal — never on a client-facing cell");
   assert.doesNotMatch(au, /16:32/);

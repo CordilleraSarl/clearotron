@@ -36,12 +36,6 @@ process.env.CLEAROTRON_AGENT = "clawdi";
 // code-side saturation-probe (2026-07-14): OFF in this legacy harness — its scenarios script the AGENT
 // member; the dedicated satprobe-codeside tests exercise the code-side path with an injected executor.
 process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
-// recall probes (P2-A): OFF in this legacy harness — a run that fails at/after verdict now writes the
-// recall store, so its RESUME mints recall-probe plan entries and legitimately re-does digest+synthesis
-// work (the band grew). That is the product behaviour under test elsewhere; HERE the subjects are the
-// resume mechanics themselves (skip telemetry, --from seams, corrective model resumption), which need
-// the resume to be minimal. The dedicated recall tests exercise the probes with the store populated.
-process.env.CLEAROTRON_RECALL_PROBES ||= "0";
 
 const PL = await import("../pipeline.mjs");
 const CMP = await import("../compare.mjs");
@@ -786,7 +780,7 @@ test("frontMatterIdentity hands the shell the intake facts, names no file, and s
   const partial = ST.frontMatterIdentity({ job: { markName: "NOVAPULSE" } });
   assert.ok(!/matter:/.test(partial) && /NOVAPULSE/.test(partial) && !/undefined/.test(partial), `a refless run must omit the matter row, not print undefined: ${partial}`);
   // profile name is the client fallback when intake named no customer
-  assert.match(ST.frontMatterIdentity({ job: { ref: "T1" }, profile: { name: "Aurora" } }), /- client: Aurora/);
+  assert.match(ST.frontMatterIdentity({ job: { ref: "T1" }, profile: { name: "Demo Brand Owner" } }), /- client: Demo Brand Owner/);
   // knows nothing ⇒ emits NOTHING (an absence must not arrive as a header inviting invention)
   assert.equal(ST.frontMatterIdentity({ job: {}, profile: {} }), "");
   assert.equal(ST.frontMatterIdentity(), "");

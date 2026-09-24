@@ -270,7 +270,7 @@ test("A BRAND OWNER ONBOARDED ONTO THE HOUSE DEFAULT IS NOT CALLED CUSTOM EITHER
 test("a brand owner with a framework of their own IS custom", async () => {
   // The capability has to survive the fix: this is the client whose page must say their matters are
   // NOT rated under the generic default.
-  const own = "skills/clearance-search/risk-framework-aurora.md";
+  const own = "skills/clearance-search/risk-framework-demo.md";
   const service = serviceOver({ acme: { name: "Acme", platforms: ["amazon.com"], frameworkPath: own } });
   const r = await service.route("GET", "/profiles/acme", STAFF_IDENTITY);
   assert.equal(r.status, 200);

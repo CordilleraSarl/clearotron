@@ -71,7 +71,7 @@ for (const [k, v] of Object.entries({
   // both, and for the same reason CORSEARCH_SESSION_KEY above is declared: the engine here is
   // mock-claude.mjs and nothing dials either vendor. A stub value, not a live one.
   PERPLEXITY_API_KEY: "test-offline",
-  CLEAROTRON_RECALL_TRIPWIRE: "0", CLEAROTRON_REGISTER_GAP_CLAMP: "0", CLEAROTRON_BAND_TRUTH_GATE: "0",
+  CLEAROTRON_REGISTER_GAP_CLAMP: "0", CLEAROTRON_BAND_TRUTH_GATE: "0",
   CLEAROTRON_SATPROBE_CODESIDE: "0",
 })) pinEnv(process.env, k, v);
 

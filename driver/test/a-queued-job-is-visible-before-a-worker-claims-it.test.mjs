@@ -40,7 +40,7 @@ function headless(jobs) {
 }
 
 const JOB = {
-  id: "portal-mta0j1im-py3cn2", profileKey: "aurora", markName: "LUMEN",
+  id: "portal-mta0j1im-py3cn2", profileKey: "demo-brand-owner", markName: "LUMEN",
   product: "knockout-search", marks: [{ name: "LUMEN" }, { name: "LUMEN GO" }],
 };
 
@@ -51,12 +51,12 @@ test("THE DEFECT: a headless install shows the job the moment it is queued", () 
   // This is not a weaker assertion than the one below — it is the measured behaviour, and it is why a
   // client watched an empty dashboard for a minute and a half.
   assert.deepEqual(
-    scanAccountRuns({ poolRoot: w.poolRoot, workspaceRoot: w.workspaceRoot, account: "aurora" }),
+    scanAccountRuns({ poolRoot: w.poolRoot, workspaceRoot: w.workspaceRoot, account: "demo-brand-owner" }),
     [], "precondition: without the queue list there is nothing to see — the reported defect",
   );
 
   const rows = scanAccountRuns({
-    poolRoot: w.poolRoot, workspaceRoot: w.workspaceRoot, account: "aurora", queueDirs: [w.queue],
+    poolRoot: w.poolRoot, workspaceRoot: w.workspaceRoot, account: "demo-brand-owner", queueDirs: [w.queue],
   });
   const queued = rows.filter((r) => r.state === "queued");
   assert.equal(queued.length, 1, "the submission is on the dashboard before any worker touches it");
@@ -64,7 +64,7 @@ test("THE DEFECT: a headless install shows the job the moment it is queued", () 
   // The acceptance criteria, read off the row: it says whose it is, what it is, and when it went in.
   const row = queued[0];
   assert.equal(row.runId, JOB.id);
-  assert.equal(row.account, "aurora", "the brand owner");
+  assert.equal(row.account, "demo-brand-owner", "the brand owner");
   assert.equal(row.product, "knockout-search", "the product ordered");
   assert.equal(row.kind, "knockout-batch", "…and the pipeline that product actually runs");
   assert.ok(row.issuedAt, "the time it was submitted");
@@ -75,7 +75,7 @@ test("THE DEFECT: a headless install shows the job the moment it is queued", () 
 test("a multi-name submission is named by its names, not by a job id nobody recognises", () => {
   const w = headless([JOB]);
   const row = scanAccountRuns({ poolRoot: w.poolRoot, workspaceRoot: w.workspaceRoot,
-    account: "aurora", queueDirs: [w.queue] }).find((r) => r.state === "queued");
+    account: "demo-brand-owner", queueDirs: [w.queue] }).find((r) => r.state === "queued");
   assert.match(String(row.markName), /LUMEN/, "the row carries the mark the client typed");
 });
 
@@ -85,7 +85,7 @@ test("ownership holds on a headless queue exactly as it does on a workspace one"
   // exists to protect, arriving through a new door.
   const w = headless([JOB, { ...JOB, id: "portal-other", profileKey: "zephyr", markName: "SOMEONE-ELSE" }]);
   const mine = scanAccountRuns({ poolRoot: w.poolRoot, workspaceRoot: w.workspaceRoot,
-    account: "aurora", queueDirs: [w.queue] }).filter((r) => r.state === "queued");
+    account: "demo-brand-owner", queueDirs: [w.queue] }).filter((r) => r.state === "queued");
   assert.deepEqual(mine.map((r) => r.runId), [JOB.id], "only this account's job");
   const theirs = scanAccountRuns({ poolRoot: w.poolRoot, workspaceRoot: w.workspaceRoot,
     account: "zephyr", queueDirs: [w.queue] }).filter((r) => r.state === "queued");
@@ -104,7 +104,7 @@ test("a queue reachable both ways is read ONCE", () => {
   mkdirSync(q, { recursive: true });
   writeFileSync(join(q, `${JOB.id}.json`), JSON.stringify(JOB));
 
-  const rows = scanAccountRuns({ poolRoot, workspaceRoot, account: "aurora", queueDirs: [q] })
+  const rows = scanAccountRuns({ poolRoot, workspaceRoot, account: "demo-brand-owner", queueDirs: [q] })
     .filter((r) => r.state === "queued");
   assert.deepEqual(rows.map((r) => r.runId), [JOB.id], "one job, one row");
   assert.deepEqual(rows.map((r) => r.queuePos), [1], "and one position");
@@ -121,7 +121,7 @@ test("the workspace queue still works on its own — this ADDS a place to look",
   mkdirSync(q, { recursive: true });
   writeFileSync(join(q, `${JOB.id}.json`), JSON.stringify(JOB));
 
-  const rows = scanAccountRuns({ poolRoot, workspaceRoot, account: "aurora" })   // no queueDirs at all
+  const rows = scanAccountRuns({ poolRoot, workspaceRoot, account: "demo-brand-owner" })   // no queueDirs at all
     .filter((r) => r.state === "queued");
   assert.deepEqual(rows.map((r) => r.runId), [JOB.id], "found by the walk, as before");
 });
@@ -130,7 +130,7 @@ test("CONTROL: an empty queue list on a headless box finds nothing, so the queue
   const w = headless([JOB]);
   for (const dirs of [[], [join(w.root, "does-not-exist")], ["", null]]) {
     assert.deepEqual(
-      scanAccountRuns({ poolRoot: w.poolRoot, workspaceRoot: w.workspaceRoot, account: "aurora", queueDirs: dirs })
+      scanAccountRuns({ poolRoot: w.poolRoot, workspaceRoot: w.workspaceRoot, account: "demo-brand-owner", queueDirs: dirs })
         .filter((r) => r.state === "queued"), [],
       `queueDirs=${JSON.stringify(dirs)} finds nothing — and neither throws`,
     );

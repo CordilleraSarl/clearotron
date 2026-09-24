@@ -156,13 +156,13 @@ test("WS-C: two concurrent pipelines run under cap 3; per-run profile sidecars s
   // DISTINCT agents — Goal 1 is cross-agent parallelism; the per-agent admission rule correctly
   // serializes same-agent runs, so a same-agent pair here would (rightly) never overlap.
   const [r1, r2] = await Promise.all([
-    pipeline(JOB("wsc-job-1", "TMP8447", "aurora-interactive.example"), { agent: "clawdi" }),
+    pipeline(JOB("wsc-job-1", "TMP8447", "demo-brand-owner.example"), { agent: "clawdi" }),
     pipeline(JOB("wsc-job-2", "TMP8448", "example.com"), { agent: "clawdi-alex" }),
   ]);
   assert.equal(r1.ok, true, JSON.stringify(r1));
   assert.equal(r2.ok, true, JSON.stringify(r2));
   const sidecar = (res) => JSON.parse(readFileSync(driverDir(res.runDir, "profile.json"), "utf8"));
-  assert.equal(sidecar(r1).profileKey, "aurora", "run 1 froze ITS profile");
+  assert.equal(sidecar(r1).profileKey, "demo-brand-owner", "run 1 froze ITS profile");
   assert.equal(sidecar(r2).profileKey, "generic", "run 2 froze ITS profile — no cross-contamination");
   // CONCURRENCY actually happened — without this, a silent regression back to serial stays green
   const span = (res) => {

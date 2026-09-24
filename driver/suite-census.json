@@ -173,7 +173,7 @@
         },
         "a-clean-install-offers-generic-alone.test.mjs": {
           "tests": 9,
-          "asserts": 14,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },
@@ -483,6 +483,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-frozen-recall-search-runs-as-an-ordinary-search.test.mjs": {
+          "tests": 2,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "a-full-country-card-keeps-what-the-multi-country-card-shows.test.mjs": {
           "tests": 2,
           "asserts": 12,
@@ -653,7 +659,7 @@
         },
         "a-mid-run-mint-cannot-lose-a-mark.test.mjs": {
           "tests": 10,
-          "asserts": 20,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -1450,8 +1456,8 @@
           "todos": 0
         },
         "alias-rule-owner-gate.test.mjs": {
-          "tests": 8,
-          "asserts": 13,
+          "tests": 9,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
@@ -2195,7 +2201,7 @@
         },
         "coverage-ledger.test.mjs": {
           "tests": 32,
-          "asserts": 110,
+          "asserts": 111,
           "skips": 0,
           "todos": 0
         },
@@ -2939,7 +2945,7 @@
         },
         "findings-model.test.mjs": {
           "tests": 68,
-          "asserts": 259,
+          "asserts": 260,
           "skips": 0,
           "todos": 0
         },
@@ -3258,12 +3264,6 @@
         "knockout-typed-finding.test.mjs": {
           "tests": 12,
           "asserts": 53,
-          "skips": 0,
-          "todos": 0
-        },
-        "known-conflicts.test.mjs": {
-          "tests": 17,
-          "asserts": 87,
           "skips": 0,
           "todos": 0
         },
@@ -3634,8 +3634,8 @@
           "todos": 0
         },
         "pipeline.mock.registergap.test.mjs": {
-          "tests": 7,
-          "asserts": 43,
+          "tests": 4,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -3875,7 +3875,7 @@
         },
         "profile-service.test.mjs": {
           "tests": 32,
-          "asserts": 162,
+          "asserts": 158,
           "skips": 0,
           "todos": 0
         },
@@ -4012,14 +4012,8 @@
           "todos": 0
         },
         "reasoning-tripwires.test.mjs": {
-          "tests": 17,
-          "asserts": 83,
-          "skips": 0,
-          "todos": 0
-        },
-        "recall-cap-is-split-by-probe-kind.test.mjs": {
-          "tests": 1,
-          "asserts": 7,
+          "tests": 11,
+          "asserts": 50,
           "skips": 0,
           "todos": 0
         },
@@ -4101,6 +4095,12 @@
           "skips": 0,
           "todos": 0
         },
+        "reference-score-joins-by-owner-and-country.test.mjs": {
+          "tests": 11,
+          "asserts": 33,
+          "skips": 0,
+          "todos": 0
+        },
         "reference-score-mark-coverage.test.mjs": {
           "tests": 25,
           "asserts": 110,
@@ -4115,7 +4115,7 @@
         },
         "reference-score.test.mjs": {
           "tests": 65,
-          "asserts": 221,
+          "asserts": 222,
           "skips": 0,
           "todos": 0
         },
@@ -4457,7 +4457,7 @@
         },
         "rule-shape.test.mjs": {
           "tests": 8,
-          "asserts": 16,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
@@ -5968,8 +5968,8 @@
           "todos": 0
         },
         "the-xcheck-cap-counts-queries.test.mjs": {
-          "tests": 9,
-          "asserts": 25,
+          "tests": 8,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },

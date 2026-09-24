@@ -117,7 +117,7 @@ test("a configured-but-unreadable overlay FAILS LOUD instead of silently using r
   // existsSync answers false for EACCES exactly as it does for ENOENT, so an overlay the process cannot
   // read would resolve every file to the repo — silently swapping a customer's own risk framework for the
   // house default. (Observed for real: as a user without access to the config store, even
-  // risk-framework-aurora.md — which exists ONLY in the overlay — resolved to the repo path.)
+  // risk-framework-demo.md — which exists ONLY in the overlay — resolved to the repo path.)
   const { config } = await import("../driver.config.mjs");
   const prev = process.env.CLEAROTRON_INSTRUCTIONS_DIR;
   pinEnv(process.env, "CLEAROTRON_INSTRUCTIONS_DIR", join(tmpdir(), "definitely-not-a-real-skills-dir-9f3a2"));

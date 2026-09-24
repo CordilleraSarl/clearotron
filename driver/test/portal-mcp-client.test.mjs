@@ -98,7 +98,7 @@ test("THE WIRE: a start_run reaches the engine with its arguments intact", async
   try {
     const out = await mcpToolCall({
       url: f.url, token: "tok-abc", tool: "start_run",
-      args: { id: "portal-x1", profileKey: "aurora", markName: "AQUAPLUS", classes: [9, 42], goods: "software" },
+      args: { id: "portal-x1", profileKey: "demo-brand-owner", markName: "AQUAPLUS", classes: [9, 42], goods: "software" },
     });
     assert.deepEqual(out, { ok: true, queued: true }, "the tool's JSON payload is returned parsed");
     assert.equal(f.calls.length, 1, "exactly ONE run is started — never two from one press");
@@ -107,7 +107,7 @@ test("THE WIRE: a start_run reaches the engine with its arguments intact", async
     // The arguments are what decide scope and therefore cost. A trip that silently dropped `classes`
     // would run a narrower search than the customer confirmed and paid for.
     assert.deepEqual(f.calls[0].args, {
-      id: "portal-x1", profileKey: "aurora", markName: "AQUAPLUS", classes: [9, 42], goods: "software",
+      id: "portal-x1", profileKey: "demo-brand-owner", markName: "AQUAPLUS", classes: [9, 42], goods: "software",
     });
   } finally { await f.close(); }
 });

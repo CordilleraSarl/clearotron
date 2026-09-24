@@ -43,7 +43,6 @@ chmodSync(CLAUDE, 0o755);
 process.env.CORSEARCH_SESSION_KEY ||= "test-offline";
 process.env.CLEAROTRON_PLAN_DISPATCH ||= "off";
 process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
-process.env.CLEAROTRON_RECALL_TRIPWIRE ||= "0";
 process.env.CLEAROTRON_REGISTER_GAP_CLAMP ||= "0";
 process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
 

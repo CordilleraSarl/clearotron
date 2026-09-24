@@ -122,6 +122,12 @@ test("the stamp moved, because what these buckets RECORD changed", () => {
   // At 6 and below every archived run scored as THE ORDER WAS REFUSED, above correct numbers, because
   // the pool preserves no status.json. A v6 delivery verdict on a pool dir is not comparable to a v7 one.
   // The ordinal distinction this arm is named for is unaffected and still holds at 7.
-  assert.equal(SCORER_VERSION, 7);
-  assert.equal(scoreKnockout().scorer_version ?? SCORER_VERSION, 7);
+  //
+  // v8: found and withheld join on the owner or the filing country as well as the name, so a
+  // same-name record of another proprietor filed elsewhere no longer counts as the lawyer's. The
+  // ordinal distinction still holds at 8.
+  //
+  // v9: a searched-mark entry no longer counts as withheld on a same-country record with no owner.
+  assert.equal(SCORER_VERSION, 9);
+  assert.equal(scoreKnockout().scorer_version ?? SCORER_VERSION, 9);
 });

@@ -21,7 +21,7 @@ import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 const meter = (token, basis = "verified-from-record") => ({ token, basis });
 const finding = (over = {}) => ({
   ordinal: 1, mark: "KOLEMA", owner: { name: "Kolema SA", country: "CH", registrations: [] },
-  composite: 4, level: "B", dispute_type: "paper-conflict",
+  composite: 4, level: "B", dispute_type: "register-only",
   meters: { mark_similarity: meter("high"), goods_proximity: meter("medium"), use: meter("confirmed"), enforcer: meter("high") },
   quadrant: { x: 0.5, y: 0.5 },
   source: { source_type: "register-vendor", resolved_link: "" },

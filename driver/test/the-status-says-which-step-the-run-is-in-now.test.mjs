@@ -16,9 +16,9 @@ import { seedRunStatus, recordTransition, stepForStage } from "../progress.mjs";
 
 function run() {
   const studioRoot = mkdtempSync(join(tmpdir(), "prog-current-"));
-  const runDir = join(studioRoot, "tmp9-aurora", "2026-06-02-copper-spire");
+  const runDir = join(studioRoot, "tmp9-demo-brand-owner", "2026-06-02-copper-spire");
   mkdirSync(runDir, { recursive: true });
-  const ctx = { run: { runDir, studioRoot, slug: "tmp9-aurora", codename: "copper-spire", date: "2026-06-02" },
+  const ctx = { run: { runDir, studioRoot, slug: "tmp9-demo-brand-owner", codename: "copper-spire", date: "2026-06-02" },
     job: { id: "j9", forwarder: "requester", ref: "TMP9001", markName: "AURORA", classes: [9] }, agent: "clawdi" };
   seedRunStatus(ctx);
   return { ctx, read: () => JSON.parse(readFileSync(join(runDir, "status.json"), "utf8")) };

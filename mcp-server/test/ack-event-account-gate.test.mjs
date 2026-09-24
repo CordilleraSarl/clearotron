@@ -8,7 +8,7 @@
 //                 `Array.isArray(scope?.accounts) && authedArgs?.runId != null`
 //   stop_run(id) → lib/ops.mjs, reading the queued manifest's profileKey
 // ack_event is addressed by a FILENAME. It carries no runId into the chokepoint, so NONE of those
-// gates ever saw it: an ops token minted with accounts:["aurora"] could delete the outbox marker of a
+// gates ever saw it: an ops token minted with accounts:["demo-brand-owner"] could delete the outbox marker of a
 // celta run and that run's delivery would never be routed to anybody. It is not reachable from the
 // portal today (that token is verb-scoped to start_run alone), which is why this is A3 and not A1 —
 // but the gate belongs on the verb, not on the current shape of one caller's token.
@@ -63,11 +63,11 @@ function makeRun(slug, codename, profileKey) {
 /** The delivered marker the driver drops: <runId>.pending, body = the forwarding agent id. */
 const marker = (runId) => { writeFileSync(join(OUTBOX, `${runId}.pending`), "clawdi\n"); return `${runId}.pending`; };
 
-const MINE = makeRun("tmpack-aurora", "2026-07-20-jade-a", "aurora");
+const MINE = makeRun("tmpack-demo-brand-owner", "2026-07-20-jade-a", "demo-brand-owner");
 const THEIRS = makeRun("tmpack-celta", "2026-07-20-jade-b", "celta");
 const UNTAGGED = makeRun("tmpack-legacy", "2026-07-20-jade-c", null);   // pre-grants run: no profile.json
 
-const SCOPED = { kind: "ops", sub: "trial-connector", accounts: ["aurora"] };
+const SCOPED = { kind: "ops", sub: "trial-connector", accounts: ["demo-brand-owner"] };
 const ABSENT = (file) => ({ ok: true, file, alreadyGone: true });
 
 test("A SCOPED session cannot consume another account's event — and the file SURVIVES", () => {

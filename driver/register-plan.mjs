@@ -862,7 +862,8 @@ function namesAnyWord(text, words) {
  * The house element a plan was compiled without, read off the plan itself, or null.
  *
  * WHY THE PLAN CARRIES IT. The compile is not the only writer. After it, the common-law cross-check,
- * the recall lane, the frame reopen and the jurisdiction candidates fold entries in, and the register
+ * the frame reopen and the jurisdiction candidates fold entries in (the recall lane did too, until the
+ * recall store was removed), and the register
  * session proposes its own. On the first live run that proposed an exclusion (2026-09-19) the compile
  * dropped the element and two later writers put it straight back: a contains query from the cross-check
  * and an exact query the register session proposed, both on the bare element. Those writers hold the
@@ -1122,7 +1123,7 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
     // carrying no letter or digit: a measured run compiled `owner: "."` and shipped two HTTP 400
     // APPLICANT_NAME deferrals as an honestly-disclosed coverage gap. Stamped here as well as screened
     // in foldSupplementalEntries because the two doors are different: the fold guards MINTED rows
-    // (recall probes, cross-check probes), this guards the COMPILER'S OWN emissions, and a funnel one
+    // (cross-check probes and the other folds), this guards the COMPILER'S OWN emissions, and a funnel one
     // of them bypasses is a funnel that can be forgotten.
     const substanceGap = (Array.isArray(e.terms) ? e.terms : [e.term]).map((t) => termSubstanceIssue(t)).find(Boolean) ?? null;
     // A capability the active provider LACKS is stamped on the entry, never compiled into a wrong query.
@@ -1803,10 +1804,10 @@ export function planRowRefusal({ qid = "", issue = "" } = {}) {
 }
 
 /**
- * — split a fold lane's directive rows by what the screen did with them. Both the cross-check
- * and the recall lane keep a `directives[]` beside their entries (the audit trail the ask ledger and
- * the demotion tripwire read), and a refused entry's directive must move OUT of it: left there it
- * claims a query that no longer exists, and dropped entirely it is a common-law signal that stopped
+ * — split a fold lane's directive rows by what the screen did with them. The cross-check lane keeps
+ * a `directives[]` beside its entries (the audit trail the ask ledger and the demotion tripwire read;
+ * the recall lane kept one too, until the recall store was removed), and a refused entry's directive
+ * must move OUT of it: left there it claims a query that no longer exists, and dropped entirely it is a common-law signal that stopped
  * being cross-checked with nothing anywhere saying so.
  *
  * Returns { kept, refused } — `refused` rows carry the reason, so the receipt is self-explaining.
@@ -1937,9 +1938,9 @@ export function entryQuestionKey(entry, plan) {
  * extendRegisterPlan — but derived_from is PRESERVED verbatim: a supplemental fold is not a manifest
  * change, and overwriting variants_fingerprint would break the store's byte-identical reuse (F2). PURE.
  *
- * — AND IT SCREENS. This is the single funnel all five non-compiler writers already call
- * (pipeline's proposal fold, recall fold, cross-check fold and frame-reopen fold; jx's candidate
- * fold), which is why the screen belongs here rather than at each site: the compiler's own rows are
+ * — AND IT SCREENS. This is the single funnel every non-compiler writer calls (pipeline's
+ * proposal fold, cross-check fold and frame-reopen fold; jx's candidate fold; the recall fold did
+ * too, until the recall store was removed), which is why the screen belongs here rather than at each site: the compiler's own rows are
  * caught by the freeze lint, and before this, two of the five folded entries in AFTER that lint with
  * no term screen of any kind. The cross-check fold is the one that mints `predicate:"default"` rows
  * straight out of model-authored common-law markdown, and it is where R2b's two heading

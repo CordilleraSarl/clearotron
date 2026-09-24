@@ -38,11 +38,11 @@ test("siteFab: a standalone stack for surfaces with no staff nav (client index, 
 });
 
 test("labels Map: the Clients dropdown speaks display names, keyed anon attrs keep the raw key", () => {
-  const nav = siteNav(pool(["index.html"]), "index", ["aurora"], "", { labels: new Map([["aurora", "Aurora Interactive"]]) });
-  assert.match(nav, /href="customer\/aurora\/"><span data-anon="client"[^>]*>Aurora Interactive<\/span><\/a>/);
+  const nav = siteNav(pool(["index.html"]), "index", ["demo-brand-owner"], "", { labels: new Map([["demo-brand-owner", "Demo Brand Owner"]]) });
+  assert.match(nav, /href="customer\/demo-brand-owner\/"><span data-anon="client"[^>]*>Demo Brand Owner<\/span><\/a>/);
   // no labels passed (the status page caller) ⇒ raw keys, unchanged
-  const bare = siteNav(pool(["index.html"]), "index", ["aurora"]);
-  assert.match(bare, />aurora<\/span><\/a>/);
+  const bare = siteNav(pool(["index.html"]), "index", ["demo-brand-owner"]);
+  assert.match(bare, />demo-brand-owner<\/span><\/a>/);
 });
 
 test("active page is highlighted; the others link only when their file exists", () => {
@@ -71,11 +71,11 @@ test("Quality and Feedback are NOT nav entries (quality subsystem retired, #265)
 });
 
 test("client views: explicit keys (index path) render sorted .cli links", () => {
-  const nav = siteNav(pool(["index.html"]), "index", ["generic", "aurora"]);
-  const gi = nav.indexOf('href="customer/generic/"'), ai = nav.indexOf('href="customer/aurora/"');
-  assert.ok(gi > 0 && ai > 0 && ai < gi, "sorted: aurora before generic");
+  const nav = siteNav(pool(["index.html"]), "index", ["generic", "demo-brand-owner"]);
+  const gi = nav.indexOf('href="customer/generic/"'), ai = nav.indexOf('href="customer/demo-brand-owner/"');
+  assert.ok(gi > 0 && ai > 0 && ai < gi, "sorted: demo-brand-owner before generic");
   assert.match(nav, /<details class="climenu"><summary>Clients/);   // client list collapses into a dropdown
-  assert.match(nav, /<a class="cli"[^>]*href="customer\/aurora\/"><span[^>]*data-anon="client"[^>]*>aurora<\/span><\/a>/);   // demo-anon: aliased text + neutralisable link
+  assert.match(nav, /<a class="cli"[^>]*href="customer\/demo-brand-owner\/"><span[^>]*data-anon="client"[^>]*>demo-brand-owner<\/span><\/a>/);   // demo-anon: aliased text + neutralisable link
 });
 
 test("client views: scanned from customer/<key>/index.html when no keys passed", () => {

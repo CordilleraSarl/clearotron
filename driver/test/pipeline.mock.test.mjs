@@ -41,26 +41,23 @@ process.env.CLEAROTRON_PLAN_DISPATCH ||= "off";
 // band-truth gate (2026-07-14): OFF in hermetic harnesses — mock runs never dial the provider, so the
 // production call ledger can never evidence their bands; the dedicated band-truth-gate tests turn it ON.
 process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
-// copper-lattice enforcement knobs are OFF in THIS legacy harness: (a) config.workspaceRoot freezes at
-// first import, so every scenario shares one slug dir — a delivery's _known-conflicts.json upsert would
-// read as the NEXT scenario's "recall regression"; (b) several fixtures deliberately ship an unclosed
+// The register-gap clamp is OFF in THIS legacy harness: several fixtures deliberately ship an unclosed
 // deferred row (pre-clamp shapes) and assert non-verdict behaviour. The dedicated
-// pipeline.mock.registergap.test.mjs file (own process, own root) exercises both clamps ON.
-process.env.CLEAROTRON_RECALL_TRIPWIRE ||= "0";
+// pipeline.mock.registergap.test.mjs file (own process, own root) exercises the clamp ON.
 process.env.CLEAROTRON_REGISTER_GAP_CLAMP ||= "0";
 // code-side saturation-probe (2026-07-14): OFF in this legacy harness — its scenarios script the AGENT
 // member; the dedicated satprobe-codeside tests exercise the code-side path with an injected executor.
 process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
 // spec 62 (per-project config): the shipped profiles/ carries the demo customers but no project overlays.
-// Seed a CLEAROTRON_CUSTOMERS_DIR copy of the real profiles/ dir plus a projects/aurora/console-ecosystem.json
+// Seed a CLEAROTRON_CUSTOMERS_DIR copy of the real profiles/ dir plus a projects/demo-brand-owner/japan-and-korea-app-launch.json
 // overlay so the project path runs end-to-end. Set BEFORE the first pipeline import — profiles.mjs freezes
 // its PROFILE_DIR when the module first loads (the same first-import freeze the workspaceRoot notes below
 // describe), and this file only imports the pipeline lazily inside runPipeline.
 const PROFILES_SEED = mkdtempSync(join(tmpdir(), "clearotron-profiles-"));
 cpSync(join(HERE, "..", "profiles"), PROFILES_SEED, { recursive: true });
-mkdirSync(join(PROFILES_SEED, "projects", "aurora"), { recursive: true });
-writeFileSync(join(PROFILES_SEED, "projects", "aurora", "console-ecosystem.json"), JSON.stringify({
-  projectName: "Console ecosystem",
+mkdirSync(join(PROFILES_SEED, "projects", "demo-brand-owner"), { recursive: true });
+writeFileSync(join(PROFILES_SEED, "projects", "demo-brand-owner", "japan-and-korea-app-launch.json"), JSON.stringify({
+  projectName: "Japan and Korea app launch",
   platforms: ["store.steampowered.com", "store.epicgames.com", "play.google.com", "apps.apple.com",
     "gog.com", "itch.io", "mobygames.com", "humblebundle.com", "gamejolt.com"],
 }, null, 2) + "\n");
@@ -887,37 +884,37 @@ test("WS-B sidecar: every run freezes _driver/profile.json (generic for example.
 });
 
 test("spec 62 sidecar: a project-bearing job freezes the PROJECT's marketplaces + floor (the grid dictation reads the overlay, not the customer)", async () => {
-  // customer aurora (6 gaming storefronts, its own framework) + the seeded console-ecosystem overlay
+  // customer demo-brand-owner (6 gaming storefronts, its own framework) + the seeded japan-and-korea-app-launch overlay
   // (9 marketplaces) — see the CLEAROTRON_CUSTOMERS_DIR seed at the top of this file.
   const { res, root, events } = await runPipeline(
     { MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced" },
-    { profileKey: "aurora", projectKey: "console-ecosystem" },
+    { profileKey: "demo-brand-owner", projectKey: "japan-and-korea-app-launch" },
   );
   assert.equal(res.ok, true, JSON.stringify(res));
   const sidecar = JSON.parse(readFileSync(driverDir(res.runDir, "profile.json"), "utf8"));
-  assert.equal(sidecar.profileKey, "aurora", "profileKey stays the CUSTOMER");
-  assert.equal(sidecar.projectKey, "console-ecosystem");
-  assert.equal(sidecar.projectName, "Console ecosystem");
+  assert.equal(sidecar.profileKey, "demo-brand-owner", "profileKey stays the CUSTOMER");
+  assert.equal(sidecar.projectKey, "japan-and-korea-app-launch");
+  assert.equal(sidecar.projectName, "Japan and Korea app launch");
   // platforms UNION (2026-07-18): the customer's marketplaces are CLIENT-MANDATED and a project adds
   // to them rather than replacing them. Asserted as the SET relation against this harness's seeded
   // config (CLEAROTRON_CUSTOMERS_DIR), not a magic count — the count depends on how much the seeded
   // overlay overlaps its customer, and hardcoding it hid that the env var was being ignored.
-  const seededCustomer = JSON.parse(readFileSync(join(PROFILES_SEED, "aurora.json"), "utf8")).platforms;
-  const seededProject = JSON.parse(readFileSync(join(PROFILES_SEED, "projects", "aurora", "console-ecosystem.json"), "utf8")).platforms;
+  const seededCustomer = JSON.parse(readFileSync(join(PROFILES_SEED, "demo-brand-owner.json"), "utf8")).platforms;
+  const seededProject = JSON.parse(readFileSync(join(PROFILES_SEED, "projects", "demo-brand-owner", "japan-and-korea-app-launch.json"), "utf8")).platforms;
   for (const p of seededCustomer) assert.ok(sidecar.platforms.includes(p), `client-mandated ${p} survives the project overlay`);
   for (const p of seededProject) assert.ok(sidecar.platforms.includes(p), `project-added ${p} is searched`);
   assert.equal(sidecar.platforms.length, new Set([...seededCustomer, ...seededProject]).size, "the UNION, deduped — never one list replacing the other");
   assert.equal(sidecar.minCellsPerVariant, sidecar.platforms.length + 1, "floor derived from the RESOLVED union (+ web)");
   assert.equal(sidecar.origins.platforms, "customer+project");
-  assert.equal(sidecar.frameworkPath, "skills/clearance-search/risk-framework-aurora.md", "the customer's framework still rates the matter");
-  assert.ok(events.some((e) => e.event === "profile" && e.key === "aurora" && e.project === "console-ecosystem"), "the project is logged on the freeze event");
+  assert.equal(sidecar.frameworkPath, "skills/clearance-search/risk-framework-demo.md", "the customer's framework still rates the matter");
+  assert.ok(events.some((e) => e.event === "profile" && e.key === "demo-brand-owner" && e.project === "japan-and-korea-app-launch"), "the project is logged on the freeze event");
 
   // END-TO-END report surface: the injectFrontMatter(run_under_project/origins_json) → parseReport →
   // scopeSection/footer seam (the one path the hand-built render.test.mjs front-matter never exercises).
   const { config: poolCfg } = await import("../driver.config.mjs");
   const { dirname: pdir, basename: pbase } = await import("node:path");
   const internal = readFileSync(join(poolCfg.poolRoot, `${pbase(pdir(res.runDir))}-${pbase(res.runDir)}`, "report.html"), "utf8");
-  assert.match(internal, /Run under project:\s*<span class="mono">Console ecosystem \(Aurora Interactive\)<\/span>/, "the internal report footer discloses the project");
+  assert.match(internal, /Run under project:\s*<span class="mono">Japan and Korea app launch \(Demo Brand Owner\)<\/span>/, "the internal report footer discloses the project");
   // THE ORIGIN TABLE IS OFF THE PAGE (the 2026-09-16 report redesign). It rendered inside the scope
   // fold, which the redesign deletes, and it was the one block in there labelled "(internal)" — the
   // same class as the reviewer notes that were ruled off the delivered page. It was never on export,

@@ -7,7 +7,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   findRecallFloorViolations, findReviewFreshnessViolation, findSeedNeutralityViolations,
-  findProbativeGradingViolations, findStatusHonestyViolation, acpCeiling, findMatrixCeilingViolations,
+  findProbativeGradingViolations, findStatusHonestyViolation,
   findDeadlineUrgencyMiss, findUnresolvedDisagreements, findOrphanVerificationFlags,
 } from "../reasoning-tripwires.mjs";
 
@@ -63,6 +63,11 @@ test("seed-neutrality: a graded / 'do not soften' seed trips; placement vocabula
     { name: "placements", text: "Korvane NOVAPULSE — placement: headline-candidate. Partner-ecosystem owner; facts only." },
   ]);
   assert.equal(ok.length, 0, JSON.stringify(ok));
+  // a Level grade on a seed is a grade, whatever the framework calls the level; a hyphenated word is not
+  assert.ok(findSeedNeutralityViolations([{ name: "matter-context", text: "Seed #2: rated Level C by the prior search." }])
+    .some((v) => /Level/.test(v.why)), "a Level grade on a seed trips");
+  assert.equal(findSeedNeutralityViolations([{ name: "matter-context", text: "A board-level C-suite owner; an enterprise-level E-commerce seller." }]).length, 0,
+    "a letter that starts a hyphenated word is not a grade");
 });
 
 test("probative-grading: enforcer=high without bears_on trips when adopted; legacy v1 is exempt", () => {
@@ -141,36 +146,6 @@ test("#8 orphan-finding: a register-sourced finding with no grounding registrati
   assert.equal(findOrphanVerificationFlags({ findings: [mk({ source: { source_type: "case-law" } })] }).length, 0);
 });
 
-test("acpCeiling: the matrix ceilings (Appendix B)", () => {
-  assert.equal(acpCeiling("A", "classic"), 1);
-  assert.equal(acpCeiling("B", "horse-trade"), 2);
-  assert.equal(acpCeiling("C", "classic"), 3, "C tops out at Medium regardless of dispute type");
-  assert.equal(acpCeiling("C", "horse-trade"), 3);
-  assert.equal(acpCeiling("D", "classic"), 5);
-  assert.equal(acpCeiling("E", "classic"), 5);
-  assert.equal(acpCeiling("D", "horse-trade"), 4);
-  assert.equal(acpCeiling("D", "nuisance-claim"), 4);
-  assert.equal(acpCeiling("D", "paper-conflict"), 3);
-  assert.equal(acpCeiling("E", "descriptive-terms"), 3);
-});
-
-test("matrix-ceiling: the KORVANE NOVAPULSE defect (Level C → Composite 4) trips; matrix-faithful ratings pass", () => {
-  // KORVANE NOVAPULSE: "Level C legal read" rated Composite 4/HIGH on an aggressive-enforcer adjustment
-  const korvane = findMatrixCeilingViolations({ findings: [{ ordinal: 1, mark: "KORVANE NOVAPULSE", composite: 4, level: "C", dispute_type: "horse-trade" }] });
-  assert.equal(korvane.length, 1, JSON.stringify(korvane));
-  assert.match(korvane[0].why, /caps it at 3/);
-  // matrix-faithful: Ember Guard C + horse-trade = 3; a genuine 5 = E + classic; B = 2 → all pass
-  const ok = findMatrixCeilingViolations({ findings: [
-    { ordinal: 1, mark: "EMBER GUARD", composite: 3, level: "C", dispute_type: "horse-trade" },
-    { ordinal: 2, mark: "DEPTH SENSE", composite: 5, level: "E", dispute_type: "classic" },
-    { ordinal: 3, mark: "X", composite: 2, level: "B", dispute_type: "nuisance-claim" },
-  ] });
-  assert.equal(ok.length, 0, JSON.stringify(ok));
-  // a below-ceiling rating (extra conservatism) does NOT trip
-  assert.equal(findMatrixCeilingViolations({ findings: [{ ordinal: 1, mark: "Y", composite: 2, level: "D", dispute_type: "paper-conflict" }] }).length, 0);
-});
-
-// ── copper-lattice: the two new S1 siblings ─────────────────────────────────────────────────────────────
 test("findUncrossCheckedDemotions: owner signal with no executed receipt flags; carried/executed suppress; no receipt ⇒ []", async () => {
   const { findUncrossCheckedDemotions } = await import("../reasoning-tripwires.mjs");
   const signals = [
@@ -192,109 +167,4 @@ test("findUncrossCheckedDemotions: owner signal with no executed receipt flags; 
   assert.equal(findUncrossCheckedDemotions(signals, { xcheckReceipt: null }).length, 0);
   // owner-less signals never flag (mark-text recheck is the dispatcher's job, not a demotion)
   assert.equal(findUncrossCheckedDemotions([signals[2]], { xcheckReceipt: receipt }).length, 0);
-});
-
-test("findRecallRegressionViolations: carried passes, fetched+drop-row-cited justifies, else flags with materiality", async () => {
-  const { findRecallRegressionViolations } = await import("../reasoning-tripwires.mjs");
-  const knownConflicts = { schema_version: 1, marks: {
-    "vibrante frostplum": [
-      { uri: "/mark/us/90491258", mark_text: "Xyience FROSTBERRY", classes: [32], status: "live" },
-      { uri: "/mark/us/11111111", mark_text: "CARRIEDMARK", classes: [32], status: "live" },
-      { uri: "/mark/us/22222222", mark_text: "JUSTIFIEDMARK", classes: [32], status: "live" },
-      { uri: "/mark/eu/offscope", mark_text: "OFFSCOPE", classes: [7], status: "live" },
-    ],
-    "other mark": [{ uri: "/mark/us/99999999", mark_text: "OTHER", classes: [32], status: "live" }],
-  } };
-  const registerFindingsMd = [
-    "## Negative results", "",
-    "| Mark | Search Term / Variant | Result | Notes |",
-    "| --- | --- | --- | --- |",
-    "| JUSTIFIEDMARK | frostplum | dropped | URI /mark/us/22222222; screen_verdict=surface:in-scope-live; class=32; status=live; goods reviewed — different field |",
-  ].join("\n");
-  const out = findRecallRegressionViolations({
-    knownConflicts,
-    searchedNames: ["VIBRANTE FROSTPLUM"],
-    carriedUris: ["/mark/us/11111111"],
-    fetchedUris: ["/mark/us/22222222"],
-    registerFindingsMd,
-    inScopeClasses: ["32"],
-  });
-  assert.equal(out.length, 2, "FROSTBERRY (unjustified) + OFFSCOPE (uncarried) flag; carried + justified pass; other-mark rows scoped out");
-  const frost = out.find((v) => v.uri === "/mark/us/90491258");
-  assert.ok(frost && frost.material === true, "the FROSTBERRY anchor is MATERIAL (live, class 32 in scope)");
-  const off = out.find((v) => v.uri === "/mark/eu/offscope");
-  assert.ok(off && off.material === false, "an off-scope class flags for the eye but is not material");
-  // fetched but NOT drop-row-cited is not justification
-  const out2 = findRecallRegressionViolations({ knownConflicts, searchedNames: ["VIBRANTE FROSTPLUM"], carriedUris: [], fetchedUris: ["/mark/us/90491258"], registerFindingsMd: "", inScopeClasses: ["32"] });
-  assert.ok(out2.some((v) => v.uri === "/mark/us/90491258"), "a fetch alone is not a justification — the drop row must cite the uri");
-  // absent fixture ⇒ [] (replay purity)
-  assert.equal(findRecallRegressionViolations({ knownConflicts: null }).length, 0);
-});
-
-test("recall-regression canonicalizes the STORE side: a full-URL store row vs a carried canonical uri is NOT a violation (and vice versa a real miss still trips)", async () => {
-  const { findRecallRegressionViolations, formatRecallRegression } = await import("../reasoning-tripwires.mjs");
-  const knownConflicts = { schema_version: 1, marks: { "glimmerpeak": [
-    // the class-fix shape: a human-edited/legacy row holding the FULL provider URL
-    { uri: "https://tm.corsearch.com/mark/int/1054099", mark_text: "GLIMMER PIQUE", classes: [41], status: "live", owner: "Maison Voltique SARL" },
-    { uri: "https://tm.corsearch.com/mark/us/90121212", mark_text: "FROSTWICK", classes: [41], status: "live", owner: "Alderline GmbH" },
-  ] } };
-  // carried as the canonical /mark path (the pipeline normalizes the carried side) ⇒ NOT a violation
-  const out = findRecallRegressionViolations({
-    knownConflicts, searchedNames: ["GLIMMERPEAK"],
-    carriedUris: ["/mark/int/1054099"], fetchedUris: [], registerFindingsMd: "", inScopeClasses: ["41"],
-  });
-  assert.ok(!out.some((v) => /1054099/.test(v.uri)), "full-URL store row joins the carried canonical uri — no false positive");
-  // the genuinely uncarried row STILL trips, carrying its owner for the named clamp reason
-  assert.equal(out.length, 1);
-  assert.equal(out[0].mark_text, "FROSTWICK");
-  assert.equal(out[0].owner, "Alderline GmbH");
-  // full-URL store row justified by a canonical-path drop row + canonical fetched key ⇒ NOT a violation
-  const rfMd = ["## Negative results", "", "| Mark | Search Term / Variant | Result | Notes |", "| --- | --- | --- | --- |",
-    "| FROSTWICK | glimmer | dropped | URI /mark/us/90121212; screen_verdict=surface:in-scope-live; class=41; status=live; goods reviewed |"].join("\n");
-  const out2 = findRecallRegressionViolations({
-    knownConflicts, searchedNames: ["GLIMMERPEAK"],
-    carriedUris: ["/mark/int/1054099"], fetchedUris: ["/mark/us/90121212"], registerFindingsMd: rfMd, inScopeClasses: ["41"],
-  });
-  assert.equal(out2.length, 0, "canonicalized justification (fetched + drop-row-cited) works for the full-URL row too");
-  // the named clamp reason: <MARK> (<owner> — <canonical uri>) — three same-named marks stay distinguishable
-  assert.equal(formatRecallRegression(out[0]), "FROSTWICK (Alderline GmbH — /mark/us/90121212)");
-  assert.equal(formatRecallRegression({ uri: "/mark/us/1", mark_text: "ION", owner: null }), "ION (/mark/us/1)");
-  assert.equal(formatRecallRegression({ uri: "/mark/us/2", mark_text: null, owner: "Kestrel Ltd" }), "Kestrel Ltd — /mark/us/2");
-});
-
-// ---- spec 64 (B3): deadline carry-forward — a recorded window must never silently disappear -------
-import { findDeadlineCarryViolations } from "../reasoning-tripwires.mjs";
-
-test("spec 64 deadline-carry: carried-without-deadline trips; carried-with passes; uncarried is recall-regression's", () => {
-  const NOW = Date.parse("2026-07-11T00:00:00Z");
-  const ledger = { schema_version: 1, marks: { venzy: [
-    { uri: "/mark/ch/06198", mark_text: "DEMVENZY", status: "live", opposition_end: "2026-07-13" },   // 2 days out
-    { uri: "/mark/us/111", mark_text: "OLDMARK", status: "live", opposition_end: "2015-08-05" },      // long lapsed
-    { uri: "/mark/us/222", mark_text: "UNCARRIED", status: "live", opposition_end: "2026-07-20" },    // not carried
-    { uri: "/mark/us/333", mark_text: "COVERED", status: "live", opposition_end: "2026-08-01" },      // carried WITH deadline
-  ] } };
-  const findings = { findings: [
-    { ordinal: 1, mark: "DEMVENZY", owner: { registrations: [{ uri: "/mark/ch/06198" }] } },          // no deadline field
-    { ordinal: 2, mark: "COVERED", deadline: { kind: "opposition", date: "2026-08-01" }, owner: { registrations: [{ uri: "/mark/us/333" }] } },
-  ] };
-  const v = findDeadlineCarryViolations({ knownConflicts: ledger, searchedNames: ["VENZY"], parsedFindings: findings, nowMs: NOW });
-  assert.equal(v.length, 1, "exactly the DEMVENZY shape trips");
-  assert.equal(v[0].uri, "/mark/ch/06198");
-  assert.equal(v[0].material, true);
-  assert.match(v[0].why, /closes 2026-07-13/);
-  assert.equal(findDeadlineCarryViolations({ knownConflicts: ledger, searchedNames: ["VENZY"], parsedFindings: findings, nowMs: 0 }).length, 0, "no clock ⇒ [] (replay purity)");
-  assert.equal(findDeadlineCarryViolations({ knownConflicts: null, searchedNames: ["VENZY"], parsedFindings: findings, nowMs: NOW }).length, 0, "no ledger ⇒ []");
-  assert.equal(findDeadlineCarryViolations({ knownConflicts: ledger, searchedNames: ["OTHERMARK"], parsedFindings: findings, nowMs: NOW }).length, 0, "other mark's rows never judged");
-});
-
-test("spec 64 review fix: deadline-carry matches a store PATH row against a finding's FULL provider URL", () => {
-  const NOW = Date.parse("2026-07-11T00:00:00Z");
-  const ledger = { schema_version: 1, marks: { venzy: [
-    { uri: "/mark/ch/06198", mark_text: "DEMVENZY", status: "live", opposition_end: "2026-07-13" },
-  ] } };
-  const findings = { findings: [
-    { ordinal: 1, mark: "DEMVENZY", owner: { registrations: [{ uri: "https://tm.corsearch.com/mark/ch/06198" }] } },
-  ] };
-  const v = findDeadlineCarryViolations({ knownConflicts: ledger, searchedNames: ["VENZY"], parsedFindings: findings, nowMs: NOW });
-  assert.equal(v.length, 1, "the URL-shaped carried uri still joins the path-shaped store row");
 });

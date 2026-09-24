@@ -164,7 +164,7 @@ const recordUriFile = (uri) => String(uri ?? "").toLowerCase().replace(/^\/mark\
 //                                             DELPHINOL false hard-halt, same fact at a different
 //                                             granularity)
 // So: canonicalise the CITE through normalizeRecordUri (registry-fidelity.mjs) — the canonical form
-// pipeline, recall-reconciliation, presence-reconciliation and known-conflicts already join on, and the
+// pipeline, recall-reconciliation and presence-reconciliation already join on, and the
 // same idea screen-gate.mjs re-implements as its own `toGateUri` fold — then resolve it against the
 // directory. A fifth copy of that idea is the last thing this defect class needs. The FILENAME
 // transform stays local and stays asymmetric to the writer's (the A3 note above); what is shared is the

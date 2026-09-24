@@ -138,7 +138,7 @@ test("the instruction is UNDOABLE — picking the marked option clears a stored 
 });
 
 test("the retired `true` reads as the marked default and never becomes `false`", async () => {
-  // NOT HYPOTHETICAL: driver/profiles/aurora.json ships `"privileged": true`.
+  // NOT HYPOTHETICAL: driver/profiles/demo-brand-owner.json ships `"privileged": true`.
   const loaded = { email: "summary", privileged: true };
   assert.equal(confPosture(loaded), CONF_DEFAULT, "true and absent render identically (shared/brand.mjs)");
   assert.equal(selectedOption("f_priv", loaded).value, "", "so the page shows the marked default, not `No marking`");
