@@ -138,16 +138,10 @@ What makes the coverage statement trustworthy:
 - **The clamps** (`applyCoverageFloor`) only ever raise CLEAR → CONDITIONAL, never lower, never
   manufacture BLOCKING: live condition actions, the lawyer's own `coverage_judgment.sufficient:
   false` (sufficiency is judgment's call — code only carries it), frame residuals, register gaps
-  (deferred rows ∪ taint axes ∪ material recall regressions — independent of the model's
-  self-report), and in-window deadlines delivered without their dates. The verdict sidecar
+  (deferred rows ∪ taint axes — independent of the model's self-report). The verdict sidecar
   (`_driver/verdict.json`) is then the single label authority for every surface; one shared
   predicate keeps the validator and the auto-correct judging "unconditional proceed" with the same
   eyes.
-- **Recall memory**: confirmed conflicts persist per mark in a workspace store
-  (`_known-conflicts/`, rows are only added — never deleted or rewritten, save the machine-provenance
-  `terminal` a delivered run may upgrade — human edits always win, non-Latin marks handled); the next run
-  folds them in as deterministic plan probes, and a prior-confirmed conflict that neither resurfaces
-  nor gets a recorded justification is a *material regression* that clamps.
 
 Register budgets deserve one honest sentence: the per-worker call budgets in the skill prose
 (enumerates, phoneme ≤ 5, image ≤ 10) are **observed, prompt-level budgets, not code-enforced
@@ -194,9 +188,8 @@ pass over inherited artifacts is visible as such.
 `reasoning-tripwires.mjs` is the mechanical net under principles held holistically in the skills:
 recall floor (a live identical registration dropped in the noise rows but not carried), seed
 neutrality (upstream artifacts must state facts, never grades), probative grading, matrix ceilings
-(legacy scale only), status honesty (clean headline over material gaps), deadline urgency and
-deadline carry, unresolved disagreements, orphan register findings, uncross-checked demotions,
-recall regression. All of it lands in `_driver/reasoning-integrity.json` and surfaces on the audit
+(legacy scale only), status honesty (clean headline over material gaps), deadline urgency,
+unresolved disagreements, orphan register findings, uncross-checked demotions. All of it lands in `_driver/reasoning-integrity.json` and surfaces on the audit
 workbook and quality pages — never as a banner on the rendered report.
 Two of these pure functions *also* feed the verdict clamps (register gap, deadline gap) — but via
 the clamp path on ledger facts, never as a tripwire "failure". `rule-shape.mjs` (rating decided by

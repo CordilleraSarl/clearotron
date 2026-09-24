@@ -475,14 +475,16 @@ test("applyTaintDeferred: confirmed-clean on a tainted MATERIAL axis → deferre
   assert.deepEqual(applyTaintDeferred(rows, []), rows, "empty taint set is a no-op");
 });
 
-test("decideRegisterGap: deferred material rows / taint / material recall each fire; coverage-limited never does", async () => {
+test("decideRegisterGap: deferred material rows / taint each fire; coverage-limited never does; recall is no input", async () => {
   const { decideRegisterGap } = await import("../coverage-ledger.mjs");
   assert.equal(decideRegisterGap([{ axis: "primary-sweep", status: "deferred", unit: "x" }]).gap, true);
   assert.equal(decideRegisterGap([{ axis: "primary-sweep", status: "coverage-limited", unit: "x" }]).gap, false, "an accepted limit is not an unfinished search");
   assert.equal(decideRegisterGap([{ axis: "saturation-probe", status: "deferred", unit: "x" }]).gap, false, "non-material axis never clamps");
   assert.equal(decideRegisterGap([], { taintAxes: ["primary-sweep"] }).gap, true);
   assert.equal(decideRegisterGap([], { taintAxes: ["saturation-probe"] }).gap, false);
-  assert.equal(decideRegisterGap([], { recallRegressions: [{ uri: "/mark/us/1", material: true }] }).gap, true);
+  assert.equal(decideRegisterGap([], { recallRegressions: [{ uri: "/mark/us/1", material: true }] }).gap, false,
+    "the recall store is gone: a caller still passing its regressions clamps nothing");
+  assert.equal("recallRegressions" in decideRegisterGap([]), false, "and the decision no longer reports a recall list");
   assert.equal(decideRegisterGap([]).gap, false);
 });
 

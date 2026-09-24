@@ -206,7 +206,7 @@ move once the same window has been read across more runs.
 `CLEAROTRON_PLAN_DISPATCH`, `CLEAROTRON_SATPROBE_CODESIDE`,
 `CLEAROTRON_BAND_TRUTH_GATE` (**never disable in prod — restores the fabrication**),
 `CLEAROTRON_FRAME_REOPEN` (+`CLEAROTRON_FRAME_REOPEN_MAX`=1, `CLEAROTRON_REOPEN_MAX_FETCH`=150),
-`CLEAROTRON_REGISTER_GAP_CLAMP`, `CLEAROTRON_RECALL_PROBES`, `CLEAROTRON_RECALL_TRIPWIRE`, `CLEAROTRON_WARM_RETRY`,
+`CLEAROTRON_REGISTER_GAP_CLAMP`, `CLEAROTRON_WARM_RETRY`,
 `CLEAROTRON_MODEL_WIRE_CHECK` (fails a turn whose
 provider reports a different model FAMILY than the driver asked for; disarming it silences the refusal
 and never the record: `modelActual`/`modelMismatch` keep landing on every dispatch row), `CLEAROTRON_FORM_REPAIR`

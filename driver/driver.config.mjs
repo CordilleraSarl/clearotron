@@ -51,8 +51,9 @@ const home = () => homedir();
 // CLEAROTRON_SKILLS_STORE_STRICT (skills-store-provenance.mjs). There was a fourth, CLEAROTRON_SELFTEST_PATHS_ONLY,
 // and it died with driver/selftest.mjs. The first two are here because they LIED, the third because it was written
 // after this note and a new gate has no excuse to spell itself a fifth way. Roughly
-// FIVE gates are still inline `!== "0"`: CLEAROTRON_BAND_TRUTH_GATE, CLEAROTRON_REGISTER_GAP_CLAMP,
-// CLEAROTRON_RECALL_TRIPWIRE, CLEAROTRON_WARM_RETRY, CLEAROTRON_SATPROBE_CODESIDE. Those are CORRECT — `0`
+// FOUR gates are still inline `!== "0"`: CLEAROTRON_BAND_TRUTH_GATE, CLEAROTRON_REGISTER_GAP_CLAMP,
+// CLEAROTRON_WARM_RETRY, CLEAROTRON_SATPROBE_CODESIDE. (CLEAROTRON_RECALL_TRIPWIRE was a fifth, and went
+// with the recall store on 2026-09-24.) Those are CORRECT — `0`
 // disables each, which is what they document — they simply do not accept `off`/`false`/`no`.
 //
 // IT WAS TEN. Three went with their knobs: CLEAROTRON_TAINT_CHAIN, CLEAROTRON_XCHECK and
@@ -61,9 +62,10 @@ const home = () => homedir();
 // rollback. The ones that remain stay because the test corpus sets them, and two of them are how a
 // hermetic suite keeps from dialling a real provider.
 //
-// CLEAROTRON_RECALL_PROBES was nearly a fourth and is the cautionary one: five test files disable it with
-// `||=`, and the census that cleared it for deletion looked for a plain `=` after the name. Deleting
-// it armed the probes in all five. A measurement that cannot see a form reports clean.
+// CLEAROTRON_RECALL_PROBES (also gone with the recall store) was nearly a fourth and is the cautionary
+// one: five test files disabled it with `||=`, and the census that cleared it for deletion looked for a
+// plain `=` after the name. Deleting it armed the probes in all five. A measurement that cannot see a form
+// reports clean.
 //
 // Anyone extending the accessors to the rest must update the note in .env.example's conventions header
 // in the same change — a header that claims more coverage than the code has is the defect this whole

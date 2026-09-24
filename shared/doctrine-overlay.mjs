@@ -6,7 +6,7 @@
 // is explicit that an edit for brevity changes what a clearance concludes. So an override that has
 // silently gone stale is a run answering from old doctrine with nothing to say so.
 //
-// WE RAN THIS EXPERIMENT ON OURSELVES. `driver/driver.config.mjs:170` records the repo split forking
+// WE RAN THIS EXPERIMENT ON OURSELVES. the SKILL RESOLUTION note above `skillsBaseDir` in `driver/driver.config.mjs` records the repo split forking
 // the whole tree: **30 of 37 shared files had silently drifted apart, in BOTH directions**. The
 // overlay fixed the mechanism for us and fixes nothing for a self-hoster, whose copies win and whose
 // upstream moves underneath them with nothing comparing the two.

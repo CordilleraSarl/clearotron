@@ -41,12 +41,9 @@ process.env.CLEAROTRON_PLAN_DISPATCH ||= "off";
 // band-truth gate (2026-07-14): OFF in hermetic harnesses — mock runs never dial the provider, so the
 // production call ledger can never evidence their bands; the dedicated band-truth-gate tests turn it ON.
 process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
-// copper-lattice enforcement knobs are OFF in THIS legacy harness: (a) config.workspaceRoot freezes at
-// first import, so every scenario shares one slug dir — a delivery's _known-conflicts.json upsert would
-// read as the NEXT scenario's "recall regression"; (b) several fixtures deliberately ship an unclosed
+// The register-gap clamp is OFF in THIS legacy harness: several fixtures deliberately ship an unclosed
 // deferred row (pre-clamp shapes) and assert non-verdict behaviour. The dedicated
-// pipeline.mock.registergap.test.mjs file (own process, own root) exercises both clamps ON.
-process.env.CLEAROTRON_RECALL_TRIPWIRE ||= "0";
+// pipeline.mock.registergap.test.mjs file (own process, own root) exercises the clamp ON.
 process.env.CLEAROTRON_REGISTER_GAP_CLAMP ||= "0";
 // code-side saturation-probe (2026-07-14): OFF in this legacy harness — its scenarios script the AGENT
 // member; the dedicated satprobe-codeside tests exercise the code-side path with an injected executor.

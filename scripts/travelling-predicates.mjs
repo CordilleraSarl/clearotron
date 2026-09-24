@@ -102,7 +102,7 @@ function isPlumbing(node, child) {
   // This was the whole of the unresolved bucket — three sites, all one shape:
   //
   //     const wrote   = files.length ? files.some(…) : null;              gateway.mjs (by name)
-  //     const inScope = scope.size   ? tokens.some(…) : (…);              reasoning-tripwires.mjs:82
+  //     const inScope = scope.size   ? tokens.some(…) : (…);              findRecallFloorViolations() in reasoning-tripwires.mjs
   //     const reached = b.layer === "national" ? (…) : regions.some(…);   resolveRegions() in register-plan.mjs
   //
   // The climb stopped at the ternary and reported "unresolved", which reads as a limit of the pattern

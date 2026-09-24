@@ -483,6 +483,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-frozen-recall-search-runs-as-an-ordinary-search.test.mjs": {
+          "tests": 2,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "a-full-country-card-keeps-what-the-multi-country-card-shows.test.mjs": {
           "tests": 2,
           "asserts": 12,
@@ -653,7 +659,7 @@
         },
         "a-mid-run-mint-cannot-lose-a-mark.test.mjs": {
           "tests": 10,
-          "asserts": 20,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -2183,7 +2189,7 @@
         },
         "coverage-ledger.test.mjs": {
           "tests": 32,
-          "asserts": 110,
+          "asserts": 111,
           "skips": 0,
           "todos": 0
         },
@@ -3249,12 +3255,6 @@
           "skips": 0,
           "todos": 0
         },
-        "known-conflicts.test.mjs": {
-          "tests": 17,
-          "asserts": 87,
-          "skips": 0,
-          "todos": 0
-        },
         "ladder-break.test.mjs": {
           "tests": 13,
           "asserts": 73,
@@ -3622,8 +3622,8 @@
           "todos": 0
         },
         "pipeline.mock.registergap.test.mjs": {
-          "tests": 7,
-          "asserts": 43,
+          "tests": 4,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -4000,14 +4000,8 @@
           "todos": 0
         },
         "reasoning-tripwires.test.mjs": {
-          "tests": 15,
-          "asserts": 71,
-          "skips": 0,
-          "todos": 0
-        },
-        "recall-cap-is-split-by-probe-kind.test.mjs": {
-          "tests": 1,
-          "asserts": 7,
+          "tests": 11,
+          "asserts": 50,
           "skips": 0,
           "todos": 0
         },
@@ -5962,8 +5956,8 @@
           "todos": 0
         },
         "the-xcheck-cap-counts-queries.test.mjs": {
-          "tests": 9,
-          "asserts": 25,
+          "tests": 8,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },
