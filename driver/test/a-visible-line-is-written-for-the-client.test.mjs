@@ -83,7 +83,7 @@ test("a line already written for the reader is left alone", () => {
   // The issue's own worked rewrite. If this flags, the rule is refusing the standard it sets.
   const good = "One company already owns this exact name for these goods in all three territories. "
     + "Everything else is a family of similar names, none decisive on its own.";
-  assert.deepEqual(plainRegisterFlags(good, { mark: "DELPH" }), []);
+  assert.deepEqual(plainRegisterFlags(good, { mark: "KORPH" }), []);
 });
 
 // ── THE LIST NAMES SOMETHING REAL, AND THIS IS WHAT MAKES THAT CHECKABLE ────────────────────────────
