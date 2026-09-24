@@ -8,7 +8,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import {
-  renderCodexConfigToml, parseClaudeMcpServers, enabledToolsByServer, tomlString, CRED_ENV_FORWARD, FENCE_PROFILE,
+  renderCodexConfigToml, parseClaudeMcpServers, enabledToolsByServer, tomlString, CRED_ENV_FORWARD, FENCE_PROFILE, TOOL_SERVER_SETTINGS,
 } from "../engine/mcp/codex-config.mjs";
 
 // Neutral register namespace (the real gather-config emits server key `register` + `register_*` tools —
@@ -296,7 +296,7 @@ test("renderCodexConfigToml: each withheld name is one exclude filter, and the s
   assert.equal(cfg.developer_instructions, "WRITE THE FILE.");
   assert.equal(cfg.default_permissions, FENCE_PROFILE);
   // The servers are untouched: codex reads their keys through env_vars, from the program's environment.
-  assert.deepEqual(cfg.mcp_servers.register.env_vars, CRED_ENV_FORWARD);
+  assert.deepEqual(cfg.mcp_servers.register.env_vars, [...CRED_ENV_FORWARD, ...TOOL_SERVER_SETTINGS]);
   assert.equal(cfg.mcp_servers.register.env.CLEAROTRON_GATHER_SESSION_KEY, "sess-1");
 });
 

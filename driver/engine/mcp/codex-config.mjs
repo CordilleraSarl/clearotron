@@ -36,6 +36,20 @@ export const CRED_ENV_FORWARD = [
   "USPTO_LOCAL_DB",
 ];
 
+// The settings the gather servers read to reach a register, which are not credentials: its address, its
+// fixtures, the case-law bridges' sign-in folder and name, and three tuning values. On the Claude engine
+// a server inherits them from the program; codex hands a server only its own entry and its `env_vars`, so
+// until these were forwarded a Codex server never saw them and ran on its defaults whatever the install
+// set. One list for both engines: engine-env.mjs passes these names to
+// the program, and every server block below forwards them. `EUIPO_ENVIRONMENT` is also written into the
+// EUIPO server's own entry by gather-config; forwarding it as well changes nothing, since `env` wins.
+export const TOOL_SERVER_SETTINGS = Object.freeze([
+  "CLARIVATE_API_BASE", "SIGNA_BASE_URL", "EUIPO_ENVIRONMENT", "SIGNA_FIXTURES_DIR", "CLAWDI_SIGNA_FIXTURES_DIR",
+  "CLEAROTRON_HTTP_TIMEOUT_MS", "CLEAROTRON_BAND_RESPONSE_CHARS", "CLEAROTRON_ENUMERATE_NAMES_CHUNK",
+  // The case-law bridges: where their sign-in lives, and the name they register under.
+  "OAUTH_BRIDGE_CREDS_DIR", "OAUTH_BRIDGE_CLIENT_NAME",
+]);
+
 // ── TOML value escaping (basic strings) ──────────────────────────────────────────────────────────────
 // One encoder for every TOML block the product writes; re-exported so this module's callers keep their import.
 export { tomlString };
@@ -106,7 +120,7 @@ export function webFetchRequested(allowedTools) {
 // turn that is awaiting it, so the turn's own budget is the honest ceiling and the child's hard wall
 // stays the backstop. Absent/0/negative ⇒ emit nothing and leave codex's default alone, so this is inert
 // for any caller that does not thread a budget.
-export function renderCodexConfigToml({ mcpConfig, allowedTools, developerInstructions, nodeBin = process.execPath, credEnvForward = CRED_ENV_FORWARD, toolTimeoutSec, fence = null, withheldFromCommands = [] } = {}) {
+export function renderCodexConfigToml({ mcpConfig, allowedTools, developerInstructions, nodeBin = process.execPath, credEnvForward = [...CRED_ENV_FORWARD, ...TOOL_SERVER_SETTINGS], toolTimeoutSec, fence = null, withheldFromCommands = [] } = {}) {
   const servers = parseClaudeMcpServers(mcpConfig);
   const enabled = enabledToolsByServer(allowedTools);
   const toolTimeout = Number(toolTimeoutSec) > 0 ? Math.floor(Number(toolTimeoutSec)) : undefined;
