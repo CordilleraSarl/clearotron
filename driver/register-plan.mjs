@@ -1490,15 +1490,15 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   // stamps each non-Latin term with the manifest's romanisation of it (romanStamp, above); a `numeric`
   // variant is Latin and the manifest carries none for it, so the axis is unchanged for that member.
   //
-  // ONE SCRIPT QUESTION PER MARKET, AND NONE WHERE THE REGISTER FILES THE ROMANISED FORM. A variant in
-  // another script is a question for the markets that register marks in that script, so it is asked there
-  // and nowhere else, and not at all when none of the markets the matter frame names files in it. A
-  // register that declares it indexes non-Latin marks by their transliteration only (`nativeScriptIndex:
-  // false`) answers the Latin question for them already, so no non-Latin question is compiled for it: on
-  // such a register each script's question went out as its romanised form and came back as the same
-  // answer. Latin transliterations and numeric variants are asked as before. With no frame on record and a
-  // worldwide scope there is no market to scope to, and the variant compiles as it always did.
-  const romanisedFiling = caps?.nativeScriptIndex === false;
+  // A SCRIPT QUESTION IS SCOPED TO THE MARKETS THAT FILE IN IT, AND NEVER DROPPED HERE. A variant in
+  // another script is scoped to the markets the matter frame names whose row in the registrable-scripts
+  // table lists that script. Where no named market's row does, it compiles where it always did: the table
+  // lists what a market must be asked, not everything its register holds, so a missing row is no reason
+  // to leave a question out. Every script question then waits for the reading turn, which releases or
+  // withholds it with a reason, and the manual tells that turn when the Latin question already covers it.
+  // A question dropped here would save no search, since it waits anyway, and would leave no line saying
+  // it was not asked. Latin transliterations and numeric variants are asked as before. With no frame on
+  // record and a worldwide scope there is no market to scope to, and the variant compiles as it always did.
   const canon = (list) => (Array.isArray(list) ? list : []).map((j) => normalizeTerritory(String(j ?? "").trim())).filter(Boolean);
   // The markets: the frame's, within the instructed ones where the client named territories (the
   // instructed ones if the two do not meet); the frame's alone on a worldwide scope; none known, none used.
@@ -1509,18 +1509,11 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   for (const v of manifest.variants) {
     if (v.category !== "transliteration" && v.category !== "numeric") continue;
     const entry = { axis: "transliteration-numeric", predicate: markPredicate(v.value), term: v.value, expected_kind: "enumerate", provenance: "model", dropIssue: variantTermIssue(v.value) };
-    if (v.category === "transliteration" && isNonLatinTerm(v.value)) {
-      if (romanisedFiling) continue;
-      if (scriptMarkets) {
-        const markets = marketsFilingScriptOf(v.value, scriptMarkets);
-        if (!markets.length) continue;
-        // A market this register cannot reach keeps the entry as it was, so its deferral is still disclosed.
-        const scoped = resolveRegions(markets, caps).regions.filter((r) => !regions.length || regions.includes(r));
-        push(scoped.length ? { ...entry, regions: scoped } : entry);
-        continue;
-      }
-    }
-    push(entry);
+    const markets = v.category === "transliteration" && isNonLatinTerm(v.value) && scriptMarkets
+      ? marketsFilingScriptOf(v.value, scriptMarkets) : [];
+    // A market this register cannot reach keeps the entry as it was, so its deferral is still disclosed.
+    const scoped = markets.length ? resolveRegions(markets, caps).regions.filter((r) => !regions.length || regions.includes(r)) : [];
+    push(scoped.length ? { ...entry, regions: scoped } : entry);
   }
 
   // incumbent-class — the industry-incumbent shadow: the anchor enumerated in the incumbent's classes.
