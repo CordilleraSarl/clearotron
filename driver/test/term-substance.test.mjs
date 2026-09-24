@@ -51,8 +51,8 @@ test("a real owner name is untouched — the exemption this preserves is the poi
   // shape rules would maul them. Substance runs first and lets every one of these through.
   for (const owner of [
     "MONSTER ENERGY COMPANY, SOCIÉTÉ ORGANISÉE SELON LES LOIS DE L ETAT DU DELAWARE",
-    "Delphi Technologies (BorgWarner Inc.)",
-    "QUANTALX NEUROSCIENCE LTD",
+    "Korphi Technologies (BorgWarner Inc.)",
+    "VECTALX NEUROSCIENCE LTD",
     "AKTIESELSKABET LAGERMAN, JUNR.",
   ]) assert.deepEqual(entryTermIssues({ predicate: "owner", term: owner }), [], owner);
 });

@@ -41,7 +41,7 @@ test("A CJK OWNER WITH A CJK MARK DOES NOT KEY TO THE EMPTY STRING", () => {
 });
 
 test("A GENUINE DUPLICATE STILL CONSOLIDATES — the fix must not stop the function working", () => {
-  const out = consolidateFindings([f("BePharBel", "VELTRI", 1), f("BePharBel", "VELTRI", 2)]);
+  const out = consolidateFindings([f("DuPharVel", "VELTRI", 1), f("DuPharVel", "VELTRI", 2)]);
   assert.equal(out.findings.length, 1);
   assert.deepEqual(out.merges.map((m) => m.dropped), [[2]]);
   assert.equal(out.findings[0].owner.registrations.length, 2, "and the union carries both registrations");
@@ -61,8 +61,8 @@ test("LATIN KEYS ARE UNCHANGED — an archived finding must not re-merge differe
   // The risk this fix carries: a consolidation key that moved would regroup every archived run's
   // findings on republish. Latin values take the same path they always did.
   const out = consolidateFindings([
-    f("Delphi Technologies, Inc.", "DELPHI", 1), f("delphi technologies inc", "delphi", 2),
-    f("Delphi Scientific LLC", "DELPHI SCIENTIFIC", 3),
+    f("Korphi Technologies, Inc.", "KORPHI", 1), f("korphi technologies inc", "korphi", 2),
+    f("Korphi Scientific LLC", "KORPHI SCIENTIFIC", 3),
   ]);
   assert.equal(out.findings.length, 2, "punctuation and case still fold exactly as before");
   assert.deepEqual(out.merges.map((m) => m.dropped), [[2]]);

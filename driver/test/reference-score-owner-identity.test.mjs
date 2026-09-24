@@ -78,7 +78,7 @@ test("containment is over WHOLE WORDS — VELTRIN never reaches inside VELTRINSO
 test("the run scores 7 of 9, and the five same-token different-owner marks stay noise", () => {
   const reference = [GOLD,
     { mark: "VELTRIN SCIENTIFIC", owner: "Veltrin Scientific, LLC (US)", classes: [5, 42, 44], jurisdictions: ["US"] },
-    { mark: "DELFITY", owner: "Novartis", classes: [5], jurisdictions: ["EU"] }];
+    { mark: "KORFITY", owner: "Norvanta", classes: [5], jurisdictions: ["EU"] }];
   const b = scoreRecall({ reference, findings: [SURFACED, ...DIFFERENT_OWNERS],
     scopeClasses: ["5", "42", "44"], scopeTerritories: ["CH", "EU", "US"] });
 
@@ -87,7 +87,7 @@ test("the run scores 7 of 9, and the five same-token different-owner marks stay 
   assert.equal(b.found[0].rule, "contained", "and the report says WHY the two labels were treated as one mark");
   assert.equal(b.found[0].matched, "DG VELTRIN GENETICS");
 
-  assert.deepEqual(b.lost.map((x) => x.mark).sort(), ["DELFITY", "VELTRIN SCIENTIFIC"],
+  assert.deepEqual(b.lost.map((x) => x.mark).sort(), ["KORFITY", "VELTRIN SCIENTIFIC"],
     "the other two stay lost — the fix must not manufacture recall it does not have");
   assert.deepEqual(b.noise.map((x) => x.mark).sort(), DIFFERENT_OWNERS.map((x) => x.mark).sort(),
     "every same-token different-owner mark stays noise");
@@ -109,7 +109,7 @@ test("a surfaced record sharing an owner with an unfound entry is REPORTED, neve
   //
   // ── THE FIXTURE HAD DRIFTED FROM THE INCIDENT IT CITES ──────────────────────────────────────────
   //
-  // The incident was `DELPHI GENETICS` in LOST beside `DG DELPHI GENETICS` in NOISE — one record split,
+  // The incident was `KORPHI GENETICS` in LOST beside `DG KORPHI GENETICS` in NOISE — one record split,
   // and the second CONTAINS the first. This fixture substituted names and broke that relation while
   // keeping the label: `ZORVIL GENETICS` and `DG VELTRIN GENETICS` share an owner and nothing else, so
   // it had stopped testing one-record-split and started testing same-proprietor.

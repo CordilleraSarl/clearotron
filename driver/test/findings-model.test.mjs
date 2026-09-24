@@ -537,12 +537,12 @@ test("joinFindingToBlock: the VENZY fixture — exact mark beats containment; am
   // the real ashen-vault shape: VENZY (C5), DEMVENZY (C3), VENZY-India (C3), VENZ (C3)
   const findings = [
     { ordinal: 1, mark: "VENZY", owner: { name: "Doruk İlkay" }, composite: 5 },
-    { ordinal: 2, mark: "DEMVENZY", owner: { name: "Novartis Pharma AG" }, composite: 3 },
+    { ordinal: 2, mark: "DEMVENZY", owner: { name: "Norvanta Pharma AG" }, composite: 3 },
     { ordinal: 3, mark: "VENZY", owner: { name: "not extracted" }, composite: 3 },
     { ordinal: 4, mark: "VENZ", owner: { name: "SAMI Pharmaceuticals" }, composite: 3 },
   ];
   // the old containment join bound this to ordinal 1 (head contains "venzy") → enforced VERY HIGH
-  assert.equal(joinFindingToBlock({ ord: null, head: "DEMVENZY — Novartis Pharma AG" }, findings)?.ordinal, 2);
+  assert.equal(joinFindingToBlock({ ord: null, head: "DEMVENZY — Norvanta Pharma AG" }, findings)?.ordinal, 2);
   assert.equal(joinFindingToBlock({ ord: null, head: "VENZ — SAMI Pharmaceuticals (Pakistan)" }, findings)?.ordinal, 4);
   // two live VENZY findings → head "VENZY — …" is ambiguous without an ord line: honest null, never a guess
   assert.equal(joinFindingToBlock({ ord: null, head: "VENZY — Owner not identified (India)" }, findings), null);
@@ -550,7 +550,7 @@ test("joinFindingToBlock: the VENZY fixture — exact mark beats containment; am
   assert.equal(joinFindingToBlock({ ord: 3, head: "VENZY — Owner not identified (India)" }, findings)?.ordinal, 3);
   // withdrawn findings never join
   const withdrawn = findings.map((f) => f.ordinal === 2 ? { ...f, disposition: "withdrawn" } : f);
-  assert.equal(joinFindingToBlock({ ord: 2, head: "DEMVENZY — Novartis" }, withdrawn), null);
+  assert.equal(joinFindingToBlock({ ord: 2, head: "DEMVENZY — Norvanta" }, withdrawn), null);
   // unique containment still works when nothing collides (legacy summaries without ord lines)
   assert.equal(joinFindingToBlock({ ord: null, head: "OPTIVENZY tablets — Laboratoires Majorelle" },
     [{ ordinal: 6, mark: "OPTIVENZY", composite: 2 }])?.ordinal, 6);

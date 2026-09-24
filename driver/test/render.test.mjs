@@ -563,13 +563,13 @@ test("doc-31 no-invent: record set present + a cited uri NOT in it + model field
 // ── doc-31 step 4: owner DISPLAY is bound from the record, so an invented variant never reaches the card. ──
 test("doc-31 owner binding: the card owner is the RECORD's proprietor, not the model's invented variant", () => {
   const recordsByUri = new Map([["https://tm.example/us/3396572", {
-    _uri: "https://tm.example/us/3396572", applicationNumber: "77999111", owner: "Lo.Li. Pharma S.r.l.", jurisdiction: "US",
+    _uri: "https://tm.example/us/3396572", applicationNumber: "77999111", owner: "Be.Ma. Pharma S.r.l.", jurisdiction: "US",
   }]]);
-  const f = [{ ...FINDINGS[0], owner: { name: "Lo.Li. Pharma International", country: "US", registrations: [
+  const f = [{ ...FINDINGS[0], owner: { name: "Be.Ma. Pharma International", country: "US", registrations: [
     { uri: "https://tm.example/us/3396572", classes: ["41"], jurisdiction: "US" } ] } }];
   const html = renderHtml(parsedOf(REPORT), f, COVERAGE, { recordsByUri });
-  assert.match(html, /Lo\.Li\. Pharma S\.r\.l\./);             // bound from the record
-  assert.doesNotMatch(html, /Lo\.Li\. Pharma International/);  // the invented variant never reaches the card owner/oneline
+  assert.match(html, /Be\.Ma\. Pharma S\.r\.l\./);             // bound from the record
+  assert.doesNotMatch(html, /Be\.Ma\. Pharma International/);  // the invented variant never reaches the card owner/oneline
 });
 
 test("doc-31 owner binding: no record owner → falls back to the model's finding.owner.name (back-compat)", () => {
@@ -1201,14 +1201,14 @@ test("spec 47: a reasoned Enforcer prose bullet suppresses the templated meter l
     "# Marks",
     "## Matchday, Inc.", "- ord: 1", "- one: The dominant MATCHDAY holder.",
     "### The read", "Distinguished as wholes.",
-    "### Full detail", "- **Enforcement.** Novartis-scale portfolio; appears likely to monitor and oppose.",
+    "### Full detail", "- **Enforcement.** Norvanta-scale portfolio; appears likely to monitor and oppose.",
     "## MAN Sports", "- ord: 2", "- one: Identical anchor on core supplement goods.",
     "### The read", "Common-law only.",
   ].join("\n");
   const html = renderHtml(parsedOf(`${FM}\n${CARDS_E}`), FINDINGS, COVERAGE, {});
   // card 1 carries the reasoned prose bullet — the templated inferred-appetite line is suppressed
   const card1 = html.slice(html.indexOf('id="c1"'), html.indexOf('id="c2"'));
-  assert.match(card1, /<b>Enforcement\.<\/b> Novartis-scale portfolio/);
+  assert.match(card1, /<b>Enforcement\.<\/b> Norvanta-scale portfolio/);
   assert.doesNotMatch(card1, /appetite <i>inferred<\/i>/, "the templated meter line never doubles a reasoned prose bullet");
   // card 2 has no prose enforcer bullet — the templated meter line still renders (inferred, honest)
   const card2 = html.slice(html.indexOf('id="c2"'));

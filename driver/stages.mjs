@@ -1101,15 +1101,15 @@ const scriptFloorDirective = (job, profile) => {
 // ── THE SIX CATEGORY NAMES WERE GIVEN AND NONE OF THEM WAS DEFINED ───────────────────────────
 //
 // An evidence run scored 7 of 9 found, 2 lost, **withheld 0**. Nothing was
-// retrieved and dropped — DELPHI SCIENTIFIC and DELFITY were never searched for. The variant dispatch
+// retrieved and dropped — KORPHI SCIENTIFIC and KORFITY were never searched for. The variant dispatch
 // named a closed enum of seven categories and defined not one of them, so the model inferred what six
 // words meant from the words themselves and generated against its own inference:
 //
-//   DELPHI SCIENTIFIC  stem + descriptor. Nothing said a composite is drawn from words that could
+//   KORPHI SCIENTIFIC  stem + descriptor. Nothing said a composite is drawn from words that could
 //                      plausibly follow the distinctive element ON THE GOODS IN SCOPE, so the model
 //                      produced seven descriptors and every one came from the applicant's own biotech
 //                      sector — the one place a conflicting mark is least likely to be hiding.
-//   DELFITY            a fuzzy neighbour. Nothing said how far `phonetic` reaches, or that a shortened
+//   KORFITY            a fuzzy neighbour. Nothing said how far `phonetic` reaches, or that a shortened
 //                      or elided middle is inside it.
 //
 // One absence, seen twice. The ruling (design agent, 2026-08-06) is explicit that the fix is a BETTER

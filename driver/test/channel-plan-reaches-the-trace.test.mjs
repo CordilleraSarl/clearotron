@@ -26,7 +26,7 @@ const src = (f) => readFileSync(join(ROOT, f), "utf8");
 // The grid-spec shape the writer produces: the dictated channels plus the general-web cell.
 const SPEC_PLATFORMS = ["taobao.com", "jd.com", "1688.com", "web"];
 const gridWith = (platforms) => JSON.stringify({
-  cells: platforms.map((p) => ({ term: "delphi", platform: p, status: "ok", candidates: [] })), gaps: [],
+  cells: platforms.map((p) => ({ term: "korphi", platform: p, status: "ok", candidates: [] })), gaps: [],
 });
 
 test("a run that swept every ordered channel reads complete", () => {

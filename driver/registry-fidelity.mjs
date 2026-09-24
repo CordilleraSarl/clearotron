@@ -467,7 +467,7 @@ export const REC = {
   isLive: (r) => r.statusClass === "live" || /\b(valid|live|registered)\b/i.test(String(r.onomaticsStatus ?? r.corsearchStatusCode ?? "")),
   statusStr: (r) => String(r.statusText ?? r.onomaticsStatus ?? r.corsearchStatusCode ?? r.statusClass ?? ""),
   // doc-31 step 4: the proprietor/applicant name as the record holds it — the AUTHORITATIVE owner display, so a
-  // model-typed/​invented variant ("Lo.Li. Pharma International" for a record that says "Lo.Li. Pharma S.r.l.")
+  // model-typed/​invented variant ("Be.Ma. Pharma International" for a record that says "Be.Ma. Pharma S.r.l.")
   // never becomes the card's owner. Provider-blind: every normalizer writes `owner` (legacy: ownerName/proprietor).
   owner: (r) => String(r.owner ?? r.ownerName ?? r.proprietor ?? "").trim(),
   // — the owner's name in its ORIGINAL script, when the record draws that distinction. Its presence
@@ -1028,8 +1028,8 @@ export function bindFindingsToRecords(findings, recordsByUri) {
     }
     // ── the owner's name: one asserted fact, one presentation choice ──────────────────────────
     //
-    // doc-31 step 4 binds owner.name from the record so a model-typed variant ("Lo.Li. Pharma
-    // International" for a record that says "Lo.Li. Pharma S.r.l.") never becomes the card's owner. That
+    // doc-31 step 4 binds owner.name from the record so a model-typed variant ("Be.Ma. Pharma
+    // International" for a record that says "Be.Ma. Pharma S.r.l.") never becomes the card's owner. That
     // still holds, and the test that pins it is unchanged.
     //
     // What it got wrong is the CJK case. The provider's Latin field is a ROMANISATION there — for a

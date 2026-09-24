@@ -910,7 +910,7 @@ test("NEGATIVE CONTROL: the preference changes the CITATION and never the BUCKET
 
 // ── — THE OWNER COMPARISON KNEW ANGLO-GERMAN FORMS AND ALMOST NO OTHERS ──────────
 //
-// `BePharBel Manufacturing` and `BePharBel Manufacturing, Société anonyme` read as two companies, so the
+// `DuPharVel Manufacturing` and `DuPharVel Manufacturing, Société anonyme` read as two companies, so the
 // scorer could not identify the record a lawyer named even with it sitting in the band. Measured before
 // building: of twenty common legal forms appended to an otherwise identical name, NINETEEN broke the
 // match — only `S.A.` survived, and only because `sa` happened to be on the noise list.
@@ -937,12 +937,12 @@ test("every legal form the register corpus actually carries matches", () => {
 });
 
 test("the specimen that started it, and the two siblings that already worked", () => {
-  assert.equal(ownersMatch("BePharBel Manufacturing", "BePharBel Manufacturing, Société anonyme"), true,
+  assert.equal(ownersMatch("DuPharVel Manufacturing", "DuPharVel Manufacturing, Société anonyme"), true,
     "the gold's owner and the band's owner are the same company written to different lengths");
-  assert.equal(ownersMatch("Lo.Li. Pharma S.r.l.", "LO.LI. Pharma S.R.L."), true, "case and punctuation, unchanged");
-  assert.equal(ownersMatch("Davis Schottlander & Davis Ltd", "Davis Schottlander & Davis Limited"), true,
+  assert.equal(ownersMatch("Be.Ma. Pharma S.r.l.", "BE.MA. Pharma S.R.L."), true, "case and punctuation, unchanged");
+  assert.equal(ownersMatch("Harlow Brenmoor & Harlow Ltd", "Harlow Brenmoor & Harlow Limited"), true,
     "a form that was already on the list, unchanged");
-  assert.equal(ownersMatch("Delphi Genetics S.A. (BX)", "Delphi Genetics S.A."), true,
+  assert.equal(ownersMatch("Korphi Genetics S.A. (BX)", "Korphi Genetics S.A."), true,
     "#450's trailing jurisdiction annotation, unchanged");
 });
 
@@ -954,7 +954,7 @@ test("STRICTNESS — a form list that ate a real word would be the worse defect"
       `two different companies sharing the trailing word "${w}" now match — the form list has eaten a `
       + "name-word, which is a wrong-owner match and worse than the gap this fixes");
   assert.equal(ownersMatch("Acme Widgets Inc", "Beta Widgets Inc"), false, "…and the ordinary case still holds");
-  assert.equal(ownersMatch("Delphi Genetics S.A.", "Delphi Diagnostics S.A."), false,
+  assert.equal(ownersMatch("Korphi Genetics S.A.", "Korphi Diagnostics S.A."), false,
     "one distinctive word apart, same form — must stay two companies");
 });
 

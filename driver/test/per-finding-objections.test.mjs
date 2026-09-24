@@ -12,7 +12,7 @@
 // and `_driver/corrections-applied.json` from that run: 9 flags →
 // `{findings-changed: 1, findings-unchanged: 2, not-entity-scoped: 6}`. **683 seconds re-emitting the
 // whole narrative and the whole findings.json so that ONE finding moved**, and six of nine flags
-// resolved to no finding at all — while the reviewer's own prose opened them "Finding 9 — DELPHIC…",
+// resolved to no finding at all — while the reviewer's own prose opened them "Finding 9 — KORPHIC…",
 // "Findings 4, 7, 8." The objections were already per-finding; the driver could not read them, because
 // `targetsOf` matches mark and owner NAMES out of a sentence.
 //

@@ -143,7 +143,7 @@ test("CONTROL: a clean success says ok and claims no contradiction", async () =>
 const BLOCKING_REVIEW = [
   "VERDICT: BLOCKING",
   "",
-  "- [kind: fact] Finding 4 asserts NOVARTIS uses the mark in class 5; the cited page does not say that.",
+  "- [kind: fact] Finding 4 asserts NORVANTA uses the mark in class 5; the cited page does not say that.",
   "- [kind: rating] Finding 9's band is HIGH on a record that never issued.",
   "",
   "## PLAN-EXECUTION CHECK",
@@ -156,7 +156,7 @@ test("the grounds a BLOCKING sidecar lacked were already parsed by a function th
   // two halves were simply never joined, which is this family's mechanism stated in one sentence.
   const cited = parseCorrections(BLOCKING_REVIEW).map((r) => r.text).filter(Boolean);
   assert.equal(cited.length, 2, "the two flagged defects, and NOT the PLAN-EXECUTION CHECK bullet below them");
-  assert.match(cited[0], /NOVARTIS/, "the ground is the reviewer's own sentence, not a count of sentences");
+  assert.match(cited[0], /NORVANTA/, "the ground is the reviewer's own sentence, not a count of sentences");
   assert.equal(countCitedDefects(BLOCKING_REVIEW), cited.length,
     "the count and the list must come from one walk — a second copy of that walk is how the two drift apart");
 });
@@ -214,22 +214,22 @@ const flag = (n, text, ordinals = null) => ({ n, kind: "fact", typed: true, text
 test("THE DEFECT: a flagged finding that is GONE is reported as removed, by name", () => {
   // The incident: a corrective pass, given a flagged fact (a named-owner use), DELETED the fact rather
   // than correcting it. The flag went away and the report did not become true.
-  const pre = { findings: [finding(4, "DELPHI"), finding(9, "VENZY")] };
-  const post = { findings: [finding(9, "VENZY")] };                      // DELPHI simply gone
-  const [row] = buildCorrectionsApplied([flag(1, "Finding 4 — DELPHI's owner use is not supported by the cited page", [4])], pre, post);
+  const pre = { findings: [finding(4, "KORPHI"), finding(9, "VENZY")] };
+  const post = { findings: [finding(9, "VENZY")] };                      // KORPHI simply gone
+  const [row] = buildCorrectionsApplied([flag(1, "Finding 4 — KORPHI's owner use is not supported by the cited page", [4])], pre, post);
   assert.equal(row.outcome, "findings-removed",
     "a deletion must not be reported as `findings-changed` — that is the outcome which reads as the flag "
     + "having landed, and it is what let round 1's deletion through");
-  assert.deepEqual(row.removed, ["DELPHI"],
+  assert.deepEqual(row.removed, ["KORPHI"],
     "…and it names WHICH fact left the report, because a reader cannot act on the bare fact that one did");
 });
 
 test("CONTROL: a finding that was actually CORRECTED still reads findings-changed", () => {
   // Without this arm the fix could be "call everything a removal", which protects nobody and buries the
   // real ones under noise.
-  const pre = { findings: [finding(4, "DELPHI", { disposition: "live" })] };
-  const post = { findings: [finding(4, "DELPHI", { disposition: "withdrawn", withdrawn_reason: "the cited page does not support the use" })] };
-  const [row] = buildCorrectionsApplied([flag(1, "Finding 4 — DELPHI's owner use is not supported", [4])], pre, post);
+  const pre = { findings: [finding(4, "KORPHI", { disposition: "live" })] };
+  const post = { findings: [finding(4, "KORPHI", { disposition: "withdrawn", withdrawn_reason: "the cited page does not support the use" })] };
+  const [row] = buildCorrectionsApplied([flag(1, "Finding 4 — KORPHI's owner use is not supported", [4])], pre, post);
   assert.equal(row.outcome, "findings-changed", "it is still there and it moved — that is a correction");
   assert.deepEqual(row.removed, [], "nothing was removed, and the field says so rather than being absent");
 });
@@ -238,19 +238,19 @@ test("a removal WINS over a change on the same flag", () => {
   // The precedence that decides whether this is visible in practice: a flag naming several findings where
   // one vanished and the others moved is a removal. Reporting the majority outcome buries it exactly where
   // it was buried before.
-  const pre = { findings: [finding(4, "DELPHI"), finding(6, "VENZY"), finding(7, "PHINIA")] };
+  const pre = { findings: [finding(4, "KORPHI"), finding(6, "VENZY"), finding(7, "PHINIA")] };
   const post = { findings: [finding(6, "VENZY", { band: "MEDIUM" }), finding(7, "PHINIA", { band: "MEDIUM" })] };
   const [row] = buildCorrectionsApplied([flag(1, "Findings 4, 6, 7 — the bands are overstated", [4, 6, 7])], pre, post);
   assert.equal(row.outcome, "findings-removed");
-  assert.deepEqual(row.removed, ["DELPHI"], "only the one that actually left, not every finding the flag named");
+  assert.deepEqual(row.removed, ["KORPHI"], "only the one that actually left, not every finding the flag named");
 });
 
 test("the recheck's table names the deletion and says it is a failure until ruled otherwise", () => {
-  const pre = { findings: [finding(4, "DELPHI")] };
+  const pre = { findings: [finding(4, "KORPHI")] };
   const post = { findings: [] };
-  const applied = buildCorrectionsApplied([flag(1, "Finding 4 — DELPHI's owner use is unsupported", [4])], pre, post);
+  const applied = buildCorrectionsApplied([flag(1, "Finding 4 — KORPHI's owner use is unsupported", [4])], pre, post);
   const table = correctionsAppliedTable(applied);
-  assert.match(table, /findings-removed: DELPHI/, "the row must carry the name into the document the recheck reads");
+  assert.match(table, /findings-removed: KORPHI/, "the row must carry the name into the document the recheck reads");
   assert.match(table, /IS a failure until you rule otherwise/,
     "…and the table must say what the outcome MEANS. The recheck that caught this once did so on its own "
     + "judgement; a legend it can read is what makes the catch structural rather than fortunate");
@@ -260,7 +260,7 @@ test("the recheck's table names the deletion and says it is a failure until rule
 
 test("the corrective pass is TOLD that deletion is not an available move", () => {
   // The constraint belongs where the moves are chosen. The recheck is the second net, not the first.
-  const worklist = correctionsWorklist([flag(1, "Finding 4 — DELPHI's owner use is unsupported", [4])]);
+  const worklist = correctionsWorklist([flag(1, "Finding 4 — KORPHI's owner use is unsupported", [4])]);
   assert.match(worklist, /REMOVING A FLAGGED FINDING DOES NOT ANSWER ITS FLAG/);
   assert.match(worklist, /WITHDRAWN with its reason recorded, never deleted/,
     "correct-or-escalate needs the escalation route named, or the only stated option is 'do nothing'");

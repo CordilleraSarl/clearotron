@@ -10,7 +10,7 @@
 // string for the variant — and because these are contains-matches, string length decides reach: a
 // family member of a variant contains the variant's ROOT and does not contain the full variant.
 //
-// Measured on a delivered run: `default DELPHI` (the element, as a root, 208 records) beside
+// Measured on a delivered run: `default KORPHI` (the element, as a root, 208 records) beside
 // `phonetic VELTRIN` (the variant, in full). One register reference mark retrieved zero times. The
 // earlier run reached it only because it happened to emit a shorter free-standing form — luck, not
 // method.

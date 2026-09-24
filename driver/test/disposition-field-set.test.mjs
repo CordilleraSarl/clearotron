@@ -28,7 +28,7 @@ const RECEIPTS = [
   { query: "veltrin meaning", results: [
     { id: "R-AAAAAAAA", title: "Veltrin — the pangolin", url: "https://example.invalid/a",
       snippet: "A long enough passage of captured text to be usable for a spot check on this row." },
-    { id: "R-BBBBBBBB", title: "Delphi oracle", url: "https://example.invalid/b",
+    { id: "R-BBBBBBBB", title: "Korphi oracle", url: "https://example.invalid/b",
       snippet: "Another passage, also long enough to count as a usable snippet for the same purposes." }] },
 ];
 

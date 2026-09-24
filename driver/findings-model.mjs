@@ -246,7 +246,7 @@ export function deriveDisplayVerdict({ verdict, reasons, kinds, findings, manife
 }
 
 // ── wp50 — THE deterministic client-summary-block → finding join ────────────────────────────────────────
-// The old first-match substring-containment join mis-bound "DEMVENZY — Novartis" to the VENZY finding
+// The old first-match substring-containment join mis-bound "DEMVENZY — Norvanta" to the VENZY finding
 // (the head CONTAINS "venzy"), so the validator and the lint auto-correct VALIDATED — and would have
 // ENFORCED — the wrong finding's tier, rating two Composite-3 conflicts at the top band. One join,
 // used by the validator, the auto-correct and the email
