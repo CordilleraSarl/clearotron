@@ -654,7 +654,7 @@ export function resolveOffices(regions) {
  * answers the deduplicated union of the deleted 4-call per-class fan-out.
  */
 // ── THE APOSTROPHE IS NOT SEARCHABLE IN APPLICANT_NAME ────────────────────────────────────────────
-// An apostrophe is not searchable: "TRADER VIC'S", "MCDONALD'S CORPORATION" and
+// An apostrophe is not searchable: "TRADER VIC'S", a company's possessive name and
 // "…L'ETAT DU DELAWARE" all answer HTTP 400 — "the following characters are not searchable by
 // themselves" — while the same names without the apostrophe answer 200. It is the character itself,
 // not the elision and not the possessive; an earlier fix narrowed this to elided articles only, on the
@@ -662,7 +662,7 @@ export function resolveOffices(regions) {
 // is exactly what failed next.
 //
 // Dropping the name is the wrong remedy: `?` is a native single-character wildcard on this field, so
-// the apostrophe is EXPRESSIBLE. "MCDONALD?S CORPORATION" returns 27 where the literal returns 400.
+// the apostrophe is EXPRESSIBLE. That possessive name written with "?" returns 27 where the literal returns 400.
 //
 // Emit BOTH spellings OR-joined, because registers hold both: "TRADER VIC?S" matches the apostrophe'd
 // record and "TRADER VICS" the stripped one (probe: 3 records each). One form alone silently loses
