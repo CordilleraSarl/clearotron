@@ -5,8 +5,8 @@
 //
 // THE INCIDENT. R2 on the 6ea1008f baseline died at register-plan at 9m30s with two terms:
 //
-//     ORVELLA (formative root DELPH-)
-//     DOLPHIN DEVICE (VIENNA 03.09.14)
+//     ORVELLA (formative root ORVEL-)
+//     PANGOLIN DEVICE (VIENNA 03.06.25)
 //
 // Both are a term plus a note saying which family the term stands for. Dispatched verbatim they are a
 // nil search that reads as a CLEAN — the class — and here they were not even dispatched: they
@@ -27,7 +27,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { variantTermShapeGaps } from "../variant-manifest-model.mjs";
 
-const INCIDENT = ["ORVELLA (formative root DELPH-)", "DOLPHIN DEVICE (VIENNA 03.09.14)"];
+const INCIDENT = ["ORVELLA (formative root ORVEL-)", "PANGOLIN DEVICE (VIENNA 03.06.25)"];
 const model = (o) => ({ dominant_element: "ORVELLA", elements: [], variants: [], ...o });
 
 test("the two terms that lost R2 are bounced at the stage gate", () => {
@@ -43,8 +43,8 @@ test("the two terms that lost R2 are bounced at the stage gate", () => {
 test("CONTROL — a clean manifest is untouched, so a gap above means something", () => {
   assert.deepEqual(variantTermShapeGaps(model({
     dominant_element: "ORVELLA",
-    elements: [{ value: "DOLPHIN DEVICE" }],
-    variants: [{ value: "DELFIS" }, { value: "БИОДЕЛЬФИС" }],
+    elements: [{ value: "PANGOLIN DEVICE" }],
+    variants: [{ value: "ORVELA" }, { value: "ОРВЕЛЛА" }],
   })), [], "the gate flags a manifest with nothing wrong with it, so it would re-ask every run");
 });
 
