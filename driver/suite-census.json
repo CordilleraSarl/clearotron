@@ -825,6 +825,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-range-deprecation-takes-exactly-the-named-versions.test.mjs": {
+          "tests": 7,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
         "a-read-the-engine-could-not-answer-names-the-check.test.mjs": {
           "tests": 4,
           "asserts": 14,
