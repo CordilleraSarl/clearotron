@@ -88,7 +88,7 @@ export function termPredicateIssue(term, predicate) {
 // state:"enumerated", total_hits:0 — a false clean, quieter than the failure.
 //
 // The three arms are the ones the issue names, and NOT the bracket: `predicate:"owner"` rows carry
-// parenthesised company names ("Delphi Technologies (BorgWarner Inc.)") and a bracket rule breaks
+// parenthesised company names ("Korphi Technologies (BorgWarner Inc.)") and a bracket rule breaks
 // owner search, which is the very lane this screen protects. Every arm fires at ANY word count.
 //
 //   `**` / `__`     markdown emphasis. No register indexes it; a mark cannot contain it.
@@ -178,7 +178,7 @@ export function termShapeIssue(term) {
  * TWO EXEMPTIONS, AND THEY ARE NOT THE SAME EXEMPTION:
  *
  *   `predicate: "owner"` is exempt from EVERYTHING, first, before any other test. Owner names are
- *   long, prose-shaped and parenthesised by nature ("Delphi Technologies (BorgWarner Inc.)"), they
+ *   long, prose-shaped and parenthesised by nature ("Korphi Technologies (BorgWarner Inc.)"), they
  *   ride their own field, and the cross-check lane mints them — so this is what makes it safe to
  *   screen that lane at all.
  *

@@ -848,7 +848,7 @@ export const CORRECTION_KINDS = ["coverage-disposition", "fact", "rating", "narr
 const CORRECTION_KIND_RE = /\[kind:\s*([a-z][a-z-]*)\s*\]/i;
 // — THE SECOND CHANNEL: WHICH FINDING A FLAG IS ABOUT.
 //
-// The reviewer already writes it, in prose — a delivered review's flags open "Finding 9 — DELPHIC…",
+// The reviewer already writes it, in prose — a delivered review's flags open "Finding 9 — KORPHIC…",
 // "Findings 4, 7, 8." — and the driver could not read it: `targetsOf` matched mark/owner NAMES and
 // returned nothing for six of nine flags on that run. So the corrective pass re-emitted the whole
 // narrative and the whole findings.json, for 683 seconds, and exactly ONE finding moved.
@@ -2574,7 +2574,7 @@ function checkClientSummaryJoin(p, c) {
     const risk = body.match(/^-\s*risk:\s*([A-Za-z –-]+)$/m)?.[1]?.trim();
     if (!risk) continue;
     // wp50: deterministic join (ord line → exact mark → unique containment). The old first-match
-    // containment join bound "DEMVENZY — Novartis" to the VENZY finding and VALIDATED the wrong tier.
+    // containment join bound "DEMVENZY — Norvanta" to the VENZY finding and VALIDATED the wrong tier.
     const f = joinFindingToBlock({ ord: parseBlockOrd(body), head }, findingsDoc.findings);
     if (!f) continue;                                                              // unjoinable block — shape checks own it
     if (v4) {

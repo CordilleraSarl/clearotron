@@ -644,7 +644,7 @@ function print(id, ref, run, s, delta, refPath) {
   console.log(renderCarryThrough(run.dir, { indent: "  " }).lines.join("\n"));
 
   // — a record in two buckets is a defect in THIS TOOL, and it is printed as loudly as any score.
-  // Silence here is what let `DELPHI GENETICS` sit in LOST and `DG DELPHI GENETICS` in NOISE on the same
+  // Silence here is what let `KORPHI GENETICS` sit in LOST and `DG KORPHI GENETICS` in NOISE on the same
   // page, and the recall number that reached the round handover was wrong for a week because nobody
   // reads two lists against each other.
   if (B.collisions?.length) {
@@ -656,7 +656,7 @@ function print(id, ref, run, s, delta, refPath) {
   //
   // These used to print under the line above, which tells the reader not to read the recall numbers.
   // One large filer anywhere in a matter therefore suppressed a whole run's measurement, and did: R2's
-  // real 88% → 63% recall movement went unquoted on the regression issue because `Novartis AG` held one
+  // real 88% → 63% recall movement went unquoted on the regression issue because `Norvanta AG` held one
   // withheld reference mark and one surfaced non-reference mark. Those two rows are both true.
   //
   // Kept visible because a reader may still want the pairing, and deliberately WITHOUT a verdict: this

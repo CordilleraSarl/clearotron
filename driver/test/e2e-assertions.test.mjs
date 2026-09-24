@@ -1100,7 +1100,7 @@ test("a parenthesised OWNER row still passes — the harness inherits the bindin
   // stays exempt in both places by construction. A bracket rule would report the register lane broken
   // on every run that cross-checks a company name.
   const owners = { entries: [
-    { qid: "primary-sweep:owner:delphi", predicate: "owner", term: "Delphi Technologies (BorgWarner Inc.)" },
+    { qid: "primary-sweep:owner:korphi", predicate: "owner", term: "Korphi Technologies (BorgWarner Inc.)" },
     { qid: "primary-sweep:exact:bioveltrin", predicate: "exact", term: "BIOVELTRIN" },
     { qid: "primary-sweep:exact:slogan", predicate: "exact", term: "I CAN'T BELIEVE IT'S NOT BUTTER", term_literal: true },
   ] };

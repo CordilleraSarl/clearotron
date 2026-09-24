@@ -137,7 +137,7 @@ test("the discriminators are markup and the enumeration — NEVER the bracket", 
   // The issue's binding trap. `predicate=owner` rows legitimately carry parenthesised company names,
   // and the cross-check lane — the one this fix screens — is exactly where they are minted. A bracket
   // rule breaks owner search on the lane the fix exists to protect.
-  assert.equal(termMarkupIssue("Delphi Technologies (BorgWarner Inc.)"), null);
+  assert.equal(termMarkupIssue("Korphi Technologies (BorgWarner Inc.)"), null);
   assert.equal(termMarkupIssue("(WAVO)"), null);
   assert.equal(termMarkupIssue("CORAL (FREEZE)"), null);
   // `#LIKEAGIRL` is a registered mark. The heading arm REQUIRES the trailing whitespace, and a bare
@@ -167,8 +167,8 @@ test("the pre-existing ≤2-word invariants are untouched — this arm adds, it 
 });
 
 test("the owner predicate stays fully exempt — screening the cross-check lane depends on it", () => {
-  assert.deepEqual(entryTermIssues({ predicate: "owner", term: "Delphi Technologies (BorgWarner Inc.)" }), []);
-  assert.deepEqual(entryTermIssues({ predicate: "owner", term: "**Delphi Technologies (BorgWarner Inc.)**" }), [],
+  assert.deepEqual(entryTermIssues({ predicate: "owner", term: "Korphi Technologies (BorgWarner Inc.)" }), []);
+  assert.deepEqual(entryTermIssues({ predicate: "owner", term: "**Korphi Technologies (BorgWarner Inc.)**" }), [],
     "exempt means exempt — a markup owner name is a separate, unevidenced question, and firing here would break owner search on the lane this fix protects");
   assert.deepEqual(entryTermIssues({ predicate: "owner", terms: ["ACME, ETC. LTD", "# NORTH CO"] }), []);
 });

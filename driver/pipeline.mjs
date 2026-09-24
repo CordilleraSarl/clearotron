@@ -3146,7 +3146,7 @@ function recordSynthesisSeam(ctx, r, trigger = null) {
     evidence: r?.fail ? String(r.fail).slice(0, 80) : "",
     reasonFor: (rec, uri) => {
       // — THE 102. This callback used to be zero-arity and constant: every record this pass
-      // discarded got the same sentence and `step-silent`, whatever it was. One of them was DELPHIC,
+      // discarded got the same sentence and `step-silent`, whatever it was. One of them was KORPHIC,
       // a lawyer-named gold mark placed on sheet-2 and stamped `carry: "carried"`, and the trace could
       // say only that synthesis had not delivered it. The sibling seam one stage earlier
       // (`recordDigestSeam`) has read its stage's own output per record since it was written; this one

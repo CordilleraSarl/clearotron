@@ -490,7 +490,7 @@ export function candidateSelfChecks({ reportMd }) {
 
 // B2 (report confabulation backstop) — per-card record provenance. The single-pass report renderer once
 // pasted one finding's body (its record link, owner, filing dates) into ANOTHER finding's card (the
-// ashen-lattice confabulation: BePharBel's body landed in cards #2 and #5). registry-record-match cannot
+// ashen-lattice confabulation: DuPharVel's body landed in cards #2 and #5). registry-record-match cannot
 // catch it: a card carrying finding-M's whole body also cites finding-M's URI, so its claims agree with the
 // cited record — but the card sits under finding-N's identity. This check binds each card to ITS finding (by
 // the hidden `- ord: N` line the per-card renderer emits, else owner-name containment for a legacy/monolithic
@@ -1312,7 +1312,7 @@ export function correctionConsistencyChecks({ reportMd, clientSummaryMd, auditMd
 // finding's `band` (the framework in force's own word, via the run's frozen manifest); on legacy runs
 // from the canonical composite→tier table. Pure rewriter (the autoCorrectRegistry pattern): joins each
 // `## ` Marks block to a live finding DETERMINISTICALLY (wp50: ord line → exact mark → unique
-// containment; the old first-match containment join bound "DEMVENZY — Novartis" to the VENZY finding and
+// containment; the old first-match containment join bound "DEMVENZY — Norvanta" to the VENZY finding and
 // would have ENFORCED the wrong tier) and overwrites its `- risk:` value; the exec-summary `- risk:` is
 // overwritten from the worst live band (v4) / max composite (legacy). Returns { text, corrections }.
 export function applyClientTierCorrections(csMd, findings, manifest = null) {

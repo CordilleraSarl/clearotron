@@ -28,7 +28,7 @@ const PLANNED = ["taobao.com", "jd.com", "1688.com", "amazon.com"];
 test("THE DEFECT: a planned channel that produced nothing is named, not averaged away", () => {
   const r = planVsExecutedChannels({
     planned: PLANNED,
-    cells: [{ term: "delphi", platform: "amazon.com" }, { term: "delphi", platform: "web" }],
+    cells: [{ term: "korphi", platform: "amazon.com" }, { term: "korphi", platform: "web" }],
   });
   assert.equal(r.state, "incomplete");
   assert.deepEqual(r.never_searched, ["1688.com", "jd.com", "taobao.com"],
@@ -42,8 +42,8 @@ test("a GAP is searched — it ran and produced nothing, which is the opposite o
   // appends strings, the reconciler and the driver's merge append objects. Reading one traces half a run.
   const r = planVsExecutedChannels({
     planned: PLANNED,
-    cells: [{ term: "delphi", platform: "amazon.com" }],
-    gaps: ["delphi | taobao.com | HTTP 503", { term: "delphi", platform: "jd.com", error: "blocked" }],
+    cells: [{ term: "korphi", platform: "amazon.com" }],
+    gaps: ["korphi | taobao.com | HTTP 503", { term: "korphi", platform: "jd.com", error: "blocked" }],
   });
   assert.deepEqual(r.never_searched, ["1688.com", "web"],
     "a channel that reported a gap was reached; counting it as never-searched would turn an outage into a "
@@ -104,7 +104,7 @@ test("a swept channel nobody planned is reported, not swallowed", () => {
 
 test("the trace carries the block, and the rate can read below 1", () => {
   const grid = JSON.stringify({ cells: [
-    { term: "delphi", platform: "amazon.com", status: "ok", candidates: [{ title: "DELPHI", url: "https://a/1" }] },
+    { term: "korphi", platform: "amazon.com", status: "ok", candidates: [{ title: "KORPHI", url: "https://a/1" }] },
   ], gaps: [] });
   const artifact = traceCommonLawCarry({ gridRaw: grid, findingsText: "", planned: PLANNED });
   assert.equal(artifact.totals.channels.state, "incomplete");

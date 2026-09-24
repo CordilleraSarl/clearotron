@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // a-recall-probe-does-not-close-on-having-run.test.mjs — loop 3, ruling 2026-08-19: "no".
 //
-// THE TRAIL THIS REPRODUCES. In the R2 scenario, DELPHI GENETICS — a HIGH-graded LIVE US registration —
+// THE TRAIL THIS REPRODUCES. In the R2 scenario, KORPHI GENETICS — a HIGH-graded LIVE US registration —
 // produced no doubt of any kind. Both of its recall asks ended `kind:executed` / `handoff:null` via the
 // plan-execution join: satisfied by the query having RUN, not by the result reaching findings. The ask
 // closed before a doubt would be minted, so the provenance rule never saw it. Nothing on any
@@ -14,7 +14,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { deriveAsks, finalizeOpenHandoffs, summarizeAsks, recallDischargedByReturn } from "../ask-ledger.mjs";
 
-const QID = "recall-delphi";
+const QID = "recall-korphi";
 const recall = (qid = QID) => ({
   ts: "2026-08-19T00:00:00Z",
   directives: [{ qid, mark_text: "EXAMPLEMARK", owner: "Someone Holdings" }],
@@ -24,7 +24,7 @@ const ran = (returned, qid = QID) => ({ executed: [{ qid, state: "enumerated", .
 const askFor = (opts, id = `ask:recall:${QID}`) => deriveAsks(opts).find((a) => a.ask_id === id);
 
 // ── THE TRAIL ─────────────────────────────────────────────────────────────────────────────────────
-test("DELPHI GENETICS: a recall probe that came back HOLDING something does not end executed", () => {
+test("KORPHI GENETICS: a recall probe that came back HOLDING something does not end executed", () => {
   const a = askFor({ recall: recall(), planExecution: ran({ records: 2, total_hits: 2 }) });
   assert.ok(a, "the recall directive mints an ask");
   assert.equal(a.ending, null, "an executed ending here is the defect: the right vanishes without a doubt");

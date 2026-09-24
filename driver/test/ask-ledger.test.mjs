@@ -435,7 +435,7 @@ test("⭐ both ledgers answer 'does this quote appear verbatim' IDENTICALLY — 
 // ── OPTION A: A RECALL ASK CLOSES ONLY WHEN THE MARK REACHED THE CLIENT ──────────────────────────────
 //
 // Ruling 2026-09-07, worded ABOUT THE MARK. The defect: a recall probe found
-// OSLER DELPHI, the closure stage cited `register-findings.md` — where the mark genuinely IS reasoned,
+// HALVER KORPHI, the closure stage cited `register-findings.md` — where the mark genuinely IS reasoned,
 // at length — and the ask closed as immaterial. The citation was true. `register-findings.md` is the
 // run's own working sheet and not the document the client reads, and nothing checked the difference.
 import { deliveredMarks, recallMarkOwed } from "../ask-ledger.mjs";
@@ -444,32 +444,32 @@ const findingsWith = (...marks) => JSON.stringify({ findings: marks.map((m, i) =
 const recallAsk = (id, mark, extra = {}) => ({
   ask_id: `ask:recall:${id}`,
   ask: { text: `prior-confirmed conflict recall probe: ${mark}`, owner: "register",
-    structured: { qid: id, mark_text: mark, owner: "Novartis AG", uri: "/mark/ch/SWIT1", ...extra } },
+    structured: { qid: id, mark_text: mark, owner: "Norvanta AG", uri: "/mark/ch/SWIT1", ...extra } },
 });
 const IMMATERIAL = (id) => [{ verdict: "IMMATERIAL", id, file: "register-findings.md", reason: "already reasoned on the sheet" }]
   .map((l) => ({ ...l, quote: "already reasoned on the incumbent sheet" }));
 
 test("a recall ask whose mark never reached the findings does NOT close, and is named as owed", () => {
-  const ask = recallAsk("recall-delfity", "DELFITY");
+  const ask = recallAsk("recall-korfity", "KORFITY");
   const files = {
     "register-findings.md": "Watchlist entry: already reasoned on the incumbent sheet in this document.",
-    "findings.json": findingsWith("VELTRYS", "DELPHIC HSE"),      // the client was NOT shown DELFITY
+    "findings.json": findingsWith("VELTRYS", "KORPHIC HSE"),      // the client was NOT shown KORFITY
   };
-  const r = applyAskClosure([ask], IMMATERIAL("ask:recall:recall-delfity"), files, { ts: "T" });
+  const r = applyAskClosure([ask], IMMATERIAL("ask:recall:recall-korfity"), files, { ts: "T" });
   assert.equal(r.asks[0].ending, undefined, "the ask must stay open — its mark never reached the client");
   assert.equal(r.immaterialByStage, 0);
   assert.equal(r.unverified.length, 0, "the citation VERIFIED; this is not a confabulation refusal and must not read as one");
-  assert.deepEqual(r.carryIntoFindings.map((c) => [c.mark, c.basis]), [["DELFITY", "absent-from-findings"]]);
+  assert.deepEqual(r.carryIntoFindings.map((c) => [c.mark, c.basis]), [["KORFITY", "absent-from-findings"]]);
   assert.match(r.asks[0].handoff, /owed a finding/);
 });
 
 test("the same ask closes normally once the mark IS in the findings — a join, not a ban", () => {
-  const ask = recallAsk("recall-delfity", "DELFITY");
+  const ask = recallAsk("recall-korfity", "KORFITY");
   const files = {
     "register-findings.md": "Watchlist entry: already reasoned on the incumbent sheet in this document.",
-    "findings.json": findingsWith("VELTRYS", "DELFITY"),
+    "findings.json": findingsWith("VELTRYS", "KORFITY"),
   };
-  const r = applyAskClosure([ask], IMMATERIAL("ask:recall:recall-delfity"), files, { ts: "T" });
+  const r = applyAskClosure([ask], IMMATERIAL("ask:recall:recall-korfity"), files, { ts: "T" });
   assert.equal(r.asks[0].ending.kind, "judged-immaterial");
   assert.equal(r.immaterialByStage, 1);
   assert.deepEqual(r.carryIntoFindings, []);
@@ -496,9 +496,9 @@ test("an unreadable findings.json is a could-not-look, not an empty findings set
   assert.equal(deliveredMarks("not json"), null);
   assert.equal(deliveredMarks(JSON.stringify({ findings: "not an array" })), null);
   assert.equal(deliveredMarks(undefined), null);
-  const owed = recallMarkOwed(recallAsk("recall-delfity", "DELFITY"), null);
+  const owed = recallMarkOwed(recallAsk("recall-korfity", "KORFITY"), null);
   assert.equal(owed.basis, "findings-unreadable");
-  const r = applyAskClosure([recallAsk("recall-delfity", "DELFITY")], IMMATERIAL("ask:recall:recall-delfity"),
+  const r = applyAskClosure([recallAsk("recall-korfity", "KORFITY")], IMMATERIAL("ask:recall:recall-korfity"),
     { "register-findings.md": "already reasoned on the incumbent sheet", "findings.json": "{ truncated" }, { ts: "T" });
   assert.equal(r.asks[0].ending, undefined);
   assert.equal(r.carryIntoFindings[0].basis, "findings-unreadable");
@@ -516,7 +516,7 @@ test("the mark is matched on the findings' own field, never as a substring of th
   assert.equal(r.asks[0].ending, undefined, "DELFIN is a substring of a delivered name, not a delivered mark");
   assert.deepEqual(r.carryIntoFindings.map((c) => c.mark), ["DELFIN"]);
   // …and punctuation/case differences still JOIN, or the guard would reopen marks that did reach the client.
-  const r2 = applyAskClosure([recallAsk("recall-delphi-md", "DELPHI·MD")], IMMATERIAL("ask:recall:recall-delphi-md"),
-    { ...files, "findings.json": findingsWith("delphi md") }, { ts: "T" });
+  const r2 = applyAskClosure([recallAsk("recall-korphi-md", "KORPHI·MD")], IMMATERIAL("ask:recall:recall-korphi-md"),
+    { ...files, "findings.json": findingsWith("korphi md") }, { ts: "T" });
   assert.equal(r2.asks[0].ending.kind, "judged-immaterial");
 });

@@ -236,7 +236,7 @@ test("the live token contract is untouched — a stage op still validates exactl
 // same rule the experiment path lives by. Recorded as a violation, it made the byte-identical criterion
 // unsatisfiable on the real path and buried the one write that WAS a violation.
 //
-// Driven on the footprint an archived client run actually carries. `memo-osler-coexistence.json` at that
+// Driven on the footprint an archived client run actually carries. `memo-halver-coexistence.json` at that
 // run's root is the seat's reply written to a path of its own choosing instead of to the `expectFile` it
 // was handed — which is also why the attempt before it failed looking for a reply that was not there.
 import { splitMemoFootprint } from "../whatif-memo-run.mjs";
@@ -247,12 +247,12 @@ test("the memo's own record is not a violation; a write anywhere else is", () =>
     { path: "_driver/whatif-memo.attempt2.dispatch.txt", before: null, after: "b:10" },
     { path: "_driver/whatif-memo.jsonl", before: null, after: "c:20" },
     { path: "_driver/run.jsonl", before: "d:100", after: "e:180" },      // appended to — a dispatch does this
-    { path: "memo-osler-coexistence.json", before: null, after: "f:900" }, // the seat, off its path
+    { path: "memo-halver-coexistence.json", before: null, after: "f:900" }, // the seat, off its path
   ]);
   assert.deepEqual(own.map((m) => m.path),
     ["_driver/whatif-memo.attempt1.dispatch.txt", "_driver/whatif-memo.attempt2.dispatch.txt",
       "_driver/whatif-memo.jsonl", "_driver/run.jsonl"]);
-  assert.deepEqual(foreign.map((m) => m.path), ["memo-osler-coexistence.json"]);
+  assert.deepEqual(foreign.map((m) => m.path), ["memo-halver-coexistence.json"]);
 });
 
 test("a scored artifact is foreign however it moved — the record is what this protects", () => {

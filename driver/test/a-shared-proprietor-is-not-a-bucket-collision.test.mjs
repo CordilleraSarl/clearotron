@@ -9,8 +9,8 @@
 //
 // WHY IT MATTERED MORE THAN A SPURIOUS LINE. score.mjs prints a collision as "do not read the recall
 // numbers above until these are resolved". So one large proprietor suppressed a whole run's recall
-// measurement, and did: on a delivered R2 run, one large filer held withheld `DELFITY` and surfaced
-// `DELPHINA`, and a real 88% → 63% recall movement went unquoted on the regression issue because of it.
+// measurement, and did: on a delivered R2 run, one large filer held withheld `KORFITY` and surfaced
+// `KORPHINA`, and a real 88% → 63% recall movement went unquoted on the regression issue because of it.
 //
 // WHAT IS ASSERTED. The spurious pair no longer collides; the predicate still fires on the shape the
 // check exists for; and the same-proprietor rows are still REPORTED — on a line that does not tell the
@@ -27,7 +27,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 // One proprietor, two different marks: the reference names one and the run withheld it; the run
 // surfaced the other, which the reference does not name. This is R2's real shape.
-const OWNER = "Novartis AG";
+const OWNER = "Norvanta AG";
 const score = ({ refMark, findingMark, retrievedMark = refMark }) => scoreRecall({
   reference: [{ mark: refMark, owner: OWNER, jurisdictions: ["CH"], classes: [5] }],
   findings: [{ mark: findingMark, owner: OWNER, band: "watch", ordinal: 1 }],
@@ -36,24 +36,24 @@ const score = ({ refMark, findingMark, retrievedMark = refMark }) => scoreRecall
 });
 
 test("DRIVEN: a shared proprietor with DIFFERENT marks is not a collision — R2's spurious pair", () => {
-  const b = score({ refMark: "DELFITY", findingMark: "DELPHINA" });
+  const b = score({ refMark: "KORFITY", findingMark: "KORPHINA" });
   assert.deepEqual(b.collisions, [],
     "same owner, different marks, different records — the run legitimately withheld one and surfaced the "
     + "other, and calling that a contradiction suppressed a whole run's recall numbers");
 });
 
 test("DRIVEN: the pair is still REPORTED, so nothing is hidden — only the verdict changed", () => {
-  const b = score({ refMark: "DELFITY", findingMark: "DELPHINA" });
+  const b = score({ refMark: "KORFITY", findingMark: "KORPHINA" });
   assert.equal(b.ownerEchoes.length, 1,
     "a reader may still want to see a proprietor on both sides; what they must not be told is that the "
     + "recall measurement is unreadable");
-  assert.equal(b.ownerEchoes[0].entry, "DELFITY");
-  assert.equal(b.ownerEchoes[0].noise, "DELPHINA");
+  assert.equal(b.ownerEchoes[0].entry, "KORFITY");
+  assert.equal(b.ownerEchoes[0].noise, "KORPHINA");
 });
 
 test("the collision predicate still fires on one record split across two buckets", () => {
   // NOT DRIVEN THROUGH scoreRecall, and the reason is worth writing down rather than working around.
-  // The pairing this check was built for — `DELPHI GENETICS` in LOST beside `DG DELPHI GENETICS` in
+  // The pairing this check was built for — `KORPHI GENETICS` in LOST beside `DG KORPHI GENETICS` in
   // NOISE — CANNOT be produced by today's scorer: `matchesReference` now relates the two ("contained"),
   // so the finding is scored `found` and never reaches the noise bucket at all. Measured, not assumed.
   //
@@ -65,9 +65,9 @@ test("the collision predicate still fires on one record split across two buckets
   const FLOOR = 4;
   const same = (x, y) => { const a = key(x), b = key(y);
     return !!(a && b && Math.min(a.length, b.length) >= FLOOR && (a === b || a.includes(b) || b.includes(a))); };
-  assert.equal(same("DELPHI GENETICS", "DG DELPHI GENETICS"), true,
+  assert.equal(same("KORPHI GENETICS", "DG KORPHI GENETICS"), true,
     "the historical pair must still satisfy the predicate — narrowing it must not cost the case it exists for");
-  assert.equal(same("DELFITY", "DELPHINA"), false,
+  assert.equal(same("KORFITY", "KORPHINA"), false,
     "and R2's pair must not, which is the whole change");
 });
 
@@ -77,8 +77,8 @@ test("the containment floor stops a short mark matching everything", () => {
   const FLOOR = 4;
   const same = (x, y) => { const a = key(x), b = key(y);
     return !!(a && b && Math.min(a.length, b.length) >= FLOOR && (a === b || a.includes(b) || b.includes(a))); };
-  assert.equal(same("DEL", "DELPHINA"), false, "three characters inside a longer mark is not a shared record");
-  assert.equal(same("DELPHI", "DELPHINA"), true, "above the floor and contained");
+  assert.equal(same("KOR", "KORPHINA"), false, "three characters inside a longer mark is not a shared record");
+  assert.equal(same("KORPHI", "KORPHINA"), true, "above the floor and contained");
   assert.equal(same("acme", "ACME"), true, "the join is case-normalised — a case-sensitive one matches zero and reads as clean");
   assert.equal(same("A.C.M.E.", "ACME"), true, "and punctuation-normalised");
 });
