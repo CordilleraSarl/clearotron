@@ -2589,6 +2589,12 @@
           "skips": 0,
           "todos": 0
         },
+        "e2e-scenario-ops.test.mjs": {
+          "tests": 20,
+          "asserts": 67,
+          "skips": 0,
+          "todos": 0
+        },
         "e2e-scenario-store.test.mjs": {
           "tests": 17,
           "asserts": 50,
