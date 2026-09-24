@@ -141,7 +141,7 @@ test("#8 orphan-finding: a register-sourced finding with no grounding registrati
   assert.equal(findOrphanVerificationFlags({ findings: [mk({ source: { source_type: "case-law" } })] }).length, 0);
 });
 
-test("acpCeiling: the ACP matrix ceilings (Appendix B)", () => {
+test("acpCeiling: the matrix ceilings (Appendix B)", () => {
   assert.equal(acpCeiling("A", "classic"), 1);
   assert.equal(acpCeiling("B", "horse-trade"), 2);
   assert.equal(acpCeiling("C", "classic"), 3, "C tops out at Medium regardless of dispute type");
