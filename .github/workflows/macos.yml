@@ -118,13 +118,13 @@ jobs:
           fi
           echo "stopped: the demo exited and port $PORT is quiet"
 
-      # A MEASUREMENT, NOT YET A GATE: does a write naming a protected folder in another letter case get
-      # past the write boundary on this disk? The boundary compares paths letter for letter, and the
-      # default macOS volume ignores case, so `P/SKILLS/x` and `P/skills/x` may be one file on disk and two
-      # strings to the hook. The policy is built by writeBoundarySettings, as a real run builds it, and the
-      # hook is fed a Write call on stdin, as the Claude program feeds it. The step fails only when its own
-      # control, the exact spelling, is not denied, since then it measured nothing. A confirmed gap is a
-      # warning and a line in the run summary until the fix lands and this becomes an assertion.
+      # A GATE: a write naming a protected folder in another letter case must not get past the write
+      # boundary on this disk. The default macOS volume ignores case, so `P/SKILLS/x` and `P/skills/x` are
+      # one file on disk and two strings to the hook, and the boundary now compares them as the disk does.
+      # The policy is built by writeBoundarySettings, as a real run builds it, and the hook is fed a Write
+      # call on stdin, as the Claude program feeds it. The step fails when its control, the exact spelling,
+      # is not denied (it measured nothing), and when the other spelling lands in the protected folder and
+      # is allowed. A disk that minds case cannot show the gap, so it warns that nothing was proved.
       - name: The write boundary, against a protected folder named in another letter case
         run: |
           node --input-type=module <<'PROBE'
@@ -160,5 +160,6 @@ jobs:
           for (const l of [...lines, verdict]) console.log(l);
           if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, `### Write boundary, letter case\n\n${lines.map((l) => `- ${l}`).join("\n")}\n\n**${verdict}**\n`);
           if (!control) { console.log(`::error::${verdict}`); process.exit(1); }
-          if (!probe && sameFile) console.log(`::warning::${verdict}`);
+          if (!probe && sameFile) { console.log(`::error::${verdict}`); process.exit(1); }
+          if (!sameFile) console.log(`::warning::this disk minds case, so the letter-case gap cannot occur here and this step proved nothing about it`);
           PROBE
