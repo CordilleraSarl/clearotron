@@ -1794,7 +1794,9 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // sentence. Neither licence-only nor comment-only, so this constant moves with the other one.
 // Advanced again by the break recorded above the FROZEN constant: two lines for a company that picked no
 // marketplaces. Not licence-only, so this constant moves with the other one.
-const FROZEN_BEFORE_SPDX = "e94f0b150827bb12e7266039508a62a2bc4e0ec52ef74cabc6f77aa3dec74d4d";
+// Advanced again by the comment-only break recorded above the FROZEN constant: one example name replaced.
+// A comment edit moves these bytes too, so this constant moves with it.
+const FROZEN_BEFORE_SPDX = "095580889cbf7ac817cc4be4209b2af033520d3dc274259b5fdbad8ae98d95a3";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2657,7 +2659,23 @@ const FROZEN_BEFORE_SPDX = "e94f0b150827bb12e7266039508a62a2bc4e0ec52ef74cabc6f7
 //      test passes unchanged, and the new arm pins that the next render after a flagged one reads as before.
 //   2. Could it live in report.css or brand.mjs? No: these are sentences, not a look.
 //   3. Why it had to move here: both sentences are composed in this file and nowhere else.
-const FROZEN = "8f44a773d32a62b68a1a39a9ef27dca88bc9088f263034c8f9d1e312d3a8d3f0";
+// ── BREAK (2026-09-24 — one example name in a comment, replaced) ─────────────────────────────────────
+//
+// COMMENT-ONLY. A comment beside the famous-mark notes used a real famous mark as its example. It now
+// uses an invented name, as every example in this tree does. One token on one line; the sentence and its
+// point are unchanged. No executable line moved.
+//
+// PROOF, measured as the 2026-09-19 break measured it: the old and new file tokenise identically with
+// comments set aside (acorn, 21,213 tokens each, 1,315 comments each).
+//
+// LATE, and said so. This file asks for the hash in the commit that moves the renderer. That commit
+// shipped without it, so this entry and both constants follow it in the next one.
+//
+// THE THREE QUESTIONS.
+//   1. Reachable from republish? No — a comment never reaches a rendered report.
+//   2. Could it live in report.css or brand.mjs? No: the example is a comment in this file.
+//   3. Why it had to move here: the example was here, in a public tree.
+const FROZEN = "d56fd1b5e0f482c94528b18497908472a0fa59248cee5c4a3df8906a53881088";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));
