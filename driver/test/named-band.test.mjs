@@ -13,7 +13,7 @@ const BAND = JSON.stringify([
       { record_id: "/mark/gb/X2", mark_text: "NOVAPULSE", classes: [9], status: "Registered", owner_name: "Other", screen_verdict: "surface:in-scope-live" },
     ] },
   { state: "incomplete", query: "contains NOVAPULSE cl.9 worldwide", total_hits: 768, fetched: 100,
-    sample: [{ record_id: "/mark/eu/1", mark_text: "RAZER NOVAPULSE" }], reason: "crowd over ceiling — descriptor only, judgment to command/halt" },
+    sample: [{ record_id: "/mark/eu/1", mark_text: "KORVANE NOVAPULSE" }], reason: "crowd over ceiling — descriptor only, judgment to command/halt" },
 ]);
 
 test("parseNamedBand: flattens enumerated records (with _query provenance) + collects crowd descriptors", () => {
@@ -78,12 +78,12 @@ test("throws token-first on defects (corrective-retry contract)", () => {
 // (total_hits > 0) but carried ZERO records into the band — the "zero records reached the band" recall loss.
 test("findCollapsedBands: flags an enumerated slice that claimed hits but extracted zero records", () => {
   const raw = JSON.stringify([
-    { state: "enumerated", query: "exact ZURENA cl.25 region:US", total_hits: 212, records: [] },
+    { state: "enumerated", query: "exact ZOLEMA cl.25 region:US", total_hits: 212, records: [] },
   ]);
   const collapsed = findCollapsedBands(raw);
   assert.equal(collapsed.length, 1, "the collapsed slice is detected");
   assert.equal(collapsed[0].total_hits, 212);
-  assert.equal(collapsed[0].query, "exact ZURENA cl.25 region:US");
+  assert.equal(collapsed[0].query, "exact ZOLEMA cl.25 region:US");
 });
 
 test("findCollapsedBands: a healthy band (records present, plus a crowd) is clean", () => {

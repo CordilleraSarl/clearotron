@@ -212,11 +212,11 @@ test("delivery-settled: a retired delivery variable in the environment cannot st
 // ── the wildcard/exact plan defect (F1) ───────────────────────────────────────────────────────────────
 
 test("no-wildcard-exact-pair catches the F1 shape and passes a correctly compiled plan", () => {
-  const bad = { entries: [{ qid: "primary-sweep:exact:tiki#2", predicate: "exact", term: "TIKI*" }] };
+  const bad = { entries: [{ qid: "primary-sweep:exact:wavo#2", predicate: "exact", term: "WAVO*" }] };
   withRun({ "_driver/register-plan.json": bad }, (dir) => {
     const r = evalAssertion({ op: "no-wildcard-exact-pair", path: "_driver/register-plan.json" }, dir);
     assert.equal(r.ok, false);
-    assert.match(r.saw, /TIKI\*/);
+    assert.match(r.saw, /WAVO\*/);
   });
   const good = { entries: [
     { qid: "primary-sweep:wildcard:vibrant", predicate: "wildcard", term: "VIBRANT*" },
@@ -1100,7 +1100,7 @@ test("a parenthesised OWNER row still passes — the harness inherits the bindin
   // stays exempt in both places by construction. A bracket rule would report the register lane broken
   // on every run that cross-checks a company name.
   const owners = { entries: [
-    { qid: "primary-sweep:owner:delphi", predicate: "owner", term: "Delphi Technologies (BorgWarner Inc.)" },
+    { qid: "primary-sweep:owner:korphi", predicate: "owner", term: "Korphi Technologies (BorgWarner Inc.)" },
     { qid: "primary-sweep:exact:bioveltrin", predicate: "exact", term: "BIOVELTRIN" },
     { qid: "primary-sweep:exact:slogan", predicate: "exact", term: "I CAN'T BELIEVE IT'S NOT BUTTER", term_literal: true },
   ] };
@@ -1110,7 +1110,7 @@ test("a parenthesised OWNER row still passes — the harness inherits the bindin
     assert.match(r.saw, /3 entries, none mispaired and none label\/markup-shaped/);
   });
   // …and the F1 shape it was originally written for is still caught, with its reason distinguishable.
-  withRun({ "_driver/register-plan.json": { entries: [{ qid: "q", predicate: "exact", term: "TIKI*" }] } }, (dir) => {
+  withRun({ "_driver/register-plan.json": { entries: [{ qid: "q", predicate: "exact", term: "WAVO*" }] } }, (dir) => {
     const r = evalAssertion({ op: "no-wildcard-exact-pair", path: "_driver/register-plan.json" }, dir);
     assert.equal(r.ok, false);
     assert.match(r.saw, /wildcard under exact/);

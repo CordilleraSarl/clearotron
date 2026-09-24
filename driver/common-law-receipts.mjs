@@ -861,9 +861,9 @@ export function mergeCommonLawFindings(parts) {
 // a present row chose.
 //
 // The join bug is fixed independently, because a census nobody can trust is worse than none:
-//   • TERM match is EXACT after stripping a trailing annotation ("提基冰沙 (ZH: …)"). It used to be
+//   • TERM match is EXACT after stripping a trailing annotation ("瓦波冰沙 (ZH: …)"). It used to be
 //     `rowTerm.includes(cellTerm)`, so the row for "CORAL FREEZE" was credited to the cells for "SLUSH"
-//     and even "TIK", and the row for "提基冰沙" to the cell for "冰沙" — 71 of the 221.
+//     and even "WAV", and the row for "瓦波冰沙" to the cell for "冰沙" — 71 of the 221.
 //   • a platform ROLL-UP row ("Multiple platforms") counts only when the term has no platform-specific
 //     row of its own; combined with the substring bug it used to match every platform at once.
 // `undisposed` (title containment over raw web-search titles) is GONE: it returned 1,986 rows on the

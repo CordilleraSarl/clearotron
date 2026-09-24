@@ -65,7 +65,7 @@ const SURFACE_VERDICTS = new Set(["surface:in-scope-live", "surface:all-class"])
 // "This cell references a SPECIFIC record" — wider than URI_RE on the jurisdiction segment (2-6 chars, so
 // /mark/int/, /mark/uss/ and /mark/wipo/ all read as references) but still strict about the identifier:
 // it must start alphanumeric. That excludes the glob forms digests write when they summarize a slice
-// ("URI cluster /mark/es/*, /mark/eu/*", "URIs across /mark/* SIRENA set") — those name no record and are
+// ("URI cluster /mark/es/*, /mark/eu/*", "URIs across /mark/* ZILEMA set") — those name no record and are
 // exactly the unnamed dismissals this gate exists to refuse, so they must NOT be excused as parse gaps.
 // Its only job is to tell an unnamed drop apart from a record URI_RE cannot read (see the header note).
 // Non-global: `test()` against a /g regex advances lastIndex between calls and alternates true/false.

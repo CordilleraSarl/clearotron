@@ -268,7 +268,7 @@ test("the dictation names the tool's ACTUAL refusal, and no other — the drift 
   // class would be refused. A seat believing that avoids a declination the rules authorise and the tool
   // accepts, which pushes it back to the silent path this whole build exists to close. A dictation that
   // describes a guard nobody has is worse than one that describes none.
-  const surface = [{ uri: "/mark/em/x1", mark: "DELPHIC", owner: "D S & D Ltd", tier: "sheet-2" }];
+  const surface = [{ uri: "/mark/em/x1", mark: "KORPHIC", owner: "D S & D Ltd", tier: "sheet-2" }];
   const text = String(STAGES.synthesis.message({
     paths: { findings: "/run/findings.json" }, job: {}, customerUnknown: false, profile: null,
     intakeAsks: [], enforcerSignals: null, framework: null, jxAim: null, registerOnly: false,
@@ -306,7 +306,7 @@ test("the dictation names the tool's ACTUAL refusal, and no other — the drift 
 
 test("a live record in an instructed class cannot be declined for want of room", () => {
   const scope = { classes: [5, 42, 44], marks: ["BIOVELTRIN"] };
-  const live = { mark: "OSLER DELPHI", status: "REGISTERED", classes: [1, 5, 9, 42] };
+  const live = { mark: "HALVER KORPHI", status: "REGISTERED", classes: [1, 5, 9, 42] };
   const clash = contradictionFor("not-worth-the-line", live, scope);
   assert.ok(clash, "a live in-class record declined on economy must be refused");
   assert.match(clash, /class 5, 42/, "the refusal must name the shared classes it rests on");
@@ -320,7 +320,7 @@ test("EVERY OTHER REASON still passes on that same record — this is not a ban 
   // The control that separates this from the refusal that was removed. If these start failing, the
   // change has become a class-overlap ban and the engine is deciding relatedness, which is not its call.
   const scope = { classes: [5, 42, 44], marks: ["BIOVELTRIN"] };
-  const live = { mark: "OSLER DELPHI", status: "REGISTERED", classes: [1, 5, 9, 42] };
+  const live = { mark: "HALVER KORPHI", status: "REGISTERED", classes: [1, 5, 9, 42] };
   for (const reason of ["unrelated-goods", "off-field-not-major", "own-right", "duplicate-of-delivered"])
     assert.equal(contradictionFor(reason, live, scope), "",
       `${reason} must remain available on a live in-class record — the seat may still omit it, on a reason about the mark`);

@@ -4,7 +4,7 @@
 //
 // FIXTURES ARE REAL. The band records below are byte-copied from `recall-reconciliation.test.mjs`,
 // which took them verbatim from the 2026-07-29 evidence run's `register-named-band.json` (register
-// records are public data; that file's header states the redaction it applied). TIKI TWIST and TIKI
+// records are public data; that file's header states the redaction it applied). WAVO TWIST and WAVO
 // TROPICS are the actual pair that sat in a run's own retrieved records and never reached its findings
 // — the incident this scorer exists to make visible. Inventing a fixture here would certify the bug.
 //
@@ -36,19 +36,19 @@ const SCORE = join(REPO, "scripts", "score.mjs");
 
 // ── verbatim retrieved records (register-named-band.json, evidence run) ───────────────────────────
 const RETRIEVED = [
-  { mark: "TIKI", record_id: "/mark/us/9fd04b1f-5c8f-4eca-98da-b66a15959c28" },
-  { mark: "TIKI TWIST", record_id: "/mark/us/d074651d-d49a-46c1-9c95-8b6a6f0880f0" },
-  { mark: "TIKITONK", record_id: "/mark/us/ff288bc8-0977-4dba-ba0c-a0eeb02dd3bf" },
-  { mark: "TIKI TROPICS", record_id: "/mark/us/9d5baa5c-efae-4f0b-bbb4-635e78483c9a" },
+  { mark: "WAVO", record_id: "/mark/us/9fd04b1f-5c8f-4eca-98da-b66a15959c28" },
+  { mark: "WAVO TWIST", record_id: "/mark/us/d074651d-d49a-46c1-9c95-8b6a6f0880f0" },
+  { mark: "WAVOTONK", record_id: "/mark/us/ff288bc8-0977-4dba-ba0c-a0eeb02dd3bf" },
+  { mark: "WAVO TROPICS", record_id: "/mark/us/9d5baa5c-efae-4f0b-bbb4-635e78483c9a" },
 ];
 
 // The reference's register table, in scope order.
 const R3_REGISTER = [
-  { mark: "TIKI", owner: "Tiki Corporation", classes: [32], on_field: true },
-  { mark: "TIKI PUNCH", owner: "Shasta Beverages", classes: [32] },
-  { mark: "TIKI TROPICS", owner: "Sunny Sky Products", classes: [32] },
-  { mark: "TIKI TWIST", classes: [32] },
-  { mark: "TIKITONK", owner: "Tiki Tonkin", classes: [32] },
+  { mark: "WAVO", owner: "Wavo Corporation", classes: [32], on_field: true },
+  { mark: "WAVO PUNCH", owner: "Selbrook Beverages", classes: [32] },
+  { mark: "WAVO TROPICS", owner: "Bright Fen Products", classes: [32] },
+  { mark: "WAVO TWIST", classes: [32] },
+  { mark: "WAVOTONK", owner: "Wavo Tonkin", classes: [32] },
   { mark: "E2E LOST PROBE", classes: [32] },
 ];
 
@@ -61,7 +61,7 @@ test("the relabelling that an exact diff misreads as a drop plus a find", () => 
 });
 
 test("corporate suffixes are not distinctive and never decide a match", () => {
-  assert.deepEqual(labelTokens("Sunny Sky Products, LLC"), ["sunny", "sky", "products"]);
+  assert.deepEqual(labelTokens("Bright Fen Products, LLC"), ["bright", "fen", "products"]);
   assert.deepEqual(labelTokens("ZORVIL / & Device"), ["zorvil"]);
 });
 
@@ -70,12 +70,12 @@ test("a non-Latin mark is matched on the script, not on an empty normalization",
   // mark R1's jx lane exists to generate would match EVERYTHING and score as a find it never made.
   assert.equal(matchesReference("星光", "星光"), "script");
   assert.equal(matchesReference("星光", "星火"), null, "a near-miss glyph is a different mark — the shape of the known jx failure");
-  assert.equal(matchesReference("星光", "TIKI"), null, "and it must not match an unrelated Latin mark");
+  assert.equal(matchesReference("星光", "WAVO"), null, "and it must not match an unrelated Latin mark");
 });
 
 test("a short token cannot match everything", () => {
-  assert.equal(matchesReference("CORAL FREEZE", "TIKI PUNCH"), null, "SLUSH is absent, so this is a different mark");
-  assert.equal(matchesReference("TIKI TWIST", "TIKI-TWIST"), "alias", "punctuation is not a difference");
+  assert.equal(matchesReference("CORAL FREEZE", "WAVO PUNCH"), null, "SLUSH is absent, so this is a different mark");
+  assert.equal(matchesReference("WAVO TWIST", "WAVO-TWIST"), "alias", "punctuation is not a difference");
 });
 
 test("near-spellings reach each other through the consonant skeleton", () => {
@@ -86,16 +86,16 @@ test("near-spellings reach each other through the consonant skeleton", () => {
 // ── the buckets ───────────────────────────────────────────────────────────────────────────────────
 
 test("withheld is separated from lost — the whole reason this exists", () => {
-  // The run rated TIKI, dropped TIKI TWIST and TIKI TROPICS despite holding both, and never retrieved
-  // TIKI PUNCH or the probe entry at all. Three different defects, three different fixes.
-  const findings = [{ mark: "TIKI", owner: "Tiki Corporation", disposition: "adversarial" }];
+  // The run rated WAVO, dropped WAVO TWIST and WAVO TROPICS despite holding both, and never retrieved
+  // WAVO PUNCH or the probe entry at all. Three different defects, three different fixes.
+  const findings = [{ mark: "WAVO", owner: "Wavo Corporation", disposition: "adversarial" }];
   const b = scoreRecall({ reference: R3_REGISTER, findings, retrieved: RETRIEVED, scopeClasses: ["32"] });
 
-  assert.deepEqual(b.found.map((r) => r.mark), ["TIKI"]);
-  assert.deepEqual(b.withheld.map((r) => r.mark).sort(), ["TIKI TROPICS", "TIKI TWIST", "TIKITONK"]);
-  assert.deepEqual(b.lost.map((r) => r.mark).sort(), ["E2E LOST PROBE", "TIKI PUNCH"]);
+  assert.deepEqual(b.found.map((r) => r.mark), ["WAVO"]);
+  assert.deepEqual(b.withheld.map((r) => r.mark).sort(), ["WAVO TROPICS", "WAVO TWIST", "WAVOTONK"]);
+  assert.deepEqual(b.lost.map((r) => r.mark).sort(), ["E2E LOST PROBE", "WAVO PUNCH"]);
   // The withheld rows carry the record that proves the run held it. Without that the row is an assertion.
-  assert.match(b.withheld.find((r) => r.mark === "TIKI TWIST").record, /^\/mark\/us\//);
+  assert.match(b.withheld.find((r) => r.mark === "WAVO TWIST").record, /^\/mark\/us\//);
 });
 
 test("a proprietor's own record with a leading element is withheld, not 'never retrieved'", () => {
@@ -105,14 +105,14 @@ test("a proprietor's own record with a leading element is withheld, not 'never r
   // The found and noise loops both pass `sameOwner`; the withheld lookup did not, and that asymmetry
   // alone decided the bucket. Names reused from this file rather than re-minted, per the header rule.
   const reference = [
-    { mark: "TIKI PUNCH", owner: "Shasta Beverages", classes: [32] },
-    { mark: "CORAL FREEZE", owner: "Shasta Beverages", classes: [32] },
+    { mark: "WAVO PUNCH", owner: "Selbrook Beverages", classes: [32] },
+    { mark: "CORAL FREEZE", owner: "Selbrook Beverages", classes: [32] },
   ];
-  const retrieved = [{ mark: "SB TIKI PUNCH", owner: "Shasta Beverages, LLC",
+  const retrieved = [{ mark: "SB WAVO PUNCH", owner: "Selbrook Beverages, LLC",
     record_id: "/mark/us/d074651d-d49a-46c1-9c95-8b6a6f0880f0" }];
   const b = scoreRecall({ reference, findings: [], retrieved, scopeClasses: ["32"] });
 
-  assert.deepEqual(b.withheld.map((r) => r.mark), ["TIKI PUNCH"], "the held record is withheld");
+  assert.deepEqual(b.withheld.map((r) => r.mark), ["WAVO PUNCH"], "the held record is withheld");
   assert.equal(b.withheld[0].rule, "contained", "and the row names the rule that reached it");
   assert.match(b.withheld[0].record, /^\/mark\/us\//, "carrying the record that proves the run held it");
 
@@ -125,16 +125,16 @@ test("owner agreement is REQUIRED for that relaxation — an absent owner keeps 
   // `ownersMatch` is fail-closed, and the whole safety of the rule above rests on it. A retrieved corpus
   // with no owner column (every fixture in this file predating it, and any band that does not record
   // one) must score exactly as it did before, or the fix quietly rewrites history it was never shown.
-  const reference = [{ mark: "TIKI PUNCH", owner: "Shasta Beverages", classes: [32] }];
+  const reference = [{ mark: "WAVO PUNCH", owner: "Selbrook Beverages", classes: [32] }];
   const noOwner = scoreRecall({ reference, findings: [],
-    retrieved: [{ mark: "SB TIKI PUNCH", record_id: "/mark/us/d074651d-d49a-46c1-9c95-8b6a6f0880f0" }],
+    retrieved: [{ mark: "SB WAVO PUNCH", record_id: "/mark/us/d074651d-d49a-46c1-9c95-8b6a6f0880f0" }],
     scopeClasses: ["32"] });
   assert.deepEqual(noOwner.withheld, [], "no owner on the record, so no relaxation");
-  assert.deepEqual(noOwner.lost.map((r) => r.mark), ["TIKI PUNCH"]);
+  assert.deepEqual(noOwner.lost.map((r) => r.mark), ["WAVO PUNCH"]);
 });
 
 test("a register-only run collapses withheld and says so, rather than reporting zero", () => {
-  const findings = [{ mark: "TIKI" }];
+  const findings = [{ mark: "WAVO" }];
   const b = scoreRecall({ reference: R3_REGISTER, findings, retrieved: RETRIEVED, scopeClasses: ["32"],
     registerOnly: true, collapseReason: "register-only run: no gather/judgment seam to measure" });
   assert.equal(b.withheld.length, 0);
@@ -222,7 +222,7 @@ test("class and territory are both required, not either", () => {
 });
 
 test("noise is what the reference does not contain, and it is reported neutrally", () => {
-  const findings = [{ mark: "TIKI" }, { mark: "E2E NOISE PROBE", owner: null, band: { label: "Medium" } }];
+  const findings = [{ mark: "WAVO" }, { mark: "E2E NOISE PROBE", owner: null, band: { label: "Medium" } }];
   const b = scoreRecall({ reference: R3_REGISTER, findings, retrieved: RETRIEVED, scopeClasses: ["32"] });
   assert.deepEqual(b.noise.map((r) => r.mark), ["E2E NOISE PROBE"]);
   // NO VERDICT WORD ANYWHERE ON THE ROW. It may be a genuine find.
@@ -261,10 +261,10 @@ test("with no pre-accepted list, nothing lands in additional", () => {
 });
 
 test("a found mark is not also counted as noise", () => {
-  const findings = [{ mark: "TIKI TWIST" }];
+  const findings = [{ mark: "WAVO TWIST" }];
   const b = scoreRecall({ reference: R3_REGISTER, findings, retrieved: RETRIEVED, scopeClasses: ["32"] });
   assert.equal(b.noise.length, 0);
-  assert.deepEqual(b.found.map((r) => r.mark), ["TIKI TWIST"]);
+  assert.deepEqual(b.found.map((r) => r.mark), ["WAVO TWIST"]);
 });
 
 test("inScope treats a reference entry naming no classes as in scope", () => {
@@ -320,20 +320,20 @@ test("no declared gap is a fact about the run, not a pass", () => {
 // ── the delta ─────────────────────────────────────────────────────────────────────────────────────
 
 test("the delta names what moved between rounds, in both directions", () => {
-  const before = scoreRecall({ reference: R3_REGISTER, findings: [{ mark: "TIKI" }], retrieved: RETRIEVED, scopeClasses: ["32"] });
+  const before = scoreRecall({ reference: R3_REGISTER, findings: [{ mark: "WAVO" }], retrieved: RETRIEVED, scopeClasses: ["32"] });
   const after = scoreRecall({
-    reference: R3_REGISTER, findings: [{ mark: "TIKI" }, { mark: "TIKI TWIST" }],
+    reference: R3_REGISTER, findings: [{ mark: "WAVO" }, { mark: "WAVO TWIST" }],
     retrieved: RETRIEVED, scopeClasses: ["32"],
   });
   const moved = bucketDelta(after, before);
-  assert.deepEqual(moved, [{ mark: "TIKI TWIST", from: "withheld", to: "found" }]);
+  assert.deepEqual(moved, [{ mark: "WAVO TWIST", from: "withheld", to: "found" }]);
   assert.equal(bucketDelta(after, null), null, "no previous round means no delta, not an empty one");
 });
 
 // ── the reference contract ────────────────────────────────────────────────────────────────────────
 
 test("a malformed reference refuses rather than reading as a clean sweep", () => {
-  assert.deepEqual(validateReference({ schema_version: REFERENCE_SCHEMA_VERSION, scenario: "R3", source: "x", register: [{ mark: "TIKI" }] }), []);
+  assert.deepEqual(validateReference({ schema_version: REFERENCE_SCHEMA_VERSION, scenario: "R3", source: "x", register: [{ mark: "WAVO" }] }), []);
   assert.ok(validateReference({}).length);
   assert.match(validateReference({ schema_version: 99, scenario: "R3", source: "x", register: [{ mark: "T" }] }).join(" "), /schema_version/);
   assert.match(validateReference({ schema_version: 1, scenario: "R3", register: [{ mark: "T" }] }).join(" "), /no `source`/);
@@ -362,7 +362,7 @@ function makeReference(dir, extra = {}) {
 function makeRun({ withDriver = true } = {}) {
   const dir = mkdtempSync(join(tmpdir(), "score-run-"));
   writeFileSync(join(dir, "findings.json"), JSON.stringify({
-    schema_version: 5, findings: [{ ordinal: 1, mark: "TIKI", owner: "Tiki Corporation", disposition: "adversarial", band: { label: "Medium" } }],
+    schema_version: 5, findings: [{ ordinal: 1, mark: "WAVO", owner: "Wavo Corporation", disposition: "adversarial", band: { label: "Medium" } }],
   }));
   writeFileSync(join(dir, "register-named-band.json"), JSON.stringify({
     enumerated: RETRIEVED.map((r) => ({ mark_text: r.mark, record_id: r.record_id, classes: [32] })), crowds: [],
@@ -391,7 +391,7 @@ test("it prints the axes and the buckets, prints no PASS, and exits 0", () => {
       assert.ok(out.includes(s), `prints ${s}`);
     }
     assert.match(out, /withheld\s+3/, "the three withheld marks are counted");
-    assert.match(out, /TIKI TWIST/, "and named");
+    assert.match(out, /WAVO TWIST/, "and named");
     assert.match(out, /ABSENT\s+github\.com/, "the unsearched channel is named");
     // The house rule: no verdict word is ever REPORTED. The disclaimer says the word in order to deny
     // it, so match on lines rather than on the whole output — a substring check would be satisfied by
@@ -473,7 +473,7 @@ test("the knockout lane is read from its own artifact, not reported as an empty 
   const run = mkdtempSync(join(tmpdir(), "score-run-"));
   writeFileSync(join(run, "knockout-findings.json"), JSON.stringify({
     schema_version: 1,
-    marks: [{ name: "E2E SCORER PROBE", findings: [{ name: "TIKI", type: "Registration", impact: "HIGH" }] }],
+    marks: [{ name: "E2E SCORER PROBE", findings: [{ name: "WAVO", type: "Registration", impact: "HIGH" }] }],
   }));
   mkdirSync(driverDir(run));
   try {
@@ -910,7 +910,7 @@ test("NEGATIVE CONTROL: the preference changes the CITATION and never the BUCKET
 
 // ── — THE OWNER COMPARISON KNEW ANGLO-GERMAN FORMS AND ALMOST NO OTHERS ──────────
 //
-// `BePharBel Manufacturing` and `BePharBel Manufacturing, Société anonyme` read as two companies, so the
+// `DuPharVel Manufacturing` and `DuPharVel Manufacturing, Société anonyme` read as two companies, so the
 // scorer could not identify the record a lawyer named even with it sitting in the band. Measured before
 // building: of twenty common legal forms appended to an otherwise identical name, NINETEEN broke the
 // match — only `S.A.` survived, and only because `sa` happened to be on the noise list.
@@ -937,12 +937,12 @@ test("every legal form the register corpus actually carries matches", () => {
 });
 
 test("the specimen that started it, and the two siblings that already worked", () => {
-  assert.equal(ownersMatch("BePharBel Manufacturing", "BePharBel Manufacturing, Société anonyme"), true,
+  assert.equal(ownersMatch("DuPharVel Manufacturing", "DuPharVel Manufacturing, Société anonyme"), true,
     "the gold's owner and the band's owner are the same company written to different lengths");
-  assert.equal(ownersMatch("Lo.Li. Pharma S.r.l.", "LO.LI. Pharma S.R.L."), true, "case and punctuation, unchanged");
-  assert.equal(ownersMatch("Davis Schottlander & Davis Ltd", "Davis Schottlander & Davis Limited"), true,
+  assert.equal(ownersMatch("Be.Ma. Pharma S.r.l.", "BE.MA. Pharma S.R.L."), true, "case and punctuation, unchanged");
+  assert.equal(ownersMatch("Harlow Brenmoor & Harlow Ltd", "Harlow Brenmoor & Harlow Limited"), true,
     "a form that was already on the list, unchanged");
-  assert.equal(ownersMatch("Delphi Genetics S.A. (BX)", "Delphi Genetics S.A."), true,
+  assert.equal(ownersMatch("Korphi Genetics S.A. (BX)", "Korphi Genetics S.A."), true,
     "#450's trailing jurisdiction annotation, unchanged");
 });
 
@@ -954,7 +954,7 @@ test("STRICTNESS — a form list that ate a real word would be the worse defect"
       `two different companies sharing the trailing word "${w}" now match — the form list has eaten a `
       + "name-word, which is a wrong-owner match and worse than the gap this fixes");
   assert.equal(ownersMatch("Acme Widgets Inc", "Beta Widgets Inc"), false, "…and the ordinary case still holds");
-  assert.equal(ownersMatch("Delphi Genetics S.A.", "Delphi Diagnostics S.A."), false,
+  assert.equal(ownersMatch("Korphi Genetics S.A.", "Korphi Diagnostics S.A."), false,
     "one distinctive word apart, same form — must stay two companies");
 });
 

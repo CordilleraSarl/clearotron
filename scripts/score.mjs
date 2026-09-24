@@ -435,7 +435,7 @@ function scoreOne(run, ref) {
   //
   // Refusing the unshaped pairing was only half of it. A gold set that gains a `counts` block usually
   // KEEPS its lawyer sheet — it is a real answer to a real matter and deleting it loses history — and
-  // scoring both prints `LOST · TIKI PUNCH` beside the count that measures the product. That is the same
+  // scoring both prints `LOST · WAVO PUNCH` beside the count that measures the product. That is the same
   // structural zero the issue is about, one row smaller, and it lands in the bucket table a reader
   // scans first.
   //
@@ -644,7 +644,7 @@ function print(id, ref, run, s, delta, refPath) {
   console.log(renderCarryThrough(run.dir, { indent: "  " }).lines.join("\n"));
 
   // — a record in two buckets is a defect in THIS TOOL, and it is printed as loudly as any score.
-  // Silence here is what let `DELPHI GENETICS` sit in LOST and `DG DELPHI GENETICS` in NOISE on the same
+  // Silence here is what let `KORPHI GENETICS` sit in LOST and `DG KORPHI GENETICS` in NOISE on the same
   // page, and the recall number that reached the round handover was wrong for a week because nobody
   // reads two lists against each other.
   if (B.collisions?.length) {
@@ -656,7 +656,7 @@ function print(id, ref, run, s, delta, refPath) {
   //
   // These used to print under the line above, which tells the reader not to read the recall numbers.
   // One large filer anywhere in a matter therefore suppressed a whole run's measurement, and did: R2's
-  // real 88% → 63% recall movement went unquoted on the regression issue because `Novartis AG` held one
+  // real 88% → 63% recall movement went unquoted on the regression issue because `Norvanta AG` held one
   // withheld reference mark and one surfaced non-reference mark. Those two rows are both true.
   //
   // Kept visible because a reader may still want the pairing, and deliberately WITHOUT a verdict: this

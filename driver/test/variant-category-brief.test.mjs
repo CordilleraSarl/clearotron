@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // variant-category-brief.test.mjs —, the six category names that were given without meanings.
 //
-// THE DEFECT. R2 BIOVELTRIN, delivered 2026-08-06, lost DELPHI SCIENTIFIC and DELFITY with
+// THE DEFECT. R2 BIOVELTRIN, delivered 2026-08-06, lost KORPHI SCIENTIFIC and KORFITY with
 // `withheld: 0` — never retrieved, so no downstream judgment could have recovered them. The variant
 // dispatch named a closed seven-token enum and defined none of it. The model inferred what the words
 // meant and generated against its own inference: `composite` came out as the applicant's own sector

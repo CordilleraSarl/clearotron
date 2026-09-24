@@ -74,11 +74,11 @@ test("verifyRegisterDirectiveClose: a COLLAPSED slice (claimed hits, zero record
 test("verifyRegisterDirectiveClose: an indeterminate class tag falls through to qid-landed + non-collapse (no false defer)", () => {
   // a block with no [cl …] tag but genuinely executed with records is CLOSED — the class check only
   // fires on POSITIVE evidence of a wrong scope, never manufactures a defer.
-  const qid = "supp:primary-sweep:exact:kurena:notag000";
+  const qid = "supp:primary-sweep:exact:kolema:notag000";
   const r = verifyRegisterDirectiveClose({
     qids: [qid], intendedClasses: ["9", "28"],
     executedQids: new Set([qid]),
-    blocksByQid: new Map([[qid, { qid, state: "enumerated", query: "exact KURENA", total_hits: 3, records: [{ id: 1 }] }]]),
+    blocksByQid: new Map([[qid, { qid, state: "enumerated", query: "exact KOLEMA", total_hits: 3, records: [{ id: 1 }] }]]),
   });
   assert.deepEqual(r, { closed: true, reason: null });
 });

@@ -490,7 +490,7 @@ export function candidateSelfChecks({ reportMd }) {
 
 // B2 (report confabulation backstop) — per-card record provenance. The single-pass report renderer once
 // pasted one finding's body (its record link, owner, filing dates) into ANOTHER finding's card (the
-// ashen-lattice confabulation: BePharBel's body landed in cards #2 and #5). registry-record-match cannot
+// ashen-lattice confabulation: DuPharVel's body landed in cards #2 and #5). registry-record-match cannot
 // catch it: a card carrying finding-M's whole body also cites finding-M's URI, so its claims agree with the
 // cited record — but the card sits under finding-N's identity. This check binds each card to ITS finding (by
 // the hidden `- ord: N` line the per-card renderer emits, else owner-name containment for a legacy/monolithic
@@ -595,7 +595,7 @@ export function recordVerificationClaimChecks({ text, recordsByUri, surface = "r
 // Two failures, one owner set, one paragraph scan.
 //
 // (1) THE UNVERIFIED "REPORTEDLY". A delivered card said a named incumbent's registration "has
-//     reportedly been used by the USPTO to refuse other TIKI-formative marks". The record that
+//     reportedly been used by the USPTO to refuse other WAVO-formative marks". The record that
 //     settles it was on disk the whole time (its refusalInformation lists six refused applications) —
 //     so the claim had two honest endings available, a verified finding citing the record or a stated
 //     open question, and it took neither. Second sighting: the same shape reached an animal-health
@@ -819,7 +819,7 @@ const OWNER_NEGATIVE_RE = /\bno\s+(?:[\w'-]+[,]?\s+){0,6}?(?:marks?|registration
 //    Class 5."                                            ← the negative is about the APPLICANT
 // The check cannot block delivery, so the cost is a warm redo whose instruction invites rewriting
 // correct prose — a doomed redo, the TONICA lesson. The real delivered true positive keeps both
-// halves in ONE sentence ("General sweeps for Kestrel Beverages and Hochland Energie … found no TIKI-initial …
+// halves in ONE sentence ("General sweeps for Kestrel Beverages and Hochland Energie … found no WAVO-initial …
 // register mark in Classes 5 or 32"), so the narrowing costs nothing it was catching.
 // The ESCAPES stay paragraph-scoped on purpose: disclosing the gap anywhere in the claim unit is an
 // honest ending for the whole unit, and narrowing an exemption is how a false NEGATIVE gets made.
@@ -827,9 +827,9 @@ const OWNER_NEGATIVE_RE = /\bno\s+(?:[\w'-]+[,]?\s+){0,6}?(?:marks?|registration
 // THE SPLIT IS NOT wipoLanguageChecks' SPLIT, and the difference is a corporate abbreviation. A bare
 // `(?<=[.!?])\s+` boundary cuts owner names in half — and register owners are FULL of periods:
 //   "Fairmile Snack Foods Corp. holds no filings in Class 5."
-//   "Marumi Foods Inc. found no TIKI-formative marks in Class 32."
+//   "Marumi Foods Inc. found no WAVO-formative marks in Class 32."
 //   "Yamagata Holdings Co., Ltd. has no registrations in the searched classes."
-//   "Harbourline Pte. Ltd. owns no TIKI mark in Class 32."
+//   "Harbourline Pte. Ltd. owns no WAVO mark in Class 32."
 // Every one of those is the exact claim this check exists to catch, and every one of them splits
 // after the suffix — owner in segment 1, negative in segment 2, no flag. Narrowing to the sentence
 // would have bought two false positives at the price of a whole class of false NEGATIVES, on the
@@ -845,7 +845,7 @@ const OWNER_NEGATIVE_RE = /\bno\s+(?:[\w'-]+[,]?\s+){0,6}?(?:marks?|registration
 // clean negative shipped over an owner nobody enumerated.
 //
 // One case the follower rule cannot see, and it is the commonest Asian register form: a legal-form
-// abbreviation followed by ANOTHER one — "Harbourline Pte. Ltd. owns no TIKI mark" splits at
+// abbreviation followed by ANOTHER one — "Harbourline Pte. Ltd. owns no WAVO mark" splits at
 // "Pte." because "Ltd." is capitalised. That pair is NOT ambiguous (no sentence ends in "Pte." and
 // begins with "Ltd."), so it gets a named list rather than a heuristic, and the list is deliberately
 // only the STACKED pair: "Inc. There are no filings…" stays two sentences, because there the capital
@@ -858,10 +858,10 @@ const OWNER_NEGATIVE_RE = /\bno\s+(?:[\w'-]+[,]?\s+){0,6}?(?:marks?|registration
 // legal form that is ordinary in this domain, so the misses are recall loss in the guard whose whole
 // purpose is catching an unverified negative about a named owner:
 //   N1a  "Bahlsen GmbH & Co. KG holds no filings…"        KG/KGaA were absent from LEGAL_FORM, so
-//        "Henkel AG & Co. KGaA found no TIKI-formative…"  "Co." got no sentinel and the capitalised
-//        "Ritter Sport Co. KG owns no TIKI mark…"         follower split owner from negative.
+//        "Henkel AG & Co. KGaA found no WAVO-formative…"  "Co." got no sentinel and the capitalised
+//        "Ritter Sport Co. KG owns no WAVO mark…"         follower split owner from negative.
 //   N1b  "Dr. Oetker AG holds no filings…"                the follower rule only ever handled a
-//        "St. Michel Biscuits found no TIKI-formative…"   TRAILING legal form. A LEADING abbreviation
+//        "St. Michel Biscuits found no WAVO-formative…"   TRAILING legal form. A LEADING abbreviation
 //        (and "Cia. Hering Ltda.", "Warner Bros. Entertainment", "Mt. Franklin Beverages") splits the
 //        owner's own name in half before the negative is ever reached.
 // Three rules close them, each doing something the other two cannot:
@@ -1312,7 +1312,7 @@ export function correctionConsistencyChecks({ reportMd, clientSummaryMd, auditMd
 // finding's `band` (the framework in force's own word, via the run's frozen manifest); on legacy runs
 // from the canonical composite→tier table. Pure rewriter (the autoCorrectRegistry pattern): joins each
 // `## ` Marks block to a live finding DETERMINISTICALLY (wp50: ord line → exact mark → unique
-// containment; the old first-match containment join bound "DEMVENZY — Novartis" to the VENZY finding and
+// containment; the old first-match containment join bound "DEMVENZY — Norvanta" to the VENZY finding and
 // would have ENFORCED the wrong tier) and overwrites its `- risk:` value; the exec-summary `- risk:` is
 // overwritten from the worst live band (v4) / max composite (legacy). Returns { text, corrections }.
 export function applyClientTierCorrections(csMd, findings, manifest = null) {

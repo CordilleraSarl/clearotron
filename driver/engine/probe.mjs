@@ -72,7 +72,7 @@ import { resolveAuthMode, CLOUD_SETTINGS, CLOUD_CREDENTIAL_CHECK } from "./auth.
 import { everyToolCallRefused } from "./tool-refusal.mjs";
 import { randomBytes } from "node:crypto";
 import { fileURLToPath } from "node:url";
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -96,8 +96,24 @@ export const PROBE_FILE = "probe-words.txt";
  * writing stage has.
  */
 const PROBE_PROMPT_HEAD = "Call the ping, note and look tools once each.";
-export const probePrompt = (file) =>
-  `${PROBE_PROMPT_HEAD} Write the three words they returned to the file ${file}, one per line. Then reply with the same three words.`;
+/**
+ * The probe's instruction. Given `commandFile`, on an engine whose stages keep a shell, the turn also runs
+ * one harmless command, `cat` of a file the probe planted with a word of its own, and replies with that
+ * word too. Without it the text is exactly what it always was.
+ */
+export const probePrompt = (file, commandFile = null) => (commandFile
+  ? `${PROBE_PROMPT_HEAD} Run the shell command cat "${commandFile}". Write the three words the tools returned to the file ${file}, one per line. Then reply with those three words and the word the command printed.`
+  : `${PROBE_PROMPT_HEAD} Write the three words they returned to the file ${file}, one per line. Then reply with the same three words.`);
+
+// THE ENGINES WHOSE STAGES KEEP A SHELL. A Claude stage is offered no command tool, so there is nothing to
+// prove there, and its probe asks for no command. A Codex stage reads its instructions through the shell
+// (`sed`, `cat`), and codex writes files with its own patch tool, outside the shell. So a Codex machine
+// whose sandbox cannot start a command (measured, 0.158.0-alpha.2: a permission profile that could not
+// read codex's own helper, every command failing with "bwrap: execvp …: No such file or directory")
+// still passed the tool calls and the file write, and every search then failed after spend.
+export const ENGINES_WITH_A_SHELL = Object.freeze(new Set(["openai-agent"]));
+/** The file the probe plants in its own folder, holding the word its command must print back. */
+export const PROBE_COMMAND_FILE = "probe-command-word.txt";
 /** Is this text the probe's instruction? For a reader that finds the probe's turn among a run's turns. */
 export const isProbePrompt = (text) => String(text ?? "").trim().startsWith(PROBE_PROMPT_HEAD);
 
@@ -275,6 +291,23 @@ export function classifyProbe({ engine, tuple = null, error = null, timeoutSec =
       return v("tools-unproven", "no-tool-answer", `${id} did not return the word its probe tool gives`,
         "Nothing here shows that the tools a search needs work on this machine. Run this again; if it repeats, a search is likely to fail the same way.",
         { detail: tail(tuple.stdout) });
+    // THE COMMAND, where the engine's stages keep a shell. The word is the probe's own, planted in its own
+    // folder, so only a command that ran can have read it. The door refuses only when the engine reports as
+    // failed a command naming that file's exact path: the file is there, so only the machine can fail that
+    // `cat`. Codex marks any non-zero exit failed, so a failure naming another path is a model that mistyped
+    // it, and that, like a word simply missing, shows nothing either way and warns.
+    if (typeof expect === "object" && expect.command) {
+      if (!String(tuple.stdout ?? "").includes(expect.command)) {
+        const ours = expect.commandFile
+          ? (tuple.commandFailures ?? []).find((f) => namesPathWhole(String(f?.command ?? ""), expect.commandFile)) : null;
+        if (ours)
+          return v("cannot-run-commands", "command-gauge", `${id} could not run a command where a search runs its commands`, cannotRunFix(id),
+            { detail: tail(ours.output) ?? tail(tuple.stderr) ?? tail(tuple.stdout) });
+        return v("commands-unproven", "no-command-answer", `${id} did not return the word its probe command prints`,
+          "Nothing here shows that a search can run its commands on this machine. Run this again; if it repeats, a search is likely to fail the same way.",
+          { detail: tail(tuple.stdout) });
+      }
+    }
     // THE FILE. Every stage writes its results to a file in its run folder, and the probe's turn was given a
     // folder of its own with the same grant. A write the ENGINE reports as failed is this machine's, and the
     // door refuses on it. A file that is simply not there shows nothing either way, because a cheap model can
@@ -360,6 +393,27 @@ function cannotWriteFix(engine) {
   return "Every search stage writes its results to a file, so no search can finish here. The engine's stderr below is the place to start.";
 }
 
+/**
+ * Whether a command line names `path` as a whole: followed by a quote, a space or the end of the line. A
+ * `cat` of `…/probe-command-word.txtt` contains the planted path but names another file, and fails on a
+ * working machine as any path that is not there does.
+ */
+export function namesPathWhole(command, path) {
+  for (let at = command.indexOf(path); at >= 0; at = command.indexOf(path, at + 1)) {
+    const next = command[at + path.length];
+    if (next === undefined || next === "\"" || next === "'" || /\s/.test(next)) return true;
+  }
+  return false;
+}
+
+/** What fixes a host where the engine cannot run a command. On codex it is its own sandbox, and the setting is named. */
+function cannotRunFix(engine) {
+  if (engine === "openai-agent")
+    return "Every search stage reads its instructions through commands, so no search can finish here. codex's own sandbox cannot run commands on this machine: "
+      + "set CLEAROTRON_CODEX_SANDBOX_BYPASS=1 in this install's environment file, or use the Anthropic engine, then run this again.";
+  return "Every search stage reads its instructions through commands, so no search can finish here. The engine's stderr below is the place to start.";
+}
+
 /** The one place the tier doctrine is POINTED AT rather than re-authored. */
 function tierFix(engine, msg) {
   if (engine === "openai-agent")
@@ -400,7 +454,7 @@ export function probeFailureText(verdict) {
 // classify is by definition one the door cannot claim to understand — and the cost of being wrong runs
 // the other way here: refusing wrongly kills a run that would have worked, proceeding wrongly costs the
 // stages before a failure the engine was going to produce anyway.
-const CONFIGURATION_MODES = new Set(["unknown-engine", "auth-misconfigured", "signed-out", "tier-unavailable", "cannot-spawn", "tools-refused", "cannot-write"]);
+const CONFIGURATION_MODES = new Set(["unknown-engine", "auth-misconfigured", "signed-out", "tier-unavailable", "cannot-spawn", "tools-refused", "cannot-write", "cannot-run-commands"]);
 
 // …and a mode alone is not enough, because `basis` says HOW WELL the mode is known and the ladder already
 // makes that distinction for its own reasons. `startup-class` is an INFERENCE FROM SILENCE — the CLI died
@@ -411,7 +465,8 @@ const CONFIGURATION_MODES = new Set(["unknown-engine", "auth-misconfigured", "si
 // inference manufactures the outage it was written to prevent, so it warns instead.
 // `tool-gauge` is named, not inferred: the adapter counted each refused call off the engine's own stream.
 // `write-gauge` is named the same way: the adapter counted the write the engine itself reported as failed.
-const NAMED_BASES = new Set(["config", "text-match", "spawn-error", "tool-gauge", "write-gauge"]);
+// `command-gauge` too: the adapter counted the command the engine itself reported as failed.
+const NAMED_BASES = new Set(["config", "text-match", "spawn-error", "tool-gauge", "write-gauge", "command-gauge"]);
 
 /**
  * "ok" | "configuration" | "weather" — PURE, and the whole of the door's judgment.
@@ -585,10 +640,18 @@ export async function probeEngineTurn({
     const words = PROBE_TOOLS.map(() => mintProbeSentinel());
     runDir = mkdtempSync(join(tmpdir(), "clearotron-probe-"));
     const file = join(runDir, PROBE_FILE);
-    const tuple = await turn({ message: probePrompt(file), model: PROBE_MODEL, thinking: PROBE_THINKING, timeoutSec, stallSec, runDir, ...probeToolConfig(words) });
+    // AND A WORD FOR THE COMMAND, where stages keep a shell: planted in the probe's own folder, so the
+    // command reads it under the same sandbox a stage's commands run in.
+    let command = null, commandFile = null;
+    if (ENGINES_WITH_A_SHELL.has(id)) {
+      command = mintProbeSentinel();
+      commandFile = join(runDir, PROBE_COMMAND_FILE);
+      writeFileSync(commandFile, `${command}\n`);
+    }
+    const tuple = await turn({ message: probePrompt(file, commandFile), model: PROBE_MODEL, thinking: PROBE_THINKING, timeoutSec, stallSec, runDir, ...probeToolConfig(words) });
     let written = null;
     try { written = readFileSync(file, "utf8"); } catch { /* not written: classifyProbe says what that means */ }
-    return classifyProbe({ engine: id, tuple, timeoutSec, auth, program, expect: { words, written } });
+    return classifyProbe({ engine: id, tuple, timeoutSec, auth, program, expect: { words, written, ...(command ? { command, commandFile } : {}) } });
   } catch (e) {
     return classifyProbe({ engine: id, error: e, timeoutSec, auth, program });
   } finally {

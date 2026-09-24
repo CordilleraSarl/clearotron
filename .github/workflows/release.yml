@@ -159,10 +159,17 @@ on:
       # script refuses a version that is not published, because pointing readers at a version that does
       # not exist is worse than leaving them unwarned.
       deprecate-below:
-        description: 'Deprecate every published version below this one (e.g. 0.3.1). Leave blank to do nothing.'
+        description: 'Deprecate every published version below this stable (e.g. 0.3.1), or a named range (e.g. 0.2.0..0.4.0-beta.0 except 0.3.3). Leave blank to do nothing.'
         type: string
         required: false
         default: ''
+      # A RANGE IS WRITTEN ONCE AS A DRY RUN AND READ, THEN FOR REAL. The dry run lists every version it
+      # would touch and the message each carries now, and writes nothing.
+      deprecate-dry-run:
+        description: 'With deprecate-below: list what would be deprecated and write nothing.'
+        type: boolean
+        required: false
+        default: false
 
 concurrency:
   group: release-${{ github.ref }}
@@ -1142,6 +1149,22 @@ jobs:
             # be a rehearsal of nothing.
             echo "This is a rehearsal: the publish step will run with --dry-run."
             echo "dry_flag=--dry-run" >> "$GITHUB_OUTPUT"
+            # THE VERSION A CUT WOULD PUBLISH NOW, NOT THE ONE ALREADY OUT. npm refuses even a dry run over a
+            # published version, and main's version is published on almost every day, so a rehearsal of it
+            # went red with nothing wrong. The script stamps this checkout as a `cut: beta` would; with no
+            # note pending there is nothing to cut, and only the publish dry run is skipped.
+            PLAN=$(node scripts/release-rehearsal-version.mjs)
+            # One of two answers or none: anything else printed would become an output of this step.
+            case "$PLAN" in
+              publish_dry_run=true|publish_dry_run=false) echo "$PLAN" >> "$GITHUB_OUTPUT" ;;
+              *) echo "::error::The rehearsal's version script did not answer publish_dry_run=true or publish_dry_run=false, so nothing it printed is kept."; exit 1 ;;
+            esac
+            VERSION=$(node -p "require('./package.json').version")
+            if [ "$PLAN" = "publish_dry_run=false" ]; then
+              echo "::notice::Nothing to cut: no release note is pending, so clearotron@$VERSION is already out and there is no new version to dry-run publish. Every check before the publish step still runs on its bytes."
+            else
+              echo "This rehearsal dry-runs clearotron@$VERSION, the version a \`cut: beta\` would publish now."
+            fi
           elif [ "${{ github.event_name }}" = "push" ] || [ "${{ github.event_name }}" = "schedule" ] \
             || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             # `schedule` is a real publish, not a rehearsal: it is the path a self-merged version takes,
@@ -1334,6 +1357,8 @@ jobs:
         run: node scripts/release-code-scanning-check.mjs --sha "$(git rev-parse HEAD)" --repo "$GITHUB_REPOSITORY"
 
       - name: Publish to npm through Trusted Publishing
+        # Skipped only by a rehearsal that found nothing to cut; a real publish never sets this output.
+        if: steps.what.outputs.publish_dry_run != 'false'
         run: npm publish "./${{ steps.what.outputs.tarball }}" --provenance --access public --tag "${{ steps.what.outputs.dist_tag }}" ${{ steps.what.outputs.dry_flag }}
 
       # KEEP THE PUBLISHED BYTES FOR AN ENTRY THAT COMES LATER. npm accepts a publish before it serves it,
@@ -1613,6 +1638,22 @@ jobs:
             # be a rehearsal of nothing.
             echo "This is a rehearsal: the publish step will run with --dry-run."
             echo "dry_flag=--dry-run" >> "$GITHUB_OUTPUT"
+            # THE VERSION A CUT WOULD PUBLISH NOW, NOT THE ONE ALREADY OUT. npm refuses even a dry run over a
+            # published version, and main's version is published on almost every day, so a rehearsal of it
+            # went red with nothing wrong. The script stamps this checkout as a `cut: beta` would; with no
+            # note pending there is nothing to cut, and only the publish dry run is skipped.
+            PLAN=$(node scripts/release-rehearsal-version.mjs)
+            # One of two answers or none: anything else printed would become an output of this step.
+            case "$PLAN" in
+              publish_dry_run=true|publish_dry_run=false) echo "$PLAN" >> "$GITHUB_OUTPUT" ;;
+              *) echo "::error::The rehearsal's version script did not answer publish_dry_run=true or publish_dry_run=false, so nothing it printed is kept."; exit 1 ;;
+            esac
+            VERSION=$(node -p "require('./package.json').version")
+            if [ "$PLAN" = "publish_dry_run=false" ]; then
+              echo "::notice::Nothing to cut: no release note is pending, so clearotron@$VERSION is already out and there is no new version to dry-run publish. Every check before the publish step still runs on its bytes."
+            else
+              echo "This rehearsal dry-runs clearotron@$VERSION, the version a \`cut: beta\` would publish now."
+            fi
           elif [ "${{ github.event_name }}" = "push" ] || [ "${{ github.event_name }}" = "schedule" ] \
             || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             # `schedule` is a real publish, not a rehearsal: it is the path a self-merged version takes,
@@ -1805,6 +1846,8 @@ jobs:
         run: node scripts/release-code-scanning-check.mjs --sha "$(git rev-parse HEAD)" --repo "$GITHUB_REPOSITORY"
 
       - name: Publish to npm through Trusted Publishing
+        # Skipped only by a rehearsal that found nothing to cut; a real publish never sets this output.
+        if: steps.what.outputs.publish_dry_run != 'false'
         run: npm publish "./${{ steps.what.outputs.tarball }}" --provenance --access public --tag "${{ steps.what.outputs.dist_tag }}" ${{ steps.what.outputs.dry_flag }}
 
       # KEEP THE PUBLISHED BYTES FOR AN ENTRY THAT COMES LATER. npm accepts a publish before it serves it,
@@ -1981,16 +2024,25 @@ jobs:
       # pasted into the shell line before the shell reads it, so a value carrying a quote and a command
       # would run that command in the one job holding a registry token. Through `env:` it is a variable's
       # value, and it must read as a stable version before anything uses it.
-      - name: Deprecate everything below the named stable
+      #
+      # A RANGE ("<from>..<through> except <v>") is handed to the script whole, as one argument, and the
+      # script parses it strictly and refuses anything else before it writes; its sentence is fixed there.
+      - name: Deprecate everything below the named stable, or the named range
         run: |
           set -euo pipefail
-          if ! [[ "$DEPRECATE_BELOW" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "::error::deprecate-below must be a stable version such as 0.3.1."
+          DRY=()
+          if [ "$DEPRECATE_DRY_RUN" = "true" ]; then DRY=(--dry-run); fi
+          if [[ "$DEPRECATE_BELOW" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            node scripts/deprecate-below.mjs --below "$DEPRECATE_BELOW" "${DRY[@]}"
+          elif [[ "$DEPRECATE_BELOW" == *..* ]]; then
+            node scripts/deprecate-below.mjs --range "$DEPRECATE_BELOW" "${DRY[@]}"
+          else
+            echo "::error::deprecate-below must be a stable version such as 0.3.1, or a range such as 0.2.0..0.4.0-beta.0 except 0.3.3."
             exit 1
           fi
-          node scripts/deprecate-below.mjs --below "$DEPRECATE_BELOW"
         # ON THE STEP, NEVER ON THE JOB. A job-level `env:` hands the token to every step in the job,
         # including the guard above whose whole purpose is to find one. The guard refuses that spelling.
         env:
           DEPRECATE_BELOW: ${{ inputs.deprecate-below }}
+          DEPRECATE_DRY_RUN: ${{ inputs.deprecate-dry-run }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_DEPRECATE_TOKEN }}

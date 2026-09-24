@@ -27,11 +27,11 @@ process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
 
 const SPEC_PLATFORMS = ["store.steampowered.com", "web"];
 const SPEC = {
-  terms: ["novapulse", "kroma", "转码", "chr0ma"],
+  terms: ["novapulse", "saybel", "转码", "sab1e"],
   platforms: SPEC_PLATFORMS,
   output_path: "/x/r/common-law-grid.json",
   batch: 14,
-  connotation: { queries: ["novapulse slang", "novapulse gang", "kroma meaning", "转码 meaning"] },
+  connotation: { queries: ["novapulse slang", "novapulse gang", "saybel meaning", "转码 meaning"] },
   ledger_required: true,
 };
 const cellsFor = (terms, platforms = SPEC_PLATFORMS) =>

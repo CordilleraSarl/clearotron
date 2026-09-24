@@ -197,11 +197,10 @@ degrades and the degradation should be findable.
 | **Outbox delivery trigger** — `driver/deliver-trigger.sh`, driven by the `clearance-outbox` systemd `.path`/`.service`/`.timer` units | systemd; bash >= 4 for `declare -A`; `timeout(1)` (GNU coreutils, or `gtimeout` from Homebrew) as the enforced wall on every courier wake | The script refuses at startup and names the missing piece. It will not wake a courier it cannot put a wall around — an unkillable wake wedged a lane for 19h once. No event is touched: everything stays pending and delivers as soon as the host is fixed. |
 | **PID-reuse claim defence** — the queue runner telling a live claimer from a recycled pid | A birth stamp for a process:`/proc/<pid>/stat` on Linux, `ps -o lstart` on macOS and anywhere else POSIX. Absent only where neither answers — WSL1, some sandboxes | Degrades **fail-safe**, and the runner says so once at startup. Claims record a bare pid, so a claim whose liveness cannot be proved counts as alive: no run is ever double-claimed and no lawyer double-delivered to. What is lost is the escape hatch — a `.processing` marker held by a recycled pid waits for the max-claim-age ceiling instead of being freed on the next tick. |
 
-CI runs the suite on macOS as well as Linux, and an assertion covering a capability the box lacks skips
-there **by name**, printing which one was missing. A skip whose reason is not in the table above is a gap
-in the table. The birth-stamp row stopped producing one on macOS when the
-defence gained its second implementation — the capability is probed by calling the reader, so the arms
-now run there rather than skipping.
+CI runs the suite on Linux. On macOS it installs the package and runs `clearotron doctor` and the demo,
+and runs no suite, so a row above that differs on macOS has no CI run behind it there. An assertion
+covering a capability a machine lacks skips **by name**, printing which one was missing; a skip whose
+reason is not in the table above is a gap in the table.
 
 ## Where to start
 

@@ -276,7 +276,6 @@ test("EUIPO_ENVIRONMENT unset reports the SERVER's default rather than the empty
 
 test("the production posture names where it was read from", () => {
   assert.match(PRODUCTION_POSTURE.source, /2026-08-04/);
-  assert.match(PRODUCTION_POSTURE.source, /#372/);
 });
 
 // ──: what this instance searches with, and the third state that is not "none" ─────────────────

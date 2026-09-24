@@ -37,6 +37,16 @@ RestrictSUIDSGID=yes
 LockPersonality=yes
 RestrictRealtime=yes
 SystemCallArchitectures=native
+#
+# ── WHAT THIS SERVICE CREATES IS CLOSED TO OTHER ACCOUNTS ─────────────────────────────────────────────
+# Every file and folder this service or the engine creates comes out with no access for accounts outside
+# its group: run records, known-conflicts, outbox packets, archive folders, and whatever a later writer
+# adds, without a mode at each write site. Group write is kept on purpose: a store shared by a group, as
+# a set-group-ID checkout that several accounts pull into, must stay writable by that group, and 0027
+# would make each new folder there closed to the others. Measured 2026-09-23 with 0027: a knockout was
+# delivered and its report served, every new folder 750 and file 640, and a saved search on a shared
+# checkout would have created a folder the group could no longer write into.
+UMask=0007
 Restart=on-failure
 RestartSec=10
 

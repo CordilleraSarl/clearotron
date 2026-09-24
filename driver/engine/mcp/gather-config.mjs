@@ -903,7 +903,7 @@ export function buildGatherMcpConfig(groups = [], { sessionKey, agent, runDir, r
     localEntry("register");
     if (!runDir) {
       throw new Error("gather-config: a register server needs the run it is fetching for — record bodies "
-        + "belong to their run since #743, and the box-global ledger is retired (#1390). Pass runDir.");
+        + "belong to their run, and the box-global ledger is retired. Pass runDir.");
     }
   }
   const env = serverEnv({ sessionKey, agent, runDir, recordAxis });

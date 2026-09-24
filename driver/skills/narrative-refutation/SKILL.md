@@ -79,7 +79,7 @@ in the file:
   that means "no finding"; the absence is the statement.
 
 Use the finding's **ordinal**, the number the narrative and `findings.json` already agree on — not the
-mark, not the owner. You are writing them anyway ("Finding 9 — DELPHIC…"); the token is the same fact
+mark, not the owner. You are writing them anyway ("Finding 9 — VELTRIC…"); the token is the same fact
 where a machine can read it.
 
 **What it buys, and it is not bookkeeping.** When every flag carries one, the author is told to change
@@ -295,7 +295,7 @@ For each obvious neighbour missing from the manifest, **FLAG (missing-variant)**
 
 ### Meaning / connotation read — did it look past the obvious gloss?
 
-The PR / reputational section carries a search *receipt*, but a receipt is not a read. With fresh eyes, take the proposed mark **and its near-forms** and ask the question the run was meant to ask: **is the obvious meaning the whole story, or does the same word carry an odd / loaded / subcultural secondary reading the section glossed past?** (`sureña` reads as "southerner" — and `Sureño` is a street gang; the benign gloss does not clear the loaded reading.) A clean PR claim that stopped at the tidy gloss while a loaded secondary reading is plausible is exactly the kind of specific suspicion your one Fresh probe exists to confirm — spend it here (below) if this is the more worth-pulling thread. If the probe surfaces a real loaded meaning the run never addressed, **FLAG (meaning-read-shallow)** and treat it like an unsupported clean negative (material); if the probe comes back clean, the meaning read holds — note it and move on.
+The PR / reputational section carries a search *receipt*, but a receipt is not a read. With fresh eyes, take the proposed mark **and its near-forms** and ask the question the run was meant to ask: **is the obvious meaning the whole story, or does the same word carry an odd / loaded / subcultural secondary reading the section glossed past?** (`mara` reads as "crowd" — and `Mara` is a street gang; the benign gloss does not clear the loaded reading.) A clean PR claim that stopped at the tidy gloss while a loaded secondary reading is plausible is exactly the kind of specific suspicion your one Fresh probe exists to confirm — spend it here (below) if this is the more worth-pulling thread. If the probe surfaces a real loaded meaning the run never addressed, **FLAG (meaning-read-shallow)** and treat it like an unsupported clean negative (material); if the probe comes back clean, the meaning read holds — note it and move on.
 
 **Confirm before you flag — bring in one input the run did not already consume.** Re-reading the same files the author read can only show they agree with themselves; it can never show you what the run missed. So when you suspect an obvious neighbour, a closer conflict on the applicant's *own* goods that the run did not carry, **or a loaded secondary meaning the PR section glossed past**, run **one scoped `perplexity_research` query** to confirm it *before* flagging — and **record that query and its result verbatim in this review** as a one-line `Fresh probe: <query> → <result or URL>`. This is the single place the review is required to introduce evidence the upstream units did not produce; cite it. One probe per review is enough — you are confirming a specific suspicion, not re-running the search.
 

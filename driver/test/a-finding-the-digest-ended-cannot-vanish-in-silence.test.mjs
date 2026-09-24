@@ -25,13 +25,13 @@ const endedFinding = (uri, mark) => ({ ending: "finding", mark_text: mark, posit
 
 test("a digest FINDING dropped with no stated reason is reported", () => {
   const r = silentlyLostFindings({
-    reconciliation: recon([endedFinding(URI, "DELPHIC HSE")]),
-    carryRows: [{ uri: URI.toLowerCase(), mark: "DELPHIC HSE", reach: "screened",
+    reconciliation: recon([endedFinding(URI, "KORPHIC HSE")]),
+    carryRows: [{ uri: URI.toLowerCase(), mark: "KORPHIC HSE", reach: "screened",
       stopped_at: "placement", reason: "placement:not-selected", reason_source: "step-silent" }],
   });
   assert.equal(r.computable, true);
   assert.equal(r.lost.length, 1, "the shape this issue was raised on must fire");
-  assert.equal(r.lost[0].mark, "DELPHIC HSE");
+  assert.equal(r.lost[0].mark, "KORPHIC HSE");
   assert.equal(r.lost[0].stopped_at, "placement");
 });
 
@@ -50,7 +50,7 @@ test("the DISCRIMINATOR — the same divergence with a STATED reason is left alo
 test("a step-silent drop that the digest never ended as a finding is NOT flagged", () => {
   // step-silent is the MAJORITY disposition on real runs. Flagging it alone would flag the whole run.
   const r = silentlyLostFindings({
-    reconciliation: recon([endedFinding(URI, "DELPHIC HSE")]),
+    reconciliation: recon([endedFinding(URI, "KORPHIC HSE")]),
     carryRows: [
       { uri: URI.toLowerCase(), reach: "finding", stopped_at: null, reason: null, reason_source: null },
       { uri: OTHER.toLowerCase(), reach: "screened", stopped_at: "placement",
@@ -76,7 +76,7 @@ test("arrival counts as arrival — reach `finding` and `findings-surface` both 
 // a check that can never fire while reporting clean, on an issue about losses that report clean.
 test("the join NORMALISES URI case, and a matched count proves it looked", () => {
   const r = silentlyLostFindings({
-    reconciliation: recon([endedFinding(URI.toUpperCase(), "DELPHIC HSE")]),
+    reconciliation: recon([endedFinding(URI.toUpperCase(), "KORPHIC HSE")]),
     carryRows: [{ uri: URI.toLowerCase(), reach: "screened", stopped_at: "placement",
       reason: "placement:not-selected", reason_source: "step-silent" }],
   });
@@ -126,7 +126,7 @@ test("a SHORTFALL alone must NOT trip it — that naive rule breaks the detectio
   // 5 against 9, and 5 against 8, both sharing 3. Refusing on a shortfall would refuse on the very run
   // this family was raised from. Overlap is the signal; count is not.
   const r = silentlyLostFindings({
-    reconciliation: recon([endedFinding(URI, "DELPHIC HSE")]),
+    reconciliation: recon([endedFinding(URI, "KORPHIC HSE")]),
     carryRows: [{ uri: URI.toLowerCase(), reach: "screened", stopped_at: "placement",
       reason: "placement:not-selected", reason_source: "step-silent" }],
     digestFindingUris: [URI, DIGEST_A, DIGEST_B],   // 3 digest rows vs 1 position, but they OVERLAP

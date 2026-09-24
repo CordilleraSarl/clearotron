@@ -6,8 +6,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
 import {
-  renderCodexConfigToml, parseClaudeMcpServers, enabledToolsByServer, tomlString, CRED_ENV_FORWARD,
+  renderCodexConfigToml, parseClaudeMcpServers, enabledToolsByServer, tomlString, CRED_ENV_FORWARD, FENCE_PROFILE, TOOL_SERVER_SETTINGS,
 } from "../engine/mcp/codex-config.mjs";
 
 // Neutral register namespace (the real gather-config emits server key `register` + `register_*` tools —
@@ -144,11 +145,8 @@ test("renderCodexConfigToml: the approval rides the servers a real stage is gran
   // stage whose servers the fixture above does not model still carries the line.
   const { buildGatherMcpConfig, allowedToolsFor, toolGroupsForStage } = await import("../engine/mcp/gather-config.mjs");
   const groups = toolGroupsForStage("register-unit:identical");
-  const before = process.env.CLEAROTRON_DATABASE;
-  process.env.CLEAROTRON_DATABASE = "euipo";
-  let cfg;
-  try { cfg = buildGatherMcpConfig(groups, { sessionKey: "s", agent: "a", runDir: "/tmp/run-x" }); }
-  finally { if (before === undefined) delete process.env.CLEAROTRON_DATABASE; else process.env.CLEAROTRON_DATABASE = before; }
+  // The register server resolves through the provider the test harness declares before anything is imported.
+  const cfg = buildGatherMcpConfig(groups, { sessionKey: "s", agent: "a", runDir: "/tmp/run-x" });
   const toml = renderCodexConfigToml({ mcpConfig: JSON.stringify(cfg), allowedTools: allowedToolsFor(groups) });
   const blocks = serverBlocks(toml);
   assert.ok(blocks.some((b) => b.startsWith("[mcp_servers.register]")), `no register server in:\n${toml}`);
@@ -156,7 +154,7 @@ test("renderCodexConfigToml: the approval rides the servers a real stage is gran
     assert.match(b, /^default_tools_approval_mode = "approve"$/m, `no approval line in:\n${b}`);
 });
 
-test("buildCodexArgs: the sandbox stays on unless the bypass is set to 1, and no approval flag rides the command line", async () => {
+test("buildCodexArgs: the sandbox stays on unless the bypass is set to 1, and neither --sandbox nor an approval flag rides the command line", async () => {
   const { buildCodexArgs } = await import("../engine/openai-agent.mjs");
   const before = process.env.CLEAROTRON_CODEX_SANDBOX_BYPASS;
   const argvWith = (v) => {
@@ -166,8 +164,8 @@ test("buildCodexArgs: the sandbox stays on unless the bypass is set to 1, and no
   try {
     for (const v of [undefined, "", "0", "true"]) {
       const args = argvWith(v);
-      const at = args.indexOf("--sandbox");
-      assert.ok(at > 0 && args[at + 1] === "workspace-write", `bypass=${JSON.stringify(v)}: ${args.join(" ")}`);
+      // The sandbox is the stage's permission profile in the config; `--sandbox` here would switch it off.
+      assert.ok(!args.includes("--sandbox"), `bypass=${JSON.stringify(v)}: ${args.join(" ")}`);
       assert.ok(!args.includes("--dangerously-bypass-approvals-and-sandbox"), `bypass=${JSON.stringify(v)} dropped the sandbox`);
       // The approval is the config file's, per server. A policy on the command line would reach shell commands.
       assert.ok(!args.some((a) => /approval|full-auto/i.test(a)), `bypass=${JSON.stringify(v)}: ${args.join(" ")}`);
@@ -184,4 +182,129 @@ test("renderCodexConfigToml: a fractional budget is floored to a whole second (T
   const toml = renderCodexConfigToml({ mcpConfig: CLAUDE_JSON, allowedTools: ALLOWED, toolTimeoutSec: 1500.7 });
   assert.match(toml, /^tool_timeout_sec = 1500$/m);
   assert.ok(!toml.includes("1500.7"), "a decimal would not be a TOML integer");
+});
+
+// ── A SERVER GRANTED WHOLE ───────────────────────────────────────────────────────────────────────────
+// On claude `mcp__<server>__*` is every tool that server serves. codex matches `enabled_tools` by exact
+// name, so the `["*"]` once written for it offered no tool at all: on the OpenAI engine the case-law step
+// started both of its databases and could call neither. These arms hold the translation to what the grant
+// means, and hold the grant itself to the two servers it was made for.
+
+/** Every stage name the gateway resolves tools for, as the per-stage argv baseline walks them. */
+async function everyStageName() {
+  const { STAGES } = await import("../stages.mjs");
+  const { KO_STAGES } = await import("../stages-knockout.mjs");
+  const { PER_AXIS_STAGES, PER_CHUNK_STAGES } = await import("../engine/mcp/gather-config.mjs");
+  return [...new Set([
+    ...Object.keys(STAGES), ...Object.keys(KO_STAGES),
+    ...[...PER_AXIS_STAGES].map((s) => `${s}:primary-sweep`), ...[...PER_CHUNK_STAGES].map((s) => `${s}#1`),
+  ])];
+}
+
+/** One stage's codex config, through the same two builders the gateway calls; null for a stage with no tools. */
+async function codexConfigFor(stage) {
+  const { buildGatherMcpConfig, allowedToolsFor, toolGroupsForStage } = await import("../engine/mcp/gather-config.mjs");
+  const groups = toolGroupsForStage(stage);
+  if (!groups.length) return null;
+  const cfg = buildGatherMcpConfig(groups, { sessionKey: "s", agent: "a", runDir: "/tmp/run-x" });
+  const allowedTools = allowedToolsFor(groups);
+  return { allowedTools, toml: renderCodexConfigToml({ mcpConfig: cfg ? JSON.stringify(cfg) : undefined, allowedTools }) };
+}
+
+const CASE_LAW_DATABASES = ["courtlistener", "legaldatahunter"];
+
+test("renderCodexConfigToml: the case-law step is offered both its databases whole, and the page fetch by its one name", async () => {
+  const { allowedTools, toml } = await codexConfigFor("case-law");
+  for (const s of CASE_LAW_DATABASES)
+    assert.ok(allowedTools.split(/\s+/).includes(`mcp__${s}__*`), `case-law is no longer granted ${s} whole on claude: ${allowedTools}`);
+  const blocks = serverBlocks(toml);
+  for (const s of CASE_LAW_DATABASES) {
+    const b = blocks.find((x) => x.startsWith(`[mcp_servers.${s}]`));
+    assert.ok(b, `no ${s} server in:\n${toml}`);
+    assert.doesNotMatch(b, /^enabled_tools/m, `${s} carries a list, so codex offers only the tools it names:\n${b}`);
+    assert.match(b, /^default_tools_approval_mode = "approve"$/m, `no approval line in:\n${b}`);
+  }
+  const fetch = blocks.find((x) => x.startsWith("[mcp_servers.fetch]"));
+  assert.ok(fetch, `no fetch server in:\n${toml}`);
+  assert.match(fetch, /^enabled_tools = \["fetch_url"\]$/m);
+});
+
+test("renderCodexConfigToml: in every stage a server goes without a list only when it was granted whole, and only the case-law databases are", async () => {
+  const names = await everyStageName();
+  assert.ok(names.includes("case-law") && names.length >= 19, `stage names: ${names.join(", ")}`);
+  const whole = new Set(), unlisted = [], starred = [];
+  let blocksSeen = 0;
+  for (const stage of names) {
+    const got = await codexConfigFor(stage);
+    if (!got) continue;
+    const grantedWhole = new Set(got.allowedTools.split(/\s+/).map((t) => /^mcp__(.+)__\*$/.exec(t)?.[1]).filter(Boolean));
+    grantedWhole.forEach((s) => whole.add(s));
+    if (/^enabled_tools = .*"\*"/m.test(got.toml)) starred.push(stage);
+    for (const b of serverBlocks(got.toml)) {
+      blocksSeen++;
+      const name = /^\[mcp_servers\.([^\]]+)\]/.exec(b)[1];
+      if (!/^enabled_tools = \[/m.test(b) && !grantedWhole.has(name)) unlisted.push(`${stage}: ${name}`);
+    }
+  }
+  assert.ok(blocksSeen >= names.length, `only ${blocksSeen} server blocks across ${names.length} stages`);
+  assert.deepEqual(starred, [], "stages whose config names a tool `*`, which codex matches as a name");
+  assert.deepEqual(unlisted, [], "servers codex would offer whole although the stage was granted only some of their tools");
+  // Offering a server whole widens what the engine can search. A register server, which is billed per
+  // call, must never arrive here without that being decided.
+  assert.deepEqual([...whole].sort(), CASE_LAW_DATABASES);
+});
+
+test("renderCodexConfigToml: a server granted whole and by name is offered whole; one granted by name keeps exactly its names", () => {
+  const cfg = JSON.stringify({ mcpServers: { a: { command: "/n", args: ["/a.mjs"] }, b: { command: "/n", args: ["/b.mjs"] } } });
+  const toml = renderCodexConfigToml({ mcpConfig: cfg, allowedTools: "mcp__a__x mcp__a__* mcp__b__y" });
+  const [a, b] = ["a", "b"].map((s) => serverBlocks(toml).find((x) => x.startsWith(`[mcp_servers.${s}]`)));
+  assert.doesNotMatch(a, /^enabled_tools/m);
+  assert.match(b, /^enabled_tools = \["y"\]$/m);
+});
+
+// ── what a stage's shell commands inherit ───────────────────────────────────────────────────────────
+// Codex hands a command its whole environment unless its config says otherwise, and the program holds the
+// register keys for its tool servers. Each withheld name is one `exclude` filter, and the shell snapshot,
+// which replays the unfiltered environment, is off. Read back with a real
+// TOML parser, because codex refuses the whole file over one bad line, and a stage whose config does not
+// parse runs nothing.
+
+function parseToml(text) {
+  const r = spawnSync("python3", ["-c", "import json, sys, tomllib; print(json.dumps(tomllib.loads(sys.stdin.read())))"],
+    { input: text, encoding: "utf8" });
+  assert.equal(r.error, undefined, "python3 is not on this machine, and the TOML check needs a real parser");
+  assert.equal(r.status, 0, `the config does not parse as TOML:\n${text}\n${r.stderr}`);
+  return JSON.parse(r.stdout);
+}
+
+test("renderCodexConfigToml: each withheld name is one exclude filter, and the servers still forward it by name", () => {
+  const withheld = ["SIGNA_API_KEY", "CORSEARCH_SESSION_KEY", "Signa_Api_Key", "CODEX_API_KEY"];
+  const toml = renderCodexConfigToml({ mcpConfig: CLAUDE_JSON, allowedTools: ALLOWED, developerInstructions: "WRITE THE FILE.",
+    fence: { runDir: "/run" }, withheldFromCommands: withheld });
+  const cfg = parseToml(toml);
+  // Once per name whatever its case: codex matches filters without regard to case and refuses a file
+  // that names one twice.
+  assert.deepEqual(cfg.shell_environment_policy,
+    { filters: { SIGNA_API_KEY: "exclude", CORSEARCH_SESSION_KEY: "exclude", CODEX_API_KEY: "exclude" } });
+  // And the shell snapshot off: codex takes it from a shell that inherits the program's whole environment,
+  // and replays it before each command, which put every filtered name back (measured, 0.156.1).
+  assert.deepEqual(cfg.features, { shell_snapshot: false });
+  // Only the filters. Codex refuses `filters` beside the older `exclude` and `include_only` lists, and an
+  // `inherit` here would change what every other name does.
+  assert.doesNotMatch(toml, /^(exclude|include_only|inherit|ignore_default_excludes) =/m);
+  // The top-level settings are still top-level, above the new table.
+  assert.equal(cfg.developer_instructions, "WRITE THE FILE.");
+  assert.equal(cfg.default_permissions, FENCE_PROFILE);
+  // The servers are untouched: codex reads their keys through env_vars, from the program's environment.
+  assert.deepEqual(cfg.mcp_servers.register.env_vars, [...CRED_ENV_FORWARD, ...TOOL_SERVER_SETTINGS]);
+  assert.equal(cfg.mcp_servers.register.env.CLEAROTRON_GATHER_SESSION_KEY, "sess-1");
+});
+
+test("renderCodexConfigToml: nothing withheld writes no policy, and the file is otherwise what it was", () => {
+  const before = renderCodexConfigToml({ mcpConfig: CLAUDE_JSON, allowedTools: ALLOWED, developerInstructions: "WRITE THE FILE." });
+  assert.ok(!before.includes("shell_environment_policy"));
+  for (const none of [[], undefined, null, [""]])
+    assert.equal(renderCodexConfigToml({ mcpConfig: CLAUDE_JSON, allowedTools: ALLOWED, developerInstructions: "WRITE THE FILE.", withheldFromCommands: none }), before);
+  const withPolicy = renderCodexConfigToml({ mcpConfig: CLAUDE_JSON, allowedTools: ALLOWED, developerInstructions: "WRITE THE FILE.", withheldFromCommands: ["SIGNA_API_KEY"] });
+  assert.equal(withPolicy.replace(/^\[features\]\nshell_snapshot = false\n\n\[shell_environment_policy\.filters\]\n"SIGNA_API_KEY" = "exclude"\n\n/m, ""), before);
 });

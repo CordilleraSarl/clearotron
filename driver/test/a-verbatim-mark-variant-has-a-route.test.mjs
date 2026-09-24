@@ -34,7 +34,7 @@ const literalStamp = (t) => (!termMarkupIssue(t) && termShapeIssue(t) ? { term_l
 test("the MARK carrying a bracketed element is already shielded — no new flag is needed", () => {
   // The case the issue was filed about, at the place it actually arrives. A device mark recorded with
   // its Vienna code is manifest provenance, so it takes term_literal automatically.
-  assert.deepEqual(literalStamp("DOLPHIN DEVICE (VIENNA 03.09.14)"), { term_literal: true });
+  assert.deepEqual(literalStamp("PANGOLIN DEVICE (VIENNA 03.06.25)"), { term_literal: true });
   // And markup is never shielded, whatever its provenance — the one exclusion in that predicate.
   assert.deepEqual(literalStamp("**BOLD**"), {});
 });
@@ -45,7 +45,7 @@ test("a model-authored variant is still refused — the lint is not weakened", (
   for (const t of ["ZEPHYR (root)", "ORVELLA (root)", "ONE; TWO"]) {
     assert.ok(variantTermIssue(t), `${JSON.stringify(t)} stopped being refused`);
   }
-  assert.equal(variantTermIssue("DOLPHIN DEVICE"), null, "and an ordinary mark still compiles");
+  assert.equal(variantTermIssue("PANGOLIN DEVICE"), null, "and an ordinary mark still compiles");
 });
 
 test("the refusal names a route for BOTH readings, not just the label one", () => {

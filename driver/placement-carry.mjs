@@ -71,7 +71,7 @@ const isSepRow = (t) => /^\|[\s:|-]+\|$/.test(t);
  * BOTH reach every line of the section, prose included, and that is deliberate. The first cut held
  * the text path to pipe-TABLE rows only, on the theory that digest.md puts carried candidates in
  * tables. Run against the real 2026-07-29 findings it manufactured a loss: the watchlist annex there
- * is written as `- **W-1 · TIKI Brand outdoor-living portfolio — …**` bullets, so a candidate the
+ * is written as `- **W-1 · WAVO Brand outdoor-living portfolio — …**` bullets, so a candidate the
  * digest had plainly carried came back `uncarried`. A join that invents losses is worth nothing, and
  * the section shape is the digest's to choose. So the reach is the same as parseFindingsEndings
  * (recall-reconciliation.mjs), which has always counted a prose mention as an ending — one
@@ -142,7 +142,9 @@ export function entryTerms(entry) {
  *
  * Fixed order, so the answer is a function of the inputs and nothing else:
  *   1. the entry names record uris ⇒ decide on URI equality alone (both sides canonical — the
- *      recall-regression lesson: canonicalizing one side makes a full-URL row unjoinable forever);
+ *      recall-regression lesson: canonicalizing one side makes a full-URL row unjoinable forever).
+ *      One of its records on a findings surface, and not itself dropped, carries the whole entry
+ *      (see KEPT below); otherwise ENDED_ORDER decides;
  *   2. no uris (a common-law-shaped candidate) ⇒ decide on the entry's MARK, floor-guarded, against
  *      the section's content lines. The owner is recorded as corroboration (`owner_confirmed`), never
  *      required: the digest re-words owner names and demanding both would manufacture losses;
@@ -152,6 +154,23 @@ export function entryTerms(entry) {
 export function classifyPlacement(entry, surfaces) {
   const uris = entryUris(entry);
   if (uris.length) {
+    // ── KEPT: A DROP ROW FOR ONE REGISTRATION IS NOT A DROP OF THE RIGHT ─────────────────────────
+    //
+    // An entry is one right, often held as several registrations: an EU filing, its national
+    // copies, an international one. The digest may put one of them on a Sheet and give each of the
+    // others a Negative-results row saying it adds nothing the kept one does not. Read with
+    // ENDED_ORDER alone, the first of those rows ended the whole entry as `reasoned-negative`, the
+    // kept registration with it. That is not a bookkeeping slip: synthesis is handed only the
+    // entries this join calls `carried`, so on one test run 24 placed rights — five of them
+    // headline candidates — never reached the stage that writes the report, and the declination
+    // check that would have named them owed nothing for them either.
+    //
+    // So a record of the entry that sits on a findings surface and has no drop row of its own
+    // carries the entry. A record with a drop row stays dropped wherever else it is named, which is
+    // the precedent the note above ENDED_ORDER keeps, and an entry none of whose records survives
+    // is decided exactly as before.
+    const kept = uris.find((u) => surfaces.uris.carried.has(u) && !surfaces.uris["reasoned-negative"].has(u));
+    if (kept) return { class: "carried", section: null, ended_by: kept, basis: "record-uri", owner_confirmed: null };
     for (const cls of ENDED_ORDER) {
       const hit = uris.find((u) => surfaces.uris[cls].has(u));
       if (hit) return { class: cls, section: null, ended_by: hit, basis: "record-uri", owner_confirmed: null };
@@ -216,7 +235,7 @@ export function adjudicationOf(entry, surfaces) {
   // Measured on `placement-carry-2026-07-29`, whose delivered digest discharges its one borderline
   // entry in as many words —
   //
-  //     | R-8 (my override) — placement-inquiry placed `TIKI LOVERS` at sheet-2 (S2-C) while flagging
+  //     | R-8 (my override) — placement-inquiry placed `WAVO LOVERS` at sheet-2 (S2-C) while flagging
   //       it as a borderline headline call | OVERRODE — promoted to headline. …
   //
   // — and names no URI anywhere in that row. A URI-only branch reports that discharged obligation as

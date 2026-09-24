@@ -139,7 +139,7 @@ export const POSITION_REQUIRED_DISPOSITIONS = ["adversarial", "coexistence-partn
 export const OFF_FIELD_GROUNDS = ["different-field", "no-material-risk"];
 // Context notes (A1) — the valid HOME for a knowledge-cited reference that is NOT a fetched-record finding:
 // a famous one-keystroke neighbour kept for diligence per digest.md's "never dropped" rule but with NO
-// register record to ground a finding (e.g. CHROME on a NOVAPULSE clearance). A context note is NEVER a finding
+// register record to ground a finding (e.g. NOVAPULSO on a NOVAPULSE clearance). A context note is NEVER a finding
 // (no composite/level/meters/registration), never drives the rating, and carries no uri — so it cannot
 // launder an ungrounded mark into the findings contract: the F-14 URI guard (validateOwner) stays whole, and
 // "the famous neighbour is never dropped" is honoured HERE rather than via a broken empty-uri finding.
@@ -246,7 +246,7 @@ export function deriveDisplayVerdict({ verdict, reasons, kinds, findings, manife
 }
 
 // ── wp50 — THE deterministic client-summary-block → finding join ────────────────────────────────────────
-// The old first-match substring-containment join mis-bound "DEMVENZY — Novartis" to the VENZY finding
+// The old first-match substring-containment join mis-bound "DEMVENZY — Norvanta" to the VENZY finding
 // (the head CONTAINS "venzy"), so the validator and the lint auto-correct VALIDATED — and would have
 // ENFORCED — the wrong finding's tier, rating two Composite-3 conflicts at the top band. One join,
 // used by the validator, the auto-correct and the email
@@ -728,7 +728,7 @@ const CORRECTION_ENTRY_KEYS = ["entity", "disposition", "note"];
 // blob. The frozen renderer receives a deterministic STRING PROJECTION (projectAssessmentField); the
 // structured rows render in the audit workbook + report-data, both unfrozen.
 // spec 2026-07-30 §3: `read` — the one-to-two-sentence consequence the reader sees ("A weak name to
-// own. SLUSH is simply what the product is, so the whole mark rests on TIKI."). The renderer shows it
+// own. SLUSH is simply what the product is, so the whole mark rests on WAVO."). The renderer shows it
 // as the visible prose and collapses the typed rows behind toggles; absent (archived structured runs)
 // the renderer falls back to spectrum/acquired/note.
 const ASSESSMENT_FIELD_KEYS = ["spectrum", "read", "per_class", "per_market", "counter_registrations", "acquired", "note"];

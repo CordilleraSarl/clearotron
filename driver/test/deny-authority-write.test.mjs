@@ -183,10 +183,12 @@ test("THE REFUSAL ISSUES NO INSTRUCTIONS — a tool result that redirects behavi
   assert.equal(/\byou\b|\byour\b|\bcontinue with\b|\bdo not\b/i.test(reason), false, reason);
 });
 
-test("nothing to protect ⇒ no settings flag at all", () => {
+test("nothing to protect ⇒ no write-boundary hook, and the turn's settings are the read fence alone", () => {
   assert.equal(writeBoundarySettings({}), null);
   const { args } = buildClaudeArgs({ message: "hi" });
-  assert.equal(args.includes("--settings"), false);
+  const at = args.indexOf("--settings");
+  assert.ok(at > 0 && args.indexOf("--settings", at + 1) < 0, "every turn carries one --settings, the read fence");
+  assert.deepEqual(JSON.parse(args[at + 1]), { permissions: { blockReadsOutsideWorkingDirectories: true } });
 });
 
 // ── LETTER CASE, DECIDED BY THE PROTECTED FOLDER'S OWN DISK ─────────────────────────────────────────────

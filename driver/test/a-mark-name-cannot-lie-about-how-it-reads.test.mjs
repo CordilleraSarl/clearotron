@@ -15,7 +15,7 @@
 //   • NFD and NFC of one mark are two matters, two searches, two bills.
 //
 // THE FOUR THAT ARE NOT, and half of this file exists to keep them that way: a Cyrillic homoglyph, an
-// emoji, a LONG name and an accented letter. An over-broad filter that refuses SIRÈNE is a worse defect
+// emoji, a LONG name and an accented letter. An over-broad filter that refuses FALCÓN is a worse defect
 // than the one being fixed, because it rejects work a client legitimately ordered.
 //
 // "Long" was "200-character" until, which applies the product's existing
@@ -67,8 +67,8 @@ test("a zero-width joiner is refused, because it makes a mark unequal to the one
 });
 
 test("NFD collapses to NFC in place, so one mark ordered twice is one matter", () => {
-  const nfd = "SIRÈNE".normalize("NFD");     // morty's C1d
-  const nfc = "SIRÈNE".normalize("NFC");
+  const nfd = "FALCÓN".normalize("NFD");     // morty's C1d
+  const nfc = "FALCÓN".normalize("NFC");
   assert.notEqual(nfd, nfc, "the fixture is genuinely decomposed, or this arm proves nothing");
   const j = job(nfd);
   assert.equal(nameError(validateJob(j)), undefined, "normalizing is not refusing");
@@ -98,7 +98,7 @@ test("the four measured-but-not-defective cases stay accepted and UNTOUCHED", ()
     // asserted in its own arm below; leaving 200 here would have kept a sentence this file can no
     // longer honour, passing only because `nameError` reads one message.
     ["a long name within the budget", "A".repeat(120)],
-    ["an accented letter", "SIRÈNE".normalize("NFC")],
+    ["an accented letter", "FALCÓN".normalize("NFC")],
     ["Arabic letters", "علامة"],                   // right-to-left LETTERS carry no U+202x at all
     ["Hebrew letters", "סימן"],
   ]) {
@@ -208,7 +208,7 @@ test("the slug is bounded at construction, and no legal name's slug moves a byte
   // a script that survives kebab whole. Those are the cases a bound on the KEBAB would have moved.
   const legal = [
     "AQUAPLUS",
-    "Sirène",
+    "Falcón",
     "ACME™",
     "アクアプラス",
     "a name with spaces, punctuation & symbols!",

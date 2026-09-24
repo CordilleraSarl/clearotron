@@ -32,7 +32,7 @@
 //     `corsearch-*` names on a box that already has them.)
 
 import { makeLedger, heldRecordBodies } from "../../_shared/ledger.mjs";
-import { answerKey, compareAnswers, noteAnswer, openAnswerMemory, recallAnswer, rememberAnswer } from "../../_shared/answer-memory.mjs";
+import { answerKey, compareAnswers, forgetAnswer, noteAnswer, openAnswerMemory, recallAnswer, rememberAnswer } from "../../_shared/answer-memory.mjs";
 import { nonAnswerBodyError, parseJsonBody, unparsedBodyError } from "../../_shared/http-body.mjs";
 import {
   BATCH_SCREEN_CHUNK, chunk, isAllClass, makeClassifyStatus, screenVerdict,
@@ -285,7 +285,7 @@ const PHRASE_OPERATOR = "ADJ";
 // once `exact`:
 //   "SLUSH FREEZE, SLUSH ICE, SLUSH POP"                     three terms crammed into one
 //   "TIKTOK / TIK- famous-neighbour family"                  a description of a family, not a name
-//   "TIKE, TIPI one-keystroke neighbours of TIKI"
+//   "WAVU, WAPO one-keystroke neighbours of WAVO"
 //
 // Searched, they return 0 — and a 0 here reads as CLEAN, which is the one outcome this contract must
 // never produce by accident. On that run the `default` twins deferred loudly while the `exact` twins
@@ -398,7 +398,7 @@ export function compilePhraseValue(term, { pre = "", post = "", dropReserved = f
   const last = kept.length - 1;
   const tailWrap = (kept.length > 1 && kept[last].length === 1) ? "" : post;
   // THE WILDCARD PREDICATE CARRIES ITS OWN STAR, so `post` is empty there and the two rules above
-  // cannot reach it: the caller writes `STEAL A*` and the star is part of the token. Same shape, same
+  // cannot reach it: the caller writes `FOLD A*` and the star is part of the token. Same shape, same
   // refusal, so the same subtraction — the star comes off a one-character final token. Nothing else is
   // touched: a longer final token keeps the caller's pattern exactly as written, and a `?` is a
   // single-character class rather than a sub-query, so it is not this.
@@ -1200,12 +1200,29 @@ export async function doSearch(apiKey, base, params, tctx) {
   if (!isSearchResponseBody(r.body)) {
     return { type: "text", text: nonAnswerBodyError("clarivate_search", r, "a search response (no ids{} — the one key POST /search answers with)", ` query=${String(echo).slice(0, 200)}`) };
   }
+  forgetContradictedAnswers(base, body, r.body, tctx);
   const out = normalizeSearchResponse(r.body, echo, p.match_mode || "default");
   // The resolution note rides on the answer, exactly as it does on the enumerate result: a reader has
   // to be able to see WHICH applicant styling this sweep actually asked for, and a zero over an owner
   // whose styling was never found is a different fact from a zero over one whose styling was.
   if (ownerResolution) out.owner_resolution = ownerResolution;
   return { type: "text", text: JSON.stringify(out, null, 2) };
+}
+
+// A SEARCH SHORTER THAN ITS OWN COUNT IS NOT KEPT, AND NEITHER IS THE COUNT. The enumerate kernel reads the
+// shortfall as the register contradicting itself and hands the slice to the repair ladder to ask again
+// (the count/search reconciliation in providers/_shared/enumerate.mjs). Kept, both answers would be served
+// again on every retry, and the slice could not be cured within the attempt. The two share one body, so
+// the count held for this search is found under the same question.
+function forgetContradictedAnswers(base, body, searchBody, tctx) {
+  const mem = openAnswerMemory(tctx?.recordLog);
+  if (!mem) return;
+  const countKey = answerKey({ base, method: "POST", path: "/count", body });
+  const counted = recallAnswer(mem, countKey)?.summary?.total;
+  const returned = rememberableAnswer("/search", 200, searchBody, null)?.total;
+  if (!Number.isFinite(counted) || !Number.isFinite(returned) || returned >= counted) return;
+  forgetAnswer(mem, countKey);
+  forgetAnswer(mem, answerKey({ base, method: "POST", path: "/search", body }));
 }
 
 // ── Count ─────────────────────────────────────────────────────────────────────────────────────────

@@ -41,16 +41,16 @@ import {
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const SCORE = join(REPO, "scripts", "score.mjs");
 
-const TIKI = "CORAL FREEZE";
+const WAVO = "CORAL FREEZE";
 const CINDER = "CINDER LANTERN";
-const BOTH = [TIKI, CINDER];
+const BOTH = [WAVO, CINDER];
 
 // ── referenceCoverage — the four states ───────────────────────────────────────────────────────────
 
 test("declared: the reference answers one of the two marks, and names the other as out of its scope", () => {
-  const c = referenceCoverage({ coversMarks: [TIKI], subjects: BOTH });
+  const c = referenceCoverage({ coversMarks: [WAVO], subjects: BOTH });
   assert.equal(c.state, "declared");
-  assert.deepEqual(c.covered, [TIKI]);
+  assert.deepEqual(c.covered, [WAVO]);
   assert.deepEqual(c.excludes, [CINDER], "the mark the reference does not answer is named, not guessed at");
   assert.deepEqual(c.undeclaredIn, []);
   assert.match(c.why, /CORAL FREEZE/);
@@ -61,7 +61,7 @@ test("a subject matches a declared label on the STEM rule, not on ==", () => {
   // The gold writes what the lawyer wrote; the run writes what the plan carried. `CORAL FREEZE` and
   // `Coral Freeze` are one mark, and the two halves of this change must never disagree about that — the
   // buckets already match on the stem, so the coverage test has to as well.
-  const c = referenceCoverage({ coversMarks: [TIKI], subjects: ["Coral Freeze"] });
+  const c = referenceCoverage({ coversMarks: [WAVO], subjects: ["Coral Freeze"] });
   assert.deepEqual(c.covered, ["Coral Freeze"]);
   assert.deepEqual(c.excludes, [], "a casing difference must not place a mark out of the reference's scope");
 });
@@ -81,42 +81,42 @@ test("a declaration matching NO subject REFUSES to exclude — the silent clean 
   // A typo, a rename, or a gold set left behind by a scenario change. Under the generic arm this
   // excludes BOTH marks, every finding leaves noise, `noise` reads 0 and the round reads clean. The
   // refusal is the guard, and it has to say why rather than quietly behaving like `undeclared`.
-  const c = referenceCoverage({ coversMarks: ["TIKI SLURSH"], subjects: BOTH });
+  const c = referenceCoverage({ coversMarks: ["WAVO SLURSH"], subjects: BOTH });
   assert.equal(c.state, "declaration-matches-no-subject");
   assert.deepEqual(c.excludes, [], "not one mark is placed out of scope on a declaration nothing matches");
   assert.deepEqual(c.covered, []);
-  assert.deepEqual(c.undeclaredIn, ["TIKI SLURSH"], "the label that matched nothing is named");
+  assert.deepEqual(c.undeclaredIn, ["WAVO SLURSH"], "the label that matched nothing is named");
   assert.match(c.why, /stale or mistyped/);
 });
 
 test("a declared label no subject matched, while others did, is reported rather than dropped", () => {
-  const c = referenceCoverage({ coversMarks: [TIKI, "ZORVYS"], subjects: BOTH });
+  const c = referenceCoverage({ coversMarks: [WAVO, "ZORVYS"], subjects: BOTH });
   assert.equal(c.state, "declared");
-  assert.deepEqual(c.covered, [TIKI]);
+  assert.deepEqual(c.covered, [WAVO]);
   assert.deepEqual(c.undeclaredIn, ["ZORVYS"], "the reference names a mark this run never searched");
   assert.match(c.why, /never searched/);
 });
 
 test("the clearance lane publishes no subject roll, and nothing changes for it", () => {
-  const c = referenceCoverage({ coversMarks: [TIKI], subjects: null });
+  const c = referenceCoverage({ coversMarks: [WAVO], subjects: null });
   assert.equal(c.state, "no-subject-roll");
   assert.deepEqual(c.excludes, [], "a lane with no roll can have nothing out of the reference's scope");
   assert.equal(c.subjects, null, "three-valued: null is not the same as an empty roll");
   // An EMPTY roll is a different fact from no roll at all, and must not collapse into it.
-  assert.equal(referenceCoverage({ coversMarks: [TIKI], subjects: [] }).state, "declaration-matches-no-subject");
+  assert.equal(referenceCoverage({ coversMarks: [WAVO], subjects: [] }).state, "declaration-matches-no-subject");
 });
 
 // ── scoreRecall — the partition ───────────────────────────────────────────────────────────────────
 
 // The batch as knockout publishes it: the run's own findings, each carrying the SUBJECT it was searching.
 const KO_FINDINGS = [
-  { subject: TIKI, mark: "Coral Freezes", owner: null, band: "Medium", evidence: "common-law" },
-  { subject: TIKI, mark: "TOAST CORAL FREEZIES", owner: null, band: "Low", evidence: "common-law" },
+  { subject: WAVO, mark: "Coral Freezes", owner: null, band: "Medium", evidence: "common-law" },
+  { subject: WAVO, mark: "TOAST CORAL FREEZIES", owner: null, band: "Low", evidence: "common-law" },
   { subject: CINDER, mark: "Cinder", owner: null, band: "Low", evidence: "common-law" },
   { subject: CINDER, mark: "Lanterne Arc Scented Porcelain Candle, Cinder", owner: null, band: "Low", evidence: "common-law" },
   { subject: CINDER, mark: "Cinder", owner: null, band: "Low", evidence: "common-law" },
 ];
-const COVERAGE = referenceCoverage({ coversMarks: [TIKI], subjects: BOTH });
+const COVERAGE = referenceCoverage({ coversMarks: [WAVO], subjects: BOTH });
 const REGISTER = [{ mark: "ZORVYS", owner: "Zorvys Holdings", classes: [32] }];
 
 test("an uncovered mark's findings land in `uncovered` and in NO other bucket", () => {
@@ -124,7 +124,7 @@ test("an uncovered mark's findings land in `uncovered` and in NO other bucket", 
   // The COUNT is what catches the absence-reported-as-success arm: dropped from every bucket, the two
   // "neither noise nor lost" asserts below still hold and the round reads better than it is.
   assert.equal(b.uncovered.length, 3, "all three of the second mark's findings are accounted for");
-  assert.deepEqual(b.noise.map((r) => r.subject), [TIKI, TIKI], "and NOT ONE of them is noise");
+  assert.deepEqual(b.noise.map((r) => r.subject), [WAVO, WAVO], "and NOT ONE of them is noise");
   assert.deepEqual(b.lost.map((r) => r.mark), ["ZORVYS"], "nor lost — lost holds reference entries only");
   for (const r of b.uncovered) {
     assert.equal(r.subject, CINDER, "every uncovered row names the mark it belongs to");
@@ -187,16 +187,16 @@ test("the clearance lane's buckets are untouched by any of this", () => {
   // Same assertions the shipped withheld/lost split makes, with a coverage object in hand. If exclusion
   // ever ran when the roll is null, the withheld/lost split moves and this goes red.
   const reference = [
-    { mark: "TIKI", owner: "Tiki Corporation", classes: [32] },
-    { mark: "TIKI TWIST", classes: [32] },
+    { mark: "WAVO", owner: "Wavo Corporation", classes: [32] },
+    { mark: "WAVO TWIST", classes: [32] },
     { mark: "E2E LOST PROBE", classes: [32] },
   ];
-  const findings = [{ subject: null, mark: "TIKI", owner: "Tiki Corporation" }];
-  const retrieved = [{ mark: "TIKI TWIST", record_id: "/mark/us/d074651d-d49a-46c1-9c95-8b6a6f0880f0" }];
-  const coverage = referenceCoverage({ coversMarks: [TIKI], subjects: null });
+  const findings = [{ subject: null, mark: "WAVO", owner: "Wavo Corporation" }];
+  const retrieved = [{ mark: "WAVO TWIST", record_id: "/mark/us/d074651d-d49a-46c1-9c95-8b6a6f0880f0" }];
+  const coverage = referenceCoverage({ coversMarks: [WAVO], subjects: null });
   const b = scoreRecall({ reference, findings, retrieved, scopeClasses: ["32"], coverage });
-  assert.deepEqual(b.found.map((r) => r.mark), ["TIKI"]);
-  assert.deepEqual(b.withheld.map((r) => r.mark), ["TIKI TWIST"]);
+  assert.deepEqual(b.found.map((r) => r.mark), ["WAVO"]);
+  assert.deepEqual(b.withheld.map((r) => r.mark), ["WAVO TWIST"]);
   assert.deepEqual(b.lost.map((r) => r.mark), ["E2E LOST PROBE"]);
   assert.deepEqual(b.uncovered, []);
 });
@@ -209,7 +209,7 @@ test("a column a mark cannot speak to is `—`, never 0", () => {
   // `no-reference-entries` row and its three-valued `returned` exist to prevent.
   const buckets = scoreRecall({ reference: REGISTER, findings: KO_FINDINGS, registerOnly: true, coverage: COVERAGE });
   const m = scoreByMark({ buckets, coverage: COVERAGE, lane: "knockout" });
-  const tiki = m.rows.find((r) => r.subject === TIKI);
+  const wavo = m.rows.find((r) => r.subject === WAVO);
   const cinder = m.rows.find((r) => r.subject === CINDER);
 
   assert.equal(cinder.coverage, "not-covered");
@@ -218,17 +218,17 @@ test("a column a mark cannot speak to is `—`, never 0", () => {
   assert.equal(cinder.noise, null);
   assert.equal(cinder.uncovered.length, 3, "what it DOES have is its uncovered rows");
 
-  assert.equal(tiki.coverage, "covered");
-  assert.equal(tiki.noise.length, 2, "and the covered mark's own noise, separated from the other's");
-  assert.equal(tiki.uncovered, null, "a covered mark cannot have uncovered rows — that column is not 0");
+  assert.equal(wavo.coverage, "covered");
+  assert.equal(wavo.noise.length, 2, "and the covered mark's own noise, separated from the other's");
+  assert.equal(wavo.uncovered, null, "a covered mark cannot have uncovered rows — that column is not 0");
 });
 
 test("the fold takes its rows from the SUBJECT ROLL, not from the findings", () => {
   // A mark that was searched and came back with nothing still gets a row. Derived from the finding rows
   // instead, it vanishes — and a covered mark that came back clean then reads identically to a mark that
   // was never searched at all.
-  const roll = [TIKI, CINDER, "ZORVYS"];
-  const coverage = referenceCoverage({ coversMarks: [TIKI, "ZORVYS"], subjects: roll });
+  const roll = [WAVO, CINDER, "ZORVYS"];
+  const coverage = referenceCoverage({ coversMarks: [WAVO, "ZORVYS"], subjects: roll });
   const buckets = scoreRecall({ reference: REGISTER, findings: KO_FINDINGS, registerOnly: true, coverage });
   const m = scoreByMark({ buckets, coverage, lane: "knockout" });
   assert.deepEqual(m.rows.map((r) => r.subject), roll, "one row per mark searched, in the roll's order");
@@ -246,7 +246,7 @@ test("the fold can never disagree with the buckets it folds", () => {
 });
 
 test("no subject roll means no per-mark fold, and it says so rather than printing an empty one", () => {
-  const coverage = referenceCoverage({ coversMarks: [TIKI], subjects: null });
+  const coverage = referenceCoverage({ coversMarks: [WAVO], subjects: null });
   const m = scoreByMark({ buckets: scoreRecall({ reference: REGISTER, findings: [], coverage }), coverage, lane: "clearance" });
   assert.equal(m.rows, null, "null, not [] — an empty table would read as a batch that searched nothing");
   assert.match(m.absent, /no per-mark subject roll/);
@@ -262,13 +262,13 @@ test("the knockout lane's structural `found` 0 is stated, so it is not filed as 
 // ── the reference contract ────────────────────────────────────────────────────────────────────────
 
 test("covers_marks is optional, and malformed refuses rather than reading as a clean sweep", () => {
-  const base = { schema_version: 1, scenario: "R3", source: "x", register: [{ mark: "TIKI" }] };
+  const base = { schema_version: 1, scenario: "R3", source: "x", register: [{ mark: "WAVO" }] };
   assert.deepEqual(validateReference(base), [], "ABSENT is valid — that is the whole migration");
-  assert.deepEqual(validateReference({ ...base, covers_marks: [TIKI] }), []);
-  assert.match(validateReference({ ...base, covers_marks: TIKI }).join(" "), /covers_marks/, "a bare string is refused");
+  assert.deepEqual(validateReference({ ...base, covers_marks: [WAVO] }), []);
+  assert.match(validateReference({ ...base, covers_marks: WAVO }).join(" "), /covers_marks/, "a bare string is refused");
   assert.match(validateReference({ ...base, covers_marks: [] }).join(" "), /covers_marks/, "an empty array is refused");
-  assert.match(validateReference({ ...base, covers_marks: [TIKI, 7] }).join(" "), /covers_marks/, "a non-string entry is refused");
-  assert.match(validateReference({ ...base, covers_marks: [TIKI, "  "] }).join(" "), /covers_marks/, "and a blank one");
+  assert.match(validateReference({ ...base, covers_marks: [WAVO, 7] }).join(" "), /covers_marks/, "a non-string entry is refused");
+  assert.match(validateReference({ ...base, covers_marks: [WAVO, "  "] }).join(" "), /covers_marks/, "and a blank one");
 });
 
 test("the schema version does NOT move — a bump stops every gold set in the config store at once", () => {
@@ -287,9 +287,9 @@ function makeStore(extra = {}) {
   const dir = mkdtempSync(join(tmpdir(), "score-store-"));
   mkdirSync(join(dir, "baselines"), { recursive: true });
   const doc = {
-    schema_version: 1, scenario: "R3", mark: TIKI, source: "fixture — synthetic two-mark knockout batch",
+    schema_version: 1, scenario: "R3", mark: WAVO, source: "fixture — synthetic two-mark knockout batch",
     scope: { classes: [32] }, register: REGISTER, channels: [],
-    counts: [{ mark: TIKI, classes: [32], identical: { min: 0, max: 50 } }],
+    counts: [{ mark: WAVO, classes: [32], identical: { min: 0, max: 50 } }],
     ...extra,
   };
   if (doc.counts === undefined) delete doc.counts;
@@ -303,7 +303,7 @@ function makeKnockoutRun() {
   writeFileSync(join(dir, "knockout-findings.json"), JSON.stringify({
     schema_version: 1, batch: { executiveSummary: "fixture" },
     marks: [
-      { name: TIKI, band: "Medium", findings: KO_FINDINGS.filter((f) => f.subject === TIKI)
+      { name: WAVO, band: "Medium", findings: KO_FINDINGS.filter((f) => f.subject === WAVO)
         .map((f, i) => ({ ordinal: i + 1, name: f.mark, owner: "fixture", band: f.band })) },
       { name: CINDER, band: "Low", findings: KO_FINDINGS.filter((f) => f.subject === CINDER)
         .map((f, i) => ({ ordinal: i + 1, name: f.mark, owner: "fixture", band: f.band })) },
@@ -326,7 +326,7 @@ const cli = (args, env = {}) => {
 };
 
 test("CLI: a declared reference separates the second mark's hits out of noise, and names them", () => {
-  const store = makeStore({ covers_marks: [TIKI] });
+  const store = makeStore({ covers_marks: [WAVO] });
   const run = makeKnockoutRun();
   try {
     const { code, out } = cli(["R3", "--run", run], { CLEAROTRON_E2E_DIR: store });
@@ -346,7 +346,7 @@ test("CLI: a declared reference separates the second mark's hits out of noise, a
     assert.match(out, /· Cinder\s+·\s+CINDER LANTERN/, "and so does an uncovered one");
     // THE ACCEPTANCE: attribution readable without opening knockout-findings.json.
     assert.match(out, /── by mark/);
-    assert.match(out, new RegExp(`${TIKI}\\s+covered\\s+0\\s+0\\s+2\\s+—`), "the covered mark's row");
+    assert.match(out, new RegExp(`${WAVO}\\s+covered\\s+0\\s+0\\s+2\\s+—`), "the covered mark's row");
     assert.match(out, new RegExp(`${CINDER}\\s+not-covered\\s+—\\s+—\\s+—\\s+3`), "and the uncovered mark's, in dashes not zeroes");
     assert.match(out, /coverage:\s+declared/);
     // The house rule the whole tool rests on, re-run over the lines this change added.
@@ -363,7 +363,7 @@ test("CLI: a mark that was searched and came back with nothing still gets a row"
   // machine-gated against the frozen plan (validateMergedFindings), the rows are a projection of it, and
   // derived from the projection a covered mark that came back CLEAN disappears from the page entirely —
   // reading identically to a mark that was never searched.
-  const store = makeStore({ covers_marks: [TIKI, "ZORVYS"] });
+  const store = makeStore({ covers_marks: [WAVO, "ZORVYS"] });
   const run = makeKnockoutRun();
   try {
     const ko = JSON.parse(readFileSync(join(run, "knockout-findings.json"), "utf8"));
@@ -426,7 +426,7 @@ test("CLI: the clearance lane says it publishes NO roll — not that it publishe
   // published one and it was empty. Collapsed to `[]`, the page tells a clearance reader the run
   // "published an empty subject roll", which is a fact about the run and is false — the same
   // absence-reported-as-a-measurement shape the buckets are careful about everywhere else.
-  const store = makeStore({ covers_marks: [TIKI] });
+  const store = makeStore({ covers_marks: [WAVO] });
   const run = mkdtempSync(join(tmpdir(), "score-cl-run-"));
   try {
     writeFileSync(join(run, "findings.json"), JSON.stringify({
@@ -444,7 +444,7 @@ test("CLI: the clearance lane says it publishes NO roll — not that it publishe
 });
 
 test("CLI --json carries the coverage, the bucket and the per-mark fold", () => {
-  const store = makeStore({ covers_marks: [TIKI] });
+  const store = makeStore({ covers_marks: [WAVO] });
   const run = makeKnockoutRun();
   try {
     const { code, out, stdout } = cli(["R3", "--run", run, "--json"], { CLEAROTRON_E2E_DIR: store });
@@ -464,12 +464,12 @@ test("CLI --json carries the coverage, the bucket and the per-mark fold", () => 
 test("CLI: an archived prose-shape knockout run still carries its rating word", () => {
   // score.mjs reads PRESERVED runs, and the archived prose row `{name, type, url, description, impact}`
   // is still republished. Reading only `band` would blank the rating on every archived run.
-  const store = makeStore({ covers_marks: [TIKI] });
+  const store = makeStore({ covers_marks: [WAVO] });
   const run = mkdtempSync(join(tmpdir(), "score-ko-old-"));
   try {
     writeFileSync(join(run, "knockout-findings.json"), JSON.stringify({
       schema_version: 1, batch: { executiveSummary: "fixture" },
-      marks: [{ name: TIKI, findings: [{ name: "Coral Freezes", type: "Active Business", url: "https://example.invalid/a", description: "d", impact: "HIGH" }] }],
+      marks: [{ name: WAVO, findings: [{ name: "Coral Freezes", type: "Active Business", url: "https://example.invalid/a", description: "d", impact: "HIGH" }] }],
     }));
     writeFileSync(join(run, "status.json"), JSON.stringify({ verdict: "Medium" }));
     const { code, out, stdout } = cli(["R3", "--run", run, "--json"], { CLEAROTRON_E2E_DIR: store });

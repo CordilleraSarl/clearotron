@@ -3,7 +3,7 @@
 //
 // member 2 — A RELABELLED RECORD IS THE SAME MARK, AND IT WAS TIERING BELOW THE FLOOR.
 //
-// Measured against the scorer: `VENZAL / VENZALMONO / VENZALKOMB` and `CHROMA & Device` are `alias` to
+// Measured against the scorer: `VENZAL / VENZALMONO / VENZALKOMB` and `LUMIVANE & Device` are `alias` to
 // reference-score and were `same-family / token-identical` here. Not dropped — tiered below the line.
 // The floors take `identical` and `near-identical` only, so a register record that IS the mark under a
 // relabelling never became a row a lawyer had to answer.
@@ -25,18 +25,18 @@ test("THE MEASURED PAIR — a relabelled entry is identical, and rides the floor
 });
 
 test("a device note is a relabelling, not a different mark", () => {
-  assert.equal(classifyRecord("CHROMA & Device", ["CHROMA"]).basis, "alias-exact");
+  assert.equal(classifyRecord("LUMIVANE & Device", ["LUMIVANE"]).basis, "alias-exact");
 });
 
 test("THE COLLISION THIS MUST NOT CAUSE — a word separator never collapses a longer mark", () => {
   // reference-score's rule-2 block warns about exactly this: conflating word separators with alias
-  // separators makes every multi-word mark match its own first word. `TIKI TWIST` is a different
+  // separators makes every multi-word mark match its own first word. `WAVO TWIST` is a different
   // proprietor's different mark. Whitespace and hyphen are deliberately NOT in the separator class.
-  for (const rec of ["TIKI TWIST", "TIKI-TWIST", "TIKI  TWIST"]) {
-    const r = classifyRecord(rec, ["TIKI"]);
-    assert.notEqual(r.tier, "identical", `${rec} must not be identical to TIKI`);
+  for (const rec of ["WAVO TWIST", "WAVO-TWIST", "WAVO  TWIST"]) {
+    const r = classifyRecord(rec, ["WAVO"]);
+    assert.notEqual(r.tier, "identical", `${rec} must not be identical to WAVO`);
   }
-  assert.deepEqual(aliasesOf("TIKI TWIST"), ["tikitwist"], "one name, not two aliases");
+  assert.deepEqual(aliasesOf("WAVO TWIST"), ["wavotwist"], "one name, not two aliases");
 });
 
 test("EQUALITY, NOT RESEMBLANCE — an alias that merely looks like a target is the family tiers' business", () => {

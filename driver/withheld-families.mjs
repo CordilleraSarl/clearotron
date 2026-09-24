@@ -46,6 +46,24 @@ export function readWithheldFamilies(runDir) {
 }
 
 /**
+ * The waiting families nobody asked, split by whether a judgment on them is on record. A family is
+ * withheld when the reading turn's record names it, or when its coverage-form row is settled
+ * withheld-by-judgment (a family the turn left unrecorded is settled there); every other one is still
+ * awaiting the turn's ask. PURE over its inputs.
+ */
+export function splitWaitingFamilies(awaiting, { recorded = {}, formRows = [] } = {}) {
+  const settled = new Set((Array.isArray(formRows) ? formRows : [])
+    .filter((r) => r?.kind === "family" && r?.status === "withheld-by-judgment")
+    .map((r) => String(r?.qid ?? "").trim()).filter(Boolean));
+  const withheld = [], stillAwaiting = [];
+  for (const f of Array.isArray(awaiting) ? awaiting : []) {
+    const qid = String(f?.qid ?? "").trim();
+    (recorded?.[qid] || settled.has(qid) ? withheld : stillAwaiting).push(f);
+  }
+  return { withheld, awaiting: stillAwaiting };
+}
+
+/**
  * The waiting families on one axis, and which of them the reading turn has asked: a waiting row is asked
  * when a question it did not wait for — a plan entry or one of this axis's supplementals — carries the
  * same question key. PURE over its inputs.

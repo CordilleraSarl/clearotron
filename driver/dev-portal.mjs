@@ -78,7 +78,7 @@ export const DEV_COCKPIT_JOB_FIELDS = Object.freeze({
       + "is a form for composing REAL dev runs; a fixture run is declared by the job file that wants one, so "
       + "the fact travels with the run rather than with whoever filled in a form.",
     promptParts: "the requester's declaration that the prose rides as SIDECAR files. The cockpit composes a job "
-      + "from its own form and writes no sidecars, so it may not claim that shape (#1085).",
+      + "from its own form and writes no sidecars, so it may not claim that shape.",
     forwarderDomain: "the cockpit's assembler defaults it; a dev form has no forwarding domain to state.",
     provider: "which register vendor answers is the dev instance's own configuration, not a form field.",
     name: "the pre-markName spelling of the search subject. The form posts `mark`.",

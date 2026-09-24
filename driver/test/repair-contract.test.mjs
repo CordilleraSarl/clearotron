@@ -54,7 +54,7 @@ test("abbrev marks a cut value, leaves a fitting one byte-identical, and never e
   // the silent form was: an 80-char prefix that IS a substring of the real URL, so it looks complete
   assert.ok(url.includes(url.slice(0, 80)), "the pre-#434 rendering was indistinguishable from a whole URL");
   // a value that fits is untouched — every short receipt in the archive renders exactly as before
-  for (const v of ["https://dictionary.com/browse/offensive", "DELPHI gang", "", null, undefined])
+  for (const v of ["https://dictionary.com/browse/offensive", "KORPHI gang", "", null, undefined])
     assert.equal(abbrev(v, 80), String(v ?? ""), `unchanged when it fits: ${v}`);
   assert.equal(abbrev("abcdef", 6), "abcdef", "exactly at the bound is not a cut");
   assert.equal(abbrev("abcdefg", 6), "abcde…");

@@ -11,14 +11,14 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { findUnrecordedConnotationQueries, captureGridFromResponse } from "../src/core.js";
 
-const DICTATED = "提基斯拉什 offensive meaning";
-const MUTATED = "提基斯ラッシュ offensive meaning";
+const DICTATED = "瓦波斯拉什 offensive meaning";
+const MUTATED = "瓦波斯ラッシュ offensive meaning";
 
 const SPEC = {
   terms: ["CORAL FREEZE"],
   platforms: ["amazon.com"],
   output_path: "/tmp/grid.json",
-  connotation: { queries: ["CORAL FREEZE gang", DICTATED, "티키 슬러시 meaning"] },
+  connotation: { queries: ["CORAL FREEZE gang", DICTATED, "와보 슬러시 meaning"] },
 };
 
 const prRisk = (queries) => queries.map((q) => ({ query: q, results: [] }));
@@ -32,7 +32,7 @@ const fullCells = [{ term: "CORAL FREEZE", platform: "amazon.com", status: "no_h
 
 test("a mis-transcribed query is caught by identity, though the count is whole", () => {
   const { missing, unmatched } = findUnrecordedConnotationQueries(
-    SPEC, ledger(["CORAL FREEZE gang", MUTATED, "티키 슬러시 meaning"]));
+    SPEC, ledger(["CORAL FREEZE gang", MUTATED, "와보 슬러시 meaning"]));
   assert.deepEqual(missing, [DICTATED], "the dictated query never ran");
   assert.deepEqual(unmatched, [MUTATED.toLowerCase()], "the substitute is surfaced so the retry can see it");
 });
@@ -49,7 +49,7 @@ test("a query that THREW owns a gap row and is not reported as a silent drop", (
     [{ term: DICTATED, platform: "connotation", error: "TimeoutError()" }], // reconciled object form
   ]) {
     const { missing } = findUnrecordedConnotationQueries(
-      SPEC, ledger(["CORAL FREEZE gang", "티키 슬러시 meaning"], gaps));
+      SPEC, ledger(["CORAL FREEZE gang", "와보 슬러시 meaning"], gaps));
     assert.deepEqual(missing, [], "an honest error is the driver merge gate's call, not a substitution");
   }
 });
@@ -57,7 +57,7 @@ test("a query that THREW owns a gap row and is not reported as a silent drop", (
 test("captureGridFromResponse refuses the substitution and names BOTH strings", () => {
   const out = captureGridFromResponse(sandbox(JSON.stringify({
     cells: fullCells,
-    extras: { pr_risk: prRisk(["CORAL FREEZE gang", MUTATED, "티키 슬러시 meaning"]) },
+    extras: { pr_risk: prRisk(["CORAL FREEZE gang", MUTATED, "와보 슬러시 meaning"]) },
     gaps: [],
   })), SPEC);
   assert.equal(out.ok, false);
@@ -68,8 +68,8 @@ test("captureGridFromResponse refuses the substitution and names BOTH strings", 
   // changed behaviour is its own defect.
   assert.equal(out.connotationBelowFloor, true);
   assert.deepEqual(out.missingQueries, [DICTATED]);
-  assert.match(out.error, /提基斯拉什 offensive meaning/, "the retry is told what it was supposed to run");
-  assert.match(out.error, /提基斯ラッシュ offensive meaning/, "…and what it ran instead");
+  assert.match(out.error, /瓦波斯拉什 offensive meaning/, "the retry is told what it was supposed to run");
+  assert.match(out.error, /瓦波斯ラッシュ offensive meaning/, "…and what it ran instead");
 });
 
 test("a faithful sweep still passes — the gate does not trip on a clean run", () => {

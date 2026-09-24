@@ -37,8 +37,8 @@ process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 const SPEC_PLATFORMS = ["store.steampowered.com", "web"];
-const TERMS = ["novapulse", "kroma", "转码", "chr0ma"];
-const QUERIES = ["novapulse slang", "novapulse gang", "kroma meaning", "转码 meaning"];
+const TERMS = ["novapulse", "saybel", "转码", "sab1e"];
+const QUERIES = ["novapulse slang", "novapulse gang", "saybel meaning", "转码 meaning"];
 const cellsFor = (terms) => terms.flatMap((term) => SPEC_PLATFORMS.map((platform) => ({ term, platform, status: "no_hit", results: [] })));
 const prRisk = (queries) => queries.map((q) => ({ query: q, results: [] }));
 

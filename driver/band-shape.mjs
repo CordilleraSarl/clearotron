@@ -65,7 +65,7 @@ const tokensOf = (s) => String(s ?? "").split(/[^\p{L}\p{N}]+/u).map((t) => norm
 
 /**
  * The ALTERNATIVE NAMES a label carries — `VENZAL / VENZALMONO / VENZALKOMB` is one relabelled entry,
- * `CHROMA & Device` is one mark plus a device note.
+ * `LUMIVANE & Device` is one mark plus a device note.
  *
  * The separator class is reference-score's `labelAliases`, character for character, and the two are
  * meant to stay that way: the scorer and the engine must agree about what a relabelling is, or a record
@@ -175,7 +175,7 @@ export function classifyRecord(markText, targets) {
 
   // ── member 2 — A RELABELLED RECORD IS THE SAME MARK, AND IT WAS TIERING BELOW THE FLOOR ────────
   //
-  // Measured against the scorer on `origin/main`: `VENZAL / VENZALMONO / VENZALKOMB` and `CHROMA &
+  // Measured against the scorer on `origin/main`: `VENZAL / VENZALMONO / VENZALKOMB` and `LUMIVANE &
   // Device` are `alias` to reference-score and `same-family / token-identical` here. Not dropped —
   // tiered BELOW the line. The floors take `identical` and `near-identical` only, so a register record
   // that IS the mark under a relabelling never became a row a lawyer had to answer. Same consequence as
@@ -184,7 +184,7 @@ export function classifyRecord(markText, targets) {
   // ALIAS SEPARATORS ONLY, and the distinction is reference-score's, kept deliberately identical
   // because the two must agree about what a relabelling IS: `/ , · & |` separate ALTERNATIVE NAMES for
   // one record; whitespace and hyphens separate WORDS WITHIN one name. Conflating them makes every
-  // multi-word mark match its own first word — `TIKI TWIST` would become `TIKI`, which is a different
+  // multi-word mark match its own first word — `WAVO TWIST` would become `WAVO`, which is a different
   // proprietor's different mark and the collision the scorer's own doc block warns about. Whitespace is
   // NOT in the class here for exactly that reason.
   //
@@ -213,7 +213,7 @@ export function classifyRecord(markText, targets) {
 // The candidate set of the retrieved→judgment reconciliation: every LIVE, in-scope, SCREEN-SURFACED
 // record whose mark carries the manifest's dominant element — as a standalone token
 // (`token-identical`), a token one edit away (`token-edit-1`), or CONCATENATED inside a longer
-// squashed word (`concatenation` — the TIKITONK class: same-family in substance, "other" to the
+// squashed word (`concatenation` — the WAVOTONK class: same-family in substance, "other" to the
 // token classifier, and the proven silent-death seam). Screen-surfaced only (screen_verdict
 // surface:*): the obligation this feeds is "everything the screen surfaced ends somewhere a reader
 // can see"; drop:* records were already ended by the screen with a policed drop row.
@@ -227,7 +227,7 @@ export function classifyRecord(markText, targets) {
 // itself never spells. They rank last so they never reached the top slice, but they inflate the
 // residual a declared crowd count must cover — a count written one short blocks the run (the
 // reviewer reproduced 378 declared vs 379 residual → blocked). A concatenation is a SQUASHED WORD
-// (TIKITONK), which is a property of one token.
+// (WAVOTONK), which is a property of one token.
 export const MIN_CONCAT_LEN = 4;
 
 /**
@@ -323,8 +323,8 @@ export function dominantElementComposites(band, { dominantElement, inScopeClasse
 //       identity, and the arithmetic becomes a cross-reference instead.
 //   (2) owner identity is compared on a CORE + LEGAL-FORM pair, not on the suffix-stripped core
 //       alone. Stripping entity words is what makes "Fairmile Snack Foods Corp." = "Fairmile Snack Foods
-//       Corporation" work, but on the same band it also collapsed "Tiki Group Limited", "Tiki AG"
-//       and "Tiki Corporation" to the bare core "tiki" and merged three distinct registrants on the
+//       Corporation" work, but on the same band it also collapsed "Wavo Group Limited", "Wavo AG"
+//       and "Wavo Corporation" to the bare core "wavo" and merged three distinct registrants on the
 //       mark-owner edge alone. So: same core AND compatible legal forms (one side's form set a
 //       SUBSET of the other's — a register that simply omits the form still matches, two different
 //       stated forms never do).
@@ -359,7 +359,7 @@ export function ownerIdentical(a, b) {
 }
 
 /** The union-find bucket key for the mark+owner edge — core + the SORTED form set, so
- *  "Tiki AG" and "Tiki Corporation" land in different buckets while "X Corp."/"X Corporation" share
+ *  "Wavo AG" and "Wavo Corporation" land in different buckets while "X Corp."/"X Corporation" share
  *  one. The subset relaxation (a register omitting the form) is applied by the second pass below. */
 const ownerKey = (s) => { const { core, forms } = ownerIdentity(s); return core ? `${core}|${[...forms].sort().join("+")}` : ""; };
 const normOwner = (s) => ownerIdentity(s).core;

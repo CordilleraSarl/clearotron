@@ -31,7 +31,7 @@ import { driverDir } from "../shared/driver-dir.mjs";   //
 import { COVERAGE_STATUSES, COVERAGE_FORM_NAME, REGISTER_AXES } from "./coverage-ledger.mjs";
 import { coverageFormSidecarName, parseCoverageForm } from "./coverage-form.mjs";
 import { capabilitiesFor } from "./register-capabilities.mjs";
-import { readWithheldFamilies } from "./withheld-families.mjs";
+import { readWithheldFamilies, splitWaitingFamilies } from "./withheld-families.mjs";
 
 export { COVERAGE_FORM_NAME };
 
@@ -162,6 +162,18 @@ export function coverageFormInput(runDir) {
  */
 export function readCoverageFormInput(runDir) {
   return coverageFormInput(runDir).input;
+}
+
+/**
+ * The run's waiting families nobody asked, split into withheld and still awaiting, from both places a
+ * judgment on one is recorded: the reading turn's per-axis record and the coverage form. One reader, so
+ * the reviewer's table and the report's summary line cannot count the same families two ways.
+ */
+export function waitingFamilyStates(runDir, awaiting) {
+  return splitWaitingFamilies(awaiting, {
+    recorded: readWithheldFamilies(runDir),
+    formRows: readCoverageForm(runDir, coverageFormStamp(runDir).formName).rows,
+  });
 }
 
 /** Read the DRIVER'S copy of the form. Three states, and they are not the same fact — see verify.mjs. */

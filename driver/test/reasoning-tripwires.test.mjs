@@ -18,7 +18,7 @@ test("recall-floor: identical-name live in-scope drop not carried → trips", ()
   const md = negMatrix([
     "| NOVAPULSE | NOVAPULSE | dropped (relevance gate / off-field) | URI /mark/us/12345; screen_verdict=surface:in-scope-live; class=9; status=live; crowded |",
   ]);
-  const v = findRecallFloorViolations(md, { carriedMarks: ["RAZER NOVAPULSE"], searchedNames: ["NOVAPULSE"], inScopeClasses: ["9"] });
+  const v = findRecallFloorViolations(md, { carriedMarks: ["KORVANE NOVAPULSE"], searchedNames: ["NOVAPULSE"], inScopeClasses: ["9"] });
   assert.equal(v.length, 1, JSON.stringify(v));
   assert.match(v[0].why, /identical name in the applicant/i);
 });
@@ -47,7 +47,7 @@ test("review-freshness: a review with no fresh input trips; a 'Fresh probe:' lin
   assert.equal(findReviewFreshnessViolation("", {}), null, "no review → null");
   const stale = findReviewFreshnessViolation("CONDITIONAL\nThe narrative is consistent with placement-recommendations.", { upstreamTexts: ["..."] });
   assert.equal(stale.pass, false);
-  const probed = findReviewFreshnessViolation("CONDITIONAL\nFresh probe: CHROME class 9 → https://tmsearch/x confirms a live mark.", {});
+  const probed = findReviewFreshnessViolation("CONDITIONAL\nFresh probe: NOVAPULSO class 9 → https://tmsearch/x confirms a live mark.", {});
   assert.equal(probed.pass, true);
   const newUrl = findReviewFreshnessViolation("CLEAR\nVerified at https://new.example/mark/9 (not upstream).", { upstreamTexts: ["only https://old.example here"] });
   assert.equal(newUrl.pass, true);
@@ -55,18 +55,18 @@ test("review-freshness: a review with no fresh input trips; a 'Fresh probe:' lin
 
 test("seed-neutrality: a graded / 'do not soften' seed trips; placement vocabulary does not", () => {
   const bad = findSeedNeutralityViolations([
-    { name: "matter-context", text: "Seed #1: Razer (Composite: 4, must not be softened downstream)." },
+    { name: "matter-context", text: "Seed #1: Korvane (Composite: 4, must not be softened downstream)." },
   ]);
   assert.ok(bad.some((v) => /do not soften|softened/i.test(v.why)), JSON.stringify(bad));
   assert.ok(bad.some((v) => /Composite/i.test(v.why)));
   const ok = findSeedNeutralityViolations([
-    { name: "placements", text: "Razer NOVAPULSE — placement: headline-candidate. Partner-ecosystem owner; facts only." },
+    { name: "placements", text: "Korvane NOVAPULSE — placement: headline-candidate. Partner-ecosystem owner; facts only." },
   ]);
   assert.equal(ok.length, 0, JSON.stringify(ok));
 });
 
 test("probative-grading: enforcer=high without bears_on trips when adopted; legacy v1 is exempt", () => {
-  const mk = (extra) => ({ ordinal: 1, mark: "RAZER NOVAPULSE", meters: { enforcer: { token: "high", basis: "inferred-from-signal" } }, ...extra });
+  const mk = (extra) => ({ ordinal: 1, mark: "KORVANE NOVAPULSE", meters: { enforcer: { token: "high", basis: "inferred-from-signal" } }, ...extra });
   // adopted (schema_version 2) + no bears_on → trip
   const a = findProbativeGradingViolations({ schemaVersion: 2, findings: [mk({})] });
   assert.equal(a.length, 1, JSON.stringify(a));
@@ -74,7 +74,7 @@ test("probative-grading: enforcer=high without bears_on trips when adopted; lega
   const b = findProbativeGradingViolations({ findings: [mk({}), { ordinal: 2, mark: "X", bears_on: "asserts NOVAPULSE in class 9", meters: { enforcer: { token: "low" } } }] });
   assert.equal(b.length, 1);
   // adopted + bears_on present → clean
-  const c = findProbativeGradingViolations({ schemaVersion: 2, findings: [mk({ bears_on: "Razer enforces NOVAPULSE on lighting in class 9, the disputed element" })] });
+  const c = findProbativeGradingViolations({ schemaVersion: 2, findings: [mk({ bears_on: "Korvane enforces NOVAPULSE on lighting in class 9, the disputed element" })] });
   assert.equal(c.length, 0);
   // legacy v1, no bears_on anywhere → exempt (no regression)
   const d = findProbativeGradingViolations({ schemaVersion: 1, findings: [mk({})] });
@@ -126,7 +126,7 @@ test("#7 unresolved-disagreement: a Disagreement-resolutions row with no/placeho
 });
 
 test("#8 orphan-finding: a register-sourced finding with no grounding registration trips; grounded / common-law do not", () => {
-  const mk = (over) => ({ ordinal: 1, mark: "BIODEL", source: { source_type: "register-vendor" }, owner: { name: "Acme", registrations: [] }, ...over });
+  const mk = (over) => ({ ordinal: 1, mark: "BIOVEL", source: { source_type: "register-vendor" }, owner: { name: "Acme", registrations: [] }, ...over });
   // register finding, empty registrations → orphan
   const a = findOrphanVerificationFlags({ findings: [mk({})] });
   assert.equal(a.length, 1, JSON.stringify(a));
@@ -154,11 +154,11 @@ test("acpCeiling: the ACP matrix ceilings (Appendix B)", () => {
   assert.equal(acpCeiling("E", "descriptive-terms"), 3);
 });
 
-test("matrix-ceiling: the RAZER NOVAPULSE defect (Level C → Composite 4) trips; matrix-faithful ratings pass", () => {
-  // RAZER NOVAPULSE: "Level C legal read" rated Composite 4/HIGH on an aggressive-enforcer adjustment
-  const razer = findMatrixCeilingViolations({ findings: [{ ordinal: 1, mark: "RAZER NOVAPULSE", composite: 4, level: "C", dispute_type: "horse-trade" }] });
-  assert.equal(razer.length, 1, JSON.stringify(razer));
-  assert.match(razer[0].why, /caps it at 3/);
+test("matrix-ceiling: the KORVANE NOVAPULSE defect (Level C → Composite 4) trips; matrix-faithful ratings pass", () => {
+  // KORVANE NOVAPULSE: "Level C legal read" rated Composite 4/HIGH on an aggressive-enforcer adjustment
+  const korvane = findMatrixCeilingViolations({ findings: [{ ordinal: 1, mark: "KORVANE NOVAPULSE", composite: 4, level: "C", dispute_type: "horse-trade" }] });
+  assert.equal(korvane.length, 1, JSON.stringify(korvane));
+  assert.match(korvane[0].why, /caps it at 3/);
   // matrix-faithful: Ember Guard C + horse-trade = 3; a genuine 5 = E + classic; B = 2 → all pass
   const ok = findMatrixCeilingViolations({ findings: [
     { ordinal: 1, mark: "EMBER GUARD", composite: 3, level: "C", dispute_type: "horse-trade" },

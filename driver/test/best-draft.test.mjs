@@ -105,7 +105,7 @@ const hardWallTurn = (timeoutSec) => ({ code: 137, killed: true, wall: timeoutSe
   laneWaitMs: 0, json: { status: "timeout", result: { meta: { agentMeta: {} }, payloads: [{ text: "" }] } },
   usage: null, sessionRef: null, signals: { hardWall: true } });
 // the shape the connotation gate throws: a count that falls attempt over attempt
-const connFail = (n) => ({ ok: false, reason: `connotation_no_ruling:no_ruling=${n};Q-ABCDEFGH [DELPHI gang]`, quantity: n });
+const connFail = (n) => ({ ok: false, reason: `connotation_no_ruling:no_ruling=${n};Q-ABCDEFGH [KORPHI gang]`, quantity: n });
 
 test("the ladder's BEST rejected draft is preserved — the converged one, not the last one",
   async () => {

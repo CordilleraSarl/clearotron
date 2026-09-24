@@ -238,7 +238,7 @@ export function buildFlagSnapshot(env, { capturedAt, registerProvider = null, re
  * reports a delta that does not exist, which is the same class of lie as reporting none.
  */
 export const PRODUCTION_POSTURE = {
-  source: "production unit environment, read 2026-08-04 with owner authorisation (#372); the flag half "
+  source: "production unit environment, read 2026-08-04 with owner authorisation; the flag half "
     + "retired 2026-08-20 when #1149 item 8 deleted every switch it named",
   // The three it named are gone — deleted BECAUSE production ran them on while the source shipped them
   // off, which is the delta this block existed to expose. There is nothing left to differ about, and

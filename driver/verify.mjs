@@ -848,7 +848,7 @@ export const CORRECTION_KINDS = ["coverage-disposition", "fact", "rating", "narr
 const CORRECTION_KIND_RE = /\[kind:\s*([a-z][a-z-]*)\s*\]/i;
 // — THE SECOND CHANNEL: WHICH FINDING A FLAG IS ABOUT.
 //
-// The reviewer already writes it, in prose — a delivered review's flags open "Finding 9 — DELPHIC…",
+// The reviewer already writes it, in prose — a delivered review's flags open "Finding 9 — KORPHIC…",
 // "Findings 4, 7, 8." — and the driver could not read it: `targetsOf` matched mark/owner NAMES and
 // returned nothing for six of nine flags on that run. So the corrective pass re-emitted the whole
 // narrative and the whole findings.json, for 683 seconds, and exactly ONE finding moved.
@@ -2574,7 +2574,7 @@ function checkClientSummaryJoin(p, c) {
     const risk = body.match(/^-\s*risk:\s*([A-Za-z –-]+)$/m)?.[1]?.trim();
     if (!risk) continue;
     // wp50: deterministic join (ord line → exact mark → unique containment). The old first-match
-    // containment join bound "DEMVENZY — Novartis" to the VENZY finding and VALIDATED the wrong tier.
+    // containment join bound "DEMVENZY — Norvanta" to the VENZY finding and VALIDATED the wrong tier.
     const f = joinFindingToBlock({ ord: parseBlockOrd(body), head }, findingsDoc.findings);
     if (!f) continue;                                                              // unjoinable block — shape checks own it
     if (v4) {
@@ -2678,4 +2678,21 @@ function placementAccountVerdict(dir) {
 // key wins where both exist, because the stage writes it on every fresh dispatch. PURE.
 export function variantsStageContract(marker) {
   return marker?.["clearance-variants"] ?? marker?.["prelim-variants"] ?? null;
+}
+
+/**
+ * A late review read against the carried verdict (beside `verdictHardenedTo` in meaning; it sits at the
+ * end of the file so no line cited above it moves). `hardened` is `verdictHardenedTo`'s answer, the only
+ * one the caller adopts. `softened` is the review's verdict when it is milder than the one carried: it
+ * is never adopted, and the caller records it, because the review on disk then disagrees with the run's
+ * verdict and a reader needs to be told which one governs. Both null when the review is the same, or
+ * unparseable. PURE.
+ */
+export function lateReviewAgainst(carried, reviewMd) {
+  const hardened = verdictHardenedTo(carried, reviewMd);
+  const now = parseVerdict(reviewMd);
+  const a = VERDICT_RANK[String(carried ?? "").toUpperCase()];
+  const b = VERDICT_RANK[now];
+  const softened = !hardened && Number.isInteger(a) && Number.isInteger(b) && b < a ? now : null;
+  return { hardened, softened };
 }

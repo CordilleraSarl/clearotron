@@ -179,7 +179,7 @@ function recallEnding(name, qid, join, ts) {
   if (discharges) return { ending, handoff: null };
   return {
     ending: null,
-    handoff: `the probe ran and ${why} — a recall probe discharges on what came back, not on having run (#1349). `
+    handoff: `the probe ran and ${why} — a recall probe discharges on what came back, not on having run. `
       + `Ships OPEN in the audit's ask ledger for the reviewing lawyer.`,
   };
 }
@@ -601,7 +601,7 @@ const normMark = (s) => String(s ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
  * as immaterial only when the mark it went looking for is in the client's findings. Otherwise the mark
  * is owed a finding and the ask stays open.
  *
- * The defect this answers: a recall probe found OSLER DELPHI, the closure stage pointed at
+ * The defect this answers: a recall probe found HALVER KORPHI, the closure stage pointed at
  * `register-findings.md` — the run's own working sheet, where the mark genuinely IS reasoned — and the
  * ask closed. The sheet is a citable file and the citation was true. It is simply not the document the
  * client reads, and nothing checked that.

@@ -14,22 +14,25 @@
 //   3. every name the tool servers read is either handed to them, written into their own entry by
 //      gather-config, or named below as not needed with the reason; a server that starts reading a new
 //      setting fails this until someone decides which;
-//   4. a real start through each adapter, against the mocks, carries the list and not the secrets.
+//   4. a real start through each adapter, against the mocks, carries the list and not the secrets;
+//   5. on Codex, whose stages keep a shell, the stage's commands are refused what the program holds only
+//      for its tool servers, and the Codex key.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync, mkdtempSync, rmSync, readdirSync } from "node:fs";
+import { spawnSync } from "node:child_process";
 import { join, dirname, resolve, relative } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 
 import {
   engineEnv, toolServerNames, RUNTIME_NAMES, RUNTIME_PREFIXES, NETWORK_NAMES, CLAUDE_PREFIXES, CLAUDE_NAMES,
-  CLOUD_NAMES, CLOUD_PREFIXES, CODEX_NAMES, TOOL_SERVER_SETTINGS, TEST_PREFIXES,
+  CLOUD_NAMES, CLOUD_PREFIXES, CLOUD_ONLY, CODEX_NAMES, TOOL_SERVER_SETTINGS, TEST_PREFIXES, codexCommandWithheld,
 } from "../engine/engine-env.mjs";
 import { CLOUD_SETTINGS } from "../engine/auth.mjs";
-import { CRED_ENV_FORWARD } from "../engine/mcp/codex-config.mjs";
+import { CRED_ENV_FORWARD, renderCodexConfigToml } from "../engine/mcp/codex-config.mjs";
 import { PROVIDERS, RESEARCH_PROVIDERS, SERP_PROVIDERS, ENGINE_BINARIES } from "../driver.config.mjs";
-import { buildGatherMcpConfig, toolGroupsForStage } from "../engine/mcp/gather-config.mjs";
+import { buildGatherMcpConfig, toolGroupsForStage, allowedToolsFor } from "../engine/mcp/gather-config.mjs";
 import { auditEnv, namesRead, envNameBindings, mergeEnvNameBindings } from "../../scripts/env-audit.mjs";
 import { pinEnv } from "../../shared/env-aliases.mjs";
 
@@ -44,6 +47,7 @@ test("the program's environment list is exactly this, group by group", () => {
     "WSL_DISTRO_NAME", "WSL_INTEROP",
     "SYSTEMROOT", "WINDIR", "SYSTEMDRIVE", "COMSPEC", "PATHEXT", "USERPROFILE", "HOMEDRIVE", "HOMEPATH",
     "APPDATA", "LOCALAPPDATA", "PROGRAMDATA", "PROGRAMFILES",
+    "NUMBER_OF_PROCESSORS", "PROCESSOR_ARCHITECTURE", "OS", "USERNAME", "COMPUTERNAME",
   ]);
   assert.deepEqual([...RUNTIME_PREFIXES], ["LC_"]);
   assert.deepEqual([...NETWORK_NAMES], [
@@ -59,6 +63,9 @@ test("the program's environment list is exactly this, group by group", () => {
   ]);
   assert.deepEqual([...CLOUD_NAMES], [...CLOUD_SETTINGS, "GOOGLE_CLOUD_PROJECT", "GCLOUD_PROJECT", "CLOUD_ML_REGION"]);
   assert.deepEqual([...CLOUD_PREFIXES], ["AWS_", "VERTEX_REGION_", "CLOUDSDK_", "AZURE_"]);
+  // Every cloud setting but the four model pins, which hold a tier still under any billing.
+  assert.deepEqual([...CLOUD_ONLY], CLOUD_SETTINGS.filter((n) => !["ANTHROPIC_DEFAULT_OPUS_MODEL",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL", "ANTHROPIC_DEFAULT_HAIKU_MODEL", "ANTHROPIC_DEFAULT_FABLE_MODEL"].includes(n)));
   assert.deepEqual([...CODEX_NAMES], ["CODEX_CA_CERTIFICATE", "CODEX_SQLITE_HOME", "RUST_LOG"]);
   assert.deepEqual([...TOOL_SERVER_SETTINGS], [
     "CLARIVATE_API_BASE", "SIGNA_BASE_URL", "EUIPO_ENVIRONMENT", "SIGNA_FIXTURES_DIR", "CLAWDI_SIGNA_FIXTURES_DIR",
@@ -82,7 +89,8 @@ function admits(engine, mode) {
     for (const n of [...CODEX_NAMES, ...toolServerNames()]) names.add(n);
     if (mode === "api-key") names.add("CODEX_API_KEY");
   }
-  return (k) => names.has(k) || prefixes.some((p) => k.startsWith(p));
+  const cloudOnlyOut = engine === "anthropic-agent" && mode !== "cloud" ? new Set(CLOUD_ONLY) : new Set();
+  return (k) => !cloudOnlyOut.has(k) && (names.has(k) || prefixes.some((p) => k.startsWith(p)));
 }
 
 /** Every setting the product reads (the env audit's product rows), by name. */
@@ -103,6 +111,27 @@ function wholeInstall() {
 }
 
 // ── 2. NOTHING OUTSIDE THE LIST, UNDER ANY ENGINE OR BILLING MODE ─────────────────────────────────────
+test("on Windows the list matches in any case and keeps each name as Windows spelled it", () => {
+  // Windows passes `Path`, `SystemRoot` and friends in mixed case, and a program started without
+  // SYSTEMROOT cannot open a socket there. Pinned here on Linux through the platform parameter.
+  const base = {
+    Path: "C:\\Windows\\system32", SystemRoot: "C:\\Windows", windir: "C:\\Windows", PATHEXT: ".COM;.EXE",
+    USERPROFILE: "C:\\Users\\lawyer", ComSpec: "C:\\Windows\\system32\\cmd.exe", NUMBER_OF_PROCESSORS: "8",
+    PROCESSOR_ARCHITECTURE: "AMD64", OS: "Windows_NT", USERNAME: "lawyer", COMPUTERNAME: "LAPTOP",
+    Trademark_MCP_Token_Secret: "the-signing-key", anthropic_api_key: "sk-ant-stray", CLEAROTRON_AI_BILLING: "subscription",
+  };
+  const win = engineEnv(base, { engine: "anthropic-agent", platform: "win32" });
+  for (const k of ["Path", "SystemRoot", "windir", "PATHEXT", "USERPROFILE", "ComSpec", "NUMBER_OF_PROCESSORS",
+    "PROCESSOR_ARCHITECTURE", "OS", "USERNAME", "COMPUTERNAME"])
+    assert.equal(win[k], base[k], `${k} did not reach the program under its own spelling`);
+  assert.equal(win.Trademark_MCP_Token_Secret, undefined, "the signing key reached the program under another spelling");
+  assert.equal(win.anthropic_api_key, undefined, "a stray key in another spelling billed a subscription install");
+  // On Linux the same names are other names: `Path` is not PATH there, and nothing is widened.
+  const linux = engineEnv(base, { engine: "anthropic-agent", platform: "linux" });
+  assert.equal(linux.Path, undefined);
+  assert.equal(linux.SystemRoot, undefined);
+});
+
 test("under every engine and billing mode the program gets the list and nothing else, and never the signing key", () => {
   const base = wholeInstall();
   assert.ok(Object.keys(base).length > 150, `the product reads too few names for this to mean anything: ${Object.keys(base).length}`);
@@ -129,12 +158,26 @@ test("each billing mode keeps its own credential and no other", () => {
   // The headless sign-in token, under the name the engine table gives it, travels in every mode.
   for (const mode of ["subscription", "api-key", "cloud"])
     assert.equal(claude(mode)[ENGINE_BINARIES["anthropic-agent"].headless.tokenEnv], "oauth", mode);
-  // A cloud's own credentials only when this install bills through a cloud.
-  for (const k of ["AWS_ACCESS_KEY_ID", "GOOGLE_APPLICATION_CREDENTIALS", "AZURE_CLIENT_SECRET"]) {
-    assert.equal(claude("cloud")[k], base[k], k);
-    assert.equal(claude("subscription")[k], undefined, k);
-    assert.equal(claude("api-key")[k], undefined, k);
+  // A cloud's own credentials only when this install bills through a cloud, the ones in Claude's own
+  // namespace included, which the prefixes would otherwise let through in every mode.
+  const inClaudeNamespace = ["ANTHROPIC_FOUNDRY_API_KEY", "ANTHROPIC_AUTH_TOKEN", "ANTHROPIC_BASE_URL",
+    "CLAUDE_CODE_USE_FOUNDRY", "CLAUDE_CODE_USE_VERTEX", "CLAUDE_CODE_USE_BEDROCK", "ANTHROPIC_VERTEX_PROJECT_ID", "ANTHROPIC_FOUNDRY_RESOURCE"];
+  // Every cloud setting set, since the product reads some of them only through the list in auth.mjs.
+  const clouded = { ...base, ...Object.fromEntries(CLOUD_SETTINGS.map((n) => [n, `value-of-${n}`])) };
+  const claudeIn = (mode) => engineEnv({ ...clouded, CLEAROTRON_AI_BILLING: mode }, { engine: "anthropic-agent" });
+  for (const k of ["AWS_ACCESS_KEY_ID", "GOOGLE_APPLICATION_CREDENTIALS", "AZURE_CLIENT_SECRET", ...inClaudeNamespace]) {
+    assert.equal(claudeIn("cloud")[k], clouded[k], k);
+    assert.equal(claudeIn("subscription")[k], undefined, k);
+    assert.equal(claudeIn("api-key")[k], undefined, k);
   }
+  // The model pins hold a tier still under any billing, and stay.
+  for (const mode of ["subscription", "api-key", "cloud"])
+    for (const k of ["ANTHROPIC_DEFAULT_OPUS_MODEL", "ANTHROPIC_DEFAULT_SONNET_MODEL", "ANTHROPIC_DEFAULT_HAIKU_MODEL", "ANTHROPIC_DEFAULT_FABLE_MODEL"])
+      assert.equal(claudeIn(mode)[k], clouded[k], `${mode} dropped ${k}`);
+  // On Windows, in any spelling.
+  const win = engineEnv({ anthropic_auth_token: "gw", Anthropic_Foundry_Api_Key: "az", CLEAROTRON_AI_BILLING: "subscription" },
+    { engine: "anthropic-agent", platform: "win32" });
+  assert.deepEqual(Object.keys(win).filter((k) => /anthropic/i.test(k)), [], "a cloud credential in another spelling reached a subscription stage");
   assert.equal(codex("api-key").CODEX_API_KEY, "sk-codex");
   assert.equal(codex("subscription").CODEX_API_KEY, undefined);
   for (const mode of ["subscription", "api-key"]) {
@@ -182,7 +225,9 @@ const NOT_PASSED = Object.freeze(Object.fromEntries([
   "INVOCATION_ID",
 ].map((n) => [n, NOT_A_TOOL_SETTING]).concat([
   ["CLEAROTRON_SUITE_TELEMETRY_DIR", "the driver resolves the ledgers under it and hands each server the resolved path by name"],
-], ["CLEAROTRON_SIGNA_ANSWER_MEMORY", "CLEAROTRON_CLARIVATE_ANSWER_MEMORY"].map((n) => [n,
+], ["ANTHROPIC_BASE_URL", "CLAUDE_CODE_USE_BEDROCK", "CLAUDE_CODE_USE_FOUNDRY", "CLAUDE_CODE_USE_VERTEX"].map((n) => [n,
+  "a cloud's setting, read by auth.mjs, which the servers import for its tables; the program has it only under cloud billing, and no tool needs it"]),
+["CLEAROTRON_SIGNA_ANSWER_MEMORY", "CLEAROTRON_CLARIVATE_ANSWER_MEMORY"].map((n) => [n,
   "the driver reads it when an attempt starts and writes the mode into the run folder; a server reads that mode (answer-memory.mjs `openAnswerMemory`), never the switch"]))));
 
 /** The import closure of `entries`: static imports and literal dynamic ones, relative paths only. */
@@ -204,7 +249,10 @@ function closure(entries) {
   return [...seen];
 }
 
-test("every setting a tool server reads is passed to it, written into its entry, or named as not needed", () => {
+/** What the tool servers' import closure reads, and what gather-config writes into each server's own entry. */
+let serverReadsMemo = null;
+function serverReads() {
+  if (serverReadsMemo) return serverReadsMemo;
   const mcp = join(ROOT, "driver", "engine", "mcp");
   const servers = readdirSync(mcp).filter((f) => f.endsWith("-server.mjs")).map((f) => join(mcp, f));
   const entries = [...servers, join(ROOT, "providers", "oauth-mcp-bridge", "bridge.mjs")];
@@ -231,13 +279,52 @@ test("every setting a tool server reads is passed to it, written into its entry,
   } finally { for (const [k, v] of Object.entries(saved)) { if (v === undefined) delete process.env[k]; else process.env[k] = v; } }
   assert.ok(perServer.has("CLEAROTRON_BAND_RUN_DIR") && perServer.has("CLEAROTRON_GATHER_SESSION_KEY"),
     `gather-config wrote no per-run names: ${[...perServer]}`);
+  serverReadsMemo = { read, perServer };
+  return serverReadsMemo;
+}
 
+test("every setting a tool server reads is passed to it, written into its entry, or named as not needed", () => {
+  const { read, perServer } = serverReads();
   const passed = admits("anthropic-agent", "subscription");
   const unaccounted = [...read.keys()].filter((n) => !passed(n) && !perServer.has(n) && !(n in NOT_PASSED)).sort();
   assert.deepEqual(unaccounted, [], `tool servers read names nobody decided about: ${unaccounted.map((n) => `${n} (${read.get(n)})`).join(", ")}`);
   // Both directions: an entry below that no server reads any more, or that the list now passes, is stale.
   const stale = Object.keys(NOT_PASSED).filter((n) => !read.has(n) || passed(n)).sort();
   assert.deepEqual(stale, [], "entries in NOT_PASSED that no server reads, or that the list passes anyway");
+});
+
+/** Names in the servers' import closure that no server acts on, so Codex need not forward them. */
+const NO_SERVER_USES_IT = Object.freeze({
+  SERPAPI_API_KEY: "driver.config.mjs reads it inside the SerpApi search, which only the driver's grid units call (jx-units.mjs); the servers import that module for its tables",
+});
+
+test("on Codex, every setting a tool server reads that the Claude engine hands it reaches the server too", () => {
+  // Codex hands a server only its own entry and its `env_vars`, so a name the Claude engine's servers
+  // inherit and the Codex config does not forward is a setting that works on one engine and silently not
+  // on the other. Read off the configs the renderer actually writes for real stages, not off the lists.
+  const { read } = serverReads();
+  const forServers = new Set(toolServerNames());
+  const reachesCodex = new Set();
+  for (const stage of ["register-unit:primary-sweep", "common-law", "case-law", "register-digest"]) {
+    const groups = toolGroupsForStage(stage);
+    const cfg = buildGatherMcpConfig(groups, { sessionKey: "s", agent: "a", runDir: "/run", recordAxis: "x" });
+    const toml = renderCodexConfigToml({ mcpConfig: JSON.stringify(cfg), allowedTools: allowedToolsFor(groups) });
+    for (const block of toml.split(/^(?=\[)/m).filter((b) => b.startsWith("[mcp_servers.") && !b.startsWith("[mcp_servers.fetch]"))) {
+      const vars = /^env_vars = (\[.*\])$/m.exec(block);
+      for (const n of vars ? JSON.parse(vars[1]) : []) reachesCodex.add(n);
+      const env = /^env = \{ (.*) \}$/m.exec(block);
+      for (const m of env ? env[1].matchAll(/([A-Za-z_][A-Za-z0-9_]*) = /g) : []) reachesCodex.add(m[1]);
+    }
+  }
+  assert.ok(reachesCodex.has("SIGNA_API_KEY") && reachesCodex.has("CLEAROTRON_GATHER_SESSION_KEY"),
+    `the rendered configs forwarded almost nothing, so the reading is broken: ${[...reachesCodex].join(", ")}`);
+  const readForServers = [...read.keys()].filter((n) => forServers.has(n));
+  assert.ok(readForServers.length >= 10, `the servers read only ${readForServers.length} of the names held for them`);
+  const claudeOnly = readForServers.filter((n) => !reachesCodex.has(n) && !(n in NO_SERVER_USES_IT)).sort();
+  assert.deepEqual(claudeOnly, [], "settings the tool servers read that reach them on Claude and never on Codex");
+  // Both directions: an entry that no server reads any more, or that Codex now forwards, is stale.
+  const stale = Object.keys(NO_SERVER_USES_IT).filter((n) => !read.has(n) || reachesCodex.has(n));
+  assert.deepEqual(stale, [], "entries in NO_SERVER_USES_IT that no server reads, or that Codex forwards anyway");
 });
 
 // ── 4. A REAL START, THROUGH EACH ADAPTER ────────────────────────────────────────────────────────────
@@ -283,5 +370,52 @@ test("codex is started with the list: no signing key, and its key only because i
     const call = JSON.parse(readFileSync(log, "utf8").trim().split("\n").pop());
     for (const k of [...Object.keys(SECRETS), "OPENAI_API_KEY"]) assert.ok(!call.envNames.includes(k), `codex was started with ${k}`);
     for (const k of ["PATH", HOME_NAME, "CODEX_HOME", "CODEX_API_KEY"]) assert.ok(startedWith(call.envNames, k), `codex was started without ${k}`);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+// ── 5. WHAT A CODEX STAGE'S COMMANDS INHERIT ─────────────────────────────────────────────────────────
+//
+// The program holds the register and research keys because its tool servers read them, and codex hands a
+// command its whole environment unless its config says otherwise. So the list above, alone, left every key
+// a command away from the model. The config each turn writes withholds them from commands and turns off
+// the shell snapshot that would replay them; codex builds its servers' environments from their own
+// `env_vars`, which this does not touch (codex-config.mjs).
+
+/** The eight register and research keys a Codex program holds for its tool servers. */
+const REGISTER_KEYS = ["SIGNA_API_KEY", "CLARIVATE_API_KEY", "CLARIVATE_CLIENT_SECRET", "CORSEARCH_API_KEY",
+  "CORSEARCH_SESSION_KEY", "PERPLEXITY_API_KEY", "SERPAPI_API_KEY", "EUIPO_CLIENT_SECRET"];
+
+test("what Codex withholds from a stage's commands is every name held for the tool servers, and its key", () => {
+  assert.deepEqual(codexCommandWithheld(), [...toolServerNames(), "CODEX_API_KEY"]);
+  for (const k of REGISTER_KEYS) assert.ok(codexCommandWithheld().includes(k), `${k} would reach a Codex stage's commands`);
+});
+
+test("codex's commands are refused the register keys and its key, while the program keeps them for its servers", async () => {
+  const { openaiAgentEngine } = await import("../engine/openai-agent.mjs");
+  const dir = mkdtempSync(join(tmpdir(), "listed-env-codex-commands-"));
+  const log = join(dir, "calls.jsonl");
+  const keys = Object.fromEntries(REGISTER_KEYS.map((k) => [k, `value-of-${k}`]));
+  try {
+    for (const sandbox of ["on", "bypassed"]) {
+      const t = await withEnv({ ...keys, CLEAROTRON_CODEX_PATH: join(HERE, "mock-codex.mjs"), MOCK_CODEX_CALL_LOG: log,
+        CLEAROTRON_AI_BILLING: "api-key", CODEX_API_KEY: "sk-codex-test", CLEAROTRON_CODEX_SANDBOX_BYPASS: sandbox === "on" ? "" : "1" },
+      () => openaiAgentEngine.runTurn({ message: "reply ok", model: "haiku", thinking: "low", timeoutSec: 60 }));
+      assert.equal(t.code, 0, t.stderr);
+      const call = JSON.parse(readFileSync(log, "utf8").trim().split("\n").pop());
+      // The program still holds them: its servers read them through env_vars.
+      for (const k of [...REGISTER_KEYS, "CODEX_API_KEY"]) assert.ok(call.envNames.includes(k), `sandbox ${sandbox}: codex was started without ${k}`);
+      // The config the turn actually ran with, read by a real TOML parser.
+      const r = spawnSync("python3", ["-c", "import json, sys, tomllib; print(json.dumps(tomllib.loads(sys.stdin.read())))"],
+        { input: call.configToml, encoding: "utf8" });
+      assert.equal(r.error, undefined, "python3 is not on this machine, and the TOML check needs a real parser");
+      assert.equal(r.status, 0, `the turn's config does not parse:\n${call.configToml}\n${r.stderr}`);
+      const cfg = JSON.parse(r.stdout);
+      const filters = cfg.shell_environment_policy?.filters ?? {};
+      const open = codexCommandWithheld().filter((k) => filters[k] !== "exclude");
+      assert.deepEqual(open, [], `sandbox ${sandbox}: a stage's commands would inherit these`);
+      // The filters alone were measured to do nothing: codex's shell snapshot is taken from a shell with
+      // the whole environment and replayed before each command (codex-config.mjs, `commandEnvToml`).
+      assert.equal(cfg.features?.shell_snapshot, false, `sandbox ${sandbox}: the shell snapshot would put every filtered name back`);
+    }
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });

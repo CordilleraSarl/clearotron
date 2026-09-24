@@ -18,7 +18,8 @@
 //   · the program's own settings, in the vendor's namespace (`CLAUDE_*` and `ANTHROPIC_*` for Claude,
 //     the documented `CODEX_*` names for Codex), plus the vendor-named switches that carry no prefix;
 //   · the credential the billing mode keeps: the Anthropic key only under `api-key`, the Codex key only
-//     under `api-key`, and a cloud's own credentials (AWS, Google, Azure) only under `cloud`;
+//     under `api-key`, and a cloud's own credentials and switches (AWS, Google, Azure, a gateway) only
+//     under `cloud`, those in Claude's own namespace included;
 //   · what the stage's tool servers read, because on the Claude engine they inherit this environment:
 //     every register and research credential the provider tables name, and the few settings the servers
 //     read to reach their register.
@@ -28,7 +29,7 @@
 
 import { PROVIDERS, RESEARCH_PROVIDERS, SERP_PROVIDERS } from "../driver.config.mjs";
 import { billingMode, CLOUD_SETTINGS } from "./auth.mjs";
-import { CRED_ENV_FORWARD } from "./mcp/codex-config.mjs";
+import { CRED_ENV_FORWARD, TOOL_SERVER_SETTINGS } from "./mcp/codex-config.mjs";
 
 /** Paths, home, user, shell, locale and temp: what any program needs to start and find its own files. */
 export const RUNTIME_NAMES = Object.freeze([
@@ -40,6 +41,7 @@ export const RUNTIME_NAMES = Object.freeze([
   // `Path` and `SystemRoot` as it likes and a program started without SYSTEMROOT cannot open a socket.
   "SYSTEMROOT", "WINDIR", "SYSTEMDRIVE", "COMSPEC", "PATHEXT", "USERPROFILE", "HOMEDRIVE", "HOMEPATH",
   "APPDATA", "LOCALAPPDATA", "PROGRAMDATA", "PROGRAMFILES",
+  "NUMBER_OF_PROCESSORS", "PROCESSOR_ARCHITECTURE", "OS", "USERNAME", "COMPUTERNAME",
 ]);
 /** `LC_ALL`, `LC_CTYPE` and the rest of the locale family. */
 export const RUNTIME_PREFIXES = Object.freeze(["LC_"]);
@@ -76,21 +78,28 @@ export const CLOUD_NAMES = Object.freeze([
 ]);
 export const CLOUD_PREFIXES = Object.freeze(["AWS_", "VERTEX_REGION_", "CLOUDSDK_", "AZURE_"]);
 
+/**
+ * Every cloud setting but the model pins, taken back out outside `cloud`. Most never pass there anyway;
+ * the ones in Claude's own namespace would, on the `CLAUDE_*` and `ANTHROPIC_*` prefixes: the switches,
+ * the Foundry key and resource, the Vertex project, and the gateway with its token. A cloud's key or a
+ * gateway's token in a subscription stage is a credential for an account the stage is not billing, and the
+ * gateway address would send the subscription's own sign-in to it. The model pins stay: they hold a tier at
+ * one model under any billing (INSTALL.md).
+ */
+export const CLOUD_ONLY = Object.freeze(CLOUD_SETTINGS.filter((n) => !/^ANTHROPIC_DEFAULT_[A-Z]+_MODEL$/.test(n)));
+
 /** Codex's own documented settings. CODEX_HOME is the adapter's, set per turn; CODEX_API_KEY is billing's. */
 export const CODEX_NAMES = Object.freeze(["CODEX_CA_CERTIFICATE", "CODEX_SQLITE_HOME", "RUST_LOG"]);
 
 /**
  * What the stage's tool servers read that the driver does not already hand each of them by name. Every
  * credential the provider tables name (so a register added to a table is covered by construction), the
- * names Codex forwards to them, and the settings they read to reach a register. Per-run values (the run
- * folder, the session, the ledgers) are not here: gather-config writes those into each server's own entry.
+ * names Codex forwards to them, and the settings they read to reach a register (`TOOL_SERVER_SETTINGS`,
+ * kept in codex-config.mjs beside the credentials Codex forwards, so both engines' servers get one list).
+ * Per-run values (the run folder, the session, the ledgers) are not here: gather-config writes those into
+ * each server's own entry.
  */
-export const TOOL_SERVER_SETTINGS = Object.freeze([
-  "CLARIVATE_API_BASE", "SIGNA_BASE_URL", "EUIPO_ENVIRONMENT", "SIGNA_FIXTURES_DIR", "CLAWDI_SIGNA_FIXTURES_DIR",
-  "CLEAROTRON_HTTP_TIMEOUT_MS", "CLEAROTRON_BAND_RESPONSE_CHARS", "CLEAROTRON_ENUMERATE_NAMES_CHUNK",
-  // The case-law bridges: where their sign-in lives, and the name they register under.
-  "OAUTH_BRIDGE_CREDS_DIR", "OAUTH_BRIDGE_CLIENT_NAME",
-]);
+export { TOOL_SERVER_SETTINGS };
 export function toolServerNames() {
   const tables = [PROVIDERS, RESEARCH_PROVIDERS, SERP_PROVIDERS]
     .flatMap((t) => Object.values(t ?? {}))
@@ -99,18 +108,29 @@ export function toolServerNames() {
 }
 
 /**
+ * What a Codex stage's shell commands are refused, though the Codex program itself holds them: every name
+ * on the list only because the tool servers read it, and the Codex key. Codex hands its commands its
+ * whole environment unless its config says otherwise, and a command can print what it was handed, so a
+ * page a stage read could have it print the register keys. The servers are not affected: Codex builds each
+ * server's environment from that server's own `env_vars`, not from what its commands get (codex-config.mjs).
+ * Built from the same list that admits the names, so a credential a provider table adds is withheld too.
+ */
+export function codexCommandWithheld() {
+  return [...toolServerNames(), "CODEX_API_KEY"];
+}
+
+/**
  * The test mocks read their controls from `MOCK_*`. No product setting uses the prefix, and a test holds
  * that true, so the rule admits test controls and nothing an install configures.
  */
 export const TEST_PREFIXES = Object.freeze(["MOCK_"]);
 
-const onWindows = process.platform === "win32";
 /** A lookup that ignores case on Windows, where the environment does too. */
-const named = (list) => {
-  const set = new Set(onWindows ? list.map((n) => n.toUpperCase()) : list);
-  return (k) => set.has(onWindows ? k.toUpperCase() : k);
+const named = (list, win) => {
+  const set = new Set(win ? list.map((n) => n.toUpperCase()) : list);
+  return (k) => set.has(win ? k.toUpperCase() : k);
 };
-const prefixed = (list) => (k) => list.some((p) => (onWindows ? k.toUpperCase() : k).startsWith(p));
+const prefixed = (list, win) => (k) => list.some((p) => (win ? k.toUpperCase() : k).startsWith(p));
 
 /**
  * The environment for one start of an engine program. PURE: `base` in, a new object out, nothing read
@@ -121,14 +141,17 @@ const prefixed = (list) => (k) => list.some((p) => (onWindows ? k.toUpperCase() 
  * validated here: the doors that validate it (the top of a stage, the probe, the jx runner) have already
  * run, and a function that builds a child's environment must not throw.
  */
-export function engineEnv(base = process.env, { engine } = {}) {
+//
+// `platform` is a parameter so the Windows rule, names matched in any case, is pinned on a Linux CI.
+export function engineEnv(base = process.env, { engine, platform = process.platform } = {}) {
+  const win = platform === "win32";
   const mode = billingMode(base);
-  const checks = [named(RUNTIME_NAMES), prefixed(RUNTIME_PREFIXES), named(NETWORK_NAMES), prefixed(TEST_PREFIXES)];
+  const checks = [named(RUNTIME_NAMES, win), prefixed(RUNTIME_PREFIXES, win), named(NETWORK_NAMES, win), prefixed(TEST_PREFIXES, win)];
   if (engine === "anthropic-agent") {
-    checks.push(prefixed(CLAUDE_PREFIXES), named(CLAUDE_NAMES), named(toolServerNames()));
-    if (mode === "cloud") checks.push(named(CLOUD_NAMES), prefixed(CLOUD_PREFIXES));
+    checks.push(prefixed(CLAUDE_PREFIXES, win), named(CLAUDE_NAMES, win), named(toolServerNames(), win));
+    if (mode === "cloud") checks.push(named(CLOUD_NAMES, win), prefixed(CLOUD_PREFIXES, win));
   } else if (engine === "openai-agent") {
-    checks.push(named(CODEX_NAMES), named(toolServerNames()));
+    checks.push(named(CODEX_NAMES, win), named(toolServerNames(), win));
   }
   const env = {};
   for (const [k, v] of Object.entries(base ?? {})) {
@@ -138,7 +161,14 @@ export function engineEnv(base = process.env, { engine } = {}) {
   // The billing credential, by mode. The Anthropic key rides only under `api-key`: a present key overrides
   // the subscription and bills per token, and under `cloud` a leftover key must never be what bills.
   // Codex's key rides only under `api-key` too; under the subscription the adapter seeds the sign-in file.
-  if (engine === "anthropic-agent" && mode !== "api-key") delete env.ANTHROPIC_API_KEY;
+  // Under any spelling on Windows: the prefix above admits `anthropic_api_key` there as readily as the key.
+  if (engine === "anthropic-agent" && mode !== "api-key")
+    for (const k of Object.keys(env)) if ((win ? k.toUpperCase() : k) === "ANTHROPIC_API_KEY") delete env[k];
+  // A cloud's own settings only under `cloud`, the ones the prefixes above let through included.
+  if (engine === "anthropic-agent" && mode !== "cloud") {
+    const cloudOnly = named(CLOUD_ONLY, win);
+    for (const k of Object.keys(env)) if (cloudOnly(k)) delete env[k];
+  }
   if (engine === "openai-agent" && mode === "api-key" && base?.CODEX_API_KEY !== undefined) env.CODEX_API_KEY = base.CODEX_API_KEY;
   return env;
 }

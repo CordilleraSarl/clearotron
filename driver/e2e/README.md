@@ -37,7 +37,7 @@ other, which is the only proof available where no gold set exists.
 
 A knockout scenario graded against a similar-marks sheet scores a **structural zero**. Knockout answers
 one narrow question — how many register filings exist for the exact mark and its close variations in the
-named classes — and never retrieves similar marks, so a lawyer's list of TIKI PUNCH and TIKI TROPICS is
+named classes — and never retrieves similar marks, so a lawyer's list of WAVO PUNCH and WAVO TROPICS is
 unreachable by construction. R3 and R4 scored 0/8 and 0/9 on both free-tier and clarivate on the same
 day with the same engine, which measured the pairing rather than the engine.
 

@@ -49,26 +49,22 @@ function argvFor(stage, { resumeRef = null } = {}) {
 }
 
 test("every stage's argv removes every command tool, fresh and resumed", () => {
-  const saved = process.env.CLEAROTRON_DATABASE;
-  process.env.CLEAROTRON_DATABASE = "euipo";   // a register stage resolves its server through the active provider
-  try {
-    const names = [...new Set([
-      ...Object.keys(STAGES), ...Object.keys(KO_STAGES),
-      ...[...PER_AXIS_STAGES].map((s) => `${s}:primary-sweep`), ...[...PER_CHUNK_STAGES].map((s) => `${s}#1`),
-    ])];
-    // A floor, so a stage table that moved or emptied cannot pass this by leaving nothing to check.
-    assert.ok(names.length >= 19, `only ${names.length} stage names to check`);
-    const lacking = [];
-    for (const stage of names) {
-      for (const resumeRef of [null, "sess-1"]) {
-        const got = removed(argvFor(stage, { resumeRef }));
-        if (JSON.stringify(got) !== JSON.stringify([...COMMAND_TOOLS].sort())) lacking.push(`${stage}${resumeRef ? " (resumed)" : ""}: ${JSON.stringify(got)}`);
-      }
+  // A register stage resolves its server through the provider, which is read once at import; the test
+  // harness declares it before anything is imported.
+  const names = [...new Set([
+    ...Object.keys(STAGES), ...Object.keys(KO_STAGES),
+    ...[...PER_AXIS_STAGES].map((s) => `${s}:primary-sweep`), ...[...PER_CHUNK_STAGES].map((s) => `${s}#1`),
+  ])];
+  // A floor, so a stage table that moved or emptied cannot pass this by leaving nothing to check.
+  assert.ok(names.length >= 19, `only ${names.length} stage names to check`);
+  const lacking = [];
+  for (const stage of names) {
+    for (const resumeRef of [null, "sess-1"]) {
+      const got = removed(argvFor(stage, { resumeRef }));
+      if (JSON.stringify(got) !== JSON.stringify([...COMMAND_TOOLS].sort())) lacking.push(`${stage}${resumeRef ? " (resumed)" : ""}: ${JSON.stringify(got)}`);
     }
-    assert.deepEqual(lacking, [], "stages whose argv does not remove the command tools");
-  } finally {
-    if (saved === undefined) delete process.env.CLEAROTRON_DATABASE; else process.env.CLEAROTRON_DATABASE = saved;
   }
+  assert.deepEqual(lacking, [], "stages whose argv does not remove the command tools");
 });
 
 test("the engine probe's turn removes them too, so the check runs with the settings a search runs with", () => {

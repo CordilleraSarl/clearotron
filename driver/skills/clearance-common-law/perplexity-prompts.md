@@ -69,13 +69,13 @@ competitor_intel / crowded_field extras are RETIRED: nothing ever read them):
 - pr_risk: search offensive / subcultural / controversial associations on BOTH (a) each core element AND
   (b) its plausible NEAR-FORMS — the edit-1 / transliteration / homophone forms from `form-neighbourhood.json`
   (`elements[].band.exactQueries` + `.transliterations`) that read as a real word, name, or plausible term in
-  any in-scope market language (e.g. `ZURENA` → `Sureño`). A near-form that is a real word/term in a market is
+  any in-scope market language (e.g. `VELANO` → `veleno`). A near-form that is a real word/term in a market is
   a connotation candidate — search it; never pre-drop one as "unlikely" (connotation is not mechanically
   enumerable, so you search the candidates, you do not filter them). Per term run TWO queries: "[TERM]
   controversy offensive association" AND "[TERM] meaning slang". **Weight subcultural / social / community web
-  — Urban Dictionary, Wikipedia, news, forums — NOT just dictionaries:** the hazard (e.g. "Sureño" = a
-  Southern-California gang) lives on the social web, never in a lexical entry. **A dictionary gloss ("it just
-  means southern") is context, NEVER a clearance** — a connotation reads CLEAN only when the searched social/web
+  — Urban Dictionary, Wikipedia, news, forums — NOT just dictionaries:** the hazard (e.g. "Mara" = a
+  Central American street gang) lives on the social web, never in a lexical entry. **A dictionary gloss ("it just
+  means crowd") is context, NEVER a clearance** — a connotation reads CLEAN only when the searched social/web
   sources came back empty, never because a dictionary looked benign.
 The program prints EXACTLY one JSON object to stdout:
 {"cells": [{"term", "platform", "status", "results": [{"name", "url"}]}],

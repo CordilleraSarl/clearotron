@@ -916,10 +916,10 @@ export const PORTAL_JOB_FIELDS = Object.freeze({
       + "which exists because the hand-emitting email-loop agent can only `write` files. The portal composer "
       + "sends structured fields and writes no sidecars, so a job it built is never in that shape — carrying "
       + "the flag would have it claim an intake it did not use, and the door's own check would then look for "
-      + "files nobody wrote (#1085).",
+      + "files nobody wrote.",
     msgId: "the email door's message id. This door has no message: the composer IS the request, and there "
       + "is no thread to thread it into. It was declared carried and reached the job as a hardcoded null "
-      + "that the trigger hop then stripped, which is a declaration measuring nothing (#497).",
+      + "that the trigger hop then stripped, which is a declaration measuring nothing.",
     conversationId: "the email door's thread id, and the portal has no thread. Same story as `msgId`: "
       + "declared carried, written null, stripped again. A reply lands in the portal, not in a mailbox.",
     customer: "the APPLICANT, and the account already resolved it — see the jobFor header. Letting a body "

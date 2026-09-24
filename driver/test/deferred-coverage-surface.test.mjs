@@ -28,7 +28,7 @@ import { countLine, countPreflight } from "../register-count.mjs";
 import { recordsLine } from "../register-records.mjs";
 
 const entry = (extra = {}) => ({
-  name: "KURENA", classes: [9], classScope: "mark",
+  name: "KOLEMA", classes: [9], classScope: "mark",
   counts: { identical: { total: 3 }, containing: { total: 41 } },
   ...extra,
 });
@@ -71,7 +71,7 @@ test("the two gaps are separate sentences, and both appear when both are true", 
 });
 
 test("recordsLine carries it on the EMPTY branch, where a clean negative is most dangerous", () => {
-  const line = recordsLine({ name: "KURENA", terms: [{ term: "KURENA", ok: true }], records: [], deferredScope: ["JP"] });
+  const line = recordsLine({ name: "KOLEMA", terms: [{ term: "KOLEMA", ok: true }], records: [], deferredScope: ["JP"] });
   assert.match(line, /the register returned none/, "the sentence that reads as a clean sweep");
   assert.match(line, /JP was ordered for this matter/, "…now qualified by what was never searched");
   assert.match(line, /no filing from it could appear here whatever the register holds/);
@@ -79,8 +79,8 @@ test("recordsLine carries it on the EMPTY branch, where a clean negative is most
 
 test("recordsLine carries it on the POPULATED branch too", () => {
   const line = recordsLine({
-    name: "KURENA", terms: [{ term: "KURENA", ok: true }],
-    records: [{ recordId: "/mark/eu/1", mark: "KURENA" }], available: 1, deferredScope: ["JP"],
+    name: "KOLEMA", terms: [{ term: "KOLEMA", ok: true }],
+    records: [{ recordId: "/mark/eu/1", mark: "KOLEMA" }], available: 1, deferredScope: ["JP"],
   });
   assert.match(line, /1 filing listed/);
   assert.match(line, /JP was ordered for this matter/,
