@@ -26,26 +26,26 @@ test('OMISSION IS NOT CONSENT: a key the page never rendered survives an edit', 
   // The bug this pins: a form that POSTs only the fields it has inputs for erases everything else the
   // day the engine grows a field. The draft is seeded from the server's object and edited in place.
   const fromServer = {
-    name: 'Aurora',
+    name: 'Demo Brand Owner',
     somethingAddedLaterByTheEngine: { deep: ['value'] },
     delivery: { template: 'standard' },
   }
-  const after = applyField(fromServer, spec('name'), 'Aurora Interactive')
-  assert.equal(after.name, 'Aurora Interactive')
+  const after = applyField(fromServer, spec('name'), 'Demo Brand Owner')
+  assert.equal(after.name, 'Demo Brand Owner')
   assert.deepEqual(after.somethingAddedLaterByTheEngine, { deep: ['value'] }, 'untouched, not dropped')
   assert.deepEqual(after.delivery, { template: 'standard' })
 })
 
 test('clearing a field DELETES the key — absent and empty mean different things', () => {
-  const after = applyField({ industry: 'Games', name: 'Aurora' }, spec('industry'), '   ')
+  const after = applyField({ industry: 'Games', name: 'Demo Brand Owner' }, spec('industry'), '   ')
   assert.ok(!('industry' in after), 'an emptied box leaves the setting to its default')
-  assert.equal(after.name, 'Aurora')
+  assert.equal(after.name, 'Demo Brand Owner')
 })
 
 test("a company's emptied Marketplaces box SAVES NONE, and a project's still inherits", () => {
   // A company may pick no marketplaces (the owner's ruling of 2026-09-23), and the server refuses a
   // company with no list at all — so on the company form an emptied box is an empty list, not a deleted key.
-  const company = applyField({ platforms: ['amazon.com'], name: 'Aurora' }, spec('platforms'), '   ')
+  const company = applyField({ platforms: ['amazon.com'], name: 'Demo Brand Owner' }, spec('platforms'), '   ')
   assert.deepEqual(company.platforms, [], 'none, stated')
   // On a project a blank box means "use the company's list": an empty overlay would read as revoking it.
   const onProject = projectFields().find((f) => f.key === 'platforms')
@@ -55,9 +55,9 @@ test("a company's emptied Marketplaces box SAVES NONE, and a project's still inh
 })
 
 test('applyField never mutates the draft it was given', () => {
-  const draft = { name: 'Aurora' }
+  const draft = { name: 'Demo Brand Owner' }
   applyField(draft, spec('name'), 'Changed')
-  assert.deepEqual(draft, { name: 'Aurora' })
+  assert.deepEqual(draft, { name: 'Demo Brand Owner' })
 })
 
 test('list fields preserve order and case — a marketplace name is not ours to normalise', () => {
@@ -116,10 +116,10 @@ test('a project cannot reach identity or rating authority', () => {
 })
 
 test('the code-owned fields are stripped before sending', () => {
-  const draft = { name: 'Aurora', frameworkPath: 'evil.md', runCaps: { perMonth: 99999 }, allowedRecipes: ['*'] }
+  const draft = { name: 'Demo Brand Owner', frameworkPath: 'evil.md', runCaps: { perMonth: 99999 }, allowedRecipes: ['*'] }
   const sent = stripCodeOwned(draft)
   for (const f of CODE_OWNED) assert.equal(sent[f], undefined, `${f} must not be sent`)
-  assert.equal(sent.name, 'Aurora')
+  assert.equal(sent.name, 'Demo Brand Owner')
   assert.equal(draft.frameworkPath, 'evil.md', 'and the caller’s draft is not mutated')
 })
 
@@ -137,8 +137,8 @@ test('A CLIENT IS NEVER SHOWN AN ENGINE PATH', () => {
   // the naming convention, and the customer key inside the filename — which together let a reader
   // guess where another client's framework lives.
   const readOnly = {
-    frameworkPath: 'skills/clearance-search/risk-framework-aurora.md',
-    workedExamplesPath: 'skills/clearance-search/worked-examples-aurora.md',
+    frameworkPath: 'skills/clearance-search/risk-framework-demo.md',
+    workedExamplesPath: 'skills/clearance-search/worked-examples-demo.md',
     allowedRecipes: ['clearotron'],
     runCaps: { perMonth: 4 },
   }
@@ -152,7 +152,7 @@ test('A CLIENT IS NEVER SHOWN AN ENGINE PATH', () => {
 })
 
 test('staff keep the paths, because they are the ones who open the file', () => {
-  const readOnly = { frameworkPath: 'skills/clearance-search/risk-framework-aurora.md', runCaps: {} }
+  const readOnly = { frameworkPath: 'skills/clearance-search/risk-framework-demo.md', runCaps: {} }
   assert.deepEqual(visibleReadOnlyFields(readOnly, true), ['frameworkPath', 'runCaps'])
 })
 
@@ -170,13 +170,13 @@ test('defaultProduct CLEARS to "" rather than deleting its key', () => {
   // and invisible: the page would show an empty box over a depth that was still in force.
   const f = spec('defaultProduct')
 
-  const untouched = applyField({ name: 'Aurora', defaultProduct: 'clearotron' }, spec('name'), 'A')
+  const untouched = applyField({ name: 'Demo Brand Owner', defaultProduct: 'clearotron' }, spec('name'), 'A')
   assert.equal(untouched.defaultProduct, 'clearotron', 'preserve: an unrelated edit does not disturb it')
 
-  const set = applyField({ name: 'Aurora' }, f, 'clearance-jx')
+  const set = applyField({ name: 'Demo Brand Owner' }, f, 'clearance-jx')
   assert.equal(set.defaultProduct, 'clearance-jx')
 
-  const cleared = applyField({ name: 'Aurora', defaultProduct: 'clearotron' }, f, '')
+  const cleared = applyField({ name: 'Demo Brand Owner', defaultProduct: 'clearotron' }, f, '')
   assert.ok('defaultProduct' in cleared, 'the key must SURVIVE the clear, carrying the sentinel')
   assert.equal(cleared.defaultProduct, '')
 })
@@ -225,7 +225,7 @@ test('a nested delivery write SPREADS the object rather than replacing it', () =
   // that assigned { email } over `delivery` would delete both without anyone noticing.
   // Driven through `delivery.privileged`: `delivery.email` was the vehicle until
   // removed that control, and the MECHANIC it proves is the nested write, not which sub-key rides it.
-  const fromServer = { name: 'Aurora', delivery: { style: 'Plain and short.', template: 'standard' } }
+  const fromServer = { name: 'Demo Brand Owner', delivery: { style: 'Plain and short.', template: 'standard' } }
   const after = applyField(fromServer, spec('delivery.privileged'), 'yes')
   assert.deepEqual(after.delivery, { style: 'Plain and short.', template: 'standard', privileged: true })
   assert.deepEqual(fromServer.delivery, { style: 'Plain and short.', template: 'standard' }, 'and no mutation')
@@ -235,9 +235,9 @@ test('clearing a nested field removes the sub-key, and prunes the container only
   const withSibling = applyField({ delivery: { privileged: true, style: 'x' } }, spec('delivery.privileged'), '')
   assert.deepEqual(withSibling.delivery, { style: 'x' }, 'a sibling the page never rendered is untouched')
 
-  const lastOne = applyField({ name: 'Aurora', delivery: { privileged: true } }, spec('delivery.privileged'), '')
+  const lastOne = applyField({ name: 'Demo Brand Owner', delivery: { privileged: true } }, spec('delivery.privileged'), '')
   assert.ok(!('delivery' in lastOne), 'delivery: {} would validate, but it is a gratuitous diff in a git-tracked file')
-  assert.equal(lastOne.name, 'Aurora')
+  assert.equal(lastOne.name, 'Demo Brand Owner')
 })
 
 test('delivery.privileged is a BOOLEAN on the wire, not the string the dropdown speaks', () => {
@@ -583,7 +583,7 @@ test('the dead "Yes" option is gone, and the field is still THREE-STATE on the w
 })
 
 test('a profile that ALREADY holds the retired value renders as the house default', () => {
-  // NOT HYPOTHETICAL: driver/profiles/aurora.json ships `"privileged": true`. Removing the option
+  // NOT HYPOTHETICAL: driver/profiles/demo-brand-owner.json ships `"privileged": true`. Removing the option
   // without this fold would leave that page holding a value matching no option in its own dropdown.
   const f = spec('delivery.privileged')
   assert.equal(f.retiredValue, 'yes')

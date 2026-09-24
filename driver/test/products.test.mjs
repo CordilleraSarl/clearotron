@@ -401,7 +401,7 @@ test("every exported *_NOT_A_REQUEST / *_NOT_A_SUPPRESSION constant has a reason
 test("searchLevel is REFUSED by name, in every form, and the sentence names its replacement", async () => {
   const { validateJob } = await import("../enqueue-schema.mjs");
   const base = { id: "p", markName: "NOVAPULSE", classes: [9], forwarder: "ops",
-    profileKey: "aurora", product: "knockout-search" };
+    profileKey: "demo-brand-owner", product: "knockout-search" };
   assert.equal(validateJob({ ...base }).classify, "run", "the control must admit, or the probes prove nothing");
   // Including `null` and the empty string: sending the KEY at all means the caller is on the retired
   // wire. This is the shape closed for deliveryRoute and nativeLanguage:false and left open on the

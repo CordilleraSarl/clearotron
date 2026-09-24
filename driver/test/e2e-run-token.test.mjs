@@ -43,7 +43,7 @@ const DOORS = ["cli", "ops-mcp"];
 // Verbatim from the store's R0.json (the config repo — the only suite) — the two cases whose expectations pull opposite ways. R0d shares ONE
 // ref across doors (oneMatterAcrossDoors) and expects `duplicate`; R0e keeps the door suffix and expects
 // `delivered` at BOTH doors.
-const R0D = { ref: "E2E-R0d", markName: "E2E DUPLICATE PROBE", classes: [9], profileKey: "aurora", product: "knockout-search", forwarder: "e2e" };
+const R0D = { ref: "E2E-R0d", markName: "E2E DUPLICATE PROBE", classes: [9], profileKey: "demo-brand-owner", product: "knockout-search", forwarder: "e2e" };
 const R0E = { ref: "E2E-R0e", markName: "E2E FALLBACK PROBE", classes: [9], product: "knockout-search", forwarder: "e2e" };
 
 // Exactly what cmdRun puts on the wire: the round token on the BASE ref, then the door suffix.

@@ -70,11 +70,11 @@ test("the portal's live row shows the rating, never the reviewer's sign-off word
     const dir = join(workspaceRoot, "workspace-test", "studio", "clearance-search", slug, "2026-09-22-amber-x");
     mkdirSync(driverDir(dir), { recursive: true });
     writeFileSync(join(dir, "status.json"), JSON.stringify({ markName: "LIVEMARK", state: "failed", updatedAt: "2026-09-22T10:00:00Z", ...status }));
-    writeFileSync(driverDir(dir, "profile.json"), JSON.stringify({ profileKey: "aurora", name: "Aurora" }));
+    writeFileSync(driverDir(dir, "profile.json"), JSON.stringify({ profileKey: "demo-brand-owner", name: "Demo Brand Owner" }));
   };
   liveRun("tmp1-rated", { runId: "tmp1-rated-amber-x", tier: "High", review: { signoff: "BLOCKING" } });
   liveRun("tmp2-before", { runId: "tmp2-before-amber-x", verdict: "BLOCKING" });
-  const rows = scanAccountRuns({ poolRoot, workspaceRoot, account: "aurora" });
+  const rows = scanAccountRuns({ poolRoot, workspaceRoot, account: "demo-brand-owner" });
   const row = (id) => rows.find((r) => r.runId === id);
   assert.ok(row("tmp1-rated-amber-x"), "the live run is not listed, so this arm asserts nothing");
   assert.equal(row("tmp1-rated-amber-x").overall, "High");

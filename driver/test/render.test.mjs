@@ -1308,8 +1308,8 @@ test("spec 49: verdictInfo drives the gauge and bound recommendation — fm.over
 // ── T6 (D4 + H10): honest searched scope + the worst-exposure jurisdiction ──────────────────────
 test("spec 49 (D4): the machine-derived searched set drives the header; a code-LIST coverage row also parses (copper-spire's shape)", () => {
   // machine set (register-plan regions via publish) wins
-  const withSet = renderHtml(parsedOf(FM), REGION_FINDINGS, [], { searchedJurisdictions: ["US", "EU", "UK", "CN", "JP", "NZ", "PH", "IN", "RU", "ID", "ZA", "TR"] });
-  for (const name of ["United States", "China", "New Zealand", "Philippines", "South Africa", "Turkey"]) assert.match(whereRow(withSet), new RegExp(name), `${name} in the searched set`);
+  const withSet = renderHtml(parsedOf(FM), REGION_FINDINGS, [], { searchedJurisdictions: ["US", "EU", "UK", "CN", "JP", "BR", "MX", "CL", "SG", "CA", "AU", "CH"] });
+  for (const name of ["United States", "China", "Brazil", "Mexico", "Chile", "Singapore"]) assert.match(whereRow(withSet), new RegExp(name), `${name} in the searched set`);
   // copper-spire's single row carrying a code LIST — the old single-code regex matched nothing → "CN/EU"
   const listCoverage = [{ area: "register / material jurisdictions US·EU·UK·CN·JP·NZ", state: "confirmed-clean", note: "" }];
   const legacy = renderHtml(parsedOf(FM), REGION_FINDINGS, listCoverage, {});
@@ -1575,9 +1575,9 @@ test("wp50: the C/L group renders AFTER the region list, labelled and cross-link
 // ── wp50/wi9: coverage reads as covered vs next-steps, in plain English ─────────────────────────────────
 // ---- doc-54: the dynamic framework band ladder (one tick per band; Clear = zero-state, not a tick) ----
 import { parseFrameworkManifest } from "../framework.mjs";
-const AURORA_MANIFEST = parseFrameworkManifest(JSON.stringify({
-  schema_version: 1, framework_key: "aurora", title: "Aurora Interactive risk framework",
-  source_deck: "Risk Assessment Framework (test fixture)", entity_label: "Aurora Interactive",
+const MATRIX_MANIFEST = parseFrameworkManifest(JSON.stringify({
+  schema_version: 1, framework_key: "demo-brand-owner", title: "Demo Brand Owner risk framework",
+  source_deck: "Risk Assessment Framework (test fixture)", entity_label: "Demo Brand Owner",
   bands: [
     { label: "Very High", tone: "severe" }, { label: "High", tone: "high" }, { label: "Medium", tone: "medium" },
     { label: "Manageable", tone: "low" }, { label: "Low", tone: "minimal" },
@@ -1596,7 +1596,7 @@ const BAND_FINDINGS = [
 test("doc-54: framework gauge = one tick per band, no merged tick, no Clear tick; marker lands on the VERDICT band (Manageable ≠ Low)", () => {
   const vi = { tier: "Manageable", verdict: "CONDITIONAL", badge: "l2", gaugeIndex: 1,
     band: { label: "Manageable", rankFromTop: 4, scale: 5 } };
-  const html = renderHtml(parsedOf(REPORT), BAND_FINDINGS, [], { framework: AURORA_MANIFEST, verdictInfo: vi });
+  const html = renderHtml(parsedOf(REPORT), BAND_FINDINGS, [], { framework: MATRIX_MANIFEST, verdictInfo: vi });
   const ticks = html.match(/<div class="ticks">([\s\S]*?)<\/div>/)[1];
   assert.equal((ticks.match(/<span/g) || []).length, 5, "one tick per manifest band");
   assert.match(ticks, /^<span>Low<\/span>/, "least severe leads (ladder reversed)");
@@ -1610,7 +1610,7 @@ test("doc-54: framework gauge = one tick per band, no merged tick, no Clear tick
 
 test("doc-54: Clear zero-state — no active tick, left-anchored clear pill", () => {
   const vi = { tier: "No rated conflicts", verdict: "CLEAR", badge: "l1", gaugeIndex: 0 };
-  const html = renderHtml(parsedOf(REPORT), [], [], { framework: AURORA_MANIFEST, verdictInfo: vi });
+  const html = renderHtml(parsedOf(REPORT), [], [], { framework: MATRIX_MANIFEST, verdictInfo: vi });
   const ticks = html.match(/<div class="ticks">([\s\S]*?)<\/div>/)[1];
   assert.doesNotMatch(ticks, /class="on"/, "no band tick is active in the zero-state");
   assert.match(html, /class="marker" style="left:0;transform:none[^"]*"><div class="pill" style="background:var\(--clear\)">No rated conflicts<\/div>/);
@@ -1618,7 +1618,7 @@ test("doc-54: Clear zero-state — no active tick, left-anchored clear pill", ()
 
 test("doc-54: composite-tier sidecar on a framework run maps tone-nearest, never Clear (fail-loud floor)", () => {
   const vi = { tier: "MEDIUM", verdict: "CONDITIONAL", badge: "l3", gaugeIndex: 2 };
-  const html = renderHtml(parsedOf(REPORT), [], [], { framework: AURORA_MANIFEST, verdictInfo: vi });
+  const html = renderHtml(parsedOf(REPORT), [], [], { framework: MATRIX_MANIFEST, verdictInfo: vi });
   const ticks = html.match(/<div class="ticks">([\s\S]*?)<\/div>/)[1];
   assert.match(ticks, /<span class="on"[^>]*>Medium<\/span>/, "tone 2 → the Medium band tick");
 });
@@ -1650,7 +1650,7 @@ test("the verdict lists every condition under its own lede, and no count stands 
       "Check the owner own filings through its corporate records.",
     ],
   };
-  const html = renderHtml(parsedOf(REPORT), [], [], { framework: AURORA_MANIFEST, verdictInfo: vi });
+  const html = renderHtml(parsedOf(REPORT), [], [], { framework: MATRIX_MANIFEST, verdictInfo: vi });
   const row = html.match(/<span class="gk">Verdict<\/span><span class="gv gv-rec">([\s\S]*?)<\/span>/)[1];
 
   assert.match(row, /^Moderate — conditional on:<ul class="gconds">/,
@@ -1670,20 +1670,20 @@ test("the verdict lists every condition under its own lede, and no count stands 
 // that routinely runs six thousand pixels. The footer line stays (it is the printed page's provenance);
 // what this adds is the name where the ladder is actually read.
 test("the gauge names the framework whose ladder it is printing, right above the ticks", () => {
-  const html = renderHtml(parsedOf(REPORT), BAND_FINDINGS, [], { framework: AURORA_MANIFEST, runId: "r" });
+  const html = renderHtml(parsedOf(REPORT), BAND_FINDINGS, [], { framework: MATRIX_MANIFEST, runId: "r" });
   const label = html.match(/<div class="label">Overall risk[\s\S]*?<\/div>/)[0];
-  assert.match(label, /<span class="gauge-fw">Aurora Interactive risk framework<\/span>/,
+  assert.match(label, /<span class="gauge-fw">Demo Brand Owner risk framework<\/span>/,
     "the manifest's own name for itself, in the gauge's heading");
   // BESIDE the ticks, not merely somewhere on the page: the whole complaint is distance.
   const gauge = html.match(/<div class="panel gauge">[\s\S]*?<div class="ticks">/)[0];
   assert.match(gauge, /<span class="gauge-fw">/, "the name sits inside the gauge panel, above the scale and the ticks");
   // ONE name for one framework. A second, composed short form here would rebuild in another corner.
   // ONE NAME FOR ONE FRAMEWORK, and the count moved when the footer stopped restating it. The footer
-  // carried "Risk bands (Aurora Interactive risk framework): …" plus a sentence explaining the
+  // carried "Risk bands (Demo Brand Owner risk framework): …" plus a sentence explaining the
   // vocabulary to a developer; both are gone. The name now sits in the gauge, and on the "Rated under"
   // line when the run records one — this fixture records none, which is why the count here is one.
   // What the arm holds is unchanged: the name is never rebuilt in another corner of the page.
-  assert.equal((html.match(/Aurora Interactive risk framework/g) ?? []).length, 1,
+  assert.equal((html.match(/Demo Brand Owner risk framework/g) ?? []).length, 1,
     "named once — the gauge; the footer no longer restates it");
 });
 
@@ -1700,7 +1700,7 @@ test("the legacy gauge names nothing — an archived run with no manifest is byt
 
 test("doc-54: region chips speak the group's worst band word in framework mode; C-codes stay legacy-only", () => {
   const vi = { tier: "Manageable", verdict: "CONDITIONAL", badge: "l2", gaugeIndex: 1, band: { label: "Manageable", rankFromTop: 4, scale: 5 } };
-  const fw = renderHtml(parsedOf(REPORT), BAND_FINDINGS, [], { framework: AURORA_MANIFEST, verdictInfo: vi });
+  const fw = renderHtml(parsedOf(REPORT), BAND_FINDINGS, [], { framework: MATRIX_MANIFEST, verdictInfo: vi });
   assert.match(fw, /<span class="kc [a-z]+">Manageable<\/span>/, "region header chip = worst band word");
   assert.doesNotMatch(fw, /<span class="kc [a-z]+">C\d<\/span>/, "no composite shorthand on a framework run");
   const legacy = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, {});
@@ -1712,7 +1712,7 @@ test("doc-54: landscape legend avoids the band-word collision only in framework 
   const onfield = [{ ordinal: 3, mark: "MATCHDAY LIVE", band: "Medium", disposition: "adversarial",
     owner: { name: "Adversary Co", country: "US", registrations: [{ uri: "https://tm.example/us/3", classes: ["41"], status: "Registered", jurisdiction: "US" }] },
     source: { source_type: "register-vendor", resolved_link: "https://tm.example/us/3" }, meters: {} }, ...BAND_FINDINGS];
-  const fw = renderHtml(parsedOf(REPORT), onfield, [], { framework: AURORA_MANIFEST, verdictInfo: vi });
+  const fw = renderHtml(parsedOf(REPORT), onfield, [], { framework: MATRIX_MANIFEST, verdictInfo: vi });
   assert.match(fw, /Secondary · watch/);
   assert.doesNotMatch(fw, /Secondary · manageable/);
   const legacy = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, {});
@@ -1731,11 +1731,11 @@ test("doc-54: one footer — the full provenance line rides the document; serve-
   // reviewer's full "Rated under:" provenance; portal-report.mjs (RATED_UNDER_RE) strips that line for
   // EVERY embedded reader at serve time — one place, tested there.
   const fmLeak = REPORT.replace("run: 2026-06-10", "run: 2026-06-10 · Corsearch register + common-law grid")
-    .replace("---\n\n#", "rated_under: Aurora Interactive (aurora) · custom framework (risk-framework-aurora.md) · profile 890f610e1dcf\n---\n\n#");
+    .replace("---\n\n#", "rated_under: Demo Brand Owner (demo-brand-owner) · custom framework (risk-framework-demo.md) · profile 890f610e1dcf\n---\n\n#");
   const vi = { tier: "Manageable", verdict: "CONDITIONAL", badge: "l2", gaugeIndex: 1, band: { label: "Manageable", rankFromTop: 4, scale: 5 } };
-  const internal = renderHtml(parsedOf(fmLeak), BAND_FINDINGS, [], { framework: AURORA_MANIFEST, verdictInfo: vi });
-  assert.match(internal, /Rated under: <span class="mono">Aurora Interactive \(aurora\)/, "the footer keeps the full provenance line");
-  const stale = renderHtml(parsedOf(fmLeak), BAND_FINDINGS, [], { client: true, framework: AURORA_MANIFEST, verdictInfo: vi });
+  const internal = renderHtml(parsedOf(fmLeak), BAND_FINDINGS, [], { framework: MATRIX_MANIFEST, verdictInfo: vi });
+  assert.match(internal, /Rated under: <span class="mono">Demo Brand Owner \(demo-brand-owner\)/, "the footer keeps the full provenance line");
+  const stale = renderHtml(parsedOf(fmLeak), BAND_FINDINGS, [], { client: true, framework: MATRIX_MANIFEST, verdictInfo: vi });
   assert.equal(stale, internal, "opts.client no longer forks the footer");
 });
 
@@ -1823,7 +1823,7 @@ test("the footer is one client line with its dates named, and the reviewer's pro
     // BOTH optional lines are set, and run_under_project is here because without it the assertion
     // below passes vacuously: the fixture never carried the field, so "is it absent from the output"
     // was true whatever the renderer did with it. Driven that way and it proved nothing.
-    .replace("---\n\n#", "rated_under: Aurora Interactive (aurora) · custom framework · profile 890f610e\nrun_under_project: Japan and Korea app launch (Demo Brand Owner)\n---\n\n#");
+    .replace("---\n\n#", "rated_under: Demo Brand Owner (demo-brand-owner) · custom framework · profile 890f610e\nrun_under_project: Japan and Korea app launch (Demo Brand Owner)\n---\n\n#");
   const html = renderHtml(parsedOf(fmRun), BAND_FINDINGS, [], { issued: "2026-06-16 · 14:32 CEST" });
   const foot = (html.match(/<footer[^>]*>([\s\S]*?)<\/footer>/) || [])[1] ?? "";
 
@@ -1846,7 +1846,7 @@ test("the footer is one client line with its dates named, and the reviewer's pro
 test("an embedded reader gets the client footer line and neither provenance line", async () => {
   const { prepareReportForEmbed } = await import("../portal-report.mjs");
   const fmRun = REPORT.replace("run: 2026-06-10", "run: 2026-06-10 · Corsearch register + common-law grid")
-    .replace("---\n\n#", "rated_under: Aurora Interactive (aurora) · custom framework · profile 890f610e\nrun_under_project: Japan and Korea app launch (Demo Brand Owner)\n---\n\n#");
+    .replace("---\n\n#", "rated_under: Demo Brand Owner (demo-brand-owner) · custom framework · profile 890f610e\nrun_under_project: Japan and Korea app launch (Demo Brand Owner)\n---\n\n#");
   const html = renderHtml(parsedOf(fmRun), BAND_FINDINGS, [], { issued: "2026-06-16 · 14:32 CEST" });
   const embedded = prepareReportForEmbed(html, {}).html ?? prepareReportForEmbed(html, {});
   const served = typeof embedded === "string" ? embedded : String(embedded);
@@ -1878,7 +1878,7 @@ test("B1 (spec 2026-07-30 §4): the 'Subject to:' bound line is DELETED — no t
     "- Approve the coexistence outreach draft.", "- Monitor prosecution of the GB application.",
   ].join("\n");
   const vi = { tier: "Manageable", verdict: "CONDITIONAL", badge: "l2", gaugeIndex: 1, band: { label: "Manageable", rankFromTop: 4, scale: 5 } };
-  const html = renderHtml(parsedOf(`${REPORT}\n${acts}`), BAND_FINDINGS, [], { client: true, framework: AURORA_MANIFEST, verdictInfo: vi });
+  const html = renderHtml(parsedOf(`${REPORT}\n${acts}`), BAND_FINDINGS, [], { client: true, framework: MATRIX_MANIFEST, verdictInfo: vi });
   assert.doesNotMatch(html, /class="bound"/, "the bound line is gone on a CONDITIONAL run");
   assert.match(html, /What happens next/, "the conditions' one home (the forward-decisions section) still renders");
   // actYouConditions itself STAYS — the email composer builds its conditions list from it (tested below).
@@ -2636,7 +2636,7 @@ test("the fold point is a sentence end, not a full stop — initialisms and corp
 // or a field deleted from a surface.
 
 test("D5: the client risk chip is the BAND WORD — the placement key never rides on it", () => {
-  const html = renderHtml(parsedOf(REPORT), BAND_FINDINGS, [], { framework: AURORA_MANIFEST, runId: "r" });
+  const html = renderHtml(parsedOf(REPORT), BAND_FINDINGS, [], { framework: MATRIX_MANIFEST, runId: "r" });
   assert.match(html, /<span class="tier[^"]*">Manageable<\/span>/, "the chip is the framework's own band word");
   assert.match(html, /<span class="tier[^"]*">Low<\/span>/);
   // THE DEFECT: "Manageable · Adversarial" on every card. `disposition` is a PLACEMENT key — stages.mjs
@@ -2653,7 +2653,7 @@ test("D5: the client risk chip is the BAND WORD — the placement key never ride
 
 test("D5: an UNRATED awareness finding drops the suffix too, and keeps its own words", () => {
   const unrated = [{ ...BAND_FINDINGS[0], band: null, disposition: "off-field" }];
-  const html = renderHtml(parsedOf(REPORT), unrated, [], { framework: AURORA_MANIFEST, runId: "r" });
+  const html = renderHtml(parsedOf(REPORT), unrated, [], { framework: MATRIX_MANIFEST, runId: "r" });
   assert.match(html, /<span class="tier[^"]*">Not rated — awareness<\/span>/);
   assert.doesNotMatch(html, /Not rated — awareness · /);
 });

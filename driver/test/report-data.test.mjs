@@ -43,7 +43,7 @@ const ACTIONS = [
 ];
 const ARGS = {
   runId: "synth-run-2026-07-29-test-fixture", codename: "test-fixture", matter: "synth-matter",
-  markName: "Voltmax", title: "VOLTMAX — Preliminary Trademark Clearance", customerKey: "aurora",
+  markName: "Voltmax", title: "VOLTMAX — Preliminary Trademark Clearance", customerKey: "demo-brand-owner",
   issued: "2026-07-29 · 10:00 CEST", url: "https://pool.example/synth/report.html", auditFile: "synth-audit.xlsx",
   product: "global-preliminary-search", stageLabel: "Depth 4", framework: FRAMEWORK,
   verdictInfo: {

@@ -227,10 +227,10 @@ test('RECENT MEANS LAST RUN AGAINST, and a project nothing ran under is absent',
 test('two companies can hold the same project key without merging', () => {
   const rows = recentProjects([
     run({ runId: '1', account: 'zephyr', projectKey: 'launch', projectName: 'Launch', date: '2026-07-25', state: 'delivered' }),
-    run({ runId: '2', account: 'aurora', projectKey: 'launch', projectName: 'Launch', date: '2026-07-24', state: 'delivered' }),
+    run({ runId: '2', account: 'demo-brand-owner', projectKey: 'launch', projectName: 'Launch', date: '2026-07-24', state: 'delivered' }),
   ])
   assert.equal(rows.length, 2)
-  assert.deepEqual(rows.map((p) => p.account), ['zephyr', 'aurora'])
+  assert.deepEqual(rows.map((p) => p.account), ['zephyr', 'demo-brand-owner'])
 })
 
 test('a project whose only run is QUEUED still has a name to show', () => {
@@ -254,16 +254,16 @@ test('row notes are capitalised — they are cells, not clauses', () => {
 test('COMPANIES COME FROM THE ROSTER, not from the runs', () => {
   // An owner set up and never used has no run to be derived from — and is exactly the one somebody is
   // most likely to be hunting for. Deriving the list from activity would hide it.
-  const names: Record<string, string> = { zephyr: 'Zephyr Beverages', aurora: 'Aurora Interactive', quiet: 'Quiet Co' }
+  const names: Record<string, string> = { zephyr: 'Zephyr Beverages', 'demo-brand-owner': 'Demo Brand Owner', quiet: 'Quiet Co' }
   const rows = ownerSummaries(
-    ['zephyr', 'aurora', 'quiet'],
+    ['zephyr', 'demo-brand-owner', 'quiet'],
     [
       run({ runId: '1', account: 'zephyr', state: 'delivered', date: '2026-07-20' }),
-      run({ runId: '2', account: 'aurora', state: 'running', date: '2026-07-27' }),
+      run({ runId: '2', account: 'demo-brand-owner', state: 'running', date: '2026-07-27' }),
     ],
     (k) => names[k] ?? k,
   )
-  assert.deepEqual(rows.map((o) => o.key), ['aurora', 'zephyr', 'quiet'], 'live first, then most recent, then name')
+  assert.deepEqual(rows.map((o) => o.key), ['demo-brand-owner', 'zephyr', 'quiet'], 'live first, then most recent, then name')
   assert.equal(rows[2]!.finished, 0)
   assert.equal(ownerNote(rows[2]!), 'Nothing yet', 'never "0 clearances" — a zero beside a client reads as a fault')
   assert.equal(ownerNote(rows[0]!), 'One in flight')
@@ -305,7 +305,7 @@ test('the staff sentence NEVER says "no in flight"', () => {
   // pins the sentence so the construction cannot come back with any data.)
   const stopped = recentFailures([
     stoppedRun({ runId: '1', account: 'zephyr' }),
-    stoppedRun({ runId: '2', account: 'aurora' }),
+    stoppedRun({ runId: '2', account: 'demo-brand-owner' }),
   ], { now: NOW })
   const line = sentence([], stopped, { owners: 5 })
   assert.doesNotMatch(line, /no in flight/)
@@ -315,8 +315,8 @@ test('the staff sentence NEVER says "no in flight"', () => {
 test('the staff view counts companies, not names', () => {
   const rows = inFlight([
     run({ runId: '1', account: 'zephyr', state: 'running' }),
-    run({ runId: '2', account: 'aurora', state: 'running' }),
-    run({ runId: '3', account: 'aurora', state: 'queued' }),
+    run({ runId: '2', account: 'demo-brand-owner', state: 'running' }),
+    run({ runId: '3', account: 'demo-brand-owner', state: 'queued' }),
   ])
   assert.equal(sentence(rows, [], { owners: 3 }), 'Three in flight, three companies.')
 })
@@ -862,7 +862,7 @@ test('the same mark under two different owners is not a twin', () => {
   // confuse — the decoration criterion 3 refuses.
   const stamps = readStamps([
     run({ runId: 'a', account: 'zephyr', state: 'failed' }),
-    run({ runId: 'b', account: 'aurora', state: 'failed' }),
+    run({ runId: 'b', account: 'demo-brand-owner', state: 'failed' }),
   ])
   assert.equal(stamps.get('a'), null)
   assert.equal(stamps.get('b'), null)

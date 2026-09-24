@@ -90,11 +90,11 @@ describe("scrub: internal-only content is REMOVED", () => {
   test("a custom framework's SOURCE FILENAME is dropped, its human title stays", () => {
     // shape taken from a real run (TMP8743): `<customer> · custom framework: <title> (<file>.md) · profile <hash>`
     const out = scrubFrontMatter({
-      rated_under: "Aurora Interactive (aurora) · custom framework: Foxglade risk framework (risk-framework-aurora.md) · profile 890f610e1dcf",
+      rated_under: "Demo Brand Owner (demo-brand-owner) · custom framework: Foxglade risk framework (risk-framework-demo.md) · profile 890f610e1dcf",
     }).rated_under;
     assert.ok(!/\.md/.test(out) && !/890f610e1dcf/.test(out), `config identity leaked: ${out}`);
     assert.match(out, /Foxglade risk framework/);
-    assert.match(out, /Aurora Interactive/);
+    assert.match(out, /Demo Brand Owner/);
   });
 
   test("front matter is an ALLOWLIST — an unknown future key is withheld by default", () => {

@@ -24,29 +24,29 @@ import { loadProfiles, loadProjects, resolveEffectiveProfile } from "../profiles
 import { resolveEffectiveScope } from "../effective-scope.mjs";
 
 const CUSTOMER = {
-  name: "Aurora Interactive Corporation", matchDomains: ["aurora.example"], industry: "gaming",
+  name: "Demo Brand Owner Corporation", matchDomains: ["demo-brand-owner.example"], industry: "gaming",
   platforms: ["store.steampowered.com", "gog.com"],
   defaultClasses: [9, 28, 41, 42], defaultJurisdictions: ["DE", "FR"], selfExclusionOwners: [],
 };
 // The project REPLACES classes (replace semantics — its list is what actually runs) and says nothing
 // about territories, so one field comes from the project and its sibling from the account. One run,
 // both answers, which is the case a single-field fixture cannot express.
-const PROJECT = { projectName: "Console ecosystem", defaultClasses: [14, 25] };
+const PROJECT = { projectName: "Japan and Korea app launch", defaultClasses: [14, 25] };
 
 function world() {
   const dir = mkdtempSync(join(tmpdir(), "scope-origins-"));
-  writeFileSync(join(dir, "aurora.json"), JSON.stringify(CUSTOMER));
+  writeFileSync(join(dir, "demo-brand-owner.json"), JSON.stringify(CUSTOMER));
   writeFileSync(join(dir, "generic.json"), JSON.stringify({
     name: "House default", matchDomains: [], industry: "gaming", platforms: ["store.steampowered.com"],
     defaultClasses: [], defaultJurisdictions: [], selfExclusionOwners: [],
   }));
-  mkdirSync(join(dir, "projects", "aurora"), { recursive: true });
-  writeFileSync(join(dir, "projects", "aurora", "console.json"), JSON.stringify(PROJECT));
+  mkdirSync(join(dir, "projects", "demo-brand-owner"), { recursive: true });
+  writeFileSync(join(dir, "projects", "demo-brand-owner", "console.json"), JSON.stringify(PROJECT));
   const profiles = loadProfiles({ dir, force: true });
   return { profiles, projects: loadProjects({ dir, profiles, force: true }) };
 }
 
-const JOB = { profileKey: "aurora", projectKey: "console" };
+const JOB = { profileKey: "demo-brand-owner", projectKey: "console" };
 const POLICY = { pipeline: "clearotron", components: {} };
 
 test("a project-supplied value says 'this project' when the profile comes from the real resolver", () => {
@@ -81,10 +81,10 @@ test("the sibling field still says the ACCOUNT — the fix must not relabel ever
 
 test("a run under NO project is unchanged — origins is null and every value is the account's", () => {
   const { profiles, projects } = world();
-  const { profile, origins } = resolveEffectiveProfile({ profileKey: "aurora" }, { profiles, projects });
+  const { profile, origins } = resolveEffectiveProfile({ profileKey: "demo-brand-owner" }, { profiles, projects });
   assert.equal(origins, null, "no project, no overlay, no origin map");
   assert.equal(profile.origins, undefined, "and nothing invented onto the profile");
-  const eff = resolveEffectiveScope({ profileKey: "aurora" }, profile, POLICY);
+  const eff = resolveEffectiveScope({ profileKey: "demo-brand-owner" }, profile, POLICY);
   assert.doesNotMatch(JSON.stringify(eff), /this project/i, "a plain customer run never claims a project");
 });
 

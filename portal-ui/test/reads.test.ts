@@ -15,7 +15,7 @@ import type { Run } from '../src/contract/api.ts'
 
 const run = (over: Partial<Run> & { runId: string }): Run => ({
   runId: over.runId,
-  account: 'aurora',
+  account: 'demo-brand-owner',
   title: 'AQUAPLUS',
   kind: 'clearance',
   state: 'delivered',
@@ -47,7 +47,7 @@ test('case and surrounding whitespace group; internal spacing does NOT', () => {
 test('a thread never crosses companies, even on an identical mark', () => {
   // Two clients clearing the same word at the same time is ordinary, not exotic. The server already
   // scopes what it returns; this is the second wall.
-  const mine = run({ runId: 'a', account: 'aurora', title: 'NOVAPULSE' })
+  const mine = run({ runId: 'a', account: 'demo-brand-owner', title: 'NOVAPULSE' })
   const theirs = run({ runId: 'b', account: 'zephyr', title: 'NOVAPULSE' })
   const reads = readsFor([mine, theirs], mine)
   assert.deepEqual(reads.map((r) => r.runId), ['a'])

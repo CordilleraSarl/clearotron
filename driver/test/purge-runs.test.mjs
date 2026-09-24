@@ -28,7 +28,7 @@ const SCRIPT = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "script
 
 // Synthetic vocabulary only: TMP9xxx is this repo's probe range, distinct from real TMP5xxx matters.
 const RUNS = [
-  ["tmp9001-novapulse-2026-07-01-flint-probe", "aurora"],
+  ["tmp9001-novapulse-2026-07-01-flint-probe", "demo-brand-owner"],
   ["tmp9002-novapulse-2026-07-02-slate-probe", "zephyr"],
   ["tmp9003-acmewidget-2026-07-03-briar-probe", "zephyr"],
 ];
@@ -119,7 +119,7 @@ test("--keep-file reads one runId per line, ignoring blanks and # comments", () 
 // it silently sends the new run to the delete set.
 test("--keep-customer is a RULE: a customer's later run is protected without editing anything", () => {
   const p = pool([
-    ["tmp9001-novapulse-2026-07-01-flint-probe", "aurora"],
+    ["tmp9001-novapulse-2026-07-01-flint-probe", "demo-brand-owner"],
     ["tmp9002-novapulse-2026-07-02-slate-probe", "zephyr"],
     ["tmp9009-novapulse-2026-07-09-hazel-probe", "zephyr"], // arrived after any list would have been written
   ]);
@@ -138,7 +138,7 @@ test("a keeper vetoes --only — a pattern can never overrule a protected run", 
 test("a RUNNING live run is never a delete candidate, even under --keep-none", () => {
   // one pool run (deletable) + two live runs, one in flight. Removing a live dir mid-write loses work
   // no retry recovers, so it must be KEEP regardless of how wide the sweep is.
-  let p = pool([["tmp9001-novapulse-2026-07-01-flint-probe", "aurora"]]);
+  let p = pool([["tmp9001-novapulse-2026-07-01-flint-probe", "demo-brand-owner"]]);
   p = liveRun(p, { matter: "tmp9004", codename: "2026-07-04-hazel-probe", runId: "tmp9004-novapulse-2026-07-04-hazel-probe", state: "running" });
   p = liveRun(p, { matter: "tmp9005", codename: "2026-07-05-umber-probe", runId: "tmp9005-novapulse-2026-07-05-umber-probe", state: "failed" });
 

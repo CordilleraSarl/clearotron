@@ -63,7 +63,7 @@ test("a list that cannot be used is a COULD-NOT-LOOK, never an empty list", () =
   for (const [why, list] of [
     ["not a list", null],
     ["an empty list", []],
-    ["a blank entry", ["aurora", "  "]],
+    ["a blank entry", ["petcary", "  "]],
   ]) {
     const { error, names } = namesFor(list);
     assert.ok(error, `${why} must be an error rather than an empty list`);
@@ -75,12 +75,12 @@ test("the real shipped list loads and is usable, so the could-not-looks are not 
   // Without this every arm above is satisfied by a list that never loads.
   const { error, names } = namesFor(TEST_ACCOUNT_NAMES);
   assert.equal(error, null);
-  assert.ok(names.length >= 3, "the shipped list must carry the fixture account names");
+  assert.ok(names.length >= 2, "the shipped list must carry the fixture account names");
   assert.equal(scanEntries([{ path: "docs/x.md", text: `the ${names[0]} matter` }], names).length, 1);
 });
 
 test("AN ORDINARY USE OF THE WORD is exempt by its CONTEXT, not by its file", () => {
-  // One of the three is also an ordinary English word, and the shipped register reference data carries
+  // One of the two is also an ordinary English word, and the shipped register reference data carries
   // it as a goods term. Without the exemption the gate refuses every release on correct data.
   const line = '{"basic_no":"240094","nice_class":24,"name_en":"zephyr [cloth]","name_zh_tw":"薄織布"}';
   const path = "providers/jx-subclass/public/goods.jsonl";
@@ -99,7 +99,7 @@ test("the exemption clears the LINE and not the FILE", () => {
 
 test("the shipped word list may carry the bare word, and only as the whole line", () => {
   // The engine ships an English word list to keep the form floor off one-letter neighbours that are
-  // ordinary words, and one of the three names is one of those words. Measured 2026-09-18 on the beta it
+  // ordinary words, and one of the two names is one of those words. Measured 2026-09-18 on the beta it
   // first shipped in: this gate refused the packed bytes on that single line, at the last step of the
   // publish job — where a refusal strands a cut whose version is already stamped.
   const path = "package/driver/wordlists/en.txt";

@@ -43,16 +43,16 @@ test("wire: mcpToolCall → real /mcp face → start_run queues with server-stam
   const srv = createServer(handler);
   await new Promise((r) => srv.listen(0, "127.0.0.1", r));
   const url = `http://127.0.0.1:${srv.address().port}`;
-  const token = mintToken({ scope: "ops", sub: "portal-poc", verbs: ["start_run", "stop_run"], accounts: ["aurora"] });
+  const token = mintToken({ scope: "ops", sub: "portal-poc", verbs: ["start_run", "stop_run"], accounts: ["demo-brand-owner"] });
   try {
     const r = await mcpToolCall({ url, token, tool: "start_run", args: {
-      profileKey: "aurora", forwarder: "portal", forwarderEmail: "cli@celta.example",
+      profileKey: "demo-brand-owner", forwarder: "portal", forwarderEmail: "cli@celta.example",
       markName: "WIREMARK", classes: [9], goods: "software",
     } });
     assert.equal(r.ok, true, JSON.stringify(r));
     assert.ok(r.queued && r.queuePath, "start_run answered through the MCP transport");
     const job = JSON.parse(readFileSync(r.queuePath, "utf8"));
-    assert.equal(job.profileKey, "aurora");
+    assert.equal(job.profileKey, "demo-brand-owner");
     assert.equal(job.enqueuedBy, "portal-poc", "attribution = the ops token's sub, stamped by the face");
     assert.equal(job.enqueuedVia, "mcp/start_run");
     // AND STOPS IT, on the same token over the same wire. The portal calls exactly these two tools, and

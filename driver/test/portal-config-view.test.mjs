@@ -150,14 +150,14 @@ import { makePrincipal } from "../portal-access.mjs";
 // person, built from the fixture's own entry.
 const KAY = "kay@install.example";
 const GRANTS = { tenants: {
-  celta: { accounts: ["aurora", "zephyr"], users: {
-    "cli@celta.example": ["aurora"],
+  celta: { accounts: ["demo-brand-owner", "zephyr"], users: {
+    "cli@celta.example": ["demo-brand-owner"],
     "boss@celta.example": "*",
     "typo@celta.example": ["aurroa"],        // a typo: celta does not hold "aurroa"
   } },
 }, people: { [KAY]: { run: true, manage: true, everything: true } } };
 const EVERYTHING = makePrincipal({ email: KAY, grants: GRANTS });
-const COMPANIES = { aurora: "Aurora", zephyr: "Zephyr" };
+const COMPANIES = { "demo-brand-owner": "Demo Brand Owner", zephyr: "Zephyr" };
 
 test("a wildcard grant is expanded to what it actually reaches", () => {
   const v = accessView({ grants: GRANTS, viewer: EVERYTHING, companies: COMPANIES });
@@ -167,7 +167,7 @@ test("a wildcard grant is expanded to what it actually reaches", () => {
   assert.deepEqual(boss.access, [{ kind: "organisation", key: "celta", name: "celta" }],
     "'*' means this TENANT, not every account");
   assert.ok(!boss.access.some((p) => p.kind === "everything"), "a wildcard row is not access to everything");
-  assert.deepEqual(makePrincipal({ email: "boss@celta.example", grants: GRANTS }).accounts, ["aurora", "zephyr"],
+  assert.deepEqual(makePrincipal({ email: "boss@celta.example", grants: GRANTS }).accounts, ["demo-brand-owner", "zephyr"],
     "and the organisation point reaches exactly the tenant's accounts");
 });
 
@@ -179,9 +179,9 @@ test("a grant naming an account its tenant does not hold is FLAGGED — it fails
 });
 
 test("an account no profile matches is reported — the other typo direction", () => {
-  const grants = { tenants: { celta: { accounts: ["aurora", "ghost"], users: {} } },
+  const grants = { tenants: { celta: { accounts: ["demo-brand-owner", "ghost"], users: {} } },
     people: { [KAY]: { run: true, manage: true, everything: true } } };
-  const v = accessView({ grants, viewer: makePrincipal({ email: KAY, grants }), companies: { aurora: "Aurora" } });
+  const v = accessView({ grants, viewer: makePrincipal({ email: KAY, grants }), companies: { "demo-brand-owner": "Demo Brand Owner" } });
   assert.deepEqual(v.unknownAccounts, ["ghost"]);
 });
 
@@ -238,9 +238,9 @@ test("observed: an empty log is AVAILABLE with nobody — distinct from unreadab
 
 test("observed: identities are aggregated, counted per event, and sorted newest first", () => {
   const p = auditFile([
-    { at: "2026-07-18T09:00:00.000Z", event: "plan", by: "reviewer@staff.example", account: "aurora" },
+    { at: "2026-07-18T09:00:00.000Z", event: "plan", by: "reviewer@staff.example", account: "demo-brand-owner" },
     { at: "2026-07-19T09:00:00.000Z", event: "trigger", by: "reviewer@staff.example", account: "zephyr" },
-    { at: "2026-07-20T09:00:00.000Z", event: "profile-save", by: "owner@staff.example", account: "aurora" },
+    { at: "2026-07-20T09:00:00.000Z", event: "profile-save", by: "owner@staff.example", account: "demo-brand-owner" },
   ]);
   const v = observedView({ auditPath: p });
   assert.equal(v.available, true);
@@ -248,7 +248,7 @@ test("observed: identities are aggregated, counted per event, and sorted newest 
     "most recent first — this is a 'who has been here lately' list");
   const reviewer = v.people.find((x) => x.email === "reviewer@staff.example");
   assert.deepEqual(reviewer.events, { plan: 1, trigger: 1 });
-  assert.deepEqual(reviewer.accounts, ["aurora", "zephyr"], "every brand owner they touched, deduped");
+  assert.deepEqual(reviewer.accounts, ["demo-brand-owner", "zephyr"], "every brand owner they touched, deduped");
   assert.equal(reviewer.firstSeen, "2026-07-18T09:00:00.000Z");
   assert.equal(reviewer.lastSeen, "2026-07-19T09:00:00.000Z");
   assert.equal(reviewer.count, 2);
@@ -296,15 +296,15 @@ test("OBSERVED NEVER RE-EXPORTS WHAT THE AUDIT LOG IS FOR", () => {
   // re-exporting it here would quietly undo that decision one surface over. This test is what stops a
   // well-meaning "let's surface more detail" edit later.
   const p = auditFile([{
-    at: "2026-07-20T09:00:00.000Z", event: "trigger", by: "a@staff.example", account: "aurora",
-    error: "upstream said PORTAL_OPS_TOKEN was rejected", selector: "recipe:aurora/secret-launch",
-    id: "portal-abc123", project: "console-ecosystem", ok: false,
+    at: "2026-07-20T09:00:00.000Z", event: "trigger", by: "a@staff.example", account: "demo-brand-owner",
+    error: "upstream said PORTAL_OPS_TOKEN was rejected", selector: "recipe:demo-brand-owner/secret-launch",
+    id: "portal-abc123", project: "japan-and-korea-app-launch", ok: false,
   }]);
   const dumped = JSON.stringify(observedView({ auditPath: p }));
-  for (const leak of ["PORTAL_OPS_TOKEN", "secret-launch", "portal-abc123", "console-ecosystem"]) {
+  for (const leak of ["PORTAL_OPS_TOKEN", "secret-launch", "portal-abc123", "japan-and-korea-app-launch"]) {
     assert.ok(!dumped.includes(leak), `${leak} must not reach a response body`);
   }
-  assert.ok(dumped.includes("a@staff.example") && dumped.includes("aurora"), "but who and which brand owner do");
+  assert.ok(dumped.includes("a@staff.example") && dumped.includes("demo-brand-owner"), "but who and which brand owner do");
 });
 
 test("accessView carries the grants file through, and tolerates not knowing it", () => {

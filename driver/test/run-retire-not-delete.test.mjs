@@ -58,31 +58,31 @@ const svcOn = (root) =>
   makePortalService({
     poolRoot: root, workspaceRoot: "/nonexistent", secret: "s",
     // STAFF is a person with access to everything (the /portal/admin gate); the client is view-only.
-    grants: () => ({ tenants: { aurora: { accounts: ["aurora"], users: { "c@aurora.example": ["aurora"] } } },
+    grants: () => ({ tenants: { "demo-brand-owner": { accounts: ["demo-brand-owner"], users: { "c@demo-brand-owner.example": ["demo-brand-owner"] } } },
       people: { "k@staff.example": { run: true, manage: true, everything: true } } }),
     audit: (rec) => audits.push(rec),
   });
 
 const STAFF = { email: "k@staff.example" };
-const CLIENT = { email: "c@aurora.example" };
+const CLIENT = { email: "c@demo-brand-owner.example" };
 const idsIn = (res) => res.json.runs.map((r) => r.runId).sort();
 
 test("arm 1 — retiring a run takes it off the listing, and the tag is what did it", async () => {
-  const root = poolWith({ plus: "aurora", max: "aurora" });
+  const root = poolWith({ plus: "demo-brand-owner", max: "demo-brand-owner" });
   const svc = svcOn(root);
-  assert.deepEqual(idsIn(await svc.route("GET", "/portal/api/runs", STAFF, {}, { account: "aurora" })), ["max", "plus"]);
+  assert.deepEqual(idsIn(await svc.route("GET", "/portal/api/runs", STAFF, {}, { account: "demo-brand-owner" })), ["max", "plus"]);
 
   const r = await svc.route("POST", "/portal/admin/retired", STAFF, { action: "retire", runIds: ["plus"] });
   assert.equal(r.status, 200);
   assert.deepEqual([...readArchivedSet(root)], ["plus"], "the sidecar carries the id, which is the whole mechanism");
-  assert.deepEqual(idsIn(await svc.route("GET", "/portal/api/runs", STAFF, {}, { account: "aurora" })), ["max"],
+  assert.deepEqual(idsIn(await svc.route("GET", "/portal/api/runs", STAFF, {}, { account: "demo-brand-owner" })), ["max"],
     "…and the listing honours it for staff too — retiring is not a per-reader preference");
 });
 
 test("arm 2 — ONE file is written; the run directory is not touched", async () => {
   // "Retiring must not touch the run directory, the pool artifacts, or the matter ledger." The pool IS
   // real client matter, so this is the assertion the issue actually turns on.
-  const root = poolWith({ plus: "aurora" });
+  const root = poolWith({ plus: "demo-brand-owner" });
   const before = readdirSync(join(root, "plus")).sort();
   const bytes = readFileSync(join(root, "plus", "report.html"));
   await svcOn(root).route("POST", "/portal/admin/retired", STAFF, { action: "retire", runIds: ["plus"] });
@@ -94,12 +94,12 @@ test("arm 2 — ONE file is written; the run directory is not touched", async ()
 });
 
 test("arm 3 — restore is the exact inverse, and does not need a readable run to work", async () => {
-  const root = poolWith({ plus: "aurora" });
+  const root = poolWith({ plus: "demo-brand-owner" });
   const svc = svcOn(root);
   await svc.route("POST", "/portal/admin/retired", STAFF, { action: "retire", runIds: ["plus"] });
   await svc.route("POST", "/portal/admin/retired", STAFF, { action: "restore", runIds: ["plus"] });
   assert.deepEqual([...readArchivedSet(root)], [], "the tag is gone");
-  assert.deepEqual(idsIn(await svc.route("GET", "/portal/api/runs", STAFF, {}, { account: "aurora" })), ["plus"],
+  assert.deepEqual(idsIn(await svc.route("GET", "/portal/api/runs", STAFF, {}, { account: "demo-brand-owner" })), ["plus"],
     "and the row is back exactly as it was — which is what makes retire safe to offer");
 
   // THE WAY BACK MUST NOT DEPEND ON THE THING THAT WENT WRONG. A retire can outlive a readable meta
@@ -118,23 +118,23 @@ test("arm 3 — restore is the exact inverse, and does not need a readable run t
 
 test("arm 4 — the audit names the actor, the verb and the account", async () => {
   audits.length = 0;
-  const root = poolWith({ plus: "aurora" });
+  const root = poolWith({ plus: "demo-brand-owner" });
   const svc = svcOn(root);
   await svc.route("POST", "/portal/admin/retired", STAFF, { action: "retire", runIds: ["plus"] });
   await svc.route("POST", "/portal/admin/retired", STAFF, { action: "restore", runIds: ["plus"] });
   assert.deepEqual(audits.map((a) => a.event), ["run-retire", "run-restore"],
     "both directions are filed — an un-retire nobody can trace is a run reappearing for no reason");
   assert.ok(audits.every((a) => a.by === STAFF.email), "with the actor's email, like family-group already does");
-  assert.ok(audits.every((a) => a.account === "aurora"), "and the owner, resolved from the run rather than the body");
+  assert.ok(audits.every((a) => a.account === "demo-brand-owner"), "and the owner, resolved from the run rather than the body");
 });
 
 test("arm 5 — a client cannot see or set this, and is told 404 rather than 403", async () => {
   // 404-never-403, the house rule for anything tenant-scoped. The sanity check matters as much as the
   // assertion: a client whose every request 404'd would pass this test for the wrong reason.
-  const root = poolWith({ plus: "aurora" });
+  const root = poolWith({ plus: "demo-brand-owner" });
   const svc = svcOn(root);
   const [runs, get, post] = await Promise.all([
-    svc.route("GET", "/portal/api/runs", CLIENT, {}, { account: "aurora" }),
+    svc.route("GET", "/portal/api/runs", CLIENT, {}, { account: "demo-brand-owner" }),
     svc.route("GET", "/portal/admin/retired", CLIENT),
     svc.route("POST", "/portal/admin/retired", CLIENT, { action: "retire", runIds: ["plus"] }),
   ]);
@@ -145,12 +145,12 @@ test("arm 5 — a client cannot see or set this, and is told 404 rather than 403
 });
 
 test("arm 6 — the retired view is the FOLD: only retired runs, never a second copy of the page", async () => {
-  const root = poolWith({ plus: "aurora", max: "aurora" });
+  const root = poolWith({ plus: "demo-brand-owner", max: "demo-brand-owner" });
   const svc = svcOn(root);
   await svc.route("POST", "/portal/admin/retired", STAFF, { action: "retire", runIds: ["plus"] });
   assert.deepEqual(idsIn(await svc.route("GET", "/portal/admin/retired", STAFF)), ["plus"],
     "the live run is NOT in the fold — you open it to find what you filed");
-  assert.deepEqual(idsIn(await svc.route("GET", "/portal/api/runs", STAFF, {}, { account: "aurora" })), ["max"],
+  assert.deepEqual(idsIn(await svc.route("GET", "/portal/api/runs", STAFF, {}, { account: "demo-brand-owner" })), ["max"],
     "and the retired one is not in the listing: the two views partition the pool");
 });
 
@@ -186,7 +186,7 @@ test("arm 8 — retiring a run does NOT revoke its report link", async () => {
   // Retirement is about what the pool ADVERTISES, not about who may read what. The link is in mail we
   // have already sent, and 404ing it from a curation command is not what "retire" means to the person
   // clicking it.
-  const root = poolWith({ plus: "aurora" });
+  const root = poolWith({ plus: "demo-brand-owner" });
   const svc = svcOn(root);
   await svc.route("POST", "/portal/admin/retired", STAFF, { action: "retire", runIds: ["plus"] });
   assert.equal((await svc.route("GET", "/portal/report/plus/", STAFF)).status, 200, "staff");

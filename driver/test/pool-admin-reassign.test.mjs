@@ -41,7 +41,7 @@ const profile = (key) => ({
   defaultClasses: [], defaultJurisdictions: [], selfExclusionOwners: [],
   delivery: { email: "summary", privileged: false },
 });
-for (const k of ["generic", "aurora", "zephyr"]) {
+for (const k of ["generic", "demo-brand-owner", "zephyr"]) {
   writeFileSync(join(PROFILES, `${k}.json`), JSON.stringify(profile(k)));
 }
 
@@ -77,10 +77,10 @@ function adminFails(args, env = {}) {
 const metaNow = () => JSON.parse(readFileSync(join(POOL, RUN, "meta.json"), "utf8"));
 
 test("reassign moves customerKey, and leaves every other field of the meta alone", () => {
-  seedRun("aurora");
+  seedRun("demo-brand-owner");
   const out = admin(["reassign", RUN, "zephyr"]);
   assert.equal(metaNow().customerKey, "zephyr");
-  assert.match(out, /aurora → zephyr/);
+  assert.match(out, /demo-brand-owner → zephyr/);
   // The rest of the meta is the run's identity and its published facts. Reassignment is an access
   // decision; rewriting anything else here would be forging the record.
   const m = metaNow();
@@ -91,7 +91,7 @@ test("reassign moves customerKey, and leaves every other field of the meta alone
 });
 
 test("the report still names the ORIGINAL client, and the command says so out loud", () => {
-  seedRun("aurora");
+  seedRun("demo-brand-owner");
   const out = admin(["reassign", RUN, "zephyr"]);
   // THE TRADE BEING MADE. A delivered report is frozen: the findings, the narrative and the risk
   // framework all carry the original customer's name and are not re-rendered. So this moves who may
@@ -103,12 +103,12 @@ test("the report still names the ORIGINAL client, and the command says so out lo
 });
 
 test("an account key that is not in the roster is REFUSED, and the refusal lists what is", () => {
-  seedRun("aurora");
+  seedRun("demo-brand-owner");
   const err = adminFails(["reassign", RUN, "zeyphr"]);   // a plausible typo for zephyr
   assert.ok(err, "a bad key must be a non-zero exit, not a warning");
   assert.match(err, /not a customer/);
-  assert.match(err, /aurora, generic, zephyr/, "the refusal names the roster it checked against");
-  assert.equal(metaNow().customerKey, "aurora", "and nothing was written");
+  assert.match(err, /demo-brand-owner, generic, zephyr/, "the refusal names the roster it checked against");
+  assert.equal(metaNow().customerKey, "demo-brand-owner", "and nothing was written");
 });
 
 test("with CLEAROTRON_CUSTOMERS_DIR unset it REFUSES rather than validating against the demo roster", () => {
@@ -116,12 +116,12 @@ test("with CLEAROTRON_CUSTOMERS_DIR unset it REFUSES rather than validating agai
   // down over a config slip. This is a one-shot curation command: writing the wrong owner is worse
   // than not running, so the same condition is fatal here. Two doors, same fact, different verdicts —
   // deliberately.
-  seedRun("aurora");
+  seedRun("demo-brand-owner");
   const err = adminFails(["reassign", RUN, "zephyr"], { CLEAROTRON_CUSTOMERS_DIR: "" });
   assert.ok(err, "unset roster must be fatal");
   assert.match(err, /CLEAROTRON_CUSTOMERS_DIR is unset/);
   assert.match(err, /BUNDLED demo/);
-  assert.equal(metaNow().customerKey, "aurora", "and nothing was written");
+  assert.equal(metaNow().customerKey, "demo-brand-owner", "and nothing was written");
 });
 
 test("reassigning to the key it already has is a no-op that says so", () => {
@@ -135,14 +135,14 @@ test("an unknown run is refused, by the same resolver archive/unarchive use", ()
   // The roster is checked BEFORE the run id, deliberately: a missing CLEAROTRON_CUSTOMERS_DIR or a bad key
   // is an environment problem that blocks every invocation, and reporting it first spares the operator
   // fixing a runId only to hit the real obstacle on the next attempt.
-  seedRun("aurora");
+  seedRun("demo-brand-owner");
   const err = adminFails(["reassign", "no-such-run", "zephyr"]);
   assert.ok(err);
   assert.match(err, /no run matches/);
 });
 
 test("reassign needs both arguments", () => {
-  seedRun("aurora");
+  seedRun("demo-brand-owner");
   const err = adminFails(["reassign", RUN]);
   assert.ok(err);
   assert.match(err, /needs <runId\|codename> <accountKey>/);

@@ -131,7 +131,7 @@ test("after a real first start, the connector and doctor read the saved searches
       `CLEAROTRON_WORK_DIR=${layout.workspace}`, `CLEAROTRON_QUEUE_DIR=${layout.queue}`].join("\n") + "\n");
 
     // A saved search for a company and one for Generic, which owns saved searches like any company.
-    const recipe = readFileSync(join(REPO, "driver", "recipes", "aurora", "quarterly-screen.json"), "utf8");
+    const recipe = readFileSync(join(REPO, "driver", "recipes", "zephyr", "standard-clearance.json"), "utf8");
     for (const [key, slug] of [["acme", "acme-screen"], ["generic", "house-screen"]]) {
       mkdirSync(join(handed.CLEAROTRON_RECIPES_DIR, key), { recursive: true });
       writeFileSync(join(handed.CLEAROTRON_RECIPES_DIR, key, `${slug}.json`), recipe);

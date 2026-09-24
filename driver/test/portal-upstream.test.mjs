@@ -23,8 +23,8 @@ import { makePrincipal, PortalDeny, mayManage, mayRun, seesEverything } from "..
 // everything, by its own entry. VIEWER holds the same company and neither switch.
 const GRANTS = {
   tenants: {
-    celta: { accounts: ["aurora", "zephyr"], users: { "cli@celta.example": ["aurora"], "boss@celta.example": "*",
-      "viewer@celta.example": ["aurora"] } },
+    celta: { accounts: ["demo-brand-owner", "zephyr"], users: { "cli@celta.example": ["demo-brand-owner"], "boss@celta.example": "*",
+      "viewer@celta.example": ["demo-brand-owner"] } },
   },
   people: {
     "cli@celta.example": { run: true, manage: true },
@@ -32,14 +32,14 @@ const GRANTS = {
   },
 };
 const P = (email) => makePrincipal({ email, grants: GRANTS });
-const CLIENT = P("cli@celta.example");      // aurora ONLY
+const CLIENT = P("cli@celta.example");      // demo-brand-owner ONLY
 const STAFF = P("staff@example-firm.com");   // everyone
-const VIEWER = P("viewer@celta.example");    // aurora only, view-only
+const VIEWER = P("viewer@celta.example");    // demo-brand-owner only, view-only
 
 test("the fixture: a 404 below is the tenancy wall, because the client holds the permission it would need", () => {
   assert.ok(mayManage(CLIENT) && mayRun(CLIENT), "the client holds Manage and Run");
   assert.ok(!seesEverything(CLIENT));
-  assert.deepEqual(CLIENT.accounts, ["aurora"], "and exactly one company");
+  assert.deepEqual(CLIENT.accounts, ["demo-brand-owner"], "and exactly one company");
   assert.ok(seesEverything(STAFF));
   assert.ok(!mayManage(VIEWER) && !mayRun(VIEWER), "the viewer holds neither switch");
 });
@@ -66,10 +66,10 @@ test("BREACH: a client asking for another customer's profile is refused — and 
 });
 
 test("a client's own account resolves whether they name it or not", async () => {
-  const { calls, up } = spy({ profile: { name: "Aurora" } });
-  await up.getProfile(CLIENT, "aurora");
+  const { calls, up } = spy({ profile: { name: "Demo Brand Owner" } });
+  await up.getProfile(CLIENT, "demo-brand-owner");
   await up.getProfile(CLIENT, null);
-  assert.deepEqual(calls.map((c) => c.path), ["/profiles/aurora", "/profiles/aurora"]);
+  assert.deepEqual(calls.map((c) => c.path), ["/profiles/demo-brand-owner", "/profiles/demo-brand-owner"]);
 });
 
 test("BREACH: a client cannot reach another customer through ANY door", async () => {
@@ -92,7 +92,7 @@ test("staff act for a named account; an unnamed one is an actionable 400, never 
 });
 
 test("the customer ROSTER is never proxied to a client — it is the list of every Cordillera client", async () => {
-  const up = makeUpstream({ callUpstream: async () => ({ status: 200, json: {} }), roster: async () => [{ key: "aurora" }] });
+  const up = makeUpstream({ callUpstream: async () => ({ status: 200, json: {} }), roster: async () => [{ key: "demo-brand-owner" }] });
   assert.equal((await up.listRoster(CLIENT)).status, 404);
   assert.equal((await up.listRoster(STAFF)).status, 200);
 });
@@ -104,7 +104,7 @@ test("BREACH: a client cannot create a company, and is not told the endpoint exi
   // Creating a company needs Manage AND access to a whole organisation. CLIENT holds Manage on one company,
   // which cannot add a sibling beside it; VIEWER holds no Manage at all. Each half is refused alone.
   for (const [who, principal] of [["a company-level manager", CLIENT], ["a view-only client", VIEWER]]) {
-    const r = await up.createCompany(principal, { name: "Aurora Holdings" });
+    const r = await up.createCompany(principal, { name: "Burrowell" });
     // 404, never 403. A 403 would confirm the endpoint is there and that somebody else may use it.
     assert.equal(r.status, 404, who);
     assert.deepEqual(r.json, { error: "not_found" }, who);
@@ -118,7 +118,7 @@ test("BREACH: a browser cannot set the framework that rates a company, on the wa
   // The attack is the same one the save path is guarded against, through the newer door: point a
   // brand-new company at a framework that rates everything clear, at the moment nobody is looking.
   await up.createCompany(STAFF, {
-    name: "Aurora Holdings",
+    name: "Burrowell",
     frameworkPath: "frameworks/always-clear.md",
     workedExamplesPath: "evil.md",
     allowedRecipes: ["*"],
@@ -128,7 +128,7 @@ test("BREACH: a browser cannot set the framework that rates a company, on the wa
 
   assert.equal(calls.length, 1, "the create reached upstream");
   const sent = calls[0].body;
-  assert.equal(sent.name, "Aurora Holdings", "what the person typed is carried");
+  assert.equal(sent.name, "Burrowell", "what the person typed is carried");
   for (const k of ["frameworkPath", "workedExamplesPath", "allowedRecipes", "runCaps", "author"]) {
     assert.ok(!(k in sent), `${k} did not cross the wall`);
   }
@@ -141,9 +141,9 @@ test("what a browser MAY state is a named list, and every name on it survives th
   // EVERY name on the list, so the deepEqual below is a real check rather than a check of five of eight.
   // A field added to CREATABLE_FIELDS and not added here reds this, which is the point: the list is what
   // a browser may state, and widening it is a decision that has to be made somewhere on purpose.
-  const draft = { name: "Aurora", key: "aurora-2", industry: "beverages",
-    matchDomains: ["aurora.example"], platforms: ["shop.example"],
-    selfExclusionOwners: ["Aurora Holdings"], defaultClasses: [32], defaultJurisdictions: ["GB"] };
+  const draft = { name: "Demo Brand Owner", key: "demo-brand-owner-2", industry: "beverages",
+    matchDomains: ["demo-brand-owner.example"], platforms: ["shop.example"],
+    selfExclusionOwners: ["Burrowell"], defaultClasses: [32], defaultJurisdictions: ["GB"] };
   await up.createCompany(STAFF, draft);
 
   // Driven against the exported list rather than a copy of it, so a field added there without being
@@ -158,7 +158,7 @@ test("a create names NO account — the one method here that resolves none", asy
   const { calls, up } = spy();
   // A body that tries to name one anyway. There is no account yet; a wall that resolved one would
   // either refuse a legitimate create or file the new company under somebody else's key.
-  await up.createCompany(STAFF, { name: "Aurora", account: "zephyr", customer: "zephyr" });
+  await up.createCompany(STAFF, { name: "Demo Brand Owner", account: "zephyr", customer: "zephyr" });
   assert.equal(calls[0].path, "/profiles");
   assert.ok(!("account" in calls[0].body));
   assert.ok(!("customer" in calls[0].body));
@@ -166,7 +166,7 @@ test("a create names NO account — the one method here that resolves none", asy
 
 test("a create with no company object is refused before it reaches upstream", async () => {
   const { calls, up } = spy();
-  for (const bad of [null, undefined, "Aurora", ["Aurora"], 42]) {
+  for (const bad of [null, undefined, "Demo Brand Owner", ["Demo Brand Owner"], 42]) {
     const r = await up.createCompany(STAFF, bad);
     assert.equal(r.status, 400, `${JSON.stringify(bad) ?? "undefined"} is not a company`);
   }
@@ -180,7 +180,7 @@ test("BREACH: a crafted body cannot move the fields that decide how a client is 
   // The attack: a client re-points the framework that rates their own matters, and raises their caps.
   await up.writeProfile(CLIENT, null, "save", {
     profile: {
-      name: "Aurora",
+      name: "Demo Brand Owner",
       frameworkPath: "frameworks/always-clear.md",
       workedExamplesPath: "evil.md",
       allowedRecipes: ["*"],
@@ -192,7 +192,7 @@ test("BREACH: a crafted body cannot move the fields that decide how a client is 
   for (const f of CODE_OWNED_FIELDS) {
     assert.equal(sent[f], undefined, `${f} must be stripped before it reaches the writer`);
   }
-  assert.equal(sent.name, "Aurora", "…while the fields a customer DOES own pass through");
+  assert.equal(sent.name, "Demo Brand Owner", "…while the fields a customer DOES own pass through");
 });
 
 test("the code-owned list matches profile-service's own — duplication that silently diverges is the bug", async () => {
@@ -206,26 +206,26 @@ test("the code-owned list matches profile-service's own — duplication that sil
 
 test("serializeProfile is an ALLOWLIST — an unknown key cannot round-trip through the editor", () => {
   const out = serializeProfile({
-    name: "Aurora",
+    name: "Demo Brand Owner",
     frameworkPath: "frameworks/x.md",     // code-owned: excluded
     somethingNobodyDeclared: "payload",   // unknown: excluded
   });
-  assert.equal(out.name, "Aurora");
+  assert.equal(out.name, "Demo Brand Owner");
   assert.equal(out.frameworkPath, undefined);
   assert.equal(out.somethingNobodyDeclared, undefined)
   for (const k of Object.keys(out)) assert.ok(!CODE_OWNED_FIELDS.includes(k));
 });
 
 test("the code-owned values are still READABLE by staff — the page shows them badged, it just cannot send them", () => {
-  const ro = readOnlyFields({ name: "Aurora", frameworkPath: "frameworks/x.md", runCaps: { perMonth: 10 } }, { staff: true });
+  const ro = readOnlyFields({ name: "Demo Brand Owner", frameworkPath: "frameworks/x.md", runCaps: { perMonth: 10 } }, { staff: true });
   assert.equal(ro.frameworkPath, "frameworks/x.md");
   assert.deepEqual(ro.runCaps, { perMonth: 10 });
   assert.equal(ro.name, undefined, "only the code-owned ones");
 });
 
 test("a CLIENT never receives an engine path — the filter is here, not only in the browser", () => {
-  const profile = { name: "Aurora", frameworkPath: "skills/clearance-search/risk-framework-aurora.md",
-                    workedExamplesPath: "skills/clearance-search/worked-examples-aurora.md",
+  const profile = { name: "Demo Brand Owner", frameworkPath: "skills/clearance-search/risk-framework-demo.md",
+                    workedExamplesPath: "skills/clearance-search/worked-examples-demo.md",
                     runCaps: { perMonth: 10 }, jxPolicy: "wide" };
   const ro = readOnlyFields(profile, { staff: false });
   assert.equal(ro.frameworkPath, undefined, "the framework path is withheld");
@@ -235,7 +235,7 @@ test("a CLIENT never receives an engine path — the filter is here, not only in
   // The old page filtered these in React, which meant the value still crossed the wire and was one
   // devtools tab away. Serialising the whole object is the check that matters: a filter that only the
   // renderer honours would pass a key-by-key assertion on a nested object it never looked at.
-  assert.ok(!JSON.stringify(ro).includes("risk-framework-aurora"), "no path anywhere in the payload");
+  assert.ok(!JSON.stringify(ro).includes("risk-framework-demo"), "no path anywhere in the payload");
 });
 
 test("readOnlyFields fails CLOSED — a caller that forgets the role discloses nothing", () => {
@@ -292,12 +292,12 @@ test("END TO END: the getProfile ROUTE applies the role filter, not just the hel
   // would still pass every unit test above while shipping paths to every client, because the helper
   // would be doing its job correctly on an argument nobody gave it.
   const upstreamBody = {
-    profile: { name: "Aurora", frameworkPath: "skills/clearance-search/risk-framework-aurora.md",
-               workedExamplesPath: "skills/clearance-search/worked-examples-aurora.md" },
-    contextPack: "Aurora watches the handheld-console resellers.",
-    framework: { path: "skills/clearance-search/risk-framework-aurora.md", custom: true,
-                 workedExamples: "skills/clearance-search/worked-examples-aurora.md",
-                 manifest: { title: "Aurora framework", bands: [{ label: "High", tone: "high" }],
+    profile: { name: "Demo Brand Owner", frameworkPath: "skills/clearance-search/risk-framework-demo.md",
+               workedExamplesPath: "skills/clearance-search/worked-examples-demo.md" },
+    contextPack: "Demo Brand Owner watches the handheld-console resellers.",
+    framework: { path: "skills/clearance-search/risk-framework-demo.md", custom: true,
+                 workedExamples: "skills/clearance-search/worked-examples-demo.md",
+                 manifest: { title: "Demo Brand Owner framework", bands: [{ label: "High", tone: "high" }],
                              source_deck: "Synthetic demo transposition (content invented)" },
                  bandMeanings: [{ band: "High", meaning: "Re-name unless counsel says otherwise." }] },
     derived: { batchSize: 3, minCellsPerVariant: 14 },
@@ -305,22 +305,22 @@ test("END TO END: the getProfile ROUTE applies the role filter, not just the hel
 
   const asClient = await spy(upstreamBody).up.getProfile(CLIENT, null);
   const seen = JSON.stringify(asClient.json);
-  assert.ok(!seen.includes("risk-framework-aurora.md"), "no framework path reaches a client, anywhere in the body");
-  assert.ok(!seen.includes("worked-examples-aurora.md"), "nor the worked-examples path");
-  // The whole-body check that matters for the pitch: `aurora` is a synthetic demo account, and its
+  assert.ok(!seen.includes("risk-framework-demo.md"), "no framework path reaches a client, anywhere in the body");
+  assert.ok(!seen.includes("worked-examples-demo.md"), "nor the worked-examples path");
+  // The whole-body check that matters for the pitch: `demo-brand-owner` is a synthetic demo account, and its
   // manifest says so in words. Sylvain logging into a demo tenant must not be told the ratings he is
   // being shown were invented.
   assert.ok(!seen.includes("content invented"), "no provenance note reaches a client, anywhere in the body");
   assert.equal(asClient.json.framework.hasWorkedExamples, true, "but the FACT survives as a boolean");
-  assert.equal(asClient.json.framework.manifest.title, "Aurora framework", "the method itself is theirs to see");
+  assert.equal(asClient.json.framework.manifest.title, "Demo Brand Owner framework", "the method itself is theirs to see");
   assert.deepEqual(asClient.json.framework.bandMeanings, upstreamBody.framework.bandMeanings);
   assert.equal(asClient.json.contextPack, upstreamBody.contextPack, "and the pack they now edit");
   assert.deepEqual(asClient.json.derived, { batchSize: 3, minCellsPerVariant: 14 }, "coverage is not secret");
 
-  const asStaff = await spy(upstreamBody).up.getProfile(STAFF, "aurora");
-  assert.equal(asStaff.json.readOnly.frameworkPath, "skills/clearance-search/risk-framework-aurora.md",
+  const asStaff = await spy(upstreamBody).up.getProfile(STAFF, "demo-brand-owner");
+  assert.equal(asStaff.json.readOnly.frameworkPath, "skills/clearance-search/risk-framework-demo.md",
     "staff keep the path — they are the ones who open the file");
-  assert.equal(asStaff.json.framework.path, "skills/clearance-search/risk-framework-aurora.md");
+  assert.equal(asStaff.json.framework.path, "skills/clearance-search/risk-framework-demo.md");
   // REVERSED by (owner, 2026-08-31, on his own install's generic page: "cannot say
   // this - its an obvious link to client data"): the provenance note renders for NO role. This line
   // used to assert staff keep it — that one-branch strip is exactly how the leak shipped. The note is
@@ -346,9 +346,9 @@ test("frameworkView: no worked examples ⇒ the row is false, not missing", () =
 });
 
 test("stripCodeOwned never mutates its input — a shared draft object must not be edited underneath a caller", () => {
-  const original = { name: "Aurora", runCaps: { perMonth: 10 } };
+  const original = { name: "Demo Brand Owner", runCaps: { perMonth: 10 } };
   const stripped = stripCodeOwned(original);
-  assert.deepEqual(original, { name: "Aurora", runCaps: { perMonth: 10 } });
+  assert.deepEqual(original, { name: "Demo Brand Owner", runCaps: { perMonth: 10 } });
   assert.equal(stripped.runCaps, undefined);
 });
 
@@ -364,7 +364,7 @@ test("BREACH: a project key cannot climb out of its customer's directory", async
   // …and an ordinary one does.
   const ok = await up.getProject(CLIENT, null, "spring-launch");
   assert.equal(ok.status, 200);
-  assert.equal(calls[0].path, "/profiles/aurora/projects/spring-launch");
+  assert.equal(calls[0].path, "/profiles/demo-brand-owner/projects/spring-launch");
 });
 
 test("the write ACTION is two literals, never interpolated from input", async () => {
@@ -399,7 +399,7 @@ test("identity travels as a VERIFIED ARGUMENT, never as a body field", async () 
   // be carried along for some future reader to trust.
   const { calls, up } = spy({ profile: {} });
   await up.writeProfile(CLIENT, null, "save", {
-    profile: { name: "Aurora" },
+    profile: { name: "Demo Brand Owner" },
     by: "attacker@evil.example",           // a crafted author
     email: "attacker@evil.example",
   });
@@ -424,17 +424,17 @@ test("identity travels as a VERIFIED ARGUMENT, never as a body field", async () 
 // the flag reaches the screen, and tenancy stays exactly where it was.
 
 test("both roles see an archived project, flagged — because hiding it is what made archiving one-way", async () => {
-  const body = { customer: "aurora", projects: [
+  const body = { customer: "demo-brand-owner", projects: [
     { key: "live-one", name: "Live one", archived: false },
     { key: "retired-one", name: "Retired one", archived: true },
   ] };
 
-  for (const [who, principal, requested] of [["a client", CLIENT, null], ["staff", STAFF, "aurora"]]) {
+  for (const [who, principal, requested] of [["a client", CLIENT, null], ["staff", STAFF, "demo-brand-owner"]]) {
     const r = await spy(body).up.listProjects(principal, requested);
     assert.equal(r.status, 200);
     assert.deepEqual(r.json.projects.map((p) => p.key), ["live-one", "retired-one"], `${who} sees both`);
     assert.equal(r.json.projects[1].archived, true, "and the flag reaches the screen, which greys the row");
-    assert.equal(r.json.customer, "aurora", "the rest of the body is passed through untouched");
+    assert.equal(r.json.customer, "demo-brand-owner", "the rest of the body is passed through untouched");
   }
 });
 
@@ -500,15 +500,15 @@ test("the customer segment is built from the RESOLVED account, never from the ca
   const { calls, up } = recipeSpy();
   // the client names nothing; their single grant resolves
   await up.listSearches(CLIENT, null);
-  assert.equal(calls[0].path, "/recipes/aurora", "resolved from the principal, not the request");
-  await up.writeSearch(CLIENT, "aurora", "us-knockouts", "save", { recipe: { label: "US knockouts", base: "knockout-search" } });
-  assert.equal(calls[1].path, "/recipes/aurora/us-knockouts/save");
+  assert.equal(calls[0].path, "/recipes/demo-brand-owner", "resolved from the principal, not the request");
+  await up.writeSearch(CLIENT, "demo-brand-owner", "us-knockouts", "save", { recipe: { label: "US knockouts", base: "knockout-search" } });
+  assert.equal(calls[1].path, "/recipes/demo-brand-owner/us-knockouts/save");
 });
 
 test("a path-shaped slug cannot escape the customer's directory", async () => {
   const { calls, up } = recipeSpy();
   for (const evil of ["../zephyr/secret", "a/b", "..", "with space", ""]) {
-    const r = await up.getSearch(CLIENT, "aurora", evil);
+    const r = await up.getSearch(CLIENT, "demo-brand-owner", evil);
     assert.equal(r.status, 404, `slug ${JSON.stringify(evil)} must be refused`);
   }
   assert.equal(calls.length, 0, "no malformed slug reaches the store");
@@ -517,7 +517,7 @@ test("a path-shaped slug cannot escape the customer's directory", async () => {
 test("only validate and save are mountable actions — no delete verb exists to reach", async () => {
   const { calls, up } = recipeSpy();
   for (const action of ["delete", "remove", "destroy", "archive"]) {
-    const r = await up.writeSearch(CLIENT, "aurora", "x", action, { recipe: {} });
+    const r = await up.writeSearch(CLIENT, "demo-brand-owner", "x", action, { recipe: {} });
     assert.equal(r.status, 404, `${action} must not be routable`);
   }
   assert.equal(calls.length, 0);
@@ -531,24 +531,24 @@ test("STAFF may act for any account, and the account they name is the one that i
 
 test("with no recipe store wired, every saved-search route answers 404 rather than guessing one", async () => {
   const up = makeUpstream({ callUpstream: async () => ({ status: 200, json: {} }) });   // no callRecipes
-  assert.equal((await up.listSearches(CLIENT, "aurora")).status, 404);
-  assert.equal((await up.getSearch(CLIENT, "aurora", "x")).status, 404);
-  assert.equal((await up.writeSearch(CLIENT, "aurora", "x", "save", { recipe: {} })).status, 404);
+  assert.equal((await up.listSearches(CLIENT, "demo-brand-owner")).status, 404);
+  assert.equal((await up.getSearch(CLIENT, "demo-brand-owner", "x")).status, 404);
+  assert.equal((await up.writeSearch(CLIENT, "demo-brand-owner", "x", "save", { recipe: {} })).status, 404);
 });
 
 test("expectedVersion is carried through so a concurrent edit 409s instead of clobbering", async () => {
   const { calls, up } = recipeSpy();
-  await up.writeSearch(CLIENT, "aurora", "x", "save", { recipe: { label: "L", base: "knockout-search" }, expectedVersion: 3 });
+  await up.writeSearch(CLIENT, "demo-brand-owner", "x", "save", { recipe: { label: "L", base: "knockout-search" }, expectedVersion: 3 });
   assert.equal(calls[0].body.expectedVersion, 3);
   // absent ⇒ not invented
-  await up.writeSearch(CLIENT, "aurora", "x", "save", { recipe: { label: "L", base: "knockout-search" } });
+  await up.writeSearch(CLIENT, "demo-brand-owner", "x", "save", { recipe: { label: "L", base: "knockout-search" } });
   assert.equal("expectedVersion" in calls[1].body, false);
 });
 
 test("a saved search must be an object — a string or array is refused before the store sees it", async () => {
   const { calls, up } = recipeSpy();
   for (const bad of ["a string", [1, 2], null, 42]) {
-    const r = await up.writeSearch(CLIENT, "aurora", "x", "save", { recipe: bad });
+    const r = await up.writeSearch(CLIENT, "demo-brand-owner", "x", "save", { recipe: bad });
     assert.equal(r.status, 400);
   }
   assert.equal(calls.length, 0);
@@ -571,14 +571,14 @@ test("a planted source_deck survives NEITHER branch of frameworkView", () => {
 });
 
 test("EVERY bundled deck's REAL manifest is clean through the view — not just the one the owner saw", () => {
-  // The acceptance names the sweep: generic, aurora, zephyr, demo, triage — a uniform fix that misses
+  // The acceptance names the sweep: generic, demo-brand-owner, zephyr, demo, triage — a uniform fix that misses
   // one member carries the defect. Driven over the real files on disk, not fixtures, because the real
   // strings are what ships. The house manifests no longer carry a confidentiality marking — that is
   // so this sweep no longer proves anything by naming one; what it proves is that
   // provenance leaves every view whatever the manifests happen to say.
   const dir = fileURLToPath(new URL("../skills/clearance-search/", import.meta.url));
   const manifests = readdirSync(dir).filter((f) => f.endsWith(".manifest.json"));
-  assert.ok(manifests.length >= 5, `only ${manifests.length} manifest(s) found — the walker broke, not the tree`);
+  assert.ok(manifests.length >= 4, `only ${manifests.length} manifest(s) found — the walker broke, not the tree`);
   for (const f of manifests) {
     const manifest = JSON.parse(readFileSync(join(dir, f), "utf8"));
     assert.ok(typeof manifest.source_deck === "string" && manifest.source_deck.length,
