@@ -67,15 +67,13 @@ is, then read that list in full and decide.
 2. Still a crowd? Ask again limited to the client's main markets, one question per market. Read those lists.
 3. Still a crowd in a market? Ask again with the dominant goods word alone. Read it.
 4. Still a crowd? Ask one class at a time. Read each list.
-5. When the readable list already holds conflicts in the client's field, stop widening. Do not open scripts,
-   neighbours, compounds or guessed owners for this mark. Write which questions you did not ask and why.
-6. When the readable list is thin, widen one step at a time: close variants first, then the owner families
-   of what you found.
+
+Having read the list, ask whether looking wider would change what you tell the client: who could object, how weak the word is in this market, and what the client should do. If it would, widen one step and read. Stop only when you can say what more searching would not change, and write that down. Either way, record which questions you did not ask and why.
 
 Every question you ask is recorded with its count. A narrowing replaces nothing silently: the crowd it
 replaces stays on the record with its count.
 
-When you stop widening under step 5, the families you did not open are recorded `withheld-by-judgment`
+The families you did not open are recorded `withheld-by-judgment`
 with your reason — not `confirmed-clean`, which would claim a search nobody ran, and not
 `coverage-limited`, which says the engine tried and could not finish. You chose where the work was best
 spent; say so, and say which questions you did not ask.

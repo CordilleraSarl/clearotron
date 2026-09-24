@@ -1534,9 +1534,9 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   // hours. A design that is careful only when the mark is crowded and opens everything otherwise is
   // backwards, which is the owner's ruling in his own words.
   //
-  // So the release is an ASK, not a state. These entries run when the reading turn asks for them under
-  // step 6 of the manual, having read the identical list and found it thin — and never otherwise,
-  // whatever the identical question returned. `awaits_reading_turn` says exactly that and cannot be
+  // So the release is an ASK, not a state. These entries run when the reading turn releases them — having
+  // read the identical list, it judged that looking wider would change what the client is told, and recorded
+  // why (withheld-families.mjs) — and never otherwise, whatever the identical question returned. `awaits_reading_turn` says exactly that and cannot be
   // satisfied by any result, which is why it is a different token from `runs_if_enumerated` rather
   // than a parent qid chosen to never enumerate.
   //
@@ -2228,7 +2228,7 @@ export function parseRegisterPlan(raw) {
  * An entry whose `when` guard resolves FALSE (parent crowd/absent) is `skipped`, never `missing`.
  * Blocks with no qid join nothing (legacy bands) and surface as unplanned only when they carry one.
  */
-export function joinPlanToBands(plan, bandBlocksByAxis) {
+export function joinPlanToBands(plan, bandBlocksByAxis, { released = new Set() } = {}) {
   const blocks = [];
   for (const [axis, arr] of Object.entries(bandBlocksByAxis ?? {})) {
     for (const b of arr ?? []) if (b && typeof b === "object") blocks.push({ ...b, _axis: axis });
@@ -2257,19 +2257,25 @@ export function joinPlanToBands(plan, bandBlocksByAxis) {
       // perfectly. Folding the two together would file "not asked, by judgment" under "held back by a
       // crowd", which is a different sentence about a different thing, on every matter.
       if (awaitsReadingTurn(e.when)) {
-        const by = askedBy.get(entryQuestionKey(e, plan));
-        if (by) asked.push({ qid: e.qid, axis: e.axis, asked_by: by });
-        else awaiting.push({ qid: e.qid, axis: e.axis });
-        continue;
+        // A RELEASED FAMILY IS A DICTATED ENTRY. The reading turn released it (withheld-families.mjs), so it
+        // joins below like any other entry: executed from its block, or missing, which the plan repair runs.
+        // Only a family nobody released waits. The release record is the one authority on that.
+        if (!released.has(e.qid)) {
+          const by = askedBy.get(entryQuestionKey(e, plan));
+          if (by) asked.push({ qid: e.qid, axis: e.axis, asked_by: by });
+          else awaiting.push({ qid: e.qid, axis: e.axis });
+          continue;
+        }
+      } else {
+        const parent = byQid.get(e.when.runs_if_enumerated);
+        const parentState = String(parent?.state ?? "").toLowerCase();
+        // A CROWD IS WHAT HOLDS A CHILD BACK, and only a crowd. `enumerated` covers a question answered
+        // with no records as well as one answered with many — `verified-zero` is a per-term disposition,
+        // never a band state (named-band.mjs BAND_STATES), so it cannot appear here. The case where a
+        // clean zero wrongly held its children was the per-term and per-class rescue in enumerate.mjs,
+        // and it is corrected there: a fully resolved stack is a complete band whose answer is zero.
+        if (parentState !== "enumerated") { skipped.push({ qid: e.qid, guard: e.when.runs_if_enumerated }); continue; }
       }
-      const parent = byQid.get(e.when.runs_if_enumerated);
-      const parentState = String(parent?.state ?? "").toLowerCase();
-      // A CROWD IS WHAT HOLDS A CHILD BACK, and only a crowd. `enumerated` covers a question answered
-      // with no records as well as one answered with many — `verified-zero` is a per-term disposition,
-      // never a band state (named-band.mjs BAND_STATES), so it cannot appear here. The case where a
-      // clean zero wrongly held its children was the per-term and per-class rescue in enumerate.mjs,
-      // and it is corrected there: a fully resolved stack is a complete band whose answer is zero.
-      if (parentState !== "enumerated") { skipped.push({ qid: e.qid, guard: e.when.runs_if_enumerated }); continue; }
     }
     const b = byQid.get(e.qid);
     if (!b) { missing.push(e.qid); continue; }
@@ -2513,7 +2519,7 @@ export const PLAN_AUDIT_HEAD =
 // Graded: only a slice that NEVER RAN blocks; a sanctioned skip and a crowd descriptor are JUDGMENT
 // inputs — the seat reasons over them, it never manufactures a verdict from a label.
 export const PLAN_AUDIT_CLASSES =
-  `THE FOUR CLASSES, GRADED: (1) a slice listed MISSING NEVER RAN — nothing resting on it may be stated as searched-clean, and nothing may describe what such a search would have shown; (2) a crowd-gated SKIPPED fringe is SANCTIONED (#361 — its parent proved intractable): the parent crowd is dilution context, never a searched-clean slice; (3) a CROWD/INCOMPLETE descriptor is a signal FOR JUDGMENT and never a verdict input — the lawyer's materiality reasoning over it STANDS (off-field, dilution evidence), and a state label never manufactures a CONDITIONAL by itself; (4) a waiting family nobody asked (ruling 204) is in one of two states. AWAITING JUDGMENT while the reading turn can still ask it: a question still open to you under step 6. WITHHELD BY JUDGMENT once the reading turn chose not to ask it and recorded why: a settled judgment, not an open question. Either way it has no parent crowd, says nothing about the field, and nothing resting on it may be stated as searched-clean.`;
+  `THE FOUR CLASSES, GRADED: (1) a slice listed MISSING NEVER RAN — nothing resting on it may be stated as searched-clean, and nothing may describe what such a search would have shown; (2) a crowd-gated SKIPPED fringe is SANCTIONED (#361 — its parent proved intractable): the parent crowd is dilution context, never a searched-clean slice; (3) a CROWD/INCOMPLETE descriptor is a signal FOR JUDGMENT and never a verdict input — the lawyer's materiality reasoning over it STANDS (off-field, dilution evidence), and a state label never manufactures a CONDITIONAL by itself; (4) a waiting family nobody asked (ruling 204) is in one of two states. AWAITING JUDGMENT while the reading turn can still ask it: a question still open to you. WITHHELD BY JUDGMENT once the reading turn chose not to ask it and recorded why: a settled judgment, not an open question. Either way it has no parent crowd, says nothing about the field, and nothing resting on it may be stated as searched-clean.`;
 
 export function deriveCoverageSkeleton(plan, join) {
   const missing = new Set(join.missing);

@@ -73,6 +73,7 @@ import { documentCoverage, renderDocumentCoverageSection, spliceDocumentCoverage
 import { buildCoverageAbsenceForm, coverageAbsenceGaps, coverageFormAbsence, coverageFormBrief, renderCoverageAbsenceSection, renderCoverageLedgerSection, spliceCoverageLedger, renderCoverageLedgerJsonFromForm } from "./coverage-form.mjs";
 import { unionCoverageForm } from "./coverage-union.mjs";
 import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStamp, readCoverageForm, readCoverageFormInput, waitingFamilyStates, writeCoverageForm } from "./coverage-form-io.mjs";
+import { releasedFamilyQids } from "./withheld-families.mjs";   // the waiting families the reading turn released join as dictated entries
 import { unionPlacementForm } from "./placement-union.mjs";
 import { readPlacementForm, readPlacementFormInput, writePlacementForm } from "./placement-form-io.mjs";
 import { dictatedPaths, findStrayArtifacts, treeSnapshot, findStrayInTree, matterSiblings, findStrayMatterSiblings } from "./stray-artifacts.mjs";   // — a run dir holds no document no stage dictated; — nor does the doctrine tree
@@ -704,7 +705,7 @@ export function refreshSupplementalExecution(ctx) {   // @internal
     const added = foldSupplementalProposals(ctx);
     const stale = ctx.planExecution && ctx.planExecution.plan_version !== ctx.registerPlan.plan_version;
     if (added.length || stale) {
-      writePlanExecutionReceipt(ctx, joinPlanToBands(ctx.registerPlan, readRegisterBands(ctx.paths, ctx.axes ?? [])));
+      writePlanExecutionReceipt(ctx, joinPlanToBands(ctx.registerPlan, readRegisterBands(ctx.paths, ctx.axes ?? []), { released: releasedFamilyQids(ctx.paths.runDir) }));
       runLog(ctx.paths.runDir, { event: "plan-execution-refresh", added: added.length });
     }
   } catch (e) { note(`supplemental receipt refresh skipped (${String(e.message).slice(0, 80)}) — never-kill`); }
@@ -10389,7 +10390,7 @@ async function pipelineInner(job, opts = {}) {
             await dispatchPlanQids(axis, qids, "early-envelope-close", 2);
           } : null,
           rejoin: planExec ? async () => {
-            writeExecution(joinPlanToBands(ctx.registerPlan, readBands()));
+            writeExecution(joinPlanToBands(ctx.registerPlan, readBands(), { released: releasedFamilyQids(ctx.paths.runDir) }));
             deriveNamedBand(ctx);   // a close landed band blocks — re-merge so Layer B reads them
             return readPlanExecution(ctx);
           } : null,
@@ -10430,7 +10431,7 @@ async function pipelineInner(job, opts = {}) {
         if (held !== j) runLog(run.runDir, { event: "plan-qids-sticky-gap", qids: j.missing.filter((q) => !held.missing.includes(q)), action: "held-from-missing" });
         return held;
       };
-      let joinRes = holdStickyGaps(joinPlanToBands(ctx.registerPlan, readBands()));
+      let joinRes = holdStickyGaps(joinPlanToBands(ctx.registerPlan, readBands(), { released: releasedFamilyQids(ctx.paths.runDir) }));
       const missingEntriesByAxis = () => {
         const byQid = new Map(ctx.registerPlan.entries.map((e) => [e.qid, e]));
         const m = new Map();
@@ -10452,7 +10453,7 @@ async function pipelineInner(job, opts = {}) {
           runLog(run.runDir, { event: "plan-qids-missing", axis: a, qids, action: "plan-direct-execute" });
           await dispatchPlanQids(a, qids, "plan-direct-execute", 2);
         }
-        joinRes = holdStickyGaps(joinPlanToBands(ctx.registerPlan, readBands()));
+        joinRes = holdStickyGaps(joinPlanToBands(ctx.registerPlan, readBands(), { released: releasedFamilyQids(ctx.paths.runDir) }));
         if (!joinRes.missing.length) deriveNamedBand(ctx);   // dispatch landed blocks — re-merge so Layer B reads them
       }
       if (joinRes.missing.length) {
@@ -10477,7 +10478,7 @@ async function pipelineInner(job, opts = {}) {
           const wf = await stage("register-unit", { ...ctx, axis: a }, { force: true, followup, sessionKey: unitKey[a], trigger: "plan-join" });
           if (!wf.ok) note(`register-unit ${a}: warm plan-join followup failed (${wf.fail}) — the plan-unexecuted StageFailure below holds the line`);
         }
-        joinRes = holdStickyGaps(joinPlanToBands(ctx.registerPlan, readBands()));
+        joinRes = holdStickyGaps(joinPlanToBands(ctx.registerPlan, readBands(), { released: releasedFamilyQids(ctx.paths.runDir) }));
         deriveNamedBand(ctx);   // the followup appended band blocks — re-merge so Layer B reads them
       }
       const skeleton = writeExecution(joinRes);
@@ -11213,7 +11214,7 @@ async function pipelineInner(job, opts = {}) {
                 refreshSupplementalExecution(ctx);
                 try { deriveNamedBand(ctx); } catch (e) { regMechFail = `named-band:${String(e.message).slice(0, 80)}`; }
                 const bands = readRegisterBands(P, axes);
-                const executedQids = new Set(joinPlanToBands(ctx.registerPlan, bands).executed.map((x) => x.qid));
+                const executedQids = new Set(joinPlanToBands(ctx.registerPlan, bands, { released: releasedFamilyQids(ctx.paths.runDir) }).executed.map((x) => x.qid));
                 const blocksByQid = new Map((bands[a] ?? []).filter((b) => b && b.qid).map((b) => [b.qid, b]));
                 return { outcome, executedQids, blocksByQid };
               };

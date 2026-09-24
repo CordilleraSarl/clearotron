@@ -139,9 +139,12 @@ test("the audit workbook's coverage sheet carries the withheld family and its re
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("the reading turn is told to record the waiting families it does not ask", () => {
+test("the reading turn is told to decide every waiting family: release it, or withhold it", () => {
   const P = { variantManifest: "vm.json", matterContext: "mc.md", registerBand: (a) => `band-${a}.json`,
     registerUnit: (a) => `unit-${a}.md`, registerPlan: "plan.json" };
   const msg = STAGES["register-unit"].message({ paths: P, axis: AXIS, job: { classes: [9, 42] }, registerPlan: plan });
-  assert.match(msg, /RECORD EVERY ONE YOU DO NOT ASK with `record_withheld_families`/);
+  assert.match(msg, /WHERE THE PLAN ABOVE HAS WAITING FAMILIES, DECIDE EVERY ONE\./);
+  assert.match(msg, /Release each one you ask with `record_released_families`/);
+  assert.match(msg, /Then call register_execute_plan again with those qids; it runs only what you released\./);
+  assert.match(msg, /Record each one you do not ask with `record_withheld_families`/);
 });

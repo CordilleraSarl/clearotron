@@ -15,10 +15,10 @@
 // (a provider error is never confusable with a sanctioned crowd), and the one in-tool retry per call.
 
 import { mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
-import { dirname } from "node:path";
+import { dirname, join } from "node:path";
 import { nativeScriptIndexGap } from "./script-form.mjs";
 import { entryTermIssues, goodsTermsList } from "./term-shape.mjs";
-import { awaitsReadingTurn } from "./plan-guards.mjs";
+import { awaitsReadingTurn, releasedFamiliesFile } from "./plan-guards.mjs";
 import { faultText, guardToolCall } from "./transport-guard.mjs";
 import { clipProviderText } from "./provider-text.mjs";   // — keep the discriminator
 
@@ -347,6 +347,12 @@ export function makeExecutePlan(deps) {
     const targeted = qidsFilter ? entries.filter((e) => qidsFilter.has(e.qid)) : entries;
     if (!targeted.length) return { type: "text", text: `ERROR: no dictated entries on axis "${axis}" match qids [${[...qidsFilter].join(", ")}].` };
 
+    // THE FAMILIES THE READING TURN RELEASED on this axis, from its record beside the frozen plan. A waiting
+    // family runs once it is named there, and never otherwise; a missing or unreadable record releases none.
+    let released = new Set();
+    try { released = new Set(Object.keys(JSON.parse(readFileSync(join(dirname(planPath), releasedFamiliesFile(axis)), "utf8"))?.families ?? {})); }
+    catch { released = new Set(); }
+
     const stateByQid = new Map();
     const seeded = new Set();
     if (qidsFilter) {
@@ -591,9 +597,10 @@ export function makeExecutePlan(deps) {
       // state (named-band.mjs BAND_STATES), so a guard testing for it here could never fire.
       // THE READING-TURN WAIT: a family awaiting the reading turn is never released by a RESULT, so there is no
       // state to read here and no seeded prior state that could release it on a warm followup either.
-      // The reading turn asks for it by minting a supplemental entry, which arrives as its own
-      // ungated entry — this one stands in the plan as the record of a question not asked.
-      if (awaitsReadingTurn(e.when)) { skipped.push(e.qid); continue; }
+      // It runs when the reading turn has RELEASED it — decided, with its reason, that looking wider would
+      // change what the client is told (the record read above) — and otherwise stands in the plan as the
+      // record of a question not asked. The turn may still ask a question of its own as a supplemental.
+      if (awaitsReadingTurn(e.when)) { if (released.has(e.qid)) await runEntry(e); else skipped.push(e.qid); continue; }
       if (stateByQid.get(e.when.runs_if_enumerated) === "enumerated") await runEntry(e);
       else skipped.push(e.qid);   // crowd/failed parent is TERMINAL for the fringe — by design, never an error
     }

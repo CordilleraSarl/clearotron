@@ -30,6 +30,13 @@ export const AWAITS_READING_TURN = Object.freeze({ awaits_reading_turn: true });
 export const awaitsReadingTurn = (when) => when?.awaits_reading_turn === true;
 
 /**
+ * The file, beside the frozen plan, where the reading turn records the waiting families it released on one
+ * axis: `{ axis, families: { [qid]: { reason } } }`. Named here because both sides read it — the driver
+ * writes it (withheld-families.mjs) and the executor runs what it names — and neither may import the other.
+ */
+export const releasedFamiliesFile = (axis) => `released-families-${axis}.json`;
+
+/**
  * The parent qid a guard waits on, or null where it waits on no question at all.
  *
  * Every caller that resolves a guard against a band, validates it against the plan's qids, or reports
