@@ -2255,7 +2255,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     if (/finding_registration_invalid/.test(lastFail)) {
       extra = ` SPECIFIC FIX: a registration.uri is NEVER empty. If this finding has a fetched register record, ` +
         `put its real record URI. If it has NO fetched record (a common-law finding, or a famous mark known only ` +
-        `from general knowledge — e.g. CHROME on a NOVAPULSE clearance), it is NOT a register finding: set ` +
+        `from general knowledge — e.g. KODAK on a CODAK clearance), it is NOT a register finding: set ` +
         `"registrations":[]. And if it is a famous one-keystroke/homophone NEIGHBOUR kept only for diligence, move ` +
         `it OUT of findings[] into the top-level "context_notes" array ({"type":"famous-neighbour-ungrounded",` +
         `"mark","owner","context"}). NEVER invent an empty-uri registration to satisfy the schema.`;
