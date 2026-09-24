@@ -562,14 +562,6 @@ function coverageJudgmentSummaryRows(cj) {
   return [{ Field: '', Value: '' }, { Field: 'Coverage judgment — slices considered', Value: '', _head: true },
     ...rows.map((r) => ({ Field: `   ${plainNote(r.area)}`, Value: plainNote(r.note) }))];
 }
-// THE REVIEWER'S OPEN POINTS, for the reviewing lawyer. Owner ruling 2026-09-24: they never reach the client
-// page, so this tab is where the lawyer reads them. The heading, lead and points are the run record's own
-// text (reviewer-open-points.mjs), carried as they were written; nothing here composes a sentence.
-function reviewerOpenPointsSummaryRows(p) {
-  if (!p || (!p.lead && !(p.points ?? []).length)) return [];
-  return [{ Field: '', Value: '' }, { Field: plainNote(p.heading), Value: plainNote(p.lead), _head: true },
-    ...(p.points ?? []).map((pt, i) => ({ Field: `   ${i + 1}`, Value: plainNote(String(pt).replace(/\*([^*]+)\*/g, '$1')) }))];
-}
 function correctionsSummaryRows(c) {
   const entries = Array.isArray(c?.entries) ? c.entries : [];
   if (!entries.length) return [];
@@ -624,8 +616,7 @@ export async function buildAudit(contract, auditParsed, outPath, mark = '', fm =
       // are empty on legacy records, so a republished archived workbook never grows rows.
       ...assessmentSummaryRows(contract?.markAssessment ?? null),
       ...coverageJudgmentSummaryRows(coverageJudgment),
-      ...correctionsSummaryRows(contract?.corrections ?? null),
-      ...reviewerOpenPointsSummaryRows(contract?.reviewerOpenPoints ?? null)],
+      ...correctionsSummaryRows(contract?.corrections ?? null)],
     (row, _d, kept) => { if (kept.has('Field')) row.getCell('Field').font = { bold: true }; });
 
   // 2 · Findings — one row per conflict; registrations joined; provenance folded into the driver tags.

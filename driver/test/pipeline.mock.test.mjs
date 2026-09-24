@@ -1224,25 +1224,13 @@ test("T3a: persistent BLOCKING after corrective + re-check → the run DELIVERS,
   const report = readFileSync(res.runDir + "/report.md", "utf8");
   assert.doesNotMatch(report, /Reviewer's open questions|did not sign this report off/,
     "the refusal reached the client page as added text");
+  // …AND THE REVIEWING LAWYER READS THEM in the run's email review headline, on a run the firm started.
+  // The path a run takes: the pipeline's record, handed to the email it writes.
+  const email = readFileSync(join(res.runDir, "email-body.md"), "utf8");
+  assert.match(email, /did not sign this report off/, "the reviewing lawyer's email does not carry the refusal");
+  assert.match(email, /the summary says the phonetic axis ran; the receipt shows it never did/,
+    "the reviewer's cited defect is not in the reviewing lawyer's email");
 
-  // …AND THE REVIEWING LAWYER STILL READS THEM, on the delivered audit workbook's Summary tab. The path a
-  // run takes, not a unit's: the pipeline's record, publish's read, the workbook in the pool.
-  const { config: poolCfg } = await import("../driver.config.mjs");
-  const { dirname: pdir, basename: pbase } = await import("node:path");
-  const poolDir = join(poolCfg.poolRoot, `${pbase(pdir(res.runDir))}-${pbase(res.runDir)}`);
-  const xlsxName = readdirSync(poolDir).find((f) => f.endsWith("-audit.xlsx"));
-  assert.ok(xlsxName, "the run delivered no audit workbook to read the open points from");
-  const { default: ExcelJS } = await import("exceljs");
-  const wb = new ExcelJS.Workbook();
-  await wb.xlsx.readFile(join(poolDir, xlsxName));
-  const cells = [];
-  wb.getWorksheet("Summary").eachRow((r) => cells.push(`${r.getCell(1).value ?? ""} | ${r.getCell(2).value ?? ""}`));
-  assert.ok(cells.some((c) => /^Reviewer's open questions \| .*did not sign this report off/.test(c)),
-    "the delivered workbook does not carry the reviewer's open points for the reviewing lawyer");
-  assert.ok(cells.some((c) => /the phonetic axis ran; the receipt shows it never did/.test(c)),
-    "the reviewer's cited defect is not in the delivered workbook");
-  assert.doesNotMatch(readFileSync(join(poolDir, "report.html"), "utf8"), /Reviewer&#39;s open questions|Reviewer's open questions|did not sign this report off/,
-    "the published page carries the reviewer's notes");
 
   // The corrective ladder is still the fix arm and still runs FIRST: original + blocking re-synth.
   assert.ok(stageOrder(events).filter((s) => s.startsWith("synthesis")).length >= 2,

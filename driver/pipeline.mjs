@@ -10,7 +10,7 @@ import { readFileSync, existsSync, mkdirSync, writeFileSync, renameSync, copyFil
 import { createHash } from "node:crypto";
 import { join, dirname, basename, resolve } from "node:path";   // resolve: the resume line must work from any cwd
 import { driverDir, driverRel, ensureDriverDir } from "../shared/driver-dir.mjs";
-import { REVIEWER_OPEN_QUESTIONS_FILE } from "./reviewer-open-points.mjs";   // the run-record file the reviewer's open points go to   // — one definition of where `_driver/` is
+import { REVIEWER_OPEN_QUESTIONS_FILE, reviewerOpenPointsForEmail } from "./reviewer-open-points.mjs";   // the run-record file the reviewer's open points go to   // — one definition of where `_driver/` is
 import { goodsOf } from "./queue-markers.mjs";   // — one reading of "does this job name goods", shared with the intake gate
 import { terminalClampDecision, orderClausesForLede, clientConditions, clauseForDefect } from "./terminal-clamp.mjs";   // — deliver and clamp, never withhold
 import { recordSpan } from "./attributed-span.mjs";   // — driver work the decomposition can attribute
@@ -15462,7 +15462,7 @@ async function pipelineInner(job, opts = {}) {
     // rule still forbids is the ENGINE'S OWN WORDS getting there: composeEmailHtml enumerates
     // predelivery-lint's code-owned projection (deliveryFlagLines), never the checks' raw `detail` —
     // this mail is addressed to job.forwarderEmail, which on a client-principal run is the client.
-    writeFileSync(P.emailBody, composeEmailHtml(P.report, published.url, published.auditFile, emailNames, deliveryForRun(ctx), emailVerdictOpts));
+    emailVerdictOpts.reviewerOpenPointsMd = reviewerOpenPointsForEmail(job, dirname(P.report));   writeFileSync(P.emailBody, composeEmailHtml(P.report, published.url, published.auditFile, emailNames, deliveryForRun(ctx), emailVerdictOpts));
     // ctx.verdict is set BEFORE the packet is composed, because the packet's copy reads it.
     ctx.verdict = verdict;
     // DELIVERY (Phase 2). The driver writes a self-contained delivery packet and leaves
