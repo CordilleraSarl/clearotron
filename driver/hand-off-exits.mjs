@@ -74,7 +74,7 @@ const URL_RE = /https?:\/\/[^\s<>"'`)\]]+/g;
 export function payloadPages(payload) {
   const seen = new Map();
   for (const raw of String(payload ?? "").match(URL_RE) ?? []) {
-    const url = raw.replace(/[.,;:!?]+$/, "");
+    const url = raw.replace(/[.,;:!?*_]+$/, "");   // sentence punctuation, and the markdown emphasis that wraps a link
     const page = normalizeUrl(url);
     if (page && !seen.has(page)) seen.set(page, url);
   }
@@ -83,8 +83,9 @@ export function payloadPages(payload) {
 
 /**
  * The knockout's notes-to-findings trace: one row per page each mark's research payload named, saying
- * whether a finding cited it. `payloadFor(name)` returns the mark's payload text, or null when the mark
- * has none (a degraded mark named no page, so it contributes no row and is listed by name). PURE.
+ * whether a finding cited it. A page a scoped absence names as its source was used too, so it counts as
+ * reached. `payloadFor(name)` returns the mark's payload text, or null when the mark has none (a degraded
+ * mark named no page, so it contributes no row and is listed by name). PURE.
  */
 export function knockoutCarry(marks = [], payloadFor = () => null) {
   const rows = [];
@@ -92,8 +93,9 @@ export function knockoutCarry(marks = [], payloadFor = () => null) {
   for (const m of Array.isArray(marks) ? marks : []) {
     const payload = payloadFor(m?.name);
     if (payload == null) { withoutPayload.push(m?.name ?? null); continue; }
-    const cited = new Set((Array.isArray(m?.findings) ? m.findings : [])
-      .flatMap((f) => knockoutCitedUrls(f)).map((u) => normalizeUrl(u)).filter(Boolean));
+    const cited = new Set([...(Array.isArray(m?.findings) ? m.findings : []).flatMap((f) => knockoutCitedUrls(f)),
+      ...(Array.isArray(m?.negatives) ? m.negatives : []).flatMap((n) => payloadPages(n?.source).map((x) => x.url))]
+      .map((u) => normalizeUrl(u)).filter(Boolean));
     for (const { page, url } of payloadPages(payload)) {
       rows.push(cited.has(page)
         ? { mark: m.name, page, url, reach: "finding", stopped_at: null, reason: null, reason_source: null }

@@ -54,25 +54,28 @@ test("the web hand-off counts silent drops across both carries, by row, page and
 
 test("the knockout trace follows every page a payload named to a finding, or counts it as an exit", () => {
   const payloads = {
-    ONE: "- **Near name** — URL: https://www.example.com/near/ — a shop.\n- **Other** https://apps.example.org/app/7.\n",
+    ONE: "- **Near name** — URL: https://www.example.com/near/ — a shop.\n- **Other** https://apps.example.org/app/7.\n"
+      + "- Searched **https://shop.example.net/s?q=near** with nothing on point.\n",
     TWO: null,
   };
   const marks = [
-    { name: "ONE", findings: [{ ordinal: 1, name: "Near name", evidence: ["https://example.com/near"] }] },
+    { name: "ONE", findings: [{ ordinal: 1, name: "Near name", evidence: ["https://example.com/near"] }],
+      negatives: [{ term: "NEAR", source: "https://shop.example.net/s", note: "no use on point" }] },
     { name: "TWO", findings: [] },
   ];
   const carry = knockoutCarry(marks, (n) => payloads[n]);
   assert.deepEqual(carry.rows.map((r) => [r.page, r.reach]),
-    [["example.com/near", "finding"], ["apps.example.org/app/7", "named"]]);
+    [["example.com/near", "finding"], ["apps.example.org/app/7", "named"], ["shop.example.net/s", "finding"]],
+    "a page a scoped absence names as its source was used, not dropped");
   assert.deepEqual(carry.marks_without_payload, ["TWO"], "a mark with no payload named no page, and is listed");
-  assert.deepEqual(carry.totals, { marks: 2, pages: 2, finding: 1, unreasoned: 1 });
+  assert.deepEqual(carry.totals, { marks: 2, pages: 3, finding: 2, unreasoned: 1 });
   const e = knockoutExits(carry);
   assert.equal(e.exits, 1);
   assert.deepEqual(e.rows, [{ mark: "ONE", url: "https://apps.example.org/app/7" }]);
 });
 
-test("a payload's pages are read once each, without the punctuation that ends a sentence", () => {
-  assert.deepEqual(payloadPages("See https://a.example/x. And https://a.example/x/ again; https://b.example."),
+test("a payload's pages are read once each, without the punctuation that ends a sentence or the emphasis around it", () => {
+  assert.deepEqual(payloadPages("See https://a.example/x. And https://a.example/x/ again; https://b.example. **https://b.example**"),
     [{ page: "a.example/x", url: "https://a.example/x" }, { page: "b.example", url: "https://b.example" }]);
   assert.deepEqual(payloadPages(""), []);
 });
