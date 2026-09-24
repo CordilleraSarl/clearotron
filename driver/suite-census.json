@@ -3635,7 +3635,7 @@
         },
         "pipeline.mock.test.mjs": {
           "tests": 103,
-          "asserts": 859,
+          "asserts": 857,
           "skips": 0,
           "todos": 0
         },
@@ -5757,15 +5757,15 @@
           "skips": 0,
           "todos": 0
         },
-        "the-reviewers-sign-off-is-not-the-clearances-answer.test.mjs": {
-          "tests": 3,
-          "asserts": 19,
+        "the-reviewers-open-points-reach-the-reviewing-lawyer-never-a-client.test.mjs": {
+          "tests": 4,
+          "asserts": 9,
           "skips": 0,
           "todos": 0
         },
-        "the-reviewing-lawyer-reads-the-open-points-in-the-workbook.test.mjs": {
-          "tests": 4,
-          "asserts": 11,
+        "the-reviewers-sign-off-is-not-the-clearances-answer.test.mjs": {
+          "tests": 3,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
