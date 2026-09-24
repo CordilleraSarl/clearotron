@@ -30,13 +30,13 @@ test("a device note is a relabelling, not a different mark", () => {
 
 test("THE COLLISION THIS MUST NOT CAUSE — a word separator never collapses a longer mark", () => {
   // reference-score's rule-2 block warns about exactly this: conflating word separators with alias
-  // separators makes every multi-word mark match its own first word. `TIKI TWIST` is a different
+  // separators makes every multi-word mark match its own first word. `WAVO TWIST` is a different
   // proprietor's different mark. Whitespace and hyphen are deliberately NOT in the separator class.
-  for (const rec of ["TIKI TWIST", "TIKI-TWIST", "TIKI  TWIST"]) {
-    const r = classifyRecord(rec, ["TIKI"]);
-    assert.notEqual(r.tier, "identical", `${rec} must not be identical to TIKI`);
+  for (const rec of ["WAVO TWIST", "WAVO-TWIST", "WAVO  TWIST"]) {
+    const r = classifyRecord(rec, ["WAVO"]);
+    assert.notEqual(r.tier, "identical", `${rec} must not be identical to WAVO`);
   }
-  assert.deepEqual(aliasesOf("TIKI TWIST"), ["tikitwist"], "one name, not two aliases");
+  assert.deepEqual(aliasesOf("WAVO TWIST"), ["wavotwist"], "one name, not two aliases");
 });
 
 test("EQUALITY, NOT RESEMBLANCE — an alias that merely looks like a target is the family tiers' business", () => {

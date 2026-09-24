@@ -6,12 +6,12 @@
 // Two defect classes shipped as SILENT CLEANS, and both were shape-vs-predicate
 // disagreements nobody checked:
 //
-//   * WILDCARD-UNDER-LITERAL: the frozen plan carried {predicate:"exact", term:"TIKI*"} ×4. Dispatch
+//   * WILDCARD-UNDER-LITERAL: the frozen plan carried {predicate:"exact", term:"WAVO*"} ×4. Dispatch
 //     never inspects term characters on a literal predicate, so the provider searched the star as a
 //     character, found nothing, and the band recorded state:"enumerated", total_hits:0 — a
 //     schema-level confident clean over a slice that was never really searched.
-//   * LABEL-AS-TERM: a frame-diff directive's display label ("Reverse-order TIKI composites
-//     (TROPICAL TIKI, ISLAND TIKI)") was dispatched verbatim as a mark term. Structured transport,
+//   * LABEL-AS-TERM: a frame-diff directive's display label ("Reverse-order WAVO composites
+//     (TROPICAL WAVO, ISLAND WAVO)") was dispatched verbatim as a mark term. Structured transport,
 //     prose value — same nil search, same false clean.
 //
 // This module is the shared detector all four seams call: the plan freeze-lint

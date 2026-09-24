@@ -285,7 +285,7 @@ const PHRASE_OPERATOR = "ADJ";
 // once `exact`:
 //   "SLUSH FREEZE, SLUSH ICE, SLUSH POP"                     three terms crammed into one
 //   "TIKTOK / TIK- famous-neighbour family"                  a description of a family, not a name
-//   "TIKE, TIPI one-keystroke neighbours of TIKI"
+//   "WAVU, WAPO one-keystroke neighbours of WAVO"
 //
 // Searched, they return 0 — and a 0 here reads as CLEAN, which is the one outcome this contract must
 // never produce by accident. On that run the `default` twins deferred loudly while the `exact` twins

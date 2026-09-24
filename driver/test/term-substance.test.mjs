@@ -66,7 +66,7 @@ test("`term_literal` DOES NOT SHIELD IT — the same reasoning that stops markup
 test("a mark-shaped term still reaches the shape rules below — the floor did not swallow them", () => {
   // Guarding the guard: an early return that answered for everything would silently disable
   // markup/predicate/shape screening, which is a bigger hole than the one being closed.
-  assert.equal(entryTermIssues({ predicate: "exact", term: "TIKI*" }).length, 1, "wildcard-under-literal still fires");
+  assert.equal(entryTermIssues({ predicate: "exact", term: "WAVO*" }).length, 1, "wildcard-under-literal still fires");
   assert.equal(entryTermIssues({ predicate: "wildcard", term: "VELTRI" }).length, 1, "wildcard-with-no-star still fires");
   assert.deepEqual(entryTermIssues({ predicate: "exact", term: "BIOVELTRIN" }), [], "and a plain mark passes");
 });

@@ -32,8 +32,8 @@ import { isCapabilityGap, makeExecutePlan } from "../execute-plan.mjs";
 
 // The 2026-07-29 axis, verbatim from the run's frozen plan — eight scripts, six of them spaced.
 const NATIVE_TERMS = [
-  "ティキスラッシュ", "提基斯拉什", "提基冰沙", "冰沙", "沙冰", "碎冰饮", "刨冰",
-  "티키 슬러시", "تيكي سلاش", "Тики Слаш", "टिकी स्लश", "ทิกิ สลัช", "Τίκι Σλας",
+  "ワボスラッシュ", "瓦波斯拉什", "瓦波冰沙", "冰沙", "沙冰", "碎冰饮", "刨冰",
+  "와보 슬러시", "وابو سلاش", "Ваво Слаш", "वाबो स्लश", "วาโบ สลัช", "Βάβο Σλας",
 ];
 
 const entry = (over = {}) => ({
@@ -64,7 +64,7 @@ async function execute(entries, capabilities, deps = {}) {
 
 test("the detector: every script on the 2026-07-29 axis registers as non-Latin, and Latin marks never do", () => {
   for (const t of NATIVE_TERMS) assert.ok(isNonLatinTerm(t), `${t} must register as non-Latin`);
-  for (const t of ["CORAL FREEZE", "GRANIZADO", "HUA WEI BAO", "TIKI SURASSHU", "24/7", "E*TRADE", "CORAL-FREEZE"])
+  for (const t of ["CORAL FREEZE", "GRANIZADO", "HUA WEI BAO", "WABO SURASSHU", "24/7", "E*TRADE", "CORAL-FREEZE"])
     assert.equal(isNonLatinTerm(t), false, `${t} is Latin/Common and must pass untouched`);
   // Diacritics are Latin+Inherited, in EITHER normalisation form — a mark like CAFÉ is not a script gap
   // (it has its own, unrelated, owner-field problem on one provider and that is a different rule).
@@ -89,7 +89,7 @@ test("the policy reads the DECLARATION, never the vendor: true accepts, false an
   // Latin terms are never anyone's gap — the Latin members of that same axis (GRANITA, GRANIZADO,
   // SLUSHICE) ran fine on the very provider that refused the natives, and must keep doing so.
   for (const caps of [chars, roman, unknown, null])
-    for (const t of ["GRANITA", "TIKI GRANIZADO", "SLUSHICE"])
+    for (const t of ["GRANITA", "WAVO GRANIZADO", "SLUSHICE"])
       assert.equal(nativeScriptIndexGap(caps, [t]), null, `${t} on ${caps?.id ?? "no contract"}`);
 
   // NO CONTRACT AT ALL is treated exactly like an undeclared one. A caller who wired an executor
@@ -147,7 +147,7 @@ test("a provider declaring a CHARACTER index sends the characters unchanged — 
 
 test("an UNDECLARED provider takes the fail-loud default — an unprobed index may not answer silently", async () => {
   for (const caps of [{ id: "signa-shaped", nativeScriptIndex: null }, { id: "no-field" }, null]) {
-    const { band, wire } = await execute([entry({ qid: "q0", term: "티키 슬러시" })], caps);
+    const { band, wire } = await execute([entry({ qid: "q0", term: "와보 슬러시" })], caps);
     assert.equal(wire.length, 0, `${caps?.id ?? "no contract"}: nothing sent to an index nobody characterised`);
     assert.equal(band[0].deferred, true, `${caps?.id ?? "no contract"}: deferred`);
     assert.equal(band[0].error, true);
@@ -266,7 +266,7 @@ test("the three shipped contracts each get the outcome their probes earned", asy
 
 test("the 2026-07-29 axis end to end: the Latin members always run, the natives split on the declaration", async () => {
   const entries = [
-    ...["TIKI GRANIZADO", "GRANIZADO", "GRANITA"].map((t, i) => entry({ qid: `lat${i}`, term: t })),
+    ...["WAVO GRANIZADO", "GRANIZADO", "GRANITA"].map((t, i) => entry({ qid: `lat${i}`, term: t })),
     ...NATIVE_TERMS.map((t, i) => entry({ qid: `nat${i}`, term: t })),
   ];
   const latin = new Set(["lat0", "lat1", "lat2"]);

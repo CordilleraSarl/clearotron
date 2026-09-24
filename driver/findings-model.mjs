@@ -728,7 +728,7 @@ const CORRECTION_ENTRY_KEYS = ["entity", "disposition", "note"];
 // blob. The frozen renderer receives a deterministic STRING PROJECTION (projectAssessmentField); the
 // structured rows render in the audit workbook + report-data, both unfrozen.
 // spec 2026-07-30 §3: `read` — the one-to-two-sentence consequence the reader sees ("A weak name to
-// own. SLUSH is simply what the product is, so the whole mark rests on TIKI."). The renderer shows it
+// own. SLUSH is simply what the product is, so the whole mark rests on WAVO."). The renderer shows it
 // as the visible prose and collapses the typed rows behind toggles; absent (archived structured runs)
 // the renderer falls back to spectrum/acquired/note.
 const ASSESSMENT_FIELD_KEYS = ["spectrum", "read", "per_class", "per_market", "counter_registrations", "acquired", "note"];
