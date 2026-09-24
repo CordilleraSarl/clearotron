@@ -299,9 +299,9 @@ export function deriveDirectiveRemedy(directive, { dominantElement = "", inScope
   const item = String(d.item ?? "").trim();
   if (!item || !inScopeStr.length) return null;
   // A2 (PR-1, the 2026-07-28 label-as-term class): the item is the directive's display LABEL, and a
-  // label is only usable as a search term when it is mark-shaped. "Reverse-order TIKI composites
-  // (TROPICAL TIKI, ISLAND TIKI)" dispatched verbatim as `exact` is a nil search that reads as a
-  // clean — TROPICAL TIKI and ISLAND TIKI were ONE label, never two terms. The mint would now reject
+  // label is only usable as a search term when it is mark-shaped. "Reverse-order WAVO composites
+  // (TROPICAL WAVO, ISLAND WAVO)" dispatched verbatim as `exact` is a nil search that reads as a
+  // clean — TROPICAL WAVO and ISLAND WAVO were ONE label, never two terms. The mint would now reject
   // it (same shared lint), but the honest ending is decided HERE: no code remedy ⇒ the directive is
   // DISCLOSED (the caller's defer lane), never swept blind. A directive that knows its terms says so
   // in a structured `remedy` (precedence 1 above) — that is the documented fix (SKILL.md).

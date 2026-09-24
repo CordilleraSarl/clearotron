@@ -18,7 +18,7 @@
 // disposition — read SERVER-SIDE from the run's own artifacts, never taken from the request. Mark and band
 // come from report-data.json; the disposition comes from findings.json beside it in the same run dir,
 // because report-data.json is the CLIENT cut and stopped serving the engine's placement key. A
-// reader who finds the ordinal now points at `KURENA / Manageable / rebuttable` when the flag says
+// reader who finds the ordinal now points at `KOLEMA / Manageable / rebuttable` when the flag says
 // `BURROWELL / Medium / conceded` knows the run was republished, which is exactly the thing a bare id
 // would have hidden.
 

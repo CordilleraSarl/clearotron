@@ -11088,7 +11088,7 @@ async function pipelineInner(job, opts = {}) {
                 directiveQids.set(key, []);
                 // Per-case wording (A2): the variant fallback now also DISCLOSES a label-shaped item
                 // (term-shape lint) — dispatching the display label verbatim was the 2026-07-28
-                // nil-search class ("Reverse-order TIKI composites (…)" searched as exact → 0 → read
+                // nil-search class ("Reverse-order WAVO composites (…)" searched as exact → 0 → read
                 // as clean). The remedy contract (SKILL.md) is the fix the wording points at.
                 regDeferReason.set(key, String(d.layer ?? "").toLowerCase() === "field"
                   ? "no-code-remedy: a field class-gap with no searchable term×class pair (closing it in the matter's own classes only re-runs the primary sweep — disclosed)"

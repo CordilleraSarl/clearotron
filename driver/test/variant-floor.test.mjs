@@ -60,17 +60,17 @@ test("model array ORDER cannot move the artifact — the churn this issue is abo
 });
 
 test("promoting a DIFFERENT distinctive element to dominant_element leaves the floor set unchanged", () => {
-  // run 1 calls ZURENA dominant; run 2 calls VELTRIN dominant. Both name both as distinctive elements.
-  const elements = [{ value: "ZURENA", kind: "distinctive" }, { value: "VELTRIN", kind: "distinctive" }];
-  const runA = { ...MODEL, dominant_element: "ZURENA", elements };
+  // run 1 calls ZOLEMA dominant; run 2 calls VELTRIN dominant. Both name both as distinctive elements.
+  const elements = [{ value: "ZOLEMA", kind: "distinctive" }, { value: "VELTRIN", kind: "distinctive" }];
+  const runA = { ...MODEL, dominant_element: "ZOLEMA", elements };
   const runB = { ...MODEL, dominant_element: "VELTRIN", elements };
   const seedsOf = (m) => new Set(floorSeeds("", { model: m }).seeds.map((s) => s.element));
   assert.deepEqual([...seedsOf(runA)].sort(), [...seedsOf(runB)].sort(), "the seed UNION is stable under promotion");
-  const floorOf = (m) => new Set(JSON.parse(renderFormNeighbourhoodJson("", { model: m, mark: "ZURENA VELTRIN" }))
+  const floorOf = (m) => new Set(JSON.parse(renderFormNeighbourhoodJson("", { model: m, mark: "ZOLEMA VELTRIN" }))
     .variant_floor.floor_families.filter((f) => f.family === "edit-1").flatMap((f) => f.terms));
   const a = floorOf(runA), b = floorOf(runB);
   assert.deepEqual([...a].sort(), [...b].sort(), "and so is the generated floor");
-  assert.ok(a.has("zurema") && a.has("veltrim"), "BOTH elements' neighbourhoods are enumerated, not just the promoted one");
+  assert.ok(a.has("zolena") && a.has("veltrim"), "BOTH elements' neighbourhoods are enumerated, not just the promoted one");
 });
 
 // ── zero semantics: a failed model turn can never empty the floor ────────────────────────────────
@@ -96,7 +96,7 @@ test("ZERO SEMANTICS: malformed model output takes the same path — no branch r
 });
 
 test("ZERO SEMANTICS: mergeVariantFloor never shrinks the floor, whatever the model hands it", () => {
-  const fams = variantFloorFamilies([{ element: "zurena", role: "dominant", band: formNeighbourhood("zurena") }], { mark: "ZURENA" });
+  const fams = variantFloorFamilies([{ element: "zolema", role: "dominant", band: formNeighbourhood("zolema") }], { mark: "ZOLEMA" });
   const floorCount = mergeVariantFloor(fams, MODEL.variants).counts.floor;
   for (const junk of [null, undefined, [], "variants", 42, [{}], [{ value: null }], [{ value: "   " }]])
     assert.equal(mergeVariantFloor(fams, junk).counts.floor, floorCount, `floor moved on ${JSON.stringify(junk)}`);
@@ -122,8 +122,8 @@ test("PARTITION: every model variant lands in exactly one bucket — a term in n
 });
 
 test("PARTITION: the family terms sum EXACTLY to the band the plan dispatches — no parallel list", () => {
-  const band = formNeighbourhood("zurena");
-  const fams = variantFloorFamilies([{ element: "zurena", role: "dominant", band }], { mark: "ZURENA" });
+  const band = formNeighbourhood("zolema");
+  const fams = variantFloorFamilies([{ element: "zolema", role: "dominant", band }], { mark: "ZOLEMA" });
   const exactFamilies = new Set(["edit-1", "visual-confusable", "transliteration", "other"]);
   const fromFamilies = fams.filter((f) => exactFamilies.has(f.family)).flatMap((f) => f.terms);
   assert.deepEqual(fromFamilies.slice().sort(), band.exactQueries.slice().sort(),

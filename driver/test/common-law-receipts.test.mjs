@@ -11,9 +11,9 @@ import { parseManifestVariants, variantsManifestAudit, variantsParseFailure, cou
   GRID_HALVES, MEANING_SEAT, GRID_SEATS, splitGridTerms, splitGridSpec, halfOfTerm, mergeGrids, mergeCommonLawFindings,
   parseGridLedger, findGridLedgerViolations } from "../common-law-receipts.mjs";
 
-// ── connotation receipt count: parsePrRiskQueries (the ZURENA fix) ──
+// ── connotation receipt count: parsePrRiskQueries (the ZOLEMA fix) ──
 test("parsePrRiskQueries: counts non-empty extras.pr_risk queries across batches; junk/absent → 0; never throws", () => {
-  const led = JSON.stringify({ cells: [], gaps: [], extras: { pr_risk: [{ query: "ZURENA gang", results: [] }, { query: "ZURENA slang", results: [{ title: "x", url: "u" }] }] } });
+  const led = JSON.stringify({ cells: [], gaps: [], extras: { pr_risk: [{ query: "ZOLEMA gang", results: [] }, { query: "ZOLEMA slang", results: [{ title: "x", url: "u" }] }] } });
   assert.equal(parsePrRiskQueries(led), 2, "two recorded queries (empty results still count — searched-clean)");
   const batched = JSON.stringify([{ cells: [], extras: { pr_risk: [{ query: "A gang", results: [] }] } }, { cells: [], extras: { pr_risk: [{ query: "B gang", results: [] }] } }]);
   assert.equal(parsePrRiskQueries(batched), 2, "counts across batched ledgers");

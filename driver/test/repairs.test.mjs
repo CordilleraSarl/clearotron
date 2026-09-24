@@ -248,7 +248,7 @@ test("class regexes: no token matches both classes", () => {
 // PR-1 (A1): the executor's plan-defect refusal (providers/_shared/execute-plan.mjs) is derived from
 // the FROZEN plan's own bytes — a re-sample re-derives the identical refusal, so parking is futile.
 test("plan-defect classifies deterministic — no park ladder against a refusal that cannot change", () => {
-  const reason = 'plan-defect: wildcard-shaped term "TIKI*" under literal predicate "exact" — slice NOT dispatched (a literal search here would be a false clean)';
+  const reason = 'plan-defect: wildcard-shaped term "WAVO*" under literal predicate "exact" — slice NOT dispatched (a literal search here would be a false clean)';
   assert.equal(classifyFailureReason(reason), "deterministic");
   assert.equal(DETERMINISTIC_RE.test(reason), true);
 });

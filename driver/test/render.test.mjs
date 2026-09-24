@@ -2220,7 +2220,7 @@ test("the hero names the product the run resolved to — one name, no rung, and 
 test("spec 2026-07-30 §3: structured mark_assessment renders the `read` sentence and collapses the typed rows behind toggles", () => {
   const ma = {
     distinctiveness: {
-      read: "A weak name to own. SLUSH is simply what the product is, so the whole mark rests on TIKI.",
+      read: "A weak name to own. SLUSH is simply what the product is, so the whole mark rests on WAVO.",
       spectrum: "descriptive-leaning suggestive",
       per_class: [{ class: "5", note: "descriptive for supplements" }, { class: "32", note: "suggestive for drinks" }],
       per_market: [{ market: "CN", note: "descriptive once translated" }],
@@ -2278,13 +2278,13 @@ test("§L: disposition mode absorbs the famous-mark notes into 03 Notable but ma
 test("§L: a same-element mark (token containment ≥4 chars) is NEVER silently ruled out — every numbered finding plots", () => {
   // FREEZEIV shares the FREEZE element of CORAL FREEZE but equals no token — the old equality check routed
   // it to "Also considered — ruled out" and off the conflict-landscape chart (a numbering gap).
-  const FM_TIKI = FM.replace("THIS IS MY MATCHDAY", "CORAL FREEZE");
+  const FM_WAVO = FM.replace("THIS IS MY MATCHDAY", "CORAL FREEZE");
   const F = [
     { ordinal: 1, mark: "CORAL", owner: dreg("US", "/mark/us/1"), composite: 3, level: "C", dispute_type: "classic", disposition: "adversarial", meters: DMETERS, quadrant: { x: 0.8, y: 0.9 }, source: { source_type: "register-vendor" } },
     { ordinal: 2, mark: "FREEZEIV", owner: dreg("US", "/mark/us/2"), composite: 2, level: "B", dispute_type: "nuisance-claim", disposition: "off-field", meters: DMETERS, quadrant: { x: 0.9, y: 0.25 }, source: { source_type: "register-vendor" } },
     { ordinal: 3, mark: "UNTAMED", owner: dreg("US", "/mark/us/3"), composite: 2, level: "B", dispute_type: "nuisance-claim", disposition: "off-field", meters: DMETERS, quadrant: { x: 0.2, y: 0.1 }, source: { source_type: "register-vendor" } },
   ];
-  const html = renderHtml(parsedOf(FM_TIKI), F, [], { runId: "plot-demo" });
+  const html = renderHtml(parsedOf(FM_WAVO), F, [], { runId: "plot-demo" });
   // ANCHOR ON THE CHART, not on the first svg in the document: the report bar carries the brand lockup,
   // which is an svg and comes first. Slicing from the landscape wrapper reads the chart whatever else
   // the page draws above it.

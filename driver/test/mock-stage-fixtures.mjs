@@ -689,7 +689,7 @@ export function gridLedger(msg, dir = null) {
     .map((pl) => ({ term: t, platform: pl, status: "no_hit", results: [] })));
   const gaps = variants.flatMap((t) => PLATFORMS.filter((pl) => isGap(t, pl)).map((pl) => `${t} | ${pl} | ${gapErr}`));
   // The real plugin records every DICTATED connotation query verbatim into extras.pr_risk[] (the
-  // ZURENA receipt) — mirror that: echo the message's spec queries (full spec on the single member, the
+  // ZOLEMA receipt) — mirror that: echo the message's spec queries (full spec on the single member, the
   // half's partition on a half member; merged pair restores the union). No spec in the message (legacy
   // prose path) keeps the historical empty list.
   // P2-C (§8b leg 2): MOCK_PR_RESULTS arms recorded RESULTS on the receipts — "1" arms every dictated

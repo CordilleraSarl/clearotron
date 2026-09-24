@@ -45,7 +45,7 @@ const { officeRecordLink, reasonCellFor } = await import("../publish/office-reco
 const { kebab } = await import("../stages-knockout.mjs");
 const { knockoutEvidence } = await import("../../mcp-server/lib/knockout.mjs");
 
-const MARK = "KURENA";
+const MARK = "KOLEMA";
 
 // The vendor's own search answer: full records, the numbers in the vendor's own published form.
 const row = (id, jurisdiction, owner, numbers) => ({
@@ -58,10 +58,10 @@ const row = (id, jurisdiction, owner, numbers) => ({
   ...numbers,
 });
 const VENDOR_ROWS = [
-  row("tm_0001", "CH", "Kurena SA", { application_number: "12345/2020", registration_number: "7634210" }),
-  row("tm_0002", "SG", "Kurena Pte Ltd", { application_number: "40202012345Y", registration_number: "40202012345Y" }),
-  row("tm_0003", "CH", "Kurena Holding AG", { filing_route: "madrid_designation", ir_number: "1543782", registration_number: "1543782" }),
-  row("tm_0004", "GB", "Kurena Ltd", {}),
+  row("tm_0001", "CH", "Kolema SA", { application_number: "12345/2020", registration_number: "7634210" }),
+  row("tm_0002", "SG", "Kolema Pte Ltd", { application_number: "40202012345Y", registration_number: "40202012345Y" }),
+  row("tm_0003", "CH", "Kolema Holding AG", { filing_route: "madrid_designation", ir_number: "1543782", registration_number: "1543782" }),
+  row("tm_0004", "GB", "Kolema Ltd", {}),
 ];
 const ANSWER = { data: VENDOR_ROWS, pagination: { total_count: VENDOR_ROWS.length, total_count_approximate: false, has_more: false } };
 const HANDLE = { ch: "/mark/ch/tm_0001", sg: "/mark/sg/tm_0002", wo: "/mark/ch/tm_0003", none: "/mark/gb/tm_0004" };
@@ -98,7 +98,7 @@ test("the listing keeps each Signa filing's owner, classes, filing date and offi
   assert.ok(ch, "the Swiss filing is listed under its handle");
   assert.deepEqual(
     [ch.owner, ch.ownerCountry, ch.classes, ch.applicationDate, ch.registrationDate, ch.status, ch.territory],
-    ["Kurena SA", "CH", [9, 42], "2021-03-04", "2021-09-01", "registered", "ch"]);
+    ["Kolema SA", "CH", [9, 42], "2021-03-04", "2021-09-01", "registered", "ch"]);
   assert.deepEqual([ch.applicationNumber, ch.registrationNumber, ch.irNumber, ch.filingRoute], ["12345/2020", "7634210", null, "direct_national"]);
   const ir = records.find((r) => r.recordId === HANDLE.wo);
   assert.deepEqual([ir.filingRoute, ir.irNumber], ["madrid_designation", "1543782"]);
@@ -116,12 +116,12 @@ test("a Signa search that fails keeps its reason in the listing", async () => {
 const FRAMEWORK = { framework_key: "house-triage", title: "t", bands: [
   { label: "Very High", tone: "severe" }, { label: "High", tone: "high" }, { label: "Medium", tone: "medium" },
   { label: "Manageable", tone: "low" }, { label: "Low", tone: "minimal" }] };
-const EVIDENCE = "https://storefront.invalid/listing/kurena";
+const EVIDENCE = "https://storefront.invalid/listing/kolema";
 const FINDINGS = {
   marks: [{
     name: MARK, rating: "Medium", bullets: ["Synthetic fixture."],
     findings: [{
-      ordinal: 1, name: "Look-alike listing", owner: "Kurena SA", band: "Medium",
+      ordinal: 1, name: "Look-alike listing", owner: "Kolema SA", band: "Medium",
       net: "A listing under a closely similar name is live on a marketplace.", type: "Active Business", evidence: [EVIDENCE],
     }],
   }],
@@ -201,8 +201,8 @@ test("the appendix and the cards carry the office's page, or the office and the 
 
 test("the filings show their owner, classes and filing date", () => {
   const { html, filings } = SIGNA;
-  assert.ok(html.includes("<td>Kurena SA</td>") && html.includes("<td>9, 42</td>"), "the appendix row carries the owner and classes");
-  const ch = filings.find((r) => r.Owner === "Kurena SA");
+  assert.ok(html.includes("<td>Kolema SA</td>") && html.includes("<td>9, 42</td>"), "the appendix row carries the owner and classes");
+  const ch = filings.find((r) => r.Owner === "Kolema SA");
   assert.deepEqual([ch.Classes, ch.Filed, ch.Registered], ["9, 42", "2021-03-04", "2021-09-01"]);
 });
 
@@ -215,10 +215,10 @@ test("under the filings, once: what a linked number opens, and why Singapore's i
 
 test("the workbook's Record cell carries the same link or number, with the reason in Note", () => {
   const by = Object.fromEntries(SIGNA.filings.map((r) => [r.Owner, r]));
-  assert.deepEqual([by["Kurena SA"].Record, by["Kurena SA"].Note], [CH.href, ""]);
-  assert.deepEqual([by["Kurena Pte Ltd"].Record, by["Kurena Pte Ltd"].Note], [SG.label, reasonCellFor(SG)]);
-  assert.deepEqual([by["Kurena Holding AG"].Record, by["Kurena Holding AG"].Note], [WO.href, ""]);
-  assert.deepEqual([by["Kurena Ltd"].Record, by["Kurena Ltd"].Note], [HANDLE.none, ""]);
+  assert.deepEqual([by["Kolema SA"].Record, by["Kolema SA"].Note], [CH.href, ""]);
+  assert.deepEqual([by["Kolema Pte Ltd"].Record, by["Kolema Pte Ltd"].Note], [SG.label, reasonCellFor(SG)]);
+  assert.deepEqual([by["Kolema Holding AG"].Record, by["Kolema Holding AG"].Note], [WO.href, ""]);
+  assert.deepEqual([by["Kolema Ltd"].Record, by["Kolema Ltd"].Note], [HANDLE.none, ""]);
 });
 
 test("report-data.json carries the same, and meta.json the tally", () => {
@@ -312,7 +312,7 @@ test("the connector's evidence view states each filing's link as report-data.jso
 const compumarkRecord = (office, applicationNumber, registrationNumber = null) => ({
   id: `g-${office.toLowerCase()}`, registrationOfficeCode: office,
   wordMarkSpecification: { markVerbalElementText: MARK },
-  applicants: [{ applicantName: `Kurena ${office}` }],
+  applicants: [{ applicantName: `Kolema ${office}` }],
   niceClassifications: [{ classNumber: 9 }],
   status: { cmNormalisedStatus: "Registered", application: { applicationNumber, applicationDate: "20210304" }, registration: { registrationNumber } },
 });

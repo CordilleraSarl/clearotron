@@ -146,9 +146,9 @@ export function romanizationSpellings(value) {
  *     an accent, it is part of WHICH LETTER this is: Japanese dakuten/handakuten (タ=ta vs ダ=da),
  *     Thai vowel signs, Devanagari matras, Arabic diacritics. A fold that strips them (the previous
  *     shape of this function: bare NFKD + strip all \p{M}) collapses MARK-DISTINGUISHED SIBLINGS
- *     into one key: ティキスラッシュ
- *     (TIKI SURASSHU) and ディキスラッシュ (DIKI SURASSHU) keyed identically, so the romanisation
- *     lookup handed one sibling the OTHER's romanisation and the dictated DIKI form was never
+ *     into one key: ワボスラッシュ
+ *     (WABO SURASSHU) and ワホスラッシュ (WAHO SURASSHU) keyed identically, so the romanisation
+ *     lookup handed one sibling the OTHER's romanisation and the dictated WAHO form was never
  *     searched anywhere — a silent wrong-query false clean, the exact class the carriage fix exists
  *     to kill. NFKD is kept for its width folding (half-width ｶﾞ and full-width ガ are the same
  *     letter); only the mark-stripping is script-scoped.

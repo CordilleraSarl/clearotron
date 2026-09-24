@@ -3963,7 +3963,7 @@ export const STAGES = {
       // passes (the lint-repair redo was a deterministic ~2-generation tax on 83% of runs).
       `LINT CONTRACTS (the delivery lint fails a card that breaks these — state them right the first time): state an owner's registration COUNT at most once, and only as the number of registrations in the record above (unsure ⇒ name the owner without a count). NEVER pair a WIPO/Madrid/international registration with "worldwide"/"global" reach language — name the designated countries or omit the reach claim.`,
       // P6 — the house prose contract. This card is the surface where "each fact once, at its rank"
-      // actually bites: the delivered report told TIKI PUNCH in six sections, and 43% of it was
+      // actually bites: the delivered report told WAVO PUNCH in six sections, and 43% of it was
       // on-field conflict prose. delivery-contract.md (this stage's skill read) carries the same rules.
       PROSE_VOICE,
       `THIS CARD IS THE FACT'S RANK. Everything you write here belongs to THIS finding and is written ONCE, here: do not restate the overall verdict, do not re-narrate another finding, and do not repeat what the summary above already said about this one. If the reader needs a neighbouring finding, name it by ordinal and stop.`,

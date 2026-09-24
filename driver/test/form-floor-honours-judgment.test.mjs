@@ -159,9 +159,9 @@ test("a swallowed-sentence formative root is rejected as a non-stem", () => {
 test("isStemOfNamedElement accepts real stems and rejects prose artifacts", () => {
   assert.equal(isStemOfNamedElement("HYDR", "HYDRA", HYDRA_MODEL), true);
   assert.equal(isStemOfNamedElement("VENZ", "VENZY", null), true);
-  // a real root may differ in its LEADING character — ZURENA→SUREN reaches the ARBORA family. That widening
+  // a real root may differ in its LEADING character — ZOLEMA→VOLEM reaches the VOLEMA family. That widening
   // is the whole point of the root, so containment must never be the test.
-  assert.equal(isStemOfNamedElement("SUREN", "ZURENA", null), true);
+  assert.equal(isStemOfNamedElement("VOLEM", "ZOLEMA", null), true);
   assert.equal(isStemOfNamedElement("VELTRI", "VELTRIN", null), true);
   assert.equal(isStemOfNamedElement("hydrtheshorteststemahydrafamilyshares", "HYDRA", HYDRA_MODEL), false);
   assert.equal(isStemOfNamedElement("", "HYDRA", HYDRA_MODEL), false);

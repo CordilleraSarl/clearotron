@@ -67,13 +67,13 @@ test("A REAL DROP IS STILL REPORTED — the fix must not be `stop reporting`", (
       // the second is never examined. My first draft of this fixture did exactly that and the arm
       // failed for its own reason — recorded because a control that silently tests nothing is the
       // failure mode this whole issue is about.
-      { name: "Kurena Bioscience — contract manufacturer", url: "https://example.test/kurena" },
+      { name: "Kolema Bioscience — contract manufacturer", url: "https://example.test/kolema" },
     ],
     arrivals: [{ subject: "Delphinus Medical Technologies", note: "device maker" }],
   });
   const r = carryThrough(dir);
   assert.equal(r.lost.length, 1, "a subject that reached no arrival artifact must still be reported");
-  assert.match(r.lost[0].subject, /Kurena Bioscience/, "and it must be the one that genuinely dropped");
+  assert.match(r.lost[0].subject, /Kolema Bioscience/, "and it must be the one that genuinely dropped");
 });
 
 test("a subject naming nothing testable is UNMEASURABLE, never `reached none`", () => {

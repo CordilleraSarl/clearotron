@@ -78,12 +78,12 @@ test("throws token-first on defects (corrective-retry contract)", () => {
 // (total_hits > 0) but carried ZERO records into the band — the "zero records reached the band" recall loss.
 test("findCollapsedBands: flags an enumerated slice that claimed hits but extracted zero records", () => {
   const raw = JSON.stringify([
-    { state: "enumerated", query: "exact ZURENA cl.25 region:US", total_hits: 212, records: [] },
+    { state: "enumerated", query: "exact ZOLEMA cl.25 region:US", total_hits: 212, records: [] },
   ]);
   const collapsed = findCollapsedBands(raw);
   assert.equal(collapsed.length, 1, "the collapsed slice is detected");
   assert.equal(collapsed[0].total_hits, 212);
-  assert.equal(collapsed[0].query, "exact ZURENA cl.25 region:US");
+  assert.equal(collapsed[0].query, "exact ZOLEMA cl.25 region:US");
 });
 
 test("findCollapsedBands: a healthy band (records present, plus a crowd) is clean", () => {
