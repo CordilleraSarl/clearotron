@@ -84,6 +84,20 @@ test("an entry named with the searched mark alone needs its owner, even in its o
     "the owner decides, strictly or with the lawyer's owner name inside the register's");
 });
 
+test("a record with no owner cannot join a searched-mark entry by country", () => {
+  // The owner is the only thing that picks out a searched-mark entry. A same-country record that records
+  // no owner says nothing about whose it is, so it neither finds nor withholds the entry.
+  const reference = [{ mark: "TARVELLO", owner: "Dunmarra Holdings", jurisdictions: ["FR"], classes: [9] }];
+  const retrieved = [{ mark: "TARVELLO", owner: null, record_id: "/mark/fr/t1", territory: "fr" }];
+  const b = scoreRecall({ reference, findings: [], retrieved, scopeClasses: ["9"], searchedMarks: SEARCHED });
+  assert.deepEqual(b.withheld, [], "an ownerless record is not the lawyer's record");
+  assert.match(b.lost[0]?.why ?? "", /recorded with no owner/, "…and the lost row says what came back");
+  // An entry that is NOT the searched word still joins that record on the country.
+  const named = scoreRecall({ reference: [{ ...reference[0], mark: "TARVELLO FOODS" }], findings: [],
+    retrieved: [{ ...retrieved[0], mark: "TARVELLO FOODS" }], scopeClasses: ["9"], searchedMarks: SEARCHED });
+  assert.deepEqual(named.withheld.map((r) => r.mark), ["TARVELLO FOODS"]);
+});
+
 test("among candidates the owner outranks the country, whatever the finding order", () => {
   const reference = [{ mark: "BRISKA", owner: "Calvesta", jurisdictions: ["FR"], classes: [9] }];
   const findings = [
@@ -118,7 +132,7 @@ test("withheld asks the same question, and a lost row names what came back under
   assert.deepEqual(b.withheld.map((r) => r.mark), ["QUENDRIX"], "its own record was held and dropped");
   const lost = b.lost.find((r) => r.mark === "BRISKA");
   assert.ok(lost, "another company's record in another country does not make the entry withheld");
-  assert.match(lost.why, /held by another proprietor or filed elsewhere/);
+  assert.match(lost.why, /held by another proprietor, filed elsewhere, or recorded with no owner/);
   assert.match(lost.why, /Norrowby Trading/, "…and the row says whose record it was");
 });
 

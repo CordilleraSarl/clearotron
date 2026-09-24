@@ -126,6 +126,8 @@ test("the stamp moved, because what these buckets RECORD changed", () => {
   // v8: found and withheld join on the owner or the filing country as well as the name, so a
   // same-name record of another proprietor filed elsewhere no longer counts as the lawyer's. The
   // ordinal distinction still holds at 8.
-  assert.equal(SCORER_VERSION, 8);
-  assert.equal(scoreKnockout().scorer_version ?? SCORER_VERSION, 8);
+  //
+  // v9: a searched-mark entry no longer counts as withheld on a same-country record with no owner.
+  assert.equal(SCORER_VERSION, 9);
+  assert.equal(scoreKnockout().scorer_version ?? SCORER_VERSION, 9);
 });
