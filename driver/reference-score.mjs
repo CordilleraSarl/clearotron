@@ -448,12 +448,14 @@ const IDENTITY_RULES = new Set(["alias", "script"]);
 
 /**
  * How a candidate joins a gold entry beyond its name: a `JOIN` rank, higher is stronger, 0 for no join.
- * When neither the owner nor the country can be asked of this pair, it joins as `unasked`. Pass the
- * name `rule` that matched and a country-only join refuses a near-form. PURE.
+ * When neither the owner nor the country can be asked of this pair, it joins as `unasked`, except an
+ * entry named with the searched mark alone, which joins on its owner or not at all. Pass the name `rule`
+ * that matched and a country-only join refuses a near-form. PURE.
  */
 export function joinRank(entry, candidate, { searchedMark = false, rule = "alias" } = {}) {
   const byOwner = Boolean(ownerKey(entry?.owner) && ownerKey(candidate?.owner));
   const byCountry = (entry?.jurisdictions ?? []).some((j) => territoryKey(j)) && candidateTerritories(candidate).size > 0;
+  if (searchedMark && ownerKey(entry?.owner) && !byOwner) return 0;
   if (!byOwner && !byCountry) return JOIN.unasked;
   const country = byCountry && territoriesMeet(entry, candidate);
   if (byOwner && ownersMatch(entry?.owner, candidate?.owner)) return JOIN.owner;

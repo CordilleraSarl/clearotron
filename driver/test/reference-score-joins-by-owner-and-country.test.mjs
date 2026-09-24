@@ -48,6 +48,8 @@ test("a pair with nothing both sides carry keeps the name-only join", () => {
     "the entry names neither owner nor country");
   assert.equal(joinRank({ mark: "QUENDRIX", owner: "Harnwick Mills Ltd" }, { mark: "QUENDRIX", territory: "de" }), JOIN.unasked,
     "the entry names only an owner and the record carries only an office");
+  assert.equal(joinRank({ mark: "TARVELLO", owner: "Dunmarra Holdings" }, { mark: "TARVELLO" }, { searchedMark: true }), 0,
+    "…but an entry named with the searched mark alone joins on its owner or not at all");
 });
 
 // ── the buckets ──────────────────────────────────────────────────────────────────────────────────────
@@ -84,7 +86,7 @@ test("an entry named with the searched mark alone needs its owner, even in its o
     "the owner decides, strictly or with the lawyer's owner name inside the register's");
 });
 
-test("a record with no owner cannot join a searched-mark entry by country", () => {
+test("a record with no owner cannot join a searched-mark entry, by country or by name alone", () => {
   // The owner is the only thing that picks out a searched-mark entry. A same-country record that records
   // no owner says nothing about whose it is, so it neither finds nor withholds the entry.
   const reference = [{ mark: "TARVELLO", owner: "Dunmarra Holdings", jurisdictions: ["FR"], classes: [9] }];
@@ -92,6 +94,11 @@ test("a record with no owner cannot join a searched-mark entry by country", () =
   const b = scoreRecall({ reference, findings: [], retrieved, scopeClasses: ["9"], searchedMarks: SEARCHED });
   assert.deepEqual(b.withheld, [], "an ownerless record is not the lawyer's record");
   assert.match(b.lost[0]?.why ?? "", /recorded with no owner/, "…and the lost row says what came back");
+  // A record carrying neither an owner nor an office leaves nothing to ask, and still picks out no one.
+  const bare = scoreRecall({ reference, findings: [], retrieved: [{ mark: "TARVELLO", owner: null, record_id: "t2" }],
+    scopeClasses: ["9"], searchedMarks: SEARCHED });
+  assert.deepEqual(bare.withheld, [], "a record with no owner and no office is not the lawyer's record");
+  assert.deepEqual(bare.lost.map((r) => r.mark), ["TARVELLO"]);
   // An entry that is NOT the searched word still joins that record on the country.
   const named = scoreRecall({ reference: [{ ...reference[0], mark: "TARVELLO FOODS" }], findings: [],
     retrieved: [{ ...retrieved[0], mark: "TARVELLO FOODS" }], scopeClasses: ["9"], searchedMarks: SEARCHED });
