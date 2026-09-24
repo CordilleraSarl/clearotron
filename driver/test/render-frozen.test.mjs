@@ -885,7 +885,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 //      THE FIXTURE IS NAMED HERE, WHICH IS THE ONE THING EVERY EARLIER TABLE LEFT OUT. Inputs are
 //      scripts/report-print-check.mjs's clearance fixture verbatim — its REPORT_MD through `parseReport`,
 //      its two FINDINGS, its two COVERAGE rows — and the manifest is
-//      driver/test/fixtures/knockout-brimstone/_driver/framework.json ("Aurora Interactive ACP risk
+//      driver/test/fixtures/knockout-brimstone/_driver/framework.json ("Aurora Interactive risk
 //      framework", 37 chars). Each shape is exactly one `(productName, delivery)` pair, productName
 //      resolved through `reportIdentityFor` the way publish resolves it, never hand-written; `delivery`
 //      is OMITTED, not passed as undefined, wherever the shape has none. An unnamed fixture is why the

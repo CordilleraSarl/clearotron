@@ -40,8 +40,8 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const FRAMEWORK = {
   "schema_version": 1,
   "framework_key": "aurora",
-  "title": "Aurora Interactive ACP risk framework",
-  "source_deck": "ACP Risk Assessment Framework \u2014 Outside Counsel (September 2022). Interim encoding: the firm's CELA transposition, re-voiced to band words; tighten against the ACP deck of record as follow-up.",
+  "title": "Aurora Interactive risk framework",
+  "source_deck": "Risk Assessment Framework (test fixture)",
   "entity_label": "Aurora Interactive",
   "bands": [
     {
