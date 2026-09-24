@@ -101,7 +101,7 @@ const log = (...a) => process.stderr.write(`[${NS}] ${a.join(" ")}\n`);
 // injection-scrubber (which redacts "ignore previous instructions" patterns) leaves it intact.
 const BRIEFING_NOTE =
   "Plain-language layer — brief the user in this voice. Translate any risk codes (e.g. 'Level 5 = C + " +
-  "Horse Trade') into plain English. Model names and internal stage names belong in answers only when the " +
+  "[dispute type]') into plain English. Model names and internal stage names belong in answers only when the " +
   "user explicitly asks how the system reached a conclusion.";
 
 // ---- run / artifact helpers --------------------------------------------------------------------

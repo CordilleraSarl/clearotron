@@ -96,11 +96,11 @@ Left cell:
 Right cell — structured with subsections:
 - Underlined subheading: `Filings`
   - Bullet: `**Level 2 Risk = B –**` (green #4EA72E, bold, purple text)
-  - Bullet: `**Level 3 Risk = C + Horse Trade / Paper Conflict –**` (yellow/amber #FFC000, bold, purple text after dash underlined)
+  - Bullet: `**Level 3 Risk = C + [dispute type] –**` (yellow/amber #FFC000, bold, purple text after dash underlined)
 - Blank line
 - Underlined subheading: `Common law use`
   - Bullet: `**Level 2 Risk = B –**` (green #4EA72E, bold, purple text)
-  - Bullet: `**Level 3 Risk = C + Horse Trade / Paper Conflict –**` (yellow/amber #FFC000, bold, purple text after dash underlined)
+  - Bullet: `**Level 3 Risk = C + [dispute type] –**` (yellow/amber #FFC000, bold, purple text after dash underlined)
 
 ### Multiple names
 When the request contains multiple names, duplicate the ANALYSIS/NOTES row for each name. Each gets its own left cell (name + risk placeholder) and right cell (Filings + Common law use structure).
