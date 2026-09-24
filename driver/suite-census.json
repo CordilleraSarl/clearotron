@@ -597,6 +597,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-sets-aside-with-a-ground.test.mjs": {
+          "tests": 6,
+          "asserts": 24,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-whose-counts-all-fail-pays-for-no-owner-lookup.test.mjs": {
           "tests": 3,
           "asserts": 12,
@@ -1338,6 +1344,12 @@
         "a-warm-turn-that-never-landed-costs-no-rung.test.mjs": {
           "tests": 4,
           "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-web-page-is-declined-like-a-record.test.mjs": {
+          "tests": 9,
+          "asserts": 49,
           "skips": 0,
           "todos": 0
         },
@@ -2788,8 +2800,8 @@
           "todos": 0
         },
         "every-hand-off-exit-is-counted.test.mjs": {
-          "tests": 8,
-          "asserts": 30,
+          "tests": 9,
+          "asserts": 34,
           "skips": 0,
           "todos": 0
         },
