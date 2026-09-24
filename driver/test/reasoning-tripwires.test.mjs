@@ -126,7 +126,7 @@ test("#7 unresolved-disagreement: a Disagreement-resolutions row with no/placeho
 });
 
 test("#8 orphan-finding: a register-sourced finding with no grounding registration trips; grounded / common-law do not", () => {
-  const mk = (over) => ({ ordinal: 1, mark: "BIODEL", source: { source_type: "register-vendor" }, owner: { name: "Acme", registrations: [] }, ...over });
+  const mk = (over) => ({ ordinal: 1, mark: "BIOVEL", source: { source_type: "register-vendor" }, owner: { name: "Acme", registrations: [] }, ...over });
   // register finding, empty registrations → orphan
   const a = findOrphanVerificationFlags({ findings: [mk({})] });
   assert.equal(a.length, 1, JSON.stringify(a));
