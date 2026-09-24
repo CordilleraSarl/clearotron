@@ -25,7 +25,7 @@ import { findScreenGateViolations } from "../screen-gate.mjs";
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 const read = (rel) => readFileSync(join(DRIVER, rel), "utf8");
 
-// The owner's sentence, word for word (tracker issue 922, sentence 2).
+// The owner's sentence 2, word for word.
 const SENTENCE_2 = "The spelling band is asked as the machine writes it. What it returns is a pile like any other: look at how much, read what a buyer in this market could take for the mark by sound, by look or by meaning, carry only that, and record the rest as set aside with your reason. Where the mark's dominant element has a sound-alike root the machine did not write, ask for it.";
 const READER_SENTENCE = "The spelling band is read differently: carry a near spelling only where a buyer in this market could take it for the mark by sound, by look or by meaning, and record each other one as a drop on the ground `sign`, with your reason.";
 
