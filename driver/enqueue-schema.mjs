@@ -242,14 +242,14 @@ function niceClassErrors(list, label) {
 //   A zero-width joiner makes "IRON\u200DWHISK" render as IRONWHISK and compare unequal to it, so
 //   `selfExclusionOwners` and dedup both miss a mark a human reads as the account's own.
 //
-//   NFD "SIRÈNE" !== NFC "SIRÈNE", so one mark submitted two ways is two matters, two searches, two bills.
+//   NFD "FALCÓN" !== NFC "FALCÓN", so one mark submitted two ways is two matters, two searches, two bills.
 //
 // REFUSED, NOT STRIPPED, for the display-control classes. Silently altering the mark a client asked
 // about is its own defect and a worse one: the deliverable would then name a mark nobody ordered. NFC is
 // the exception because it changes no character a reader can see — it is the same string, spelled once.
 //
 // WHAT THIS DELIBERATELY DOES NOT TOUCH, because an over-broad filter here is worse than the defect:
-//   • ACCENTED AND NON-LATIN LETTERS. SIRÈNE, СOLA and an Arabic or Hebrew mark are all legitimate things
+//   • ACCENTED AND NON-LATIN LETTERS. FALCÓN, СOLA and an Arabic or Hebrew mark are all legitimate things
 //     to clear. The refusal is for explicit direction-OVERRIDE controls, never for letters that happen to
 //     be right-to-left — an Arabic mark contains no U+202x at all.
 //   • HOMOGLYPHS. A Cyrillic ES in СOLA is measured in  and explicitly NOT claimed as a defect;
