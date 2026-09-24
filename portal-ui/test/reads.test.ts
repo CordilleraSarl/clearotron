@@ -219,7 +219,7 @@ test('a long name is bounded before it goes into a confirm, and a real mark is u
 
   // EVERY REAL MARK IS BYTE-IDENTICAL. A bound that shortens the names people actually search would be
   // a worse defect than the one it fixes — the reader would not recognise their own record.
-  for (const name of ['AQUAPLUS', 'Zephyr Beverages', 'VENZY', 'Sirène', 'アクアプラス',
+  for (const name of ['AQUAPLUS', 'Zephyr Beverages', 'VENZY', 'Falcón', 'アクアプラス',
     'A NAME OF EXACTLY SIXTY CHARACTERS PADDED OUT TO REACH THE CAP']) {
     if (name.length <= 60) assert.equal(inSentence(name), name, `a real mark was altered: ${name}`)
   }
