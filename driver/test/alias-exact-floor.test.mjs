@@ -3,7 +3,7 @@
 //
 // member 2 — A RELABELLED RECORD IS THE SAME MARK, AND IT WAS TIERING BELOW THE FLOOR.
 //
-// Measured against the scorer: `VENZAL / VENZALMONO / VENZALKOMB` and `CHROMA & Device` are `alias` to
+// Measured against the scorer: `VENZAL / VENZALMONO / VENZALKOMB` and `LUMIVANE & Device` are `alias` to
 // reference-score and were `same-family / token-identical` here. Not dropped — tiered below the line.
 // The floors take `identical` and `near-identical` only, so a register record that IS the mark under a
 // relabelling never became a row a lawyer had to answer.
@@ -25,7 +25,7 @@ test("THE MEASURED PAIR — a relabelled entry is identical, and rides the floor
 });
 
 test("a device note is a relabelling, not a different mark", () => {
-  assert.equal(classifyRecord("CHROMA & Device", ["CHROMA"]).basis, "alias-exact");
+  assert.equal(classifyRecord("LUMIVANE & Device", ["LUMIVANE"]).basis, "alias-exact");
 });
 
 test("THE COLLISION THIS MUST NOT CAUSE — a word separator never collapses a longer mark", () => {

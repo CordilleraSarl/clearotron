@@ -139,7 +139,7 @@ export const POSITION_REQUIRED_DISPOSITIONS = ["adversarial", "coexistence-partn
 export const OFF_FIELD_GROUNDS = ["different-field", "no-material-risk"];
 // Context notes (A1) — the valid HOME for a knowledge-cited reference that is NOT a fetched-record finding:
 // a famous one-keystroke neighbour kept for diligence per digest.md's "never dropped" rule but with NO
-// register record to ground a finding (e.g. CHROME on a NOVAPULSE clearance). A context note is NEVER a finding
+// register record to ground a finding (e.g. NOVAPULSO on a NOVAPULSE clearance). A context note is NEVER a finding
 // (no composite/level/meters/registration), never drives the rating, and carries no uri — so it cannot
 // launder an ungrounded mark into the findings contract: the F-14 URI guard (validateOwner) stays whole, and
 // "the famous neighbour is never dropped" is honoured HERE rather than via a broken empty-uri finding.
