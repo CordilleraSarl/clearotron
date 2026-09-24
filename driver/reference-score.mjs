@@ -578,7 +578,7 @@ export function scoreRecall({ reference, findings = [], retrieved = [], scopeCla
     // entry's own proprietor. Measured on a 2026-08-27 test run against its lawyer reference: of eight entries,
     // five matched more than one band record and three cited the wrong company. For two of those three
     // the RIGHT record was already in the match set and was passed over on position alone — DELPHIC's at
-    // index 1, DELPHYS's at index 3.
+    // index 1, VELTRYS's at index 3.
     //
     // The looseness of the matcher is NOT the fault here and is deliberately left alone. Only one of the
     // three wrong citations came from a skeleton collision; the other two were `alias` matches — the

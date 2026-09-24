@@ -453,7 +453,7 @@ test("a recall ask whose mark never reached the findings does NOT close, and is 
   const ask = recallAsk("recall-delfity", "DELFITY");
   const files = {
     "register-findings.md": "Watchlist entry: already reasoned on the incumbent sheet in this document.",
-    "findings.json": findingsWith("DELPHYS", "DELPHIC HSE"),      // the client was NOT shown DELFITY
+    "findings.json": findingsWith("VELTRYS", "DELPHIC HSE"),      // the client was NOT shown DELFITY
   };
   const r = applyAskClosure([ask], IMMATERIAL("ask:recall:recall-delfity"), files, { ts: "T" });
   assert.equal(r.asks[0].ending, undefined, "the ask must stay open — its mark never reached the client");
@@ -467,7 +467,7 @@ test("the same ask closes normally once the mark IS in the findings — a join, 
   const ask = recallAsk("recall-delfity", "DELFITY");
   const files = {
     "register-findings.md": "Watchlist entry: already reasoned on the incumbent sheet in this document.",
-    "findings.json": findingsWith("DELPHYS", "DELFITY"),
+    "findings.json": findingsWith("VELTRYS", "DELFITY"),
   };
   const r = applyAskClosure([ask], IMMATERIAL("ask:recall:recall-delfity"), files, { ts: "T" });
   assert.equal(r.asks[0].ending.kind, "judged-immaterial");
@@ -482,7 +482,7 @@ test("the ruling is about the MARK — an owner/term probe is not reopened", () 
   const overflow = { ask_id: "ask:recall-overflow:5",
     ask: { structured: { qid: "recall-owner-lewis-silkin", term: "Lewis Silkin LLP" } } };
   const noMark = recallAsk("recall-bare", "");
-  const files = { "register-findings.md": "already reasoned on the incumbent sheet", "findings.json": findingsWith("DELPHYS") };
+  const files = { "register-findings.md": "already reasoned on the incumbent sheet", "findings.json": findingsWith("VELTRYS") };
   const lines = [...IMMATERIAL("ask:recall-overflow:5"), ...IMMATERIAL("ask:recall:recall-bare")];
   const r = applyAskClosure([overflow, noMark], lines, files, { ts: "T" });
   assert.deepEqual(r.carryIntoFindings, [], "an ask carrying no mark_text is out of scope");
