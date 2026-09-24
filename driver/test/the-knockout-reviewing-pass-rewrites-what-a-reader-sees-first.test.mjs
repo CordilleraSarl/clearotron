@@ -386,18 +386,21 @@ test("the knockout reviewing pass opens on the client's question, ahead of its m
   assert.equal(msg.split(FIRST_QUESTION).length - 1, 1, "the question appears once");
 });
 
-test("a review record with no answer to that question is refused, and one with an answer passes", () => {
+test("the answer is recorded when sent, and a record without one is never refused", () => {
   const dir = mkdtempSync(join(tmpdir(), "ko-review-"));
   mkdirSync(join(dir, "_driver"), { recursive: true });
   writeFileSync(join(dir, "knockout-findings.json"), JSON.stringify(record()));
-  const reviewPath = knockoutReviewFile(dir);
   const row = { at: { field: "basis", mark: MARK }, why: "reads plainly in context" };
-  writeFileSync(reviewPath, JSON.stringify({ declined: [row] }));
-  const v0 = validateKnockoutReviewFile(reviewPath, readFileSync(reviewPath, "utf8"));
-  assert.equal(v0.ok, false);
-  assert.match(v0.reason, /no answer to the question the pass opens on/);
-  writeFileSync(reviewPath, JSON.stringify({ first_question: ANSWER, declined: [row] }));
+  // No answer: the rewrite pass still lands. A refusal here would cost the client the rewrite.
+  const without = recordKnockoutReview(dir, { declined: [row] });
+  assert.ok(without.written, JSON.stringify(without));
+  const reviewPath = knockoutReviewFile(dir);
   assert.equal(validateKnockoutReviewFile(reviewPath, readFileSync(reviewPath, "utf8")).ok, true);
+  assert.equal(JSON.parse(readFileSync(reviewPath, "utf8")).first_question, undefined);
+  // An answer sent is kept, in the seat's own words.
+  const withAnswer = recordKnockoutReview(dir, { first_question: ANSWER });
+  assert.ok(withAnswer.written, JSON.stringify(withAnswer));
+  assert.equal(JSON.parse(readFileSync(reviewPath, "utf8")).first_question, ANSWER);
 });
 
 test("a repair turn that sends no answer keeps the one already given", () => {

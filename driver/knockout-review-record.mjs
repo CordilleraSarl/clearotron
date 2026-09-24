@@ -202,11 +202,11 @@ export function addressFault(at) {
 
 /** SHAPE ONLY. Whether an address resolves against THIS run's record is the validator's join, not this. */
 export function acceptKnockoutReview(call) {
-  const rewrites = call?.rewrites, declined = call?.declined, firstQuestion = call?.first_question;
-  // THE ANSWER TO THE QUESTION THE PASS OPENS ON. Optional in one call, so a repair turn can send only what
-  // it corrects; the merged file must carry it, and the file's validator is where that is held.
-  if (firstQuestion !== undefined && (typeof firstQuestion !== "string" || !firstQuestion.trim()))
-    return { ok: false, reason: "first_question, when sent, is your answer in words — a non-empty string" };
+  const rewrites = call?.rewrites, declined = call?.declined;
+  // THE ANSWER TO THE QUESTION THE PASS OPENS ON is recorded when the seat sends it, and never required or
+  // refused: a refusal here would cost the client the rewrite for want of a note the client never reads.
+  // Only words are kept; anything else is left out rather than refused.
+  const firstQuestion = typeof call?.first_question === "string" && call.first_question.trim() ? call.first_question : undefined;
   if (rewrites !== undefined && !Array.isArray(rewrites)) return { ok: false, reason: "rewrites must be an array" };
   if (declined !== undefined && !Array.isArray(declined)) return { ok: false, reason: "declined must be an array" };
   const seen = new Set();
@@ -325,8 +325,6 @@ export function validateKnockoutReviewFile(file, text) {
   try { doc = JSON.parse(text); } catch (e) { return { ok: false, reason: `not valid JSON: ${e.message}` }; }
   const shape = acceptKnockoutReview(doc);
   if (!shape.ok) return shape;
-  if (typeof doc.first_question !== "string" || !doc.first_question.trim())
-    return { ok: false, reason: "the record carries no answer to the question the pass opens on — send it as first_question" };
 
   // The run dir, from the artifact's own path rather than a fixed depth — the assumption that bit the
   // assess validator when its chunk file moved out of `_driver/`.
