@@ -126,7 +126,7 @@ let exit = 0;
 try {
   // ── THE CONTROLS FIRST ──────────────────────────────────────────────────────────────────────────────
   const leaked = await open(pathToFileURL(leak).href);
-  if (!leaked.away.some((u) => u.includes("api.fontshare.com"))) {
+  if (!leaked.away.some((u) => URL.canParse(u) && new URL(u).hostname === "api.fontshare.com")) {
     console.error("report-offline-render-check: a report with a font service put back made no request this check could see. The instrument is blind; nothing below would mean anything.");
     exit = 2;
   }
