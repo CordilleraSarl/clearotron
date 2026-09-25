@@ -556,8 +556,10 @@ export function variantsFingerprint(manifest) {
     dominant: manifest.dominant_element,
     elements: manifest.elements.map((e) => [e.value, e.kind]),
     variants: manifest.variants.map((v) => [v.value, v.category]),
-    incumbent: manifest.incumbent_classes,
     // ── WHAT BELONGS HERE IS WHAT CHANGES AN ENTRY ─────────────────────────────────────────────
+    //
+    // `incumbent_classes` left for the same reason (2026-09-25): the incumbent's-classes anchor was its
+    // only entry, and with the anchor gone two manifests differing only in it compile the same plan.
     //
     // `watchlist_owners` is GONE from this fingerprint, and its removal follows the same rule that put
     // it here: a field belongs when a manifest gaining it must not reuse a stored plan byte-identical.
@@ -1517,11 +1519,15 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
     push(scoped.length ? { ...entry, regions: scoped } : entry);
   }
 
-  // incumbent-class — the industry-incumbent shadow: the anchor enumerated in the incumbent's classes.
-  if (manifest.incumbent_classes.length) {
-    push({ axis: "incumbent-class", predicate: "default", term: manifest.dominant_element, expected_kind: "enumerate",
-      nice_classes: manifest.incumbent_classes.map(String), provenance: "model", qidSuffix: "+incumbent" });
-  }
+  // ── THE INCUMBENT'S-CLASSES ANCHOR IS GONE (ruled 2026-09-25) ──────────────────────────────────
+  //
+  // What stood here searched the client's main word in the incumbent's own classes, on every matter
+  // with an incumbent alert. It asked nothing about any company, and it was not held to the client's
+  // classes: on a measured matter it asked a class wider than the client's and counted a crowd it never
+  // fetched. Held to the client's classes it would repeat the main sweep, so it goes rather than
+  // narrows: one fewer counted search per run. `incumbent_classes` is still recorded as the variants
+  // stage's market read; it compiles nothing. The incumbent step keeps the house-mark confirmation, and
+  // the owner searches its unit proposes from the records the sweeps return.
 
   // ── THE GUESSED OWNER LANE IS GONE (2026-09-20) ────────────────────────────────────────────────
   //
@@ -1544,8 +1550,9 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   // disclosure about a guessed owner is worth less than the queries it costs, and that owners are
   // better found by grouping the records the close forms actually return.
   //
-  // The axis is NOT gone: the incumbent-class anchor above still compiles, so the coverage skeleton
-  // still carries the axis and no clean is ever claimed over an axis that vanished.
+  // The axis is NOT gone, though the plan may now dictate nothing on it: an incumbent alert still
+  // spawns its unit (decideAxes), and the coverage form carries an axis row for every unit that ran,
+  // so no clean is ever claimed over an axis that vanished.
 
   // ── DECISION 10, AS AMENDED 2026-09-21: THE WIDER FAMILIES WAIT FOR THE READING TURN ────────────
   //

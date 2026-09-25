@@ -1599,6 +1599,12 @@
           "skips": 0,
           "todos": 0
         },
+        "an-incumbent-alert-adds-no-search-of-the-clients-word.test.mjs": {
+          "tests": 4,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "an-install-from-npx-moves-out-of-the-cache.test.mjs": {
           "tests": 13,
           "asserts": 79,

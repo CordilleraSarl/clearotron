@@ -37,7 +37,7 @@ import { coverageFormRows, formRowKey, rowIsSettled, findCoverageFormViolations 
 import { compileRegisterPlan, joinPlanToBands, deriveCoverageSkeleton } from "../register-plan.mjs";
 import { parseVariantManifestModel } from "../variant-manifest-model.mjs";
 import { capabilitiesFor } from "../register-capabilities.mjs";
-import { REGISTER_AXES, COVERAGE_STATUSES } from "../coverage-ledger.mjs";
+import { REGISTER_AXES, COVERAGE_STATUSES, decideAxes } from "../coverage-ledger.mjs";
 
 const MODEL = {
   schema_version: 1, mark: "GLIMBEX", dominant_element: "GLIMBEX",
@@ -82,7 +82,10 @@ function runToForm({ jurisdictions, unavailableOffices }) {
       .push({ qid: e.qid, state: "enumerated", total_hits: 0, records: [] });
   }
   const skeleton = deriveCoverageSkeleton(plan, joinPlanToBands(plan, bandBlocksByAxis));
-  const activeAxes = [...new Set(plan.entries.map((e) => e.axis).filter(Boolean))];
+  // The axes a run activates, as the pipeline decides them: every unit the manifest spawns, plus any
+  // axis the plan names. The plan alone is not that set — an incumbent alert spawns its unit even where
+  // the plan dictates nothing on it, and that unit's axis carries the gap like any other.
+  const activeAxes = [...new Set([...decideAxes(JSON.stringify(MODEL)), ...plan.entries.map((e) => e.axis).filter(Boolean)])];
   return { plan, skeleton, ...coverageFormRows({ skeleton, plan, bandBlocksByAxis, activeAxes }) };
 }
 
