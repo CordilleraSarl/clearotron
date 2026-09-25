@@ -157,7 +157,7 @@ export async function runOwnerChecks({ owners, exec, runDir, ledgerPath = null, 
     const source = ok ? (firstSourceUrl(r.text) ?? NO_RESULT) : NO_RESULT;
     const row = {
       mark: o.mark, owner: o.owner, recordIds: o.recordIds, classes: o.classes,
-      query, ok, source, payloadFile,
+      query, preset, ok, source, payloadFile,
       ...(ok ? {} : { cause: String(r?.cause ?? "no result").slice(0, 300) }),
       ...(r?.outage === true ? { outage: true } : {}),
       ts: now(), took_ms: r?.tookMs ?? (Date.now() - started),
