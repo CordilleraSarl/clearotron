@@ -92,13 +92,13 @@ function sanitizeMeaningAngle(raw) {
 /**
  * Parse the matter frame's `Meaning angles: <q>; <q>; …` line into the sanitized meaning queries.
  * Semicolon-separated (an angle phrase may contain commas); `none` (the asserted-zero form) and a missing
- * line both yield [], and the run then asks no meaning question at all. Sanitization is mechanical only:
- * strip WRAPPING quotes/backticks (see sanitizeMeaningAngle — a phrase quote inside the angle survives),
- * collapse whitespace, drop empties and over-length entries, dedupe
- * case-insensitively (against itself and `alreadyQueried`). No count cap: how many is the frame's call.
- * `maxLen` is a limit on a query's shape, not on how many. Content judgment stays the frame's. PURE.
+ * line both yield [], and meaningAnglesAssertedNone tells the two apart: only the first is the frame's
+ * decision. Sanitization is mechanical only: strip WRAPPING quotes/backticks (see sanitizeMeaningAngle — a
+ * phrase quote inside the angle survives), collapse whitespace, drop empties, dedupe case-insensitively
+ * (against itself and `alreadyQueried`). No cap on length or count: the frame's tool refuses an over-long
+ * question at the source, every question is run as written, and how many is the frame's call. PURE.
  */
-export function meaningAnglesFromMatterContext(md, { alreadyQueried = [], maxAngles = Infinity, maxLen = 90 } = {}) {
+export function meaningAnglesFromMatterContext(md, { alreadyQueried = [], maxAngles = Infinity } = {}) {
   const m = String(md || "").match(MEANING_ANGLES_RE);
   if (!m) return [];
   const value = m[1].trim();
@@ -111,7 +111,7 @@ export function meaningAnglesFromMatterContext(md, { alreadyQueried = [], maxAng
     // quote runs at both ends unconditionally, so `"` sanitized to "" and fell out here; the wrapper rule
     // keeps it, and a lone `"` dictated as a query is a search nobody asked for that no receipt can ever
     // match — the failure this change exists to stop. Dropped explicitly rather than as a side effect.
-    if (!q || !/[\p{L}\p{N}]/u.test(q) || q.length > maxLen) continue;
+    if (!q || !/[\p{L}\p{N}]/u.test(q)) continue;
     const k = queryKey(q);
     if (seen.has(k)) continue;
     seen.add(k);
@@ -119,6 +119,12 @@ export function meaningAnglesFromMatterContext(md, { alreadyQueried = [], maxAng
     if (picked.length >= maxAngles) break;
   }
   return picked;
+}
+
+/** Whether the matter frame asserted that no meaning question applies: its `Meaning angles:` line reads `none`. PURE. */
+export function meaningAnglesAssertedNone(md) {
+  const m = String(md || "").match(MEANING_ANGLES_RE);
+  return Boolean(m) && /^none\b/i.test(m[1].trim());
 }
 
 // The PR / reputational / connotation section heading (the only place the gate polices — it must not flag a

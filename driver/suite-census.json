@@ -3082,8 +3082,8 @@
           "todos": 0
         },
         "first-time-is-read-from-the-whole-run-record.test.mjs": {
-          "tests": 7,
-          "asserts": 38,
+          "tests": 9,
+          "asserts": 57,
           "skips": 0,
           "todos": 0
         },
@@ -3460,8 +3460,8 @@
           "todos": 0
         },
         "matter-frame-record.test.mjs": {
-          "tests": 27,
-          "asserts": 100,
+          "tests": 28,
+          "asserts": 108,
           "skips": 0,
           "todos": 0
         },
@@ -5542,8 +5542,8 @@
           "todos": 0
         },
         "the-frame-decides-the-web-grid.test.mjs": {
-          "tests": 20,
-          "asserts": 78,
+          "tests": 21,
+          "asserts": 81,
           "skips": 0,
           "todos": 0
         },

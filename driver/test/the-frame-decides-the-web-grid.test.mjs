@@ -151,11 +151,12 @@ test("every store set aside leaves the general web alone; nothing is refused", (
 
 // ── the path a run takes: frame record → spec → program → ledger → gate ─────────────────────────────
 
-function runWithFrame({ call, asked = true, profile = { platforms: STORES, profileKey: "alderfen" } } = {}) {
+function runWithFrame({ call, asked = true, profile = { platforms: STORES, profileKey: "alderfen" }, meaning = "Meaning angles: none\n" } = {}) {
   const runDir = mkdtempSync(join(ROOT, "run-"));
   const P = ST.paths(runDir);
   mkdirSync(dirname(P.matterContext), { recursive: true });
-  writeFileSync(P.matterContext, `## The matter\n\nA games-kit maker.\n\nSearch channels: ${CHANNEL}\n`);   // the line renderMatterFrame writes
+  // the lines renderMatterFrame writes; a frame always carries its meaning line, `none` included
+  writeFileSync(P.matterContext, `## The matter\n\nA games-kit maker.\n\nSearch channels: ${CHANNEL}\n${meaning}`);
   if (call) {
     const at = driverDir(runDir, "matter-frame-calls", "accepted.json");
     mkdirSync(dirname(at), { recursive: true });
@@ -327,3 +328,12 @@ test("a grid of one product reads exactly as it always has", () => {
 });
 
 test.after(() => rmSync(ROOT, { recursive: true, force: true }));
+
+test("only the frame's `none` stamps an empty meaning search; a frame with no usable line fails the grid spec", () => {
+  assert.equal(runWithFrame().spec.connotation.none_named, true);
+  const named = runWithFrame({ meaning: "Meaning angles: novapulse slang meaning; novapulse gaming backlash\n" }).spec.connotation;
+  assert.deepEqual([named.queries, named.none_named], [["novapulse slang meaning", "novapulse gaming backlash"], undefined]);
+  for (const meaning of ["", "Meaning angles: \"; `\n"])
+    assert.throws(() => runWithFrame({ meaning }), /Meaning angles:.*did not assert none/,
+      "a frame that never decided had its empty meaning search stamped as its decision");
+});

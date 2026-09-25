@@ -72,6 +72,9 @@ export const SCOPE_BASES = Object.freeze(["instructed", "worldwide", "inferred"]
 
 const str = (v) => String(v ?? "").trim();
 const list = (v) => (Array.isArray(v) ? v : []).map(str).filter(Boolean);
+// One meaning question is one short web query, run as written. The reader keeps every one the tool
+// accepts, so the limit is enforced here, where the frame can rewrite the question.
+export const MEANING_ANGLE_MAX_CHARS = 90;
 
 /**
  * The instructed-scope section, STAMPED from the driver's own record rather than retyped by the seat.
@@ -336,7 +339,10 @@ export function acceptMatterFrame(params, { instructedScope = null } = {}) {
   if (meaning_angles_none && meaning_angles.length)
     return { ok: false, reason: `matterframe_meaning_angles_contradictory: ${meaning_angles.length} angle(s) sent beside an asserted none — assert none ONLY for a coined term with no real-word semantic field` };
   if (!meaning_angles_none && !meaning_angles.length)
-    return { ok: false, reason: "matterframe_meaning_angles_missing: 3-8 per-matter angles anchored on the mark's own element(s), or meaning_angles_none:true for a coined term with no semantic field to probe" };
+    return { ok: false, reason: "matterframe_meaning_angles_missing: the per-matter meaning questions, each short and anchored on the mark's own element(s) — they are the whole meaning search, run as written — or meaning_angles_none:true for a coined term with no semantic field to probe" };
+  const unusable = meaning_angles.filter((q) => q.length > MEANING_ANGLE_MAX_CHARS || !/[\p{L}\p{N}]/u.test(q));
+  if (unusable.length)
+    return { ok: false, reason: `matterframe_meaning_angle_unusable: ${unusable.length} angle(s) are not one short web query — each is at most ${MEANING_ANGLE_MAX_CHARS} characters with a word in it, and is run exactly as written; shorten or split it` };
 
   const intake_asks = [];
   for (const a of (Array.isArray(params?.intake_asks) ? params.intake_asks : [])) {

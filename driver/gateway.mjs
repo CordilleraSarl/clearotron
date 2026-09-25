@@ -2497,7 +2497,8 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     hint = "the matter frame must carry the per-matter meaning/connotation angles — derived from the mark's " +
       "OWN semantic field and this matter's market/industry (cultural origin and communities the word " +
       "evokes, charged historical/political associations of the term or its imagery, category-specific " +
-      "controversy for these goods) — 3-8 short queries, each anchored on the mark's element(s). Send them " +
+      "controversy for these goods) — short queries, each anchored on the mark's element(s); they are the " +
+      "whole meaning search, run as written. Send them " +
       "as `meaning_angles` in one `record_matter_frame` call, or send `meaning_angles_none: true` with an " +
       "empty array ONLY when the mark is a coined term with no real-word semantic field to probe. The call " +
       "replaces the stored frame, so send the whole frame again, not only the angles — the driver renders " +

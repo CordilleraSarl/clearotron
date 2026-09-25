@@ -61,7 +61,7 @@ import { compileRegisterPlan, parseRegisterPlan, resolvePlanAgainstStore, joinPl
 // — ONE binding of the office split to this box's env, shared with Depth 2's two lanes.
 import { registerCapabilities, registerUnavailableOffices } from "./register-unreachable.mjs";
 import { parseVariantManifestModel } from "./variant-manifest-model.mjs";
-import { meaningAnglesFromMatterContext, findConnotationViolations, parsePrRiskResults, connotationReasonKey, parseDispositionForm, renderDispositionTable, connotationObligations, CONNOTATION_FORM_TOKEN_SRC, CONNOTATION_UNRULED_REASONS, connotationAuditCounts, DECLINED_RULING } from "./connotation-search.mjs";
+import { meaningAnglesFromMatterContext, meaningAnglesAssertedNone, findConnotationViolations, parsePrRiskResults, connotationReasonKey, parseDispositionForm, renderDispositionTable, connotationObligations, CONNOTATION_FORM_TOKEN_SRC, CONNOTATION_UNRULED_REASONS, connotationAuditCounts, DECLINED_RULING } from "./connotation-search.mjs";
 // — the merge unions the halves' forms into the canonical one, with the same code the gateway unions
 // an attempt with. PURE and acyclic.
 import { unionDispositionForm, outstandingRows, formSidecarPath } from "./disposition-union.mjs";
@@ -1033,6 +1033,13 @@ function deriveGridSpec(ctx) {
     // beside the list, about 54 questions whatever the matter; they are gone. The count is ASSERTED in the
     // grid-spec event either way — a 0 is the frame's recorded `none`, never an absence.
     const angleQueries = meaningAnglesFromMatterContext(matterMd);
+    // Only the frame's `none` is a decision. A missing line, or one naming nothing usable, would read to
+    // the web step as that decision and skip the meaning search on a frame that never made it.
+    const anglesAssertedNone = meaningAnglesAssertedNone(matterMd);
+    if (!angleQueries.length && !anglesAssertedNone)
+      throw new StageFailure("grid-spec",
+        "the matter frame's \"Meaning angles:\" line is missing or names no usable question, and the frame did not assert none — so there is no meaning search to dictate, and an empty one would read as the frame's decision",
+        undefined, { failClass: "deterministic" });
     // THE WEB GRID THE MATTER FRAME DECIDED (web-grid.mjs): the stores it did not set aside, for the mark
     // itself and the forms a buyer could confuse, and every spelling on the general web. A frame that was
     // never asked for those fields (a resumed older run) keeps every spelling on every channel.
@@ -1071,7 +1078,7 @@ function deriveGridSpec(ctx) {
       // gateway unions it and the validator reads it, all from this one string.
       // `none_named` is the frame's asserted zero carried to the seat that owns the sweep, so an empty list
       // reads as the frame's decision and never as a spec the driver failed to write.
-      connotation: { queries: angleQueries, ...(angleQueries.length ? {} : { none_named: true }), disposition_required: true,
+      connotation: { queries: angleQueries, ...(anglesAssertedNone ? { none_named: true } : {}), disposition_required: true,
         dispositions_path: P.commonLawDispositions },
       // D1 fail-closed stamp: the commonLaw validator refuses a missing plugin ledger ONLY for specs
       // carrying this field (receipt presence, never absence) — pre-D1 archived specs lack it, so
