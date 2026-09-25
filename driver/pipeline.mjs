@@ -9,7 +9,8 @@ import "./engine/mcp/http-dispatcher.mjs";   // side effect: raise undici header
 import { readFileSync, existsSync, mkdirSync, writeFileSync, renameSync, copyFileSync, readdirSync, rmSync, statSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join, dirname, basename, resolve } from "node:path";   // resolve: the resume line must work from any cwd
-import { driverDir, driverRel, ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
+import { driverDir, driverRel, ensureDriverDir } from "../shared/driver-dir.mjs";
+import { REVIEWER_OPEN_QUESTIONS_FILE, reviewerOpenPointsForEmail } from "./reviewer-open-points.mjs";   // the run-record file the reviewer's open points go to   // — one definition of where `_driver/` is
 import { goodsOf } from "./queue-markers.mjs";   // — one reading of "does this job name goods", shared with the intake gate
 import { terminalClampDecision, orderClausesForLede, clientConditions, clauseForDefect } from "./terminal-clamp.mjs";   // — deliver and clamp, never withhold
 import { recordSpan } from "./attributed-span.mjs";   // — driver work the decomposition can attribute
@@ -7726,14 +7727,12 @@ export function buildOnlyYouSection(actions, findings, { nowMs = Date.now(), wit
 // ── T3a — THE REVIEWER'S OPEN POINTS, CODE-BUILT FROM THE REVIEW ────────────────────────────────────
 //
 // Ruling 2026-08-26, verbatim: "Deliver always, with open points printed. The refusal on a
-// blocking review goes." That REVERSES T3, which retired "delivered-with-open-questions" and
-// is itself recorded as an owner-approved decision — both are his, and this is the standing one.
+// blocking review goes." The delivery half stands: a refusing review never withholds a report.
 //
-// The section the reviewer's concerns land in is not new. `driver/skills/clearance-search/SKILL.md`
-// has described it all along — "delivered … as a prominent Reviewer's open questions section at the
-// top of the body (the driver passes them in)" — and `:295` lists it as a required section with
-// "Never omit it to look more finished." deleted the driver's half and left that text
-// standing; this restores the half that was removed, so the two agree again.
+// WHERE THE SECTION GOES CHANGED. Owner ruling 2026-09-24: reviewer notes never reach the client page, and
+// a report the reviewer still refuses ships with its rating and nothing added. This builder is unchanged
+// and its output goes to the run record beside the review (the call site in assembleReportMd), for the
+// reviewing lawyer. The rest of this note describes how the section is built, which still holds.
 //
 // ── CODE-BUILT, LIKE THE ONLY-YOU SECTION, AND FOR THE SAME REASON ─────────────────────────────────
 //
@@ -8057,38 +8056,37 @@ export function assembleReportMd(P, findings, cardOrdinals, { grouped = [], byRi
       overview = overview.replace(/\s*$/, "");
     }
   } catch { /* never-kill: a malformed findings.json leaves the overview untouched (its own gates own that) */ }
-  // ── T3a — THE REVIEWER'S OPEN POINTS, AT THE TOP OF THE BODY ──────────────────────────────────────
+  // ── THE REVIEWER'S OPEN POINTS GO TO THE RUN RECORD, NEVER TO THE CLIENT PAGE ─────────────────────
   //
-  // `driver/skills/clearance-search/SKILL.md` says where: "a prominent Reviewer's open questions section at the TOP of the body
-  // (the driver passes them in)". That sentence has been true of the contract and false of the code
-  // since deleted the driver's half; this is the half coming back.
+  // Owner ruling, 2026-09-24: reviewer notes never reach the client page, and a report the reviewer still
+  // refuses ships with its rating and nothing added. This site used to put the section at the top of the
+  // body, under an earlier ruling that asked for open points printed; the client page then opened with
+  // the reviewer's objections in the engine's own vocabulary, most of them about wording, while the
+  // objections that mattered went unnoticed. The section is still built, from the same review and the
+  // same corrective observation, and it is written beside them for the reviewing lawyer. The overview is
+  // not touched, so nothing here can reach a surface a client reads.
   //
-  // ORDER MATTERS AND IT IS NOT COSMETIC. This runs AFTER the / PR-9 blocks above. Each of
-  // those replaces its own subsection with a regex bounded by `(?=^###\s|^#\s|$)` — so a new `###`
-  // heading inserted BELOW them would become the boundary that truncates them, while one inserted
-  // ABOVE cannot be reached by a match that starts at their own heading. Above, and last.
-  //
-  // Assembly-time, like every sibling here: no archived report.md is rewritten by this.
+  // Assembly-time, like every sibling here: no archived report.md is rewritten by this, and a stale file
+  // from an earlier assembly of the same run is removed rather than left to be read as current.
   try {
     // T3b — the driver's own flag-by-flag observation rides in beside the review. NEVER-KILL, and the
-    // direction matters: an unreadable or absent corrections-applied.json yields `null`, which prints
-    // the BLOCKING grounds exactly as before and adds nothing. A run that never had a corrective pass
-    // (SIGNED first time) has no such file BY DESIGN and has no unfixed objections either.
+    // direction matters: an unreadable or absent corrections-applied.json yields `null`, which records
+    // the BLOCKING grounds alone. A run that never had a corrective pass (SIGNED first time) has no such
+    // file BY DESIGN and has no unfixed objections either.
     let applied = null;
     try { applied = JSON.parse(readFileSync(P.correctionsApplied, "utf8"))?.rows ?? null; }
-    catch { /* absent or malformed — the section falls back to the review alone, which is T3a's behaviour */ }
+    catch { /* absent or malformed — the record falls back to the review alone */ }
     const openPoints = existsSync(P.seniorEyeReview)
       ? buildReviewerOpenPointsSection(readFileSync(P.seniorEyeReview, "utf8"), applied)
       : "";
+    const record = driverDir(dirname(P.report), REVIEWER_OPEN_QUESTIONS_FILE);
     if (openPoints) {
-      // After the front matter, never inside it: that block is YAML, and a markdown heading placed in
-      // it is read as a key rather than as prose.
-      const fm = overview.match(/^---\n[\s\S]*?\n---\n?/);
-      const head = fm ? fm[0].replace(/\s*$/, "\n") : "";
-      const rest = overview.slice(fm ? fm[0].length : 0).replace(/^\n+/, "");
-      overview = `${head}\n${openPoints}\n\n${rest}`.replace(/^\n+/, "");
+      mkdirSync(dirname(record), { recursive: true });
+      writeFileSync(record, `${openPoints}\n`);
+    } else {
+      rmSync(record, { force: true });
     }
-  } catch { /* never-kill: an unreadable review leaves the overview as it stands — the verdict still ships on its own path */ }
+  } catch { /* never-kill: an unreadable review leaves no record here — the verdict still ships on its own path */ }
   const set = new Set(cardOrdinals ?? []);
   // T6 (H8): the.md assembly and the HTML render share ONE adversarial-ordering comparator.
   const sorted = [...(findings ?? [])]
@@ -13390,7 +13388,7 @@ async function pipelineInner(job, opts = {}) {
           citedDefects: countCitedDefects(readReview()),
           degenerate: isDegenerate(readReview()),
         });
-        note(`verdict: BLOCKING stands after the corrective pass + re-check — the report DELIVERS with the reviewer's open points printed (${countCitedDefects(readReview())} cited defect(s)); the reviewing lawyer is the backstop`);
+        note(`verdict: BLOCKING stands after the corrective pass + re-check — the report DELIVERS, with the reviewer's open points recorded for the reviewing lawyer (${countCitedDefects(readReview())} cited defect(s)); the reviewing lawyer is the backstop`);
       }
     }
 
@@ -15165,7 +15163,7 @@ async function pipelineInner(job, opts = {}) {
     // rule still forbids is the ENGINE'S OWN WORDS getting there: composeEmailHtml enumerates
     // predelivery-lint's code-owned projection (deliveryFlagLines), never the checks' raw `detail` —
     // this mail is addressed to job.forwarderEmail, which on a client-principal run is the client.
-    writeFileSync(P.emailBody, composeEmailHtml(P.report, published.url, published.auditFile, emailNames, deliveryForRun(ctx), emailVerdictOpts));
+    emailVerdictOpts.reviewerOpenPointsMd = reviewerOpenPointsForEmail(job, dirname(P.report));   writeFileSync(P.emailBody, composeEmailHtml(P.report, published.url, published.auditFile, emailNames, deliveryForRun(ctx), emailVerdictOpts));
     // ctx.verdict is set BEFORE the packet is composed, because the packet's copy reads it.
     ctx.verdict = verdict;
     // DELIVERY (Phase 2). The driver writes a self-contained delivery packet and leaves

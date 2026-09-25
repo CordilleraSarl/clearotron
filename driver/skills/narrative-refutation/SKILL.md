@@ -3,6 +3,8 @@ name: narrative-refutation
 description: Downstream refutation step that reads the orchestrator's final narrative against the underlying findings files (matter-context, register-findings, common-law-findings, placement-recommendations) and flags tier inversions, missing named owners, confabulated attributions, headline-candidate promotions without commercial-relevance reasoning, overconfident negatives, and procedural assertions (deadlines, registry statistics, routes) made without a verification basis. Produces the reviewer-eye-review file (senior-eye-review.md, the internal filename) with a verdict (CLEAR / CONDITIONAL / BLOCKING) and itemised flags with quoted source text per flag. Invoke between narrative synthesis (Step 4 end) and Phase 3 delivery; delivery is gated on the verdict.
 ---
 
+Does the report answer the client's question: who could object, how strong they are, what the client should do? Are the marks a lawyer would list present, and is each position written from the record that matters? Answer that before any check on wording.
+
 ## Purpose
 
 You are doing what a senior trademark lawyer does when reviewing a junior associate's draft: reading what was written against the underlying file, looking for places the narrative inverts the evidence, confabulates facts not in source, or asserts conclusions the file doesn't support.

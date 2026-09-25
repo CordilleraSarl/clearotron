@@ -690,7 +690,7 @@ export const E3_BACKLOG = [
   {
     stage: "narrative-refutation",
     kind: "dictated-line-shape",
-    where: "driver/skills/narrative-refutation/SKILL.md:71",
+    where: "driver/skills/narrative-refutation/SKILL.md:73",
     surface: "skill-file",
     // RE-QUOTED BY CONVERSION 9. The dictation survives and its CHANNEL changed: `on` is an array of
     // ordinals the seat sends, and the bracketed forms are now labelled as what the DRIVER renders. The

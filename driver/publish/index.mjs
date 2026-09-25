@@ -1801,7 +1801,8 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
     // second rung on any shipped build. Nothing renders a failover note into a report.
     // B5b checkpoint 4 — a customer named after the analysis was written ships as a delivery note, never silently.
     + (fm.late_bind_note ? `<p style="margin:0 0 8px;color:#7a2b12"><b>Applicant named mid-run:</b> ${cell(fm.late_bind_note)}</p>` : '')
-    + (oq ? `<div style="margin:0 0 8px">${mdBlock(oq[0])}</div>` : '')
+    + (oq ? `<div style="margin:0 0 8px">${mdBlock(oq[0])}</div>` : '')   // …and the reviewer's open points from the run record (opts.reviewerOpenPointsMd), never from the report
+    + (opts.reviewerOpenPointsMd ? `<div style="margin:0 0 8px">${mdBlock(String(opts.reviewerOpenPointsMd).replace(/^#+\s*(.+)$/m, '**$1**'))}</div>` : '')
     // wp50: the two-bucket # Actions list no longer rides the email — it renders on the report itself
     // (the single master document); the cover keeps only the headline, link, and surviving flags.
     + `</div>`;
