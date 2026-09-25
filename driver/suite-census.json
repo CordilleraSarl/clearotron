@@ -3574,8 +3574,8 @@
           "todos": 0
         },
         "no-two-dictated-queries-fold-to-one-key.test.mjs": {
-          "tests": 5,
-          "asserts": 10,
+          "tests": 3,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
@@ -3767,7 +3767,7 @@
         },
         "pipeline.mock.test.mjs": {
           "tests": 103,
-          "asserts": 859,
+          "asserts": 861,
           "skips": 0,
           "todos": 0
         },

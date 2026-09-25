@@ -189,15 +189,13 @@ means *blackberry*" is context, not a clearance: a connotation reads clean only 
 |---|---|---|
 | meaning readings surfaced | Urban Dictionary / Wikipedia / news / forums | per form, the readings the search returned + benign/loaded label — e.g. `ELEVATE → ordinary verb "raise" (benign)`; near-forms `RAIZE / RAYSE → no slang/gang/offensive reading`. Write `(None identified)` as the *bottom line* only after the readings are laid out and none is loaded. |
 
-A clean PR/connotation row MUST cite its search — add a `**Connotation-search source:** <URL | "perplexity_research — no result">` line. The driver dictates the meaning sweep into the grid (the mark + near-forms × meaning shapes) and the plugin records every query into the ledger's `extras.pr_risk[]`; the `commonLaw` validator rejects a `(None identified)` claim with no recorded queries (`connotation_search_missing`). An empty-results search is a clean receipt; a *missing* search is not.
+A clean PR/connotation row MUST cite its search — add a `**Connotation-search source:** <URL | "perplexity_research — no result">` line. The driver dictates the meaning sweep into the grid (the matter frame's meaning questions) and the plugin records every query into the ledger's `extras.pr_risk[]`; the `commonLaw` validator rejects a `(None identified)` claim with no recorded queries (`connotation_search_missing`). An empty-results search is a clean receipt; a *missing* search is not.
 
-The dictated sweep has TWO halves, and this section's scope is exactly that sweep — never a generic
-sensitivities checklist. Half one: the driver's fixed query shapes (mark + near-forms × meaning / slang /
-gang / offensive / lookup shapes). Half two: the matter frame's per-matter derived angles (its
-`Meaning angles:` line — the cultural origin and communities the word evokes, charged historical or
-political associations of the term or its imagery, category-specific controversy for these goods). Derived
-queries are floor-equal citizens: recorded into `extras.pr_risk[]` and policed by the same identity join —
-weigh their results with the same seriousness as the fixed shapes'.
+The dictated sweep is the matter frame's own meaning questions (its `Meaning angles:` line — the cultural
+origin and communities the word evokes, charged historical or political associations of the term or its
+imagery, category-specific controversy for these goods, what the mark means in each language whose market
+matters, and any slang, gang or offensive reading), and this section's scope is exactly that sweep — never
+a generic sensitivities checklist. Each is recorded into `extras.pr_risk[]` and policed by the identity join.
 
 **Receipts disposition (machine-enforced). You send VALUES through a tool; you never write or edit a
 file for this.** When the grid tool returns, its result lists every meaning obligation you owe — one row

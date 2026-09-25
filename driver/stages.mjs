@@ -1259,7 +1259,7 @@ export const STAGES = {
       },
       "meaning_angles — the per-matter semantic-field queries, or an asserted none": {
         class: "judgment", tokens: ["meaning_angles_missing"],
-        why: "the semantic-field read; the driver's fixed shapes are the floor and these are the per-matter angles no fixed list can ask",
+        why: "the semantic-field read, and the whole meaning sweep since the fixed shapes went (ruled 2026-09-25): which meanings and languages matter is the frame's judgment",
       },
       "### Intake asks rows — {ask, owner} content": {
         class: "judgment", tokens: [],
@@ -1354,14 +1354,14 @@ export const STAGES = {
       profile?.platforms?.length && profile.profileKey !== "generic" ? `Customer profile's stores: ${profile.platforms.join(", ")}.` : "",
       `Send \`confusable_forms\` — the forms a buyer could confuse, as a buyer would type them. Each is searched on every store you do not set aside and on every channel in \`search_channels\`; every spelling is searched on the general web.`,
       `Send \`set_aside\` — one \`{store, reason}\` for each store on the customer profile's list you do not search, and one \`{form, reason}\` for each form you set aside. A store with no entry here is searched.`,
-      // P2-C (Round-2 §8b) — the DERIVED half of the meaning sweep's scope. The driver's fixed shapes
-      // ("<mark> offensive", "<mark> urban dictionary") stay as the floor; THIS line supplies the per-matter
-      // angles no fixed list can ask. The driver appends these queries VERBATIM to the dictated meaning sweep
-      // (each is executed and receipted — the per-query identity gate polices them like the floor's), so
+      // THE MEANING SWEEP IS THIS LIST (ruled 2026-09-25). The fixed shapes that rode beside it are gone, so
+      // the frame names the meanings and the languages that matter for this matter. The driver dictates these
+      // queries VERBATIM as the whole meaning sweep
+      // (each is executed and receipted — the per-query identity gate polices every one), so
       // every query must be a real, runnable web search. REQUIRED on every frame this prompt mints (the
       // stage-contract marker above arms the validator; legacy/archived frames stay under their own rules)
       // — never a hardcoded sensitivities checklist, always reasoned from THIS mark.
-      `Send \`meaning_angles\` — an array of the per-matter meaning/connotation angles a reputational reader would probe, derived from the mark's OWN semantic field and this matter's market/industry (NOT a fixed sensitivities list): the cultural origin and communities the word evokes (appropriation/criticism debates), charged historical or political associations of the term or its imagery, and category-specific controversy for these goods. 3-8 short queries, each anchored on the mark's element(s) (e.g. a Polynesian-derived element → "<element> cultural appropriation"; "<element> bar criticism"). Send \`meaning_angles_none: true\` INSTEAD, with an empty array, only when the mark is a coined term with no real-word semantic field to probe — that is an asserted zero and the driver records it as one. Sending neither is not an answer, and sending both is refused.`,
+      `Send \`meaning_angles\` — an array of the per-matter meaning/connotation angles a reputational reader would probe, derived from the mark's OWN semantic field and this matter's market/industry (NOT a fixed sensitivities list): the cultural origin and communities the word evokes (appropriation/criticism debates), charged historical or political associations of the term or its imagery, and category-specific controversy for these goods. Short queries, each anchored on the mark's element(s) (e.g. a Polynesian-derived element → "<element> cultural appropriation"; "<element> bar criticism"). They are the whole meaning sweep, run as written: a word's meaning in another language is asked only where the frame says that market matters and buyers would read the word as the mark, one query for each such language; and where the mark, or a form a buyer could confuse, could read as slang, a gang name or an offensive word in a market the matter names, a query asks that. Send \`meaning_angles_none: true\` INSTEAD, with an empty array, only when the mark is a coined term with no real-word semantic field to probe — that is an asserted zero and the driver records it as one. Sending neither is not an answer, and sending both is refused.`,
       // A6 — the intake-ask register: every EXPLICIT customer instruction becomes a machine
       // row the driver freezes (_driver/intake-asks.json) and every later surface must answer as a
       // LABELLED response. An ask can never evaporate between intake and output (the VENZY
@@ -2037,6 +2037,7 @@ export const STAGES = {
         `You own this matter's MEANING SWEEP and nothing else. Two sibling members are running the marketplace grid concurrently and the driver merges all three in code — do NOT sweep marketplaces, do NOT judge listings, and do NOT widen beyond your dictated queries.`,
         `Run the sweep via the DETERMINISTIC grid: call perplexity_research with enable_sandbox:true and grid_spec_path: ${P.gridSpecHalf(half)}. Your spec carries the dictated meaning queries and NO term x platform cells. The tool runs exactly those queries and WRITES your ledger to ${P.commonLawGridHalf(half)} itself.`,
         `Do NOT author the grid program, do NOT save ${P.commonLawGridHalf(half)} yourself, and do NOT re-emit the ledger JSON in your message.`,
+        `If your spec's connotation carries "none_named": true, the matter frame named no meaning question for this mark, so there is nothing to search: do not call perplexity_research, and write ${P.commonLawHalf(half)} with a "Findings" heading saying no meaning search ran because the matter frame named no meaning question, and an "Audit trail" section saying the same.`,
         // The MEANING seat always owns meaning queries — that is what it is for — so the may-own-nothing
         // sentence is FALSE here. It used to be served anyway, because the option was keyed on being a
         // half rather than on the obligations.

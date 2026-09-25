@@ -66,13 +66,8 @@ the string "<term> | <platform> | <repr of the exception>". Do not skip any cell
 AFTER the grid, the same program runs the CONNOTATION searches (same access idiom, up to 8 results
 each, recorded raw into extras.pr_risk — the ONLY extras key with a consumer; the old
 competitor_intel / crowded_field extras are RETIRED: nothing ever read them):
-- pr_risk: search offensive / subcultural / controversial associations on BOTH (a) each core element AND
-  (b) its plausible NEAR-FORMS — the edit-1 / transliteration / homophone forms from `form-neighbourhood.json`
-  (`elements[].band.exactQueries` + `.transliterations`) that read as a real word, name, or plausible term in
-  any in-scope market language (e.g. `VELANO` → `veleno`). A near-form that is a real word/term in a market is
-  a connotation candidate — search it; never pre-drop one as "unlikely" (connotation is not mechanically
-  enumerable, so you search the candidates, you do not filter them). Per term run TWO queries: "[TERM]
-  controversy offensive association" AND "[TERM] meaning slang". **Weight subcultural / social / community web
+- pr_risk: run the matter frame's meaning questions, its `Meaning angles:` line in matter-context.md, each
+  as written. **Weight subcultural / social / community web
   — Urban Dictionary, Wikipedia, news, forums — NOT just dictionaries:** the hazard (e.g. "Mara" = a
   Central American street gang) lives on the social web, never in a lexical entry. **A dictionary gloss ("it just
   means crowd") is context, NEVER a clearance** — a connotation reads CLEAN only when the searched social/web
@@ -87,8 +82,8 @@ Your final message after the program runs must be ONLY one line, derived from th
 ```
 
 **Deterministic-grid mode (the default when the profile has platforms):** you do NOT author this program.
-The driver writes `grid-spec.json` — including a `connotation.queries` list it dictates from the mark + its
-near-forms — and the `perplexity_research` tool BUILDS and runs the program itself, recording the marketplace
+The driver writes `grid-spec.json` — including a `connotation.queries` list: the matter frame's meaning
+questions, as it wrote them — and the `perplexity_research` tool BUILDS and runs the program itself, recording the marketplace
 cells AND the connotation/meaning queries into the ledger's `extras.pr_risk[]`. The template above governs only
 the no-profile fallback path. Either way the connotation contract is identical: the meaning sweep RUNS and every
 query is recorded, and a clean PR claim with no recorded search is rejected (`connotation_search_missing`).

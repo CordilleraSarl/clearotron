@@ -121,13 +121,16 @@ The machine-readable parts of the frame are TYPED FIELDS on the `record_matter_f
 shapes for you to hit: `scope_jurisdictions`, `excluded_jurisdictions`, `scope_basis`, `search_channels`,
 `meaning_angles` (or `meaning_angles_none`), and `intake_asks`. The driver renders every one of them into
 the file, and the `## Instructed scope` section is stamped by the driver from its own intake record — you
-are not asked to quote the request back. Two rules for `meaning_angles` specifically — it feeds the meaning/connotation web sweep VERBATIM, beside the
-driver's fixed query shapes:
+are not asked to quote the request back. Three rules for `meaning_angles` specifically — it IS the meaning/connotation web sweep, run
+VERBATIM; nothing else asks what the name means:
 
 - Derive the angles from THIS mark's semantic field × THIS matter's market/industry — the cultural origin
   and communities the word evokes (appropriation/criticism debates), charged historical or political
   associations of the term or its imagery, category-specific controversy for these goods. Never reproduce a
   generic sensitivities checklist; an angle that could be written for any mark is not an angle.
+- A word's meaning in another language is asked only where the frame says that market matters and buyers would read the word as the mark: for each such language, one angle asking what the mark means in it. Where the mark, or a
+  form a buyer could confuse, could read as slang, a gang name or an offensive word in a market the matter
+  names, one angle asks that too.
 - Every entry must be a real, runnable web-search query (each is executed and receipted — an unrunnable
   entry burns a dictated query). `Meaning angles: none` is the only valid empty form, reserved for a coined
   term with no real-word semantic field.

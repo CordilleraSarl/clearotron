@@ -831,9 +831,11 @@ serve({
         meaning_angles: {
           type: "array", items: { type: "string" },
           description:
-            "3-8 short web-search queries, each anchored on the mark's element(s): the cultural origin " +
-            "and communities the word evokes, charged historical or political associations, " +
-            "category-specific controversy for these goods. Every one is executed and receipted.",
+            "Short web-search queries, each anchored on the mark's element(s). They are the whole meaning " +
+            "sweep, run as written: the cultural origin and communities the word evokes, charged historical or " +
+            "political associations, category-specific controversy for these goods; what the mark means in each " +
+            "language whose market matters and whose buyers would read the word as the mark; and any slang, gang " +
+            "or offensive reading of the mark or a form a buyer could confuse. Every one is executed and receipted.",
         },
         // AN ASSERTED ZERO IS ITS OWN FIELD, never an inference from an empty array. "This mark is coined
         // and has no semantic field" and "the seat did not answer" are different facts, and an empty array
