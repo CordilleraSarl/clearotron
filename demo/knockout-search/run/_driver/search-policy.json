@@ -17,7 +17,7 @@
   "recipeScope": null,
   "deliveryRoute": null,
   "enqueuedVia": "mcp/start_run",
-  "enqueuedBy": "e2e-capella",
+  "enqueuedBy": "demo",
   "parentRunId": null,
   "frozenAt": "2026-09-18T16:18:15.945Z"
 }
