@@ -192,6 +192,32 @@ test("a family nobody decided, one decided both ways, and an ask with no rationa
   assert.match(r.saw, /1 asked by a question of the turn's that gives no rationale: fam:b/);
 });
 
+test("a stacked spelling-band entry that waited fails, even withheld with a reason: the band is asked as written", () => {
+  const run = familyRun({
+    released: { "fam:a": { reason: "Reason." } },
+    withheld: { "fam:b": { reason: "Reason." }, "fam:c": { reason: "Reason." },
+      "primary-sweep:exact:varento+form": { reason: "The spellings would only return noise." } },
+  });
+  run["_driver/register-plan.json"].entries.push(planEntry("primary-sweep:exact:varento+form",
+    { predicate: "exact", provenance: "floor", term: undefined, terms: ["VARENTO", "VARENTOS"], when: WAIT }));
+  const r = check(JUDGED_ASSERT, run);
+  assert.equal(r.ok, false, r.saw);
+  assert.match(r.saw, /1 spelling-band entry waited for the reading turn instead of being asked: primary-sweep:exact:varento\+form/);
+});
+
+test("a band entry asked one spelling a question that waited fails the same way", () => {
+  const run = familyRun({
+    released: { "fam:a": { reason: "Reason." } },
+    withheld: { "fam:b": { reason: "Reason." }, "fam:c": { reason: "Reason." },
+      "primary-sweep:exact:varentos+form#2": { reason: "Reason." } },
+  });
+  run["_driver/register-plan.json"].entries.push(planEntry("primary-sweep:exact:varentos+form#2",
+    { predicate: "exact", provenance: "floor", term: "VARENTOS", when: WAIT }));
+  const r = check(JUDGED_ASSERT, run);
+  assert.equal(r.ok, false, r.saw);
+  assert.match(r.saw, /1 spelling-band entry waited for the reading turn instead of being asked: primary-sweep:exact:varentos\+form#2/);
+});
+
 test("a family settled withheld on the coverage form counts, and is named as such", () => {
   const r = check(JUDGED_ASSERT, familyRun({
     released: { "fam:a": { reason: "Reason." } }, withheld: { "fam:b": { reason: "Reason." } },

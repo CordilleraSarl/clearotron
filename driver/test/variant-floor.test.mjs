@@ -15,7 +15,8 @@ import {
   renderFormNeighbourhoodJson, floorSeeds, markSeedTokens, spacingPunctuationForms,
   variantFloorFamilies, mergeVariantFloor, formNeighbourhood, MAX_SEED_LENGTH,
 } from "../form-neighbourhood.mjs";
-import { compileRegisterPlan, bandsFor, parseRegisterPlan, PLAN_PROVENANCE } from "../register-plan.mjs";
+import { compileRegisterPlan, bandsFor, parseRegisterPlan, PLAN_PROVENANCE, isSpellingBandEntry } from "../register-plan.mjs";
+import { capabilitiesFor } from "../register-capabilities.mjs";
 
 const MANIFEST = `# Variant manifest
 Dominant element: VELTRIS
@@ -180,6 +181,24 @@ test("spacingPunctuationForms enumerates the mark's separator forms, and none fo
 });
 
 // ── the plan: floor terms reach the wire, marked, and the model cannot take one off it ───────────
+
+test("the spelling band is asked as it compiles, stacked or one a spelling: none of it waits for the reading turn", () => {
+  // The unit manual's rule is that the band is asked as the machine writes it. Held for the reading
+  // turn, it could be withheld before a record existed, and measured runs withheld all of it that way.
+  const form = JSON.parse(renderFormNeighbourhoodJson(MANIFEST, { model: MODEL, mark: "BIO VELTRIS" }));
+  const shapes = { clarivate: (band) => band.some((e) => (e.terms?.length ?? 1) > 1),
+    signa: (band) => band.every((e) => (e.terms?.length ?? 1) === 1) };
+  for (const [provider, shaped] of Object.entries(shapes)) {
+    const plan = compileRegisterPlan({ manifest: MODEL, job: JOB, form, capabilities: capabilitiesFor(provider) });
+    const band = plan.entries.filter(isSpellingBandEntry);
+    assert.ok(band.length > 0, `guard: the band compiled on ${provider}`);
+    assert.ok(shaped(band), `guard: ${provider} compiles the band ${provider === "clarivate" ? "stacked" : "one question a spelling"}`);
+    assert.deepEqual(band.filter((e) => e.when).map((e) => e.qid), [],
+      `${provider}: a band entry waits, so the reading turn could withhold it unasked`);
+    assert.ok(plan.entries.some((e) => e.when?.awaits_reading_turn === true && !isSpellingBandEntry(e)),
+      `${provider}: the wider families still wait for the reading turn`);
+  }
+});
 
 test("the compiled plan MARKS every entry floor / model / mark", () => {
   const form = JSON.parse(renderFormNeighbourhoodJson(MANIFEST, { model: MODEL, mark: "BIO VELTRIS" }));

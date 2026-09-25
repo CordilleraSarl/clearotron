@@ -550,6 +550,10 @@ export function stableStringify(v) {
   return `{${Object.keys(v).sort().map((k) => `${JSON.stringify(k)}:${stableStringify(v[k])}`).join(",")}}`;
 }
 
+/** A spelling-band entry: the compiler's `+form` suffix, with a `#n` when a duplicate question was renamed.
+ *  The one reading of what a band entry is, for the compiler and for everything that checks its plans. */
+export const isSpellingBandEntry = (e) => /\+form(?:#\d+)?$/.test(String(e?.qid ?? ""));
+
 export function variantsFingerprint(manifest) {
   return fingerprint({
     mark: manifest.mark,
@@ -1580,11 +1584,18 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   //   · the goods-narrowed contains entry — on every matter (ruled 2026-09-20), and it is the one entry that
   //     makes a crowded identical question answerable rather than merely deferred
   //   · anything already waiting on something else, which keeps its own parent
+  //   · the spelling band — the unit manual's own rule is that it is asked as the machine writes it
   //
   // Everything else is a widening: scripts and transliterations, neighbour lists, compounds, the
   // wildcard and phonetic fringes. On the measured dense matter every one of the 4,805 records read
   // came from these, while the identical question went unread — which is the defect, stated as
   // arithmetic.
+  // THE SPELLING BAND IS NOT A WIDENING THE TURN MAY DECLINE UNASKED. The unit manual tells the reading
+  // turn that the band "is asked as the machine writes it", and what it returns is read like any other
+  // list. Gated here, the same turn was asked to release or withhold it before a record existed, and on
+  // measured runs it withheld the whole band under one guess about its answers — the judgment before
+  // asking the design rejects, since lawyer marks exist that only the complete band reaches. It is asked
+  // as it compiled: stacked where the register can stack, one question a spelling where it cannot.
   const identicalTermKey = formKey(manifest.mark);
   const isIdenticalQuestion = (e) =>
     e.provenance === "mark" && !goodsTermsList(e).length
@@ -1595,6 +1606,7 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
     if (e.when) continue;                        // already waiting on its own parent
     if (goodsTermsList(e).length) continue;      // compiled on every matter (2026-09-20)
     if (isIdenticalQuestion(e)) continue;
+    if (isSpellingBandEntry(e)) continue;
     // AN UNSUPPORTED ENTRY IS A DISCLOSURE, NOT A SEARCH. It was stamped at compile because this
     // provider cannot express it, so it costs no reading and answers nothing — gating it would hold
     // back a coverage gap the run already knows about, and turn a `deferred` row (this was not

@@ -15,6 +15,7 @@ import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
 import { formKey } from "../providers/_shared/script-form.mjs";
 import { goodsTermsList } from "../providers/_shared/term-shape.mjs";
+import { isSpellingBandEntry } from "../driver/register-plan.mjs";
 
 const readJson = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
 const list = (v) => (Array.isArray(v) ? v : []);
@@ -170,6 +171,9 @@ export function everyFamilyWasJudged(a, runDir) {
   const plan = readPlan(runDir);
   if (!plan) return { ok: false, saw: "_driver/register-plan.json absent or carries no entries, so the waiting families cannot be listed" };
   const waiting = plan.entries.filter((e) => waitsForReadingTurn(e) && e.unsupported !== true);
+  // The spelling band is asked as the machine writes it; a band entry that waited could be withheld
+  // before it was asked, which no reason on the record makes right.
+  const bandWaited = waiting.filter(isSpellingBandEntry);
   if (!waiting.length)
     return { ok: true, notProbed: true, saw: "NOT PROBED (not a pass): no family in this run's frozen plan waited for the reading turn" };
   const released = familyRecords(runDir, "released-families-");
@@ -203,11 +207,12 @@ export function everyFamilyWasJudged(a, runDir) {
     `${plural(waiting.length, "waiting family", "waiting families")}: ${asked} asked (${releasedN} released with a reason), ${withheldN} withheld with a reason`
       + (formOnly ? ` (${formOnly} settled on the coverage form, not in the reading turn's own record)` : ""),
   ];
+  if (bandWaited.length) parts.push(`${plural(bandWaited.length, "spelling-band entry", "spelling-band entries")} waited for the reading turn instead of being asked${sample(bandWaited.map((e) => text(e.qid)))}`);
   if (neither.length) parts.push(`${neither.length} decided neither way${sample(neither)}`);
   if (both.length) parts.push(`${both.length} recorded both asked and withheld${sample(both)}`);
   if (noRationale.length) parts.push(`${noRationale.length} asked by a question of the turn's that gives no rationale${sample(noRationale)}`);
   if (blank.length) parts.push(`${blank.length} family record(s) with an empty reason${sample(blank)}`);
-  return { ok: !neither.length && !both.length && !noRationale.length && !blank.length, saw: parts.join("; ") };
+  return { ok: !bandWaited.length && !neither.length && !both.length && !noRationale.length && !blank.length, saw: parts.join("; ") };
 }
 
 /**
