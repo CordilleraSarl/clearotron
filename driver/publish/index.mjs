@@ -12,7 +12,7 @@ import { join, dirname } from 'node:path';
 import { driverDir, RUN_DIR_MODE } from '../../shared/driver-dir.mjs';   //
 import { parseReport, parseAudit, parseSections, parseBlocks, stripInternal, parseCaseLawProfiles, parseCaseLawPreamble, joinCaseLawProfiles } from './parse.mjs';
 import { renderHtml, parseActionBuckets, actYouConditions } from './render.mjs';
-import { buildAudit } from './xlsx.mjs'; import { readDeclinations } from '../declination-tool.mjs';   // — what synthesis set aside, with its grounds
+import { buildAudit } from './xlsx.mjs'; import { readDeclinations } from '../declination-tool.mjs'; import { frameSetAsideRows } from '../web-grid.mjs';   // — what synthesis set aside, with its grounds; and the stores the matter frame set aside, with its reason
 import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, joinFindingToBlock, CLIENT_TIER_BY_COMPOSITE, projectCoverageJudgment } from '../findings-model.mjs';
 import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.mjs'; import { coverageFormStamp, readCoverageForm } from '../coverage-form-io.mjs'; import { readReleasedFamilies } from '../withheld-families.mjs'; import { unitLabel } from '../coverage-form.mjs'; import { coverageUnitLabel } from '../coverage-ledger.mjs'; import { recallReceiptForOwnCompany } from '../recall-receipt.mjs';   // — and why an absence did not close; whose recall checks an audit lists
 import { clearanceReportData } from './report-data.mjs';
@@ -881,8 +881,8 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // record and in the audit workbook, and NOT in the report. The coverage form keeps these rows out of
   // the ledger the report is built from, so this sheet is their one reader-facing place. Same builder,
   // same four columns and the same state as the probes above; the area is the driver's own label and the
-  // words are the reading turn's reason.
-  const withheldFamilies = withheldFamilyRows(runDir ?? dirname(reportMd)); const setAside = setAsideRows(runDir ?? dirname(reportMd));
+  // words are the reading turn's reason. The stores the matter frame set aside join them the same way (web-grid.mjs).
+  const withheldFamilies = [...withheldFamilyRows(runDir ?? dirname(reportMd)), ...frameSetAsideRows(runDir ?? dirname(reportMd))]; const setAside = setAsideRows(runDir ?? dirname(reportMd));
 
   // doc 50 — the run's FROZEN framework manifest (band vocabulary). Present on band-doctrine runs;
   // absent on every archived run (they render byte-identically on the legacy paths).

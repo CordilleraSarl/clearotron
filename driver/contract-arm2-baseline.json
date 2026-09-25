@@ -11,7 +11,7 @@
     "the baseline tracks named elements, and a rename is a new name. Regenerate rather than work around it.",
     "Measured 139 of 287 declared elements."
   ],
-  "total": 103,
+  "total": 105,
   "byStage": {
     "matter-frame": [
       "### Intake asks line shape — rendered by the driver from intake_asks[]",
@@ -22,7 +22,9 @@
       "Class scope & adjacency — classes scoped IN with a one-line reason each, classes deliberately scoped OUT",
       "Return shape — hand the frame back through record_matter_frame, write NO file, return ONLY a 2-3 line summary",
       "Scope reasoning — search-wide/cite-narrow, the in-scope-by-reach routes, and the reopen trigger behind each exclusion",
-      "search_channels — the domains where real use of THIS matter's goods would show"
+      "confusable_forms — the forms a buyer could confuse, searched on the stores",
+      "search_channels — the domains where real use of THIS matter's goods would show",
+      "set_aside — the profile stores and forms the frame does not search, each with its reason"
     ],
     "clearance-variants": [
       "### Scope ledger rows — {Layer, Item, Status: applied|dropped, Reason, Reopen trigger} across variant / field / source / jurisdiction",

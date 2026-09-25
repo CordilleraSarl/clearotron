@@ -808,6 +808,26 @@ serve({
             "general web is always added by the driver. Reasoned from THIS matter's vertical, never a " +
             "fixed list. A non-domain value is kept in the record and dropped by the grid.",
         },
+        // THE WEB GRID THE FRAME DECIDES (web-grid.mjs): the forms searched on the stores, and the stores
+        // and forms the frame set aside with its reason. Model-facing prose: its wording is the owner's.
+        // No field here is required and no entry is refused: an entry with no reason is not a decision,
+        // and the store it names stays searched.
+        confusable_forms: {
+          type: "array", items: { type: "string" },
+          description: "The forms a buyer could confuse, as a buyer would type them.",
+        },
+        set_aside: {
+          type: "array",
+          description: "A store or form set aside is written down with its reason.",
+          items: {
+            type: "object",
+            properties: {
+              store: { type: "string", description: "A store from the customer profile's list." },
+              form: { type: "string", description: "A form of the mark." },
+              reason: { type: "string", description: "Why it is set aside." },
+            },
+          },
+        },
         meaning_angles: {
           type: "array", items: { type: "string" },
           description:
