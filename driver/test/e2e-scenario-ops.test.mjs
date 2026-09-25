@@ -302,6 +302,24 @@ test("every family waits except the identical question, the saturation count, th
   assert.match(noIdentical.saw, /no identical-mark question/);
 });
 
+test("the spelling band runs without waiting, since it is asked as the machine writes it, and a family still may not", () => {
+  // The band's entries are the compiler's, read through its own predicate: an exact question ending
+  // "+form", or "+form#n" where a duplicate was renamed.
+  const entries = [
+    planEntry("primary-sweep:exact:varento", { predicate: "exact", provenance: "mark" }),
+    planEntry("primary-sweep:exact:varentos+form", { predicate: "exact", provenance: "floor", term: "VARENTOS" }),
+    planEntry("primary-sweep:exact:varent0+form#2", { predicate: "exact", provenance: "floor", term: "VARENT0" }),
+    planEntry("fam:a", { when: WAIT }),
+  ];
+  const ok = check(GATE_ASSERT, { "variant-manifest.json": { mark: MARK }, "_driver/register-plan.json": { entries } });
+  assert.equal(ok.ok, true, ok.saw);
+  assert.match(ok.saw, /3 run without waiting as the rule allows \(1 identical-mark, 0 saturation count, 0 goods-narrowed, 0 the register cannot express, 2 spelling band\)/);
+  const leak = check(GATE_ASSERT, { "variant-manifest.json": { mark: MARK },
+    "_driver/register-plan.json": { entries: [...entries, planEntry("fam:loose", { axis: "transliteration-numeric" })] } });
+  assert.equal(leak.ok, false, "a family that is not the band ran without waiting and passed");
+  assert.match(leak.saw, /1 other entry runs without waiting: transliteration-numeric\/default fam:loose/);
+});
+
 const CHAIN_ASSERT = { op: "identical-read-per-market", path: "_driver/register-plan.json" };
 const IDQ = "primary-sweep:exact:varento";
 
