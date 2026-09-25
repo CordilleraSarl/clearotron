@@ -243,7 +243,7 @@ export function seatRows(rows, driverKeys) {
 // normalizeAxis, scope-facts, the taint join). Terms are bounded so an OR-stack of forty cannot make one
 // table cell unreadable; the qid rides its own column, so nothing identifying is lost to the cut.
 const MAX_TERMS_IN_LABEL = 4;
-function unitLabel(axis, entry) {
+export function unitLabel(axis, entry) {
   if (!entry) return String(axis);
   const terms = Array.isArray(entry.terms) && entry.terms.length
     ? entry.terms

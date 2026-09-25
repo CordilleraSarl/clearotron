@@ -418,7 +418,11 @@ function splitCoverageNote(note, state) {
 function coverageRows(coverage) {
   return (coverage || []).map(c => {
     const state = STATE_WORD[c.state] || 'Note';
-    const { done, left } = splitCoverageNote(c.note, state);
+    // A row that says which cell its words belong in is not split: a reading turn's reason is one sentence,
+    // and cut at its first `;` it read as half done and half left.
+    const { done, left } = ('done' in c || 'left' in c)
+      ? { done: plainNote(c.done ?? ''), left: plainNote(c.left ?? '') || '—' }
+      : splitCoverageNote(c.note, state);
     return { Area: plainNote(c.area), State: state, 'What was done': done, "What's left": left };
   });
 }
@@ -661,7 +665,8 @@ export async function buildAudit(contract, auditParsed, outPath, mark = '', fm =
   // shape and not a new sheet, and the words are the run receipt's own.
   addSheet(wb, 'Coverage & gaps', COVERAGE_COLS,
     [...coverageRows(coverage), ...coverageRows(contract?.droppedConditions || []),
-     ...coverageRows(contract?.undispatchedProbes || []), ...coverageRows(contract?.withheldFamilies || [])], (row, _d, kept) => {
+     ...coverageRows(contract?.undispatchedProbes || []), ...coverageRows(contract?.withheldFamilies || []),
+     ...coverageRows(contract?.releasedFamilies || [])], (row, _d, kept) => {
     if (!kept.has('State')) return;
     const st = row.getCell('State'); const f = STATE_FILL[String(st.value).trim()];
     if (f) { st.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF' + f } }; st.font = { bold: true }; }

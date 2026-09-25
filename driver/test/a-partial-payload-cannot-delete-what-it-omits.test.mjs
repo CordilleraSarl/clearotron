@@ -323,7 +323,7 @@ test("the population is derived, and it is what the servers actually serve", asy
       .map((t) => t.split("__").pop())
       .filter(IS_RETURN_PATH),
   );
-  const OUTSIDE = ["record_coverage", "record_dispositions", "record_coverage_status", "record_unit_note", "record_withheld_families", "record_declination"];
+  const OUTSIDE = ["record_coverage", "record_dispositions", "record_coverage_status", "record_unit_note", "record_withheld_families", "record_released_families", "record_declination"];
   for (const t of OUTSIDE) granted.add(t);
 
   assert.deepEqual([...served.keys()].sort(), [...granted].sort(),

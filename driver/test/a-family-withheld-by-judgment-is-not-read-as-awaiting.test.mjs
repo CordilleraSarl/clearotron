@@ -111,7 +111,7 @@ test("only a family row settled withheld-by-judgment counts; an open family row 
 });
 
 test("class (4) tells the reader both states, and the block carries it", () => {
-  assert.match(PLAN_AUDIT_CLASSES, /AWAITING JUDGMENT while the reading turn can still ask it: a question still open to you under step 6\./);
+  assert.match(PLAN_AUDIT_CLASSES, /AWAITING JUDGMENT while the reading turn can still ask it: a question still open to you\./);
   assert.match(PLAN_AUDIT_CLASSES, /WITHHELD BY JUDGMENT once the reading turn chose not to ask it and recorded why: a settled judgment, not an open question\./);
   assert.ok(composeDispatchExtra("narrative-refutation", fixtureRun().ctx).text.includes(PLAN_AUDIT_CLASSES));
 });

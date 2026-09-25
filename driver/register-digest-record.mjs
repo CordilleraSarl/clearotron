@@ -61,6 +61,7 @@ const SCHEMA_VERSION = 1;
  * nothing about band internals and the same call decides the same way in a test and in a run.
  */
 import { applyFates } from "./hit-list.mjs";   // — the digest marks the list
+import { formKey } from "../providers/_shared/script-form.mjs";   // — the one fold for "is this the same form of the mark"
 
 export const FACTS_FILE = "register-digest-facts.json";
 /** — the slim hit list the digest marks; a projection of the merged band. */
@@ -611,6 +612,14 @@ export const DIGEST_DROP_REASONS = Object.freeze({
     rules: "digest.md — one row per POSITION, never one per registration of the same right",
     gloss: "the same right already has a row under another constituent record",
   },
+  // The spelling band is read like any list (unit.md step 2): a near spelling a buyer could not take for
+  // the mark is set aside with its reason. Without this token a live in-class near spelling had nowhere
+  // to go but the findings, because every other ground a seat may judge is about the goods.
+  sign: {
+    seatJudged: true,
+    rules: "digest.md — the relevance gate: the spelling band is read differently",
+    gloss: "a near spelling a buyer in this market could not take for the mark, by sound, by look or by meaning",
+  },
   "dead-status": {
     seatJudged: false, verdict: "drop:dead",
     rules: "digest.md — the status filter; the screen's own verdict",
@@ -707,6 +716,10 @@ export function acceptRegisterDigest(params, facts = emptyFacts()) {
     // could see it happen, because the ground was prose.
     if (!spec.seatJudged && verdict && SURFACING_VERDICTS.includes(verdict))
       return { ok: false, reason: `registerdigest_drop_ground_contradicted:${ground} on ${j.cells.uri}, which this run's band screened \`${verdict}\` — that is a real in-scope candidate, so it cannot be dropped on status or class. Decide it on its own goods (\`off-field\`/\`goods-distance\`) or carry it` };
+    // `sign` is for a near spelling. The searched mark itself is not one, so a sign drop of a record
+    // whose mark folds to it is refused, as a status or class drop the screen contradicts is.
+    if (ground === "sign" && str(facts?.identity?.mark) && formKey(str(j.rec?.mark_text)) === formKey(str(facts.identity.mark)))
+      return { ok: false, reason: `registerdigest_drop_ground_contradicted:sign on ${j.cells.uri}, whose mark is the searched mark itself — \`sign\` is for a near spelling; decide it on its goods or carry it` };
     if (!spec.seatJudged && verdict && spec.verdict && verdict !== spec.verdict)
       return { ok: false, reason: `registerdigest_drop_ground_contradicted:${ground} on ${j.cells.uri}, which this run's band screened \`${verdict}\` — the token names a screen verdict this record does not carry` };
     // The provenance the acceptance gate keys on is the BAND's read of the record, not the seat's.

@@ -706,7 +706,7 @@ const LOCAL = {
   // ONE TOOL ON ITS OWN KEY, not on `register` — that key is the funnel's and a record tool added to it
   // would be enumerated into every register-unit seat's grant AND every other holder's. Same rule the
   // three entries above follow.
-  "unit-note": { script: "unit-note-server.mjs", tools: ["record_unit_note", "record_withheld_families"] },
+  "unit-note": { script: "unit-note-server.mjs", tools: ["record_unit_note", "record_withheld_families", "record_released_families"] },
   // ── RECORDING — DERIVED from the registry above, one entry per stage, in registry order ──────────
   //
   // These rows were hand-written here until the collapse. They are LAST in this object on purpose:
