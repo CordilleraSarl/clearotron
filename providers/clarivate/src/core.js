@@ -128,7 +128,12 @@ export async function clarivateFetch(apiKey, base, path, { body = null, method =
   const raw = await resp.text();
   // The parse failure travels on `parseError` instead of being swallowed — providers/_shared/http-body.mjs.
   const { body: parsed, parseError } = parseJsonBody(raw);
-  logCall(tctx, { http_status: resp.status, ok: resp.ok, attempts, took_ms: Date.now() - t0, bytes: raw.length, cache_hit: false, ...(ledgerExtra ?? {}) });
+  // A FAILED CALL'S BODY IS KEPT WHOLE on its row. Everything downstream shortens it — the error text
+  // quotes 200 characters of it and a band's reason 240 — and a gateway's 504 once lost the only sentence
+  // that said what happened (measured in testing, 2026-09-25). A successful body is never written here:
+  // the record ledger holds records, and this row is the call's.
+  logCall(tctx, { http_status: resp.status, ok: resp.ok, attempts, took_ms: Date.now() - t0, bytes: raw.length, cache_hit: false, ...(ledgerExtra ?? {}),
+    ...(resp.ok ? {} : { error_body: raw }) });
   if (mem) {
     const summary = rememberableAnswer(path, resp.status, parsed, parseError);
     const row = { held: Boolean(held), status: resp.status, rememberable: Boolean(summary) };
@@ -1877,6 +1882,13 @@ export async function doEnumerate(apiKey, base, params, tctx) {
     if (chunked) {
       parsed.per_office_counts = null;
       parsed.per_office_counts_unavailable = `the ${p.names.length}-name stack was enumerated in windows of ${namesChunk} (the provider's OR-width bound), so no whole-stack per-office count exists — per-window counts would misreport the jurisdictional shape of this crowd.`;
+    } else if (parsed.region_split) {
+      // ASKED IN REGION HALVES after a gateway timeout, so sink[0] may be one half's count. Each count
+      // covers exactly its own offices, and an office's count is the same whichever count asked it, so
+      // the first count that names an office answers for it.
+      const perOffice = {};
+      for (const entry of sink) for (const [office, n] of Object.entries(entry?.per_office ?? {})) if (!(office in perOffice)) perOffice[office] = n;
+      if (Object.keys(perOffice).length) parsed.per_office_counts = perOffice;
     } else if (sink.length && sink[0]?.per_office) {
       parsed.per_office_counts = sink[0].per_office;
     }
