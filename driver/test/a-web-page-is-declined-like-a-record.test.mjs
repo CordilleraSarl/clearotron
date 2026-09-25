@@ -158,7 +158,7 @@ test("the findings step's own words about a declination say record or page, as t
   };
   const text = String(STAGES.synthesis.message({ ...base, findingsSurface: [RECORD, PAGE_A] }));
   assert.ok(text.includes("on why THIS record or page does not earn a line"));
-  assert.ok(text.includes("the rules do not let you omit it."));
+  assert.ok(text.includes("the rules do not let you omit the record or page."));
   assert.doesNotMatch(text, /THIS record does not earn|omit the record\./);
   assert.match(groundsProblem("too short", "duplicate"), /too short to say anything about this record or page\./);
 });
