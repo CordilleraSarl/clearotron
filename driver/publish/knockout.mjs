@@ -213,7 +213,9 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
   // A run with NO artifact still produces a byte-identical workbook to yesterday's, which is what keeps
   // an archived republish honest.
   // A filing whose link was removed because its address is not on the register's own site (537): the
-  // number stays in the Record cell, and the Note says why, in the shape of the notes above.
+  // number stays in the Record cell, and the Note says why, in the shape of the notes above. The register
+  // is named by the label its listing recorded; a listing that recorded none is left as it was delivered,
+  // rather than naming the register by a setting's id.
   const dropped = new Set((degraded.droppedLinks ?? []).map((d) => `${d.mark}\u0000${d.recordId}`));
   const linkDropped = (mark, r) => dropped.has(`${mark}\u0000${r?.recordId ?? null}`);
   if (registerRecords) {
@@ -239,7 +241,7 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
           'Classes': (r.classes ?? []).join(', ') || '—', 'Territory': r.territory ?? '—',
           'Filed': r.applicationDate ?? '—', 'Registered': r.registrationDate ?? '—',
           'Record': r.officeLink?.href ?? r.officeLink?.label ?? r.url ?? r.recordId ?? '—', 'Note': r.officeLink && !r.officeLink.href ? reasonCellFor(r.officeLink)
-            : !r.officeLink && linkDropped(m.name, r) ? linkNotOnRegisterSite(registerRecords.providerLabel ?? registerRecords.provider ?? 'the register') : '',
+            : !r.officeLink && linkDropped(m.name, r) && registerRecords.providerLabel ? linkNotOnRegisterSite(registerRecords.providerLabel) : '',
         });
       }
       // Every search that did NOT answer gets its own row. Without them a mark with two dead searches

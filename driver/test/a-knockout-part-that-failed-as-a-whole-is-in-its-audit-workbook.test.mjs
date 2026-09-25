@@ -141,6 +141,11 @@ test("a filing whose link was removed keeps its number and says why; a filing wh
   const note = (id) => filings.find((r) => r["Record"] === id)?.["Note"];
   assert.equal(note("EM-1"), linkNotOnRegisterSite("Signa"));
   assert.equal(note("EM-2"), "", "a filing whose link was not removed gained a note");
+  // A listing that recorded no label for its register is left as delivered: a setting's id is no name.
+  const { providerLabel, ...unlabelled } = records;
+  const old = await book({ droppedLinks: [{ mark: "LANTERNWICK", recordId: "EM-1", was: "https://elsewhere.example/1" }] }, unlabelled);
+  // A sheet whose notes are all empty prints no Note column, so an absent cell is an empty note.
+  assert.equal(old.filings.find((r) => r["Record"] === "EM-1")?.["Note"] ?? "", "", `the note named the register by its setting id (${providerLabel} was removed)`);
 });
 
 test("THE CONTROL: a workbook handed no failed part is the one it was before", async () => {
