@@ -39,6 +39,7 @@
 // say the query did not answer, and the run publishes.
 import { existsSync, readFileSync, writeFileSync, appendFileSync } from "node:fs";
 import { join } from "node:path";
+import { createHash } from "node:crypto";
 
 import { promotableRecords } from "./publish/render-knockout.mjs";
 
@@ -140,9 +141,9 @@ export async function runOwnerChecks({ owners, exec, runDir, ledgerPath = null, 
     const ok = Boolean(r?.ok && r?.text);
     let payloadFile = null;
     if (ok && runDir) {
-      // The payload lands beside the mark payloads, under a name derived from the owner rather than the
-      // record, because one payload answers for every filing that owner holds.
-      payloadFile = `owner-${slug(o.owner)}.md`;
+      // The payload lands beside the mark payloads, under a name derived from the row rather than the
+      // record, because one payload answers for every filing that owner holds under that mark.
+      payloadFile = ownerPayloadFile(o);
       try { writeFileSync(join(runDir, "research", payloadFile), r.text); } catch { payloadFile = null; }
     }
     const source = ok ? (firstSourceUrl(r.text) ?? NO_RESULT) : NO_RESULT;
@@ -157,6 +158,18 @@ export async function runOwnerChecks({ owners, exec, runDir, ledgerPath = null, 
     if (ledgerPath) { try { appendFileSync(ledgerPath, JSON.stringify(row) + "\n"); } catch { /* receipts best-effort, never fatal */ } }
   }
   return rows;
+}
+
+/**
+ * The file one check's answer is written to: one per (mark, owner) row, the same name on every run. The
+ * readable part is the owner's name in Latin letters, and a fingerprint of the mark and the owner keeps two
+ * rows apart where that part is the same: one owner holding filings for two marks, two owners whose names
+ * reduce to the same letters, or names with no Latin letters at all. The reading seat is given each row's
+ * path, so two rows sharing one file would point one owner at another owner's answer.
+ */
+export function ownerPayloadFile({ mark, owner }) {
+  const key = createHash("sha256").update(`${mark ?? ""}\u0000${owner ?? ""}`).digest("hex").slice(0, 10);
+  return `owner-${slug(owner)}-${key}.md`;
 }
 
 const slug = (s) => String(s ?? "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) || "owner";
