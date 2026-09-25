@@ -10,7 +10,7 @@
 
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { buildReviewerOpenPointsSection } from "../pipeline.mjs";
@@ -64,4 +64,12 @@ test("the email's review headline carries the points it is handed, and nothing w
     const without = composeEmailHtml(report, "https://example.invalid/r", null, [], undefined, {});
     assert.doesNotMatch(without, /Reviewer(&#39;|')s open questions|did not sign this report off/);
   } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("the drafting manual asks for no reviewer's section on the report, and says where the points are kept", () => {
+  const md = readFileSync(new URL("../skills/clearance-search/SKILL.md", import.meta.url), "utf8");
+  assert.ok(md.includes("### Deliverable 2: Excel workbook"), "guard: the drafting manual was read");
+  assert.doesNotMatch(md, /Reviewer's open questions/, "a drafting model told to print the section would write it itself");
+  assert.ok(md.includes("the report is delivered and those concerns stay in the run record for the reviewing lawyer."));
+  assert.ok(md.includes("The reviewing lawyer always sees the review (CLEAR / CONDITIONAL / BLOCKING) on the audit notification, so the reviewer can decide whether the read was right."));
 });

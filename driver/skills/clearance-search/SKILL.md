@@ -238,7 +238,7 @@ Phase 2 is **sequenced by the deterministic driver** (`driver/`); the step-by-st
 
 **Phase 3 is mandatory on every run that reaches it.** It produces the **email reply with the Excel attached** — *that* is the deliverable, not the Excel file alone. Partial *coverage* (honest `coverage-limited` / `deferred` ledger rows) still delivers, with documented gaps — but a missing main research layer is a **failed run**, not a deliverable (see [Failure fallbacks](#failure-fallbacks)).
 
-The driver runs the delivery stage on **every** completed run — the search is a defended **draft for the reviewing lawyer**, never withheld. The `narrative-refutation` verdict drives a corrective re-synthesis (CONDITIONAL / BLOCKING feed the reviewer's flags back into one rewrite pass), but it does **not** block delivery: if the reviewer still has unresolved concerns after the corrective pass, the report is delivered with those concerns surfaced to the reviewing lawyer as a prominent **"Reviewer's open questions"** section at the top of the body (the driver passes them in). The reviewing lawyer is the consumer and the backstop.
+The driver runs the delivery stage on **every** completed run — the search is a defended **draft for the reviewing lawyer**, never withheld. The `narrative-refutation` verdict drives a corrective re-synthesis (CONDITIONAL / BLOCKING feed the reviewer's flags back into one rewrite pass), but it does **not** block delivery: if the reviewer still has unresolved concerns after the corrective pass, the report is delivered and those concerns stay in the run record for the reviewing lawyer. The reviewing lawyer is the consumer and the backstop.
 
 **Delivery is deterministic — code, not an agent turn (`../../docs/DELIVERY.md`). On every completed run the driver:**
 1. Composes the HTML email body in CODE: the cover note per Deliverable 1 spec below + the published report/audit links. One shape for every customer — no per-customer review table rides the mail.
@@ -247,7 +247,7 @@ The driver runs the delivery stage on **every** completed run — the search is 
 4. The **integrator's courier** sends the packet **VERBATIM** (email threaded on the packet's `msgId`; WhatsApp ping only if the packet carries a binding) and confirms with the ops-MCP `mark_sent` — which writes the `.sent` guard and clears `sendPending`. The courier composes nothing and never invents a recipient.
 5. The **driver** archives the run-dir (`studio/clearance-search/<slug>/<date>/` → `archive/<YYYY-MM>/<slug>/<date>/`) and records the delivery. `senior-eye-review.md` travels in the published audit set, so the reviewing lawyer sees the refutation verdict regardless of CLEAR/CONDITIONAL.
 
-**Why the verdict always surfaces:** the dangerous failure mode is a wrongly-cleared confabulation that ships unread. The reviewing lawyer always sees the review (CLEAR / CONDITIONAL / BLOCKING) — on the audit notification, and, when concerns are unresolved, as the **Reviewer's open questions** section in the report itself — so the reviewer can decide whether the read was right. Never silently passed, never silently withheld.
+**Why the verdict always surfaces:** the dangerous failure mode is a wrongly-cleared confabulation that ships unread. The reviewing lawyer always sees the review (CLEAR / CONDITIONAL / BLOCKING) on the audit notification, so the reviewer can decide whether the read was right. Never silently passed, never silently withheld.
 
 **Filename pattern for the Excel**: `TMP<n>-<mark-slug>-V<v>-<Provider>-Findings-<YYYY-MM-DD>.xlsx`.
 
@@ -291,8 +291,6 @@ Structure (content shared across templates):
 **5. Local-counsel / further-investigation flags:** where the position can't be closed remotely, say so and name the next step — e.g. *"a sense-check from Irish counsel is recommended"* or *"Chinese / Benelux investigations would be needed to confirm non-use."* This is the bridge to the eventual full per-market clearance; the reviewing lawyer includes it routinely. Tie each flag to the specific finding(s) it concerns.
 
 **6. Clean searches:** when no material findings are identified for a mark, explicitly state this as a positive result. Document what was searched and the absence of findings — a clean search is a good result but the client needs to see the full analysis was done. (Only sayable for `confirmed-clean` coverage — see the Coverage statement.)
-
-**7. Reviewer's open questions:** the judgment calls the run could not close on its own — the independent reviewer's unresolved concerns (surfaced prominently at the top when the verdict was still BLOCKING after the corrective pass), plus any deliberate "reviewer to confirm" items. This is the honest hand-off: the best draft we can produce, with its weak spots labelled for the reviewing lawyer's judgment. Never omit it to look more finished.
 
 ### Deliverable 2: Excel workbook
 
