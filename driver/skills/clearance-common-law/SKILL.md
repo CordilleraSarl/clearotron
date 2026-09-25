@@ -458,7 +458,7 @@ matrix remains your judged, human-readable view, but it is not what the gate cou
 
 ### Step 3 — Famous-mark follow-ups (1 per flagged element)
 
-If the manifest's `Famous-mark Perplexity calls needed` section lists any elements, fire a lightweight fast query per element using the famous-mark template in [perplexity-prompts.md](perplexity-prompts.md). Budget: 1 fast call per flagged element, within the 4-per-mark cap.
+If the manifest's `Famous-mark Perplexity calls needed` section lists any elements, fire a lightweight fast query per element using the famous-mark template in [perplexity-prompts.md](perplexity-prompts.md).
 
 If multiple elements need famous-mark checks, combine into one query: "Is X a brand name, band name, sports team...? Is Y? Is Z?"
 
@@ -472,7 +472,7 @@ After the grid call (and any famous-mark calls), run the gate:
 4. Are there any dual-meaning terms where a descriptive reading may be masking a trademark?
 5. For compound marks: would the average consumer recognise any element as a brand name?
 
-If any answer is "no" or "unsure," fire a targeted `perplexity_research` follow-up (`depth: "pro-search"`) focused on the specific gap. Budget: up to 3 follow-up calls per mark (5 total per mark including the grid call + any famous-mark calls).
+If any answer is "no" or "unsure," fire a targeted `perplexity_research` follow-up (`depth: "pro-search"`) focused on the specific gap.
 
 ### Step 5 — Judge the grid output into structured tables
 
@@ -546,5 +546,4 @@ Assemble `studio/clearance-search/<slug>/<date>/common-law-findings.md` per the 
 - [ ] Cross-checks suggested section populated
 - [ ] Open verification flags listed (URL-404s, thin coverage, transliteration confirmations)
 - [ ] Common-law findings file written to `studio/clearance-search/<slug>/<date>/common-law-findings.md`
-- [ ] Perplexity budget under workflow cap (15 calls)
 - [ ] No client identity, reference numbers, or contact names in any submitted Perplexity prompt

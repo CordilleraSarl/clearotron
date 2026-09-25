@@ -138,8 +138,7 @@ computer game software (Class 9)."
   [TITLE] ([URL])")
 - Did an unexpected finding surface that warrants deeper investigation?
 
-If gaps exist, fire a targeted `perplexity_research` call focused on the specific gap. Budget: up
-to 3 follow-up calls per mark (5 total per mark including the grid call and any famous-mark call).
+If gaps exist, fire a targeted `perplexity_research` call focused on the specific gap.
 
 ## Citation quality
 

@@ -95,7 +95,7 @@ saturated raw pile — does **not** exist: crowds are descriptors, named slices 
 | Worker | register_enumerate calls (named slices) | count-only crowd descriptors | Phoneme | Image |
 |---|---|---|---|---|
 | `saturation-probe` unit | 0 | ~3–4 (count-only) | 0 | 0 |
-| `primary-sweep` unit | ~8–14 (exact + substring band + per-major + meaning, where applicable) | ~1–2 | up to 5 (phonetic recipes) | up to 10 (device-led) |
+| `primary-sweep` unit | ~8–14 (exact + substring band + per-major + meaning, where applicable) | ~1–2 | phonetic recipes | device-led |
 | `transliteration-numeric` unit | ~4–6 (one per script/variant query) | ~1 | 0 | 0 |
 | `incumbent-class` unit | ~2–4 | 0 | 0 | 0 |
 | digest worker (merch-sweep + Option-D follow-ups) | ~2–4 | 0 | 0 | 0 |
@@ -106,8 +106,7 @@ saturated raw pile — does **not** exist: crowds are descriptors, named slices 
 That `incomplete` is the signal to **judgment (Layer B)**, which decides whether the crowd is material and
 either **commands a narrower named enumeration** (which the funnel then runs) or **halts to a human**. The
 funnel never converts a resource limit into a clean negative and never re-adds a record/count ceiling that
-says "searched N, ship clean". (Phoneme at 5 and image at 10 are observed budgets — exceeding them usually
-indicates a worker repeating itself, not finding new content.)
+says "searched N, ship clean".
 
 ### At every step: look at what you have before you work on it
 

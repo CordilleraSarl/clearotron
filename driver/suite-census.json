@@ -5439,6 +5439,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-engine-is-given-no-fixed-call-budget.test.mjs": {
+          "tests": 1,
+          "asserts": 2,
+          "skips": 0,
+          "todos": 0
+        },
         "the-engine-step-cannot-loop-on-a-menu-nothing-changed.test.mjs": {
           "tests": 17,
           "asserts": 45,

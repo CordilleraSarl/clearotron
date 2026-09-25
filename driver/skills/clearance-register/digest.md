@@ -600,4 +600,4 @@ This skill's universal logic — per-axis funnel, status filter, relevance gate,
 - [ ] **Dominant-element reconciliation satisfied** — every screened-live dominant-element POSITION ends as a finding row, a drop row citing any one constituent URI, or membership of the ONE counted `dominant-element crowd` row ADDED THROUGH `record_coverage`, whose `unit` value carries `(<N> members)` with `<N>` >= the residual POSITION count (the count is read from `unit`, never from `reason`); the code-ranked closest positions ended individually
 - [ ] **Sheet-1 rows are POSITIONS** (one row per position, citing at least one constituent URI; owner-divergent pairs left as separate rows per the shape's Cross-references) — never one row per registration of the same right
 - [ ] Register findings file written; per-unit counts + per-jurisdiction-subquery counts + thin-unit flags in the audit trail
-- [ ] Open verification flags listed; API budget summed and under the workflow cap (150)
+- [ ] Open verification flags listed
