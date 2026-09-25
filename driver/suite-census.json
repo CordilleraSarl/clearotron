@@ -7403,6 +7403,12 @@
           "skips": 0,
           "todos": 0
         },
+        "providers/signa/test/the-screen-speaks-the-shared-verdicts.test.mjs": {
+          "tests": 2,
+          "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
         "providers/uspto-local/test/backfile-window.test.mjs": {
           "tests": 6,
           "asserts": 11,
