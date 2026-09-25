@@ -20,6 +20,7 @@ import { parsePrRiskResults, connotationObligations, obligationRows, CONNOTATION
 // TRUTHFULNESS, not a workaround: a real run's _driver/tool-calls.jsonl carries a pair per tool call,
 // and the audit's readable/blind distinction stands on that file existing.
 import { recordDispositions } from "../disposition-tool.mjs";
+import { reconcileGridLedger } from "../../providers/perplexity/src/core.js";   // the grid tool writes the reconciled ledger — called, not copied
 // — the mock seat FILLS IN the driver-written coverage form, and the driver renders the
 // `## Coverage ledger` table from it. The form is read from DISK (the file runDigest wrote before this
 // dispatch), exactly as a compliant seat opens it — deriving it from the message would let the mock
@@ -699,12 +700,18 @@ export function gridLedger(msg, dir = null) {
   // (the review-flagged blind spot: no test ever drove an ARMED with-results disposition through the split).
   const specQueries = gridSpecFromMsg(msg)?.connotation?.queries ?? [];
   // MOCK_CL_MISSING_QUERIES omits the LAST n dictated queries from the receipts, with both halves
-  // otherwise completing normally — the "fifty-nine of sixty" shape. It is deliberately not a gap and
-  // not a thrown error: the queries simply are not there, which is the state a delivered clearance met
-  // and the one no knob could previously reproduce.
+  // otherwise completing normally — the "fifty-nine of sixty" shape. The program simply did not return them.
+  // The grid tool does not write the program's output as printed: it writes the RECONCILED ledger, in which
+  // each dictated query the program did not return carries a gap row. The gap rows come from the capture's own
+  // reconcile, never retyped here, so a later answer to the query meets the row the real tool leaves behind.
   const omit = Math.max(0, Number(process.env.MOCK_CL_MISSING_QUERIES || 0));
   const recorded = omit ? specQueries.slice(0, Math.max(0, specQueries.length - omit)) : specQueries;
-  return JSON.stringify({ cells, extras: { pr_risk: recorded.map((q) => ({ query: q, results: prResultsArmedFor(q) })) }, gaps });
+  const printed = { cells, extras: { pr_risk: recorded.map((q) => ({ query: q, results: prResultsArmedFor(q) })) }, gaps };
+  const spec = omit ? gridSpecFromMsg(msg) : null;
+  if (!spec) return JSON.stringify(printed);
+  const unreturned = reconcileGridLedger(JSON.stringify(printed), spec).ledger.gaps
+    .filter((g) => g && typeof g === "object" && g.platform === "connotation");
+  return JSON.stringify({ ...printed, gaps: [...gaps, ...unreturned] });
 }
 
 // Fix-1: the plugin-written SUPPLEMENTARY ledger for a driver-dictated supp spec — exactly its

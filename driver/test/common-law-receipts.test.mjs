@@ -309,6 +309,21 @@ test("mergeGrids: extras.pr_risk concat+dedup by query (a-then-b order); other e
   assert.deepEqual(merged.extras.other, [1, 2]);
 });
 
+test("mergeGrids: a meaning query the merged receipts answer keeps no gap row; one they do not answer keeps its row", () => {
+  // The meaning seat's ledger as the grid tool writes it after the engine re-issued a query the program had
+  // not returned: the answer appended, and the capture's gap row still beside it.
+  const halves = splitGridTerms(FULL_SPEC.terms);
+  const a = { cells: cellsFor(halves.a), extras: {}, gaps: [] };
+  const b = { cells: cellsFor(halves.b), extras: {}, gaps: [] };
+  const unreturned = (q) => ({ term: q, platform: "connotation", error: "query not returned by grid program (reconciled gap)" });
+  const m = { cells: [], extras: { pr_risk: [{ query: "novapulse slang", results: [] }, { query: "Novapulse Gang", results: [] }] },
+    gaps: [unreturned("novapulse gang"), unreturned("nuvapulse meaning"), "novapulse slang | connotation | TimeoutError()"] };
+  const merged = mergeGrids(mergeGrids(a, b, { spec: FULL_SPEC }), m, { spec: FULL_SPEC });
+  assert.deepEqual(merged.gaps, [unreturned("nuvapulse meaning")],
+    "only the query with no answer keeps its row; an answer matched as the receipts are matched clears the others");
+  assert.equal(merged.cells.length, FULL_SPEC.terms.length * SPEC_PLATFORMS.length);
+});
+
 test("mergeCommonLawFindings: concatenated halves stay one structurally-valid findings file; a failed half becomes an honest driver note", async () => {
   const { validators } = await import("../verify.mjs");
   const half = (h) => [

@@ -3064,6 +3064,15 @@ test("the engine re-issues a missing meaning search itself, and a recovered one 
     "a search the engine RECOVERED must not be disclosed as unfinished — that tells a client work was missed that was not");
   assert.ok(!events.some((e) => e.event === "meaning-gap-coverage"),
     "a recovered search grew a coverage row on the report saying it did not complete");
+  // THE ROW THE CAPTURE LEFT IS GONE, NOT CLOSED. The grid tool records a gap row for the query its program did
+  // not return, and the re-issue answers it later in the same ledger. A row kept beside that answer reaches the
+  // canonical grid, where the closure pass takes every gap row for a store cell and runs the meaning query
+  // again, restricted to a site called "connotation": a search of nothing that then reads as a searched cell.
+  const merged = JSON.parse(readFileSync(join(res.runDir, "common-law-grid.json"), "utf8"));
+  assert.deepEqual(merged.cells.filter((c) => String(c.platform).toLowerCase() === "connotation"), [],
+    "a meaning query came back as a store cell: the closure pass re-ran it on a site called \"connotation\"");
+  assert.deepEqual(merged.gaps.filter((g) => String(g.platform).toLowerCase() === "connotation"), [],
+    "a recovered meaning query still carries a gap row beside its answer");
 });
 
 test("and when the re-issue cannot recover it, the run DELIVERS with the gap disclosed", async () => {
