@@ -5427,6 +5427,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-frame-decides-the-web-grid.test.mjs": {
+          "tests": 20,
+          "asserts": 77,
+          "skips": 0,
+          "todos": 0
+        },
         "the-freeze-carries-what-the-run-reads.test.mjs": {
           "tests": 4,
           "asserts": 13,
