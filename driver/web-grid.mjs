@@ -129,15 +129,16 @@ export function closureBlocksOf(cells) {
 
 /**
  * The stores the frame set aside, as audit-workbook coverage rows in the withheld families' shape: the store
- * as the area, and the frame's own reason. Read from the grid spec the driver wrote, so a row names only a
- * store the grid really left out. A form the frame set aside gets no row, because the general web search
- * still asks every spelling. Never throws.
+ * as the area, and the frame's own reason, kept whole in the "What's left" cell as a withheld family's is,
+ * so a reason with a semicolon is not cut in two. Read from the grid spec the driver wrote, so a row names
+ * only a store the grid really left out. A form the frame set aside gets no row, because the general web
+ * search still asks every spelling. Never throws.
  */
 export function frameSetAsideRows(runDir) {
   try {
     const spec = JSON.parse(readFileSync(driverDir(runDir, "grid-spec.json"), "utf8"));
     return (Array.isArray(spec?.set_aside) ? spec.set_aside : [])
       .filter((x) => str(x?.store) && str(x?.reason))
-      .map((x) => ({ area: str(x.store), state: "not-searched", note: str(x.reason) }));
+      .map((x) => ({ area: str(x.store), state: "not-searched", note: str(x.reason), done: "", left: str(x.reason) }));
   } catch { return []; }
 }

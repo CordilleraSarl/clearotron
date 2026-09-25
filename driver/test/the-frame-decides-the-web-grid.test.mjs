@@ -264,8 +264,9 @@ test("a frame never asked for the fields, resumed today, keeps its old grid, and
 
 test("a store the frame set aside reaches the audit workbook with the frame's reason; a form does not", () => {
   const { runDir } = runWithFrame({ call: { confusable_forms: [], set_aside: [
-    { store: "toys.alderfen.test", reason: "sells no software" }, { form: "TAMBRI VEL", reason: "no buyer types the space" }] } });
-  assert.deepEqual(frameSetAsideRows(runDir), [{ area: "toys.alderfen.test", state: "not-searched", note: "sells no software" }]);
+    { store: "toys.alderfen.test", reason: "sells no software; toys only" }, { form: "TAMBRI VEL", reason: "no buyer types the space" }] } });
+  assert.deepEqual(frameSetAsideRows(runDir), [{ area: "toys.alderfen.test", state: "not-searched", note: "sells no software; toys only",
+    done: "", left: "sells no software; toys only" }], "the reason stays whole in one cell, as a withheld family's does");
   assert.deepEqual(frameSetAsideRows(join(ROOT, "no-such-run")), [], "no spec, no row, and no throw");
   rmSync(runDir, { recursive: true, force: true });
 });
