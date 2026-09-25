@@ -1675,7 +1675,8 @@ export function activeProvider(env = null) {
 // executor; tests inject their own, the dev instance uses CLEAROTRON_KNOCKOUT_SWEEP_FIXTURES. Knobs:
 //   PERPLEXITY_API_KEY                — required for live sweeps (absent ⇒ every call degrades, loud)
 //   CLEAROTRON_KNOCKOUT_PRESET            — perplexity preset (default "pro-search"; "deep-research" = deeper/costlier)
-//   CLEAROTRON_KNOCKOUT_SWEEP_FIXTURES    — dir of <mark-kebab>.md canned payloads ($0 dev/e2e)
+//   CLEAROTRON_KNOCKOUT_SWEEP_FIXTURES    — dir of <mark-kebab>.md canned payloads ($0 dev/e2e), and
+//                                           <mark-kebab>.in-use-as.md for each mark's second question
 //   CLEAROTRON_KNOCKOUT_MODEL             — LLM override for the frame/assess turns (default opus)
 export const RESEARCH_PROVIDERS = {
   perplexity: {

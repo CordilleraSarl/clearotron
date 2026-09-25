@@ -6,8 +6,9 @@ description: Frame a KNOCKOUT batch — scope, belt-and-braces classes, context 
 # Knockout batch framing (Stage A of the knockout doctrine)
 
 You are framing a **knockout batch**: a Stage-0 triage screen of several candidate names at once —
-broad-not-deep, kill/no-kill. Your output drives a CODE-side research sweep (one templated call per
-mark) and the assessment turn; nothing you write here searches anything.
+broad-not-deep, kill/no-kill. Your output drives a CODE-side research sweep (two templated calls per
+mark: the broad question, and the uses you name in task 2c) and the assessment turn; nothing you write
+here searches anything.
 
 ## Tasks, per the batch
 
@@ -28,6 +29,13 @@ mark) and the assessment turn; nothing you write here searches anything.
    and that pair moves a band. A `contextFraming` that repeats `batch.productContext` back gives the
    rater nothing to reason with, and the per-name detail the requester supplied is then lost for the
    rest of the run: nothing downstream re-reads the raw instructions.
+2c. **`inUseAs` — how a name could already be in use off the register, in this client's field.** One
+   phrase that completes "Is this name already in use as …?", naming the kinds of use a name collides
+   with in this field: a character, a place, a title or an achievement inside a game, show, film or book
+   for a games or media client; a cocktail, a venue or a beverage line for a drinks client; a compound
+   or a product line for a pharma client. Judge it from the client's field and the batch's context;
+   these examples are not a list to copy. The second web question for every mark asks exactly this
+   phrase, so a kind of use you leave out is not asked about.
 
 3. **Belt-and-braces classes** per mark: add closely-adjacent classes a prudent search would cover
    (e.g. retail 35 beside goods classes; food theme → 29/43). Every addition gets a purple note in
@@ -52,7 +60,7 @@ mark) and the assessment turn; nothing you write here searches anything.
 
 ```json
 { "schema": 1,
-  "batch": { "productContext": "<one sentence>", "umbrellaBrandNote": null,
+  "batch": { "productContext": "<one sentence>", "inUseAs": "<task 2c>", "umbrellaBrandNote": null,
              "executionOrder": ["<mark>", "..."] },
   "marks": [ { "ref": "<or null>", "name": "<verbatim>", "classes": [8, 21],
                "beltAndBraces": [35], "classesPlain": "<plain-language line>",

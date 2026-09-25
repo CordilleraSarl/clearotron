@@ -120,7 +120,8 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
     }
   }
   const trailRows = (receipts ?? []).map((r) => ({
-    'Mark': r.mark, 'Search Term': r.mark, 'Source / Context': `${r.executor ?? 'perplexity'} (${r.preset ?? ''})`,
+    // The second web question's row names the kinds of use it asked about, in the frame's words.
+    'Mark': r.mark, 'Search Term': r.mark, 'Source / Context': `${r.executor ?? 'perplexity'} (${r.preset ?? ''})${r.question && r.inUseAs ? ` — in use as ${r.inUseAs}` : ''}`,
     'Result Summary': r.ok ? `ok — ${r.bytes ?? 0} bytes` : `FAILED — ${r.cause ?? 'unknown'}`,
     'Finding Reference': r.ok && refByMark.has(r.mark) ? refByMark.get(r.mark) : '',
     'Sweep Call #': r.callNo ?? '', 'Wall-time (s)': r.took_ms != null ? Math.round(r.took_ms / 1000) : '', 'OK/Degraded': r.ok ? 'OK' : 'Degraded',
