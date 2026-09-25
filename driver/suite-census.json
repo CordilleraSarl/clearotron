@@ -621,6 +621,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-owner-lookup-that-got-no-answer-is-in-its-audit-trail.test.mjs": {
+          "tests": 2,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-whose-counts-all-fail-pays-for-no-owner-lookup.test.mjs": {
           "tests": 3,
           "asserts": 12,
@@ -798,6 +804,12 @@
         "a-parked-cancel-frees-its-matter.test.mjs": {
           "tests": 6,
           "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-part-that-fails-and-still-ships-is-in-the-audit-workbook.test.mjs": {
+          "tests": 16,
+          "asserts": 52,
           "skips": 0,
           "todos": 0
         },

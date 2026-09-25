@@ -86,6 +86,13 @@ export const COUNTED_EVENTS = {
   "jx-serp-grid-skipped": { kind: FAILED, when: (e) => !isDesignedJxCause(e.cause) },
   "knockout-owner-checks": { kind: FAILED, when: (e) => Number(e.unanswered) > 0 },
   "knockout-register-counts": { kind: FAILED, when: (e) => Number(e.counted) < Number(e.marks) },
+  // A part of the report that failed and still shipped. Its failure is counted where it happened, except a
+  // court-decisions file that arrived absent or empty from a stage that ended ok: this record is its only one.
+  "degraded-parts": { kind: FAILED, when: (e) => (Array.isArray(e.parts) ? e.parts : [])
+    .some((p) => p?.part === "court-decisions" && /is (absent|empty)$/.test(String(p?.cause ?? ""))) },
+  "degraded-parts-failed": FAILED,
+  // A workbook that failed to build is recorded only here.
+  "publish-gates": { kind: FAILED, when: (e) => e.auditWorkbook === "failed" },
   // the plain-English pass rewrote the rater's text, or failed and shipped it unrewritten
   "knockout-review": [{ kind: REPAIR, when: (e) => e.outcome === "applied" && Number(e.applied) > 0 },
     { kind: FAILED, when: (e) => !["applied", "nothing-flagged"].includes(e.outcome) }],
@@ -158,7 +165,7 @@ export const NOT_COUNTED_EVENTS = {
     "named-band-merged", "one-shot-stamp-settled", "order-probe", "output-snapshot", "owner-screen-derived",
     "placement-borderline", "placement-form-written", "plan-execution", "plan-execution-census",
     "plan-execution-refresh", "plan-qids-deferred", "probe-over-cap-undispatched", "profile", "profile-exclusion-seed",
-    "profile-resolved", "profile-selection", "provider-usage", "publish-gates", "quote",
+    "profile-resolved", "profile-selection", "provider-usage", "quote",
     "record-artifacts", "register-digest-facts-written",
     "register-only", "register-plan", "register-plan-axis-deferred", "register-plan-deferred-coverage",
     "register-plan-variant-dropped", "register-positions-derived", "register-presence",

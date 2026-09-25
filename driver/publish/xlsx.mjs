@@ -430,20 +430,23 @@ function coverageRows(coverage) {
 // ── Summary ─────────────────────────────────────────────────────────────────────────────────────────────
 // The one-open-caveat + headline-honesty rule: the workbook must never read clean/complete while any
 // coverage unit did not finish. This computes whether that condition holds and the plain caveat sentence.
-function coverageOpen({ coverage = [], coverageJudgment = null, verdict = null } = {}) {
-  const openState = (coverage || []).some(c => c.state === 'open' || c.state === 'coverage-limited');
+function coverageOpen({ coverage = [], coverageJudgment = null, verdict = null, degradedParts = [] } = {}) {
+  const openState = (coverage || []).some(c => c.state === 'open' || c.state === 'coverage-limited') || (degradedParts || []).length > 0;
   const judgeUnsure = coverageJudgment && coverageJudgment.sufficient === false;
   const verdictCoverage = !!(verdict && verdict.kinds && verdict.kinds.coverage);
   return openState || judgeUnsure || verdictCoverage;
 }
 
-function summaryRows(findings, coverage, fm, { mark, coverageJudgment, verdict, jurisdiction, registerOnly = false, commonLawUnlogged = false, clientGate = null, lintFailures = [], productName = null } = {}) {
+function summaryRows(findings, coverage, fm, { mark, coverageJudgment, verdict, jurisdiction, registerOnly = false, commonLawUnlogged = false, clientGate = null, lintFailures = [], productName = null, degradedParts = [] } = {}) {
   const disp = d => findings.filter(f => f.disposition === d && !f.isContextNote).length;
   const rated = findings.filter(f => !f.isContextNote);
-  const openCount = (coverage || []).filter(c => c.state === 'open' || c.state === 'coverage-limited').length;
+  // A part that failed and still shipped is open too, so the count and the caveat never read complete
+  // beside its row on Coverage & gaps.
+  const openCount = (coverage || []).filter(c => c.state === 'open' || c.state === 'coverage-limited').length + (degradedParts || []).length;
   const verdictWord = (verdict && verdict.tier) || fm.overall_label || '';
   const caveat = plainNote(coverageJudgment?.reason) ||
     (coverage || []).find(c => c.state === 'open' || c.state === 'coverage-limited')?.note ||
+    (degradedParts || [])[0]?.note ||
     'None — every search unit reached completion.';
 
   const rows = [
@@ -595,6 +598,8 @@ export async function buildAudit(contract, auditParsed, outPath, mark = '', fm =
   const verdict = contract?.verdict || null;
   const fetchState = contract?.fetchState || {};
   const jurisdiction = contract?.jurisdiction || '';
+  // The parts that failed and still shipped, as the shipped deferral row composes them at delivery.
+  const degradedParts = contract?.degradedParts || [];
 
   // context notes (famous-mark neighbours) ride the Findings tab as explicitly-not-rated rows, so the book
   // holds exactly four tabs and the "never dropped" promise still holds.
@@ -616,7 +621,7 @@ export async function buildAudit(contract, auditParsed, outPath, mark = '', fm =
 
   // 1 · Summary
   addSheet(wb, 'Summary', ['Field', 'Value'],
-    [...summaryRows(findings, coverage, fm, { mark, coverageJudgment, verdict, jurisdiction, registerOnly, commonLawUnlogged, clientGate: contract?.clientGate ?? null, lintFailures: contract?.lintFailures ?? [], productName: contract?.productName ?? null }),
+    [...summaryRows(findings, coverage, fm, { mark, coverageJudgment, verdict, jurisdiction, registerOnly, commonLawUnlogged, clientGate: contract?.clientGate ?? null, lintFailures: contract?.lintFailures ?? [], productName: contract?.productName ?? null, degradedParts }),
       // PR-9 — the structured v5 rows (mark assessment / coverage-judgment slices / corrections
       // attestation) render as ROWS here; the report carries only their string projection. All three
       // are empty on legacy records, so a republished archived workbook never grows rows.
@@ -664,7 +669,7 @@ export async function buildAudit(contract, auditParsed, outPath, mark = '', fm =
   // made the checks it wanted. Same builder, same four columns, same State colour: this is not a second
   // shape and not a new sheet, and the words are the run receipt's own.
   addSheet(wb, 'Coverage & gaps', COVERAGE_COLS,
-    [...coverageRows(coverage), ...coverageRows(contract?.droppedConditions || []),
+    [...coverageRows(coverage), ...coverageRows(degradedParts), ...coverageRows(contract?.droppedConditions || []),
      ...coverageRows(contract?.undispatchedProbes || []), ...coverageRows(contract?.withheldFamilies || []),
      ...coverageRows(contract?.releasedFamilies || []), ...(contract?.setAside || []).map((s) => ({ Area: plainNote(s.area), State: 'Note', 'What was done': plainNote(s.note) || '—', "What's left": '—' }))], (row, _d, kept) => {
     if (!kept.has('State')) return;
@@ -677,7 +682,7 @@ export async function buildAudit(contract, auditParsed, outPath, mark = '', fm =
   // never a reason to drop the Excel. (A gate that deletes the artifact it was meant to protect is the bug
   // this replaced: a legitimately-sparse run — e.g. no bound Class — must still ship its workbook.)
   await wb.xlsx.writeFile(outPath);
-  const gate = validateAudit(wb, { findings, coverage, coverageJudgment, verdict, registerOnly,
+  const gate = validateAudit(wb, { findings, coverage, coverageJudgment, verdict, registerOnly, degradedParts,
     registerPublishesRecordPages: contract?.registerPublishesRecordPages ?? null });
   return {
     sheets: wb.worksheets.map(w => w.name),
@@ -725,7 +730,7 @@ function readerWords(s) {
  * Returns { ok, violations[] }. Exported so tests assert the same contract the build enforces.
  */
 export function validateAudit(wb, { findings = [], coverage = [], coverageJudgment = null, verdict = null, registerOnly = false,
-  registerPublishesRecordPages = null } = {}) {
+  registerPublishesRecordPages = null, degradedParts = [] } = {}) {
   const v = [];
   const sheets = wb.worksheets.map(w => w.name);
 
@@ -921,7 +926,7 @@ export function validateAudit(wb, { findings = [], coverage = [], coverageJudgme
       if (/check first/i.test(f)) hasCaveat = true;
     });
     if (!hasVerdict) v.push('Summary: no Verdict row');
-    if (coverageOpen({ coverage, coverageJudgment, verdict })) {
+    if (coverageOpen({ coverage, coverageJudgment, verdict, degradedParts })) {
       if (!hasCaveat) v.push('Summary: coverage is open but no caveat row (headline-honesty)');
       const covWs = wb.getWorksheet('Coverage & gaps');
       let openRow = false;

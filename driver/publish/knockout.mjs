@@ -8,6 +8,7 @@
 // palette (TONE_TIER, resolved against the run's FROZEN framework) so driver and interactive output
 // can never drift and a knockout never reads the clearance composer's module state.
 import { readFileSync, writeFileSync, copyFileSync, mkdirSync, chmodSync, existsSync } from 'node:fs';
+import { plainDeferralReason } from '../deferral-row.mjs';   // — the reader's words for a search left open
 import { join } from 'node:path';
 import { driverDir, ensureDriverDir, RUN_DIR_MODE } from '../../shared/driver-dir.mjs';   //
 import { riskTier, TONE_TIER, regenIndex, regenSurfaces, auditRouteFor, markReportRouteFor, reportRouteFor } from './index.mjs';
@@ -97,7 +98,7 @@ export const knockoutStatement = (framework, marks) =>
 // than "never asked for". 'Impact' goes with them: it was the second rating scale. What replaces them is
 // what the typed record actually carries. A `—` means the shape that produced the row never had the
 // field (an archived prose finding), which is a different fact from an empty cell.
-export async function buildKnockoutWorkbook(findings, receipts, outPath, registerCounts = null, qcFlags = [], framework = null, registerRecords = null, frameworkMethod = null) {
+export async function buildKnockoutWorkbook(findings, receipts, outPath, registerCounts = null, qcFlags = [], framework = null, registerRecords = null, frameworkMethod = null, ownerChecks = []) {
   const ExcelJS = (await import('exceljs')).default;
   const wb = new ExcelJS.Workbook();
   const findingRows = [];
@@ -126,6 +127,18 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
     'Finding Reference': r.ok && refByMark.has(r.mark) ? refByMark.get(r.mark) : '',
     'Sweep Call #': r.callNo ?? '', 'Wall-time (s)': r.took_ms != null ? Math.round(r.took_ms / 1000) : '', 'OK/Degraded': r.ok ? 'OK' : 'Degraded',
   }));
+  // AN OWNER LOOKUP THAT GOT NO ANSWER (ruling 498): the card still prints its use-check line, so the
+  // failure is recorded here, in the trail's own columns and words, beside the web searches. Only a failed
+  // lookup gets a row, so a run whose lookups all answered builds the workbook it built before. The reason
+  // is the deferral row's reader's line; the raw cause stays in the run's owner-check record.
+  for (const c of ownerChecks ?? []) {
+    if (!c || c.ok) continue;
+    trailRows.push({
+      'Mark': c.mark, 'Search Term': c.query ?? '', 'Source / Context': `perplexity (${c.preset ?? ''})`,
+      'Result Summary': `FAILED — ${plainDeferralReason(/timeout|timed out/i.test(String(c.cause ?? '')) ? 'mechanical-fail:timeout' : 'unfinished')}`,
+      'Finding Reference': '', 'Sweep Call #': '', 'Wall-time (s)': c.took_ms != null ? Math.round(c.took_ms / 1000) : '', 'OK/Degraded': 'Degraded',
+    });
+  }
   addSheet(wb, 'Findings', ['Mark', 'Finding Reference', 'Finding Name', 'Owner', 'Band', 'Type', 'Net', 'Basis', 'Evidence'], findingRows);
   addSheet(wb, 'Negative Results', ['Mark', 'Search Term', 'Source / Context', 'Result', 'Notes'], negativeRows);
   addSheet(wb, 'Audit Trail', ['Mark', 'Search Term', 'Source / Context', 'Result Summary', 'Finding Reference', 'Sweep Call #', 'Wall-time (s)', 'OK/Degraded'], trailRows);
@@ -483,7 +496,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   } catch (e) { note(`knockout predelivery lint skipped (non-fatal): ${e.message}`); }
 
   const auditFile = `knockout-audit-${codename ?? runId}.xlsx`;
-  await buildKnockoutWorkbook(findings, sweepReceipts, join(poolRunDir, auditFile), registerCounts, qcFlags, framework, registerRecords, frameworkMethod);
+  await buildKnockoutWorkbook(findings, sweepReceipts, join(poolRunDir, auditFile), registerCounts, qcFlags, framework, registerRecords, frameworkMethod, ownerChecks);
   grpRead(join(poolRunDir, auditFile), 0o640);
 
   // The run's report identity, off the SAME registry row that chose its machinery (search-policy.mjs
