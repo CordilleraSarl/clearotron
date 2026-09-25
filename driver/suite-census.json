@@ -639,6 +639,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-part-that-failed-as-a-whole-is-in-its-audit-workbook.test.mjs": {
+          "tests": 7,
+          "asserts": 18,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-whose-counts-all-fail-pays-for-no-owner-lookup.test.mjs": {
           "tests": 3,
           "asserts": 12,

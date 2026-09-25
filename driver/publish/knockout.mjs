@@ -8,7 +8,7 @@
 // palette (TONE_TIER, resolved against the run's FROZEN framework) so driver and interactive output
 // can never drift and a knockout never reads the clearance composer's module state.
 import { readFileSync, writeFileSync, copyFileSync, mkdirSync, chmodSync, existsSync } from 'node:fs';
-import { plainDeferralReason } from '../deferral-row.mjs';   // — the reader's words for a search left open
+import { plainDeferralReason } from '../deferral-row.mjs'; import { knockoutStepFailures, PART_NAMES, RULED_WORDS, NOT_COMPLETED, linkNotOnRegisterSite } from '../degraded-parts.mjs'; import { ownersOwedACheck, composeOwnerQuery } from '../owner-use-check.mjs';   // — the reader's words for a search left open; and the parts that failed as a whole
 import { join } from 'node:path';
 import { driverDir, ensureDriverDir, RUN_DIR_MODE } from '../../shared/driver-dir.mjs';   //
 import { riskTier, TONE_TIER, regenIndex, regenSurfaces, auditRouteFor, markReportRouteFor, reportRouteFor } from './index.mjs';
@@ -98,7 +98,7 @@ export const knockoutStatement = (framework, marks) =>
 // than "never asked for". 'Impact' goes with them: it was the second rating scale. What replaces them is
 // what the typed record actually carries. A `—` means the shape that produced the row never had the
 // field (an archived prose finding), which is a different fact from an empty cell.
-export async function buildKnockoutWorkbook(findings, receipts, outPath, registerCounts = null, qcFlags = [], framework = null, registerRecords = null, frameworkMethod = null, ownerChecks = []) {
+export async function buildKnockoutWorkbook(findings, receipts, outPath, registerCounts = null, qcFlags = [], framework = null, registerRecords = null, frameworkMethod = null, ownerChecks = [], degraded = {}) {
   const ExcelJS = (await import('exceljs')).default;
   const wb = new ExcelJS.Workbook();
   const findingRows = [];
@@ -138,6 +138,20 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
       'Result Summary': `FAILED — ${plainDeferralReason(/timeout|timed out/i.test(String(c.cause ?? '')) ? 'mechanical-fail:timeout' : 'unfinished')}`,
       'Finding Reference': '', 'Sweep Call #': '', 'Wall-time (s)': c.took_ms != null ? Math.round(c.took_ms / 1000) : '', 'OK/Degraded': 'Degraded',
     });
+  }
+  // THE PARTS THAT FAILED AS A WHOLE (ruled 2026-09-25, 537 and 539), in the trail's own columns: the
+  // part's name where a search would be named, the reader's line for a part left open, and every other
+  // cell `—`. A run with none of them builds the workbook it built before.
+  const partRow = (name, reason) => ({ 'Mark': '—', 'Search Term': '—', 'Source / Context': name,
+    'Result Summary': `FAILED — ${plainDeferralReason(reason)}`, 'Finding Reference': '—', 'Sweep Call #': '—', 'Wall-time (s)': '—', 'OK/Degraded': 'Degraded' });
+  if (degraded.review) trailRows.push(partRow(RULED_WORDS.plainLanguageReview, degraded.review.reason));
+  if (degraded.machineChecks) trailRows.push(partRow(PART_NAMES.machineChecks, degraded.machineChecks.reason));
+  if (degraded.aboutThisRequest) trailRows.push(partRow(PART_NAMES.aboutThisRequest, degraded.aboutThisRequest.reason));
+  // A search that ran and whose trail entry was never written. Its answer reached the report, so the row
+  // says the record was not kept, and never that the search failed.
+  for (const r of degraded.recordsNotKept ?? []) {
+    trailRows.push({ 'Mark': r.mark, 'Search Term': '—', 'Source / Context': `perplexity (${r.preset ?? ''})`,
+      'Result Summary': RULED_WORDS.recordNotKept, 'Finding Reference': '—', 'Sweep Call #': '—', 'Wall-time (s)': '—', 'OK/Degraded': 'Degraded' });
   }
   addSheet(wb, 'Findings', ['Mark', 'Finding Reference', 'Finding Name', 'Owner', 'Band', 'Type', 'Net', 'Basis', 'Evidence'], findingRows);
   addSheet(wb, 'Negative Results', ['Mark', 'Search Term', 'Source / Context', 'Result', 'Notes'], negativeRows);
@@ -198,6 +212,10 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
   //
   // A run with NO artifact still produces a byte-identical workbook to yesterday's, which is what keeps
   // an archived republish honest.
+  // A filing whose link was removed because its address is not on the register's own site (537): the
+  // number stays in the Record cell, and the Note says why, in the shape of the notes above.
+  const dropped = new Set((degraded.droppedLinks ?? []).map((d) => `${d.mark}\u0000${d.recordId}`));
+  const linkDropped = (mark, r) => dropped.has(`${mark}\u0000${r?.recordId ?? null}`);
   if (registerRecords) {
     const recordRows = [];
     for (const m of findings.marks ?? []) {
@@ -220,7 +238,8 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
           'Trademark': r.mark ?? '—', 'Owner': r.owner ?? '—', 'Status': r.status ?? '—',
           'Classes': (r.classes ?? []).join(', ') || '—', 'Territory': r.territory ?? '—',
           'Filed': r.applicationDate ?? '—', 'Registered': r.registrationDate ?? '—',
-          'Record': r.officeLink?.href ?? r.officeLink?.label ?? r.url ?? r.recordId ?? '—', 'Note': r.officeLink && !r.officeLink.href ? reasonCellFor(r.officeLink) : '',
+          'Record': r.officeLink?.href ?? r.officeLink?.label ?? r.url ?? r.recordId ?? '—', 'Note': r.officeLink && !r.officeLink.href ? reasonCellFor(r.officeLink)
+            : !r.officeLink && linkDropped(m.name, r) ? linkNotOnRegisterSite(registerRecords.providerLabel ?? registerRecords.provider ?? 'the register') : '',
         });
       }
       // Every search that did NOT answer gets its own row. Without them a mark with two dead searches
@@ -251,6 +270,15 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
     addSheet(wb, 'Register Filings',
       ['Mark', 'Matched form', 'Basis', 'Trademark', 'Owner', 'Status', 'Classes', 'Territory', 'Filed', 'Registered', 'Record', 'Note'],
       recordRows);
+  } else if (degraded.listing) {
+    // THE LISTING THAT FAILED AS A WHOLE wrote no sidecar, so the sheet above is not built. One row per
+    // mark in the sheet's own `not available` shape, with the reader's line for a part left open.
+    addSheet(wb, 'Register Filings',
+      ['Mark', 'Matched form', 'Basis', 'Trademark', 'Owner', 'Status', 'Classes', 'Territory', 'Filed', 'Registered', 'Record', 'Note'],
+      (findings.marks ?? []).map((m) => ({
+        'Mark': m.name, 'Matched form': '—', 'Basis': '—', 'Trademark': 'not available', 'Owner': '—', 'Status': '—',
+        'Classes': '—', 'Territory': '—', 'Filed': '—', 'Registered': '—', 'Record': '—', 'Note': plainDeferralReason(degraded.listing.reason),
+      })));
   }
 
   // ── The machine-check record (2026-07-31) ───────────────────────────────────────────────────────
@@ -417,9 +445,9 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   // The request the run was given, read the same tolerant way as the sidecars above and for the same
   // reason (A.1). It is what "About this request" states; a run archived before the
   // sidecar existed has none, and its page renders exactly as it was delivered.
-  let instructedScope = null;
+  let instructedScope = null, scopeUnreadable = false;
   try { instructedScope = JSON.parse(readFileSync(driverDir(runDir, 'instructed-scope.json'), 'utf8')); }
-  catch { instructedScope = null; }
+  catch { instructedScope = null; scopeUnreadable = existsSync(driverDir(runDir, 'instructed-scope.json')); }
   // The run's frozen method, where its framework states one (framework-method.mjs): the report card and
   // the workbook's band cell show the framework's inputs beside the band. A run that froze none — every
   // run before the method existed among them — renders the band alone, as it was delivered.
@@ -470,7 +498,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   //   3. The receipt write is best-effort and idempotent. Re-publishing an ARCHIVED run recomputes the
   //      same result over the same frozen findings, so the write records this publish rather than
   //      rewriting history; where the run store is read-only it simply does not land.
-  let qcFlags = [];
+  let qcFlags = [], machineChecksFailed = null;
   try {
     const lint = runKnockoutLint({ findings });
     qcFlags = deliveryFlagLines(lint.failures.filter((c) => c.surface === 'report'));
@@ -493,10 +521,31 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
         receipts: receipts.checked,
       }, null, 2) + '\n');
     } catch (e) { note(`knockout lint receipt write failed (non-fatal): ${e.message}`); }
-  } catch (e) { note(`knockout predelivery lint skipped (non-fatal): ${e.message}`); }
+  } catch (e) { note(`knockout predelivery lint skipped (non-fatal): ${e.message}`); machineChecksFailed = { reason: NOT_COMPLETED }; }
 
+  // ── THE PARTS THAT FAILED AS A WHOLE, for the workbook only (degraded-parts.mjs): the report is as it was.
+  // The owner lookups, when their step failed before any was recorded, become one failed lookup per owner
+  // the listing owed a check, so the trail's owner-lookup row prints each; the cards never see them.
+  const steps = knockoutStepFailures(runDir);
+  const koPreset = sweepReceipts.find((r) => r?.preset)?.preset ?? (process.env.CLEAROTRON_KNOCKOUT_PRESET || 'pro-search');
+  let lookupsNotRun = [];
+  if (steps.ownerChecks && !ownerChecks.length) {
+    try { lookupsNotRun = ownersOwedACheck(registerRecords).map((o) => ({ ok: false, mark: o.mark, query: composeOwnerQuery(o), preset: koPreset, cause: steps.ownerChecks.cause })); }
+    catch { lookupsNotRun = []; }
+  }
+  // A first web question whose answer is on disk and whose trail entry is not. Only the first question is
+  // read: a second question's missing entry cannot be told from one that got no answer. A run with no
+  // trail file at all was delivered before the trail existed, and republishes as it was delivered.
+  const keptATrail = existsSync(driverDir(runDir, 'knockout-sweep.jsonl'));
+  const recordsNotKept = (keptATrail ? (plan?.marks ?? []) : []).map((m) => String(m?.name ?? '')).filter((name) => name
+    && existsSync(join(runDir, 'research', `${kebab(name)}.md`))
+    && !sweepReceipts.some((r) => r?.mark === name && !r.question))
+    .map((mark) => ({ mark, preset: koPreset }));
   const auditFile = `knockout-audit-${codename ?? runId}.xlsx`;
-  await buildKnockoutWorkbook(findings, sweepReceipts, join(poolRunDir, auditFile), registerCounts, qcFlags, framework, registerRecords, frameworkMethod, ownerChecks);
+  await buildKnockoutWorkbook(findings, sweepReceipts, join(poolRunDir, auditFile), registerCounts, qcFlags, framework, registerRecords, frameworkMethod, [...ownerChecks, ...lookupsNotRun], {
+    listing: registerRecords ? null : steps.listing, review: steps.review, machineChecks: machineChecksFailed,
+    aboutThisRequest: scopeUnreadable ? { reason: NOT_COMPLETED } : null, droppedLinks: recordLinksDropped, recordsNotKept,
+  });
   grpRead(join(poolRunDir, auditFile), 0o640);
 
   // The run's report identity, off the SAME registry row that chose its machinery (search-policy.mjs
