@@ -29,10 +29,11 @@
 //   - CLASS-SCOPED ALWAYS: every entry carries nice_classes (the NOVA PULSE/VELTRIPHEN all-class-flood
 //     lesson is structural here, not prose). The only cross-class entry is the exact-identical
 //     merch check (Nice 25), per the recipes' single sanctioned exception.
-//   - CROWD-GATED FAN-OUT: fringe slices (the wildcard/phonetic family of the dominant
-//     token) carry `when: { runs_if_enumerated: <parent qid> }` — they run ONLY if the parent
-//     contains-slice proved tractable. A crowd parent is TERMINAL for its children, encoded, not
-//     remembered.
+//   - NO CROWD-GATED FAN-OUT (ruled 2026-09-25): the fringe of the dominant token (the wildcard
+//     family) carried `when: { runs_if_enumerated: <parent qid> }` and ran ONLY if its parent
+//     contains-slice listed under the ceiling, so a crowd parent stopped it with no reason written. It
+//     now waits for the reading turn like every other widening. The guard is still honoured on a
+//     frozen plan being resumed; no fresh compile writes one.
 //   - AND A SECOND, DIFFERENT WAIT (ruled 2026-09-21, on every matter): the decision-10 families carry
 //     `when: { awaits_reading_turn: true }`. No result releases it. They run when the reading turn
 //     ASKS for them after reading the identical mark's own list, and the ask arrives as a
@@ -1294,7 +1295,7 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   // axis that way and said so in its own comment, naming this stamp as the remedy. Optional and
   // closed when present, like `provenance`: a frozen pre-2050 plan carries none and its reader falls
   // back to the old rule, so a resumed run does not change its answer because a field arrived.
-  const parentQid = push({ axis: "primary-sweep", predicate: "default", term: manifest.dominant_element, expected_kind: "enumerate", provenance: "mark", crowd_gate_parent: true });
+  push({ axis: "primary-sweep", predicate: "default", term: manifest.dominant_element, expected_kind: "enumerate", provenance: "mark", crowd_gate_parent: true });
 
   // ── THE SAME SWEEP, NARROWED TO WHAT THE FILINGS COVER ──────────────────────────────────────────
   //
@@ -1446,8 +1447,7 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
     }
   }
   // — EVERY seeded band, not just the dominant element's (see bandsFor). The wildcard fringe stays
-  // on the dominant band alone: it is crowd-gated on the dominant's own contains parent, and no other
-  // seed has one to gate against. The oracle does not ask for more — coverageGaps' family arm counts ANY
+  // on the dominant band alone. The oracle does not ask for more — coverageGaps' family arm counts ANY
   // dispatched wildcard as the family being reached, so the dominant's fringe answers it for all seeds.
   for (const formBand of bandsFor(form, manifest.dominant_element).map((e) => e.band)) {
   if (formBand?.exactQueries?.length) {
@@ -1479,8 +1479,11 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   }
   }
   for (const w of bandFor(form, manifest.dominant_element)?.wildcardPatterns ?? []) {
-    // fringe of the dominant token — crowd-gated on the contains parent: a crowd parent is terminal
-    push({ axis: "primary-sweep", predicate: "wildcard", term: w, expected_kind: "enumerate", provenance: "floor", when: { runs_if_enumerated: parentQid } });
+    // THE FRINGE OF THE DOMINANT TOKEN WAITS FOR THE READING TURN, like every other widening (ruled
+    // 2026-09-25). It ran only if its contains parent listed under the ceiling: a crowded parent stopped
+    // it with no reason written, and a withheld parent took it down unasked. The ceiling is a call limit,
+    // never a decision point. The turn releases or withholds it with its reason (the wait loop below).
+    push({ axis: "primary-sweep", predicate: "wildcard", term: w, expected_kind: "enumerate", provenance: "floor" });
   }
   push({ axis: "primary-sweep", predicate: markPredicate(manifest.mark), term: manifest.mark, expected_kind: "enumerate",
     nice_classes: ["25"], qidSuffix: "+merch", provenance: "mark", ...literalStamp(manifest.mark) });
@@ -1614,7 +1617,8 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   //     is the other half of "look at the count before you read anything"
   //   · the goods-narrowed contains entry — on every matter (ruled 2026-09-20), and it is the one entry that
   //     makes a crowded identical question answerable rather than merely deferred
-  //   · anything already waiting on something else, which keeps its own parent
+  //   · anything already waiting on something else, which keeps its own guard (no fresh compile writes
+  //     one now: the wildcard fringe, the last, waits for the turn like the rest)
   //   · the spelling band — the unit manual's own rule is that it is asked as the machine writes it
   //
   // Everything else is a widening: scripts and transliterations, neighbour lists, compounds, the

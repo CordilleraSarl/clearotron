@@ -74,7 +74,7 @@ import { documentCoverage, renderDocumentCoverageSection, spliceDocumentCoverage
 import { buildCoverageAbsenceForm, coverageAbsenceGaps, coverageFormAbsence, coverageFormBrief, renderCoverageAbsenceSection, renderCoverageLedgerSection, spliceCoverageLedger, renderCoverageLedgerJsonFromForm } from "./coverage-form.mjs";
 import { unionCoverageForm } from "./coverage-union.mjs";
 import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStamp, readCoverageForm, readCoverageFormInput, waitingFamilyStates, writeCoverageForm } from "./coverage-form-io.mjs";
-import { releasedFamilyQids } from "./withheld-families.mjs";   // the waiting families the reading turn released join as dictated entries
+import { releasedFamilyQids, readWithheldFamilies } from "./withheld-families.mjs";   // the waiting families the reading turn released join as dictated entries
 import { unionPlacementForm } from "./placement-union.mjs";
 import { readPlacementForm, readPlacementFormInput, writePlacementForm } from "./placement-form-io.mjs";
 import { dictatedPaths, findStrayArtifacts, treeSnapshot, findStrayInTree, matterSiblings, findStrayMatterSiblings } from "./stray-artifacts.mjs";   // — a run dir holds no document no stage dictated; — nor does the doctrine tree
@@ -2593,7 +2593,7 @@ export function registerDeferredCoverage(ctx, plan) {   // @internal
 // rides the SAME supplemental-sweep + clamp channel as the blind frame-diff — the form axis stops depending on a
 // peer model to NOTICE the gap (two LLMs share the same blind spot; the oracle does not). NEVER-KILL: any
 // missing/unparseable artifact → [] (the blind frame-diff still runs).
-function mechanicalFormGapDirectives(ctx) {
+export function mechanicalFormGapDirectives(ctx) {   // @internal
   const P = ctx.paths;
   try {
     if (!existsSync(P.formNeighbourhood) || !existsSync(P.registerNamedBand)) return [];
@@ -2610,7 +2610,13 @@ function mechanicalFormGapDirectives(ctx) {
       for (const q of el.band.exactQueries) if (lower.includes(String(q).toLowerCase())) dispatched.push(q);
       for (const w of (el.band.wildcardPatterns ?? [])) if (lower.includes(String(w).toLowerCase())) dispatched.push(w); // phonetic family dispatched-in-prose
     }
-    return formGapDirectives(elements, { dispatched });
+    // A WITHHELD FAMILY IS AN EXPLAINED ABSENCE. The reading turn withholds a waiting family with its reason
+    // (withheld-families.mjs), and the wildcard fringe is one. Counted as unsearched, it would be ordered
+    // searched anyway, or clamp the verdict, over a decision the run recorded.
+    const withheld = readWithheldFamilies(P.runDir);
+    const explained = (ctx.registerPlan?.entries ?? []).filter((e) => withheld[e.qid])
+      .flatMap((e) => [e.term, ...(Array.isArray(e.terms) ? e.terms : [])]).filter(Boolean);
+    return formGapDirectives(elements, { dispatched, explained });
   } catch { return []; }
 }
 

@@ -165,10 +165,10 @@ discriminator, not the label.** Every substring slice here — the dominant toke
 predicate, and each per-major and phonetic slice built on it — is **attempted once, class-scoped, and gated on
 its own result**. If it returns `enumerated` (tractable — a real named band: e.g. ≈257 exact-in-class-live; the phrase
 "WIDE OPEN" ≈ 99), keep it and run its per-major / phonetic passes. If it returns `incomplete` because the
-slice is **itself a crowd over the ceiling** (a hyper-common word — GREAT ≈ 28k, OUTDOORS ≈ 2.7k), that token
-line is **TERMINAL**: STOP — do **not** fan it out per-major and do **not** run the phonetic fringe on it (those
-are the same crowd re-issued; wholesale-enumerating a crowd across the majors + phonetic is the grind that
-double-SIGKILLed **The Wide Open**). Gate on the *result*, never the label: a token the manifest calls
+slice is **itself a crowd over the ceiling** (a hyper-common word — GREAT ≈ 28k, OUTDOORS ≈ 2.7k),
+the ceiling is a call limit, never a decision point: decide on that crowd as on the identical mark's,
+narrowing it [in that order](#read-the-identical-mark-first-look-at-the-count-before-you-read-anything) until it lists, or writing down why looking further would not
+change what you tell the client. Gate on the *result*, never the label: a token the manifest calls
 "dominant" is enumerated only if class-scoping makes it tractable (the colour-word mark COLORA→色彩), and a hyper-common word is
 counted whether or not it is the dominant unit. **On a crowd slice, what you WRITE depends on which slice it is:**
 - **the DISTINCTIVE anchor / the exact-or-near-identical named category** (the highest-relevance slice) → write
@@ -193,7 +193,7 @@ returns — no per-word list, no new keep/stop rule.
   classes). The tool pages to `has_more:false` and returns `enumerated` (every record carried forward) **or**
   `incomplete` (the substring is itself a crowd over the ceiling). On `enumerated`, keep it verbatim (never
   sampled / truncated / cleaned) and run its per-major / phonetic passes. On `incomplete` the **bound above**
-  governs: STOP the per-major / phonetic fan-out for this token, and write the `incomplete` block only when this
+  governs: decide on the crowd, and write the `incomplete` block only when this
   is the **distinctive anchor / dominant category** (it crosses as a material could-not-finish) — for a stripped
   **common** component, `saturation-probe`'s count is the sole signal, so write no second block. (Goods-relevance is judged by Layer B
   after it reads the in-class band — never as a search-time text filter, so do **NOT** AND the matter's
@@ -203,24 +203,22 @@ returns — no per-word list, no new keep/stop rule.
   substring × in-scope-class × status predicate. This is bounded and cheap (region + filed class +
   exact-substring narrows the crowd to a handful, often ~10 in EU). Each call writes its own band block —
   `enumerated` or `incomplete`. The funnel does not decide a major was "covered enough" by the worldwide
-  pass; it runs the per-major enumeration and lets the block state speak. **Per the bound: run per-major only
-  when the worldwide slice was tractable, or (for a distinctive root whose worldwide slice hit the provider
-  window — Recipe 1 §2b) when each per-major slice is itself a handful; a per-major slice that returns a crowd
-  is terminal — stop, do not narrow it further, and for a common component write no block.**
+  pass; it runs the per-major enumeration and lets the block state speak. **Per the bound: a per-major slice
+  that returns a crowd is decided like any other crowd, and for a common component write no block.**
 - **The exact name-list is the cheapest slice and always enumerates.** The exact mark token × in-scope
   class × per major+material jurisdiction (`match_mode:exact`) is small and cheap by construction — call
   `register_enumerate` on it; it returns `enumerated` (every exact-in-class record carried forward,
   live and dead with status). If it ever returns `incomplete`, that block crosses to judgment too — but the
   funnel never sub-samples the exact name-list and never rolls it into a count.
-- **Phonetic fringe (tractable distinctive token only).** Run the provider phonetic capability on a **tractable
-  distinctive** dominant token for the matter languages (`register_expand_phoneme` then `register_enumerate`
+- **Phonetic fringe (distinctive token only).** Run the provider phonetic capability on a **distinctive**
+  dominant token for the matter languages (`register_expand_phoneme` then `register_enumerate`
   `match_mode:phonetic` with the variants), scoped to the in-scope classes. **`register_expand_phoneme` is
   not offered by every provider** — where the active provider's doc says the variant PREVIEW is unavailable
   (its phonetic surface is server-side and opaque), skip that call and run `register_enumerate`
   `match_mode:phonetic` directly on the token; never substitute a literal search for the phonetic band, and
   say in the block that the variant list could not be previewed. Phonetic sets can be large;
-  `register_enumerate` returns `enumerated` if bounded or `incomplete` if a crowd — a crowd block is terminal
-  per the bound (no further narrow). **Skip the phonetic fringe for a hyper-common component** (GREAT / OUTDOORS):
+  `register_enumerate` returns `enumerated` if bounded or `incomplete` if a crowd — a crowd is decided
+  per the bound. **Skip the phonetic fringe for a hyper-common component** (GREAT / OUTDOORS):
   phonetic-expanding a saturated everyday word is pure crowd-grind and its `saturation-probe` count stands. Do
   **not** name any phonetic algorithm.
 
