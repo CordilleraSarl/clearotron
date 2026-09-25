@@ -23,7 +23,8 @@
 // killed before it mentioned anything.
 
 import { buildSelectionIndex, selectionOf, rowIsSettled, seatFields, formRowKey, seatRows,
-  SEAT_ROW_CONTRACT, SELECT_ROW_CONTRACT, PLACEMENT_FORM_PROVENANCE } from "./placement-form.mjs";
+  SEAT_ROW_CONTRACT, SELECT_ROW_CONTRACT, PLACEMENT_FORM_PROVENANCE,
+  SET_ASIDE_ROW_CONTRACT, isSetAsideRow, setAsideKey } from "./placement-form.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
 
 /**
@@ -146,10 +147,32 @@ export function unionPlacementForm(prior, submitted, input) {
   for (const r of priorRows) pushSelection(r);
   for (const r of (submittedRows ?? [])) pushSelection(r);
 
+  // ONE GROUND PER OWNER'S SET (placement-form.mjs, SET_ASIDE_ROW_CONTRACT). A set-aside row is not a
+  // candidate: it is consumed here, kept on its own list, and never joins the rows that render into
+  // placements.json. Prior first, so a later row for the same owner replaces the earlier ground, and a
+  // retraction names the record id the row set aside. A row the band cannot resolve, or one with no
+  // ground, is reported back by id, never dropped in silence.
+  const setAside = new Map();
+  const setAsideRefused = [];
+  const takeSetAside = (row) => {
+    const id = String(row.set_aside).trim();
+    const ground = typeof row.ground === "string" ? row.ground.trim() : "";
+    const canonical = index.resolve(id);
+    if (!canonical) { setAsideRefused.push({ set_aside: id, why: "the band holds no record with this id" }); return; }
+    if (!ground) { setAsideRefused.push({ set_aside: id, why: "no ground" }); return; }
+    const key = setAsideKey(canonical);
+    setAside.delete(key);
+    setAside.set(key, { set_aside: id, key, owner: canonical.owner ?? null, ground });
+  };
+  for (const e of (Array.isArray(prior?.set_aside) ? prior.set_aside : [])) if (isSetAsideRow(e)) takeSetAside(e);
+  for (const r of (submittedRows ?? [])) if (isSetAsideRow(r)) { consumed.add(r); takeSetAside(r); }
+  for (const [k, e] of setAside) if (retracted.has(e.set_aside) || retracted.has(e.set_aside.toUpperCase())) setAside.delete(k);
+
   const form = { _provenance: PLACEMENT_FORM_PROVENANCE, select_row_contract: SELECT_ROW_CONTRACT,
-    seat_row_contract: SEAT_ROW_CONTRACT,
-    generated_from: { ...index.derived_from, selected: selections.length, unresolved: unresolved.length },
-    ...(unresolved.length ? { unresolved } : {}), rows: selections };
+    seat_row_contract: SEAT_ROW_CONTRACT, set_aside_row_contract: SET_ASIDE_ROW_CONTRACT,
+    generated_from: { ...index.derived_from, selected: selections.length, unresolved: unresolved.length, set_aside: setAside.size },
+    ...(unresolved.length ? { unresolved } : {}), ...(setAsideRefused.length ? { set_aside_refused: setAsideRefused } : {}),
+    set_aside: [...setAside.values()], rows: selections };
 
   // THE TWO SIDES ARE MATCHED DIFFERENTLY, and the asymmetry is the point.
   //
@@ -198,7 +221,7 @@ export function unionPlacementForm(prior, submitted, input) {
     if (rowIsSettled(r, r)) settled += 1;
   }
   return { form, total: form.rows.length, settled, outstanding: form.rows.length - settled,
-    carried, seat_rows: carriedSeat.length, unresolved: unresolved.length };
+    carried, seat_rows: carriedSeat.length, unresolved: unresolved.length, set_aside: setAside.size };
 }
 
 /** How many rows of an already-unioned form the render would still omit. PURE. */

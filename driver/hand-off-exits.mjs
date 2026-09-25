@@ -35,8 +35,11 @@ export function pickingExits(recordCarry) {
   const rows = recordCarry.rows
     .filter((r) => r?.stopped_at === "placement" && (r.reason_source === "step-silent" || r.reason_source === "absent"))
     .map((r) => ({ uri: r.uri ?? null, mark: r.mark ?? null, owner: r.owner ?? null }));
-  const owners = new Set(rows.map((r) => String(r.owner ?? "").trim()));
-  return { computable: true, reason: null, exits: rows.length, owners: rows.length ? owners.size : 0, rows };
+  // A record that names no owner is its own set: one ground covers it and nothing else, so it is owed its
+  // own. Folded into one shared blank owner, every ownerless exit read as a single ground owed.
+  const named = new Set(rows.map((r) => String(r.owner ?? "").trim()).filter(Boolean));
+  const ownerless = rows.filter((r) => !String(r.owner ?? "").trim()).length;
+  return { computable: true, reason: null, exits: rows.length, owners: named.size + ownerless, rows };
 }
 
 const SECTION_ANCHOR_RE = /<!--\s*clearotron:section\s*=\s*([a-z-]+)\s*-->/i;

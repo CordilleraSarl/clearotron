@@ -77,6 +77,7 @@ import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStam
 import { releasedFamilyQids, readWithheldFamilies } from "./withheld-families.mjs";   // the waiting families the reading turn released join as dictated entries
 import { unionPlacementForm } from "./placement-union.mjs";
 import { readPlacementForm, readPlacementFormInput, writePlacementForm } from "./placement-form-io.mjs";
+import { buildSelectionIndex, setAsideGrounds } from "./placement-form.mjs";
 import { dictatedPaths, findStrayArtifacts, treeSnapshot, findStrayInTree, matterSiblings, findStrayMatterSiblings } from "./stray-artifacts.mjs";   // — a run dir holds no document no stage dictated; — nor does the doctrine tree
 import { resolveProfile, resolveEffectiveProfile, derivedFloor, derivedBatchSize, gridBatchFor, applicantMatchesProfile, NEUTRAL_DELIVERY, deliveryForRun, recipeProseGuard, withRunPlatforms, profileStoreResolution } from "./profiles.mjs";   // adds profileStoreResolution — the CONFIG store's identity, beside the doctrine tree's
 import { resolveSearchPolicy, gateResolvedPolicy, loadRecipes, policyFor, isRegisterOnly, reportIdentityFor, depthFor } from "./search-policy.mjs";
@@ -2955,11 +2956,32 @@ function recordPlacementSeam(ctx, r, trigger = null) {
     seam: "placement", stage: "placement-inquiry", trigger, completed: r?.ok === true && !r?.skipped,
     saw, carried: placedUriRows(P),
     evidence: r?.skipped ? "the pass was SKIPPED on an artifact already on disk, so it made no decision this pass" : (r?.fail ? String(r.fail).slice(0, 80) : ""),
-    reasonFor: () => ({
-      reason: "placement:not-selected", reason_source: "step-silent",
-      detail: "placement-inquiry completed this pass and named no placement for this record; the decision not to carry it was made and no ground for this record was recorded",
-    }),
+    reasonFor: placementSeamReason(placementSetAsideGrounds(P)),
   });
+}
+
+/** The set-aside grounds the placement form holds, as uri → entry, through the form's own selection index. */
+function placementSetAsideGrounds(P) {
+  try {
+    const form = readPlacementForm(P.runDir);
+    if (!form.set_aside?.length) return () => null;
+    return setAsideGrounds(form.set_aside, buildSelectionIndex(readPlacementFormInput(P.runDir)));
+  } catch { return () => null; }
+}
+
+/**
+ * WHY A RECORD THE PICKING STEP DID NOT PLACE LEFT IT. Where the step set aside that owner's records as a
+ * set, the record leaves with the step's own ground (sentence 6, ruled 2026-09-25). Otherwise the step
+ * completed and said nothing about it, which is what the reason-less exit count reports. PURE.
+ */
+export function placementSeamReason(groundOf) {   // @internal
+  return (_rec, uri) => {
+    const g = typeof groundOf === "function" ? groundOf(uri) : null;
+    if (g) return { reason: "placement:set-aside", reason_source: "step-stated",
+      detail: `placement-inquiry set aside this owner's records as a set: ${g.ground}` };
+    return { reason: "placement:not-selected", reason_source: "step-silent",
+      detail: "placement-inquiry completed this pass and named no placement for this record; the decision not to carry it was made and no ground for this record was recorded" };
+  };
 }
 
 /**
@@ -4402,11 +4424,11 @@ async function stageOnce(name, ctx, opts = {}) {
   if (name === "placement-inquiry" && def.contract?.placementForm) {
     try {
       const input = readPlacementFormInput(P.runDir);
-      const prior = readPlacementForm(P.runDir).rows;
-      const u = unionPlacementForm({ rows: prior }, null, input);
+      const priorForm = readPlacementForm(P.runDir);
+      const u = unionPlacementForm({ rows: priorForm.rows, set_aside: priorForm.set_aside }, null, input);
       writePlacementForm(P.runDir, u.form);
       runLog(P.runDir, { event: "placement-form-written", trigger: opts.trigger ?? "fresh", rows: u.total,
-        settled: u.settled, carried: u.carried, seatRows: u.seat_rows, unresolved: u.unresolved,
+        settled: u.settled, carried: u.carried, seatRows: u.seat_rows, unresolved: u.unresolved, setAside: u.set_aside,
         selectable: u.form.generated_from?.selectable_records ?? null });
     } catch (e) {
       note(`placement-form write failed: ${e.message} — the stamp is already armed, so the absence is loud rather than silent`);

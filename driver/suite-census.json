@@ -1671,6 +1671,12 @@
           "skips": 0,
           "todos": 0
         },
+        "an-owners-set-leaves-the-picking-step-with-one-ground.test.mjs": {
+          "tests": 3,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
         "an-unread-probe-is-not-a-failed-measurement.test.mjs": {
           "tests": 5,
           "asserts": 11,

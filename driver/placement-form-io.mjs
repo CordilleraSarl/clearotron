@@ -63,12 +63,12 @@ export function readPlacementFormInput(runDir) {
 /** Read the DRIVER'S copy. Three states, and they are not the same fact — see verify.mjs. */
 export function readPlacementForm(runDir, formName = PLACEMENT_FORM_NAME) {
   const { sidecar } = placementFormPaths(runDir, formName);
-  if (!existsSync(sidecar)) return { rows: null, error: null, present: false };
+  if (!existsSync(sidecar)) return { rows: null, set_aside: [], error: null, present: false };
   let raw = null;
   try { raw = readFileSync(sidecar, "utf8"); }
-  catch { return { rows: null, error: `${basename(sidecar)} exists and could not be read`, present: true }; }
-  const { rows, error } = parsePlacementForm(raw);
-  return { rows, error: error ? `${basename(sidecar)} ${error}` : null, present: true };
+  catch { return { rows: null, set_aside: [], error: `${basename(sidecar)} exists and could not be read`, present: true }; }
+  const { rows, set_aside, error } = parsePlacementForm(raw);
+  return { rows, set_aside: set_aside ?? [], error: error ? `${basename(sidecar)} ${error}` : null, present: true };
 }
 
 /** Read the SEAT's copy — what this attempt handed back. Absent/unreadable is "said nothing", not "empty". */

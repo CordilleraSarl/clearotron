@@ -735,9 +735,9 @@ export function syncPlacementForm(files) {
     const runDir = dirname(String(f));
     if (!placementFormStamp(runDir).required) return null;
     const input = readPlacementFormInput(runDir);
-    const prior = readPlacementForm(runDir).rows;
+    const priorForm = readPlacementForm(runDir);
     const submitted = readSubmittedPlacementForm(runDir);
-    const u = unionPlacementForm({ rows: prior }, submitted === null ? null : { rows: submitted }, input);
+    const u = unionPlacementForm({ rows: priorForm.rows, set_aside: priorForm.set_aside }, submitted === null ? null : { rows: submitted }, input);
     try { writePlacementForm(runDir, u.form); }
     catch (e) { note(`[placement-form] could not write the form: ${abbrev(String(e.message), 120)} — the render below still runs from the union in hand`); }
     // PARSE-THEN-LAND, through the gate's own parser, before it replaces anything. A render defect can
