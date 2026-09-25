@@ -164,7 +164,7 @@ when N==M"): it is the same completeness contract applied to the dangerous slice
 discriminator, not the label.** Every substring slice here — the dominant token / formative root as a *contains*
 predicate, and each per-major and phonetic slice built on it — is **attempted once, class-scoped, and gated on
 its own result**. If it returns `enumerated` (tractable — a real named band: e.g. ≈257 exact-in-class-live; the phrase
-"WIDE OPEN" ≈ 99), keep it and run its per-major / phonetic passes. If it returns `incomplete` because the
+"QUIET FIELD" ≈ 99), keep it and run its per-major / phonetic passes. If it returns `incomplete` because the
 slice is **itself a crowd over the ceiling** (a hyper-common word — GREAT ≈ 28k, OUTDOORS ≈ 2.7k),
 the ceiling is a call limit, never a decision point: decide on that crowd as on the identical mark's,
 narrowing it [in that order](#read-the-identical-mark-first-look-at-the-count-before-you-read-anything) until it lists, or writing down why looking further would not
@@ -178,7 +178,7 @@ counted whether or not it is the dominant unit. **On a crowd slice, what you WRI
   anchor) → do **not** write a second crowd block: `saturation-probe` already counted it and that count
   (immaterial off-field dilution) is the sole signal — a duplicate *primary-sweep* crowd risks mis-reading as a
   material in-class gap.
-**For an all-common-words phrase / descriptive-compound mark ("The Wide Open" — dominant unit = the phrase,
+**For an all-common-words phrase / descriptive-compound mark ("The Quiet Field" — dominant unit = the phrase,
 no distinctive single-token root), the exact phrase + its near-neighbours IS the dangerous named band** (trivially
 enumerable, ≈ 99); the common-word components are dilution the lawyer USES (a weak, diluted, common mark), never a
 wall to grind. This is a **removal** of the mega-crowd grind, gated on the class-scoped result the tool already
