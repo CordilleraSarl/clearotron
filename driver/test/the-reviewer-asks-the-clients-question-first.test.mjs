@@ -53,7 +53,8 @@ test("the manual's body opens with the owner's question, character for character
 test("both engines resolve the manual order to the same file", () => {
   const skillsDir = "/store/skills";
   const resolved = absolutizeSkillRefs(reviewerMessage(), skillsDir);
-  assert.match(resolved, /First, read and follow exactly: \/store\/skills\/narrative-refutation\/SKILL\.md\./);
+  // Joined with this machine's `join`, so a Windows prompt names the file with its own separator.
+  assert.ok(resolved.includes(`First, read and follow exactly: ${join("/store", MANUAL)}.`), resolved);
   for (const engine of ["anthropic-agent.mjs", "openai-agent.mjs"]) {
     const src = readFileSync(join(DRIVER, "engine", engine), "utf8");
     assert.match(src, /absolutizeSkillRefs\(message, skillsDir, resolveSkill\)/,
