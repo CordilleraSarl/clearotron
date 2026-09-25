@@ -675,20 +675,57 @@ export function foldStepLedgers(ledgers, spec = null) {
   });
 }
 
+/** The index of the bracket that closes the value opening at `i`, or -1 when the text ends first. */
+function closingBracket(s, i) {
+  let depth = 0, inString = false, escaped = false;
+  for (let j = i; j < s.length; j++) {
+    const c = s[j];
+    if (inString) { if (escaped) escaped = false; else if (c === "\\") escaped = true; else if (c === "\"") inString = false; continue; }
+    if (c === "\"") inString = true;
+    else if (c === "{" || c === "[") depth++;
+    else if ((c === "}" || c === "]") && --depth === 0) return j;
+  }
+  return -1;
+}
+
+/**
+ * EVERY LEDGER ONE EXECUTION PRINTED, in order. The sandbox returns all of one execution's output as ONE
+ * stdout string: the vendor's documentation gives one `results[]` entry per execution, and its example prints
+ * ten lines into a single `stdout`. So a program that loops over its groups and prints each group's object
+ * returns `{…}\n{…}\n…`: not one JSON value, and refused whole by a capture that reads only a stdout that
+ * parses. A value is read where a line starts with it, compact or indented; a line of text between values is
+ * passed over; a value the output ends inside of was cut off and is not read, so its cells become recorded
+ * gaps like any other cell that did not come back. PURE.
+ */
+export function ledgersPrinted(stdout) {
+  const s = String(stdout ?? "");
+  try { const whole = JSON.parse(s); return isLedgerShaped(whole) ? [whole] : []; } catch { /* several values, or text around them */ }
+  const out = [], starts = /^[ \t]*[{[]/gm;
+  for (let m = starts.exec(s); m; m = starts.exec(s)) {
+    const i = m.index + m[0].length - 1;
+    const end = closingBracket(s, i);
+    if (end < 0) continue;   // the output ends inside this value (cut off), or a line of text opened a bracket
+    try { const p = JSON.parse(s.slice(i, end + 1)); if (isLedgerShaped(p)) out.push(p); starts.lastIndex = end + 1; }
+    catch { /* not JSON: read on from the next line */ }
+  }
+  return out;
+}
+
 export function captureGridFromResponse(data, spec) {
   validateGridSpec(spec);
   const runs = parseSandboxResults(data);
   if (runs.length === 0) return { ok: false, error: "sandbox was not used — no program executed" };
-  // A grid split into groups prints one ledger per sandbox execution (see foldStepLedgers); every one is read.
-  // A single ledger, or none, is read exactly as before: the last output that parses.
-  const steps = [];
-  for (const r of runs) { try { const p = JSON.parse(r.stdout); if (isLedgerShaped(p)) steps.push({ r, p }); } catch { /* not a ledger */ } }
+  // A grid split into groups prints one ledger per group, from separate executions or several from one (see
+  // ledgersPrinted and foldStepLedgers); every one is read. A single ledger, or none, is read exactly as
+  // before: the last output that parses, or else the one ledger printed among other lines.
+  const steps = runs.flatMap((r) => ledgersPrinted(r.stdout).map((p) => ({ r, p })));
   let deliverable = steps.length > 1
-    ? { stdout: foldStepLedgers(steps.map((x) => x.p), spec), code: steps.map((x) => x.r.code || "").filter(Boolean).join("\n\n") }
+    ? { stdout: foldStepLedgers(steps.map((x) => x.p), spec), code: [...new Set(steps.map((x) => x.r))].map((r) => r.code || "").filter(Boolean).join("\n\n") }
     : null;
   for (let i = runs.length - 1; i >= 0 && !deliverable; i--) {
     try { JSON.parse(runs[i].stdout); deliverable = runs[i]; } catch { /* not this run */ }
   }
+  if (!deliverable && steps.length === 1) deliverable = { stdout: JSON.stringify(steps[0].p), code: steps[0].r.code || "" };
   if (!deliverable) {
     const last = runs[runs.length - 1];
     return { ok: false, error: `sandbox stdout is not valid JSON (exit ${last.exitCode})`, stderrTail: (last.stderr || "").slice(-400) };
