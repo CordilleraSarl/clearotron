@@ -17,6 +17,7 @@ import { deferralCoverageRow } from "../deferral-row.mjs";
 import { buildAudit } from "../publish/xlsx.mjs";
 import { pinEnv, envFrom } from "../../shared/env-aliases.mjs";
 import { driverDir } from "../../shared/driver-dir.mjs";
+import { firstTimeRows, firstTimeLines } from "../../scripts/e2e-first-time.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const jl = (rows) => rows.map((r) => JSON.stringify(r)).join("\n") + "\n";
@@ -137,6 +138,18 @@ test("the rows written at delivery are what a republish reads back", (t) => {
   const record = writeDegradedParts(dir, degradedParts(dir));
   assert.deepEqual(readDegradedPartRows(dir), record.rows);
   assert.deepEqual(readDegradedPartRows(runDir(t)), [], "a run that wrote none reads none");
+});
+
+test("the first-time line counts a degraded part only where the part's record is the failure's only one", () => {
+  const base = { attempts: [{ stage: "matter-frame", row: { attempt: 1, ok: true, engine: "e", modelActual: "m" } }], status: { state: "delivered" } };
+  const reads = (event) => firstTimeLines(firstTimeRows({ ...base, runLog: [event] }))[0].split(" — ")[0];
+  assert.equal(reads({ event: "degraded-parts", parts: [{ part: "court-decisions", cause: "case-law-findings.md is empty" }] }), "first time: no");
+  assert.equal(reads({ event: "degraded-parts", parts: [{ part: "checks", cause: "the reviewer's pass: timeout" }] }), "first time: yes",
+    "a stage that ended failed is counted from its own attempt row, not twice");
+  assert.equal(reads({ event: "degraded-parts", parts: [] }), "first time: yes");
+  assert.equal(reads({ event: "degraded-parts-failed", cause: "boom" }), "first time: no");
+  assert.equal(reads({ event: "publish-gates", auditWorkbook: "failed", auditWorkbookError: "x" }), "first time: no");
+  assert.equal(reads({ event: "publish-gates", auditWorkbook: "built" }), "first time: yes");
 });
 
 // ── The workbook ─────────────────────────────────────────────────────────────────────────────────────
