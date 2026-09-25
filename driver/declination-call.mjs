@@ -180,7 +180,7 @@ export function groundsProblem(grounds, reason) {
       + `lawyer reads. A declination with no ground is the silence this tool exists to replace.`;
   }
   if (g.length < MIN_GROUNDS) {
-    return `grounds is ${g.length} characters — too short to say anything about this record. Write the `
+    return `grounds is ${g.length} characters — too short to say anything about this record or page. Write the `
       + `sentence you would say to the reviewing lawyer if they asked why it is not in the report.`;
   }
   if (markKey(g) === markKey(reason) || markKey(g) === markKey(String(reason).replace(/-/g, " "))) {

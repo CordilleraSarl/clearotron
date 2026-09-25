@@ -11,7 +11,7 @@ import { mkdtempSync, writeFileSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { driverDir, ensureDriverDir } from "../../shared/driver-dir.mjs";
-import { acceptDeclinationCall, rowKey, isPageRow, DECLINATION_REASONS } from "../declination-call.mjs";
+import { acceptDeclinationCall, rowKey, isPageRow, DECLINATION_REASONS, groundsProblem } from "../declination-call.mjs";
 import { recordDeclinations, readDeclinations, declinationKey } from "../declination-tool.mjs";
 import { reconcileDeclinationDuty } from "../declination-duty.mjs";
 import { notesExits, notesPageRows } from "../hand-off-exits.mjs";
@@ -148,6 +148,19 @@ test("the synthesis instructions print the pages after the records, continuing t
   const tool = readFileSync(new URL("../engine/mcp/declination-server.mjs", import.meta.url), "utf8");
   assert.ok(tool.includes("every page the web notes marked as a candidate or conflict"), "the tool names the same pages");
   assert.doesNotMatch(tool, /web notes surfaced/);
+});
+
+test("the findings step's own words about a declination say record or page, as the tool's fields do", () => {
+  const base = {
+    paths: { findings: "/run/findings.json" }, job: {}, customerUnknown: false, profile: null,
+    intakeAsks: [], enforcerSignals: null, framework: null, jxAim: null, registerOnly: false,
+    crowdContext: null, dispatchBlocks: {},
+  };
+  const text = String(STAGES.synthesis.message({ ...base, findingsSurface: [RECORD, PAGE_A] }));
+  assert.ok(text.includes("on why THIS record or page does not earn a line"));
+  assert.ok(text.includes("the rules do not let you omit the record or page."));
+  assert.doesNotMatch(text, /THIS record does not earn|omit the record\./);
+  assert.match(groundsProblem("too short", "duplicate"), /too short to say anything about this record or page\./);
 });
 
 test("what synthesis set aside reaches the audit workbook's coverage tab, with the AI's own ground", async () => {
