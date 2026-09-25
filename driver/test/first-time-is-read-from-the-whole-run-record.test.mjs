@@ -64,7 +64,10 @@ test("every kind the attempt count misses is listed, with its stage, engine and 
   const rescue = ft.rows.find((r) => r.kind === "rescue");
   assert.deepEqual([rescue.stage, rescue.engine, rescue.model], ["placement-inquiry", "engine-a", "model-a"]);
   const [head, ...rest] = firstTimeLines(ft);
-  assert.match(head, new RegExp(`^first time: no — ${ft.rows.length} row\\(s\\)`));
+  assert.match(head, new RegExp(`^first time: no — ${ft.rows.length} row\\(s\\): `));
+  assert.ok(head.includes("1 rescue") && head.includes("1 failed tool call"), `the head line does not carry the counts by kind: ${head}`);
+  assert.match(tool.cause, /settled ok:false at 2026-09-25T10:00:50/, "a failed tool call does not carry its time");
+  assert.match(ft.rows.find((r) => r.kind === "second cycle").cause, /^attempt 1 of a second cycle/);
   assert.equal(rest.length, ft.rows.length);
 });
 
@@ -85,8 +88,11 @@ test("the reader takes the run record from disk: stage records, the run log, sta
   writeFileSync(join(run, "_driver", "register-repair.jsonl"), jl([{ axis: "primary-sweep", reason: "re-run" }]));
   writeFileSync(join(run, "status.json"), JSON.stringify({ state: "delivered" }));
   writeFileSync(join(run, ".postponed"), JSON.stringify({ stage: "matter-frame", parkKind: "weather" }));
+  writeFileSync(join(run, ".failed"), JSON.stringify({ stage: "matter-frame", reason: "missing_file" }));
+  writeFileSync(join(run, "_driver", "run.jsonl"), jl([{ event: "form-repair", stage: "matter-frame", attempt: 1 }, { event: "failed", stage: "matter-frame", reason: "missing_file" }]));
   const ft = firstTimeRows(readRunRecord(run));
   assert.equal(ft.codeSteps, 1);
-  assert.deepEqual(ft.rows.map((r) => r.kind).sort(), ["form repair turn", "recovery", "register repair"]);
+  assert.deepEqual(ft.rows.map((r) => r.kind).sort(), ["form repair turn", "recovery", "register repair", "run failed"], "one failure was listed twice");
+  assert.match(ft.rows.find((r) => r.kind === "run failed").cause, /also the failure marker/);
   assert.equal(ft.firstTime, false);
 });

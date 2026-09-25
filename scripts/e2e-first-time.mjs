@@ -82,7 +82,7 @@ export function firstTimeRows({ attempts = [], runLog = [], status = {}, markers
     if (row.engine || row.modelActual || row.model) engineOf.set(stage, row);
     const n = Number(row.attempt);
     const prior = seenAttempt.get(stage) ?? 0;
-    if (Number.isFinite(n) && n <= prior) add("second cycle", stage, n, `attempt ${n} again after attempt ${prior} in the same stage record — a recovery or resume ran the stage again`, row);
+    if (Number.isFinite(n) && n <= prior) add("second cycle", stage, n, `attempt ${n} of a second cycle: the stage ran again after reaching attempt ${prior} — a recovery or resume`, row);
     if (Number.isFinite(n)) seenAttempt.set(stage, Math.max(prior, n));
     if (row.ok === false) add("failed attempt", stage, n, row.fail ?? "no cause recorded", row);
     else if (Number.isFinite(n) && n > 1) add("retry", stage, n, `attempt ${n} succeeded`, row);
@@ -103,7 +103,12 @@ export function firstTimeRows({ attempts = [], runLog = [], status = {}, markers
   if (Number(status?.recoveryAttempts) > 0) add("recovery", status.failedStage ?? null, null, `status records ${status.recoveryAttempts} recovery attempt(s)`);
   if (status?.resumedAt) add("recovery", null, null, `resumed at ${status.resumedAt}`);
   if (markers?.postponed) add("recovery", markers.postponed.stage ?? null, null, `parked${markers.postponed.parkKind ? ` (${markers.postponed.parkKind})` : ""}`);
-  if (markers?.failed) add("run failed", markers.failed.stage ?? null, null, markers.failed.reason ?? markers.failed.terminalKind ?? "the run's failure marker");
+  // One failure, whichever records name it: the run log's row and the failure marker are the same event.
+  if (markers?.failed) {
+    const same = rows.find((r) => r.kind === "run failed" && (r.stage ?? null) === (markers.failed.stage ?? null));
+    if (same) same.cause = clip(`${same.cause} (also the failure marker)`);
+    else add("run failed", markers.failed.stage ?? null, null, markers.failed.reason ?? markers.failed.terminalKind ?? "the run's failure marker");
+  }
   for (const r of Array.isArray(repairs) ? repairs : []) add("register repair", r?.axis ?? r?.stage ?? "register", null, r?.reason ?? r?.kind ?? "a register repair row");
   for (const d of Array.isArray(discards) ? discards : []) {
     if (/:stage-incomplete$/.test(String(d?.reason ?? ""))) add("incomplete pass", d.stage ?? d.seam ?? null, d.pass ?? null, `${d.seam ?? "a"} pass did not complete`);
@@ -117,7 +122,7 @@ export function firstTimeRows({ attempts = [], runLog = [], status = {}, markers
     const t = Date.parse(c.ts);
     const at = windows.filter((w) => t >= w.start && t <= w.end);
     const stage = at.length ? [...new Set(at.map((w) => w.stage))].join(" or ") : null;
-    add("failed tool call", stage ?? "stage not recorded", at.length === 1 ? at[0].attempt : null, `${c.server ?? "?"}/${c.tool ?? "?"} settled ok:false`);
+    add("failed tool call", stage ?? "stage not recorded", at.length === 1 ? at[0].attempt : null, `${c.server ?? "?"}/${c.tool ?? "?"} settled ok:false at ${c.ts ?? "a time not recorded"}`);
   }
   const engineRows = (Array.isArray(attempts) ? attempts : []).filter(({ row, code }) => row && !code && row.ok !== null && row.ok !== undefined).length;
   const firstTime = engineRows === 0 ? null : rows.length === 0;
@@ -130,7 +135,11 @@ export function firstTimeLines(ft) {
   const code = ft.codeSteps ? ` ${ft.codeSteps} code step(s) are not engine attempts and count neither way.` : "";
   if (ft.firstTime === null) return [`first time: CANNOT TELL — the run record holds no engine attempt row.${code} (${nr})`];
   if (ft.firstTime) return [`first time: yes — the run record shows no failure, retry, repair, rescue or refusal.${code} (${nr})`];
-  return [`first time: no — ${ft.rows.length} row(s) in the run record.${code} (${nr})`,
+  // The head line is the score; the rows under it are the evidence.
+  const counts = new Map();
+  for (const r of ft.rows) counts.set(r.kind, (counts.get(r.kind) ?? 0) + 1);
+  const byKind = [...counts].map(([k, n]) => `${n} ${k}`).join(", ");
+  return [`first time: no — ${ft.rows.length} row(s): ${byKind}.${code} (${nr})`,
     ...ft.rows.map((r) => `    ${r.kind} · ${r.stage ?? "no stage"}${r.attempt != null ? ` attempt ${r.attempt}` : ""} · ${r.engine ?? "engine not recorded"}/${r.model ?? "model not recorded"} — ${r.cause}`)];
 }
 
