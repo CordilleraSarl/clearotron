@@ -264,7 +264,7 @@ import { unionCoverageForm } from "./coverage-union.mjs";
 import { coverageFormStamp, readCoverageForm, readCoverageFormInput, writeCoverageForm } from "./coverage-form-io.mjs";
 import { unionPlacementForm } from "./placement-union.mjs";
 import { placementRenderAccount } from "./placement-form.mjs";
-import { placementFormStamp, readPlacementForm, readPlacementFormInput, readSubmittedPlacementForm, writePlacementForm, renderPlacementsFile } from "./placement-form-io.mjs";
+import { placementFormStamp, readPlacementForm, readPlacementFormInput, readSubmittedPlacementForm, readSubmittedPlacementSetAside, writePlacementForm, renderPlacementsFile } from "./placement-form-io.mjs";
 // The register-axis vocabulary, quoted verbatim into the coverage-form axis hint. ONE source: the same
 // constant `rowIsSettled` refuses against, so the hint can never name a set the gate does not accept.
 // Acyclic — coverage-ledger.mjs is PURE (no node imports, no driver imports).
@@ -737,7 +737,8 @@ export function syncPlacementForm(files) {
     const input = readPlacementFormInput(runDir);
     const priorForm = readPlacementForm(runDir);
     const submitted = readSubmittedPlacementForm(runDir);
-    const u = unionPlacementForm({ rows: priorForm.rows, set_aside: priorForm.set_aside }, submitted === null ? null : { rows: submitted }, input);
+    const u = unionPlacementForm({ rows: priorForm.rows, set_aside: priorForm.set_aside },
+      submitted === null ? null : { rows: submitted, set_aside: readSubmittedPlacementSetAside(runDir) }, input);
     try { writePlacementForm(runDir, u.form); }
     catch (e) { note(`[placement-form] could not write the form: ${abbrev(String(e.message), 120)} — the render below still runs from the union in hand`); }
     // PARSE-THEN-LAND, through the gate's own parser, before it replaces anything. A render defect can

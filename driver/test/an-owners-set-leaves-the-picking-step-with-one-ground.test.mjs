@@ -14,6 +14,11 @@
 // and the count of reason-less exits.
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { syncPlacementForm } from "../gateway.mjs";
+import { readPlacementForm } from "../placement-form-io.mjs";
 import { unionPlacementForm } from "../placement-union.mjs";
 import { buildSelectionIndex, setAsideGrounds, renderPlacementsJson, SET_ASIDE_ROW_CONTRACT } from "../placement-form.mjs";
 import { placementSeamReason } from "../pipeline.mjs";
@@ -93,4 +98,29 @@ test("with no set-aside row, a passed-over record still leaves as before, with n
   assert.equal(row.reason, "placement:not-selected");
   assert.equal(row.reason_source, "step-silent");
   assert.match(row.detail, /no ground for this record was recorded/);
+});
+
+test("a ground the step adds to the set-aside list it is shown, rather than as a row, is kept", (t) => {
+  // The driver writes the form with its grounds as a top-level list, and that is the shape the step sees
+  // on its next pass. A step that adds its row there, where it sees the others, must not lose it.
+  const run = mkdtempSync(join(tmpdir(), "set-aside-list-"));
+  t.after(() => rmSync(run, { recursive: true, force: true }));
+  mkdirSync(join(run, "_driver"), { recursive: true });
+  writeFileSync(join(run, "_driver", "stage-contracts.json"), JSON.stringify({ "placement-inquiry": { placementForm: 1 } }));
+  writeFileSync(join(run, "_driver", "register-positions.json"), JSON.stringify({ positions: input.positions }));
+  writeFileSync(join(run, "_driver", "band-shape.json"), JSON.stringify({ floors: { in_class_identical_or_near: [] } }));
+  const md = join(run, "placement-recommendations.md");
+  writeFileSync(md, "# Placement\n");
+  // Pass 1: the step answers with rows.
+  writeFileSync(join(run, "placement-form.json"), JSON.stringify(submitted));
+  assert.ok(syncPlacementForm([md]), "guard: the sync ran");
+  assert.deepEqual(readPlacementForm(run).set_aside.map((e) => e.set_aside), ["/mark/us/1002", "/mark/us/3001"]);
+  // Pass 2: the step opens the form the driver wrote and appends to the list it sees there.
+  const shown = readPlacementForm(run);
+  const onDisk = { rows: shown.rows, set_aside: [...shown.set_aside, { set_aside: "/mark/us/2001", ground: "Owner B's marks are for bicycles." }] };
+  writeFileSync(join(run, "placement-form.json"), JSON.stringify(onDisk));
+  syncPlacementForm([md]);
+  const held = readPlacementForm(run).set_aside;
+  assert.deepEqual(held.map((e) => e.set_aside), ["/mark/us/1002", "/mark/us/3001", "/mark/us/2001"], "a ground added to the list was dropped");
+  assert.equal(held.find((e) => e.set_aside === "/mark/us/2001").ground, "Owner B's marks are for bicycles.");
 });

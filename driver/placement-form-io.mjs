@@ -81,6 +81,20 @@ export function readSubmittedPlacementForm(runDir, formName = PLACEMENT_FORM_NAM
   return rows;   // null on a torn/unparseable write ⇒ the union reads it as "said nothing" ⇒ prior stands
 }
 
+/**
+ * The set-aside list on the SEAT's copy. The form shows the step its grounds as a top-level list, so a
+ * step that adds one where it sees the others is answering in that list, not in `rows`. Read here so the
+ * union takes it; an entry equal to one already held changes nothing. Absent or torn reads as none.
+ */
+export function readSubmittedPlacementSetAside(runDir, formName = PLACEMENT_FORM_NAME) {
+  const { seat } = placementFormPaths(runDir, formName);
+  if (!existsSync(seat)) return [];
+  let raw = null;
+  try { raw = readFileSync(seat, "utf8"); } catch { return []; }
+  const { rows, set_aside } = parsePlacementForm(raw);
+  return rows === null ? [] : (set_aside ?? []);
+}
+
 /** Write both copies. */
 export function writePlacementForm(runDir, form, formName = PLACEMENT_FORM_NAME) {
   const { seat, sidecar } = placementFormPaths(runDir, formName);

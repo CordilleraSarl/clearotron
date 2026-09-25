@@ -158,13 +158,17 @@ export function unionPlacementForm(prior, submitted, input) {
     const id = String(row.set_aside).trim();
     const ground = typeof row.ground === "string" ? row.ground.trim() : "";
     const canonical = index.resolve(id);
-    if (!canonical) { setAsideRefused.push({ set_aside: id, why: "the band holds no record with this id" }); return; }
-    if (!ground) { setAsideRefused.push({ set_aside: id, why: "no ground" }); return; }
+    const refuse = (why) => { if (!setAsideRefused.some((x) => x.set_aside === id && x.why === why)) setAsideRefused.push({ set_aside: id, why }); };
+    if (!canonical) { refuse("the band holds no record with this id"); return; }
+    if (!ground) { refuse("no ground"); return; }
     const key = setAsideKey(canonical);
     setAside.delete(key);
     setAside.set(key, { set_aside: id, key, owner: canonical.owner ?? null, ground });
   };
   for (const e of (Array.isArray(prior?.set_aside) ? prior.set_aside : [])) if (isSetAsideRow(e)) takeSetAside(e);
+  // The step may answer in either place: the top-level list it is shown, or a row. An entry equal to one
+  // already held changes nothing; a changed ground there replaces the held one, like a row.
+  for (const e of (Array.isArray(submitted?.set_aside) ? submitted.set_aside : [])) if (isSetAsideRow(e)) takeSetAside(e);
   for (const r of (submittedRows ?? [])) if (isSetAsideRow(r)) { consumed.add(r); takeSetAside(r); }
   for (const [k, e] of setAside) if (retracted.has(e.set_aside) || retracted.has(e.set_aside.toUpperCase())) setAside.delete(k);
 
