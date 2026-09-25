@@ -334,10 +334,10 @@ them will not join, even though both halves are verbatim. This is what the numbe
 is two passages, and you name one and copy from it. It used to be easiest to get wrong where the script has
 no inter-word spaces, because a stitch reads as continuous there — that is now a number, not a judgement.
 
-### Negative results (per-platform per-variant — the full grid accounting)
+### Negative results
 <!-- clearotron:section=negative-results -->
 
-**One row for EVERY (variant × platform) grid cell**, each carrying its receipt. The three row
+**One row for EVERY grid cell**, each carrying its receipt. The three row
 forms (and the gap form) — this is what the driver's receipt gate counts:
 
 | Variant | Platform | Result |
@@ -349,18 +349,16 @@ forms (and the gap form) — this is what the driver's receipt gate counts:
 | Dawn: Legends of Thornmantle | Microsoft Store | No results |
 | Dawn: Legends of Thornmantle | itch.io | Similar listing(s) found — see Findings (2 candidates) |
 | Dawn: Legends of Thornmantle | web | No similar listings (8 candidates reviewed) |
-| RAIZ8 | Steam | No results |
 | エバーライト | Steam | not executed — coverage-limited (see ledger) |
-| (... full term × platform matrix ...) | | |
 
 ### Coverage ledger (feeds synthesis coverage-honesty + skeptic audit)
 <!-- clearotron:section=coverage-ledger -->
 
-One row per planned coverage unit (each mandatory platform; the field-scoped general search; non-Latin / transliteration platform reach), with status + one-line reason. Same three statuses as the register side (see `clearance-register/SKILL.md` → *Coverage ledger*): `confirmed-clean` (ran to completion), `coverage-limited` (the search **ran and reached the platform** but could not be exhausted — thin data, non-Latin reach), `deferred` (planned but **not run, or the platform/tool could not be reached**). Per the keystone doctrine: a could-not-reach gap (a platform/tool that was unavailable) is `deferred`, never `coverage-limited` — the latter is a searched-but-unexhausted DATA limit. This is the structured form of the Open-verification-flags prose — a `coverage-limited` row is **not** a clean negative downstream.
+One row per planned coverage unit (each dictated platform; the field-scoped general search; non-Latin / transliteration platform reach), with status + one-line reason. Same three statuses as the register side (see `clearance-register/SKILL.md` → *Coverage ledger*): `confirmed-clean` (ran to completion), `coverage-limited` (the search **ran and reached the platform** but could not be exhausted — thin data, non-Latin reach), `deferred` (planned but **not run, or the platform/tool could not be reached**). Per the keystone doctrine: a could-not-reach gap (a platform/tool that was unavailable) is `deferred`, never `coverage-limited` — the latter is a searched-but-unexhausted DATA limit. This is the structured form of the Open-verification-flags prose — a `coverage-limited` row is **not** a clean negative downstream.
 
 | Coverage unit | Status | Reason |
 |---|---|---|
-| dictated platform grid | confirmed-clean | all dictated platforms searched, term-by-term |
+| dictated platform grid | confirmed-clean | all dictated platforms searched |
 | field-scoped general search (collab / non-gaming goods) | confirmed-clean | run per matter scope |
 | non-Latin platform reach (translit variants) | coverage-limited | marketplace data thin for non-Latin scripts; absence not confirmed clean |
 
@@ -487,7 +485,7 @@ common word) does not. Then categorise each finding into one of:
 - **Commercial awareness** — identical/similar in unrelated fields; crowded field evidence; competitor intelligence (existing brand partnerships)
 - **Competitor intelligence** — watchlist matches; existing partnerships major brands have in the space
 - **PR / reputational risk** — the meaning read of the mark AND its near-forms, scoped by the run's OWN dictated sweep: the fixed meaning / slang / gang / offensive / lookup shapes plus the matter frame's derived `Meaning angles:` queries (cultural origin/appropriation, charged history of the term or its imagery, category-specific controversy — as THIS matter's frame reasoned them). Never a generic sensitivities checklist — the scope IS the dictated sweep. NOT scored on legal-risk framework — separate category. **Every recorded query with results carries a ruling recorded through `record_dispositions`, whatever this section concludes** — reporting a loaded reading does not discharge the rest of the sweep (see the PR / reputational risk contract above). `None identified` is additionally a clean *receipt* ONLY when the meaning sweep ran — cite a `Connotation-search source:` line; the driver rejects an unsearched clean claim (`connotation_search_missing`) and refuses the turn while any ruling is unrecorded (the `connotation_call_*` family). A dictionary gloss is never a clearance.
-- **Negative results** — **one row for EVERY variant × platform grid cell** (the full grid accounting the driver's receipt gate counts), **plus rows for the field-scoped cells** (collab / non-gaming goods) when run. **Each row carries its receipt:** `No results` (the search returned nothing), `No similar listings (N candidates reviewed)` (returned N candidates, none prima facie similar), `Similar listing(s) found — see Findings (N candidates)` (the cell produced findings), or `not executed — coverage-limited (see ledger)` (the cell is in the grid's `gaps` — never a clean negative).
+- **Negative results** — **one row for EVERY grid cell** (the grid accounting the driver's receipt gate counts), **plus rows for the field-scoped cells** (collab / non-gaming goods) when run. **Each row carries its receipt:** `No results` (the search returned nothing), `No similar listings (N candidates reviewed)` (returned N candidates, none prima facie similar), `Similar listing(s) found — see Findings (N candidates)` (the cell produced findings), or `not executed — coverage-limited (see ledger)` (the cell is in the grid's `gaps` — never a clean negative).
 - **Cross-checks suggested** — register-side checks the orchestrator should dispatch to `clearance-register` (every common-law owner found → ONE register check)
 
 **100% URL coverage is mandatory.** Every finding row must have a clickable URL. If a finding cannot be verified with a URL, mark it as an Open verification flag and note the source.
@@ -534,11 +532,11 @@ Assemble `studio/clearance-search/<slug>/<date>/common-law-findings.md` per the 
 - [ ] Variant manifest read; all marks accounted for
 - [ ] Search-as-code grid call executed for every mark (sandbox program receipt captured in audit trail)
 - [ ] **`common-law-grid.json` exists** — deterministic mode: the TOOL wrote it (you passed `grid_spec_path`, you did NOT save it). Legacy mode (no `grid_spec_path`): you saved the grid stdout JSON VERBATIM (single object, or JSON array per batch in order). Either way the driver's machine-receipts join validates THIS file
-- [ ] Negative results matrix has one receipt-carrying row per (variant × platform) grid cell
+- [ ] Negative results matrix has one receipt-carrying row per grid cell
 - [ ] Every `perplexity_research` call passed an explicit `depth` (routing table in perplexity-prompts.md)
 - [ ] Famous-mark calls executed for every manifest-flagged element (or "None" documented)
 - [ ] Post-search 5-question checklist run; any "no/unsure" gaps closed via follow-up calls
-- [ ] Every DICTATED platform appears in the audit trail (term-by-term — the list from your task message's PLATFORMS block)
+- [ ] Every DICTATED platform appears in the audit trail (the list from your task message's PLATFORMS block)
 - [ ] Field-scoped general search for collaborated / out-of-field goods logged (when the matter goes outside the customer's core field)
 - [ ] Every finding has a URL (or is in Open verification flags)
 - [ ] Findings categorised: consumer-confusion / commercial-awareness / competitor-intel / PR-risk

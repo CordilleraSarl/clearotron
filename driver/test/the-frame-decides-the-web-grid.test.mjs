@@ -287,8 +287,12 @@ test("sentence 5 is in the frame's manual once, word for word, and nowhere in th
 test("the web sweep's manual no longer says every variant runs on every store", () => {
   const web = skill("clearance-common-law/SKILL.md");
   for (const gone of ["the gaming default is 6 stores", "every one is mandatory for every variant", "The dictated platform list is the floor",
-    "(the program searches them on every platform)", "full variant × platform matrix", "every variant × platform combination"])
+    "(the program searches them on every platform)", "full variant × platform matrix", "every variant × platform combination",
+    // and the leftovers of the same full grid: every spelling on every store, and a mandatory store list
+    "the full grid accounting", "(variant × platform) grid cell", "variant × platform grid cell", "full term × platform matrix",
+    "term-by-term", "each mandatory platform"])
     assert.equal(count(web, gone), 0, gone);
+  assert.equal(count(skill("clearance-search/phase2-execution.md"), "the 6 gaming platforms"), 0, "the skeptic still checks a fixed store list");
   for (const kept of ["- **The dictated platforms** — your task message's PLATFORMS block names the exact store domains for this customer's profile. A gaming profile",
     "Extend with field-scoped cells when the matter goes outside", "6. **Negative results** — one row per grid cell", "- [ ] Negative results documented for every grid cell"])
     assert.equal(count(web, kept), 1, kept);

@@ -5489,7 +5489,7 @@
         },
         "the-frame-decides-the-web-grid.test.mjs": {
           "tests": 20,
-          "asserts": 77,
+          "asserts": 78,
           "skips": 0,
           "todos": 0
         },
