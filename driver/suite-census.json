@@ -597,12 +597,6 @@
           "skips": 0,
           "todos": 0
         },
-        "a-knockout-sets-aside-with-a-ground.test.mjs": {
-          "tests": 6,
-          "asserts": 24,
-          "skips": 0,
-          "todos": 0
-        },
         "a-knockout-whose-counts-all-fail-pays-for-no-owner-lookup.test.mjs": {
           "tests": 3,
           "asserts": 12,
@@ -5502,6 +5496,12 @@
         "the-knockout-page-leads-with-the-read.test.mjs": {
           "tests": 39,
           "asserts": 125,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-knockout-rating-step-reads-no-set-aside-lines.test.mjs": {
+          "tests": 5,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
