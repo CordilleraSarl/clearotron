@@ -1600,8 +1600,8 @@
           "todos": 0
         },
         "an-incumbent-alert-adds-no-search-of-the-clients-word.test.mjs": {
-          "tests": 4,
-          "asserts": 8,
+          "tests": 6,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
@@ -5854,8 +5854,8 @@
           "todos": 0
         },
         "the-reviewers-open-points-reach-the-reviewing-lawyer-never-a-client.test.mjs": {
-          "tests": 5,
-          "asserts": 13,
+          "tests": 6,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
