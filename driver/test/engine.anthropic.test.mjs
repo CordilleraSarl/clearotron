@@ -802,15 +802,26 @@ test("THE FAIL-SAFE: a child that writes ONLY stderr is still bounded, by the by
   // The direction that matters, and the reason the change above is safe. "stderr is not the protocol"
   // must not become "a chattering child runs forever": with no stdout at all the turn has still never
   // started, so the byte-stall bounds it at max(STALL, GRACE) exactly as a silent spawn is bounded.
+  //
+  // THE CLAIM IS WHICH CLOCK KILLED IT, AND BEFORE WHAT, not how fast a runner is. A 4s wall bound failed on
+  // the Windows runner at 4141ms with the kill exactly right (stalled, stdout never read): starting Node and
+  // ending its process tree took the rest. What the regression would look like is the child living until its
+  // first stdout, BOOT_MS in, so the arm asserts that it never spoke and died well before then.
+  const BOOT_MS = 20000;
   const t0 = Date.now();
   const r = await run({ message: "x", model: "sonnet", thinking: "low", timeoutSec: 60 },
-    { MOCK_CLAUDE_STDERR_FIRST: "1", MOCK_CLAUDE_BOOT_MS: "9000",
+    { MOCK_CLAUDE_STDERR_FIRST: "1", MOCK_CLAUDE_BOOT_MS: String(BOOT_MS),
       CLEAROTRON_STALL_MS: "300", CLEAROTRON_SPAWN_GRACE_MS: "500", CLEAROTRON_NO_PROGRESS_MS: "60000" });
   assert.equal(r.killed, true,
     "a child that only ever wrote to stderr ran unbounded — the fix removed the backstop instead of "
     + "deciding which stream starts the clocks" + specimen(r));
-  assert.ok(Date.now() - t0 < 4000,
-    `waited ${Date.now() - t0}ms against a 500ms grace: stderr is keeping the startup window open`);
+  assert.equal(r.signals?.stalled, true,
+    "killed, but not by the byte-stall that bounds a child which never spoke" + specimen(r));
+  assert.equal(r.firstByteMs, null,
+    "the child spoke on stdout before it was killed: stderr held the startup window open until its protocol began" + specimen(r));
+  const waited = Date.now() - t0;
+  assert.ok(waited < BOOT_MS,
+    `waited ${waited}ms, as long as the child's ${BOOT_MS}ms boot: stderr is keeping the startup window open`);
 }));
 
 test("the grace has ONE source: this engine derives it from common.mjs, never a second literal", () => {
