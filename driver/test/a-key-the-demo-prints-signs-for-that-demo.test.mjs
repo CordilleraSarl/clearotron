@@ -57,7 +57,7 @@ test("a demo is refused over an install's directory, so its secret never lands w
   const home = mkdtempSync(join(tmpdir(), "demo-over-install-"));
   const start = (base, extra = {}) => spawnSync(process.execPath, [join(ROOT, "bin", "start.mjs"), "--demo", "--base", base], {
     encoding: "utf8", cwd: ROOT, timeout: 60000,
-    env: handRunEnv({ HOME: home, ...extra }, { PATH: process.env.PATH }),
+    env: handRunEnv({ HOME: home, USERPROFILE: home, ...extra }, { PATH: process.env.PATH }),
   });
   try {
     // The directory an install is set up in by default.
@@ -145,7 +145,7 @@ test("a refusal never tells the reader to drop a flag they did not give", () => 
     writeFileSync(join(quiet, "grants.json"), JSON.stringify({ tenants: {}, people: {} }));
     const r = spawnSync(process.execPath, [join(ROOT, "bin", "start.mjs"), "--demo", "--base", quiet], {
       encoding: "utf8", cwd: ROOT, timeout: 60000,
-      env: handRunEnv({ HOME: home, CLEAROTRON_NO_ENV_FILE: "1" }, { PATH: process.env.PATH }),
+      env: handRunEnv({ HOME: home, USERPROFILE: home, CLEAROTRON_NO_ENV_FILE: "1" }, { PATH: process.env.PATH }),
     });
     const out = `${r.stdout}${r.stderr}`;
     assert.match(out, /--demo cannot run in/, "a base the reader NAMED that looks like an install is still refused");
@@ -168,7 +168,7 @@ test("run as printed it issues a key the demo's secret verifies — and without 
       tenants: { "demo-org": { name: "Demo Org", accounts: ["demo-brand-owner"], users: {} } },
       people: { "demo@localhost": { run: true, manage: true, everything: true } },
     }));
-    const env = { PATH: process.env.PATH, HOME: home, CLEAROTRON_NO_ENV_FILE: "1" };
+    const env = { PATH: process.env.PATH, HOME: home, USERPROFILE: home, CLEAROTRON_NO_ENV_FILE: "1" };
     const key = (args) => spawnSync(process.execPath, [join(ROOT, "bin", "key.mjs"), ...args], { encoding: "utf8", cwd: ROOT, env });
 
     const issued = key(["issue", "demo@localhost", "--base", base]);

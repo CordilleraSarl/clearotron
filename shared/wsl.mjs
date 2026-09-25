@@ -7,7 +7,7 @@
 import { existsSync, readFileSync } from "node:fs";
 
 /**
- * BOTH SIGNALS INJECTABLE, for the reason `platformEngineRefusal` gives: the readers this protects are the
+ * BOTH SIGNALS INJECTABLE, as every platform branch here is: the readers this protects are the
  * ones who cannot run this suite to find out, so a Linux runner has to be able to drive both answers
  * rather than read the source and agree with it.
  *

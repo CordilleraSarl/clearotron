@@ -257,10 +257,13 @@ export function unnamedStructuredFailure({ failClass, classSource, token, kind }
 // while different defects stay apart: paths → basename, long hex runs → "H", digit runs → "N",
 // whitespace collapsed, capped at 160 chars (matches the park log truncation, so a signature can be
 // recomputed from historical run.jsonl rows).
-export function normalizeReason(reason) {
+export function normalizeReason(reason, { platform = process.platform } = {}) {
+  // A Windows path is written with "\", so there both separators end a segment. Elsewhere "\" is an
+  // ordinary character and stays one, so a Linux signature is exactly what it was.
+  const pathLike = platform === "win32" ? /[^\s"'`]*[\\/][^\s"'`]*/g : /[^\s"'`]*\/[^\s"'`]*/g;
   const full = String(reason ?? "")
     .toLowerCase()
-    .replace(/[^\s"'`]*\/[^\s"'`]*/g, (m) => m.split("/").filter(Boolean).pop() ?? "")
+    .replace(pathLike, (m) => m.split(platform === "win32" ? /[\\/]/ : "/").filter(Boolean).pop() ?? "")
     .replace(/[0-9a-f]{8,}/g, "H")
     .replace(/\d+/g, "N")
     .replace(/\s+/g, " ")

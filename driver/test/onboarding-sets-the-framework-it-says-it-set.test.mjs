@@ -376,7 +376,7 @@ test("a malformed key is a named refusal on stderr, not a stack trace", async ()
 
   const run = spawnSync(process.execPath, [j(root, "bin", "brandowner.mjs"), "add", "Bad Key!", "--name", "X"], {
     encoding: "utf8", timeout: 30000,
-    env: { PATH: process.env.PATH, HOME: process.env.HOME, CLEAROTRON_CUSTOMERS_DIR: store },
+    env: { PATH: process.env.PATH, HOME: process.env.HOME, USERPROFILE: process.env.USERPROFILE, CLEAROTRON_CUSTOMERS_DIR: store },
   });
 
   // FATE BEFORE TEXT. A refusal that wrote nothing is exit 1 — the same code this file already spends

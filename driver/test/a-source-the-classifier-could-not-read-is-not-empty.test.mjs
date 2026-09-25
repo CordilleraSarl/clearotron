@@ -83,9 +83,10 @@ test("the CI source reads EVERY workflow, not one of them by name", () => {
     "a variable set by a workflow other than ci.yml is invisible again — that is the defect, restored");
 });
 
+// The refusals below quote the path as this machine spells it, so their separators match either way.
 test("the END-TO-END source refuses when its files are gone, rather than reporting nobody sets them", () => {
   const root = plantRoot({ "ci.yml": "jobs:\n  x:\n    env:\n      CLEAROTRON_X: '1'\n" }, { viable: false });
-  assert.throws(() => gather({ root, prodList: "" }), /scripts\/e2e\.mjs is absent/,
+  assert.throws(() => gather({ root, prodList: "" }), /scripts[\\/]e2e\.mjs is absent/,
     "the end-to-end surface read as empty, so every name it alone sets reported as never set");
 });
 
@@ -109,13 +110,13 @@ test("the SETUP population refuses when the wizard is gone — the worst source 
   // set-site is the deletion population. A missing wizard would propose the whole install surface for
   // removal, and nothing in the output would say the file was not there.
   const root = plantRoot({ "ci.yml": "jobs:\n  x:\n    env:\n      CLEAROTRON_X: '1'\n" }, { viable: false });
-  assert.throws(() => setupNames(root), /bin\/onboard\.mjs is absent/,
+  assert.throws(() => setupNames(root), /bin[\\/]onboard\.mjs is absent/,
     "the wizard read as empty, so the install surface reported as set by nobody");
 });
 
 test("an ABSENT workflow directory refuses; it does not report that nothing sets anything", () => {
   const root = plantRoot(null);
-  assert.throws(() => gather({ root, prodList: "" }), /cannot read .*\.github\/workflows/,
+  assert.throws(() => gather({ root, prodList: "" }), /cannot read .*\.github[\\/]workflows/,
     "a missing directory answered as an empty source, which is a failure to look wearing a finding's clothes");
 });
 

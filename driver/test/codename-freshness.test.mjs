@@ -59,7 +59,7 @@ test("codename OVERRIDE is honoured verbatim even when the dir exists (resume re
   mkdirSync(join(studioRoot, "tmp1-x", `${DATE}-cobalt-falcon`), { recursive: true });
   const ctx = buildRunContext(JOB, { studioRoot, archiveRoot, claim, date: DATE, codename: "cobalt-falcon", rand: () => 0.9 });
   assert.equal(ctx.codename, "cobalt-falcon");
-  assert.ok(ctx.runDir.endsWith(`tmp1-x/${DATE}-cobalt-falcon`));
+  assert.ok(ctx.runDir.endsWith(join("tmp1-x", `${DATE}-cobalt-falcon`)));   // joined, so Windows spells it with its own separator
 });
 
 test("no collision ⇒ the first pick stands (vanilla mint unchanged)", () => {

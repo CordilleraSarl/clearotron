@@ -133,6 +133,8 @@ export function clearanceReportData({
       ordinal: f.ordinal,
       mark: f.mark,
       band: f.band ?? null,
+      // the framework's own inputs, where it states a method — absent otherwise, so every other run's data is unchanged
+      ...(f.inputs ? { inputs: f.inputs } : {}),
       // item 9a — the one-clause net, written once in synthesis and rendered everywhere. It is a
       // client-facing sentence by design (it is the card's lead), so it joins the whitelist explicitly
       // and routes through clientText like every other model-authored free string.

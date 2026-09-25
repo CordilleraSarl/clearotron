@@ -61,7 +61,7 @@
 //                               `rs`. A reader holding the position holds both.
 //   · commonlaw-carry.mjs:386   `completed` folds ALL THREE stage labels from one `outcomes` read and is
 //                               handed to `classifyCandidate` for every candidate in the same call.
-//   · findings-model.mjs:475    `boundLost` and `names` both come off the one `index` argument.
+//   · findings-model.mjs:476 actionPartyReferences `boundLost` and `names` both come off the one `index` argument.
 //   · `familyDispatched` declared in `form-neighbourhood.mjs`  feeds BOTH the returned
 //                               `phoneticFamilyDispatched` and the `complete` verdict beside it — the
 //                               good shape: two ends, one computation, no second derivation to drift.
@@ -90,7 +90,6 @@
 //                               exists to argue against.)
 //   · publish/xlsx.mjs:319,587  `anyHit` and `commonLawUnlogged` are derived from the exact rows the
 //                               sheet then writes, in the same builder.
-//   · reasoning-tripwires.mjs:419 findRecallRegressionViolations — `material` is written onto the row it describes.
 //   · reference-score.mjs:430,861,1538  all three only select WORDING — an excluded-reason string, a
 //                               receipt `detail`, a `missingArtifact` note. A flag that chooses a
 //                               sentence has no satisfaction side to disagree with.
@@ -207,7 +206,7 @@ const RULED = new Map([
   ["band-shape.mjs", 1], ["commonlaw-carry.mjs", 1], ["findings-model.mjs", 1],
   ["form-neighbourhood.mjs", 3], ["gateway.mjs", 2], ["grounds-grammar.mjs", 1],
   ["pipeline.mjs", 2], ["publish/render.mjs", 1], ["publish/xlsx.mjs", 2],
-  ["reasoning-tripwires.mjs", 1], ["reference-score.mjs", 3], ["registry-fidelity.mjs", 2],
+  ["reference-score.mjs", 3], ["registry-fidelity.mjs", 2],
   ["portal-config-view.mjs", 1], ["publish/search-depth.mjs", 1],
 ]);
 

@@ -327,7 +327,8 @@ test("a stage with no projector writes and compares exactly as before — byte-i
   writeFileSync(fp, "x"); writeFileSync(fp2, "x");
   writeStamp(dir, "synthesis", [fp]);
   writeStamp(dir2, "synthesis", [fp2], { project: cardProject });
-  const strip = (d, p) => JSON.stringify(readStamp(d, "synthesis").inputs).replaceAll(p, "P");
+  // The path is replaced as JSON spells it, which doubles every backslash a Windows path holds.
+  const strip = (d, p) => JSON.stringify(readStamp(d, "synthesis").inputs).replaceAll(JSON.stringify(p).slice(1, -1), "P");
   assert.equal(strip(dir, fp), strip(dir2, fp2), "no projection ⇒ no `proj` key ⇒ reconcileStamps' equality still holds");
   assert.ok(!JSON.stringify(readStamp(dir2, "synthesis")).includes("proj"));
 });

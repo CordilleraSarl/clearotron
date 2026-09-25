@@ -58,7 +58,7 @@ const SCHEMA_VERSION = 1;
  * and the artifact would say the seat rewrote a line it did not.
  */
 const DECLARED = {
-  "": ["schema_version", "rewrites", "declined"],
+  "": ["schema_version", "first_question", "rewrites", "declined"],
   rewrites: ["at", "text", "why"],
   "rewrites.at": ["field", "mark", "index", "ordinal"],
   declined: ["at", "why"],
@@ -203,6 +203,10 @@ export function addressFault(at) {
 /** SHAPE ONLY. Whether an address resolves against THIS run's record is the validator's join, not this. */
 export function acceptKnockoutReview(call) {
   const rewrites = call?.rewrites, declined = call?.declined;
+  // THE ANSWER TO THE QUESTION THE PASS OPENS ON is recorded when the seat sends it, and never required or
+  // refused: a refusal here would cost the client the rewrite for want of a note the client never reads.
+  // Only words are kept; anything else is left out rather than refused.
+  const firstQuestion = typeof call?.first_question === "string" && call.first_question.trim() ? call.first_question : undefined;
   if (rewrites !== undefined && !Array.isArray(rewrites)) return { ok: false, reason: "rewrites must be an array" };
   if (declined !== undefined && !Array.isArray(declined)) return { ok: false, reason: "declined must be an array" };
   const seen = new Set();
@@ -226,7 +230,8 @@ export function acceptKnockoutReview(call) {
   // findings: one says the seat read the lines and had nothing to change, the other says nothing looked.
   if (!(rewrites ?? []).length && !(declined ?? []).length)
     return { ok: false, reason: "send at least one rewrite or one declined row — an empty call cannot be told from a stage that never ran" };
-  return { ok: true, model: { schema_version: SCHEMA_VERSION, rewrites: rewrites ?? [], declined: declined ?? [] } };
+  return { ok: true, model: { schema_version: SCHEMA_VERSION, ...(firstQuestion !== undefined ? { first_question: firstQuestion } : {}),
+    rewrites: rewrites ?? [], declined: declined ?? [] } };
 }
 
 /** Merge a repair turn onto what was already accepted, BY ADDRESS. See the header for the per-key rule. */

@@ -24,7 +24,8 @@ function req(port, path, { method = "GET", body = null } = {}) {
   });
 }
 
-test("dev-portal: serves the pool statically, guards traversal, proxies /profiles/*", async () => {
+test("dev-portal: serves the pool statically, guards traversal, proxies /profiles/*",
+  async () => {
   // a miniature pool
   const pool = mkdtempSync(join(tmpdir(), "devportal-pool-"));
   writeFileSync(join(pool, "index.html"), "<h1>dev archive index</h1>");

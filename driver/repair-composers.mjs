@@ -459,7 +459,7 @@ export const REPAIR_COMPOSERS = [
     key: "register-unit:plan-join-fresh",
     route: "freshMessage",
     compose: ({ axis, registerPlan, bandPath, entries = [] }) => lines(
-        `Execute the FROZEN register plan for axis "${axis}": call register_execute_plan ONCE with {"plan_path": "${registerPlan}", "axis": "${axis}", "output_path": "${bandPath}"${entries.length ? `, "qids": ${JSON.stringify(entries.map((e) => e.qid))}` : ""}} — the tool runs ${entries.length ? "ONLY those dictated entries, the ones with no band block yet," : "this axis's dictated entries"} and MERGES the band itself (every other block stays as it is; the missing dictated blocks land, qids stamped). Do NOT run the entries manually, do NOT edit the band yourself, author NO clearance verdict.`,
+        `Execute the FROZEN register plan for axis "${axis}": call register_execute_plan ONCE with {"plan_path": ${JSON.stringify(registerPlan)}, "axis": "${axis}", "output_path": ${JSON.stringify(bandPath)}${entries.length ? `, "qids": ${JSON.stringify(entries.map((e) => e.qid))}` : ""}} — the tool runs ${entries.length ? "ONLY those dictated entries, the ones with no band block yet," : "this axis's dictated entries"} and MERGES the band itself (every other block stays as it is; the missing dictated blocks land, qids stamped). Do NOT run the entries manually, do NOT edit the band yourself, author NO clearance verdict.`,
         `Return ONLY: the band path + the tool's summary line.`,
       ),
     samples: [{ name: "a fresh plan execution", tail: "tool", args: { axis: "eu", registerPlan: "register-plan.json", bandPath: "bands/eu.md", entries: [{ qid: "q1" }] } }],
@@ -472,7 +472,7 @@ export const REPAIR_COMPOSERS = [
         `You are RESUMING your own register-unit session (axis "${axis}"). Your unit digest stands — do NOT redo it.`,
         `These DICTATED plan entries have no band block yet:`,
         ...entries.map((e) => `- qid "${e.qid}": ${e.predicate} ${e.terms ? `names ${JSON.stringify(e.terms)}` : `"${e.term}"`} · nice_classes ${JSON.stringify(e.nice_classes)}${e.regions?.length ? ` · regions ${JSON.stringify(e.regions)}` : ""} · expected: ${e.expected_kind}`),
-        `Close them by calling register_execute_plan ONCE with {"plan_path": "${registerPlan}", "axis": "${axis}", "output_path": "${bandPath}", "qids": ${JSON.stringify(entries.map((e) => e.qid))}} — the tool runs ONLY those entries and MERGES the band itself (your judgment blocks and every other block stay as they are; the missing dictated blocks land, qids stamped). Do NOT run the entries manually or edit the band yourself, and do not call it without qids: that re-runs every entry on the axis.`,
+        `Close them by calling register_execute_plan ONCE with {"plan_path": ${JSON.stringify(registerPlan)}, "axis": "${axis}", "output_path": ${JSON.stringify(bandPath)}, "qids": ${JSON.stringify(entries.map((e) => e.qid))}} — the tool runs ONLY those entries and MERGES the band itself (your judgment blocks and every other block stay as they are; the missing dictated blocks land, qids stamped). Do NOT run the entries manually or edit the band yourself, and do not call it without qids: that re-runs every entry on the axis.`,
         `Return ONLY: the band path + the tool's summary line.`,
       ),
     samples: [{ name: "one dictated entry with no band block", tail: "tool", args: { axis: "eu", registerPlan: "register-plan.json", bandPath: "bands/eu.md", entries: [{ qid: "q1", predicate: "identical", term: "NOVA", nice_classes: [9], expected_kind: "exact" }] } }],

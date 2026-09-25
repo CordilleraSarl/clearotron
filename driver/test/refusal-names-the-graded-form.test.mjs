@@ -219,7 +219,8 @@ test("arm 8 — the quarantine lane still recognises a finding token after the s
   assert.match(fail, /^invalid_file:[^:]*:finding/, "the path carries no colon, so the allowlist still matches");
 });
 
-test("arm 9 — the repair anchor did NOT move: `file` is still the stage's own output", async () => {
+test("arm 9 — the repair anchor did NOT move: `file` is still the stage's own output", {
+}, async () => {
   // The fail STRING names the graded artifact; `file` — the value the draft carry and the write-time
   // repair both anchor on — stays the DECLARED output. Read off best-draft's own score.json, because
   // that is the one place `failingFile` leaves a trace: aim it at the sibling and the run preserves the

@@ -174,7 +174,8 @@ import { readReport, reportsOf, resolveReportFile, batchSummaryOf } from "./port
 import { readArchivedSet, updateArchived } from "./publish/archive-tags.mjs";
 import { readAcks, setAck, withAcks, ACKNOWLEDGEABLE } from "./portal-acks.mjs";
 import { MAX_BRIEF, makeReadBudget } from "./compose-read.mjs";
-import { BRAND, ORGANISATION_NAME, ADMINISTRATOR_CONTACT, PALETTE, FONT_LINK, FAVICON_LINK, bracketMark, DOOR_ROOT, DOOR_ROOT_DARK, DOOR_THEME_INIT } from "../shared/brand.mjs";
+import { BRAND, ORGANISATION_NAME, ADMINISTRATOR_CONTACT, PALETTE, FAVICON_LINK, bracketMark, DOOR_ROOT, DOOR_ROOT_DARK, DOOR_THEME_INIT } from "../shared/brand.mjs";
+import { TEXT_FONT_STYLE } from "../shared/brand-fonts.mjs";   // the text face, carried in the page rather than fetched
 import { envFrom, pinEnv } from "../shared/env-aliases.mjs";   // — a refusal names the name in force
 import { accessAudience, audienceLabel } from "../shared/access-audience.mjs";   // — F54; jose-free on purpose
 import { resolveNumericSetting } from "./numeric-setting.mjs";   // — the same table the engine enforces, without the throw a rendering surface must not take
@@ -3872,8 +3873,8 @@ export function denialPage(status, message) {
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow"><title>${esc(title)} — ${esc(BRAND.name)}</title>
 ${FAVICON_LINK}
-${FONT_LINK}
 ${DOOR_THEME_INIT}
+${TEXT_FONT_STYLE}
 <style>
   ${DOOR_ROOT}
   body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
@@ -3973,8 +3974,8 @@ export function loginPage({ email, error = null, signedIn = false, discarded = f
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow"><title>${escHtml(title)} — ${escHtml(BRAND.name)}</title>
 ${FAVICON_LINK}
-${FONT_LINK}
 ${DOOR_THEME_INIT}
+${TEXT_FONT_STYLE}
 <style>
   ${DOOR_ROOT}
   body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;

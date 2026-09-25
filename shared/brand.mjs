@@ -7,7 +7,7 @@
 //   • the Run status page  (writer retired with the quality subsystem in)
 //
 // Built on the Cordillera brand package (v3, legacy — the values below are the record): limestone-cream + crimson,
-// Satoshi. Crimson is the ONLY strong accent; warm health/risk tones replace traffic-light colours.
+// Plus Jakarta Sans. Crimson is the ONLY strong accent; warm health/risk tones replace traffic-light colours.
 // Hex values are canonical here; CSS is case-insensitive, so casing in any rendered :root is irrelevant.
 //
 // Two ready-made :root blocks are exported because the two surface families use different token names:
@@ -253,8 +253,8 @@ export const PALETTE_DARK = {
   codeBg:     'rgba(236,229,216,.08)',// parchment at 8%
 };
 
-// Satoshi via Fontshare. Used by index + staff pages (the report head loads its own weights incl. 900 inline).
-export const FONT_LINK = `<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">`;
+// The typefaces themselves are not linked from anywhere: brand-fonts.mjs embeds them in each page that
+// sets text, and this module only names them, so it stays free of file reads for the tools that import it.
 
 // The canonical Cordillera ridge mark — the exact path from the v3 brand package (legacy; this constant IS the record now),
 // — THE RIDGE IS GONE FROM EVERY SURFACE THIS PRODUCT RENDERS, and the constants went with it.
@@ -434,7 +434,7 @@ export const REPORT_ROOT =
   // The mark-itself disclosure toggles. A DEDICATED token: --crimson has no dark variant, and
   // reusing it left the toggles barely legible on the dark ground.
   `--ma-toggle:#860F09;` +
-  `--font:'Satoshi','Helvetica Neue',system-ui,sans-serif;` +
+  `--font:'Plus Jakarta Sans','Helvetica Neue',system-ui,sans-serif;` +
   `--mono:'Fira Code',ui-monospace,monospace;` +
   `--shadow:0 1px 2px rgba(37,9,2,.05), 0 10px 30px rgba(37,9,2,.07);` +
   `}`;
@@ -575,7 +575,7 @@ export const DOOR_ROOT =
   `--code-bg:${P.codeBg};` +
   // The doors' own font stack, not brand's: they must render with no bundle and no webfont, so the
   // fallbacks are the platform's rather than Helvetica Neue / Fira Code.
-  `--font:"Satoshi",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;` +
+  `--font:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;` +
   `--mono:ui-monospace,SFMono-Regular,Menlo,monospace}`;
 
 // Same token names, dark values. Nothing here is a scoped rule override: every value the dark scheme

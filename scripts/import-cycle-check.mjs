@@ -34,6 +34,7 @@
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join, dirname, normalize, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ROOTS = ["bin", "driver", "shared", "scripts"];
@@ -430,7 +431,7 @@ export function scan({ read = readFileSync, list = readdirSync } = {}) {
     missing: [...new Set(missing)], undeclaredAbsent, unreadable: [...new Set(unreadable)] };
 }
 
-if (import.meta.url === `file://${process.argv[1]}` || (process.argv[1] ?? "").endsWith("import-cycle-check.mjs")) {
+if (isEntrypoint(import.meta.url) || (process.argv[1] ?? "").endsWith("import-cycle-check.mjs")) {
   let r;
   try { r = scan(); }
   catch (e) {

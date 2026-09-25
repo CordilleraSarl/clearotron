@@ -61,6 +61,7 @@ import { execFileSync } from "node:child_process";
 import { publishedOf, wrapsInto } from "../shared/reference-guard-classes.mjs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const APPLY = process.argv.includes("--apply");
@@ -239,7 +240,7 @@ export function surveyOf(files, read) {
   return { strippedTotal, remainingTotal, stripped, handoff, unreadable };
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (isEntrypoint(import.meta.url)) {
   // THE PUBLISHED POPULATION, NOT THE INDEX. The counts this prints are read as a statement about the
   // public tree, and under an overlay `git ls-files` would have made them a statement about the
   // withheld corpus instead. Same helper as the residue floor and the backlog minter.

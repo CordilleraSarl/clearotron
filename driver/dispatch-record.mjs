@@ -37,7 +37,7 @@
 import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, renameSync, writeFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
+import { driverDir, driverFileName } from "../shared/driver-dir.mjs";   //
 
 export const DISPATCH_SUFFIX = "dispatch.txt";
 
@@ -115,7 +115,7 @@ export function dispatchGrantState(dispatch, ranTools) {
  */
 export function recordDispatch(runDir, stage, { attempt, repair = 0, kind = "fresh", message, grant } = {}) {
   if (!runDir) return null;
-  const name = dispatchFileName(stage, attempt, repair);
+  const name = driverFileName(dispatchFileName(stage, attempt, repair));   // on Windows the label's colon is written %3A
   try {
     const text = String(message ?? "");
     const buf = Buffer.from(text, "utf8");

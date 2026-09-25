@@ -47,6 +47,11 @@ Type=simple
 EnvironmentFile=%h/.env
 Environment=PATH=%h/.local/bin:%h/.npm-global/bin:/usr/local/bin:/usr/bin:/bin
 Environment=CLEAROTRON_NO_ENV_FILE=1
+# NOT THE SIGNING KEY. The file above is the whole install's configuration, so it holds the key that signs
+# every access token, and the one it replaces during a rotation. The portal and the doors mint and check
+# keys; this worker does neither, and it starts the AI program for every stage. systemd applies
+# UnsetEnvironment= last, after EnvironmentFile=, so neither name reaches this process or anything it starts.
+UnsetEnvironment=TRADEMARK_MCP_TOKEN_SECRET TRADEMARK_MCP_TOKEN_SECRET_PREVIOUS
 ExecStart=/usr/bin/node ${CLEAROTRON_CHECKOUT_DIR}/driver/runner.mjs --watch
 # ── REFRESH THE CAPABILITY PAGE'S CAPTURE AT EVERY START ─────────────────────────────────────────────
 # The capability page renders `pool/_state/clearance-flag-snapshot.json`, and until this line its only
@@ -95,7 +100,7 @@ SystemCallArchitectures=native
 #
 # ── WHAT THIS SERVICE CREATES IS CLOSED TO OTHER ACCOUNTS ─────────────────────────────────────────────
 # Every file and folder this service or the engine creates comes out with no access for accounts outside
-# its group: run records, known-conflicts, outbox packets, archive folders, and whatever a later writer
+# its group: run records, outbox packets, archive folders, and whatever a later writer
 # adds, without a mode at each write site. Group write is kept on purpose: a store shared by a group, as
 # a set-group-ID checkout that several accounts pull into, must stay writable by that group, and 0027
 # would make each new folder there closed to the others. Measured 2026-09-23 with 0027: a knockout was

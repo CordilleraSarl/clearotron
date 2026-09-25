@@ -130,7 +130,7 @@ function doctor(home, extraEnv = {}) {
       // `handRunEnv` over an EMPTY base rather than over `process.env`, which is what it usually takes:
       // the empty shell is this file's whole criterion — none of the names doctor reports on may be in
       // this environment — so inheriting the real one would defeat the arms while satisfying the guard.
-      env: handRunEnv({ HOME: home, PATH: [NODE_BIN, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", ...extraEnv }, {}),
+      env: handRunEnv({ HOME: home, USERPROFILE: home, PATH: [NODE_BIN, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", ...extraEnv }, {}),
     });
     return { code: 0, out };
   } catch (e) { return { code: e.status ?? -1, out: `${e.stdout ?? ""}${e.stderr ?? ""}` }; }
@@ -289,14 +289,15 @@ function doctorWithLoginctl(home, script) {
   try {
     const out = execFileSync(process.execPath, [ONBOARD, "--check"], {
       encoding: "utf8", stdio: "pipe", timeout: 120_000,
-      env: { HOME: home, PATH: [shim, NODE_BIN, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1" },
+      env: { HOME: home, USERPROFILE: home, PATH: [shim, NODE_BIN, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1" },
     });
     return { code: 0, out };
   } catch (e) { return { code: e.status ?? -1, out: `${e.stdout ?? ""}${e.stderr ?? ""}` }; }
   finally { rmSync(shim, { recursive: true, force: true }); }
 }
 
-test("units installed and lingering OFF is named, with the command that fixes it", () => {
+test("units installed and lingering OFF is named, with the command that fixes it",
+  { skip: process.platform === "win32" && "no systemd lingering on Windows, and the `loginctl` stand-in is a `#!/bin/sh` script Windows cannot run" }, () => {
   const home = installedHome(GOOD_ENV);
   try {
     const r = doctorWithLoginctl(home, "#!/bin/sh\necho Linger=no\n");
@@ -662,7 +663,8 @@ test("doctor names why saved searches are off, and says when they are on", () =>
 
 // The walked case: a store the connector cannot open because of its permissions. Doctor checked the setting
 // and passed it; it reads the store now, the way the connector does.
-test("doctor says when the saved-search store itself cannot be opened", { skip: process.getuid?.() === 0 && "root reads through any file mode" }, () => {
+test("doctor says when the saved-search store itself cannot be opened", { skip: (process.getuid?.() === 0 && "root reads through any file mode")
+  || (process.platform === "win32" && "Windows ignores a directory's mode bits — the fault injection is a no-op") }, () => {
   const home = installedHome(GOOD_ENV);
   const repo = mkdtempSync(join(tmpdir(), "rec-repo-"));
   const inside = join(repo, "recipes");
@@ -850,7 +852,8 @@ test("THE PLANT — a shell that sets the log and units that do not is a DISAGRE
     `doctor resolved the disagreement silently instead of naming it. Output:\n${r.out}`);
 });
 
-test("units whose environment cannot be read withhold the access log's location rather than guessing", () => {
+test("units whose environment cannot be read withhold the access log's location rather than guessing",
+  { skip: process.platform === "win32" && "Windows ignores a file's mode bits — mode 000 leaves the settings file readable, so the fault injection is a no-op" }, () => {
   // An unreadable unit environment is a could-not-look. Naming a path anyway would be a claim about
   // where the door writes, made without having read anything that says so.
   const home = mkdtempSync(join(tmpdir(), "f34-unreadable-"));

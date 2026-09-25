@@ -18,7 +18,7 @@
 import { readFileSync, writeFileSync, mkdirSync, appendFileSync } from "node:fs";
 import { join, basename } from "node:path";
 import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
-import { acceptDeclinationCall, MAX_DECLINATIONS_PER_CALL } from "./declination-call.mjs";
+import { acceptDeclinationCall, MAX_DECLINATIONS_PER_CALL, PAGE_KEY_PREFIX } from "./declination-call.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
 import { idSetHash, priorCallWithIdSet, listGeneration } from "./call-repeat.mjs";   //
 import { PARK_AFTER_REFUSALS, parkedIds, refusalCountsBy } from "./refusal-bound.mjs";   //
@@ -85,14 +85,23 @@ export function readDeclinations(runDir) {
   try {
     const raw = JSON.parse(readFileSync(ledger, "utf8"));
     const byUri = new Map();
+    const byPage = new Map();   // a page the web notes marked, keyed by its normalised address
     for (const d of Array.isArray(raw?.declinations) ? raw.declinations : []) {
+      if (typeof d?.page === "string" && d.page) { byPage.set(d.page, d); continue; }
       const u = normalizeRecordUri(d?.uri);
       if (u) byUri.set(u, d);
     }
-    return { present: true, byUri, count: byUri.size };
+    return { present: true, byUri, byPage, count: byUri.size + byPage.size };
   } catch {
-    return { present: false, byUri: new Map(), count: 0 };
+    return { present: false, byUri: new Map(), byPage: new Map(), count: 0 };
   }
+}
+
+/** The key a decision is kept, counted and parked under: a record's normalised uri, or a page's
+ *  `page:<address>` kept as it is — the record normaliser reads a page key as nothing. */
+export function declinationKey(k) {
+  const s = String(k ?? "").trim();
+  return s.startsWith(PAGE_KEY_PREFIX) ? s : normalizeRecordUri(s);
 }
 
 /**
@@ -105,18 +114,21 @@ export function appendDeclinations(runDir, accepted, { now = () => new Date().to
   try {
     const prior = readDeclinations(runDir);
     const byUri = new Map(prior.byUri);
+    for (const [page, d] of prior.byPage) byUri.set(`${PAGE_KEY_PREFIX}${page}`, d);
     for (const a of accepted) {
-      const u = normalizeRecordUri(a?.uri);
+      const isPage = typeof a?.page === "string" && a.page.length > 0;
+      const u = isPage ? `${PAGE_KEY_PREFIX}${a.page}` : normalizeRecordUri(a?.uri);
       if (!u) continue;
       const was = byUri.get(u);
       byUri.set(u, {
-        uri: u, mark: a.mark ?? null, reason: a.reason, grounds: a.grounds, recordedAt: now(),
+        ...(isPage ? { page: a.page, url: a.url ?? null } : { uri: u }),
+        mark: a.mark ?? null, owner: a.owner ?? null, reason: a.reason, grounds: a.grounds, recordedAt: now(),
         ...(was ? { supersedes: { reason: was.reason, grounds: was.grounds, recordedAt: was.recordedAt } } : {}),
       });
     }
     ensureDriverDir(runDir);
     writeFileSync(ledger, JSON.stringify({
-      _provenance: "synthesis's own stated decision not to deliver a record that reached the findings surface. "
+      _provenance: "synthesis's own stated decision not to deliver a record or page that reached the findings surface. "
         + "Written by the driver from typed calls — never hand-authored, never parsed out of prose.",
       ts: now(), count: byUri.size, declinations: [...byUri.values()],
     }, null, 2) + "\n");
@@ -148,10 +160,10 @@ export function recordDeclinationVerdict(runDir, seq, { accepted, refused } = {}
     mkdirSync(dir, { recursive: true });
     appendFileSync(verdicts, JSON.stringify({
       at: now(), seq,
-      accepted: arr(accepted).map((r) => ({ uri: normalizeRecordUri(r?.uri) || "",
+      accepted: arr(accepted).map((r) => ({ uri: declinationKey(r?.page ? `${PAGE_KEY_PREFIX}${r.page}` : r?.uri) || "",
         row_index: Number.isInteger(r?.row_index) ? r.row_index : null,
         reason: String(r?.reason ?? "").trim() })),
-      refused: arr(refused).map((r) => ({ uri: normalizeRecordUri(r?.uri) || "",
+      refused: arr(refused).map((r) => ({ uri: declinationKey(r?.uri) || "",
         row_index: Number.isInteger(r?.row_index) ? r.row_index : null,
         why: String(r?.why ?? "").slice(0, 400) })),
     }) + "\n");
@@ -205,13 +217,13 @@ export function recordDeclinations(spec, received, { now = () => new Date().toIS
   // recordDeclinationVerdict's note and refusal-bound.mjs's header for why that is not a free choice.
   //
   // THE IN-FLIGHT REFUSALS ARE NORMALIZED TO THE LEDGER'S KEY SHAPE BEFORE THEY ARE COUNTED, and this is
-  // load-bearing rather than tidy. `recordDeclinationVerdict` stores `normalizeRecordUri(uri)`; the
+  // load-bearing rather than tidy. `recordDeclinationVerdict` stores `declinationKey(uri)`; the
   // objects still in hand carry the spec's raw value. Count the two together without normalizing and the
   // twenty-nine records read back from disk key differently from the one in memory, so the tally never
   // reaches the bound and the park never fires — a silent failure that looks exactly like a seat that
   // never repeated itself. It cost this file one red test to find, which is one more than it would have
   // cost to notice.
-  const inFlight = { refused: decided.refused.map((r) => ({ ...r, uri: normalizeRecordUri(r?.uri) || "" })) };
+  const inFlight = { refused: decided.refused.map((r) => ({ ...r, uri: declinationKey(r?.uri) || "" })) };
   const allVerdicts = [...readDeclinationVerdicts(runDir), inFlight];
   const parked = new Set(parkedIds(allVerdicts, { idField: "uri" }));
   const refusalsByUri = refusalCountsBy(allVerdicts, { idField: "uri" });
@@ -219,7 +231,7 @@ export function recordDeclinations(spec, received, { now = () => new Date().toIS
   // it still owes a decision on a record it has been refused thirty times over. It is NOT recorded as
   // declined: nothing is appended to the declination ledger for it, so no count claims a decision that
   // was never made. The run reports it as undecided, which is the true and the useful answer.
-  const stillOpen = decided.open.filter((r) => !parked.has(normalizeRecordUri(r?.uri) || ""));
+  const stillOpen = decided.open.filter((r) => !parked.has(declinationKey(r?.page ? `${PAGE_KEY_PREFIX}${r.page}` : r?.uri) || ""));
   const parkedNow = [...parked].filter((u) => inFlight.refused.some((r) => r.uri === u));
   const vr = recordDeclinationVerdict(runDir, seq, { accepted: decided.accepted, refused: decided.refused }, { now });
 
@@ -249,9 +261,9 @@ export function recordDeclinations(spec, received, { now = () => new Date().toIS
         + `NOT recorded as declined; this run will report them as undecided. `
       : "")
       + (stillOpen.length
-      ? `${stillOpen.length} record(s) on your findings surface still carry no decision. Deliver each as a `
-        + `finding or record a declination for it — a record that reached this surface leaves it by a stated `
-        + `decision, and anything left silent is reported as a defect of this run, named per record.`
-      : "every record on your findings surface now carries a decision — delivered, or declined with a ground."),
+      ? `${stillOpen.length} row(s) on your findings surface still carry no decision. Deliver each as a `
+        + `finding or record a declination for it — a record or page that reached this surface leaves it by a `
+        + `stated decision, and anything left silent is reported as a defect of this run.`
+      : "every record and page on your findings surface now carries a decision — delivered, or declined with a ground."),
   };
 }

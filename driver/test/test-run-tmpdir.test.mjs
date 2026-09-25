@@ -30,6 +30,7 @@ function withBase(fn) {
 
 const runnerEnv = (base) => ({ ...process.env, CT_TEST_TMP_BASE: base });
 
+
 test("a fixture made by the child lands inside the run root, not in the ambient tmpdir", () => {
   withBase((base) => {
     const script = join(base, "child.mjs");
@@ -82,7 +83,8 @@ test("a nested run does not root itself inside its parent's root", () => {
     // inside ITS root, which is neither of these runs' base, so the nested runner would refuse on
     // containment before it ever chose a root — a refusal about a different property wearing this
     // arm's name.
-    const env = { ...process.env, TMPDIR: base, NESTED_RUNNER: RUNNER, NESTED_SCRIPT: inner };
+    // TEMP and TMP too, because they are what os.tmpdir() reads on Windows.
+    const env = { ...process.env, TMPDIR: base, TEMP: base, TMP: base, NESTED_RUNNER: RUNNER, NESTED_SCRIPT: inner };
     delete env.CT_TEST_TMP_BASE;
     for (const v of ["CLEAROTRON_QUEUE_DIR", "CLEAROTRON_REPORTS_DIR", "CLEAROTRON_WORK_DIR"]) delete env[v];
     const out = execFileSync("node", [RUNNER, "node", outer], { encoding: "utf8", env }).trim();
@@ -92,7 +94,7 @@ test("a nested run does not root itself inside its parent's root", () => {
       `the nested run put its fixture at ${nested}, which is not under a run root directly beneath ${base}`);
     // THE PROPERTY, stated as the failure it prevents: exactly one run root on the path. Two means the
     // inner root lives under the outer one, which is the state whose cleanup eats live fixtures.
-    const roots = nested.slice(base.length + 1).split("/").filter((seg) => seg.startsWith("ct-testrun-"));
+    const roots = nested.slice(base.length + 1).split(/[\\/]/).filter((seg) => seg.startsWith("ct-testrun-"));
     assert.equal(roots.length, 1,
       `the nested run rooted itself inside its parent — ${nested} carries ${roots.length} run roots, so the outer cleanup would delete the inner run's fixtures`);
   });
@@ -159,6 +161,12 @@ test("an abandoned root from a killed run is swept on the next run, once it is o
 // limit and a surprise.
 const runRoots = (base) => readdirSync(base).filter((n) => n.startsWith("ct-testrun-"));
 
+// The two arms that cancel with a catchable signal. On Windows `kill("SIGTERM")` and `kill("SIGINT")`
+// end the process outright, as SIGKILL does, so no handler runs and the arm below it is the one that
+// holds there.
+const CATCHABLE_SIGNAL = { skip: process.platform === "win32"
+  && "POSIX signals: Windows has no SIGTERM or SIGINT a process can catch, so a kill ends the wrapper before its cleanup runs" };
+
 const spawnLongRun = (base, extraEnv = {}) => {
   const script = join(base, "long.mjs");
   writeFileSync(script, "setTimeout(() => {}, 60000);");
@@ -179,7 +187,7 @@ const until = async (pred, ms = 15000, every = 50) => {
 };
 
 for (const sig of ["SIGTERM", "SIGINT"]) {
-  test(`a run cancelled with ${sig} removes its root — the cancel-in-progress path`, async () => {
+  test(`a run cancelled with ${sig} removes its root — the cancel-in-progress path`, CATCHABLE_SIGNAL, async () => {
     const base = mkdtempSync(join(tmpdir(), "testrun-spec-"));
     try {
       const child = spawnLongRun(base);
@@ -193,7 +201,7 @@ for (const sig of ["SIGTERM", "SIGINT"]) {
   });
 }
 
-test("a cancel that lands during SETUP still removes the root — ownership precedes the mkdtemp", async () => {
+test("a cancel that lands during SETUP still removes the root — ownership precedes the mkdtemp", CATCHABLE_SIGNAL, async () => {
   // THE ARMS ABOVE POLL AT 50ms AND LAND AFTER THE WINDOW. This one signals at the first instant the
   // root exists, which is what a runner's `cancel-in-progress` does on a superseded push: it does not
   // wait for the wrapper to finish wiring itself up.

@@ -84,9 +84,13 @@
 // make sure one was written and that it is not the reason token typed twice.
 //
 // PURE — no node imports, so it tests offline, exactly like doubt-closure-call.mjs and disposition-call.mjs.
-// It imports the house normalizer and known-conflicts.mjs does not import it: the dependency runs ONE WAY,
-// so there is no second opinion about what an identical mark is.
-import { markKey } from "./known-conflicts.mjs";
+// The house mark normalizer lives here, so there is no second opinion about what an identical mark is:
+// fold diacritics, drop punctuation and trademark symbols, lowercase.
+// \p{L}\p{N}: a Cyrillic, Greek or CJK mark must not fold to "". Diacritics still fold for Latin.
+function markKey(name) {
+  return String(name ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
+}
 
 // One call carries a BATCH. A tool that is tedious at N rows gets routed around — 17 of 23 recorded runs
 // hand-wrote a program rather than author the disposition form — and 102 declines is squarely in the
@@ -122,12 +126,12 @@ export const DECLINATION_REASONS = Object.freeze({
   "duplicate-of-delivered": {
     discretionary: false,
     rules: "consolidation — the same right is already delivered under another record",
-    gloss: "this record is the same right as one already delivered; it is consolidated, not dropped",
+    gloss: "this record or page is the same right or use as one already delivered; it is consolidated, not dropped",
   },
   "own-right": {
     discretionary: false,
     rules: "the applicant's own or affiliated record (`own_rights` is a finding field)",
-    gloss: "the record belongs to the applicant or an affiliate, so it is not a conflict to report",
+    gloss: "the record or page belongs to the applicant or an affiliate, so it is not a conflict to report",
   },
 });
 
@@ -171,7 +175,7 @@ export const MIN_GROUNDS = 20;
 export function groundsProblem(grounds, reason) {
   const g = String(grounds ?? "").trim();
   if (!g) {
-    return `grounds is required: one or two lines, in your own words, saying why THIS record does not `
+    return `grounds is required: one or two lines, in your own words, saying why THIS record or page does not `
       + `earn a line in the report. The reason token is the category; grounds is what the reviewing `
       + `lawyer reads. A declination with no ground is the silence this tool exists to replace.`;
   }
@@ -300,6 +304,20 @@ export function seamReasonFor(declined, uri) {
 }
 
 /**
+ * A PAGE ON THE SAME LIST. The web notes' pages follow the register records on the offered list, so the
+ * seat declines a page exactly as it declines a record: by position, with a reason and a ground. A page
+ * row is `{kind: "page", page, url}` — `page` the normalised address the notes and the findings are
+ * joined on, `url` the address as the notes printed it — and it has no register uri. PURE.
+ */
+export const PAGE_KEY_PREFIX = "page:";
+export const isPageRow = (row) => row?.kind === "page" && typeof row?.page === "string" && row.page.length > 0;
+/** The key a row is decided and parked under: the record's uri, or `page:<address>` for a page. PURE. */
+export function rowKey(row) {
+  if (isPageRow(row)) return `${PAGE_KEY_PREFIX}${row.page}`;
+  return row?.uri ?? null;
+}
+
+/**
  * THE ACCEPTANCE BOUNDARY. Partial accept, always: a refused row never voids its neighbours. All-or-
  * nothing was the old transport's whole disease — one bad row voided seventy-three good ones — and a
  * batch of 40 declines is exactly where re-creating it would hurt most.
@@ -331,10 +349,13 @@ export function acceptDeclinationCall(spec, received) {
   // key `appendDeclinations` already stores accepted declinations under, and a map key in the spec's
   // producer, so it is non-null and unique by construction.
   //
+  // A PAGE IS NAMED BY ITS ADDRESS. The web notes' pages follow the records on the same list, and a page
+  // has no register uri, so its key is `page:<address>` (`rowKey`) — unique by the same construction.
+  //
   // A refusal whose index addresses no row keeps `uri: null` deliberately. It CANNOT be parked — you
   // cannot park a record you cannot name — and the bound counts it separately rather than dropping it,
   // because a per-record histogram that silently omits them reads as "nothing was refused".
-  const uriAt = (i) => (Number.isInteger(i) && i >= 0 && i < rows.length ? (rows[i]?.uri ?? null) : null);
+  const uriAt = (i) => (Number.isInteger(i) && i >= 0 && i < rows.length ? rowKey(rows[i]) : null);
   const no = (row_index, why) => refused.push({
     row_index: Number.isInteger(row_index) ? row_index : null, uri: uriAt(row_index), why,
   });
@@ -384,14 +405,17 @@ export function acceptDeclinationCall(spec, received) {
     accepted.push({
       row_index: idx,
       uri: rows[idx]?.uri ?? null,
+      ...(isPageRow(rows[idx]) ? { page: rows[idx].page, url: rows[idx].url ?? null } : {}),
       mark: rows[idx]?.mark ?? null,
+      owner: rows[idx]?.owner ?? null,
       reason,
       grounds,
     });
   }
 
   const open = rows
-    .map((r, i) => ({ row_index: i, uri: r?.uri ?? null, mark: r?.mark ?? null, owner: r?.owner ?? null }))
+    .map((r, i) => ({ row_index: i, uri: r?.uri ?? null, ...(isPageRow(r) ? { page: r.page, url: r.url ?? null } : {}),
+      mark: r?.mark ?? null, owner: r?.owner ?? null }))
     .filter((r) => !claimed.has(r.row_index));
 
   return { accepted, refused, open, offered: rows.length };

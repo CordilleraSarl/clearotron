@@ -235,7 +235,8 @@ test("atomicWrite: a failed rename cleans up its tmp and rethrows", () => {
   const dir = mkdtempSync(join(tmpdir(), "prog-atomic-"));
   const target = join(dir, "occupied");
   mkdirSync(join(target, "child"), { recursive: true });   // rename(file → non-empty dir) always fails
-  assert.throws(() => atomicWrite(target, "x"), /ENOTDIR|EISDIR|ENOTEMPTY/);
+  // Windows refuses the same rename as EPERM.
+  assert.throws(() => atomicWrite(target, "x"), /ENOTDIR|EISDIR|ENOTEMPTY|EPERM/);
   assert.deepEqual(readdirSync(dir), ["occupied"], "no tmp stranded after the failure");
 });
 

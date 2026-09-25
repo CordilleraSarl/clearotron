@@ -316,7 +316,7 @@ For each transliteration variant in the manifest:
 **Why this order:** crowd descriptor first (cheap — tells the lawyer how crowded the band is); then enumerate the substring band class+region-scoped via `register_enumerate` (the tool owns the page loop — the funnel cannot stop early); then the majors region-scoped (the worldwide pass does not discharge them); then the exact name-list (cheapest, always enumerates); then the phonetic fringe. **The funnel emits no `confirmed-clean` verdict** — each block's `enumerated`/`incomplete` state is the receipt. The lawyer reads the complete band, decides relevance and sufficiency, commands a narrower enumeration on any `incomplete` it deems material, or halts. A sampled dangerous category is impossible here: the tool either enumerates or returns `incomplete`.
 
 **Meaning-axis extension — a saturated everyday-word meaning token (COLORA→色彩) runs the same enumeration.** When
-the saturation probe flags a `translit-*-meaning` variant, add **one `register_enumerate` step on the
+the saturation probe flags a `translit-*-meaning` variant and the frame says that market matters, add **one `register_enumerate` step on the
 field-scoped meaning token**: scope the everyday-word token to the **filed in-scope Nice classes (and region)**
 — the `nice_classes` × `regions` filter on the `register_enumerate` call, **exactly as step 2 / 2b do for the
 Latin root** — with the token kept as a contiguous *substring* predicate (`match_mode:default`). The tool pages

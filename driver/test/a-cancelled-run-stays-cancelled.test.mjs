@@ -25,6 +25,8 @@ import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync } from 
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
+import { driverDir } from "../../shared/driver-dir.mjs";
+import { fileURLToPath } from "node:url";
 
 // Set the workspace root BEFORE driver.config.mjs loads (via the dynamic imports below), so
 // config.workspaceRoot and config.queueDirs freeze to our temp tree and never see the real box.
@@ -266,8 +268,9 @@ test("item 4: a resume re-states the engines the run has used, so a two-engine r
   const d = mkRun("mark-engine", "2026-09-03-engine-one");
   mkdirSync(join(d, "_driver"), { recursive: true });
   // The shape rollupTokens reads: stage-attempt records carrying a model, a usage block and an engine.
-  // Two engines on ONE run — exactly the artifact the issue calls confounded.
-  writeFileSync(join(d, "_driver", "common-law-half:a.jsonl"),
+  // Two engines on ONE run — exactly the artifact the issue calls confounded. Named through driverDir,
+  // which writes the stage label's colon the way Windows allows in a file name, as the product does.
+  writeFileSync(driverDir(d, "common-law-half:a.jsonl"),
     JSON.stringify({ model: "gpt-5", engine: "openai-agent", usage: { input: 10, output: 2 } }) + "\n"
     + JSON.stringify({ model: "claude-opus-5", engine: "anthropic", usage: { input: 30, output: 4 } }) + "\n");
   statusFile(d, "running");
@@ -293,5 +296,5 @@ test("item 4 WIRING: the resume path re-stamps, and does so AFTER the stop refus
 });
 
 function dirnameOf(url) {
-  return new URL(".", url).pathname;
+  return fileURLToPath(new URL(".", url));
 }

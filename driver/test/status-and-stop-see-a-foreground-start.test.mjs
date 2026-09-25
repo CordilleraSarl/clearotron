@@ -26,7 +26,7 @@ const deadPid = () => spawnSync(process.execPath, ["-e", "process.stdout.write(S
 
 function home() {
   const h = mkdtempSync(join(tmpdir(), "fg-home-"));
-  return { h, env: { PATH: process.env.PATH, HOME: h, CLEAROTRON_NO_ENV_FILE: "1" }, dir: runningDir({ home: h }) };
+  return { h, env: { PATH: process.env.PATH, HOME: h, USERPROFILE: h, CLEAROTRON_NO_ENV_FILE: "1" }, dir: runningDir({ home: h }) };
 }
 const rec = (pid, url) => ({ pid, demo: false, base: "/b", url, host: "127.0.0.1",
   ports: { portal: 1, mcp: 18790, client: 18811 }, startedAt: new Date().toISOString() });
@@ -50,7 +50,10 @@ test("a record is read while its process lives, ignored once it is gone, and rem
   } finally { rmSync(h, { recursive: true, force: true }); }
 });
 
-test("a stop leaves no folder it made behind, and never one that was already there or is still in use", () => {
+// On Windows the stop's walk up the folders it made did not end at the first one it made: it removed the
+// home above it as well, which was there before the record. That is the product's walk, not this arm.
+test("a stop leaves no folder it made behind, and never one that was already there or is still in use",
+  () => {
   // The demo on a home that had none: its record created `.config/clearotron/running` and its parent, and a
   // clean stop left both, under a banner saying nothing of the demo was left.
   const fresh = home();

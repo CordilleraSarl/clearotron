@@ -1,6 +1,6 @@
 ---
 name: clearance-common-law
-description: Common-law / marketplace execution for the v3 preliminary trademark search workflow. **Invoked exclusively by the `clearance-search` orchestrator** — do not call directly. Reads the variant manifest produced by `clearance-variants` and runs structured Perplexity research across the DICTATED platform list (the task message's PLATFORMS block names the exact store domains for this customer; the gaming default is 6 stores) plus general web, social, e-commerce, and industry press. Produces a common-law findings file consumed by the orchestrator for synthesis and Excel assembly. Runs alongside `clearance-register`.
+description: Common-law / marketplace execution for the v3 preliminary trademark search workflow. **Invoked exclusively by the `clearance-search` orchestrator** — do not call directly. Reads the variant manifest produced by `clearance-variants` and runs structured Perplexity research across the DICTATED platform list plus general web, social, e-commerce, and industry press. Produces a common-law findings file consumed by the orchestrator for synthesis and Excel assembly. Runs alongside `clearance-register`.
 ---
 
 ## Spawned session
@@ -92,8 +92,8 @@ so there is **no partial-delivery fallback**:
 ### In scope
 
 - Internet-based marketplace searches (Google, Amazon, social media, industry platforms)
-- **The dictated mandatory platforms** — your task message's PLATFORMS block names the exact store domains for this customer's profile; every one is mandatory for every variant (the receipts gate validates count AND identity against that list). A gaming profile is one example of such a list — Steam, Epic Games Store, Google Play, Apple App Store, Microsoft Store, itch.io — illustrative only; never substitute the example for the dictated list
-- **Field-scoped general search** — when the matter goes outside the customer's core field (the profile's industry — e.g. a collaboration or goods outside it), a general internet search **scoped to the collaborated / actual goods** is also mandatory (e.g. a gaming × pizza collab → search the web generally for *pizza*). The dictated platform list is the floor; extend with field-scoped cells when the matter goes outside the customer's core field. Scope to the specific goods the brief instructs — not a fixed per-field platform list (staff-lawyer redline, Project NOVA PULSE)
+- **The dictated platforms** — your task message's PLATFORMS block names the exact store domains for this customer's profile. A gaming profile is one example of such a list — Steam, Epic Games Store, Google Play, Apple App Store, Microsoft Store, itch.io — illustrative only; never substitute the example for the dictated list
+- **Field-scoped general search** — when the matter goes outside the customer's core field (the profile's industry — e.g. a collaboration or goods outside it), a general internet search **scoped to the collaborated / actual goods** is also mandatory (e.g. a gaming × pizza collab → search the web generally for *pizza*). Extend with field-scoped cells when the matter goes outside the customer's core field. Scope to the specific goods the brief instructs — not a fixed per-field platform list (staff-lawyer redline, Project NOVA PULSE)
 - Domain name presence
 - Social media presence and commercial use
 - Industry press and trade publications
@@ -178,12 +178,12 @@ For game-title rows, the `developer_of_record` and `publisher_of_record` columns
 ### PR / reputational risk
 
 Covers the core element(s) **and their plausible near-forms** (the connotation hazard often rides a
-near-form — `mara` ("crowd") → `Mara` = a gang name — not the literal mark). `(None identified)` may be written
+near-form — `mora` ("blackberry") → `Mara` = a gang name — not the literal mark). `(None identified)` may be written
 **only when the searched social/subcultural web came back empty** — never on a dictionary gloss. "It just
-means *southern*" is context, not a clearance: a connotation reads clean only when Urban-Dictionary / Wikipedia
+means *blackberry*" is context, not a clearance: a connotation reads clean only when Urban-Dictionary / Wikipedia
 / news / forums were searched (on the near-forms too) and surfaced nothing.
 
-**Surface what the meaning search actually returned — a receipt is not a read.** Even when your call is clean, do **not** collapse the meaning sweep to a bare `(None identified)`: for the mark **and each near-form**, name the actual readings the search surfaced and label each benign or loaded (e.g. `mara → "crowd" (colloquial, benign); Mara → a Central American street gang (loaded)`). You are an extraction worker — lay out what the social/subcultural web actually returned per form; you do **not** make the final clearance call. The strong synthesis layer reads that material and decides whether a loaded secondary reading needs pulling. A row that only says "searched, nothing found" hands synthesis a verdict instead of the evidence it needs to look past the obvious gloss.
+**Surface what the meaning search actually returned — a receipt is not a read.** Even when your call is clean, do **not** collapse the meaning sweep to a bare `(None identified)`: for the mark **and each near-form**, name the actual readings the search surfaced and label each benign or loaded (e.g. `mora → "blackberry" (benign); Mara → a Central American street gang (loaded)`). You are an extraction worker — lay out what the social/subcultural web actually returned per form; you do **not** make the final clearance call. The strong synthesis layer reads that material and decides whether a loaded secondary reading needs pulling. A row that only says "searched, nothing found" hands synthesis a verdict instead of the evidence it needs to look past the obvious gloss.
 
 | Finding | Source | Notes |
 |---|---|---|
@@ -411,7 +411,7 @@ Open `studio/clearance-search/<slug>/<date>/variant-manifest.md`. Parse:
 
 The variants table is the source of truth for what to search. The skill does NOT generate its own variants — manifest is authoritative.
 
-**Transliteration variants** (rows tagged `translit-<script>` with `Verify? ✅`) get included in the grid call's SEARCH TERMS like every other variant (the program searches them on every platform), but findings on these get carried through with the `Verify?` flag to the findings file.
+**Transliteration variants** (rows tagged `translit-<script>` with `Verify? ✅`) get included in the grid call's SEARCH TERMS like every other variant, but findings on these get carried through with the `Verify?` flag to the findings file.
 
 ### Step 2 — Search-as-code marketplace grid (1 sandbox call per mark)
 
@@ -523,7 +523,7 @@ Assemble `studio/clearance-search/<slug>/<date>/common-law-findings.md` per the 
 3. **Commercial awareness** — unrelated-field + crowded-field
 4. **Competitor intelligence** — watchlist + partnerships
 5. **PR / reputational risk** (or "None identified")
-6. **Negative results** — full variant × platform matrix
+6. **Negative results** — one row per grid cell
 7. **Coverage ledger** — one row per planned coverage unit (`confirmed-clean`/`coverage-limited`/`deferred`); the structured form of the open-verification prose, consumed by synthesis + the skeptic
 8. **Cross-checks suggested** — the register-side hand-offs to the orchestrator
 9. **Audit trail** — Perplexity call log
@@ -543,7 +543,7 @@ Assemble `studio/clearance-search/<slug>/<date>/common-law-findings.md` per the 
 - [ ] Every finding has a URL (or is in Open verification flags)
 - [ ] Findings categorised: consumer-confusion / commercial-awareness / competitor-intel / PR-risk
 - [ ] **Every game-title finding in Consumer-confusion-risks has both `developer_of_record` and `publisher_of_record` columns populated** — with the extracted value when known, or the literal string `not extracted` when uncertain. Never confabulated.
-- [ ] Negative results documented for every variant × platform combination
+- [ ] Negative results documented for every grid cell
 - [ ] Coverage ledger emitted — one row per planned coverage unit; non-Latin / thin-data reach logged `coverage-limited`, not silently clean
 - [ ] Cross-checks suggested section populated
 - [ ] Open verification flags listed (URL-404s, thin coverage, transliteration confirmations)

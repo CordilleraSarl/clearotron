@@ -295,6 +295,7 @@ const PLANTED = Object.freeze({
     record: (runDir, params) => recordKnockoutReview(runDir, params),
     full: {
       schema_version: 1,
+      first_question: "Yes: it names who could object, how strong each is, and what the client should do.",
       rewrites: [
         { at: { field: "basis", mark: "NOVAPULSE" },
           text: "The name is already crowded in drinks. Two live registrations sit close to it.",
@@ -323,7 +324,7 @@ test("the population is derived, and it is what the servers actually serve", asy
       .map((t) => t.split("__").pop())
       .filter(IS_RETURN_PATH),
   );
-  const OUTSIDE = ["record_coverage", "record_dispositions", "record_coverage_status", "record_unit_note", "record_withheld_families", "record_declination"];
+  const OUTSIDE = ["record_coverage", "record_dispositions", "record_coverage_status", "record_unit_note", "record_withheld_families", "record_released_families", "record_declination"];
   for (const t of OUTSIDE) granted.add(t);
 
   assert.deepEqual([...served.keys()].sort(), [...granted].sort(),
@@ -578,7 +579,7 @@ test("a required field is enforced by the ACCEPTOR, because nothing before it en
 const DECLARES_NONE_BY_DESIGN = Object.freeze({
   record_synthesis:
     "A call omitting `findings` or `narrative` IS the patch path, not an incomplete call — "
-    + "synthesis-record.mjs:525 detects a partial by that absence and merges it onto the last accepted "
+    + "synthesis-record.mjs:628 recordSynthesis detects a partial by that absence and merges it onto the last accepted "
     + "call before acceptSynthesis judges it. Declaring either required would refuse every corrective "
     + "repair-composers.mjs tells the seat to send.",
   record_register_digest:

@@ -21,7 +21,7 @@ import { DISPOSITIONS, POSITION_REQUIRED_DISPOSITIONS } from "./findings-model.m
 import { frozenSnapshot, describeDrift } from "./run-integrity.mjs";   // — the frozen judged-by set across a seat turn
 import { isCancelled, readCancel, RunCancelled } from "./cancel.mjs";
 import { anthropicAgentEngine } from "./engine/anthropic-agent.mjs";
-import { openaiAgentEngine } from "./engine/openai-agent.mjs";
+import { openaiAgentEngine, codexHomesRoot } from "./engine/openai-agent.mjs";
 import { resolveAuthMode } from "./engine/auth.mjs";
 // ABBREVIATED_VALUE_NOTE is no longer imported: it explained the "…" marker on a value the model
 // had to reproduce EXACTLY, and the only messages that rendered one were the connotation arms telling a
@@ -388,7 +388,7 @@ export function toolGauge(turn) {
     // really happened. An ARRAY is a measurement (`[]` = measured, nothing unmeasurable); null is "this
     // engine cannot report", the same distinction toolWaitByTool draws one line up. RECORDING ONLY:
     // toolWaitMs and the per-tool split are exactly what they were, because the kill clock reads them.
-    toolWaitUnmeasurable: Array.isArray(turn?.toolWaitUnmeasurable) ? [...turn.toolWaitUnmeasurable] : null,
+    toolWaitUnmeasurable: Array.isArray(turn?.toolWaitUnmeasurable) ? [...turn.toolWaitUnmeasurable] : null, ...toolCallCounts(turn),
   };
 }
 
@@ -788,7 +788,7 @@ export async function runStage(name, opts) {
   const engineForHome = selectEngine();
   let stageCodexHome = null;
   if (engineForHome?.name === "openai-agent") {
-    try { stageCodexHome = mkdtempSync(join(tmpdir(), `codex-stage-${String(name).replace(/[^a-z0-9-]/gi, "_")}-`)); }
+    try { stageCodexHome = mkdtempSync(join(codexHomesRoot(), `stage-${String(name).replace(/[^a-z0-9-]/gi, "_")}-`)); }
     catch { stageCodexHome = null; }   // fall back to the engine's own per-turn home rather than fail a stage
   }
   try {
@@ -1071,7 +1071,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // written to disk before the comparison, so the thing being watched cannot reach it. See
     // run-integrity.mjs for why it is not a manifest file and why the append-only journals are excluded.
     const integrityBefore = frozenSnapshot(runDir);
-    const turn = await engine.runTurn({ agent, sessionKey: key, message: effMessage, model, thinking, timeoutSec: effTimeout, resumeRef: warm ? lastSessionRef : undefined, codexHome: stageCodexHome, mcpConfig: gatherMcpConfig, allowedTools: gatherAllowedTools, seatWrites: gatherSeatWrites, skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
+    const turn = await engine.runTurn({ agent, sessionKey: key, message: effMessage, grantDispatch: base, model, thinking, timeoutSec: effTimeout, resumeRef: warm ? lastSessionRef : undefined, codexHome: stageCodexHome, mcpConfig: gatherMcpConfig, allowedTools: gatherAllowedTools, seatWrites: gatherSeatWrites, skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
       progressFiles: files });   // the no-progress watchdog's artifact-advance signal (anthropic-agent; other adapters ignore it)
     const settledAt = Date.now();   //: zero point of the wall-rescue quiescence clock, read before anything else
     // LOG-ONLY. Nothing here can fail a turn: the claim that the frozen set does not change across a seat
@@ -2109,9 +2109,12 @@ function refusalsInWindow(files, runDir, from, to) {
   return journals ? { count, last, ...(unattributed ? { unattributed } : {}) } : null;
 }
 
+// A failure string's display path. A path outside a studio keeps its Windows drive, `C:\…`, so the patterns
+// that read these strings back never stop the path at the first colon: FORM_CLASS_RE and WARM_ELIGIBLE_RE
+// take the path lazily up to the token they know, and failingTarget allows a drive letter.
 function rel(p) {
-  const i = Math.max(p.indexOf("/clearance-search/"), p.indexOf("/prelim-search/"));   // either spelling of the studio segment
-  return i >= 0 ? p.slice(i + 1) : p;
+  const m = /[\\/](clearance-search|prelim-search)[\\/]/.exec(p);   // either spelling of the studio segment, behind either separator
+  return m ? p.slice(m.index + 1) : p;
 }
 
 // Fix B: a retry after a CONTENT (file-validation) failure tells the model what was wrong, instead of re-running
@@ -2270,10 +2273,19 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
         `record; it carries no band/registration and never moves the rating.`;
     } else if (/finding_legacy_scale_forbidden/.test(lastFail)) {
       // doc 50 — the reversion repair: years of Composite/Level habit pull the model back to the retired
-      // scale; the fix is stated in the framework's own terms, never as a mapping.
-      extra = ` SPECIFIC FIX: schema_version 4 carries NO composite/level/dispute_type — delete those keys. ` +
-        `The rating is "band": the band WORD your reasoning under the framework you read yields (EXACTLY one of ` +
-        `its band words, as written in the framework). Your reasoning trail stays in the narrative prose.`;
+      // scale; the fix is stated in the framework's own terms, never as a mapping. Under a framework that
+      // states a method the refusal itself says so, and the retired keys have a home: the framework's own
+      // inputs (framework-method.mjs).
+      extra = /own inputs under "inputs"/.test(lastFail)
+        ? ` SPECIFIC FIX: delete composite/level/dispute_type and record the framework's own inputs under ` +
+          `"inputs", then give the band the framework's table yields for them.`
+        : ` SPECIFIC FIX: schema_version 4 carries NO composite/level/dispute_type — delete those keys. ` +
+          `The rating is "band": the band WORD your reasoning under the framework you read yields (EXACTLY one of ` +
+          `its band words, as written in the framework). Your reasoning trail stays in the narrative prose.`;
+    } else if (/finding_(inputs_[a-z]+|band_off_table|borderline_off_table):/.test(lastFail)) {
+      // The framework's method (framework-method.mjs). Each refusal already names its fix — the value list,
+      // or the band the table gives — so no addendum: the generic band hint below would point elsewhere.
+      extra = "";
     } else if (/finding_band_|findings_rated_under_|finding_disposition_missing/.test(lastFail)) {
       extra = ` SPECIFIC FIX: every finding carries "disposition"; adversarial / coexistence-partner / ` +
         `distinguished findings are RATED and carry "band" = EXACTLY one of the framework's band words (as ` +
@@ -3071,7 +3083,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
 // already the safe one — a token nobody added costs what it costs today and is never swallowed.
 // Kill-switch: CLEAROTRON_FORM_REPAIR=0 (or off/false/no — it reads through envGateOn,) restores
 // today's behaviour exactly.
-const FORM_CLASS_RE = /^invalid_file:[^:]*:(framediff_(key_unknown|directive_key_unknown|directives_invalid|layer_invalid|severity_invalid|gap_invalid|remedy_invalid|directive_undispatchable)|coverage_(key_unknown|axis_invalid|status_invalid|status_offenum|classes_invalid))\b/;
+const FORM_CLASS_RE = /^invalid_file:.*?:(framediff_(key_unknown|directive_key_unknown|directives_invalid|layer_invalid|severity_invalid|gap_invalid|remedy_invalid|directive_undispatchable)|coverage_(key_unknown|axis_invalid|status_invalid|status_offenum|classes_invalid))\b/;
 export function isFormClassFail(fail) {
   return FORM_CLASS_RE.test(fail ?? "");
 }
@@ -3190,7 +3202,7 @@ const MAX_FORM_REPAIRS = 2;
 // form, and the ladder spends its attempts on a file the validator never re-reads. Binding to the list
 // is what did one level up, for the same reason. The RE is built from a string for that one splice;
 // nothing else in it changed, and it carries no backslash escapes for the string form to mangle.
-const WARM_ELIGIBLE_RE = new RegExp(`^(missing_file|invalid_file:[^:]*:(use_check_missing|own_rights_missing|coverage_ledger_unparseable|coverage_ledger_empty|coverage_axis_invalid|coverage_axis_missing|coverage_status_(invalid|offenum)|coverage_key_unknown|coverage_(no_status|form_damaged|form_axis_invalid|form_engine_vocabulary)|grid_join_missing|grid_ledger_unparseable|platforms_missing|${CONNOTATION_FORM_TOKEN_SRC}|findings?_[a-z_]+|blindframe_[a-z_]+|framediff_[a-z_]+|named_band_(state_invalid|block_invalid|unparseable|missing)|tool_timeout:[a-z_]+:[a-z0-9-]+|plan_audit_missing|intake_ask_unanswered))`);
+const WARM_ELIGIBLE_RE = new RegExp(`^(missing_file|invalid_file:.*?:(use_check_missing|own_rights_missing|coverage_ledger_unparseable|coverage_ledger_empty|coverage_axis_invalid|coverage_axis_missing|coverage_status_(invalid|offenum)|coverage_key_unknown|coverage_(no_status|form_damaged|form_axis_invalid|form_engine_vocabulary)|grid_join_missing|grid_ledger_unparseable|platforms_missing|${CONNOTATION_FORM_TOKEN_SRC}|findings?_[a-z_]+|blindframe_[a-z_]+|framediff_[a-z_]+|named_band_(state_invalid|block_invalid|unparseable|missing)|tool_timeout:[a-z_]+:[a-z0-9-]+|plan_audit_missing|intake_ask_unanswered))`);
 
 // — `tool_timeout` IS ON THAT LIST TO KEEP ROUTING WHERE IT ALREADY IS, not to add a lane.
 //
@@ -3561,3 +3573,17 @@ export function warmPatchMessage(lastFail, expectFile, { supplementalLane = fals
 //
 // Move it to the top the day those citations name symbols instead of numbers — which is what
 // CONTRIBUTING.md asks for, and what makes them checkable at all.
+
+/**
+ * THE COUNTS A TEST ROUND READS PER STAGE, on both engines, spread into `toolGauge`. `toolCallsRefused`:
+ * calls the program refused (Claude's own denials; Codex's tool-server calls refused before reaching their
+ * server). `commandToolCalls`: calls to a tool that runs a command, which no Claude stage is offered, so
+ * zero is the expected reading; Codex keeps its shell and reports null. `mcpToolCalls`: the tool-server
+ * calls Codex completed, its only count of calls made, since its `toolCalls` stays null. Null, as in
+ * `toolGauge`, is "this engine does not report", never zero. RECORDING ONLY. It sits at the end of this
+ * file so that adding it moved no line another file cites.
+ */
+function toolCallCounts(turn) {
+  const n = (v) => (Number.isFinite(v) && v >= 0 ? v : null);
+  return { toolCallsRefused: n(turn?.toolCallsRefused), commandToolCalls: n(turn?.commandToolCalls), mcpToolCalls: n(turn?.mcpToolCalls) };
+}

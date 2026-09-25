@@ -132,7 +132,9 @@ async function driveAndKillTheVisiblePid({ forwarding }) {
   }
 }
 
-test("the control: without forwarding, killing the visible pid orphans everything", async () => {
+test("the control: without forwarding, killing the visible pid orphans everything", {
+  skip: process.platform === "win32" && "POSIX signals: on Windows SIGTERM is a hard kill and a killed parent takes its children down with it, so the unpatched shim cannot orphan a grandchild there",
+}, async () => {
   // THE ORACLE. If this passes, the harness above cannot see an orphan and the subject arm below means
   // nothing. It is the shim as it shipped in 0.1.1, driven the way the stranger drove it.
   const { grand } = await driveAndKillTheVisiblePid({ forwarding: false });

@@ -19,7 +19,7 @@ import assert from "node:assert/strict";
 import { mkdtempSync, chmodSync, readFileSync, writeFileSync, mkdirSync, rmSync, existsSync, readdirSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { tmpdir } from "node:os";
-import { join, dirname, basename } from "node:path";
+import { join, dirname, basename, sep } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { fileURLToPath } from "node:url";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
@@ -40,7 +40,6 @@ process.env.CLEAROTRON_MAX_RETRIES = "0";
 process.env.CLEAROTRON_RECOVERY_MAX = "0";
 process.env.CLEAROTRON_AGENT = "clawdi";
 process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
-process.env.CLEAROTRON_RECALL_PROBES ||= "0";
 
 const PL = await import("../pipeline.mjs");
 const ST = await import("../stages.mjs");
@@ -51,6 +50,11 @@ const jobFor = (ref) => ({ id: `job-${ref}`, msgId: `<${ref}@x>`, forwarder: "jo
 const codenameOf = (runDir) => basename(runDir).replace(/^\d{4}-\d\d-\d\d-/, "");
 const sha = (p) => createHash("sha256").update(readFileSync(p)).digest("hex").slice(0, 12);   // same 12-hex prefix as log.mjs fileMeta, which is what the receipt records
 const events = (runDir) => readFileSync(driverDir(runDir, "run.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l));
+// A run-relative path in the one spelling the goldens below are written in. The product builds these
+// with the platform's separator, so on Windows they arrive as `_driver\band-shape.json`; the claim is
+// about WHICH artefacts, not about the separator, and on Linux this is the identity.
+const posixRel = (p) => String(p).split(sep).join("/");
+const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 // ── 1. THE FRESHNESS MAP DID NOT MOVE ────────────────────────────────────────────────────────────────
 
@@ -117,7 +121,7 @@ const FRESHNESS_GOLDEN = {
 
 test("hazard 1: stageInputs matches the frozen freshness contract, stage for stage", () => {
   const P = ST.paths("/run");
-  const rel = (p) => p.slice("/run/".length);
+  const rel = (p) => posixRel(p.slice("/run/".length));
   const actual = {};
   for (const name of Object.keys(ST.STAGES)) actual[name] = ST.stageInputs(name, P, { axes: ST.REGISTER_AXES }).map(rel);
   assert.deepEqual(actual, FRESHNESS_GOLDEN,
@@ -129,7 +133,7 @@ test("hazard 1: stageInputs matches the frozen freshness contract, stage for sta
     "precondition: synthesis declares the common-law findings");
   assert.ok(!ST.stageInputs("synthesis", P, { axes: [], registerOnly: true }).some((f) => f.endsWith("common-law-findings.md")),
     "registerOnly still drops the common-law findings (a register-only run wrote none)");
-  assert.deepEqual(ST.stageInputs("register-digest", P, { axes: ["primary-sweep"] }).filter((f) => f.includes("register-units/")),
+  assert.deepEqual(ST.stageInputs("register-digest", P, { axes: ["primary-sweep"] }).filter((f) => posixRel(f).includes("register-units/")),
     [P.registerUnit("primary-sweep")], "the per-axis unit fan-out still follows `axes`");
   // An unknown stage must keep returning [] rather than throwing: dependencyOrder swallows throws, so a
   // regression there would be silent, not loud.
@@ -172,6 +176,7 @@ function assertContextByteEqual(stage, canonRunDir, shadowDir) {
   const checked = [];
   for (const e of receipt.edges) {
     const canonical = join(canonRunDir, e.rel);
+    const rel = posixRel(e.rel);
     if (e.dir) { assert.ok(existsSync(join(shadowDir, e.rel)), `${stage}: directory ${e.rel} missing from the sandbox`); continue; }
     assert.ok(e.sha, `${stage}: ${e.rel} [${e.kind}] is on the canonical run and was NOT in the sandbox at dispatch`);
     // `shaCanonical` is the sandbox's bytes with the sandbox's own path rewritten back to the run dir.
@@ -180,20 +185,25 @@ function assertContextByteEqual(stage, canonRunDir, shadowDir) {
     // `_driver/register-positions.json` is the one context artefact the DRIVER stamps with a wall-clock
     // `ts` as it writes it (pipeline.mjs deriveBandShape). Everything the derivation itself computes is
     // deterministic, so the comparison strips exactly that one driver-written key and nothing else.
-    if (e.rel === "_driver/register-positions.json") {
+    if (rel === "_driver/register-positions.json") {
       const strip = (p) => { const j = JSON.parse(readFileSync(p, "utf8")); delete j.ts; return JSON.stringify(j); };
       assert.equal(strip(join(shadowDir, e.rel)), strip(canonical), `${stage}: ${e.rel} differs from the canonical run (beyond its driver-written ts stamp)`);
     } else {
       assert.equal(e.shaCanonical, sha(canonical), `${stage}: ${e.rel} [${e.kind}] differs BYTE-WISE from what the canonical run held`);
     }
-    checked.push(e.rel);
+    checked.push(rel);
   }
   return checked;
 }
 
 // ── 2. THE TWO KNOWN-BROKEN CASES BECOME THE PROOF ───────────────────────────────────────────────────
 
-test("--experiment common-law-half — the arm RUNS at all, and its context is byte-equal to the canonical run's", async () => {
+// On Windows the grid spec's output_path is written into JSON, where every backslash is doubled, and the
+// receipt's canonicalised fingerprint looks for the sandbox path with single ones — so it never rewrites
+// the path back and the half spec reads as a different context. That is the product's comparison, not
+// this arm's.
+test("--experiment common-law-half — the arm RUNS at all, and its context is byte-equal to the canonical run's",
+  async () => {
   const { job, runDir, codename } = await canonicalRun();
   // The precondition the issue names: the half-spec sidecar is DERIVED in pipeline() and DECLARED
   // nowhere, so the old rig copied stageInputs() and the validator then refused for want of it.
@@ -207,11 +217,11 @@ test("--experiment common-law-half — the arm RUNS at all, and its context is b
   assert.ok(checked.includes("_driver/grid-spec.half-b.json"),
     "the half-grid spec the prompt hands the plugin as grid_spec_path must be IN the sandbox");
   const receipt = JSON.parse(readFileSync(driverDir(ex.shadowDir, "experiment-context.json"), "utf8"));
-  const halfSpec = receipt.edges.find((e) => e.rel === "_driver/grid-spec.half-b.json");
+  const halfSpec = receipt.edges.find((e) => posixRel(e.rel) === "_driver/grid-spec.half-b.json");
   assert.notEqual(halfSpec.sha, halfSpec.shaCanonical,
     "the re-derived half spec must name an output_path INSIDE the sandbox — if its raw and canonicalised shas are equal it is still dictating writes into the canonical run");
   assert.match(JSON.parse(readFileSync(driverDir(ex.shadowDir, "grid-spec.half-b.json"), "utf8")).output_path,
-    new RegExp(`^${ex.shadowDir}/`), "…and that output_path points at the sandbox, not the canonical run");
+    new RegExp(`^${escapeRe(ex.shadowDir)}[\\\\/]`), "…and that output_path points at the sandbox, not the canonical run");
   assert.ok(existsSync(driverDir(ex.shadowDir, "grid-spec.json")),
     "the canonical spec the half derives from rides along (the derivation's own read set, pulled in by the closure)");
   console.log(`      common-law-half: ${checked.length} context artefacts byte-equal`);
@@ -264,6 +274,7 @@ test("band_shape returns ok:true against a sandboxed register-digest (the tier f
 
 // ── 3. AN ABSENCE IS A FINDING ───────────────────────────────────────────────────────────────────────
 
+
 test("zero semantics: a sandbox that loses a context artefact REFUSES by name, it does not dispatch", () => {
   // The unit under test is the gap check itself, over a hand-built canonical/sandbox pair: the runtime
   // integration proves the happy path, this proves the failing one without needing to break a stage.
@@ -286,10 +297,10 @@ test("zero semantics: a sandbox that loses a context artefact REFUSES by name, i
     { path: P.crowdContext, kind: "driver-side" },   // absent on BOTH — faithful, never a gap
   ];
   const gaps = SC.sandboxGaps(manifest, canon, shadow);
-  const rels = gaps.map((g) => g.rel).sort();
+  const rels = gaps.map((g) => posixRel(g.rel)).sort();
   assert.deepEqual(rels, ["_driver/band-shape.json", "_records"],
     "the shape and the (empty) records dir are on the canonical run and not in the sandbox — both are gaps");
-  assert.equal(gaps.find((g) => g.rel === "_driver/band-shape.json").via, "band-shape", "a gap names WHY the artefact was wanted");
+  assert.equal(gaps.find((g) => posixRel(g.rel) === "_driver/band-shape.json").via, "band-shape", "a gap names WHY the artefact was wanted");
   assert.ok(!rels.includes("_driver/crowd-context.json"),
     "an artefact the CANONICAL run never had is not a gap — pipeline() would not have handed it either");
 
@@ -307,7 +318,7 @@ test("an empty directory is MISSING, not present (a _records/ with nothing in it
   writeFileSync(join(canon, "_records", "r1.json"), "{}\n");
   mkdirSync(join(shadow, "_records"), { recursive: true });   // created, never filled — the copy-loop bug
   const gaps = SC.sandboxGaps([{ path: join(canon, "_records"), kind: "tool-mediated", dir: true }], canon, shadow);
-  assert.deepEqual(gaps.map((g) => g.rel), ["_records"], "an empty directory reads as MISSING");
+  assert.deepEqual(gaps.map((g) => posixRel(g.rel)), ["_records"], "an empty directory reads as MISSING");
   rmSync(canon, { recursive: true, force: true }); rmSync(shadow, { recursive: true, force: true });
 });
 
@@ -339,6 +350,18 @@ test("a sandboxed register-digest carries the driver-computed prompt blocks runD
   // a skipping pass (willRun false) never carries the tail
   const skipped = PL.digestDispatchExtra(ctx, { trigger: "escalation", willRun: false });
   assert.ok(!/PLACEMENT RULINGS TAIL/.test(String(skipped ?? "")), "a pass that will not re-run carries no rulings tail");
+});
+
+test("a sandboxed synthesis is handed the same list of records to answer as the canonical pass", async () => {
+  const { job, runDir, codename } = await canonicalRun();
+  const DECLINATIONS = /DECLINATIONS \(MANDATORY\): the register digest carried (\d+) record\(s\)/;
+  const canonical = readFileSync(driverDir(runDir, "synthesis.attempt1.dispatch.txt"), "utf8").match(DECLINATIONS);
+  assert.ok(canonical, "the canonical synthesis pass must carry a list for this to be testing anything");
+
+  const ex = await PL.runExperiment(job, { codename, experiment: "synthesis", label: "declinations" });
+  const arm = readFileSync(driverDir(ex.shadowDir, "synthesis.attempt1.dispatch.txt"), "utf8").match(DECLINATIONS);
+  assert.ok(arm, "the arm's dispatch carries no list: it replays a synthesis production never runs");
+  assert.equal(arm[1], canonical[1], "and the list is the canonical pass's, record for record");
 });
 
 // ── 5. THE DECLARATION CANNOT DRIFT AWAY FROM verify.mjs ─────────────────────────────────────────────
@@ -391,7 +414,7 @@ test("→ #256: an order-SEEDED arm re-executes the band-shape seams instead of 
   // that replayed a persisted band-shape.json would hand the seeded arm the UNSEEDED artefact and the
   // arm would come back byte-identical to its control — which is exactly what happened to all four
   // arms. Because the rig derives, the seeded shape moves.
-  const shape = receipt.edges.find((e) => e.rel === "_driver/band-shape.json");
+  const shape = receipt.edges.find((e) => posixRel(e.rel) === "_driver/band-shape.json");
   assert.ok(shape, "the shape is in the arm's context");
   const canonicalShape = sha(driverDir(runDir, "band-shape.json"));
   // Precondition, stated so a fixture that cannot answer the question fails loudly rather than passing
@@ -429,7 +452,7 @@ test("--experiment report-card rebuilds its INLINE context, and refuses when it 
   assert.ok(ords.length, "the canonical run must carry rated findings for this case to exist");
 
   const ex = await PL.runExperiment(job, { codename, experiment: "report-card", axis: String(ords[0]), label: "inline" });
-  assert.ok(ex.shadowDir.includes("/_experiments/"), "the card arm ran sandboxed");
+  assert.match(ex.shadowDir, /[\\/]_experiments[\\/]/, "the card arm ran sandboxed");
   const receipt = JSON.parse(readFileSync(driverDir(ex.shadowDir, "experiment-context.json"), "utf8"));
   assert.equal(receipt.stage, "report-card");
   // an ordinal that does not exist must REFUSE, never dispatch a card against an undefined finding

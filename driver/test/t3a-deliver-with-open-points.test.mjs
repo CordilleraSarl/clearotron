@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 //
-// T3a — "Deliver always, with open points printed. The refusal on a blocking review goes."
-// Ruling 2026-08-26, verbatim. It REVERSES T3, whose flip to fail-on-BLOCKING is itself
-// itself an owner-approved decision. Both are his; this is the standing one.
+// T3a — "Deliver always, with open points printed. The refusal on a blocking review goes." Ruling
+// 2026-08-26, verbatim, and the delivery half of it stands: a refusing review never withholds a report.
+// Where the open points go does not. Owner ruling 2026-09-24: reviewer notes never reach the client page,
+// and a report the reviewer still refuses ships with its rating and nothing added. The section is still
+// built, from the same review and the same corrective observation, and it goes to the run record.
 //
 // The end-to-end arm lives in pipeline.mock.test.mjs, where a BLOCKING run is driven to delivery and the
 // rendered report is read. This file carries the two halves that arm cannot reach: the section builder's
@@ -15,6 +17,8 @@ import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { join, dirname } from "node:path";
 import { buildReviewerOpenPointsSection, assembleReportMd } from "../pipeline.mjs";
+import { REVIEWER_OPEN_QUESTIONS_FILE } from "../reviewer-open-points.mjs";
+import { driverDir } from "../../shared/driver-dir.mjs";
 import { paths as stagePaths } from "../stages.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -159,7 +163,7 @@ test("T3b: BLOCKING keeps every cited ground AND gains the unfixed ones, deduped
 // passing it in. An injected dependency tested only through injection is the shape where the wiring is
 // missing and every arm is green — so this arm writes the real artifact at the real path
 // (`stagePaths(dir).correctionsApplied`, never one invented here) and reads the assembled report.
-test("T3b: assembly reads corrections-applied.json off the run dir and prints from it", () => {
+test("T3b: assembly reads corrections-applied.json off the run dir and records it, never on the report", () => {
   const dir = mkdtempSync(join(tmpdir(), "t3b-assembly-"));
   try {
     const P = stagePaths(dir);
@@ -173,15 +177,16 @@ test("T3b: assembly reads corrections-applied.json off the run dir and prints fr
     }) + "\n");
 
     assembleReportMd(P, [], []);
+    const record = readFileSync(driverDir(dir, REVIEWER_OPEN_QUESTIONS_FILE), "utf8");
+    assert.match(record, /the EU class 9 search never ran, and the summary says it did\./,
+      "the unfixed objection did not reach the run record. The builder's own arms pass their rows in by "
+      + "hand, so a call site that never reads the artifact leaves every one of them green while the "
+      + "reviewing lawyer never sees an open point");
+    assert.match(record, /^###\s+Reviewer's open questions/m, "and under its own heading");
     const md = readFileSync(P.report, "utf8");
-    assert.match(md, /the EU class 9 search never ran, and the summary says it did\./,
-      "the unfixed objection did not reach the report. The builder's own arms pass their rows in by "
-      + "hand, so a call site that never reads the artifact leaves every one of them green while no "
-      + "client ever sees an open point on a delivered report");
-    assert.match(md, /^###\s+Reviewer's open questions/m, "and under its own heading");
-    assert.ok(md.indexOf("Reviewer's open questions") < md.indexOf("# Coverage"),
-      "at the TOP of the body — clearance-search/SKILL.md says where, and a section a reader meets "
-      + "after the coverage note is not the hand-off that sentence describes");
+    assert.doesNotMatch(md, /the EU class 9 search never ran/,
+      "a reviewer's note reached the client page — the owner ruled that it never does");
+    assert.doesNotMatch(md, /Reviewer's open questions/, "nor its heading");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 

@@ -15,13 +15,14 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { mkdtempSync, mkdirSync, readFileSync, existsSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { join, dirname, resolve } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
-import { authorityTrees, denyReason, isInside } from "../authority-trees.mjs";
+import { authorityTrees, canonicalWindowsPath, denyReason, foldsCaseAt, isInside } from "../authority-trees.mjs";
 import { writeBoundarySettings, buildClaudeArgs } from "../engine/anthropic-agent.mjs";
 import { targetOf } from "../engine/deny-authority-write.mjs";
+import { foldsCase } from "./platform-caps.mjs";
 
 const HOOK = join(dirname(fileURLToPath(import.meta.url)), "..", "engine", "deny-authority-write.mjs");
 const SKILLS = "/srv/app/driver/skills";
@@ -122,20 +123,39 @@ test("the boundary is derived from the SAME roots the grant hands out", () => {
   const granted = args.filter((a, i) => args[i - 1] === "--add-dir");
   assert.deepEqual(granted, [OVERLAY, SKILLS, RUN]);
   const settings = JSON.parse(args[args.indexOf("--settings") + 1]);
-  const cmd = settings.hooks.PreToolUse[0].hooks[0].command;
-  const policy = JSON.parse(Buffer.from(cmd.split(" ").at(-1), "base64").toString("utf8"));
+  const policy = JSON.parse(Buffer.from(settings.hooks.PreToolUse[0].hooks[0].args.at(-1), "base64").toString("utf8"));
   const protectedRoots = policy.trees.map((t) => t.path);
   // Every granted root is protected — except the run dir, whose TOP LEVEL must stay writable; it is
-  // represented by its _driver/ subtree.
-  assert.deepEqual(protectedRoots, [OVERLAY, SKILLS, PROFILES, driverDir(RUN)]);
+  // represented by its _driver/ subtree, resolved as the hook compares it (on Windows, with its drive).
+  assert.deepEqual(protectedRoots, [OVERLAY, SKILLS, PROFILES, resolve(driverDir(RUN))]);
   assert.ok(!protectedRoots.includes(RUN));
 });
 
-test("the hook command survives a checkout path with a space in it", () => {
+test("the hook is launched with no shell: the running Node, then the script and its policy as arguments", () => {
+  // EXEC FORM. A command string quoted for a POSIX shell does not parse where the CLI runs hooks in
+  // PowerShell (Windows without Git Bash), and a hook that cannot start lets the write through. With
+  // `args` set, the CLI spawns `command` directly and each element is one argument, whatever it holds.
   const s = JSON.parse(writeBoundarySettings({ skillsRoots: ["/a b/skills"], runDir: "/r" }));
-  const cmd = s.hooks.PreToolUse[0].hooks[0].command;
-  assert.match(cmd, /^'[^']*node[^']*' '.*deny-authority-write\.mjs' [A-Za-z0-9+/=]+$/);
-  assert.ok(cmd.startsWith(`'${process.execPath}'`));   // absolute node: the hook shell's PATH is not ours
+  const h = s.hooks.PreToolUse[0].hooks[0];
+  assert.equal(h.command, process.execPath, "not the Node running the driver: a bare `node` depends on a PATH that is not ours");
+  assert.equal(h.args.length, 2);
+  assert.match(h.args[0], /deny-authority-write\.mjs$/);
+  assert.match(h.args[1], /^[A-Za-z0-9+/=]+$/);
+  assert.ok(!/['"]/.test(h.command + h.args.join("")), "shell quoting survived into exec form, where it would be passed literally");
+});
+
+test("the hook, spawned exactly as the CLI spawns it, refuses a write into a protected tree", () => {
+  // The CLI's side of exec form, reproduced: `command` with `args`, no shell, the tool call on stdin.
+  const { args } = buildClaudeArgs({ message: "hi", skillsDir: SKILLS, skillsGrantRoots: [SKILLS], runDir: RUN });
+  const h = JSON.parse(args[args.indexOf("--settings") + 1]).hooks.PreToolUse[0].hooks[0];
+  const call = (file_path) => spawnSync(h.command, h.args, { input: JSON.stringify({ tool_name: "Write", tool_input: { file_path } }), encoding: "utf8" });
+  const denied = call(join(SKILLS, "planted.md"));
+  assert.equal(denied.status, 0);
+  assert.equal(JSON.parse(denied.stdout.trim()).hookSpecificOutput.permissionDecision, "deny",
+    "the hook as the CLI would start it let a write into the skills tree through");
+  const allowed = call(join(RUN, "findings.json"));
+  assert.equal(allowed.status, 0);
+  assert.equal(allowed.stdout.trim(), "", "a write to the run's own top level was refused");
 });
 
 test("FAIL CLOSED: a policy that decoded but names no tree is a policy that did not arrive", () => {
@@ -163,8 +183,67 @@ test("THE REFUSAL ISSUES NO INSTRUCTIONS — a tool result that redirects behavi
   assert.equal(/\byou\b|\byour\b|\bcontinue with\b|\bdo not\b/i.test(reason), false, reason);
 });
 
-test("nothing to protect ⇒ no settings flag at all", () => {
+test("nothing to protect ⇒ no write-boundary hook, and the turn's settings are the read fence alone", () => {
   assert.equal(writeBoundarySettings({}), null);
   const { args } = buildClaudeArgs({ message: "hi" });
-  assert.equal(args.includes("--settings"), false);
+  const at = args.indexOf("--settings");
+  assert.ok(at > 0 && args.indexOf("--settings", at + 1) < 0, "every turn carries one --settings, the read fence");
+  assert.deepEqual(JSON.parse(args[at + 1]), { permissions: { blockReadsOutsideWorkingDirectories: true } });
+});
+
+// ── LETTER CASE, DECIDED BY THE PROTECTED FOLDER'S OWN DISK ─────────────────────────────────────────────
+//
+// Measured on the macOS runner, 2026-09-23: a Write to P/SKILLS/probe.md was allowed while P/skills was
+// protected, and the file landed in P/skills, because that disk ignores case and the boundary compared
+// letter for letter.
+
+test("a folder's disk ignores case when its own name, case swapped, is the same file", () => {
+  const same = () => ({ dev: 1, ino: 7 });
+  assert.equal(foldsCaseAt("/p/skills", { platform: "darwin", stat: same }), true);
+  assert.equal(foldsCaseAt("/p/skills", { platform: "linux", stat: same }), true, "a Linux folder set to ignore case was read as minding it");
+  const minds = (p) => { if (p.endsWith("SKILLS")) throw Object.assign(new Error("no"), { code: "ENOENT" }); return { dev: 1, ino: 7 }; };
+  assert.equal(foldsCaseAt("/p/skills", { platform: "darwin", stat: minds }), false, "a case-sensitive Mac volume was folded, which refuses real sibling folders");
+  const blind = () => { throw Object.assign(new Error("no"), { code: "EACCES" }); };
+  assert.equal(foldsCaseAt("/p/skills", { platform: "darwin", stat: blind }), true, "a Mac that could not look did not err toward refusing");
+  assert.equal(foldsCaseAt("/p/skills", { platform: "linux", stat: blind }), false);
+  assert.equal(foldsCaseAt("C:\\p\\skills", { platform: "win32", stat: minds }), true, "Windows stopped folding");
+});
+
+test("the boundary ignores case exactly where the protected folder's disk does", () => {
+  const trees = authorityTrees({ skillsRoots: ["/p/skills"] });
+  assert.ok(denyReason("/p/SKILLS/merge.sh", trees, { platform: "darwin", foldsCase: () => true }),
+    "a write naming the protected folder in another case got past the boundary on a disk that ignores case");
+  assert.equal(denyReason("/p/SKILLS/merge.sh", trees, { platform: "linux", foldsCase: () => false }), null,
+    "a real sibling folder on a disk that minds case was refused");
+});
+
+test("on this machine's own disk, a write naming the protected folder in another case is refused if and only if it lands there", () => {
+  const P = mkdtempSync(join(tmpdir(), "case-boundary-"));
+  mkdirSync(join(P, "skills"));
+  const trees = authorityTrees({ skillsRoots: [join(P, "skills")] });
+  assert.equal(hook("Write", join(P, "skills", "probe.md"), { trees }).decision?.permissionDecision, "deny", "the control, the exact spelling, was not refused");
+  const folds = foldsCase(P);
+  const d = hook("Write", join(P, "SKILLS", "probe.md"), { trees }).decision;
+  assert.equal(d?.permissionDecision === "deny", folds, folds
+    ? "this disk ignores case, so P/SKILLS/probe.md is inside the protected P/skills, and the boundary let the write through"
+    : "this disk minds case, so P/SKILLS is a different folder, and the boundary refused a write that could not reach the protected one");
+});
+
+// ── WINDOWS' OTHER SPELLINGS OF ONE FOLDER ──────────────────────────────────────────────────────────────
+//
+// Measured on a Windows runner, 2026-09-23: a device-form path and the long name of a folder recorded by
+// its 8.3 short name both reached a protected folder and were allowed. Driven here with Windows' own answer
+// injected; a-windows-write-boundary-knows-every-spelling asks the real Windows.
+
+test("on Windows a device path, a short name and a long name are one folder to the boundary", () => {
+  const LONG = { "C:\\Users\\RUNNER~1": "C:\\Users\\runneradmin", "C:\\Users\\runneradmin": "C:\\Users\\runneradmin",
+    "C:\\Users\\RUNNER~1\\skills": "C:\\Users\\runneradmin\\skills", "C:\\Users\\runneradmin\\skills": "C:\\Users\\runneradmin\\skills" };
+  const realpath = (p) => { if (LONG[p] || p === "C:\\Users" || p === "C:\\") return LONG[p] ?? p; throw Object.assign(new Error("no"), { code: "ENOENT" }); };
+  const canonical = (p) => canonicalWindowsPath(p, { realpath });
+  const trees = authorityTrees({ skillsRoots: ["C:\\Users\\RUNNER~1\\skills"] });
+  for (const spelling of ["\\\\?\\C:\\Users\\RUNNER~1\\skills\\x.md", "\\\\.\\C:\\Users\\RUNNER~1\\skills\\x.md",
+    "C:\\Users\\runneradmin\\skills\\x.md", "//?/C:/Users/runneradmin/skills/new/x.md"])
+    assert.ok(denyReason(spelling, trees, { platform: "win32", canonical }), `a write spelled ${spelling} reached the protected folder and was allowed`);
+  assert.equal(denyReason("C:\\Users\\runneradmin\\skills-backup\\x.md", trees, { platform: "win32", canonical }), null,
+    "a sibling folder was refused once spellings were read as one");
 });

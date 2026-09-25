@@ -79,7 +79,7 @@ test("every unit this repo ships, ANYWHERE, is a real file the check can compare
   // unit added or renamed without its file lands here.: over the whole tree — this used to read
   // driver/systemd/ alone, which is how four tracked unit files went uncompared.
   const { readFileSync } = require("node:fs");
-  const root = new URL("../../", import.meta.url).pathname;
+  const root = fileURLToPath(new URL("../../", import.meta.url));
   const walk = findUnitFiles(root);
   assert.equal(walk.error, null, `the walk could not read the tree: ${walk.error}`);
   assert.ok(walk.files.length >= 9, `unit files shipped repo-wide: ${walk.files.length}`);
@@ -131,7 +131,7 @@ test("the banner IN THE FILE is the discriminator, not a second list beside it",
   assert.equal(isTemplateUnit(null), false);
   // …and the repo's actual templates classify themselves. A list would be free to drift from the files.
   const { readFileSync } = require("node:fs");
-  const root = new URL("../../", import.meta.url).pathname;
+  const root = fileURLToPath(new URL("../../", import.meta.url));
   const walk = findUnitFiles(root);
   const templates = walk.files.filter((f) => isTemplateUnit(readFileSync(`${root}${unitFilePath(walk, f)}`, "utf8")));
   // — `portal-service.service` and `recipe-service.service` left this census when the owner ruled
@@ -153,4 +153,5 @@ test("the banner IN THE FILE is the discriminator, not a second list beside it",
     + "expected to MATCH and a difference there is real drift");
 });
 import { createRequire } from "node:module";
+import { fileURLToPath } from "node:url";
 const require = createRequire(import.meta.url);

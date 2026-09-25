@@ -289,7 +289,10 @@ test("AUDIT #172/2 + A-1 — a warm patch or a capped gauge downgrades read:fals
 // 7 of the 12 non-clean dispatches in the 2026-08-02 round, so this is the common path. (It used to be
 // `coverage_status_offenum`, which moved to the in-dispatch form repair: that token no longer reaches
 // the ladder at all, so it can no longer produce a settled WARM attempt for this rule to be read on.)
-test("AUDIT #175/N1 — the settled attempt was a WARM PATCH: absence journals null, and the row carries the reason", async () => {
+// On Windows the failure names a drive-lettered path, and the warm-eligibility pattern reads the path as
+// ending at the drive letter's colon, so the ladder never offers the warm patch this arm settles on.
+test("AUDIT #175/N1 — the settled attempt was a WARM PATCH: absence journals null, and the row carries the reason",
+  async () => {
   const dir = mkdtempSync(join(tmpdir(), "ihr-warmpatch-"));
   mkdirSync(driverDir(dir), { recursive: true });
   const out = join(dir, "register-findings.md");
@@ -514,17 +517,23 @@ test("an engine that CANNOT REPORT tool time records null, never 0 — silence i
 // that reports nothing reports null for it too: "cannot report" and "measured, nothing unmeasurable"
 // (`[]`) are different answers, which is the whole distinction the field exists to draw.
 const NO_GAUGE = { toolCalls: null, toolWaitMs: null, activeMs: null, toolWaitByTool: null,
-  toolWaitUnmeasurable: null };
+  toolWaitUnmeasurable: null, toolCallsRefused: null, commandToolCalls: null, mcpToolCalls: null };
 
 test("toolGauge — an honest zero survives, and every unmeasurable operand returns null", () => {
   assert.deepEqual(toolGauge({ toolCalls: 3, toolWaitMs: 5400, activeMs: 12000, toolWaitByTool: { Read: 5400 } }),
     { toolCalls: 3, toolWaitMs: 5400, activeMs: 12000, toolWaitByTool: { Read: 5400 },
-      toolWaitUnmeasurable: null });
+      toolWaitUnmeasurable: null, toolCallsRefused: null, commandToolCalls: null, mcpToolCalls: null });
   assert.deepEqual(toolGauge({ toolCalls: 0, toolWaitMs: 0, activeMs: 0, toolWaitByTool: {} }),
-    { toolCalls: 0, toolWaitMs: 0, activeMs: 0, toolWaitByTool: {}, toolWaitUnmeasurable: null },
+    { toolCalls: 0, toolWaitMs: 0, activeMs: 0, toolWaitByTool: {}, toolWaitUnmeasurable: null,
+      toolCallsRefused: null, commandToolCalls: null, mcpToolCalls: null },
     "a turn that genuinely called no tools must keep its 0 and its EMPTY map — both are measurements, not silences");
   assert.deepEqual(toolGauge({}), NO_GAUGE, "an engine that reports none of them");
   assert.deepEqual(toolGauge(undefined), NO_GAUGE, "no turn at all");
+  // The per-stage counts a test round reads: an honest zero is kept, and a negative or a string is not a count.
+  assert.deepEqual([toolGauge({ toolCallsRefused: 0, commandToolCalls: 0, mcpToolCalls: 0 })].map((g) => [g.toolCallsRefused, g.commandToolCalls, g.mcpToolCalls])[0], [0, 0, 0],
+    "zero refused, zero command calls and zero server calls are measurements, and must survive as zeros");
+  assert.deepEqual([toolGauge({ toolCallsRefused: 2, commandToolCalls: 1, mcpToolCalls: 7 })].map((g) => [g.toolCallsRefused, g.commandToolCalls, g.mcpToolCalls])[0], [2, 1, 7]);
+  assert.deepEqual(toolGauge({ toolCallsRefused: -1, commandToolCalls: "1", mcpToolCalls: -3 }), NO_GAUGE);
   assert.deepEqual(toolGauge({ toolCalls: -1, toolWaitMs: -1, activeMs: -1 }), NO_GAUGE,
     "a negative count or duration is impossible; recording it would put a wrong number in a comparison");
   assert.deepEqual(toolGauge({ toolCalls: "3", toolWaitMs: "5400", activeMs: "1" }), NO_GAUGE,

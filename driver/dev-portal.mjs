@@ -32,7 +32,7 @@
 import { envFileRead } from "../shared/env-local.mjs";   // side effect: apply this install's .env when THIS file is the CLI entry (never on library import)
 import { createServer, request as httpRequest } from "node:http";
 import { readFileSync, existsSync, statSync, readdirSync, writeFileSync, renameSync, mkdirSync } from "node:fs";
-import { join, resolve, extname, dirname } from "node:path"; import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
+import { join, resolve, extname, dirname, sep } from "node:path"; import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
 import { fileURLToPath } from "node:url";
 import { config } from "./driver.config.mjs";
 import { BRAND } from "../shared/brand.mjs";
@@ -470,7 +470,7 @@ export function startPortal({ poolRoot = null, port = 18899, host = "127.0.0.1",
       // Static pool files. decodeURIComponent + resolve + prefix check = traversal-guarded.
       let p;
       try { p = resolve(root, "." + decodeURIComponent(url.pathname)); } catch { res.writeHead(400); return res.end(); }
-      if (p !== root && !p.startsWith(root + "/")) { res.writeHead(400); return res.end("bad path"); }
+      if (p !== root && !p.startsWith(root + sep)) { res.writeHead(400); return res.end("bad path"); }   // resolve() gives this machine's separator
       if (existsSync(p) && statSync(p).isDirectory()) p = join(p, "index.html");
       if (!existsSync(p)) { res.writeHead(404, { "content-type": "text/plain" }); return res.end("not found in the dev pool"); }
       sendFile(res, p);

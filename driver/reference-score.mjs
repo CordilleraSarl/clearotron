@@ -80,7 +80,14 @@ export const REFERENCE_SCHEMA_VERSION = 1;
 // — v7: the delivery line no longer reads a MISSING status.json as a refusal.
 // Scores at 6 and below printed THE ORDER WAS REFUSED for every archived run, above correct
 // numbers, so a v6 delivery verdict on a pool dir is not comparable with a v7 one.
-export const SCORER_VERSION = 7;
+// 8 — WHAT `found` AND `withheld` MEAN CHANGED. An entry that names an owner or a country is joined on
+// it as well as on the name, and an entry named with the searched mark alone is joined on the owner
+// (WHOSE RECORD, below). At 7 a same-name finding or record of a different proprietor filed elsewhere
+// was credited as the lawyer's, and one finding could credit two entries, so v7 recall reads HIGH on a
+// crowded name and v7 noise reads LOW by the findings that credit moved. Not comparable across 7 and 8.
+// 9 — an entry named with the searched mark alone is no longer withheld on a same-country record that
+// records no owner: nothing ties that record to the lawyer's. v8 could read such an entry withheld.
+export const SCORER_VERSION = 9;
 
 /**
  * The owner as a person reads it.
@@ -216,7 +223,7 @@ const MIN_SKELETON = 4;
  *     `ownersMatch`, it reaches exactly the case it is for: one proprietor, one record, two renderings.
  *     The caller establishes the owner agreement; this function never guesses it.
  */
-export function matchesReference(ref, candidate, { sameOwner = false } = {}) {
+export function matchesReference(ref, candidate, { sameOwner = false, sameTerritory = false } = {}) {
   const rawRef = String(ref ?? "").trim();
   const rawCand = String(candidate ?? "").trim();
   if (!rawRef || !rawCand) return null;
@@ -267,8 +274,13 @@ export function matchesReference(ref, candidate, { sameOwner = false } = {}) {
   // on a piece of its name, and only the proprietor separates that from a different company using the
   // same piece. How the RUN chose to label what it found is the run's business, and folds no identity
   // claim into the gold.
+  // A FILING COUNTRY THE TWO SIDES SHARE ALSO ANSWERS THE FRAGMENT QUESTION, and only that one. The
+  // lawyer types the proprietor as she knows it ("Acme AI") and the register as it was filed ("ACMEDOCS,
+  // INC."), so the owner test fails on the same company while the filing country agrees. `sameTerritory`
+  // reaches rules 2 and 3 for a decomposed gold label; it never reaches rule 4 or the script escape,
+  // which stay owner-only because containment under a shared country alone is a different company.
   const fullIdentity = refAliases.length === 1;
-  if (fullIdentity || sameOwner) {
+  if (fullIdentity || sameOwner || sameTerritory) {
     for (const r of refAliases) if (candAliases.includes(r)) return "alias";
   }
 
@@ -282,7 +294,7 @@ export function matchesReference(ref, candidate, { sameOwner = false } = {}) {
   // to both: full identity on both sides stays ungated, and a match resting on one alternative of a
   // decomposed label needs the proprietor. This is strictly narrower than gating skeleton outright,
   // which would change the fuzzy rule for the ordinary single-name case it was built for.
-  if (fullIdentity || sameOwner) {
+  if (fullIdentity || sameOwner || sameTerritory) {
     for (const r of refAliases) {
       const skel = consonantSkeleton(r);
       if (!skel || skel.length < MIN_SKELETON) continue;
@@ -357,14 +369,99 @@ export function satisfiesReference(entry, candidate) {
   const mark = typeof candidate === "string" ? candidate : (candidate?.mark ?? "");
   // — the owner agreement is established HERE and handed to the matcher, which never guesses it.
   // A string entry / string candidate carries no owner, so the containment rule stays off for them.
-  const sameOwner = typeof entry === "object" && typeof candidate === "object"
-    && ownersMatch(entry?.owner, candidate?.owner);
-  const rule = matchesReference(label, mark, { sameOwner });
+  const both = typeof entry === "object" && typeof candidate === "object";
+  const sameOwner = both && ownersMatch(entry?.owner, candidate?.owner);
+  const sameTerritory = both && territoriesMeet(entry, candidate);
+  const rule = matchesReference(label, mark, { sameOwner, sameTerritory });
   if (!rule) return { rule: null, evidence: null, ok: false };
   const evidence = (typeof candidate === "object" && candidate?.evidence) || "unknown";
   // A REGISTER entry is not satisfied by material that is not a register record. case-law is refused for
   // the same reason: a precedent naming the mark is not the registration.
   return { rule, evidence, ok: evidence === "register" || evidence === "unknown" };
+}
+
+// ── WHOSE RECORD, NOT ONLY WHICH NAME ─────────────────────────────────────────────────────────────────
+//
+// A gold entry is one record: a mark, the proprietor who filed it and where. A finding with the same
+// name filed by a different company somewhere else is a different record, and crediting it as the
+// lawyer's is recall the run does not have. So an entry that names an owner or a country is joined on
+// that as well as on the name:
+//
+//   · the owner agrees — `ownersMatch`, strict, as everywhere in this file; or
+//   · a filing country agrees — the gold's `jurisdictions` against the offices the candidate is filed in.
+//
+// The country arm exists because the two sides spell one proprietor differently: the lawyer writes the
+// company as she knows it and the register as it was filed, and the strict owner test cannot join them.
+// It admits an IDENTICAL name only. A near-form of the name (skeleton, containment) under a different
+// owner in the same country is another company's mark, so a near-form needs the owner.
+//
+// AN ENTRY NAMED WITH THE SEARCHED MARK ALONE IS JOINED ON THE OWNER ONLY. Its name identifies nothing —
+// on a matter about a common word, every company in the crowd holds that exact name, several of them in
+// the same country. For it the owner must agree, strictly or with the lawyer's owner name contained
+// whole in the register's (she shortens the company; the register spells it out), and the country only
+// chooses between candidates. A candidate with no owner recorded cannot join it by country either.
+//
+// EACH SIDE IS ASKED ONLY WHAT BOTH SIDES CARRY. The owner is compared when the entry and the candidate
+// both name one, the country when both carry one. When neither can be asked — an entry naming neither,
+// or a band record with an office where the entry names only an owner — the name-only join stands,
+// unchanged: there is nothing to join on, and refusing would turn every such entry into a miss and
+// rescore every preserved run whose band records no owner column.
+
+/** The filing countries a candidate carries, folded: its `territories`, else its `territory`, else its
+ *  owner's country. A set of `territoryKey` codes; empty when the candidate says nothing. PURE. */
+function candidateTerritories(candidate) {
+  const listed = Array.isArray(candidate?.territories) ? candidate.territories : [];
+  const raw = listed.length ? listed
+    : [candidate?.territory ?? (typeof candidate?.owner === "object" ? candidate?.owner?.country : null)];
+  return new Set(raw.map(territoryKey).filter(Boolean));
+}
+
+/** Does a filing country of the candidate appear among the gold entry's jurisdictions? PURE. */
+export function territoriesMeet(entry, candidate) {
+  const want = new Set((entry?.jurisdictions ?? []).map(territoryKey).filter(Boolean));
+  if (!want.size) return false;
+  for (const t of candidateTerritories(candidate)) if (want.has(t)) return true;
+  return false;
+}
+
+/** Is every distinctive word of the gold owner inside the candidate's owner? A SUPERSET test, so it
+ *  never stands where `ownersMatch` is required: it admits only for a searched-mark entry, and
+ *  otherwise only ranks a candidate the country already joined. PURE. */
+function ownerContained(goldOwner, candidateOwner) {
+  const g = ownerKey(goldOwner), c = ownerKey(candidateOwner);
+  if (!g || !c) return false;
+  const have = new Set(c.split(" "));
+  return g.split(" ").every((t) => have.has(t));
+}
+
+/** Is the entry named with the searched mark and nothing else? Every alias of its label must be an alias
+ *  of a searched mark. PURE. */
+export function namedBySearchedMark(entry, searchedMarks = []) {
+  const searched = new Set(searchedMarks.flatMap((m) => labelAliases(m)));
+  const own = labelAliases(entry?.mark ?? entry?.name ?? "");
+  return own.length > 0 && own.every((a) => searched.has(a));
+}
+
+/** The ranks `joinRank` returns, strongest first. `country` admits an identical name only. */
+export const JOIN = Object.freeze({ owner: 4, ownerContained: 3, country: 2, unasked: 1 });
+const IDENTITY_RULES = new Set(["alias", "script"]);
+
+/**
+ * How a candidate joins a gold entry beyond its name: a `JOIN` rank, higher is stronger, 0 for no join.
+ * When neither the owner nor the country can be asked of this pair, it joins as `unasked`, except an
+ * entry named with the searched mark alone, which joins on its owner or not at all. Pass the name `rule`
+ * that matched and a country-only join refuses a near-form. PURE.
+ */
+export function joinRank(entry, candidate, { searchedMark = false, rule = "alias" } = {}) {
+  const byOwner = Boolean(ownerKey(entry?.owner) && ownerKey(candidate?.owner));
+  const byCountry = (entry?.jurisdictions ?? []).some((j) => territoryKey(j)) && candidateTerritories(candidate).size > 0;
+  if (searchedMark && ownerKey(entry?.owner) && !byOwner) return 0;
+  if (!byOwner && !byCountry) return JOIN.unasked;
+  const country = byCountry && territoriesMeet(entry, candidate);
+  if (byOwner && ownersMatch(entry?.owner, candidate?.owner)) return JOIN.owner;
+  if (byOwner && ownerContained(entry?.owner, candidate?.owner)) return searchedMark || country ? JOIN.ownerContained : 0;
+  if (searchedMark && ownerKey(entry?.owner)) return 0;
+  return country && IDENTITY_RULES.has(rule) ? JOIN.country : 0;
 }
 
 /** In scope iff the entry's classes AND territories both intersect what the run was instructed to search. */
@@ -507,10 +604,14 @@ export function referenceCoverage({ coversMarks = null, subjects = null } = {}) 
  * subject roll; the fuzzy match happens once, in `referenceCoverage`, between the gold's label and the
  * roll. Two loops asking the matcher the same question two different ways is.
  */
-export function scoreRecall({ reference, findings = [], retrieved = [], scopeClasses = [], scopeTerritories = [], registerOnly = false, collapseReason = null, preAccepted = [], coverage = null }) {
+export function scoreRecall({ reference, findings = [], retrieved = [], scopeClasses = [], scopeTerritories = [], registerOnly = false, collapseReason = null, preAccepted = [], coverage = null, searchedMarks = [] }) {
   const entries = reference ?? [];
   const buckets = { found: [], withheld: [], lost: [], excluded: [], additional: [], noise: [], uncovered: [] };
   const claimed = new Set();
+  // One finding credits one entry. Keyed on the finding itself, not its mark: two entries can share a
+  // name, and a mark string cannot say which finding was spent.
+  const credited = new Set();
+  const bySearched = (e) => ({ searchedMark: namedBySearchedMark(e, searchedMarks) });
 
   // — the partition, before anything is scored.
   const outOfScope = new Set((coverage?.excludes ?? []).map(String));
@@ -536,9 +637,18 @@ export function scoreRecall({ reference, findings = [], retrieved = [], scopeCla
       continue;
     }
     //: the same-name test AND the right-kind-of-evidence test. Both, or it is not a find.
-    const hit = scorable.find((f) => satisfiesReference(e, f).ok);
+    // Name AND owner-or-country (see WHOSE RECORD above), and the strongest join wins; among equals the
+    // finding order stands. A finding already spent on another entry is not offered again.
+    // Among equal joins an identical name beats a near-form.
+    const hit = scorable
+      .filter((f) => !credited.has(f) && satisfiesReference(e, f).ok)
+      .map((f) => { const rule = satisfiesReference(e, f).rule;
+        return { f, rank: joinRank(e, f, { ...bySearched(e), rule }), exact: IDENTITY_RULES.has(rule) ? 1 : 0 }; })
+      .filter((x) => x.rank > 0)
+      .sort((a, b) => b.rank - a.rank || b.exact - a.exact)[0]?.f;
     if (hit) {
       claimed.add(hit.mark);
+      credited.add(hit);
       const s = satisfiesReference(e, hit);
       // — WHICH FINDING, NOT JUST WHICH NAME. `matched` records the mark string the finding carries,
       // and on a run holding five findings whose marks are the gold label or start with it, that string
@@ -571,7 +681,8 @@ export function scoreRecall({ reference, findings = [], retrieved = [], scopeCla
     // false and the strict test is what runs, so this can only ever relax a pair whose proprietor the
     // scorer has already established. It is not a fuzzier matcher — the relaxation is containment under
     // a proven-equal owner, and a DIFFERENT mark of the SAME owner still returns null.
-    const heldRule = (r) => matchesReference(label, r.mark, { sameOwner: ownersMatch(e?.owner, r?.owner) });
+    const heldRule = (r) => matchesReference(label, r.mark,
+      { sameOwner: ownersMatch(e?.owner, r?.owner), sameTerritory: territoriesMeet(e, r) });
     // ── — THE OWNER DECIDES WHICH RECORD IS CITED, NEVER BAND ORDER ───────────────
     //
     // This was `retrieved.find(heldRule)` — the FIRST match in band order, with nothing preferring the
@@ -588,7 +699,10 @@ export function scoreRecall({ reference, findings = [], retrieved = [], scopeCla
     // MEMBERSHIP IS UNCHANGED, and that is what keeps the baseline honest: the entry is withheld if ANY
     // record matched, exactly as before. Only the CITED record moves. R2's buckets stay found 0 /
     // withheld 8 / lost 1.
-    const heldAll = registerOnly ? [] : retrieved.filter((r) => heldRule(r));
+    // Membership asks the found loop's question: a retrieved record of the same name filed by another
+    // company elsewhere is not the lawyer's record, so it does not make the entry withheld.
+    const heldAll = registerOnly ? [] : retrieved.filter((r) => { const rule = heldRule(r);
+      return Boolean(rule) && joinRank(e, r, { ...bySearched(e), rule }) > 0; });
     const heldOwned = heldAll.filter((r) => ownersMatch(e?.owner, r?.owner));
     // ✕ ONLY WHEN THE ENTRY NAMES AN OWNER. `ownersMatch` is fail-closed, so an entry the gold records no
     // owner for would match nothing and disclose on every row — turning a scorer that cited a correct
@@ -626,12 +740,18 @@ export function scoreRecall({ reference, findings = [], retrieved = [], scopeCla
     // knockout lane with no gather/judgment seam, and a run dir with no `_driver/` and therefore no
     // retrieved corpus to look in — and a row that blames the wrong one tells the reader the lane was
     // register-only when it was not. The caller says which.
+    // A record of this name that the join refused is not the lawyer's, but the reader is told it was
+    // there: `lost` must not read as "the name never came back" when another proprietor's did.
+    const elsewhere = registerOnly ? [] : retrieved.filter((r) => heldRule(r));
     buckets.lost.push({ ...e,
       ...(refused ? { refused: refused.mark, refusedEvidence: satisfiesReference(e, refused).evidence,
         refusedRule: satisfiesReference(e, refused).rule } : {}),
       ...(registerOnly
         ? { why: collapseReason ?? "withheld could not be computed for this run" }
-        : {}) });
+        : elsewhere.length
+          ? { why: `retrieved ${elsewhere.length} record(s) of this name held by another proprietor, filed `
+            + `elsewhere, or recorded with no owner, none of them this entry's: ${elsewhere.slice(0, 4).map((r) => `${r.mark} (${r.owner ?? "owner unrecorded"})`).join("; ")}` }
+          : {}) });
   }
 
   for (const f of scorable) {
@@ -639,8 +759,10 @@ export function scoreRecall({ reference, findings = [], retrieved = [], scopeCla
     // — the SAME call the found-loop makes, owner agreement included. Two loops asking the matcher
     // different questions is how one record reached two buckets: this one said "not a reference mark"
     // while the loop above said "not retrieved", and both were reported as facts about the run.
-    if (entries.some((e) => matchesReference(e.mark ?? e.name ?? "", f.mark,
-      { sameOwner: ownersMatch(e?.owner, f?.owner) }))) continue;
+    // A same-name finding the join refused is NOT skipped here: it belongs to another proprietor, so it is
+    // a surfaced mark outside the reference, and it must land in a bucket rather than in none.
+    if (entries.some((e) => { const rule = satisfiesReference(e, f).rule;
+      return Boolean(rule) && joinRank(e, f, { ...bySearched(e), rule }) > 0; })) continue;
     // A mark the client had already accepted before the search is NOT noise. It is absent from the
     // headline set on purpose, and a run that surfaces it did the right thing — the reference says so
     // explicitly. Scoring it as noise would penalise a correct find and, worse, teach the next round to

@@ -14,11 +14,14 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { join, sep } from "node:path";
 import { paths } from "../stages.mjs";
 import { dictatedPaths, findStrayArtifacts, treeSnapshot, findStrayInTree } from "../stray-artifacts.mjs";
 import { MEANING_SEAT } from "../common-law-receipts.mjs";
 
-const RUN = "/RUN";
+// A native root: paths() joins with the platform separator, so a POSIX literal would not prefix what
+// it returns on Windows and every dictated name would fall outside the run.
+const RUN = join(sep, "RUN");
 const P = paths(RUN);
 const DICT = dictatedPaths(P, { axes: ["primary-sweep", "transliteration-numeric"] });
 
@@ -96,9 +99,9 @@ test("dictatedPaths reads the paths() factory itself, so it cannot drift from wh
   // paths), so this is a floor on the AXIS-INDEPENDENT vocabulary rather than a pinned total — a pinned
   // one would fail on every legitimate new artifact and teach the next reader to bump it without looking.
   assert.ok(DICT.size > 80, `the dictated vocabulary must be the real one, got ${DICT.size}`);
-  assert.ok(DICT.has(`${RUN}/report.md`) && DICT.has(`${RUN}/findings.json`));
+  assert.ok(DICT.has(join(RUN, "report.md")) && DICT.has(join(RUN, "findings.json")));
   // the per-half factories are exercised, not just the plain strings
-  assert.ok(DICT.has(`${RUN}/common-law-findings.half-b.json`.replace(".json", ".md")));
+  assert.ok(DICT.has(join(RUN, "common-law-findings.half-b.json").replace(".json", ".md")));
   assert.ok(!DICT.has(RUN), "the run dir is the thing being judged, never an artifact in it");
 });
 
@@ -120,7 +123,9 @@ test("the MEANING SEAT's four artifacts are dictated — a detector wrong four t
   const dictated = dictatedPaths(P, { axes: ["primary-sweep", "transliteration-numeric"] });
   assert.deepEqual(findStrayArtifacts(names, dictated, { runDir: RUN }), [],
     "the default seat vocabulary covers every seat a split run dispatches");
-  for (const n of names) assert.ok(dictated.has(`${RUN}/${n}`), `${n} is in the dictated set by name, not by wildcard`);
+  // The obligations sidecar is composed with "/" and the rest are joined, so on Windows the two spell the
+  // separator differently; on Linux both spellings are the one string.
+  for (const n of names) assert.ok(dictated.has(join(RUN, n)) || dictated.has(`${RUN}/${n}`), `${n} is in the dictated set by name, not by wildcard`);
   // …and the guarantee that makes that safe: a model-invented look-alike is still caught, because each
   // name is DERIVED from the same factory the writer uses rather than admitted by a `half-*` pattern.
   assert.deepEqual(
@@ -187,13 +192,14 @@ test("the #1846 provenance sidecar is DECLARED — and only beside the ledgers t
   // run-dir AUDITOR — real, per its own header: the 2026-08-24 round mis-reported this lane as
   // quota-starved off a SerpAPI counter, with no artifact naming the true provider. Declared, from
   // the writer's own path function, never a second spelling.
-  const P = paths("/tmp/stray-check-run");
+  const R = join(sep, "tmp", "stray-check-run");
+  const P = paths(R);
   const d = dictatedPaths(P);
-  assert.ok(d.has("/tmp/stray-check-run/common-law-grid.provenance.json"), "the full-grid sidecar is undeclared");
+  assert.ok(d.has(join(R, "common-law-grid.provenance.json")), "the full-grid sidecar is undeclared");
   for (const h of ["a", "b", "m"])
-    assert.ok(d.has(`/tmp/stray-check-run/common-law-grid.half-${h}.provenance.json`), `the half-${h} sidecar is undeclared`);
+    assert.ok(d.has(join(R, `common-law-grid.half-${h}.provenance.json`)), `the half-${h} sidecar is undeclared`);
   // NOT a wildcard: a provenance file beside any OTHER ledger is still a stray — a new writer nothing
   // has decided about. The supplemental lane's is the nearest such member.
-  assert.ok(!d.has("/tmp/stray-check-run/common-law-grid.supp-x1.provenance.json"),
+  assert.ok(!d.has(join(R, "common-law-grid.supp-x1.provenance.json")),
     "a supplemental provenance sidecar slipped into the dictated set — the declaration became a wildcard");
 });

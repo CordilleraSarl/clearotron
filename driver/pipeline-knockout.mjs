@@ -27,8 +27,6 @@
 // history is not rewritten to tidy a citation, so the wrong number stands in the log forever; the
 // references in this file are corrected and this comment is the reconciliation. A reader who greps the
 // history for 1886 and lands here is in the right place and the number that brought them is not.
-//   - no known-conflicts writes — triage hits are unverified; the recall ledger is read-only territory
-//     for this lane (review 2026-07-17 doctrine).
 import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync, rmSync, renameSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { driverDir, ensureDriverDir } from "../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
@@ -46,6 +44,7 @@ import {
 } from "./repairs.mjs";
 import { RunCancelled, assertNotCancelledBeforePublish } from "./cancel.mjs";   // stop-by-user: never the failure lane below
 import { loadFrameworkManifest, parseFrameworkManifest, frameworkFor, DEFAULT_FRAMEWORK } from "./framework.mjs";
+import { attachFrameworkMethod, methodPathFor, FROZEN_METHOD_FILE } from "./framework-method.mjs";
 import { KO_STAGES, KO_STEPS, KO_STEP_REGISTER_COUNT, koSteps, koPaths, kebab, knockoutPrompt, koChunks } from "./stages-knockout.mjs";
 import { kebabCollisions, reportIdentityFor, CAPABILITY_SKIPPED_CAUSE, CAPABILITY_SKIPPED_NOTE } from "./search-policy.mjs";
 import { countPreflight, countRegisterHits, countedMarks, resolveCountExecutor } from "./register-count.mjs";
@@ -117,12 +116,23 @@ function attachKnockoutFramework(ctx) {
     try { ctx.framework = parseFrameworkManifest(raw); }
     catch (e) { throw new Error(`_driver/framework.json is corrupt (${e.message}) — investigate; the frozen framework is never silently re-derived`); }
     readBackLadder(ctx, sidecarPath, { minted: false });
+    // The method is read back with the manifest it was frozen beside, never loaded fresh on a resume.
+    ctx.frameworkMethod = attachFrameworkMethod({ frozenPath: driverDir(ctx.paths.runDir, FROZEN_METHOD_FILE),
+      resolve: (rel) => config.resolveSkillPath(rel), fwPath, manifest: ctx.framework, minted: false });
     return;
   }
   const manifest = loadFrameworkManifest((rel) => config.resolveSkillPath(rel), fwPath);   // see pipeline.mjs attachFramework
   ctx.framework = manifest;
+  // THE FRAMEWORK'S METHOD, frozen when the framework states one (framework-method.mjs): every rated card
+  // on a knockout page then records the framework's inputs and takes its table's band. Frozen BEFORE the
+  // manifest, as the clearance lane does: a run interrupted between the two writes has no manifest, so its
+  // resume mints both again. The other order would leave a manifest with no method beside it, which the
+  // resume branch above reads as a framework that states none.
+  ctx.frameworkMethod = attachFrameworkMethod({ frozenPath: driverDir(ctx.paths.runDir, FROZEN_METHOD_FILE),
+    resolve: (rel) => config.resolveSkillPath(rel), fwPath, manifest, minted: true });
   atomicWrite(sidecarPath, JSON.stringify(manifest, null, 2) + "\n");
-  runLog(ctx.paths.runDir, { event: "framework", key: manifest.framework_key, custom: fwPath !== TRIAGE_FRAMEWORK, lane: "knockout", bands: manifest.bands.map((b) => b.label).join("/") });
+  runLog(ctx.paths.runDir, { event: "framework", key: manifest.framework_key, custom: fwPath !== TRIAGE_FRAMEWORK, lane: "knockout", bands: manifest.bands.map((b) => b.label).join("/"),
+    method: ctx.frameworkMethod ? methodPathFor(fwPath) : null });
   readBackLadder(ctx, sidecarPath, { minted: true });
 }
 
@@ -756,6 +766,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
             const checks = await runOwnerChecks({
               owners: owed, exec: sweep.exec, runDir: run.runDir, ledgerPath: K.ownerCheckLedger,
               preset: process.env.CLEAROTRON_KNOCKOUT_PRESET || "pro-search",
+              concurrency: 3,   // step 3 — the same constant as the sibling calls above
             });
             atomicWrite(K.ownerChecks, JSON.stringify({ schema: 1, checks }, null, 2) + "\n");
             runLog(run.runDir, {
@@ -935,7 +946,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
       }
     }
     for (let c = 0; c < chunks.length; c++) {
-      await koStage("knockout-assess", ctx, { chunkNo: c, msgCtx: { chunkMarks: chunks[c], chunkTotal: chunks.length, framework: ctx.framework } });
+      await koStage("knockout-assess", ctx, { chunkNo: c, msgCtx: { chunkMarks: chunks[c], chunkTotal: chunks.length, framework: ctx.framework, frameworkMethod: ctx.frameworkMethod ?? null } });
     }
     // `let`, because the reviewing pass below returns a REWRITTEN record rather than editing this one:
     // the original has to survive intact as the thing that ships if the pass cannot finish cleanly.

@@ -185,7 +185,7 @@ test("the grants path resolves with no variable set, and agrees with installPath
   // THE DEFAULT, and it must be the SAME path installPaths states — not a second opinion that drifts the
   // first time anyone moves the base.
   const home = "/home/somebody";
-  const viaDefault = defaultGrantsPath({ env: { HOME: home } });
+  const viaDefault = defaultGrantsPath({ env: { HOME: home, USERPROFILE: home } });
   assert.ok(viaDefault.endsWith(join("trademark", "grants.json")),
     `the default must be the documented one, got ${viaDefault}`);
   assert.equal(viaDefault, installPaths(dirname(dirname(viaDefault) + "/x")).grants.replace(/x$/, ""),
@@ -202,7 +202,7 @@ test("the grants path resolves with no variable set, and agrees with installPath
 test("with nothing set, grant names the real file and a command that writes it", () => {
   const home = mkdtempSync(join(tmpdir(), "f13-nofile-"));
   const r = spawnSync(process.execPath, [join(HERE, "..", "..", "bin", "grant.mjs"), "list"],
-    { encoding: "utf8", env: { PATH: process.env.PATH, HOME: home, CLEAROTRON_NO_ENV_FILE: "1" } });
+    { encoding: "utf8", env: { PATH: process.env.PATH, HOME: home, USERPROFILE: home, CLEAROTRON_NO_ENV_FILE: "1" } });
   const out = `${r.stdout ?? ""}${r.stderr ?? ""}`;
   assert.doesNotMatch(out, /Set CLEAROTRON_ACCESS_FILE/,
     "it must not send the reader to a variable nothing writes — that was the dead end");

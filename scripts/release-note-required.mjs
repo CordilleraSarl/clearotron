@@ -122,10 +122,25 @@
 // Every answer taken is printed with the sha that gave it, and every refused answer fails the check and
 // names the commit that carries it. The answering commit is read like any other: one that ships no code,
 // such as an empty commit, owes nothing of its own.
+//
+// ── …AND MAY ANSWER A LINE THAT PROMISED A NOTE, BY NAMING THE NOTE ─────────────────────────────────────
+//
+// Five commits on one design said `Release-note: to follow`, because the note's sentence was the owner's
+// to write, and a second and third branch were built on them before the sentence existed. A sentence in a
+// `Release-note:` line is refused, rightly: it reaches no reader. The only fix was again a rewrite of shared
+// branches. So a later commit may answer such a commit by NAMING the note that answers for it:
+//
+//     Release-note-for: <sha> .changeset/<name>.md
+//
+// under every rule above (one line, one earlier commit on its own history, one answer each), and one more:
+// the range must add that note, exactly as a `Release-note:` line naming a note is read. It answers a
+// commit whose own line is a sentence or a bare `none`. A commit that says nothing is answered by any note
+// in the range already, so naming one for it is refused as stale.
 import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -202,10 +217,11 @@ export function readAnswers(commits = [], isAncestor = null) {
       const text = m[0].trim();
       const bad = (problem) => refused.push({ sha: c.sha, subject: c.subject, text, problem });
       const head = ANSWER_HEAD.exec(m.groups.rest);
-      if (!head) { bad("names no commit: the form is `Release-note-for: <sha> none — <reason>`"); continue; }
-      const none = NO_NOTE.exec(`Release-note:${head.groups.tail}`);
-      if (!none) { bad("does not say `none` straight after one sha: one line answers one commit"); continue; }
-      if (!none.groups?.reason) { bad("gives no reason, and the reason is the whole point of the line"); continue; }
+      if (!head) { bad("names no commit: the form is `Release-note-for: <sha> none — <reason>` or `Release-note-for: <sha> .changeset/<name>.md`"); continue; }
+      const note = NAMED_NOTE.exec(head.groups.tail.trim())?.groups.name ?? null;
+      const none = note ? null : NO_NOTE.exec(`Release-note:${head.groups.tail}`);
+      if (!note && !none) { bad("does not say `none` or name a note straight after one sha: one line answers one commit"); continue; }
+      if (!note && !none.groups?.reason) { bad("gives no reason, and the reason is the whole point of the line"); continue; }
       const prefix = head.groups.sha.toLowerCase();
       const hits = commits.filter((k) => String(k.sha).toLowerCase().startsWith(prefix));
       if (!hits.length) { bad(`names ${prefix}, which is not a commit in this range`); continue; }
@@ -215,7 +231,7 @@ export function readAnswers(commits = [], isAncestor = null) {
         && (isAncestor ? isAncestor(target.sha, c.sha) : commits.indexOf(target) < at);
       if (!later) { bad(`names ${prefix}, which is not an earlier commit on this commit's own history`); continue; }
       if (!claims.has(target.sha)) claims.set(target.sha, []);
-      claims.get(target.sha).push({ by: c.sha, subject: c.subject, text, reason: none.groups.reason });
+      claims.get(target.sha).push({ by: c.sha, subject: c.subject, text, ...(note ? { note } : { reason: none.groups.reason }) });
     }
   });
   const answers = new Map();
@@ -314,12 +330,24 @@ export function commitVerdicts({ commits = [], files = [], atHead = null, isAnce
     const named = values.map((v) => NAMED_NOTE.exec(v)?.groups.name).filter(Boolean);
     const prose = values.filter((v) => !/^none\b/i.test(v) && !NAMED_NOTE.test(v));
     const at = { sha: c.sha, subject: c.subject };
-    if (prose.length && !addsNote) { owed.push({ ...at, why: "prose", text: prose[0] }); continue; }
+    // A LATER COMMIT'S ANSWER NAMING A NOTE: taken for a sentence line or a bare `none`, when the range adds it.
+    const byNote = (answer) => {
+      used.add(c.sha);
+      if (!noteNames.has(answer.note)) { owed.push({ ...at, why: "names-a-missing-note", text: answer.note, by: answer.by }); return; }
+      answered.push({ ...at, by: answer.by, note: answer.note, said: prose[0] ?? "none" });
+    };
+    if (prose.length && !addsNote) {
+      const answer = answers.get(c.sha);
+      if (answer?.note) byNote(answer);
+      else owed.push({ ...at, why: "prose", text: prose[0] });
+      continue;
+    }
     const none = NO_NOTE.exec(String(c.message ?? ""));
     if (none) {
       const reason = none.groups?.reason;
       const answer = reason ? null : answers.get(c.sha);
       if (reason) declined.push({ ...at, reason });
+      else if (answer?.note) byNote(answer);
       else if (answer) { answered.push({ ...at, by: answer.by, reason: answer.reason }); used.add(c.sha); }
       else owed.push({ ...at, why: "bare-none" });
       continue;
@@ -348,7 +376,9 @@ export function commitVerdicts({ commits = [], files = [], atHead = null, isAnce
     if (used.has(sha)) continue;
     refusedAnswers.push({ sha: a.by, subject: a.subject, text: a.text,
       problem: owing.has(sha)
-        ? `names ${sha.slice(0, 7)}, which owes a note this line cannot give: an answer covers only a bare \`none\``
+        ? (a.note
+          ? `names ${sha.slice(0, 7)}, whose own line this answer does not reach: a note answers only a sentence or a bare \`none\` in the named commit`
+          : `names ${sha.slice(0, 7)}, which owes a note this line cannot give: an answer covers only a bare \`none\``)
         : `names ${sha.slice(0, 7)}, which owes no answer: it ships no code, carries a note, or gives its own reason` });
   }
   return { visible, notes, declined, withdrawals, owed, answered, refusedAnswers };
@@ -438,7 +468,9 @@ function main() {
     console.log(`  ${w.sha.slice(0, 7)} answered with ${w.note}, which ${w.by.slice(0, 7)} withdrew: ${w.reason}`);
   }
   for (const a of answered) {
-    console.log(`  ${a.sha.slice(0, 7)} said a bare \`none\`, which ${a.by.slice(0, 7)} answers: ${a.reason}`);
+    console.log(a.note
+      ? `  ${a.sha.slice(0, 7)} said ${a.said === "none" ? "a bare `none`" : `"${a.said}"`}, which ${a.by.slice(0, 7)} answers with ${a.note}`
+      : `  ${a.sha.slice(0, 7)} said a bare \`none\`, which ${a.by.slice(0, 7)} answers: ${a.reason}`);
   }
   if (!owed.length && !refusedAnswers.length) return;
   if (refusedAnswers.length) {
@@ -469,7 +501,9 @@ function main() {
         + "\n      release too, say that in THAT commit — `Release-note: none — <why>` — which is the newest of"
         + "\n      the two and the one that can still be amended.");
     } else {
-      console.error(`      names ${o.text} as its note, and this range adds no note by that name.`);
+      console.error(o.by
+        ? `      is answered by ${o.by.slice(0, 7)} with ${o.text}, and this range adds no note by that name.`
+        : `      names ${o.text} as its note, and this range adds no note by that name.`);
     }
   }
   console.error("\nSomebody installing Clearotron reads the releases page to decide whether to upgrade. Add a"
@@ -480,4 +514,4 @@ function main() {
   process.exit(1);
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) main();
+if (isEntrypoint(import.meta.url)) main();

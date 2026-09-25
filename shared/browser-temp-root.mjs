@@ -75,9 +75,10 @@ export const ROOT_PREFIX = "ctb-";
  * Returned rather than thrown so a caller can decide: a check that has already produced a result
  * should say this and exit, not lose the result to an exception.
  */
-export function rootRefusal(dir) {
+export function rootRefusal(dir, { platform = process.platform } = {}) {
   if (typeof dir !== "string" || dir === "") return "a browser temp root must be a non-empty path";
-  if (dir.length <= MAX_ROOT_LENGTH) return null;
+  // On Windows the browser's singleton is a named pipe, not a socket at a file path, so no length binds.
+  if (platform === "win32" || dir.length <= MAX_ROOT_LENGTH) return null;
   return (
     `browser temp root is ${dir.length} characters and the limit is ${MAX_ROOT_LENGTH}: ${dir}\n` +
     `  A browser writes its process-singleton socket at <root>${LOCK_SUFFIX}, and a unix socket ` +

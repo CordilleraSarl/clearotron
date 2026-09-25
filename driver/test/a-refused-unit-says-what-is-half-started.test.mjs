@@ -28,6 +28,10 @@ import { handRunEnv } from "./drive-env.mjs";
 import { startStands } from "../../bin/start.mjs";
 import { systemdFailure, CAPTURE_STDERR } from "../../shared/systemd-failure.mjs";
 
+/** The arms below that drive the background path, which ends at a refusal on Windows. */
+const NO_BACKGROUND_FORM_ON_WINDOWS = process.platform === "win32"
+  && "on Windows `start --background` stops at its own refusal before this path (a-windows-start-has-no-background-mode.test.mjs): the background form is systemd units, which Windows does not have";
+
 const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 const START = join(ROOT, "bin", "start.mjs");
 
@@ -61,7 +65,7 @@ async function driveToEnable(stderrLine) {
     // would make this drive read no .env, so the values written above never arrive and it stops at an
     // earlier refusal — the guard `reachedTheEnable` names rather than lets an arm read past
     //.
-    env: handRunEnv({ HOME: home, PATH: `${bin}:${process.env.PATH}`,
+    env: handRunEnv({ HOME: home, USERPROFILE: home, PATH: `${bin}:${process.env.PATH}`,
       PORTAL_SERVICE_PORT: String(ports.portal), TRADEMARK_MCP_HTTP_PORT: String(ports.mcp),
       CLIENT_MCP_HTTP_PORT: String(ports.client) }) }),
     { busy: (r) => /is already in use/.test(`${r.stdout ?? ""}${r.stderr ?? ""}`) });
@@ -79,6 +83,11 @@ function reachedTheEnable(d) {
   return d.said;
 }
 
+// The arms that read a systemd refusal need two things Windows has neither of: a `#!/bin/sh` stand-in
+// on PATH, which Windows cannot execute, and systemd's user units, which `--background` enables.
+const SYSTEMD_SHIM = { skip: process.platform === "win32"
+  && "systemd units and a #!/bin/sh systemctl stand-in: Windows has no systemd and cannot run a shebang shim" };
+
 let REFUSED = null;    // systemd declines for a reason that is not the bus
 let NOBUS = null;      // systemd declines because there is no session bus
 
@@ -88,7 +97,7 @@ test.before(async () => {
 });
 test.after(() => { REFUSED?.clean(); NOBUS?.clean(); });
 
-test("a systemd refusal arrives as a sentence, and no stack trace reaches the operator", () => {
+test("a systemd refusal arrives as a sentence, and no stack trace reaches the operator", SYSTEMD_SHIM, () => {
   const said = reachedTheEnable(REFUSED);
   assert.match(said, /^start: /m, "the refusal did not come out of this command's own failure path");
   for (const trace of [/node:internal\/errors/, /at genericNodeError/, /at checkExecSyncError/, /^\s+at .*\(node:/m]) {
@@ -97,13 +106,13 @@ test("a systemd refusal arrives as a sentence, and no stack trace reaches the op
   assert.equal(REFUSED.code, 1, "it must still exit non-zero — a sentence is not a success");
 });
 
-test("systemd's own words are printed, not discarded by `stdio: ignore`", () => {
+test("systemd's own words are printed, not discarded by `stdio: ignore`", SYSTEMD_SHIM, () => {
   const said = reachedTheEnable(REFUSED);
   assert.match(said, /Failed to enable unit: Unit file clearotron-portal\.service does not exist\./,
     `the reason systemd gave was thrown away before anyone could read it:\n${said.slice(-1500)}`);
 });
 
-test("the reader is told which unit refused and what is running", () => {
+test("the reader is told which unit refused and what is running", SYSTEMD_SHIM, () => {
   const said = reachedTheEnable(REFUSED);
   assert.match(said, /HALF STARTED/, `no statement of what happened to the install:\n${said.slice(-1500)}`);
   assert.match(said, /was NOT enabled/, "the refusing unit is not named");
@@ -112,7 +121,7 @@ test("the reader is told which unit refused and what is running", () => {
   assert.match(said, /clearotron stop/, "nothing tells the reader how to take back down what is up");
 });
 
-test("the generic post-write trailer does not double the specific one", () => {
+test("the generic post-write trailer does not double the specific one", SYSTEMD_SHIM, () => {
   // Both were printed at first, and the pair read as two answers to one question. The generic line is
   // still right on every OTHER post-write refusal — the arm below holds it there — so this is about
   // suppression at one site, not deletion.
@@ -121,7 +130,7 @@ test("the generic post-write trailer does not double the specific one", () => {
     `the generic trailer printed beside the specific one:\n${said.slice(-1500)}`);
 });
 
-test("and the generic trailer still fires where nothing better was said", async () => {
+test("and the generic trailer still fires where nothing better was said", { skip: NO_BACKGROUND_FORM_ON_WINDOWS }, async () => {
   // THE PLANT FOR THE SUPPRESSION. `fatal(msg, { stated: true })` is opt-in, and an opt-in that turned
   // out to be always-on would delete the re-running-is-safe line from every other post-write refusal in
   // this command with nothing going red. So it is driven at a DIFFERENT post-write refusal.
@@ -149,7 +158,7 @@ test("and the generic trailer still fires where nothing better was said", async 
     const r = spawnSync(process.execPath, [START, "--background"], { encoding: "utf8", timeout: 180_000,
       // CLEAROTRON_NO_ENV_FILE is set BACK here on purpose: this drive wants a refusal that comes from
       // the box rather than from a file, and reading one would be a way to accidentally have values.
-      env: handRunEnv({ HOME: home, CLEAROTRON_NO_ENV_FILE: "1",
+      env: handRunEnv({ HOME: home, USERPROFILE: home, CLEAROTRON_NO_ENV_FILE: "1",
         PORTAL_SERVICE_PORT: String(ports.portal), TRADEMARK_MCP_HTTP_PORT: String(ports.mcp),
         CLIENT_MCP_HTTP_PORT: String(ports.client),
         CLEAROTRON_DATABASE: undefined, CLEAROTRON_AI: undefined, CLEAROTRON_CLAUDE_PATH: undefined }) });
@@ -161,7 +170,7 @@ test("and the generic trailer still fires where nothing better was said", async 
   } finally { rmSync(home, { recursive: true, force: true }); }
 });
 
-test("the bus branch and the not-the-bus branch give DIFFERENT remedies", () => {
+test("the bus branch and the not-the-bus branch give DIFFERENT remedies", SYSTEMD_SHIM, () => {
   // The defect this half inherits: one remedy appended to every failure, so a
   // unit that would not start for a bound port told the reader to export XDG_RUNTIME_DIR. A confident
   // remedy for a cause that is not the reader's costs more than no remedy.
@@ -177,7 +186,7 @@ test("the bus branch and the not-the-bus branch give DIFFERENT remedies", () => 
   for (const said of [refused, nobus]) assert.match(said, /HALF STARTED/);
 });
 
-test("the OTHER systemd catch still lands, and now leads with what systemd said", async () => {
+test("the OTHER systemd catch still lands, and now leads with what systemd said", SYSTEMD_SHIM, async () => {
   // NOTHING DRIVES THIS PATH ANYWHERE ELSE — `reachedTheEnable` above excludes it by name, so the
   // daemon-reload catch was changed with no arm over it. It keeps its own two-cause remedy, which is
   // right and is not the shared one: at that point the question is whether this session can reach a
@@ -204,7 +213,7 @@ test("the OTHER systemd catch still lands, and now leads with what systemd said"
     // daemon-reload catch, so a number that went stale between allocation and bind is noise.
     const r = await withFreePorts(["portal", "mcp", "client"], (ports) =>
       spawnSync(process.execPath, [START, "--background"], { encoding: "utf8", timeout: 180_000,
-        env: handRunEnv({ HOME: home, PATH: `${bin}:${process.env.PATH}`,
+        env: handRunEnv({ HOME: home, USERPROFILE: home, PATH: `${bin}:${process.env.PATH}`,
           PORTAL_SERVICE_PORT: String(ports.portal), TRADEMARK_MCP_HTTP_PORT: String(ports.mcp),
           CLIENT_MCP_HTTP_PORT: String(ports.client) }) }),
       { busy: (r) => /is already in use/.test(`${r.stdout ?? ""}${r.stderr ?? ""}`) });

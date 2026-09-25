@@ -45,23 +45,10 @@ run is [mcp-server/CONNECT.md](mcp-server/CONNECT.md), and why something is the 
   Node 20, or on 22.0 through 22.12, the install succeeds and the first US search fails with
   `ERR_UNKNOWN_BUILTIN_MODULE`, saying nothing about Node. `package.json` declares the floor, the
   install refuses below it before writing anything, and `nvm use` picks the pin up.
-- **macOS, Linux, or native Windows for the demo; WSL2 for a clearance.** `npx clearotron
-  demo` runs anywhere Node does, native Windows included. A real clearance does not: the engine spawns
-  each stage with POSIX path and process semantics, so on native Windows a clearance is refused before it
-  starts, even with the program installed. Native Windows clearances are planned for a later
-  release. Until then, on Windows,
-  `wsl --install -d Ubuntu`, then `wsl -d Ubuntu`, and work through this page
-  from **inside** that distribution. Name it: plain `wsl` can open a minimal image with no apt, no
-  curl and no bash, and everything below assumes Ubuntu. A fresh Ubuntu has no Node at all, and
-  apt's package is below the floor above, so `npx` answers "not found" before anything of ours runs.
-  From the Ubuntu prompt:
-
-  ```bash
-  sudo apt update && sudo apt install -y curl
-  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
-  . "$HOME/.nvm/nvm.sh" && nvm install 22    # 22.13 or newer, per the floor above
-  npx clearotron install  # offers to install the reasoning program if the machine has none, and shows you how to sign it in
-  ```
+- **macOS, Linux or Windows.** On Windows everything runs natively in PowerShell, with no WSL2, no Git
+  and no administrator rights: `npm install --global clearotron`, then `clearotron install`, which installs
+  the AI program you choose into your own user folder. On Windows and macOS Clearotron runs in the window
+  you start it from, and closing the window stops it.
 
   Run from `npx`, the install first installs Clearotron under `~/.local`, as `npm install -g --prefix
   ~/.local` would, and finishes from there. That way the `clearotron` command and your assistant's connection

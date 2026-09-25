@@ -9,7 +9,8 @@ serves it.
 | `src/` | the app. `contract/` decodes the wire, `screens/` are the pages, `shell/` + `nav/` are the frame |
 | `dist/` | the built bundle, committed: `index.html` plus one content-hashed JS and CSS file |
 | `test/` | offline unit and source-text tests. `npm test -w portal-ui` typechecks, then runs them |
-| `index.html` | the document: inline favicon, the pre-paint theme script, the Fontshare stylesheet |
+| `index.html` | the document: inline favicon and the pre-paint theme script |
+| `src/fonts.css` | the text face, from the package's own font file in `shared/fonts/`; the portal fetches no font from anywhere else |
 | `vite.config.ts` | the build. `base: '/portal/'` and `minify: false` are load-bearing, each with its reason at the line |
 
 ## The seam

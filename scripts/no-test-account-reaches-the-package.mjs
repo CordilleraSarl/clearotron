@@ -44,6 +44,7 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { execFileSync } from "node:child_process";
 import { TEST_ACCOUNT_NAMES, ALLOWED_CONTEXTS, ALLOWED_WORD_LISTS } from "./test-account-names.mjs";
+import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 
 export const EXIT_CLEAN = 0, EXIT_FOUND = 1, EXIT_COULD_NOT_LOOK = 2;
 
@@ -230,4 +231,4 @@ function main(argv = process.argv.slice(2)) {
   return EXIT_FOUND;
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) process.exit(main());
+if (isEntrypoint(import.meta.url)) process.exit(main());

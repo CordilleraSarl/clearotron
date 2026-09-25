@@ -86,7 +86,7 @@ import { test, after } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync, writeFileSync, existsSync, mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, dirname, relative } from "node:path";
+import { join, dirname, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { createServer, request as httpRequest } from "node:http";
@@ -137,7 +137,8 @@ function doorsFromSource() {
       // and a scan that counted those would classify modules that never call it — an exemption list
       // padded with fiction is how a real door hides in it.
       const code = readFileSync(p, "utf8").replace(/\/\*[\s\S]*?\*\//g, "").replace(/(^|[^:])\/\/[^\n]*/g, "$1");
-      if (/\bvalidateJob\s*\(/.test(code)) hits.push(relative(REPO, p));
+      // Spelled with "/" whatever the platform, because the tables below are keyed that way.
+      if (/\bvalidateJob\s*\(/.test(code)) hits.push(relative(REPO, p).split(sep).join("/"));
     }
   }
   return hits.sort();

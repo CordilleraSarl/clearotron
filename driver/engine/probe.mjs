@@ -15,18 +15,22 @@
 //
 // THE CHEAPEST TURN THAT PROVES THE WHOLE PATH
 //
-// One `haiku`-tier turn at `low` effort, asked to call one tool, with no skills dir and no run dir. The
-// tool is `ping` on engine/mcp/probe-server.mjs, handed over exactly as a stage hands over its own.
+// One `haiku`-tier turn at `low` effort, asked to call three tools and write one file, with no skills dir
+// and a run folder of its own. The tools are `ping`, `note` and `look` on engine/mcp/probe-server.mjs, one
+// per kind of tool a stage calls, handed over exactly as a stage hands over its own.
 //
 // WHY IT CALLS A TOOL. It used to call none, and a turn with no tools proves nothing about the tools every
 // search stage is given. On some hosts codex's own sandbox refuses every tool call while the turn reports
 // success; the probe passed there, and every search then failed after real spend. So the probe now passes
-// only when the reply carries the word `ping` returned, a random word minted for this turn and given to
-// that server alone, so the model cannot supply it. Every call refused is a configuration fault, refused at
-// the door; no call and no word shows nothing either way, and warns.
+// only when the reply carries the word each tool returned, random words minted for this turn and given to
+// that server alone, so the model cannot supply them, and when the file it was asked to write holds them. A
+// refusal the engine records is a configuration fault, refused at the door, and so is a write the engine
+// reports as failed; a missing word or a missing file with no such record shows nothing either way, and
+// warns.
 //
 // It exercises every link a stage uses: binary → spawn → billing mode → credential → model access → a tool
-// call through the stage's own tool path → a completed turn parsed by the adapter's own settle path. And
+// call of each kind through the stage's own tool path → a write in a run folder under the stage's own grant
+// and sandbox → a completed turn parsed by the adapter's own settle path. And
 // it is far lighter than the thing it protects: one register-sweep stage prompt inlines 150 KB of plan and
 // runs for minutes.
 //
@@ -68,20 +72,59 @@ import { resolveAuthMode, CLOUD_SETTINGS, CLOUD_CREDENTIAL_CHECK } from "./auth.
 import { everyToolCallRefused } from "./tool-refusal.mjs";
 import { randomBytes } from "node:crypto";
 import { fileURLToPath } from "node:url";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
-/** One tool call and one word back: short enough to be free in practice, and it needs a working tool path. */
-export const PROBE_PROMPT = "Call the ping tool once, then reply with exactly the word it returned.";
-/** The server and tool the probe hands the engine, named as a stage names its own (`mcp__<server>__<tool>`). */
+/** The server the probe hands the engine, named as a stage names its own (`mcp__<server>__<tool>`). */
 export const PROBE_SERVER = "probe";
-export const PROBE_TOOL = "ping";
+/**
+ * One tool per kind a search stage calls, in the order their words are given to the server: `ping` is
+ * declared as the register search is, `note` as the recording tools are, `look` as the page fetch is
+ * (probe-server.mjs). A host that refuses one kind refuses every stage that calls it.
+ */
+export const PROBE_TOOLS = Object.freeze(["ping", "note", "look"]);
+/** Kept for callers that name the first tool, the one declared as the register search is. */
+export const PROBE_TOOL = PROBE_TOOLS[0];
 const PROBE_SERVER_PATH = fileURLToPath(new URL("./mcp/probe-server.mjs", import.meta.url));
 
+/** The file the probe asks the engine to write, in a run folder the probe makes for the turn. */
+export const PROBE_FILE = "probe-words.txt";
+/**
+ * Three tool calls, one file written, three words back. Short enough to be free in practice, and it needs
+ * a working tool path and a working write, with the same tool grant and the same run-folder grant a
+ * writing stage has.
+ */
+const PROBE_PROMPT_HEAD = "Call the ping, note and look tools once each.";
+/**
+ * The probe's instruction. Given `commandFile`, on an engine whose stages keep a shell, the turn also runs
+ * one harmless command, `cat` of a file the probe planted with a word of its own, and replies with that
+ * word too. Without it the text is exactly what it always was.
+ */
+export const probePrompt = (file, commandFile = null) => (commandFile
+  ? `${PROBE_PROMPT_HEAD} Run the shell command cat "${commandFile}". Write the three words the tools returned to the file ${file}, one per line. Then reply with those three words and the word the command printed.`
+  : `${PROBE_PROMPT_HEAD} Write the three words they returned to the file ${file}, one per line. Then reply with the same three words.`);
+
+// THE ENGINES WHOSE STAGES KEEP A SHELL. A Claude stage is offered no command tool, so there is nothing to
+// prove there, and its probe asks for no command. A Codex stage reads its instructions through the shell
+// (`sed`, `cat`), and codex writes files with its own patch tool, outside the shell. So a Codex machine
+// whose sandbox cannot start a command (measured, 0.158.0-alpha.2: a permission profile that could not
+// read codex's own helper, every command failing with "bwrap: execvp …: No such file or directory")
+// still passed the tool calls and the file write, and every search then failed after spend.
+export const ENGINES_WITH_A_SHELL = Object.freeze(new Set(["openai-agent"]));
+/** The file the probe plants in its own folder, holding the word its command must print back. */
+export const PROBE_COMMAND_FILE = "probe-command-word.txt";
+/** Is this text the probe's instruction? For a reader that finds the probe's turn among a run's turns. */
+export const isProbePrompt = (text) => String(text ?? "").trim().startsWith(PROBE_PROMPT_HEAD);
+
 /** The tool config for one probe turn, in the shape both adapters take from a stage. */
-export function probeToolConfig(sentinel) {
+export function probeToolConfig(words) {
+  const list = (Array.isArray(words) ? words : [words]).map(String);
   return {
     mcpConfig: JSON.stringify({ mcpServers: { [PROBE_SERVER]: {
-      command: process.execPath, args: [PROBE_SERVER_PATH, String(sentinel)], env: {} } } }),
-    allowedTools: `mcp__${PROBE_SERVER}__${PROBE_TOOL}`,
+      command: process.execPath, args: [PROBE_SERVER_PATH, ...list], env: {} } } }),
+    // A writing stage's grant: the file tools and its servers' tools, by name (gather-config allowedToolsFor).
+    allowedTools: ["Read", "Write", "Edit", ...PROBE_TOOLS.map((t) => `mcp__${PROBE_SERVER}__${t}`)].join(" "),
   };
 }
 
@@ -231,13 +274,54 @@ export function classifyProbe({ engine, tuple = null, error = null, timeoutSec =
   // adapter's own gauge, and the run door refuses on it. The word in the reply is the pass. Neither is a
   // turn that shows nothing about the tools either way: not a pass, and not this box's fault to refuse on.
   if (tuple.code === 0 && expect != null) {
+    // The words the probe's tools return, and what the turn wrote. A bare word is the one-tool form.
+    const words = typeof expect === "object" ? (expect.words ?? []).map(String) : [String(expect)];
     if (everyToolCallRefused(tuple))
       return v("tools-refused", "tool-gauge", `${id} refused every tool call it was given`, toolsRefusedFix(id),
         { detail: tail(tuple.mcpToolCallRefusals?.[0]?.message) });
-    if (!String(tuple.stdout ?? "").includes(String(expect)))
+    // SOME OF THE PROBE'S OWN CALLS REFUSED, AND SOME NOT. The calls are prescribed, one per kind of tool a
+    // stage calls, so a refusal the engine names on one of them is this machine refusing that kind, and
+    // every stage that calls it. Only the engine's own record of a refused call counts, named to the probe's
+    // server, so a model that wandered off its instruction cannot turn into a refusal at the door.
+    const refusedOwn = (tuple.mcpToolCallRefusals ?? []).filter((r) => r?.server === PROBE_SERVER);
+    if (refusedOwn.length)
+      return v("tools-refused", "tool-gauge", `${id} refused a tool call it was given`, toolsRefusedFix(id),
+        { detail: tail(refusedOwn[0].message) });
+    if (!words.every((w) => String(tuple.stdout ?? "").includes(w)))
       return v("tools-unproven", "no-tool-answer", `${id} did not return the word its probe tool gives`,
         "Nothing here shows that the tools a search needs work on this machine. Run this again; if it repeats, a search is likely to fail the same way.",
         { detail: tail(tuple.stdout) });
+    // THE COMMAND, where the engine's stages keep a shell. The word is the probe's own, planted in its own
+    // folder, so only a command that ran can have read it. The door refuses only when the engine reports as
+    // failed a command naming that file's exact path: the file is there, so only the machine can fail that
+    // `cat`. Codex marks any non-zero exit failed, so a failure naming another path is a model that mistyped
+    // it, and that, like a word simply missing, shows nothing either way and warns.
+    if (typeof expect === "object" && expect.command) {
+      if (!String(tuple.stdout ?? "").includes(expect.command)) {
+        const ours = expect.commandFile
+          ? (tuple.commandFailures ?? []).find((f) => namesPathWhole(String(f?.command ?? ""), expect.commandFile)) : null;
+        if (ours)
+          return v("cannot-run-commands", "command-gauge", `${id} could not run a command where a search runs its commands`, cannotRunFix(id),
+            { detail: tail(ours.output) ?? tail(tuple.stderr) ?? tail(tuple.stdout) });
+        return v("commands-unproven", "no-command-answer", `${id} did not return the word its probe command prints`,
+          "Nothing here shows that a search can run its commands on this machine. Run this again; if it repeats, a search is likely to fail the same way.",
+          { detail: tail(tuple.stdout) });
+      }
+    }
+    // THE FILE. Every stage writes its results to a file in its run folder, and the probe's turn was given a
+    // folder of its own with the same grant. A write the ENGINE reports as failed is this machine's, and the
+    // door refuses on it. A file that is simply not there shows nothing either way, because a cheap model can
+    // skip a step, so that warns.
+    if (typeof expect === "object" && "written" in expect) {
+      const wroteIt = typeof expect.written === "string" && words.every((w) => expect.written.includes(w));
+      if (!wroteIt && Number(tuple.writesFailed ?? 0) > 0)
+        return v("cannot-write", "write-gauge", `${id} could not write a file where a search writes its results`, cannotWriteFix(id),
+          { detail: tail(tuple.stderr) ?? tail(tuple.stdout) });
+      if (!wroteIt)
+        return v("write-unproven", "no-file", `${id} did not write the file its probe asks for`,
+          "Nothing here shows that a search can write its results on this machine. Run this again; if it repeats, a search is likely to fail the same way.",
+          { detail: tail(tuple.stdout) });
+    }
   }
 
   // A completed turn names what served it, the model and the provider as the program reported them, and
@@ -301,6 +385,35 @@ function toolsRefusedFix(engine) {
   return "Every search stage calls tools, so no search can finish here. The engine's stderr below is the place to start.";
 }
 
+/** What fixes a host where the engine cannot write in a run folder. On codex it is its own sandbox, and the setting is named. */
+function cannotWriteFix(engine) {
+  if (engine === "openai-agent")
+    return "Every search stage writes its results to a file, so no search can finish here. codex's own sandbox cannot write on this machine: "
+      + "set CLEAROTRON_CODEX_SANDBOX_BYPASS=1 in this install's environment file, or use the Anthropic engine, then run this again.";
+  return "Every search stage writes its results to a file, so no search can finish here. The engine's stderr below is the place to start.";
+}
+
+/**
+ * Whether a command line names `path` as a whole: followed by a quote, a space or the end of the line. A
+ * `cat` of `…/probe-command-word.txtt` contains the planted path but names another file, and fails on a
+ * working machine as any path that is not there does.
+ */
+export function namesPathWhole(command, path) {
+  for (let at = command.indexOf(path); at >= 0; at = command.indexOf(path, at + 1)) {
+    const next = command[at + path.length];
+    if (next === undefined || next === "\"" || next === "'" || /\s/.test(next)) return true;
+  }
+  return false;
+}
+
+/** What fixes a host where the engine cannot run a command. On codex it is its own sandbox, and the setting is named. */
+function cannotRunFix(engine) {
+  if (engine === "openai-agent")
+    return "Every search stage reads its instructions through commands, so no search can finish here. codex's own sandbox cannot run commands on this machine: "
+      + "set CLEAROTRON_CODEX_SANDBOX_BYPASS=1 in this install's environment file, or use the Anthropic engine, then run this again.";
+  return "Every search stage reads its instructions through commands, so no search can finish here. The engine's stderr below is the place to start.";
+}
+
 /** The one place the tier doctrine is POINTED AT rather than re-authored. */
 function tierFix(engine, msg) {
   if (engine === "openai-agent")
@@ -341,7 +454,7 @@ export function probeFailureText(verdict) {
 // classify is by definition one the door cannot claim to understand — and the cost of being wrong runs
 // the other way here: refusing wrongly kills a run that would have worked, proceeding wrongly costs the
 // stages before a failure the engine was going to produce anyway.
-const CONFIGURATION_MODES = new Set(["unknown-engine", "auth-misconfigured", "signed-out", "tier-unavailable", "cannot-spawn", "tools-refused"]);
+const CONFIGURATION_MODES = new Set(["unknown-engine", "auth-misconfigured", "signed-out", "tier-unavailable", "cannot-spawn", "tools-refused", "cannot-write", "cannot-run-commands"]);
 
 // …and a mode alone is not enough, because `basis` says HOW WELL the mode is known and the ladder already
 // makes that distinction for its own reasons. `startup-class` is an INFERENCE FROM SILENCE — the CLI died
@@ -351,7 +464,9 @@ const CONFIGURATION_MODES = new Set(["unknown-engine", "auth-misconfigured", "si
 // a startup-class engine death" on a machine whose engine was fine. Refusing a production run on that
 // inference manufactures the outage it was written to prevent, so it warns instead.
 // `tool-gauge` is named, not inferred: the adapter counted each refused call off the engine's own stream.
-const NAMED_BASES = new Set(["config", "text-match", "spawn-error", "tool-gauge"]);
+// `write-gauge` is named the same way: the adapter counted the write the engine itself reported as failed.
+// `command-gauge` too: the adapter counted the command the engine itself reported as failed.
+const NAMED_BASES = new Set(["config", "text-match", "spawn-error", "tool-gauge", "write-gauge", "command-gauge"]);
 
 /**
  * "ok" | "configuration" | "weather" — PURE, and the whole of the door's judgment.
@@ -508,6 +623,7 @@ export async function probeEngineTurn({
 
   const restore = applyEngineEnv(env);
   let program = null;
+  let runDir = null;
   try {
     // THE COPY THAT RUNS, resolved the way the adapter resolves it: by the one resolver, inside the
     // environment the turn runs in. The sign-in advice names it when it is the copy Clearotron installed,
@@ -517,12 +633,29 @@ export async function probeEngineTurn({
     // the environment back whatever it does. A resolver that cannot answer leaves the bare word.
     if (knownProgram?.path) program = { source: knownProgram.source ?? null, path: knownProgram.path };
     else try { const r = resolveEngineProgram(id); program = r.resolved ? { source: r.source, path: r.resolved } : null; } catch { /* the bare word */ }
-    const sentinel = mintProbeSentinel();
-    const tuple = await turn({ message: PROBE_PROMPT, model: PROBE_MODEL, thinking: PROBE_THINKING, timeoutSec, stallSec, ...probeToolConfig(sentinel) });
-    return classifyProbe({ engine: id, tuple, timeoutSec, auth, program, expect: sentinel });
+    // A WORD PER TOOL, AND A RUN FOLDER OF ITS OWN. The turn is handed the folder exactly as a stage is
+    // handed its run folder, so it gets the same write grant and, on codex, the same sandbox; the file it
+    // writes there is the proof that a search can write its results on this machine. The folder is the
+    // probe's alone and goes when the turn does.
+    const words = PROBE_TOOLS.map(() => mintProbeSentinel());
+    runDir = mkdtempSync(join(tmpdir(), "clearotron-probe-"));
+    const file = join(runDir, PROBE_FILE);
+    // AND A WORD FOR THE COMMAND, where stages keep a shell: planted in the probe's own folder, so the
+    // command reads it under the same sandbox a stage's commands run in.
+    let command = null, commandFile = null;
+    if (ENGINES_WITH_A_SHELL.has(id)) {
+      command = mintProbeSentinel();
+      commandFile = join(runDir, PROBE_COMMAND_FILE);
+      writeFileSync(commandFile, `${command}\n`);
+    }
+    const tuple = await turn({ message: probePrompt(file, commandFile), model: PROBE_MODEL, thinking: PROBE_THINKING, timeoutSec, stallSec, runDir, ...probeToolConfig(words) });
+    let written = null;
+    try { written = readFileSync(file, "utf8"); } catch { /* not written: classifyProbe says what that means */ }
+    return classifyProbe({ engine: id, tuple, timeoutSec, auth, program, expect: { words, written, ...(command ? { command, commandFile } : {}) } });
   } catch (e) {
     return classifyProbe({ engine: id, error: e, timeoutSec, auth, program });
   } finally {
+    if (runDir) try { rmSync(runDir, { recursive: true, force: true }); } catch { /* a temp folder; the turn's verdict stands */ }
     restore();
   }
 }

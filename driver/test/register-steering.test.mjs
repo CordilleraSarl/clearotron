@@ -223,7 +223,9 @@ test("owner/watchlist steering rides the lane only, and states the proposal gram
   // TOOL TRUTH (F1, PR-1): a mark-text proposal may carry an `owner` SCOPE FIELD — the owner×term
   // intersection slice is the coverage instrument; the bare predicate:"owner" sweep is crowd context
   // that points at those slices. The steering must state the grammar the mint actually accepts.
-  assert.match(OWNER_SWEEP_STEERING, /owner×term slice is THE coverage instrument/);
+  assert.match(OWNER_SWEEP_STEERING, /an owner's marks that share the client's word or family, in the client's classes and markets, are asked with the owner×term slice/);
+  assert.match(OWNER_SWEEP_STEERING, /Asking more of an owner is a supplemental that states its question about that owner: can it block, would it, what kind of filer it is\. Never because it is an incumbent or on the watchlist\./);
+  assert.doesNotMatch(OWNER_SWEEP_STEERING, /THE coverage instrument|a watchlist owner is answered by records/, "the old whole-portfolio line is gone");
   assert.match(OWNER_SWEEP_STEERING, /owner as a scope field/);
   assert.match(OWNER_SWEEP_STEERING, /owner:"<the owner>"/);
   assert.match(OWNER_SWEEP_STEERING, /CROWD CONTEXT, not coverage/);

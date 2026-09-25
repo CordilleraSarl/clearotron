@@ -399,10 +399,10 @@ const { profile: userDir, env: chromeEnv, keep: keepRoot } = browserRun("clearan
 // --keep means LEAVE THE PROFILE: take the run root out of the exit sweep, or the flag
 // would go on reading as working while the directory it promises is removed anyway.
 if (keep) keepRoot()
-// NO NETWORK, deliberately. CI runs this with no route to api.fontshare.com, so the brand webfonts never
-// arrive and the page renders in a wider fallback — which is exactly when a cell wraps and a table
-// overflows. A check that passes only when the fonts load is a check that passes on the developer's
-// machine and fails in CI, which is how this was found.
+// NO NETWORK, deliberately. The portal's typeface is its own file, served by the portal under test, so it
+// arrives here exactly as it does for a reader; anything that reached for another host would fail here
+// as it would on a machine with no network. This check was first written when the font came from a font
+// service CI could not reach, and a table measured in the fallback face wrapped where the real one did not.
 const chrome = spawn('google-chrome', [
   '--headless=new', '--disable-gpu', '--no-sandbox', '--hide-scrollbars',
   '--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1',

@@ -11,7 +11,7 @@ import { test } from "node:test";
 import { pinEnvAll } from "../../shared/env-aliases.mjs";   // — a spread carries EVERY spelling, so an override must clear every spelling
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync, existsSync, readFileSync, rmSync, readdirSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, existsSync, readFileSync, rmSync, readdirSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
@@ -92,7 +92,7 @@ function runDemo(args, env = {}) {
       encoding: "utf8", stdio: ["ignore", "pipe", "pipe"],
       // TMPDIR IS THE RUN'S OWN, so the demo's temporary copies land where the runner removes them. Without
       // it the child falls back to the machine's temp directory and every run left five behind there.
-      env: { HOME: env.HOME ?? tmpdir(), PATH: "/usr/bin:/bin", TMPDIR: tmpdir(), ...env },
+      env: { HOME: env.HOME ?? tmpdir(), USERPROFILE: env.USERPROFILE ?? env.HOME ?? tmpdir(), PATH: "/usr/bin:/bin", TMPDIR: tmpdir(), ...env },
     });
     return { code: 0, out };
   } catch (e) {
@@ -161,9 +161,13 @@ test("a $HOME symlinked into a real pool does not get past the guard", () => {
   const configured = join(root, "configured-pool");
   mkdirSync(join(configured, "home"), { recursive: true });
   const link = join(root, "home-link");
-  execFileSync("ln", ["-s", join(configured, "home"), link]);
+  // A directory link made by Node rather than by `ln -s`: Windows has no `ln` of its own, and the one a
+  // POSIX layer puts on PATH may copy the directory instead of linking it. "junction" is the Windows
+  // directory link that needs no privilege; everywhere else the type is ignored and this is the symlink
+  // `ln -s` made.
+  symlinkSync(join(configured, "home"), link, "junction");
   // Default pool is $HOME/trademark-demo/pool — which, through the link, lands inside the real pool.
-  const r = runDemo(["--run-dir", sample, "--once"], { HOME: link, CLEAROTRON_REPORTS_DIR: configured });
+  const r = runDemo(["--run-dir", sample, "--once"], { HOME: link, USERPROFILE: link, CLEAROTRON_REPORTS_DIR: configured });
   assert.equal(r.code, 1, r.out);
   assert.match(r.out, /refusing to publish/, r.out);
   assert.ok(!existsSync(join(configured, "home", "trademark-demo")), "nothing was created through the symlink");

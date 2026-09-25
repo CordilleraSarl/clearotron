@@ -26,6 +26,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { hermeticInstallRoot } from "./hermetic-install-root.mjs";
 import { NO_INSTALLED_ENGINES } from "./drive-env.mjs";   // this doctor's env is composed from nothing
+import { homeAt } from "./helpers/home.mjs";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const ONBOARD = join(REPO, "bin", "onboard.mjs");
@@ -92,14 +93,12 @@ test("what 'no engine' means is said in ONE place, so the two routes cannot drif
     `the no-engine wording appears ${hits} times; the menu's last row and the loop's escape must both `
     + "route through sayNoEngine(), or one of them will be reworded alone");
   assert.match(src, /const sayNoEngine = \(\) => \{/, "…and that one place is a named helper");
-  // THREE ROUTES NOW, and the count is kept exact rather than relaxed to "at least". The third is the
-  // native-Windows refusal at the top of the engine step: no engine can run there, so setup offers
-  // finishing without one instead of resolving a binary it cannot start. It reaches the same ending as
-  // the other two and must reach it through the same helper — a route that re-worded the sentence
-  // locally is exactly what this counts.
+  // TWO ROUTES, and the count is kept exact rather than relaxed to "at least". A third, the native-Windows
+  // refusal at the top of the engine step, went when native Windows began to run searches. A route that
+  // re-worded the sentence locally is exactly what this counts.
   const calls = src.split("sayNoEngine()").length - 1;
-  assert.equal(calls, 3, `sayNoEngine() is called ${calls} time(s); every route out must use it — `
-    + "the menu's last row, the loop's escape, and the platform refusal");
+  assert.equal(calls, 2, `sayNoEngine() is called ${calls} time(s); every route out must use it — `
+    + "the menu's last row and the loop's escape");
 });
 
 test("the fix did NOT move which engine Enter selects", () => {
@@ -141,7 +140,7 @@ function doctor({ envFile = null, ...env } = {}) {
   try {
     return { rc: 0, out: execFileSync(process.execPath, [onboard, "--check"], {
       encoding: "utf8", stdio: ["ignore", "pipe", "pipe"],
-      env: { PATH: `${NODE_DIR}:/usr/bin:/bin`, HOME: mkdtempSync(join(tmpdir(), "onboard-1907-home-")),
+      env: { PATH: `${NODE_DIR}:/usr/bin:/bin`, ...homeAt(mkdtempSync(join(tmpdir(), "onboard-1907-home-"))),
              CLEAROTRON_NO_ENV_FILE: "1", ...NO_INSTALLED_ENGINES, ...env },
     }) };
   } catch (e) { return { rc: e.status ?? 1, out: `${e.stdout ?? ""}${e.stderr ?? ""}` }; }

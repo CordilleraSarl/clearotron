@@ -11,7 +11,7 @@ import assert from "node:assert/strict";
 import { mkdtempSync, chmodSync, readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
-import { join, dirname, basename } from "node:path";
+import { join, dirname, basename, sep } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { fileURLToPath } from "node:url";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
@@ -36,12 +36,6 @@ process.env.CLEAROTRON_AGENT = "clawdi";
 // code-side saturation-probe (2026-07-14): OFF in this legacy harness — its scenarios script the AGENT
 // member; the dedicated satprobe-codeside tests exercise the code-side path with an injected executor.
 process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
-// recall probes (P2-A): OFF in this legacy harness — a run that fails at/after verdict now writes the
-// recall store, so its RESUME mints recall-probe plan entries and legitimately re-does digest+synthesis
-// work (the band grew). That is the product behaviour under test elsewhere; HERE the subjects are the
-// resume mechanics themselves (skip telemetry, --from seams, corrective model resumption), which need
-// the resume to be minimal. The dedicated recall tests exercise the probes with the store populated.
-process.env.CLEAROTRON_RECALL_PROBES ||= "0";
 
 const PL = await import("../pipeline.mjs");
 const CMP = await import("../compare.mjs");
@@ -53,6 +47,10 @@ const jobFor = (ref) => ({ id: `job-${ref}`, msgId: `<${ref}@x>`, forwarder: "jo
 const events = (runDir) => readFileSync(driverDir(runDir, "run.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l));
 const sinceLastStart = (ev) => { let i = ev.map((e) => e.event).lastIndexOf("start"); return ev.slice(i); };
 const codenameOf = (runDir) => basename(runDir).replace(/^\d{4}-\d\d-\d\d-/, "");
+// A run directory is a native path, so the folders in it are bounded by this platform's separator.
+const underDir = (path, name) => path.includes(`${sep}${name}${sep}`);
+// The separator as a regex fragment, for matchers over paths that paths() built with join.
+const SEP_RE = sep === "\\" ? "\\\\" : "/";
 
 // ---- WS1a — dispatch cost-neutrality on a clean run -------------------------------------------------
 // Resilience on both shipped engines is same-model retry + lane-wedge re-dispatch + rate-limit postpone
@@ -111,7 +109,7 @@ test("WS1b-core: resume reuses the run-dir — upstream stages SKIP, only synthe
   const ran = ev2.filter((e) => e.event === "stage" && e.ok).map((e) => e.stage);
   assert.ok(ran.includes("synthesis"), "synthesis re-ran on resume");
   assert.ok(ran.includes("report-overview"), "delivery re-ran on resume");
-  assert.ok(r2.runDir.includes("/archive/"), "resumed run delivered + archived");
+  assert.ok(underDir(r2.runDir, "archive"), "resumed run delivered + archived");
 });
 
 // ── post-merge audit, N2 — the contract the babysit surface STATES, on a real resume ─────────
@@ -278,7 +276,9 @@ test("WS1b (review fix, adapted): a stage that SKIPS on resume reports the model
 test("WS1b (review fix, adapted): corrective re-synthesis on resume RESUMES the winning attempt's model, not the configured primary", async () => {
   // Run 1: synthesis succeeds, then refutation hard-fails → live run-dir; narrative.md valid on disk,
   // senior-eye-review.md absent (so refute re-runs on resume rather than skipping a stale CLEAR verdict).
-  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FAIL_STAGE: "narrative-refutation/SKILL" });
+  // The engine rewrites the prompt's skill reference to an absolute native path before the mock sees
+  // it, so the stage is named with this platform's separator.
+  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FAIL_STAGE: join("narrative-refutation", "SKILL") });
   const job = jobFor("TMPWIN2");
   const r1 = await PL.pipeline(job);
   assert.equal(r1.ok, false);
@@ -468,7 +468,7 @@ test("WS1b-ext --experiment: sandboxed — canonical run is byte-identical, outp
   assert.equal(readFileSync(skepticPath, "utf8"), canonicalBefore, "canonical skeptic-flags.md unchanged");
   assert.equal(readdirSync(driverDir(r1.runDir)).filter((f) => f.startsWith("skeptic")).length, driverBefore, "no new canonical attempt log");
   // output isolated to the shadow dir, with the experimental content
-  assert.ok(ex.shadowDir.includes("/_experiments/"), "shadow dir under _experiments");
+  assert.ok(underDir(ex.shadowDir, "_experiments"), "shadow dir under _experiments");
   assert.match(readFileSync(ex.output, "utf8"), /EXPERIMENTAL skeptic output/);
   // the canonical run.jsonl carries an experiment breadcrumb
   assert.ok(events(r1.runDir).some((e) => e.event === "experiment" && e.stage === "skeptic"), "experiment breadcrumb logged");
@@ -530,7 +530,7 @@ test("WS1b (Drop 1.1 fix): skeptic escalation does NOT re-fire on a resume past 
   const ev2 = sinceLastStart(events(r2.runDir));
   assert.ok(!ev2.some((e) => e.event === "skeptic-escalation"), "escalation did NOT re-fire on the resume (narrative present)");
   assert.ok(!ev2.some((e) => e.event === "stage" && e.stage.startsWith("register-unit") && e.ok), "no register-unit re-run on resume");
-  assert.ok(r2.runDir.includes("/archive/"), "resume delivered");
+  assert.ok(underDir(r2.runDir, "archive"), "resume delivered");
 });
 
 test("WS4: escalation skips the Opus re-digest when the unit is defended in place (unchanged), fires when it changes", async () => {
@@ -658,7 +658,8 @@ test("WS-T/#249: stage context covers every DECLARED-ARTIFACT file each stage me
   }
   for (const must of ["md", "json"])
     assert.ok(exts.has(must), `the matcher must be DERIVED from paths() — "${must}" is missing from ${[...exts]}, so the derivation broke`);
-  const artifactRe = new RegExp("/RUN/[^\\s`'\";)]+\\.(?:" + [...exts].sort().join("|") + ")", "g");
+  // paths() joins natively, so on Windows every reference is `\RUN\…`; the matcher follows the separator.
+  const artifactRe = new RegExp(`${SEP_RE}RUN${SEP_RE}[^\\s\`'";)]+\\.(?:` + [...exts].sort().join("|") + ")", "g");
 
   // Stages parameterized by an axis/half/ordinal say so by taking a second `out(P, axis)` argument. The
   // three vocabularies differ (register axes, grid halves, finding ordinals), so the value comes from a
@@ -713,7 +714,7 @@ test("WS-T/#249: stage context covers every DECLARED-ARTIFACT file each stage me
   // to `.md`-only passes every assertion above — this is the one that catches it.
   assert.ok(seen.has(P.findings),
     "the guard must SEE findings.json — an `.md`-only matcher is exactly how its undeclared movement shipped a report over a findings set that had moved");
-  assert.ok([...seen].some((f) => f.startsWith(`${RUN}/_driver/`)),
+  assert.ok([...seen].some((f) => f.startsWith(join(RUN, "_driver") + sep)),
     "the guard must see the _driver/ sidecars too — they are all JSON, so an `.md`-only matcher was blind to every one of them");
 });
 
@@ -755,7 +756,7 @@ test("report-overview declares EXACTLY the two files it reads, and its prompt ci
 
     // Both `.md` and `.json`, unlike the drift guard above — placements.json/findings.json must be visible.
     const msg = ST.STAGES["report-overview"].message({ paths: P, job, axes, registerOnly, agent: "clawdi", run: { slug: "s", codename: "c" } });
-    const cited = [...new Set(msg.match(/\/RUN\/[^\s`'";)]+\.(?:md|json)/g) || [])].filter((p) => p !== ST.STAGES["report-overview"].out(P));
+    const cited = [...new Set(msg.match(new RegExp(`${SEP_RE}RUN${SEP_RE}[^\\s\`'";)]+\\.(?:md|json)`, "g")) || [])].filter((p) => p !== ST.STAGES["report-overview"].out(P));
     assert.deepEqual(sorted(cited), sorted(EXPECTED),
       `report-overview's prompt (registerOnly=${registerOnly}) must cite exactly the files it declares — cited [${sorted(cited).join(", ")}] vs declared [${sorted(EXPECTED).join(", ")}]`);
   }
@@ -810,7 +811,7 @@ test("blind-frame's out() IS blind-frame-model.json, and blind-frame.md is gone 
   const P = ST.paths("/RUN");
   assert.equal(ST.STAGES["blind-frame"].out(P), P.blindFrameModel,
     "blind-frame must gate on the model itself — an `out` that is undefined or a prose path makes a model-less turn pass");
-  assert.equal(P.blindFrameModel, "/RUN/blind-frame-model.json");
+  assert.equal(P.blindFrameModel, join("/RUN", "blind-frame-model.json"));
   assert.ok(ST.STAGES["blind-frame"].validate, "the gated output must still be strict-parsed");
   assert.ok(!("blindFrame" in P), "the retired prose path constant must not come back as a dead key");
   // no stage prompt may name a file the engine no longer writes — a prompt pointing at blind-frame.md is

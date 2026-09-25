@@ -8,6 +8,7 @@
 import { existsSync, readFileSync, writeFileSync, mkdirSync, appendFileSync } from "node:fs";
 import { dirname, basename } from "node:path";
 import { driverDir } from "../../../shared/driver-dir.mjs";   //
+import { underStudioSegment } from "../../../shared/path-seps.mjs";   // Windows builds the path with "\"
 import { serve } from "./stdio-server.mjs";
 import {
   detectPreset, VALID_PRESETS, buildRequestBody, callAgentAPI, formatResponse, formatSandboxResponse,
@@ -154,7 +155,7 @@ async function research(params) {
     let spec;
     try { spec = validateGridSpec(JSON.parse(readFileSync(grid_spec_path, "utf8"))); }
     catch (err) { return `ERROR: grid_spec_path unreadable/invalid (${err.message}). The driver writes this file; do not hand-author it.`; }
-    if (!/\/studio\/(?:prelim|clearance)-search\//.test(spec.output_path))   // either spelling: an install keeps the studio segment it has
+    if (!underStudioSegment(spec.output_path))   // either spelling: an install keeps the studio segment it has
       return requiredLedgerRefusal(`ERROR: grid spec.output_path must be within a studio/clearance-search run dir; got ${spec.output_path}`, { spec, gridSpecPath: grid_spec_path });
     // — already recorded and complete? Answer from the ledger; do not buy the grid twice.
     const already = recordedLedgerFor(spec);

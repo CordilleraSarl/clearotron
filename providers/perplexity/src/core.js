@@ -370,7 +370,36 @@ export function validateGridSpec(spec) {
     if (typeof spec.connotation !== "object" || Array.isArray(spec.connotation)) throw new Error("grid spec.connotation must be an object { queries[] }");
     if (!Array.isArray(spec.connotation.queries)) throw new Error("grid spec.connotation.queries[] must be an array");
   }
+  // OPTIONAL blocks: a grid the matter frame decided is not one term × platform product — the frame's forms
+  // on the frame's stores, and every spelling on the general web — so it is dictated as blocks, each a
+  // product, drawn from the spec's own terms and platforms. Absent ⇒ the grid is terms × platforms.
+  if (spec.grids != null) {
+    if (!Array.isArray(spec.grids)) throw new Error("grid spec.grids must be an array of { terms[], platforms[] }");
+    const terms = new Set(spec.terms.map(gnorm)), platforms = new Set(spec.platforms.map(gnorm));
+    for (const g of spec.grids) {
+      if (!g || !Array.isArray(g.terms) || !Array.isArray(g.platforms)) throw new Error("grid spec.grids[] entry must be { terms[], platforms[] }");
+      if (g.terms.some((t) => !terms.has(gnorm(t))) || g.platforms.some((p) => !platforms.has(gnorm(p))))
+        throw new Error("grid spec.grids[] names a term or platform the spec does not carry");
+    }
+  }
   return spec;
+}
+
+/**
+ * Every (term × platform) cell the spec dictates, in the spec's own spelling, each once: its blocks when it
+ * has them, else terms × platforms. The one reading of "what was asked" — the program, the reconcile, the
+ * fold, the half merge and the receipts gate all count from it. PURE.
+ */
+export function dictatedCells(spec) {
+  const blocks = Array.isArray(spec?.grids) ? spec.grids : [{ terms: spec?.terms ?? [], platforms: spec?.platforms ?? [] }];
+  const out = [], seen = new Set();
+  for (const g of blocks) for (const term of g.terms ?? []) for (const platform of g.platforms ?? []) {
+    const k = cellKey(term, platform);
+    if (seen.has(k)) continue;
+    seen.add(k);
+    out.push([term, platform]);
+  }
+  return out;
 }
 
 /** The dictated connotation queries (non-empty strings) the program must run + record. PURE. */
@@ -391,8 +420,12 @@ export function connotationQueriesOf(spec) {
  */
 export function buildGridProgramTask(spec) {
   validateGridSpec(spec);
-  const { terms, platforms, batch = 14 } = spec;
-  const cellCount = terms.length * platforms.length;
+  const { batch = 14 } = spec;
+  // THE GRID ASKED: the spec's own term × platform product, or its blocks when the matter frame decided the
+  // grid (see validateGridSpec). One product reads exactly as it always has.
+  const pieces = (Array.isArray(spec.grids) ? spec.grids : [{ terms: spec.terms, platforms: spec.platforms }]).filter((g) => g.terms.length && g.platforms.length);
+  const terms = [...new Set(pieces.flatMap((g) => g.terms))];
+  const cellCount = dictatedCells(spec).length;
   const conn = connotationQueriesOf(spec);
   const hasConn = conn.length > 0;
   // — THE MEANING RECEIPTS CARRY A SNIPPET; THE MARKETPLACE CELLS DO NOT.
@@ -415,9 +448,10 @@ export function buildGridProgramTask(spec) {
     hasCells
       ? "Write and run ONE sandbox program that executes a marketplace clearance search grid."
       : "Write and run ONE sandbox program that executes a MEANING/CONNOTATION sweep. There is no marketplace grid in this spec — do not invent one.",
-    hasCells ? `Search EXACTLY this term × platform grid — every (term × platform) cell runs once, no additions, no omissions, keys VERBATIM (${cellCount} cells total):` : "",
-    hasCells ? `TERMS (${terms.length}): ${JSON.stringify(terms)}` : "",
-    hasCells ? `PLATFORMS (${platforms.length}): ${JSON.stringify(platforms)}` : "",
+    hasCells && pieces.length > 1
+      ? `Search EXACTLY these ${pieces.length} term × platform grids — each TERMS list runs on the PLATFORMS list that follows it; every (term × platform) cell runs once, no additions, no omissions, keys VERBATIM (${cellCount} cells total):`
+      : hasCells ? `Search EXACTLY this term × platform grid — every (term × platform) cell runs once, no additions, no omissions, keys VERBATIM (${cellCount} cells total):` : "",
+    ...pieces.flatMap((g) => [`TERMS (${g.terms.length}): ${JSON.stringify(g.terms)}`, `PLATFORMS (${g.platforms.length}): ${JSON.stringify(g.platforms)}`]),
     "Access the Perplexity results with EXACTLY this idiom — the result object supports ITERATION and ATTRIBUTE access ONLY (NO slicing, NO list(...), NO dict(...), NO indexing — iterating a single hit raises 'WebHit object is not iterable'):",
     hasCells ? "    hits = pplx_sdk.search.web(term, limit=10, domains=[platform])   # for the \"web\" platform, OMIT the domains= argument entirely" : "",
     hasCells ? "    results = []" : "",
@@ -426,7 +460,7 @@ export function buildGridProgramTask(spec) {
     hasCells ? "        results.append({\"title\": h.title or \"\", \"url\": h.url or \"\"})" : "",
     hasCells ? "Per cell: status = \"hit\" if results else \"no_hit\". Wrap EACH cell in its own try/except; on an exception append the string \"<term> | <platform> | <repr(exception)>\" to gaps and CONTINUE — one failing cell must never abort the grid." : "",
     hasCells && terms.length > batch
-      ? `Batch into groups of <= ${batch} terms (accumulate ALL cells before printing — one oversized run truncates).`
+      ? `Batch into groups of <= ${batch} terms and run each group as its own sandbox execution that prints only that group's JSON object — output over about 1 MiB is cut off, so never print the whole grid at once.`
       : "",
     // ── CONNOTATION / MEANING sweep (distinct from the marketplace grid) ──
     hasConn
@@ -442,7 +476,9 @@ export function buildGridProgramTask(spec) {
     hasConn
       ? "Record EVERY connotation query — INCLUDING ones that returned zero results — as one entry of extras.pr_risk = [{\"query\":\"<verbatim>\",\"results\":[...]}]. An empty results[] is a SEARCHED-clean receipt; a MISSING query is not a receipt."
       : "",
-    "Print to stdout EXACTLY one JSON object (no prose, no markdown fences):",
+    hasCells && terms.length > batch
+      ? "Each execution prints to stdout EXACTLY one JSON object (no prose, no markdown fences):"
+      : "Print to stdout EXACTLY one JSON object (no prose, no markdown fences):",
     `{"cells":[{"term":"<verbatim>","platform":"<verbatim>","status":"hit|no_hit","candidates":[{"title":"...","url":"..."}]}],${extrasShape},"gaps":["<term> | <platform> | <error>"]}`,
     "Every (term × platform) pair appears once — in cells[] if it ran, or in gaps[] only if that specific cell threw.",
     hasConn ? "Every connotation query appears once in extras.pr_risk[] (or in gaps[] only if that specific query threw)." : "",
@@ -479,7 +515,7 @@ export function reconcileGridLedger(stdoutStr, spec) {
     else if (g && g.term != null && g.platform != null) accounted.add(cellKey(g.term, g.platform));
   }
   const missing = [], addedGaps = [];
-  for (const term of spec.terms) for (const platform of spec.platforms) {
+  for (const [term, platform] of dictatedCells(spec)) {
     if (!accounted.has(cellKey(term, platform))) {
       missing.push({ term, platform });
       addedGaps.push({ term, platform, error: "cell not returned by grid program (reconciled gap)" });
@@ -512,7 +548,7 @@ export function reconcileGridLedger(stdoutStr, spec) {
     missingQueries,
     requestedQueries: dictatedQueries.length,
     presentQueries: dictatedQueries.length - missingQueries.length,
-    requested: spec.terms.length * spec.platforms.length,
+    requested: dictatedCells(spec).length,
     present: cells.length,
   };
 }
@@ -589,13 +625,69 @@ export function requiredLedgerRefusal(why, { spec, gridSpecPath } = {}) {
     + `the ledger yourself, and do not summarise one that does not exist. Report this refusal and stop.`;
 }
 
+/** A parsed stdout that is a grid ledger: an object, or a list of objects, carrying cells, gaps or extras. */
+const isLedgerShaped = (p) => (Array.isArray(p) ? p : [p]).some((b) => b && typeof b === "object" && !Array.isArray(b)
+  && (Array.isArray(b.cells) || Array.isArray(b.gaps) || (b.extras && typeof b.extras === "object")));
+
+/**
+ * — EVERY STEP'S LEDGER, FOLDED INTO ONE. The sandbox cuts a single print off near 1 MiB (the vendor documents
+ * it per output stream), and a big grid's ledger crosses that, so a grid split into groups runs each group as
+ * its own execution and prints only that group. The ledger is then all of them, in order: a cell a later step
+ * ran again keeps its last result, a gap a later step filled is dropped, and every step's meaning receipts are
+ * kept, the last per query. Given the spec, only its own grid's cells and gaps and its dictated meaning
+ * queries are kept, so a stray trial print can neither add a cell nor count toward the floor. Queries are
+ * matched as the reconcile matches them (gnorm). PURE; returns the folded ledger as a JSON string.
+ */
+export function foldStepLedgers(ledgers, spec = null) {
+  const inGrid = spec ? new Set(dictatedCells(spec).map(([t, p]) => cellKey(t, p))) : null;
+  const dictated = spec ? new Set(connotationQueriesOf(spec).map(gnorm)) : null;   // matched as the reconcile matches
+  const cells = new Map(), receipts = new Map(), extras = {}, gaps = [];
+  for (const p of ledgers) {
+    for (const b of Array.isArray(p) ? p : [p]) {
+      if (!b || typeof b !== "object") continue;
+      for (const c of b.cells ?? []) {
+        if (!c || typeof c !== "object") continue;
+        const k = cellKey(c.term, c.platform);
+        if (inGrid && !inGrid.has(k)) continue;
+        cells.delete(k); cells.set(k, c);
+      }
+      for (const g of b.gaps ?? []) gaps.push(g);
+      for (const [k, v] of Object.entries(b.extras && typeof b.extras === "object" ? b.extras : {})) {
+        if (k !== "pr_risk" || !Array.isArray(v)) { extras[k] = v; continue; }
+        for (const r of v) {
+          if (!r || typeof r !== "object") continue;
+          const q = gnorm(r.query);
+          if (dictated && !dictated.has(q)) continue;
+          receipts.delete(q); receipts.set(q, r);
+        }
+      }
+    }
+  }
+  const keep = (g) => {
+    const [term, platform] = typeof g === "string" ? g.split("|").map((x) => x.trim()) : [g?.term, g?.platform];
+    if (gnorm(platform) === "connotation") return !receipts.has(gnorm(term)) && (!dictated || dictated.has(gnorm(term)));
+    return !cells.has(cellKey(term, platform)) && (!inGrid || inGrid.has(cellKey(term, platform)));
+  };
+  return JSON.stringify({
+    cells: [...cells.values()],
+    extras: { ...extras, ...(receipts.size ? { pr_risk: [...receipts.values()] } : {}) },
+    gaps: gaps.filter(keep),
+  });
+}
+
 export function captureGridFromResponse(data, spec) {
   validateGridSpec(spec);
   const runs = parseSandboxResults(data);
   if (runs.length === 0) return { ok: false, error: "sandbox was not used — no program executed" };
-  let deliverable = null;
-  for (let i = runs.length - 1; i >= 0; i--) {
-    try { JSON.parse(runs[i].stdout); deliverable = runs[i]; break; } catch { /* not this run */ }
+  // A grid split into groups prints one ledger per sandbox execution (see foldStepLedgers); every one is read.
+  // A single ledger, or none, is read exactly as before: the last output that parses.
+  const steps = [];
+  for (const r of runs) { try { const p = JSON.parse(r.stdout); if (isLedgerShaped(p)) steps.push({ r, p }); } catch { /* not a ledger */ } }
+  let deliverable = steps.length > 1
+    ? { stdout: foldStepLedgers(steps.map((x) => x.p), spec), code: steps.map((x) => x.r.code || "").filter(Boolean).join("\n\n") }
+    : null;
+  for (let i = runs.length - 1; i >= 0 && !deliverable; i--) {
+    try { JSON.parse(runs[i].stdout); deliverable = runs[i]; } catch { /* not this run */ }
   }
   if (!deliverable) {
     const last = runs[runs.length - 1];

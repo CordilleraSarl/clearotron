@@ -36,19 +36,6 @@
       chosen anywhere in the product holds everywhere in it.
     -->
     <script>(function(){try{var t=localStorage.getItem('cordillera-theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
-
-    <!--
-      Satoshi, from Fontshare — the same source every other surface in this product uses (the report, the
-      pool index, staff pages), so the portal does not render in a different face from the report embedded
-      inside it.
-
-      NOT self-hosted, deliberately and for now: no Satoshi binary exists in this repo or on the box, and
-      vendoring a webfont is a licence-and-provenance decision, not a build detail. The CSP therefore
-      admits api.fontshare.com for styles and fonts and NOTHING else — no script, no connect. Self-hosting
-      would let that allowance go away entirely; it is worth doing, in a PR that can address the licence.
-    -->
-    <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
-    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet" />
   </head>
   <body>
     <div id="root"></div>

@@ -31,7 +31,6 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 process.env.CLEAROTRON_AI ||= "anthropic-agent";
 process.env.CORSEARCH_SESSION_KEY ||= "test-offline";
 process.env.CLEAROTRON_PLAN_DISPATCH ||= "off";   // hermetic: never dial the live provider from a test
-process.env.CLEAROTRON_RECALL_TRIPWIRE ||= "0";
 process.env.CLEAROTRON_REGISTER_GAP_CLAMP ||= "0";
 
 // ── unit level: runSaturationProbeCodeSide ───────────────────────────────────────────────────────────

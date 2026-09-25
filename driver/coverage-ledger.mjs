@@ -337,16 +337,14 @@ export function applyTaintDeferred(rows, taintedAxes) {
 
 // The registerGap clamp decision (copper-lattice) — PURE, unit-testable. A material register slice that
 // never (fully) ran is an EXECUTION fact, not a sufficiency judgment: `deferred` material rows (incl.
-// the taint relabel), an unresolved timeout-taint on a material axis, or a material recall regression
-// (a prior-confirmed live conflict this run neither carried nor justified) each force the deterministic
+// the taint relabel) or an unresolved timeout-taint on a material axis each force the deterministic
 // CLEAR→CONDITIONAL floor, independent of the LLM's coverage_judgment (whose absent-⇒-sufficient default
 // is exactly the hole this closes). `coverage-limited` never fires — that is an accepted limit, not an
 // unfinished search.
-export function decideRegisterGap(rows, { taintAxes = [], recallRegressions = [] } = {}) {
+export function decideRegisterGap(rows, { taintAxes = [] } = {}) {
   const deferred = deriveCoverageStatus(rows).materialGaps.filter((g) => g.status === "deferred");
   const taint = (taintAxes ?? []).filter((a) => !NON_MATERIAL_AXES.includes(String(a ?? "").toLowerCase()));
-  const recalls = (recallRegressions ?? []).filter(Boolean);
-  return { gap: deferred.length > 0 || taint.length > 0 || recalls.length > 0, deferred, taintAxes: taint, recallRegressions: recalls };
+  return { gap: deferred.length > 0 || taint.length > 0, deferred, taintAxes: taint };
 }
 
 // NOTE (judgment-relocation, 2026-06-23): the interim NOVA PULSE gate `coerceMeaningExactFalseClean` (the

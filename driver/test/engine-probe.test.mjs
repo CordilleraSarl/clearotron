@@ -23,13 +23,15 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { chmodSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { classifyProbe, probeEngineTurn, preflightEngineTurn, probeFailureText, probeVerdictLane,
-  PROBE_MODEL, PROBE_THINKING, PROBE_PROMPT, probeToolConfig } from "../engine/probe.mjs";
+  PROBE_MODEL, PROBE_THINKING, PROBE_TOOLS, PROBE_FILE, probePrompt, isProbePrompt, probeToolConfig,
+  ENGINES_WITH_A_SHELL, PROBE_COMMAND_FILE, namesPathWhole } from "../engine/probe.mjs";
+import { parseCodexEvent } from "../engine/openai-agent.mjs";
 import { CLOUD_SETTINGS, CLOUD_CREDENTIAL_CHECK } from "../engine/auth.mjs";
 import { ENGINE_BINARIES } from "../driver.config.mjs";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
@@ -44,10 +46,23 @@ const tupleOf = (over = {}) => ({ code: 1, killed: false, wall: 0.4, stdout: "",
 
 const explode = () => { throw new Error("loadAdapter must not be reached — this suite never spawns a real engine"); };
 
-/** The word the probe handed its tool, read off the tool config it passed, as the tool server reads it. */
-const wordOf = (a) => JSON.parse(a.mcpConfig).mcpServers.probe.args[1];
-/** What a working engine does with the probe's tool: calls it, and answers with the word it returned. */
-const answering = (over = {}) => async (a) => tupleOf({ code: 0, stdout: `${wordOf(a)}`, ...over });
+/** The words the probe handed its tools, read off the tool config it passed, as the tool server reads them. */
+const wordsOf = (a) => JSON.parse(a.mcpConfig).mcpServers.probe.args.slice(1);
+const wordOf = (a) => wordsOf(a)[0];
+/**
+ * What a working engine does with the probe's turn: calls each tool, writes their words to the file the
+ * instruction names, in the run folder it was handed, and answers with the words.
+ */
+/** The word the probe's command prints, read off the file its prompt names, or null when it asks for none. */
+const commandWordOf = (a) => {
+  const f = /Run the shell command cat "(.+?)"\./.exec(a.message)?.[1];
+  try { return f ? readFileSync(f, "utf8").trim() : null; } catch { return null; }
+};
+const answering = (over = {}, { write = true, command = true } = {}) => async (a) => {
+  if (write) writeFileSync(join(a.runDir, PROBE_FILE), wordsOf(a).join("\n") + "\n");
+  const said = [...wordsOf(a), ...(command && commandWordOf(a) ? [commandWordOf(a)] : [])];
+  return tupleOf({ code: 0, stdout: said.join(" "), ...over });
+};
 
 // ── the seam that keeps the suite (and CI) from spending ─────────────────────────────────────────────
 
@@ -67,24 +82,32 @@ test("the probe asks for the CHEAPEST turn either adapter can build", async () =
   let seen = null;
   await probeEngineTurn({ env: { CLEAROTRON_AI: "anthropic-agent" }, loadAdapter: explode,
     runTurn: async (a) => { seen = a; return answering()(a); } });
-  // haiku + low are the floor rungs of BOTH tier tables (CONTRACT §3), and nothing heavier is passed: one
-  // tool on one server, and no skillsDir, no runDir — the smallest argv that still proves a stage's tools.
+  // haiku + low are the floor rungs of BOTH tier tables (CONTRACT §3), and nothing heavier is passed: three
+  // tools on one server, one file in a run folder of the probe's own, and no skillsDir — the smallest turn
+  // that still proves a stage's tools and a stage's write.
   assert.equal(seen.model, PROBE_MODEL);
   assert.equal(seen.model, "haiku");
   assert.equal(seen.thinking, PROBE_THINKING);
   assert.equal(seen.thinking, "low");
-  assert.equal(seen.message, PROBE_PROMPT);
+  assert.ok(seen.runDir && seen.runDir.startsWith(tmpdir()), `the probe's run folder is its own, in the temp folder: ${seen.runDir}`);
+  assert.equal(seen.message, probePrompt(join(seen.runDir, PROBE_FILE)));
+  assert.ok(isProbePrompt(seen.message));
+  assert.equal(existsSync(seen.runDir), false, "the probe's run folder outlived its turn");
   assert.ok(seen.timeoutSec > 0 && seen.timeoutSec <= 120, "bounded, because a person is waiting at a wizard");
   assert.ok(seen.stallSec > 0 && seen.stallSec < seen.timeoutSec, "and the stall clock trips well before the wall");
-  for (const k of ["skillsDir", "runDir", "resumeRef"]) {
+  for (const k of ["skillsDir", "resumeRef"]) {
     assert.equal(seen[k], undefined, `${k} would make the probe heavier than the thing it protects`);
   }
-  // THE ONE TOOL, and nothing beside it: the probe's own server, granted by the name a stage would use.
-  assert.equal(seen.allowedTools, "mcp__probe__ping");
+  // A WRITING STAGE'S GRANT, and nothing beside it: the file tools, and the probe's own tools by the name a
+  // stage would use.
+  assert.equal(seen.allowedTools, "Read Write Edit mcp__probe__ping mcp__probe__note mcp__probe__look");
   const servers = JSON.parse(seen.mcpConfig).mcpServers;
   assert.deepEqual(Object.keys(servers), ["probe"], "the probe hands the engine one server, its own");
-  assert.match(servers.probe.args[0], /engine\/mcp\/probe-server\.mjs$/);
-  assert.match(wordOf(seen), /^probe-[0-9a-f]{8}$/, "the word is minted fresh, so the model cannot supply it");
+  assert.ok(servers.probe.args[0].endsWith(join("engine", "mcp", "probe-server.mjs")), servers.probe.args[0]);
+  const words = wordsOf(seen);
+  assert.equal(words.length, PROBE_TOOLS.length, "one word per tool");
+  for (const w of words) assert.match(w, /^probe-[0-9a-f]{8}$/, "each word is minted fresh, so the model cannot supply it");
+  assert.equal(new Set(words).size, words.length, "and no two are the same, so one call cannot answer for another");
 });
 
 test("the real probe server, started as the config starts it, returns exactly the word it was given", async () => {
@@ -105,15 +128,20 @@ test("the real probe server, started as the config starts it, returns exactly th
     });
     const send = (o) => p.stdin.write(JSON.stringify(o) + "\n");
     send({ jsonrpc: "2.0", id: 1, method: "initialize", params: { protocolVersion: "2024-11-05", capabilities: {}, clientInfo: { name: "t", version: "0" } } });
-    send({ jsonrpc: "2.0", id: 2, method: "tools/call", params: { name: "ping", arguments: {} } });
+    send({ jsonrpc: "2.0", id: 2, method: "tools/call", params: { name: server.tool, arguments: {} } });
   });
-  const server = JSON.parse(probeToolConfig("probe-0badc0de").mcpConfig).mcpServers.probe;
-  const r = await ping(server);
-  assert.notEqual(r?.isError, true, "the server refused its own ping");
-  assert.equal((r?.content ?? []).map((c) => c.text).join(""), "probe-0badc0de");
-  // Started with no word, it refuses rather than returning something a guess could match.
-  const bare = await ping({ ...server, args: server.args.slice(0, 1) });
-  assert.equal(bare?.isError, true, "a server with no word answered ping");
+  const words = ["probe-0badc0de", "probe-0badc0df", "probe-0badc0e0"];
+  const server = JSON.parse(probeToolConfig(words).mcpConfig).mcpServers.probe;
+  for (const [i, tool] of PROBE_TOOLS.entries()) {
+    const r = await ping({ ...server, tool });
+    assert.notEqual(r?.isError, true, `the server refused its own ${tool}`);
+    assert.equal((r?.content ?? []).map((c) => c.text).join(""), words[i], `${tool} returned another tool's word`);
+  }
+  // Started with no word, each refuses rather than returning something a guess could match.
+  for (const tool of PROBE_TOOLS) {
+    const bare = await ping({ ...server, args: server.args.slice(0, 1), tool });
+    assert.equal(bare?.isError, true, `a server with no word answered ${tool}`);
+  }
 });
 
 // ── the tool: three outcomes, never two ──────────────────────────────────────────────────────────────
@@ -575,12 +603,17 @@ test("the real anthropic adapter is driven by its OWN spawn path — mock-claude
     // E2BIG lesson), the streaming flags the watchdog needs, and the floor tier.
     assert.deepEqual(call.argv.slice(0, 5), ["-p", "--output-format", "stream-json", "--verbose", "--include-partial-messages"]);
     assert.deepEqual(call.argv.slice(5, 9), ["--model", "haiku", "--effort", "low"]);
-    assert.equal(call.prompt, PROBE_PROMPT, "the prompt rode stdin, never argv");
+    assert.ok(isProbePrompt(call.prompt), "the prompt rode stdin, never argv");
+    assert.ok(!call.argv.some((a) => isProbePrompt(a)), "and never as an argument");
     // ONE MCP SERVER, the probe's own, handed over the way a stage hands over its tools.
     const cfg = JSON.parse(call.argv[call.argv.indexOf("--mcp-config") + 1]);
     assert.deepEqual(Object.keys(cfg.mcpServers), ["probe"], "the probe starts its own tool server and no other");
-    assert.equal(call.argv[call.argv.indexOf("--allowedTools") + 1], "mcp__probe__ping");
-    assert.ok(!call.argv.includes("--add-dir"), "and no run directory is granted — there is none");
+    assert.equal(call.argv[call.argv.indexOf("--allowedTools") + 1], "Read Write Edit mcp__probe__ping mcp__probe__note mcp__probe__look");
+    // ITS OWN RUN FOLDER, granted as a stage's is, and gone once the turn is.
+    const granted = call.argv[call.argv.indexOf("--add-dir") + 1];
+    assert.ok(granted && /clearotron-probe-/.test(granted), `the probe's run folder was not granted: ${call.argv.join(" ")}`);
+    assert.ok(call.prompt.includes(join(granted, PROBE_FILE)), "the file the probe asks for sits in the folder it granted");
+    assert.equal(existsSync(granted), false, "the probe's run folder outlived its turn");
   } finally {
     if (saved === undefined) delete process.env.MOCK_CLAUDE_CALL_LOG; else process.env.MOCK_CLAUDE_CALL_LOG = saved;
   }
@@ -605,12 +638,190 @@ test("through the real codex adapter: a host that refuses every tool call fails 
   }
 });
 
+/** One probe through a real adapter with the mock's controls set for that turn alone. */
+async function probeWith(env, controls) {
+  const saved = Object.fromEntries(Object.keys(controls).map((k) => [k, process.env[k]]));
+  Object.assign(process.env, controls);
+  try { return await probeEngineTurn({ env }); }
+  finally { for (const [k, v] of Object.entries(saved)) { if (v === undefined) delete process.env[k]; else process.env[k] = v; } }
+}
+const CODEX = { CLEAROTRON_AI: "openai-agent", CLEAROTRON_CODEX_PATH: join(HERE, "mock-codex.mjs"), CLEAROTRON_AI_BILLING: "api-key", CODEX_API_KEY: "sk-test" };
+const CLAUDE = { CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: MOCK_CLAUDE };
+
+test("through the real codex adapter: one kind of tool refused is refused at the door, and names the setting", async () => {
+  // Codex approving the register search and the fetch but not the recording tools is a host no search can
+  // finish on, however many other calls went through.
+  const v = await probeWith(CODEX, { MOCK_CODEX_REFUSE_TOOLS: "note" });
+  assert.equal(v.mode, "tools-refused", JSON.stringify(v));
+  assert.equal(v.headline, "openai-agent refused a tool call it was given");
+  assert.equal(probeVerdictLane(v), "configuration");
+  assert.match(v.fix, /CLEAROTRON_CODEX_SANDBOX_BYPASS=1/);
+  assert.match(v.detail, /requires approval, but approval policy is never/);
+});
+
+test("through the real codex adapter: a write codex reports as failed is refused at the door, and names the setting", async () => {
+  // The shape measured on codex-cli 0.156.1 where its sandbox cannot start: every tool call completed, the
+  // file change failed, and no file appeared. A search there spends and writes nothing.
+  const v = await probeWith(CODEX, { MOCK_CODEX_WRITE_FAILED: "1" });
+  assert.equal(v.mode, "cannot-write", JSON.stringify(v));
+  assert.equal(v.basis, "write-gauge");
+  assert.equal(probeVerdictLane(v), "configuration");
+  assert.match(v.fix, /^Every search stage writes its results to a file, so no search can finish here\. codex's own sandbox cannot write on this machine: set CLEAROTRON_CODEX_SANDBOX_BYPASS=1/);
+  // And the run door refuses on it, before a run directory exists.
+  process.env.MOCK_CODEX_WRITE_FAILED = "1";
+  try {
+    await assert.rejects(preflightEngineTurn({ env: CODEX }),
+      /\[preflight\] openai-agent could not write a file where a search writes its results/, "the run door did not refuse");
+  } finally { delete process.env.MOCK_CODEX_WRITE_FAILED; }
+});
+
+// ── THE COMMAND: where a stage keeps a shell, the probe proves one runs ───────────────────────────────
+// Measured on codex 0.158.0-alpha.2 with a permission profile that could not read codex's own helper: every
+// tool call completed and the patch tool wrote the file, while every shell command failed before it
+// started. The probe passed there. Now a Codex probe also runs `cat` of a word it planted in its own folder.
+
+test("only an engine whose stages keep a shell is asked for a command, and Claude's probe reads as it always did", () => {
+  assert.deepEqual([...ENGINES_WITH_A_SHELL], ["openai-agent"]);
+  assert.equal(probePrompt("/p/probe-words.txt"),
+    "Call the ping, note and look tools once each. Write the three words they returned to the file /p/probe-words.txt, one per line. Then reply with the same three words.");
+  const withCommand = probePrompt("/p/probe-words.txt", `/p/${PROBE_COMMAND_FILE}`);
+  assert.ok(isProbePrompt(withCommand), "the command form is no longer recognised as the probe");
+  assert.match(withCommand, /Run the shell command cat "\/p\/probe-command-word\.txt"\./);
+});
+
+/** A failed `cat` of the file the turn's prompt planted, as codex reports it when its sandbox cannot start one. */
+const failedCatOfPlanted = (output) => async (a) => {
+  const planted = /Run the shell command cat "(.+?)"\./.exec(a.message)?.[1];
+  return answering({ commandsFailed: 1, commandFailures: [{ command: `/bin/bash -lc 'cat ${planted}'`, output }] }, { command: false })(a);
+};
+
+test("a failed cat of the planted file is refused at the door; a word simply missing warns", async () => {
+  const failed = await probeEngineTurn({ env: { CLEAROTRON_AI: "openai-agent" }, loadAdapter: explode,
+    runTurn: failedCatOfPlanted("bwrap: execvp /x/codex: No such file or directory\n") });
+  assert.equal(failed.mode, "cannot-run-commands", JSON.stringify(failed));
+  assert.equal(failed.basis, "command-gauge");
+  assert.equal(probeVerdictLane(failed), "configuration", "a machine whose commands cannot start is this box's to fix");
+  assert.match(failed.fix, /^Every search stage reads its instructions through commands, so no search can finish here\. codex's own sandbox cannot run commands on this machine: set CLEAROTRON_CODEX_SANDBOX_BYPASS=1/);
+  assert.match(failed.detail, /bwrap: execvp/, "codex's own reason rides the verdict");
+
+  const skipped = await probeEngineTurn({ env: { CLEAROTRON_AI: "openai-agent" }, loadAdapter: explode,
+    runTurn: answering({}, { command: false }) });
+  assert.equal(skipped.mode, "commands-unproven", JSON.stringify(skipped));
+  assert.equal(probeVerdictLane(skipped), "weather", "a model that skipped a step is not this box's fault");
+
+  // A MISTYPED NAME ON A WORKING MACHINE IS NOT A BROKEN MACHINE. Codex marks any non-zero exit failed, so a
+  // `cat` of the wrong path reads exactly like one the sandbox refused, except for the path it names.
+  const mistyped = await probeEngineTurn({ env: { CLEAROTRON_AI: "openai-agent" }, loadAdapter: explode,
+    runTurn: answering({ commandsFailed: 1, commandFailures: [{ command: "/bin/bash -lc 'cat /tmp/clearotron-probe-x/probe-comand-word.txt'",
+      output: "cat: /tmp/clearotron-probe-x/probe-comand-word.txt: No such file or directory\n" }] }, { command: false }) });
+  assert.equal(mistyped.mode, "commands-unproven", JSON.stringify(mistyped));
+  assert.equal(probeVerdictLane(mistyped), "weather", "a working machine was refused at the door for a mistyped name");
+
+  // Nor is the planted path with a character added after it: that command names another file.
+  const lengthened = await probeEngineTurn({ env: { CLEAROTRON_AI: "openai-agent" }, loadAdapter: explode,
+    runTurn: async (a) => {
+      const planted = /Run the shell command cat "(.+?)"\./.exec(a.message)?.[1];
+      return answering({ commandsFailed: 1, commandFailures: [{ command: `/bin/bash -lc 'cat ${planted}t'`,
+        output: `cat: ${planted}t: No such file or directory\n` }] }, { command: false })(a);
+    } });
+  assert.equal(lengthened.mode, "commands-unproven", JSON.stringify(lengthened));
+  assert.equal(probeVerdictLane(lengthened), "weather", "a working machine was refused at the door for a path with a character added");
+
+  // A failed command whose word still came back is a command that ran: the model retried, or ran another.
+  const retried = await probeEngineTurn({ env: { CLEAROTRON_AI: "openai-agent" }, loadAdapter: explode,
+    runTurn: answering({ commandsFailed: 1, commandFailures: [{ command: "cat nope", output: "" }] }) });
+  assert.equal(retried.ok, true, JSON.stringify(retried));
+
+  // Claude's stages have no shell, so its probe asks for no command and passes without one.
+  const claude = await probeEngineTurn({ env: { CLEAROTRON_AI: "anthropic-agent" }, loadAdapter: explode, runTurn: answering({}, { command: false }) });
+  assert.equal(claude.ok, true, JSON.stringify(claude));
+});
+
+test("a command names the planted path only where the path ends", () => {
+  const p = "/tmp/clearotron-probe-x/probe-command-word.txt";
+  for (const cmd of [`/bin/bash -lc 'cat ${p}'`, `cat "${p}"`, `cat ${p}`, `cat ${p} 2>&1`])
+    assert.equal(namesPathWhole(cmd, p), true, cmd);
+  for (const cmd of [`cat ${p}t`, `cat ${p}.bak`, `cat /tmp/clearotron-probe-x/probe-comand-word.txt`, "cat nothing"])
+    assert.equal(namesPathWhole(cmd, p), false, cmd);
+});
+
+test("the codex adapter counts a command codex reports as failed, and keeps each one's command line and output", () => {
+  const ev = {};
+  const item = (status, out) => JSON.stringify({ type: "item.completed", item: { id: "c", type: "command_execution",
+    command: "/bin/bash -lc 'cat x'", aggregated_output: out, exit_code: status === "failed" ? 1 : 0, status } });
+  parseCodexEvent(item("completed", "probe-1\n"), ev);
+  assert.equal(ev.commandsFailed ?? 0, 0, "a command that ran was counted as failed");
+  parseCodexEvent(item("failed", "bwrap: first\n"), ev);
+  parseCodexEvent(item("failed", "bwrap: second\n"), ev);
+  assert.equal(ev.commandsFailed, 2);
+  assert.deepEqual(ev.commandFailures, [{ command: "/bin/bash -lc 'cat x'", output: "bwrap: first\n" },
+    { command: "/bin/bash -lc 'cat x'", output: "bwrap: second\n" }]);
+});
+
+test("through the real codex adapter: the probe's command runs, fails as codex reports it, or is skipped", async () => {
+  const works = await probeWith(CODEX, {});
+  assert.equal(works.ok, true, JSON.stringify(works));
+  const failed = await probeWith(CODEX, { MOCK_CODEX_COMMAND_FAILED: "1" });
+  assert.equal(failed.mode, "cannot-run-commands", JSON.stringify(failed));
+  assert.equal(probeVerdictLane(failed), "configuration");
+  assert.match(failed.detail, /bwrap: execvp/);
+  const skipped = await probeWith(CODEX, { MOCK_CODEX_COMMAND_SKIPPED: "1" });
+  assert.equal(skipped.mode, "commands-unproven", JSON.stringify(skipped));
+  const mistyped = await probeWith(CODEX, { MOCK_CODEX_COMMAND_MISTYPED: "1" });
+  assert.equal(mistyped.mode, "commands-unproven", JSON.stringify(mistyped));
+  assert.equal(probeVerdictLane(mistyped), "weather", "a mistyped name on a working machine reached the door as a refusal");
+  // And the run door refuses on the failed command, before a run directory exists.
+  process.env.MOCK_CODEX_COMMAND_FAILED = "1";
+  try {
+    await assert.rejects(preflightEngineTurn({ env: CODEX }),
+      /\[preflight\] openai-agent could not run a command where a search runs its commands/, "the run door did not refuse");
+  } finally { delete process.env.MOCK_CODEX_COMMAND_FAILED; }
+});
+
+test("through the real claude adapter: a write the program reports as failed is refused; a file simply not written warns", async () => {
+  const failed = await probeWith(CLAUDE, { MOCK_CLAUDE_WRITE_FAILED: "1" });
+  assert.equal(failed.mode, "cannot-write", JSON.stringify(failed));
+  assert.equal(probeVerdictLane(failed), "configuration");
+  assert.equal(failed.fix, "Every search stage writes its results to a file, so no search can finish here. The engine's stderr below is the place to start.");
+  const skipped = await probeWith(CLAUDE, { MOCK_CLAUDE_PROBE_NO_WRITE: "1" });
+  assert.equal(skipped.mode, "write-unproven", JSON.stringify(skipped));
+  assert.equal(probeVerdictLane(skipped), "weather", "a missing file with no failed write shows nothing either way, so it warns");
+  assert.equal(skipped.headline, "anthropic-agent did not write the file its probe asks for");
+  const works = await probeWith(CLAUDE, {});
+  assert.equal(works.ok, true, JSON.stringify(works));
+});
+
+test("the verdicts on the file: every word in it passes; a word short, or no file, warns; a failed write refuses", () => {
+  const words = ["probe-00000001", "probe-00000002", "probe-00000003"];
+  const said = tupleOf({ code: 0, stdout: words.join(" ") });
+  assert.equal(classifyProbe({ engine: "openai-agent", tuple: said, expect: { words, written: words.join("\n") } }).ok, true);
+  assert.equal(classifyProbe({ engine: "openai-agent", tuple: said, expect: { words, written: words.slice(0, 2).join("\n") } }).mode, "write-unproven");
+  assert.equal(classifyProbe({ engine: "openai-agent", tuple: said, expect: { words, written: null } }).mode, "write-unproven");
+  const v = classifyProbe({ engine: "openai-agent", tuple: { ...said, writesFailed: 1, stderr: "Failed to write file /x/probe-words.txt" }, expect: { words, written: null } });
+  assert.equal(v.mode, "cannot-write");
+  assert.match(v.detail, /Failed to write file/, "the engine's own words ride along");
+  // A written file does not need the gauge's opinion: the proof is the file.
+  assert.equal(classifyProbe({ engine: "openai-agent", tuple: { ...said, writesFailed: 1 }, expect: { words, written: words.join("\n") } }).ok, true);
+});
+
+test("a refusal the model wandered into, on a server that is not the probe's, is never a refusal at the door", () => {
+  const words = ["probe-00000001", "probe-00000002", "probe-00000003"];
+  const wandered = tupleOf({ code: 0, stdout: words.join(" "), mcpToolCalls: 3, mcpToolCallsRefused: 1,
+    mcpToolCallRefusals: [{ server: "register", tool: "register_search", message: "MCP tool call requires approval, but approval policy is never" }] });
+  assert.equal(classifyProbe({ engine: "openai-agent", tuple: wandered, expect: { words, written: words.join("\n") } }).ok, true);
+  const own = { ...wandered, mcpToolCallRefusals: [{ server: "probe", tool: "look", message: "MCP tool call requires approval, but approval policy is never" }] };
+  assert.equal(classifyProbe({ engine: "openai-agent", tuple: own, expect: { words, written: words.join("\n") } }).mode, "tools-refused");
+});
+
 test("a binary that exits silently is diagnosed, not shrugged at", async () => {
   // The startup-class shape for real: a program on PATH that runs, says nothing and exits nonzero. It
   // passes every filesystem check preflightEngineBinary makes, which is exactly why this probe exists.
+  // Windows cannot start a `#!/bin/sh` script, so there the mute program is a Node script, which the
+  // engine starts through the Node running now. It is just as silent.
   const dir = mkdtempSync(join(tmpdir(), "probe-mute-"));
-  const mute = join(dir, "claude");
-  writeFileSync(mute, "#!/bin/sh\nexit 1\n", { mode: 0o755 });
+  const win = process.platform === "win32";
+  const mute = join(dir, win ? "claude.mjs" : "claude");
+  writeFileSync(mute, win ? "process.exit(1);\n" : "#!/bin/sh\nexit 1\n", { mode: 0o755 });
   chmodSync(mute, 0o755);
   const v = await probeEngineTurn({ env: { CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: mute } });
   assert.equal(v.ok, false);
@@ -680,4 +891,20 @@ test("the probe's tool carries the register search tool's annotations, read from
   // declaration it replaced never did, which is how a probe passed where no search could run.
   assert.equal(codexWouldAskApproval(ping.annotations), true);
   assert.equal(codexWouldAskApproval({ readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false }), false);
+});
+
+test("the probe's other two tools carry the recording tools' and the page fetch's annotations, read from their own servers", async () => {
+  // A stage calls three kinds of tool, and codex decides approval by kind. `note` stands in for the tools that
+  // record a stage's results, `look` for the page fetch; each is compared with what its own server lists.
+  const probe = JSON.parse(probeToolConfig(["a", "b", "c"]).mcpConfig).mcpServers.probe;
+  const listed = await toolsOf(probe.command, probe.args, probe.env);
+  const byName = Object.fromEntries(listed.map((t) => [t.name, t]));
+  assert.deepEqual(Object.keys(byName).sort(), [...PROBE_TOOLS].sort(), "the probe server lists exactly its three tools");
+  const writers = (await toolsOf(process.execPath, [join(MCP_DIR, "recording-server.mjs")])).filter((t) => t.annotations?.readOnlyHint === false);
+  assert.ok(writers.length >= 10, `the recording server lists only ${writers.length} tools that record — the comparison would mean nothing`);
+  for (const t of writers)
+    assert.deepEqual(byName.note.annotations, t.annotations, `${t.name} is declared ${JSON.stringify(t.annotations)} and the probe's note ${JSON.stringify(byName.note.annotations)}`);
+  const [fetchUrl] = (await toolsOf(process.execPath, [join(MCP_DIR, "fetch-server.mjs")])).filter((t) => t.name === "fetch_url");
+  assert.ok(fetchUrl, "the fetch server lists no fetch_url");
+  assert.deepEqual(byName.look.annotations, fetchUrl.annotations);
 });

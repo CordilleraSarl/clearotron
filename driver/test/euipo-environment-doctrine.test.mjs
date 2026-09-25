@@ -20,8 +20,9 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const SKILLS = new URL("../skills/", import.meta.url).pathname;
+const SKILLS = fileURLToPath(new URL("../skills/", import.meta.url));
 
 /**
  * Every markdown file in the skills tree, found rather than listed. ONE read, walked ONCE, and the set

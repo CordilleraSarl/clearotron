@@ -868,17 +868,25 @@ test("an ALIAS match on a DIFFERENT proprietor does not decide it either", () =>
     + "of theirs is still a wrong citation");
 });
 
-test("where no record can be attributed to the owner, the row SAYS SO and cites nothing", () => {
-  // Naming the blindness rather than inventing the verdict. Falling back to first-in-band is exactly
-  // what produced the wrong citations, so the fallback is the thing being removed.
+test("where every record of the name belongs to another proprietor, the entry is lost and the row names them", () => {
+  // v8. At 7 this entry was WITHHELD on another company's record, with no citation. The lawyer's own
+  // record was never retrieved, so it is lost; the row still says what of that name did come back, so
+  // "lost" never reads as "the name never came back".
   const reference = [{ mark: "VELTHYS", owner: "Someone Else Entirely GmbH", classes: [5] }];
   const b = scoreRecall({ reference, findings: [], retrieved: OWNER_BAND, scopeClasses: ["5"] });
-  const row = b.withheld.find((r) => r.mark === "VELTHYS");
-  assert.ok(row, "still withheld — a near-form WAS retrieved, and that fact is unchanged");
-  assert.equal(row.record, null, "no record is cited when none can be attributed to the entry's owner");
-  assert.equal(row.ownerUnidentified, true, "…and the row declares that, rather than staying silent");
-  assert.match(row.why, /none could be attributed to this entry's owner/, "…in words a reader can act on");
+  assert.equal(b.withheld.find((r) => r.mark === "VELTHYS"), undefined, "not withheld on another company's record");
+  const row = b.lost.find((r) => r.mark === "VELTHYS");
+  assert.ok(row, "lost — its own record was never retrieved");
+  assert.match(row.why, /held by another proprietor, filed elsewhere, or recorded with no owner/, "…in words a reader can act on");
   assert.match(row.why, /VELTHOS|VELTHYS/, "…naming what it did match, so the reader can judge it");
+
+  // The disclosure still fires where the join is by country alone: the record is the entry's by where it
+  // is filed, but none carries the entry's owner, so none is cited.
+  const byCountry = scoreRecall({ reference: [{ ...reference[0], jurisdictions: ["EU"] }], findings: [],
+    retrieved: OWNER_BAND.map((r) => ({ ...r, territory: r.record_id.split("/")[2] })), scopeClasses: ["5"] });
+  const held = byCountry.withheld.find((r) => r.mark === "VELTHYS");
+  assert.equal(held?.record, null, "no record is cited when none can be attributed to the entry's owner");
+  assert.equal(held?.ownerUnidentified, true, "…and the row declares that, rather than staying silent");
 });
 
 test("an entry the gold gives NO owner keeps the old first-match behaviour", () => {
@@ -895,6 +903,9 @@ test("an entry the gold gives NO owner keeps the old first-match behaviour", () 
 test("NEGATIVE CONTROL: the preference changes the CITATION and never the BUCKET", () => {
   // The whole safety argument for this change, driven rather than asserted: R2's baseline is read from
   // these buckets, and a fix that moved membership would move the number the re-run is compared against.
+  //
+  // v8 moves exactly one entry, and on purpose: the one whose owner holds no record here. Its name came
+  // back only under other proprietors, which v8 no longer counts as the lawyer's record.
   const reference = [
     { mark: "VELTHYS", owner: "Calder Pharma S.r.l.", classes: [5] },
     { mark: "VELTHIC", owner: "Marchmont Dental Limited", classes: [5] },
@@ -902,10 +913,10 @@ test("NEGATIVE CONTROL: the preference changes the CITATION and never the BUCKET
     { mark: "ORPHIC", classes: [5] },
   ];
   const b = scoreRecall({ reference, findings: [], retrieved: OWNER_BAND, scopeClasses: ["5"] });
-  assert.equal(b.withheld.length, 4,
-    "every entry that matched a record before still matches one — including the entry whose owner cannot "
-    + "be identified, which is withheld with no citation rather than demoted to lost");
-  assert.equal(b.lost.length, 0, "nothing fell to lost, which is the regression this control exists to catch");
+  assert.equal(b.withheld.length, 3,
+    "every entry whose own proprietor's record is in the band still matches one");
+  assert.deepEqual(b.lost.map((r) => r.owner), ["Someone Else Entirely GmbH"],
+    "only the entry with no record of its own fell to lost, which is the v8 rule and nothing wider");
 });
 
 // ── — THE OWNER COMPARISON KNEW ANGLO-GERMAN FORMS AND ALMOST NO OTHERS ──────────

@@ -342,7 +342,7 @@ line, which describes the card and claims nothing about the rating. So:
                "degraded": null } ] }
 ```
 
-**The finding record — closed keys, all nine, no others.** A key this list does not name is refused
+**The finding record — closed keys, all nine, no others, and "inputs" where the framework states a method.** A key this list does not name is refused
 (the validator is `findings-model.mjs validateKnockoutFinding`, and it runs at the chunk and again on
 the merged artifact):
 
@@ -360,6 +360,9 @@ the merged artifact):
   attribution breach no parser can see, and a blank is refused precisely so the honest negative is said.
 - `band` — a word from the frozen ladder, the SAME vocabulary as the mark's own `rating`. One rating
   vocabulary on one page: never HIGH/MEDIUM/LOW, never a number, never a code, never a coined pair.
+- `inputs` — only where the framework states a method: its own inputs for this finding, keyed by its
+  labels, each one of the values it lists, reasoned in its order before the band. The band is the one
+  its table gives for them.
 - `net` — ONE sentence answering "is this a problem for the applicant". A conclusion, not a chain: no
   semicolons stitching facts to a verdict, no arrows, and never an action ("we recommend…").
 - `type` ∈ Famous Brand | Active Business | Cultural Reference | Domain | Descriptive Use | Negative

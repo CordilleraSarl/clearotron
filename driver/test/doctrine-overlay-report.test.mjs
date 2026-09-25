@@ -4,7 +4,7 @@
 //
 // Doctrine is prompt payload served to the model at runtime, so an override that has silently gone
 // stale answers a clearance from old doctrine with nothing to say so. We ran this experiment on
-// ourselves: `driver/driver.config.mjs:170` records 30 of 37 shared files silently drifting apart in
+// ourselves: the SKILL RESOLUTION note above `skillsBaseDir` in `driver/driver.config.mjs` records 30 of 37 shared files silently drifting apart in
 // BOTH directions after the repo split. The overlay fixed the mechanism for us and fixes nothing for a
 // self-hoster.
 //

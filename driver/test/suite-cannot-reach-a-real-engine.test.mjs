@@ -231,13 +231,16 @@ test("THE COPY INSTALLED WITH CLEAROTRON is closed for the whole suite, whatever
 
   // THE CONTROL. The same child, with the lookup pointed at a planted tree, finds a copy for every engine:
   // the empty answer above is the wrapper closing the route, not a resolver that cannot see one.
+  // Windows starts a program by its extension and has no execute bit, so the resolver takes only an
+  // .exe, .com or JavaScript file there; the planted copy is named the way the vendor names it on Windows.
+  const program = process.platform === "win32" ? "program.exe" : "program";
   const planted = mkdtempSync(join(tmpdir(), "planted-installed-copy-"));
   for (const spec of Object.values(m.ENGINE_BINARIES)) {
     const dir = join(planted, "node_modules", ...spec.package.split("/"));
     mkdirSync(join(dir, "bin"), { recursive: true });
-    writeFileSync(join(dir, "package.json"), JSON.stringify({ name: spec.package, version: "0.0.1", bin: { [spec.fallback]: "bin/program" } }));
-    writeFileSync(join(dir, "bin", "program"), "#!/bin/sh\nexit 0\n");
-    chmodSync(join(dir, "bin", "program"), 0o755);
+    writeFileSync(join(dir, "package.json"), JSON.stringify({ name: spec.package, version: "0.0.1", bin: { [spec.fallback]: `bin/${program}` } }));
+    writeFileSync(join(dir, "bin", program), "#!/bin/sh\nexit 0\n");
+    chmodSync(join(dir, "bin", program), 0o755);
   }
   const open = ask(`process.env[m.ENGINES_DIR_ENV] = ${JSON.stringify(planted)};`);
   assert.ok(open.report, `the control child never reported; wrapper exited ${open.code}\n${open.all.slice(0, 800)}`);

@@ -10,7 +10,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Customer profiles · Clearotron</title>
-<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet"><!--FAVICON-->
+<!--FONTS--><!--FAVICON-->
 <!-- Pre-paint theme init (localStorage 'cordillera-theme' + the .theme-toggle click handler) — injected
      from the SINGLE source brand.mjs THEME_INIT by publish/profiles-page.mjs. Staff page: OS auto-dark. -->
 <!--THEME-INIT-->
@@ -19,7 +19,7 @@
    hand-copied palette to drift out of sync with the other staff pages. */
 /*BRAND-ROOT*/
 *{box-sizing:border-box}
-body{margin:0;font:15px/1.6 'Satoshi','Helvetica Neue',Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+body{margin:0;font:15px/1.6 'Plus Jakarta Sans','Helvetica Neue',Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg)}
 .wrap{max-width:1100px;margin:0 auto;padding:22px 20px 80px}
 header.rep{background:transparent;color:var(--ink);border-bottom:1px solid var(--line);border-radius:0;padding:6px 0 18px;margin-bottom:18px}
 header.rep .tag{font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--crimson-mid)}
@@ -509,8 +509,8 @@ function renderProjectEditor(customer, project, data, isNew) {
   $("editor").innerHTML = `
     <div class="ro"><button class="ghost" id="p_back" style="padding:4px 10px;margin-right:8px">← ${esc(cname)}</button> ${isNew ? "New project under" : "Project under"} <b><span data-anon="client">${esc(cname)}</span></b></div>
     <p class="hint" style="margin:-4px 0 12px">A project overlays this customer — fill in only what differs; anything left blank inherits the customer's setting. A project can't change the customer's name, own-marks list, or risk framework.</p>
-    ${isNew ? f("Project id"+REQ, "p_key", "", `<span class="reqtag">Required.</span> A short lowercase id — letters, numbers and hyphens only. It becomes the project's filename and can't be changed later.`, "e.g. console-ecosystem") : `<div class="ro">Project <b><code>${esc(project)}</code></b></div>`}
-    ${f("Project name"+REQ, "p_name", ov.projectName||"", `<span class="reqtag">Required.</span> The engagement's display name.`, "e.g. Console ecosystem", true)}
+    ${isNew ? f("Project id"+REQ, "p_key", "", `<span class="reqtag">Required.</span> A short lowercase id — letters, numbers and hyphens only. It becomes the project's filename and can't be changed later.`, "e.g. japan-and-korea-app-launch") : `<div class="ro">Project <b><code>${esc(project)}</code></b></div>`}
+    ${f("Project name"+REQ, "p_name", ov.projectName||"", `<span class="reqtag">Required.</span> The engagement's display name.`, "e.g. Japan and Korea app launch", true)}
     ${ta("Marketplaces and registers", "p_platforms", (ov.platforms||[]).join("\n"), `Leave blank to inherit the customer's <b>${esc((inh.platforms||[]).length)}</b> marketplaces. One website per line; don't add 'web'.`, "", true)}
     ${f("Industry / sector", "p_industry", ov.industry||"", inheritHint(inh.industry||"—"), undefined, true)}
     <div class="row2">
@@ -553,7 +553,7 @@ function collectProject() {
 function clientValidateProject(c) {
   const problems = [];
   if (currentProject.isNew) {
-    if (!c.slug) problems.push({ id:"p_key", message:"Enter a project id (like “console-ecosystem”)." });
+    if (!c.slug) problems.push({ id:"p_key", message:"Enter a project id (like “japan-and-korea-app-launch”)." });
     else if (!KEY_RE.test(c.slug)) problems.push({ id:"p_key", message:"The project id can only use lowercase letters, numbers and hyphens (2–39 characters)." });
   }
   if (!c.profile.projectName) problems.push({ id:"p_name", message:"Enter the project name." });

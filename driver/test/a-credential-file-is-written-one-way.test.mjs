@@ -26,7 +26,8 @@ import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 
 const REPO = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 
-test("a credential file is written into a directory that does not exist yet", () => {
+test("a credential file is written into a directory that does not exist yet",
+  { skip: process.platform === "win32" && "mode bits: Windows files carry no POSIX permission bits, so no file there can be held at 600" }, () => {
   const root = mkdtempSync(join(tmpdir(), "secret-write-"));
   try {
     // The shape of a machine that has never run this product: a home with no config directory in it.
@@ -97,7 +98,10 @@ test("the printed recovery command runs as printed", () => {
     `a credential outside the default was not named in the recovery line: ${qualified}`);
   assert.notEqual(qualified, "npx clearotron passphrase --reset");
 
-  // An operator who set the variable themselves had the same broken line, and gets the same fix.
+  // An operator who set the variable themselves had the same broken line, and gets the same fix. The
+  // assignment is written in the shell of the platform the line is printed on: PowerShell on Windows.
   assert.match(passphraseResetCommand({ prefix: "", env: { PORTAL_LOCAL_CREDENTIAL: "/srv/ops/creds.json" }, home }),
-    /^PORTAL_LOCAL_CREDENTIAL=\/srv\/ops\/creds\.json clearotron passphrase --reset$/);
+    process.platform === "win32"
+      ? /^\$env:PORTAL_LOCAL_CREDENTIAL="\/srv\/ops\/creds\.json"; clearotron passphrase --reset$/
+      : /^PORTAL_LOCAL_CREDENTIAL=\/srv\/ops\/creds\.json clearotron passphrase --reset$/);
 });

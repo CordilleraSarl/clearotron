@@ -9,9 +9,9 @@
 // to test them. The suite runs files in parallel, so nothing here touches a shared path.
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync, readdirSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, dirname } from "node:path";
+import { join, dirname, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
 import { plan, providerTestFiles, COVERED_ELSEWHERE } from "../../scripts/test-full.mjs";
@@ -242,8 +242,13 @@ test("this tree's provider corpus reaches every provider test on disk, with noth
   // The arm above proves the walk; this one proves it against the real tree, because a walk that is
   // correct in a fixture and pointed at the wrong directory here would pass it.
   const collected = new Set(providerTestFiles(REPO));
-  const onDisk = execFileSync("find", ["providers", "-name", "*.test.mjs", "-type", "f", "-not", "-path", "*/node_modules/*"],
-    { cwd: REPO, encoding: "utf8" }).split("\n").filter(Boolean);
+  // The files on disk, by a walk of this file's own rather than `find(1)`: on Windows `find` is a text
+  // search, not a file walk. It selects what `find providers -name "*.test.mjs" -type f -not -path
+  // "*/node_modules/*"` selects, spelled with "/" as the corpus spells it.
+  const onDisk = readdirSync(join(REPO, "providers"), { recursive: true, withFileTypes: true })
+    .filter((d) => d.isFile() && d.name.endsWith(".test.mjs"))
+    .map((d) => relative(REPO, join(d.parentPath, d.name)).split(sep).join("/"))
+    .filter((f) => !f.split("/").includes("node_modules"));
   assert.ok(onDisk.length > 30, `expected the real corpus, found ${onDisk.length}`);
   const missed = onDisk.filter((f) => !collected.has(f));
   assert.deepEqual(missed, [], "a provider test on disk that no corpus runs");

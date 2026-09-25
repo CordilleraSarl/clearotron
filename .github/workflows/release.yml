@@ -1051,6 +1051,37 @@ jobs:
           || (needs.pending.outputs.cut == 'true' && !contains(needs.pending.outputs.version, '-')))
     uses: ./.github/workflows/macos.yml
 
+  # EVERY CUT IS INSTALLED ON WINDOWS, AND A RED ONE HOLDS A STABLE. README names Windows, natively from
+  # PowerShell, and a change made on Linux can break how a turn is started, located or stopped there
+  # without any Linux test noticing. windows.yml installs the sealed tarball, runs `doctor`, starts and
+  # stops the demo, presses Ctrl-C on `clearotron start`, and runs a whole clearance on each engine
+  # against stand-in engine programs. It holds nothing and calls no model or register.
+  #
+  # TWO JOBS PER PUBLISH PATH, because a job that only calls another workflow cannot be allowed to fail.
+  # `windows` is keyed exactly as `macos` is, so on a stable a red run is a failure the publish job sees
+  # and the stable stays unpublished. `windows-beta` runs the same check on a beta and nothing needs it,
+  # so the beta publishes either way and a red run shows as a red release run beside it. Whether a red
+  # Windows run should hold a beta too is the owner's call, raised when this landed.
+  windows:
+    name: Install the stable on Windows before it is published
+    needs: [version, pending]
+    if: >-
+      !cancelled()
+      && github.repository == 'CordilleraSarl/clearotron'
+      && ((needs.version.outputs.cut == 'true' && !contains(needs.version.outputs.version, '-'))
+          || (needs.pending.outputs.cut == 'true' && !contains(needs.pending.outputs.version, '-')))
+    uses: ./.github/workflows/windows.yml
+
+  windows-beta:
+    name: Install the beta on Windows, without holding it
+    needs: [version, pending]
+    if: >-
+      !cancelled()
+      && github.repository == 'CordilleraSarl/clearotron'
+      && ((needs.version.outputs.cut == 'true' && contains(needs.version.outputs.version, '-'))
+          || (needs.pending.outputs.cut == 'true' && contains(needs.pending.outputs.version, '-')))
+    uses: ./.github/workflows/windows.yml
+
   publish:
     name: Publish the release to npm
     # A DEPRECATE-ONLY DISPATCH IS NOT A REHEARSAL, and the `cut` default is why it looked like one.
@@ -1068,7 +1099,7 @@ jobs:
     # on the cron, so on any given run one of them did not happen — which is why the condition opens with
     # `!failure() && !cancelled()` rather than relying on the default, and why a skipped decider reads as
     # "not this path" instead of blocking the job.
-    needs: [version, pending, macos]
+    needs: [version, pending, macos, windows]
     if: >-
       !failure() && !cancelled()
       && github.repository == 'CordilleraSarl/clearotron'
@@ -1132,10 +1163,10 @@ jobs:
       #    refuses rather than reconciling: two spellings disagreeing means somebody's intention is
       #    unrecorded, and guessing which they meant is how the wrong one wins.
       #  · the channel is derived, never defaulted. `npm publish` with no `--tag` publishes to `latest`,
-      #    and a version reaching `latest` by default rather than by decision is the failure. DURING THE
-      #    PRE-RELEASE PHASE `latest` IS the pre-release, by the owner's ruling — "latest has all our
-      #    fixes" — and `beta` is deliberately not also set: npm exchanges its OIDC token inside
-      #    `npm publish` and nowhere else, so a second tag would need a long-lived credential in this
+      #    and a version reaching `latest` by default rather than by decision is the failure. A
+      #    pre-release goes to the channel its version names (`beta` for a beta), a stable to `latest`
+      #    (scripts/release-dist-tag.mjs), and neither moves a second tag: npm exchanges its OIDC token
+      #    inside `npm publish` and nowhere else, so a second tag would need a long-lived credential in this
       #    repository, which is the one thing this design forbids. One publish, one tag.
       - name: What is being published, and whether this run may publish it
         id: what
@@ -1493,13 +1524,32 @@ jobs:
       && needs.awaited.outputs.cut == 'true' && !contains(needs.awaited.outputs.version, '-')
     uses: ./.github/workflows/macos.yml
 
+  # THE SAME TWO WINDOWS JOBS, for the version a dispatch cut and `awaited` saw merge. See `windows`.
+  windows-awaited:
+    name: Install the awaited stable on Windows before it is published
+    needs: [awaited]
+    if: >-
+      !cancelled()
+      && github.repository == 'CordilleraSarl/clearotron'
+      && needs.awaited.outputs.cut == 'true' && !contains(needs.awaited.outputs.version, '-')
+    uses: ./.github/workflows/windows.yml
+
+  windows-awaited-beta:
+    name: Install the awaited beta on Windows, without holding it
+    needs: [awaited]
+    if: >-
+      !cancelled()
+      && github.repository == 'CordilleraSarl/clearotron'
+      && needs.awaited.outputs.cut == 'true' && contains(needs.awaited.outputs.version, '-')
+    uses: ./.github/workflows/windows.yml
+
   publish-awaited:
     name: Publish the version this push cut, once it merges itself
     # BOTH DECIDERS ARE NEEDED AND EITHER MAY BE SKIPPED. `version` runs on a push to main and `pending`
     # on the cron, so on any given run one of them did not happen — which is why the condition opens with
     # `!failure() && !cancelled()` rather than relying on the default, and why a skipped decider reads as
     # "not this path" instead of blocking the job.
-    needs: [version, publish, awaited, macos-awaited]
+    needs: [version, publish, awaited, macos-awaited, windows-awaited]
     # THE SECOND PUBLISH OF THE RUN, and it publishes a DIFFERENT version from the first.
     #
     # `publish` above releases whatever was already sitting on main unpublished. This one releases the
@@ -1597,10 +1647,10 @@ jobs:
       #    refuses rather than reconciling: two spellings disagreeing means somebody's intention is
       #    unrecorded, and guessing which they meant is how the wrong one wins.
       #  · the channel is derived, never defaulted. `npm publish` with no `--tag` publishes to `latest`,
-      #    and a version reaching `latest` by default rather than by decision is the failure. DURING THE
-      #    PRE-RELEASE PHASE `latest` IS the pre-release, by the owner's ruling — "latest has all our
-      #    fixes" — and `beta` is deliberately not also set: npm exchanges its OIDC token inside
-      #    `npm publish` and nowhere else, so a second tag would need a long-lived credential in this
+      #    and a version reaching `latest` by default rather than by decision is the failure. A
+      #    pre-release goes to the channel its version names (`beta` for a beta), a stable to `latest`
+      #    (scripts/release-dist-tag.mjs), and neither moves a second tag: npm exchanges its OIDC token
+      #    inside `npm publish` and nowhere else, so a second tag would need a long-lived credential in this
       #    repository, which is the one thing this design forbids. One publish, one tag.
       # ── IT PUBLISHES THE VERSION IT AWAITED, OR NOTHING ────────────────────────────────────────────
       #

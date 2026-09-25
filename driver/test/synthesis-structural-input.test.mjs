@@ -48,7 +48,6 @@ process.env.CLEAROTRON_MAX_RETRIES = "0";
 process.env.CLEAROTRON_RECOVERY_MAX = "0";
 process.env.CLEAROTRON_AGENT = "clawdi";
 process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
-process.env.CLEAROTRON_RECALL_PROBES ||= "0";
 
 const PL = await import("../pipeline.mjs");
 const { composeDispatchExtra } = PL;
@@ -400,8 +399,49 @@ test("review: the stale-repair re-dispatch of synthesis carries the structural b
     "and over the same ledger");
   assert.match(repaired, /DISPATCH RECORD — the REGISTER layer's, authoritative and driver-written/,
     "and its prompt's claim about what it carries is true, exactly as the fresh pass's is");
+  // The list of records the seat must answer is re-read from the findings that moved, not left out.
+  const DECLINATIONS = /DECLINATIONS \(MANDATORY\): the register digest carried \d+ record\(s\)/;
+  assert.match(fresh, DECLINATIONS, "the fresh pass carries the list, so the repair owes it too");
+  assert.match(repaired, DECLINATIONS, "the repair re-dispatch carries the list the recorder holds it to");
   // The original justification for withholding was that a repair must not carry a different prompt from
   // the pass it repairs. It had it backwards, and the sizes say so: withholding is what made them differ.
   assert.ok(repaired.length >= fresh.length - 200,
     `the repair prompt is no longer the thinner one — fresh ${fresh.length}, repair ${repaired.length}`);
+});
+
+// ── AN EMPTIED FINDINGS SURFACE TAKES ITS LIST AWAY ──────────────────────────────────────────────────
+//
+// A repair or corrective pass re-prepares the list because the findings may have moved. When they moved
+// to nothing, the list the earlier pass wrote must go too: the recorder holds the seat to whatever the
+// spec file carries, and a pass whose prompt carries no list must not be bound by an old one.
+test("a findings surface that empties between passes removes the list the earlier pass wrote", () => {
+  const runDir = mkdtempSync(join(tmpdir(), "emptied-surface-"));
+  const P = paths(runDir);
+  writeFileSync(P.placementModel, JSON.stringify({ schema_version: 1, placements: [
+    { mark: "QUILLMERE", owner: "Quill Holdings SA", jurisdiction: "EU", tier: "sheet-2", reason: "Near-identical mark, cl 5, EU, registered", records: ["/mark/eu/tm_quillmere-eu"] },
+  ] }));
+  const carried = "# Register findings\n\n### Incumbent-context (orchestrator: Sheet 2 candidates)\n\n| /mark/eu/tm_quillmere-eu | QUILLMERE | Completes the record. |\n";
+  const dropped = "# Register findings\n\n### Negative results (orchestrator: Sheet \"Negative Results\")\n\n| QUILLMERE | Different goods. | URI /mark/eu/tm_quillmere-eu |\n";
+  const spec = driverDir(runDir, "declination-spec.json");
+  const ctx = {};
+
+  writeFileSync(P.registerFindings, carried);
+  PL.prepareDeclinationSpec(ctx, P);
+  assert.equal(JSON.parse(readFileSync(spec, "utf8")).rows.length, 1, "CONTROL: a carried record is listed");
+  assert.equal(ctx.findingsSurface?.length, 1, "CONTROL: and the prompt is handed it");
+
+  writeFileSync(P.registerFindings, dropped);
+  PL.prepareDeclinationSpec(ctx, P);
+  assert.throws(() => readFileSync(spec, "utf8"), /ENOENT/, "the earlier pass's list no longer binds the seat");
+  assert.equal(ctx.findingsSurface, undefined, "and the prompt carries no list");
+});
+
+test("the stale-repair and corrective passes both rebuild the list before they dispatch synthesis", () => {
+  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  assert.match(src, /synthesis: \(ctx\) => \{ prepareDeclinationSpec\(ctx, ctx\.paths\); return repairStage\("synthesis"\)\(ctx\); \}/,
+    "the stale-repair arm rebuilds it, so an emptied surface empties its list");
+  const corrective = src.slice(src.indexOf("const preCorrective = snapshotFindingsForCorrections("),
+    src.indexOf('trigger: "corrective" });'));
+  assert.match(corrective, /prepareDeclinationSpec\(ctx, P\);\s*\n\s*const correctivePass = await stage\("synthesis"/,
+    "the corrective pass rebuilds it immediately before its dispatch");
 });

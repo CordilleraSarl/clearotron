@@ -70,10 +70,11 @@ test("a run that writes under the home's product folders FAILS, and the path is 
     const r = drive(root, `const fs = require("fs"), p = require("path");
       const d = p.join(process.env.HOME, "trademark", "telemetry");
       fs.mkdirSync(d, { recursive: true });
-      fs.writeFileSync(p.join(d, "trademark-mcp-access.jsonl"), "{}");`, root, { HOME: home });
+      fs.writeFileSync(p.join(d, "trademark-mcp-access.jsonl"), "{}");`, root, { HOME: home, USERPROFILE: home });
     assert.equal(r.code, 1, `a run that wrote under the home exited ${r.code}; it must fail`);
     assert.match(r.said, /THIS RUN WROTE UNDER THE HOME IT RAN AS/);
-    assert.match(r.said, /\+ trademark\/telemetry\/trademark-mcp-access\.jsonl/, "the reader is told WHICH path");
+    // Either separator: the runner names the path the way this platform spells it.
+    assert.match(r.said, /\+ trademark[\\/]telemetry[\\/]trademark-mcp-access\.jsonl/, "the reader is told WHICH path");
   } finally { rmSync(root, { recursive: true, force: true }); rmSync(home, { recursive: true, force: true }); }
 });
 
@@ -84,16 +85,16 @@ test("a change to a settings file that was already there fails too; the rest of 
   writeFileSync(join(home, ".config", "clearotron", ".env"), "A=1\n");
   try {
     const changed = drive(root, `require("fs").appendFileSync(require("path").join(process.env.HOME, ".config", "clearotron", ".env"), "B=2\\n")`,
-      root, { HOME: home });
+      root, { HOME: home, USERPROFILE: home });
     assert.equal(changed.code, 1, "a run that changed the settings file passed");
-    assert.match(changed.said, /~ \.config\/clearotron\/\.env/);
+    assert.match(changed.said, /~ \.config[\\/]clearotron[\\/]\.env/);
     // THE CONTROL. npm's cache and a browser's profile are written by the tools a run uses, and a guard
     // that fired on them would fire on every run and be switched off by the first person it annoyed.
     const tools = drive(root, `const fs = require("fs"), p = require("path");
       for (const d of [".npm", ".cache", p.join(".config", "google-chrome")]) {
         fs.mkdirSync(p.join(process.env.HOME, d), { recursive: true });
         fs.writeFileSync(p.join(process.env.HOME, d, "x"), "x");
-      }`, root, { HOME: home });
+      }`, root, { HOME: home, USERPROFILE: home });
     assert.equal(tools.code, 0, `a run that wrote only the tools' own folders failed:\n${tools.said}`);
     assert.doesNotMatch(tools.said, /THIS RUN WROTE UNDER THE HOME/);
   } finally { rmSync(root, { recursive: true, force: true }); rmSync(home, { recursive: true, force: true }); }
@@ -101,7 +102,10 @@ test("a change to a settings file that was already there fails too; the rest of 
 
 // ── THE BUNDLE: a product command a test starts does not rebuild the checkout's portal ─────────────
 
-test("inside a run, `npm run build:ui` in the checkout is refused, and every other npm command reaches npm", () => {
+test("inside a run, `npm run build:ui` in the checkout is refused, and every other npm command reaches npm", {
+  skip: process.platform === "win32" && "a #!/bin/sh npm shim at the front of PATH: test-run.mjs installs it only "
+    + "off Windows, where npm is npm.cmd and a shell script cannot stand in for it",
+}, () => {
   // `start` rebuilds a stale `portal-ui/dist` by running exactly this, with the checkout as its working
   // directory; eight driver files start `start` from the checkout.
   const root = fakeCheckout();
@@ -327,8 +331,8 @@ test("a directory a test leaves under driver/profiles/ fails the run and is name
     mkdirSync(join(root, "driver", "profiles", "projects", "b2018-4242"), { recursive: true });
     writeFileSync(join(root, "driver", "profiles", "planted.json"), "{}");
     const moved = repoWrites(before, snapshotRepo(root), root).join("\n");
-    assert.match(moved, /\+ driver\/profiles\/projects\/b2018-4242/, "an empty project directory left in the bundled profiles went unseen");
-    assert.match(moved, /\+ driver\/profiles\/planted\.json/, "a file left in the bundled profiles went unseen");
+    assert.match(moved, /\+ driver[\\/]profiles[\\/]projects[\\/]b2018-4242/, "an empty project directory left in the bundled profiles went unseen");
+    assert.match(moved, /\+ driver[\\/]profiles[\\/]planted\.json/, "a file left in the bundled profiles went unseen");
     for (const list of [ALLOWED_TO_MOVE, [...NEVER_WALK]])
       assert.ok(!list.some((e) => /profiles/.test(String(e))), `the profiles directory was carved out of the guard: ${JSON.stringify(list)}`);
   } finally { rmSync(root, { recursive: true, force: true }); }
@@ -342,7 +346,7 @@ test("node_modules and .git are not walked, and nothing else is skipped by name"
     const seen = [...snapshotRepo(root).keys()].join("\n");
     assert.doesNotMatch(seen, /node_modules/, "an npm install would red every run");
     assert.doesNotMatch(seen, /\.git/, "a read-only git command touches the index");
-    assert.match(seen, /driver\/f\.txt/, "the source tree itself must be walked");
+    assert.match(seen, /driver[\\/]f\.txt/, "the source tree itself must be walked");
     assert.deepEqual([...NEVER_WALK].sort(), [".git", "node_modules"],
       "the skip list grew — a new entry is a blind spot, and needs a measurement saying why");
   } finally { rmSync(root, { recursive: true, force: true }); }
@@ -368,7 +372,9 @@ test("a symlink is recorded by its OWN identity, never by what it points at", ()
   } finally { for (const d of [root, outside]) rmSync(d, { recursive: true, force: true }); }
 });
 
-test("a directory that cannot be read is recorded, never quietly skipped", () => {
+test("a directory that cannot be read is recorded, never quietly skipped", {
+  skip: process.platform === "win32" && "mode bits: chmod 000 does not make a Windows folder unreadable, so there is no closed directory to record",
+}, () => {
   // An absence is a finding. A run that removed read permission from a directory must not look
   // identical to a run that did nothing.
   const root = mkdtempSync(join(tmpdir(), "ct198-perm-"));

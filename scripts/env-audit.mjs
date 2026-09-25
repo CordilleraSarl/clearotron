@@ -301,6 +301,14 @@ export const SYSTEM_OWNED = new Set([
   // genuinely ours cannot vanish from the audit by resembling a system name, and a prefix arm here
   // would silently swallow any future `GITHUB_`-prefixed variable this product did come to own.
   "GITHUB_OUTPUT", "GITHUB_REPOSITORY",
+  // ── THE ACCOUNT'S CACHE FOLDER ──────────────────────────────────────────────────────────────────
+  //
+  // Where each system keeps an account's cache, read to place the Codex homes outside the temp folder:
+  // Windows sets LOCALAPPDATA in every session, and XDG_CACHE_HOME belongs to the same base-directory
+  // convention as XDG_CONFIG_HOME above, set by the login environment when it is set at all. Both have a
+  // fallback in the code. Nobody configures a Clearotron install by choosing either, so a row in
+  // `.env.example` would document a decision this product does not make.
+  "LOCALAPPDATA", "XDG_CACHE_HOME",
 ]);
 
 /** A file that ships and runs in production, as opposed to one that only ever runs a test. */

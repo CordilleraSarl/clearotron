@@ -52,6 +52,7 @@
 import { readFileSync } from "node:fs";
 import { serve } from "./stdio-server.mjs";
 import { validateGridSpec } from "../../../providers/perplexity/src/core.js";
+import { underStudioSegment } from "../../../shared/path-seps.mjs";   // Windows builds the path with "\"
 // B — the typed disposition transport. This server owns the seat-facing surface; the tool module owns
 // the disk work and disposition-call.mjs owns the decision. One direction of import, no second opinion.
 import { recordDispositions } from "../../disposition-tool.mjs";
@@ -78,7 +79,7 @@ function specFrom(params) {
   let spec;
   try { spec = validateGridSpec(JSON.parse(readFileSync(grid_spec_path, "utf8"))); }
   catch (err) { return { error: `ERROR: grid_spec_path unreadable/invalid (${err.message}). The driver writes this file; do not hand-author it.` }; }
-  if (!/\/studio\/(?:prelim|clearance)-search\//.test(spec.output_path))   // either spelling: an install keeps the studio segment it has
+  if (!underStudioSegment(spec.output_path))   // either spelling: an install keeps the studio segment it has
     return { error: `ERROR: grid spec.output_path must be within a studio/clearance-search run dir; got ${spec.output_path}` };
   return { spec };
 }

@@ -15,6 +15,7 @@
 
 import { readFileSync, writeFileSync, renameSync, unlinkSync, readdirSync, statSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path"; import { STUDIO_SEGMENT_RE } from "../shared/pre-rename-spellings.mjs";
+import { sepClass, notSepClass } from "../shared/path-seps.mjs";   // a Windows path is built with "\"
 import { DRIVER_DIR } from "../shared/driver-dir.mjs";   //
 import { config } from "./driver.config.mjs";
 import { batchMarkName } from "./mark-name.mjs";
@@ -467,7 +468,7 @@ function currentStepOf(step) {
 // The archive lives UNDER studioRoot (studioRoot/archive/...), so a recursive walk of studioRoot finds
 // both in-flight and delivered/failed runs. Cap depth (status.json only sits at the run-dir level) and
 // skip the high-churn leaf dirs for speed.
-const SKIP_DIRS = new Set([DRIVER_DIR, "register-units", "queue", "_history", "_experiments", "_known-conflicts"]);   // spec 64 — the per-mark recall store holds no status.json
+const SKIP_DIRS = new Set([DRIVER_DIR, "register-units", "queue", "_history", "_experiments", "_known-conflicts"]);   // the old per-mark recall store, left on disk by its removal, holds no status.json
 const MAX_RUNS = 12;
 
 function findStatusFiles(root, depth, acc) {
@@ -480,8 +481,9 @@ function findStatusFiles(root, depth, acc) {
   }
 }
 
-function agentFromStudioRoot(studioRoot) {
-  const m = new RegExp(`${config.workspacePrefixRe}([^/]+)/studio/${STUDIO_SEGMENT_RE}/?$`).exec(studioRoot ?? "");
+export function agentFromStudioRoot(studioRoot, { platform = process.platform } = {}) {
+  const [S, N] = [sepClass(platform), notSepClass(platform)];
+  const m = new RegExp(`${config.workspacePrefixRe}(${N}+)${S}studio${S}${STUDIO_SEGMENT_RE}${S}?$`).exec(studioRoot ?? "");
   return m ? m[1] : "";
 }
 

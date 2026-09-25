@@ -44,12 +44,13 @@ const GOLD = {
     { mark: "NIMBUS · NIMBUS Stylised", owner: HOLDER },
     // An ampersand inside one name.
     { mark: "HARBOUR DENTAL & MEDICAL SUPPLY", owner: HOLDER },
-    // A plain single name, for the full-identity arm.
-    { mark: "CALDERA", owner: HOLDER },
+    // A plain single name, for the full-identity arm, filed in one country.
+    { mark: "CALDERA", owner: HOLDER, jurisdictions: ["DE"] },
   ],
 };
 
-const finding = (ordinal, mark, owner) => ({ ordinal, mark, owner: { name: owner }, band: { label: "High" } });
+const finding = (ordinal, mark, owner, country) => ({ ordinal, mark,
+  owner: { name: owner, ...(country ? { country } : {}) }, band: { label: "High" } });
 
 function score(findings) {
   const store = mkdtempSync(join(tmpdir(), "alias-gate-store-"));
@@ -118,14 +119,22 @@ test("an ampersand inside a name does not split it either", () => {
     "`&` joins words inside one name; splitting made the tail a standalone identity");
 });
 
-test("full identity stays ungated — a different proprietor's identical mark is still a find", () => {
+test("full identity is not gated on the owner alone — a different proprietor's identical mark filed where the gold says is still a find", () => {
   // The gate must not become a recall collapse dressed as precision. `ownersMatch` is fail-closed, and
-  // a stranger registering the identical mark is precisely the conflict this engine exists to surface.
-  const s = score([finding(1, "CALDERA", STRANGER)]);
+  // the lawyer and the register spell one company differently, so a filing country the two share
+  // joins them when the owner test cannot.
+  const s = score([finding(1, "CALDERA", STRANGER, "DE")]);
   assert.equal(s.found.has("CALDERA"), true,
-    "gating exact single-name equality on owner would send every entry whose owner the gold does not "
-    + "record straight to `lost`");
+    "gating exact single-name equality on the owner alone would lose every entry whose owner the "
+    + "register spells differently");
   assert.equal(s.rule.get("CALDERA"), "alias", "and it should still be reported as the alias rule");
+});
+
+test("…but the same name filed elsewhere by a different proprietor is not the lawyer's record", () => {
+  // v8. Owner and country both disagree, so nothing ties this finding to the entry but its name.
+  const s = score([finding(1, "CALDERA", STRANGER, "FR")]);
+  assert.equal(s.found.has("CALDERA"), false,
+    "a different company's identical mark in another country is a different record");
 });
 
 test("a RELABELLED finding still matches: the gate is on the reference side, not the candidate's", () => {
@@ -136,7 +145,7 @@ test("a RELABELLED finding still matches: the gate is on the reference side, not
   //
   // Gating on both sides would turn every relabelled finding into a `lost`, which reads as a recall
   // defect in the engine while the cause sits in the instrument.
-  const s = score([finding(1, "CALDERA / CALDERAMONO / CALDERAKOMB", STRANGER)]);
+  const s = score([finding(1, "CALDERA / CALDERAMONO / CALDERAKOMB", STRANGER, "DE")]);
   assert.equal(s.found.has("CALDERA"), true,
     "the gold's whole identity matched one of the candidate's alternatives — that is not a fragment match");
 });

@@ -15,7 +15,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, existsSync, readFileSync, readdi
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SCRIPT = join(HERE, "..", "..", "scripts", "freeze-example-run.mjs");
@@ -346,16 +346,17 @@ function runHoledFreeze(root, runDir) {
   assert.notEqual(patched, holedAllowlist, "the REPO derivation must exist to be pinned");
   // — the same problem one level down. The copy's RELATIVE imports also resolve against the temp
   // dir, so `../shared/driver-dir.mjs` is not there. Pin it to the real checkout for the same reason
-  // REPO is pinned above: what is under test is the allowlist, not module resolution.
+  // REPO is pinned above: what is under test is the allowlist, not module resolution. Pinned as a file
+  // URL, because an import of a bare drive-letter path is refused on Windows.
   const pinned = patched.replace(
     /^(import \{[^}]*\} from )["'][^"']*shared\/driver-dir\.mjs["'](.*)$/m,
-    (_m, head, tail) => `${head}${JSON.stringify(join(HERE, "..", "..", "shared", "driver-dir.mjs"))}${tail}`,
+    (_m, head, tail) => `${head}${JSON.stringify(pathToFileURL(join(HERE, "..", "..", "shared", "driver-dir.mjs")).href)}${tail}`,
   );
   assert.notEqual(pinned, patched, "the shared/driver-dir.mjs import must exist to be pinned");
   // And the publisher's declared inputs, which the allowlist now takes whole — pinned the same way.
   const pinnedInputs = pinned.replace(
     /^(import \{[^}]*\} from )["'][^"']*driver\/publish\/publish-inputs\.mjs["'](.*)$/m,
-    (_m, head, tail) => `${head}${JSON.stringify(join(HERE, "..", "publish", "publish-inputs.mjs"))}${tail}`,
+    (_m, head, tail) => `${head}${JSON.stringify(pathToFileURL(join(HERE, "..", "publish", "publish-inputs.mjs")).href)}${tail}`,
   );
   assert.notEqual(pinnedInputs, pinned, "the publish-inputs import must exist to be pinned");
   // THE DERIVATION WOULD REFILL THE HOLE, since findings.json is a declared input — which is the point of

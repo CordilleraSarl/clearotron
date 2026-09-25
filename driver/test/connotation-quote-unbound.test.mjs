@@ -199,7 +199,8 @@ test("arm 11 — verify.mjs emits the token this test pins, read off its own sou
     const patch = warmPatchMessage(fail(reason), ["/run/common-law-findings.half-b.md"]);
     assert.match(patch, /record_dispositions/,
       `connotation_${reason} does not route to the recording tool, so the repair aims at a file`);
-    assert.match(patch, /\/run\/_driver\/grid-spec\.half-b\.json/,
+    // The spec path is joined on this machine, so its separators are matched either way.
+    assert.match(patch, /[\\/]run[\\/]_driver[\\/]grid-spec\.half-b\.json/,
       `connotation_${reason}'s patch does not name the failing member's own spec — a warm resume has no base prompt to fall back on`);
     assert.doesNotMatch(patch, /EDIT that file|Edit tool|re-save/i,
       `connotation_${reason}'s patch orders a file write — the one route a ruling cannot take any more`);

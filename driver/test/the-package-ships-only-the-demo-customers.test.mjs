@@ -23,6 +23,11 @@ import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
+import { npmInvocation } from "../../shared/npm-cli.mjs";
+
+/** npm as this machine starts it: `npm` itself, or on Windows its npm-cli.js through this Node, since
+ *  Windows' npm is a batch file a spawn without a shell cannot start. The environment rides unchanged. */
+const npm = (args, opts) => { const { command, args: argv } = npmInvocation(args); return execFileSync(command, argv, opts); };
 
 const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 
@@ -51,7 +56,7 @@ const SHIPPED_ACCOUNTS = Object.freeze(["demo-brand-owner.json", "generic.json"]
 const FIXTURES_ONLY = Object.freeze(["zephyr", "petcary"]);
 
 test("94/F13 the package's customer roster is the two accounts a reader is meant to see", { timeout: 120_000 }, () => {
-  const out = execFileSync("npm", ["pack", "--dry-run", "--json"],
+  const out = npm(["pack", "--dry-run", "--json"],
     { cwd: ROOT, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"], env: PACK_ENV });
   const files = JSON.parse(out)[0].files.map((f) => f.path);
   // AN EMPTY FILE LIST WOULD SATISFY EVERY ASSERTION BELOW. npm printing nothing, or printing its
@@ -91,12 +96,12 @@ test("94/F13 and the artifact itself carries none of them", { timeout: 300_000 }
   // alone is a claim about the intent of a list.
   const out = mkdtempSync(join(tmpdir(), "roster-pack-"));
   try {
-    execFileSync("npm", ["pack", "--pack-destination", out],
+    npm(["pack", "--pack-destination", out],
       { cwd: ROOT, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"], env: PACK_ENV });
     const tarballs = readdirSync(out).filter((f) => f.endsWith(".tgz"));
     assert.equal(tarballs.length, 1, `expected exactly one tarball, got: ${tarballs.join(", ") || "none"}`);
     const entries = execFileSync("tar", ["-tzf", join(out, tarballs[0])], { encoding: "utf8" })
-      .split("\n").filter(Boolean).map((p) => p.replace(/^package\//, ""));
+      .split(/\r?\n/).filter(Boolean).map((p) => p.replace(/^package\//, ""));   // Windows' tar ends its lines \r\n
     // A TARBALL THAT LISTED NOTHING WOULD SATISFY EVERY LINE BELOW.
     nonEmpty(entries, "the entries in the packed tarball");
 

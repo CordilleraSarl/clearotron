@@ -101,7 +101,7 @@
 
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
+import { driverDir, labelOfDriverFile } from "../shared/driver-dir.mjs";   //
 import { runLog, note } from "./log.mjs";
 import { writeRunStatus } from "./progress.mjs";
 // tokens.mjs imports this module too (isCodeSide, stampRunEconomics). The cycle is safe because each side
@@ -478,7 +478,7 @@ export function runEconomics(runDir, { now = null, bytesPerOutputToken = BYTES_P
   catch { files = null; }
 
   for (const file of files ?? []) {
-    const stage = file.replace(/\.jsonl$/, "");
+    const stage = labelOfDriverFile(file);   // a Windows record writes the label's colon %3A
     const rows = readRows(join(dDir, file));
     if (!rows) continue;
     const st = (byStage[stage] ??= emptyStage());

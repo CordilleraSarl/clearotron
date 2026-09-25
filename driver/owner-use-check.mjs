@@ -39,6 +39,7 @@
 // say the query did not answer, and the run publishes.
 import { existsSync, readFileSync, writeFileSync, appendFileSync } from "node:fs";
 import { join } from "node:path";
+import { createHash } from "node:crypto";
 
 import { promotableRecords } from "./publish/render-knockout.mjs";
 
@@ -127,10 +128,18 @@ export function firstSourceUrl(text) {
  * literal. A row is written for EVERY owner owed a check, including the ones that failed — an owner with
  * no row would be indistinguishable from an owner nobody owed a check to, which is the absence-reads-as-
  * a-pass shape this repository keeps paying for.
+ *
+ * THE LOOKUPS RUN SIDE BY SIDE, `concurrency` at a time, and the rows come back in the owners' order.
+ * Each lookup is its own question with its own payload file, so asking them one after another only added
+ * their times together: measured in testing, 2026-09-25, nine lookups in series took 3.9 of a four-mark
+ * knockout's 13.7 minutes. The questions asked are the same either way. The receipts ledger takes each
+ * row as its lookup finishes, so its lines follow completion; the returned rows, which the report reads,
+ * keep the owners' order.
  */
-export async function runOwnerChecks({ owners, exec, runDir, ledgerPath = null, preset = "pro-search", now = () => new Date().toISOString() }) {
-  const rows = [];
-  for (const o of (owners ?? [])) {
+export async function runOwnerChecks({ owners, exec, runDir, ledgerPath = null, preset = "pro-search", concurrency = 1, now = () => new Date().toISOString() }) {
+  const list = Array.isArray(owners) ? owners : [];
+  const rows = new Array(list.length);
+  const check = async (o) => {
     const query = composeOwnerQuery(o);
     const started = Date.now();
     let r;
@@ -140,9 +149,9 @@ export async function runOwnerChecks({ owners, exec, runDir, ledgerPath = null, 
     const ok = Boolean(r?.ok && r?.text);
     let payloadFile = null;
     if (ok && runDir) {
-      // The payload lands beside the mark payloads, under a name derived from the owner rather than the
-      // record, because one payload answers for every filing that owner holds.
-      payloadFile = `owner-${slug(o.owner)}.md`;
+      // The payload lands beside the mark payloads, under a name derived from the row rather than the
+      // record, because one payload answers for every filing that owner holds under that mark.
+      payloadFile = ownerPayloadFile(o);
       try { writeFileSync(join(runDir, "research", payloadFile), r.text); } catch { payloadFile = null; }
     }
     const source = ok ? (firstSourceUrl(r.text) ?? NO_RESULT) : NO_RESULT;
@@ -153,10 +162,28 @@ export async function runOwnerChecks({ owners, exec, runDir, ledgerPath = null, 
       ...(r?.outage === true ? { outage: true } : {}),
       ts: now(), took_ms: r?.tookMs ?? (Date.now() - started),
     };
-    rows.push(row);
     if (ledgerPath) { try { appendFileSync(ledgerPath, JSON.stringify(row) + "\n"); } catch { /* receipts best-effort, never fatal */ } }
-  }
+    return row;
+  };
+  // A non-finite or sub-1 limit runs one lookup at a time, never none.
+  const limit = Number.isFinite(concurrency) && concurrency >= 1 ? Math.floor(concurrency) : 1;
+  let next = 0;
+  await Promise.all(Array.from({ length: Math.max(1, Math.min(limit, list.length)) }, async () => {
+    while (next < list.length) { const i = next++; rows[i] = await check(list[i]); }
+  }));
   return rows;
+}
+
+/**
+ * The file one check's answer is written to: one per (mark, owner) row, the same name on every run. The
+ * readable part is the owner's name in Latin letters, and a fingerprint of the mark and the owner keeps two
+ * rows apart where that part is the same: one owner holding filings for two marks, two owners whose names
+ * reduce to the same letters, or names with no Latin letters at all. The reading seat is given each row's
+ * path, so two rows sharing one file would point one owner at another owner's answer.
+ */
+export function ownerPayloadFile({ mark, owner }) {
+  const key = createHash("sha256").update(`${mark ?? ""}\u0000${owner ?? ""}`).digest("hex").slice(0, 10);
+  return `owner-${slug(owner)}-${key}.md`;
 }
 
 const slug = (s) => String(s ?? "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) || "owner";

@@ -33,7 +33,7 @@ import "../shared/env-local.mjs";   // — FIRST: applies the CLEAROTRON_* trans
 // capture evaluates. Reads no `.env` here — that load is gated on isCliEntry(argv[1]).
 import { readFileSync, writeFileSync, readdirSync, existsSync, mkdtempSync, rmSync, mkdirSync, renameSync, statSync } from "node:fs";
 import { join, dirname, resolve, basename } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";   //
+import { driverDir, labelOfDriverFile } from "../shared/driver-dir.mjs";   //
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
 import { randomBytes } from "node:crypto";
@@ -72,6 +72,7 @@ import { entryTermIssues } from "../providers/_shared/term-shape.mjs";
 // restated here: a floor naming a tier that does not exist must fail loudly rather than compare against
 // a missing key, and the list must not drift if a tier is ever added. PURE (no node imports) too.
 import { SHAPE_TIERS } from "../driver/band-shape.mjs";
+import { SCENARIO_FILE_OPS, SCENARIO_FILE_OP_READS } from "./e2e-scenario-ops.mjs";   // the whole-run ops two scenarios declared
 // The owner's turnaround benchmarks. The BAND owns the number and a scenario file cannot carry
 // one — see the lint rule below. Another pure leaf with zero imports of its own, for the same reason
 // queue-markers.mjs is: nothing in this file may reach driver.config.mjs.
@@ -1218,6 +1219,12 @@ const OPS = {
   exists: (v) => ({ ok: v !== null && v !== undefined, saw: v === null ? "absent" : "present" }),
   "non-empty": (v) => ({ ok: Array.isArray(v) ? v.length > 0 : Boolean(v), saw: Array.isArray(v) ? `${v.length} item(s)` : JSON.stringify(v) }),
   length: (v, want) => ({ ok: Array.isArray(v) && v.length === want, saw: Array.isArray(v) ? `${v.length}` : JSON.stringify(v) }),
+  truthy: (v) => ({ ok: Boolean(v), saw: JSON.stringify(v) }),
+  // Stricter than `non-empty`, which also passes a non-empty string: only a list with a member passes.
+  "non-empty-array": (v) => ({ ok: Array.isArray(v) && v.length > 0, saw: Array.isArray(v) ? `${v.length} item(s)` : `not a list: ${JSON.stringify(v)}` }),
+  "count-greater-than": (v, want) => ({ ok: Array.isArray(v) && Number.isFinite(want) && v.length > want,
+    saw: !Number.isFinite(want) ? `no numeric value to compare against: ${JSON.stringify(want)}`
+      : Array.isArray(v) ? `${v.length} item(s), more than ${want} required` : `not a list: ${JSON.stringify(v)}` }),
 };
 
 /**
@@ -1235,7 +1242,7 @@ export const DELIVERY_STATUS_FILE = "status.json";
  * DERIVED CHECKS NEED THIS TABLE, not a hand-written list of known-bad scenarios: a scenario nobody
  * thought to add is exactly the one that goes unnoticed, and R13 went unnoticed for four rounds.
  */
-export const FIXED_FILE_OPS = Object.freeze({ "delivery-settled": DELIVERY_STATUS_FILE });
+export const FIXED_FILE_OPS = Object.freeze({ "delivery-settled": DELIVERY_STATUS_FILE, ...SCENARIO_FILE_OP_READS });
 
 /**
  * Every scenario case whose declared `path` names a file its `op` does not read.
@@ -1810,6 +1817,9 @@ function evalAssertion(a, runDir) {
     return shape.verdict(met, body,
       `${body} — the band the clearance lane merged is smaller or narrower than this scenario exists to hand the size-dependent paths`);
   }
+
+  const fileOp = SCENARIO_FILE_OPS[a.op];
+  if (fileOp) return fileOp(a, runDir);
 
   // field ops
   const fn = OPS[a.op];
@@ -2746,7 +2756,7 @@ function runLedger(runDir) {
   let files = [];
   try { files = readdirSync(dd).filter((f) => f.endsWith(".jsonl") && f !== "run.jsonl"); } catch { /* no _driver */ }
   for (const f of files) {
-    const stage = f.replace(/\.jsonl$/, "");
+    const stage = labelOfDriverFile(f);   // a Windows record writes the label's colon %3A
     for (const line of readFileSync(join(dd, f), "utf8").split("\n")) {
       if (!line.trim()) continue;
       let e; try { e = JSON.parse(line); } catch { continue; }
@@ -3347,9 +3357,11 @@ async function cmdReport(id, { round: requestedToken = null } = {}) {
     for (const a of [...(s.expect?.assert ?? []), ...(kase?.expect?.assert ?? [])]) {
       const r = evalAssertion(a, runDir);
       if (r.unimplemented) unimplemented++;
-      if (r.notProbed) notProbed.push(`${ref}: ${a.what} — ${r.saw}`);
+      // A REPORTED op prints its counts and judges nothing: neither a pass, a failure nor a gap.
+      if (r.reported) { /* printed below, counted nowhere */ }
+      else if (r.notProbed) notProbed.push(`${ref}: ${a.what} — ${r.saw}`);
       else if (!r.ok) { failures++; toInvestigate.push(`ordered-vs-ran: ${a.what} — ${r.saw}`); }
-      console.log(`  [${r.notProbed ? "n/p " : r.ok ? " ok " : "FAIL"}] ${a.what}\n           ${r.saw}`);
+      console.log(`  [${r.reported ? "info" : r.notProbed ? "n/p " : r.ok ? " ok " : "FAIL"}] ${a.what}\n           ${r.saw}`);
     }
 
     const led = printLedger(runDir, bench);

@@ -160,6 +160,10 @@ test("the recording engine's homes are real, distinct paths per ladder — the a
 
 const FORM_FAIL = "framediff_severity_invalid";   // matches FORM_CLASS_RE; anything outside it never enters the loop
 
+// The failure reaches FORM_CLASS_RE as `invalid_file:<absolute path>:<reason>`, and the pattern reads the
+// reason after the first colon past `invalid_file:`. A Windows path has a colon after its drive letter,
+// so no form failure is ever recognised there and the repair never runs. That is the gateway's to fix.
+
 async function runWithFormRepair(tag, onTurn) {
   const runDir = freshRun(tag);
   const out = join(runDir, "frame-diff.md");

@@ -71,13 +71,17 @@ for (const [k, v] of Object.entries({
   // both, and for the same reason CORSEARCH_SESSION_KEY above is declared: the engine here is
   // mock-claude.mjs and nothing dials either vendor. A stub value, not a live one.
   PERPLEXITY_API_KEY: "test-offline",
-  CLEAROTRON_RECALL_TRIPWIRE: "0", CLEAROTRON_REGISTER_GAP_CLAMP: "0", CLEAROTRON_BAND_TRUTH_GATE: "0",
+  CLEAROTRON_REGISTER_GAP_CLAMP: "0", CLEAROTRON_BAND_TRUTH_GATE: "0",
   CLEAROTRON_SATPROBE_CODESIDE: "0",
 })) pinEnv(process.env, k, v);
 
 const { main } = await import("../runner.mjs");
 const Q = join(root, "workspace-clawdi", "studio", "clearance-search", "queue");
 mkdirSync(Q, { recursive: true });
+
+// On Windows the runner's claim token is `<pid>:<birth stamp>` and it claims a job by renaming it to
+// `<base>.processing.claimed-<token>`. A Windows file name cannot hold a colon, so the rename fails, the
+// runner reads that as a lost race, and no job here is ever claimed. That is the runner's to fix.
 
 const findRun = (needle) => {
   const hits = [];

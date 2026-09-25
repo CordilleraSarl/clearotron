@@ -32,7 +32,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, chmodSync, readFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, dirname } from "node:path";
+import { join, dirname, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -43,7 +43,6 @@ chmodSync(CLAUDE, 0o755);
 process.env.CLEAROTRON_AI ||= "anthropic-agent";
 process.env.CORSEARCH_SESSION_KEY ||= "test-offline";
 process.env.CLEAROTRON_PLAN_DISPATCH ||= "off";
-process.env.CLEAROTRON_RECALL_TRIPWIRE ||= "0";
 process.env.CLEAROTRON_REGISTER_GAP_CLAMP ||= "0";
 process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";   // hermetic mock runs never dial the provider
 process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
@@ -78,13 +77,18 @@ async function runMockPipeline(env, opts = {}, reuse = null) {
 // The artifacts a sanctioned pre-synthesis arm is ALLOWED to move under a settled frame. Anything else
 // turning up in the seam's `changed` list means the grant has quietly widened past what was reasoned
 // about, and this test is where that gets noticed rather than at a delivery gate on a live run.
-const SANCTIONED = (p) => /(^|\/)register-named-band\.json$/.test(p) || /(^|\/)register-units\/[^/]+\.md$/.test(p) || /(^|\/)common-law\.md$/.test(p);
+// The paths are native, so a separator is matched either way.
+const SANCTIONED = (p) => /(^|[\\/])register-named-band\.json$/.test(p) || /(^|[\\/])register-units[\\/][^\\/]+\.md$/.test(p) || /(^|[\\/])common-law\.md$/.test(p);
+
+// Pass 1 parks on the turn whose message names placement-inquiry's skill. The driver writes that
+// reference as an absolute path joined on this machine, so on Windows it reads `placement-inquiry\SKILL`.
+const PARK_AT_PLACEMENT = `placement-inquiry${sep}SKILL`;
 
 test("a resume whose frame-diff SKIPS is not parked by the escalation rewriting the band/units it declares", async () => {
   // ── pass 1: park at placement-inquiry ────────────────────────────────────────────────────────────
   // The window the defect lives in: frame-diff has RUN (its seam is above placement since) and
   // narrative.md is absent, so the resume is NOT digest-locked and the escalation/envelope arms fire.
-  const p1 = await runMockPipeline({ MOCK_FAIL_STAGE: "placement-inquiry/SKILL" }, {});
+  const p1 = await runMockPipeline({ MOCK_FAIL_STAGE: PARK_AT_PLACEMENT }, {});
   assert.equal(p1.res.ok, false, "pass 1 parks");
   assert.equal(p1.res.failedStage, "placement-inquiry",
     `pass 1 must park AT placement-inquiry (substring match caught a different turn: ${p1.res.failedStage})`);
@@ -109,7 +113,7 @@ test("a resume whose frame-diff SKIPS is not parked by the escalation rewriting 
   assert.equal(blocked.filter((e) => (e.stages ?? []).some((s) => s.label === "frame-diff")).length, 0,
     `frame-diff must not stale-block delivery: ${JSON.stringify(blocked)}`);
   assert.equal(p2.res.ok, true, JSON.stringify({ ok: p2.res.ok, fail: p2.res.fail, stage: p2.res.failedStage }));
-  assert.ok(existsSync(join(p2.res.runDir, ".delivered")) || p2.res.runDir.includes("/archive/"), "the resume delivers");
+  assert.ok(existsSync(join(p2.res.runDir, ".delivered")) || /[\\/]archive[\\/]/.test(p2.res.runDir), "the resume delivers");
 
   // the seam accounted for the rewrite, and RECORDED which files it moved — the grant is auditable
   const settle = ev2.filter((e) => e.event === "one-shot-stamp-settled" && e.stage === "frame-diff");
@@ -161,7 +165,7 @@ test("a restamp aimed at a file the stage does NOT declare lands a restamp-miss 
 test("frame-diff still recomputes when a NON-sanctioned input moves (the freshness contract is not blanket-disabled)", async () => {
   // The seam blesses only what the pre-synthesis register arms rewrite. A blind-frame model that moves
   // between passes is new material and must still force the diff — the copper-vault catch, intact.
-  const p1 = await runMockPipeline({ MOCK_FAIL_STAGE: "placement-inquiry/SKILL" }, {});
+  const p1 = await runMockPipeline({ MOCK_FAIL_STAGE: PARK_AT_PLACEMENT }, {});
   assert.equal(p1.res.ok, false, "pass 1 parks");
   assert.equal(p1.res.failedStage, "placement-inquiry");
 

@@ -23,6 +23,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — realpath both sides, or a symlinked invocation exits 0 silently
 import { nonEmpty } from "../shared/vacuous-pass.mjs";        // — an empty row set would confirm compliance over nothing
+import { npmInvocation } from "../shared/npm-cli.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 export const OUTPUT = join(ROOT, "THIRD-PARTY-NOTICES.md");
@@ -80,7 +81,8 @@ export function npmTree(root = ROOT, run = execFileSync) {
   const opts = { cwd: root, encoding: "utf8", maxBuffer: 128 * 1024 * 1024 };
   let out;
   try {
-    out = run("npm", ["ls", "--omit=dev", "--all", "--json"], opts);
+    const npm = npmInvocation(["ls", "--omit=dev", "--all", "--json"]);   // npm.cmd on Windows needs a shell; npm-cli.js does not
+    out = run(npm.command, npm.args, opts);
   } catch (e) {
     out = e?.stdout;
     if (typeof out !== "string" || !out.trim()) throw e;

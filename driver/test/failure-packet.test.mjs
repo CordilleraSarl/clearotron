@@ -10,6 +10,7 @@ import { readFileSync } from "node:fs";
 import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";   // — the guard scans the product tree
 import { join } from "node:path";
 import { buildFailurePacket } from "../pipeline.mjs";
+import { fileURLToPath } from "node:url";
 
 const BASE = {
   runId: "tmp8729-open-country-teal-causeway", agent: "clawdi",
@@ -215,7 +216,7 @@ test("both notice lanes and the terminal status write pass the payload — the E
 // `undefined,`. Dropping one argument from a four-argument call is not a mistake a reader catches, which
 // is why this is an arm and not a comment: every site is counted FROM THE SOURCE, never from a list here.
 test("no StageFailure site passes its options bag one position early", (t) => {
-  const root = new URL("../../", import.meta.url).pathname;
+  const root = fileURLToPath(new URL("../../", import.meta.url));
   // The corpus comes from the shared helper, never from a `git ls-files` of this guard's own: outside a
   // checkout that call exits 128 and the guard fails as a wall of noise instead of saying it could not
   // look. `test-tiers.test.mjs` enforces this, and caught this arm doing it by hand.

@@ -1794,9 +1794,13 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // sentence. Neither licence-only nor comment-only, so this constant moves with the other one.
 // Advanced again by the break recorded above the FROZEN constant: two lines for a company that picked no
 // marketplaces. Not licence-only, so this constant moves with the other one.
+// Advanced again by the break recorded above the FROZEN constant: the report carries its own fonts.
+// Neither licence-only nor comment-only, so this constant moves with the other one.
 // Advanced again by the comment-only break recorded above the FROZEN constant: one example name replaced.
 // A comment edit moves these bytes too, so this constant moves with it.
-const FROZEN_BEFORE_SPDX = "095580889cbf7ac817cc4be4209b2af033520d3dc274259b5fdbad8ae98d95a3";
+// Advanced again by the break recorded above the FROZEN constant: a framework's own inputs beside the band.
+// Not licence-only, so this constant moves with the other one.
+const FROZEN_BEFORE_SPDX = "a4728c8f6b9ed2b7cc32b120e23b6d87ef8aa724a3702f415fc52cf7f85f7458";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2659,6 +2663,26 @@ const FROZEN_BEFORE_SPDX = "095580889cbf7ac817cc4be4209b2af033520d3dc274259b5fdb
 //      test passes unchanged, and the new arm pins that the next render after a flagged one reads as before.
 //   2. Could it live in report.css or brand.mjs? No: these are sentences, not a look.
 //   3. Why it had to move here: both sentences are composed in this file and nowhere else.
+// ── BREAK (2026-09-23 — the report carries its own fonts) ──────────────────────────────────────────
+//
+// WHAT MOVED: the three <link> lines in the document head, which fetched Satoshi from Fontshare and Fira
+// Code from Google Fonts, become one `${REPORT_FONT_STYLE}` imported from shared/brand-fonts.mjs, which
+// embeds both faces as data with each licence text beside it. The face the stylesheet names moves from
+// Satoshi to Plus Jakarta Sans in the three places this file names it inline: the demo banner, one
+// caption and the quadrant chart's SVG.
+//
+// WHY. Opening a report told two font services the reader's address and that a report had been opened,
+// from the portal, from disk or from an email. The owner ruled the replacement face (Satoshi's licence
+// allows neither shipping the file nor embedding it where it can be copied out; Plus Jakarta Sans and
+// Fira Code are under the OFL).
+//
+// THE THREE QUESTIONS.
+//   1. Reachable from republish? Yes. A republished report carries the embedded fonts and is drawn in
+//      Plus Jakarta Sans; its words and structure are the same bytes as before.
+//   2. Could it live in report.css or brand.mjs? The faces themselves now do, in brand-fonts.mjs, so the
+//      next font change does not touch this file. The link tags could not: they were written into this
+//      file's own document head.
+//   3. Why it had to move here: the head is composed in this file and nowhere else.
 // ── BREAK (2026-09-24 — one example name in a comment, replaced) ─────────────────────────────────────
 //
 // COMMENT-ONLY. A comment beside the famous-mark notes used a real famous mark as its example. It now
@@ -2675,7 +2699,25 @@ const FROZEN_BEFORE_SPDX = "095580889cbf7ac817cc4be4209b2af033520d3dc274259b5fdb
 //   1. Reachable from republish? No — a comment never reaches a rendered report.
 //   2. Could it live in report.css or brand.mjs? No: the example is a comment in this file.
 //   3. Why it had to move here: the example was here, in a public tree.
-const FROZEN = "d56fd1b5e0f482c94528b18497908472a0fa59248cee5c4a3df8906a53881088";
+// ── BREAK (2026-09-24 — a framework's own inputs beside the band) ─────────────────────────────────
+//
+// WHAT MOVED: the band chip. Where the run froze a framework method (framework-method.mjs) and a finding
+// records that framework's inputs, the chip reads the band and then the inputs, in the framework's own
+// labels and order: "High · Claim Grade R · Harbour". Three lines carry it: the import of
+// `inputsLine`, the FRAMEWORK_METHOD module state set from `opts.frameworkMethod` beside FRAMEWORK, and
+// the chip. Everywhere else the chip is the band word alone, as before.
+//
+// WHY. A framework that rates through named inputs and a table used to reach the report as its band
+// words only; the inputs a reader needs to check the band against the framework had nowhere to go.
+//
+// THE THREE QUESTIONS.
+//   1. Reachable from republish? Yes, and it renders the same bytes: publish passes a method only when
+//      the run froze one, and no archived run did. Measured by rendering the same banded findings through
+//      the previous file and this one, with a framework and without one, and comparing: identical in both
+//      modes (212,751 and 212,604 bytes).
+//   2. Could it live in report.css or brand.mjs? No: it is the chip's text, not its look.
+//   3. Why it had to move here: the chip is composed in this file and nowhere else.
+const FROZEN = "4c19e303c7e08f6dbb50e59c47e4c67b4be32393d9593920eb4b6ffdb9af6714";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

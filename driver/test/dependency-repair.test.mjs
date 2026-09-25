@@ -8,6 +8,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { basename } from "node:path";
 import { paths, STAGES, stageInputs, stageOutputs, dependencyOrder } from "../stages.mjs";
 import { partitionDeliveryStale } from "../pipeline.mjs";
 import { DISPATCH_EXTRAS } from "../stage-context.mjs";
@@ -15,7 +16,7 @@ import { DISPATCH_EXTRAS } from "../stage-context.mjs";
 const P = paths("/run");
 
 test("15c — every stage's authored surface is declared, not just the one file out() names", () => {
-  const named = (name, opts = {}) => stageOutputs(name, P, opts).map((f) => f.split("/").pop());
+  const named = (name, opts = {}) => stageOutputs(name, P, opts).map((f) => basename(f));
   assert.deepEqual(named("synthesis"), ["narrative.md", "findings.json"],
     "findings.json is the most-consumed artifact in the run and was undeclared");
   assert.ok(named("clearance-variants").includes("variant-manifest.json"));
@@ -96,7 +97,7 @@ test("15b — the blocked pass writes down WHAT is stale, so the recovery has so
 });
 
 test("A-4 — the skeptic declares what it consumes, and has an arm to be repaired by", () => {
-  const inputs = stageInputs("skeptic", P).map((f) => f.split("/").pop());
+  const inputs = stageInputs("skeptic", P).map((f) => basename(f));
   assert.ok(inputs.includes("plan-execution.json"), "the receipt skepticDeferralExtra is built from");
   assert.ok(inputs.includes("register-coverage-ledger.json"));
   const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
@@ -110,7 +111,7 @@ test("A-4 — the skeptic declares what it consumes, and has an arm to be repair
 // skips as legitimately fresh it joins deliveryPathStages, and with no entry the run parked with no
 // in-pass remedy. Ruled to option 1: pay one placement dispatch on affected resumes.
 test("placement-inquiry declares the band material, and has a stale-repair arm; its stamp is never blessed", () => {
-  const inputs = stageInputs("placement-inquiry", P).map((f) => f.split("/").pop());
+  const inputs = stageInputs("placement-inquiry", P).map((f) => basename(f));
   assert.ok(inputs.includes("register-named-band.json"),
     "the declaration is why it can go stale — narrowing it instead would be the gate lying");
   const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
@@ -121,7 +122,7 @@ test("placement-inquiry declares the band material, and has a stale-repair arm; 
   // frame-diff's remedy must NOT transfer: placement's outputs are declared inputs of three stages that
   // run after the mutation, so blessing its stamp would hide staleness with live consumers.
   for (const consumer of ["register-digest", "synthesis", "narrative-refutation"]) {
-    const consumed = stageInputs(consumer, P).map((f) => f.split("/").pop());
+    const consumed = stageInputs(consumer, P).map((f) => basename(f));
     assert.ok(consumed.some((f) => /^placements?\.(md|json)$/.test(f)),
       `${consumer} reads placement's output, so settleOneShotStamp would hide staleness from it`);
   }

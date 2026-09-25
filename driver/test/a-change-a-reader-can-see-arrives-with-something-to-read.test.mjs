@@ -565,6 +565,46 @@ test("an answer naming a commit that owes a note of another kind is refused, and
   }
 });
 
+// ── …AND A LATER COMMIT MAY ANSWER A LINE THAT PROMISED A NOTE, BY NAMING THE NOTE THE RANGE ADDS ─────────
+
+const PROMISED = { changes: { "bin/thing.mjs": "export const a = 6;\n" }, message: "A change\n\nRelease-note: to follow\n" };
+const naming = (i, name = "drop.md", adds = true) => ({
+  ...(adds ? { changes: { [`.changeset/${name}`]: "---\n\"clearotron\": patch\n---\n\nFixed: Reports read better.\n" } } : { empty: true }),
+  message: (s) => `Add the note the change promised\n\nRelease-note-for: ${s[i].slice(0, 7)} .changeset/${name}\n`,
+});
+
+test("a later commit answers a line that promised a note by naming the note the range adds", () => {
+  const repo = repoWithSteps([PROMISED, naming(0)]);
+  try {
+    const r = run(repo);
+    assert.equal(r.code, 0, `a promised note, added and named by a later commit, was not taken:\n${r.said}`);
+    assert.match(r.said, new RegExp(`${repo.shas[0].slice(0, 7)} said "to follow", which ${repo.shas[1].slice(0, 7)} answers with drop\\.md`),
+      `the pass is silent about which commit answered, and with what:\n${r.said}`);
+  } finally { repo.clean(); }
+  // …and a bare `none` may be answered the same way.
+  const bare = repoWithSteps([BARE, naming(0)]);
+  try { assert.equal(run(bare).code, 0, "a note named by a later commit did not answer a bare `none`"); } finally { bare.clean(); }
+});
+
+test("a named note the range does not add answers nothing, and says which commit named it", () => {
+  const repo = repoWithSteps([PROMISED, naming(0, "never-added.md", false)]);
+  try {
+    const r = run(repo);
+    assert.equal(r.code, 1, `a note that is not in the range answered for a commit:\n${r.said}`);
+    assert.match(r.said, new RegExp(`is answered by ${repo.shas[1].slice(0, 7)} with never-added\\.md, and this range adds no note by that name`));
+  } finally { repo.clean(); }
+});
+
+test("a note named for a commit that says nothing is refused as stale: any note in the range already answers it", () => {
+  const silent = { changes: { "bin/thing.mjs": "export const a = 7;\n" }, message: "A change" };
+  const repo = repoWithSteps([silent, naming(0)]);
+  try {
+    const r = run(repo);
+    assert.equal(r.code, 1, `a note answer to a silent commit passed in silence:\n${r.said}`);
+    assert.match(r.said, /which owes no answer/);
+  } finally { repo.clean(); }
+});
+
 test("an ambiguous prefix is refused against the range's own commits only", async () => {
   const { readAnswers } = await import("../../scripts/release-note-required.mjs");
   const commits = [

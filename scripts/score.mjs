@@ -133,6 +133,9 @@ function findingsOf(runDir) {
         // layer is load-bearing alone.
         ordinal: Number.isInteger(f.ordinal) ? f.ordinal : null,
         mark: f.mark ?? "", owner: ownerName(f.owner), band: f.band?.label ?? null,
+        // The offices the finding's records are filed in, for the owner-or-country join: the office
+        // segment of each registration's `/mark/<office>/…` uri, else the owner's country.
+        territories: officesOf(f.owner),
         disposition: f.disposition ?? null, ruled_out: f.ruled_out === true,
         ruled_out_reason: f.ruled_out_reason ?? null,
         // — the EVIDENCE CLASS, derived at the artifact boundary so the scorer stays pure and
@@ -204,6 +207,18 @@ function findingsOf(runDir) {
   return { lane: null, rows: [], subjects: null };
 }
 
+/** The office a record id names: `/mark/<office>/…` → `<office>`, else null. */
+function officeOfRecord(recordId) {
+  const m = /^\/mark\/([a-z]{2,3})\//i.exec(String(recordId ?? ""));
+  return m ? m[1] : null;
+}
+
+/** The offices a finding's owner is filed in, from its registration uris; else the owner's country. */
+function officesOf(owner) {
+  const offices = [...new Set((owner?.registrations ?? []).map((r) => officeOfRecord(r?.uri)).filter(Boolean))];
+  return offices.length ? offices : (owner?.country ? [owner.country] : []);
+}
+
 /**
  * Every label the run RETRIEVED — the corpus `withheld` is measured against.
  *
@@ -227,7 +242,7 @@ function retrievedOf(runDir) {
     const k = `${mark} ${record_id ?? ""}`;
     if (!mark) return;
     const prior = out.get(k);
-    if (!prior) { out.set(k, { mark, record_id: record_id ?? null, owner: owner ?? null, qids: [...new Set(qids ?? [])] }); return; }
+    if (!prior) { out.set(k, { mark, record_id: record_id ?? null, owner: owner ?? null, territory: officeOfRecord(record_id), qids: [...new Set(qids ?? [])] }); return; }
     for (const q of qids ?? []) if (!prior.qids.includes(q)) prior.qids.push(q);   // union across both sources
   };
 
@@ -271,6 +286,17 @@ function searchedTextOf(runDir) {
     const d = driverDir(runDir);
     for (const f of readdirSync(d)) if (/^grid-spec.*\.json$/.test(f)) parts.push(readText(join(d, f)));
   } catch { /* no _driver — reported by the caller */ }
+  // THE KNOCKOUT LANE WRITES NONE OF THE ABOVE. It keeps no plan-execution record and no grid ledger:
+  // where it looked is recorded in what it cites, the evidence addresses on each finding in
+  // knockout-findings.json and the pages its research notes name, one file per mark under research/.
+  // Read only the files above, a knockout printed every channel ABSENT while its findings cited the
+  // very store the reference names. Neither file exists on the clearance lane, so its reading is
+  // unchanged.
+  parts.push(readText(join(runDir, "knockout-findings.json")));
+  try {
+    const r = join(runDir, "research");
+    for (const f of readdirSync(r)) if (/\.md$/.test(f)) parts.push(readText(join(r, f)));
+  } catch { /* no research/ — a clearance run, or a knockout that wrote no notes */ }
   return parts.join("\n");
 }
 
@@ -446,7 +472,7 @@ function scoreOne(run, ref) {
   const buckets = scoreRecall({
     reference: countShaped ? [] : ref.register, findings: run.findings, retrieved: run.retrieved,
     scopeClasses: run.scopeClasses, scopeTerritories: run.scopeTerritories, registerOnly, collapseReason, preAccepted: ref.pre_accepted ?? [],
-    coverage,
+    coverage, searchedMarks: [...(ref.covers_marks ?? []), ref.mark].filter(Boolean),
   });
   return {
     registerOnly, collapseReason, coverage, buckets, countShaped,

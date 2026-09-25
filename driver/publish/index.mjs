@@ -12,12 +12,12 @@ import { join, dirname } from 'node:path';
 import { driverDir, RUN_DIR_MODE } from '../../shared/driver-dir.mjs';   //
 import { parseReport, parseAudit, parseSections, parseBlocks, stripInternal, parseCaseLawProfiles, parseCaseLawPreamble, joinCaseLawProfiles } from './parse.mjs';
 import { renderHtml, parseActionBuckets, actYouConditions } from './render.mjs';
-import { buildAudit } from './xlsx.mjs';
+import { buildAudit } from './xlsx.mjs'; import { readDeclinations } from '../declination-tool.mjs'; import { frameSetAsideRows } from '../web-grid.mjs';   // — what synthesis set aside, with its grounds; and the stores the matter frame set aside, with its reason
 import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, joinFindingToBlock, CLIENT_TIER_BY_COMPOSITE, projectCoverageJudgment } from '../findings-model.mjs';
-import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.mjs'; import { coverageFormStamp, readCoverageForm } from '../coverage-form-io.mjs'; import { coverageUnitLabel } from '../coverage-ledger.mjs'; import { recallReceiptForOwnCompany } from '../known-conflicts.mjs';   // — and why an absence did not close; whose recall checks an audit lists
+import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.mjs'; import { coverageFormStamp, readCoverageForm } from '../coverage-form-io.mjs'; import { readReleasedFamilies } from '../withheld-families.mjs'; import { unitLabel } from '../coverage-form.mjs'; import { coverageUnitLabel } from '../coverage-ledger.mjs'; import { recallReceiptForOwnCompany } from '../recall-receipt.mjs';   // — and why an absence did not close; whose recall checks an audit lists
 import { clearanceReportData } from './report-data.mjs';
 import { searchDepthRecord, planTerritoriesOf } from './search-depth.mjs'; import { bandRecords } from '../named-band.mjs';   // how much was read to reach the answer, as counts and tokens
-import { parseFrameworkManifest } from '../framework.mjs';
+import { parseFrameworkManifest } from '../framework.mjs'; import { readFrozenMethod, FROZEN_METHOD_FILE } from '../framework-method.mjs';
 import { rollupTokens, servedModels } from '../tokens.mjs';
 import { reportIdentityFor, productCoverageNote, isRegisterOnly } from '../search-policy.mjs';
 import { readRecordArtifacts, bindFindingsToRecords, joinEvidenceStatus } from '../registry-fidelity.mjs';
@@ -29,7 +29,7 @@ import { declaredRecordOrigins } from '../record-origins.mjs';
 import { NEUTRAL_DELIVERY, loadProfiles } from '../profiles.mjs';
 import { resolveDemoData, demoBannerMd } from './demo-marking.mjs';   // — one demo question, every product; 2134 — every SURFACE
 import { engineCommit } from '../engine-build.mjs';
-import { WARM_ROOT, WARM_ROOT_DARK, WARM_ROOT_DARK_EXPLICIT, THEME_INIT, THEME_INIT_EXPLICIT, FONT_LINK, FAVICON_LINK, BRAND } from '../../shared/brand.mjs';
+import { WARM_ROOT, WARM_ROOT_DARK, WARM_ROOT_DARK_EXPLICIT, THEME_INIT, THEME_INIT_EXPLICIT, FAVICON_LINK, BRAND } from '../../shared/brand.mjs'; import { TEXT_FONT_STYLE } from '../../shared/brand-fonts.mjs';   // the text face, carried in the page rather than fetched
 import { NAV_CSS, siteNav, siteFab } from '../../shared/site-nav.mjs';
 import { anonAssets, anonClient, anonMark } from '../../shared/anon-overlay.mjs';
 
@@ -183,13 +183,13 @@ export function assembleReleaseInputs(reportMdPath, findingsJsonPath) {
   };
 }
 
-// Cordillera brand pack (locked): limestone-cream + crimson, Satoshi. Crimson is the only strong accent;
+// Cordillera brand pack (locked): limestone-cream + crimson, Plus Jakarta Sans. Crimson is the only strong accent;
 // health states use warm-palette tones. Brand tokens come from the shared brand.mjs module.
 const INDEX_CSS = `
  ${WARM_ROOT}
  ${NAV_CSS}
  *{box-sizing:border-box}
- body{margin:0;font:15px/1.6 'Satoshi','Helvetica Neue',Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+ body{margin:0;font:15px/1.6 'Plus Jakarta Sans','Helvetica Neue',Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg)}
  .wrap{max-width:1000px;margin:0 auto;padding:24px 22px 60px}
  header.rep{background:transparent;color:var(--ink);border-bottom:1px solid var(--line);border-radius:0;padding:6px 0 20px;margin-bottom:22px}
  header.rep .tag{display:inline-flex;align-items:center;gap:10px;font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--crimson-mid)}
@@ -354,7 +354,7 @@ function indexPage({ heading, sub, rows, auditCol, filter = '', archive = '', na
   return `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex, nofollow"><title>${esc(heading)}</title>
-${FONT_LINK}${FAVICON_LINK}${client ? THEME_INIT_EXPLICIT : THEME_INIT}
+${TEXT_FONT_STYLE}${FAVICON_LINK}${client ? THEME_INIT_EXPLICIT : THEME_INIT}
 <style>${INDEX_CSS}${client ? WARM_ROOT_DARK_EXPLICIT : WARM_ROOT_DARK}</style>${anon.head}</head><body class="has-glow">${nav}<div class="wrap">
   <header class="rep"><div class="tag">${esc(BRAND.name)} · ${esc(BRAND.product)}</div><h1>${esc(heading)}</h1><div class="meta">${sub}</div></header>${client ? siteFab({ anon: false }) : ''}
   ${SEARCH_BAR}
@@ -819,8 +819,10 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   }
   // ── THE CHECKS THE RUN DECIDED ON AND DID NOT MAKE ─────────────────────────────────────────────
   //
-  // The recall net mints a probe per remembered conflict and a probe per owner behind one, then
-  // dispatches at most five owner probes. The excess is recorded in the run's own receipt and nothing
+  // A run from before the recall store's removal (2026-09-24) carries its recall receipt; a newer run
+  // writes none, so on it this reads nothing. The recall net minted a probe per remembered conflict and
+  // a probe per owner behind one, then dispatched at most five owner probes. The excess was recorded in
+  // the run's own receipt and nothing
   // downstream carried it to a reader, so a search that decided on nineteen ownership checks, made five
   // and said nothing about the other fourteen read as a search that made the checks it wanted.
   //
@@ -835,7 +837,8 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // Nothing here composes a sentence, and the note carries no seam, so the gaps sheet's own splitter
   // leaves "What was done" empty — which is the fact: nothing was done.
   // READ THROUGH THE DECLARED HELPER, three states and not two. An absent receipt is a run whose recall
-  // net minted nothing — env-gated off, or a matter with no remembered conflict — and there is nothing
+  // net minted nothing — env-gated off, a matter with no remembered conflict, or any run after the
+  // removal — and there is nothing
   // to disclose. A DAMAGED one is a different fact: the probes may have overflowed and this publish
   // cannot tell, so it says so in the run record instead of shipping the same empty sheet an
   // everything-dispatched run ships. Collapsing those two is the defect publish-inputs.mjs exists for.
@@ -878,13 +881,13 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // record and in the audit workbook, and NOT in the report. The coverage form keeps these rows out of
   // the ledger the report is built from, so this sheet is their one reader-facing place. Same builder,
   // same four columns and the same state as the probes above; the area is the driver's own label and the
-  // words are the reading turn's reason.
-  const withheldFamilies = withheldFamilyRows(runDir ?? dirname(reportMd));
+  // words are the reading turn's reason. The stores the matter frame set aside join them the same way (web-grid.mjs).
+  const withheldFamilies = [...withheldFamilyRows(runDir ?? dirname(reportMd)), ...frameSetAsideRows(runDir ?? dirname(reportMd))]; const setAside = setAsideRows(runDir ?? dirname(reportMd));
 
   // doc 50 — the run's FROZEN framework manifest (band vocabulary). Present on band-doctrine runs;
   // absent on every archived run (they render byte-identically on the legacy paths).
-  let framework = null;
-  try { framework = parseFrameworkManifest(readFileSync(driverDir(runDir, 'framework.json'), 'utf8')); } catch { /* legacy run */ }
+  let framework = null, frameworkMethod = null;   // + the frozen method, where the framework states one (framework-method.mjs): the card and workbook show its inputs
+  try { framework = parseFrameworkManifest(readFileSync(driverDir(runDir, 'framework.json'), 'utf8')); frameworkMethod = readFrozenMethod(driverDir(runDir, FROZEN_METHOD_FILE), framework).method ?? null; } catch { /* legacy run */ }
   // T2 (H5): a pre-49 sidecar ({verdict,reasons,kinds} — copper-spire's shape) gains the derived
   // display fields HERE, so a re-published archived run joins the same single authority as a fresh one.
   // No sidecar at all (pre-A2 runs) ⇒ legacy fm rendering, byte-stable.
@@ -1154,7 +1157,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
       // the same rule (the workbook's own BANNED gate had already started firing on the raw detail —
       // advisory, so CI stayed green). reviewReceipts.lint keeps its raw detail for the internal
       // readers above (fetchState reads registry-record-coverage's URIs out of it).
-      counts = await buildAudit({ droppedConditions, undispatchedProbes, withheldFamilies, findings, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null }, auditParsed, join(poolRunDir, auditFile), fm.title, fm);
+      counts = await buildAudit({ droppedConditions, undispatchedProbes, withheldFamilies, releasedFamilies: releasedFamilyRows(runDir ?? dirname(reportMd)), setAside, findings, frameworkMethod, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null }, auditParsed, join(poolRunDir, auditFile), fm.title, fm);
       grpRead(join(poolRunDir, auditFile), 0o640);
       if (counts?.gateViolations?.length) console.warn(`[audit-workbook] advisory: ${counts.gateViolations.join(' | ')}`);
     } catch (e) {
@@ -1240,7 +1243,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     writeRO('search-depth.json', JSON.stringify(searchDepth, null, 2));
   } catch { /* the depth record is additive — a publish never fails for want of it */ }
 
-  writeRO('report.html', renderHtml(parsed, findings, coverage, { demoData, servedModels: served, productName, depthNote, scopeBasis, auditFile: auditFile || undefined, runId, delivery: deliv, recordsByUri, contextNotes, coverageJudgment: coverageJudgmentDisplay, markAssessment, fourAnswers, homeHref: '../index.html', nav: reportNav, chromeHref: '../assets/chrome.css', issued, asOf, verdictInfo, framework, searchedJurisdictions, planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals, recordOrigin, recordOrigins: runOrigins, recordCitation: runProviderConf?.recordCitation ?? null, recordLinks: officeLinks?.byUri ?? null, providerLabel, seniorRights, findingsSchemaVersion, searchDepth }));
+  writeRO('report.html', renderHtml(parsed, findings, coverage, { demoData, frameworkMethod, servedModels: served, productName, depthNote, scopeBasis, auditFile: auditFile || undefined, runId, delivery: deliv, recordsByUri, contextNotes, coverageJudgment: coverageJudgmentDisplay, markAssessment, fourAnswers, homeHref: '../index.html', nav: reportNav, chromeHref: '../assets/chrome.css', issued, asOf, verdictInfo, framework, searchedJurisdictions, planTerritories, caseLawByOrdinal, caseLawNotice, enforcerSignals, recordOrigin, recordOrigins: runOrigins, recordCitation: runProviderConf?.recordCitation ?? null, recordLinks: officeLinks?.byUri ?? null, providerLabel, seniorRights, findingsSchemaVersion, searchDepth }));
   // ONE report (spec 2026-07-30 §5): report.client.html is no longer written. The knockout lane's own
   // collapse note is the precedent: "two renderings of one run is how the wrong link gets sent". The
   // client host serves the same report.html through the portal's readReport() (cleaning built in) — its
@@ -1798,7 +1801,8 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
     // second rung on any shipped build. Nothing renders a failover note into a report.
     // B5b checkpoint 4 — a customer named after the analysis was written ships as a delivery note, never silently.
     + (fm.late_bind_note ? `<p style="margin:0 0 8px;color:#7a2b12"><b>Applicant named mid-run:</b> ${cell(fm.late_bind_note)}</p>` : '')
-    + (oq ? `<div style="margin:0 0 8px">${mdBlock(oq[0])}</div>` : '')
+    + (oq ? `<div style="margin:0 0 8px">${mdBlock(oq[0])}</div>` : '')   // …and the reviewer's open points from the run record (opts.reviewerOpenPointsMd), never from the report
+    + (opts.reviewerOpenPointsMd ? `<div style="margin:0 0 8px">${mdBlock(String(opts.reviewerOpenPointsMd).replace(/^#+\s*(.+)$/m, '**$1**'))}</div>` : '')
     // wp50: the two-bucket # Actions list no longer rides the email — it renders on the report itself
     // (the single master document); the cover keeps only the headline, link, and surviving flags.
     + `</div>`;
@@ -1835,6 +1839,40 @@ export function withheldFamilyRows(runDir) {
   try {
     const { rows } = readCoverageForm(runDir, coverageFormStamp(runDir).formName);
     return (rows ?? []).filter((r) => r?.kind === 'family' && r.status === 'withheld-by-judgment' && r.reason)
-      .map((r) => ({ area: coverageUnitLabel(r.unit), state: 'not-searched', note: String(r.reason) }));
+      .map((r) => ({ area: coverageUnitLabel(r.unit), state: 'not-searched', note: String(r.reason), done: '', left: String(r.reason) }));
+  } catch { return []; }
+}
+
+/**
+ * The waiting families the reading turn RELEASED, as Coverage & gaps rows beside the withheld ones: the
+ * driver's label for the family, the shipped `Note` state, and the turn's reason, why looking wider would
+ * change what the client is told. They ran, so their records are in the findings and the search log; this
+ * row is where the reason is read. The label is the one a withheld family's row
+ * carries, composed from the frozen plan's entry; with no plan it falls back to the axis.
+ */
+export function releasedFamilyRows(runDir) {
+  try {
+    const released = readReleasedFamilies(runDir);
+    let entries = [];
+    try { entries = JSON.parse(readFileSync(driverDir(runDir, 'register-plan.json'), 'utf8'))?.entries ?? []; } catch { /* no frozen plan */ }
+    const byQid = new Map((Array.isArray(entries) ? entries : []).map((e) => [e?.qid, e]));
+    return Object.entries(released).map(([qid, r]) => ({ area: coverageUnitLabel(unitLabel(r.axis, byQid.get(qid))), state: 'note', note: String(r.reason), done: String(r.reason), left: '' }));
+  } catch { return []; }
+}
+
+/**
+ * What synthesis set aside, record or page, each with the ground it wrote — as audit-workbook coverage
+ * rows. Set-aside reasons live in the audit workbook and never in the report, so this sheet is their one
+ * reader-facing place. The label is the driver's; the ground is the AI's own words. Never throws.
+ */
+export function setAsideRows(runDir) {
+  try {
+    const d = readDeclinations(runDir);
+    if (!d.present) return [];
+    const label = (x) => [x.mark, x.owner].filter((v) => typeof v === 'string' && v.trim()).join(' — ') || x.uri;
+    return [
+      ...[...d.byUri.values()].map((x) => ({ area: `Set aside: ${label(x)}`, note: String(x.grounds ?? '') })),
+      ...[...d.byPage.values()].map((x) => ({ area: `Set aside: ${x.url ?? x.page}`, note: String(x.grounds ?? '') })),
+    ];
   } catch { return []; }
 }

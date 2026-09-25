@@ -375,7 +375,8 @@ test("loadRecipes: missing dir ⇒ empty map; valid store loads customer-keyed; 
 // A process running as root reads through any mode, so there the planted refusal never happens.
 const READS_THROUGH_MODES = process.getuid?.() === 0 && "root reads through any file mode";
 
-test("loadRecipes: a store that is there and cannot be read throws, at either level; only an absent one is empty", { skip: READS_THROUGH_MODES }, () => {
+test("loadRecipes: a store that is there and cannot be read throws, at either level; only an absent one is empty",
+  { skip: READS_THROUGH_MODES || (process.platform === "win32" && "mode bits: chmod cannot make a folder unreadable on Windows, so the planted refusal never happens") }, () => {
   const dir = mkdtempSync(join(tmpdir(), "recipes-shut-"));
   mkdirSync(join(dir, "acme"));
   writeFileSync(join(dir, "acme", "quick.json"), JSON.stringify({ label: "Quick", base: "knockout-search" }));

@@ -33,9 +33,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, readFileSync, rmSync, symlinkSync, writeFileSync, utimesSync } from "node:fs";
+import { existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync, symlinkSync, writeFileSync, utimesSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, delimiter } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { bundleFreshness } from "../../shared/bundle-freshness.mjs";   // moved there when /portal/health became its second reader
@@ -142,13 +142,20 @@ test("a timestamp that could not be read is REPORTED, not ticked and not called 
 
 const NODE_BIN = mkdtempSync(join(tmpdir(), "bundle-node-"));
 symlinkSync(process.execPath, join(NODE_BIN, "node"));
+// Where doctor finds `git`, which is how it tells a checkout from an extracted tree. On Linux that is the
+// system's own two directories and nothing else. Windows has no /usr/bin: its git lives wherever the
+// machine's Path says, so there it is the Path's directories that hold git.exe, and nothing else.
+const SYSTEM_PATH = process.platform === "win32"
+  ? String(process.env[Object.keys(process.env).find((k) => k.toUpperCase() === "PATH")] ?? "")
+    .split(delimiter).filter((d) => d && existsSync(join(d, "git.exe"))).join(delimiter)
+  : ["/usr/bin", "/bin"].join(delimiter);
 
 function doctor(root) {
   const home = mkdtempSync(join(tmpdir(), "bundle-home-"));
   try {
     const out = execFileSync(process.execPath, [join(root, "bin", "onboard.mjs"), "--check"], {
       encoding: "utf8", stdio: ["ignore", "pipe", "pipe"],
-      env: { HOME: home, PATH: [NODE_BIN, "/usr/bin", "/bin"].join(":"), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", ...NO_INSTALLED_ENGINES },
+      env: { HOME: home, USERPROFILE: home, PATH: [NODE_BIN, SYSTEM_PATH].join(delimiter), CLEAROTRON_DOCTOR_ASSUME_PINNED: "1", ...NO_INSTALLED_ENGINES },
     });
     return { code: 0, out };
   } catch (e) { return { code: e.status ?? -1, out: `${e.stdout ?? ""}${e.stderr ?? ""}` }; }

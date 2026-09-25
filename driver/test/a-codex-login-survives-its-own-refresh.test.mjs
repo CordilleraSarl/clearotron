@@ -52,7 +52,9 @@ function masterIn(dir) {
 }
 
 for (const write of ["inplace", "rename"]) {
-  test(`a login codex rotates inside a stage reaches the master, and the next stage signs in (${write})`, async () => {
+  test(`a login codex rotates inside a stage reaches the master, and the next stage signs in (${write})`, {
+    skip: process.platform === "win32" && "mode bits: the arm reads the master login's 0o600 permission, and Windows keeps no owner-only mode on a file",
+  }, async () => {
     const dir = mkdtempSync(join(tmpdir(), "codex-login-"));
     try {
       const master = masterIn(dir);

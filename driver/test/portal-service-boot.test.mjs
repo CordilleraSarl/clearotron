@@ -274,7 +274,9 @@ test("LOCAL MODE BOOTS, and says which door it opened", async () => {
   assert.ok(!/AUTH OFF/.test(r.stderr), "there is no third state where nothing is proven");
 });
 
-test("/ 1960 FIRST RUN mints a credential; off a terminal the passphrase is not printed at all", async () => {
+test("/ 1960 FIRST RUN mints a credential; off a terminal the passphrase is not printed at all", {
+  skip: process.platform === "win32" && "mode bits: the arm reads the credential file's 0o600 permission, and Windows keeps no owner-only mode on a file",
+}, async () => {
   // ✕ THIS ARM ASSERTED THE OPPOSITE until, and was right to: printing once WAS the
   // handoff. What changed is who is reading. `boot()` spawns with a pipe, so this is the non-terminal
   // shape — the same one a systemd unit, a CI job and this harness all have, and the one where a

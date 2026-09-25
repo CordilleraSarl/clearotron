@@ -20,7 +20,7 @@ import assert from "node:assert/strict";
 import { MODELS } from "../driver.config.mjs";   // — a tier is recorded as what the catalog says, not a second copy
 import { mkdtempSync, chmodSync, readFileSync, writeFileSync, mkdirSync, rmSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, dirname, basename } from "node:path";
+import { join, dirname, basename, sep } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { fileURLToPath } from "node:url";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
@@ -40,7 +40,6 @@ process.env.CLEAROTRON_MAX_RETRIES = "0";
 process.env.CLEAROTRON_RECOVERY_MAX = "0";
 process.env.CLEAROTRON_AGENT = "clawdi";
 process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
-process.env.CLEAROTRON_RECALL_PROBES ||= "0";
 
 const PL = await import("../pipeline.mjs");
 const ST = await import("../stages.mjs");
@@ -102,7 +101,12 @@ test("corruption 1 (closed by #236): every run-dir path the SHADOW PROMPT names 
     // Every absolute path under the SANDBOX that the prompt names, de-duplicated. Output paths are
     // excluded — a stage is told where to WRITE, and that file does not exist before it runs.
     const outs = new Set(ST.stageOutputs(stage, shadowCtx.paths, { axes: ctx.axes, axis: opts.axis ?? null }).filter(Boolean));
-    const named = [...new Set((message.match(new RegExp(`${ex.shadowDir}/[A-Za-z0-9._/:-]+`, "g")) ?? [])
+    // The sandbox path is escaped, because a Windows one is full of backslashes that a pattern would read
+    // as escapes, and on Windows the separator after it may be either spelling.
+    const SEP = process.platform === "win32" ? "[\\\\/]" : "/";
+    const REST = process.platform === "win32" ? "[A-Za-z0-9._/\\\\:-]+" : "[A-Za-z0-9._/:-]+";
+    const shadowRe = new RegExp(`${ex.shadowDir.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}${SEP}${REST}`, "g");
+    const named = [...new Set((message.match(shadowRe) ?? [])
       .map((p) => p.replace(/[.,;:)]+$/, "")))].filter((p) => !outs.has(p));
     assert.ok(named.length > 0, `${stage}: the prompt names no run-dir path at all — the extraction is not testing anything`);
     const missing = named.filter((p) => !existsSync(p));
@@ -142,7 +146,7 @@ test("corruption 2: narrative-refutation's driver-computed blocks are REGISTERED
   assert.ok(declaredPaths.has(P.planExecution), "the plan-execution receipt the audit block is derived FROM");
   assert.ok(declaredPaths.has(P.registerPlan), "…the frozen plan, without which planAuditExtra returns an empty string and the block silently vanishes");
   assert.ok(declaredPaths.has(P.narrative), "…the narrative the registry check runs OVER");
-  assert.ok([...declaredPaths].some((p) => p.endsWith("/_records")), "…and the fetched records each claimed field is checked against");
+  assert.ok([...declaredPaths].some((p) => p.endsWith(`${sep}_records`)), "…and the fetched records each claimed field is checked against");
 
   // The behaviour, not the table: ONE composer builds the production prompt and the arm's, so a block
   // cannot exist on one path and not the other.

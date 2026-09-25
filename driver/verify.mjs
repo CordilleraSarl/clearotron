@@ -10,7 +10,7 @@
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { dirname, join, basename } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
-import { findReceiptViolations, findGridLedgerViolations, findPlatformIdentityViolations, parsePrRiskQueries, MEANING_SEAT, erroredConnotationQueriesAmong } from "./common-law-receipts.mjs";
+import { findReceiptViolations, findGridLedgerViolations, findUnranDictatedCells, findPlatformIdentityViolations, parsePrRiskQueries, MEANING_SEAT, erroredConnotationQueriesAmong } from "./common-law-receipts.mjs";
 // Conversion 2 — the discriminator the two rulings above key on. PURE-ish: one existsSync-shaped read.
 import { matterFrameWasRecorded, frameRatifiedForms } from "./matter-frame-record.mjs";
 import { findConnotationViolations, parsePrRiskResults, prRiskPopulation,
@@ -37,7 +37,7 @@ import { registerPlanCallKilled } from "./tool-calls.mjs";   // — did the dict
 import { parseFindingsJson, parseFindingsJsonLenient, CLIENT_TIER_BY_COMPOSITE, isUnconditionalProceed, joinFindingToBlock, parseBlockOrd } from "./findings-model.mjs";
 import { parsePlacementsJson } from "./placement-model.mjs"; import { placementFormSidecarName, parsePlacementForm, placementRenderAccount } from "./placement-form.mjs";
 import { parseCaseLawLedger, findCaseLawLedgerViolations, caseLawLedgerFail } from "./case-law-ledger.mjs";
-import { parseFrameworkManifest, aboveLowestBand, normalizeBand } from "./framework.mjs";
+import { parseFrameworkManifest, aboveLowestBand, normalizeBand } from "./framework.mjs"; import { readFrozenMethod, FROZEN_METHOD_FILE } from "./framework-method.mjs";
 import { parseNamedBand, findCollapsedBands } from "./named-band.mjs";
 import { parseBlindFrameModel } from "./blind-frame-model.mjs";
 import { parseFrameDiff } from "./frame-diff-model.mjs";
@@ -70,9 +70,9 @@ function readRunProfile(p) {
 function readRunFramework(p) {
   for (const dir of [dirname(p), dirname(dirname(p))]) {
     const f = driverDir(dir, "framework.json");
-    if (!existsSync(f)) continue;
-    try { return { manifest: parseFrameworkManifest(readFileSync(f, "utf8")), invalid: false }; }
-    catch { return { manifest: null, invalid: true }; }
+    if (!existsSync(f)) continue; let manifest;
+    try { manifest = parseFrameworkManifest(readFileSync(f, "utf8")); } catch { return { manifest: null, invalid: true }; }
+    const m = readFrozenMethod(driverDir(dir, FROZEN_METHOD_FILE), manifest); return { manifest, method: m.method, methodInvalid: m.invalid ?? null, invalid: false };   // + the frozen method beside it (framework-method.mjs): null when none, `methodInvalid` when it does not read back
   }
   return { manifest: null, invalid: false };
 }
@@ -513,11 +513,11 @@ function commonLawEvidence(p, c) {
     try { ledgerRaw = readFileSync(join(dirname(p), "common-law-grid.json"), "utf8"); } catch { /* legacy run */ }
     if (ledgerRaw != null) {
       let short;
-      try { short = findGridLedgerViolations(joinKeys, ledgerRaw, { minCellsPerVariant }); }
+      try { short = Array.isArray(spec?.grids) ? findUnranDictatedCells(spec, ledgerRaw) : findGridLedgerViolations(joinKeys, ledgerRaw, { minCellsPerVariant }); }
       catch (e) { return fail(`grid_ledger_unparseable:${String(e.message).slice(0, 80)}`); }
       if (short.length) return fail(`grid_join_missing:${short.map((v) => `${v.variant}:${v.cells}/${v.expected}`).join(",")}`);
       // platform-identity join: the count above proves how MANY platforms — this proves WHICH.
-      if (dictatedPlatforms.length) {
+      if (dictatedPlatforms.length && !Array.isArray(spec?.grids)) {   // blocks: every cell is joined above
         let wrong;
         try { wrong = findPlatformIdentityViolations(joinKeys, ledgerRaw, dictatedPlatforms); }
         catch (e) { return fail(`platform_identity_error:${String(e.message).slice(0, 80)}`); }   // never silently disable the join
@@ -606,10 +606,10 @@ function commonLawHalfEvidence(p, c) {
     try { ledgerRaw = readFileSync(join(dirname(p), `common-law-grid.half-${half}.json`), "utf8"); } catch { /* missing → fail-closed below */ }
     if (ledgerRaw == null) return fail(`grid_ledger_missing:common-law-grid.half-${half}.json absent while _driver/grid-spec.half-${half}.json dictates the grid`);
     let short;
-    try { short = findGridLedgerViolations(spec.terms, ledgerRaw, { minCellsPerVariant: spec.platforms?.length || undefined }); }
+    try { short = Array.isArray(spec.grids) ? findUnranDictatedCells(spec, ledgerRaw) : findGridLedgerViolations(spec.terms, ledgerRaw, { minCellsPerVariant: spec.platforms?.length || undefined }); }
     catch (e) { return fail(`grid_ledger_unparseable:${String(e.message).slice(0, 80)}`); }
     if (short.length) return fail(`grid_join_missing:${short.map((v) => `${v.variant}:${v.cells}/${v.expected}`).join(",")}`);
-    if (spec.platforms?.length) {
+    if (spec.platforms?.length && !Array.isArray(spec.grids)) {   // blocks: every cell is joined above
       let wrong;
       try { wrong = findPlatformIdentityViolations(spec.terms, ledgerRaw, spec.platforms); }
       catch (e) { return fail(`platform_identity_error:${String(e.message).slice(0, 80)}`); }
@@ -1177,7 +1177,7 @@ function checkFindingsSibling(p, c) {
   // material-band line). A v4 record with no frozen manifest is a driver bug: fail LOUD, never judge a
   // rated matter without its vocabulary. Legacy (v≤3) records never look for one — replay never flips.
   const fw = readRunFramework(p);
-  if (fw.invalid) return fail("framework_manifest_unreadable: _driver/framework.json is corrupt (driver-written — this is a bug, not a model defect)");
+  if (fw.invalid) return fail("framework_manifest_unreadable: _driver/framework.json is corrupt (driver-written — this is a bug, not a model defect)"); if (fw.methodInvalid) return fail(`framework_method_unreadable: _driver/${FROZEN_METHOD_FILE} is corrupt (driver-written — this is a bug, not a model defect)`);
   let parsed;
   // — the gate on the model-written URL column. `recordOriginsFor` resolves a COMPOSITE through
   // its members, so a free-tier run allows both EUIPO and USPTO hosts rather than neither. With no
@@ -1186,7 +1186,7 @@ function checkFindingsSibling(p, c) {
   const recordOrigins = activeRecordOrigins();
   try {
     parsed = parseFindingsJson(raw, {
-      ...(fw.manifest ? { manifest: fw.manifest } : {}),
+      ...(fw.manifest ? { manifest: fw.manifest, method: fw.method } : {}),
       ...(recordOrigins ? { recordOrigins } : {}),
     });
   }
@@ -2678,4 +2678,21 @@ function placementAccountVerdict(dir) {
 // key wins where both exist, because the stage writes it on every fresh dispatch. PURE.
 export function variantsStageContract(marker) {
   return marker?.["clearance-variants"] ?? marker?.["prelim-variants"] ?? null;
+}
+
+/**
+ * A late review read against the carried verdict (beside `verdictHardenedTo` in meaning; it sits at the
+ * end of the file so no line cited above it moves). `hardened` is `verdictHardenedTo`'s answer, the only
+ * one the caller adopts. `softened` is the review's verdict when it is milder than the one carried: it
+ * is never adopted, and the caller records it, because the review on disk then disagrees with the run's
+ * verdict and a reader needs to be told which one governs. Both null when the review is the same, or
+ * unparseable. PURE.
+ */
+export function lateReviewAgainst(carried, reviewMd) {
+  const hardened = verdictHardenedTo(carried, reviewMd);
+  const now = parseVerdict(reviewMd);
+  const a = VERDICT_RANK[String(carried ?? "").toUpperCase()];
+  const b = VERDICT_RANK[now];
+  const softened = !hardened && Number.isInteger(a) && Number.isInteger(b) && b < a ? now : null;
+  return { hardened, softened };
 }

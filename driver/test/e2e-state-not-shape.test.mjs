@@ -23,8 +23,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync, existsSync, readdirSync } from "node:fs";
-import { join } from "node:path";
+import { basename, join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
+import { claimLockPath } from "../runner.mjs";
 import { tmpdir } from "node:os";
 
 import {
@@ -315,14 +316,20 @@ test("a marker with a suffix the drain does not know is REPORTED, not dropped", 
 // scan that reads the queue by ref — and both were found by walking runner.mjs's filename composition
 // rather than by reasoning about what a queue "should" hold.
 
-test("the #377 claim lock is an in-flight state, not a stranded marker", () => {
+// The fixture is the lock name the runner composes, `<pid>:<starttime>` and all. A Windows file name cannot
+// hold that colon (the write lands in a hidden stream of a file named up to it), and the runner itself
+// cannot create this name there either, which is the runner's to fix. When it changes the name on
+// Windows, this fixture follows it.
+test("the #377 claim lock is an in-flight state, not a stranded marker", {
+}, () => {
   scratch((root) => {
     // `<base>.processing.claimed-<pid>:<starttime>` is the job file renamed for the atomic claim. A live
     // token is a claim in progress; a dead one is restored by sweepAbandonedTakeovers. Reporting it as a
     // suffix nothing drains would put a false INVESTIGATE line on every claim race — this issue's own
     // defect, re-authored by its fix.
     const { q, ob } = deployment(root, {
-      queue: { [`${QUEUE_BASE}.processing.claimed-4172:88431`]: { id: QUEUE_BASE, ref: "E2E-R2-token1" } },
+      // Named as the runner names it, which on Windows writes the token's colon %3A.
+      queue: { [basename(claimLockPath(`${QUEUE_BASE}.processing`, "4172:88431"))]: { id: QUEUE_BASE, ref: "E2E-R2-token1" } },
     });
     withEnv({ CLEAROTRON_OUTBOX_DIR: ob }, () => {
       const [row] = queueOutcomes("E2E-R2", q);

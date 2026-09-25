@@ -22,6 +22,7 @@ import { execFileSync } from "node:child_process";
 import { readFileSync, writeFileSync, readdirSync, existsSync, statSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { isEntrypoint } from "../shared/is-entrypoint.mjs";
 
 const ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
 export const MANIFEST = join(ROOT, "demo", "MANIFEST.json");
@@ -53,7 +54,7 @@ export function mixedPaths(files) {
   return files.filter((f) => !f.startsWith("demo/"));
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (isEntrypoint(import.meta.url)) {
   const apply = process.argv.includes("--apply");
 
   if (apply) {

@@ -148,7 +148,7 @@
      live — a wrapper would leave a stray line on those reports.
      The gutter matches the topbar's, so the first entry lines up under the back button. */
   .strip{display:flex;gap:4px;align-items:center;padding:4px max(26px,calc((100% - 1120px)/2)) 6px;
-    border-top:1px solid var(--line);font:600 12px/1 'Satoshi','Helvetica Neue',Arial,sans-serif;
+    border-top:1px solid var(--line);font:600 12px/1 'Plus Jakarta Sans','Helvetica Neue',Arial,sans-serif;
     letter-spacing:.04em;overflow-x:auto;scrollbar-width:none}
   .strip::-webkit-scrollbar{display:none}
   .strip a{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;color:#6b5d50;text-decoration:none;white-space:nowrap}

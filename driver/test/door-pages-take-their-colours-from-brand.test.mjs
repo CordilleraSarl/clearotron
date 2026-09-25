@@ -29,10 +29,12 @@ const BRAND_COLOURS = new Set(
     .map((v) => v.toLowerCase().replace(/\s+/g, "")),
 );
 
-// Pull every colour out of a stylesheet: hexes and rgb/rgba functions. The `{3,8}` floor is what keeps
-// the HTML entity `&#39;` (an escaped apostrophe, which this page emits) from reading as a colour.
+// Pull every colour out of the page's stylesheets: hexes and rgb/rgba functions. The `{3,8}` floor is what
+// keeps the HTML entity `&#39;` (an escaped apostrophe, which this page emits) from reading as a colour.
+// EVERY <style> block, not the first: the page carries its typeface in a block of its own ahead of the
+// colours, and reading only the first would scan a font and find no colour at all.
 const coloursIn = (html) => {
-  const css = html.match(/<style>([\s\S]*?)<\/style>/)?.[1] ?? "";
+  const css = [...html.matchAll(/<style>([\s\S]*?)<\/style>/g)].map((m) => m[1]).join("\n");
   const hex = [...css.matchAll(/#[0-9a-fA-F]{3,8}\b/g)].map((m) => m[0]);
   const fn = [...css.matchAll(/rgba?\([^)]*\)/g)].map((m) => m[0]);
   return [...hex, ...fn].map((v) => v.toLowerCase().replace(/\s+/g, ""));

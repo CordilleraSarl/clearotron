@@ -91,6 +91,7 @@ export const VOCABULARY = [
   // ── synthesis ──────────────────────────────────────────────────────────────────────────────────────
   { token: "framework_manifest_unreadable", stages: ["synthesis"], site: "driver/verify.mjs:691" },
   { token: "framework_manifest_missing_for_v4", stages: ["synthesis"], site: "driver/verify.mjs:706" },
+  { token: "framework_method_unreadable", stages: ["synthesis"], site: "driver/verify.mjs" },
   { token: "finding_use_check_source_missing", stages: ["synthesis"], site: "driver/verify.mjs" },
   { token: "finding_own_rights_source_missing", stages: ["synthesis"], site: "driver/verify.mjs" },
   { token: "finding_basis_source_missing", stages: ["synthesis"], site: "driver/verify.mjs" },
@@ -288,6 +289,12 @@ export const ARM1_EXEMPTIONS = [
     reason: "The rating framework manifest is driver-loaded config (verify.mjs:691). Unreadable = a config/deploy fault, not a defect in anything synthesis was asked to author.",
   },
   {
+    token: "framework_method_unreadable",
+    stages: ["synthesis"],
+    symbol: { file: "driver/verify.mjs", names: ["checkFindingsSibling"] },
+    reason: "The frozen framework method (framework-method.mjs) is driver-written at attach time, beside the manifest. Unreadable = a driver/deploy fault, the same class as `framework_manifest_unreadable`; nothing synthesis was asked to author can cause or repair it.",
+  },
+  {
     token: "framework_manifest_missing_for_v4",
     stages: ["synthesis"],
     symbol: { file: "driver/verify.mjs", names: ["checkFindingsSibling", "checkClientSummaryJoin"] },
@@ -405,13 +412,13 @@ export const TRIPWIRE_OUT_OF_SCOPE = [
   },
   {
     prefix: "knockout_",
-    site: "driver/findings-model.mjs:1944-2033 (`knockout_finding_*` and `knockout_findings_*`)",
+    site: "driver/findings-model.mjs:2303 validateKnockoutFinding, for `knockout_finding_*` and `knockout_findings_*`",
     reason: "The knockout lane's parser. knockout-frame and knockout-assess live in driver/stages-knockout.mjs, not in STAGES, so they carry no E1 declaration and are outside this partition. RECORDED AS A GAP: #850 audits both stages, and an E1 declaration for the knockout lane is not in this scaffolding.",
   },
   {
     prefix: "framework_",
-    site: "driver/framework.mjs",
-    reason: "parseFrameworkManifest's throws never reach a stage: verify.mjs:64 wraps the call and returns {invalid:true}, and verify.mjs:691 emits its OWN token (framework_manifest_unreadable) instead. The family is unreachable by construction.",
+    site: "driver/framework.mjs, driver/framework-method.mjs",
+    reason: "parseFrameworkManifest's throws never reach a stage: verify.mjs:70 readRunFramework wraps the call and returns {invalid:true}, and verify.mjs:1180 checkFindingsSibling emits its OWN token (framework_manifest_unreadable) instead. The family is unreachable by construction. parseFrameworkMethod's `framework_method_*` throws take the same road: readFrozenMethod wraps the parse and returns {invalid}, and checkFindingsSibling emits its own `framework_method_unreadable`.",
   },
   {
     prefix: "register_plan_",
@@ -544,7 +551,7 @@ export const COVERED_SOURCES = [
   "disposition-call-audit.mjs", "disposition-tool.mjs",
   "repair-contract.mjs", "coverage-ledger.mjs", "register-plan.mjs", "coverage-form.mjs",
   "coverage-form-io.mjs", "register-taint.mjs", "tool-calls.mjs", "findings-model.mjs",
-  "placement-model.mjs", "case-law-ledger.mjs", "framework.mjs", "named-band.mjs",
+  "placement-model.mjs", "case-law-ledger.mjs", "framework.mjs", "framework-method.mjs", "named-band.mjs",
   "blind-frame-model.mjs", "frame-diff-model.mjs", "variant-manifest-model.mjs",
   // Conversion 2 — verify.mjs reaches matterFrameWasRecorded (the recorded-vs-dictated discriminator the
   // two matter-frame guard rulings key on), so the tripwire must read this module's token literals too.

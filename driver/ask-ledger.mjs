@@ -428,6 +428,8 @@ export function deriveAsks({
   }
 
   // 9 ── cross-checks: the common-law→register recovery nets (xcheck + recall) — directives carry
+  // (the recall receipt exists only on runs from before the recall store's removal, 2026-09-24;
+  // on a newer run `recall` is null and this family lists the cross-checks alone)
   // qids (computed executed); over-cap rows are real unanswered questions (OPEN → closure/lawyer).
   for (const [name, doc] of [["xcheck", xcheck], ["recall", recall]]) {
     for (const d of doc?.directives ?? []) {

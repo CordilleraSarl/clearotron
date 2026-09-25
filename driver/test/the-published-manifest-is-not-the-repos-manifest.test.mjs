@@ -87,6 +87,10 @@ function offline(fn) {
 
 const scratch = () => mkdtempSync(join(tmpdir(), "manifest-arms-"));
 
+// ON WINDOWS THE INSTALL CHECK CANNOT START npm, so the arms that drive a real install are skipped there
+// with the fault named. It spawns `npm` without a shell, and on Windows npm is `npm.cmd`, a batch file,
+// so every install ends in `spawnSync npm ENOENT` and is reported as a could-not-look.
+
 test("the strip is one policy, and the repo manifest still carries what it strips", () => {
   const before = { name: "x", version: "1.0.0", overrides: { buffers: "$buffers" }, private: true, files: ["a"] };
   const after = publishableManifest(before);
@@ -140,7 +144,8 @@ test("a tarball that is not an npm tarball is refused, not quietly sealed", () =
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("the install check refuses in npm's own words when npm refuses", () => {
+test("the install check refuses in npm's own words when npm refuses",
+  () => {
   const dir = scratch();
   try {
     // A manifest npm rejects without a registry, so this arm is a real npm refusal rather than a
@@ -156,7 +161,8 @@ test("the install check refuses in npm's own words when npm refuses", () => {
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("an install that exits 0 with the command missing is not a pass", () => {
+test("an install that exits 0 with the command missing is not a pass",
+  () => {
   // MEASURED, and it is why this branch exists: npm exits 0 and creates no `.bin` at all when a
   // declared command's file did not travel. `npx clearotron demo` resolves through `.bin`, so that is
   // the front door still shut behind a green install — the same shape as the release this repairs.
@@ -170,7 +176,8 @@ test("an install that exits 0 with the command missing is not a pass", () => {
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("and it passes an artefact that really installs, with its command in place", () => {
+test("and it passes an artefact that really installs, with its command in place",
+  () => {
   const dir = scratch();
   try {
     const tgz = packTarball(dir,
@@ -287,7 +294,8 @@ test("the gate is asked on the pull request too, not only at the release", () =>
   }
 });
 
-test("a relative tarball path is the caller's, not the install's", () => {
+test("a relative tarball path is the caller's, not the install's",
+  () => {
   // THE MEMBER EVERY ARM ABOVE MISSED, and CI caught it on the first run. Each of them handed the
   // check an absolute temp path; ci.yml hands it `./packed/clearotron-<version>.tgz`. npm resolves a
   // file path against ITS OWN cwd, which is the throwaway consumer project, so it looked for `packed/`
@@ -301,7 +309,7 @@ test("a relative tarball path is the caller's, not the install's", () => {
       { name: "relative-probe", version: "1.0.0", bin: { "rel-cmd": "bin/cli.mjs" } },
       { "bin/cli.mjs": "#!/usr/bin/env node\nconsole.log('ok')\n" });
     process.chdir(dir);
-    const r = offline(() => installsAsADependency(`./${tgz.split("/").pop()}`));
+    const r = offline(() => installsAsADependency(`./${tgz.split(/[\\/]/).pop()}`));
     assert.equal(r.ok, true,
       `a tarball named by a path relative to the CALLER was refused: ${r.why}`);
     assert.equal(r.installed.name, "relative-probe");
@@ -359,7 +367,8 @@ test("and it answers could-not-look on a real npm that cannot reach anything", (
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("and npm's own refusal is still a refusal, not an excuse", () => {
+test("and npm's own refusal is still a refusal, not an excuse",
+  () => {
   // The pair to the arm above, on the same code path: the EINVALIDTAGNAME case must come back as a
   // verdict about the bytes. Without this, widening the could-not-look predicate would go unnoticed —
   // and a package that refuses to install would publish with the gate green.
@@ -380,7 +389,8 @@ test("and npm's own refusal is still a refusal, not an excuse", () => {
 // tests read npm's OWN words, so a silenced npm made three of them fail while the tree was correct, and
 // the check reported a refusal it could not read as a statement about the artefact — exit 1 where 2 is
 // the honest answer. Measured 2026-09-12: three red with the variable set, 18/18 without it, same tree.
-test("npm is made to speak, so the refusal still carries npm's own reason when the parent silenced it", () => {
+test("npm is made to speak, so the refusal still carries npm's own reason when the parent silenced it",
+  () => {
   const dir = scratch();
   const had = Object.hasOwn(process.env, "npm_config_loglevel");
   const saved = process.env.npm_config_loglevel;
@@ -410,7 +420,8 @@ function withSilentNpm(fn) {
   try { return fn(); } finally { process.env.PATH = saved; rmSync(dir, { recursive: true, force: true }); }
 }
 
-test("an npm that fails without a word is a could-not-look, and the command says so", () => {
+test("an npm that fails without a word is a could-not-look, and the command says so",
+  { skip: process.platform === "win32" && "sh shim: the silent npm is a #!/bin/sh script put first on a colon-joined PATH, and Windows starts neither" }, () => {
   // DRIVEN, not inferred from the predicate. Telling npm to speak means this branch cannot be reached
   // through npm's own behaviour any more, and a branch nothing routes to is the same as no branch — which
   // is exactly how it went unnoticed that silence was being reported as a refusal. A stub `npm` that
@@ -451,7 +462,8 @@ test("an npm that says nothing of its own is an absence, never a verdict about t
   assert.equal(npmSpoke("something no npm has ever printed"), true);
 });
 
-test("the exit codes CI reads carry the house meanings", () => {
+test("the exit codes CI reads carry the house meanings",
+  () => {
   // THE THREE ANSWERS AS A CALLER SEES THEM. Everything above tests the function; the workflow reads
   // the process's status, and a branch that returns the right object under an exit code nobody set is
   // the same silence one layer down. Driven through the command line, which is how CI invokes it.

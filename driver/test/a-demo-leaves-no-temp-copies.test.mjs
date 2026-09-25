@@ -37,7 +37,7 @@ test("demo --once publishes every sample and leaves no copy in the temp director
   mkdirSync(tmp);
   try {
     const r = spawnSync(process.execPath, [join(REPO, "bin", "example.mjs"), "--once", "--pool", pool], {
-      encoding: "utf8", env: { PATH: process.env.PATH, HOME: root, TMPDIR: tmp } });
+      encoding: "utf8", env: { PATH: process.env.PATH, HOME: root, USERPROFILE: root, TMPDIR: tmp } });
     assert.equal(r.status, 0, r.stdout + r.stderr);
     assert.ok(readdirSync(pool).some((n) => existsSync(join(pool, n, "report.html"))), "nothing was published, so this proves nothing");
     assert.deepEqual(copiesIn(tmp), [], "demo --once left its copies in the temp directory");

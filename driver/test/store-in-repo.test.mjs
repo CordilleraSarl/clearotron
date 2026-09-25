@@ -27,7 +27,9 @@ import { fileURLToPath } from "node:url";
 import { readFileSync } from "node:fs";
 import { storeInRepo, storeOutsideRepoMessage, makeCommittableAudit, commitWithAuditRow, resolveStoreRepoRoot, within } from "../../shared/store-in-repo.mjs";
 
-const DRIVER = dirname(fileURLToPath(import.meta.url)).replace(/\/test$/, "");
+// The folder above this one, by path rather than by trimming a "/test" suffix, which a Windows path
+// (driver\test) does not end in.
+const DRIVER = dirname(dirname(fileURLToPath(import.meta.url)));
 
 test("a store inside its repo is reachable; a sibling is not", () => {
   assert.equal(storeInRepo("/srv/store/profiles", "/srv/store").ok, true);

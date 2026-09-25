@@ -92,7 +92,8 @@ test("absolutizeSkillRefs routes EACH reference independently through the resolv
 
 test("absolutizeSkillRefs without a resolver keeps the legacy single-dir behaviour exactly", () => {
   const msg = "Read skills/a/SKILL.md.";
-  assert.equal(absolutizeSkillRefs(msg, "/x/y/skills"), "Read /x/y/skills/a/SKILL.md.");
+  // The reference is joined onto the folder, so on Windows it comes back with the platform's separator.
+  assert.equal(absolutizeSkillRefs(msg, "/x/y/skills"), `Read ${join("/x/y/skills", "a", "SKILL.md")}.`);
 });
 
 test("the engine is granted read access to BOTH roots (a prompt may cite files from each)", () => {

@@ -66,7 +66,7 @@ const entryIsNonLatinScript = (e) => {
  * `classes_line`/`coverage_line` are null when there is genuinely nothing to compute — the caller
  * (applyScopeFrontMatter) then leaves the surface untouched rather than stamping an empty claim.
  */
-export function deriveScopeFacts({ instructedScope = null, plan = null, planExecution = null, coverageRows = [] } = {}) {
+export function deriveScopeFacts({ instructedScope = null, plan = null, planExecution = null, coverageRows = [], withheldQids = [] } = {}) {
   const instructedClasses = (Array.isArray(instructedScope?.classes) ? instructedScope.classes : (plan?.nice_classes ?? []))
     .map(clsStr).filter((c) => c);
   const entries = Array.isArray(plan?.entries) ? plan.entries : [];
@@ -75,6 +75,13 @@ export function deriveScopeFacts({ instructedScope = null, plan = null, planExec
   const missingSet = new Set(planExecution?.missing ?? []);
   const skippedSet = new Set((planExecution?.skipped ?? []).map((x) => x.qid));
   const deferredByQid = new Map((planExecution?.deferred ?? []).map((x) => [x.qid, String(x.reason ?? "")]));
+  // A WAITING FAMILY THAT NEVER BECAME A SEARCH OF ITS OWN LEAVES THE COUNT. One the reading turn asked
+  // was answered by the entry that asked it, which is counted where it ran. One the turn withheld, with
+  // its reason on record, was a judgment not to search, and the report's coverage table leaves those out
+  // too. In no bucket, both fell to the fail-closed "missing" below and printed as searches that "did not
+  // complete", which none of them was. A waiting family nobody judged stays there: it is still unread.
+  const askedSet = new Set((planExecution?.asked ?? []).map((x) => x.qid));
+  const withheldSet = new Set(Array.isArray(withheldQids) ? withheldQids : []);
 
   // ledger rows joined per class: structured classes[] wins; a legacy free-text row falls back to the
   // conservative class-token scan over its scope+reason cells. A gap row naming NO class is run-level
@@ -87,9 +94,11 @@ export function deriveScopeFacts({ instructedScope = null, plan = null, planExec
   const per_class = {};
   for (const c of instructedClasses) {
     const a = { entries: 0, dispatched_qids: [], enumerated: 0, incomplete: 0, deferred: [], missing: [], skipped: 0, deferred_script: 0,
-      count_slices: 0, counts_taken: 0, count_deferred: [] };
+      count_slices: 0, counts_taken: 0, count_deferred: [], withheld: 0, asked_elsewhere: 0 };
     for (const e of entries) {
       if (!(e?.nice_classes ?? []).map(clsStr).includes(c)) continue;
+      if (askedSet.has(e.qid)) { a.asked_elsewhere++; continue; }
+      if (withheldSet.has(e.qid)) { a.withheld++; continue; }
       a.entries++;
       // F2 doctrine (post-merge audit 2 (d)): an expected_kind:"count" descriptor is CROWD CONTEXT,
       // not coverage — it enumerates nothing by construction, so its band state is "incomplete" on
@@ -140,6 +149,8 @@ export function deriveScopeFacts({ instructedScope = null, plan = null, planExec
       counts_taken: a.counts_taken,
       state: classState(a),
       open_reasons,
+      ...(a.withheld ? { withheld: a.withheld } : {}),
+      ...(a.asked_elsewhere ? { asked_elsewhere: a.asked_elsewhere } : {}),
     };
   }
 

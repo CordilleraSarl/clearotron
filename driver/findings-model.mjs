@@ -174,6 +174,7 @@ export const CLIENT_TIER_BY_COMPOSITE = { 1: "LOW", 2: "MANAGEABLE", 3: "MEDIUM"
 // joins on the band's TONE (a closed enum in the manifest) so 4-band and 5-band ladders both land on the
 // existing badge/gauge ramps without any per-framework code.
 import { bandIndex, bandTone, worstBand, aboveLowestBand, normalizeBand } from "./framework.mjs";
+import { checkRatingInputs } from "./framework-method.mjs";
 const BADGE_BY_TONE = { severe: "l4", high: "l4", medium: "l3", low: "l2", minimal: "l2" };
 const GAUGE_BY_TONE = { severe: 4, high: 3, medium: 2, low: 1, minimal: 1 };
 /** The zero-banded-findings display word: a clean v4 run has NO rated conflicts — "Low" is not a band. */
@@ -689,7 +690,10 @@ const FINDING_KEYS = ["ordinal", "mark", "owner", "composite", "level", "dispute
 // `borderline_between` (item 10, OPTIONAL, back-compatible) is v4-only by construction: it names two of
 // the framework's band words, and bands are the v4 scale. Absent means the framework's own criteria
 // decided this finding cleanly — which is the common case and the one that needs no ceremony.
-const FINDING_KEYS_V4 = ["ordinal", "mark", "owner", "band", "borderline_between", "net", "disposition", "meters", "quadrant", "source", "use_check", "own_rights", "bears_on", "impact", "deadline", "withdrawn_reason", "ruled_out", "ruled_out_reason", "legal_position", "practical_position", "manageable"];
+// `inputs` (OPTIONAL, back-compatible) carries the framework's own inputs where the framework states a
+// method (framework-method.mjs): required on a rated finding under such a framework, refused under any
+// other. Archived runs never carry it and parse unchanged.
+const FINDING_KEYS_V4 = ["ordinal", "mark", "owner", "band", "borderline_between", "inputs", "net", "disposition", "meters", "quadrant", "source", "use_check", "own_rights", "bears_on", "impact", "deadline", "withdrawn_reason", "ruled_out", "ruled_out_reason", "legal_position", "practical_position", "manageable"];
 // (v6) — `off_field_ground` joins the per-finding keys: WHICH of off-field's two sanctioned grounds
 // this negative rests on (see OFF_FIELD_GROUNDS). Required on off-field, forbidden everywhere else — a
 // field ground on a rated conflict is a mis-typed disposition, not extra colour.
@@ -848,6 +852,10 @@ export function parseFindingsJson(raw, opts = {}) {
   if (!isPlainObject(doc)) throw new Error("findings_unparseable: top level must be a JSON OBJECT { schema_version, findings, coverage }");
   const schemaVersion = typeof doc.schema_version === "number" ? doc.schema_version : 1;
   const mode = { v4: schemaVersion >= 4, v5: schemaVersion >= 5, v6: schemaVersion >= 6, v7: schemaVersion >= 7, manifest: opts.manifest ?? null,
+    // The run's frozen method (framework-method.mjs). ABSENT from opts means the caller did not say —
+    // offline and render paths — and `inputs` is checked for shape only. `null` means the run froze no
+    // method, so `inputs` is refused; an object means every rated finding is held to its table.
+    method: "method" in opts ? (opts.method ?? null) : undefined,
     // — null means the caller named no provider, and the record-URL gate stays inactive. An empty
     // ARRAY is a real answer ("this provider publishes no per-record page") and is not the same thing.
     recordOrigins: Array.isArray(opts.recordOrigins) ? opts.recordOrigins : null };
@@ -1332,7 +1340,7 @@ function validateFinding(f, idx, seenOrdinals, mode = { v4: false, manifest: nul
   // corrective ladder repairs a model that reverts to years of Composite/Level habit instructively.
   if (mode.v4) {
     for (const k of LEGACY_SCALE_KEYS) if (k in f)
-      throw new Error(`finding_legacy_scale_forbidden:${k} (schema_version 4 rates with the framework's band WORD — the composite/level/dispute_type scale is retired; put the reasoning in the narrative)`);
+      throw new Error(`finding_legacy_scale_forbidden:${k} (schema_version 4 rates with the framework's band WORD — the composite/level/dispute_type scale is retired; ${mode.method ? 'record this framework\'s own inputs under "inputs" instead' : "put the reasoning in the narrative"})`);
   }
   onlyKeys(f, findingKeysFor(mode), (k) => `finding_key_unknown:${short(k)}`);
 
@@ -1599,6 +1607,7 @@ function validateBand(f, ord, mode) {
     // is the one shape the field must never be allowed to take (item 10). `net` is checked here too —
     // an off-field awareness item carries the sentence like any other card.
     validateBorderlineBetween(f, ord, manifest);
+    validateInputs(f, ord, mode);
     validateNet(f, ord, mode);
     return;
   }
@@ -1613,6 +1622,7 @@ function validateBand(f, ord, mode) {
     f.band = canonical;
   }
   validateBorderlineBetween(f, ord, manifest);
+  validateInputs(f, ord, mode);
   validateNet(f, ord, mode);
 }
 
@@ -1763,7 +1773,7 @@ function validateNet(f, ord, mode) {
 //
 // The name also has to satisfy the two conditions the gateway imposes, both verified in
 // findings-gate-token.test.mjs rather than assumed:
-//   · lowercase-and-underscore after the prefix, or gateway.mjs:2833's WARM_ELIGIBLE_RE
+//   · lowercase-and-underscore after the prefix, or gateway.mjs:3205 WARM_ELIGIBLE_RE
 //     (`findings?_[a-z_]+`) does not admit it and the failure goes cold instead of warm;
 //   · no `coverage_ledger` / `coverage_axis` / `coverage_key` / `coverage_mirror` /
 //     `coverage_status_invalid` substring, because repairSiblingName's ternary tests `coverage_*` BEFORE
@@ -1792,6 +1802,24 @@ function validateNetShape(f, ord, mode) {
   const markers = netChainMarkers(f.net);
   if (!markers.length) return;
   throw new Error(`findings_net_chained:${ord} (the finding sentence is a CONCLUSION, not a chain — this net carries ${markers.join(" and ")}. Answer the one question a reader asks of this finding: is this a problem for me. Name the parties and the territory and state the outcome as a likelihood ("Veltra Labs' registered VELTRA is more likely than not to prevail against VELTRA PHARMA in the United States."). Then MOVE the chain's clauses — territories, the goods paraphrase, the owner's business, status and use history — into legal_position and practical_position, in full: this is a relocation, never a compression, and a net that got shorter because the reasoning got thinner is the wrong fix. There is no length cap)`);
+}
+
+// The framework's own inputs, where it states a method. A finding with a band is a rated conflict and
+// records them, and its band must be the one the framework's table gives for them; the refusal names the
+// band the table gives, so the correction is one step. A withdrawn finding keeps its forensic record and
+// is checked for shape only. Without a method there are no inputs to record, and an `inputs` key is
+// refused rather than carried — a framework that states no method must not grow one on the page.
+function validateInputs(f, ord, mode) {
+  if (!mode.v4) return;
+  const shapeOnly = mode.method === undefined || (f.band != null && f.disposition === "withdrawn");
+  if (shapeOnly) {
+    if (f.inputs !== undefined && (!isPlainObject(f.inputs) || Object.values(f.inputs).some((v) => typeof v !== "string" || !v.trim())))
+      throw new Error(`finding_inputs_invalid:${ord} ("inputs" is an object naming each of the framework's inputs and its value)`);
+    return;
+  }
+  const r = checkRatingInputs(mode.method, { inputs: f.inputs, band: f.band, rated: f.band != null, borderline: f.borderline_between ?? null });
+  if (r.issue) throw new Error(`finding_${r.issue.code}:${ord} (${r.issue.detail})`);
+  if (r.inputs) f.inputs = r.inputs;   // the framework's own casing and order, like band itself
 }
 
 function validateBorderlineBetween(f, ord, manifest) {
@@ -2242,7 +2270,9 @@ export const KNOCKOUT_FINDING_TYPES = [
 // transport allowed `weighedFilings` and this list refused it, so a seat that sent what its doctrine
 // teaches had the whole stage refused, and the retry dropped the key the report's source chip is derived
 // from. `weighedFilings` is optional; verify-knockout.mjs joins every id against the run's own records.
-export const KNOCKOUT_FINDING_KEYS = Object.freeze(["ordinal", "name", "owner", "band", "net", "type", "evidence", "basis", "weighedFilings"]);
+// `inputs` — the framework's own inputs behind the band, when the run froze a framework METHOD
+// (framework-method.mjs). Required on every knockout finding then, refused otherwise; checked below.
+export const KNOCKOUT_FINDING_KEYS = Object.freeze(["ordinal", "name", "owner", "band", "inputs", "net", "type", "evidence", "basis", "weighedFilings"]);
 // The throw family is `knockout_`, NOT `findings_`, and that is deliberate: gateway.mjs's
 // repairSiblingName routes every `/findings?_/` token to **findings.json**, which is the clearance
 // artifact and does not exist on a knockout run. A knockout token borrowing that family would aim its
@@ -2264,8 +2294,11 @@ const kshort = (v) => String(v ?? "").replace(/\s+/g, " ").trim().slice(0, 40);
  * @param {object} f
  * @param {number} idx — position in the mark's findings[], for the token when there is no usable ordinal.
  * @param {Set<number>} seenOrdinals — per MARK, not per run: one report is one name ( assumes it).
- * @param {{ manifest?: object }} [opts] — the run's frozen framework manifest. Supplied, the band must be
- *   one of its words; absent (offline/unit paths) the band is shape-checked only, as parseFindingsJson does.
+ * @param {{ manifest?: object, method?: object|null }} [opts] — the run's frozen framework manifest, and
+ *   the frozen framework method when the run froze one. With the manifest supplied, the band must be one of
+ *   its words, and the finding's `inputs` are checked against the method: required and table-true when
+ *   there is one, refused when there is none. Absent (offline/unit paths) both are shape-checked only, as
+ *   parseFindingsJson does.
  */
 export function validateKnockoutFinding(f, idx, seenOrdinals = new Set(), opts = {}) {
   const manifest = opts.manifest ?? null;
@@ -2297,6 +2330,21 @@ export function validateKnockoutFinding(f, idx, seenOrdinals = new Set(), opts =
     if (!canonical)
       throw new Error(`knockout_finding_band_invalid:${kshort(f.band)} (this run's framework "${manifest.framework_key}" rates in EXACTLY these words: ${manifest.bands.map((b) => b.label).join(" / ")})`);
     f.band = canonical;
+  }
+  // THE FRAMEWORK'S METHOD, WHEN IT STATES ONE: every knockout finding is a rated conflict, so it records
+  // the framework's inputs and takes the band the framework's table gives for them. The same check and
+  // the same words as the clearance's findings, under this lane's token family. The canonical inputs,
+  // in the framework's own casing and order, are written back so every surface prints the same words.
+  // `opts.method` ABSENT means the caller did not say (an offline path), and `inputs` is checked for
+  // shape only; `null` means the run froze no method, so `inputs` is refused.
+  const method = "method" in opts ? (opts.method ?? null) : undefined;
+  if (method === undefined || !manifest) {
+    if (f.inputs !== undefined && (!isPlainObject(f.inputs) || Object.values(f.inputs).some((v) => typeof v !== "string" || !v.trim())))
+      throw new Error(`knockout_finding_inputs_invalid:${ord} ("inputs" is an object naming each of the framework's inputs and its value)`);
+  } else {
+    const r = checkRatingInputs(method, { inputs: f.inputs, band: f.band, rated: true });
+    if (r.issue) throw new Error(`knockout_finding_${r.issue.code}:${ord} (${r.issue.detail})`);
+    if (r.inputs) f.inputs = r.inputs;
   }
   // THE CONCLUSION SENTENCE — the contract, unchanged, on the other product. One rule, one gate: a
   // knockout card and a clearance card are read by the same lawyer in the same week.
@@ -2418,6 +2466,9 @@ export function knockoutFindingView(f, idx = 0) {
     name: str(f?.name),
     owner: str(f?.owner),
     band: str(f?.band),
+    // The framework's own inputs behind the band, where it states a method (framework-method.mjs);
+    // null on every other run. Surfaces print them with inputsLine, never by walking the object.
+    inputs: isPlainObject(f?.inputs) ? f.inputs : null,
     type: str(f?.type),
     // The sentence the card leads with: `net` on the typed record, `description` on the prose row.
     lead: str(f?.net) ?? str(f?.description),        // KNOCKOUT PROSE ARM 2026-08-06

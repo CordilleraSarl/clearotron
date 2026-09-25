@@ -27,8 +27,8 @@
 
 // THREE MODES FOR CLAUDE, AND NOTHING ELSE IS A MODE. `cloud` bills Claude through the reader's own
 // Google, Microsoft or Amazon account, or through a gateway in front of one (ANTHROPIC_BASE_URL). The
-// vendor's program already routes on its own switches, which reach it because the stage environment is
-// the driver's; what was missing was a billing word that says so. Without it a cloud machine had two
+// vendor's program already routes on its own switches, which reach it because the stage environment
+// carries the vendor's own names (engine-env.mjs); what was missing was a billing word that says so. Without it a cloud machine had two
 // choices and both were wrong: `api-key` refused for want of an Anthropic key the machine does not have,
 // and `subscription` ran and stamped every row as billed to a subscription nobody was paying.
 //

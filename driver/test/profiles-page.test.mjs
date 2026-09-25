@@ -7,6 +7,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
+import { sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { writeProfilesPage } from "../publish/profiles-page.mjs";
 import { anonAssets, anonToggle, loadAnonConfig } from "../../shared/anon-overlay.mjs";
@@ -29,7 +30,7 @@ test("template is SINGLE-SOURCE: has the placeholders, carries NO inline config/
 test("writeProfilesPage fills the placeholders from the single sources + writes profiles.html", () => {
   const pool = mkdtempSync(`${tmpdir()}/profiles-`);
   const out = writeProfilesPage({ poolDir: pool });
-  assert.ok(out.endsWith("/profiles.html"));
+  assert.ok(out.endsWith(`${sep}profiles.html`));
   const html = readFileSync(out, "utf8");
 
   // placeholders are consumed (injection happened) ...

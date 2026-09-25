@@ -600,15 +600,16 @@ serve({
               drop_reason: { type: "string", description: "The one-line WHY — the judgment about THIS record. Never a bare status word." },
               ground: {
                 type: "string",
-                enum: ["off-field", "goods-distance", "duplicate-of-surfaced", "dead-status", "out-of-class"],
+                enum: ["off-field", "goods-distance", "duplicate-of-surfaced", "sign", "dead-status", "out-of-class"],
                 description:
                   "REQUIRED. EXACTLY one bare token saying under WHICH RULE the drop is made — the prose " +
                   "in drop_reason says why this record, the token says under which rule. `off-field` " +
                   "(the relevance gate, on the record's own goods), `goods-distance`, " +
-                  "`duplicate-of-surfaced` (the same right already has a row). `dead-status` and " +
+                  "`duplicate-of-surfaced` (the same right already has a row), `sign` (a near spelling a buyer in " +
+                  "this market could not take for the mark, by sound, by look or by meaning). `dead-status` and " +
                   "`out-of-class` name the SCREEN's own verdict and are checked against it: a record " +
                   "the band screened as a live in-scope candidate cannot be dropped on status or class, " +
-                  "and that call is refused — decide it on its goods or carry it.",
+                  "and that call is refused — decide it on its goods or its sign, or carry it.",
               },
               variant: { type: "string", description: "OPTIONAL — the search term / variant this candidate came back on." },
             },
@@ -806,6 +807,26 @@ serve({
             "DOMAINS only (amazon.com, fda.gov) — the common-law grid site-restricts to them and the " +
             "general web is always added by the driver. Reasoned from THIS matter's vertical, never a " +
             "fixed list. A non-domain value is kept in the record and dropped by the grid.",
+        },
+        // THE WEB GRID THE FRAME DECIDES (web-grid.mjs): the forms searched on the stores, and the stores
+        // and forms the frame set aside with its reason. Model-facing prose: its wording is the owner's.
+        // No field here is required and no entry is refused: an entry with no reason is not a decision,
+        // and the store it names stays searched.
+        confusable_forms: {
+          type: "array", items: { type: "string" },
+          description: "The forms a buyer could confuse, as a buyer would type them.",
+        },
+        set_aside: {
+          type: "array",
+          description: "A store or form set aside is written down with its reason.",
+          items: {
+            type: "object",
+            properties: {
+              store: { type: "string", description: "A store from the customer profile's list." },
+              form: { type: "string", description: "A form of the mark." },
+              reason: { type: "string", description: "Why it is set aside." },
+            },
+          },
         },
         meaning_angles: {
           type: "array", items: { type: "string" },
@@ -1198,6 +1219,9 @@ serve({
                     // means an undeclared key is a contradiction between the prose and the schema, and the
                     // seat resolves it whichever way it happens to trust.
                     band: { type: "string", description: "OPTIONAL — how you rate THIS filing, in the framework's own band words. Send it when you formed a view on the filing itself; the card prints it as that filing's rating. Omit it and your read still prints, with no rating claimed." },
+                    // The framework's inputs behind that band, when the framework states a method; the driver
+                    // checks them against its table (verify-knockout.mjs checkRegisterReadInputs).
+                    inputs: { type: "object", additionalProperties: { type: "string" }, description: "The framework's own inputs for this filing, beside its band." },
                   },
                 },
               },
@@ -1213,7 +1237,7 @@ serve({
               },
               findings: {
                 type: "array",
-                description: "CLOSED KEYS, all nine, no others.",
+                description: "CLOSED KEYS, all nine, no others, and \"inputs\" where the framework states a method.",
                 items: {
                   type: "object", additionalProperties: false,
                   required: ["ordinal", "name"],
@@ -1222,6 +1246,9 @@ serve({
                     name: { type: "string", description: "The CONFLICTING name, verbatim." },
                     owner: { type: "string" },
                     band: { type: "string" },
+                    // The framework's inputs behind the band, when the framework states a method: required on
+                    // every finding then, refused otherwise (findings-model.mjs validateKnockoutFinding).
+                    inputs: { type: "object", additionalProperties: { type: "string" }, description: "The framework's own inputs for this finding, keyed by its labels, each one of the values it lists." },
                     net: { type: "string", description: "One conclusion sentence." },
                     type: { type: "string" },
                     evidence: { type: "array", items: { type: "string" } },
@@ -1259,6 +1286,10 @@ serve({
       additionalProperties: false,
       properties: {
         schema_version: { type: "integer", description: "Accepted and ignored — the driver stamps its own." },
+        first_question: {
+          type: "string",
+          description: "Your answer to the question the dispatch opens with, in your own words.",
+        },
         rewrites: {
           type: "array",
           description:

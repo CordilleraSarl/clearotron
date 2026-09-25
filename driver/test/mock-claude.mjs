@@ -30,7 +30,9 @@
 //   MOCK_CLAUDE_FILE=<content>    — the output file content (default a tiny valid stub)
 //   MOCK_CLAUDE_COST=<usd>        — total_cost_usd (default 0.0123)
 //   MOCK_CLAUDE_SESSION=<id>      — session_id (default derived); a --resume value echoes back as the session
-//   MOCK_CLAUDE_CALL_LOG=<file>   — append each invocation's argv as a JSON line (assert flags/resume)
+//   MOCK_CLAUDE_DENIALS=<n>       — the result carries <n> permission_denials (calls the program refused)
+//   MOCK_CLAUDE_CALL_LOG=<file>   — append each invocation's argv as a JSON line (assert flags/resume), with the
+//                               NAMES of the environment it was started with (never a value)
 //   MOCK_CLAUDE_WIRE_MODEL=<id>   — report <id> as the served model on system:init AND every assistant
 //                               message, whatever --model asked for: the SILENT SUBSTITUTION fixture
 //                               ( corruption 3). Unset, the mock echoes the model it was asked for.
@@ -83,7 +85,7 @@ const msg = (await readStdin()) || positional;
 // Call-log = the REAL argv (flags) + the stdin prompt, so tests can assert both faithfully (the prompt is
 // no longer an argv element). Written after the stdin read so `prompt` is populated.
 if (process.env.MOCK_CLAUDE_CALL_LOG) {
-  try { appendFileSync(process.env.MOCK_CLAUDE_CALL_LOG, JSON.stringify({ argv, prompt: msg }) + "\n"); } catch { /* best-effort */ }
+  try { appendFileSync(process.env.MOCK_CLAUDE_CALL_LOG, JSON.stringify({ argv, prompt: msg, envNames: Object.keys(process.env).sort() }) + "\n"); } catch { /* best-effort */ }
 }
 const resumeIdx = argv.indexOf("--resume");
 const resumed = resumeIdx >= 0 ? (argv[resumeIdx + 1] ?? "") : "";
@@ -112,17 +114,22 @@ const WIRE_MODEL = {
 };
 const wireModel = process.env.MOCK_CLAUDE_WIRE_MODEL || WIRE_MODEL[askedModel] || "claude-haiku-4-5";
 
-// THE ENGINE PROBE'S TOOL. The probe hands the engine one tool, `ping` on the probe server, and passes only
-// when the reply carries the word that server was given. A working engine calls it and answers with that
-// word, so this does too, read off the --mcp-config it was handed; MOCK_CLAUDE_TOOLS_UNUSED=1 answers
-// without it, the shape of a turn that shows nothing about the tools.
-const probeWord = (() => {
+// THE ENGINE PROBE'S TOOLS. The probe hands the engine three tools on the probe server, `ping`, `note` and
+// `look`, and passes only when the reply carries the word each was given and the file it asked for holds
+// them. A working engine calls them, writes the file and answers with the words, so this does too, reading
+// the words off the --mcp-config it was handed (the server's arguments after its path) and the file off the
+// prompt. MOCK_CLAUDE_TOOLS_UNUSED=1 answers without them, the shape of a turn that shows nothing about the
+// tools. MOCK_CLAUDE_PROBE_NO_WRITE=1 answers with the words and writes nothing. MOCK_CLAUDE_WRITE_FAILED=1
+// asks to Write the file and gets an error back, as the program reports a write it could not make.
+const probeWords = (() => {
   if (process.env.MOCK_CLAUDE_TOOLS_UNUSED) return null;
   try {
     const i = argv.indexOf("--mcp-config");
-    return (i >= 0 ? JSON.parse(argv[i + 1]) : null)?.mcpServers?.probe?.args?.[1] ?? null;
+    const words = ((i >= 0 ? JSON.parse(argv[i + 1]) : null)?.mcpServers?.probe?.args ?? []).slice(1);
+    return words.length ? words : null;
   } catch { return null; }
 })();
+const probeWord = probeWords ? probeWords.join(" ") : null;
 
 // system:init — mirrors the real shape (apiKeySource etc.)
 // MOCK_CLAUDE_BOOT_MS=<ms> — block for <ms> before ANY output: the shape a STARVED SPAWN has from the
@@ -389,6 +396,20 @@ if (process.env.MOCK_CLAUDE_USAGE_THEN_STALL) {
   // 120s watchdog exists to abort. Hold the process open; the engine SIGKILLs it.
   setInterval(() => {}, 1 << 30);
 } else {
+  // The probe's file: written as the program writes one, or refused as the program reports a failed write.
+  function doProbeWrite() {
+    const target = probeWords ? msg.match(/to the file (.+?), one per line/)?.[1] : null;
+    if (!target || process.env.MOCK_CLAUDE_PROBE_NO_WRITE) return;
+    if (process.env.MOCK_CLAUDE_WRITE_FAILED) {
+      send({ type: "assistant", message: { role: "assistant", model: wireModel,
+        content: [{ type: "tool_use", id: "toolu_probe_write", name: "Write", input: { file_path: target } }],
+        usage: { input_tokens: 1, output_tokens: 1, cache_read_input_tokens: 0, cache_creation_input_tokens: 0 } } });
+      send({ type: "user", message: { role: "user", content: [{ type: "tool_result", tool_use_id: "toolu_probe_write", is_error: true,
+        content: "EACCES: permission denied" }] } });
+      return;
+    }
+    try { writeFileSync(target, probeWords.join("\n") + "\n"); } catch { /* best-effort */ }
+  }
   function doStageWrites() {
     if (process.env.MOCK_CLAUDE_NOFILE) return;
     // The bound card index the driver put into this turn's recording-server env. Read from argv rather
@@ -421,9 +442,9 @@ if (process.env.MOCK_CLAUDE_USAGE_THEN_STALL) {
     const traceEnd = () => { if (traceCard) appendFileSync(process.env.MOCK_STAGE_TRACE, JSON.stringify({ card: traceCard, phase: "end", t: Date.now() }) + "\n"); };
     // Engine-test mode: a simple message + explicit MOCK_CLAUDE_FILE content → write it to the named path.
     if (process.env.MOCK_CLAUDE_FILE != null) {
-      const m = msg.match(/ABSOLUTE path[^:]*:\s*(\/\S+)/)
-        || msg.match(/write (?:the COMPLETE corrected file|it) at\s+(\/\S+)/)
-        || msg.match(/OUTPUT_FILE:\s*(\/\S+)/);
+      const m = msg.match(/ABSOLUTE path[^:]*:\s*((?:[A-Za-z]:)?[\\/]\S+)/)
+        || msg.match(/write (?:the COMPLETE corrected file|it) at\s+((?:[A-Za-z]:)?[\\/]\S+)/)
+        || msg.match(/OUTPUT_FILE:\s*((?:[A-Za-z]:)?[\\/]\S+)/);
       if (m) { try { mkdirSync(dirname(m[1]), { recursive: true }); writeFileSync(m[1], process.env.MOCK_CLAUDE_FILE); } catch { /* best-effort */ } }
       traceEnd();
       return;
@@ -447,6 +468,11 @@ if (process.env.MOCK_CLAUDE_USAGE_THEN_STALL) {
       // MOCK_CLAUDE_PROVIDER=<word> — the per-model usage the real program reports, naming its provider
       // ("firstParty", "foundry"). Absent by default, as it was before the provider gauge read it.
       ...(process.env.MOCK_CLAUDE_PROVIDER ? { modelUsage: { [wireModel]: { provider: process.env.MOCK_CLAUDE_PROVIDER } } } : {}),
+      // MOCK_CLAUDE_DENIALS=<n> — the result's `permission_denials`, one entry per call the program refused, in
+      // the shape 2.1.280 reports them. The real program sends the field on every result, empty when it
+      // refused nothing, so the mock does too.
+      permission_denials: Array.from({ length: Number(process.env.MOCK_CLAUDE_DENIALS || 0) },
+        (_, i) => ({ tool_name: "WebSearch", tool_use_id: `toolu_denied_${i}`, tool_input: {} })),
     };
     // MOCK_CLAUDE_NO_NEWLINE=1 — emit the FINAL result event with NO trailing newline (NDJSON last record);
     // the engine MUST flush its buffer on close or the result is dropped (the B1 regression).
@@ -576,6 +602,7 @@ if (process.env.MOCK_CLAUDE_USAGE_THEN_STALL) {
     // a streamed partial (the watchdog heartbeat) then the final result
     send({ type: "stream_event", event: { type: "content_block_delta", delta: { type: "text_delta", text: "…" } } });
     doStageWrites();
+    doProbeWrite();
     emitResult();
   }
 }

@@ -63,7 +63,7 @@
 import { test } from "node:test";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
 import assert from "node:assert/strict";
-import { dirname, join } from "node:path";
+import { dirname, join, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { ledgerPath } from "../../providers/_shared/ledger-path.mjs";
 
@@ -88,9 +88,15 @@ const SUBSTITUTIONS = [
   [process.execPath, "<NODE>"],
 ];
 
+// ONE SEPARATOR. On Windows every path in the config is native, and JSON doubles its backslashes, so a
+// substitution of the raw path matches nothing and the pin's "/" joins read as a moved grant. Both sides
+// are brought to "/" first: the measured string's escaped backslashes, and each value substituted. On
+// Linux neither step changes a byte.
+const slashed = (p) => p.split(sep).join("/");
+
 function normalise(s) {
-  let out = s;
-  for (const [from, to] of SUBSTITUTIONS) out = out.split(from).join(to);
+  let out = s.split("\\\\").join("/");
+  for (const [from, to] of SUBSTITUTIONS) out = out.split(slashed(from)).join(to);
   return out;
 }
 
@@ -149,7 +155,7 @@ const PINNED = Object.freeze({
       + " mcp__register__register_image_fetch mcp__register__register_expand_phoneme"
       + " mcp__register__register_batch_screen mcp__register__register_enumerate"
       + " mcp__register__register_execute_plan mcp__register__register_propose_supplemental"
-      + " mcp__unit-note__record_unit_note mcp__unit-note__record_withheld_families",
+      + " mcp__unit-note__record_unit_note mcp__unit-note__record_withheld_families mcp__unit-note__record_released_families",
     mcpConfig: `{"mcpServers":{${local("register", "corsearch-server.mjs")},${local("unit-note", "unit-note-server.mjs")}}}`,
   },
   // THREE groups on one stage — the only row that pins server ORDER inside the config across more than

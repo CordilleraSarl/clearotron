@@ -11,7 +11,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
-import { join, dirname } from "node:path";
+import { join, dirname, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { scan, POPULATION_FLOOR, KNOWN_ABSENT, topLevelAwaitLines, fragmentsOf, resolveSpecifier, cyclePairs,
   reachedDuringTopLevelAwait, staticSpecifiers } from "../../scripts/import-cycle-check.mjs";
@@ -20,9 +20,11 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
 /** A tree in memory, addressed exactly as the check addresses the real one. */
 function virtualTree(files) {
+  // The check joins its tree-relative paths onto ROOT with this platform's separator, and the fixture
+  // keys are written with `/`, so the relative path is put back into that spelling before the lookup.
   const rel = (abs) => {
     const s = String(abs);
-    return s.startsWith(ROOT) ? s.slice(ROOT.length).replace(/^[/\\]/, "") : s;
+    return s.startsWith(ROOT) ? s.slice(ROOT.length).replace(/^[/\\]/, "").split(sep).join("/") : s;
   };
   const read = (abs) => {
     const p = rel(abs);

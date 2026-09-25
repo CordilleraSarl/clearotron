@@ -36,7 +36,7 @@ function doctorOnABareMachine() {
       encoding: "utf8",
       // env -i: the engine binaries are found on PATH, so a PATH carrying this box's own tools would
       // resolve one and the case under test would never arise.
-      env: { PATH: `${dirname(process.execPath)}:/usr/bin:/bin`, HOME: home, CLEAROTRON_NO_ENV_FILE: "1" },
+      env: { PATH: `${dirname(process.execPath)}:/usr/bin:/bin`, HOME: home, USERPROFILE: home, CLEAROTRON_NO_ENV_FILE: "1" },
     });
     return `${r.stdout ?? ""}${r.stderr ?? ""}`;
   } finally { rmSync(home, { recursive: true, force: true }); }

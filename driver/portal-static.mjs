@@ -49,20 +49,16 @@ const TYPES = {
  * `style-src` does allow inline. React writes `style=` attributes for anything computed, and there is no
  * hashing story for attributes. That is a real but much smaller surface: a style attribute cannot execute.
  *
- * fontshare is allowed for stylesheets and font files ONLY — not script, not connect. Self-hosting Satoshi
- * would remove even that; see the note in index.html.
+ * No font host is allowed at all. The bundle ships its typeface as its own files, served from this origin
+ * (portal-ui/src/fonts.css), so the portal fetches nothing from a font service.
  */
 export function spaCsp() {
   const sha = createHash("sha256").update(PRE_PAINT_SCRIPT).digest("base64");
   return [
     "default-src 'none'",
     `script-src 'self' 'sha256-${sha}'`,
-    "style-src 'self' 'unsafe-inline' https://api.fontshare.com",
-    // TWO hosts, and the difference is not cosmetic: Fontshare serves the @font-face STYLESHEET from
-    // api.fontshare.com but the woff2/woff files themselves from cdn.fontshare.com. Naming only the
-    // api host blocks every weight, and the failure is silent — the page renders in the fallback face
-    // and nothing errors anywhere a test would see. Verified against the live CSS.
-    "font-src https://cdn.fontshare.com https://api.fontshare.com data:",
+    "style-src 'self' 'unsafe-inline'",
+    "font-src 'self' data:",
     "img-src 'self' data:",
     "connect-src 'self'",
     // the Result screen embeds a delivered report from this same origin
@@ -92,8 +88,8 @@ export function spaCsp() {
 /**
  * The policy for a plain document this server renders itself — the by-hand setup page.
  *
- * NOT `reportCsp()`, and the difference is the point. That one permits inline script and three font
- * hosts because a delivered report is a frozen self-contained artefact that genuinely needs them.
+ * NOT `reportCsp()`, and the difference is the point. That one permits inline script and embedded fonts
+ * because a delivered report is a frozen self-contained artefact that genuinely needs them.
  * This page is escaped text in a `<pre>`: it runs nothing, fetches nothing, and frames nothing, so it
  * gets a policy that says exactly that. Borrowing the looser one because it was already there would
  * hand a new surface permissions nobody weighed for it.
@@ -106,14 +102,11 @@ export function reportCsp() {
   return [
     "default-src 'none'",
     "script-src 'self' 'unsafe-inline'",
-    // The reports themselves are frozen artefacts, and they load TWO font families from THREE hosts:
-    // Satoshi from Fontshare (stylesheet on api.*, files on cdn.*) and Fira Code from Google Fonts
-    // (stylesheet on fonts.googleapis.com, files on fonts.gstatic.com). Verified against real delivered
-    // reports. A policy naming fewer hosts than the document uses does not fail loudly — the report
-    // simply renders in a fallback face inside the frame while looking correct opened standalone,
-    // which is the kind of difference nobody attributes to a CSP.
-    "style-src 'self' 'unsafe-inline' https://api.fontshare.com https://fonts.googleapis.com",
-    "font-src https://cdn.fontshare.com https://api.fontshare.com https://fonts.gstatic.com data:",
+    // A report carries its typefaces inside itself, as data (shared/brand-fonts.mjs), so no font host is
+    // allowed. A report published before that still links two font services; framed here it is drawn in
+    // its fallback face, because the policy no longer lets it reach them.
+    "style-src 'self' 'unsafe-inline'",
+    "font-src data:",
     "img-src 'self' data:",
     "connect-src 'none'",
     // framed by the portal, and by nothing else

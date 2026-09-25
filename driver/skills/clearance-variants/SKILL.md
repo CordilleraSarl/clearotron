@@ -415,7 +415,7 @@ Per request, populate three lists:
 
 **Mandatory client-exclusion rule:** if the request identifies a client, DROP that company's name from ALL three lists before emitting the manifest. The client's own marks must not auto-flag as conflicts.
 
-Watchlists drive cross-pollination triggers and owner-bound register sweeps (Step 8.5 of [clearance-register/SKILL.md](../clearance-register/SKILL.md)).
+Watchlists drive cross-pollination triggers. They start no register sweep: the register asks an owner's marks where the records it returns show that owner.
 
 **Structured sibling:** mirror the register-relevant watchlist into the structured model's
 `watchlist_owners` key — `aggressive_enforcers` ∪ `competitors` ∪ the matter frame's watchlist-owner
