@@ -85,7 +85,7 @@ export function readDeclinations(runDir) {
   try {
     const raw = JSON.parse(readFileSync(ledger, "utf8"));
     const byUri = new Map();
-    const byPage = new Map();   // a page the web notes surfaced, keyed by its normalised address
+    const byPage = new Map();   // a page the web notes marked, keyed by its normalised address
     for (const d of Array.isArray(raw?.declinations) ? raw.declinations : []) {
       if (typeof d?.page === "string" && d.page) { byPage.set(d.page, d); continue; }
       const u = normalizeRecordUri(d?.uri);

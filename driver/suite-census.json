@@ -1385,7 +1385,7 @@
         },
         "a-web-page-is-declined-like-a-record.test.mjs": {
           "tests": 9,
-          "asserts": 49,
+          "asserts": 51,
           "skips": 0,
           "todos": 0
         },
@@ -2854,8 +2854,8 @@
           "todos": 0
         },
         "every-hand-off-exit-is-counted.test.mjs": {
-          "tests": 9,
-          "asserts": 34,
+          "tests": 7,
+          "asserts": 24,
           "skips": 0,
           "todos": 0
         },
@@ -5560,8 +5560,8 @@
           "todos": 0
         },
         "the-knockout-rating-step-reads-no-set-aside-lines.test.mjs": {
-          "tests": 5,
-          "asserts": 18,
+          "tests": 4,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },

@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// A page the web notes surfaced leaves synthesis the way a register record does: delivered as a finding,
-// or declined by its position on the offered list with a reason and a ground. The pages follow the
-// records on that list, so no record's position moves, and nothing the seat sends can name a page it was
-// not handed. The declines reach the hand-off count, and an undecided page is counted, not refused.
+// A page the web notes marked as a candidate or conflict leaves synthesis the way a register record does:
+// delivered as a finding, or declined by its position on the offered list with a reason and a ground. The
+// pages follow the records on that list, so no record's position moves, and nothing the seat sends can name
+// a page it was not handed. A page the notes only read is not offered. The declines reach the hand-off
+// count, and an undecided page is counted, not refused.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, writeFileSync, readFileSync, rmSync } from "node:fs";
@@ -27,6 +28,10 @@ const NOTES = [
   "|---|---|---|---|",
   `| Near title | store.example | ${PAGE_A.url} | direct conflict |`,
   `| Publisher | store.example | ${PAGE_B.url} | indie publisher |`,
+  "### Negative results",
+  "| Variant | Platform | Result |",
+  "|---|---|---|",
+  "| SAMPLE | store.example | No similar listings (8 candidates reviewed) https://store.example/search?q=sample |",
 ].join("\n");
 const GROUND = "an indie publisher page with no game under the name; nothing sold in the client's field";
 
@@ -102,7 +107,7 @@ test("an undecided page is counted, not refused: the records' duty does not reac
 
 test("the hand-off count treats a declined page as a stated exit", () => {
   const e = notesExits(NOTES, [], new Map([[PAGE_A.page, { reason: "off-field-not-major" }]]));
-  assert.equal(e.surfaced, 2);
+  assert.equal(e.marked, 2, "the two pages the notes marked, not the search page their matrix read");
   assert.equal(e.declined, 1);
   assert.equal(e.exits, 1);
   assert.deepEqual(e.rows.map((r) => r.page), [PAGE_B.page]);
@@ -131,15 +136,18 @@ test("the synthesis instructions print the pages after the records, continuing t
     crowdContext: null, dispatchBlocks: {},
   };
   const text = String(STAGES.synthesis.message({ ...base, findingsSurface: [RECORD, PAGE_A, PAGE_B] }));
-  assert.match(text, /the register digest carried 1 record\(s\) onto your findings surface, and the web notes surfaced 2 page\(s\)\./);
+  assert.match(text, /the register digest carried 1 record\(s\) onto your findings surface, and the web notes marked 2 page\(s\) as candidates or conflicts\./);
   assert.match(text, /A page you do not mention is counted as a defect of this run\./);
   assert.match(text, /A record or page that reached your findings surface leaves this stage/);
   assert.match(text, /you cite a record or page by its POSITION in the list below/);
   const list = text.slice(text.indexOf("The records on your findings surface, by position:"));
   assert.match(list, /\n {2}0\. SAMPLE — Sample Holdings SA \[sheet-2\] \/mark\/eu\/tm_sample-1\n/);
-  assert.match(list, /\nThe pages the web notes surfaced, continuing the same positions:\n {2}1\. https:\/\/store\.example\/app\/12\/Near_Title\/\n {2}2\. https:\/\/store\.example\/publisher\/north/);
+  assert.match(list, /\nThe pages the web notes marked as candidates or conflicts, continuing the same positions:\n {2}1\. https:\/\/store\.example\/app\/12\/Near_Title\/\n {2}2\. https:\/\/store\.example\/publisher\/north/);
   const recordsOnly = String(STAGES.synthesis.message({ ...base, findingsSurface: [RECORD] }));
-  assert.doesNotMatch(recordsOnly, /web notes surfaced|A page you do not mention/, "a run with no pages reads as before");
+  assert.doesNotMatch(recordsOnly, /web notes marked|A page you do not mention/, "a run with no pages reads as before");
+  const tool = readFileSync(new URL("../engine/mcp/declination-server.mjs", import.meta.url), "utf8");
+  assert.ok(tool.includes("every page the web notes marked as a candidate or conflict"), "the tool names the same pages");
+  assert.doesNotMatch(tool, /web notes surfaced/);
 });
 
 test("what synthesis set aside reaches the audit workbook's coverage tab, with the AI's own ground", async () => {

@@ -121,7 +121,7 @@ import { escalatedAxes } from "./skeptic-record.mjs";   // THE escalation parse 
 import { PLACEMENT_CARRY_SCHEMA_VERSION, reconcilePlacementCarry, placementCarryEvent, mintPlacementCarryDoubts, entryUris } from "./placement-carry.mjs";
 import { FLOOR_DUTY_SCHEMA_VERSION, reconcileFloorDuty, floorDutyEvent, armFloorDuty, floorDutyArmed, floorDutyBlock, floorDutyBlocksSkip } from "./floor-duty.mjs";   // — the era stamp that turns disclosure into a delivery floor
 import { synthesisDutyForRun } from "./synthesis-record.mjs";   // — the duty checked against the DELIVERED document
-import { RECORD_CARRY_SCHEMA_VERSION, traceRecordCarry, parseStageOutcomes, recordCarryEvent, mintRecordCarryDoubts, bandRecordUri, placementIndex, findingUris , silentlyLostFindings, statedDivergenceFindings } from "./record-carry.mjs"; import { pickingExits, webExits, notesExits, notesPageRows, exitsForLog } from "./hand-off-exits.mjs";
+import { RECORD_CARRY_SCHEMA_VERSION, traceRecordCarry, parseStageOutcomes, recordCarryEvent, mintRecordCarryDoubts, bandRecordUri, placementIndex, findingUris , silentlyLostFindings, statedDivergenceFindings } from "./record-carry.mjs"; import { pickingExits, notesExits, notesPageRows, exitsForLog } from "./hand-off-exits.mjs";
 import { reconcileSurfaceDuty, surfaceDutyNote } from "./surface-duty.mjs";   // item 3 — silence at the findings surface, read off the rows above
 import { DISCARD_LEDGER_NAME, seamRows, appendDiscardRows, foldDiscardLedger } from "./record-discard.mjs";
 import { readDeclinations } from "./declination-tool.mjs";   // — synthesis's own stated declines
@@ -13818,19 +13818,19 @@ async function pipelineInner(job, opts = {}) {
           consumed: true,
         });
       }
-      // EVERY HAND-OFF'S EXITS WITH NO GROUND, read off the traces written just above and the findings
-      // parsed before them: a record that left the picking step, a grid row that left for the web notes,
-      // and a page the notes surfaced that no delivered finding cites, each with nothing saying why. It
-      // reports and never gates, and a missing trace says so by name rather than counting zero.
+      // THE HAND-OFFS' EXITS WITH NO GROUND, read off the record trace written just above and the findings
+      // parsed before them: a record that left the picking step, and a page the web notes marked as a
+      // candidate or conflict that no delivered finding cites, each with nothing saying why. A page the web
+      // step only read is not owed a ground, so the grid's rows are not counted here. It reports and never
+      // gates, and a missing trace says so by name rather than counting zero.
       try {
         const exits = { picking: pickingExits(safeReadJson(P.recordCarry)),
-          web: webExits([P.commonLawCarry, P.jxZhCarry].map((f) => safeReadJson(f)).filter(Boolean)),
           notes: notesExits(existsSync(P.commonLaw) ? readFileSync(P.commonLaw, "utf8") : null, auditRunFindings, readDeclinations(P.runDir).byPage) };
         runLog(P.runDir, { event: "reasonless-exits", lane: "clearance", ...exitsForLog(exits) });
-        if (exits.picking.exits || exits.web.exits || exits.notes.exits) {
+        if (exits.picking.exits || exits.notes.exits) {
           note(`hand-offs: ${exits.picking.exits} record(s) of ${exits.picking.owners ?? 0} owner(s) left the picking step `
-            + `with no ground; ${exits.web.exits} web grid row(s) on ${exits.web.pages ?? 0} page(s) left for the web notes with no reason; `
-            + `${exits.notes.exits} page(s) the web notes surfaced reached no delivered finding and no step said why`);
+            + `with no ground; ${exits.notes.exits} page(s) the web notes marked as candidates or conflicts reached no delivered `
+            + `finding and no step said why`);
         }
       } catch { /* never mask a delivery */ }
 

@@ -3,9 +3,9 @@
 // The knockout's rating step reads none of the hand-off lines. They were added to it and taken out again
 // by the owner's ruling, after the one knockout run that carried them rated three of four marks a band
 // lower: the lines stay in the clearance, where sentence 6 closes the picking step's promotion question,
-// and leave the knockout's manual, its instructions and its record tool. What stays in the knockout is
-// the count, which reads the run after rating and changes nothing. The workbook still prints a set-aside
-// row where a run holds one, so an archived run republishes as it was.
+// and leave the knockout's manual, its instructions and its record tool. Nothing counts the knockout's
+// pages either, and its workbook has no set-aside row: a ground is owed only for a candidate the web notes
+// marked, never for a page read.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
@@ -15,7 +15,6 @@ import { fileURLToPath } from "node:url";
 import { ensureDriverDir } from "../../shared/driver-dir.mjs";
 import { KO_STAGES, koPaths } from "../stages-knockout.mjs";
 import { kebab } from "../search-policy.mjs";
-import { setAsideNote } from "../publish/knockout.mjs";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 const SENTENCE_6 = "Judge an owner's records as a set. Write the position from the record in the client's market and class, quoting its goods. A record you do not carry is given a ground; no record leaves without one.";
@@ -64,40 +63,14 @@ test("the knockout's record tool and its allowlist offer no set-aside list", () 
   assert.ok(server.includes("registerReads: {"), "guard: the knockout record schema was read");
   assert.doesNotMatch(server, /setAside: \{/);
   const record = readFileSync(join(DRIVER, "knockout-assess-record.mjs"), "utf8");
-  assert.ok(record.includes('"marks.registerReads": ["recordId", "read", "band"]'), "guard: the allowlist was read");
+  assert.match(record, /"marks\.registerReads": \[/, "guard: the allowlist was read");
   assert.doesNotMatch(record, /setAside/);
 });
 
-test("a set-aside row prints as what was set aside, then the rater's ground", () => {
-  const records = { marks: [{ name: "NEARFIELD", records: [{ recordId: "R-1", mark: "NEARFIELD", owner: "Paper Goods KK" }] }] };
-  assert.equal(setAsideNote({ page: "https://dict.example/word/near", ground: "a dictionary entry, not a use" }, "NEARFIELD", records),
-    "https://dict.example/word/near: a dictionary entry, not a use");
-  assert.equal(setAsideNote({ recordId: "R-1", ground: "class 16 paper goods only" }, "nearfield", records),
-    "NEARFIELD — Paper Goods KK: class 16 paper goods only");
-  assert.equal(setAsideNote({ recordId: "R-8", ground: "not in the store" }, "NEARFIELD", records), "R-8: not in the store");
-});
-
-test("the knockout workbook prints each set-aside row on Working Notes, and a blank ground prints nothing", async () => {
-  const { buildKnockoutWorkbook } = await import("../publish/knockout.mjs");
-  const { default: ExcelJS } = await import("exceljs");
-  const dir = mkdtempSync(join(tmpdir(), "ko-set-aside-book-"));
-  try {
-    const book = join(dir, "audit.xlsx");
-    const findings = { marks: [{ name: "NEARFIELD", findings: [], negatives: [], setAside: [
-      { page: "https://dict.example/word/near", ground: "a dictionary entry, not a use" },
-      { recordId: "R-1", ground: "class 16 paper goods only" },
-      { recordId: "R-2", ground: "" },
-    ] }] };
-    const records = { marks: [{ name: "NEARFIELD", records: [{ recordId: "R-1", mark: "NEARFIELD", owner: "Paper Goods KK" }] }] };
-    await buildKnockoutWorkbook(findings, [], book, null, [], null, records);
-    const wb = new ExcelJS.Workbook();
-    await wb.xlsx.readFile(book);
-    const ws = wb.getWorksheet("Working Notes");
-    const rows = [];
-    ws.eachRow((r, n) => { if (n > 1) rows.push(r.values.slice(1).map((v) => String(v ?? ""))); });
-    assert.deepEqual(rows, [
-      ["NEARFIELD", "Set aside", "https://dict.example/word/near: a dictionary entry, not a use"],
-      ["NEARFIELD", "Set aside", "NEARFIELD — Paper Goods KK: class 16 paper goods only"],
-    ]);
-  } finally { rmSync(dir, { recursive: true, force: true }); }
+test("the knockout's workbook prints no set-aside row, and the knockout keeps no page trace", () => {
+  const book = readFileSync(join(DRIVER, "publish", "knockout.mjs"), "utf8");
+  assert.ok(book.includes("'Working Notes'"), "guard: the knockout workbook builder was read");
+  assert.doesNotMatch(book, /Set aside|setAside/);
+  const paths = readFileSync(join(DRIVER, "stages-knockout.mjs"), "utf8");
+  assert.doesNotMatch(paths, /knockout-carry\.json/);
 });

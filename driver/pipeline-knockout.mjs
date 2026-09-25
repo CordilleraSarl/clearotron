@@ -54,11 +54,11 @@ import { capabilitiesFor } from "./register-capabilities.mjs";
 import { registerUnavailableOffices } from "./register-unreachable.mjs";
 import { runRecordLogPath } from "../providers/_shared/ledger-path.mjs";   // — this run's record log
 import { beginAnswerMemory, endAnswerMemory } from "../providers/_shared/answer-memory.mjs";
-import { validators as koValidators, validateMergedFindings, worstBand, registerSurfacedFilings, raterCaveats, SURVIVOR_BOUNDARY_RE, registerRecordIdsFor } from "./verify-knockout.mjs";
+import { validators as koValidators, validateMergedFindings, worstBand, registerSurfacedFilings, raterCaveats, SURVIVOR_BOUNDARY_RE } from "./verify-knockout.mjs";
 import { reviewAbout, reviewEvidence, reviewEvidenceLines, applyKnockoutReview, knockoutReviewFile } from "./knockout-review-record.mjs";
 import { stripNextStepSections } from "./knockout-next-step.mjs";
 import { publishKnockout, composeKnockoutEmail } from "./publish/knockout.mjs";
-import { writeRunStatus, rollupStatus, atomicWrite, identitySeed } from "./progress.mjs"; import { knockoutCarry, knockoutExits, exitsForLog } from "./hand-off-exits.mjs";   // — the identity seed is shared; the stepper is not
+import { writeRunStatus, rollupStatus, atomicWrite, identitySeed } from "./progress.mjs";   // — the identity seed is shared; the stepper is not
 import { batchMarkName } from "./mark-name.mjs";
 import { runLog, note, outputMeta } from "./log.mjs";
 import { defaultTerritoryState } from "./effective-scope.mjs";   // the stored-defaults reading — one producer, shared with the clearance lane
@@ -1053,16 +1053,6 @@ export async function knockoutInner(ctx, job, opts = {}) {
     // assessment", which is what it is part of.
     merged = await knockoutReviewingPass({ ctx, run, K, merged, plan });
     try { writeFileSync(K.assessment, String(merged.batch.executiveSummary ?? "")); } catch { /* prose mirror, best-effort */ }
-    // THE NOTES-TO-FINDINGS TRACE: every page a mark's research payload named, and whether a finding cited
-    // it. Written after the reviewing pass, so it describes the record that ships. It reports the pages
-    // that left with no ground and never gates.
-    try {
-      const carry = knockoutCarry(merged.marks, (name) => {
-        try { return readFileSync(K.research(kebab(name)), "utf8"); } catch { return null; }
-      }, (name) => [...registerRecordIdsFor(run.runDir, name)]);
-      atomicWrite(K.knockoutCarry, JSON.stringify(carry, null, 2) + "\n");
-      runLog(run.runDir, { event: "reasonless-exits", lane: "knockout", ...exitsForLog({ knockout: knockoutExits(carry) }) });
-    } catch { /* never mask a delivery */ }
 
     // 4 — publish (report + workbook + meta + index)
     //
