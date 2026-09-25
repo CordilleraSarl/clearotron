@@ -324,7 +324,7 @@ The `phonetic` / `visual-substitution` / `numeric-substitution` / typographic ro
 |---|---|
 | foreign-transliteration | Always for worldwide/multi-region scope. Coined-word archetype: prioritise. Slogan archetype: skip unless mark targets a non-English market. Scripts per [transliteration-scripts.md](transliteration-scripts.md). |
 | component-isolation | When `clearance-common-law` needs to isolate an element for platform-specific search. |
-| competitor-intel | Driven by Watchlist, NOT by variant table — handled in `clearance-register` Step 8.5. |
+| competitor-intel | Driven by Watchlist, NOT by variant table. |
 
 **Phrase-substitution rules** (slogan archetype, primarily):
 
@@ -455,7 +455,7 @@ Used by `clearance-search` to flag cross-mark risks in synthesis.
 | compound | direct search variations | `match_mode: default` |
 | family-pattern wildcard | not used | Lucene wildcards inside backticks |
 | phrase-substitution | direct search of substituted phrase | `match_mode: default` (NOT `exact`) |
-| competitor-intel / watchlist | focused web search | **Owner-bound search per Step 8.5 of [clearance-register/SKILL.md](../clearance-register/SKILL.md)** |
+| competitor-intel / watchlist | focused web search | not used |
 
 Downstream skills do NOT generate their own variants — the manifest is authoritative.
 

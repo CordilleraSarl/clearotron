@@ -226,13 +226,6 @@ or impersonal. Never address the reviewer by name ("[Name] —"). Flags and acti
 whether the client has prior use predating <date>", not "you should confirm…"). Owner / filer names (the parties
 behind the marks) stay — they are the findings' subject.
 
-RETIRED — this told the seat to surface the reviewer's open points at the top of
-`# Actions`. The driver code-builds that section from the review and places it at the TOP OF THE BODY
-(T3a, `buildReviewerOpenPointsSection`), which is a different place, so following this sentence produced a
-second copy in the wrong one. It was true when the driver's half did not exist; spec-49 deleted that half
-and T3a brought it back, and this line went false where it stood without anybody editing it. The substance
-survives in the code: impersonal, at the top, never withheld.
-
 ## House prose contract (P6 — spec §7 + the lawyer walk-through)
 
 Prompt guidance, deliberately **not** a lint: a code gate on prose adds redelivery cycles and removes the

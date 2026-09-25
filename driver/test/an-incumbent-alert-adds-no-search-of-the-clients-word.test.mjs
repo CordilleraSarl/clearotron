@@ -53,3 +53,17 @@ test("the register manual's incumbent paragraph asks in the matter's classes and
     "the paragraph carries the approved sentence");
   assert.doesNotMatch(unit, /incumbent's primary classes/, "no line sends the unit to the incumbent's own classes");
 });
+
+test("no register recipe asks for the client's word in the incumbent's classes", () => {
+  const recipes = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-register", "register-recipes.md"), "utf8");
+  assert.ok(recipes.includes("## Recipe 4 — Industry-incumbent shadow"), "guard: the recipes were read");
+  assert.doesNotMatch(recipes, /ENUMERATE the incumbent(?:'s)? classes|classes <incumbent classes>/,
+    "a recipe the unit reads would ask again for the search the plan no longer compiles");
+});
+
+test("the spelling manual points at no register step that no longer exists", () => {
+  const variants = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-variants", "SKILL.md"), "utf8");
+  assert.ok(variants.includes("| competitor-intel / watchlist | focused web search | not used |"),
+    "a watchlist starts no register sweep, as Step 5 says");
+  assert.doesNotMatch(variants, /Step 8\.5/);
+});

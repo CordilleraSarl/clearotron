@@ -62,21 +62,18 @@ the cross-cutting relevance / sufficiency / owner-aggregation / prioritisation o
 2. ENUMERATE the distinctive element (register_enumerate)
    → name:LUMENGARDE classes 9,28,41,42 → enumerated|incomplete block (every record carried forward)
 
-3. ENUMERATE the incumbent classes if an industry-incumbent alert
-   → name:LUMENGARDE classes 11 → captures lighting incumbent
-
-4. ENUMERATE each common element as a named query in the in-scope classes
+3. ENUMERATE each common element as a named query in the in-scope classes
    → name:DAWN match=exact classes 9,28,41,42  → register_enumerate (exact-in-class name-list)
    → name:LEGEND match=exact classes 9,28,41,42 → register_enumerate
 
-5. ENUMERATE the compound phrase
+4. ENUMERATE the compound phrase
    → name:"Dawn: Legends of Lumengarde" match=phrase classes 9,28,41,42 → register_enumerate
 
-6. ENUMERATE a cross-class merch query if any identical match
+5. ENUMERATE a cross-class merch query if any identical match
    → name:<exact mark> match=exact classes 25 → register_enumerate
 ```
 
-**Why this order:** crowd descriptors first (cheap, informational — they describe the crowd, they do not clear it); then enumerate the distinctive element (highest-yield); then incumbent context; then each common element's exact-in-class name-list; then the compound phrase; then merch. Every numbered enumeration crosses the firewall as a band block — none is sampled.
+**Why this order:** crowd descriptors first (cheap, informational — they describe the crowd, they do not clear it); then enumerate the distinctive element (highest-yield); then each common element's exact-in-class name-list; then the compound phrase; then merch. Every numbered enumeration crosses the firewall as a band block — none is sampled.
 
 **Expected output:** the complete enumerated band for the distinctive element + each named slice, plus crowd descriptors for the saturated common elements. Volume is judgment's to read, not the funnel's to prune.
 
@@ -99,9 +96,7 @@ the cross-cutting relevance / sufficiency / owner-aggregation / prioritisation o
 3. ENUMERATE the default-mode named band (register_enumerate)
    → name:<mark> match=default classes <target>
 
-4. ENUMERATE the incumbent classes if an industry-incumbent alert
-
-5. ENUMERATE a cross-class merch query if identical match
+4. ENUMERATE a cross-class merch query if identical match
 ```
 
 **Why:** coined words rarely have crowded fields; phonetic expansion catches misspellings and stylisations the default mode misses. Multi-language phoneme expansion catches non-English-speaker filings. Each enumeration returns `enumerated` (the usual case — sparse, fully paged) or `incomplete` if a crowd; either way it crosses verbatim.
@@ -132,9 +127,7 @@ the cross-cutting relevance / sufficiency / owner-aggregation / prioritisation o
    → name:"<mark> *" wildcard classes <target>  → register_enumerate
    → name:"* <mark>" wildcard classes <target>  → register_enumerate
 
-4. ENUMERATE the incumbent classes if a famous-brand incumbent exists for the descriptive word
-
-5. ENUMERATE a cross-class merch query if identical match
+4. ENUMERATE a cross-class merch query if identical match
 ```
 
 **Why:** descriptive crowded-field marks have many records. The funnel does **not** narrow-to-tractable-and-stop — it scopes each named slice by class and region (which is breadth, not sufficiency) and lets `register_enumerate` page it to completion or return `incomplete`. The crowd descriptor (step 1) tells the lawyer how crowded the field is; the lawyer decides relevance and sufficiency over the complete enumerated slices.
@@ -152,15 +145,11 @@ the cross-cutting relevance / sufficiency / owner-aggregation / prioritisation o
 ```
 1. ENUMERATE the primary named band on target classes (Recipe 1 or 2 above)
 
-2. ENUMERATE the incumbent's classes (register_enumerate)
-   → name:<element> classes <incumbent classes>
-   → for LUMENGARDE/lighting: classes 9 (LEDs/sensors) + 11 (lighting fixtures)
-
-3. ENUMERATE the owner-bound named band
+2. ENUMERATE the owner-bound named band
    → owner:<incumbent name pattern> + classes <target>
    → surfaces whether the incumbent has filed in the target industry too
 
-4. ENUMERATE the incumbent's portfolio for opposition context
+3. ENUMERATE the incumbent's portfolio for opposition context
    → enumerate the incumbent's marks; opposition data rides on each record
    → the lawyer reads onomaticsOppositions[] to gauge enforcement posture
 ```
