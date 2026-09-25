@@ -99,6 +99,7 @@ import { parseCaseLawProfiles, joinCaseLawProfiles } from "./publish/parse.mjs";
 import { buildAuditMd, parseSpineFindingBlocks } from "./publish/audit-from-spine.mjs";
 import { deriveRegisterPresence } from "./publish/register-presence.mjs";   // — the audit stores every live in-scope record
 import { lastAcceptedMatterFrame, frameIdentifiedClasses, frameIdentifiedClassRows, frameHouseElementCandidate } from "./matter-frame-record.mjs";   // — the frame's inferred scope, when nothing was instructed; and the classes it judged necessary beyond the instructed ones, each with its reason, which the plan compile gives one identical-mark question apiece (decision 18)
+import { frameWebChoiceFor, frameAskedForWebGrid, webGridOf, closureBlocksOf } from "./web-grid.mjs";   // — the web grid the matter frame decides: its stores, its forms, what it set aside
 import { romanizedTermsFromPlan, mintSupplementalQid } from "./register-plan.mjs";
 import { excludeHouseElement, verifyHouseElementOwnership, resolveRegions as resolvePlanRegions, HOUSE_ELEMENT_RECEIPT } from "./register-plan.mjs";   // 647 — the client's own element leaves the conflict analysis only on a verified receipt
 import { resolveRecordExecutor } from "./register-records.mjs";   // — the stamp the late lanes never met
@@ -1044,12 +1045,32 @@ function deriveGridSpec(ctx) {
     // extras.pr_risk[], and the per-query identity join fails the merge if one vanishes. The count is
     // ASSERTED in the grid-spec event either way — a 0 is a recorded zero, never an absence.
     const angleQueries = meaningAnglesFromMatterContext(matterMd, { alreadyQueried: [...connotationQueries, ...translitQueries] });
+    // THE WEB GRID THE MATTER FRAME DECIDED (web-grid.mjs): the stores it did not set aside, for the mark
+    // itself and the forms a buyer could confuse, and every spelling on the general web. A frame that was
+    // never asked for those fields (a resumed older run) keeps every spelling on every channel.
+    const choice = frameWebChoiceFor(P.runDir);
+    const asked = frameAskedForWebGrid(P.runDir);
+    const markNames = Array.isArray(ctx.job?.marks)
+      ? ctx.job.marks.map((m) => (typeof m === "string" ? m : m?.name)).filter(Boolean)
+      : [ctx.job?.markName ?? ctx.job?.name].filter(Boolean);
+    const web = webGridOf({ variants: ctx.gridVariants, channels, marks: markNames,
+      forms: choice.forms, setAside: choice.setAside, decided: choice.forms !== null || asked });
+    const webCells = web.grids ? web.grids.reduce((n, g) => n + g.terms.length * g.platforms.length, 0) : web.terms.length * web.platforms.length;
+    runLog(P.runDir, { event: "frame-web-grid", reading: web.grids ? (choice.forms !== null ? "frame-forms" : "mark-only") : "every-channel",
+      forms: choice.forms?.length ?? null, stores: web.platforms.length - 1, stores_set_aside: web.setAside.filter((x) => x.store).length,
+      forms_set_aside: web.setAside.filter((x) => x.form).length, unmatched: web.unmatched.length, cells: webCells });
+    if (!web.grids) note(`common-law grid: the matter frame was not asked for its stores and forms, so every spelling runs on every channel (${webCells} cells)`);
+    else note(`common-law grid: ${web.platforms.length - 1} store(s) for ${web.grids.length > 1 ? web.grids[0].terms.length : 0} form(s), and ${web.terms.length} spelling(s) on the general web — ${webCells} cells${choice.forms === null ? "; the frame sent no forms, so the mark itself stands in for them" : ""}${web.setAside.length ? `; ${web.setAside.length} set aside by the frame with its reason` : ""}`);
     const gridSpec = {
-      terms: ctx.gridVariants,
-      platforms: [...channels, "web"], // the dictated channels + the general-web cell
+      terms: web.terms,
+      platforms: web.platforms, // the dictated stores + the general-web cell
+      // THE BLOCKS: which terms run on which platforms, when the frame decided the grid. `menu` is every
+      // channel the frame chose from, and `set_aside` what it left out with its reason, for the record and
+      // the audit workbook; neither dictates a cell.
+      ...(web.grids ? { grids: web.grids, menu: web.menu, set_aside: web.setAside } : {}),
       output_path: P.commonLawGrid,
       // SIZED BY THE CELLS THIS GRID RUNS, never larger than the profile's own figure (gridBatchFor).
-      batch: gridBatchFor(ctx.profile, channels.length + 1),
+      batch: gridBatchFor(ctx.profile, web.platforms.length),
       // disposition_required (P2-C §8b leg 2): the receipt-presence stamp arming the commonLaw validator's
       // receipts-disposition arm (the D1 ledger_required pattern — every fresh spec carries it; pre-P2-C
       // archived specs lack it, so replay verdicts never flip). splitGridSpec spreads the connotation
@@ -10427,6 +10448,9 @@ async function pipelineInner(job, opts = {}) {
           const spec = {
             terms: [...new Set(cells.map((c) => c.variant))],
             platforms: [...new Set(cells.map((c) => c.platform))],
+            // A grid the frame decided is blocks, so its gaps are too: re-running them as one product would
+            // ask cells the grid never dictated. One product still reads exactly as before.
+            ...closureBlocksOf(cells),
             output_path: P.commonLawGridSupp(half, "closure"),
             batch: batchSize,
             ledger_required: true,

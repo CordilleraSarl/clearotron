@@ -370,7 +370,36 @@ export function validateGridSpec(spec) {
     if (typeof spec.connotation !== "object" || Array.isArray(spec.connotation)) throw new Error("grid spec.connotation must be an object { queries[] }");
     if (!Array.isArray(spec.connotation.queries)) throw new Error("grid spec.connotation.queries[] must be an array");
   }
+  // OPTIONAL blocks: a grid the matter frame decided is not one term × platform product — the frame's forms
+  // on the frame's stores, and every spelling on the general web — so it is dictated as blocks, each a
+  // product, drawn from the spec's own terms and platforms. Absent ⇒ the grid is terms × platforms.
+  if (spec.grids != null) {
+    if (!Array.isArray(spec.grids)) throw new Error("grid spec.grids must be an array of { terms[], platforms[] }");
+    const terms = new Set(spec.terms.map(gnorm)), platforms = new Set(spec.platforms.map(gnorm));
+    for (const g of spec.grids) {
+      if (!g || !Array.isArray(g.terms) || !Array.isArray(g.platforms)) throw new Error("grid spec.grids[] entry must be { terms[], platforms[] }");
+      if (g.terms.some((t) => !terms.has(gnorm(t))) || g.platforms.some((p) => !platforms.has(gnorm(p))))
+        throw new Error("grid spec.grids[] names a term or platform the spec does not carry");
+    }
+  }
   return spec;
+}
+
+/**
+ * Every (term × platform) cell the spec dictates, in the spec's own spelling, each once: its blocks when it
+ * has them, else terms × platforms. The one reading of "what was asked" — the program, the reconcile, the
+ * fold, the half merge and the receipts gate all count from it. PURE.
+ */
+export function dictatedCells(spec) {
+  const blocks = Array.isArray(spec?.grids) ? spec.grids : [{ terms: spec?.terms ?? [], platforms: spec?.platforms ?? [] }];
+  const out = [], seen = new Set();
+  for (const g of blocks) for (const term of g.terms ?? []) for (const platform of g.platforms ?? []) {
+    const k = cellKey(term, platform);
+    if (seen.has(k)) continue;
+    seen.add(k);
+    out.push([term, platform]);
+  }
+  return out;
 }
 
 /** The dictated connotation queries (non-empty strings) the program must run + record. PURE. */
@@ -391,8 +420,12 @@ export function connotationQueriesOf(spec) {
  */
 export function buildGridProgramTask(spec) {
   validateGridSpec(spec);
-  const { terms, platforms, batch = 14 } = spec;
-  const cellCount = terms.length * platforms.length;
+  const { batch = 14 } = spec;
+  // THE GRID ASKED: the spec's own term × platform product, or its blocks when the matter frame decided the
+  // grid (see validateGridSpec). One product reads exactly as it always has.
+  const pieces = (Array.isArray(spec.grids) ? spec.grids : [{ terms: spec.terms, platforms: spec.platforms }]).filter((g) => g.terms.length && g.platforms.length);
+  const terms = [...new Set(pieces.flatMap((g) => g.terms))];
+  const cellCount = dictatedCells(spec).length;
   const conn = connotationQueriesOf(spec);
   const hasConn = conn.length > 0;
   // — THE MEANING RECEIPTS CARRY A SNIPPET; THE MARKETPLACE CELLS DO NOT.
@@ -415,9 +448,10 @@ export function buildGridProgramTask(spec) {
     hasCells
       ? "Write and run ONE sandbox program that executes a marketplace clearance search grid."
       : "Write and run ONE sandbox program that executes a MEANING/CONNOTATION sweep. There is no marketplace grid in this spec — do not invent one.",
-    hasCells ? `Search EXACTLY this term × platform grid — every (term × platform) cell runs once, no additions, no omissions, keys VERBATIM (${cellCount} cells total):` : "",
-    hasCells ? `TERMS (${terms.length}): ${JSON.stringify(terms)}` : "",
-    hasCells ? `PLATFORMS (${platforms.length}): ${JSON.stringify(platforms)}` : "",
+    hasCells && pieces.length > 1
+      ? `Search EXACTLY these ${pieces.length} term × platform grids — each TERMS list runs on the PLATFORMS list that follows it; every (term × platform) cell runs once, no additions, no omissions, keys VERBATIM (${cellCount} cells total):`
+      : hasCells ? `Search EXACTLY this term × platform grid — every (term × platform) cell runs once, no additions, no omissions, keys VERBATIM (${cellCount} cells total):` : "",
+    ...pieces.flatMap((g) => [`TERMS (${g.terms.length}): ${JSON.stringify(g.terms)}`, `PLATFORMS (${g.platforms.length}): ${JSON.stringify(g.platforms)}`]),
     "Access the Perplexity results with EXACTLY this idiom — the result object supports ITERATION and ATTRIBUTE access ONLY (NO slicing, NO list(...), NO dict(...), NO indexing — iterating a single hit raises 'WebHit object is not iterable'):",
     hasCells ? "    hits = pplx_sdk.search.web(term, limit=10, domains=[platform])   # for the \"web\" platform, OMIT the domains= argument entirely" : "",
     hasCells ? "    results = []" : "",
@@ -481,7 +515,7 @@ export function reconcileGridLedger(stdoutStr, spec) {
     else if (g && g.term != null && g.platform != null) accounted.add(cellKey(g.term, g.platform));
   }
   const missing = [], addedGaps = [];
-  for (const term of spec.terms) for (const platform of spec.platforms) {
+  for (const [term, platform] of dictatedCells(spec)) {
     if (!accounted.has(cellKey(term, platform))) {
       missing.push({ term, platform });
       addedGaps.push({ term, platform, error: "cell not returned by grid program (reconciled gap)" });
@@ -514,7 +548,7 @@ export function reconcileGridLedger(stdoutStr, spec) {
     missingQueries,
     requestedQueries: dictatedQueries.length,
     presentQueries: dictatedQueries.length - missingQueries.length,
-    requested: spec.terms.length * spec.platforms.length,
+    requested: dictatedCells(spec).length,
     present: cells.length,
   };
 }
@@ -605,7 +639,7 @@ const isLedgerShaped = (p) => (Array.isArray(p) ? p : [p]).some((b) => b && type
  * matched as the reconcile matches them (gnorm). PURE; returns the folded ledger as a JSON string.
  */
 export function foldStepLedgers(ledgers, spec = null) {
-  const inGrid = spec ? new Set(spec.terms.flatMap((t) => spec.platforms.map((p) => cellKey(t, p)))) : null;
+  const inGrid = spec ? new Set(dictatedCells(spec).map(([t, p]) => cellKey(t, p))) : null;
   const dictated = spec ? new Set(connotationQueriesOf(spec).map(gnorm)) : null;   // matched as the reconcile matches
   const cells = new Map(), receipts = new Map(), extras = {}, gaps = [];
   for (const p of ledgers) {

@@ -132,6 +132,10 @@ driver's fixed query shapes:
   entry burns a dictated query). `Meaning angles: none` is the only valid empty form, reserved for a coined
   term with no real-word semantic field.
 
+`search_channels`, `confusable_forms` and `set_aside` decide the web grid before the web sweep runs it:
+
+- The stores that sell the client's kind of goods, for the forms a buyer could confuse. The customer profile's list is what you choose from, not what you owe. A store or form set aside is written down with its reason.
+
 ## Reasoning posture
 
 - When in doubt about an **off-field / adjacency** decision, INCLUDE rather than exclude — matter-frame should not silently filter a *field*; downstream review (`placement-inquiry`) can deprioritise later with reasoning. **Jurisdiction scope follows its own rule (see *Scope jurisdictions*): search wide, cite narrow.** An instructed-narrow scope is honored; a worldwide or brand-signalled scope widens the SEARCH to the majors + signalled markets; an inferred scope is labelled and disclosed. Do not silently pin a globally-signalling brand to one country (the pinned-scope miss), and do not widen a deliberately-local matter on abstract "the sector is global" reasoning (a wasted sweep).

@@ -10,7 +10,7 @@
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { dirname, join, basename } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
-import { findReceiptViolations, findGridLedgerViolations, findPlatformIdentityViolations, parsePrRiskQueries, MEANING_SEAT, erroredConnotationQueriesAmong } from "./common-law-receipts.mjs";
+import { findReceiptViolations, findGridLedgerViolations, findUnranDictatedCells, findPlatformIdentityViolations, parsePrRiskQueries, MEANING_SEAT, erroredConnotationQueriesAmong } from "./common-law-receipts.mjs";
 // Conversion 2 — the discriminator the two rulings above key on. PURE-ish: one existsSync-shaped read.
 import { matterFrameWasRecorded, frameRatifiedForms } from "./matter-frame-record.mjs";
 import { findConnotationViolations, parsePrRiskResults, prRiskPopulation,
@@ -513,11 +513,11 @@ function commonLawEvidence(p, c) {
     try { ledgerRaw = readFileSync(join(dirname(p), "common-law-grid.json"), "utf8"); } catch { /* legacy run */ }
     if (ledgerRaw != null) {
       let short;
-      try { short = findGridLedgerViolations(joinKeys, ledgerRaw, { minCellsPerVariant }); }
+      try { short = Array.isArray(spec?.grids) ? findUnranDictatedCells(spec, ledgerRaw) : findGridLedgerViolations(joinKeys, ledgerRaw, { minCellsPerVariant }); }
       catch (e) { return fail(`grid_ledger_unparseable:${String(e.message).slice(0, 80)}`); }
       if (short.length) return fail(`grid_join_missing:${short.map((v) => `${v.variant}:${v.cells}/${v.expected}`).join(",")}`);
       // platform-identity join: the count above proves how MANY platforms — this proves WHICH.
-      if (dictatedPlatforms.length) {
+      if (dictatedPlatforms.length && !Array.isArray(spec?.grids)) {   // blocks: every cell is joined above
         let wrong;
         try { wrong = findPlatformIdentityViolations(joinKeys, ledgerRaw, dictatedPlatforms); }
         catch (e) { return fail(`platform_identity_error:${String(e.message).slice(0, 80)}`); }   // never silently disable the join
@@ -606,10 +606,10 @@ function commonLawHalfEvidence(p, c) {
     try { ledgerRaw = readFileSync(join(dirname(p), `common-law-grid.half-${half}.json`), "utf8"); } catch { /* missing → fail-closed below */ }
     if (ledgerRaw == null) return fail(`grid_ledger_missing:common-law-grid.half-${half}.json absent while _driver/grid-spec.half-${half}.json dictates the grid`);
     let short;
-    try { short = findGridLedgerViolations(spec.terms, ledgerRaw, { minCellsPerVariant: spec.platforms?.length || undefined }); }
+    try { short = Array.isArray(spec.grids) ? findUnranDictatedCells(spec, ledgerRaw) : findGridLedgerViolations(spec.terms, ledgerRaw, { minCellsPerVariant: spec.platforms?.length || undefined }); }
     catch (e) { return fail(`grid_ledger_unparseable:${String(e.message).slice(0, 80)}`); }
     if (short.length) return fail(`grid_join_missing:${short.map((v) => `${v.variant}:${v.cells}/${v.expected}`).join(",")}`);
-    if (spec.platforms?.length) {
+    if (spec.platforms?.length && !Array.isArray(spec.grids)) {   // blocks: every cell is joined above
       let wrong;
       try { wrong = findPlatformIdentityViolations(spec.terms, ledgerRaw, spec.platforms); }
       catch (e) { return fail(`platform_identity_error:${String(e.message).slice(0, 80)}`); }

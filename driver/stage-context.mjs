@@ -272,6 +272,8 @@ export const CONTEXT_DERIVATIONS = [
     reads: (P) => [
       { path: P.variantManifest, why: "ctx.gridVariants = parseManifestVariants(variant-manifest.md)" },
       { path: P.matterContext, why: "the generic profile's channels and the derived meaning angles come from the frame" },
+      { path: driverDir(P.runDir, "matter-frame-calls", "accepted.json"), why: "web-grid.mjs frameWebChoiceFor: the forms the frame names and the stores it set aside decide the grid's blocks" },
+      { path: driverDir(P.runDir, "stage-contracts.json"), why: "web-grid.mjs frameAskedForWebGrid: a frame asked for its forms that sent none gets the mark itself; one never asked keeps the full grid" },
       { path: P.variantManifestModel, why: "the transliteration connotation bucket" },
       { path: P.commonLaw, why: "the resumed-unsplit self-disarm reads the canonical findings" },
       { path: P.commonLawHalf("a"), why: "the resumed-unsplit self-disarm" },

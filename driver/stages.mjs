@@ -1231,7 +1231,10 @@ export const STAGES = {
     // run, archived and parked included) — the first cut keyed on it and flipped real archived replay
     // verdicts AND forced completed matter-frames to re-dispatch on resume, dragging the full downstream
     // staleness cascade (2026-07-31 review round).
-    contract: { meaningAngles: 1 },
+    // `webGrid` marks a frame asked for its stores and forms (web-grid.mjs frameAskedForWebGrid): such a
+    // frame that sends no forms gets the mark itself on the stores, while a frame minted before the fields
+    // existed keeps the grid it was minted with.
+    contract: { meaningAngles: 1, webGrid: 1 },
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
     // CONTRACT DECLARATION above STAGES for the enum and the rules; contract-audit.mjs enforces them.
     contractElements: {
@@ -1242,6 +1245,14 @@ export const STAGES = {
       "search_channels — the domains where real use of THIS matter's goods would show": {
         class: "judgment", tokens: [],
         why: "the vertical read — which channels real use of THIS matter's goods would show on; no artifact holds it. Consumed by channelsFromMatterContext() in scope-ledger.mjs for the generic-fallback common-law grid",
+      },
+      "confusable_forms — the forms a buyer could confuse, searched on the stores": {
+        class: "judgment", tokens: [],
+        why: "which forms a buyer of THIS matter's goods could take for the mark is a reading of the market no artifact holds. Read by frameWebChoice() in web-grid.mjs for the stores block of the common-law grid; the mark itself always runs there, so an empty or absent answer still searches the stores",
+      },
+      "set_aside — the profile stores and forms the frame does not search, each with its reason": {
+        class: "judgment", tokens: [],
+        why: "which of the customer's stores do not sell THIS client's kind of goods is a judgment no artifact holds. Read by webGridOf() in web-grid.mjs; an entry with no reason is no decision and its store stays searched, so nothing is refused and no token speaks about it",
       },
       "meaning_angles — the per-matter semantic-field queries, or an asserted none": {
         class: "judgment", tokens: ["meaning_angles_missing"],
@@ -1333,6 +1344,13 @@ export const STAGES = {
       // #5 — channel derivation (replaces the static class→channel table). The generic-fallback common-law grid
       // reads THIS to pick its channels, so a regulated/B2B matter isn't forced onto consumer storefronts.
       `Send \`search_channels\` — an array of DOMAINS naming the search channels where real use of a mark in THIS matter's industry/goods would show, reasoned from the vertical (NOT a fixed list): consumer-retail goods → marketplaces (amazon.com, apps.apple.com, play.google.com); pharma/veterinary/medical (cl. 5/10/44 regulated) → drug/health registers (ema.europa.eu, fda.gov, animaldrugsatfda.fda.gov); B2B/developer products → the real trade/developer channels. Domains only (the grid site-restricts to them); the general web is always added by the driver.`,
+      // THE WEB GRID THE FRAME DECIDES (web-grid.mjs). A named customer's store list is what the frame
+      // chooses from: every store it does not set aside with a reason is searched for its forms. Generic
+      // is a house default the frame's channels replace, so it is not shown as a list to choose from.
+      // Model-facing prose: the three lines below are the owner's wording.
+      profile?.platforms?.length && profile.profileKey !== "generic" ? `Customer profile's stores: ${profile.platforms.join(", ")}.` : "",
+      `Send \`confusable_forms\` — the forms a buyer could confuse, as a buyer would type them. Each is searched on every store you do not set aside and on every channel in \`search_channels\`; every spelling is searched on the general web.`,
+      `Send \`set_aside\` — one \`{store, reason}\` for each store on the customer profile's list you do not search, and one \`{form, reason}\` for each form you set aside. A store with no entry here is searched.`,
       // P2-C (Round-2 §8b) — the DERIVED half of the meaning sweep's scope. The driver's fixed shapes
       // ("<mark> offensive", "<mark> urban dictionary") stay as the floor; THIS line supplies the per-matter
       // angles no fixed list can ask. The driver appends these queries VERBATIM to the dictated meaning sweep

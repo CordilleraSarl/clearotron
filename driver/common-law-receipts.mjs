@@ -30,6 +30,7 @@ export const MIN_CELLS_PER_VARIANT = 7;
 // It composes `queryKey`, which is the one author of what "the same text" means across a provider
 // boundary, and keeps its own wrapping-quote strip because a term arrives quoted here and does not there.
 import { queryKey } from "./connotation-search.mjs";
+import { dictatedCells } from "../providers/perplexity/src/core.js";   // what the spec asks, product or blocks
 
 const norm = (s) => queryKey(String(s || "").trim().replace(/^["'`\u2018\u2019\u201c\u201d]+|["'`\u2018\u2019\u201c\u201d]+$/g, ""));
 
@@ -283,6 +284,30 @@ export function findGridLedgerViolations(manifestOrTerms, ledgerRaw, { minCellsP
   // manifest-inference class). Legacy path: parse the markdown manifest (archived runs / offline tests).
   const variants = Array.isArray(manifestOrTerms) ? manifestOrTerms : parseManifestVariants(manifestOrTerms);
   return shortVariants(variants, (term) => platforms.get(norm(term))?.size || 0, minCellsPerVariant);
+}
+
+/**
+ * — THE RECEIPTS JOIN FOR A GRID IN BLOCKS: every cell the spec dictated ran — a cell or a recorded gap in
+ * the ledger — judged cell by cell. The count and identity joins below assume every term owes every
+ * platform, which a grid the matter frame decided does not ask. Same {variant, cells, expected} shape as
+ * findGridLedgerViolations, plus the platforms still owed, so the `grid_join_missing` token is unchanged.
+ * Throws on an unparseable ledger.
+ *
+ * @returns {Array<{variant:string, cells:number, expected:number, missing:string[]}>}
+ */
+export function findUnranDictatedCells(spec, ledgerRaw) {
+  const map = parseGridLedger(ledgerRaw);
+  const owed = new Map();   // term → [platform, ran?]
+  for (const [term, platform] of dictatedCells(spec)) {
+    if (!owed.has(term)) owed.set(term, []);
+    owed.get(term).push([platform, map.get(norm(term))?.has(norm(platform)) === true]);
+  }
+  const out = [];
+  for (const [variant, rows] of owed) {
+    const missing = rows.filter(([, ran]) => !ran).map(([p]) => p);
+    if (missing.length) out.push({ variant, cells: rows.length - missing.length, expected: rows.length, missing });
+  }
+  return out;
 }
 
 // ── WS-B: platform-identity join (per-customer profiles) ────────────────────────────────────────────────
@@ -674,6 +699,8 @@ export function splitGridSpec(spec, { outputPaths = {}, dispositionsPaths = {} }
       // The meaning seat sweeps no cells. `terms: []` is what makes its dispatch the meaning work and
       // nothing else, and it is why the grid halves keep an untouched 50/50 parity split.
       terms: isMeaning ? [] : terms[h],
+      // A grid in blocks keeps its blocks, each cut to this half's terms (a term owns all its cells in one half).
+      ...(Array.isArray(spec.grids) ? { grids: spec.grids.map((g) => ({ terms: g.terms.filter((t) => !isMeaning && terms[h].includes(t)), platforms: g.platforms })).filter((g) => g.terms.length) } : {}),
       output_path: outputPaths[h] ?? spec.output_path,
       // The disposition_required stamp still rides BOTH halves: it is the receipt-presence arm, and a
       // stray pr_risk block in the non-owning half must still be judged rather than waved through.
@@ -773,14 +800,14 @@ export function mergeGrids(a, b, { spec, halfErrors = {} } = {}) {
   // gaps: recomputed against the FULL spec
   const halfTerms = splitGridTerms(spec?.terms ?? []);
   const gaps = [];
-  for (const term of spec?.terms ?? []) {
-    for (const platform of spec?.platforms ?? []) {
-      if (seen.has(key(term, platform))) continue;
-      const owner = halfOfTerm(halfTerms, term);
-      const error = gapErr.get(key(term, platform))?.error
-        || (owner && halfErrors[owner]) || "cell not accounted by either half-grid";
-      gaps.push({ term, platform, error });
-    }
+  // Over the cells the spec DICTATES, never terms × platforms: a grid the frame decided is blocks, and the
+  // product of its unions would make a gap of every cell nobody asked for, which the closure pass would run.
+  for (const [term, platform] of spec ? dictatedCells(spec) : []) {
+    if (seen.has(key(term, platform))) continue;
+    const owner = halfOfTerm(halfTerms, term);
+    const error = gapErr.get(key(term, platform))?.error
+      || (owner && halfErrors[owner]) || "cell not accounted by either half-grid";
+    gaps.push({ term, platform, error });
   }
   // UNION honestly-recorded NON-SPEC gap rows: a half may record a gap for a cell OUTSIDE the canonical
   // spec (a legitimately re-keyed variant / an extra platform a half swept). The spec-only recompute above

@@ -182,8 +182,9 @@ export function renderMatterFrame(model) {
  */
 /** The shape this tool declares, at every depth — what the ACCEPTOR enforces. */
 const DECLARED = Object.freeze({
-  "": ["prose_body", "scope_basis", "scope_jurisdictions", "excluded_jurisdictions", "search_channels", "meaning_angles", "meaning_angles_none", "intake_asks", "identified_classes", "ratified_forms", "house_element_candidate"],
+  "": ["prose_body", "scope_basis", "scope_jurisdictions", "excluded_jurisdictions", "search_channels", "confusable_forms", "set_aside", "meaning_angles", "meaning_angles_none", "intake_asks", "identified_classes", "ratified_forms", "house_element_candidate"],
   intake_asks: ["ask", "owner"],
+  set_aside: ["store", "form", "reason"],
   identified_classes: ["class", "reason"],
   house_element_candidate: ["element", "remainder", "owner_basis"],
 });
@@ -300,6 +301,10 @@ export function mergeMatterFrameCall(stored, received) {
     // omission here is a repair that did not mention them, never a decision to withdraw them.
     identified_classes: keepIfAbsent(received?.identified_classes, base.identified_classes),
     ratified_forms: keepIfAbsent(received?.ratified_forms, base.ratified_forms),
+    // KEEP-IF-ABSENT: the web grid the frame decided. A repair turn that did not mention it has not
+    // withdrawn it, and losing it would put the grid back to every spelling on every store.
+    confusable_forms: keepIfAbsent(received?.confusable_forms, base.confusable_forms),
+    set_aside: keepIfAbsent(received?.set_aside, base.set_aside),
     // KEEP-IF-ABSENT, and the direction of its failure is the OPPOSITE of the two above — which is
     // worth saying, because the reasoning that protects them does not transfer and a reader who assumed
     // it did would mis-rank this key. Dropping the identified classes NARROWS the next compile, towards
@@ -451,6 +456,23 @@ export function acceptMatterFrame(params, { instructedScope = null } = {}) {
     house_element_candidate = { element, remainder, owner_basis };
   }
 
+  // ── THE WEB GRID THE FRAME DECIDES: its forms, and what it set aside with its reason ──────────────
+  //
+  // ABSENT IS NOT EMPTY. Absent means the frame did not decide the forms, and the grid keeps every spelling
+  // on every store; an empty list is the frame's answer that no form is searched on the stores. Nothing
+  // here refuses: a blank form or a set-aside with no reason is not a decision and is left out, because a
+  // refusal costs the run a retry and a missing decision already has a safe reading.
+  const confusable_forms = Array.isArray(params?.confusable_forms) ? [] : null;
+  for (const f of confusable_forms ? params.confusable_forms : []) {
+    const form = str(f);
+    if (form && !confusable_forms.some((k) => k.toLowerCase() === form.toLowerCase())) confusable_forms.push(form);
+  }
+  const set_aside = [];
+  for (const x of Array.isArray(params?.set_aside) ? params.set_aside : []) {
+    const store = str(x?.store), form = str(x?.form), reason = str(x?.reason);
+    if (reason && (store || form)) set_aside.push({ ...(store ? { store } : {}), ...(form ? { form } : {}), reason });
+  }
+
   const model = {
     schema_version: SCHEMA_VERSION,
     instructed_scope: instructedScope ?? null,
@@ -459,6 +481,7 @@ export function acceptMatterFrame(params, { instructedScope = null } = {}) {
     scope_jurisdictions: list(params?.scope_jurisdictions),
     excluded_jurisdictions: list(params?.excluded_jurisdictions),
     search_channels: list(params?.search_channels),
+    confusable_forms, set_aside,
     meaning_angles, meaning_angles_none,
     intake_asks,
     identified_classes,
