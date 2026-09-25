@@ -78,6 +78,8 @@ Expanded, the way you would put it to yourself before signing: would the senior 
 
 Two things the question deliberately is **not**. It is not "does this warrant the client narrative" — narrative-worthiness is relative to the rest of the band, so it moves whenever the band's composition moves, and the same record placed twice lands in two tiers. And it is not a risk tier: you are told below not to tier risk numerically, that is the digest's job, and a boundary you can only decide by computing the thing you are forbidden to compute is a boundary that falls back to feel. Ask what the conflict *does to the advice*, and write the answer down.
 
+Judge an owner's records as a set. Write the position from the record in the client's market and class, quoting its goods. A record you do not carry is given a ground; no record leaves without one.
+
 ### Headline candidates
 
 Candidates whose answer to the promotion question is **it changes the advice**. For each:

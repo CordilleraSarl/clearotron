@@ -666,7 +666,7 @@ export async function buildAudit(contract, auditParsed, outPath, mark = '', fm =
   addSheet(wb, 'Coverage & gaps', COVERAGE_COLS,
     [...coverageRows(coverage), ...coverageRows(contract?.droppedConditions || []),
      ...coverageRows(contract?.undispatchedProbes || []), ...coverageRows(contract?.withheldFamilies || []),
-     ...coverageRows(contract?.releasedFamilies || [])], (row, _d, kept) => {
+     ...coverageRows(contract?.releasedFamilies || []), ...(contract?.setAside || []).map((s) => ({ Area: plainNote(s.area), State: 'Note', 'What was done': plainNote(s.note) || '—', "What's left": '—' }))], (row, _d, kept) => {
     if (!kept.has('State')) return;
     const st = row.getCell('State'); const f = STATE_FILL[String(st.value).trim()];
     if (f) { st.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF' + f } }; st.font = { bold: true }; }

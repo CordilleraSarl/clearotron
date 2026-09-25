@@ -81,11 +81,11 @@ serve({
   tools: [{
     name: "record_declination",
     description:
-      "Record, per record, your decision NOT to deliver something that reached your findings surface. " +
-      "Every record the digest carried to you either becomes a finding or carries a stated reason it did " +
-      "not — there is no third way out, and a record left silent is reported as a defect of this run and " +
-      "named individually in its trace. One call carries a batch; the answer tells you what was accepted, " +
-      "what was refused and why, and WHICH RECORDS STILL CARRY NO DECISION, so you can finish inside this " +
+      "Record, per record or page, your decision NOT to deliver something that reached your findings surface. " +
+      "Every record the digest carried to you, and every page the web notes surfaced, either becomes a finding " +
+      "or carries a stated reason it did not — there is no third way out, and one left silent is reported as " +
+      "a defect of this run. One call carries a batch; the answer tells you what was accepted, " +
+      "what was refused and why, and WHICH ROWS STILL CARRY NO DECISION, so you can finish inside this " +
       "turn. A refusal is about bookkeeping, never about your legal judgment: a reason is refused only " +
       "where it contradicts a fact the job recorded before this run started.",
     inputSchema: { type: "object", required: ["declinations"], properties: {
@@ -95,18 +95,18 @@ serve({
         items: { type: "object", required: ["row_index", "reason", "grounds"], properties: {
           row_index: {
             type: "integer",
-            description: "The POSITION of the record in the findings-surface list this stage was handed. There is no field for a uri or a mark name — a record you were not given cannot be expressed.",
+            description: "The POSITION of the record or page in the findings-surface list this stage was handed. There is no field for a uri, a page address or a mark name — a row you were not given cannot be expressed.",
           },
           reason: {
             type: "string",
             enum: [...DECLINATION_REASON_TOKENS],
             description: "The category, from the closed set the synthesis rules already authorise: "
               + DECLINATION_REASON_TOKENS.map((t) => `${t} — ${DECLINATION_REASONS[t].gloss}`).join(" · ")
-              + ". If your ground is none of these, the rules do not let you omit the record.",
+              + ". If your ground is none of these, the rules do not let you omit it.",
           },
           grounds: {
             type: "string",
-            description: "One or two lines, in your own words, on why THIS record does not earn a line. Never machine-parsed — it is what the reviewing lawyer reads. The reason token is the category; this is the substance.",
+            description: "One or two lines, in your own words, on why THIS record or page does not earn a line. Never machine-parsed — it is what the reviewing lawyer reads. The reason token is the category; this is the substance.",
           },
         } },
       },

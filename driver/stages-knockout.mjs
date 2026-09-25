@@ -74,6 +74,7 @@ export function koPaths(runDir) {
     ownerCheckLedger: driverDir(runDir, "owner-check.jsonl"),
     researchDir: join(runDir, "research"),
     research: (markKebab) => join(runDir, "research", `${markKebab}.md`),
+    knockoutCarry: driverDir(runDir, "knockout-carry.json"),   // which pages each payload named reached a finding
     sweepLedger: driverDir(runDir, "knockout-sweep.jsonl"),
     // That SHAPE, APPLIED: the WORK MOVES OUT OF THE GUARDED TREE — the hook is never weakened.
     //
