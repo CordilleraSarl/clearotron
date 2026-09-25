@@ -129,6 +129,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-case-law-source-that-answers-with-an-error-has-not-answered.test.mjs": {
+          "tests": 2,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "a-change-a-reader-can-see-arrives-with-something-to-read.test.mjs": {
           "tests": 35,
           "asserts": 89,
