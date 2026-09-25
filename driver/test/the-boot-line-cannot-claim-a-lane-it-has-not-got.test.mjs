@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// (Leia's filing), criteria 1 and 2.
+// The boot line cannot claim a lane it has not got: criteria 1 and 2.
 //
 // The owner's 502: this boot line had been printing a confident sentence about the trigger lane for as
 // long as the lane had been dead. It fired on PORTAL_OPS_TOKEN alone and described the token's posture

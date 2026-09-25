@@ -105,7 +105,7 @@ test("the producer imports the shared predicate rather than keeping its own", ()
 const SURVIVOR = survivorBoundaryNote({ level: "knockout-search" });
 
 test("THE DEFECT: a pipeline-shaped document with NO standing caveat used to pass", () => {
-  // Gimli's row 3. The standing caveat is entirely absent, the register surfaced nothing, and the run
+  // The standing caveat is entirely absent, the register surfaced nothing, and the run
   // owes it — but the survivor sentence made `supplied` non-empty, so the lint said nothing at all.
   const dir = runWith([]);
   const f = validateMergedFindings(dir, merged([SURVIVOR]), { marks: [] });
