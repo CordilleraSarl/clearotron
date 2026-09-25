@@ -148,7 +148,7 @@ driver's fixed query shapes:
 - **Don't rate risk.** Risk-rating happens later, against this context.
 - **Don't predict outcomes.** matter-frame is descriptive (what this matter IS), not predictive (what we'll find).
 - **Don't be exhaustive on watchlist owners.** 3-7 named seeds is the right density.
-- **Don't blur the off-field list with the risk list.** Off-field sectors are categorically excluded from headline risk; risky-but-on-field findings go through `placement-inquiry`.
+- **Don't blur the off-field list with the risk list.** Risky-but-on-field findings go through `placement-inquiry`.
 
 ## Length target
 

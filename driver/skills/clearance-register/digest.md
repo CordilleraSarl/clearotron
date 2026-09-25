@@ -503,18 +503,17 @@ applicant-exclusion for conflict-ranking is otherwise untouched. If priority is 
 
 ### Step 5 — Apply watchlists
 
-Flag owners against `aggressive_enforcers` ("aggressive enforcer; always include"),
+Flag owners against `aggressive_enforcers` ("aggressive enforcer"),
 `major_brand_owners` ("major brand owner; business-relevant"), `competitors` ("competitor;
-business-relevant"). **Watchlist-flagged rows enter findings regardless of relevance-gate result.**
+business-relevant").
 
-**Watchlist / named-owner status is an ADDITIVE surfacing channel, never a FILTER.** Step 4's
-competitor/enforcer sweeps and this step's watchlist flags are *enrichment and priority-decoration* — they
-can only ever ADD a finding or attach context, never gate one out or down-rank it. An in-class
+**Watchlist / named-owner status is a hint: never a rule that carries a finding, and never a FILTER.**
+This step's watchlist flags are *enrichment* — context the reading weighs — and never gate a finding out or
+down-rank it. An in-class
 identical / near-identical incumbent surfaces on **field-relevance ALONE** — the exact same surfacing it
 would get if its owner happened to sit on a watchlist — with any named-owner context attached as
 enrichment. A finding is **never** down-ranked or omitted because its owner was not pre-named in
-`matter-context`'s watchlist-owner seeds. The named-owner channel exists to *guarantee* the famous/aggressive
-owner surfaces; it must not become an asymmetry that demotes the un-named in-class incumbent the gate already
+`matter-context`'s watchlist-owner seeds. The named-owner channel must not become an asymmetry that demotes the un-named in-class incumbent the gate already
 kept.
 
 ### Step 6 — Stealth-filer detection + Option-D cross-checks
@@ -593,7 +592,7 @@ This skill's universal logic — per-axis funnel, status filter, relevance gate,
 - [ ] Owner aggregation across the band; owner-identity conflicts flagged `Verify? ✅` (never silently picked)
 - [ ] **Every coverage-form row ruled through `record_coverage`** — the tool's answer reports nothing outstanding; every `incomplete` crowd descriptor ruled cleared/material-gap; reconciled against `matter-context`'s material-jurisdiction list (every material jurisdiction enumerated-and-cleared, or written `coverage-limited`/`deferred` → CONDITIONAL — never a self-accepted clean over an unsearched slice); rolled-up `{sufficient, reason}` stated for synthesis to emit; genuine open judgment surfaced to ship (not a coverage gap)
 - [ ] Applicant own-rights sweep run **if priority is live** (tagged `applicant_own_rights`; never a conflict / Findings row / gate)
-- [ ] Watchlist matches flagged (override the gate)
+- [ ] Watchlist matches flagged
 - [ ] Stealth-filer detection + Option-D triggers (exec 1 & 4, flag 2 & 3)
 - [ ] Out-of-scope-filtered candidates routed to Excel Out-of-Scope tab with reasoning (NOT to Findings)
 - [ ] Watchlist-annex candidates routed to audit-tab + optional brief narrative mention with monitor trigger
