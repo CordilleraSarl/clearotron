@@ -42,6 +42,7 @@ const { KO_STAGES, koPaths, knockoutGridSpec, KNOCKOUT_WEB, kebab } = await impo
 const { knockoutReceipts, validators, placesDefect, spellingsDefect } = await import("../verify-knockout.mjs");
 const { acceptKnockoutFrame, refuseUndeclared } = await import("../knockout-frame-record.mjs");
 const { buildRequestBody, buildGridProgramTask, SANDBOX_INSTRUCTIONS } = await import("../../providers/perplexity/src/core.js");
+const { RESEARCH_PROVIDERS } = await import("../driver.config.mjs");
 
 // ── The plan's two lists, checked as the search program will read them ─────────────────────────────
 
@@ -245,4 +246,20 @@ test("a grid call that met a provider outage is not asked again, and a batch of 
   assert.match(log, /"event":"knockout-sweep-outage"/, "the batch was not recognised as an outage");
   assert.equal(res, null, "an all-outage batch returned instead of parking");
   assert.equal(thrown?.reason, "rate_limited", `an all-outage batch should park on the provider's clock: ${thrown?.message}`);
+});
+
+test("the live grid call reads a 5xx as an outage and a 4xx as not one, after the provider call's own retries", async () => {
+  const spec = knockoutGridSpec({ name: "LANTERNWICK", spellings: ["LANTERNWICK", "LANTERN WICK"] }, { places: ["web", "fandom.com"] },
+    { outputPath: join(ROOT, "studio", "clearance-search", "runs", "x", "research", "lanternwick.md") });
+  const real = globalThis.fetch;
+  const answered = (status) => async () => ({ ok: false, status, text: async () => `status ${status}`, json: async () => ({}) });
+  try {
+    globalThis.fetch = answered(503);
+    const down = await RESEARCH_PROVIDERS.perplexity.grid(spec, KNOCKOUT_WEB);
+    assert.deepEqual([down.ok, down.outage, down.status], [false, true, 503]);
+    assert.match(down.cause, /^grid call threw: Perplexity API 503/);
+    globalThis.fetch = answered(400);
+    const refused = await RESEARCH_PROVIDERS.perplexity.grid(spec, KNOCKOUT_WEB);
+    assert.deepEqual([refused.ok, refused.outage, refused.status], [false, false, 400], "a request the provider refuses is not weather");
+  } finally { globalThis.fetch = real; }
 });
