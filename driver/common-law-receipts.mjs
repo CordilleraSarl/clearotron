@@ -741,7 +741,8 @@ export function splitGridSpec(spec, { outputPaths = {}, dispositionsPaths = {} }
  *     batch has since closed is dropped). This is the never-thinner guarantee: every dictated cell is
  *     accounted as a real cell or an HONEST gap, so a half failure can never yield a ledger that is
  *     thinner but still valid. A half's honestly-recorded gap for a cell OUTSIDE the spec (a re-keyed
- *     variant / an extra swept platform) is UNIONED in too — the spec-only recompute would erase it.
+ *     variant / an extra swept platform) is UNIONED in too — the spec-only recompute would erase it,
+ *     except a meaning query's gap row when the merged receipts answer that query.
  *   - extras.pr_risk[]: concatenated (a then b), deduped by trimmed query — restores the full dictated
  *     meaning-receipt set from the per-half partitions. Other extras keys: arrays concatenate,
  *     anything else first-defined wins.
@@ -814,9 +815,18 @@ export function mergeGrids(a, b, { spec, halfErrors = {} } = {}) {
   // never emits those, silently erasing an honestly-recorded coverage gap — union them so an honest gap
   // survives the merge. A cell present in cells[] still wins (a stale gap a supplementary batch has since
   // closed is dropped exactly as for spec cells), and a gap already emitted by the spec loop is not doubled.
+  //
+  // A MEANING QUERY THE MERGED RECEIPTS ANSWER KEEPS NO GAP ROW. The grid tool records one for each dictated
+  // query its program did not return, and the engine's re-issue can answer that query later in the same
+  // ledger. Kept beside the answer, the row says a search did not complete when it did, and the closure pass
+  // takes every gap row for a store cell, so it searches the query again on a site called "connotation".
+  // Queries are matched as the receipts are (norm).
+  const answered = new Set((Array.isArray(extras.pr_risk) ? extras.pr_risk : [])
+    .map((e) => (typeof e?.query === "string" ? norm(e.query) : "")).filter(Boolean));
   const gappedKeys = new Set(gaps.map((g) => key(g.term, g.platform)));
   for (const [k, g] of gapErr) {
     if (seen.has(k) || gappedKeys.has(k)) continue;
+    if (String(g.platform).toLowerCase() === "connotation" && answered.has(norm(g.term))) continue;
     gaps.push({ term: g.term, platform: g.platform, error: g.error || "cell not accounted by either half-grid" });
   }
   return { cells, extras, gaps };

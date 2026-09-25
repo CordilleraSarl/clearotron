@@ -1369,9 +1369,10 @@ serve({
         },
         batch: {
           type: "object",
-          required: ["productContext"],
+          required: ["productContext", "inUseAs"],
           properties: {
             productContext: { type: "string", description: "One sentence: what the batch is for. Every mark's contextFraming is read against it." },
+            inUseAs: { type: "string", description: "The kinds of use off the register that could conflict in this client's field, as one phrase completing \"Is this name already in use as …?\". The second web question for every mark asks exactly this." },
             umbrellaBrandNote: { type: "string", description: "A note where an umbrella brand is in play, or omit it." },
             executionOrder: {
               type: "array", items: { type: "string" },

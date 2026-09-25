@@ -82,7 +82,7 @@ export function knockoutFrameCallPaths(runDir) {
  */
 const DECLARED = Object.freeze({
   "": ["schema", "batch", "marks", "scope_note"],
-  batch: ["productContext", "umbrellaBrandNote", "executionOrder"],
+  batch: ["productContext", "inUseAs", "umbrellaBrandNote", "executionOrder"],
   marks: ["ref", "name", "classes", "beltAndBraces", "classesPlain", "contextFraming", "priorKnowledge", "priority"],
 });
 
@@ -121,6 +121,7 @@ export function mergeKnockoutFrameCall(stored, received) {
   const bPatch = patch.batch ?? {};
   out.batch = {
     productContext: keepIfAbsent(bPatch.productContext, bBase.productContext),
+    inUseAs: keepIfAbsent(bPatch.inUseAs, bBase.inUseAs),
     umbrellaBrandNote: keepIfAbsent(bPatch.umbrellaBrandNote, bBase.umbrellaBrandNote),
     executionOrder: keepIfAbsent(bPatch.executionOrder, bBase.executionOrder),
   };

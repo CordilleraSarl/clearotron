@@ -843,6 +843,12 @@
           "skips": 3,
           "todos": 0
         },
+        "a-program-printing-each-group-in-one-run-is-read-whole.test.mjs": {
+          "tests": 5,
+          "asserts": 26,
+          "skips": 0,
+          "todos": 0
+        },
         "a-project-cannot-break-the-tree-it-joins.test.mjs": {
           "tests": 13,
           "asserts": 37,
@@ -2008,8 +2014,8 @@
           "todos": 0
         },
         "common-law-receipts.test.mjs": {
-          "tests": 40,
-          "asserts": 141,
+          "tests": 41,
+          "asserts": 143,
           "skips": 0,
           "todos": 0
         },
@@ -2889,6 +2895,12 @@
           "skips": 0,
           "todos": 0
         },
+        "every-knockout-mark-asks-how-its-name-is-already-in-use.test.mjs": {
+          "tests": 5,
+          "asserts": 43,
+          "skips": 0,
+          "todos": 0
+        },
         "every-lane-declares-its-transport-position.test.mjs": {
           "tests": 7,
           "asserts": 12,
@@ -3329,7 +3341,7 @@
         },
         "knockout-seats-do-not-describe-the-register-lane.test.mjs": {
           "tests": 6,
-          "asserts": 13,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
@@ -3731,7 +3743,7 @@
         },
         "pipeline.mock.test.mjs": {
           "tests": 103,
-          "asserts": 857,
+          "asserts": 859,
           "skips": 0,
           "todos": 0
         },
@@ -4667,7 +4679,7 @@
         },
         "runner.knockout-e2e.test.mjs": {
           "tests": 3,
-          "asserts": 118,
+          "asserts": 121,
           "skips": 0,
           "todos": 0
         },

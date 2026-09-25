@@ -113,11 +113,28 @@ export function koPaths(runDir) {
 }
 
 
-// ── The sweep prompt — the interactive skill's Perplexity template, VERBATIM (knockout-searches
-// SKILL.md :118-150), driver-templated: every substitution is DICTATED from the frame's plan row —
-// nothing inferred at run time, and the template carries no client identity/reference/contact
-// (the skill's HITL sanitization, now enforced by construction).
-export function knockoutPrompt(markRow, batch, { jurisdictions = null } = {}) {
+// — the other half of part 2's ruling, which reached the ASSESS seat only (see the same
+// wording further down this file) and left the sweep seat with the same blindness and no prohibition.
+// Measured on R4 2026-08-21: that seat wrote "No USPTO, EUIPO, WIPO, Swiss, or other trademark-register
+// searches were performed, as instructed" into the delivered research file, on a run that took
+// THIRTEEN EUIPO register searches and reported their counts in the same delivery's email body.
+//
+// The seat was not lying and "as instructed" is a true description of the scope line above it — but
+// the line scopes THE SEAT's work, and the client has no way to read it that narrowly. Nobody who
+// cannot see the machinery describes it: the renderer owns that sentence and writes it from the
+// sidecars, including the coverage-shortfall disclosure. Hidden until now only because the register
+// provider is normally clarivate while this sentence names USPTO/WIPO/Swiss as its examples; running
+// EUIPO put the named office and the counted office side by side in one delivery. Both web questions
+// carry it, since both answers land in the same research file.
+const SAY_NOTHING_ABOUT_THE_REGISTERS = [
+  `- SAY NOTHING ABOUT WHETHER THE REGISTERS WERE SEARCHED, counted, overlaid or checked — not in a`,
+  `  finding, not in a gaps, scope or caveat note, not as an aside. The scope line above governs YOUR`,
+  `  work and is not a fact about the run: this run may well be searching registers on a lane you`,
+  `  cannot see, and the report states what it covered in code, from the run's own measurements.`,
+];
+
+// The substitutions both web questions share, each DICTATED from the frame's plan row or the job.
+function sweepTerms(markRow, jurisdictions) {
   const name = String(markRow.name);
   // Instructed territories are DICTATED from the job, never inferred by the frame — the same discipline
   // every other substitution here follows. Absent ⇒ the global default, which is what a quick screen has
@@ -129,15 +146,27 @@ export function knockoutPrompt(markRow, batch, { jurisdictions = null } = {}) {
   const multi = /\s/.test(name.trim());
   const noSpaces = name.replace(/\s+/g, "");
   const hyphenated = name.trim().replace(/\s+/g, "-");
-  const dotCom = `${noSpaces.toLowerCase().replace(/[^a-z0-9-]/g, "")}.com`;
   const ctxNote = markRow.contextFraming ? ` — ${markRow.contextFraming}` : "";
-  return lines(
-    `Quick knockout trademark search for the proposed mark "${name}" in the context of ${batch.productContext}${ctxNote}.`,
-    ``,
+  const searchFor = [
     `SEARCH FOR:`,
     `1. "${name}" — exact phrase`,
     multi ? `2. "${noSpaces}" — no spaces` : "",
     multi ? `3. "${hyphenated}" — hyphenated` : "",
+  ];
+  return { name, jx, scopeLine, noSpaces, ctxNote, searchFor };
+}
+
+// ── The sweep prompt — the interactive skill's Perplexity template, VERBATIM (knockout-searches
+// SKILL.md :118-150), driver-templated: every substitution is DICTATED from the frame's plan row —
+// nothing inferred at run time, and the template carries no client identity/reference/contact
+// (the skill's HITL sanitization, now enforced by construction).
+export function knockoutPrompt(markRow, batch, { jurisdictions = null } = {}) {
+  const { name, jx, scopeLine, noSpaces, ctxNote, searchFor } = sweepTerms(markRow, jurisdictions);
+  const dotCom = `${noSpaces.toLowerCase().replace(/[^a-z0-9-]/g, "")}.com`;
+  return lines(
+    `Quick knockout trademark search for the proposed mark "${name}" in the context of ${batch.productContext}${ctxNote}.`,
+    ``,
+    ...searchFor,
     ``,
     `CLASSES/INDUSTRIES TO CONSIDER: ${markRow.classesPlain}`,
     ``,
@@ -157,22 +186,7 @@ export function knockoutPrompt(markRow, batch, { jurisdictions = null } = {}) {
     `- Industry-specific marketplaces relevant to the product context (e.g. for gaming: Steam, Epic, Google Play, App Store, Microsoft Store, itch.io; for physical goods: Amazon and the category's retail/marketplace sites)`,
     `- Do NOT search trademark registers (USPTO, WIPO, etc.) — common-law / marketplace only`,
     ``,
-    // — the other half of part 2's ruling, which reached the ASSESS seat only (see the same
-    // wording further down this file) and left this one with the same blindness and no prohibition.
-    // Measured on R4 2026-08-21: this seat wrote "No USPTO, EUIPO, WIPO, Swiss, or other trademark-register
-    // searches were performed, as instructed" into the delivered research file, on a run that took
-    // THIRTEEN EUIPO register searches and reported their counts in the same delivery's email body.
-    //
-    // The seat was not lying and "as instructed" is a true description of the line above it — but the
-    // line scopes THIS SEAT's work, and the client has no way to read it that narrowly. Nobody who
-    // cannot see the machinery describes it: the renderer owns that sentence and writes it from the
-    // sidecars, including the coverage-shortfall disclosure. Hidden until now only because the register
-    // provider is normally clarivate while this sentence names USPTO/WIPO/Swiss as its examples; running
-    // EUIPO put the named office and the counted office side by side in one delivery.
-    `- SAY NOTHING ABOUT WHETHER THE REGISTERS WERE SEARCHED, counted, overlaid or checked — not in a`,
-    `  finding, not in a gaps, scope or caveat note, not as an aside. The scope line above governs YOUR`,
-    `  work and is not a fact about the run: this run may well be searching registers on a lane you`,
-    `  cannot see, and the report states what it covered in code, from the run's own measurements.`,
+    ...SAY_NOTHING_ABOUT_THE_REGISTERS,
     ``,
     `REPORT FORMAT:`,
     jx.length
@@ -182,6 +196,59 @@ export function knockoutPrompt(markRow, batch, { jurisdictions = null } = {}) {
     `- Be concise — this is a knockout search, not a deep dive`,
     `- Focus on OBVIOUS conflicts: famous brands, identical names in same/adjacent industries, well-known cultural references, major commercial entities`,
     `- Note the crowded field situation if relevant (e.g., "many MOTO-[x] publications exist")`,
+  );
+}
+
+// ── The second web question: the name already in use in the client's field (ruled 2026-09-25) ───────
+//
+// A lawyer reads each mark against the name already in use off the register, in the ways that matter in
+// the client's field, and the question above never asks it: it asks whether the name IS a well-known
+// work or brand, not whether something already USES it. Measured in testing, 2026-09-25: three entries a
+// lawyer named on one games reference — a television character, a place inside two games and an
+// achievement inside a game — were lost on both engines. So every mark in every knockout is asked this
+// one more question, for every client. It costs one more web search a mark, and no register question.
+//
+// WHICH KINDS OF USE is the frame's judgment, made per matter from the client's field and worded as
+// `batch.inUseAs` (a character, place, title or achievement for a games client; a cocktail, venue or
+// beverage line for a drinks client). The question carries those words and no list of its own, so a
+// client outside games is asked about its own field's uses, not a games list.
+//
+// Its frame is the question above, line for line, where a line applies: the mark, the spellings, the
+// scope and the silence about the registers. What it asks and how it answers are its own.
+export const IN_USE_AS = "in-use-as";
+
+/** Between the two answers in a mark's research file: a rule, and no words the seat would have to read. */
+export const SECOND_ANSWER_SEPARATOR = "\n\n---\n\n";
+
+/** The frame's kinds of use for this matter, or null when the plan carries none. */
+export const inUseAsOf = (batch) => (typeof batch?.inUseAs === "string" && batch.inUseAs.trim() ? batch.inUseAs.trim() : null);
+
+export function knockoutInUseAsPrompt(markRow, batch, { jurisdictions = null } = {}) {
+  const { name, jx, scopeLine, ctxNote, searchFor } = sweepTerms(markRow, jurisdictions);
+  const uses = inUseAsOf(batch);
+  if (!uses) throw new Error("knockoutInUseAsPrompt: the plan's batch.inUseAs is empty — the frame names the kinds of use");
+  return lines(
+    `Quick knockout trademark search for the proposed mark "${name}" in the context of ${batch.productContext}${ctxNote}.`,
+    ``,
+    ...searchFor,
+    ``,
+    `WHAT I NEED TO KNOW:`,
+    `- Is this name already in use as ${uses}?`,
+    `- For each such use: where it appears, and who makes or owns it.`,
+    ``,
+    `SEARCH SCOPE:`,
+    scopeLine,
+    `- General web, including the sites that list such uses`,
+    `- Do NOT search trademark registers (USPTO, WIPO, etc.) — common-law / marketplace only`,
+    ``,
+    ...SAY_NOTHING_ABOUT_THE_REGISTERS,
+    ``,
+    `REPORT FORMAT:`,
+    jx.length
+      ? `- List each use with: name, what it is, where it appears, who makes or owns it, URL, jurisdiction, and why it matters — findings OUTSIDE ${jx.join(", ")} are out of scope for this screen and should be omitted`
+      : `- List each use with: name, what it is, where it appears, who makes or owns it, URL, jurisdiction, and why it matters`,
+    `- If NOTHING is found, explicitly state: "No use of ${name} as ${uses} identified"`,
+    `- Be concise — this is a knockout search, not a deep dive`,
   );
 }
 
@@ -269,7 +336,7 @@ export const KO_STAGES = {
       `HAND THE FRAME BACK BY CALLING \`record_knockout_frame\`. THERE ARE NO FILES FOR YOU TO WRITE and this dispatch names none — the driver writes both the plan and the scope note from what you send, and nothing you write by hand is read.`,
       `Send \`scope_note\`: the 2–3 sentence scope note, FINISHED — what the batch is, which classes, anything flagged. It is written to knockout-frame.md exactly as you send it, with no heading added and nothing composed into it, so it must read as a complete document on arrival.`,
       `Send \`marks\`: one row per instructed mark, names verbatim from the instructed scope, each with its classes, beltAndBraces, classesPlain, contextFraming and priority. Two names that differ only in spacing, punctuation or case are REFUSED — they would share one research payload, and one of them would then be rated on the other's evidence.`,
-      `Send \`batch\`: productContext, and executionOrder as a permutation of your mark names.`,
+      `Send \`batch\`: productContext, inUseAs (task 2c), and executionOrder as a permutation of your mark names.`,
       `IF YOU CALL AGAIN, SEND ONLY WHAT YOU ARE CORRECTING. The driver merges marks BY NAME onto what it already accepted, so a mark you omit keeps its row — but a mark you DO send replaces that row whole, so send a corrected mark complete rather than as a fragment.`,
     ),
   },

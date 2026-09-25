@@ -266,6 +266,10 @@ export const validators = {
     if (p?.schema !== 1) return { ok: false, reason: "schema must be 1" };
     if (!p.batch || typeof p.batch.productContext !== "string" || !p.batch.productContext.trim())
       return { ok: false, reason: "batch.productContext (string) is required" };
+    // The kinds of use every mark's second web question asks about, judged from the client's field. Without
+    // them the question would be asked with words nobody chose, or not at all (stages-knockout.mjs).
+    if (typeof p.batch.inUseAs !== "string" || !p.batch.inUseAs.trim())
+      return { ok: false, reason: "batch.inUseAs (string) is required: the kinds of use the second web question asks about, for this client's field" };
     if (!Array.isArray(p.marks) || !p.marks.length) return { ok: false, reason: "marks[] is required" };
     const MARK_KEYS = ["ref", "name", "classes", "beltAndBraces", "classesPlain", "contextFraming", "priorKnowledge", "priority"];
     for (const m of p.marks) {
