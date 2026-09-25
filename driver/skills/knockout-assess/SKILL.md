@@ -32,8 +32,6 @@ there is no other value: a band that needs sharpening is the band above it, stat
    the band and renumbers, so what your order decides is the order inside a band. Every cited URL must appear in THAT mark's
    research payload — the receipts gate refuses a citation the driver cannot trace, at the chunk, at
    the merged artifact and again at publish.
-
-   Judge an owner's records as a set. Write the position from the record in the client's market and class, quoting its goods. A record you do not carry is given a ground; no record leaves without one.
 6. **RETIRED — you are given the filings now, so you do not estimate them.**
    This ordered an expectation sentence ("moderate volume of filings expected") and forbade a register
    conclusion, because this seat could not see the register lane. It can: the run's fetched records are
@@ -292,11 +290,11 @@ source as a fact rather than as a word you typed about your own sourcing.
   actually used. The report derives the finding's source labelling from this, so list one only if you
   reasoned from it.
 
-**Both are optional for a filing you weighed.** A filing with no row keeps its card's standing
-line, which describes the card and claims nothing about the rating. A filing you do not carry into a finding or a read is not left there: it goes in `setAside` with its ground. So:
+**Both are optional, and omitting them is always safe.** A filing with no row keeps its card's standing
+line, which describes the card and claims nothing about the rating. So:
 
 > **Never invent a read to fill a row, and never write "not weighed" as a read.** A filing you did not
-> weigh gets no `registerReads` row; it gets a `setAside` row saying why you set it aside. The failure this replaces was a card asserting the rating did not turn on a
+> weigh simply gets no row. The failure this replaces was a card asserting the rating did not turn on a
 > filing when the rating had; a row you wrote to look complete would be the same defect with your name
 > on it.
 
@@ -341,7 +339,6 @@ line, which describes the card and claims nothing about the rating. A filing you
                                "evidence": ["https://…"], "basis": "<the ground the band rests on>",
                                "weighedFilings": ["<recordIds this finding's reasoning used>"] } ],
                "negatives": [ { "term": "...", "source": "...", "note": "..." } ],
-               "setAside": [ { "page": "…", "ground": "…" }, { "recordId": "…", "ground": "…" } ],
                "degraded": null } ] }
 ```
 
@@ -371,8 +368,6 @@ the merged artifact):
   research payload. A finding nobody can open is a bullet with a shape around it.
 - `basis` — the ground the band rests on: what the evidence shows about use, reach and the owner. The
   rank is read off the band, so a band with no stated basis is an unarguable ranking.
-
-**`setAside` — what you read and did not carry, each with its ground.** Every address in the mark's page list that no finding's `evidence` and no `negatives` entry cites, and every filing you were given for the mark that no finding weighs and no `registerReads` row reads, gets one row: `{page, ground}` for an address copied from the list, or `{recordId, ground}` for a filing copied verbatim. `ground` is one line in your own words. The rows go to the audit workbook, never the report.
 
 `rating` must be a band from the frozen ladder, and `ratingQualifier` is `null` or `"low"` — nothing
 else. A clean mark keeps `findings: []` with the negatives recording what was checked. A degraded mark

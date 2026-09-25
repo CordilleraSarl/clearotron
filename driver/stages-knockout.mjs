@@ -9,7 +9,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 import { validators as koValidators } from "./verify-knockout.mjs";
-import { kebab } from "./search-policy.mjs"; import { payloadPages } from "./hand-off-exits.mjs";
+import { kebab } from "./search-policy.mjs";
 // — the door owns "did the request name any classes?"; this builder reads it rather than
 // re-deriving it. A third copy is what put the knockout frame a class behind the intake.
 import { requestNamesClasses } from "./enqueue-schema.mjs";
@@ -318,7 +318,7 @@ export const KO_STAGES = {
       // come from one of the two sources named here, which is the anti-confabulation rule it always was
       // and never a rule about which of the two.
       `Each mark's RAW research payload (a cited URL must appear in the mark's own payload or in the register records below):`,
-      ...chunkMarks.map((m) => `- ${m.name}: ${K.research(kebab(m.name))}${m.degraded ? `   (DEGRADED: ${m.degraded} — apply the null-results doctrine, never inflate)` : ""}`), ...knockoutPageListLines(K, chunkMarks),
+      ...chunkMarks.map((m) => `- ${m.name}: ${K.research(kebab(m.name))}${m.degraded ? `   (DEGRADED: ${m.degraded} — apply the null-results doctrine, never inflate)` : ""}`),
       // NAMED ONLY WHEN IT IS ON DISK. The records land at step 2 of 5 and this stage is step 3 or 4, so
       // the file exists by now on a run that fetched them — and on a run that did not, a dispatch naming
       // a path that is not there teaches the seat that a missing file is normal.
@@ -359,7 +359,7 @@ export const KO_STAGES = {
       // a finding with no register evidence. Omitting either field is always safe: the card keeps its
       // neutral line, which describes the card and is true.
       existsSync(K.registerRecords)
-        ? `WHEN YOU WEIGH ONE OF THOSE FILINGS, SAY SO BY ITS OWN ID — copy "recordId" verbatim from the file above. "registerReads" on the MARK: rows of {recordId, read, band?} for a filing you weighed that did NOT become a findings[] record; "read" is what you concluded about THAT filing — whether it bears on the rating and why — and it prints on that filing's card in the reader's own report. "band" is OPTIONAL and is your rating of THAT filing on its own, in the framework's band words: send it whenever you formed a view on the filing itself, because a registered right left unbanded is the only card on the page with no rating while softer uses beside it carry one, which reads as though the registration mattered least. Omit it and your read still prints, claiming no rating. "weighedFilings" on a FINDING: the recordIds whose evidence your reasoning for that conflict actually used, because the report derives that finding's source labelling from it. Both are optional for a filing you weighed, and both are joined against the filings you were given, so an id we do not hold is refused by name. A filing you did not weigh gets no read — do not invent one, and never write "not weighed" as a read — and goes in "setAside" with its ground instead.\n"setAside" also takes {recordId, ground} for a filing above that no finding weighs and no registerReads row reads. "ground" is one line in your own words on why it does not earn a finding. It goes to the audit workbook, never the report.`
+        ? `WHEN YOU WEIGH ONE OF THOSE FILINGS, SAY SO BY ITS OWN ID — copy "recordId" verbatim from the file above. "registerReads" on the MARK: rows of {recordId, read, band?} for a filing you weighed that did NOT become a findings[] record; "read" is what you concluded about THAT filing — whether it bears on the rating and why — and it prints on that filing's card in the reader's own report. "band" is OPTIONAL and is your rating of THAT filing on its own, in the framework's band words: send it whenever you formed a view on the filing itself, because a registered right left unbanded is the only card on the page with no rating while softer uses beside it carry one, which reads as though the registration mattered least. Omit it and your read still prints, claiming no rating. "weighedFilings" on a FINDING: the recordIds whose evidence your reasoning for that conflict actually used, because the report derives that finding's source labelling from it. Both are optional and both are joined against the filings you were given, so an id we do not hold is refused by name. A filing you did not weigh simply gets no row: do not invent a read to fill one, and never write "not weighed" as a read.`
         : "",
       `A DEGRADED mark's row must carry degraded:true and the purple "Manual verification recommended"`,
       `note; a mark WITH a payload must never claim degraded (the validator joins both against the disk).`,
@@ -553,22 +553,3 @@ export const KO_STAGES = {
     ),
   },
 };
-
-/**
- * EACH MARK'S PAGES, printed so the rater answers the list the hand-off count reads. The count follows
- * every address a mark's research payload names to a finding, an absence or a set-aside ground; a rater
- * handed only the file would have to find every address itself, and would miss some. A mark with no
- * payload names no page and is left out; no page at all, no block.
- */
-export function knockoutPageListLines(K, marks) {
-  const perMark = (Array.isArray(marks) ? marks : []).map((m) => {
-    let payload = null;
-    try { payload = readFileSync(K.research(kebab(m.name)), "utf8"); } catch { /* degraded: no page */ }
-    return { name: m.name, pages: payload == null ? [] : payloadPages(payload) };
-  }).filter((x) => x.pages.length);
-  if (!perMark.length) return [];
-  return [
-    `EACH MARK'S PAGES — every address its research names, as the engine reads them. Each one leaves this stage cited in a finding's "evidence" or a "negatives" "source", or set aside in "setAside" on the MARK as {page, ground}, the address copied from this list. There is no third way out:`,
-    ...perMark.flatMap((x) => [`- ${x.name}:`, ...x.pages.map((p) => `  ${p.url}`)]),
-  ];
-}
