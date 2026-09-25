@@ -5,7 +5,7 @@
 // The funnel emits this from `register_enumerate` results: the dangerous *named* band — the exact mark + each
 // manifest variant × in-scope class × material/major jurisdiction — ENUMERATED to has_more:false, every record
 // carried forward WITH its screening facts; plus CROWD DESCRIPTORS (count + sample + reason) for any query that
-// came back `incomplete`. This is exactly what crosses the lifted firewall (the old `unit.md:146` "raw dies in
+// came back `incomplete`. This is exactly what crosses the lifted firewall (the old `unit.md:143` "raw dies in
 // session" rule): the **complete named band + crowd descriptors**, NOT the raw character-noise pile. Judgment
 // (placement / digest / synthesis) reads THIS — the real material — instead of a pre-pruned digest.
 //

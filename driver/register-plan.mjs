@@ -112,6 +112,35 @@ export function romanizedTermsFromPlan(plan, term) {
   return null;
 }
 
+/**
+ * THE LATIN QUESTIONS THAT ASK A SCRIPT QUESTION'S ROMANISED FORM — what the reading turn needs in
+ * order to apply sentence 3 ("Where the register files foreign marks by their romanised form, and it
+ * says so, the Latin question already covers them; do not ask it again in other scripts").
+ *
+ * The turn that releases a script question sees only its own axis, and the characters. On a register
+ * that files the romanised form, the question goes out as its romanised spellings, and one of them can
+ * be a Latin question another axis already holds. Measured on a test run, 2026-09-25: 4 of the 7 script
+ * questions the turn released repeated a Latin question on another axis, which it could not see.
+ *
+ * Returns each plan entry, on any axis, whose Latin term has the same `formKey` as one of the entry's
+ * romanised spellings, with that term. It judges nothing: the dispatch prints what each one searches,
+ * and the turn decides. An owner-bound, goods-narrowed or count-only entry asks a narrower question, and
+ * an unsupported one never runs, so none of those is returned.
+ */
+export function latinQuestionsOfRomanisedForm(plan, entry) {
+  const roman = Array.isArray(entry?.romanizedTerms) ? entry.romanizedTerms : [];
+  if (!roman.length || !isNonLatinTerm(String(entry?.term ?? ""))) return [];
+  const keys = new Set(roman.map((r) => formKey(String(r))).filter(Boolean));
+  const out = [];
+  for (const e of plan?.entries ?? []) {
+    if (e === entry || e?.qid === entry.qid || e?.owner || e?.unsupported === true || e?.expected_kind !== "enumerate" || goodsTermsList(e).length) continue;
+    const term = [e.term, ...(Array.isArray(e.terms) ? e.terms : [])]
+      .find((t) => t != null && !isNonLatinTerm(String(t)) && keys.has(formKey(String(t))));
+    if (term != null) out.push({ qid: e.qid, predicate: e.predicate, term: String(term) });
+  }
+  return out;
+}
+
 export const PLAN_PROVENANCE = ["floor", "model", "mark"];
 
 // The two waits an entry can carry, and what each means, are defined once beside the executor that
@@ -1502,7 +1531,9 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   // table lists that script. Where no named market's row does, it compiles where it always did: the table
   // lists what a market must be asked, not everything its register holds, so a missing row is no reason
   // to leave a question out. Every script question then waits for the reading turn, which releases or
-  // withholds it with a reason, and the manual tells that turn when the Latin question already covers it.
+  // withholds it with a reason. The manual tells that turn not to ask again what the Latin question
+  // covers, and on a register that files the romanised form the dispatch shows it the romanised form each
+  // one is searched by, with the Latin question that already asks it (latinQuestionsOfRomanisedForm).
   // A question dropped here would save no search, since it waits anyway, and would leave no line saying
   // it was not asked. Latin transliterations and numeric variants are asked as before. With no frame on
   // record and a worldwide scope there is no market to scope to, and the variant compiles as it always did.

@@ -17,6 +17,9 @@
 import { join, basename } from "node:path";
 import { driverRel } from "../shared/driver-dir.mjs";   //
 import { awaitsReadingTurn } from "../providers/_shared/plan-guards.mjs";   // — a guard the dictation misreads is a question the model never knows it may ask
+import { isNonLatinTerm } from "../providers/_shared/script-form.mjs";
+import { latinQuestionsOfRomanisedForm } from "./register-plan.mjs";   // sentence 3 — the Latin question a script question repeats
+import { registerCapabilities } from "./register-unreachable.mjs";
 import { validators } from "./verify.mjs";
 import { REGISTER_PROVIDER, PROVIDERS } from "./driver.config.mjs";
 import { REGISTER_AXES, decideAxes } from "./coverage-ledger.mjs";
@@ -2159,7 +2162,7 @@ export const STAGES = {
         why: "The path is `out: (P, axis) => P.registerUnit(axis)`, pre-bound by the driver; all three counts are aggregates over the band the tool wrote. No token speaks about the return message.",
       },
     },
-    message: ({ paths: P, axis, job, registerPlan }) => {
+    message: ({ paths: P, axis, job, registerPlan, capabilities = registerCapabilities() }) => {
     // Lever-1 data plane (2026-06-24): hand the funnel a COPYABLE in-scope Nice-class array. The NOVA PULSE timeout
     // proved skill prose alone is not enough — the funnel HAD [9,28,41,42] in matter-context and still ran
     // all-class enumerations (10k-record flood) because nice_classes read as optional. Pin it in the task.
@@ -2173,6 +2176,16 @@ export const STAGES = {
     // whole message — the tool exclusion in pipeline.mjs keys on exactly this and nothing else. Read it
     // once here so no branch below can drift out of step with what the model can actually call.
     const supplementalLane = !!registerPlan?.contract?.supplemental_lane;
+    // SENTENCE 3 NEEDS WHAT THE REGISTER SEARCHES. Where the register files foreign marks by their
+    // romanised form, and declares it, a question in another script goes out as its romanised spellings,
+    // and the Latin question already asking one of them may sit on another axis, out of this turn's sight.
+    // The turn released such repeats because it saw only the characters. It is shown both; it decides.
+    const romanisedNote = (e) => {
+      if (capabilities?.nativeScriptIndex !== false || !isNonLatinTerm(String(e.term ?? "")) || !e.romanizedTerms?.length) return "";
+      return ` · searched here by its romanised form ${JSON.stringify(e.romanizedTerms)}`
+        + latinQuestionsOfRomanisedForm(registerPlan, e).map((y) => `; the Latin question qid "${y.qid}" asks ${y.predicate} ${JSON.stringify(y.term)}`).join("");
+    };
+    const romanisedFiling = planEntries.some((e) => romanisedNote(e));
     return lines(
       `First, read and follow exactly: skills/clearance-register/SKILL.md (the shared spine) then skills/clearance-register/unit.md (MODE A — UNIT). Do NOT read digest.md (digest-mode judgment a unit must never run).`,
       // WHAT THE KEY ALSO CARRIES — COMPOSED, NOT DOCTRINE.
@@ -2203,7 +2216,8 @@ export const STAGES = {
             // message for transparency and so judgment knows what is already covered.
             `EXECUTE THE FROZEN PLAN VIA THE TOOL: call register_execute_plan ONCE with {"plan_path": ${JSON.stringify(P.registerPlan)}, "axis": "${axis}", "output_path": ${JSON.stringify(P.registerBand(axis))}}; call it again only with the qids of waiting families you release. The tool runs every dictated entry below ITSELF (paged enumerates; count-only crowd descriptors; a "when"-guarded fringe only if its parent enumerated; a waiting family only once you release it) and WRITES the band file itself with each block's qid stamped. Do NOT run these dictated entries manually and do NOT write their blocks yourself.`,
             `For your audit context, the dictated entries the tool will run:`,
-            ...planEntries.map((e) => `- qid "${e.qid}": ${e.predicate} ${e.terms ? `names ${JSON.stringify(e.terms)} (one OR-stacked call)` : JSON.stringify(e.term)}${e.owner ? ` · owner ${JSON.stringify(e.owner)}` : ""} · nice_classes ${JSON.stringify(e.nice_classes)}${e.regions?.length ? ` · regions ${JSON.stringify(e.regions)}` : ""}${e.when ? (awaitsReadingTurn(e.when) ? ` · WAITING FOR YOU: after reading the identical mark's list, release it or withhold it, with your reason` : ` · when: "${e.when.runs_if_enumerated}" enumerated`) : ""} · expected: ${e.expected_kind}${Array.isArray(e.covered_by) && e.covered_by.length ? ` · crowd context — coverage is ${e.covered_by.join(", ")}` : ""}`),
+            romanisedFiling && `This register files foreign marks by their romanised form, and says so: a question below in another script is searched by the romanised form shown on it.`,
+            ...planEntries.map((e) => `- qid "${e.qid}": ${e.predicate} ${e.terms ? `names ${JSON.stringify(e.terms)} (one OR-stacked call)` : JSON.stringify(e.term)}${romanisedNote(e)}${e.owner ? ` · owner ${JSON.stringify(e.owner)}` : ""} · nice_classes ${JSON.stringify(e.nice_classes)}${e.regions?.length ? ` · regions ${JSON.stringify(e.regions)}` : ""}${e.when ? (awaitsReadingTurn(e.when) ? ` · WAITING FOR YOU: after reading the identical mark's list, release it or withhold it, with your reason` : ` · when: "${e.when.runs_if_enumerated}" enumerated`) : ""} · expected: ${e.expected_kind}${Array.isArray(e.covered_by) && e.covered_by.length ? ` · crowd context — coverage is ${e.covered_by.join(", ")}` : ""}`),
             // copper-lattice re-route (supplemental_lane contract): judgment additions stay the model's
             // CALL — which queries the manifest/frame warrant beyond the dictated set — but their
             // EXECUTION and their band blocks are code's (register_propose_supplemental mints qid'd
@@ -2684,7 +2698,7 @@ export const STAGES = {
       },
       "the escalation decision — which register axes carry a material, unresolved, genuinely closeable gap, and the one-line reason for each": {
         class: "judgment", tokens: [],
-        why: "Whether a documented coverage-limited row, a capability-gap deferral or a fresh concern on a confirmed-clean row warrants spending a re-run. The driver hands the coverage/execution truth in as a computed table (stages.mjs:1476; skepticDeferralExtra) precisely so this is a call over data rather than a re-derivation — but the call itself is nobody else's. [citation unverified]",
+        why: "Whether a documented coverage-limited row, a capability-gap deferral or a fresh concern on a confirmed-clean row warrants spending a re-run. The driver hands the coverage/execution truth in as a computed table (stages.mjs:1479; skepticDeferralExtra) precisely so this is a call over data rather than a re-derivation — but the call itself is nobody else's. [citation unverified]",
       },
       "escalation decisions — one {axis, reason} per axis that must be re-run, sent through record_skeptic": {
         class: "mechanical:code-rendered", tokens: [],
