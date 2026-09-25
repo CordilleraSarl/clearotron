@@ -8489,7 +8489,7 @@ async function pipelineInner(job, opts = {}) {
   // established one — a fixture clearance holds no live credential of any kind.
   //
   // This moves a failure earlier; it does not add one. Without it the run spends every register stage
-  // and dies at the grid, which is `perplexity-server.mjs:149` handing the model an ERROR string per
+  // and dies at the grid, which is `research` in perplexity-server.mjs handing the model an ERROR string per
   // call — the shape named "degrades every mark per-call and the batch dies all-failed only AFTER
   // the paid frame turn" when it removed the knockout's refusal for the same reason in the other
   // direction. ADR-0003 carries the ruling for both lanes.
