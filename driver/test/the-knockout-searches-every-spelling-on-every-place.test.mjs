@@ -199,13 +199,20 @@ test("each mark is one grid call, its ledger is its research file, and everythin
 
   // THE RATING STEP is handed each mark's ledger by path, and told what it is
   const K = koPaths(dir);
-  const dispatch = KO_STAGES["knockout-assess"].message({ K, chunkNo: 0, chunkTotal: 1, probeNote: "",
+  const assess = (job) => KO_STAGES["knockout-assess"].message({ K, job, chunkNo: 0, chunkTotal: 1, probeNote: "",
     chunkMarks: MARKS.map((name) => ({ name })), framework: { title: "House triage", bands: [{ label: "High" }, { label: "Low" }] } });
+  const dispatch = assess({ jurisdictions: ["EU", " US "] });
   assert.match(dispatch, /Each mark's RAW research payload: the record of its web searches, every spelling on every place/);
   for (const m of MARKS) assert.ok(dispatch.includes(`- ${m}: ${K.research(kebab(m))}`), `${m}'s payload is not named`);
+  // The search is not limited to the ordered territories, so the step that judges is told them
+  assert.ok(dispatch.includes("THE TERRITORIES THIS SCREEN WAS ORDERED FOR: EU, US. The web search was not limited to them. "
+    + "A use found only outside them is out of scope for this screen: leave it out of the findings, and say in that mark's assessment that you left it out."));
+  assert.doesNotMatch(assess({ jurisdictions: [] }), /ORDERED FOR/, "a worldwide screen names no territories");
+  assert.doesNotMatch(assess({}), /ORDERED FOR/);
 
   // THE RECEIPTS GATE traces a citation to the ledger, and refuses one the ledger does not hold
   const cited = (url) => knockoutReceipts(dir, [{ name: "LANTERNWICK", findings: [{ name: "A character", url }] }]);
   assert.deepEqual(cited("https://wiki.example.test/lanternwick").failures, []);
   assert.equal(cited("https://elsewhere.example.test/lanternwick").ok, false);
 });
+

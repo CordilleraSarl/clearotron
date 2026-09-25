@@ -136,6 +136,10 @@ export function koPaths(runDir) {
 // and keeps.
 export const KNOCKOUT_WEB = Object.freeze({ preset: "pro-search", reasoning: Object.freeze({ effort: "low" }), resultsPerCell: 10 });
 
+/** The territories the request ordered, as the job carries them; empty for a worldwide screen. PURE. */
+export const orderedTerritories = (job) =>
+  (Array.isArray(job?.jurisdictions) ? job.jurisdictions.map((s) => String(s).trim()).filter(Boolean) : []);
+
 /**
  * One mark's grid, dictated from the frozen plan: its spellings on the batch's places. PURE.
  *
@@ -263,7 +267,7 @@ export const KO_STAGES = {
     // out/validate are per-CHUNK; the merged knockout-findings.json is validated separately in code.
     out: (K, chunkNo) => K.assessChunk(chunkNo),
     validate: koValidators.knockoutAssessChunk,
-    message: ({ K, chunkNo, chunkMarks, chunkTotal, framework, frameworkPath, probeNote, frameworkMethod }) => lines(
+    message: ({ K, job, chunkNo, chunkMarks, chunkTotal, framework, frameworkPath, probeNote, frameworkMethod }) => lines(
       // The deck path comes from ctx (attachKnockoutFramework resolves it once, on the fresh and the
       // resume path both) — never recomputed here, because "which deck" is one decision.
       reads(["skills/knockout-assess/SKILL.md", frameworkPath, "skills/clearance-search/firm-wide-reasoning.md"].filter(Boolean)),
@@ -288,6 +292,12 @@ export const KO_STAGES = {
       // and never a rule about which of the two.
       `Each mark's RAW research payload: the record of its web searches, every spelling on every place, with the listings each search returned and any search that could not run. It holds no summary and no judgment; the judgment is yours. A cited URL must appear in the mark's own payload or in the register records below:`,
       ...chunkMarks.map((m) => `- ${m.name}: ${K.research(kebab(m.name))}${m.degraded ? `   (DEGRADED: ${m.degraded} — apply the null-results doctrine, never inflate)` : ""}`),
+      // THE ORDERED TERRITORIES, where the request named some. The web questions used to carry them in
+      // their own scope lines and drop what fell outside; the grid returns results and judges nothing, so
+      // the territories reach the step that judges, which leaves such a use out and says it did.
+      orderedTerritories(job).length
+        ? `THE TERRITORIES THIS SCREEN WAS ORDERED FOR: ${orderedTerritories(job).join(", ")}. The web search was not limited to them. A use found only outside them is out of scope for this screen: leave it out of the findings, and say in that mark's assessment that you left it out.`
+        : "",
       // NAMED ONLY WHEN IT IS ON DISK. The records land at step 2 of 5 and this stage is step 3 or 4, so
       // the file exists by now on a run that fetched them — and on a run that did not, a dispatch naming
       // a path that is not there teaches the seat that a missing file is normal.
