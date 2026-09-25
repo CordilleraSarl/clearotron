@@ -4307,7 +4307,7 @@
         },
         "register-steering.test.mjs": {
           "tests": 9,
-          "asserts": 70,
+          "asserts": 72,
           "skips": 0,
           "todos": 0
         },

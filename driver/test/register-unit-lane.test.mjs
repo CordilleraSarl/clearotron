@@ -87,11 +87,11 @@ test("supplemental lane: the unit is told HOW to cover a watchlist owner, with o
   for (const [label, plan] of [["no entries (the ION shape)", LANE], ["with entries", LANE_WITH_ENTRIES]]) {
     const m = msg(plan);
     assert.ok(m.includes(OWNER_SWEEP_STEERING), label);
-    assert.match(m, /OWNER \/ WATCHLIST COVERAGE/, label);
+    assert.match(m, /OWNER COVERAGE on this lane/, label);
     // the grammar the mint actually accepts (F1): owner rides the mark-text proposal as a scope field
     assert.match(m, /owner as a scope field/, label);
     assert.match(m, /owner:"<the owner>"/, label);
-    assert.match(m, /owner×term slice is THE coverage instrument/, label);
+    assert.match(m, /are asked with the owner×term slice/, label);
     // the RETIRED doctrine (owner and name may never compose) must not survive anywhere in the message
     assert.doesNotMatch(m, /never both|REPLACES the name clause/, label);
     // …and the fallback that actually shipped is still named and forbidden — for slice AND sweep alike
@@ -104,7 +104,7 @@ test("supplemental lane: the unit is told HOW to cover a watchlist owner, with o
 test("legacy lane gets NO owner-proposal steering (off-lane the unit still has register_enumerate)", () => {
   const m = msg(LEGACY);
   assert.ok(!m.includes(OWNER_SWEEP_STEERING));
-  assert.doesNotMatch(m, /OWNER \/ WATCHLIST COVERAGE/);
+  assert.doesNotMatch(m, /OWNER COVERAGE on this lane/);
 });
 
 test("the lane read matches pipeline.mjs's exclusion key exactly (contract.supplemental_lane, truthy)", () => {
