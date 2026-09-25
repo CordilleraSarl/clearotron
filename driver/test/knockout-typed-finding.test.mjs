@@ -22,7 +22,7 @@ import {
 
 // A 5-band ladder with its own words, so nothing here can accidentally pass against a hardcoded set.
 const MANIFEST = {
-  schema_version: 1, framework_key: "aurora", title: "Synthetic five-band deck", entity_label: "the company",
+  schema_version: 1, framework_key: "demo-brand-owner", title: "Synthetic five-band deck", entity_label: "the company",
   bands: [{ label: "Very High", tone: "severe" }, { label: "High", tone: "high" }, { label: "Medium", tone: "medium" },
     { label: "Manageable", tone: "low" }, { label: "Low", tone: "minimal" }],
 };

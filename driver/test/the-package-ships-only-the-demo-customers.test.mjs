@@ -3,8 +3,8 @@
 //
 // Finding F13 — a stranger's roster is the two accounts meant for them.
 //
-// `driver/profiles/` holds the customer accounts the engine loads, and three of its files —
-// `aurora`, `zephyr`, `petcary` — are the renamed identities the suite uses as fixtures. They are not
+// `driver/profiles/` holds the customer accounts the engine loads, and two of its files —
+// `zephyr`, `petcary` — are the renamed identities the suite uses as fixtures. They are not
 // customers, and they are not demos: the owner, driving the portal, opened the roster and found three
 // company names he did not recognise offered as brand owners he could run a clearance for.
 //
@@ -48,7 +48,7 @@ const PACK_ENV = Object.freeze({ ...process.env, npm_config_offline: "true", npm
 const SHIPPED_ACCOUNTS = Object.freeze(["demo-brand-owner.json", "generic.json"]);
 
 /** Fixture identities that must never reach a reader as accounts they could run a clearance for. */
-const FIXTURES_ONLY = Object.freeze(["aurora", "zephyr", "petcary"]);
+const FIXTURES_ONLY = Object.freeze(["zephyr", "petcary"]);
 
 test("94/F13 the package's customer roster is the two accounts a reader is meant to see", { timeout: 120_000 }, () => {
   const out = execFileSync("npm", ["pack", "--dry-run", "--json"],
@@ -66,8 +66,8 @@ test("94/F13 the package's customer roster is the two accounts a reader is meant
     "the package's customer roster is not the two accounts it is meant to carry");
 
   // AND NOWHERE ELSE IN THE PACKAGE, because the accounts are not the only place these names are a
-  // path. `driver/recipes/aurora/` and `driver/recipes/zephyr/` ship saved searches under the same
-  // identities, and the context markdown and the saved projects travel by different `files[]` patterns
+  // path. `driver/recipes/zephyr/` ships saved searches under the same identity, and the context
+  // markdown and the saved projects travel by different `files[]` patterns
   // again — three shapes, one class, and checking only the account files would have shipped two of them.
   // Path segments only: the shipped source discusses these fixtures in comments, which is prose about
   // the suite rather than something a reader is offered.

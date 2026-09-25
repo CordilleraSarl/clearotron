@@ -224,8 +224,8 @@ test("§E 'edge is wrong': a NON-firm CF identity + no token → 403, NO session
   // non-firm domain → firmStaff false → resolveScope refuses. This is the load-bearing hardening.
   const sessions = new Map();
   const res = mockRes();
-  const verify = makeAccessVerifier({ team: TEAM, aud: AUD, allowedDomains: ["example.com", "aurora-interactive.example"], jwks }); // edge mis-scoped to admit a customer
-  await mk({ verify, firmDomains: ["example.com"], sessions, createSession: noSession })(mockReqInit({ "cf-access-jwt-assertion": await mint("alice@aurora-interactive.example") }), res);
+  const verify = makeAccessVerifier({ team: TEAM, aud: AUD, allowedDomains: ["example.com", "demo-brand-owner.example"], jwks }); // edge mis-scoped to admit a customer
+  await mk({ verify, firmDomains: ["example.com"], sessions, createSession: noSession })(mockReqInit({ "cf-access-jwt-assertion": await mint("alice@demo-brand-owner.example") }), res);
   assert.equal(res.statusCode, 403, "non-firm identity with no token must be refused, not given internal");
   assert.equal(sessions.size, 0);
 });

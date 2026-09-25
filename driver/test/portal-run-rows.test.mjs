@@ -89,7 +89,7 @@ function withQueued(job, fn) {
 
 const KO_JOB = {
   id: "ko-queued", msgId: "<ko-queued@x>", forwarder: "jordan", forwarderDomain: "example.com",
-  profileKey: "aurora", product: "knockout-search", ref: "TMP9100", markName: "IRONWHISK",
+  profileKey: "demo-brand-owner", product: "knockout-search", ref: "TMP9100", markName: "IRONWHISK",
   marks: [{ name: "IRONWHISK", classes: [8, 21] }, { name: "CLUVENDRA", classes: [8] }, { name: "SUNDAY ROAST CLUB", classes: [21, 35] }],
   classes: [8, 21, 35], goods: "kitchen tools; household utensils",
 };
@@ -149,9 +149,9 @@ function withLive(status, fn) {
     mkdirSync(driverDir(dir), { recursive: true });
     mkdirSync(join(root, "pool"), { recursive: true });
     writeFileSync(join(dir, "status.json"), JSON.stringify(status, null, 2));
-    writeFileSync(driverDir(dir, "profile.json"), JSON.stringify({ profileKey: "aurora" }));
+    writeFileSync(driverDir(dir, "profile.json"), JSON.stringify({ profileKey: "demo-brand-owner" }));
     writeFileSync(driverDir(dir, "search-policy.json"), JSON.stringify({ schema: 1, level: "knockout-search", pipeline: "knockout" }));
-    const rows = scanAccountRuns({ poolRoot: join(root, "pool"), workspaceRoot: root, account: "aurora" });
+    const rows = scanAccountRuns({ poolRoot: join(root, "pool"), workspaceRoot: root, account: "demo-brand-owner" });
     assert.equal(rows.length, 1);
     return fn(rows[0]);
   } finally { rmSync(root, { recursive: true, force: true }); }

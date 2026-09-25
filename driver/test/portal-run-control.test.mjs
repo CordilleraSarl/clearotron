@@ -19,10 +19,10 @@ import { join } from "node:path";
 const { makePortalService } = await import("../portal-service.mjs");
 const { reorderQueue, orderedQueueFiles, readQueueOrder } = await import("../queue-order.mjs");
 
-// The client holds aurora and Run clearances. Stopping, cancelling and reordering are Run's, so without the
+// The client holds demo-brand-owner and Run clearances. Stopping, cancelling and reordering are Run's, so without the
 // switch every route below would 404 on the permission before reaching the ownership check each test is
 // about — and the foreign-run refusals would pass for the wrong reason.
-const GRANTS = { tenants: { celta: { accounts: ["aurora", "zephyr"], users: { "cli@celta.example": ["aurora"] } } },
+const GRANTS = { tenants: { celta: { accounts: ["demo-brand-owner", "zephyr"], users: { "cli@celta.example": ["demo-brand-owner"] } } },
   people: { "cli@celta.example": { run: true } } };
 const CLIENT = { email: "cli@celta.example" };
 
@@ -73,23 +73,23 @@ const serviceFor = (w, stops) => makePortalService({
 test("stop: a running run reaches the engine by runId, and never asks for a confirmation token", async () => {
   // The confirmation gate exists to stop money being spent by accident. Stopping is its opposite, and
   // making someone confirm twice while a run they no longer want keeps billing gets it exactly backwards.
-  const w = world([], { live: [{ id: "r-aurora", slug: "tmp-a", account: "aurora", state: "running" }] });
+  const w = world([], { live: [{ id: "r-demo-brand-owner", slug: "tmp-a", account: "demo-brand-owner", state: "running" }] });
   const stops = [];
-  const res = await serviceFor(w, stops).route("POST", "/portal/api/run/r-aurora/stop", CLIENT, null, {});
+  const res = await serviceFor(w, stops).route("POST", "/portal/api/run/r-demo-brand-owner/stop", CLIENT, null, {});
   assert.equal(res.status, 200, JSON.stringify(res.json));
   // — AND IT CARRIES THE HUMAN. `via` on the far side records only the channel, and the engine
   // sees one shared ops token for every UI stop, so this argument is the only thing that can put a
   // person in the run dir. Asserted here because this is where it leaves the portal.
   // — AND WHICH STOP. `immediate` travels on every press, including the safe
   // one, so a reader who chose to preserve the step is as legible on this lane as one who did not.
-  assert.deepEqual(stops, [{ runId: "r-aurora", immediate: false, onBehalfOf: CLIENT.email }]);
+  assert.deepEqual(stops, [{ runId: "r-demo-brand-owner", immediate: false, onBehalfOf: CLIENT.email }]);
 });
 
 test("stop: a PAUSED run can be stopped — that is when people reach for it", async () => {
   // A rate-limit park can sit for hours. Refusing to stop a parked run (which stop_run used to do) is
   // backwards: it is the state where giving up is most likely, and the one the engine cannot self-cancel.
   for (const state of ["paused", "postponed", "recovering", "parked-for-human"]) {
-    const w = world([], { live: [{ id: `r-${state}`, slug: `tmp-${state}`, account: "aurora", state }] });
+    const w = world([], { live: [{ id: `r-${state}`, slug: `tmp-${state}`, account: "demo-brand-owner", state }] });
     const stops = [];
     const res = await serviceFor(w, stops).route("POST", `/portal/api/run/r-${state}/stop`, CLIENT, null, {});
     assert.equal(res.status, 200, `${state}: ${JSON.stringify(res.json)}`);
@@ -112,13 +112,13 @@ test("stop: a run that already finished is refused, and the engine is not called
   // failed and cancelled live in the workspace; delivered lives in the pool. All three are terminal,
   // and stopping one has to be refused rather than passed upstream to be refused there.
   for (const state of ["failed", "cancelled"]) {
-    const w = world([], { live: [{ id: `r-${state}`, slug: `tmp-${state}`, account: "aurora", state }] });
+    const w = world([], { live: [{ id: `r-${state}`, slug: `tmp-${state}`, account: "demo-brand-owner", state }] });
     const stops = [];
     const res = await serviceFor(w, stops).route("POST", `/portal/api/run/r-${state}/stop`, CLIENT, null, {});
     assert.equal(res.status, 409, `${state}: ${JSON.stringify(res.json)}`);
     assert.deepEqual(stops, [], `${state}: nothing reached the engine`);
   }
-  const w = world([], { pool: [{ id: "r-delivered", account: "aurora" }] });
+  const w = world([], { pool: [{ id: "r-delivered", account: "demo-brand-owner" }] });
   const stops = [];
   const res = await serviceFor(w, stops).route("POST", "/portal/api/run/r-delivered/stop", CLIENT, null, {});
   assert.equal(res.status, 409, JSON.stringify(res.json));
@@ -127,7 +127,7 @@ test("stop: a run that already finished is refused, and the engine is not called
 
 // ── cancelling a queued job ───────────────────────────────────────────────────────────────────────
 test("cancel: a queued job is dropped by id, and someone else's is a 404", async () => {
-  const w = world([{ id: "q-a", account: "aurora" }, { id: "q-z", account: "zephyr" }], { order: ["q-a", "q-z"] });
+  const w = world([{ id: "q-a", account: "demo-brand-owner" }, { id: "q-z", account: "zephyr" }], { order: ["q-a", "q-z"] });
   const stops = [];
   const svc = serviceFor(w, stops);
 
@@ -143,7 +143,7 @@ test("cancel: a queued job is dropped by id, and someone else's is a 404", async
 test("cancel: losing the race to the runner is a race, not a failure", async () => {
   // The runner claimed it between the click and the request. Saying "error" would be wrong — the job is
   // fine, it is running. Never dress a lost race as a fault, and never grey the control out to avoid it.
-  const w = world([{ id: "q-a", account: "aurora" }]);
+  const w = world([{ id: "q-a", account: "demo-brand-owner" }]);
   const svc = makePortalService({
     poolRoot: w.poolRoot, workspaceRoot: w.workspaceRoot, recipesDir: mkdtempSync(join(tmpdir(), "rc-rec-")),
     secret: "test-secret", grants: GRANTS,
@@ -164,25 +164,25 @@ test("reorder: YOU MOVE YOUR OWN WORK AND NOBODY ELSE MOVES", async () => {
   // silently promoting them past another tenant's queued work.
   const w = world([
     { id: "q-z1", account: "zephyr" },
-    { id: "q-a1", account: "aurora" },
+    { id: "q-a1", account: "demo-brand-owner" },
     { id: "q-z2", account: "zephyr" },
-    { id: "q-a2", account: "aurora" },
+    { id: "q-a2", account: "demo-brand-owner" },
   ], { order: ["q-z1", "q-a1", "q-z2", "q-a2"] });
 
-  // aurora asks for its two in the opposite order.
+  // demo-brand-owner asks for its two in the opposite order.
   const res = await serviceFor(w, []).route("POST", "/portal/api/queue/order", CLIENT, { order: ["q-a2", "q-a1"] }, {});
   assert.equal(res.status, 200, JSON.stringify(res.json));
 
   const now = readQueueOrder(w.q);
   assert.deepEqual(now, ["q-z1", "q-a2", "q-z2", "q-a1"],
-    "aurora's two swapped WITH EACH OTHER; zephyr's stayed at positions 1 and 3");
+    "demo-brand-owner's two swapped WITH EACH OTHER; zephyr's stayed at positions 1 and 3");
 });
 
 test("reorder: ids the caller does not hold are dropped silently, never named in a refusal", async () => {
   // Refusing and naming the offending id would confirm that another tenant's job exists — the one thing
   // every refusal on these routes is shaped to avoid.
   const w = world([
-    { id: "q-a1", account: "aurora" },
+    { id: "q-a1", account: "demo-brand-owner" },
     { id: "q-z1", account: "zephyr" },
   ], { order: ["q-a1", "q-z1"] });
 
@@ -196,9 +196,9 @@ test("reorder: the order the portal writes is the order the runner reads", async
   // One function, two callers. If these ever diverged the screen would assert an order the engine
   // does not honour, which is precisely the fiction this whole change exists to remove.
   const w = world([
-    { id: "q-a1", account: "aurora" },
-    { id: "q-a2", account: "aurora" },
-    { id: "q-a3", account: "aurora" },
+    { id: "q-a1", account: "demo-brand-owner" },
+    { id: "q-a2", account: "demo-brand-owner" },
+    { id: "q-a3", account: "demo-brand-owner" },
   ], { order: ["q-a1", "q-a2", "q-a3"] });
 
   await serviceFor(w, []).route("POST", "/portal/api/queue/order", CLIENT, { order: ["q-a3", "q-a1", "q-a2"] }, {});
@@ -207,7 +207,7 @@ test("reorder: the order the portal writes is the order the runner reads", async
 });
 
 test("reorder: a bad body is refused without touching the queue", async () => {
-  const w = world([{ id: "q-a1", account: "aurora" }]);
+  const w = world([{ id: "q-a1", account: "demo-brand-owner" }]);
   const res = await serviceFor(w, []).route("POST", "/portal/api/queue/order", CLIENT, { order: "not-an-array" }, {});
   assert.equal(res.status, 400);
   assert.ok(!existsSync(join(w.studio, ".queue-order.json")), "no order file was written");
@@ -237,8 +237,8 @@ test("listing: parked-for-human maps to paused + pausedKind operator on the wire
   // The portal contract coerces an unknown state to "running" — exactly the zombie face this state
   // exists to end — so the mapping MUST happen server-side, like postponed/recovering always did.
   const w = world([], { live: [
-    { id: "r-parked", slug: "tmp-p", account: "aurora", state: "parked-for-human" },
-    { id: "r-recover", slug: "tmp-r", account: "aurora", state: "recovering" },
+    { id: "r-parked", slug: "tmp-p", account: "demo-brand-owner", state: "parked-for-human" },
+    { id: "r-recover", slug: "tmp-r", account: "demo-brand-owner", state: "recovering" },
   ] });
   const res = await serviceFor(w, []).route("GET", "/portal/api/runs", CLIENT, null, {});
   assert.equal(res.status, 200, JSON.stringify(res.json));
@@ -271,7 +271,7 @@ const stopRunReturning = (w, stops, reply) => makePortalService({
   stopRun: async (args) => { stops.push(args); return reply(args); },
   audit: () => {},
 });
-const running = () => world([], { live: [{ id: "r-aurora", slug: "tmp-a", account: "aurora", state: "running" }] });
+const running = () => world([], { live: [{ id: "r-demo-brand-owner", slug: "tmp-a", account: "demo-brand-owner", state: "running" }] });
 
 test("arm 1 — the reader's choice reaches the engine, and the answer says which stop happened", async () => {
   const w = running();
@@ -280,7 +280,7 @@ test("arm 1 — the reader's choice reaches the engine, and the answer says whic
     ok: true, action: "cancel-requested", immediate: { attempted: true, signalled: "SIGTERM", pid: 4242, ended: true },
     note: "Stopping now. The step in flight has ended.",
   }));
-  const res = await svc.route("POST", "/portal/api/run/r-aurora/stop", CLIENT, { immediate: true }, {});
+  const res = await svc.route("POST", "/portal/api/run/r-demo-brand-owner/stop", CLIENT, { immediate: true }, {});
 
   assert.equal(res.status, 200, JSON.stringify(res.json));
   assert.equal(stops[0].immediate, true, "the reader chose to end the step in flight and the engine was not told");
@@ -296,7 +296,7 @@ test("arm 2 — anything but an explicit true is the stop that PRESERVES the ste
     const w = running();
     const stops = [];
     const svc = stopRunReturning(w, stops, () => ({ ok: true, action: "cancel-requested", note: "Stopping." }));
-    await svc.route("POST", "/portal/api/run/r-aurora/stop", CLIENT, body, {});
+    await svc.route("POST", "/portal/api/run/r-demo-brand-owner/stop", CLIENT, body, {});
     assert.equal(stops[0].immediate, false, `${JSON.stringify(body)} was read as consent to end the step in flight`);
   }
 });
@@ -311,7 +311,7 @@ test("arm 3 — an immediate stop that could not act is reported as the boundary
     immediate: { attempted: false, why: "no engine turn is recorded for this run — the cancel stands" },
     note: "Stopping at the next step boundary. An immediate stop was asked for and could not be made.",
   }));
-  const res = await svc.route("POST", "/portal/api/run/r-aurora/stop", CLIENT, { immediate: true }, {});
+  const res = await svc.route("POST", "/portal/api/run/r-demo-brand-owner/stop", CLIENT, { immediate: true }, {});
 
   assert.equal(stops[0].immediate, true, "premise: the reader asked for the immediate stop");
   assert.equal(res.json.stop.mode, "boundary",
@@ -322,7 +322,7 @@ test("arm 3 — an immediate stop that could not act is reported as the boundary
   const stops2 = [];
   const res2 = await stopRunReturning(w2, stops2, () => ({
     ok: true, action: "cancel-requested", immediate: { attempted: true, signalled: null, pid: 9, error: "EPERM" },
-  })).route("POST", "/portal/api/run/r-aurora/stop", CLIENT, { immediate: true }, {});
+  })).route("POST", "/portal/api/run/r-demo-brand-owner/stop", CLIENT, { immediate: true }, {});
   assert.equal(res2.json.stop.mode, "boundary", "a signal that was refused is being reported as an immediate stop");
 
   // AND A SIGNAL THAT WAS SENT IS NOT A STOP THAT HAPPENED. `ended` is what the driver saw after the
@@ -333,7 +333,7 @@ test("arm 3 — an immediate stop that could not act is reported as the boundary
     { attempted: true, signalled: "SIGTERM", pid: 9, ended: null },
   ]) {
     const res3 = await stopRunReturning(running(), [], () => ({ ok: true, action: "cancel-requested", immediate }))
-      .route("POST", "/portal/api/run/r-aurora/stop", CLIENT, { immediate: true }, {});
+      .route("POST", "/portal/api/run/r-demo-brand-owner/stop", CLIENT, { immediate: true }, {});
     assert.equal(res3.json.stop.mode, "boundary",
       `a stop that was sent and not seen to end is reported as immediate: ${JSON.stringify(immediate)}`);
   }
@@ -353,7 +353,7 @@ test("arm 4 — no process id reaches the browser, and the raw tool result stops
     // below asserts it does not travel; which internal string it is does not matter to that.
     internalDetail: "<a run directory the tool knows and a browser must not>",
   }));
-  const res = await svc.route("POST", "/portal/api/run/r-aurora/stop", CLIENT, { immediate: true }, {});
+  const res = await svc.route("POST", "/portal/api/run/r-demo-brand-owner/stop", CLIENT, { immediate: true }, {});
 
   const wire = JSON.stringify(res.json);
   assert.ok(!wire.includes("3292812"), `a process id reached the browser: ${wire}`);

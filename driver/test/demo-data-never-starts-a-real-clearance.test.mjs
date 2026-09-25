@@ -57,13 +57,13 @@ test("the marker is CUSTOMER-ONLY — a project can neither apply nor remove it"
   // fiction through the wall, and it would look like an ordinary project override doing it.
   assert.ok(CUSTOMER_ONLY_KEYS.includes("demoData"));
   assert.equal(PROJECT_KEYS.includes("demoData"), false);
-  const v = validateProfileEdit("projects/aurora/p", { projectName: "P", demoData: true }, "", { sparse: true });
+  const v = validateProfileEdit("projects/demo-brand-owner/p", { projectName: "P", demoData: true }, "", { sparse: true });
   assert.equal(v.ok, false, "an overlay carrying the marker is refused outright");
 });
 
 test("the shipped invented companies say so, and `generic` does not", () => {
   const ps = loadProfiles({ force: true });
-  for (const k of ["aurora", "petcary", "zephyr"]) {
+  for (const k of ["demo-brand-owner", "petcary", "zephyr"]) {
     assert.ok(ps.has(k), `${k} is in the bundled roster`);
     assert.equal(ps.get(k).demoData, true, `${k} is an invented company and must say so`);
   }
@@ -115,7 +115,7 @@ test("resolving a profile is NOT starting a clearance — the demo path keeps wo
     + "and a throw here would refuse the demo the marker exists to make safe");
 
   const ps = loadProfiles({ force: true });
-  assert.equal(ps.get("aurora").demoData, true, "a marked account still loads");
-  assert.ok(ps.get("aurora").platforms?.length, "and is still readable, listable and reportable — the "
+  assert.equal(ps.get("demo-brand-owner").demoData, true, "a marked account still loads");
+  assert.ok(ps.get("demo-brand-owner").platforms?.length, "and is still readable, listable and reportable — the "
     + "marker is provenance, never visibility");
 });

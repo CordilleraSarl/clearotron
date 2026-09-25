@@ -39,10 +39,10 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 // EXCLUDE would satisfy the guard by removing the coverage.
 const FRAMEWORK = {
   "schema_version": 1,
-  "framework_key": "aurora",
-  "title": "Aurora Interactive risk framework",
+  "framework_key": "demo-brand-owner",
+  "title": "Demo Brand Owner risk framework",
   "source_deck": "Risk Assessment Framework (test fixture)",
-  "entity_label": "Aurora Interactive",
+  "entity_label": "Demo Brand Owner",
   "bands": [
     {
       "label": "Very High",

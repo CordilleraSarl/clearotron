@@ -90,7 +90,7 @@
 //                               exists to argue against.)
 //   · publish/xlsx.mjs:319,587  `anyHit` and `commonLawUnlogged` are derived from the exact rows the
 //                               sheet then writes, in the same builder.
-//   · reasoning-tripwires.mjs:465  `material` is written onto the row it describes.
+//   · reasoning-tripwires.mjs:419 findRecallRegressionViolations — `material` is written onto the row it describes.
 //   · reference-score.mjs:430,861,1538  all three only select WORDING — an excluded-reason string, a
 //                               receipt `detail`, a `missingArtifact` note. A flag that chooses a
 //                               sentence has no satisfaction side to disagree with.

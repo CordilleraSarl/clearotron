@@ -51,7 +51,7 @@ const FINDING = {
   mark: "LUMENGARDE",
   owner: { name: "Plesner Advokatpartnerselskab", country: "DK",
     registrations: [{ uri: "/mark/eu/018553557", classes: ["09", "41"], status: "Registered", filed: "2021-09-07", expiry: "2031-09-07", jurisdiction: "EU" }] },
-  composite: 4, level: "B", dispute_type: "paper-conflict",
+  composite: 4, level: "B", dispute_type: "register-only",
   meters: {
     mark_similarity: meter("high"),
     goods_proximity: meter("medium", "inferred-from-signal"),

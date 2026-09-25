@@ -151,7 +151,7 @@ test('the focus ring is focus-VISIBLE and sits on the control that takes focus',
 
 test('the company heading is a SECTION HEADER, not the smallest type on the page', () => {
   // It was `.eyebrow`: 9.5px, letterspaced caps, --text-faint. That reads as a rule between rows rather
-  // than as "everything below this belongs to Aurora Interactive", which is the whole fault.
+  // than as "everything below this belongs to Demo Brand Owner", which is the whole fault.
   assert.match(CLEARANCES, /className="owner-name"/)
   assert.match(CLEARANCES, /className="owner-count"/)
   assert.doesNotMatch(CLEARANCES.slice(CLEARANCES.indexOf('tr className="group-head"'), CLEARANCES.indexOf('</tr>', CLEARANCES.indexOf('tr className="group-head"'))),

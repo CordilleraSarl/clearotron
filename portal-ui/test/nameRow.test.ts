@@ -34,7 +34,7 @@ const LADDER: readonly Band[] = [
 ]
 
 const run = (over: Partial<Run> & { runId: string }): Run => ({
-  account: 'aurora',
+  account: 'demo-brand-owner',
   title: 'AQUAPLUS',
   markName: 'AQUAPLUS',
   product: null,

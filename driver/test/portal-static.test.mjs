@@ -113,7 +113,7 @@ test("serves the SPA document for /portal and for any client-routed path below i
     // inside the app: pasted, bookmarked or mailed, it would 404 while client-side navigation to the
     // same URL worked, which is the hardest kind of broken to reproduce.
     for (const path of ["/portal", "/portal/", "/portal/clearances", "/portal/brand/projects",
-      "/portal/result/xyz", "/portal/result/tmp4-aurora-batch/ironwhisk"]) {
+      "/portal/result/xyz", "/portal/result/tmp4-demo-brand-owner-batch/ironwhisk"]) {
       const res = fakeRes();
       assert.equal(handle(GET, res, path), true, `${path} should be served by the SPA handler`);
       assert.equal(res.status, 200);

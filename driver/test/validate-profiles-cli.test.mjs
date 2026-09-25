@@ -53,7 +53,7 @@ test("the bundled roster is clean, and the report names which store it read", ()
   // The literal list is deliberate brittleness, like the key-split arm: adding a BUNDLED profile is a
   // shipped-surface change and should require somebody to type it here. `demo-brand-owner` joined in
   // — the demo account, marked demo data, which the runner refuses real clearances on.
-  assert.match(out, /roster: aurora, demo-brand-owner, generic, petcary, zephyr/, "the roster is printed — the two stores share no key");
+  assert.match(out, /roster: demo-brand-owner, generic, petcary, zephyr/, "the roster is printed — the two stores share no key");
 });
 
 test("an unset CLEAROTRON_CUSTOMERS_DIR validates the bundled roster and SAYS that is what it did", () => {
@@ -117,7 +117,7 @@ test("a missing generic.json fails — the set-level guard, and it is not masked
 test("two profiles claiming one match domain fail — readdir order must never decide a customer", () => {
   const d = store();
   try {
-    // SEEDED ON BOTH SIDES, NOT BORROWED FROM ONE. This read aurora's first matchDomain and
+    // SEEDED ON BOTH SIDES, NOT BORROWED FROM ONE. This read demo-brand-owner's first matchDomain and
     // bailed with a bare `return` when the bundled roster carried none — so the day the demo profiles
     // stop declaring matchDomains, the collision rule retires silently and this arm still reports ok.
     // The subject here is the RULE, not the roster's contents, so the collision is constructed.
@@ -126,7 +126,7 @@ test("two profiles claiming one match domain fail — readdir order must never d
     // the profiles are not invented outright: an invented shape would pass a validator the real ones
     // fail, and the overlap check has to run against a store that is otherwise valid.
     const dom = "collision-probe.example";
-    edit(d, "aurora.json", (o) => { o.matchDomains = [dom]; });
+    edit(d, "demo-brand-owner.json", (o) => { o.matchDomains = [dom]; });
     edit(d, "zephyr.json", (o) => { o.matchDomains = [dom]; });
     const { code, out } = run(["--dir", d]);
     assert.equal(code, 1);
@@ -137,13 +137,13 @@ test("two profiles claiming one match domain fail — readdir order must never d
 test("a project overlay may not set a customer-only key", () => {
   const d = store();
   try {
-    const pdir = join(d, "projects", "aurora");
+    const pdir = join(d, "projects", "demo-brand-owner");
     mkdirSync(pdir, { recursive: true });
     // `frameworkPath` is rating authority — whole-customer only. An overlay states deltas.
     writeFileSync(join(pdir, "probe.json"), JSON.stringify({ frameworkPath: "skills/clearance-search/risk-framework.md" }));
     const { code, out } = run(["--dir", d]);
     assert.equal(code, 1);
-    assert.match(out, /projects\/aurora\/probe\.json/);
+    assert.match(out, /projects\/demo-brand-owner\/probe\.json/);
     assert.match(out, /customer-only/);
   } finally { rmSync(d, { recursive: true, force: true }); }
 });

@@ -48,7 +48,7 @@
 //
 //   5. AN ACCOUNT WITH DEFAULTS IS EXERCISED. The old file used `generic` throughout — no default
 //      territories, no default product — so the account-default arm, where every asymmetry in the
-//      matrix lived, was never reached. `aurora` holds seven territories and `zephyr` holds a default
+//      matrix lived, was never reached. `demo-brand-owner` holds three territories and `zephyr` holds a default
 //      product and a one-name budget.
 //
 // THE ASSERTION IS ON THE REFUSAL STRING, not on a boolean or a substring: two doors that refuse for the
@@ -179,12 +179,12 @@ const stampFor = (req) => ({
 }[geographyIntentOf(req)]);
 
 // STAFF acting for a named account. `generic` carries no default territories and no default product, so
-// a case that names it measures the REQUEST alone; `aurora` (seven default territories) and `zephyr`
+// a case that names it measures the REQUEST alone; `demo-brand-owner` (three default territories) and `zephyr`
 // (a default product and a one-name budget) are what reach the account-default arm.
 // The portal's requester holds Run (plan and run are gated on it) and access to everything, because a
 // case that names no account orders Generic, and ordering Generic stays with a person who sees everything.
 const GRANTS = {
-  tenants: { celta: { accounts: ["aurora", "zephyr", "generic"], users: { "cli@celta.example": ["aurora"] } } },
+  tenants: { celta: { accounts: ["demo-brand-owner", "zephyr", "generic"], users: { "cli@celta.example": ["demo-brand-owner"] } } },
   people: { "staff@example-firm.com": { run: true, manage: true, everything: true } },
 };
 const PRINCIPAL = { email: "staff@example-firm.com" };
@@ -399,7 +399,7 @@ function assertAllRefuse(label, said, refusal) {
  * THE WALL'S OWN VERDICT for this request, from the predicate `claimAndPrep` calls —.
  *
  * Every profile this file uses as a fixture except `generic` carries `demoData: true`, because those are
- * the only accounts with the defaults these cases need (aurora's seven territories, zephyr's default
+ * the only accounts with the defaults these cases need (demo-brand-owner's three territories, zephyr's default
  * product). That was invisible while no door asked the wall's question. `--dry-run` now asks it, so a
  * fixture that could never run anywhere started reading as a door refusing a legal request.
  */
@@ -568,12 +568,12 @@ const RESOLVED_CASES = {
       + "broad question per mark, not a per-store grid. Drop platforms to run the quick screen, or ask for a "
       + "preliminary search, whose common-law grid sweeps the account's marketplaces plus any named here",
   },
-  // aurora holds SEVEN default territories. A Full country search over them is seven shallow reads sold
+  // demo-brand-owner holds THREE default territories. A Full country search over them is three shallow reads sold
   // as one deep one — and the request itself names no territory at all, so this is invisible at the door.
   "scope-rules": {
-    label: "a Full country search over an account's seven default territories",
-    req: { product: "full-country-search", profileKey: "aurora", accountDefault: true },
-    message: () => scopeMsg("full-country-search", ["NZ", "PH", "IN", "RU", "ID", "ZA", "TR"]),
+    label: "a Full country search over an account's three default territories",
+    req: { product: "full-country-search", profileKey: "demo-brand-owner", accountDefault: true },
+    message: () => scopeMsg("full-country-search", ["EU", "US", "JP"]),
   },
 };
 
@@ -603,9 +603,9 @@ test("every product in the offering is orderable at every door, with the geograp
     ["Multi-country focus, two countries", { product: "multi-country-focus-search", jurisdictions: ["France", "Germany"] }],
     ["Multi-country focus, native language", { product: "multi-country-focus-search", jurisdictions: ["China", "Japan"], nativeLanguage: true }],
     ["Full country search", { product: "full-country-search", jurisdictions: ["United States"] }],
-    // THE ACCOUNT-DEFAULT ARM, which no case reached before. aurora's seven territories make a request
+    // THE ACCOUNT-DEFAULT ARM, which no case reached before. demo-brand-owner's three territories make a request
     // that names nothing a Multi-country focus search, and every door must admit it as one.
-    ["the account's own territories, no product named", { profileKey: "aurora", accountDefault: true }],
+    ["the account's own territories, no product named", { profileKey: "demo-brand-owner", accountDefault: true }],
     // zephyr's own defaultProduct, with a scope that fits it.
     ["the account's default product", { profileKey: "zephyr", accountDefault: true }],
   ];
@@ -692,7 +692,7 @@ test("the same request stores the same job at every writing door — geography s
     ["worldwide", { product: "global-preliminary-search", worldwide: true }],
     ["named", { product: "multi-country-focus-search", jurisdictions: ["France", "Germany"] }],
     ["one country", { product: "full-country-search", jurisdictions: ["United States"] }],
-    ["the account's own", { profileKey: "aurora", accountDefault: true }],
+    ["the account's own", { profileKey: "demo-brand-owner", accountDefault: true }],
   ];
   for (const [label, req] of cases) {
     const said = await driveAll(req);

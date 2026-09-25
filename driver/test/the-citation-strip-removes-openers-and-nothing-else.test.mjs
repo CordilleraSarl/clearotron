@@ -147,7 +147,7 @@ test("the excluded files are excluded, and nothing else is", () => {
     assert.equal(isScannable(f), true, `${f} must be swept`);
   }
   assert.equal(isScannable("portal-ui/dist/assets/index.js"), false, "a built artefact is not prose");
-  assert.equal(isScannable("driver/profiles/aurora.png"), false, "a binary is not prose");
+  assert.equal(isScannable("driver/profiles/demo-brand-owner.png"), false, "a binary is not prose");
 });
 
 // ── the bracketed citation, and the two things that make it safe ────────────────────────────────────

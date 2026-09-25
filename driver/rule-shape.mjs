@@ -48,16 +48,16 @@ const PRESENTATION = /\b(?:detailed|listed|shown|displayed|set out|appears?|see|
 // this vocabulary and still flags.
 const MATRIX_CONTEXT = /\b(?:matrix|ceiling|tops?\s+out|caps?\s+at|read\s+off|per\s+the\s+(?:risk\s+)?(?:framework|matrix))\b/i;
 
-// doc-27 Item 3: the matrix DERIVATION notation "Level C + Horse Trade" / "Composite 3 + Paper Conflict"
-// — where the "+" joins a Level/Composite to a Dispute Type (risk-framework's Classic / Horse Trade /
-// Paper Conflict / Descriptive / Nuisance) — is the customer's full citation, not a us-invented cutoff, so
+// doc-27 Item 3: the matrix DERIVATION notation "Level C + Bargain" / "Composite 3 + Register-only"
+// — where the "+" joins a Level/Composite to a Dispute Type the run's OWN framework names, passed in by the
+// caller and never a list written here — is the customer's full citation, not a us-invented cutoff, so
 // it is exempt EVEN without nearby matrix vocabulary. A BARE "Level C +" (no Dispute Type follows) is still
 // a shortcut and still flags. `[ \t]*` (NOT \s) keeps the Dispute Type on the SAME line as the "+" — a
-// bare "Level C +\nHorse Trade …" across a line break is NOT the derivation and still flags.
-const DISPUTE_TYPE_AFTER_PLUS = /^[ \t]*(?:classic|horse[ \t]*trade|paper[ \t]*conflict|descriptive|nuisance)\b/i;
+// bare "Level C +\nBargain …" across a line break is NOT the derivation and still flags.
+const disputeTypeAfterPlus = (types) => (types.length ? new RegExp(`^[ \\t]*(?:${types.map((t) => String(t).trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/[\s-]+/g, "[ \\t-]*")).join("|")})\\b`, "i") : null);
 
-export function findRuleShapeFlags(text) {
-  const s = String(text || "");
+export function findRuleShapeFlags(text, { disputeTypes = [] } = {}) {
+  const s = String(text || ""); const afterPlus = disputeTypeAfterPlus(disputeTypes.filter((t) => String(t ?? "").trim().length > 1));   // a one-letter value is a level, never a type
   const out = [];
   const seen = new Set();
   for (const [re, why] of PATTERNS) {
@@ -66,7 +66,7 @@ export function findRuleShapeFlags(text) {
     while ((m = g.exec(s))) {
       if (PRESENTATION.test(s.slice(m.index, m.index + m[0].length + 40))) continue;   // presentation, not a rule
       if (MATRIX_CONTEXT.test(s.slice(Math.max(0, m.index - 60), m.index + m[0].length + 60))) continue;   // sanctioned matrix-citation, not a us-invented shortcut
-      if (/\+$/.test(m[0]) && DISPUTE_TYPE_AFTER_PLUS.test(s.slice(m.index + m[0].length))) continue;   // matrix derivation "Level C + Horse Trade", not a bare cutoff
+      if (afterPlus && /\+$/.test(m[0]) && afterPlus.test(s.slice(m.index + m[0].length))) continue;   // matrix derivation "Level C + Bargain", not a bare cutoff
       const snippet = m[0].replace(/\s+/g, " ").trim().slice(0, 120);
       const key = `${why}::${snippet.toLowerCase()}`;
       if (!seen.has(key)) { seen.add(key); out.push({ why, snippet }); }

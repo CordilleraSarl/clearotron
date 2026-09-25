@@ -13,7 +13,7 @@ test('a client and a staff member read the same company the same way', () => {
   // The client's own grants, named by /portal/api/me…
   const asClient = ownerNameMap({ 'vantor': 'Vantor Labs' }, [])
   // …and the staff view of the same customer, named by the roster.
-  const asStaff = ownerNameMap({}, [{ key: 'vantor', name: 'Vantor Labs' }, { key: 'aurora', name: 'Aurora Interactive' }])
+  const asStaff = ownerNameMap({}, [{ key: 'vantor', name: 'Vantor Labs' }, { key: 'demo-brand-owner', name: 'Demo Brand Owner' }])
 
   assert.equal(ownerNameFrom(asClient, 'vantor'), 'Vantor Labs')
   assert.equal(ownerNameFrom(asStaff, 'vantor'), 'Vantor Labs')
@@ -25,13 +25,13 @@ test('a client and a staff member read the same company the same way', () => {
 })
 
 test('an unknown key reads as itself, and nothing ever renders blank', () => {
-  const names = ownerNameMap({ aurora: 'Aurora Interactive' }, [])
+  const names = ownerNameMap({ "demo-brand-owner": 'Demo Brand Owner' }, [])
   // A company whose profile carries no name, a stale key, a degraded server that sent {} — all
   // the same answer, and it is always something a person can act on.
   assert.equal(ownerNameFrom(names, 'zephyr'), 'zephyr')
   assert.equal(ownerNameFrom({}, 'zephyr'), 'zephyr')
   assert.equal(ownerNameFrom(names, null), ALL_OWNERS)
-  for (const k of ['zephyr', 'aurora', null]) assert.notEqual(ownerNameFrom(names, k), '')
+  for (const k of ['zephyr', 'demo-brand-owner', null]) assert.notEqual(ownerNameFrom(names, k), '')
 })
 
 test('a de-slugged key is never invented', () => {
@@ -44,30 +44,30 @@ test('a de-slugged key is never invented', () => {
 test('an empty name is a miss, not a name', () => {
   // Both sources can carry one — a profile with `"name": ""`, or a roster row built from it. Storing
   // it would render a company as nothing at all, which is the one output worse than the slug.
-  const names = ownerNameMap({ aurora: '' }, [{ key: 'zephyr', name: '' }])
+  const names = ownerNameMap({ "demo-brand-owner": '' }, [{ key: 'zephyr', name: '' }])
   assert.deepEqual(names, {})
-  assert.equal(ownerNameFrom(names, 'aurora'), 'aurora')
+  assert.equal(ownerNameFrom(names, 'demo-brand-owner'), 'demo-brand-owner')
 })
 
 test('the roster wins where both sources answer, which is only ever for staff', () => {
-  const names = ownerNameMap({ aurora: 'stale' }, [{ key: 'aurora', name: 'Aurora Interactive' }])
-  assert.equal(ownerNameFrom(names, 'aurora'), 'Aurora Interactive')
+  const names = ownerNameMap({ "demo-brand-owner": 'stale' }, [{ key: 'demo-brand-owner', name: 'Demo Brand Owner' }])
+  assert.equal(ownerNameFrom(names, 'demo-brand-owner'), 'Demo Brand Owner')
 })
 
 test('the switcher is ordered by what is read, not by what is stored', () => {
   const names = ownerNameMap({}, [
     { key: 'vantor', name: 'Vantor Labs' },
-    { key: 'aurora', name: 'Zephyr Beverages' },   // deliberately at odds with its key
-    { key: 'zephyr', name: 'Aurora Interactive' },
+    { key: 'demo-brand-owner', name: 'Zephyr Beverages' },   // deliberately at odds with its key
+    { key: 'zephyr', name: 'Demo Brand Owner' },
   ])
   assert.deepEqual(
-    sortOwners(names, ['vantor', 'aurora', 'zephyr']).map((o) => o.name),
-    ['Aurora Interactive', 'Vantor Labs', 'Zephyr Beverages'],
+    sortOwners(names, ['vantor', 'demo-brand-owner', 'zephyr']).map((o) => o.name),
+    ['Demo Brand Owner', 'Vantor Labs', 'Zephyr Beverages'],
   )
   // The KEY is what every request is keyed by and it rides along untouched — sorting must never be a
   // step that quietly renames anything.
-  // `aurora` is named "Zephyr Beverages" here, so it sorts LAST — by its name, carrying its own key.
-  assert.deepEqual(sortOwners(names, ['vantor', 'aurora']).map((o) => o.key), ['vantor', 'aurora'])
+  // `demo-brand-owner` is named "Zephyr Beverages" here, so it sorts LAST — by its name, carrying its own key.
+  assert.deepEqual(sortOwners(names, ['vantor', 'demo-brand-owner']).map((o) => o.key), ['vantor', 'demo-brand-owner'])
 })
 
 test('a nameless account is still offered in the switcher', () => {

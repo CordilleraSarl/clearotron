@@ -21,7 +21,7 @@ process.env.TRADEMARK_MCP_TOKEN_SECRET ||= "test-secret-grants";
 const GRANTS = {
   tenants: {
     firm: { accounts: ["celta"], users: { "junior@firm.example": ["celta"] } },
-    trial: { accounts: ["aurora", "zephyr", "petcary"], users: { "*@vendor.example": "*", "one@other.example": ["aurora"] } },
+    trial: { accounts: ["demo-brand-owner", "zephyr", "petcary"], users: { "*@vendor.example": "*", "one@other.example": ["demo-brand-owner"] } },
   },
   people: { "senior@firm.example": { run: true, manage: true, everything: true } },
 };
@@ -29,8 +29,8 @@ const GRANTS = {
 test("accountsForEmail: exact, domain-wildcard, tenant-grant expansion, union, and the misses", () => {
   assert.equal(accountsForEmail("senior@firm.example", GRANTS), "*", "a person with access to everything = everything");
   assert.deepEqual(accountsForEmail("junior@firm.example", GRANTS), ["celta"]);
-  assert.deepEqual(accountsForEmail("anyone@vendor.example", GRANTS).sort(), ["aurora", "petcary", "zephyr"], "*@domain expands to the tenant grant");
-  assert.deepEqual(accountsForEmail("one@other.example", GRANTS), ["aurora"]);
+  assert.deepEqual(accountsForEmail("anyone@vendor.example", GRANTS).sort(), ["demo-brand-owner", "petcary", "zephyr"], "*@domain expands to the tenant grant");
+  assert.deepEqual(accountsForEmail("one@other.example", GRANTS), ["demo-brand-owner"]);
   assert.deepEqual(accountsForEmail("stranger@nowhere.example", GRANTS), [], "authenticated but granted NOTHING");
   assert.equal(accountsForEmail("anyone@x.example", null), "*", "no grants file = enforcement off");
   // union across tenants
@@ -60,8 +60,8 @@ test("loadGrants refuses a company in two organisations, a wildcard organisation
     assert.throws(() => loadGrants({ grantsPath: join(dir, "g.json") }), re);
   };
   try {
-    refuses({ tenants: { a: { accounts: ["aurora"] }, b: { accounts: ["zephyr", "aurora"] } } },
-      /account "aurora" is listed under both tenants\.a and tenants\.b/);
+    refuses({ tenants: { a: { accounts: ["demo-brand-owner"] }, b: { accounts: ["zephyr", "demo-brand-owner"] } } },
+      /account "demo-brand-owner" is listed under both tenants\.a and tenants\.b/);
     refuses({ tenants: { a: { accounts: "*" } } }, /tenants\.a\.accounts is "\*".*"everything": true/);
     refuses({ tenants: {}, people: { "x@y.example": { mange: true } } }, /people\."x@y\.example"\.mange is not a field/);
     refuses({ tenants: {}, people: { "x@y.example": { run: "yes" } } }, /must be true or false/);
@@ -76,19 +76,19 @@ test("loadGrants refuses a company in two organisations, a wildcard organisation
 test("assertAccountAccess: null/'*' scope passes everything; a list gates; untagged runs only for full grants", () => {
   assertAccountAccess({ accounts: "*" }, "anything");
   assertAccountAccess({ accounts: null }, null);
-  assertAccountAccess({ accounts: ["aurora"] }, "aurora");
-  assert.throws(() => assertAccountAccess({ accounts: ["aurora"] }, "celta"), /does not include account "celta"/);
-  assert.throws(() => assertAccountAccess({ accounts: ["aurora"] }, null), /no account tag/);
-  assert.equal(accountVisible({ accounts: ["aurora"] }, "aurora"), true);
-  assert.equal(accountVisible({ accounts: ["aurora"] }, "zephyr"), false);
+  assertAccountAccess({ accounts: ["demo-brand-owner"] }, "demo-brand-owner");
+  assert.throws(() => assertAccountAccess({ accounts: ["demo-brand-owner"] }, "celta"), /does not include account "celta"/);
+  assert.throws(() => assertAccountAccess({ accounts: ["demo-brand-owner"] }, null), /no account tag/);
+  assert.equal(accountVisible({ accounts: ["demo-brand-owner"] }, "demo-brand-owner"), true);
+  assert.equal(accountVisible({ accounts: ["demo-brand-owner"] }, "zephyr"), false);
 });
 
 test("ops token accounts claim: minted, surfaced, and carried into the scope; legacy = full", () => {
-  const tok = mintToken({ scope: "ops", sub: "trial-connector", accounts: ["aurora", "zephyr"] });
+  const tok = mintToken({ scope: "ops", sub: "trial-connector", accounts: ["demo-brand-owner", "zephyr"] });
   const v = verifyToken(tok);
-  assert.deepEqual(v.accounts, ["aurora", "zephyr"]);
+  assert.deepEqual(v.accounts, ["demo-brand-owner", "zephyr"]);
   const scope = resolveScope({ innerToken: tok });
-  assert.deepEqual(scope.accounts, ["aurora", "zephyr"]);
+  assert.deepEqual(scope.accounts, ["demo-brand-owner", "zephyr"]);
   assert.equal(resolveScope({ innerToken: mintToken({ scope: "ops", sub: "legacy" }) }).accounts, "*");
   assert.equal(resolveScope({ local: true }).accounts, "*");
   // a run-bound token is already narrower than any account cap could make it (accounts[] is for the ops
@@ -98,10 +98,10 @@ test("ops token accounts claim: minted, surfaced, and carried into the scope; le
 });
 
 test("authorize gates start_run by the grant — including the implicit 'generic' account", () => {
-  const scoped = resolveScope({ innerToken: mintToken({ scope: "ops", sub: "trial", accounts: ["aurora"] }) });
+  const scoped = resolveScope({ innerToken: mintToken({ scope: "ops", sub: "trial", accounts: ["demo-brand-owner"] }) });
   // start_run args are passed through UNTOUCHED — the forwarder stamp is a plan_run-only courtesy
   // (shared/scope.mjs), so the spend path still requires the caller to name its own routing key.
-  assert.deepEqual(authorize(scoped, "start_run", { markName: "X", profileKey: "aurora" }), { markName: "X", profileKey: "aurora" });
+  assert.deepEqual(authorize(scoped, "start_run", { markName: "X", profileKey: "demo-brand-owner" }), { markName: "X", profileKey: "demo-brand-owner" });
   assert.throws(() => authorize(scoped, "start_run", { markName: "X", profileKey: "celta" }), /does not include account "celta"/);
   assert.throws(() => authorize(scoped, "start_run", { markName: "X" }), /account "generic"/, "no profileKey = the generic account, which must be granted too");
   const full = resolveScope({ innerToken: mintToken({ scope: "ops", sub: "full" }) });
@@ -109,10 +109,10 @@ test("authorize gates start_run by the grant — including the implicit 'generic
 });
 
 test("describe_options: naming an account is gated by the grant, OMITTING one is the discovery question", () => {
-  const scoped = resolveScope({ innerToken: mintToken({ scope: "ops", sub: "trial", accounts: ["aurora"] }) });
+  const scoped = resolveScope({ innerToken: mintToken({ scope: "ops", sub: "trial", accounts: ["demo-brand-owner"] }) });
   assert.doesNotThrow(() => authorize(scoped, "describe_options", {}),
     "an omitted profileKey is how a session asks which accounts it holds — refusing it re-opens the dead end");
-  assert.doesNotThrow(() => authorize(scoped, "describe_options", { profileKey: "aurora" }));
+  assert.doesNotThrow(() => authorize(scoped, "describe_options", { profileKey: "demo-brand-owner" }));
   assert.throws(() => authorize(scoped, "describe_options", { profileKey: "celta" }), /does not include account "celta"/);
 });
 
@@ -128,11 +128,11 @@ test("describe_options: the grant binds a scoped INTERNAL session too, not just 
     const junior = resolveScope({ firmStaff: true, email: "junior@firm.example" });
     assert.deepEqual(junior.accounts, ["celta"]);
     assert.doesNotThrow(() => authorize(junior, "describe_options", { profileKey: "celta" }));
-    assert.throws(() => authorize(junior, "describe_options", { profileKey: "aurora" }), /does not include account "aurora"/);
+    assert.throws(() => authorize(junior, "describe_options", { profileKey: "demo-brand-owner" }), /does not include account "demo-brand-owner"/);
     assert.doesNotThrow(() => authorize(junior, "describe_options", {}), "omission stays legal for every kind");
     // a FULL-grant staff session is unrestricted, exactly as it is for every other read
     const senior = resolveScope({ firmStaff: true, email: "senior@firm.example" });
-    assert.doesNotThrow(() => authorize(senior, "describe_options", { profileKey: "aurora" }));
+    assert.doesNotThrow(() => authorize(senior, "describe_options", { profileKey: "demo-brand-owner" }));
   } finally {
     pinEnv(process.env, "CLEAROTRON_ACCESS_FILE", undefined);
     rmSync(dir, { recursive: true, force: true });
@@ -169,18 +169,18 @@ test("filterByAccounts narrows list_runs/list_profiles/list_outbox_events/search
     writeFileSync(join(d, "status.json"), JSON.stringify({ schema: 1, runId: `${slug}-${run}`, slug, codename: run, agent: "test", state: "delivered", updatedAt: "2026-01-01T00:00:00Z" }));
     if (key) writeFileSync(driverDir(d, "profile.json"), JSON.stringify({ profileKey: key, name: "Fixture" }));
   };
-  mk("tmp1-a", "run-a", "aurora");
+  mk("tmp1-a", "run-a", "demo-brand-owner");
   mk("tmp2-b", "run-b", "celta");
   mk("tmp3-c", "run-c", null); // untagged (pre-grants)
   const saved = process.env.CLEAROTRON_WORK_DIR;
   pinEnv(process.env, "CLEAROTRON_WORK_DIR", ws);
   try {
     const { filterByAccounts } = await import("../server.mjs");
-    const scope = { kind: "ops", accounts: ["aurora"] };
+    const scope = { kind: "ops", accounts: ["demo-brand-owner"] };
     const runs = [{ runId: "tmp1-a-run-a" }, { runId: "tmp2-b-run-b" }, { runId: "tmp3-c-run-c" }];
     assert.deepEqual(filterByAccounts(scope, "list_runs", runs).map((r) => r.runId), ["tmp1-a-run-a"]);
-    const profs = { clients: [{ key: "aurora" }, { key: "celta" }], genericFallback: "generic" };
-    assert.deepEqual(filterByAccounts(scope, "list_profiles", profs).clients.map((c) => c.key), ["aurora"]);
+    const profs = { clients: [{ key: "demo-brand-owner" }, { key: "celta" }], genericFallback: "generic" };
+    assert.deepEqual(filterByAccounts(scope, "list_profiles", profs).clients.map((c) => c.key), ["demo-brand-owner"]);
     const ob = { ok: true, count: 2, events: [{ runId: "tmp1-a-run-a", kind: "delivered" }, { runId: "tmp2-b-run-b", kind: "delivered" }] };
     const fob = filterByAccounts(scope, "list_outbox_events", ob);
     assert.deepEqual(fob.events.map((e) => e.runId), ["tmp1-a-run-a"]);
@@ -212,8 +212,8 @@ test("runAccountKey: reads the REAL frozen shape (profileKey) AND the legacy {ke
   const { runAccountKey } = await import("../lib/runs.mjs");
   const d1 = mkdtempSync(join(tmpdir(), "rak-"));
   mkdirSync(driverDir(d1), { recursive: true });
-  writeFileSync(driverDir(d1, "profile.json"), JSON.stringify({ profileKey: "aurora", name: "A" }));
-  assert.equal(runAccountKey({ runDir: d1 }), "aurora");
+  writeFileSync(driverDir(d1, "profile.json"), JSON.stringify({ profileKey: "demo-brand-owner", name: "A" }));
+  assert.equal(runAccountKey({ runDir: d1 }), "demo-brand-owner");
   const d2 = mkdtempSync(join(tmpdir(), "rak-"));
   mkdirSync(driverDir(d2), { recursive: true });
   writeFileSync(driverDir(d2, "profile.json"), JSON.stringify({ key: "zephyr" }));
@@ -259,7 +259,7 @@ test("examples/grants.example.json loads through loadGrants and grants what it l
   // Every account key it names must be a demo customer this repo actually ships, or the example resolves
   // to accounts that do not exist on a stock install.
   //
-  // DERIVED FROM THE SHIPPED ROSTER, not restated. This was a literal ["aurora", "zephyr", "petcary"],
+  // DERIVED FROM THE SHIPPED ROSTER, not restated. This was a literal ["demo-brand-owner", "zephyr", "petcary"],
   // which is a copy of the roster that goes stale the moment one is added — and it did, when
   // `demo-brand-owner` shipped. The literal could only ever say "these three
   // existed when somebody last looked".

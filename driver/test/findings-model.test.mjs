@@ -10,7 +10,7 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import {
   parseFindingsJson, parseFindingsJsonLenient, consolidateFindings, CONTEXT_NOTE_TYPES,
-  LEVELS, DISPUTE_TYPES, METERS, METER_TOKENS, BASIS_VALUES, SOURCE_TYPES, COVERAGE_AREA_STATES, DISPOSITIONS,
+  LEVELS, DISPUTE_TYPE_RE, METERS, METER_TOKENS, BASIS_VALUES, SOURCE_TYPES, COVERAGE_AREA_STATES, DISPOSITIONS,
 } from "../findings-model.mjs";
 import { validators } from "../verify.mjs";
 import { correctionHint, warmEligible } from "../gateway.mjs";
@@ -28,7 +28,7 @@ const FINDING = {
       { uri: "/mark/eu/018553560", classes: ["25"], status: "Registered", filed: "2004-02-01", expiry: "2034-02-01", jurisdiction: "EU" },
     ],
   },
-  composite: 4, level: "B", dispute_type: "paper-conflict",
+  composite: 4, level: "B", dispute_type: "register-only",
   meters: {
     mark_similarity: meter("high"),
     goods_proximity: meter("medium", "inferred-from-signal"),
@@ -86,7 +86,8 @@ test("consolidateFindings: distinct owners or distinct marks are NEVER merged (n
 
 test("vocab: the closed enums are exactly the design's tokens", () => {
   assert.deepEqual(LEVELS, ["A", "B", "C", "D", "E"]);
-  assert.deepEqual(DISPUTE_TYPES, ["classic", "horse-trade", "paper-conflict", "descriptive-terms", "nuisance-claim"]);
+  assert.ok(DISPUTE_TYPE_RE.test("bargain") && DISPUTE_TYPE_RE.test("register-only"), "a dispute type is one lowercase hyphenated word");
+  assert.ok(!DISPUTE_TYPE_RE.test("Bargain") && !DISPUTE_TYPE_RE.test("register only") && !DISPUTE_TYPE_RE.test(""), "…and nothing else");
   assert.deepEqual(METERS, ["mark_similarity", "goods_proximity", "use", "enforcer"]);
   assert.deepEqual(METER_TOKENS.mark_similarity, ["high", "medium", "low"]);   // 3-pip; fine position is in quadrant
   assert.deepEqual(METER_TOKENS.use, ["confirmed", "not-confirmed", "unknown"]);
@@ -134,7 +135,7 @@ test("throws token-FIRST on every defect class", () => {
   t((d) => { d.findings[0].mark = ""; }, "finding_mark_missing:1");
   t((d) => { d.findings[0].composite = 6; }, "finding_composite_invalid:6");
   t((d) => { d.findings[0].level = "F"; }, "finding_level_invalid:F");
-  t((d) => { d.findings[0].dispute_type = "lawsuit"; }, "finding_dispute_type_invalid:lawsuit");
+  t((d) => { d.findings[0].dispute_type = "Law Suit"; }, "finding_dispute_type_invalid:Law Suit");
   // owner + registrations (A3)
   t((d) => { d.findings[0].owner = "Acme"; }, "finding_owner_invalid:1");
   t((d) => { d.findings[0].owner.weird = 1; }, "finding_owner_key_unknown:weird");
@@ -590,7 +591,7 @@ test("v4: a rated finding carries the framework's band word; the retired scale i
   assert.equal(okDoc.findings[0].band, "Medium");
   assert.throws(() => parseFindingsJson(raw(V4DOC([v4finding({ composite: 3 })]))), /finding_legacy_scale_forbidden:composite/);
   assert.throws(() => parseFindingsJson(raw(V4DOC([v4finding({ level: "C" })]))), /finding_legacy_scale_forbidden:level/);
-  assert.throws(() => parseFindingsJson(raw(V4DOC([v4finding({ dispute_type: "classic" })]))), /finding_legacy_scale_forbidden:dispute_type/);
+  assert.throws(() => parseFindingsJson(raw(V4DOC([v4finding({ dispute_type: "head-on" })]))), /finding_legacy_scale_forbidden:dispute_type/);
 });
 
 test("v4: band-by-disposition matrix — rated need one, off-field forbids one, withdrawn tolerates", () => {

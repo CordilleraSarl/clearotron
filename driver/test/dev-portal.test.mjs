@@ -63,7 +63,7 @@ test("dev-portal: serves the pool statically, guards traversal, proxies /profile
     // /profiles/* proxies through, method + path intact
     const health = await req(port, "/profiles/health");
     assert.deepEqual(JSON.parse(health.body), { path: "/profiles/health", method: "GET" });
-    const post = await req(port, "/profiles/aurora/save", { method: "POST", body: "{}" });
+    const post = await req(port, "/profiles/demo-brand-owner/save", { method: "POST", body: "{}" });
     assert.equal(JSON.parse(post.body).method, "POST");
   } finally {
     portal.close();
@@ -127,7 +127,7 @@ test("dev cockpit: enqueue validates-first into the dev queue; runs + outbox end
 
     // valid enqueue → job lands atomically in the dev queue, same shape as the CLI door
     const ok = await req(port, "/dev/enqueue", { method: "POST",
-      body: JSON.stringify({ mark: "DemoMark", classes: "9,42", forwarder: "dev", profile: "aurora" }) });
+      body: JSON.stringify({ mark: "DemoMark", classes: "9,42", forwarder: "dev", profile: "demo-brand-owner" }) });
     assert.equal(ok.status, 200, ok.body);
     const okBody = JSON.parse(ok.body);
     assert.equal(okBody.ok, true);
@@ -136,7 +136,7 @@ test("dev cockpit: enqueue validates-first into the dev queue; runs + outbox end
     const job = JSON.parse(readFileSync(jobFile, "utf8"));
     assert.equal(job.markName, "DemoMark");
     assert.deepEqual(job.classes, [9, 42]);
-    assert.equal(job.profileKey, "aurora");
+    assert.equal(job.profileKey, "demo-brand-owner");
     assert.equal(job.enqueuedVia, "cli/enqueue");
 
     // invalid (no classes/goods) → 422 with the validator's classify, nothing written

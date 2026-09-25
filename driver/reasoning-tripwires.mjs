@@ -120,7 +120,7 @@ export function findReviewFreshnessViolation(reviewMd, { upstreamTexts = [] } = 
 const SEED_GRADE_RES = [
   { re: /\b(?:must not be softened|do not soften|cannot be softened)\b/i, why: 'a "do not soften" instruction' },
   { re: /\bcomposite\s*[:=]?\s*[1-5]\b/i, why: "an overall Composite score" },
-  { re: /\blegal[ -]?risk[ -]?level\s*[:=]?\s*[A-E]\b/i, why: "an overall Legal Risk Level" },
+  { re: /\b[Ll]evel\s*[:=]?\s*[A-E]\b(?!-)/, why: "an overall Level" },
   { re: /\b(?:this is|it is|name(?:d)? as) the headline\b/i, why: 'a "this is the headline" claim' },
 ];
 
@@ -168,51 +168,6 @@ export function findProbativeGradingViolations(parsedFindings = {}) {
       out.push({
         ordinal: f.ordinal, mark: f.mark,
         why: `"${f.mark}" is rated enforcer=high but carries no one-line "why this bears on this conflict" — enforcement counts only where the owner asserted this element in a comparable situation; state it, or it is annotation not a level-mover`,
-      });
-    }
-  }
-  return out;
-}
-
-// Appendix B — the customer's risk MATRIX is the authority for the rating: Composite is DERIVED from
-// (Legal Level × Dispute Type), with hard ceilings (4/5 require Level D/E; a Level-C finding tops out at
-// Medium 3; A→1, B→2). Elevate/mitigate move the INPUTS (Level/Dispute Type), never the output number.
-// acpCeiling returns the MAX Composite the matrix permits for a (level, dispute_type) pair; a finding rated
-// ABOVE it is a ceiling violation (the NOVA PULSE "Level C → Composite 4 on an aggressive-enforcer
-// adjustment" defect). Firm-wide: the neutral fallback keeps the same shape so it cannot violate either.
-const DISPUTE_4 = new Set(["horse-trade", "nuisance-claim"]);          // D/E + these → 4
-export function acpCeiling(level, disputeType) {
-  const L = String(level ?? "").trim().toUpperCase();
-  const dt = String(disputeType ?? "").trim().toLowerCase();
-  if (L === "A") return 1;
-  if (L === "B") return 2;
-  if (L === "C") return 3;                                              // C tops out at Medium, any dispute type
-  if (L === "D" || L === "E") {
-    if (dt === "classic") return 5;
-    if (DISPUTE_4.has(dt)) return 4;
-    if (dt === "paper-conflict" || dt === "descriptive-terms") return 3;
-    return 5;                                                          // unknown dispute type on D/E: lenient (no false trip)
-  }
-  return 5;                                                            // unknown level: do not police
-}
-
-/**
- * Appendix B — Matrix-ceiling check. A finding whose Composite EXCEEDS the matrix ceiling for its
- * (Legal Level × Dispute Type) is a grading error — a practical/optics factor was let move the output
- * number instead of an input. Reads findings.json only (composite + level + dispute_type all exist in v1+).
- *
- * @param {{findings?:Array}} parsedFindings
- * @returns {Array<{ordinal:number, mark:string, composite:number, level:string, dispute_type:string, ceiling:number, why:string}>}
- */
-export function findMatrixCeilingViolations(parsedFindings = {}) {
-  const out = [];
-  for (const f of parsedFindings?.findings ?? []) {
-    if (!f || typeof f.composite !== "number") continue;
-    const ceiling = acpCeiling(f.level, f.dispute_type);
-    if (f.composite > ceiling) {
-      out.push({
-        ordinal: f.ordinal, mark: f.mark, composite: f.composite, level: f.level, dispute_type: f.dispute_type, ceiling,
-        why: `"${f.mark}" is rated Composite ${f.composite} but Legal Level ${f.level} + ${f.dispute_type} caps it at ${ceiling} via the risk matrix — High/Very-High require Level D/E; a practical factor (enforcer/size/partner) moves the Level or Dispute Type, never the output rating`,
       });
     }
   }
