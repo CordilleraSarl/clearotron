@@ -129,6 +129,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-case-law-source-that-answers-with-an-error-has-not-answered.test.mjs": {
+          "tests": 2,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "a-change-a-reader-can-see-arrives-with-something-to-read.test.mjs": {
           "tests": 35,
           "asserts": 89,
@@ -258,6 +264,12 @@
         "a-correction-to-a-line-that-is-not-a-finding-is-observed.test.mjs": {
           "tests": 7,
           "asserts": 33,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-court-search-that-did-not-run-reads-as-not-completed.test.mjs": {
+          "tests": 4,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },
@@ -1425,6 +1437,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-web-hit-reads-as-a-hit-on-what-was-searched.test.mjs": {
+          "tests": 5,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "a-web-page-is-declined-like-a-record.test.mjs": {
           "tests": 10,
           "asserts": 55,
@@ -1931,7 +1949,7 @@
         },
         "caselaw-bridge-audit.test.mjs": {
           "tests": 8,
-          "asserts": 17,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -2214,6 +2232,12 @@
         "could-not-look-is-not-not-armed.test.mjs": {
           "tests": 3,
           "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "court-decisions-take-the-pass-record-over-its-words.test.mjs": {
+          "tests": 7,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },

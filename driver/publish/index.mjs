@@ -16,7 +16,7 @@ import { buildAudit } from './xlsx.mjs'; import { readDegradedPartRows } from '.
 import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, joinFindingToBlock, CLIENT_TIER_BY_COMPOSITE, projectCoverageJudgment } from '../findings-model.mjs';
 import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.mjs'; import { coverageFormStamp, readCoverageForm } from '../coverage-form-io.mjs'; import { readReleasedFamilies } from '../withheld-families.mjs'; import { unitLabel } from '../coverage-form.mjs'; import { coverageUnitLabel } from '../coverage-ledger.mjs'; import { recallReceiptForOwnCompany } from '../recall-receipt.mjs';   // — and why an absence did not close; whose recall checks an audit lists
 import { clearanceReportData } from './report-data.mjs';
-import { searchDepthRecord, planTerritoriesOf } from './search-depth.mjs'; import { bandRecords } from '../named-band.mjs';   // how much was read to reach the answer, as counts and tokens
+import { searchDepthRecord, planTerritoriesOf, caseLawPassRecord } from './search-depth.mjs'; import { bandRecords } from '../named-band.mjs'; import { CASELAW_BRIDGES } from '../engine/mcp/gather-config.mjs';   // how much was read to reach the answer, as counts and tokens; and the case-law sources whose calls the court state reads
 import { parseFrameworkManifest } from '../framework.mjs'; import { readFrozenMethod, FROZEN_METHOD_FILE } from '../framework-method.mjs';
 import { rollupTokens, servedModels } from '../tokens.mjs';
 import { reportIdentityFor, productCoverageNote, isRegisterOnly } from '../search-policy.mjs';
@@ -1236,6 +1236,17 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
       bandRecordIds: existsSync(recDir) ? null : (() => { try { const b = rdJson(join(runBase, 'register-named-band.json')); return b ? bandRecords(b).map((r) => r?.record_id).filter(Boolean) : null; } catch { return null; } })(),
       commonLawGrid: rdJson(join(runBase, 'common-law-grid.json')),
       caseLawText: rdText(join(dirname(reportMd), 'case-law-findings.md')),
+      // The pass's own record, which decides the court state wherever the run kept one: its last attempt,
+      // its retrieval record, and the calls its sources answered. The file's words decide only without it.
+      caseLawRecord: (() => {
+        const ledger = readStore(runBase, 'case-law-citations.json');
+        return caseLawPassRecord({
+          attemptsJsonl: rdText(driverDir(runBase, 'case-law.jsonl')) || null,
+          ledgerRaw: ledger.state === 'absent' ? null : (ledger.raw ?? ''),
+          readingLogJsonl: rdText(driverDir(runBase, 'reading-log.jsonl')) || null,
+          bridges: CASELAW_BRIDGES,
+        });
+      })(),
       registerPlan: rdJson(driverDir(runBase, 'register-plan.json')),
       laneDepthVerdicts,
       noMarketplacesPicked,

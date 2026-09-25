@@ -215,6 +215,11 @@ const scopeFromTerm = (term, note) => {
   return m ? m[0].replace(/cl\.?\s*/i, 'cl. ').replace(/\s+/g, ' ') : '';
 };
 const HITY = /similar listing|found|products found|product found|account exists|brand account found|squatted|→\s*finding/i;
+// THE SEARCH LOG'S OWN WORDS FOR A HIT. `gridNegativeRows` (audit-from-spine.mjs) writes an executed grid
+// cell that came back with candidates as "<n> candidate(s) reviewed", and HITY above does not match that
+// wording — so every web and marketplace hit on a run with a grid read "0 — clean" / "No conflict". The
+// whole cell is matched, so a register row's prose that happens to mention candidates is never read as one.
+const GRID_HIT = /^\d+ candidates? reviewed$/i;
 const EXCL = /excluded|dropped|off-field|out of scope|distribution-partner|relevance/i;
 
 // THE THIRD STATE. "This could not be searched" is not "this was searched and found nothing", and
@@ -328,7 +333,7 @@ export function searchRows(auditParsed, { findings = [], joinedTerms = null, reg
     for (const term of order) {
       const g = byTerm.get(term);
       const results = [...g.results];
-      const anyHit = results.some(r => HITY.test(r) && !/^no /i.test(r));
+      const anyHit = results.some(r => (HITY.test(r) || GRID_HIT.test(String(r).trim())) && !/^no /i.test(r));
       const n = g.plats.size;
       const scope = n ? `~${n} surfaces` : '';
       // the deduped row lost its per-surface detail (that lives in the run's own grid); the Note states the

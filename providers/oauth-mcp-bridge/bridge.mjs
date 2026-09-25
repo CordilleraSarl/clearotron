@@ -278,6 +278,20 @@ function resultBytes(res) {
   try { return JSON.stringify(res ?? null).length; } catch { return null; }
 }
 
+/**
+ * AN ERROR ANSWER IS A FAILED CALL. Under MCP a tool reports its own failure, a quota or an outage behind
+ * the server, inside its result as `isError: true`, and the call itself returns. Logged as ok, that answer
+ * read as a source that answered: a case-law pass whose every query met a failing source would then read
+ * as having searched and found nothing. Returns the source's words, cut like a thrown error's, or null
+ * for an answer that is not an error.
+ */
+function toolError(res) {
+  if (res?.isError !== true) return null;
+  const said = (Array.isArray(res.content) ? res.content : [])
+    .filter((c) => c?.type === "text").map((c) => String(c.text ?? "")).join(" ").trim();
+  return (said || "the tool answered with an error").slice(0, 200);
+}
+
 function logCall(server, tool, args, result) {
   if (!AUDIT_RUN_DIR) return;
   try {
@@ -341,7 +355,9 @@ async function main() {
     }
     try {
       const res = await upstream.callTool({ name, arguments: req.params.arguments });
-      logCall(serverName, name, req.params.arguments, { ok: true, bytes: resultBytes(res) });
+      const refused = toolError(res);
+      if (refused === null) logCall(serverName, name, req.params.arguments, { ok: true, bytes: resultBytes(res) });
+      else logCall(serverName, name, req.params.arguments, { ok: false, error: refused });
       return res;
     } catch (err) {
       // A FAILED CALL IS LOGGED TOO, and it is the half that matters: without it, "the search ran and
