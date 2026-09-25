@@ -1413,6 +1413,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-web-hit-reads-as-a-hit-on-what-was-searched.test.mjs": {
+          "tests": 5,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "a-web-page-is-declined-like-a-record.test.mjs": {
           "tests": 10,
           "asserts": 55,
