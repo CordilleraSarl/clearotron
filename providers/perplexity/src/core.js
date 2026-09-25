@@ -426,7 +426,7 @@ export function buildGridProgramTask(spec) {
     hasCells ? "        results.append({\"title\": h.title or \"\", \"url\": h.url or \"\"})" : "",
     hasCells ? "Per cell: status = \"hit\" if results else \"no_hit\". Wrap EACH cell in its own try/except; on an exception append the string \"<term> | <platform> | <repr(exception)>\" to gaps and CONTINUE — one failing cell must never abort the grid." : "",
     hasCells && terms.length > batch
-      ? `Batch into groups of <= ${batch} terms (accumulate ALL cells before printing — one oversized run truncates).`
+      ? `Batch into groups of <= ${batch} terms and run each group as its own sandbox execution that prints only that group's JSON object — output over about 1 MiB is cut off, so never print the whole grid at once.`
       : "",
     // ── CONNOTATION / MEANING sweep (distinct from the marketplace grid) ──
     hasConn
@@ -442,7 +442,9 @@ export function buildGridProgramTask(spec) {
     hasConn
       ? "Record EVERY connotation query — INCLUDING ones that returned zero results — as one entry of extras.pr_risk = [{\"query\":\"<verbatim>\",\"results\":[...]}]. An empty results[] is a SEARCHED-clean receipt; a MISSING query is not a receipt."
       : "",
-    "Print to stdout EXACTLY one JSON object (no prose, no markdown fences):",
+    hasCells && terms.length > batch
+      ? "Each execution prints to stdout EXACTLY one JSON object (no prose, no markdown fences):"
+      : "Print to stdout EXACTLY one JSON object (no prose, no markdown fences):",
     `{"cells":[{"term":"<verbatim>","platform":"<verbatim>","status":"hit|no_hit","candidates":[{"title":"...","url":"..."}]}],${extrasShape},"gaps":["<term> | <platform> | <error>"]}`,
     "Every (term × platform) pair appears once — in cells[] if it ran, or in gaps[] only if that specific cell threw.",
     hasConn ? "Every connotation query appears once in extras.pr_risk[] (or in gaps[] only if that specific query threw)." : "",
@@ -589,13 +591,69 @@ export function requiredLedgerRefusal(why, { spec, gridSpecPath } = {}) {
     + `the ledger yourself, and do not summarise one that does not exist. Report this refusal and stop.`;
 }
 
+/** A parsed stdout that is a grid ledger: an object, or a list of objects, carrying cells, gaps or extras. */
+const isLedgerShaped = (p) => (Array.isArray(p) ? p : [p]).some((b) => b && typeof b === "object" && !Array.isArray(b)
+  && (Array.isArray(b.cells) || Array.isArray(b.gaps) || (b.extras && typeof b.extras === "object")));
+
+/**
+ * — EVERY STEP'S LEDGER, FOLDED INTO ONE. The sandbox cuts a single print off near 1 MiB (the vendor documents
+ * it per output stream), and a big grid's ledger crosses that, so a grid split into groups runs each group as
+ * its own execution and prints only that group. The ledger is then all of them, in order: a cell a later step
+ * ran again keeps its last result, a gap a later step filled is dropped, and every step's meaning receipts are
+ * kept, the last per query. Given the spec, only its own grid's cells and gaps and its dictated meaning
+ * queries are kept, so a stray trial print can neither add a cell nor count toward the floor. Queries are
+ * matched as the reconcile matches them (gnorm). PURE; returns the folded ledger as a JSON string.
+ */
+export function foldStepLedgers(ledgers, spec = null) {
+  const inGrid = spec ? new Set(spec.terms.flatMap((t) => spec.platforms.map((p) => cellKey(t, p)))) : null;
+  const dictated = spec ? new Set(connotationQueriesOf(spec).map(gnorm)) : null;   // matched as the reconcile matches
+  const cells = new Map(), receipts = new Map(), extras = {}, gaps = [];
+  for (const p of ledgers) {
+    for (const b of Array.isArray(p) ? p : [p]) {
+      if (!b || typeof b !== "object") continue;
+      for (const c of b.cells ?? []) {
+        if (!c || typeof c !== "object") continue;
+        const k = cellKey(c.term, c.platform);
+        if (inGrid && !inGrid.has(k)) continue;
+        cells.delete(k); cells.set(k, c);
+      }
+      for (const g of b.gaps ?? []) gaps.push(g);
+      for (const [k, v] of Object.entries(b.extras && typeof b.extras === "object" ? b.extras : {})) {
+        if (k !== "pr_risk" || !Array.isArray(v)) { extras[k] = v; continue; }
+        for (const r of v) {
+          if (!r || typeof r !== "object") continue;
+          const q = gnorm(r.query);
+          if (dictated && !dictated.has(q)) continue;
+          receipts.delete(q); receipts.set(q, r);
+        }
+      }
+    }
+  }
+  const keep = (g) => {
+    const [term, platform] = typeof g === "string" ? g.split("|").map((x) => x.trim()) : [g?.term, g?.platform];
+    if (gnorm(platform) === "connotation") return !receipts.has(gnorm(term)) && (!dictated || dictated.has(gnorm(term)));
+    return !cells.has(cellKey(term, platform)) && (!inGrid || inGrid.has(cellKey(term, platform)));
+  };
+  return JSON.stringify({
+    cells: [...cells.values()],
+    extras: { ...extras, ...(receipts.size ? { pr_risk: [...receipts.values()] } : {}) },
+    gaps: gaps.filter(keep),
+  });
+}
+
 export function captureGridFromResponse(data, spec) {
   validateGridSpec(spec);
   const runs = parseSandboxResults(data);
   if (runs.length === 0) return { ok: false, error: "sandbox was not used — no program executed" };
-  let deliverable = null;
-  for (let i = runs.length - 1; i >= 0; i--) {
-    try { JSON.parse(runs[i].stdout); deliverable = runs[i]; break; } catch { /* not this run */ }
+  // A grid split into groups prints one ledger per sandbox execution (see foldStepLedgers); every one is read.
+  // A single ledger, or none, is read exactly as before: the last output that parses.
+  const steps = [];
+  for (const r of runs) { try { const p = JSON.parse(r.stdout); if (isLedgerShaped(p)) steps.push({ r, p }); } catch { /* not a ledger */ } }
+  let deliverable = steps.length > 1
+    ? { stdout: foldStepLedgers(steps.map((x) => x.p), spec), code: steps.map((x) => x.r.code || "").filter(Boolean).join("\n\n") }
+    : null;
+  for (let i = runs.length - 1; i >= 0 && !deliverable; i--) {
+    try { JSON.parse(runs[i].stdout); deliverable = runs[i]; } catch { /* not this run */ }
   }
   if (!deliverable) {
     const last = runs[runs.length - 1];
