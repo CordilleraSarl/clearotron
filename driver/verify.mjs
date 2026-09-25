@@ -96,8 +96,11 @@ function readGridSpec(p) {
       // — a spec is well-formed when it dictates SOME work, not when it dictates CELLS. The
       // meaning seat carries `terms: []` and the whole meaning sweep, and reading that as malformed
       // would fail the one seat whose entire dispatch is the meaning work.
+      // …and the meaning list may be EMPTY when the matter frame named no meaning question: the driver
+      // stamps that as `none_named`, the frame's asserted zero, which is a decision and not a malformed spec.
       const dictates = (Array.isArray(spec?.terms) && spec.terms.length)
-        || (Array.isArray(spec?.connotation?.queries) && spec.connotation.queries.length);
+        || (Array.isArray(spec?.connotation?.queries) && spec.connotation.queries.length)
+        || spec?.connotation?.none_named === true;
       if (spec && typeof spec === "object" && Array.isArray(spec.terms) && dictates) return { spec, invalid: false };
     } catch { /* present-but-unparseable — fall through to invalid */ }
     return { spec: null, invalid: true };
@@ -119,8 +122,11 @@ function readGridSpecHalf(p, half) {
       // — a spec is well-formed when it dictates SOME work, not when it dictates CELLS. The
       // meaning seat carries `terms: []` and the whole meaning sweep, and reading that as malformed
       // would fail the one seat whose entire dispatch is the meaning work.
+      // …and the meaning list may be EMPTY when the matter frame named no meaning question: the driver
+      // stamps that as `none_named`, the frame's asserted zero, which is a decision and not a malformed spec.
       const dictates = (Array.isArray(spec?.terms) && spec.terms.length)
-        || (Array.isArray(spec?.connotation?.queries) && spec.connotation.queries.length);
+        || (Array.isArray(spec?.connotation?.queries) && spec.connotation.queries.length)
+        || spec?.connotation?.none_named === true;
       if (spec && typeof spec === "object" && Array.isArray(spec.terms) && dictates) return { spec, invalid: false };
     } catch { /* present-but-unparseable — fall through to invalid */ }
     return { spec: null, invalid: true };
@@ -560,7 +566,10 @@ function commonLawEvidence(p, c) {
       const conn = connotationViolations(c, parsePrRiskQueries(ledgerRaw),
         dispositionArmed ? { recorded: mergedRecorded, form: mergedForm.rows, formError: mergedForm.error } : {},
         dispositionArmed ? (spec?.connotation?.dispositions_path ?? null) : null);
-      if (conn.some((v) => v.reason === "no_recorded_queries")) return fail("connotation_search_missing");
+      // A sweep with nothing dictated is not a sweep that did not run: when the matter frame named no meaning
+      // question, the driver stamps `none_named` and there was nothing to record. The report then owes the
+      // statement that no meaning search ran, and that is the synthesis manual's to require, not a refusal here.
+      if (conn.some((v) => v.reason === "no_recorded_queries") && spec?.connotation?.none_named !== true) return fail("connotation_search_missing");
       const connFail = connotationDispositionFail(conn);
       if (connFail) return connFail;
       // P2-A candidate-cardinality is NOT a validator arm (review problem 1). `candidates[]` is raw,

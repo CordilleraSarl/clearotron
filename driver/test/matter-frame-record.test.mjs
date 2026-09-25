@@ -30,10 +30,10 @@ import { driverDir } from "../../shared/driver-dir.mjs";   //
 import {
   acceptMatterFrame, renderMatterFrame, recordMatterFrame, matterFrameWasRecorded,
   matterFrameCallPaths, MATTER_CONTEXT_FILE, SCOPE_BASES, INTAKE_ASK_OWNERS,
-  mergeMatterFrameCall, frameIdentifiedClasses,
+  mergeMatterFrameCall, frameIdentifiedClasses, MEANING_ANGLE_MAX_CHARS,
 } from "../matter-frame-record.mjs";
 import { channelsDiagnosis, channelsFromMatterContext } from "../scope-ledger.mjs";
-import { meaningAnglesFromMatterContext } from "../connotation-search.mjs";
+import { meaningAnglesFromMatterContext, meaningAnglesAssertedNone } from "../connotation-search.mjs";
 import { parseIntakeAsks } from "../pipeline.mjs";
 import { findSeedNeutralityViolations } from "../reasoning-tripwires.mjs";
 import { validators } from "../verify.mjs";
@@ -122,6 +122,23 @@ test("conversion 2 — an asserted `none` is a different fact from an unanswered
   const both = acceptMatterFrame({ ...PARAMS, meaning_angles_none: true }, { instructedScope: SCOPE });
   assert.equal(both.ok, false);
   assert.match(both.reason, /^matterframe_meaning_angles_contradictory/);
+  // Only the rendered `none` is the frame's decision; a frame with no line at all has made none.
+  assert.equal(meaningAnglesAssertedNone(md), true);
+  assert.equal(meaningAnglesAssertedNone("## The matter\n\nA games-kit maker.\n"), false);
+});
+
+test("a meaning question the web cannot run as written is refused at the tool, where the frame can rewrite it", () => {
+  const at = (meaning_angles) => acceptMatterFrame({ ...PARAMS, meaning_angles }, { instructedScope: SCOPE });
+  const long = at(["novapulse slang meaning", "n".repeat(MEANING_ANGLE_MAX_CHARS + 1)]);
+  assert.equal(long.ok, false);
+  assert.match(long.reason, /^matterframe_meaning_angle_unusable: 1 angle\(s\)/);
+  assert.match(at(["\"", "novapulse slang meaning"]).reason, /^matterframe_meaning_angle_unusable/, "a question with no word in it was accepted");
+  const edge = "n".repeat(MEANING_ANGLE_MAX_CHARS);
+  assert.equal(at([edge]).ok, true);
+  // What the tool accepts, the reader keeps: no question it recorded is dropped on the way to the web.
+  assert.deepEqual(meaningAnglesFromMatterContext(accepted({ meaning_angles: [edge] }).content), [edge]);
+  assert.deepEqual(meaningAnglesFromMatterContext(`Meaning angles: ${"y".repeat(120)}`), ["y".repeat(120)],
+    "an older frame's long question was dropped unseen instead of run as written");
 });
 
 test("conversion 2 — an empty channel list is `all-rejected`, not `no-line`", () => {

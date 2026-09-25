@@ -43,7 +43,7 @@ import { recordBlindFrame } from "../../blind-frame-record.mjs";
 import { VARIANT_DIRECTIONS, RANKING_BASES } from "../../blind-frame-model.mjs";
 import { recordSkeptic } from "../../skeptic-record.mjs";
 import { recordFrameDiff } from "../../frame-diff-record.mjs";
-import { recordMatterFrame, INTAKE_ASK_OWNERS, SCOPE_BASES } from "../../matter-frame-record.mjs";
+import { recordMatterFrame, INTAKE_ASK_OWNERS, SCOPE_BASES, MEANING_ANGLE_MAX_CHARS } from "../../matter-frame-record.mjs";
 import { recordClearanceVariants, SCOPE_LAYERS, SCOPE_STATUS } from "../../clearance-variants-record.mjs";
 import { recordReportOverview } from "../../report-overview-record.mjs";
 import { recordReportCard } from "../../report-card-record.mjs";      // conversion 5 — the fan-out transport
@@ -496,7 +496,7 @@ serve({
             "entirely when no axis is mandatory, which is the ordinary case.",
         },
         watchlist_owners: { type: "array", items: { type: "string" },
-          description: "Real register owners the plan compiles owner lanes from — never sectors or descriptions." },
+          description: "Real register owners — never sectors or descriptions." },
         goods_words: { type: "array", items: { type: "string" },
           description:
             "The words the register search is narrowed to: the client's own goods and services wording " +
@@ -831,9 +831,11 @@ serve({
         meaning_angles: {
           type: "array", items: { type: "string" },
           description:
-            "3-8 short web-search queries, each anchored on the mark's element(s): the cultural origin " +
-            "and communities the word evokes, charged historical or political associations, " +
-            "category-specific controversy for these goods. Every one is executed and receipted.",
+            `Short web-search queries, each at most ${MEANING_ANGLE_MAX_CHARS} characters and anchored on the mark's element(s). They are the whole meaning ` +
+            "sweep, run as written: the cultural origin and communities the word evokes, charged historical or " +
+            "political associations, category-specific controversy for these goods; what the mark means in each " +
+            "language whose market matters and whose buyers would read the word as the mark; and any slang, gang " +
+            "or offensive reading of the mark or a form a buyer could confuse. Every one is executed and receipted.",
         },
         // AN ASSERTED ZERO IS ITS OWN FIELD, never an inference from an empty array. "This mark is coined
         // and has no semantic field" and "the seat did not answer" are different facts, and an empty array

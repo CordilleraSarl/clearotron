@@ -280,7 +280,7 @@ Structure (content shared across templates):
 
 - **Consumer-confusion risks:** findings that could cause confusion with the proposed mark in its intended product space. For each, state the **legal read** (the whole-mark confusion comparison → Legal Risk Level) and the **business / practical read** (use / enforcement / coexistence) **separately** — the business read sits beside the legal level and never moves it. Include the advisory composite and inline URL. Mix common-law and register-side findings if both apply.
 - **Commercial awareness:** identical or similar names in unrelated fields, crowded-field evidence, anything the business should know about even if not a legal blocker.
-- **Competitor intelligence:** existing brand partnerships in the space; watchlist hits; competitor portfolios in target classes. Mandatory category.
+- **Competitor intelligence:** existing brand partnerships in the space; watchlist hits. Mandatory category.
 - **Register snapshot:** key register-layer evidence — primary blockers, opposition history, stealth-filing patterns, industry-incumbent context.
 - **Negative connotations / PR risk:** any brand risk, offensive associations, controversial connections — or "None identified" if clean.
 

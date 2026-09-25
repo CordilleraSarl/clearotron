@@ -34,7 +34,7 @@ Across the synthesis, two postures are load-bearing:
 - [Verify-or-defer — procedure, deadlines, registry statistics](#verify-or-defer--procedure-deadlines-registry-statistics)
 - [Volume is not a risk multiplier](#volume-is-not-a-risk-multiplier)
 - [Common-law scope — narrow](#common-law-scope--narrow)
-- [Watchlist findings — automatic inclusion](#watchlist-findings--automatic-inclusion)
+- [Watchlist findings](#watchlist-findings)
 - [Game-title attribution — never confabulate publishers](#game-title-attribution--never-confabulate-publishers)
 - [Firm-wide reasoning discipline (applies under every framework)](#firm-wide-reasoning-discipline-applies-under-every-framework)
 - [Synthesis output](#synthesis-output)
@@ -542,9 +542,9 @@ When judging which common-law hits to include in the Findings sheet:
 - Exclude: conceptually similar but lexically different marks (e.g. "Chart My Course" surfacing for a "Chart Your Course" clearance is borderline — include only with very-similar / same-field overlap).
 - Document the scope decision in the narrative's Methodology note so the staff lawyer can see what was and wasn't searched.
 
-## Watchlist findings — automatic inclusion
+## Watchlist findings
 
-Watchlist matches (aggressive enforcers / major brand owners / competitors) are flagged in the variant manifest. When such an owner appears in ANY layer's findings, the finding is included in the deliverable regardless of legal-test result. Per the staff lawyer: "I'll absolutely include that in the analysis."
+Watchlist matches (aggressive enforcers / major brand owners / competitors) are flagged in the variant manifest. When such an owner appears in any layer's findings, the flag is a hint to read that finding closely; the finding is carried or set aside like any other.
 
 Type column for watchlist-only findings (where legal-test doesn't independently elevate):
 

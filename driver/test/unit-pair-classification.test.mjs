@@ -65,6 +65,9 @@
 //   · `familyDispatched` declared in `form-neighbourhood.mjs`  feeds BOTH the returned
 //                               `phoneticFamilyDispatched` and the `complete` verdict beside it — the
 //                               good shape: two ends, one computation, no second derivation to drift.
+//                               `familyExplained` beside it (a retrieval pattern the reading turn
+//                               withheld, 2026-09-25) has the same shape: it feeds the returned
+//                               `phoneticFamilyExplained` and the same `complete`, off the same band.
 //   · gateway.mjs:1293,1501     the two `wrote` producers — see the disagreement below; both now guard
 //                               the empty case, and each reads its own per-turn stat snapshot, which the
 //                               site states.
@@ -204,7 +207,7 @@ const structureSites = () => nonEmpty(sweep(), "travelling-predicates sweep()")
 // header; this is what the tree may not exceed without a re-read.
 const RULED = new Map([
   ["band-shape.mjs", 1], ["commonlaw-carry.mjs", 1], ["findings-model.mjs", 1],
-  ["form-neighbourhood.mjs", 3], ["gateway.mjs", 2], ["grounds-grammar.mjs", 1],
+  ["form-neighbourhood.mjs", 4], ["gateway.mjs", 2], ["grounds-grammar.mjs", 1],
   ["pipeline.mjs", 2], ["publish/render.mjs", 1], ["publish/xlsx.mjs", 2],
   ["reference-score.mjs", 3], ["registry-fidelity.mjs", 2],
   ["portal-config-view.mjs", 1], ["publish/search-depth.mjs", 1],

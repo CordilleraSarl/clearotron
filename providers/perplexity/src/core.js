@@ -359,12 +359,15 @@ export function validateGridSpec(spec) {
   // entire dispatch is the meaning work. A spec with neither is still malformed and still throws.
   const hasCells = Array.isArray(spec.terms) && spec.terms.length > 0;
   const hasQueries = Array.isArray(spec.connotation?.queries) && spec.connotation.queries.length > 0;
+  // …and a meaning seat whose list is EMPTY because the matter frame named no meaning question carries the
+  // driver's `none_named` stamp: a decided zero, run as zero queries, never a malformed spec.
+  const noneNamed = spec.connotation?.none_named === true;
   if (!Array.isArray(spec.terms)) throw new Error("grid spec.terms[] missing or empty");
-  if (!hasCells && !hasQueries) throw new Error("grid spec dictates no work — terms[] and connotation.queries[] are both empty");
+  if (!hasCells && !hasQueries && !noneNamed) throw new Error("grid spec dictates no work — terms[] and connotation.queries[] are both empty");
   if (!Array.isArray(spec.platforms) || spec.platforms.length === 0) throw new Error("grid spec.platforms[] missing or empty");
   if (typeof spec.output_path !== "string" || !spec.output_path) throw new Error("grid spec.output_path missing");
   // OPTIONAL connotation/meaning sweep (back-compat: absent ⇒ marketplace-grid-only). The driver dictates
-  // the meaning queries verbatim (mark + near-forms × shapes), the program runs them on the general web and
+  // the meaning queries verbatim (the matter frame's meaning questions), the program runs them on the general web and
   // records them into extras.pr_risk — distinct from the term×platform marketplace cells.
   if (spec.connotation != null) {
     if (typeof spec.connotation !== "object" || Array.isArray(spec.connotation)) throw new Error("grid spec.connotation must be an object { queries[] }");

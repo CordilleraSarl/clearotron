@@ -49,7 +49,8 @@ test("THE CONTROL: where the register takes OR, the batch stays one question", (
 test("the names of a batch spend one slot of each cap between them, in this call and the next", () => {
   // Twelve batches of three are twelve slots: all 36 names mint, and a thirteenth batch is past the call's cap.
   const proposals = Array.from({ length: 13 }, (_, b) => batch(NAMES.map((n) => `${n}${String.fromCharCode(65 + b)}`)));
-  const { minted, rejected } = mintSupplementalEntries("primary-sweep", proposals, { capabilities: SIGNA });
+  // The tool sets no cap (ruled 2026-09-25); a caller that sets one still meets it per slot, not per name.
+  const { minted, rejected } = mintSupplementalEntries("primary-sweep", proposals, { capabilities: SIGNA, perCall: 12, axisMax: 24 });
   assert.equal(minted.length, 36);
   assert.equal(rejected.length, 3);
   assert.ok(rejected.every((r) => /per-call cap 12/.test(r.issue)));
@@ -58,7 +59,7 @@ test("the names of a batch spend one slot of each cap between them, in this call
   assert.equal(supplementalSlots([...minted, { qid: "single", term: "X" }]), 13);
   // An 80-name batch mints whole where the axis has room for one more question.
   const eighty = Array.from({ length: 80 }, (_, k) => `VELTRIN${String.fromCharCode(65 + (k % 26))}${Math.floor(k / 26)}`);
-  const late = mintSupplementalEntries("primary-sweep", [batch(eighty)], { capabilities: SIGNA, existingCount: 23 });
+  const late = mintSupplementalEntries("primary-sweep", [batch(eighty)], { capabilities: SIGNA, perCall: 12, axisMax: 24, existingCount: 23 });
   assert.equal(late.minted.length, 80, "the batch was cut by a cap it did not spend");
   assert.deepEqual(late.rejected, []);
 });

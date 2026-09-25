@@ -105,6 +105,9 @@ import { productionPoolRefusal } from "../driver/production-pool-guard.mjs";
 // all — so it cannot drag driver.config.mjs, whose unset-env defaults are PRODUCTION, into this file.
 // The module's own `main()` is behind an import.meta.url guard, so importing it runs nothing.
 import { hasAttemptRows } from "./e2e-unread-terminals.mjs";
+// — "first time", read from the whole run record rather than the attempt count (ruled 2026-09-25). A
+// pure leaf of the same kind: node:fs, node:path and shared/driver-dir.mjs, which this file imports anyway.
+import { firstTimeRows, firstTimeLines, readRunRecord } from "./e2e-first-time.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -2881,6 +2884,11 @@ function printLedger(runDir, bench = null) {
   for (const a of attempts) byStage.set(a.stage, (byStage.get(a.stage) || 0) + (a.wall || 0));
   const slow = [...byStage].filter(([, w]) => w).sort((x, y) => y[1] - x[1]);
   if (slow.length) console.log(`  durations: ${slow.map(([s2, w]) => `${s2} ${secs(w)}`).join(" · ")}`);
+
+  // FIRST TIME, FROM THE WHOLE RUN RECORD: every failure, retry, recovery, repair and refusal it shows,
+  // each with its engine and model, and what the record cannot show named as not recorded. A fact line,
+  // like the retries above, never a grade.
+  for (const l of firstTimeLines(firstTimeRows(readRunRecord(runDir)))) console.log(`  ${l}`);
 
   // — the benchmark, this run's wall against it, and which number that judgement used. A no-op
   // `bench` is not silently tolerated: `turnaroundVerdict({})` prints NOT DETERMINED and flags, which is

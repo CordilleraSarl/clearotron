@@ -63,12 +63,12 @@ export function readPlacementFormInput(runDir) {
 /** Read the DRIVER'S copy. Three states, and they are not the same fact — see verify.mjs. */
 export function readPlacementForm(runDir, formName = PLACEMENT_FORM_NAME) {
   const { sidecar } = placementFormPaths(runDir, formName);
-  if (!existsSync(sidecar)) return { rows: null, error: null, present: false };
+  if (!existsSync(sidecar)) return { rows: null, set_aside: [], error: null, present: false };
   let raw = null;
   try { raw = readFileSync(sidecar, "utf8"); }
-  catch { return { rows: null, error: `${basename(sidecar)} exists and could not be read`, present: true }; }
-  const { rows, error } = parsePlacementForm(raw);
-  return { rows, error: error ? `${basename(sidecar)} ${error}` : null, present: true };
+  catch { return { rows: null, set_aside: [], error: `${basename(sidecar)} exists and could not be read`, present: true }; }
+  const { rows, set_aside, error } = parsePlacementForm(raw);
+  return { rows, set_aside: set_aside ?? [], error: error ? `${basename(sidecar)} ${error}` : null, present: true };
 }
 
 /** Read the SEAT's copy — what this attempt handed back. Absent/unreadable is "said nothing", not "empty". */
@@ -79,6 +79,20 @@ export function readSubmittedPlacementForm(runDir, formName = PLACEMENT_FORM_NAM
   try { raw = readFileSync(seat, "utf8"); } catch { return null; }
   const { rows } = parsePlacementForm(raw);
   return rows;   // null on a torn/unparseable write ⇒ the union reads it as "said nothing" ⇒ prior stands
+}
+
+/**
+ * The set-aside list on the SEAT's copy. The form shows the step its grounds as a top-level list, so a
+ * step that adds one where it sees the others is answering in that list, not in `rows`. Read here so the
+ * union takes it; an entry equal to one already held changes nothing. Absent or torn reads as none.
+ */
+export function readSubmittedPlacementSetAside(runDir, formName = PLACEMENT_FORM_NAME) {
+  const { seat } = placementFormPaths(runDir, formName);
+  if (!existsSync(seat)) return [];
+  let raw = null;
+  try { raw = readFileSync(seat, "utf8"); } catch { return []; }
+  const { rows, set_aside } = parsePlacementForm(raw);
+  return rows === null ? [] : (set_aside ?? []);
 }
 
 /** Write both copies. */

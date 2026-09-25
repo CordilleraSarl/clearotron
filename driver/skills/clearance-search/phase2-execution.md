@@ -158,8 +158,7 @@ is not a reason to skip it, and "the rule said so" is not an answer.
   sweep was missed, or because the field is genuinely clear?
 - Register-specific: are the audit trail + negative-results matrix present, do the per-unit counts
   reconcile, **and did the register-findings file actually get written (file-truth precondition — synthesis must read the file,
-  not inline output)?** Common-law-specific: are the mandatory platforms (the 6 gaming platforms when
-  in scope) **plus the field-scoped general search for any collaborated / non-gaming goods** and any
+  not inline output)?** Common-law-specific: are the dictated platforms **plus the field-scoped general search for any collaborated / non-gaming goods** and any
   famous-mark flags covered, with a negative-results matrix?
 - **Self-conflict / partner:** is any headline or high-rated conflict the applicant's **own** mark, an
   affiliate's, or a named **partner** in `matter-context`? A partner / own mark is a coexistence-or-business

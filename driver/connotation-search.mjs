@@ -11,9 +11,9 @@
 // for the meaning search, the model fabricated "(None identified — affirmative sweep) … no gang associations".
 //
 // Two halves, both PURE (no node imports → tests offline):
-//   1. buildConnotationQueries — the driver dictates the meaning queries (mark + near-forms × shapes) VERBATIM
-//      into grid-spec.json; the perplexity plugin runs them on the general web and records each into the grid
-//      ledger's extras.pr_risk[] (a recorded query — even with empty results — is the receipt the search ran).
+//   1. meaningAnglesFromMatterContext — the driver dictates the meaning queries, the matter frame's own list,
+//      VERBATIM into grid-spec.json; the perplexity plugin runs them on the general web and records each into the
+//      grid ledger's extras.pr_risk[] (a recorded query — even with empty results — is the receipt the search ran).
 //   2. findConnotationViolations — the validator: recorded meaning receipts must be disposed of, per query,
 //      citing the receipt. A PR/reputational section that ASSERTS a clean result must additionally cite a
 //      Connotation-search source line. A searched-clean (recorded queries, empty results) passes.
@@ -28,98 +28,21 @@
 // section at all matched no block, so DELETING the section passed the gate. Receipts present now means
 // receipts validated, whatever the document says.
 
-// The meaning query shapes. NOT a banned-word list — these are SEARCH directions ("what does this name mean,
-// and to whom?"). Perplexity surfaces foreign-language / gang / slang meanings from English query shapes
-// (a benign given name one letter off "Mara" → the gang label surfaces from "<mark> gang" / "<mark> urban dictionary").
-
+// THE SHAPES THE FIXED MEANING SWEEP ASKED, until 2026-09-25: every run searched the first 6 spellings on
+// the five core shapes and the first 8 translated forms on the three below, about 54 web questions whatever
+// the matter. The matter frame decides the sweep now, as it decides the stores, and no query is built from
+// these. They stay so connotationReasonKey still reads the queries of the runs archived before.
 export const CONNOTATION_SHAPES = ["meaning slang", "gang", "offensive", "urban dictionary", "wikipedia"];
-
-/**
- * Build the dictated connotation queries from the mark + its near-forms (the grid variants). De-dups
- * case-insensitively and caps the term count (the meaning search is the mark + a handful of near-forms, not
- * the full variant explosion). Returns ["<term> <shape>", …] — run VERBATIM by the plugin's grid program. PURE.
- */
-export function pickConnotationTerms(terms, maxTerms = 6) {
-  const seen = new Set();
-  const picked = [];
-  for (const t of (terms ?? [])) {
-    const v = String(t ?? "").trim();
-    if (!v) continue;
-    // KEYED THE SAME WAY THE GATES COMPARE. A producer that folds less than its consumer dictates two
-    // terms the gate can only see as one, and a seat recording either satisfies it for both — the gate
-    // then passes a query that never ran, which is the fault it exists to catch, inverted.
-    const k = queryKey(v);
-    if (seen.has(k)) continue;
-    seen.add(k);
-    picked.push(v);
-    if (picked.length >= maxTerms) break;
-  }
-  return picked;
-}
-
-export function buildConnotationQueries(terms, { shapes = CONNOTATION_SHAPES, maxTerms = 6 } = {}) {
-  const picked = pickConnotationTerms(terms, maxTerms);
-  const queries = [];
-  for (const t of picked) for (const s of shapes) queries.push(`${t} ${s}`);
-  return queries;
-}
-
-// WP-56 B1 — the NON-ENGLISH half of the meaning sweep. The core bucket runs the mark + its first
-// near-forms; the manifest's translated/transliterated forms (non-Latin script rows, "丝绸与铁 / 席尔克"
-// packed alternates) sat beyond its cap, so a mark could ship with no meaning read in the very scripts the
-// manifest committed to search. These forms get their OWN capped bucket with meaning-appropriate shapes —
-// the slang / urban-dictionary shapes are Latin-web search directions; a non-Latin or translated form
-// wants its meaning and English reading. Which forms exist stays the variants stage's judgment (the
-// structured manifest); this stays mechanical.
 export const CONNOTATION_SHAPES_TRANSLIT = ["meaning", "meaning in english", "offensive meaning"];
 
-// A letter outside the Latin script (property escape, not a codepoint range — punctuation/dashes in a
-// Latin term must not read as "non-Latin").
-const NON_LATIN_LETTER_RE = /(?![\p{Script=Latin}])\p{L}/u;
-
-/**
- * Build the translit/translation connotation queries from the STRUCTURED variant-manifest model's
- * variants[] ({value, category, rationale}): rows typed category "transliteration" (a Latin-script
- * translation typed there rides along) plus any variant value carrying a non-Latin letter, whatever its
- * category. " / "-packed alternates split into individual forms; forms the core bucket already queries
- * (coreTerms, case-insensitive) are dropped; own cap (default 8, beside the core bucket's 6).
- * Returns ["<form> <shape>", …] like buildConnotationQueries. PURE.
- */
-export function buildTranslitConnotationQueries(modelVariants, { shapes = CONNOTATION_SHAPES_TRANSLIT, maxTerms = 8, coreTerms = [] } = {}) {
-  const seen = new Set((coreTerms ?? []).map((t) => queryKey(t)).filter(Boolean));
-  const picked = [];
-  for (const v of (modelVariants ?? [])) {
-    const value = String(v?.value ?? "").trim();
-    if (!value) continue;
-    const isTranslit = String(v?.category ?? "").trim().toLowerCase() === "transliteration" || NON_LATIN_LETTER_RE.test(value);
-    if (!isTranslit) continue;
-    for (const form of value.split(" / ")) {
-      const f = form.trim();
-      if (!f) continue;
-      const k = queryKey(f);
-      if (seen.has(k)) continue;
-      seen.add(k);
-      picked.push(f);
-      if (picked.length >= maxTerms) break;
-    }
-    if (picked.length >= maxTerms) break;
-  }
-  const queries = [];
-  for (const t of picked) for (const s of shapes) queries.push(`${t} ${s}`);
-  return queries;
-}
-
-// ── P2-C (Round-2 §8b) — the DERIVED half of the sweep's scope ─────────────────────────────────────────
-// The fixed CONNOTATION_SHAPES floor asks generic search DIRECTIONS ("<mark> offensive") and stays — it is
-// not a sensitivities checklist, and on the evidence run it did retrieve the cultural-criticism material.
-// What no fixed list can ask is the PER-MATTER angle: the cultural origin a word evokes, the charged history
-// of its imagery, the controversy specific to these goods in this market. Deriving those is judgment, so the
-// MATTER FRAME authors them — its dictated `Meaning angles:` line (semantic field × market/industry; the
-// stage message dictates it and the matterContext validator requires it on fresh runs, `none` allowed as an
-// explicit reasoned emptiness). This parser is the mechanical half: extract, sanitize, cap. The queries are
-// appended VERBATIM to grid-spec connotation.queries BESIDE the floor, so the per-query identity join
-// (findDroppedConnotationQueries) polices their execution exactly like the floor's. NEVER a hardcoded
-// sensitivities checklist — the angles are authored per matter; code only carries them.
+// ── THE MATTER FRAME'S LIST IS THE WHOLE MEANING SWEEP (ruled 2026-09-25) ─────────────────────────────────
+// Deriving what a name could mean, and to whom, is judgment, so the MATTER FRAME authors the questions: its
+// `Meaning angles:` line — the mark's semantic field × this matter's market and goods, the languages whose
+// buyers matter, and any slang, gang or offensive reading (the stage message dictates it and the
+// matterContext validator requires it on fresh runs, `none` allowed as an asserted zero). A fixed floor rode
+// beside it and is gone. This parser is the mechanical half: extract and sanitize; the frame decides how
+// many. The queries go VERBATIM into grid-spec connotation.queries, and the per-query identity join
+// (findDroppedConnotationQueries) polices their execution. NEVER a hardcoded sensitivities checklist.
 
 // The frame's machine line (mirrors channelsFromMatterContext's "Search channels:" shape), ANCHORED to a
 // line start: prose that merely MENTIONS `"Meaning angles:" line …` must never read as the line (the
@@ -167,15 +90,15 @@ function sanitizeMeaningAngle(raw) {
 }
 
 /**
- * Parse the matter frame's `Meaning angles: <q>; <q>; …` line into sanitized derived queries.
- * Semicolon-separated (an angle phrase may contain commas); `none` (the explicit reasoned-emptiness form)
- * and a missing line both yield [] — the floor always rides regardless. Sanitization is mechanical only:
- * strip WRAPPING quotes/backticks (see sanitizeMeaningAngle — a phrase quote inside the angle survives),
- * collapse whitespace, drop empties and over-length entries, dedupe
- * case-insensitively (against itself and `alreadyQueried`, so a derived angle never double-dictates a floor
- * query), cap the count. Content judgment stays the frame's. PURE.
+ * Parse the matter frame's `Meaning angles: <q>; <q>; …` line into the sanitized meaning queries.
+ * Semicolon-separated (an angle phrase may contain commas); `none` (the asserted-zero form) and a missing
+ * line both yield [], and meaningAnglesAssertedNone tells the two apart: only the first is the frame's
+ * decision. Sanitization is mechanical only: strip WRAPPING quotes/backticks (see sanitizeMeaningAngle — a
+ * phrase quote inside the angle survives), collapse whitespace, drop empties, dedupe case-insensitively
+ * (against itself and `alreadyQueried`). No cap on length or count: the frame's tool refuses an over-long
+ * question at the source, every question is run as written, and how many is the frame's call. PURE.
  */
-export function meaningAnglesFromMatterContext(md, { alreadyQueried = [], maxAngles = 8, maxLen = 90 } = {}) {
+export function meaningAnglesFromMatterContext(md, { alreadyQueried = [], maxAngles = Infinity } = {}) {
   const m = String(md || "").match(MEANING_ANGLES_RE);
   if (!m) return [];
   const value = m[1].trim();
@@ -188,7 +111,7 @@ export function meaningAnglesFromMatterContext(md, { alreadyQueried = [], maxAng
     // quote runs at both ends unconditionally, so `"` sanitized to "" and fell out here; the wrapper rule
     // keeps it, and a lone `"` dictated as a query is a search nobody asked for that no receipt can ever
     // match — the failure this change exists to stop. Dropped explicitly rather than as a side effect.
-    if (!q || !/[\p{L}\p{N}]/u.test(q) || q.length > maxLen) continue;
+    if (!q || !/[\p{L}\p{N}]/u.test(q)) continue;
     const k = queryKey(q);
     if (seen.has(k)) continue;
     seen.add(k);
@@ -196,6 +119,12 @@ export function meaningAnglesFromMatterContext(md, { alreadyQueried = [], maxAng
     if (picked.length >= maxAngles) break;
   }
   return picked;
+}
+
+/** Whether the matter frame asserted that no meaning question applies: its `Meaning angles:` line reads `none`. PURE. */
+export function meaningAnglesAssertedNone(md) {
+  const m = String(md || "").match(MEANING_ANGLES_RE);
+  return Boolean(m) && /^none\b/i.test(m[1].trim());
 }
 
 // The PR / reputational / connotation section heading (the only place the gate polices — it must not flag a

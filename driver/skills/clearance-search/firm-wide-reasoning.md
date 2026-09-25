@@ -336,10 +336,11 @@ They must be:
 - Labeled as "PR / Reputational risk" clearly
 - Documented even if clean: "No negative connotations identified" is a useful data point
 
-The scope is the run's OWN dictated meaning sweep — the fixed query shapes plus the matter frame's derived
-`Meaning angles:` (cultural origin and communities the word evokes, charged history of the term or its
-imagery, category-specific controversy for these goods), as recorded and disposed of in the common-law
-findings' PR section. Never a generic sensitivities checklist: report what THIS mark's sweep surfaced (or
+The scope is the run's OWN dictated meaning sweep — the matter frame's `Meaning angles:` (cultural origin
+and communities the word evokes, charged history of the term or its imagery, category-specific controversy
+for these goods, the mark's meaning in each language whose market matters, any slang, gang or offensive
+reading), as recorded and disposed of in the common-law findings' PR section. Where the frame asserted none,
+no meaning search ran: say so, and never write the section as clean. Never a generic sensitivities checklist: report what THIS mark's sweep surfaced (or
 its disposed clean receipts), not a tour of categories no query asked about.
 
 ### Crowded field analysis

@@ -29,10 +29,11 @@
 //   - CLASS-SCOPED ALWAYS: every entry carries nice_classes (the NOVA PULSE/VELTRIPHEN all-class-flood
 //     lesson is structural here, not prose). The only cross-class entry is the exact-identical
 //     merch check (Nice 25), per the recipes' single sanctioned exception.
-//   - CROWD-GATED FAN-OUT: fringe slices (the wildcard/phonetic family of the dominant
-//     token) carry `when: { runs_if_enumerated: <parent qid> }` — they run ONLY if the parent
-//     contains-slice proved tractable. A crowd parent is TERMINAL for its children, encoded, not
-//     remembered.
+//   - NO CROWD-GATED FAN-OUT (ruled 2026-09-25): the fringe of the dominant token (the wildcard
+//     family) carried `when: { runs_if_enumerated: <parent qid> }` and ran ONLY if its parent
+//     contains-slice listed under the ceiling, so a crowd parent stopped it with no reason written. It
+//     now waits for the reading turn like every other widening. The guard is still honoured on a
+//     frozen plan being resumed; no fresh compile writes one.
 //   - AND A SECOND, DIFFERENT WAIT (ruled 2026-09-21, on every matter): the decision-10 families carry
 //     `when: { awaits_reading_turn: true }`. No result releases it. They run when the reading turn
 //     ASKS for them after reading the identical mark's own list, and the ask arrives as a
@@ -110,6 +111,35 @@ export function romanizedTermsFromPlan(plan, term) {
     if (formKey(String(e.term ?? "")) === key) return [...e.romanizedTerms];
   }
   return null;
+}
+
+/**
+ * THE LATIN QUESTIONS THAT ASK A SCRIPT QUESTION'S ROMANISED FORM — what the reading turn needs in
+ * order to apply sentence 3 ("Where the register files foreign marks by their romanised form, and it
+ * says so, the Latin question already covers them; do not ask it again in other scripts").
+ *
+ * The turn that releases a script question sees only its own axis, and the characters. On a register
+ * that files the romanised form, the question goes out as its romanised spellings, and one of them can
+ * be a Latin question another axis already holds. Measured on a test run, 2026-09-25: 4 of the 7 script
+ * questions the turn released repeated a Latin question on another axis, which it could not see.
+ *
+ * Returns each plan entry, on any axis, whose Latin term has the same `formKey` as one of the entry's
+ * romanised spellings, with that term. It judges nothing: the dispatch prints what each one searches,
+ * and the turn decides. An owner-bound, goods-narrowed or count-only entry asks a narrower question, and
+ * an unsupported one never runs, so none of those is returned.
+ */
+export function latinQuestionsOfRomanisedForm(plan, entry) {
+  const roman = Array.isArray(entry?.romanizedTerms) ? entry.romanizedTerms : [];
+  if (!roman.length || !isNonLatinTerm(String(entry?.term ?? ""))) return [];
+  const keys = new Set(roman.map((r) => formKey(String(r))).filter(Boolean));
+  const out = [];
+  for (const e of plan?.entries ?? []) {
+    if (e === entry || e?.qid === entry.qid || e?.owner || e?.unsupported === true || e?.expected_kind !== "enumerate" || goodsTermsList(e).length) continue;
+    const term = [e.term, ...(Array.isArray(e.terms) ? e.terms : [])]
+      .find((t) => t != null && !isNonLatinTerm(String(t)) && keys.has(formKey(String(t))));
+    if (term != null) out.push({ qid: e.qid, predicate: e.predicate, term: String(term) });
+  }
+  return out;
 }
 
 export const PLAN_PROVENANCE = ["floor", "model", "mark"];
@@ -1265,7 +1295,7 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   // axis that way and said so in its own comment, naming this stamp as the remedy. Optional and
   // closed when present, like `provenance`: a frozen pre-2050 plan carries none and its reader falls
   // back to the old rule, so a resumed run does not change its answer because a field arrived.
-  const parentQid = push({ axis: "primary-sweep", predicate: "default", term: manifest.dominant_element, expected_kind: "enumerate", provenance: "mark", crowd_gate_parent: true });
+  push({ axis: "primary-sweep", predicate: "default", term: manifest.dominant_element, expected_kind: "enumerate", provenance: "mark", crowd_gate_parent: true });
 
   // ── THE SAME SWEEP, NARROWED TO WHAT THE FILINGS COVER ──────────────────────────────────────────
   //
@@ -1417,8 +1447,7 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
     }
   }
   // — EVERY seeded band, not just the dominant element's (see bandsFor). The wildcard fringe stays
-  // on the dominant band alone: it is crowd-gated on the dominant's own contains parent, and no other
-  // seed has one to gate against. The oracle does not ask for more — coverageGaps' family arm counts ANY
+  // on the dominant band alone. The oracle does not ask for more — coverageGaps' family arm counts ANY
   // dispatched wildcard as the family being reached, so the dominant's fringe answers it for all seeds.
   for (const formBand of bandsFor(form, manifest.dominant_element).map((e) => e.band)) {
   if (formBand?.exactQueries?.length) {
@@ -1450,8 +1479,11 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   }
   }
   for (const w of bandFor(form, manifest.dominant_element)?.wildcardPatterns ?? []) {
-    // fringe of the dominant token — crowd-gated on the contains parent: a crowd parent is terminal
-    push({ axis: "primary-sweep", predicate: "wildcard", term: w, expected_kind: "enumerate", provenance: "floor", when: { runs_if_enumerated: parentQid } });
+    // THE FRINGE OF THE DOMINANT TOKEN WAITS FOR THE READING TURN, like every other widening (ruled
+    // 2026-09-25). It ran only if its contains parent listed under the ceiling: a crowded parent stopped
+    // it with no reason written, and a withheld parent took it down unasked. The ceiling is a call limit,
+    // never a decision point. The turn releases or withholds it with its reason (the wait loop below).
+    push({ axis: "primary-sweep", predicate: "wildcard", term: w, expected_kind: "enumerate", provenance: "floor" });
   }
   push({ axis: "primary-sweep", predicate: markPredicate(manifest.mark), term: manifest.mark, expected_kind: "enumerate",
     nice_classes: ["25"], qidSuffix: "+merch", provenance: "mark", ...literalStamp(manifest.mark) });
@@ -1502,7 +1534,9 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   // table lists that script. Where no named market's row does, it compiles where it always did: the table
   // lists what a market must be asked, not everything its register holds, so a missing row is no reason
   // to leave a question out. Every script question then waits for the reading turn, which releases or
-  // withholds it with a reason, and the manual tells that turn when the Latin question already covers it.
+  // withholds it with a reason. The manual tells that turn not to ask again what the Latin question
+  // covers, and on a register that files the romanised form the dispatch shows it the romanised form each
+  // one is searched by, with the Latin question that already asks it (latinQuestionsOfRomanisedForm).
   // A question dropped here would save no search, since it waits anyway, and would leave no line saying
   // it was not asked. Latin transliterations and numeric variants are asked as before. With no frame on
   // record and a worldwide scope there is no market to scope to, and the variant compiles as it always did.
@@ -1583,7 +1617,8 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   //     is the other half of "look at the count before you read anything"
   //   · the goods-narrowed contains entry — on every matter (ruled 2026-09-20), and it is the one entry that
   //     makes a crowded identical question answerable rather than merely deferred
-  //   · anything already waiting on something else, which keeps its own parent
+  //   · anything already waiting on something else, which keeps its own guard (no fresh compile writes
+  //     one now: the wildcard fringe, the last, waits for the turn like the rest)
   //   · the spelling band — the unit manual's own rule is that it is asked as the machine writes it
   //
   // Everything else is a widening: scripts and transliterations, neighbour lists, compounds, the
