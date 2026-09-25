@@ -174,7 +174,7 @@ test("the knockout lane takes no delivery preference for its MAIL — there is n
   // deleted, and rather than bypassed.
   //
   // WHAT STILL HAS TO STAY TRUE: no mail-shape read creeps back. composeKnockoutEmail takes no delivery
-  // argument (publish/knockout.mjs:273 composeKnockoutEmail) and the lane must not fold one in.
+  // argument (composeKnockoutEmail in publish/knockout.mjs) and the lane must not fold one in.
   const { readFileSync } = await import("node:fs");
   const src = readFileSync(new URL("../pipeline-knockout.mjs", import.meta.url), "utf8");
   assert.ok(!/deliveryForRun/.test(src), "no fold — the lane's mail has exactly one shape");

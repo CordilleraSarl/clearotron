@@ -16345,6 +16345,10 @@ const RETIRED_ENV = {
   // conflicts any more, so a box that set either to 0 loses nothing and one that left them on gains nothing.
   CLEAROTRON_RECALL_PROBES: ["2026-09-24", "the feature was removed"],
   CLEAROTRON_RECALL_TRIPWIRE: ["2026-09-24", "the feature was removed"],
+
+  // Set in no environment file on any box when it was retired. The knockout's web search now runs one
+  // pinned setting, so an old line stays harmless and says so.
+  CLEAROTRON_KNOCKOUT_PRESET: ["2026-09-25", "the knockout's web search settings are fixed in the build"],
 };
 
 /** One warning line per retired variable still set in `env`. Pure; [] when the environment is clean. */
