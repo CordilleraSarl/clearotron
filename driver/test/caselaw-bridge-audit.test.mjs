@@ -58,6 +58,11 @@ test("BOTH OUTCOMES ARE LOGGED, including the refusal path", () => {
   assert.ok(calls.includes("false"), "a failed call is recorded");
   assert.match(BRIDGE, /logCall\(serverName, name, req\.params\.arguments, \{ ok: false, error: "not in bridge allowlist" \}\)/,
     "and so is a call the allowlist refused — that is a fact about the run too");
+  // An answer the tool itself marked as an error returns without a throw, and it is a failed call too:
+  // a source that answers every query with an error has not answered any of them.
+  assert.match(BRIDGE, /if \(res\?\.isError !== true\) return null;/, "an error answer is told apart from an answer");
+  assert.match(BRIDGE, /else logCall\(serverName, name, req\.params\.arguments, \{ ok: false, error: refused \}\)/,
+    "and logged as a failed call, with the source's words");
 });
 
 test("ARGUMENTS ARE REDACTED BY KEY NAME — this bridge is GENERIC", () => {

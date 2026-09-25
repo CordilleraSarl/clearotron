@@ -1937,7 +1937,7 @@
         },
         "caselaw-bridge-audit.test.mjs": {
           "tests": 8,
-          "asserts": 17,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
