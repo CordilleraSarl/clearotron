@@ -80,6 +80,10 @@ export const PUBLISH_INPUTS = {
   "_driver/jx/units.json": "optional",
   // T7 (E5) — the grounded case-law profiles. A run with no case-law layer legitimately has none.
   "case-law-findings.md": "optional",
+  // The case-law pass's retrieval record: what it searched and what it cited. It decides the court-decisions
+  // state wherever a run kept one. Optional: a run without the pass has none, and neither does one from
+  // before the record existed, whose state then reads from the findings file as it always did.
+  "case-law-citations.json": "optional",
   // T7 (E6) — Corsearch enforcement telemetry; presentation-only, absent ⇒ no lines.
   "_driver/enforcer-signals.json": "optional",
   // The predelivery lint sink — failing ids for the gate + the record-fetch failure list.
@@ -108,6 +112,7 @@ export const PUBLISH_INPUTS = {
 export const NOT_READ_BY_NAME = {
   "_records/": "a DIRECTORY of fetched register records, read through registry-fidelity.mjs readRecordArtifacts(runDir); an empty map is the documented back-compat no-op, not an absence to gate on",
   "token-ledger": "the per-recipe token rollup, read through tokens.mjs rollupTokens(runDir) which walks the run's own telemetry; absent ⇒ the meta simply omits the tokens field",
+  "case-law-telemetry": "the case-law stage's attempt rows (_driver/case-law.jsonl) and its sources' call log (_driver/reading-log.jsonl), read for one fact each — did the last attempt pass, did a source answer — through search-depth.mjs caseLawPassRecord. Telemetry, not a store: a frozen sample carries neither, and its court state then reads from the retrieval record or the findings file",
 };
 
 // Neither of these is a run-side store, and both have been miscounted as one (its own issue body

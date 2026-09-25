@@ -53,9 +53,9 @@
 // arrive and contradict. That `quote_required` was exactly this: a flag on a form, met later by
 // candidates that had been rebuilt textless.
 //
-// ── THE RULING, ALL TWENTY-THREE AS CLASSIFIED — TWENTY-TWO IN THE SWEEP TODAY, SEE THE CURE BELOW ──
+// ── THE RULING, ALL TWENTY-FOUR AS CLASSIFIED — TWENTY-THREE IN THE SWEEP TODAY, SEE THE CURE BELOW ──
 //
-//  AGREE (21) — the flag and the data it summarises are written into ONE structure in ONE expression, or
+//  AGREE (22) — the flag and the data it summarises are written into ONE structure in ONE expression, or
 //  consumed inside the pass that computed them, so a reader cannot get one without the other:
 //   · band-shape.mjs:494        `live` is minted in the same object literal as `records`, off the same
 //                               `rs`. A reader holding the position holds both.
@@ -125,6 +125,16 @@
 //                               this search" over a run that asked and whose record was never written.
 //                               The guard is on the data, not on the flag, which is the right way round.
 //                               (CITED BY SYMBOL AND NO LINE, per CONTRIBUTING.md.)
+//   · `sourceAnswered` declared in search-depth.mjs's `caseLawPassRecord` is read by
+//                               `courtDecisionsState` in the same publish pass, beside the retrieval
+//                               record it vouches for, and is written nowhere: search-depth.json keeps
+//                               the state WORD, never the flag. The two ends could still have been two
+//                               units, and that is the part ruled here. The call log holds every attempt
+//                               of the stage, the record only what the last attempt left, so the flag
+//                               counts only calls that settled after the attempt before the last one was
+//                               recorded: an earlier attempt's answer cannot vouch for the last one's
+//                               zeros. An arm of court-decisions-take-the-pass-record-over-its-words
+//                               pins that cut. (CITED BY SYMBOL AND NO LINE, per CONTRIBUTING.md.)
 //
 //  DISAGREE (1), fixed here:
 //   · gateway.mjs:1293   TWO PRODUCERS OF ONE FIELD, TWO UNITS FOR THE EMPTY CASE. The attempt row
@@ -210,7 +220,7 @@ const RULED = new Map([
   ["form-neighbourhood.mjs", 4], ["gateway.mjs", 2], ["grounds-grammar.mjs", 1],
   ["pipeline.mjs", 2], ["publish/render.mjs", 1], ["publish/xlsx.mjs", 2],
   ["reference-score.mjs", 3], ["registry-fidelity.mjs", 2],
-  ["portal-config-view.mjs", 1], ["publish/search-depth.mjs", 1],
+  ["portal-config-view.mjs", 1], ["publish/search-depth.mjs", 2],
 ]);
 
 const shortName = (f) => f.replace(/^driver\//, "");

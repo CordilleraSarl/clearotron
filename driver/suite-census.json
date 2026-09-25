@@ -261,6 +261,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-court-search-that-did-not-run-reads-as-not-completed.test.mjs": {
+          "tests": 4,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "a-credential-file-is-written-one-way.test.mjs": {
           "tests": 4,
           "asserts": 13,
@@ -2208,6 +2214,12 @@
         "could-not-look-is-not-not-armed.test.mjs": {
           "tests": 3,
           "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "court-decisions-take-the-pass-record-over-its-words.test.mjs": {
+          "tests": 7,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },

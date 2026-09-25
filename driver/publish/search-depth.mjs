@@ -36,6 +36,8 @@
 //   · a per-country count names every country read   → break: count only countries with a finding, arm 5 red
 //   · court decisions distinguishes four states      → break: collapse none-found into not-checked, arm 6 red
 
+import { parseCaseLawLedger } from "../case-law-ledger.mjs";   // pure, like this module
+
 /** The closed set a group key may take. The renderer's headings are keyed on these, never on prose. */
 export const CLEARED_GROUPS = Object.freeze(["dead-filing", "different-goods", "other"]);
 
@@ -179,14 +181,75 @@ export function sweepCounts(commonLawGrid, auditMd = "") {
  * negative, which is the one thing a clearance may never do. "Not in scope" is neither — the product
  * offers the pass on a full country search only.
  *
+ * THE STATE IS THE PASS'S OWN RECORD, NOT THE WORDS OF ITS FILE. The file was the only input, read for five
+ * phrasings of an outage, and three wrong pages followed from that: a pass that failed its check but left
+ * its file behind read as "searched" and "found"; a source described as "unavailable" read as "found"; and
+ * one profile's "none found" turned a pass that cited authorities into "none found". So:
+ *   · the stage's last attempt failed               → not-checked. What it left behind is not its result.
+ *   · the retrieval record is there but unreadable  → not-checked. Nothing shows the search ran.
+ *   · the record cites a decision                   → found.
+ *   · no citation, and the source answered          → none-found: a query came back with hits, none of them
+ *     on point, or a case-law source's own call log shows a call it answered.
+ *   · no citation, and nothing shows an answer      → not-checked. The record carries a row per query at
+ *     the count the model wrote, and on the six test runs whose source was down (measured 2026-09-25) it
+ *     wrote 0 for queries that never reached one — on one of them with no search or fetch tool called. A 0
+ *     is not evidence a search ran, and "none found" is the claim that one did. The cost, stated rather
+ *     than hidden: an honest pass whose every query returned nothing, through a source whose calls are
+ *     not logged, reads as not completed.
+ * Only a run that kept no record — one from before the record existed, or a demo — reads the file's words,
+ * because they are all it has; its outage phrasings include "unavailable" for that reason.
+ *
+ * @param {string} caseLawText  the case-law findings file
+ * @param {{lastAttemptOk?: boolean|null, ledgerRaw?: string|null, sourceAnswered?: boolean}} [record]
+ *        the pass's own record, as caseLawPassRecord cuts it; omitted, the file's words decide
  * @returns {"found"|"none-found"|"not-checked"|"not-in-scope"}
  */
-export function courtDecisionsState(caseLawText) {
+export function courtDecisionsState(caseLawText, { lastAttemptOk = null, ledgerRaw = null, sourceAnswered = false } = {}) {
   const t = String(caseLawText ?? "");
   if (!t.trim()) return "not-in-scope";
-  if (/source unreachable|could not be reached|CONNECTION_CLOSED|not reachable|quota/i.test(t)) return "not-checked";
+  if (lastAttemptOk === false) return "not-checked";
+  if (ledgerRaw != null) {
+    const { ledger } = parseCaseLawLedger(ledgerRaw);
+    if (!ledger) return "not-checked";
+    if (ledger.citations.length) return "found";
+    if (sourceAnswered || ledger.queries.some((q) => q.results > 0)) return "none-found";
+    return "not-checked";
+  }
+  if (/source unreachable|could not be reached|CONNECTION_CLOSED|not reachable|quota|unavailable/i.test(t)) return "not-checked";
   if (/No on-point precedent found|none found|no decisions found/i.test(t)) return "none-found";
   return "found";
+}
+
+/**
+ * The court-decisions pass's own record, cut to the three facts its state is read from. PURE: the caller
+ * reads the files and hands their text in, and an absent file is null.
+ *
+ * @param {object} p
+ * @param {string|null} p.attemptsJsonl    the stage's attempt rows, one JSON object per line
+ * @param {string|null} p.ledgerRaw        the retrieval record as written; null when the run kept none
+ * @param {string|null} p.readingLogJsonl  the call log the case-law sources write, one JSON object per line
+ * @param {string[]} p.bridges             the case-law source servers, whose calls log as `<server>__<tool>`
+ * @returns {{lastAttemptOk: boolean|null, ledgerRaw: string|null, sourceAnswered: boolean}}
+ */
+export function caseLawPassRecord({ attemptsJsonl = null, ledgerRaw = null, readingLogJsonl = null, bridges = [] } = {}) {
+  // A torn last line costs its own row, nothing more.
+  const rows = (text) => String(text ?? "").split("\n").map((l) => { try { return JSON.parse(l); } catch { return null; } })
+    .filter((r) => r && typeof r === "object");
+  const attempts = rows(attemptsJsonl).filter((r) => typeof r.ok === "boolean");
+  const servers = (Array.isArray(bridges) ? bridges : []).map((b) => `${b}__`);
+  // THE LAST ATTEMPT'S CALLS, AND NO EARLIER ONE'S. The retrieval record read beside this flag is what the
+  // last attempt left, so an answer from an attempt before it must not vouch for that record's zeros. The
+  // call log is the stage's, every attempt in one file, and an attempt's row is written when it ends: a
+  // call belongs to the last attempt when it settled after the row before it. A time that cannot be read
+  // cannot be placed, and does not count.
+  const prev = attempts.length > 1 ? attempts[attempts.length - 2] : null;
+  const since = prev ? Date.parse(prev.ts ?? "") : null;
+  const inLastAttempt = (r) => since === null || (Number.isFinite(since) && Date.parse(r.ts ?? "") > since);
+  return {
+    lastAttemptOk: attempts.length ? attempts[attempts.length - 1].ok : null,
+    ledgerRaw: ledgerRaw ?? null,
+    sourceAnswered: rows(readingLogJsonl).some((r) => r.ok === true && servers.some((s) => String(r.tool ?? "").startsWith(s)) && inLastAttempt(r)),
+  };
 }
 
 /**
@@ -275,7 +338,7 @@ export function localScriptSearched(registerPlan) {
  *
  * @returns {{schemaVersion: number, cleared: object, counts: object}}
  */
-export function searchDepthRecord({ auditMd = "", recordIndex = {}, recordFileNames = [], bandRecordIds = null, commonLawGrid = null, caseLawText = "", registerPlan = null, laneDepthVerdicts = null, noMarketplacesPicked = false } = {}) {
+export function searchDepthRecord({ auditMd = "", recordIndex = {}, recordFileNames = [], bandRecordIds = null, commonLawGrid = null, caseLawText = "", caseLawRecord = null, registerPlan = null, laneDepthVerdicts = null, noMarketplacesPicked = false } = {}) {
   // `recordFileNames: null` travels all the way to the page — see recordsByCountry. The default stays `[]`
   // because that is "the caller said nothing", not "the store is absent"; only the publish path knows the
   // difference and it is the one producer.
@@ -299,7 +362,7 @@ export function searchDepthRecord({ auditMd = "", recordIndex = {}, recordFileNa
       // the matter. Stamped only when true, so every other run's record is unchanged.
       sweep: { ...sweepCounts(commonLawGrid, auditMd), ...(noMarketplacesPicked ? { noMarketplacesPicked: true } : {}) },
       localScriptSearched: localScriptSearched(registerPlan),
-      courtDecisions: courtDecisionsState(caseLawText),
+      courtDecisions: courtDecisionsState(caseLawText, caseLawRecord ?? undefined),
       // `localScriptSearched` above answers whether the spellings were searched; this answers how deep
       // the investigation went against what was configured. Two different facts, and the row the report
       // reserves is for the second.
