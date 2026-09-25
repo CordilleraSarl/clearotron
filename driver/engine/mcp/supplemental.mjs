@@ -290,7 +290,7 @@ export function mintSupplementalEntries(axis, proposals, { existingQids = new Se
       ...(typeof p.narrows === "string" && p.narrows.trim() ? { narrows: p.narrows.trim().slice(0, 200) } : {}),
       ...(term_literal ? { term_literal: true } : {}),
       nice_classes: nice, regions,
-      expected_kind: "enumerate",
+      expected_kind: predicate === "owner" ? "count" : "enumerate",   // an owner's name alone is crowd context: counted, never read as a portfolio
       origin: "supplemental",
       ...(splitOf ? { split_of: splitOf } : {}),
       ...(typeof p.rationale === "string" && p.rationale.trim() ? { rationale: p.rationale.trim().slice(0, 200) } : {}),

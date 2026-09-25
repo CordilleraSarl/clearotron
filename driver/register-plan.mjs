@@ -1915,8 +1915,8 @@ export function partitionFoldDirectives(directives, refused) {
  *     probe. Where those trade off, miss the duplicate.
  *
  * What is deliberately NOT in the key:
- *   · `expected_kind`. The minter hardcodes `expected_kind: "enumerate"` on every supplemental entry
- *     (driver/engine/mcp/supplemental.mjs), so it carries nothing about what the model asked for —
+ *   · `expected_kind`. The minter sets it from the predicate alone — `count` for an owner's name alone,
+ *     `enumerate` for everything else (driver/engine/mcp/supplemental.mjs) — so it adds nothing the key lacks —
  *     including it would make this screen blind to every re-proposal of a compiler `count` slice,
  *     which is two of the three rows above.
  *   · `romanizedTerms`, for the reason the minter gives for leaving it out of the qid fingerprint:

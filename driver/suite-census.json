@@ -1611,6 +1611,12 @@
           "skips": 0,
           "todos": 0
         },
+        "an-owner-name-alone-is-counted-not-read.test.mjs": {
+          "tests": 3,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "an-unread-probe-is-not-a-failed-measurement.test.mjs": {
           "tests": 5,
           "asserts": 11,
