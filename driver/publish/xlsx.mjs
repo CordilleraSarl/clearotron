@@ -220,7 +220,7 @@ const HITY = /similar listing|found|products found|product found|account exists|
 // wording — so every web and marketplace hit on a run with a grid read "0 — clean" / "No conflict". The
 // whole cell is matched, so a register row's prose that happens to mention candidates is never read as one.
 const GRID_HIT = /^\d+ candidates? reviewed$/i;
-const EXCL =/excluded|dropped|off-field|out of scope|distribution-partner|relevance/i;
+const EXCL = /excluded|dropped|off-field|out of scope|distribution-partner|relevance/i;
 
 // THE THIRD STATE. "This could not be searched" is not "this was searched and found nothing", and
 // the workbook is the document a reviewing lawyer relies on for what was searched. The word is the one the
