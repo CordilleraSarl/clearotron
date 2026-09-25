@@ -216,3 +216,33 @@ test("each mark is one grid call, its ledger is its research file, and everythin
   assert.equal(cited("https://elsewhere.example.test/lanternwick").ok, false);
 });
 
+// ── A provider outage is not retried here ────────────────────────────────────────────────────────────
+//
+// The provider call already retried a 429 or 5xx before it returned, so asking again at once buys the same
+// answer. A program that did not run is the provider's model's own miss and gets its one more call (the
+// retried mark in the run above); an outage gets none, and a batch where every mark met one is parked on
+// the provider's clock rather than failed.
+test("a grid call that met a provider outage is not asked again, and a batch of them parks rather than fails", async () => {
+  const grids = [];
+  const id = "ko-outage";
+  const studioRoot = join(ROOT, "studio", id);
+  const dir = join(studioRoot, "clearance-search", "runs", "lanternwick", "2026-09-25-outage");
+  mkdirSync(driverDir(dir), { recursive: true });
+  const run = { runDir: dir, studioRoot, slug: "lanternwick", date: "2026-09-25", codename: "outage", archiveDir: join(studioRoot, "archive", "2026-09-25-outage") };
+  const job = { id, markName: MARKS[0], marks: MARKS.map((name) => ({ name })), classes: [9], forwarder: "jordan", msgId: `<${id}@x>`, ref: "E2E-outage" };
+  const ctx = { run, job, agent: "clawdi", paths: { runDir: dir }, profile: {}, searchPolicy: { level: "knockout", stageLabel: "Knockout", components: {} } };
+  let res = null, thrown = null;
+  try {
+    res = await knockoutInner(ctx, job, {
+      gridExecutor: async (spec, { mark }) => { grids.push(mark); return { ok: false, outage: true, status: 503, cause: "grid call threw: Perplexity API 503: unavailable" }; },
+      sweepExecutor: async () => ({ ok: true, text: "unused" }),
+    });
+  } catch (e) { thrown = e; }
+  assert.deepEqual(grids.sort(), [...MARKS].sort(), "one call a mark, and not one more");
+  const rows = readFileSync(driverDir(dir, "knockout-sweep.jsonl"), "utf8").split("\n").filter(Boolean).map(JSON.parse);
+  assert.deepEqual(rows.map((r) => [r.attempts, r.ok]), MARKS.map(() => [1, false]));
+  const log = readFileSync(driverDir(dir, "run.jsonl"), "utf8");
+  assert.match(log, /"event":"knockout-sweep-outage"/, "the batch was not recognised as an outage");
+  assert.equal(res, null, "an all-outage batch returned instead of parking");
+  assert.equal(thrown?.reason, "rate_limited", `an all-outage batch should park on the provider's clock: ${thrown?.message}`);
+});
