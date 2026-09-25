@@ -56,9 +56,11 @@ test("the register manual's incumbent paragraph asks in the matter's classes and
 
 test("no register recipe asks for the client's word in the incumbent's classes", () => {
   const recipes = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-register", "register-recipes.md"), "utf8");
-  assert.ok(recipes.includes("## Recipe 4 — Industry-incumbent shadow"), "guard: the recipes were read");
+  assert.ok(recipes.includes("## Recipe 1 — Compound tagline"), "guard: the recipes were read");
   assert.doesNotMatch(recipes, /ENUMERATE the incumbent(?:'s)? classes|classes <incumbent classes>/,
     "a recipe the unit reads would ask again for the search the plan no longer compiles");
+  assert.doesNotMatch(recipes, /Industry-incumbent shadow|incumbent's portfolio|owner:<incumbent name pattern>/,
+    "no recipe asks for an incumbent's marks or its whole portfolio because it is an incumbent");
 });
 
 test("the spelling manual points at no register step that no longer exists", () => {

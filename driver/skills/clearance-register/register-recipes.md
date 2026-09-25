@@ -38,7 +38,6 @@ the cross-cutting relevance / sufficiency / owner-aggregation / prioritisation o
 - [Recipe 1 — Compound tagline](#recipe-1--compound-tagline-multi-word-mark-with-distinctive-element)
 - [Recipe 2 — Single distinctive word](#recipe-2--single-distinctive-word-coined--unusual)
 - [Recipe 3 — Single descriptive word with crowded field](#recipe-3--single-descriptive-word-with-crowded-field)
-- [Recipe 4 — Industry-incumbent shadow](#recipe-4--industry-incumbent-shadow)
 - [Recipe 5 — Foreign-language transliteration](#recipe-5--foreign-language-transliteration-worldwide--multi-region-scope)
 - [Recipe 6 — Multi-word descriptive tagline](#recipe-6--multi-word-descriptive-tagline-0-distinctive-elements)
 - [Recipe 7 — Exact-in-class-live floor (saturated near-exact band)](#recipe-7--exact-in-class-live-floor-saturated-near-exact-band)
@@ -133,30 +132,6 @@ the cross-cutting relevance / sufficiency / owner-aggregation / prioritisation o
 **Why:** descriptive crowded-field marks have many records. The funnel does **not** narrow-to-tractable-and-stop — it scopes each named slice by class and region (which is breadth, not sufficiency) and lets `register_enumerate` page it to completion or return `incomplete`. The crowd descriptor (step 1) tells the lawyer how crowded the field is; the lawyer decides relevance and sufficiency over the complete enumerated slices.
 
 **Expected output:** complete enumerated band for each class/region-scoped named slice + a crowd descriptor for the bare element. The lawyer filters to relevance; the funnel does not.
-
----
-
-## Recipe 4 — Industry-incumbent shadow
-
-**When to use:** the mark's distinctive element is also a known incumbent in a non-target industry (e.g., LUMENGARDE → Lumengarde Electronics lighting). Triggered by `industry_incumbent_alert` field in the variant manifest.
-
-**Pattern:**
-
-```
-1. ENUMERATE the primary named band on target classes (Recipe 1 or 2 above)
-
-2. ENUMERATE the owner-bound named band
-   → owner:<incumbent name pattern> + classes <target>
-   → surfaces whether the incumbent has filed in the target industry too
-
-3. ENUMERATE the incumbent's portfolio for opposition context
-   → enumerate the incumbent's marks; opposition data rides on each record
-   → the lawyer reads onomaticsOppositions[] to gauge enforcement posture
-```
-
-**Why:** the incumbent's enforcement posture is highly relevant — but that is the lawyer's read. The funnel enumerates the incumbent's band; judgment interprets the opposition history. The watchlist seeds *attention*; they do not bound what is enumerated (the unnamed-owner exact-in-class-live band crosses regardless).
-
-**Expected output:** the incumbent's enumerated band + opposition data per record for the lawyer to weigh.
 
 ---
 
@@ -379,8 +354,7 @@ Per mark, in the manifest:
 | 0 | 1+ | No | Recipe 3 (single descriptive word, crowded) |
 | **0** | **2+** | **Yes** | **Recipe 6 (multi-word descriptive tagline)** |
 | 0 | 0 | — | edge case — apply general 7-step from SKILL.md |
-| Any | Any with industry_incumbent_alert | — | Add Recipe 4 alongside the primary recipe |
 | Any | Any with translit-* variants | — | Add Recipe 5 alongside |
 | Any | Any owned element `saturation: high`/`very-high` | — | Add Recipe 7 alongside (primary-sweep unit — the dangerous-category named enumeration) |
 
-Recipes are composable. Most worldwide-scope gaming taglines run Recipe 1 + Recipe 4 + Recipe 5 (compound tagline + industry-incumbent shadow + transliteration sweep).
+Recipes are composable. Most worldwide-scope gaming taglines run Recipe 1 + Recipe 5 (compound tagline + transliteration sweep).
