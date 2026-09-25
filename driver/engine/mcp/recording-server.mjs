@@ -496,7 +496,7 @@ serve({
             "entirely when no axis is mandatory, which is the ordinary case.",
         },
         watchlist_owners: { type: "array", items: { type: "string" },
-          description: "Real register owners the plan compiles owner lanes from — never sectors or descriptions." },
+          description: "Real register owners — never sectors or descriptions." },
         goods_words: { type: "array", items: { type: "string" },
           description:
             "The words the register search is narrowed to: the client's own goods and services wording " +

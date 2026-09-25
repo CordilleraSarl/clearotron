@@ -193,13 +193,10 @@ For each transliteration variant in the manifest:
 6. ENUMERATE each common element's exact-in-class name-list (register_enumerate)
    → name:ELEVATE match=exact classes <target>  (scope by CLASS + REGION, not a product/goods term)
 
-7. ENUMERATE owner-bound competitor queries
-   → owner:<each competitor> classes <target>   → register_enumerate
-
-8. ENUMERATE a cross-class merch query if identical match
+7. ENUMERATE a cross-class merch query if identical match
 ```
 
-**Why:** for 0-distinctive multi-word marks, the search vector IS the phrase + its morphological variations + competitor portfolio. The funnel enumerates each — it does **not** "narrow via phrase composition because element-level sweeps are too saturated" (that was a sufficiency call). The element-level crowd is *described* (steps 1–2) and the named slices are *enumerated* (steps 3–8). The lawyer reads the complete band + the crowd descriptors and decides sufficiency.
+**Why:** for 0-distinctive multi-word marks, the search vector IS the phrase + its morphological variations. The funnel enumerates each — it does **not** "narrow via phrase composition because element-level sweeps are too saturated" (that was a sufficiency call). The element-level crowd is *described* (steps 1–2) and the named slices are *enumerated* (steps 3–7). The lawyer reads the complete band + the crowd descriptors and decides sufficiency.
 
 **Expected output:** the enumerated band for every named slice + crowd descriptors for the bare elements. The lawyer prioritises; the funnel surfaces everything.
 

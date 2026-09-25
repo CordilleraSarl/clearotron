@@ -473,16 +473,7 @@ findings row and set `Verify? ✅` with reason "owner-identity conflict — conf
 read." Owner identity drives enforcer-profiling (see `clearance-search/firm-wide-reasoning.md`, *Enforcer profiling*
 rule) — a wrong owner is a wrong risk read.
 
-### Step 4 — Proactive competitor + aggressive-enforcer sweep
-
-**Plan-first:** when the frozen plan carries the owner lane (the manifest seeded `watchlist_owners`),
-the incumbent-class band ALREADY holds, per seeded owner, the owner×formative enumerate slices
-(qids `…+owner-<owner>`) and one bare-owner count descriptor (qid `…+watch`). **The slices are the
-owner's coverage — read them record-by-record. The bare-owner count is crowd context** whose
-`covered_by`/reason points at the slice qids: cite it as portfolio size, never as coverage, and
-**"portfolio too large, noted" is never a finding** — the answer to a watchlist owner is the slice
-records (or their honest per-class `class_counts` accounting when a wide-class slice crowds), not a
-number and a shrug. Only fall back to the sweep below for a watchlist entity the plan did not seed.
+### Step 4 — Owner slices, and the applicant's own rights
 
 **The screen's own receipt is handed to you as DATA — write the negative FROM IT, never from a lookup
 you had to invent.** The dispatch carries a driver-computed line naming, per owner: the slice qid,
@@ -499,15 +490,10 @@ Never write that the owner screen "produced no records" while the receipt says r
 attributed — that sentence shipped on a live run whose screen had returned eleven, and it turned a
 working instrument into a disclaimer.
 
-For each unseeded entity in the manifest's `competitors` AND `aggressive_enforcers` watchlists (NOT
-`major_brand_owners` — too broad), run one owner-bound search (`owner: "<entity>"`, target classes,
-limit 50). Apply the Step 2 relevance gate to results; detail-fetch new ones; merge as
-`Type: Competitor Intelligence`.
-
 **Applicant own-rights sweep (gated on priority-live — surfacing only, never a conflict).** When a unit has
 surfaced a senior on-point conflict (an identical / near-identical in-class incumbent) AND `matter-context` /
 the request form indicates the applicant may hold prior rights of its own (prior use, or co-pending / unclear
-priority — i.e. priority is *live*), run the **same owner-bound search on the applicant's own name** — the one
+priority — i.e. priority is *live*), run an **owner-bound search on the applicant's own name** — the one
 name the applicant-exclusion (`matter-context`) normally drops — with `active_only: false` to catch the
 applicant's own lapsed filings. Tag every hit `applicant_own_rights: true`. This is a **surfacing exception
 for the applicant only**: these rows are **never conflicts, never Findings-sheet rows, and never gate or
@@ -606,7 +592,6 @@ This skill's universal logic — per-axis funnel, status filter, relevance gate,
 - [ ] Relevance gate applied per archetype over the **complete enumerated set** (field-relevance only — filer size/dormancy held for Stage-2, never a drop reason); drops logged
 - [ ] Owner aggregation across the band; owner-identity conflicts flagged `Verify? ✅` (never silently picked)
 - [ ] **Every coverage-form row ruled through `record_coverage`** — the tool's answer reports nothing outstanding; every `incomplete` crowd descriptor ruled cleared/material-gap; reconciled against `matter-context`'s material-jurisdiction list (every material jurisdiction enumerated-and-cleared, or written `coverage-limited`/`deferred` → CONDITIONAL — never a self-accepted clean over an unsearched slice); rolled-up `{sufficient, reason}` stated for synthesis to emit; genuine open judgment surfaced to ship (not a coverage gap)
-- [ ] Competitor + enforcer owner-bound sweep run
 - [ ] Applicant own-rights sweep run **if priority is live** (tagged `applicant_own_rights`; never a conflict / Findings row / gate)
 - [ ] Watchlist matches flagged (override the gate)
 - [ ] Stealth-filer detection + Option-D triggers (exec 1 & 4, flag 2 & 3)
