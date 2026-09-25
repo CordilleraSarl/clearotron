@@ -766,6 +766,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
             const checks = await runOwnerChecks({
               owners: owed, exec: sweep.exec, runDir: run.runDir, ledgerPath: K.ownerCheckLedger,
               preset: process.env.CLEAROTRON_KNOCKOUT_PRESET || "pro-search",
+              concurrency: 3,   // step 3 — the same constant as the sibling calls above
             });
             atomicWrite(K.ownerChecks, JSON.stringify({ schema: 1, checks }, null, 2) + "\n");
             runLog(run.runDir, {
