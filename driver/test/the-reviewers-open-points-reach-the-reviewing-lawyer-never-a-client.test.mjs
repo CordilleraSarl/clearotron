@@ -73,3 +73,9 @@ test("the drafting manual asks for no reviewer's section on the report, and says
   assert.ok(md.includes("the report is delivered and those concerns stay in the run record for the reviewing lawyer."));
   assert.ok(md.includes("The reviewing lawyer always sees the review (CLEAR / CONDITIONAL / BLOCKING) on the audit notification, so the reviewer can decide whether the read was right."));
 });
+
+test("the delivery contract no longer says the driver puts the reviewer's points at the top of the report", () => {
+  const md = readFileSync(new URL("../skills/clearance-search/delivery-contract.md", import.meta.url), "utf8");
+  assert.ok(md.includes("## House prose contract"), "guard: the delivery contract was read");
+  assert.doesNotMatch(md, /TOP OF THE BODY|buildReviewerOpenPointsSection/, "a note describing a section the driver no longer builds");
+});
