@@ -125,9 +125,9 @@
 //                               this search" over a run that asked and whose record was never written.
 //                               The guard is on the data, not on the flag, which is the right way round.
 //                               (CITED BY SYMBOL AND NO LINE, per CONTRIBUTING.md.)
-//   · `sourceAnswered` declared in search-depth.mjs's `caseLawPassRecord` is read by
-//                               `courtDecisionsState` in the same publish pass, beside the retrieval
-//                               record it vouches for, and is written nowhere: search-depth.json keeps
+//   · `caseLawPassRecord` declared in search-depth.mjs returns the flag `sourceAnswered`, which
+//                               `courtDecisionsState` reads in the same publish pass, beside the retrieval
+//                               record it vouches for. The flag is written nowhere: search-depth.json keeps
 //                               the state WORD, never the flag. The two ends could still have been two
 //                               units, and that is the part ruled here. The call log holds every attempt
 //                               of the stage, the record only what the last attempt left, so the flag

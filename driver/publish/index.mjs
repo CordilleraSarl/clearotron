@@ -16,8 +16,7 @@ import { buildAudit } from './xlsx.mjs'; import { readDeclinations } from '../de
 import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, joinFindingToBlock, CLIENT_TIER_BY_COMPOSITE, projectCoverageJudgment } from '../findings-model.mjs';
 import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.mjs'; import { coverageFormStamp, readCoverageForm } from '../coverage-form-io.mjs'; import { readReleasedFamilies } from '../withheld-families.mjs'; import { unitLabel } from '../coverage-form.mjs'; import { coverageUnitLabel } from '../coverage-ledger.mjs'; import { recallReceiptForOwnCompany } from '../recall-receipt.mjs';   // — and why an absence did not close; whose recall checks an audit lists
 import { clearanceReportData } from './report-data.mjs';
-import { searchDepthRecord, planTerritoriesOf, caseLawPassRecord } from './search-depth.mjs'; import { bandRecords } from '../named-band.mjs';   // how much was read to reach the answer, as counts and tokens
-import { CASELAW_BRIDGES } from '../engine/mcp/gather-config.mjs';   // the case-law sources whose calls the court state reads
+import { searchDepthRecord, planTerritoriesOf, caseLawPassRecord } from './search-depth.mjs'; import { bandRecords } from '../named-band.mjs'; import { CASELAW_BRIDGES } from '../engine/mcp/gather-config.mjs';   // how much was read to reach the answer, as counts and tokens; and the case-law sources whose calls the court state reads
 import { parseFrameworkManifest } from '../framework.mjs'; import { readFrozenMethod, FROZEN_METHOD_FILE } from '../framework-method.mjs';
 import { rollupTokens, servedModels } from '../tokens.mjs';
 import { reportIdentityFor, productCoverageNote, isRegisterOnly } from '../search-policy.mjs';
