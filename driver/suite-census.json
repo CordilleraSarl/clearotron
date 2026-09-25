@@ -2943,6 +2943,12 @@
           "skips": 0,
           "todos": 0
         },
+        "every-run-log-name-is-classed-for-first-time.test.mjs": {
+          "tests": 2,
+          "asserts": 14,
+          "skips": 1,
+          "todos": 0
+        },
         "every-surface-that-takes-the-manifest-asks-for-the-goods-words.test.mjs": {
           "tests": 10,
           "asserts": 22,
@@ -3076,8 +3082,8 @@
           "todos": 0
         },
         "first-time-is-read-from-the-whole-run-record.test.mjs": {
-          "tests": 4,
-          "asserts": 20,
+          "tests": 7,
+          "asserts": 38,
           "skips": 0,
           "todos": 0
         },
