@@ -12,8 +12,7 @@ import { join, dirname } from 'node:path';
 import { driverDir, RUN_DIR_MODE } from '../../shared/driver-dir.mjs';   //
 import { parseReport, parseAudit, parseSections, parseBlocks, stripInternal, parseCaseLawProfiles, parseCaseLawPreamble, joinCaseLawProfiles } from './parse.mjs';
 import { renderHtml, parseActionBuckets, actYouConditions } from './render.mjs';
-import { buildAudit } from './xlsx.mjs'; import { readDeclinations } from '../declination-tool.mjs'; import { frameSetAsideRows } from '../web-grid.mjs';   // — what synthesis set aside, with its grounds; and the stores the matter frame set aside, with its reason
-import { readDegradedPartRows } from '../degraded-parts.mjs';   // — the parts that failed and still ship, written at delivery
+import { buildAudit } from './xlsx.mjs'; import { readDegradedPartRows } from '../degraded-parts.mjs'; import { readDeclinations } from '../declination-tool.mjs'; import { frameSetAsideRows } from '../web-grid.mjs';   // — what synthesis set aside, with its grounds; and the stores the matter frame set aside, with its reason
 import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, joinFindingToBlock, CLIENT_TIER_BY_COMPOSITE, projectCoverageJudgment } from '../findings-model.mjs';
 import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.mjs'; import { coverageFormStamp, readCoverageForm } from '../coverage-form-io.mjs'; import { readReleasedFamilies } from '../withheld-families.mjs'; import { unitLabel } from '../coverage-form.mjs'; import { coverageUnitLabel } from '../coverage-ledger.mjs'; import { recallReceiptForOwnCompany } from '../recall-receipt.mjs';   // — and why an absence did not close; whose recall checks an audit lists
 import { clearanceReportData } from './report-data.mjs';

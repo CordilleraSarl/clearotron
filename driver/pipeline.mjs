@@ -88,9 +88,7 @@ import { NATIVE_LANGUAGE_REMEDY } from "./products.mjs";
 import { resolveTerritories, defaultTerritoryState } from "./effective-scope.mjs";   // the ONE territory ladder (the geography stamp included) + the stored-defaults reading
 import { acquireSlot, releaseSlot } from "./slot-lock.mjs";
 import { mintSupplementalEntries, withRejected } from "./engine/mcp/supplemental.mjs";
-import { plainDirective, deferralCoverageRow } from "./deferral-row.mjs";   // — the row for anything left open, and its words
-import { degradedParts, writeDegradedParts } from "./degraded-parts.mjs";   // — every part that failed and still ships, for the audit workbook
-import { runLog, note, fileMeta, outputMeta, stageLog } from "./log.mjs"; import { armProduced, readArmSurfaces, producedNothingLine } from "./experiment-honesty.mjs"; import { correctiveReadiness, correctiveRefusalLine, correctivePassState } from "./corrective-arm.mjs";
+import { runLog, note, fileMeta, outputMeta, stageLog } from "./log.mjs"; import { plainDirective, deferralCoverageRow } from "./deferral-row.mjs"; import { degradedParts, writeDegradedParts } from "./degraded-parts.mjs"; import { armProduced, readArmSurfaces, producedNothingLine } from "./experiment-honesty.mjs"; import { correctiveReadiness, correctiveRefusalLine, correctivePassState } from "./corrective-arm.mjs";
 import { deriveScopeFacts } from "./scope-facts.mjs";
 import { documentGrowth } from "./gate-metrics.mjs";
 import { editRepairTail, abbrev } from "./repair-contract.mjs";
