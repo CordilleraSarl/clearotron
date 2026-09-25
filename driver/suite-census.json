@@ -2685,6 +2685,12 @@
           "skips": 0,
           "todos": 0
         },
+        "each-owner-check-keeps-its-own-answer-file.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "effective-scope.test.mjs": {
           "tests": 15,
           "asserts": 44,
