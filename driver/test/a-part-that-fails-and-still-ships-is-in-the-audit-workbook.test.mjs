@@ -223,4 +223,6 @@ test("at the door: a run whose reviewer stage failed publishes a workbook that s
   const clean = await runOffline({});
   t.after(() => rmSync(clean.root, { recursive: true, force: true }));
   assert.ok(!clean.areas.some((a) => a.startsWith("Follow-up / Machine QC")), "a clean run's workbook carries a degraded row");
+  // Every part, not only the one the other run failed: a check that fires on a clean run is a false row.
+  assert.deepEqual(JSON.parse(readFileSync(driverDir(clean.res.runDir, "degraded-parts.json"), "utf8")).parts, [], "a clean run recorded a degraded part");
 });
