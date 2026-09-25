@@ -538,6 +538,8 @@ export const KO_STAGES = {
     // exists to stop. The driver does not dispatch on an empty measurement; the branch is here because
     // "it cannot happen" is not a property a message should depend on.
     message: ({ K, evidenceLines = [], exclusionNote = "" }) => lines(
+      // THE CLIENT'S QUESTION LEADS, in the owner's words (ruling 2026-09-24), ahead of the rewrite job.
+      `Does the report answer the client's question: who could object, how strong they are, what the client should do? Are the marks a lawyer would list present, and is each position written from the record that matters? Answer that before any check on wording.`,
       reads(["skills/clearance-search/report-prose.md"]),
       `You are the REVIEWING PASS on a knockout screen. The batch is already rated and nothing about that rating is yours to change. Your job is the words.`,
       `THE RULE. A line a reader meets before opening anything carries no legal or engine vocabulary and no sentence longer than 25 words. Inside a fold the lawyer's words are allowed where a plain one would lose precision; on a default-visible line they are not. The reader here is the client of the lawyer who ordered this screen, and they read the same page.`,
@@ -551,6 +553,7 @@ export const KO_STAGES = {
       // "Make the report plainer" is read and not applied, and nothing refuses — it simply does not
       // happen. The address IS the field, so every rewrite this stage returns names the exact line it
       // replaces and the driver writes it there.
+      `Send your answer to that first question as \`first_question\` in the same call.`,
       `HAND YOUR REWRITES BACK BY CALLING \`record_knockout_review\`. THERE IS NO FILE FOR YOU TO WRITE and this dispatch names none for you to write to. Send \`rewrites\`: one row per line you are replacing, each carrying the \`at\` address COPIED VERBATIM from the row above and \`text\`, the replacement prose. The driver writes your text into that field exactly as you send it.`,
       `A REWRITE KEEPS EVERY FACT. You are changing the register, never the content: the same band, the same names, the same reasons, the same conclusion, in the words the reader already owns. Splitting one long sentence into two short ones is the commonest right answer. Dropping the reason to make a line shorter is the commonest wrong one.`,
       `SEND \`declined\` FOR A LINE YOU ARE LEAVING ALONE, with \`why\`. A word that is a mark being screened, a client's own product name, or a term with no plainer form that keeps the meaning — say so and leave it. A line you neither rewrite nor decline is indistinguishable afterwards from a line nobody read.`,

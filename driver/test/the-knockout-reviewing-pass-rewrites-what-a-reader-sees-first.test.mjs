@@ -28,6 +28,7 @@ import {
   ADDRESSABLE, addressKey, applyKnockoutReview, reviewEvidence, reviewAbout,
   validateKnockoutReviewFile, knockoutReviewFile, recordKnockoutReview, nearestAddress,
 } from "../knockout-review-record.mjs";
+import { KO_STAGES } from "../stages-knockout.mjs";
 
 // A REAL DELIVERED RECORD, not an invented one: the shape these read is the shape a run writes, and a
 // fixture of my own would only prove the fixture matches the reader.
@@ -38,6 +39,7 @@ import {
 const DEMO = new URL("./fixtures/delivered-knockout/run/knockout-findings.json", import.meta.url);
 const record = () => JSON.parse(readFileSync(DEMO, "utf8"));
 const MARK = "VENQORI";
+const ANSWER = "Yes: it names who could object, how strong each is, and what the client should do.";
 
 // The engine's own survivor sentence, matched at delivery by SURVIVOR_BOUNDARY_RE. Taken from the
 // record rather than retyped — a copy here would pass this file while the real one moved.
@@ -251,7 +253,7 @@ test("the validator joins every address against the record on disk, and says so 
 
   // NO RECORD YET: a could-not-look, said as one. Passing here would let every address through unchecked
   // and read on the receipt exactly like a run whose addresses all resolved.
-  const blind = write({ rewrites: [{ at: { field: "basis", mark: MARK }, text: "x" }] });
+  const blind = write({ first_question: ANSWER, rewrites: [{ at: { field: "basis", mark: MARK }, text: "x" }] });
   const v0 = validateKnockoutReviewFile(reviewPath, blind);
   assert.equal(v0.ok, false);
   assert.match(v0.reason, /not on disk/);
@@ -259,12 +261,12 @@ test("the validator joins every address against the record on disk, and says so 
   writeFileSync(join(dir, "knockout-findings.json"), JSON.stringify(record()));
   assert.equal(validateKnockoutReviewFile(reviewPath, blind).ok, true, "a resolvable address was refused");
 
-  const bad = write({ rewrites: [{ at: { field: "basis", mark: "NOBODY" }, text: "x" }] });
+  const bad = write({ first_question: ANSWER, rewrites: [{ at: { field: "basis", mark: "NOBODY" }, text: "x" }] });
   const v1 = validateKnockoutReviewFile(reviewPath, bad);
   assert.equal(v1.ok, false);
   assert.match(v1.reason, /names no line on this record/);
 
-  const owned = write({ rewrites: [{ at: { field: "batch.standardCaveats", index: survivorIndex(record()) }, text: "x" }] });
+  const owned = write({ first_question: ANSWER, rewrites: [{ at: { field: "batch.standardCaveats", index: survivorIndex(record()) }, text: "x" }] });
   const v2 = validateKnockoutReviewFile(reviewPath, owned);
   assert.equal(v2.ok, false);
   assert.match(v2.reason, /the engine wrote/);
@@ -366,4 +368,50 @@ test("the rewrite is NOT applied by analogy, and the row says which spelling the
   assert.equal(receipt.unresolved.length, 1);
   assert.match(receipt.unresolved[0].why, /differing from/, "the row does not say what the difference was");
   assert.ok(receipt.unresolved[0].why.includes(STRAIGHT), "the row never names the spelling the record holds");
+});
+
+// ── THE CLIENT'S QUESTION LEADS THE PASS, AND ITS ANSWER IS KEPT ──────────────────────────────────────
+//
+// Owner ruling 2026-09-24: the reviewing pass opens on the client's question, in the owner's words, ahead
+// of any check on wording, and on this lane its answer goes in the pass's review file. The sentence is his,
+// character for character; a difference here is a new ruling, not a fix.
+const FIRST_QUESTION = "Does the report answer the client's question: who could object, how strong they are, "
+  + "what the client should do? Are the marks a lawyer would list present, and is each position written from "
+  + "the record that matters? Answer that before any check on wording.";
+
+test("the knockout reviewing pass opens on the client's question, ahead of its manual and its rewrite job", () => {
+  const msg = KO_STAGES["knockout-review"].message({ K: { findings: "/run/knockout-findings.json" } });
+  const first = msg.split("\n").find((l) => l.trim());
+  assert.equal(first, FIRST_QUESTION);
+  assert.equal(msg.split(FIRST_QUESTION).length - 1, 1, "the question appears once");
+});
+
+test("the answer is recorded when sent, and a record without one is never refused", () => {
+  const dir = mkdtempSync(join(tmpdir(), "ko-review-"));
+  mkdirSync(join(dir, "_driver"), { recursive: true });
+  writeFileSync(join(dir, "knockout-findings.json"), JSON.stringify(record()));
+  const row = { at: { field: "basis", mark: MARK }, why: "reads plainly in context" };
+  // No answer: the rewrite pass still lands. A refusal here would cost the client the rewrite.
+  const without = recordKnockoutReview(dir, { declined: [row] });
+  assert.ok(without.written, JSON.stringify(without));
+  const reviewPath = knockoutReviewFile(dir);
+  assert.equal(validateKnockoutReviewFile(reviewPath, readFileSync(reviewPath, "utf8")).ok, true);
+  assert.equal(JSON.parse(readFileSync(reviewPath, "utf8")).first_question, undefined);
+  // An answer sent is kept, in the seat's own words.
+  const withAnswer = recordKnockoutReview(dir, { first_question: ANSWER });
+  assert.ok(withAnswer.written, JSON.stringify(withAnswer));
+  assert.equal(JSON.parse(readFileSync(reviewPath, "utf8")).first_question, ANSWER);
+});
+
+test("a repair turn that sends no answer keeps the one already given", () => {
+  const dir = mkdtempSync(join(tmpdir(), "ko-review-"));
+  mkdirSync(join(dir, "_driver"), { recursive: true });
+  writeFileSync(join(dir, "knockout-findings.json"), JSON.stringify(record()));
+  const row = { at: { field: "basis", mark: MARK }, why: "reads plainly in context" };
+  const first = recordKnockoutReview(dir, { first_question: ANSWER, declined: [row] });
+  assert.ok(first.written, JSON.stringify(first));
+  const second = recordKnockoutReview(dir, { declined: [{ ...row, why: "reads plainly, and the mark is the subject" }] });
+  assert.ok(second.written, JSON.stringify(second));
+  const stored = JSON.parse(readFileSync(knockoutReviewFile(dir), "utf8"));
+  assert.equal(stored.first_question, ANSWER);
 });

@@ -295,6 +295,7 @@ const PLANTED = Object.freeze({
     record: (runDir, params) => recordKnockoutReview(runDir, params),
     full: {
       schema_version: 1,
+      first_question: "Yes: it names who could object, how strong each is, and what the client should do.",
       rewrites: [
         { at: { field: "basis", mark: "NOVAPULSE" },
           text: "The name is already crowded in drinks. Two live registrations sit close to it.",
