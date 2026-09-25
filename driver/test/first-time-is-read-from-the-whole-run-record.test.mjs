@@ -145,3 +145,36 @@ test("a name the reader has not classed is listed and keeps the run from reading
   assert.equal(withRow.firstTime, false);
   assert.match(firstTimeLines(withRow)[0], /not classed, read neither way: event "a-new-event"/);
 });
+
+test("a summary event or a skip counts in the state that is a failure, and not in its designed state", () => {
+  const read = (runLog) => firstTimeRows({ ...clean, runLog });
+  // knockout: an owner lookup that did not answer, a name with no register count, a review that failed
+  assert.deepEqual(read([{ event: "knockout-owner-checks", owners: 3, answered: 1, unanswered: 2 }]).rows.map((r) => r.kind), ["step failed"]);
+  assert.equal(read([{ event: "knockout-owner-checks", owners: 3, answered: 3, unanswered: 0 }]).firstTime, true);
+  assert.deepEqual(read([{ event: "knockout-register-counts", marks: 4, counted: 3 }]).rows.map((r) => r.kind), ["step failed"]);
+  assert.equal(read([{ event: "knockout-register-counts", marks: 4, counted: 4 }]).firstTime, true);
+  assert.deepEqual(read([{ event: "knockout-review", outcome: "stage-failed", applied: 0 }]).rows.map((r) => r.kind), ["step failed"]);
+  assert.deepEqual(read([{ event: "knockout-review", outcome: "applied", applied: 2 }]).rows.map((r) => r.kind), ["repair"],
+    "a rater's text the plain-English pass rewrote was not accepted as it stood");
+  for (const outcome of ["nothing-flagged", "applied"]) assert.equal(read([{ event: "knockout-review", outcome, applied: 0 }]).firstTime, true);
+  // clearance: one name for a designed skip and a failure, told apart by cause
+  assert.equal(read([{ event: "frame-diff-skipped", reason: "no-blind-model" }]).firstTime, true);
+  assert.deepEqual(read([{ event: "frame-diff-skipped", reason: "model-unparseable: Unexpected token" }]).rows.map((r) => r.kind), ["step failed"]);
+  assert.equal(read([{ event: "jx-serp-grid-skipped", cause: "CLEAROTRON_NATIVE_LANGUAGE_ZH off" }]).firstTime, true);
+  assert.deepEqual(read([{ event: "jx-serp-grid-skipped", cause: "coverage floor" }]).rows.map((r) => r.kind), ["step failed"]);
+  assert.deepEqual(read([{ event: "jx-nativeread-skipped", cause: "a cause no one has seen" }]).rows.map((r) => r.kind), ["step failed"],
+    "an unfamiliar cause read as a designed skip");
+  assert.deepEqual(read([{ event: "form-neighbourhood-skipped", reason: "derive_failed:boom" }]).rows.map((r) => r.kind), ["step failed"]);
+  assert.deepEqual(read([{ event: "floor-duty", computable: false, reason: "not computed" }]).rows.map((r) => r.kind), ["step failed"]);
+  assert.equal(read([{ event: "floor-duty", computable: true, reconciles: true }]).firstTime, true);
+  assert.deepEqual(read([{ event: "escalation-recheck", axis: "primary-sweep", dispatched: true, outcome: "ok" }]).rows.map((r) => r.kind), ["re-ask"]);
+  assert.equal(read([{ event: "escalation-recheck", axis: "primary-sweep", dispatched: false, reason: "digest-locked (post-synthesis)" }]).firstTime, true);
+});
+
+test("a failed step with no engine row is counted from its dispatch record, and an engine stage's failure only once", () => {
+  const code = firstTimeRows({ ...clean, runLog: [{ event: "stage", stage: "register-unit:saturation-probe", trigger: "fresh", ok: false, fail: "executor threw" }] });
+  assert.deepEqual(code.rows.map((r) => [r.kind, r.stage]), [["step failed", "register-unit:saturation-probe"]]);
+  const engine = firstTimeRows({ attempts: [{ stage: "synthesis", row: { attempt: 1, ok: false, fail: "timeout", engine: "engine-a" } }],
+    runLog: [{ event: "stage", stage: "synthesis", trigger: "fresh", ok: false, fail: "timeout" }] });
+  assert.deepEqual(engine.rows.map((r) => r.kind), ["failed attempt"]);
+});

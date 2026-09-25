@@ -50,7 +50,8 @@ const REFUSED = "refused item";
 const RECOVERY = "recovery";
 
 // Run-log events that count, with the kind the line lists them under. `when` narrows an event that
-// counts only in one state.
+// counts only in one state, and a list gives each state its own kind: a summary event and a skip carry
+// a failure and a designed case under one name, told apart by their fields.
 export const COUNTED_EVENTS = {
   // a step, stage, check or gate that failed
   "asks-failed": FAILED, "band-shape-failed": FAILED, "band-truth-gate": FAILED, "basis-derivation-failed": FAILED,
@@ -76,11 +77,44 @@ export const COUNTED_EVENTS = {
   "reviewer-degenerate": FAILED, "salvage-lane-no-target": FAILED, "searched-jurisdictions-unresolved": FAILED,
   "skeptic-skipped": FAILED, "stage-input-over-ceiling": FAILED, "status-write-failed": FAILED,
   "stale-repair-entry-done": { kind: FAILED, when: (e) => (Array.isArray(e.failed) ? e.failed.length : Number(e.failed)) > 0 },
+  // written only where the step threw
+  "form-neighbourhood-skipped": FAILED, "register-plan-skipped": FAILED,
+  // a stage failure is on its own record; a model that would not parse, or was never written, is only here
+  "frame-diff-skipped": { kind: FAILED, when: (e) => /^model-unparseable|^no-frame-diff-model$/.test(String(e.reason ?? "")) },
+  "jx-candidate-fold-skipped": { kind: FAILED, when: (e) => !isDesignedJxCause(e.cause) },
+  "jx-nativeread-skipped": { kind: FAILED, when: (e) => !isDesignedJxCause(e.cause) },
+  "jx-serp-grid-skipped": { kind: FAILED, when: (e) => !isDesignedJxCause(e.cause) },
+  "knockout-owner-checks": { kind: FAILED, when: (e) => Number(e.unanswered) > 0 },
+  "knockout-register-counts": { kind: FAILED, when: (e) => Number(e.counted) < Number(e.marks) },
+  // the plain-English pass rewrote the rater's text, or failed and shipped it unrewritten
+  "knockout-review": [{ kind: REPAIR, when: (e) => e.outcome === "applied" && Number(e.applied) > 0 },
+    { kind: FAILED, when: (e) => !["applied", "nothing-flagged"].includes(e.outcome) }],
+  "commonlaw-reconciliation": { kind: FAILED, when: (e) => e.state !== "at-or-above-floor" },
+  "engine-turn-probe": { kind: FAILED, when: (e) => e.ok === false },
+  // a skeptic flag on a code-side axis re-runs its plan queries through the executor
+  "escalation-recheck": [{ kind: REASK, when: (e) => e.dispatched === true },
+    { kind: FAILED, when: (e) => e.outcome === "repair-budget-exhausted" }],
+  "skills-store": { kind: FAILED, when: (e) => e.outcome !== "pass" },
+  "profile-store": { kind: FAILED, when: (e) => e.outcome !== "pass" },
+  "registry-record-closure": { kind: FAILED, when: (e) => (Array.isArray(e.failed) ? e.failed.length : 0) > 0 },
+  "silently-lost-findings": { kind: FAILED, when: (e) => Number(e.lost) > 0 },
+  "correction-kinds": { kind: FAILED, when: (e) => e.ok === false },
+  "reasoning-integrity": { kind: FAILED, when: (e) => e.ok === false },
+  "screen-gate-postflush": [{ kind: FAILED, when: (e) => Number(e.count) > 0 }, { kind: REPAIR, when: (e) => e.recovered === true }],
+  // a duty or carry the run could not compute, or whose arithmetic does not reconcile
+  "floor-duty": { kind: FAILED, when: (e) => e.computable === false || e.reconciles === false },
+  "declination-duty": { kind: FAILED, when: (e) => e.computable === false || e.reconciles === false },
+  "commonlaw-carry": { kind: FAILED, when: (e) => e.computable === false },
+  "placement-carry": { kind: FAILED, when: (e) => e.computable === false },
+  "recall-reconciliation": { kind: FAILED, when: (e) => e.computable === false },
+  "record-carry": { kind: FAILED, when: (e) => e.computable === false },
+  "remedy-accounting": { kind: FAILED, when: (e) => e.computable === false },
   // asked or run again, where no dispatch records it
   "connotation-reissue": REASK, "plan-qids-missing": REASK, "plan-qids-deferred-suspect": REASK,
   "screen-gate-violation": REASK, "stage-floor-duty-rerun": REASK, "lane-wedge-retry": RETRY,
   // code changed an answer it did not accept
   "band-truth-rebuilt": REPAIR, "client-condition-dropped": REPAIR, "common-law-downgrade-clamp": REPAIR,
+  "commonlaw-channels-unstated": REPAIR, "commonlaw-channels-unusable": REPAIR,
   "corrective-unnamed-removal-repaired": REPAIR, "coverage-floor-clamp": REPAIR, "jx-receipt-repaired": REPAIR,
   "knockout-next-step-removed": REPAIR, "recall-reconciliation-positions-rederived": REPAIR, "registry-auto-correct": REPAIR,
   "repair-attempted": REPAIR, "terminal-guard-clamp": REPAIR, "verdict-conditions-dropped": REPAIR,
@@ -104,45 +138,45 @@ export const NOT_COUNTED_EVENTS = {
   "what the run does whatever the first answer was: telemetry, receipts, derivations, plans and designed skips": [
     "answer-memory", "asks", "audit", "axes", "axis-from-plan", "band-borderline", "band-shape-derived", "basis-derivation",
     "blind-frame-skipped", "case-law-decision", "case-law-trigger", "channel-coverage", "closure-partition",
-    "common-law-candidates", "common-law-merged", "common-law-path", "common-law-supp-folded", "commonlaw-carry",
-    "commonlaw-channels-added", "commonlaw-reconciliation", "connotation-receipts", "correction-kinds",
+    "common-law-candidates", "common-law-merged", "common-law-path", "common-law-supp-folded", 
+    "commonlaw-channels-added", "connotation-receipts", 
     "corrective-worklist-source", "coverage-form-written", "coverage-judgment", "coverage-judgment-rows",
     "coverage-ledger-derived", "coverage-ledger-dropped", "coverage-ledger-rendered", "crowd-context", "crowd-context-skips",
-    "customer-late-bind", "customer-late-bind-ack", "declination-duty", "depth-ladder", "digest-batch-brief",
+    "customer-late-bind", "customer-late-bind-ack", "depth-ladder", "digest-batch-brief",
     "digest-coverage-form-brief", "digest-flush", "digest-queue-noop", "digest-queued", "digest-rulings-tail",
     "doctrine-write", "document-coverage-rendered", "document-growth-trip", "doubt-selection", "doubts", "draft-carry",
-    "economics", "engine-build", "engine-turn-probe", "envelope-closed", "envelope-decision", "envelope-decision-early",
-    "escalation-recheck", "escalation-skipped", "experiment", "experiment-refused", "floor-duty",
-    "form-neighbourhood-derived", "form-neighbourhood-skipped", "frame-diff", "frame-diff-skipped",
+    "economics", "engine-build", "envelope-closed", "envelope-decision", "envelope-decision-early",
+    "escalation-skipped", "experiment", "experiment-refused", 
+    "form-neighbourhood-derived", "frame-diff", 
     "frame-diff-source-directives-dropped", "frame-reopen-reconcile-not-needed", "frame-reopen-skipped", "frame-web-grid",
     "framework", "grid-ledger-saved", "grid-spec", "grid-split", "grid-split-skipped", "hit-list-minted",
     "house-element-ownership", "intake-artifacts", "intake-asks", "jurisdiction-scope", "jurisdiction-scope-register-deferred",
-    "jx-aim-consumed", "jx-candidate-fold", "jx-candidate-fold-skipped", "jx-nativeread", "jx-nativeread-skipped",
-    "jx-serp-grid", "jx-serp-grid-overflow", "jx-serp-grid-skipped", "jx-serp-grid-spec", "jx-slices-stated",
-    "knockout-owner-checks", "knockout-published", "knockout-receipts", "knockout-register-counts",
-    "knockout-register-records", "knockout-review", "knockout-sweep-skipped", "knockout-sweep-start", "level-scope-note",
+    "jx-aim-consumed", "jx-candidate-fold", "jx-nativeread", 
+    "jx-serp-grid", "jx-serp-grid-overflow", "jx-serp-grid-spec", "jx-slices-stated",
+    "knockout-published", "knockout-receipts", 
+    "knockout-register-records", "knockout-sweep-skipped", "knockout-sweep-start", "level-scope-note",
     "named-band-merged", "one-shot-stamp-settled", "order-probe", "output-snapshot", "owner-screen-derived",
-    "placement-borderline", "placement-carry", "placement-form-written", "plan-execution", "plan-execution-census",
+    "placement-borderline", "placement-form-written", "plan-execution", "plan-execution-census",
     "plan-execution-refresh", "plan-qids-deferred", "probe-over-cap-undispatched", "profile", "profile-exclusion-seed",
-    "profile-resolved", "profile-selection", "profile-store", "provider-usage", "publish-gates", "quote",
-    "reasoning-integrity", "recall-reconciliation", "record-artifacts", "record-carry", "register-digest-facts-written",
+    "profile-resolved", "profile-selection", "provider-usage", "publish-gates", "quote",
+    "record-artifacts", "register-digest-facts-written",
     "register-only", "register-plan", "register-plan-axis-deferred", "register-plan-deferred-coverage",
-    "register-plan-skipped", "register-plan-variant-dropped", "register-positions-derived", "register-presence",
-    "register-presence-skipped", "register-xcheck", "registry-record-closure", "remedy-accounting", "run-integrity",
+    "register-plan-variant-dropped", "register-positions-derived", "register-presence",
+    "register-presence-skipped", "register-xcheck", "run-integrity",
     "scope-facts", "scope-frontmatter", "scope-ledger-derived", "scope-ledger-skipped", "screen-gate-clean",
-    "screen-gate-postflush", "search-policy", "searched-jurisdictions", "senior-rights", "skills-store", "skip",
+    "search-policy", "searched-jurisdictions", "senior-rights", "skip",
     "stage-contract", "stage-limit-derived", "stage-stamps-reconciled", "start", "supplemental-fold", "token-rollup",
     "turnaround-reconciliation", "verdict", "verdict-conditions-recorded", "verdict-frontmatter",
     "whatif-settled-on-archive", "write-up-forms",
   ],
   "a note about the answer's content that changes nothing in the run; the quality read judges it": [
-    "ask-closure-mark-owed", "classifier-gap", "commonlaw-channels-unstated", "commonlaw-channels-unusable",
+    "ask-closure-mark-owed", "classifier-gap", 
     "connotation-addressed-not-discharged", "connotation-ruling-drift", "default-territory-unrecognized", "delivery-flags",
     "enforcer-signals", "findings-actions-legacy", "findings-schema-legacy", "floor-duty-undischarged",
     "frame-diff-undispatchable-disclosed", "frame-reopen-dom-unaccounted", "house-element-excluded",
     "house-element-not-applied", "owner-screen-absent", "profile-mismatch", "reasonless-exits", "screen-gate-parse-gap",
-    "screen-gate-unnamed-observed", "silently-lost-findings", "stated-divergence-findings", "stray-artifact",
-    "stray-matter", "synthesis-duty-undischarged", "unsettled-inputs", "verdict-blocking-delivered",
+    "screen-gate-unnamed-observed", "stated-divergence-findings", "stray-artifact",
+    "stray-matter", "synthesis-duty-undischarged", "verdict-blocking-delivered",
   ],
   "the twin of an incident counted under another record — its dispatch, its repair, its clamp or its failure": [
     "action-reemit", "ask-answer-reemit", "authority-write-denied", "connotation-remedy", "corrections-applied",
@@ -152,7 +186,7 @@ export const NOT_COUNTED_EVENTS = {
     "frame-reopen-reattempt", "grid-ledger-missing", "knockout-assess-invalidated", "lint-redo-skipped-structural",
     "meaning-gap-coverage", "park-resumed", "plan-qids-sticky-gap", "recall-reconciliation-unended",
     "recovery-classified", "record-discard", "screen-gate-unresolved", "skeptic-escalation", "stage-stale",
-    "stale-repair-entry", "taint-disclose", "verdict-2", "verdict-3",
+    "stale-repair-entry", "taint-disclose", "unsettled-inputs", "verdict-2", "verdict-3",
   ],
   "read from its own record: the stage records, the dispatch records and the tool-call log": [
     "attempt", "stage", "settled", "started",
@@ -208,13 +242,20 @@ export const OUTSIDE_THE_RUN = ["whatif-memo"];
 // dispatch of the same label: the event names it and the dispatch is not listed again.
 const NAMES_A_FRESH_DISPATCH = new Set(["lane-wedge-retry", "stage-floor-duty-rerun"]);
 
+// A native-language unit that did not run for a reason the design gives. Any other cause, a degraded or
+// deferred unit, a throw or a corrupt fixture among them, is a failure.
+const DESIGNED_JX_CAUSES = [/^CLEAROTRON_NATIVE_LANGUAGE_\w+ off$/, /^no frozen \S+ lane decision/, /^no SERP capability entry/,
+  /^already ran \(frozen\)$/, /^already folded \(frozen\)$/, /^no lanes in scope/, /^frozen decision has no lanes$/,
+  /^no in-scope classes/, /^no terms to dictate/];
+function isDesignedJxCause(cause) { return DESIGNED_JX_CAUSES.some((re) => re.test(String(cause ?? ""))); }
+
 const NOT_COUNTED = Symbol("not counted");
 const flat = (groups) => new Set(Object.values(groups).flat());
 const NOT_COUNTED_EVENT_NAMES = flat(NOT_COUNTED_EVENTS);
 const NOT_COUNTED_TRIGGER_NAMES = flat(NOT_COUNTED_TRIGGERS);
-const normal = (c) => (typeof c === "string" ? { kind: c } : c);
+const normal = (c) => (Array.isArray(c) ? c : [typeof c === "string" ? { kind: c } : c]);
 
-/** An event's class: {kind, when?}, NOT_COUNTED, or null when this reader has not classed it. */
+/** An event's class: [{kind, when?}, …], the first that holds applying; NOT_COUNTED; or null when this reader has not classed it. */
 export function classOfEvent(name) {
   const n = String(name ?? "");
   if (Object.hasOwn(COUNTED_EVENTS, n)) return normal(COUNTED_EVENTS[n]);
@@ -227,7 +268,7 @@ export function classOfTrigger(name) {
   if (Object.hasOwn(COUNTED_TRIGGERS, n)) return normal(COUNTED_TRIGGERS[n]);
   if (NOT_COUNTED_TRIGGER_NAMES.has(n)) return NOT_COUNTED;
   const family = TRIGGER_FAMILIES.find(([re]) => re.test(n));
-  return family ? { kind: family[1] } : null;
+  return family ? [{ kind: family[1] }] : null;
 }
 
 export { NOT_COUNTED };
@@ -290,17 +331,20 @@ export function firstTimeRows({ attempts = [], runLog = [], status = {}, markers
   const log = Array.isArray(runLog) ? runLog : [];
   const dispatches = new Map();   // stage → the reason of each dispatch, in order
   const named = new Map();        // stage → fresh re-dispatches an event already names
+  const failedSteps = [];         // dispatch records that failed: a code-side step's only record of it
   for (const e of log) {
     if (!e || typeof e !== "object") continue;
     if (e.event === "stage") {
       if (e.stage != null) dispatches.set(e.stage, [...(dispatches.get(e.stage) ?? []), e.trigger ?? "fresh"]);
+      if (e.ok === false && e.stage != null) failedSteps.push(e);
       continue;
     }
     const c = classOfEvent(e.event);
     if (c === null) { unclassed.add(`event "${e.event}"`); continue; }
-    if (c === NOT_COUNTED || (c.when && !c.when(e))) continue;
+    const holds = c === NOT_COUNTED ? null : c.find((s) => !s.when || s.when(e));
+    if (!holds) continue;
     if (NAMES_A_FRESH_DISPATCH.has(e.event) && e.stage != null) named.set(e.stage, (named.get(e.stage) ?? 0) + 1);
-    add(c.kind, e.stage ?? e.fromStage ?? null, e.attempt ?? null, causeOf(e));
+    add(holds.kind, e.stage ?? e.fromStage ?? null, e.attempt ?? null, causeOf(e));
   }
   // Each dispatch past a stage's first, by its reason. A stage with no engine row is a code-side step,
   // and counts neither way.
@@ -311,11 +355,14 @@ export function firstTimeRows({ attempts = [], runLog = [], status = {}, markers
       if (t === "fresh") { fresh++; continue; }
       const c = classOfTrigger(t);
       if (c === null) { unclassed.add(`dispatch reason "${t}"`); continue; }
-      if (c !== NOT_COUNTED && engineOf.has(stage)) add(c.kind, stage, null, `dispatched again: ${t}`);
+      if (c !== NOT_COUNTED && engineOf.has(stage)) add(c[0].kind, stage, null, `dispatched again: ${t}`);
     }
     const again = Math.max(0, fresh - 1) - (named.get(stage) ?? 0);
     if (engineOf.has(stage)) for (let i = 0; i < again; i++) add("second cycle", stage, 1, "dispatched fresh again: a recovery or resume re-ran the stage");
   }
+  // A step with no engine row failed: its dispatch record is the only one. An engine stage's failed
+  // attempts are on its own record above.
+  for (const e of failedSteps) if (!engineOf.has(e.stage) && !OUTSIDE_THE_RUN.includes(e.stage)) add(FAILED, e.stage, null, `a code-side step failed: ${e.fail ?? "no cause recorded"}`);
   // A cycle no dispatch accounts for. The first needs none: a stage cancelled mid-turn never wrote its
   // dispatch record.
   for (const [stage, cs] of cycles) {
