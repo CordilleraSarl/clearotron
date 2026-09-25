@@ -1305,6 +1305,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-store-lost-at-publish-is-in-the-audit-workbook.test.mjs": {
+          "tests": 3,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "a-store-refusal-reaches-the-person-who-can-fix-it.test.mjs": {
           "tests": 5,
           "asserts": 21,
@@ -5754,6 +5760,12 @@
         "the-package-ships-only-the-demo-customers.test.mjs": {
           "tests": 2,
           "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-parts-read-at-publish-are-named-and-closed.test.mjs": {
+          "tests": 9,
+          "asserts": 36,
           "skips": 0,
           "todos": 0
         },

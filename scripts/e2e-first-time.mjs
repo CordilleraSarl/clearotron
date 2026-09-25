@@ -91,6 +91,8 @@ export const COUNTED_EVENTS = {
   "degraded-parts": { kind: FAILED, when: (e) => (Array.isArray(e.parts) ? e.parts : [])
     .some((p) => p?.part === "court-decisions" && /is (absent|empty)$/.test(String(p?.cause ?? ""))) },
   "degraded-parts-failed": FAILED,
+  // A store publishing found unreadable, or one delivery read and a republish found missing: its only record.
+  "degraded-parts-at-publish": FAILED,
   // A workbook that failed to build is recorded only here.
   "publish-gates": { kind: FAILED, when: (e) => e.auditWorkbook === "failed" },
   // the plain-English pass rewrote the rater's text, or failed and shipped it unrewritten
