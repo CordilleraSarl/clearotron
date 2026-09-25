@@ -2877,6 +2877,12 @@
           "skips": 0,
           "todos": 0
         },
+        "every-knockout-mark-asks-how-its-name-is-already-in-use.test.mjs": {
+          "tests": 5,
+          "asserts": 43,
+          "skips": 0,
+          "todos": 0
+        },
         "every-lane-declares-its-transport-position.test.mjs": {
           "tests": 7,
           "asserts": 12,
@@ -3317,7 +3323,7 @@
         },
         "knockout-seats-do-not-describe-the-register-lane.test.mjs": {
           "tests": 6,
-          "asserts": 13,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
@@ -4655,7 +4661,7 @@
         },
         "runner.knockout-e2e.test.mjs": {
           "tests": 3,
-          "asserts": 118,
+          "asserts": 121,
           "skips": 0,
           "todos": 0
         },

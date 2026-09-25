@@ -19,7 +19,7 @@
 // writes about scope — so a prompt that says the first thing must say the second.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { knockoutPrompt, KO_STAGES } from "../stages-knockout.mjs";
+import { knockoutPrompt, knockoutInUseAsPrompt, KO_STAGES } from "../stages-knockout.mjs";
 import { RETIRED_POLICIES } from "../search-policy.mjs";   // — the retired rungs, derived not recited
 
 /** Says something about the seat not searching registers. */
@@ -42,6 +42,9 @@ function seatPrompts() {
   const out = {};
   out["knockout-sweep"] = knockoutPrompt(
     { name: "HESPRA", classes: [9, 41] }, { productContext: "games" }, { jurisdictions: ["CH"] });
+  // the sweep's second question, whose answer lands in the same research file as the first's
+  out["knockout-sweep:in-use-as"] = knockoutInUseAsPrompt(
+    { name: "HESPRA", classes: [9, 41] }, { productContext: "games", inUseAs: "a character or a place in a game" }, { jurisdictions: ["CH"] });
   // The four K members the seats read. Paths are strings because the builders join them.
   const K = {
     runDir: "/tmp/ko-run", plan: "/tmp/ko-run/plan.json",
@@ -69,6 +72,7 @@ test("the seat fixture builds real prompts — an empty set would pass every arm
   assert.ok(names.length >= 2, `only built ${names.length} seat prompt(s): ${names.join(", ")}. The `
     + "arms below assert over what this builds, so a fixture that stopped building is a silent pass.");
   assert.ok(names.includes("knockout-sweep"), "the sweep seat — the one #1511 is about — is not in the set");
+  assert.ok(names.includes("knockout-sweep:in-use-as"), "the sweep's second question is not in the set");
   for (const [name, text] of Object.entries(seats)) {
     assert.ok(!(text instanceof Error), `${name} could not be built by this fixture — ${text?.message}. `
       + "Its prompt is therefore unchecked by every arm below, which is the shape of gap #1511 is about.");

@@ -438,7 +438,7 @@ const STAGE_OUTPUTS = {
 
 const STAGE_NOTES = {
   "knockout-frame": "Reads the order and writes the plan: which names, which classes, at what depth.",
-  "knockout-sweep": "One research call per mark against the marketplace/common-law provider; the payloads land in research/.",
+  "knockout-sweep": "Two research calls per mark against the marketplace/common-law provider: the broad question, and the kinds of use the frame named for the client's field; the payloads land in research/.",
   "knockout-register": "Fetches and counts register filings for the searched names. Absent on a run with no register component.",
   "knockout-assess": "Rates each mark from its own payload and the fetched filings, and writes knockout-findings.json.",
 };

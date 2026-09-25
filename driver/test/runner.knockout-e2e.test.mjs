@@ -34,6 +34,9 @@ mkdirSync(FIXTURES, { recursive: true });
 // SUNDAY ROAST CLUB has NO fixture file → the sweep degrades that mark (null-results doctrine).
 writeFileSync(join(FIXTURES, "ironwhisk.md"), "Research: an active seller at https://www.amazon.com/ironwhisk-store sells mixers. No famous marks.\n");
 writeFileSync(join(FIXTURES, "cluvendra.md"), "No major common law blockers identified for CLUVENDRA.\n");
+// the second question's answers, one file per mark and question (`<mark>.in-use-as.md`)
+writeFileSync(join(FIXTURES, "ironwhisk.in-use-as.md"), "IRONWHISK is the name of a blacksmith character in a cooking game: https://example.test/wiki/ironwhisk\n");
+writeFileSync(join(FIXTURES, "cluvendra.in-use-as.md"), "No use of CLUVENDRA as a product line, a character or a place identified\n");
 // canned REGISTER COUNTS (the $0 Depth 2): IRONWHISK is a busy name, CLUVENDRA is empty, and
 // CLUVENDRA's breadth figure is deliberately absent — a count that could not be taken must render as
 // "not available" everywhere, never as a 0.
@@ -156,13 +159,20 @@ test("a 3-mark knockout batch runs end to end: receipts, degrade, publish stamps
   const fw = JSON.parse(readFileSync(driverDir(rd, "framework.json"), "utf8"));
   assert.equal(fw.framework_key, "house-triage", "unconfigured customers get the triage ladder, not the clearance house default");
 
-  // sweep receipts: one row per mark; the fixture-less mark is degraded, batch still delivered
+  // sweep receipts: the broad question for every mark, and the second question for every mark whose
+  // broad one answered; the fixture-less mark is degraded, and asks nothing more; the batch still delivers
   const receipts = readFileSync(driverDir(rd, "knockout-sweep.jsonl"), "utf8").split("\n").filter(Boolean).map(JSON.parse);
-  assert.equal(receipts.length, 3, "every research call is receipted");
+  assert.equal(receipts.length, 5, "every research call is receipted");
+  assert.equal(receipts.filter((r) => !r.question).length, 3, "one broad question per mark");
+  assert.deepEqual(receipts.filter((r) => r.question === "in-use-as").map((r) => [r.mark, r.ok]).sort(),
+    [["CLUVENDRA", true], ["IRONWHISK", true]], "the second question, only where the first answered");
   const degraded = receipts.filter((r) => !r.ok);
   assert.equal(degraded.length, 1);
   assert.equal(degraded[0].mark, "SUNDAY ROAST CLUB");
   assert.ok(existsSync(join(rd, "research", "ironwhisk.md")), "payloads held in the run dir");
+  const payload = readFileSync(join(rd, "research", "ironwhisk.md"), "utf8");
+  assert.ok(payload.includes("amazon.com/ironwhisk-store") && payload.includes("example.test/wiki/ironwhisk"),
+    "both answers are in the mark's one research file");
 
   // merged findings: one row per planned mark; the degraded row carries the doctrine note
   const findings = JSON.parse(readFileSync(join(rd, "knockout-findings.json"), "utf8"));
