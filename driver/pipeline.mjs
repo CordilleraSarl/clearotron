@@ -89,7 +89,7 @@ import { NATIVE_LANGUAGE_REMEDY } from "./products.mjs";
 import { resolveTerritories, defaultTerritoryState } from "./effective-scope.mjs";   // the ONE territory ladder (the geography stamp included) + the stored-defaults reading
 import { acquireSlot, releaseSlot } from "./slot-lock.mjs";
 import { mintSupplementalEntries, withRejected } from "./engine/mcp/supplemental.mjs";
-import { runLog, note, fileMeta, outputMeta, stageLog } from "./log.mjs"; import { plainDirective, deferralCoverageRow } from "./deferral-row.mjs"; import { degradedParts, writeDegradedParts } from "./degraded-parts.mjs"; import { armProduced, readArmSurfaces, producedNothingLine } from "./experiment-honesty.mjs"; import { correctiveReadiness, correctiveRefusalLine, correctivePassState } from "./corrective-arm.mjs";
+import { runLog, note, fileMeta, outputMeta, stageLog } from "./log.mjs"; import { plainDirective, deferralCoverageRow } from "./deferral-row.mjs"; import { degradedParts, writeDegradedParts, PART_NAMES, NOT_COMPLETED } from "./degraded-parts.mjs"; import { armProduced, readArmSurfaces, producedNothingLine } from "./experiment-honesty.mjs"; import { correctiveReadiness, correctiveRefusalLine, correctivePassState } from "./corrective-arm.mjs";
 import { deriveScopeFacts } from "./scope-facts.mjs";
 import { documentGrowth } from "./gate-metrics.mjs";
 import { editRepairTail, abbrev } from "./repair-contract.mjs";
@@ -7219,12 +7219,21 @@ export function zhLaneRanOnRun(runDir, opts = {}) {   // @internal
  *  discipline, same "the reader always gets the row" purpose. Idempotent on resume: the row is keyed
  *  by its area, and a coverage row that already discloses the Stage-1.5 recommendation (a synthesis
  *  that weighed it in on a re-run) suppresses the injection rather than duplicating it. */
-export function injectScriptScopeCoverage(P, runDir, note, { searchPolicy = null, job = null, profile = null, env = process.env, lanes = Object.keys(LANGUAGE_LANES) } = {}) {   // @internal
+export function injectScriptScopeCoverage(P, runDir, note, { searchPolicy = null, job = null, profile = null, env = process.env, lanes = Object.keys(LANGUAGE_LANES), localLanguage = null } = {}) {   // @internal
   try {
     if (!existsSync(P.findings)) return;
     const scope = jxScopeJurisdictions(job ?? {}, profile ?? {});
     const pending = [];
-    for (const lane of lanes) {
+    // AN INVESTIGATION THE CLIENT ORDERED IS NEVER OFFERED BACK TO THEM (ruled 2026-09-25). The row below
+    // says where the native-language investigation can be bought, which is true of a search that did not
+    // include it and false of one that did: there, a lane that did not run is a part of the order that
+    // failed. So on an ordered investigation no offer is made, and one that ran no lane at all carries the
+    // audit's own row for that part, word for word, so the page and the workbook say the same thing.
+    const ordered = Boolean(searchPolicy?.components?.jxLanes);
+    if (ordered && localLanguage === "not-run") {
+      pending.push({ lane: "native-language", row: deferralCoverageRow(PART_NAMES.localLanguage, NOT_COMPLETED), marker: null });
+    }
+    for (const lane of ordered ? [] : lanes) {
       const d = scriptScopeDisclosure(lane);
       const row = d && decideScriptScopeHonesty({
         lane, scope,
@@ -7252,7 +7261,7 @@ export function injectScriptScopeCoverage(P, runDir, note, { searchPolicy = null
       const already = doc.coverage.some((c) => {
         const t = rowText(c);
         return t.includes(p.row.area.toLowerCase())
-          || (t.includes(p.marker) && SCRIPT_SCOPE_RECOMMENDATION_TOKENS.some((tok) => t.includes(tok)));
+          || (p.marker != null && t.includes(p.marker) && SCRIPT_SCOPE_RECOMMENDATION_TOKENS.some((tok) => t.includes(tok)));
       });
       if (already) continue;
       doc.coverage.push(p.row);
@@ -7265,6 +7274,20 @@ export function injectScriptScopeCoverage(P, runDir, note, { searchPolicy = null
   } catch (e) {
     note(`[script-scope] coverage injection skipped: ${String(e?.message || e).replace(/\s+/g, " ").slice(0, 100)}`);
   }
+}
+
+/**
+ * The native-language state, read the way publishing reads it: `not-run`, `ran-shallow`, `ran` or
+ * `not-in-scope`, or null for a run with no lane record. One reader for the page's row and the audit's
+ * part, so the two cannot disagree about whether the investigation ran. The lanes' record needs jx.mjs,
+ * which a plain clearance never imports.
+ */
+export async function localLanguageStateOf(runDir) {   // @internal
+  if (!existsSync(driverDir(runDir, "jx-lanes.json"))) return null;
+  const { laneDepthOfRun } = await import("./jx.mjs");
+  const { localLanguageDepth } = await import("./publish/search-depth.mjs");
+  const read = (f) => { try { return JSON.parse(readFileSync(driverDir(runDir, f), "utf8")); } catch { return null; } };
+  return localLanguageDepth(laneDepthOfRun({ sidecar: read("jx-lanes.json"), units: read("jx/units.json") })).state;
 }
 
 /** The zh-only form, kept because it is the name the existing tests use. One writer, one lane. */
@@ -13354,13 +13377,15 @@ async function pipelineInner(job, opts = {}) {
     // print "NOT writing one", which reads as a withheld action on a run where absence is simply normal.
     // That is the absent-vs-failed conflation this tranche exists to remove; a lazy import also keeps a
     // plain clearotron byte-identical, which is why the sibling sites are shaped this way.
+    let localLanguage = null;
     if (ctx.searchPolicy?.components?.jxLanes) {
       try {
         const { stateJxSlices } = await import("./jx.mjs");
         stateJxSlices(run.runDir, { note, runLog });
       } catch (e) { note(`jx slice statement skipped (${String(e?.message ?? e).slice(0, 100)}) — never-kill`); }
+      try { localLanguage = await localLanguageStateOf(run.runDir); } catch { localLanguage = null; }
     }
-    injectScriptScopeCoverage(P, run.runDir, note, { searchPolicy: ctx.searchPolicy, job, profile: ctx.profile });
+    injectScriptScopeCoverage(P, run.runDir, note, { searchPolicy: ctx.searchPolicy, job, profile: ctx.profile, localLanguage });
     // — AFTER stateJxSlices, and the order is load-bearing: this reads `fold.depth`, which the call
     // above mints. Before it, every run would look like one that never stated a verdict. Its sibling one
     // line up covers the lane that did not run; this covers the lane that ran short of what was bought.
@@ -14982,14 +15007,7 @@ async function pipelineInner(job, opts = {}) {
       // retry or a resume recovered writes nothing, and written for the audit workbook in the shipped
       // deferral row's words. The run's record keeps each raw cause; the reader's cell never carries one.
       try {
-        // The native-language state, read the way publishing reads it, since the lanes' record needs jx.mjs.
-        let localLanguage = null;
-        if (existsSync(driverDir(run.runDir, "jx-lanes.json"))) {
-          const { laneDepthOfRun } = await import("./jx.mjs");
-          const { localLanguageDepth } = await import("./publish/search-depth.mjs");
-          const read = (f) => { try { return JSON.parse(readFileSync(driverDir(run.runDir, f), "utf8")); } catch { return null; } };
-          localLanguage = localLanguageDepth(laneDepthOfRun({ sidecar: read("jx-lanes.json"), units: read("jx/units.json") })).state;
-        }
+        const localLanguage = await localLanguageStateOf(run.runDir);
         const degraded = writeDegradedParts(run.runDir, degradedParts(run.runDir, { localLanguage }));
         runLog(run.runDir, { event: "degraded-parts", parts: degraded.parts.map((d) => ({ part: d.part, cause: d.cause })) });
       } catch (e) { runLog(run.runDir, { event: "degraded-parts-failed", cause: String(e?.message ?? e).slice(0, 200) }); }

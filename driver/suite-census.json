@@ -1683,6 +1683,12 @@
           "skips": 0,
           "todos": 0
         },
+        "an-ordered-native-language-investigation-that-failed-is-not-offered-back.test.mjs": {
+          "tests": 6,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
         "an-ordinary-word-that-sounds-different-is-not-searched.test.mjs": {
           "tests": 9,
           "asserts": 26,
@@ -4727,7 +4733,7 @@
         },
         "runner.jx-jako-e2e.test.mjs": {
           "tests": 2,
-          "asserts": 30,
+          "asserts": 31,
           "skips": 0,
           "todos": 0
         },
