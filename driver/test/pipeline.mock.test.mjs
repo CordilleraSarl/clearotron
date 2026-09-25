@@ -281,11 +281,11 @@ test("B5: the canonical grid-spec.json lands complete (atomic temp+rename) with 
   assert.deepEqual(debris, [], "the sibling tmp was renamed away, not left behind");
 });
 
-// P2-C (Round-2 §8b): the frame's authored per-matter meaning angles append VERBATIM to the dictated
-// connotation sweep BESIDE the fixed shape floor — floor-equal citizens end-to-end: dictated in the spec,
-// executed and receipted into extras.pr_risk (the identity gate's join surface), and count-ASSERTED in the
-// grid-spec event (a 0 is a recorded zero, never an absence).
-test("P2-C: derived meaning angles ride the dictated sweep beside the floor — spec, receipts, asserted count", async () => {
+// THE FRAME'S MEANING QUESTIONS ARE THE WHOLE MEANING SWEEP (ruled 2026-09-25): dictated VERBATIM in the
+// spec with no fixed shape beside them, executed and receipted into extras.pr_risk (the identity gate's join
+// surface), and count-ASSERTED in the grid-spec event. A frame that asserts none gets no meaning search, and
+// the run still delivers.
+test("the frame's meaning questions are the whole dictated sweep — spec, receipts, asserted count; none still delivers", async () => {
   const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
     MOCK_MEANING_ANGLES: "novapulse gaming backlash; novapulse political meaning" });
   assert.equal(res.ok, true, JSON.stringify(res));
@@ -293,10 +293,8 @@ test("P2-C: derived meaning angles ride the dictated sweep beside the floor — 
   const q = spec.connotation.queries;
   assert.equal(spec.connotation.disposition_required, true,
     "every fresh spec carries the receipts-disposition stamp (leg 2's receipt-presence key — archived specs lack it)");
-  assert.ok(q.some((x) => new RegExp(`\\s(${["meaning slang", "gang", "offensive", "urban dictionary", "wikipedia"].join("|")})$`).test(x)),
-    "the fixed shape floor still rides (derivation adds, never replaces)");
-  assert.deepEqual(q.slice(-2), ["novapulse gaming backlash", "novapulse political meaning"],
-    "the frame's angles append verbatim after the floor buckets");
+  assert.deepEqual(q, ["novapulse gaming backlash", "novapulse political meaning"],
+    "the dictated sweep is exactly the frame's questions, with no fixed shape beside them");
   // the plugin's ledger records each dictated query — derived ones included (the per-query identity join surface)
   const grid = JSON.parse(readFileSync(join(res.runDir, "common-law-grid.json"), "utf8"));
   const recorded = new Set((grid.extras?.pr_risk ?? []).map((e) => e.query));
@@ -310,9 +308,14 @@ test("P2-C: derived meaning angles ride the dictated sweep beside the floor — 
   // assert the dispatch actually wrote it, so the validator's arm and the pipeline can't drift apart.
   const contracts = JSON.parse(readFileSync(driverDir(res.runDir, "stage-contracts.json"), "utf8"));
   assert.equal(contracts["matter-frame"]?.meaningAngles, 1, "the matter-frame contract marker is recorded at dispatch");
-  // and the default harness path asserts its ZERO: the mock frame's "Meaning angles: none" run records 0
-  const { events: noneEvents } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced" });
-  assert.equal(noneEvents.find((e) => e.event === "grid-spec").connotation_derived, 0,
+  // …and the asserted zero: a frame that names no meaning question gets no meaning search, the driver stamps
+  // the empty list as the frame's decision and writes the meaning seat's empty ledger, and the run DELIVERS.
+  const { res: noneRes, events: noneEvents } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_MEANING_ANGLES: "none" });
+  assert.equal(noneRes.ok, true, `a frame that named no meaning question failed the run: ${JSON.stringify(noneRes)}`);
+  const noneSpec = JSON.parse(readFileSync(driverDir(noneRes.runDir, "grid-spec.json"), "utf8"));
+  assert.deepEqual(noneSpec.connotation.queries, []);
+  assert.equal(noneSpec.connotation.none_named, true, "the empty list is not stamped as the frame's decision");
+  assert.equal(noneEvents.find((e) => e.event === "grid-spec").connotation, 0,
     "'Meaning angles: none' is an asserted zero, never an absence");
 });
 
@@ -2561,7 +2564,7 @@ test("P2-C split armed: with-results receipts flow the disposition contract end 
 });
 
 test("P2-C split: an undisposed receipt fails AT THE OWNING HALF SEAT and the corrective retry heals it — the connotation hint reaches the authoring session", async () => {
-  // needle = the FULL first dictated query ("<first grid term> meaning slang", connotation index 0).
+  // needle = the FULL first dictated query (the frame's first meaning question, connotation index 0).
   //
   // THIS SEAT MOVED, and that is what this test now pins. Index 0 used to land on half a under the
   // parity partition, which was also the half writing the clean bottom line. The meaning sweep is now
@@ -2571,7 +2574,7 @@ test("P2-C split: an undisposed receipt fails AT THE OWNING HALF SEAT and the co
   // the owning half is policed on what its ledger records, whatever its own document claims.
   // MOCK_CL_UNDISPOSED withholds the rows until a turn carrying the connotation correction dictate.
   const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
-    MOCK_PR_RESULTS: "novapulse meaning slang", MOCK_CL_UNDISPOSED: "1", CLEAROTRON_MAX_RETRIES: "1" });
+    MOCK_PR_RESULTS: "novapulse gaming backlash", MOCK_CL_UNDISPOSED: "1", CLEAROTRON_MAX_RETRIES: "1" });
   assert.equal(res.ok, true, JSON.stringify(res));
   const owner = events.find((e) => e.event === "stage" && e.stage === `common-law-half:${MEANING_SEAT}` && e.trigger === "fresh");
   assert.equal(owner.ok, true);
@@ -2602,12 +2605,12 @@ test("P2-C split: an undisposed receipt fails AT THE OWNING HALF SEAT and the co
   // the row is DRIVER-RENDERED from the form now, so the receipt's URL comes from the tool-written
   // ledger rather than from anything the seat typed.
   assert.match(md, /meaning-sweep dispositions \(driver-rendered\)/, "the driver rendered the table, not the seat");
-  assert.match(md, /\| novapulse meaning slang \|[^|]*\|[^|]*news\.example\/mock-meaning-receipt/,
+  assert.match(md, /\| novapulse gaming backlash \|[^|]*\|[^|]*news\.example\/mock-meaning-receipt/,
     "the healed half's ruled row reached the merged findings");
 });
 
 test("P2-C split cross-half: the half that OWNS the receipt now catches it at ITS OWN seat — the merged doc never has to (#350)", async () => {
-  // needle = "<first grid term> gang" (connotation index 1 → half b): the with-results receipt lives in
+  // needle = the frame's second meaning question (connotation index 1; it used to route to half b): the with-results receipt lives in
   // half b's ledger, which writes NO bottom line of its own, while half a writes the clean claim over zero
   // with-results receipts of its own.
   //
@@ -2630,7 +2633,7 @@ test("P2-C split cross-half: the half that OWNS the receipt now catches it at IT
   // merged violations are a subset of that half's by construction. common-law-receipts.test.mjs proves
   // the containment at unit level, and reproduces the old split shape to show what it cost.
   const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
-    MOCK_PR_RESULTS: "novapulse gang", MOCK_CL_UNDISPOSED: "1", CLEAROTRON_MAX_RETRIES: "1" });
+    MOCK_PR_RESULTS: "novapulse political meaning", MOCK_CL_UNDISPOSED: "1", CLEAROTRON_MAX_RETRIES: "1" });
   assert.equal(res.ok, true, JSON.stringify(res));
   // THIS IS THE ACCEPTANCE CRITERION, AS A TEST. The receipt is still caught at the seat that
   // holds it and still healed by that seat's own corrective ladder; what changed is WHICH seat that is.
@@ -2652,7 +2655,7 @@ test("P2-C split cross-half: the half that OWNS the receipt now catches it at IT
     "the merge gate never had to route a remedy — the owning seat caught its own receipt");
   const md = readFileSync(join(res.runDir, "common-law-findings.md"), "utf8");
   assert.match(md, /None identified — affirmative sweep/, "half a's bottom line stands");
-  assert.match(md, /\| novapulse gang \|[^|]*\|[^|]*news\.example\/mock-meaning-receipt/,
+  assert.match(md, /\| novapulse political meaning \|[^|]*\|[^|]*news\.example\/mock-meaning-receipt/,
     "the meaning seat's healed ruled row reached the merged findings, rendered by the driver from the form");
   // the merged canonical pair passes the same gate a single-member run faces
   assert.ok(events.filter((e) => e.event === "common-law-merged").length >= 1, "the canonical pair was derived and passed the merge gate");

@@ -61,7 +61,7 @@ import { compileRegisterPlan, parseRegisterPlan, resolvePlanAgainstStore, joinPl
 // — ONE binding of the office split to this box's env, shared with Depth 2's two lanes.
 import { registerCapabilities, registerUnavailableOffices } from "./register-unreachable.mjs";
 import { parseVariantManifestModel } from "./variant-manifest-model.mjs";
-import { buildConnotationQueries, buildTranslitConnotationQueries, pickConnotationTerms, meaningAnglesFromMatterContext, findConnotationViolations, parsePrRiskResults, connotationReasonKey, parseDispositionForm, renderDispositionTable, connotationObligations, CONNOTATION_FORM_TOKEN_SRC, CONNOTATION_UNRULED_REASONS, connotationAuditCounts, DECLINED_RULING } from "./connotation-search.mjs";
+import { meaningAnglesFromMatterContext, meaningAnglesAssertedNone, findConnotationViolations, parsePrRiskResults, connotationReasonKey, parseDispositionForm, renderDispositionTable, connotationObligations, CONNOTATION_FORM_TOKEN_SRC, CONNOTATION_UNRULED_REASONS, connotationAuditCounts, DECLINED_RULING } from "./connotation-search.mjs";
 // — the merge unions the halves' forms into the canonical one, with the same code the gateway unions
 // an attempt with. PURE and acyclic.
 import { unionDispositionForm, outstandingRows, formSidecarPath } from "./disposition-union.mjs";
@@ -74,9 +74,10 @@ import { documentCoverage, renderDocumentCoverageSection, spliceDocumentCoverage
 import { buildCoverageAbsenceForm, coverageAbsenceGaps, coverageFormAbsence, coverageFormBrief, renderCoverageAbsenceSection, renderCoverageLedgerSection, spliceCoverageLedger, renderCoverageLedgerJsonFromForm } from "./coverage-form.mjs";
 import { unionCoverageForm } from "./coverage-union.mjs";
 import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStamp, readCoverageForm, readCoverageFormInput, waitingFamilyStates, writeCoverageForm } from "./coverage-form-io.mjs";
-import { releasedFamilyQids } from "./withheld-families.mjs";   // the waiting families the reading turn released join as dictated entries
+import { releasedFamilyQids, readWithheldFamilies } from "./withheld-families.mjs";   // the waiting families the reading turn released join as dictated entries
 import { unionPlacementForm } from "./placement-union.mjs";
 import { readPlacementForm, readPlacementFormInput, writePlacementForm } from "./placement-form-io.mjs";
+import { buildSelectionIndex, setAsideGrounds } from "./placement-form.mjs";
 import { dictatedPaths, findStrayArtifacts, treeSnapshot, findStrayInTree, matterSiblings, findStrayMatterSiblings } from "./stray-artifacts.mjs";   // — a run dir holds no document no stage dictated; — nor does the doctrine tree
 import { resolveProfile, resolveEffectiveProfile, derivedFloor, derivedBatchSize, gridBatchFor, applicantMatchesProfile, NEUTRAL_DELIVERY, deliveryForRun, recipeProseGuard, withRunPlatforms, profileStoreResolution } from "./profiles.mjs";   // adds profileStoreResolution — the CONFIG store's identity, beside the doctrine tree's
 import { resolveSearchPolicy, gateResolvedPolicy, loadRecipes, policyFor, isRegisterOnly, reportIdentityFor, depthFor } from "./search-policy.mjs";
@@ -1022,31 +1023,23 @@ function deriveGridSpec(ctx) {
       note(`common-law channels: ${diag.state === "no-document" ? "no matter-context file to read" : "the matter frame carries no \"Search channels:\" line"}, so the profile's ${channels.length} platform(s) stand.`);
       runLog(P.runDir, { event: "commonlaw-channels-unstated", state: diag.state });
     }
-    // CONNOTATION / MEANING sweep (the gang-slang near-miss fix — live incident: a benign-reading name one
-    // letter off a major street-gang label, meaning sweep skipped, clean PR claimed): the driver DICTATES the meaning queries (mark +
-    // near-forms × shapes) verbatim, exactly like the term×platform cells — the plugin runs them on the
-    // general web and records each into the ledger's extras.pr_risk[]. This gives a tool-written receipt the
-    // model cannot fabricate; verify.mjs rejects a clean PR claim with no recorded queries.
-    const connotationQueries = buildConnotationQueries(ctx.gridVariants);
-    // WP-56 B1 — the non-English half: the manifest's translated/transliterated forms (structured model,
-    // category "transliteration" + any non-Latin-script value) get their own capped bucket — the core
-    // cap kept them out entirely, so a mark could ship with no meaning read in the scripts the manifest
-    // committed to search. Model absent/unparseable ⇒ skip the bucket (legacy runs unchanged).
-    let translitQueries = [];
-    try {
-      if (existsSync(P.variantManifestModel)) {
-        translitQueries = buildTranslitConnotationQueries(
-          parseVariantManifestModel(readFileSync(P.variantManifestModel, "utf8")).variants,
-          { coreTerms: pickConnotationTerms(ctx.gridVariants) });
-      }
-    } catch (e) { note(`translit connotation bucket skipped: ${String(e?.message || e).slice(0, 80)}`); }
-    // P2-C (Round-2 §8b) — the DERIVED half of the sweep's scope: the matter frame's authored per-matter
-    // meaning angles (its dictated "Meaning angles:" line — semantic field × market/industry; required on
-    // fresh runs by the matterContext validator) append VERBATIM beside the fixed floor. Once in the spec
-    // they are floor-equal citizens: the split partitions them, the plugin records each into
-    // extras.pr_risk[], and the per-query identity join fails the merge if one vanishes. The count is
-    // ASSERTED in the grid-spec event either way — a 0 is a recorded zero, never an absence.
-    const angleQueries = meaningAnglesFromMatterContext(matterMd, { alreadyQueried: [...connotationQueries, ...translitQueries] });
+    // THE MEANING SWEEP IS THE MATTER FRAME'S LIST (ruled 2026-09-25). A meaning search runs at all because
+    // of a live near-miss: a benign-reading name one letter off a major street-gang label, meaning sweep
+    // skipped, clean PR claimed. The frame names the meanings and the languages that matter for this matter
+    // (its "Meaning angles:" line, required on fresh runs by the matterContext validator); the driver
+    // DICTATES them verbatim, exactly like the term×platform cells, and the plugin runs them on the general
+    // web and records each into the ledger's extras.pr_risk[] — a tool-written receipt the model cannot
+    // fabricate, and verify.mjs rejects a clean PR claim with no recorded queries. Two fixed shapes rode
+    // beside the list, about 54 questions whatever the matter; they are gone. The count is ASSERTED in the
+    // grid-spec event either way — a 0 is the frame's recorded `none`, never an absence.
+    const angleQueries = meaningAnglesFromMatterContext(matterMd);
+    // Only the frame's `none` is a decision. A missing line, or one naming nothing usable, would read to
+    // the web step as that decision and skip the meaning search on a frame that never made it.
+    const anglesAssertedNone = meaningAnglesAssertedNone(matterMd);
+    if (!angleQueries.length && !anglesAssertedNone)
+      throw new StageFailure("grid-spec",
+        "the matter frame's \"Meaning angles:\" line is missing or names no usable question, and the frame did not assert none — so there is no meaning search to dictate, and an empty one would read as the frame's decision",
+        undefined, { failClass: "deterministic" });
     // THE WEB GRID THE MATTER FRAME DECIDED (web-grid.mjs): the stores it did not set aside, for the mark
     // itself and the forms a buyer could confuse, and every spelling on the general web. A frame that was
     // never asked for those fields (a resumed older run) keeps every spelling on every channel.
@@ -1083,7 +1076,9 @@ function deriveGridSpec(ctx) {
       // meaning sweep fell back to a prose regime that no longer exists. The path is dictated HERE and in
       // splitGridSpec, from the same P.* factory, and derived nowhere: the grid tool writes the form, the
       // gateway unions it and the validator reads it, all from this one string.
-      connotation: { queries: [...connotationQueries, ...translitQueries, ...angleQueries], disposition_required: true,
+      // `none_named` is the frame's asserted zero carried to the seat that owns the sweep, so an empty list
+      // reads as the frame's decision and never as a spec the driver failed to write.
+      connotation: { queries: angleQueries, ...(anglesAssertedNone ? { none_named: true } : {}), disposition_required: true,
         dispositions_path: P.commonLawDispositions },
       // D1 fail-closed stamp: the commonLaw validator refuses a missing plugin ledger ONLY for specs
       // carrying this field (receipt presence, never absence) — pre-D1 archived specs lack it, so
@@ -1092,7 +1087,7 @@ function deriveGridSpec(ctx) {
     };
     atomicWrite(gridSpecPath, JSON.stringify(gridSpec, null, 2) + "\n");   // B5 — the canonical grid-spec is never seen torn (the fail-closed join rejects a truncated read)
     ctx.gridSpecPath = gridSpecPath;
-    runLog(P.runDir, { event: "grid-spec", terms: gridSpec.terms.length, platforms: gridSpec.platforms.length, connotation: connotationQueries.length + translitQueries.length + angleQueries.length, connotation_translit: translitQueries.length, connotation_derived: angleQueries.length });
+    runLog(P.runDir, { event: "grid-spec", terms: gridSpec.terms.length, platforms: gridSpec.platforms.length, connotation: angleQueries.length, connotation_derived: angleQueries.length });
 
     // ── A1 SPLIT (perf): the per-half spec sidecars for the two concurrent common-law members ────────
     // The canonical _driver/grid-spec.json above stays the FULL spec — the validator/receipts join, the
@@ -1131,6 +1126,11 @@ function deriveGridSpec(ctx) {
           dispositionsPaths: Object.fromEntries(GRID_SEATS.map((h) => [h, P.commonLawDispositionsHalf(h)])),
         });
         for (const h of GRID_SEATS) atomicWrite(P.gridSpecHalf(h), JSON.stringify(halves[h], null, 2) + "\n");
+        // THE FRAME NAMED NO MEANING QUESTION, so the meaning seat has nothing to search. Its ledger is the
+        // empty one the grid tool would have written, written here, so the merge and every check downstream
+        // read a sweep of zero queries rather than a missing file; the seat is told not to run the tool.
+        if (halves[MEANING_SEAT]?.connotation?.none_named === true)
+          atomicWrite(P.commonLawGridHalf(MEANING_SEAT), JSON.stringify({ cells: [], extras: { pr_risk: [] }, gaps: [] }, null, 2) + "\n");
         ctx.clHalfTerms = { a: halves.a.terms, b: halves.b.terms };
 
         ctx.clSplitDecision = { path: "split", reason: "armed",
@@ -2593,7 +2593,7 @@ export function registerDeferredCoverage(ctx, plan) {   // @internal
 // rides the SAME supplemental-sweep + clamp channel as the blind frame-diff — the form axis stops depending on a
 // peer model to NOTICE the gap (two LLMs share the same blind spot; the oracle does not). NEVER-KILL: any
 // missing/unparseable artifact → [] (the blind frame-diff still runs).
-function mechanicalFormGapDirectives(ctx) {
+export function mechanicalFormGapDirectives(ctx) {   // @internal
   const P = ctx.paths;
   try {
     if (!existsSync(P.formNeighbourhood) || !existsSync(P.registerNamedBand)) return [];
@@ -2610,7 +2610,13 @@ function mechanicalFormGapDirectives(ctx) {
       for (const q of el.band.exactQueries) if (lower.includes(String(q).toLowerCase())) dispatched.push(q);
       for (const w of (el.band.wildcardPatterns ?? [])) if (lower.includes(String(w).toLowerCase())) dispatched.push(w); // phonetic family dispatched-in-prose
     }
-    return formGapDirectives(elements, { dispatched });
+    // A WITHHELD FAMILY IS AN EXPLAINED ABSENCE. The reading turn withholds a waiting family with its reason
+    // (withheld-families.mjs), and the wildcard fringe is one. Counted as unsearched, it would be ordered
+    // searched anyway, or clamp the verdict, over a decision the run recorded.
+    const withheld = readWithheldFamilies(P.runDir);
+    const explained = (ctx.registerPlan?.entries ?? []).filter((e) => withheld[e.qid])
+      .flatMap((e) => [e.term, ...(Array.isArray(e.terms) ? e.terms : [])]).filter(Boolean);
+    return formGapDirectives(elements, { dispatched, explained });
   } catch { return []; }
 }
 
@@ -2949,11 +2955,32 @@ function recordPlacementSeam(ctx, r, trigger = null) {
     seam: "placement", stage: "placement-inquiry", trigger, completed: r?.ok === true && !r?.skipped,
     saw, carried: placedUriRows(P),
     evidence: r?.skipped ? "the pass was SKIPPED on an artifact already on disk, so it made no decision this pass" : (r?.fail ? String(r.fail).slice(0, 80) : ""),
-    reasonFor: () => ({
-      reason: "placement:not-selected", reason_source: "step-silent",
-      detail: "placement-inquiry completed this pass and named no placement for this record; the decision not to carry it was made and no ground for this record was recorded",
-    }),
+    reasonFor: placementSeamReason(placementSetAsideGrounds(P)),
   });
+}
+
+/** The set-aside grounds the placement form holds, as uri → entry, through the form's own selection index. */
+function placementSetAsideGrounds(P) {
+  try {
+    const form = readPlacementForm(P.runDir);
+    if (!form.set_aside?.length) return () => null;
+    return setAsideGrounds(form.set_aside, buildSelectionIndex(readPlacementFormInput(P.runDir)));
+  } catch { return () => null; }
+}
+
+/**
+ * WHY A RECORD THE PICKING STEP DID NOT PLACE LEFT IT. Where the step set aside that owner's records as a
+ * set, the record leaves with the step's own ground (sentence 6, ruled 2026-09-25). Otherwise the step
+ * completed and said nothing about it, which is what the reason-less exit count reports. PURE.
+ */
+export function placementSeamReason(groundOf) {   // @internal
+  return (_rec, uri) => {
+    const g = typeof groundOf === "function" ? groundOf(uri) : null;
+    if (g) return { reason: "placement:set-aside", reason_source: "step-stated",
+      detail: `placement-inquiry set aside this owner's records as a set: ${g.ground}` };
+    return { reason: "placement:not-selected", reason_source: "step-silent",
+      detail: "placement-inquiry completed this pass and named no placement for this record; the decision not to carry it was made and no ground for this record was recorded" };
+  };
 }
 
 /**
@@ -4396,11 +4423,11 @@ async function stageOnce(name, ctx, opts = {}) {
   if (name === "placement-inquiry" && def.contract?.placementForm) {
     try {
       const input = readPlacementFormInput(P.runDir);
-      const prior = readPlacementForm(P.runDir).rows;
-      const u = unionPlacementForm({ rows: prior }, null, input);
+      const priorForm = readPlacementForm(P.runDir);
+      const u = unionPlacementForm({ rows: priorForm.rows, set_aside: priorForm.set_aside }, null, input);
       writePlacementForm(P.runDir, u.form);
       runLog(P.runDir, { event: "placement-form-written", trigger: opts.trigger ?? "fresh", rows: u.total,
-        settled: u.settled, carried: u.carried, seatRows: u.seat_rows, unresolved: u.unresolved,
+        settled: u.settled, carried: u.carried, seatRows: u.seat_rows, unresolved: u.unresolved, setAside: u.set_aside,
         selectable: u.form.generated_from?.selectable_records ?? null });
     } catch (e) {
       note(`placement-form write failed: ${e.message} — the stamp is already armed, so the absence is loud rather than silent`);

@@ -2028,7 +2028,9 @@ export function applyStageWrites(msg, argv) {
       // NO instructed-scope echo. The mock used to reproduce the seat's retyping of the job fields so the
       // string-compare would pass; the driver stamps that section now, so a mock that still echoed it
       // would be standing in for a duty no seat has.
-      const anglesRaw = String(process.env.MOCK_MEANING_ANGLES || "none");
+      // A frame names its meaning questions by default, as a real one does for a mark with a semantic field:
+      // since 2026-09-25 they are the whole meaning sweep. `MOCK_MEANING_ANGLES=none` is the asserted zero.
+      const anglesRaw = String(process.env.MOCK_MEANING_ANGLES || "novapulse gaming backlash; novapulse political meaning");
       const none = /^\s*none\s*$/i.test(anglesRaw);
       const asksRaw = String(process.env.MOCK_INTAKE_ASKS || "");
       const intake_asks = [...asksRaw.matchAll(/^-\s*ask:\s*"([^"]+)"\s*(?:\|\s*owner:\s*([a-z-]+))?/gim)]

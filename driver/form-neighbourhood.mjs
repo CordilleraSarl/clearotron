@@ -380,10 +380,13 @@ export function coverageGaps(band, { dispatched = [], explained = [] } = {}) {
   const familyDispatched = (band?.wildcardPatterns ?? []).some((p) => have.has(norm(p)))
     || (band?.phoneticKeys ?? []).some((k) => have.has(norm(k)))
     || dispatched.some((d) => /[?*]/.test(String(d)));
+  // A retrieval pattern the reading turn withheld, with its reason, is an explained absence like any other.
+  const familyExplained = (band?.wildcardPatterns ?? []).some((p) => excused.has(norm(p)));
   return {
-    complete: gaps.length === 0 && (band?.wildcardPatterns?.length ? familyDispatched : true),
+    complete: gaps.length === 0 && (band?.wildcardPatterns?.length ? familyDispatched || familyExplained : true),
     missingExact: gaps,
     phoneticFamilyDispatched: familyDispatched,
+    phoneticFamilyExplained: familyExplained,
   };
 }
 
@@ -870,7 +873,7 @@ export function formGapDirectives(elements, { dispatched = [], explained = [], m
         observation: `mechanical form near-form of "${el.element}" (deterministically generated) was not dispatched — search it.`,
       });
     }
-    if (!g.phoneticFamilyDispatched && (el.band?.wildcardPatterns?.length)) directives.push({
+    if (!g.phoneticFamilyDispatched && !g.phoneticFamilyExplained && (el.band?.wildcardPatterns?.length)) directives.push({
       layer: "variant", item: `${el.element} phonetic family`, severity: "material",
       observation: `the consonant-skeleton wildcard (${el.band.wildcardPatterns.join(" / ")}) / phonetic key was not dispatched — the vowel-family (VYLONA/VILINA-class) is unsearched.`,
     });

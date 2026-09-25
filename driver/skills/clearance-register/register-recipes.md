@@ -12,11 +12,9 @@ funnel's tool surface, one `register_execute_plan` call runs every dictated entr
 the SHAPE of the query it names, never as an instruction to type the call yourself. The funnel (Layer A) runs
 each named query via
 `register_enumerate` — the completeness primitive that owns the page loop and returns `enumerated` or
-`incomplete`, never a partial list. **No recipe step narrows-for-tractability, samples a top-N, or decides it
-searched enough** — those were funnel sufficiency calls and are deleted. A recipe step that says "macro probe"
+`incomplete`, never a partial list. **No recipe step narrows-for-tractability or samples a top-N.** A recipe step that says "macro probe"
 is a **count-only crowd descriptor** (`limit:1`); a recipe step that names a variant query is an
-**`register_enumerate` call**. The lawyer (Layer B) reads the complete band and decides relevance,
-sufficiency, and prioritisation. See [unit.md](unit.md).
+**`register_enumerate` call**. See [unit.md](unit.md).
 
 > **EVERY `register_enumerate` IN EVERY RECIPE MUST BE CLASS-SCOPED.** Pass `nice_classes`=<the matter's
 > in-scope Nice set> (the spawn task hands you the array) on every enumerate call. **Before you run any
@@ -195,13 +193,10 @@ For each transliteration variant in the manifest:
 6. ENUMERATE each common element's exact-in-class name-list (register_enumerate)
    → name:ELEVATE match=exact classes <target>  (scope by CLASS + REGION, not a product/goods term)
 
-7. ENUMERATE owner-bound competitor queries
-   → owner:<each competitor> classes <target>   → register_enumerate
-
-8. ENUMERATE a cross-class merch query if identical match
+7. ENUMERATE a cross-class merch query if identical match
 ```
 
-**Why:** for 0-distinctive multi-word marks, the search vector IS the phrase + its morphological variations + competitor portfolio. The funnel enumerates each — it does **not** "narrow via phrase composition because element-level sweeps are too saturated" (that was a sufficiency call). The element-level crowd is *described* (steps 1–2) and the named slices are *enumerated* (steps 3–8). The lawyer reads the complete band + the crowd descriptors and decides sufficiency.
+**Why:** for 0-distinctive multi-word marks, the search vector IS the phrase + its morphological variations. The funnel enumerates each — it does **not** "narrow via phrase composition because element-level sweeps are too saturated" (that was a sufficiency call). The element-level crowd is *described* (steps 1–2) and the named slices are *enumerated* (steps 3–7). The lawyer reads the complete band + the crowd descriptors and decides sufficiency.
 
 **Expected output:** the enumerated band for every named slice + crowd descriptors for the bare elements. The lawyer prioritises; the funnel surfaces everything.
 

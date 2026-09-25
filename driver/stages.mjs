@@ -17,6 +17,9 @@
 import { join, basename } from "node:path";
 import { driverRel } from "../shared/driver-dir.mjs";   //
 import { awaitsReadingTurn } from "../providers/_shared/plan-guards.mjs";   // — a guard the dictation misreads is a question the model never knows it may ask
+import { isNonLatinTerm } from "../providers/_shared/script-form.mjs";
+import { latinQuestionsOfRomanisedForm } from "./register-plan.mjs";   // sentence 3 — the Latin question a script question repeats
+import { registerCapabilities } from "./register-unreachable.mjs";
 import { validators } from "./verify.mjs";
 import { REGISTER_PROVIDER, PROVIDERS } from "./driver.config.mjs";
 import { REGISTER_AXES, decideAxes } from "./coverage-ledger.mjs";
@@ -1256,7 +1259,7 @@ export const STAGES = {
       },
       "meaning_angles — the per-matter semantic-field queries, or an asserted none": {
         class: "judgment", tokens: ["meaning_angles_missing"],
-        why: "the semantic-field read; the driver's fixed shapes are the floor and these are the per-matter angles no fixed list can ask",
+        why: "the semantic-field read, and the whole meaning sweep since the fixed shapes went (ruled 2026-09-25): which meanings and languages matter is the frame's judgment",
       },
       "### Intake asks rows — {ask, owner} content": {
         class: "judgment", tokens: [],
@@ -1351,14 +1354,14 @@ export const STAGES = {
       profile?.platforms?.length && profile.profileKey !== "generic" ? `Customer profile's stores: ${profile.platforms.join(", ")}.` : "",
       `Send \`confusable_forms\` — the forms a buyer could confuse, as a buyer would type them. Each is searched on every store you do not set aside and on every channel in \`search_channels\`; every spelling is searched on the general web.`,
       `Send \`set_aside\` — one \`{store, reason}\` for each store on the customer profile's list you do not search, and one \`{form, reason}\` for each form you set aside. A store with no entry here is searched.`,
-      // P2-C (Round-2 §8b) — the DERIVED half of the meaning sweep's scope. The driver's fixed shapes
-      // ("<mark> offensive", "<mark> urban dictionary") stay as the floor; THIS line supplies the per-matter
-      // angles no fixed list can ask. The driver appends these queries VERBATIM to the dictated meaning sweep
-      // (each is executed and receipted — the per-query identity gate polices them like the floor's), so
+      // THE MEANING SWEEP IS THIS LIST (ruled 2026-09-25). The fixed shapes that rode beside it are gone, so
+      // the frame names the meanings and the languages that matter for this matter. The driver dictates these
+      // queries VERBATIM as the whole meaning sweep
+      // (each is executed and receipted — the per-query identity gate polices every one), so
       // every query must be a real, runnable web search. REQUIRED on every frame this prompt mints (the
       // stage-contract marker above arms the validator; legacy/archived frames stay under their own rules)
       // — never a hardcoded sensitivities checklist, always reasoned from THIS mark.
-      `Send \`meaning_angles\` — an array of the per-matter meaning/connotation angles a reputational reader would probe, derived from the mark's OWN semantic field and this matter's market/industry (NOT a fixed sensitivities list): the cultural origin and communities the word evokes (appropriation/criticism debates), charged historical or political associations of the term or its imagery, and category-specific controversy for these goods. 3-8 short queries, each anchored on the mark's element(s) (e.g. a Polynesian-derived element → "<element> cultural appropriation"; "<element> bar criticism"). Send \`meaning_angles_none: true\` INSTEAD, with an empty array, only when the mark is a coined term with no real-word semantic field to probe — that is an asserted zero and the driver records it as one. Sending neither is not an answer, and sending both is refused.`,
+      `Send \`meaning_angles\` — an array of the per-matter meaning/connotation angles a reputational reader would probe, derived from the mark's OWN semantic field and this matter's market/industry (NOT a fixed sensitivities list): the cultural origin and communities the word evokes (appropriation/criticism debates), charged historical or political associations of the term or its imagery, and category-specific controversy for these goods. Short queries, each anchored on the mark's element(s) (e.g. a Polynesian-derived element → "<element> cultural appropriation"; "<element> bar criticism"). They are the whole meaning sweep, run as written: a word's meaning in another language is asked only where the frame says that market matters and buyers would read the word as the mark, one query for each such language; and where the mark, or a form a buyer could confuse, could read as slang, a gang name or an offensive word in a market the matter names, a query asks that. Send \`meaning_angles_none: true\` INSTEAD, with an empty array, only when the mark is a coined term with no real-word semantic field to probe — that is an asserted zero and the driver records it as one. Sending neither is not an answer, and sending both is refused.`,
       // A6 — the intake-ask register: every EXPLICIT customer instruction becomes a machine
       // row the driver freezes (_driver/intake-asks.json) and every later surface must answer as a
       // LABELLED response. An ask can never evaporate between intake and output (the VENZY
@@ -2034,6 +2037,7 @@ export const STAGES = {
         `You own this matter's MEANING SWEEP and nothing else. Two sibling members are running the marketplace grid concurrently and the driver merges all three in code — do NOT sweep marketplaces, do NOT judge listings, and do NOT widen beyond your dictated queries.`,
         `Run the sweep via the DETERMINISTIC grid: call perplexity_research with enable_sandbox:true and grid_spec_path: ${P.gridSpecHalf(half)}. Your spec carries the dictated meaning queries and NO term x platform cells. The tool runs exactly those queries and WRITES your ledger to ${P.commonLawGridHalf(half)} itself.`,
         `Do NOT author the grid program, do NOT save ${P.commonLawGridHalf(half)} yourself, and do NOT re-emit the ledger JSON in your message.`,
+        `If your spec's connotation carries "none_named": true, the matter frame named no meaning question for this mark, so there is nothing to search: do not call perplexity_research, and write ${P.commonLawHalf(half)} with a "Findings" heading saying no meaning search ran because the matter frame named no meaning question, and an "Audit trail" section saying the same.`,
         // The MEANING seat always owns meaning queries — that is what it is for — so the may-own-nothing
         // sentence is FALSE here. It used to be served anyway, because the option was keyed on being a
         // half rather than on the obligations.
@@ -2130,7 +2134,7 @@ export const STAGES = {
         class: "judgment", tokens: ["too_short"],
         why: "#850 rules the per-axis prose digest J (keep) and I do not re-litigate. The only arm that speaks about it is nonEmpty at 40 or 80 chars, in validators.registerUnit — the branch reading `return /not applicable|n\\/a|no .*(hits|results)/i.test(c) ? nonEmpty(c, 40) : nonEmpty(c, 80)`. CONVERTED, and the ruling STANDS: the judgment half — is this axis a null result, and the one observation the counts cannot carry — is still the seat's, sent as values through `record_unit_note`. What left is the part that was never judgment: the three COUNTS (queries enumerated, incomplete blocks, records carried forward) are aggregates over the tool-written band, so the driver derives them and the note cannot disagree with the material it describes. The floor is checked at the call now as well as by the validator, so a short note surfaces as a refusal the seat can act on rather than as a stage failure.",
       },
-      "escalation judgement — the CROWD BOUND: attempt each dangerous-category slice once class-scoped, gate on the RESULT, stop terminal on a crowd, and write a block only for the distinctive anchor": {
+      "escalation judgement — the CROWD BOUND: attempt each dangerous-category slice once class-scoped, gate on the RESULT, decide on a crowd, and write a block only for the distinctive anchor": {
         class: "judgment", tokens: [],
         why: "#850 keeps escalation judgement. Which slice is the distinctive anchor and which is a stripped common component is a materiality read the driver cannot make. No validator token speaks about it.",
       },
@@ -2159,7 +2163,7 @@ export const STAGES = {
         why: "The path is `out: (P, axis) => P.registerUnit(axis)`, pre-bound by the driver; all three counts are aggregates over the band the tool wrote. No token speaks about the return message.",
       },
     },
-    message: ({ paths: P, axis, job, registerPlan }) => {
+    message: ({ paths: P, axis, job, registerPlan, capabilities = registerCapabilities() }) => {
     // Lever-1 data plane (2026-06-24): hand the funnel a COPYABLE in-scope Nice-class array. The NOVA PULSE timeout
     // proved skill prose alone is not enough — the funnel HAD [9,28,41,42] in matter-context and still ran
     // all-class enumerations (10k-record flood) because nice_classes read as optional. Pin it in the task.
@@ -2173,6 +2177,16 @@ export const STAGES = {
     // whole message — the tool exclusion in pipeline.mjs keys on exactly this and nothing else. Read it
     // once here so no branch below can drift out of step with what the model can actually call.
     const supplementalLane = !!registerPlan?.contract?.supplemental_lane;
+    // SENTENCE 3 NEEDS WHAT THE REGISTER SEARCHES. Where the register files foreign marks by their
+    // romanised form, and declares it, a question in another script goes out as its romanised spellings,
+    // and the Latin question already asking one of them may sit on another axis, out of this turn's sight.
+    // The turn released such repeats because it saw only the characters. It is shown both; it decides.
+    const romanisedNote = (e) => {
+      if (capabilities?.nativeScriptIndex !== false || !isNonLatinTerm(String(e.term ?? "")) || !e.romanizedTerms?.length) return "";
+      return ` · searched here by its romanised form ${JSON.stringify(e.romanizedTerms)}`
+        + latinQuestionsOfRomanisedForm(registerPlan, e).map((y) => `; the Latin question qid "${y.qid}" asks ${y.predicate} ${JSON.stringify(y.term)}`).join("");
+    };
+    const romanisedFiling = planEntries.some((e) => romanisedNote(e));
     return lines(
       `First, read and follow exactly: skills/clearance-register/SKILL.md (the shared spine) then skills/clearance-register/unit.md (MODE A — UNIT). Do NOT read digest.md (digest-mode judgment a unit must never run).`,
       // WHAT THE KEY ALSO CARRIES — COMPOSED, NOT DOCTRINE.
@@ -2203,7 +2217,8 @@ export const STAGES = {
             // message for transparency and so judgment knows what is already covered.
             `EXECUTE THE FROZEN PLAN VIA THE TOOL: call register_execute_plan ONCE with {"plan_path": ${JSON.stringify(P.registerPlan)}, "axis": "${axis}", "output_path": ${JSON.stringify(P.registerBand(axis))}}; call it again only with the qids of waiting families you release. The tool runs every dictated entry below ITSELF (paged enumerates; count-only crowd descriptors; a "when"-guarded fringe only if its parent enumerated; a waiting family only once you release it) and WRITES the band file itself with each block's qid stamped. Do NOT run these dictated entries manually and do NOT write their blocks yourself.`,
             `For your audit context, the dictated entries the tool will run:`,
-            ...planEntries.map((e) => `- qid "${e.qid}": ${e.predicate} ${e.terms ? `names ${JSON.stringify(e.terms)} (one OR-stacked call)` : JSON.stringify(e.term)}${e.owner ? ` · owner ${JSON.stringify(e.owner)}` : ""} · nice_classes ${JSON.stringify(e.nice_classes)}${e.regions?.length ? ` · regions ${JSON.stringify(e.regions)}` : ""}${e.when ? (awaitsReadingTurn(e.when) ? ` · WAITING FOR YOU: after reading the identical mark's list, release it or withhold it, with your reason` : ` · when: "${e.when.runs_if_enumerated}" enumerated`) : ""} · expected: ${e.expected_kind}${Array.isArray(e.covered_by) && e.covered_by.length ? ` · crowd context — coverage is ${e.covered_by.join(", ")}` : ""}`),
+            romanisedFiling && `This register files foreign marks by their romanised form, and says so: a question below in another script is searched by the romanised form shown on it.`,
+            ...planEntries.map((e) => `- qid "${e.qid}": ${e.predicate} ${e.terms ? `names ${JSON.stringify(e.terms)} (one OR-stacked call)` : JSON.stringify(e.term)}${romanisedNote(e)}${e.owner ? ` · owner ${JSON.stringify(e.owner)}` : ""} · nice_classes ${JSON.stringify(e.nice_classes)}${e.regions?.length ? ` · regions ${JSON.stringify(e.regions)}` : ""}${e.when ? (awaitsReadingTurn(e.when) ? ` · WAITING FOR YOU: after reading the identical mark's list, release it or withhold it, with your reason` : ` · when: "${e.when.runs_if_enumerated}" enumerated`) : ""} · expected: ${e.expected_kind}${Array.isArray(e.covered_by) && e.covered_by.length ? ` · crowd context — coverage is ${e.covered_by.join(", ")}` : ""}`),
             // copper-lattice re-route (supplemental_lane contract): judgment additions stay the model's
             // CALL — which queries the manifest/frame warrant beyond the dictated set — but their
             // EXECUTION and their band blocks are code's (register_propose_supplemental mints qid'd
@@ -2243,13 +2258,14 @@ export const STAGES = {
       inScope
         ? `IN-SCOPE NICE CLASSES = [${inScope}]. Pin EVERY ${supplementalLane ? "proposal" : "register_enumerate"} to these — pass nice_classes:[${inScope}] AND in_scope_classes:[${inScope}] on every ${supplementalLane ? "proposal" : "call"}. ${supplementalLane ? "A proposal" : "An enumerate"} WITHOUT nice_classes (all-class default / starts_with / ends_with / phonetic / fuzzy) is FORBIDDEN: it pulls an all-45-class crowd that floods the band and times the stage out — it is not breadth. A bare saturated element with no class filter is a COUNT-ONLY descriptor (register_search limit:1), never enumerated. ONLY exception: the exact-IDENTICAL cross-class merch check (nice_classes:[25], match_mode:exact).`
         : `Pin EVERY ${supplementalLane ? "proposal" : "register_enumerate"} to the matter's in-scope Nice classes (from the matter frame) via nice_classes — an unscoped all-class ${supplementalLane ? "proposal" : "enumerate"} is FORBIDDEN (it floods the band + times out the stage). Only exception: the exact-identical cross-class merch check (nice_classes:[25]).`,
-      // CROWD BOUND (a REMOVAL): gate the dangerous-category substring enumeration on the class-scoped
-      // RESULT (tractable vs crowd), not the manifest label — a slice that returns a crowd is terminal (stop the
-      // per-major/phonetic fan-out). On a crowd, WRITE a block only for the distinctive anchor (material); for a
+      // CROWD BOUND: gate the dangerous-category substring enumeration on the class-scoped RESULT (tractable
+      // vs crowd), not the manifest label. A slice that returns a crowd is no longer terminal (ruled 2026-09-25):
+      // the listing ceiling is a call limit, never a decision point, and the unit decides on the crowd as on the
+      // identical mark's, narrowing it until it lists or writing down why not. On a crowd, WRITE a block only for the distinctive anchor (material); for a
       // stripped common component (GREAT/OUTDOORS) write none — saturation-probe already counted it (immaterial).
-      // This removes the primary-sweep grind that double-SIGKILLed The Wide Open. Boundary held: the funnel
+      // This removes the primary-sweep grind that double-SIGKILLed an all-common-words phrase run. Boundary held: the funnel
       // counts + hands up; it never writes coverage-limited and never drives CONDITIONAL (judgment's call, Layer B).
-      `CROWD BOUND (removal — prevents the primary-sweep timeout, spec-46): every dangerous-category substring slice (the dominant token / formative root as a contains predicate + its per-major + phonetic slices) is attempted ONCE class-scoped and gated on its RESULT, not on the manifest label. Returns enumerated (tractable — NOVA PULSE∩class≈257, the phrase "WIDE OPEN"≈99) → keep it + run its per-major / phonetic. Returns incomplete because the slice is ITSELF a crowd over the ceiling (a hyper-common word — GREAT≈28k, OUTDOORS≈2.7k) → TERMINAL: STOP, do NOT fan it out per-major and do NOT phonetic-fringe it (that grind double-SIGKILLed the stage). On a crowd slice, WHAT you write depends which slice it is: the DISTINCTIVE anchor / dominant category → write ONE incomplete block (a material could-not-finish for judgment); a stripped COMMON component (GREAT/OUTDOORS — NOT the anchor) → write NO block, the saturation-probe axis already counted it (immaterial dilution; a duplicate primary-sweep crowd risks mis-reading as a material in-class gap). For an all-common-words phrase mark ("The Wide Open" — dominant unit = the phrase), the exact phrase + near-neighbours IS the dangerous band; the common-word components are dilution counts. The funnel counts + hands up; it never writes coverage-limited and never drives CONDITIONAL — materiality is judgment's call (Layer B).`,
+      `CROWD BOUND (removal — prevents the primary-sweep timeout, spec-46): every dangerous-category substring slice (the dominant token / formative root as a contains predicate + its per-major + phonetic slices) is attempted ONCE class-scoped and gated on its RESULT, not on the manifest label. Returns enumerated (tractable — NOVA PULSE∩class≈257, the phrase "QUIET FIELD"≈99) → keep it + run its per-major / phonetic. Returns incomplete because the slice is ITSELF a crowd over the ceiling (a hyper-common word — GREAT≈28k, OUTDOORS≈2.7k) → the ceiling is a call limit, never a decision point: decide on that crowd as on the identical mark's (unit.md, \"Read the identical mark first\"), narrowing it until it lists or writing down why looking further would not change what you tell the client. On a crowd slice, WHAT you write depends which slice it is: the DISTINCTIVE anchor / dominant category → write ONE incomplete block (a material could-not-finish for judgment); a stripped COMMON component (GREAT/OUTDOORS — NOT the anchor) → write NO block, the saturation-probe axis already counted it (immaterial dilution; a duplicate primary-sweep crowd risks mis-reading as a material in-class gap). For an all-common-words phrase mark ("The Quiet Field" — dominant unit = the phrase), the exact phrase + near-neighbours IS the dangerous band; the common-word components are dilution counts. The funnel counts + hands up; it never writes coverage-limited and never drives CONDITIONAL — materiality is judgment's call (Layer B).`,
       // judgment-relocation (2026-06-23): the funnel ENUMERATES or reports HONEST INCOMPLETENESS — it decides
       // NOTHING about relevance or sufficiency. For the DANGEROUS NAMED BAND (the exact mark + each manifest
       // variant × in-scope class × material/major jurisdiction) you MUST use register_enumerate, which owns the
@@ -2425,6 +2441,7 @@ export const STAGES = {
       `PLACEMENT FORM (MANDATORY): record every placement in ${P.placementForm} — {"rows":[…]}, and DO NOT WRITE placements.json (the driver renders it from this form).`,
       `· A REGISTER candidate: {"select":"<one record URI it holds>","tier":"…","reason":"…"} (+ optional "borderline":true). Naming ONE record selects the whole position — a mark registered in several territories is one candidate and you tier it once. The driver fills mark, owner, records, territories and classes from the register record itself; anything you write in those fields on a selected row is ignored, so do not re-type them.`,
       `· A COMMON-LAW candidate the register does not hold: write the row in full — {"kind":"seat","mark","owner","jurisdiction","records":[],"tier","reason"}. An empty records list is correct there, never a gap.`,
+      `· AN OWNER'S RECORDS YOU DO NOT CARRY get one ground for the set: a set-aside row naming one record of that owner, with the fields the form's set_aside_row_contract gives. It covers every record of that owner the form does not place (a record that names no owner stands for its own position). It is not a candidate and has no bound: a record you do not carry is given a ground; no record leaves without one.`,
       `· tier EXACTLY one of headline-candidate / sheet-2 / watchlist-annex / out-of-scope-filtered. reason = a SHORT PARAGRAPH carrying your STATED reasoning for the tier — the candidate characterisation (what the owner actually does, the customer/channel overlap read), the decisive placement ground, and any Stage-2 mitigant flag — substantial enough that a downstream stage can quote it and argue with it; NEVER a bare label, NEVER the full 7-point inquiry trace.`,
       `· The form ACCUMULATES across attempts: a row you complete stays complete even if a later pass never mentions it, so a pass that only fixes two rows writes only those two. To remove a row, hand back {"retract":"<its row_id>"} — silence never removes anything.`,
       `· The rulings tail of the md (Band reconciliation, Disagreements / flags surfaced to downstream, Coverage rulings & open questions, Open questions for the client / reviewer) is NOT mirrored into the form — it travels verbatim as prose.`,
@@ -2684,7 +2701,7 @@ export const STAGES = {
       },
       "the escalation decision — which register axes carry a material, unresolved, genuinely closeable gap, and the one-line reason for each": {
         class: "judgment", tokens: [],
-        why: "Whether a documented coverage-limited row, a capability-gap deferral or a fresh concern on a confirmed-clean row warrants spending a re-run. The driver hands the coverage/execution truth in as a computed table (stages.mjs:1476; skepticDeferralExtra) precisely so this is a call over data rather than a re-derivation — but the call itself is nobody else's. [citation unverified]",
+        why: "Whether a documented coverage-limited row, a capability-gap deferral or a fresh concern on a confirmed-clean row warrants spending a re-run. The driver hands the coverage/execution truth in as a computed table (stages.mjs:1479; skepticDeferralExtra) precisely so this is a call over data rather than a re-derivation — but the call itself is nobody else's. [citation unverified]",
       },
       "escalation decisions — one {axis, reason} per axis that must be re-run, sent through record_skeptic": {
         class: "mechanical:code-rendered", tokens: [],

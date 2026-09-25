@@ -39,9 +39,12 @@ export function ownerCheckLines(K) {
   const checks = Array.isArray(doc?.checks) ? doc.checks : [];
   return checks.map((c) => {
     const who = `${c.owner} (proprietor of a filing for ${c.mark})`;
+    // A row with no answer on disk is a lookup that did not answer — failed, empty, or unsaved — and the
+    // line says exactly that. "Returned nothing" read as a search that ran and found nothing, which is the
+    // other fact the comment above keeps apart, and the seat wrote it into the read as one.
     return c.ok && c.payloadFile
       ? `- ${who}: ${join(K.runDir, "research", c.payloadFile)}`
-      : `- ${who}: THE SEARCH RETURNED NOTHING. Say so in the read; do not infer the trade from the name.`;
+      : `- ${who}: THE SEARCH DID NOT ANSWER. Say so in the read; do not infer the trade from the name.`;
   });
 }
 

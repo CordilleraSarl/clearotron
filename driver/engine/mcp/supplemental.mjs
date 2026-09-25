@@ -21,8 +21,10 @@
 // The driver folds the supplemental files into the run plan at fan-in (foldSupplementalProposals), so
 // every supplemental is skeleton-tracked and receipt-durable like a dictated entry.
 //
-// Caps: 12 per call, 24 per axis — overflow is REJECTED loudly in the response, never silently dropped.
-// Both were settable and nothing ever set them; step 3 made them constants.
+// NO CAP ON HOW FAR IT WIDENS (ruled 2026-09-25). It took at most 12 new questions a call and 24 an axis a
+// run, and refused the rest whatever the reading said: a stop with no reason, where the design lets
+// widening need none. The reading step decides now; every proposal is minted or refused on its own
+// merits. `mintSupplementalEntries` still takes a cap from a caller that sets one, and none does.
 //
 // Pure orchestration with injected IO/executor (deps) so it tests offline; the corsearch-server handler
 // binds the live doExecutePlan.
@@ -55,14 +57,14 @@ const compactProposal = (p) => ({
 const inPriority = (p, prio) =>
   (Array.isArray(p?.nice_classes) ? p.nice_classes : []).some((c) => prio.has(String(c).trim()));
 
-export function mintSupplementalEntries(axis, proposals, { existingQids = new Set(), perCall = 12, axisMax = 24, existingCount = 0, capabilities = null, priorityClasses = [] } = {}) {
+export function mintSupplementalEntries(axis, proposals, { existingQids = new Set(), perCall = Infinity, axisMax = Infinity, existingCount = 0, capabilities = null, priorityClasses = [] } = {}) {
   const minted = [], reused = [], rejected = [], enriched = [], narrowed = [];
   let budget = Math.max(0, axisMax - existingCount);
   // C3 — the Cl.30 SLUSH lesson: the per-axis cap rejected a coverage-relevant retry while earlier
   // out-of-priority proposals held the budget. STABLE-sort the batch by intersection with the
   // priority (in-scope) classes BEFORE budget assignment — priority proposals compete for the caps
-  // first, non-priority ones keep their relative order behind them. The cap VALUES are unchanged
-  // (no count threshold moves), and with no priorityClasses the order is byte-identical to before.
+  // first, non-priority ones keep their relative order behind them. With no cap set, which is every
+  // production call, every proposal is minted whatever its order.
   const prio = new Set((priorityClasses ?? []).map((c) => String(c).trim()).filter(Boolean));
   // ONE QUESTION PER GOODS WORD where the register cannot offer alternatives in one goods clause — the
   // compiler's own rule for such a register (register-plan.mjs, goodsTextListOr). Joined, the words would
@@ -372,7 +374,7 @@ export async function proposeSupplemental(params, tctx, deps) {
     house = houseElementOf(frozen);
     planRegions = (Array.isArray(frozen?.regions) ? frozen.regions : []).map((r) => String(r).trim()).filter(Boolean);
     // C3 — the frozen plan's own class list is the priority set: proposals intersecting it compete
-    // for the per-call/per-axis caps first (mintSupplementalEntries stable-sorts; values unchanged).
+    // for any cap a caller sets first (mintSupplementalEntries stable-sorts; this tool sets none).
     planClasses = (Array.isArray(frozen?.nice_classes) ? frozen.nice_classes : []).map((c) => String(c).trim()).filter(Boolean);
   } catch { /* no frozen plan (a bare-band test/legacy layout) — proposals then supply their own regions */ }
 
@@ -383,8 +385,6 @@ export async function proposeSupplemental(params, tctx, deps) {
       if (prior && Array.isArray(prior.entries)) supp = { ...prior, regions: (Array.isArray(prior.regions) && prior.regions.length) ? prior.regions : planRegions };
     } catch { /* a torn supplemental file is rebuilt — minted qids are deterministic, nothing is lost */ }
   }
-  const perCall = 12;   // step 3 — was a knob; no environment ever set it
-  const axisMax = 24;   // step 3 — was a knob; no environment ever set it
   // ── THE CLIENT'S OWN ELEMENT IS LEFT OUT BEFORE ANYTHING RUNS ───────────────────────────────────
   //
   // This tool EXECUTES what it mints, before the fold adds it to the plan, so the fold's own exclusion
@@ -403,7 +403,7 @@ export async function proposeSupplemental(params, tctx, deps) {
     return { type: "text", text: JSON.stringify({ minted: [], reused: [], rejected: [], excluded_house_element: excludedHouse, executed: false }, null, 2) };
   const existingQids = new Set(supp.entries.map((e) => e.qid));
   const { minted, reused, rejected, enriched, narrowed } = mintSupplementalEntries(axis, offered,
-    { existingQids, perCall, axisMax, existingCount: supplementalSlots(supp.entries), capabilities: deps.capabilities ?? null, priorityClasses: planClasses });
+    { existingQids, capabilities: deps.capabilities ?? null, priorityClasses: planClasses });
 
   // Field-level romanisation enrichment of a REUSED qid (2026-07-30 review round): the natural retry —
   // a bare non-Latin proposal deferred at the wire, the model re-proposes it WITH the romanisation —

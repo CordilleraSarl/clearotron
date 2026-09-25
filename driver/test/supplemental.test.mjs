@@ -105,6 +105,29 @@ test("proposeSupplemental: persists the per-axis plan, executes via the injected
   assert.equal(JSON.parse(readFileSync(suppPath, "utf8")).entries.length, 1, "no duplicate entries on a re-propose");
 });
 
+test("proposeSupplemental sets no cap: past twelve questions a call and twenty-four an axis, every one is minted", async () => {
+  // The tool took at most 12 new questions a call and 24 an axis a run, and refused the rest whatever the
+  // reading said. The reading step decides how far to widen now (ruled 2026-09-25).
+  const dir = mkdtempSync(join(tmpdir(), "supp-nocap-"));
+  const bandPath = join(dir, "register-units", "primary-sweep-band.json");
+  const executePlan = async (params) => {
+    const supp = JSON.parse(readFileSync(params.plan_path, "utf8"));
+    const blocks = supp.entries.filter((e) => params.qids.includes(e.qid)).map((e) => ({
+      state: "enumerated", qid: e.qid, query: `${e.predicate} ${e.term}`, total_hits: 0, count: 0, records: [] }));
+    writeFileSync(bandPath, JSON.stringify(blocks, null, 2));
+    return { type: "text", text: JSON.stringify({ written: bandPath, blocks: blocks.length, executed: blocks.length }) };
+  };
+  const proposals = (from, n) => Array.from({ length: n }, (_, i) => ({ predicate: "exact", term: `VELTRAN ${from + i}`, nice_classes: [9], rationale: "a near form" }));
+  const first = JSON.parse((await proposeSupplemental({ axis: "primary-sweep", output_path: bandPath, proposals: proposals(0, 20) }, tctx, { executePlan })).text);
+  assert.equal(first.minted.length, 20, "the old cap minted 12 of these and refused 8");
+  assert.equal((first.rejected ?? []).length, 0);
+  const second = JSON.parse((await proposeSupplemental({ axis: "primary-sweep", output_path: bandPath, proposals: proposals(20, 10) }, tctx, { executePlan })).text);
+  assert.equal(second.minted.length, 10, "the old cap refused every question past the axis's 24th");
+  assert.equal((second.rejected ?? []).length, 0);
+  const supp = JSON.parse(readFileSync(join(dir, "register-units", "primary-sweep-supplemental-plan.json"), "utf8"));
+  assert.equal(supp.entries.length, 30);
+});
+
 test("proposeSupplemental: an executor error surfaces loudly — never a silent clean", async () => {
   const dir = mkdtempSync(join(tmpdir(), "supp-err-"));
   const bandPath = join(dir, "register-units", "primary-sweep-band.json");

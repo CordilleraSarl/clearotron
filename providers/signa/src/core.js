@@ -24,6 +24,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { goodsTermsList } from "../../_shared/term-shape.mjs";   // the shared reader for the goods words
+import { isAllClass, screenVerdict } from "../../_shared/screen.mjs";
 
 import { makeLedger } from "../../_shared/ledger.mjs";
 import { nonAnswerBodyError, parseJsonBody, unparsedBodyError } from "../../_shared/http-body.mjs";
@@ -840,6 +841,30 @@ export function toSignaParams(p = {}) {
  */
 export const ownerWindowCeiling = (params) => (isOwnerScoped(params) ? OWNER_SCOPED_WINDOW : null);
 
+// THE VERDICT IS THE SHARED CLOSED SET, as on every other register (`_shared/screen.mjs`). This
+// connector once wrote its own words — keep, keep-dead, out-of-class, unscoped, unknown — which no
+// check reads: the gate that refuses dropping a live in-class record nobody opened keys on
+// `surface:*`, and a dead or out-of-class drop must match `drop:dead` or `drop:out-of-class`. So on
+// this register a live filing could be dropped unread, and every drop on the screen's own ground was
+// refused. The status maps to the shared vocabulary; an unrecognised one is `ambiguous`, never
+// droppable, and an empty scope or a row with no classes stays a candidate, as the shared screen
+// already makes it.
+export function rowScreen(row, inScopeClasses) {
+  const classes = Array.isArray(row?.nice_classes) ? row.nice_classes.map(Number).filter(Number.isFinite) : [];
+  const scope = Array.isArray(inScopeClasses) ? inScopeClasses.map(Number).filter(Number.isFinite) : [];
+  const status = row?.status_class;
+  const screened = {
+    record_id: row?.record_id ?? null,
+    mark_text: row?.mark_text ?? null,
+    office: row?.office ?? null,
+    classes,
+    live_status: status === "live" || status === "active" ? "live" : status === "dead" ? "dead" : "ambiguous",
+    all_class: isAllClass(classes),
+    in_scope_class: !scope.length ? null : classes.some((c) => scope.includes(c)),
+  };
+  return { ...screened, screen_verdict: screenVerdict(screened, scope) };
+}
+
 const { enumerate: __enumerate } = makeEnumerate({
   search: (auth, params, tctx) => doSearch(auth.apiKey, auth.base, toSignaParams(params), tctx, { mock: auth.mock }),
   // Still no count function, and now for the OPPOSITE reason. `countProbe` is `"cheap"`: the
@@ -868,30 +893,7 @@ const { enumerate: __enumerate } = makeEnumerate({
   // `{ ...record, screen: <this> }`, so a row that nests itself lands at `screen.screen.screen_verdict`
   // and every consumer's lookup misses by one level. Nothing errors; the verdict is simply absent, and
   // a band with no verdicts is a band that was never screened.
-  rowScreen: (row, inScopeClasses) => {
-    const classes = Array.isArray(row?.nice_classes) ? row.nice_classes.map(Number).filter(Number.isFinite) : [];
-    const scope = Array.isArray(inScopeClasses) ? inScopeClasses.map(Number).filter(Number.isFinite) : [];
-    const live = row?.status_class === "live" || row?.status_class === "active";
-    // An EMPTY in-scope set means "not asked", never "nothing is in scope" — the second reading would
-    // screen every row out and hand up a band that looks searched and clean.
-    const inClass = !scope.length ? null : classes.some((c) => scope.includes(c));
-    return {
-      record_id: row?.record_id ?? null,
-      mark_text: row?.mark_text ?? null,
-      office: row?.office ?? null,
-      classes,
-      live_status: row?.status_class ?? null,
-      in_scope_class: inClass,
-      // UNKNOWN is its own verdict. A row with no classes on a class-scoped sweep has not been shown
-      // irrelevant — it has not been shown anything, and calling that a miss is how a live mark leaves
-      // a band quietly.
-      screen_verdict: inClass === null ? "unscoped"
-        : !classes.length ? "unknown"
-        : inClass && live ? "keep"
-        : inClass ? "keep-dead"
-        : "out-of-class",
-    };
-  },
+  rowScreen,
   // Page 0 sends no cursor; every later page sends the one the previous answer handed back. A missing
   // cursor with has_more:true would loop on page 0 forever, so it ends the band instead — the kernel's
   // pagination guard would otherwise spend sixty identical calls to reach the same conclusion.

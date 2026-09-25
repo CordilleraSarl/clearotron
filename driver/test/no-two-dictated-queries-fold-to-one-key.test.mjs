@@ -10,10 +10,13 @@
 // Driven, not tabulated. A folding table over queryKey passes everything and says nothing about this:
 // the defect is not in what the key folds, it is in two callers disagreeing about the key. So these arms
 // compose the dictated list the way the pipeline composes it and assert one property over the result.
+//
+// ONE PRODUCER NOW (ruled 2026-09-25). The meaning sweep is the matter frame's own list; the two fixed
+// builders that rode beside it are gone, so the list the pipeline dictates is exactly what this reader
+// returns from the frame's line.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { buildConnotationQueries, buildTranslitConnotationQueries, pickConnotationTerms,
-  meaningAnglesFromMatterContext, queryKey } from "../connotation-search.mjs";
+import { meaningAnglesFromMatterContext, queryKey, CONNOTATION_SHAPES, CONNOTATION_SHAPES_TRANSLIT } from "../connotation-search.mjs";
 
 const keysOf = (qs) => qs.map(queryKey);
 const collisions = (qs) => keysOf(qs).length - new Set(keysOf(qs)).size;
@@ -21,76 +24,38 @@ const collisions = (qs) => keysOf(qs).length - new Set(keysOf(qs)).size;
 // Invented marks throughout. No client data reaches a test fixture.
 const MARK = "Zarvex";
 
-test("the transliteration bucket dictates no two queries the gate reads as one", () => {
-  // THE REALISTIC CASE, and the reason this bucket is where it bites: it exists to carry non-Latin and
-  // accented forms, mixed sources are where an NFC/NFD pair comes from, and NFKC folds them. Composed
-  // U+00E9 against decomposed e + U+0301 — the same letter, two encodings, distinct to `toLowerCase`.
-  const composed = "Zarvéx";
-  const decomposed = "Zarvéx";
-  assert.notEqual(composed, decomposed, "the fixture's two forms are byte-identical, so this arm proves nothing");
-
-  const qs = buildTranslitConnotationQueries(
-    [{ value: composed, category: "transliteration" }, { value: decomposed, category: "transliteration" }],
-    { coreTerms: [] });
-
-  // THE FLOOR, because an empty bucket has no collisions either and would read as a pass.
-  assert.ok(qs.length >= 2, `the bucket dictated ${qs.length} queries, so the distinctness below is vacuous`);
-  assert.equal(collisions(qs), 0,
-    `the bucket dictated ${qs.length} queries the gate can only see as ${new Set(keysOf(qs)).size}. `
-    + "A seat recording the smaller number satisfies the gate for all of them");
-});
-
-test("a core term suppresses its own folded twin in the transliteration bucket", () => {
-  // The seed set is the other half of the same bug: a core term that folds onto a variant must suppress
-  // it, or the variant is dictated a second time under a key the gate already holds.
-  const qs = buildTranslitConnotationQueries(
-    [{ value: "Zarvéx", category: "transliteration" }],
-    { coreTerms: ["Zarvéx"] });
-  assert.equal(qs.length, 0,
-    "a transliteration that folds onto a core term was dictated again; the gate holds one key for both");
-});
-
 test("the authored meaning angles dictate no two queries the gate reads as one", () => {
-  // The other producer, and a different folding class: a trailing question mark and an em-dash against a
-  // hyphen. Both are things a human types twice in one authored line without noticing.
+  // A trailing question mark and an em-dash against a hyphen: things a human types twice in one authored
+  // line without noticing.
   const md = "Meaning angles: street slang for zarvex in skate culture; "
     + "street slang for zarvex in skate culture?; "
     + "does zarvex read as an insult—UK market; "
     + "does zarvex read as an insult-UK market";
-  const angles = meaningAnglesFromMatterContext(md, { alreadyQueried: buildConnotationQueries([MARK]) });
+  const angles = meaningAnglesFromMatterContext(md);
 
   assert.ok(angles.length >= 2, `only ${angles.length} angle(s) parsed, so the distinctness below is vacuous`);
   assert.equal(collisions(angles), 0,
     `the frame dictated ${angles.length} angles the gate can only see as ${new Set(keysOf(angles)).size}`);
 });
 
-test("an already-queried floor query suppresses an angle that folds onto it", () => {
-  // The seed set again, one producer over. An angle re-stating a floor query in different punctuation is
-  // dictated twice and recorded once, and the gate cannot tell that from a search that ran.
-  const floor = buildConnotationQueries([MARK]);
-  assert.ok(floor.length >= 1, "the floor is empty, so this arm's premise is missing");
-  const md = `Meaning angles: ${floor[0]}’s meaning; ${floor[0]}'s meaning`;
-  const angles = meaningAnglesFromMatterContext(md, { alreadyQueried: floor });
-  assert.equal(collisions(angles), 0, "two angles differing only by apostrophe form were both dictated");
+test("two angles differing only by apostrophe form are dictated once", () => {
+  const angles = meaningAnglesFromMatterContext(`Meaning angles: ${MARK.toLowerCase()}’s meaning in Portuguese; ${MARK.toLowerCase()}'s meaning in Portuguese`);
+  assert.equal(angles.length, 1, "two angles differing only by apostrophe form were both dictated");
 });
 
-test("the list the pipeline composes from all three producers is distinct under the key", () => {
-  // THE PROPERTY THAT ACTUALLY MATTERS, composed the way pipeline.mjs composes it: the floor, then the
-  // transliteration bucket seeded with the picked core terms, then the angles seeded with both. A
-  // per-producer arm cannot see a collision BETWEEN two producers; this one can.
-  const gridVariants = [MARK, "Zarvéx", "Zarvéx", "ZARVEX"];
-  const connotation = buildConnotationQueries(gridVariants);
-  const translit = buildTranslitConnotationQueries(
-    [{ value: "Zarvéx", category: "transliteration" }, { value: "Zarvéx", category: "transliteration" }],
-    { coreTerms: pickConnotationTerms(gridVariants) });
-  const angles = meaningAnglesFromMatterContext(
-    "Meaning angles: zarvex in skate culture; zarvex in skate culture?",
-    { alreadyQueried: [...connotation, ...translit] });
-
-  const dictated = [...connotation, ...translit, ...angles];
-  assert.ok(dictated.length >= 6, `the composed list holds ${dictated.length} queries, too few to be a real check`);
+test("the list the pipeline dictates is the frame's list: distinct under the key, uncapped, with no fixed shape beside it", () => {
+  // THE PROPERTY THAT ACTUALLY MATTERS, over the one producer left. Ten distinct angles and two folded
+  // twins: all ten are dictated (the frame decides how many; there is no cap), once each.
+  const distinct = Array.from({ length: 10 }, (_, i) => `zarvex reading ${i + 1} in skate culture`);
+  const md = `Meaning angles: ${[...distinct, `${distinct[0]}?`, distinct[1].toUpperCase()].join("; ")}`;
+  const dictated = meaningAnglesFromMatterContext(md);
+  assert.equal(dictated.length, 10, `the frame named 10 distinct angles and ${dictated.length} were dictated`);
   assert.equal(collisions(dictated), 0,
     `the composed spec dictates ${dictated.length} queries the gate can only see as `
     + `${new Set(keysOf(dictated)).size}. Every one of that difference is a query a seat may skip while `
     + "the gate reports it searched");
+  for (const q of dictated)
+    for (const s of [...CONNOTATION_SHAPES, ...CONNOTATION_SHAPES_TRANSLIT])
+      assert.ok(!q.endsWith(` ${s}`), `a fixed shape reached the dictated list: ${q}`);
+  assert.deepEqual(meaningAnglesFromMatterContext("Meaning angles: none"), [], "an asserted none dictated a query");
 });

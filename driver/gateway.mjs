@@ -264,7 +264,7 @@ import { unionCoverageForm } from "./coverage-union.mjs";
 import { coverageFormStamp, readCoverageForm, readCoverageFormInput, writeCoverageForm } from "./coverage-form-io.mjs";
 import { unionPlacementForm } from "./placement-union.mjs";
 import { placementRenderAccount } from "./placement-form.mjs";
-import { placementFormStamp, readPlacementForm, readPlacementFormInput, readSubmittedPlacementForm, writePlacementForm, renderPlacementsFile } from "./placement-form-io.mjs";
+import { placementFormStamp, readPlacementForm, readPlacementFormInput, readSubmittedPlacementForm, readSubmittedPlacementSetAside, writePlacementForm, renderPlacementsFile } from "./placement-form-io.mjs";
 // The register-axis vocabulary, quoted verbatim into the coverage-form axis hint. ONE source: the same
 // constant `rowIsSettled` refuses against, so the hint can never name a set the gate does not accept.
 // Acyclic — coverage-ledger.mjs is PURE (no node imports, no driver imports).
@@ -735,9 +735,10 @@ export function syncPlacementForm(files) {
     const runDir = dirname(String(f));
     if (!placementFormStamp(runDir).required) return null;
     const input = readPlacementFormInput(runDir);
-    const prior = readPlacementForm(runDir).rows;
+    const priorForm = readPlacementForm(runDir);
     const submitted = readSubmittedPlacementForm(runDir);
-    const u = unionPlacementForm({ rows: prior }, submitted === null ? null : { rows: submitted }, input);
+    const u = unionPlacementForm({ rows: priorForm.rows, set_aside: priorForm.set_aside },
+      submitted === null ? null : { rows: submitted, set_aside: readSubmittedPlacementSetAside(runDir) }, input);
     try { writePlacementForm(runDir, u.form); }
     catch (e) { note(`[placement-form] could not write the form: ${abbrev(String(e.message), 120)} — the render below still runs from the union in hand`); }
     // PARSE-THEN-LAND, through the gate's own parser, before it replaces anything. A render defect can
@@ -2496,7 +2497,8 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     hint = "the matter frame must carry the per-matter meaning/connotation angles — derived from the mark's " +
       "OWN semantic field and this matter's market/industry (cultural origin and communities the word " +
       "evokes, charged historical/political associations of the term or its imagery, category-specific " +
-      "controversy for these goods) — 3-8 short queries, each anchored on the mark's element(s). Send them " +
+      "controversy for these goods) — short queries, each anchored on the mark's element(s); they are the " +
+      "whole meaning search, run as written. Send them " +
       "as `meaning_angles` in one `record_matter_frame` call, or send `meaning_angles_none: true` with an " +
       "empty array ONLY when the mark is a coined term with no real-word semantic field to probe. The call " +
       "replaces the stored frame, so send the whole frame again, not only the angles — the driver renders " +

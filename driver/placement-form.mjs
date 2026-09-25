@@ -103,6 +103,54 @@ export const SELECT_ROW_CONTRACT = Object.freeze({
   unresolved: "A `select` the band does not hold is reported back to you by id, never silently dropped.",
 });
 
+// ONE GROUND PER OWNER'S SET (ruled 2026-09-25, sentence 6: "Judge an owner's records as a set. … A record
+// you do not carry is given a ground; no record leaves without one."). The form had rows for what is
+// placed and nothing for what is not, so every record the step passed over left with "no ground for this
+// record was recorded", hundreds of owners a run. This row gives an owner's records that are not placed
+// one ground. It is not a candidate, it renders into no placement, and nothing bounds how many there are.
+export const SET_ASIDE_ROW_FIELDS = ["set_aside", "ground"];
+export const SET_ASIDE_ROW_CONTRACT = Object.freeze({
+  when: "an owner whose records you judge as a set and do not carry. A record you do not carry is given a "
+    + "ground; no record leaves without one. One row gives that owner's set its ground.",
+  fields: SET_ASIDE_ROW_FIELDS,
+  set_aside: "one record id of that owner, from the band. The driver finds the owner on the register's own "
+    + "projection; the ground covers every record of that owner the form does not place. A record that names "
+    + "no owner stands for its own position only.",
+  ground: "why this owner's records are not carried, in a lawyer's words.",
+  not_a_candidate: "It places nothing and has no bound. A record of the same owner you do place stays placed.",
+  latest: "A later row for the same owner replaces the earlier ground. To remove one, hand back "
+    + "{\"retract\":\"<its set_aside id>\"}.",
+  unresolved: "A `set_aside` the band does not hold, or one with no ground, is reported back to you by id.",
+});
+
+/** Is this submitted row an owner's set-aside? PURE. */
+export const isSetAsideRow = (row) => typeof row?.set_aside === "string" && row.set_aside.trim() !== "";
+
+/**
+ * The set a set-aside covers, keyed off the register's own projection: the owner, folded as the cross-run
+ * join folds it. A record that names no owner is its own position, never one set with every other
+ * ownerless record, or one ground would silently cover them all. PURE.
+ */
+export function setAsideKey(canonical) {
+  if (!canonical) return null;
+  const owner = normKey(canonical.owner);
+  return owner ? `owner:${owner}` : `position:${formRowKey(canonical)}`;
+}
+
+/**
+ * The ground a record leaves the picking step with, if its owner's set was set aside: record uri →
+ * {set_aside, owner, ground} or null. Resolved through the same selection index a `select` resolves
+ * through, so the owner is read one way at both ends. PURE; never throws.
+ */
+export function setAsideGrounds(entries, index) {
+  const byKey = new Map();
+  for (const e of Array.isArray(entries) ? entries : []) if (e?.key && e?.ground) byKey.set(e.key, e);
+  return (uri) => {
+    if (!byKey.size || !index?.resolve) return null;
+    return byKey.get(setAsideKey(index.resolve(uri))) ?? null;
+  };
+}
+
 const PROVENANCE = "driver-written form. You SELECT and you JUDGE; the driver COPIES. For each "
   + "register candidate you are placing, add a row naming one of its record ids in `select` plus your "
   + "`tier` and `reason` (and `borderline` if the call is close) — the driver resolves the id against the "
@@ -111,7 +159,8 @@ const PROVENANCE = "driver-written form. You SELECT and you JUDGE; the driver CO
   + "`placements.json` from your answers — DO NOT WRITE THAT FILE. Tiers accumulate across attempts: a row "
   + "you tier once stays tiered even if a later attempt never sees it, which is what makes a killed "
   + "attempt's work survive. Candidates the register does not hold are yours to write in full — see "
-  + "`seat_row_contract`.";
+  + "`seat_row_contract`. An owner whose records you judge as a set and do not carry gets one ground for "
+  + "the set — see `set_aside_row_contract`.";
 
 /** A row's identity, for matching a submission against the driver's regenerated set. PURE. */
 export function formRowKey(row) {
@@ -367,7 +416,7 @@ export function parsePlacementForm(raw) {
   catch (e) { return { rows: null, error: `is not valid JSON (${String(e?.message ?? e).slice(0, 80)})` }; }
   const rows = Array.isArray(doc) ? doc : doc?.rows;
   if (!Array.isArray(rows)) return { rows: null, error: "carries no rows[] array" };
-  return { rows, error: null };
+  return { rows, set_aside: Array.isArray(doc?.set_aside) ? doc.set_aside : [], error: null };
 }
 
 /**
@@ -381,7 +430,7 @@ export function parsePlacementForm(raw) {
 export function buildPlacementForm(input) {
   const { derived_from } = buildSelectionIndex(input);
   return { _provenance: PROVENANCE, select_row_contract: SELECT_ROW_CONTRACT,
-    seat_row_contract: SEAT_ROW_CONTRACT, generated_from: derived_from, rows: [] };
+    seat_row_contract: SEAT_ROW_CONTRACT, set_aside_row_contract: SET_ASIDE_ROW_CONTRACT, generated_from: derived_from, rows: [] };
 }
 
 export { PROVENANCE as PLACEMENT_FORM_PROVENANCE };

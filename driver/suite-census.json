@@ -273,6 +273,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-crowd-is-decided-not-a-fixed-stop.test.mjs": {
+          "tests": 3,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "a-crowded-sweep-is-narrowed-by-what-a-filing-covers.test.mjs": {
           "tests": 22,
           "asserts": 109,
@@ -1143,6 +1149,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-script-question-shows-the-latin-question-it-repeats.test.mjs": {
+          "tests": 3,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
         "a-search-the-engine-chose-not-to-run-is-not-reported-as-unfinished.test.mjs": {
           "tests": 5,
           "asserts": 13,
@@ -1395,6 +1407,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-watchlist-is-a-hint-not-a-rule.test.mjs": {
+          "tests": 1,
+          "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
         "a-web-page-is-declined-like-a-record.test.mjs": {
           "tests": 10,
           "asserts": 55,
@@ -1606,8 +1624,8 @@
           "todos": 0
         },
         "an-incumbent-alert-adds-no-search-of-the-clients-word.test.mjs": {
-          "tests": 6,
-          "asserts": 13,
+          "tests": 7,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
@@ -1641,9 +1659,21 @@
           "skips": 0,
           "todos": 0
         },
+        "an-owner-lookup-that-did-not-answer-is-read-as-one.test.mjs": {
+          "tests": 1,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "an-owner-name-alone-is-counted-not-read.test.mjs": {
           "tests": 3,
           "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-owners-set-leaves-the-picking-step-with-one-ground.test.mjs": {
+          "tests": 4,
+          "asserts": 23,
           "skips": 0,
           "todos": 0
         },
@@ -2913,6 +2943,12 @@
           "skips": 0,
           "todos": 0
         },
+        "every-run-log-name-is-classed-for-first-time.test.mjs": {
+          "tests": 2,
+          "asserts": 14,
+          "skips": 1,
+          "todos": 0
+        },
         "every-surface-that-takes-the-manifest-asks-for-the-goods-words.test.mjs": {
           "tests": 10,
           "asserts": 22,
@@ -3042,6 +3078,12 @@
         "findings-v5.test.mjs": {
           "tests": 12,
           "asserts": 50,
+          "skips": 0,
+          "todos": 0
+        },
+        "first-time-is-read-from-the-whole-run-record.test.mjs": {
+          "tests": 9,
+          "asserts": 57,
           "skips": 0,
           "todos": 0
         },
@@ -3418,8 +3460,8 @@
           "todos": 0
         },
         "matter-frame-record.test.mjs": {
-          "tests": 27,
-          "asserts": 100,
+          "tests": 28,
+          "asserts": 108,
           "skips": 0,
           "todos": 0
         },
@@ -3538,8 +3580,8 @@
           "todos": 0
         },
         "no-two-dictated-queries-fold-to-one-key.test.mjs": {
-          "tests": 5,
-          "asserts": 10,
+          "tests": 3,
+          "asserts": 7,
           "skips": 0,
           "todos": 0
         },
@@ -3731,7 +3773,7 @@
         },
         "pipeline.mock.test.mjs": {
           "tests": 103,
-          "asserts": 859,
+          "asserts": 861,
           "skips": 0,
           "todos": 0
         },
@@ -5086,8 +5128,8 @@
           "todos": 0
         },
         "supplemental.test.mjs": {
-          "tests": 23,
-          "asserts": 148,
+          "tests": 24,
+          "asserts": 153,
           "skips": 0,
           "todos": 0
         },
@@ -5445,6 +5487,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-engine-is-given-no-fixed-call-budget.test.mjs": {
+          "tests": 1,
+          "asserts": 2,
+          "skips": 0,
+          "todos": 0
+        },
         "the-engine-step-cannot-loop-on-a-menu-nothing-changed.test.mjs": {
           "tests": 17,
           "asserts": 45,
@@ -5494,8 +5542,8 @@
           "todos": 0
         },
         "the-frame-decides-the-web-grid.test.mjs": {
-          "tests": 20,
-          "asserts": 77,
+          "tests": 21,
+          "asserts": 81,
           "skips": 0,
           "todos": 0
         },
@@ -7412,6 +7460,12 @@
         "providers/signa/test/match-mode-is-not-approximated.test.mjs": {
           "tests": 4,
           "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/signa/test/the-screen-speaks-the-shared-verdicts.test.mjs": {
+          "tests": 2,
+          "asserts": 4,
           "skips": 0,
           "todos": 0
         },

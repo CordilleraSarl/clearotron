@@ -15,7 +15,7 @@
 
 ### High
 
-- **Triage read.** Significant conflicts — same format as Medium, more urgent. Reserved for dominant, well-resourced, known-to-enforce rights holders.
+- **Triage read.** Significant conflicts — same format as Medium, more urgent.
 
 ### Medium
 
@@ -34,7 +34,7 @@
 1. **Class-specific ratings are mandatory at Medium and above** — "Medium (Classes 9, 25, 28, 41)", never a bare band.
 2. **Crowded field = diluted risk, not amplified** — many small non-enforcing players typically caps risk at Medium.
 3. **RETIRED — an everyday name with nothing serious found can reach the bottom band** (owner, 2026-09-15). This read "common English phrases never rate Low"; it decided a band from how ordinary the words were, which no evidence supports and which the clearance lane's own instruction forbids in terms — the applicant's own-mark read is advisory and never moves a band. How ordinary or ownable the words are is a note for the reviewing lawyer. Anything that should lift a name is a finding of its own, rated as one.
-4. **Every rating is pending register overlay** — the standing caveat rides every summary.
+4. **RETIRED — the caveat is conditional now, and it is not this file's to state.**
 5. **Enforcer profiling matters** at Medium+ — portfolio brand? opposition history? institutional filer? "No assertive enforcers" can cap a Medium at "Medium (low)".
 6. **Client's prior use mitigates, never overrides** — rate the full external landscape first; note the mitigation in a purple bullet.
 7. **Measured tone only** — the band colour communicates urgency; the prose stays calm, precise, professional. No quantitative claims (stream counts, sales figures).

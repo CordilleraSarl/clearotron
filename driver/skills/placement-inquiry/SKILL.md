@@ -80,6 +80,8 @@ Two things the question deliberately is **not**. It is not "does this warrant th
 
 Judge an owner's records as a set. Write the position from the record in the client's market and class, quoting its goods. A record you do not carry is given a ground; no record leaves without one.
 
+In the placement form that ground is one set-aside row per owner's set, naming one record of that owner; the form's `set_aside_row_contract` gives its fields. It is not a candidate, and the length target below does not count it.
+
 ### Headline candidates
 
 Candidates whose answer to the promotion question is **it changes the advice**. For each:

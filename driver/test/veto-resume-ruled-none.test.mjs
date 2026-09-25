@@ -68,7 +68,7 @@ test("veto: a corrective retry over a ruled-none meaning population dispatches F
   // seat did the other work and ruled ZERO of its rows. Whatever token names that failure, and
   // whichever transport carries the rulings, attempt 2 must not resume that session.
   const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
-    MOCK_PR_RESULTS: "novapulse meaning slang", MOCK_CL_UNDISPOSED: "1", CLEAROTRON_MAX_RETRIES: "1" });
+    MOCK_PR_RESULTS: "novapulse gaming backlash", MOCK_CL_UNDISPOSED: "1", CLEAROTRON_MAX_RETRIES: "1" });
   assert.equal(res.ok, true, JSON.stringify(res));
   const owner = events.find((e) => e.event === "stage" && e.stage === `common-law-half:${MEANING_SEAT}` && e.trigger === "fresh");
   assert.ok(owner, "the meaning seat ran fresh");
