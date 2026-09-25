@@ -2759,7 +2759,7 @@
         },
         "engine.anthropic.test.mjs": {
           "tests": 65,
-          "asserts": 246,
+          "asserts": 248,
           "skips": 1,
           "todos": 0
         },
