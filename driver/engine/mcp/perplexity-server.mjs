@@ -11,7 +11,7 @@ import { driverDir } from "../../../shared/driver-dir.mjs";   //
 import { underStudioSegment } from "../../../shared/path-seps.mjs";   // Windows builds the path with "\"
 import { serve } from "./stdio-server.mjs";
 import {
-  detectPreset, VALID_PRESETS, buildRequestBody, callAgentAPI, formatResponse, formatSandboxResponse,
+  isKnownPreset, questionPresetFor, buildRequestBody, callAgentAPI, formatResponse, formatSandboxResponse,
   validateGridSpec, buildGridProgramTask, captureGridFromResponse, requiredLedgerRefusal,
   reconcileGridLedger, findUnrecordedConnotationQueries, candidatesForJudgment, rawResultItems,
 } from "../../../providers/perplexity/src/core.js";
@@ -72,6 +72,19 @@ function logCall(tool, args, result) {
     }) + "\n");
   } catch { /* best-effort — a log failure must never break a lookup (band-server.mjs's rule) */ }
 }
+
+// THE TIER THIS RUN'S QUESTIONS GO OUT ON, pinned by its product (search-policy.mjs PRODUCT_POLICIES,
+// ruled 2026-09-25) and frozen in the run's own policy, read once from the run folder this process already
+// serves. Every question is sent on it, whatever depth the question names. A run frozen before the rule
+// names none, and the question's own depth, or the task's shape, decides as it always did. Grids are not
+// questions: they run on their own tier, and their lever is the results each cell keeps.
+const PINNED_QUESTION_PRESET = (() => {
+  if (!RUN_DIR) return null;
+  try {
+    const p = JSON.parse(readFileSync(driverDir(RUN_DIR, "search-policy.json"), "utf8"))?.web?.questionPreset;
+    return typeof p === "string" && isKnownPreset(p) ? p : null;
+  } catch { return null; }
+})();
 
 // WHAT CAME BACK, KEPT IN THE RUN: one file a call, under `_driver/web-results/`. The log above records what
 // was asked and the answer's shape; this keeps the searches the provider ran and the pages it was handed,
@@ -229,10 +242,11 @@ async function research(params) {
     logCall("perplexity_research", { task: "", depth: depth ?? null }, { ok: false, error: "empty task" });
     return "ERROR: task parameter is required and must not be empty.";
   }
-  const preset = depth && VALID_PRESETS.includes(depth) ? depth : detectPreset(task);
+  const preset = questionPresetFor({ pinned: PINNED_QUESTION_PRESET, depth, task });
   // The resolved preset, not the requested one: `depth` is often absent and detectPreset decides, so
-  // logging the request would record a null where the fact is what actually ran.
-  const asked = { task, depth: depth ?? null, preset, allow_fetch, enable_sandbox,
+  // logging the request would record a null where the fact is what actually ran. `pinned` says the run's
+  // setting decided it rather than the question.
+  const asked = { task, depth: depth ?? null, preset, ...(PINNED_QUESTION_PRESET ? { pinned: true } : {}), allow_fetch, enable_sandbox,
     ...(domain_filter ? { domain_filter } : {}), ...(modelOverride ? { model: modelOverride } : {}) };
   try {
     const body = buildRequestBody({ task, preset, allowFetch: allow_fetch, domainFilter: domain_filter, modelOverride, enableSandbox: enable_sandbox, responseSchema: response_schema, schemaName: schema_name });
@@ -254,10 +268,14 @@ serve({
   name: "perplexity", version: "0.1.0",
   tools: [{
     name: "perplexity_research",
-    description: "Web/marketplace research via Perplexity's agent API. Auto-detects depth (fast-search|pro-search|deep-research|advanced-deep-research) unless `depth` is given. For deterministic marketplace grids, pass `grid_spec_path` (absolute, the driver writes it) — the tool runs every (term × platform) cell and saves the verbatim ledger to the spec's output_path; you get back only candidates needing judgment (never write the grid yourself).",
+    // On a run whose search sets the tier, the tool says so and offers no depth: a depth the model chose
+    // would be ignored, and a parameter that is ignored is one the model spends a thought on for nothing.
+    description: PINNED_QUESTION_PRESET
+      ? "Web/marketplace research via Perplexity's agent API, at the depth this search is set to. For deterministic marketplace grids, pass `grid_spec_path` (absolute, the driver writes it) — the tool runs every (term × platform) cell and saves the verbatim ledger to the spec's output_path; you get back only candidates needing judgment (never write the grid yourself)."
+      : "Web/marketplace research via Perplexity's agent API. Auto-detects depth (fast-search|pro-search|deep-research|advanced-deep-research) unless `depth` is given. For deterministic marketplace grids, pass `grid_spec_path` (absolute, the driver writes it) — the tool runs every (term × platform) cell and saves the verbatim ledger to the spec's output_path; you get back only candidates needing judgment (never write the grid yourself).",
     inputSchema: { type: "object", required: ["task"], properties: {
       task: { type: "string", description: "Sanitized research query (~200 tokens max)." },
-      depth: { type: "string", enum: ["fast-search", "pro-search", "deep-research", "advanced-deep-research"] },
+      ...(PINNED_QUESTION_PRESET ? {} : { depth: { type: "string", enum: ["fast-search", "pro-search", "deep-research", "advanced-deep-research"] } }),
       model: { type: "string", description: "Optional model override." },
       allow_fetch: { type: "boolean", default: false },
       domain_filter: { type: "array", items: { type: "string" }, description: "Restrict/exclude domains (max 20), e.g. ['nature.com','-reddit.com']." },

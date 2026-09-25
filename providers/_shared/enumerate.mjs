@@ -65,9 +65,9 @@ import { clipProviderText } from "./provider-text.mjs";   // — keep the discri
 // That structural predicate could not match, and a refusal that recurs byte-identically forever was
 // filed as weather and retried on every future run of that shape. They were raised to 400.
 //
-// AN ERROR IS NO LONGER CLIPPED HERE AT ALL. A register's gateway answered a slow question with an HTTP
-// 504 whose body ran past the bound, and no record of the run kept what the gateway said (measured in
-// testing, 2026-09-25). The count probe's error and a page's error now reach the band block whole, and
+// AN ERROR IS NO LONGER CLIPPED HERE AT ALL. A register's gateway can answer a slow question with an
+// HTTP 504 whose body runs past the bound, and then no record of the run keeps what the gateway said.
+// The count probe's error and a page's error now reach the band block whole, and
 // `deferExhaustedProviderErrors` still bounds what lands in the ledger at 240 downstream, so this widens
 // what the block and the classifier carry, not the ledger's line.
 //
@@ -386,9 +386,9 @@ export function makeEnumerate(deps) {
 
   // ── A QUESTION SLOWER THAN THE REGISTER'S GATEWAY WAITS IS ASKED AGAIN IN REGION HALVES ───────────────
   //
-  // Measured in testing, 2026-09-25: one question across 186 regions came back HTTP 504 from the
-  // register's gateway on all eight attempts, each after about a minute, and the slice it answered was
-  // lost. So the same question is asked again on each half of its regions, and a half that still times
+  // A question across many regions can run longer than the register's gateway waits, and the gateway
+  // then answers HTTP 504 on every attempt, each after its full wait, and the slice is lost. So the same
+  // question is asked again on each half of its regions, and a half that still times
   // out is halved again, down to a single region; the parts are merged into the one answer. The extra
   // calls happen only after a gateway timeout, so a question that answers costs what it always did, and
   // each half runs this whole contract: its own count, its own ceiling, its own screen.

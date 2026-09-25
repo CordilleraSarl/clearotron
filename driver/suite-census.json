@@ -1179,6 +1179,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-search-asks-the-web-on-the-settings-its-report-type-pins.test.mjs": {
+          "tests": 6,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
         "a-search-the-engine-chose-not-to-run-is-not-reported-as-unfinished.test.mjs": {
           "tests": 5,
           "asserts": 13,

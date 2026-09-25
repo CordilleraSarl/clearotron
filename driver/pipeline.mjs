@@ -226,7 +226,13 @@ async function defaultRecordFetcher(uri, ctx) {
  * It DECIDES nothing. The caller re-merges and the gate judges, so a re-issue that comes back empty is
  * simply a re-merge that still fails, and is disclosed as such rather than counted as searched.
  */
-async function defaultConnotationReissuer(queries, { spec, modelOverride = null } = {}) {
+/** The grid spec's `results_per_cell` from a frozen search policy, or nothing for a run frozen without one. PURE. */
+export function resultsPerCellOf(searchPolicy) {   // @internal
+  const n = searchPolicy?.web?.resultsPerCell;
+  return Number.isInteger(n) && n >= 1 ? { results_per_cell: n } : {};
+}
+
+async function defaultConnotationReissuer(queries, { spec, modelOverride = null, rawPath = null } = {}) {
   const apiKey = process.env.PERPLEXITY_API_KEY || "";
   if (!apiKey) return { ok: false, cause: "no research credential in the driver environment", rows: [] };
   const core = await import("../providers/perplexity/src/core.js");
@@ -235,6 +241,13 @@ async function defaultConnotationReissuer(queries, { spec, modelOverride = null 
     const task = core.buildGridProgramTask(narrow);
     const data = await core.callAgentAPI(apiKey,
       core.buildRequestBody({ task, preset: "pro-search", modelOverride, enableSandbox: true }));
+    // WHAT CAME BACK, KEPT IN THE RUN like every other web call's: the capture keeps the receipts only.
+    if (rawPath) {
+      try {
+        mkdirSync(dirname(rawPath), { recursive: true });
+        writeFileSync(rawPath, JSON.stringify({ tool: "connotation-reissue", queries, items: core.rawResultItems(data) }, null, 1) + "\n");
+      } catch { /* best-effort: the receipts below are the record */ }
+    }
     const cap = core.captureGridFromResponse(data, narrow);
     if (!cap?.ok) return { ok: false, cause: String(cap?.error ?? "capture failed").slice(0, 160), rows: [] };
     const rows = parsePrRiskResults(cap.ledgerJson).filter((r) => queries.includes(r.query));
@@ -1084,6 +1097,9 @@ function deriveGridSpec(ctx) {
       // carrying this field (receipt presence, never absence) — pre-D1 archived specs lack it, so
       // replay verdicts on old runs never flip while every fresh grid is ledger-or-fail.
       ledger_required: true,
+      // HOW MANY RESULTS EACH CELL AND EACH MEANING QUERY ASKS FOR AND KEEPS, by report type, from the
+      // run's frozen policy. A run frozen before the rule names none, and its program asks as it did.
+      ...resultsPerCellOf(ctx.searchPolicy),
     };
     atomicWrite(gridSpecPath, JSON.stringify(gridSpec, null, 2) + "\n");   // B5 — the canonical grid-spec is never seen torn (the fail-closed join rejects a truncated read)
     ctx.gridSpecPath = gridSpecPath;
@@ -1861,6 +1877,9 @@ export function attachSearchPolicy(ctx, job, { write = true } = {}) {   // @inte
       // run's own jurisdictions/classes/platforms from THIS copy on every pass (fresh and resume),
       // so a recipe edited mid-park cannot retarget a run the requester already approved.
       recipeScope: resolved.recipeScope ?? null,
+      // THE WEB SETTINGS this run is held to (search-policy.mjs PRODUCT_POLICIES): the tier its questions go
+      // out on and the results each grid cell keeps. Frozen, so a resume runs on what the run started on.
+      web: resolved.web ?? null,
       deliveryRoute: route,
       enqueuedVia: /^[a-z0-9][a-z0-9/_.-]{0,63}$/i.test(viaRaw) ? viaRaw : null,
       // WHO triggered (Phase 3b attribution): the verified token sub start_run stamped — frozen here so
@@ -9245,7 +9264,7 @@ async function pipelineInner(job, opts = {}) {
             + `${short.length === 1 ? "it" : "them"} itself rather than asking for the sweep again`);
           clConnotationReissueSpent = true;
           const reissuer = opts.connotationReissuer ?? defaultConnotationReissuer;
-          const r = await reissuer(short, { spec });
+          const r = await reissuer(short, { spec, rawPath: driverDir(run.runDir, "web-results", `connotation-reissue-${h}-${Date.now()}.json`) });
           runLog(run.runDir, { event: "connotation-reissue-result", ok: !!r?.ok,
             recovered: Array.isArray(r?.rows) ? r.rows.length : 0,
             cause: r?.ok ? null : String(r?.cause ?? "").slice(0, 160) });
@@ -9547,7 +9566,7 @@ async function pipelineInner(job, opts = {}) {
             note(`${missing.length} dictated meaning quer${missing.length === 1 ? "y" : "ies"} missing after the `
               + "model's one repair turn — the engine re-issues them itself through the same tool");
             const reissuer = opts.connotationReissuer ?? defaultConnotationReissuer;
-            const r = await reissuer(missing, { spec });
+            const r = await reissuer(missing, { spec, rawPath: driverDir(run.runDir, "web-results", `connotation-reissue-${Date.now()}.json`) });
             runLog(run.runDir, { event: "connotation-reissue-result", ok: !!r?.ok,
               recovered: Array.isArray(r?.rows) ? r.rows.length : 0,
               cause: r?.ok ? null : String(r?.cause ?? "").slice(0, 160) });
@@ -10383,6 +10402,7 @@ async function pipelineInner(job, opts = {}) {
             batch: batchSize,
             ledger_required: true,
             ...(half ? { half } : {}),
+            ...resultsPerCellOf(ctx.searchPolicy),
           };
           atomicWrite(P.gridSpecSupp(half, "closure"), JSON.stringify(spec, null, 2) + "\n");
           return spec;

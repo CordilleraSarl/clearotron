@@ -129,9 +129,9 @@ export async function clarivateFetch(apiKey, base, path, { body = null, method =
   // The parse failure travels on `parseError` instead of being swallowed — providers/_shared/http-body.mjs.
   const { body: parsed, parseError } = parseJsonBody(raw);
   // A FAILED CALL'S BODY IS KEPT WHOLE on its row. Everything downstream shortens it — the error text
-  // quotes 200 characters of it and a band's reason 240 — and a gateway's 504 once lost the only sentence
-  // that said what happened (measured in testing, 2026-09-25). A successful body is never written here:
-  // the record ledger holds records, and this row is the call's.
+  // quotes 200 characters of it and a band's reason 240 — and a gateway's error body is often the only
+  // sentence that says what happened. A successful body is never written here: the record ledger holds
+  // records, and this row is the call's.
   logCall(tctx, { http_status: resp.status, ok: resp.ok, attempts, took_ms: Date.now() - t0, bytes: raw.length, cache_hit: false, ...(ledgerExtra ?? {}),
     ...(resp.ok ? {} : { error_body: raw }) });
   if (mem) {
