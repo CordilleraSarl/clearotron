@@ -20,11 +20,22 @@ import { shipsCode, NO_NOTE } from "../../scripts/release-note-required.mjs";
 
 const ROOT = join(dirname(dirname(fileURLToPath(import.meta.url))), "..");
 const CHECK = join(ROOT, "scripts", "release-note-required.mjs");
+/**
+ * git in a fixture repository. A failure throws with git's own words: on a Windows runner `add -A` failed
+ * here once and passed on the re-run (2026-09-25), and "Command failed" alone named no cause.
+ */
+const gitIn = (dir) => (...a) => {
+  const r = spawnSync("git", ["-c", "user.email=a@b.c", "-c", "user.name=t", ...a], { cwd: dir, encoding: "utf8" });
+  if (r.status !== 0) {
+    const how = r.error ? r.error.code : r.status === null ? `signal ${r.signal}` : `exit ${r.status}`;
+    throw new Error(`git ${a.join(" ")} failed (${how}): ${(r.stderr || r.stdout || "").trim() || "git printed nothing"}`);
+  }
+  return r.stdout;
+};
 /** A repository with one commit on `base`, then whatever this change does on top. */
 function repoWith(changes, message = "a change") {
   const dir = mkdtempSync(join(tmpdir(), "ctnote-"));
-  const git = (...a) => execFileSync("git", ["-c", "user.email=a@b.c", "-c", "user.name=t", ...a],
-    { cwd: dir, encoding: "utf8" });
+  const git = gitIn(dir);
   git("init", "-q", "-b", "main");
   mkdirSync(join(dir, "bin"), { recursive: true });
   writeFileSync(join(dir, "seed.txt"), "seed\n");
@@ -41,8 +52,7 @@ function repoWith(changes, message = "a change") {
 /** A repository with one commit on `base`, then one commit per entry, oldest first. */
 function repoWithCommits(list) {
   const dir = mkdtempSync(join(tmpdir(), "ctnote-"));
-  const git = (...a) => execFileSync("git", ["-c", "user.email=a@b.c", "-c", "user.name=t", ...a],
-    { cwd: dir, encoding: "utf8" });
+  const git = gitIn(dir);
   git("init", "-q", "-b", "main");
   writeFileSync(join(dir, "seed.txt"), "seed\n");
   git("add", "-A"); git("commit", "-qm", "base");
@@ -442,8 +452,7 @@ test("a note a PRE-RELEASE has consumed still answers for the commit that wrote 
 /** Steps on top of a base commit; a message may be a function of the shas so far; `empty` commits nothing. */
 function repoWithSteps(steps) {
   const dir = mkdtempSync(join(tmpdir(), "ctnote-"));
-  const git = (...a) => execFileSync("git", ["-c", "user.email=a@b.c", "-c", "user.name=t", ...a],
-    { cwd: dir, encoding: "utf8" });
+  const git = gitIn(dir);
   git("init", "-q", "-b", "main");
   writeFileSync(join(dir, "seed.txt"), "seed\n");
   git("add", "-A"); git("commit", "-qm", "base");
