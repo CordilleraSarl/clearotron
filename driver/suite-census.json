@@ -1540,9 +1540,9 @@
           "todos": 0
         },
         "a-windows-stage-record-has-a-name-windows-can-hold.test.mjs": {
-          "tests": 5,
-          "asserts": 21,
-          "skips": 0,
+          "tests": 6,
+          "asserts": 24,
+          "skips": 1,
           "todos": 0
         },
         "a-windows-start-has-no-background-mode.test.mjs": {

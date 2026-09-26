@@ -13,6 +13,7 @@ import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { driverDir } from "../../shared/driver-dir.mjs";
 import { firstTimeRows, firstTimeLines, readRunRecord, NOT_RECORDED } from "../../scripts/e2e-first-time.mjs";
 
 const ok = (stage, attempt = 1, extra = {}) => ({ stage, row: { attempt, ok: true, engine: "engine-a", modelActual: "model-a", ...extra } });
@@ -85,7 +86,10 @@ test("the reader takes the run record from disk: stage records, the run log, sta
   mkdirSync(join(run, "_driver"), { recursive: true });
   const jl = (rows) => rows.map((r) => JSON.stringify(r)).join("\n") + "\n";
   writeFileSync(join(run, "_driver", "matter-frame.jsonl"), jl([{ attempt: 1, ok: true, engine: "engine-a" }]));
-  writeFileSync(join(run, "_driver", "register-unit:saturation-probe.jsonl"), jl([{ attempt: 1, wall: 0.002 }]));
+  // Through driverDir, which writes the label's colon as Windows can hold it, as the product does.
+  // Written by hand, NTFS takes the name as a hidden stream of a file called register-unit, the
+  // directory listing this reader walks never shows it, and the run reads as having no code step.
+  writeFileSync(driverDir(run, "register-unit:saturation-probe.jsonl"), jl([{ attempt: 1, wall: 0.002 }]));
   writeFileSync(join(run, "status.json"), JSON.stringify({ state: "delivered" }));
   writeFileSync(join(run, ".postponed"), JSON.stringify({ stage: "matter-frame", parkKind: "weather" }));
   writeFileSync(join(run, ".failed"), JSON.stringify({ stage: "matter-frame", reason: "missing_file" }));
