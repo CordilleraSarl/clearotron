@@ -95,7 +95,7 @@ test("status-honesty: a clean headline over a material gap trips; a gap honestly
 
 test("#6 deadline-urgency: a near-term client deadline trips; far-future / long-past / absent do not", () => {
   const NOW = Date.parse("2026-06-19T00:00:00Z");
-  const mk = (deadline) => ({ ordinal: 1, mark: "PHINIA", deadline });
+  const mk = (deadline) => ({ ordinal: 1, mark: "AXLEVORN", deadline });
   const day = 86400000;
   // due in 30 days → trip (action window)
   const a = findDeadlineUrgencyMiss({ findings: [mk({ kind: "opposition", date: "2026-07-19" })] }, { nowMs: NOW });
@@ -119,13 +119,13 @@ test("#6 deadline-urgency: a near-term client deadline trips; far-future / long-
 test("#7 unresolved-disagreement: a Disagreement-resolutions row with no/placeholder resolution trips; a real one passes", () => {
   const md = (rows) => `## Findings\n\n### Disagreement resolutions\n| Disagreement | Resolution |\n|---|---|\n${rows.join("\n")}\n`;
   // empty resolution → trip
-  const a = findUnresolvedDisagreements(md(["| placement-inquiry placed PHINIA at watchlist, class-match said headline | |"]));
+  const a = findUnresolvedDisagreements(md(["| placement-inquiry placed AXLEVORN at watchlist, class-match said headline | |"]));
   assert.equal(a.length, 1, JSON.stringify(a));
   assert.match(a[0].why, /no resolution/i);
   // placeholder (pending / tbd) → trip
   assert.equal(findUnresolvedDisagreements(md(["| X deviated | pending |", "| Y deviated | TBD |"])).length, 2);
   // a real resolution → pass
-  assert.equal(findUnresolvedDisagreements(md(["| PHINIA placement | ADOPTED placement-inquiry — cl.12 auto-parts is off-field |"])).length, 0);
+  assert.equal(findUnresolvedDisagreements(md(["| AXLEVORN placement | ADOPTED placement-inquiry — cl.12 auto-parts is off-field |"])).length, 0);
   // no table at all (legacy / no disagreements) → nothing
   assert.equal(findUnresolvedDisagreements("## Findings\n(none)\n").length, 0);
 });

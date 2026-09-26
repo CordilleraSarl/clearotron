@@ -229,7 +229,7 @@ export function findDeadlineUrgencyMiss(parsedFindings = {}, { nowMs = 0, within
 /**
  * #7 — Unresolved placement disagreement. The digest (MODE B) consumes placement-inquiry's "Disagreements /
  * flags surfaced to downstream" and must EXPLICITLY adopt or override-with-reasoning each one (digest.md). The
- * PHINIA miss: a disagreement that neither resolved — it just vanished. The digest authors a STRUCTURED
+ * miss it guards: a disagreement that neither resolved — it just vanished. The digest authors a STRUCTURED
  * `### Disagreement resolutions` table (`| Disagreement | Resolution |`); this parses it (a frozen-schema
  * table read, NOT a loose prose regex — same shape as parseDropRows) and trips on any row whose Resolution is
  * empty or a non-answer (tbd / pending / open). No table (legacy / no disagreements) → nothing. Non-blocking.
