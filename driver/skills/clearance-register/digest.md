@@ -355,7 +355,7 @@ surfaced and declared none.
 - **`decision`** — EXACTLY one bare token of: `ADOPTED` / `OVERRODE`.
 - **`reason`** — an override QUOTES the reason it contradicts; a kept tier still says why.
 
-For example: subject `PHINIA — placed at watchlist-annex, class-match said headline (cl.12 overlap)`,
+For example: subject `AXLEVORN — placed at watchlist-annex, class-match said headline (cl.12 overlap)`,
 decision `ADOPTED`, reason `the cl.12 overlap is auto-parts vs the applicant's software; off-field`.
 
 **Coverage ledger → the `coverage_judgment` contract.** You rule every row of the driver's coverage form
