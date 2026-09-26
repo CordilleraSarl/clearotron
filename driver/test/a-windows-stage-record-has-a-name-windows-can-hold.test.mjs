@@ -18,7 +18,7 @@ import assert from "node:assert/strict";
 import { mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { trackedFiles } from "../../shared/tracked-files.mjs";
+import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { driverDir, driverFileName, labelOfDriverFile } from "../../shared/driver-dir.mjs";
@@ -97,11 +97,14 @@ test("a stop removes only the folders its record made, however the machine spell
 // colon, the reader's directory walk never lists it, and the test fails for a reason its own text cannot
 // explain. Two did, on main, on 2026-09-26: the run-record reader read no code step, and the audit
 // workbook read no failed card. Both were fixture defects; the product had been right since 2026-09-23.
-test("no test fixture writes a _driver artefact whose stage label keeps a raw colon", () => {
+test("no test fixture writes a _driver artefact whose stage label keeps a raw colon", (ctx) => {
+  const GUARD = "windows-safe _driver fixtures";
   const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
-  const files = trackedFiles("windows-safe _driver fixtures", { root,
+  const files = trackedFiles(GUARD, { root,
     pathspec: ["driver/test/*", "providers/*/test/*", "mcp-server/test/*", "portal-ui/test/*"] });
-  if (files === null) return;   // no checkout: the helper has already said so, loudly
+  // A bare `return` here would score as a PASS having measured nothing, which is the one thing this
+  // arm may not do. Off a checkout it SKIPS, loudly, and the run says so.
+  if (files === null) return ctx.skip(skipReason(GUARD));
   assert.ok(files.length > 500, `the corpus read as ${files.length} file(s), which is too few to be the test tree`);
   // A hand-built path is `join(…, "_driver", …)` or a literal beginning `_driver/`. Either is fine until
   // the name on it carries a colon, which is the character Windows cannot hold.

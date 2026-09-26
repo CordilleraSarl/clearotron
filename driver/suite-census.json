@@ -1518,7 +1518,7 @@
         "a-windows-stage-record-has-a-name-windows-can-hold.test.mjs": {
           "tests": 6,
           "asserts": 23,
-          "skips": 0,
+          "skips": 1,
           "todos": 0
         },
         "a-windows-start-has-no-background-mode.test.mjs": {
