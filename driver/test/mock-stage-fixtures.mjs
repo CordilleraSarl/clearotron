@@ -2098,6 +2098,10 @@ export function applyStageWrites(msg, argv) {
       marks: names.map((n, i) => ({ ref: null, name: n, classes: [9], beltAndBraces: [35],
         classesPlain: "software (9); retail services (35, belt-and-braces)",
         contextFraming: /[aeiou]{2}|q[^u]/i.test(n) ? "coined/fanciful term" : "brand-like compound",
+        // THE KIND OF USE, and DERIVED FROM THE MARK for the same reason contextFraming above it is: an
+        // arm asserting that a mark's cells carry THAT mark's use cannot fail against a fixture that
+        // gives every mark the same word. A real frame judges this; the mock only has to differ per mark.
+        useKind: /[aeiou]{2}|q[^u]/i.test(n) ? "character" : "product line",
         // the name as instructed, and one misspelling: its last letter doubled, which no name can equal
         spellings: [n, `${n}${n.slice(-1)}`],
         priorKnowledge: null, priority: i + 1 })),

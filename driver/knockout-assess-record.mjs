@@ -147,6 +147,9 @@ const DECLARED = Object.freeze({
     // conflict. Rows of { recordId, read }; the recordId is JOINED against the run's own register record
     // store, so it is a fact and not an echo.
     "registerReads",
+    // — the web side of the same duty (ruled 2026-09-26): a result the search returned that the rating
+    // did not carry as a finding, with the ground for leaving it. Rows of { url, ground }.
+    "setAside",
   ],
   // A finding's closed keys are the VALIDATOR'S OWN LIST, imported rather than restated. This allowlist
   // and that list were two spellings of one closed set, and they disagreed: this one allowed
@@ -164,6 +167,7 @@ const DECLARED = Object.freeze({
   // `inputs` rides with a band: under a framework that states a method, a banded read is a rated conflict
   // and records the framework's inputs, as a finding does (verify-knockout.mjs checkRegisterReadInputs).
   "marks.registerReads": ["recordId", "read", "band", "inputs"],
+  "marks.setAside": ["url", "ground"],
   "marks.negatives": ["term", "source", "note"],
 });
 

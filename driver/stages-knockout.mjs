@@ -144,15 +144,21 @@ export const orderedTerritories = (job) =>
   (Array.isArray(job?.jurisdictions) ? job.jurisdictions.map((s) => String(s).trim()).filter(Boolean) : []);
 
 /**
- * One mark's grid, dictated from the frozen plan: its spellings on the batch's places. PURE.
+ * One mark's grid, dictated from the frozen plan: its spellings, with its kind of use, on the batch's
+ * places. PURE.
  *
- * The spellings and the places are the frame's own words, copied and never re-typed. The plan's validator
- * has already refused a plan without them, so an empty list here is a plan frozen before they existed.
+ * The spellings, the use and the places are the frame's own words, copied and never re-typed. The plan's
+ * validator has already refused a plan without them, so an empty list here is a plan frozen before they
+ * existed. So is a mark with no `useKind`, and its cells search the bare spelling as they did then.
+ * THE USE IS THE FRAME'S JUDGMENT (ruled 2026-09-26): a cell searches the spelling plus the kind of use
+ * the frame named for that name, never a word from a list here.
  */
 export function knockoutGridSpec(markRow, batch, { outputPath }) {
+  const use = typeof markRow?.useKind === "string" ? markRow.useKind.trim() : "";
   return {
     terms: [...(Array.isArray(markRow?.spellings) ? markRow.spellings : [])],
     platforms: [...(Array.isArray(batch?.places) ? batch.places : [])],
+    ...(use ? { use } : {}),
     output_path: outputPath,
     results_per_cell: KNOCKOUT_WEB.resultsPerCell,
   };
@@ -241,7 +247,7 @@ export const KO_STAGES = {
       // second chance the Write tool used to give.
       `HAND THE FRAME BACK BY CALLING \`record_knockout_frame\`. THERE ARE NO FILES FOR YOU TO WRITE and this dispatch names none — the driver writes both the plan and the scope note from what you send, and nothing you write by hand is read.`,
       `Send \`scope_note\`: the 2–3 sentence scope note, FINISHED — what the batch is, which classes, anything flagged. It is written to knockout-frame.md exactly as you send it, with no heading added and nothing composed into it, so it must read as a complete document on arrival.`,
-      `Send \`marks\`: one row per instructed mark, names verbatim from the instructed scope, each with its classes, beltAndBraces, classesPlain, contextFraming, spellings (task 2e) and priority. Two names that differ only in spacing, punctuation or case are REFUSED — they would share one research payload, and one of them would then be rated on the other's evidence.`,
+      `Send \`marks\`: one row per instructed mark, names verbatim from the instructed scope, each with its classes, beltAndBraces, classesPlain, contextFraming, useKind (task 2c: in one to three words, the kind of use this name is searched for), spellings (task 2e) and priority. Two names that differ only in spacing, punctuation or case are REFUSED — they would share one research payload, and one of them would then be rated on the other's evidence.`,
       `Send \`batch\`: productContext, inUseAs (task 2c), places (task 2d), and executionOrder as a permutation of your mark names.`,
       `IF YOU CALL AGAIN, SEND ONLY WHAT YOU ARE CORRECTING. The driver merges marks BY NAME onto what it already accepted, so a mark you omit keeps its row — but a mark you DO send replaces that row whole, so send a corrected mark complete rather than as a fragment.`,
     ),

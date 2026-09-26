@@ -120,11 +120,21 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
       negativeRows.push({ 'Mark': m.name, 'Search Term': n.term ?? '', 'Source / Context': n.source ?? '', 'Result': n.note ?? 'No results found', 'Notes': '' });
     }
   }
+  // EACH CELL'S QUERY, not just its spelling. Since the knockout's cells search the spelling followed by
+  // the kind of use the frame named for that name, a row printing the bare spellings would say the run
+  // searched something it did not. The frame's own word is appended to each spelling and nothing is
+  // composed around it. A receipt with no use — an archived run, or a plan frozen before the field
+  // existed — prints its spellings exactly as it did then.
+  const searchedTerms = (r) => {
+    const spellings = Array.isArray(r.spellings) && r.spellings.length ? r.spellings : [r.mark];
+    const use = typeof r.use === 'string' ? r.use.trim() : '';
+    return (use ? spellings.map((s) => `${s} ${use}`) : spellings).join(', ');
+  };
   const trailRows = (receipts ?? []).map((r) => ({
-    // A grid call's row names what it searched: the spellings, and the places each was searched on. An
-    // archived run's rows print as they were delivered: the mark as the term, and on its second web
-    // question the kinds of use it asked about, in the frame's words.
-    'Mark': r.mark, 'Search Term': Array.isArray(r.spellings) && r.spellings.length ? r.spellings.join(', ') : r.mark,
+    // A grid call's row names what it searched: the spellings with their kind of use, and the places each
+    // was searched on. An archived run's rows print as they were delivered: the mark as the term, and on
+    // its second web question the kinds of use it asked about, in the frame's words.
+    'Mark': r.mark, 'Search Term': searchedTerms(r),
     'Source / Context': `${r.executor ?? 'perplexity'} (${r.preset ?? ''})${Array.isArray(r.places) && r.places.length ? ` — ${r.places.join(', ')}` : r.question && r.inUseAs ? ` — in use as ${r.inUseAs}` : ''}`,
     'Result Summary': r.ok ? `ok — ${r.bytes ?? 0} bytes` : `FAILED — ${plainCause(r.cause)}`,
     'Finding Reference': r.ok && refByMark.has(r.mark) ? refByMark.get(r.mark) : '',
@@ -155,6 +165,37 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
   for (const r of degraded.recordsNotKept ?? []) {
     trailRows.push({ 'Mark': r.mark, 'Search Term': '—', 'Source / Context': `perplexity (${r.preset ?? ''})`,
       'Result Summary': RULED_WORDS.recordNotKept, 'Finding Reference': '—', 'Sweep Call #': '—', 'Wall-time (s)': '—', 'OK/Degraded': 'Degraded' });
+  }
+  // WHAT THE SEARCH RETURNED AND THE RATING DID NOT CARRY, each with the ground the rater wrote (ruled
+  // 2026-09-26). Set-aside reasons live in the audit workbook and never in the report, so this sheet is
+  // their one reader-facing place, as it already is on a clearance. The label is the clearance's own and
+  // the ground is the rater's words; nothing is composed around either. The row is not a degraded one:
+  // reading a result and putting it down is the screen working, so it stands as OK.
+  for (const m of findings.marks ?? []) {
+    for (const s of m.setAside ?? []) {
+      const url = String(s?.url ?? '').trim();
+      const ground = String(s?.ground ?? '').trim();
+      // A ROW WITHOUT ITS GROUND IS STILL A ROW. The validator refuses one on the way in, but this
+      // function is also called directly on a re-render of an existing `knockout-findings.json`, with no
+      // validator between — so a record from another build can arrive half-formed here. Dropping it
+      // silently would print the mark as having set nothing aside, which is the absence-reads-as-a-pass
+      // shape. The row stays, and it is marked Degraded, because part of this record genuinely is missing.
+      //
+      // ITS REASON CELL IS LEFT EMPTY, and that is deliberate rather than unfinished. The row's own
+      // shipped line for a part left open says "it could not be completed this run" — and here the
+      // set-aside WAS completed; only its reason is absent from the record another build wrote. Printing
+      // that line would tell a client a step failed when none did, which is the defect this very sheet
+      // was cleaned of. No shipped string says "the reason is not in this record", and writing one is a
+      // new sentence a client reads, so it is not this function's to write. Empty says nothing untrue,
+      // and the Degraded mark beside it is what carries the fact that something is missing.
+      //
+      // A row with no url has nothing to name and nothing to look up, so it is the one shape that
+      // cannot be printed at all.
+      if (!url) continue;
+      trailRows.push({ 'Mark': m.name, 'Search Term': `Set aside: ${url}`, 'Source / Context': '—',
+        'Result Summary': ground,
+        'Finding Reference': '—', 'Sweep Call #': '—', 'Wall-time (s)': '—', 'OK/Degraded': ground ? 'OK' : 'Degraded' });
+    }
   }
   addSheet(wb, 'Findings', ['Mark', 'Finding Reference', 'Finding Name', 'Owner', 'Band', 'Type', 'Net', 'Basis', 'Evidence'], findingRows);
   addSheet(wb, 'Negative Results', ['Mark', 'Search Term', 'Source / Context', 'Result', 'Notes'], negativeRows);

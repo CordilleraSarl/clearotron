@@ -292,6 +292,23 @@ export function spellingsDefect(name, spellings) {
   return null;
 }
 
+/**
+ * The refusal for a mark's kind of use, or null. PURE. The frame names it per name, in its own judgment,
+ * and every search of the name adds it. Nothing here lists the kinds, and NOTHING HERE BOUNDS ITS LENGTH:
+ * the manual ASKS for one to three words, and a longer answer is accepted.
+ *
+ * It was built refusing anything over three words or forty characters, and the owner softened that
+ * (ruling 583, 2026-09-26): a longer kind of use is accepted and never costs a retry. The bound was mine,
+ * not his, and its cost was the reason — a refusal here sends the frame a repair turn, and a run that
+ * repaired anything has failed the round's own bar. The batch's `inUseAs` line invites exactly the shape
+ * the bound refused ("a character or a place in a game"), so it would have fired on a frame doing as it
+ * was asked. A long answer makes the cells' queries longer, which makes the screen weaker, not wrong.
+ */
+export function useKindDefect(name, useKind) {
+  const refusal = `mark "${name}": useKind is required: one to three words, the kind of use this name is searched for (task 2c)`;
+  return typeof useKind === "string" && useKind.trim() ? null : refusal;
+}
+
 // ── Stage validators (runStage corrective-ladder shape) ──────────────────────────────────────────────
 export const validators = {
   // knockout-plan.json — strict: closed keys, one row per instructed mark (name parity vs the
@@ -310,7 +327,7 @@ export const validators = {
     const placesRefused = placesDefect(p.batch.places);
     if (placesRefused) return { ok: false, reason: placesRefused };
     if (!Array.isArray(p.marks) || !p.marks.length) return { ok: false, reason: "marks[] is required" };
-    const MARK_KEYS = ["ref", "name", "classes", "beltAndBraces", "classesPlain", "contextFraming", "spellings", "priorKnowledge", "priority"];
+    const MARK_KEYS = ["ref", "name", "classes", "beltAndBraces", "classesPlain", "contextFraming", "useKind", "spellings", "priorKnowledge", "priority"];
     for (const m of p.marks) {
       for (const k of Object.keys(m)) if (!MARK_KEYS.includes(k)) return { ok: false, reason: `plan mark key "${k}" is not in the closed contract` };
       if (typeof m.name !== "string" || !m.name.trim()) return { ok: false, reason: "every plan mark needs a verbatim name" };
@@ -318,6 +335,8 @@ export const validators = {
       const spellingsRefused = spellingsDefect(m.name, m.spellings);
       if (spellingsRefused) return { ok: false, reason: spellingsRefused };
       if (typeof m.contextFraming !== "string" || !m.contextFraming.trim()) return { ok: false, reason: `mark "${m.name}": contextFraming is required (the rating hangs off it)` };
+      const useKindRefused = useKindDefect(m.name, m.useKind);
+      if (useKindRefused) return { ok: false, reason: useKindRefused };
       for (const ck of ["classes", "beltAndBraces"]) {
         if (m[ck] != null && (!Array.isArray(m[ck]) || !m[ck].every((n) => Number.isInteger(n) && n >= 1 && n <= 45)))
           return { ok: false, reason: `mark "${m.name}": ${ck} must be Nice-class integers (1–45)` };
@@ -541,6 +560,26 @@ export const validators = {
             const ri = checkRegisterReadInputs(method, fw, row);
             if (ri.reason) return { ok: false, reason: `mark "${m.name}": ${ri.reason}` };
           }
+        }
+      }
+      // — WHAT THE SEARCH RETURNED AND THE RATING DID NOT CARRY, each with its ground (ruled 2026-09-26).
+      // Optional, exactly as `registerReads` above is: nothing found leaves the record without a reason,
+      // and a row invented to fill the list would be the same defect with the rater's name on it. Unlike
+      // `registerReads` the url is NOT joined against the mark's ledger — a refusal here costs a repair
+      // turn, and nothing is gained by fabricating a reason for a page nobody will look up.
+      if (m.setAside !== undefined && m.setAside !== null) {
+        if (!Array.isArray(m.setAside))
+          return { ok: false, reason: `mark "${m.name}": setAside must be an ARRAY of { url, ground } rows, or omitted entirely` };
+        for (const row of m.setAside) {
+          const url = String(row?.url ?? "").trim();
+          const ground = String(row?.ground ?? "").trim();
+          if (!url) return { ok: false, reason: `mark "${m.name}": a setAside row has no url — name the result you are setting aside by its own address, verbatim from the payload you were given` };
+          // THE GROUND IS NOT LENGTH-BOUNDED, and `useKind` in the frame beside it is. The difference is
+          // where each one goes: a kind of use is appended to every cell's QUERY, so three extra words are
+          // searched in every cell and bury the spelling, while a ground is prose a reader reads, in the
+          // same class as `registerReads[].read` and a finding's `basis` — both unbounded, for the same
+          // reason. Capping it would buy nothing and would teach the rater to write half a reason.
+          if (!ground) return { ok: false, reason: `mark "${m.name}": setAside row "${url}" has an empty ground. Omit the row rather than sending an empty one: a set-aside with no reason is not a decision` };
         }
       }
       for (const f of (Array.isArray(m.findings) ? m.findings : [])) {
