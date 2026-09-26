@@ -95,6 +95,7 @@ import { resolveRegions } from "./register-plan.mjs";
 import { reachableRegions } from "./register-availability.mjs";   // — pure; the env binding is injected
 import { variantForms, VARIANT_RULES, VARIANT_CAP } from "./register-variants.mjs";
 import { isCapabilityGap } from "../providers/_shared/execute-plan.mjs";
+import { plainDeferralReason } from "./deferral-row.mjs";   // — the reader's line for a count left open
 
 /** The three questions, in report order. `matchMode` is the provider-neutral predicate name.
  *
@@ -413,9 +414,10 @@ export async function countRegisterHits({
           // lane: a deterministic gap settles and is never re-billed, and a misconfigured cap is the one
           // "empty set" a resume MUST re-take once the variable is fixed.
           ...(capped ? {} : { deterministic: true }),
-          unavailable: capped
-            ? `the close-variation form cap is set to ${variantCap}, which admits no forms — the rule table generated ${variants.generated} for "${name}" and every one was cut. Check ${VARIANT_CAP_ENV}; this is a configuration fault, not a property of the name`
-            : `no close-variation forms could be generated from "${name}" — the name has no near-form under any rule in the table, so there was nothing to count` };
+          // THE CELL IS A READER'S, THE CAUSE IS THE RECORD'S. A client sees the line a count left open prints;
+          // the configuration fault, with the setting to fix, stays in the counts record under `cause`.
+          unavailable: capped ? plainDeferralReason("unfinished") : `no close-variation forms could be generated from "${name}" — the name has no near-form under any rule in the table, so there was nothing to count`,
+          ...(capped ? { cause: `the close-variation form cap is set to ${variantCap}, which admits no forms — the rule table generated ${variants.generated} for "${name}" and every one was cut. Check ${VARIANT_CAP_ENV}; this is a configuration fault, not a property of the name` } : {}) };
       }
       // SERIAL, deliberately — the parallelism is the outer per-mark batch's, and it stays the outer
       // batch's. Fanning out here too would multiply: `concurrency` marks × up to 12 forms is 36 calls
