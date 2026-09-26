@@ -91,12 +91,6 @@ test("a stop removes only the folders its record made, however the machine spell
   assert.deepEqual(madeChain(dir, undefined), [], "a record whose folders were all there already removed some");
 });
 
-// THE CLASS, not the two that failed. A fixture that reaches into `_driver/` by hand instead of through
-// driverDir or driverRel writes a stage label's colon raw. On Linux that is the same path, so the test
-// passes and nothing says otherwise; on Windows NTFS takes it as a hidden stream of the name before the
-// colon, the reader's directory walk never lists it, and the test fails for a reason its own text cannot
-// explain. Two did, on main, on 2026-09-26: the run-record reader read no code step, and the audit
-// workbook read no failed card. Both were fixture defects; the product had been right since 2026-09-23.
 const ROOTS = ["driver/test/*", "providers/*/test/*", "mcp-server/test/*", "portal-ui/test/*"];
 
 /** A tracked path against one of those pathspecs, reading `*` as git does: one path segment. */
@@ -116,6 +110,19 @@ const HAND_BUILT = [
   // a `join(…, "_driver", …)` whose arguments carry one
   new RegExp("join\\([^)\\n]*" + QUOTE + "_driver" + QUOTE + "[^)\\n]*" + COLON_NAME, "i"),
 ];
+
+/**
+ * The line with each helper CALL removed, arguments and all.
+ *
+ * `join(dir, "_driver", driverFileName("report-card:3.jsonl"))` is safe — the helper encodes the colon —
+ * but the shapes above scan to the first `)`, which the helper's own paren is not, so the colon name is
+ * reached and the line reads as hand-built. Removing the calls first answers that without bringing back
+ * the exemption it replaced: only a helper's OWN arguments go, so a genuine hand-built write on the same
+ * line survives and is still named. A call this cannot parse — one with a nested paren — is left in
+ * place and the line is judged as it stands, which errs toward naming a safe line over missing an
+ * unsafe one.
+ */
+const withoutHelperCalls = (line) => line.replace(/\b(?:driverDir|driverRel|driverFileName)\([^()]*\)/g, "");
 
 // THE CLASS, not the two that failed. A fixture that reaches into `_driver/` by hand instead of through
 // driverDir or driverRel writes a stage label's colon raw. On Linux that is the same path, so the test
@@ -145,8 +152,10 @@ test("no test fixture writes a _driver artefact whose stage label keeps a raw co
   const offenders = [];
   for (const rel of files) {
     readFileSync(join(root, rel), "utf8").split("\n").forEach((line, i) => {
-      if (HAND_BUILT.some((re) => re.test(line))) offenders.push(`${rel}:${i + 1}`);
+      if (HAND_BUILT.some((re) => re.test(withoutHelperCalls(line)))) offenders.push(`${rel}:${i + 1}`);
     });
   }
-  assert.deepEqual(offenders, [], "write these through driverDir or driverRel, which spell the colon %3A on Windows");
+  assert.deepEqual(offenders, [],
+    "write the name through driverDir or driverRel — they compose _driver/ themselves and spell the colon %3A on Windows, "
+    + "so `driverDir(runDir, \"register-unit:primary-sweep.jsonl\")` rather than a join or a literal path");
 });
