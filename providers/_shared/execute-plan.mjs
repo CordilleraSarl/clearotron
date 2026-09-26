@@ -21,7 +21,7 @@ import { entryTermIssues, goodsTermsList } from "./term-shape.mjs";
 import { awaitsReadingTurn, releasedFamiliesFile } from "./plan-guards.mjs";
 import { faultText, guardToolCall } from "./transport-guard.mjs";
 import { clipProviderText } from "./provider-text.mjs";   // — keep the discriminator
-import { isGatewayStall } from "./enumerate.mjs";   // a question that timed out on both halves of its regions
+import { isGatewayStall, isUnresolvedCount } from "./enumerate.mjs";   // a question that timed out on both halves of its regions; and the one definition of a count the reading step must still decide
 
 // plan predicate → provider query params. "wildcard" patterns compile to the provider's anchored
 // modes (trailing * → starts_with, leading * → ends_with); there is deliberately NO `contains`
@@ -281,11 +281,19 @@ export function defaultBuildEntryQuery(e, pp) {
  */
 export function makeRegionRequiredBuildEntryQuery(inner = defaultBuildEntryQuery) {
   return function buildEntryQuery(e, pp, plan) {
-    const q = inner(e, pp, plan);
-    if (Array.isArray(q.regions) && q.regions.length) return q;
-    const planRegions = (Array.isArray(plan?.regions) ? plan.regions : []).map((r) => String(r).trim()).filter(Boolean);
-    return planRegions.length ? { ...q, regions: planRegions } : q;
+    return withPlanRegions(inner(e, pp, plan), plan);
   };
+}
+
+/**
+ * A query that names no regions takes the plan's: the matter's territories in this provider's own
+ * vocabulary, the list every compiled entry already carries. A query that names regions keeps them, and
+ * a plan with none (a worldwide order on a register that needs no office) leaves the query as it is. PURE.
+ */
+export function withPlanRegions(q, plan) {
+  if (Array.isArray(q?.regions) && q.regions.length) return q;
+  const planRegions = (Array.isArray(plan?.regions) ? plan.regions : []).map((r) => String(r).trim()).filter(Boolean);
+  return planRegions.length ? { ...q, regions: planRegions } : q;
 }
 
 /**
@@ -410,10 +418,13 @@ export function makeExecutePlan(deps) {
         stateByQid.set(e.qid, "error");
         return;
       }
-      // `plan` is passed as a THIRD argument so a provider whose regions[] is mandatory can backfill an
-      // entry that carries none from the plan's own regions (makeRegionRequiredBuildEntryQuery). The
-      // default builder ignores it — corsearch/signa behaviour is byte-identical.
-      const query = buildEntryQuery(e, predicateParams(e), plan);
+      // EVERY QUESTION IS ASKED TO THE ORDER'S SCOPE (ruled 2026-09-26). An entry minted with no regions (a
+      // proposal, a cross-check, a recall probe) asks for the matter's territories, and only a provider
+      // whose regions are mandatory used to fill them in. On every other register such an entry searched
+      // the whole register on an order that named its countries, while the fold's question key read it
+      // as the plan's regions: the key and the query described two different searches. Every provider now
+      // fills them the same way (withPlanRegions); a worldwide plan has none to fill.
+      const query = withPlanRegions(buildEntryQuery(e, predicateParams(e), plan), plan);
       // ── SCRIPT FORM, declaration-driven: a term this index cannot HOLD is refused, not sent ──────
       // The parity half of the transliteration defect. One provider refused native-script
       // mark text inside its own request builder, because its index holds the romanisation and the
@@ -629,9 +640,30 @@ export function makeExecutePlan(deps) {
     // temp+rename: a fail-closed reader sees the old complete band or the new one, never a torn write.
     writeFileSync(`${outPath}.tmp`, JSON.stringify([...blocks, ...preserved], null, 2) + "\n");
     renameSync(`${outPath}.tmp`, outPath);
+    // EACH SPELLING'S COUNT, IN THE REPLY. A crowded stack comes back counted and unread, and the reading
+    // step decides which spellings to read, narrow or leave (ruled 2026-09-26), so it is handed the counts
+    // here rather than left to find them in the band file: a number for a spelling counted and not read,
+    // 0 for a verified zero, "crowd N" for one over the ceiling, "error" for a count that failed.
+    //
+    // THE GATE IS "ANYTHING LEFT TO DECIDE", not one disposition, and that is the whole of this block's
+    // correctness. Keyed on `unenumerated` alone it dropped the two stacks the rule exists for: one where
+    // EVERY spelling is itself over the ceiling, and one where every count failed. Both came back with a
+    // full `term_counts` and this filter then handed the reading step nothing — the rule landed without its
+    // main instance, and a step told nothing reads exactly like a step told there is nothing.
+    //
+    // `isUnresolvedCount` is IMPORTED from the rescue that writes these dispositions, and is the same
+    // predicate both rescues there decide completeness with — one definition, three call sites. It was a
+    // local copy with a comment claiming the two could not drift, which the code did not do: nothing
+    // coupled them. A stack whose every spelling verified zero is resolved and is deliberately still
+    // absent here, because there is nothing for the reading step to read or narrow.
+    const spellingCounts = Object.fromEntries(blocks
+      .filter((b) => b?.term_counts && Object.values(b.term_counts).some(isUnresolvedCount))
+      .map((b) => [b.qid, Object.fromEntries(Object.entries(b.term_counts).map(([t, v]) => [t,
+        v?.disposition === "crowd" ? `crowd ${v.total_hits}` : v?.disposition === "error" ? "error" : (v?.total_hits ?? "error")]))]));
     return { type: "text", text: JSON.stringify({
       written: outPath, blocks: blocks.length + preserved.length, executed: blocks.length, preserved: preserved.length, skipped,
       states: Object.fromEntries([...stateByQid].filter(([q]) => !seeded.has(q))),
+      ...(Object.keys(spellingCounts).length ? { spelling_counts: spellingCounts } : {}),
     }, null, 2) };
   };
 }

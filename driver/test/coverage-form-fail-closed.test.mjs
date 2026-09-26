@@ -279,7 +279,7 @@ test("FUNNEL: plan-execution + plan + band → the exact rows the gate judges, w
       ["axis:primary-sweep", "block:ps:stack:lumen+form"]);
     const block = form.rows[1];
     assert.equal(block.total_hits, 6862, "read off the band, never typed");
-    assert.deepEqual(block.unaccounted_terms, ["LUMENN"]);
+    assert.deepEqual(block.unaccounted_terms, ["LUMEN", "LUMENN"], "LUMEN is itself a crowd: counted, never read");
     assert.match(block.unit, /^primary-sweep \/ exact: LUMEN OR LUMENN \[cl 9\]$/);
     // Whole-object, deliberately: the receipt is the record of what the form was derived from, and a
     // field appearing or vanishing unnoticed is drift in exactly the artifact that exists to prevent it.
