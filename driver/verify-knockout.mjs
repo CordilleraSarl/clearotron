@@ -265,17 +265,33 @@ const materialIdxMax = (ladder) => ladder.length - 3;   // inclusive index bound
 
 /** The place that is the whole web. Every other place is a site's bare host, which covers its subdomains. */
 export const WEB_PLACE = "web";
-/** How many of a batch's places must be the whole web: the one line that decides it (ruling pending on 932). */
+/**
+ * How many of a name's places must be the whole web: the one line that decides it. Ruling 543 — the whole
+ * web is always one of the places — so this is 1 and the check below is what holds it per name.
+ */
 export const WEB_PLACES_REQUIRED = 1;
 const BARE_HOST = /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z](?:[a-z0-9-]{0,61}[a-z0-9])?$/;
-const PLACES_REFUSAL = `batch.places is required: 2 to 4 places, one of them "${WEB_PLACE}" and each other a bare host`;
 
-/** The refusal for a batch's places, or null when they are the list the program can search. PURE. */
-export function placesDefect(places) {
-  if (!Array.isArray(places) || places.length < 2 || places.length > 4) return PLACES_REFUSAL;
-  if (!places.every((x) => x === WEB_PLACE || (typeof x === "string" && x.length <= 253 && BARE_HOST.test(x)))) return PLACES_REFUSAL;
-  if (new Set(places).size !== places.length) return PLACES_REFUSAL;
-  if (places.filter((x) => x === WEB_PLACE).length !== WEB_PLACES_REQUIRED) return PLACES_REFUSAL;
+/**
+ * The refusal for the places a name is searched on, or null. PURE. `name` is the mark, or null for the
+ * batch-level list an archived plan carries.
+ *
+ * PER NAME, AND NO UPPER CAP (ruling 570, 2026-09-26): the frame chooses each name's places, and a batch
+ * of four names may want four different lists. It was 2 to 4 places for the whole batch, which made one
+ * name's storefront the whole batch's, and capped the frame's judgment at a number nobody had ruled.
+ *
+ * THE FLOOR AND THE WEB STAY. Two is the floor because one place is not a screen, and exactly one of them
+ * is the whole web because ruling 543 says the whole web is always one of the places — moving the list
+ * per name is what makes that check per name, and a name whose list lacked the web would be 543 reversed
+ * with nobody ruling it.
+ */
+export function placesDefect(name, places) {
+  const subject = name ? `mark "${name}": places` : "batch.places";
+  const refusal = `${subject} is required: 2 or more places, one of them "${WEB_PLACE}" and each other a bare host`;
+  if (!Array.isArray(places) || places.length < 2) return refusal;
+  if (!places.every((x) => x === WEB_PLACE || (typeof x === "string" && x.length <= 253 && BARE_HOST.test(x)))) return refusal;
+  if (new Set(places).size !== places.length) return refusal;
+  if (places.filter((x) => x === WEB_PLACE).length !== WEB_PLACES_REQUIRED) return refusal;
   return null;
 }
 
@@ -323,11 +339,15 @@ export const validators = {
     // batch is searched on from them, so a plan without them has chosen its places on nothing it stated.
     if (typeof p.batch.inUseAs !== "string" || !p.batch.inUseAs.trim())
       return { ok: false, reason: "batch.inUseAs (string) is required: the kinds of use off the register, for this client's field" };
-    // Where every spelling is searched. Without them the web search has no cell to run (stages-knockout.mjs).
-    const placesRefused = placesDefect(p.batch.places);
-    if (placesRefused) return { ok: false, reason: placesRefused };
+    // THE BATCH'S LIST IS NO LONGER REQUIRED (ruling 570): the places are per name below. A plan frozen
+    // before that carries one here, and it is still checked when present, so an archived plan reads back
+    // under the rule it was written to rather than passing unexamined.
+    if (p.batch.places !== undefined) {
+      const batchPlacesRefused = placesDefect(null, p.batch.places);
+      if (batchPlacesRefused) return { ok: false, reason: batchPlacesRefused };
+    }
     if (!Array.isArray(p.marks) || !p.marks.length) return { ok: false, reason: "marks[] is required" };
-    const MARK_KEYS = ["ref", "name", "classes", "beltAndBraces", "classesPlain", "contextFraming", "useKind", "spellings", "priorKnowledge", "priority"];
+    const MARK_KEYS = ["ref", "name", "classes", "beltAndBraces", "classesPlain", "contextFraming", "useKind", "places", "spellings", "priorKnowledge", "priority"];
     for (const m of p.marks) {
       for (const k of Object.keys(m)) if (!MARK_KEYS.includes(k)) return { ok: false, reason: `plan mark key "${k}" is not in the closed contract` };
       if (typeof m.name !== "string" || !m.name.trim()) return { ok: false, reason: "every plan mark needs a verbatim name" };
@@ -337,6 +357,13 @@ export const validators = {
       if (typeof m.contextFraming !== "string" || !m.contextFraming.trim()) return { ok: false, reason: `mark "${m.name}": contextFraming is required (the rating hangs off it)` };
       const useKindRefused = useKindDefect(m.name, m.useKind);
       if (useKindRefused) return { ok: false, reason: useKindRefused };
+      // WHERE THIS NAME IS SEARCHED (ruling 570). Required per name on a fresh plan; a plan frozen before
+      // the field existed carries the batch's list instead and `knockoutGridSpec` falls back to it, so an
+      // archived plan still runs — the same shape `useKind` takes.
+      if (m.places !== undefined || p.batch.places === undefined) {
+        const placesRefused = placesDefect(m.name, m.places);
+        if (placesRefused) return { ok: false, reason: placesRefused };
+      }
       for (const ck of ["classes", "beltAndBraces"]) {
         if (m[ck] != null && (!Array.isArray(m[ck]) || !m[ck].every((n) => Number.isInteger(n) && n >= 1 && n <= 45)))
           return { ok: false, reason: `mark "${m.name}": ${ck} must be Nice-class integers (1–45)` };
