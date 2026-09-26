@@ -2221,8 +2221,9 @@ export function knockoutReportData(findings, framework, { runId, codename, overa
               ...(r.officeLink ? { officeRecord: { label: r.officeLink.label, href: r.officeLink.href, reason: r.officeLink.reason } } : {}),
             })),
             // Which searches did NOT answer, by name. A consumer that lists only `records` would report
-            // a partial listing as a complete one.
-            unanswered: (listed.terms ?? []).filter((t) => !t.ok).map((t) => ({ form: t.term, basis: t.basis, reason: t.reason ?? null })),
+            // a partial listing as a complete one. A form the cap stopped keeps its sentence; a failed
+            // search's own text stays in the run's filings record, never in this file.
+            unanswered: (listed.terms ?? []).filter((t) => !t.ok).map((t) => ({ form: t.term, basis: t.basis, reason: t.notAsked ? t.reason ?? null : null })),
           };
         })(),
       };

@@ -21,6 +21,7 @@ import { variantForms } from "../register-variants.mjs";
 import { capabilitiesFor } from "../register-capabilities.mjs";
 import { buildKnockoutWorkbook } from "../publish/knockout.mjs";
 import { renderKnockoutHtml, knockoutReportData } from "../publish/render-knockout.mjs";
+import { plainDeferralReason } from "../deferral-row.mjs";
 
 const CORSEARCH = capabilitiesFor("corsearch");
 const CLARIVATE = capabilitiesFor("clarivate");
@@ -200,8 +201,12 @@ test("a MISCONFIGURED cap says so — it never reads as a name with no near-form
   const doc = await run({ marks: [{ name: "ALCHEMIST" }], variantCap: NaN, counter: async () => ({ ok: true, total: 1 }) });
   const cell = doc.marks[0].counts.close;
   assert.equal(cell.total, null);
-  assert.match(cell.unavailable, /configuration fault, not a property of the name/);
-  assert.match(cell.unavailable, /CLEAROTRON_KNOCKOUT_VARIANT_CAP/, "the refusal names the variable to fix");
+  // The fault and the variable to fix are the RECORD's; the reader's cell carries the line a count left open
+  // prints, and no setting name or raw value.
+  assert.match(cell.cause, /configuration fault, not a property of the name/);
+  assert.match(cell.cause, /CLEAROTRON_KNOCKOUT_VARIANT_CAP/, "the record names the variable to fix");
+  assert.equal(cell.unavailable, plainDeferralReason("unfinished"), "the reader's cell is the shipped line");
+  assert.doesNotMatch(cell.unavailable, /CLEAROTRON_|NaN/, "no setting name or raw value reaches a reader's cell");
   assert.equal(cell.generated, 7, "the rule table did produce forms — the cap cut them");
   assert.equal(cell.deterministic, undefined,
     "and it does NOT settle: fixing the variable and resuming must re-take the column, not carry the gap forward");
@@ -428,13 +433,13 @@ test("the adapter path passes the neutral shape through to the provider", async 
     // — `recordLog` rides every adapter call, including this one. No core writes a record BODY from
     // a count today; one that started to would otherwise write it to the box-global fallback, where the
     // run-dir reader never looks and nothing throws.
-    agentId: "clawdi", sessionKey: "clearotron-x", recordLog: "/run/_driver/register-record-bodies.jsonl",
+    agentId: "mailagent", sessionKey: "clearotron-x", recordLog: "/run/_driver/register-record-bodies.jsonl",
   });
   assert.equal(source, "provider");
   await count("IRONWHISK", COUNT_PREDICATES[0], { classes: [8], regions: ["US"] });
   assert.deepEqual(seen[0].q, { name: "IRONWHISK", matchMode: "exact", classes: [8], regions: ["US"] });
   assert.deepEqual(seen[0].ctx,
-    { agentId: "clawdi", sessionKey: "clearotron-x", recordLog: "/run/_driver/register-record-bodies.jsonl" });
+    { agentId: "mailagent", sessionKey: "clearotron-x", recordLog: "/run/_driver/register-record-bodies.jsonl" });
 });
 
 // ── what reaches the client ─────────────────────────────────────────────────────────────────────────

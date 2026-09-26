@@ -159,7 +159,7 @@ async function stageTurn(tag, env) {
   pinEnv(process.env, "CLEAROTRON_CLAUDE_PATH", MOCK);
   try {
     const r = await runStage(`cloud-${tag}`, {
-      agent: "clawdi", sessionKey: `clearotron-test-cloud-${tag}`,
+      agent: "mailagent", sessionKey: `clearotron-test-cloud-${tag}`,
       message: `Do the task. Write to the ABSOLUTE path for the stage output: ${out}`,
       model: "opus", thinking: "medium", timeoutSec: 60, expectFile: out, validate: () => ({ ok: true }), runDir, maxRetries: 0,
     });

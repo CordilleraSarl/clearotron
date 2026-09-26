@@ -229,7 +229,7 @@ function niceClassErrors(list, label) {
 //                        no classes AND no goods anywhere): the fix is a question back to the requester
 //            "reject"  — can't run or can't even reply: not an object / missing id (dedup lock + marker
 //                        filename) / missing msgId (delivery notify hard-requires inReplyTo) / missing
-//                        forwarder (selects clawdi_send_<forwarder> — no reply path without it)
+//                        forwarder (it selects the reply tool — no reply path without it)
 // ── · WHAT A MARK NAME MAY CONTAIN ────────────────────────────────────────────────────────────
 //
 // Intake stored the mark verbatim. Three consequences, driven at the CLI door on 9bd4f8b, all accepted

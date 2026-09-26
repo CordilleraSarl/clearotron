@@ -29,7 +29,7 @@ process.env.CORSEARCH_SESSION_KEY ||= "test-offline";
 const ROOT = mkdtempSync(join(tmpdir(), "warm-rung-"));
 pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
 pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", join(ROOT, "pool"));
-process.env.CLEAROTRON_AGENT = "clawdi";
+process.env.CLEAROTRON_AGENT = "mailagent";
 process.env.CLEAROTRON_RETRY_BACKOFF_MS = "0";
 const GW = await import("../gateway.mjs");
 const GATEWAY_SRC = readFileSync(new URL("../gateway.mjs", import.meta.url), "utf8");
@@ -59,7 +59,7 @@ async function ladder(tag, turnsAfterFirst, { maxRetries = "2" } = {}) {
   GW.registerEngine({ name: "openai-agent",
     async runTurn() { n++; return n === 1 ? OK_BUT_NO_FILE : turnsAfterFirst; } });
   await withEnv({ CLEAROTRON_AI: "openai-agent", CLEAROTRON_MAX_RETRIES: maxRetries, CLEAROTRON_RECOVERY_MAX: "0" }, () =>
-    GW.runStage("synthesis", { agent: "clawdi", message: "go", model: "haiku",
+    GW.runStage("synthesis", { agent: "mailagent", message: "go", model: "haiku",
       sessionKey: `clearance-${tag}`, timeoutSec: 30, runDir, expectFile: [join(runDir, "out.md")] }));
   const readJsonl = (f) => { try { return readFileSync(driverDir(runDir, f), "utf8").trim().split("\n").filter(Boolean).map((l) => JSON.parse(l)); } catch { return []; } };
   return { turns: n, attempts: readJsonl("synthesis.jsonl"), run: readJsonl("run.jsonl") };

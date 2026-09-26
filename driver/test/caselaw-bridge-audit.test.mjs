@@ -27,7 +27,7 @@ const BAND = readFileSync(join(ROOT, "driver", "engine", "mcp", "band-server.mjs
 const caselaw = (opts) => buildGatherMcpConfig(["caselaw"], opts)?.mcpServers ?? {};
 
 test("THE BRIDGE NOW GETS A RUN DIR — the half that made the log impossible", () => {
-  const s = caselaw({ runDir: "/srv/testhome/run", agent: "clawdi", sessionKey: "sk" });
+  const s = caselaw({ runDir: "/srv/testhome/run", agent: "mailagent", sessionKey: "sk" });
   for (const k of ["courtlistener", "legaldatahunter"]) {
     assert.ok(s[k], `${k} is mounted`);
     assert.equal(s[k].env?.CLEAROTRON_BAND_RUN_DIR, "/srv/testhome/run", `${k} can find the run dir`);
@@ -38,7 +38,7 @@ test("A DELIBERATELY SMALLER SET THAN THE LOCAL SERVERS' ENV", () => {
   // A bridge proxies someone else's MCP server and needs exactly three facts to write an audit line.
   // The local servers get register ledger paths because they do register work; a bridge must not
   // quietly acquire reach it has no use for.
-  const s = caselaw({ runDir: "/srv/testhome/run", agent: "clawdi", sessionKey: "sk" });
+  const s = caselaw({ runDir: "/srv/testhome/run", agent: "mailagent", sessionKey: "sk" });
   const keys = Object.keys(s.courtlistener.env).sort();
   assert.deepEqual(keys, ["CLEAROTRON_BAND_RUN_DIR", "CLEAROTRON_GATHER_AGENT", "CLEAROTRON_GATHER_SESSION_KEY"]);
   assert.ok(!keys.some((k) => /REGISTER|POOL|OUTBOX/.test(k)), "no register or pool reach");

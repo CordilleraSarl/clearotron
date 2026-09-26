@@ -46,7 +46,7 @@ function pool(runs = RUNS) {
 // `state` is a LIVE-STORE concept: collect() only reads it from a workspace run's status.json, never
 // from a pool meta.json. So the running-run guard has to be exercised against the live store — putting
 // a state on a pool fixture tests nothing (and looks like it passes for the wrong reason).
-function liveRun({ root, ...rest }, { matter, codename, runId, state, agent = "clawdi" }) {
+function liveRun({ root, ...rest }, { matter, codename, runId, state, agent = "mailagent" }) {
   const dir = join(root, "ws", `workspace-${agent}`, "studio", "clearance-search", matter, codename);
   mkdirSync(dir, { recursive: true });
   writeFileSync(join(dir, "status.json"), JSON.stringify({ runId, state }));
@@ -226,7 +226,7 @@ test("no real runtime identifiers are hardcoded in the script", async () => {
 // A queue claim for `codename`, in the shape the runner writes: `<base>.processing.meta` carries the
 // identity, `<base>.processing.pid` carries "<pid>:<starttime>". The pid is THIS test process, which is
 // definitively alive, so the liveness answer is real rather than stubbed.
-function queueClaim({ root, ...rest }, { codename, pid = process.pid, agent = "clawdi" }) {
+function queueClaim({ root, ...rest }, { codename, pid = process.pid, agent = "mailagent" }) {
   const q = join(root, "ws", `workspace-${agent}`, "studio", "clearance-search", "queue");
   mkdirSync(q, { recursive: true });
   const stat = (() => { try { return readFileSync(`/proc/${pid}/stat`, "utf8"); } catch { return null; } })();
@@ -298,7 +298,7 @@ test("a RUNNING run with no claim is still spared — the original guard is unto
 function outbox(env, owedRunIds = []) {
   const dir = join(env.wsRoot, "clearance-outbox");
   mkdirSync(dir, { recursive: true });
-  for (const id of owedRunIds) writeFileSync(join(dir, `${id}.pending`), "clawdi\n");
+  for (const id of owedRunIds) writeFileSync(join(dir, `${id}.pending`), "mailagent\n");
   return dir;
 }
 

@@ -34,7 +34,7 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = mkdtempSync(join(tmpdir(), "ko-no-research-key-"));
 pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
 pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", join(ROOT, "pool"));
-process.env.CLEAROTRON_AGENT = "clawdi";
+process.env.CLEAROTRON_AGENT = "mailagent";
 // THE PRE-ALIAS SPELLING, DELIBERATELY. `CLEAROTRON_DATABASE` is the current name, but the translation
 // runs in `applyEnvAliases` at the CLI entry gates — `driver.config.mjs` never calls it and reads this
 // name straight off the environment. A test setting only the current spelling configures nothing and
@@ -139,7 +139,7 @@ test("a keyless screen LAUNCHES — it passes the preflight that used to kill it
       archiveDir: join(studioRoot, "archive", "2026-08-20-teal-gantry") };
     const job = { id, markName: "WANDERER", marks: [{ name: "WANDERER" }], classes: [9],
       jurisdictions: ["EU"], forwarder: "jordan", msgId: `<${id}@x>`, ref: "E2E-1223" };
-    const ctx = { run, job, agent: "clawdi", paths: { runDir }, profile: {},
+    const ctx = { run, job, agent: "mailagent", paths: { runDir }, profile: {},
       searchPolicy: { level: "knockout-register", stageLabel: "Knockout + register",
         components: { registerProbe: true } } };
 

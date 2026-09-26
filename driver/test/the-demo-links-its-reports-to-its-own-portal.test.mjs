@@ -69,7 +69,7 @@ test("a later start on another port, or a copy an older version laid down, is re
   // Each copy's status file, where the seed lays it: named from the sample's own fields, not discovered.
   const statusFiles = demoChildren(join(ROOT, "demo")).map((name) => {
     const s = JSON.parse(readFileSync(join(ROOT, "demo", name, "run", "status.json"), "utf8"));
-    return join(ws, `workspace-${s.agent || "clawdi"}`, "studio", "clearance-search", s.slug, `${s.date}-${s.codename}`, "status.json");
+    return join(ws, `workspace-${s.agent || "mailagent"}`, "studio", "clearance-search", s.slug, `${s.date}-${s.codename}`, "status.json");
   });
   assert.ok(statusFiles.length >= 4, `the package ships ${statusFiles.length} samples; this arm needs the four it was written for`);
   assert.equal(statusFiles.length, first.seeded.length);

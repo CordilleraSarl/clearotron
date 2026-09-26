@@ -348,7 +348,7 @@ export const isDesignedRefusal = (e) => e instanceof StageFailure && e.refusal =
 // ones a caller may re-run without risking a quality drop, because a repeat is the actual remedy and it
 // CANNOT paper over a recall gap. Everything NOT matched here is a content/coverage failure (validator
 // reject, missing output, unparseable, self-reported incomplete) — those never earn a re-run beyond the
-// same-model ladder inside runStage; they hard-stop, loudly. ⚠️ `status_timeout` is the 2026-06-07 CLAWDI
+// same-model ladder inside runStage; they hard-stop, loudly. ⚠️ `status_timeout` is the 2026-06-07
 // incident itself (the gateway's ~120s LLM idle-timeout surfaced as a clean-JSON status:"timeout" → the soft
 // `status_<json.status>` bucket) and MUST stay eligible.
 //
@@ -2812,7 +2812,7 @@ const safeReadText = (p) => { try { return readFileSync(p, "utf8"); } catch { re
 // SAME POSTURE AS placement-carry: disclosure only. It re-tiers nothing, gates nothing and sends no
 // followup. `computable:false` carries its reason and NO counts — a zero would read as "every floor
 // accounted for", which is the opposite of "the band could not be read".
-function deriveFloorDuty(ctx, r, trigger = null) {
+export function deriveFloorDuty(ctx, r, trigger = null) {   // @internal — driven by its test with a run's own files
   const P = ctx.paths;
   const write = (artifact) => {
     try {
@@ -2840,7 +2840,7 @@ function deriveFloorDuty(ctx, r, trigger = null) {
     } catch (e) { return notComputable(`band-shape.json unreadable: ${String(e?.message ?? e).slice(0, 80)}`); }
     try { placements = parsePlacementsJson(readFileSync(P.placementModel, "utf8")).placements; }
     catch (e) { return notComputable(`placements.json unparseable: ${String(e?.message ?? e).slice(0, 80)}`); }
-    const artifact = reconcileFloorDuty({ floors, placements });
+    const artifact = reconcileFloorDuty({ floors, placements, setAsideGroundOf: placementSetAsideGrounds(P) });
     // The pass's own outcome, beside the rows. That lesson: a stage that failed or skipped makes every
     // record it did not reach an UPSTREAM ABSENCE, not a judgment, and a reader blaming the seat for a
     // crash is reading the artifact wrong.
@@ -8581,7 +8581,7 @@ async function pipelineInner(job, opts = {}) {
   }
   const agent = opts.agent ?? config.defaultAgent;
   // Run-dir + archive root follow the executing agent's workspace (passed by the runner from the queue it
-  // claimed); default to clawdi's. ctx.agent makes every stage — including the notify SEND — run as this agent.
+  // claimed); default to the legacy agent's. ctx.agent makes every stage — including the notify SEND — run as this agent.
   // opts.codename rebuilds a DICTATED run identity. Two callers use it: RESUME (re-drive an existing run
   // so idempotency reuses the prior, valid stages) and the runner's dispatch PRE-MINT (B1 — opts.minted:
   // a FRESH identity, minted freshness-aware and persisted to the queue sidecar BEFORE any spend, so a
@@ -15108,7 +15108,8 @@ async function pipelineInner(job, opts = {}) {
     // telemetry — the reviewer reads it on the audit workbook. A4: the
     // stable reason codes still ride the event, so a classifier reading the spine never hashes prose.
     if (published.clientGate && published.clientGate.released === false) {
-      runLog(run.runDir, { event: "machine-qc-failed", reasons: (published.clientGate.reasons ?? []).map(String), ...(published.clientGate.reasonCodes?.length ? { reasonCodes: published.clientGate.reasonCodes } : {}) });
+      runLog(run.runDir, { event: "machine-qc-failed", reasons: (published.clientGate.reasons ?? []).map(String), ...(published.clientGate.reasonCodes?.length ? { reasonCodes: published.clientGate.reasonCodes } : {}),
+        ...(published.clientGate.evaluationError ? { evaluationError: published.clientGate.evaluationError } : {}) });
       note(`machine QC failed (${(published.clientGate.reasons ?? []).length} check(s)) — recorded on the audit workbook; the report is delivered as usual: ${(published.clientGate.reasons ?? []).join("; ")}`);
     }
     ctx.publishedUrl = published.url;
@@ -15233,7 +15234,7 @@ async function pipelineInner(job, opts = {}) {
       try { rmSync(driverDir(run.runDir, "send-receipts.json"), { force: true }); } catch { /* none */ }
       try { rmSync(driverDir(run.runDir, "failure.json")); } catch { /* none */ }
       writeFileSync(driverDir(run.runDir, "delivery.json"), JSON.stringify(packet, null, 2) + "\n");
-      note(`delivery: handoff → wrote _driver/delivery.json (clawdi completion-watch sends email${packet.whatsappTo ? " + WhatsApp" : ""})`);
+      note(`delivery: handoff → wrote _driver/delivery.json (the forwarding agent's completion-watch sends email${packet.whatsappTo ? " + WhatsApp" : ""})`);
       // Workstream B — instant delivery: drop a marker in the fixed outbox so the prelim-outbox.path unit
       // wakes the forwarder agent NOW (vs ≤55m on the HEARTBEAT completion-watch, which stays as the
       // backstop). The marker only names the agent to wake; status.sendPending + the run's .sent guard

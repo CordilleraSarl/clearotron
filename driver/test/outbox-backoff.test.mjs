@@ -105,7 +105,7 @@ test("fail-safe: a torn sidecar reads as due (retry, never a wedged agent)", () 
 
 // ── rescan ─────────────────────────────────────────────────────────────────────────────────────────
 
-function makeRun({ agent = "clawdi", slug, leaf, archived = false, sendPending, withSent = false, runId = null, codename = null, state}) {
+function makeRun({ agent = "mailagent", slug, leaf, archived = false, sendPending, withSent = false, runId = null, codename = null, state}) {
   const studio = join(process.env.CLEAROTRON_WORK_DIR, `workspace-${agent}`, "studio", "clearance-search");
   const runDir = archived ? join(studio, "archive", "2026-07", slug, leaf) : join(studio, slug, leaf);
   mkdirSync(runDir, { recursive: true });
@@ -133,15 +133,15 @@ test("rescan re-drops markers on exactly the sendPending-and-no-.sent predicate 
 
   const dropped = rescanOwedRuns();
   assert.deepEqual(dropped.map((d) => d.runId).sort(), ["owed-arch-2026-07-10-bravo", "owed-live-2026-07-11-alpha"]);
-  assert.equal(readFileSync(join(outbox, "owed-live-2026-07-11-alpha.pending"), "utf8"), "clawdi\n");
+  assert.equal(readFileSync(join(outbox, "owed-live-2026-07-11-alpha.pending"), "utf8"), "mailagent\n");
   assert.equal(readFileSync(join(outbox, "owed-arch-2026-07-10-bravo.pending"), "utf8"), "agent-a\n");
   const markers = readdirSync(outbox).filter((f) => f.endsWith(".pending"));
   assert.equal(markers.length, 2, `no marker for settled/sent/legacy/unsafe runs (got ${markers.join(", ")})`);
 
   // idempotent: a second rescan neither duplicates nor rewrites existing markers (inotify churn)
-  writeFileSync(join(outbox, "owed-live-2026-07-11-alpha.pending"), "clawdi\nkeep-me\n");
+  writeFileSync(join(outbox, "owed-live-2026-07-11-alpha.pending"), "mailagent\nkeep-me\n");
   assert.deepEqual(rescanOwedRuns(), []);
-  assert.equal(readFileSync(join(outbox, "owed-live-2026-07-11-alpha.pending"), "utf8"), "clawdi\nkeep-me\n");
+  assert.equal(readFileSync(join(outbox, "owed-live-2026-07-11-alpha.pending"), "utf8"), "mailagent\nkeep-me\n");
 });
 
 // ── no-progress circuit-breaker ──────────────────────────────────────────────────────────────────────
@@ -202,16 +202,16 @@ test("no-progress breaker: a delivered marker whose run is already .sent is SILE
   // "sent:true, sendPending:false, marker resurfacing" shape the user reported for Axis Workflow.
   makeRun({ slug: "delivered-ok", leaf: "2026-07-23-yankee", sendPending: false, withSent: true });
   const runId = "delivered-ok-2026-07-23-yankee";
-  writeFileSync(join(outbox, `${runId}.pending`), "clawdi\n");
+  writeFileSync(join(outbox, `${runId}.pending`), "mailagent\n");
   const okEnv = JSON.stringify({ status: "ok", result: { stopReason: "stop" } });
 
-  const r = settleWake("clawdi", { code: 0, stdout: okEnv });
+  const r = settleWake("mailagent", { code: 0, stdout: okEnv });
   assert.equal(r.outcome, "ok", "a successful-delivery orphan is progress, not a stuck marker");
   assert.equal(r.silentCleared, 1);
   assert.ok(!existsSync(join(outbox, `${runId}.pending`)), "the stray marker is cleared, like mark_sent's idempotent path");
   assert.equal(existsSync(join(outbox, "quarantine", `${runId}.pending`)), false, "NOT quarantined — the delivery succeeded");
   assert.equal(readdirSync(outbox).filter((f) => f.includes("delivery-stuck")).length, 0, "no false 'could not be sent' alert on a send that happened");
-  assert.equal(existsSync(join(outbox, "backoff", "clawdi.json")), false, "no strike sidecar");
+  assert.equal(existsSync(join(outbox, "backoff", "mailagent.json")), false, "no strike sidecar");
 });
 
 // ── ONE canonical runId form (charter P1 §3, 2026-07-30) ───────────────────────────────────────────
@@ -225,7 +225,7 @@ test("rescan does not drop a dated sibling while a LEGACY dateless marker for th
   for (const f of readdirSync(outbox)) if (f.endsWith(".pending")) rmSync(join(outbox, f));
   makeRun({ slug: "legacy-live", leaf: "2026-07-24-alpha", codename: "alpha", sendPending: true,
     runId: "legacy-live-2026-07-24-alpha" });
-  writeFileSync(join(outbox, "legacy-live-alpha.pending"), "clawdi\n");   // the pre-fix (dateless) marker, still queued
+  writeFileSync(join(outbox, "legacy-live-alpha.pending"), "mailagent\n");   // the pre-fix (dateless) marker, still queued
   const dropped = rescanOwedRuns();
   assert.ok(!dropped.some((d) => d.runId.startsWith("legacy-live")), "the run is already queued under its legacy name");
   assert.ok(!existsSync(join(outbox, "legacy-live-2026-07-24-alpha.pending")),
@@ -239,9 +239,9 @@ test("the .sent orphan guard matches the LEGACY dateless marker form (historical
   rmSync(join(outbox, "quarantine"), { recursive: true, force: true });
   makeRun({ slug: "legacy-sent", leaf: "2026-07-24-bravo", codename: "bravo", sendPending: false, withSent: true,
     runId: "legacy-sent-2026-07-24-bravo" });
-  writeFileSync(join(outbox, "legacy-sent-bravo.pending"), "clawdi\n");   // pre-fix marker orphaned by a completed send
+  writeFileSync(join(outbox, "legacy-sent-bravo.pending"), "mailagent\n");   // pre-fix marker orphaned by a completed send
   const okEnv = JSON.stringify({ status: "ok", result: { stopReason: "stop" } });
-  const r = settleWake("clawdi", { code: 0, stdout: okEnv });
+  const r = settleWake("mailagent", { code: 0, stdout: okEnv });
   assert.equal(r.outcome, "ok", "a successful-delivery orphan is progress under EITHER runId form");
   assert.equal(r.silentCleared, 1);
   assert.ok(!existsSync(join(outbox, "legacy-sent-bravo.pending")), "the legacy-form orphan is cleared, never struck/quarantined");
@@ -253,7 +253,7 @@ test("rescan does NOT resurrect a quarantined delivery (else the circuit-breaker
   makeRun({ slug: "quar-owed", leaf: "2026-07-23-zulu", sendPending: true });   // would normally be re-dropped
   const runId = "quar-owed-2026-07-23-zulu";
   mkdirSync(join(outbox, "quarantine"), { recursive: true });
-  writeFileSync(join(outbox, "quarantine", `${runId}.pending`), "clawdi\n");     // already set aside
+  writeFileSync(join(outbox, "quarantine", `${runId}.pending`), "mailagent\n");     // already set aside
   const dropped = rescanOwedRuns();
   assert.ok(!dropped.some((d) => d.runId === runId), "rescan skips the quarantined runId");
   assert.ok(!existsSync(join(outbox, `${runId}.pending`)), "no live marker re-created");

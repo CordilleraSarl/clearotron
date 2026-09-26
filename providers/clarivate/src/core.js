@@ -1777,6 +1777,33 @@ export async function doFilingDate(apiKey, base, params, tctx) {
   return { type: "text", text: JSON.stringify({ count: rows.length, registers: rows }, null, 2) };
 }
 
+// ── ONE OFFICE WITH NO GOODS FIELD REFUSES THE WHOLE REQUEST ─────────────────────────────────────
+// The vendor answers a goods-narrowed request with HTTP 400 "Search field INT_GOODS_SERVICES_DESCRIPTION
+// is not supported for registrationOfficeCode XX" when any one office in it lacks the field, so every
+// other office goes unasked. A retry of the same request cannot change that; the request without that
+// office can. Ask again without it, as often as another office refuses, and name each office left out on
+// the result. No call is added unless an office refuses.
+export function officeRefusingGoodsField(reason) {
+  const m = new RegExp(`Search field ${GOODS_FIELD} is not supported for registrationOfficeCode ([A-Z]{2})\\b`).exec(String(reason ?? ""));
+  return m ? m[1] : null;
+}
+
+export async function withoutOfficesRefusingGoods(params, ask, reasonOf) {
+  const leftOut = [];
+  let p = params;
+  let out = await ask(p);
+  for (let office = officeRefusingGoodsField(reasonOf(out)); office && !leftOut.includes(office); office = officeRefusingGoodsField(reasonOf(out))) {
+    const regions = (Array.isArray(p?.regions) ? p.regions : []).filter((r) => !resolveOffices([r]).codes.includes(office));
+    // The refusing office is not in the request as the caller wrote it, or it is the only one: the
+    // refusal stands as it was given.
+    if (!regions.length || regions.length === (p?.regions ?? []).length) break;
+    leftOut.push(office);
+    p = { ...p, regions };
+    out = await ask(p);
+  }
+  return { out, params: p, leftOut };
+}
+
 // ── Enumerate — WIRED FROM THE SHARED KERNEL ──────────────────────────────────────────────────────
 //
 // The control flow (states, ceilings, the wide-`names` chunking, the count-first per-term rescue) lives
@@ -1817,8 +1844,14 @@ export async function doEnumerate(apiKey, base, params, tctx) {
   const chunked = Array.isArray(p?.names) && p.names.filter(Boolean).length > namesChunk;
 
   const sink = [];
-  let r = await __enumerate({ apiKey, base }, { ...p, __countSink: sink }, tctx);
-  let parsed = parseToolText(r);
+  const asked = await withoutOfficesRefusingGoods(p, async (q) => {
+    sink.length = 0;
+    const rr = await __enumerate({ apiKey, base }, { ...q, __countSink: sink }, tctx);
+    return { rr, parsed: parseToolText(rr) };
+  }, (o) => o.parsed?.reason);
+  p = asked.params;
+  let r = asked.out.rr;
+  let parsed = asked.out.parsed;
   if (!parsed) return r;
 
   // ── the ADDITIVE invariant, ENFORCED AT RUNTIME TOO ─────────────────────────────────────────────
@@ -1843,7 +1876,7 @@ export async function doEnumerate(apiKey, base, params, tctx) {
     // without it the kernel's calls underneath this fallback would re-resolve the very names whose
     // expansion the provider has just rejected — reinstating the stack the fallback exists to drop.
     // The un-resolved sweep has to be genuinely un-resolved, at every seam.
-    const rawOnly = { ...params, resolve_owner: false };
+    const rawOnly = { ...params, regions: p.regions, resolve_owner: false };
     delete rawOnly.owners;
     const sink2 = [];
     const r2 = await __enumerate({ apiKey, base }, { ...rawOnly, __countSink: sink2 }, tctx);
@@ -1863,6 +1896,9 @@ export async function doEnumerate(apiKey, base, params, tctx) {
       sink.length = 0; for (const s of sink2) sink.push(s);
     }
   }
+
+  // After the owner fallback, which may replace the answer: it asks with the same reduced offices.
+  if (asked.leftOut.length) parsed.offices_without_goods_field = asked.leftOut;
 
   if (parsed.state === "incomplete") {
     // The 30000 ceiling is the provider truthfully reporting a CROWD, not a fault. Restate it as a

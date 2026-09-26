@@ -17,7 +17,7 @@ import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { mintSupplementalEntries, proposeSupplemental } from "../engine/mcp/supplemental.mjs";
 import { PLAN_MAX_OR_WIDTH } from "../register-plan.mjs";
 
-const tctx = { kind: "propose_supplemental", sessionKey: "run-x", agentId: "clawdi", sessionId: "s1" };
+const tctx = { kind: "propose_supplemental", sessionKey: "run-x", agentId: "mailagent", sessionId: "s1" };
 
 test("mintSupplementalEntries: deterministic qids, rejection matrix, caps, in-batch + existing dedup", () => {
   const good = { predicate: "exact", term: "FROSTBERRY", nice_classes: [32], rationale: "rare near-form seen in common-law" };
