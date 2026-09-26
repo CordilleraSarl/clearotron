@@ -21,6 +21,7 @@ import { entryTermIssues, goodsTermsList } from "./term-shape.mjs";
 import { awaitsReadingTurn, releasedFamiliesFile } from "./plan-guards.mjs";
 import { faultText, guardToolCall } from "./transport-guard.mjs";
 import { clipProviderText } from "./provider-text.mjs";   // — keep the discriminator
+import { isGatewayStall } from "./enumerate.mjs";   // a question that timed out on both halves of its regions
 
 // plan predicate → provider query params. "wildcard" patterns compile to the provider's anchored
 // modes (trailing * → starts_with, leading * → ends_with); there is deliberately NO `contains`
@@ -523,18 +524,24 @@ export function makeExecutePlan(deps) {
         try { return { r: rr, parsed: JSON.parse(rr?.text ?? "") }; } catch { return { r: rr, parsed: null }; }
       };
       let { r, parsed } = await runEnumerate();
-      if (providerErrored(parsed)) ({ r, parsed } = await runEnumerate());
+      // A question that timed out on both halves of its regions, or on the one region a split came down to,
+      // is not asked again here: a smaller question already did not answer, so the retry would only repeat
+      // the wait (the shared kernel's region split).
+      const stalled = (p) => isGatewayStall(p?.reason);
+      if (providerErrored(parsed) && !stalled(parsed)) ({ r, parsed } = await runEnumerate());
       if (providerErrored(parsed)) {
         const detail = parsed?.reason ?? clipProviderText(r?.text ?? "", 120);
         // A CLIENT-SIDE refusal (the provider's own query language cannot express this slice — the
         // request was never sent) is deterministic: no rung of the repair ladder can change it. Defer it
         // as a disclosed gap instead of grinding the run to a StageFailure over an answer that will
         // never differ. Everything else keeps the transient reading and rides the ladder.
-        const gap = isCapabilityGap(detail);
+        // …and like a capability gap it is deferred, disclosed, and the run goes on: asking the same slow
+        // question again on a later rung would meet the same wall.
+        const gap = isCapabilityGap(detail) || stalled(parsed);
         blocks.push({ state: "incomplete", ...base,
           total_hits: parsed?.total_hits ?? 0, fetched: parsed?.fetched ?? 0, sample: (parsed?.sample ?? []).slice(0, 5),
           error: true, ...(gap ? { deferred: true } : {}),
-          reason: `provider error (after one in-tool retry): ${clipProviderText(detail, 240)}` });
+          reason: `${stalled(parsed) ? "provider error (not asked again)" : "provider error (after one in-tool retry)"}: ${clipProviderText(detail, 240)}` });
         stateByQid.set(e.qid, "error");
         return;
       }

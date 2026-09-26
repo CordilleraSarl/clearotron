@@ -158,6 +158,17 @@ export const COMPONENTS = {
 // `graded` means: the stage is told what kind of report it is writing and grades ITS OWN written output.
 // NO COUNT EVER REACHES AN INSTRUCTION — a number turns judgment back into a rule, and an arithmetic cut
 // is what re-opens.
+// ── THE WEB SETTINGS, BY REPORT TYPE (ruled 2026-09-25) ────────────────────────────────────────────────
+//
+// `web` on each row pins two things and nothing reads them from the environment:
+//   questionPreset  the vendor tier every QUESTION the run asks the web is sent on — the models' own side
+//                   questions and the knockout's owner lookups. The ruling named the tiers low, medium,
+//                   high and xhigh; `pro-search` is the vendor's former name for `low`, and the knockout
+//                   keeps the name it has always sent.
+//   resultsPerCell  how many results each cell of a search program's grid asks for and keeps, the meaning
+//                   queries included. Grids stay on the tier they run on today; this is their lever.
+// The run freezes the pair in its search policy, which is its record of what it ran on; a run frozen
+// before this rule carries none and runs as every run did before it.
 export const PRODUCT_POLICIES = {
   // ONE knockout, and it carries the register hit-counts. There used to be two levels here — a plain
   // screen and the same screen plus a filing count per name — and the offering has one Knockout search.
@@ -170,6 +181,7 @@ export const PRODUCT_POLICIES = {
     product: "knockout-search", stageLabel: "Knockout search", pipeline: "knockout",
     report: { template: "knockout", identity: "Knockout search" },
     components: { registerProbe: true, jxLanes: false, commonLawGrid: false },
+    web: { questionPreset: "pro-search", resultsPerCell: 10 },
     // — NO DEPTH ROW ON PURPOSE. Product 1 is out of scope by the spec: the knockout lane has its
     // own machinery and reaches none of the graded stages, and a row here would invite a consumer to
     // grade it. It is still told apart from an unrecognised product — depthFor() names it in `source`.
@@ -220,6 +232,7 @@ export const PRODUCT_POLICIES = {
       coverageClosureRounds: "one",
     },
     components: { registerProbe: false, jxLanes: false, commonLawGrid: true },
+    web: { questionPreset: "medium", resultsPerCell: 15 },
   },
   // jxLanes FALSE on the row and TRUE only when the toggle is on — this is the one product where the
   // native-language investigation is a choice, so the row states the product without it and
@@ -271,6 +284,7 @@ export const PRODUCT_POLICIES = {
       coverageClosureRounds: "as-today",
     },
     components: { registerProbe: false, jxLanes: false, commonLawGrid: true },
+    web: { questionPreset: "high", resultsPerCell: 20 },
   },
   // jxLanes TRUE on the row: automatic, never a toggle. It is not a promise a lane RUNS — the lanes route
   // on jurisdiction and a country with no adapter has nothing to route — it is a statement that the
@@ -292,6 +306,7 @@ export const PRODUCT_POLICIES = {
       coverageClosureRounds: "as-today",
     },
     components: { registerProbe: false, jxLanes: true, commonLawGrid: true },
+    web: { questionPreset: "xhigh", resultsPerCell: 25 },
   },
 };
 
@@ -1345,5 +1360,7 @@ export function resolveSearchPolicy(job, { profile = null, recipes = null, terri
     // The other arm of decideCaseLaw is untouched: a run whose own reading turns up an opposition or a
     // precedent still grounds the stage mid-flight, unordered. This says what was BOUGHT.
     caseLaw: spec?.caseLaw === true,
+    // THE WEB SETTINGS the product pins (PRODUCT_POLICIES above), copied so the run freezes them.
+    web: policy.web ? { ...policy.web } : null,
   };
 }

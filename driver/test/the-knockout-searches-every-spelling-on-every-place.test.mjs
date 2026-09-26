@@ -96,7 +96,7 @@ test("the spec is the plan's own lists, copied, with the knockout's results per 
     output_path: "/r/research/lanternwick.md", results_per_cell: 10 });
   spec.terms.push("X");
   assert.deepEqual(row.spellings, ["LANTERNWICK", "LANTERN WICK"], "a copy: the frozen plan is never written through the spec");
-  assert.deepEqual(KNOCKOUT_WEB, { preset: "pro-search", reasoning: { effort: "low" }, resultsPerCell: 10 });
+  assert.deepEqual(KNOCKOUT_WEB, { preset: "pro-search", reasoning: { effort: "low" }, resultsPerCell: 10, questionPreset: "pro-search" });
 });
 
 test("the clearance grid's request is unchanged: no reasoning setting, and its own 10 asked and 8 kept", () => {

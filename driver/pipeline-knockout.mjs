@@ -792,7 +792,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
           if (owed.length) {
             const checks = await runOwnerChecks({
               owners: owed, exec: sweep.exec, runDir: run.runDir, ledgerPath: K.ownerCheckLedger,
-              rawDir: driverDir(run.runDir, "web-results"), preset: KNOCKOUT_WEB.preset,
+              rawDir: driverDir(run.runDir, "web-results"), preset: KNOCKOUT_WEB.questionPreset,
               concurrency: 3,   // step 3 — the same constant as the sibling calls above
             });
             atomicWrite(K.ownerChecks, JSON.stringify({ schema: 1, checks }, null, 2) + "\n");

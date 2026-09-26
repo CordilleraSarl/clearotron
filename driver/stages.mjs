@@ -1502,9 +1502,9 @@ export const STAGES = {
         class: "judgment", tokens: [],
         why: "an advisory legal read that reaches the client-facing report; prose-only, no structured slot, no token",
       },
-      "Famous-mark flags per element + famous_mark_calls_needed[]": {
+      "elements[].famous_mark_flag — the elements Step 2's famous-mark check flags": {
         class: "judgment", tokens: [],
-        why: "recognising that an element is also a band, a celebrity or a famous brand is the judgment; but the HAND-OFF is prose that makes clearance-common-law fire a dedicated Perplexity call, with no structured slot and no token — the same shape as the CROSS-CHECK line #850 classed M for its line shape",
+        why: "recognising that an element is also a band, a celebrity or a famous brand is the judgment. The hand-off is the typed flag, which the driver turns into general-web grid cells (web-grid.mjs); nothing re-parses it, so no token speaks about it",
       },
       "Scope statement — 2-4 sentences opening the deliverable narrative, with the class scope reasoned and advisory additions marked": {
         class: "judgment", tokens: [],
@@ -1608,6 +1608,8 @@ export const STAGES = {
       //
       // EACH FIELD CARRIES ITS OWN IMPERATIVE IN ITS OWN SENTENCE.
       `Hand the manifest back by calling the \`record_clearance_variants\` tool. Send \`mark\` verbatim, \`dominant_element\`, and \`elements\` — one \`{value, kind}\` per token, kind from the closed set distinctive | common | saturated-common.`,
+      // The famous-mark check's hand-off, in its own sentence for the same reason as the fields below.
+      `Set \`famous_mark_flag: true\` on each element that is also a well-known brand, band, celebrity, sports team, entertainment property or cultural icon (Step 2's famous-mark check), and leave it off every other element: the web search searches each flagged element on the general web, and the web step judges the results.`,
       `Send \`variants\` — one \`{value, category, rationale, romanization}\` per search term, category from the closed set the skill names, and \`romanization\` on every non-Latin value and only on those.`,
       `Send \`incumbent_classes\` and \`watchlist_owners\` where Step 5 names them, as arrays; omit or send empty where it does not.`,
       // ITS OWN SENTENCE, BECAUSE A FIELD WITH NO IMPERATIVE IS A FIELD NOBODY FILLS. A production run
@@ -2294,7 +2296,7 @@ export const STAGES = {
       // is the quiet one: the note says nine enumerated queries, the band holds eight, and nothing compares
       // them. Deriving removes the disagreement rather than detecting it.
       `FILE THIS AXIS'S AUDIT NOTE WITH \`record_unit_note\`. THE DISPATCH NAMES NO PATH FOR IT, deliberately — the driver writes this axis's note from what you send and you never open it, so there is no path here for you to hold. THE COUNTS ARE NOT YOURS TO TYPE: queries enumerated, incomplete blocks and records carried forward are taken from the band, so the note and the band cannot disagree. Send only what the band cannot say — \`null_result\` if this axis genuinely found nothing (refused against a band that carries records), and \`note\`, ONE short observation an auditor would want, in a lawyer's words. Still NO coverage-limited/confirmed-clean/deferred rows and NO clearance verdict: those are judgment's, Layer B. Call it AFTER the band exists — a note over a band that has not been written is refused by name, because an account of a sweep that has not happened is not a short note, it is a wrong one.`,
-      CROSS_CHECK_HANDOFF, "WHERE THE PLAN ABOVE HAS WAITING FAMILIES, DECIDE EVERY ONE. Release each one you ask with `record_released_families`: its qids, as listed above, and why looking wider would change what you tell the client. Then call register_execute_plan again with those qids; it runs only what you released. Record each one you do not ask with `record_withheld_families`: its qids and why it was not asked. A family you leave unasked was never searched, so it is recorded withheld-by-judgment; one nobody decided holds up delivery. The reasons go into the audit workbook, not the report.",   // withheld-families.mjs
+      CROSS_CHECK_HANDOFF, DECIDE_WAITING_FAMILIES,   // withheld-families.mjs
       // THE CLOSING LINE SPLITS WITH THE LANE, because what the seat owes splits with it. Under the
       // supplemental-lane contract the seat writes NOTHING — the band is the tools' and the note is the
       // driver's — so the dispatch names no file and ends the way conversion 9's reviewer does. With the
@@ -3138,6 +3140,8 @@ export const STAGES = {
       // (house-brand attachment / seasonality / scale). Context, never a rule that decides a finding.
       job?.campaignShape ? `Stated campaign shape (verbatim from intake — how the mark will be deployed; facts, not judgment): ${job.campaignShape}` : "",
       `Inputs: register findings ${P.registerFindings}${registerOnly ? "" : `; common-law ${P.commonLaw}`}; placements ${P.placement} (structured tiers + reasons: ${P.placementModel}); matter frame ${P.matterContext}; manifest ${P.variantManifest}.`,
+      // The skeptic's shipped sentence, word for word: a granted tool is named, or the seat cannot know it holds it.
+      `Re-read any of this run's own artifacts with the \`search_run_artifacts\` tool — ONE file per call, named relative to the run directory (e.g. "register-findings.md"), with \`terms\` as literal substrings OR-matched per line.`,
       PLACEMENT_BORDERLINE_NOTE,
       registerOnly ? REGISTER_ONLY_NOTE : "",
       // — THE DISPATCH RECORD, NAMED HERE AND DELIVERED AS DATA.
@@ -3587,6 +3591,8 @@ export const STAGES = {
       // PR-8: the reviewer verifies register claims against the RECORD, on the record — the same
       // read-only band tools the drafting stages used, every lookup logged to the reading audit.
       `REGISTER VERIFICATION TOOLS: you hold the read-only band tools — band_shape (the deterministic shape of the complete register band, incl. THE FLOORS: every live in-class identical/near-identical record, listed unconditionally), band_lookup (pull any record the narrative relies on or omits) and band_record (the official registry record fetched this run). Check the narrative's register assertions against them — a floor row the narrative neither rates nor reasons away is a FLAGGED CORRECTION. They are read-only and logged; you hold no live register tools (by design, never an outage).`,
+      // The skeptic's shipped sentence, word for word: a granted tool is named, or the seat cannot know it holds it.
+      `Re-read any of this run's own artifacts with the \`search_run_artifacts\` tool — ONE file per call, named relative to the run directory (e.g. "register-findings.md"), with \`terms\` as literal substrings OR-matched per line.`,
       registerOnly ? REGISTER_ONLY_NOTE : "",
       // C4 — the pharma field module is binding on pharma matters; the review verifies it was honoured
       pharmaMatter(job) ? `This is a PHARMA matter (Nice 5 / pharma goods): verify the narrative honoured the pharma field module (skills/clearance-search/field-doctrine-pharma.md) — therapeutic-area goods discipline (same therapeutic area ≈ proximate goods regardless of formulation), NO-USE never softens a pharma risk (pipelines run 5-10 years pre-launch), and practitioner/pharmacist confusion including handwriting/verbal look-alikes was weighed. A violation is a FLAGGED CORRECTION.` : "",
@@ -4743,3 +4749,7 @@ export function dispatchBlockWhy(ctx, stage, id) {
 // onto a different real line passes while describing the wrong code. Adding below the last cited line
 // is the one placement that cannot do that. See band-size.mjs for what reads this.
 export const BAND_READING_STAGES = new Set(["placement-inquiry", "register-digest", "synthesis"]);
+
+// The register reading step's order on the waiting families. One constant, because the cross-check
+// follow-up reads it word for word (repair-composers.mjs); declared last so no line above it moves.
+export const DECIDE_WAITING_FAMILIES = "WHERE THE PLAN ABOVE HAS WAITING FAMILIES, DECIDE EVERY ONE. Release each one you ask with `record_released_families`: its qids, as listed above, and why looking wider would change what you tell the client. Then call register_execute_plan again with those qids; it runs only what you released. Record each one you do not ask with `record_withheld_families`: its qids and why it was not asked. A family you leave unasked was never searched, so it is recorded withheld-by-judgment; one nobody decided holds up delivery. The reasons go into the audit workbook, not the report.";

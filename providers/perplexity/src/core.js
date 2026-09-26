@@ -29,6 +29,20 @@ export const ADVANCED_SIGNALS = [
 ];
 
 export const VALID_PRESETS = ["fast-search", "pro-search", "deep-research", "advanced-deep-research"];
+// THE VENDOR'S TIER NAMES, which the names above now alias (presets page, read 2026-09-25: "fast-search →
+// fast, pro-search → low, deep-research → medium, advanced-deep-research → high, and ultra → xhigh"). A
+// setting may name either; detectPreset still answers in the older names.
+export const PRESET_TIERS = Object.freeze(["fast", "low", "medium", "high", "xhigh"]);
+export const isKnownPreset = (p) => VALID_PRESETS.includes(p) || PRESET_TIERS.includes(p);
+
+/**
+ * The preset a question goes out on: the run's pinned tier where it has one, whatever the question asks;
+ * otherwise the question's own depth; otherwise the task's shape. PURE.
+ */
+export function questionPresetFor({ pinned = null, depth = null, task = "" } = {}) {
+  if (pinned && isKnownPreset(pinned)) return pinned;
+  return depth && VALID_PRESETS.includes(depth) ? depth : detectPreset(String(task ?? ""));
+}
 
 export function detectPreset(task) {
   const lower = task.toLowerCase();
@@ -147,7 +161,7 @@ export function buildRequestBody({
 // skill has its own follow-up logic as the second line of defence.
 
 export function retriesForPreset(preset) {
-  return preset === "deep-research" || preset === "advanced-deep-research" ? 1 : 2;
+  return ["deep-research", "advanced-deep-research", "medium", "high", "xhigh"].includes(preset) ? 1 : 2;
 }
 
 export function isRetryableStatus(status) {
@@ -446,8 +460,8 @@ export function connotationQueriesOf(spec) {
 export function buildGridProgramTask(spec) {
   validateGridSpec(spec);
   const { batch = 14 } = spec;
-  // How many results a cell asks for and keeps. A spec that names none runs on the numbers every grid ran
-  // on before it could: ask for 10, keep the first 8.
+  // How many results a cell, and a meaning query, asks for and keeps. A spec that names none runs on the
+  // numbers every grid ran on before it could: ask for 10, keep the first 8.
   const ask = spec.results_per_cell ?? 10;
   const keep = spec.results_per_cell ?? 8;
   // THE GRID ASKED: the spec's own term × platform product, or its blocks when the matter frame decided the
@@ -500,7 +514,7 @@ export function buildGridProgramTask(spec) {
       // getattr with a default, NOT `h.snippet` — the pinned idiom is attribute access, and an SDK build
       // whose WebHit has no snippet attribute would raise inside the per-query try/except and send the
       // whole meaning query to gaps. A missing snippet must cost the spot-check, never the receipt.
-      ? "For EACH connotation query: hits = pplx_sdk.search.web(query, limit=10)   # GENERAL web — OMIT the domains= argument; collect up to 8 {\"title\": h.title or \"\", \"url\": h.url or \"\", \"snippet\": (getattr(h, \"snippet\", \"\") or \"\")[:400]} using the SAME iterate-only idiom; wrap each in its own try/except (on an exception append \"<query> | connotation | <repr(exception)>\" to gaps and CONTINUE)."
+      ? `For EACH connotation query: hits = pplx_sdk.search.web(query, limit=${ask})   # GENERAL web — OMIT the domains= argument; collect up to ${keep} {\"title\": h.title or \"\", \"url\": h.url or \"\", \"snippet\": (getattr(h, \"snippet\", \"\") or \"\")[:400]} using the SAME iterate-only idiom; wrap each in its own try/except (on an exception append \"<query> | connotation | <repr(exception)>\" to gaps and CONTINUE).`
       : "",
     hasConn
       ? "Record EVERY connotation query — INCLUDING ones that returned zero results — as one entry of extras.pr_risk = [{\"query\":\"<verbatim>\",\"results\":[...]}]. An empty results[] is a SEARCHED-clean receipt; a MISSING query is not a receipt."
@@ -619,6 +633,27 @@ export function candidatesForJudgment(ledger) {
   return (ledger.cells ?? [])
     .filter((c) => Array.isArray(c.candidates) && c.candidates.length > 0)
     .map((c) => ({ term: c.term, platform: c.platform, candidates: c.candidates }));
+}
+
+/**
+ * The candidates, split between cells into parts whose indented JSON stays within `budget` characters,
+ * the first within `firstBudget` (it shares its reply with whatever else the first reply carries). A cell
+ * is never cut: one that alone passes the budget is a part of its own. One part when everything fits, so
+ * a grid that fits reads exactly as before. PURE, so every call splits the same answer the same way.
+ */
+export function candidateParts(cands, budget, firstBudget = budget) {
+  const parts = [];
+  let part = [], size = 2;
+  for (const cell of Array.isArray(cands) ? cands : []) {
+    // Each cell sits in the array indented by two more spaces per line, plus its separator.
+    const text = JSON.stringify(cell, null, 2);
+    const cost = text.length + text.split("\n").length * 2 + 2;
+    if (part.length && size + cost > (parts.length ? budget : firstBudget)) { parts.push(part); part = []; size = 2; }
+    part.push(cell);
+    size += cost;
+  }
+  if (part.length || !parts.length) parts.push(part);
+  return parts;
 }
 
 /**

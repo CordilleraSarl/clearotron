@@ -78,7 +78,7 @@ export const COUNTED_EVENTS = {
   "skeptic-skipped": FAILED, "stage-input-over-ceiling": FAILED, "status-write-failed": FAILED,
   "stale-repair-entry-done": { kind: FAILED, when: (e) => (Array.isArray(e.failed) ? e.failed.length : Number(e.failed)) > 0 },
   // written only where the step threw
-  "form-neighbourhood-skipped": FAILED, "register-plan-skipped": FAILED,
+  "form-neighbourhood-skipped": FAILED, "register-plan-skipped": FAILED, "register-xcheck-decide-failed": FAILED,
   // a stage failure is on its own record; a model that would not parse, or was never written, is only here
   "frame-diff-skipped": { kind: FAILED, when: (e) => /^model-unparseable|^no-frame-diff-model$/.test(String(e.reason ?? "")) },
   "jx-candidate-fold-skipped": { kind: FAILED, when: (e) => !isDesignedJxCause(e.cause) },
@@ -171,7 +171,7 @@ export const NOT_COUNTED_EVENTS = {
     "record-artifacts", "register-digest-facts-written",
     "register-only", "register-plan", "register-plan-axis-deferred", "register-plan-deferred-coverage",
     "register-plan-variant-dropped", "register-positions-derived", "register-presence",
-    "register-presence-skipped", "register-xcheck", "run-integrity",
+    "register-presence-skipped", "register-xcheck", "register-xcheck-decided", "run-integrity",
     "scope-facts", "scope-frontmatter", "scope-ledger-derived", "scope-ledger-skipped", "screen-gate-clean",
     "search-policy", "searched-jurisdictions", "senior-rights", "skip",
     "stage-contract", "stage-limit-derived", "stage-stamps-reconciled", "start", "supplemental-fold", "token-rollup",
@@ -240,7 +240,8 @@ export const COUNTED_TRIGGERS = {
 // The two reasons built at run time: a recall reconciliation re-asking the digest, and a flush retried.
 export const TRIGGER_FAMILIES = [[/^recall-reconcile-./, REASK], [/-retry$/, RETRY]];
 export const NOT_COUNTED_TRIGGERS = {
-  "a first dispatch, or one the run makes whatever the first answer was": ["fresh", "skip", "late-bind", "experiment"],
+  "a first dispatch, or one the run makes whatever the first answer was": ["fresh", "skip", "late-bind", "experiment",
+    "xcheck-decide"],
   "the digest folding in re-runs, each counted where it was dispatched": ["settlement-flush", "late-flush"],
   "a follow-up message's composer or section, never a dispatch reason": ["digest-flush", "draft-carry", "envelope-close",
     "frame-reopen-directive", "recall-reconcile", "settled-coverage-facts"],

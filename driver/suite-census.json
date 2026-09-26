@@ -291,6 +291,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-cross-check-waits-for-the-reading-step.test.mjs": {
+          "tests": 5,
+          "asserts": 21,
+          "skips": 0,
+          "todos": 0
+        },
         "a-crowd-counted-and-not-read-is-never-clean.test.mjs": {
           "tests": 5,
           "asserts": 16,
@@ -513,6 +519,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-famous-mark-element-is-searched-on-the-general-web.test.mjs": {
+          "tests": 7,
+          "asserts": 38,
+          "skips": 0,
+          "todos": 0
+        },
         "a-finding-the-digest-ended-cannot-vanish-in-silence.test.mjs": {
           "tests": 11,
           "asserts": 30,
@@ -684,6 +696,12 @@
         "a-knockouts-owner-lookups-run-side-by-side.test.mjs": {
           "tests": 4,
           "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-large-grid-is-served-in-parts-under-the-tool-cap.test.mjs": {
+          "tests": 4,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -1215,6 +1233,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-search-asks-the-web-on-the-settings-its-report-type-pins.test.mjs": {
+          "tests": 6,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
         "a-search-the-engine-chose-not-to-run-is-not-reported-as-unfinished.test.mjs": {
           "tests": 5,
           "asserts": 13,
@@ -1731,6 +1755,12 @@
           "skips": 0,
           "todos": 0
         },
+        "an-ordered-native-language-investigation-that-failed-is-not-offered-back.test.mjs": {
+          "tests": 6,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
         "an-ordinary-word-that-sounds-different-is-not-searched.test.mjs": {
           "tests": 9,
           "asserts": 26,
@@ -2110,8 +2140,8 @@
           "todos": 0
         },
         "common-law-receipts.test.mjs": {
-          "tests": 41,
-          "asserts": 143,
+          "tests": 42,
+          "asserts": 148,
           "skips": 0,
           "todos": 0
         },
@@ -2776,8 +2806,8 @@
           "todos": 0
         },
         "e2e-scenario-ops.test.mjs": {
-          "tests": 22,
-          "asserts": 71,
+          "tests": 23,
+          "asserts": 75,
           "skips": 0,
           "todos": 0
         },
@@ -4775,7 +4805,7 @@
         },
         "runner.jx-jako-e2e.test.mjs": {
           "tests": 2,
-          "asserts": 30,
+          "asserts": 31,
           "skips": 0,
           "todos": 0
         },
@@ -7373,6 +7403,12 @@
           "skips": 0,
           "todos": 0
         },
+        "providers/_shared/test/a-slow-question-is-asked-again-in-region-halves.test.mjs": {
+          "tests": 9,
+          "asserts": 38,
+          "skips": 0,
+          "todos": 0
+        },
         "providers/_shared/test/absent-body.test.mjs": {
           "tests": 12,
           "asserts": 53,
@@ -7454,6 +7490,12 @@
         "providers/_shared/test/territory-codes.test.mjs": {
           "tests": 15,
           "asserts": 45,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/clarivate/test/a-gateway-timeout-is-asked-again-in-region-halves.test.mjs": {
+          "tests": 6,
+          "asserts": 28,
           "skips": 0,
           "todos": 0
         },

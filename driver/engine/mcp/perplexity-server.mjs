@@ -11,9 +11,9 @@ import { driverDir } from "../../../shared/driver-dir.mjs";   //
 import { underStudioSegment } from "../../../shared/path-seps.mjs";   // Windows builds the path with "\"
 import { serve } from "./stdio-server.mjs";
 import {
-  detectPreset, VALID_PRESETS, buildRequestBody, callAgentAPI, formatResponse, formatSandboxResponse,
+  isKnownPreset, questionPresetFor, buildRequestBody, callAgentAPI, formatResponse, formatSandboxResponse,
   validateGridSpec, buildGridProgramTask, captureGridFromResponse, requiredLedgerRefusal,
-  reconcileGridLedger, findUnrecordedConnotationQueries, candidatesForJudgment, rawResultItems,
+  reconcileGridLedger, findUnrecordedConnotationQueries, candidatesForJudgment, candidateParts, rawResultItems,
 } from "../../../providers/perplexity/src/core.js";
 // — the seat's meaning-receipt obligations, told here because this is the first instant they exist.
 // The SAME function the validator judges with (driver/connotation-search.mjs); see its doc block for why
@@ -73,6 +73,19 @@ function logCall(tool, args, result) {
   } catch { /* best-effort — a log failure must never break a lookup (band-server.mjs's rule) */ }
 }
 
+// THE TIER THIS RUN'S QUESTIONS GO OUT ON, pinned by its product (search-policy.mjs PRODUCT_POLICIES,
+// ruled 2026-09-25) and frozen in the run's own policy, read once from the run folder this process already
+// serves. Every question is sent on it, whatever depth the question names. A run frozen before the rule
+// names none, and the question's own depth, or the task's shape, decides as it always did. Grids are not
+// questions: they run on their own tier, and their lever is the results each cell keeps.
+const PINNED_QUESTION_PRESET = (() => {
+  if (!RUN_DIR) return null;
+  try {
+    const p = JSON.parse(readFileSync(driverDir(RUN_DIR, "search-policy.json"), "utf8"))?.web?.questionPreset;
+    return typeof p === "string" && isKnownPreset(p) ? p : null;
+  } catch { return null; }
+})();
+
 // WHAT CAME BACK, KEPT IN THE RUN: one file a call, under `_driver/web-results/`. The log above records what
 // was asked and the answer's shape; this keeps the searches the provider ran and the pages it was handed,
 // which the formatted answer drops. Without them a run cannot say whether a page was never retrieved or was
@@ -126,6 +139,16 @@ function recordedLedgerFor(spec) {
 // the form path; rulings ride `record_dispositions`.) Best-effort as a whole (see the caller): the ledger is already
 // on disk by the time this runs and the grid cost real money, so a fault here degrades the seat to
 // learning by refusal and must never turn a completed grid into an error.
+// The length of the obligations block part 1 carries, computed without writing anything, so a later
+// part splits the ledger exactly as part 1 did. Nothing to reserve when the render cannot be made.
+function obligationsReserve(spec, ledgerJson) {
+  try {
+    const owed = renderConnotationObligations(connotationObligations(parsePrRiskResults(ledgerJson)),
+      { ledgerPath: spec.output_path, dispositionsPath: spec.connotation?.dispositions_path ?? null });
+    return owed ? owed.length + 2 : 0;
+  } catch { return 0; }
+}
+
 function tellObligations(spec, ledgerJson) {
   const ob = connotationObligations(parsePrRiskResults(ledgerJson));
   // — the path is the DRIVER'S, taken from the spec it wrote (splitGridSpec dictates it). Never
@@ -166,9 +189,32 @@ function tellObligations(spec, ledgerJson) {
 
 
 
+// ── A GRID'S CANDIDATES, SERVED UNDER THE ENGINE'S CAP ON ONE TOOL RESULT ──────────────────────────
+// The engine errors a tool result past MAX_MCP_OUTPUT_TOKENS (25,000 tokens, about 100KB, by default),
+// and a grid's candidates grow with its results per cell. So they are served in parts, split between
+// cells, as band_shape serves an oversize shape, with the same part size. A later part is read from the
+// saved ledger: nothing is searched again.
+const GRID_PART_CHARS = 70000;
+
+// `reserve` is what part 1's reply also carries (the meaning obligations): part 1 is that much smaller,
+// and every call passes the same reserve for the same ledger, so every call splits it the same way.
+function judgeBlock(cands, part, gridSpecPath, reserve = 0) {
+  if (!cands.length) return "\n\nNo candidate hits surfaced — every cell was clean.";
+  const parts = candidateParts(cands, GRID_PART_CHARS, Math.max(GRID_PART_CHARS - reserve, 10000));
+  if (parts.length === 1) return `\n\nCandidate hits needing your taxonomy judgment (${cands.length}):\n` + JSON.stringify(cands, null, 2);
+  const total = parts.length;
+  const p = Math.min(Math.max(1, Math.floor(Number(part)) || 1), total);
+  const head = `[perplexity_research part ${p}/${total} — these candidates exceed one tool response, so they are served in ${total} parts`
+    + ` split between cells (every cell is intact). The candidates are COMPLETE only once ALL ${total} parts are read — never judge from a partial list.]`;
+  const tail = p < total
+    ? `[end of part ${p}/${total} — call perplexity_research again with {"grid_spec_path": ${JSON.stringify(gridSpecPath)}, "part": ${p + 1}} for the next part]`
+    : `[end of part ${total}/${total} — the candidates are complete once parts 1..${total} are all read]`;
+  return `\n\n${head}\nCandidate hits needing your taxonomy judgment (${cands.length}):\n` + JSON.stringify(parts[p - 1], null, 2) + `\n${tail}`;
+}
+
 async function research(params) {
   if (!API_KEY) return "ERROR: PERPLEXITY_API_KEY not set — marketplace research unavailable.";
-  const { task, depth, model: modelOverride, allow_fetch = false, domain_filter, enable_sandbox = false, response_schema, schema_name, grid_spec_path } = params;
+  const { task, depth, model: modelOverride, allow_fetch = false, domain_filter, enable_sandbox = false, response_schema, schema_name, grid_spec_path, part } = params;
 
   // ── Deterministic grid mode: the caller dictates the cells; the tool runs + captures them. ──
   if (grid_spec_path) {
@@ -177,18 +223,25 @@ async function research(params) {
     catch (err) { return `ERROR: grid_spec_path unreadable/invalid (${err.message}). The driver writes this file; do not hand-author it.`; }
     if (!underStudioSegment(spec.output_path))   // either spelling: an install keeps the studio segment it has
       return requiredLedgerRefusal(`ERROR: grid spec.output_path must be within a studio/clearance-search run dir; got ${spec.output_path}`, { spec, gridSpecPath: grid_spec_path });
-    // — already recorded and complete? Answer from the ledger; do not buy the grid twice.
+    // — already recorded and complete? Answer from the ledger; do not buy the grid twice. This is also
+    // where a later part is read: a saved ledger always passes, because its cells and meaning queries
+    // are accounted as rows or as honest gaps when it is written.
     const already = recordedLedgerFor(spec);
     if (already) {
       const ledgerJson = JSON.stringify(already.ledger, null, 2);
+      const cands = candidatesForJudgment(already.ledger);
+      // A later part is part 1's answer read on: the obligations and the provenance record stay with
+      // part 1, and the split reserves the same room for them, so every call cuts the same parts.
+      if (Number(part) > 1)
+        return `Grid ALREADY RECORDED for this spec (${already.present}/${already.requested} cells present) at ${spec.output_path} — every dictated cell is accounted and every dictated meaning query carries a receipt, so it was NOT run again. The sweep is a fact of this run, not of this attempt.\n` +
+          `Do NOT write the grid ledger yourself — it is already saved. Use the candidates below for judgment only.` +
+          judgeBlock(cands, part, grid_spec_path, obligationsReserve(spec, ledgerJson));
       let owed = "";
       try { owed = tellObligations(spec, ledgerJson); } catch { /* best-effort — see tellObligations */ }
-      const cands = candidatesForJudgment(already.ledger);
       writeGridProvenance(spec, { ran: false, present: already.present, requested: already.requested, model: modelOverride });
       return `Grid ALREADY RECORDED for this spec (${already.present}/${already.requested} cells present) at ${spec.output_path} — every dictated cell is accounted and every dictated meaning query carries a receipt, so it was NOT run again. The sweep is a fact of this run, not of this attempt.\n` +
         `Do NOT write the grid ledger yourself — it is already saved. Use the candidates below for judgment only.` +
-        (cands.length ? `\n\nCandidate hits needing your taxonomy judgment (${cands.length}):\n` + JSON.stringify(cands, null, 2)
-          : "\n\nNo candidate hits surfaced — every cell was clean.") +
+        judgeBlock(cands, 1, grid_spec_path, owed ? owed.length + 2 : 0) +
         (owed ? `\n\n${owed}` : "");
     }
     const gridTask = buildGridProgramTask(spec);
@@ -201,9 +254,7 @@ async function research(params) {
       writeFileSync(spec.output_path, cap.ledgerJson + "\n");
       writeGridProvenance(spec, { ran: true, present: cap.present, requested: cap.requested, model: modelOverride });
       const note = cap.missing.length ? ` ${cap.missing.length} cell(s) the program did not return were recorded as honest gaps (coverage-limited).` : "";
-      const judge = cap.candidates.length
-        ? `\n\nCandidate hits needing your taxonomy judgment (${cap.candidates.length}):\n` + JSON.stringify(cap.candidates, null, 2)
-        : "\n\nNo candidate hits surfaced — every cell was clean.";
+      const judge = judgeBlock(cap.candidates, 1, grid_spec_path, obligationsReserve(spec, cap.ledgerJson));
       // The meaning-receipt obligations, from the ledger THIS call just wrote. Empty string when the seat
       // owns no meaning queries (half a always) — nothing is appended then.
       //
@@ -229,10 +280,11 @@ async function research(params) {
     logCall("perplexity_research", { task: "", depth: depth ?? null }, { ok: false, error: "empty task" });
     return "ERROR: task parameter is required and must not be empty.";
   }
-  const preset = depth && VALID_PRESETS.includes(depth) ? depth : detectPreset(task);
+  const preset = questionPresetFor({ pinned: PINNED_QUESTION_PRESET, depth, task });
   // The resolved preset, not the requested one: `depth` is often absent and detectPreset decides, so
-  // logging the request would record a null where the fact is what actually ran.
-  const asked = { task, depth: depth ?? null, preset, allow_fetch, enable_sandbox,
+  // logging the request would record a null where the fact is what actually ran. `pinned` says the run's
+  // setting decided it rather than the question.
+  const asked = { task, depth: depth ?? null, preset, ...(PINNED_QUESTION_PRESET ? { pinned: true } : {}), allow_fetch, enable_sandbox,
     ...(domain_filter ? { domain_filter } : {}), ...(modelOverride ? { model: modelOverride } : {}) };
   try {
     const body = buildRequestBody({ task, preset, allowFetch: allow_fetch, domainFilter: domain_filter, modelOverride, enableSandbox: enable_sandbox, responseSchema: response_schema, schemaName: schema_name });
@@ -254,10 +306,14 @@ serve({
   name: "perplexity", version: "0.1.0",
   tools: [{
     name: "perplexity_research",
-    description: "Web/marketplace research via Perplexity's agent API. Auto-detects depth (fast-search|pro-search|deep-research|advanced-deep-research) unless `depth` is given. For deterministic marketplace grids, pass `grid_spec_path` (absolute, the driver writes it) — the tool runs every (term × platform) cell and saves the verbatim ledger to the spec's output_path; you get back only candidates needing judgment (never write the grid yourself).",
+    // On a run whose search sets the tier, the tool says so and offers no depth: a depth the model chose
+    // would be ignored, and a parameter that is ignored is one the model spends a thought on for nothing.
+    description: PINNED_QUESTION_PRESET
+      ? "Web/marketplace research via Perplexity's agent API, at the depth this search is set to. For deterministic marketplace grids, pass `grid_spec_path` (absolute, the driver writes it) — the tool runs every (term × platform) cell and saves the verbatim ledger to the spec's output_path; you get back only candidates needing judgment (never write the grid yourself)."
+      : "Web/marketplace research via Perplexity's agent API. Auto-detects depth (fast-search|pro-search|deep-research|advanced-deep-research) unless `depth` is given. For deterministic marketplace grids, pass `grid_spec_path` (absolute, the driver writes it) — the tool runs every (term × platform) cell and saves the verbatim ledger to the spec's output_path; you get back only candidates needing judgment (never write the grid yourself).",
     inputSchema: { type: "object", required: ["task"], properties: {
       task: { type: "string", description: "Sanitized research query (~200 tokens max)." },
-      depth: { type: "string", enum: ["fast-search", "pro-search", "deep-research", "advanced-deep-research"] },
+      ...(PINNED_QUESTION_PRESET ? {} : { depth: { type: "string", enum: ["fast-search", "pro-search", "deep-research", "advanced-deep-research"] } }),
       model: { type: "string", description: "Optional model override." },
       allow_fetch: { type: "boolean", default: false },
       domain_filter: { type: "array", items: { type: "string" }, description: "Restrict/exclude domains (max 20), e.g. ['nature.com','-reddit.com']." },
@@ -265,6 +321,7 @@ serve({
       response_schema: { type: "object", description: "JSON Schema for structured output." },
       schema_name: { type: "string" },
       grid_spec_path: { type: "string", description: "Absolute path to the driver-written grid spec (implies enable_sandbox)." },
+      part: { type: "number", description: "1-based part number when a grid's candidates are served in parts (default 1)" },
     } },
     annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
     handler: research,

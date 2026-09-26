@@ -9,7 +9,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 import { validators as koValidators } from "./verify-knockout.mjs";
-import { kebab } from "./search-policy.mjs";
+import { kebab, PRODUCT_POLICIES } from "./search-policy.mjs";
 // — the door owns "did the request name any classes?"; this builder reads it rather than
 // re-deriving it. A third copy is what put the knockout frame a class behind the intake.
 import { requestNamesClasses } from "./enqueue-schema.mjs";
@@ -130,11 +130,14 @@ export function koPaths(runDir) {
 // registers was there because its answer landed in the research file as prose. A grid writes no prose, and
 // the rating step keeps its own rule, where the report is composed.
 //
-// THE SETTINGS ARE PINNED HERE, never read from the environment: the preset the grid path runs on, its
+// THE SETTINGS ARE PINNED, never read from the environment: the preset the grid path runs on, its
 // reasoning raised from that preset's `minimal` through the vendor's documented override (measured
-// 2026-09-25: the response echoes it back beside the search program), and the results each cell asks for
-// and keeps.
-export const KNOCKOUT_WEB = Object.freeze({ preset: "pro-search", reasoning: Object.freeze({ effort: "low" }), resultsPerCell: 10 });
+// 2026-09-25: the response echoes it back beside the search program), and, from the product's own row
+// (search-policy.mjs PRODUCT_POLICIES), the results each cell asks for and keeps and the tier the owner
+// lookups ask on.
+const KO_WEB_ROW = PRODUCT_POLICIES["knockout-search"].web;
+export const KNOCKOUT_WEB = Object.freeze({ preset: "pro-search", reasoning: Object.freeze({ effort: "low" }),
+  resultsPerCell: KO_WEB_ROW.resultsPerCell, questionPreset: KO_WEB_ROW.questionPreset });
 
 /** The territories the request ordered, as the job carries them; empty for a worldwide screen. PURE. */
 export const orderedTerritories = (job) =>
