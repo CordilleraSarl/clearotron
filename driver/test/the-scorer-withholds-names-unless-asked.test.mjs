@@ -106,7 +106,7 @@ test("a reference sentence is withheld whole, not name-substituted", () => {
   assert.ok(!out.includes("permitted-use"), `the sentence survived: ${out}`);
   assert.ok(!out.includes("Bracken"), `a name inside the sentence survived: ${out}`);
   assert.match(out, /\[assertion\]/, "the reader must still see that an assertion was there");
-  assert.match(out, /--names/, "and how to read it");
+  assert.match(out, /run again with --names/, "and how to read it");
 });
 
 test("a control sentence and a reference note are withheld the same way", () => {
