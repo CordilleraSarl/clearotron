@@ -21,7 +21,7 @@ import { entryTermIssues, goodsTermsList } from "./term-shape.mjs";
 import { awaitsReadingTurn, releasedFamiliesFile } from "./plan-guards.mjs";
 import { faultText, guardToolCall } from "./transport-guard.mjs";
 import { clipProviderText } from "./provider-text.mjs";   // — keep the discriminator
-import { isGatewayStall } from "./enumerate.mjs";   // a question that timed out on both halves of its regions
+import { isGatewayStall, isUnresolvedCount } from "./enumerate.mjs";   // a question that timed out on both halves of its regions; and the one definition of a count the reading step must still decide
 
 // plan predicate → provider query params. "wildcard" patterns compile to the provider's anchored
 // modes (trailing * → starts_with, leading * → ends_with); there is deliberately NO `contains`
@@ -651,12 +651,13 @@ export function makeExecutePlan(deps) {
     // full `term_counts` and this filter then handed the reading step nothing — the rule landed without its
     // main instance, and a step told nothing reads exactly like a step told there is nothing.
     //
-    // `unresolved` is the rescue's own word for it (enumerate.mjs: crowd + unenumerated + error), reused
-    // rather than restated so the two cannot drift. A stack whose every spelling verified zero is resolved
-    // and is deliberately still absent here: there is nothing for the reading step to read or narrow.
-    const leftToDecide = (v) => v?.disposition === "unenumerated" || v?.disposition === "crowd" || v?.disposition === "error";
+    // `isUnresolvedCount` is IMPORTED from the rescue that writes these dispositions, and is the same
+    // predicate both rescues there decide completeness with — one definition, three call sites. It was a
+    // local copy with a comment claiming the two could not drift, which the code did not do: nothing
+    // coupled them. A stack whose every spelling verified zero is resolved and is deliberately still
+    // absent here, because there is nothing for the reading step to read or narrow.
     const spellingCounts = Object.fromEntries(blocks
-      .filter((b) => b?.term_counts && Object.values(b.term_counts).some(leftToDecide))
+      .filter((b) => b?.term_counts && Object.values(b.term_counts).some(isUnresolvedCount))
       .map((b) => [b.qid, Object.fromEntries(Object.entries(b.term_counts).map(([t, v]) => [t,
         v?.disposition === "crowd" ? `crowd ${v.total_hits}` : v?.disposition === "error" ? "error" : (v?.total_hits ?? "error")]))]));
     return { type: "text", text: JSON.stringify({

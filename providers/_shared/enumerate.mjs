@@ -168,6 +168,22 @@ export const isOwnerScoped = (params) => Boolean(
  * @param deps.rowScreen (row, inScopeClasses) => object — used for "search-row".
  * @param deps.hasAnyElement (params) => boolean
  */
+/**
+ * Is there anything left for the reading step to decide about this term or class leg? PURE.
+ *
+ * THE ONE DEFINITION OF "UNRESOLVED", and it is exported because three places need it and a rule stated
+ * three times is a rule that drifts. It was: a local sum of the tally at each of the two rescues here, and
+ * a third predicate in `execute-plan.mjs` deciding whether to hand the counts to the reading step. The
+ * three agreed, and a comment there claimed they could not drift, which was not true of the code — the
+ * claim is what made this worth coupling, because a reader who believes drift is impossible will not add
+ * the coupling themselves.
+ *
+ * `verified-zero` and `enumerated` are the resolved pair: the question was asked and answered. The other
+ * three each leave something open — a crowd to narrow, a count read but not its records, or a count that
+ * failed — and every one of them is the reading step's to decide.
+ */
+export const isUnresolvedCount = (v) => v?.disposition === "crowd" || v?.disposition === "unenumerated" || v?.disposition === "error";
+
 export function makeEnumerate(deps) {
   const {
     search: rawSearch,
@@ -289,7 +305,7 @@ export function makeEnumerate(deps) {
     const records = [];
     const tally = { "verified-zero": 0, enumerated: 0, crowd: 0, unenumerated: 0, error: 0 };
     for (const v of Object.values(term_counts)) tally[v.disposition] += 1;
-    const unresolved = tally.crowd + tally.unenumerated + tally.error;
+    const unresolved = Object.values(term_counts).filter(isUnresolvedCount).length;
     // A FULLY RESOLVED STACK IS A COMPLETE BAND, INCLUDING WHEN THE ANSWER IS ZERO. The comment below
     // states the rule and the code then demanded a record anyway: `records.length > 0`. So a stack in
     // which EVERY term resolved to verified-zero — nobody has filed any of these names — fell through
@@ -355,7 +371,7 @@ export function makeEnumerate(deps) {
     const records = [...merged.values()];
     const tally = { "verified-zero": 0, enumerated: 0, crowd: 0, unenumerated: 0, error: 0 };
     for (const v of Object.values(class_counts)) tally[v.disposition] += 1;
-    const unresolved = tally.crowd + tally.unenumerated + tally.error;
+    const unresolved = Object.values(class_counts).filter(isUnresolvedCount).length;
     // Same rule, same reason, same correction as the OR-stack rescue above: a stack in which every class
     // came back a verified zero is a complete band whose answer is zero, not a question nobody answered.
     if (unresolved === 0) {
