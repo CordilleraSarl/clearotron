@@ -63,6 +63,14 @@ test("sentence 6 stays in the clearance's picking step; the knockout manual reco
   const md = readFileSync(join(DRIVER, "skills", "knockout-assess", "SKILL.md"), "utf8");
   assert.ok(md.includes("## Per mark — the mandatory sequence"), "guard: the knockout manual was read");
   assert.equal(md.includes(SENTENCE_6), false, "sentence 6 is out of the knockout manual");
+  // AND THE PAGE LIST, on this surface too. The rater is handed this manual in its dispatch —
+  // `stages-knockout.mjs` names it in the `reads([...])` line of the rating step's own message — so the
+  // manual and the dispatch are one instruction set as far as the rater is concerned, and forbidding the
+  // page list in the dispatch alone (the first arm above) leaves the surface where it can actually go
+  // wrong unguarded. THE ABSENCE ASSERTIONS ARE THE LOAD-BEARING HALF HERE: every other check on `md`
+  // below is a positive `includes`, and a positive cannot be broken by ADDING text, so a per-page
+  // accounting paragraph could be added beside the section and pass all of them.
+  assert.doesNotMatch(md, /EACH MARK'S PAGES/, "the page list stays out of the manual too, not only out of the dispatch");
   assert.ok(md.includes("**Both are optional, and omitting them is always safe.**"), "the filing lines read as before");
   const placement = readFileSync(join(DRIVER, "skills", "placement-inquiry", "SKILL.md"), "utf8");
   assert.equal(placement.split(SENTENCE_6).length - 1, 1, "and it stays, once, in the clearance's picking step");
