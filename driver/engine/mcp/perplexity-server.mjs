@@ -13,7 +13,7 @@ import { serve } from "./stdio-server.mjs";
 import {
   detectPreset, VALID_PRESETS, buildRequestBody, callAgentAPI, formatResponse, formatSandboxResponse,
   validateGridSpec, buildGridProgramTask, captureGridFromResponse, requiredLedgerRefusal,
-  reconcileGridLedger, findUnrecordedConnotationQueries, candidatesForJudgment,
+  reconcileGridLedger, findUnrecordedConnotationQueries, candidatesForJudgment, rawResultItems,
 } from "../../../providers/perplexity/src/core.js";
 // — the seat's meaning-receipt obligations, told here because this is the first instant they exist.
 // The SAME function the validator judges with (driver/connotation-search.mjs); see its doc block for why
@@ -71,6 +71,26 @@ function logCall(tool, args, result) {
       ...(SESSION ? { session: SESSION } : {}), ...(AGENT ? { agent: AGENT } : {}),
     }) + "\n");
   } catch { /* best-effort — a log failure must never break a lookup (band-server.mjs's rule) */ }
+}
+
+// WHAT CAME BACK, KEPT IN THE RUN: one file a call, under `_driver/web-results/`. The log above records what
+// was asked and the answer's shape; this keeps the searches the provider ran and the pages it was handed,
+// which the formatted answer drops. Without them a run cannot say whether a page was never retrieved or was
+// retrieved and left out. They are the matter's own content, so they are written to the run folder and
+// nowhere else. Best-effort like the log: a failed write never fails a lookup.
+let rawSeq = 0;
+function keepRaw(kind, asked, data) {
+  if (!RUN_DIR) return;
+  const items = rawResultItems(data);
+  if (!items.length) return;
+  try {
+    const p = driverDir(RUN_DIR, "web-results", `${new Date().toISOString().replace(/[:.]/g, "-")}-${process.pid}-${++rawSeq}.json`);
+    mkdirSync(dirname(p), { recursive: true });
+    writeFileSync(p, JSON.stringify({
+      tool: "perplexity_research", kind, ...asked,
+      ...(SESSION ? { session: SESSION } : {}), ...(AGENT ? { agent: AGENT } : {}), items,
+    }, null, 1) + "\n");
+  } catch { /* best-effort */ }
 }
 
 /** How many sources the answer carried, when the shape says so. Never the sources themselves. */
@@ -174,6 +194,7 @@ async function research(params) {
     const gridTask = buildGridProgramTask(spec);
     try {
       const data = await callAgentAPI(API_KEY, buildRequestBody({ task: gridTask, preset: "pro-search", modelOverride, enableSandbox: true }));
+      keepRaw("grid", { output_path: spec.output_path }, data);
       const cap = captureGridFromResponse(data, spec);
       if (!cap.ok) return requiredLedgerRefusal(`ERROR: grid run failed — ${cap.error}.${cap.stderrTail ? ` stderr: ${cap.stderrTail}` : ""} Retry the call.`, { spec, gridSpecPath: grid_spec_path });
       mkdirSync(dirname(spec.output_path), { recursive: true });
@@ -216,6 +237,7 @@ async function research(params) {
   try {
     const body = buildRequestBody({ task, preset, allowFetch: allow_fetch, domainFilter: domain_filter, modelOverride, enableSandbox: enable_sandbox, responseSchema: response_schema, schemaName: schema_name });
     const data = await callAgentAPI(API_KEY, body);
+    keepRaw("question", { task, preset }, data);
     const text = enable_sandbox ? formatSandboxResponse(data, preset) : formatResponse(data, preset);
     logCall("perplexity_research", asked, { ok: true, bytes: String(text ?? "").length, citations: citationCount(data) });
     return text;

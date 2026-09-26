@@ -37,7 +37,7 @@
 // cite is enforced in that it is always PRESENT and always the driver's, never in the sense that a
 // missing one can withhold a report. Nothing in this module throws. A provider outage produces rows that
 // say the query did not answer, and the run publishes.
-import { existsSync, readFileSync, writeFileSync, appendFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync, appendFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { createHash } from "node:crypto";
 
@@ -136,7 +136,7 @@ export function firstSourceUrl(text) {
  * row as its lookup finishes, so its lines follow completion; the returned rows, which the report reads,
  * keep the owners' order.
  */
-export async function runOwnerChecks({ owners, exec, runDir, ledgerPath = null, preset = "pro-search", concurrency = 1, now = () => new Date().toISOString() }) {
+export async function runOwnerChecks({ owners, exec, runDir, ledgerPath = null, rawDir = null, preset = "pro-search", concurrency = 1, now = () => new Date().toISOString() }) {
   const list = Array.isArray(owners) ? owners : [];
   const rows = new Array(list.length);
   const check = async (o) => {
@@ -146,6 +146,14 @@ export async function runOwnerChecks({ owners, exec, runDir, ledgerPath = null, 
     try { r = await exec(query, { mark: o.mark, preset }); }
     catch (e) { r = { ok: false, cause: `executor threw: ${String(e?.message ?? e).slice(0, 200)}` }; }
 
+    // THE SEARCHES BEHIND THE ANSWER ARE KEPT, answered or not, beside the answer's own name: the answer
+    // alone cannot say which pages the lookup was handed.
+    if (rawDir && Array.isArray(r?.raw) && r.raw.length) {
+      try {
+        mkdirSync(rawDir, { recursive: true });
+        writeFileSync(join(rawDir, ownerPayloadFile(o).replace(/\.md$/, ".json")), JSON.stringify({ mark: o.mark, owner: o.owner, query, items: r.raw }, null, 1) + "\n");
+      } catch { /* the ledger row is the receipt; a raw-results write never fails a lookup */ }
+    }
     const ok = Boolean(r?.ok && r?.text);
     let payloadFile = null;
     if (ok && runDir) {

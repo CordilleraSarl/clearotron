@@ -2094,10 +2094,12 @@ export function applyStageWrites(msg, argv) {
     const plan = {
       schema: 1,
       batch: { productContext: "mock consumer product line", inUseAs: "a product line, a character or a place",
-        umbrellaBrandNote: null, executionOrder: [...names] },
+        places: ["web", "shop.example.com"], umbrellaBrandNote: null, executionOrder: [...names] },
       marks: names.map((n, i) => ({ ref: null, name: n, classes: [9], beltAndBraces: [35],
         classesPlain: "software (9); retail services (35, belt-and-braces)",
         contextFraming: /[aeiou]{2}|q[^u]/i.test(n) ? "coined/fanciful term" : "brand-like compound",
+        // the name as instructed, and one misspelling: its last letter doubled, which no name can equal
+        spellings: [n, `${n}${n.slice(-1)}`],
         priorKnowledge: null, priority: i + 1 })),
     };
     // THE NOTE'S BYTES ARE UNCHANGED, deliberately. This conversion moves who writes the file and not

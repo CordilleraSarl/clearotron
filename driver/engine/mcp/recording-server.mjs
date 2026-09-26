@@ -1371,10 +1371,14 @@ serve({
         },
         batch: {
           type: "object",
-          required: ["productContext", "inUseAs"],
+          required: ["productContext", "inUseAs", "places"],
           properties: {
             productContext: { type: "string", description: "One sentence: what the batch is for. Every mark's contextFraming is read against it." },
-            inUseAs: { type: "string", description: "The kinds of use off the register that could conflict in this client's field, as one phrase completing \"Is this name already in use as …?\". The second web question for every mark asks exactly this." },
+            inUseAs: { type: "string", description: "The kinds of use off the register that could conflict in this client's field, as one phrase completing \"Is this name already in use as …?\". The places the batch is searched on include the sites where these uses are listed." },
+            places: {
+              type: "array", items: { type: "string" },
+              description: "The 2 to 4 places every spelling is searched on: \"web\" for the whole web, and the client's stores and the sites where the kinds of use are listed, each a bare host. A host covers its subdomains.",
+            },
             umbrellaBrandNote: { type: "string", description: "A note where an umbrella brand is in play, or omit it." },
             executionOrder: {
               type: "array", items: { type: "string" },
@@ -1387,16 +1391,17 @@ serve({
           description: "One row per instructed mark, names verbatim. Two names that differ only in spacing, punctuation or case are REFUSED: they would share one research payload, and one of them would be rated on the other's evidence.",
           items: {
             type: "object",
-            // The three the acceptor refuses a row without, by name. `classes` is NOT among them: a plan
+            // The four the acceptor refuses a row without, by name. `classes` is NOT among them: a plan
             // row may legitimately carry none, and the acceptor only constrains its shape when present.
-            required: ["name", "classesPlain", "contextFraming"],
+            required: ["name", "classesPlain", "contextFraming", "spellings"],
             properties: {
               ref: { type: "string", description: "The requester's own reference for this mark, or omit it." },
               name: { type: "string", description: "The mark, verbatim from the instructed scope." },
               classes: { type: "array", items: { type: "number" }, description: "Nice classes, integers 1-45." },
               beltAndBraces: { type: "array", items: { type: "number" }, description: "Adjacent Nice classes swept as a precaution, integers 1-45." },
-              classesPlain: { type: "string", description: "The sweep prompt's plain-language class line — what these classes are, in words a search engine can use." },
+              classesPlain: { type: "string", description: "The plain-language class line — what these classes are, in words the rating step reads beside the numbers." },
               contextFraming: { type: "string", description: "What THIS name is for — a character, a location, a product line. The rating hangs off it: the assess stage is told to rate WITH this field, per mark, and two names in one batch can sit at different bands on identical evidence because they are used differently." },
+              spellings: { type: "array", items: { type: "string" }, description: "2 or 3 ways this name is written, the name as instructed among them. Each is searched on every place." },
               priorKnowledge: { type: "string", description: "What the requester already told you about this name, or omit it." },
               priority: { type: "number", description: "This mark's position in the execution order." },
             },

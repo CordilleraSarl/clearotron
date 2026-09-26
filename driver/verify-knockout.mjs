@@ -256,6 +256,42 @@ const bandIdx = (ladder, word) => ladder.findIndex((l) => l.toLowerCase() === St
 // ladder, the interactive skill's rule, generalized by position); registerEstimate above the lowest.
 const materialIdxMax = (ladder) => ladder.length - 3;   // inclusive index bound for "material"
 
+// ── The web search's two lists, checked as the search program will read them ─────────────────────────
+//
+// The program searches every place verbatim: the literal `web` is the whole web, and any other entry is
+// passed to the provider as a site filter exactly as written. So a place is refused unless it is `web` or
+// a bare host in lower case, never trimmed or lower-cased here: a place the check repaired would not be
+// the place the program searched.
+
+/** The place that is the whole web. Every other place is a site's bare host, which covers its subdomains. */
+export const WEB_PLACE = "web";
+/** How many of a batch's places must be the whole web: the one line that decides it (ruling pending on 932). */
+export const WEB_PLACES_REQUIRED = 1;
+const BARE_HOST = /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z](?:[a-z0-9-]{0,61}[a-z0-9])?$/;
+const PLACES_REFUSAL = `batch.places is required: 2 to 4 places, one of them "${WEB_PLACE}" and each other a bare host`;
+
+/** The refusal for a batch's places, or null when they are the list the program can search. PURE. */
+export function placesDefect(places) {
+  if (!Array.isArray(places) || places.length < 2 || places.length > 4) return PLACES_REFUSAL;
+  if (!places.every((x) => x === WEB_PLACE || (typeof x === "string" && x.length <= 253 && BARE_HOST.test(x)))) return PLACES_REFUSAL;
+  if (new Set(places).size !== places.length) return PLACES_REFUSAL;
+  if (places.filter((x) => x === WEB_PLACE).length !== WEB_PLACES_REQUIRED) return PLACES_REFUSAL;
+  return null;
+}
+
+/**
+ * The refusal for a mark's spellings, or null. PURE. Two spellings that differ only in case or spacing
+ * are one search, so they are refused as a repeat; the name as instructed must be among them.
+ */
+export function spellingsDefect(name, spellings) {
+  const refusal = `mark "${name}": spellings is required: 2 or 3 ways the name is written, the name among them`;
+  if (!Array.isArray(spellings) || spellings.length < 2 || spellings.length > 3) return refusal;
+  if (!spellings.every((x) => typeof x === "string" && x.trim())) return refusal;
+  const keys = spellings.map(nameKey);
+  if (new Set(keys).size !== keys.length || !keys.includes(nameKey(name))) return refusal;
+  return null;
+}
+
 // ── Stage validators (runStage corrective-ladder shape) ──────────────────────────────────────────────
 export const validators = {
   // knockout-plan.json — strict: closed keys, one row per instructed mark (name parity vs the
@@ -266,16 +302,21 @@ export const validators = {
     if (p?.schema !== 1) return { ok: false, reason: "schema must be 1" };
     if (!p.batch || typeof p.batch.productContext !== "string" || !p.batch.productContext.trim())
       return { ok: false, reason: "batch.productContext (string) is required" };
-    // The kinds of use every mark's second web question asks about, judged from the client's field. Without
-    // them the question would be asked with words nobody chose, or not at all (stages-knockout.mjs).
+    // The kinds of use off the register, judged from the client's field. The frame chooses the places the
+    // batch is searched on from them, so a plan without them has chosen its places on nothing it stated.
     if (typeof p.batch.inUseAs !== "string" || !p.batch.inUseAs.trim())
-      return { ok: false, reason: "batch.inUseAs (string) is required: the kinds of use the second web question asks about, for this client's field" };
+      return { ok: false, reason: "batch.inUseAs (string) is required: the kinds of use off the register, for this client's field" };
+    // Where every spelling is searched. Without them the web search has no cell to run (stages-knockout.mjs).
+    const placesRefused = placesDefect(p.batch.places);
+    if (placesRefused) return { ok: false, reason: placesRefused };
     if (!Array.isArray(p.marks) || !p.marks.length) return { ok: false, reason: "marks[] is required" };
-    const MARK_KEYS = ["ref", "name", "classes", "beltAndBraces", "classesPlain", "contextFraming", "priorKnowledge", "priority"];
+    const MARK_KEYS = ["ref", "name", "classes", "beltAndBraces", "classesPlain", "contextFraming", "spellings", "priorKnowledge", "priority"];
     for (const m of p.marks) {
       for (const k of Object.keys(m)) if (!MARK_KEYS.includes(k)) return { ok: false, reason: `plan mark key "${k}" is not in the closed contract` };
       if (typeof m.name !== "string" || !m.name.trim()) return { ok: false, reason: "every plan mark needs a verbatim name" };
-      if (typeof m.classesPlain !== "string" || !m.classesPlain.trim()) return { ok: false, reason: `mark "${m.name}": classesPlain (the sweep prompt's plain-language class line) is required` };
+      if (typeof m.classesPlain !== "string" || !m.classesPlain.trim()) return { ok: false, reason: `mark "${m.name}": classesPlain (the plain-language class line) is required` };
+      const spellingsRefused = spellingsDefect(m.name, m.spellings);
+      if (spellingsRefused) return { ok: false, reason: spellingsRefused };
       if (typeof m.contextFraming !== "string" || !m.contextFraming.trim()) return { ok: false, reason: `mark "${m.name}": contextFraming is required (the rating hangs off it)` };
       for (const ck of ["classes", "beltAndBraces"]) {
         if (m[ck] != null && (!Array.isArray(m[ck]) || !m[ck].every((n) => Number.isInteger(n) && n >= 1 && n <= 45)))

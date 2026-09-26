@@ -5,7 +5,7 @@
 //
 // The defect this closes is not a wrong answer, it is a paid one: a clearance with no PERPLEXITY_API_KEY
 // used to run every register stage, reach the common-law grid, and get an ERROR string back per call
-// (perplexity-server.mjs:149 — `if (!API_KEY) return "ERROR: PERPLEXITY_API_KEY not set`). The
+// (`research` in perplexity-server.mjs — `if (!API_KEY) return "ERROR: PERPLEXITY_API_KEY not set`). The
 // failure was correct and the spend before it was avoidable.
 //
 // WHAT IS EASY TO GET WRONG HERE, and what most of this file is about: the refusal must NOT be gated on

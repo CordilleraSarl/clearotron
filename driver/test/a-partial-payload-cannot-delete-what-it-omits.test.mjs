@@ -266,6 +266,8 @@ const PLANTED = Object.freeze({
         + "as belt and braces. Triage only: this is not a clearance opinion and no full search has run.",
       batch: {
         productContext: "A two-name knockout batch for a beverages launch.",
+        inUseAs: "a drink, a cocktail or a bar",
+        places: ["web", "shop.example.com"],
         umbrellaBrandNote: "Both names would sit under an existing house brand.",
         executionOrder: ["NOVAPULSE", "VELTRIN"],
       },
@@ -274,6 +276,7 @@ const PLANTED = Object.freeze({
           ref: "m1", name: "NOVAPULSE", classes: [32], beltAndBraces: [33],
           classesPlain: "soft drinks and mineral waters, with beers and spirits swept as a precaution",
           contextFraming: "a drink name for the core product line",
+          spellings: ["NOVAPULSE", "NOVA PULSE"],
           priorKnowledge: "The requester believes it is coined.",
           priority: 1,
         },
@@ -281,6 +284,7 @@ const PLANTED = Object.freeze({
           ref: "m2", name: "VELTRIN", classes: [32], beltAndBraces: [33],
           classesPlain: "soft drinks and mineral waters, with beers and spirits swept as a precaution",
           contextFraming: "a sub-brand for a limited edition",
+          spellings: ["VELTRIN", "VELTRINN"],
           priorKnowledge: "",
           priority: 2,
         },
@@ -499,6 +503,21 @@ test("a knockout-frame repair turn correcting ONE mark keeps the note, the batch
     "the mark the repair did not mention was rewritten or lost");
   assert.equal(byName.get(full.marks[0].name).contextFraming, "a drink name for the flagship line",
     "the correction did not land — the repair turn wrote nothing");
+});
+
+// THE BATCH MERGES KEY BY KEY, AND A KEY THE MERGE DOES NOT NAME IS A KEY IT DROPS. `places` is where every
+// spelling is searched, so a repair that corrected only the execution order and lost it would leave the web
+// search with no cell to run, and every mark would reach the rating step degraded.
+test("a knockout-frame repair turn correcting the execution order keeps the places", () => {
+  const full = PLANTED.record_knockout_frame.full;
+  const runDir = mkdtempSync(join(tmpdir(), "frame-places-"));
+  assert.ok(recordKnockoutFrame(runDir, full).written, "the full fixture was refused — this arm is planting nothing");
+  const again = recordKnockoutFrame(runDir, { batch: { executionOrder: ["VELTRIN", "NOVAPULSE"] } });
+  assert.ok(again.written, `the order-only repair was refused (${again.refused})`);
+  const plan = JSON.parse(readFile(knockoutFrameFiles(runDir).plan, "utf8"));
+  assert.deepEqual(plan.batch.executionOrder, ["VELTRIN", "NOVAPULSE"], "the correction did not land");
+  assert.deepEqual(plan.batch.places, full.batch.places, "the repair did not speak about the places and they moved");
+  assert.deepEqual(plan.marks.map((m) => m.spellings), full.marks.map((m) => m.spellings));
 });
 
 test("the known-open rows name fields the schema actually declares as optional", async () => {

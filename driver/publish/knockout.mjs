@@ -121,8 +121,11 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
     }
   }
   const trailRows = (receipts ?? []).map((r) => ({
-    // The second web question's row names the kinds of use it asked about, in the frame's words.
-    'Mark': r.mark, 'Search Term': r.mark, 'Source / Context': `${r.executor ?? 'perplexity'} (${r.preset ?? ''})${r.question && r.inUseAs ? ` — in use as ${r.inUseAs}` : ''}`,
+    // A grid call's row names what it searched: the spellings, and the places each was searched on. An
+    // archived run's rows print as they were delivered: the mark as the term, and on its second web
+    // question the kinds of use it asked about, in the frame's words.
+    'Mark': r.mark, 'Search Term': Array.isArray(r.spellings) && r.spellings.length ? r.spellings.join(', ') : r.mark,
+    'Source / Context': `${r.executor ?? 'perplexity'} (${r.preset ?? ''})${Array.isArray(r.places) && r.places.length ? ` — ${r.places.join(', ')}` : r.question && r.inUseAs ? ` — in use as ${r.inUseAs}` : ''}`,
     'Result Summary': r.ok ? `ok — ${r.bytes ?? 0} bytes` : `FAILED — ${r.cause ?? 'unknown'}`,
     'Finding Reference': r.ok && refByMark.has(r.mark) ? refByMark.get(r.mark) : '',
     'Sweep Call #': r.callNo ?? '', 'Wall-time (s)': r.took_ms != null ? Math.round(r.took_ms / 1000) : '', 'OK/Degraded': r.ok ? 'OK' : 'Degraded',

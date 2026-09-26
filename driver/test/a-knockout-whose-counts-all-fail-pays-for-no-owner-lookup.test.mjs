@@ -38,6 +38,7 @@ import assert from "node:assert/strict";
 const { driverDir } = await import("../../shared/driver-dir.mjs");
 const { capabilitiesFor } = await import("../register-capabilities.mjs");
 const { knockoutInner } = await import("../pipeline-knockout.mjs");
+const { answeredGrid } = await import("./knockout-grid-fixture.mjs");
 
 // A live filing in the searched class, with an owner: exactly what earns an owner lookup.
 const FILING = { record_id: "tm_1", mark_text: "LANTERNWICK", owner_name: "Brightmoor Candle Co", status: "Registered", classes: [4] };
@@ -62,8 +63,12 @@ async function knockout(codename, { countsLand }) {
         order.push(`count:${p.key}:${term}`);
         return countsLand ? { ok: true, total: 3 } : { ok: false, total: null, reason: "HTTP 503: the register is down" };
       },
+      gridExecutor: async (spec) => {
+        order.push("sweep");
+        return answeredGrid(spec, [{ title: "Lanternwick candles", url: "https://example.test/lanternwick" }]);
+      },
       sweepExecutor: async (task) => {
-        order.push(OWNER_QUESTION.test(task) ? "owner-lookup" : "sweep");
+        order.push(OWNER_QUESTION.test(task) ? "owner-lookup" : "question");
         return { ok: true, text: "Brightmoor sells candles. https://example.test/brightmoor" };
       },
     });
