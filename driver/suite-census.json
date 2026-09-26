@@ -460,8 +460,8 @@
           "todos": 0
         },
         "a-failed-filings-search-says-so-in-plain-words.test.mjs": {
-          "tests": 4,
-          "asserts": 9,
+          "tests": 6,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },
