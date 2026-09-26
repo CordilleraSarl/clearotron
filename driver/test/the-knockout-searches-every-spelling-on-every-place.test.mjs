@@ -71,19 +71,21 @@ test("the spellings are 2 or 3 searches, the name among them and none a repeat o
   ]) assert.equal(spellingsDefect("LANTERNWICK", bad), sentence, JSON.stringify(bad));
 });
 
-test("the kind of use is a word or two, required, and nothing here lists the kinds", () => {
+test("the kind of use is required, asked for in one to three words, and a longer one is accepted", () => {
   for (const ok of ["character", "app", "achievement", "in-game location", "game character name"])
     assert.equal(useKindDefect("LANTERNWICK", ok), null, JSON.stringify(ok));
-  const sentence = 'mark "LANTERNWICK": useKind is required: in a word or two, the kind of use this name is searched for (task 2c)';
+  const sentence = 'mark "LANTERNWICK": useKind is required: one to three words, the kind of use this name is searched for (task 2c)';
   for (const missing of [undefined, null, "", "   ", 7, [], {}])
     assert.equal(useKindDefect("LANTERNWICK", missing), sentence, JSON.stringify(missing));
-  // TOO LONG TO SEARCH. Every cell's query is the spelling plus this text, so a phrase is searched word
-  // for word in every cell and buries the spelling. The refusal keeps the sentence and adds what was
-  // sent, so the frame can see which of its words was the problem. THE BOUND IS ON SHAPE ONLY — no kind
-  // of use is named or excluded here. "a place in a game" is the shape the batch's own `inUseAs` line
-  // invites and it is refused: the manual asks for the kind of use, not a sentence about it.
+
+  // A LONGER ANSWER IS ACCEPTED, and these three cases used to be refused (ruling 583 softened it). They
+  // stay here as the positive evidence that no length bound is left, rather than being deleted — a deleted
+  // case proves nothing, and the first of them is the shape the batch's own `inUseAs` line invites, so it
+  // would have fired on a frame doing exactly as it was asked. The cost of a refusal was a repair turn,
+  // and a run that repaired anything has failed the round's bar; a long answer only lengthens each cell's
+  // query, which makes the screen weaker and not wrong.
   for (const long of ["a place in a game", "a character in the client's own broadcast", "the name of a place inside a game"])
-    assert.match(useKindDefect("LANTERNWICK", long), /^mark "LANTERNWICK": useKind is required:.*is longer than that$/);
+    assert.equal(useKindDefect("LANTERNWICK", long), null, `refused a longer kind of use: ${JSON.stringify(long)}`);
 });
 
 test("the plan and the frame's tool refuse with the same sentence, and the tool declares all three fields", () => {
@@ -146,10 +148,12 @@ test("a cell's query is its spelling followed by the kind of use, and the cell's
   const withoutUse = task(base);
   assert.match(withoutUse, /pplx_sdk\.search\.web\(term, limit=10, domains=\[platform\]\)/);
   assert.doesNotMatch(withoutUse, /Every cell's query is its term followed by/);
-  // The provider refuses a use it would have to search word for word in every cell.
-  for (const bad of ["", "   ", 7, "the name of a place inside one of the client's games"])
-    assert.throws(() => validateGridSpec({ ...base, use: bad }), /grid spec\.use must be a word or two/, JSON.stringify(bad));
-  assert.doesNotThrow(() => validateGridSpec({ ...base, use: "in-game location" }));
+  // The provider refuses a use that carries nothing, and NOT one that is merely long: refusing there
+  // would fail the whole grid over the frame's choice of words, after the driver had already accepted it.
+  for (const empty of ["", "   ", 7])
+    assert.throws(() => validateGridSpec({ ...base, use: empty }), /grid spec\.use, when present, must be a non-empty string/, JSON.stringify(empty));
+  for (const long of ["in-game location", "the name of a place inside one of the client's games"])
+    assert.doesNotThrow(() => validateGridSpec({ ...base, use: long }), `the provider refused a longer use: ${long}`);
   assert.doesNotThrow(() => validateGridSpec(base), "absent is still a valid spec");
 });
 

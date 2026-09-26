@@ -402,10 +402,15 @@ export function validateGridSpec(spec) {
   // Absent ⇒ the numbers every grid ran on before (ask 10, keep 8).
   if (spec.results_per_cell != null && !(Number.isInteger(spec.results_per_cell) && spec.results_per_cell >= 1 && spec.results_per_cell <= 50))
     throw new Error("grid spec.results_per_cell must be an integer from 1 to 50");
-  // OPTIONAL: the kind of use every cell's query adds to its term, a word or two, as the driver dictates it.
-  // Absent ⇒ each cell searches the bare term, as every grid did before.
-  if (spec.use != null && !(typeof spec.use === "string" && spec.use.trim() && spec.use.trim().length <= 40 && spec.use.trim().split(/\s+/).length <= 3))
-    throw new Error("grid spec.use must be a word or two, at most three words and 40 characters");
+  // OPTIONAL: the kind of use every cell's query adds to its term, as the driver dictates it. Absent ⇒
+  // each cell searches the bare term, as every grid did before.
+  //
+  // NO LENGTH BOUND, and it had one: three words and forty characters, removed by ruling 583 so a longer
+  // kind of use is accepted and never costs a retry. Refusing here would fail the whole grid over the
+  // frame's choice of words, after the driver had already accepted it — the worst place of the two to say
+  // no. A long answer lengthens each cell's query; it does not make the call invalid.
+  if (spec.use != null && !(typeof spec.use === "string" && spec.use.trim()))
+    throw new Error("grid spec.use, when present, must be a non-empty string: the kind of use each cell's query adds to its term");
   // OPTIONAL connotation/meaning sweep (back-compat: absent ⇒ marketplace-grid-only). The driver dictates
   // the meaning queries verbatim (the matter frame's meaning questions), the program runs them on the general web and
   // records them into extras.pr_risk — distinct from the term×platform marketplace cells.

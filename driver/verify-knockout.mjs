@@ -294,14 +294,19 @@ export function spellingsDefect(name, spellings) {
 
 /**
  * The refusal for a mark's kind of use, or null. PURE. The frame names it per name, in its own judgment,
- * and every search of the name adds it, so it is a word or two and never a sentence: a long phrase would
- * be searched word for word in every cell. Nothing here lists the kinds; only the shape is checked.
+ * and every search of the name adds it. Nothing here lists the kinds, and NOTHING HERE BOUNDS ITS LENGTH:
+ * the manual ASKS for one to three words, and a longer answer is accepted.
+ *
+ * It was built refusing anything over three words or forty characters, and the owner softened that
+ * (ruling 583, 2026-09-26): a longer kind of use is accepted and never costs a retry. The bound was mine,
+ * not his, and its cost was the reason — a refusal here sends the frame a repair turn, and a run that
+ * repaired anything has failed the round's own bar. The batch's `inUseAs` line invites exactly the shape
+ * the bound refused ("a character or a place in a game"), so it would have fired on a frame doing as it
+ * was asked. A long answer makes the cells' queries longer, which makes the screen weaker, not wrong.
  */
 export function useKindDefect(name, useKind) {
-  const refusal = `mark "${name}": useKind is required: in a word or two, the kind of use this name is searched for (task 2c)`;
-  if (typeof useKind !== "string" || !useKind.trim()) return refusal;
-  const words = useKind.trim().split(/\s+/);
-  return words.length > 3 || useKind.trim().length > 40 ? `${refusal}; "${useKind.trim().slice(0, 60)}" is longer than that` : null;
+  const refusal = `mark "${name}": useKind is required: one to three words, the kind of use this name is searched for (task 2c)`;
+  return typeof useKind === "string" && useKind.trim() ? null : refusal;
 }
 
 // ── Stage validators (runStage corrective-ladder shape) ──────────────────────────────────────────────

@@ -1422,7 +1422,7 @@ serve({
               beltAndBraces: { type: "array", items: { type: "number" }, description: "Adjacent Nice classes swept as a precaution, integers 1-45." },
               classesPlain: { type: "string", description: "The plain-language class line — what these classes are, in words the rating step reads beside the numbers." },
               contextFraming: { type: "string", description: "What THIS name is for — a character, a location, a product line. The rating hangs off it: the assess stage is told to rate WITH this field, per mark, and two names in one batch can sit at different bands on identical evidence because they are used differently." },
-              useKind: { type: "string", description: "In a word or two, the kind of use this name most plausibly already has in this field, in your judgment (task 2c). Every search of the name adds it: each spelling is searched on each place as the spelling followed by this word." },
+              useKind: { type: "string", description: "In one to three words, the kind of use this name most plausibly already has in this field, in your judgment (task 2c). Every search of the name adds it: each spelling is searched on each place as the spelling followed by those words. Keep it short — it goes into every one of that name's searches — but a longer answer is accepted." },
               spellings: { type: "array", items: { type: "string" }, description: "2 or 3 ways this name is written, the name as instructed among them. Each is searched on every place." },
               priorKnowledge: { type: "string", description: "What the requester already told you about this name, or omit it." },
               priority: { type: "number", description: "This mark's position in the execution order." },
