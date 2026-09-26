@@ -854,7 +854,9 @@ export async function knockoutInner(ctx, job, opts = {}) {
       // knockout wearing a Depth 2 label and price, which is the silent substitution the whole
       // search-policy registry exists to forbid. Terminal, with the provider's own reason on it.
       if (!counted) {
-        const why = doc.marks?.[0]?.counts?.[Object.keys(doc.marks[0].counts)[0]]?.unavailable ?? "no reason recorded";
+        // The record's cause where a count kept one apart from the reader's line, so the operator reads what to fix.
+        const first = doc.marks?.[0]?.counts?.[Object.keys(doc.marks[0].counts)[0]];
+        const why = first?.cause ?? first?.unavailable ?? "no reason recorded";
         throw new StageFailure("knockout-register-count",
           `no register count could be taken for any of the ${planMarks.length} mark(s) via ${REGISTER_PROVIDER} (executor ${countExec.source}) — first cause: ${String(why).slice(0, 200)}`, null);
       }
