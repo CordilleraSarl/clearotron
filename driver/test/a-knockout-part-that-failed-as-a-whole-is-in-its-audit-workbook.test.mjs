@@ -38,6 +38,7 @@ const { driverDir } = await import("../../shared/driver-dir.mjs");
 const { knockoutInner } = await import("../pipeline-knockout.mjs");
 const { buildKnockoutWorkbook } = await import("../publish/knockout.mjs");
 const { RULED_WORDS, linkNotOnRegisterSite } = await import("../degraded-parts.mjs");
+const { answeredGrid } = await import("./knockout-grid-fixture.mjs");
 
 const FILING = { record_id: "tm_1", mark_text: "LANTERNWICK", owner_name: "Brightmoor Candle Co", status: "Registered", classes: [4] };
 const OWNER_QUESTION = /What goods or services does the company "Brightmoor Candle Co"/;
@@ -73,6 +74,7 @@ async function knockout(codename, { plant = () => {} } = {}) {
   const res = await knockoutInner(ctx, job, {
     recordLister: async (term) => ({ ok: true, total: null, records: term === "LANTERNWICK" ? [FILING] : [] }),
     countExecutor: async () => ({ ok: true, total: 3 }),
+    gridExecutor: async (spec) => answeredGrid(spec, [{ title: "Lanternwick candles", url: "https://example.test/lanternwick" }]),
     sweepExecutor: async () => ({ ok: true, text: "Brightmoor sells candles. https://example.test/brightmoor" }),
   });
   assert.equal(res?.ok, true, `the knockout did not deliver: ${JSON.stringify(res)}`);
