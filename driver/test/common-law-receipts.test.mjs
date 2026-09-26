@@ -519,6 +519,9 @@ test("findSimilarListingSignals: an of-record label in a table header is never t
     const other = block([head, "|---|---|---|", "| shop.example.com | Lanternwick Studio | https://shop.example.com/lanternwick |"]);
     assert.deepEqual(findSimilarListingSignals(other).map((x) => x.owner), [], `a column label was minted as an owner: ${head}`);
   }
+  // A rule under an owner's line is not a table: the owner stands.
+  assert.deepEqual(findSimilarListingSignals(block(["**Developer of record:** Lanternwick Studio Ltd", "---"])).map((x) => x.owner),
+    ["Lanternwick Studio Ltd"], "a horizontal rule was read as a table's separator");
   // A two-column table of fields still names the owner on its of-record row, below the header.
   const fields = block(["| Field | Value |", "|---|---|", "| Developer of record | Lanternwick Studio Ltd |"]);
   assert.deepEqual(findSimilarListingSignals(fields).map((x) => x.owner), ["Lanternwick Studio Ltd"]);

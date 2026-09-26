@@ -2093,7 +2093,7 @@
         },
         "common-law-receipts.test.mjs": {
           "tests": 42,
-          "asserts": 147,
+          "asserts": 148,
           "skips": 0,
           "todos": 0
         },
