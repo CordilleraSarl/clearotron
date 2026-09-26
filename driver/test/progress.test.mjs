@@ -165,8 +165,13 @@ test("seed + recordTransition write an answerable status from the first moment",
 // packet FIELD (`whatsappTo`) rather than a dictated line in a prompt, so the fact those arms pinned
 // is asserted where the packet is built rather than where a message was composed.
 test("the chat roster still resolves an agent to its bound number — the packet's routing key", () => {
-  assert.equal(AGENT_WHATSAPP["clawdi-alex"], "+10000000002", "the demo roster is still keyed by agent id");
-  assert.equal(AGENT_WHATSAPP["clawdi"], "+10000000001");
+  assert.equal(AGENT_WHATSAPP["relay-agent"], "+10000000003", "the demo roster is still keyed by agent id");
+  assert.equal(AGENT_WHATSAPP.localagent, "+10000000001");
+  // AND THE TWO KEYS NAMED FOR THE OLD DEFAULT ARE GONE (ruling 563). An install running as that id with
+  // no roster of its own now writes `whatsappTo: null` on the packet rather than a placeholder number,
+  // which is the honest answer: nobody has said where to send it.
+  assert.equal(AGENT_WHATSAPP.clawdi, undefined);
+  assert.equal(AGENT_WHATSAPP["clawdi-alex"], undefined);
 });
 
 // ── 2026-07-04 incident: the rollup must carry the send state — the completion-watch's primary source ──
