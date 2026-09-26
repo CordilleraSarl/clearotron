@@ -459,6 +459,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-failed-filings-search-says-so-in-plain-words.test.mjs": {
+          "tests": 6,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
         "a-failed-repair-rolls-back.test.mjs": {
           "tests": 5,
           "asserts": 16,
@@ -642,6 +648,12 @@
         "a-knockout-owner-lookup-that-got-no-answer-is-in-its-audit-trail.test.mjs": {
           "tests": 2,
           "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-knockout-part-that-failed-as-a-whole-is-in-its-audit-workbook.test.mjs": {
+          "tests": 7,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -1308,6 +1320,12 @@
         "a-store-in-a-pushed-checkout-is-told-its-saves-will-be-published.test.mjs": {
           "tests": 9,
           "asserts": 37,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-store-lost-at-publish-is-in-the-audit-workbook.test.mjs": {
+          "tests": 3,
+          "asserts": 13,
           "skips": 0,
           "todos": 0
         },
@@ -5760,6 +5778,12 @@
         "the-package-ships-only-the-demo-customers.test.mjs": {
           "tests": 2,
           "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-parts-read-at-publish-are-named-and-closed.test.mjs": {
+          "tests": 9,
+          "asserts": 36,
           "skips": 0,
           "todos": 0
         },
