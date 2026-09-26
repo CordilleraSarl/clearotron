@@ -551,7 +551,7 @@ test("a roster it cannot read never blocks intake — fail-open, like the key ch
   // it did not; it failed, which is what sent me to look.)
   const script = `
     const { validateJob } = await import(${JSON.stringify(new URL("../enqueue-schema.mjs", import.meta.url).href)});
-    const v = validateJob({ id:"m1", msgId:"<m1@x>", forwarder:"sam", markName:"PROBE", classes:[9], customer:"Petcary" });
+    const v = validateJob({ id:"m1", msgId:"<m1@x>", forwarder:"relay", markName:"PROBE", classes:[9], customer:"Petcary" });
     console.log(v.classify);
   `;
   const r = spawnSync(process.execPath, ["--input-type=module", "-e", script], {
