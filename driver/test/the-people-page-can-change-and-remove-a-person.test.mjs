@@ -28,8 +28,8 @@ const FILE = () => ({
   tenants: {
     anthropic: { name: "Anthropic", accounts: ["anthropic-eu", "anthropic-us"],
       users: { "dana@anthropic.example": "*", "priya@anthropic.example": "*" } },
-    cordillera: { name: "Cordillera", accounts: ["clawdi", "ridge"],
-      users: { "dana@anthropic.example": ["clawdi"] } },
+    cordillera: { name: "Cordillera", accounts: ["summit", "ridge"],
+      users: { "dana@anthropic.example": ["summit"] } },
   },
   people: {
     "dana@anthropic.example": { run: true, manage: false },
@@ -43,7 +43,7 @@ const FILE = () => ({
 });
 
 const KRZYS = { email: "krzys@cordillera.example" };   // sees everything
-const PRIYA = { email: "priya@anthropic.example" };    // manages Anthropic, and cannot see Clawdi
+const PRIYA = { email: "priya@anthropic.example" };    // manages Anthropic, and cannot see Summit
 const DANA = "dana@anthropic.example";
 
 /** A service over an in-memory grants file, with the write and the revocation watched rather than done. */
@@ -81,7 +81,7 @@ test("a manager who sees everything changes what somebody holds, in one save", a
   const r = await post("change", KRZYS, { email: DANA, permissions: { run: true, manage: true },
     access: [{ kind: "organisation", key: "anthropic" }] });
   assert.equal(r.status, 200, JSON.stringify(r.json));
-  // Anthropic kept, Clawdi taken away — the untick the mockup draws.
+  // Anthropic kept, Summit taken away — the untick the mockup draws.
   assert.deepEqual(pointsFor(state.grants, DANA), ["anthropic/*"]);
   assert.deepEqual(state.grants.people[DANA], { run: true, manage: true }, "their permissions did not follow the save");
   assert.equal(r.json.switchesApplied, true);
@@ -92,24 +92,24 @@ test("a manager who sees everything changes what somebody holds, in one save", a
 test("the diff is computed from the FILE, so a stale page cannot write back over an edit it never saw", async () => {
   const { state, post } = on();
   // Somebody else gives Dana a second company while this page is open. The page was drawn before it and
-  // sends only what it knew: Anthropic and Clawdi.
+  // sends only what it knew: Anthropic and Summit.
   state.grants = structuredClone(state.grants);
-  state.grants.tenants.cordillera.users[DANA] = ["clawdi", "ridge"];
+  state.grants.tenants.cordillera.users[DANA] = ["summit", "ridge"];
   const r = await post("change", KRZYS, { email: DANA, permissions: { run: true, manage: false },
-    access: [{ kind: "organisation", key: "anthropic" }, { kind: "company", key: "clawdi" }] });
+    access: [{ kind: "organisation", key: "anthropic" }, { kind: "company", key: "summit" }] });
   assert.equal(r.status, 200, JSON.stringify(r.json));
   // The page's own set is what it asked for, so Ridge goes — that is a change this caller CAN see and
   // did order. What must not happen is the opposite: a point outside their view being rewritten. The
   // arm below is the one that proves the read was fresh, because a handler applying the request's own
   // notion of "before" would have reported removing nothing.
   assert.equal(r.json.removed, 1, "the handler diffed against its own copy of the page's state, not the file");
-  assert.deepEqual(pointsFor(state.grants, DANA), ["anthropic/*", "cordillera/clawdi"]);
+  assert.deepEqual(pointsFor(state.grants, DANA), ["anthropic/*", "cordillera/summit"]);
 });
 
 test("a bounded manager changes only their own half, and the other half is untouched and unsaid", async () => {
   const { state, post, view } = on();
   const before = JSON.stringify(state.grants.tenants.cordillera);
-  // Priya manages Anthropic. Dana also holds Clawdi, which Priya cannot see.
+  // Priya manages Anthropic. Dana also holds Summit, which Priya cannot see.
   const seen = (await view(PRIYA)).json.people.find((p) => p.email === DANA);
   assert.deepEqual(seen.access.map((a) => a.key ?? a.kind), ["anthropic"], "Priya was shown access she cannot reach");
   assert.equal(seen.covered, false, "the page was told this row is the whole of Dana");
@@ -117,7 +117,7 @@ test("a bounded manager changes only their own half, and the other half is untou
   const r = await post("change", PRIYA, { email: DANA, permissions: { run: false, manage: false },
     access: [{ kind: "company", key: "anthropic-eu" }] });
   assert.equal(r.status, 200, JSON.stringify(r.json));
-  assert.deepEqual(pointsFor(state.grants, DANA), ["anthropic/anthropic-eu", "cordillera/clawdi"]);
+  assert.deepEqual(pointsFor(state.grants, DANA), ["anthropic/anthropic-eu", "cordillera/summit"]);
   assert.equal(JSON.stringify(state.grants.tenants.cordillera), before, "a bounded change reached an organisation the caller cannot see");
   // AND THE SWITCHES STAYED. They belong to the person, and part of that person is outside Priya's view.
   assert.deepEqual(state.grants.people[DANA], { run: true, manage: false }, "a bounded caller set permissions that apply where they cannot see");
@@ -170,8 +170,8 @@ test("a bounded removal takes the organisation and NOT the person — and revoke
   assert.equal(r.status, 200, JSON.stringify(r.json));
   assert.equal(r.json.removed, "organisations");
   assert.deepEqual(r.json.organisations, ["anthropic"]);
-  assert.deepEqual(pointsFor(state.grants, DANA), ["cordillera/clawdi"]);
-  // The entry under `people` is the half Priya cannot see, and it is how Dana still reaches Clawdi.
+  assert.deepEqual(pointsFor(state.grants, DANA), ["cordillera/summit"]);
+  // The entry under `people` is the half Priya cannot see, and it is how Dana still reaches Summit.
   assert.deepEqual(state.grants.people[DANA], { run: true, manage: false });
   // THE KEY STAYS. Dana is still on this install, and the key is how they reach what is left.
   assert.deepEqual(state.denylist, []);
@@ -280,7 +280,7 @@ test("a whole email domain is a row like any other, through both routes", async 
   // lowercased string and a pattern is a string that looks like one thing and means another.
   const start = FILE();
   start.tenants.anthropic.users["*@anthropic.example"] = "*";
-  start.tenants.cordillera.users["*@anthropic.example"] = ["clawdi"];
+  start.tenants.cordillera.users["*@anthropic.example"] = ["summit"];
   start.people["*@anthropic.example"] = { run: true, manage: false };
   const { state, post } = on(start);
   const DOMAIN = "*@anthropic.example";
@@ -297,7 +297,7 @@ test("a whole email domain is a row like any other, through both routes", async 
   assert.deepEqual(pointsFor(state.grants, DOMAIN), []);
   assert.equal(state.grants.people[DOMAIN], undefined);
   // And nobody else went with them.
-  assert.deepEqual(pointsFor(state.grants, DANA), ["anthropic/*", "cordillera/clawdi"]);
+  assert.deepEqual(pointsFor(state.grants, DANA), ["anthropic/*", "cordillera/summit"]);
 });
 
 test("somebody who is not on the guest list is a not-found, not an empty success", async () => {

@@ -25,8 +25,8 @@ const FILE = () => ({
   tenants: {
     anthropic: { name: "Anthropic", accounts: ["anthropic-eu", "anthropic-us"],
       users: { "dana@anthropic.example": "*", "priya@anthropic.example": ["anthropic-eu"] } },
-    cordillera: { name: "Cordillera", accounts: ["clawdi", "ridge"],
-      users: { "dana@anthropic.example": ["clawdi"], "Tom@Outside.example": ["ridge"] } },
+    cordillera: { name: "Cordillera", accounts: ["summit", "ridge"],
+      users: { "dana@anthropic.example": ["summit"], "Tom@Outside.example": ["ridge"] } },
   },
   people: {
     "dana@anthropic.example": { run: true, manage: false },
@@ -46,7 +46,7 @@ test("personPoints reads every shape a person can take, and the population is no
   assert.ok(everyone.filter((p) => p.points.length).length >= 3,
     "fewer than three of the four people resolved to any access — the reader is matching nothing");
 
-  assert.deepEqual(pointsOf(g, "dana@anthropic.example"), ["anthropic/*", "cordillera/clawdi"]);
+  assert.deepEqual(pointsOf(g, "dana@anthropic.example"), ["anthropic/*", "cordillera/summit"]);
   assert.deepEqual(pointsOf(g, "priya@anthropic.example"), ["anthropic/anthropic-eu"]);
   // ACCESS TO EVERYTHING IS NOT A POINT. It lives under `people` and in no organisation, which is the
   // whole reason a narrowing cannot be honest about it.
@@ -86,7 +86,7 @@ test("removing from the install strikes every organisation row AND the entry und
 test("a narrowing never touches `people` — the half a bounded manager cannot see", () => {
   const g = FILE();
   const after = withoutPerson(g, { email: "dana@anthropic.example", points: [{ tenant: "anthropic" }] });
-  assert.deepEqual(pointsOf(after, "dana@anthropic.example"), ["cordillera/clawdi"]);
+  assert.deepEqual(pointsOf(after, "dana@anthropic.example"), ["cordillera/summit"]);
   assert.deepEqual(after.people["dana@anthropic.example"], { run: true, manage: false },
     "a narrowing rewrote permissions the person who ordered it may not be able to see");
 });

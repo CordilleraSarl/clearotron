@@ -439,7 +439,7 @@ if (escaped.length) {
 // ── WHAT THE NEXT TWENTY MINUTES OF OUTPUT IS, SAID BEFORE IT STARTS ───────────────────────
 //
 // The suites print thousands of lines shaped like
-//   [register-unit:primary-sweep] attempt 1/1 (engine=anthropic-agent agent=clawdi model=opus … timeout=1500s)
+//   [register-unit:primary-sweep] attempt 1/1 (engine=anthropic-agent agent=mailagent model=opus … timeout=1500s)
 // and to somebody who cloned this repo ten minutes ago that is their subscription being spent, at
 // speed, for reasons nobody explained. It is the mock engine's dispatch record. Nothing here can tell
 // them that except a line that says it, and it has to come FIRST — an explanation after the scroll is

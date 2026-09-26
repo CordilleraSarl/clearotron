@@ -2494,8 +2494,6 @@ export function applyStageWrites(msg, argv) {
     } else {
       summary = "acknowledged (no save)";
     }
-  } else if (/clawdi_send/.test(msg)) {
-    summary = "sent messageId=<mock-reply-id>; xlsx=/tmp/mock-findings.xlsx";
   }
   return summary;
 }

@@ -81,7 +81,7 @@ test("the order file decides which queued job runs next — asserted on COMPLETI
   const root = mkdtempSync(join(tmpdir(), "clearotron-qorder-"));
   for (const [k, v] of Object.entries(envFor(root))) pinEnv(process.env, k, v);
 
-  const Q = queueFor(root, "clawdi");
+  const Q = queueFor(root, "mailagent");
   mkdirSync(Q, { recursive: true });
   // Queued a, b, c, d — ascending by filename AND by enqueuedAt.
   writeFileSync(join(Q, "ord-a.json"), jobJson("a", 1));
@@ -115,7 +115,7 @@ test("with no order file, the queue runs oldest-first by enqueuedAt — the fiel
   const root = mkdtempSync(join(tmpdir(), "clearotron-qorder-fallback-"));
   for (const [k, v] of Object.entries(envFor(root))) pinEnv(process.env, k, v);
 
-  const Q = queueFor(root, "clawdi");
+  const Q = queueFor(root, "mailagent");
   mkdirSync(Q, { recursive: true });
   // enqueuedAt is DELIBERATELY the reverse of the filename order, so alphabetical-by-accident fails.
   writeFileSync(join(Q, "ord-a.json"), jobJson("a", 40));
@@ -146,7 +146,7 @@ test("a job the order file no longer knows about still runs — the file is advi
   const root = mkdtempSync(join(tmpdir(), "clearotron-qorder-advisory-"));
   for (const [k, v] of Object.entries(envFor(root))) pinEnv(process.env, k, v);
 
-  const Q = queueFor(root, "clawdi");
+  const Q = queueFor(root, "mailagent");
   mkdirSync(Q, { recursive: true });
   writeFileSync(join(Q, "ord-b.json"), jobJson("b", 2));
   writeFileSync(join(Q, "ord-c.json"), jobJson("c", 3));   // present but UNLISTED
@@ -181,7 +181,7 @@ test("no run slot free: the drain HOLDS the job queued and admits it when a slot
   const root = mkdtempSync(join(tmpdir(), "clearotron-qorder-starved-"));
   for (const [k, v] of Object.entries(envFor(root))) pinEnv(process.env, k, v);
 
-  const Q = queueFor(root, "clawdi");
+  const Q = queueFor(root, "mailagent");
   mkdirSync(Q, { recursive: true });
   const lockDir = join(root, "run-locks");
   mkdirSync(lockDir, { recursive: true });

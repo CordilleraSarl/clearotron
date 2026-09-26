@@ -32,7 +32,7 @@ pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
 pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", join(ROOT, "pool"));
 process.env.CLEAROTRON_MAX_RETRIES = "0";
 process.env.CLEAROTRON_RECOVERY_MAX = "0";   // terminal semantics under test — auto-recovery exercised in pipeline.mock
-process.env.CLEAROTRON_AGENT = "clawdi";
+process.env.CLEAROTRON_AGENT = "mailagent";
 // code-side saturation-probe (2026-07-14): OFF in this legacy harness — its scenarios script the AGENT
 // member; the dedicated satprobe-codeside tests exercise the code-side path with an injected executor.
 process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
@@ -679,7 +679,7 @@ test("WS-T/#249: stage context covers every DECLARED-ARTIFACT file each stage me
   for (const name of ST.STAGE_ORDER) {
     const def = ST.STAGES[name];
     const axis = PARAM_FOR[name] ?? null;
-    const base = { paths: P, job, axes, axis, agent: "clawdi", run: { slug: "s", codename: "c" } };
+    const base = { paths: P, job, axes, axis, agent: "mailagent", run: { slug: "s", codename: "c" } };
     // The second shape: common-law names the canonical grid spec only when the driver wrote one
     // (ctx.gridSpecPath), so under the minimal ctx that whole branch — and its file reference — is
     // invisible. Both shapes are swept and their references unioned.
@@ -755,7 +755,7 @@ test("report-overview declares EXACTLY the two files it reads, and its prompt ci
       assert.ok(!declared.includes(path), `report-overview re-declared ${key} (${path}) — if the stage now genuinely READS it, cite it in message() too and update this guard; a declaration alone is the #252 defect`);
 
     // Both `.md` and `.json`, unlike the drift guard above — placements.json/findings.json must be visible.
-    const msg = ST.STAGES["report-overview"].message({ paths: P, job, axes, registerOnly, agent: "clawdi", run: { slug: "s", codename: "c" } });
+    const msg = ST.STAGES["report-overview"].message({ paths: P, job, axes, registerOnly, agent: "mailagent", run: { slug: "s", codename: "c" } });
     const cited = [...new Set(msg.match(new RegExp(`${SEP_RE}RUN${SEP_RE}[^\\s\`'";)]+\\.(?:md|json)`, "g")) || [])].filter((p) => p !== ST.STAGES["report-overview"].out(P));
     assert.deepEqual(sorted(cited), sorted(EXPECTED),
       `report-overview's prompt (registerOnly=${registerOnly}) must cite exactly the files it declares — cited [${sorted(cited).join(", ")}] vs declared [${sorted(EXPECTED).join(", ")}]`);
@@ -823,7 +823,7 @@ test("blind-frame's out() IS blind-frame-model.json, and blind-frame.md is gone 
     const def = ST.STAGES[name];
     const axis = name === "register-unit" ? "primary-sweep" : null;
     let msg;
-    try { msg = def.message({ paths: P, job, axes, axis, agent: "clawdi", run: { slug: "s", codename: "c" } }); }
+    try { msg = def.message({ paths: P, job, axes, axis, agent: "mailagent", run: { slug: "s", codename: "c" } }); }
     catch { continue; }   // a message needing richer ctx — same skip as the stageInputs drift guard above
     built.add(name);
     assert.ok(!/blind-frame\.md/.test(String(msg)), `stage ${name}'s prompt still names blind-frame.md, which nothing writes`);

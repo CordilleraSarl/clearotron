@@ -53,7 +53,7 @@ test("continuous admission: a job dropped mid-flight is claimed while an earlier
     MOCK_BARRIER_FILE: barrier, CLEAROTRON_MAX_CONCURRENT_RUNS: "2", CLEAROTRON_QUEUE_SCAN_MS: "100",
   })) pinEnv(process.env, k, v);
 
-  const Q = queueFor(root, "clawdi");
+  const Q = queueFor(root, "mailagent");
   mkdirSync(Q, { recursive: true });
   writeFileSync(join(Q, "job-a.json"), jobJson("TMP-ADM-A"));  // only A is queued when the drain starts
 

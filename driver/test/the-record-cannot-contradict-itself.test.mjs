@@ -61,7 +61,7 @@ test("THE INCIDENT: the seat says success and writes nothing — the row's verdi
   await withRun("rec1061-a-", async (dir) => {
     const out = join(dir, "knockout-assess-0.json");
     const r = await withEngine("fake-claims-success", async () => claimsSuccess(),   // writes NOTHING
-      () => runStage("knockout-assess", { agent: "clawdi", sessionKey: "k", message: "m", model: "opus",
+      () => runStage("knockout-assess", { agent: "mailagent", sessionKey: "k", message: "m", model: "opus",
         thinking: "medium", timeoutSec: 600, expectFile: out, runDir: dir, maxRetries: 0 }));
     assert.equal(r.ok, false);
     assert.match(r.fail, /^missing_file:/, "the fixture must reproduce the incident's failure class");
@@ -90,7 +90,7 @@ test("THE 60-RECORD SUB-SHAPE: it wrote the file, the file was rejected, and the
   await withRun("rec1061-b-", async (dir) => {
     const out = join(dir, "card.md");
     const r = await withEngine("fake-writes-junk", async () => { writeFileSync(out, "# card\n"); return claimsSuccess(); },
-      () => runStage("report-card", { agent: "clawdi", sessionKey: "k", message: "m", model: "opus",
+      () => runStage("report-card", { agent: "mailagent", sessionKey: "k", message: "m", model: "opus",
         thinking: "medium", timeoutSec: 600, expectFile: out, runDir: dir, maxRetries: 0,
         validate: () => ({ ok: false, reason: "invalid_file:card.md:missing:card+detail" }) }));
     assert.equal(r.ok, false);
@@ -111,7 +111,7 @@ test("CONTROL: an honestly-reported failure is not a contradiction", async () =>
   await withRun("rec1061-c-", async (dir) => {
     const out = join(dir, "o.md");
     const r = await withEngine("fake-honest-error", async () => claimsSuccess({ code: 1, json: { status: "error" } }),
-      () => runStage("s", { agent: "clawdi", sessionKey: "k", message: "m", model: "opus", thinking: "medium",
+      () => runStage("s", { agent: "mailagent", sessionKey: "k", message: "m", model: "opus", thinking: "medium",
         timeoutSec: 600, expectFile: out, runDir: dir, maxRetries: 0 }));
     assert.equal(r.ok, false, "it failed");
 
@@ -128,7 +128,7 @@ test("CONTROL: a clean success says ok and claims no contradiction", async () =>
   await withRun("rec1061-d-", async (dir) => {
     const out = join(dir, "o.md");
     const r = await withEngine("fake-clean", async () => { writeFileSync(out, "x"); return claimsSuccess(); },
-      () => runStage("s", { agent: "clawdi", sessionKey: "k", message: "m", model: "opus", thinking: "medium",
+      () => runStage("s", { agent: "mailagent", sessionKey: "k", message: "m", model: "opus", thinking: "medium",
         timeoutSec: 600, expectFile: out, runDir: dir, maxRetries: 0 }));
     assert.equal(r.ok, true);
     const row = readStageRows(dir, "s")[0];

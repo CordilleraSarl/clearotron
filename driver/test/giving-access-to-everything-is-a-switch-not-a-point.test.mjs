@@ -19,7 +19,7 @@ import { makePortalService } from "../portal-service.mjs";
 const FILE = () => ({
   tenants: {
     anthropic: { name: "Anthropic", accounts: ["anthropic-eu"], users: { "priya@anthropic.example": "*" } },
-    cordillera: { name: "Cordillera", accounts: ["clawdi"], users: {} },
+    cordillera: { name: "Cordillera", accounts: ["mailagent"], users: {} },
   },
   people: {
     "priya@anthropic.example": { run: true, manage: true },

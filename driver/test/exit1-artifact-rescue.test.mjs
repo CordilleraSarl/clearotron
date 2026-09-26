@@ -49,7 +49,7 @@ test("exit-1 rescue: a nonzero exit whose artifact is present, FRESH and valid i
   try {
     const r = await withEngine("fake-500-after-write", async () => { calls++; writeFileSync(out, "# finished work\n"); return turn500(); },
       () => runStage("teststage", {
-        agent: "clawdi", sessionKey: "clearotron-test-rescue", message: "do it",
+        agent: "mailagent", sessionKey: "clearotron-test-rescue", message: "do it",
         model: "opus", thinking: "medium", timeoutSec: 600, expectFile: out,
         validate: (f, text) => ({ ok: /finished work/.test(text) }), runDir: dir, maxRetries: 2,
       }));
@@ -71,7 +71,7 @@ test("exit-1 rescue refuses a STALE artifact: a pre-existing file the turn never
   try {
     const r = await withEngine("fake-500-no-write", async () => turn500(),   // fails without touching the file
       () => runStage("teststage", {
-        agent: "clawdi", sessionKey: "clearotron-test-stale", message: "do it",
+        agent: "mailagent", sessionKey: "clearotron-test-stale", message: "do it",
         model: "opus", thinking: "medium", timeoutSec: 600, expectFile: out,
         validate: () => ({ ok: true }), runDir: dir, maxRetries: 1,
       }));
@@ -87,7 +87,7 @@ test("exit-1 rescue refuses an INVALID artifact: fresh but failing its validator
   try {
     const r = await withEngine("fake-500-bad-write", async () => { writeFileSync(out, "truncated garb"); return turn500(); },
       () => runStage("teststage", {
-        agent: "clawdi", sessionKey: "clearotron-test-invalid", message: "do it",
+        agent: "mailagent", sessionKey: "clearotron-test-invalid", message: "do it",
         model: "opus", thinking: "medium", timeoutSec: 600, expectFile: out,
         validate: (f, text) => (/COMPLETE/.test(text) ? { ok: true } : { ok: false, reason: "incomplete" }),
         runDir: dir, maxRetries: 1,
@@ -125,7 +125,7 @@ test("a STALL kill retries once at the SAME budget — never the 1.5× 'needed m
         json: { status: "ok", result: { meta: { agentMeta: {} }, payloads: [{ text: "ok" }] } },
         usage: { input: 10, output: 5, cacheRead: 100, cacheWrite: 0, total: 115 }, sessionRef: "s-ok" };
     }, () => runStage("teststage", {
-      agent: "clawdi", sessionKey: "clearotron-test-stall-budget", message: "do it",
+      agent: "mailagent", sessionKey: "clearotron-test-stall-budget", message: "do it",
       model: "opus", thinking: "high", timeoutSec: 2500, expectFile: out,
       validate: () => ({ ok: true }), runDir: dir, maxRetries: 2,
     }));
@@ -147,7 +147,7 @@ test("a HARD-WALL kill (genuine over-budget grind) keeps the single 1.5× extend
         json: { status: "ok", result: { meta: { agentMeta: {} }, payloads: [{ text: "ok" }] } },
         usage: { input: 10, output: 5, cacheRead: 100, cacheWrite: 0, total: 115 }, sessionRef: "s-ok" };
     }, () => runStage("teststage", {
-      agent: "clawdi", sessionKey: "clearotron-test-wall-budget", message: "do it",
+      agent: "mailagent", sessionKey: "clearotron-test-wall-budget", message: "do it",
       model: "opus", thinking: "high", timeoutSec: 600, expectFile: out,
       validate: () => ({ ok: true }), runDir: dir, maxRetries: 2,
     }));
@@ -221,7 +221,7 @@ test("a kill-partial from attempt 1 never rescues attempt 2's no-write nonzero e
       if (calls === 1) return killPartialTurn(out, "# synthesis — torn mid-wr", timeoutSec);
       return turn500();                       // a startup/transport death: touches nothing
     }, () => runStage("teststage", {
-      agent: "clawdi", sessionKey: "clearotron-test-killpartial", message: "do it",
+      agent: "mailagent", sessionKey: "clearotron-test-killpartial", message: "do it",
       model: "opus", thinking: "medium", timeoutSec: 600, expectFile: out,
       validate: () => ({ ok: true }),   // the torn partial CLEARS the stage validator — shape is not completeness
       runDir: dir, maxRetries: 1,
@@ -245,7 +245,7 @@ test("after a kill in the ladder the rescue stays CLOSED — even for a later at
       writeFileSync(out, "# COMPLETE finished work\n");   // attempt 2's own write — fresh AND valid — then a 500
       return turn500();
     }, () => runStage("teststage", {
-      agent: "clawdi", sessionKey: "clearotron-test-killclosed", message: "do it",
+      agent: "mailagent", sessionKey: "clearotron-test-killclosed", message: "do it",
       model: "opus", thinking: "medium", timeoutSec: 600, expectFile: out,
       validate: (f, text) => ({ ok: /COMPLETE/.test(text) }), runDir: dir, maxRetries: 1,
     }));
@@ -269,7 +269,7 @@ test("with NO kill in the ladder a LATER attempt still rescues its own fresh, va
       writeFileSync(out, "# COMPLETE finished work\n");   // attempt 2 does the work, then the final message 500s
       return turn500();
     }, () => runStage("teststage", {
-      agent: "clawdi", sessionKey: "clearotron-test-lateattempt", message: "do it",
+      agent: "mailagent", sessionKey: "clearotron-test-lateattempt", message: "do it",
       model: "opus", thinking: "medium", timeoutSec: 600, expectFile: out,
       validate: (f, text) => ({ ok: /COMPLETE/.test(text) }), runDir: dir, maxRetries: 1,
     }));
@@ -303,7 +303,7 @@ test("a hard-wall kill whose artifact was written by this attempt, validates, an
       quiesce(out, 974);            // the measured margin on the incident: written, then 16 minutes of other work
       return hardWallTurn(timeoutSec);
     }, () => runStage("teststage", {
-      agent: "clawdi", sessionKey: "clearotron-test-wallrescue", message: "do it",
+      agent: "mailagent", sessionKey: "clearotron-test-wallrescue", message: "do it",
       model: "opus", thinking: "medium", timeoutSec: 600, expectFile: out,
       validate: (f, text) => ({ ok: /COMPLETE/.test(text) }), runDir: dir, maxRetries: 1,
     }));
@@ -327,7 +327,7 @@ test("a hard-wall kill whose artifact was still being written is REFUSED — and
       writeFileSync(out, "# COMPLETE-looking but torn mid-wr");   // clears the validator; shape is not completeness
       return hardWallTurn(timeoutSec);                            // killed the same instant ⇒ zero quiescence
     }, () => runStage("teststage", {
-      agent: "clawdi", sessionKey: "clearotron-test-walltorn", message: "do it",
+      agent: "mailagent", sessionKey: "clearotron-test-walltorn", message: "do it",
       model: "opus", thinking: "medium", timeoutSec: 600, expectFile: out,
       validate: (f, text) => ({ ok: /COMPLETE/.test(text) }), runDir: dir, maxRetries: 0,
     }));
@@ -367,7 +367,7 @@ test("a quiescent, WRITTEN artifact refused by its VALIDATOR names that cause �
       quiesce(out, 371);                    // the measured R1 margin, far past the 60s bar
       return hardWallTurn(timeoutSec);
     }, () => runStage("teststage", {
-      agent: "clawdi", sessionKey: "clearotron-test-wallinvalid", message: "do it",
+      agent: "mailagent", sessionKey: "clearotron-test-wallinvalid", message: "do it",
       model: "opus", thinking: "medium", timeoutSec: 600, expectFile: out,
       // stands in for validators.placement's structured-sibling floor: the prose is there, the JSON is not
       validate: () => ({ ok: false, reason: "placementmodel_missing" }), runDir: dir, maxRetries: 0,
@@ -393,7 +393,7 @@ test("a stage with NO validator is untouched by the wall rescue — there is not
       quiesce(out, 974);
       return hardWallTurn(timeoutSec);
     }, () => runStage("teststage", {
-      agent: "clawdi", sessionKey: "clearotron-test-wallnoval", message: "do it",
+      agent: "mailagent", sessionKey: "clearotron-test-wallnoval", message: "do it",
       model: "opus", thinking: "medium", timeoutSec: 600, expectFile: out,
       runDir: dir, maxRetries: 0,
     }));
@@ -417,7 +417,7 @@ test("CLEAROTRON_WALL_RESCUE=0 disarms it — the stage fails as timeout exactly
       quiesce(out, 974);
       return hardWallTurn(timeoutSec);
     }, () => runStage("teststage", {
-      agent: "clawdi", sessionKey: "clearotron-test-walldisarm", message: "do it",
+      agent: "mailagent", sessionKey: "clearotron-test-walldisarm", message: "do it",
       model: "opus", thinking: "medium", timeoutSec: 600, expectFile: out,
       validate: () => ({ ok: true }), runDir: dir, maxRetries: 0,
     }));
@@ -444,7 +444,7 @@ test("every attempt leaves the verbatim message it was dispatched with, and the 
         json: { status: "ok", result: { meta: { agentMeta: {} }, payloads: [{ text: "ok" }] } },
         usage: { input: 1, output: 1, cacheRead: 0, cacheWrite: 0, total: 2 }, sessionRef: "s" };
     }, () => runStage("teststage", {
-      agent: "clawdi", sessionKey: "clearotron-test-dispatch",
+      agent: "mailagent", sessionKey: "clearotron-test-dispatch",
       // the acceptance shape: a qid that rides the MESSAGE BODY and is not a declared input file
       message: "Dispatch one: deferred slice Q-SYNTH-1 — provider cannot express",
       model: "opus", thinking: "medium", timeoutSec: 600, expectFile: out,
@@ -492,7 +492,7 @@ test("CLEAROTRON_DISPATCH_RECORD=0 disarms it — the row says null rather than 
         json: { status: "ok", result: { meta: { agentMeta: {} }, payloads: [{ text: "ok" }] } },
         usage: { input: 1, output: 1, cacheRead: 0, cacheWrite: 0, total: 2 }, sessionRef: "s" };
     }, () => runStage("teststage", {
-      agent: "clawdi", sessionKey: "clearotron-test-dispatch-off", message: "do it",
+      agent: "mailagent", sessionKey: "clearotron-test-dispatch-off", message: "do it",
       model: "opus", thinking: "medium", timeoutSec: 600, expectFile: out,
       validate: () => ({ ok: true }), runDir: dir, maxRetries: 0,
     }));
@@ -534,7 +534,7 @@ test("the wall rescue ACCEPTS a quiescent prose-only placement attempt — the R
       quiesce(out, 371);            // the incident's own margin, against a 60-second bar
       return hardWallTurn(timeoutSec);
     }, () => runStage("placement-inquiry", {
-      agent: "clawdi", sessionKey: "clearotron-test-placement-wall", message: "place them",
+      agent: "mailagent", sessionKey: "clearotron-test-placement-wall", message: "place them",
       model: "opus", thinking: "high", timeoutSec: 600, expectFile: out,
       validate: validators.placement, runDir: dir, maxRetries: 1,
     }));
@@ -608,7 +608,7 @@ const spineRowsOf = (dir, stage = "teststage") =>
     .filter((row) => row.event === "attempt" && row.stage === stage);
 const wallOnce = (name, dir, out, runTurn, validate = (f, text) => ({ ok: /COMPLETE/.test(text) })) =>
   withEngine(name, runTurn, () => runStage("teststage", {
-    agent: "clawdi", sessionKey: `clearotron-test-${name}`, message: "do it",
+    agent: "mailagent", sessionKey: `clearotron-test-${name}`, message: "do it",
     model: "opus", thinking: "medium", timeoutSec: 600, expectFile: out,
     validate, runDir: dir, maxRetries: 0,
   }));
