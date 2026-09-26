@@ -285,6 +285,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-cross-check-waits-for-the-reading-step.test.mjs": {
+          "tests": 5,
+          "asserts": 21,
+          "skips": 0,
+          "todos": 0
+        },
         "a-crowd-is-decided-not-a-fixed-stop.test.mjs": {
           "tests": 3,
           "asserts": 13,

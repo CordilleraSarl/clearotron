@@ -104,7 +104,8 @@ import { deriveRegisterPresence } from "./publish/register-presence.mjs";   // �
 import { lastAcceptedMatterFrame, frameIdentifiedClasses, frameIdentifiedClassRows, frameHouseElementCandidate } from "./matter-frame-record.mjs";   // — the frame's inferred scope, when nothing was instructed; and the classes it judged necessary beyond the instructed ones, each with its reason, which the plan compile gives one identical-mark question apiece (decision 18)
 import { frameWebChoiceFor, frameAskedForWebGrid, webGridOf, closureBlocksOf } from "./web-grid.mjs";   // — the web grid the matter frame decides: its stores, its forms, what it set aside
 import { romanizedTermsFromPlan, mintSupplementalQid } from "./register-plan.mjs";
-import { excludeHouseElement, verifyHouseElementOwnership, resolveRegions as resolvePlanRegions, HOUSE_ELEMENT_RECEIPT } from "./register-plan.mjs";   // 647 — the client's own element leaves the conflict analysis only on a verified receipt
+import { excludeHouseElement, verifyHouseElementOwnership, resolveRegions as resolvePlanRegions, HOUSE_ELEMENT_RECEIPT } from "./register-plan.mjs";
+import { waitingCrossCheck, undecidedCrossChecks, withoutWait } from "./cross-check-wait.mjs";   // the cross-checks wait for the reading step   // 647 — the client's own element leaves the conflict analysis only on a verified receipt
 import { resolveRecordExecutor } from "./register-records.mjs";   // — the stamp the late lanes never met
 import { slimLine, crowdLine } from "./hit-list.mjs";   // — the list the run works from; crowds ride it as a sibling array
 import { mintCrossCheckDoubts, mintContradictionDoubts, stitchDoubts, applyClosure } from "./doubt-ledger.mjs";   // doubt-stitch + doubt-closure (2026-07-22)
@@ -10021,7 +10022,7 @@ async function pipelineInner(job, opts = {}) {
           // was refused by the capability gap while the same plan held its romanisation on the entries
           // that answered it. An owner row is exempt — an owner NAME is not mark text and the executor
           // drops the carrier on an owner query, exactly as romanStamp itself decides.
-          candidates.push({ qid, axis: "primary-sweep", predicate: s.owner ? "owner" : "default", term, nice_classes: inScope.map(String), regions: [], ...(s.owner ? {} : (() => { const r = romanizedTermsFromPlan(ctx.registerPlan, term); return r ? { romanizedTerms: r } : {}; })()), expected_kind: "enumerate" });
+          candidates.push(waitingCrossCheck({ qid, axis: "primary-sweep", predicate: s.owner ? "owner" : "default", term, nice_classes: inScope.map(String), regions: [], ...(s.owner ? {} : (() => { const r = romanizedTermsFromPlan(ctx.registerPlan, term); return r ? { romanizedTerms: r } : {}; })()), expected_kind: "enumerate" }));
           candDirectives.push({ qid, owner: s.owner ?? null, markText: s.markText ?? null, source: { term: s.term ?? null, platform: s.platform ?? null, url: s.url ?? null } });
         }
         // — THIS IS THE LANE THAT KILLED R2b. `findSimilarListingSignals` takes a negative-results
@@ -10079,7 +10080,36 @@ async function pipelineInner(job, opts = {}) {
             qids: refusedDirectives.map((d) => d.qid).slice(0, 6) });
           note(`common-law→register cross-check: ${refusedDirectives.length} signal(s) REFUSED as un-searchable terms — recorded in _driver/register-xcheck.json refused[], never dispatched`);
         }
-        writeFileSync(`${receiptPath}.tmp`, JSON.stringify({ schema_version: 1, ts: new Date().toISOString(), cap: XCHECK_CAP, directives: kept, overflow, ...(refusedDirectives.length ? { refused: refusedDirectives } : {}) }, null, 2) + "\n");
+        // THE CROSS-CHECKS WAIT FOR THE READING STEP (cross-check-wait.mjs). Minted after it decided its plan,
+        // they are put to it once more, in its own session. Whatever it leaves undecided — all of them when
+        // that session cannot be asked — runs as code, as before the wait, and the receipt says so.
+        let decided = prior?.decided ?? null;
+        const waiting = undecidedCrossChecks(ctx.registerPlan, { released: releasedFamilyQids(run.runDir), withheld: readWithheldFamilies(run.runDir) });
+        if (waiting.length) {
+          const axis = "primary-sweep";
+          let asked = false;
+          // A follow-up that throws is one that could not be asked: the questions must still run below.
+          if (unitKey[axis]) try {
+            const byQid = new Map(ctx.registerPlan.entries.map((e) => [e.qid, e]));
+            const from = new Map([...(Array.isArray(prior?.directives) ? prior.directives : []), ...kept].map((d) => [d.qid, d.source?.url ?? null]));
+            const followup = repairFollowup("register-unit:xcheck-decide", { axis, entries: waiting.map((q) => ({ ...byQid.get(q), from: from.get(q) ?? null })) });
+            const r = await stage("register-unit", { ...ctx, axis }, { force: true, followup, sessionKey: unitKey[axis], trigger: "xcheck-decide" });
+            asked = r?.ok === true;
+          } catch (e) { runLog(run.runDir, { event: "register-xcheck-decide-failed", fail: String(e?.message ?? e).slice(0, 160) }); }
+          const released = releasedFamilyQids(run.runDir), withheld = readWithheldFamilies(run.runDir);
+          const ran = undecidedCrossChecks(ctx.registerPlan, { released, withheld });
+          if (ran.length) {
+            const plan = withoutWait(ctx.registerPlan, ran);
+            writeFileSync(`${P.registerPlan}.tmp`, JSON.stringify(plan, null, 2) + "\n");
+            renameSync(`${P.registerPlan}.tmp`, P.registerPlan);
+            ctx.registerPlan = plan;
+            note(`common-law→register cross-check: ${ran.length} quer${ran.length === 1 ? "y" : "ies"} the reading step did not decide`
+              + `${asked ? "" : " (its session could not be asked)"} run as code, as before the wait`);
+          }
+          decided = { asked, released: waiting.filter((q) => released.has(q)), withheld: waiting.filter((q) => withheld[q]), ran_undecided: ran };
+          runLog(run.runDir, { event: "register-xcheck-decided", ...decided });
+        }
+        writeFileSync(`${receiptPath}.tmp`, JSON.stringify({ schema_version: 1, ts: new Date().toISOString(), cap: XCHECK_CAP, directives: kept, overflow, ...(refusedDirectives.length ? { refused: refusedDirectives } : {}), ...(decided ? { decided } : {}) }, null, 2) + "\n");
         renameSync(`${receiptPath}.tmp`, receiptPath);
       } catch (e) {
         note(`common-law→register cross-check skipped (${String(e.message).slice(0, 100)}) — never-kill`);

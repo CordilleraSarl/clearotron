@@ -2294,7 +2294,7 @@ export const STAGES = {
       // is the quiet one: the note says nine enumerated queries, the band holds eight, and nothing compares
       // them. Deriving removes the disagreement rather than detecting it.
       `FILE THIS AXIS'S AUDIT NOTE WITH \`record_unit_note\`. THE DISPATCH NAMES NO PATH FOR IT, deliberately — the driver writes this axis's note from what you send and you never open it, so there is no path here for you to hold. THE COUNTS ARE NOT YOURS TO TYPE: queries enumerated, incomplete blocks and records carried forward are taken from the band, so the note and the band cannot disagree. Send only what the band cannot say — \`null_result\` if this axis genuinely found nothing (refused against a band that carries records), and \`note\`, ONE short observation an auditor would want, in a lawyer's words. Still NO coverage-limited/confirmed-clean/deferred rows and NO clearance verdict: those are judgment's, Layer B. Call it AFTER the band exists — a note over a band that has not been written is refused by name, because an account of a sweep that has not happened is not a short note, it is a wrong one.`,
-      CROSS_CHECK_HANDOFF, "WHERE THE PLAN ABOVE HAS WAITING FAMILIES, DECIDE EVERY ONE. Release each one you ask with `record_released_families`: its qids, as listed above, and why looking wider would change what you tell the client. Then call register_execute_plan again with those qids; it runs only what you released. Record each one you do not ask with `record_withheld_families`: its qids and why it was not asked. A family you leave unasked was never searched, so it is recorded withheld-by-judgment; one nobody decided holds up delivery. The reasons go into the audit workbook, not the report.",   // withheld-families.mjs
+      CROSS_CHECK_HANDOFF, DECIDE_WAITING_FAMILIES,   // withheld-families.mjs
       // THE CLOSING LINE SPLITS WITH THE LANE, because what the seat owes splits with it. Under the
       // supplemental-lane contract the seat writes NOTHING — the band is the tools' and the note is the
       // driver's — so the dispatch names no file and ends the way conversion 9's reviewer does. With the
@@ -4747,3 +4747,7 @@ export function dispatchBlockWhy(ctx, stage, id) {
 // onto a different real line passes while describing the wrong code. Adding below the last cited line
 // is the one placement that cannot do that. See band-size.mjs for what reads this.
 export const BAND_READING_STAGES = new Set(["placement-inquiry", "register-digest", "synthesis"]);
+
+// The register reading step's order on the waiting families. One constant, because the cross-check
+// follow-up reads it word for word (repair-composers.mjs); declared last so no line above it moves.
+export const DECIDE_WAITING_FAMILIES = "WHERE THE PLAN ABOVE HAS WAITING FAMILIES, DECIDE EVERY ONE. Release each one you ask with `record_released_families`: its qids, as listed above, and why looking wider would change what you tell the client. Then call register_execute_plan again with those qids; it runs only what you released. Record each one you do not ask with `record_withheld_families`: its qids and why it was not asked. A family you leave unasked was never searched, so it is recorded withheld-by-judgment; one nobody decided holds up delivery. The reasons go into the audit workbook, not the report.";
