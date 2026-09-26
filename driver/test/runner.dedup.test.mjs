@@ -82,7 +82,7 @@ pinEnv(process.env, "CLEAROTRON_CUSTOMERS_DIR", customersDir);
 // Dynamic import AFTER env is set (driver.config captures workspaceRoot at module load).
 const { main, matterSignature, findDuplicateMatter, recordMatter, dropMatter } = await import("../runner.mjs");
 
-function enqueue(q, base, { msgId, mark, classes, customer, profileKey, forwarder = "sam", conversationId, dupOverride }) {
+function enqueue(q, base, { msgId, mark, classes, customer, profileKey, forwarder = "relay", conversationId, dupOverride }) {
   writeFileSync(join(q, `${base}.markName.md`), mark + "\n");           // prose sidecar
   writeFileSync(join(q, `${base}.json`), JSON.stringify({              // scalar manifest (undefined convId is dropped)
     id: base, msgId, conversationId, forwarder, forwarderDomain: "example.com", provider: "corsearch", classes, customer,
@@ -92,10 +92,10 @@ function enqueue(q, base, { msgId, mark, classes, customer, profileKey, forwarde
 }
 
 test("matterSignature normalizes casing / spacing / class-order; different mark ⇒ different sig", () => {
-  const a = matterSignature({ forwarder: "sam", markName: "VELTRIPHEN", classes: [1, 5, 42, 44], customer: "Petcary" });
-  const b = matterSignature({ forwarder: "Sam", markName: " veltriphen ", classes: [44, 5, 1, 42], customer: "petcary" });
+  const a = matterSignature({ forwarder: "relay", markName: "VELTRIPHEN", classes: [1, 5, 42, 44], customer: "Petcary" });
+  const b = matterSignature({ forwarder: "Relay", markName: " veltriphen ", classes: [44, 5, 1, 42], customer: "petcary" });
   assert.equal(a, b, "casing/spacing/class-order drift between an original and its reply must collide");
-  const c = matterSignature({ forwarder: "sam", markName: "AURALITH", classes: [1, 5, 42, 44], customer: "Petcary" });
+  const c = matterSignature({ forwarder: "relay", markName: "AURALITH", classes: [1, 5, 42, 44], customer: "Petcary" });
   assert.notEqual(a, c, "a different mark is a different matter");
 });
 
@@ -112,23 +112,23 @@ test("matterSignature normalizes casing / spacing / class-order; different mark 
 // problem inside matterSignature fails here, loudly, instead of quietly changing how real matters are
 // identified.
 test("the production matter signature composition is PINNED", () => {
-  assert.equal(matterSignature({ forwarder: "Sam", markName: " Veltriphen ", classes: [44, 5, 1, 42], customer: "Petcary" }),
-    "sam|veltriphen|1,5,42,44|petcary|", "refless, no level — the pre-spine string every legacy ledger row carries");
-  assert.equal(matterSignature({ forwarder: "Sam", markName: " Veltriphen ", classes: [44, 5, 1, 42], customer: "Petcary", ref: "TMP-2201" }),
-    "sam|veltriphen|1,5,42,44|petcary|tmp-2201", "the ref is the last field, lowercased");
-  assert.equal(matterSignature({ forwarder: "sam", markName: "VELTRIPHEN", classes: [9], customer: "Petcary", ref: "TMP-2201" }, { product: "global-preliminary-search" }),
-    "sam|veltriphen|9|petcary|tmp-2201", "an explicit clearotron adds NOTHING — it still collides with a legacy no-field job");
-  assert.equal(matterSignature({ forwarder: "sam", markName: "VELTRIPHEN", classes: [9], customer: "Petcary", ref: "TMP-2201" }, { product: "knockout-search" }),
-    "sam|veltriphen|9|petcary|tmp-2201|level:knockout-search", "any other resolved level is a signature dimension, so an escalation never dedups");
-  assert.equal(matterSignature({ forwarder: "sam", marks: [{ name: "ZED" }, { name: "ALPHA" }], classes: [9], customer: "Acme", ref: "TMP-9" }, { product: "knockout-search" }),
-    "sam|alpha + zed|9|acme|tmp-9|level:knockout-search", "a knockout BATCH keys on the sorted mark set, so a reordered re-send still collides");
+  assert.equal(matterSignature({ forwarder: "Relay", markName: " Veltriphen ", classes: [44, 5, 1, 42], customer: "Petcary" }),
+    "relay|veltriphen|1,5,42,44|petcary|", "refless, no level — the pre-spine string every legacy ledger row carries");
+  assert.equal(matterSignature({ forwarder: "Relay", markName: " Veltriphen ", classes: [44, 5, 1, 42], customer: "Petcary", ref: "TMP-2201" }),
+    "relay|veltriphen|1,5,42,44|petcary|tmp-2201", "the ref is the last field, lowercased");
+  assert.equal(matterSignature({ forwarder: "relay", markName: "VELTRIPHEN", classes: [9], customer: "Petcary", ref: "TMP-2201" }, { product: "global-preliminary-search" }),
+    "relay|veltriphen|9|petcary|tmp-2201", "an explicit clearotron adds NOTHING — it still collides with a legacy no-field job");
+  assert.equal(matterSignature({ forwarder: "relay", markName: "VELTRIPHEN", classes: [9], customer: "Petcary", ref: "TMP-2201" }, { product: "knockout-search" }),
+    "relay|veltriphen|9|petcary|tmp-2201|level:knockout-search", "any other resolved level is a signature dimension, so an escalation never dedups");
+  assert.equal(matterSignature({ forwarder: "relay", marks: [{ name: "ZED" }, { name: "ALPHA" }], classes: [9], customer: "Acme", ref: "TMP-9" }, { product: "knockout-search" }),
+    "relay|alpha + zed|9|acme|tmp-9|level:knockout-search", "a knockout BATCH keys on the sorted mark set, so a reordered re-send still collides");
 });
 
 test("ledger: reply dedups; same-msgId/different-matter/stale do NOT; a failed run's drop unblocks a re-send", () => {
   const q = join(mkdtempSync(join(tmpdir(), "ledger-")), "queue");
   mkdirSync(q, { recursive: true });
-  const sig = matterSignature({ forwarder: "sam", markName: "VELTRIPHEN", classes: [1, 5, 42, 44], customer: "Petcary" });
-  const other = matterSignature({ forwarder: "sam", markName: "AURALITH", classes: [9], customer: "Acme" });
+  const sig = matterSignature({ forwarder: "relay", markName: "VELTRIPHEN", classes: [1, 5, 42, 44], customer: "Petcary" });
+  const other = matterSignature({ forwarder: "relay", markName: "AURALITH", classes: [9], customer: "Acme" });
   const now = 1_700_000_000_000;
   recordMatter(q, { sig, conversationId: "CONV-A", msgId: "<orig@x>", ts: now });
 
@@ -140,7 +140,7 @@ test("ledger: reply dedups; same-msgId/different-matter/stale do NOT; a failed r
 
   // thread (conversationId) dimension — catches a SAME-MARK reply whose classes/customer DRIFTED, but a
   // DIFFERENT mark in the same thread is a DISTINCT matter and must NOT collapse (three-marks-in-one-email).
-  const velDrift = matterSignature({ forwarder: "sam", markName: "VELTRIPHEN", classes: [9], customer: "PetCary Ltd" });
+  const velDrift = matterSignature({ forwarder: "relay", markName: "VELTRIPHEN", classes: [9], customer: "PetCary Ltd" });
   assert.notEqual(velDrift, sig, "drifted classes/customer make a different signature — only the thread+mark can match");
   assert.ok(findDuplicateMatter(q, { sig: velDrift, conversationId: "CONV-A", msgId: "<reply@x>" }, now + 60_000), "same thread, SAME mark, drifted classes/customer ⇒ duplicate (thread dimension)");
   assert.equal(findDuplicateMatter(q, { sig: other, conversationId: "CONV-A", msgId: "<reply@x>" }, now + 60_000), null, "same thread but a DIFFERENT mark ⇒ distinct matter, NOT deduped");
@@ -171,7 +171,7 @@ test("integration: signature + same-mark-thread dedup park .duplicate; distinct-
   // (3) DISTINCT matter + distinct thread — must run.
   enqueue(q, "other", { msgId: "<other@x>", mark: "AURALITH", classes: [9], customer: "Acme", conversationId: "CONV-O" });
   // (4) dupOverride: a job whose matter MATCHES a pre-seeded prior still runs (the explicit force-run path).
-  const ovrSig = matterSignature({ forwarder: "sam", markName: "OVERMARK", classes: [9], customer: "Ovr" });
+  const ovrSig = matterSignature({ forwarder: "relay", markName: "OVERMARK", classes: [9], customer: "Ovr" });
   recordMatter(q, { sig: ovrSig, conversationId: "", msgId: "<ovr-prior@x>", id: "ovr-prior", ts: Date.now() });
   assert.ok(findDuplicateMatter(q, { sig: ovrSig, msgId: "<ovr-force@x>" }, Date.now()), "the seeded prior really would dedup — so a successful run proves dupOverride bypassed it");
   enqueue(q, "ovr-force", { msgId: "<ovr-force@x>", mark: "OVERMARK", classes: [9], customer: "Ovr", dupOverride: true });

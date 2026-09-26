@@ -71,26 +71,26 @@ const enqueue = (base, extra = {}) => writeFileSync(join(Q, `${base}.json`), JSO
 
 // ── matterSignature (pure) ──────────────────────────────────────────────────────────────────────────
 test("matterSignature: single-mark clearotron stays BYTE-IDENTICAL to the pre-spine formula", () => {
-  const job = { forwarder: "Sam", markName: "  Nova  Pulse ", classes: [41, 9], customer: "Acme Ltd", ref: "TMP-1" };
-  assert.equal(matterSignature(job), "sam|nova pulse|9,41|acme ltd|tmp-1", "the exact legacy string — every ledger entry must keep colliding");
+  const job = { forwarder: "Relay", markName: "  Nova  Pulse ", classes: [41, 9], customer: "Acme Ltd", ref: "TMP-1" };
+  assert.equal(matterSignature(job), "relay|nova pulse|9,41|acme ltd|tmp-1", "the exact legacy string — every ledger entry must keep colliding");
   assert.equal(matterSignature({ ...job, product: "global-preliminary-search" }), matterSignature(job),
     "an EXPLICIT clearotron adds nothing — it is the same product as an implicit one");
 });
 
 test("matterSignature: a level is a dedup dimension (escalation never parks); KNOCKOUT batches key on the FULL sorted set", () => {
-  const job = { forwarder: "sam", markName: "NOVA", classes: [9], customer: "acme", ref: "t1" };
+  const job = { forwarder: "relay", markName: "NOVA", classes: [9], customer: "acme", ref: "t1" };
   assert.notEqual(matterSignature(job, { product: "knockout" }), matterSignature(job),
     "knockout ≠ clearotron for the same matter — the $2 screen must never dedup-block the $40 clearance");
   assert.equal(matterSignature(job, { product: "knockout" }), `${matterSignature(job)}|level:knockout`);
   const ko = { product: "knockout" };
-  const batchA = { forwarder: "sam", markName: "ALPHA", marks: [{ name: "ALPHA" }, { name: "BETA" }, { name: "GAMMA" }] };
-  const batchB = { forwarder: "sam", markName: "GAMMA", marks: [{ name: "GAMMA" }, { name: "ALPHA" }, { name: "BETA" }] };
-  const batchC = { forwarder: "sam", markName: "ALPHA", marks: [{ name: "ALPHA" }, { name: "DELTA" }] };
+  const batchA = { forwarder: "relay", markName: "ALPHA", marks: [{ name: "ALPHA" }, { name: "BETA" }, { name: "GAMMA" }] };
+  const batchB = { forwarder: "relay", markName: "GAMMA", marks: [{ name: "GAMMA" }, { name: "ALPHA" }, { name: "BETA" }] };
+  const batchC = { forwarder: "relay", markName: "ALPHA", marks: [{ name: "ALPHA" }, { name: "DELTA" }] };
   assert.equal(matterSignature(batchA, ko), matterSignature(batchB, ko), "a reordered re-send of the SAME batch collides");
   assert.notEqual(matterSignature(batchA, ko), matterSignature(batchC, ko), "two batches sharing mark #1 are DIFFERENT matters");
   assert.match(matterSignature(batchA, ko), /\|alpha \+ beta \+ gamma\|/);
   // the sorted-set form is knockout-scoped: a legacy multi-mark CLEARANCE job keys on markName exactly as before
-  assert.match(matterSignature(batchA), /^sam\|alpha\|/, "multi-mark on a clearance level stays the legacy scalar form (byte-identity)");
+  assert.match(matterSignature(batchA), /^relay\|alpha\|/, "multi-mark on a clearance level stays the legacy scalar form (byte-identity)");
 });
 
 test("findDuplicateMatter: the THREAD dimension is level-aware — a same-thread escalation never parks as duplicate", () => {
