@@ -38,6 +38,10 @@ import { entryUris } from "./placement-carry.mjs";
 
 export const FLOOR_DUTY_SCHEMA_VERSION = 1;
 
+// The breakdown's name for a floor answered by its owner's set-aside ground. Not a placement tier: the
+// row renders into no placement.
+export const SET_ASIDE_TIER = "set-aside";
+
 /**
  * THE ERA STAMP that turns this derivation from disclosure into a delivery floor.
  *
@@ -127,12 +131,18 @@ const hasGround = (entry) => String(entry?.reason ?? "").trim().length > 0;
 /**
  * Reconcile the floors against the placement form.
  *
- * @param floors      `band-shape.json`'s `floors.in_class_identical_or_near` rows.
- * @param placements  `placements.json`'s `placements` entries.
+ * @param floors            `band-shape.json`'s `floors.in_class_identical_or_near` rows.
+ * @param placements        `placements.json`'s `placements` entries.
+ * @param setAsideGroundOf  record id → the ground the picking step gave that record's owner's set, or
+ *                          null (placement-form.mjs `setAsideGrounds`). A set-aside row renders into no
+ *                          placement by design, so a check that read `placements.json` alone counted every
+ *                          record of a set-aside owner unanswered. Measured 2026-09-25: 985 of the 990
+ *                          floor rows one run reported unanswered had left the picking step with a ground.
  * @returns the artifact body. Every floor lands in exactly one disposition and the four counts sum to
  *          `floors`, so a reader can reconcile it without trusting this module's arithmetic.
  */
-export function reconcileFloorDuty({ floors = [], placements = [] } = {}) {
+export function reconcileFloorDuty({ floors = [], placements = [], setAsideGroundOf = null } = {}) {
+  const groundOf = typeof setAsideGroundOf === "function" ? setAsideGroundOf : () => null;
   const entries = Array.isArray(placements) ? placements : [];
   // uri -> the entry that names it. First writer wins; a uri named twice is the same duty discharged
   // once, and picking either entry gives the same disposition.
@@ -150,16 +160,22 @@ export function reconcileFloorDuty({ floors = [], placements = [] } = {}) {
     const uri = floorUri(f);
     totals.floors++;
     const entry = uri ? named.get(uri) : undefined;
+    // A floor the form did not place, whose owner's set the step set aside with a ground, is answered:
+    // the ground is the step naming why. Read by the record id as written, the way the step's own exit
+    // record reads it.
+    const setAside = uri && entry === undefined && hasGround({ reason: groundOf(String(f?.record_id ?? "").trim())?.ground });
     // A floor row with no record id at all is UNANSWERABLE, not unanswered — the band gave the seat
     // nothing to name. Counted with the unanswered because the duty is undischarged either way, and
     // distinguished on the row so nobody chases the seat for a row it could not have answered.
     const disposition = !uri ? "no-record-id"
+      : setAside ? "accounted"
       : entry === undefined ? "unanswered"
       : hasGround(entry) ? "accounted"
       : "named-without-ground";
+    const tierOf = () => (setAside ? SET_ASIDE_TIER : String(entry?.tier ?? "(untiered)"));
     if (disposition === "accounted") {
       totals.accounted++;
-      const tier = String(entry?.tier ?? "(untiered)");
+      const tier = tierOf();
       byTier[tier] = (byTier[tier] ?? 0) + 1;
     } else if (disposition === "named-without-ground") totals.named_without_ground++;
     else {
@@ -178,7 +194,7 @@ export function reconcileFloorDuty({ floors = [], placements = [] } = {}) {
       owner: String(f?.owner_name ?? ""), registry: String(f?.registry ?? ""),
       basis: String(f?.basis ?? ""), status: String(f?.status ?? ""), live: f?.live ?? null,
       disposition,
-      tier: disposition === "accounted" ? String(entry?.tier ?? "(untiered)") : null,
+      tier: disposition === "accounted" ? tierOf() : null,
     });
   }
   return {
