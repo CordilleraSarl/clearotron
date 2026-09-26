@@ -8,7 +8,7 @@
 // palette (TONE_TIER, resolved against the run's FROZEN framework) so driver and interactive output
 // can never drift and a knockout never reads the clearance composer's module state.
 import { readFileSync, writeFileSync, copyFileSync, mkdirSync, chmodSync, existsSync } from 'node:fs';
-import { plainDeferralReason } from '../deferral-row.mjs';   // — the reader's words for a search left open
+import { plainCause } from '../deferral-row.mjs';   // — the reader's words for a search left open
 import { join } from 'node:path';
 import { driverDir, ensureDriverDir, RUN_DIR_MODE } from '../../shared/driver-dir.mjs';   //
 import { riskTier, TONE_TIER, regenIndex, regenSurfaces, auditRouteFor, markReportRouteFor, reportRouteFor } from './index.mjs';
@@ -135,7 +135,7 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
     if (!c || c.ok) continue;
     trailRows.push({
       'Mark': c.mark, 'Search Term': c.query ?? '', 'Source / Context': `perplexity (${c.preset ?? ''})`,
-      'Result Summary': `FAILED — ${plainDeferralReason(/timeout|timed out/i.test(String(c.cause ?? '')) ? 'mechanical-fail:timeout' : 'unfinished')}`,
+      'Result Summary': `FAILED — ${plainCause(c.cause)}`,
       'Finding Reference': '', 'Sweep Call #': '', 'Wall-time (s)': c.took_ms != null ? Math.round(c.took_ms / 1000) : '', 'OK/Degraded': 'Degraded',
     });
   }
@@ -224,13 +224,16 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
         });
       }
       // Every search that did NOT answer gets its own row. Without them a mark with two dead searches
-      // and three filings reads as a mark with three filings.
+      // and three filings reads as a mark with three filings. A search that failed says so in the
+      // reader's words; its raw cause stays in the run's filings record and its ledger, where it was
+      // written. A form the cap stopped before it was asked keeps its own sentence, which is its true cause.
       for (const t of e.terms ?? []) {
         if (t.ok) continue;
         recordRows.push({
           'Mark': m.name, 'Matched form': t.term, 'Basis': t.basis === 'close' ? 'close variation' : 'identical',
           'Trademark': 'not available', 'Owner': '—', 'Status': '—', 'Classes': '—', 'Territory': '—',
-          'Filed': '—', 'Registered': '—', 'Record': '—', 'Note': t.reason ?? 'the search did not run',
+          'Filed': '—', 'Registered': '—', 'Record': '—',
+          'Note': !t.reason ? 'the search did not run' : t.notAsked ? t.reason : plainCause(t.reason),
         });
       }
       if (!(e.records ?? []).length && (e.terms ?? []).every((t) => t.ok)) {
