@@ -173,6 +173,20 @@ const withoutNumbers = (doc) => {
   return out;
 };
 
+/** The same delivery with its issue stamp neutralised.
+ *  `issued` is composed at publish as `<date> · <time>` and never injected, so two publishes of one
+ *  listing differ whenever the clock turns between them: the report prints the whole stamp in its
+ *  "Searched on" row and the date alone in the title bar, and report-data.json carries the stamp in
+ *  `issued`. A test that asks whether two listings render alike is not asking about the clock. */
+const withoutTheIssueStamp = (out) => {
+  const stamp = out.data?.issued ?? null;
+  const date = (String(stamp ?? "").match(/^\d{4}-\d{2}-\d{2}/) || [])[0] ?? null;
+  let html = out.html;
+  if (stamp) html = html.split(stamp).join("<issued>");
+  if (date) html = html.split(date).join("<issued-date>");
+  return { ...out, html, data: { ...out.data, issued: "<issued>" } };
+};
+
 const CH = officeRecordLink({ applicationNumber: "12345/2020", registrationNumber: "7634210", filingRoute: "direct_national" }, HANDLE.ch);
 const SG = officeRecordLink({ applicationNumber: "40202012345Y", registrationNumber: "40202012345Y" }, HANDLE.sg);
 const WO = officeRecordLink({ filingRoute: "madrid_designation", irNumber: "1543782", registrationNumber: "1543782" }, HANDLE.wo);
@@ -243,8 +257,8 @@ test("a Signa listing taken before the numbers were kept renders its filings as 
 
 test("on a register that publishes record pages of its own the filings render byte for byte as before, with no office link", async () => {
   const other = (doc) => ({ ...doc, provider: "euipo", providerLabel: "EUIPO" });
-  const kept = await publish(other(structuredClone(LISTING)), "ko-office-record-other");
-  const before = await publish(other(withoutNumbers(LISTING)), "ko-office-record-other");
+  const kept = withoutTheIssueStamp(await publish(other(structuredClone(LISTING)), "ko-office-record-other"));
+  const before = withoutTheIssueStamp(await publish(other(withoutNumbers(LISTING)), "ko-office-record-other"));
   assert.ok(kept.html.includes(`<td class="ko-findev">${HANDLE.ch}</td>`), "the filing shows by its handle, as before");
   assert.equal(kept.html, before.html, "the office numbers changed another register's report");
   assert.deepEqual(kept.data, before.data, "the office numbers changed another register's report-data.json");

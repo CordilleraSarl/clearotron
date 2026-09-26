@@ -315,8 +315,12 @@ function makeKnockoutRun() {
   return dir;
 }
 
+// `--names`: every test below reads a row BY MARK — which mark got a row, which coverage word sits
+// beside it, which rating word survived an archived shape. The scorer withholds names by default so
+// scoring a real scenario does not print a real matter into a session log; the marks here are invented
+// for these fixtures, and asking for them keeps each assertion reading what it was written to read.
 const cli = (args, env = {}) => {
-  const r = spawnSync("node", [SCORE, ...args], { encoding: "utf8", env: { ...process.env, CLEAROTRON_E2E_DIR: "", ...env } });
+  const r = spawnSync("node", [SCORE, ...args, "--names"], { encoding: "utf8", env: { ...process.env, CLEAROTRON_E2E_DIR: "", ...env } });
   // `out` MERGES the streams because it is what every assertion message prints, and a failure with the
   // stderr withheld is a failure you cannot diagnose. But stdout ALONE is the JSON document: parsing the
   // merged text breaks on any stderr at all, and score.mjs legitimately writes to it — under a legacy

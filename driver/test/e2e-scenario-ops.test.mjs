@@ -313,11 +313,43 @@ test("the spelling band runs without waiting, since it is asked as the machine w
   ];
   const ok = check(GATE_ASSERT, { "variant-manifest.json": { mark: MARK }, "_driver/register-plan.json": { entries } });
   assert.equal(ok.ok, true, ok.saw);
-  assert.match(ok.saw, /3 run without waiting as the rule allows \(1 identical-mark, 0 saturation count, 0 goods-narrowed, 0 the register cannot express, 2 spelling band\)/);
+  assert.match(ok.saw, /3 run without waiting as the rule allows \(1 identical-mark, 0 saturation count, 0 goods-narrowed, 0 the register cannot express, 2 spelling band, 0 cross-check the reading step left undecided\)/);
   const leak = check(GATE_ASSERT, { "variant-manifest.json": { mark: MARK },
     "_driver/register-plan.json": { entries: [...entries, planEntry("fam:loose", { axis: "transliteration-numeric" })] } });
   assert.equal(leak.ok, false, "a family that is not the band ran without waiting and passed");
   assert.match(leak.saw, /1 other entry runs without waiting: transliteration-numeric\/default fam:loose/);
+});
+
+test("a cross-check runs without waiting only on the receipt that says the reading step left it undecided", () => {
+  // A cross-check is minted waiting and has its wait LIFTED when the reading step does not decide it,
+  // so the plan on disk shows no wait either way. _driver/register-xcheck.json is what tells the two apart.
+  const XC = "xcheck-owner-lanternwick-studio";
+  const plan = { entries: [
+    planEntry("primary-sweep:exact:varento", { predicate: "exact", provenance: "mark" }),
+    planEntry(XC, { predicate: "owner", term: "Lanternwick Studio" }),
+    planEntry("fam:a", { when: WAIT }),
+  ] };
+  const base = { "variant-manifest.json": { mark: MARK }, "_driver/register-plan.json": plan };
+
+  const lifted = check(GATE_ASSERT, { ...base, "_driver/register-xcheck.json": { decided: { asked: true, ran_undecided: [XC] } } });
+  assert.equal(lifted.ok, true, lifted.saw);
+  assert.match(lifted.saw, /1 cross-check the reading step left undecided/);
+
+  // The receipt accounts for no cross-check, so this one never waited: a finding, not an exemption.
+  const never = check(GATE_ASSERT, { ...base, "_driver/register-xcheck.json": { decided: { asked: true, ran_undecided: [] } } });
+  assert.equal(never.ok, false, "a cross-check that never waited passed as one the reading step released");
+  assert.match(never.saw, new RegExp(`1 other entry runs without waiting: primary-sweep/owner ${XC}`));
+
+  // No receipt at all: the record that would answer the question is gone, and that is not a pass.
+  const noReceipt = check(GATE_ASSERT, base);
+  assert.equal(noReceipt.ok, false, "a cross-check with no receipt behind it passed");
+  assert.match(noReceipt.saw, /COULD NOT LOOK \(not a pass\): 1 cross-check runs without waiting/);
+
+  // The ordinary run: no cross-check was minted, so no receipt is owed.
+  const none = check(GATE_ASSERT, { "variant-manifest.json": { mark: MARK }, "_driver/register-plan.json": {
+    entries: [planEntry("primary-sweep:exact:varento", { predicate: "exact", provenance: "mark" }), planEntry("fam:a", { when: WAIT })] } });
+  assert.equal(none.ok, true, none.saw);
+  assert.match(none.saw, /0 cross-check the reading step left undecided/);
 });
 
 const CHAIN_ASSERT = { op: "identical-read-per-market", path: "_driver/register-plan.json" };
@@ -362,4 +394,23 @@ test("a scenario naming a file the op does not read is reported against the file
     ["every-family-was-judged", "_driver/coverage-ledger.json", "_driver/register-plan.json"],
     ["questions-and-records-at-most", "_driver/plan-execution-census.json", "_driver/plan-execution.json"],
   ]);
+});
+
+test("a fallback path declared on an op that cannot use one is reported, not left sitting there", () => {
+  // A fallback is a FIELD op's. A whole-file op returns before the resolver looks at one, so declared
+  // there it does nothing while its author reads it as covering the case it does not — which is the same
+  // quiet miss this function exists to find, one field along.
+  const found = pathsAnOpDoesNotRead([{ id: "X", expect: { assert: [
+    { op: "delivery-settled", path: "status.json", orElsePath: "_driver/run.jsonl" },
+    { op: "families-gate-on-the-identical-question", path: "_driver/register-plan.json", orElsePath: "_driver/plan-execution.json" },
+    // THE CONTROL: on a field op a fallback is legitimate and must NOT be reported.
+    { op: "count-greater-than", path: "_driver/grid-spec.json:menu", orElsePath: "_driver/grid-spec.json:platforms", value: 8 },
+    // AND THE OTHER CONTROL: the same two ops with no fallback are silent.
+    { op: "delivery-settled", path: "status.json" },
+  ] } }]);
+  assert.deepEqual(found.map((f) => [f.op, f.declared]), [
+    ["delivery-settled", "_driver/run.jsonl"],
+    ["families-gate-on-the-identical-question", "_driver/plan-execution.json"],
+  ], "a fallback on a whole-file op went unreported, or one on a field op was reported");
+  assert.equal(found.find((f) => f.op === "delivery-settled").reads, "status.json");
 });

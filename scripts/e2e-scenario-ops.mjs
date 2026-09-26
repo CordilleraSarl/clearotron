@@ -16,6 +16,7 @@ import { driverDir } from "../shared/driver-dir.mjs";
 import { formKey } from "../providers/_shared/script-form.mjs";
 import { goodsTermsList } from "../providers/_shared/term-shape.mjs";
 import { isSpellingBandEntry } from "../driver/register-plan.mjs";
+import { CROSS_CHECK_QID } from "../driver/cross-check-wait.mjs";
 
 const readJson = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
 const list = (v) => (Array.isArray(v) ? v : []);
@@ -147,6 +148,24 @@ const readPlan = (runDir) => {
   return plan && Array.isArray(plan.entries) ? plan : null;
 };
 const waitsForReadingTurn = (e) => e?.when?.awaits_reading_turn === true;
+
+/**
+ * The cross-checks the reading step did not decide, from the run's own receipt.
+ *
+ * A cross-check is minted waiting (`driver/cross-check-wait.mjs`), and when the reading step neither
+ * releases nor withholds it its wait is LIFTED and the plan is written back without it. On disk that
+ * entry is then indistinguishable from one that never waited at all, so the plan alone cannot say
+ * which happened and `_driver/register-xcheck.json` is the only record that can.
+ *
+ * `null` means the receipt could not be read. That is not an empty set: a run holding cross-checks
+ * that do not wait and no receipt to account for them has lost the record, and the caller says so
+ * rather than exempting them.
+ */
+const crossChecksRunUndecided = (runDir) => {
+  const receipt = readJson(driverDir(runDir, "register-xcheck.json"));
+  if (!receipt) return null;
+  return new Set(list(receipt?.decided?.ran_undecided).map(text).filter(Boolean));
+};
 const waitsOnParent = (e) => typeof e?.when?.runs_if_enumerated === "string" && text(e.when.runs_if_enumerated) !== "";
 
 /** The identical-mark questions: the mark itself, asked by name, not narrowed by goods. */
@@ -301,6 +320,11 @@ export function questionsAndRecordsAtMost(a, runDir) {
  * saturation count, the goods-narrowed questions, entries the register cannot express and the spelling band,
  * which is asked as the machine writes it. A family waits for the reading turn, or on a parent question of
  * its own.
+ *
+ * A cross-check is the one entry that both waits and then does not: it is minted waiting, and the
+ * reading step lifts the wait of whatever it leaves undecided, which the plan file then records as an
+ * entry with no wait at all. Those are exempt, by qid, against the run's own cross-check receipt — never
+ * as a class, because a cross-check that never waited looks exactly the same in the plan.
  */
 export function familiesGateOnTheIdenticalQuestion(a, runDir) {
   const plan = readPlan(runDir);
@@ -308,8 +332,9 @@ export function familiesGateOnTheIdenticalQuestion(a, runDir) {
   const markKey = markKeyOf(runDir);
   if (!markKey) return { ok: false, saw: "variant-manifest.json names no mark, so the identical-mark questions cannot be told apart" };
   const identical = new Set(identicalQuestions(plan, markKey));
-  let waitTurn = 0, waitParent = 0, idN = 0, satN = 0, goodsN = 0, unsupN = 0, bandN = 0, turnN = 0;
-  const ungated = [];
+  let waitTurn = 0, waitParent = 0, idN = 0, satN = 0, goodsN = 0, unsupN = 0, bandN = 0, xcheckN = 0, turnN = 0;
+  const ranUndecided = crossChecksRunUndecided(runDir);
+  const ungated = [], unaccounted = [];
   for (const e of plan.entries) {
     if (waitsForReadingTurn(e)) { waitTurn++; continue; }
     if (waitsOnParent(e)) { waitParent++; continue; }
@@ -321,16 +346,22 @@ export function familiesGateOnTheIdenticalQuestion(a, runDir) {
     if (goodsTermsList(e).length) { goodsN++; continue; }
     if (identical.has(e)) { idN++; continue; }
     if (isSpellingBandEntry(e)) { bandN++; continue; }
+    if (CROSS_CHECK_QID.test(text(e?.qid))) {
+      if (ranUndecided === null) { unaccounted.push(text(e?.qid)); continue; }
+      if (ranUndecided.has(text(e?.qid))) { xcheckN++; continue; }
+    }
     ungated.push(`${e?.axis ?? "?"}/${e?.predicate ?? "?"} ${e?.qid ?? "?"}`);
   }
   const parts = [
     `${plural(plan.entries.length, "plan entry", "plan entries")}: ${waitTurn + waitParent} wait (${waitTurn} for the reading turn, ${waitParent} on a parent question)`,
-    `${idN + satN + goodsN + unsupN + bandN} run without waiting as the rule allows (${idN} identical-mark, ${satN} saturation count, ${goodsN} goods-narrowed, ${unsupN} the register cannot express, ${bandN} spelling band)`,
+    `${idN + satN + goodsN + unsupN + bandN + xcheckN} run without waiting as the rule allows (${idN} identical-mark, ${satN} saturation count, ${goodsN} goods-narrowed, ${unsupN} the register cannot express, ${bandN} spelling band, ${xcheckN} cross-check the reading step left undecided)`,
     `${turnN} the reading turn's own question(s)`,
   ];
   if (!identical.size) parts.push("the plan holds no identical-mark question for the families to wait on");
   if (ungated.length) parts.push(`${ungated.length} other entr${ungated.length === 1 ? "y runs" : "ies run"} without waiting${sample(ungated)}`);
-  return { ok: identical.size > 0 && !ungated.length, saw: parts.join("; ") };
+  if (unaccounted.length)
+    parts.push(`COULD NOT LOOK (not a pass): ${plural(unaccounted.length, "cross-check")} runs without waiting and _driver/register-xcheck.json is absent or unreadable, so nothing says whether the reading step lifted the wait${sample(unaccounted)}`);
+  return { ok: identical.size > 0 && !ungated.length && !unaccounted.length, saw: parts.join("; ") };
 }
 
 /**

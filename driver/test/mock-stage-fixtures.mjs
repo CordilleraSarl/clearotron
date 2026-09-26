@@ -2093,8 +2093,10 @@ export function applyStageWrites(msg, argv) {
     try { const sc = JSON.parse(readFileSync(scopePath, "utf8")); if (Array.isArray(sc.marks) && sc.marks.length) names = sc.marks; } catch { /* fallback */ }
     const plan = {
       schema: 1,
+      // NO BATCH PLACES from ruling 570 on: each mark names its own, below. The old shape (one list here,
+      // none on the marks) is driven by the plan validator's own arms, not by this mock.
       batch: { productContext: "mock consumer product line", inUseAs: "a product line, a character or a place",
-        places: ["web", "shop.example.com"], umbrellaBrandNote: null, executionOrder: [...names] },
+        umbrellaBrandNote: null, executionOrder: [...names] },
       marks: names.map((n, i) => ({ ref: null, name: n, classes: [9], beltAndBraces: [35],
         classesPlain: "software (9); retail services (35, belt-and-braces)",
         contextFraming: /[aeiou]{2}|q[^u]/i.test(n) ? "coined/fanciful term" : "brand-like compound",
@@ -2102,6 +2104,18 @@ export function applyStageWrites(msg, argv) {
         // arm asserting that a mark's cells carry THAT mark's use cannot fail against a fixture that
         // gives every mark the same word. A real frame judges this; the mock only has to differ per mark.
         useKind: /[aeiou]{2}|q[^u]/i.test(n) ? "character" : "product line",
+        // THIS NAME'S OWN PLACES (ruling 570), and DERIVED FROM THE MARK'S POSITION rather than from its
+        // spelling. An arm asserting a mark's cells ran on THAT mark's places cannot fail against a fixture
+        // that gives every mark the same list, so any two marks in a batch must differ — and a predicate on
+        // the NAME cannot promise that: the first draft here keyed on double vowels, and the two marks of
+        // the web-grid arm both fell on the same side of it, which that arm then caught. The index cannot.
+        // The whole web is in every list, as ruling 543 requires, and a longer list than the old cap of
+        // four appears on every third mark so the no-cap path is exercised by the end-to-end runs too.
+        places: i % 3 === 2
+          ? ["web", "shop.example.com", "wiki.example.com", "store.example.org", "forum.example.net"]
+          : i % 2 === 0
+            ? ["web", "shop.example.com"]
+            : ["web", "shop.example.com", "wiki.example.com"],
         // the name as instructed, and one misspelling: its last letter doubled, which no name can equal
         spellings: [n, `${n}${n.slice(-1)}`],
         priorKnowledge: null, priority: i + 1 })),

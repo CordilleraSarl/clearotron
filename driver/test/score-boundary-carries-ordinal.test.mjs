@@ -62,7 +62,10 @@ function scoreFixture() {
     mkdirSync(join(store, "baselines"));
     writeFileSync(join(store, "baselines", "BF1.gold.json"), JSON.stringify(GOLD, null, 2));
     writeFileSync(join(run, "findings.json"), JSON.stringify(FINDINGS, null, 2));
-    const r = spawnSync("node", [SCORE, "BF1", "--run", run, "--json"], {
+    // `--names`: this asserts the run→scorer BOUNDARY carries `ordinal`, which is read off a named
+    // finding. The scorer withholds names by default so scoring a real scenario does not print a real
+    // matter into a session log; the fixture here is invented and the assertion is about the boundary.
+    const r = spawnSync("node", [SCORE, "BF1", "--run", run, "--json", "--names"], {
       encoding: "utf8",
       // BOTH names scrubbed before ours is set. An inherited CLEAROTRON_E2E_DIR would point this at the
       // config store's real gold sets, which are live client matter, and the run would read as clean.
