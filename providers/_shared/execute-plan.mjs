@@ -640,9 +640,18 @@ export function makeExecutePlan(deps) {
     // temp+rename: a fail-closed reader sees the old complete band or the new one, never a torn write.
     writeFileSync(`${outPath}.tmp`, JSON.stringify([...blocks, ...preserved], null, 2) + "\n");
     renameSync(`${outPath}.tmp`, outPath);
+    // EACH SPELLING'S COUNT, IN THE REPLY. A crowded stack comes back counted and unread, and the reading
+    // step decides which spellings to read, narrow or leave (ruled 2026-09-26), so it is handed the counts
+    // here rather than left to find them in the band file: a number for a spelling counted and not read,
+    // 0 for a verified zero, "crowd N" for one over the ceiling, "error" for a count that failed.
+    const spellingCounts = Object.fromEntries(blocks
+      .filter((b) => b?.term_counts && Object.values(b.term_counts).some((v) => v?.disposition === "unenumerated"))
+      .map((b) => [b.qid, Object.fromEntries(Object.entries(b.term_counts).map(([t, v]) => [t,
+        v?.disposition === "crowd" ? `crowd ${v.total_hits}` : v?.disposition === "error" ? "error" : (v?.total_hits ?? "error")]))]));
     return { type: "text", text: JSON.stringify({
       written: outPath, blocks: blocks.length + preserved.length, executed: blocks.length, preserved: preserved.length, skipped,
       states: Object.fromEntries([...stateByQid].filter(([q]) => !seeded.has(q))),
+      ...(Object.keys(spellingCounts).length ? { spelling_counts: spellingCounts } : {}),
     }, null, 2) };
   };
 }

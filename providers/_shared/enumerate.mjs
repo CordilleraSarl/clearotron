@@ -249,16 +249,21 @@ export function makeEnumerate(deps) {
   // A multi-name OR-stack that crowds over the ceiling used to return ONE blind `incomplete` — a rare
   // term bundled with a saturated one (FROSTBERRY + ICEBERRY) vanished inside the pile and was read as
   // 0/clean. The rescue restores per-term truth at the one choke point every caller shares: count each
-  // term with the cheapest probe available to the provider (SEAM 1), then individually enumerate every
-  // term that is populated AND tractable (0 < n ≤ ceiling), cheapest first under a merged-records budget
-  // of one ceiling. INVARIANT: a populated term can never be recorded 0 — it is in `term_counts`, and if
-  // tractable its records are carried. Dispositions:
+  // term with the cheapest probe available to the provider (SEAM 1), and hand every count to the register
+  // reading step. INVARIANT: a populated term can never be recorded 0 — it is in `term_counts`.
+  //
+  // IT READS NONE OF THEM (ruled 2026-09-26: the reading step sees each spelling's count and decides what
+  // to narrow or read, with no budget). It used to enumerate every tractable term itself, cheapest first,
+  // under a merged-records budget of one ceiling, so the ceiling decided which spellings were read: on a
+  // test run of 2026-09-25, 78 spellings holding 17,498 records were left unread on that budget, none of
+  // them over 569 alone, and the reading step then set them aside on counts it had never seen. A crowded
+  // stack now comes back with each spelling counted and nothing read, and the reading step reads, narrows
+  // or leaves each one; what it leaves stays on the stack's coverage row with its count. Dispositions:
   //   verified-zero — the probe returned 0 (deterministic true-0, tool-derived)
-  //   enumerated    — individually paged to exhaustion; records merged into the block
-  //   crowd         — the term is ITSELF over the ceiling (dilution for judgment, never enumerated here)
-  //   unenumerated  — populated + tractable but the records budget was exhausted first (still a gap:
-  //                   full accounting is only verified-zero|enumerated|crowd — a clean cannot sit on it)
-  //   error         — the probe/enumeration failed; honest unknown, never a zero
+  //   crowd         — the term is ITSELF over the ceiling (never enumerated here)
+  //   unenumerated  — populated and under the ceiling: counted, not read, the reading step's to decide
+  //   error         — the probe failed; honest unknown, never a zero
+  // (`enumerated` is still a disposition the band reads: stacks recorded before this rule carry it.)
   // Lazy by design: on "cheap" the page-0 total IS the free whole-stack count, so the clean case costs
   // zero extra calls; the probes only run when the stack crowds. It had a kill switch; nothing set it,
   // so it is gone rather than carried as an untested path.
@@ -274,34 +279,14 @@ export function makeEnumerate(deps) {
 
   async function countFirstRescue(auth, params, names, ceiling, stackTotal, tctx, incomplete) {
     const term_counts = {};
-    const tractable = [];
     for (const t of names) {
       const n = await probeTermCount(auth, params, t, tctx);
       if (n == null) { term_counts[t] = { total_hits: null, disposition: "error" }; continue; }
       if (n === 0) term_counts[t] = { total_hits: 0, disposition: "verified-zero" };
       else if (n > ceiling) term_counts[t] = { total_hits: n, disposition: "crowd" };
-      else tractable.push({ t, n });
+      else term_counts[t] = { total_hits: n, disposition: "unenumerated" };
     }
-    tractable.sort((a, b) => a.n - b.n); // cheapest first — maximizes fully-enumerated terms under the budget
-    const merged = new Map();
-    for (const { t, n } of tractable) {
-      if (merged.size + n > ceiling) { term_counts[t] = { total_hits: n, disposition: "unenumerated" }; continue; }
-      const r = await enumerate(auth, { ...params, [namesKey]: [t] }, tctx);
-      const parsed = isToolError(r) ? null : parseToolText(r);
-      if (!parsed) { term_counts[t] = { total_hits: n, disposition: "error" }; continue; }
-      if (parsed.state === "enumerated") {
-        term_counts[t] = { total_hits: n, disposition: "enumerated" };
-        for (const rec of (parsed.records ?? [])) {
-          const k = recordKeyOf(rec);
-          if (!merged.has(k)) merged.set(k, rec);
-        }
-      } else {
-        // drifted past the probe count (provider re-count) or hit the provider window — honest per-term state
-        const m = parsed.total_hits ?? n;
-        term_counts[t] = { total_hits: m, disposition: m > ceiling ? "crowd" : "error" };
-      }
-    }
-    const records = [...merged.values()];
+    const records = [];
     const tally = { "verified-zero": 0, enumerated: 0, crowd: 0, unenumerated: 0, error: 0 };
     for (const v of Object.values(term_counts)) tally[v.disposition] += 1;
     const unresolved = tally.crowd + tally.unenumerated + tally.error;
@@ -317,12 +302,11 @@ export function makeEnumerate(deps) {
     // producing a run that searches almost nothing. The ordinary search path has always returned
     // `enumerated` for a zero-record answer; this rescue path was the one place that did not.
     if (unresolved === 0) {
-      // every term resolved to verified-zero or fully-enumerated ⇒ the union of per-term enumerations IS
-      // the complete stack (every record matching ≥1 name sits in some term's enumeration) — a true band.
+      // every term verified zero ⇒ nobody has filed any of these names: a complete band whose answer is zero.
       return { type: "text", text: JSON.stringify({ state: "enumerated", total_hits: stackTotal, count: records.length, records, term_counts }, null, 2) };
     }
     return incomplete(stackTotal, records.length, records,
-      `stack total_hits ${stackTotal} exceeds the enumerate ceiling ${ceiling}; count-first per-term rescue ran (${names.length} terms: ${tally["verified-zero"]} verified-zero, ${tally.enumerated} enumerated with records carried, ${tally.crowd} crowd, ${tally.unenumerated} unenumerated on budget, ${tally.error} error). Saturated terms stay a CROWD descriptor for judgment; term_counts is the per-term truth — a populated term is never recorded 0.`,
+      `stack total_hits ${stackTotal} exceeds the enumerate ceiling ${ceiling}; each spelling was counted and none was read (${names.length} terms: ${tally["verified-zero"]} verified-zero, ${tally.unenumerated} counted and not read, ${tally.crowd} crowd, ${tally.error} error). term_counts carries each spelling's count: which to read, narrow or leave is the reading step's decision, and a populated term is never recorded 0.`,
       { term_counts, records });
   }
 

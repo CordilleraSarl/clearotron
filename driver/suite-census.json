@@ -7391,6 +7391,12 @@
         "providers/*/test/*.test.mjs"
       ],
       "perFile": {
+        "providers/_shared/test/a-crowded-stack-is-counted-and-the-reading-step-decides.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "providers/_shared/test/a-question-with-no-regions-is-asked-to-the-orders-scope.test.mjs": {
           "tests": 3,
           "asserts": 6,
