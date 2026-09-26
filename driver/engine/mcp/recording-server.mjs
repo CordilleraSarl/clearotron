@@ -1233,6 +1233,21 @@ serve({
                   },
                 },
               },
+              // THE WEB SIDE OF `registerReads`, and declared here for the same reason it is: with
+              // `additionalProperties: false`, a field the prose asks for and the schema omits is a
+              // contradiction the seat resolves whichever way it happens to trust.
+              setAside: {
+                type: "array",
+                description: "Rows of { url, ground } for a result the search RETURNED that you are not carrying as a findings[] record. `ground` is why it is not a conflict — what it turned out to be, or why it does not bear on this name. It reaches the audit workbook, never the client's report. Write a row for what you looked at and put down; never invent one to fill the list, and where many results share one ground, say it once against the one you read.",
+                items: {
+                  type: "object", additionalProperties: false,
+                  required: ["url", "ground"],
+                  properties: {
+                    url: { type: "string", description: "The result's own address, copied VERBATIM from the payload you were given." },
+                    ground: { type: "string", description: "Why this result is not carried as a finding." },
+                  },
+                },
+              },
               classesSearched: { type: "array", items: { type: "integer", minimum: 1, maximum: 45 } },
               classesDriving: { type: "array", items: { type: "integer", minimum: 1, maximum: 45 }, description: "Mandatory at a material band — class-specific ratings." },
               beltAndBraces: { type: "array", items: { type: "integer", minimum: 1, maximum: 45 } },

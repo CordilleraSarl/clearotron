@@ -557,6 +557,21 @@ export const validators = {
           }
         }
       }
+      // — WHAT THE SEARCH RETURNED AND THE RATING DID NOT CARRY, each with its ground (ruled 2026-09-26).
+      // Optional, exactly as `registerReads` above is: nothing found leaves the record without a reason,
+      // and a row invented to fill the list would be the same defect with the rater's name on it. Unlike
+      // `registerReads` the url is NOT joined against the mark's ledger — a refusal here costs a repair
+      // turn, and nothing is gained by fabricating a reason for a page nobody will look up.
+      if (m.setAside !== undefined && m.setAside !== null) {
+        if (!Array.isArray(m.setAside))
+          return { ok: false, reason: `mark "${m.name}": setAside must be an ARRAY of { url, ground } rows, or omitted entirely` };
+        for (const row of m.setAside) {
+          const url = String(row?.url ?? "").trim();
+          const ground = String(row?.ground ?? "").trim();
+          if (!url) return { ok: false, reason: `mark "${m.name}": a setAside row has no url — name the result you are setting aside by its own address, verbatim from the payload you were given` };
+          if (!ground) return { ok: false, reason: `mark "${m.name}": setAside row "${url}" has an empty ground. Omit the row rather than sending an empty one: a set-aside with no reason is not a decision` };
+        }
+      }
       for (const f of (Array.isArray(m.findings) ? m.findings : [])) {
         if (f?.weighedFilings === undefined || f?.weighedFilings === null) continue;
         if (!Array.isArray(f.weighedFilings))

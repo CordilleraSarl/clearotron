@@ -166,6 +166,20 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
     trailRows.push({ 'Mark': r.mark, 'Search Term': '—', 'Source / Context': `perplexity (${r.preset ?? ''})`,
       'Result Summary': RULED_WORDS.recordNotKept, 'Finding Reference': '—', 'Sweep Call #': '—', 'Wall-time (s)': '—', 'OK/Degraded': 'Degraded' });
   }
+  // WHAT THE SEARCH RETURNED AND THE RATING DID NOT CARRY, each with the ground the rater wrote (ruled
+  // 2026-09-26). Set-aside reasons live in the audit workbook and never in the report, so this sheet is
+  // their one reader-facing place, as it already is on a clearance. The label is the clearance's own and
+  // the ground is the rater's words; nothing is composed around either. The row is not a degraded one:
+  // reading a result and putting it down is the screen working, so it stands as OK.
+  for (const m of findings.marks ?? []) {
+    for (const s of m.setAside ?? []) {
+      const url = String(s?.url ?? '').trim();
+      const ground = String(s?.ground ?? '').trim();
+      if (!url || !ground) continue;
+      trailRows.push({ 'Mark': m.name, 'Search Term': `Set aside: ${url}`, 'Source / Context': '—',
+        'Result Summary': ground, 'Finding Reference': '—', 'Sweep Call #': '—', 'Wall-time (s)': '—', 'OK/Degraded': 'OK' });
+    }
+  }
   addSheet(wb, 'Findings', ['Mark', 'Finding Reference', 'Finding Name', 'Owner', 'Band', 'Type', 'Net', 'Basis', 'Evidence'], findingRows);
   addSheet(wb, 'Negative Results', ['Mark', 'Search Term', 'Source / Context', 'Result', 'Notes'], negativeRows);
   addSheet(wb, 'Audit Trail', ['Mark', 'Search Term', 'Source / Context', 'Result Summary', 'Finding Reference', 'Sweep Call #', 'Wall-time (s)', 'OK/Degraded'], trailRows);

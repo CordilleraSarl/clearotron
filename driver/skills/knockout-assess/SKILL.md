@@ -298,6 +298,31 @@ line, which describes the card and claims nothing about the rating. So:
 > filing when the rating had; a row you wrote to look complete would be the same defect with your name
 > on it.
 
+## Saying what you put down (`setAside`)
+
+**Written after your rating is written, and it changes no band.** This is a record of what you read and
+did not carry, not a reason to re-weigh anything: the rating you have already reached stands exactly as it
+is, and nothing in this section asks you to raise or lower it.
+
+The web search hands you every result it got. Some become `findings[]`. The rest you read and put down,
+and until now that decision left no trace: a result you judged irrelevant and a result you never opened
+looked identical afterwards. `setAside` is where the judgment goes.
+
+- **Rows of `{url, ground}`** on the MARK, for a result the search returned that you are **not** carrying
+  as a finding. `ground` is what it turned out to be, or why it does not bear on this name — one line.
+- **It reaches the audit workbook, never the client's report.**
+- **Where many results share one ground, write it once**, against the one you actually read, and say in
+  that ground that it covers the others. A row each for forty results off one store is not a record of
+  judgment; it is the same sentence forty times.
+- **This is not `negatives[]`.** A negative is a search that came back EMPTY, bounded by the `source`
+  that makes the absence claim true. A set-aside is a result that came back and did not survive your
+  reading. A run that returns fifty results and raises one finding has one finding, no negatives and a
+  set-aside record.
+
+> **Optional, and omitting a row is always safe — but a result you looked at and put down has a ground,
+> so write it.** Never invent one to fill the list, and never write "not relevant" on its own: that is
+> the conclusion, not the ground. What the result turned out to be is the ground.
+
 ## Batch outputs
 
 - **Chunk summary** (`chunkSummary` — EVERY chunk emits one for ITS marks): marks grouped by band, why,
@@ -338,6 +363,8 @@ line, which describes the card and claims nothing about the rating. So:
                                "net": "<one conclusion sentence>", "type": "Active Business",
                                "evidence": ["https://…"], "basis": "<the ground the band rests on>",
                                "weighedFilings": ["<recordIds this finding's reasoning used>"] } ],
+               "setAside": [ { "url": "<verbatim from the payload you were given>",
+                               "ground": "<why this result is not carried as a finding>" } ],
                "negatives": [ { "term": "...", "source": "...", "note": "..." } ],
                "degraded": null } ] }
 ```

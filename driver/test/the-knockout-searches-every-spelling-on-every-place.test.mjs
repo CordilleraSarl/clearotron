@@ -172,6 +172,38 @@ test("the audit trail says what each cell searched: the spelling with its kind o
   assert.equal(term("MOSSGLEN"), "MOSSGLEN, MOSS GLEN", "a receipt with no kind of use prints its spellings as it always did");
 });
 
+test("what the rating did not carry reaches the audit workbook with the rater's own ground", async () => {
+  const out = join(mkdtempSync(join(ROOT, "book-aside-")), "audit.xlsx");
+  const GROUND = "A fan page for an unrelated board game; no trade use of the name.";
+  const findings = { marks: [
+    { name: "LANTERNWICK", findings: [], setAside: [
+      { url: "https://example.test/fan-page", ground: GROUND },
+      // Refused by the validator, so it cannot arrive — but the sheet is built from the merged artifact,
+      // which a run delivered before the field existed also feeds. A half-row is dropped, never printed
+      // as a set-aside with no reason.
+      { url: "https://example.test/no-ground", ground: "  " },
+      { url: "", ground: "a ground with nothing to attach it to" },
+    ] },
+    { name: "MOSSGLEN", findings: [] },
+  ] };
+  await buildKnockoutWorkbook(findings, [], out);
+  const ExcelJS = (await import("exceljs")).default;
+  const wb = new ExcelJS.Workbook();
+  await wb.xlsx.readFile(out);
+  const ws = wb.getWorksheet("Audit Trail");
+  const head = ws.getRow(1).values.slice(1);
+  const rows = [];
+  ws.eachRow((row, n) => { if (n > 1) rows.push(Object.fromEntries(head.map((h, i) => [h, String(row.values[i + 1] ?? "")]))); });
+  const aside = rows.filter((r) => r["Search Term"].startsWith("Set aside: "));
+  assert.equal(aside.length, 1, `only the complete row prints: ${JSON.stringify(rows.map((r) => r["Search Term"]))}`);
+  assert.equal(aside[0]["Search Term"], "Set aside: https://example.test/fan-page");
+  assert.equal(aside[0]["Result Summary"], GROUND, "the ground is the rater's words, carried through");
+  assert.equal(aside[0]["Mark"], "LANTERNWICK");
+  // READING A RESULT AND PUTTING IT DOWN IS THE SCREEN WORKING, so the row is not a degraded one: a
+  // Degraded here would tell the reader a part of the screen failed when the opposite happened.
+  assert.equal(aside[0]["OK/Degraded"], "OK");
+});
+
 test("the clearance grid's request is unchanged: no reasoning setting, and its own 10 asked and 8 kept", () => {
   const spec = { terms: ["LANTERNWICK"], platforms: ["web", "shop.example.com"], output_path: "/r/grid.json" };
   const body = buildRequestBody({ task: buildGridProgramTask(spec), preset: "pro-search", enableSandbox: true });
