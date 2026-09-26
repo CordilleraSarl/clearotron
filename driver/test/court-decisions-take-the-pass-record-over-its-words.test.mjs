@@ -28,8 +28,8 @@ const CITES = "### Grounded profile — the proposed mark vs the first finding (
 const NONE = "### Grounded profile — the proposed mark vs the first finding (Japan)\n- ord: 1\n**No on-point precedent found.**\n";
 const MIXED = `${CITES}\n${NONE.replace("- ord: 1", "- ord: 2").replace("first finding", "second finding")}`;
 
-const ledger = ({ results = [], citations = 0 } = {}) => JSON.stringify({
-  schema_version: 1,
+const ledger = ({ results = [], citations = 0, schema = 1 } = {}) => JSON.stringify({
+  schema_version: schema,
   queries: results.map((n, i) => ({ query: `query ${i + 1}`, jurisdiction: "JP", results: n })),
   citations: Array.from({ length: citations }, (_, i) => ({ proceeding: `Case ${i + 1}`, forum: "District Court", jurisdiction: "JP",
     decided: "2019", url: `https://courts.example/${i + 1}`, read: "read", ord: i + 1, bearing: "grounds the finding" })),
@@ -60,6 +60,27 @@ test("arm 2: with no citation, none found needs the source to have answered", ()
     "a query that came back with hits, none of them cited, is the honest negative");
   // THE CONTROL: the same words with no record read none found, as they always did.
   assert.equal(courtDecisionsState(NONE), "none-found");
+});
+
+test("arm 2b: from version 2 a zero is an answer, because that version's instruction forbids a zero for a query it could not send", () => {
+  // The whole of tracker issue 949. At version 1 a 0 meant either "searched, nothing back" or "never
+  // reached a source", so the reader could not count it and an honest empty pass read as not completed.
+  // Version 2's instruction tells the model to write null for a query it could not send, so the two are
+  // now distinguishable and the honest pass gets its "none found" back.
+  const v2 = (results) => record({ attemptsJsonl: attempts(true), ledgerRaw: ledger({ results, schema: 2 }) });
+  assert.equal(courtDecisionsState(NONE, v2([0, 0, 0])), "none-found", "a version-2 zero is a search that returned nothing");
+  assert.equal(courtDecisionsState(NONE, v2([null, null])), "not-checked", "a null is the record saying the query never went");
+  assert.equal(courtDecisionsState(NONE, v2([null, 0])), "none-found", "one query that went is enough to have reached the source");
+  // THE CONTROL, and it is the half that must not move: the same zeros at version 1 still read not-checked.
+  assert.equal(courtDecisionsState(NONE, record({ attemptsJsonl: attempts(true), ledgerRaw: ledger({ results: [0, 0, 0] }) })), "not-checked",
+    "a version-1 zero was counted as a search, which is the defect version 2 exists to end");
+});
+
+test("arm 2c: a record naming no version is read as the oldest, so its zeros are never counted", () => {
+  // An unversioned record predates the field being asked for, so it is the ambiguous kind. Defaulting it
+  // to whatever this build is at would hand it every promise the current instruction makes.
+  const raw = JSON.stringify({ queries: [{ query: "q", jurisdiction: "JP", results: 0 }], citations: [] });
+  assert.equal(courtDecisionsState(NONE, record({ attemptsJsonl: attempts(true), ledgerRaw: raw })), "not-checked");
 });
 
 test("arm 3: a record that cites a decision reads found, even where one profile found nothing", () => {
