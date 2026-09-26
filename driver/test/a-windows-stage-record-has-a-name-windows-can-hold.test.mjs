@@ -15,7 +15,10 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, readdirSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+import { trackedFiles } from "../../shared/tracked-files.mjs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { driverDir, driverFileName, labelOfDriverFile } from "../../shared/driver-dir.mjs";
@@ -86,4 +89,31 @@ test("a stop removes only the folders its record made, however the machine spell
   assert.deepEqual(madeChain(dir, join(home, "elsewhere"), { realpath: (p) => p }), [],
     "a record outside the folder that was made would have had folders above it removed");
   assert.deepEqual(madeChain(dir, undefined), [], "a record whose folders were all there already removed some");
+});
+
+// THE CLASS, not the two that failed. A fixture that reaches into `_driver/` by hand instead of through
+// driverDir or driverRel writes a stage label's colon raw. On Linux that is the same path, so the test
+// passes and nothing says otherwise; on Windows NTFS takes it as a hidden stream of the name before the
+// colon, the reader's directory walk never lists it, and the test fails for a reason its own text cannot
+// explain. Two did, on main, on 2026-09-26: the run-record reader read no code step, and the audit
+// workbook read no failed card. Both were fixture defects; the product had been right since 2026-09-23.
+test("no test fixture writes a _driver artefact whose stage label keeps a raw colon", () => {
+  const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+  const files = trackedFiles("windows-safe _driver fixtures", { root,
+    pathspec: ["driver/test/*", "providers/*/test/*", "mcp-server/test/*", "portal-ui/test/*"] });
+  if (files === null) return;   // no checkout: the helper has already said so, loudly
+  assert.ok(files.length > 500, `the corpus read as ${files.length} file(s), which is too few to be the test tree`);
+  // A hand-built path is `join(…, "_driver", …)` or a literal beginning `_driver/`. Either is fine until
+  // the name on it carries a colon, which is the character Windows cannot hold.
+  const byHand = /join\([^)]*["'`]_driver["'`]|["'`]_driver\//;
+  const colonName = /[a-z0-9-]+:[a-z0-9${}._-]+\.(?:jsonl|json|txt)/i;
+  // A line that hands the name to one of the three helpers is safe by construction, whatever it spells.
+  const viaHelper = /driverDir\(|driverRel\(|driverFileName\(/;
+  const offenders = [];
+  for (const rel of files) {
+    readFileSync(join(root, rel), "utf8").split("\n").forEach((line, i) => {
+      if (byHand.test(line) && colonName.test(line) && !viaHelper.test(line)) offenders.push(`${rel}:${i + 1}`);
+    });
+  }
+  assert.deepEqual(offenders, [], "write these through driverDir or driverRel, which spell the colon %3A on Windows");
 });
