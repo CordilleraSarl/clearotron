@@ -15,6 +15,8 @@ process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
 import {
   writeRecordArtifacts, readRecordArtifacts, assembleRunRecords,
 } from "../registry-fidelity.mjs";
+// The findings' own citations: the second source 955 added, and the derivation both arms below read.
+import { findingUris } from "../record-carry.mjs";
 import { registryChecks } from "../predelivery-lint.mjs";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
 // code-side saturation-probe (2026-07-14): OFF in this legacy harness — its scenarios script the AGENT
@@ -152,9 +154,31 @@ test("V4-2 e2e: an unfetchable cited record ships as the failing coverage flag w
   assert.doesNotMatch(fm, /lint_flags:/, "A1: lint flags never ride report.md front-matter");
 });
 
-test("V4-1 e2e: no cited URIs → no closure pass; receipt still states the (empty) artifact set", async () => {
+// ── V4-1, REWRITTEN FOR THE CONTRACT 955 ESTABLISHES ────────────────────────────────────────────────
+//
+// It used to read "no cited URIs → no closure pass", and its fixture's findings cited a registration all
+// along — the closure only read the REPORT for addresses, and this mock's report prints none, so the set
+// came out empty and the arm passed on a premise its own fixture contradicted.
+//
+// 955 makes the findings a second source of the same question, because a register that publishes no page
+// per record prints no address in the report at all: on those runs the report-derived set is empty, the
+// closure never runs, and every card prints the owner, status and dates as the model wrote them with
+// nothing comparing them against a record. So a finding naming a registration must now pull that record.
+//
+// The empty-set property has not been dropped — it moved to the arm below, where it can actually be
+// produced. It cannot be produced here: the mock clamps its finding count to at least one and every
+// finding carries a registration, so an end-to-end run through this fixture always cites something.
+test("V4-1 e2e: a finding names a registration, so the closure fetches it even when the report prints no address", async () => {
   const calls = [];
-  const fetcher = async (uri) => { calls.push(uri); return { ok: true }; };
+  // THE BODY IS WRITTEN, as the V4-2 arms' fetcher does. A stub that answers `ok` and writes nothing leaves
+  // the artifact set legitimately empty, so the receipt assertion below would be measuring the stub rather
+  // than the closure — the first version of this arm did exactly that and read the emptiness as a defect.
+  const fetcher = async (uri, { sessionKey, recordLog }) => {
+    calls.push(uri);
+    mkdirSync(dirname(recordLog), { recursive: true });
+    appendFileSync(recordLog, JSON.stringify({ ts: "t", sessionKey, target: uri, body: { uri, mark_text: "PROJECT NOVAPULSE", status: "Registered" } }) + "\n");
+    return { ok: true };
+  };
   const root = mkdtempSync(join(tmpdir(), "v4e2e-"));
   for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_REPORT_URI", "MOCK_CL_SHORT", "MOCK_NO_GRID_LEDGER"]) delete process.env[k];
   for (const [k, v] of Object.entries({
@@ -165,10 +189,38 @@ test("V4-1 e2e: no cited URIs → no closure pass; receipt still states the (emp
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
   const res = await pipeline({ ...JOB, id: "v4-job-clean" }, { recordFetcher: fetcher });
   assert.equal(res.ok, true);
-  assert.deepEqual(calls, [], "no targeted fetches when nothing is cited");
+
+  // THE REGISTRATION THE FINDINGS NAME, read off the delivered findings rather than written here, so the
+  // arm fails if the fixture's citation moves and cannot pass against a hard-coded address.
+  const findings = JSON.parse(readFileSync(join(res.runDir, "findings.json"), "utf8"));
+  const named = [...findingUris(findings.findings ?? []).keys()];
+  assert.ok(named.length > 0, "guard: this fixture's findings name no registration, so there is nothing for the closure to do");
+
+  assert.deepEqual(calls, named, "the closure did not fetch the records the findings name");
   const events = readFileSync(driverDir(res.runDir, "run.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l));
-  assert.ok(!events.some((e) => e.event === "registry-record-closure"), "no closure event without citations");
+  assert.ok(events.some((e) => e.event === "registry-record-closure"), "no closure event for a record the findings cite");
   const receipt = JSON.parse(readFileSync(driverDir(res.runDir, "predelivery-lint.json"), "utf8"));
-  assert.deepEqual(receipt.artifactSet.recordUris, []);
-  assert.ok(events.some((e) => e.event === "record-artifacts" && e.fromRunDir === 0 && e.fromLedgerThisSession === 0));
+  assert.deepEqual(receipt.artifactSet.recordUris, named, "the receipt does not state the set the run actually closed over");
+});
+
+// ── AND THE EMPTY CASE, WHERE IT CAN BE PRODUCED ─────────────────────────────────────────────────────
+//
+// The property the arm above used to claim: with nothing cited, there is nothing to close over. Held on
+// the derivation itself, which is pure and takes the findings directly, because the end-to-end fixture
+// cannot express it. The two together are what the old single arm was believed to be covering.
+test("findingUris: only a registration is a citation, and a finding without one cites nothing", () => {
+  assert.deepEqual([...findingUris([]).keys()], [], "no findings cite nothing");
+  assert.deepEqual([...findingUris([{ ordinal: 1, mark: "A", owner: { name: "Owner LLC" } }]).keys()], [],
+    "a finding whose owner holds no registrations cited something");
+  assert.deepEqual([...findingUris([{ ordinal: 1, mark: "A", owner: { name: "Owner LLC", registrations: [] } }]).keys()], [],
+    "an empty registrations list cited something");
+
+  // …and a finding that DOES name one is carried, normalised, once — so the arms above cannot be green
+  // because this derivation returns nothing whatever it is handed.
+  const named = findingUris([
+    { ordinal: 1, mark: "A", disposition: "adversarial", owner: { registrations: [{ uri: "/MARK/US/90000001" }] } },
+    { ordinal: 2, mark: "B", owner: { registrations: [{ uri: "/mark/us/90000001" }, { uri: "/mark/tr/2009-53984" }] } },
+  ]);
+  assert.deepEqual([...named.keys()], ["/mark/us/90000001", "/mark/tr/2009-53984"], "a citation was dropped, duplicated or left un-normalised");
+  assert.equal(named.get("/mark/us/90000001").ordinal, 1, "the first finding to name a record keeps it");
 });
