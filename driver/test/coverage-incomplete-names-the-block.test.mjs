@@ -71,5 +71,5 @@ test("THE RETURN SHAPE: the calculation carries total_hits and the unaccounted l
   const open = openBlocksByAxis(skeleton, bands, plan);
   assert.deepEqual(Object.keys(open), ["incumbent-class"]);
   assert.equal(open["incumbent-class"][0].total_hits, 805, "the number the model used to have to write is the number the gate computed");
-  assert.deepEqual(open["incumbent-class"][0].unaccounted_classes, ["30"]);
+  assert.deepEqual(open["incumbent-class"][0].unaccounted_classes, ["5", "30"], "class 5 is itself a crowd: counted, never read");
 });
