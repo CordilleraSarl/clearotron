@@ -97,25 +97,55 @@ test("a stop removes only the folders its record made, however the machine spell
 // colon, the reader's directory walk never lists it, and the test fails for a reason its own text cannot
 // explain. Two did, on main, on 2026-09-26: the run-record reader read no code step, and the audit
 // workbook read no failed card. Both were fixture defects; the product had been right since 2026-09-23.
+const ROOTS = ["driver/test/*", "providers/*/test/*", "mcp-server/test/*", "portal-ui/test/*"];
+
+/** A tracked path against one of those pathspecs, reading `*` as git does: one path segment. */
+function matchesRoot(file, spec) {
+  const parts = spec.split("*").map((x) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+  return new RegExp("^" + parts.join("[^/]*")).test(file);
+}
+
+// The two shapes that write a stage label's colon raw into `_driver/`. Built from pieces rather than
+// written as literals, because the pieces are what the comment below is about.
+const QUOTE = "[\"'`]";                                   // a JS string of any kind
+const NOT_QUOTE = "[^\"'`\\n]*";                             // …its contents, up to its closing quote
+const COLON_NAME = "[a-z0-9-]+:[a-z0-9${}._-]+\\.(?:jsonl|json|txt)";   // register-unit:primary-sweep.jsonl
+const HAND_BUILT = [
+  // a literal `_driver/…` whose name carries a colon
+  new RegExp(QUOTE + "_driver\\/" + NOT_QUOTE + COLON_NAME, "i"),
+  // a `join(…, "_driver", …)` whose arguments carry one
+  new RegExp("join\\([^)\\n]*" + QUOTE + "_driver" + QUOTE + "[^)\\n]*" + COLON_NAME, "i"),
+];
+
+// THE CLASS, not the two that failed. A fixture that reaches into `_driver/` by hand instead of through
+// driverDir or driverRel writes a stage label's colon raw. On Linux that is the same path, so the test
+// passes and nothing says otherwise; on Windows NTFS takes it as a hidden stream of the name before the
+// colon, the reader's directory walk never lists it, and the test fails for a reason its own text cannot
+// explain. Two did, on main, on 2026-09-26: the run-record reader read no code step, and the audit
+// workbook read no failed card. Both were fixture defects; the product had been right since 2026-09-23.
+//
+// IT MATCHES THE CONSTRUCTION, NOT A LINE THAT MENTIONS BOTH. An earlier form of this arm exempted any
+// line carrying a helper call, and a genuine hand-built write hid behind an unrelated `driverRel(` on the
+// same line. The two shapes above cannot match a name handed to driverDir, driverRel or driverFileName,
+// because those compose the directory themselves and no `_driver` literal sits beside the name — so no
+// exemption is needed, and there is none to hide behind.
 test("no test fixture writes a _driver artefact whose stage label keeps a raw colon", (ctx) => {
   const GUARD = "windows-safe _driver fixtures";
   const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
-  const files = trackedFiles(GUARD, { root,
-    pathspec: ["driver/test/*", "providers/*/test/*", "mcp-server/test/*", "portal-ui/test/*"] });
+  const files = trackedFiles(GUARD, { root, pathspec: ROOTS });
   // A bare `return` here would score as a PASS having measured nothing, which is the one thing this
   // arm may not do. Off a checkout it SKIPS, loudly, and the run says so.
   if (files === null) return ctx.skip(skipReason(GUARD));
-  assert.ok(files.length > 500, `the corpus read as ${files.length} file(s), which is too few to be the test tree`);
-  // A hand-built path is `join(…, "_driver", …)` or a literal beginning `_driver/`. Either is fine until
-  // the name on it carries a colon, which is the character Windows cannot hold.
-  const byHand = /join\([^)]*["'`]_driver["'`]|["'`]_driver\//;
-  const colonName = /[a-z0-9-]+:[a-z0-9${}._-]+\.(?:jsonl|json|txt)/i;
-  // A line that hands the name to one of the three helpers is safe by construction, whatever it spells.
-  const viaHelper = /driverDir\(|driverRel\(|driverFileName\(/;
+  // EVERY ROOT SEPARATELY, because a total cannot see a lost one: driver/test alone is over a thousand
+  // files, so any floor on the sum is met by that root while the other three return nothing — which is
+  // what a mistyped pathspec looks like, and it would read as a clean sweep of a tree nobody searched.
+  for (const spec of ROOTS)
+    assert.ok(files.some((f) => matchesRoot(f, spec)), `${spec} matched no tracked file, so this sweep did not cover it`);
+
   const offenders = [];
   for (const rel of files) {
     readFileSync(join(root, rel), "utf8").split("\n").forEach((line, i) => {
-      if (byHand.test(line) && colonName.test(line) && !viaHelper.test(line)) offenders.push(`${rel}:${i + 1}`);
+      if (HAND_BUILT.some((re) => re.test(line))) offenders.push(`${rel}:${i + 1}`);
     });
   }
   assert.deepEqual(offenders, [], "write these through driverDir or driverRel, which spell the colon %3A on Windows");
