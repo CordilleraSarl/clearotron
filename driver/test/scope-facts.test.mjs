@@ -6,6 +6,8 @@
 // register-coverage-ledger.json) — no client data.
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { CAPABILITY_GAP_MARKER } from "../../providers/_shared/execute-plan.mjs";
+import { nativeScriptIndexGap } from "../../providers/_shared/script-form.mjs";
 import { deriveScopeFacts } from "../scope-facts.mjs";
 import { classTokensFromScopeText } from "../coverage-ledger.mjs";
 
@@ -339,25 +341,44 @@ test("567 R2: a script form the register FAILED on is no longer described as a s
     planExecution: { executed: [{ qid: "primary-sweep:exact:mark", state: "enumerated" }], missing: [], skipped: [], deferred },
     coverageRows: [] }).coverage_line;
 
-  // THE FIX: both are non-Latin, and the register FAILED on them. The script is not why they went unsearched.
+  // EVERY REASON HERE IS BUILT BY THE PRODUCER THAT WRITES IT, NEVER RETYPED, and that is the whole
+  // reason this arm is trustworthy. The first version of it invented short strings ("provider
+  // unavailable", "capability-gap: term is not in Latin script") and passed against a discriminator that
+  // the REAL script refusal broke: that refusal's own text says searching the characters "would return 0
+  // with no error", and the substring match then read "error" inside a negation and called every honest
+  // script deferral a failure. A private control caught it and this arm could not have. So the strings
+  // come from `nativeScriptIndexGap` and are assembled the way the executor assembles them.
+  const scriptGap = (term, declared) =>
+    `${CAPABILITY_GAP_MARKER} ${nativeScriptIndexGap({ id: "stand-in", nativeScriptIndex: declared }, [term])}`;
+  const providerError = (detail) => `provider error (after one in-tool retry): ${detail}`;
+  assert.match(scriptGap("\u0417\u041d\u0410\u041a", false), /with no error/,
+    "guard: the producer no longer writes the negation this arm exists to survive \u2014 re-read the discriminator");
+
+  // THE FIX: both are non-Latin, and the register FAILED on them. A stalled call is stamped deferred
+  // beside its error, so it lands in this bucket, and the script is not why it went unsearched.
   assert.match(line([
-    { qid: "translit:exact:a", reason: "provider unavailable" },
-    { qid: "translit:exact:b", reason: "register returned an error" },
+    { qid: "translit:exact:a", reason: providerError("the register did not answer") },
+    { qid: "translit:exact:b", reason: providerError("connection reset") },
   ]), /2 could not be searched/, "a failed search is still blamed on its script");
 
   // ITS PAIR: the register DECLINED the shape, which is what a script form honestly is. Same two entries,
   // same shapes, only the reason differs — so this arm is what stops the fix relabelling every deferral.
+  // Both forms of the refusal: the provider that declares a transliteration index, and the one that has
+  // declared nothing.
   assert.match(line([
-    { qid: "translit:exact:a", reason: "capability-gap: term is not in Latin script" },
-    { qid: "translit:exact:b", reason: "script form not supported by the provider" },
+    { qid: "translit:exact:a", reason: scriptGap("\u0417\u041d\u0410\u041a", false) },
+    { qid: "translit:exact:b", reason: scriptGap("\u6a19\u8b58", undefined) },
   ]), /2 are non-Latin script forms/, "a capability gap stopped being called a script form");
 
-  // AND A REASON THIS BUILD DOES NOT RECOGNISE LEAVES THE LINE ALONE. Reading an unknown string as a
-  // failure would take the script explanation away from a search honestly deferred for its script.
+  // AND THE COST OF ASKING FOR POSITIVE EVIDENCE, PINNED RATHER THAN LEFT TO BE DISCOVERED. A reason no
+  // producer in this tree writes is not evidence of a capability gap, so it does not earn the script
+  // sentence and falls to the remainder. That is the deliberate direction: the script claim says WHY a
+  // search did not happen and may only be made where the run recorded that reason. The opposite default
+  // was tried and is what let a negation inside a producer's own prose relabel every script deferral.
   assert.match(line([
     { qid: "translit:exact:a", reason: "some reason nobody has seen before" },
     { qid: "translit:exact:b", reason: "" },
-  ]), /2 are non-Latin script forms/, "an unrecognised reason was read as a failure");
+  ]), /2 could not be searched/, "an unrecognised reason still earns the script sentence");
 });
 
 test("567 R4: a listing that came back with NOTHING is no longer described as one that overflowed", () => {

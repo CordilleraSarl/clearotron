@@ -25,7 +25,7 @@
 // Nice class — judgment (coverage_judgment) stays Layer B. Provider-agnostic by construction: it
 // keys only on the neutral plan/band vocabulary, never a vendor name or vendor-shaped field.
 
-import { classTokensFromScopeText } from "./coverage-ledger.mjs";
+import { classTokensFromScopeText, isCapabilityGapReason } from "./coverage-ledger.mjs";
 import { capabilitiesFor } from "./register-capabilities.mjs";
 
 const clsStr = (c) => String(c ?? "").trim();
@@ -141,8 +141,22 @@ export function deriveScopeFacts({ instructedScope = null, plan = null, planExec
         // A NON-LATIN FORM IS ONLY A SCRIPT REASON WHEN THE SCRIPT IS THE REASON. This counted on the
         // entry's shape alone, so a script form the register FAILED on was described to the client as a
         // script form left unsearched — blaming the alphabet for the register's failure. The reason is in
-        // the same map this branch already consults.
-        if (entryIsNonLatinScript(e) && !deferralIsFailure(deferredByQid.get(e.qid))) a.deferred_script++;
+        // the same map this branch already consults, and a provider error does reach this bucket: the
+        // executor stamps `deferred: true` beside `error: true` when a call stalls, and that reason opens
+        // "provider error".
+        //
+        // THE TEST IS THE ONE THIS TREE ALREADY MAINTAINS, and it is positive: `isCapabilityGapReason`
+        // names the producers' own strings, the script refusal among them. A hand-rolled list of FAILURE
+        // words was written here first and it was wrong in a way that reads as right — the script
+        // refusal's own text says the characters "would return 0 with no error", and a substring match
+        // found "error" inside that negation, so every honest script deferral was reclassified as a
+        // failure. The private control caught it; nothing public could.
+        //
+        // Positive evidence, then, for the same reason the clean negative needs it: the script claim says
+        // WHY a search did not happen, and it may only be made where the run recorded that reason. Both
+        // strings the script refusal can produce carry the marker this test reads — the executor prefixes
+        // them — and one matches by phrase as well, so an archived run keeps its line.
+        if (entryIsNonLatinScript(e) && isCapabilityGapReason(deferredByQid.get(e.qid))) a.deferred_script++;
         continue;
       }
       if (stateByQid.has(e.qid)) {
@@ -300,24 +314,6 @@ function classClause(c, pc) {
 // skipped + incomplete === remaining; a shape the join never produces still degrades to "did not
 // complete", never to silence. "Returned more records than could be listed in full" is now true by
 // construction — only an enumerate slice that genuinely overflowed its listing can reach it.
-/**
- * Is this deferral reason a FAILURE rather than something the register cannot express? PURE.
- *
- * A capability gap is the register declining a shape it has no way to ask — a predicate it lacks, an
- * office outside its vocabulary, a script it does not file under. That is the reason a non-Latin form is
- * honestly described as a script form. A failure is the register being asked and not answering, and a
- * script form that failed is a failed search, not an alphabet problem.
- *
- * A FAILURE ONLY ON POSITIVE EVIDENCE OF ONE, and that direction is the point rather than caution. Read
- * the other way — a failure unless the reason names a capability — an unrecognised string takes the script
- * explanation away from a search that was honestly deferred for its script, and the client is told a
- * register failed when it declined. The first draft of this did exactly that, and it read
- * "predicate not supported by the active register provider" as a failure because the phrase it matched was
- * "does not support". So the list here is of failures, it is short, and a reason outside it leaves the line
- * as it was.
- */
-const deferralIsFailure = (reason) => /unavailable|timed? ?out|error|failed|refused|unreachable|no answer/i.test(String(reason ?? ""));
-
 function remainderBuckets(pc, remaining) {
   const dispatched = Array.isArray(pc.dispatched_qids) ? pc.dispatched_qids.length : 0;
   const unfinished = Math.max(0, dispatched - (pc.enumerated ?? 0) - (pc.incomplete ?? 0)) + (pc.missing ?? 0);
