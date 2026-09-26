@@ -24,7 +24,7 @@
 // are PRODUCTION, into anything that imports it.
 import { readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { driverDir } from "../shared/driver-dir.mjs";
+import { driverDir, labelOfDriverFile } from "../shared/driver-dir.mjs";   // a card's label carries a colon, which Windows writes %3A
 import { deferralCoverageRow } from "./deferral-row.mjs";
 import { PUBLISH_INPUTS, readStore } from "./publish/publish-inputs.mjs";
 
@@ -138,10 +138,22 @@ function register(runDir, log) {
 }
 
 // A finding's written card: its stage ended failed, so the card shipped with its structured rows only.
+//
+// MATCHED ON THE LABEL, NEVER ON THE FILE NAME. A card's stage label carries a colon — `report-card:3` —
+// and Windows cannot hold one, so `driverFileName` writes it `%3A` there and this filter's raw colon
+// matched nothing: `degradedParts` returned an empty list, and the audit workbook then reported coverage
+// CLOSED over a card that failed. On Linux the two spellings are the same string, which is why every arm
+// was green and only the scheduled Windows run showed it.
+//
+// `labelOfDriverFile` decodes `%3A` on every platform and strips the extension, so the label is the same
+// on both and the predicate reads it rather than the bytes on disk. The label is also what `stageEnded`
+// wants: it resolves its path through `driverDir`, which re-encodes the colon for the platform it is on,
+// so handing it the raw name would send Windows looking for a file it never wrote.
 function findingCards(runDir) {
   let files = [];
-  try { files = readdirSync(driverDir(runDir)).filter((f) => /^report-card:.+\.jsonl$/.test(f)); } catch { return null; }
-  const failed = files.map((f) => f.slice(0, -".jsonl".length)).filter((stage) => stageEnded(runDir, stage));
+  try { files = readdirSync(driverDir(runDir)).filter((f) => f.endsWith(".jsonl")); } catch { return null; }
+  const failed = files.map((f) => labelOfDriverFile(f)).filter((stage) => /^report-card:.+/.test(stage))
+    .filter((stage) => stageEnded(runDir, stage));
   if (!failed.length) return null;
   return { part: "finding-cards", name: PART_NAMES.findings, reason: NOT_COMPLETED, cause: `card stages ended failed: ${failed.join(", ")}` };
 }
