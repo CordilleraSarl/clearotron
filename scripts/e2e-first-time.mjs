@@ -163,7 +163,11 @@ export const NOT_COUNTED_EVENTS = {
     "jx-aim-consumed", "jx-candidate-fold", "jx-nativeread", 
     "jx-serp-grid", "jx-serp-grid-overflow", "jx-serp-grid-spec", "jx-slices-stated",
     "knockout-published", "knockout-receipts", 
-    "knockout-register-records", "knockout-sweep-skipped", "knockout-sweep-start", "level-scope-note",
+    "knockout-register-records", "knockout-sweep-skipped", "knockout-sweep-start",
+    // The sweep's cost line: marks, calls, cells, the largest place list any one name carried, the minutes
+    // and the target they are read against. A RECORD, never a failure — nothing about it is a step that
+    // went wrong, a question re-asked or an attempt repeated, so it does not bear on "first time" (515).
+    "knockout-sweep-total", "level-scope-note",
     "named-band-merged", "one-shot-stamp-settled", "order-probe", "output-snapshot", "owner-screen-derived",
     "placement-borderline", "placement-form-written", "plan-execution", "plan-execution-census",
     "plan-execution-refresh", "plan-qids-deferred", "probe-over-cap-undispatched", "profile", "profile-exclusion-seed",
