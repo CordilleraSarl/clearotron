@@ -59,7 +59,7 @@ const FULL_CALL = {
   findings_rows: [{ uri: "/mark/eu/018999001", flag_reason: "exact dominant element in class 9", verify: "yes" }],
   negative_rows: [{ uri: "/mark/us/99999", drop_reason: "off-field — relevance gate", ground: "off-field", variant: "acme gadget (default)" }],
   instructed_checks: [{ ask: "Any EU oppositions?", answer: "None in the frozen band." }],
-  disagreement_resolutions: [{ subject: "PHINIA", decision: "ADOPTED", reason: "the cl.12 overlap is off-field" }],
+  disagreement_resolutions: [{ subject: "AXLEVORN", decision: "ADOPTED", reason: "the cl.12 overlap is off-field" }],
   opposition: "No opposition history surfaced.",
 };
 
@@ -200,7 +200,7 @@ test("a patch that names ONE instructed check or disagreement leaves the others 
       { ask: "Any CH filings after 2020?", answer: "Two, both the applicant's own." },
     ],
     disagreement_resolutions: [
-      { subject: "PHINIA", decision: "ADOPTED", reason: "the cl.12 overlap is off-field" },
+      { subject: "AXLEVORN", decision: "ADOPTED", reason: "the cl.12 overlap is off-field" },
       { subject: "ZORVA", decision: "OVERRODE", reason: "the placement reason mis-reads class 9" },
     ],
   };
@@ -215,12 +215,12 @@ test("a patch that names ONE instructed check or disagreement leaves the others 
     "One, withdrawn 2019.", "…and the named one is corrected in place, not appended");
 
   const adj = mergeDigestPatch(stored, {
-    disagreement_resolutions: [{ subject: "PHINIA", decision: "OVERRODE", reason: "re-read: the overlap is real" }],
+    disagreement_resolutions: [{ subject: "AXLEVORN", decision: "OVERRODE", reason: "re-read: the overlap is real" }],
   });
   assert.equal(adj.disagreement_resolutions.length, 2, "the unnamed disagreement resolution was deleted by a patch that did not mention it");
   assert.equal(adj.disagreement_resolutions.find((d) => d.subject === "ZORVA")?.reason,
     "the placement reason mis-reads class 9", "the survivor must come back byte-identical");
-  assert.equal(adj.disagreement_resolutions.find((d) => d.subject === "PHINIA")?.decision, "OVERRODE",
+  assert.equal(adj.disagreement_resolutions.find((d) => d.subject === "AXLEVORN")?.decision, "OVERRODE",
     "…and the named one is corrected in place");
 
   // A patch that names NEITHER key leaves both whole — the omitted-key direction, which is how the
