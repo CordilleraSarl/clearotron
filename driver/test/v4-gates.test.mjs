@@ -46,10 +46,10 @@ test("assembleRunRecords: run-dir artifacts ∪ this-session ledger (session win
   // inherited artifact (the fork case: _records/ copied, ledger prefix knows nothing)
   writeRecordArtifacts(runDir, new Map([["/mark/us/86272665", { ...REC, registrationNumber: "OLD" }]]));
   appendFileSync(ledger, JSON.stringify({
-    ts: "t", sessionKey: "agent:clawdi:clearance-tmp1-aa-record-closure", target: "/mark/us/86272665", body: REC,
+    ts: "t", sessionKey: "agent:mailagent:clearance-tmp1-aa-record-closure", target: "/mark/us/86272665", body: REC,
   }) + "\n");
   appendFileSync(ledger, JSON.stringify({
-    ts: "t", sessionKey: "agent:clawdi:clearance-tmp1-aa-register-unit-x", target: "/mark/eu/018922211", body: { registrationNumber: "9" },
+    ts: "t", sessionKey: "agent:mailagent:clearance-tmp1-aa-register-unit-x", target: "/mark/eu/018922211", body: { registrationNumber: "9" },
   }) + "\n");
   const { records, fromRunDir, fromLedger } = assembleRunRecords(runDir, "clearance-tmp1-aa-", ledger);
   assert.deepEqual({ size: records.size, fromRunDir, fromLedger }, { size: 2, fromRunDir: 1, fromLedger: 2 });
@@ -89,7 +89,7 @@ async function runWithFetcher(recordFetcher, env = {}) {
   for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_REPORT_URI", "MOCK_CL_SHORT", "MOCK_NO_GRID_LEDGER"]) delete process.env[k];
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"),
-    CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_AGENT: "clawdi", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
+    CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_AGENT: "mailagent", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
     CLEAROTRON_REGISTER_RECORD_LOG: recordLog, MOCK_REPORT_URI: "/mark/us/86272665", ...env,
   })) pinEnv(process.env, k, v);
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
@@ -159,7 +159,7 @@ test("V4-1 e2e: no cited URIs → no closure pass; receipt still states the (emp
   for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_REPORT_URI", "MOCK_CL_SHORT", "MOCK_NO_GRID_LEDGER"]) delete process.env[k];
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"),
-    CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_AGENT: "clawdi", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
+    CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_AGENT: "mailagent", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
     CLEAROTRON_REGISTER_RECORD_LOG: join(root, "records.jsonl"),
   })) pinEnv(process.env, k, v);
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);

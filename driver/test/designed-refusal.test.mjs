@@ -33,7 +33,7 @@ const ROOT = mkdtempSync(join(tmpdir(), "designed-refusal-"));
 // under CLEAROTRON_DATABASE=corsearch this suite ran as corsearch — the vendor the operator asked for
 // and the file did not — and stayed green while doing it.
 pinEnvAll(process.env, { "CLEAROTRON_WORK_DIR": ROOT, "CLEAROTRON_REPORTS_DIR": join(ROOT, "pool") });
-process.env.CLEAROTRON_AGENT = "clawdi";
+process.env.CLEAROTRON_AGENT = "mailagent";
 // The tier a stranger runs, and the one both refusals in came from. `capabilitiesFor` reads it
 // through REGISTER_PROVIDER, another import-time const.
 pinEnv(process.env, "CLEAROTRON_DATABASE", "free-tier");
@@ -61,7 +61,7 @@ async function refusedRun({ jurisdictions = ["JP"], id = "cli-refusal" } = {}) {
   const job = { id, markName: "WANDERER", marks: [{ name: "WANDERER" }], classes: [9], jurisdictions,
     forwarder: "jordan", msgId: `<${id}@x>`, ref: "E2E-848" };
   const ctx = {
-    run, job, agent: "clawdi", paths: { runDir }, profile: {},
+    run, job, agent: "mailagent", paths: { runDir }, profile: {},
     searchPolicy: { level: "knockout-register", stageLabel: "Knockout + register", components: { registerProbe: true } },
   };
   const res = await knockoutInner(ctx, job, {
@@ -167,7 +167,7 @@ test("· E11 three of countPreflight's four refusals outrun the 200-char cap, an
 // ── 3 · the notice an operator reads ────────────────────────────────────────────────────────────────
 
 test("the failure packet's copy says REFUSED, not FAILED, and never calls it a technical failure", () => {
-  const base = { runId: "wanderer-2026-08-13-teal-gantry", agent: "clawdi", job: { markName: "WANDERER" },
+  const base = { runId: "wanderer-2026-08-13-teal-gantry", agent: "mailagent", job: { markName: "WANDERER" },
     failedStage: "knockout-register-count", shortReason: "this run names one territory (JP), which free-tier does not cover",
     reasonVerbatim: "this run names one territory (JP), which free-tier does not cover, so there is no scope left to count in." };
 
@@ -280,7 +280,7 @@ test("an ordinary knockout failure carries terminalKind null and reads exactly a
   // refusal and carries no stamp.
   const job = { id: "cli-plain-failure", marks: [{ name: "WANDERER" }, { name: "wanderer!" }], classes: [9],
     jurisdictions: ["EU"], forwarder: "jordan", msgId: "<plain@x>" };
-  const ctx = { run, job, agent: "clawdi", paths: { runDir }, profile: {},
+  const ctx = { run, job, agent: "mailagent", paths: { runDir }, profile: {},
     searchPolicy: { level: "knockout", stageLabel: "Knockout", components: {} } };
   const res = await knockoutInner(ctx, job, { sweepExecutor: async () => ({ ok: true, text: "u", bytes: 1 }) });
 

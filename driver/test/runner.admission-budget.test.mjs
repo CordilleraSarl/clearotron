@@ -56,7 +56,7 @@ test("admission budget: past the budget the drain stops claiming NEW jobs, finis
     CLEAROTRON_ADMISSION_BUDGET_MS: String(BUDGET_MS),
   })) pinEnv(process.env, k, v);
 
-  const Q = queueFor(root, "clawdi");
+  const Q = queueFor(root, "mailagent");
   mkdirSync(Q, { recursive: true });
   writeFileSync(join(Q, "job-a.json"), jobJson("TMP-BUD-A"));  // only A is queued when the drain starts
 

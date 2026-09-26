@@ -27,7 +27,7 @@ import { assembleRunRecords } from "../registry-fidelity.mjs";
 import { runRecordLogPath } from "../../providers/_shared/ledger-path.mjs";
 
 const PREFIX = "clearance-tmp743-aa-";
-const SK = `agent:clawdi:${PREFIX}register-unit-x`;
+const SK = `agent:mailagent:${PREFIX}register-unit-x`;
 const BODY = { applicationNumber: "86272665", registrationNumber: "4641314" };
 
 const recordRow = (target, body = BODY) => JSON.stringify({ ts: "t", sessionKey: SK, target, body }) + "\n";

@@ -35,12 +35,12 @@ pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
 process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
 
 const STUDIO = (agent) => join(ROOT, `workspace-${agent}`, "studio", "clearance-search");
-const mkRun = (slug, run, agent = "clawdi") => {
+const mkRun = (slug, run, agent = "mailagent") => {
   const d = join(STUDIO(agent), slug, run);
   mkdirSync(d, { recursive: true });
   return d;
 };
-const mkQueue = (agent = "clawdi") => {
+const mkQueue = (agent = "mailagent") => {
   const q = join(STUDIO(agent), "queue");
   mkdirSync(q, { recursive: true });
   return q;
@@ -51,7 +51,7 @@ const past = new Date(Date.now() - 60_000).toISOString();
 // that anything skipped below is skipped for the reason under test and not for a malformed sentinel.
 const duePark = (codename) => JSON.stringify({
   kind: "rate-limit", resetsAt: past, postponedAt: past, fromStage: "common-law-half:a",
-  codename, job: { markName: "M", classes: [9] }, agent: "clawdi",
+  codename, job: { markName: "M", classes: [9] }, agent: "mailagent",
 });
 const statusFile = (runDir, state, extra = {}) =>
   writeFileSync(join(runDir, "status.json"), JSON.stringify({ schema: 1, state, ...extra }, null, 2));

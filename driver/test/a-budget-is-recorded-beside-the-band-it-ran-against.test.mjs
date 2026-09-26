@@ -156,7 +156,7 @@ const driveStage = async (label, extra) => {
   try {
     await withEngine(`fake-band-${label}`, async () => { writeFileSync(out, "# done\n"); return okTurn(); },
       () => runStage("teststage", {
-        agent: "clawdi", sessionKey: `clearotron-test-band-${label}`, message: "do it",
+        agent: "mailagent", sessionKey: `clearotron-test-band-${label}`, message: "do it",
         model: "opus", thinking: "medium", timeoutSec: 600, expectFile: out,
         validate: () => ({ ok: true }), runDir: dir, maxRetries: 1, ...extra,
       }));

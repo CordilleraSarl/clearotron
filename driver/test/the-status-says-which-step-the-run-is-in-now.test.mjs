@@ -19,7 +19,7 @@ function run() {
   const runDir = join(studioRoot, "tmp9-demo-brand-owner", "2026-06-02-copper-spire");
   mkdirSync(runDir, { recursive: true });
   const ctx = { run: { runDir, studioRoot, slug: "tmp9-demo-brand-owner", codename: "copper-spire", date: "2026-06-02" },
-    job: { id: "j9", forwarder: "requester", ref: "TMP9001", markName: "AURORA", classes: [9] }, agent: "clawdi" };
+    job: { id: "j9", forwarder: "requester", ref: "TMP9001", markName: "AURORA", classes: [9] }, agent: "mailagent" };
   seedRunStatus(ctx);
   return { ctx, read: () => JSON.parse(readFileSync(join(runDir, "status.json"), "utf8")) };
 }

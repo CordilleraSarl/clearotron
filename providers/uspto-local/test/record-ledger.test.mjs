@@ -50,7 +50,7 @@ const ledgerRows = () => (existsSync(RECORD_LOG) ? readFileSync(RECORD_LOG, "utf
 
 test("a fetched record's body is persisted, keyed by the uri the fidelity gate indexes on", async () => {
   const auth = build();
-  const tctx = { agentId: "clawdi", sessionKey: "clearotron-test-run", sessionId: null };
+  const tctx = { agentId: "mailagent", sessionKey: "clearotron-test-run", sessionId: null };
   await core.doRecordFetch(auth, { uri: "/mark/us/86264144" }, tctx);
 
   const rows = ledgerRows().filter((r) => r.target === "/mark/us/86264144");

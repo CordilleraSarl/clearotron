@@ -121,10 +121,10 @@ test("attributes gateway-namespaced sessionKeys: agent:<id>:clearotron-… (the 
   // The gateway prepends `agent:<agentId>:` to the driver's --session-key before it reaches the plugin;
   // a bare startsWith("clearance-…") would miss all of these. This is the exact shape seen on the first live run.
   const t = tallyRows([
-    { ts: "t", sessionKey: `agent:clawdi:${RUN}register-unit-primary-sweep`,            sessionId: "uuid-a", tool: "search",       ok: true, attempts: 1, bytes: 10, cache_hit: false },
-    { ts: "t", sessionKey: `agent:clawdi:${RUN}register-unit-transliteration-numeric`,  sessionId: "uuid-b", tool: "record_fetch", target: "/m/1", ok: true, attempts: 1, bytes: 20, cache_hit: false },
+    { ts: "t", sessionKey: `agent:mailagent:${RUN}register-unit-primary-sweep`,            sessionId: "uuid-a", tool: "search",       ok: true, attempts: 1, bytes: 10, cache_hit: false },
+    { ts: "t", sessionKey: `agent:mailagent:${RUN}register-unit-transliteration-numeric`,  sessionId: "uuid-b", tool: "record_fetch", target: "/m/1", ok: true, attempts: 1, bytes: 20, cache_hit: false },
     // a DIFFERENT run, also namespaced — must be excluded
-    { ts: "t", sessionKey: "agent:clawdi:clearotron-other-run-primary-sweep",               sessionId: "uuid-c", tool: "search",       ok: true, attempts: 1, bytes: 5,  cache_hit: false },
+    { ts: "t", sessionKey: "agent:mailagent:clearotron-other-run-primary-sweep",               sessionId: "uuid-c", tool: "search",       ok: true, attempts: 1, bytes: 5,  cache_hit: false },
   ]);
   assert.equal(t.total, 2);
   assert.equal(t.search, 1);

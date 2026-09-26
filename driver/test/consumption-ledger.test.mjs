@@ -12,7 +12,7 @@ import { recordConsumption, recordRunConsumption, accountConsumption, consumptio
 
 const DAY = 86400000;
 
-function mkWorkspace(agents = ["clawdi"]) {
+function mkWorkspace(agents = ["mailagent"]) {
   const root = mkdtempSync(join(tmpdir(), "clearotron-consumption-"));
   const studios = {};
   for (const a of agents) {
@@ -29,15 +29,15 @@ const tokens = (input, output, attempts = 1) => ({
 });
 
 test("accountConsumption: sums tokens per account across workspaces, day and month buckets", () => {
-  const { root, studios } = mkWorkspace(["clawdi", "reviewer"]);
+  const { root, studios } = mkWorkspace(["mailagent", "reviewer"]);
   const now = Date.parse("2026-07-28T12:00:00Z");
   try {
-    recordConsumption({ studioRoot: studios.clawdi, runId: "r1", phase: "delivered", profileKey: "acme", tokens: tokens(100, 10), now });
+    recordConsumption({ studioRoot: studios.mailagent, runId: "r1", phase: "delivered", profileKey: "acme", tokens: tokens(100, 10), now });
     recordConsumption({ studioRoot: studios.reviewer, runId: "r2", phase: "delivered", profileKey: "acme", tokens: tokens(200, 20), now });
     // last month → month bucket excludes it
-    recordConsumption({ studioRoot: studios.clawdi, runId: "r3", phase: "delivered", profileKey: "acme", tokens: tokens(999, 99), now: now - 40 * DAY });
+    recordConsumption({ studioRoot: studios.mailagent, runId: "r3", phase: "delivered", profileKey: "acme", tokens: tokens(999, 99), now: now - 40 * DAY });
     // a different account is never mixed in
-    recordConsumption({ studioRoot: studios.clawdi, runId: "r4", phase: "delivered", profileKey: "other", tokens: tokens(500, 50), now });
+    recordConsumption({ studioRoot: studios.mailagent, runId: "r4", phase: "delivered", profileKey: "other", tokens: tokens(500, 50), now });
 
     const c = accountConsumption({ workspaceRoot: root, account: "acme", now });
     assert.equal(c.today.runs, 2);
@@ -56,8 +56,8 @@ test("accountConsumption: a run that postponed then delivered counts ONCE, at it
   const { root, studios } = mkWorkspace();
   const now = Date.parse("2026-07-28T12:00:00Z");
   try {
-    recordConsumption({ studioRoot: studios.clawdi, runId: "r1", phase: "postponed", profileKey: "acme", tokens: tokens(100, 10), now: now - 3600_000 });
-    recordConsumption({ studioRoot: studios.clawdi, runId: "r1", phase: "delivered", profileKey: "acme", tokens: tokens(450, 60), now });
+    recordConsumption({ studioRoot: studios.mailagent, runId: "r1", phase: "postponed", profileKey: "acme", tokens: tokens(100, 10), now: now - 3600_000 });
+    recordConsumption({ studioRoot: studios.mailagent, runId: "r1", phase: "delivered", profileKey: "acme", tokens: tokens(450, 60), now });
 
     const c = accountConsumption({ workspaceRoot: root, account: "acme", now });
     assert.equal(c.today.runs, 1, "one run, not one per terminal");
@@ -73,12 +73,12 @@ test("recordConsumption: carries wall-clock beside the tokens, and no currency a
   const now = Date.parse("2026-07-28T12:00:00Z");
   try {
     recordConsumption({
-      studioRoot: studios.clawdi, runId: "r1", phase: "delivered", profileKey: "acme", level: "clearance",
+      studioRoot: studios.mailagent, runId: "r1", phase: "delivered", profileKey: "acme", level: "clearance",
       stageLabel: "Depth 4", clientPrincipal: true, markCount: 1, tokens: tokens(100, 10),
       providerUsage: { corsearch: { search: 12, record_fetch: 40, total: 52 } },
       startedAt: new Date(now - 5400_000).toISOString(), now,
     });
-    const row = JSON.parse(readFileSync(consumptionLedgerPath(studios.clawdi), "utf8").trim());
+    const row = JSON.parse(readFileSync(consumptionLedgerPath(studios.mailagent), "utf8").trim());
     assert.equal(row.wallSec, 5400, "a speed pass reads the same row as a spend pass");
     assert.equal(row.level, "clearance");
     assert.equal(row.clientPrincipal, true);
@@ -93,19 +93,19 @@ test("recordConsumption: carries wall-clock beside the tokens, and no currency a
 test("recordRunConsumption: maps a run ctx onto a row, taking startedAt from status.json", () => {
   const { root, studios } = mkWorkspace();
   const now = Date.parse("2026-07-28T12:00:00Z");
-  const runDir = join(studios.clawdi, "run-1");
+  const runDir = join(studios.mailagent, "run-1");
   mkdirSync(runDir, { recursive: true });
   try {
     writeFileSync(join(runDir, "status.json"), JSON.stringify({ startedAt: new Date(now - 1800_000).toISOString() }));
     const ctx = {
-      run: { runDir, studioRoot: studios.clawdi, slug: "acme-corp", date: "2026-07-28", codename: "zesty-otter" },
+      run: { runDir, studioRoot: studios.mailagent, slug: "acme-corp", date: "2026-07-28", codename: "zesty-otter" },
       profile: { profileKey: "acme", projectKey: "eu-launch" },
       searchPolicy: { level: "clearance-jx", stageLabel: "Depth 5" },
       job: { clientPrincipal: true, marks: [{ name: "A" }, { name: "B" }] },
     };
     assert.equal(recordRunConsumption(ctx, { phase: "delivered", tokens: tokens(7, 3), now }), true);
 
-    const row = JSON.parse(readFileSync(consumptionLedgerPath(studios.clawdi), "utf8").trim());
+    const row = JSON.parse(readFileSync(consumptionLedgerPath(studios.mailagent), "utf8").trim());
     assert.equal(row.runId, "acme-corp-2026-07-28-zesty-otter");
     assert.equal(row.projectKey, "eu-launch");
     assert.equal(row.level, "clearance-jx");
@@ -122,12 +122,12 @@ test("recordRunConsumption: maps a run ctx onto a row, taking startedAt from sta
 test("recordRunConsumption: carries the frozen quote beside the measured tokens", () => {
   const { root, studios } = mkWorkspace();
   const now = Date.parse("2026-07-28T12:00:00Z");
-  const runDir = join(studios.clawdi, "run-q");
+  const runDir = join(studios.mailagent, "run-q");
   mkdirSync(runDir, { recursive: true });
   try {
     writeFileSync(join(runDir, "status.json"), JSON.stringify({ startedAt: new Date(now - 600_000).toISOString() }));
     const ctx = {
-      run: { runDir, studioRoot: studios.clawdi, slug: "acme", date: "2026-07-28", codename: "plucky-vireo" },
+      run: { runDir, studioRoot: studios.mailagent, slug: "acme", date: "2026-07-28", codename: "plucky-vireo" },
       profile: { profileKey: "acme" },
       searchPolicy: { level: "clearance", stageLabel: "Depth 4" },
       job: { clientPrincipal: true, markName: "A" },
@@ -135,7 +135,7 @@ test("recordRunConsumption: carries the frozen quote beside the measured tokens"
     };
     recordRunConsumption(ctx, { phase: "delivered", tokens: tokens(120, 40), now });
 
-    const row = JSON.parse(readFileSync(consumptionLedgerPath(studios.clawdi), "utf8").trim());
+    const row = JSON.parse(readFileSync(consumptionLedgerPath(studios.mailagent), "utf8").trim());
     assert.equal(row.quote.units, 5);
     assert.equal(row.quote.unitsVersion, 1, "a quote is only interpretable against its weight set");
     assert.equal(row.quote.raw, 23.2, "the absolute figure is what a price may later be fitted against");

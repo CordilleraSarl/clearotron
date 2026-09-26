@@ -28,7 +28,7 @@ const scratch = (fn) => {
 const ctxFor = (runDir) => ({
   job: { id: "TMP9001", ref: "E2E-ARM", markName: "ARM MARK", classes: [9], forwarder: "demo" },
   run: { runDir, slug: "arm", date: "2026-08-25", codename: "synthetic-arm-label" },
-  agent: "clawdi",
+  agent: "mailagent",
 });
 
 // ── 1. the run dir names the engine that served it ────────────────────────────────────────────────

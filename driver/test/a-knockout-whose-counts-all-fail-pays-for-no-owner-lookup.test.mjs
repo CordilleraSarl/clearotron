@@ -24,7 +24,7 @@ pinEnv(process.env, "CLEAROTRON_REGISTER_CALL_LOG", join(ROOT, "register-calls.j
 pinEnv(process.env, "CLEAROTRON_REGISTER_RECORD_LOG", undefined);
 pinEnv(process.env, "CLEAROTRON_SIGNA_ANSWER_MEMORY", undefined);
 pinEnv(process.env, "CLEAROTRON_INSTRUCTIONS_DIR", undefined);
-process.env.CLEAROTRON_AGENT = "clawdi";
+process.env.CLEAROTRON_AGENT = "mailagent";
 process.env.CLEAROTRON_AI = "anthropic-agent";
 pinEnv(process.env, "CLEAROTRON_CLAUDE_PATH", join(HERE, "mock-claude.mjs"));
 process.env.CLEAROTRON_MAX_RETRIES = "0";
@@ -52,7 +52,7 @@ async function knockout(codename, { countsLand }) {
   const run = { runDir: dir, studioRoot, slug: "lanternwick", date: "2026-09-23", codename, archiveDir: join(studioRoot, "archive", `2026-09-23-${codename}`) };
   const job = { id, markName: "LANTERNWICK", marks: [{ name: "LANTERNWICK" }], classes: [4], jurisdictions: ["EU"],
     forwarder: "jordan", msgId: `<${id}@x>`, ref: `E2E-${codename}` };
-  const ctx = { run, job, agent: "clawdi", paths: { runDir: dir }, profile: {},
+  const ctx = { run, job, agent: "mailagent", paths: { runDir: dir }, profile: {},
     searchPolicy: { level: "knockout-register", stageLabel: "Knockout + register", components: { registerProbe: true } } };
   const order = [];
   let res = null, failure = null;

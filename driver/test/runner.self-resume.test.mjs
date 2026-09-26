@@ -25,21 +25,21 @@ const mkRun = (agent, slug, run) => {
 };
 const past = new Date(Date.now() - 60_000).toISOString();
 const future = new Date(Date.now() + 3_600_000).toISOString();
-const payload = (extra) => JSON.stringify({ resetsAt: past, fromStage: "register-unit", codename: "x", job: { markName: "M", classes: [9] }, agent: "clawdi", ...extra });
+const payload = (extra) => JSON.stringify({ resetsAt: past, fromStage: "register-unit", codename: "x", job: { markName: "M", classes: [9] }, agent: "mailagent", ...extra });
 
 test("scanDueRunDirOrphans: DUE payload-complete orphans across agents; skips not-due / pre-fix / terminal", async () => {
   // (1) DUE + full payload (resetsAt in the past) → FOUND
-  writeFileSync(join(mkRun("clawdi", "mark-a", "2026-06-25-jade"), ".postponed"), payload({ codename: "jade" }));
+  writeFileSync(join(mkRun("mailagent", "mark-a", "2026-06-25-jade"), ".postponed"), payload({ codename: "jade" }));
   // (2) not due (resetsAt in the future) → skipped
-  writeFileSync(join(mkRun("clawdi", "mark-b", "2026-06-25-ruby"), ".postponed"), payload({ codename: "ruby", resetsAt: future }));
+  writeFileSync(join(mkRun("mailagent", "mark-b", "2026-06-25-ruby"), ".postponed"), payload({ codename: "ruby", resetsAt: future }));
   // (3) pre-fix sentinel (no job/agent payload) → skipped (left for manual handling, never a bad pipeline call)
-  writeFileSync(join(mkRun("clawdi", "mark-c", "2026-06-25-opal"), ".postponed"), JSON.stringify({ resetsAt: past, codename: "opal" }));
+  writeFileSync(join(mkRun("mailagent", "mark-c", "2026-06-25-opal"), ".postponed"), JSON.stringify({ resetsAt: past, codename: "opal" }));
   // (4) already terminal (.delivered present) → skipped (the run moved on after the sentinel was written)
-  const done = mkRun("clawdi", "mark-d", "2026-06-25-onyx");
+  const done = mkRun("mailagent", "mark-d", "2026-06-25-onyx");
   writeFileSync(join(done, ".postponed"), payload({ codename: "onyx" }));
   writeFileSync(join(done, ".delivered"), "{}");
   // (5) being-resumed (.resuming present) → skipped (another tick/runner already claimed it)
-  const claimed = mkRun("clawdi", "mark-f", "2026-06-25-topaz");
+  const claimed = mkRun("mailagent", "mark-f", "2026-06-25-topaz");
   writeFileSync(join(claimed, ".postponed"), payload({ codename: "topaz" }));
   writeFileSync(join(claimed, ".resuming"), "{}");
   // (6) a DIFFERENT agent's studio is scanned too (the multi-agent footgun the queueDirs getter also fixes)
@@ -50,7 +50,7 @@ test("scanDueRunDirOrphans: DUE payload-complete orphans across agents; skips no
   assert.deepEqual(found, ["jade", "pearl"], `expected only DUE payload-complete orphans across agents, got: ${found.join(", ")}`);
   // the found ones carry the self-contained resume payload pipeline() needs
   const jade = scanDueRunDirOrphans().find((o) => o.codename === "jade");
-  assert.equal(jade.agent, "clawdi");
+  assert.equal(jade.agent, "mailagent");
   assert.equal(jade.fromStage, "register-unit");
   assert.deepEqual(jade.job, { markName: "M", classes: [9] });
 });
@@ -62,15 +62,15 @@ test("resumeRunDirOrphans: throwing resume re-parks with a reparks count, termin
   const { resumeRunDirOrphans } = await import("../runner.mjs");
   const boom = async () => { throw new Error("EACCES: studio path unwritable"); };
 
-  const runDir = mkRun("clawdi", "mark-g", "2026-07-05-flint");
+  const runDir = mkRun("mailagent", "mark-g", "2026-07-05-flint");
   const mkOrphan = (reparks) => {
     // each iteration needs a fresh claimable sentinel (the function renames .postponed → .resuming).
     // Post-A4-split shape: a recovery sentinel carries recoveryResumesAt (never resetsAt) — by the time
     // the watcher fires and the resume throws, that clock is already in the PAST.
-    const payload = { kind: "recovery", recoveryResumesAt: past, postponedAt: past, codename: "flint", job: { markName: "M", classes: [9] }, agent: "clawdi", attempt: 1, sig: "x|abc", reparks };
+    const payload = { kind: "recovery", recoveryResumesAt: past, postponedAt: past, codename: "flint", job: { markName: "M", classes: [9] }, agent: "mailagent", attempt: 1, sig: "x|abc", reparks };
     writeFileSync(join(runDir, ".postponed"), JSON.stringify(payload));
     try { rmSync(join(runDir, ".resuming"), { force: true }); } catch { /* fresh */ }
-    return { runDir, sentPath: join(runDir, ".postponed"), job: payload.job, agent: "clawdi", codename: "flint", fromStage: null, reparks, payload };
+    return { runDir, sentPath: join(runDir, ".postponed"), job: payload.job, agent: "mailagent", codename: "flint", fromStage: null, reparks, payload };
   };
 
   // reparks 0 → re-parked with reparks 1, original payload fields preserved, no terminal

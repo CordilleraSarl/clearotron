@@ -31,7 +31,7 @@ const parkedQueue = (postponedAt, extra = {}) => {
   writeFileSync(join(q, "j.postponed"), JSON.stringify({ id: "j", msgId: "<j@x>", ref: "TMP8439", markName: "PROBE" }));
   writeFileSync(join(q, "j.postponed.meta"), JSON.stringify({
     resetsAt: RESET_2033, codename: "probe-run", dateISO: "2026-08-06",
-    runDir, agentId: "clawdi", postponedAt, ...extra,
+    runDir, agentId: "mailagent", postponedAt, ...extra,
   }));
   return { q, runDir };
 };
