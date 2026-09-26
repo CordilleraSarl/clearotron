@@ -538,7 +538,8 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   const koPreset = sweepReceipts.find((r) => r?.preset)?.preset ?? KNOCKOUT_WEB.preset;
   let lookupsNotRun = [];
   if (steps.ownerChecks && !ownerChecks.length) {
-    try { lookupsNotRun = ownersOwedACheck(registerRecords).map((o) => ({ ok: false, mark: o.mark, query: composeOwnerQuery(o), preset: koPreset, cause: steps.ownerChecks.cause })); }
+    // An owner lookup is a question, asked on the owner lookups' own setting, not the web grid's.
+    try { lookupsNotRun = ownersOwedACheck(registerRecords).map((o) => ({ ok: false, mark: o.mark, query: composeOwnerQuery(o), preset: KNOCKOUT_WEB.questionPreset, cause: steps.ownerChecks.cause })); }
     catch { lookupsNotRun = []; }
   }
   // A first web question whose answer is on disk and whose trail entry is not. Only the first question is
