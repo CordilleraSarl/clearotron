@@ -15,7 +15,10 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, readdirSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { driverDir, driverFileName, labelOfDriverFile } from "../../shared/driver-dir.mjs";
@@ -86,4 +89,78 @@ test("a stop removes only the folders its record made, however the machine spell
   assert.deepEqual(madeChain(dir, join(home, "elsewhere"), { realpath: (p) => p }), [],
     "a record outside the folder that was made would have had folders above it removed");
   assert.deepEqual(madeChain(dir, undefined), [], "a record whose folders were all there already removed some");
+});
+
+const ROOTS = ["driver/test/*", "providers/*/test/*", "mcp-server/test/*", "portal-ui/test/*"];
+
+/** A tracked path against one of those pathspecs, reading `*` as git does: one path segment. */
+function matchesRoot(file, spec) {
+  const parts = spec.split("*").map((x) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+  return new RegExp("^" + parts.join("[^/]*")).test(file);
+}
+
+// The two shapes that write a stage label's colon raw into `_driver/`. Built from pieces rather than
+// written as literals, because the pieces are what the comment below is about.
+const QUOTE = "[\"'`]";                                   // a JS string of any kind
+const NOT_QUOTE = "[^\"'`\\n]*";                             // …its contents, up to its closing quote
+const COLON_NAME = "[a-z0-9-]+:[a-z0-9${}._-]+\\.(?:jsonl|json|txt)";   // register-unit:primary-sweep.jsonl
+const HAND_BUILT = [
+  // a literal `_driver/…` whose name carries a colon
+  new RegExp(QUOTE + "_driver\\/" + NOT_QUOTE + COLON_NAME, "i"),
+  // a `join(…, "_driver", …)` whose arguments carry one
+  new RegExp("join\\([^)\\n]*" + QUOTE + "_driver" + QUOTE + "[^)\\n]*" + COLON_NAME, "i"),
+];
+
+/**
+ * The line with each helper CALL removed, arguments and all.
+ *
+ * `join(dir, "_driver", driverFileName("report-card:3.jsonl"))` is safe — the helper encodes the colon —
+ * but the shapes above scan to the first `)`, which the helper's own paren is not, so the colon name is
+ * reached and the line reads as hand-built. Removing the calls first answers that without bringing back
+ * the exemption it replaced: only a helper's OWN arguments go, so a genuine hand-built write on the same
+ * line survives and is still named. A call this cannot parse — one with a nested paren — is left in
+ * place and the line is judged as it stands, which errs toward naming a safe line over missing an
+ * unsafe one.
+ */
+const withoutHelperCalls = (line) => line.replace(/\b(?:driverDir|driverRel|driverFileName)\([^()]*\)/g, "");
+
+// THE CLASS, not the two that failed. A fixture that reaches into `_driver/` by hand instead of through
+// driverDir or driverRel writes a stage label's colon raw. On Linux that is the same path, so the test
+// passes and nothing says otherwise; on Windows NTFS takes it as a hidden stream of the name before the
+// colon, the reader's directory walk never lists it, and the test fails for a reason its own text cannot
+// explain. Two did, on main, on 2026-09-26: the run-record reader read no code step, and the audit
+// workbook read no failed card. Both were fixture defects; the product had been right since 2026-09-23.
+//
+// IT MATCHES THE CONSTRUCTION, NOT A LINE THAT MENTIONS BOTH. An earlier form of this arm exempted any
+// line carrying a helper call, and a genuine hand-built write hid behind an unrelated `driverRel(` on the
+// same line. The two shapes above cannot match a name handed to driverDir, driverRel or driverFileName,
+// because those compose the directory themselves and no `_driver` literal sits beside the name — so no
+// exemption is needed, and there is none to hide behind.
+test("no test fixture writes a _driver artefact whose stage label keeps a raw colon", (ctx) => {
+  const GUARD = "windows-safe _driver fixtures";
+  const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+  const files = trackedFiles(GUARD, { root, pathspec: ROOTS });
+  // A bare `return` here would score as a PASS having measured nothing, which is the one thing this
+  // arm may not do. Off a checkout it SKIPS, loudly, and the run says so.
+  if (files === null) return ctx.skip(skipReason(GUARD));
+  // THE SET THE LOOP BELOW WALKS IS NOT EMPTY, said here and directly. The per-root assertions that
+  // follow imply it, but only to a reader: a loop over a discovered set that asserts nothing when the set
+  // is empty passes having measured none of it, and the check for that class reads the assertion rather
+  // than the implication. It is also the honest order — the corpus first, then its coverage.
+  assert.ok(files.length > 0, "the tracked corpus read as empty, so this sweep measured nothing");
+  // EVERY ROOT SEPARATELY, because a total cannot see a lost one: driver/test alone is over a thousand
+  // files, so any floor on the sum is met by that root while the other three return nothing — which is
+  // what a mistyped pathspec looks like, and it would read as a clean sweep of a tree nobody searched.
+  for (const spec of ROOTS)
+    assert.ok(files.some((f) => matchesRoot(f, spec)), `${spec} matched no tracked file, so this sweep did not cover it`);
+
+  const offenders = [];
+  for (const rel of files) {
+    readFileSync(join(root, rel), "utf8").split("\n").forEach((line, i) => {
+      if (HAND_BUILT.some((re) => re.test(withoutHelperCalls(line)))) offenders.push(`${rel}:${i + 1}`);
+    });
+  }
+  assert.deepEqual(offenders, [],
+    "write the name through driverDir or driverRel — they compose _driver/ themselves and spell the colon %3A on Windows, "
+    + "so `driverDir(runDir, \"register-unit:primary-sweep.jsonl\")` rather than a join or a literal path");
 });

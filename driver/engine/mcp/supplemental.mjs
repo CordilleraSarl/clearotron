@@ -365,9 +365,9 @@ export async function proposeSupplemental(params, tctx, deps) {
   // The plan-level `regions` here is the matter's territorial scope, read from the run's own FROZEN
   // plan (siblings by construction: <run>/register-units/<axis>-band.json and
   // <run>/_driver/register-plan.json — the same relative resolution driver/verify.mjs uses). The
-  // execute-plan kernel hands it to the provider's buildEntryQuery, which backfills only entries that
-  // declare none (makeRegionRequiredBuildEntryQuery). A proposal that DOES declare regions is
-  // untouched, qid fingerprints are unchanged, and providers that do not require regions ignore it.
+  // execute-plan kernel fills every entry that declares none from the plan's regions, on every provider
+  // (withPlanRegions). A proposal that DOES declare regions is untouched, and qid fingerprints are
+  // unchanged.
   let planRegions = [], planClasses = [], house = null;
   try {
     const frozen = JSON.parse(readFileSync(driverDir(dirname(dirname(outPath)), "register-plan.json"), "utf8"));

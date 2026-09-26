@@ -259,6 +259,46 @@ export function unitLabel(axis, entry) {
   return `${axis} / ${scope || String(entry.qid ?? "")}${cls}${goodsTermsList(entry).length ? ` goods: ${goodsTermsList(entry).join(" OR ")}` : ""}`;   // the goods words are part of the question (ruled for the client's table 2026-09-22): a goods slice shares predicate, term and classes with the identical one
 }
 
+// THE QUESTIONS READ IN A CROWD'S PLACE: every plan entry whose `narrows` names the crowd's qid, in the
+// plan's order. The reading turn names the crowd a narrowing replaces, and nothing read that link, so the
+// digest had no way to say what answered a crowd and what it left unread. PURE.
+export function narrowingsOf(plan, qid) {
+  if (typeof qid !== "string" || !qid) return [];
+  return (plan?.entries ?? []).filter((e) => e && typeof e.narrows === "string" && e.narrows.trim() === qid);
+}
+
+// A question in plain words, for a sentence the digest seat reads and may carry into its reason: no axis
+// and no qid, nothing the reason gate refuses as engine vocabulary. PURE.
+const PLAIN_PREDICATE = { contains: "containing ", owner: "owned by " };
+function plainQuestion(e) {
+  const terms = Array.isArray(e?.terms) && e.terms.length
+    ? e.terms : (typeof e?.term === "string" && e.term.trim() ? [e.term] : []);
+  const shown = terms.slice(0, MAX_TERMS_IN_LABEL).map((t) => `"${String(t).trim()}"`);
+  const more = terms.length > shown.length ? ` and ${terms.length - shown.length} more` : "";
+  const cls = Array.isArray(e?.nice_classes) && e.nice_classes.length ? ` in class ${e.nice_classes.join(", ")}` : "";
+  const goods = goodsTermsList(e);
+  const regions = Array.isArray(e?.regions) && e.regions.length ? ` in ${e.regions.join(", ")}` : "";
+  return `${PLAIN_PREDICATE[String(e?.predicate ?? "")] ?? ""}${shown.join(" or ")}${more}${cls}`
+    + `${goods.length ? ` limited to goods: ${goods.join(" or ")}` : ""}${regions}`;
+}
+
+// WHY A CROWD BLOCK IS OPEN, in the driver's words and carrying the block's own facts: the count, the
+// spellings and classes left unread, and the questions read in its place. It is the one text on the row
+// that reaches the seat on every path (the form's parser and the recording tool both keep it), so the
+// facts ride in it rather than in fields a projection would drop. What was counted and not read is set
+// aside, never clean (ruled 2026-09-26). PURE.
+export function blockOpenBecause(b, narrowings = []) {
+  const counted = Number.isInteger(b?.total_hits) ? ` (${b.total_hits} counted)` : "";
+  const legs = [
+    b?.unaccounted?.length ? `spellings not read: ${b.unaccounted.join(", ")}` : "",
+    b?.unaccounted_classes?.length ? `classes not read: ${b.unaccounted_classes.join(", ")}` : "",
+  ].filter(Boolean).join("; ");
+  const instead = narrowings.length ? `; read in its place: ${narrowings.slice(0, 6).map(plainQuestion).join("; ")}` : "";
+  return `the search RAN and counted more than it read${counted}${legs ? `, ${legs}` : ""}. What was not read is `
+    + `set aside, never clean: say what was read instead and what was left, with the count${instead}. No row `
+    + `about another slice discharges it`;
+}
+
 /**
  * THE FORM'S ROWS, computed from driver facts alone. Three kinds, and the kind decides what the row owes:
  *
@@ -356,9 +396,7 @@ export function coverageFormRows({ skeleton = [], activeAxes = null, plan = null
         // The block's OWN row is the naming the deleted join required. A clean claim HERE is the
         // silent swallow; a clean claim on a sibling slice never discharged this block and does not now.
         open: true,
-        open_because: "the band left this slice neither verified-zero nor individually enumerated nor a"
-          + " ruled crowd, so part of it is unaccounted — the search RAN, and this block is what it did"
-          + " not close. It cannot be confirmed-clean, and no row about another slice discharges it",
+        open_because: blockOpenBecause(b, narrowingsOf(plan, b.qid)),
         status: null, reason: null,
       });
     }

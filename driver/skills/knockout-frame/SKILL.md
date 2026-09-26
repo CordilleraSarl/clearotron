@@ -7,8 +7,8 @@ description: Frame a KNOCKOUT batch — scope, belt-and-braces classes, context 
 
 You are framing a **knockout batch**: a Stage-0 triage screen of several candidate names at once —
 broad-not-deep, kill/no-kill. Your output drives a CODE-side web search and the assessment turn. The
-search runs every spelling you name for a mark (task 2e) on every place you name for the batch (task 2d),
-and keeps what each search returned, with no summary. Nothing you write here searches anything.
+search runs every spelling you name for a mark (task 2e), with the kind of use you name for it (task 2c),
+on every place you name for the batch (task 2d), and keeps what each search returned, with no summary. Nothing you write here searches anything.
 
 ## Tasks, per the batch
 
@@ -36,12 +36,22 @@ and keeps what each search returned, with no summary. Nothing you write here sea
    or a product line for a pharma client. Judge it from the client's field and the batch's context;
    these examples are not a list to copy. The places you name in task 2d include the sites where these
    uses are listed, so a kind of use you leave out has no place searched for it.
-2d. **`places` — the 2 to 4 places every name in the batch is searched on.** The places that matter for
+   Then, per mark, **`useKind`**: in **one to three words**, the one kind of use THIS name most plausibly
+   already has in this field ("character", "app", "achievement"), judged from its `contextFraming` and the
+   batch's context; the examples are not a list to copy either. Every search of the name adds it: each
+   spelling is searched on each place as the spelling followed by those words, so a name that reads as a
+   character is looked for as one. Keep it short because it goes into every one of that name's searches
+   and a long phrase buries the spelling — but a longer answer is accepted, never refused.
+2d. **`places` — per mark, the places THIS name is searched on: two or more, and as many as the name needs.** The places that matter for
    this client: its stores, and the sites where the kinds of use in task 2c are listed. One of them is
    `web`, the whole web, where famous names and cultural references surface. Every other place is a
    site's domain written as a bare host (`store.steampowered.com`, `fandom.com`); a domain covers its
-   subdomains, so `fandom.com` reaches every wiki hosted there. Every spelling of every mark is searched
-   once on each place, so a place you leave out is not searched for any name.
+   subdomains, so `fandom.com` reaches every wiki hosted there. Every spelling of THIS name is searched
+   once on each of ITS places, so a place you leave out is not searched for this name.
+   **Choose them per name, and there is no cap.** Two names in one batch can want different places: a
+   name that reads as a game character wants the wikis, a name that reads as an app wants the app stores,
+   and neither should carry the other's list. Name as many as the name needs and no more — every place you
+   add is another search of every spelling, so a list nobody needs costs minutes and finds nothing.
 2e. **`spellings` — 2 or 3 ways each name is written.** The name exactly as instructed is always one of
    them. Add the forms a buyer would type or a seller would list: the words joined or split, a hyphen, a
    common misspelling, a transliteration a market uses. Each spelling is searched on every place in
@@ -70,17 +80,19 @@ and keeps what each search returned, with no summary. Nothing you write here sea
 
 ```json
 { "schema": 1,
-  "batch": { "productContext": "<one sentence>", "inUseAs": "<task 2c>", "places": ["web", "<host>"],
+  "batch": { "productContext": "<one sentence>", "inUseAs": "<task 2c>",
              "umbrellaBrandNote": null, "executionOrder": ["<mark>", "..."] },
   "marks": [ { "ref": "<or null>", "name": "<verbatim>", "classes": [8, 21],
                "beltAndBraces": [35], "classesPlain": "<plain-language line>",
                "contextFraming": "<what THIS name is for — see task 2b>",
+               "useKind": "<one to three words: this name's kind of use — see task 2c>",
+               "places": ["web", "<host>", "..."],
                "spellings": ["<the name>", "<another form>"], "priorKnowledge": null,
                "priority": 1 } ] }
 ```
 
 Exactly one row per instructed mark (name parity vs instructed-scope, byte-exact after trim);
-`beltAndBraces` are Nice ints; `executionOrder` is a permutation of the names. `places` holds 2 to 4
-entries, one of them `web` and each other a bare host; `spellings` holds 2 or 3 strings, the name among
+`beltAndBraces` are Nice ints; `executionOrder` is a permutation of the names. Each mark's `places` holds
+two or more entries, with no upper limit, one of them `web` and each other a bare host; `spellings` holds 2 or 3 strings, the name among
 them. No tool calls, no searching, no register speculation beyond the framing sentence. Also write a
 2–3 sentence scope note as `knockout-frame.md` (what the batch is, which classes, anything flagged).

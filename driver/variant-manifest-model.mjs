@@ -55,7 +55,12 @@ export const WATCHLIST_OWNERS_MAX = 24;
 // The goods-words bound. Wider than this is a list that has stopped describing these goods: every word
 // is OR-ed on the wire, so an over-long list restores the very crowd the narrowing exists to cut.
 export const GOODS_WORDS_MAX = 24;
-const ELEMENT_KEYS = ["value", "kind"];
+// `famous_mark_flag` — the famous-mark check's hand-off, on the element it is about. When this manifest
+// became the driver's render of a typed call, the prose section that named the elements to check was no
+// longer written by anyone, and the web step's famous-mark check had nothing to run on. The flag carries
+// it: a flagged element is searched on the general web as a grid cell, and the web step judges what
+// comes back.
+const ELEMENT_KEYS = ["value", "kind", "famous_mark_flag"];
 // `romanization` — the Latin-script form of a NON-LATIN `value`, and the whole reason the
 // transliteration axis can be executed at all (see the doc block on variantRomanizationGaps below).
 // Optional in the schema so a legacy manifest still parses on resume/replay; REQUIRED by verify.mjs
@@ -103,7 +108,9 @@ export function parseVariantManifestModel(raw) {
       throw new Error(`variantmodel_element_kind_invalid:${short(e.kind)} (one of: ${ELEMENT_KINDS.join(", ")})`);
     const value = String(e.value ?? "").trim();
     if (!value) throw new Error("variantmodel_unparseable: every element needs a non-empty value");
-    return { value, kind };
+    // Only `true` flags an element. The flag is optional, so anything else reads as not flagged rather
+    // than as a refusal, and an unflagged element keeps the shape it always had.
+    return { value, kind, ...(e.famous_mark_flag === true ? { famous_mark_flag: true } : {}) };
   });
 
   const variants = Array.isArray(m.variants) ? m.variants : null;
@@ -252,6 +259,18 @@ export function parseVariantManifestModel(raw) {
     goods_words,
     search_floor,
   };
+}
+
+/** The elements flagged for the famous-mark check, as written, each once. [] when none is. PURE. */
+export function famousMarkElements(model) {
+  const seen = new Set(), out = [];
+  for (const e of model?.elements ?? []) {
+    const value = String(e?.value ?? "").trim();
+    if (e?.famous_mark_flag !== true || !value || seen.has(value.toLowerCase())) continue;
+    seen.add(value.toLowerCase());
+    out.push(value);
+  }
+  return out;
 }
 
 /**

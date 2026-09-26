@@ -701,6 +701,8 @@ export function splitGridSpec(spec, { outputPaths = {}, dispositionsPaths = {} }
       terms: isMeaning ? [] : terms[h],
       // A grid in blocks keeps its blocks, each cut to this half's terms (a term owns all its cells in one half).
       ...(Array.isArray(spec.grids) ? { grids: spec.grids.map((g) => ({ terms: g.terms.filter((t) => !isMeaning && terms[h].includes(t)), platforms: g.platforms })).filter((g) => g.terms.length) } : {}),
+      // The famous-mark record names only the cells this seat runs.
+      ...(Array.isArray(spec.famous) ? { famous: spec.famous.filter((t) => !isMeaning && terms[h].includes(t)) } : {}),
       output_path: outputPaths[h] ?? spec.output_path,
       // The disposition_required stamp still rides BOTH halves: it is the receipt-presence arm, and a
       // stray pr_risk block in the non-owning half must still be judged rather than waved through.
@@ -963,7 +965,16 @@ export function findSimilarListingSignals(findingsContent) {
   const signals = [];
   const OWNER_RE = /(?:developer|publisher|seller|owner)(?:\s+|_)of(?:\s+|_)record\W{0,5}([^\n|]+)/i;
   const OWNER_SKIP_RE = /not extracted|unknown|n\/a|none|^[\s—–-]*$/i;
+  // A table whose header lists the of-record fields matches OWNER_RE on its first label and captures the
+  // next one, so a label reached the register as an owner's name ("publisherofrecord", once its
+  // underscores were stripped). A label is never a name.
+  const OWNER_LABEL_RE = /^(?:developer|publisher|seller|owner)[\s_]*of[\s_]*record\b/i;
   const URL_RE = /https?:\/\/[^\s)|\]">]+/;
+  // A TABLE'S HEADER ROW NAMES COLUMNS, NEVER AN OWNER, whatever column follows an of-record label ("URL",
+  // "Store"). It is the row a separator row follows, and both are table rows: a bare "---" under an owner's
+  // line is a rule, not a separator, and the owner stands.
+  const SEPARATOR_RE = /^\s*\|?\s*:?-{3,}:?\s*(?:\|\s*:?-{3,}:?\s*)*\|?\s*$/;
+  const headerRow = (ln, next) => ln.includes("|") && String(next ?? "").includes("|") && SEPARATOR_RE.test(next);
   let inMatrix = false, inFindings = false;
   let block = null;   // { markText, owner, url }
   const flush = () => {
@@ -972,7 +983,9 @@ export function findSimilarListingSignals(findingsContent) {
     }
     block = null;
   };
-  for (const ln of (findingsContent || "").split("\n")) {
+  const lines = (findingsContent || "").split("\n");
+  for (let i = 0; i < lines.length; i++) {
+    const ln = lines[i];
     const h = ln.match(/^(#{1,6})\s+(.*)/);
     if (h) {
       const title = h[2];
@@ -995,10 +1008,10 @@ export function findSimilarListingSignals(findingsContent) {
       continue;
     }
     if (inFindings && block) {
-      const om = ln.match(OWNER_RE);
+      const om = headerRow(ln, lines[i + 1]) ? null : ln.match(OWNER_RE);
       if (om && !block.owner) {
         const owner = om[1].replace(/[*_`]/g, "").trim();
-        if (owner && !OWNER_SKIP_RE.test(owner)) block.owner = owner.slice(0, 120);
+        if (owner && !OWNER_SKIP_RE.test(owner) && !OWNER_LABEL_RE.test(om[1].trim())) block.owner = owner.slice(0, 120);
       }
       const um = ln.match(URL_RE);
       if (um && !block.url) block.url = um[0];

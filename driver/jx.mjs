@@ -211,15 +211,17 @@ export function deriveLaneDepthVerdicts({ sidecar, slices } = {}) {
     const shortfall = asked === "full" && ran !== "full";
     let cause = null, why = null;
     if (shortfall) {
-      if (!deep.length) {
+      // "The lane ran as a slice-1 candidate lane" is said only of a lane whose candidates ran: a lane
+      // that ran nothing is not established, whatever this build carries for it.
+      if (!deep.length && ran === "candidates") {
         cause = "not-built-for-lane";
         why = `this build carries no deep slice for the ${lane} lane — the SERP grid and native read are zh-only `
           + `(JX_SLICES, SERP_LANES), so \`full\` cannot be delivered here by any environment. The lane ran as a `
           + `slice-1 candidate lane, which is what it ships as.`;
       } else if (ran === null) {
         cause = "not-established";
-        why = `the deep slice(s) ${deepStates.map((d) => `${d.name}=${d.state ?? "no record"}`).join(", ")} did not state that they ran, `
-          + `and slice 1 for this lane is ${candidatesState ?? "unrecorded"} — what this lane delivered CANNOT be established from `
+        why = `${deep.length ? `the deep slice(s) ${deepStates.map((d) => `${d.name}=${d.state ?? "no record"}`).join(", ")} did not state that they ran, and ` : ""}`
+          + `slice 1 for this lane is ${candidatesState ?? "unrecorded"} — what this lane delivered CANNOT be established from `
           + `this run's own record. Not reported as candidates: that would be a claim no artifact supports.`;
       } else {
         cause = "requested-full-ran-candidates";

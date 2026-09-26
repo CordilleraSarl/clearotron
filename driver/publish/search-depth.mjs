@@ -36,7 +36,7 @@
 //   · a per-country count names every country read   → break: count only countries with a finding, arm 5 red
 //   · court decisions distinguishes four states      → break: collapse none-found into not-checked, arm 6 red
 
-import { parseCaseLawLedger } from "../case-law-ledger.mjs";   // pure, like this module
+import { parseCaseLawLedger, ledgerSeparatesUnsentQueries } from "../case-law-ledger.mjs";   // pure, like this module
 
 /** The closed set a group key may take. The renderer's headings are keyed on these, never on prose. */
 export const CLEARED_GROUPS = Object.freeze(["dead-filing", "different-goods", "other"]);
@@ -190,12 +190,17 @@ export function sweepCounts(commonLawGrid, auditMd = "") {
  *   · the record cites a decision                   → found.
  *   · no citation, and the source answered          → none-found: a query came back with hits, none of them
  *     on point, or a case-law source's own call log shows a call it answered.
- *   · no citation, and nothing shows an answer      → not-checked. The record carries a row per query at
- *     the count the model wrote, and on the six test runs whose source was down (measured 2026-09-25) it
- *     wrote 0 for queries that never reached one — on one of them with no search or fetch tool called. A 0
- *     is not evidence a search ran, and "none found" is the claim that one did. The cost, stated rather
- *     than hidden: an honest pass whose every query returned nothing, through a source whose calls are
- *     not logged, reads as not completed.
+ *   · no citation, and nothing shows an answer      → not-checked. At ledger version 1 the record carries
+ *     a row per query at the count the model wrote, and on the six test runs whose source was down
+ *     (measured 2026-09-25) it wrote 0 for queries that never reached one — on one of them with no search
+ *     or fetch tool called. There a 0 is not evidence a search ran, and "none found" is the claim that one
+ *     did. The cost, stated rather than hidden: an honest version-1 pass whose every query returned
+ *     nothing, through a source whose calls are not logged, reads as not completed.
+ *   · FROM LEDGER VERSION 2 a 0 IS AN ANSWER, because the instruction that version names tells the model
+ *     to write null for a query it could not send and never 0. That is what buys the honest pass its
+ *     "none found" back: the record now distinguishes the two cases the reader could only guess at, and
+ *     the guess was resolved against the run. `null` is still not an answer at any version — it is the
+ *     record saying the query never reached a source, which is the whole point of writing it.
  * Only a run that kept no record — one from before the record existed, or a demo — reads the file's words,
  * because they are all it has; its outage phrasings include "unavailable" for that reason.
  *
@@ -212,7 +217,12 @@ export function courtDecisionsState(caseLawText, { lastAttemptOk = null, ledgerR
     const { ledger } = parseCaseLawLedger(ledgerRaw);
     if (!ledger) return "not-checked";
     if (ledger.citations.length) return "found";
-    if (sourceAnswered || ledger.queries.some((q) => q.results > 0)) return "none-found";
+    // A query with a numeric count was SENT; one at null was not. Below version 2 the model was never
+    // asked to make that distinction, so only a positive count can vouch for a search there.
+    const answered = ledgerSeparatesUnsentQueries(ledger)
+      ? ledger.queries.some((q) => Number.isFinite(q.results))
+      : ledger.queries.some((q) => q.results > 0);
+    if (sourceAnswered || answered) return "none-found";
     return "not-checked";
   }
   if (/source unreachable|could not be reached|CONNECTION_CLOSED|not reachable|quota|unavailable/i.test(t)) return "not-checked";

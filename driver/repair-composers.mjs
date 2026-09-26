@@ -52,7 +52,7 @@ import { basename } from "node:path";
 // These six are already named, exported, and living beside the subject they repair. Moving them into
 // this file would trade locality for nothing: what was missing was never their location, it was that
 // nothing enumerated them, so the guard could not walk them. They are imported and registered.
-import { buildFrameReopenFollowup, buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenRetryMessage } from "./stages.mjs";
+import { buildFrameReopenFollowup, buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenRetryMessage, DECIDE_WAITING_FAMILIES } from "./stages.mjs";
 import { buildReconcileFollowup } from "./recall-reconciliation.mjs";
 import { buildFlushFollowup } from "./digest-queue.mjs";
 
@@ -476,6 +476,22 @@ export const REPAIR_COMPOSERS = [
         `Return ONLY: the band path + the tool's summary line.`,
       ),
     samples: [{ name: "one dictated entry with no band block", tail: "tool", args: { axis: "eu", registerPlan: "register-plan.json", bandPath: "bands/eu.md", entries: [{ qid: "q1", predicate: "identical", term: "NOVA", nice_classes: [9], expected_kind: "exact" }] } }],
+  },
+  // The web search's findings mint register cross-checks after the reading step has decided its plan
+  // (cross-check-wait.mjs), so it is asked once more, in its own session. The second line is the only one
+  // this follow-up adds; the rest is the reading step's own wording.
+  {
+    trigger: "xcheck-decide",
+    stage: "register-unit",
+    key: "register-unit:xcheck-decide",
+    compose: ({ axis, entries }) => lines(
+        `You are RESUMING your own register-unit session (axis "${axis}"). Your unit digest stands — do NOT redo it.`,
+        `The web search's findings named these register questions after your reading. They wait for you like the families in your plan:`,
+        ...entries.map((e) => `- qid "${e.qid}": ${e.predicate} "${e.term}" · nice_classes ${JSON.stringify(e.nice_classes)}${e.from ? ` · from ${e.from}` : ""}`),
+        DECIDE_WAITING_FAMILIES,
+        `Return ONLY: the band path + the tool's summary line.`,
+      ),
+    samples: [{ name: "a cross-check the web search named", tail: "tool", args: { axis: "primary-sweep", entries: [{ qid: "xcheck-owner-lanternwick-studio", predicate: "owner", term: "Lanternwick Studio", nice_classes: ["9"], from: "https://shop.example.com/lanternwick" }] } }],
   },
   {
     trigger: "grid-ledger",

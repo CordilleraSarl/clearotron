@@ -36,7 +36,18 @@
 // "no node imports → tests offline" invariant, exactly as connotation-search.mjs already does.
 import { abbrev } from "./repair-contract.mjs";
 
-export const CASE_LAW_LEDGER_SCHEMA_VERSION = 1;
+// Version 2 is the one whose instruction tells the model to write `null` for a query it could not send,
+// and never 0. At version 1 a 0 could mean either, so a reader may not count one as a search that ran.
+export const CASE_LAW_LEDGER_SCHEMA_VERSION = 2;
+
+// WHAT A RECORD THAT NAMES NO VERSION IS. The oldest, never the newest. Defaulting an unversioned record
+// to whatever this build happens to be at hands it every promise the current instruction makes, which is
+// exactly backwards: the records that name no version are the ones written before the field was asked
+// for, and their zeros are the ambiguous kind. Read low, and a record only gains a promise by claiming it.
+export const CASE_LAW_LEDGER_OLDEST_SCHEMA = 1;
+
+/** Version 2 and up separate "sent and returned nothing" (0) from "never sent" (null). */
+export const ledgerSeparatesUnsentQueries = (ledger) => Number(ledger?.schema_version) >= 2;
 
 /**
  * How far a proceeding got. `read` is the only state that discharges a depth dive, and the distinction
@@ -91,11 +102,16 @@ export function parseCaseLawLedger(raw) {
   return {
     error: null,
     ledger: {
-      schema_version: Number(parsed.schema_version) || CASE_LAW_LEDGER_SCHEMA_VERSION,
+      schema_version: Number(parsed.schema_version) || CASE_LAW_LEDGER_OLDEST_SCHEMA,
       queries: queries.filter((q) => q && typeof q === "object").map((q) => ({
         query: str(q.query),
         jurisdiction: str(q.jurisdiction),
-        results: Number.isFinite(Number(q.results)) ? Number(q.results) : null,
+        // NULL STAYS NULL, and this is load-bearing from version 2 on. `Number(null)` is 0 and
+        // `Number("")` is 0, both finite, so the obvious coercion turns the record's "I could not send
+        // this query" into "I sent it and got nothing" — the very two the version exists to separate,
+        // collapsed by the parser before any reader sees them. Only a value that genuinely is a number
+        // becomes one; everything else is null, which is the record declining to give a count.
+        results: q.results == null || q.results === "" || Number.isNaN(Number(q.results)) ? null : Number(q.results),
       })),
       citations: citations.filter((c) => c && typeof c === "object").map((c) => ({
         proceeding: str(c.proceeding),

@@ -1403,3 +1403,48 @@ test("a status with NO state is still asserted — absence is not evidence of fa
     assert.doesNotMatch(r.saw, /NOT ASSERTED/, "no state is not a scope-out");
   });
 });
+
+// A DECLARED SECOND PATH, and why R15 needs one. The grid's chosen storefronts are written to `menu`
+// when the matter frame decided the grid, and to `platforms` when it did not (web-grid.mjs). A check
+// pointed at either alone false-fails the other, honestly run: at `platforms` it fails a frame that
+// decided a narrower set than the profile's, and at `menu` it fails every undecided frame, which writes
+// no `menu` at all. The fallback is opt-in per assertion, is exactly one path, and names which one
+// answered — a check that quietly reads somewhere else is the silent pass this suite exists to refuse.
+test("a field op falls back to a declared second path, and says which one it read", () => {
+  const a = { path: "_driver/grid-spec.json:menu", op: "count-greater-than", value: 8,
+    orElsePath: "_driver/grid-spec.json:platforms" };
+  const nine = ["a", "b", "c", "d", "e", "f", "g", "h", "web"];
+
+  // The frame decided: `menu` is there and is what answers.
+  withRun({ "_driver/grid-spec.json": { menu: nine, platforms: ["a", "web"] } }, (dir) => {
+    const r = evalAssertion(a, dir);
+    assert.equal(r.ok, true, r.saw);
+    assert.match(r.saw, /read from _driver\/grid-spec\.json:menu/);
+  });
+
+  // The frame did not decide: no `menu`, so `platforms` answers, and the report says so.
+  withRun({ "_driver/grid-spec.json": { platforms: nine } }, (dir) => {
+    const r = evalAssertion(a, dir);
+    assert.equal(r.ok, true, r.saw);
+    assert.match(r.saw, /read from _driver\/grid-spec\.json:platforms/);
+  });
+
+  // THE CONTROL. The fallback must not turn a real failure into a pass: a short list still fails.
+  withRun({ "_driver/grid-spec.json": { platforms: ["a", "web"] } }, (dir) => {
+    assert.equal(evalAssertion(a, dir).ok, false, "a grid of two platforms passed a greater-than-eight check");
+  });
+
+  // Neither path carries a value: a finding, never a pass by omission.
+  withRun({ "_driver/grid-spec.json": { something: 1 } }, (dir) => {
+    const r = evalAssertion(a, dir);
+    assert.equal(r.ok, false);
+    assert.match(r.saw, /neither .*:menu nor .*:platforms carries a value/);
+  });
+
+  // And with no fallback declared, nothing changes: the saw line carries no "read from" at all.
+  withRun({ "_driver/grid-spec.json": { platforms: nine } }, (dir) => {
+    const plain = evalAssertion({ path: "_driver/grid-spec.json:platforms", op: "count-greater-than", value: 8 }, dir);
+    assert.equal(plain.ok, true, plain.saw);
+    assert.doesNotMatch(plain.saw, /read from/);
+  });
+});

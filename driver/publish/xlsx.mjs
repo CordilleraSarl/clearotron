@@ -603,8 +603,10 @@ export async function buildAudit(contract, auditParsed, outPath, mark = '', fm =
   const verdict = contract?.verdict || null;
   const fetchState = contract?.fetchState || {};
   const jurisdiction = contract?.jurisdiction || '';
-  // The parts that failed and still shipped, as the shipped deferral row composes them at delivery.
-  const degradedParts = contract?.degradedParts || [];
+  // The parts that failed and still shipped, as the shipped deferral row composes them at delivery. A part
+  // whose row the report's own coverage already carries, word for word, is that row: printed once.
+  const degradedParts = (contract?.degradedParts || [])
+    .filter((d) => !coverage.some((c) => c?.area === d?.area && c?.note === d?.note));
 
   // context notes (famous-mark neighbours) ride the Findings tab as explicitly-not-rated rows, so the book
   // holds exactly four tabs and the "never dropped" promise still holds.

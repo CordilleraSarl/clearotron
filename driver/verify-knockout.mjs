@@ -265,17 +265,33 @@ const materialIdxMax = (ladder) => ladder.length - 3;   // inclusive index bound
 
 /** The place that is the whole web. Every other place is a site's bare host, which covers its subdomains. */
 export const WEB_PLACE = "web";
-/** How many of a batch's places must be the whole web: the one line that decides it (ruling pending on 932). */
+/**
+ * How many of a name's places must be the whole web: the one line that decides it. Ruling 543 — the whole
+ * web is always one of the places — so this is 1 and the check below is what holds it per name.
+ */
 export const WEB_PLACES_REQUIRED = 1;
 const BARE_HOST = /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z](?:[a-z0-9-]{0,61}[a-z0-9])?$/;
-const PLACES_REFUSAL = `batch.places is required: 2 to 4 places, one of them "${WEB_PLACE}" and each other a bare host`;
 
-/** The refusal for a batch's places, or null when they are the list the program can search. PURE. */
-export function placesDefect(places) {
-  if (!Array.isArray(places) || places.length < 2 || places.length > 4) return PLACES_REFUSAL;
-  if (!places.every((x) => x === WEB_PLACE || (typeof x === "string" && x.length <= 253 && BARE_HOST.test(x)))) return PLACES_REFUSAL;
-  if (new Set(places).size !== places.length) return PLACES_REFUSAL;
-  if (places.filter((x) => x === WEB_PLACE).length !== WEB_PLACES_REQUIRED) return PLACES_REFUSAL;
+/**
+ * The refusal for the places a name is searched on, or null. PURE. `name` is the mark, or null for the
+ * batch-level list an archived plan carries.
+ *
+ * PER NAME, AND NO UPPER CAP (ruling 570, 2026-09-26): the frame chooses each name's places, and a batch
+ * of four names may want four different lists. It was 2 to 4 places for the whole batch, which made one
+ * name's storefront the whole batch's, and capped the frame's judgment at a number nobody had ruled.
+ *
+ * THE FLOOR AND THE WEB STAY. Two is the floor because one place is not a screen, and exactly one of them
+ * is the whole web because ruling 543 says the whole web is always one of the places — moving the list
+ * per name is what makes that check per name, and a name whose list lacked the web would be 543 reversed
+ * with nobody ruling it.
+ */
+export function placesDefect(name, places) {
+  const subject = name ? `mark "${name}": places` : "batch.places";
+  const refusal = `${subject} is required: 2 or more places, one of them "${WEB_PLACE}" and each other a bare host`;
+  if (!Array.isArray(places) || places.length < 2) return refusal;
+  if (!places.every((x) => x === WEB_PLACE || (typeof x === "string" && x.length <= 253 && BARE_HOST.test(x)))) return refusal;
+  if (new Set(places).size !== places.length) return refusal;
+  if (places.filter((x) => x === WEB_PLACE).length !== WEB_PLACES_REQUIRED) return refusal;
   return null;
 }
 
@@ -292,6 +308,23 @@ export function spellingsDefect(name, spellings) {
   return null;
 }
 
+/**
+ * The refusal for a mark's kind of use, or null. PURE. The frame names it per name, in its own judgment,
+ * and every search of the name adds it. Nothing here lists the kinds, and NOTHING HERE BOUNDS ITS LENGTH:
+ * the manual ASKS for one to three words, and a longer answer is accepted.
+ *
+ * It was built refusing anything over three words or forty characters, and the owner softened that
+ * (ruling 583, 2026-09-26): a longer kind of use is accepted and never costs a retry. The bound was mine,
+ * not his, and its cost was the reason — a refusal here sends the frame a repair turn, and a run that
+ * repaired anything has failed the round's own bar. The batch's `inUseAs` line invites exactly the shape
+ * the bound refused ("a character or a place in a game"), so it would have fired on a frame doing as it
+ * was asked. A long answer makes the cells' queries longer, which makes the screen weaker, not wrong.
+ */
+export function useKindDefect(name, useKind) {
+  const refusal = `mark "${name}": useKind is required: one to three words, the kind of use this name is searched for (task 2c)`;
+  return typeof useKind === "string" && useKind.trim() ? null : refusal;
+}
+
 // ── Stage validators (runStage corrective-ladder shape) ──────────────────────────────────────────────
 export const validators = {
   // knockout-plan.json — strict: closed keys, one row per instructed mark (name parity vs the
@@ -306,11 +339,15 @@ export const validators = {
     // batch is searched on from them, so a plan without them has chosen its places on nothing it stated.
     if (typeof p.batch.inUseAs !== "string" || !p.batch.inUseAs.trim())
       return { ok: false, reason: "batch.inUseAs (string) is required: the kinds of use off the register, for this client's field" };
-    // Where every spelling is searched. Without them the web search has no cell to run (stages-knockout.mjs).
-    const placesRefused = placesDefect(p.batch.places);
-    if (placesRefused) return { ok: false, reason: placesRefused };
+    // THE BATCH'S LIST IS NO LONGER REQUIRED (ruling 570): the places are per name below. A plan frozen
+    // before that carries one here, and it is still checked when present, so an archived plan reads back
+    // under the rule it was written to rather than passing unexamined.
+    if (p.batch.places !== undefined) {
+      const batchPlacesRefused = placesDefect(null, p.batch.places);
+      if (batchPlacesRefused) return { ok: false, reason: batchPlacesRefused };
+    }
     if (!Array.isArray(p.marks) || !p.marks.length) return { ok: false, reason: "marks[] is required" };
-    const MARK_KEYS = ["ref", "name", "classes", "beltAndBraces", "classesPlain", "contextFraming", "spellings", "priorKnowledge", "priority"];
+    const MARK_KEYS = ["ref", "name", "classes", "beltAndBraces", "classesPlain", "contextFraming", "useKind", "places", "spellings", "priorKnowledge", "priority"];
     for (const m of p.marks) {
       for (const k of Object.keys(m)) if (!MARK_KEYS.includes(k)) return { ok: false, reason: `plan mark key "${k}" is not in the closed contract` };
       if (typeof m.name !== "string" || !m.name.trim()) return { ok: false, reason: "every plan mark needs a verbatim name" };
@@ -318,6 +355,15 @@ export const validators = {
       const spellingsRefused = spellingsDefect(m.name, m.spellings);
       if (spellingsRefused) return { ok: false, reason: spellingsRefused };
       if (typeof m.contextFraming !== "string" || !m.contextFraming.trim()) return { ok: false, reason: `mark "${m.name}": contextFraming is required (the rating hangs off it)` };
+      const useKindRefused = useKindDefect(m.name, m.useKind);
+      if (useKindRefused) return { ok: false, reason: useKindRefused };
+      // WHERE THIS NAME IS SEARCHED (ruling 570). Required per name on a fresh plan; a plan frozen before
+      // the field existed carries the batch's list instead and `knockoutGridSpec` falls back to it, so an
+      // archived plan still runs — the same shape `useKind` takes.
+      if (m.places !== undefined || p.batch.places === undefined) {
+        const placesRefused = placesDefect(m.name, m.places);
+        if (placesRefused) return { ok: false, reason: placesRefused };
+      }
       for (const ck of ["classes", "beltAndBraces"]) {
         if (m[ck] != null && (!Array.isArray(m[ck]) || !m[ck].every((n) => Number.isInteger(n) && n >= 1 && n <= 45)))
           return { ok: false, reason: `mark "${m.name}": ${ck} must be Nice-class integers (1–45)` };
@@ -541,6 +587,26 @@ export const validators = {
             const ri = checkRegisterReadInputs(method, fw, row);
             if (ri.reason) return { ok: false, reason: `mark "${m.name}": ${ri.reason}` };
           }
+        }
+      }
+      // — WHAT THE SEARCH RETURNED AND THE RATING DID NOT CARRY, each with its ground (ruled 2026-09-26).
+      // Optional, exactly as `registerReads` above is: nothing found leaves the record without a reason,
+      // and a row invented to fill the list would be the same defect with the rater's name on it. Unlike
+      // `registerReads` the url is NOT joined against the mark's ledger — a refusal here costs a repair
+      // turn, and nothing is gained by fabricating a reason for a page nobody will look up.
+      if (m.setAside !== undefined && m.setAside !== null) {
+        if (!Array.isArray(m.setAside))
+          return { ok: false, reason: `mark "${m.name}": setAside must be an ARRAY of { url, ground } rows, or omitted entirely` };
+        for (const row of m.setAside) {
+          const url = String(row?.url ?? "").trim();
+          const ground = String(row?.ground ?? "").trim();
+          if (!url) return { ok: false, reason: `mark "${m.name}": a setAside row has no url — name the result you are setting aside by its own address, verbatim from the payload you were given` };
+          // THE GROUND IS NOT LENGTH-BOUNDED, and `useKind` in the frame beside it is. The difference is
+          // where each one goes: a kind of use is appended to every cell's QUERY, so three extra words are
+          // searched in every cell and bury the spelling, while a ground is prose a reader reads, in the
+          // same class as `registerReads[].read` and a finding's `basis` — both unbounded, for the same
+          // reason. Capping it would buy nothing and would teach the rater to write half a reason.
+          if (!ground) return { ok: false, reason: `mark "${m.name}": setAside row "${url}" has an empty ground. Omit the row rather than sending an empty one: a set-aside with no reason is not a decision` };
         }
       }
       for (const f of (Array.isArray(m.findings) ? m.findings : [])) {

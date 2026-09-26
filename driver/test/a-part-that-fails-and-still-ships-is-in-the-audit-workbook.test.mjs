@@ -16,7 +16,7 @@ import { degradedParts, degradedPartRows, writeDegradedParts, readDegradedPartRo
 import { deferralCoverageRow } from "../deferral-row.mjs";
 import { buildAudit } from "../publish/xlsx.mjs";
 import { pinEnv, envFrom } from "../../shared/env-aliases.mjs";
-import { driverDir } from "../../shared/driver-dir.mjs";
+import { driverDir, driverRel } from "../../shared/driver-dir.mjs";
 import { firstTimeRows, firstTimeLines } from "../../scripts/e2e-first-time.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -36,7 +36,11 @@ function runDir(t, patch = {}) {
     "audit.md": "# Audit\n\n## Negative results\n",
     ...patch,
   };
-  for (const [name, body] of Object.entries(files)) if (body !== null) writeFileSync(join(dir, name), body);
+  // A _driver name goes through driverRel, which writes a stage label's colon as Windows can hold
+  // it, as the product does. Written by hand, NTFS takes report-card:3.jsonl as a hidden stream of
+  // a file called report-card, and the reader's directory walk never sees the card at all.
+  for (const [name, body] of Object.entries(files))
+    if (body !== null) writeFileSync(join(dir, name.startsWith("_driver/") ? driverRel(name.slice("_driver/".length)) : name), body);
   return dir;
 }
 
@@ -104,7 +108,8 @@ test("the register's own steps and a finding's written card are degraded parts w
     { event: "owner-screen-failed", fail: "boom" }, { event: "form-neighbourhood-skipped", reason: "threw" }]) }));
   assert.deepEqual(register.map((p) => [p.part, p.name]), [["register", "Register"]]);
   assert.match(register[0].cause, /the form floor: threw; the owner screen: boom|the owner screen: boom/);
-  const cards = degradedParts(runDir(t, { "_driver/report-card:3.jsonl": jl([attempt(1, false, "timeout")]), "_driver/report-card:4.jsonl": jl([attempt(1, true)]) }));
+  const cards = degradedParts(runDir(t, { [driverRel("report-card:3.jsonl")]: jl([attempt(1, false, "timeout")]),
+    [driverRel("report-card:4.jsonl")]: jl([attempt(1, true)]) }));
   assert.deepEqual(cards.map((p) => [p.part, p.name, p.cause]), [["finding-cards", "Findings", "card stages ended failed: report-card:3"]]);
 });
 

@@ -2704,15 +2704,19 @@ export function findUnexecutedCleanClaims(claimedRows, skeleton) {
  * THE OPEN CROWD BLOCKS, per axis — the discriminated `incomplete` calculation (copper-lattice
  * 2026-07-08), and the whole of what the coverage form's block rows are built from.
  *
- * An `incomplete` axis is USUALLY sanctioned (a plan-dictated count descriptor, a single saturated
- * slice — crowd = dilution for judgment, the settled doctrine), so a block is OPEN only on the
- * unverified shape: a plan-joined ENUMERATE entry whose multi-term OR-stack crowd lacks full per-term
- * accounting — some term neither verified-zero nor individually enumerated nor itself a crowd
- * (`term_counts`, the count-first truth from doEnumerate) — or, after the class split, a class leg whose
- * disposition is `unenumerated` / `error`. That is exactly the FROSTBERRY shape (a populated tractable
- * term nobody enumerated) and exactly not the shape (a 28k crowd, disposition "crowd", accounted).
- * Never open: count-kind entries, single-term crowds with no class truth, error:true blocks (they join
- * MISSING → the unexecuted gate), or qid-less judgment descriptors (the taint lane owns those).
+ * WHAT WAS COUNTED AND NOT READ IS OPEN, whatever its shape (ruled 2026-09-26: it is set aside with its
+ * reason and its count, and never marked clean). That is every plan-joined ENUMERATE block that came
+ * back `incomplete`: a single question over the ceiling; a multi-term OR-stack with a term that was not
+ * verified-zero or enumerated in full (`term_counts`, the count-first truth); a class split with such a
+ * leg (`class_counts`). A term or leg that is itself a crowd was counted and not read, like a budget-cut
+ * or failed one. It used to count as accounted ("crowd = dilution for judgment"), and a single crowded
+ * question was never open, so a clean claim over it passed. Measured 2026-09-25: a worldwide
+ * identical-mark question was narrowed to seven offices, every other office was recorded clean, and
+ * three of the reference answer's register marks were never read.
+ * Never open: count-kind entries (a plan-dictated count is a measurement, not a search), error:true
+ * blocks (they join MISSING → the unexecuted gate), or qid-less judgment descriptors (the taint lane owns
+ * those). An archived run that claimed clean over such a crowd now fails the prose gate too: one
+ * calculation, so both eras read the rule the same way.
  *
  * — THIS IS C2..C7, LIFTED OUT WHOLE AND SHARED BY BOTH ERAS. The conditions below are
  * byte-for-byte the ones findUnverifiedIncompleteCleanClaims applied; that function still exists,
@@ -2736,7 +2740,8 @@ export function findUnexecutedCleanClaims(claimedRows, skeleton) {
  *   no open block are ABSENT from the object, never present-and-empty. PURE.
  */
 export function openBlocksByAxis(skeleton, bandBlocksByAxis, plan) {
-  const RESOLVED = new Set(["verified-zero", "enumerated", "crowd"]);
+  // READ in full: nothing else is. A leg that is itself a crowd was counted, not read.
+  const READ = new Set(["verified-zero", "enumerated"]);
   const entriesByQid = new Map((plan?.entries ?? []).map((e) => [e.qid, e]));
   const out = {};
   for (const s of (skeleton ?? [])) {
@@ -2750,27 +2755,16 @@ export function openBlocksByAxis(skeleton, bandBlocksByAxis, plan) {
       const e = typeof b.qid === "string" ? entriesByQid.get(b.qid) : null;
       if (!e) continue;                                     // qid-less judgment descriptors: the taint lane owns those
       if (e.expected_kind === "count") continue;            // plan-dictated count crowd — sanctioned by doctrine
-      // ── the per-CLASS sibling (F2 owner lane, 2026-07-29) — same replay purity as term_counts:
-      // a pre-class-split band CANNOT carry class_counts, so absent means legacy, never unverified.
-      // When the classSplitRescue ran, a class leg whose disposition is `unenumerated` (populated,
-      // tractable, budget-cut — nobody enumerated it) or `error` is the FROSTBERRY shape one axis
-      // over: a confirmed-clean claim swallowing a populated leg the descriptor itself says stayed
-      // open. Fires on single-term entries too (the owner×formative slice is single-term + owner
-      // scope) — the single-term carve-out below is about honest SATURATED slices, and a rescued
-      // block carrying per-class truth is exactly not that.
+      // The per-class and per-term truth NAMES the legs left unread on the block's row; the block is open
+      // either way. A band from before the class split or the count-first rescue carries neither map, and
+      // its row then names no leg: the question as a whole was counted and not read.
       const cc = b.class_counts && typeof b.class_counts === "object" && !Array.isArray(b.class_counts) ? b.class_counts : null;
       const unaccountedClasses = cc
-        ? Object.keys(cc).filter((c) => !RESOLVED.has(String(cc[c]?.disposition ?? ""))) : [];
-      // count-first-gated (replay purity): a pre-count-first band CANNOT carry term_counts — absent
-      // means legacy, not unverified (the 2026-07-10 corpus audit: marble-spire/copper-spire would
-      // flip otherwise). Post-count-first every multi-term crowd carries it (the rescue attaches it
-      // on the crowd path), so PARTIAL accounting — a term missing from the map, or a budget-cut
-      // `unenumerated` / `error` disposition — is the live unverified shape this gate exists for.
+        ? Object.keys(cc).filter((c) => !READ.has(String(cc[c]?.disposition ?? ""))) : [];
       const terms = Array.isArray(e.terms) ? e.terms : null;
       const tc = terms && terms.length > 1
         && b.term_counts && typeof b.term_counts === "object" && !Array.isArray(b.term_counts) ? b.term_counts : null;
-      const unaccounted = tc ? terms.filter((t) => !RESOLVED.has(String(tc?.[t]?.disposition ?? ""))) : [];
-      if (!unaccounted.length && !unaccountedClasses.length) continue;
+      const unaccounted = tc ? terms.filter((t) => !READ.has(String(tc?.[t]?.disposition ?? ""))) : [];
       // `total_hits` rides along because it was one of the TWO things that could DISCLOSE this block
       // under the deleted prose join (the qid, or this number standalone). Both are now written INTO the
       // form's row by the driver, so the equivalence the join had to test for is structural — see

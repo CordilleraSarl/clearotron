@@ -57,7 +57,8 @@ test("a demo is refused over an install's directory, so its secret never lands w
   const home = mkdtempSync(join(tmpdir(), "demo-over-install-"));
   const start = (base, extra = {}) => spawnSync(process.execPath, [join(ROOT, "bin", "start.mjs"), "--demo", "--base", base], {
     encoding: "utf8", cwd: ROOT, timeout: 60000,
-    env: handRunEnv({ HOME: home, USERPROFILE: home, ...extra }, { PATH: process.env.PATH }),
+    // TMPDIR is the run's own, so a demo that got past the refusal copies its samples where the runner removes them.
+    env: handRunEnv({ HOME: home, USERPROFILE: home, ...extra }, { PATH: process.env.PATH, TMPDIR: tmpdir() }),
   });
   try {
     // The directory an install is set up in by default.
@@ -145,7 +146,7 @@ test("a refusal never tells the reader to drop a flag they did not give", () => 
     writeFileSync(join(quiet, "grants.json"), JSON.stringify({ tenants: {}, people: {} }));
     const r = spawnSync(process.execPath, [join(ROOT, "bin", "start.mjs"), "--demo", "--base", quiet], {
       encoding: "utf8", cwd: ROOT, timeout: 60000,
-      env: handRunEnv({ HOME: home, USERPROFILE: home, CLEAROTRON_NO_ENV_FILE: "1" }, { PATH: process.env.PATH }),
+      env: handRunEnv({ HOME: home, USERPROFILE: home, CLEAROTRON_NO_ENV_FILE: "1" }, { PATH: process.env.PATH, TMPDIR: tmpdir() }),
     });
     const out = `${r.stdout}${r.stderr}`;
     assert.match(out, /--demo cannot run in/, "a base the reader NAMED that looks like an install is still refused");

@@ -504,6 +504,32 @@ test("findSimilarListingSignals: matrix similar-listing rows + owner-carrying fi
   assert.deepEqual(findSimilarListingSignals(""), [], "empty/absent prose ⇒ no signals");
 });
 
+test("findSimilarListingSignals: an of-record label in a table header is never taken for an owner", async () => {
+  // The header lists the of-record fields, so the owner pattern matched its first label and captured the
+  // next one: the register was then asked for an owner named "publisherofrecord".
+  const { findSimilarListingSignals } = await import("../common-law-receipts.mjs");
+  const block = (lines) => ["## Findings", "", "### LANTERNWICK store listing", "", ...lines, ""].join("\n");
+  const header = block([
+    "| Store | developer_of_record | publisher_of_record | URL |", "|---|---|---|---|",
+    "| shop.example.com | Lanternwick Studio | Lanternwick Studio | https://shop.example.com/lanternwick |",
+  ]);
+  assert.deepEqual(findSimilarListingSignals(header).map((x) => x.owner), [], "a label was minted as an owner");
+  // Nor is any other column's label: a header row names columns, whatever follows the of-record one.
+  for (const head of ["| Store | Owner of record | URL |", "| Developer of record | Store |"]) {
+    const other = block([head, "|---|---|---|", "| shop.example.com | Lanternwick Studio | https://shop.example.com/lanternwick |"]);
+    assert.deepEqual(findSimilarListingSignals(other).map((x) => x.owner), [], `a column label was minted as an owner: ${head}`);
+  }
+  // A rule under an owner's line is not a table: the owner stands.
+  assert.deepEqual(findSimilarListingSignals(block(["**Developer of record:** Lanternwick Studio Ltd", "---"])).map((x) => x.owner),
+    ["Lanternwick Studio Ltd"], "a horizontal rule was read as a table's separator");
+  // A two-column table of fields still names the owner on its of-record row, below the header.
+  const fields = block(["| Field | Value |", "|---|---|", "| Developer of record | Lanternwick Studio Ltd |"]);
+  assert.deepEqual(findSimilarListingSignals(fields).map((x) => x.owner), ["Lanternwick Studio Ltd"]);
+  // The control: a named owner on an of-record line still signals, whatever its spelling of the label.
+  for (const line of ["**Publisher of record:** Lanternwick Studio Ltd", "- publisher_of_record: Lanternwick Studio Ltd"])
+    assert.deepEqual(findSimilarListingSignals(block([line])).map((x) => x.owner), ["Lanternwick Studio Ltd"], line);
+});
+
 // ── review fix (2026-07-12): the per-query connotation identity join + channel-sweep term routing ───────
 test("findDroppedConnotationQueries: a quarantined half's dictated meaning queries surface as DROPPED (count-based gate blindness)", async () => {
   const { findDroppedConnotationQueries } = await import("../common-law-receipts.mjs");

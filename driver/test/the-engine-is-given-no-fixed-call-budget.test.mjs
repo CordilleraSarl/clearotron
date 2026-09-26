@@ -21,7 +21,7 @@ test("the web and register manuals set no call budget", () => {
     "clearance-register/SKILL.md": skill("clearance-register/SKILL.md"),
     "clearance-register/digest.md": skill("clearance-register/digest.md"),
   };
-  assert.ok(manuals["clearance-common-law/SKILL.md"].includes("Famous-mark Perplexity calls needed")
+  assert.ok(manuals["clearance-common-law/SKILL.md"].includes("Step 3 — Famous-mark check")
     && manuals["clearance-register/SKILL.md"].includes("| Worker | register_enumerate calls"), "guard: the manuals were read");
   for (const [name, text] of Object.entries(manuals)) {
     for (const budget of [/Budget: /, /\d+-per-mark cap/, /workflow cap/, /up to \d+ follow-up calls/, /Phoneme at \d+/, /image at \d+/, /up to \d+ \((?:phonetic recipes|device-led)\)/])

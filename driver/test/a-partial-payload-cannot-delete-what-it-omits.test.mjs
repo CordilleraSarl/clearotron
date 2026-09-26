@@ -276,6 +276,7 @@ const PLANTED = Object.freeze({
           ref: "m1", name: "NOVAPULSE", classes: [32], beltAndBraces: [33],
           classesPlain: "soft drinks and mineral waters, with beers and spirits swept as a precaution",
           contextFraming: "a drink name for the core product line",
+          useKind: "drink",
           spellings: ["NOVAPULSE", "NOVA PULSE"],
           priorKnowledge: "The requester believes it is coined.",
           priority: 1,
@@ -284,6 +285,9 @@ const PLANTED = Object.freeze({
           ref: "m2", name: "VELTRIN", classes: [32], beltAndBraces: [33],
           classesPlain: "soft drinks and mineral waters, with beers and spirits swept as a precaution",
           contextFraming: "a sub-brand for a limited edition",
+          // DIFFERENT FROM ITS SIBLING'S, so the drop-each-key arm reads back this mark's own word and
+          // not one a merge could have copied across from the other row.
+          useKind: "cocktail",
           spellings: ["VELTRIN", "VELTRINN"],
           priorKnowledge: "",
           priority: 2,

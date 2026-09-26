@@ -403,7 +403,7 @@ Open `studio/clearance-search/<slug>/<date>/variant-manifest.md`. Parse:
 - Per-mark variant tables — these become the search terms in the Perplexity prompt
 - Watchlists — used for competitor intelligence framing
 - Diligence notes — informs how aggressive to be on saturated common words
-- `Famous-mark Perplexity calls needed` section — triggers Step 3
+- The Elements table's `Famous-mark check` column — the elements Step 3 judges
 
 The variants table is the source of truth for what to search. The skill does NOT generate its own variants — manifest is authoritative.
 
@@ -419,7 +419,7 @@ The variants table is the source of truth for what to search. The skill does NOT
 > re-emitting ~100 cells through your turn output — is exactly what truncated/dropped cells before), and
 > you do **NOT** re-emit the grid JSON. The tool returns the candidate hits that need judgment.
 > **This mode changes ONLY the Step-2 grid mechanics — nothing else about common-law.** You STILL run
-> **Step 3 (famous-mark follow-ups)** and the **extras** (competitor-intel / PR-risk / crowded-field)
+> **Step 3 (the famous-mark check)** and the **extras** (competitor-intel / PR-risk / crowded-field)
 > exactly as normal, then judge all candidates into the taxonomy (Step 4) and write the COMPLETE findings
 > file with every section (Findings, famous-mark, extras, Negative results matrix, Coverage ledger, Audit
 > trail). Skipping Step 3 or the extras leaves the deliverable missing a core search layer and the
@@ -454,15 +454,13 @@ validates the grid by exact join on this file (machine receipts) — the markdow
 matrix remains your judged, human-readable view, but it is not what the gate counts.
 *(In deterministic grid mode the tool already wrote this file — do not write it.)*
 
-### Step 3 — Famous-mark follow-ups (1 per flagged element)
+### Step 3 — Famous-mark check (1 per flagged element)
 
-If the manifest's `Famous-mark Perplexity calls needed` section lists any elements, fire a lightweight fast query per element using the famous-mark template in [perplexity-prompts.md](perplexity-prompts.md).
-
-If multiple elements need famous-mark checks, combine into one query: "Is X a brand name, band name, sports team...? Is Y? Is Z?"
+The manifest's Elements table marks under `Famous-mark check` each element that may also be a well-known brand, band, celebrity, sports team, entertainment property or cultural icon. The grid searched each of them on the general web, so ask no separate question. For each flagged element whose general-web cell your grid ran, judge from its results whether it is a famous mark and whether its fame reaches the client's goods, and record that judgment in the famous-mark section with the results it rests on.
 
 ### Step 4 — "What did I miss?" checklist + targeted follow-ups
 
-After the grid call (and any famous-mark calls), run the gate:
+After the grid call, run the gate:
 
 1. Did I search every individual element of the mark independently (not just as a compound)?
 2. Did I check whether any element is a famous brand in entertainment (music, film, gaming)?
@@ -532,7 +530,7 @@ Assemble `studio/clearance-search/<slug>/<date>/common-law-findings.md` per the 
 - [ ] **`common-law-grid.json` exists** — deterministic mode: the TOOL wrote it (you passed `grid_spec_path`, you did NOT save it). Legacy mode (no `grid_spec_path`): you saved the grid stdout JSON VERBATIM (single object, or JSON array per batch in order). Either way the driver's machine-receipts join validates THIS file
 - [ ] Negative results matrix has one receipt-carrying row per grid cell
 - [ ] Every `perplexity_research` call passed an explicit `depth` (routing table in perplexity-prompts.md)
-- [ ] Famous-mark calls executed for every manifest-flagged element (or "None" documented)
+- [ ] Famous-mark check judged for every flagged element from its general-web results (or "None" documented)
 - [ ] Post-search 5-question checklist run; any "no/unsure" gaps closed via follow-up calls
 - [ ] Every DICTATED platform appears in the audit trail (the list from your task message's PLATFORMS block)
 - [ ] Field-scoped general search for collaborated / out-of-field goods logged (when the matter goes outside the customer's core field)

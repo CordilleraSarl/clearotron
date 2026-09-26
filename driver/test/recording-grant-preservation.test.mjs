@@ -215,7 +215,7 @@ const PINNED = Object.freeze({
     allowedTools: "Read mcp__perplexity__perplexity_research"
       + " mcp__band__band_lookup mcp__band__band_record mcp__band__band_shape"
       + " mcp__declination__record_declination"
-      + " mcp__recording-synthesis__record_synthesis",
+      + " mcp__recording-synthesis__record_synthesis mcp__recording-synthesis__search_run_artifacts",
     mcpConfig: `{"mcpServers":{${local("perplexity", "perplexity-server.mjs")},${local("band", "band-server.mjs")},${local("declination", "declination-server.mjs")},${local("recording-synthesis", "recording-server.mjs")}}}`,
   },
   // — A ROW THAT DID NOT EXIST UNTIL THE CHANGE THAT NEEDED IT. narrative-refutation is the
@@ -238,7 +238,7 @@ const PINNED = Object.freeze({
     groups: ["perplexity", "band", "recording-narrative-refutation"],
     allowedTools: "Read mcp__perplexity__perplexity_research"
       + " mcp__band__band_lookup mcp__band__band_record mcp__band__band_shape"
-      + " mcp__recording-narrative-refutation__record_narrative_refutation",
+      + " mcp__recording-narrative-refutation__record_narrative_refutation mcp__recording-narrative-refutation__search_run_artifacts",
     mcpConfig: `{"mcpServers":{${local("perplexity", "perplexity-server.mjs")},${local("band", "band-server.mjs")},`
       + `${local("recording-narrative-refutation", "recording-server.mjs")}}}`,
   },

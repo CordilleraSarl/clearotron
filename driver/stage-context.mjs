@@ -160,6 +160,11 @@ export const TOOL_GROUP_EDGES = {
   // The arm that keeps this from having a SEVENTH occurrence is in `experiment-context.test.mjs`: it
   // walks the servers for driver-written reads and asserts each is declared, rather than listing these
   // two. A list is what produced this comment.
+  // The research server sends every question on the tier the run's frozen policy pins. A sandbox without
+  // the policy asks on the question's own depth instead, so the arm would measure a different tier.
+  perplexity: (P) => [
+    { path: driverDir(P.runDir, "search-policy.json"), why: "perplexity_research sends every question on the tier the run's frozen policy pins (web.questionPreset); without it a question goes out on its own depth" },
+  ],
   declination: (P) => [
     { path: driverDir(P.runDir, "declination-spec.json"), why: "record_declination resolves every row_index against this spec; without it the tool refuses the call and the seat cannot decline at all" },
   ],

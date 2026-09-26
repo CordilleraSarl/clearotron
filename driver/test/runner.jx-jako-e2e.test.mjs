@@ -155,27 +155,26 @@ test("per-lane kill switch: CLEAROTRON_NATIVE_LANGUAGE_KO=0 excludes ko at the f
     const plan = JSON.parse(readFileSync(driverDir(rd, "register-plan.json"), "utf8"));
     assert.ok(plan.entries.every((e) => !e.qid.startsWith("jx-ko-")), "no ko entries in the plan");
 
-    // — the lane-general coverage row, END TO END on a run that reached JP and KR. Neither lane
-    // searched anything here: ko was killed by the env switch, and ja's fold DEGRADED to zero accepted
-    // candidates (this run's mark has no fixture, which is why `accepted` is empty above). Two
-    // different causes, one fact — nothing was searched in either script — so both rows are owed.
+    // — THE ORDERED INVESTIGATION THAT RAN NO LANE, END TO END on a run that reached JP and KR. Neither
+    // lane searched anything here: ko was killed by the env switch, and ja's fold DEGRADED to zero
+    // accepted candidates (this run's mark has no fixture, which is why `accepted` is empty above). Two
+    // causes, one fact: nothing was searched in either script.
     //
-    // Before this run disclosed NOTHING about Japanese or Korean script. Silence there is
-    // indistinguishable from "there was nothing to search", which is the defect is about.
-    // Note what the degraded ja lane proves: the predicate is the fold's ACCEPTED candidates, not the
-    // frozen lane decision. A lane that was nominally on and folded nothing still owes its row.
+    // This run ORDERED the investigation (`nativeLanguage: true`), so the rows that used to be owed here —
+    // one per script, each saying where the investigation can be bought — offered the client what they had
+    // already bought. Ruled 2026-09-25: the failure reads the audit's own line for the part, and no offer
+    // appears. A search that did not order it still gets the rows (cn-scope-honesty.test.mjs).
     //
     // This is a MOCK scenario on fixtures. No scheduled E2E scenario instructs JP or KR, so nothing
     // here is evidence that either lane has run on a real matter.
     const cov = JSON.parse(readFileSync(join(rd, "findings.json"), "utf8")).coverage ?? [];
     const areas = cov.map((c) => String(c?.area ?? ""));
-    for (const script of ["Japanese", "Korean"]) {
-      assert.ok(areas.some((a) => new RegExp(`${script}-script register equivalents`).test(a)),
-        `${script}-script row owed — that lane accepted no candidates. areas: ${areas.join(" | ")}`);
-    }
-    assert.ok(!areas.some((a) => /Chinese-script register equivalents/.test(a)), "no CN-family territory in scope");
-    assert.ok(cov.filter((c) => /(Japanese|Korean)-script register equivalents/.test(String(c?.area ?? "")))
-      .every((c) => c.state === "coverage-limited"), "a disclosed limit, never the clamping `deferred`");
+    assert.ok(!areas.some((a) => /(Japanese|Korean|Chinese)-script register equivalents/.test(a)),
+      `the ordered investigation was offered back to the client. areas: ${areas.join(" | ")}`);
+    const failed = cov.filter((c) => c?.area === "Follow-up / Local-language investigation");
+    assert.equal(failed.length, 1, `the audit's row for the part is owed once. areas: ${areas.join(" | ")}`);
+    assert.equal(failed[0].state, "open");
+    assert.match(failed[0].note, /could not be completed this run/);
   } finally {
     delete process.env.CLEAROTRON_NATIVE_LANGUAGE_KO;
   }
