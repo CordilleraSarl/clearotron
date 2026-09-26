@@ -139,6 +139,17 @@ const KO_WEB_ROW = PRODUCT_POLICIES["knockout-search"].web;
 export const KNOCKOUT_WEB = Object.freeze({ preset: "pro-search", reasoning: Object.freeze({ effort: "low" }),
   resultsPerCell: KO_WEB_ROW.resultsPerCell, questionPreset: KO_WEB_ROW.questionPreset });
 
+/**
+ * The minutes a knockout is meant to come in under — the owner's bar, named in ruling 570 (2026-09-26).
+ *
+ * IT IS RECORDED AND DECIDES NOTHING. Nothing reads it to park a mark, trim a grid, skip a place or end a
+ * sweep: the sweep writes its cells and its wall minutes beside this number so a run can be read against
+ * the bar afterwards, and that is the whole of its job. A number that decided anything here would be the
+ * kind of fixed stop the search design removes, and the frame's judgment about places (task 2d) is
+ * deliberately not bounded by it.
+ */
+export const KNOCKOUT_MINUTES_BAR = 10;
+
 /** The territories the request ordered, as the job carries them; empty for a worldwide screen. PURE. */
 export const orderedTerritories = (job) =>
   (Array.isArray(job?.jurisdictions) ? job.jurisdictions.map((s) => String(s).trim()).filter(Boolean) : []);
@@ -155,9 +166,14 @@ export const orderedTerritories = (job) =>
  */
 export function knockoutGridSpec(markRow, batch, { outputPath }) {
   const use = typeof markRow?.useKind === "string" ? markRow.useKind.trim() : "";
+  // THIS NAME'S OWN PLACES (ruling 570), falling back to the batch's for a plan frozen before the field
+  // existed. The fallback is the whole of the back-compatibility: an archived plan carries one list for
+  // the batch and every mark reads it, exactly as it did when it ran.
+  const places = Array.isArray(markRow?.places) && markRow.places.length ? markRow.places
+    : Array.isArray(batch?.places) ? batch.places : [];
   return {
     terms: [...(Array.isArray(markRow?.spellings) ? markRow.spellings : [])],
-    platforms: [...(Array.isArray(batch?.places) ? batch.places : [])],
+    platforms: [...places],
     ...(use ? { use } : {}),
     output_path: outputPath,
     results_per_cell: KNOCKOUT_WEB.resultsPerCell,
@@ -247,8 +263,8 @@ export const KO_STAGES = {
       // second chance the Write tool used to give.
       `HAND THE FRAME BACK BY CALLING \`record_knockout_frame\`. THERE ARE NO FILES FOR YOU TO WRITE and this dispatch names none — the driver writes both the plan and the scope note from what you send, and nothing you write by hand is read.`,
       `Send \`scope_note\`: the 2–3 sentence scope note, FINISHED — what the batch is, which classes, anything flagged. It is written to knockout-frame.md exactly as you send it, with no heading added and nothing composed into it, so it must read as a complete document on arrival.`,
-      `Send \`marks\`: one row per instructed mark, names verbatim from the instructed scope, each with its classes, beltAndBraces, classesPlain, contextFraming, useKind (task 2c: in one to three words, the kind of use this name is searched for), spellings (task 2e) and priority. Two names that differ only in spacing, punctuation or case are REFUSED — they would share one research payload, and one of them would then be rated on the other's evidence.`,
-      `Send \`batch\`: productContext, inUseAs (task 2c), places (task 2d), and executionOrder as a permutation of your mark names.`,
+      `Send \`marks\`: one row per instructed mark, names verbatim from the instructed scope, each with its classes, beltAndBraces, classesPlain, contextFraming, useKind (task 2c: in one to three words, the kind of use this name is searched for), places (task 2d: the places THIS name is searched on, two or more, one of them the whole web, as many as the name needs), spellings (task 2e) and priority. Two names that differ only in spacing, punctuation or case are REFUSED — they would share one research payload, and one of them would then be rated on the other's evidence.`,
+      `Send \`batch\`: productContext, inUseAs (task 2c), and executionOrder as a permutation of your mark names. THE PLACES ARE PER NAME (task 2d) and go on each mark, not here.`,
       `IF YOU CALL AGAIN, SEND ONLY WHAT YOU ARE CORRECTING. The driver merges marks BY NAME onto what it already accepted, so a mark you omit keeps its row — but a mark you DO send replaces that row whole, so send a corrected mark complete rather than as a fragment.`,
     ),
   },

@@ -47,7 +47,7 @@ import {
 import { RunCancelled, assertNotCancelledBeforePublish } from "./cancel.mjs";   // stop-by-user: never the failure lane below
 import { loadFrameworkManifest, parseFrameworkManifest, frameworkFor, DEFAULT_FRAMEWORK } from "./framework.mjs";
 import { attachFrameworkMethod, methodPathFor, FROZEN_METHOD_FILE } from "./framework-method.mjs";
-import { KO_STAGES, KO_STEPS, KO_STEP_REGISTER_COUNT, koSteps, koPaths, kebab, knockoutGridSpec, KNOCKOUT_WEB, koChunks } from "./stages-knockout.mjs";
+import { KO_STAGES, KO_STEPS, KO_STEP_REGISTER_COUNT, koSteps, koPaths, kebab, knockoutGridSpec, KNOCKOUT_WEB, KNOCKOUT_MINUTES_BAR, koChunks } from "./stages-knockout.mjs";
 import { kebabCollisions, reportIdentityFor, CAPABILITY_SKIPPED_CAUSE, CAPABILITY_SKIPPED_NOTE } from "./search-policy.mjs";
 import { countPreflight, countRegisterHits, countedMarks, resolveCountExecutor } from "./register-count.mjs";
 import { recordsPreflight, listRegisterRecords, listedMarks, resolveRecordExecutor } from "./register-records.mjs";
@@ -873,6 +873,10 @@ export async function knockoutInner(ctx, job, opts = {}) {
     // and every result is kept, with no summary (stages-knockout.mjs, KNOCKOUT_WEB). A mark whose call
     // fails is degraded on its own; the rest of the batch goes on.
     koStep(ctx, "Sweeping marks");
+    // WHEN THE SWEEP STARTED, for the minutes recorded against the owner's bar after it. The sweep's own
+    // wall clock, not the sum of the marks' — they run side by side, so a sum would report minutes nobody
+    // waited. Epoch, never a formatted time.
+    const sweepStartedAt = Date.now();
     const { grid, source } = sweep;
     const { preset, reasoning } = KNOCKOUT_WEB;
     // step 3 — was a knob; no environment ever set it. The `Number.isFinite` guard beside it went
@@ -980,6 +984,24 @@ export async function knockoutInner(ctx, job, opts = {}) {
       throw new StageFailure("knockout-sweep", `all ${planMarks.length} research calls failed (executor ${source}) — nothing to assess`, null);
     }
     if (degraded.size) note(`knockout sweep: ${degraded.size}/${planMarks.length} mark(s) degraded — the batch continues (null-results doctrine)`);
+    // ── WHAT THE SWEEP COST, BESIDE THE BAR (ruling 570) ─────────────────────────────────────────────
+    //
+    // The frame chooses each name's places with no cap, so the only way to know what a knockout costs is
+    // to record it. Cells come from the RECEIPTS ON DISK rather than the loop's own variables: a resumed
+    // run's earlier marks are in the ledger and not in this process, and the ledger is what a reader has
+    // afterwards. The bar is recorded, not applied — nothing above or below this line reads it.
+    try {
+      const rows = readFileSync(K.sweepLedger, "utf8").split("\n").filter(Boolean).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
+      const cells = rows.reduce((n, r) => n + (Number.isFinite(r?.cells) ? r.cells : 0), 0);
+      const places = rows.reduce((n, r) => Math.max(n, Array.isArray(r?.places) ? r.places.length : 0), 0);
+      const minutes = Number(((Date.now() - sweepStartedAt) / 60000).toFixed(1));
+      runLog(run.runDir, { event: "knockout-sweep-total", marks: planMarks.length, calls: rows.length,
+        cells, mostPlacesForOneName: places, minutes, barMinutes: KNOCKOUT_MINUTES_BAR,
+        // Stated so a reader does not have to do the comparison, and so "over" is a fact about this run
+        // rather than a judgment about the build. It changes nothing this run did.
+        overBar: minutes > KNOCKOUT_MINUTES_BAR });
+      note(`knockout sweep: ${cells} cell(s) across ${rows.length} call(s) in ${minutes} min (the bar is ${KNOCKOUT_MINUTES_BAR})`);
+    } catch { /* the receipts are the record; a summary that could not be read never fails a sweep */ }
     }
 
     // 3 — assess (chunked ≤8/turn; merged + gated in code). DEGRADED per the DISK truth (payload

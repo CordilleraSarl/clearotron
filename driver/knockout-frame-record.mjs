@@ -86,7 +86,7 @@ export function knockoutFrameCallPaths(runDir) {
 const DECLARED = Object.freeze({
   "": ["schema", "batch", "marks", "scope_note"],
   batch: ["productContext", "inUseAs", "places", "umbrellaBrandNote", "executionOrder"],
-  marks: ["ref", "name", "classes", "beltAndBraces", "classesPlain", "contextFraming", "useKind", "spellings", "priorKnowledge", "priority"],
+  marks: ["ref", "name", "classes", "beltAndBraces", "classesPlain", "contextFraming", "useKind", "places", "spellings", "priorKnowledge", "priority"],
 });
 
 /** Refuse an undeclared key by path, through the shared implementation every transport now uses. */
@@ -153,8 +153,12 @@ export function acceptKnockoutFrame(params) {
   if (!productContext)
     return { ok: false, reason: "knockoutframe_context_missing: batch.productContext (one sentence) is required — every mark's contextFraming is read against it" };
 
-  const placesRefused = placesDefect(params?.batch?.places);
-  if (placesRefused) return { ok: false, reason: `knockoutframe_places: ${placesRefused}` };
+  // THE BATCH'S LIST IS OPTIONAL FROM RULING 570 ON — the places are per name, checked with each mark
+  // below. A call that still sends a batch list is not refused for sending it, only for sending a bad one.
+  if (params?.batch?.places !== undefined) {
+    const placesRefused = placesDefect(null, params.batch.places);
+    if (placesRefused) return { ok: false, reason: `knockoutframe_places: ${placesRefused}` };
+  }
 
   const marks = Array.isArray(params?.marks) ? params.marks : null;
   if (!marks || !marks.length)
@@ -170,6 +174,11 @@ export function acceptKnockoutFrame(params) {
       return { ok: false, reason: `knockoutframe_context_framing:${name} — contextFraming is required, and the rating hangs off it: the assess stage is told to rate WITH this field, per mark` };
     const useKindRefused = useKindDefect(name, m?.useKind);
     if (useKindRefused) return { ok: false, reason: `knockoutframe_use_kind:${name} — ${useKindRefused}` };
+    // Per name (ruling 570). A call that sends the batch list instead is the old shape and keeps working.
+    if (m?.places !== undefined || params?.batch?.places === undefined) {
+      const markPlacesRefused = placesDefect(name, m?.places);
+      if (markPlacesRefused) return { ok: false, reason: `knockoutframe_places:${name} — ${markPlacesRefused}` };
+    }
     const spellingsRefused = spellingsDefect(name, m?.spellings);
     if (spellingsRefused) return { ok: false, reason: `knockoutframe_spellings:${name} — ${spellingsRefused}` };
     for (const ck of ["classes", "beltAndBraces"]) {
