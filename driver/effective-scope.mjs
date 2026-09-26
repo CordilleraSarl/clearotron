@@ -148,16 +148,38 @@ export function defaultTerritoryState(profile) {
 export const MAJOR_MARKETS = Object.freeze(["US", "EU", "GB", "CN", "JP"]);
 
 /**
- * WHERE A CROWDED RESULT IS NARROWED, in the ruled order (2026-09-26), as far as the driver can know it:
- * the order's named countries; else, on a worldwide order, the account's default territories as the
- * customer's priority markets; else nothing the driver knows, so the markets the customer's field and
- * brand point to are the reading step's judgment; and the major markets last.
- * `{ named, priorities, major }` — each an array of codes, PURE.
+ * WHERE A CROWDED RESULT IS NARROWED BY MARKET, in the ruled order (2026-09-26), as far as the driver can
+ * know it. An order with a territorial scope (its own countries, or the account's defaults filling an
+ * absent one) narrows within that scope, one market at a time: nothing outside it was ordered. A worldwide
+ * order, or one with no territory at all, narrows to the customer's priority markets (the account's
+ * defaults); else to the markets the customer's field and brand point to, which is the reading step's
+ * judgment; else to the major markets.
+ * `{ scope, priorities, major }` — arrays of codes; `scope` empty means worldwide. PURE.
  */
 export function narrowingMarkets(job, profile) {
-  const named = jobJurisdictions(job).map((t) => String(t).trim()).filter(Boolean);
-  const { kept } = defaultTerritoryState(profile);
-  return { named, priorities: named.length ? [] : kept, major: [...MAJOR_MARKETS] };
+  const { jurisdictions, geographyMode } = resolveTerritories(job, profile);
+  const scope = geographyMode === "worldwide" ? [] : jurisdictions.map((t) => String(t).trim()).filter(Boolean);
+  if (scope.length) return { scope, priorities: [], major: [] };
+  return { scope: [], priorities: defaultTerritoryState(profile).kept, major: [...MAJOR_MARKETS] };
+}
+
+/**
+ * THE NARROWING ORDER, as the register reading step is told it (ruled 2026-09-26): goods and class
+ * first, then the markets in turn, with the markets the driver knows filled in. One line. PURE.
+ */
+export function narrowingOrderLine(job, profile, inScopeClasses = null) {
+  const { scope, priorities, major } = narrowingMarkets(job, profile);
+  const markets = scope.length
+    ? `one question per market of the order's scope (${scope.join(", ")}); nothing outside it was ordered`
+    : `one question per market: ${[
+      priorities.length ? `the customer's priority markets (${priorities.join(", ")})` : "",
+      "the markets the customer's field and brand point to (judge them from the matter frame)",
+      `the major markets (${major.join(", ")})`,
+    ].filter(Boolean).join(", else ")}`;
+  return `NARROWING A CROWD, in this order: first the goods and the classes, the client's goods words in `
+    + `${inScopeClasses ? `the order's classes [${inScopeClasses}]` : "the order's classes"}, then the classes the crowding owners `
+    + `file in; still a crowd, then the markets, ${markets}. From the narrowed lists, read what a lawyer would raise. `
+    + `What was counted and not read stays on its coverage row with its count: set aside, never clean.`;
 }
 
 export function defaultJurisdictionsLine(job, profile) {

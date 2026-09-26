@@ -297,6 +297,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-crowd-is-narrowed-by-goods-and-class-then-by-market.test.mjs": {
+          "tests": 4,
+          "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
         "a-crowded-sweep-is-narrowed-by-what-a-filing-covers.test.mjs": {
           "tests": 22,
           "asserts": 109,
@@ -6143,7 +6149,7 @@
         },
         "the-wider-families-wait-on-the-identical-question.test.mjs": {
           "tests": 13,
-          "asserts": 49,
+          "asserts": 50,
           "skips": 0,
           "todos": 0
         },
@@ -7319,6 +7325,12 @@
         "providers/*/test/*.test.mjs"
       ],
       "perFile": {
+        "providers/_shared/test/a-question-with-no-regions-is-asked-to-the-orders-scope.test.mjs": {
+          "tests": 3,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "providers/_shared/test/a-record-is-written-once-per-run.test.mjs": {
           "tests": 5,
           "asserts": 16,

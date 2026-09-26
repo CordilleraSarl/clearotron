@@ -127,7 +127,12 @@ test("the manual tells the model the order of moves, in the shipping tree", () =
     const manual = readFileSync(join(ROOT, "driver", "skills", "clearance-register", f), "utf8");
     assert.match(manual, /Look at the count before you read anything/, `${f} does not carry the crowd-narrow doctrine`);
     assert.match(manual, /limited to the client's goods words/, `${f} does not state the first move`);
-    assert.match(manual, /one question per market/, `${f} does not state the second move`);
+    assert.match(manual, /one question per market/, `${f} does not state the market move`);
+    // The ruled order (2026-09-26): goods and class before any market.
+    const goods = manual.indexOf("limited to the client's goods words");
+    const byClass = manual.indexOf("one class at a time");
+    const byMarket = manual.indexOf("one question per market");
+    assert.ok(goods < byClass && byClass < byMarket, `${f} does not narrow by goods, then class, then market`);
     assert.match(manual, /the crowd it\s+replaces stays on the record with its count/,
       `${f} does not say a narrowing replaces nothing silently`);
   }
