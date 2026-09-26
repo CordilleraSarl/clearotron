@@ -112,7 +112,7 @@ const USAGE = `
     --name       the brand owner's legal name (required)
     --domains    comma-separated email domains that resolve to this owner
     --platforms  comma-separated marketplaces their searches cover
-                 omitted ⇒ the Generic default's platforms are applied and named in the output
+                 omitted ⇒ none — searches use the general web, plus any stores chosen for each matter
     --framework  their risk framework, as skills/clearance-search/<file>.md
                  omitted ⇒ the Generic default is applied and named in the output
     --industry   free text, shown on their profile
