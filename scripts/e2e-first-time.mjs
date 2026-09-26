@@ -214,7 +214,10 @@ export const NOT_COUNTED_EVENTS = {
 
 // Names older records carry that the product no longer writes, so no census can find them.
 export const RETIRED_EVENTS = ["known-conflicts-read", "known-conflicts-upsert", "known-conflicts-upsert-skipped",
-  "recall-regression", "register-recall-probes", "register-recall-refused"];
+  "recall-regression", "register-recall-probes", "register-recall-refused",
+  // the knockout's second web question, which the grid replaced; a knockout delivered before it still
+  // carries the event, and it is still counted above
+  "knockout-in-use-as-unanswered"];
 
 // A stage dispatched again says why, on the run log's `stage` event. Counted: a dispatch that exists
 // because an answer was not accepted as it stood.

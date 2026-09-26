@@ -20,8 +20,8 @@
 // At least four different causes present to the driver as one sentence — "the ledger is absent":
 //   · the seat held no research tool                (ruled out below, for every stage)
 //   · PERPLEXITY_API_KEY unset — the server starts fine and answers the CALL with an ERROR string
-//     (perplexity-server.mjs:108), which the driver never sees
-//   · the tool refused the output_path             (perplexity-server.mjs:116, the studio/clearance-search guard)
+//     (`research` in perplexity-server.mjs), which the driver never sees
+//   · the tool refused the output_path             (`research` in perplexity-server.mjs, the studio/clearance-search guard)
 //   · the seat simply did not call it
 //
 // The arm's context receipt now records its wiring, so the first of those is answerable from the record

@@ -257,7 +257,7 @@ test("M1 the half-lane and whole-run forms differ ONLY where the lanes differ", 
 
 test("the may-own-nothing sentence never reaches a seat that HOLDS a form", () => {
   // The meaning seat always owns meaning queries, so the tool always writes it a form
-  // (engine/mcp/perplexity-server.mjs:113 — `const dispositionsPath = spec.connotation?.dispositions_path`,
+  // (`tellObligations` in engine/mcp/perplexity-server.mjs — `const dispositionsPath = spec.connotation?.dispositions_path`,
   // read by `renderConnotationObligations` on the next line). A seat holding
   // a 74-row form previously read a sentence ending "you fill in nothing"; it is now unreachable for it.
   const meaningSeat = meaningSweepReceiptsInstruction({ lead: "MEANING-SWEEP RECEIPTS — THIS IS THE WORK.", findingsTail: false });

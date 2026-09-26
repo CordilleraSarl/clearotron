@@ -826,8 +826,8 @@
           "todos": 0
         },
         "a-partial-payload-cannot-delete-what-it-omits.test.mjs": {
-          "tests": 11,
-          "asserts": 44,
+          "tests": 12,
+          "asserts": 49,
           "skips": 0,
           "todos": 0
         },
@@ -2949,12 +2949,6 @@
           "skips": 0,
           "todos": 0
         },
-        "every-knockout-mark-asks-how-its-name-is-already-in-use.test.mjs": {
-          "tests": 5,
-          "asserts": 43,
-          "skips": 0,
-          "todos": 0
-        },
         "every-lane-declares-its-transport-position.test.mjs": {
           "tests": 7,
           "asserts": 12,
@@ -3407,7 +3401,7 @@
         },
         "knockout-seats-do-not-describe-the-register-lane.test.mjs": {
           "tests": 6,
-          "asserts": 14,
+          "asserts": 13,
           "skips": 0,
           "todos": 0
         },
@@ -5682,6 +5676,12 @@
         "the-knockout-reviewing-pass-rewrites-what-a-reader-sees-first.test.mjs": {
           "tests": 21,
           "asserts": 80,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-knockout-searches-every-spelling-on-every-place.test.mjs": {
+          "tests": 8,
+          "asserts": 53,
           "skips": 0,
           "todos": 0
         },
