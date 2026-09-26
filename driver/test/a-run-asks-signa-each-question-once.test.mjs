@@ -36,7 +36,7 @@ pinEnv(process.env, "CLEAROTRON_REGISTER_RECORD_LOG", undefined);
 pinEnv(process.env, "CLEAROTRON_SIGNA_ANSWER_MEMORY", undefined);
 pinEnv(process.env, "CLEAROTRON_INSTRUCTIONS_DIR", undefined);
 // The knockout arms run the real lane, whose frame turn is a model dispatch: the repo's mock CLI, at $0.
-process.env.CLEAROTRON_AGENT = "clawdi";
+process.env.CLEAROTRON_AGENT = "mailagent";
 process.env.CLEAROTRON_AI = "anthropic-agent";
 pinEnv(process.env, "CLEAROTRON_CLAUDE_PATH", join(HERE, "mock-claude.mjs"));
 process.env.CLEAROTRON_MAX_RETRIES = "0";
@@ -351,7 +351,7 @@ async function knockout(mode, codename) {
     const run = { runDir: dir, studioRoot, slug: "timber", date: "2026-09-23", codename, archiveDir: join(studioRoot, "archive", `2026-09-23-${codename}`) };
     const job = { id, markName: "TIMBER", marks: [{ name: "TIMBER" }], classes: [9], jurisdictions: ["EU"],
       forwarder: "jordan", msgId: `<${id}@x>`, ref: `E2E-${codename}` };
-    const ctx = { run, job, agent: "clawdi", paths: { runDir: dir }, profile: {},
+    const ctx = { run, job, agent: "mailagent", paths: { runDir: dir }, profile: {},
       searchPolicy: { level: "knockout-register", stageLabel: "Knockout + register", components: { registerProbe: true } } };
     const order = [];
     const res = await knockoutInner(ctx, job, {

@@ -49,7 +49,7 @@ const healingExecutor = (ledgerPath, calls = []) => async ({ planPath, axis, out
     reason: "count-only crowd descriptor (plan-dictated)",
   }));
   writeFileSync(outputPath, JSON.stringify(blocks, null, 2) + "\n");
-  appendFileSync(ledgerPath, JSON.stringify({ ts: new Date().toISOString(), agentId: "clawdi", sessionKey: `agent:clawdi:${sessionKey}`, tool: "search" }) + "\n");
+  appendFileSync(ledgerPath, JSON.stringify({ ts: new Date().toISOString(), agentId: "mailagent", sessionKey: `agent:mailagent:${sessionKey}`, tool: "search" }) + "\n");
   return { ok: true, executed: blocks.length, states: {} };
 };
 
@@ -59,7 +59,7 @@ async function runMockPipeline(env, opts = {}) {
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root,
     CLEAROTRON_REPORTS_DIR: join(root, "pool"), CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0",
-    CLEAROTRON_AGENT: "clawdi", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
+    CLEAROTRON_AGENT: "mailagent", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
     CLEAROTRON_BAND_TRUTH_GATE: "1", ...env,
   })) pinEnv(process.env, k, v);
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);

@@ -34,7 +34,7 @@ test("a portal-minted key stamps the PORTAL door, not the MCP door", () => {
 });
 
 test("every other verified principal still stamps the MCP door", () => {
-  for (const sub of ["clawdi", "demo-brand-owner-connector", "staff-key", ""]) {
+  for (const sub of ["mailagent", "demo-brand-owner-connector", "staff-key", ""]) {
     const job = buildJob({ ...RUNNABLE }, { scope: { sub } });
     assert.equal(job.enqueuedVia, "mcp/start_run", `sub ${JSON.stringify(sub)} changed the door`);
   }

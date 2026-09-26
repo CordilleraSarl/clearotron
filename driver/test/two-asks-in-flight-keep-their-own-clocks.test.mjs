@@ -51,7 +51,7 @@ beforeEach(() => {
 
 const run = async (key) => {
   await runStage("twoask-stage", {
-    agent: "clawdi", message: `TASK\nOUTPUT_FILE: ${process.env.MOCK_OUT_FILE}`, sessionKey: key,
+    agent: "mailagent", message: `TASK\nOUTPUT_FILE: ${process.env.MOCK_OUT_FILE}`, sessionKey: key,
     timeoutSec: 30, expectFile: process.env.MOCK_OUT_FILE, maxRetries: 0, runDir: dir,
   }).catch(() => {});
   return JSON.parse(readFileSync(driverDir(dir, "twoask-stage.jsonl"), "utf8").trim().split("\n")[0]);

@@ -1634,7 +1634,7 @@ export function composeEmailBody(reportMdPath, url, auditFile, productName = nul
 // ---------------------------------------------------------------------------------------------------
 // composeEmailHtml — the reply the reviewer gets back: (1) a short INTERNAL review headline, (2) the
 // pre-populated CLIENT-FACING review table (re-voiced by the cheap `client-summary` stage), (3) the report
-// link. Returns ONE HTML fragment that BEGINS WITH A TAG, so the mail tool (clawdi-graph markdownToHtml)
+// link. Returns ONE HTML fragment that BEGINS WITH A TAG, so the mail tool's markdownToHtml
 // passes it through unchanged — a markdown/HTML mix would be escaped. Falls back to the markdown body
 // (composeEmailBody) when the client summary is missing/short, so a failed cheap step never blocks delivery.
 // ---------------------------------------------------------------------------------------------------

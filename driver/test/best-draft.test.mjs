@@ -117,7 +117,7 @@ test("the ladder's BEST rejected draft is preserved — the converged one, not t
   try {
     const r = await withEngine("fake-converge-then-regress", async () => { writeFileSync(out, `# draft ${counts[i]}\n`); i += 1; return okTurn(); },
       () => runStage("common-law-half:b", {
-        agent: "clawdi", sessionKey: "clearotron-test-carry", message: "do it",
+        agent: "mailagent", sessionKey: "clearotron-test-carry", message: "do it",
         model: "opus", thinking: "medium", timeoutSec: 600, expectFile: out,
         validate: (f, text) => connFail(Number(/# draft (\d+)/.exec(text)[1])), runDir: dir, maxRetries: 2,
       }));
@@ -137,7 +137,7 @@ test("a draft written by a KILLED attempt is never preserved — a torn file is 
   try {
     await withEngine("fake-kill-after-write", async ({ timeoutSec }) => { writeFileSync(out, "# draft 2\n"); return hardWallTurn(timeoutSec); },
       () => runStage("common-law-half:b", {
-        agent: "clawdi", sessionKey: "clearotron-test-carry-kill", message: "do it",
+        agent: "mailagent", sessionKey: "clearotron-test-carry-kill", message: "do it",
         model: "opus", thinking: "medium", timeoutSec: 600, expectFile: out,
         validate: (f, text) => connFail(Number(/# draft (\d+)/.exec(text)[1])), runDir: dir, maxRetries: 0,
       }));
@@ -153,7 +153,7 @@ test("a rejection whose remedy is a RE-SEARCH is not preserved — carrying it w
   try {
     await withEngine("fake-search-missing", async () => { writeFileSync(out, "# no sweep ran\n"); return okTurn(); },
       () => runStage("common-law-half:b", {
-        agent: "clawdi", sessionKey: "clearotron-test-carry-nosearch", message: "do it",
+        agent: "mailagent", sessionKey: "clearotron-test-carry-nosearch", message: "do it",
         model: "opus", thinking: "medium", timeoutSec: 600, expectFile: out,
         validate: () => ({ ok: false, reason: "connotation_search_missing", quantity: 1 }), runDir: dir, maxRetries: 0,
       }));

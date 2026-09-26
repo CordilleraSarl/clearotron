@@ -49,14 +49,14 @@ test("on Linux the grid check reads exactly as it did: \"/\" only", () => {
 });
 
 test("the agent a Windows queue and studio root belong to is read from the path", () => {
-  const ws = win32.join("C:\\Users\\lawyer", ".clearotron", `${config.workspacePrefix}clawdi`);
-  assert.equal(config.agentIdFromQueueDir(win32.join(ws, "studio", "clearance-search", "queue"), { platform: W }), "clawdi");
-  assert.equal(config.agentIdFromQueueDir(win32.join(ws, "studio", "prelim-search", "queue") + "\\", { platform: W }), "clawdi");
-  assert.equal(agentFromStudioRoot(win32.join(ws, "studio", "clearance-search"), { platform: W }), "clawdi",
+  const ws = win32.join("C:\\Users\\lawyer", ".clearotron", `${config.workspacePrefix}mailagent`);
+  assert.equal(config.agentIdFromQueueDir(win32.join(ws, "studio", "clearance-search", "queue"), { platform: W }), "mailagent");
+  assert.equal(config.agentIdFromQueueDir(win32.join(ws, "studio", "prelim-search", "queue") + "\\", { platform: W }), "mailagent");
+  assert.equal(agentFromStudioRoot(win32.join(ws, "studio", "clearance-search"), { platform: W }), "mailagent",
     "the status rollup would show \"?\" for every Windows run");
   // Linux: unchanged, and a "\" is part of a name there.
-  const lws = posix.join("/srv/clearotron", `${config.workspacePrefix}clawdi`);
-  assert.equal(config.agentIdFromQueueDir(posix.join(lws, "studio", "clearance-search", "queue"), { platform: "linux" }), "clawdi");
+  const lws = posix.join("/srv/clearotron", `${config.workspacePrefix}mailagent`);
+  assert.equal(config.agentIdFromQueueDir(posix.join(lws, "studio", "clearance-search", "queue"), { platform: "linux" }), "mailagent");
   assert.equal(config.agentIdFromQueueDir(win32.join(ws, "studio", "clearance-search", "queue"), { platform: "linux" }), null);
 });
 

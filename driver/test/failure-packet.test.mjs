@@ -13,7 +13,7 @@ import { buildFailurePacket } from "../pipeline.mjs";
 import { fileURLToPath } from "node:url";
 
 const BASE = {
-  runId: "tmp8729-open-country-teal-causeway", agent: "clawdi",
+  runId: "tmp8729-open-country-teal-causeway", agent: "mailagent",
   job: { markName: "Open Country", forwarder: "requester", forwarderEmail: "r@example.com", msgId: "AAMkAGI2=", conversationId: "AAQkConv=" },
   failedStage: "fan-in", shortReason: "register plan unexecuted after direct dispatch + followup — 2 dictated qid(s) own no band block",
   reasonVerbatim: "register plan unexecuted after direct dispatch + followup — 2 dictated qid(s) own no band block: primary-sweep:exact:ailderness+form ← provider error: corsearch_search HTTP 414 <URI Too Long>",

@@ -54,7 +54,7 @@ export const MATCH_MODE_PREFIX = {
 // `provider` discriminator on every row.
 //
 // SECURITY — the ids logged (agentId / sessionKey / sessionId) are the GATEWAY tool-call context
-// (e.g. "clawdi", "clearotron-acme-…"), the per-run attribution. They are NOT the Corsearch `sessionKey`
+// (e.g. "localagent", "clearotron-acme-…"), the per-run attribution. They are NOT the Corsearch `sessionKey`
 // COOKIE (the live credential, which merely shares the name). logCall is only ever handed `tctx`
 // (kind + gateway ids + target) and response metrics — the cookie is never passed in. Keep it so.
 export const { logCall, logRecordBody, tctxOf } = makeLedger("corsearch");
@@ -269,7 +269,7 @@ export function normalizeSearchResponse(body, echoQuery, matchMode) {
 // ── Search (with per-run dedup) ───────────────────────────────────────────────
 // The plugin runs in the long-lived gateway daemon, so this module-level Map persists across tool
 // calls within a run. A run issues the SAME search more than once (~12% of this build's baseline run
-// were exact-duplicate sweeps — name:CLAWDI, the JP and CN transliteration sweeps each issued twice),
+// were exact-duplicate sweeps — the name sweep and the JP and CN transliteration sweeps, each issued twice),
 // invisible to telemetry because the dup counter watched record_fetch only. We cache the normalized
 // result keyed on the GATEWAY session key (per-run, unique → no cross-run collision) + the FULL
 // canonical upstream query tail (so a different page / field-set is NOT a dup). On an exact repeat we

@@ -4,7 +4,7 @@
 // (global fetch only). This is the testable core: index.js imports from here and adds the SDK
 // registration + TypeBox parameter schemas (which need the SDK and typebox, neither resolvable in an
 // offline `node --test` run). Tests import this module directly. build.js copies the whole src/ dir
-// to dist/, so the `./core.js` import resolves at runtime. (Same layout as clawdi-corsearch.)
+// to dist/, so the `./core.js` import resolves at runtime. (Same layout as the Corsearch provider.)
 
 export const AGENT_API_URL = "https://api.perplexity.ai/v1/agent";
 
@@ -313,8 +313,8 @@ export function formatResponse(data, preset) {
 
   if (!text) {
     const output = data.output || [];
-    console.error(`[clawdi-perplexity] No text extracted. Response keys: ${Object.keys(data).join(", ")}`);
-    console.error(`[clawdi-perplexity] output array types: ${output.map((i) => i.type).join(", ")}`);
+    console.error(`[perplexity] No text extracted. Response keys: ${Object.keys(data).join(", ")}`);
+    console.error(`[perplexity] output array types: ${output.map((i) => i.type).join(", ")}`);
     return `ERROR: Perplexity returned a response but no text content could be extracted. Status: ${data.status || "unknown"}`;
   }
 

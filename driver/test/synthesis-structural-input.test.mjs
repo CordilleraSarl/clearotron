@@ -46,7 +46,7 @@ pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
 pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", join(ROOT, "pool"));
 process.env.CLEAROTRON_MAX_RETRIES = "0";
 process.env.CLEAROTRON_RECOVERY_MAX = "0";
-process.env.CLEAROTRON_AGENT = "clawdi";
+process.env.CLEAROTRON_AGENT = "mailagent";
 process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
 
 const PL = await import("../pipeline.mjs");
@@ -206,7 +206,7 @@ test("the graded classes are ONE literal — the author's block, the reviewer's,
 // driven, and the branch that claims a table is the branch that has one.
 const BOTH = { synthesis: { built: ["synthesis-plan-audit", "synthesis-coverage-ledger"], failed: [] } };
 const synthMsg = (P, job, { dispatchBlocks, registerOnly = false } = {}) =>
-  STAGES.synthesis.message({ paths: P, job, axes: REGISTER_AXES, registerOnly, dispatchBlocks, agent: "clawdi", run: { slug: "s", codename: "c" } });
+  STAGES.synthesis.message({ paths: P, job, axes: REGISTER_AXES, registerOnly, dispatchBlocks, agent: "mailagent", run: { slug: "s", codename: "c" } });
 
 test("the synthesis prompt names both machine artifacts and carries assert-or-defer", () => {
   const P = paths("/RUN");

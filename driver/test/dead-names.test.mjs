@@ -18,9 +18,9 @@ let tree;
 const corpus = () => (tree === undefined ? (tree = corpusOf()) : tree);
 
 test("the mechanism fires on an invented per-person identity handed to it, naming file and line", () => {
-  const invented = /clawdi-(example)/i;
+  const invented = /mailagent-(example)/i;
   const planted = [
-    { file: "ops/roster.md", text: "the agents on this box\nqueue watched: clawdi-example\n" },
+    { file: "ops/roster.md", text: "the agents on this box\nqueue watched: mailagent-example\n" },
     { file: "ops/clean.md", text: "nothing to see\n" },
   ];
   assert.deepEqual(deadNameHits(planted, invented).map(({ file, line }) => [file, line]), [["ops/roster.md", 2]]);

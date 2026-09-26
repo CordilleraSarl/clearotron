@@ -103,7 +103,7 @@ export function selectCustomer(job) {
   return resolveProfile(job)?.key ?? "generic";
 }
 
-// studioRoot defaults to clawdi's; per-run code passes the FORWARDING agent's studioRoot (the run-dir must
+// studioRoot defaults to the legacy agent's; per-run code passes the FORWARDING agent's studioRoot (the run-dir must
 // sit in the executing agent's workspace so its sandboxed write tool can reach it).
 export function runDirFor({ slug, date, codename, studioRoot = config.studioRoot }) {
   return join(studioRoot, slug, `${date}-${codename}`);
@@ -208,7 +208,7 @@ export function mintFreshCodename({ slug, date, studioRoot = config.studioRoot, 
 
 // Assemble the immutable run identity for a job. rand and claim are injectable for tests — claim so a test's
 // mints go to a registry of its own rather than the box-wide one every run on this account shares. studioRoot/archiveRoot are the
-// FORWARDING agent's (derived from its queue dir by the runner); they default to clawdi's for back-compat.
+// FORWARDING agent's (derived from its queue dir by the runner); they default to the legacy agent's for back-compat.
 // `codename`/`date` overrides exist for RESUME: re-driving a failed run must rebuild the SAME run identity
 // (slug/date/codename → the same run-dir) so the idempotency skip reuses the prior stages instead of minting
 // a fresh codename and re-spending everything (the "pearl-keystone" trap). A bare new run leaves both unset.

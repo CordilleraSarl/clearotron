@@ -172,7 +172,7 @@ test("PR-8 grants: digest/placement/refutation → band; synthesis → perplexit
 });
 
 test("PR-8 band config: neutral `band` server mounted, run dir threaded, tools allow-listed", () => {
-  const b = buildGatherMcpConfig(["band"], { sessionKey: "k", agent: "clawdi", runDir: "/tmp/run-x" });
+  const b = buildGatherMcpConfig(["band"], { sessionKey: "k", agent: "mailagent", runDir: "/tmp/run-x" });
   assert.ok(b.mcpServers.band, "band server present under the neutral key");
   assert.match(b.mcpServers.band.args[0], /band-server\.mjs$/);
   assert.equal(b.mcpServers.band.env.CLEAROTRON_BAND_RUN_DIR, "/tmp/run-x", "the band server serves THIS run's band/shape/_records");
@@ -194,12 +194,12 @@ test("band server: handshake + 3 read-only tools + missing-run-dir guard returns
 });
 
 test("buildGatherMcpConfig: maps groups → the right MCP servers + threads the run session key", () => {
-  const p = buildGatherMcpConfig(["perplexity"], { sessionKey: "clearotron-x-y-stage", agent: "clawdi" });
+  const p = buildGatherMcpConfig(["perplexity"], { sessionKey: "clearotron-x-y-stage", agent: "mailagent" });
   assert.ok(p.mcpServers.perplexity, "perplexity server present");
   assert.equal(p.mcpServers.perplexity.command, process.execPath);
   assert.match(p.mcpServers.perplexity.args[0], /perplexity-server\.mjs$/);
   assert.equal(p.mcpServers.perplexity.env.CLEAROTRON_GATHER_SESSION_KEY, "clearotron-x-y-stage");
-  assert.equal(p.mcpServers.perplexity.env.CLEAROTRON_GATHER_AGENT, "clawdi");
+  assert.equal(p.mcpServers.perplexity.env.CLEAROTRON_GATHER_AGENT, "mailagent");
 
   // The register provider mounts under the NEUTRAL key `register` — never the vendor's name. That key is
   // what `mcp__register__register_*` allowlist entries and pipeline.mjs's excludeTools bind to, so it must
