@@ -1045,7 +1045,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     // about what publish read, not about what the gate decided, so dropping it on the one path where
     // the gate could not evaluate would lose the absence record exactly where the run is least
     // understood — an absence reading as nothing, inside the guard against absences reading as nothing.
-    clientGate = { released: false, reasons: [`gate-evaluation-error: ${String(e.message).slice(0, 80)}`], reasonCodes: ["gate-evaluation-error"], inputsAbsent };
+    clientGate = gateCouldNotEvaluate(e, inputsAbsent);
   }
 
   // ── audit-workbook inputs (all from artifacts already loaded above) ──────────────────────────────────
@@ -1405,7 +1405,8 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     // re-rendered without its meta changing shape. When it IS present it is the durable record that
     // this report was assembled without those stores, which the run previously kept nowhere at all.
     clientGate: { released: clientGate.released, reasons: clientGate.reasons,
-      inputsAbsent: clientGate.inputsAbsent?.length ? clientGate.inputsAbsent : undefined, notClosing: clientGate.notClosing?.length ? clientGate.notClosing : undefined },
+      inputsAbsent: clientGate.inputsAbsent?.length ? clientGate.inputsAbsent : undefined, notClosing: clientGate.notClosing?.length ? clientGate.notClosing : undefined,
+      evaluationError: clientGate.evaluationError ?? undefined },
     // PR-9 — present ⇒ report-data.json is beside the report and the portal can render natively (the
     // same stamp the knockout lane writes; the consumer branch had readers before it had a writer).
     // undefined on a producer miss, so the meta never advertises a file that is not there.
@@ -1900,3 +1901,12 @@ export function setAsideRows(runDir) {
     ];
   } catch { return []; }
 }
+
+/**
+ * THE MACHINE QC RESULT WHEN THE CHECKS THEMSELVES THREW. Nothing was judged, so no reason is given: the
+ * workbook's Machine QC row prints its own line for checks that could not be evaluated. The stable code
+ * still rides along, and the exception's text is kept for the run's record (meta.json and the run log),
+ * never for a reader's cell.
+ */
+export const gateCouldNotEvaluate = (e, inputsAbsent = []) => ({ released: false, reasons: [], reasonCodes: ["gate-evaluation-error"],
+  inputsAbsent, evaluationError: String(e?.message ?? e).slice(0, 80) });

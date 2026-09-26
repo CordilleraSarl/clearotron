@@ -21,6 +21,7 @@ import { variantForms } from "../register-variants.mjs";
 import { capabilitiesFor } from "../register-capabilities.mjs";
 import { buildKnockoutWorkbook } from "../publish/knockout.mjs";
 import { renderKnockoutHtml, knockoutReportData } from "../publish/render-knockout.mjs";
+import { plainDeferralReason } from "../deferral-row.mjs";
 
 const CORSEARCH = capabilitiesFor("corsearch");
 const CLARIVATE = capabilitiesFor("clarivate");
@@ -200,8 +201,12 @@ test("a MISCONFIGURED cap says so — it never reads as a name with no near-form
   const doc = await run({ marks: [{ name: "ALCHEMIST" }], variantCap: NaN, counter: async () => ({ ok: true, total: 1 }) });
   const cell = doc.marks[0].counts.close;
   assert.equal(cell.total, null);
-  assert.match(cell.unavailable, /configuration fault, not a property of the name/);
-  assert.match(cell.unavailable, /CLEAROTRON_KNOCKOUT_VARIANT_CAP/, "the refusal names the variable to fix");
+  // The fault and the variable to fix are the RECORD's; the reader's cell carries the line a count left open
+  // prints, and no setting name or raw value.
+  assert.match(cell.cause, /configuration fault, not a property of the name/);
+  assert.match(cell.cause, /CLEAROTRON_KNOCKOUT_VARIANT_CAP/, "the record names the variable to fix");
+  assert.equal(cell.unavailable, plainDeferralReason("unfinished"), "the reader's cell is the shipped line");
+  assert.doesNotMatch(cell.unavailable, /CLEAROTRON_|NaN/, "no setting name or raw value reaches a reader's cell");
   assert.equal(cell.generated, 7, "the rule table did produce forms — the cap cut them");
   assert.equal(cell.deterministic, undefined,
     "and it does NOT settle: fixing the variable and resuming must re-take the column, not carry the gap forward");

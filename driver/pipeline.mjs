@@ -15033,7 +15033,8 @@ async function pipelineInner(job, opts = {}) {
     // telemetry — the reviewer reads it on the audit workbook. A4: the
     // stable reason codes still ride the event, so a classifier reading the spine never hashes prose.
     if (published.clientGate && published.clientGate.released === false) {
-      runLog(run.runDir, { event: "machine-qc-failed", reasons: (published.clientGate.reasons ?? []).map(String), ...(published.clientGate.reasonCodes?.length ? { reasonCodes: published.clientGate.reasonCodes } : {}) });
+      runLog(run.runDir, { event: "machine-qc-failed", reasons: (published.clientGate.reasons ?? []).map(String), ...(published.clientGate.reasonCodes?.length ? { reasonCodes: published.clientGate.reasonCodes } : {}),
+        ...(published.clientGate.evaluationError ? { evaluationError: published.clientGate.evaluationError } : {}) });
       note(`machine QC failed (${(published.clientGate.reasons ?? []).length} check(s)) — recorded on the audit workbook; the report is delivered as usual: ${(published.clientGate.reasons ?? []).join("; ")}`);
     }
     ctx.publishedUrl = published.url;
