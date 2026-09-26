@@ -38,11 +38,19 @@ const PROSE_KEYS = new Set([
   // is for: `lawyer_position` and `common_law_note` are the lawyer reasoning about a named party, and
   // `next_step` is advice written about the subject. All three were printing in full.
   "lawyer_position", "common_law_note", "next_step", "counts_provenance",
+  // Engine prose about a matter, classified from reading its site rather than from a warning: the
+  // reason a finding was ruled out is written about that finding and can name the party it concerns.
+  "ruled_out_reason",
 ]);
 
 /** Fields that carry a name: a mark, a proprietor, a subject, a form of a mark. */
 const NAME_KEYS = new Set([
   "mark", "owner", "subject", "name", "matched", "entry", "noise", "form", "use_form",
+  // A SEARCH TERM IS A SPELLING OF A MARK. `term` carries the string a register question was actually
+  // asked with — the same class of thing as `close_variations`, which was already protected, arriving
+  // by a different route. Read at its site (the per-territory query roll) rather than inferred: it is
+  // `e.term ?? e.terms[0]` off the frozen plan's own query entries.
+  "term",
 ]);
 
 /** Arrays whose entries are bare names rather than objects. */
@@ -65,6 +73,20 @@ const SAFE_KEYS = new Set([
   // Label-shaped fields the real references carry, confirmed one by one rather than assumed: a grade,
   // an expected-value word, and the territory a reference entry sits in.
   "grade", "expected", "jurisdiction",
+  // THE TWENTY-ONE THE WARNING NAMED ON THE WITHHELD CORPUS, each classified by what its site holds
+  // rather than by what its name suggests — two of them would have been got wrong by the name alone.
+  //
+  // `evidence` reads like matter content and is a CHANNEL CLASS: "register", "case-law", "unknown".
+  // `key` reads like an account key and is a TERRITORY key. Both are safe; tokenising either would
+  // have shredded output that names nobody.
+  //
+  // The rest are labels, states, counts and code-owned harness sentences: a sentence this tool composes
+  // about its own measurement names no party, and withholding it whole would blank the conclusion a
+  // reader came for. Where one of them interpolates engine prose, the prose's own key carries the
+  // protection — `detail` is safe and `ruled_out_reason`, which it can quote, is prose.
+  "absent", "asked", "axis", "collapseReason", "depth", "detail", "evidence", "executes", "generated",
+  "key", "outcome", "ownerState", "qid", "recall", "record", "record_id", "sentence", "side",
+  "statementWhy", "subQuery", "territory",
 ]);
 
 const isStr = (v) => typeof v === "string" && v.trim().length > 0;
@@ -146,7 +168,7 @@ const matcher = (name) => new RegExp(`(?<![\\p{L}\\p{N}])${escapeRe(name)}(?:['�
  * Every token says what it replaced and how to get it back. A blanked line a reader cannot account for
  * sends them to re-run the command some other way, which is how the names end up on the page anyway.
  */
-export function redactor({ names = new Set(), prose = new Set(), hint = "pass --names to read it" } = {}) {
+export function redactor({ names = new Set(), prose = new Set(), hint = "run again with --names to read it" } = {}) {
   const index = new Map();
   const ordered = [...names].sort((a, b) => b.length - a.length || a.localeCompare(b));
   // The token is the entry's position in a STABLE ordering of the protected set, not its position in the
@@ -219,4 +241,7 @@ export function installRedaction(redact, io = { console, process }) {
 /** The line every redacted read carries, so an absence is never silent. */
 export const REDACTION_NOTICE =
   "names withheld — marks, proprietors and the reference's own sentences are replaced by «name N»; "
-  + "pass --names to print them. The counts and buckets below are unaffected.";
+  + "run again with --names to print them. The counts and buckets below are unaffected.";
+// The verb is "run again", not "pass": the suite forbids a verdict word anywhere in this tool's output,
+// and the corpus arm that enforces it reads "pass" wherever it appears, including as an instruction to
+// the reader. It was right to catch this. Plain words are better here anyway.
