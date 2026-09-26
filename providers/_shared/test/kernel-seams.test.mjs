@@ -151,11 +151,12 @@ test('countProbe "endpoint": the per-term rescue probes the COUNT endpoint, not 
     capabilities: { countProbe: "endpoint", screenSource: "billed-record-fetch", ceilingDefault: 10 },
   });
   const out = parse(await enumerate("auth", { names: ["ZERO", "RARE"] }, {}));
-  assert.equal(out.state, "enumerated");                    // every term resolved ⇒ the union IS the band
+  // Each spelling is counted and none is read: which to read is the reading step's decision.
+  assert.equal(out.state, "incomplete");
   assert.equal(out.total_hits, 5000);
   assert.deepEqual(out.term_counts.ZERO, { total_hits: 0, disposition: "verified-zero" });
-  assert.deepEqual(out.term_counts.RARE, { total_hits: 2, disposition: "enumerated" });
-  assert.deepEqual(probes, ["ZERO+RARE", "ZERO", "RARE", "RARE"]);
+  assert.deepEqual(out.term_counts.RARE, { total_hits: 2, disposition: "unenumerated" });
+  assert.deepEqual(probes, ["ZERO+RARE", "ZERO", "RARE"], "every probe went to the COUNT endpoint, and nothing was read");
 });
 
 test('countProbe "endpoint" without a count dependency fails LOUDLY at construction', () => {
@@ -341,9 +342,9 @@ test("per-class rescue: the multi-NAME rescue keeps precedence (term accounting 
     capabilities: { countProbe: "endpoint", screenSource: "billed-record-fetch", ceilingDefault: 10 },
   });
   const out = parse(await enumerate("auth", { names: ["ZERO", "RARE"], owner: "Vantage Orchard Inc.", nice_classes: [5, 32] }, {}));
-  assert.equal(out.state, "enumerated");
+  assert.equal(out.state, "incomplete", "RARE is counted for the reading step, not read");
   assert.ok(out.term_counts, "per-term truth rides the block");
-  assert.equal(out.class_counts, undefined, "no per-class pass when the term rescue already resolved the stack");
+  assert.equal(out.class_counts, undefined, "no per-class pass when the term rescue ran");
 });
 
 test("per-class rescue: a failed class probe is an honest error disposition — never a zero (register-count rule 2)", async () => {

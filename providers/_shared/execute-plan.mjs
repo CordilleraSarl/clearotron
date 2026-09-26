@@ -21,7 +21,7 @@ import { entryTermIssues, goodsTermsList } from "./term-shape.mjs";
 import { awaitsReadingTurn, releasedFamiliesFile } from "./plan-guards.mjs";
 import { faultText, guardToolCall } from "./transport-guard.mjs";
 import { clipProviderText } from "./provider-text.mjs";   // — keep the discriminator
-import { isGatewayStall } from "./enumerate.mjs";   // a question that timed out on both halves of its regions
+import { isGatewayStall, isUnresolvedCount } from "./enumerate.mjs";   // a question that timed out on both halves of its regions; and the one definition of a count the reading step must still decide
 
 // plan predicate → provider query params. "wildcard" patterns compile to the provider's anchored
 // modes (trailing * → starts_with, leading * → ends_with); there is deliberately NO `contains`
@@ -640,9 +640,30 @@ export function makeExecutePlan(deps) {
     // temp+rename: a fail-closed reader sees the old complete band or the new one, never a torn write.
     writeFileSync(`${outPath}.tmp`, JSON.stringify([...blocks, ...preserved], null, 2) + "\n");
     renameSync(`${outPath}.tmp`, outPath);
+    // EACH SPELLING'S COUNT, IN THE REPLY. A crowded stack comes back counted and unread, and the reading
+    // step decides which spellings to read, narrow or leave (ruled 2026-09-26), so it is handed the counts
+    // here rather than left to find them in the band file: a number for a spelling counted and not read,
+    // 0 for a verified zero, "crowd N" for one over the ceiling, "error" for a count that failed.
+    //
+    // THE GATE IS "ANYTHING LEFT TO DECIDE", not one disposition, and that is the whole of this block's
+    // correctness. Keyed on `unenumerated` alone it dropped the two stacks the rule exists for: one where
+    // EVERY spelling is itself over the ceiling, and one where every count failed. Both came back with a
+    // full `term_counts` and this filter then handed the reading step nothing — the rule landed without its
+    // main instance, and a step told nothing reads exactly like a step told there is nothing.
+    //
+    // `isUnresolvedCount` is IMPORTED from the rescue that writes these dispositions, and is the same
+    // predicate both rescues there decide completeness with — one definition, three call sites. It was a
+    // local copy with a comment claiming the two could not drift, which the code did not do: nothing
+    // coupled them. A stack whose every spelling verified zero is resolved and is deliberately still
+    // absent here, because there is nothing for the reading step to read or narrow.
+    const spellingCounts = Object.fromEntries(blocks
+      .filter((b) => b?.term_counts && Object.values(b.term_counts).some(isUnresolvedCount))
+      .map((b) => [b.qid, Object.fromEntries(Object.entries(b.term_counts).map(([t, v]) => [t,
+        v?.disposition === "crowd" ? `crowd ${v.total_hits}` : v?.disposition === "error" ? "error" : (v?.total_hits ?? "error")]))]));
     return { type: "text", text: JSON.stringify({
       written: outPath, blocks: blocks.length + preserved.length, executed: blocks.length, preserved: preserved.length, skipped,
       states: Object.fromEntries([...stateByQid].filter(([q]) => !seeded.has(q))),
+      ...(Object.keys(spellingCounts).length ? { spelling_counts: spellingCounts } : {}),
     }, null, 2) };
   };
 }
