@@ -16,7 +16,7 @@ import { degradedParts, degradedPartRows, writeDegradedParts, readDegradedPartRo
 import { deferralCoverageRow } from "../deferral-row.mjs";
 import { buildAudit } from "../publish/xlsx.mjs";
 import { pinEnv, envFrom } from "../../shared/env-aliases.mjs";
-import { driverDir, driverRel } from "../../shared/driver-dir.mjs";
+import { driverDir, driverRel, driverFileName, labelOfDriverFile } from "../../shared/driver-dir.mjs";
 import { firstTimeRows, firstTimeLines } from "../../scripts/e2e-first-time.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -243,4 +243,50 @@ test("at the door: a run whose reviewer stage failed publishes a workbook that s
   assert.ok(!clean.areas.some((a) => a.startsWith("Follow-up / Machine QC")), "a clean run's workbook carries a degraded row");
   // Every part, not only the one the other run failed: a check that fires on a clean run is a false row.
   assert.deepEqual(JSON.parse(readFileSync(driverDir(clean.res.runDir, "degraded-parts.json"), "utf8")).parts, [], "a clean run recorded a degraded part");
+});
+
+// ── THE FAILED CARD IS FOUND WHATEVER THE MACHINE SPELLS ITS NAME (585) ─────────────────────────────
+//
+// A card's stage label carries a colon — `report-card:3` — and Windows cannot hold one, so
+// `driverFileName` writes it `%3A` there. `findingCards` filtered the `_driver` listing with a raw colon,
+// which on Windows matched nothing: `degradedParts` returned an empty list, and the audit workbook then
+// reported coverage CLOSED over a card that failed. The product had been right since the helper landed;
+// this one read site was missed.
+//
+// WHAT NO ARM ON THIS PLATFORM CAN DO, stated because the first version of this test tried it and was
+// wrong: plant the Windows spelling and expect this platform to read it. `driverFileName` is a no-op off
+// win32, so the reader resolves `report-card:3.jsonl` and a file named `report-card%3A3.jsonl` is simply a
+// different file — no platform writes one and reads the other. The defect is Windows-only and Linux cannot
+// exercise it, which is exactly why it shipped green here and red only on the scheduled Windows run.
+//
+// So the fix is pinned in the two places that ARE checkable here: the decode step the reader now depends
+// on, and the absence of the raw-colon filter it used to depend on.
+test("a failed card is found on this platform, and its label survives the Windows spelling", (t) => {
+  const planted = (name) => degradedParts(runDir(t, { [`_driver/${name}`]: jl([attempt(1, false, "timeout")]) }))
+    .filter((p) => p.part === "finding-cards");
+
+  // The card as THIS platform writes it, through the helper the product uses.
+  assert.deepEqual(planted(driverFileName("report-card:3.jsonl")).map((p) => p.cause),
+    ["card stages ended failed: report-card:3"], "the card this platform spells was not found");
+
+  // THE CONTROL, so the row above is not green by construction: a card whose stage ended WELL writes none.
+  assert.deepEqual(degradedParts(runDir(t, { [`_driver/${driverFileName("report-card:4.jsonl")}`]: jl([attempt(1, true)]) }))
+    .filter((p) => p.part === "finding-cards"), [], "a card that succeeded wrote a row");
+
+  // THE STEP THE WINDOWS FIX TURNS ON, checkable on any platform: both spellings decode to the one label
+  // the filter matches and `stageEnded` resolves. With the old raw-colon filter this function was never
+  // called, so the Windows name reached the predicate as bytes and matched nothing.
+  assert.equal(labelOfDriverFile(driverFileName("report-card:3.jsonl", "win32")), "report-card:3");
+  assert.equal(labelOfDriverFile(driverFileName("report-card:3.jsonl", "linux")), "report-card:3");
+});
+
+// AND THE READER NO LONGER MATCHES BYTES. A source assertion, which is the only instrument that fails here
+// for a Windows-only defect: the shape that shipped was a raw colon in the predicate over the `_driver`
+// listing, and nothing a Linux run does can tell the two predicates apart. Narrow on purpose — it names
+// this one reader rather than sweeping the tree, because the sweep is its own change.
+test("the finding-card reader matches a decoded label, never a raw colon in a file name", () => {
+  const src = readFileSync(join(HERE, "..", "degraded-parts.mjs"), "utf8");
+  assert.match(src, /labelOfDriverFile/, "guard: the reader was read");
+  assert.doesNotMatch(src, /report-card:[^"'`\n]*\\\.jsonl/,
+    "the reader filters the _driver listing on a raw colon again — Windows writes %3A and this matches nothing there");
 });
