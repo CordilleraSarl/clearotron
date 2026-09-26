@@ -185,7 +185,7 @@ const MIN_SKELETON = 4;
  *     WHOLE MARK, NOT CONTAINMENT. This rule was containment in both directions and unowned,
  *     which is rule 4's test WITHOUT rule 4's guard — on the one path where the guard matters most,
  *     because a Han mark carries no aliases and no skeleton to catch the error further down. Measured
- *     live: gold 澜珀 (class 9) scored as RETRIEVED because the run held 澜珀花间 (class 41, a different
+ *     live: gold 澜珀 (class 9) scored as RETRIEVED because the run held a longer mark containing it (class 41, a different
  *     proprietor). Every CJK found/withheld verdict in every R1/R6 score was decided that way, in both
  *     directions, so the recall numbers were unquotable rather than merely wrong.
  *
@@ -1981,7 +1981,7 @@ export function scoreScriptTargets({ reference = [], buckets = {}, findings = []
 
     // What came back. THE BUCKETS' RULE FIRST, so the two can never disagree about what IS the mark —
     // then a disclosed widening. stopped the buckets scoring a longer Han mark that merely
-    // CONTAINS the target (gold 澜珀 was being scored off a different proprietor's 澜珀花间), and that is
+    // CONTAINS the target (gold 澜珀 was being scored off a different proprietor's longer mark), and that is
     // right for a recall verdict and wrong for this list: a script-lane target's reader needs to see
     // that the lane came back with a neighbour rather than with nothing, which is the difference
     // between a lane that did not fire and one that fired and missed.

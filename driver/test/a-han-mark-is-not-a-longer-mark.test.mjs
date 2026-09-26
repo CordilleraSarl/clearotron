@@ -2,7 +2,7 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // a-han-mark-is-not-a-longer-mark.test.mjs —.
 //
-// THE LIVE PAIR. Gold 澜珀 (class 9) scored as RETRIEVED because the run held 澜珀花间 (class 41, a
+// THE LIVE PAIR. Gold 澜珀 (class 9) scored as RETRIEVED because the run held a longer mark containing it (class 41, a
 // different proprietor). matchesReference's script rule was containment in both directions with no
 // owner gate — rule 4's test without rule 4's guard, on the one path where the guard matters most: a
 // Han mark carries no aliases and no consonant skeleton, so nothing further down the ladder catches the
@@ -24,7 +24,7 @@ import { matchesReference, scoreRecall, scoreScriptTargets } from "../reference-
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
 const GOLD = "澜珀";
-const OTHER = "澜珀花间";          // the run's mark, class 41, a DIFFERENT proprietor
+const OTHER = "澜珀竹灯";          // the run's mark, class 41, a DIFFERENT proprietor
 const GOLD_OWNER = "Ningbo Keltara Instruments Co., Ltd.";
 const OTHER_OWNER = "Suzhou Pellmire Interiors Co., Ltd.";
 
@@ -35,7 +35,7 @@ test("the fixture is the defect's own shape — void control", () => {
 });
 
 test("a different proprietor's longer Han mark is NOT the reference's mark", () => {
-  assert.equal(matchesReference(GOLD, OTHER), null, "this is the live miss: 澜珀 scored off 澜珀花间");
+  assert.equal(matchesReference(GOLD, OTHER), null, "this is the live miss: the reference mark scored off a longer one");
   assert.equal(matchesReference(OTHER, GOLD), null, "both directions — the rule was symmetric");
   assert.equal(matchesReference(GOLD, OTHER, { sameOwner: false }), null, "explicit false, same answer");
 });
