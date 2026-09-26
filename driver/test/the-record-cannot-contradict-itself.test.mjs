@@ -238,8 +238,8 @@ test("a removal WINS over a change on the same flag", () => {
   // The precedence that decides whether this is visible in practice: a flag naming several findings where
   // one vanished and the others moved is a removal. Reporting the majority outcome buries it exactly where
   // it was buried before.
-  const pre = { findings: [finding(4, "KORPHI"), finding(6, "VENZY"), finding(7, "PHINIA")] };
-  const post = { findings: [finding(6, "VENZY", { band: "MEDIUM" }), finding(7, "PHINIA", { band: "MEDIUM" })] };
+  const pre = { findings: [finding(4, "KORPHI"), finding(6, "VENZY"), finding(7, "AXLEVORN")] };
+  const post = { findings: [finding(6, "VENZY", { band: "MEDIUM" }), finding(7, "AXLEVORN", { band: "MEDIUM" })] };
   const [row] = buildCorrectionsApplied([flag(1, "Findings 4, 6, 7 — the bands are overstated", [4, 6, 7])], pre, post);
   assert.equal(row.outcome, "findings-removed");
   assert.deepEqual(row.removed, ["KORPHI"], "only the one that actually left, not every finding the flag named");
