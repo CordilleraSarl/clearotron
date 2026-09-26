@@ -86,8 +86,8 @@ export function isGatewayTimeout(text) {
 }
 
 /**
- * The token a question carries when it timed out on both halves of its regions: the source timed out, in
- * the words the report's deferral line already reads it with. The plan executor defers such a slice as a
+ * The token a question carries when it timed out on both halves of its regions, or on the one region a
+ * split came down to: the source timed out, in the words the report's deferral line already reads it with. The plan executor defers such a slice as a
  * disclosed gap instead of asking it again, because a smaller question did not answer either.
  */
 export const GATEWAY_STALL = "mechanical-fail:timeout";
@@ -403,10 +403,10 @@ export function makeEnumerate(deps) {
     const regions = params.regions;
     const mid = Math.ceil(regions.length / 2);
     const halves = [regions.slice(0, mid), regions.slice(mid)];
-    // EACH HALF IS ASKED ONCE AS IT STANDS before either is halved again (ruled 2026-09-25). When both
-    // halves time out too, the number of regions is not what makes the question slow, and halving further
-    // would only ask it more times: the question is not answered this run, with that reason, and the run
-    // goes on with the gap disclosed.
+    // EACH HALF IS ASKED ONCE AS IT STANDS before either is halved again. When both halves time out too,
+    // the number of regions is not what makes the question slow, and halving further would only ask it
+    // more times: the question is not answered this run, with that reason, and the run goes on with the gap
+    // disclosed.
     const asked = [];
     for (const half of halves) asked.push({ half, r: await enumerate(auth, { ...params, regions: half }, tctx, { split: false }) });
     const timedOut = ({ r }) => !isToolError(r) && parseToolText(r)?.gateway_timeout === true;
@@ -422,13 +422,29 @@ export function makeEnumerate(deps) {
     let total = 0;
     let screenLift = null;
     for (const { half, r: first } of asked) {
+      // ONE REGION THAT TIMES OUT ALONE meets the same wall as two halves that both time out: nothing is
+      // left to halve, and asking it again would only repeat the wait. It is the same stall, not answered
+      // this run, so the plan executor defers it rather than running the whole split a second time.
+      if (timedOut({ r: first }) && half.length === 1) {
+        return incomplete(total, merged.size, [...merged.values()],
+          `provider error — ${GATEWAY_STALL}: after a gateway timeout the question was asked again in region halves `
+          + `down to the one region ${half[0]}, which timed out alone too, so it is not answered this run. The gateway's `
+          + `words: ${parseToolText(first)?.reason ?? cause}`,
+          { region_split: { cause, parts } });
+      }
       // A half that timed out while its sibling answered is the one place fewer regions may help: it is
       // halved in turn, under the same rule.
-      const r = timedOut({ r: first }) && half.length > 1
+      const r = timedOut({ r: first })
         ? await regionHalves(auth, { ...params, regions: half }, tctx, { ceiling, incomplete, cause: parseToolText(first)?.reason ?? cause })
         : first;
       const parsed = isToolError(r) ? null : parseToolText(r);
       const which = `the ${half.length}-region half ${half[0]}${half.length > 1 ? `…${half[half.length - 1]}` : ""}`;
+      // A stall from a deeper split keeps its own reason, stall first, so the executor reads it however
+      // deep the split went and however short the reason is later cut.
+      if (parsed && parsed.state !== "enumerated" && isGatewayStall(parsed.reason)) {
+        return incomplete(total + (parsed.total_hits ?? 0), merged.size + (parsed.fetched ?? 0), [...merged.values(), ...(parsed.sample ?? [])],
+          parsed.reason, { region_split: { cause, parts } });
+      }
       if (!parsed || parsed.state !== "enumerated") {
         const said = parsed ? `came back ${parsed.state}: ${parsed.reason ?? ""}` : `failed: ${String(r?.text ?? "unparseable")}`;
         return incomplete(total + (parsed?.total_hits ?? 0), merged.size + (parsed?.fetched ?? 0), [...merged.values(), ...(parsed?.sample ?? [])],

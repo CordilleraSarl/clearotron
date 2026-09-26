@@ -93,15 +93,17 @@ test("when both halves time out too, the regions are not the cause: halving stop
   assert.deepEqual(out.region_split.parts, []);
 });
 
-test("a single region that still times out, while its sibling answered, ends the slice incomplete with the gateway's words whole", async () => {
+test("a single region that still times out alone is the same stall: nothing is left to halve, and the stall leads the reason", async () => {
   const { enumerate, asked } = register({ slow: (r) => r.includes("AA") });
   const out = parse(await enumerate({ names: ["QZXV"], regions: REGIONS }));
   assert.deepEqual(asked, [8, 4, 4, 2, 2, 1, 1], "down the slow side to one region, and no further");
   assert.equal(out.state, "incomplete");
-  assert.match(out.reason, /^after a gateway timeout the question was asked again in region halves, and the 4-region half AA…DD came back incomplete: /);
-  assert.match(out.reason, /provider error during enumeration \(page 0\): ERROR: register_search HTTP 504: /, "the executor must still read it as a provider error");
+  assert.ok(out.reason.startsWith(`provider error — ${GATEWAY_STALL}: after a gateway timeout the question was asked again in region halves `
+    + "down to the one region AA, which timed out alone too, so it is not answered this run. The gateway's words: "),
+    `the stall does not lead the reason, so a cut reason would lose it: ${out.reason.slice(0, 160)}`);
   assert.ok(out.reason.includes("END-OF-BODY"), "the gateway's body was clipped");
-  assert.equal(isGatewayStall(out.reason), false, "not a stall: the other half answered, so regions were the cause");
+  assert.equal(isGatewayStall(out.reason), true, "a region that times out alone meets the same wall, so it is a stall");
+  assert.ok(out.region_split, "the answer no longer says it was asked in parts");
 });
 
 test("THE CONTROL: any other error is reported as before, whole, and asked once", async () => {

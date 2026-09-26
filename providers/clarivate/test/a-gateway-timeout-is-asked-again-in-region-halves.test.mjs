@@ -75,7 +75,7 @@ test("a slice that ends incomplete after a split reports each office's count fro
     doEnumerate("k", "https://register.example.test", { names: ["QZXV"], regions: ["US", "CH", "GB", "DE"], match_mode: "exact" }, null));
   const parsed = JSON.parse(out.text);
   assert.equal(parsed.state, "incomplete");
-  assert.match(parsed.reason, /^after a gateway timeout the question was asked again in region halves, and the 2-region half GB…DE came back incomplete: /);
+  assert.match(parsed.reason, /^provider error — mechanical-fail:timeout: after a gateway timeout the question was asked again in region halves down to the one region DE, which timed out alone too/);
   assert.ok(parsed.reason.includes("END-OF-BODY") || parsed.reason.includes("HTTP 504"), parsed.reason);
   assert.deepEqual(parsed.per_office_counts, { US: 0, CH: 0, GB: 0 }, "the counts of every part, not only the first");
 });
@@ -115,4 +115,19 @@ test("through the plan executor, a question that timed out on both halves is def
   // The whole question, then each half once, each with the fetch's own one retry: 6 counts, and no second
   // round from the executor.
   assert.equal(asked.filter((a) => a.startsWith("/count")).length, 6, asked.join(" · "));
+});
+
+test("through the plan executor, a question whose last region times out alone is deferred, and the split runs once", async () => {
+  // DE times out even alone. Before, the answer read as an ordinary provider error: the executor ran the
+  // whole split a second time, and the block was left for the repair steps to run again.
+  const { plan, block, blocks, asked } = await executeOne((offices) => offices.includes("DE"));
+  assert.equal(block.error, true);
+  assert.equal(block.deferred, true, "a stall left to the recovery ladder would meet the same wall again");
+  assert.match(block.reason, /^provider error \(not asked again\): provider error — mechanical-fail:timeout: after a gateway timeout .* down to the one region DE/);
+  assert.equal(plainDeferralReason(block.reason), "the source timed out this run");
+  assert.deepEqual(joinPlanToBands(plan, { "transliteration-numeric": blocks }).deferred.map((d) => d.qid), ["q-slow"]);
+  // The whole question and each timed-out half with the fetch's own one retry, each other half once, and no
+  // second round from the executor.
+  assert.deepEqual(asked.filter((a) => a.startsWith("/count")).map((a) => a.split(" ")[1]),
+    ["US,CH,GB,DE", "US,CH,GB,DE", "US,CH", "GB,DE", "GB,DE", "GB", "DE", "DE"], asked.join(" · "));
 });

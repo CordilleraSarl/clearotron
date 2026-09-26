@@ -513,8 +513,9 @@ export function makeExecutePlan(deps) {
         try { return { r: rr, parsed: JSON.parse(rr?.text ?? "") }; } catch { return { r: rr, parsed: null }; }
       };
       let { r, parsed } = await runEnumerate();
-      // A question that timed out on both halves of its regions is not asked again here: a smaller question
-      // already did not answer, so the retry would only repeat the wait (the shared kernel's region split).
+      // A question that timed out on both halves of its regions, or on the one region a split came down to,
+      // is not asked again here: a smaller question already did not answer, so the retry would only repeat
+      // the wait (the shared kernel's region split).
       const stalled = (p) => isGatewayStall(p?.reason);
       if (providerErrored(parsed) && !stalled(parsed)) ({ r, parsed } = await runEnumerate());
       if (providerErrored(parsed)) {
