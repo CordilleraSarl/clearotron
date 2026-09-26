@@ -49,6 +49,9 @@ import { refuseUndeclared as refuseUndeclaredShared, keepIfAbsent, lastAccepted,
 // The collision predicate itself, imported. See the duplication note above: two copies of a rule are how
 // two gates come to disagree about what they are enforcing.
 import { kebabCollisions } from "./search-policy.mjs";
+// The plan's own checks for the web search's lists, one definition: the call is refused with the plan's
+// sentence, so the seat hears the rule once, in the same words, whichever door it reaches first.
+import { placesDefect, spellingsDefect } from "./verify-knockout.mjs";
 
 const SCHEMA_VERSION = 1;
 
@@ -73,7 +76,7 @@ export function knockoutFrameCallPaths(runDir) {
  * THE SHAPE THIS TOOL DECLARES, at every depth — the same shape `tools/list` serves the seat.
  *
  * BUILT FROM THE VALIDATOR AND THE SKILL'S OWN OUTPUT CONTRACT, which agree here — `MARK_KEYS` in
- * `verify-knockout.mjs` and the JSON block in `skills/knockout-frame/SKILL.md` list the same eight keys
+ * `verify-knockout.mjs` and the JSON block in `skills/knockout-frame/SKILL.md` list the same nine keys
  * in the same order. That agreement is worth stating rather than assuming: on the assess stage they did
  * NOT agree, and five fields the validator required were absent from the doctrine's own template.
  *
@@ -82,8 +85,8 @@ export function knockoutFrameCallPaths(runDir) {
  */
 const DECLARED = Object.freeze({
   "": ["schema", "batch", "marks", "scope_note"],
-  batch: ["productContext", "inUseAs", "umbrellaBrandNote", "executionOrder"],
-  marks: ["ref", "name", "classes", "beltAndBraces", "classesPlain", "contextFraming", "priorKnowledge", "priority"],
+  batch: ["productContext", "inUseAs", "places", "umbrellaBrandNote", "executionOrder"],
+  marks: ["ref", "name", "classes", "beltAndBraces", "classesPlain", "contextFraming", "spellings", "priorKnowledge", "priority"],
 });
 
 /** Refuse an undeclared key by path, through the shared implementation every transport now uses. */
@@ -122,6 +125,7 @@ export function mergeKnockoutFrameCall(stored, received) {
   out.batch = {
     productContext: keepIfAbsent(bPatch.productContext, bBase.productContext),
     inUseAs: keepIfAbsent(bPatch.inUseAs, bBase.inUseAs),
+    places: keepIfAbsent(bPatch.places, bBase.places),
     umbrellaBrandNote: keepIfAbsent(bPatch.umbrellaBrandNote, bBase.umbrellaBrandNote),
     executionOrder: keepIfAbsent(bPatch.executionOrder, bBase.executionOrder),
   };
@@ -149,6 +153,9 @@ export function acceptKnockoutFrame(params) {
   if (!productContext)
     return { ok: false, reason: "knockoutframe_context_missing: batch.productContext (one sentence) is required — every mark's contextFraming is read against it" };
 
+  const placesRefused = placesDefect(params?.batch?.places);
+  if (placesRefused) return { ok: false, reason: `knockoutframe_places: ${placesRefused}` };
+
   const marks = Array.isArray(params?.marks) ? params.marks : null;
   if (!marks || !marks.length)
     return { ok: false, reason: "knockoutframe_marks_missing: marks[] is required and cannot be empty — a plan carries one row per instructed mark" };
@@ -158,9 +165,11 @@ export function acceptKnockoutFrame(params) {
     if (!name)
       return { ok: false, reason: "knockoutframe_mark_unnamed: every plan mark carries its name verbatim from the instructed scope" };
     if (!str(m?.classesPlain))
-      return { ok: false, reason: `knockoutframe_classes_plain:${name} — classesPlain is required: the sweep prompt's plain-language class line` };
+      return { ok: false, reason: `knockoutframe_classes_plain:${name} — classesPlain is required: the plain-language class line` };
     if (!str(m?.contextFraming))
       return { ok: false, reason: `knockoutframe_context_framing:${name} — contextFraming is required, and the rating hangs off it: the assess stage is told to rate WITH this field, per mark` };
+    const spellingsRefused = spellingsDefect(name, m?.spellings);
+    if (spellingsRefused) return { ok: false, reason: `knockoutframe_spellings:${name} — ${spellingsRefused}` };
     for (const ck of ["classes", "beltAndBraces"]) {
       if (m?.[ck] != null && !isClassArray(m[ck]))
         return { ok: false, reason: `knockoutframe_classes:${name}.${ck} must be Nice-class integers 1–45 — these interpolate into report and email HTML, so a free string is both a contract break and an injection surface` };

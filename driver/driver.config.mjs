@@ -1671,13 +1671,16 @@ export function activeProvider(env = null) {
 
 
 // ── Research providers (Phase 2a, knockout lane) — the same lazy-import + cred-guard idiom as
-// PROVIDERS, for CODE-side research calls (no model in the data path). The knockout sweep's live
-// executor; tests inject their own, the dev instance uses CLEAROTRON_KNOCKOUT_SWEEP_FIXTURES. Knobs:
-//   PERPLEXITY_API_KEY                — required for live sweeps (absent ⇒ every call degrades, loud)
-//   CLEAROTRON_KNOCKOUT_PRESET            — perplexity preset (default "pro-search"; "deep-research" = deeper/costlier)
-//   CLEAROTRON_KNOCKOUT_SWEEP_FIXTURES    — dir of <mark-kebab>.md canned payloads ($0 dev/e2e), and
-//                                           <mark-kebab>.in-use-as.md for each mark's second question
+// PROVIDERS, for CODE-side research calls (no model in the data path). The knockout's live executors:
+// `grid` runs one mark's web search as a dictated grid, `research` asks one question (the owner lookups).
+// Tests inject their own, the dev instance uses CLEAROTRON_KNOCKOUT_SWEEP_FIXTURES. Knobs:
+//   PERPLEXITY_API_KEY                — required for live calls (absent ⇒ the web half is skipped, loud)
+//   CLEAROTRON_KNOCKOUT_SWEEP_FIXTURES    — dir of canned answers ($0 dev/e2e): <mark-kebab>.grid.json, the
+//                                           grid program's printed ledger for a mark, and <mark-kebab>.md,
+//                                           the answer to a question asked about that mark
 //   CLEAROTRON_KNOCKOUT_MODEL             — LLM override for the frame/assess turns (default opus)
+// The preset and the reasoning setting are not knobs: they are pinned in stages-knockout.mjs, so no
+// environment can quietly move them.
 export const RESEARCH_PROVIDERS = {
   perplexity: {
     // The vendor's own name, for the staff config page's provider inventory (config-inventory.mjs).
@@ -1701,8 +1704,11 @@ export const RESEARCH_PROVIDERS = {
         const body = core.buildRequestBody({ task, preset });
         const data = await core.callAgentAPI(process.env.PERPLEXITY_API_KEY, body, { retries: core.retriesForPreset(preset) });
         const text = core.formatResponse(data, preset);
-        if (!text || !String(text).trim()) return { ok: false, cause: "empty research response" };
-        return { ok: true, text: String(text), bytes: Buffer.byteLength(String(text)), tookMs: Date.now() - started };
+        // The searches behind the answer, kept for the caller to write into the run: the answer alone
+        // cannot say which pages were retrieved.
+        const raw = core.rawResultItems(data);
+        if (!text || !String(text).trim()) return { ok: false, cause: "empty research response", raw };
+        return { ok: true, text: String(text), bytes: Buffer.byteLength(String(text)), tookMs: Date.now() - started, raw };
       } catch (e) {
         // OUTAGE-SHAPED OR NOT — the caller cannot tell from prose, so say it here.
         //
@@ -1725,6 +1731,38 @@ export const RESEARCH_PROVIDERS = {
           cause: `research call threw: ${String(e?.message ?? e).slice(0, 200)}`,
           status,
           outage: status === 429 || (status >= 500 && status <= 599),
+        };
+      }
+    },
+    /**
+     * ONE DICTATED GRID, THROUGH THE CLEARANCE GRID'S OWN FUNCTIONS: the program task built from the spec,
+     * the sandbox call, and the capture that reconciles what the program printed against every cell the
+     * spec asked for. Nothing is summarised; the ledger is what came back.
+     *
+     * The outage rule is `research`'s, for the same reason: 429 and 5xx park, anything else is loud.
+     */
+    async grid(spec, { preset = "pro-search", reasoning = null } = {}) {
+      if (!process.env.PERPLEXITY_API_KEY) return { ok: false, cause: "PERPLEXITY_API_KEY absent from driver env" };
+      let core;
+      try { core = await import("../providers/perplexity/src/core.js"); }
+      catch (e) { return { ok: false, cause: `perplexity core unavailable: ${e.message}` }; }
+      const started = Date.now();
+      try {
+        const body = core.buildRequestBody({ task: core.buildGridProgramTask(spec), preset, enableSandbox: true, reasoning });
+        const data = await core.callAgentAPI(process.env.PERPLEXITY_API_KEY, body, { retries: core.retriesForPreset(preset) });
+        const raw = core.rawResultItems(data);
+        const cap = core.captureGridFromResponse(data, spec);
+        if (!cap.ok) return { ok: false, cause: `grid: ${String(cap.error ?? "capture failed").slice(0, 200)}`, raw, tookMs: Date.now() - started };
+        return { ok: true, ledgerJson: cap.ledgerJson, present: cap.present, requested: cap.requested, missing: cap.missing.length,
+          bytes: Buffer.byteLength(cap.ledgerJson), tookMs: Date.now() - started, raw };
+      } catch (e) {
+        const status = Number.isInteger(e?.status) ? e.status : null;
+        return {
+          ok: false,
+          cause: `grid call threw: ${String(e?.message ?? e).slice(0, 200)}`,
+          status,
+          outage: status === 429 || (status >= 500 && status <= 599),
+          tookMs: Date.now() - started,
         };
       }
     },

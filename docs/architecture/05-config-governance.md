@@ -164,7 +164,7 @@ structural, or dev seam); [dev] = dev/test seam, never set in prod.
 `CLEAROTRON_OPENAI_MODEL_CHEAP` (all gpt-5.6-sol),
 `CLEAROTRON_CLAUDE_PATH` (claude on PATH, then the copy Clearotron installed),
 `CLEAROTRON_SYNTHESIS_MODEL` (opus), `CLEAROTRON_KNOCKOUT_MODEL` (opus),
-`CLEAROTRON_KNOCKOUT_PRESET` (pro-search), `CLEAROTRON_MAX_BUDGET_USD` (unset).
+`CLEAROTRON_MAX_BUDGET_USD` (unset).
 
 The Claude program's own cloud settings — `CLAUDE_CODE_USE_FOUNDRY`, `CLAUDE_CODE_USE_VERTEX` and
 `CLAUDE_CODE_USE_BEDROCK`, each cloud's own settings, the gateway pair and the model pins — are the

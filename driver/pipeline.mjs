@@ -8489,7 +8489,7 @@ async function pipelineInner(job, opts = {}) {
   // established one — a fixture clearance holds no live credential of any kind.
   //
   // This moves a failure earlier; it does not add one. Without it the run spends every register stage
-  // and dies at the grid, which is `perplexity-server.mjs:149` handing the model an ERROR string per
+  // and dies at the grid, which is `research` in perplexity-server.mjs handing the model an ERROR string per
   // call — the shape named "degrades every mark per-call and the batch dies all-failed only AFTER
   // the paid frame turn" when it removed the knockout's refusal for the same reason in the other
   // direction. ADR-0003 carries the ruling for both lanes.
@@ -16345,6 +16345,10 @@ const RETIRED_ENV = {
   // conflicts any more, so a box that set either to 0 loses nothing and one that left them on gains nothing.
   CLEAROTRON_RECALL_PROBES: ["2026-09-24", "the feature was removed"],
   CLEAROTRON_RECALL_TRIPWIRE: ["2026-09-24", "the feature was removed"],
+
+  // Set in no environment file on any box when it was retired. The knockout's web search now runs one
+  // pinned setting, so an old line stays harmless and says so.
+  CLEAROTRON_KNOCKOUT_PRESET: ["2026-09-25", "the knockout's web search settings are fixed in the build"],
 };
 
 /** One warning line per retired variable still set in `env`. Pure; [] when the environment is clean. */
