@@ -569,6 +569,11 @@ export const validators = {
           const url = String(row?.url ?? "").trim();
           const ground = String(row?.ground ?? "").trim();
           if (!url) return { ok: false, reason: `mark "${m.name}": a setAside row has no url — name the result you are setting aside by its own address, verbatim from the payload you were given` };
+          // THE GROUND IS NOT LENGTH-BOUNDED, and `useKind` in the frame beside it is. The difference is
+          // where each one goes: a kind of use is appended to every cell's QUERY, so three extra words are
+          // searched in every cell and bury the spelling, while a ground is prose a reader reads, in the
+          // same class as `registerReads[].read` and a finding's `basis` — both unbounded, for the same
+          // reason. Capping it would buy nothing and would teach the rater to write half a reason.
           if (!ground) return { ok: false, reason: `mark "${m.name}": setAside row "${url}" has an empty ground. Omit the row rather than sending an empty one: a set-aside with no reason is not a decision` };
         }
       }

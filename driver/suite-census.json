@@ -5741,7 +5741,7 @@
         },
         "the-knockout-searches-every-spelling-on-every-place.test.mjs": {
           "tests": 13,
-          "asserts": 81,
+          "asserts": 84,
           "skips": 0,
           "todos": 0
         },

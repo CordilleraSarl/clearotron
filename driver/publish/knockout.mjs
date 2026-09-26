@@ -175,9 +175,26 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
     for (const s of m.setAside ?? []) {
       const url = String(s?.url ?? '').trim();
       const ground = String(s?.ground ?? '').trim();
-      if (!url || !ground) continue;
+      // A ROW WITHOUT ITS GROUND IS STILL A ROW. The validator refuses one on the way in, but this
+      // function is also called directly on a re-render of an existing `knockout-findings.json`, with no
+      // validator between — so a record from another build can arrive half-formed here. Dropping it
+      // silently would print the mark as having set nothing aside, which is the absence-reads-as-a-pass
+      // shape. The row stays, and it is marked Degraded, because part of this record genuinely is missing.
+      //
+      // ITS REASON CELL IS LEFT EMPTY, and that is deliberate rather than unfinished. The row's own
+      // shipped line for a part left open says "it could not be completed this run" — and here the
+      // set-aside WAS completed; only its reason is absent from the record another build wrote. Printing
+      // that line would tell a client a step failed when none did, which is the defect this very sheet
+      // was cleaned of. No shipped string says "the reason is not in this record", and writing one is a
+      // new sentence a client reads, so it is not this function's to write. Empty says nothing untrue,
+      // and the Degraded mark beside it is what carries the fact that something is missing.
+      //
+      // A row with no url has nothing to name and nothing to look up, so it is the one shape that
+      // cannot be printed at all.
+      if (!url) continue;
       trailRows.push({ 'Mark': m.name, 'Search Term': `Set aside: ${url}`, 'Source / Context': '—',
-        'Result Summary': ground, 'Finding Reference': '—', 'Sweep Call #': '—', 'Wall-time (s)': '—', 'OK/Degraded': 'OK' });
+        'Result Summary': ground,
+        'Finding Reference': '—', 'Sweep Call #': '—', 'Wall-time (s)': '—', 'OK/Degraded': ground ? 'OK' : 'Degraded' });
     }
   }
   addSheet(wb, 'Findings', ['Mark', 'Finding Reference', 'Finding Name', 'Owner', 'Band', 'Type', 'Net', 'Basis', 'Evidence'], findingRows);

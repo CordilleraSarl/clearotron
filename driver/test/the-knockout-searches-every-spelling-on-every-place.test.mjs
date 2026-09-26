@@ -40,6 +40,7 @@ const { driverDir } = await import("../../shared/driver-dir.mjs");
 const { knockoutInner } = await import("../pipeline-knockout.mjs");
 const { KO_STAGES, koPaths, knockoutGridSpec, KNOCKOUT_WEB, kebab } = await import("../stages-knockout.mjs");
 const { buildKnockoutWorkbook } = await import("../publish/knockout.mjs");
+const { plainDeferralReason } = await import("../deferral-row.mjs");
 const { knockoutReceipts, validators, placesDefect, spellingsDefect, useKindDefect } = await import("../verify-knockout.mjs");
 const { acceptKnockoutFrame, refuseUndeclared } = await import("../knockout-frame-record.mjs");
 const { buildRequestBody, buildGridProgramTask, validateGridSpec, SANDBOX_INSTRUCTIONS } = await import("../../providers/perplexity/src/core.js");
@@ -178,10 +179,12 @@ test("what the rating did not carry reaches the audit workbook with the rater's 
   const findings = { marks: [
     { name: "LANTERNWICK", findings: [], setAside: [
       { url: "https://example.test/fan-page", ground: GROUND },
-      // Refused by the validator, so it cannot arrive — but the sheet is built from the merged artifact,
-      // which a run delivered before the field existed also feeds. A half-row is dropped, never printed
-      // as a set-aside with no reason.
+      // REFUSED BY THE VALIDATOR, so it cannot arrive on a fresh run — but this builder is also called
+      // directly on a re-render of an existing record, with no validator between, so a half-formed row
+      // from another build reaches here. It must not vanish: a mark that set something aside would print
+      // as having set nothing aside.
       { url: "https://example.test/no-ground", ground: "  " },
+      // The one shape that cannot be printed: nothing to name and nothing to look up.
       { url: "", ground: "a ground with nothing to attach it to" },
     ] },
     { name: "MOSSGLEN", findings: [] },
@@ -195,13 +198,28 @@ test("what the rating did not carry reaches the audit workbook with the rater's 
   const rows = [];
   ws.eachRow((row, n) => { if (n > 1) rows.push(Object.fromEntries(head.map((h, i) => [h, String(row.values[i + 1] ?? "")]))); });
   const aside = rows.filter((r) => r["Search Term"].startsWith("Set aside: "));
-  assert.equal(aside.length, 1, `only the complete row prints: ${JSON.stringify(rows.map((r) => r["Search Term"]))}`);
-  assert.equal(aside[0]["Search Term"], "Set aside: https://example.test/fan-page");
-  assert.equal(aside[0]["Result Summary"], GROUND, "the ground is the rater's words, carried through");
-  assert.equal(aside[0]["Mark"], "LANTERNWICK");
+  assert.equal(aside.length, 2, `the row with no address cannot print; the one missing its ground must: ${JSON.stringify(rows.map((r) => r["Search Term"]))}`);
+
+  const complete = aside.find((r) => r["Search Term"].endsWith("/fan-page"));
+  assert.equal(complete["Search Term"], "Set aside: https://example.test/fan-page");
+  assert.equal(complete["Result Summary"], GROUND, "the ground is the rater's words, carried through");
+  assert.equal(complete["Mark"], "LANTERNWICK");
   // READING A RESULT AND PUTTING IT DOWN IS THE SCREEN WORKING, so the row is not a degraded one: a
   // Degraded here would tell the reader a part of the screen failed when the opposite happened.
-  assert.equal(aside[0]["OK/Degraded"], "OK");
+  assert.equal(complete["OK/Degraded"], "OK");
+
+  // AND THE HALF-FORMED ROW IS VISIBLE RATHER THAN DROPPED, marked Degraded because part of this record
+  // is genuinely missing. Dropped silently, this mark would read as having set nothing aside.
+  const half = aside.find((r) => r["Search Term"].endsWith("/no-ground"));
+  assert.equal(half["OK/Degraded"], "Degraded");
+  // ITS REASON CELL SAYS NOTHING, and the arm pins the emptiness on purpose. The row's shipped line for a
+  // part left open asserts a step could not be completed, and here the set-aside was completed — only its
+  // reason is absent from the record. That line would tell a client a step failed when none did, which is
+  // what this sheet was cleaned of; no shipped string says "the reason is not in this record", and a new
+  // one is a sentence a client reads. Empty asserts nothing untrue, and Degraded carries the fact.
+  assert.equal(half["Result Summary"], "", "an empty reason is the only honest one until a sentence exists for it");
+  assert.notEqual(half["Result Summary"], plainDeferralReason("unfinished"),
+    "this row must never claim a step could not be completed: the set-aside happened, its reason did not survive");
 });
 
 test("the clearance grid's request is unchanged: no reasoning setting, and its own 10 asked and 8 kept", () => {
