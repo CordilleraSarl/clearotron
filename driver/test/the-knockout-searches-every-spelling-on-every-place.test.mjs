@@ -48,17 +48,32 @@ const { RESEARCH_PROVIDERS } = await import("../driver.config.mjs");
 
 // ── The plan's two lists, checked as the search program will read them ─────────────────────────────
 
-const PLACES_SENTENCE = 'batch.places is required: 2 to 4 places, one of them "web" and each other a bare host';
+const PLACES_SENTENCE = 'mark "LANTERNWICK": places is required: 2 or more places, one of them "web" and each other a bare host';
+const BATCH_PLACES_SENTENCE = 'batch.places is required: 2 or more places, one of them "web" and each other a bare host';
 
-test("the places are `web` and bare hosts in lower case, 2 to 4 of them, exactly one of them the web", () => {
-  for (const ok of [["web", "fandom.com"], ["store.steampowered.com", "web", "fandom.com", "itch.io"]])
-    assert.equal(placesDefect(ok), null, JSON.stringify(ok));
+test("a name's places are `web` and bare hosts in lower case, two or more, exactly one of them the web", () => {
+  for (const ok of [
+    ["web", "fandom.com"],
+    ["store.steampowered.com", "web", "fandom.com", "itch.io"],
+    // FIVE, AND MORE, ARE LEGAL (ruling 570). The five-place list was among the refusals before, under a
+    // cap of four; it is kept here as an accepted case rather than deleted, because a list PASSING is the
+    // evidence the cap is gone and a deleted case is evidence of nothing.
+    ["web", "a.com", "b.com", "c.com", "d.com"],
+    ["web", ...Array.from({ length: 30 }, (_, i) => `store${i}.example.com`)],
+  ]) assert.equal(placesDefect("LANTERNWICK", ok), null, JSON.stringify(ok).slice(0, 80));
+
+  // The floor, the one web and the shape of a host all stand: one place is not a screen, ruling 543 puts
+  // the whole web in every list, and a place is passed to the provider as a site filter exactly as written.
   for (const bad of [
-    undefined, [], ["web"], ["web", "a.com", "b.com", "c.com", "d.com"],
+    undefined, [], ["web"],
     ["web", "web"], ["fandom.com", "itch.io"], ["Web", "fandom.com"], ["web", "Fandom.com"],
     ["web", "https://fandom.com"], ["web", "fandom.com/wiki"], ["web", " fandom.com"], ["web", "fandom"],
     ["web", "fandom.com", "fandom.com"], ["web", 7],
-  ]) assert.equal(placesDefect(bad), PLACES_SENTENCE, JSON.stringify(bad));
+  ]) assert.equal(placesDefect("LANTERNWICK", bad), PLACES_SENTENCE, JSON.stringify(bad));
+
+  // The same check names the batch when it is reading an archived plan's one list, and the refusal says so.
+  assert.equal(placesDefect(null, ["web"]), BATCH_PLACES_SENTENCE);
+  assert.equal(placesDefect(null, ["web", "fandom.com"]), null);
 });
 
 test("the spellings are 2 or 3 searches, the name among them and none a repeat of another", () => {
@@ -88,14 +103,17 @@ test("the kind of use is required, asked for in one to three words, and a longer
     assert.equal(useKindDefect("LANTERNWICK", long), null, `refused a longer kind of use: ${JSON.stringify(long)}`);
 });
 
-test("the plan and the frame's tool refuse with the same sentence, and the tool declares all three fields", () => {
+test("the plan and the frame's tool refuse with the same sentence, and the tool declares all four fields", () => {
   const dir = mkdtempSync(join(tmpdir(), "knockout-web-plan-"));
-  const batch = { productContext: "video games", inUseAs: "a character or a place in a game", places: ["web", "fandom.com"] };
+  // NO BATCH LIST: from ruling 570 the places are the mark's. The archived shape, a batch list and marks
+  // without one, is driven in its own arm below.
+  const batch = { productContext: "video games", inUseAs: "a character or a place in a game" };
   const mark = { ref: null, name: "LANTERNWICK", classes: [9], beltAndBraces: [], classesPlain: "game software (9)",
-    contextFraming: "the flagship game", useKind: "character", spellings: ["LANTERNWICK", "LANTERN WICK"], priorKnowledge: null, priority: 1 };
+    contextFraming: "the flagship game", useKind: "character", places: ["web", "fandom.com"],
+    spellings: ["LANTERNWICK", "LANTERN WICK"], priorKnowledge: null, priority: 1 };
   const plan = (b, m) => JSON.stringify({ schema: 1, batch: b, marks: [m] });
   assert.equal(validators.knockoutPlan(join(dir, "knockout-plan.json"), plan(batch, mark)).ok, true);
-  const noPlaces = validators.knockoutPlan(join(dir, "knockout-plan.json"), plan({ ...batch, places: undefined }, mark));
+  const noPlaces = validators.knockoutPlan(join(dir, "knockout-plan.json"), plan(batch, { ...mark, places: undefined }));
   assert.equal(noPlaces.reason, PLACES_SENTENCE);
   const noSpellings = validators.knockoutPlan(join(dir, "knockout-plan.json"), plan(batch, { ...mark, spellings: undefined }));
   assert.match(noSpellings.reason, /^mark "LANTERNWICK": spellings is required/);
@@ -104,10 +122,21 @@ test("the plan and the frame's tool refuse with the same sentence, and the tool 
 
   const call = (b, m) => acceptKnockoutFrame({ scope_note: "One name, screened.", batch: b, marks: [m] });
   assert.equal(call(batch, mark).ok, true);
-  assert.equal(call({ ...batch, places: ["web"] }, mark).reason, `knockoutframe_places: ${PLACES_SENTENCE}`);
+  assert.equal(call(batch, { ...mark, places: ["web"] }).reason, `knockoutframe_places:LANTERNWICK — ${PLACES_SENTENCE}`);
   assert.match(call(batch, { ...mark, spellings: ["LANTERN WICK", "X"] }).reason, /^knockoutframe_spellings:LANTERNWICK — mark "LANTERNWICK": spellings is required/);
   assert.match(call(batch, { ...mark, useKind: undefined }).reason, /^knockoutframe_use_kind:LANTERNWICK — mark "LANTERNWICK": useKind is required/);
-  assert.equal(refuseUndeclared({ batch, marks: [mark] }), null, "the tool declares all three fields");
+  assert.equal(refuseUndeclared({ batch, marks: [mark] }), null, "the tool declares all four fields");
+
+  // THE ARCHIVED SHAPE STILL VALIDATES AND STILL RUNS: one list on the batch, no list on the marks. That
+  // is the whole of 570's back-compatibility, and without this arm a plan frozen last week would be
+  // refused by a rule written today.
+  const oldBatch = { ...batch, places: ["web", "fandom.com"] };
+  const { places: _dropped, ...oldMark } = mark;
+  assert.equal(validators.knockoutPlan(join(dir, "knockout-plan.json"), plan(oldBatch, oldMark)).ok, true,
+    "a plan frozen before the field existed is refused by a rule written after it");
+  assert.equal(call(oldBatch, oldMark).ok, true, "and the frame's tool accepts the same shape");
+  // …and a bad batch list is still named as the batch's, so an archived plan reads back under its own rule.
+  assert.equal(call({ ...batch, places: ["web"] }, oldMark).reason, `knockoutframe_places: ${BATCH_PLACES_SENTENCE}`);
 });
 
 test("the spec is the plan's own lists, copied, with the knockout's results per cell", () => {
@@ -300,7 +329,10 @@ test("each mark is one grid call, its ledger is its research file, and everythin
   for (const m of plan.marks) {
     const b = grids.find((x) => x.input.includes(`TERMS (${m.spellings.length}): ${JSON.stringify(m.spellings)}`));
     assert.ok(b, `no call carried ${m.name}'s spellings verbatim`);
-    assert.ok(b.input.includes(`PLATFORMS (${plan.batch.places.length}): ${JSON.stringify(plan.batch.places)}`), "the batch's places, verbatim");
+    // THIS MARK'S OWN PLACES, verbatim (ruling 570) — read off the frozen plan's mark row, not the batch,
+    // so a driver that sent one batch-wide list would fail here rather than pass on a shared default.
+    assert.ok(Array.isArray(m.places) && m.places.length >= 2, `${m.name}'s plan row carries no places`);
+    assert.ok(b.input.includes(`PLATFORMS (${m.places.length}): ${JSON.stringify(m.places)}`), `${m.name}'s own places are not in its call, verbatim`);
     // AND THE KIND OF USE the frame named for THIS mark, read off the frozen plan rather than written
     // here, so the arm fails if the driver sends a use the plan does not hold.
     assert.ok(m.useKind, `${m.name}'s plan row carries no kind of use`);
@@ -326,7 +358,12 @@ test("each mark is one grid call, its ledger is its research file, and everythin
   assert.deepEqual(
     { ok: lw.ok, preset: lw.preset, reasoning: lw.reasoning, resultsPerCell: lw.resultsPerCell, cells: lw.cells, present: lw.present, attempts: lw.attempts },
     { ok: true, preset: "pro-search", reasoning: "low", resultsPerCell: 10, cells: 4, present: 4, attempts: 1 });
-  assert.deepEqual([lw.spellings, lw.places], [plan.marks.find((m) => m.name === "LANTERNWICK").spellings, plan.batch.places]);
+  const lwRow = plan.marks.find((m) => m.name === "LANTERNWICK");
+  assert.deepEqual([lw.spellings, lw.places], [lwRow.spellings, lwRow.places], "the receipt does not carry THIS mark's own places");
+  // AND THE TWO MARKS' LISTS DIFFER in this batch, which is what makes the assertion above able to fail:
+  // against one shared list it would pass however the driver resolved them.
+  const mgRow = plan.marks.find((m) => m.name === "MOSSGLEN");
+  assert.notDeepEqual(lwRow.places, mgRow.places, "both marks were framed with the same places, so nothing here could tell them apart");
   // AND THE USE ON THE RECEIPT, so what each cell searched is readable after the run from the receipt
   // alone, beside the spellings and the places it was crossed with.
   assert.equal(lw.use, plan.marks.find((m) => m.name === "LANTERNWICK").useKind, "the receipt does not say what use the cells carried");
