@@ -153,7 +153,7 @@ export function classifyRecord(markText, targets) {
     //
     // THIS PARAGRAPH USED TO SAY "narrower than the scorer's rule", and it was right when it was
     // written: matchesReference's script rule was unowned containment in both directions until,
-    // which scored gold 澜珀 as retrieved off a different proprietor's 澜珀花间. The scorer now takes
+    // which scored gold 澜珀 as retrieved off a different proprietor's longer mark that contains it. The scorer now takes
     // equality too, with one owner-gated containment escape the floors deliberately do not have. The
     // two agree; neither is the looser one any more.
     const raw = text.normalize("NFKC").trim();

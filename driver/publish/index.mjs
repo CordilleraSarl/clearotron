@@ -12,7 +12,7 @@ import { join, dirname } from 'node:path';
 import { driverDir, RUN_DIR_MODE } from '../../shared/driver-dir.mjs';   //
 import { parseReport, parseAudit, parseSections, parseBlocks, stripInternal, parseCaseLawProfiles, parseCaseLawPreamble, joinCaseLawProfiles } from './parse.mjs';
 import { renderHtml, parseActionBuckets, actYouConditions } from './render.mjs';
-import { buildAudit } from './xlsx.mjs'; import { readDegradedPartRows } from '../degraded-parts.mjs'; import { readDeclinations } from '../declination-tool.mjs'; import { frameSetAsideRows } from '../web-grid.mjs';   // — what synthesis set aside, with its grounds; and the stores the matter frame set aside, with its reason
+import { buildAudit } from './xlsx.mjs'; import { readDegradedPartRows, degradedPartRows, degradedAtPublish, storeStates, readDeliveredStores, mergeDegradedRows } from '../degraded-parts.mjs'; import { readDeclinations } from '../declination-tool.mjs'; import { frameSetAsideRows } from '../web-grid.mjs';   // — what synthesis set aside, with its grounds; and the stores the matter frame set aside, with its reason
 import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, joinFindingToBlock, CLIENT_TIER_BY_COMPOSITE, projectCoverageJudgment } from '../findings-model.mjs';
 import { readStore, requiredAbsent, nonClosingAbsences } from './publish-inputs.mjs'; import { coverageFormStamp, readCoverageForm } from '../coverage-form-io.mjs'; import { readReleasedFamilies } from '../withheld-families.mjs'; import { unitLabel } from '../coverage-form.mjs'; import { coverageUnitLabel } from '../coverage-ledger.mjs'; import { recallReceiptForOwnCompany } from '../recall-receipt.mjs';   // — and why an absence did not close; whose recall checks an audit lists
 import { clearanceReportData } from './report-data.mjs';
@@ -1143,6 +1143,15 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
   // test that exercises publishReport has no findings — so buildAudit was skipped and the suite went
   // green on a publish path that would have thrown on every run that actually has a workbook.
   let auditFile = null, counts = null, auditError = null;
+  // THE PARTS ONLY PUBLISHING SEES (degraded-parts.mjs degradedAtPublish): a store present and unreadable
+  // now, or one delivery read and a republish finds missing. Their rows follow delivery's, one per name,
+  // and they are recorded in meta.json and the run log beside them; delivery's own record is never
+  // rewritten, because it is the state at delivery.
+  const publishParts = degradedAtPublish(storeStates(runDir ?? dirname(reportMd)), readDeliveredStores(runDir ?? dirname(reportMd)));
+  if (publishParts.length && runDir) {
+    try { runLog(runDir, { event: 'degraded-parts-at-publish', parts: publishParts.map((d) => ({ part: d.part, cause: d.cause })) }); }
+    catch { /* the workbook row is the record that matters; this line is the second copy */ }
+  }
   const auditParsed = (auditMd && existsSync(auditMd)) ? parseAudit(auditMd) : null;
   if (auditMd && existsSync(auditMd)) copyRO(auditMd, 'audit.md');   // durable source (kept even if the xlsx fails)
   if (findings.length || auditParsed) {
@@ -1157,7 +1166,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
       // the same rule (the workbook's own BANNED gate had already started firing on the raw detail —
       // advisory, so CI stayed green). reviewReceipts.lint keeps its raw detail for the internal
       // readers above (fetchState reads registry-record-coverage's URIs out of it).
-      counts = await buildAudit({ degradedParts: runDir ? readDegradedPartRows(runDir) : [], droppedConditions, undispatchedProbes, withheldFamilies, releasedFamilies: releasedFamilyRows(runDir ?? dirname(reportMd)), setAside, findings, frameworkMethod, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null }, auditParsed, join(poolRunDir, auditFile), fm.title, fm);
+      counts = await buildAudit({ degradedParts: mergeDegradedRows(runDir ? readDegradedPartRows(runDir) : [], degradedPartRows(publishParts)), droppedConditions, undispatchedProbes, withheldFamilies, releasedFamilies: releasedFamilyRows(runDir ?? dirname(reportMd)), setAside, findings, frameworkMethod, coverage, contextNotes, coverageJudgment, markAssessment, corrections: correctionsDoc, fetchState, verdict: verdictInfo, jurisdiction, commonLawJoinedTerms, registerOnly, clientGate, lintFailures: deliveryFlagLines(reviewReceipts.lint), productName, registerPublishesRecordPages: runOrigins == null ? null : runOrigins.length > 0, recordLinks: officeLinks?.byUri ?? null }, auditParsed, join(poolRunDir, auditFile), fm.title, fm);
       grpRead(join(poolRunDir, auditFile), 0o640);
       if (counts?.gateViolations?.length) console.warn(`[audit-workbook] advisory: ${counts.gateViolations.join(' | ')}`);
     } catch (e) {
@@ -1375,6 +1384,8 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     overall: verdictInfo?.tier ?? fm.overall_label, badge: verdictInfo?.badge ?? fm.overall_badge, run: fm.run, date: dateOf(fm.run), auditFile,
     // WHY THERE IS NO WORKBOOK, when the build threw. Absent when it built, so such a meta is unchanged.
     auditError: auditError ?? undefined,
+    // THE PARTS PUBLISHING FOUND DEGRADED, with their raw causes, which no cell carries. Absent when none.
+    degradedAtPublish: publishParts.length ? publishParts.map((d) => ({ part: d.part, name: d.name, cause: d.cause })) : undefined,
     // spec 64 — THE one risk statement (band + stance in one sentence, composed once by the sidecar
     // writer). Absent on legacy runs — regenIndex re-reads every historical meta.json, so consumers
     // null-guard and old rows render byte-identically.

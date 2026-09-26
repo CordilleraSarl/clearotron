@@ -19,12 +19,14 @@
 // deferral row translates into its reader's words. The row is that builder's, so this module writes no
 // sentence, and no raw cause reaches a reader's cell: the cause stays on the run's record.
 //
-// A pure leaf: node:fs, node:path, shared/driver-dir.mjs and the row's own module only, so it cannot drag
-// driver.config.mjs, whose unset-env defaults are PRODUCTION, into anything that imports it.
+// A pure leaf: node:fs, node:path, shared/driver-dir.mjs, the row's own module and the publisher's table of
+// stores (itself node:fs and node:path only), so it cannot drag driver.config.mjs, whose unset-env defaults
+// are PRODUCTION, into anything that imports it.
 import { readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
 import { deferralCoverageRow } from "./deferral-row.mjs";
+import { PUBLISH_INPUTS, readStore } from "./publish/publish-inputs.mjs";
 
 // The name each part is given: a label the report or the workbook already prints. Never a new phrase.
 export const PART_NAMES = {
@@ -34,7 +36,24 @@ export const PART_NAMES = {
   localLanguage: "Local-language investigation",   // the report's search-coverage row (publish/render.mjs)
   findings: "Findings",                // the workbook's tab (publish/xlsx.mjs)
   machineQc: "Machine QC",             // the workbook's Summary row for the checks (publish/xlsx.mjs)
+  conditions: "Conditions",            // the gaps sheet's area for a condition that reaches no page (publish/index.mjs)
+  coverage: "Coverage & gaps",         // the workbook's tab (publish/xlsx.mjs)
+  marketplaceWeb: "Marketplace and web",   // the report's search-coverage row (publish/render.mjs)
+  machineChecks: "Machine Checks",     // the knockout workbook's sheet (publish/knockout.mjs)
+  aboutThisRequest: "About this request",   // the knockout report's heading (publish/render-knockout.mjs)
 };
+
+// The words the owner ruled where no shipped label or line fitted (537 and 539, 2026-09-25), each held to
+// the ruling verbatim by a test. They are his; nothing here composes around them.
+export const RULED_WORDS = {
+  officialRecords: "Official records",          // the register records behind a clearance's cards
+  plainLanguageReview: "Plain-language review", // the knockout pass that rewrites the rater's wording
+  // A knockout web search that ran, whose answer reached the report, and whose trail entry was never written.
+  recordNotKept: "The record of this search was not kept this run; its answer was used",
+};
+
+/** A filing's Note when its link was removed because the address is not on the register's own site (537). */
+export const linkNotOnRegisterSite = (register) => `Address not on this register's own site (${register}); cited by number`;
 
 // Reason tokens the shipped deferral row translates (deferral-row.mjs, plainDeferralReason). Only these two
 // reach it from here, so the reader's line is one of the row's own and never the raw cause.
@@ -158,7 +177,37 @@ function localLanguage(runDir, log, { localLanguage: state = null } = {}) {
   return { part: "local-language", name: PART_NAMES.localLanguage, reason: NOT_COMPLETED, cause: "native-language lanes were asked and none of them ran" };
 }
 
-const CHECKS = [courtDecisions, searchLog, register, localLanguage, findingCards, checks];
+/**
+ * The fetched official records, `_records/*.json`: "absent" with no file, "damaged" when files are there
+ * and none of them parses, "read" otherwise. It asks what registry-fidelity.mjs readRecordArtifacts asks
+ * of the same folder, which skips a file it cannot parse, only whether anything survived.
+ */
+export function recordsState(runDir) {
+  let files;
+  try { files = readdirSync(join(runDir, "_records")).filter((f) => f.endsWith(".json")); } catch { return "absent"; }
+  if (!files.length) return "absent";
+  for (const f of files) {
+    try {
+      const body = JSON.parse(readFileSync(join(runDir, "_records", f), "utf8"));
+      if (body && typeof body === "object" && !Array.isArray(body)) return "read";
+    } catch { /* the next file */ }
+  }
+  return "damaged";
+}
+
+// The official records behind the cards, where the run's record set was built from a fetch ledger it could
+// not read: the set is empty for that reason, and the cards print what the model wrote with nothing to check
+// it against and no mark that it went unchecked. Two cases are left out on purpose. A merely empty set is the
+// product's design on a register whose report cites no record address, which never fetches one. And the
+// count of fetches whose bodies went missing is taken before the closure fetch, which can still close it.
+function officialRecords(runDir, log) {
+  const last = lastEvent(log, ["record-artifacts"]);
+  if (!last?.ledgerError) return null;
+  return { part: "official-records", name: RULED_WORDS.officialRecords, reason: NOT_COMPLETED,
+    cause: `the fetch ledger could not be read: ${last.ledgerError}` };
+}
+
+const CHECKS = [courtDecisions, searchLog, register, localLanguage, findingCards, checks, officialRecords];
 
 /**
  * Every part of this clearance run that failed and still ships, read from the run directory as it stands
@@ -185,9 +234,13 @@ export function degradedPartRows(parts) {
   return rows;
 }
 
-/** Write the parts and their rows to the run's record, where publishing and a later republish read them. */
+/**
+ * Write the parts and their rows to the run's record, where publishing and a later republish read them,
+ * with the state of every store the publisher reads as delivery found it: the evidence a republish needs
+ * to tell a store this run lost from one it never had.
+ */
 export function writeDegradedParts(runDir, parts) {
-  const record = { parts, rows: degradedPartRows(parts) };
+  const record = { parts, rows: degradedPartRows(parts), stores: storeStates(runDir) };
   writeFileSync(driverDir(runDir, DEGRADED_PARTS_FILE), JSON.stringify(record, null, 2) + "\n");
   return record;
 }
@@ -198,4 +251,115 @@ export function readDegradedPartRows(runDir) {
     const rows = JSON.parse(readFileSync(driverDir(runDir, DEGRADED_PARTS_FILE), "utf8"))?.rows;
     return Array.isArray(rows) ? rows.filter((r) => r && typeof r.area === "string" && typeof r.note === "string") : [];
   } catch { return []; }
+}
+
+// ── AT PUBLISH: THE STORES A REPUBLISH OR A DISK FAULT CAN TAKE ──────────────────────────────────────
+//
+// Two things only the publisher sees. A store that is PRESENT AND UNREADABLE when it is read: an archived
+// run is never in that state, only a missing one, so it cannot fire on older work. And a store that
+// delivery read and a later republish finds MISSING: the delivery's own record of what it read is the
+// evidence, so a run delivered before that record existed writes nothing, as before.
+//
+// Each store the publisher reads is the part it feeds, named with a label the report or workbook prints,
+// or it is declared out with the reason, so a new store cannot be added without deciding which.
+export const STORE_PARTS = {
+  "findings.json": "findings",
+  "_driver/receipts.json": "officialRecords",
+  "_driver/senior-rights.json": "officialRecords",
+  "_driver/verdict.json": "conditions",
+  "_driver/framework.json": "findings",
+  "_driver/register-recall.json": "coverage",
+  "_driver/register-plan.json": "register",
+  "register-named-band.json": "register",
+  "_driver/instructed-scope.json": "register",
+  "_driver/jx-lanes.json": "localLanguage",
+  "_driver/jx/units.json": "localLanguage",
+  "case-law-findings.md": "courtDecisions",
+  "case-law-citations.json": "courtDecisions",
+  "_driver/predelivery-lint.json": "machineQc",
+  "_driver/escalation-state.json": "machineQc",
+  "_driver/reasoning-integrity.json": "machineQc",
+  "_driver/corrections-state.json": "machineQc",
+  "common-law-grid.json": "marketplaceWeb",
+};
+
+/** The stores no row describes honestly, each with its reason. */
+export const STORES_WITHOUT_A_PART = {
+  "_driver/enforcer-signals.json": "presentation-only lines about enforcement, and no shipped name describes them",
+  "status.json": "the pool's mark name and a machine note, neither of them a part of the report",
+  "_driver/search-policy.json": "the product's identity, which no shipped name describes",
+  "_driver/profile.json": "the pool's profile stamp, not a part of the report",
+};
+
+// The record set is a folder, not a named store (publish-inputs.mjs NOT_READ_BY_NAME), and is read as one.
+const RECORDS = "_records/";
+
+const partName = (key) => PART_NAMES[key] ?? RULED_WORDS[key];
+
+/** The state of every store the publisher reads, as `base` holds it now: read, damaged or absent. */
+export function storeStates(base) {
+  const states = {};
+  for (const name of Object.keys(PUBLISH_INPUTS)) {
+    try { states[name] = readStore(base, name).state; } catch { states[name] = "damaged"; }
+  }
+  states[RECORDS] = recordsState(base);
+  return states;
+}
+
+/** The store states delivery recorded, or null for a run delivered before it recorded them. */
+export function readDeliveredStores(runDir) {
+  try {
+    const stores = JSON.parse(readFileSync(driverDir(runDir, DEGRADED_PARTS_FILE), "utf8"))?.stores;
+    return stores && typeof stores === "object" && !Array.isArray(stores) ? stores : null;
+  } catch { return null; }
+}
+
+/**
+ * The parts publishing finds degraded, from the store states now and, where delivery recorded them, then.
+ * PURE over its inputs. `now` is `storeStates(base)`; `delivered` is `readDeliveredStores(runDir)`.
+ */
+export function degradedAtPublish(now = {}, delivered = null) {
+  const parts = [];
+  const mapped = { ...STORE_PARTS, [RECORDS]: "officialRecords" };
+  for (const [store, key] of Object.entries(mapped)) {
+    const state = now[store];
+    const cause = state === "damaged" ? `${store} is present and cannot be read`
+      : state === "absent" && delivered?.[store] === "read" ? `${store} was read at delivery and is missing now`
+        : null;
+    if (cause) parts.push({ part: `store:${store}`, name: partName(key), reason: NOT_COMPLETED, cause });
+  }
+  return parts;
+}
+
+/** One row per area across lists, the first kept: delivery's rows, then publishing's. */
+export function mergeDegradedRows(...lists) {
+  const seen = new Set();
+  const rows = [];
+  for (const r of lists.flat()) {
+    if (!r || typeof r.area !== "string" || seen.has(r.area)) continue;
+    seen.add(r.area);
+    rows.push(r);
+  }
+  return rows;
+}
+
+// ── THE KNOCKOUT: A STEP THAT FAILED AS A WHOLE ───────────────────────────────────────────────────────
+//
+// The listing of filings and the owner lookups each end in one run-log event, a success or a failure, and
+// the last of the pair is the step's state at delivery, so a resume that succeeded clears it. The
+// plain-language review logs its outcome; the three that ship the rater's wording unreviewed are failures.
+const REVIEW_FAILED = ["stage-failed", "artifact-unreadable", "rewrite-refused-by-the-merged-gate"];
+
+/** Which of the knockout's whole steps ended failed, each with its raw cause for the run's record. */
+export function knockoutStepFailures(runDir) {
+  const log = readJsonl(driverDir(runDir, "run.jsonl"));
+  const listing = lastEvent(log, ["knockout-register-records", "knockout-register-records-refused", "knockout-register-records-failed"]);
+  const owners = failedStep(log, "knockout-owner-checks", "knockout-owner-checks-failed");
+  const review = lastEvent(log, ["knockout-review"]);
+  const cause = (e) => String(e?.cause ?? e?.reason ?? e?.outcome ?? e?.event ?? "no cause recorded");
+  return {
+    listing: listing?.event === "knockout-register-records-failed" ? { reason: reasonFor(cause(listing)), cause: cause(listing) } : null,
+    ownerChecks: owners ? { reason: reasonFor(cause(owners)), cause: cause(owners) } : null,
+    review: REVIEW_FAILED.includes(review?.outcome) ? { reason: reasonFor(cause(review)), cause: `${review.outcome}: ${cause({ reason: review.reason })}` } : null,
+  };
 }

@@ -465,6 +465,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-failed-filings-search-says-so-in-plain-words.test.mjs": {
+          "tests": 6,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
         "a-failed-repair-rolls-back.test.mjs": {
           "tests": 5,
           "asserts": 16,
@@ -504,6 +510,12 @@
         "a-finding-the-digest-ended-cannot-vanish-in-silence.test.mjs": {
           "tests": 11,
           "asserts": 30,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-floor-row-whose-owner-was-set-aside-is-answered.test.mjs": {
+          "tests": 2,
+          "asserts": 10,
           "skips": 0,
           "todos": 0
         },
@@ -648,6 +660,12 @@
         "a-knockout-owner-lookup-that-got-no-answer-is-in-its-audit-trail.test.mjs": {
           "tests": 2,
           "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-knockout-part-that-failed-as-a-whole-is-in-its-audit-workbook.test.mjs": {
+          "tests": 7,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -1326,6 +1344,12 @@
         "a-store-in-a-pushed-checkout-is-told-its-saves-will-be-published.test.mjs": {
           "tests": 9,
           "asserts": 37,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-store-lost-at-publish-is-in-the-audit-workbook.test.mjs": {
+          "tests": 3,
+          "asserts": 13,
           "skips": 0,
           "todos": 0
         },
@@ -5787,6 +5811,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-parts-read-at-publish-are-named-and-closed.test.mjs": {
+          "tests": 9,
+          "asserts": 36,
+          "skips": 0,
+          "todos": 0
+        },
         "the-passphrase-is-in-the-block-not-the-log.test.mjs": {
           "tests": 6,
           "asserts": 19,
@@ -7442,6 +7472,12 @@
         "providers/clarivate/test/a-refused-query-is-named-with-its-size.test.mjs": {
           "tests": 6,
           "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/clarivate/test/an-office-that-takes-no-goods-field-is-left-out-and-the-rest-asked.test.mjs": {
+          "tests": 5,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },

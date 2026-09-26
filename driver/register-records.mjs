@@ -420,8 +420,10 @@ export function recordsLine(entry) {
       + `appear here whatever the register holds.`
     : "";
   if (!entry.records?.length) {
+    // A failed search's own text is not printed: it is a provider's or the program's words, and it stays in
+    // the run's filings record and its ledger, where the listing wrote it.
     return (failed.length
-      ? `Filings: not available — ${failed.length} of ${(entry.terms ?? []).length} search(es) could not be run (${failed[0].reason}).`
+      ? `Filings: not available — ${failed.length} of ${(entry.terms ?? []).length} search(es) could not be run.`
       : `Filings: the register returned none under the name or any close variation of it, in the classes counted${unlisted.length ? ` and in the register${(entry.officeScope?.listed ?? []).length === 1 ? "" : "s"} searched (${(entry.officeScope?.listed ?? []).join(", ")})` : ""}.`)
       + officeNote + coverageNote;
   }
