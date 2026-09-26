@@ -29,7 +29,11 @@ const frameFor = (job) => STAGES["matter-frame"].message({
   profile: { defaultJurisdictions: DEFAULTS }, exclusionSeed: [],
 });
 
-test("a worldwide order, as the door records it, gets no default line and no default territory", () => {
+// Each default may appear on the priority line and on no other line of the frame's message.
+const linesCarrying = (msg, t) => msg.split("\n").filter((l) => new RegExp(`\\b${t}\\b`).test(l));
+const PRIORITY_LINE = /^Customer priority markets \(the account's default territories — where a crowded result is narrowed first; never the scope of this order\): NZ, PH, IN\.$/;
+
+test("a worldwide order, as the door records it, is framed as worldwide, with the defaults only as its priority markets", () => {
   const job = order({ jurisdictions: ["Global"] });
   validateJob(job);
   assert.equal(job.geography?.mode, "worldwide", "the door no longer stamps the worldwide word");
@@ -37,13 +41,30 @@ test("a worldwide order, as the door records it, gets no default line and no def
     "the ladder narrowed a worldwide order");
   const msg = frameFor(job);
   assert.doesNotMatch(msg, DEFAULT_LINE, "a worldwide order was told to apply the account's defaults");
-  for (const t of DEFAULTS) assert.ok(!new RegExp(`\\b${t}\\b`).test(msg), `${t} reached a worldwide order's frame`);
+  assert.match(msg, /^Order scope: worldwide \(AUTHORITATIVE — every register question is asked worldwide;/m);
+  for (const t of DEFAULTS) {
+    const carrying = linesCarrying(msg, t);
+    assert.equal(carrying.length, 1, `${t} reached the frame on ${carrying.length} lines`);
+    assert.match(carrying[0], PRIORITY_LINE, `${t} reached the frame outside the priority line`);
+  }
 });
 
 test("a worldwide stamp sent by the requester is honoured the same way", () => {
   const job = order({ geography: { mode: "worldwide", origin: "request" } });
   validateJob(job);
-  assert.doesNotMatch(frameFor(job), DEFAULT_LINE);
+  const msg = frameFor(job);
+  assert.doesNotMatch(msg, DEFAULT_LINE);
+  assert.match(msg, /^Order scope: worldwide/m);
+  assert.match(msg, /^Customer priority markets/m);
+});
+
+test("a worldwide order under an account with no defaults gets the scope line alone", () => {
+  const job = order({ jurisdictions: ["Global"] });
+  validateJob(job);
+  const msg = STAGES["matter-frame"].message({ paths: { inboundRequest: "/dev/null" }, job, customerUnknown: true,
+    profile: { defaultJurisdictions: [] }, exclusionSeed: [] });
+  assert.match(msg, /^Order scope: worldwide/m);
+  assert.doesNotMatch(msg, /Customer priority markets/);
 });
 
 test("THE CONTROL: an order that says nothing about territory still gets the account's defaults", () => {

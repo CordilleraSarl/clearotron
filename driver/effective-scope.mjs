@@ -90,7 +90,7 @@ export const jobJurisdictions = (job) =>
 /**
  * — WHAT THE ACCOUNT'S DEFAULT TERRITORIES MAY SAY TO THE MATTER FRAME.
  *
- * Returns 0 or 1 prompt lines, spread into the frame's message by stages.mjs.
+ * Returns 0 to 2 prompt lines, spread into the frame's message by stages.mjs.
  *
  * THE RULE IS THE LADDER'S RULE, which is why it lives beside the ladder rather than in the prompt: a
  * default FILLS AN ABSENT SCOPE and never widens a stated one. `resolveTerritories` below has always
@@ -139,14 +139,43 @@ export function defaultTerritoryState(profile) {
   return { kept, unrecognized: dropped };
 }
 
-export function defaultJurisdictionsLine(job, profile) {
-  // The ladder's first rung, which this line had never heard of: a worldwide order accepts no narrowing,
-  // so it gets no default line, as it gets no default territory. Measured 2026-09-25: a worldwide search
-  // under an account with seven default territories was told "the request names none — apply these",
-  // framed as those seven, and its crowded identical-mark question was read in those seven only.
-  if (job?.geography?.mode === "worldwide") return [];
-  if (jobJurisdictions(job).length) return [];
+/**
+ * THE MAJOR MARKETS: where a crowded result is narrowed when neither the order nor the account names a
+ * market and the customer's field and brand point nowhere in particular. One list, and the manuals that
+ * name the major markets name these (ruled 2026-09-26: a generic customer narrows by the order's classes
+ * and the major markets). Codes as the territory vocabulary writes them, so GB is the UK.
+ */
+export const MAJOR_MARKETS = Object.freeze(["US", "EU", "GB", "CN", "JP"]);
+
+/**
+ * WHERE A CROWDED RESULT IS NARROWED, in the ruled order (2026-09-26), as far as the driver can know it:
+ * the order's named countries; else, on a worldwide order, the account's default territories as the
+ * customer's priority markets; else nothing the driver knows, so the markets the customer's field and
+ * brand point to are the reading step's judgment; and the major markets last.
+ * `{ named, priorities, major }` — each an array of codes, PURE.
+ */
+export function narrowingMarkets(job, profile) {
+  const named = jobJurisdictions(job).map((t) => String(t).trim()).filter(Boolean);
   const { kept } = defaultTerritoryState(profile);
+  return { named, priorities: named.length ? [] : kept, major: [...MAJOR_MARKETS] };
+}
+
+export function defaultJurisdictionsLine(job, profile) {
+  const { kept } = defaultTerritoryState(profile);
+  // THE ORDER'S SCOPE IN ONE LINE, and the account's defaults as the customer's PRIORITIES, never as the
+  // scope (ruled 2026-09-26). The ladder's first rung, which this line had never heard of: measured
+  // 2026-09-25, a worldwide search under an account with seven default territories was told "the request
+  // names none — apply these", framed as those seven, and its crowded identical-mark question was read
+  // in those seven only.
+  if (job?.geography?.mode === "worldwide") {
+    return [
+      "Order scope: worldwide (AUTHORITATIVE — every register question is asked worldwide; do NOT narrow the scope, and exclude no market for lying outside the customer's priority markets).",
+      ...(kept.length ? [`Customer priority markets (the account's default territories — where a crowded result is narrowed first; never the scope of this order): ${kept.join(", ")}.`] : []),
+    ];
+  }
+  // A named order's own countries are its scope and the first markets a crowd narrows to, so no default
+  // appears anywhere in its prompt.
+  if (jobJurisdictions(job).length) return [];
   return kept.length
     ? [`Customer-default jurisdictions that materially matter (the request names none — apply these): ${kept.join(", ")}.`]
     : [];
