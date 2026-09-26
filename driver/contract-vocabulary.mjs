@@ -396,7 +396,7 @@ export const TRIPWIRE_OUT_OF_SCOPE = [
   {
     token: "no_citations",
     symbol: { file: "driver/case-law-ledger.mjs", names: ["findCaseLawLedgerViolations", "CASE_LAW_ADVISORY_REASONS", "isCaseLawBlocking"] },
-    site: "driver/case-law-ledger.mjs:195 (minted), :65 CASE_LAW_ADVISORY_REASONS, :67 isCaseLawBlocking",
+    site: "driver/case-law-ledger.mjs:195 no_citations, where it is minted; :65 CASE_LAW_ADVISORY_REASONS, :67 isCaseLawBlocking",
     reason: "ADVISORY, and filtered before the token is built. caseLawLedgerFail() in case-law-ledger.mjs keeps only blocking violations (:196), and `no_citations` is the one member of CASE_LAW_ADVISORY_REASONS — so it cannot appear even in the `caselaw_ledger` census payload, let alone as a token head. It is the honest no-on-point-precedent result the report is allowed to state; failing a run for it would manufacture citations.",
   },
   {
@@ -490,7 +490,7 @@ export const INNER_CODES = Object.freeze([
   // caseLawLedgerFail() in case-law-ledger.mjs (:195) returns `caselaw_ledger:<census>;<detail>`, and
   // `normalizeFailToken` cuts at the first colon — so the token is `caselaw_ledger` and every code below
   // lives in the payload. The `caselaw_ledger` row already carries `family:
-  // "driver/case-law-ledger.mjs:220 (census reasons)"`, which is this ruling written down before the
+  // "driver/case-law-ledger.mjs caseLawLedgerFail (census reasons)"`, which is this ruling written down before the
   // census could read the shape it is written in.
   //
   // SUPPOSED `caselaw_no_queries` MIGHT BE A REAL HOLE. It is not a hole and it is not a token:
