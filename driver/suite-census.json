@@ -2314,8 +2314,8 @@
           "todos": 0
         },
         "court-decisions-take-the-pass-record-over-its-words.test.mjs": {
-          "tests": 7,
-          "asserts": 27,
+          "tests": 9,
+          "asserts": 32,
           "skips": 0,
           "todos": 0
         },
@@ -2776,8 +2776,8 @@
           "todos": 0
         },
         "e2e-assertions.test.mjs": {
-          "tests": 86,
-          "asserts": 242,
+          "tests": 87,
+          "asserts": 251,
           "skips": 1,
           "todos": 0
         },
@@ -2806,8 +2806,8 @@
           "todos": 0
         },
         "e2e-scenario-ops.test.mjs": {
-          "tests": 23,
-          "asserts": 75,
+          "tests": 25,
+          "asserts": 85,
           "skips": 0,
           "todos": 0
         },
