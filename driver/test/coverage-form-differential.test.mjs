@@ -241,20 +241,22 @@ test("C1 through C7 are byte-identical — the shared calculation is called once
   assert.deepEqual(Object.keys(open), ["primary-sweep"]);
   assert.deepEqual(open["primary-sweep"].map((b) => b.qid), ["ps:stack:lumen+form", "ps:owner:lumen+incumbent"]);
   assert.equal(open["primary-sweep"][0].total_hits, 6862);
-  assert.deepEqual(open["primary-sweep"][0].unaccounted, ["LUMENN"]);
+  // LUMEN is itself a crowd: counted, never read, so it is named beside the budget-cut LUMENN.
+  assert.deepEqual(open["primary-sweep"][0].unaccounted, ["LUMEN", "LUMENN"]);
   assert.deepEqual(open["primary-sweep"][1].unaccounted_classes, ["9"]);
   const built = coverageFormRows({ skeleton: SKELETON, plan: PLAN, bandBlocksByAxis: BANDS }).rows
     .filter((r) => r.kind === "block").map((r) => r.qid);
   assert.deepEqual(built, ["ps:stack:lumen+form", "ps:owner:lumen+incumbent"]);
 });
 
-test("C2..C7's replay carve-outs survive: a legacy band with neither count map can never open a block", () => {
-  // A pre-count-first band CANNOT carry term_counts and a pre-class-split one CANNOT carry class_counts;
-  // absent means legacy, never unverified. The 2026-07-10 corpus audit turned on exactly this.
+test("a legacy band with neither count map still opens its block, naming no leg: the question was counted and not read", () => {
+  // A pre-count-first band cannot carry term_counts and a pre-class-split one cannot carry class_counts.
+  // That used to keep the block shut. What was counted and not read is set aside and never clean, so the
+  // block opens either way, and without the maps its row names no leg.
   const legacy = { "primary-sweep": [{ state: "incomplete", qid: "ps:stack:lumen+form", total_hits: 6862 }] };
-  assert.deepEqual(openBlocksByAxis(SKELETON, legacy, PLAN), {});
+  assert.deepEqual(openBlocksByAxis(SKELETON, legacy, PLAN), { "primary-sweep": [{ qid: "ps:stack:lumen+form", total_hits: 6862 }] });
   assert.deepEqual(coverageFormRows({ skeleton: SKELETON, plan: PLAN, bandBlocksByAxis: legacy }).rows
-    .filter((r) => r.kind === "block"), []);
+    .filter((r) => r.kind === "block").map((r) => [r.qid, r.total_hits, r.open]), [["ps:stack:lumen+form", 6862, true]]);
 });
 
 test("an error block still joins MISSING, and a count-kind entry is still sanctioned", () => {
