@@ -15,7 +15,7 @@ import assert from "node:assert/strict";
 import { mkdtempSync, writeFileSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { doEnumerate, doExecutePlan, officeRefusingGoodsField, GOODS_FIELD } from "../src/core.js";
+import { doEnumerate, doExecutePlan, officeRefusingGoodsField, GOODS_FIELD, OWNER_FIELD } from "../src/core.js";
 
 const refusal = (office) => ({ errorMessage: `searchFields[2] - Search field ${GOODS_FIELD} is not supported for registrationOfficeCode ${office}.` });
 
@@ -53,6 +53,36 @@ test("a second refusing office is left out in turn", async () => {
   // The register names one refusing office at a time; this stand-in names the first in request order.
   assert.deepEqual(parsed.offices_without_goods_field, ["GB", "MC"]);
   assert.deepEqual(counts.map((c) => c.offices), [["US", "GB", "MC"], ["US", "MC"], ["US"]]);
+});
+
+test("an owner question keeps the note when the register then refuses its widened owner list", async () => {
+  // The owner is widened by the register's own spellings of the company; the register refuses that list,
+  // and the question falls back to the caller's own owner term. The fallback answer replaces the first,
+  // so the note must be set after it, and the fallback must ask the reduced offices too.
+  const real = globalThis.fetch;
+  const counts = [];
+  globalThis.fetch = async (url, init) => {
+    const body = init?.body ? JSON.parse(init.body) : {};
+    const reply = (status, answer) => new Response(JSON.stringify(answer), { status, headers: { "content-type": "application/json" } });
+    if (String(url).endsWith("/resolution/company"))
+      return reply(200, { companies: [{ applicantName: "LANTERNWICK HOLDINGS LIMITED", registrationOfficeCode: "US", confidenceScore: 90 }] });
+    const offices = body.registrationOfficeCodes ?? [];
+    const goods = (body.searchFields ?? []).some((f) => f?.name === GOODS_FIELD);
+    const widened = (body.searchFields ?? []).some((f) => f?.name === OWNER_FIELD && String(f.value).includes(" OR "));
+    if (String(url).endsWith("/count")) counts.push({ offices, widened });
+    if (goods && offices.includes("MC")) return reply(400, refusal("MC"));
+    if (widened) return reply(400, { errorMessage: `searchFields[0] - ${OWNER_FIELD}` });
+    return reply(200, { counts: Object.fromEntries(offices.map((o) => [o, 0])), ids: {}, totalResults: 0 });
+  };
+  try {
+    const parsed = JSON.parse((await doEnumerate("k", "https://x",
+      { owner: "Lanternwick Holdings", regions: ["US", "GB", "MC"], goods_text: ["computer game software"] }, null)).text);
+    assert.equal(parsed.state, "enumerated", `the question was not answered: ${parsed.reason}`);
+    assert.equal(parsed.owner_resolution?.degraded_to_unresolved_sweep, true, "the fallback to the caller's own owner term did not run");
+    assert.deepEqual(parsed.offices_without_goods_field, ["MC"], "the fallback answer dropped the note");
+    assert.deepEqual(counts.map((c) => `${c.offices.join(",")}${c.widened ? " widened" : ""}`),
+      ["US,GB,MC widened", "US,GB widened", "US,GB"], "the fallback asked the refusing office again");
+  } finally { globalThis.fetch = real; }
 });
 
 test("a run's plan executor answers the question instead of setting it aside", async () => {
