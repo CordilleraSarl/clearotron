@@ -32,7 +32,7 @@ const parkedQueue = (extra = {}) => {
   writeFileSync(join(q, "j.postponed"), JSON.stringify({ id: "j", msgId: "<j@x>", ref: "TMP8439", markName: "PARKREC" }));
   writeFileSync(join(q, "j.postponed.meta"), JSON.stringify({
     resetsAt: RESET_PAST, codename: "park-record", dateISO: "2026-08-23",
-    runDir, agentId: "clawdi", postponedAt: new Date(Date.now() - 90 * MIN).toISOString(),
+    runDir, agentId: "mailagent", postponedAt: new Date(Date.now() - 90 * MIN).toISOString(),
     kind: "rate-limit", fromStage: "register-digest", probeAttempt: 3, ...extra,
   }));
   return { q, runDir };
@@ -116,7 +116,7 @@ test("a run-dir-sentinel resume appends park-resumed too, and says which door wr
 
   let dispatched = 0;
   await resumeRunDirOrphans(
-    [{ runDir, sentPath, codename: "park-record", agent: "clawdi", fromStage: "register-digest", job: { id: "j" } }],
+    [{ runDir, sentPath, codename: "park-record", agent: "mailagent", fromStage: "register-digest", job: { id: "j" } }],
     { runPipeline: async () => { dispatched++; } },
   );
   assert.equal(dispatched, 1, "the orphan must actually be resumed — otherwise this asserts nothing");
@@ -143,7 +143,7 @@ test("a pre-fix run-dir sentinel with no probeAttempt still records the wake", a
   writeFileSync(sentPath, "not json at all");
 
   await resumeRunDirOrphans(
-    [{ runDir, sentPath, codename: "park-record", agent: "clawdi", fromStage: null, job: { id: "j" } }],
+    [{ runDir, sentPath, codename: "park-record", agent: "mailagent", fromStage: null, job: { id: "j" } }],
     { runPipeline: async () => {} },
   );
   const rows = spine(runDir).filter((r) => r?.event === "park-resumed");

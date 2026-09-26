@@ -31,7 +31,7 @@ const { buildGatherMcpConfig } = await import("../engine/mcp/gather-config.mjs")
 const REPO = join(fileURLToPath(new URL("../..", import.meta.url)));
 const PREFIX = "clearance-tmp594-aa-";
 const ROW = (target, body) => JSON.stringify({
-  ts: "t", sessionKey: `agent:clawdi:${PREFIX}register-unit-x`, target, body,
+  ts: "t", sessionKey: `agent:mailagent:${PREFIX}register-unit-x`, target, body,
 }) + "\n";
 
 const HOME_WAS = process.env.HOME;
@@ -155,7 +155,7 @@ test("a spawned register server is handed a RESOLVED call ledger and THIS RUN's 
   fakeHome({ "corsearch-records.jsonl": "x", "corsearch-calls.jsonl": "x" });
   try {
     const runDir = mkdtempSync(join(tmpdir(), "run743-"));
-    const cfg = buildGatherMcpConfig(["register"], { sessionKey: "clearotron-x-y-z", agent: "clawdi", runDir });
+    const cfg = buildGatherMcpConfig(["register"], { sessionKey: "clearotron-x-y-z", agent: "mailagent", runDir });
     const env = cfg.mcpServers.register.env;
     assert.ok(env.CLEAROTRON_REGISTER_CALL_LOG, "unconditional — the old line forwarded nothing on every real box");
     assert.match(env.CLEAROTRON_REGISTER_CALL_LOG, /corsearch-calls\.jsonl$/,
@@ -175,12 +175,12 @@ test("no run dir REFUSES — the box-global record ledger is retired, not a fall
   fakeHome({ "corsearch-records.jsonl": "x" });
   try {
     assert.throws(
-      () => buildGatherMcpConfig(["register"], { sessionKey: "clearotron-x-y-z", agent: "clawdi" }),
+      () => buildGatherMcpConfig(["register"], { sessionKey: "clearotron-x-y-z", agent: "mailagent" }),
       /record bodies\s+belong to their run|needs the run it is fetching for/,
       "a register server was built with no run — its bodies would land in the retired global ledger");
     // And the refusal is about the RUN, not about registers in general: with one, it builds.
     const runDir = mkdtempSync(join(tmpdir(), "run1390-"));
-    const cfg = buildGatherMcpConfig(["register"], { sessionKey: "clearotron-x-y-z", agent: "clawdi", runDir });
+    const cfg = buildGatherMcpConfig(["register"], { sessionKey: "clearotron-x-y-z", agent: "mailagent", runDir });
     assert.equal(cfg.mcpServers.register.env.CLEAROTRON_REGISTER_RECORD_LOG, RUN_LOG(runDir));
   } finally { restoreHome(); }
 });
@@ -190,7 +190,7 @@ test("a config with NO register server still builds without a run — the refusa
   // refusal that caught them would be a wider change than the issue asked for.
   fakeHome({ "corsearch-records.jsonl": "x" });
   try {
-    assert.ok(buildGatherMcpConfig(["perplexity"], { sessionKey: "k", agent: "clawdi" }).mcpServers.perplexity);
+    assert.ok(buildGatherMcpConfig(["perplexity"], { sessionKey: "k", agent: "mailagent" }).mcpServers.perplexity);
     assert.equal(buildGatherMcpConfig(["perplexity"], { sessionKey: "k" }).mcpServers.perplexity.env
       .CLEAROTRON_REGISTER_RECORD_LOG, undefined,
       "a server that writes no record bodies must not be handed a record-log path at all");

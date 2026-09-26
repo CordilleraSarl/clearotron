@@ -146,7 +146,7 @@ test("seed + recordTransition write an answerable status from the first moment",
   const ctx = {
     run: { runDir, studioRoot, slug: "tmp9-demo-brand-owner", codename: "copper-spire", date: "2026-06-02" },
     job: { id: "j9", forwarder: "requester", ref: "TMP9001", markName: "AURORA", classes: [9] },
-    agent: "clawdi",
+    agent: "mailagent",
   };
   seedRunStatus(ctx);
   let s = JSON.parse(readFileSync(join(runDir, "status.json"), "utf8"));
@@ -246,7 +246,7 @@ test("seedRunStatus: a fresh run gets startedAt from the first-write backfill, a
   const studioRoot = mkdtempSync(join(tmpdir(), "prog-seed-"));
   const runDir = join(studioRoot, "tmp1-x", "2026-07-28-teal-arch");
   mkdirSync(runDir, { recursive: true });
-  const ctx = { job: { id: "j1", forwarder: "jordan" }, run: { runDir, studioRoot, slug: "tmp1-x", date: "2026-07-28", codename: "teal-arch" }, agent: "clawdi" };
+  const ctx = { job: { id: "j1", forwarder: "jordan" }, run: { runDir, studioRoot, slug: "tmp1-x", date: "2026-07-28", codename: "teal-arch" }, agent: "mailagent" };
   seedRunStatus(ctx);
   const s = JSON.parse(readFileSync(join(runDir, "status.json"), "utf8"));
   assert.equal(s.startedAt, s.updatedAt, "backfilled from the seed write itself");
@@ -259,7 +259,7 @@ test("seedRunStatus on RESUME: startedAt survives untouched (the last-resume lie
   const studioRoot = mkdtempSync(join(tmpdir(), "prog-resume-"));
   const runDir = join(studioRoot, "tmp1-x", "2026-07-28-teal-arch");
   mkdirSync(runDir, { recursive: true });
-  const ctx = { job: { id: "j1", forwarder: "jordan" }, run: { runDir, studioRoot, slug: "tmp1-x", date: "2026-07-28", codename: "teal-arch" }, agent: "clawdi" };
+  const ctx = { job: { id: "j1", forwarder: "jordan" }, run: { runDir, studioRoot, slug: "tmp1-x", date: "2026-07-28", codename: "teal-arch" }, agent: "mailagent" };
   seedRunStatus(ctx);
   const first = JSON.parse(readFileSync(join(runDir, "status.json"), "utf8"));
   // the run fails terminally; a human/reclaim resume follows (the guard cleared .failed and threads reset)
@@ -446,7 +446,7 @@ test("an unmapped stage records what the run is doing, and still moves no step",
   const ctx = {
     run: { runDir, studioRoot, slug: "tmp9-demo-brand-owner", codename: "copper-spire", date: "2026-06-02" },
     job: { id: "j9", forwarder: "requester", ref: "TMP9002", markName: "AURORA", classes: [9] },
-    agent: "clawdi",
+    agent: "mailagent",
   };
   const read = () => JSON.parse(readFileSync(join(runDir, "status.json"), "utf8"));
   seedRunStatus(ctx);
@@ -476,7 +476,7 @@ test("an unmapped stage cannot pull the displayed step backwards", () => {
   const runDir = join(studioRoot, "tmp9-demo-brand-owner", "2026-06-02-copper-spire");
   mkdirSync(runDir, { recursive: true });
   const ctx = { run: { runDir, studioRoot, slug: "tmp9-demo-brand-owner", codename: "copper-spire", date: "2026-06-02" },
-    job: { id: "j9", forwarder: "requester", ref: "TMP9003", markName: "AURORA", classes: [9] }, agent: "clawdi" };
+    job: { id: "j9", forwarder: "requester", ref: "TMP9003", markName: "AURORA", classes: [9] }, agent: "mailagent" };
   seedRunStatus(ctx);
   recordTransition(ctx, "publish");                 // the furthest step this run reaches
   const far = JSON.parse(readFileSync(join(runDir, "status.json"), "utf8"));

@@ -277,8 +277,8 @@ edited — that box runs pre-rebuild code and genuinely still sets it.
 
 ### 5.7 Delivery & comms — T3/T4
 
-`CLEAROTRON_DEFAULT_AGENT` (clawdi), `CLEAROTRON_SEND_TOOL_PREFIX`
-(clawdi_send_), `CLEAROTRON_AGENT_WHATSAPP`, `CLEAROTRON_OUTBOX_BACKOFF_BASE_SEC` (60) / `CLEAROTRON_OUTBOX_BACKOFF_CAP_SEC` (900) /
+`CLEAROTRON_DEFAULT_AGENT` (localagent),
+`CLEAROTRON_AGENT_WHATSAPP`, `CLEAROTRON_OUTBOX_BACKOFF_BASE_SEC` (60) / `CLEAROTRON_OUTBOX_BACKOFF_CAP_SEC` (900) /
 `CLEAROTRON_OUTBOX_BACKOFF_MAX_RETRIES` (5) / `CLEAROTRON_OUTBOX_GIVEUP_COOLDOWN_SEC` (3600 — note this one
 drops BACKOFF from the prefix, which the elided spelling this row used to carry actively misled about),
 `CLEAROTRON_OUTBOX_NOPROGRESS_MAX`, `TRADEMARK_MSGID_DOMAIN` (enqueue.local).

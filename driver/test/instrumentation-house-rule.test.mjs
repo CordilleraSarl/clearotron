@@ -63,7 +63,7 @@ test("attempt events land on run.jsonl per dispatch — cause on the failed row,
       writeFileSync(out, "# real work\n");              // attempt 2: writes and succeeds
       return okTurn();
     }, () => runStage("teststage", {
-      agent: "clawdi", sessionKey: "clearotron-test-ihr", message: "do it",
+      agent: "mailagent", sessionKey: "clearotron-test-ihr", message: "do it",
       model: "opus", thinking: "medium", timeoutSec: 600, expectFile: out,
       validate: (f, text) => ({ ok: /real work/.test(text) }), runDir: dir, maxRetries: 2,
     }));
@@ -100,7 +100,7 @@ test("the BILLING stamp is written even when false — a subscription run states
   try {
     await withEngine("fake-billing", async () => { writeFileSync(out, "# real work\n"); return okTurn(); },
       () => runStage("teststage", {
-        agent: "clawdi", sessionKey: "clearotron-test-billing", message: "do it",
+        agent: "mailagent", sessionKey: "clearotron-test-billing", message: "do it",
         model: "opus", thinking: "medium", timeoutSec: 600, expectFile: out,
         validate: () => ({ ok: true }), runDir: dir, maxRetries: 1,
       }));
@@ -135,7 +135,7 @@ test("emitted-vs-landed: a FAILED attempt that mid-wrote its artifact journals o
       writeFileSync(out, "partial garbage");            // the turn wrote, then died
       return failTurn({ killed: true, code: 137, wall: 700, signals: { stalled: true } });
     }, () => runStage("teststage", {
-      agent: "clawdi", sessionKey: "clearotron-test-ihr-mw", message: "do it",
+      agent: "mailagent", sessionKey: "clearotron-test-ihr-mw", message: "do it",
       model: "opus", thinking: "medium", timeoutSec: 600, expectFile: out,
       validate: (f, text) => ({ ok: /real work/.test(text) }), runDir: dir, maxRetries: 0,
     }));
@@ -160,7 +160,7 @@ test("AUDIT #172/1 — an attempt that emitted NOTHING journals output {present:
   mkdirSync(driverDir(dir), { recursive: true });
   try {
     const r = await withEngine("fake-emits-nothing", async () => failTurn(),
-      () => runStage("register-digest", { agent: "clawdi", sessionKey: "clearotron-ihr-absent", message: "m",
+      () => runStage("register-digest", { agent: "mailagent", sessionKey: "clearotron-ihr-absent", message: "m",
         model: "opus", thinking: "medium", timeoutSec: 600, expectFile: out, runDir: dir, maxRetries: 0 }));
     assert.equal(r.ok, false);
     const row = readStageRows(dir, "register-digest")[0];
@@ -185,7 +185,7 @@ test("AUDIT #172/1 — a failed dispatch over an INHERITED artifact journals pre
   try {
     writeFileSync(out, "# register findings\nthe earlier successful pass's artifact\n");   // idx-51 stand-in
     const r = await withEngine("fake-overloaded", async () => failTurn({ code: 0, json: { status: "overloaded" } }),
-      () => runStage("register-digest", { agent: "clawdi", sessionKey: "clearotron-ihr-inh", message: "m",
+      () => runStage("register-digest", { agent: "mailagent", sessionKey: "clearotron-ihr-inh", message: "m",
         model: "opus", thinking: "medium", timeoutSec: 600, expectFile: out, runDir: dir, maxRetries: 0 }));
     assert.equal(r.ok, false);
     assert.equal(r.fail, "status_overloaded", "the idx 84/131/159 failure class on that run");
@@ -206,19 +206,19 @@ test("AUDIT #172/5 — a truncated reads gauge is journalled as truncated, and i
   for (const d of [dirA, dirB, dirC]) mkdirSync(driverDir(d), { recursive: true });
   try {
     const rA = await withEngine("fake-capped-gauge", async () => { writeFileSync(outA, "x"); return okTurn({ reads: ["/a", "/b"], readsTruncated: true }); },
-      () => runStage("s", { agent: "clawdi", sessionKey: "k-a", message: "m", model: "opus", thinking: "medium",
+      () => runStage("s", { agent: "mailagent", sessionKey: "k-a", message: "m", model: "opus", thinking: "medium",
         timeoutSec: 600, expectFile: outA, runDir: dirA, maxRetries: 0 }));
     assert.equal(readStageRows(dirA, "s")[0].readsTruncated, true, "the cap is VISIBLE — this list is a prefix");
     assert.equal(rA.readsTruncated, true, "…and rides the runStage result, where the stage row reads it");
 
     const rB = await withEngine("fake-complete-gauge", async () => { writeFileSync(outB, "x"); return okTurn({ reads: ["/a"] }); },
-      () => runStage("s", { agent: "clawdi", sessionKey: "k-b", message: "m", model: "opus", thinking: "medium",
+      () => runStage("s", { agent: "mailagent", sessionKey: "k-b", message: "m", model: "opus", thinking: "medium",
         timeoutSec: 600, expectFile: outB, runDir: dirB, maxRetries: 0 }));
     assert.equal(readStageRows(dirB, "s")[0].readsTruncated, false, "explicit false — 'complete', not 'not recorded'");
     assert.equal(rB.readsTruncated, false);
 
     const rC = await withEngine("fake-no-gauge-at-all", async () => { writeFileSync(outC, "x"); return okTurn(); },
-      () => runStage("s", { agent: "clawdi", sessionKey: "k-c", message: "m", model: "opus", thinking: "medium",
+      () => runStage("s", { agent: "mailagent", sessionKey: "k-c", message: "m", model: "opus", thinking: "medium",
         timeoutSec: 600, expectFile: outC, runDir: dirC, maxRetries: 0 }));
     assert.equal(readStageRows(dirC, "s")[0].readsTruncated, null, "no gauge ⇒ nothing to truncate ⇒ no claim");
     assert.equal(rC.readsTruncated, null);
@@ -313,7 +313,7 @@ test("AUDIT #175/N1 — the settled attempt was a WARM PATCH: absence journals n
       writeFileSync(out, "# digest\nrepaired\n");                              // the one-cell warm relabel
       return okTurn({ reads: [] });                                            // resumed session: opens nothing
     }, () => runStage("register-digest", {
-      agent: "clawdi", sessionKey: "clearotron-ihr-warmpatch", message: "m", model: "opus", thinking: "medium",
+      agent: "mailagent", sessionKey: "clearotron-ihr-warmpatch", message: "m", model: "opus", thinking: "medium",
       timeoutSec: 600, expectFile: out, runDir: dir, maxRetries: 1,
       // a warm-eligible WORK-class token from WARM_ELIGIBLE_RE — a clean turn whose recorded meaning
       // receipts are undisposed ( owns it; the in-dispatch form repair never touches it)
@@ -369,7 +369,7 @@ test("AUDIT #175/N1 — a FRESH settled attempt still earns its `false`: threadi
   writeFileSync(offered, "ctx");
   try {
     const r = await withEngine("fake-fresh-ignores-input", async () => { writeFileSync(out, "x"); return okTurn({ reads: [] }); },
-      () => runStage("s", { agent: "clawdi", sessionKey: "k-fresh", message: "m", model: "opus", thinking: "medium",
+      () => runStage("s", { agent: "mailagent", sessionKey: "k-fresh", message: "m", model: "opus", thinking: "medium",
         timeoutSec: 600, expectFile: out, runDir: dir, maxRetries: 0 }));
     assert.equal(r.ok, true);
     assert.equal(r.warm, false, "a single fresh attempt is not a warm patch — explicit false, never an omitted key");
@@ -387,7 +387,7 @@ test("reads three-valuedness: an engine without a reads gauge journals reads:nul
   try {
     // engine that CANNOT observe reads (no `reads` key on the tuple — the openai-agent shape)
     const rA = await withEngine("fake-no-reads-gauge", async () => { writeFileSync(outA, "x"); return okTurn(); },
-      () => runStage("teststage", { agent: "clawdi", sessionKey: "clearotron-ihr-ra", message: "m", model: "opus",
+      () => runStage("teststage", { agent: "mailagent", sessionKey: "clearotron-ihr-ra", message: "m", model: "opus",
         thinking: "medium", timeoutSec: 600, expectFile: outA, runDir: dirA, maxRetries: 0 }));
     assert.equal(rA.ok, true);
     assert.equal(readStageRows(dirA, "teststage")[0].reads, null, "cannot-observe journals null — nothing is claimed");
@@ -395,7 +395,7 @@ test("reads three-valuedness: an engine without a reads gauge journals reads:nul
 
     // engine that observed the turn and saw NO reads ([] — the recorded fact)
     const rB = await withEngine("fake-empty-reads-gauge", async () => { writeFileSync(outB, "x"); return okTurn({ reads: [] }); },
-      () => runStage("teststage", { agent: "clawdi", sessionKey: "clearotron-ihr-rb", message: "m", model: "opus",
+      () => runStage("teststage", { agent: "mailagent", sessionKey: "clearotron-ihr-rb", message: "m", model: "opus",
         thinking: "medium", timeoutSec: 600, expectFile: outB, runDir: dirB, maxRetries: 0 }));
     assert.equal(rB.ok, true);
     assert.deepEqual(readStageRows(dirB, "teststage")[0].reads, [], "'ran and read nothing' is recorded, distinct from null");
@@ -411,7 +411,7 @@ test("a stage with NO expected files journals wrote:null — 'nothing to emit' i
   mkdirSync(driverDir(dir), { recursive: true });
   try {
     const r = await withEngine("fake-no-expect", async () => okTurn(),
-      () => runStage("teststage", { agent: "clawdi", sessionKey: "clearotron-ihr-nf", message: "m", model: "opus",
+      () => runStage("teststage", { agent: "mailagent", sessionKey: "clearotron-ihr-nf", message: "m", model: "opus",
         thinking: "medium", timeoutSec: 600, runDir: dir, maxRetries: 0 }));
     assert.equal(r.ok, true);
     const row = readStageRows(dir, "teststage")[0];
@@ -439,7 +439,7 @@ test("a measured dispatch records its rate on the stage row AND on the run.jsonl
   mkdirSync(driverDir(dir), { recursive: true });
   try {
     const r = await withEngine("fake-rate", async () => { writeFileSync(out, "x"); return okTurn(); },
-      () => runStage("teststage", { agent: "clawdi", sessionKey: "clearotron-ihr-rate", message: "m", model: "opus",
+      () => runStage("teststage", { agent: "mailagent", sessionKey: "clearotron-ihr-rate", message: "m", model: "opus",
         thinking: "medium", timeoutSec: 600, expectFile: out, runDir: dir, maxRetries: 0 }));
     assert.equal(r.ok, true);
     // okTurn is wall 2 s / 9 output tokens.
@@ -462,7 +462,7 @@ test("an UNMEASURED dispatch records null, never 0 — 'we could not measure' is
     // The real shape: a hard-kill with a NULL usage envelope (the teal-bastion signature isLaneWedge keys on).
     await withEngine("fake-killed-null-usage",
       async () => failTurn({ killed: true, code: 137, wall: 700, usage: null, signals: { hardWall: true } }),
-      () => runStage("teststage", { agent: "clawdi", sessionKey: "clearotron-ihr-rate-null", message: "m", model: "opus",
+      () => runStage("teststage", { agent: "mailagent", sessionKey: "clearotron-ihr-rate-null", message: "m", model: "opus",
         thinking: "medium", timeoutSec: 600, runDir: dir, maxRetries: 0 })).catch(() => {});
     const row = readStageRows(dir, "teststage")[0];
     assert.equal(row.tokensPerSec, null, "a turn that measured nothing has no rate");
@@ -497,7 +497,7 @@ test("an engine that CANNOT REPORT tool time records null, never 0 — silence i
   try {
     await withEngine("fake-no-tool-gauge",
       async () => okTurn(),                      // an ok turn that reports NEITHER field — the codex shape
-      () => runStage("teststage", { agent: "clawdi", sessionKey: "clearotron-ihr-tool-null", message: "m",
+      () => runStage("teststage", { agent: "mailagent", sessionKey: "clearotron-ihr-tool-null", message: "m",
         model: "opus", thinking: "medium", timeoutSec: 600, runDir: dir, maxRetries: 0 })).catch(() => {});
     const row = readStageRows(dir, "teststage")[0];
     assert.equal(row.toolCalls, null, "an engine that cannot report has no tool count");

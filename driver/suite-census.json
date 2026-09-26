@@ -183,6 +183,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-client-cell-carries-no-raw-engine-words.test.mjs": {
+          "tests": 4,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "a-client-condition-never-carries-an-engine-token.test.mjs": {
           "tests": 11,
           "asserts": 37,
@@ -4367,7 +4373,7 @@
         },
         "register-count.test.mjs": {
           "tests": 30,
-          "asserts": 192,
+          "asserts": 194,
           "skips": 0,
           "todos": 0
         },

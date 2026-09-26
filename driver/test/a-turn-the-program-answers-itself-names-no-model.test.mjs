@@ -104,7 +104,7 @@ async function stageRow(tag, stream) {
   const out = join(runDir, "out.md");
   writeFileSync(out, "ok\n");
   const r = await withStandin(stream, () => runStage(`answered-${tag}`, {
-    agent: "clawdi", sessionKey: `clearotron-test-answered-${tag}`, message: `Do the task. Write to the ABSOLUTE path: ${out}`,
+    agent: "mailagent", sessionKey: `clearotron-test-answered-${tag}`, message: `Do the task. Write to the ABSOLUTE path: ${out}`,
     model: "opus", thinking: "medium", timeoutSec: 60, expectFile: out, validate: () => ({ ok: true }), runDir, maxRetries: 0,
   }));
   const read = (name) => readFileSync(driverDir(runDir, name), "utf8").trim().split("\n").map((l) => JSON.parse(l));

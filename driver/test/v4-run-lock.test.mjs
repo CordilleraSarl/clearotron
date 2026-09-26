@@ -28,7 +28,7 @@ process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
 const ROOT = mkdtempSync(join(tmpdir(), "runlock-e2e-"));
 for (const [k, v] of Object.entries({
   CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: ROOT, CLEAROTRON_REPORTS_DIR: join(ROOT, "pool"),
-  CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_AGENT: "clawdi", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
+  CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_AGENT: "mailagent", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
   CLEAROTRON_REGISTER_RECORD_LOG: join(ROOT, "records.jsonl"),
 })) pinEnv(process.env, k, v);
 
@@ -98,10 +98,10 @@ test("WS-C slot-lock: cap-3 admits 3 / blocks the 4th; release is OWNERSHIP-veri
 test("WS-C per-agent admission: a second SAME-tag acquire queues despite free slots; other tags admit", async () => {
   const { acquireSlot, releaseSlot } = await import("../slot-lock.mjs");
   const dir = mkdtempSync(join(tmpdir(), "slottag-"));
-  const a = await acquireSlot({ dir, cap: 3, pollMs: 15, tag: "clawdi" });
-  const b = await acquireSlot({ dir, cap: 3, pollMs: 15, tag: "clawdi-alex" });   // different agent — admits
+  const a = await acquireSlot({ dir, cap: 3, pollMs: 15, tag: "mailagent" });
+  const b = await acquireSlot({ dir, cap: 3, pollMs: 15, tag: "mailagent-b" });   // different agent — admits
   let dup = null;
-  const p = acquireSlot({ dir, cap: 3, pollMs: 15, tag: "clawdi" }).then((s) => { dup = s; return s; });
+  const p = acquireSlot({ dir, cap: 3, pollMs: 15, tag: "mailagent" }).then((s) => { dup = s; return s; });
   await new Promise((r) => setTimeout(r, 80));
   assert.equal(dup, null, "a same-agent run queues like under the old cap 1 (the M2 within-agent risk stays fenced)");
   releaseSlot(a);
@@ -156,8 +156,8 @@ test("WS-C: two concurrent pipelines run under cap 3; per-run profile sidecars s
   // DISTINCT agents — Goal 1 is cross-agent parallelism; the per-agent admission rule correctly
   // serializes same-agent runs, so a same-agent pair here would (rightly) never overlap.
   const [r1, r2] = await Promise.all([
-    pipeline(JOB("wsc-job-1", "TMP8447", "demo-brand-owner.example"), { agent: "clawdi" }),
-    pipeline(JOB("wsc-job-2", "TMP8448", "example.com"), { agent: "clawdi-alex" }),
+    pipeline(JOB("wsc-job-1", "TMP8447", "demo-brand-owner.example"), { agent: "mailagent" }),
+    pipeline(JOB("wsc-job-2", "TMP8448", "example.com"), { agent: "mailagent-b" }),
   ]);
   assert.equal(r1.ok, true, JSON.stringify(r1));
   assert.equal(r2.ok, true, JSON.stringify(r2));
@@ -195,8 +195,8 @@ test("Phase-4: two concurrent SAME-AGENT pipelines overlap (per-agent slot admis
     ref, markName: "NOVAPULSE", classes: [9, 41], provider: "corsearch",
   });
   const [r1, r2] = await Promise.all([
-    pipeline(JOB("sameagent-1", "TMP8001"), { agent: "clawdi" }),
-    pipeline(JOB("sameagent-2", "TMP8002"), { agent: "clawdi" }),
+    pipeline(JOB("sameagent-1", "TMP8001"), { agent: "mailagent" }),
+    pipeline(JOB("sameagent-2", "TMP8002"), { agent: "mailagent" }),
   ]);
   assert.equal(r1.ok, true, JSON.stringify(r1));
   assert.equal(r2.ok, true, JSON.stringify(r2));

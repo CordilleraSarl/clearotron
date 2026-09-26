@@ -43,7 +43,7 @@ MSG="The trademark engine's outbox has pending events. Run the clearotron-delive
 # slim container. Without it `timeout …` is simply a command that is not there: bash answers 127, and
 # because this script runs under `set -u` and NOT `set -e`, it sails straight on. outbox-backoff.mjs
 # then judges 127 the way it judges any nonzero exit and records `nonzero_exit_127` — a WAKE FAILURE.
-# So the operator reads "wake for clawdi failed" in the journal, goes looking at the CLI, at auth, at
+# So the operator reads "wake for <agent> failed" in the journal, goes looking at the CLI, at auth, at
 # the agent, and the answer is that a package is missing on the box. Deliveries stop, backoff climbs,
 # every diagnosis points somewhere real and wrong. That is the silent class this repo keeps paying
 # for, so it is turned into one sentence that names the cause.

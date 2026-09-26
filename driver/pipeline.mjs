@@ -334,7 +334,7 @@ export const isDesignedRefusal = (e) => e instanceof StageFailure && e.refusal =
 // ones a caller may re-run without risking a quality drop, because a repeat is the actual remedy and it
 // CANNOT paper over a recall gap. Everything NOT matched here is a content/coverage failure (validator
 // reject, missing output, unparseable, self-reported incomplete) — those never earn a re-run beyond the
-// same-model ladder inside runStage; they hard-stop, loudly. ⚠️ `status_timeout` is the 2026-06-07 CLAWDI
+// same-model ladder inside runStage; they hard-stop, loudly. ⚠️ `status_timeout` is the 2026-06-07
 // incident itself (the gateway's ~120s LLM idle-timeout surfaced as a clean-JSON status:"timeout" → the soft
 // `status_<json.status>` bucket) and MUST stay eligible.
 //
@@ -8531,7 +8531,7 @@ async function pipelineInner(job, opts = {}) {
   }
   const agent = opts.agent ?? config.defaultAgent;
   // Run-dir + archive root follow the executing agent's workspace (passed by the runner from the queue it
-  // claimed); default to clawdi's. ctx.agent makes every stage — including the notify SEND — run as this agent.
+  // claimed); default to the legacy agent's. ctx.agent makes every stage — including the notify SEND — run as this agent.
   // opts.codename rebuilds a DICTATED run identity. Two callers use it: RESUME (re-drive an existing run
   // so idempotency reuses the prior, valid stages) and the runner's dispatch PRE-MINT (B1 — opts.minted:
   // a FRESH identity, minted freshness-aware and persisted to the queue sidecar BEFORE any spend, so a
@@ -15033,7 +15033,8 @@ async function pipelineInner(job, opts = {}) {
     // telemetry — the reviewer reads it on the audit workbook. A4: the
     // stable reason codes still ride the event, so a classifier reading the spine never hashes prose.
     if (published.clientGate && published.clientGate.released === false) {
-      runLog(run.runDir, { event: "machine-qc-failed", reasons: (published.clientGate.reasons ?? []).map(String), ...(published.clientGate.reasonCodes?.length ? { reasonCodes: published.clientGate.reasonCodes } : {}) });
+      runLog(run.runDir, { event: "machine-qc-failed", reasons: (published.clientGate.reasons ?? []).map(String), ...(published.clientGate.reasonCodes?.length ? { reasonCodes: published.clientGate.reasonCodes } : {}),
+        ...(published.clientGate.evaluationError ? { evaluationError: published.clientGate.evaluationError } : {}) });
       note(`machine QC failed (${(published.clientGate.reasons ?? []).length} check(s)) — recorded on the audit workbook; the report is delivered as usual: ${(published.clientGate.reasons ?? []).join("; ")}`);
     }
     ctx.publishedUrl = published.url;
@@ -15158,7 +15159,7 @@ async function pipelineInner(job, opts = {}) {
       try { rmSync(driverDir(run.runDir, "send-receipts.json"), { force: true }); } catch { /* none */ }
       try { rmSync(driverDir(run.runDir, "failure.json")); } catch { /* none */ }
       writeFileSync(driverDir(run.runDir, "delivery.json"), JSON.stringify(packet, null, 2) + "\n");
-      note(`delivery: handoff → wrote _driver/delivery.json (clawdi completion-watch sends email${packet.whatsappTo ? " + WhatsApp" : ""})`);
+      note(`delivery: handoff → wrote _driver/delivery.json (the forwarding agent's completion-watch sends email${packet.whatsappTo ? " + WhatsApp" : ""})`);
       // Workstream B — instant delivery: drop a marker in the fixed outbox so the prelim-outbox.path unit
       // wakes the forwarder agent NOW (vs ≤55m on the HEARTBEAT completion-watch, which stays as the
       // backstop). The marker only names the agent to wake; status.sendPending + the run's .sent guard

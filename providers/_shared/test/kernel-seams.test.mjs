@@ -35,8 +35,8 @@ const rows = (n, tag) => Array.from({ length: n }, (_, i) => ({ record_id: `/mar
 test("ledger: every row carries its provider discriminator, on the shared paths", () => {
   const a = makeLedger("corsearch");
   const b = makeLedger("clarivate");
-  a.logCall({ agentId: "clawdi", sessionKey: "s1", kind: "search", target: "t" }, { http_status: 200, ok: true });
-  b.logCall({ agentId: "clawdi", sessionKey: "s1", kind: "search", target: "t" }, { http_status: 200, ok: true });
+  a.logCall({ agentId: "mailagent", sessionKey: "s1", kind: "search", target: "t" }, { http_status: 200, ok: true });
+  b.logCall({ agentId: "mailagent", sessionKey: "s1", kind: "search", target: "t" }, { http_status: 200, ok: true });
   b.logRecordBody({ sessionKey: "s1" }, "/mark/ch/1", { x: 1 });
   const calls = readFileSync(CALL_LOG_PATH, "utf8").trim().split("\n").map(JSON.parse);
   assert.deepEqual(calls.map((r) => r.provider), ["corsearch", "clarivate"]);

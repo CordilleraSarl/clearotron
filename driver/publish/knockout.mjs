@@ -126,7 +126,7 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
     // question the kinds of use it asked about, in the frame's words.
     'Mark': r.mark, 'Search Term': Array.isArray(r.spellings) && r.spellings.length ? r.spellings.join(', ') : r.mark,
     'Source / Context': `${r.executor ?? 'perplexity'} (${r.preset ?? ''})${Array.isArray(r.places) && r.places.length ? ` — ${r.places.join(', ')}` : r.question && r.inUseAs ? ` — in use as ${r.inUseAs}` : ''}`,
-    'Result Summary': r.ok ? `ok — ${r.bytes ?? 0} bytes` : `FAILED — ${r.cause ?? 'unknown'}`,
+    'Result Summary': r.ok ? `ok — ${r.bytes ?? 0} bytes` : `FAILED — ${plainCause(r.cause)}`,
     'Finding Reference': r.ok && refByMark.has(r.mark) ? refByMark.get(r.mark) : '',
     'Sweep Call #': r.callNo ?? '', 'Wall-time (s)': r.took_ms != null ? Math.round(r.took_ms / 1000) : '', 'OK/Degraded': r.ok ? 'OK' : 'Degraded',
   }));

@@ -15,7 +15,7 @@ import {
 // the vendor name never leaves engine/mcp/<provider>-server.mjs; see provider-neutral-prose.test.mjs).
 const CLAUDE_JSON = JSON.stringify({
   mcpServers: {
-    register: { command: "/usr/bin/node", args: ["/srv/register-server.mjs"], env: { CLEAROTRON_GATHER_SESSION_KEY: "sess-1", CLEAROTRON_GATHER_AGENT: "clawdi" } },
+    register: { command: "/usr/bin/node", args: ["/srv/register-server.mjs"], env: { CLEAROTRON_GATHER_SESSION_KEY: "sess-1", CLEAROTRON_GATHER_AGENT: "mailagent" } },
     courtlistener: { command: "/usr/bin/node", args: ["/srv/bridge.mjs", "--server", "courtlistener"], connectionTimeoutMs: 60000 },
   },
 });
@@ -41,7 +41,7 @@ test("renderCodexConfigToml: emits [mcp_servers.*] with command/args/env + per-s
   assert.match(toml, /\[mcp_servers\.register\]/);
   assert.match(toml, /command = "\/usr\/bin\/node"/);
   assert.match(toml, /args = \["\/srv\/register-server\.mjs"\]/);
-  assert.match(toml, /env = \{ CLEAROTRON_GATHER_SESSION_KEY = "sess-1", CLEAROTRON_GATHER_AGENT = "clawdi" \}/);
+  assert.match(toml, /env = \{ CLEAROTRON_GATHER_SESSION_KEY = "sess-1", CLEAROTRON_GATHER_AGENT = "mailagent" \}/);
   assert.match(toml, /enabled_tools = \["register_search", "register_record_fetch"\]/);
   assert.match(toml, /\[mcp_servers\.courtlistener\]/);
   assert.match(toml, /startup_timeout_sec = 60/);

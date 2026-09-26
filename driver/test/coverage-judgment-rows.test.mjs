@@ -38,7 +38,7 @@ pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
 pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", join(ROOT, "pool"));
 process.env.CLEAROTRON_MAX_RETRIES = "0";
 process.env.CLEAROTRON_RECOVERY_MAX = "0";
-process.env.CLEAROTRON_AGENT = "clawdi";
+process.env.CLEAROTRON_AGENT = "mailagent";
 process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
 
 const PL = await import("../pipeline.mjs");
@@ -215,7 +215,7 @@ test("a corrupt ledger costs the ledger half of the rows and keeps the receipt h
 test("the synthesis dictation no longer invites rows[] and says who writes it", () => {
   const P = paths("/RUN");
   const job = { marks: [{ name: "VENZY", classes: [5] }], markName: "VENZY", name: "PROJECT K", classes: [5], ref: "TMP447", customer: "ACME", goods: "supplements", forwarder: "jordan", msgId: "<m>" };
-  const msg = STAGES.synthesis.message({ paths: P, job, axes: REGISTER_AXES, registerOnly: false, agent: "clawdi", run: { slug: "s", codename: "c" } });
+  const msg = STAGES.synthesis.message({ paths: P, job, axes: REGISTER_AXES, registerOnly: false, agent: "mailagent", run: { slug: "s", codename: "c" } });
 
   const block = msg.match(/COVERAGE JUDGMENT \(MANDATORY[\s\S]*?Decide it on the RISK PICTURE/);
   assert.ok(block, "the coverage-judgment dictation is still there");
