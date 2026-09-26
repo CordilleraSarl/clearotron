@@ -1053,7 +1053,27 @@ test("senior-right closure: the SENIOR leg of a multi-leg family gets the ONE re
   const { res, root, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
     MOCK_MULTI_LEG: "1" }, {}, { recordFetcher });
   assert.equal(res.ok, true, JSON.stringify(res));
-  assert.deepEqual(fetched, ["/mark/tr/2009-53984"], "exactly ONE fetch, redirected to the senior leg");
+  // THE REDIRECT IS THE GUARANTEE, AND ITS PRIMACY IS WHAT SAYS SO. This read `deepEqual(fetched,
+  // ["/mark/tr/2009-53984"])` — one fetch, the senior leg. The closure now also pulls the records the
+  // FINDINGS cite (ruled 2026-09-26: a register that publishes no record page prints no address in the
+  // report, so the findings are the second source), and this fixture's finding cites both legs, so the
+  // junior one arrives too. The count moved; the guarantee did not.
+  //
+  // So the assertion moved to the thing the arm is FOR: the senior leg is fetched, and it is fetched
+  // FIRST, because the ranking happens in code before any citation is followed. Relaxing this to "at
+  // least one fetch" would have kept it green and stopped protecting the redirect, which is the only
+  // reason the arm exists.
+  assert.equal(fetched[0], "/mark/tr/2009-53984", "the senior leg is not the FIRST fetch — the closure ranked after following a citation, or not at all");
+
+  // AND THE REST IS THE CITATION CLOSURE, NOTHING ELSE. The junior leg is read off the delivered findings
+  // rather than written here, so this cannot pass against a hard-coded address and fails if the fixture's
+  // citation moves. Every fetch is accounted for: one redirect, then each cited record once.
+  const { findingUris } = await import("../record-carry.mjs");
+  const delivered = JSON.parse(readFileSync(join(res.runDir, "findings.json"), "utf8"));
+  const cited = [...findingUris(delivered.findings ?? []).keys()];
+  assert.ok(cited.includes("/mark/tr/2009-53984") && cited.length === 2,
+    `guard: this fixture's finding should cite both legs, and cites ${JSON.stringify(cited)}`);
+  assert.deepEqual([...fetched].sort(), [...new Set(cited)].sort(), "a record was fetched that nothing cited, or a cited record was fetched twice");
   const sr = JSON.parse(readFileSync(driverDir(res.runDir, "senior-rights.json"), "utf8"));
   assert.equal(sr.rows.length, 1);
   assert.equal(sr.rows[0].seniorUri, "/mark/tr/2009-53984");
