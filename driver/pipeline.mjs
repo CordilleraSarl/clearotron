@@ -2785,7 +2785,7 @@ const safeReadText = (p) => { try { return readFileSync(p, "utf8"); } catch { re
 // SAME POSTURE AS placement-carry: disclosure only. It re-tiers nothing, gates nothing and sends no
 // followup. `computable:false` carries its reason and NO counts — a zero would read as "every floor
 // accounted for", which is the opposite of "the band could not be read".
-function deriveFloorDuty(ctx, r, trigger = null) {
+export function deriveFloorDuty(ctx, r, trigger = null) {   // @internal — driven by its test with a run's own files
   const P = ctx.paths;
   const write = (artifact) => {
     try {
@@ -2813,7 +2813,7 @@ function deriveFloorDuty(ctx, r, trigger = null) {
     } catch (e) { return notComputable(`band-shape.json unreadable: ${String(e?.message ?? e).slice(0, 80)}`); }
     try { placements = parsePlacementsJson(readFileSync(P.placementModel, "utf8")).placements; }
     catch (e) { return notComputable(`placements.json unparseable: ${String(e?.message ?? e).slice(0, 80)}`); }
-    const artifact = reconcileFloorDuty({ floors, placements });
+    const artifact = reconcileFloorDuty({ floors, placements, setAsideGroundOf: placementSetAsideGrounds(P) });
     // The pass's own outcome, beside the rows. That lesson: a stage that failed or skipped makes every
     // record it did not reach an UPSTREAM ABSENCE, not a judgment, and a reader blaming the seat for a
     // crash is reading the artifact wrong.
