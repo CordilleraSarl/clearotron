@@ -963,6 +963,10 @@ export function findSimilarListingSignals(findingsContent) {
   const signals = [];
   const OWNER_RE = /(?:developer|publisher|seller|owner)(?:\s+|_)of(?:\s+|_)record\W{0,5}([^\n|]+)/i;
   const OWNER_SKIP_RE = /not extracted|unknown|n\/a|none|^[\s—–-]*$/i;
+  // A table whose header lists the of-record fields matches OWNER_RE on its first label and captures the
+  // next one, so a label reached the register as an owner's name ("publisherofrecord", once its
+  // underscores were stripped). A label is never a name.
+  const OWNER_LABEL_RE = /^(?:developer|publisher|seller|owner)[\s_]*of[\s_]*record\b/i;
   const URL_RE = /https?:\/\/[^\s)|\]">]+/;
   let inMatrix = false, inFindings = false;
   let block = null;   // { markText, owner, url }
@@ -998,7 +1002,7 @@ export function findSimilarListingSignals(findingsContent) {
       const om = ln.match(OWNER_RE);
       if (om && !block.owner) {
         const owner = om[1].replace(/[*_`]/g, "").trim();
-        if (owner && !OWNER_SKIP_RE.test(owner)) block.owner = owner.slice(0, 120);
+        if (owner && !OWNER_SKIP_RE.test(owner) && !OWNER_LABEL_RE.test(om[1].trim())) block.owner = owner.slice(0, 120);
       }
       const um = ln.match(URL_RE);
       if (um && !block.url) block.url = um[0];
