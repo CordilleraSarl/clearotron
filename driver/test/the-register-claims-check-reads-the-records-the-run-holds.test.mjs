@@ -90,13 +90,19 @@ test("a plural sweep and a singular status are told apart, on the same fixture",
 
 // ── the records file itself ──────────────────────────────────────────────────────────────────────────
 
-test("an ABSENT records file is not read as zero, and the check stays strict", () => {
-  // An absence is a finding, not a count. Inferring zero from a file that is not there would tighten the
-  // bound on the strength of something nobody measured — and it would do it silently.
-  const r = check({ text: "There is no registration for this name.", records: null });
-  assert.equal(r.ok, false);
-  assert.match(r.saw, /absent or unreadable/);
-  assert.match(r.saw, /not a count of zero/);
+test("an ABSENT records file is as strict as a zero one, and says which it was", () => {
+  // These two are BEHAVIOURALLY IDENTICAL — records loosen this bound and zero is its strictest state,
+  // so neither allows anything the other does. The distinction is kept for the sentence, not the
+  // verdict: "the run held nothing" is a fact about the search, "the file would not open" is a fact
+  // about this check's own evidence, and only one of them sends a reader to look at the run.
+  const absent = check({ text: "There is no registration for this name.", records: null });
+  const zero = check({ text: "There is no registration for this name.", records: 0 });
+  assert.equal(absent.ok, false);
+  assert.equal(zero.ok, false);
+  assert.equal(absent.ok, zero.ok, "identical verdicts — the split buys the basis line, nothing else");
+  assert.match(absent.saw, /absent or unreadable/, "and the two are told apart in words");
+  assert.match(zero.saw, /holds 0 register record/);
+  assert.notEqual(absent.saw, zero.saw);
 });
 
 test("the answer says which basis it judged on, either way", () => {

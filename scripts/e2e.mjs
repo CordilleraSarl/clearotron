@@ -1549,9 +1549,19 @@ function evalAssertion(a, runDir) {
     const singularAbsence = /\b(?:no|not one|zero|none)\s+(?:\w+\s+){0,3}(?:filing|registration)\b/i;
     // Self-labelled as an expectation, or stated as the count it is — both stay inside what ran.
     const staysInside = /\bexpect(?:ed|ation|ations)?\b|\bpending\b|\bnot a search result\b|\bhit[- ]counts?\b|\bcounts?\b|\bmay adjust\b|\banticipat/i;
-    // WHAT THE RUN HOLDS, READ RATHER THAN ASSUMED. An unreadable or absent records file is NOT zero:
-    // zero is a real state that widens this bound, and inferring it from a file that failed to open
-    // would tighten the check on the strength of an absence. So it says so and stays strict.
+    // WHAT THE RUN HOLDS, READ RATHER THAN ASSUMED.
+    //
+    // RECORDS LOOSEN THIS BOUND AND ZERO IS ITS STRICTEST STATE, so an absent or unreadable file and a
+    // genuine zero behave IDENTICALLY: both refuse a singular absence, both allow nothing a count could
+    // not already say. Driven rather than reasoned: `null` and `0` fail, `1` and `59` pass. Folding the
+    // two together would change no verdict on any run.
+    //
+    // THE SPLIT IS KEPT FOR THE SENTENCE IT PRINTS, NOT FOR A VERDICT. A reader has to be able to tell
+    // "strict because the run held nothing" from "strict because the file would not open" — the first is
+    // a fact about the search, the second is a fact about this check's own evidence, and only one of them
+    // is a reason to go and look at the run. That is all the distinction buys, and it is worth saying so
+    // here: a later editor comparing the two branches will find them behaviourally identical, because
+    // they are, and collapsing them would silently destroy the only thing they provide.
     const recordsFile = readJson(driverDir(runDir, "register-records.json"));
     const held = recordsFile
       ? (recordsFile.marks ?? []).reduce((n, m) => n + (m.records ?? []).length, 0)
@@ -1559,7 +1569,7 @@ function evalAssertion(a, runDir) {
     const bad = sentences.filter((s) => aboutRegister.test(s) && !staysInside.test(s)
       && (exceedsACount.test(s) || (singularAbsence.test(s) && !(held > 0))));
     const basis = held === null
-      ? "_driver/register-records.json is absent or unreadable, so a singular absence is bound as strictly as a sweep — an unreadable file is not a count of zero"
+      ? "_driver/register-records.json is absent or unreadable, so this is as strict as a run holding zero records — identical verdict, different reason: one is a fact about the search, this is a fact about the check's own evidence"
       : `the run holds ${held} register record(s), so a status read off one is supported and only a claim over the field is not`;
     return { ok: bad.length === 0,
       saw: bad.length ? `${bad.length} register claim(s) wider than the records this run holds — ${bad.slice(0, 2).map((s) => `"${s.slice(0, 120)}"`).join(" · ")} (${basis})`
