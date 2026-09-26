@@ -402,6 +402,10 @@ export function validateGridSpec(spec) {
   // Absent ⇒ the numbers every grid ran on before (ask 10, keep 8).
   if (spec.results_per_cell != null && !(Number.isInteger(spec.results_per_cell) && spec.results_per_cell >= 1 && spec.results_per_cell <= 50))
     throw new Error("grid spec.results_per_cell must be an integer from 1 to 50");
+  // OPTIONAL: the kind of use every cell's query adds to its term, a word or two, as the driver dictates it.
+  // Absent ⇒ each cell searches the bare term, as every grid did before.
+  if (spec.use != null && !(typeof spec.use === "string" && spec.use.trim() && spec.use.trim().length <= 40 && spec.use.trim().split(/\s+/).length <= 3))
+    throw new Error("grid spec.use must be a word or two, at most three words and 40 characters");
   // OPTIONAL connotation/meaning sweep (back-compat: absent ⇒ marketplace-grid-only). The driver dictates
   // the meaning queries verbatim (the matter frame's meaning questions), the program runs them on the general web and
   // records them into extras.pr_risk — distinct from the term×platform marketplace cells.
@@ -464,6 +468,7 @@ export function buildGridProgramTask(spec) {
   // numbers every grid ran on before it could: ask for 10, keep the first 8.
   const ask = spec.results_per_cell ?? 10;
   const keep = spec.results_per_cell ?? 8;
+  const use = typeof spec.use === "string" ? spec.use.trim() : "";
   // THE GRID ASKED: the spec's own term × platform product, or its blocks when the matter frame decided the
   // grid (see validateGridSpec). One product reads exactly as it always has.
   const pieces = (Array.isArray(spec.grids) ? spec.grids : [{ terms: spec.terms, platforms: spec.platforms }]).filter((g) => g.terms.length && g.platforms.length);
@@ -496,7 +501,10 @@ export function buildGridProgramTask(spec) {
       : hasCells ? `Search EXACTLY this term × platform grid — every (term × platform) cell runs once, no additions, no omissions, keys VERBATIM (${cellCount} cells total):` : "",
     ...pieces.flatMap((g) => [`TERMS (${g.terms.length}): ${JSON.stringify(g.terms)}`, `PLATFORMS (${g.platforms.length}): ${JSON.stringify(g.platforms)}`]),
     "Access the Perplexity results with EXACTLY this idiom — the result object supports ITERATION and ATTRIBUTE access ONLY (NO slicing, NO list(...), NO dict(...), NO indexing — iterating a single hit raises 'WebHit object is not iterable'):",
-    hasCells ? `    hits = pplx_sdk.search.web(term, limit=${ask}, domains=[platform])   # for the \"web\" platform, OMIT the domains= argument entirely` : "",
+    // THE CELL'S QUERY: the term, or the term followed by the kind of use the driver dictates. The key stays
+    // the term either way, so every receipt, gap and reconciliation reads exactly as it did.
+    hasCells ? `    hits = pplx_sdk.search.web(${use ? `term + " " + ${JSON.stringify(use)}` : "term"}, limit=${ask}, domains=[platform])   # for the \"web\" platform, OMIT the domains= argument entirely` : "",
+    hasCells && use ? `Every cell's query is its term followed by a space and ${JSON.stringify(use)}; the cell's "term" key is still the TERM exactly as listed, never the query.` : "",
     hasCells ? "    results = []" : "",
     hasCells ? "    for h in hits:" : "",
     hasCells ? `        if len(results) >= ${keep}: break` : "",

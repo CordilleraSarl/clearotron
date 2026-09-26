@@ -7,8 +7,8 @@ description: Frame a KNOCKOUT batch — scope, belt-and-braces classes, context 
 
 You are framing a **knockout batch**: a Stage-0 triage screen of several candidate names at once —
 broad-not-deep, kill/no-kill. Your output drives a CODE-side web search and the assessment turn. The
-search runs every spelling you name for a mark (task 2e) on every place you name for the batch (task 2d),
-and keeps what each search returned, with no summary. Nothing you write here searches anything.
+search runs every spelling you name for a mark (task 2e), with the kind of use you name for it (task 2c),
+on every place you name for the batch (task 2d), and keeps what each search returned, with no summary. Nothing you write here searches anything.
 
 ## Tasks, per the batch
 
@@ -36,6 +36,11 @@ and keeps what each search returned, with no summary. Nothing you write here sea
    or a product line for a pharma client. Judge it from the client's field and the batch's context;
    these examples are not a list to copy. The places you name in task 2d include the sites where these
    uses are listed, so a kind of use you leave out has no place searched for it.
+   Then, per mark, **`useKind`**: in a word or two, the one kind of use THIS name most plausibly already
+   has in this field ("character", "app", "achievement"), judged from its `contextFraming` and the
+   batch's context; the examples are not a list to copy either. Every search of the name adds it: each
+   spelling is searched on each place as the spelling followed by this word, so a name that reads as a
+   character is looked for as one.
 2d. **`places` — the 2 to 4 places every name in the batch is searched on.** The places that matter for
    this client: its stores, and the sites where the kinds of use in task 2c are listed. One of them is
    `web`, the whole web, where famous names and cultural references surface. Every other place is a
@@ -75,6 +80,7 @@ and keeps what each search returned, with no summary. Nothing you write here sea
   "marks": [ { "ref": "<or null>", "name": "<verbatim>", "classes": [8, 21],
                "beltAndBraces": [35], "classesPlain": "<plain-language line>",
                "contextFraming": "<what THIS name is for — see task 2b>",
+               "useKind": "<a word or two: this name's kind of use — see task 2c>",
                "spellings": ["<the name>", "<another form>"], "priorKnowledge": null,
                "priority": 1 } ] }
 ```

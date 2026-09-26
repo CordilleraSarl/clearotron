@@ -51,7 +51,7 @@ import { refuseUndeclared as refuseUndeclaredShared, keepIfAbsent, lastAccepted,
 import { kebabCollisions } from "./search-policy.mjs";
 // The plan's own checks for the web search's lists, one definition: the call is refused with the plan's
 // sentence, so the seat hears the rule once, in the same words, whichever door it reaches first.
-import { placesDefect, spellingsDefect } from "./verify-knockout.mjs";
+import { placesDefect, spellingsDefect, useKindDefect } from "./verify-knockout.mjs";
 
 const SCHEMA_VERSION = 1;
 
@@ -86,7 +86,7 @@ export function knockoutFrameCallPaths(runDir) {
 const DECLARED = Object.freeze({
   "": ["schema", "batch", "marks", "scope_note"],
   batch: ["productContext", "inUseAs", "places", "umbrellaBrandNote", "executionOrder"],
-  marks: ["ref", "name", "classes", "beltAndBraces", "classesPlain", "contextFraming", "spellings", "priorKnowledge", "priority"],
+  marks: ["ref", "name", "classes", "beltAndBraces", "classesPlain", "contextFraming", "useKind", "spellings", "priorKnowledge", "priority"],
 });
 
 /** Refuse an undeclared key by path, through the shared implementation every transport now uses. */
@@ -168,6 +168,8 @@ export function acceptKnockoutFrame(params) {
       return { ok: false, reason: `knockoutframe_classes_plain:${name} — classesPlain is required: the plain-language class line` };
     if (!str(m?.contextFraming))
       return { ok: false, reason: `knockoutframe_context_framing:${name} — contextFraming is required, and the rating hangs off it: the assess stage is told to rate WITH this field, per mark` };
+    const useKindRefused = useKindDefect(name, m?.useKind);
+    if (useKindRefused) return { ok: false, reason: `knockoutframe_use_kind:${name} — ${useKindRefused}` };
     const spellingsRefused = spellingsDefect(name, m?.spellings);
     if (spellingsRefused) return { ok: false, reason: `knockoutframe_spellings:${name} — ${spellingsRefused}` };
     for (const ck of ["classes", "beltAndBraces"]) {

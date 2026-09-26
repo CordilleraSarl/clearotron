@@ -292,6 +292,18 @@ export function spellingsDefect(name, spellings) {
   return null;
 }
 
+/**
+ * The refusal for a mark's kind of use, or null. PURE. The frame names it per name, in its own judgment,
+ * and every search of the name adds it, so it is a word or two and never a sentence: a long phrase would
+ * be searched word for word in every cell. Nothing here lists the kinds; only the shape is checked.
+ */
+export function useKindDefect(name, useKind) {
+  const refusal = `mark "${name}": useKind is required: in a word or two, the kind of use this name is searched for (task 2c)`;
+  if (typeof useKind !== "string" || !useKind.trim()) return refusal;
+  const words = useKind.trim().split(/\s+/);
+  return words.length > 3 || useKind.trim().length > 40 ? `${refusal}; "${useKind.trim().slice(0, 60)}" is longer than that` : null;
+}
+
 // ── Stage validators (runStage corrective-ladder shape) ──────────────────────────────────────────────
 export const validators = {
   // knockout-plan.json — strict: closed keys, one row per instructed mark (name parity vs the
@@ -310,7 +322,7 @@ export const validators = {
     const placesRefused = placesDefect(p.batch.places);
     if (placesRefused) return { ok: false, reason: placesRefused };
     if (!Array.isArray(p.marks) || !p.marks.length) return { ok: false, reason: "marks[] is required" };
-    const MARK_KEYS = ["ref", "name", "classes", "beltAndBraces", "classesPlain", "contextFraming", "spellings", "priorKnowledge", "priority"];
+    const MARK_KEYS = ["ref", "name", "classes", "beltAndBraces", "classesPlain", "contextFraming", "useKind", "spellings", "priorKnowledge", "priority"];
     for (const m of p.marks) {
       for (const k of Object.keys(m)) if (!MARK_KEYS.includes(k)) return { ok: false, reason: `plan mark key "${k}" is not in the closed contract` };
       if (typeof m.name !== "string" || !m.name.trim()) return { ok: false, reason: "every plan mark needs a verbatim name" };
@@ -318,6 +330,8 @@ export const validators = {
       const spellingsRefused = spellingsDefect(m.name, m.spellings);
       if (spellingsRefused) return { ok: false, reason: spellingsRefused };
       if (typeof m.contextFraming !== "string" || !m.contextFraming.trim()) return { ok: false, reason: `mark "${m.name}": contextFraming is required (the rating hangs off it)` };
+      const useKindRefused = useKindDefect(m.name, m.useKind);
+      if (useKindRefused) return { ok: false, reason: useKindRefused };
       for (const ck of ["classes", "beltAndBraces"]) {
         if (m[ck] != null && (!Array.isArray(m[ck]) || !m[ck].every((n) => Number.isInteger(n) && n >= 1 && n <= 45)))
           return { ok: false, reason: `mark "${m.name}": ${ck} must be Nice-class integers (1–45)` };
