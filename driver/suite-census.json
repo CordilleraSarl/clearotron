@@ -1515,6 +1515,12 @@
           "skips": 5,
           "todos": 0
         },
+        "a-worldwide-order-is-never-framed-as-the-account-defaults.test.mjs": {
+          "tests": 3,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "a-write-free-stage-hands-paths-over-to-read.test.mjs": {
           "tests": 4,
           "asserts": 14,
