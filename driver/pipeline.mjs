@@ -14182,6 +14182,19 @@ async function pipelineInner(job, opts = {}) {
         const surfacesText = [P.report].filter(existsSync)
           .map((f) => readFileSync(f, "utf8")).join("\n");
         const cited = new Set((surfacesText.match(CITED_URI_RE) ?? []).map((u) => u.toLowerCase()));
+        // AND THE FINDINGS' OWN REGISTRATIONS, because the report is not a complete list of them. A
+        // register that publishes no page per record prints no record address at all, so on those runs
+        // the set built from the report above is EMPTY, this pass never runs, and bindFindingsToRecords
+        // and joinEvidenceStatus have nothing to compare the cards against — every card then prints the
+        // owner, status and dates as the model wrote them, and the only place that says so is the audit
+        // workbook's "Record retrieved?" column. Measured over 45 days of test runs: six of nine runs on
+        // such a register held no record at all, their findings citing 7 to 90 registrations each, while
+        // every run on a register that does publish pages held 112 to 5,038. The findings name the
+        // registrations whatever the register does. findingUris is the one derivation of that (it reads
+        // owner.registrations[].uri and normalizes to the same lowercased /mark/ path this set keys on),
+        // so this is the same question asked of a second source, not a second answer to it.
+        for (const uri of findingUris(parseFindingsJsonLenient(
+          existsSync(P.findings) ? readFileSync(P.findings, "utf8") : "").findings ?? []).keys()) cited.add(uri);
         const missing = [...cited].filter((u) => !assembled.records.has(u)).sort();
         if (missing.length) {
           note(`registry-record closure: ${missing.length} cited record(s) absent from the run's set — targeted fetch`);
