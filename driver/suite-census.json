@@ -1517,7 +1517,7 @@
         },
         "a-windows-stage-record-has-a-name-windows-can-hold.test.mjs": {
           "tests": 6,
-          "asserts": 23,
+          "asserts": 24,
           "skips": 1,
           "todos": 0
         },

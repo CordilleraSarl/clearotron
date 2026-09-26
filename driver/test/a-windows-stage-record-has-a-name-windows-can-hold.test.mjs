@@ -143,6 +143,11 @@ test("no test fixture writes a _driver artefact whose stage label keeps a raw co
   // A bare `return` here would score as a PASS having measured nothing, which is the one thing this
   // arm may not do. Off a checkout it SKIPS, loudly, and the run says so.
   if (files === null) return ctx.skip(skipReason(GUARD));
+  // THE SET THE LOOP BELOW WALKS IS NOT EMPTY, said here and directly. The per-root assertions that
+  // follow imply it, but only to a reader: a loop over a discovered set that asserts nothing when the set
+  // is empty passes having measured none of it, and the check for that class reads the assertion rather
+  // than the implication. It is also the honest order — the corpus first, then its coverage.
+  assert.ok(files.length > 0, "the tracked corpus read as empty, so this sweep measured nothing");
   // EVERY ROOT SEPARATELY, because a total cannot see a lost one: driver/test alone is over a thousand
   // files, so any floor on the sum is met by that root while the other three return nothing — which is
   // what a mistyped pathspec looks like, and it would read as a clean sweep of a tree nobody searched.
