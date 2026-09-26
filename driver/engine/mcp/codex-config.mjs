@@ -44,7 +44,7 @@ export const CRED_ENV_FORWARD = [
 // the program, and every server block below forwards them. `EUIPO_ENVIRONMENT` is also written into the
 // EUIPO server's own entry by gather-config; forwarding it as well changes nothing, since `env` wins.
 export const TOOL_SERVER_SETTINGS = Object.freeze([
-  "CLARIVATE_API_BASE", "SIGNA_BASE_URL", "EUIPO_ENVIRONMENT", "SIGNA_FIXTURES_DIR", "CLAWDI_SIGNA_FIXTURES_DIR",
+  "CLARIVATE_API_BASE", "SIGNA_BASE_URL", "EUIPO_ENVIRONMENT", "SIGNA_FIXTURES_DIR",
   "CLEAROTRON_HTTP_TIMEOUT_MS", "CLEAROTRON_BAND_RESPONSE_CHARS", "CLEAROTRON_ENUMERATE_NAMES_CHUNK",
   // The case-law bridges: where their sign-in lives, and the name they register under.
   "OAUTH_BRIDGE_CREDS_DIR", "OAUTH_BRIDGE_CLIENT_NAME",

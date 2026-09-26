@@ -456,9 +456,7 @@ Dev cockpit: `PORTAL_PORT`, `PORTAL_HOST`.
 
 Diagnostics and fixtures: `CLEAROTRON_DUMP_JSON`,
 `CLEAROTRON_REPLAY_SNAPSHOT`, `CLEAROTRON_REPLAY_ROOTS`, `CLEAROTRON_JX_FIXTURES`,
-`CLEAROTRON_KNOCKOUT_SWEEP_FIXTURES`, `SIGNA_FIXTURES_DIR` (and its accepted alias
-`CLAWDI_SIGNA_FIXTURES_DIR` — `providers/signa/src/core.js` reads the plain name first and falls back
-to the prefixed one, so an operator who sets only the alias must be able to find it here),
+`CLEAROTRON_KNOCKOUT_SWEEP_FIXTURES`, `SIGNA_FIXTURES_DIR`,
 `PORT` (smoke test), and the `MOCK_*` fixture vars. Those are part of
 the harness-only set `scripts/env-audit.mjs` counts separately and this register deliberately omits.
 
