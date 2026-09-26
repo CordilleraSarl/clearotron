@@ -651,6 +651,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-large-grid-is-served-in-parts-under-the-tool-cap.test.mjs": {
+          "tests": 4,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
         "a-late-review-that-softens-is-recorded-not-adopted.test.mjs": {
           "tests": 3,
           "asserts": 12,

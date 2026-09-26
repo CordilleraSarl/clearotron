@@ -636,6 +636,27 @@ export function candidatesForJudgment(ledger) {
 }
 
 /**
+ * The candidates, split between cells into parts whose indented JSON stays within `budget` characters,
+ * the first within `firstBudget` (it shares its reply with whatever else the first reply carries). A cell
+ * is never cut: one that alone passes the budget is a part of its own. One part when everything fits, so
+ * a grid that fits reads exactly as before. PURE, so every call splits the same answer the same way.
+ */
+export function candidateParts(cands, budget, firstBudget = budget) {
+  const parts = [];
+  let part = [], size = 2;
+  for (const cell of Array.isArray(cands) ? cands : []) {
+    // Each cell sits in the array indented by two more spaces per line, plus its separator.
+    const text = JSON.stringify(cell, null, 2);
+    const cost = text.length + text.split("\n").length * 2 + 2;
+    if (part.length && size + cost > (parts.length ? budget : firstBudget)) { parts.push(part); part = []; size = 2; }
+    part.push(cell);
+    size += cost;
+  }
+  if (part.length || !parts.length) parts.push(part);
+  return parts;
+}
+
+/**
  * End-to-end pure capture: parse the sandbox response, pick the deliverable run, reconcile against the
  * dictated spec. Returns { ok, ledgerJson, missing, present, requested, candidates, code, error }.
  * index.js does the fs read of the spec and the fs write of ledgerJson — this stays pure for `node --test`.
