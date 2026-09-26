@@ -122,7 +122,7 @@ test("--job file passthrough keeps prose verbatim; flags override; id collision 
   const brief = `Confirmation brief with "quotes", a €-sign & <angle brackets> —\ntwo lines.`;
   const jobFile = join(root, "req.json");
   writeFileSync(jobFile, JSON.stringify({
-    id: "file-1", forwarder: "sam", markName: "FILEPROBE", classes: [5],
+    id: "file-1", forwarder: "relay", markName: "FILEPROBE", classes: [5],
     brief, goods: "veterinary preparations",
   }));
 

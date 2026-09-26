@@ -117,9 +117,9 @@ test("custom OIDC issuer: a non-Cloudflare JWT-fronting proxy verifies via the i
 
 test("custom identity claim (e.g. preferred_username) is honored; missing it → 403", async () => {
   const verify = makeAccessVerifier({ team: TEAM, aud: AUD, allowedDomains: ["example.com"], emailClaim: "preferred_username", jwks });
-  const tok = await new SignJWT({ preferred_username: "Sam@Example.com" }).setProtectedHeader({ alg: "RS256", kid: KID })
+  const tok = await new SignJWT({ preferred_username: "Relay@Example.com" }).setProtectedHeader({ alg: "RS256", kid: KID })
     .setIssuedAt().setIssuer(ISS).setAudience(AUD).setExpirationTime(Math.floor(Date.now() / 1000) + 300).sign(priv);
-  assert.equal((await verify(tok)).email, "sam@example.com", "claim read + lowercased");
+  assert.equal((await verify(tok)).email, "relay@example.com", "claim read + lowercased");
   await assert.rejects(async () => verify(await mint()), isAuth(403), "a token carrying only `email` lacks the configured claim");
 });
 
@@ -127,7 +127,7 @@ test("exact email allowlist: applied IN ADDITION to the domain gate", async () =
   const verify = makeAccessVerifier({ team: TEAM, aud: AUD, allowedDomains: ["example.com"],
     allowedEmails: ["jordan@example.com"], jwks });
   assert.equal((await verify(await mint({ email: "Jordan@example.com" }))).email, "jordan@example.com");
-  await assert.rejects(async () => verify(await mint({ email: "sam@example.com" })), isAuth(403),
+  await assert.rejects(async () => verify(await mint({ email: "relay@example.com" })), isAuth(403),
     "right domain but not on the email allowlist");
 });
 
