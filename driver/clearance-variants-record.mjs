@@ -130,8 +130,15 @@ export function renderClearanceVariants(model, scopeRows) {
   const out = ["# Variant manifest", ""];
   out.push(`## Mark: ${model.mark}`, "", `Dominant element: ${model.dominant_element}`, "");
 
-  out.push("### Elements", "", "| Value | Kind |", "|---|---|");
-  for (const e of model.elements) out.push(`| ${e.value} | ${e.kind} |`);
+  // The famous-mark column appears only when an element carries the flag, so a manifest with none reads
+  // exactly as it did before the flag existed.
+  if (model.elements.some((e) => e.famous_mark_flag)) {
+    out.push("### Elements", "", "| Value | Kind | Famous-mark check |", "|---|---|---|");
+    for (const e of model.elements) out.push(`| ${e.value} | ${e.kind} | ${e.famous_mark_flag ? "yes" : ""} |`);
+  } else {
+    out.push("### Elements", "", "| Value | Kind |", "|---|---|");
+    for (const e of model.elements) out.push(`| ${e.value} | ${e.kind} |`);
+  }
   out.push("");
 
   out.push(`### Variants (${model.variants.length})`, "", "| Value | Category | Romanisation | Rationale |", "|---|---|---|---|");
@@ -172,7 +179,7 @@ export function renderClearanceVariants(model, scopeRows) {
 /** The shape this tool declares, at every depth — what the ACCEPTOR enforces. */
 const DECLARED = Object.freeze({
   "": ["mark", "dominant_element", "elements", "variants", "incumbent_classes", "search_floor", "watchlist_owners", "goods_words", "scope_ledger"],
-  elements: ["value", "kind"],
+  elements: ["value", "kind", "famous_mark_flag"],
   variants: ["value", "category", "rationale", "romanization"],
   scope_ledger: ["layer", "item", "status", "reason", "reopen_trigger"],
 });

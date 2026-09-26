@@ -298,8 +298,9 @@ export function questionsAndRecordsAtMost(a, runDir) {
 
 /**
  * `families-gate-on-the-identical-question` — every family waits, except the identical-mark questions, the
- * saturation count, the goods-narrowed questions and entries the register cannot express. A family waits
- * for the reading turn, or on a parent question of its own.
+ * saturation count, the goods-narrowed questions, entries the register cannot express and the spelling band,
+ * which is asked as the machine writes it. A family waits for the reading turn, or on a parent question of
+ * its own.
  */
 export function familiesGateOnTheIdenticalQuestion(a, runDir) {
   const plan = readPlan(runDir);
@@ -307,7 +308,7 @@ export function familiesGateOnTheIdenticalQuestion(a, runDir) {
   const markKey = markKeyOf(runDir);
   if (!markKey) return { ok: false, saw: "variant-manifest.json names no mark, so the identical-mark questions cannot be told apart" };
   const identical = new Set(identicalQuestions(plan, markKey));
-  let waitTurn = 0, waitParent = 0, idN = 0, satN = 0, goodsN = 0, unsupN = 0, turnN = 0;
+  let waitTurn = 0, waitParent = 0, idN = 0, satN = 0, goodsN = 0, unsupN = 0, bandN = 0, turnN = 0;
   const ungated = [];
   for (const e of plan.entries) {
     if (waitsForReadingTurn(e)) { waitTurn++; continue; }
@@ -319,11 +320,12 @@ export function familiesGateOnTheIdenticalQuestion(a, runDir) {
     if (e?.axis === "saturation-probe") { satN++; continue; }
     if (goodsTermsList(e).length) { goodsN++; continue; }
     if (identical.has(e)) { idN++; continue; }
+    if (isSpellingBandEntry(e)) { bandN++; continue; }
     ungated.push(`${e?.axis ?? "?"}/${e?.predicate ?? "?"} ${e?.qid ?? "?"}`);
   }
   const parts = [
     `${plural(plan.entries.length, "plan entry", "plan entries")}: ${waitTurn + waitParent} wait (${waitTurn} for the reading turn, ${waitParent} on a parent question)`,
-    `${idN + satN + goodsN + unsupN} run without waiting as the rule allows (${idN} identical-mark, ${satN} saturation count, ${goodsN} goods-narrowed, ${unsupN} the register cannot express)`,
+    `${idN + satN + goodsN + unsupN + bandN} run without waiting as the rule allows (${idN} identical-mark, ${satN} saturation count, ${goodsN} goods-narrowed, ${unsupN} the register cannot express, ${bandN} spelling band)`,
     `${turnN} the reading turn's own question(s)`,
   ];
   if (!identical.size) parts.push("the plan holds no identical-mark question for the families to wait on");

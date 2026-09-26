@@ -31,10 +31,11 @@ test("both outcomes of a free-form call are logged — success AND failure", () 
 });
 
 test("THE RESOLVED PRESET IS LOGGED, not the requested one", () => {
-  // `depth` is often absent and detectPreset decides. Logging the request would record a null where the
-  // fact is what actually ran.
-  assert.match(SRC, /const preset = depth && VALID_PRESETS\.includes\(depth\) \? depth : detectPreset\(task\);/);
-  assert.match(SRC, /const asked = \{ task, depth: depth \?\? null, preset,/);
+  // `depth` is often absent and detectPreset decides, and on a pinned run the run's tier decides whatever
+  // the question names. Logging the request would record a null, or a depth nobody sent, where the fact is
+  // what actually ran.
+  assert.match(SRC, /const preset = questionPresetFor\(\{ pinned: PINNED_QUESTION_PRESET, depth, task \}\);/);
+  assert.match(SRC, /const asked = \{ task, depth: depth \?\? null, preset, \.\.\.\(PINNED_QUESTION_PRESET \? \{ pinned: true \} : \{\}\),/);
 });
 
 test("THE RESPONSE BODY IS NEVER WRITTEN — shape only", () => {

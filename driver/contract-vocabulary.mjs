@@ -516,9 +516,9 @@ export const INNER_CODES = Object.freeze([
   // ONE CODE, TWO TOKENS, and the split is by `cause` rather than by code: verify.mjs peels the
   // `axis_invalid` cause into its own family before counting the rest. A ruling naming only
   // `coverage_no_status` would be true of most `no_status` records and false of the ones that matter most.
-  { code: "no_status", mints: ["driver/coverage-form.mjs:856"], rollsUpTo: ["coverage_no_status", "coverage_form_axis_invalid"],
+  { code: "no_status", mints: ["driver/coverage-form.mjs:894"], rollsUpTo: ["coverage_no_status", "coverage_form_axis_invalid"],
     why: "Two composites, split on the record's `cause`: `checkFindingsSibling()` in verify.mjs for cause `axis_invalid`, `dispositionForm()` there for the rest. NOT the `@returns` annotation above `COVERAGE_CAUSES` in coverage-form.mjs — that is the annotation, not the mint." },
-  { code: "engine_vocabulary", mints: ["driver/coverage-form.mjs:846"], rollsUpTo: ["coverage_form_engine_vocabulary"],
+  { code: "engine_vocabulary", mints: ["driver/coverage-form.mjs:884"], rollsUpTo: ["coverage_form_engine_vocabulary"],
     why: "#669 — the seat wrote an engine token into the `reason` sentence that reaches the reader's page. Checked on settled rows too, because a row the seat considers finished is exactly the one whose sentence gets printed. Namespaced at verify.mjs:1165; the bare code names a row, never a stage." },
 
   // ── ONE CODE, TWO MODULES ────────────────────────────────────────────────────────────────────────
@@ -529,7 +529,7 @@ export const INNER_CODES = Object.freeze([
   // the census output would have been half a ruling. verify.mjs:1075 already states the rule this row
   // records: `coverage_form_damaged`, never a bare `form_damaged`.
   { code: "form_damaged",
-    mints: ["driver/connotation-search.mjs:2004", "driver/connotation-search.mjs:2080", "driver/coverage-form.mjs:838"],
+    mints: ["driver/connotation-search.mjs:2004", "driver/connotation-search.mjs:2080", "driver/coverage-form.mjs:876"],
     rollsUpTo: ["connotation_form_damaged", "coverage_form_damaged"],
     why: "Minted in two lanes and namespaced per lane: verify.mjs:1019 for the meaning sweep, verify.mjs:1119 for the register digest. The namespacing is what keeps them apart — see verify.mjs:1075." },
 ]);

@@ -792,7 +792,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
           if (owed.length) {
             const checks = await runOwnerChecks({
               owners: owed, exec: sweep.exec, runDir: run.runDir, ledgerPath: K.ownerCheckLedger,
-              rawDir: driverDir(run.runDir, "web-results"), preset: KNOCKOUT_WEB.preset,
+              rawDir: driverDir(run.runDir, "web-results"), preset: KNOCKOUT_WEB.questionPreset,
               concurrency: 3,   // step 3 — the same constant as the sibling calls above
             });
             atomicWrite(K.ownerChecks, JSON.stringify({ schema: 1, checks }, null, 2) + "\n");
@@ -931,7 +931,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
       }
       const row = {
         ts: new Date().toISOString(), mark: m.name, callNo: n, preset, reasoning: reasoning.effort, executor: source,
-        spellings: spec.terms, places: spec.platforms, resultsPerCell: spec.results_per_cell,
+        spellings: spec.terms, places: spec.platforms, ...(spec.use ? { use: spec.use } : {}), resultsPerCell: spec.results_per_cell,
         cells: r?.requested ?? spec.terms.length * spec.platforms.length,
         // The mark's whole wall time, both attempts when there were two: what the client waited for.
         present: r?.present ?? 0, attempts, took_ms: Date.now() - started,

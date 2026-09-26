@@ -70,8 +70,9 @@ test("the driver writes the qid AND the hit count into the row — both accept-f
   assert.equal(ps.total_hits, 6862);
   const ic = rowOf(build(), "block", "ic:owner:glimmer+holdings");
   assert.equal(ic.total_hits, 703);
-  assert.deepEqual(ic.unaccounted_classes, ["30"]);
-  assert.deepEqual(rowOf(build(), "block", "ps:exact:glimmer+form").unaccounted_terms, ["GLIMMR"]);
+  // A leg that is itself a crowd was counted and never read, so it is named beside the budget-cut one.
+  assert.deepEqual(ic.unaccounted_classes, ["5", "30"]);
+  assert.deepEqual(rowOf(build(), "block", "ps:exact:glimmer+form").unaccounted_terms, ["GLIMMER", "GLIMMR"]);
 });
 
 test("a deferred slice becomes its own row carrying ITS OWN receipt reason", () => {
@@ -95,15 +96,17 @@ test("every active axis owns a row, so the completeness contract cannot be misse
   assert.deepEqual(axes, ["incumbent-class", "primary-sweep", "saturation-probe", "transliteration-numeric"]);
 });
 
-test("a sanctioned crowd is not an open block — count-kind and resolved legs never fire", () => {
-  // C6 and C7, unchanged from the gate this replaces: a plan-dictated count descriptor is sanctioned
-  // doctrine (crowd = dilution), and a block whose every term/class is verified-zero, enumerated or
-  // itself a ruled crowd is accounted for.
-  const resolved = coverageFormRows({ ...INPUT, bandBlocksByAxis: {
+test("a leg that is itself a crowd opens its block, and only the legs not read are named", () => {
+  // What was counted and not read is set aside and never clean. A spelling that is itself a crowd used
+  // to count as accounted ("crowd = dilution"), so a clean claim over the stack passed with it unread.
+  // A count-kind entry is still a measurement, not a search, and never opens (the differential test).
+  const crowdLeg = coverageFormRows({ ...INPUT, bandBlocksByAxis: {
     "primary-sweep": [{ state: "incomplete", qid: "ps:exact:glimmer+form", total_hits: 6862,
       term_counts: { GLIMMER: { disposition: "crowd" }, GLIMMR: { disposition: "enumerated" }, GLYMMER: { disposition: "verified-zero" } } }],
   } });
-  assert.equal(resolved.rows.filter((r) => r.kind === "block").length, 0);
+  const blocks = crowdLeg.rows.filter((r) => r.kind === "block");
+  assert.deepEqual(blocks.map((r) => [r.qid, r.unaccounted_terms, r.open]), [["ps:exact:glimmer+form", ["GLIMMER"], true]]);
+  assert.match(blocks[0].open_because, /\(6862 counted\), spellings not read: GLIMMER\./);
 });
 
 test("the form regenerates byte-identically from the same inputs", () => {

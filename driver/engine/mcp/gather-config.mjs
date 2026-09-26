@@ -404,7 +404,10 @@ const RECORDING = Object.freeze({
     // recording stage carried its record tool alone. A stage may not drift into this state silently — the
     // flag is what O4 compares against, and a member that stops holding retrieval fails the reverse arm.
     keepsRetrieval: true,
-    tools: Object.freeze(["record_narrative_refutation"]),
+    // It also holds `search_run_artifacts`, the skeptic's read: a reviewer checks the report against
+    // whichever part of the run's record a claim rests on, so its reads cannot be listed in advance.
+    // Its server always offered the tool; ungranted, every call the seat made was refused.
+    tools: Object.freeze(["record_narrative_refutation", "search_run_artifacts"]),
     reason: "hands back its verdict and typed flags through record_narrative_refutation instead of "
       + "writing senior-eye-review.md itself — so the enumeration style becomes the driver's and a flag "
       + "the parse cannot see stops being possible; KEEPS its perplexity and band groups, deliberately, "
@@ -496,7 +499,10 @@ const RECORDING = Object.freeze({
     // three times over. The flag is what O4 compares against; a stage may not drift into this state
     // silently, and one that stops holding retrieval fails the reverse arm.
     keepsRetrieval: true,
-    tools: Object.freeze(["record_synthesis"]),
+    // It also holds `search_run_artifacts`: rating a finding means finding the passage in the run's own
+    // artifacts that the finding rests on, which the band tools do not serve. Its server always offered
+    // the tool; ungranted, every call the seat made was refused.
+    tools: Object.freeze(["record_synthesis", "search_run_artifacts"]),
     reason: "hands back the cross-finding narrative as typed sections and the findings record as the "
       + "values it already was, through record_synthesis, instead of authoring narrative.md and "
       + "findings.json itself — so a confirmed-clean coverage row can be joined to the plan-execution "
@@ -1288,6 +1294,7 @@ export const RECORDING_TOOLS = Object.freeze({
     "mcp__declination__record_declination",
     "mcp__perplexity__perplexity_research",
     "mcp__recording-synthesis__record_synthesis",
+    "mcp__recording-synthesis__search_run_artifacts",
   ]),
   // Conversion 9. BY HAND, like every row here — O1 asserts the resolved grant EQUALS this row, so a
   // derived row would compare a value with itself. The retrieval groups this stage keeps are resolved
@@ -1304,6 +1311,7 @@ export const RECORDING_TOOLS = Object.freeze({
     "mcp__band__band_record",
     "mcp__band__band_shape",
     "mcp__recording-narrative-refutation__record_narrative_refutation",
+    "mcp__recording-narrative-refutation__search_run_artifacts",
   ]),
   // Conversion 11 — THE THIRD MIXED ROW, and the only one holding a SECOND typed transport beside its
   // own. BY HAND, like every row here — O1 asserts the resolved grant EQUALS this row, so a derived row

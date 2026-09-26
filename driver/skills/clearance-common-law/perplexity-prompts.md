@@ -11,7 +11,6 @@ expensive tier).
 | Call | `depth` | Other params |
 |---|---|---|
 | Search-as-code marketplace grid (Step 2) | `pro-search` | `enable_sandbox: true` |
-| Famous-mark query (Step 3) | `fast-search` | — |
 | Targeted follow-ups (Step 4) | `pro-search` | — |
 
 ## Search-as-code marketplace grid (Step 2)
@@ -108,21 +107,6 @@ The tool returns: the stdout JSON (cells + extras + gaps) → the **SANDBOX PROG
    count) — it is the proof of what executed.
 5. If the tool returns `ERROR: sandbox was not used` or a stdout-parse error, retry the call once;
    if it persists, follow the skill's Failure protocol (no findings file, declare the failure).
-
-## Famous-mark query (triggered by manifest's `Famous-mark Perplexity calls needed` section)
-
-`depth: "fast-search"` — this is a knowledge lookup, not deep research. Escalate to `pro-search`
-only if the fast answer is empty or ambiguous. Combine multiple flagged elements into one query.
-
-```
-"Is [ELEMENT] a brand name, band name, entertainment property, sports team,
-or well-known cultural entity? Does [ELEMENT] have trademark filings or 
-a trademark portfolio? Any connections to gaming, software, digital 
-entertainment, or [SPECIFIC INDUSTRY CONTEXT]? Look for: trademark 
-portfolios, gaming collaborations, brand licensing deals, entertainment 
-crossovers, merchandise. Include any recent filings or expansion into 
-computer game software (Class 9)."
-```
 
 ## Follow-up calls
 

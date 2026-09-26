@@ -58,23 +58,40 @@ import { makeCountProbe, parseToolText, isToolError } from "./count.mjs";
 import { guardCountCall, guardToolCall } from "./transport-guard.mjs";
 import { clipProviderText } from "./provider-text.mjs";   // — keep the discriminator
 
-// ── — HOW MUCH OF A PROVIDER ERROR SURVIVES INTO THE BAND BLOCK ───────────────────────────────
+// ── — HOW MUCH OF A PROVIDER ERROR SURVIVES INTO THE BAND BLOCK: ALL OF IT ───────────────────────────
 //
-// Both were 140, and 140 is where the defect lived: one register's Near/Adj refusal runs just past that
+// Both were 140, and 140 is where a defect lived: one register's Near/Adj refusal runs just past that
 // bound and its verdict — `are not allowed` — is the last two words. Cut at 140 it arrived truncated,
 // That structural predicate could not match, and a refusal that recurs byte-identically forever was
-// filed as weather and retried on every future run of that shape.
+// filed as weather and retried on every future run of that shape. They were raised to 400.
 //
-// Raised so the messages actually seen on these paths FIT rather than being reconstructed from a
-// stump, and measured rather than guessed: the vendor refusal is 144, and this kernel's OWN
-// non-answer-body error (the longest thing that reaches the page arm) is ~200 with the query echoed.
-// 400 clears both with room, and `deferExhaustedProviderErrors` still bounds what lands in the ledger
-// at 240 downstream — so this widens what the CLASSIFIER sees, not what the record carries.
+// AN ERROR IS NO LONGER CLIPPED HERE AT ALL. A register's gateway can answer a slow question with an
+// HTTP 504 whose body runs past the bound, and then no record of the run keeps what the gateway said.
+// The count probe's error and a page's error now reach the band block whole, and
+// `deferExhaustedProviderErrors` still bounds what lands in the ledger at 240 downstream, so this widens
+// what the block and the classifier carry, not the ledger's line.
 //
-// The clip is tail-preserving either way, so the discriminator survives even past this budget. The
-// budget is what stops that mattering in the ordinary case.
+// The cardinality refusal below keeps its budget: it quotes the provider inside a sentence of our own,
+// and the clip is tail-preserving, so the discriminator survives it.
 const COUNT_PROBE_BUDGET = 400;
-const PAGE_ERROR_BUDGET = 400;
+
+/**
+ * A gateway gave up waiting for the register: HTTP 504, or 524 as one gateway vendor numbers the same
+ * wait, or the gateway's own words for it. Not a refusal and not an outage: the question was slower than
+ * the gateway waits, which a smaller question may not be.
+ */
+export function isGatewayTimeout(text) {
+  const s = String(text ?? "");
+  return /\bHTTP 5[02]4\b/.test(s) || /gateway time-?out/i.test(s);
+}
+
+/**
+ * The token a question carries when it timed out on both halves of its regions, or on the one region a
+ * split came down to: the source timed out, in the words the report's deferral line already reads it with. The plan executor defers such a slice as a
+ * disclosed gap instead of asking it again, because a smaller question did not answer either.
+ */
+export const GATEWAY_STALL = "mechanical-fail:timeout";
+export const isGatewayStall = (reason) => String(reason ?? "").includes(`${GATEWAY_STALL}: after a gateway timeout`);
 
 export { BATCH_SCREEN_CHUNK, chunk, classifyStatus, isAllClass, normalizeBrandRow, screenVerdict };
 
@@ -151,6 +168,22 @@ export const isOwnerScoped = (params) => Boolean(
  * @param deps.rowScreen (row, inScopeClasses) => object — used for "search-row".
  * @param deps.hasAnyElement (params) => boolean
  */
+/**
+ * Is there anything left for the reading step to decide about this term or class leg? PURE.
+ *
+ * THE ONE DEFINITION OF "UNRESOLVED", and it is exported because three places need it and a rule stated
+ * three times is a rule that drifts. It was: a local sum of the tally at each of the two rescues here, and
+ * a third predicate in `execute-plan.mjs` deciding whether to hand the counts to the reading step. The
+ * three agreed, and a comment there claimed they could not drift, which was not true of the code — the
+ * claim is what made this worth coupling, because a reader who believes drift is impossible will not add
+ * the coupling themselves.
+ *
+ * `verified-zero` and `enumerated` are the resolved pair: the question was asked and answered. The other
+ * three each leave something open — a crowd to narrow, a count read but not its records, or a count that
+ * failed — and every one of them is the reading step's to decide.
+ */
+export const isUnresolvedCount = (v) => v?.disposition === "crowd" || v?.disposition === "unenumerated" || v?.disposition === "error";
+
 export function makeEnumerate(deps) {
   const {
     search: rawSearch,
@@ -232,16 +265,21 @@ export function makeEnumerate(deps) {
   // A multi-name OR-stack that crowds over the ceiling used to return ONE blind `incomplete` — a rare
   // term bundled with a saturated one (FROSTBERRY + ICEBERRY) vanished inside the pile and was read as
   // 0/clean. The rescue restores per-term truth at the one choke point every caller shares: count each
-  // term with the cheapest probe available to the provider (SEAM 1), then individually enumerate every
-  // term that is populated AND tractable (0 < n ≤ ceiling), cheapest first under a merged-records budget
-  // of one ceiling. INVARIANT: a populated term can never be recorded 0 — it is in `term_counts`, and if
-  // tractable its records are carried. Dispositions:
+  // term with the cheapest probe available to the provider (SEAM 1), and hand every count to the register
+  // reading step. INVARIANT: a populated term can never be recorded 0 — it is in `term_counts`.
+  //
+  // IT READS NONE OF THEM (ruled 2026-09-26: the reading step sees each spelling's count and decides what
+  // to narrow or read, with no budget). It used to enumerate every tractable term itself, cheapest first,
+  // under a merged-records budget of one ceiling, so the ceiling decided which spellings were read: on a
+  // test run of 2026-09-25, 78 spellings holding 17,498 records were left unread on that budget, none of
+  // them over 569 alone, and the reading step then set them aside on counts it had never seen. A crowded
+  // stack now comes back with each spelling counted and nothing read, and the reading step reads, narrows
+  // or leaves each one; what it leaves stays on the stack's coverage row with its count. Dispositions:
   //   verified-zero — the probe returned 0 (deterministic true-0, tool-derived)
-  //   enumerated    — individually paged to exhaustion; records merged into the block
-  //   crowd         — the term is ITSELF over the ceiling (dilution for judgment, never enumerated here)
-  //   unenumerated  — populated + tractable but the records budget was exhausted first (still a gap:
-  //                   full accounting is only verified-zero|enumerated|crowd — a clean cannot sit on it)
-  //   error         — the probe/enumeration failed; honest unknown, never a zero
+  //   crowd         — the term is ITSELF over the ceiling (never enumerated here)
+  //   unenumerated  — populated and under the ceiling: counted, not read, the reading step's to decide
+  //   error         — the probe failed; honest unknown, never a zero
+  // (`enumerated` is still a disposition the band reads: stacks recorded before this rule carry it.)
   // Lazy by design: on "cheap" the page-0 total IS the free whole-stack count, so the clean case costs
   // zero extra calls; the probes only run when the stack crowds. It had a kill switch; nothing set it,
   // so it is gone rather than carried as an untested path.
@@ -257,37 +295,17 @@ export function makeEnumerate(deps) {
 
   async function countFirstRescue(auth, params, names, ceiling, stackTotal, tctx, incomplete) {
     const term_counts = {};
-    const tractable = [];
     for (const t of names) {
       const n = await probeTermCount(auth, params, t, tctx);
       if (n == null) { term_counts[t] = { total_hits: null, disposition: "error" }; continue; }
       if (n === 0) term_counts[t] = { total_hits: 0, disposition: "verified-zero" };
       else if (n > ceiling) term_counts[t] = { total_hits: n, disposition: "crowd" };
-      else tractable.push({ t, n });
+      else term_counts[t] = { total_hits: n, disposition: "unenumerated" };
     }
-    tractable.sort((a, b) => a.n - b.n); // cheapest first — maximizes fully-enumerated terms under the budget
-    const merged = new Map();
-    for (const { t, n } of tractable) {
-      if (merged.size + n > ceiling) { term_counts[t] = { total_hits: n, disposition: "unenumerated" }; continue; }
-      const r = await enumerate(auth, { ...params, [namesKey]: [t] }, tctx);
-      const parsed = isToolError(r) ? null : parseToolText(r);
-      if (!parsed) { term_counts[t] = { total_hits: n, disposition: "error" }; continue; }
-      if (parsed.state === "enumerated") {
-        term_counts[t] = { total_hits: n, disposition: "enumerated" };
-        for (const rec of (parsed.records ?? [])) {
-          const k = recordKeyOf(rec);
-          if (!merged.has(k)) merged.set(k, rec);
-        }
-      } else {
-        // drifted past the probe count (provider re-count) or hit the provider window — honest per-term state
-        const m = parsed.total_hits ?? n;
-        term_counts[t] = { total_hits: m, disposition: m > ceiling ? "crowd" : "error" };
-      }
-    }
-    const records = [...merged.values()];
+    const records = [];
     const tally = { "verified-zero": 0, enumerated: 0, crowd: 0, unenumerated: 0, error: 0 };
     for (const v of Object.values(term_counts)) tally[v.disposition] += 1;
-    const unresolved = tally.crowd + tally.unenumerated + tally.error;
+    const unresolved = Object.values(term_counts).filter(isUnresolvedCount).length;
     // A FULLY RESOLVED STACK IS A COMPLETE BAND, INCLUDING WHEN THE ANSWER IS ZERO. The comment below
     // states the rule and the code then demanded a record anyway: `records.length > 0`. So a stack in
     // which EVERY term resolved to verified-zero — nobody has filed any of these names — fell through
@@ -300,12 +318,11 @@ export function makeEnumerate(deps) {
     // producing a run that searches almost nothing. The ordinary search path has always returned
     // `enumerated` for a zero-record answer; this rescue path was the one place that did not.
     if (unresolved === 0) {
-      // every term resolved to verified-zero or fully-enumerated ⇒ the union of per-term enumerations IS
-      // the complete stack (every record matching ≥1 name sits in some term's enumeration) — a true band.
+      // every term verified zero ⇒ nobody has filed any of these names: a complete band whose answer is zero.
       return { type: "text", text: JSON.stringify({ state: "enumerated", total_hits: stackTotal, count: records.length, records, term_counts }, null, 2) };
     }
     return incomplete(stackTotal, records.length, records,
-      `stack total_hits ${stackTotal} exceeds the enumerate ceiling ${ceiling}; count-first per-term rescue ran (${names.length} terms: ${tally["verified-zero"]} verified-zero, ${tally.enumerated} enumerated with records carried, ${tally.crowd} crowd, ${tally.unenumerated} unenumerated on budget, ${tally.error} error). Saturated terms stay a CROWD descriptor for judgment; term_counts is the per-term truth — a populated term is never recorded 0.`,
+      `stack total_hits ${stackTotal} exceeds the enumerate ceiling ${ceiling}; each spelling was counted and none was read (${names.length} terms: ${tally["verified-zero"]} verified-zero, ${tally.unenumerated} counted and not read, ${tally.crowd} crowd, ${tally.error} error). term_counts carries each spelling's count: which to read, narrow or leave is the reading step's decision, and a populated term is never recorded 0.`,
       { term_counts, records });
   }
 
@@ -354,7 +371,7 @@ export function makeEnumerate(deps) {
     const records = [...merged.values()];
     const tally = { "verified-zero": 0, enumerated: 0, crowd: 0, unenumerated: 0, error: 0 };
     for (const v of Object.values(class_counts)) tally[v.disposition] += 1;
-    const unresolved = tally.crowd + tally.unenumerated + tally.error;
+    const unresolved = Object.values(class_counts).filter(isUnresolvedCount).length;
     // Same rule, same reason, same correction as the OR-stack rescue above: a stack in which every class
     // came back a verified zero is a complete band whose answer is zero, not a question nobody answered.
     if (unresolved === 0) {
@@ -367,7 +384,87 @@ export function makeEnumerate(deps) {
       { class_counts, records });
   }
 
-  async function enumerate(auth, params, tctx) {
+  // ── A QUESTION SLOWER THAN THE REGISTER'S GATEWAY WAITS IS ASKED AGAIN IN REGION HALVES ───────────────
+  //
+  // A question across many regions can run longer than the register's gateway waits, and the gateway
+  // then answers HTTP 504 on every attempt, each after its full wait, and the slice is lost. So the same
+  // question is asked again on each half of its regions, and a half that still times
+  // out is halved again, down to a single region; the parts are merged into the one answer. The extra
+  // calls happen only after a gateway timeout, so a question that answers costs what it always did, and
+  // each half runs this whole contract: its own count, its own ceiling, its own screen.
+  //
+  // THE MERGE IS EXACT. A record is filed at one office, so two halves share no record: the totals add,
+  // and the records join, deduplicated by key all the same. The sum is held to the ceiling as the whole
+  // question would have been. A half that did not enumerate makes the whole slice incomplete with that
+  // half's own reason, as a names window does: a clean never ships over a part that did not run.
+  // `region_split` rides the answer, naming the timeout that started it and the size of every part that
+  // answered, so a reader can see the question was asked in pieces and where.
+  async function regionHalves(auth, params, tctx, { ceiling, incomplete, cause }) {
+    const regions = params.regions;
+    const mid = Math.ceil(regions.length / 2);
+    const halves = [regions.slice(0, mid), regions.slice(mid)];
+    // EACH HALF IS ASKED ONCE AS IT STANDS before either is halved again. When both halves time out too,
+    // the number of regions is not what makes the question slow, and halving further would only ask it
+    // more times: the question is not answered this run, with that reason, and the run goes on with the gap
+    // disclosed.
+    const asked = [];
+    for (const half of halves) asked.push({ half, r: await enumerate(auth, { ...params, regions: half }, tctx, { split: false }) });
+    const timedOut = ({ r }) => !isToolError(r) && parseToolText(r)?.gateway_timeout === true;
+    if (asked.every(timedOut)) {
+      return incomplete(0, 0, [],
+        `provider error — ${GATEWAY_STALL}: after a gateway timeout the question was asked again on each half of its `
+        + `regions, and both halves timed out too, so the number of regions is not what makes it slow. It is not `
+        + `answered this run. The gateway's words: ${cause}`,
+        { region_split: { cause, parts: [] } });
+    }
+    const merged = new Map();
+    const parts = [];
+    let total = 0;
+    let screenLift = null;
+    for (const { half, r: first } of asked) {
+      // ONE REGION THAT TIMES OUT ALONE meets the same wall as two halves that both time out: nothing is
+      // left to halve, and asking it again would only repeat the wait. It is the same stall, not answered
+      // this run, so the plan executor defers it rather than running the whole split a second time.
+      if (timedOut({ r: first }) && half.length === 1) {
+        return incomplete(total, merged.size, [...merged.values()],
+          `provider error — ${GATEWAY_STALL}: after a gateway timeout the question was asked again in region halves `
+          + `down to the one region ${half[0]}, which timed out alone too, so it is not answered this run. The gateway's `
+          + `words: ${parseToolText(first)?.reason ?? cause}`,
+          { region_split: { cause, parts } });
+      }
+      // A half that timed out while its sibling answered is the one place fewer regions may help: it is
+      // halved in turn, under the same rule.
+      const r = timedOut({ r: first })
+        ? await regionHalves(auth, { ...params, regions: half }, tctx, { ceiling, incomplete, cause: parseToolText(first)?.reason ?? cause })
+        : first;
+      const parsed = isToolError(r) ? null : parseToolText(r);
+      const which = `the ${half.length}-region half ${half[0]}${half.length > 1 ? `…${half[half.length - 1]}` : ""}`;
+      // A stall from a deeper split keeps its own reason, stall first, so the executor reads it however
+      // deep the split went and however short the reason is later cut.
+      if (parsed && parsed.state !== "enumerated" && isGatewayStall(parsed.reason)) {
+        return incomplete(total + (parsed.total_hits ?? 0), merged.size + (parsed.fetched ?? 0), [...merged.values(), ...(parsed.sample ?? [])],
+          parsed.reason, { region_split: { cause, parts } });
+      }
+      if (!parsed || parsed.state !== "enumerated") {
+        const said = parsed ? `came back ${parsed.state}: ${parsed.reason ?? ""}` : `failed: ${String(r?.text ?? "unparseable")}`;
+        return incomplete(total + (parsed?.total_hits ?? 0), merged.size + (parsed?.fetched ?? 0), [...merged.values(), ...(parsed?.sample ?? [])],
+          `after a gateway timeout the question was asked again in region halves, and ${which} ${said}`,
+          { region_split: { cause, parts } });
+      }
+      total += parsed.total_hits ?? 0;
+      for (const rec of (parsed.records ?? [])) {
+        const k = recordKeyOf(rec);
+        if (!merged.has(k)) merged.set(k, rec);
+      }
+      screenLift ??= parsed.screen_lift ?? null;
+      parts.push(...(parsed.region_split?.parts ?? [half.length]));
+    }
+    if (total > ceiling) return incomplete(total, merged.size, [...merged.values()], crowdReason(total, ceiling), { region_split: { cause, parts } });
+    return { type: "text", text: JSON.stringify({ state: "enumerated", total_hits: total, count: merged.size, records: [...merged.values()],
+      ...(screenLift ? { screen_lift: screenLift } : {}), region_split: { cause, parts } }, null, 2) };
+  }
+
+  async function enumerate(auth, params, tctx, { split = true } = {}) {
     if (!hasAnyElement(params)) return { type: "text", text: missingElementError };
 
     // The tuned ceiling, then narrowed by any window the QUERY SHAPE imposes. Min, never max:
@@ -383,6 +480,10 @@ export function makeEnumerate(deps) {
       ({ type: "text", text: JSON.stringify({ state: "incomplete", total_hits: total, fetched, sample: (sample ?? []).slice(0, 20), reason, ...(extras ?? {}) }, null, 2) });
     // A provider with no total anywhere cannot run a count-first rescue — there is nothing to count.
     const countFirst = countProbe !== "none";
+    // A question over more than one region can be asked again in halves when the gateway times out. A half
+    // asked as it stands (`split: false`) reports its timeout instead, so the caller can see both halves'.
+    const splittable = split && Array.isArray(params?.regions) && params.regions.length > 1;
+    const timeoutMark = (text) => (!split && isGatewayTimeout(text) ? { gateway_timeout: true } : undefined);
     // The per-class rescue's trigger shape: an owner-scoped query (bare-owner sweep or owner×term
     // slice) spanning >1 class — the portfolio-shaped crowd a single blind count dies as. The per-term rescue
     // keeps precedence on multi-name stacks (its accounting is the finer truth there).
@@ -498,8 +599,9 @@ export function makeEnumerate(deps) {
             + `Provider's own words: ${clipProviderText(c?.reason ?? "", COUNT_PROBE_BUDGET)}`,
             { crowd_basis: "provider-refused-count", count_unavailable: true });
         }
+        if (splittable && isGatewayTimeout(c?.reason)) return regionHalves(auth, params, tctx, { ceiling, incomplete, cause: String(c.reason) });
         return incomplete(0, 0, [],
-          `provider error on the count probe before enumeration: ${clipProviderText(c?.reason ?? "count unavailable", COUNT_PROBE_BUDGET)}`);
+          `provider error on the count probe before enumeration: ${String(c?.reason ?? "count unavailable")}`, timeoutMark(c?.reason));
       }
       total = Number.isFinite(c.total) ? c.total : 0;
       probeTotal = total;
@@ -522,7 +624,10 @@ export function makeEnumerate(deps) {
     let prevParsed = null;
     for (let page = 0; ; page += 1) {
       const r = await search(auth, { ...params, ...pageParams(page, pageSize, prevParsed) }, tctx);
-      if (isToolError(r)) return incomplete(total, results.length, results, `provider error during enumeration (page ${page}): ${clipProviderText(r.text, PAGE_ERROR_BUDGET)}`);
+      if (isToolError(r)) {
+        if (splittable && isGatewayTimeout(r.text)) return regionHalves(auth, params, tctx, { ceiling, incomplete, cause: String(r.text) });
+        return incomplete(total, results.length, results, `provider error during enumeration (page ${page}): ${String(r.text ?? "")}`, timeoutMark(r.text));
+      }
       const parsed = parseToolText(r);
       if (!parsed) return incomplete(total, results.length, results, `unparseable search response during enumeration (page ${page})`);
       // ── the number the completeness claim rests on must BE a number ────────────────────────────────

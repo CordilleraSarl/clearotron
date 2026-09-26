@@ -60,7 +60,7 @@ import { shortEntryBody, groupEntries, buildGradedEntriesSection } from "./write
 import { compileRegisterPlan, parseRegisterPlan, resolvePlanAgainstStore, joinPlanToBands, deriveCoverageSkeleton, validatePlanFeasibility, feasibilityMessages, foldSupplementalEntries, partitionFoldDirectives, screenThenCap, fullyDeferredAxes, variantTermIssue, searchedJurisdictionsFromPlan, PLAN_AUDIT_HEAD, PLAN_AUDIT_CLASSES, deferExhaustedProviderErrors, ladderExhaustedQids, isProviderHardErrorReason } from "./register-plan.mjs";
 // — ONE binding of the office split to this box's env, shared with Depth 2's two lanes.
 import { registerCapabilities, registerUnavailableOffices } from "./register-unreachable.mjs";
-import { parseVariantManifestModel } from "./variant-manifest-model.mjs";
+import { parseVariantManifestModel, famousMarkElements } from "./variant-manifest-model.mjs";
 import { meaningAnglesFromMatterContext, meaningAnglesAssertedNone, findConnotationViolations, parsePrRiskResults, connotationReasonKey, parseDispositionForm, renderDispositionTable, connotationObligations, CONNOTATION_FORM_TOKEN_SRC, CONNOTATION_UNRULED_REASONS, connotationAuditCounts, DECLINED_RULING } from "./connotation-search.mjs";
 // — the merge unions the halves' forms into the canonical one, with the same code the gateway unions
 // an attempt with. PURE and acyclic.
@@ -89,7 +89,7 @@ import { NATIVE_LANGUAGE_REMEDY } from "./products.mjs";
 import { resolveTerritories, defaultTerritoryState } from "./effective-scope.mjs";   // the ONE territory ladder (the geography stamp included) + the stored-defaults reading
 import { acquireSlot, releaseSlot } from "./slot-lock.mjs";
 import { mintSupplementalEntries, withRejected } from "./engine/mcp/supplemental.mjs";
-import { runLog, note, fileMeta, outputMeta, stageLog } from "./log.mjs"; import { plainDirective, deferralCoverageRow } from "./deferral-row.mjs"; import { degradedParts, writeDegradedParts } from "./degraded-parts.mjs"; import { armProduced, readArmSurfaces, producedNothingLine } from "./experiment-honesty.mjs"; import { correctiveReadiness, correctiveRefusalLine, correctivePassState } from "./corrective-arm.mjs";
+import { runLog, note, fileMeta, outputMeta, stageLog } from "./log.mjs"; import { plainDirective, deferralCoverageRow } from "./deferral-row.mjs"; import { degradedParts, writeDegradedParts, PART_NAMES, NOT_COMPLETED } from "./degraded-parts.mjs"; import { armProduced, readArmSurfaces, producedNothingLine } from "./experiment-honesty.mjs"; import { correctiveReadiness, correctiveRefusalLine, correctivePassState } from "./corrective-arm.mjs";
 import { deriveScopeFacts } from "./scope-facts.mjs";
 import { documentGrowth } from "./gate-metrics.mjs";
 import { editRepairTail, abbrev } from "./repair-contract.mjs";
@@ -104,7 +104,8 @@ import { deriveRegisterPresence } from "./publish/register-presence.mjs";   // �
 import { lastAcceptedMatterFrame, frameIdentifiedClasses, frameIdentifiedClassRows, frameHouseElementCandidate } from "./matter-frame-record.mjs";   // — the frame's inferred scope, when nothing was instructed; and the classes it judged necessary beyond the instructed ones, each with its reason, which the plan compile gives one identical-mark question apiece (decision 18)
 import { frameWebChoiceFor, frameAskedForWebGrid, webGridOf, closureBlocksOf } from "./web-grid.mjs";   // — the web grid the matter frame decides: its stores, its forms, what it set aside
 import { romanizedTermsFromPlan, mintSupplementalQid } from "./register-plan.mjs";
-import { excludeHouseElement, verifyHouseElementOwnership, resolveRegions as resolvePlanRegions, HOUSE_ELEMENT_RECEIPT } from "./register-plan.mjs";   // 647 — the client's own element leaves the conflict analysis only on a verified receipt
+import { excludeHouseElement, verifyHouseElementOwnership, resolveRegions as resolvePlanRegions, HOUSE_ELEMENT_RECEIPT } from "./register-plan.mjs";
+import { waitingCrossCheck, undecidedCrossChecks, withoutWait } from "./cross-check-wait.mjs";   // the cross-checks wait for the reading step   // 647 — the client's own element leaves the conflict analysis only on a verified receipt
 import { resolveRecordExecutor } from "./register-records.mjs";   // — the stamp the late lanes never met
 import { slimLine, crowdLine } from "./hit-list.mjs";   // — the list the run works from; crowds ride it as a sibling array
 import { mintCrossCheckDoubts, mintContradictionDoubts, stitchDoubts, applyClosure } from "./doubt-ledger.mjs";   // doubt-stitch + doubt-closure (2026-07-22)
@@ -226,7 +227,13 @@ async function defaultRecordFetcher(uri, ctx) {
  * It DECIDES nothing. The caller re-merges and the gate judges, so a re-issue that comes back empty is
  * simply a re-merge that still fails, and is disclosed as such rather than counted as searched.
  */
-async function defaultConnotationReissuer(queries, { spec, modelOverride = null } = {}) {
+/** The grid spec's `results_per_cell` from a frozen search policy, or nothing for a run frozen without one. PURE. */
+export function resultsPerCellOf(searchPolicy) {   // @internal
+  const n = searchPolicy?.web?.resultsPerCell;
+  return Number.isInteger(n) && n >= 1 ? { results_per_cell: n } : {};
+}
+
+async function defaultConnotationReissuer(queries, { spec, modelOverride = null, rawPath = null } = {}) {
   const apiKey = process.env.PERPLEXITY_API_KEY || "";
   if (!apiKey) return { ok: false, cause: "no research credential in the driver environment", rows: [] };
   const core = await import("../providers/perplexity/src/core.js");
@@ -235,6 +242,13 @@ async function defaultConnotationReissuer(queries, { spec, modelOverride = null 
     const task = core.buildGridProgramTask(narrow);
     const data = await core.callAgentAPI(apiKey,
       core.buildRequestBody({ task, preset: "pro-search", modelOverride, enableSandbox: true }));
+    // WHAT CAME BACK, KEPT IN THE RUN like every other web call's: the capture keeps the receipts only.
+    if (rawPath) {
+      try {
+        mkdirSync(dirname(rawPath), { recursive: true });
+        writeFileSync(rawPath, JSON.stringify({ tool: "connotation-reissue", queries, items: core.rawResultItems(data) }, null, 1) + "\n");
+      } catch { /* best-effort: the receipts below are the record */ }
+    }
     const cap = core.captureGridFromResponse(data, narrow);
     if (!cap?.ok) return { ok: false, cause: String(cap?.error ?? "capture failed").slice(0, 160), rows: [] };
     const rows = parsePrRiskResults(cap.ledgerJson).filter((r) => queries.includes(r.query));
@@ -1048,14 +1062,19 @@ function deriveGridSpec(ctx) {
     const markNames = Array.isArray(ctx.job?.marks)
       ? ctx.job.marks.map((m) => (typeof m === "string" ? m : m?.name)).filter(Boolean)
       : [ctx.job?.markName ?? ctx.job?.name].filter(Boolean);
+    // THE FAMOUS-MARK CHECK: the elements the variants step flagged, each searched on the general web. A
+    // manifest that cannot be read here flags none, which is the grid as it was before the flag.
+    let famous = [];
+    try { famous = famousMarkElements(parseVariantManifestModel(readFileSync(P.variantManifestModel, "utf8"))); } catch { /* none */ }
     const web = webGridOf({ variants: ctx.gridVariants, channels, marks: markNames,
-      forms: choice.forms, setAside: choice.setAside, decided: choice.forms !== null || asked });
+      forms: choice.forms, setAside: choice.setAside, decided: choice.forms !== null || asked, famous });
     const webCells = web.grids ? web.grids.reduce((n, g) => n + g.terms.length * g.platforms.length, 0) : web.terms.length * web.platforms.length;
     runLog(P.runDir, { event: "frame-web-grid", reading: web.grids ? (choice.forms !== null ? "frame-forms" : "mark-only") : "every-channel",
       forms: choice.forms?.length ?? null, stores: web.platforms.length - 1, stores_set_aside: web.setAside.filter((x) => x.store).length,
-      forms_set_aside: web.setAside.filter((x) => x.form).length, unmatched: web.unmatched.length, cells: webCells });
+      forms_set_aside: web.setAside.filter((x) => x.form).length, unmatched: web.unmatched.length, cells: webCells,
+      famous: web.famous?.length ?? 0 });
     if (!web.grids) note(`common-law grid: the matter frame was not asked for its stores and forms, so every spelling runs on every channel (${webCells} cells)`);
-    else note(`common-law grid: ${web.platforms.length - 1} store(s) for ${web.grids.length > 1 ? web.grids[0].terms.length : 0} form(s), and ${web.terms.length} spelling(s) on the general web — ${webCells} cells${choice.forms === null ? "; the frame sent no forms, so the mark itself stands in for them" : ""}${web.setAside.length ? `; ${web.setAside.length} set aside by the frame with its reason` : ""}`);
+    else note(`common-law grid: ${web.platforms.length - 1} store(s) for ${web.grids.length > 1 ? web.grids[0].terms.length : 0} form(s), and ${web.terms.length} spelling(s) on the general web — ${webCells} cells${choice.forms === null ? "; the frame sent no forms, so the mark itself stands in for them" : ""}${web.setAside.length ? `; ${web.setAside.length} set aside by the frame with its reason` : ""}${web.famous?.length ? `; ${web.famous.length} element(s) flagged for the famous-mark check among the general-web searches` : ""}`);
     const gridSpec = {
       terms: web.terms,
       platforms: web.platforms, // the dictated stores + the general-web cell
@@ -1063,6 +1082,8 @@ function deriveGridSpec(ctx) {
       // channel the frame chose from, and `set_aside` what it left out with its reason, for the record and
       // the audit workbook; neither dictates a cell.
       ...(web.grids ? { grids: web.grids, menu: web.menu, set_aside: web.setAside } : {}),
+      // The famous-mark check's cells, for the record: each is a general-web cell the grid above carries.
+      ...(web.famous?.length ? { famous: web.famous } : {}),
       output_path: P.commonLawGrid,
       // SIZED BY THE CELLS THIS GRID RUNS, never larger than the profile's own figure (gridBatchFor).
       batch: gridBatchFor(ctx.profile, web.platforms.length),
@@ -1084,6 +1105,9 @@ function deriveGridSpec(ctx) {
       // carrying this field (receipt presence, never absence) — pre-D1 archived specs lack it, so
       // replay verdicts on old runs never flip while every fresh grid is ledger-or-fail.
       ledger_required: true,
+      // HOW MANY RESULTS EACH CELL AND EACH MEANING QUERY ASKS FOR AND KEEPS, by report type, from the
+      // run's frozen policy. A run frozen before the rule names none, and its program asks as it did.
+      ...resultsPerCellOf(ctx.searchPolicy),
     };
     atomicWrite(gridSpecPath, JSON.stringify(gridSpec, null, 2) + "\n");   // B5 — the canonical grid-spec is never seen torn (the fail-closed join rejects a truncated read)
     ctx.gridSpecPath = gridSpecPath;
@@ -1861,6 +1885,9 @@ export function attachSearchPolicy(ctx, job, { write = true } = {}) {   // @inte
       // run's own jurisdictions/classes/platforms from THIS copy on every pass (fresh and resume),
       // so a recipe edited mid-park cannot retarget a run the requester already approved.
       recipeScope: resolved.recipeScope ?? null,
+      // THE WEB SETTINGS this run is held to (search-policy.mjs PRODUCT_POLICIES): the tier its questions go
+      // out on and the results each grid cell keeps. Frozen, so a resume runs on what the run started on.
+      web: resolved.web ?? null,
       deliveryRoute: route,
       enqueuedVia: /^[a-z0-9][a-z0-9/_.-]{0,63}$/i.test(viaRaw) ? viaRaw : null,
       // WHO triggered (Phase 3b attribution): the verified token sub start_run stamped — frozen here so
@@ -7219,12 +7246,21 @@ export function zhLaneRanOnRun(runDir, opts = {}) {   // @internal
  *  discipline, same "the reader always gets the row" purpose. Idempotent on resume: the row is keyed
  *  by its area, and a coverage row that already discloses the Stage-1.5 recommendation (a synthesis
  *  that weighed it in on a re-run) suppresses the injection rather than duplicating it. */
-export function injectScriptScopeCoverage(P, runDir, note, { searchPolicy = null, job = null, profile = null, env = process.env, lanes = Object.keys(LANGUAGE_LANES) } = {}) {   // @internal
+export function injectScriptScopeCoverage(P, runDir, note, { searchPolicy = null, job = null, profile = null, env = process.env, lanes = Object.keys(LANGUAGE_LANES), localLanguage = null } = {}) {   // @internal
   try {
     if (!existsSync(P.findings)) return;
     const scope = jxScopeJurisdictions(job ?? {}, profile ?? {});
     const pending = [];
-    for (const lane of lanes) {
+    // AN INVESTIGATION THE CLIENT ORDERED IS NEVER OFFERED BACK TO THEM (ruled 2026-09-25). The row below
+    // says where the native-language investigation can be bought, which is true of a search that did not
+    // include it and false of one that did: there, a lane that did not run is a part of the order that
+    // failed. So on an ordered investigation no offer is made, and one that ran no lane at all carries the
+    // audit's own row for that part, word for word, so the page and the workbook say the same thing.
+    const ordered = Boolean(searchPolicy?.components?.jxLanes);
+    if (ordered && localLanguage === "not-run") {
+      pending.push({ lane: "native-language", row: deferralCoverageRow(PART_NAMES.localLanguage, NOT_COMPLETED), marker: null });
+    }
+    for (const lane of ordered ? [] : lanes) {
       const d = scriptScopeDisclosure(lane);
       const row = d && decideScriptScopeHonesty({
         lane, scope,
@@ -7252,7 +7288,7 @@ export function injectScriptScopeCoverage(P, runDir, note, { searchPolicy = null
       const already = doc.coverage.some((c) => {
         const t = rowText(c);
         return t.includes(p.row.area.toLowerCase())
-          || (t.includes(p.marker) && SCRIPT_SCOPE_RECOMMENDATION_TOKENS.some((tok) => t.includes(tok)));
+          || (p.marker != null && t.includes(p.marker) && SCRIPT_SCOPE_RECOMMENDATION_TOKENS.some((tok) => t.includes(tok)));
       });
       if (already) continue;
       doc.coverage.push(p.row);
@@ -7265,6 +7301,20 @@ export function injectScriptScopeCoverage(P, runDir, note, { searchPolicy = null
   } catch (e) {
     note(`[script-scope] coverage injection skipped: ${String(e?.message || e).replace(/\s+/g, " ").slice(0, 100)}`);
   }
+}
+
+/**
+ * The native-language state, read the way publishing reads it: `not-run`, `ran-shallow`, `ran` or
+ * `not-in-scope`, or null for a run with no lane record. One reader for the page's row and the audit's
+ * part, so the two cannot disagree about whether the investigation ran. The lanes' record needs jx.mjs,
+ * which a plain clearance never imports.
+ */
+export async function localLanguageStateOf(runDir) {   // @internal
+  if (!existsSync(driverDir(runDir, "jx-lanes.json"))) return null;
+  const { laneDepthOfRun } = await import("./jx.mjs");
+  const { localLanguageDepth } = await import("./publish/search-depth.mjs");
+  const read = (f) => { try { return JSON.parse(readFileSync(driverDir(runDir, f), "utf8")); } catch { return null; } };
+  return localLanguageDepth(laneDepthOfRun({ sidecar: read("jx-lanes.json"), units: read("jx/units.json") })).state;
 }
 
 /** The zh-only form, kept because it is the name the existing tests use. One writer, one lane. */
@@ -9222,7 +9272,7 @@ async function pipelineInner(job, opts = {}) {
             + `${short.length === 1 ? "it" : "them"} itself rather than asking for the sweep again`);
           clConnotationReissueSpent = true;
           const reissuer = opts.connotationReissuer ?? defaultConnotationReissuer;
-          const r = await reissuer(short, { spec });
+          const r = await reissuer(short, { spec, rawPath: driverDir(run.runDir, "web-results", `connotation-reissue-${h}-${Date.now()}.json`) });
           runLog(run.runDir, { event: "connotation-reissue-result", ok: !!r?.ok,
             recovered: Array.isArray(r?.rows) ? r.rows.length : 0,
             cause: r?.ok ? null : String(r?.cause ?? "").slice(0, 160) });
@@ -9524,7 +9574,7 @@ async function pipelineInner(job, opts = {}) {
             note(`${missing.length} dictated meaning quer${missing.length === 1 ? "y" : "ies"} missing after the `
               + "model's one repair turn — the engine re-issues them itself through the same tool");
             const reissuer = opts.connotationReissuer ?? defaultConnotationReissuer;
-            const r = await reissuer(missing, { spec });
+            const r = await reissuer(missing, { spec, rawPath: driverDir(run.runDir, "web-results", `connotation-reissue-${Date.now()}.json`) });
             runLog(run.runDir, { event: "connotation-reissue-result", ok: !!r?.ok,
               recovered: Array.isArray(r?.rows) ? r.rows.length : 0,
               cause: r?.ok ? null : String(r?.cause ?? "").slice(0, 160) });
@@ -9979,7 +10029,7 @@ async function pipelineInner(job, opts = {}) {
           // was refused by the capability gap while the same plan held its romanisation on the entries
           // that answered it. An owner row is exempt — an owner NAME is not mark text and the executor
           // drops the carrier on an owner query, exactly as romanStamp itself decides.
-          candidates.push({ qid, axis: "primary-sweep", predicate: s.owner ? "owner" : "default", term, nice_classes: inScope.map(String), regions: [], ...(s.owner ? {} : (() => { const r = romanizedTermsFromPlan(ctx.registerPlan, term); return r ? { romanizedTerms: r } : {}; })()), expected_kind: "enumerate" });
+          candidates.push(waitingCrossCheck({ qid, axis: "primary-sweep", predicate: s.owner ? "owner" : "default", term, nice_classes: inScope.map(String), regions: [], ...(s.owner ? {} : (() => { const r = romanizedTermsFromPlan(ctx.registerPlan, term); return r ? { romanizedTerms: r } : {}; })()), expected_kind: "enumerate" }));
           candDirectives.push({ qid, owner: s.owner ?? null, markText: s.markText ?? null, source: { term: s.term ?? null, platform: s.platform ?? null, url: s.url ?? null } });
         }
         // — THIS IS THE LANE THAT KILLED R2b. `findSimilarListingSignals` takes a negative-results
@@ -10037,7 +10087,36 @@ async function pipelineInner(job, opts = {}) {
             qids: refusedDirectives.map((d) => d.qid).slice(0, 6) });
           note(`common-law→register cross-check: ${refusedDirectives.length} signal(s) REFUSED as un-searchable terms — recorded in _driver/register-xcheck.json refused[], never dispatched`);
         }
-        writeFileSync(`${receiptPath}.tmp`, JSON.stringify({ schema_version: 1, ts: new Date().toISOString(), cap: XCHECK_CAP, directives: kept, overflow, ...(refusedDirectives.length ? { refused: refusedDirectives } : {}) }, null, 2) + "\n");
+        // THE CROSS-CHECKS WAIT FOR THE READING STEP (cross-check-wait.mjs). Minted after it decided its plan,
+        // they are put to it once more, in its own session. Whatever it leaves undecided — all of them when
+        // that session cannot be asked — runs as code, as before the wait, and the receipt says so.
+        let decided = prior?.decided ?? null;
+        const waiting = undecidedCrossChecks(ctx.registerPlan, { released: releasedFamilyQids(run.runDir), withheld: readWithheldFamilies(run.runDir) });
+        if (waiting.length) {
+          const axis = "primary-sweep";
+          let asked = false;
+          // A follow-up that throws is one that could not be asked: the questions must still run below.
+          if (unitKey[axis]) try {
+            const byQid = new Map(ctx.registerPlan.entries.map((e) => [e.qid, e]));
+            const from = new Map([...(Array.isArray(prior?.directives) ? prior.directives : []), ...kept].map((d) => [d.qid, d.source?.url ?? null]));
+            const followup = repairFollowup("register-unit:xcheck-decide", { axis, entries: waiting.map((q) => ({ ...byQid.get(q), from: from.get(q) ?? null })) });
+            const r = await stage("register-unit", { ...ctx, axis }, { force: true, followup, sessionKey: unitKey[axis], trigger: "xcheck-decide" });
+            asked = r?.ok === true;
+          } catch (e) { runLog(run.runDir, { event: "register-xcheck-decide-failed", fail: String(e?.message ?? e).slice(0, 160) }); }
+          const released = releasedFamilyQids(run.runDir), withheld = readWithheldFamilies(run.runDir);
+          const ran = undecidedCrossChecks(ctx.registerPlan, { released, withheld });
+          if (ran.length) {
+            const plan = withoutWait(ctx.registerPlan, ran);
+            writeFileSync(`${P.registerPlan}.tmp`, JSON.stringify(plan, null, 2) + "\n");
+            renameSync(`${P.registerPlan}.tmp`, P.registerPlan);
+            ctx.registerPlan = plan;
+            note(`common-law→register cross-check: ${ran.length} quer${ran.length === 1 ? "y" : "ies"} the reading step did not decide`
+              + `${asked ? "" : " (its session could not be asked)"} run as code, as before the wait`);
+          }
+          decided = { asked, released: waiting.filter((q) => released.has(q)), withheld: waiting.filter((q) => withheld[q]), ran_undecided: ran };
+          runLog(run.runDir, { event: "register-xcheck-decided", ...decided });
+        }
+        writeFileSync(`${receiptPath}.tmp`, JSON.stringify({ schema_version: 1, ts: new Date().toISOString(), cap: XCHECK_CAP, directives: kept, overflow, ...(refusedDirectives.length ? { refused: refusedDirectives } : {}), ...(decided ? { decided } : {}) }, null, 2) + "\n");
         renameSync(`${receiptPath}.tmp`, receiptPath);
       } catch (e) {
         note(`common-law→register cross-check skipped (${String(e.message).slice(0, 100)}) — never-kill`);
@@ -10360,6 +10439,7 @@ async function pipelineInner(job, opts = {}) {
             batch: batchSize,
             ledger_required: true,
             ...(half ? { half } : {}),
+            ...resultsPerCellOf(ctx.searchPolicy),
           };
           atomicWrite(P.gridSpecSupp(half, "closure"), JSON.stringify(spec, null, 2) + "\n");
           return spec;
@@ -13354,13 +13434,15 @@ async function pipelineInner(job, opts = {}) {
     // print "NOT writing one", which reads as a withheld action on a run where absence is simply normal.
     // That is the absent-vs-failed conflation this tranche exists to remove; a lazy import also keeps a
     // plain clearotron byte-identical, which is why the sibling sites are shaped this way.
+    let localLanguage = null;
     if (ctx.searchPolicy?.components?.jxLanes) {
       try {
         const { stateJxSlices } = await import("./jx.mjs");
         stateJxSlices(run.runDir, { note, runLog });
       } catch (e) { note(`jx slice statement skipped (${String(e?.message ?? e).slice(0, 100)}) — never-kill`); }
+      try { localLanguage = await localLanguageStateOf(run.runDir); } catch { localLanguage = null; }
     }
-    injectScriptScopeCoverage(P, run.runDir, note, { searchPolicy: ctx.searchPolicy, job, profile: ctx.profile });
+    injectScriptScopeCoverage(P, run.runDir, note, { searchPolicy: ctx.searchPolicy, job, profile: ctx.profile, localLanguage });
     // — AFTER stateJxSlices, and the order is load-bearing: this reads `fold.depth`, which the call
     // above mints. Before it, every run would look like one that never stated a verdict. Its sibling one
     // line up covers the lane that did not run; this covers the lane that ran short of what was bought.
@@ -14995,14 +15077,7 @@ async function pipelineInner(job, opts = {}) {
       // retry or a resume recovered writes nothing, and written for the audit workbook in the shipped
       // deferral row's words. The run's record keeps each raw cause; the reader's cell never carries one.
       try {
-        // The native-language state, read the way publishing reads it, since the lanes' record needs jx.mjs.
-        let localLanguage = null;
-        if (existsSync(driverDir(run.runDir, "jx-lanes.json"))) {
-          const { laneDepthOfRun } = await import("./jx.mjs");
-          const { localLanguageDepth } = await import("./publish/search-depth.mjs");
-          const read = (f) => { try { return JSON.parse(readFileSync(driverDir(run.runDir, f), "utf8")); } catch { return null; } };
-          localLanguage = localLanguageDepth(laneDepthOfRun({ sidecar: read("jx-lanes.json"), units: read("jx/units.json") })).state;
-        }
+        const localLanguage = await localLanguageStateOf(run.runDir);
         const degraded = writeDegradedParts(run.runDir, degradedParts(run.runDir, { localLanguage }));
         runLog(run.runDir, { event: "degraded-parts", parts: degraded.parts.map((d) => ({ part: d.part, cause: d.cause })) });
       } catch (e) { runLog(run.runDir, { event: "degraded-parts-failed", cause: String(e?.message ?? e).slice(0, 200) }); }

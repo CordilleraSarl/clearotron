@@ -463,6 +463,12 @@ serve({
             properties: {
               value: { type: "string" },
               kind: { type: "string", enum: ["distinctive", "common", "saturated-common"] },
+              // The famous-mark check's hand-off (variant-manifest-model.mjs): the web grid searches a
+              // flagged element on the general web.
+              famous_mark_flag: { type: "boolean",
+                description: "Set true when this element is also a well-known brand, band, celebrity, sports team, entertainment "
+                  + "property or cultural icon: Step 2's famous-mark check. The element is then searched on the general web, "
+                  + "and the web step judges the results. Omit it on every other element." },
             },
           },
         },
@@ -1227,6 +1233,21 @@ serve({
                   },
                 },
               },
+              // THE WEB SIDE OF `registerReads`, and declared here for the same reason it is: with
+              // `additionalProperties: false`, a field the prose asks for and the schema omits is a
+              // contradiction the seat resolves whichever way it happens to trust.
+              setAside: {
+                type: "array",
+                description: "Rows of { url, ground } for a result the search RETURNED that you are not carrying as a findings[] record. `ground` is why it is not a conflict — what it turned out to be, or why it does not bear on this name. It reaches the audit workbook, never the client's report. Write a row for what you looked at and put down; never invent one to fill the list, and where many results share one ground, say it once against the one you read.",
+                items: {
+                  type: "object", additionalProperties: false,
+                  required: ["url", "ground"],
+                  properties: {
+                    url: { type: "string", description: "The result's own address, copied VERBATIM from the payload you were given." },
+                    ground: { type: "string", description: "Why this result is not carried as a finding." },
+                  },
+                },
+              },
               classesSearched: { type: "array", items: { type: "integer", minimum: 1, maximum: 45 } },
               classesDriving: { type: "array", items: { type: "integer", minimum: 1, maximum: 45 }, description: "Mandatory at a material band — class-specific ratings." },
               beltAndBraces: { type: "array", items: { type: "integer", minimum: 1, maximum: 45 } },
@@ -1391,9 +1412,9 @@ serve({
           description: "One row per instructed mark, names verbatim. Two names that differ only in spacing, punctuation or case are REFUSED: they would share one research payload, and one of them would be rated on the other's evidence.",
           items: {
             type: "object",
-            // The four the acceptor refuses a row without, by name. `classes` is NOT among them: a plan
+            // The five the acceptor refuses a row without, by name. `classes` is NOT among them: a plan
             // row may legitimately carry none, and the acceptor only constrains its shape when present.
-            required: ["name", "classesPlain", "contextFraming", "spellings"],
+            required: ["name", "classesPlain", "contextFraming", "useKind", "spellings"],
             properties: {
               ref: { type: "string", description: "The requester's own reference for this mark, or omit it." },
               name: { type: "string", description: "The mark, verbatim from the instructed scope." },
@@ -1401,6 +1422,7 @@ serve({
               beltAndBraces: { type: "array", items: { type: "number" }, description: "Adjacent Nice classes swept as a precaution, integers 1-45." },
               classesPlain: { type: "string", description: "The plain-language class line — what these classes are, in words the rating step reads beside the numbers." },
               contextFraming: { type: "string", description: "What THIS name is for — a character, a location, a product line. The rating hangs off it: the assess stage is told to rate WITH this field, per mark, and two names in one batch can sit at different bands on identical evidence because they are used differently." },
+              useKind: { type: "string", description: "In one to three words, the kind of use this name most plausibly already has in this field, in your judgment (task 2c). Every search of the name adds it: each spelling is searched on each place as the spelling followed by those words. Keep it short — it goes into every one of that name's searches — but a longer answer is accepted." },
               spellings: { type: "array", items: { type: "string" }, description: "2 or 3 ways this name is written, the name as instructed among them. Each is searched on every place." },
               priorKnowledge: { type: "string", description: "What the requester already told you about this name, or omit it." },
               priority: { type: "number", description: "This mark's position in the execution order." },
