@@ -27,7 +27,7 @@ import { envFrom } from "../../shared/env-aliases.mjs";   // — resolves EITHER
 // Queue resolution (mirrors the enqueue CLI, docs/INTAKE.md): with NO explicit agent, a
 // headless deployment's CLEAROTRON_QUEUE_DIR wins; otherwise the default agent's workspace queue. An
 // EXPLICIT agent must actually exist — either the default agent or one with a real workspace queue —
-// derived from config, never a hardcoded roster (the old closed set {clawdi, clawdi-alex, clawdi-sam}
+// derived from config, never a hardcoded roster (the old closed set of three fixed agent ids
 // rejected every other deployment's agents).
 function queueDir(agent) {
   if (!agent) {
