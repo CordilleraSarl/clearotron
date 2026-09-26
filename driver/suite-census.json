@@ -459,6 +459,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-failed-filings-search-says-so-in-plain-words.test.mjs": {
+          "tests": 4,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "a-failed-repair-rolls-back.test.mjs": {
           "tests": 5,
           "asserts": 16,
