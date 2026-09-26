@@ -5969,7 +5969,7 @@
         },
         "the-register-claims-check-reads-the-records-the-run-holds.test.mjs": {
           "tests": 10,
-          "asserts": 17,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
