@@ -42,6 +42,7 @@ const { KO_STAGES, koPaths, knockoutGridSpec, KNOCKOUT_WEB, kebab } = await impo
 const { knockoutReceipts, validators, placesDefect, spellingsDefect } = await import("../verify-knockout.mjs");
 const { acceptKnockoutFrame, refuseUndeclared } = await import("../knockout-frame-record.mjs");
 const { buildRequestBody, buildGridProgramTask, SANDBOX_INSTRUCTIONS } = await import("../../providers/perplexity/src/core.js");
+const { RESEARCH_PROVIDERS } = await import("../driver.config.mjs");
 
 // ── The plan's two lists, checked as the search program will read them ─────────────────────────────
 
@@ -199,13 +200,66 @@ test("each mark is one grid call, its ledger is its research file, and everythin
 
   // THE RATING STEP is handed each mark's ledger by path, and told what it is
   const K = koPaths(dir);
-  const dispatch = KO_STAGES["knockout-assess"].message({ K, chunkNo: 0, chunkTotal: 1, probeNote: "",
+  const assess = (job) => KO_STAGES["knockout-assess"].message({ K, job, chunkNo: 0, chunkTotal: 1, probeNote: "",
     chunkMarks: MARKS.map((name) => ({ name })), framework: { title: "House triage", bands: [{ label: "High" }, { label: "Low" }] } });
+  const dispatch = assess({ jurisdictions: ["EU", " US "] });
   assert.match(dispatch, /Each mark's RAW research payload: the record of its web searches, every spelling on every place/);
   for (const m of MARKS) assert.ok(dispatch.includes(`- ${m}: ${K.research(kebab(m))}`), `${m}'s payload is not named`);
+  // The search is not limited to the ordered territories, so the step that judges is told them
+  assert.ok(dispatch.includes("THE TERRITORIES THIS SCREEN WAS ORDERED FOR: EU, US. The web search was not limited to them. "
+    + "A use found only outside them is out of scope for this screen: leave it out of the findings, and say in that mark's assessment that you left it out."));
+  assert.doesNotMatch(assess({ jurisdictions: [] }), /ORDERED FOR/, "a worldwide screen names no territories");
+  assert.doesNotMatch(assess({}), /ORDERED FOR/);
 
   // THE RECEIPTS GATE traces a citation to the ledger, and refuses one the ledger does not hold
   const cited = (url) => knockoutReceipts(dir, [{ name: "LANTERNWICK", findings: [{ name: "A character", url }] }]);
   assert.deepEqual(cited("https://wiki.example.test/lanternwick").failures, []);
   assert.equal(cited("https://elsewhere.example.test/lanternwick").ok, false);
+});
+
+// ── A provider outage is not retried here ────────────────────────────────────────────────────────────
+//
+// The provider call already retried a 429 or 5xx before it returned, so asking again at once buys the same
+// answer. A program that did not run is the provider's model's own miss and gets its one more call (the
+// retried mark in the run above); an outage gets none, and a batch where every mark met one is parked on
+// the provider's clock rather than failed.
+test("a grid call that met a provider outage is not asked again, and a batch of them parks rather than fails", async () => {
+  const grids = [];
+  const id = "ko-outage";
+  const studioRoot = join(ROOT, "studio", id);
+  const dir = join(studioRoot, "clearance-search", "runs", "lanternwick", "2026-09-25-outage");
+  mkdirSync(driverDir(dir), { recursive: true });
+  const run = { runDir: dir, studioRoot, slug: "lanternwick", date: "2026-09-25", codename: "outage", archiveDir: join(studioRoot, "archive", "2026-09-25-outage") };
+  const job = { id, markName: MARKS[0], marks: MARKS.map((name) => ({ name })), classes: [9], forwarder: "jordan", msgId: `<${id}@x>`, ref: "E2E-outage" };
+  const ctx = { run, job, agent: "clawdi", paths: { runDir: dir }, profile: {}, searchPolicy: { level: "knockout", stageLabel: "Knockout", components: {} } };
+  let res = null, thrown = null;
+  try {
+    res = await knockoutInner(ctx, job, {
+      gridExecutor: async (spec, { mark }) => { grids.push(mark); return { ok: false, outage: true, status: 503, cause: "grid call threw: Perplexity API 503: unavailable" }; },
+      sweepExecutor: async () => ({ ok: true, text: "unused" }),
+    });
+  } catch (e) { thrown = e; }
+  assert.deepEqual(grids.sort(), [...MARKS].sort(), "one call a mark, and not one more");
+  const rows = readFileSync(driverDir(dir, "knockout-sweep.jsonl"), "utf8").split("\n").filter(Boolean).map(JSON.parse);
+  assert.deepEqual(rows.map((r) => [r.attempts, r.ok]), MARKS.map(() => [1, false]));
+  const log = readFileSync(driverDir(dir, "run.jsonl"), "utf8");
+  assert.match(log, /"event":"knockout-sweep-outage"/, "the batch was not recognised as an outage");
+  assert.equal(res, null, "an all-outage batch returned instead of parking");
+  assert.equal(thrown?.reason, "rate_limited", `an all-outage batch should park on the provider's clock: ${thrown?.message}`);
+});
+
+test("the live grid call reads a 5xx as an outage and a 4xx as not one, after the provider call's own retries", async () => {
+  const spec = knockoutGridSpec({ name: "LANTERNWICK", spellings: ["LANTERNWICK", "LANTERN WICK"] }, { places: ["web", "fandom.com"] },
+    { outputPath: join(ROOT, "studio", "clearance-search", "runs", "x", "research", "lanternwick.md") });
+  const real = globalThis.fetch;
+  const answered = (status) => async () => ({ ok: false, status, text: async () => `status ${status}`, json: async () => ({}) });
+  try {
+    globalThis.fetch = answered(503);
+    const down = await RESEARCH_PROVIDERS.perplexity.grid(spec, KNOCKOUT_WEB);
+    assert.deepEqual([down.ok, down.outage, down.status], [false, true, 503]);
+    assert.match(down.cause, /^grid call threw: Perplexity API 503/);
+    globalThis.fetch = answered(400);
+    const refused = await RESEARCH_PROVIDERS.perplexity.grid(spec, KNOCKOUT_WEB);
+    assert.deepEqual([refused.ok, refused.outage, refused.status], [false, false, 400], "a request the provider refuses is not weather");
+  } finally { globalThis.fetch = real; }
 });
