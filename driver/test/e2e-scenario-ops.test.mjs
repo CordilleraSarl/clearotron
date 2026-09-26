@@ -395,3 +395,22 @@ test("a scenario naming a file the op does not read is reported against the file
     ["questions-and-records-at-most", "_driver/plan-execution-census.json", "_driver/plan-execution.json"],
   ]);
 });
+
+test("a fallback path declared on an op that cannot use one is reported, not left sitting there", () => {
+  // A fallback is a FIELD op's. A whole-file op returns before the resolver looks at one, so declared
+  // there it does nothing while its author reads it as covering the case it does not — which is the same
+  // quiet miss this function exists to find, one field along.
+  const found = pathsAnOpDoesNotRead([{ id: "X", expect: { assert: [
+    { op: "delivery-settled", path: "status.json", orElsePath: "_driver/run.jsonl" },
+    { op: "families-gate-on-the-identical-question", path: "_driver/register-plan.json", orElsePath: "_driver/plan-execution.json" },
+    // THE CONTROL: on a field op a fallback is legitimate and must NOT be reported.
+    { op: "count-greater-than", path: "_driver/grid-spec.json:menu", orElsePath: "_driver/grid-spec.json:platforms", value: 8 },
+    // AND THE OTHER CONTROL: the same two ops with no fallback are silent.
+    { op: "delivery-settled", path: "status.json" },
+  ] } }]);
+  assert.deepEqual(found.map((f) => [f.op, f.declared]), [
+    ["delivery-settled", "_driver/run.jsonl"],
+    ["families-gate-on-the-identical-question", "_driver/plan-execution.json"],
+  ], "a fallback on a whole-file op went unreported, or one on a field op was reported");
+  assert.equal(found.find((f) => f.op === "delivery-settled").reads, "status.json");
+});
