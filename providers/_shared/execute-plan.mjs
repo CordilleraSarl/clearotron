@@ -281,11 +281,19 @@ export function defaultBuildEntryQuery(e, pp) {
  */
 export function makeRegionRequiredBuildEntryQuery(inner = defaultBuildEntryQuery) {
   return function buildEntryQuery(e, pp, plan) {
-    const q = inner(e, pp, plan);
-    if (Array.isArray(q.regions) && q.regions.length) return q;
-    const planRegions = (Array.isArray(plan?.regions) ? plan.regions : []).map((r) => String(r).trim()).filter(Boolean);
-    return planRegions.length ? { ...q, regions: planRegions } : q;
+    return withPlanRegions(inner(e, pp, plan), plan);
   };
+}
+
+/**
+ * A query that names no regions takes the plan's: the matter's territories in this provider's own
+ * vocabulary, the list every compiled entry already carries. A query that names regions keeps them, and
+ * a plan with none (a worldwide order on a register that needs no office) leaves the query as it is. PURE.
+ */
+export function withPlanRegions(q, plan) {
+  if (Array.isArray(q?.regions) && q.regions.length) return q;
+  const planRegions = (Array.isArray(plan?.regions) ? plan.regions : []).map((r) => String(r).trim()).filter(Boolean);
+  return planRegions.length ? { ...q, regions: planRegions } : q;
 }
 
 /**
@@ -410,10 +418,13 @@ export function makeExecutePlan(deps) {
         stateByQid.set(e.qid, "error");
         return;
       }
-      // `plan` is passed as a THIRD argument so a provider whose regions[] is mandatory can backfill an
-      // entry that carries none from the plan's own regions (makeRegionRequiredBuildEntryQuery). The
-      // default builder ignores it — corsearch/signa behaviour is byte-identical.
-      const query = buildEntryQuery(e, predicateParams(e), plan);
+      // EVERY QUESTION IS ASKED TO THE ORDER'S SCOPE (ruled 2026-09-26). An entry minted with no regions (a
+      // proposal, a cross-check, a recall probe) asks for the matter's territories, and only a provider
+      // whose regions are mandatory used to fill them in. On every other register such an entry searched
+      // the whole register on an order that named its countries, while the fold's question key read it
+      // as the plan's regions: the key and the query described two different searches. Every provider now
+      // fills them the same way (withPlanRegions); a worldwide plan has none to fill.
+      const query = withPlanRegions(buildEntryQuery(e, predicateParams(e), plan), plan);
       // ── SCRIPT FORM, declaration-driven: a term this index cannot HOLD is refused, not sent ──────
       // The parity half of the transliteration defect. One provider refused native-script
       // mark text inside its own request builder, because its index holds the romanisation and the

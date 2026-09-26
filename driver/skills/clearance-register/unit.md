@@ -61,14 +61,17 @@ is, then read that list in full and decide.
 
 1. Ask again for the identical mark, in the instructed classes, limited to the client's goods words. Read
    that list.
-2. Still a crowd? Ask again limited to the client's main markets, one question per market. Read those lists.
-3. Still a crowd in a market? Ask again with the dominant goods word alone. Read it.
-4. Still a crowd? Ask one class at a time. Read each list.
+2. Still a crowd? Ask again with the dominant goods word alone, then one class at a time: the instructed
+   classes first, then the incumbent's (the classes the owners crowding the list file in). Read each list.
+3. Still a crowd? Ask again one question per market, in the order your dispatch names: the order's own countries;
+   on a worldwide order, the customer's priority markets, else the markets the customer's field and brand
+   point to, else the major markets. Read those lists.
 
 Having read the list, ask whether looking wider would change what you tell the client: who could object, how weak the word is in this market, and what the client should do. If it would, widen one step and read. Stop only when you can say what more searching would not change, and write that down. Either way, record which questions you did not ask and why.
 
 Every question you ask is recorded with its count. A narrowing replaces nothing silently: the crowd it
-replaces stays on the record with its count.
+replaces stays on the record with its count. What was counted and not read is set aside with that count,
+never marked clean.
 
 The families you did not open are recorded `withheld-by-judgment`
 with your reason — not `confirmed-clean`, which would claim a search nobody ran, and not
