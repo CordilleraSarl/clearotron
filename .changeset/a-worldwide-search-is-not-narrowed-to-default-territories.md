@@ -2,4 +2,4 @@
 "clearotron-driver": patch
 ---
 
-Fixed: A worldwide search from an account with default territories is no longer narrowed to those territories.
+Fixed: Worldwide searches are no longer narrowed to an account's default territories, and results too crowded to read in full are no longer reported clean.
