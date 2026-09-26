@@ -1442,9 +1442,17 @@ function registerPositionClause(mark, registerCounts, registerRecords, cards = [
   }
   const records = entry.records ?? [];
   if (!records.length) {
-    return (entry.terms ?? []).some((t) => !t.ok)
-      ? 'The filings listing for this name did not complete, so nothing here says whether one stands.'
-      : `No filing of this name or a close variation of it stands on ${provider}, in the classes counted.`;
+    // THE CLEAN NEGATIVE NEEDS POSITIVE EVIDENCE, and it used to need only the absence of a refusal. The
+    // test was `some((t) => !t.ok)`, so a listing carrying NO terms at all — nothing asked — answered false
+    // and fell through to "no filing stands": a settled result printed over a question never put. Stated
+    // the other way round, it is the rule `recordsLine` now holds on the same fact, in the same words: a
+    // term was asked and answered, and none was left unanswered. Anything else is a listing that did not
+    // finish, which this page already has the sentence for.
+    const terms = entry.terms ?? [];
+    const ranAndAnswered = terms.length > 0 && terms.every((t) => t.ok);
+    return ranAndAnswered
+      ? `No filing of this name or a close variation of it stands on ${provider}, in the classes counted.`
+      : 'The filings listing for this name did not complete, so nothing here says whether one stands.';
   }
   return `${records.length} filing${records.length === 1 ? ' is' : 's are'} listed for this name below; `
     + `none is carried up as a conflict — each is either shown dead on the register or outside the classes counted.`;
