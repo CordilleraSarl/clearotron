@@ -495,6 +495,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-floor-row-whose-owner-was-set-aside-is-answered.test.mjs": {
+          "tests": 2,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "a-follow-up-re-runs-only-what-is-missing.test.mjs": {
           "tests": 4,
           "asserts": 9,
@@ -1513,6 +1519,12 @@
           "tests": 3,
           "asserts": 4,
           "skips": 5,
+          "todos": 0
+        },
+        "a-worldwide-order-is-never-framed-as-the-account-defaults.test.mjs": {
+          "tests": 3,
+          "asserts": 8,
+          "skips": 0,
           "todos": 0
         },
         "a-write-free-stage-hands-paths-over-to-read.test.mjs": {
@@ -7400,6 +7412,12 @@
         "providers/clarivate/test/a-refused-query-is-named-with-its-size.test.mjs": {
           "tests": 6,
           "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/clarivate/test/an-office-that-takes-no-goods-field-is-left-out-and-the-rest-asked.test.mjs": {
+          "tests": 4,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
