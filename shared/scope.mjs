@@ -5,7 +5,7 @@
 // cf-access.mjs is the OUTER transport gate: "is this a cordillera person?" (CF Access JWT, per request).
 // This module is the INNER gate: "WHAT may this principal do, on WHICH run?" Three principal kinds:
 //   ops      — full: every read tool across all runs + the write verbs (start_run/stop_run/feed_context)
-//              + what-if (stdio only). Minted for clawdi/ops, and used unconditionally on the trusted
+//              + what-if (stdio only). Minted for the ops agent, and used unconditionally on the trusted
 //              local stdio surface.
 //   user     — read-only, bound to EXACTLY ONE delivered run; cannot enumerate or read other runs and
 //              cannot call any write/spend tool. This is what a report's "Ask your AI" link mints.
@@ -203,7 +203,7 @@ export const TOOL_SCOPES = {
   run_changes: {}, diff_artifact: {},
   list_runs: { crossRun: true, accountSafe: true, present: "scrub" }, search_runs: { crossRun: true },
   // list_profiles enumerates the firm's customer roster (not run-bound). Mark crossRun so it is allowed to
-  // ops (clawdi/intake) + internal (CF-authed staff) but DENIED to a run-scoped user token (an external
+  // ops (intake) + internal (CF-authed staff) but DENIED to a run-scoped user token (an external
   // report viewer must not enumerate the client list).
   list_profiles: { crossRun: true },
   // plan_run RESOLVES a prospective search and describes it: depth, effective scope, the account's caps.
