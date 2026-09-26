@@ -514,6 +514,14 @@ test("findSimilarListingSignals: an of-record label in a table header is never t
     "| shop.example.com | Lanternwick Studio | Lanternwick Studio | https://shop.example.com/lanternwick |",
   ]);
   assert.deepEqual(findSimilarListingSignals(header).map((x) => x.owner), [], "a label was minted as an owner");
+  // Nor is any other column's label: a header row names columns, whatever follows the of-record one.
+  for (const head of ["| Store | Owner of record | URL |", "| Developer of record | Store |"]) {
+    const other = block([head, "|---|---|---|", "| shop.example.com | Lanternwick Studio | https://shop.example.com/lanternwick |"]);
+    assert.deepEqual(findSimilarListingSignals(other).map((x) => x.owner), [], `a column label was minted as an owner: ${head}`);
+  }
+  // A two-column table of fields still names the owner on its of-record row, below the header.
+  const fields = block(["| Field | Value |", "|---|---|", "| Developer of record | Lanternwick Studio Ltd |"]);
+  assert.deepEqual(findSimilarListingSignals(fields).map((x) => x.owner), ["Lanternwick Studio Ltd"]);
   // The control: a named owner on an of-record line still signals, whatever its spelling of the label.
   for (const line of ["**Publisher of record:** Lanternwick Studio Ltd", "- publisher_of_record: Lanternwick Studio Ltd"])
     assert.deepEqual(findSimilarListingSignals(block([line])).map((x) => x.owner), ["Lanternwick Studio Ltd"], line);

@@ -970,6 +970,9 @@ export function findSimilarListingSignals(findingsContent) {
   // underscores were stripped). A label is never a name.
   const OWNER_LABEL_RE = /^(?:developer|publisher|seller|owner)[\s_]*of[\s_]*record\b/i;
   const URL_RE = /https?:\/\/[^\s)|\]">]+/;
+  // A TABLE'S HEADER ROW NAMES COLUMNS, NEVER AN OWNER, whatever column follows an of-record label ("URL",
+  // "Store"). It is the row a separator row follows.
+  const SEPARATOR_RE = /^\s*\|?\s*:?-{3,}:?\s*(?:\|\s*:?-{3,}:?\s*)*\|?\s*$/;
   let inMatrix = false, inFindings = false;
   let block = null;   // { markText, owner, url }
   const flush = () => {
@@ -978,7 +981,9 @@ export function findSimilarListingSignals(findingsContent) {
     }
     block = null;
   };
-  for (const ln of (findingsContent || "").split("\n")) {
+  const lines = (findingsContent || "").split("\n");
+  for (let i = 0; i < lines.length; i++) {
+    const ln = lines[i];
     const h = ln.match(/^(#{1,6})\s+(.*)/);
     if (h) {
       const title = h[2];
@@ -1001,7 +1006,7 @@ export function findSimilarListingSignals(findingsContent) {
       continue;
     }
     if (inFindings && block) {
-      const om = ln.match(OWNER_RE);
+      const om = SEPARATOR_RE.test(lines[i + 1] ?? "") ? null : ln.match(OWNER_RE);
       if (om && !block.owner) {
         const owner = om[1].replace(/[*_`]/g, "").trim();
         if (owner && !OWNER_SKIP_RE.test(owner) && !OWNER_LABEL_RE.test(om[1].trim())) block.owner = owner.slice(0, 120);
