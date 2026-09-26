@@ -95,11 +95,11 @@ test("WS-C runner: a broken queue dir is isolated — sibling queues still drain
   const { config } = await import("../driver.config.mjs");
   const root = config.workspaceRoot;
   const alexQ = queueFor(root, "clawdi-alex");
-  const brokenQ = queueFor(root, "clawdi-sam");
+  const brokenQ = queueFor(root, "relay-agent");
   mkdirSync(alexQ, { recursive: true });
   mkdirSync(brokenQ, { recursive: true });
   writeFileSync(join(alexQ, "job-iso.json"), JSON.stringify({ ...job("alex"), id: "test-iso", msgId: "<test-iso@x>", ref: "TMP9002" }));
-  writeFileSync(join(brokenQ, "job-broken.json"), JSON.stringify({ ...job("sam"), ref: "TMP9003" }));
+  writeFileSync(join(brokenQ, "job-broken.json"), JSON.stringify({ ...job("relay"), ref: "TMP9003" }));
   const { chmodSync: chmod } = await import("node:fs");
   chmod(brokenQ, 0o000);                                  // readdirSync inside drainQueue throws EACCES
   try {
