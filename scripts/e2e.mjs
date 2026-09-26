@@ -1261,6 +1261,11 @@ export function pathsAnOpDoesNotRead(scenarios) {
     for (const c of cases) {
       for (const a of c?.expect?.assert ?? []) {
         const fixed = FIXED_FILE_OPS[a?.op];
+        // A fallback path is a FIELD op's, and a fixed-file op returns before the resolver ever looks at
+        // one. Declared on such an op it would sit in the scenario doing nothing, read by its author as
+        // covering the case it does not — the same class of quiet miss this function exists to find.
+        if (a?.orElsePath && (fixed || SCENARIO_FILE_OPS[a?.op]))
+          out.push({ scenario: s.id, case: c.id ?? s.id, op: a.op, declared: String(a.orElsePath), reads: fixed ?? "a whole file, not a field" });
         if (!fixed) continue;
         const declared = String(a?.path ?? "").split(":")[0];
         if (declared && declared !== fixed) out.push({ scenario: s.id, case: c.id ?? s.id, op: a.op, declared, reads: fixed });
@@ -1829,7 +1834,25 @@ function evalAssertion(a, runDir) {
   if (!fn) return { ok: false, saw: `UNIMPLEMENTED op "${a.op}" — not passing by omission`, unimplemented: true };
   const doc = readJson(full);
   if (doc === null) return { ok: false, saw: `${file} absent or unparseable` };
-  return fn(field ? dotted(doc, field) : doc, a.value);
+  let value = field ? dotted(doc, field) : doc;
+  let read = a.path;
+  // A DECLARED SECOND PATH, for the one shape a single path cannot ask about: a field the engine writes
+  // only in one of two legitimate cases, where the other case answers the same question from a different
+  // field. R15 is the case — the grid's chosen storefronts live in `menu` when the frame decided the
+  // grid, and in `platforms` when it did not — and a check pointed at either alone fails the other,
+  // honestly run. It is opt-in per assertion and never a search: exactly one fallback, named in the
+  // scenario, and the report says WHICH path answered, because a check that quietly reads somewhere
+  // else is the silent pass this suite exists to refuse.
+  if (value === undefined && typeof a.orElsePath === "string" && a.orElsePath.trim()) {
+    const [file2, field2] = String(a.orElsePath).split(":");
+    const doc2 = readJson(join(runDir, file2 || ""));
+    if (doc2 === null) return { ok: false, saw: `${a.path} carries no value and the fallback ${file2} is absent or unparseable` };
+    value = field2 ? dotted(doc2, field2) : doc2;
+    read = a.orElsePath;
+    if (value === undefined) return { ok: false, saw: `neither ${a.path} nor ${a.orElsePath} carries a value` };
+  }
+  const r = fn(value, a.value);
+  return a.orElsePath ? { ...r, saw: `${r.saw} (read from ${read})` } : r;
 }
 
 // ── does anything actually drain this queue? ─────────────────────────────────────────────────────────

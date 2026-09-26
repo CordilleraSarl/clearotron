@@ -63,8 +63,8 @@ test("arm 2: with no citation, none found needs the source to have answered", ()
 });
 
 test("arm 2b: from version 2 a zero is an answer, because that version's instruction forbids a zero for a query it could not send", () => {
-  // The whole of tracker issue 949. At version 1 a 0 meant either "searched, nothing back" or "never
-  // reached a source", so the reader could not count it and an honest empty pass read as not completed.
+  // At version 1 a 0 meant either "searched, nothing back" or "never reached a source", so the reader
+  // could not count it, and an honest pass whose queries all came back empty read as not completed.
   // Version 2's instruction tells the model to write null for a query it could not send, so the two are
   // now distinguishable and the honest pass gets its "none found" back.
   const v2 = (results) => record({ attemptsJsonl: attempts(true), ledgerRaw: ledger({ results, schema: 2 }) });
