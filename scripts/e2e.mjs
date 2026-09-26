@@ -1502,11 +1502,24 @@ function evalAssertion(a, runDir) {
     return { ok: others.length === 0,
       saw: others.length ? `${file} names ${others.join(", ")} while the run was configured as ${want}` : `names ${want}, and no other search` };
   }
-  // `register-claims-within-counts` — an absence claim may never exceed the configured search. On a
-  // count lane the engine holds two totals per mark and no records at all, so it cannot say the register
-  // is clear, and it cannot say the register is crowded either: both are claims about a field it never
-  // enumerated. What it MAY say is the count, or an expectation that labels itself as one (the lane's
-  // own registerEstimate already ends "This is an expectation only, not a search result").
+  // `register-claims-within-counts` — an absence claim may never exceed the configured search. It cannot
+  // say the register is clear, and it cannot say the register is crowded either: both are claims about a
+  // FIELD nothing on this lane enumerated. What it MAY say is the count, an expectation that labels
+  // itself as one (the lane's own registerEstimate already ends "This is an expectation only, not a
+  // search result"), and — since this op was written — a status read off a filing the run actually holds.
+  //
+  // THE OLD PREMISE WAS "no records at all", AND IT WENT STALE UNDER THE LANE IT BOUNDS. This comment
+  // used to say the knockout holds two totals per mark and nothing else. It now lists filings: measured
+  // 2026-09-26, two knockout runs on the same build carried 59 and 29 records in
+  // `_driver/register-records.json` against 0 in `register-counts.json`. So the bound "count language
+  // only" was true when it was written and is not true now, and the honest bound is narrower: NO CLAIM
+  // WIDER THAN THE RECORDS THE RUN HOLDS.
+  //
+  // What that changes, concretely. A sentence saying one filing gives no registered right is a STATUS
+  // read off a record in hand, not a sweep over the field, and it was being refused — which pushes the
+  // rater toward saying LESS about a filing it actually read, the opposite of what this family of checks
+  // is for. A sentence saying the field is crowded, or clear, or that nothing is on the register, is
+  // still unsupported however many records the run holds: 59 filings is not an enumeration of a register.
   //
   // Scoped to the count lane and it SAYS so rather than passing elsewhere: on a lane that freezes a real
   // register plan, enumerated language is supported by the enumeration, and this op has nothing to add.
@@ -1521,14 +1534,46 @@ function evalAssertion(a, runDir) {
     // Only sentences that speak about the REGISTER are in scope — a common-law absence claim is the
     // knockout's own base and is evidenced by the findings it published.
     const aboutRegister = /\b(register|registered|registration|registrations|filing|filings|trade\s?mark records?)\b/i;
-    // Claims a count cannot support: a sweep, an emptiness, or a crowding of the field.
-    const exceedsACount = /\b(?:no|not one|zero|none)\s+(?:\w+\s+){0,3}(?:filings?|registrations?|registered\s+\w+|marks?\s+on\s+the\s+register)\b|\b(?:clear|clean)\s+on\s+the\s+register\b|\bthe\s+register\s+is\s+(?:clear|clean|crowded)\b|\bnothing\s+on\s+the\s+register\b|\b(?:crowded|dilute[sd]?|dilution|saturated)\b|\b(?:register|registry)\s+search\s+(?:found|revealed|returned|shows?)\b/i;
+    // Claims nothing on this lane can support, WHATEVER it holds: a sweep over the field, an emptiness
+    // of it, or a crowding of it. Records make a filing's status sayable; they do not make the field
+    // sayable, so every shape here fails whether the run holds 0 records or 59.
+    //
+    // THE SWEEP NOUN IS PLURAL OR FIELD-SCOPED, and that is the whole of the narrowing. It used to read
+    // `registered\s+\w+`, which was written for "no registered marks" and also caught "no registered
+    // right" — the singular status of one filing, which is the opposite kind of statement: not an
+    // absence over the field, but a property of a record the run fetched.
+    const exceedsACount = /\b(?:no|not one|zero|none)\s+(?:\w+\s+){0,3}(?:filings|registrations|registered\s+(?:marks|rights|filings|registrations)|marks?\s+on\s+the\s+register)\b|\b(?:clear|clean)\s+on\s+the\s+register\b|\bthe\s+register\s+is\s+(?:clear|clean|crowded)\b|\bnothing\s+on\s+the\s+register\b|\b(?:crowded|dilute[sd]?|dilution|saturated)\b|\b(?:register|registry)\s+search\s+(?:found|revealed|returned|shows?)\b/i;
+    // A singular absence — "no filing", "no registration" — is a claim about the field only when the run
+    // holds nothing to read it off. With records in hand it can be a status; with none it cannot be
+    // anything else. So it is bound by what the run actually fetched rather than by a constant.
+    const singularAbsence = /\b(?:no|not one|zero|none)\s+(?:\w+\s+){0,3}(?:filing|registration)\b/i;
     // Self-labelled as an expectation, or stated as the count it is — both stay inside what ran.
     const staysInside = /\bexpect(?:ed|ation|ations)?\b|\bpending\b|\bnot a search result\b|\bhit[- ]counts?\b|\bcounts?\b|\bmay adjust\b|\banticipat/i;
-    const bad = sentences.filter((s) => aboutRegister.test(s) && exceedsACount.test(s) && !staysInside.test(s));
+    // WHAT THE RUN HOLDS, READ RATHER THAN ASSUMED.
+    //
+    // RECORDS LOOSEN THIS BOUND AND ZERO IS ITS STRICTEST STATE, so an absent or unreadable file and a
+    // genuine zero behave IDENTICALLY: both refuse a singular absence, both allow nothing a count could
+    // not already say. Driven rather than reasoned: `null` and `0` fail, `1` and `59` pass. Folding the
+    // two together would change no verdict on any run.
+    //
+    // THE SPLIT IS KEPT FOR THE SENTENCE IT PRINTS, NOT FOR A VERDICT. A reader has to be able to tell
+    // "strict because the run held nothing" from "strict because the file would not open" — the first is
+    // a fact about the search, the second is a fact about this check's own evidence, and only one of them
+    // is a reason to go and look at the run. That is all the distinction buys, and it is worth saying so
+    // here: a later editor comparing the two branches will find them behaviourally identical, because
+    // they are, and collapsing them would silently destroy the only thing they provide.
+    const recordsFile = readJson(driverDir(runDir, "register-records.json"));
+    const held = recordsFile
+      ? (recordsFile.marks ?? []).reduce((n, m) => n + (m.records ?? []).length, 0)
+      : null;
+    const bad = sentences.filter((s) => aboutRegister.test(s) && !staysInside.test(s)
+      && (exceedsACount.test(s) || (singularAbsence.test(s) && !(held > 0))));
+    const basis = held === null
+      ? "_driver/register-records.json is absent or unreadable, so this is as strict as a run holding zero records — identical verdict, different reason: one is a fact about the search, this is a fact about the check's own evidence"
+      : `the run holds ${held} register record(s), so a status read off one is supported and only a claim over the field is not`;
     return { ok: bad.length === 0,
-      saw: bad.length ? `${bad.length} register claim(s) beyond a count — ${bad.slice(0, 2).map((s) => `"${s.slice(0, 120)}"`).join(" · ")}`
-        : `${sentences.filter((s) => aboutRegister.test(s)).length} register sentence(s), each a count or a labelled expectation` };
+      saw: bad.length ? `${bad.length} register claim(s) wider than the records this run holds — ${bad.slice(0, 2).map((s) => `"${s.slice(0, 120)}"`).join(" · ")} (${basis})`
+        : `${sentences.filter((s) => aboutRegister.test(s)).length} register sentence(s), each a count, a labelled expectation, or a status the records support — ${basis}` };
   }
   // `survivor-not-clear` — a mark this lane did not knock out is a SURVIVOR, never a clear. The two words
   // are one dispatch decision apart for the reader: "clear" ends the matter, "not knocked out at the
