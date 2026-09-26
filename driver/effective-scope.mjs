@@ -140,6 +140,11 @@ export function defaultTerritoryState(profile) {
 }
 
 export function defaultJurisdictionsLine(job, profile) {
+  // The ladder's first rung, which this line had never heard of: a worldwide order accepts no narrowing,
+  // so it gets no default line, as it gets no default territory. Measured 2026-09-25: a worldwide search
+  // under an account with seven default territories was told "the request names none — apply these",
+  // framed as those seven, and its crowded identical-mark question was read in those seven only.
+  if (job?.geography?.mode === "worldwide") return [];
   if (jobJurisdictions(job).length) return [];
   const { kept } = defaultTerritoryState(profile);
   return kept.length
