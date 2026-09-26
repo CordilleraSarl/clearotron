@@ -1848,7 +1848,6 @@ export async function doEnumerate(apiKey, base, params, tctx) {
   let r = asked.out.rr;
   let parsed = asked.out.parsed;
   if (!parsed) return r;
-  if (asked.leftOut.length) parsed.offices_without_goods_field = asked.leftOut;
 
   // ── the ADDITIVE invariant, ENFORCED AT RUNTIME TOO ─────────────────────────────────────────────
   // expandOwnerTerms filters resolved names through assertSearchableTerm, which catches the shapes we
@@ -1892,6 +1891,9 @@ export async function doEnumerate(apiKey, base, params, tctx) {
       sink.length = 0; for (const s of sink2) sink.push(s);
     }
   }
+
+  // After the owner fallback, which may replace the answer: it asks with the same reduced offices.
+  if (asked.leftOut.length) parsed.offices_without_goods_field = asked.leftOut;
 
   if (parsed.state === "incomplete") {
     // The 30000 ceiling is the provider truthfully reporting a CROWD, not a fault. Restate it as a
