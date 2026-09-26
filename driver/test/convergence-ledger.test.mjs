@@ -144,7 +144,7 @@ const replay = async (name, steps, { stamp = true, maxRetries = 3 } = {}) => {
   };
   const out = join(dir, `${name}.md`);
   return runStage(name, {
-    agent: "clawdi", message: `BASE TASK — write your output to the ABSOLUTE path: ${out}`,
+    agent: "mailagent", message: `BASE TASK — write your output to the ABSOLUTE path: ${out}`,
     sessionKey: `clearance-${name}`, timeoutSec: 30, expectFile: out, maxRetries, runDir: dir, validate,
   });
 };
@@ -203,7 +203,7 @@ test("ladder 7 → 6 → 5, park, 6 → 3 → pass: the count crosses the park, 
 
 test("a quantity-less ladder records ABSENT on every row — an absence is not a converged zero", async () => {
   process.env.MOCK_FAIL_STAGE = "BASE TASK";              // every turn: exit(1) → nonzero_exit_1
-  const r = await runStage("transport", { agent: "clawdi", message: "BASE TASK", sessionKey: "clearotron-transport",
+  const r = await runStage("transport", { agent: "mailagent", message: "BASE TASK", sessionKey: "clearotron-transport",
     timeoutSec: 30, expectFile: join(dir, "t.md"), maxRetries: 2, runDir: dir });
   assert.equal(r.ok, false);
   assert.deepEqual(counts("transport"), [null, null, null]);

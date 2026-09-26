@@ -307,8 +307,8 @@ export const config = {
 
   // ── Per-agent paths ───────────────────────────────────────────────────────
   // A clearotron job is enqueued into the FORWARDING agent's OWN workspace queue (that agent's `write` tool
-  // is sandboxed there), and we run the whole pipeline as that same agent so the reply tool
-  // (`clawdi_send_<user>`), the run-dir, and the agent's memory all line up. The queue LOCATION therefore
+  // is sandboxed there), and we run the whole pipeline as that same agent so the reply tool,
+  // the run-dir, and the agent's memory all line up. The queue LOCATION therefore
   // encodes the agent identity — the driver derives {agentId, studioRoot} from where it claimed the job,
   // so there is no forwarder→agent map to keep in sync. Delivery is still centralized (poolRoot below).
   // The per-agent directory prefix under workspaceRoot. Inherited as a bare `workspace-` layout; now ONE

@@ -45,7 +45,7 @@ beforeEach(() => {
 // The mock writes its artifact when the message names the path; this stage calls no tools, which is
 // exactly the case that proves the fields are PRESENT rather than merely non-zero somewhere.
 const runIt = (sessionKey) => runStage("tool-time-stage", {
-  agent: "clawdi", message: `TASK\nOUTPUT_FILE: ${process.env.MOCK_OUT_FILE}`, sessionKey,
+  agent: "mailagent", message: `TASK\nOUTPUT_FILE: ${process.env.MOCK_OUT_FILE}`, sessionKey,
   timeoutSec: 30, expectFile: process.env.MOCK_OUT_FILE, maxRetries: 0, runDir: dir,
 });
 const rows = (f) => readFileSync(f, "utf8").trim().split("\n").map((l) => JSON.parse(l));

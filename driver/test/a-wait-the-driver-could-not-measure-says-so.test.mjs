@@ -58,7 +58,7 @@ beforeEach(() => {
 // the bytes queue in the pipe, and one later read delivers an ask and its result together.
 const runIt = async (key, { startMs = 0, stallMs = 0 } = {}) => {
   const p = runStage("unmeasurable-stage", {
-    agent: "clawdi", message: `TASK\nOUTPUT_FILE: ${process.env.MOCK_OUT_FILE}`, sessionKey: key,
+    agent: "mailagent", message: `TASK\nOUTPUT_FILE: ${process.env.MOCK_OUT_FILE}`, sessionKey: key,
     timeoutSec: 30, expectFile: process.env.MOCK_OUT_FILE, maxRetries: 0, runDir: dir,
   }).catch(() => {});
   if (stallMs) setTimeout(() => { const until = Date.now() + stallMs; while (Date.now() < until) { /* block */ } }, startMs);

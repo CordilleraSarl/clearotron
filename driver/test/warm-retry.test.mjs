@@ -46,7 +46,7 @@ const resumed = (c) => (c.argv ?? c).includes("--resume");
 const msgOf = (c) => c.prompt ?? "";
 
 const stage = (over = {}) => runStage("test-stage", {
-  agent: "clawdi", message: "BASE TASK", sessionKey: "clearotron-test-base",
+  agent: "mailagent", message: "BASE TASK", sessionKey: "clearotron-test-base",
   timeoutSec: 30, expectFile: process.env.MOCK_OUT_FILE, maxRetries: 2, ...over,
 });
 

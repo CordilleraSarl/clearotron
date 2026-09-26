@@ -42,7 +42,7 @@ async function runAnthropicPipeline(env = {}) {
     CLEAROTRON_AI: "anthropic-agent",       // stage compute on claude -p (mocked)
     CLEAROTRON_CLAUDE_PATH: CLAUDE_MOCK,
     MOCK_CLAUDE_CALL_LOG: claudeLog,        // proves the stages actually went through the anthropic engine
-    CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"), CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_AGENT: "clawdi",
+    CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"), CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_AGENT: "mailagent",
     MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", ...env,
   })) pinEnv(process.env, k, v);
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
@@ -199,9 +199,9 @@ test("E2: full pipeline runs on the anthropic-agent engine (CLEAR, delivered, al
     "no vendor-named tool namespace may reach an allowedTools list");
 
   // Handoff mode: on the anthropic engine the driver does NOT run the notify/notify-chat gateway stages —
-  // it writes a self-contained delivery packet for clawdi to send off (driver stays 100% gateway-fraw-free).
+  // it writes a self-contained delivery packet for the forwarding agent to send off (driver stays 100% gateway-fraw-free).
   assert.ok(!order.includes("notify") && !order.includes("notify-chat"), "no notify gateway stages in handoff mode");
-  assert.ok(!claudeCalls.some((a) => /notify-receipt|notify-chat|clawdi_send|channel \"whatsapp\"/.test(a.prompt || "")), "comms did NOT run through the compute engine");
+  assert.ok(!claudeCalls.some((a) => /notify-receipt|notify-chat|channel \"whatsapp\"/.test(a.prompt || "")), "comms did NOT run through the compute engine");
   const packet = JSON.parse(readFileSync(driverDir(res.runDir, "delivery.json"), "utf8"));
   assert.equal(packet.forwarder, "requester");
   assert.equal(packet.verdict, "CLEAR");
@@ -210,7 +210,7 @@ test("E2: full pipeline runs on the anthropic-agent engine (CLEAR, delivered, al
   // so the subject names it — the end-to-end proof that the resolver reaches the delivery surface.
   assert.match(packet.subject, /^Global preliminary search — PROJECT NOVAPULSE$/);
   assert.doesNotMatch(packet.subject, /Preliminary clearance/, "the retired literal is gone from the wire");
-  assert.ok(packet.emailBodyHtml && packet.emailBodyHtml.length > 0, "email body embedded for clawdi");
+  assert.ok(packet.emailBodyHtml && packet.emailBodyHtml.length > 0, "email body embedded for mailagent");
   // The rating, never the reviewer's sign-off word (ruled 2026-09-22).
   assert.match(packet.whatsappText, /Clearotron search for PROJECT NOVAPULSE.*is done\. Overall risk: [A-Za-z ]+\. Report:/);
   assert.doesNotMatch(packet.whatsappText, /verdict|CLEAR|CONDITIONAL|BLOCKING/);
@@ -228,7 +228,7 @@ test("E2: full pipeline runs on the anthropic-agent engine (CLEAR, delivered, al
   assert.match(packet.whatsappToReason, /no chat number is held/, "and the packet states the gap");
   assert.equal(packet.whatsappCcOperator, "+10000000001", "the operator's copy, in its own field");
   const sentinel = JSON.parse(readFileSync(join(res.runDir, ".delivered"), "utf8"));
-  assert.equal(sentinel.sendPending, true, ".delivered marks sendPending for clawdi's watch");
+  assert.equal(sentinel.sendPending, true, ".delivered marks sendPending for mailagent's watch");
 });
 
 // ── PR-8 (reading layer) — the wiring proof, end to end on the mock engine ─────────────────────────

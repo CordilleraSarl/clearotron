@@ -19,7 +19,7 @@ import assert from "node:assert/strict";
 const REQUESTER = "+41000000111";
 const OPERATOR = "+41000000999";
 
-process.env.CLEAROTRON_AGENT_WHATSAPP = JSON.stringify({ clawdi: OPERATOR });
+process.env.CLEAROTRON_AGENT_WHATSAPP = JSON.stringify({ mailagent: OPERATOR });
 process.env.CLEAROTRON_REQUESTER_WHATSAPP = JSON.stringify({
   "robin@tenant.example": REQUESTER,
   "jordan": "+41000000222",
@@ -33,17 +33,17 @@ const job = (over = {}) => ({ forwarder: "somebody", forwarderEmail: "robin@tena
 // ── the requester is the recipient ───────────────────────────────────────────────────────────────────
 
 test("the notice is addressed to the requester, not to whoever runs the agent", () => {
-  const r = whatsappRouting(job(), "clawdi");
+  const r = whatsappRouting(job(), "mailagent");
   assert.equal(r.whatsappTo, REQUESTER, "the person who asked");
   assert.notEqual(r.whatsappTo, OPERATOR, "and specifically NOT the operator, which is what shipped");
   assert.equal(r.whatsappToReason, null, "no reason is stated when there is a recipient");
 });
 
 test("the requester resolves by email, and by handle when no email is held", () => {
-  assert.equal(whatsappRouting(job(), "clawdi").whatsappTo, REQUESTER, "email wins where both could match");
-  assert.equal(whatsappRouting(job({ forwarderEmail: null, forwarder: "jordan" }), "clawdi").whatsappTo,
+  assert.equal(whatsappRouting(job(), "mailagent").whatsappTo, REQUESTER, "email wins where both could match");
+  assert.equal(whatsappRouting(job({ forwarderEmail: null, forwarder: "jordan" }), "mailagent").whatsappTo,
     "+41000000222", "a job with only a handle still reaches its requester");
-  assert.equal(whatsappRouting(job({ forwarderEmail: "ROBIN@TENANT.EXAMPLE" }), "clawdi").whatsappTo, REQUESTER,
+  assert.equal(whatsappRouting(job({ forwarderEmail: "ROBIN@TENANT.EXAMPLE" }), "mailagent").whatsappTo, REQUESTER,
     "an address is matched case-insensitively — a roster is typed by a person");
 });
 
@@ -53,7 +53,7 @@ test("the requester resolves by email, and by handle when no email is held", () 
 // being replaced, and it is invisible: the notice arrives, somebody reads it, and nothing anywhere says
 // it went to the wrong person.
 test("with no number held, the packet SAYS SO and does not quietly use the operator", () => {
-  const r = whatsappRouting(job({ forwarderEmail: "nobody@tenant.example", forwarder: "nobody" }), "clawdi");
+  const r = whatsappRouting(job({ forwarderEmail: "nobody@tenant.example", forwarder: "nobody" }), "mailagent");
   assert.equal(r.whatsappTo, null, "no recipient is invented");
   assert.notEqual(r.whatsappTo, OPERATOR, "and the operator is NOT substituted in — the old behaviour");
   assert.match(r.whatsappToReason, /no chat number is held/, "the gap is stated");
@@ -63,7 +63,7 @@ test("with no number held, the packet SAYS SO and does not quietly use the opera
 // ── acceptance 5: the operator's copy is separate and switchable ─────────────────────────────────────
 
 test("the operator keeps a copy, and it is a DIFFERENT field from the requester's", () => {
-  const r = whatsappRouting(job(), "clawdi");
+  const r = whatsappRouting(job(), "mailagent");
   assert.equal(r.whatsappCcOperator, OPERATOR, "the operator still gets their copy by default");
   assert.equal(r.whatsappTo, REQUESTER);
   assert.notEqual(r.whatsappCcOperator, r.whatsappTo, "two recipients, two fields — not one field fought over");
@@ -72,7 +72,7 @@ test("the operator keeps a copy, and it is a DIFFERENT field from the requester'
 test("the operator can drop their copy WITHOUT dropping the requester's notice", async () => {
   process.env.CLEAROTRON_WHATSAPP_OPERATOR_COPY = "0";
   const fresh = await import(`../stages.mjs?operator-copy-off=${Date.now()}`);
-  const r = fresh.whatsappRouting(job(), "clawdi");
+  const r = fresh.whatsappRouting(job(), "mailagent");
   assert.equal(r.whatsappCcOperator, null, "the operator is out of everyone else's runs");
   assert.equal(r.whatsappTo, REQUESTER, "and the person who asked is still told — the half that must survive");
   delete process.env.CLEAROTRON_WHATSAPP_OPERATOR_COPY;
@@ -86,7 +86,7 @@ test("an unconfigured requester roster is EMPTY, never a demo one", async () => 
   delete process.env.CLEAROTRON_REQUESTER_WHATSAPP;
   const fresh = await import(`../stages.mjs?no-roster=${Date.now()}`);
   assert.deepEqual(fresh.REQUESTER_WHATSAPP, {}, "no invented numbers");
-  const r = fresh.whatsappRouting(job(), "clawdi");
+  const r = fresh.whatsappRouting(job(), "mailagent");
   assert.equal(r.whatsappTo, null);
   assert.match(r.whatsappToReason, /no chat number is held/, "and it says why rather than going quiet");
   process.env.CLEAROTRON_REQUESTER_WHATSAPP = saved;
@@ -185,7 +185,7 @@ test("both completion packets route through whatsappRouting, and neither picks t
 // implying it: a field is harder to lose than a sentence, and an integrator reading the packet cannot
 // end up guessing from their own configuration.
 test("the routing names the channel the number is on, beside the number", () => {
-  const r = whatsappRouting(job(), "clawdi");
+  const r = whatsappRouting(job(), "mailagent");
   assert.equal(r.whatsappChannel, "whatsapp", "the packet says which channel this route is on");
   assert.equal(r.whatsappTo, REQUESTER);
 });
@@ -195,7 +195,7 @@ test("the channel is stated even when there is nobody to send to", () => {
   // send; a field that appears only when a number happens to be held would be absent exactly when an
   // integrator is debugging why nothing arrived, and "sometimes present" is the shape that teaches a
   // reader to fall back to their own configuration.
-  const r = whatsappRouting(job({ forwarderEmail: "nobody@tenant.example", forwarder: "nobody" }), "clawdi");
+  const r = whatsappRouting(job({ forwarderEmail: "nobody@tenant.example", forwarder: "nobody" }), "mailagent");
   assert.equal(r.whatsappTo, null);
   assert.equal(r.whatsappChannel, "whatsapp");
   assert.match(r.whatsappToReason, /no chat number is held/);

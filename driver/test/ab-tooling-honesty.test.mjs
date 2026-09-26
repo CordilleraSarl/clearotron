@@ -38,7 +38,7 @@ pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
 pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", join(ROOT, "pool"));
 process.env.CLEAROTRON_MAX_RETRIES = "0";
 process.env.CLEAROTRON_RECOVERY_MAX = "0";
-process.env.CLEAROTRON_AGENT = "clawdi";
+process.env.CLEAROTRON_AGENT = "mailagent";
 process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
 
 const PL = await import("../pipeline.mjs");
@@ -256,7 +256,7 @@ async function oneTurn({ model, wire, env = {} } = {}) {
   const out = join(runDir, "out.md");
   const r = await withEnv({ MOCK_CLAUDE_WIRE_MODEL: wire ?? null, MOCK_CLAUDE_FILE: "ok\n", ...env }, () =>
     GW.runStage("wire-stage", {
-      agent: "clawdi", message: `Write your output to the ABSOLUTE path: ${out}`, model,
+      agent: "mailagent", message: `Write your output to the ABSOLUTE path: ${out}`, model,
       sessionKey: "clearotron-wire-test", timeoutSec: 30, expectFile: out, runDir,
       // A REAL retry budget, overriding this file's CLEAROTRON_MAX_RETRIES=0: the ladder break is the
       // thing under test in the mismatch case, and with no budget "it did not retry" would be
@@ -354,7 +354,7 @@ test("corruption 3 zero semantics: a wire that reports NO model records `unknown
   const out = join(runDir, "out.md");
   writeFileSync(out, "ok\n");
   const r = await withEnv({ CLEAROTRON_AI: "silent-engine" }, () =>
-    GW.runStage("silent-stage", { agent: "clawdi", message: "go", model: "haiku",
+    GW.runStage("silent-stage", { agent: "mailagent", message: "go", model: "haiku",
       sessionKey: "clearotron-silent", timeoutSec: 30, expectFile: out, runDir }));
   assert.equal(r.ok, true, "an engine that cannot report a model must not have its turns failed for it");
   const row = JSON.parse(readFileSync(driverDir(runDir, "silent-stage.jsonl"), "utf8").trim().split("\n").pop());

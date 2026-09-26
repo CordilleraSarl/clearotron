@@ -30,7 +30,7 @@ test("claimDuePostponed persists the codename to .processing.meta AT CLAIM, befo
   writeFileSync(join(Q, "job-p.postponed"), MANIFEST);
   writeFileSync(join(Q, "job-p.postponed.meta"), JSON.stringify({
     codename: "teal-otter", dateISO: "2026-07-10", resetsAt: PAST, fromStage: "register-unit:corsearch",
-    agentId: "clawdi", postponedAt: PAST,
+    agentId: "mailagent", postponedAt: PAST,
   }));
 
   const out = claimDuePostponed(Q);
@@ -44,7 +44,7 @@ test("claimDuePostponed persists the codename to .processing.meta AT CLAIM, befo
   // this claim and runPrepared's dispatch re-persist must still find the codename on disk. The old
   // code wrote nothing here (it only rm'd .postponed.meta), so this assert catches the regression.
   const meta = JSON.parse(readFileSync(`${proc}.meta`, "utf8"));
-  assert.deepEqual(meta, { codename: "teal-otter", dateISO: "2026-07-10", agentId: "clawdi" },
+  assert.deepEqual(meta, { codename: "teal-otter", dateISO: "2026-07-10", agentId: "mailagent" },
     "identity handed off to .processing.meta at claim time");
   assert.ok(!existsSync(join(Q, "job-p.postponed.meta")), "the postponed copy is dropped only after the handoff");
   assert.equal(readdirSync(Q).filter((f) => f.endsWith(".tmp")).length, 0, "atomic write left no tmp residue");
@@ -67,7 +67,7 @@ test("parkPostponed: identity lands in .postponed.meta BEFORE the marker rename 
   // throw happened first and the codename evaporated with the cleaned .processing.meta.
   const proc = join(Q, "job-x.processing");   // never created — renameSync(proc, …) will ENOENT
   assert.throws(() => parkPostponed(proc, Q, "job-x", {
-    resetsAt: null, codename: "amber-lynx", dateISO: "2026-07-11", fromStage: "report", agentId: "clawdi", postponedAt: PAST,
+    resetsAt: null, codename: "amber-lynx", dateISO: "2026-07-11", fromStage: "report", agentId: "mailagent", postponedAt: PAST,
   }), "the marker rename fails (the injected crash point)");
   const meta = JSON.parse(readFileSync(join(Q, "job-x.postponed.meta"), "utf8"));
   assert.equal(meta.codename, "amber-lynx", "the identity was already durable when the crash hit");
@@ -78,11 +78,11 @@ test("parkPostponed happy path: postponed marker + meta present, claim sidecars 
   const proc = join(Q, "job-y.processing");
   writeFileSync(proc, MANIFEST);
   writeFileSync(`${proc}.pid`, claimToken());
-  writeFileSync(`${proc}.meta`, JSON.stringify({ codename: "amber-lynx", dateISO: "2026-07-11", agentId: "clawdi" }));
+  writeFileSync(`${proc}.meta`, JSON.stringify({ codename: "amber-lynx", dateISO: "2026-07-11", agentId: "mailagent" }));
   writeFileSync(`${proc}.skips`, "2\n");
 
   parkPostponed(proc, Q, "job-y", {
-    resetsAt: PAST, codename: "amber-lynx", dateISO: "2026-07-11", fromStage: "report", agentId: "clawdi", postponedAt: PAST,
+    resetsAt: PAST, codename: "amber-lynx", dateISO: "2026-07-11", fromStage: "report", agentId: "mailagent", postponedAt: PAST,
   });
   assert.ok(existsSync(join(Q, "job-y.postponed")), "parked");
   const meta = JSON.parse(readFileSync(join(Q, "job-y.postponed.meta"), "utf8"));

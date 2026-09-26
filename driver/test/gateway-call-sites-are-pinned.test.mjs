@@ -32,7 +32,7 @@ process.env.CORSEARCH_SESSION_KEY ||= "test-offline";
 const ROOT = mkdtempSync(join(tmpdir(), "clearotron-callsite-pin-"));
 pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
 pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", join(ROOT, "pool"));
-process.env.CLEAROTRON_AGENT = "clawdi";
+process.env.CLEAROTRON_AGENT = "mailagent";
 process.env.CLEAROTRON_RETRY_BACKOFF_MS = "0";
 
 const GW = await import("../gateway.mjs");
@@ -68,7 +68,7 @@ test("the stderr digest is applied AT THE RECORD, not merely available as a help
     } });
   const runDir = freshRun("loud");
   await withEnv({ CLEAROTRON_AI: "loud-failing-engine", CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0" }, () =>
-    GW.runStage("loud-stage", { agent: "clawdi", message: "go", model: "haiku",
+    GW.runStage("loud-stage", { agent: "mailagent", message: "go", model: "haiku",
       sessionKey: "clearotron-loud", timeoutSec: 30, runDir }));
 
   const tail = rows(runDir, "loud-stage").map((r) => r.stderrTail).filter(Boolean).pop();
@@ -103,7 +103,7 @@ test("every dispatch in one ladder receives the SAME codexHome, and it is not em
     } });
   const runDir = freshRun("home");
   await withEnv({ CLEAROTRON_AI: CODEX, CLEAROTRON_MAX_RETRIES: "2", CLEAROTRON_RECOVERY_MAX: "0" }, () =>
-    GW.runStage("home-stage", { agent: "clawdi", message: "go", model: "haiku",
+    GW.runStage("home-stage", { agent: "mailagent", message: "go", model: "haiku",
       sessionKey: "clearotron-home", timeoutSec: 30, runDir }));
 
   assert.ok(seen.length >= 2, `the ladder must dispatch more than once for this to mean anything — got ${seen.length}`);
@@ -130,7 +130,7 @@ test("the recording engine's homes are real, distinct paths per ladder — the a
   for (const tag of ["ladderA", "ladderB"]) {
     const runDir = freshRun(tag);
     await withEnv({ CLEAROTRON_AI: CODEX, CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0" }, () =>
-      GW.runStage(`${tag}-stage`, { agent: "clawdi", message: "go", model: "haiku",
+      GW.runStage(`${tag}-stage`, { agent: "mailagent", message: "go", model: "haiku",
         sessionKey: `clearance-${tag}`, timeoutSec: 30, runDir }));
   }
   assert.equal(homes.length, 2, "two ladders, two dispatches");
@@ -178,7 +178,7 @@ async function runWithFormRepair(tag, onTurn) {
   let judged = 0;
   await withEnv({ CLEAROTRON_AI: CODEX, CLEAROTRON_MAX_RETRIES: "1", CLEAROTRON_RECOVERY_MAX: "0",
     CLEAROTRON_FORM_REPAIR: "1", CLEAROTRON_DISPATCH_RECORD: "1" }, () =>
-    GW.runStage("frame-diff", { agent: "clawdi", message: "go", model: "haiku",
+    GW.runStage("frame-diff", { agent: "mailagent", message: "go", model: "haiku",
       sessionKey: `clearance-${tag}`, timeoutSec: 30, runDir, expectFile: [out],
       validate: () => { judged++; return judged <= 2 ? { ok: false, reason: FORM_FAIL } : { ok: true }; } }));
   return { runDir, seen, rows: rows(runDir, "frame-diff") };

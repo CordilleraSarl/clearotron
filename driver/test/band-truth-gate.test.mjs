@@ -29,12 +29,12 @@ function mkLedger(lines) {
 
 test("countLaneCalls: counts gateway-namespaced rows, -fbN / -taint-rerun variants, sessionId fallback; ignores other lanes and torn lines", () => {
   const p = mkLedger([
-    JSON.stringify({ ts: "t", agentId: "clawdi", sessionKey: `agent:clawdi:${LANE}`, tool: "search" }),
-    JSON.stringify({ ts: "t", agentId: "clawdi", sessionKey: `agent:clawdi:${LANE}-fb1`, tool: "search" }),
-    JSON.stringify({ ts: "t", agentId: "clawdi", sessionKey: `agent:clawdi:${LANE}-taint-rerun-1`, tool: "search" }),
-    JSON.stringify({ ts: "t", agentId: "clawdi", sessionKey: "", sessionId: LANE, tool: "search" }),
-    JSON.stringify({ ts: "t", agentId: "clawdi", sessionKey: "agent:clawdi:clearotron-noref123-test-mark-copper-keystone-register-unit-primary-sweep", tool: "search" }),
-    `{"ts":"t","sessionKey":"agent:clawdi:${LANE}","tool":`,   // torn concurrent append
+    JSON.stringify({ ts: "t", agentId: "mailagent", sessionKey: `agent:mailagent:${LANE}`, tool: "search" }),
+    JSON.stringify({ ts: "t", agentId: "mailagent", sessionKey: `agent:mailagent:${LANE}-fb1`, tool: "search" }),
+    JSON.stringify({ ts: "t", agentId: "mailagent", sessionKey: `agent:mailagent:${LANE}-taint-rerun-1`, tool: "search" }),
+    JSON.stringify({ ts: "t", agentId: "mailagent", sessionKey: "", sessionId: LANE, tool: "search" }),
+    JSON.stringify({ ts: "t", agentId: "mailagent", sessionKey: "agent:mailagent:clearotron-noref123-test-mark-copper-keystone-register-unit-primary-sweep", tool: "search" }),
+    `{"ts":"t","sessionKey":"agent:mailagent:${LANE}","tool":`,   // torn concurrent append
   ]);
   assert.equal(countLaneCalls(LANE, p), 4, "base + fb + taint-rerun + sessionId fallback; other lane and torn line ignored");
   assert.equal(countLaneCalls("clearotron-noref123-test-mark-copper-keystone-register-unit-primary-sweep", p), 1);

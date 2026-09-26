@@ -45,7 +45,7 @@ function mkCtx({ entries }) {
     ctx: {
       paths: null,   // filled by the caller after importing paths()
       run: { slug: "tmptest-probe", codename: "unit-test", studioRoot: runDir },
-      agent: "clawdi",
+      agent: "mailagent",
       job: { markName: "PROBE TEST" },
       registerPlan: { plan_version: 1, entries },
     },

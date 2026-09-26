@@ -213,7 +213,7 @@ async function runOffline(env) {
   delete process.env.MOCK_FAIL_STAGE;
   for (const [k, v] of Object.entries({ CLEAROTRON_CUSTOMERS_DIR: profiles, CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE,
     CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"), CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0",
-    CLEAROTRON_AGENT: "clawdi", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", ...env })) pinEnv(process.env, k, v);
+    CLEAROTRON_AGENT: "mailagent", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", ...env })) pinEnv(process.env, k, v);
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
   const res = await pipeline({ id: "test-job", msgId: "<test@x>", forwarder: "jordan", forwarderDomain: "example.com",
     ref: "TMP-2201", markName: "NOVAPULSE", classes: [9, 41], provider: "corsearch" }, {});

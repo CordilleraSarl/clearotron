@@ -85,7 +85,7 @@ test("seq cursor survives same-millisecond events where a ts cursor would drop t
 test("a SUCCEEDED attempt is folded out of the timeline — stage-completed already tells it", () => {
   const P = runs.resolveRun(RUN_ID).P;
   const evs = [
-    { ts: "2026-07-29T19:00:00.000Z", event: "start", agent: "clawdi" },
+    { ts: "2026-07-29T19:00:00.000Z", event: "start", agent: "mailagent" },
     { ts: "2026-07-29T19:10:00.000Z", event: "attempt", stage: "register-digest", attempt: 1, of: 3, ok: false, fail: "status_overloaded" },
     { ts: "2026-07-29T19:12:00.000Z", event: "attempt", stage: "register-digest", attempt: 2, of: 3, ok: true, fail: null },
     { ts: "2026-07-29T19:13:07.133Z", event: "stage", stage: "register-digest", trigger: "fresh", ok: true, attempts: 2,
@@ -102,7 +102,7 @@ test("a SUCCEEDED attempt is folded out of the timeline — stage-completed alre
 test("folding an attempt out does NOT renumber seq — a poll cursor never re-reads or skips history", () => {
   const P = runs.resolveRun(RUN_ID).P;
   const evs = [
-    { ts: "2026-07-29T19:00:00.000Z", event: "start", agent: "clawdi" },
+    { ts: "2026-07-29T19:00:00.000Z", event: "start", agent: "mailagent" },
     { ts: "2026-07-29T19:12:00.000Z", event: "attempt", stage: "register-digest", attempt: 1, of: 3, ok: true, fail: null },
     { ts: "2026-07-29T19:13:00.000Z", event: "stage", stage: "register-digest", trigger: "fresh", ok: true, attempts: 1 },
     { ts: "2026-07-29T19:14:00.000Z", event: "verdict", verdict: "CONDITIONAL" },

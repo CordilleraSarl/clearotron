@@ -22,7 +22,7 @@ pinEnv(process.env, "CLEAROTRON_WORK_DIR", envFrom(process.env, "CLEAROTRON_WORK
 pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", join(ROOT, "pool"));
 pinEnv(process.env, "CLEAROTRON_INSTRUCTIONS_DIR", undefined);
 pinEnv(process.env, "CLEAROTRON_KNOCKOUT_SWEEP_FIXTURES", undefined);
-process.env.CLEAROTRON_AGENT = "clawdi";
+process.env.CLEAROTRON_AGENT = "mailagent";
 process.env.CLEAROTRON_AI = "anthropic-agent";
 pinEnv(process.env, "CLEAROTRON_CLAUDE_PATH", join(HERE, "mock-claude.mjs"));
 process.env.CLEAROTRON_MAX_RETRIES = "0";
@@ -148,7 +148,7 @@ async function knockout(codename) {
   const run = { runDir: dir, studioRoot, slug: "lanternwick", date: "2026-09-25", codename, archiveDir: join(studioRoot, "archive", `2026-09-25-${codename}`) };
   const job = { id, markName: MARKS[0], marks: MARKS.map((name) => ({ name })), classes: [9], jurisdictions: ["EU"],
     forwarder: "jordan", msgId: `<${id}@x>`, ref: `E2E-${codename}` };
-  const ctx = { run, job, agent: "clawdi", paths: { runDir: dir }, profile: {},
+  const ctx = { run, job, agent: "mailagent", paths: { runDir: dir }, profile: {},
     searchPolicy: { level: "knockout", stageLabel: "Knockout", components: {} } };
   const res = await knockoutInner(ctx, job, {});
   return { res, dir: res?.runDir ?? dir };
@@ -231,7 +231,7 @@ test("a grid call that met a provider outage is not asked again, and a batch of 
   mkdirSync(driverDir(dir), { recursive: true });
   const run = { runDir: dir, studioRoot, slug: "lanternwick", date: "2026-09-25", codename: "outage", archiveDir: join(studioRoot, "archive", "2026-09-25-outage") };
   const job = { id, markName: MARKS[0], marks: MARKS.map((name) => ({ name })), classes: [9], forwarder: "jordan", msgId: `<${id}@x>`, ref: "E2E-outage" };
-  const ctx = { run, job, agent: "clawdi", paths: { runDir: dir }, profile: {}, searchPolicy: { level: "knockout", stageLabel: "Knockout", components: {} } };
+  const ctx = { run, job, agent: "mailagent", paths: { runDir: dir }, profile: {}, searchPolicy: { level: "knockout", stageLabel: "Knockout", components: {} } };
   let res = null, thrown = null;
   try {
     res = await knockoutInner(ctx, job, {

@@ -35,7 +35,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { claimToken, takeoverClaim, retireClaimAndSweep, finishReclaimedClaim, readMatterLedger, matterLedgerPath } from "../runner.mjs";
 
-const META = JSON.stringify({ codename: "PROJECT-KESTREL", dateISO: "2026-08-13", agentId: "clawdi" }) + "\n";
+const META = JSON.stringify({ codename: "PROJECT-KESTREL", dateISO: "2026-08-13", agentId: "mailagent" }) + "\n";
 
 // On Windows the claim token is `<pid>:<birth stamp>`, and the runner names its lock
 // `<marker>.claimed-<token>`. A Windows file name cannot hold a colon, so every rename into the lock
@@ -192,7 +192,7 @@ test("a marker covered by another runner's token is neither retired nor swept", 
 // add over the primitive's.
 
 const PROSE = { ".markName.md": "KESTREL\n", ".brief.md": "the brief the job is re-assembled from\n" };
-const SPENT = JSON.stringify({ codename: "PROJECT-KESTREL", dateISO: "2026-08-13", agentId: "clawdi", reclaims: 3 }) + "\n";
+const SPENT = JSON.stringify({ codename: "PROJECT-KESTREL", dateISO: "2026-08-13", agentId: "mailagent", reclaims: 3 }) + "\n";
 const LEDGER_ROW = { msgId: "msg-77", sig: "forwarder|KESTREL|9,42|acme", ts: 1_770_000_000_000, profileKey: "acme" };
 
 // The ledger lives BESIDE the queue dir (usage-ledger.mjs), so the queue needs a parent — a bare mkdtemp
