@@ -2758,8 +2758,8 @@
           "todos": 0
         },
         "e2e-assertions.test.mjs": {
-          "tests": 86,
-          "asserts": 242,
+          "tests": 87,
+          "asserts": 251,
           "skips": 1,
           "todos": 0
         },
