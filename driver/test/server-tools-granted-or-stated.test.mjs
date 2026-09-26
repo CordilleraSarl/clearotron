@@ -404,15 +404,19 @@ const RECORDING_GRANTS = Object.freeze({
   //     deliberate outcome and the whole of it belongs here. This census pins the RESOLVED mcp grant, not
   //     the recording server's share of it, which is why all four rows are listed: a set naming only the
   //     record tool would red on a correct grant and invite a "fix" that subtracts before comparing.
-  //     It takes the frame-diff ruling on the read surface: its Class 2 reads are the findings files the
-  //     dispatch names by position, which the seeded `Read` grant serves whole, so no
-  //     `search_run_artifacts` is minted.
+  //     It first took the frame-diff ruling on the read surface — its reads were the findings files the
+  //     dispatch names by position, which the seeded `Read` grant serves whole — and minted no
+  //     `search_run_artifacts`. Measured on a test run, 2026-09-25: its server offered the tool, and the
+  //     seat reached for it four times and was refused each time. A reviewer checks a claim against
+  //     whichever part of the record it rests on, so its reads cannot be listed; it now holds the tool,
+  //     named in its dispatch with the skeptic's sentence.
   "narrative-refutation": Object.freeze([
     "mcp__band__band_lookup",
     "mcp__band__band_record",
     "mcp__band__band_shape",
     "mcp__perplexity__perplexity_research",
     "mcp__recording-narrative-refutation__record_narrative_refutation",
+    "mcp__recording-narrative-refutation__search_run_artifacts",
   ]),
   //   · synthesis is the SECOND mixed stage and the widest: it keeps perplexity, band AND declination
   //     beside its record tool. `declination` is a RECORD tool on its own key, not a retrieval one, so
@@ -427,6 +431,8 @@ const RECORDING_GRANTS = Object.freeze({
     "mcp__declination__record_declination",
     "mcp__perplexity__perplexity_research",
     "mcp__recording-synthesis__record_synthesis",
+    // Measured on the same run: offered, reached for four times, refused each time. Granted and named.
+    "mcp__recording-synthesis__search_run_artifacts",
   ]),
   "matter-frame": Object.freeze([
     "mcp__recording-matter-frame__record_matter_frame",
