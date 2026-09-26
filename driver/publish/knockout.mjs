@@ -120,11 +120,21 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
       negativeRows.push({ 'Mark': m.name, 'Search Term': n.term ?? '', 'Source / Context': n.source ?? '', 'Result': n.note ?? 'No results found', 'Notes': '' });
     }
   }
+  // EACH CELL'S QUERY, not just its spelling. Since the knockout's cells search the spelling followed by
+  // the kind of use the frame named for that name, a row printing the bare spellings would say the run
+  // searched something it did not. The frame's own word is appended to each spelling and nothing is
+  // composed around it. A receipt with no use — an archived run, or a plan frozen before the field
+  // existed — prints its spellings exactly as it did then.
+  const searchedTerms = (r) => {
+    const spellings = Array.isArray(r.spellings) && r.spellings.length ? r.spellings : [r.mark];
+    const use = typeof r.use === 'string' ? r.use.trim() : '';
+    return (use ? spellings.map((s) => `${s} ${use}`) : spellings).join(', ');
+  };
   const trailRows = (receipts ?? []).map((r) => ({
-    // A grid call's row names what it searched: the spellings, and the places each was searched on. An
-    // archived run's rows print as they were delivered: the mark as the term, and on its second web
-    // question the kinds of use it asked about, in the frame's words.
-    'Mark': r.mark, 'Search Term': Array.isArray(r.spellings) && r.spellings.length ? r.spellings.join(', ') : r.mark,
+    // A grid call's row names what it searched: the spellings with their kind of use, and the places each
+    // was searched on. An archived run's rows print as they were delivered: the mark as the term, and on
+    // its second web question the kinds of use it asked about, in the frame's words.
+    'Mark': r.mark, 'Search Term': searchedTerms(r),
     'Source / Context': `${r.executor ?? 'perplexity'} (${r.preset ?? ''})${Array.isArray(r.places) && r.places.length ? ` — ${r.places.join(', ')}` : r.question && r.inUseAs ? ` — in use as ${r.inUseAs}` : ''}`,
     'Result Summary': r.ok ? `ok — ${r.bytes ?? 0} bytes` : `FAILED — ${plainCause(r.cause)}`,
     'Finding Reference': r.ok && refByMark.has(r.mark) ? refByMark.get(r.mark) : '',

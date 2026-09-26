@@ -39,9 +39,10 @@ import assert from "node:assert/strict";
 const { driverDir } = await import("../../shared/driver-dir.mjs");
 const { knockoutInner } = await import("../pipeline-knockout.mjs");
 const { KO_STAGES, koPaths, knockoutGridSpec, KNOCKOUT_WEB, kebab } = await import("../stages-knockout.mjs");
-const { knockoutReceipts, validators, placesDefect, spellingsDefect } = await import("../verify-knockout.mjs");
+const { buildKnockoutWorkbook } = await import("../publish/knockout.mjs");
+const { knockoutReceipts, validators, placesDefect, spellingsDefect, useKindDefect } = await import("../verify-knockout.mjs");
 const { acceptKnockoutFrame, refuseUndeclared } = await import("../knockout-frame-record.mjs");
-const { buildRequestBody, buildGridProgramTask, SANDBOX_INSTRUCTIONS } = await import("../../providers/perplexity/src/core.js");
+const { buildRequestBody, buildGridProgramTask, validateGridSpec, SANDBOX_INSTRUCTIONS } = await import("../../providers/perplexity/src/core.js");
 const { RESEARCH_PROVIDERS } = await import("../driver.config.mjs");
 
 // ── The plan's two lists, checked as the search program will read them ─────────────────────────────
@@ -69,34 +70,106 @@ test("the spellings are 2 or 3 searches, the name among them and none a repeat o
   ]) assert.equal(spellingsDefect("LANTERNWICK", bad), sentence, JSON.stringify(bad));
 });
 
-test("the plan and the frame's tool refuse with the same sentence, and the tool declares both fields", () => {
+test("the kind of use is a word or two, required, and nothing here lists the kinds", () => {
+  for (const ok of ["character", "app", "achievement", "in-game location", "game character name"])
+    assert.equal(useKindDefect("LANTERNWICK", ok), null, JSON.stringify(ok));
+  const sentence = 'mark "LANTERNWICK": useKind is required: in a word or two, the kind of use this name is searched for (task 2c)';
+  for (const missing of [undefined, null, "", "   ", 7, [], {}])
+    assert.equal(useKindDefect("LANTERNWICK", missing), sentence, JSON.stringify(missing));
+  // TOO LONG TO SEARCH. Every cell's query is the spelling plus this text, so a phrase is searched word
+  // for word in every cell and buries the spelling. The refusal keeps the sentence and adds what was
+  // sent, so the frame can see which of its words was the problem. THE BOUND IS ON SHAPE ONLY — no kind
+  // of use is named or excluded here. "a place in a game" is the shape the batch's own `inUseAs` line
+  // invites and it is refused: the manual asks for the kind of use, not a sentence about it.
+  for (const long of ["a place in a game", "a character in the client's own broadcast", "the name of a place inside a game"])
+    assert.match(useKindDefect("LANTERNWICK", long), /^mark "LANTERNWICK": useKind is required:.*is longer than that$/);
+});
+
+test("the plan and the frame's tool refuse with the same sentence, and the tool declares all three fields", () => {
   const dir = mkdtempSync(join(tmpdir(), "knockout-web-plan-"));
   const batch = { productContext: "video games", inUseAs: "a character or a place in a game", places: ["web", "fandom.com"] };
   const mark = { ref: null, name: "LANTERNWICK", classes: [9], beltAndBraces: [], classesPlain: "game software (9)",
-    contextFraming: "the flagship game", spellings: ["LANTERNWICK", "LANTERN WICK"], priorKnowledge: null, priority: 1 };
+    contextFraming: "the flagship game", useKind: "character", spellings: ["LANTERNWICK", "LANTERN WICK"], priorKnowledge: null, priority: 1 };
   const plan = (b, m) => JSON.stringify({ schema: 1, batch: b, marks: [m] });
   assert.equal(validators.knockoutPlan(join(dir, "knockout-plan.json"), plan(batch, mark)).ok, true);
   const noPlaces = validators.knockoutPlan(join(dir, "knockout-plan.json"), plan({ ...batch, places: undefined }, mark));
   assert.equal(noPlaces.reason, PLACES_SENTENCE);
   const noSpellings = validators.knockoutPlan(join(dir, "knockout-plan.json"), plan(batch, { ...mark, spellings: undefined }));
   assert.match(noSpellings.reason, /^mark "LANTERNWICK": spellings is required/);
+  const noUse = validators.knockoutPlan(join(dir, "knockout-plan.json"), plan(batch, { ...mark, useKind: undefined }));
+  assert.match(noUse.reason, /^mark "LANTERNWICK": useKind is required/);
 
   const call = (b, m) => acceptKnockoutFrame({ scope_note: "One name, screened.", batch: b, marks: [m] });
   assert.equal(call(batch, mark).ok, true);
   assert.equal(call({ ...batch, places: ["web"] }, mark).reason, `knockoutframe_places: ${PLACES_SENTENCE}`);
   assert.match(call(batch, { ...mark, spellings: ["LANTERN WICK", "X"] }).reason, /^knockoutframe_spellings:LANTERNWICK — mark "LANTERNWICK": spellings is required/);
-  assert.equal(refuseUndeclared({ batch, marks: [mark] }), null, "the tool declares both fields");
+  assert.match(call(batch, { ...mark, useKind: undefined }).reason, /^knockoutframe_use_kind:LANTERNWICK — mark "LANTERNWICK": useKind is required/);
+  assert.equal(refuseUndeclared({ batch, marks: [mark] }), null, "the tool declares all three fields");
 });
 
 test("the spec is the plan's own lists, copied, with the knockout's results per cell", () => {
-  const row = { name: "LANTERNWICK", spellings: ["LANTERNWICK", "LANTERN WICK"] };
+  const row = { name: "LANTERNWICK", useKind: "character", spellings: ["LANTERNWICK", "LANTERN WICK"] };
   const batch = { places: ["web", "fandom.com"] };
   const spec = knockoutGridSpec(row, batch, { outputPath: "/r/research/lanternwick.md" });
   assert.deepEqual(spec, { terms: ["LANTERNWICK", "LANTERN WICK"], platforms: ["web", "fandom.com"],
-    output_path: "/r/research/lanternwick.md", results_per_cell: 10 });
+    use: "character", output_path: "/r/research/lanternwick.md", results_per_cell: 10 });
   spec.terms.push("X");
   assert.deepEqual(row.spellings, ["LANTERNWICK", "LANTERN WICK"], "a copy: the frozen plan is never written through the spec");
   assert.deepEqual(KNOCKOUT_WEB, { preset: "pro-search", reasoning: { effort: "low" }, resultsPerCell: 10, questionPreset: "pro-search" });
+});
+
+test("each mark's spec carries THAT mark's kind of use, and a plan frozen without one searches the bare spelling", () => {
+  const batch = { places: ["web", "fandom.com"] };
+  const spec = (row) => knockoutGridSpec(row, batch, { outputPath: "/r/research/x.md" });
+  // Two marks in one batch, two different uses: the spec reads the row it was handed and never a sibling.
+  assert.equal(spec({ name: "LANTERNWICK", useKind: "character", spellings: ["LANTERNWICK", "LANTERN WICK"] }).use, "character");
+  assert.equal(spec({ name: "MOSSGLEN", useKind: "in-game location", spellings: ["MOSSGLEN", "MOSS GLEN"] }).use, "in-game location");
+  assert.equal(spec({ name: "LANTERNWICK", useKind: "  character  ", spellings: ["LANTERNWICK"] }).use, "character", "trimmed, so no cell searches a trailing space");
+  // BACK-COMPAT, and the reason the field is optional on the spec: the validator refuses a NEW plan
+  // without a use, so a row that has none is one frozen before the field existed. Its cells search the
+  // bare spelling, exactly as every knockout did then, rather than the run failing on an old plan.
+  for (const without of [{ name: "OLDPLAN", spellings: ["OLDPLAN"] }, { name: "OLDPLAN", useKind: "", spellings: ["OLDPLAN"] }, { name: "OLDPLAN", useKind: 7, spellings: ["OLDPLAN"] }])
+    assert.equal("use" in spec(without), false, JSON.stringify(without));
+});
+
+test("a cell's query is its spelling followed by the kind of use, and the cell's key stays the spelling", () => {
+  const base = { terms: ["LANTERNWICK", "LANTERN WICK"], platforms: ["web", "fandom.com"], output_path: "/r/g.json" };
+  const task = (spec) => buildGridProgramTask(spec);
+  const withUse = task({ ...base, use: "character" });
+  assert.match(withUse, /pplx_sdk\.search\.web\(term \+ " " \+ "character", limit=10, domains=\[platform\]\)/);
+  assert.match(withUse, /Every cell's query is its term followed by a space and "character"; the cell's "term" key is still the TERM exactly as listed, never the query\./);
+  // The lists themselves are untouched: the use rides the query, so the grid is the same size and the
+  // keys the capture reconciles against are the spellings the frame wrote.
+  assert.match(withUse, /TERMS \(2\): \["LANTERNWICK","LANTERN WICK"\]/);
+  assert.match(withUse, /PLATFORMS \(2\): \["web","fandom\.com"\]/);
+  const withoutUse = task(base);
+  assert.match(withoutUse, /pplx_sdk\.search\.web\(term, limit=10, domains=\[platform\]\)/);
+  assert.doesNotMatch(withoutUse, /Every cell's query is its term followed by/);
+  // The provider refuses a use it would have to search word for word in every cell.
+  for (const bad of ["", "   ", 7, "the name of a place inside one of the client's games"])
+    assert.throws(() => validateGridSpec({ ...base, use: bad }), /grid spec\.use must be a word or two/, JSON.stringify(bad));
+  assert.doesNotThrow(() => validateGridSpec({ ...base, use: "in-game location" }));
+  assert.doesNotThrow(() => validateGridSpec(base), "absent is still a valid spec");
+});
+
+test("the audit trail says what each cell searched: the spelling with its kind of use", async () => {
+  const out = join(mkdtempSync(join(ROOT, "book-")), "audit.xlsx");
+  const receipts = [
+    { mark: "LANTERNWICK", spellings: ["LANTERNWICK", "LANTERN WICK"], places: ["web", "fandom.com"], use: "character", ok: true, bytes: 12, callNo: 1, preset: "pro-search", took_ms: 1000 },
+    // AN ARCHIVED RECEIPT, from a run delivered before the field existed: it prints as it was delivered.
+    { mark: "MOSSGLEN", spellings: ["MOSSGLEN", "MOSS GLEN"], places: ["web"], ok: true, bytes: 8, callNo: 2, preset: "pro-search", took_ms: 900 },
+  ];
+  await buildKnockoutWorkbook({ marks: [{ name: "LANTERNWICK", findings: [] }, { name: "MOSSGLEN", findings: [] }] }, receipts, out);
+  const ExcelJS = (await import("exceljs")).default;
+  const wb = new ExcelJS.Workbook();
+  await wb.xlsx.readFile(out);
+  const ws = wb.getWorksheet("Audit Trail");
+  const head = ws.getRow(1).values.slice(1);
+  const rows = [];
+  ws.eachRow((row, n) => { if (n > 1) rows.push(Object.fromEntries(head.map((h, i) => [h, String(row.values[i + 1] ?? "")]))); });
+  const term = (mark) => rows.find((r) => r["Mark"] === mark)?.["Search Term"];
+  assert.equal(term("LANTERNWICK"), "LANTERNWICK character, LANTERN WICK character");
+  assert.equal(term("MOSSGLEN"), "MOSSGLEN, MOSS GLEN", "a receipt with no kind of use prints its spellings as it always did");
 });
 
 test("the clearance grid's request is unchanged: no reasoning setting, and its own 10 asked and 8 kept", () => {
@@ -174,6 +247,11 @@ test("each mark is one grid call, its ledger is its research file, and everythin
     const b = grids.find((x) => x.input.includes(`TERMS (${m.spellings.length}): ${JSON.stringify(m.spellings)}`));
     assert.ok(b, `no call carried ${m.name}'s spellings verbatim`);
     assert.ok(b.input.includes(`PLATFORMS (${plan.batch.places.length}): ${JSON.stringify(plan.batch.places)}`), "the batch's places, verbatim");
+    // AND THE KIND OF USE the frame named for THIS mark, read off the frozen plan rather than written
+    // here, so the arm fails if the driver sends a use the plan does not hold.
+    assert.ok(m.useKind, `${m.name}'s plan row carries no kind of use`);
+    assert.ok(b.input.includes(`pplx_sdk.search.web(term + " " + ${JSON.stringify(m.useKind)}, limit=10`),
+      `${m.name}'s cells do not search its spelling followed by its kind of use`);
   }
 
   // THE PAYLOAD: the ledger, every cell, the listings where a search found some
@@ -195,6 +273,9 @@ test("each mark is one grid call, its ledger is its research file, and everythin
     { ok: lw.ok, preset: lw.preset, reasoning: lw.reasoning, resultsPerCell: lw.resultsPerCell, cells: lw.cells, present: lw.present, attempts: lw.attempts },
     { ok: true, preset: "pro-search", reasoning: "low", resultsPerCell: 10, cells: 4, present: 4, attempts: 1 });
   assert.deepEqual([lw.spellings, lw.places], [plan.marks.find((m) => m.name === "LANTERNWICK").spellings, plan.batch.places]);
+  // AND THE USE ON THE RECEIPT, so what each cell searched is readable after the run from the receipt
+  // alone, beside the spellings and the places it was crossed with.
+  assert.equal(lw.use, plan.marks.find((m) => m.name === "LANTERNWICK").useKind, "the receipt does not say what use the cells carried");
   assert.equal(rows.find((r) => r.mark === "MOSSGLEN").attempts, 2);
   assert.ok(Number.isFinite(lw.took_ms) && lw.took_ms >= 0);
 
