@@ -147,8 +147,12 @@ test("setAside: optional, and a row without a ground or a url is refused by name
 
   const noGround = validators.knockoutAssessChunk(file, chunk([{ url: URL, ground: "  " }]));
   assert.equal(noGround.ok, false, "a set-aside with no ground is not a decision");
-  assert.ok(noGround.reason.includes(URL), "and the refusal names the row it means");
-  assert.match(noGround.reason, /has an empty ground\. Omit the row rather than sending an empty one/);
+  // THE WHOLE SENTENCE, not a substring of it. The rater reads this string and repairs from it, so the
+  // arm pins what it says as well as which row it names. It was written as `.includes(URL)` first, which
+  // the security scan reads — rightly, as a pattern — as a URL checked by substring; an exact sentence
+  // asserts more and cannot be mistaken for a host test.
+  assert.equal(noGround.reason,
+    `mark "TESTMARK": setAside row "${URL}" has an empty ground. Omit the row rather than sending an empty one: a set-aside with no reason is not a decision`);
 
   const noUrl = validators.knockoutAssessChunk(file, chunk([{ ground: GROUND }]));
   assert.equal(noUrl.ok, false);
