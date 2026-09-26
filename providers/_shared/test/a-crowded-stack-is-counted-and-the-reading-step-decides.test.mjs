@@ -24,12 +24,13 @@ const COUNTS = { LANTERNWICK: 12, LANTRENWICK: 0, LANTERNWIK: 340, LANTERN: 2100
 const STACK = { qid: "primary-sweep:form:lanternwick", axis: "primary-sweep", predicate: "exact",
   terms: Object.keys(COUNTS), nice_classes: [9], regions: [], expected_kind: "enumerate" };
 
-async function run() {
+async function run({ counts = COUNTS, countFails = false } = {}) {
   const dir = mkdtempSync(join(tmpdir(), "stack-counted-"));
   try {
     const planPath = join(dir, "register-plan.json");
     const outPath = join(dir, "band.json");
-    writeFileSync(planPath, JSON.stringify({ regions: [], entries: [STACK] }));
+    const stack = { ...STACK, terms: Object.keys(counts) };
+    writeFileSync(planPath, JSON.stringify({ regions: [], entries: [stack] }));
     const searched = [];
     const counted = [];
     const register = {
@@ -37,7 +38,12 @@ async function run() {
       count: async (_a, p) => {
         const names = p.names ?? [];
         counted.push(names.join("+"));
-        return { ok: true, total: names.length > 1 ? 2452 : COUNTS[names[0]] };
+        // The whole-stack probe always answers: it is what puts the stack over the ceiling in the first
+        // place. `countFails` fails only the PER-SPELLING probes, which is the shape of a register that
+        // answers a broad question and errors on the narrow ones.
+        if (names.length > 1) return { ok: true, total: 2452 };
+        if (countFails) return { ok: false, reason: "the register did not answer this count" };
+        return { ok: true, total: counts[names[0]] };
       },
       screen: async (_a, p) => ok({ rows: p.uris.map((u) => ({ uri: u })) }),
       capabilities: { countProbe: "endpoint", screenSource: "billed-record-fetch", ceilingDefault: 600 },
@@ -68,4 +74,40 @@ test("the plan tool's reply hands the reading step each spelling's count", async
   const { reply } = await run();
   assert.deepEqual(reply.spelling_counts, { [STACK.qid]: { LANTERNWICK: 12, LANTRENWICK: 0, LANTERNWIK: 340, LANTERN: "crowd 2100" } });
   assert.equal(reply.states[STACK.qid], "incomplete");
+});
+
+// ── THE TWO STACKS THIS RULE EXISTS FOR, and the reply used to carry nothing for either ────────────────
+//
+// The hand-off was gated on at least one spelling being `unenumerated` — counted and under the ceiling. A
+// stack where EVERY spelling is itself over the ceiling has none, and neither does one where every count
+// failed, so both were dropped from the reply while carrying a full `term_counts` on the band. The first
+// is the owner's own case for this rule: it should never read 17,000 records, because it has seen there is
+// a lot and decides. Handing it nothing is the rule shipped without its main instance.
+//
+// A step told nothing and a step told there is nothing read identically, which is why these are arms and
+// not a comment.
+test("every spelling over the ceiling: the reading step is still handed every count", async () => {
+  const CROWDS = { LANTERNWICK: 4200, LANTRENWICK: 3100, LANTERNWIK: 1700 };
+  const { reply, band } = await run({ counts: CROWDS });
+  const block = band.find((b) => b.qid === STACK.qid);
+  assert.deepEqual(Object.values(block.term_counts).map((v) => v.disposition), ["crowd", "crowd", "crowd"],
+    "guard: the case under test is a stack with nothing but crowds");
+  assert.deepEqual(reply.spelling_counts, { [STACK.qid]: { LANTERNWICK: "crowd 4200", LANTRENWICK: "crowd 3100", LANTERNWIK: "crowd 1700" } });
+});
+
+test("every count failed: the reading step is told so, not told nothing", async () => {
+  const { reply, band } = await run({ countFails: true });
+  const block = band.find((b) => b.qid === STACK.qid);
+  assert.deepEqual(Object.values(block.term_counts).map((v) => v.disposition), ["error", "error", "error", "error"],
+    "guard: the case under test is a stack whose every count failed");
+  assert.deepEqual(reply.spelling_counts,
+    { [STACK.qid]: { LANTERNWICK: "error", LANTRENWICK: "error", LANTERNWIK: "error", LANTERN: "error" } },
+    "a count that failed must reach the reading step as a failure, never as an absence");
+});
+
+test("a stack whose every spelling verified zero is resolved, so it carries no counts to decide", async () => {
+  const { reply } = await run({ counts: { LANTERNWICK: 0, LANTRENWICK: 0, LANTERNWIK: 0, LANTERN: 0 } });
+  // DELIBERATELY ABSENT, and this arm is what stops the gate being widened to "any term_counts at all":
+  // nobody has filed any of these spellings, so there is nothing to read, narrow or leave.
+  assert.equal(reply.spelling_counts, undefined, "an all-zero stack has nothing for the reading step to decide");
 });

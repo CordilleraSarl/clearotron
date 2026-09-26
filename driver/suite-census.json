@@ -7392,8 +7392,8 @@
       ],
       "perFile": {
         "providers/_shared/test/a-crowded-stack-is-counted-and-the-reading-step-decides.test.mjs": {
-          "tests": 2,
-          "asserts": 7,
+          "tests": 5,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },

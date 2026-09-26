@@ -644,8 +644,19 @@ export function makeExecutePlan(deps) {
     // step decides which spellings to read, narrow or leave (ruled 2026-09-26), so it is handed the counts
     // here rather than left to find them in the band file: a number for a spelling counted and not read,
     // 0 for a verified zero, "crowd N" for one over the ceiling, "error" for a count that failed.
+    //
+    // THE GATE IS "ANYTHING LEFT TO DECIDE", not one disposition, and that is the whole of this block's
+    // correctness. Keyed on `unenumerated` alone it dropped the two stacks the rule exists for: one where
+    // EVERY spelling is itself over the ceiling, and one where every count failed. Both came back with a
+    // full `term_counts` and this filter then handed the reading step nothing — the rule landed without its
+    // main instance, and a step told nothing reads exactly like a step told there is nothing.
+    //
+    // `unresolved` is the rescue's own word for it (enumerate.mjs: crowd + unenumerated + error), reused
+    // rather than restated so the two cannot drift. A stack whose every spelling verified zero is resolved
+    // and is deliberately still absent here: there is nothing for the reading step to read or narrow.
+    const leftToDecide = (v) => v?.disposition === "unenumerated" || v?.disposition === "crowd" || v?.disposition === "error";
     const spellingCounts = Object.fromEntries(blocks
-      .filter((b) => b?.term_counts && Object.values(b.term_counts).some((v) => v?.disposition === "unenumerated"))
+      .filter((b) => b?.term_counts && Object.values(b.term_counts).some(leftToDecide))
       .map((b) => [b.qid, Object.fromEntries(Object.entries(b.term_counts).map(([t, v]) => [t,
         v?.disposition === "crowd" ? `crowd ${v.total_hits}` : v?.disposition === "error" ? "error" : (v?.total_hits ?? "error")]))]));
     return { type: "text", text: JSON.stringify({
