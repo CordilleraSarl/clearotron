@@ -7337,6 +7337,12 @@
         "providers/*/test/*.test.mjs"
       ],
       "perFile": {
+        "providers/_shared/test/a-crowded-stack-is-counted-and-the-reading-step-decides.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "providers/_shared/test/a-record-is-written-once-per-run.test.mjs": {
           "tests": 5,
           "asserts": 16,
