@@ -47,7 +47,7 @@ import {
 import { RunCancelled, assertNotCancelledBeforePublish } from "./cancel.mjs";   // stop-by-user: never the failure lane below
 import { loadFrameworkManifest, parseFrameworkManifest, frameworkFor, DEFAULT_FRAMEWORK } from "./framework.mjs";
 import { attachFrameworkMethod, methodPathFor, FROZEN_METHOD_FILE } from "./framework-method.mjs";
-import { KO_STAGES, KO_STEPS, KO_STEP_REGISTER_COUNT, koSteps, koPaths, kebab, knockoutPrompt, knockoutInUseAsPrompt, inUseAsOf, IN_USE_AS, SECOND_ANSWER_SEPARATOR, koChunks } from "./stages-knockout.mjs";
+import { KO_STAGES, KO_STEPS, KO_STEP_REGISTER_COUNT, koSteps, koPaths, kebab, knockoutGridSpec, KNOCKOUT_WEB, koChunks } from "./stages-knockout.mjs";
 import { kebabCollisions, reportIdentityFor, CAPABILITY_SKIPPED_CAUSE, CAPABILITY_SKIPPED_NOTE } from "./search-policy.mjs";
 import { countPreflight, countRegisterHits, countedMarks, resolveCountExecutor } from "./register-count.mjs";
 import { recordsPreflight, listRegisterRecords, listedMarks, resolveRecordExecutor } from "./register-records.mjs";
@@ -284,18 +284,37 @@ async function koStage(name, ctx, { chunkNo = null, msgCtx = {} } = {}) {
   return r;
 }
 
-// ── The sweep executor chain: injected (tests) → fixtures dir (the $0 offline guarantee) → the live
-// RESEARCH_PROVIDERS.perplexity adapter. Executor contract:
-// async (task, {mark, preset, question?}) -> { ok, text?, cause?, bytes?, tookMs? }. `question` is absent
-// on the broad question and IN_USE_AS on the second; the fixtures dir holds one file per question.
+// ── The sweep's executors: injected (tests) → fixtures dir (the $0 offline guarantee) → the live
+// RESEARCH_PROVIDERS.perplexity adapter. Two of them, because the lane asks the web two kinds of thing:
+//   grid  async (spec, {mark, preset, reasoning}) -> { ok, ledgerJson?, requested?, present?, cause?, raw?, tookMs? }
+//         one mark's web search, every spelling on every place, with every result kept;
+//   exec  async (task, {mark, preset}) -> { ok, text?, cause?, raw?, tookMs? }
+//         one question, which the owner lookups ask.
+// The fixtures dir holds <mark-kebab>.grid.json, the grid program's printed ledger for a mark, and
+// <mark-kebab>.md, the answer to a question asked about that mark.
 export function resolveSweepExecutor(opts) {   // exported for its test, like readBackLadder above
-  if (typeof opts?.sweepExecutor === "function") return { exec: opts.sweepExecutor, source: "injected" };
+  if (typeof opts?.gridExecutor === "function" || typeof opts?.sweepExecutor === "function")
+    return { grid: opts.gridExecutor ?? null, exec: opts.sweepExecutor ?? null, source: "injected" };
   const fixDir = process.env.CLEAROTRON_KNOCKOUT_SWEEP_FIXTURES;
   if (fixDir) {
     return {
       source: `fixtures:${fixDir}`,
-      exec: async (_task, { mark, question = null }) => {
-        const file = question ? `${kebab(mark)}.${question}.md` : `${kebab(mark)}.md`;
+      // THE FIXTURE GOES THROUGH THE LIVE PATH'S OWN RECONCILE, so a canned ledger missing a cell reads
+      // exactly as a live one would: the missing cell becomes an honest gap, never a silent hole.
+      grid: async (spec, { mark }) => {
+        const file = `${kebab(mark)}.grid.json`;
+        let printed;
+        try { printed = readFileSync(join(fixDir, file), "utf8"); }
+        catch (e) { return { ok: false, cause: `fixture missing for ${file}: ${e.message}` }; }
+        try {
+          const { reconcileGridLedger } = await import("../providers/perplexity/src/core.js");
+          const rec = reconcileGridLedger(printed, spec);
+          const ledgerJson = JSON.stringify(rec.ledger, null, 2);
+          return { ok: true, ledgerJson, requested: rec.requested, present: rec.present, bytes: Buffer.byteLength(ledgerJson) };
+        } catch (e) { return { ok: false, cause: `grid: fixture ${file} did not reconcile: ${String(e?.message ?? e).slice(0, 160)}` }; }
+      },
+      exec: async (_task, { mark }) => {
+        const file = `${kebab(mark)}.md`;
         try {
           const text = readFileSync(join(fixDir, file), "utf8");
           return { ok: true, text, bytes: Buffer.byteLength(text) };
@@ -314,8 +333,12 @@ export function resolveSweepExecutor(opts) {   // exported for its test, like re
   // per mark, the cred-guard would degrade each one, and the batch would die at the all-failed branch
   // AFTER the paid frame turn — worse than the refusal, and it costs money to reach. Not-attempted and
   // attempted-and-failed are different runs; this is the first.
-  if (!process.env.PERPLEXITY_API_KEY) return { source: "perplexity", exec: null, skipped: "common-law-no-credential" };
-  return { source: "perplexity", exec: (task, { preset }) => RESEARCH_PROVIDERS.perplexity.research(task, { preset }) };
+  if (!process.env.PERPLEXITY_API_KEY) return { source: "perplexity", grid: null, exec: null, skipped: "common-law-no-credential" };
+  return {
+    source: "perplexity",
+    grid: (spec, { preset, reasoning }) => RESEARCH_PROVIDERS.perplexity.grid(spec, { preset, reasoning }),
+    exec: (task, { preset }) => RESEARCH_PROVIDERS.perplexity.research(task, { preset }),
+  };
 }
 
 // bounded-concurrency fan-out (local copy of the runBatched idiom — pipeline.mjs's is private).
@@ -769,7 +792,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
           if (owed.length) {
             const checks = await runOwnerChecks({
               owners: owed, exec: sweep.exec, runDir: run.runDir, ledgerPath: K.ownerCheckLedger,
-              preset: process.env.CLEAROTRON_KNOCKOUT_PRESET || "pro-search",
+              rawDir: driverDir(run.runDir, "web-results"), preset: KNOCKOUT_WEB.preset,
               concurrency: 3,   // step 3 — the same constant as the sibling calls above
             });
             atomicWrite(K.ownerChecks, JSON.stringify({ schema: 1, checks }, null, 2) + "\n");
@@ -843,11 +866,13 @@ export async function knockoutInner(ctx, job, opts = {}) {
       await checkOwners(listFirst ? listedFirst : await listFilings());
     }
 
-    // 2 — the sweep: TWO code-side research calls per mark, each receipted — the broad question, then
-    // the name in use as the frame's `inUseAs` words it (stages-knockout.mjs) — with a per-mark degrade on the first
+    // 2 — the sweep: ONE grid call per mark, receipted, through the clearance grid's own program path.
+    // Every spelling the frame named for the mark is searched once on every place it named for the batch,
+    // and every result is kept, with no summary (stages-knockout.mjs, KNOCKOUT_WEB). A mark whose call
+    // fails is degraded on its own; the rest of the batch goes on.
     koStep(ctx, "Sweeping marks");
-    const { exec, source } = sweep;
-    const preset = process.env.CLEAROTRON_KNOCKOUT_PRESET || "pro-search";
+    const { grid, source } = sweep;
+    const { preset, reasoning } = KNOCKOUT_WEB;
     // step 3 — was a knob; no environment ever set it. The `Number.isFinite` guard beside it went
     // with the read: a constant cannot be typo'd, which is the hazard that guard existed for.
     const concurrency = 3;
@@ -869,59 +894,61 @@ export async function knockoutInner(ctx, job, opts = {}) {
       runLog(run.runDir, { event: "knockout-sweep-skipped", marks: planMarks.length, executor: source, cause: sweep.skipped });
       note(`knockout sweep: not run (${sweep.skipped}) — the screen delivers its register half and discloses the rest`);
     } else {
-    runLog(run.runDir, { event: "knockout-sweep-start", marks: planMarks.length, executor: source, preset, concurrency });
-    const jurisdictions = job.jurisdictions ?? null;
-    const unanswered = [];   // marks whose second question did not answer — receipted, and counted below
-    // The frame's kinds of use for this matter. The plan's validator refuses a plan without them, so a plan
-    // that reaches here with none was frozen before they existed: its second question is receipted as not
-    // asked, with the reason, rather than asked with words nobody chose or skipped without a trace.
-    const inUseAs = inUseAsOf(plan.batch);
+    runLog(run.runDir, { event: "knockout-sweep-start", marks: planMarks.length, executor: source, preset, reasoning: reasoning.effort, resultsPerCell: KNOCKOUT_WEB.resultsPerCell, concurrency });
     await runBatched(planMarks, concurrency, async (m) => {
       const out = K.research(kebab(m.name));
       if (existsSync(out)) return;   // per-mark resume: only missing payloads re-sweep
       const hadFailed = existsSync(out + ".failed");
-      // One research call, receipted on the sweep ledger whatever it returns. `question` names the
-      // second question on its row and to the executor; the first question's row stays as it always was.
-      const ask = async (task, question = null) => {
-        const started = Date.now();
-        const n = ++callNo;
-        let r;
-        try { r = await exec(task, { mark: m.name, preset, ...(question ? { question } : {}) }); }
-        catch (e) { r = { ok: false, cause: `executor threw: ${String(e?.message ?? e).slice(0, 200)}` }; }
-        const row = {
-          ts: new Date().toISOString(), mark: m.name, callNo: n, preset, executor: source, ...(question ? { question, inUseAs } : {}),
-          took_ms: r?.tookMs ?? (Date.now() - started), bytes: r?.bytes ?? (r?.text ? Buffer.byteLength(r.text) : 0),
-          ok: Boolean(r?.ok), ...(r?.ok ? {} : { cause: String(r?.cause ?? "unknown").slice(0, 300) }),
-        };
-        try { appendFileSync(K.sweepLedger, JSON.stringify(row) + "\n"); } catch { /* receipts best-effort, never fatal */ }
-        return { r, row };
+      const spec = knockoutGridSpec(m, plan.batch, { outputPath: out });
+      const started = Date.now();
+      const n = ++callNo;
+      // ONE MORE CALL WHEN THE PROGRAM, NOT THE PROVIDER, FAILED. The search program is written by the
+      // provider's model each call, and the clearance grid's own guidance retries once when it did not run
+      // or printed something unreadable. A provider outage is not retried here: the provider call retried
+      // a 429 or 5xx already, and the all-failed branch below parks the batch on it.
+      let r = null, attempts = 0;
+      const raw = [];   // every attempt's, in order: a retried call's first answer is evidence too
+      if (!spec.terms.length || !spec.platforms.length) {
+        r = { ok: false, cause: "the plan names no spellings or no places for this mark" };
+      } else {
+        while (attempts < 2) {
+          attempts++;
+          try { r = await grid(spec, { mark: m.name, preset, reasoning }); }
+          catch (e) { r = { ok: false, cause: `executor threw: ${String(e?.message ?? e).slice(0, 200)}` }; }
+          if (Array.isArray(r?.raw) && r.raw.length) raw.push({ attempt: attempts, items: r.raw });
+          if (r?.ok || r?.outage === true || !/^grid: /.test(String(r?.cause ?? ""))) break;
+        }
+      }
+      // THE RAW RESULTS ARE KEPT, whether the call answered or not: what the provider returned is the only
+      // record of which pages a search reached, and the ledger keeps only what each cell asked for.
+      if (raw.length) {
+        try {
+          mkdirSync(dirname(K.webResults(kebab(m.name))), { recursive: true });
+          writeFileSync(K.webResults(kebab(m.name)), JSON.stringify({ mark: m.name, callNo: n, attempts: raw }, null, 1) + "\n");
+        } catch { /* the ledger below is the receipt; a raw-results write never fails a mark */ }
+      }
+      const row = {
+        ts: new Date().toISOString(), mark: m.name, callNo: n, preset, reasoning: reasoning.effort, executor: source,
+        spellings: spec.terms, places: spec.platforms, resultsPerCell: spec.results_per_cell,
+        cells: r?.requested ?? spec.terms.length * spec.platforms.length,
+        // The mark's whole wall time, both attempts when there were two: what the client waited for.
+        present: r?.present ?? 0, attempts, took_ms: Date.now() - started,
+        bytes: r?.bytes ?? (r?.ledgerJson ? Buffer.byteLength(r.ledgerJson) : 0),
+        ok: Boolean(r?.ok && r?.ledgerJson), ...(r?.ok && r?.ledgerJson ? {} : { cause: String(r?.cause ?? "unknown").slice(0, 300) }),
       };
-      const notAsked = () => {
-        const row = { ts: new Date().toISOString(), mark: m.name, callNo: null, preset, executor: source, question: IN_USE_AS,
-          inUseAs: null, took_ms: 0, bytes: 0, ok: false, cause: "not asked: the plan names no kinds of use for this matter" };
-        try { appendFileSync(K.sweepLedger, JSON.stringify(row) + "\n"); } catch { /* receipts best-effort, never fatal */ }
-        return { r: null, row };
-      };
-      const { r, row } = await ask(knockoutPrompt(m, plan.batch, { jurisdictions }));
-      if (r?.ok && r.text) {
-        // THE SECOND QUESTION rides the first, and only an answered first question earns it: a mark whose
-        // first question failed is degraded whatever a second one returns, so asking would buy nothing.
-        // Both answers land in the mark's ONE research file, so the rating step reads them together and
-        // the receipts gate traces a citation to either. An unanswered second question leaves the first
-        // answer to stand alone, and its failed row on the ledger is what the audit workbook's trail
-        // prints; the mark is not degraded, because the question every mark has always had answered.
-        const second = inUseAs ? await ask(knockoutInUseAsPrompt(m, plan.batch, { jurisdictions }), IN_USE_AS) : notAsked();
-        const answered = Boolean(second.r?.ok && second.r.text);
-        if (!answered) unanswered.push(m.name);
-        writeFileSync(out, answered ? `${r.text}${SECOND_ANSWER_SEPARATOR}${second.r.text}` : r.text);
+      try { appendFileSync(K.sweepLedger, JSON.stringify(row) + "\n"); } catch { /* receipts best-effort, never fatal */ }
+      if (row.ok) {
+        // THE LEDGER IS THE PAYLOAD. The rating step reads it as it came back: every cell, the listings
+        // each search returned, and any search that could not run. It is data, with no words of ours in it.
+        writeFileSync(out, r.ledgerJson + "\n");
         if (hadFailed) {
           try { rmSync(out + ".failed"); } catch { /* best-effort */ }
           recovered.push(m.name);
         }
       } else {
-        degraded.set(m.name, row.cause ?? "research unavailable");
+        degraded.set(m.name, row.cause);
         if (r?.outage === true) outaged.add(m.name);
-        writeFileSync(out + ".failed", `research failed: ${row.cause ?? "unknown"}\n`);
+        writeFileSync(out + ".failed", `research failed: ${row.cause}\n`);
       }
     });
     if (degraded.size >= planMarks.length) {
@@ -951,10 +978,6 @@ export async function knockoutInner(ctx, job, opts = {}) {
       throw new StageFailure("knockout-sweep", `all ${planMarks.length} research calls failed (executor ${source}) — nothing to assess`, null);
     }
     if (degraded.size) note(`knockout sweep: ${degraded.size}/${planMarks.length} mark(s) degraded — the batch continues (null-results doctrine)`);
-    if (unanswered.length) {
-      note(`knockout sweep: the second question did not answer for ${unanswered.length}/${planMarks.length} mark(s) — each first answer stands alone, and the audit trail carries the failed row`);
-      runLog(run.runDir, { event: "knockout-in-use-as-unanswered", marks: unanswered.length, executor: source });
-    }
     }
 
     // 3 — assess (chunked ≤8/turn; merged + gated in code). DEGRADED per the DISK truth (payload

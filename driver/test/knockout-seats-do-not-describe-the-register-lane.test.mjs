@@ -19,7 +19,8 @@
 // writes about scope — so a prompt that says the first thing must say the second.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { knockoutPrompt, knockoutInUseAsPrompt, KO_STAGES } from "../stages-knockout.mjs";
+import { knockoutGridSpec, KO_STAGES } from "../stages-knockout.mjs";
+import { buildGridProgramTask } from "../../providers/perplexity/src/core.js";
 import { RETIRED_POLICIES } from "../search-policy.mjs";   // — the retired rungs, derived not recited
 
 /** Says something about the seat not searching registers. */
@@ -40,11 +41,11 @@ const CARRIES_SILENCE = /SAY NOTHING ABOUT WHETHER THE REGISTER(?:S WERE SEARCHE
 /** Every knockout seat prompt this build can produce, keyed by the seat's name. */
 function seatPrompts() {
   const out = {};
-  out["knockout-sweep"] = knockoutPrompt(
-    { name: "HESPRA", classes: [9, 41] }, { productContext: "games" }, { jurisdictions: ["CH"] });
-  // the sweep's second question, whose answer lands in the same research file as the first's
-  out["knockout-sweep:in-use-as"] = knockoutInUseAsPrompt(
-    { name: "HESPRA", classes: [9, 41] }, { productContext: "games", inUseAs: "a character or a place in a game" }, { jurisdictions: ["CH"] });
+  // THE SWEEP'S TASK IS A SEARCH PROGRAM NOW, and the provider's model is the reader: it runs the cells
+  // and prints the ledger, with no prose. Kept in the set, so every arm below still reads what it is sent.
+  out["knockout-sweep"] = buildGridProgramTask(knockoutGridSpec(
+    { name: "HESPRA", spellings: ["HESPRA", "HESPRAH"] }, { places: ["web", "fandom.com"] },
+    { outputPath: "/tmp/studio/clearance-search/runs/hespra/research/hespra.md" }));
   // The four K members the seats read. Paths are strings because the builders join them.
   const K = {
     runDir: "/tmp/ko-run", plan: "/tmp/ko-run/plan.json",
@@ -72,7 +73,6 @@ test("the seat fixture builds real prompts — an empty set would pass every arm
   assert.ok(names.length >= 2, `only built ${names.length} seat prompt(s): ${names.join(", ")}. The `
     + "arms below assert over what this builds, so a fixture that stopped building is a silent pass.");
   assert.ok(names.includes("knockout-sweep"), "the sweep seat — the one #1511 is about — is not in the set");
-  assert.ok(names.includes("knockout-sweep:in-use-as"), "the sweep's second question is not in the set");
   for (const [name, text] of Object.entries(seats)) {
     assert.ok(!(text instanceof Error), `${name} could not be built by this fixture — ${text?.message}. `
       + "Its prompt is therefore unchecked by every arm below, which is the shape of gap #1511 is about.");
@@ -82,10 +82,13 @@ test("the seat fixture builds real prompts — an empty set would pass every arm
 
 test("a seat told to stay OFF the registers is also told not to describe them", () => {
   const seats = seatPrompts();
+  // THE SWEEP, WHERE THE REGISTER SENTENCE WAS WRITTEN, WRITES NO PROSE NOW. Its program prints one JSON
+  // object, the ledger, and that ledger is the payload the rating step reads, so the sentence has nowhere
+  // to be written. The scoping line left with the questions, and this arm holds the sweep to what closed
+  // it rather than going quiet: a sweep that may write prose again needs the pair below again.
+  assert.match(seats["knockout-sweep"], /EXACTLY one JSON object \(no prose, no markdown fences\)/,
+    "the sweep's program is no longer held to a JSON-only answer — the register sentence came from prose");
   const scoped = Object.entries(seats).filter(([, t]) => SCOPES_OFF_REGISTERS.test(t));
-  assert.ok(scoped.length >= 1,
-    "no seat prompt scopes itself off the registers any more — either the wording moved, in which case "
-    + "this arm is watching nothing, or the scoping is gone and the failure mode changed shape");
   for (const [name, text] of scoped) {
     assert.match(text, CARRIES_SILENCE,
       `${name} tells its seat not to search the registers and does not tell it to stay silent about `

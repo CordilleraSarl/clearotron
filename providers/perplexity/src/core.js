@@ -97,6 +97,7 @@ export function buildRequestBody({
   enableSandbox = false,
   responseSchema = null,
   schemaName = null,
+  reasoning = null,
 }) {
   const tools = [];
   if (enableSandbox) {
@@ -128,6 +129,12 @@ export function buildRequestBody({
 
   if (modelOverride) {
     body.model = modelOverride;
+  }
+
+  // The vendor's documented override: "Any field you pass alongside the preset overrides that default"
+  // (presets page, read 2026-09-25). Absent, the preset's own reasoning stands and the body is unchanged.
+  if (reasoning) {
+    body.reasoning = reasoning;
   }
 
   return body;
@@ -232,6 +239,17 @@ export function extractText(data) {
 // ({stdout, stderr, exit_code}). The LAST run whose stdout parses as JSON is the deliverable (the model
 // may legitimately run, fix, and re-run the program). The code is returned as an audit appendix — it is
 // the receipt of exactly what was executed.
+
+/**
+ * WHAT CAME BACK, AS THE VENDOR SENT IT. The formatters keep the answer and drop the rest: the searches the
+ * model ran and the pages it was handed (`search_results`), the pages it opened (`fetch_url_results`), and
+ * a search program's own output (`sandbox_results`). Without them a run cannot say whether a page was never
+ * retrieved or was retrieved and left out. The items are returned verbatim for the caller to keep in the run.
+ */
+export const RAW_RESULT_TYPES = Object.freeze(["search_results", "fetch_url_results", "sandbox_results"]);
+export function rawResultItems(data) {
+  return (Array.isArray(data?.output) ? data.output : []).filter((i) => RAW_RESULT_TYPES.includes(i?.type));
+}
 
 export function parseSandboxResults(data) {
   const runs = [];
@@ -366,6 +384,10 @@ export function validateGridSpec(spec) {
   if (!hasCells && !hasQueries && !noneNamed) throw new Error("grid spec dictates no work — terms[] and connotation.queries[] are both empty");
   if (!Array.isArray(spec.platforms) || spec.platforms.length === 0) throw new Error("grid spec.platforms[] missing or empty");
   if (typeof spec.output_path !== "string" || !spec.output_path) throw new Error("grid spec.output_path missing");
+  // OPTIONAL: how many results each cell asks for and keeps, dictated by the driver per search type.
+  // Absent ⇒ the numbers every grid ran on before (ask 10, keep 8).
+  if (spec.results_per_cell != null && !(Number.isInteger(spec.results_per_cell) && spec.results_per_cell >= 1 && spec.results_per_cell <= 50))
+    throw new Error("grid spec.results_per_cell must be an integer from 1 to 50");
   // OPTIONAL connotation/meaning sweep (back-compat: absent ⇒ marketplace-grid-only). The driver dictates
   // the meaning queries verbatim (the matter frame's meaning questions), the program runs them on the general web and
   // records them into extras.pr_risk — distinct from the term×platform marketplace cells.
@@ -424,6 +446,10 @@ export function connotationQueriesOf(spec) {
 export function buildGridProgramTask(spec) {
   validateGridSpec(spec);
   const { batch = 14 } = spec;
+  // How many results a cell asks for and keeps. A spec that names none runs on the numbers every grid ran
+  // on before it could: ask for 10, keep the first 8.
+  const ask = spec.results_per_cell ?? 10;
+  const keep = spec.results_per_cell ?? 8;
   // THE GRID ASKED: the spec's own term × platform product, or its blocks when the matter frame decided the
   // grid (see validateGridSpec). One product reads exactly as it always has.
   const pieces = (Array.isArray(spec.grids) ? spec.grids : [{ terms: spec.terms, platforms: spec.platforms }]).filter((g) => g.terms.length && g.platforms.length);
@@ -456,10 +482,10 @@ export function buildGridProgramTask(spec) {
       : hasCells ? `Search EXACTLY this term × platform grid — every (term × platform) cell runs once, no additions, no omissions, keys VERBATIM (${cellCount} cells total):` : "",
     ...pieces.flatMap((g) => [`TERMS (${g.terms.length}): ${JSON.stringify(g.terms)}`, `PLATFORMS (${g.platforms.length}): ${JSON.stringify(g.platforms)}`]),
     "Access the Perplexity results with EXACTLY this idiom — the result object supports ITERATION and ATTRIBUTE access ONLY (NO slicing, NO list(...), NO dict(...), NO indexing — iterating a single hit raises 'WebHit object is not iterable'):",
-    hasCells ? "    hits = pplx_sdk.search.web(term, limit=10, domains=[platform])   # for the \"web\" platform, OMIT the domains= argument entirely" : "",
+    hasCells ? `    hits = pplx_sdk.search.web(term, limit=${ask}, domains=[platform])   # for the \"web\" platform, OMIT the domains= argument entirely` : "",
     hasCells ? "    results = []" : "",
     hasCells ? "    for h in hits:" : "",
-    hasCells ? "        if len(results) >= 8: break" : "",
+    hasCells ? `        if len(results) >= ${keep}: break` : "",
     hasCells ? "        results.append({\"title\": h.title or \"\", \"url\": h.url or \"\"})" : "",
     hasCells ? "Per cell: status = \"hit\" if results else \"no_hit\". Wrap EACH cell in its own try/except; on an exception append the string \"<term> | <platform> | <repr(exception)>\" to gaps and CONTINUE — one failing cell must never abort the grid." : "",
     hasCells && terms.length > batch

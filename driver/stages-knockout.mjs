@@ -78,6 +78,10 @@ export function koPaths(runDir) {
     researchDir: join(runDir, "research"),
     research: (markKebab) => join(runDir, "research", `${markKebab}.md`),
     sweepLedger: driverDir(runDir, "knockout-sweep.jsonl"),
+    // What each web call returned, verbatim, one file per call: the pages a search reached, which the ledger
+    // above and the payload under research/ do not carry. A directory, because every `_driver/*.jsonl` is
+    // read as a stage log. The driver's own record of a call it made, so under `_driver/`.
+    webResults: (name) => driverDir(runDir, "web-results", `${name}.json`),
     // That SHAPE, APPLIED: the WORK MOVES OUT OF THE GUARDED TREE — the hook is never weakened.
     //
     // This chunk is a MODEL OUTPUT, and it sat under `_driver/` in flat contradiction of the rule stated
@@ -113,143 +117,42 @@ export function koPaths(runDir) {
 }
 
 
-// — the other half of part 2's ruling, which reached the ASSESS seat only (see the same
-// wording further down this file) and left the sweep seat with the same blindness and no prohibition.
-// Measured on R4 2026-08-21: that seat wrote "No USPTO, EUIPO, WIPO, Swiss, or other trademark-register
-// searches were performed, as instructed" into the delivered research file, on a run that took
-// THIRTEEN EUIPO register searches and reported their counts in the same delivery's email body.
+// ── THE WEB SEARCH IS A GRID, AND IT RETURNS RESULTS (owner's ruling, 2026-09-25) ────────────────────
 //
-// The seat was not lying and "as instructed" is a true description of the scope line above it — but
-// the line scopes THE SEAT's work, and the client has no way to read it that narrowly. Nobody who
-// cannot see the machinery describes it: the renderer owns that sentence and writes it from the
-// sidecars, including the coverage-shortfall disclosure. Hidden until now only because the register
-// provider is normally clarivate while this sentence names USPTO/WIPO/Swiss as its examples; running
-// EUIPO put the named office and the counted office side by side in one delivery. Both web questions
-// carry it, since both answers land in the same research file.
-const SAY_NOTHING_ABOUT_THE_REGISTERS = [
-  `- SAY NOTHING ABOUT WHETHER THE REGISTERS WERE SEARCHED, counted, overlaid or checked — not in a`,
-  `  finding, not in a gaps, scope or caveat note, not as an aside. The scope line above governs YOUR`,
-  `  work and is not a fact about the run: this run may well be searching registers on a lane you`,
-  `  cannot see, and the report states what it covered in code, from the run's own measurements.`,
-];
-
-// The substitutions both web questions share, each DICTATED from the frame's plan row or the job.
-function sweepTerms(markRow, jurisdictions) {
-  const name = String(markRow.name);
-  // Instructed territories are DICTATED from the job, never inferred by the frame — the same discipline
-  // every other substitution here follows. Absent ⇒ the global default, which is what a quick screen has
-  // always been; present ⇒ the screen is pointed, and the prompt says so in both places scope is stated
-  // (the scope block and the report format), because a model told "US only" in one line and asked for
-  // "jurisdiction" in another will happily hand back the world.
-  const jx = Array.isArray(jurisdictions) ? jurisdictions.map((s) => String(s).trim()).filter(Boolean) : [];
-  const scopeLine = jx.length ? `- ${jx.join(", ")} — named territories only` : `- Global — all jurisdictions`;
-  const multi = /\s/.test(name.trim());
-  const noSpaces = name.replace(/\s+/g, "");
-  const hyphenated = name.trim().replace(/\s+/g, "-");
-  const ctxNote = markRow.contextFraming ? ` — ${markRow.contextFraming}` : "";
-  const searchFor = [
-    `SEARCH FOR:`,
-    `1. "${name}" — exact phrase`,
-    multi ? `2. "${noSpaces}" — no spaces` : "",
-    multi ? `3. "${hyphenated}" — hyphenated` : "",
-  ];
-  return { name, jx, scopeLine, noSpaces, ctxNote, searchFor };
-}
-
-// ── The sweep prompt — the interactive skill's Perplexity template, VERBATIM (knockout-searches
-// SKILL.md :118-150), driver-templated: every substitution is DICTATED from the frame's plan row —
-// nothing inferred at run time, and the template carries no client identity/reference/contact
-// (the skill's HITL sanitization, now enforced by construction).
-export function knockoutPrompt(markRow, batch, { jurisdictions = null } = {}) {
-  const { name, jx, scopeLine, noSpaces, ctxNote, searchFor } = sweepTerms(markRow, jurisdictions);
-  const dotCom = `${noSpaces.toLowerCase().replace(/[^a-z0-9-]/g, "")}.com`;
-  return lines(
-    `Quick knockout trademark search for the proposed mark "${name}" in the context of ${batch.productContext}${ctxNote}.`,
-    ``,
-    ...searchFor,
-    ``,
-    `CLASSES/INDUSTRIES TO CONSIDER: ${markRow.classesPlain}`,
-    ``,
-    `WHAT I NEED TO KNOW:`,
-    `- Are there any MAJOR existing brands, products, companies, or well-known entities using this exact name or a very close variant?`,
-    `- Is this name a well-known TV show, movie, book, song, game, or cultural reference?`,
-    `- Are there any famous trademarks that are identical or nearly identical?`,
-    `- Is the term commonly used in commerce in the relevant industries listed above?`,
-    `- Are there any businesses using this name in the same or adjacent industries (especially ${batch.productContext})?`,
-    `- Are there any negative, controversial, or offensive associations?`,
-    `- Is there a dominant .com or commercial website at ${dotCom}?`,
-    ``,
-    `SEARCH SCOPE:`,
-    scopeLine,
-    `- All commercial contexts relevant to the classes above`,
-    `- General web, major e-commerce (Amazon), app stores, social media, domain registries`,
-    `- Industry-specific marketplaces relevant to the product context (e.g. for gaming: Steam, Epic, Google Play, App Store, Microsoft Store, itch.io; for physical goods: Amazon and the category's retail/marketplace sites)`,
-    `- Do NOT search trademark registers (USPTO, WIPO, etc.) — common-law / marketplace only`,
-    ``,
-    ...SAY_NOTHING_ABOUT_THE_REGISTERS,
-    ``,
-    `REPORT FORMAT:`,
-    jx.length
-      ? `- List any significant findings with: name, what it is, URL, jurisdiction, and why it matters — findings OUTSIDE ${jx.join(", ")} are out of scope for this screen and should be omitted`
-      : `- List any significant findings with: name, what it is, URL, jurisdiction, and why it matters`,
-    `- If NOTHING significant is found, explicitly state: "No major common law blockers identified for ${name}"`,
-    `- Be concise — this is a knockout search, not a deep dive`,
-    `- Focus on OBVIOUS conflicts: famous brands, identical names in same/adjacent industries, well-known cultural references, major commercial entities`,
-    `- Note the crowded field situation if relevant (e.g., "many MOTO-[x] publications exist")`,
-  );
-}
-
-// ── The second web question: the name already in use in the client's field (ruled 2026-09-25) ───────
+// The web half asked two summarising questions per mark, and each answer was the provider's own short
+// write-up of what it found. Measured in testing, 2026-09-25: a store listing that one plain query returns
+// reached the rating step in 9 of 11 runs, and a character's fan-wiki page in none, because the write-up
+// decided what the rating step ever saw. Judgment is the rating step's, so the search now returns results
+// and nothing else: every spelling the frame names for a mark, searched once on every place it names for
+// the batch, through the clearance grid's own program path, with every result kept.
 //
-// A lawyer reads each mark against the name already in use off the register, in the ways that matter in
-// the client's field, and the question above never asks it: it asks whether the name IS a well-known
-// work or brand, not whether something already USES it. Measured in testing, 2026-09-25: three entries a
-// lawyer named on one games reference — a television character, a place inside two games and an
-// achievement inside a game — were lost on both engines. So every mark in every knockout is asked this
-// one more question, for every client. It costs one more web search a mark, and no register question.
+// THE REGISTER RULE LEFT WITH THE QUESTIONS. The paragraph telling the web search to say nothing about the
+// registers was there because its answer landed in the research file as prose. A grid writes no prose, and
+// the rating step keeps its own rule, where the report is composed.
 //
-// WHICH KINDS OF USE is the frame's judgment, made per matter from the client's field and worded as
-// `batch.inUseAs` (a character, place, title or achievement for a games client; a cocktail, venue or
-// beverage line for a drinks client). The question carries those words and no list of its own, so a
-// client outside games is asked about its own field's uses, not a games list.
-//
-// Its frame is the question above, line for line, where a line applies: the mark, the spellings, the
-// scope and the silence about the registers. What it asks and how it answers are its own.
-export const IN_USE_AS = "in-use-as";
+// THE SETTINGS ARE PINNED HERE, never read from the environment: the preset the grid path runs on, its
+// reasoning raised from that preset's `minimal` through the vendor's documented override (measured
+// 2026-09-25: the response echoes it back beside the search program), and the results each cell asks for
+// and keeps.
+export const KNOCKOUT_WEB = Object.freeze({ preset: "pro-search", reasoning: Object.freeze({ effort: "low" }), resultsPerCell: 10 });
 
-/** Between the two answers in a mark's research file: a rule, and no words the seat would have to read. */
-export const SECOND_ANSWER_SEPARATOR = "\n\n---\n\n";
+/** The territories the request ordered, as the job carries them; empty for a worldwide screen. PURE. */
+export const orderedTerritories = (job) =>
+  (Array.isArray(job?.jurisdictions) ? job.jurisdictions.map((s) => String(s).trim()).filter(Boolean) : []);
 
-/** The frame's kinds of use for this matter, or null when the plan carries none. */
-export const inUseAsOf = (batch) => (typeof batch?.inUseAs === "string" && batch.inUseAs.trim() ? batch.inUseAs.trim() : null);
-
-export function knockoutInUseAsPrompt(markRow, batch, { jurisdictions = null } = {}) {
-  const { name, jx, scopeLine, ctxNote, searchFor } = sweepTerms(markRow, jurisdictions);
-  const uses = inUseAsOf(batch);
-  if (!uses) throw new Error("knockoutInUseAsPrompt: the plan's batch.inUseAs is empty — the frame names the kinds of use");
-  return lines(
-    `Quick knockout trademark search for the proposed mark "${name}" in the context of ${batch.productContext}${ctxNote}.`,
-    ``,
-    ...searchFor,
-    ``,
-    `WHAT I NEED TO KNOW:`,
-    `- Is this name already in use as ${uses}?`,
-    `- For each such use: where it appears, and who makes or owns it.`,
-    ``,
-    `SEARCH SCOPE:`,
-    scopeLine,
-    `- General web, including the sites that list such uses`,
-    `- Do NOT search trademark registers (USPTO, WIPO, etc.) — common-law / marketplace only`,
-    ``,
-    ...SAY_NOTHING_ABOUT_THE_REGISTERS,
-    ``,
-    `REPORT FORMAT:`,
-    jx.length
-      ? `- List each use with: name, what it is, where it appears, who makes or owns it, URL, jurisdiction, and why it matters — findings OUTSIDE ${jx.join(", ")} are out of scope for this screen and should be omitted`
-      : `- List each use with: name, what it is, where it appears, who makes or owns it, URL, jurisdiction, and why it matters`,
-    `- If NOTHING is found, explicitly state: "No use of ${name} as ${uses} identified"`,
-    `- Be concise — this is a knockout search, not a deep dive`,
-  );
+/**
+ * One mark's grid, dictated from the frozen plan: its spellings on the batch's places. PURE.
+ *
+ * The spellings and the places are the frame's own words, copied and never re-typed. The plan's validator
+ * has already refused a plan without them, so an empty list here is a plan frozen before they existed.
+ */
+export function knockoutGridSpec(markRow, batch, { outputPath }) {
+  return {
+    terms: [...(Array.isArray(markRow?.spellings) ? markRow.spellings : [])],
+    platforms: [...(Array.isArray(batch?.places) ? batch.places : [])],
+    output_path: outputPath,
+    results_per_cell: KNOCKOUT_WEB.resultsPerCell,
+  };
 }
 
 // ── Assess chunking: ≤8 marks per LLM turn; chunks merged in code (pipeline-knockout) ────────────────
@@ -310,7 +213,7 @@ export const KO_STAGES = {
       `You are framing a KNOCKOUT SEARCH batch — a triage pass. You frame, you do NOT search.`,
       `The instructed scope (AUTHORITATIVE — quote mark names verbatim from it): ${K.instructedScope}`,
       job.goods ? `Goods/services (verbatim): ${job.goods}` : "",
-      job.customer ? `Applicant (context only — never enters the sweep prompt): ${job.customer}` : "",
+      job.customer ? `Applicant (context only — never searched): ${job.customer}` : "",
       profile?.industry ? `Customer industry (context for marketplace selection): ${profile.industry}.` : "",
       // — "the request names none" reads the intake's classes-anywhere predicate, not a third copy
       // of it. This checked TOP-LEVEL classes only, and a knockout is a batch keyed on `job.marks`: a
@@ -335,8 +238,8 @@ export const KO_STAGES = {
       // second chance the Write tool used to give.
       `HAND THE FRAME BACK BY CALLING \`record_knockout_frame\`. THERE ARE NO FILES FOR YOU TO WRITE and this dispatch names none — the driver writes both the plan and the scope note from what you send, and nothing you write by hand is read.`,
       `Send \`scope_note\`: the 2–3 sentence scope note, FINISHED — what the batch is, which classes, anything flagged. It is written to knockout-frame.md exactly as you send it, with no heading added and nothing composed into it, so it must read as a complete document on arrival.`,
-      `Send \`marks\`: one row per instructed mark, names verbatim from the instructed scope, each with its classes, beltAndBraces, classesPlain, contextFraming and priority. Two names that differ only in spacing, punctuation or case are REFUSED — they would share one research payload, and one of them would then be rated on the other's evidence.`,
-      `Send \`batch\`: productContext, inUseAs (task 2c), and executionOrder as a permutation of your mark names.`,
+      `Send \`marks\`: one row per instructed mark, names verbatim from the instructed scope, each with its classes, beltAndBraces, classesPlain, contextFraming, spellings (task 2e) and priority. Two names that differ only in spacing, punctuation or case are REFUSED — they would share one research payload, and one of them would then be rated on the other's evidence.`,
+      `Send \`batch\`: productContext, inUseAs (task 2c), places (task 2d), and executionOrder as a permutation of your mark names.`,
       `IF YOU CALL AGAIN, SEND ONLY WHAT YOU ARE CORRECTING. The driver merges marks BY NAME onto what it already accepted, so a mark you omit keeps its row — but a mark you DO send replaces that row whole, so send a corrected mark complete rather than as a fragment.`,
     ),
   },
@@ -364,7 +267,7 @@ export const KO_STAGES = {
     // out/validate are per-CHUNK; the merged knockout-findings.json is validated separately in code.
     out: (K, chunkNo) => K.assessChunk(chunkNo),
     validate: koValidators.knockoutAssessChunk,
-    message: ({ K, chunkNo, chunkMarks, chunkTotal, framework, frameworkPath, probeNote, frameworkMethod }) => lines(
+    message: ({ K, job, chunkNo, chunkMarks, chunkTotal, framework, frameworkPath, probeNote, frameworkMethod }) => lines(
       // The deck path comes from ctx (attachKnockoutFramework resolves it once, on the fresh and the
       // resume path both) — never recomputed here, because "which deck" is one decision.
       reads(["skills/knockout-assess/SKILL.md", frameworkPath, "skills/clearance-search/firm-wide-reasoning.md"].filter(Boolean)),
@@ -387,8 +290,14 @@ export const KO_STAGES = {
       // reached the client as raw cards with no band. The URL rule stays and is scoped: a cited URL must
       // come from one of the two sources named here, which is the anti-confabulation rule it always was
       // and never a rule about which of the two.
-      `Each mark's RAW research payload (a cited URL must appear in the mark's own payload or in the register records below):`,
+      `Each mark's RAW research payload: the record of its web searches, every spelling on every place, with the listings each search returned and any search that could not run. It holds no summary and no judgment; the judgment is yours. A cited URL must appear in the mark's own payload or in the register records below:`,
       ...chunkMarks.map((m) => `- ${m.name}: ${K.research(kebab(m.name))}${m.degraded ? `   (DEGRADED: ${m.degraded} — apply the null-results doctrine, never inflate)` : ""}`),
+      // THE ORDERED TERRITORIES, where the request named some. The web questions used to carry them in
+      // their own scope lines and drop what fell outside; the grid returns results and judges nothing, so
+      // the territories reach the step that judges, which leaves such a use out and says it did.
+      orderedTerritories(job).length
+        ? `THE TERRITORIES THIS SCREEN WAS ORDERED FOR: ${orderedTerritories(job).join(", ")}. The web search was not limited to them. A use found only outside them is out of scope for this screen: leave it out of the findings, and say in that mark's assessment that you left it out.`
+        : "",
       // NAMED ONLY WHEN IT IS ON DISK. The records land at step 2 of 5 and this stage is step 3 or 4, so
       // the file exists by now on a run that fetched them — and on a run that did not, a dispatch naming
       // a path that is not there teaches the seat that a missing file is normal.

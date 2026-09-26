@@ -183,9 +183,9 @@ export const E3_BACKLOG = [
     // CONSOLIDATED 2026-08-16 from THREE rows (common-law stages.mjs:1031, common-law-half :1112 and
     // :1146). Those three existed because the dictation was AUTHORED at three sites in stages.mjs. M1 made
     // it one: authored once in renderConnotationObligations, and reaching the seat through the perplexity
-    // MCP server (driver/engine/mcp/perplexity-server.mjs:111) rather than a stage message. Three rows
+    // MCP server (`tellObligations` in driver/engine/mcp/perplexity-server.mjs) rather than a stage message. Three rows
     // pointing at one block would fabricate two authored sites the surface does not have.
-    where: "driver/connotation-search.mjs:1403-1416, renderConnotationObligations() in connotation-search.mjs (delivered to the seat via driver/engine/mcp/perplexity-server.mjs:111 — a TOOL RESPONSE, no longer a stage message)",
+    where: "driver/connotation-search.mjs:1403-1416, renderConnotationObligations() in connotation-search.mjs (delivered to the seat via `tellObligations` in driver/engine/mcp/perplexity-server.mjs — a TOOL RESPONSE, no longer a stage message)",
     surface: "tool-response",
     // ── (a) THE ORIGINAL SUBJECT WAS DELETED BY DESIGN — DISCHARGED, NOT FAILED ────────────────────
     // The old rows dictated `receipt_id` (an 8-char token the seat copied) and `quote`. Both are gone:
@@ -878,7 +878,7 @@ export const E3_EVIDENCE_UNRESOLVED = [
  * Seeded 2026-08-18: 46 of the 51 rows had exactly one witnessed surface and were derived. Three
  * multi-witness rows were settled by the site their anchor resolves at (narrative-refutation to its
  * SKILL.md, two synthesis rows to stages.mjs). Two were decided by reading the delivering call site:
- * common-law-half is `tool-response` (perplexity-server.mjs:111), register-digest is `stage-message`
+ * common-law-half is `tool-response` (`tellObligations` in perplexity-server.mjs), register-digest is `stage-message`
  * (pipeline.mjs, where coverageFormBrief is appended to the dispatch).
  */
 // 35 -> 32 stage-message. The three rows that left were the send stages' dictated line shapes
