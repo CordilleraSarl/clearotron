@@ -82,6 +82,15 @@ export const plainDeferralReason = (r) => {
   return "it could not be completed this run, so it is left open here rather than reported as clean";
 };
 
+/**
+ * A RAW CAUSE, IN THE READER'S WORDS. A lookup or a listing that failed carries the provider's own text —
+ * an exception's message, a status line — and that text belongs to the run's record, never to a client's
+ * cell. A timeout reads as the timeout line and anything else as the line for a search left open; the
+ * cause itself stays where it was written.
+ */
+export const plainCause = (cause) =>
+  plainDeferralReason(/timeout|timed out/i.test(String(cause ?? "")) ? "mechanical-fail:timeout" : "unfinished");
+
 // ── — A HEADING IS NOT THE PLACE FOR A DIRECTIVE ───────────────────────────────────────────────
 //
 // What shipped: `Follow-up / ${plainDirective(directive).slice(0, 60)}` — a hard character cut with no
