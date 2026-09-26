@@ -463,6 +463,12 @@ serve({
             properties: {
               value: { type: "string" },
               kind: { type: "string", enum: ["distinctive", "common", "saturated-common"] },
+              // The famous-mark check's hand-off (variant-manifest-model.mjs): the web grid searches a
+              // flagged element on the general web.
+              famous_mark_flag: { type: "boolean",
+                description: "Set true when this element is also a well-known brand, band, celebrity, sports team, entertainment "
+                  + "property or cultural icon: Step 2's famous-mark check. The element is then searched on the general web, "
+                  + "and the web step judges the results. Omit it on every other element." },
             },
           },
         },

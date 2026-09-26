@@ -66,18 +66,20 @@ export function frameAskedForWebGrid(runDir) {
  * The grid: its terms, the platforms it runs, and its blocks. PURE.
  *
  * `decided` false (a frame never asked for the fields): every spelling on every channel and the general web,
- * one product with no blocks, the grid as it always was.
+ * one product with no blocks, the grid as it always was, famous-mark elements included only as spellings.
  *
  * Otherwise the stores are the channels less those the frame set aside with a reason. The mark itself and
- * the frame's forms run on them, and every spelling, those forms included, runs on the general web. `menu`
+ * the frame's forms run on them, and every spelling, those forms included, runs on the general web, with
+ * every element flagged for the famous-mark check (`famous`, as the grid spells it on return). `menu`
  * is every channel the frame chose from. `setAside` is what the frame set aside that the grid honoured: its
  * stores, and its forms that the stores do not search. `unmatched` is every decision that changed nothing,
  * kept for the run log.
  *
  * @returns {{terms:string[], platforms:string[], grids?:Array<{terms:string[], platforms:string[]}>,
- *   menu?:string[], setAside:Array<{store?:string, form?:string, reason:string}>, unmatched:Array<object>}}
+ *   menu?:string[], setAside:Array<{store?:string, form?:string, reason:string}>, unmatched:Array<object>,
+ *   famous?:string[]}}
  */
-export function webGridOf({ variants = [], channels = [], marks = [], forms = null, setAside = [], decided = forms !== null } = {}) {
+export function webGridOf({ variants = [], channels = [], marks = [], forms = null, setAside = [], decided = forms !== null, famous = [] } = {}) {
   const menu = dedupe(channels).filter((c) => key(c) !== "web");
   if (!decided) return { terms: [...variants], platforms: [...menu, "web"], setAside: [], unmatched: [] };
   // THE MARK ITSELF IS THE MANIFEST'S, never the request's raw name: the manifest is what a run searches,
@@ -98,12 +100,16 @@ export function webGridOf({ variants = [], channels = [], marks = [], forms = nu
     } else unmatched.push(x);
   }
   const stores = menu.filter((c) => !asideStore.has(key(c)));
-  const onWeb = dedupe([...variants, ...onStores]);
+  // THE FAMOUS-MARK CHECK runs on the general web beside the spellings: each element the variants step
+  // flagged is searched there, and the web step judges what comes back. One already searched as a
+  // spelling keeps that cell and is not asked twice.
+  const onWeb = dedupe([...variants, ...onStores, ...famous]);
   const grids = [
     ...(onStores.length && stores.length ? [{ terms: onStores, platforms: stores }] : []),
     { terms: onWeb, platforms: ["web"] },
   ];
-  return { terms: dedupe([...onStores, ...onWeb]), platforms: [...stores, "web"], grids, menu: [...menu, "web"], setAside: keptAside, unmatched };
+  return { terms: dedupe([...onStores, ...onWeb]), platforms: [...stores, "web"], grids, menu: [...menu, "web"], setAside: keptAside, unmatched,
+    famous: dedupe(famous).map((f) => onWeb.find((t) => key(t) === key(f))) };
 }
 
 /**

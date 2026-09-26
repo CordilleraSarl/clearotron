@@ -60,7 +60,7 @@ import { shortEntryBody, groupEntries, buildGradedEntriesSection } from "./write
 import { compileRegisterPlan, parseRegisterPlan, resolvePlanAgainstStore, joinPlanToBands, deriveCoverageSkeleton, validatePlanFeasibility, feasibilityMessages, foldSupplementalEntries, partitionFoldDirectives, screenThenCap, fullyDeferredAxes, variantTermIssue, searchedJurisdictionsFromPlan, PLAN_AUDIT_HEAD, PLAN_AUDIT_CLASSES, deferExhaustedProviderErrors, ladderExhaustedQids, isProviderHardErrorReason } from "./register-plan.mjs";
 // — ONE binding of the office split to this box's env, shared with Depth 2's two lanes.
 import { registerCapabilities, registerUnavailableOffices } from "./register-unreachable.mjs";
-import { parseVariantManifestModel } from "./variant-manifest-model.mjs";
+import { parseVariantManifestModel, famousMarkElements } from "./variant-manifest-model.mjs";
 import { meaningAnglesFromMatterContext, meaningAnglesAssertedNone, findConnotationViolations, parsePrRiskResults, connotationReasonKey, parseDispositionForm, renderDispositionTable, connotationObligations, CONNOTATION_FORM_TOKEN_SRC, CONNOTATION_UNRULED_REASONS, connotationAuditCounts, DECLINED_RULING } from "./connotation-search.mjs";
 // — the merge unions the halves' forms into the canonical one, with the same code the gateway unions
 // an attempt with. PURE and acyclic.
@@ -1062,14 +1062,19 @@ function deriveGridSpec(ctx) {
     const markNames = Array.isArray(ctx.job?.marks)
       ? ctx.job.marks.map((m) => (typeof m === "string" ? m : m?.name)).filter(Boolean)
       : [ctx.job?.markName ?? ctx.job?.name].filter(Boolean);
+    // THE FAMOUS-MARK CHECK: the elements the variants step flagged, each searched on the general web. A
+    // manifest that cannot be read here flags none, which is the grid as it was before the flag.
+    let famous = [];
+    try { famous = famousMarkElements(parseVariantManifestModel(readFileSync(P.variantManifestModel, "utf8"))); } catch { /* none */ }
     const web = webGridOf({ variants: ctx.gridVariants, channels, marks: markNames,
-      forms: choice.forms, setAside: choice.setAside, decided: choice.forms !== null || asked });
+      forms: choice.forms, setAside: choice.setAside, decided: choice.forms !== null || asked, famous });
     const webCells = web.grids ? web.grids.reduce((n, g) => n + g.terms.length * g.platforms.length, 0) : web.terms.length * web.platforms.length;
     runLog(P.runDir, { event: "frame-web-grid", reading: web.grids ? (choice.forms !== null ? "frame-forms" : "mark-only") : "every-channel",
       forms: choice.forms?.length ?? null, stores: web.platforms.length - 1, stores_set_aside: web.setAside.filter((x) => x.store).length,
-      forms_set_aside: web.setAside.filter((x) => x.form).length, unmatched: web.unmatched.length, cells: webCells });
+      forms_set_aside: web.setAside.filter((x) => x.form).length, unmatched: web.unmatched.length, cells: webCells,
+      famous: web.famous?.length ?? 0 });
     if (!web.grids) note(`common-law grid: the matter frame was not asked for its stores and forms, so every spelling runs on every channel (${webCells} cells)`);
-    else note(`common-law grid: ${web.platforms.length - 1} store(s) for ${web.grids.length > 1 ? web.grids[0].terms.length : 0} form(s), and ${web.terms.length} spelling(s) on the general web — ${webCells} cells${choice.forms === null ? "; the frame sent no forms, so the mark itself stands in for them" : ""}${web.setAside.length ? `; ${web.setAside.length} set aside by the frame with its reason` : ""}`);
+    else note(`common-law grid: ${web.platforms.length - 1} store(s) for ${web.grids.length > 1 ? web.grids[0].terms.length : 0} form(s), and ${web.terms.length} spelling(s) on the general web — ${webCells} cells${choice.forms === null ? "; the frame sent no forms, so the mark itself stands in for them" : ""}${web.setAside.length ? `; ${web.setAside.length} set aside by the frame with its reason` : ""}${web.famous?.length ? `; ${web.famous.length} element(s) flagged for the famous-mark check among the general-web searches` : ""}`);
     const gridSpec = {
       terms: web.terms,
       platforms: web.platforms, // the dictated stores + the general-web cell
@@ -1077,6 +1082,8 @@ function deriveGridSpec(ctx) {
       // channel the frame chose from, and `set_aside` what it left out with its reason, for the record and
       // the audit workbook; neither dictates a cell.
       ...(web.grids ? { grids: web.grids, menu: web.menu, set_aside: web.setAside } : {}),
+      // The famous-mark check's cells, for the record: each is a general-web cell the grid above carries.
+      ...(web.famous?.length ? { famous: web.famous } : {}),
       output_path: P.commonLawGrid,
       // SIZED BY THE CELLS THIS GRID RUNS, never larger than the profile's own figure (gridBatchFor).
       batch: gridBatchFor(ctx.profile, web.platforms.length),

@@ -1502,9 +1502,9 @@ export const STAGES = {
         class: "judgment", tokens: [],
         why: "an advisory legal read that reaches the client-facing report; prose-only, no structured slot, no token",
       },
-      "Famous-mark flags per element + famous_mark_calls_needed[]": {
+      "elements[].famous_mark_flag — the elements Step 2's famous-mark check flags": {
         class: "judgment", tokens: [],
-        why: "recognising that an element is also a band, a celebrity or a famous brand is the judgment; but the HAND-OFF is prose that makes clearance-common-law fire a dedicated Perplexity call, with no structured slot and no token — the same shape as the CROSS-CHECK line #850 classed M for its line shape",
+        why: "recognising that an element is also a band, a celebrity or a famous brand is the judgment. The hand-off is the typed flag, which the driver turns into general-web grid cells (web-grid.mjs); nothing re-parses it, so no token speaks about it",
       },
       "Scope statement — 2-4 sentences opening the deliverable narrative, with the class scope reasoned and advisory additions marked": {
         class: "judgment", tokens: [],
@@ -1608,6 +1608,8 @@ export const STAGES = {
       //
       // EACH FIELD CARRIES ITS OWN IMPERATIVE IN ITS OWN SENTENCE.
       `Hand the manifest back by calling the \`record_clearance_variants\` tool. Send \`mark\` verbatim, \`dominant_element\`, and \`elements\` — one \`{value, kind}\` per token, kind from the closed set distinctive | common | saturated-common.`,
+      // The famous-mark check's hand-off, in its own sentence for the same reason as the fields below.
+      `Set \`famous_mark_flag: true\` on each element that is also a well-known brand, band, celebrity, sports team, entertainment property or cultural icon (Step 2's famous-mark check), and leave it off every other element: the web search searches each flagged element on the general web, and the web step judges the results.`,
       `Send \`variants\` — one \`{value, category, rationale, romanization}\` per search term, category from the closed set the skill names, and \`romanization\` on every non-Latin value and only on those.`,
       `Send \`incumbent_classes\` and \`watchlist_owners\` where Step 5 names them, as arrays; omit or send empty where it does not.`,
       // ITS OWN SENTENCE, BECAUSE A FIELD WITH NO IMPERATIVE IS A FIELD NOBODY FILLS. A production run

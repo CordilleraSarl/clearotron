@@ -37,7 +37,7 @@ Always Opus. Variant generation is the highest-value AI step in the pipeline —
 
 Zero `perplexity_research`, zero plugin calls. Pure thinking. Output is the variant manifest only.
 
-If an element triggers Step 2's famous-mark check, the manifest TAGS it for a famous-mark Perplexity call — the call itself happens in `clearance-common-law`.
+If an element triggers Step 2's famous-mark check, you flag it and the web search runs it on the general web — the judgment of what comes back happens in `clearance-common-law`.
 
 ## Core thesis — archetype-driven analysis
 
@@ -259,7 +259,7 @@ For EACH element:
 If ANY element triggers questions 2–4:
 
 - Set `famous_mark_flag: true` on that element
-- Add an entry to `famous_mark_calls_needed[]` so `clearance-common-law` fires a dedicated Perplexity query
+- The web search then searches that element on the general web, and `clearance-common-law` judges the results
 - Set the **famous-element-masked modifier** on the mark's archetype
 
 **Dual-meaning rule:** when a term is BOTH descriptive AND a famous mark, treat it as the famous mark for risk purposes. Worked example: "Bloodguard Sabatons" → Sabatons is real armor terminology AND a Swedish metal band with gaming collaborations. Famous-mark search required.

@@ -701,6 +701,8 @@ export function splitGridSpec(spec, { outputPaths = {}, dispositionsPaths = {} }
       terms: isMeaning ? [] : terms[h],
       // A grid in blocks keeps its blocks, each cut to this half's terms (a term owns all its cells in one half).
       ...(Array.isArray(spec.grids) ? { grids: spec.grids.map((g) => ({ terms: g.terms.filter((t) => !isMeaning && terms[h].includes(t)), platforms: g.platforms })).filter((g) => g.terms.length) } : {}),
+      // The famous-mark record names only the cells this seat runs.
+      ...(Array.isArray(spec.famous) ? { famous: spec.famous.filter((t) => !isMeaning && terms[h].includes(t)) } : {}),
       output_path: outputPaths[h] ?? spec.output_path,
       // The disposition_required stamp still rides BOTH halves: it is the receipt-presence arm, and a
       // stray pr_risk block in the non-owning half must still be judged rather than waved through.
