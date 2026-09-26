@@ -376,8 +376,18 @@ function makeRun({ withDriver = true } = {}) {
   return dir;
 }
 
+// `--names` UNLESS THE CALLER ASKS OTHERWISE, and the reason is what each test below is for: these
+// assert what the RENDERER puts on a row — an owner that is not `[object Object]`, a mark that lands in
+// the right bucket, a rating word that survives an archived shape. The scorer now withholds those words
+// by default so that scoring a real scenario does not print a real matter into a session log, and the
+// probe names in this file are invented ones that no such rule needs to protect. Asking for the names
+// keeps every assertion here reading the thing it was written to read.
+//
+// The DEFAULT path has its own file — the-scorer-withholds-names-unless-asked.test.mjs — because a
+// redaction proved only by the tests that opt out of it is not proved at all.
 const cli = (args, env = {}) => {
-  const r = spawnSync("node", [SCORE, ...args], { encoding: "utf8", env: { ...process.env, CLEAROTRON_E2E_DIR: "", ...env } });
+  const r = spawnSync("node", [SCORE, ...args, ...(args.includes("--names") ? [] : ["--names"])],
+    { encoding: "utf8", env: { ...process.env, CLEAROTRON_E2E_DIR: "", ...env } });
   return { code: r.status, out: `${r.stdout ?? ""}${r.stderr ?? ""}` };
 };
 

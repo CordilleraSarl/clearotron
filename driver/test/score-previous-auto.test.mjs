@@ -60,8 +60,11 @@ function putRun(box, name, { ref, startedAt, marks = [] }) {
   return dir;
 }
 
+// `--names`, because these assert on the DELTA and the rows it moves, which are read by mark. The
+// scorer withholds names by default so scoring a real scenario does not print a real matter into a
+// session log; every mark in this file is invented for it.
 function score(box, args) {
-  const r = spawnSync("node", [SCORE, ...args], { encoding: "utf8",
+  const r = spawnSync("node", [SCORE, ...args, "--names"], { encoding: "utf8",
     env: pinEnvAll({ ...process.env }, { CLEAROTRON_E2E_DIR: box.store, CLEAROTRON_WORK_DIR: box.ws }) });
   return { code: r.status, out: `${r.stdout ?? ""}${r.stderr ?? ""}` };
 }

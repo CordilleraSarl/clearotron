@@ -3,7 +3,13 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // score.mjs — score a completed run against the lawyer's reference answer for its scenario.
 //
-//   node scripts/score.mjs <ID> --run <runDir> [--previous <runDir>|auto] [--json]
+//   node scripts/score.mjs <ID> --run <runDir> [--previous <runDir>|auto] [--json] [--names]
+//
+// `--names` prints the reference's marks, proprietors and sentences. WITHOUT it they are withheld and
+// each is shown as a stable `«name N»` token, because scoring a run is routine work done in sessions
+// that record everything they print, and a reference answer is a real lawyer's answer to a real matter.
+// Every number, axis and bucket is unaffected: an entry's index answers every question this tool asks.
+// The flag is for the one job that needs the words, reading a surprising result against the finding text.
 //
 // `--previous auto` resolves the OTHER HALF OF A PAIR: the run of the round immediately before
 // this one, same scenario, same door. It reads the scenario's declared refs from the config store and
@@ -56,6 +62,9 @@ import { recordQids } from "../driver/named-band.mjs";
 // reason it is not in scripts/e2e.mjs: this scorer is deliberately offline, and importing the harness
 // would drag portal-mcp-client, enqueue-schema and door-gates in behind it.
 import { previousRunDir, scenarioRefs } from "../driver/e2e-rounds.mjs";
+// The names rule, kept out of this file so it is testable without a run directory — the same reason
+// reference-score.mjs holds the scoring rules rather than this script.
+import { protectedStrings, redactor, installRedaction, unclassifiedNotice, REDACTION_NOTICE } from "../driver/score-redaction.mjs";
 import { readSettleStamp } from "../driver/settle-stamp.mjs";   
 import { envFrom } from "../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
 
@@ -903,7 +912,7 @@ function print(id, ref, run, s, delta, refPath) {
 
 // ── main ─────────────────────────────────────────────────────────────────────────────────────────────
 
-const USAGE = `usage: score.mjs <ID> --run <runDir> [--previous <runDir>|auto] [--json]`;
+const USAGE = `usage: score.mjs <ID> --run <runDir> [--previous <runDir>|auto] [--json] [--names]`;
 
 /**
  * `--previous auto` — the other half of the pair, resolved rather than typed.
@@ -933,9 +942,10 @@ function resolvePreviousAuto(id, runDir) {
 }
 
 // One pass, so a directory named like a flag's value can never be mistaken for the scenario id.
-const opts = { json: false, run: null, previous: null, id: null };
+const opts = { json: false, run: null, previous: null, id: null, names: false };
 for (let i = 0, a = process.argv.slice(2); i < a.length; i++) {
   if (a[i] === "--json") opts.json = true;
+  else if (a[i] === "--names") opts.names = true;
   else if (a[i] === "--run") opts.run = a[++i];
   else if (a[i] === "--previous") opts.previous = a[++i];
   else if (a[i].startsWith("--")) die(`unknown flag ${a[i]}\n${USAGE}`);
@@ -955,11 +965,40 @@ const previousDir = opts.previous === "auto" ? resolvePreviousAuto(id, runDir) :
 const prev = previousDir ? scoreOne(readRun(previousDir, ref), ref) : null;
 const delta = prev ? bucketDelta(scored.buckets, prev.buckets) : null;
 
+// ── NAMES ARE WITHHELD UNLESS SOMEBODY ASKS FOR THEM ─────────────────────────────────────────────────
+//
+// A reference answer is a real lawyer's answer to a real matter, and scoring a run is routine work done
+// inside sessions that record everything they print. So the default output carries the axes, the buckets
+// and which entry fell in which, with every mark, proprietor and reference sentence swapped for a stable
+// token; `--names` prints them as before.
+//
+// INSTALLED OVER THE STREAM, not at each of the twenty-odd sites that interpolate a name. Redacting
+// per-site is the shape that leaves one site out, and it would have to be revisited by every later edit
+// that adds a print. Here `renderCarryThrough`'s lines and anything added after this was written are
+// covered without anyone remembering to.
+//
+// The two inputs are the reference AND the scored buckets: a proprietor this run surfaced that the
+// lawyer never named is still somebody's name, and it reaches the page through `noise`.
+let unclassifiedKeys = [];
+if (!opts.names) {
+  const { names, prose, unclassified } = protectedStrings({ reference: ref, scored });
+  unclassifiedKeys = unclassified;
+  installRedaction(redactor({ names, prose }));
+}
+
 if (opts.json) {
   console.log(JSON.stringify({
     // — the instrument that produced these numbers, so a reader comparing two archived scores can
     // tell whether the comparison is valid. A score with no `scorer_version` predates this stamp.
     scorer_version: SCORER_VERSION,
+    // — WHETHER THE NAMES IN THIS PAYLOAD ARE THE REAL ONES. `--json` goes to the same terminal the
+    // human path does, so it is redacted on the same rule; stamped rather than left to be inferred,
+    // because a consumer that cannot tell a redacted score from a named one will compare the two.
+    names: opts.names ? "printed" : "redacted",
+    // THE SAME WARNING THE HUMAN PATH PRINTS, AS A FIELD RATHER THAN A LINE. It cannot be printed here:
+    // this payload is parsed, and a sentence above it makes the whole document unreadable — which is how
+    // it first went wrong. Keys only, never their values.
+    names_unclassified: unclassifiedKeys,
     // — the OTHER half of the same question. A consumer comparing two archived scores needs
     // both instruments: which scorer read the run, and which engine produced it.
     engine_commit: run.engineCommit,
@@ -975,6 +1014,12 @@ if (opts.json) {
     carry_through: (() => { const ct = carryThrough(run.dir); return { ...ct, coverage: coverageConflicts(run.dir, ct.lost) }; })(),
   }, null, 2));
 } else {
+  // Said before the first number, not after the last: a reader who stops at the top screen must know
+  // which of the two readings they are holding.
+  if (!opts.names) console.log(`\n  ${REDACTION_NOTICE}`);
+  // A reference that has grown a field this module does not classify is unprotected in exactly that
+  // field, so the reader learns it before anything below, not after.
+  if (unclassifiedKeys.length) console.log(`  ${unclassifiedNotice(unclassifiedKeys)}`);
   print(String(id).toUpperCase(), ref, run, scored, delta, refPath);
   // — THE LAWYER'S OWN STATEMENTS OF WHAT THE RUN MUST DEMONSTRATE. The buckets cannot carry
   // these: an assertion says WHY a mark matters, and that reasoning is what tells a reader which lane to

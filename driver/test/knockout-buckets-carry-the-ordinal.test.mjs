@@ -65,7 +65,10 @@ function scoreKnockout() {
     mkdirSync(join(store, "baselines"));
     writeFileSync(join(store, "baselines", "BF9.gold.json"), JSON.stringify(GOLD, null, 2));
     writeFileSync(join(run, "knockout-findings.json"), JSON.stringify(KNOCKOUT, null, 2));
-    const r = spawnSync("node", [SCORE, "BF9", "--run", run, "--json"], {
+    // `--names`: this reads which FINDING a bucket row points back to, by name. The scorer withholds
+    // names by default so scoring a real scenario does not print a real matter into a session log; the
+    // findings here are invented for this fixture.
+    const r = spawnSync("node", [SCORE, "BF9", "--run", run, "--json", "--names"], {
       encoding: "utf8",
       // BOTH scrubbed before ours is set — an inherited CLEAROTRON_E2E_DIR would point this at the config
       // store's real gold sets, which are live client matter, and the run would read as clean.

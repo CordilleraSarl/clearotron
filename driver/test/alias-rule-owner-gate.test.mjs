@@ -59,7 +59,10 @@ function score(findings) {
     mkdirSync(join(store, "baselines"));
     writeFileSync(join(store, "baselines", "BF2.gold.json"), JSON.stringify(GOLD, null, 2));
     writeFileSync(join(run, "findings.json"), JSON.stringify({ findings }, null, 2));
-    const r = spawnSync("node", [SCORE, "BF2", "--run", run, "--json"], {
+    // `--names`: this reads which MARK landed in `found` and under which rule, so it needs the marks.
+    // The scorer withholds them by default so scoring a real scenario does not print a real matter into
+    // a session log; every mark in this fixture is invented for it.
+    const r = spawnSync("node", [SCORE, "BF2", "--run", run, "--json", "--names"], {
       encoding: "utf8",
       env: pinEnvAll({ ...process.env }, { CLEAROTRON_E2E_DIR: store, CLEAROTRON_WORK_DIR: "" }),
     });
