@@ -8,7 +8,7 @@
 // palette (TONE_TIER, resolved against the run's FROZEN framework) so driver and interactive output
 // can never drift and a knockout never reads the clearance composer's module state.
 import { readFileSync, writeFileSync, copyFileSync, mkdirSync, chmodSync, existsSync } from 'node:fs';
-import { plainDeferralReason, plainCause } from '../deferral-row.mjs'; import { knockoutStepFailures, PART_NAMES, RULED_WORDS, NOT_COMPLETED, linkNotOnRegisterSite } from '../degraded-parts.mjs'; import { ownersOwedACheck, composeOwnerQuery } from '../owner-use-check.mjs';   // — the reader's words for a search left open; and the parts that failed as a whole
+import { plainDeferralReason, plainCause } from '../deferral-row.mjs'; import { knockoutStepFailures, PART_NAMES, RULED_WORDS, NOT_COMPLETED, linkNotOnRegisterSite } from '../degraded-parts.mjs'; import { ownersOwedACheck, composeOwnerQuery } from '../owner-use-check.mjs'; import { KNOCKOUT_WEB } from '../stages-knockout.mjs';   // — the reader's words for a search left open; and the parts that failed as a whole
 import { join } from 'node:path';
 import { driverDir, ensureDriverDir, RUN_DIR_MODE } from '../../shared/driver-dir.mjs';   //
 import { riskTier, TONE_TIER, regenIndex, regenSurfaces, auditRouteFor, markReportRouteFor, reportRouteFor } from './index.mjs';
@@ -535,7 +535,7 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   // The owner lookups, when their step failed before any was recorded, become one failed lookup per owner
   // the listing owed a check, so the trail's owner-lookup row prints each; the cards never see them.
   const steps = knockoutStepFailures(runDir);
-  const koPreset = sweepReceipts.find((r) => r?.preset)?.preset ?? (process.env.CLEAROTRON_KNOCKOUT_PRESET || 'pro-search');
+  const koPreset = sweepReceipts.find((r) => r?.preset)?.preset ?? KNOCKOUT_WEB.preset;
   let lookupsNotRun = [];
   if (steps.ownerChecks && !ownerChecks.length) {
     try { lookupsNotRun = ownersOwedACheck(registerRecords).map((o) => ({ ok: false, mark: o.mark, query: composeOwnerQuery(o), preset: koPreset, cause: steps.ownerChecks.cause })); }
