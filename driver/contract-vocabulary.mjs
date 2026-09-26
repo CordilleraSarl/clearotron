@@ -22,7 +22,7 @@
 //   D5 verify.mjs:1504  fail(`${unaccounted[0].token}:…`)    — token minted in a DATA ROW
 //   D6 verify.mjs:1567  fail(`${violations[0].token}…`)      — validatePlanFeasibility in register-plan.mjs
 //   D7 verify.mjs:1558  fail(`${v2[0].token}${detail}…`)     — register-plan.mjs disclosureTextByAxis
-//   D8 verify.mjs:2470 caseLawLedgerFail  fail(caseLawLedgerFail(…))  — token built in case-law-ledger.mjs:195 caseLawLedgerFail
+//   D8 verify.mjs:2470 caseLawLedgerFail  fail(caseLawLedgerFail(…))  — token built in case-law-ledger.mjs:211 caseLawLedgerFail
 //
 // A partition built on the 60 tokens a regex CAN see would run green while blind to the rest, which is
 // worse than having no E2 at all: it certifies a partition it never checked. So the census is authored
@@ -396,7 +396,7 @@ export const TRIPWIRE_OUT_OF_SCOPE = [
   {
     token: "no_citations",
     symbol: { file: "driver/case-law-ledger.mjs", names: ["findCaseLawLedgerViolations", "CASE_LAW_ADVISORY_REASONS", "isCaseLawBlocking"] },
-    site: "driver/case-law-ledger.mjs:179 (minted), :65 CASE_LAW_ADVISORY_REASONS, :67 isCaseLawBlocking",
+    site: "driver/case-law-ledger.mjs:195 (minted), :65 CASE_LAW_ADVISORY_REASONS, :67 isCaseLawBlocking",
     reason: "ADVISORY, and filtered before the token is built. caseLawLedgerFail() in case-law-ledger.mjs keeps only blocking violations (:196), and `no_citations` is the one member of CASE_LAW_ADVISORY_REASONS — so it cannot appear even in the `caselaw_ledger` census payload, let alone as a token head. It is the honest no-on-point-precedent result the report is allowed to state; failing a run for it would manufacture citations.",
   },
   {
@@ -490,25 +490,25 @@ export const INNER_CODES = Object.freeze([
   // caseLawLedgerFail() in case-law-ledger.mjs (:195) returns `caselaw_ledger:<census>;<detail>`, and
   // `normalizeFailToken` cuts at the first colon — so the token is `caselaw_ledger` and every code below
   // lives in the payload. The `caselaw_ledger` row already carries `family:
-  // "driver/case-law-ledger.mjs:204 (census reasons)"`, which is this ruling written down before the
+  // "driver/case-law-ledger.mjs:220 (census reasons)"`, which is this ruling written down before the
   // census could read the shape it is written in.
   //
   // SUPPOSED `caselaw_no_queries` MIGHT BE A REAL HOLE. It is not a hole and it is not a token:
   // nothing in the tree mints that name. The guess came from reading this module by analogy with
   // connotation-search.mjs, which namespaces per code. This one does not.
-  { code: "no_queries", mints: ["driver/case-law-ledger.mjs:166"], rollsUpTo: ["caselaw_ledger"],
+  { code: "no_queries", mints: ["driver/case-law-ledger.mjs:182"], rollsUpTo: ["caselaw_ledger"],
     why: "Census payload of caselaw_ledger. The sweep cannot be shown to have run." },
-  { code: "query_no_text", mints: ["driver/case-law-ledger.mjs:168"], rollsUpTo: ["caselaw_ledger"],
+  { code: "query_no_text", mints: ["driver/case-law-ledger.mjs:184"], rollsUpTo: ["caselaw_ledger"],
     why: "Census payload of caselaw_ledger. A query row with no text is a count, not a receipt." },
-  { code: "query_no_jurisdiction", mints: ["driver/case-law-ledger.mjs:169"], rollsUpTo: ["caselaw_ledger"],
+  { code: "query_no_jurisdiction", mints: ["driver/case-law-ledger.mjs:185"], rollsUpTo: ["caselaw_ledger"],
     why: "Census payload of caselaw_ledger. It cannot answer whether THIS territory was swept." },
-  { code: "citation_no_proceeding", mints: ["driver/case-law-ledger.mjs:172"], rollsUpTo: ["caselaw_ledger"],
+  { code: "citation_no_proceeding", mints: ["driver/case-law-ledger.mjs:188"], rollsUpTo: ["caselaw_ledger"],
     why: "Census payload of caselaw_ledger. A link with no proceeding identity is not a citation." },
-  { code: "citation_no_url", mints: ["driver/case-law-ledger.mjs:173"], rollsUpTo: ["caselaw_ledger"],
+  { code: "citation_no_url", mints: ["driver/case-law-ledger.mjs:189"], rollsUpTo: ["caselaw_ledger"],
     why: "Census payload of caselaw_ledger. Nothing a reader can re-open." },
-  { code: "citation_read_state", mints: ["driver/case-law-ledger.mjs:175"], rollsUpTo: ["caselaw_ledger"],
+  { code: "citation_read_state", mints: ["driver/case-law-ledger.mjs:191"], rollsUpTo: ["caselaw_ledger"],
     why: "Census payload of caselaw_ledger. A read state outside CASE_LAW_READ_STATES." },
-  { code: "dive_unread", mints: ["driver/case-law-ledger.mjs:186"], rollsUpTo: ["caselaw_ledger"],
+  { code: "dive_unread", mints: ["driver/case-law-ledger.mjs:202"], rollsUpTo: ["caselaw_ledger"],
     why: "Census payload of caselaw_ledger. Proceedings were found and none opened — the `ran thin` condition. Blocking, unlike its neighbour no_citations, which is why that one is an out-of-scope ruling and this one is here." },
 
   // ── coverage-form.mjs ─────────────────────────────────────────────────────────────────────────────

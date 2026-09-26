@@ -2314,8 +2314,8 @@
           "todos": 0
         },
         "court-decisions-take-the-pass-record-over-its-words.test.mjs": {
-          "tests": 7,
-          "asserts": 27,
+          "tests": 9,
+          "asserts": 32,
           "skips": 0,
           "todos": 0
         },
