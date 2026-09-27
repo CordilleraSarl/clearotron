@@ -527,45 +527,26 @@ export const UNIT_INVENTORY = Object.freeze([
     note: "STOPPED. Production ran it every 30 minutes against an input nothing writes to any more"
       + "; the owner's word came 2026-08-20 and it was disabled the same evening.",
   },
-  // ── OTHER REPOS' UNITS, SHARING THE BOX ───────────────────────────────────────────────────────────
-  // Declared, not adopted. A unit this repo does not own is still a unit the arm enumerates, and an
-  // undeclared unit is a FAIL by design — so the choice is to name them or to make the arm useless on the
-  // box it matters most on. Same treatment sync-skills already gets. Owner and measured ExecStart root
-  // only: no port, no hostname, no tenant.
+  // ── ANOTHER PRODUCT'S UNITS ARE NOT DECLARED HERE, AND THAT IS THE RULE (ruling 594, 2026-09-27) ──
   //
-  // AND NOT THE OTHER PRODUCT'S REPOSITORY NAME. This file ships — the cut keeps it
-  // because `scripts/live-surface-check.mjs` imports it — so every sentence here is on the public repo.
-  // Naming the unrelated product's repo there is a cross-reference the rules forbid, and it told a public
-  // reader nothing the sentence does not: what they need is that the unit belongs to a different checkout
-  // and that nothing in THIS one touches it. The unit names themselves keep their prefix, because that is
-  // what `systemctl` actually calls them and a renamed unit in an inventory is worse than a named repo.
-  {
-    unit: "openclaw-gateway", runsOn: ["prod"], tracked: null,
-    untrackedReason: "OpenClaw's gateway, run from a global npm install of the `openclaw` package. Nothing "
-      + "in this repo builds, deploys or restarts it.",
-  },
-  {
-    unit: "graph-notify-adapter", runsOn: ["prod"], tracked: null,
-    untrackedReason: "belongs to a DIFFERENT product's checkout on the same box — its WorkingDirectory is "
-      + "outside this clone, so nothing here builds, deploys or restarts it.",
-  },
-  {
-    unit: "clawdi-courtlistener-mcp", runsOn: ["prod"], tracked: null,
-    untrackedReason: "the OAuth MCP bridge as PRODUCTION ACTUALLY RUNS IT: under this name, from the other "
-      + "checkout's copy of warm-server.mjs. This repo ships a unit file for the same bridge under the name "
-      + "`courtlistener-mcp` (see the orphan below) — editing providers/oauth-mcp-bridge/ here changes "
-      + "nothing on the box.",
-  },
-  {
-    unit: "clawdi-ghostfolio-mcp", runsOn: ["prod"], tracked: null,
-    untrackedReason: "belongs to a different product's checkout on the same box; runs from that "
-      + "checkout's bridge, not this clone's.",
-  },
-  {
-    unit: "clawdi-openbb-mcp", runsOn: ["prod"], tracked: null,
-    untrackedReason: "belongs to a different product's checkout on the same box; runs from that "
-      + "checkout's bridge, not this clone's.",
-  },
+  // Five entries stood here describing a different product's services on the production box — a gateway, a
+  // notify adapter and three bridges — each with prose about how that box actually runs them. The owner's
+  // rule: deployment-specific entries have no place in public open-source code, and the health check needs
+  // its own services only.
+  //
+  // THE ARGUMENT THEY WERE KEPT ON WAS A FALSE CHOICE, and recording that is the point of this note. It ran:
+  // an undeclared unit is a FAIL by design, so either name another product's units or make the check useless
+  // on the box that matters most. There was a third option and it is what this file does now — declare this
+  // product's own units, and do not raise another product's services at all.
+  //
+  // IT COSTS THE CHECK NOTHING, measured rather than argued. `scripts/live-surface-check.mjs` enumerates the
+  // service manager of the account it runs as and keeps only units whose fragment sits under THAT account's
+  // own directory — the scoping exists so a distribution's units are not reported as faults. Another
+  // product's services run under a different account, so this check never saw them: driven as this
+  // product's account on 2026-09-27, seven units, every one this product's own.
+  //
+  // WHERE SUCH A LIST BELONGS IF IT IS EVER WANTED: the private configuration repository, which describes
+  // deployments. Not here. This file ships.
   {
     unit: "trademark-test-deploy", runsOn: [],
       measured: "2026-09-07, test box: LoadState=not-found. The hourly deploy runs as clearotron-deploy.timer, which has its own entry; this name is what that one used to be called.", tracked: null,
@@ -609,7 +590,7 @@ export const UNIT_INVENTORY = Object.freeze([
     unit: "courtlistener-mcp", runsOn: [], tracked: ["courtlistener-mcp.service"],
     resolved: ["courtlistener-mcp.service"],   // option B
     orphanReason: "providers/oauth-mcp-bridge/systemd/. No box runs a unit of this name: production runs "
-      + "the same bridge as `clawdi-courtlistener-mcp`, from the other checkout's copy of the code. So this repo "
+      + "the same bridge under a name of its own, from another checkout's copy of the code. So this repo "
       + "asserts it owns a service it does not run, and the drift check could never see it for TWO "
       + "independent reasons — the name does not match the live fragment, and until now the lookup only "
       + "opened driver/systemd/. It is the exact name mismatch #685 named as \"how the mismatch that made "
@@ -1000,7 +981,7 @@ export function unitWorkingDirectory(raw) {
  * The "services share one commit" straddle arm compared every unit in `CHECKED_UNITS`, and that list is
  * "every unit this repo has heard of on any box" — which on production includes units this product
  * neither owns nor touches. `client-access` runs a script from a different product's checkout;
- * `graph-notify-adapter`, `clawdi-courtlistener-mcp` and the other product's bridges have WorkingDirectories
+ * another product's gateway, notify adapter and bridges have WorkingDirectories
  * inside a different clone entirely. The deploy skill states in as many words that a trademark deploy
  * must not restart `client-access`. So the arm demanded commit agreement from services this deploy is
  * forbidden to move, and reddened on every production deploy for units behaving correctly.

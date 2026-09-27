@@ -13,8 +13,7 @@ a global aggregator, so it declares no enumerable covered office set; see the la
 | `test/` | Characterisation and fault-lane tests |
 
 Environment: `CORSEARCH_SESSION_KEY` is required, and it is a **session cookie**, not a bearer token —
-`core.js` sends it as `Cookie: sessionKey=…`. `src/index.js` will also take it from the gateway's
-`plugins.entries.clawdi-corsearch.config.sessionKey`. There is no base-URL variable: `BASE_SEARCH`,
+`core.js` sends it as `Cookie: sessionKey=…`. There is no base-URL variable: `BASE_SEARCH`,
 `BASE_DETAIL` and `BASE_IMAGE` are constants in `core.js`. The per-call ledger paths come from
 `CLEAROTRON_REGISTER_CALL_LOG` / `CLEAROTRON_REGISTER_RECORD_LOG`, resolved in
 [`../_shared/ledger-path.mjs`](../_shared/ledger-path.mjs) and shared with the other register adapters
