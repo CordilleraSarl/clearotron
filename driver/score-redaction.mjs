@@ -79,6 +79,12 @@ const NAME_LIST_KEYS = new Set(["covers_marks", "close_variations", "variations"
  * steady state, so a reference that gains a field says so the first time it is scored.
  */
 const SAFE_KEYS = new Set([
+  // NOT A REFERENCE KEY AT ALL, read at its producer by the lane that owns this file: `coverage` appears
+  // zero times in every gold. `reference-score.mjs` sets it from the scorer's own verdict word and the
+  // scorer prints it as a state and a `why` — the harness's sentence about what it could measure, not a
+  // sentence about anybody. Classified here because the warning below named it and a reader would
+  // otherwise go looking in a gold file for a key the scorer invented.
+  "coverage",
   "scenario", "schema_version", "schema", "framework", "id", "title", "door", "lane", "state", "why",
   "lawyer_band", "legal_level", "dispute_type", "lawyer_risk", "band", "rating", "ratingQualifier",
   "channel", "channels", "jurisdictions", "classes", "territories", "country", "rule", "bucket",
@@ -157,23 +163,40 @@ export function protectedStrings(root) {
   // reader would recognise the party from, which is the thing being withheld.
   const LEGAL_FORM = new Set(["inc", "llc", "ltd", "limited", "gmbh", "corp", "corporation", "company",
     "holdings", "group", "plc", "sarl", "bv", "nv", "ag", "sa", "spa", "pty", "kk", "co", "and", "the", "of"]);
+  // tracker issue 1003 — KEPT APART FROM THE GIVEN NAMES, because the two are not equally safe to
+  // apply. A given name is a party's name and appears nowhere else by construction. A DERIVED word is an
+  // ordinary word that happens to sit inside one, so it collides with the scorer's own scaffolding: a
+  // party called "Depth Charge" turns `per-territory depth` into `per-territory «name 2»`, and a reader
+  // cannot tell a redaction from a word. Both layers still apply to everything the run prints; only a
+  // line the SCORER ITSELF authored drops the derived one, through `authoredRedactor` below.
+  const derived = new Set();
   for (const n of [...names]) {
     const parts = n.trim().split(/\s+/);
     if (parts.length < 2) continue;
     for (const w of parts) {
       const bare = w.replace(/[^\p{L}\p{N}]/gu, "");
-      if (bare.length >= 5 && !LEGAL_FORM.has(bare.toLowerCase())) names.add(bare);
+      if (bare.length >= 5 && !LEGAL_FORM.has(bare.toLowerCase())) { names.add(bare); derived.add(bare); }
     }
   }
   // A one- or two-character "name" is a substring of ordinary words, and swapping it everywhere would
   // shred the surrounding prose without protecting anything a reader could identify anyone from.
   for (const n of [...names]) if (n.length < 3) names.delete(n);
-  return { names, prose, unclassified: [...unclassified].sort() };
+  return { names, prose, derived, unclassified: [...unclassified].sort() };
 }
 
-/** The line a caller prints when `unclassified` is not empty. Names keys, never values. */
+/**
+ * The line a caller prints when `unclassified` is not empty. Names keys, never values.
+ *
+ * IT DOES NOT SAY "THE REFERENCE", and that wording was a real misdirection rather than a looseness.
+ * `protectedStrings` walks the reference, the scored buckets AND the run, so a key it names may come from
+ * any of the three — and the first key it named after the run was added, `coverage`, is the scorer's own
+ * field, absent from every gold. Anyone acting on the old sentence went looking in a gold file for a key
+ * the scorer invented. Saying it does not know which source is worse than naming it and better than
+ * naming the wrong one; carrying the source per key is a further change and is not this one.
+ */
 export const unclassifiedNotice = (keys) =>
-  `*** THE REFERENCE CARRIES ${keys.length} KEY(S) THIS REDACTION DOES NOT CLASSIFY: ${keys.join(", ")}. `
+  `*** THE REFERENCE, THE SCORED BUCKETS OR THE RUN CARRIES ${keys.length} KEY(S) THIS REDACTION DOES NOT `
+  + `CLASSIFY, and this line does not know which: ${keys.join(", ")}. `
   + `Their text was NOT withheld and may name somebody. Classify each in driver/score-redaction.mjs as a `
   + `name, as prose, or as safe — this warning is the only thing standing between a new reference field `
   + `and the silent leak it would otherwise be.`;
@@ -248,7 +271,43 @@ export function redactor({ names = new Set(), prose = new Set(), hint = "run aga
  * rather than rethrowing: a rethrow would reach node's own printer, which writes to the real file
  * descriptor and never passes through anything installed here.
  */
-export function installRedaction(redact, io = { console, process }) {
+/**
+ * The redactor for a line the SCORER ITSELF wrote — a heading, a column ruler, a label (tracker issue 1003).
+ *
+ * It applies the party names and the reference's own sentences, and DROPS the derived words. So a
+ * scaffolding word that happens to sit inside a party's name survives, and a reader keeps the structure
+ * that tells them what was withheld.
+ *
+ * IT IS NOT A BYPASS, and that is the whole reason it is a redactor rather than a raw write. Routing
+ * structural lines straight to the original writer would make this a hole: a data line sent through it by
+ * mistake would print a party name in clear. Here the worst a mistake costs is a shortened form — the full
+ * name is still taken out, and the given-name layer is exactly as strict as the main one. Every failure
+ * mode of this path is over-redaction; none is a name escaping.
+ */
+export function authoredRedactor({ names = new Set(), prose = new Set(), derived = new Set(), hint } = {}) {
+  // SUBTRACTS, rather than being handed a narrower set to union. The first shape of this had `redactor`
+  // take the derived words as a separate argument, so every existing caller that did not pass them lost
+  // the layer silently — including the live install. Two arms caught it. Dropping a layer has to be the
+  // thing a caller asks for explicitly; the default cannot be the weaker one.
+  const kept = new Set([...names].filter((x) => !derived.has(x)));
+  return redactor({ names: kept, prose, ...(hint ? { hint } : {}) });
+}
+
+// The authored printer, live only while a redaction is installed. Held here rather than threaded through
+// every caller so a call site needs nothing but the function.
+let authoredPrint = null;
+
+/**
+ * Print a line this tool authored, with the derived-word layer dropped. With no redaction installed it is
+ * an ordinary write, which is the `--names` case: nothing is withheld, so there is nothing to drop.
+ */
+export function printAuthored(line) {
+  const text = `${line}\n`;
+  if (authoredPrint) authoredPrint(text);
+  else process.stdout.write(text);
+}
+
+export function installRedaction(redact, io = { console, process }, authored = null) {
   const { console: con, process: proc } = io;
   // THE REFERENCE TO PUT BACK AND THE FUNCTION TO CALL ARE NOT THE SAME THING. A stream write has to be
   // called bound to its stream, but restoring the BOUND copy leaves a different function on the object
@@ -270,6 +329,9 @@ export function installRedaction(redact, io = { console, process }) {
     original.stderr(`${redact(e?.stack ?? String(e))}\n`);
     proc.exit(1);
   };
+  // tracker issue 1003 — writes through the ORIGINAL stream, so the wrap above cannot re-apply the
+  // derived layer to a line that just had it dropped.
+  authoredPrint = (text) => original.stdout(authored ? authored(text) : redact(text));
   proc.on?.("uncaughtException", onUncaught);
   proc.on?.("unhandledRejection", onUncaught);
   return function uninstall() {
@@ -278,6 +340,7 @@ export function installRedaction(redact, io = { console, process }) {
     proc.stderr.write = original.stderrRef;
     proc.off?.("uncaughtException", onUncaught);
     proc.off?.("unhandledRejection", onUncaught);
+      authoredPrint = null;
   };
 }
 
