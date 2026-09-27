@@ -1362,8 +1362,29 @@ function bandShapeUnder(full, file, field) {
  * used is the detail.
  */
 function fromTheRun({ names, quotes, where }) {
-  if (names) return quotes.map((q) => `"${String(q).slice(0, 120)}"`).join(" · ");
+  // THE LOCATION IS KEPT WHEN THE WORDS ARE SHOWN. It costs one clause beside the quotation it stands in
+  // for, and a reader chasing a surprising row wants to go and read around it rather than only at it.
+  if (names) return `${quotes.map((q) => `"${String(q).slice(0, 160)}"`).join(" · ")} (${where})`;
   return `${where} — run again with --names to read them here`;
+}
+
+/**
+ * The row that fires when a listing does not hold the mark an assertion asked for.
+ *
+ * It is the WIDEST row in either floor op: it printed the name asked for and every name the listing did
+ * hold, in clear, with no flag involved, and it fires precisely when somebody is investigating — a mark
+ * is absent, so a reader is reading the report. It exists twice, once per floor op, with one verb each.
+ *
+ * The COUNT is never withheld. A listing that held nothing is a different defect from one that held four
+ * other marks, and that distinction is the finding.
+ */
+function noSuchMark({ names, field, marks, file, verb }) {
+  const listed = (marks ?? []).map((x) => x?.name).filter((x) => typeof x === "string");
+  return { ok: false, saw: `the asked-for mark is not in ${file}, which ${verb} ${listed.length} mark(s)`
+    + (listed.length
+      ? ` — ${fromTheRun({ names, quotes: [field, ...listed],
+          where: `the name asked for is the field of this assertion's path, and the names ${verb} are the "marks" array of ${file}` })}`
+      : "") };
 }
 
 function evalAssertion(a, runDir, { names = REPORT_NAMES } = {}) {
@@ -1745,7 +1766,7 @@ function evalAssertion(a, runDir, { names = REPORT_NAMES } = {}) {
     const want = field ? String(field).trim().toLowerCase() : null;
     if (!want) return { ok: false, saw: "no mark given (path must be <file>:<MARK NAME>)" };
     const m = (doc.marks ?? []).find((x) => String(x?.name ?? "").trim().toLowerCase() === want);
-    if (!m) return { ok: false, saw: `no mark ${JSON.stringify(field)} in ${file} — it counted ${(doc.marks ?? []).map((x) => JSON.stringify(x?.name)).join(", ") || "nothing"}` };
+    if (!m) return noSuchMark({ names, field, marks: doc.marks, file, verb: "counted" });
     const floors = a.value && typeof a.value === "object" ? a.value : null;
     if (!floors) return { ok: false, saw: "value must be an object of predicate floors, e.g. {\"identical\": 45}" };
     const saw = [], short = [], untaken = [];
@@ -1753,7 +1774,12 @@ function evalAssertion(a, runDir, { names = REPORT_NAMES } = {}) {
       const cell = m.counts?.[pred];
       if (!cell) { untaken.push(`${pred}: no such predicate on this run's sidecar`); continue; }
       if (!Number.isFinite(cell.total)) {
-        untaken.push(`${pred}: NOT TAKEN — ${String(cell.unavailable ?? "no reason recorded").slice(0, 160)}`);
+        // THE SAME FIELD AND THE SAME PROVENANCE as the `unavailable` twenty lines below, which is
+        // withheld — this one is the engine's own prose about why a count could not be taken, out of the
+        // run's sidecar. Withheld with it, and located by the predicate it belongs to.
+        untaken.push(`${pred}: NOT TAKEN — ${cell.unavailable === undefined || cell.unavailable === null
+          ? "no reason recorded"
+          : fromTheRun({ names, quotes: [String(cell.unavailable)], where: `the reason is counts.${pred}.unavailable of ${file}` })}`);
         continue;
       }
       saw.push(`${pred}=${cell.total} (floor ${floor})`);
@@ -1778,26 +1804,13 @@ function evalAssertion(a, runDir, { names = REPORT_NAMES } = {}) {
     const doc = readJson(full);
     if (!doc) return { ok: false, saw: `${file} present but unparseable` };
     if (doc.unavailable) return { ok: false, saw: `the filings were never listed — `
-      + `${fromTheRun({ names, quotes: [String(doc.unavailable).slice(0, 200)], where: `the reason is the "unavailable" field of ${file}` })}. `
+      + `${fromTheRun({ names, quotes: [String(doc.unavailable)], where: `the reason is the "unavailable" field of ${file}` })}. `
       + `A listing that was refused is not a register that holds nothing.` };
     const want = field ? String(field).trim().toLowerCase() : null;
     if (!want) return { ok: false, saw: "no mark given (path must be <file>:<MARK NAME>)" };
     const markIndex = (doc.marks ?? []).findIndex((x) => String(x?.name ?? "").trim().toLowerCase() === want);
     const m = markIndex === -1 ? null : doc.marks[markIndex];
-    // THE WIDEST ROW IN THIS OP, so it is withheld too. It used to print the mark that was asked for AND
-    // every mark the listing held, in clear, and it fires precisely when a run is being investigated —
-    // a mark is missing, so somebody is reading the report. `--names` prints them for the one job that
-    // needs them; by default the row says how many were listed and where they are, which is what a reader
-    // acts on. The COUNT is never withheld: a listing that held nothing is a different defect from a
-    // listing that held four other marks, and that distinction is the finding.
-    if (!m) {
-      const listed = (doc.marks ?? []).map((x) => x?.name).filter((x) => typeof x === "string");
-      return { ok: false, saw: `the asked-for mark is not in ${file}, which listed ${listed.length} mark(s)`
-        + (listed.length
-          ? ` — ${fromTheRun({ names, quotes: [field, ...listed],
-              where: `the name asked for is the field of this assertion's path, and the names listed are the "marks" array of ${file}` })}`
-          : "") };
-    }
+    if (!m) return noSuchMark({ names, field, marks: doc.marks, file, verb: "listed" });
     const floors = a.value && typeof a.value === "object" ? a.value : {};
     const minRecords = Number.isFinite(floors.records) ? floors.records : 1;
     const minOffices = Number.isFinite(floors.offices) ? floors.offices : 1;

@@ -81,13 +81,15 @@ test("fromTheRun withholds by default and quotes when asked", () => {
   assert.match(withheld, /sentence 9 of findings\.md/);
   const shown = fromTheRun({ ...args, names: true });
   assert.match(shown, /"a sentence about a matter"/);
-  assert.ok(!shown.includes("sentence 9"), "the location is the substitute for the quote, not an addition");
+  assert.ok(shown.includes("sentence 9"),
+    "the location is kept when the words are shown — it costs one clause and a reader chasing a surprising row wants to read around it");
 });
 
 test("fromTheRun joins several quotes and clips a long one", () => {
   const long = "x".repeat(300);
   const shown = fromTheRun({ names: true, quotes: ["one", long], where: "n/a" });
-  assert.match(shown, /"one" · "x{120}"$/, "two quotes, the second clipped at 120");
+  assert.match(shown, /"one" · "x{160}" \(n\/a\)$/, "two quotes, the second clipped at 160, then the location");
+  assert.ok(!shown.includes("x".repeat(161)), "the clip is the only limit — no caller slices first");
 });
 
 test("a location is never empty, because an empty one reads as a row with nothing to say", () => {
@@ -207,4 +209,56 @@ test("the argv flag reaches a call that passes no options at all", () => {
     const on = evalAssertion({ op: "register-records-floor", path: `knockout-filings.json:${ASKED}`, value: {} }, dir);
     assert.ok(on.saw.includes(LISTED[0]), `--names did not reach the default path: ${on.saw}`);
   } finally { setReportNames(false); rmSync(dir, { recursive: true, force: true }); }
+});
+
+// ── the counts op carries the same two rows, and had neither fix ──────────────────────────────────────
+
+function makeCounts({ marks }) {
+  const dir = mkdtempSync(join(tmpdir(), "counts-"));
+  mkdirSync(driverDir(dir), { recursive: true });
+  writeFileSync(driverDir(dir, "register-records.json"), JSON.stringify({ marks }));
+  return dir;
+}
+
+const countFloor = (dir, mark, value, opts) => evalAssertion(
+  { op: "register-count-floor", path: `_driver/register-records.json:${mark}`, value }, dir, opts);
+
+test("the counts op withholds its missing-mark row too — one defect, two ops", () => {
+  // The two floor ops each carry this row, with one verb each. Fixing one and not the other is the
+  // failure this arm exists to prevent: the fixed op is what makes the other easy to miss.
+  const dir = makeCounts({ marks: LISTED.map((name) => ({ name, counts: {} })) });
+  try {
+    const r = countFloor(dir, ASKED, { identical: 1 }, { names: false });
+    assert.equal(r.ok, false);
+    for (const n of [ASKED, ...LISTED]) assert.ok(!r.saw.includes(n), `a name reached the row: ${r.saw}`);
+    assert.match(r.saw, /counted 2 mark\(s\)/, "and it says 'counted', not 'listed' — this op counted them");
+    const shown = countFloor(dir, ASKED, { identical: 1 }, { names: true });
+    for (const n of [ASKED, ...LISTED]) assert.ok(shown.saw.includes(n), `--names did not carry ${n}: ${shown.saw}`);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("a count that was never taken withholds the reason and names the predicate", () => {
+  // `cell.unavailable` is the same field, with the same provenance, as the `doc.unavailable` the listing
+  // op withholds — the engine's own prose about why a count could not be taken. One withheld and one not,
+  // twenty lines apart, is how this survived the first pass.
+  const dir = makeCounts({ marks: [{ name: LISTED[0], counts: { identical: { unavailable: "the office refused the hit-count endpoint for E2E OTHER PROBE ONE" } } }] });
+  try {
+    const r = countFloor(dir, LISTED[0], { identical: 1 }, { names: false });
+    assert.equal(r.ok, false);
+    assert.ok(!r.saw.includes("E2E OTHER PROBE ONE"), `the reason carried a name onto the row: ${r.saw}`);
+    assert.ok(!r.saw.includes("refused the hit-count"), `the engine's prose reached the row: ${r.saw}`);
+    assert.match(r.saw, /identical: NOT TAKEN/, "the predicate and the verdict are never withheld");
+    assert.match(r.saw, /counts\.identical\.unavailable/, "and the row says where the reason is");
+    const shown = countFloor(dir, LISTED[0], { identical: 1 }, { names: true });
+    assert.ok(shown.saw.includes("refused the hit-count"), `--names did not carry the reason: ${shown.saw}`);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("a missing reason says so rather than offering to print nothing", () => {
+  const dir = makeCounts({ marks: [{ name: LISTED[0], counts: { identical: { total: null } } }] });
+  try {
+    const r = countFloor(dir, LISTED[0], { identical: 1 }, { names: false });
+    assert.match(r.saw, /identical: NOT TAKEN — no reason recorded/);
+    assert.doesNotMatch(r.saw, /run again with --names/, "there is no reason to print, so the row must not offer to print it");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
 });
