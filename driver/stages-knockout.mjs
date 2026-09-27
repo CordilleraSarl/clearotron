@@ -150,6 +150,28 @@ export const KNOCKOUT_WEB = Object.freeze({ preset: "pro-search", reasoning: Obj
  */
 export const KNOCKOUT_MINUTES_BAR = 10;
 
+/**
+ * The bar's verdict for one run, from the run's own two timestamps. PURE, and it lives beside the constant
+ * so the comparison and the number it compares against cannot drift apart.
+ *
+ * AN UNREADABLE OR ABSENT START IS NOT "UNDER THE BAR". `runMinutes` and `overBar` are both null then, and
+ * `barNotMeasured` says why — a run whose span could not be read must not record a verdict that reads as a
+ * pass. That is the whole reason this returns three fields rather than a boolean.
+ *
+ * @param {{startedAt?: string|null, deliveredAt?: string|null}} span the run's own ISO timestamps
+ */
+export function knockoutBarVerdict({ startedAt = null, deliveredAt = null } = {}) {
+  const a = startedAt ? Date.parse(startedAt) : NaN;
+  const b = deliveredAt ? Date.parse(deliveredAt) : NaN;
+  if (!Number.isFinite(a) || !Number.isFinite(b) || b < a)
+    return { runMinutes: null, overBar: null,
+      barNotMeasured: !Number.isFinite(a) ? "the run's own startedAt could not be read"
+        : !Number.isFinite(b) ? "the run has no delivery time to measure to"
+        : "the run's delivery time is before its start" };
+  const runMinutes = Number(((b - a) / 60000).toFixed(1));
+  return { runMinutes, overBar: runMinutes > KNOCKOUT_MINUTES_BAR };
+}
+
 /** The territories the request ordered, as the job carries them; empty for a worldwide screen. PURE. */
 export const orderedTerritories = (job) =>
   (Array.isArray(job?.jurisdictions) ? job.jurisdictions.map((s) => String(s).trim()).filter(Boolean) : []);

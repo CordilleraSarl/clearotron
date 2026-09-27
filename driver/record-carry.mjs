@@ -567,6 +567,21 @@ export function traceRecordCarry({ bandRecords = [], placements = [], registerFi
   // and the one that run shipped without stating, so it is counted separately and never folded
   // into an ordinary drop total.
   const upstreamAbsent = rows.filter((r) => /:stage-incomplete$/.test(String(r.reason ?? "")));
+  // Records the step PASSED OVER: it ran, it reached them, and it recorded no ground of its own, so the
+  // driver's own literal stands as the reason. A reason, so not `unreasoned` — the same distinction
+  // `upstreamAbsent` above is drawn on, and counted separately for the same reason.
+  //
+  // WHY IT HAS TO BE IN `totals` AND NOT ONLY IN `by_reason_source`. This module's own header says a
+  // reader who opens the file and sees `unreasoned: 0` must be able to tell that from "nothing was
+  // dropped anywhere in this run". On R18 of 2026-09-27 the totals block read `unreasoned: 0` beside
+  // 5,760 records the step passed over — the count was in `by_reason_source` and not in the block a
+  // reader opens first, so the loudest fact about that run was one level down from the answer.
+  //
+  // `unreasoned` IS NOT REDEFINED, deliberately. A shipped Machine QC check passes only on
+  // `unreasoned === 0` and that row reaches a client's workbook; folding these in would turn a green
+  // into a red on every run with a silent exit, which is a decision about what a client is told rather
+  // than a correction to a record.
+  const stepSilent = rows.filter((r) => r.reason_source === "step-silent");
   const incompleteStages = Object.values(outcomes ?? {}).filter((o) => o && o.completed !== true).map((o) => o.stage);
   const slices = untraceableSlices({ crowds, planExecution });
   const deliveredFindings = Array.isArray(findings) ? findings.length : 0;
@@ -601,6 +616,7 @@ export function traceRecordCarry({ bandRecords = [], placements = [], registerFi
       finding: byReach.finding ?? 0,
       dropped: rows.length - (byReach.finding ?? 0),
       unreasoned: unreasoned.length,
+      step_silent: stepSilent.length,
       upstream_absent: upstreamAbsent.length,
       untraceable_slices: slices.length,
       // — THE SUM STATES ITS OWN INCOMPLETENESS. `n + s.untraced` coerced a null to 0, so a
