@@ -524,7 +524,7 @@ export const UNIT_INVENTORY = Object.freeze([
   },
   // ── ANOTHER PRODUCT'S UNITS ARE NOT DECLARED HERE, AND THAT IS THE RULE (ruling 594, 2026-09-27) ──
   //
-  // Five entries stood here describing a different product's services on the production box — a gateway, a
+  // Five entries stood here describing a different product's services on production — a gateway, a
   // notify adapter and three bridges — each with prose about how that box actually runs them. The owner's
   // rule: deployment-specific entries have no place in public open-source code, and the health check needs
   // its own services only.
