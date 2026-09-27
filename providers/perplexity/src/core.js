@@ -370,6 +370,24 @@ const cellKey = (term, platform) => `${gnorm(term)}\u0000${gnorm(platform)}`;
 // teal-vault 1-of-154 "WebHit not iterable" failure shipped exactly that way before this floor).
 export const GRID_COVERAGE_FLOOR = 0.5;
 
+// ── HOW MANY CELLS THE PROGRAM RUNS AT ONCE ──────────────────────────────────────────────────────────
+//
+// The grid is one program the provider's sandbox writes and runs, and the idiom dictated below used to
+// imply a loop: measured over two archived rounds, seven grid programs, every one a nested `for` with no
+// concurrency primitive of any kind. A cell is one HTTP search, so a name's grid cost its cell count
+// times a cell — 9 to 25 seconds a name on those rounds, at about 1.2 seconds a cell.
+//
+// A BOUND RATHER THAN "ALL OF THEM", and the bound is the vendor's business rather than ours. The cells
+// are independent and we do not know what the search endpoint tolerates in parallel from one sandbox, so
+// this asks for a modest fan-out instead of every cell at once. Raising it is a measurement, not an
+// opinion: the floor below already turns a mass failure into a retry rather than a thin ledger, so the
+// cost of finding out is one retried grid.
+//
+// NOTHING ABOUT THE GRID CHANGES WITH IT. The same cells, each asking the same query and keeping the same
+// results, recorded in the same ledger. The per-cell try/except is what makes that true whichever way the
+// program runs them: a cell that fails is its own gap row and the others carry on.
+export const GRID_CELL_CONCURRENCY = 8;
+
 // THE SAME MECHANISM FOR THE MEANING SWEEP, WITH A TIGHTER BOUND, AND THE DIFFERENCE IS REDUNDANCY —
 //.
 //
@@ -515,6 +533,7 @@ export function buildGridProgramTask(spec) {
     hasCells ? `        if len(results) >= ${keep}: break` : "",
     hasCells ? "        results.append({\"title\": h.title or \"\", \"url\": h.url or \"\"})" : "",
     hasCells ? "Per cell: status = \"hit\" if results else \"no_hit\". Wrap EACH cell in its own try/except; on an exception append the string \"<term> | <platform> | <repr(exception)>\" to gaps and CONTINUE — one failing cell must never abort the grid." : "",
+    hasCells ? `Run the cells CONCURRENTLY rather than one after another: submit every cell of this group to a concurrent.futures.ThreadPoolExecutor with max_workers=min(${GRID_CELL_CONCURRENCY}, number of cells) and collect them as they finish. Each cell keeps its OWN try/except exactly as above, and builds its OWN results list and its OWN cells[] row — never a list shared between cells, which under threads would put one cell's hits in another cell's row. The cells are independent searches: which cells run, what each one asks for and what is recorded are unchanged by running them together.` : "",
     hasCells && terms.length > batch
       ? `Batch into groups of <= ${batch} terms and run each group as its own sandbox execution that prints only that group's JSON object — output over about 1 MiB is cut off, so never print the whole grid at once.`
       : "",
