@@ -200,7 +200,7 @@ flowchart TD
     SYN --> PAR["case-law ∥ narrative-refutation<br/>(case-law non-fatal)"]
     PAR --> VG{"verdict gate:<br/>parseVerdict(review)"}
     VG -- "CONDITIONAL / BLOCKING" --> CORR["corrective re-synthesis (fatal) ·<br/>corrections freshness gate ·<br/>verdict re-check (warm)"] --> VG2{"still BLOCKING?"}
-    VG2 -- yes --> FAIL[["FATAL StageFailure('verdict')"]]
+    VG2 -- yes --> DELIV["report DELIVERS (ruling 2026-08-26) ·<br/>runLog verdict-blocking-delivered ·<br/>open points recorded beside the review,<br/>for the reviewing lawyer (ruling 2026-09-24)"] --> CLAMP
     VG2 -- no --> CLAMP
     VG -- CLEAR --> CLAMP["code clamps (raise-only):<br/>legal actions · coverage · frame residual ·<br/>screen gate · register gap · deadline gap"]
     CLAMP --> VS["verdict sidecar _driver/verdict.json<br/>(single label authority; write failure = fatal)"]
@@ -212,7 +212,7 @@ flowchart TD
     PUB --> HANDOFF["delivery packet _driver/delivery.json ·<br/>outbox <runId>.pending · .delivered · archive"]
 
     classDef fatal stroke:#c0392b,stroke-width:2px
-    class MF,PV,PI,RD,SYN,FAIL,VS,CG fatal
+    class MF,PV,PI,RD,SYN,VS,CG fatal
 ```
 
 Reading order for the phases, with what code decides at each:
@@ -274,8 +274,12 @@ Reading order for the phases, with what code decides at each:
     verdict is parsed by code; a parse failure is **BLOCKING** (fail-safe). CONDITIONAL/BLOCKING
     triggers corrective re-synthesis (fatal if it fails), a freshness gate proving the named
     corrections reached `findings.json`, and a warm verdict re-check. A still-BLOCKING verdict
-    after the degenerate-artifact repair is a fatal run failure — "delivered with open questions"
-    is retired.
+    after the degenerate-artifact repair does **not** fail the run. Ruling 2026-08-26, verbatim:
+    "Deliver always, with open points printed. The refusal on a blocking review goes." The run
+    logs `verdict-blocking-delivered` and carries on to the clamps. Ruling 2026-09-24 settled
+    where the points go: reviewer notes never reach the client page, and a report the reviewer
+    still refuses ships with its rating and nothing added — the open points are recorded beside
+    the review in the run record, for the reviewing lawyer.
 13. **Code clamps** — the coverage floor (`applyCoverageFloor`) only ever *raises* CLEAR to
     CONDITIONAL: typed condition actions, the lawyer's explicit `coverage_judgment.sufficient ===
     false`, frame residuals, screen-gate gaps, register gaps (from the taint-relabelled ledger).

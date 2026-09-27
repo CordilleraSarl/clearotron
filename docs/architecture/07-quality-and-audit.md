@@ -92,9 +92,15 @@ under-grading ships a wrong CLEAR. The reviewer's context includes code-computed
 and a mandatory plan-execution check. CONDITIONAL/BLOCKING triggers corrective re-synthesis, a
 freshness gate proving the named corrections actually reached `findings.json`, and a warm verdict
 re-check that can only fall back to the *entry* verdict. A terminal BLOCKING first gets the
-degenerate-artifact refusal (a "BLOCKING" with zero cited defects is re-asked fresh, once), then
-fails the run — a report the reviewer won't stand behind never ships looking finished
-("delivered with open questions" is retired). The reviewer's verdict is treated as documented-noisy;
+degenerate-artifact refusal (a "BLOCKING" with zero cited defects is re-asked fresh, once), and
+then the run **delivers**. Ruling 2026-08-26, verbatim: "Deliver always, with open points printed.
+The refusal on a blocking review goes." The corrective ladder is still the fix arm and still runs
+first; what changed is only what happens once it is exhausted. "Never ships" and "never ships
+*looking finished*" were treated as one requirement and are two — only the second was ever
+load-bearing, and it is met by the open-points section being code-built from the review. Ruling
+2026-09-24 settled where that section goes: reviewer notes never reach the client page, and a
+report the reviewer still refuses ships with its rating and nothing added, the points recorded
+beside the review for the reviewing lawyer. The reviewer's verdict is treated as documented-noisy;
 that is precisely why every *honesty* signal below derives from ledgers and receipts, not review
 prose.
 
