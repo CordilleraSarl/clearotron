@@ -102,13 +102,18 @@ test("register-count-floor FAILS below the floor without proposing a lower one",
 test("AN UNTAKEN COUNT FAILS AS UNTAKEN, never as a number below the floor", () => {
   const d = runDirWith({ "register-counts.json": counts([{ name: "PROBEMARK",
     counts: { identical: { total: null, unavailable: "no register credential in scope" } } }]) });
-  const r = evalAssertion({ op: "register-count-floor", path: "_driver/register-counts.json:PROBEMARK",
-    value: { identical: 45 } }, d);
+  const a = { op: "register-count-floor", path: "_driver/register-counts.json:PROBEMARK", value: { identical: 45 } };
+  const r = evalAssertion(a, d);
   assert.equal(r.ok, false);
   assert.match(r.saw, /NOT TAKEN/);
-  assert.match(r.saw, /no register credential in scope/);
   assert.doesNotMatch(r.saw, /below the floor/,
     "a count that was never taken must not be reported as a register that has thinned out");
+  // THE REASON IS THE ENGINE'S OWN PROSE ABOUT A MATTER, so by default the row says where it is and the
+  // verdict stands without it. What this test guards — untaken read as untaken — is in the verdict, not
+  // in the words; the words are reachable, and the control below reaches them.
+  assert.doesNotMatch(r.saw, /no register credential in scope/);
+  assert.match(r.saw, /counts\.identical\.unavailable/);
+  assert.match(evalAssertion(a, d, { names: true }).saw, /no register credential in scope/);
   rmSync(d, { recursive: true, force: true });
 });
 
@@ -120,11 +125,21 @@ test("register-count-floor fails when the sidecar is absent — nothing written 
   rmSync(d, { recursive: true, force: true });
 });
 
-test("register-count-floor names the marks it did count when the asked-for one is missing", () => {
+test("register-count-floor says how many marks it did count when the asked-for one is missing", () => {
+  // WHAT THIS GUARDS is that the row distinguishes "counted nothing" from "counted a different mark" —
+  // a naming mismatch between the scenario and the run looks identical to an empty register otherwise.
+  // The COUNT carries that, and the names are the detail: this row fires precisely when somebody is
+  // investigating, so it withholds them and says where they are.
   const d = runDirWith({ "register-counts.json": counts([{ name: "SOMETHING ELSE", counts: { identical: { total: 9 } } }]) });
-  const r = evalAssertion({ op: "register-count-floor", path: "_driver/register-counts.json:PROBEMARK", value: { identical: 45 } }, d);
+  const a = { op: "register-count-floor", path: "_driver/register-counts.json:PROBEMARK", value: { identical: 45 } };
+  const r = evalAssertion(a, d);
   assert.equal(r.ok, false);
-  assert.match(r.saw, /SOMETHING ELSE/);
+  assert.match(r.saw, /counted 1 mark\(s\)/);
+  assert.doesNotMatch(r.saw, /SOMETHING ELSE/);
+  assert.doesNotMatch(r.saw, /PROBEMARK/, "the name asked for is a mark too");
+  const shown = evalAssertion(a, d, { names: true });
+  assert.match(shown.saw, /SOMETHING ELSE/);
+  assert.match(shown.saw, /PROBEMARK/);
   rmSync(d, { recursive: true, force: true });
 });
 
@@ -171,7 +186,21 @@ test("a failed term is named even when the floor is MET — it is reduced covera
   const r = evalAssertion({ op: "register-records-floor", path: "_driver/register-records.json:PROBEMARK",
     value: { records: 20, offices: 2 } }, d);
   assert.equal(r.ok, true);
-  assert.match(r.saw, /PROBEMARC/, "a pass that hides a refused term is how reduced coverage reads as full coverage");
+  // A PASS THAT HIDES A REFUSED TERM IS HOW REDUCED COVERAGE READS AS FULL COVERAGE, so the row must
+  // still say a term was refused. What it no longer prints by default is the term itself: a term is a
+  // spelling of a mark, and `report` is the cheap instrument, run against real matters in sessions that
+  // record what they print. The INDEX says which of the run's terms to go and read.
+  assert.match(r.saw, /1 term\(s\) were refused/, "the refusal is still on the row");
+  assert.match(r.saw, /term 2 of/, "and the row says which term");
+  assert.ok(!r.saw.includes("PROBEMARC"), "the spelling itself is withheld");
+  assert.ok(!r.saw.includes("the register timed out"), "and so is the engine's reason");
+
+  // THE CONTROL. Without it, both assertions above pass over a row that stopped saying anything.
+  const named = evalAssertion({ op: "register-records-floor", path: "_driver/register-records.json:PROBEMARK",
+    value: { records: 20, offices: 2 } }, d, { names: true });
+  assert.equal(named.ok, true, "the verdict is the same either way");
+  assert.match(named.saw, /PROBEMARC/, "--names names the term");
+  assert.match(named.saw, /the register timed out/, "and its reason");
   rmSync(d, { recursive: true, force: true });
 });
 

@@ -1214,6 +1214,11 @@ export function outboxPackets({ runId = null, runIds = [], queueBase = null } = 
   return { packets: [...hit].sort(), unreadable: null };
 }
 
+// WITHHELD UNLESS ASKED, and the default is off so nothing has to remember to turn it on. Set once from
+// argv; `evalAssertion` takes it as an option so a test can drive both paths without touching argv.
+export let REPORT_NAMES = false;
+export const setReportNames = (v) => { REPORT_NAMES = Boolean(v); };
+
 // ── assertions ───────────────────────────────────────────────────────────────────────────────────────
 // Every op is implemented or explicitly reported UNIMPLEMENTED. An op that silently passes because
 // nobody wrote it is the exact failure mode this whole suite exists to prevent.
@@ -1340,7 +1345,49 @@ function bandShapeUnder(full, file, field) {
   return { doc, unread, shallow, verdict };
 }
 
-function evalAssertion(a, runDir) {
+/**
+ * A quotation from a RUN, or where to find it.
+ *
+ * WHY THIS EXISTS. `report` is the cheap instrument — free, re-runnable, and the doctrine tells a lane to
+ * re-run it rather than re-run the clearance — so it is the one most often pointed at a real matter, in a
+ * session that records whatever it prints. Its INVESTIGATE rows earned their usefulness by showing the
+ * sentence they object to, and that sentence is the engine's own words about a client's matter.
+ *
+ * A LOCATION IS AS ACTIONABLE AS A QUOTE AND CARRIES NOTHING. "sentence 14 of knockout-findings.md" sends
+ * a reader to the same words, in the file that already holds them, without copying them anywhere else.
+ * The one job that needs them on the page — reading a surprising row against the text — asks with
+ * `--names`, the same flag the scorer takes for the same reason.
+ *
+ * The count is never withheld. How many claims exceeded their evidence is the finding; which words they
+ * used is the detail.
+ */
+function fromTheRun({ names, quotes, where }) {
+  // THE LOCATION IS KEPT WHEN THE WORDS ARE SHOWN. It costs one clause beside the quotation it stands in
+  // for, and a reader chasing a surprising row wants to go and read around it rather than only at it.
+  if (names) return `${quotes.map((q) => `"${String(q).slice(0, 160)}"`).join(" · ")} (${where})`;
+  return `${where} — run again with --names to read them here`;
+}
+
+/**
+ * The row that fires when a listing does not hold the mark an assertion asked for.
+ *
+ * It is the WIDEST row in either floor op: it printed the name asked for and every name the listing did
+ * hold, in clear, with no flag involved, and it fires precisely when somebody is investigating — a mark
+ * is absent, so a reader is reading the report. It exists twice, once per floor op, with one verb each.
+ *
+ * The COUNT is never withheld. A listing that held nothing is a different defect from one that held four
+ * other marks, and that distinction is the finding.
+ */
+function noSuchMark({ names, field, marks, file, verb }) {
+  const listed = (marks ?? []).map((x) => x?.name).filter((x) => typeof x === "string");
+  return { ok: false, saw: `the asked-for mark is not in ${file}, which ${verb} ${listed.length} mark(s)`
+    + (listed.length
+      ? ` — ${fromTheRun({ names, quotes: [field, ...listed],
+          where: `the name asked for is the field of this assertion's path, and the names ${verb} are the "marks" array of ${file}` })}`
+      : "") };
+}
+
+function evalAssertion(a, runDir, { names = REPORT_NAMES } = {}) {
   const [file, field] = String(a.path ?? "").split(":");
   const full = join(runDir, file || "");
 
@@ -1567,13 +1614,19 @@ function evalAssertion(a, runDir) {
     const held = recordsFile
       ? (recordsFile.marks ?? []).reduce((n, m) => n + (m.records ?? []).length, 0)
       : null;
-    const bad = sentences.filter((s) => aboutRegister.test(s) && !staysInside.test(s)
+    // Carried WITH ITS POSITION, because the index is what a withheld row prints instead of the words.
+    // `indexOf` on the sentence would be wrong the moment a document repeats one: both rows would send
+    // the reader to the first copy, and a run that says the same thing twice is exactly the run somebody
+    // is reading the report about.
+    const badAt = sentences.map((s, i) => ({ s, i })).filter(({ s }) => aboutRegister.test(s) && !staysInside.test(s)
       && (exceedsACount.test(s) || (singularAbsence.test(s) && !(held > 0))));
+    const bad = badAt.map(({ s }) => s);
     const basis = held === null
       ? "_driver/register-records.json is absent or unreadable, so this is as strict as a run holding zero records — identical verdict, different reason: one is a fact about the search, this is a fact about the check's own evidence"
       : `the run holds ${held} register record(s), so a status read off one is supported and only a claim over the field is not`;
     return { ok: bad.length === 0,
-      saw: bad.length ? `${bad.length} register claim(s) wider than the records this run holds — ${bad.slice(0, 2).map((s) => `"${s.slice(0, 120)}"`).join(" · ")} (${basis})`
+      saw: bad.length ? `${bad.length} register claim(s) wider than the records this run holds — `
+        + `${fromTheRun({ names, quotes: bad.slice(0, 2), where: `sentence ${badAt.slice(0, 2).map(({ i }) => i + 1).join(" and ")} of ${file}` })} (${basis})`
         : `${sentences.filter((s) => aboutRegister.test(s)).length} register sentence(s), each a count, a labelled expectation, or a status the records support — ${basis}` };
   }
   // `survivor-not-clear` — a mark this lane did not knock out is a SURVIVOR, never a clear. The two words
@@ -1713,7 +1766,7 @@ function evalAssertion(a, runDir) {
     const want = field ? String(field).trim().toLowerCase() : null;
     if (!want) return { ok: false, saw: "no mark given (path must be <file>:<MARK NAME>)" };
     const m = (doc.marks ?? []).find((x) => String(x?.name ?? "").trim().toLowerCase() === want);
-    if (!m) return { ok: false, saw: `no mark ${JSON.stringify(field)} in ${file} — it counted ${(doc.marks ?? []).map((x) => JSON.stringify(x?.name)).join(", ") || "nothing"}` };
+    if (!m) return noSuchMark({ names, field, marks: doc.marks, file, verb: "counted" });
     const floors = a.value && typeof a.value === "object" ? a.value : null;
     if (!floors) return { ok: false, saw: "value must be an object of predicate floors, e.g. {\"identical\": 45}" };
     const saw = [], short = [], untaken = [];
@@ -1721,7 +1774,12 @@ function evalAssertion(a, runDir) {
       const cell = m.counts?.[pred];
       if (!cell) { untaken.push(`${pred}: no such predicate on this run's sidecar`); continue; }
       if (!Number.isFinite(cell.total)) {
-        untaken.push(`${pred}: NOT TAKEN — ${String(cell.unavailable ?? "no reason recorded").slice(0, 160)}`);
+        // THE SAME FIELD AND THE SAME PROVENANCE as the `unavailable` twenty lines below, which is
+        // withheld — this one is the engine's own prose about why a count could not be taken, out of the
+        // run's sidecar. Withheld with it, and located by the predicate it belongs to.
+        untaken.push(`${pred}: NOT TAKEN — ${cell.unavailable === undefined || cell.unavailable === null
+          ? "no reason recorded"
+          : fromTheRun({ names, quotes: [String(cell.unavailable)], where: `the reason is counts.${pred}.unavailable of ${file}` })}`);
         continue;
       }
       saw.push(`${pred}=${cell.total} (floor ${floor})`);
@@ -1745,11 +1803,14 @@ function evalAssertion(a, runDir) {
     if (!existsSync(full)) return { ok: false, saw: `${file} absent — the filings lane wrote nothing, not even its refusal` };
     const doc = readJson(full);
     if (!doc) return { ok: false, saw: `${file} present but unparseable` };
-    if (doc.unavailable) return { ok: false, saw: `the filings were never listed — ${String(doc.unavailable).slice(0, 200)}. A listing that was refused is not a register that holds nothing.` };
+    if (doc.unavailable) return { ok: false, saw: `the filings were never listed — `
+      + `${fromTheRun({ names, quotes: [String(doc.unavailable)], where: `the reason is the "unavailable" field of ${file}` })}. `
+      + `A listing that was refused is not a register that holds nothing.` };
     const want = field ? String(field).trim().toLowerCase() : null;
     if (!want) return { ok: false, saw: "no mark given (path must be <file>:<MARK NAME>)" };
-    const m = (doc.marks ?? []).find((x) => String(x?.name ?? "").trim().toLowerCase() === want);
-    if (!m) return { ok: false, saw: `no mark ${JSON.stringify(field)} in ${file} — it listed ${(doc.marks ?? []).map((x) => JSON.stringify(x?.name)).join(", ") || "nothing"}` };
+    const markIndex = (doc.marks ?? []).findIndex((x) => String(x?.name ?? "").trim().toLowerCase() === want);
+    const m = markIndex === -1 ? null : doc.marks[markIndex];
+    if (!m) return noSuchMark({ names, field, marks: doc.marks, file, verb: "listed" });
     const floors = a.value && typeof a.value === "object" ? a.value : {};
     const minRecords = Number.isFinite(floors.records) ? floors.records : 1;
     const minOffices = Number.isFinite(floors.offices) ? floors.offices : 1;
@@ -1757,8 +1818,15 @@ function evalAssertion(a, runDir) {
     const offices = [...new Set(records.map((r) => String(r?.territory ?? "").trim().toLowerCase()).filter(Boolean))];
     // A term the register refused is REDUCED COVERAGE, and it is named whichever way the floor goes: met,
     // it qualifies what was proved; missed, it says the shortfall may be the fetch rather than the register.
-    const failed = (m.terms ?? []).filter((t) => t?.ok !== true)
-      .map((t) => `${t?.term ?? "?"}: ${String(t?.reason ?? "no reason recorded").slice(0, 120)}`);
+    // A TERM IS A SPELLING OF A MARK and the reason is the engine's own prose, so both are withheld by
+    // default; the INDEX still says which of the run's terms to go and read.
+    const failedRows = (m.terms ?? []).map((t, i) => ({ t, i })).filter(({ t }) => t?.ok !== true);
+    const failed = names
+      ? failedRows.map(({ t }) => `${t?.term ?? "?"}: ${String(t?.reason ?? "no reason recorded").slice(0, 120)}`)
+      // NAMED BY POSITION IN THE FILE, both coordinates. `term 2 of knockout-filings.json` is ambiguous
+      // the moment the listing holds more than one mark, and it always does — so the row would send a
+      // reader to a term belonging to a different mark and read just as confidently.
+      : failedRows.map(({ i }) => `term ${i + 1} of mark ${markIndex + 1} of ${file}`);
     const met = records.length >= minRecords && offices.length >= minOffices;
     const body = `${records.length} record(s) (floor ${minRecords}) across ${offices.length} office(s) [${offices.join(", ") || "none"}] (floor ${minOffices})`;
     if (met) return { ok: true, saw: failed.length ? `${body} — floor met, but ${failed.length} term(s) were refused and this run covered less than it asked for: ${failed.join(" · ")}` : body };
@@ -4045,7 +4113,7 @@ function cmdTeardown(id) {
 // stamp can never disagree about whether a round is done.
 // adds `SCENARIO_FILE` — the ONE filename pattern, exported so the test that pins the widening
 // reads the same regex `list` and the sweep read, rather than a copy that agrees today.
-export { evalAssertion, OPS, queueDrainState, DOORS, runLedger, investigate, brief, secs, queueOutcomes,
+export { evalAssertion, fromTheRun, OPS, queueDrainState, DOORS, runLedger, investigate, brief, secs, queueOutcomes,
   TERMINAL_BY_SUFFIX, TERMINAL_BY_SUFFIX_RAN, SCENARIO_FILE };
 
 // ── main ─────────────────────────────────────────────────────────────────────────────────────────────
@@ -4069,6 +4137,10 @@ if (invokedDirectly) {
     if (a === "--round") {
       requestedRound = raw[++i] ?? null;
       if (!requestedRound || requestedRound.startsWith("--")) die("--round needs a round TOKEN: e2e.mjs report <ID> --round <token>\n  The token is on `run`'s output and in the ROUNDS block of any report.");
+    } else if (a === "--names") {
+      // The words the run wrote, on the page. Off by default because `report` is the cheap instrument and
+      // is pointed at real matters in sessions that record what they print.
+      setReportNames(true);
     } else if (a.startsWith("--round=")) {
       requestedRound = a.slice("--round=".length);
       if (!requestedRound) die("--round= needs a round TOKEN: e2e.mjs report <ID> --round=<token>");
@@ -4076,13 +4148,13 @@ if (invokedDirectly) {
   }
   const [cmd, arg, ...extra] = positional;
   if (extra.length) die(`unexpected argument "${extra[0]}"\n`
-    + "usage: e2e.mjs list | run <ID> [--stale] | status | report <ID> [--round <token>] | teardown <ID> [--waive-unread]");
+    + "usage: e2e.mjs list | run <ID> [--stale] | status | report <ID> [--round <token>] [--names] | teardown <ID> [--waive-unread]");
   switch (cmd) {
     case "list": cmdList(); break;
     case "run": if (!arg) die("usage: e2e.mjs run <ID> [--stale]"); await cmdRun(arg); break;
     case "status": cmdStatus(); break;
-    case "report": if (!arg) die("usage: e2e.mjs report <ID> [--round <token>]"); await cmdReport(arg, { round: requestedRound }); break;
+    case "report": if (!arg) die("usage: e2e.mjs report <ID> [--round <token>] [--names]"); await cmdReport(arg, { round: requestedRound }); break;
     case "teardown": if (!arg) die("usage: e2e.mjs teardown <ID> [--waive-unread]"); cmdTeardown(arg); break;
-    default: die("usage: e2e.mjs list | run <ID> [--stale] | status | report <ID> [--round <token>] | teardown <ID> [--waive-unread]");
+    default: die("usage: e2e.mjs list | run <ID> [--stale] | status | report <ID> [--round <token>] [--names] | teardown <ID> [--waive-unread]");
   }
 }
