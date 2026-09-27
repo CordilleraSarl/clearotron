@@ -93,6 +93,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-cap-of-zero-is-not-a-register-outcome.test.mjs": {
+          "tests": 3,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "a-capability-gap-is-decided-once-per-run.test.mjs": {
           "tests": 4,
           "asserts": 17,
@@ -1812,6 +1818,12 @@
         "an-unread-probe-is-not-a-failed-measurement.test.mjs": {
           "tests": 5,
           "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "an-unreadable-sidecar-is-not-an-absent-one.test.mjs": {
+          "tests": 7,
+          "asserts": 13,
           "skips": 0,
           "todos": 0
         },

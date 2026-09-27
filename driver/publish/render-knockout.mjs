@@ -1377,16 +1377,16 @@ function firstRef(marks, framework) {
   return '';
 }
 
-// — THE REGISTER SENTENCE IS THE RENDERER'S, and it is the whole reason this function exists.
+// — THE REGISTER SENTENCE IS THE RENDERER'S, and it is the whole reason the two clauses below exist.
 //
 // A live run printed "the register overlay has not been run" in model prose directly under a table of
 // register counts the same run had taken. The model was not lying: it cannot see the count lane, it is
 // deliberately never shown the figures (register-count.mjs rule 1), and it filled the gap with the only
 // thing it had. The fix is not a better prompt — it is that nobody who cannot see the machinery gets to
-// describe it. The validator forbids the model from saying anything about register coverage; this
-// function says it, from the artifacts.
+// describe it. The validator forbids the model from saying anything about register coverage; these
+// clauses say it, from the artifacts.
 //
-// It reads the SIDECARS, never the prose: the counts entry for this mark, and whether the product bought
+// They read the SIDECARS, never the prose: the counts entry for this mark, and whether the product bought
 // the probe at all. Four states, four sentences, and none of them is a judgment.
 //
 // — AND IT NOW STATES THE POSITION, NOT ONLY THE COVERAGE. Coverage alone ("hit-counts were taken
@@ -1394,10 +1394,12 @@ function firstRef(marks, framework) {
 // STANDS on the register for this name. That sentence is appended by registerPositionClause below and
 // it is present in every state, including the state where the answer is "nothing does" — an absence is
 // a finding and must be said out loud, never left as a silence over a table of numbers.
-function registerLine(mark, registerCounts, probeRan, registerRecords = null, cards = []) {
-  return [coverageClause(mark, registerCounts, probeRan),
-    registerPositionClause(mark, registerCounts, registerRecords, cards)].filter(Boolean).join(' ');
-}
+//
+// THE FUNCTION THAT COMPOSED THE PAIR IS GONE, and removing it was the point rather than tidiness. It
+// was called from nowhere in the tree, and its call to `registerPositionClause` was the one that did NOT
+// pass the unreadable-sidecar flag — so anybody reviving it would have revived exactly the defect that
+// flag closes, silently, with nothing at the call site to say so. The live composition is inline in
+// `renderKnockoutHtml`, which passes it. Found independently twice before being removed once.
 
 /**
  * Where the name STANDS on the register that was searched. Six states, and they are six because
@@ -1421,12 +1423,22 @@ function registerLine(mark, registerCounts, probeRan, registerRecords = null, ca
 // unconditionally, which was true while the clause was drawn under the cards. It is drawn under the
 // COUNTS now — the numbers it qualifies — and the cards are below it, so a fixed word would send a
 // reader the wrong way up the page. The caller knows the order; this function does not guess it.
-function registerPositionClause(mark, registerCounts, registerRecords, cards = [], where = 'above') {
+// The one sentence for a listing whose answer this run cannot state, whether the lister refused or the
+// sidecar itself would not parse. Held once so the two callers below cannot drift: they are the same fact
+// to a reader, and two copies of a sentence are two sentences waiting to differ.
+const FILINGS_NOT_LISTED = 'The filings behind the counts could not be listed on this run, so nothing here says whether one stands.';
+
+function registerPositionClause(mark, registerCounts, registerRecords, cards = [], where = 'above', recordsUnreadable = false) {
   if (!registerRecords) {
+    // AN UNREADABLE SIDECAR IS NOT AN ABSENT ONE. Absent means the listing was never taken, and the page
+    // says so. Unreadable means it WAS taken and this run cannot say what it found. The second sentence
+    // was already written, for the lister's own refusal, and was simply unreachable from a republish:
+    // a file that would not parse arrived as null, and null reads here as absent.
+    if (recordsUnreadable) return FILINGS_NOT_LISTED;
     return registerCounts ? 'The filings behind those counts were not listed on this run.' : '';
   }
   if (registerRecords.unavailable) {
-    return 'The filings behind the counts could not be listed on this run, so nothing here says whether one stands.';
+    return FILINGS_NOT_LISTED;
   }
   const entry = recordsForMark(registerRecords, mark?.name);
   const provider = registerRecords.providerLabel ?? registerRecords.provider ?? 'the register';
@@ -1775,6 +1787,11 @@ const CAVEAT_LEAD = 'This screen also carries the following limits:';
 export function renderKnockoutHtml(findings, framework, {
   runId, overall, issued = null, auditFile = null, probeRan = false, registerCounts = null,
   registerRecords = null,
+  // — was the filings sidecar PRESENT but unreadable? Defaults to false, so every existing caller — the
+  // unit fixtures and both render-check scripts, none of which pass one — renders exactly as it did. It
+  // is its own value rather than a marker on `registerRecords`, because three sites PRINT
+  // `registerRecords.unavailable` and anything invented for it would become client-facing wording.
+  registerRecordsUnreadable = false,
   // The driver's own record of the owner lookups it ran. Defaults to [] so an
   // archived run that predates the lane renders exactly as it was delivered.
   ownerChecks = [],
@@ -1853,7 +1870,7 @@ export function renderKnockoutHtml(findings, framework, {
   // promoted, and the clause would name refs no card carries.
   const cardsByMark = new Map(marks.map((m) => [m?.name, registerCardViews(m, framework, registerRecords).cards]));
   const positions = marks.map((m) => {
-    const clause = registerPositionClause(m, registerCounts, registerRecords, cardsByMark.get(m?.name) ?? [], 'below');
+    const clause = registerPositionClause(m, registerCounts, registerRecords, cardsByMark.get(m?.name) ?? [], 'below', registerRecordsUnreadable);
     if (!clause) return '';
     return marks.length > 1 && m?.name ? `${m.name}: ${clause}` : clause;
   }).filter(Boolean).join(' ');
@@ -2220,6 +2237,16 @@ export function knockoutReportData(findings, framework, { runId, codename, overa
             line: recordsLine(listed),
             fetched: listed.fetched ?? (listed.records ?? []).length,
             capped: Boolean(listed.capped),
+            // THE CAP THE RUN RECORDED, beside the flag that says it bit. `capped: true` on its own cannot
+            // tell a listing truncated at fifty from one a cap of zero stopped before it began: the first
+            // is a register outcome and the second is a configuration, and a consumer reading the flag
+            // alone reports them the same way. The run has always written `cap` per mark; nothing read it.
+            //
+            // NULL IS NOT ZERO and the two are kept apart all the way out, the way the portal's allowance
+            // contract keeps them. Null is a sidecar that recorded no cap at all, which is every run
+            // archived before the field existed; zero is a cap that was set to zero. Folding them together
+            // would put an archived run and a misconfigured one on the same line.
+            cap: Number.isFinite(listed.cap) ? listed.cap : null,
             records: (listed.records ?? []).map((r) => ({
               mark: r.mark, owner: r.owner, status: r.status, classes: r.classes ?? [],
               territory: r.territory, matchedForm: r.matchedForm, matchedBasis: r.matchedBasis,
