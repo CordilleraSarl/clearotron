@@ -69,6 +69,9 @@ const readJsonl = (p) => {
   } catch { return []; }
 };
 
+/** One JSON artifact of the run, or null when it is absent or unreadable — the same contract as above. */
+const readJson = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
+
 /** The stage's own last attempt row, or null when the stage wrote none. */
 export function lastAttempt(runDir, stage) {
   const rows = readJsonl(driverDir(runDir, `${stage}.jsonl`))
@@ -219,7 +222,42 @@ function officialRecords(runDir, log) {
     cause: `the fetch ledger could not be read: ${last.ledgerError}` };
 }
 
-const CHECKS = [courtDecisions, searchLog, register, localLanguage, findingCards, checks, officialRecords];
+// ── COVERAGE THIS RUN COULD NOT TRACE ───────────────────────────────────────────────────────────────
+//
+// A NEW CHECK, NOT A REPAIR OF ONE. Every other check here reads a stage or a step that FAILED, or a
+// store the publisher could not read. None of them asks whether the run left coverage untraced, so a run
+// that delivered with slices it could not account for declared nothing — not because the mechanism was
+// silent, but because nothing in it was about coverage completeness. `coverage` has been in PART_NAMES
+// since this module shipped, reachable only through one store being unreadable.
+//
+// Measured on the run of 2026-09-27: 41 untraceable slices holding 4,835,678 hits against 9,865 records
+// retrieved, and `degraded-parts.json` recorded `parts: 0`. Nothing about that run's delivery said the
+// coverage was partial.
+//
+// THE COUNT IS THE GATE, NEVER THE HIT SUM. A slice the provider REFUSED contributes zero untraced hits,
+// so a run whose provider refused every slice sums to zero and a hit-gate reads it as a run with nothing
+// to say — the same arithmetic the operator note was corrected for. The slice count cannot be zero while
+// slices are untraced.
+//
+// THE READER'S LINE IS THE ROW'S OWN. `NOT_COMPLETED` is one of the two tokens the shipped deferral row
+// translates, so this writes no sentence and no new words reach a client: coverage that could not be
+// traced is coverage that could not be completed. The counts stay on the run's record, where the cause
+// belongs.
+function coverage(runDir) {
+  const totals = readJson(driverDir(runDir, "record-carry.json"))?.totals;
+  const slices = Number(totals?.untraceable_slices ?? 0) || 0;
+  if (!slices) return null;
+  const hits = Number(totals?.untraced_hits ?? 0) || 0;
+  const unknown = Number(totals?.untraced_unknown_slices ?? 0) || 0;
+  return { part: "coverage", name: PART_NAMES.coverage, reason: NOT_COMPLETED,
+    // A SUM THAT CANNOT BE COMPLETE SAYS SO. `untraced_hits` is of the KNOWN remainders only, so the
+    // count of slices whose remainder is unmeasurable rides beside it rather than being folded into a
+    // total that would then read as covering every slice.
+    cause: `${slices} slice(s) left untraced${hits ? `, holding ${hits} known hit(s)` : ""}`
+      + `${unknown ? `, ${unknown} of them with an unmeasurable remainder` : ""}` };
+}
+
+const CHECKS = [courtDecisions, searchLog, register, localLanguage, findingCards, checks, officialRecords, coverage];
 
 /**
  * Every part of this clearance run that failed and still ships, read from the run directory as it stands

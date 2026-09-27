@@ -6111,6 +6111,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-run-declares-the-coverage-it-could-not-trace.test.mjs": {
+          "tests": 4,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "the-run-key-is-unique-where-it-is-read.test.mjs": {
           "tests": 5,
           "asserts": 12,
