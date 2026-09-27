@@ -79,6 +79,12 @@ const NAME_LIST_KEYS = new Set(["covers_marks", "close_variations", "variations"
  * steady state, so a reference that gains a field says so the first time it is scored.
  */
 const SAFE_KEYS = new Set([
+  // NOT A REFERENCE KEY AT ALL, read at its producer by the lane that owns this file: `coverage` appears
+  // zero times in every gold. `reference-score.mjs` sets it from the scorer's own verdict word and the
+  // scorer prints it as a state and a `why` — the harness's sentence about what it could measure, not a
+  // sentence about anybody. Classified here because the warning below named it and a reader would
+  // otherwise go looking in a gold file for a key the scorer invented.
+  "coverage",
   "scenario", "schema_version", "schema", "framework", "id", "title", "door", "lane", "state", "why",
   "lawyer_band", "legal_level", "dispute_type", "lawyer_risk", "band", "rating", "ratingQualifier",
   "channel", "channels", "jurisdictions", "classes", "territories", "country", "rule", "bucket",
@@ -157,28 +163,104 @@ export function protectedStrings(root) {
   // reader would recognise the party from, which is the thing being withheld.
   const LEGAL_FORM = new Set(["inc", "llc", "ltd", "limited", "gmbh", "corp", "corporation", "company",
     "holdings", "group", "plc", "sarl", "bv", "nv", "ag", "sa", "spa", "pty", "kk", "co", "and", "the", "of"]);
+  // KEPT APART FROM THE GIVEN NAMES, because the two are not equally safe to
+  // apply. A given name is a party's name and appears nowhere else by construction. A DERIVED word is an
+  // ordinary word that happens to sit inside one, so it collides with the scorer's own scaffolding: a
+  // party called "Depth Charge" turns `per-territory depth` into `per-territory «name 2»`, and a reader
+  // cannot tell a redaction from a word. Both layers still apply to everything the run prints; only a
+  // line the SCORER ITSELF authored drops the derived one, through `authoredRedactor` below.
+  const derived = new Set();
   for (const n of [...names]) {
     const parts = n.trim().split(/\s+/);
     if (parts.length < 2) continue;
     for (const w of parts) {
-      const bare = w.replace(/[^\p{L}\p{N}]/gu, "");
-      if (bare.length >= 5 && !LEGAL_FORM.has(bare.toLowerCase())) names.add(bare);
+      // FOLDED BEFORE THE FLOOR AND THE LEGAL-FORM LOOKUP, and the folded form is what is stored.
+      // Both tests are wrong on the unfolded word, in opposite directions. `\uFF2C\uFF34\uFF24`
+      // lowercases to `\uFF4C\uFF54\uFF44`, which is not in LEGAL_FORM, so the legal form became a
+      // protected word — and once the text is folded too, that word matches every "Ltd" the run prints,
+      // which is the shredding LEGAL_FORM exists to prevent. The floor has the mirror fault: the "fi"
+      // ligature is four characters raw and five folded, so a distinctive word was excluded for being
+      // short when it is not. Deriving from the folded form makes both decisions right by construction.
+      const bare = foldForMatching(w).folded.replace(/[^\p{L}\p{N}]/gu, "");
+      if (bare.length >= 5 && !LEGAL_FORM.has(bare.toLowerCase())) { names.add(bare); derived.add(bare); }
     }
   }
   // A one- or two-character "name" is a substring of ordinary words, and swapping it everywhere would
   // shred the surrounding prose without protecting anything a reader could identify anyone from.
   for (const n of [...names]) if (n.length < 3) names.delete(n);
-  return { names, prose, unclassified: [...unclassified].sort() };
+  return { names, prose, derived, unclassified: [...unclassified].sort() };
 }
 
-/** The line a caller prints when `unclassified` is not empty. Names keys, never values. */
+/**
+ * The line a caller prints when `unclassified` is not empty. Names keys, never values.
+ *
+ * IT DOES NOT SAY "THE REFERENCE", and that wording was a real misdirection rather than a looseness.
+ * `protectedStrings` walks the reference, the scored buckets AND the run, so a key it names may come from
+ * any of the three — and the first key it named after the run was added, `coverage`, is the scorer's own
+ * field, absent from every gold. Anyone acting on the old sentence went looking in a gold file for a key
+ * the scorer invented. Saying it does not know which source is worse than naming it and better than
+ * naming the wrong one; carrying the source per key is a further change and is not this one.
+ */
 export const unclassifiedNotice = (keys) =>
-  `*** THE REFERENCE CARRIES ${keys.length} KEY(S) THIS REDACTION DOES NOT CLASSIFY: ${keys.join(", ")}. `
+  `*** THE REFERENCE, THE SCORED BUCKETS OR THE RUN CARRIES ${keys.length} KEY(S) THIS REDACTION DOES NOT `
+  + `CLASSIFY, and this line does not know which: ${keys.join(", ")}. `
   + `Their text was NOT withheld and may name somebody. Classify each in driver/score-redaction.mjs as a `
   + `name, as prose, or as safe — this warning is the only thing standing between a new reference field `
   + `and the silent leak it would otherwise be.`;
 
 const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/**
+ * A name is matched however it is rendered, and the token is spliced back into the ORIGINAL text.
+ *
+ * WHY. A score taken without `--names` printed a mark and its proprietor in clear, in the same sentence
+ * as three that redacted correctly, because that one renders at full width: the protected set matched
+ * only the exact code points the reference happened to carry. Full-width Latin is
+ * ordinary in East Asian filings, so the failure concentrated in exactly the matters read in more than
+ * one script. A register can also hand back full-width digits and punctuation, half-width katakana, and
+ * an accented name either composed or decomposed. All of those are the same class, and one compatibility
+ * fold answers all of them.
+ *
+ * WHY NOT FOLD THE WHOLE STRING. The fold has to be reversible enough to put the token back where the
+ * name stood in the text the reader will see. Normalising the page and printing the normalised copy would
+ * silently rewrite text that names nobody. So the fold is built as a PROJECTION: a folded string to match
+ * in, and two arrays mapping each folded position back to the original range it came from.
+ *
+ * WHY BY CLUSTER, NOT BY CHARACTER. Folding one code point at a time keeps the mapping simple but never
+ * recombines: `e` followed by a combining acute stays two characters and never matches the composed name.
+ * So a character is grouped with the marks that follow it and the group is folded whole. The group has to
+ * include the half-width katakana voiced marks, which are modifier LETTERS and not marks — without them
+ * the fold yields U+30C8 U+3099 where the reference carries U+30C9, which is the same glyph on screen and
+ * not a match. Measured, 2026-09-27; the character classes are why reading the output was not enough.
+ *
+ * EVERY FAILURE MODE HERE IS OVER-REDACTION. The spliced range runs from the start of the first cluster
+ * the match touched to the end of the last, so it always contains the matched text and never less. A
+ * match that lands part-way into one cluster removes the whole cluster.
+ */
+export function foldForMatching(text) {
+  const src = String(text);
+  // A character plus any marks that follow it. `\uFF9E`/`\uFF9F` are the half-width voiced sound marks:
+  // they behave as marks here and are not in `\p{M}`.
+  const cluster = /\P{M}[\p{M}\uFF9E\uFF9F]*|[\p{M}\uFF9E\uFF9F]+/gu;
+  let folded = "";
+  const start = [];     // folded position -> where its cluster starts in the original
+  const end = [];       // folded position -> where its cluster ends in the original
+  for (let m = cluster.exec(src); m !== null; m = cluster.exec(src)) {
+    // FORMAT CHARACTERS ARE DROPPED FOR MATCHING, never from the output. NFKC keeps every one of them:
+    // a zero-width space, joiner, non-joiner, soft hyphen or byte-order mark sitting INSIDE a name
+    // survives the fold, and the name is then printed in clear. Measured 2026-09-27: a zero-width space
+    // one character into a protected name defeated the match completely. They carry no width and a reader
+    // cannot see them, so a page can carry a party's name looking exactly like the redacted rows beside
+    // it. Dropping them here only ever makes a match MORE likely, and the splice still removes the whole
+    // original range, format characters included.
+    const f = m[0].normalize("NFKC").replace(/\p{Cf}/gu, "");
+    for (let k = 0; k < f.length; k++) { start.push(m.index); end.push(m.index + m[0].length); }
+    folded += f;
+  }
+  start.push(src.length);
+  end.push(src.length);
+  return { folded, start, end };
+}
 
 /**
  * A name matches where it stands on its own, not where it happens to be inside a word.
@@ -213,24 +295,93 @@ const matcher = (name) => new RegExp(`(?<![\\p{L}\\p{N}])${escapeRe(name)}(?:['�
  */
 export function redactor({ names = new Set(), prose = new Set(), hint = "run again with --names to read it" } = {}) {
   const index = new Map();
-  const ordered = [...names].sort((a, b) => b.length - a.length || a.localeCompare(b));
   // The token is the entry's position in a STABLE ordering of the protected set, not its position in the
   // reference: the same run scored twice must redact to the same tokens, and two entries that differ only
   // in case are one name.
   [...names].sort((a, b) => a.localeCompare(b)).forEach((n, i) => index.set(n.toLowerCase(), i + 1));
-  const proseOrdered = [...prose].sort((a, b) => b.length - a.length);
+  // LONGEST FOLDED FIRST, not longest raw. The reason for longest-first is about the text being matched,
+  // and that text is now the folded projection — folding does not preserve length, so raw order can put
+  // a shorter name first and leave the tail of a longer one beside a token claiming it was removed.
+  const withFold = (s) => ({ raw: s, fold: foldForMatching(s).folded });
+  const ordered = [...names].map(withFold).sort((a, b) => b.fold.length - a.fold.length || a.raw.localeCompare(b.raw));
+  const proseOrdered = [...prose].map(withFold).sort((a, b) => b.fold.length - a.fold.length);
 
   return function redact(text) {
-    let out = String(text);
+    const src = String(text);
+    // The page is folded ONCE, not once per name: the protected set runs to hundreds of entries on a real
+    // reference, and re-folding for each would be a second full scan of the text per name.
+    const { folded, start, end } = foldForMatching(src);
+    // Accepted replacements, in ORIGINAL offsets, each accepted only where it overlaps nothing already
+    // accepted. That is what makes prose win over the names inside it.
+    const taken = [];
+    // UNION, NEVER DROP. A candidate overlapping something already accepted is MERGED into it rather than
+    // discarded, and dropping was the one step in this file that could SHRINK coverage. A name straddling
+    // the edge of an accepted prose range was refused whole, and the text outside that range — the rest of
+    // the name — was then emitted as it stood. Measured: prose "hello DRAV" beside a protected "DRAVOLINE"
+    // printed "OLINE" in clear, immediately after a withheld token. That is the worst shape this module
+    // has, because the token beside the fragment tells the reader the redaction is working. A name wholly
+    // inside a prose range was always correct; only the straddle leaked. Merging restores the invariant
+    // the fold already relies on: every failure here is over-redaction and none is a leak.
+    //
+    // WHICH TEXT A MERGED RANGE CARRIES. Prose beats a name, because a sentence with its names swapped out
+    // still says what the matter is about. Between two names the INCUMBENT keeps its token — the earliest
+    // entry in a stable ordering — because the same run scored twice must redact to the same tokens.
+    const take = (at, stop, isFolded, withText, isProse) => {
+      let from = isFolded ? start[at] : at;
+      let to = isFolded ? end[stop - 1] : stop;
+      const hits = [];
+      for (let i = 0; i < taken.length; i++) if (from < taken[i].to && to > taken[i].from) hits.push(i);
+      if (!hits.length) { taken.push({ from, to, withText, isProse }); return; }
+      let text = withText;
+      let prose = isProse;
+      for (const i of hits) {
+        const t = taken[i];
+        from = Math.min(from, t.from);
+        to = Math.max(to, t.to);
+        if (t.isProse || !prose) { text = t.withText; prose = prose || t.isProse; }
+      }
+      // Accepted ranges are pairwise disjoint, so every range inside the merged extent is among the hits
+      // and one pass is enough. `hits` ascends, so removing from the end keeps the earlier indexes valid.
+      for (let k = hits.length - 1; k >= 0; k--) taken.splice(hits[k], 1);
+      taken.push({ from, to, withText: text, isProse: prose });
+    };
+
+    // PROSE FIRST, AND IT WINS ANY OVERLAP: a sentence with its names swapped out still says what the
+    // matter is about, so the whole sentence goes rather than the names inside it.
     for (const p of proseOrdered) {
-      if (!out.includes(p)) continue;
-      out = out.split(p).join(`[withheld — ${hint}]`);
+      const needle = p.fold || p.raw;     // a string that folds to nothing is matched as it stands
+      // AN EMPTY ENTRY IS SKIPPED, and the guard is here rather than left to the producer. `indexOf("")`
+      // is 0 and the loop below advances by the needle's length, so an empty string spins forever. Nothing
+      // empty can arrive from a reference today, because every branch that collects one tests it first —
+      // but that is the producer's property, not this function's, and a hang has no error message.
+      if (!needle) continue;
+      const hay = p.fold ? folded : src;
+      for (let at = hay.indexOf(needle); at !== -1; at = hay.indexOf(needle, at + needle.length)) {
+        take(at, at + needle.length, Boolean(p.fold), `[withheld — ${hint}]`, true);
+      }
     }
-    // One pass per name, and no `test` before it: `replace` on a global regex resets `lastIndex` itself,
-    // so the guard did no work the replace did not, and on a long protected set it was a second full
-    // scan of the text for every name.
-    for (const n of ordered) out = out.replace(matcher(n), `«name ${index.get(n.toLowerCase())}»`);
-    return out;
+    for (const n of ordered) {
+      const needle = n.fold || n.raw;
+      if (!needle) continue;              // same reason as the prose loop above
+      const hay = n.fold ? folded : src;
+      const re = matcher(needle);
+      const withText = `«name ${index.get(n.raw.toLowerCase())}»`;
+      for (let m = re.exec(hay); m !== null; m = re.exec(hay)) {
+        if (m[0].length === 0) { re.lastIndex += 1; continue; }   // never advance on an empty match
+        take(m.index, m.index + m[0].length, Boolean(n.fold), withText, false);
+      }
+    }
+
+    if (!taken.length) return src;
+    taken.sort((a, b) => a.from - b.from);
+    let out = "";
+    let at = 0;
+    for (const t of taken) {
+      if (t.from < at) continue;
+      out += src.slice(at, t.from) + t.withText;
+      at = t.to;
+    }
+    return out + src.slice(at);
   };
 }
 
@@ -248,7 +399,43 @@ export function redactor({ names = new Set(), prose = new Set(), hint = "run aga
  * rather than rethrowing: a rethrow would reach node's own printer, which writes to the real file
  * descriptor and never passes through anything installed here.
  */
-export function installRedaction(redact, io = { console, process }) {
+/**
+ * The redactor for a line the SCORER ITSELF wrote — a heading, a column ruler, a label.
+ *
+ * It applies the party names and the reference's own sentences, and DROPS the derived words. So a
+ * scaffolding word that happens to sit inside a party's name survives, and a reader keeps the structure
+ * that tells them what was withheld.
+ *
+ * IT IS NOT A BYPASS, and that is the whole reason it is a redactor rather than a raw write. Routing
+ * structural lines straight to the original writer would make this a hole: a data line sent through it by
+ * mistake would print a party name in clear. Here the worst a mistake costs is a shortened form — the full
+ * name is still taken out, and the given-name layer is exactly as strict as the main one. Every failure
+ * mode of this path is over-redaction; none is a name escaping.
+ */
+export function authoredRedactor({ names = new Set(), prose = new Set(), derived = new Set(), hint } = {}) {
+  // SUBTRACTS, rather than being handed a narrower set to union. The first shape of this had `redactor`
+  // take the derived words as a separate argument, so every existing caller that did not pass them lost
+  // the layer silently — including the live install. Two arms caught it. Dropping a layer has to be the
+  // thing a caller asks for explicitly; the default cannot be the weaker one.
+  const kept = new Set([...names].filter((x) => !derived.has(x)));
+  return redactor({ names: kept, prose, ...(hint ? { hint } : {}) });
+}
+
+// The authored printer, live only while a redaction is installed. Held here rather than threaded through
+// every caller so a call site needs nothing but the function.
+let authoredPrint = null;
+
+/**
+ * Print a line this tool authored, with the derived-word layer dropped. With no redaction installed it is
+ * an ordinary write, which is the `--names` case: nothing is withheld, so there is nothing to drop.
+ */
+export function printAuthored(line) {
+  const text = `${line}\n`;
+  if (authoredPrint) authoredPrint(text);
+  else process.stdout.write(text);
+}
+
+export function installRedaction(redact, io = { console, process }, authored = null) {
   const { console: con, process: proc } = io;
   // THE REFERENCE TO PUT BACK AND THE FUNCTION TO CALL ARE NOT THE SAME THING. A stream write has to be
   // called bound to its stream, but restoring the BOUND copy leaves a different function on the object
@@ -270,6 +457,9 @@ export function installRedaction(redact, io = { console, process }) {
     original.stderr(`${redact(e?.stack ?? String(e))}\n`);
     proc.exit(1);
   };
+  // Writes through the ORIGINAL stream, so the wrap above cannot re-apply the
+  // derived layer to a line that just had it dropped.
+  authoredPrint = (text) => original.stdout(authored ? authored(text) : redact(text));
   proc.on?.("uncaughtException", onUncaught);
   proc.on?.("unhandledRejection", onUncaught);
   return function uninstall() {
@@ -278,6 +468,7 @@ export function installRedaction(redact, io = { console, process }) {
     proc.stderr.write = original.stderrRef;
     proc.off?.("uncaughtException", onUncaught);
     proc.off?.("unhandledRejection", onUncaught);
+      authoredPrint = null;
   };
 }
 

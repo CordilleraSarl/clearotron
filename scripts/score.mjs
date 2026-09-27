@@ -64,7 +64,7 @@ import { recordQids } from "../driver/named-band.mjs";
 import { previousRunDir, scenarioRefs } from "../driver/e2e-rounds.mjs";
 // The names rule, kept out of this file so it is testable without a run directory — the same reason
 // reference-score.mjs holds the scoring rules rather than this script.
-import { protectedStrings, redactor, installRedaction, unclassifiedNotice, REDACTION_NOTICE } from "../driver/score-redaction.mjs";
+import { protectedStrings, redactor, authoredRedactor, printAuthored, installRedaction, unclassifiedNotice, REDACTION_NOTICE } from "../driver/score-redaction.mjs";
 import { readSettleStamp } from "../driver/settle-stamp.mjs";   
 import { envFrom } from "../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
 
@@ -761,9 +761,13 @@ function print(id, ref, run, s, delta, refPath) {
   // instructed territory, or does the lane thin out as the count rises. Read `sub-query` first, then
   // `returned` — a sub-query that ran and came back over the provider's ceiling is not depth holding.
   const T = s.territories;
-  console.log(`\n── axis E · per-territory depth ${"─".repeat(45)}`);
+  // AUTHORED, not data: this heading and the column ruler below it carry the words "territory" and
+  // "depth", which a party name can put into the protected set. Measured before this change: a reference
+  // whose proprietor was "Depth Charge" printed `per-territory «name 2»`, and one called "Territory
+  // Holdings" printed `per-«name 1» depth` — a reader cannot tell a redaction from a word.
+  printAuthored(`\n── axis E · per-territory depth ${"─".repeat(45)}`);
   if (!T.subQueriesResolved) console.log(`  sub-queries NOT MEASURABLE — ${T.why}`);
-  console.log(`  ${"territory".padEnd(10)} ${"sub-query".padEnd(22)} ${"own".padEnd(4)} ${"grouped".padEnd(8)} ${"returned".padEnd(9)} ${"recall".padEnd(7)} reference entries`);
+  printAuthored(`  ${"territory".padEnd(10)} ${"sub-query".padEnd(22)} ${"own".padEnd(4)} ${"grouped".padEnd(8)} ${"returned".padEnd(9)} ${"recall".padEnd(7)} reference entries`);
   for (const r of T.rows) {
     // `—` for recall is deliberate and is the whole design point of this row: a territory whose
     // reference carries nothing to score prints NEITHER 0% (which reads as total failure) NOR 100%
@@ -990,9 +994,13 @@ const delta = prev ? bucketDelta(scored.buckets, prev.buckets) : null;
 // came for.
 let unclassifiedKeys = [];
 if (!opts.names) {
-  const { names, prose, unclassified } = protectedStrings({ reference: ref, scored, run: run.findings ?? null });
+  const { names, prose, derived, unclassified } = protectedStrings({ reference: ref, scored, run: run.findings ?? null });
   unclassifiedKeys = unclassified;
-  installRedaction(redactor({ names, prose }));
+  // The second redactor is for lines this tool WROTE. It drops the derived-word layer
+  // only, so a party's ordinary long word stops rewriting our own headings while its full name is still
+  // taken out of them. A structural line nobody routed through `printAuthored` is redacted as before,
+  // which is the old behaviour and the safe side.
+  installRedaction(redactor({ names, prose }), undefined, authoredRedactor({ names, prose, derived }));
 }
 
 if (opts.json) {
