@@ -2,6 +2,7 @@
   "classes": [
     "bare-reference",
     "spelled-citation",
+    "retired-agent-id",
     "login",
     "home-path",
     "private-repo-name",
@@ -9,7 +10,7 @@
     "agent-trailer",
     "machine-trailer"
   ],
-  "total": 10,
+  "total": 15,
   "files": {
     "driver/test/a-bare-reference-added-in-a-diff-is-refused.test.mjs": [
       0,
@@ -19,9 +20,11 @@
       0,
       0,
       0,
+      0,
       0
     ],
     "driver/test/a-real-install-starts-with-an-empty-archive.test.mjs": [
+      0,
       0,
       0,
       0,
@@ -34,6 +37,7 @@
     "driver/test/deployment-hostnames.test.mjs": [
       0,
       0,
+      0,
       2,
       0,
       0,
@@ -42,6 +46,7 @@
       0
     ],
     "driver/test/doctor-reads-the-units-not-the-shell.test.mjs": [
+      0,
       0,
       0,
       0,
@@ -59,6 +64,18 @@
       0,
       0,
       0,
+      0,
+      0
+    ],
+    "driver/test/render-frozen.test.mjs": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
       0
     ],
     "driver/test/the-citation-strip-removes-openers-and-nothing-else.test.mjs": [
@@ -69,11 +86,57 @@
       0,
       0,
       0,
+      0,
+      0
+    ],
+    "driver/unit-inventory.mjs": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "providers/corsearch/README.md": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "providers/oauth-mcp-bridge/README.md": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "providers/signa/src/core.js": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
       0
     ],
     "scripts/strip-tracker-citations.mjs": [
       0,
       1,
+      0,
       0,
       0,
       0,
