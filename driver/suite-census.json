@@ -5439,6 +5439,12 @@
           "skips": 1,
           "todos": 0
         },
+        "the-chapters-step-order-is-the-executed-order.test.mjs": {
+          "tests": 4,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "the-citation-strip-removes-openers-and-nothing-else.test.mjs": {
           "tests": 18,
           "asserts": 51,
