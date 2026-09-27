@@ -41,11 +41,24 @@ const PROSE_KEYS = new Set([
   // Engine prose about a matter, classified from reading its site rather than from a warning: the
   // reason a finding was ruled out is written about that finding and can name the party it concerns.
   "ruled_out_reason",
+  // The findings document's own prose, surfaced the first time the run was walked rather than only the
+  // reference. Each of these is the engine reasoning about a party in sentences.
+  "net", "practical_position", "legal_position", "off_field_ground", "reason", "bears_on", "read",
+  "condition", "basis", "quality",
 ]);
 
 /** Fields that carry a name: a mark, a proprietor, a subject, a form of a mark. */
 const NAME_KEYS = new Set([
   "mark", "owner", "subject", "name", "matched", "entry", "noise", "form", "use_form",
+  // `refused` READS LIKE A BOOLEAN AND HOLDS A MARK. `reference-score.mjs` builds it as
+  // `refused: refused.mark`, so a key whose name suggests a flag carries a name. Classified from its
+  // producer rather than from the word — I had it in the safe set for one draft, which would have
+  // shipped a leak inside the change that closes one.
+  "refused",
+  // `item` is a gap's identifier, `g.item ?? g.slice`, and I could not establish from its producer that
+  // it never carries matter text. Protected rather than assumed safe: tokenising an identifier costs a
+  // little readability, and the other error costs a name on the page.
+  "item",
   // A SEARCH TERM IS A SPELLING OF A MARK. `term` carries the string a register question was actually
   // asked with — the same class of thing as `close_variations`, which was already protected, arriving
   // by a different route. Read at its site (the per-territory query roll) rather than inferred: it is
@@ -73,6 +86,14 @@ const SAFE_KEYS = new Set([
   // Label-shaped fields the real references carry, confirmed one by one rather than assumed: a grade,
   // an expected-value word, and the territory a reference entry sits in.
   "grade", "expected", "jurisdiction",
+  // Band and classification labels the findings document carries. Words from a fixed ladder, not names.
+  "Dispute Type", "Legal Risk Level", "category", "source_type", "resolved_link",
+  // The refusal record's own fields, surfaced once the run was walked: `refusedRule` and
+  // `refusedEvidence` name the RULE that fired and the evidence class it wanted, both from fixed
+  // vocabularies, and `refused` is its boolean. Read at their site rather than inferred from the names.
+  // `refusedRule` names the RULE that fired and `refusedEvidence` the evidence class it wanted, both
+  // fixed vocabularies. `refused` is NOT here: see NAME_KEYS.
+  "refusedRule", "refusedEvidence",
   // THE TWENTY-ONE THE WARNING NAMED ON THE WITHHELD CORPUS, each classified by what its site holds
   // rather than by what its name suggests — two of them would have been got wrong by the name alone.
   //
@@ -122,6 +143,28 @@ export function protectedStrings(root) {
     }
   };
   walk(root);
+  // A MULTI-WORD NAME IS ALSO PROTECTED BY ITS DISTINCTIVE WORD, because prose shortens it.
+  //
+  // Measured on R18 `f5764a2f`: a two-word proprietor was collected in full and still printed in clear,
+  // because the sentence that named it used the first word with a possessive and nothing else. Matching
+  // only the whole string protects the form in the record and misses the form a reader actually meets —
+  // and a redaction that covers the tidy case and not the prose one is worse than none, because the page
+  // looks redacted.
+  //
+  // THE FLOOR IS FIVE CHARACTERS AND THE LEGAL FORMS ARE EXCLUDED. A short word, or "Holdings", or "Ltd",
+  // is a word of ordinary English before it is anybody's name, and swapping those everywhere would shred
+  // the surrounding text while protecting nobody. A distinctive five-letter-plus word is the part a
+  // reader would recognise the party from, which is the thing being withheld.
+  const LEGAL_FORM = new Set(["inc", "llc", "ltd", "limited", "gmbh", "corp", "corporation", "company",
+    "holdings", "group", "plc", "sarl", "bv", "nv", "ag", "sa", "spa", "pty", "kk", "co", "and", "the", "of"]);
+  for (const n of [...names]) {
+    const parts = n.trim().split(/\s+/);
+    if (parts.length < 2) continue;
+    for (const w of parts) {
+      const bare = w.replace(/[^\p{L}\p{N}]/gu, "");
+      if (bare.length >= 5 && !LEGAL_FORM.has(bare.toLowerCase())) names.add(bare);
+    }
+  }
   // A one- or two-character "name" is a substring of ordinary words, and swapping it everywhere would
   // shred the surrounding prose without protecting anything a reader could identify anyone from.
   for (const n of [...names]) if (n.length < 3) names.delete(n);

@@ -977,11 +977,20 @@ const delta = prev ? bucketDelta(scored.buckets, prev.buckets) : null;
 // that adds a print. Here `renderCarryThrough`'s lines and anything added after this was written are
 // covered without anyone remembering to.
 //
-// The two inputs are the reference AND the scored buckets: a proprietor this run surfaced that the
-// lawyer never named is still somebody's name, and it reaches the page through `noise`.
+// THE INPUTS ARE THE REFERENCE, THE SCORED BUCKETS **AND THE RUN'S OWN FINDINGS**, and the third was
+// missing. A proprietor this run surfaced that the lawyer never named is still somebody's name; the
+// buckets carry the ones the scorer could join to a reference entry, and the FINDINGS carry every other.
+//
+// Measured on R18 `f5764a2f`: the `verdict:` line printed a proprietor in clear while tokenising the mark
+// beside it. The name sits at `findings[0].owner.name` — a key already in the protected set — and was
+// simply never walked, because the findings were not handed over. It also appears inside five prose
+// fields of the same document (`net`, `practical_position`, `read`, `condition`, `text`), so collecting it
+// as a name substitutes it in all of them rather than needing each one withheld whole. That matters:
+// `text` carries the reviewer's verdict word, and withholding it entire would blank a value the reader
+// came for.
 let unclassifiedKeys = [];
 if (!opts.names) {
-  const { names, prose, unclassified } = protectedStrings({ reference: ref, scored });
+  const { names, prose, unclassified } = protectedStrings({ reference: ref, scored, run: run.findings ?? null });
   unclassifiedKeys = unclassified;
   installRedaction(redactor({ names, prose }));
 }
