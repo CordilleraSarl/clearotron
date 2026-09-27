@@ -4,6 +4,65 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.4.0-beta.2
+
+### New
+
+- A knockout search now also asks whether each name is already in use in the client's field, such as a game character or a drink.
+- Searching by judgment.
+- This release changes how a clearance decides what to search. Until now the engine followed fixed rules: a set number of spellings, a fixed list of stores, a stop after the first identical mark. Fixed rules are fast and cheap, but they miss things. On a recent matter, a lawyer's review found marks the engine had counted but never read, and others it had raised that did not matter.
+- So the approach changes. Wherever the engine holds a pile of results, it now looks at what is there and decides what a lawyer would raise. It carries that forward and writes down what it set aside, and why. Nothing is dropped silently. Every wider search, every spelling set aside and every store left out appears in the audit workbook with its reason.
+- What you will notice:
+- Searches widen where it could change the advice, and narrow where it cannot.
+- Near spellings no buyer would confuse with the mark are set aside, with the reason recorded.
+- Searches in other scripts run only in markets that file marks in that script.
+- A large company's register is read for the marks that share the searched name. The rest is counted, not fetched.
+- Marketplace searches cover the stores that sell the client's goods, and say which stores were left out and why.
+- The report no longer opens with the internal reviewer's notes. They reach the reviewing lawyer separately.
+- A large marketplace search no longer fails because its results were too big to return in one piece.
+- Where a company's framework rates through named inputs, the report shows them beside each band.
+- A word on regressions. While testing this line we found two. A crowded search failed before delivering its report, and a knockout's ratings moved one step away from the lawyer's. Both were caught by running the same matters against a lawyer's answers, and both are fixed here. Every build is now tested that way before it ships. We are tuning for three things at once: a report that is right the first time, delivered fast, at a sensible cost. They pull against each other, and each release is our best current balance.
+- Clearotron runs natively on Windows, from PowerShell: no WSL2, no Git and no administrator rights.
+- Global preliminary, multi-country and full country searches now search the web in more depth and keep more results from each search.
+- The meaning and reputation search now asks the questions the matter's framing names, in the languages whose markets matter. Where the framing names none, the report says no meaning search ran.
+
+### Fixed
+
+- In a crowded field, the search now reads the spellings a lawyer would raise, rather than the ones that fit under a record limit.
+- When a knockout's search for filings fails, the report and the audit workbook no longer show the raw error.
+- On Windows, a failed finding card no longer shows as covered in the audit workbook.
+- When a search could not be made, the report says so instead of giving a wrong reason.
+- A register search limited to the client's goods now searches every other office when one office cannot filter by goods.
+- a right the report keeps is no longer dropped because other registrations of the same right were ruled out.
+- A knockout search no longer drops a store listing or fan wiki page its web search found; the rating now reads every result.
+- A knockout's audit workbook also lists a part that failed as a whole, such as its filings listing or plain-language review. A filing shown without its link now says why.
+- on a Mac, `clearotron start` no longer offers to run in the background, which only works on Linux.
+- on a Mac, a search step could write into Clearotron's own protected folders by naming them in a different letter case. Those writes are now refused.
+- A register search that times out across many countries is asked again in smaller parts; one that still times out is reported as incomplete.
+- on the OpenAI engine, Codex's own sandbox no longer refuses the register searches a clearance runs.
+- the audit workbook's What was searched tab no longer shows a web or marketplace search that found similar listings as clean.
+- Worldwide searches are no longer narrowed to an account's default territories, and results too crowded to read in full are no longer reported clean.
+- A report no longer offers a native-language investigation to a client who ordered one, and says when that investigation was not completed.
+- When a knockout's lookup of a filing owner fails, its read now says the lookup did not answer, instead of saying it found nothing.
+- a full country search's report no longer says court decisions were searched when that search failed or its source was down.
+- opening a report no longer contacts any font service; the report carries its typeface, now Plus Jakarta Sans, inside itself.
+- searches no longer reuse earlier results.
+- skipped searches are no longer shown as unfinished in the report.
+- The audit workbook now lists, on Coverage & gaps, any part of a report that could not be completed on the run. A knockout's Audit Trail also lists an owner lookup that got no answer.
+- on the OpenAI engine, a Full country search now reads case law from CourtListener and Legal Data Hunter, not EUR-Lex alone.
+- setup, `clearotron doctor` and the start of every search now check that the engine can write a file where a search writes its results.
+- The operator tool no longer accepts instructions, which never reached the run; a call sending them is refused.
+- on the OpenAI engine, the tool that reads web pages now refuses addresses on the server's own network, such as cloud metadata addresses.
+
+### For operators
+
+- on the Anthropic engine, a search can no longer read the install's settings or other private files.
+- stages on the Anthropic engine can no longer run commands on the server; every tool that runs a command is removed from them.
+- on the OpenAI engine with Codex's sandbox on, the commands a search runs can no longer read the install's settings or other private files.
+- each stage's AI program now receives only the settings it needs, and never the key that signs access keys.
+- the old default agent name is gone from the product. An install upgrading from a version before 0.2.2 must set its own agent name to keep seeing its earlier runs.
+- the background worker no longer receives the key that signs access keys. Run `clearotron start --background` once to update an installed worker.
+
 ## 0.4.0-beta.1
 
 ### Fixed
