@@ -145,67 +145,108 @@ export function mergeKnockoutFrameCall(stored, received) {
  * restating anything, which is exactly why it is not a call-time question.
  */
 export function acceptKnockoutFrame(params) {
+  // ── EVERY DEFECT IN ONE REFUSAL (ruling 592, 2026-09-27) ──────────────────────────────────────────
+  //
+  // This returned on the FIRST defect, so a frame with four faults was refused four times and each
+  // refusal bought one fault's worth of news. Measured on an archived round: three of that run's four
+  // refusals were one defect class charged as three turns, about a minute and a half of the sweep's extra
+  // time. Collecting them costs nothing and the seat repairs once.
+  //
+  // ONE DEFECT STILL READS EXACTLY AS IT DID. "Every defect" is that defect when there is one, so the
+  // single-defect refusal is byte-identical to before — the common case is unchanged, and the arms that
+  // pin those sentences are unchanged with it.
+  //
+  // TWO DEPENDENCIES ARE SKIPS RATHER THAN DEFECTS, because a defect nobody can determine is not a
+  // defect. With no marks[] there is nothing to check per mark and no name set for executionOrder to be
+  // checked against, so those checks are skipped rather than reported as failures of a list that is
+  // absent. And a mark with no name is reported once and then skipped: every later message about that
+  // mark interpolates its name, and a refusal naming the empty string tells a seat nothing.
+  const defects = [];
+
   const scopeNote = str(params?.scope_note);
   if (!scopeNote)
-    return { ok: false, reason: "knockoutframe_note_missing: scope_note is required — the 2–3 sentence scope note the driver writes to knockout-frame.md. It is the surface an audit reads to see which search ran, and before this transport a run could complete without one" };
+    defects.push("knockoutframe_note_missing: scope_note is required \u2014 the 2\u20133 sentence scope note the driver writes to knockout-frame.md. It is the surface an audit reads to see which search ran, and before this transport a run could complete without one");
 
   const productContext = str(params?.batch?.productContext);
   if (!productContext)
-    return { ok: false, reason: "knockoutframe_context_missing: batch.productContext (one sentence) is required — every mark's contextFraming is read against it" };
+    defects.push("knockoutframe_context_missing: batch.productContext (one sentence) is required \u2014 every mark's contextFraming is read against it");
 
-  // THE BATCH'S LIST IS OPTIONAL FROM RULING 570 ON — the places are per name, checked with each mark
+  // THE BATCH'S LIST IS OPTIONAL FROM RULING 570 ON \u2014 the places are per name, checked with each mark
   // below. A call that still sends a batch list is not refused for sending it, only for sending a bad one.
   if (params?.batch?.places !== undefined) {
     const placesRefused = placesDefect(null, params.batch.places);
-    if (placesRefused) return { ok: false, reason: `knockoutframe_places: ${placesRefused}` };
+    if (placesRefused) defects.push(`knockoutframe_places: ${placesRefused}`);
   }
 
   const marks = Array.isArray(params?.marks) ? params.marks : null;
-  if (!marks || !marks.length)
-    return { ok: false, reason: "knockoutframe_marks_missing: marks[] is required and cannot be empty — a plan carries one row per instructed mark" };
-
-  for (const m of marks) {
-    const name = str(m?.name);
-    if (!name)
-      return { ok: false, reason: "knockoutframe_mark_unnamed: every plan mark carries its name verbatim from the instructed scope" };
-    if (!str(m?.classesPlain))
-      return { ok: false, reason: `knockoutframe_classes_plain:${name} — classesPlain is required: the plain-language class line` };
-    if (!str(m?.contextFraming))
-      return { ok: false, reason: `knockoutframe_context_framing:${name} — contextFraming is required, and the rating hangs off it: the assess stage is told to rate WITH this field, per mark` };
-    const useKindRefused = useKindDefect(name, m?.useKind);
-    if (useKindRefused) return { ok: false, reason: `knockoutframe_use_kind:${name} — ${useKindRefused}` };
-    // Per name (ruling 570). A call that sends the batch list instead is the old shape and keeps working.
-    if (m?.places !== undefined || params?.batch?.places === undefined) {
-      const markPlacesRefused = placesDefect(name, m?.places);
-      if (markPlacesRefused) return { ok: false, reason: `knockoutframe_places:${name} — ${markPlacesRefused}` };
+  if (!marks || !marks.length) {
+    defects.push("knockoutframe_marks_missing: marks[] is required and cannot be empty \u2014 a plan carries one row per instructed mark");
+  } else {
+    for (const m of marks) {
+      const name = str(m?.name);
+      if (!name) {
+        defects.push("knockoutframe_mark_unnamed: every plan mark carries its name verbatim from the instructed scope");
+        continue;
+      }
+      if (!str(m?.classesPlain))
+        defects.push(`knockoutframe_classes_plain:${name} \u2014 classesPlain is required: the plain-language class line`);
+      if (!str(m?.contextFraming))
+        defects.push(`knockoutframe_context_framing:${name} \u2014 contextFraming is required, and the rating hangs off it: the assess stage is told to rate WITH this field, per mark`);
+      const useKindRefused = useKindDefect(name, m?.useKind);
+      if (useKindRefused) defects.push(`knockoutframe_use_kind:${name} \u2014 ${useKindRefused}`);
+      // Per name (ruling 570). A call that sends the batch list instead is the old shape and keeps working.
+      if (m?.places !== undefined || params?.batch?.places === undefined) {
+        const markPlacesRefused = placesDefect(name, m?.places);
+        if (markPlacesRefused) defects.push(`knockoutframe_places:${name} \u2014 ${markPlacesRefused}`);
+      }
+      const spellingsRefused = spellingsDefect(name, m?.spellings);
+      if (spellingsRefused) defects.push(`knockoutframe_spellings:${name} \u2014 ${spellingsRefused}`);
+      for (const ck of ["classes", "beltAndBraces"]) {
+        if (m?.[ck] != null && !isClassArray(m[ck]))
+          defects.push(`knockoutframe_classes:${name}.${ck} must be Nice-class integers 1\u201345 \u2014 these interpolate into report and email HTML, so a free string is both a contract break and an injection surface`);
+      }
     }
-    const spellingsRefused = spellingsDefect(name, m?.spellings);
-    if (spellingsRefused) return { ok: false, reason: `knockoutframe_spellings:${name} — ${spellingsRefused}` };
-    for (const ck of ["classes", "beltAndBraces"]) {
-      if (m?.[ck] != null && !isClassArray(m[ck]))
-        return { ok: false, reason: `knockoutframe_classes:${name}.${ck} must be Nice-class integers 1–45 — these interpolate into report and email HTML, so a free string is both a contract break and an injection surface` };
+
+    // DUPLICATED FROM THE VALIDATOR ON PURPOSE \u2014 see the header. Two marks that differ only in spacing,
+    // punctuation or case share one research key, so one is never swept and is then assessed against the
+    // other's evidence. Refused at the call, where the seat can still reword one.
+    const collisions = kebabCollisions(marks.map((m) => String(m?.name ?? "")));
+    if (collisions.length)
+      defects.push(`knockoutframe_key_collision: marks ${collisions.map(([a, b]) => `"${a}"/"${b}"`).join(", ")} collide to the same research key \u2014 a batch cannot carry two marks that differ only in spacing, punctuation or case, because they would share ONE research payload and one of them would be rated on the other's evidence. Reword or drop one`);
+
+    const order = params?.batch?.executionOrder;
+    if (order != null) {
+      if (!Array.isArray(order)) {
+        defects.push("knockoutframe_order_shape: batch.executionOrder must be an array of mark names when present");
+      } else {
+        const names = new Set(marks.map((m) => String(m?.name ?? "").trim().toLowerCase()));
+        for (const n of order) {
+          if (!names.has(String(n ?? "").trim().toLowerCase()))
+            defects.push(`knockoutframe_order_unknown: executionOrder names "${n}", which is not a mark in this plan`);
+        }
+      }
     }
   }
 
-  // DUPLICATED FROM THE VALIDATOR ON PURPOSE — see the header. Two marks that differ only in spacing,
-  // punctuation or case share one research key, so one is never swept and is then assessed against the
-  // other's evidence. Refused at the call, where the seat can still reword one.
-  const collisions = kebabCollisions(marks.map((m) => String(m?.name ?? "")));
-  if (collisions.length)
-    return { ok: false, reason: `knockoutframe_key_collision: marks ${collisions.map(([a, b]) => `"${a}"/"${b}"`).join(", ")} collide to the same research key — a batch cannot carry two marks that differ only in spacing, punctuation or case, because they would share ONE research payload and one of them would be rated on the other's evidence. Reword or drop one` };
-
-  const order = params?.batch?.executionOrder;
-  if (order != null) {
-    if (!Array.isArray(order))
-      return { ok: false, reason: "knockoutframe_order_shape: batch.executionOrder must be an array of mark names when present" };
-    const names = new Set(marks.map((m) => String(m?.name ?? "").trim().toLowerCase()));
-    for (const n of order) {
-      if (!names.has(String(n ?? "").trim().toLowerCase()))
-        return { ok: false, reason: `knockoutframe_order_unknown: executionOrder names "${n}", which is not a mark in this plan` };
-    }
-  }
+  if (defects.length === 1) return { ok: false, reason: defects[0] };
+  if (defects.length) return { ok: false, reason: frameRefusal(defects) };
 
   return { ok: true, model: { schema: SCHEMA_VERSION, batch: params.batch, marks, scope_note: scopeNote } };
+}
+
+/**
+ * Several defects as one refusal (ruling 592). PURE.
+ *
+ * The per-defect sentences are the ones a single-defect refusal has always carried, verbatim and in the
+ * order they are checked. What is added is the count, and the one thing a seat needs to know that a list
+ * does not say: fixing one of them is another refusal. The repair-turn sentence is the tool description's
+ * own, so the call document and the refusal cannot disagree about what a repair may send.
+ */
+function frameRefusal(defects) {
+  return `knockoutframe_refused: ${defects.length} defects in this call, every one of them below. `
+    + "Fix them all in the next call \u2014 correcting one leaves the rest, and the driver refuses again. A repair "
+    + "turn may send only the marks it is correcting; a mark you do send replaces its stored row key by key, "
+    + `so send that mark whole.\n${defects.map((d, i) => `${i + 1}. ${d}`).join("\n")}`;
 }
 
 /**
