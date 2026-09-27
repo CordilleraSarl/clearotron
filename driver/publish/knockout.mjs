@@ -475,16 +475,26 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
   // Depth 2's sidecar, read from the RUN DIR rather than taken on trust from the caller: the
   // publisher renders what the driver measured and wrote, and a republish of an archived run picks up
   // the same file. An absent sidecar publishes exactly today's knockout.
+  // AN UNREADABLE SIDECAR IS NOT AN ABSENT ONE, and until now both arrived here as null. The
+  // instructed-scope load eight lines down has told the two apart since it was written; these two had
+  // the same catch and neither flag. A run whose counts file is present but corrupt therefore published
+  // the sentence for a run that never took any counts.
+  //
+  // `registerCountsUnreadable` HAS NO CONSUMER YET, deliberately. The page's line for an absent counts
+  // file says none could be taken, and there is no shipped sentence for a file that could not be read —
+  // writing one is a decision about what a client is told, not a defect fix. The distinction is recorded
+  // here so the decision has something to key on when it is made.
+  let registerCountsUnreadable = false;
   if (!registerCounts) {
     try { registerCounts = JSON.parse(readFileSync(driverDir(runDir, 'register-counts.json'), 'utf8')); }
-    catch { registerCounts = null; }
+    catch { registerCounts = null; registerCountsUnreadable = existsSync(driverDir(runDir, 'register-counts.json')); }
   }
   // part 5 — the filings sidecar, read the same way and for the same reason: the publisher renders
   // what the driver measured and wrote, and a republish of an archived run picks up the same file. An
   // absent sidecar publishes exactly the counts-only knockout, with no filings section anywhere.
-  let registerRecords = null;
+  let registerRecords = null, registerRecordsUnreadable = false;
   try { registerRecords = JSON.parse(readFileSync(driverDir(runDir, 'register-records.json'), 'utf8')); }
-  catch { registerRecords = null; }
+  catch { registerRecords = null; registerRecordsUnreadable = existsSync(driverDir(runDir, 'register-records.json')); }
   // The owner lookups this run made, read the same tolerant way as the records above:
   // an archived run that predates the lane has no file, and its cards then render exactly as they were
   // delivered. The source line the report prints comes from HERE, not from anything the seat typed.
@@ -699,6 +709,9 @@ export async function publishKnockout({ runId, codename, runDir, findings, plan,
     const markBand = single ? overall : worstBand(framework, [m]);
     writeRO(file, renderKnockoutHtml(one, framework, {
       runId, overall: markBand, issued, auditFile, probeRan, registerCounts, registerRecords, ownerChecks, instructedScope, identity, matter: runId,
+      // Carried as its own value rather than folded into `registerRecords`, because three sites PRINT
+      // `registerRecords.unavailable` and a marker invented here would become client-facing wording.
+      registerRecordsUnreadable,
       // — an invented mark says so on its own report. Resolved ONCE above the loop:
       // the answer is a property of the run, and asking per mark would let a multi-mark demo mark some
       // documents and not others if the roster moved mid-publish.

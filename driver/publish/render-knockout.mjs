@@ -1421,12 +1421,22 @@ function registerLine(mark, registerCounts, probeRan, registerRecords = null, ca
 // unconditionally, which was true while the clause was drawn under the cards. It is drawn under the
 // COUNTS now — the numbers it qualifies — and the cards are below it, so a fixed word would send a
 // reader the wrong way up the page. The caller knows the order; this function does not guess it.
-function registerPositionClause(mark, registerCounts, registerRecords, cards = [], where = 'above') {
+// The one sentence for a listing whose answer this run cannot state, whether the lister refused or the
+// sidecar itself would not parse. Held once so the two callers below cannot drift: they are the same fact
+// to a reader, and two copies of a sentence are two sentences waiting to differ.
+const FILINGS_NOT_LISTED = 'The filings behind the counts could not be listed on this run, so nothing here says whether one stands.';
+
+function registerPositionClause(mark, registerCounts, registerRecords, cards = [], where = 'above', recordsUnreadable = false) {
   if (!registerRecords) {
+    // AN UNREADABLE SIDECAR IS NOT AN ABSENT ONE. Absent means the listing was never taken, and the page
+    // says so. Unreadable means it WAS taken and this run cannot say what it found. The second sentence
+    // was already written, for the lister's own refusal, and was simply unreachable from a republish:
+    // a file that would not parse arrived as null, and null reads here as absent.
+    if (recordsUnreadable) return FILINGS_NOT_LISTED;
     return registerCounts ? 'The filings behind those counts were not listed on this run.' : '';
   }
   if (registerRecords.unavailable) {
-    return 'The filings behind the counts could not be listed on this run, so nothing here says whether one stands.';
+    return FILINGS_NOT_LISTED;
   }
   const entry = recordsForMark(registerRecords, mark?.name);
   const provider = registerRecords.providerLabel ?? registerRecords.provider ?? 'the register';
@@ -1775,6 +1785,11 @@ const CAVEAT_LEAD = 'This screen also carries the following limits:';
 export function renderKnockoutHtml(findings, framework, {
   runId, overall, issued = null, auditFile = null, probeRan = false, registerCounts = null,
   registerRecords = null,
+  // — was the filings sidecar PRESENT but unreadable? Defaults to false, so every existing caller — the
+  // unit fixtures and both render-check scripts, none of which pass one — renders exactly as it did. It
+  // is its own value rather than a marker on `registerRecords`, because three sites PRINT
+  // `registerRecords.unavailable` and anything invented for it would become client-facing wording.
+  registerRecordsUnreadable = false,
   // The driver's own record of the owner lookups it ran. Defaults to [] so an
   // archived run that predates the lane renders exactly as it was delivered.
   ownerChecks = [],
@@ -1853,7 +1868,7 @@ export function renderKnockoutHtml(findings, framework, {
   // promoted, and the clause would name refs no card carries.
   const cardsByMark = new Map(marks.map((m) => [m?.name, registerCardViews(m, framework, registerRecords).cards]));
   const positions = marks.map((m) => {
-    const clause = registerPositionClause(m, registerCounts, registerRecords, cardsByMark.get(m?.name) ?? [], 'below');
+    const clause = registerPositionClause(m, registerCounts, registerRecords, cardsByMark.get(m?.name) ?? [], 'below', registerRecordsUnreadable);
     if (!clause) return '';
     return marks.length > 1 && m?.name ? `${m.name}: ${clause}` : clause;
   }).filter(Boolean).join(' ');
