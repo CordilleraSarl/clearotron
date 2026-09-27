@@ -24,7 +24,6 @@ pinEnv(process.env, "CLEAROTRON_REGISTER_CALL_LOG", join(ROOT, "register-calls.j
 pinEnv(process.env, "CLEAROTRON_REGISTER_RECORD_LOG", undefined);
 pinEnv(process.env, "CLEAROTRON_SIGNA_ANSWER_MEMORY", undefined);
 pinEnv(process.env, "CLEAROTRON_INSTRUCTIONS_DIR", undefined);
-process.env.CLEAROTRON_AGENT = "mailagent";
 process.env.CLEAROTRON_AI = "anthropic-agent";
 pinEnv(process.env, "CLEAROTRON_CLAUDE_PATH", join(HERE, "mock-claude.mjs"));
 process.env.CLEAROTRON_MAX_RETRIES = "0";

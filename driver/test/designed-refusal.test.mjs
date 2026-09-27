@@ -33,7 +33,6 @@ const ROOT = mkdtempSync(join(tmpdir(), "designed-refusal-"));
 // under CLEAROTRON_DATABASE=corsearch this suite ran as corsearch — the vendor the operator asked for
 // and the file did not — and stayed green while doing it.
 pinEnvAll(process.env, { "CLEAROTRON_WORK_DIR": ROOT, "CLEAROTRON_REPORTS_DIR": join(ROOT, "pool") });
-process.env.CLEAROTRON_AGENT = "mailagent";
 // The tier a stranger runs, and the one both refusals in came from. `capabilitiesFor` reads it
 // through REGISTER_PROVIDER, another import-time const.
 pinEnv(process.env, "CLEAROTRON_DATABASE", "free-tier");

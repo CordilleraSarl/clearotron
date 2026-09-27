@@ -32,7 +32,6 @@ pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
 pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", join(ROOT, "pool"));
 process.env.CLEAROTRON_MAX_RETRIES = "0";
 process.env.CLEAROTRON_RECOVERY_MAX = "0";   // terminal semantics under test — auto-recovery exercised in pipeline.mock
-process.env.CLEAROTRON_AGENT = "mailagent";
 // code-side saturation-probe (2026-07-14): OFF in this legacy harness — its scenarios script the AGENT
 // member; the dedicated satprobe-codeside tests exercise the code-side path with an injected executor.
 process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";

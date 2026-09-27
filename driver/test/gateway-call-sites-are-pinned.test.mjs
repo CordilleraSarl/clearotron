@@ -32,7 +32,6 @@ process.env.CORSEARCH_SESSION_KEY ||= "test-offline";
 const ROOT = mkdtempSync(join(tmpdir(), "clearotron-callsite-pin-"));
 pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
 pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", join(ROOT, "pool"));
-process.env.CLEAROTRON_AGENT = "mailagent";
 process.env.CLEAROTRON_RETRY_BACKOFF_MS = "0";
 
 const GW = await import("../gateway.mjs");

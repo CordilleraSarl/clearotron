@@ -46,12 +46,13 @@ function harness(env = {}) {
     CLEAROTRON_AI: "anthropic-agent",
     CLEAROTRON_CLAUDE_PATH: CLAUDE_MOCK,
     CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"),
-    CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_AGENT: "intake-agent",
-    // THE VARIABLE THAT DECIDES THE WORKSPACE IS THIS ONE, and the line above is read by nothing in the
-    // shipped tree — measured, not assumed. The run directory resolves under `config.defaultAgent`, which
-    // reads CLEAROTRON_DEFAULT_AGENT; until ruling 563 it fell back to one agent named as a literal, and
-    // this harness passed because that literal and the value above happened to be the same word. So the
-    // arm below read as proof that the line above decided the path, and it never did.
+    CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0",
+    // THE VARIABLE THAT DECIDES THE WORKSPACE IS THIS ONE. This harness also set CLEAROTRON_AGENT, which
+    // the shipped tree reads nowhere, and asserted a run landed under that agent — so the arm read as proof
+    // that the setting decided the path when the path came from one agent named as a literal in the engine,
+    // and the two agreed only because they spelled the same word. Ruling 563 removed the literal and the
+    // arm failed; the dead setting went with issue 990. The run directory resolves under
+    // `config.defaultAgent`, which reads this:
     CLEAROTRON_DEFAULT_AGENT: "intake-agent",
     MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", ...env,
   })) pinEnv(process.env, k, v);
