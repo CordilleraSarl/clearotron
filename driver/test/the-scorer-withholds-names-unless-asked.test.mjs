@@ -264,3 +264,43 @@ test("a non-string chunk passes through untouched", () => {
   uninstall();
   assert.equal(seen[0], buf, "the same Buffer, not a copy and not a string");
 });
+
+// ── A MULTI-WORD NAME IS ALSO PROTECTED BY ITS DISTINCTIVE WORD ──────────────────────────────────────
+//
+// Found on R18 `f5764a2f`, and it is the failure mode that matters most: a two-word proprietor was
+// collected in full and still printed in clear, because the sentence naming it used the first word with
+// a possessive. The page looked redacted — the mark beside it carried a token — which is worse than an
+// obviously unredacted page, because nobody re-reads a page that appears to have been handled.
+
+test("a multi-word name is redacted where prose shortens it to one word", () => {
+  const { redact } = protectedStringsFor({ reference: { register: [{ owner: "Bracken Holdings AG" }] } });
+  for (const line of ["Bracken's registration stands", "the objection is Bracken's", "filed by Bracken"])
+    assert.match(redact(line), /«name \d+»/, `the shortened form survived: ${line} → ${redact(line)}`);
+  assert.ok(!/Bracken/i.test(redact("Bracken's registration stands")));
+});
+
+test("the full form is still redacted too, and both map to the same reading", () => {
+  const { redact } = protectedStringsFor({ reference: { register: [{ owner: "Bracken Holdings AG" }] } });
+  assert.ok(!/Bracken/i.test(redact("Bracken Holdings AG objected")));
+});
+
+test("CONTROL: the legal-form words are NOT swapped, because they name nobody", () => {
+  // Without this, the rule would tokenise "Holdings" and "Limited" across every page that uses them as
+  // ordinary words, shredding text while protecting no one.
+  const { redact } = protectedStringsFor({ reference: { register: [{ owner: "Bracken Holdings AG" }] } });
+  const line = "two holdings were limited in scope and the group agreed";
+  assert.equal(redact(line), line, `a legal-form word was swapped: ${redact(line)}`);
+});
+
+test("CONTROL: a short distinctive word is left alone, because it collides with ordinary English", () => {
+  // The floor is five characters. "Arc" in "search" is the case that taught it.
+  const { names } = protectedStrings({ reference: { register: [{ owner: "Arc Systems Ltd" }] } });
+  assert.ok(!names.has("Arc"), "below the floor, so not protected standalone");
+  assert.ok(names.has("Systems"), "at or above the floor, so protected");
+});
+
+test("a single-word name gains nothing and loses nothing", () => {
+  const { names } = protectedStrings({ reference: { register: [{ mark: "Quillion" }] } });
+  assert.ok(names.has("Quillion"));
+  assert.equal([...names].filter((n) => n.toLowerCase().includes("quillion")).length, 1, "no duplicate entry");
+});
