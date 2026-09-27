@@ -1377,16 +1377,16 @@ function firstRef(marks, framework) {
   return '';
 }
 
-// — THE REGISTER SENTENCE IS THE RENDERER'S, and it is the whole reason this function exists.
+// — THE REGISTER SENTENCE IS THE RENDERER'S, and it is the whole reason the two clauses below exist.
 //
 // A live run printed "the register overlay has not been run" in model prose directly under a table of
 // register counts the same run had taken. The model was not lying: it cannot see the count lane, it is
 // deliberately never shown the figures (register-count.mjs rule 1), and it filled the gap with the only
 // thing it had. The fix is not a better prompt — it is that nobody who cannot see the machinery gets to
-// describe it. The validator forbids the model from saying anything about register coverage; this
-// function says it, from the artifacts.
+// describe it. The validator forbids the model from saying anything about register coverage; these
+// clauses say it, from the artifacts.
 //
-// It reads the SIDECARS, never the prose: the counts entry for this mark, and whether the product bought
+// They read the SIDECARS, never the prose: the counts entry for this mark, and whether the product bought
 // the probe at all. Four states, four sentences, and none of them is a judgment.
 //
 // — AND IT NOW STATES THE POSITION, NOT ONLY THE COVERAGE. Coverage alone ("hit-counts were taken
@@ -1394,10 +1394,12 @@ function firstRef(marks, framework) {
 // STANDS on the register for this name. That sentence is appended by registerPositionClause below and
 // it is present in every state, including the state where the answer is "nothing does" — an absence is
 // a finding and must be said out loud, never left as a silence over a table of numbers.
-function registerLine(mark, registerCounts, probeRan, registerRecords = null, cards = []) {
-  return [coverageClause(mark, registerCounts, probeRan),
-    registerPositionClause(mark, registerCounts, registerRecords, cards)].filter(Boolean).join(' ');
-}
+//
+// THE FUNCTION THAT COMPOSED THE PAIR IS GONE, and removing it was the point rather than tidiness. It
+// was called from nowhere in the tree, and its call to `registerPositionClause` was the one that did NOT
+// pass the unreadable-sidecar flag — so anybody reviving it would have revived exactly the defect that
+// flag closes, silently, with nothing at the call site to say so. The live composition is inline in
+// `renderKnockoutHtml`, which passes it. Found independently twice before being removed once.
 
 /**
  * Where the name STANDS on the register that was searched. Six states, and they are six because
