@@ -20,7 +20,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";
-import { evalAssertion, fromTheRun } from "../../scripts/e2e.mjs";
+import { evalAssertion, fromTheRun, setReportNames, REPORT_NAMES } from "../../scripts/e2e.mjs";
 
 // An invented sentence, in the shape the engine writes and the check refuses: a claim over the FIELD,
 // which no number of held records can support.
@@ -125,4 +125,86 @@ test("two copies of one sentence get their own locations, not two copies of the 
     assert.equal(shown.ok, false);
     assert.ok(shown.saw.includes(FIELD_CLAIM), `--names did not carry the sentence: ${shown.saw}`);
   } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+// ── the filings listing: the row that fires when a mark is missing ───────────────────────────────────
+
+const ASKED = "E2E ABSENT PROBE";
+const LISTED = ["E2E OTHER PROBE ONE", "E2E OTHER PROBE TWO"];
+
+function makeFilings({ marks }) {
+  const dir = mkdtempSync(join(tmpdir(), "filings-"));
+  mkdirSync(driverDir(dir), { recursive: true });
+  writeFileSync(join(dir, "knockout-filings.json"), JSON.stringify({ marks }));
+  return dir;
+}
+
+const floor = (dir, mark, opts) => evalAssertion(
+  { op: "register-records-floor", path: `knockout-filings.json:${mark}`, value: { records: 1, offices: 1 } },
+  dir, opts);
+
+test("a missing mark does not print the mark asked for, nor the ones the listing held", () => {
+  // THE WIDEST ROW IN THE OP. It fires exactly when somebody is investigating — a mark is absent — and it
+  // used to print the name asked for and every name the listing carried, in clear, with no flag involved.
+  const dir = makeFilings({ marks: LISTED.map((name) => ({ name, records: [], terms: [] })) });
+  try {
+    const r = floor(dir, ASKED, { names: false });
+    assert.equal(r.ok, false);
+    for (const n of [ASKED, ...LISTED]) assert.ok(!r.saw.includes(n), `a name reached the row: ${r.saw}`);
+    assert.match(r.saw, /listed 2 mark\(s\)/, "the count is never withheld — a listing of 2 and a listing of 0 are different defects");
+    assert.match(r.saw, /run again with --names/);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("CONTROL: --names carries the mark asked for and the ones listed", () => {
+  const dir = makeFilings({ marks: LISTED.map((name) => ({ name, records: [], terms: [] })) });
+  try {
+    const r = floor(dir, ASKED, { names: true });
+    assert.equal(r.ok, false);
+    for (const n of [ASKED, ...LISTED]) assert.ok(r.saw.includes(n), `--names did not carry ${n}: ${r.saw}`);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("an EMPTY listing says so rather than trailing an empty quotation", () => {
+  const dir = makeFilings({ marks: [] });
+  try {
+    const r = floor(dir, ASKED, { names: false });
+    assert.match(r.saw, /listed 0 mark\(s\)/);
+    assert.doesNotMatch(r.saw, /run again with --names/, "there is nothing to print, so the row must not offer to print it");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("a refused term is located by its mark's position as well as its own", () => {
+  // `term 2 of knockout-filings.json` is ambiguous the moment the listing holds more than one mark, and
+  // it always does — the row would send a reader to a term belonging to a different mark.
+  const dir = makeFilings({ marks: [
+    { name: LISTED[0], records: [], terms: [] },
+    { name: LISTED[1], records: [{ territory: "atlantis" }], terms: [{ term: "ok one", ok: true }, { term: "E2E REFUSED SPELLING", ok: false, reason: "the office declined the wildcard" }] },
+  ] });
+  try {
+    const r = floor(dir, LISTED[1], { names: false });
+    assert.ok(!r.saw.includes("E2E REFUSED SPELLING"), `the spelling reached the row: ${r.saw}`);
+    assert.ok(!r.saw.includes("wildcard"), `the engine's reason reached the row: ${r.saw}`);
+    assert.match(r.saw, /term 2 of mark 2 of knockout-filings\.json/, `both coordinates must be named: ${r.saw}`);
+    const shown = floor(dir, LISTED[1], { names: true });
+    assert.ok(shown.saw.includes("E2E REFUSED SPELLING") && shown.saw.includes("wildcard"), `--names did not carry the term: ${shown.saw}`);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+// ── the path a human actually takes ──────────────────────────────────────────────────────────────────
+
+test("the argv flag reaches a call that passes no options at all", () => {
+  // EVERY ARM ABOVE PASSES `names` EXPLICITLY, and the report's own call site passes nothing: it reads
+  // the module-level default. So the wiring from `--names` to that default is the one link none of them
+  // touch, and it is the only link a human uses.
+  const dir = makeFilings({ marks: [{ name: LISTED[0], records: [], terms: [] }] });
+  try {
+    setReportNames(false);
+    assert.equal(REPORT_NAMES, false, "the default is off, so nothing has to remember to turn it on");
+    const off = evalAssertion({ op: "register-records-floor", path: `knockout-filings.json:${ASKED}`, value: {} }, dir);
+    assert.ok(!off.saw.includes(LISTED[0]), `the default path printed a name: ${off.saw}`);
+    setReportNames(true);
+    const on = evalAssertion({ op: "register-records-floor", path: `knockout-filings.json:${ASKED}`, value: {} }, dir);
+    assert.ok(on.saw.includes(LISTED[0]), `--names did not reach the default path: ${on.saw}`);
+  } finally { setReportNames(false); rmSync(dir, { recursive: true, force: true }); }
 });

@@ -1782,8 +1782,22 @@ function evalAssertion(a, runDir, { names = REPORT_NAMES } = {}) {
       + `A listing that was refused is not a register that holds nothing.` };
     const want = field ? String(field).trim().toLowerCase() : null;
     if (!want) return { ok: false, saw: "no mark given (path must be <file>:<MARK NAME>)" };
-    const m = (doc.marks ?? []).find((x) => String(x?.name ?? "").trim().toLowerCase() === want);
-    if (!m) return { ok: false, saw: `no mark ${JSON.stringify(field)} in ${file} — it listed ${(doc.marks ?? []).map((x) => JSON.stringify(x?.name)).join(", ") || "nothing"}` };
+    const markIndex = (doc.marks ?? []).findIndex((x) => String(x?.name ?? "").trim().toLowerCase() === want);
+    const m = markIndex === -1 ? null : doc.marks[markIndex];
+    // THE WIDEST ROW IN THIS OP, so it is withheld too. It used to print the mark that was asked for AND
+    // every mark the listing held, in clear, and it fires precisely when a run is being investigated —
+    // a mark is missing, so somebody is reading the report. `--names` prints them for the one job that
+    // needs them; by default the row says how many were listed and where they are, which is what a reader
+    // acts on. The COUNT is never withheld: a listing that held nothing is a different defect from a
+    // listing that held four other marks, and that distinction is the finding.
+    if (!m) {
+      const listed = (doc.marks ?? []).map((x) => x?.name).filter((x) => typeof x === "string");
+      return { ok: false, saw: `the asked-for mark is not in ${file}, which listed ${listed.length} mark(s)`
+        + (listed.length
+          ? ` — ${fromTheRun({ names, quotes: [field, ...listed],
+              where: `the name asked for is the field of this assertion's path, and the names listed are the "marks" array of ${file}` })}`
+          : "") };
+    }
     const floors = a.value && typeof a.value === "object" ? a.value : {};
     const minRecords = Number.isFinite(floors.records) ? floors.records : 1;
     const minOffices = Number.isFinite(floors.offices) ? floors.offices : 1;
@@ -1796,7 +1810,10 @@ function evalAssertion(a, runDir, { names = REPORT_NAMES } = {}) {
     const failedRows = (m.terms ?? []).map((t, i) => ({ t, i })).filter(({ t }) => t?.ok !== true);
     const failed = names
       ? failedRows.map(({ t }) => `${t?.term ?? "?"}: ${String(t?.reason ?? "no reason recorded").slice(0, 120)}`)
-      : failedRows.map(({ i }) => `term ${i + 1} of ${file}`);
+      // NAMED BY POSITION IN THE FILE, both coordinates. `term 2 of knockout-filings.json` is ambiguous
+      // the moment the listing holds more than one mark, and it always does — so the row would send a
+      // reader to a term belonging to a different mark and read just as confidently.
+      : failedRows.map(({ i }) => `term ${i + 1} of mark ${markIndex + 1} of ${file}`);
     const met = records.length >= minRecords && offices.length >= minOffices;
     const body = `${records.length} record(s) (floor ${minRecords}) across ${offices.length} office(s) [${offices.join(", ") || "none"}] (floor ${minOffices})`;
     if (met) return { ok: true, saw: failed.length ? `${body} — floor met, but ${failed.length} term(s) were refused and this run covered less than it asked for: ${failed.join(" · ")}` : body };
