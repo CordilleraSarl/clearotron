@@ -6021,6 +6021,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-redaction-never-shrinks-its-own-coverage.test.mjs": {
+          "tests": 5,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "the-reference-strip-left-sentences-unfinished.test.mjs": {
           "tests": 6,
           "asserts": 15,

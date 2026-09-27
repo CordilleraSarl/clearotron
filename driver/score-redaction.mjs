@@ -314,30 +314,61 @@ export function redactor({ names = new Set(), prose = new Set(), hint = "run aga
     // Accepted replacements, in ORIGINAL offsets, each accepted only where it overlaps nothing already
     // accepted. That is what makes prose win over the names inside it.
     const taken = [];
-    const free = (from, to) => !taken.some((t) => from < t.to && to > t.from);
-    const take = (at, stop, isFolded, withText) => {
-      const from = isFolded ? start[at] : at;
-      const to = isFolded ? end[stop - 1] : stop;
-      if (free(from, to)) taken.push({ from, to, withText });
+    // UNION, NEVER DROP. A candidate overlapping something already accepted is MERGED into it rather than
+    // discarded, and dropping was the one step in this file that could SHRINK coverage. A name straddling
+    // the edge of an accepted prose range was refused whole, and the text outside that range — the rest of
+    // the name — was then emitted as it stood. Measured: prose "hello DRAV" beside a protected "DRAVOLINE"
+    // printed "OLINE" in clear, immediately after a withheld token. That is the worst shape this module
+    // has, because the token beside the fragment tells the reader the redaction is working. A name wholly
+    // inside a prose range was always correct; only the straddle leaked. Merging restores the invariant
+    // the fold already relies on: every failure here is over-redaction and none is a leak.
+    //
+    // WHICH TEXT A MERGED RANGE CARRIES. Prose beats a name, because a sentence with its names swapped out
+    // still says what the matter is about. Between two names the INCUMBENT keeps its token — the earliest
+    // entry in a stable ordering — because the same run scored twice must redact to the same tokens.
+    const take = (at, stop, isFolded, withText, isProse) => {
+      let from = isFolded ? start[at] : at;
+      let to = isFolded ? end[stop - 1] : stop;
+      const hits = [];
+      for (let i = 0; i < taken.length; i++) if (from < taken[i].to && to > taken[i].from) hits.push(i);
+      if (!hits.length) { taken.push({ from, to, withText, isProse }); return; }
+      let text = withText;
+      let prose = isProse;
+      for (const i of hits) {
+        const t = taken[i];
+        from = Math.min(from, t.from);
+        to = Math.max(to, t.to);
+        if (t.isProse || !prose) { text = t.withText; prose = prose || t.isProse; }
+      }
+      // Accepted ranges are pairwise disjoint, so every range inside the merged extent is among the hits
+      // and one pass is enough. `hits` ascends, so removing from the end keeps the earlier indexes valid.
+      for (let k = hits.length - 1; k >= 0; k--) taken.splice(hits[k], 1);
+      taken.push({ from, to, withText: text, isProse: prose });
     };
 
     // PROSE FIRST, AND IT WINS ANY OVERLAP: a sentence with its names swapped out still says what the
     // matter is about, so the whole sentence goes rather than the names inside it.
     for (const p of proseOrdered) {
       const needle = p.fold || p.raw;     // a string that folds to nothing is matched as it stands
+      // AN EMPTY ENTRY IS SKIPPED, and the guard is here rather than left to the producer. `indexOf("")`
+      // is 0 and the loop below advances by the needle's length, so an empty string spins forever. Nothing
+      // empty can arrive from a reference today, because every branch that collects one tests it first —
+      // but that is the producer's property, not this function's, and a hang has no error message.
+      if (!needle) continue;
       const hay = p.fold ? folded : src;
       for (let at = hay.indexOf(needle); at !== -1; at = hay.indexOf(needle, at + needle.length)) {
-        take(at, at + needle.length, Boolean(p.fold), `[withheld — ${hint}]`);
+        take(at, at + needle.length, Boolean(p.fold), `[withheld — ${hint}]`, true);
       }
     }
     for (const n of ordered) {
       const needle = n.fold || n.raw;
+      if (!needle) continue;              // same reason as the prose loop above
       const hay = n.fold ? folded : src;
       const re = matcher(needle);
       const withText = `«name ${index.get(n.raw.toLowerCase())}»`;
       for (let m = re.exec(hay); m !== null; m = re.exec(hay)) {
         if (m[0].length === 0) { re.lastIndex += 1; continue; }   // never advance on an empty match
-        take(m.index, m.index + m[0].length, Boolean(n.fold), withText);
+        take(m.index, m.index + m[0].length, Boolean(n.fold), withText, false);
       }
     }
 
