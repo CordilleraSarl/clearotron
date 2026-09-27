@@ -25,7 +25,7 @@ instead; and `clearance-search/templates/search-request-form.html`, named only i
 | `clearance-register` | Register execution in the two modes a spawn selects: `unit.md` (the funnel — enumerate one axis to completion) and `digest.md` (judgment over the merged band). Plus `register-recipes.md`, `status-rules.md`, `stealth-filer-indicators.md`, `providers/`. |
 | `placement-inquiry` | Applies commercial relevance per candidate — headline-candidate / sheet-2 / watchlist-annex / out-of-scope-filtered — before any tiering runs. |
 | `case-law-citation` | Grounds risk-relevant findings in precedent fetched in-session, never from memory. One thin adapter per source in `sources/`; `evals.md` defines what working means. |
-| `narrative-refutation` | Reads the finished narrative against the underlying findings files and returns CLEAR / CONDITIONAL / BLOCKING with itemised flags. Delivery is gated on the verdict. |
+| `narrative-refutation` | Reads the finished narrative against the underlying findings files and returns CLEAR / CONDITIONAL / BLOCKING with itemised flags. |
 | `clearance-search` | The doctrine the synthesis and delivery stages are held to: `synthesis-rules.md`, the `risk-framework*.md` ladders with their `.manifest.json` band vocabularies, `delivery-contract.md`, `report-prose.md`, `worked-examples.md`, `phase2-execution.md`, `field-doctrine-pharma.md`. |
 | `knockout-frame`, `knockout-assess` | Stages A and C of the knockout doctrine — a broad kill/no-kill triage screen over several candidate names at once (Stage B is a code-side research sweep). Not a clearance. |
 

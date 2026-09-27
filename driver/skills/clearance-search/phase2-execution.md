@@ -347,8 +347,7 @@ fetch-before-cite, refusal-to-fabricate — gate whether Sonnet is trusted here;
 
 After synthesis composes the narrative and case-law grounding is folded in, `narrative-refutation` refutes the
 narrative against the underlying source files and writes `senior-eye-review.md` with a verdict. **Phase 3 reads
-the verdict** (the driver decides in code what each one does): the verdict changes what the report carries, not
-whether it ships — all three below deliver.
+the verdict** (the driver decides this in code):
 
 - **CLEAR** → proceed to delivery.
 - **CONDITIONAL** → apply the suggested narrative edits (each flag in `senior-eye-review.md` carries a minimum-change correction); record the corrections in the workflow audit summary; proceed to delivery.
