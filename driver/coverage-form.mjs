@@ -1005,6 +1005,12 @@ export function renderCoverageLedgerJsonFromForm(rows, classTokens) {
       axis: String(r.axis ?? "").trim().toLowerCase(),
       scope, status: String(r.status).trim().toLowerCase(), reason,
       ...(classes.length ? { classes } : {}),
+      // THE COUNT AND THE PLAN KEY THE SOURCE ROW ALREADY HOLDS (ruling 551). The table two functions up
+      // prints `total_hits` as "N hits" and this render dropped it, so the two renders of one form
+      // disagreed about whether the run knew the size of what it left. A row without either — a seat-added
+      // row — emits neither, which says "this row has no count" rather than "the count was lost here".
+      ...(Number.isInteger(r.total_hits) ? { total_hits: r.total_hits } : {}),
+      ...(r.qid ? { qid: String(r.qid) } : {}),
     };
   }));
 }

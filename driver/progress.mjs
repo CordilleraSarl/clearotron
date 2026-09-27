@@ -153,7 +153,12 @@ export function atomicWrite(file, text) {
 
 function statusPath(runDir) { return join(runDir, "status.json"); }
 
-function readRunStatus(runDir) {
+/**
+ * The run's own status as last written. `{}` when it cannot be read, which callers must treat as an
+ * absence rather than as an empty run — exported so a lane can read the run's own `startedAt` without
+ * a second copy of where status.json lives.
+ */
+export function readRunStatus(runDir) {
   try { return JSON.parse(readFileSync(statusPath(runDir), "utf8")); }
   catch { return {}; }
 }

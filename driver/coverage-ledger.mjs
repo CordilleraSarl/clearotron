@@ -450,7 +450,19 @@ export function parseCoverageLedger(md) {
 // OPTIONAL structured column: the Nice classes a row is about, as an array of class-number strings — the
 // join key scope-facts.mjs uses to attribute a coverage gap to an instructed class without re-parsing
 // prose. Archived ledgers (no classes key) parse byte-identically to before.
-const ROW_KEYS = ["axis", "scope", "status", "reason", "classes"];
+// TWO MORE OPTIONAL COLUMNS, AND THEY CLOSE A DRIFT THE RENDERER'S OWN DOCTRINE FORBIDS. The form is the
+// source and the prose table and this JSON are both renders of it, "so they agree by construction and
+// neither can be the thing that drifts" — and they did not agree: a form row carries `total_hits` and the
+// table prints it as "N hits", while this JSON dropped it. Measured on R18 of 2026-09-27: 50 rows of four
+// fields, and not one of the 49 coverage-limited rows carried a count, so a reader could not tell a slice
+// holding 200 records from one holding 300,000. Ruling 551 puts the count on the row in as many words.
+//
+// `qid` rides for the same reason the form keeps it in its own column: it is what joins a coverage row to
+// the plan's question, and without it the count can only be re-attached by matching prose. A seat-added
+// row has no qid and no count, which is a fact about that row rather than a gap in this contract.
+//
+// Archived ledgers parse byte-identically: both are optional and absence is unchanged behaviour.
+const ROW_KEYS = ["axis", "scope", "status", "reason", "classes", "total_hits", "qid"];
 
 // Extract Nice-class tokens from a ledger row's free-text scope/reason cell ("[cl 5,32]", "Class 30 leg",
 // "nice classes 5/32"). DETERMINISTIC + conservative: only numbers 1–45 introduced by an explicit
@@ -494,7 +506,7 @@ export function parseCoverageLedgerJson(raw, { allowedAxes = REGISTER_AXES, acti
     if (!r || typeof r !== "object" || Array.isArray(r))
       throw new Error("coverage_ledger_unparseable: every row must be a plain object");
     for (const k of Object.keys(r)) {
-      if (!ROW_KEYS.includes(k)) throw new Error(`coverage_key_unknown:${short(k)} (keys are EXACTLY: axis, scope, status, reason — plus OPTIONAL classes)`);
+      if (!ROW_KEYS.includes(k)) throw new Error(`coverage_key_unknown:${short(k)} (keys are EXACTLY: axis, scope, status, reason — plus OPTIONAL classes, total_hits, qid)`);
     }
     // normalize-then-validate (B): coerce cosmetic formatting (markdown/qualifier/transposition) to the
     // canonical token, but keep the guard STRICT — an unknown axis still fails, with the ORIGINAL token in

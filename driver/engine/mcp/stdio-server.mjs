@@ -156,7 +156,18 @@ export function serve({ name, version = "0.1.0", tools = [] }) {
         // a seat can act on it in the turn it happens.
         const unmet = requiredFieldViolations(tool.inputSchema, params?.arguments);
         if (unmet.length) {
-          logToolEvent({ event: "settled", seq, server: name, tool: tool.name, ...(axis ? { axis } : {}), ok: false });
+          // THE REASON THE ROW HAD IN SCOPE AND THREW AWAY. A settled row with
+          // `ok: false` and nothing else asserts a failure and withholds everything that would let a
+          // reader weigh it — and a verdict turns on that, because a failed tool call counts against a
+          // run's cleanliness. Measured on the round of 2026-09-26: this gate settled a frame call in the
+          // SAME MILLISECOND it started, wrote no call file, and the record could not say why.
+          //
+          // THE FIELD NAMES, NEVER THE MESSAGE. `unmet` is a list of schema keys, so it carries no matter
+          // content; the sentence below carries none today either, but a tool's refusal text is free to
+          // interpolate a mark, and this row's own contract is the call and never its content. A row that
+          // copied the message would leak the day one of them does; a row that copies `unmet` cannot.
+          logToolEvent({ event: "settled", seq, server: name, tool: tool.name, ...(axis ? { axis } : {}), ok: false,
+            reason: `missing_required:${unmet.join(",")}` });
           return ok(id, { isError: true, content: [{ type: "text", text:
             `${tool.name}_missing_required:${unmet.join(",")} — the schema you were handed declares `
             + `${unmet.length === 1 ? "this field" : "these fields"} REQUIRED and the call did not carry `
