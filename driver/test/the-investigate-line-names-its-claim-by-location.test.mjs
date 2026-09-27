@@ -95,3 +95,34 @@ test("a location is never empty, because an empty one reads as a row with nothin
   assert.ok(r.trim().length > 0);
   assert.match(r, /sentence 1 of f\.md/);
 });
+
+// ── a document that says the same thing twice ────────────────────────────────────────────────────────
+
+test("two copies of one sentence get their own locations, not two copies of the first", () => {
+  // THE CASE THE LOCATION HAS TO SURVIVE. Looking the sentence up by its text returns the FIRST copy for
+  // both rows, so a document that repeats its claim sends the reader to the same line twice and hides
+  // that there was a second. A run that states a thing twice is exactly the run somebody is reading the
+  // report about, so this is not a corner.
+  const dir = mkdtempSync(join(tmpdir(), "investigate-dup-"));
+  try {
+    mkdirSync(driverDir(dir), { recursive: true });
+    writeFileSync(driverDir(dir, "search-policy.json"), JSON.stringify({ pipeline: "knockout" }));
+    writeFileSync(driverDir(dir, "register-records.json"), JSON.stringify({
+      marks: [{ name: "E2E LOCATION PROBE", records: [{ recordId: "R0" }] }],
+    }));
+    writeFileSync(join(dir, "knockout-findings.md"), [FIELD_CLAIM, FILLER, FIELD_CLAIM].join("\n"));
+    const a = { op: "register-claims-within-counts", path: "knockout-findings.md" };
+
+    const withheld = evalAssertion(a, dir, { names: false });
+    assert.equal(withheld.ok, false);
+    assert.match(withheld.saw, /2 register claim\(s\)/, "both copies are counted");
+    assert.match(withheld.saw, /sentence 1 and 3 of knockout-findings\.md/,
+      `the two rows must carry their own indices, not the first one twice: ${withheld.saw}`);
+
+    // CONTROL: the same run with --names still carries the words, so the arm above is about the index
+    // and not about the row having gone quiet.
+    const shown = evalAssertion(a, dir, { names: true });
+    assert.equal(shown.ok, false);
+    assert.ok(shown.saw.includes(FIELD_CLAIM), `--names did not carry the sentence: ${shown.saw}`);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});

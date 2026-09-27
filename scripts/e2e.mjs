@@ -1593,14 +1593,19 @@ function evalAssertion(a, runDir, { names = REPORT_NAMES } = {}) {
     const held = recordsFile
       ? (recordsFile.marks ?? []).reduce((n, m) => n + (m.records ?? []).length, 0)
       : null;
-    const bad = sentences.filter((s) => aboutRegister.test(s) && !staysInside.test(s)
+    // Carried WITH ITS POSITION, because the index is what a withheld row prints instead of the words.
+    // `indexOf` on the sentence would be wrong the moment a document repeats one: both rows would send
+    // the reader to the first copy, and a run that says the same thing twice is exactly the run somebody
+    // is reading the report about.
+    const badAt = sentences.map((s, i) => ({ s, i })).filter(({ s }) => aboutRegister.test(s) && !staysInside.test(s)
       && (exceedsACount.test(s) || (singularAbsence.test(s) && !(held > 0))));
+    const bad = badAt.map(({ s }) => s);
     const basis = held === null
       ? "_driver/register-records.json is absent or unreadable, so this is as strict as a run holding zero records — identical verdict, different reason: one is a fact about the search, this is a fact about the check's own evidence"
       : `the run holds ${held} register record(s), so a status read off one is supported and only a claim over the field is not`;
     return { ok: bad.length === 0,
       saw: bad.length ? `${bad.length} register claim(s) wider than the records this run holds — `
-        + `${fromTheRun({ names, quotes: bad.slice(0, 2), where: `sentence ${bad.slice(0, 2).map((b) => sentences.indexOf(b) + 1).join(" and ")} of ${file}` })} (${basis})`
+        + `${fromTheRun({ names, quotes: bad.slice(0, 2), where: `sentence ${badAt.slice(0, 2).map(({ i }) => i + 1).join(" and ")} of ${file}` })} (${basis})`
         : `${sentences.filter((s) => aboutRegister.test(s)).length} register sentence(s), each a count, a labelled expectation, or a status the records support — ${basis}` };
   }
   // `survivor-not-clear` — a mark this lane did not knock out is a SURVIVOR, never a clear. The two words
