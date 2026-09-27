@@ -5691,6 +5691,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-grid-runs-its-cells-at-once.test.mjs": {
+          "tests": 4,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "the-heartbeat-stays-fresh-while-a-run-is-in-flight.test.mjs": {
           "tests": 4,
           "asserts": 8,
