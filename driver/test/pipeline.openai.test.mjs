@@ -45,7 +45,7 @@ async function runOpenaiPipeline(env = {}) {
     CLEAROTRON_CODEX_PATH: CODEX_MOCK,
     CLEAROTRON_AI_BILLING: "api-key", CODEX_API_KEY: "sk-codex-dummy",   // api-key mode → no auth.json seeding; the mock ignores it
     MOCK_CODEX_CALL_LOG: codexLog,          // proves the stages actually went through the openai engine (argv + prompt + config.toml)
-    CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"), CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_AGENT: "intake-agent",
+    CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"), CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0",
     MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", ...env,
   });
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
@@ -276,9 +276,14 @@ test("E2(openai): an api-key billing mode with no key is REFUSED AT THE DOOR (na
   });
   // "Before a run directory exists" is the whole property, so it is asserted from the filesystem and not
   // from the message. The whole ROOT is listed rather than one guessed path checked absent: a run dir sits
-  // two levels down (<root>/workspace-intake-agent/studio/clearance-search/…), so a path guessed at the top would
+  // two levels down (<root>/workspace-<agent>/studio/clearance-search/…), so a path guessed at the top would
   // read as absent whatever the door did. `clearance-run-locks` is the run slot `pipeline()` takes before
-  // `pipelineInner` runs; a run that got past the door would put `workspace-intake-agent` beside it.
+  // `pipelineInner` runs; a run that got past the door would put its own workspace directory beside it.
+  //
+  // THE AGENT IS DELIBERATELY NOT NAMED HERE (issue 990). These lines used to name one, taken from a
+  // CLEAROTRON_AGENT this fixture set and the shipped tree reads nowhere — so they named a directory that
+  // could never have appeared, since the engine derives its own from CLEAROTRON_DEFAULT_AGENT. Listing
+  // the whole root is what made the assertion immune; only its explanation was wrong.
   assert.deepEqual(readdirSync(lastRoot), ["clearance-run-locks"],
     "a refused run leaves no run directory, no frozen profile and no status sidecar behind");
 });
