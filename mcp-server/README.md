@@ -54,7 +54,7 @@ Read-only (cross-run): `search_runs` (ranked search across every run — `scope`
 resolves a job's `profileKey` against).
 Ordering a search: `describe_options` (what this deployment offers, free) → `plan_run` (free preview; resolves
 and describes the job, queues nothing) → `start_run` (enqueues, and spends once it runs), plus `stop_run` and
-`feed_context` (late-bind an applicant or steer a re-run).
+`feed_context` (late-bind an applicant).
 Delivery courier: `list_outbox_events`, `get_delivery_packet`, `mark_sent`, `ack_event`.
 Gated compute: `what_if_plan` (dry-run + cost + completeness + `confirmationToken`) → `what_if_run` (executes).
 Resources: `trademark://run/<runId>/<artifact>` (report, audit, narrative, registerFindings, commonLaw,
