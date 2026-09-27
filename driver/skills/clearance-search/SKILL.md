@@ -131,7 +131,7 @@ Three phases, all complete before a single reply is sent to the forwarder.
 5. **Skeptic review** — coverage check against floors; a flagged thin unit is re-run escalated to opus
 6. **Cross-pollination** — Option D deterministic cross-checks (cap N=10) using both layers' findings
 7. **Synthesis** — joint risk analysis using [risk-framework.md](risk-framework.md) and [synthesis-rules.md](synthesis-rules.md)
-8. **Touchpoint 3: narrative-refutation** — refutes the narrative against the source files; produces `senior-eye-review.md` (verdict CLEAR / CONDITIONAL / BLOCKING; delivery is gated on it)
+8. **Touchpoint 3: narrative-refutation** — refutes the narrative against the source files; produces `senior-eye-review.md` (verdict CLEAR / CONDITIONAL / BLOCKING; the verdict changes what the report carries, not whether it ships)
 9. **Case-law grounding** — ground watchlist / enforcer findings in cited precedent
 10. **Cross-mark references** — once, after all marks complete (multi-mark requests only)
 
