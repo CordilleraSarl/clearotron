@@ -996,7 +996,7 @@ let unclassifiedKeys = [];
 if (!opts.names) {
   const { names, prose, derived, unclassified } = protectedStrings({ reference: ref, scored, run: run.findings ?? null });
   unclassifiedKeys = unclassified;
-  // tracker issue 1003 — the second redactor is for lines this tool WROTE. It drops the derived-word layer
+  // The second redactor is for lines this tool WROTE. It drops the derived-word layer
   // only, so a party's ordinary long word stops rewriting our own headings while its full name is still
   // taken out of them. A structural line nobody routed through `printAuthored` is redacted as before,
   // which is the old behaviour and the safe side.

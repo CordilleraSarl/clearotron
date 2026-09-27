@@ -1,4 +1,6 @@
-// A WITHHELD SCORE PRINTED A NAME IN CLEAR BECAUSE THE NAME WAS FULL WIDTH (tracker issue 1004).
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
+// A WITHHELD SCORE PRINTED A NAME IN CLEAR BECAUSE THE NAME WAS FULL WIDTH.
 //
 // A score taken without `--names` printed a mark and its proprietor in clear, in the same sentence as
 // three that redacted correctly, from the same template, on the same run. The one that leaked renders its
@@ -52,7 +54,7 @@ const BOTH_WAYS = [
 
 for (const [shape, a, b] of BOTH_WAYS) {
   for (const [protectedAs, metAs, way] of [[a, b, "protected one way, met the other"], [b, a, "and the reverse"]]) {
-    test(`1004 ${shape} - ${way}`, () => {
+    test(`${shape} - ${way}`, () => {
       const line = `  owner ${metAs} filed in 2019`;
       const out = forParty(protectedAs)(line);
       assert.ok(!out.includes(metAs),
@@ -64,7 +66,7 @@ for (const [shape, a, b] of BOTH_WAYS) {
   }
 }
 
-test("1004 the half-width voiced mark is folded into the syllable, not left beside it", () => {
+test("the half-width voiced mark is folded into the syllable, not left beside it", () => {
   // THE REASON THE CLUSTER RULE NAMES THOSE TWO CODE POINTS EXPLICITLY. They are modifier LETTERS, not
   // marks, so grouping a character with \p{M} alone leaves U+30C8 U+3099 where the reference carries
   // U+30C9 - the same glyph on screen, and not a match. Reading the folded output could not catch this.
@@ -74,7 +76,7 @@ test("1004 the half-width voiced mark is folded into the syllable, not left besi
     "the half-width form folded to a different sequence of code points than the full-width one");
 });
 
-test("1004 the fold must not turn a legal form into a protected word", () => {
+test("the fold must not turn a legal form into a protected word", () => {
   // THE FOLD IS WHAT MAKES THIS BITE. The distinctive-word rule excludes legal forms, but it did so on the
   // unfolded word: a full-width "Ltd" lowercases to full-width letters, which are not in the list.
   // Unfolded that was a harmless stray entry, because nothing matched it. Fold the text too and it matches
@@ -87,7 +89,7 @@ test("1004 the fold must not turn a legal form into a protected word", () => {
   assert.equal(redactor({ names, prose: new Set() })(line), line, "an ordinary legal form in the run's output was rewritten");
 });
 
-test("1004 and 1003 together - a full-width party whose word collides with the scorer's own heading", () => {
+test("both fixes together - a full-width party whose word collides with the scorer's own heading", () => {
   // NEITHER FIX MAY PASS WITH THE OTHER'S DEFECT INTACT, which is what 1004 asks for. Without the fold the
   // full-width party is not matched at all and the data line below keeps its name. Without the authored
   // exemption the heading is rewritten. One party, both assertions.
@@ -100,7 +102,7 @@ test("1004 and 1003 together - a full-width party whose word collides with the s
     `the full-width party was printed in clear: ${JSON.stringify(redactor({ names, prose })(data))}`);
 });
 
-test("1004 a zero-width character inside a name does not defeat the match", () => {
+test("a zero-width character inside a name does not defeat the match", () => {
   // THE SAME DEFECT AS THE WIDTH ONE AND NOT FIXED BY THE FOLD. NFKC keeps every format character, so a
   // zero-width space one character into a protected name left it printed in clear - and a reader cannot
   // see the difference between that line and the redacted rows beside it. Both directions: the invisible
@@ -112,7 +114,7 @@ test("1004 a zero-width character inside a name does not defeat the match", () =
   }
 });
 
-test("1004 a line carrying no protected name comes back unchanged, character for character", () => {
+test("a line carrying no protected name comes back unchanged, character for character", () => {
   // The splice is new. A redaction that quietly rewrites text naming nobody is the same fault as one that
   // eats a heading, and an unfolded page is the common case.
   const line = "  axis E, 4 territories, depth 2, 3 searched: Ltd, GmbH, K.K.";

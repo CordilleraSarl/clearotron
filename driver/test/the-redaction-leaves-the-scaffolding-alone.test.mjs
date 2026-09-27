@@ -1,4 +1,6 @@
-// A REDACTION THAT EATS THE SCAFFOLDING MAKES A READER DOUBT WHAT IS INTACT (tracker issue 1003).
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
+// A REDACTION THAT EATS THE SCAFFOLDING MAKES A READER DOUBT WHAT IS INTACT.
 //
 // The distinctive-word rule protects every word of five characters or more, bar legal forms, from each
 // party name — so prose shortening a two-word proprietor is still covered. That closed a real leak and
@@ -26,14 +28,14 @@ const HEADING = `\n── axis E · per-territory depth ${"─".repeat(45)}`;
 // on a single collision.
 const REF = { findings: [{ owner: { name: "Depth Charge" } }] };
 
-test("1003 a party's ordinary long word does not rewrite the scorer's own heading", () => {
+test("a party's ordinary long word does not rewrite the scorer's own heading", () => {
   const { names, prose, derived } = protectedStrings(REF);
   assert.ok([...derived].includes("Depth"), "precondition: the distinctive-word rule protects it at all");
   const authored = authoredRedactor({ names, prose, derived });
   assert.equal(authored(HEADING), HEADING, "the heading came back rewritten, so a reader sees a party named in it");
 });
 
-test("1003 and the teeth are intact — the same word IS redacted in the run's own prose", () => {
+test("and the teeth are intact — the same word IS redacted in the run's own prose", () => {
   // The control. Without this the arm above passes on a redactor that stopped redacting.
   const { names, prose, derived } = protectedStrings(REF);
   const red = redactor({ names, prose, derived });
@@ -42,7 +44,7 @@ test("1003 and the teeth are intact — the same word IS redacted in the run's o
   assert.doesNotMatch(red(line), /\bDepth\b/, "the word is still there");
 });
 
-test("1003 an authored line carrying a party's FULL name is still redacted", () => {
+test("an authored line carrying a party's FULL name is still redacted", () => {
   // The authored path is not a bypass: it drops the derived layer only. A data line routed through it by
   // mistake still has its party names taken out, so the worst case is a shortened form and never a name.
   const { names, prose, derived } = protectedStrings(REF);
@@ -50,7 +52,7 @@ test("1003 an authored line carrying a party's FULL name is still redacted", () 
   assert.doesNotMatch(authored("owner: Depth Charge"), /Depth Charge/, "the full name survived an authored line");
 });
 
-test("1003 a party name with no ordinary long word is unaffected either way", () => {
+test("a party name with no ordinary long word is unaffected either way", () => {
   // Acme is short, so nothing is derived from it — which is why this was invisible until a long
   // ordinary word turned up in a reference.
   const { names, prose, derived } = protectedStrings({ findings: [{ owner: { name: "Acme" } }] });

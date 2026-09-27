@@ -163,7 +163,7 @@ export function protectedStrings(root) {
   // reader would recognise the party from, which is the thing being withheld.
   const LEGAL_FORM = new Set(["inc", "llc", "ltd", "limited", "gmbh", "corp", "corporation", "company",
     "holdings", "group", "plc", "sarl", "bv", "nv", "ag", "sa", "spa", "pty", "kk", "co", "and", "the", "of"]);
-  // tracker issue 1003 — KEPT APART FROM THE GIVEN NAMES, because the two are not equally safe to
+  // KEPT APART FROM THE GIVEN NAMES, because the two are not equally safe to
   // apply. A given name is a party's name and appears nowhere else by construction. A DERIVED word is an
   // ordinary word that happens to sit inside one, so it collides with the scorer's own scaffolding: a
   // party called "Depth Charge" turns `per-territory depth` into `per-territory «name 2»`, and a reader
@@ -215,7 +215,7 @@ const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
  *
  * WHY. A score taken without `--names` printed a mark and its proprietor in clear, in the same sentence
  * as three that redacted correctly, because that one renders at full width: the protected set matched
- * only the exact code points the reference happened to carry (tracker issue 1004). Full-width Latin is
+ * only the exact code points the reference happened to carry. Full-width Latin is
  * ordinary in East Asian filings, so the failure concentrated in exactly the matters read in more than
  * one script. A register can also hand back full-width digits and punctuation, half-width katakana, and
  * an accented name either composed or decomposed. All of those are the same class, and one compatibility
@@ -369,7 +369,7 @@ export function redactor({ names = new Set(), prose = new Set(), hint = "run aga
  * descriptor and never passes through anything installed here.
  */
 /**
- * The redactor for a line the SCORER ITSELF wrote — a heading, a column ruler, a label (tracker issue 1003).
+ * The redactor for a line the SCORER ITSELF wrote — a heading, a column ruler, a label.
  *
  * It applies the party names and the reference's own sentences, and DROPS the derived words. So a
  * scaffolding word that happens to sit inside a party's name survives, and a reader keeps the structure
@@ -426,7 +426,7 @@ export function installRedaction(redact, io = { console, process }, authored = n
     original.stderr(`${redact(e?.stack ?? String(e))}\n`);
     proc.exit(1);
   };
-  // tracker issue 1003 — writes through the ORIGINAL stream, so the wrap above cannot re-apply the
+  // Writes through the ORIGINAL stream, so the wrap above cannot re-apply the
   // derived layer to a line that just had it dropped.
   authoredPrint = (text) => original.stdout(authored ? authored(text) : redact(text));
   proc.on?.("uncaughtException", onUncaught);
