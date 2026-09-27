@@ -546,7 +546,7 @@ export const UNIT_INVENTORY = Object.freeze([
     unit: "trademark-test-deploy", runsOn: [],
       measured: "2026-09-07, read on the test deployment: LoadState=not-found. The hourly deploy runs as clearotron-deploy.timer, which has its own entry; this name is what that one used to be called.", tracked: null,
     // AN EMPTY runsOn OWES A REASON, and this one is a supersession rather than an orphan: the hourly
-    // deploy still runs on the test box, under the name `clearotron-deploy`, which has its own entry and
+    // deploy still runs on the test deployment, under the name `clearotron-deploy`, which has its own entry
     // its own measurement. This name is what that unit used to be called. It is kept rather than deleted
     // because the unit FILE is still tracked and an inventory of what ships should account for every
     // tracked file — deleting the entry would make the file unaccounted for, which is the ratchet this
@@ -560,7 +560,7 @@ export const UNIT_INVENTORY = Object.freeze([
   // row was right until the moment it was wrong. That nightly rotation was retired in code by:
   // bin/register-ledger-prune.mjs is deleted, record bodies now live in each run's own directory and
   // are purged with the run, so there is no global file left to rotate. The row stayed here on
-  // purpose while the TIMER was still installed on the test box — dropping it first would have made
+  // purpose while the TIMER was still installed on the test deployment — dropping it first would have
   // an installed unit invisible to the very check that exists to find installed units nothing
   // describes. The timer was disabled and stopped on 2026-08-13, four hours before it would have
   // fired against the deleted script, and this row went with it. Re-listing it would re-declare a
@@ -723,7 +723,7 @@ export function unitInventoryVerdict({
   // units shipped WITH entries, those entries kept `runsOn: []`, and the pre-rename names kept the
   // boxes. Every arm scoped to CHECKED_UNITS — which filters on a NON-EMPTY runsOn — therefore asked
   // systemd about sixteen names that mostly named nothing and reported "0 active; 16 at rest", while
-  // four services ran under names no entry claimed. Measured on the test box 2026-09-07.
+  // four services ran under names no entry claimed. Measured on the test deployment, 2026-09-07.
   //
   // This needs NO knowledge of which box it is running on, which is what makes it the right shape: an
   // entry saying a unit runs on no box is contradicted by that unit running HERE, wherever here is.
