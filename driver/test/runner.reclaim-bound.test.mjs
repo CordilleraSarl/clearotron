@@ -26,7 +26,7 @@ const RUNNER = join(HERE, "..", "runner.mjs");
 const CLAUDE = join(HERE, "mock-claude.mjs");
 chmodSync(CLAUDE, 0o755);
 
-const studioFor = (root) => join(root, "workspace-clawdi", "studio", "clearance-search");
+const studioFor = (root) => join(root, "workspace-intake-agent", "studio", "clearance-search");
 const queueFor = (root) => join(studioFor(root), "queue");
 
 // On Windows the runner's claim token is `<pid>:<birth stamp>` and it takes over a dead claim by renaming
@@ -66,12 +66,12 @@ async function seedOrphan(root, { reclaims }) {
   const runDir = join(studioFor(root), slug, `${dateISO}-${codename}`);
   mkdirSync(driverDir(runDir), { recursive: true });
   writeFileSync(join(runDir, "status.json"), JSON.stringify({
-    runId: `${slug}-${dateISO}-${codename}`, slug, codename, date: dateISO, agent: "clawdi",
+    runId: `${slug}-${dateISO}-${codename}`, slug, codename, date: dateISO, agent: "intake-agent",
     state: "running", stepN: 7, stepTotal: 9, stepLabel: "Drafting the report", updatedAt: new Date().toISOString(),
   }, null, 2) + "\n");
   writeFileSync(join(Q, "job-a.processing"), JSON.stringify(J));
   writeFileSync(join(Q, "job-a.processing.pid"), await deadClaimToken());
-  writeFileSync(join(Q, "job-a.processing.meta"), JSON.stringify({ codename, dateISO, agentId: "clawdi", ...(reclaims ? { reclaims } : {}) }, null, 2) + "\n");
+  writeFileSync(join(Q, "job-a.processing.meta"), JSON.stringify({ codename, dateISO, agentId: "intake-agent", ...(reclaims ? { reclaims } : {}) }, null, 2) + "\n");
   return { Q, runDir, codename, slug, job: J };
 }
 

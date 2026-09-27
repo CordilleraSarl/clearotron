@@ -17,16 +17,16 @@ import assert from "node:assert/strict";
 import { watchedQueueDirs, compareWatches } from "../../scripts/drain-preflight.mjs";
 
 const UNIT = `[Path]
-PathExistsGlob=%h/.openclaw/workspace-clawdi/studio/clearance-search/queue/*.json
-PathExistsGlob=%h/.openclaw/workspace-clawdi-b/studio/clearance-search/queue/*.json
+PathExistsGlob=%h/.openclaw/workspace-intake-agent/studio/clearance-search/queue/*.json
+PathExistsGlob=%h/.openclaw/workspace-intake-agent-b/studio/clearance-search/queue/*.json
 #PathExistsGlob=%h/clearance-queue/*.json
 Unit=prelim-driver.service
 `;
 
 test("%h is resolved and the glob tail stripped — a watch is a directory, not a pattern", () => {
   assert.deepEqual(watchedQueueDirs(UNIT, "/srv/testhome"), [
-    "/srv/testhome/.openclaw/workspace-clawdi/studio/clearance-search/queue",
-    "/srv/testhome/.openclaw/workspace-clawdi-b/studio/clearance-search/queue",
+    "/srv/testhome/.openclaw/workspace-intake-agent/studio/clearance-search/queue",
+    "/srv/testhome/.openclaw/workspace-intake-agent-b/studio/clearance-search/queue",
   ]);
 });
 
@@ -44,9 +44,9 @@ test("THE SILENT DISAGREEMENT IS THE POINT — a queue the runner drains and not
   // spellings of one fact with nothing at runtime comparing them. moved the code default from
   // the platform dot-directory to `$HOME/trademark/workspace` and the globs deliberately did not move.
   const r = compareWatches(
-    ["/srv/testhome/trademark/workspace/workspace-clawdi/studio/clearance-search/queue"],
+    ["/srv/testhome/trademark/workspace/workspace-intake-agent/studio/clearance-search/queue"],
     watchedQueueDirs(UNIT, "/srv/testhome"));
-  assert.deepEqual(r.unwatched, ["/srv/testhome/trademark/workspace/workspace-clawdi/studio/clearance-search/queue"]);
+  assert.deepEqual(r.unwatched, ["/srv/testhome/trademark/workspace/workspace-intake-agent/studio/clearance-search/queue"]);
 });
 
 test("agreement reports nothing, and a trailing slash is not a disagreement", () => {

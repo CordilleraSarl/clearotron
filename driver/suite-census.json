@@ -1209,6 +1209,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-sample-seeded-under-two-agent-ids-is-shown-once-per-copy.test.mjs": {
+          "tests": 3,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "a-save-that-cannot-commit-says-so.test.mjs": {
           "tests": 4,
           "asserts": 19,
@@ -4133,7 +4139,7 @@
         },
         "progress.test.mjs": {
           "tests": 26,
-          "asserts": 97,
+          "asserts": 99,
           "skips": 0,
           "todos": 0
         },

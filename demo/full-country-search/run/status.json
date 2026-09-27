@@ -5,7 +5,7 @@
   "slug": "tmpdemo2014fullcountrysearch-venqori",
   "codename": "sample-capture",
   "date": "2026-09-18",
-  "agent": "clawdi",
+  "agent": "localagent",
   "forwarder": "e2e",
   "ref": "DEMO-2014-full-country-search",
   "markName": "VENQORI",

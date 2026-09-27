@@ -46,7 +46,13 @@ function harness(env = {}) {
     CLEAROTRON_AI: "anthropic-agent",
     CLEAROTRON_CLAUDE_PATH: CLAUDE_MOCK,
     CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"),
-    CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_AGENT: "clawdi",
+    CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_AGENT: "intake-agent",
+    // THE VARIABLE THAT DECIDES THE WORKSPACE IS THIS ONE, and the line above is read by nothing in the
+    // shipped tree — measured, not assumed. The run directory resolves under `config.defaultAgent`, which
+    // reads CLEAROTRON_DEFAULT_AGENT; until ruling 563 it fell back to one agent named as a literal, and
+    // this harness passed because that literal and the value above happened to be the same word. So the
+    // arm below read as proof that the line above decided the path, and it never did.
+    CLEAROTRON_DEFAULT_AGENT: "intake-agent",
     MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", ...env,
   })) pinEnv(process.env, k, v);
   return {
@@ -99,7 +105,7 @@ test("a SIGNED-OUT engine is refused at the door — before a run directory exis
   // so `existsSync(<root>/studio/clearance-search) === false` is a sentence that passes whatever the door
   // does, and would have shipped this file's headline assertion as decoration. The only entry is the run
   // slot, which `pipeline()` takes before `pipelineInner` is called at all and releases in its finally;
-  // a run that got past the door would add `workspace-clawdi` beside it, as the test below shows.
+  // a run that got past the door would add `workspace-intake-agent` beside it, as the test below shows.
   assert.deepEqual(readdirSync(root), ["clearance-run-locks"],
     "no agent workspace, no run directory, no frozen profile, no status sidecar — the refusal costs one cheap turn and nothing else");
 });
@@ -116,7 +122,7 @@ test("an UPSTREAM OVERLOAD does NOT refuse — the door fails open and says so o
   // not the archive. It says where a run that gets past the door puts itself — which is what makes "the
   // workspace root is empty" up there an assertion about the door rather than about a path that never
   // existed. Keep these two together; separating them is how the absence stops being a finding.
-  assert.ok(res.runDir.startsWith(join(root, "workspace-clawdi", "studio", "clearance-search")),
+  assert.ok(res.runDir.startsWith(join(root, "workspace-intake-agent", "studio", "clearance-search")),
     `a run that passes the door populates the workspace root: ${res.runDir}`);
 
   const probeRow = runEvents(res.runDir).find((e) => e.event === "engine-turn-probe");

@@ -47,7 +47,7 @@ delete process.env.CLEAROTRON_JX_LANES;
 // Dynamic import AFTER env is set (driver.config captures the roots at module load).
 const { main, matterSignature, findDuplicateMatter, recordMatter } = await import("../runner.mjs");
 const { resolveSearchPolicy, gateResolvedPolicy } = await import("../search-policy.mjs");
-const Q = join(root, "workspace-clawdi", "studio", "clearance-search", "queue");
+const Q = join(root, "workspace-intake-agent", "studio", "clearance-search", "queue");
 mkdirSync(Q, { recursive: true });
 const OUTBOX = join(root, "clearance-outbox");   // config.outboxDir default: <workspaceRoot>/clearance-outbox
 
@@ -188,7 +188,7 @@ test("a NO-selector job runs the product its SCOPE names, end to end, and the ru
   refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.search-policy-gate.test.mjs");
   assert.ok(existsSync(join(Q, "plain-1.done")), "the default path still delivers");
   // the frozen product identity (the delivered run has moved to the archive subtree)
-  const runDirs = findSidecarRuns(join(root, "workspace-clawdi", "studio", "clearance-search"));
+  const runDirs = findSidecarRuns(join(root, "workspace-intake-agent", "studio", "clearance-search"));
   assert.equal(runDirs.length, 1, "exactly one run froze a search-policy sidecar");
   const sp = JSON.parse(readFileSync(driverDir(runDirs[0], "search-policy.json"), "utf8"));
   // NOT a house default any more: `clearotron` named three different searches depending on where it pointed,

@@ -5,7 +5,7 @@ After=network-online.target
 Wants=network-online.target
 
 [Service]
-# Reads the OAuth cache at ~/.config/clawdi/oauth-mcp/courtlistener.json (no ~/.env needed).
+# Reads the OAuth cache at <creds-dir>/courtlistener.json (no ~/.env needed).
 Environment=PATH=/usr/local/bin:/usr/bin:/bin
 # ── RESOLVED AT INSTALL (option B) ───────────────────────────────────────────────────────────
 # `@CLEAROTRON_CHECKOUT_DIR@` is substituted by render-units.mjs when it writes the resolved copy.

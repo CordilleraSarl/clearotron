@@ -43,11 +43,12 @@ The bridge owns `<creds-dir>/<server>.json` from the moment the recipe below
 writes it, and refreshes are written back there. mcporter's own credential store
 can rotate or clear without affecting the bridge.
 
-**Where `<creds-dir>` is.** `bridge.mjs` reads `--creds-dir`, else
-`OAUTH_BRIDGE_CREDS_DIR`, else `~/.config/trademark-oauth-mcp`. `warm-server.mjs`
-reads `--creds-dir`, else `~/.config/clawdi/oauth-mcp` — it has no env override,
-so a deployment that runs both must pass the same directory to the warm server
-explicitly or keep the credentials where each default looks.
+**Where `<creds-dir>` is.** Both `bridge.mjs` and `warm-server.mjs` read
+`--creds-dir`, else `OAUTH_BRIDGE_CREDS_DIR`, else `~/.config/trademark-oauth-mcp`.
+They disagreed until 2026-09-27 — the warm server defaulted elsewhere and took no
+variable at all, so a deployment running both had to pass the directory explicitly.
+A deployment whose credentials sit in the folder an earlier build used points
+`OAUTH_BRIDGE_CREDS_DIR` at that folder.
 
 ## One-time setup (per remote MCP server)
 
@@ -274,7 +275,7 @@ checkout.
 
 **Why this unit does not take `CLEAROTRON_CHECKOUT_DIR` the way the driver units do**: those load
 `EnvironmentFile=%h/.env` and expand `${CLEAROTRON_CHECKOUT_DIR}` in `ExecStart`. This one deliberately
-loads no environment file — it reads the OAuth cache at `~/.config/clawdi/oauth-mcp/courtlistener.json`
+loads no environment file — it reads the OAuth cache under the credentials directory
 and needs nothing else — and on systemd an `EnvironmentFile` **overrides** the unit's own `Environment=`
 lines, so adding one to gain the variable would also let `~/.env` silently replace this unit's `PATH`.
 Editing one line is the smaller cost. Keep `loginctl enable-linger <user>` on if the service must

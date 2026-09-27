@@ -53,8 +53,19 @@ import { randomUUID } from "node:crypto";
 import http from "node:http";
 import path from "node:path";
 import { listenOrDie } from "../../shared/listen.mjs";   // — a taken port is a sentence, not a stack
+import { warnRetiredEnv } from "../../shared/env-aliases.mjs";
 
-const DEFAULT_CREDS_DIR = path.join(homedir(), ".config", "clawdi", "oauth-mcp");
+// THE REFUSAL ONLY, NO ENVIRONMENT FILE. This process reads one variable and deliberately loads no
+// `.env` — its unit says so and explains why — but an operator who renamed the retired settings in that
+// unit must not have this process silently stop seeing them. Reading the environment is what owes the
+// refusal, and until 2026-09-27 this file read none, which is why it owed nothing.
+warnRetiredEnv();
+
+// Creds dir: env-overridable (OAUTH_BRIDGE_CREDS_DIR), and the same folder `bridge.mjs` already
+// defaults to. The two entry points disagreed — this one named a folder after the old agent id and took
+// no override at all, which is what made an install on the default unable to keep its sign-in. A
+// deployment whose credentials sit in the old folder points the variable at it.
+const DEFAULT_CREDS_DIR = process.env.OAUTH_BRIDGE_CREDS_DIR || path.join(homedir(), ".config", "trademark-oauth-mcp");
 
 // Per-server tool allowlist — upstream servers may add/rename tools without
 // notice, so we explicitly opt in. Kept in sync with bridge.mjs ALLOWED_TOOLS.
@@ -132,7 +143,7 @@ if (!allowedTools) {
 }
 
 const log = (msg) =>
-  process.stderr.write(`[clawdi-warm-mcp:${serverName}] ${msg}\n`);
+  process.stderr.write(`[clearotron-warm-mcp:${serverName}] ${msg}\n`);
 
 async function loadCreds() {
   let raw;
@@ -199,7 +210,7 @@ class WarmOAuthProvider {
   get clientMetadata() {
     return (
       this._creds.clientInfo?.metadata ?? {
-        client_name: "clawdi-oauth-mcp-bridge",
+        client_name: "clearotron-oauth-mcp-bridge",
         grant_types: ["authorization_code", "refresh_token"],
         response_types: ["code"],
         redirect_uris: [],
@@ -279,7 +290,7 @@ function scheduleKeepWarm(expiresInSec) {
 // warm upstream through the serialization mutex, applying the allowlist.
 function makeProxyServer() {
   const server = new Server(
-    { name: `clawdi-warm-${serverName}`, version: "0.1.0" },
+    { name: `clearotron-warm-${serverName}`, version: "0.1.0" },
     { capabilities: { tools: {} } },
   );
   server.setRequestHandler(ListToolsRequestSchema, async () => {
@@ -344,7 +355,7 @@ async function main() {
   const authProvider = new WarmOAuthProvider(creds);
 
   upstream = new Client(
-    { name: "clawdi-warm-mcp-client", version: "0.1.0" },
+    { name: "clearotron-warm-mcp-client", version: "0.1.0" },
     { capabilities: {} },
   );
   const clientTransport = new StreamableHTTPClientTransport(

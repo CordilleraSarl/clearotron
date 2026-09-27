@@ -74,7 +74,7 @@ case "$(cat "${root}/mode" 2>/dev/null)" in
   turn-error) echo '{"status":"ok","result":{"stopReason":"error"}}' ;;
   garbage)    echo 'not json' ;;
   ok-consume) rm -f "${outbox}"/*.pending; echo '{"status":"ok","result":{"stopReason":"stop","payloads":[]}}' ;;
-  clawdi-only) for f in "${outbox}"/*.pending; do [ -e "$f" ] || continue; [ "$(head -n1 "$f" | tr -d '[:space:]')" = clawdi ] && rm -f "$f"; done
+  intake-agent-only) for f in "${outbox}"/*.pending; do [ -e "$f" ] || continue; [ "$(head -n1 "$f" | tr -d '[:space:]')" = intake-agent ] && rm -f "$f"; done
               echo '{"status":"ok","result":{"stopReason":"stop","payloads":[]}}' ;;
   *)          echo '{"status":"ok","result":{"stopReason":"stop","payloads":[]}}' ;;
 esac
@@ -130,22 +130,22 @@ exit 0
 test("successful wake + courier consumption: agent woken once, events consumed, no backoff sidecar", SHELL_GATE, () => {
   const h = makeHarness();
   h.setMode("ok-consume");
-  writeFileSync(join(h.outbox, "run-a.pending"), "clawdi\n");
+  writeFileSync(join(h.outbox, "run-a.pending"), "intake-agent\n");
   h.run();
   assert.equal(h.calls().length, 1, "one wake");
-  assert.match(h.calls()[0], /--agent clawdi .*--json/, "woke the marker's agent under --json");
+  assert.match(h.calls()[0], /--agent intake-agent .*--json/, "woke the marker's agent under --json");
   assert.deepEqual(h.markers(), [], "events consumed by the courier (mark_sent/ack_event)");
-  assert.equal(h.sidecar("clawdi"), null, "no sidecar on success");
+  assert.equal(h.sidecar("intake-agent"), null, "no sidecar on success");
 });
 
 test("successful wake WITHOUT consumption: events RETAINED + a no-progress strike is recorded (circuit-breaker arming)", SHELL_GATE, () => {
   const h = makeHarness();
   h.setMode("ok");
-  writeFileSync(join(h.outbox, "run-r.pending"), "clawdi\n");
+  writeFileSync(join(h.outbox, "run-r.pending"), "intake-agent\n");
   h.run();
   assert.equal(h.calls().length, 1, "one wake");
   assert.deepEqual(h.markers(), ["run-r.pending"], "turn ok is NOT consumption — payload survives an idle courier (trigger never deletes)");
-  const sc = h.sidecar("clawdi");
+  const sc = h.sidecar("intake-agent");
   assert.equal(sc?.markerStrikes?.["run-r.pending"], 1,
     "an ok-but-unconsumed wake now STRIKES the marker (the old behaviour — no sidecar at all — is exactly the loophole the runaway spend fell through)");
 });
@@ -154,7 +154,7 @@ test("no-progress circuit-breaker: an ok wake that never consumes is quarantined
   const h = makeHarness();
   h.env.CLEAROTRON_OUTBOX_NOPROGRESS_MAX = "1";   // trip on the first unconsumed wake for a deterministic e2e
   h.setMode("ok");                            // turn succeeds but consumes nothing — the exact 2026-07 class
-  writeFileSync(join(h.outbox, "stuck-run.pending"), "clawdi\n");
+  writeFileSync(join(h.outbox, "stuck-run.pending"), "intake-agent\n");
   h.run();
   assert.equal(h.calls().length, 1, "one wake attempted");
   assert.deepEqual(h.markers(), [], "the stuck marker no longer matches the .path glob AND no alert packet is pushed back in");
@@ -165,12 +165,12 @@ test("no-progress circuit-breaker: an ok wake that never consumes is quarantined
 test("failed wake (stopReason error, exit 0) → retained events + sidecar; in-window re-fire wakes NOBODY; post-window retry succeeds and clears all", SHELL_GATE, () => {
   const h = makeHarness();
   h.setMode("turn-error");
-  writeFileSync(join(h.outbox, "run-b.pending"), "clawdi\n");
+  writeFileSync(join(h.outbox, "run-b.pending"), "intake-agent\n");
 
   h.run();   // fire 1: wake attempted, turn errored
   assert.equal(h.calls().length, 1);
   assert.deepEqual(h.markers(), ["run-b.pending"], "events RETAINED on wake failure");
-  assert.equal(h.sidecar("clawdi")?.retries, 1, "backoff sidecar recorded");
+  assert.equal(h.sidecar("intake-agent")?.retries, 1, "backoff sidecar recorded");
 
   h.run();   // fire 2, inside the 2s window (the .path re-fire): due-check false ⇒ no wake attempted
   assert.equal(h.calls().length, 1, "tight-loop impossibility: in-window fire attempts NO wake");
@@ -178,21 +178,21 @@ test("failed wake (stopReason error, exit 0) → retained events + sidecar; in-w
 
   // — the window elapses because the sidecar says so, not because 2.1 real seconds passed. The
   // old sleep made this leg cost real time AND made the leg above a race against the same clock.
-  h.expireBackoff("clawdi");
+  h.expireBackoff("intake-agent");
   h.setMode("ok-consume");
   h.run();   // fire 3: due again — retry, this time the turn succeeds and the courier consumes
   assert.equal(h.calls().length, 2, "post-window fire retries the wake");
   assert.deepEqual(h.markers(), [], "events consumed on the successful retry");
-  assert.equal(h.sidecar("clawdi"), null, "sidecar cleared on success");
+  assert.equal(h.sidecar("intake-agent"), null, "sidecar cleared on success");
 });
 
 test("rescan manufactures a marker for an owed run and the same activation delivers it", SHELL_GATE, () => {
   const h = makeHarness();
   h.setMode("ok-consume");
-  const runDir = join(h.workspaces, "workspace-clawdi", "studio", "clearance-search", "owed-slug", "2026-07-11-alpha");
+  const runDir = join(h.workspaces, "workspace-intake-agent", "studio", "clearance-search", "owed-slug", "2026-07-11-alpha");
   mkdirSync(runDir, { recursive: true });
   writeFileSync(join(runDir, "status.json"), JSON.stringify({
-    runId: "owed-slug-2026-07-11-alpha", slug: "owed-slug", agent: "clawdi", state: "delivered", sendPending: true,
+    runId: "owed-slug-2026-07-11-alpha", slug: "owed-slug", agent: "intake-agent", state: "delivered", sendPending: true,
   }));
   h.run();   // no pre-existing marker: the rescan step drops one, then the wake processes it
   assert.equal(h.calls().length, 1, "the timer-cadence fire wakes the agent for the owed run");
@@ -217,7 +217,7 @@ test("DRAIN_WAIT=0 and the courier consumed everything: the drain is reported, n
   const h = makeHarness();
   assert.equal(h.env.CLEAROTRON_OUTBOX_DRAIN_WAIT, "0", "this arm is about the zero — the harness must be setting it");
   h.setMode("ok-consume");
-  writeFileSync(join(h.outbox, "run-z.pending"), "clawdi\n");
+  writeFileSync(join(h.outbox, "run-z.pending"), "intake-agent\n");
   const r = h.run();
   assert.doesNotMatch(r.stderr, /unbound variable/, `set -u tripped inside the drain block:\n${r.stderr}`);
   assert.match(r.stdout, /clearance-outbox: drained/, "the drain outcome reaches the journal");
@@ -225,8 +225,8 @@ test("DRAIN_WAIT=0 and the courier consumed everything: the drain is reported, n
 
 test("DRAIN_WAIT=0 with an event left behind: the retained COUNT is reported", SHELL_GATE, () => {
   const h = makeHarness();
-  h.setMode("clawdi-only");   // clawdi's wake settles ok (woke_ok=1); otherbot's marker is left pending
-  writeFileSync(join(h.outbox, "run-c.pending"), "clawdi\n");
+  h.setMode("intake-agent-only");   // intake-agent's wake settles ok (woke_ok=1); otherbot's marker is left pending
+  writeFileSync(join(h.outbox, "run-c.pending"), "intake-agent\n");
   writeFileSync(join(h.outbox, "run-o.pending"), "otherbot\n");
   const r = h.run();
   assert.equal(h.calls().length, 2, "both agents woken");

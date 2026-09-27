@@ -15,12 +15,12 @@ function tree() {
   const root = mkdtempSync(join(tmpdir(), "snap-"));
   const runLock = join(root, "locks"); mkdirSync(runLock);
   const turnLock = join(runLock, "turns"); mkdirSync(turnLock);
-  // one LIVE run slot (our own pid, tag=clawdi) + one DEAD slot (must not count)
-  writeFileSync(join(runLock, "slot-0.lock"), `${process.pid}:abc:clawdi`);
+  // one LIVE run slot (our own pid, tag=intake-agent) + one DEAD slot (must not count)
+  writeFileSync(join(runLock, "slot-0.lock"), `${process.pid}:abc:intake-agent`);
   writeFileSync(join(runLock, "slot-1.lock"), `${DEAD_PID}:def:agent-b`);
   writeFileSync(join(turnLock, "turn-0.lock"), `${process.pid}:ghi`);
   // queue: one waiting .json (+ markName sidecar) and one claimed .processing
-  const qdir = join(root, "workspace-clawdi", "studio", "clearance-search", "queue"); mkdirSync(qdir, { recursive: true });
+  const qdir = join(root, "workspace-intake-agent", "studio", "clearance-search", "queue"); mkdirSync(qdir, { recursive: true });
   writeFileSync(join(qdir, "job1.json"), JSON.stringify({ classes: [9, 42], profileKey: "zephyr", forwarder: "requesting-lawyer" }));
   writeFileSync(join(qdir, "job1.markName.md"), "AURORA GLOW\n");
   writeFileSync(join(qdir, "job2.processing"), "{}");
@@ -28,12 +28,12 @@ function tree() {
 }
 
 const RUNS = [
-  { state: "running", runId: "r1", slug: "aura", codename: "x", agent: "clawdi", markName: "AURA", stepN: 5, stepTotal: 9, stepLabel: "Synthesis", startedAt: "2026-06-16T10:00:00Z", updatedAt: "2026-06-16T10:12:00Z" },
+  { state: "running", runId: "r1", slug: "aura", codename: "x", agent: "intake-agent", markName: "AURA", stepN: 5, stepTotal: 9, stepLabel: "Synthesis", startedAt: "2026-06-16T10:00:00Z", updatedAt: "2026-06-16T10:12:00Z" },
   { state: "delivered", runId: "r2", slug: "myr", codename: "y", verdict: "clearance", url: "https://x/r2/report.html", deliveredAt: "2026-06-15T09:00:00Z", updatedAt: "2026-06-15T09:00:00Z" },
   { state: "failed", runId: "r3", slug: "fire", codename: "z", failedStage: "synthesis", reason: "timeout", updatedAt: "2026-06-14T08:00:00Z" },
-  { state: "postponed", runId: "r4", slug: "nova-pulse", codename: "quartz-vault", agent: "clawdi", markName: "PROJECT NOVA PULSE", stepN: 2, stepTotal: 9, stepLabel: "Register sweeps", resetsAt: "2026-06-16T11:30:00Z", updatedAt: "2026-06-16T10:30:00Z" },
+  { state: "postponed", runId: "r4", slug: "nova-pulse", codename: "quartz-vault", agent: "intake-agent", markName: "PROJECT NOVA PULSE", stepN: 2, stepTotal: 9, stepLabel: "Register sweeps", resetsAt: "2026-06-16T11:30:00Z", updatedAt: "2026-06-16T10:30:00Z" },
   // auto-recovery park (2026-07-29 hardening): paused-but-alive, backing off — same bucket as postponed
-  { state: "recovering", runId: "r6", slug: "ember-arc", codename: "v", agent: "clawdi", markName: "EMBER ARC", stepN: 4, stepTotal: 9, stepLabel: "Register sweeps", resetsAt: "2026-06-16T10:32:00Z", updatedAt: "2026-06-16T10:30:00Z" },
+  { state: "recovering", runId: "r6", slug: "ember-arc", codename: "v", agent: "intake-agent", markName: "EMBER ARC", stepN: 4, stepTotal: 9, stepLabel: "Register sweeps", resetsAt: "2026-06-16T10:32:00Z", updatedAt: "2026-06-16T10:30:00Z" },
   // presentation-retired (2026-07-06): hidden from EVERY surface bucket, reversibly (status.retired flag)
   { state: "failed", runId: "r5", slug: "old-test", codename: "w", failedStage: "fan-in", reason: "e2e noise", updatedAt: "2026-06-13T08:00:00Z", status: { retired: true } },
 ];
@@ -46,7 +46,7 @@ test("snapshot: counts only live-pid slots, reads queue + markName sidecar, part
     runCap: 3, enumerate: () => RUNS,
   });
   assert.equal(snap.slots.run.inUse, 1, "dead slot must not count");
-  assert.deepEqual(snap.slots.run.agents, ["clawdi"]);
+  assert.deepEqual(snap.slots.run.agents, ["intake-agent"]);
   assert.equal(snap.slots.run.cap, 3);
   // — `slots.turn` is GONE, not zeroed. Nothing acquires a turn slot since the gateway comms
   // one-shots became packets, so the pair would have read `{inUse: 0, cap: 3}` on every box forever: a
@@ -54,7 +54,7 @@ test("snapshot: counts only live-pid slots, reads queue + markName sidecar, part
   assert.equal(snap.slots.turn, undefined, "a cap nothing can reach must not be reported as a cap");
   // queue
   assert.equal(snap.queuedTotal, 1);
-  assert.equal(snap.queues[0].agent, "clawdi");
+  assert.equal(snap.queues[0].agent, "intake-agent");
   assert.equal(snap.queues[0].processing, 1);
   assert.equal(snap.queues[0].jobs[0].markName, "AURORA GLOW", "markName from the sidecar, not the manifest");
   assert.deepEqual(snap.queues[0].jobs[0].classes, [9, 42]);
@@ -150,7 +150,7 @@ test("spec 64: buildRecentActivity speaks the statement over the bare verdict wo
 
 test("A5: parked-for-human joins the paused bucket (never invisible), with the split clocks + kinds surfaced", () => {
   const runs = [
-    { state: "parked-for-human", runId: "p1", slug: "held", codename: "h", agent: "clawdi", markName: "HELD MARK", parkedKind: "grace-exit", updatedAt: "2026-07-28T10:00:00Z" },
+    { state: "parked-for-human", runId: "p1", slug: "held", codename: "h", agent: "intake-agent", markName: "HELD MARK", parkedKind: "grace-exit", updatedAt: "2026-07-28T10:00:00Z" },
     { state: "postponed", runId: "p2", slug: "capped", codename: "c", resetsAt: "2026-07-28T12:00:00Z", updatedAt: "2026-07-28T09:00:00Z" },
     { state: "failed", runId: "p3", slug: "ended", codename: "e", failedStage: "queue-reclaim", reason: "x", terminalKind: "reclaim-exhausted", updatedAt: "2026-07-28T08:00:00Z" },
   ];

@@ -45,7 +45,7 @@ async function runOpenaiPipeline(env = {}) {
     CLEAROTRON_CODEX_PATH: CODEX_MOCK,
     CLEAROTRON_AI_BILLING: "api-key", CODEX_API_KEY: "sk-codex-dummy",   // api-key mode → no auth.json seeding; the mock ignores it
     MOCK_CODEX_CALL_LOG: codexLog,          // proves the stages actually went through the openai engine (argv + prompt + config.toml)
-    CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"), CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_AGENT: "clawdi",
+    CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"), CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_AGENT: "intake-agent",
     MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", ...env,
   });
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
@@ -276,9 +276,9 @@ test("E2(openai): an api-key billing mode with no key is REFUSED AT THE DOOR (na
   });
   // "Before a run directory exists" is the whole property, so it is asserted from the filesystem and not
   // from the message. The whole ROOT is listed rather than one guessed path checked absent: a run dir sits
-  // two levels down (<root>/workspace-clawdi/studio/clearance-search/…), so a path guessed at the top would
+  // two levels down (<root>/workspace-intake-agent/studio/clearance-search/…), so a path guessed at the top would
   // read as absent whatever the door did. `clearance-run-locks` is the run slot `pipeline()` takes before
-  // `pipelineInner` runs; a run that got past the door would put `workspace-clawdi` beside it.
+  // `pipelineInner` runs; a run that got past the door would put `workspace-intake-agent` beside it.
   assert.deepEqual(readdirSync(lastRoot), ["clearance-run-locks"],
     "a refused run leaves no run directory, no frozen profile and no status sidecar behind");
 });

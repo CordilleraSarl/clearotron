@@ -38,7 +38,7 @@ function world(jobs, { live = [], pool = [], order = null } = {}) {
     }));
     writeFileSync(join(poolRoot, r.id, "report.html"), "<title>x</title>ok");
   }
-  const studio = join(workspaceRoot, "workspace-clawdi", "studio", "clearance-search");
+  const studio = join(workspaceRoot, "workspace-intake-agent", "studio", "clearance-search");
   const q = join(studio, "queue");
   mkdirSync(q, { recursive: true });
   for (const j of jobs) {
@@ -223,8 +223,8 @@ test("reorderQueue: a lane the caller has nothing in is left completely alone", 
     for (const id of ids) writeFileSync(join(q, `${id}.json`), JSON.stringify({ id, enqueuedAt: "2026-07-28T10:00:00.000Z" }));
     return q;
   };
-  const qa = mk("clawdi", ["m1", "m2"]);
-  const qb = mk("clawdi-b", ["n1", "n2"]);
+  const qa = mk("intake-agent", ["m1", "m2"]);
+  const qb = mk("intake-agent-b", ["n1", "n2"]);
 
   const out = reorderQueue({ workspaceRoot, order: ["m2", "m1"], allowed: new Set(["m1", "m2"]) });
   assert.equal(out.lanes, 1, "exactly one lane was rewritten");

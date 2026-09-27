@@ -39,12 +39,21 @@
 // `deploy` IS A SKILL NAME AND IS NOT BANNED, for the same reason. It is an ordinary English word and a
 // paragraph about deploying would be refused line by line.
 //
-// `clawdi` IS NOT BANNED, and this one was measured rather than reasoned. It reads like an internal
-// name and it is the product's own default agent id: `CLEAROTRON_DEFAULT_AGENT=clawdi` is in
-// INSTALL.md, in the configuration reference and in the operations runbook, and it is a path segment in
-// every run directory. 49 lines carry it in that sense and none carries it as a reference to the other
-// product, which is the class that would have been worth refusing. Banning it would refuse the install
-// instructions a stranger reads first.
+// THE PRODUCT'S FORMER DEFAULT AGENT ID IS NOW BANNED, and the reason it was not is worth keeping
+// because it was a good one. It was the id an install ran as: it named a setting in the install
+// instructions, in the configuration reference and in the operations runbook, and it was a path segment
+// in every run directory. 49 lines carried it in that sense. A guard refusing it would have refused the
+// install instructions a stranger reads first, so it was left alone and the reason written down.
+//
+// Ruling 563 (2026-09-27) took every functional use of it out of the product, and the ban is the closing
+// step: without it the id comes back and nothing says so. The class is below, and its pattern is the only
+// place in this tree that spells it — a `pattern:` line is code, and this guard reads comments and
+// markdown, never code, so the class does not refuse its own definition.
+//
+// WHAT THE BAN DOES NOT DISTURB. This check is diff-shaped: what a change ADDS is refused, and what is
+// already here is not its business. Two lines still carry the id on purpose — a record of a measurement
+// taken over archived runs, and a captured error message from a real incident — and neither is refused,
+// because neither is added by anything. That is the mechanism, not an exemption list to maintain.
 
 import { execFileSync } from "node:child_process";
 import { CUT_RECORD_PRESENT, isWithheld } from "./withheld-paths-access.mjs";
@@ -156,6 +165,21 @@ export const CLASSES = [
     why: "a spelled tracker citation — the reason for a decision belongs in the tree, its address does "
       + "not. A reader outside this project cannot open the number. Say why the code is as it is; put "
       + "the citation in the commit message or the pull request body.",
+  },
+  {
+    // NOT A NAME THIS PROJECT USES FOR HOW IT IS BUILT — it is an identifier the product SHIPPED, which is
+    // why it is banned only now that it ships nowhere. The remedy is the same as the login class's: say
+    // what the thing is for, not what it was called.
+    id: "retired-agent-id",
+    // NO WORD BOUNDARIES, and that is deliberate. `\b` does not match before an underscore, so a
+    // boundaried pattern let every prefixed spelling of the id through — a setting name carrying it as a
+    // prefix read as clean, which is the shape a returning identifier actually takes. The id is a coined
+    // word, so an unanchored match has no innocent population to refuse.
+    pattern: /clawdi/i,
+    why: "the agent id this product used to default to. It was a path segment in every run directory and "
+      + "named in the install instructions until it was taken out of the product; a new line carrying it "
+      + "is either residue or a reference to a different product. Name the setting that holds the agent, "
+      + "or the install's own default, rather than one particular value of it.",
   },
   {
     id: "login",

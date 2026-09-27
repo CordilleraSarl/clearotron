@@ -77,7 +77,7 @@ test("a level the registry has forgotten resolves to NOTHING, never a guess", ()
 function withQueued(job, fn) {
   const root = mkdtempSync(join(tmpdir(), "portal-rows-"));
   try {
-    const q = join(root, "workspace-clawdi", "studio", "clearance-search", "queue");
+    const q = join(root, "workspace-intake-agent", "studio", "clearance-search", "queue");
     mkdirSync(q, { recursive: true });
     mkdirSync(join(root, "pool"), { recursive: true });
     writeFileSync(join(q, `${job.id}.json`), JSON.stringify(job, null, 2));
@@ -145,7 +145,7 @@ test("a QUEUED knockout batch is a batch, and carries every name it was submitte
 function withLive(status, fn) {
   const root = mkdtempSync(join(tmpdir(), "portal-rows-live-"));
   try {
-    const dir = join(root, "workspace-clawdi", "studio", "clearance-search", "tmp9100-ironwhisk", "2026-08-07-fixture");
+    const dir = join(root, "workspace-intake-agent", "studio", "clearance-search", "tmp9100-ironwhisk", "2026-08-07-fixture");
     mkdirSync(driverDir(dir), { recursive: true });
     mkdirSync(join(root, "pool"), { recursive: true });
     writeFileSync(join(dir, "status.json"), JSON.stringify(status, null, 2));

@@ -509,7 +509,7 @@ export function normalizeSearchResponse(body, echoQuery) {
 //
 // driver/test/signa-mock-lane-is-unreachable-from-a-run.test.mjs holds the line.
 const __dir = dirname(fileURLToPath(import.meta.url));
-const FIXTURES_DIR = process.env.SIGNA_FIXTURES_DIR || process.env.CLAWDI_SIGNA_FIXTURES_DIR
+const FIXTURES_DIR = process.env.SIGNA_FIXTURES_DIR
   || [join(__dir, "..", "test", "fixtures"), join(__dir, "..", "..", "test", "fixtures")].find((p) => existsSync(p))
   || join(__dir, "..", "test", "fixtures");
 function loadFixture(name) {

@@ -23,7 +23,7 @@ const RUNNER = join(HERE, "..", "runner.mjs");
 const CLAUDE = join(HERE, "mock-claude.mjs");
 chmodSync(CLAUDE, 0o755);
 
-const studioFor = (root) => join(root, "workspace-clawdi", "studio", "clearance-search");
+const studioFor = (root) => join(root, "workspace-intake-agent", "studio", "clearance-search");
 const queueFor = (root) => join(studioFor(root), "queue");
 const ledgerFor = (root) => join(dirname(queueFor(root)), ".matter-ledger.jsonl");   // usage-ledger.mjs matterLedgerPath
 function envFor(root, extra = {}) {
