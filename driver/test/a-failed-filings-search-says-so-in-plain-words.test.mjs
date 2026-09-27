@@ -132,3 +132,56 @@ test("report-data.json keeps the sentence of a form the record cap stopped", asy
   assert.ok(stopped.length > 0, "the fixture reached no form past the cap");
   for (const u of stopped) assert.equal(u.reason, "the 1-record cap for this name was reached before this form was fetched");
 });
+
+// ── AND A LISTING NOBODY ASKED IS NOT A LISTING THAT FOUND NOTHING (ruling 567, K23) ────────────────
+//
+// The cap's own sentence reached the workbook rows and report-data (the arms above), and the ONE place it
+// did not reach is the place that speaks for the whole name. `recordsLine` builds its failure count from
+// terms that failed, and `notAsked` is deliberately excluded from that set — so with the record cap at
+// zero every form is stopped, no form has failed, and the empty-records branch printed "the register
+// returned none under the name or any close variation of it": word for word what a listing that ran on
+// every form and found nothing prints. A reader cannot tell the two apart, and one of them is a clean
+// bill over a search never made.
+//
+// The replacement is the ruling's own wording — the listing "did not complete" — carrying the clause the
+// knockout page already prints for the same fact. Driven through the real listing and the real publisher,
+// because the sentence's home is the page.
+test("K23: with the record cap at zero, the page says the listing did not complete — never that none stands", async () => {
+  let asked = 0;
+  const doc = await listing(async () => { asked += 1; return { ok: true, records: [], total: 0 }; }, { cap: 0 });
+  const forms = doc.marks[0].terms.length;
+  assert.equal(asked, 0, "precondition: the cap is meant to stop every form before it is asked");
+  assert.ok(doc.marks[0].terms.every((t) => t.notAsked), "precondition: every form is recorded as never asked");
+  assert.deepEqual(doc.marks[0].records, [], "precondition: the case under test is a listing with no records");
+
+  const { html, data } = await publish(doc);
+  assert.ok(forms > 1, "precondition: the fixture generates the forms the cap is meant to stop");
+  const line = "Filings: the listing did not complete, so nothing here says whether one stands.";
+  assert.equal(data.marks[0].registerFilings.line, line);
+  assert.ok(html.includes(line), "the report page does not carry the line");
+  assert.ok(!html.includes("returned none"), "the page claims the register returned none over forms it never asked");
+});
+
+test("ITS PAIR: a listing that ran on every form and found nothing still says the register returned none", async () => {
+  const doc = await listing(async () => ({ ok: true, records: [], total: 0 }));
+  assert.ok(doc.marks[0].terms.every((t) => t.ok), "precondition: every form was asked and answered");
+  const { html, data } = await publish(doc);
+  assert.match(data.marks[0].registerFilings.line,
+    /^Filings: the register returned none under the name or any close variation of it/);
+  assert.ok(html.includes("returned none"), "the fix bought silence where the clean negative is earned");
+});
+
+// The reader's own guard, driven on `recordsLine` and not through a run, because this producer cannot
+// reach it: the cap only stops a form once records have filled it, and records that filled it are records
+// the branch above never sees. A listing artifact that carries stopped forms beside answered ones and no
+// records is therefore hand-built or from another build — and the clean negative is still not its sentence.
+test("K23: asked-and-answered beside never-asked, with nothing found, is not a clean negative either", async () => {
+  const { recordsLine } = await import("../register-records.mjs");
+  const line = recordsLine({
+    name: NAME, classes: [4], records: [],
+    terms: [{ term: NAME, basis: "identical", ok: true, fetched: 0, total: 0 },
+      { term: "LANTERN WICK", basis: "close", ok: false, notAsked: true, fetched: 0, total: null,
+        reason: "the 1-record cap for this name was reached before this form was fetched" }],
+  });
+  assert.equal(line, "Filings: the listing did not complete, so nothing here says whether one stands.");
+});

@@ -422,9 +422,31 @@ export function recordsLine(entry) {
   if (!entry.records?.length) {
     // A failed search's own text is not printed: it is a provider's or the program's words, and it stays in
     // the run's filings record and its ledger, where the listing wrote it.
-    return (failed.length
-      ? `Filings: not available — ${failed.length} of ${(entry.terms ?? []).length} search(es) could not be run.`
-      : `Filings: the register returned none under the name or any close variation of it, in the classes counted${unlisted.length ? ` and in the register${(entry.officeScope?.listed ?? []).length === 1 ? "" : "s"} searched (${(entry.officeScope?.listed ?? []).join(", ")})` : ""}.`)
+    //
+    // — A SEARCH NEVER ASKED IS NOT A SEARCH THAT FOUND NOTHING, and this branch could not tell them
+    // apart. `failed` deliberately excludes `notAsked`, and the loop above is equally deliberate about
+    // recording it ("the term was never asked, and saying so is the difference"). With the record cap at
+    // zero EVERY term comes back notAsked, so `failed` is empty, and the sentence that came out was the
+    // clean negative — word for word what a listing that ran on every form and found nothing prints. The
+    // populated branch below has said `form(s) not reached before the cap` all along; the empty one threw
+    // the same fact away in the one place it decided the whole sentence.
+    //
+    // So the clean negative now needs POSITIVE EVIDENCE: a term asked and answered, with nothing unasked
+    // beside it. Anything else is a listing that did not complete, which is the wording of the ruling and
+    // the clause the knockout page already prints for the same fact.
+    //
+    // THE ORDER OF THE THREE IS DELIBERATE. The failed branch stays first and its sentence is unchanged to
+    // the byte: a listing whose searches failed already said so, and this is not the item that touches it.
+    // A run with both failures and stopped forms therefore still reports only its failures — pre-existing,
+    // and left alone rather than widened on the way past.
+    const answered = (entry.terms ?? []).filter((t) => t.ok);
+    if (failed.length) {
+      return `Filings: not available — ${failed.length} of ${(entry.terms ?? []).length} search(es) could not be run.`
+        + officeNote + coverageNote;
+    }
+    return (answered.length && !skipped.length
+      ? `Filings: the register returned none under the name or any close variation of it, in the classes counted${unlisted.length ? ` and in the register${(entry.officeScope?.listed ?? []).length === 1 ? "" : "s"} searched (${(entry.officeScope?.listed ?? []).join(", ")})` : ""}.`
+      : "Filings: the listing did not complete, so nothing here says whether one stands.")
       + officeNote + coverageNote;
   }
   const parts = [`${entry.records.length} filing${entry.records.length === 1 ? "" : "s"} listed`];

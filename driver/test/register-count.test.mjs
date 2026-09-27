@@ -817,3 +817,51 @@ test("the knockout draws its board's strip, and never names an anchor the docume
     [["summary", "Summary"], ["findings", "Findings"]], "the two entries every knockout draws are not the board's");
   assert.equal((nav[1].match(/class="now"/g) ?? []).length, 1, "the leading entry is not marked current, or more than one is");
 });
+
+// ── NOTHING ASKED IS NOT NOTHING FOUND (ruling 567, coverage line 4) ────────────────────────────────
+//
+// The same rule as "A FAILED PROBE IS NULL, NOT ZERO", one surface over: the register POSITION sentence
+// the renderer appends under the counts table. Its test was `some((t) => !t.ok)` — the clean negative on
+// the ABSENCE of a refusal — so a listing carrying no terms at all answered false and got the settled
+// sentence over a question never put. It now needs positive evidence: a term asked and answered, and none
+// unanswered.
+//
+// THE RECORD CAP'S OWN CASE IS NOT HERE, and looking for it here is the mistake this note exists to stop.
+// A cap of zero stops every form with `notAsked`, so the terms list is FULL and every row is not-ok — which
+// the old test already caught on this surface. Where that case was printed as a clean negative is the
+// listing lane's own sentence, and it is armed in a-failed-filings-search-says-so-in-plain-words.
+//
+// Driven on the renderer and asserted on the HTML, because the sentence is the deliverable. The clause has
+// one live caller and it feeds two surfaces — the basis line under the counts table, and the panel on a
+// run that lists filings without counting them. This arm pins the first.
+test("a filings listing that asked nothing reads as incomplete, never as no filing standing", async () => {
+  const doc = await run({
+    marks: [{ name: "IRONWHISK", classes: [8] }],
+    counter: async () => ({ ok: true, total: 7 }),
+  });
+  const findings = { marks: [{ name: "IRONWHISK", rating: "Medium", bullets: ["b"], purpleNotes: [], findings: [] }] };
+  const fw = { bands: [{ label: "Medium", tone: "medium" }] };
+  const page = (terms) => renderKnockoutHtml(findings, fw, {
+    runId: "r", overall: "Medium", registerCounts: doc,
+    registerRecords: { provider: "corsearch", providerLabel: "Corsearch", marks: [{ name: "IRONWHISK", terms, records: [] }] },
+  });
+
+  const STANDS = /No filing of this name or a close variation of it stands/;
+  const INCOMPLETE = /The filings listing for this name did not complete/;
+
+  // THE FIX: no term asked, so nothing is known, and the page says so.
+  const unasked = page([]);
+  assert.match(unasked, INCOMPLETE, "a listing that asked nothing did not say so");
+  assert.doesNotMatch(unasked, STANDS, "a listing that asked nothing claimed no filing stands");
+
+  // ITS PAIR, and the reason this is two assertions and not one: the sentence that MAY be said must still
+  // be said. A listing that ran on both spellings and found nothing is the one case that earns it, and a
+  // fix that bought silence here would be a loss, not a gain.
+  assert.match(page([{ term: "IRONWHISK", ok: true }, { term: "IRON WHISK", ok: true }]), STANDS,
+    "a listing that ran and found nothing stopped saying so");
+
+  // AND THE CASE THE LINE ALREADY COVERED. Asserted so the change is shown to have WIDENED the condition
+  // rather than swapped one branch for another.
+  assert.match(page([{ term: "IRONWHISK", ok: true }, { term: "IRON WHISK", ok: false }]), INCOMPLETE,
+    "a term that did not answer stopped reading as an incomplete listing");
+});

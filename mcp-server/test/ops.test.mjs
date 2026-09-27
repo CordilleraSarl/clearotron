@@ -329,16 +329,26 @@ test("stop_run by runId: noop on an already-terminal run", async () => {
   assert.equal((await stopRun({ runId })).action, "noop");
 });
 
-test("feed_context: writes the late-bind customer-bind.json + instructions sidecar", () => {
+test("feed_context: writes the late-bind customer-bind.json", () => {
   const { runDir, runId } = makeRun({ slug: "tmpf-feed", codename: "2026-06-16-feed-x" });
-  const r = feedContext({ runId, customer: "Globex", exclusions: ["Globex", "Globex Corp"], instructions: "treat ACME as expired" });
+  const r = feedContext({ runId, customer: "Globex", exclusions: ["Globex", "Globex Corp"] });
   assert.equal(r.ok, true);
   assert.ok(r.wrote.includes("customer-bind.json"));
   const bind = JSON.parse(readFileSync(join(runDir, "customer-bind.json"), "utf8"));
   assert.equal(bind.customer, "Globex");
   assert.deepEqual(bind.exclusions, ["Globex", "Globex Corp"]);
   assert.equal(bind.source, "mcp/feed_context");
-  assert.ok(existsSync(driverDir(runDir, "fed-context.json")));
+});
+
+test("feed_context: refuses instructions rather than dropping it in silence, and writes nothing on the way", () => {
+  const { runDir, runId } = makeRun({ slug: "tmpf-instr", codename: "2026-06-16-instr-x" });
+  // The field is gone from the tool's schema, but the handler passes args through: a lenient caller's text
+  // would vanish while the call still answered ok. The refusal is the only thing that tells them, and it
+  // fires before any write so a call carrying both a good field and this one lands nothing at all.
+  assert.throws(() => feedContext({ runId, customer: "Globex", instructions: "treat ACME as expired" }),
+    /instructions is not accepted/);
+  assert.ok(!existsSync(join(runDir, "customer-bind.json")), "fail-closed: the bind it would have written is absent");
+  assert.ok(!existsSync(driverDir(runDir, "fed-context.json")), "and the file nothing read is not written either");
 });
 
 test("feed_context: errors when there is nothing to write", () => {

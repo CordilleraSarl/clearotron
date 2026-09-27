@@ -27,6 +27,8 @@ import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { deriveScopeFacts } from "../scope-facts.mjs";
+import { CAPABILITY_GAP_MARKER } from "../../providers/_shared/execute-plan.mjs";
+import { nativeScriptIndexGap } from "../../providers/_shared/script-form.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const RULES = readFileSync(join(HERE, "..", "skills", "clearance-search", "synthesis-rules.md"), "utf8");
@@ -64,11 +66,17 @@ test("arm 4 — the driver's own wording for the same gap is unchanged and still
     instructedScope: { classes: ["9"], jurisdictions: ["US"] },
     // the script-form read is off the plan entry's own TERM, never a vendor field — so the fixture
     // carries a real non-Latin term rather than a reason string that says so.
+    //
+    // AND THE REASON IS BUILT BY THE PRODUCER THAT WRITES IT (ruling 567). It used to be the retyped
+    // "script form not supported by the provider", which no producer in this tree writes. The line now asks
+    // for positive evidence of a capability gap rather than settling for the absence of a failure, so an
+    // invented string takes the script sentence away and this arm would read as the rule having been
+    // broken by the change that kept it. Assembled exactly as the executor assembles a script refusal.
     plan: { nice_classes: ["9"], entries: [
       { qid: "a", nice_classes: ["9"], term: "MOONBERRY" },
       { qid: "b", nice_classes: ["9"], term: "月莓" } ] },
     planExecution: { executed: [{ qid: "a", state: "enumerated" }], missing: [], skipped: [],
-      deferred: [{ qid: "b", reason: "script form not supported by the provider" }] },
+      deferred: [{ qid: "b", reason: `${CAPABILITY_GAP_MARKER} ${nativeScriptIndexGap({ id: "stand-in", nativeScriptIndex: false }, ["月莓"])}` }] },
     coverageRows: [],
   });
   assert.match(f.coverage_line, /non-Latin script form/,

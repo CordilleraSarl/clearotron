@@ -6,6 +6,8 @@
 // register-coverage-ledger.json) — no client data.
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { CAPABILITY_GAP_MARKER } from "../../providers/_shared/execute-plan.mjs";
+import { nativeScriptIndexGap } from "../../providers/_shared/script-form.mjs";
 import { deriveScopeFacts } from "../scope-facts.mjs";
 import { classTokensFromScopeText } from "../coverage-ledger.mjs";
 
@@ -316,4 +318,115 @@ test("audit 2 (d): a count shortfall stays loud — 'N of M crowd-context counts
   const g = deriveScopeFacts({ ...countsOnly, coverageRows: [] });
   assert.match(g.coverage_line, /Class 30: not searched on the registers · 1 oversized result set was counted rather than listed/);
   assert.equal(g.per_class["30"].state, "dispatched", "taken counts are dispatched work — never 'executed', never 'unexecuted'");
+});
+
+// ── RULING 567: THREE COVERAGE LINES NAME THE REAL REASON ────────────────────────────────────────────
+//
+// Each of the three was one defect: a reason the run recorded and this reader discarded. So each arm below
+// carries the evidence the fix keys on AND its pair — the case that must keep the old words — because a fix
+// that reads absence as evidence would pass the first half of each and fail the second.
+//
+// The arms exist because the 19 files pinning these strings all pass either way: their fixtures predate the
+// discriminators, so they show the lines unchanged where they were right and say nothing about the lines
+// changing where they were wrong.
+
+test("567 R2: a script form the register FAILED on is no longer described as a script form", () => {
+  const plan = { ...PLAN, entries: [
+    { qid: "translit:exact:a", axis: "translit", predicate: "exact", term: "ЗНАК", nice_classes: ["5"], regions: ["us"] },
+    { qid: "translit:exact:b", axis: "translit", predicate: "exact", term: "標識", nice_classes: ["5"], regions: ["us"] },
+    { qid: "primary-sweep:exact:mark", axis: "primary-sweep", predicate: "exact", term: "MARKNAME", nice_classes: ["5"], regions: ["us"] },
+  ] };
+  const instructed = { ...INSTRUCTED, classes: [5] };
+  const line = (deferred) => deriveScopeFacts({ instructedScope: instructed, plan,
+    planExecution: { executed: [{ qid: "primary-sweep:exact:mark", state: "enumerated" }], missing: [], skipped: [], deferred },
+    coverageRows: [] }).coverage_line;
+
+  // EVERY REASON HERE IS BUILT BY THE PRODUCER THAT WRITES IT, NEVER RETYPED, and that is the whole
+  // reason this arm is trustworthy. The first version of it invented short strings ("provider
+  // unavailable", "capability-gap: term is not in Latin script") and passed against a discriminator that
+  // the REAL script refusal broke: that refusal's own text says searching the characters "would return 0
+  // with no error", and the substring match then read "error" inside a negation and called every honest
+  // script deferral a failure. A private control caught it and this arm could not have. So the strings
+  // come from `nativeScriptIndexGap` and are assembled the way the executor assembles them.
+  const scriptGap = (term, declared) =>
+    `${CAPABILITY_GAP_MARKER} ${nativeScriptIndexGap({ id: "stand-in", nativeScriptIndex: declared }, [term])}`;
+  const providerError = (detail) => `provider error (after one in-tool retry): ${detail}`;
+  assert.match(scriptGap("\u0417\u041d\u0410\u041a", false), /with no error/,
+    "guard: the producer no longer writes the negation this arm exists to survive \u2014 re-read the discriminator");
+
+  // THE FIX: both are non-Latin, and the register FAILED on them. A stalled call is stamped deferred
+  // beside its error, so it lands in this bucket, and the script is not why it went unsearched.
+  assert.match(line([
+    { qid: "translit:exact:a", reason: providerError("the register did not answer") },
+    { qid: "translit:exact:b", reason: providerError("connection reset") },
+  ]), /2 could not be searched/, "a failed search is still blamed on its script");
+
+  // ITS PAIR: the register DECLINED the shape, which is what a script form honestly is. Same two entries,
+  // same shapes, only the reason differs — so this arm is what stops the fix relabelling every deferral.
+  // Both forms of the refusal: the provider that declares a transliteration index, and the one that has
+  // declared nothing.
+  assert.match(line([
+    { qid: "translit:exact:a", reason: scriptGap("\u0417\u041d\u0410\u041a", false) },
+    { qid: "translit:exact:b", reason: scriptGap("\u6a19\u8b58", undefined) },
+  ]), /2 are non-Latin script forms/, "a capability gap stopped being called a script form");
+
+  // AND THE COST OF ASKING FOR POSITIVE EVIDENCE, PINNED RATHER THAN LEFT TO BE DISCOVERED. A reason no
+  // producer in this tree writes is not evidence of a capability gap, so it does not earn the script
+  // sentence and falls to the remainder. That is the deliberate direction: the script claim says WHY a
+  // search did not happen and may only be made where the run recorded that reason. The opposite default
+  // was tried and is what let a negation inside a producer's own prose relabel every script deferral.
+  assert.match(line([
+    { qid: "translit:exact:a", reason: "some reason nobody has seen before" },
+    { qid: "translit:exact:b", reason: "" },
+  ]), /2 could not be searched/, "an unrecognised reason still earns the script sentence");
+});
+
+test("567 R4: a listing that came back with NOTHING is no longer described as one that overflowed", () => {
+  const plan = { ...PLAN, entries: [
+    { qid: "owner:exact:a", axis: "owner", predicate: "exact", term: "OWNER", nice_classes: ["5"], regions: ["us"] },
+    { qid: "primary-sweep:exact:mark", axis: "primary-sweep", predicate: "exact", term: "MARKNAME", nice_classes: ["5"], regions: ["us"] },
+  ] };
+  const instructed = { ...INSTRUCTED, classes: [5] };
+  const line = (ownerRow) => deriveScopeFacts({ instructedScope: instructed, plan,
+    planExecution: { executed: [{ qid: "primary-sweep:exact:mark", state: "enumerated" }, ownerRow], missing: [], skipped: [], deferred: [] },
+    coverageRows: [] }).coverage_line;
+
+  // THE FIX: incomplete with a MEASURED zero — the register could not match the owner, so the search found
+  // nothing. It did not return more than it could list.
+  assert.match(line({ qid: "owner:exact:a", state: "incomplete", total_hits: 0 }), /1 could not be searched/,
+    "a search that found nothing is still described as one that overflowed its listing");
+
+  // ITS PAIR: a listing that genuinely overflowed keeps its words.
+  assert.match(line({ qid: "owner:exact:a", state: "incomplete", total_hits: 4212 }), /1 returned more records than could be listed in full/,
+    "a real overflow stopped saying so");
+
+  // AND A COUNT NOBODY COULD TAKE IS NOT A ZERO. `total_hits` is three-valued for exactly this reason, and
+  // demoting on a null would read an absence as evidence.
+  assert.match(line({ qid: "owner:exact:a", state: "incomplete", total_hits: null }), /1 returned more records than could be listed in full/,
+    "a null count was read as a measured zero");
+});
+
+test("567 R12: a skip after a FAILED broader search is no longer described as a skip after a crowd", () => {
+  const plan = { ...PLAN, entries: [
+    { qid: "fam:a", axis: "family", predicate: "exact", term: "FAM", nice_classes: ["5"], regions: ["us"],
+      when: { runs_if_enumerated: "primary-sweep:exact:mark" } },
+    { qid: "primary-sweep:exact:mark", axis: "primary-sweep", predicate: "exact", term: "MARKNAME", nice_classes: ["5"], regions: ["us"] },
+  ] };
+  const instructed = { ...INSTRUCTED, classes: [5] };
+  const line = (skipped) => deriveScopeFacts({ instructedScope: instructed, plan,
+    planExecution: { executed: [{ qid: "primary-sweep:exact:mark", state: "enumerated" }], missing: [], skipped, deferred: [] },
+    coverageRows: [] }).coverage_line;
+
+  // THE FIX: the broader search FAILED, so this was a search that could not be made — not one held back.
+  assert.match(line([{ qid: "fam:a", guard: "primary-sweep:exact:mark", parent_state: "missing" }]), /1 could not be searched/,
+    "a skip after a failure is still blamed on a crowd");
+
+  // ITS PAIR: the broader search crowded, which is what the old words describe, and it keeps them.
+  assert.match(line([{ qid: "fam:a", guard: "primary-sweep:exact:mark", parent_state: "incomplete" }]),
+    /1 was skipped after a broader search came back crowded/, "a genuine crowd stopped saying so");
+
+  // AND A RECEIPT WRITTEN BEFORE THE PRODUCER CARRIED THE STATE SAYS NOTHING ABOUT WHY. Reading its
+  // silence as a failure would relabel every archived run's skips.
+  assert.match(line([{ qid: "fam:a", guard: "primary-sweep:exact:mark" }]),
+    /1 was skipped after a broader search came back crowded/, "an absent parent state was read as a failure");
 });
