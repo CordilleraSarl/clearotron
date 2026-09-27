@@ -26,6 +26,7 @@
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { basename, dirname, join, resolve, sep } from "node:path"; import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
+import { config } from "./driver.config.mjs";   // — the install's own default agent, never a literal
 
 /** The entry file each lane's publisher reads as its source, in the order a child is probed for one. */
 export const ENTRY_FILES = Object.freeze(["report.md", "knockout-findings.json"]);
@@ -200,7 +201,9 @@ export function seedDemoRuns({ workspace, examplesDir, portalOrigin = null }) {
     let s;
     try { s = JSON.parse(readFileSync(join(run, "status.json"), "utf8")); } catch { continue; }
     if (!s?.slug || !s?.codename || !s?.date) continue;
-    const dir = join(studioDirFor(join(workspace, `workspace-${s.agent || "clawdi"}`)), s.slug, `${s.date}-${s.codename}`);
+    // THE FALLBACK IS THE INSTALL'S OWN DEFAULT AGENT, not a literal (ruling 563). It fires only for a
+    // sample whose status.json carries no agent; all four shipped samples carry one.
+    const dir = join(studioDirFor(join(workspace, `workspace-${s.agent || config.defaultAgent}`)), s.slug, `${s.date}-${s.codename}`);
     if (existsSync(join(dir, "status.json"))) already.push(s.runId);
     else {
       // ONE SAMPLE'S UNREADABLE FILE COSTS THAT SAMPLE ONLY, and is named, never a throw out of the loop.
