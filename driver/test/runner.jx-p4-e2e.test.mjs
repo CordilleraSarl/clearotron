@@ -76,7 +76,7 @@ for (const [k, v] of Object.entries({
 })) pinEnv(process.env, k, v);
 
 const { main } = await import("../runner.mjs");
-const Q = join(root, "workspace-clawdi", "studio", "clearance-search", "queue");
+const Q = join(root, "workspace-intake-agent", "studio", "clearance-search", "queue");
 mkdirSync(Q, { recursive: true });
 
 // On Windows the runner's claim token is `<pid>:<birth stamp>` and it claims a job by renaming it to
@@ -91,7 +91,7 @@ const findRun = (needle) => {
     if (existsSync(driverDir(d, "search-policy.json")) && d.includes(needle)) { hits.push(d); return; }
     for (const e of es) if (e.isDirectory()) walk(join(d, e.name), depth + 1);
   };
-  walk(join(root, "workspace-clawdi", "studio", "clearance-search"), 0);
+  walk(join(root, "workspace-intake-agent", "studio", "clearance-search"), 0);
   return hits;
 };
 

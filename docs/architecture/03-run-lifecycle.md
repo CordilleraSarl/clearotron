@@ -189,18 +189,17 @@ flowchart TD
     GRID --> GATHER
     GATHER --> FANIN{{"fan-in barrier (code):<br/>quarantines · must() · half-merge ·<br/>named-band gate · taint chain ·<br/>plan⇄band identity join · grid-ledger gate"}}
     FANIN --> CLOSURE["coverage closure pass<br/>(one supplementary sweep, non-fatal)"]
-    CLOSURE --> PI[placement-inquiry] --> RD[register-digest]
+    CLOSURE --> FD["frame-diff vs blind frame<br/>+ bounded reopen (non-fatal block)"] --> PI[placement-inquiry] --> RD[register-digest]
     RD --> SK["skeptic (non-fatal)"]
     SK --> ESC{"ESCALATE: axis tokens?"}
     ESC -- yes --> RERUN["re-run flagged axes warm ·<br/>byte-diff · one re-digest"] --> ENV
     ESC -- no --> ENV["deadline envelope:<br/>close deferred floors if time allows"]
     ENV --> SG{{"screen-gate: dropped LIVE mark<br/>without fetched record?<br/>fetch → re-digest → else FATAL"}}
-    SG --> FD["frame-diff vs blind frame<br/>+ bounded reopen (non-fatal block)"]
-    FD --> SYN[synthesis]
+    SG --> SYN[synthesis]
     SYN --> PAR["case-law ∥ narrative-refutation<br/>(case-law non-fatal)"]
     PAR --> VG{"verdict gate:<br/>parseVerdict(review)"}
     VG -- "CONDITIONAL / BLOCKING" --> CORR["corrective re-synthesis (fatal) ·<br/>corrections freshness gate ·<br/>verdict re-check (warm)"] --> VG2{"still BLOCKING?"}
-    VG2 -- yes --> FAIL[["FATAL StageFailure('verdict')"]]
+    VG2 -- yes --> DELIV["report DELIVERS (ruling 2026-08-26) ·<br/>runLog verdict-blocking-delivered ·<br/>open points recorded beside the review,<br/>for the reviewing lawyer (ruling 2026-09-24)"] --> CLAMP
     VG2 -- no --> CLAMP
     VG -- CLEAR --> CLAMP["code clamps (raise-only):<br/>legal actions · coverage · frame residual ·<br/>screen gate · register gap · deadline gap"]
     CLAMP --> VS["verdict sidecar _driver/verdict.json<br/>(single label authority; write failure = fatal)"]
@@ -212,7 +211,7 @@ flowchart TD
     PUB --> HANDOFF["delivery packet _driver/delivery.json ·<br/>outbox <runId>.pending · .delivered · archive"]
 
     classDef fatal stroke:#c0392b,stroke-width:2px
-    class MF,PV,PI,RD,SYN,FAIL,VS,CG fatal
+    class MF,PV,PI,RD,SYN,VS,CG fatal
 ```
 
 Reading order for the phases, with what code decides at each:
@@ -243,29 +242,29 @@ Reading order for the phases, with what code decides at each:
    persistent repair ledger (`_driver/repairs.json`) so no ladder is ever bought twice.
 5. **Coverage closure** — one supplementary sweep for closable coverage-limited cells, idempotent
    by receipt; survivors become a front-matter coverage note, not a halt.
-6. **Placement → register-digest** — both fatal. Every digest pass (fresh, escalation, envelope,
+6. **Frame-diff + bounded reopen** — the blind frame is diffed against the run's own framing;
+   directives (including deterministic mechanical form-gap directives) can reopen register and
+   source arms once, under a fetch ceiling (`CLEAROTRON_REOPEN_MAX_FETCH`, default 150), with
+   per-directive closure verification. The whole block is non-fatal; unclosed directives demote to
+   disclosed deferrals that later clamp the verdict.
+7. **Placement → register-digest** — both fatal. Every digest pass (fresh, escalation, envelope,
    late-bind, stale-repair) goes through the single `runDigest` chokepoint, which drops stale ledgers,
    renders the coverage ledger from the driver-written coverage form the seat submits through
    `record_coverage` — the prose `## Coverage ledger` table and the machine-readable JSON are both
    renders of that one form, so neither can be the thing that drifts (prose parsing survives only as
    the fallback when the derivation throws) — and quarantines rather than ships a ledger that fails
    its validator.
-7. **Skeptic + escalation** — the skeptic is deliberately non-fatal (a checker outage must not bin
+8. **Skeptic + escalation** — the skeptic is deliberately non-fatal (a checker outage must not bin
    a completed gather). Escalation is triggered only by structured `ESCALATE: <axis>` tokens; an
    axis whose every owned ledger row is `coverage-limited` is skipped (documented accepted limit);
    flagged axes re-run warm on their winning session keys, byte-diff guards skip unchanged units,
    then exactly one re-digest. A digest lock forbids escalation after synthesis exists on a resume.
-8. **Deadline envelope** — pure arithmetic: if the deadline leaves room after an estimated close
+9. **Deadline envelope** — pure arithmetic: if the deadline leaves room after an estimated close
    cost plus a one-hour delivery reserve, deferred floors get one warm close attempt, verified by
    re-running the detectors; unverifiable closes are disclosed, never claimed.
-9. **Screen-gate** — an in-scope *live* mark dropped on goods/field grounds without a fetched
-   record is repaired (code fetches the record, one warm re-digest) or the run dies: an
-   unexaminable drop is not shippable.
-10. **Frame-diff + bounded reopen** — the blind frame is diffed against the run's own framing;
-    directives (including deterministic mechanical form-gap directives) can reopen register and
-    source arms once, under a fetch ceiling (`CLEAROTRON_REOPEN_MAX_FETCH`, default 150), with
-    per-directive closure verification. The whole block is non-fatal; unclosed directives demote to
-    disclosed deferrals that later clamp the verdict.
+10. **Screen-gate** — an in-scope *live* mark dropped on goods/field grounds without a fetched
+    record is repaired (code fetches the record, one warm re-digest) or the run dies: an
+    unexaminable drop is not shippable.
 11. **Synthesis** — fatal. Malformed findings get one warm re-emit naming exactly the defective
     objects; still-malformed findings after the ladder are terminal (the old quarantine-and-continue
     is retired). Schema and actions[] upgrades are demanded warm on runs where synthesis actually ran.
@@ -274,8 +273,12 @@ Reading order for the phases, with what code decides at each:
     verdict is parsed by code; a parse failure is **BLOCKING** (fail-safe). CONDITIONAL/BLOCKING
     triggers corrective re-synthesis (fatal if it fails), a freshness gate proving the named
     corrections reached `findings.json`, and a warm verdict re-check. A still-BLOCKING verdict
-    after the degenerate-artifact repair is a fatal run failure — "delivered with open questions"
-    is retired.
+    after the degenerate-artifact repair does **not** fail the run. Ruling 2026-08-26, verbatim:
+    "Deliver always, with open points printed. The refusal on a blocking review goes." The run
+    logs `verdict-blocking-delivered` and carries on to the clamps. Ruling 2026-09-24 settled
+    where the points go: reviewer notes never reach the client page, and a report the reviewer
+    still refuses ships with its rating and nothing added — the open points are recorded beside
+    the review in the run record, for the reviewing lawyer.
 13. **Code clamps** — the coverage floor (`applyCoverageFloor`) only ever *raises* CLEAR to
     CONDITIONAL: typed condition actions, the lawyer's explicit `coverage_judgment.sufficient ===
     false`, frame residuals, screen-gate gaps, register gaps (from the taint-relabelled ledger).

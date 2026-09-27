@@ -34,11 +34,23 @@ const JOB = {
 
 // config.workspaceRoot freezes at FIRST import — every run in this file lands under ROOT.
 const ROOT = mkdtempSync(join(tmpdir(), "clearotron-mock-gap-"));
-const SLUG_DIR = join(ROOT, "workspace-clawdi", "studio", "clearance-search", "tmp8439-project-novapulse");
+// THIS FIXTURE PINS NO AGENT, AND THAT IS THE ANSWER RATHER THAN AN OMISSION (issue 990). It used to set
+// CLEAROTRON_AGENT, which the shipped tree reads NOWHERE — `.env.example` has recorded it as retired with
+// zero code reads since 2026-07-27 — so the value did nothing and the path below was spelled by hand.
+//
+// The obvious repair was to pin CLEAROTRON_DEFAULT_AGENT instead, the variable that DOES decide where the
+// engine puts a run. Driven before believing it: with that variable pinned to a DIFFERENT agent from the
+// directory spelled here, every arm still passed. So it would have been one dead setting swapped for
+// another, which is the defect 990 reports rather than the fix for it.
+//
+// The arms here build the directory they inspect and hand the engine the path, so no derivation is
+// involved and none should be implied. An arm added later that asks the engine where it put the run needs
+// CLEAROTRON_DEFAULT_AGENT pinned to this spelling, and needs to fail without it.
+const SLUG_DIR = join(ROOT, "workspace-intake-agent", "studio", "clearance-search", "tmp8439-project-novapulse");
 
 async function runPipeline(env, jobPatch = {}, opts = {}) {
   for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_LEDGER_LIMITED"]) delete process.env[k];
-  for (const [k, v] of Object.entries({ CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: ROOT, CLEAROTRON_REPORTS_DIR: join(ROOT, "pool"), CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_AGENT: "clawdi", ...env })) pinEnv(process.env, k, v);
+  for (const [k, v] of Object.entries({ CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: ROOT, CLEAROTRON_REPORTS_DIR: join(ROOT, "pool"), CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", ...env })) pinEnv(process.env, k, v);
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
   const res = await pipeline({ ...JOB, ...jobPatch }, opts);
   const events = readFileSync(driverDir(res.runDir, "run.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l));
@@ -49,7 +61,7 @@ test("a recall store left on disk is neither read nor written, and changes nothi
   // The store from before the removal stays where it was, in both of its old places: the workspace file
   // per mark and the matter-sibling file. It holds a live in-scope conflict this scenario never carries,
   // and an in-window opposition window on the registration it does carry. Either one used to clamp.
-  const storeDir = join(ROOT, "workspace-clawdi", "studio", "clearance-search", "_known-conflicts");
+  const storeDir = join(ROOT, "workspace-intake-agent", "studio", "clearance-search", "_known-conflicts");
   mkdirSync(storeDir, { recursive: true });
   mkdirSync(SLUG_DIR, { recursive: true });
   const soon = new Date(Date.now() + 5 * 86400000).toISOString().slice(0, 10);

@@ -28,7 +28,7 @@ process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
 const ROOT = mkdtempSync(join(tmpdir(), "runlock-e2e-"));
 for (const [k, v] of Object.entries({
   CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: ROOT, CLEAROTRON_REPORTS_DIR: join(ROOT, "pool"),
-  CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_AGENT: "mailagent", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
+  CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
   CLEAROTRON_REGISTER_RECORD_LOG: join(ROOT, "records.jsonl"),
 })) pinEnv(process.env, k, v);
 

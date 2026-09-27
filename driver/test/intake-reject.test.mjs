@@ -38,7 +38,7 @@ test("HANDOFF (default): intake rejects park + write outbox packets with ZERO ga
   })) pinEnv(process.env, k, v);
   delete process.env.CLEAROTRON_DELIVERY; // exercise the DEFAULT (handoff)
 
-  const q = join(root, "workspace-clawdi", "studio", "clearance-search", "queue");
+  const q = join(root, "workspace-intake-agent", "studio", "clearance-search", "queue");
   mkdirSync(q, { recursive: true });
   // (1) markless → "clarify"-class intake failure (runnable identity, missing search subject)
   writeFileSync(join(q, "job-markless.json"),
@@ -112,5 +112,5 @@ test("HANDOFF (default): intake rejects park + write outbox packets with ZERO ga
   const slug = basename(dirname(res.runDir));
   const marker = join(outbox, `${slug}-${basename(res.runDir)}.pending`);
   assert.ok(existsSync(marker), `delivered outbox marker written: ${marker}`);
-  assert.equal(readFileSync(marker, "utf8"), "clawdi\n", "marker body is the agent id (edge-trigger shape)");
+  assert.equal(readFileSync(marker, "utf8"), "intake-agent\n", "marker body is the agent id (edge-trigger shape)");
 });

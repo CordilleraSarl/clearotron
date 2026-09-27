@@ -24,6 +24,11 @@ import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins E
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = mkdtempSync(join(tmpdir(), "options-ws-"));
 pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
+// THE AGENT IS PINNED BECAUSE THE PATH IS THE AGENT'S (ruling 563). The studio paths these fixtures
+// build resolve under `config.defaultAgent`, which reads CLEAROTRON_DEFAULT_AGENT. Until that ruling one
+// agent was named as a literal instead, so a fixture spelling that same word matched by coincidence and
+// nothing said which of the two decided — CLEAROTRON_AGENT is read by nothing in the shipped tree.
+pinEnv(process.env, "CLEAROTRON_DEFAULT_AGENT", "intake-agent");
 // The POOL root is pinned for the same reason the workspace root is: availability now reconciles `built`
 // against the flag snapshot beside the pool, and unpinned that would be the real /srv/trademark-archive —
 // a unit whose answers depend on the deployment's own snapshot (the CI trap this repo has been bitten by).
@@ -311,7 +316,7 @@ test("saved searches: a store that cannot be READ is not reported as having none
 // ---- 4. the allowance ---------------------------------------------------------------------------
 
 test("the allowance is the LEDGER's number — the same one the admission wall counts", () => {
-  const studio = join(ROOT, "workspace-clawdi", "studio", "clearance-search");
+  const studio = join(ROOT, "workspace-intake-agent", "studio", "clearance-search");
   mkdirSync(studio, { recursive: true });
   const now = Date.now();
   writeFileSync(join(studio, ".matter-ledger.jsonl"), [
@@ -365,7 +370,7 @@ test("a ledger the menu could not read reports NO FIGURES and says so — never 
 test("a ledger that WAS read says complete:true beside its figures", () => {
   // The control for the test above: the same field, on the same shape, when the count is real. Without
   // it `complete:false` could be constant and every assertion up there would still pass.
-  const studio = join(ROOT, "workspace-clawdi", "studio", "clearance-search");
+  const studio = join(ROOT, "workspace-intake-agent", "studio", "clearance-search");
   mkdirSync(studio, { recursive: true });
   const now = Date.now();
   writeFileSync(join(studio, ".matter-ledger.jsonl"),

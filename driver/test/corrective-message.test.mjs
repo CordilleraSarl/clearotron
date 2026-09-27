@@ -9,7 +9,7 @@ import { correctiveMessage, warmPatchMessage, TOOL_WRITTEN_ARTIFACTS } from "../
 const BASE = "Produce the register digest.";
 // — a synthetic path, not an operator's. What this fixture needs is a plausible ABSOLUTE run path;
 // naming a specific account made it wrong under every other service account and in every public clone.
-const FILE = "/srv/agentplatform/workspace-clawdi/studio/clearance-search/run/register-findings.md";
+const FILE = "/srv/agentplatform/workspace-intake-agent/studio/clearance-search/run/register-findings.md";
 
 test("attempt 1 → base message verbatim (no correction), even with a prior fail set", () => {
   assert.equal(correctiveMessage(BASE, 1, "invalid_file:x:missing:findings+ledger", FILE), BASE);

@@ -22,7 +22,6 @@ pinEnv(process.env, "CLEAROTRON_WORK_DIR", envFrom(process.env, "CLEAROTRON_WORK
 pinEnv(process.env, "CLEAROTRON_REPORTS_DIR", join(ROOT, "pool"));
 pinEnv(process.env, "CLEAROTRON_INSTRUCTIONS_DIR", undefined);
 pinEnv(process.env, "CLEAROTRON_KNOCKOUT_SWEEP_FIXTURES", undefined);
-process.env.CLEAROTRON_AGENT = "mailagent";
 process.env.CLEAROTRON_AI = "anthropic-agent";
 pinEnv(process.env, "CLEAROTRON_CLAUDE_PATH", join(HERE, "mock-claude.mjs"));
 process.env.CLEAROTRON_MAX_RETRIES = "0";

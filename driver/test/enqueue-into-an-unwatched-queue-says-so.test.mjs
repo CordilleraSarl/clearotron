@@ -54,8 +54,8 @@ test("`%h` in the unit resolves against the SAME home the probe was asked about"
   const home = mkdtempSync(join(tmpdir(), "qw-home-"));
   const unit = pathUnitFor(home);
   mkdirSync(dirname(unit), { recursive: true });
-  writeFileSync(unit, "[Path]\nPathExistsGlob=%h/trademark/workspace/workspace-clawdi/queue/*.json\n");
-  assert.equal(probeQueueWatch({ queueDirs: [join(home, "trademark/workspace/workspace-clawdi/queue")], home }).state, "pass");
+  writeFileSync(unit, "[Path]\nPathExistsGlob=%h/trademark/workspace/workspace-intake-agent/queue/*.json\n");
+  assert.equal(probeQueueWatch({ queueDirs: [join(home, "trademark/workspace/workspace-intake-agent/queue")], home }).state, "pass");
   assert.equal(probeQueueWatch({ queueDirs: [join(home, "trademark/workspace/workspace-other/queue")], home }).state, "fail");
 });
 

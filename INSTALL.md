@@ -150,20 +150,6 @@ with `sudo`; install under your home instead: `npm install -g clearotron --prefi
 **Upgrade production to stables only.** What each channel promises and how often one is cut:
 **[docs/RELEASES.md](docs/RELEASES.md)**.
 
-**Upgrading an install made before 0.2.2: pin the agent id first.** The default agent id changed from
-`clawdi` to `localagent`, and that id is part of a path — your runs live under
-`<workspaceRoot>/workspace-<agent>/studio/clearance-search/`. If you never set an agent id, the upgraded
-install reads a workspace that does not exist yet, and an empty workspace looks like an account with no
-runs rather than like a misconfiguration. Set **both** names in your environment file before starting
-it, because the register-search servers read their own:
-
-```
-CLEAROTRON_DEFAULT_AGENT=clawdi
-CLEAROTRON_GATHER_AGENT=clawdi
-```
-
-If your environment file already sets them, nothing changes. A first-time install needs neither.
-
 The rest of this section is about the two ways a package reaches you, which is a separate question from
 which version it is.
 

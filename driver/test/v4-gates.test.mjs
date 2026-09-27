@@ -91,7 +91,7 @@ async function runWithFetcher(recordFetcher, env = {}) {
   for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_REPORT_URI", "MOCK_CL_SHORT", "MOCK_NO_GRID_LEDGER"]) delete process.env[k];
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"),
-    CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_AGENT: "mailagent", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
+    CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
     CLEAROTRON_REGISTER_RECORD_LOG: recordLog, MOCK_REPORT_URI: "/mark/us/86272665", ...env,
   })) pinEnv(process.env, k, v);
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
@@ -183,7 +183,7 @@ test("V4-1 e2e: a finding names a registration, so the closure fetches it even w
   for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_REPORT_URI", "MOCK_CL_SHORT", "MOCK_NO_GRID_LEDGER"]) delete process.env[k];
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"),
-    CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_AGENT: "mailagent", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
+    CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
     CLEAROTRON_REGISTER_RECORD_LOG: join(root, "records.jsonl"),
   })) pinEnv(process.env, k, v);
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);

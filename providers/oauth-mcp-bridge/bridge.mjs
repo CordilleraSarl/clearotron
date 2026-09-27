@@ -33,13 +33,13 @@ import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { RefreshLock } from "./refresh-lock.mjs";
 import { exitOnStdinClose } from "./stdin-guard.mjs";
 
-// Creds dir: env-overridable (OAUTH_BRIDGE_CREDS_DIR). An existing deployment migrating from the
-// origin monorepo keeps its credentials by pointing this at the old ~/.config/clawdi/oauth-mcp.
+// Creds dir: env-overridable (OAUTH_BRIDGE_CREDS_DIR). A deployment whose credentials still sit in the
+// folder an earlier build used keeps them by pointing this variable at that folder.
 const DEFAULT_CREDS_DIR = process.env.OAUTH_BRIDGE_CREDS_DIR || path.join(homedir(), ".config", "trademark-oauth-mcp");
 
 // Per-server tool allowlist. Upstream MCP servers may add or rename tools
 // without notice — we explicitly opt in. To add a tool: verify it's read-only
-// (or otherwise intended for clawdi use) against the upstream API docs, then
+// (or otherwise intended for this product's use) against the upstream API docs, then
 // add the unprefixed upstream name below and restart the bridge.
 const ALLOWED_TOOLS = {
   courtlistener: new Set([
@@ -146,7 +146,7 @@ process.on("exit", () => refreshLock.releaseSync());
 // of holding the upstream HTTP transport (and any in-flight upstream call) open forever (see
 // stdin-guard.mjs for the 3.5-day PPID-1 orphan this closes). The 'exit' hook above releases the
 // refresh lock on the way out.
-exitOnStdinClose({ name: `clawdi-oauth-bridge:${serverName}` });
+exitOnStdinClose({ name: `clearotron-oauth-bridge:${serverName}` });
 
 class CachedOAuthProvider {
   constructor(initialCreds) {

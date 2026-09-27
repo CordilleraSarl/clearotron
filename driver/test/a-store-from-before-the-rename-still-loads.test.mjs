@@ -134,14 +134,14 @@ test("the run root, the queue list and the queue-dir parser all read the install
   const prev = process.env.CLEAROTRON_WORK_DIR;
   try {
     pinEnv(process.env, "CLEAROTRON_WORK_DIR", root);
-    const ws = join(root, config.workspaceDirName("clawdi"));
+    const ws = join(root, config.workspaceDirName("intake-agent"));
     for (const seg of STUDIO_SEGMENTS) mkdirSync(join(ws, "studio", seg, "queue"), { recursive: true });
-    assert.equal(config.studioRootForAgent("clawdi"), join(ws, "studio", "prelim-search"));
+    assert.equal(config.studioRootForAgent("intake-agent"), join(ws, "studio", "prelim-search"));
     const queues = config.queueDirs;
     for (const seg of STUDIO_SEGMENTS)
       assert.ok(queues.includes(join(ws, "studio", seg, "queue")), `a job queued under ${seg} is drained`);
-    assert.equal(config.agentIdFromQueueDir(join(ws, "studio", "prelim-search", "queue")), "clawdi");
-    assert.equal(config.agentIdFromQueueDir(join(ws, "studio", "clearance-search", "queue")), "clawdi");
+    assert.equal(config.agentIdFromQueueDir(join(ws, "studio", "prelim-search", "queue")), "intake-agent");
+    assert.equal(config.agentIdFromQueueDir(join(ws, "studio", "clearance-search", "queue")), "intake-agent");
   } finally {
     if (prev === undefined) delete process.env.CLEAROTRON_WORK_DIR; else pinEnv(process.env, "CLEAROTRON_WORK_DIR", prev);
     rmSync(root, { recursive: true, force: true });

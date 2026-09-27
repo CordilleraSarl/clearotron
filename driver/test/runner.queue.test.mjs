@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // @tier full — drives the real runner over two agents' queues end to end
-// Offline runner test: the per-agent execution fix. Drops a job into clawdi-alex's queue AND clawdi's queue,
+// Offline runner test: the per-agent execution fix. Drops a job into intake-agent-alex's queue AND intake-agent's queue,
 // runs the runner once against the mock engine (no billable calls), and asserts each job is (a) claimed
 // from its OWN queue, (b) run as the agent whose workspace it lives in, (c) given a run-dir under THAT
 // workspace, and (d) marked .done back in its origin queue. This is the regression guard for the bug where
-// the driver only ever drained workspace-clawdi, silently orphaning every request in another agent's queue.
+// the driver only ever drained workspace-intake-agent, silently orphaning every request in another agent's queue.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, chmodSync, existsSync, readFileSync } from "node:fs";
@@ -43,13 +43,13 @@ test("runner drains every agent queue and runs each job as its own agent", async
     CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
   })) pinEnv(process.env, k, v);
 
-  // one job in the second agent's queue (clawdi-alex) and one in the first agent's (clawdi)
-  const alexQ = queueFor(root, "clawdi-alex");
-  const clawdiQ = queueFor(root, "clawdi");
+  // one job in the second agent's queue (intake-agent-alex) and one in the first agent's (intake-agent)
+  const alexQ = queueFor(root, "intake-agent-alex");
+  const firstAgentQ = queueFor(root, "intake-agent");
   mkdirSync(alexQ, { recursive: true });
-  mkdirSync(clawdiQ, { recursive: true });
+  mkdirSync(firstAgentQ, { recursive: true });
   writeFileSync(join(alexQ, "job-alex.json"), JSON.stringify(job("alex")));
-  writeFileSync(join(clawdiQ, "job-jordan.json"), JSON.stringify(job("jordan")));
+  writeFileSync(join(firstAgentQ, "job-jordan.json"), JSON.stringify(job("jordan")));
 
   const { main } = await import(`../runner.mjs?bust=${Math.random()}`);
   await main({ once: true });
@@ -58,27 +58,27 @@ test("runner drains every agent queue and runs each job as its own agent", async
   // product defect.
   refuseOnPreRunFailure(join(root, "clearance-outbox"), "runner.queue.test.mjs");
 
-  // Each job marked .done in its OWN origin queue (not centralized to clawdi's).
-  assert.ok(existsSync(join(alexQ, "job-alex.done")), ".done landed in clawdi-alex's queue");
-  assert.ok(existsSync(join(clawdiQ, "job-jordan.done")), ".done landed in clawdi's queue");
+  // Each job marked .done in its OWN origin queue (not centralized to intake-agent's).
+  assert.ok(existsSync(join(alexQ, "job-alex.done")), ".done landed in intake-agent-alex's queue");
+  assert.ok(existsSync(join(firstAgentQ, "job-jordan.done")), ".done landed in intake-agent's queue");
 
   const alexRes = JSON.parse(readFileSync(join(alexQ, "job-alex.done.result"), "utf8"));
-  const ownerRes = JSON.parse(readFileSync(join(clawdiQ, "job-jordan.done.result"), "utf8"));
+  const ownerRes = JSON.parse(readFileSync(join(firstAgentQ, "job-jordan.done.result"), "utf8"));
   assert.equal(alexRes.ok, true, JSON.stringify(alexRes));
   assert.equal(ownerRes.ok, true, JSON.stringify(ownerRes));
 
   // Run-dir rooted in the FORWARDING agent's workspace.
   // Either separator: the run dir is a native path, and Windows joins it with backslashes.
-  assert.ok(/[\\/]workspace-clawdi-alex[\\/]/.test(alexRes.runDir), `alex run-dir under alex workspace: ${alexRes.runDir}`);
-  assert.ok(/[\\/]workspace-clawdi[\\/](?!.*alex)/.test(ownerRes.runDir) || /[\\/]workspace-clawdi[\\/]studio[\\/]/.test(ownerRes.runDir),
-    `jordan run-dir under clawdi workspace: ${ownerRes.runDir}`);
-  assert.ok(!ownerRes.runDir.includes("workspace-clawdi-alex"), "jordan did not land in alex's workspace");
+  assert.ok(/[\\/]workspace-intake-agent-alex[\\/]/.test(alexRes.runDir), `alex run-dir under alex workspace: ${alexRes.runDir}`);
+  assert.ok(/[\\/]workspace-intake-agent[\\/](?!.*alex)/.test(ownerRes.runDir) || /[\\/]workspace-intake-agent[\\/]studio[\\/]/.test(ownerRes.runDir),
+    `jordan run-dir under intake-agent workspace: ${ownerRes.runDir}`);
+  assert.ok(!ownerRes.runDir.includes("workspace-intake-agent-alex"), "jordan did not land in alex's workspace");
 
   // The pipeline executed as the right agent (start event records it).
   const alexLog = readFileSync(driverDir(alexRes.runDir, "run.jsonl"), "utf8");
   const ownerLog = readFileSync(driverDir(ownerRes.runDir, "run.jsonl"), "utf8");
-  assert.match(alexLog, /"agent":\s*"clawdi-alex"/, "alex job ran as clawdi-alex");
-  assert.match(ownerLog, /"agent":\s*"clawdi"/, "jordan job ran as clawdi");
+  assert.match(alexLog, /"agent":\s*"intake-agent-alex"/, "alex job ran as intake-agent-alex");
+  assert.match(ownerLog, /"agent":\s*"intake-agent"/, "jordan job ran as intake-agent");
 });
 
 // WS-C Goal 1: queues drain CONCURRENTLY with per-queue failure ISOLATION (allSettled, not all) —
@@ -94,7 +94,7 @@ test("WS-C runner: a broken queue dir is isolated — sibling queues still drain
   })) pinEnv(process.env, k, v);
   const { config } = await import("../driver.config.mjs");
   const root = config.workspaceRoot;
-  const alexQ = queueFor(root, "clawdi-alex");
+  const alexQ = queueFor(root, "intake-agent-alex");
   const brokenQ = queueFor(root, "relay-agent");
   mkdirSync(alexQ, { recursive: true });
   mkdirSync(brokenQ, { recursive: true });

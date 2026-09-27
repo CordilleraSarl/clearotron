@@ -42,7 +42,7 @@ async function runAnthropicPipeline(env = {}) {
     CLEAROTRON_AI: "anthropic-agent",       // stage compute on claude -p (mocked)
     CLEAROTRON_CLAUDE_PATH: CLAUDE_MOCK,
     MOCK_CLAUDE_CALL_LOG: claudeLog,        // proves the stages actually went through the anthropic engine
-    CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"), CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_AGENT: "mailagent",
+    CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"), CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0",
     MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", ...env,
   })) pinEnv(process.env, k, v);
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);

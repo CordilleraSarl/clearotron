@@ -5,6 +5,10 @@
 // Asserts stage sequence, the fan-in barrier, skeptic escalation, the verdict gate, and sentinels.
 import { test } from "node:test";
 import { refusalsFor } from "../synthesis-record.mjs";   // the run's record that a defect was refused and restated
+// THE AGENT IS PINNED BECAUSE THE PATH IS THE AGENT'S (ruling 563). The studio paths these fixtures
+// build resolve under `config.defaultAgent`, which reads CLEAROTRON_DEFAULT_AGENT. Until that ruling one
+// agent was named as a literal instead, so a fixture spelling that same word matched by coincidence and
+// nothing said which of the two decided — CLEAROTRON_AGENT is read by nothing in the shipped tree.
 import { pinEnv, envFrom } from "../../shared/env-aliases.mjs";   // a fixture pins EVERY spelling; the default is taken only when NO spelling holds one
 import assert from "node:assert/strict";
 import { mkdtempSync, chmodSync, readFileSync, existsSync, readdirSync, writeFileSync, mkdirSync, cpSync } from "node:fs";
@@ -77,7 +81,7 @@ async function runPipeline(env, jobPatch = {}, opts = {}) {
   const root = mkdtempSync(join(tmpdir(), "clearotron-mock-"));
   // hermetic: clear the mock knobs so one test's MOCK_* never bleeds into the next (env is process-global).
   for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_CLAUDE_OVERLOADED", "MOCK_LEDGER_LIMITED", "MOCK_SEARCH_FLOOR", "MOCK_CANDSELF", "MOCK_NO_GRID_LEDGER", "MOCK_CL_SHORT", "MOCK_CL_GAPS", "MOCK_CL_MISSING_QUERIES", "MOCK_NO_COVERAGE_LEDGER", "MOCK_BAD_COVERAGE_LEDGER", "MOCK_UNPARSEABLE_LEDGER", "MOCK_WRITE_RECORD", "MOCK_SCREEN_DROP", "MOCK_FRAME_DIFF", "MOCK_NO_BLIND_MODEL", "MOCK_COVERAGE_INSUFFICIENT", "MOCK_BAND_COLLAPSED", "MOCK_PLAN_DROP_QID", "MOCK_PLAN_DROP_STICKY", "MOCK_PLAN_DEFERRED", "MOCK_PLAN_HARD_ERROR", "MOCK_DEGENERATE_HEALS", "MOCK_VERDICT_DEFECTS", "MOCK_BAD_FINDING", "MOCK_MULTI_LEG", "MOCK_ACTIONS", "MOCK_ASK_ANSWER_BAD", "MOCK_FINDINGS_N", "MOCK_STAGE_TRACE", "MOCK_STAGE_DELAY_MS", "MOCK_MEANING_ANGLES", "MOCK_PR_RESULTS", "MOCK_CL_UNDISPOSED", "MOCK_NARRATIVE_RECO", "MOCK_REPORT_URI", "CLEAROTRON_REGISTER_RECORD_LOG", "CLEAROTRON_REGISTER_CALL_LOG"]) delete process.env[k];
-  for (const [k, v] of Object.entries({ CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"), CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_AGENT: "clawdi", ...env })) pinEnv(process.env, k, v);
+  for (const [k, v] of Object.entries({ CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"), CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_DEFAULT_AGENT: "intake-agent", ...env })) pinEnv(process.env, k, v);
   await opts.seed?.(root);   // config is all getters now (access-time env) — seed INSIDE this run's root
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
   const res = await pipeline({ ...JOB, ...jobPatch }, opts);
@@ -200,13 +204,13 @@ test("happy path: CLEAR verdict → full sequence, delivered + archived", async 
   assert.ok(idx("synthesis") < idx("narrative-refutation"), "synthesis before refutation");
   // delivery (B1): report-overview (LLM shell) + report-card (LLM, one per finding) → assemble/audit/publish
   // (all CODE). On the anthropic-agent engine the driver runs in HANDOFF mode: it writes a self-contained
-  // _driver/delivery.json packet + leaves .delivered{sendPending} for clawdi's comms watch, and does NOT run
-  // the notify/notify-chat gateway stages (they live on clawdi's comms plane; see pipeline.anthropic.test.mjs).
+  // _driver/delivery.json packet + leaves .delivered{sendPending} for intake-agent's comms watch, and does NOT run
+  // the notify/notify-chat gateway stages (they live on intake-agent's comms plane; see pipeline.anthropic.test.mjs).
   assert.ok(idx("narrative-refutation") < idx("report-overview"), "report-overview after refutation");
   assert.ok(order.some((s) => s.startsWith("report-card")), "B1 per-card render ran (≥1 full-prose finding)");
   assert.ok(!order.includes("notify") && !order.includes("notify-chat"), "handoff mode: no notify gateway stages");
   const packet = JSON.parse(readFileSync(driverDir(res.runDir, "delivery.json"), "utf8"));
-  assert.equal(packet.verdict, "CLEAR", "delivery packet carries the verdict for clawdi's send");
+  assert.equal(packet.verdict, "CLEAR", "delivery packet carries the verdict for intake-agent's send");
   assert.equal(JSON.parse(readFileSync(join(res.runDir, ".delivered"), "utf8")).sendPending, true, ".delivered marks sendPending");
   assert.ok(!order.includes("audit-emit"), "audit-emit is no longer an LLM stage");
   assert.ok(existsSync(join(res.runDir, ".published")) || ARCHIVED.test(res.runDir), "published");
@@ -684,7 +688,7 @@ test("Map A e2e: a finding citing a fetched record renders its registry IDs FROM
   for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_CLAUDE_OVERLOADED", "MOCK_LEDGER_LIMITED", "MOCK_SEARCH_FLOOR", "MOCK_CANDSELF", "MOCK_NO_GRID_LEDGER", "MOCK_CL_SHORT", "MOCK_CL_GAPS", "MOCK_CL_MISSING_QUERIES", "MOCK_NO_COVERAGE_LEDGER", "MOCK_BAD_COVERAGE_LEDGER", "MOCK_UNPARSEABLE_LEDGER", "MOCK_WRITE_RECORD", "MOCK_SCREEN_DROP", "MOCK_FRAME_DIFF", "MOCK_NO_BLIND_MODEL", "MOCK_COVERAGE_INSUFFICIENT", "MOCK_BAND_COLLAPSED", "MOCK_PLAN_DROP_QID", "MOCK_PLAN_DROP_STICKY", "MOCK_PLAN_DEFERRED", "MOCK_PLAN_HARD_ERROR", "MOCK_DEGENERATE_HEALS", "MOCK_VERDICT_DEFECTS", "MOCK_BAD_FINDING", "MOCK_MULTI_LEG", "MOCK_ACTIONS", "MOCK_ASK_ANSWER_BAD", "MOCK_FINDINGS_N", "MOCK_STAGE_TRACE", "MOCK_STAGE_DELAY_MS", "MOCK_MEANING_ANGLES", "MOCK_PR_RESULTS", "MOCK_CL_UNDISPOSED", "MOCK_NARRATIVE_RECO", "MOCK_REPORT_URI", "CLEAROTRON_REGISTER_RECORD_LOG", "CLEAROTRON_REGISTER_CALL_LOG"]) delete process.env[k];
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"),
-    CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_AGENT: "clawdi", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
+    CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_DEFAULT_AGENT: "intake-agent", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
     MOCK_WRITE_RECORD: "1",
   })) pinEnv(process.env, k, v);
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
@@ -1008,7 +1012,7 @@ test("a prior run's plan store is IGNORED — every run mints fresh, so a fixed 
     // window to keep the comment and the match together; adding tests moved that boundary and the
     // suppression stopped being seen. Naming the value once puts the literal nowhere near the keyword.
     const fixtureSlug = "tmp9077-novapulse";
-    const plansDir = join(root, "workspace-clawdi", "studio", "clearance-search", fixtureSlug, "_plans");
+    const plansDir = join(root, "workspace-intake-agent", "studio", "clearance-search", fixtureSlug, "_plans");
     mkdirSync(plansDir, { recursive: true });
     writeFileSync(join(plansDir, "register-plan.v1.json"), JSON.stringify({
       schema_version: 1, plan_version: 1,
@@ -1369,9 +1373,9 @@ test("delivered run → status.json delivered, STATUS.md rollup, .delivered reco
   // STATUS.md (at the stable studio root) shows the delivered run
   const md = readFileSync(join(studioRootOf(res.runDir), "STATUS.md"), "utf8");
   assert.match(md, /TMP-2201 NOVAPULSE — delivered \(High\)/);
-  // the delivery sentinel marks the run ready for clawdi's comms watch to send (handoff mode)
+  // the delivery sentinel marks the run ready for intake-agent's comms watch to send (handoff mode)
   const delivered = JSON.parse(readFileSync(join(res.runDir, ".delivered"), "utf8"));
-  assert.equal(delivered.sendPending, true, "sendPending marker set for clawdi's comms watch");
+  assert.equal(delivered.sendPending, true, "sendPending marker set for intake-agent's comms watch");
   // ONE report: the two-bit delivery is deleted — status/sentinel/packet carry NO readiness fields
   assert.equal(s.delivery, undefined, "no delivery{} second bit on status.json");
   assert.ok(!("clientReady" in delivered), "no clientReady on the .delivered sentinel");
@@ -1516,14 +1520,14 @@ test("B5b e2e: pre-seeded customer-bind.json folds at pre-matter-frame (normal p
   for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_CLAUDE_OVERLOADED", "MOCK_LEDGER_LIMITED", "MOCK_SEARCH_FLOOR", "MOCK_CANDSELF", "MOCK_NO_GRID_LEDGER", "MOCK_CL_SHORT", "MOCK_CL_GAPS", "MOCK_CL_MISSING_QUERIES", "MOCK_NO_COVERAGE_LEDGER", "MOCK_BAD_COVERAGE_LEDGER", "MOCK_UNPARSEABLE_LEDGER", "MOCK_WRITE_RECORD", "MOCK_SCREEN_DROP", "MOCK_FRAME_DIFF", "MOCK_NO_BLIND_MODEL", "MOCK_COVERAGE_INSUFFICIENT", "MOCK_BAND_COLLAPSED", "MOCK_PLAN_DROP_QID", "MOCK_PLAN_DROP_STICKY", "MOCK_PLAN_DEFERRED", "MOCK_PLAN_HARD_ERROR", "MOCK_DEGENERATE_HEALS", "MOCK_VERDICT_DEFECTS", "MOCK_BAD_FINDING", "MOCK_MULTI_LEG", "MOCK_ACTIONS", "MOCK_ASK_ANSWER_BAD", "MOCK_FINDINGS_N", "MOCK_STAGE_TRACE", "MOCK_STAGE_DELAY_MS", "MOCK_MEANING_ANGLES", "MOCK_PR_RESULTS", "MOCK_CL_UNDISPOSED", "MOCK_NARRATIVE_RECO", "MOCK_REPORT_URI", "CLEAROTRON_REGISTER_RECORD_LOG", "CLEAROTRON_REGISTER_CALL_LOG"]) delete process.env[k];
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"),
-    CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_AGENT: "clawdi", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
+    CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_DEFAULT_AGENT: "intake-agent", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
   })) pinEnv(process.env, k, v);
   // create the run dir BEFORE the run and drop the bind — a thread reply that arrived pre-start.
   // driver.config freezes workspaceRoot at its FIRST import in this process, so derive the dir from the
   // (cached) config rather than this test's own root — correct in both full-file and solo runs.
   const { mkdirSync, writeFileSync } = await import("node:fs");
   const { config } = await import("../driver.config.mjs");
-  const runDir = join(config.studioRootForAgent("clawdi"), "tmp2201-novapulse", "2026-01-01-bind-test");
+  const runDir = join(config.studioRootForAgent("intake-agent"), "tmp2201-novapulse", "2026-01-01-bind-test");
   mkdirSync(runDir, { recursive: true });
   writeFileSync(join(runDir, "customer-bind.json"),
     JSON.stringify({ customer: "ACME Interactive", exclusions: ["BigCo"], ts: "2026-01-01T00:00:00Z", source: "<reply@x>" }));
@@ -1545,11 +1549,11 @@ test("B5b ack: every consumed bind writes the plain-language confirmation packet
   for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_CLAUDE_OVERLOADED", "MOCK_LEDGER_LIMITED", "MOCK_SEARCH_FLOOR", "MOCK_CANDSELF", "MOCK_NO_GRID_LEDGER", "MOCK_CL_SHORT", "MOCK_CL_GAPS", "MOCK_CL_MISSING_QUERIES", "MOCK_NO_COVERAGE_LEDGER", "MOCK_BAD_COVERAGE_LEDGER", "MOCK_UNPARSEABLE_LEDGER", "MOCK_WRITE_RECORD", "MOCK_SCREEN_DROP", "MOCK_FRAME_DIFF", "MOCK_NO_BLIND_MODEL", "MOCK_COVERAGE_INSUFFICIENT", "MOCK_BAND_COLLAPSED", "MOCK_PLAN_DROP_QID", "MOCK_PLAN_DROP_STICKY", "MOCK_PLAN_DEFERRED", "MOCK_PLAN_HARD_ERROR", "MOCK_DEGENERATE_HEALS", "MOCK_VERDICT_DEFECTS", "MOCK_BAD_FINDING", "MOCK_MULTI_LEG", "MOCK_ACTIONS", "MOCK_ASK_ANSWER_BAD", "MOCK_FINDINGS_N", "MOCK_STAGE_TRACE", "MOCK_STAGE_DELAY_MS", "MOCK_MEANING_ANGLES", "MOCK_PR_RESULTS", "MOCK_CL_UNDISPOSED", "MOCK_NARRATIVE_RECO", "MOCK_REPORT_URI", "CLEAROTRON_REGISTER_RECORD_LOG", "CLEAROTRON_REGISTER_CALL_LOG"]) delete process.env[k];
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"),
-    CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_AGENT: "clawdi", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
+    CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_DEFAULT_AGENT: "intake-agent", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
   })) pinEnv(process.env, k, v);
   const { mkdirSync, writeFileSync } = await import("node:fs");
   const { config } = await import("../driver.config.mjs");
-  const runDir = join(config.studioRootForAgent("clawdi"), "tmp2201-novapulse", "2026-01-02-ack-test");
+  const runDir = join(config.studioRootForAgent("intake-agent"), "tmp2201-novapulse", "2026-01-02-ack-test");
   mkdirSync(runDir, { recursive: true });
   writeFileSync(join(runDir, "customer-bind.json"),
     JSON.stringify({ customer: "ACME Interactive", exclusions: [], ts: "2026-01-02T00:00:00Z", source: "<reply@x>" }));

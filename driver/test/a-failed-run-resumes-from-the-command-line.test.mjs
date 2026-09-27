@@ -23,6 +23,9 @@ import { pinEnv } from "../../shared/env-aliases.mjs";
 
 import { resumeJobRefusal } from "../pipeline.mjs";
 
+/** The agent this fixture writes its run under, and the one the spawned CLI must default to. */
+const AGENT = "intake-agent";
+
 const PIPELINE = resolve(dirname(fileURLToPath(import.meta.url)), "..", "pipeline.mjs");
 
 function resumeCli(codename, status) {
@@ -30,13 +33,18 @@ function resumeCli(codename, status) {
   const work = join(root, "workspace"), pool = join(root, "pool");
   mkdirSync(pool, { recursive: true });
   if (status) {
-    const runDir = join(work, "workspace-clawdi", "studio", "clearance-search", "invented-matter", `2026-09-18-${codename}`);
+    const runDir = join(work, `workspace-${AGENT}`, "studio", "clearance-search", "invented-matter", `2026-09-18-${codename}`);
     mkdirSync(runDir, { recursive: true });
     writeFileSync(join(runDir, "status.json"), JSON.stringify(status));
-  } else mkdirSync(join(work, "workspace-clawdi", "studio", "clearance-search"), { recursive: true });
+  } else mkdirSync(join(work, `workspace-${AGENT}`, "studio", "clearance-search"), { recursive: true });
   const env = { ...process.env };
   pinEnv(env, "CLEAROTRON_WORK_DIR", work);
   pinEnv(env, "CLEAROTRON_REPORTS_DIR", pool);
+  // THE AGENT IS PINNED BECAUSE THE PATH IS THE AGENT'S. `config.studioRoot` resolves under the install's
+  // own default agent (ruling 563 — it named one agent as a literal before), so a fixture that writes
+  // under one id and spawns a process defaulting to another looks exactly like a missing run directory.
+  // Pinned rather than writing under the built-in default, so the coupling is visible where it bites.
+  pinEnv(env, "CLEAROTRON_DEFAULT_AGENT", AGENT);
   const r = spawnSync(process.execPath, [PIPELINE, "--resume", codename], { env, encoding: "utf8", timeout: 60_000 });
   rmSync(root, { recursive: true, force: true });
   return { code: r.status, err: `${r.stderr ?? ""}` };

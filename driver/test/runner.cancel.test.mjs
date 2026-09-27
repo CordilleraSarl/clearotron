@@ -25,8 +25,8 @@ process.env.CORSEARCH_SESSION_KEY ||= "test-offline";
 process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
 process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
 
-const queueFor = (root) => join(root, "workspace-clawdi", "studio", "clearance-search", "queue");
-const studioFor = (root) => join(root, "workspace-clawdi", "studio", "clearance-search");
+const queueFor = (root) => join(root, "workspace-intake-agent", "studio", "clearance-search", "queue");
+const studioFor = (root) => join(root, "workspace-intake-agent", "studio", "clearance-search");
 
 const jobJson = (id) => JSON.stringify({
   id, msgId: `<${id}@x>`, forwarder: "jordan", forwarderDomain: "example.com",
@@ -198,7 +198,7 @@ test("a run STOPPED WHILE PARKED never wakes up — the resume path reads the ma
   writeFileSync(join(Q, "stop-c.postponed"), jobJson("stop-c"));
   writeFileSync(join(Q, "stop-c.postponed.meta"), JSON.stringify({
     resetsAt: "2020-01-01T00:00:00Z", codename: "jade-parked", dateISO: "2026-07-28",
-    runDir, agentId: "clawdi", postponedAt: "2026-07-28T00:00:00.000Z",
+    runDir, agentId: "intake-agent", postponedAt: "2026-07-28T00:00:00.000Z",
   }));
 
   try {
@@ -257,7 +257,7 @@ test("the run-dir self-resume watcher also refuses a cancelled run", async () =>
   }));
   writeFileSync(join(runDir, ".postponed"), JSON.stringify({
     resetsAt: "2020-01-01T00:00:00Z", postponedAt: "2026-07-28T00:00:00.000Z",
-    fromStage: "register-sweeps", codename: "jade-selfres", job: JSON.parse(jobJson("stop-d")), agent: "clawdi",
+    fromStage: "register-sweeps", codename: "jade-selfres", job: JSON.parse(jobJson("stop-d")), agent: "intake-agent",
   }) + "\n");
 
   try {
