@@ -10,7 +10,7 @@
 
 import { writeFileSync, existsSync, mkdirSync, rmSync, renameSync, readFileSync, readdirSync } from "node:fs";
 import { join, basename } from "node:path";
-import { driverDir, ensureDriverDir } from "../../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
+import { driverDir } from "../../shared/driver-dir.mjs";   // — one definition of where `_driver/` is
 import { randomUUID } from "node:crypto";
 import { config } from "./driver.mjs";
 import { validateJob } from "../../driver/enqueue-schema.mjs";
@@ -713,9 +713,15 @@ export function markSent(args = {}) {
 }
 
 // feed_context — late-bind the applicant + exclusions onto a run (the B5b binding the pipeline's pre-start
-// bind reads from customer-bind.json), and/or attach free-text instructions for the reviewer.
+// bind reads from customer-bind.json).
 export function feedContext(args = {}) {
   if (!args.runId) throw new Error("feed_context: runId is required");
+  // REFUSED, NOT IGNORED. `instructions` wrote `_driver/fed-context.json` and nothing ever read it, so the
+  // field is gone from this tool's schema. But the handler passes args straight through, so a lenient
+  // caller's text would be dropped in silence while the call still answered ok — the same promise-with-no-
+  // reader this removal exists to end. Refused before anything is written, so a mixed call writes nothing.
+  if (args.instructions)
+    throw new Error("feed_context: instructions is not accepted — what it wrote was read by nothing. Pass customer and/or exclusions[].");
   const run = resolveRun(String(args.runId));
   if (!run) throw new Error(`feed_context: run "${args.runId}" not found`);
   const wrote = [];
@@ -728,12 +734,6 @@ export function feedContext(args = {}) {
     writeFileSync(run.P.customerBind, JSON.stringify(bind, null, 2) + "\n");
     wrote.push("customer-bind.json");
   }
-  if (args.instructions) {
-    const p = driverDir(run.runDir, "fed-context.json");
-    ensureDriverDir(run.runDir);
-    writeFileSync(p, JSON.stringify({ instructions: String(args.instructions), ts: new Date().toISOString(), source: "mcp/feed_context" }, null, 2) + "\n");
-    wrote.push("_driver/fed-context.json");
-  }
-  if (!wrote.length) throw new Error("feed_context: nothing to write — pass customer, exclusions[], and/or instructions");
+  if (!wrote.length) throw new Error("feed_context: nothing to write — pass customer and/or exclusions[]");
   return { ok: true, runId: run.runId, wrote, note: "Late-bind written. Consumed by the pipeline's pre-start applicant bind (customer-bind.json) on the next claim/resume." };
 }
