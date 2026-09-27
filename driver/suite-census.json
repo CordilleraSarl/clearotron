@@ -6009,6 +6009,18 @@
           "skips": 0,
           "todos": 0
         },
+        "the-redaction-folds-character-width.test.mjs": {
+          "tests": 5,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-redaction-leaves-the-scaffolding-alone.test.mjs": {
+          "tests": 4,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "the-reference-strip-left-sentences-unfinished.test.mjs": {
           "tests": 6,
           "asserts": 15,

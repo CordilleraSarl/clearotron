@@ -174,7 +174,14 @@ export function protectedStrings(root) {
     const parts = n.trim().split(/\s+/);
     if (parts.length < 2) continue;
     for (const w of parts) {
-      const bare = w.replace(/[^\p{L}\p{N}]/gu, "");
+      // FOLDED BEFORE THE FLOOR AND THE LEGAL-FORM LOOKUP, and the folded form is what is stored.
+      // Both tests are wrong on the unfolded word, in opposite directions. `\uFF2C\uFF34\uFF24`
+      // lowercases to `\uFF4C\uFF54\uFF44`, which is not in LEGAL_FORM, so the legal form became a
+      // protected word — and once the text is folded too, that word matches every "Ltd" the run prints,
+      // which is the shredding LEGAL_FORM exists to prevent. The floor has the mirror fault: the "fi"
+      // ligature is four characters raw and five folded, so a distinctive word was excluded for being
+      // short when it is not. Deriving from the folded form makes both decisions right by construction.
+      const bare = foldForMatching(w).folded.replace(/[^\p{L}\p{N}]/gu, "");
       if (bare.length >= 5 && !LEGAL_FORM.has(bare.toLowerCase())) { names.add(bare); derived.add(bare); }
     }
   }
@@ -202,6 +209,51 @@ export const unclassifiedNotice = (keys) =>
   + `and the silent leak it would otherwise be.`;
 
 const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/**
+ * A name is matched however it is rendered, and the token is spliced back into the ORIGINAL text.
+ *
+ * WHY. A score taken without `--names` printed a mark and its proprietor in clear, in the same sentence
+ * as three that redacted correctly, because that one renders at full width: the protected set matched
+ * only the exact code points the reference happened to carry (tracker issue 1004). Full-width Latin is
+ * ordinary in East Asian filings, so the failure concentrated in exactly the matters read in more than
+ * one script. A register can also hand back full-width digits and punctuation, half-width katakana, and
+ * an accented name either composed or decomposed. All of those are the same class, and one compatibility
+ * fold answers all of them.
+ *
+ * WHY NOT FOLD THE WHOLE STRING. The fold has to be reversible enough to put the token back where the
+ * name stood in the text the reader will see. Normalising the page and printing the normalised copy would
+ * silently rewrite text that names nobody. So the fold is built as a PROJECTION: a folded string to match
+ * in, and two arrays mapping each folded position back to the original range it came from.
+ *
+ * WHY BY CLUSTER, NOT BY CHARACTER. Folding one code point at a time keeps the mapping simple but never
+ * recombines: `e` followed by a combining acute stays two characters and never matches the composed name.
+ * So a character is grouped with the marks that follow it and the group is folded whole. The group has to
+ * include the half-width katakana voiced marks, which are modifier LETTERS and not marks — without them
+ * the fold yields U+30C8 U+3099 where the reference carries U+30C9, which is the same glyph on screen and
+ * not a match. Measured, 2026-09-27; the character classes are why reading the output was not enough.
+ *
+ * EVERY FAILURE MODE HERE IS OVER-REDACTION. The spliced range runs from the start of the first cluster
+ * the match touched to the end of the last, so it always contains the matched text and never less. A
+ * match that lands part-way into one cluster removes the whole cluster.
+ */
+export function foldForMatching(text) {
+  const src = String(text);
+  // A character plus any marks that follow it. `\uFF9E`/`\uFF9F` are the half-width voiced sound marks:
+  // they behave as marks here and are not in `\p{M}`.
+  const cluster = /\P{M}[\p{M}\uFF9E\uFF9F]*|[\p{M}\uFF9E\uFF9F]+/gu;
+  let folded = "";
+  const start = [];     // folded position -> where its cluster starts in the original
+  const end = [];       // folded position -> where its cluster ends in the original
+  for (let m = cluster.exec(src); m !== null; m = cluster.exec(src)) {
+    const f = m[0].normalize("NFKC");
+    for (let k = 0; k < f.length; k++) { start.push(m.index); end.push(m.index + m[0].length); }
+    folded += f;
+  }
+  start.push(src.length);
+  end.push(src.length);
+  return { folded, start, end };
+}
 
 /**
  * A name matches where it stands on its own, not where it happens to be inside a word.
@@ -236,24 +288,62 @@ const matcher = (name) => new RegExp(`(?<![\\p{L}\\p{N}])${escapeRe(name)}(?:['�
  */
 export function redactor({ names = new Set(), prose = new Set(), hint = "run again with --names to read it" } = {}) {
   const index = new Map();
-  const ordered = [...names].sort((a, b) => b.length - a.length || a.localeCompare(b));
   // The token is the entry's position in a STABLE ordering of the protected set, not its position in the
   // reference: the same run scored twice must redact to the same tokens, and two entries that differ only
   // in case are one name.
   [...names].sort((a, b) => a.localeCompare(b)).forEach((n, i) => index.set(n.toLowerCase(), i + 1));
-  const proseOrdered = [...prose].sort((a, b) => b.length - a.length);
+  // LONGEST FOLDED FIRST, not longest raw. The reason for longest-first is about the text being matched,
+  // and that text is now the folded projection — folding does not preserve length, so raw order can put
+  // a shorter name first and leave the tail of a longer one beside a token claiming it was removed.
+  const withFold = (s) => ({ raw: s, fold: foldForMatching(s).folded });
+  const ordered = [...names].map(withFold).sort((a, b) => b.fold.length - a.fold.length || a.raw.localeCompare(b.raw));
+  const proseOrdered = [...prose].map(withFold).sort((a, b) => b.fold.length - a.fold.length);
 
   return function redact(text) {
-    let out = String(text);
+    const src = String(text);
+    // The page is folded ONCE, not once per name: the protected set runs to hundreds of entries on a real
+    // reference, and re-folding for each would be a second full scan of the text per name.
+    const { folded, start, end } = foldForMatching(src);
+    // Accepted replacements, in ORIGINAL offsets, each accepted only where it overlaps nothing already
+    // accepted. That is what makes prose win over the names inside it.
+    const taken = [];
+    const free = (from, to) => !taken.some((t) => from < t.to && to > t.from);
+    const take = (at, stop, isFolded, withText) => {
+      const from = isFolded ? start[at] : at;
+      const to = isFolded ? end[stop - 1] : stop;
+      if (free(from, to)) taken.push({ from, to, withText });
+    };
+
+    // PROSE FIRST, AND IT WINS ANY OVERLAP: a sentence with its names swapped out still says what the
+    // matter is about, so the whole sentence goes rather than the names inside it.
     for (const p of proseOrdered) {
-      if (!out.includes(p)) continue;
-      out = out.split(p).join(`[withheld — ${hint}]`);
+      const needle = p.fold || p.raw;     // a string that folds to nothing is matched as it stands
+      const hay = p.fold ? folded : src;
+      for (let at = hay.indexOf(needle); at !== -1; at = hay.indexOf(needle, at + needle.length)) {
+        take(at, at + needle.length, Boolean(p.fold), `[withheld — ${hint}]`);
+      }
     }
-    // One pass per name, and no `test` before it: `replace` on a global regex resets `lastIndex` itself,
-    // so the guard did no work the replace did not, and on a long protected set it was a second full
-    // scan of the text for every name.
-    for (const n of ordered) out = out.replace(matcher(n), `«name ${index.get(n.toLowerCase())}»`);
-    return out;
+    for (const n of ordered) {
+      const needle = n.fold || n.raw;
+      const hay = n.fold ? folded : src;
+      const re = matcher(needle);
+      const withText = `«name ${index.get(n.raw.toLowerCase())}»`;
+      for (let m = re.exec(hay); m !== null; m = re.exec(hay)) {
+        if (m[0].length === 0) { re.lastIndex += 1; continue; }   // never advance on an empty match
+        take(m.index, m.index + m[0].length, Boolean(n.fold), withText);
+      }
+    }
+
+    if (!taken.length) return src;
+    taken.sort((a, b) => a.from - b.from);
+    let out = "";
+    let at = 0;
+    for (const t of taken) {
+      if (t.from < at) continue;
+      out += src.slice(at, t.from) + t.withText;
+      at = t.to;
+    }
+    return out + src.slice(at);
   };
 }
 
