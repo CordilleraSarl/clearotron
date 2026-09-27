@@ -47,6 +47,7 @@ import { readRegisterTaint, readActiveTaintAxes } from "./register-taint.mjs";
 import { parseNamedBand, mergeNamedBands, findCollapsedBands, quarantineUnknownStates, taintQuarantineCleanBlocks, bandRecords } from "./named-band.mjs";
 import { recordOriginsFor } from "./record-origins.mjs";
 import { REGISTER_PROVIDER } from "./driver.config.mjs";
+import { noteRegisterServed, registersServedFrom, providerUsageCaveat } from "./register-served.mjs";   // which register actually served this run, from the resolver the dispatch itself uses
 import { FACTS_FILE as DIGEST_FACTS_FILE, ACCOUNTING_STAMP as DIGEST_ACCOUNTING_STAMP, recordedFindingUris,
   digestAccountingGap, digestBatchBrief, batchesOf } from "./register-digest-record.mjs";   // conversion 11 — the render's facts sidecar and the accounting era stamp
 import { buildBandShape, dominantElementComposites, deriveRegisterPositions, floorTierByMark, floorMarkKey } from "./band-shape.mjs";   // PR-8 — the deterministic reading layer; P2-A — candidates + positions
@@ -94,7 +95,7 @@ import { deriveScopeFacts } from "./scope-facts.mjs";
 import { documentGrowth } from "./gate-metrics.mjs";
 import { editRepairTail, abbrev } from "./repair-contract.mjs";
 import { repairFollowup } from "./repair-composers.mjs";
-import { seedRunStatus, recordTransition, writeRunStatus, rollupStatus, atomicWrite, finalStepFields, terminalRunState, signoffPatch, readSignoff } from "./progress.mjs";
+import { seedRunStatus, recordTransition, writeRunStatus, readRunStatus, rollupStatus, atomicWrite, finalStepFields, terminalRunState, signoffPatch, readSignoff } from "./progress.mjs";
 import { batchMarkName } from "./mark-name.mjs";
 import { writeOutboxPacket } from "./outbox.mjs";
 import { publishReport, composeEmailHtml, deliverySubject } from "./publish/index.mjs";
@@ -208,8 +209,21 @@ const CL_SUPP_TAGS = ["closure"];
 // body) under the un-namespaced sessionKey we pass, so the row prefix-matches this run and the assembled
 // record set picks it up on re-assembly. Credential = the provider's own env var (already in the driver's
 // systemd EnvironmentFile); absence is a named mechanical cause. One provider is active per run.
+/**
+ * Note the adapter's own id against this run, and hand the adapter straight back.
+ *
+ * RECORDED WHERE IT IS RESOLVED, so the run's record says what SERVED it rather than what was configured
+ * at launch. Noting is idempotent per run and writes only when the set changes, so a run fetching a
+ * thousand records pays one write. A null run directory notes nothing: a call outside a run has no record
+ * to carry the field, and inventing one is the guess this field exists to replace.
+ */
+function noteAdapter(ctx, adapter) {
+  noteRegisterServed(ctx?.run?.runDir ?? ctx?.paths?.runDir ?? null, adapter?.id);
+  return adapter;
+}
+
 async function defaultRecordFetcher(uri, ctx) {
-  return activeProvider().recordFetch(uri, ctx);
+  return noteAdapter(ctx, activeProvider()).recordFetch(uri, ctx);
 }
 
 /**
@@ -2399,7 +2413,7 @@ async function verifyAndRecordHouseElement(ctx, opts = {}) {
     const caps = registerCapabilities();
     const { regions } = resolvePlanRegions(registerJurisdictions(ctx.job, ctx.profile), caps);
     const rec = resolveRecordExecutor({
-      lister: opts?.recordLister ?? null, adapter: activeProvider(),
+      lister: opts?.recordLister ?? null, adapter: noteAdapter(ctx, activeProvider()),
       agentId: ctx.agentId ?? null, sessionKey: `clearance-${ctx.run.slug}-${ctx.run.codename}`,
       recordLog: runRecordLogPath(P.runDir),
       fixtureDir: ctx.job?.registerFixtures?.records ?? null,
@@ -9173,7 +9187,7 @@ async function pipelineInner(job, opts = {}) {
     // which is the same bug in the other direction.
     const planExec = opts.planExecutor
       ?? (envGateOn("CLEAROTRON_PLAN_DISPATCH") && activeProvider().executePlan
-        ? (args, c) => activeProvider().executePlan(args, c) : null);
+        ? (args, c) => noteAdapter(c ?? ctx, activeProvider()).executePlan(args, c) : null);
     // Kill switch CLEAROTRON_SATPROBE_CODESIDE=0 (the inline `!== "0"` pattern): legacy mock harnesses
     // opt out — their scenarios pre-date the code-side member and script the AGENT path (and an armed
     // real executor lane would dial the provider from a test). Production default is ON.
@@ -15136,8 +15150,20 @@ async function pipelineInner(job, opts = {}) {
     try {
       const provider = activeProvider().id;
       const usage = tallyRegisterCalls(DEFAULT_LEDGER_PATH, `clearance-${run.slug}-${run.codename}-`);
-      runLog(run.runDir, { event: "provider-usage", provider, ...usage });
-      writeRunStatus(ctx, { providerUsage: { [provider]: usage } });
+      // ── A WHOLE-RUN TALLY FILED UNDER ONE REGISTER SAYS SO WHEN THE RUN SERVED MORE THAN ONE ──────
+      //
+      // This label is resolved HERE, at publish, while the tally it labels spans the whole run. On a run
+      // whose register changed part-way that key is whichever register happened to be active at publish,
+      // and every call is filed under it — the confident-and-wrong shape the served field exists to end.
+      //
+      // The key's SHAPE is untouched because a ledger reads this map. What is added is the caveat, in the
+      // same record, so the two register fields in one status cannot silently disagree: the served list
+      // says two, and this says the tally covers both and could only be filed under one. Splitting the
+      // tally by register is a second question and is not answered here.
+      const served = registersServedFrom(readRunStatus(run.runDir));
+      const spans = providerUsageCaveat(served);
+      runLog(run.runDir, { event: "provider-usage", provider, ...(served.length > 1 ? { spans: served } : {}), ...usage });
+      writeRunStatus(ctx, { providerUsage: { [provider]: usage }, ...spans });
       providerTally = { [provider]: usage };
       // AD-4: the line prints the complete by_tool census, not a hand-picked subset — the R2 run printed
       // "search=0" while 286 execute_plan calls carried the whole register workload, and the subset read

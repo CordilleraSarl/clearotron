@@ -73,8 +73,15 @@
 //                               site states.
 //   · grounds-grammar.mjs:89 classifyGroundsNote
 //                               `limits` is spent inside that function's own precedence ladder.
-//   · pipeline.mjs:2029         `repairable` rides a runLog event. A journal line has no enforcement
-//                               counterpart — nothing reads it back and acts.
+//   · pipeline.mjs `attachRegisterPlan` — the `register-plan-infeasible` event's `repairable` field
+//                               rides a runLog line. A journal line has no enforcement counterpart —
+//                               nothing reads it back and acts. (CITED BY SYMBOL AND NO LINE, for the
+//                               reason the neighbour below gives: the number here was :2029, which was
+//                               already pointing past the event — the site was at :2562 on the commit
+//                               this was last read against — and a line that drifts onto real code reads
+//                               as correct to the citation check. It only became visible when an edit
+//                               above moved :2029 onto a closing brace, which is the one case that check
+//                               can see.)
 //   · pipeline.mjs `seniorGap` is read by the coverage floor in the same block, off the
 //                               `ctx.seniorRights` it was computed from. (CITED BY SYMBOL AND NO LINE,
 //                               deliberately: the line number here was :11252, which was already
