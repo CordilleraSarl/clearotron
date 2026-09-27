@@ -33,7 +33,7 @@ const job = (ref, mark) => ({
   id: `bs-${ref}`, msgId: `<bs-${ref}@x>`, forwarder: "requester", forwarderDomain: "example.com",
   ref, markName: mark, classes: [9], provider: "corsearch",
 });
-const studioFor = (root) => join(root, "workspace-clawdi", "studio", "clearance-search");
+const studioFor = (root) => join(root, "workspace-intake-agent", "studio", "clearance-search");
 const queueFor = (root) => join(studioFor(root), "queue");
 function envFor(root, extra = {}) {
   return {
@@ -72,7 +72,7 @@ test("pre-try throw with a run dir (corrupt _driver/profile.json) → failure pa
   writeFileSync(driverDir(runDir, "profile.json"), "{corrupt");
   writeFileSync(join(Q, "job-p.processing"), JSON.stringify(J));
   writeFileSync(join(Q, "job-p.processing.pid"), await deadClaimToken());
-  writeFileSync(join(Q, "job-p.processing.meta"), JSON.stringify({ codename: "copper-anvil", dateISO: date, agentId: "clawdi" }));
+  writeFileSync(join(Q, "job-p.processing.meta"), JSON.stringify({ codename: "copper-anvil", dateISO: date, agentId: "intake-agent" }));
 
   const { code, log } = await runToExit(envFor(root));
   assert.equal(code, 0, log);
@@ -92,7 +92,7 @@ test("pre-try throw with a run dir (corrupt _driver/profile.json) → failure pa
   const { renameSync } = await import("node:fs");
   renameSync(join(Q, "job-p.failed"), join(Q, "job-p.processing"));
   writeFileSync(join(Q, "job-p.processing.pid"), await deadClaimToken());
-  writeFileSync(join(Q, "job-p.processing.meta"), JSON.stringify({ codename: "copper-anvil", dateISO: date, agentId: "clawdi" }));
+  writeFileSync(join(Q, "job-p.processing.meta"), JSON.stringify({ codename: "copper-anvil", dateISO: date, agentId: "intake-agent" }));
   const second = await runToExit(envFor(root));
   assert.equal(second.code, 0, second.log);
   assert.deepEqual(outboxFiles(root), [`${slug}-${date}-copper-anvil.pending`], "STILL exactly one marker — no double-notify");

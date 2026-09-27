@@ -99,7 +99,7 @@ test("a queue reachable both ways is read ONCE", () => {
   const root = mkdtempSync(join(process.env.TMPDIR || "/tmp", "q1918-both-"));
   const poolRoot = join(root, "pool");
   const workspaceRoot = join(root, "workspaces");
-  const q = join(workspaceRoot, "workspace-clawdi", "studio", "clearance-search", "queue");
+  const q = join(workspaceRoot, "workspace-intake-agent", "studio", "clearance-search", "queue");
   mkdirSync(poolRoot, { recursive: true });
   mkdirSync(q, { recursive: true });
   writeFileSync(join(q, `${JOB.id}.json`), JSON.stringify(JOB));
@@ -116,7 +116,7 @@ test("the workspace queue still works on its own — this ADDS a place to look",
   const root = mkdtempSync(join(process.env.TMPDIR || "/tmp", "q1918-ws-"));
   const poolRoot = join(root, "pool");
   const workspaceRoot = join(root, "workspaces");
-  const q = join(workspaceRoot, "workspace-clawdi", "studio", "clearance-search", "queue");
+  const q = join(workspaceRoot, "workspace-intake-agent", "studio", "clearance-search", "queue");
   mkdirSync(poolRoot, { recursive: true });
   mkdirSync(q, { recursive: true });
   writeFileSync(join(q, `${JOB.id}.json`), JSON.stringify(JOB));

@@ -373,38 +373,45 @@ export const config = {
         }
       }
     } catch { /* workspaceRoot may not exist in some test envs — fall through to the canonical queue */ }
-    // THE ONE AGENT NAME NO CONFIGURATION REMOVES, and it is deliberate. row 5.
+    // THE INSTALL'S OWN QUEUE IS ALWAYS WATCHED, AND IT USED TO BE ONE PARTICULAR AGENT'S. `this.queueDir`
+    // was `queueDirForAgent("<the old default>")` — a LITERAL, not `defaultAgent` — so every deployment,
+    // however configured, watched that one directory as well as its own. It was back-compat for a real
+    // legacy queue, and its own note said removing it was a SEQUENCED MIGRATION rather than an edit:
+    // drain that queue, or name it explicitly with CLEAROTRON_QUEUE_DIR, and only then drop the literal.
     //
-    // `this.queueDir` is `queueDirForAgent("clawdi")` — a LITERAL, not `defaultAgent` — so every
-    // deployment, however configured, watches `<workspacePrefix>clawdi/studio/clearance-search/queue`.
-    // Setting CLEAROTRON_DEFAULT_AGENT does not remove it (prod runs `ops`, dev runs `dev`, and both still
-    // watch this); nor does CLEAROTRON_WORKSPACE_PREFIX. An installer who copies `.env.example` gets a
-    // neutral default agent AND this directory.
+    // BOTH PRECONDITIONS WERE MEASURED BEFORE IT WENT (2026-09-27). Every install that runs a clearance
+    // unit sets CLEAROTRON_QUEUE_DIR, and holds nothing in that legacy directory. One retired deployment
+    // still has 23 files there; classified against this product's own live-marker rule, NONE is live —
+    // ten results, ten done markers and three hand-made probe files, newest a month old — that deployment
+    // runs no clearance unit, and the path resolved per-install anyway, so no other deployment could ever
+    // have reached it.
     //
-    // WHY IT STAYS. It is back-compat for a real legacy queue that still holds work. Dropping the
-    // literal stops the deployment that owns that queue draining it — silently, because an unwatched
-    // queue looks exactly like an empty one. Removing it is therefore a SEQUENCED MIGRATION (drain the
-    // legacy queue, or name it explicitly via CLEAROTRON_QUEUE_DIR, then drop this), not an edit: it needs
-    // the box, and no repository-only change can do it safely.
-    //
-    // Written down because a sweep of this platform name will find it again and read it as residue.
-    // It is not residue; it is the one instance whose removal has a cost outside this repository.
+    // What remains is the honest version of what the literal was for: the queue of the agent this
+    // install actually runs as, appended so a deployment whose own queue is not among the scanned
+    // workspaces still drains it.
     const canonical = this.queueDir;
     if (!dirs.includes(canonical)) dirs.push(canonical);
     return [...new Set(dirs)];                  // CLEAROTRON_QUEUE_DIR may equal a scanned workspace queue
   },
 
-  // Back-compat defaults for the legacy agent (selftest / docs / CLI without a derived agent), pinned
-  // for the reason written at `queueDirs` above. Per-run code uses the *ForAgent helpers above with the
-  // agent derived from the claimed queue dir.
+  // Defaults for a caller with no derived agent (selftest, docs, a CLI invocation): the agent this
+  // install runs as, which is what CLEAROTRON_DEFAULT_AGENT says and `localagent` when it says nothing.
+  // They named one particular agent as a literal until 2026-09-27; see `queueDirs` above for what that
+  // was for and what was measured before it went. Per-run code uses the *ForAgent helpers with the agent
+  // derived from the claimed queue dir, and is unaffected either way.
+  //
+  // THIS MOVES NO PATH ON A DEPLOYMENT THAT SETS ITS OWN AGENT, which is the point: the two installs
+  // whose default agent is the id this replaced resolve to exactly the directories they resolved to
+  // before, because that is what their own configuration says. An install that sets nothing moves to its
+  // own default, where its runs already are.
   get studioRoot() {
-    return this.studioRootForAgent("clawdi");
+    return this.studioRootForAgent(this.defaultAgent);
   },
   get queueDir() {
-    return this.queueDirForAgent("clawdi");
+    return this.queueDirForAgent(this.defaultAgent);
   },
   get archiveRoot() {
-    return this.archiveRootForAgent("clawdi");
+    return this.archiveRootForAgent(this.defaultAgent);
   },
 
   // Delivery pool: the deterministic publish step writes report.html + audit.xlsx here; Caddy serves it
@@ -621,20 +628,20 @@ export const config = {
   //
   // THE DEFAULT IS PART OF A PATH, so changing it moves where an install looks for its own runs:
   // every run dir is `<workspaceRoot>/workspace-<agent>/studio/clearance-search/…`. An install created
-  // before this default changed keeps its runs under the old id and must pin it — both spellings,
-  // because the gather servers read their own variable:
+  // before this default changed keeps its runs under the id it was created with, and must set both
+  // CLEAROTRON_DEFAULT_AGENT and CLEAROTRON_GATHER_AGENT to that id — both, because the gather servers
+  // read their own variable. Unpinned, such an install starts a fresh empty workspace and its existing
+  // runs read as absent rather than as an error.
   //
-  //     CLEAROTRON_DEFAULT_AGENT=clawdi
-  //     CLEAROTRON_GATHER_AGENT=clawdi
+  // THE ID IS NO LONGER WRITTEN DOWN ANYWHERE FOR THEM (ruling 563, 2026-09-27): what this tree knows is
+  // that the id is a path segment, not which id any particular install was created with. An operator who
+  // needs it reads the name of the workspace directory their runs are in. The release note for that
+  // ruling carries the instruction; this comment carries the reason.
   //
-  // Unpinned, such an install starts a fresh empty workspace and its existing runs read as absent
-  // rather than as an error. Said again where upgrades are described (INSTALL.md, ops runbook).
-  //
-  // THE ID IS ALSO A KEY, not only a path segment. `AGENT_WHATSAPP` in stages.mjs is keyed by agent
-  // id, so the demo roster has to carry this value or the reference deployment resolves no operator
-  // number and the hole reads as "no copy configured" rather than as a miss. Both ids are in that
-  // roster for the same reason the pin above exists. (The roster stays one line: 32 backlog rows
-  // cite line numbers in stages.mjs, so a comment added there repoints all of them.)
+  // THE ID IS ALSO A KEY, not only a path segment. `AGENT_WHATSAPP` in stages.mjs is keyed by agent id,
+  // so a deployment whose agent is not in that roster resolves no operator number and the hole reads as
+  // "no copy configured" rather than as a miss. (The roster stays one line: 32 backlog rows cite line
+  // numbers in stages.mjs, so a comment added there repoints all of them.)
   get defaultAgent() { return process.env.CLEAROTRON_DEFAULT_AGENT || "localagent"; },
 
   // Per-stage retry budget (fresh session key per retry).

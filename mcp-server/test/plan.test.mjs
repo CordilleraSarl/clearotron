@@ -12,6 +12,11 @@ import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins E
 
 const ROOT = mkdtempSync(join(tmpdir(), "plan-ws-"));
 pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
+// THE AGENT IS PINNED BECAUSE THE PATH IS THE AGENT'S (ruling 563). The studio paths these fixtures
+// build resolve under `config.defaultAgent`, which reads CLEAROTRON_DEFAULT_AGENT. Until that ruling one
+// agent was named as a literal instead, so a fixture spelling that same word matched by coincidence and
+// nothing said which of the two decided — CLEAROTRON_AGENT is read by nothing in the shipped tree.
+pinEnv(process.env, "CLEAROTRON_DEFAULT_AGENT", "intake-agent");
 // The POOL root too, now that the availability gate reconciles `built` against the flag snapshot beside
 // the pool: unpinned it defaults to the real /srv/trademark-archive, and a unit test whose answers depend
 // on the deployment's own snapshot is the CI trap this repo has already been bitten by.
@@ -29,7 +34,7 @@ pinEnv(process.env, "CLEAROTRON_CUSTOMERS_DIR", STORE);
 // EnvironmentFile. A built depth must preview as runnable anyway — that is the regression test for the
 // bug that retired them (plan_run telling clients three shipped depths were "not switched on").
 for (const sw of ["CLEAROTRON_JX_LANES", "CLEAROTRON_KNOCKOUT_MODE", "CLEAROTRON_RECIPES_MODE"]) delete process.env[sw];
-const STUDIO = join(ROOT, "workspace-clawdi", "studio", "clearance-search");
+const STUDIO = join(ROOT, "workspace-intake-agent", "studio", "clearance-search");
 const QUEUE = join(STUDIO, "queue");
 
 const { planRun, PLAN_CAVEAT } = await import("../lib/plan.mjs");

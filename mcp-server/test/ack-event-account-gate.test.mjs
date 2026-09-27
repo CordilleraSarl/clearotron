@@ -49,11 +49,11 @@ const { ackEvent, listOutboxEvents } = await import("../lib/ops.mjs");
 
 /** A run tagged with an account, exactly as the driver freezes it. Returns its runId. */
 function makeRun(slug, codename, profileKey) {
-  const runDir = join(ROOT, "workspace-clawdi", "studio", "clearance-search", slug, codename);
+  const runDir = join(ROOT, "workspace-intake-agent", "studio", "clearance-search", slug, codename);
   mkdirSync(driverDir(runDir), { recursive: true });
   const runId = `${slug}-${codename}`;
   writeFileSync(join(runDir, "status.json"), JSON.stringify({
-    schema: 1, runId, slug, codename, agent: "clawdi", state: "delivered", markName: slug.toUpperCase(),
+    schema: 1, runId, slug, codename, agent: "intake-agent", state: "delivered", markName: slug.toUpperCase(),
     sendPending: true, updatedAt: "2026-07-20T00:00:00Z",
   }));
   if (profileKey) writeFileSync(driverDir(runDir, "profile.json"), JSON.stringify({ profileKey, name: profileKey }));
@@ -61,7 +61,7 @@ function makeRun(slug, codename, profileKey) {
 }
 
 /** The delivered marker the driver drops: <runId>.pending, body = the forwarding agent id. */
-const marker = (runId) => { writeFileSync(join(OUTBOX, `${runId}.pending`), "clawdi\n"); return `${runId}.pending`; };
+const marker = (runId) => { writeFileSync(join(OUTBOX, `${runId}.pending`), "intake-agent\n"); return `${runId}.pending`; };
 
 const MINE = makeRun("tmpack-demo-brand-owner", "2026-07-20-jade-a", "demo-brand-owner");
 const THEIRS = makeRun("tmpack-celta", "2026-07-20-jade-b", "celta");
@@ -75,7 +75,7 @@ test("A SCOPED session cannot consume another account's event — and the file S
   const r = ackEvent({ file: f }, { scope: SCOPED });
   // The destructive half: before the fix this rmSync'd celta's marker and returned alreadyGone:false.
   assert.equal(existsSync(join(OUTBOX, f)), true, "a foreign event must still be on disk for the full-grant courier");
-  assert.equal(readFileSync(join(OUTBOX, f), "utf8"), "clawdi\n", "and byte-intact — not truncated or rewritten");
+  assert.equal(readFileSync(join(OUTBOX, f), "utf8"), "intake-agent\n", "and byte-intact — not truncated or rewritten");
   // The disclosure half: the answer is the one an absent file gives, field for field.
   assert.deepEqual(r, ABSENT(f), "a foreign event must be indistinguishable from one that is not there");
   rmSync(join(OUTBOX, f), { force: true });

@@ -175,7 +175,7 @@ const workspace = () => {
 test("DRY RUN IS THE DEFAULT — it reports the same decision it would apply, and writes nothing", () => {
   const { root, mk } = workspace();
   try {
-    const dir = mk("clawdi", "novapulse", "r1", { runId: "novapulse-r1", state: "running", updatedAt: ago(9 * HOUR) });
+    const dir = mk("intake-agent", "novapulse", "r1", { runId: "novapulse-r1", state: "running", updatedAt: ago(9 * HOUR) });
     const before = readFileSync(join(dir, "status.json"), "utf8");
 
     const dry = reconcileRunDir(dir, { now: NOW });
@@ -198,7 +198,7 @@ test("a live run on disk is not written to, even with --apply", () => {
   const { root, mk } = workspace();
   try {
     // A REAL pid: this process. No injection — the live path has to work against the actual check.
-    const dir = mk("clawdi", "novapulse", "r2", {
+    const dir = mk("intake-agent", "novapulse", "r2", {
       runId: "novapulse-r2", state: "running", pid: process.pid, pidStarttime: null, updatedAt: ago(50 * HOUR),
     });
     const before = readFileSync(join(dir, "status.json"), "utf8");
@@ -212,7 +212,7 @@ test("a live run on disk is not written to, even with --apply", () => {
 test("a torn or missing status.json is reported, never thrown and never written", () => {
   const { root, mk } = workspace();
   try {
-    const dir = mk("clawdi", "novapulse", "r3", { state: "running", updatedAt: ago(9 * HOUR) });
+    const dir = mk("intake-agent", "novapulse", "r3", { state: "running", updatedAt: ago(9 * HOUR) });
     writeFileSync(join(dir, "status.json"), "{ this is torn");
     assert.equal(reconcileRunDir(dir, { apply: true, now: NOW }).verdict, "unreadable-status");
     assert.equal(readFileSync(join(dir, "status.json"), "utf8"), "{ this is torn");
@@ -223,9 +223,9 @@ test("a torn or missing status.json is reported, never thrown and never written"
 test("the walk finds live and archived runs and skips the queue and the driver sidecar", () => {
   const { root, mk } = workspace();
   try {
-    mk("clawdi", "novapulse", "r1", { state: "running" });
-    mk("clawdi", join("archive", "2026-07"), join("oldmark", "r9"), { state: "delivered" });
-    const studio = join(root, "workspace-clawdi", "studio", "clearance-search");
+    mk("intake-agent", "novapulse", "r1", { state: "running" });
+    mk("intake-agent", join("archive", "2026-07"), join("oldmark", "r9"), { state: "delivered" });
+    const studio = join(root, "workspace-intake-agent", "studio", "clearance-search");
     // A status.json under queue/ or _driver/ is not a run — the walk must not descend into either.
     for (const skip of ["queue", "_driver", "register-units"]) {
       mkdirSync(join(studio, "novapulse", "r1", skip), { recursive: true });

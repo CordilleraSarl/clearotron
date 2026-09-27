@@ -35,7 +35,7 @@ const job = (ref, mark) => ({
   id: `crash-${ref}`, msgId: `<crash-${ref}@x>`, forwarder: "requesting-lawyer", forwarderDomain: "example.com",
   ref, markName: mark, classes: [9], provider: "corsearch",
 });
-const studioFor = (root) => join(root, "workspace-clawdi", "studio", "clearance-search");
+const studioFor = (root) => join(root, "workspace-intake-agent", "studio", "clearance-search");
 const queueFor = (root) => join(studioFor(root), "queue");
 
 // Child env: explicit, so a knob a sibling test exported can never leak into the spawned runner.
@@ -105,7 +105,7 @@ test("SIGKILLed claimer with identity meta → re-drain RESUMES the same codenam
   const metaPath = join(Q, "job-a.processing.meta");
   assert.ok(await waitFor(() => existsSync(metaPath)), `dispatch wrote the identity meta\n${claimer.log}`);
   const meta = JSON.parse(readFileSync(metaPath, "utf8"));
-  assert.ok(meta.codename && meta.dateISO && meta.agentId === "clawdi", `meta carries the identity: ${JSON.stringify(meta)}`);
+  assert.ok(meta.codename && meta.dateISO && meta.agentId === "intake-agent", `meta carries the identity: ${JSON.stringify(meta)}`);
   const runDir = join(studioFor(root), slug, `${meta.dateISO}-${meta.codename}`);
   assert.ok(await waitFor(() => existsSync(join(runDir, "matter-context.md"))), `matter-frame completed before the kill\n${claimer.log}`);
 
@@ -160,7 +160,7 @@ test("dead claimer whose run already DELIVERED (live dir, .delivered) → queue 
   writeFileSync(join(runDir, ".delivered"), JSON.stringify({ verdict: "CLEAR" }));
   writeFileSync(join(Q, "job-d.processing"), JSON.stringify(J));
   writeFileSync(join(Q, "job-d.processing.pid"), await deadClaimToken());
-  writeFileSync(join(Q, "job-d.processing.meta"), JSON.stringify({ codename: "copper-anvil", dateISO: date, agentId: "clawdi" }));
+  writeFileSync(join(Q, "job-d.processing.meta"), JSON.stringify({ codename: "copper-anvil", dateISO: date, agentId: "intake-agent" }));
 
   const c = spawnRunner(envFor(root));
   assert.equal(await exited(c), 0, c.log);
@@ -183,7 +183,7 @@ test("dead claimer whose run was ARCHIVED (post-delivery crash left no live dir)
   mkdirSync(archDir, { recursive: true });
   writeFileSync(join(Q, "job-e.processing"), JSON.stringify(J));
   writeFileSync(join(Q, "job-e.processing.pid"), await deadClaimToken());
-  writeFileSync(join(Q, "job-e.processing.meta"), JSON.stringify({ codename: "marble-vault", dateISO: date, agentId: "clawdi" }));
+  writeFileSync(join(Q, "job-e.processing.meta"), JSON.stringify({ codename: "marble-vault", dateISO: date, agentId: "intake-agent" }));
 
   const c = spawnRunner(envFor(root));
   assert.equal(await exited(c), 0, c.log);
@@ -218,7 +218,7 @@ test("A2 — stale EARLIER-date run dir shares today's codename → a fresh job 
   // A crashed dead claimer for a BRAND-NEW job — meta carries TODAY's date + the colliding codename.
   writeFileSync(join(Q, "job-c.processing"), JSON.stringify(J));
   writeFileSync(join(Q, "job-c.processing.pid"), await deadClaimToken());
-  writeFileSync(join(Q, "job-c.processing.meta"), JSON.stringify({ codename: "copper-anvil", dateISO: today, agentId: "clawdi" }));
+  writeFileSync(join(Q, "job-c.processing.meta"), JSON.stringify({ codename: "copper-anvil", dateISO: today, agentId: "intake-agent" }));
 
   const c = spawnRunner(envFor(root));
   assert.equal(await exited(c), 0, c.log);
@@ -285,7 +285,7 @@ test("A4 — run dir with delivery.json but NO .delivered sentinel → marked .d
   writeFileSync(join(runDir, ".sent"), "sent");
   writeFileSync(join(Q, "job-t.processing"), JSON.stringify(J));
   writeFileSync(join(Q, "job-t.processing.pid"), await deadClaimToken());
-  writeFileSync(join(Q, "job-t.processing.meta"), JSON.stringify({ codename: "marble-lattice", dateISO: date, agentId: "clawdi" }));
+  writeFileSync(join(Q, "job-t.processing.meta"), JSON.stringify({ codename: "marble-lattice", dateISO: date, agentId: "intake-agent" }));
 
   const c = spawnRunner(envFor(root));
   assert.equal(await exited(c), 0, c.log);
@@ -310,7 +310,7 @@ test("A4 — run dir with status.state 'delivered' but NO .delivered sentinel �
   writeFileSync(join(runDir, "status.json"), JSON.stringify({ state: "delivered", verdict: "CLEAR" }));
   writeFileSync(join(Q, "job-s.processing"), JSON.stringify(J));
   writeFileSync(join(Q, "job-s.processing.pid"), await deadClaimToken());
-  writeFileSync(join(Q, "job-s.processing.meta"), JSON.stringify({ codename: "quartz-lattice", dateISO: date, agentId: "clawdi" }));
+  writeFileSync(join(Q, "job-s.processing.meta"), JSON.stringify({ codename: "quartz-lattice", dateISO: date, agentId: "intake-agent" }));
 
   const c = spawnRunner(envFor(root));
   assert.equal(await exited(c), 0, c.log);

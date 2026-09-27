@@ -19,11 +19,11 @@ pinEnv(process.env, "CLEAROTRON_WORK_DIR", ROOT);
 const { tools } = await import("../server.mjs");
 
 function makeRun({ slug, codename, sendPending, withSentFile = false, receipts = null }) {
-  const runDir = join(ROOT, "workspace-clawdi", "studio", "clearance-search", "archive", "2026-07", slug, codename);
+  const runDir = join(ROOT, "workspace-intake-agent", "studio", "clearance-search", "archive", "2026-07", slug, codename);
   mkdirSync(runDir, { recursive: true });
   const runId = `${slug}-${codename}`;
   writeFileSync(join(runDir, "status.json"), JSON.stringify({
-    runId, slug, codename, date: "2026-07-08", agent: "clawdi", state: "delivered",
+    runId, slug, codename, date: "2026-07-08", agent: "intake-agent", state: "delivered",
     verdict: "CONDITIONAL", markName: "TESTMARK", sendPending,
     startedAt: "2026-07-08T05:00:00Z", updatedAt: "2026-07-08T06:00:00Z", deliveredAt: "2026-07-08T06:00:00Z",
   }));
@@ -51,11 +51,11 @@ test("get_run: a handoff-mode run still owed a notification reports sendPending 
 });
 
 test("get_run: a status.json with no sendPending field at all (legacy stage-mode run) reports false, not undefined/null", () => {
-  const runDir = join(ROOT, "workspace-clawdi", "studio", "clearance-search", "archive", "2026-07", "tmpc-legacy", "2026-07-08-charlie-x");
+  const runDir = join(ROOT, "workspace-intake-agent", "studio", "clearance-search", "archive", "2026-07", "tmpc-legacy", "2026-07-08-charlie-x");
   mkdirSync(runDir, { recursive: true });
   const runId = "tmpc-legacy-2026-07-08-charlie-x";
   writeFileSync(join(runDir, "status.json"), JSON.stringify({
-    runId, slug: "tmpc-legacy", codename: "2026-07-08-charlie-x", date: "2026-07-08", agent: "clawdi",
+    runId, slug: "tmpc-legacy", codename: "2026-07-08-charlie-x", date: "2026-07-08", agent: "intake-agent",
     state: "delivered", verdict: "CLEAR", markName: "LEGACY",
   }));
   const r = tools.get_run({ runId });

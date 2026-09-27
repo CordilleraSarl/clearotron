@@ -292,7 +292,9 @@ const EXCEPTIONS = [
       /\bids\s+your\s+account\s+offers\b/gi,
       /\bon\s+your\s+account\b/gi,
       /\blocal-account\s+form\b/gi,
-      /\ban\s+account\s+with\s+no\s+runs\b/gi,
+      // `an account with no runs` went with the upgrade note it excused (ruling 563, 2026-09-27). The
+      // arm below refuses an exception that excuses nothing, which is what caught it: a phrase kept
+      // after its text leaves is a hole held open for nothing.
     ],
     files: /^INSTALL\.md$/,
     reason: "an account a reader pays through or signs in with — at a cloud provider, a model vendor, or "

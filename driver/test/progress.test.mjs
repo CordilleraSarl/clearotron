@@ -170,8 +170,8 @@ test("the chat roster still resolves an agent to its bound number — the packet
   // AND THE TWO KEYS NAMED FOR THE OLD DEFAULT ARE GONE (ruling 563). An install running as that id with
   // no roster of its own now writes `whatsappTo: null` on the packet rather than a placeholder number,
   // which is the honest answer: nobody has said where to send it.
-  assert.equal(AGENT_WHATSAPP.clawdi, undefined);
-  assert.equal(AGENT_WHATSAPP["clawdi-alex"], undefined);
+  assert.equal(AGENT_WHATSAPP["intake-agent"], undefined);
+  assert.equal(AGENT_WHATSAPP["intake-agent-alex"], undefined);
 });
 
 // ── 2026-07-04 incident: the rollup must carry the send state — the completion-watch's primary source ──

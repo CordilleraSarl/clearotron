@@ -38,11 +38,11 @@ let n = 0;
 function makeRun() {
   const slug = "tmpx-acme";
   const codename = `2026-06-16-now-${++n}`;
-  const runDir = join(ROOT, "workspace-clawdi", "studio", "clearance-search", slug, codename);
+  const runDir = join(ROOT, "workspace-intake-agent", "studio", "clearance-search", slug, codename);
   mkdirSync(driverDir(runDir), { recursive: true });
   const runId = `${slug}-${codename}`;
   writeFileSync(join(runDir, "status.json"),
-    JSON.stringify({ runId, slug, codename, agent: "clawdi", state: "running", markName: "ACME" }));
+    JSON.stringify({ runId, slug, codename, agent: "intake-agent", state: "running", markName: "ACME" }));
   return { runDir, runId };
 }
 

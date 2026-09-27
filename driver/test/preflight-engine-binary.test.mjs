@@ -183,7 +183,7 @@ const job = (ref, mark) => ({
   id: `eb-${ref}`, msgId: `<eb-${ref}@x>`, forwarder: "requester", forwarderDomain: "example.com",
   ref, markName: mark, classes: [9], provider: "corsearch",
 });
-const studioFor = (root) => join(root, "workspace-clawdi", "studio", "clearance-search");
+const studioFor = (root) => join(root, "workspace-intake-agent", "studio", "clearance-search");
 const queueFor = (root) => join(studioFor(root), "queue");
 const runToExit = (env) => {
   const c = spawn(process.execPath, [RUNNER], { env, stdio: ["ignore", "pipe", "pipe"] });
