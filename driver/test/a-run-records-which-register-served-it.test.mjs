@@ -15,7 +15,7 @@ import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { noteRegisterServed, registersServedFrom, registerServedLine, forgetRegistersServed, REGISTERS_SERVED }
+import { noteRegisterServed, registersServedFrom, registerServedLine, providerUsageCaveat, forgetRegistersServed, REGISTERS_SERVED }
   from "../register-served.mjs";
 
 const newRun = () => {
@@ -108,5 +108,38 @@ test("nothing is recorded without a run to record it against", () => {
   try {
     assert.equal(noteRegisterServed(dir, ""), null, "an empty register id was recorded as one");
     assert.equal(statusOf(dir)[REGISTERS_SERVED], undefined);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("a whole-run tally filed under one register says so when the run served more than one", () => {
+  // THE SECOND REGISTER FIELD IN THE SAME STATUS. The provider-usage rollup's key is resolved at PUBLISH
+  // while the tally it labels spans the whole run, so on a run whose register changed part-way every call
+  // is filed under whichever was active at the end. That is the confident-and-wrong shape this field
+  // exists to end, and before the served list existed nothing could contradict it.
+  //
+  // DRIVEN ON THE DECISION, NOT ON ITS PRECONDITION. The first version of this arm asserted only that the
+  // run had served two registers and that one register carries no caveat — which is the setup, not the
+  // claim. The decision is its own pure function so the claim itself can fail.
+  assert.deepEqual(providerUsageCaveat(["clarivate"]), {},
+    "a run served by one register carries a caveat, so every ordinary run gains a field about nothing");
+  assert.deepEqual(providerUsageCaveat(["clarivate", "signa"]), { providerUsageSpans: ["clarivate", "signa"] },
+    "a tally spanning two registers is filed under one with nothing saying so — the two register fields in "
+    + "one record then disagree in silence, which is the state this closes");
+  // The absences: nothing served, and a malformed field. Neither may invent a caveat.
+  for (const v of [[], null, undefined, "clarivate", [""], [null, 3]])
+    assert.deepEqual(providerUsageCaveat(v), {}, `${JSON.stringify(v)}: a caveat was invented from it`);
+});
+
+test("the caveat's precondition is reachable from the recorded field", () => {
+  // The join between the two halves: the list the caveat reads is the one the run records, so a run that
+  // served two registers really does reach the caveat rather than it being reachable only in a test.
+  forgetRegistersServed();
+  const dir = newRun();
+  try {
+    noteRegisterServed(dir, "clarivate");
+    assert.deepEqual(providerUsageCaveat(registersServedFrom(statusOf(dir))), {});
+    noteRegisterServed(dir, "signa");
+    assert.deepEqual(providerUsageCaveat(registersServedFrom(statusOf(dir))),
+      { providerUsageSpans: ["clarivate", "signa"] });
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });

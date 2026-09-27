@@ -72,5 +72,20 @@ export function registerServedLine(status) {
   return r.length === 1 ? r[0] : `${r.length} registers served this run: ${r.join(", ")}`;
 }
 
+/**
+ * The caveat a whole-run provider tally needs when the run served more than one register: `{}` when the
+ * tally's single key cannot be wrong, and the spanning list when it can. PURE.
+ *
+ * A TALLY'S KEY IS RESOLVED AT PUBLISH and the tally spans the whole run, so on a run whose register
+ * changed part-way every call is filed under whichever was active at the end. That is the shape the
+ * served field exists to end, and until the field existed nothing could contradict it. This does not
+ * split the tally — attributing a whole-run count to one of two registers is a different question — it
+ * stops the two register fields in one record disagreeing in silence.
+ */
+export function providerUsageCaveat(served) {
+  const r = Array.isArray(served) ? served.filter((x) => typeof x === "string" && x.trim()) : [];
+  return r.length > 1 ? { providerUsageSpans: r } : {};
+}
+
 /** Test seam: forget the per-process memo, so an arm can drive a second run in the same process. */
 export function forgetRegistersServed() { seen.clear(); }
