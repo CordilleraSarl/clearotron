@@ -246,7 +246,14 @@ export function foldForMatching(text) {
   const start = [];     // folded position -> where its cluster starts in the original
   const end = [];       // folded position -> where its cluster ends in the original
   for (let m = cluster.exec(src); m !== null; m = cluster.exec(src)) {
-    const f = m[0].normalize("NFKC");
+    // FORMAT CHARACTERS ARE DROPPED FOR MATCHING, never from the output. NFKC keeps every one of them:
+    // a zero-width space, joiner, non-joiner, soft hyphen or byte-order mark sitting INSIDE a name
+    // survives the fold, and the name is then printed in clear. Measured 2026-09-27: a zero-width space
+    // one character into a protected name defeated the match completely. They carry no width and a reader
+    // cannot see them, so a page can carry a party's name looking exactly like the redacted rows beside
+    // it. Dropping them here only ever makes a match MORE likely, and the splice still removes the whole
+    // original range, format characters included.
+    const f = m[0].normalize("NFKC").replace(/\p{Cf}/gu, "");
     for (let k = 0; k < f.length; k++) { start.push(m.index); end.push(m.index + m[0].length); }
     folded += f;
   }

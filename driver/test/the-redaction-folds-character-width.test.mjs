@@ -100,6 +100,18 @@ test("1004 and 1003 together - a full-width party whose word collides with the s
     `the full-width party was printed in clear: ${JSON.stringify(redactor({ names, prose })(data))}`);
 });
 
+test("1004 a zero-width character inside a name does not defeat the match", () => {
+  // THE SAME DEFECT AS THE WIDTH ONE AND NOT FIXED BY THE FOLD. NFKC keeps every format character, so a
+  // zero-width space one character into a protected name left it printed in clear - and a reader cannot
+  // see the difference between that line and the redacted rows beside it. Both directions: the invisible
+  // character can sit in the record or in the text.
+  const ZW = "\u200B";
+  for (const [protectedAs, metAs] of [[HALF, `Quil${ZW}lion`], [`Quil${ZW}lion`, HALF]]) {
+    const out = forParty(protectedAs)(`  owner ${metAs} filed`);
+    assert.ok(!out.includes(metAs), `the name was printed in clear: ${JSON.stringify(out)}`);
+  }
+});
+
 test("1004 a line carrying no protected name comes back unchanged, character for character", () => {
   // The splice is new. A redaction that quietly rewrites text naming nobody is the same fault as one that
   // eats a heading, and an unfolded page is the common case.

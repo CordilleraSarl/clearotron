@@ -6010,8 +6010,8 @@
           "todos": 0
         },
         "the-redaction-folds-character-width.test.mjs": {
-          "tests": 5,
-          "asserts": 10,
+          "tests": 6,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },
