@@ -57,6 +57,7 @@ import { isLiveQueueMarker, isQueueSidecar, liveQueueState, LIVE_QUEUE_STATES, T
 // leave the real one to park tomorrow's re-run as a duplicate. usage-ledger.mjs is a pure leaf too
 // (node:fs + node:path + queue-markers.mjs), so it drags no driver machinery in either.
 import { matterLedgerPath } from "../driver/usage-ledger.mjs";
+import { registerServedLine } from "../driver/register-served.mjs";   // which register a run recorded as having served it
 import { probeWorker } from "../driver/queue-watch-probe.mjs";   // the drain this deployment actually has
 // Teardown asks whether a process is actually producing a run before it rewrites the record that says so.
 import { claimLivenessForCodename, claimForbidsDestruction } from "../driver/claim-liveness.mjs";
@@ -3091,6 +3092,10 @@ async function cmdReport(id, { round: requestedToken = null } = {}) {
       // — the handover's "commit SHA on test" field, READ rather than reconstructed. An absence
       // is printed as itself: a run that predates the stamp has none, and inventing one from a reflog
       // is the reconstruction this replaces.
+      // — WHICH REGISTER SERVED IT, beside the engine build because it is the same class of fact: what
+      // this run actually ran against, read as a field rather than searched for as a substring. An absence
+      // prints as itself, because "not recorded" is not "none served" and a reader must not have to guess.
+      console.log(`         register: ${registerServedLine(readJson(join(run.runDir, "status.json")))}`);
       const eb = engineBuildOf(run.runDir);
       if (!eb) console.log(`         engine build: NOT RECORDED — this run predates the run-start stamp (#1423); any attribution for it is a reflog reconstruction`);
       else {
