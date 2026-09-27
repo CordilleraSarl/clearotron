@@ -47,7 +47,7 @@ import {
 import { RunCancelled, assertNotCancelledBeforePublish } from "./cancel.mjs";   // stop-by-user: never the failure lane below
 import { loadFrameworkManifest, parseFrameworkManifest, frameworkFor, DEFAULT_FRAMEWORK } from "./framework.mjs";
 import { attachFrameworkMethod, methodPathFor, FROZEN_METHOD_FILE } from "./framework-method.mjs";
-import { KO_STAGES, KO_STEPS, KO_STEP_REGISTER_COUNT, koSteps, koPaths, kebab, knockoutGridSpec, KNOCKOUT_WEB, KNOCKOUT_MINUTES_BAR, koChunks } from "./stages-knockout.mjs";
+import { KO_STAGES, KO_STEPS, KO_STEP_REGISTER_COUNT, koSteps, koPaths, kebab, knockoutGridSpec, KNOCKOUT_WEB, KNOCKOUT_MINUTES_BAR, knockoutBarVerdict, koChunks } from "./stages-knockout.mjs";
 import { kebabCollisions, reportIdentityFor, CAPABILITY_SKIPPED_CAUSE, CAPABILITY_SKIPPED_NOTE } from "./search-policy.mjs";
 import { countPreflight, countRegisterHits, countedMarks, resolveCountExecutor } from "./register-count.mjs";
 import { recordsPreflight, listRegisterRecords, listedMarks, resolveRecordExecutor } from "./register-records.mjs";
@@ -60,7 +60,7 @@ import { validators as koValidators, validateMergedFindings, worstBand, register
 import { reviewAbout, reviewEvidence, reviewEvidenceLines, applyKnockoutReview, knockoutReviewFile } from "./knockout-review-record.mjs";
 import { stripNextStepSections } from "./knockout-next-step.mjs";
 import { publishKnockout, composeKnockoutEmail } from "./publish/knockout.mjs";
-import { writeRunStatus, rollupStatus, atomicWrite, identitySeed } from "./progress.mjs";   // — the identity seed is shared; the stepper is not
+import { writeRunStatus, readRunStatus, rollupStatus, atomicWrite, identitySeed } from "./progress.mjs";   // — the identity seed is shared; the stepper is not
 import { batchMarkName } from "./mark-name.mjs";
 import { runLog, note, outputMeta } from "./log.mjs";
 import { defaultTerritoryState } from "./effective-scope.mjs";   // the stored-defaults reading — one producer, shared with the clearance lane
@@ -994,13 +994,16 @@ export async function knockoutInner(ctx, job, opts = {}) {
       const rows = readFileSync(K.sweepLedger, "utf8").split("\n").filter(Boolean).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
       const cells = rows.reduce((n, r) => n + (Number.isFinite(r?.cells) ? r.cells : 0), 0);
       const places = rows.reduce((n, r) => Math.max(n, Array.isArray(r?.places) ? r.places.length : 0), 0);
-      const minutes = Number(((Date.now() - sweepStartedAt) / 60000).toFixed(1));
+      // THE SWEEP'S OWN ELAPSED TIME, UNDER A NAME THAT SAYS SO, and the bar is no longer asserted here.
+      // The bar is about the RUN (ruling 591) and this span is one stage of it: both knockouts of
+      // 2026-09-26 recorded `overBar: false` at 0.6 and 0.8 minutes while the runs took 14.4 minutes
+      // wall, which e2e scored as over. A bar recorded against the wrong quantity is worse than an
+      // unrecorded one, because the field's name says it answered the question. It is recorded at
+      // delivery instead, where the run's own start is readable.
+      const sweepMinutes = Number(((Date.now() - sweepStartedAt) / 60000).toFixed(1));
       runLog(run.runDir, { event: "knockout-sweep-total", marks: planMarks.length, calls: rows.length,
-        cells, mostPlacesForOneName: places, minutes, barMinutes: KNOCKOUT_MINUTES_BAR,
-        // Stated so a reader does not have to do the comparison, and so "over" is a fact about this run
-        // rather than a judgment about the build. It changes nothing this run did.
-        overBar: minutes > KNOCKOUT_MINUTES_BAR });
-      note(`knockout sweep: ${cells} cell(s) across ${rows.length} call(s) in ${minutes} min (the bar is ${KNOCKOUT_MINUTES_BAR})`);
+        cells, mostPlacesForOneName: places, sweepMinutes });
+      note(`knockout sweep: ${cells} cell(s) across ${rows.length} call(s) in ${sweepMinutes} min`);
     } catch { /* the receipts are the record; a summary that could not be read never fails a sweep */ }
     }
 
@@ -1216,6 +1219,24 @@ export async function knockoutInner(ctx, job, opts = {}) {
       writeFileSync(join(config.outboxDir, `${packet.runId}.pending`), `${agent}\n`);
     } catch (e) { note(`delivery: outbox marker write skipped (${String(e.message).slice(0, 100)})`); }
     const deliveredAt = new Date().toISOString();
+    // ── THE TEN-MINUTE BAR, AGAINST THE RUN (ruling 591) ────────────────────────────────────────────
+    //
+    // Recorded here because this is the first point at which the run's own span is known: `startedAt` is
+    // in the run's status and `deliveredAt` is the line above. It used to be recorded at the web sweep,
+    // against the sweep's own elapsed time, so both knockouts of 2026-09-26 stated `overBar: false` at
+    // 0.6 and 0.8 minutes while their runs took 14.4 minutes wall — the number beside the bar was not the
+    // number the bar is about.
+    //
+    // RECORDED, NEVER APPLIED, exactly as before: nothing reads `overBar` and nothing about this run
+    // changes on it.
+    //
+    // AND AN UNREADABLE START SAYS SO RATHER THAN VANISHING. `readRunStatus` answers `{}` when it cannot
+    // read, and a bar quietly omitted because a file was unreadable is an absence that reads as "not
+    // over". So the event always carries the field, and names the reason when it has no span.
+    try {
+      const verdict = knockoutBarVerdict({ startedAt: readRunStatus(run.runDir)?.startedAt, deliveredAt });
+      runLog(run.runDir, { event: "knockout-run-total", barMinutes: KNOCKOUT_MINUTES_BAR, ...verdict });
+    } catch { /* the bar is a record, never a gate: a summary that could not be written never fails a delivery */ }
     // `tier` beside `verdict` — the same band word under the name the clearance lane records it by, so a
     // reader of either lane's status finds the rating in one place. `verdict` stays as it was.
     writeRunStatus(ctx, { state: "delivered", tier: overall, statement: published.statement, url: published.url, reports: published.reports.map((r) => ({ mark: r.mark, url: r.url })), deliveredAt, sendPending: true, stepIndex: STEPS.length - 1, stepLabel: STEPS[STEPS.length - 1], stepN: STEPS.length, stepTotal: STEPS.length });

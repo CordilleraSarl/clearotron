@@ -163,10 +163,18 @@ export const NOT_COUNTED_EVENTS = {
     "jx-aim-consumed", "jx-candidate-fold", "jx-nativeread", 
     "jx-serp-grid", "jx-serp-grid-overflow", "jx-serp-grid-spec", "jx-slices-stated",
     "knockout-published", "knockout-receipts", 
-    "knockout-register-records", "knockout-sweep-skipped", "knockout-sweep-start",
-    // The sweep's cost line: marks, calls, cells, the largest place list any one name carried, the minutes
-    // and the target they are read against. A RECORD, never a failure — nothing about it is a step that
-    // went wrong, a question re-asked or an attempt repeated, so it does not bear on "first time" (515).
+    "knockout-register-records",
+    // The run's own span against the ten-minute target, written at delivery because that is the first
+    // point at which the run's span is known. Same class as the sweep's line below: a RECORD, never a
+    // failure. `overBar: null` on it means the span could not be measured, which is a gap in the record
+    // and still not a retry (515).
+    "knockout-run-total",
+    "knockout-sweep-skipped", "knockout-sweep-start",
+    // The sweep's cost line: marks, calls, cells, the largest place list any one name carried, and the
+    // sweep's own elapsed minutes. A RECORD, never a failure — nothing about it is a step that went
+    // wrong, a question re-asked or an attempt repeated, so it does not bear on "first time" (515).
+    // The target moved off this line to the run's own, above: the bar is about a run and this span is
+    // one stage of it.
     "knockout-sweep-total", "level-scope-note",
     "named-band-merged", "one-shot-stamp-settled", "order-probe", "output-snapshot", "owner-screen-derived",
     "placement-borderline", "placement-form-written", "plan-execution", "plan-execution-census",
