@@ -171,7 +171,21 @@ test("a failed term is named even when the floor is MET — it is reduced covera
   const r = evalAssertion({ op: "register-records-floor", path: "_driver/register-records.json:PROBEMARK",
     value: { records: 20, offices: 2 } }, d);
   assert.equal(r.ok, true);
-  assert.match(r.saw, /PROBEMARC/, "a pass that hides a refused term is how reduced coverage reads as full coverage");
+  // A PASS THAT HIDES A REFUSED TERM IS HOW REDUCED COVERAGE READS AS FULL COVERAGE, so the row must
+  // still say a term was refused. What it no longer prints by default is the term itself: a term is a
+  // spelling of a mark, and `report` is the cheap instrument, run against real matters in sessions that
+  // record what they print. The INDEX says which of the run's terms to go and read.
+  assert.match(r.saw, /1 term\(s\) were refused/, "the refusal is still on the row");
+  assert.match(r.saw, /term 2 of/, "and the row says which term");
+  assert.ok(!r.saw.includes("PROBEMARC"), "the spelling itself is withheld");
+  assert.ok(!r.saw.includes("the register timed out"), "and so is the engine's reason");
+
+  // THE CONTROL. Without it, both assertions above pass over a row that stopped saying anything.
+  const named = evalAssertion({ op: "register-records-floor", path: "_driver/register-records.json:PROBEMARK",
+    value: { records: 20, offices: 2 } }, d, { names: true });
+  assert.equal(named.ok, true, "the verdict is the same either way");
+  assert.match(named.saw, /PROBEMARC/, "--names names the term");
+  assert.match(named.saw, /the register timed out/, "and its reason");
   rmSync(d, { recursive: true, force: true });
 });
 
