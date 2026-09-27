@@ -137,7 +137,7 @@ Three phases, all complete before a single reply is sent to the forwarder.
 
 **Phase 3 — Delivery:**
 - Compile narrative summary + Excel workbook using the per-customer templates selected at Phase 0
-- Phase 3 gated on `senior-eye-review.md` verdict (BLOCKING halts; CONDITIONAL applies the suggested corrections; CLEAR proceeds)
+- Phase 3 reads the `senior-eye-review.md` verdict (a still-BLOCKING verdict delivers, with the reviewer's open points recorded for the reviewing lawyer; CONDITIONAL applies the suggested corrections; CLEAR proceeds)
 - Reply to forwarder
 - Cross-person deadline flag
 - Mark as read, log handoff, done message
@@ -356,7 +356,7 @@ be audited without touching the engine.
 - [ ] **Delivery complete:** report + audit published to the pool; `_driver/delivery.json` + the outbox `delivered` event written (`sendPending` set — the courier sends verbatim and confirms via `mark_sent`); the driver archived the run-dir to `studio/clearance-search/archive/<YYYY-MM>/<slug>/<date>/` and recorded the delivery
 - [ ] **matter-context.md produced at Phase 0** with materially-matters jurisdictions, off-field sectors, watchlist-owner seeds; downstream workers received it as input
 - [ ] **placement-recommendations.md produced at Phase 2 Touchpoint 2** with every candidate placed at headline / sheet-2 / watchlist-annex / out-of-scope-filtered + written reasoning; consumed by digest worker
-- [ ] **senior-eye-review.md produced at Phase 2 Touchpoint 3** with verdict CLEAR / CONDITIONAL / BLOCKING; corrections applied before Phase 3 if CONDITIONAL; halt + surface if BLOCKING twice
+- [ ] **senior-eye-review.md produced at Phase 2 Touchpoint 3** with verdict CLEAR / CONDITIONAL / BLOCKING; corrections applied before Phase 3 if CONDITIONAL; if BLOCKING twice, the report delivers with the open points recorded for the reviewing lawyer
 - [ ] **No confabulated game-publisher attributions** — every game-title finding's publisher / developer traces to `developer_of_record` / `publisher_of_record` in common-law-findings, or shows "(developer unverified)"
 - [ ] Register findings include opposition history verbatim when present
 - [ ] Negative results documented for all variant × platform combinations (common-law), the field-scoped general search for collaborated / non-gaming goods, and all variant × class queries that returned no live results (register)

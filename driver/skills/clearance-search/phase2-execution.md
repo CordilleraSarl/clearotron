@@ -351,7 +351,7 @@ is gated on the verdict** (the driver enforces the gate in code):
 
 - **CLEAR** → proceed to delivery.
 - **CONDITIONAL** → apply the suggested narrative edits (each flag in `senior-eye-review.md` carries a minimum-change correction); record the corrections in the workflow audit summary; proceed to delivery.
-- **BLOCKING** → re-do synthesis applying the refutation's corrections; re-run `narrative-refutation` once on the corrected narrative. If the second pass also returns BLOCKING, halt and surface to the requester with the review attached (documented delivery failure, never silent send).
+- **BLOCKING** → re-do synthesis applying the refutation's corrections; re-run `narrative-refutation` once on the corrected narrative. If the second pass also returns BLOCKING, the report **delivers**, with the reviewer's open points recorded for the reviewing lawyer — ruling 2026-08-26: "Deliver always, with open points printed. The refusal on a blocking review goes." The driver decides this in code; do not halt.
 
 *(Why this lives between synthesis and delivery: the agent that just composed the narrative cannot reliably refute its own work — tier inversions, confabulated attributions, and overconfident negatives slip through when the same agent both writes and reviews. A fresh-context refutation reading the narrative against the source files catches these before delivery.)*
 
