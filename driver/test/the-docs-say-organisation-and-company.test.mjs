@@ -130,6 +130,12 @@ const EXCEPTIONS = [
     reason: "the client gate is the engine's pre-publication check (`evaluateClientGate`), named in code",
   },
   {
+    phrases: [/\bclient\s+pages?\b/gi],
+    reason: "the client page is the report page the outside reader receives, named in the engine's own "
+      + "comments where the open-points section is kept off it (ruling 2026-09-24); the reviewing "
+      + "lawyer's copy is the other destination — " + ORG_OR_COMPANY,
+  },
+  {
     phrases: [/\bMCP\s+clients?\b/gi, /\bOAuth2?\s+client[\s-]+credentials\b/gi, /\bclient-side\b/gi],
     reason: "software: the program that connects to a server, the OAuth client of a register office, and "
       + "code that runs in the browser",
