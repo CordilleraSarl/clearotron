@@ -2235,6 +2235,16 @@ export function knockoutReportData(findings, framework, { runId, codename, overa
             line: recordsLine(listed),
             fetched: listed.fetched ?? (listed.records ?? []).length,
             capped: Boolean(listed.capped),
+            // THE CAP THE RUN RECORDED, beside the flag that says it bit. `capped: true` on its own cannot
+            // tell a listing truncated at fifty from one a cap of zero stopped before it began: the first
+            // is a register outcome and the second is a configuration, and a consumer reading the flag
+            // alone reports them the same way. The run has always written `cap` per mark; nothing read it.
+            //
+            // NULL IS NOT ZERO and the two are kept apart all the way out, the way the portal's allowance
+            // contract keeps them. Null is a sidecar that recorded no cap at all, which is every run
+            // archived before the field existed; zero is a cap that was set to zero. Folding them together
+            // would put an archived run and a misconfigured one on the same line.
+            cap: Number.isFinite(listed.cap) ? listed.cap : null,
             records: (listed.records ?? []).map((r) => ({
               mark: r.mark, owner: r.owner, status: r.status, classes: r.classes ?? [],
               territory: r.territory, matchedForm: r.matchedForm, matchedBasis: r.matchedBasis,

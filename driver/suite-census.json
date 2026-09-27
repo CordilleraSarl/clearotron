@@ -93,6 +93,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-cap-of-zero-is-not-a-register-outcome.test.mjs": {
+          "tests": 3,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "a-capability-gap-is-decided-once-per-run.test.mjs": {
           "tests": 4,
           "asserts": 17,
