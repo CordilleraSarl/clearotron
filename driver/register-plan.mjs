@@ -2351,7 +2351,11 @@ export function joinPlanToBands(plan, bandBlocksByAxis, { released = new Set() }
         // never a band state (named-band.mjs BAND_STATES), so it cannot appear here. The case where a
         // clean zero wrongly held its children was the per-term and per-class rescue in enumerate.mjs,
         // and it is corrected there: a fully resolved stack is a complete band whose answer is zero.
-        if (parentState !== "enumerated") { skipped.push({ qid: e.qid, guard: e.when.runs_if_enumerated }); continue; }
+        // THE PARENT'S STATE RIDES WITH THE SKIP. The guard alone says a skip happened; it never said why,
+        // and the report's coverage line claims to: it reads "skipped after a broader search came back
+        // crowded", which is true when the parent was `incomplete` and false when the parent FAILED or
+        // never ran. The state that decides it is read one line above and was thrown away here.
+        if (parentState !== "enumerated") { skipped.push({ qid: e.qid, guard: e.when.runs_if_enumerated, parent_state: parentState || null }); continue; }
       }
     }
     const b = byQid.get(e.qid);

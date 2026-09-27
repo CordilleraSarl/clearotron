@@ -25,7 +25,7 @@
 // Nice class — judgment (coverage_judgment) stays Layer B. Provider-agnostic by construction: it
 // keys only on the neutral plan/band vocabulary, never a vendor name or vendor-shaped field.
 
-import { classTokensFromScopeText } from "./coverage-ledger.mjs";
+import { classTokensFromScopeText, isCapabilityGapReason } from "./coverage-ledger.mjs";
 import { capabilitiesFor } from "./register-capabilities.mjs";
 
 const clsStr = (c) => String(c ?? "").trim();
@@ -72,8 +72,15 @@ export function deriveScopeFacts({ instructedScope = null, plan = null, planExec
   const entries = Array.isArray(plan?.entries) ? plan.entries : [];
 
   const stateByQid = new Map((planExecution?.executed ?? []).map((x) => [x.qid, String(x.state ?? "").toLowerCase()]));
+  // WHAT THE SLICE RETURNED, KEPT. `joinPlanToBands` writes `total_hits` three-valued — a number or null,
+  // never a zero standing in for an absence — precisely so a count that failed is not read as a count of
+  // nothing. This reader took the state and dropped the number, and the coverage line then described a
+  // slice that found nothing as one that "returned more records than could be listed in full".
+  const hitsByQid = new Map((planExecution?.executed ?? []).map((x) => [x.qid, Number.isFinite(x.total_hits) ? x.total_hits : null]));
   const missingSet = new Set(planExecution?.missing ?? []);
-  const skippedSet = new Set((planExecution?.skipped ?? []).map((x) => x.qid));
+  // The skip's own reason: why the broader search did not enumerate. See the producer.
+  const skippedByQid = new Map((planExecution?.skipped ?? []).map((x) => [x.qid, String(x.parent_state ?? "")]));
+  const skippedSet = new Set(skippedByQid.keys());
   const deferredByQid = new Map((planExecution?.deferred ?? []).map((x) => [x.qid, String(x.reason ?? "")]));
   // A WAITING FAMILY THAT NEVER BECAME A SEARCH OF ITS OWN LEAVES THE COUNT. One the reading turn asked
   // was answered by the entry that asked it, which is counted where it ran. One the turn withheld, with
@@ -94,7 +101,9 @@ export function deriveScopeFacts({ instructedScope = null, plan = null, planExec
   const per_class = {};
   for (const c of instructedClasses) {
     const a = { entries: 0, dispatched_qids: [], enumerated: 0, incomplete: 0, deferred: [], missing: [], skipped: 0, deferred_script: 0,
-      count_slices: 0, counts_taken: 0, count_deferred: [], withheld: 0, asked_elsewhere: 0 };
+      count_slices: 0, counts_taken: 0, count_deferred: [], withheld: 0, asked_elsewhere: 0,
+      // The three splits, each read off a reason the run recorded and this reader used to discard.
+      skipped_after_failure: 0, incomplete_found_nothing: 0 };
     for (const e of entries) {
       if (!(e?.nice_classes ?? []).map(clsStr).includes(c)) continue;
       if (askedSet.has(e.qid)) { a.asked_elsewhere++; continue; }
@@ -113,14 +122,56 @@ export function deriveScopeFacts({ instructedScope = null, plan = null, planExec
         if (stateByQid.has(e.qid)) a.counts_taken++;
         continue;
       }
-      if (skippedSet.has(e.qid)) { a.skipped++; continue; }
+      if (skippedSet.has(e.qid)) {
+        a.skipped++;
+        // A skip keeps the crowd's words only when the broader search actually crowded. `incomplete` is the
+        // band state for a listing that overflowed; a RECORDED state that is anything else — a provider
+        // error, a slice that never ran — is a search that could not be made rather than one held back.
+        //
+        // AN ABSENT STATE IS NOT EVIDENCE, and this is the same trap as the count below: a receipt written
+        // before the producer carried the parent's state says nothing about why, and reading its silence as
+        // a failure would relabel every archived run's skips. Silence leaves the line as it was.
+        const parent = skippedByQid.get(e.qid);
+        if (parent && parent !== "incomplete") a.skipped_after_failure++;
+        continue;
+      }
       if (missingSet.has(e.qid)) { a.missing.push(e.qid); continue; }
-      if (deferredByQid.has(e.qid)) { a.deferred.push(e.qid); if (entryIsNonLatinScript(e)) a.deferred_script++; continue; }
+      if (deferredByQid.has(e.qid)) {
+        a.deferred.push(e.qid);
+        // A NON-LATIN FORM IS ONLY A SCRIPT REASON WHEN THE SCRIPT IS THE REASON. This counted on the
+        // entry's shape alone, so a script form the register FAILED on was described to the client as a
+        // script form left unsearched — blaming the alphabet for the register's failure. The reason is in
+        // the same map this branch already consults, and a provider error does reach this bucket: the
+        // executor stamps `deferred: true` beside `error: true` when a call stalls, and that reason opens
+        // "provider error".
+        //
+        // THE TEST IS THE ONE THIS TREE ALREADY MAINTAINS, and it is positive: `isCapabilityGapReason`
+        // names the producers' own strings, the script refusal among them. A hand-rolled list of FAILURE
+        // words was written here first and it was wrong in a way that reads as right — the script
+        // refusal's own text says the characters "would return 0 with no error", and a substring match
+        // found "error" inside that negation, so every honest script deferral was reclassified as a
+        // failure. The private control caught it; nothing public could.
+        //
+        // Positive evidence, then, for the same reason the clean negative needs it: the script claim says
+        // WHY a search did not happen, and it may only be made where the run recorded that reason. Both
+        // strings the script refusal can produce carry the marker this test reads — the executor prefixes
+        // them — and one matches by phrase as well, so an archived run keeps its line.
+        if (entryIsNonLatinScript(e) && isCapabilityGapReason(deferredByQid.get(e.qid))) a.deferred_script++;
+        continue;
+      }
       if (stateByQid.has(e.qid)) {
         a.dispatched_qids.push(e.qid);
         const s = stateByQid.get(e.qid);
         if (s === "enumerated") a.enumerated++;
-        else if (s === "incomplete") a.incomplete++;
+        else if (s === "incomplete") {
+          a.incomplete++;
+          // A LISTING THAT OVERFLOWED RETURNED MORE THAN IT COULD LIST. One that came back with ZERO
+          // returned nothing — the register could not match what was asked, so the search found nothing
+          // rather than too much. Only a MEASURED zero demotes it: a null is a count that could not be
+          // taken, which is not evidence either way, and reading absence as evidence is the defect this
+          // whole file keeps meeting.
+          if (hitsByQid.get(e.qid) === 0) a.incomplete_found_nothing++;
+        }
       } else {
         // a plan entry in NO execution bucket is UNACCOUNTED — the fail-closed reading is "missing"
         // (joinPlanToBands puts block-less qids there; a torn receipt must not upgrade a class to
@@ -145,6 +196,8 @@ export function deriveScopeFacts({ instructedScope = null, plan = null, planExec
       deferred_script_forms: a.deferred_script,
       missing: a.missing.length,
       skipped: a.skipped,
+      skipped_after_failure: a.skipped_after_failure,
+      incomplete_found_nothing: a.incomplete_found_nothing,
       count_slices: a.count_slices,
       counts_taken: a.counts_taken,
       state: classState(a),
@@ -238,8 +291,14 @@ function classClause(c, pc) {
   // Complete — every planned enumerate slice fully enumerated. The only shape that may read as a bare claim.
   if (done === total) return `Class ${c}: searched${countsTail}`;
   // Untouched — planned, but every slice was guard-skipped: nothing was ever dispatched (PR-11).
-  if (!done && (pc.skipped ?? 0) === total)
-    return `Class ${c}: not searched — every planned search was skipped after a broader search came back crowded${countsTail}`;
+  // Same claim, same correction: this says every search was held back by a crowd, which is false when the
+  // broader search failed. A class where any skip followed a failure reads as searches that could not be
+  // made, in the words the remainder buckets use.
+  if (!done && (pc.skipped ?? 0) === total) {
+    return (pc.skipped_after_failure ?? 0) > 0
+      ? `Class ${c}: not searched — every planned search could not be searched${countsTail}`
+      : `Class ${c}: not searched — every planned search was skipped after a broader search came back crowded${countsTail}`;
+  }
   // Partial — the proportion plus the one-line reason for the remainder, worst bucket first.
   const remaining = Math.max(0, total - done);
   const buckets = remainderBuckets(pc, remaining);
@@ -260,12 +319,19 @@ function remainderBuckets(pc, remaining) {
   const unfinished = Math.max(0, dispatched - (pc.enumerated ?? 0) - (pc.incomplete ?? 0)) + (pc.missing ?? 0);
   const script = Math.min(pc.deferred ?? 0, pc.deferred_script_forms ?? 0);
   const deferredOther = Math.max(0, (pc.deferred ?? 0) - script);
+  // THE THREE SPLITS, each folded into the bucket that already carries the honest words. Nothing new is
+  // written: "could not be searched" is the phrase this function has always used for a search that could
+  // not be made, and it now also carries the script forms that failed, the skips that followed a failure
+  // rather than a crowd, and the listings that came back with nothing rather than with too much.
+  const skippedAfterCrowd = Math.max(0, (pc.skipped ?? 0) - (pc.skipped_after_failure ?? 0));
+  const overflowed = Math.max(0, (pc.incomplete ?? 0) - (pc.incomplete_found_nothing ?? 0));
+  const couldNotBeSearched = deferredOther + (pc.skipped_after_failure ?? 0) + (pc.incomplete_found_nothing ?? 0);
   const parts = [];
   if (unfinished) parts.push(`${unfinished} did not complete`);
-  if (deferredOther) parts.push(`${deferredOther} could not be searched`);
+  if (couldNotBeSearched) parts.push(`${couldNotBeSearched} could not be searched`);
   if (script) parts.push(script === 1 ? "1 is a non-Latin script form" : `${script} are non-Latin script forms`);
-  if (pc.skipped) parts.push(`${pc.skipped} ${pc.skipped === 1 ? "was" : "were"} skipped after a broader search came back crowded`);
-  if (pc.incomplete) parts.push(`${pc.incomplete} returned more records than could be listed in full`);
+  if (skippedAfterCrowd) parts.push(`${skippedAfterCrowd} ${skippedAfterCrowd === 1 ? "was" : "were"} skipped after a broader search came back crowded`);
+  if (overflowed) parts.push(`${overflowed} returned more records than could be listed in full`);
   if (!parts.length && remaining) parts.push(`${remaining} did not complete`);
   return parts;
 }
