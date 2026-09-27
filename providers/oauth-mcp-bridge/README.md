@@ -248,7 +248,7 @@ that way.
 
 Two caveats on "courtlistener is warm", both about WHERE. First, no box runs a unit of
 that name: `driver/unit-inventory.mjs` declares the shipped one an orphan and records the
-live service as `clawdi-courtlistener-mcp`, run from another checkout — so editing
+live service under a name of its own, run from another checkout — so editing
 `warm-server.mjs` or the unit file here changes nothing on the running proxy. Second, the
 clearance engine does not reach the warm service at all: `driver/engine/mcp/gather-config.mjs`
 mounts courtlistener as a per-session `bridge.mjs` spawn, exactly like legaldatahunter, so
