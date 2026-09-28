@@ -1078,11 +1078,29 @@ if (opts.json) {
   if (statements.length) {
     console.log(`\n  THE REFERENCE'S OWN ASSERTIONS AND CONTROLS (${statements.length}) — the scorer does not read English, so`);
     console.log("  these are the run's own facts about the marks each one names, never a verdict on the sentence:");
+    // A MARK LIFTED OUT OF A WITHHELD SENTENCE IS STILL A MARK.
+    //
+    // `st.text` is a reference sentence, so it is in the prose set and prints as withheld. These rows are
+    // the SAME sentence, parsed: `scoreStatements` runs the mark extractor over it and reports each mark
+    // it names with the bucket that mark landed in. A mark that appears nowhere but inside that sentence
+    // was never a value of a name field, so it is in no name set, and the boundary redactor has nothing
+    // to match — it printed in clear, beside a mark that was correctly withheld, on a real score.
+    //
+    // WITHHELD AT THE PRINT SITE RATHER THAN BY WIDENING THE PROTECTED SET. Collecting what the extractor
+    // finds into the protected set was tried first and measured: that extractor is a floor, not a sound
+    // extraction — it reads capitals, lawyers emphasise in capitals, and the redactor is case-insensitive,
+    // so an emphasised `REFERENCE` in one gold sentence tokenised every lowercase "reference" on the
+    // page. 34 more tokens, 17 from that one word, and a bucket table reading `88% of 8 in-scope «name»
+    // marks`. The cure was worse than the leak, so it is not there; the state is the finding, and the
+    // mark's identity is the detail that belongs behind the flag.
+    const markShown = (mark) => (opts.names ? mark : "[withheld — run again with --names to read it]");
     for (const st of statements) {
       console.log(`\n    [${st.kind}] ${st.text}`);
       if (st.halves.length)
-        for (const h of st.halves) console.log(`        ${h.mark} — ${h.state}`);
-      if (st.why) console.log(`        UNEVALUATED: ${st.why}`);
+        for (const h of st.halves) console.log(`        ${markShown(h.mark)} — ${h.state}`);
+      // `why` names the same marks in a sentence of its own, so it is withheld the same way or it is a
+      // second door onto the first defect.
+      if (st.why) console.log(`        UNEVALUATED: ${opts.names ? st.why : st.why.replace(/names .*?, none of which/, "names marks this reference holds, none of which")}`);
     }
   } else if (ref) {
     // Absence, stated. A reference with no assertions and a reference the scorer failed to read are

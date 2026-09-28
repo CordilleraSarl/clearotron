@@ -741,6 +741,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-mark-named-only-in-prose-is-withheld.test.mjs": {
+          "tests": 6,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "a-mark-too-short-for-contains-is-asked-exactly.test.mjs": {
           "tests": 12,
           "asserts": 57,
