@@ -64,7 +64,7 @@ import { recordQids } from "../driver/named-band.mjs";
 import { previousRunDir, scenarioRefs } from "../driver/e2e-rounds.mjs";
 // The names rule, kept out of this file so it is testable without a run directory — the same reason
 // reference-score.mjs holds the scoring rules rather than this script.
-import { protectedStrings, redactor, authoredRedactor, printAuthored, installRedaction, unclassifiedNotice, REDACTION_NOTICE } from "../driver/score-redaction.mjs";
+import { protectedStrings, redactor, authoredRedactor, printAuthored, printPreRedacted, redactDeep, installRedaction, unclassifiedNotice, REDACTION_NOTICE } from "../driver/score-redaction.mjs";
 import { readSettleStamp } from "../driver/settle-stamp.mjs";   
 import { envFrom } from "../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
 
@@ -993,6 +993,9 @@ const delta = prev ? bucketDelta(scored.buckets, prev.buckets) : null;
 // `text` carries the reviewer's verdict word, and withholding it entire would blank a value the reader
 // came for.
 let unclassifiedKeys = [];
+// The two instruments the JSON payload needs, live only when names are withheld. With `--names` they
+// stay identity, which is the same "nothing to withhold" case `printAuthored` already has.
+let redactValue = (x) => x, redactKey = (x) => x;
 if (!opts.names) {
   const { names, prose, derived, unclassified } = protectedStrings({ reference: ref, scored, run: run.findings ?? null });
   unclassifiedKeys = unclassified;
@@ -1000,11 +1003,18 @@ if (!opts.names) {
   // only, so a party's ordinary long word stops rewriting our own headings while its full name is still
   // taken out of them. A structural line nobody routed through `printAuthored` is redacted as before,
   // which is the old behaviour and the safe side.
-  installRedaction(redactor({ names, prose }), undefined, authoredRedactor({ names, prose, derived }));
+  redactValue = redactor({ names, prose });
+  redactKey = authoredRedactor({ names, prose, derived });
+  installRedaction(redactValue, undefined, redactKey);
 }
 
 if (opts.json) {
-  console.log(JSON.stringify({
+  // REDACTED AS A STRUCTURE, THEN WRITTEN RAW. Stringifying first and sending the text through the
+  // boundary redacts a document with no prose in it: every string is either a field NAME this file
+  // wrote or a VALUE out of the data, and they need opposite treatment. On one real score that turned
+  // the keys `owner` and `additional` into tokens, because both are distinctive words of multi-word
+  // parties in that reference — two fields no consumer could address, or discover the new name of.
+  printPreRedacted(`${JSON.stringify(redactDeep({
     // — the instrument that produced these numbers, so a reader comparing two archived scores can
     // tell whether the comparison is valid. A score with no `scorer_version` predates this stamp.
     scorer_version: SCORER_VERSION,
@@ -1029,7 +1039,7 @@ if (opts.json) {
     // so leaving it out would hide it from exactly the readers most likely to automate on it, and a
     // consumer would have no way to tell an absent measure from a clean one.
     carry_through: (() => { const ct = carryThrough(run.dir); return { ...ct, coverage: coverageConflicts(run.dir, ct.lost) }; })(),
-  }, null, 2));
+  }, { redactValue, redactKey }), null, 2)}\n`);
 } else {
   // Said before the first number, not after the last: a reader who stops at the top screen must know
   // which of the two readings they are holding.

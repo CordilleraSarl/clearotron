@@ -429,11 +429,72 @@ let authoredPrint = null;
  * Print a line this tool authored, with the derived-word layer dropped. With no redaction installed it is
  * an ordinary write, which is the `--names` case: nothing is withheld, so there is nothing to drop.
  */
+/**
+ * Redact a STRUCTURE rather than its serialisation.
+ *
+ * WHY A SERIALISED PAYLOAD CANNOT BE REDACTED AS TEXT. `--json` used to be built, stringified, and sent
+ * through the boundary like any other line, which redacts a document that has no prose in it — every
+ * string in it is either a field NAME the code wrote or a VALUE out of the data, and the two need
+ * opposite treatment. Measured on one real score: the keys `owner` and `additional` came back as
+ * `«name 141»` and `«name 1»`, because both are distinctive words of multi-word parties in that
+ * reference. Two of the payload's fields were unaddressable — a consumer asking for `owner` finds
+ * nothing, and cannot discover what to ask for instead. That is past readability: the JSON is an
+ * interface.
+ *
+ * KEYS ARE AUTHORED AND VALUES ARE DATA, so each gets the instrument that fits it. A key is a literal in
+ * this repository's source: the derived layer has no business in it, and dropping that layer is exactly
+ * what `authoredRedactor` is for. A value came out of a reference or a run, so it keeps every layer,
+ * including the derived one that closed the leak where a two-word proprietor's first word survived in
+ * prose.
+ *
+ * A KEY IS STILL REDACTED, never passed through. If a party's whole name is also a field name, the field
+ * name goes — that collision is worth a token, and it is not the ordinary-word case this exists for.
+ *
+ * Numbers, booleans and null are returned as they are: there is nothing in them to withhold, and turning
+ * them into strings would change the payload's shape.
+ */
+export function redactDeep(value, { redactValue, redactKey }) {
+  const walk = (v) => {
+    if (typeof v === "string") return redactValue(v);
+    if (Array.isArray(v)) return v.map(walk);
+    if (v && typeof v === "object") {
+      const out = {};
+      // The key through the AUTHORED redactor, the value through the full one, in one pass so the two
+      // can never drift apart by a caller forgetting one of them.
+      for (const [k, x] of Object.entries(v)) out[redactKey(k)] = walk(x);
+      return out;
+    }
+    return v;
+  };
+  return walk(value);
+}
+
 export function printAuthored(line) {
   const text = `${line}\n`;
   if (authoredPrint) authoredPrint(text);
   else process.stdout.write(text);
 }
+
+/**
+ * Write text that has ALREADY been redacted, part by part, through the original stream.
+ *
+ * THE ONE CALLER THIS IS FOR is a `redactDeep` payload, and the contract is narrow on purpose. Every
+ * string in such a payload has been through a redactor already — values through the full one, keys
+ * through the authored one — so sending it round again would re-apply the derived layer to keys and put
+ * back the exact defect `redactDeep` exists to remove.
+ *
+ * IT IS A HOLE IF IT IS MISUSED, and unlike `printAuthored` there is no weaker layer standing behind it:
+ * hand this raw run text and it prints in clear. So it takes text that a redactor produced, never text a
+ * caller assembled, and the two arms that drive it both assert a name is absent rather than that a
+ * structure survived.
+ */
+export function printPreRedacted(text) {
+  if (rawPrint) rawPrint(text);
+  else process.stdout.write(text);
+}
+
+// The raw printer, live only while a redaction is installed, for the reason above.
+let rawPrint = null;
 
 export function installRedaction(redact, io = { console, process }, authored = null) {
   const { console: con, process: proc } = io;
@@ -460,9 +521,13 @@ export function installRedaction(redact, io = { console, process }, authored = n
   // Writes through the ORIGINAL stream, so the wrap above cannot re-apply the
   // derived layer to a line that just had it dropped.
   authoredPrint = (text) => original.stdout(authored ? authored(text) : redact(text));
+  // Straight through, because the caller's contract is that every part of it is already redacted.
+  rawPrint = (text) => original.stdout(text);
   proc.on?.("uncaughtException", onUncaught);
   proc.on?.("unhandledRejection", onUncaught);
   return function uninstall() {
+    authoredPrint = null;
+    rawPrint = null;
     for (const m of ["log", "error", "warn", "info", "debug"]) con[m] = original[m];
     proc.stdout.write = original.stdoutRef;
     proc.stderr.write = original.stderrRef;
