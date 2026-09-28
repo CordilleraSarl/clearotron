@@ -5919,6 +5919,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-payload-is-redacted-as-a-structure.test.mjs": {
+          "tests": 11,
+          "asserts": 22,
+          "skips": 0,
+          "todos": 0
+        },
         "the-people-page-can-change-and-remove-a-person.test.mjs": {
           "tests": 17,
           "asserts": 85,
