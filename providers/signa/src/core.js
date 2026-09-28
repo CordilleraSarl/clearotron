@@ -485,8 +485,8 @@ export function normalizeSearchResponse(body, echoQuery) {
 //
 // THIS HEADER USED TO ADVERTISE AN ENVIRONMENT VARIABLE, `CLAWDI_SIGNA_MOCK`. There was never such a
 // variable: two occurrences in the whole tree, both comments, zero reads. Following the line produced a
-// run that died at preflight in seconds, and it cost a real investigation (, found by e2e looking
-// for a credential-free register lane for fault injection).
+// run that died at preflight in seconds, and it cost a real investigation — found while looking for a
+// register path that needs no credential, to inject faults into.
 //
 // The lane below is real and works. What does not exist is a way to REACH it from a run: `doSearch`,
 // `doRecordFetch` and `doEnumerate` each take `{ mock = false }`, the capability wrappers pass
@@ -494,10 +494,11 @@ export function normalizeSearchResponse(body, echoQuery) {
 // (driver.config.mjs) call these functions with no options object at all. So the only callers that
 // enable it are this provider's own tests, and that is the whole of it.
 //
-// AND IT STAYS THAT WAY DELIBERATELY, rather than for want of wiring. offered to wire it; the
-// acceptance that comes with wiring is "preflightCredentials must not demand SIGNA_API_KEY when the
-// mock lane is on", and that produces a clearance run with no register credential, reaching the
-// register stage, answering from ten in-repo fixtures. ADR-0003's first table row rules exactly that
+// AND IT STAYS THAT WAY DELIBERATELY, rather than for want of wiring. Wiring it was offered and
+// declined; the acceptance that comes with wiring is "preflightCredentials must not demand
+// SIGNA_API_KEY when the mock path is on", and that produces a clearance run with no register
+// credential, reaching the register stage, answering from ten in-repo fixtures. ADR-0003's first
+// table row rules exactly that
 // out: the register REFUSES at preflight, by name, because "an unconfigured register that answered
 // 'no conflicts found' is the most dangerous output this system can produce".
 //
