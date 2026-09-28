@@ -205,8 +205,8 @@ export const unclassifiedNotice = (keys) =>
   `*** THE REFERENCE, THE SCORED BUCKETS OR THE RUN CARRIES ${keys.length} KEY(S) THIS REDACTION DOES NOT `
   + `CLASSIFY, and this line does not know which: ${keys.join(", ")}. `
   + `Their text was NOT withheld and may name somebody. Classify each in driver/score-redaction.mjs as a `
-  + `name, as prose, or as safe — this warning is the only thing standing between a new reference field `
-  + `and the silent leak it would otherwise be.`;
+  + `name, as prose, or as safe, reading the site that WRITES it rather than its key name — and protect `
+  + `anything you cannot establish is free of matter text.`;
 
 const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
@@ -278,8 +278,19 @@ export function foldForMatching(text) {
  *
  * WHAT IT STILL DOES NOT CATCH, stated because a redaction that overclaims is the thing this module
  * warns about: a name fused into a longer alphanumeric token with no separator — a slug, a domain, a
- * run-together identifier. The scorer does not print the reference in those forms today, and the honest
- * position is that this rule protects the forms it prints rather than every form that could exist.
+ * run-together identifier.
+ *
+ * THIS COMMENT USED TO SAY THE SCORER DOES NOT PRINT THE REFERENCE IN THOSE FORMS. It does, and the
+ * claim was the dangerous half of the paragraph: a reader who believed it would stop looking.
+ *
+ *   · The `run:` line prints the run directory, and a run directory is named after the matter — five
+ *     of forty scenario slugs measured on the box are a client's name with nothing done to them.
+ *   · Carry-through prints source URLs, and a mark inside a URL path is fused to what surrounds it.
+ *   · A native-script page produced two fused matches on the first real page it was read against.
+ *
+ * So the honest position is narrower than it was written: this rule protects a name standing on its
+ * own, with a plural or possessive, at any width. It does not protect one fused into a longer token,
+ * that case is not rare, and the forms it misses are being counted rather than assumed away.
  */
 const matcher = (name) => new RegExp(`(?<![\\p{L}\\p{N}])${escapeRe(name)}(?:['’]s|s)?(?![\\p{L}\\p{N}])`, "giu");
 

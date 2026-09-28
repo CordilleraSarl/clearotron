@@ -517,8 +517,20 @@ function print(id, ref, run, s, delta, refPath) {
   const B = s.buckets;
   const scored = B.found.length + B.withheld.length + B.lost.length;
 
-  console.log(`\n${"═".repeat(78)}`);
+  // A RULE IS A RULE. Nothing in it came from anywhere; routed so a party's ordinary long word cannot
+  // rewrite the page's own furniture.
+  printAuthored(`\n${"═".repeat(78)}`);
   console.log(`${id} — ${ref.mark ?? "(mark unnamed in the reference)"}`);
+  // NOT ROUTED, AND THIS IS THE ONE THAT PROVED WHY. A path looks authored — the config repository's
+  // name and the working directory's name are furniture, and the derived layer was tokenising them, so
+  // a reader was shown a path they could not use. Routing it put a real client name on the page on the
+  // first run measured after the change: a run directory is NAMED AFTER THE MATTER, and that segment is
+  // a distinctive word of a party rather than a whole name, so it is exactly what the derived layer
+  // catches and exactly what the authored path drops.
+  //
+  // A path is not authored text. It is furniture with a data-derived segment in the middle of it, and
+  // the two cannot be separated by choosing an instrument for the whole line. Both stay on the full
+  // layer until the run directories themselves stop carrying matter (tracker issue 1011).
   console.log(`reference: ${refPath}`);
   console.log(`           ${ref.source}`);
   console.log(`run:       ${run.dir}`);
@@ -534,7 +546,9 @@ function print(id, ref, run, s, delta, refPath) {
   // 28). The tool already had the honest pattern four lines down — `withheld` names what it could not
   // read and declines to answer — and the delivery line invented a verdict from the same kind of
   // absence. This is that asymmetry closed, in the direction of the honest half.
-  console.log(deliveryLine(run));
+  // `deliveryLine` composes authored words, a state token and a timestamp, read at its producer in
+  // reference-score.mjs — no part of it comes from the matter.
+  printAuthored(deliveryLine(run));
   // — THE INSTRUMENT, BESIDE THE NUMBER. `--json` has carried `scorer_version` since this file
   // shipped; the human path did not, and the human path is the one whose numbers get pasted into an
   // issue. That body states 6/9 for a run that re-scores 5/2/2 today across two scorer changes
@@ -547,13 +561,17 @@ function print(id, ref, run, s, delta, refPath) {
   console.log(`engine:    ${run.engineCommit
     ? `${run.engineCommit.slice(0, 12)}${run.engineCommitFrom === "meta.json" ? "   (from the pool's meta.json — this dir has no status.json)" : ""}`
     : "(not recorded — no status.json engine stamp and no pool meta.json carrying one)"}`);
-  console.log(`scorer:    v${SCORER_VERSION}   (a score with no version predates this stamp and is not comparable to one)`);
-  console.log(`lane:      ${run.lane}${run.hasDriver ? "" : "   (no _driver/ — pool dir, not a workspace archive)"}`);
-  console.log(`scope:     classes ${run.scopeClasses.join(", ") || "(none recorded)"}   territories ${run.scopeTerritories.join(", ") || "(none recorded)"}`);
+  printAuthored(`scorer:    v${SCORER_VERSION}   (a score with no version predates this stamp and is not comparable to one)`);
+  printAuthored(`lane:      ${run.lane}${run.hasDriver ? "" : "   (no _driver/ — pool dir, not a workspace archive)"}`);
+  // Class numbers and territory codes. Neither is a name, and both were being broken up by the derived
+  // layer on references whose parties carry an ordinary long word.
+  printAuthored(`scope:     classes ${run.scopeClasses.join(", ") || "(none recorded)"}   territories ${run.scopeTerritories.join(", ") || "(none recorded)"}`);
   // — WHICH SUBJECT MARKS THIS REFERENCE ANSWERS, on the line beside the classes and territories it
   // already scopes by, because it is the same kind of fact. Never silent: a gold set that declares
   // nothing says NOT DECLARED and names the marks the run searched.
-  console.log(`coverage:  ${s.coverage.state} — ${s.coverage.why}`);
+  // `coverage.why` is the SCORER's own sentence about what it could measure, not a sentence about
+  // anybody — the same reading that put `coverage` in the safe key set.
+  printAuthored(`coverage:  ${s.coverage.state} — ${s.coverage.why}`);
   // Never a bare "(unreadable)". An unread verdict is an absence, and an absence that prints as an empty
   // parenthesis is the one a reader skims past — so it states the reason, and where a reading DID come
   // from it names the artifact, because the two lanes answer this from different files.
@@ -1043,10 +1061,15 @@ if (opts.json) {
 } else {
   // Said before the first number, not after the last: a reader who stops at the top screen must know
   // which of the two readings they are holding.
-  if (!opts.names) console.log(`\n  ${REDACTION_NOTICE}`);
+  // THE NOTICE THAT EXPLAINS THE TOKENS HAD TOKENS IN IT. A party's distinctive word collided with
+  // "marks", so the sentence defining «name N» was itself redacted — useless exactly where it matters.
+  if (!opts.names) printAuthored(`\n  ${REDACTION_NOTICE}`);
   // A reference that has grown a field this module does not classify is unprotected in exactly that
   // field, so the reader learns it before anything below, not after.
-  if (unclassifiedKeys.length) console.log(`  ${unclassifiedNotice(unclassifiedKeys)}`);
+  // AND THE WARNING PRINTED ONE OF ITS OWN KEY NAMES AS A TOKEN, so it could not name the key it
+  // exists to name. It fires when a new reference field is unclassified, which is the one moment it has
+  // to be readable.
+  if (unclassifiedKeys.length) printAuthored(`  ${unclassifiedNotice(unclassifiedKeys)}`);
   print(String(id).toUpperCase(), ref, run, scored, delta, refPath);
   // — THE LAWYER'S OWN STATEMENTS OF WHAT THE RUN MUST DEMONSTRATE. The buckets cannot carry
   // these: an assertion says WHY a mark matters, and that reasoning is what tells a reader which lane to
