@@ -113,8 +113,25 @@ test("the table is not stale — a repair is RECORDED, so the backlog cannot qui
     + "`node scripts/mint-reference-strip-backlog.mjs` — after repairing, never instead of it.");
   assert.deepEqual(now.files, TABLE.files, "the per-file backlog disagrees with the tree; re-mint it");
 
+  // EVERY ROW CARRIES A SENTENCE, or the table is a number nobody can act on. Once this backlog reached
+  // zero, the next row to appear is one of two things a count cannot tell apart: a regression somebody
+  // must repair, or a line that matches a signature and is correct English anyway. The first `.js` row
+  // is the second kind. A row with no note is therefore refused here rather than left to be rediscovered
+  // — and refusing it is what stops a known-good being parked as a number that will never fall.
+  const unexplained = Object.keys(TABLE.files).filter((f) => !(TABLE.notes ?? {})[f]);
+  assert.deepEqual(unexplained, [],
+    "a file is recorded in the backlog with no note saying what its rows are. Repair the line, or — if "
+    + "it matches a signature and is correct English anyway — add the sentence in NOTES in "
+    + "scripts/mint-reference-strip-backlog.mjs and re-mint. A number on its own cannot be acted on.");
+  for (const [f, note] of Object.entries(TABLE.notes ?? {}))
+    assert.ok(TABLE.files[f], `the table carries a note for ${f}, which has no rows — a repair takes its `
+      + "explanation with it; re-mint so the two cannot drift");
+
   // Said out loud every run, because a backlog nobody sees is a backlog nobody finishes.
-  console.error(`[185] ${TABLE.total} unfinished sentence(s) remain, in ${Object.keys(TABLE.files).length} file(s)`);
+  const toRepair = Object.keys(TABLE.files).filter((f) => !(TABLE.notes ?? {})[f]);
+  console.error(`[185] ${TABLE.total} matching line(s) in ${Object.keys(TABLE.files).length} file(s) — `
+    + `${toRepair.length} unfinished sentence(s) to repair, `
+    + `${Object.keys(TABLE.files).length - toRepair.length} recorded as not residue`);
 });
 
 test("the signatures still FIRE — a matcher that stopped matching reports a repaired tree", () => {
@@ -157,6 +174,33 @@ test("the signatures still FIRE — a matcher that stopped matching reports a re
   }
 });
 
+// THE NOTE RULE, DRIVEN BOTH WAYS ON A SYNTHETIC TABLE. The arm above reads the committed table, where
+// every row happens to be explained, so it would pass identically if the rule were not there at all. The
+// rule is a predicate over a table, so it is driven here over tables written to fail it.
+const unexplainedIn = (t) => Object.keys(t.files).filter((f) => !(t.notes ?? {})[f]);
+const orphanedIn = (t) => Object.keys(t.notes ?? {}).filter((f) => !t.files[f]);
+
+test("a backlog row with no note is refused, and a note for no row is refused", () => {
+  const explained = { total: 1, files: { "x.js": [0, 0, 1] }, notes: { "x.js": "not residue — a separator" } };
+  assert.deepEqual(unexplainedIn(explained), [], "an explained row must pass, or the rule refuses the whole tree");
+  assert.deepEqual(orphanedIn(explained), []);
+
+  assert.deepEqual(unexplainedIn({ total: 1, files: { "x.js": [0, 0, 1] } }), ["x.js"],
+    "a row with no notes object at all is unexplained");
+  assert.deepEqual(unexplainedIn({ total: 1, files: { "x.js": [0, 0, 1] }, notes: {} }), ["x.js"],
+    "a row absent from a present notes object is unexplained");
+  assert.deepEqual(unexplainedIn({ total: 2, files: { "x.js": [0, 0, 1], "y.mjs": [1, 0, 0] }, notes: { "x.js": "n" } }),
+    ["y.mjs"], "one explained row does not cover its neighbour");
+
+  // The other direction: a repair takes its explanation with it, so a note left behind is a table that
+  // has stopped describing the tree — the same failure as a stale count, one field over.
+  assert.deepEqual(orphanedIn({ total: 0, files: {}, notes: { "x.js": "repaired last week" } }), ["x.js"]);
+
+  // An empty table is the finished state, not an unexplained one.
+  assert.deepEqual(unexplainedIn({ total: 0, files: {}, notes: {} }), []);
+  assert.deepEqual(orphanedIn({ total: 0, files: {} }), []);
+});
+
 test("the census COUNTS — driven on a synthetic tree, so it is not trusted on its own word", () => {
   // The census reads the real repository, where the right answer is whatever it says. Planted, it has to
   // agree with an answer known in advance. A helper that returned {} would pass every arm above.
@@ -165,13 +209,17 @@ test("the census COUNTS — driven on a synthetic tree, so it is not trusted on 
     "b.md": "renders the pre- section\n",
     "c.mjs": "// nothing wrong here\n",
     "d.png": "// 's ignored — not a scannable extension\n",
+    // `.js` IS SCANNED, and it is planted here rather than asserted about the real tree, because the
+    // real tree's answer is whatever it is. The register adapters are the population this extension
+    // brings in, and the hole it closes was one of their headers.
+    "f.js": "// the ruling (, 2026-08-21) settled it\n",
     // The third signature, planted with its code near-miss beside it: one is residue, one is a regex,
     // and a census that counted both would report a repaired file as broken forever.
     "e.mjs": "// the ruling (, 2026-08-21) settled it\nconst re = /[(,=]/;\n",
   };
   const got = censusOf("/synthetic", Object.keys(fake), (f) => fake[f]);
-  assert.equal(got.total, 4, `planted 4 breaks across 3 files, census said ${got.total}`);
-  assert.deepEqual(got.files, { "a.mjs": [2, 0, 0], "b.md": [0, 1, 0], "e.mjs": [0, 0, 1] },
+  assert.equal(got.total, 5, `planted 5 breaks across 4 files, census said ${got.total}`);
+  assert.deepEqual(got.files, { "a.mjs": [2, 0, 0], "b.md": [0, 1, 0], "e.mjs": [0, 0, 1], "f.js": [0, 0, 1] },
     "the per-file counts are POSITIONAL: a signature appended last keeps the first two columns meaning "
     + "what the committed table already said they meant");
   assert.ok(!isScannable("d.png") && !isScannable("portal-ui/dist/x.mjs"),

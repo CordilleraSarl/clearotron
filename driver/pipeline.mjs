@@ -10855,6 +10855,13 @@ async function pipelineInner(job, opts = {}) {
           let regArm = null;
           const regSwept = new Set();
           const regDeferReason = new Map();
+          // — WHAT THE FOLD REFUSED, AND WHICH KIND OF REFUSAL IT WAS. Read by the remedy accounting
+          // below, which otherwise requires every minted qid to land and so records a term as
+          // dispatch-failed when the fold refused its slice as a duplicate of a question the plan had
+          // already asked and answered. A fold-refused qid can never land, by construction — the
+          // re-attempt above deliberately filters it out — so only the accounting was still waiting
+          // for it. qid -> { kind, twin }.
+          const regFoldRefusals = new Map();
           // Partial mints must not read as full sweeps: when SOME of a directive's remedy proposals mint
           // and a sibling is refused by the shape lint, the directive can still verify-closed on the
           // minted subset — the refusal is disclosed per directive (receipt `partials` row on a close,
@@ -10988,9 +10995,25 @@ async function pipelineInner(job, opts = {}) {
               // belief about two screens agreeing, and the day they stop agreeing this is the only place
               // that would say so.
               if (refused.length) {
+                for (const r of refused) if (r?.qid) regFoldRefusals.set(r.qid, { kind: r.kind ?? null, twin: r.twin ?? null });
+                // THE REASON THE FOLD GAVE IS LOGGED, not just the qid it refused. The fold is the only
+                // place that knows WHY, and for a duplicate it knows WHICH plan row already holds the
+                // answer. Logging the qid alone threw that away: recovering it on one run meant
+                // re-deriving the twin from a shared identity hash by hand, and a receipt that cannot
+                // say why a slice is missing reads as an engine fault whatever the cause was.
                 runLog(run.runDir, { event: "frame-reopen-fold-refused", refused: refused.length,
-                  qids: refused.map((r) => r.qid).slice(0, 6) });
-                note(`frame-reopen: ${refused.length} minted entr${refused.length === 1 ? "y" : "ies"} REFUSED at the fold — the mint screen and the fold screen disagree, which is a wiring finding`);
+                  qids: refused.map((r) => r.qid).slice(0, 6),
+                  kinds: refused.reduce((a, r) => { const k = r.kind ?? "unstated"; a[k] = (a[k] ?? 0) + 1; return a; }, {}),
+                  rows: refused.slice(0, 6).map((r) => ({ qid: r.qid, kind: r.kind ?? null, twin: r.twin ?? null, issue: r.issue ?? null })) });
+                // ONE NOTE PER KIND, because they are three different findings and only one of them is a
+                // wiring fault. A duplicate-question refusal is the fold working: the question is already
+                // in the plan and its existing row carries the coverage. An identity collision or a
+                // malformed term IS the mint screen and the fold screen disagreeing, because the mint
+                // runs entryTermIssues and should have caught it.
+                const dupes = refused.filter((r) => r.kind === "duplicate-question");
+                const faults = refused.filter((r) => r.kind !== "duplicate-question");
+                if (dupes.length) note(`frame-reopen: ${dupes.length} minted entr${dupes.length === 1 ? "y" : "ies"} refused at the fold as already-asked — the plan row${dupes.length === 1 ? "" : "s"} ${dupes.map((r) => `"${r.twin ?? "(twin unstated)"}"`).join(", ")} carr${dupes.length === 1 ? "ies" : "y"} that coverage; the term is answered, not unsearched`);
+                if (faults.length) note(`frame-reopen: ${faults.length} minted entr${faults.length === 1 ? "y" : "ies"} REFUSED at the fold (${[...new Set(faults.map((r) => r.kind ?? "unstated"))].join(", ")}) — the mint screen and the fold screen disagree, which is a wiring finding`);
               }
               // Dispatch → derive band → VERIFY per directive (qid-landed + non-collapse + class-scope).
               // A byte-changed band with only a wrong-scope/empty/error block closes NOTHING.
@@ -11320,6 +11343,7 @@ async function pipelineInner(job, opts = {}) {
               terms: termRows,
               blocksByQid: regLastJoin?.blocksByQid ?? new Map(),
               executedQids: regLastJoin?.executedQids ?? new Set(),
+              foldRefusals: regFoldRefusals,
               outOfScope,
             });
           } catch (e) {
