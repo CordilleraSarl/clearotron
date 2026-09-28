@@ -2079,7 +2079,7 @@ export function foldSupplementalEntries(plan, entries) {
     const eTerm = String(e.term ?? e.terms?.[0] ?? "");
     if (inBatch.has(e.qid) && inBatch.get(e.qid) === eTerm) continue;   // the same row twice — one refusal
     if (inBatch.has(e.qid)) {
-      refused.push({ qid: e.qid, term: String(e.term ?? e.terms?.[0] ?? ""),
+      refused.push({ qid: e.qid, term: String(e.term ?? e.terms?.[0] ?? ""), kind: "identity-collision",
         issue: planRowRefusal({ qid: e.qid, issue:
           `a different term ("${inBatch.get(e.qid)}") already minted this identity in the same batch, so `
           + `one of the two would be dropped with nothing recorded. Two DIFFERENT terms sharing one qid is `
@@ -2098,7 +2098,7 @@ export function foldSupplementalEntries(plan, entries) {
     e = kept;
     const issues = entryTermIssues(e);
     if (issues.length) {
-      refused.push({ qid: e.qid, term: String(e.term ?? e.terms?.[0] ?? ""),
+      refused.push({ qid: e.qid, term: String(e.term ?? e.terms?.[0] ?? ""), kind: "malformed-term",
         issue: planRowRefusal({ qid: e.qid, issue: issues[0].issue }) });
       continue;
     }
@@ -2107,7 +2107,11 @@ export function foldSupplementalEntries(plan, entries) {
     const key = entryQuestionKey(e, plan);
     const twin = key ? asked.get(key) : undefined;
     if (twin) {
-      refused.push({ qid: e.qid, term: String(e.term ?? e.terms?.[0] ?? ""),
+      // THE TWIN IS A FIELD, NOT ONLY A PHRASE IN THE PROSE. This row is the only place that knows the
+      // question is already asked, and by which plan row. A reader could parse it back out of the
+      // sentence; a caller cannot be asked to. The remedy accounting reads it to tell a duplicate
+      // refusal (answered elsewhere) from the other two kinds (genuinely unasked).
+      refused.push({ qid: e.qid, term: String(e.term ?? e.terms?.[0] ?? ""), kind: "duplicate-question", twin,
         issue: planRowRefusal({ qid: e.qid, issue:
           `it asks the same question as plan row "${twin}" once regions are resolved (an entry with no `
           + `regions of its own inherits the plan's, so an empty list is the WIDEST scope, not a narrower `
