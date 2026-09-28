@@ -6052,8 +6052,8 @@
           "todos": 0
         },
         "the-reference-strip-left-sentences-unfinished.test.mjs": {
-          "tests": 6,
-          "asserts": 15,
+          "tests": 7,
+          "asserts": 25,
           "skips": 4,
           "todos": 0
         },
