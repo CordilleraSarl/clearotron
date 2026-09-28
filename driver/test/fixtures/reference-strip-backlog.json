@@ -4,6 +4,15 @@
     "`pre- ` followed by a lowercase word",
     "a parenthesis opening on a comma"
   ],
-  "total": 0,
-  "files": {}
+  "total": 1,
+  "files": {
+    "providers/clarivate/src/core.js": [
+      0,
+      0,
+      1
+    ]
+  },
+  "notes": {
+    "providers/clarivate/src/core.js": "NOT residue — the header names a list separator as `(, ; / etc)`. It matches the third signature and is correct English about punctuation, so it is recorded rather than repaired."
+  }
 }

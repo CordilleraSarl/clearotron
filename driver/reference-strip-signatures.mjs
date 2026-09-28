@@ -66,8 +66,18 @@ export const RULE_DEFINITIONS = [
 ];
 
 /** Files worth scanning: prose-bearing, tracked, not generated, and not this rule's own definition. */
+// `.js` IS IN THE LIST BECAUSE IT WAS THE HOLE. The extensions here were the ones the driver is written
+// in, and the register adapters are not: 26 tracked `.js` files, every one carrying the same kind of
+// header prose as the rest of the tree, scanned by nothing. The strip ran over them like everywhere
+// else, and one of its casualties sat in an adapter header for as long as this check has existed,
+// under a table reading zero. A floor that cannot see a whole file extension reports a repaired tree.
+//
+// It costs one row, and the row is NOT residue: an adapter header names a list separator as
+// `(, ; / etc)`, which is a parenthesis opening on a comma and is also correct English about
+// punctuation. `notes` in the backlog table records why that row is there, so the next reader meets an
+// explanation rather than a number that will not fall.
 export const isScannable = (f) =>
-  /\.(mjs|md|yml|ts)$/.test(f) && !f.startsWith("portal-ui/dist/") && !RULE_DEFINITIONS.includes(f);
+  /\.(mjs|js|md|yml|ts)$/.test(f) && !f.startsWith("portal-ui/dist/") && !RULE_DEFINITIONS.includes(f);
 
 /**
  * Count both signatures per file across `files`.
