@@ -187,7 +187,7 @@ Be aware these capabilities are missing, so the skill doesn't promise them:
 
 ## API budget
 
-Sustained-burst behaviour is UNDECLARED. The skill's per-tool budget (20 search / 40 detail-fetch / 5 expand-phoneme / 10 image-fetch per mark) stays well inside practical limits.
+Sustained-burst behaviour is UNDECLARED.
 
 Session-key validation: send one cheap `register_search({ name: "EXAMPLEMARK", limit: 1 })` before doing any real work. If it returns 401/403, halt and surface to orchestrator immediately.
 

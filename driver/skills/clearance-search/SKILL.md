@@ -150,7 +150,7 @@ The orchestrator itself makes few direct tool calls. Most calls happen inside su
 - `clearance-common-law`: **15** `perplexity_research` per workflow
   *(rationale: cost-based overflow protection against a looping worker — the API is usage-billed; a search-as-code grid call ≈ $0.06, prose follow-ups ≈ $0.01–0.15 each (measured 2026-06-10). Typical workflow uses 2–6 calls/mark; 15 leaves headroom for thinness re-spawns)*
 - `clearance-register`: **150** provider calls per workflow, across all marks
-  *(rationale: Corsearch billing-tier ceiling; calibrated against May runs which used 80–110 calls each. The per-mark hard constraints are tighter — see `clearance-register/SKILL.md` "Per-mark ceilings": 20 search / 40 detail-fetch / 5 phoneme / 10 image)*
+  *(rationale: Corsearch billing-tier ceiling; calibrated against May runs which used 80–110 calls each)*
 - This skill: file read/write and memory write — bounded by workflow steps. It builds no workbook and sends no mail: the driver does both at publish, in code.
 
 Cross-pollination dispatches add at most **10** calls split across the two sub-skills (Option D cap).
