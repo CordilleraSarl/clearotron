@@ -21,6 +21,8 @@ there is no other value: a band that needs sharpening is the band above it, stat
 2. **Parody / evocation check**: does the name echo a famous mark or property even without identical
    ownership ("Free Range 1s" echoes "Air Force 1s")? Flag it even when nobody owns the echoed form.
 3. **Band per the framework ladder**, applying the calibration rules below.
+   [worked-examples.md](../clearance-search/worked-examples.md) — the spine + per-finding reasoning
+   depth (per-customer variants calibrate under that customer's framework)
 4. **1–5 evidence bullets** shaped by the band — the mark's READING, not its conflicts. One honest
    bullet beats two, and a degraded mark usually has exactly one: a floor of two is an instruction to
    pad, and the null-results doctrine forbids inflating a mark whose research came back thin.
