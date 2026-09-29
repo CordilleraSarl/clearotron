@@ -634,7 +634,9 @@ function print(id, ref, run, s, delta, refPath) {
     console.log(`  entries are unreachable by construction. The counts axis above is this scenario's score.`);
     console.log(`  What follows folds over the run's OWN findings only.\n`);
   }
-  console.log(row("bucket", "n", "of the marks the lawyer named"));
+  // CLASS: THE TABLE'S OWN COLUMNS. "marks" is this tool's word for its own header, and on a reference
+  // whose parties carry it as a distinctive word the header read `of the «name N» the lawyer named`.
+  printAuthored(row("bucket", "n", "of the marks the lawyer named"));
   console.log(row("found", B.found.length, `${pct(B.found.length, scored)} of ${scored} in-scope reference marks`));
   if (s.registerOnly) {
     // ONE source for the reason, so the summary and the rows can never name different causes. Missing
@@ -763,11 +765,11 @@ function print(id, ref, run, s, delta, refPath) {
   for (const note of M.notes) console.log(`  ${note}`);
 
   console.log(`\n── axis B · field ${"─".repeat(59)}`);
-  if (!s.field.length) console.log("  the reference flags no entry as on-field — not scored, not passed");
+  if (!s.field.length) printAuthored("  the reference flags no entry as on-field — not scored, not passed");
   for (const f of s.field) console.log(`  ${String(f.state).padEnd(12)} ${f.mark}  —  ${f.detail}`);
 
   console.log(`\n── axis C · sources ${"─".repeat(57)}`);
-  if (!s.sources.length) console.log("  the reference names no channels — not scored, not passed");
+  if (!s.sources.length) printAuthored("  the reference names no channels — not scored, not passed");
   for (const c of s.sources) console.log(`  ${(c.searched ? "searched" : "ABSENT").padEnd(12)} ${c.channel}`);
 
   console.log(`\n── axis D · gap discipline ${"─".repeat(50)}`);
@@ -921,15 +923,18 @@ function print(id, ref, run, s, delta, refPath) {
   else for (const d of delta) console.log(`  ${d.mark}: ${d.from} → ${d.to}`);
 
   console.log(`\n${"═".repeat(78)}`);
-  console.log(`This is a measurement, not a verdict. There is no PASS here and the exit code is always 0.`);
-  console.log(`Reproducing the reference proves nothing — it is a regression tripwire, never a target.`);
-  console.log(`What to read: every WITHHELD row is a gather-to-judgment seam defect, not a recall one.`);
-  console.log(`Axis E: "own" counts sub-queries naming ONE territory and nothing else — the deep-dive itself.`);
-  console.log(`A territory with no reference entry prints "—", never 0% and never 100%. Both are conclusions.`);
+  // CLASS: THE CLOSING LEGEND. Eight lines, every one a literal of this file's own with nothing
+  // interpolated from a reference or a run — the class most obviously ours and the least defensible to
+  // leave on the data path, because a party's ordinary long word rewrites the page's own instructions.
+  printAuthored(`This is a measurement, not a verdict. There is no PASS here and the exit code is always 0.`);
+  printAuthored(`Reproducing the reference proves nothing — it is a regression tripwire, never a target.`);
+  printAuthored(`What to read: every WITHHELD row is a gather-to-judgment seam defect, not a recall one.`);
+  printAuthored(`Axis E: "own" counts sub-queries naming ONE territory and nothing else — the deep-dive itself.`);
+  printAuthored(`A territory with no reference entry prints "—", never 0% and never 100%. Both are conclusions.`);
   // The instrument changed. A round comparing its noise against a round scored before `uncovered`
   // existed is comparing two different measurements, and the drop will otherwise read as an improvement.
-  console.log(`"uncovered" is a finding of a mark this reference does not answer — a noise count from before`);
-  console.log(`that bucket existed is not comparable with one after it. The gold set must declare covers_marks.\n`);
+  printAuthored(`"uncovered" is a finding of a mark this reference does not answer — a noise count from before`);
+  printAuthored(`that bucket existed is not comparable with one after it. The gold set must declare covers_marks.\n`);
 }
 
 // ── main ─────────────────────────────────────────────────────────────────────────────────────────────
