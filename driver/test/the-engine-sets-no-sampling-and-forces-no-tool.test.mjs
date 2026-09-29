@@ -93,7 +93,7 @@ test("nothing on the anthropic path sets temperature, top_p or top_k", () => {
     + "outright, and the program writes the body — there is nothing here this field can legitimately reach.");
 });
 
-test("the forced tool choices that remain are the known, unforwarded three", () => {
+test("no file outside the known, unforwarded set forces a tool choice", () => {
   const found = [];
   for (const f of walk(join(ROOT, "providers")).concat(walk(DRIVER))) {
     const text = readFileSync(f, "utf8");
@@ -102,9 +102,15 @@ test("the forced tool choices that remain are the known, unforwarded three", () 
       if (/\btool_choice\s*:/.test(line)) found.push(`${f.slice(ROOT.length + 1)}:${i + 1}`);
     }
   }
-  assert.deepEqual(found.map((f) => f.split(":")[0]).sort(),
-    ["providers/jx/src/core.js", "providers/jx/src/judge.js", "providers/jx/src/nativeread.js"].sort(),
-    "the set of files setting tool_choice changed. The three known ones build request bodies that the "
-    + "turn envelope parses for a prompt and a tool schema and never posts, so their field reaches no "
-    + "vendor. A new one is a forced tool choice on a generation that refuses it.");
+  // A SUBSET, NOT AN EQUALITY, AND THE DIFFERENCE IS THE WHOLE POINT. Equality against the known set
+  // would make REMOVING one of them red — a guard keyed to the thing it wants gone, firing when the
+  // work is done. The three known files build request bodies that the turn envelope parses for a
+  // prompt and a tool schema and never posts, so their field reaches no vendor and taking it out is
+  // free. Adding a fourth is not.
+  const KNOWN = new Set(["providers/jx/src/core.js", "providers/jx/src/judge.js", "providers/jx/src/nativeread.js"]);
+  const unexpected = found.filter((f) => !KNOWN.has(f.split(":")[0]));
+  assert.deepEqual(unexpected, [],
+    "a file outside the known set forces a tool choice, on a generation that refuses it. The known "
+    + "three reach no vendor: the turn envelope reads a body's prompt and its first tool schema and "
+    + "posts neither field.");
 });
