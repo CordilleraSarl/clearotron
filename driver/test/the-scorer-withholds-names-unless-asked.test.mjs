@@ -332,3 +332,20 @@ test("CONTROL: a key nobody has classified still reports — the arm above is no
   const { unclassified } = protectedStrings({ reference: { ...REFERENCE, a_key_nobody_classified: "x" } });
   assert.deepEqual(unclassified, ["a_key_nobody_classified"]);
 });
+
+// ── the short-name floor, and the case it is known to miss ───────────────────────────────────────────
+
+test("a name under three characters is DELETED from the protected set — the owner's ruling, pinned", () => {
+  // Ruling: keep the floor, name the case it misses (tracker issue 1016, branch B). This arm is not
+  // approval of the behaviour, it is the ruling made enforceable: lowering the floor is a real option
+  // whose cost has not been measured, and whoever lowers it should fail this arm and read why first.
+  const { names } = protectedStrings({ reference: { ...REFERENCE, register: [{ mark: "MC", owner: "Bracken Holdings AG" }] } });
+  assert.ok(![...names].some((n) => n.toLowerCase() === "mc"),
+    "the floor has moved — that is a decision, not a refactor: read the note beside it and tracker issue 1016");
+});
+
+test("CONTROL: a three-character name IS protected, so the arm above pins a floor and not a hole", () => {
+  const { names } = protectedStrings({ reference: { ...REFERENCE, register: [{ mark: "MCQ", owner: "Bracken Holdings AG" }] } });
+  assert.ok([...names].some((n) => n.toLowerCase() === "mcq"),
+    "three characters must still be protected, or this is not a floor at all");
+});

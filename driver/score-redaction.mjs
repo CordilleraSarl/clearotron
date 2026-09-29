@@ -212,8 +212,27 @@ export function protectedStrings(root) {
       if (bare.length >= 5 && !LEGAL_FORM.has(bare.toLowerCase())) { names.add(bare); derived.add(bare); }
     }
   }
-  // A one- or two-character "name" is a substring of ordinary words, and swapping it everywhere would
-  // shred the surrounding prose without protecting anything a reader could identify anyone from.
+  // THE FLOOR STAYS AND THE CASE IT MISSES IS NAMED, which is the owner's ruling rather than this
+  // file's preference (tracker issue 1016, branch B).
+  //
+  // WHAT IT BUYS: a two-character token is cheap to collide with, and every standalone occurrence of one
+  // would go — including words of this harness's own vocabulary. Lowering the floor is a real option and
+  // its cost has not been measured, so it is left open on evidence rather than closed on an argument.
+  //
+  // WHAT IT COSTS, SAID PLAINLY BECAUSE THE OLD COMMENT DENIED IT. This used to claim a short name
+  // protects "nothing a reader could identify anyone from". That is false, and it was measured: on one
+  // scenario the two-character SUBJECT MARK of the matter is deleted here and prints in clear, beside a
+  // name that was correctly withheld. The scenario is named after it and its run directory carries it.
+  // `ops/real-names/scan.mjs` holds that same string as a list entry and refuses a page that shows it —
+  // so two instruments on this box disagree about it, and this is the one that lets it through.
+  //
+  // The other clause was stale rather than false: "a substring of ordinary words" described a matcher
+  // without boundaries. The matcher has them now — no letter or digit may sit immediately before a
+  // match, and only a plural or possessive after — so a short name matches standing alone, not inside a
+  // word. That narrows the shredding this floor was written to prevent, which is why lowering it is
+  // worth measuring rather than dismissing.
+  //
+  // THE SCAN IS WHAT CATCHES THE MISS, and a reader of this file should know that rather than infer it.
   for (const n of [...names]) if (n.length < 3) names.delete(n);
   return { names, prose, derived, unclassified: [...unclassified].sort() };
 }
