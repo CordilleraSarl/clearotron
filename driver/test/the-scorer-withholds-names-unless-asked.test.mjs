@@ -349,3 +349,40 @@ test("CONTROL: a three-character name IS protected, so the arm above pins a floo
   assert.ok([...names].some((n) => n.toLowerCase() === "mcq"),
     "three characters must still be protected, or this is not a floor at all");
 });
+
+// ── a URL is not an exemption ────────────────────────────────────────────────────────────────────────
+
+test("a protected name inside a URL is withheld in every shape a locator puts it in", () => {
+  // Decided rather than inherited (tracker issue 1007, done-when 3). A locator is not prose, and there
+  // was an argument that a name inside one is an address rather than a disclosure. It was not taken: a
+  // reader who can see the address can fetch it, and what comes back names the party as plainly as the
+  // page would have. This used to hold by accident of the boundary rule; the arm is here so it holds on
+  // purpose, and fails if the URL case ever stops being caught.
+  const { names, prose } = protectedStrings({ reference: { ...REFERENCE, register: [{ mark: "Wrenlow", owner: "Bracken Holdings AG" }] } });
+  const redact = redactor({ names, prose });
+  const shapes = {
+    "a path segment": "https://example.com/about/Wrenlow",
+    "against a hyphen": "https://example.com/about/Wrenlow-group",
+    "between slashes": "https://example.com/Wrenlow/profile",
+    "a subdomain": "https://Wrenlow.example.com/",
+    "a query value": "see https://example.com/x?q=Wrenlow&n=1",
+  };
+  for (const [where, url] of Object.entries(shapes)) {
+    const out = redact(url);
+    assert.ok(!out.includes("Wrenlow"), `a name survived as ${where}: ${out}`);
+    assert.match(out, /«name \d+»/, `and it must be tokenised, not deleted: ${where} -> ${out}`);
+  }
+});
+
+test("the ONE decline inside a URL is the fused case, and it is the general limit, not a URL rule", () => {
+  // Named so nobody reads the arm above as covering it, and so nobody reads this decline as evidence
+  // that locators are treated differently. `NAMEgroup` survives in a URL for exactly the reason it
+  // survives in prose. Measured across six scored pages: 789 protected names, three declines, one in a
+  // URL — which is why the boundary was left alone.
+  const { names, prose } = protectedStrings({ reference: { ...REFERENCE, register: [{ mark: "Wrenlow", owner: "Bracken Holdings AG" }] } });
+  const redact = redactor({ names, prose });
+  assert.equal(redact("https://example.com/about/Wrenlowgroup"), "https://example.com/about/Wrenlowgroup",
+    "the fused case is a known decline; if this starts passing the boundary has changed and tracker issue 1007 wants re-reading");
+  assert.equal(redact("Wrenlowgroup is the filing name"), "Wrenlowgroup is the filing name",
+    "and it declines identically outside a URL, which is what makes it the general limit");
+});

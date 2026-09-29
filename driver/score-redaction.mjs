@@ -337,6 +337,20 @@ export function foldForMatching(text) {
  * So the honest position is narrower than it was written: this rule protects a name standing on its
  * own, with a plural or possessive, at any width. It does not protect one fused into a longer token,
  * that case is not rare, and the forms it misses are being counted rather than assumed away.
+ *
+ * A URL IS NOT AN EXEMPTION, and that is a decision rather than a side effect (tracker issue 1007,
+ * done-when 3). A locator is not prose, and there was an argument that a name inside one is an address
+ * rather than a disclosure — it was not taken. A reader who can see the address can fetch it, and what
+ * comes back names the party as plainly as the page would have. So a protected name is withheld inside
+ * a URL exactly as it is anywhere else: as a path segment, against a hyphen, between slashes, as a
+ * subdomain, as a query value. An arm holds all five, because this used to be true by accident of the
+ * boundary rule and is now true on purpose.
+ *
+ * THE ONE DECLINE INSIDE A URL IS THE FUSED CASE ABOVE, not a rule about URLs. `…/about/NAMEgroup`
+ * survives for the same reason `NAMEgroup` survives in prose, and the measurement that decided against
+ * refining the boundary counted it: 789 protected names across six scored pages, three declines, one of
+ * them inside a URL. Nothing here narrows that; it only stops a reader concluding from a URL decline
+ * that locators are treated differently.
  */
 const matcher = (name) => new RegExp(`(?<![\\p{L}\\p{N}])${escapeRe(name)}(?:['’]s|s)?(?![\\p{L}\\p{N}])`, "giu");
 
