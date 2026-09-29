@@ -304,3 +304,31 @@ test("a single-word name gains nothing and loses nothing", () => {
   assert.ok(names.has("Quillion"));
   assert.equal([...names].filter((n) => n.toLowerCase().includes("quillion")).length, 1, "no duplicate entry");
 });
+
+// ── the seven the warning used to name ───────────────────────────────────────────────────────────────
+
+test("the seven keys the unclassified warning named are classified, and none reports as unknown", () => {
+  // Each was read at the site that writes it (tracker issue 1005). Four were measured against the real
+  // name list one key at a time; three protect on what their producer is FOR, because clean today is not
+  // safe. This arm exists so a later edit cannot drop one back into `unclassified` in silence — the
+  // warning is loud when it fires, and a key quietly returning to it is the failure it cannot report.
+  const SEVEN = {
+    email_line: "A line written to be sent to somebody about their matter.",
+    transcription_note: "A note about how a form was transcribed.",
+    scoring_caveat: "A caveat the lawyer attached to the scoring.",
+    what: "A description of what the entry is.",
+    owner_description: "a regional bakery chain",
+    channels_note: "The lawyer's prose about the channels this matter reaches.",
+    sheet: "row 2: 5, JP, Valid, Renewed, as of 2012-08-31, app 2011-094307, reg 5518592",
+  };
+  const { prose, unclassified } = protectedStrings({ reference: { ...REFERENCE, ...SEVEN } });
+  assert.deepEqual(unclassified, [], `a key fell back to unclassified: ${unclassified.join(", ")}`);
+  for (const [k, v] of Object.entries(SEVEN))
+    assert.ok(prose.has(v), `${k} was not collected as prose, so its value is unprotected`);
+});
+
+test("CONTROL: a key nobody has classified still reports — the arm above is not a blanket pass", () => {
+  // Without this, classifying every key as prose would pass the arm above and destroy the warning.
+  const { unclassified } = protectedStrings({ reference: { ...REFERENCE, a_key_nobody_classified: "x" } });
+  assert.deepEqual(unclassified, ["a_key_nobody_classified"]);
+});

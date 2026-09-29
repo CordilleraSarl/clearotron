@@ -6196,8 +6196,8 @@
           "todos": 0
         },
         "the-scorer-withholds-names-unless-asked.test.mjs": {
-          "tests": 26,
-          "asserts": 54,
+          "tests": 28,
+          "asserts": 57,
           "skips": 0,
           "todos": 0
         },

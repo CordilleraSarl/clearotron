@@ -45,6 +45,25 @@ const PROSE_KEYS = new Set([
   // reference. Each of these is the engine reasoning about a party in sentences.
   "net", "practical_position", "legal_position", "off_field_ground", "reason", "bears_on", "read",
   "condition", "basis", "quality",
+  // THE SEVEN THE WARNING HAD BEEN NAMING, each read at the site that WRITES it rather than classified
+  // from its key name — which is what the warning asks a reader to do, and what it now says.
+  //
+  // Four were measured against the real-name list, one key at a time: `email_line` hit 104 times across
+  // 12 values, `transcription_note` 3 of 4, `scoring_caveat` 1 of 1, `what` 1 of 2. A line written to be
+  // sent to somebody about their matter names them, which is what `email_line` is for.
+  "email_line", "transcription_note", "scoring_caveat", "what",
+  // Three read clean against that list TODAY and are protected on what their producer is for, because
+  // clean today is not safe. `owner_description` sits at `common_law[].owner_description` and its job is
+  // to describe a party: its values are generic in the references we hold and the next one written is
+  // the one that names somebody. `channels_note` is 97 words of the lawyer's prose about a matter.
+  "owner_description", "channels_note",
+  // `sheet` is the one that argues for reading the producer rather than the name. Two files write it
+  // and they mean different things: `presence-reconciliation.mjs` writes a two-word workbook label,
+  // plainly safe, and a gold writes ten values, all distinct, up to 165 characters — tabulated register
+  // rows carrying application and registration numbers. Only the gold's reaches this function today
+  // (zero `sheet` keys in a real run's findings, checked on R19 `a46abdad`), so prose costs nothing and
+  // is right for what arrives. See the note below on why that is luck rather than design.
+  "sheet",
 ]);
 
 /** Fields that carry a name: a mark, a proprietor, a subject, a form of a mark. */
@@ -140,6 +159,14 @@ export function protectedStrings(root) {
     if (Array.isArray(node)) { for (const v of node) walk(v); return; }
     for (const [k, v] of Object.entries(node)) {
       if (k.startsWith("_")) continue;                       // `_why` keys document the file, not the matter
+      // CLASSIFIED BY THE LEAF KEY NAME, AND THAT IS A KNOWN LIMIT rather than an oversight. Two files
+      // can write the same key and mean different things: `sheet` is a two-word workbook label in
+      // `presence-reconciliation.mjs` and a tabulated register row in a gold. Only one of them reaches
+      // this function today, so the sets are right about what arrives — but they are right by luck, and
+      // the day the other one arrives whichever answer is held is wrong for it. The fix, when it is
+      // needed, is to decide on the FULL PATH before the leaf, the way the scenario-label guard does for
+      // `cost.note` against `scoring.note`. Not done here because nothing yet needs it, and a path-aware
+      // classifier built against a collision that has not happened would be guessing at its shape.
       if (isStr(v) && NAME_KEYS.has(k)) names.add(v.trim());
       else if (isStr(v) && PROSE_KEYS.has(k)) prose.add(v.trim());
       else if (Array.isArray(v) && NAME_LIST_KEYS.has(k)) { for (const e of v) if (isStr(e)) names.add(e.trim()); }
