@@ -790,8 +790,8 @@
           "todos": 0
         },
         "a-model-of-the-current-generation-is-named-in-every-spelling.test.mjs": {
-          "tests": 4,
-          "asserts": 13,
+          "tests": 8,
+          "asserts": 29,
           "skips": 0,
           "todos": 0
         },
@@ -3443,7 +3443,7 @@
         },
         "jx-p4-cores.test.mjs": {
           "tests": 14,
-          "asserts": 56,
+          "asserts": 58,
           "skips": 0,
           "todos": 0
         },
@@ -5652,6 +5652,12 @@
         "the-engine-is-given-no-fixed-call-budget.test.mjs": {
           "tests": 1,
           "asserts": 2,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-engine-sets-no-sampling-and-forces-no-tool.test.mjs": {
+          "tests": 6,
+          "asserts": 9,
           "skips": 0,
           "todos": 0
         },

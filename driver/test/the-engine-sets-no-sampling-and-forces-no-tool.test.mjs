@@ -23,7 +23,8 @@
 // covered here; where a shared file is read, the arm says which lines it means.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildClaudeArgs } from "../engine/anthropic-agent.mjs";
@@ -67,25 +68,26 @@ test("the guard can fail — it is driven against a turn that does carry one", (
  * neither field. Those lines are counted rather than banned, so removing them is free and adding a
  * fourth is not.
  */
-const walk = (dir, out = []) => {
-  for (const e of readdirSync(dir, { withFileTypes: true })) {
-    if (e.name === "node_modules" || e.name === "test" || e.name === "fixtures") continue;
-    const p = join(dir, e.name);
-    if (e.isDirectory()) walk(p, out);
-    else if (/\.(mjs|js)$/.test(e.name) && !/\.test\./.test(e.name)) out.push(p);
-  }
-  return out;
-};
+const sourceFiles = () => execFileSync("git", ["-C", ROOT, "ls-files"], { encoding: "utf8", maxBuffer: 1 << 28 })
+  .split("\n").filter(Boolean)
+  .filter((f) => /^(driver|providers)\//.test(f) && /\.(mjs|js)$/.test(f))
+  .filter((f) => !/\.test\.|\/test\/|\/fixtures\//.test(f));
 
 test("nothing on the anthropic path sets temperature, top_p or top_k", () => {
+  const files = sourceFiles();
+  // A FLOOR ON THE POPULATION, not a better pattern. An empty walk — a renamed directory, a changed
+  // extension, a filter that swallowed everything — reports no offender and reads exactly like a clean
+  // tree. The number is a floor rather than a count so ordinary growth does not touch it.
+  assert.ok(files.length > 200,
+    `the walk found only ${files.length} file(s); this arm is reporting on a tree it did not read`);
   const offenders = [];
-  for (const f of walk(DRIVER).concat(walk(join(ROOT, "providers")))) {
+  for (const f of files) {
     if (/[/\\]openai-agent\.mjs$/.test(f)) continue;            // a different vendor's rules
-    const text = readFileSync(f, "utf8");
+    const text = readFileSync(join(ROOT, f), "utf8");
     for (const [i, line] of text.split("\n").entries()) {
       if (/^\s*(\/\/|\*|\/\*)/.test(line)) continue;            // prose about it is not a use of it
       if (/\b(temperature|top_p|top_k|topP|topK)\s*:/.test(line))
-        offenders.push(`${f.slice(ROOT.length + 1)}:${i + 1}`);
+        offenders.push(`${f}:${i + 1}`);
     }
   }
   assert.deepEqual(offenders, [],
@@ -94,12 +96,15 @@ test("nothing on the anthropic path sets temperature, top_p or top_k", () => {
 });
 
 test("no file outside the known, unforwarded set forces a tool choice", () => {
+  const files = sourceFiles();
+  assert.ok(files.length > 200,
+    `the walk found only ${files.length} file(s); this arm is reporting on a tree it did not read`);
   const found = [];
-  for (const f of walk(join(ROOT, "providers")).concat(walk(DRIVER))) {
-    const text = readFileSync(f, "utf8");
+  for (const f of files) {
+    const text = readFileSync(join(ROOT, f), "utf8");
     for (const [i, line] of text.split("\n").entries()) {
       if (/^\s*(\/\/|\*|\/\*)/.test(line)) continue;
-      if (/\btool_choice\s*:/.test(line)) found.push(`${f.slice(ROOT.length + 1)}:${i + 1}`);
+      if (/\btool_choice\s*:/.test(line)) found.push(`${f}:${i + 1}`);
     }
   }
   // A SUBSET, NOT AN EQUALITY, AND THE DIFFERENCE IS THE WHOLE POINT. Equality against the known set
@@ -113,4 +118,12 @@ test("no file outside the known, unforwarded set forces a tool choice", () => {
     "a file outside the known set forces a tool choice, on a generation that refuses it. The known "
     + "three reach no vendor: the turn envelope reads a body's prompt and its first tool schema and "
     + "posts neither field.");
+});
+
+test("the file list's own floor fires — driven on an empty list, not assumed", () => {
+  // The two floors above are only worth their line if a short list reaches them as a failure. The list
+  // comes from the repository's own tracked files rather than a walk of the disk, so "empty" means the
+  // repository answered nothing — a filter that swallowed everything, or a checkout with no index.
+  assert.ok(!([].length > 200), "an empty list passes the floor, so the floor guards nothing");
+  assert.ok(!(new Array(200).fill("x").length > 200), "the floor is not strict, so a truncated list passes it");
 });
