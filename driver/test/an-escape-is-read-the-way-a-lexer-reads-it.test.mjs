@@ -30,6 +30,25 @@ test("a Windows path written raw holds no escapes, so its backslashes stay separ
   assert.equal(fires("Quenvik", String.raw`C:\Users\Example\Quenvik\x`), true);
 });
 
+test("a relative path is as raw as an absolute one, and so is one behind a stand-in", () => {
+  // Only the drive-letter form was recognised, so the same misreading came back on the relative forms and
+  // was reported three times on the public tip before anybody read it. Each line below ate the `n` of the
+  // first segment and left the letters after it at the front of a word, inventing a three-letter name.
+  assert.equal(fires("Ytrex", String.raw`if (-not (Test-Path ".\nytrex\.bin\clearotron.cmd"))`), false,
+    "a quoted relative path was read as holding an escaped newline");
+  assert.equal(fires("Ytrex", String.raw`.\nytrex\.bin\x.cmd doctor`), false, "a bare relative path");
+  assert.equal(fires("Ytrex", String.raw`..\nytrex\x`), false, "a parent-relative path");
+  assert.equal(fires("Ytrex", String.raw`a global package at <prefix>\nytrex with`), false,
+    "a path whose first segment is a stand-in, as a comment or a doc writes it");
+  assert.equal(fires("Ytrex", String.raw`%TEMP%\nytrex\x`), false, "a path behind an environment variable");
+
+  // IT MISSED A REAL NAME BY THE SAME MISTAKE, which is the half that would have stayed silent: eating the
+  // `n` destroys a name beginning with one just as readily as it invents one that was never there.
+  assert.equal(fires("Norvale", String.raw`.\clients\norvale\notes.txt`), true,
+    "a name starting with n, after a relative separator, was lost to a newline");
+  assert.equal(fires("Norvale", String.raw`<root>\norvale\notes.txt`), true);
+});
+
 test("the escapes the rule exists for are still boundaries", () => {
   assert.equal(fires("Quenvik", String.raw`ownNames:'Harrow Holdings\nQuenvik'`), true, "an escaped newline");
   assert.equal(fires("Quenvik", String.raw`"\\\nQuenvik"`), true, "a backslash pair, then an escaped newline");

@@ -129,7 +129,22 @@ export const ALLOWED_CONTEXT =
  *     The escaped form (`C:\\`) is not a raw path, so an escape beside a path in a string is still read.
  */
 const BACKSLASH_ESCAPE = /\\(?:[\\nrtfv0]|u[0-9a-fA-F]{4}|x[0-9a-fA-F]{2})/g;
-const RAW_WINDOWS_PATH = /(?<![A-Za-z0-9])[A-Za-z]:\\(?!\\)[^"'`<>|?*\r\n]*/g;
+
+// A RAW PATH IS NOT ONLY AN ABSOLUTE ONE. The drive-letter form was the only one recognised, so the same
+// misreading came back on the relative forms: `.\node_modules\.bin` and `<prefix>\node_modules` were read
+// as holding an escaped newline, which ate the `n` and left the three letters after it standing at the
+// front of a word. Three occurrences on the public tip, in a CI workflow and a test.
+//
+// The anchors below are what makes a backslash a separator rather than an escape, and each is a shape a
+// path is written in and a string literal is not: a drive letter, a relative `.` or `..`, and the end of a
+// stand-in for the first segment — `<prefix>\` in prose, `%TEMP%\` in a script. A backslash after a LETTER
+// is deliberately not an anchor: that is the escape the rule exists for, and the arms pin it.
+const PATH_TAIL = "[^\"'`<>|?*\\r\\n]*";
+const RAW_WINDOWS_PATH = new RegExp([
+  "(?<![A-Za-z0-9])[A-Za-z]:\\\\(?!\\\\)",
+  "(?<![A-Za-z0-9])\\.{1,2}\\\\(?!\\\\)",
+  "(?<=[>%])\\\\(?!\\\\)",
+].map((anchor) => anchor + PATH_TAIL).join("|"), "g");
 
 export const unescapeBoundaries = (line) => {
   let out = "", at = 0;
