@@ -2626,7 +2626,7 @@ OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 ```
 
-## ip-address@10.5.0
+## ip-address@10.7.2
 
 - **Licence declared:** `MIT`
 - **Repository:** https://github.com/beaugunderson/ip-address
