@@ -1968,7 +1968,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-## fast-uri@3.1.7
+## fast-uri@3.1.8
 
 - **Licence declared:** `BSD-3-Clause`
 - **Repository:** https://github.com/fastify/fast-uri
