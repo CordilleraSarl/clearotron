@@ -73,9 +73,10 @@ test("serpapi callSearchAPI: 429/5xx retry then succeed; 401 fails fast; api_key
 });
 
 // ── judge core ──────────────────────────────────────────────────────────────────────────────────────
-test("judge buildJudgeRequest: forced tool_choice, ids verbatim, requires mark + hits", () => {
+test("judge buildJudgeRequest: the tool schema, ids verbatim, requires mark + hits", () => {
   const body = judge.buildJudgeRequest({ mark: "NOVAPULSE", hits: [{ id: 7, term: "诺瓦", platform: "taobao.com", title: "t", url: "https://x/1", snippet: "s" }] });
-  assert.deepEqual(body.tool_choice, { type: "tool", name: "emit_judgments" });
+  assert.equal(body.tools[0].name, "emit_judgments");
+  assert.equal(body.tool_choice, undefined, "a forced choice is refused by the current generation and was never forwarded");
   assert.match(body.messages[0].content, /\[7\] term "诺瓦" on taobao\.com/);
   assert.throws(() => judge.buildJudgeRequest({ mark: "M", hits: [] }), /nothing to judge/);
   assert.throws(() => judge.buildJudgeRequest({ hits: [{ id: 1 }] }), /mark is required/);
@@ -128,9 +129,10 @@ test("judge judgeHits: an EMPTY judgment list is an answer, and is believed", as
 });
 
 // ── nativeread core ─────────────────────────────────────────────────────────────────────────────────
-test("nativeread buildNativereadRequest: forced tool_choice, requires payload, zh only", () => {
+test("nativeread buildNativereadRequest: the tool schema, requires payload, zh only", () => {
   const body = nread.buildNativereadRequest({ mark: "NOVAPULSE", payload: "## slice\nrow" });
-  assert.deepEqual(body.tool_choice, { type: "tool", name: "emit_read_items" });
+  assert.equal(body.tools[0].name, "emit_read_items");
+  assert.equal(body.tool_choice, undefined, "a forced choice is refused by the current generation and was never forwarded");
   assert.match(body.messages[0].content, /=== EVIDENCE SLICE ===/);
   assert.throws(() => nread.buildNativereadRequest({ mark: "M", payload: " " }), /payload/);
   assert.throws(() => nread.buildNativereadRequest({ mark: "M", lane: "kr", payload: "x" }), /no prompt for lane/);

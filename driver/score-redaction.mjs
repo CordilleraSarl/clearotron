@@ -45,6 +45,25 @@ const PROSE_KEYS = new Set([
   // reference. Each of these is the engine reasoning about a party in sentences.
   "net", "practical_position", "legal_position", "off_field_ground", "reason", "bears_on", "read",
   "condition", "basis", "quality",
+  // THE SEVEN THE WARNING HAD BEEN NAMING, each read at the site that WRITES it rather than classified
+  // from its key name — which is what the warning asks a reader to do, and what it now says.
+  //
+  // Four were measured against the real-name list, one key at a time: `email_line` hit 104 times across
+  // 12 values, `transcription_note` 3 of 4, `scoring_caveat` 1 of 1, `what` 1 of 2. A line written to be
+  // sent to somebody about their matter names them, which is what `email_line` is for.
+  "email_line", "transcription_note", "scoring_caveat", "what",
+  // Three read clean against that list TODAY and are protected on what their producer is for, because
+  // clean today is not safe. `owner_description` sits at `common_law[].owner_description` and its job is
+  // to describe a party: its values are generic in the references we hold and the next one written is
+  // the one that names somebody. `channels_note` is 97 words of the lawyer's prose about a matter.
+  "owner_description", "channels_note",
+  // `sheet` is the one that argues for reading the producer rather than the name. Two files write it
+  // and they mean different things: `presence-reconciliation.mjs` writes a two-word workbook label,
+  // plainly safe, and a gold writes ten values, all distinct, up to 165 characters — tabulated register
+  // rows carrying application and registration numbers. Only the gold's reaches this function today
+  // (zero `sheet` keys in a real run's findings, checked on R19 `a46abdad`), so prose costs nothing and
+  // is right for what arrives. See the note below on why that is luck rather than design.
+  "sheet",
 ]);
 
 /** Fields that carry a name: a mark, a proprietor, a subject, a form of a mark. */
@@ -140,6 +159,14 @@ export function protectedStrings(root) {
     if (Array.isArray(node)) { for (const v of node) walk(v); return; }
     for (const [k, v] of Object.entries(node)) {
       if (k.startsWith("_")) continue;                       // `_why` keys document the file, not the matter
+      // CLASSIFIED BY THE LEAF KEY NAME, AND THAT IS A KNOWN LIMIT rather than an oversight. Two files
+      // can write the same key and mean different things: `sheet` is a two-word workbook label in
+      // `presence-reconciliation.mjs` and a tabulated register row in a gold. Only one of them reaches
+      // this function today, so the sets are right about what arrives — but they are right by luck, and
+      // the day the other one arrives whichever answer is held is wrong for it. The fix, when it is
+      // needed, is to decide on the FULL PATH before the leaf, the way the scenario-label guard does for
+      // `cost.note` against `scoring.note`. Not done here because nothing yet needs it, and a path-aware
+      // classifier built against a collision that has not happened would be guessing at its shape.
       if (isStr(v) && NAME_KEYS.has(k)) names.add(v.trim());
       else if (isStr(v) && PROSE_KEYS.has(k)) prose.add(v.trim());
       else if (Array.isArray(v) && NAME_LIST_KEYS.has(k)) { for (const e of v) if (isStr(e)) names.add(e.trim()); }
@@ -185,8 +212,27 @@ export function protectedStrings(root) {
       if (bare.length >= 5 && !LEGAL_FORM.has(bare.toLowerCase())) { names.add(bare); derived.add(bare); }
     }
   }
-  // A one- or two-character "name" is a substring of ordinary words, and swapping it everywhere would
-  // shred the surrounding prose without protecting anything a reader could identify anyone from.
+  // THE FLOOR STAYS AND THE CASE IT MISSES IS NAMED. A fleet decision on an internal page rather than
+  // this file's preference: keep the floor, and name the case it does not cover.
+  //
+  // WHAT IT BUYS: a two-character token is cheap to collide with, and every standalone occurrence of one
+  // would go — including words of this harness's own vocabulary. Lowering the floor is a real option and
+  // its cost has not been measured, so it is left open on evidence rather than closed on an argument.
+  //
+  // WHAT IT COSTS, SAID PLAINLY BECAUSE THE OLD COMMENT DENIED IT. This used to claim a short name
+  // protects "nothing a reader could identify anyone from". That is false, and it was measured: on one
+  // scenario the two-character SUBJECT MARK of the matter is deleted here and prints in clear, beside a
+  // name that was correctly withheld. The scenario is named after it and its run directory carries it.
+  // `ops/real-names/scan.mjs` holds that same string as a list entry and refuses a page that shows it —
+  // so two instruments on this box disagree about it, and this is the one that lets it through.
+  //
+  // The other clause was stale rather than false: "a substring of ordinary words" described a matcher
+  // without boundaries. The matcher has them now — no letter or digit may sit immediately before a
+  // match, and only a plural or possessive after — so a short name matches standing alone, not inside a
+  // word. That narrows the shredding this floor was written to prevent, which is why lowering it is
+  // worth measuring rather than dismissing.
+  //
+  // THE SCAN IS WHAT CATCHES THE MISS, and a reader of this file should know that rather than infer it.
   for (const n of [...names]) if (n.length < 3) names.delete(n);
   return { names, prose, derived, unclassified: [...unclassified].sort() };
 }
@@ -205,8 +251,8 @@ export const unclassifiedNotice = (keys) =>
   `*** THE REFERENCE, THE SCORED BUCKETS OR THE RUN CARRIES ${keys.length} KEY(S) THIS REDACTION DOES NOT `
   + `CLASSIFY, and this line does not know which: ${keys.join(", ")}. `
   + `Their text was NOT withheld and may name somebody. Classify each in driver/score-redaction.mjs as a `
-  + `name, as prose, or as safe — this warning is the only thing standing between a new reference field `
-  + `and the silent leak it would otherwise be.`;
+  + `name, as prose, or as safe, reading the site that WRITES it rather than its key name — and protect `
+  + `anything you cannot establish is free of matter text.`;
 
 const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
@@ -278,8 +324,32 @@ export function foldForMatching(text) {
  *
  * WHAT IT STILL DOES NOT CATCH, stated because a redaction that overclaims is the thing this module
  * warns about: a name fused into a longer alphanumeric token with no separator — a slug, a domain, a
- * run-together identifier. The scorer does not print the reference in those forms today, and the honest
- * position is that this rule protects the forms it prints rather than every form that could exist.
+ * run-together identifier.
+ *
+ * THIS COMMENT USED TO SAY THE SCORER DOES NOT PRINT THE REFERENCE IN THOSE FORMS. It does, and the
+ * claim was the dangerous half of the paragraph: a reader who believed it would stop looking.
+ *
+ *   · The `run:` line prints the run directory, and a run directory is named after the matter — five
+ *     of forty scenario slugs measured on the box are a client's name with nothing done to them.
+ *   · Carry-through prints source URLs, and a mark inside a URL path is fused to what surrounds it.
+ *   · A native-script page produced two fused matches on the first real page it was read against.
+ *
+ * So the honest position is narrower than it was written: this rule protects a name standing on its
+ * own, with a plural or possessive, at any width. It does not protect one fused into a longer token,
+ * that case is not rare, and the forms it misses are being counted rather than assumed away.
+ *
+ * A URL IS NOT AN EXEMPTION, and that is a decision rather than a side effect. A locator is not prose, and there was an argument that a name inside one is an address
+ * rather than a disclosure — it was not taken. A reader who can see the address can fetch it, and what
+ * comes back names the party as plainly as the page would have. So a protected name is withheld inside
+ * a URL exactly as it is anywhere else: as a path segment, against a hyphen, between slashes, as a
+ * subdomain, as a query value. An arm holds all five, because this used to be true by accident of the
+ * boundary rule and is now true on purpose.
+ *
+ * THE ONE DECLINE INSIDE A URL IS THE FUSED CASE ABOVE, not a rule about URLs. `…/about/NAMEgroup`
+ * survives for the same reason `NAMEgroup` survives in prose, and the measurement that decided against
+ * refining the boundary counted it: 789 protected names across six scored pages, three declines, one of
+ * them inside a URL. Nothing here narrows that; it only stops a reader concluding from a URL decline
+ * that locators are treated differently.
  */
 const matcher = (name) => new RegExp(`(?<![\\p{L}\\p{N}])${escapeRe(name)}(?:['’]s|s)?(?![\\p{L}\\p{N}])`, "giu");
 
@@ -429,11 +499,72 @@ let authoredPrint = null;
  * Print a line this tool authored, with the derived-word layer dropped. With no redaction installed it is
  * an ordinary write, which is the `--names` case: nothing is withheld, so there is nothing to drop.
  */
+/**
+ * Redact a STRUCTURE rather than its serialisation.
+ *
+ * WHY A SERIALISED PAYLOAD CANNOT BE REDACTED AS TEXT. `--json` used to be built, stringified, and sent
+ * through the boundary like any other line, which redacts a document that has no prose in it — every
+ * string in it is either a field NAME the code wrote or a VALUE out of the data, and the two need
+ * opposite treatment. Measured on one real score: the keys `owner` and `additional` came back as
+ * `«name 141»` and `«name 1»`, because both are distinctive words of multi-word parties in that
+ * reference. Two of the payload's fields were unaddressable — a consumer asking for `owner` finds
+ * nothing, and cannot discover what to ask for instead. That is past readability: the JSON is an
+ * interface.
+ *
+ * KEYS ARE AUTHORED AND VALUES ARE DATA, so each gets the instrument that fits it. A key is a literal in
+ * this repository's source: the derived layer has no business in it, and dropping that layer is exactly
+ * what `authoredRedactor` is for. A value came out of a reference or a run, so it keeps every layer,
+ * including the derived one that closed the leak where a two-word proprietor's first word survived in
+ * prose.
+ *
+ * A KEY IS STILL REDACTED, never passed through. If a party's whole name is also a field name, the field
+ * name goes — that collision is worth a token, and it is not the ordinary-word case this exists for.
+ *
+ * Numbers, booleans and null are returned as they are: there is nothing in them to withhold, and turning
+ * them into strings would change the payload's shape.
+ */
+export function redactDeep(value, { redactValue, redactKey }) {
+  const walk = (v) => {
+    if (typeof v === "string") return redactValue(v);
+    if (Array.isArray(v)) return v.map(walk);
+    if (v && typeof v === "object") {
+      const out = {};
+      // The key through the AUTHORED redactor, the value through the full one, in one pass so the two
+      // can never drift apart by a caller forgetting one of them.
+      for (const [k, x] of Object.entries(v)) out[redactKey(k)] = walk(x);
+      return out;
+    }
+    return v;
+  };
+  return walk(value);
+}
+
 export function printAuthored(line) {
   const text = `${line}\n`;
   if (authoredPrint) authoredPrint(text);
   else process.stdout.write(text);
 }
+
+/**
+ * Write text that has ALREADY been redacted, part by part, through the original stream.
+ *
+ * THE ONE CALLER THIS IS FOR is a `redactDeep` payload, and the contract is narrow on purpose. Every
+ * string in such a payload has been through a redactor already — values through the full one, keys
+ * through the authored one — so sending it round again would re-apply the derived layer to keys and put
+ * back the exact defect `redactDeep` exists to remove.
+ *
+ * IT IS A HOLE IF IT IS MISUSED, and unlike `printAuthored` there is no weaker layer standing behind it:
+ * hand this raw run text and it prints in clear. So it takes text that a redactor produced, never text a
+ * caller assembled, and the two arms that drive it both assert a name is absent rather than that a
+ * structure survived.
+ */
+export function printPreRedacted(text) {
+  if (rawPrint) rawPrint(text);
+  else process.stdout.write(text);
+}
+
+// The raw printer, live only while a redaction is installed, for the reason above.
+let rawPrint = null;
 
 export function installRedaction(redact, io = { console, process }, authored = null) {
   const { console: con, process: proc } = io;
@@ -460,9 +591,13 @@ export function installRedaction(redact, io = { console, process }, authored = n
   // Writes through the ORIGINAL stream, so the wrap above cannot re-apply the
   // derived layer to a line that just had it dropped.
   authoredPrint = (text) => original.stdout(authored ? authored(text) : redact(text));
+  // Straight through, because the caller's contract is that every part of it is already redacted.
+  rawPrint = (text) => original.stdout(text);
   proc.on?.("uncaughtException", onUncaught);
   proc.on?.("unhandledRejection", onUncaught);
   return function uninstall() {
+    authoredPrint = null;
+    rawPrint = null;
     for (const m of ["log", "error", "warn", "info", "debug"]) con[m] = original[m];
     proc.stdout.write = original.stdoutRef;
     proc.stderr.write = original.stderrRef;

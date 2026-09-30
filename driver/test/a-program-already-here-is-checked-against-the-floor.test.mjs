@@ -30,7 +30,9 @@ const CLAUDE = ENGINE_BINARIES["anthropic-agent"];
 const FLOOR = CLAUDE.floor;
 // The version the vendor's own refusal named, and the one the box carried when it was measured.
 const TOO_OLD = "2.1.263";
-const CURRENT = "2.1.280";
+// The floor itself, so this moves when the floor moves rather than pinning a number that was current
+// once. 2.1.280 is now BELOW the floor and is exercised as such in the boundary arms at the end.
+const CURRENT = CLAUDE.floor;
 const copy = (version, extra = {}) => ({ path: "/somewhere/bin/claude", executable: true, relative: false, source: "path", version, rejected: [], ...extra });
 
 test("an old version sorts below the floor and a current one does not, part by part", () => {
@@ -214,4 +216,48 @@ test("setup, driven in a terminal, shows the fix for an old copy when that engin
     await new Promise((r) => (child.exitCode !== null || child.signalCode !== null ? r() : child.once("close", r)));
     for (const d of [dir, home]) rmSync(d, { recursive: true, force: true });
   }
+});
+
+
+// ── WHAT THE FLOOR IS FOR, AND WHY IT IS THIS NUMBER ──────────────────────────────────────────────
+//
+// The floor is the oldest release whose tier ALIASES reach the current model generation, and the two
+// tiers crossed on different releases. Measured 2026-09-30 by driving each version's `-p` turn at a
+// local recorder and reading the `model` it put on the wire: opus crossed at 2.1.280 and sonnet only at
+// 2.1.284, so for four releases a stage asking for sonnet was served a generation behind — silently,
+// because the alias resolves inside the program and the request is well formed either way.
+//
+// NOTHING HERE ASSERTS THE PROGRAM'S BEHAVIOUR. That is the vendor's and it is not ours to pin; the
+// measurement is recorded beside the floor in the engine table. What these arms hold is that the floor
+// we declare places the measured boundary on the right side, so a later edit that lowers it back to the
+// release where only the top tier crossed has to argue with a named version rather than a comment.
+const ALIAS_BOUNDARY = Object.freeze({
+  opusCrossedAt: "2.1.280",     // opus reached the current generation here
+  sonnetCrossedAt: "2.1.284",   // sonnet only here — four releases later
+});
+
+test("the floor is the release where the LATER tier crossed, not the earlier one", () => {
+  assert.equal(CLAUDE.floor, ALIAS_BOUNDARY.sonnetCrossedAt,
+    "the floor no longer matches the release where the sonnet tier reached the current generation. If a "
+    + "newer release moved it again, move this with it and re-measure; if it was lowered to the top "
+    + "tier's crossing, that leaves every sonnet stage a generation behind with nothing refusing.");
+  // And the earlier crossing is BELOW the floor, which is the whole point of moving it.
+  assert.equal(olderThanFloor(ALIAS_BOUNDARY.opusCrossedAt, CLAUDE.floor), true,
+    "the release where only the top tier crossed must not satisfy this floor");
+});
+
+test("every version measured below the boundary is refused, and the boundary itself is not", () => {
+  for (const v of ["2.1.263", "2.1.277", "2.1.278", "2.1.280", "2.1.281", "2.1.282", "2.1.283"])
+    assert.equal(olderThanFloor(v, CLAUDE.floor), true, `${v} was measured below the floor and is accepted`);
+  assert.equal(olderThanFloor("2.1.284", CLAUDE.floor), false);
+  assert.equal(olderThanFloor("2.1.290", CLAUDE.floor), false, "a newer release must still satisfy the floor");
+});
+
+test("the recorded install size moved with the floor, as the table says it must", () => {
+  // The engine table says to re-measure when the floor moves, because setup states this figure to a
+  // reader before it installs. Measured 2026-09-30 on a fresh install of the floor version into an empty
+  // folder: 233 MB, against 214 recorded for the previous floor.
+  assert.equal(CLAUDE.installMB, 233,
+    "the install size is the one recorded for an earlier floor; re-measure it or setup tells a reader a "
+    + "number that was true for a different release");
 });

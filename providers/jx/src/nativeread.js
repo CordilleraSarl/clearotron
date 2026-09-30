@@ -81,7 +81,6 @@ export function buildNativereadRequest({ mark, lane = "zh", payload, model = DEF
     model,
     max_tokens: 4096,   // 12 grounded items with grounds quotes need headroom; truncation checked either way
     tools: [NATIVEREAD_TOOL],
-    tool_choice: { type: "tool", name: NATIVEREAD_TOOL.name },   // FORCED tool answer; shape validated at parse
     messages: [{ role: "user", content: prompt }],
   };
 }

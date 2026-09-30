@@ -264,13 +264,23 @@ test("report --round: a refused case shows THAT round's door answers, not the ne
     appendRound(box.pool, "R0", refusal(OLD, "REASON-FROM-THE-EARLIER-ROUND: retired vocabulary"));
     appendRound(box.pool, "R0", refusal(NEW, "REASON-FROM-THE-NEWER-ROUND: something else entirely"));
 
-    const older = cli(box, ["report", "R0", "--round", OLD]);
+    // `--names` BECAUSE THIS ARM IS ABOUT ROUND SELECTION, NOT REDACTION. A door's refusal text is
+    // withheld by default now, and this test identifies the round BY that text — without the flag both
+    // rounds print the same withheld line and the arm would pass while proving nothing. The redaction
+    // itself is driven where it belongs, beside the other withholding arms.
+    const older = cli(box, ["report", "R0", "--round", OLD, "--names"]);
     assert.match(older.out, /REASON-FROM-THE-EARLIER-ROUND/, "the earlier round's own reason");
     assert.doesNotMatch(older.out, /REASON-FROM-THE-NEWER-ROUND/, "and never the newer round's, which would be a different run's answer");
 
-    const newest = cli(box, ["report", "R0"]);
+    const newest = cli(box, ["report", "R0", "--names"]);
     assert.match(newest.out, /REASON-FROM-THE-NEWER-ROUND/);
     assert.doesNotMatch(newest.out, /REASON-FROM-THE-EARLIER-ROUND/);
+
+    // AND THE DEFAULT PATH WITHHOLDS BOTH, asserted here rather than assumed: if it did not, the flag
+    // above would be decoration and this file would be quietly reporting a door's words on every run.
+    const withheld = cli(box, ["report", "R0"]);
+    assert.doesNotMatch(withheld.out, /REASON-FROM-THE-(EARLIER|NEWER)-ROUND/,
+      "the default report must not carry a door's own words");
   } finally { rmSync(box.root, { recursive: true, force: true }); }
 });
 

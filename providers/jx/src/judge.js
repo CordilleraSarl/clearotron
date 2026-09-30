@@ -79,7 +79,6 @@ export function buildJudgeRequest({ mark, hits, model = DEFAULT_MODEL }) {
     model,
     max_tokens: 4096,   // 40 one-clause judgments fit well inside; truncation checked either way
     tools: [JUDGE_TOOL],
-    tool_choice: { type: "tool", name: JUDGE_TOOL.name },   // FORCED tool answer; shape validated at parse
     messages: [{ role: "user", content: prompt }],
   };
 }

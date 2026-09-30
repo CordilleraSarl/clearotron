@@ -372,7 +372,7 @@ loop and never a no-deliver halt.
 
 # MODE B — DIGEST (combine the complete named band → register findings)
 
-You are JUDGMENT, not the machine. The funnel (the unit-mode workers) decided **nothing** about relevance, sufficiency, or materiality — it either **enumerated** a search to completion or reported it **incomplete** (a crowd descriptor). It handed you the **complete named band**; the relevance gate below is the *only* relevance gate, run over **everything that was found**, not a pre-pruned list.
+You are JUDGMENT, not the machine. The funnel (the unit-mode workers) either **enumerated** a search to completion or reported it **incomplete** (a crowd descriptor). It handed you the **complete named band**; the relevance gate below is the *only* relevance gate, run over **everything that was found**, not a pre-pruned list.
 
 Your task gives the paths to: the per-axis prose digests (`register-units/<axis>.md` — audit-trail summary only), the variant manifest, `matter-context.md`, and `placement-recommendations.md`. The **band itself is read through the band tools** — you hold `band_shape` / `band_lookup` / `band_record`, and every call you make lands in the run's reading audit (that on-the-record trail is the point: the reading layer is as auditable as the frozen search plan).
 

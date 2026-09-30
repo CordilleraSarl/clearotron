@@ -566,7 +566,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
 
-## brace-expansion@1.1.18
+## brace-expansion@1.1.21
 
 - **Licence declared:** `MIT`
 - **Repository:** git://github.com/juliangruber/brace-expansion
@@ -596,7 +596,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-## brace-expansion@2.1.4
+## brace-expansion@2.1.7
 
 - **Licence declared:** `MIT`
 - **Repository:** git://github.com/juliangruber/brace-expansion
@@ -1968,7 +1968,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-## fast-uri@3.1.7
+## fast-uri@3.1.8
 
 - **Licence declared:** `BSD-3-Clause`
 - **Repository:** https://github.com/fastify/fast-uri
@@ -2626,7 +2626,7 @@ OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 ```
 
-## ip-address@10.5.0
+## ip-address@10.7.2
 
 - **Licence declared:** `MIT`
 - **Repository:** https://github.com/beaugunderson/ip-address

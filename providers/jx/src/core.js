@@ -120,7 +120,6 @@ export function buildCandidateRequest({ mark, productContext = "", lane = "zh", 
     model,
     max_tokens: 2048,   // 8 Han candidates + rationales need headroom; truncation is checked either way
     tools: [CANDIDATE_TOOL],
-    tool_choice: { type: "tool", name: CANDIDATE_TOOL.name },   // FORCED tool answer; shape validated at parse
     messages: [{ role: "user", content: promptFor({ mark: String(mark).trim(), productContext: String(productContext ?? "").trim() }) }],
   };
 }
