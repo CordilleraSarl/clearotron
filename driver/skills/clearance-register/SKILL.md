@@ -92,14 +92,6 @@ cheap by construction**, so they enumerate fully and cheaply. A saturation crowd
 count-only call (`limit:1`), not enumerated. The expensive failure mode of the old funnel — deep-paging a
 saturated raw pile — does **not** exist: crowds are descriptors, named slices are bounded.
 
-| Worker | register_enumerate calls (named slices) | count-only crowd descriptors | Phoneme | Image |
-|---|---|---|---|---|
-| `saturation-probe` unit | 0 | ~3–4 (count-only) | 0 | 0 |
-| `primary-sweep` unit | ~8–14 (exact + substring band + per-major + meaning, where applicable) | ~1–2 | phonetic recipes | device-led |
-| `transliteration-numeric` unit | ~4–6 (one per script/variant query) | ~1 | 0 | 0 |
-| `incumbent-class` unit | ~2–4 | 0 | 0 | 0 |
-| digest worker (merch-sweep + Option-D follow-ups) | ~2–4 | 0 | 0 | 0 |
-
 **A genuine resource/time limit produces an `incomplete` block, never a sufficiency accept.** If
 `register_enumerate` hits the provider 5000-record window or a resource ceiling on a slice, it returns
 `{state:"incomplete", …, reason}` — the funnel writes that block verbatim and **stops there for that slice**.

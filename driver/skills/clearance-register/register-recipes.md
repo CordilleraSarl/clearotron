@@ -215,22 +215,16 @@ For each transliteration variant in the manifest:
    → name:<root> nice-class:<class N> limit=1 fields=[uri] → `incomplete` crowd-descriptor block
      (the count tells the lawyer how crowded; it clears nothing)
 
-1b. CROWD STOP — the tractability gate (the removal). Step 1's count IS the gate. If the root's class-scoped
-   count is over the resource ceiling (a crowd — GREAT≈28k, OUTDOORS≈2.7k), the Step-2 substring enumerate
-   would return `incomplete`, and fanning it out per-major + phonetic is the grind that double-SIGKILLed the
-   stage. STOP the fan-out: do NOT run Step 2b (per-major) or Step 3 (phonetic) on a crowd root; keep the exact
-   name-list (Step 2c). Then WRITE depends on WHICH root it is:
+1b. WRITE depends on WHICH root it is:
      • the DISTINCTIVE dominant category (the highest-relevance slice) → write ONE `incomplete` block (a
        material could-not-finish for judgment — the COLORA→色彩 case);
      • a stripped COMMON component (NOT the distinctive anchor — GREAT/OUTDOORS) → write NO block; the
        `saturation-probe` count is the sole, immaterial signal (a duplicate primary-sweep crowd risks
        mis-reading as a material in-class gap).
-   Run Steps 2–3 in full only when the root's class-scoped slice is TRACTABLE (a class-scoped band ≈257; a distinctive root
-   that narrows per-region). For an all-common-words phrase mark, the exact phrase + near-neighbours is the
+   For an all-common-words phrase mark, the exact phrase + near-neighbours is the
    dangerous band (Recipe 1), not the component substrings.
 
-2. ENUMERATE the substring band (register_enumerate) — when the root is TRACTABLE (Step 1b did not fire);
-   class + region scoped (breadth, not sufficiency)
+2. ENUMERATE the substring band (register_enumerate) — class + region scoped (breadth, not sufficiency)
    → register_enumerate name:<root> match=default nice_classes:<in-scope full Nice set, goods AND
      services 42/44 — never a goods-only 1/5 subset> regions:<in-scope>
    → the tool pages to has_more:false and returns:
