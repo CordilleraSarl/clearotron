@@ -34,6 +34,23 @@ test("a warning the register attaches is on the normalised response", () => {
   assert.deepEqual(normalizeSearchResponse(body({ warnings: [w] }), "ZYTHERMO").warnings, [w]);
 });
 
+test("the code that DOES arrive on our own request shapes is carried, with its affected filters", () => {
+  // `expanded_fallback` is emitted on `offices` together with `nice_classes`, and on
+  // `goods_services_text` — which rides every goods-narrowed question this connector sends. It reports
+  // that the grouped view cannot serve the filter, so the answer is one row per record rather than one
+  // row per mark, and the total inflates. The total is what the enumerate ceiling reads to call a band a
+  // crowd, so this is the one warning whose arrival changes how a number should be read.
+  const w = {
+    code: "expanded_fallback", severity: "info",
+    message: "expanded_fallback: the grouped view cannot serve the goods_services_text filter, so results are one row per record (international_registrations=expanded).",
+    affected_filters: ["goods_services_text"],
+  };
+  const out = normalizeSearchResponse(body({ warnings: [w] }), "ZYTHERMO");
+  assert.deepEqual(out.warnings, [w]);
+  assert.deepEqual(out.warnings[0].affected_filters, ["goods_services_text"],
+    "which filter forced the fallback must survive, or a reader cannot tell which number to distrust");
+});
+
 test("a code this repository has never seen is carried too — the filtered-recorder case", () => {
   const unknown = { code: "a_code_no_one_here_has_written_down", severity: "warning", message: "…" };
   assert.deepEqual(normalizeSearchResponse(body({ warnings: [unknown] }), "ZYTHERMO").warnings, [unknown],

@@ -556,12 +556,22 @@ export function normalizeSearchResponse(body, echoQuery) {
     // register adds one, and there is no way to tell those two apart from the outside. An empty array is
     // the ordinary case: a clean response carries no `warnings` key at all.
     //
-    // WHAT THIS DOES NOT BUY, said here because the empty column is the trap. The one code observed live
-    // is emitted on the exact-text filter path and NOT on the ranked path — a ranked query folds
-    // look-alike letters through its own similarity channel instead, and so has nothing to warn about.
-    // Every sweep this connector sends is ranked. So this column will be empty on the searches we
-    // actually make, and an empty warnings list is NOT evidence that a query carried no mixed-script
-    // risk. Whatever guards that risk on the ranked path still has to do it.
+    // TWO CODES ARE KNOWN TO ARRIVE HERE, and they behave oppositely — which is the reason to keep the
+    // list whole rather than reason about either one.
+    //
+    // `mixed_script` is emitted on the exact-text filter path and NOT on the ranked path, because a
+    // ranked query folds look-alike letters through its own similarity channel and so has nothing to
+    // warn about. Every sweep this connector sends is ranked, so this code will not appear, and an
+    // empty list is NOT evidence that a query carried no mixed-script risk. Whatever guards that on the
+    // ranked path still has to.
+    //
+    // `expanded_fallback` DOES arrive on requests this connector sends. Measured: it fires on
+    // `offices` together with `nice_classes`, and on `goods_services_text`, which rides every
+    // goods-narrowed question. It says the grouped view cannot serve that filter, so the answer comes
+    // back one row per RECORD instead of one row per MARK — and the register's own note says that
+    // inflates the total. The total is what the enumerate ceiling reads to call a band a crowd, so a
+    // band can be declared a crowd on a number that counts designations rather than marks. This field
+    // is what makes that visible; it does not yet make it safe.
     warnings: Array.isArray(meta.warnings) ? meta.warnings : [],
     // The corpus total when the vendor counted it exactly; null when it did not answer, when the
     // total was not requested, and when the figure it returned is an approximation. NEVER the page
