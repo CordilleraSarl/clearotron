@@ -304,3 +304,86 @@ test("a single-word name gains nothing and loses nothing", () => {
   assert.ok(names.has("Quillion"));
   assert.equal([...names].filter((n) => n.toLowerCase().includes("quillion")).length, 1, "no duplicate entry");
 });
+
+// ── the seven the warning used to name ───────────────────────────────────────────────────────────────
+
+test("the seven keys the unclassified warning named are classified, and none reports as unknown", () => {
+  // Each was read at the site that writes it (tracker issue 1005). Four were measured against the real
+  // name list one key at a time; three protect on what their producer is FOR, because clean today is not
+  // safe. This arm exists so a later edit cannot drop one back into `unclassified` in silence — the
+  // warning is loud when it fires, and a key quietly returning to it is the failure it cannot report.
+  const SEVEN = {
+    email_line: "A line written to be sent to somebody about their matter.",
+    transcription_note: "A note about how a form was transcribed.",
+    scoring_caveat: "A caveat the lawyer attached to the scoring.",
+    what: "A description of what the entry is.",
+    owner_description: "a regional bakery chain",
+    channels_note: "The lawyer's prose about the channels this matter reaches.",
+    sheet: "row 2: 5, JP, Valid, Renewed, as of 2012-08-31, app 2011-094307, reg 5518592",
+  };
+  const { prose, unclassified } = protectedStrings({ reference: { ...REFERENCE, ...SEVEN } });
+  assert.deepEqual(unclassified, [], `a key fell back to unclassified: ${unclassified.join(", ")}`);
+  for (const [k, v] of Object.entries(SEVEN))
+    assert.ok(prose.has(v), `${k} was not collected as prose, so its value is unprotected`);
+});
+
+test("CONTROL: a key nobody has classified still reports — the arm above is not a blanket pass", () => {
+  // Without this, classifying every key as prose would pass the arm above and destroy the warning.
+  const { unclassified } = protectedStrings({ reference: { ...REFERENCE, a_key_nobody_classified: "x" } });
+  assert.deepEqual(unclassified, ["a_key_nobody_classified"]);
+});
+
+// ── the short-name floor, and the case it is known to miss ───────────────────────────────────────────
+
+test("a name under three characters is DELETED from the protected set — a fleet decision, pinned", () => {
+  // Keep the floor, name the case it misses: a fleet decision on an internal page, recorded on tracker
+  // issue 1016 as branch B. This arm is not approval of the behaviour, it is that decision made
+  // enforceable — lowering the floor is a real option whose cost has not been measured, and whoever
+  // lowers it should fail this arm and read why first.
+  const { names } = protectedStrings({ reference: { ...REFERENCE, register: [{ mark: "MC", owner: "Bracken Holdings AG" }] } });
+  assert.ok(![...names].some((n) => n.toLowerCase() === "mc"),
+    "the floor has moved — that is a decision, not a refactor: read the note beside it and tracker issue 1016");
+});
+
+test("CONTROL: a three-character name IS protected, so the arm above pins a floor and not a hole", () => {
+  const { names } = protectedStrings({ reference: { ...REFERENCE, register: [{ mark: "MCQ", owner: "Bracken Holdings AG" }] } });
+  assert.ok([...names].some((n) => n.toLowerCase() === "mcq"),
+    "three characters must still be protected, or this is not a floor at all");
+});
+
+// ── a URL is not an exemption ────────────────────────────────────────────────────────────────────────
+
+test("a protected name inside a URL is withheld in every shape a locator puts it in", () => {
+  // Decided rather than inherited (tracker issue 1007, done-when 3). A locator is not prose, and there
+  // was an argument that a name inside one is an address rather than a disclosure. It was not taken: a
+  // reader who can see the address can fetch it, and what comes back names the party as plainly as the
+  // page would have. This used to hold by accident of the boundary rule; the arm is here so it holds on
+  // purpose, and fails if the URL case ever stops being caught.
+  const { names, prose } = protectedStrings({ reference: { ...REFERENCE, register: [{ mark: "Wrenlow", owner: "Bracken Holdings AG" }] } });
+  const redact = redactor({ names, prose });
+  const shapes = {
+    "a path segment": "https://example.com/about/Wrenlow",
+    "against a hyphen": "https://example.com/about/Wrenlow-group",
+    "between slashes": "https://example.com/Wrenlow/profile",
+    "a subdomain": "https://Wrenlow.example.com/",
+    "a query value": "see https://example.com/x?q=Wrenlow&n=1",
+  };
+  for (const [where, url] of Object.entries(shapes)) {
+    const out = redact(url);
+    assert.ok(!out.includes("Wrenlow"), `a name survived as ${where}: ${out}`);
+    assert.match(out, /«name \d+»/, `and it must be tokenised, not deleted: ${where} -> ${out}`);
+  }
+});
+
+test("the ONE decline inside a URL is the fused case, and it is the general limit, not a URL rule", () => {
+  // Named so nobody reads the arm above as covering it, and so nobody reads this decline as evidence
+  // that locators are treated differently. `NAMEgroup` survives in a URL for exactly the reason it
+  // survives in prose. Measured across six scored pages: 789 protected names, three declines, one in a
+  // URL — which is why the boundary was left alone.
+  const { names, prose } = protectedStrings({ reference: { ...REFERENCE, register: [{ mark: "Wrenlow", owner: "Bracken Holdings AG" }] } });
+  const redact = redactor({ names, prose });
+  assert.equal(redact("https://example.com/about/Wrenlowgroup"), "https://example.com/about/Wrenlowgroup",
+    "the fused case is a known decline; if this starts passing the boundary has changed and tracker issue 1007 wants re-reading");
+  assert.equal(redact("Wrenlowgroup is the filing name"), "Wrenlowgroup is the filing name",
+    "and it declines identically outside a URL, which is what makes it the general limit");
+});

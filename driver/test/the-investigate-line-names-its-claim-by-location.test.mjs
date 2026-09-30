@@ -20,7 +20,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";
-import { evalAssertion, fromTheRun, setReportNames, REPORT_NAMES } from "../../scripts/e2e.mjs";
+import { evalAssertion, fromTheRun, doorReasonLine, setReportNames, REPORT_NAMES } from "../../scripts/e2e.mjs";
 
 // An invented sentence, in the shape the engine writes and the check refuses: a claim over the FIELD,
 // which no number of held records can support.
@@ -261,4 +261,38 @@ test("a missing reason says so rather than offering to print nothing", () => {
     assert.match(r.saw, /identical: NOT TAKEN — no reason recorded/);
     assert.doesNotMatch(r.saw, /run again with --names/, "there is no reason to print, so the row must not offer to print it");
   } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+// ── a door's refusal text ────────────────────────────────────────────────────────────────────────────
+
+test("a door's refusal reason is withheld by default and located instead", () => {
+  // The text is the DOOR's, not ours. Nothing here governs a third party's error-message discipline, so
+  // the half of these that can echo an order — a `tools/call` refusal, sent after the order is on the
+  // wire — is guarded rather than trusted.
+  const r = doorReasonLine({ door: "cli", reason: "refused: could not search E2E SECRET MARK" }, false);
+  assert.ok(!r.includes("E2E SECRET MARK"), `the door's words reached the row: ${r}`);
+  assert.match(r, /rounds\[\]\.cases\[\]\.answers\[\]\.reason/, "and the row says where to read them");
+  assert.match(r, /run again with --names/);
+});
+
+test("CONTROL: --names carries the door's words", () => {
+  const r = doorReasonLine({ door: "cli", reason: "refused: could not search E2E SECRET MARK" }, true);
+  assert.ok(r.includes("E2E SECRET MARK"), `--names did not carry the reason: ${r}`);
+});
+
+test("A MISSING REASON IS NOT A WITHHELD ONE, and does not offer to print what does not exist", () => {
+  // Otherwise a receipt that recorded nothing reads as a receipt that recorded something private, and a
+  // reader goes looking for words no door ever wrote.
+  for (const row of [{ door: "cli" }, { door: "cli", reason: null }, { door: "cli", reason: "   " }]) {
+    const r = doorReasonLine(row, false);
+    assert.equal(r, "(no reason recorded)", `a missing reason read as withheld: ${JSON.stringify(row)} -> ${r}`);
+    assert.doesNotMatch(r, /run again with --names/);
+  }
+});
+
+test("the DOOR is never withheld — it is which door refused, not what it said", () => {
+  // The door name is a fixed vocabulary and it is the finding: one door refusing and both refusing are
+  // different results, and a reader cannot tell them apart if the name goes too.
+  assert.equal(doorReasonLine({ door: "ops-mcp", reason: "anything" }, false).includes("ops-mcp"), false,
+    "the helper renders only the reason; the caller prints the door beside it");
 });

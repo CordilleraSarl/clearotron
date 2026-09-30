@@ -282,17 +282,40 @@ export function narrowingNamesItsCrowd(a, runDir) {
   const exec = readJson(driverDir(runDir, "plan-execution.json"));
   if (!exec) return { ok: false, saw: "_driver/plan-execution.json absent, so no question's count can be read" };
   const counts = executedCounts(exec);
-  const crowdMissing = [], crowdUncounted = [], narrowingUncounted = [];
+  // A QUESTION ASKED OFF THE PLAN IS DISPOSITIONED, NOT OMITTED, and this op had no branch for it.
+  //
+  // The plan record carries an `unplanned` bucket: the engine asked something the plan did not contain
+  // and said so. Such an entry is on the record with a disposition and carries no executed count, and
+  // this check used to render that as "carries no count of its own" — which describes a silent omission.
+  // On the run that surfaced it, that ONE narrowing was the whole failure: 35 of 36 carried their own
+  // count, all 14 crowds were on the record, and neither crowd branch fired.
+  //
+  // IT IS NAMED, NOT COUNTED AGAINST THE ENGINE. The rule this op states is that the crowd a narrowing
+  // replaced is on the record with a count. An off-plan question satisfies the first half and cannot
+  // satisfy the second, because no count exists to read — and whether the engine ought to record one for
+  // a question it asked off-plan is a question about the RECORD, not about this narrowing. That belongs
+  // to the lane that writes the record; this op says what it found and declines to invent a verdict.
+  const offPlanQids = new Set(list(exec.unplanned).map((e) => text(e?.qid)).filter(Boolean));
+  const crowdMissing = [], crowdUncounted = [], narrowingUncounted = [], narrowingOffPlan = [];
   for (const n of narrowings) {
     const crowd = text(n.narrows);
     if (!byQid.has(crowd)) crowdMissing.push(`${n.qid} → ${crowd}`);
     else if (!counts.has(crowd)) crowdUncounted.push(`${n.qid} → ${crowd}`);
-    if (!counts.has(text(n.qid))) narrowingUncounted.push(text(n.qid));
+    if (!counts.has(text(n.qid))) {
+      if (offPlanQids.has(text(n.qid))) narrowingOffPlan.push(text(n.qid));
+      else narrowingUncounted.push(text(n.qid));
+    }
   }
   const parts = [`${plural(narrowings.length, "narrowing")} naming ${new Set(narrowings.map((n) => text(n.narrows))).size} crowd(s)`];
   if (crowdMissing.length) parts.push(`${crowdMissing.length} name a crowd that is not on the record${sample(crowdMissing)}`);
   if (crowdUncounted.length) parts.push(`${crowdUncounted.length} name a crowd with no count${sample(crowdUncounted)}`);
   if (narrowingUncounted.length) parts.push(`${narrowingUncounted.length} carry no count of their own${sample(narrowingUncounted)}`);
+  // Said whether or not anything failed, because it is the difference between a question the engine
+  // never answered and one it asked outside the plan — and a reader cannot tell those apart from a
+  // count's absence alone.
+  if (narrowingOffPlan.length) parts.push(`${narrowingOffPlan.length} asked OFF THE PLAN: on the record`
+    + ` in plan-execution's \`unplanned\` bucket with a disposition and no executed count, so this check`
+    + ` has no count to read rather than a count that is missing${sample(narrowingOffPlan)}`);
   if (parts.length === 1) parts.push("each crowd and each narrowing on the record with its count");
   return { ok: !crowdMissing.length && !crowdUncounted.length && !narrowingUncounted.length, saw: parts.join("; ") };
 }

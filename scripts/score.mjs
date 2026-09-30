@@ -64,7 +64,7 @@ import { recordQids } from "../driver/named-band.mjs";
 import { previousRunDir, scenarioRefs } from "../driver/e2e-rounds.mjs";
 // The names rule, kept out of this file so it is testable without a run directory — the same reason
 // reference-score.mjs holds the scoring rules rather than this script.
-import { protectedStrings, redactor, authoredRedactor, printAuthored, installRedaction, unclassifiedNotice, REDACTION_NOTICE } from "../driver/score-redaction.mjs";
+import { protectedStrings, redactor, authoredRedactor, printAuthored, printPreRedacted, redactDeep, installRedaction, unclassifiedNotice, REDACTION_NOTICE } from "../driver/score-redaction.mjs";
 import { readSettleStamp } from "../driver/settle-stamp.mjs";   
 import { envFrom } from "../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
 
@@ -517,8 +517,20 @@ function print(id, ref, run, s, delta, refPath) {
   const B = s.buckets;
   const scored = B.found.length + B.withheld.length + B.lost.length;
 
-  console.log(`\n${"═".repeat(78)}`);
+  // A RULE IS A RULE. Nothing in it came from anywhere; routed so a party's ordinary long word cannot
+  // rewrite the page's own furniture.
+  printAuthored(`\n${"═".repeat(78)}`);
   console.log(`${id} — ${ref.mark ?? "(mark unnamed in the reference)"}`);
+  // NOT ROUTED, AND THIS IS THE ONE THAT PROVED WHY. A path looks authored — the config repository's
+  // name and the working directory's name are furniture, and the derived layer was tokenising them, so
+  // a reader was shown a path they could not use. Routing it put a real client name on the page on the
+  // first run measured after the change: a run directory is NAMED AFTER THE MATTER, and that segment is
+  // a distinctive word of a party rather than a whole name, so it is exactly what the derived layer
+  // catches and exactly what the authored path drops.
+  //
+  // A path is not authored text. It is furniture with a data-derived segment in the middle of it, and
+  // the two cannot be separated by choosing an instrument for the whole line. Both stay on the full
+  // layer until the run directories themselves stop carrying matter (tracker issue 1011).
   console.log(`reference: ${refPath}`);
   console.log(`           ${ref.source}`);
   console.log(`run:       ${run.dir}`);
@@ -534,7 +546,9 @@ function print(id, ref, run, s, delta, refPath) {
   // 28). The tool already had the honest pattern four lines down — `withheld` names what it could not
   // read and declines to answer — and the delivery line invented a verdict from the same kind of
   // absence. This is that asymmetry closed, in the direction of the honest half.
-  console.log(deliveryLine(run));
+  // `deliveryLine` composes authored words, a state token and a timestamp, read at its producer in
+  // reference-score.mjs — no part of it comes from the matter.
+  printAuthored(deliveryLine(run));
   // — THE INSTRUMENT, BESIDE THE NUMBER. `--json` has carried `scorer_version` since this file
   // shipped; the human path did not, and the human path is the one whose numbers get pasted into an
   // issue. That body states 6/9 for a run that re-scores 5/2/2 today across two scorer changes
@@ -547,13 +561,17 @@ function print(id, ref, run, s, delta, refPath) {
   console.log(`engine:    ${run.engineCommit
     ? `${run.engineCommit.slice(0, 12)}${run.engineCommitFrom === "meta.json" ? "   (from the pool's meta.json — this dir has no status.json)" : ""}`
     : "(not recorded — no status.json engine stamp and no pool meta.json carrying one)"}`);
-  console.log(`scorer:    v${SCORER_VERSION}   (a score with no version predates this stamp and is not comparable to one)`);
-  console.log(`lane:      ${run.lane}${run.hasDriver ? "" : "   (no _driver/ — pool dir, not a workspace archive)"}`);
-  console.log(`scope:     classes ${run.scopeClasses.join(", ") || "(none recorded)"}   territories ${run.scopeTerritories.join(", ") || "(none recorded)"}`);
+  printAuthored(`scorer:    v${SCORER_VERSION}   (a score with no version predates this stamp and is not comparable to one)`);
+  printAuthored(`lane:      ${run.lane}${run.hasDriver ? "" : "   (no _driver/ — pool dir, not a workspace archive)"}`);
+  // Class numbers and territory codes. Neither is a name, and both were being broken up by the derived
+  // layer on references whose parties carry an ordinary long word.
+  printAuthored(`scope:     classes ${run.scopeClasses.join(", ") || "(none recorded)"}   territories ${run.scopeTerritories.join(", ") || "(none recorded)"}`);
   // — WHICH SUBJECT MARKS THIS REFERENCE ANSWERS, on the line beside the classes and territories it
   // already scopes by, because it is the same kind of fact. Never silent: a gold set that declares
   // nothing says NOT DECLARED and names the marks the run searched.
-  console.log(`coverage:  ${s.coverage.state} — ${s.coverage.why}`);
+  // `coverage.why` is the SCORER's own sentence about what it could measure, not a sentence about
+  // anybody — the same reading that put `coverage` in the safe key set.
+  printAuthored(`coverage:  ${s.coverage.state} — ${s.coverage.why}`);
   // Never a bare "(unreadable)". An unread verdict is an absence, and an absence that prints as an empty
   // parenthesis is the one a reader skims past — so it states the reason, and where a reading DID come
   // from it names the artifact, because the two lanes answer this from different files.
@@ -616,7 +634,9 @@ function print(id, ref, run, s, delta, refPath) {
     console.log(`  entries are unreachable by construction. The counts axis above is this scenario's score.`);
     console.log(`  What follows folds over the run's OWN findings only.\n`);
   }
-  console.log(row("bucket", "n", "of the marks the lawyer named"));
+  // CLASS: THE TABLE'S OWN COLUMNS. "marks" is this tool's word for its own header, and on a reference
+  // whose parties carry it as a distinctive word the header read `of the «name N» the lawyer named`.
+  printAuthored(row("bucket", "n", "of the marks the lawyer named"));
   console.log(row("found", B.found.length, `${pct(B.found.length, scored)} of ${scored} in-scope reference marks`));
   if (s.registerOnly) {
     // ONE source for the reason, so the summary and the rows can never name different causes. Missing
@@ -745,11 +765,11 @@ function print(id, ref, run, s, delta, refPath) {
   for (const note of M.notes) console.log(`  ${note}`);
 
   console.log(`\n── axis B · field ${"─".repeat(59)}`);
-  if (!s.field.length) console.log("  the reference flags no entry as on-field — not scored, not passed");
+  if (!s.field.length) printAuthored("  the reference flags no entry as on-field — not scored, not passed");
   for (const f of s.field) console.log(`  ${String(f.state).padEnd(12)} ${f.mark}  —  ${f.detail}`);
 
   console.log(`\n── axis C · sources ${"─".repeat(57)}`);
-  if (!s.sources.length) console.log("  the reference names no channels — not scored, not passed");
+  if (!s.sources.length) printAuthored("  the reference names no channels — not scored, not passed");
   for (const c of s.sources) console.log(`  ${(c.searched ? "searched" : "ABSENT").padEnd(12)} ${c.channel}`);
 
   console.log(`\n── axis D · gap discipline ${"─".repeat(50)}`);
@@ -903,15 +923,18 @@ function print(id, ref, run, s, delta, refPath) {
   else for (const d of delta) console.log(`  ${d.mark}: ${d.from} → ${d.to}`);
 
   console.log(`\n${"═".repeat(78)}`);
-  console.log(`This is a measurement, not a verdict. There is no PASS here and the exit code is always 0.`);
-  console.log(`Reproducing the reference proves nothing — it is a regression tripwire, never a target.`);
-  console.log(`What to read: every WITHHELD row is a gather-to-judgment seam defect, not a recall one.`);
-  console.log(`Axis E: "own" counts sub-queries naming ONE territory and nothing else — the deep-dive itself.`);
-  console.log(`A territory with no reference entry prints "—", never 0% and never 100%. Both are conclusions.`);
+  // CLASS: THE CLOSING LEGEND. Eight lines, every one a literal of this file's own with nothing
+  // interpolated from a reference or a run — the class most obviously ours and the least defensible to
+  // leave on the data path, because a party's ordinary long word rewrites the page's own instructions.
+  printAuthored(`This is a measurement, not a verdict. There is no PASS here and the exit code is always 0.`);
+  printAuthored(`Reproducing the reference proves nothing — it is a regression tripwire, never a target.`);
+  printAuthored(`What to read: every WITHHELD row is a gather-to-judgment seam defect, not a recall one.`);
+  printAuthored(`Axis E: "own" counts sub-queries naming ONE territory and nothing else — the deep-dive itself.`);
+  printAuthored(`A territory with no reference entry prints "—", never 0% and never 100%. Both are conclusions.`);
   // The instrument changed. A round comparing its noise against a round scored before `uncovered`
   // existed is comparing two different measurements, and the drop will otherwise read as an improvement.
-  console.log(`"uncovered" is a finding of a mark this reference does not answer — a noise count from before`);
-  console.log(`that bucket existed is not comparable with one after it. The gold set must declare covers_marks.\n`);
+  printAuthored(`"uncovered" is a finding of a mark this reference does not answer — a noise count from before`);
+  printAuthored(`that bucket existed is not comparable with one after it. The gold set must declare covers_marks.\n`);
 }
 
 // ── main ─────────────────────────────────────────────────────────────────────────────────────────────
@@ -993,6 +1016,9 @@ const delta = prev ? bucketDelta(scored.buckets, prev.buckets) : null;
 // `text` carries the reviewer's verdict word, and withholding it entire would blank a value the reader
 // came for.
 let unclassifiedKeys = [];
+// The two instruments the JSON payload needs, live only when names are withheld. With `--names` they
+// stay identity, which is the same "nothing to withhold" case `printAuthored` already has.
+let redactValue = (x) => x, redactKey = (x) => x;
 if (!opts.names) {
   const { names, prose, derived, unclassified } = protectedStrings({ reference: ref, scored, run: run.findings ?? null });
   unclassifiedKeys = unclassified;
@@ -1000,11 +1026,18 @@ if (!opts.names) {
   // only, so a party's ordinary long word stops rewriting our own headings while its full name is still
   // taken out of them. A structural line nobody routed through `printAuthored` is redacted as before,
   // which is the old behaviour and the safe side.
-  installRedaction(redactor({ names, prose }), undefined, authoredRedactor({ names, prose, derived }));
+  redactValue = redactor({ names, prose });
+  redactKey = authoredRedactor({ names, prose, derived });
+  installRedaction(redactValue, undefined, redactKey);
 }
 
 if (opts.json) {
-  console.log(JSON.stringify({
+  // REDACTED AS A STRUCTURE, THEN WRITTEN RAW. Stringifying first and sending the text through the
+  // boundary redacts a document with no prose in it: every string is either a field NAME this file
+  // wrote or a VALUE out of the data, and they need opposite treatment. On one real score that turned
+  // the keys `owner` and `additional` into tokens, because both are distinctive words of multi-word
+  // parties in that reference — two fields no consumer could address, or discover the new name of.
+  printPreRedacted(`${JSON.stringify(redactDeep({
     // — the instrument that produced these numbers, so a reader comparing two archived scores can
     // tell whether the comparison is valid. A score with no `scorer_version` predates this stamp.
     scorer_version: SCORER_VERSION,
@@ -1029,14 +1062,19 @@ if (opts.json) {
     // so leaving it out would hide it from exactly the readers most likely to automate on it, and a
     // consumer would have no way to tell an absent measure from a clean one.
     carry_through: (() => { const ct = carryThrough(run.dir); return { ...ct, coverage: coverageConflicts(run.dir, ct.lost) }; })(),
-  }, null, 2));
+  }, { redactValue, redactKey }), null, 2)}\n`);
 } else {
   // Said before the first number, not after the last: a reader who stops at the top screen must know
   // which of the two readings they are holding.
-  if (!opts.names) console.log(`\n  ${REDACTION_NOTICE}`);
+  // THE NOTICE THAT EXPLAINS THE TOKENS HAD TOKENS IN IT. A party's distinctive word collided with
+  // "marks", so the sentence defining «name N» was itself redacted — useless exactly where it matters.
+  if (!opts.names) printAuthored(`\n  ${REDACTION_NOTICE}`);
   // A reference that has grown a field this module does not classify is unprotected in exactly that
   // field, so the reader learns it before anything below, not after.
-  if (unclassifiedKeys.length) console.log(`  ${unclassifiedNotice(unclassifiedKeys)}`);
+  // AND THE WARNING PRINTED ONE OF ITS OWN KEY NAMES AS A TOKEN, so it could not name the key it
+  // exists to name. It fires when a new reference field is unclassified, which is the one moment it has
+  // to be readable.
+  if (unclassifiedKeys.length) printAuthored(`  ${unclassifiedNotice(unclassifiedKeys)}`);
   print(String(id).toUpperCase(), ref, run, scored, delta, refPath);
   // — THE LAWYER'S OWN STATEMENTS OF WHAT THE RUN MUST DEMONSTRATE. The buckets cannot carry
   // these: an assertion says WHY a mark matters, and that reasoning is what tells a reader which lane to
@@ -1045,11 +1083,29 @@ if (opts.json) {
   if (statements.length) {
     console.log(`\n  THE REFERENCE'S OWN ASSERTIONS AND CONTROLS (${statements.length}) — the scorer does not read English, so`);
     console.log("  these are the run's own facts about the marks each one names, never a verdict on the sentence:");
+    // A MARK LIFTED OUT OF A WITHHELD SENTENCE IS STILL A MARK.
+    //
+    // `st.text` is a reference sentence, so it is in the prose set and prints as withheld. These rows are
+    // the SAME sentence, parsed: `scoreStatements` runs the mark extractor over it and reports each mark
+    // it names with the bucket that mark landed in. A mark that appears nowhere but inside that sentence
+    // was never a value of a name field, so it is in no name set, and the boundary redactor has nothing
+    // to match — it printed in clear, beside a mark that was correctly withheld, on a real score.
+    //
+    // WITHHELD AT THE PRINT SITE RATHER THAN BY WIDENING THE PROTECTED SET. Collecting what the extractor
+    // finds into the protected set was tried first and measured: that extractor is a floor, not a sound
+    // extraction — it reads capitals, lawyers emphasise in capitals, and the redactor is case-insensitive,
+    // so an emphasised `REFERENCE` in one gold sentence tokenised every lowercase "reference" on the
+    // page. 34 more tokens, 17 from that one word, and a bucket table reading `88% of 8 in-scope «name»
+    // marks`. The cure was worse than the leak, so it is not there; the state is the finding, and the
+    // mark's identity is the detail that belongs behind the flag.
+    const markShown = (mark) => (opts.names ? mark : "[withheld — run again with --names to read it]");
     for (const st of statements) {
       console.log(`\n    [${st.kind}] ${st.text}`);
       if (st.halves.length)
-        for (const h of st.halves) console.log(`        ${h.mark} — ${h.state}`);
-      if (st.why) console.log(`        UNEVALUATED: ${st.why}`);
+        for (const h of st.halves) console.log(`        ${markShown(h.mark)} — ${h.state}`);
+      // `why` names the same marks in a sentence of its own, so it is withheld the same way or it is a
+      // second door onto the first defect.
+      if (st.why) console.log(`        UNEVALUATED: ${opts.names ? st.why : st.why.replace(/names .*?, none of which/, "names marks this reference holds, none of which")}`);
     }
   } else if (ref) {
     // Absence, stated. A reference with no assertions and a reference the scorer failed to read are

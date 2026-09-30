@@ -1361,6 +1361,27 @@ function bandShapeUnder(full, file, field) {
  * The count is never withheld. How many claims exceeded their evidence is the finding; which words they
  * used is the detail.
  */
+/**
+ * One door's refusal line.
+ *
+ * A DOOR'S REFUSAL TEXT IS THE DOOR'S, NOT OURS, and that is the reason to gate it rather than a reason
+ * not to. Measured across every receipt on this box — 397 door answers, 213 refusals, 113 distinct
+ * reasons — not one echoes the order: they carry an HTTP status and the server's own error envelope, or
+ * a socket error. So this guards a case that has not happened, and it is worth one line, because the
+ * half of these that CAN echo is structural: an `initialize` refusal is sent before any order exists and
+ * cannot carry one, a `tools/call` refusal is sent after and can. Which it does is the door's own
+ * error-message discipline, which nothing here governs and no clipping saves — an echoing server puts
+ * the mark near the front, well inside the 160 characters this used to print.
+ *
+ * A MISSING REASON IS NOT A WITHHELD ONE. "(no reason recorded)" is a fact about the receipt and says so
+ * plainly; offering to print it with `--names` would promise words that do not exist.
+ */
+export function doorReasonLine(r, names = REPORT_NAMES) {
+  if (r?.reason == null || String(r.reason).trim() === "") return "(no reason recorded)";
+  return fromTheRun({ names, quotes: [String(r.reason)],
+    where: "the door's own words are in the round receipt, at rounds[].cases[].answers[].reason" });
+}
+
 function fromTheRun({ names, quotes, where }) {
   // THE LOCATION IS KEPT WHEN THE WORDS ARE SHOWN. It costs one clause beside the quotation it stands in
   // for, and a reader chasing a surprising row wants to go and read around it rather than only at it.
@@ -3250,7 +3271,7 @@ async function cmdReport(id, { round: requestedToken = null } = {}) {
           notProbed.push(`${ref}: the doors refused, but this receipt records no REASON — re-run with the current e2e.mjs to check expect.reasonMatches`);
           console.log(`  reason: NOT RECORDED by the round that wrote this receipt — not a pass`);
         } else {
-          for (const r of refusal.reasons) console.log(`      [${r.door}] ${String(r.reason ?? "(no reason recorded)").slice(0, 160)}`);
+          for (const r of refusal.reasons) console.log(`      [${r.door}] ${doorReasonLine(r)}`);
           if (refusal.wantReason && refusal.missed.length)
             toInvestigate.push(`${ref}: refused, but ${refusal.missed.join(", ")} did not say "${refusal.wantReason}" — a refusal for the wrong reason reads exactly like the right one`);
           else if (refusal.wantReason) console.log(`  [ ok ] every door's reason carries "${refusal.wantReason}"`);

@@ -741,6 +741,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-mark-named-only-in-prose-is-withheld.test.mjs": {
+          "tests": 6,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "a-mark-too-short-for-contains-is-asked-exactly.test.mjs": {
           "tests": 12,
           "asserts": 57,
@@ -2831,7 +2837,7 @@
         },
         "e2e-pair-workflow.test.mjs": {
           "tests": 14,
-          "asserts": 72,
+          "asserts": 73,
           "skips": 0,
           "todos": 0
         },
@@ -2848,8 +2854,8 @@
           "todos": 0
         },
         "e2e-scenario-ops.test.mjs": {
-          "tests": 25,
-          "asserts": 85,
+          "tests": 28,
+          "asserts": 94,
           "skips": 0,
           "todos": 0
         },
@@ -5806,8 +5812,8 @@
           "todos": 0
         },
         "the-investigate-line-names-its-claim-by-location.test.mjs": {
-          "tests": 16,
-          "asserts": 50,
+          "tests": 20,
+          "asserts": 57,
           "skips": 0,
           "todos": 0
         },
@@ -5922,6 +5928,12 @@
         "the-passphrase-line-tells-the-truth-on-a-first-start.test.mjs": {
           "tests": 2,
           "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-payload-is-redacted-as-a-structure.test.mjs": {
+          "tests": 11,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },
@@ -6190,8 +6202,8 @@
           "todos": 0
         },
         "the-scorer-withholds-names-unless-asked.test.mjs": {
-          "tests": 26,
-          "asserts": 54,
+          "tests": 32,
+          "asserts": 63,
           "skips": 0,
           "todos": 0
         },

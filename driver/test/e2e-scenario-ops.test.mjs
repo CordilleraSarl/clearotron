@@ -267,6 +267,54 @@ test("a narrowing names a crowd on the record, and both carry a count", () => {
   assert.equal(check(NARROW_ASSERT, { ...base, ...exec([]) }).notProbed, true, "no narrowing: not probed");
 });
 
+test("a narrowing asked OFF THE PLAN is named as that, not counted as a missing count", () => {
+  // The engine asked something the plan did not contain and said so: the question is on the record in
+  // `unplanned`, with a disposition and no executed count. This op had no branch for that disposition
+  // and rendered it as "carries no count of its own", which describes a silent omission. On the run
+  // that surfaced it, that one narrowing was the whole failure — 35 of 36 carried their own count and
+  // both crowd branches were clean.
+  const base = { "_driver/register-plan.json": { entries: [planEntry("crowd:1", { predicate: "exact", provenance: "mark" })] } };
+  const supp = { "register-units/primary-sweep-supplemental-plan.json": { entries: [
+    { qid: "supp:offplan", origin: "supplemental", narrows: "crowd:1", rationale: "Narrowed to the client's main market." }] } };
+  const files = { ...base, ...supp, "_driver/plan-execution.json": {
+    executed: [{ qid: "crowd:1", state: "incomplete", total_hits: 1200 }],
+    unplanned: [{ qid: "supp:offplan", query: "a question the plan did not contain" }] } };
+
+  const r = check(NARROW_ASSERT, files);
+  assert.equal(r.ok, true, `an off-plan disposition is not this check's failure: ${r.saw}`);
+  assert.match(r.saw, /asked OFF THE PLAN/);
+  assert.match(r.saw, /no count to read rather than a count that is missing/,
+    "the sentence must separate the two, which is the whole defect");
+  assert.doesNotMatch(r.saw, /carry no count of their own/, "the old wording described a silent omission");
+});
+
+test("CONTROL: a narrowing on NO record still fails as uncounted — the branch is not a blanket pass", () => {
+  // Without this, classifying every count-less narrowing as off-plan would satisfy the arm above and
+  // retire the check. The difference is whether the record dispositions the question at all.
+  const base = { "_driver/register-plan.json": { entries: [planEntry("crowd:1", { predicate: "exact", provenance: "mark" })] } };
+  const supp = { "register-units/primary-sweep-supplemental-plan.json": { entries: [
+    { qid: "supp:silent", origin: "supplemental", narrows: "crowd:1", rationale: "Narrowed to the client's main market." }] } };
+  const r = check(NARROW_ASSERT, { ...base, ...supp, "_driver/plan-execution.json": {
+    executed: [{ qid: "crowd:1", state: "incomplete", total_hits: 1200 }],
+    // A DIFFERENT question is off-plan, so the bucket exists and does not cover this narrowing.
+    unplanned: [{ qid: "supp:somethingelse", query: "not the narrowing in question" }] } });
+  assert.equal(r.ok, false, `a narrowing the record says nothing about must still fail: ${r.saw}`);
+  assert.match(r.saw, /1 carry no count of their own/);
+  assert.doesNotMatch(r.saw, /asked OFF THE PLAN/);
+});
+
+test("an absent `unplanned` bucket changes nothing — an older record is read as it always was", () => {
+  // Every run archived before that bucket existed has no `unplanned` key at all. Reading its absence as
+  // anything but "no question was off-plan" would re-verdict rounds nobody can re-run.
+  const base = { "_driver/register-plan.json": { entries: [planEntry("crowd:1", { predicate: "exact", provenance: "mark" })] } };
+  const supp = { "register-units/primary-sweep-supplemental-plan.json": { entries: [
+    { qid: "supp:n1", origin: "supplemental", narrows: "crowd:1", rationale: "Narrowed to the client's main market." }] } };
+  const r = check(NARROW_ASSERT, { ...base, ...supp,
+    "_driver/plan-execution.json": { executed: [{ qid: "crowd:1", state: "incomplete", total_hits: 1200 }] } });
+  assert.equal(r.ok, false);
+  assert.match(r.saw, /1 carry no count of their own/);
+});
+
 test("the question and record counts are reported beside the baseline and judged nowhere", () => {
   const r = check({ op: "questions-and-records-at-most", path: "_driver/plan-execution-census.json", value: { questions: 2, records: 10 } },
     { "_driver/plan-execution.json": { executed: [{ qid: "a", records: 30 }, { qid: "b", records: 12 }, { qid: "c", records: 0 }] },
