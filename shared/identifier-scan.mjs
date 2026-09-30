@@ -136,14 +136,29 @@ const BACKSLASH_ESCAPE = /\\(?:[\\nrtfv0]|u[0-9a-fA-F]{4}|x[0-9a-fA-F]{2})/g;
 // front of a word. Three occurrences on the public tip, in a CI workflow and a test.
 //
 // The anchors below are what makes a backslash a separator rather than an escape, and each is a shape a
-// path is written in and a string literal is not: a drive letter, a relative `.` or `..`, and the end of a
-// stand-in for the first segment — `<prefix>\` in prose, `%TEMP%\` in a script. A backslash after a LETTER
-// is deliberately not an anchor: that is the escape the rule exists for, and the arms pin it.
+// path is written in and a string literal is not. A backslash after a LETTER is deliberately not an anchor:
+// that is the escape the rule exists for, and the arms pin it.
+//
+// EACH ANCHOR MATCHES ONLY THE SHAPE ITS COMMENT CLAIMS, and the first version of this did not. `[>%]` alone
+// read ANY closing angle or percent before an escape as a path — `rose to 50%\nNorvale`, `cmd >\nNorvale` —
+// and `\.{1,2}` read the last two dots of an ellipsis as `..\`. In each of those the escape was left
+// unescaped, the `n` stayed glued to the name, and A REAL NAME WENT UNFOUND. That is the worse of this
+// rule's two failure directions, and it is the one a widened anchor buys.
+//
+// THE RESIDUE, said here so it is not a surprise: `a<b>\nNorvale` still reads as a path, because `<b>` is
+// indistinguishable by shape from `<root>`. A closing HTML tag immediately before an escape, with a name
+// straight after it, is not caught. A minimum length inside the angles would be an arbitrary line through
+// real stand-ins, so this is recorded rather than fixed.
 const PATH_TAIL = "[^\"'`<>|?*\\r\\n]*";
 const RAW_WINDOWS_PATH = new RegExp([
+  // C:\… — a drive letter
   "(?<![A-Za-z0-9])[A-Za-z]:\\\\(?!\\\\)",
-  "(?<![A-Za-z0-9])\\.{1,2}\\\\(?!\\\\)",
-  "(?<=[>%])\\\\(?!\\\\)",
+  // .\… and ..\… — relative. The dot in the lookbehind is what stops an ellipsis reading as `..\`.
+  "(?<![A-Za-z0-9.])\\.{1,2}\\\\(?!\\\\)",
+  // <prefix>\… — a stand-in for the first segment, as a comment or a doc writes it
+  "(?<=<[A-Za-z_][A-Za-z0-9_]*>)\\\\(?!\\\\)",
+  // %TEMP%\… — an environment variable, as a script writes it
+  "(?<=%[A-Za-z_][A-Za-z0-9_]*%)\\\\(?!\\\\)",
 ].map((anchor) => anchor + PATH_TAIL).join("|"), "g");
 
 export const unescapeBoundaries = (line) => {
