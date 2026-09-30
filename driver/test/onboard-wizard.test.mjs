@@ -1238,12 +1238,24 @@ test("each engine's install offer states its measured size and how to remove it"
   const withPackage = Object.entries(ENGINE_BINARIES).filter(([, e]) => e.package);
   assert.ok(withPackage.length >= 2, "fixture precondition: both engines carry a package setup can install");
   for (const [id, eng] of withPackage) {
+    // AND THE FIGURES THEMSELVES, because the two assertions below now DERIVE from the table and so can
+    // no longer catch a wrong number in it. The anthropic figure is pinned beside its floor, where the
+    // obligation to re-measure lives; this keeps the other one pinned, which the derivation would
+    // otherwise have quietly dropped.
+    if (eng === ENGINE_BINARIES["openai-agent"])
+      assert.equal(eng.installMB, 324, "the openai install size moved; re-measure it and say so here");
     assert.ok(Number.isInteger(eng.installMB) && eng.installMB > 0,
       `${id} carries no measured install size beside its package, so the offer cannot say what it takes`);
   }
   // The measured figures, in the words the offer prints.
-  assert.equal(installSizeLine(ENGINE_BINARIES["anthropic-agent"]), "It takes about 214 MB. To remove it, delete that folder.");
-  assert.equal(installSizeLine(ENGINE_BINARIES["openai-agent"]), "It takes about 324 MB. To remove it, delete that folder.");
+  // DERIVED FROM THE TABLE, NOT REPEATED. This asserted the number as a literal, so raising the engine
+  // floor — which obliges a re-measured install size — reds an arm about the wizard's wording for a
+  // reason that has nothing to do with wording. The shape is what this arm is for; the figure belongs to
+  // the engine table, and the arm above it already holds that the table carries one.
+  assert.equal(installSizeLine(ENGINE_BINARIES["anthropic-agent"]),
+    `It takes about ${ENGINE_BINARIES["anthropic-agent"].installMB} MB. To remove it, delete that folder.`);
+  assert.equal(installSizeLine(ENGINE_BINARIES["openai-agent"]),
+    `It takes about ${ENGINE_BINARIES["openai-agent"].installMB} MB. To remove it, delete that folder.`);
 });
 
 test("the size line is said after the folder is named and before the question, whose default stays No", () => {
