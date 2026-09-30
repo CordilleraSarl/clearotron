@@ -117,10 +117,19 @@ test("the HUMAN score output names the scorer version and the run's engine", () 
   // `--json` has carried `scorer_version` since this file shipped. The gap was the HUMAN path, which is
   // the one whose numbers get pasted into an issue: the body states 6/9 for a run that re-scores
   // 5/2/2 today, across two scorer changes, so every delta quoted from it crosses an unmarked boundary.
-  assert.match(src, /console\.log\(`scorer:\s+v\$\{SCORER_VERSION\}/,
-    "print() must state the instrument beside the number a reader carries away");
+  // EITHER PRINTER SATISFIES THIS, and that is the assertion rather than a loosening. What must hold is
+  // that the human path states the instrument beside the number; which function puts it on the page is a
+  // redaction decision that has already moved once. The scorer version is a literal of this file, so it
+  // goes through the authored printer that spares our own words; pinning `console.log` by name made this
+  // arm fail for a change that did not touch what it is about.
+  assert.match(src, /(?:console\.log|printAuthored)\(`scorer:\s+v\$\{SCORER_VERSION\}/,
+    "the human path must state the instrument beside the number a reader carries away, by whichever printer");
+  // THE ENGINE LINE IS DELIBERATELY NOT WIDENED. A commit sha comes out of the run, so it is data and
+  // belongs on the full redaction layer — the authored printer drops the derived layer, which is not
+  // right for a value the run produced. If this one ever moves to `printAuthored`, that is a change worth
+  // failing on rather than accepting.
   assert.match(src, /console\.log\(`engine:\s+\$\{run\.engineCommit/,
-    "and the engine that produced the run being scored");
+    "and the engine that produced the run being scored, on the layer a run's own value belongs to");
   assert.match(src, /engine_commit: run\.engineCommit/,
     "the --json payload carries both instruments too — a consumer automating on it must not have less");
 });
