@@ -335,10 +335,11 @@ test("CONTROL: a key nobody has classified still reports — the arm above is no
 
 // ── the short-name floor, and the case it is known to miss ───────────────────────────────────────────
 
-test("a name under three characters is DELETED from the protected set — the owner's ruling, pinned", () => {
-  // Ruling: keep the floor, name the case it misses (tracker issue 1016, branch B). This arm is not
-  // approval of the behaviour, it is the ruling made enforceable: lowering the floor is a real option
-  // whose cost has not been measured, and whoever lowers it should fail this arm and read why first.
+test("a name under three characters is DELETED from the protected set — a fleet decision, pinned", () => {
+  // Keep the floor, name the case it misses: a fleet decision on an internal page, recorded on tracker
+  // issue 1016 as branch B. This arm is not approval of the behaviour, it is that decision made
+  // enforceable — lowering the floor is a real option whose cost has not been measured, and whoever
+  // lowers it should fail this arm and read why first.
   const { names } = protectedStrings({ reference: { ...REFERENCE, register: [{ mark: "MC", owner: "Bracken Holdings AG" }] } });
   assert.ok(![...names].some((n) => n.toLowerCase() === "mc"),
     "the floor has moved — that is a decision, not a refactor: read the note beside it and tracker issue 1016");
