@@ -1,5 +1,14 @@
 # clearotron-driver
 
+## 0.4.0-beta.3
+
+### Patch Changes
+
+- Fixed: Reports no longer show a gap in coverage when a search was skipped because an identical one had already run.
+- Fixed: Opposition windows appear again on register records, and renewal dates are read from where the register now publishes them.
+- Before you upgrade: setup and `clearotron doctor` now ask for a newer Claude Code, because the older one quietly serves an earlier model generation.
+- Fixed: Expiry dates appear again on US trademark records, which had been left blank since the register moved where it publishes them.
+
 ## 0.4.0-beta.2
 
 ### Minor Changes
