@@ -337,6 +337,75 @@ const allScenarios = () => {
     .sort((a, b) => byScenarioNumber(a.id, b.id));
 };
 
+// ── A SCENARIO MAY NAME THE REGISTER ITS NUMBERS WERE MEASURED AGAINST ──────────────────────────────
+//
+// THE DEFECT THIS CLOSES. A scenario's register floors are counts, and a count is an answer one register
+// gave. Run the same scenario against a different register and the floor decides nothing about the
+// engine: measured 2026-09-30 on a knockout whose floors are `identical: 8` and `containing: 300`, the
+// other register answered 2 and 471 for the SAME mark. One floor failed and one passed, in one run, and
+// neither outcome was about the engine. A red like that costs a round: it reads as a regression, it is
+// investigated as one, and the run that produced it is already spent.
+//
+// WHAT THIS DOES NOT DO, deliberately. It does not encode which register returns more. The measurement
+// says the two DISAGREE — 2 against 8 on one predicate and 471 against 300 on another, in opposite
+// directions — and nothing here has established why. A floor per register would need that why, and a
+// harness rule must not smuggle one in. So a scenario states which register its numbers came from, and
+// the harness refuses to spend the run anywhere else.
+//
+// OPTIONAL BY CONSTRUCTION, because the store is a DIFFERENT REPO. A scenario that declares nothing
+// behaves exactly as it does today. There is no ordering problem to manage and no day on which this
+// harness refuses a store that has not caught up.
+//
+// WHY THIS DOES NOT ASK THE DRIVER. `driver.config.mjs` resolves the provider, and this file may not
+// import it — its unset-env defaults are PRODUCTION, which is the rule stated at four points above. The
+// variable is read here directly and with no fallback: unset stays unset, and unset is reported as its
+// own state rather than resolved to anything.
+//
+// CONFIGURED, NOT SERVED, and the difference is a live gap. What a run was configured for is the
+// launch value; what actually served it is a separate record the runs do not yet carry (measured
+// 2026-09-30: absent on all four runs of a round, on both the knockout and the clearance path). When
+// that record exists, an assertion could read what served. Until then this is a PRE-RUN refusal on the
+// configured value, which is the honest instrument available — and it is placed before the spend, where
+// being approximately right still saves the money.
+export const REGISTER_ENV = "CLEAROTRON_DATABASE";
+
+/** The registers a scenario declares its numbers were measured against, lowercased. `[]` when it declares none. PURE. */
+export function registersDeclaredBy(sc) {
+  const v = sc?.register;
+  const list = Array.isArray(v) ? v : v == null ? [] : [v];
+  return list.map((x) => String(x ?? "").trim().toLowerCase()).filter(Boolean);
+}
+
+/** The register this process is configured for, or `null` when the variable names none. No default, ever. PURE apart from the read. */
+export function configuredRegister(env = process.env) {
+  return String(env?.[REGISTER_ENV] ?? "").trim().toLowerCase() || null;
+}
+
+/**
+ * The refusal text for running `sc` here, or `null` when there is nothing to refuse. PURE.
+ *
+ * Three cases, and the middle one is the reason this returns text rather than a boolean: a scenario that
+ * declares a register and an environment that names none is NOT a match and NOT a mismatch. Running it
+ * would spend against whatever the driver defaults to, which this file is not allowed to ask about, so
+ * the refusal says exactly that rather than guessing either way.
+ */
+export function registerRefusal(sc, env = process.env) {
+  const want = registersDeclaredBy(sc);
+  if (!want.length) return null;
+  const have = configuredRegister(env);
+  const declares = want.length === 1 ? want[0] : `one of ${want.join(", ")}`;
+  if (!have) {
+    return `${sc.id} states that its numbers were measured against ${declares}, and ${REGISTER_ENV} names no register `
+      + `on this instance. This harness does not resolve a default — the module that would is the one it may not import. `
+      + `Set ${REGISTER_ENV} to ${declares} and run again.`;
+  }
+  if (want.includes(have)) return null;
+  return `${sc.id} states that its numbers were measured against ${declares}, and this instance is configured for ${have}. `
+    + `What one register answered is not what another answers, so here this scenario would judge the register `
+    + `and not the engine — and a red read as a regression arrives on a run that is already spent. `
+    + `Set ${REGISTER_ENV} to ${declares}, or run a scenario whose numbers were measured against ${have}.`;
+}
+
 // ── — the store is the input to the most expensive thing this repo does ─────────────────────────
 //
 // Every job block in the store, through BOTH admission gates, against the outcome the scenario declares.
@@ -439,6 +508,20 @@ export function lintScenarios(scenarios) {
     }
     for (const f of sc.expect?.artifacts ?? []) {
       if (/^\/|\.\./.test(f)) wrong.push(`${label}: artifact ${JSON.stringify(f)} must be a plain run-relative name`);
+    }
+    // ── `register`, IF STATED, MUST BE STATABLE ────────────────────────────────────────────────────
+    //
+    // SHAPE ONLY, AND NOT THE NAME. Checking the value against the known providers would mean importing
+    // `driver.config.mjs`, which this file may not do. That is not a hole worth patching another way: a
+    // misspelled register never runs anywhere, and the refusal it produces prints the scenario's word
+    // and the instance's word side by side, which is a typo shown rather than described. What IS worth
+    // refusing is a value nothing can compare at all — an empty string, a number, an empty list — since
+    // that would declare a register and then silently compare against nothing.
+    if (Object.prototype.hasOwnProperty.call(sc, "register")) {
+      const raw = Array.isArray(sc.register) ? sc.register : [sc.register];
+      const bad = raw.length === 0 || raw.some((x) => typeof x !== "string" || !x.trim());
+      if (bad) wrong.push(`${label}: \`register\` is ${JSON.stringify(sc.register)} — it must be a non-empty register name, or a non-empty list of them. `
+        + `A scenario states this when its numbers are counts one register returned, so that a run against another is refused before it spends.`);
     }
     const allAsserts = [...(sc.expect?.assert ?? []), ...(sc.cases ?? []).flatMap((c) => c.expect?.assert ?? [])];
     for (const a of allAsserts) {
@@ -2185,7 +2268,11 @@ export function provenanceLines(cost, today = new Date()) {
 
 function cmdList() {
   console.log("\nE2E scenarios — each is one complete clearance unless marked $0");
-  console.log(`store: ${storeLine(STORE)}\n`);
+  console.log(`store: ${storeLine(STORE)}`);
+  // WHAT THIS INSTANCE IS CONFIGURED FOR, once at the top, because it decides which of the scenarios
+  // below `run` will start. Printed even when nothing declares a register: a reader choosing a scenario
+  // needs to know the variable names none BEFORE the refusal tells them.
+  console.log(`register: ${configuredRegister() ?? `${REGISTER_ENV} names none`}\n`);
   sweepStoreOrDie();
   for (const s of allScenarios()) {
     const cost = s.cost?.measured ? `~${s.cost.wallMinutes} min` : "UNMEASURED";
@@ -2200,6 +2287,16 @@ function cmdList() {
     // all, and an absent benchmark is not a met one.
     for (const l of turnaroundVerdict(bandForScenario(s)).lines) console.log(`      ${l}`);
     for (const l of provenanceLines(s.cost)) console.log(`      ${l}`);
+    // WHETHER `run` WOULD START THIS ONE HERE, at a glance, so the choice is made in the list rather
+    // than discovered one scenario at a time. The refusal's own words, not a second wording of them.
+    {
+      const declared = registersDeclaredBy(s);
+      if (declared.length) {
+        const no = registerRefusal(s);
+        console.log(`      register: measured against ${declared.join(", ")} — ${no ? "WOULD REFUSE HERE" : "runnable here"}`);
+        if (no) console.log(`        ${no}`);
+      }
+    }
     // — which scenarios prove the register HIT path, at a glance. Unconditional, and an
     // unstated label prints as loudly as a stated one.
     {
@@ -2263,6 +2360,13 @@ async function cmdRun(id) {
   // Which store this came from, on the record before the run spends. The synthetic and the real scenario
   // share an ID, so the ledger afterwards cannot tell you which one ran unless the run says so now.
   console.log(`store: ${storeLine(STORE)}`);
+  // BEFORE THE SPEND, because that is the only place this check is worth anything: a scenario whose
+  // floors were measured against another register produces a red that reads as an engine regression,
+  // and by then the run is paid for. `die` rather than a warning — a warning printed above a three-hour
+  // run is a warning nobody reads until the verdict.
+  { const no = registerRefusal(s); if (no) die(`REFUSING: ${no}`); }
+  console.log(`register: ${configuredRegister() ?? `${REGISTER_ENV} names none`}${
+    registersDeclaredBy(s).length ? ` — the scenario states its numbers were measured against ${registersDeclaredBy(s).join(", ")}` : ""}`);
   // Every scenario spends, R0 included — so every scenario refuses on stale code. R0 was exempted here
   // on the belief that it is refused at the door before any model call, which its own `why` also claimed.
   // It is not: R0d's FIRST submission is expected to admit (that is how it produces a duplicate to
@@ -3486,8 +3590,27 @@ async function cmdReport(id, { round: requestedToken = null } = {}) {
       // A multi-name knockout stamps NO single url BY DESIGN: one address would be the first
       // name standing for the batch, so the packet carries `reports[{mark, url}]` instead. Read it —
       // from the run dir, or from the pool meta once the run dir is archived — and probe every per-mark
-      // address exactly as the single-url arm does. Only a delivered run with neither a url nor a
-      // reports[] list is the CLEAROTRON_REPORTS_URL absence this arm was written for.
+      // address exactly as the single-url arm does.
+      //
+      // ── WHAT THE TWO ABSENCE ARMS BELOW MEASURE, AND WHAT THEY CANNOT SEE ───────────────────────────
+      //
+      // They measure one thing: no entry carries a url. They used to REPORT a second thing they never
+      // looked at — that CLEAROTRON_REPORTS_URL is unset — and the row said it flatly, as a fact about
+      // the instance.
+      //
+      // IT IS NOT ALWAYS TRUE, measured on a test instance 2026-09-30: the variable was present and
+      // non-empty both in the instance's env file and in the worker process's own environment, and the
+      // run's eight report entries each carried a `url` KEY WITH AN EMPTY VALUE. The stamp had run and
+      // produced nothing. On that run the stated cause was simply wrong, and the cause of the empty
+      // stamp is still unknown.
+      //
+      // WHAT IT COSTS TO STATE A CAUSE YOU DID NOT MEASURE: acting on the row, the obvious repair is to
+      // restore the variable from a backup — overwriting a working value with an older one and calling
+      // it a fix. That was nearly done here.
+      //
+      // So the row states the measurement and the investigate line keeps the hypothesis, marked as one.
+      // A reader who wants the cause reads the variable on the instance and the stamp's own output; this
+      // check is not in a position to tell them.
       const batchReports = (() => {
         try { return JSON.parse(readFileSync(driverDir(runDir, "delivery.json"), "utf8")).reports ?? []; } catch { /* archived or pre-batch */ }
         try { return JSON.parse(readFileSync(join(poolDir, "meta.json"), "utf8")).reports ?? []; } catch { /* no pool entry */ }
@@ -3505,13 +3628,14 @@ async function cmdReport(id, { round: requestedToken = null } = {}) {
           else if (error) { failures++; toInvestigate.push(`${ref}: could not probe ${r.mark}'s report URL (${error}) — ${r.url}`); }
         }
       } else if (batchReports.length) {
-        console.log(`  [FAIL] the run's stamped URL resolves\n           delivered as a batch of ${batchReports.length}, but no report entry carries a url — CLEAROTRON_REPORTS_URL is unset on this instance`);
-        failures++; toInvestigate.push(`${ref}: batch delivered with no per-report URL stamped (CLEAROTRON_REPORTS_URL unset?)`);
+        console.log(`  [FAIL] the run's stamped URL resolves\n           delivered as a batch of ${batchReports.length}, and not one of those entries carries a url`);
+        failures++; toInvestigate.push(`${ref}: batch delivered with no per-report URL stamped — cause NOT measured here; read CLEAROTRON_REPORTS_URL on the instance AND what the stamp wrote, because a set variable can still stamp empty`);
       } else {
-        // A delivered run with no URL at all is the same absence one step earlier: CLEAROTRON_REPORTS_URL unset
-        // makes publishReport stamp null, and the handoff packet then carries no address for anyone to open.
-        console.log(`  [FAIL] the run's stamped URL resolves\n           delivered, but status.json carries no url — CLEAROTRON_REPORTS_URL is unset on this instance`);
-        failures++; toInvestigate.push(`${ref}: delivered with no report URL stamped (CLEAROTRON_REPORTS_URL unset?)`);
+        // A delivered run with no URL at all is the same absence one step earlier, and the same limit
+        // applies: this arm sees that the record carries no address, never why. The handoff packet then
+        // carries no address for anyone to open, whatever produced that.
+        console.log(`  [FAIL] the run's stamped URL resolves\n           delivered, and status.json carries no url`);
+        failures++; toInvestigate.push(`${ref}: delivered with no report URL stamped — cause NOT measured here; read CLEAROTRON_REPORTS_URL on the instance AND what the stamp wrote, because a set variable can still stamp empty`);
       }
     }
 
