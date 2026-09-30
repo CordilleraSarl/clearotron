@@ -182,6 +182,52 @@ export function rememberableAnswer(method, status, body, parseError) {
 // answering as though it were the one requested.
 const DETERMINISTIC_MATCH = new Set(["similar", "exact", "starts_with", "ends_with", "contains"]);
 
+// ── THE RANKED STRATEGIES, AS SIMILARITY CHANNELS ────────────────────────────────────────────────
+//
+// The register retired `strategies` in favour of `similarity` and retired `query` in favour of `q`, both
+// on the same date, and says so in `search_meta.deprecations` on every response that still uses the old
+// names. This is that migration.
+//
+// THE TABLE IS NOT A RENAME, and assuming it was is the way to lose coverage quietly. Each old strategy
+// expands to a SET of channels, and the sets are not the strategy's own name: `fuzzy` alone applies four.
+// Every row below was read off the register's own `similarity_applied` for the old parameter — so the
+// register derived this table, not us — and each was then confirmed by sending the new form and comparing
+// what came back against the old form's answer, on a neutral term, not by reading the names across:
+//
+//   strategy   similarity channels
+//   exact      identical, lookalike
+//   phonetic   identical, phonetic
+//   fuzzy      identical, fuzzy, embedded, lookalike
+//   prefix     identical, embedded
+//
+// For `exact` the comparison was of the returned SETS, paged to exhaustion both ways and compared by
+// record, not of the totals — two totals agreeing is not two sets agreeing. Several strategies in one call
+// UNION their channels, confirmed on a combination the same way. The figures, the date and the term they
+// were taken on are on the tracker: this directory is public and vendor measurements do not live here.
+//
+// `similarity` REFUSES ANYTHING ELSE — "similarity must be one of: identical, fuzzy, embedded, phonetic,
+// lookalike" — which is why `prefix` has no channel of its own and why an unknown strategy must not be
+// forwarded verbatim: it would 4xx the call rather than narrow it, but only at run time and only for the
+// plan that asked. Unknown names map to the exact channels and the caller's word is kept in the request's
+// own record by the plan, not invented here.
+const SIMILARITY_FOR = Object.freeze({
+  exact: ["identical", "lookalike"],
+  phonetic: ["identical", "phonetic"],
+  fuzzy: ["identical", "fuzzy", "embedded", "lookalike"],
+  prefix: ["identical", "embedded"],
+});
+const SIMILARITY_CHANNELS = Object.freeze(["identical", "fuzzy", "embedded", "phonetic", "lookalike"]);
+
+/** The channels a list of ranked strategies asks for: the union of each one's, in the register's own order. */
+export function similarityFor(strategies) {
+  const want = new Set();
+  const list = Array.isArray(strategies) && strategies.length ? strategies : ["exact"];
+  for (const s of list) {
+    for (const c of (SIMILARITY_FOR[String(s ?? "").trim().toLowerCase()] ?? SIMILARITY_FOR.exact)) want.add(c);
+  }
+  return SIMILARITY_CHANNELS.filter((c) => want.has(c));
+}
+
 // ── filters: ONE builder, because the two shapes drifting apart is how `status` survived ───────────
 //
 // `filters.status` was sent by both branches below and NO SUCH KEY EXISTS. The API rejects unknown
@@ -227,12 +273,27 @@ export function buildSearchRequest(p) {
   // serializes away anyway, but writing it conditionally is what makes the owner-only shape legible here
   // rather than an accident of JSON.stringify.
   const body = {};
-  if (String(p.query ?? "").trim()) body.query = p.query;
+  // ── `q` CARRIES ONE TERM, AND AN ARRAY HERE WOULD BE A DIFFERENT SEARCH ────────────────────────
+  //
+  // A scalar `q` is a RANKED query: the similarity channels below apply to it. A LIST in the same field
+  // is not a wider ranked query — it is an exact-text filter, and the register refuses to combine it with
+  // similarity at all ("a list is an exact-text filter, not a ranked query"). Measured: the ranked form
+  // returns a live mark the register itself tiers `identical` via its lookalike channel, and the list form
+  // does not, because that mark's text does not contain the term. So an array reaching this line would
+  // silently drop look-alike coverage while answering 200 — a narrowed query wearing a complete answer,
+  // the failure this connector already refuses a multi-term stack to prevent.
+  //
+  // It is refused rather than joined or first-element-picked, for the same reason the stack is.
+  if (Array.isArray(p.query))
+    throw new Error("[signa] `query` reached the request builder as a list. A list in `q` is an exact-text "
+      + "filter on this register and cannot carry the similarity channels a ranked band asks for, so it "
+      + "would drop look-alike matches while answering 200. Send one term per request.");
+  if (String(p.query ?? "").trim()) body.q = p.query;
   const match = typeof p.match === "string" ? p.match.trim() : "";
   if (match && DETERMINISTIC_MATCH.has(match)) {
-    body.match = match;   // sending strategies alongside is a 4xx, not a preference
+    body.match = match;   // sending similarity alongside is a 4xx, not a preference
   } else {
-    body.strategies = Array.isArray(p.strategies) && p.strategies.length ? p.strategies : ["exact"];
+    body.similarity = similarityFor(p.strategies);
   }
   const filters = buildFilters(p);
   if (Object.keys(filters).length) body.filters = filters;
@@ -488,6 +549,30 @@ export function normalizeSearchResponse(body, echoQuery) {
     strategies_used: meta.strategies_used ?? [],
     match: meta.match ?? null,
     search_id: meta.search_id ?? null,
+    // ── THE REGISTER'S OWN WARNINGS, CARRIED WHOLE ──────────────────────────────────────────────
+    //
+    // Passed through as the register sent them rather than filtered to the codes we happen to know. A
+    // recorder keyed to a fixed list of codes looks like coverage and is an empty column the day the
+    // register adds one, and there is no way to tell those two apart from the outside. An empty array is
+    // the ordinary case: a clean response carries no `warnings` key at all.
+    //
+    // TWO CODES ARE KNOWN TO ARRIVE HERE, and they behave oppositely — which is the reason to keep the
+    // list whole rather than reason about either one.
+    //
+    // `mixed_script` is emitted on the exact-text filter path and NOT on the ranked path, because a
+    // ranked query folds look-alike letters through its own similarity channel and so has nothing to
+    // warn about. Every sweep this connector sends is ranked, so this code will not appear, and an
+    // empty list is NOT evidence that a query carried no mixed-script risk. Whatever guards that on the
+    // ranked path still has to.
+    //
+    // `expanded_fallback` DOES arrive on requests this connector sends. Measured: it fires on
+    // `offices` together with `nice_classes`, and on `goods_services_text`, which rides every
+    // goods-narrowed question. It says the grouped view cannot serve that filter, so the answer comes
+    // back one row per RECORD instead of one row per MARK — and the register's own note says that
+    // inflates the total. The total is what the enumerate ceiling reads to call a band a crowd, so a
+    // band can be declared a crowd on a number that counts designations rather than marks. This field
+    // is what makes that visible; it does not yet make it safe.
+    warnings: Array.isArray(meta.warnings) ? meta.warnings : [],
     // The corpus total when the vendor counted it exactly; null when it did not answer, when the
     // total was not requested, and when the figure it returned is an approximation. NEVER the page
     // size — `data.length` is `count`, and conflating the two is how a page reads as a corpus.

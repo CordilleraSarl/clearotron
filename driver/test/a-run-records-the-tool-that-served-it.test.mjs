@@ -18,6 +18,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { parseVersion, probeCliVersion, forgetCliVersions } from "../engine/cli-version.mjs";
+import { olderThanFloor } from "../driver.config.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const fresh = () => new Map();
@@ -175,4 +176,43 @@ test("the attempt record carries the version AND its probe state, on both rows",
   // the version on both rows: a machine can hold two copies of one program at different versions.
   assert.equal([...src.matchAll(/cliSource: cli\.source/g)].length, 2,
     "both attempt rows must say which copy of the program served, beside the version it answered");
+});
+
+// ── THE FLOOR IS COMPARED, AND THE ANSWER REACHES THE RECORD ──────────────────────────────────────
+//
+// The build declares a minimum version for each engine's program. Nothing compared a running copy
+// against it: the floor was handed to the installer, so a copy this product installs cannot land below
+// it, but resolution walks PATH first and takes the first hit — so a copy already on the machine wins
+// and was measured against nothing. A stage then runs on a program below the floor and is served
+// whatever that program serves, with nothing said anywhere.
+//
+// RECORDED, NOT REFUSED, and these arms hold the recorded contract rather than a refusal. Refusing
+// would stop runs on machines that are behind and working, which is a decision about those machines
+// and not a defect fix.
+//
+// The wiring is asserted against the SOURCE for the same reason the two arms above are: the row is
+// built inside a dispatch this suite cannot drive, and the fields must reach BOTH row sites. The
+// comparison itself is a real unit below.
+test("the floor comparison reaches the record, at both row sites", () => {
+  const src = readFileSync(join(ROOT, "driver", "gateway.mjs"), "utf8");
+  assert.equal([...src.matchAll(/cliBelowFloor: cli\.belowFloor/g)].length, 2,
+    "a run whose program is behind the floor must say so on both attempt rows, or the fact exists nowhere");
+  assert.equal([...src.matchAll(/cliFloor: cli\.floor/g)].length, 2,
+    "the floor it was measured against rides along, or a later reader has to guess which build's floor applied");
+});
+
+test("the comparison is THREE-VALUED, so an unknown version is never an all-clear", () => {
+  assert.equal(olderThanFloor("2.1.280", "2.1.284"), true, "a copy behind the floor");
+  assert.equal(olderThanFloor("2.1.284", "2.1.284"), false, "a copy exactly at the floor is not behind it");
+  assert.equal(olderThanFloor("2.1.285", "2.1.284"), false, "a copy ahead of the floor");
+  assert.equal(olderThanFloor(null, "2.1.284"), null, "an unreadable version must record as unknown, never as fine");
+  assert.equal(olderThanFloor("a build that answers in prose", "2.1.284"), null);
+  assert.equal(olderThanFloor("2.1.280", null), null, "no floor to compare against is also an unknown");
+});
+
+test("THE CONTROL: the comparison is by part, not by text", () => {
+  // "2.1.99" sorts above "2.1.280" as a string, so a text comparison reads a machine two hundred
+  // releases behind as ahead of the floor — the one error here that fails as a clean pass.
+  assert.equal(olderThanFloor("2.1.99", "2.1.280"), true,
+    "compared as text, which reads a copy far behind the floor as ahead of it");
 });

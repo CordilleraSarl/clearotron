@@ -17,6 +17,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { noteRegisterServed, registersServedFrom, registerServedLine, providerUsageCaveat, forgetRegistersServed, REGISTERS_SERVED }
   from "../register-served.mjs";
+import { tallyRegisterCalls } from "../provider-usage.mjs";
 
 const newRun = () => {
   const dir = mkdtempSync(join(tmpdir(), "register-served-"));
@@ -142,4 +143,69 @@ test("the caveat's precondition is reachable from the recorded field", () => {
     assert.deepEqual(providerUsageCaveat(registersServedFrom(statusOf(dir))),
       { providerUsageSpans: ["clarivate", "signa"] });
   } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+// ── THE RUN THAT RECORDED NOTHING: COUNTS WITHOUT A RECORD FETCH ──────────────────────────────────────
+//
+// The field above was written from ONE place — the adapter wrapper that the record fetcher, the record
+// lister and a gated plan executor pass through. A clearance that asks a register how many and never
+// fetches a record reaches none of them, so it recorded no register while having called one all day.
+//
+// The ledger is what knows. Every row it appends carries the vendor that produced it, so these arms drive
+// the tally rather than the wrapper: the question is whether the vendor can be read off rows that no
+// record fetch ever touched. Vendor ids here, never a party — a ledger row's `provider` is "signa" or
+// "clarivate" and nothing about a matter.
+const PREFIX = "clearance-zzz-invented-";
+const ledgerWith = (rows) => {
+  const dir = mkdtempSync(join(tmpdir(), "register-ledger-"));
+  const path = join(dir, "register-calls.jsonl");
+  writeFileSync(path, rows.map((r) => JSON.stringify(r)).join("\n") + "\n");
+  return { dir, path };
+};
+const countRow = (provider, tool = "count") => ({
+  ts: new Date().toISOString(), provider, sessionKey: `${PREFIX}a1`, sessionId: `${PREFIX}a1`,
+  tool, target: "an-invented-term", ok: true, bytes: 120, attempts: 1,
+});
+
+test("a run that only took counts still says which register answered it", () => {
+  const { dir, path } = ledgerWith([countRow("signa"), countRow("signa"), countRow("signa", "search")]);
+  try {
+    const usage = tallyRegisterCalls(path, PREFIX);
+    assert.equal(usage.record_fetch, 0, "this fixture must contain no record fetch, or it is not the case under test");
+    assert.deepEqual(usage.providers, ["signa"],
+      "a run that took counts and fetched no record names no register — which is the run the wrapper never saw");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("THE CONTROL: the same run shape on the other register names the other one", () => {
+  const { dir, path } = ledgerWith([countRow("clarivate"), countRow("clarivate")]);
+  try {
+    assert.deepEqual(tallyRegisterCalls(path, PREFIX).providers, ["clarivate"],
+      "the value is pinned rather than read — one register would pass this arm whatever the rows said");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("a run whose register changed part-way names BOTH, which a label resolved at publish cannot", () => {
+  const { dir, path } = ledgerWith([countRow("clarivate"), countRow("signa"), countRow("clarivate")]);
+  try {
+    assert.deepEqual(tallyRegisterCalls(path, PREFIX).providers, ["clarivate", "signa"],
+      "the rows name two vendors and the tally named fewer — the confident-and-wrong shape this field exists to end");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("rows belonging to ANOTHER run are not counted as this run's registers", () => {
+  const other = { ...countRow("corsearch"), sessionKey: "clearance-someone-else-", sessionId: "clearance-someone-else-" };
+  const { dir, path } = ledgerWith([countRow("signa"), other]);
+  try {
+    assert.deepEqual(tallyRegisterCalls(path, PREFIX).providers, ["signa"],
+      "another run's vendor leaked into this run's record");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("AN ABSENCE IS NAMED: no ledger means no answer, never 'no register was used'", () => {
+  const usage = tallyRegisterCalls(join(tmpdir(), "no-such-ledger-invented.jsonl"), PREFIX);
+  assert.deepEqual(usage.providers, [], "an empty list is the only honest answer here");
+  assert.equal(usage.ledger.present, false,
+    "and the provenance must say the ledger was missing — otherwise an empty list reads as a measurement");
+  assert.equal(usage.ledger.configured, true, "a path WAS given, so 'not configured' would be the wrong provenance");
 });
