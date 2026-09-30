@@ -58,3 +58,49 @@ test("CONTROL — the fallback reaches no other date", () => {
   assert.equal(r.registrationDate, null, "a derived registration date reached registrationDate");
   assert.equal(r.expiryDate, "2031-04-18");
 });
+
+// ── THE OTHER TWO FIELDS THE SAME RELEASE MOVED ───────────────────────────────────────────────────
+
+test("the opposition window is read from the computed object, as the OBJECT it is", () => {
+  // Not a path swap: the window used to be a scalar and is now a shape. An arm that only checked for
+  // non-null would pass on a connector that put an object where a caller expects a date.
+  const w = { supported: true, window_opens: "2026-01-05", window_closes: "2026-04-05" };
+  assert.deepEqual(normalizeRecord({ ...base, derived: { opposition_window: w } }, "us").oppositionWindow, w);
+  // The not-opposable shape is a real answer and must survive intact rather than flatten to null.
+  const no = { supported: false, reason: "stage_not_opposable", rule_id: "eu_opposition" };
+  assert.deepEqual(normalizeRecord({ ...base, derived: { opposition_window: no } }, "us").oppositionWindow, no,
+    "a stage that cannot be opposed is a stated answer, not an absence");
+  assert.equal(normalizeRecord({ ...base }, "us").oppositionWindow, null,
+    "no window in either place is an absence");
+});
+
+test("a top-level opposition window still wins, if the register ever sends one again", () => {
+  const top = { supported: true, window_opens: "2025-01-01" };
+  const der = { supported: false, reason: "stage_not_opposable" };
+  assert.deepEqual(normalizeRecord({ ...base, opposition_window: top, derived: { opposition_window: der } }, "us")
+    .oppositionWindow, top);
+});
+
+test("SYNTHETIC — the renewal fallback, which the data we hold never exercises", () => {
+  // Stated as synthetic on purpose. Of the 22 bodies from the run that straddled the release, none
+  // carried a renewal date in either place, so nothing here reproduces a recovery we have observed. The
+  // fallback exists because the register names this field as moving with expiry, and reading one place is
+  // exactly how the expiry loss happened.
+  assert.equal(normalizeRecord({ ...base, derived: { renewal_due_date: "2032-06-01" } }, "us").renewalDueDate,
+    "2032-06-01");
+  assert.equal(normalizeRecord({ ...base, renewal_due_date: "2031-06-01", derived: { renewal_due_date: "2032-06-01" } }, "us")
+    .renewalDueDate, "2031-06-01", "the office's own date comes first here too");
+  assert.equal(normalizeRecord({ ...base }, "us").renewalDueDate, null);
+});
+
+test("CONTROL — the IR number format change needs nothing, and the fallbacks did not reach it", () => {
+  // The register dropped the WO prefix from an international registration's number, so it now equals
+  // `ir_number`. This connector already read `registration_number ?? ir_number`, so both forms land the
+  // same; measured on the run's four WO records, the two fields agree. Asserted here so a later edit to
+  // the lines above cannot quietly add a derived fallback to a field that needs none.
+  assert.equal(normalizeRecord({ ...base, jurisdiction_code: "wo", registration_number: "1508624", ir_number: "1508624" }, "wo")
+    .registrationNumber, "1508624");
+  assert.equal(normalizeRecord({ ...base, jurisdiction_code: "wo", ir_number: "1508624" }, "wo").registrationNumber, "1508624");
+  assert.equal(normalizeRecord({ ...base, derived: { registration_number: "9999999" } }, "us").registrationNumber, null,
+    "a computed registration number reached the field that carries the office's own");
+});

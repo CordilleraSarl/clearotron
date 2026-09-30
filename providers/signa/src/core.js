@@ -360,16 +360,31 @@ export function normalizeRecord(rec, officeHint = null) {
     // "absent from the register", and `nativeScriptIndex` is settled from the record, not from this.
     markTextScript: rec.mark_text_script ?? null,
     markTextLanguage: rec.mark_text_language ?? null,
-    renewalDueDate: toIso(rec.renewal_due_date),
+    // The same split as `expiryDate` above, and the vendor names both fields in it. UNEXERCISED ON THE
+    // DATA WE HOLD: of the 22 record bodies from the run that straddled the release, none carried a
+    // renewal date in either place, so the fallback recovers nothing we can point at. It is here because
+    // the register says this field moved with expiry, and reading one place is how the expiry loss
+    // happened; the arm for it is therefore synthetic and says so.
+    renewalDueDate: toIso(rec.renewal_due_date ?? rec.derived?.renewal_due_date),
     publicationDate: toIso(rec.publication_date),
     priorityDate: toIso(rec.priority_date),
     terminationDate: toIso(rec.termination_date),
-    // Opposition data IS on the record now: `opposition_window` rides every search row and
-    // `proceedings_count` the full record. The per-proceeding detail behind
-    // GET /v1/trademarks/{id}/proceedings is still an unwired tool — so the window and the count are
-    // reported, and the absence of detail is stated rather than left to look like an absence of
-    // proceedings.
-    oppositionWindow: rec.opposition_window ?? null,
+    // Opposition data IS on the record, and NOT where this used to look. The register reports the window
+    // under its computed object, and as an OBJECT rather than a scalar:
+    // `{supported, window_opens, window_closes, …}`, or `{supported: false, reason, rule_id}` where the
+    // stage cannot be opposed. `proceedings_count` is still the office's own, top-level.
+    //
+    // THE OLD READ RETURNED NULL ON EVERY RECORD WE HOLD, and the comment here asserted otherwise — that
+    // the window "rides every search row". Measured over all four saved runs on this register: 0 of 6,
+    // 0 of 5, 0 of 7 and 0 of 22 bodies carried it top-level, and 6, 3, 7 and 22 carried it under the
+    // computed object. So the earliest evidence we have already reads the new place, eleven days before
+    // the release the register attributes the move to. Which of the two dates is right does not change
+    // what to read; it does mean this was not reported missing for as long as it was missing.
+    //
+    // The per-proceeding detail behind GET /v1/trademarks/{id}/proceedings is still an unwired tool, so
+    // the window and the count are reported and the absence of detail is stated rather than left to look
+    // like an absence of proceedings.
+    oppositionWindow: rec.opposition_window ?? rec.derived?.opposition_window ?? null,
     proceedingsCount: rec.proceedings_count ?? null,
     oppositions: null,
     _provenance: { opposition: rec.proceedings_count != null ? `count=${rec.proceedings_count} from the record; per-proceeding detail via /proceedings, tool not wired` : "per-proceeding detail via /proceedings, tool not wired" },
