@@ -524,14 +524,41 @@ let authoredPrint = null;
  * them into strings would change the payload's shape.
  */
 export function redactDeep(value, { redactValue, redactKey }) {
-  const walk = (v) => {
+  const walk = (v, path = "") => {
     if (typeof v === "string") return redactValue(v);
-    if (Array.isArray(v)) return v.map(walk);
+    if (Array.isArray(v)) return v.map((x) => walk(x, path));
     if (v && typeof v === "object") {
       const out = {};
-      // The key through the AUTHORED redactor, the value through the full one, in one pass so the two
-      // can never drift apart by a caller forgetting one of them.
-      for (const [k, x] of Object.entries(v)) out[redactKey(k)] = walk(x);
+      // TWO SIBLING KEYS CAN REDUCE TO ONE TOKEN, and the later write would take the earlier field with
+      // it. The matcher tolerates a trailing plural, so a protected name and that name plus `s` both
+      // match; it is case-insensitive, so two spellings of one name collide too. Rebuilding the object
+      // key by key, the second write wins and the first field is gone — valid JSON, no warning, and a
+      // consumer cannot tell a field ever existed. That is the failure mode this whole module exists to
+      // prevent, so it refuses rather than guessing which field to keep.
+      //
+      // MEASURED BEFORE BEING BUILT: across four real scored payloads, 585 objects and 1634 protected
+      // names, there is no such pair today. The mechanism is real and the path is not reachable on
+      // anything this box produces, which is why this is a guard and not a repair.
+      //
+      // THE REFUSAL NAMES THE TOKEN AND THE PATH, NEVER THE KEYS. Saying which keys collided would print
+      // the very name being withheld — the keys are the protected string, that is why they collided. A
+      // reader who needs them asks with `--names`, where nothing is withheld and the collision cannot
+      // happen.
+      const seen = new Map();
+      for (const [k, x] of Object.entries(v)) {
+        const rk = redactKey(k);
+        if (seen.has(rk)) {
+          const e = new Error(`two sibling keys reduce to the same token ${rk} at ${path || "the payload root"}`
+            + ` — this payload cannot be rendered addressably, so it is refused rather than written with a`
+            + ` field silently dropped. Run again with --names to see which keys they are.`);
+          e.code = "REDACTED_KEY_COLLISION";
+          e.token = rk;
+          e.at = path || "(root)";
+          throw e;
+        }
+        seen.set(rk, true);
+        out[rk] = walk(x, path ? `${path}.${rk}` : rk);
+      }
       return out;
     }
     return v;
