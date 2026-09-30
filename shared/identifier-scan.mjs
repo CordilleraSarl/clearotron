@@ -129,7 +129,37 @@ export const ALLOWED_CONTEXT =
  *     The escaped form (`C:\\`) is not a raw path, so an escape beside a path in a string is still read.
  */
 const BACKSLASH_ESCAPE = /\\(?:[\\nrtfv0]|u[0-9a-fA-F]{4}|x[0-9a-fA-F]{2})/g;
-const RAW_WINDOWS_PATH = /(?<![A-Za-z0-9])[A-Za-z]:\\(?!\\)[^"'`<>|?*\r\n]*/g;
+
+// A RAW PATH IS NOT ONLY AN ABSOLUTE ONE. The drive-letter form was the only one recognised, so the same
+// misreading came back on the relative forms: `.\node_modules\.bin` and `<prefix>\node_modules` were read
+// as holding an escaped newline, which ate the `n` and left the three letters after it standing at the
+// front of a word. Three occurrences on the public tip, in a CI workflow and a test.
+//
+// The anchors below are what makes a backslash a separator rather than an escape, and each is a shape a
+// path is written in and a string literal is not. A backslash after a LETTER is deliberately not an anchor:
+// that is the escape the rule exists for, and the arms pin it.
+//
+// EACH ANCHOR MATCHES ONLY THE SHAPE ITS COMMENT CLAIMS, and the first version of this did not. `[>%]` alone
+// read ANY closing angle or percent before an escape as a path — `rose to 50%\nNorvale`, `cmd >\nNorvale` —
+// and `\.{1,2}` read the last two dots of an ellipsis as `..\`. In each of those the escape was left
+// unescaped, the `n` stayed glued to the name, and A REAL NAME WENT UNFOUND. That is the worse of this
+// rule's two failure directions, and it is the one a widened anchor buys.
+//
+// THE RESIDUE, said here so it is not a surprise: `a<b>\nNorvale` still reads as a path, because `<b>` is
+// indistinguishable by shape from `<root>`. A closing HTML tag immediately before an escape, with a name
+// straight after it, is not caught. A minimum length inside the angles would be an arbitrary line through
+// real stand-ins, so this is recorded rather than fixed.
+const PATH_TAIL = "[^\"'`<>|?*\\r\\n]*";
+const RAW_WINDOWS_PATH = new RegExp([
+  // C:\… — a drive letter
+  "(?<![A-Za-z0-9])[A-Za-z]:\\\\(?!\\\\)",
+  // .\… and ..\… — relative. The dot in the lookbehind is what stops an ellipsis reading as `..\`.
+  "(?<![A-Za-z0-9.])\\.{1,2}\\\\(?!\\\\)",
+  // <prefix>\… — a stand-in for the first segment, as a comment or a doc writes it
+  "(?<=<[A-Za-z_][A-Za-z0-9_]*>)\\\\(?!\\\\)",
+  // %TEMP%\… — an environment variable, as a script writes it
+  "(?<=%[A-Za-z_][A-Za-z0-9_]*%)\\\\(?!\\\\)",
+].map((anchor) => anchor + PATH_TAIL).join("|"), "g");
 
 export const unescapeBoundaries = (line) => {
   let out = "", at = 0;

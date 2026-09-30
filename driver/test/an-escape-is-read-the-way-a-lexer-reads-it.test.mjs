@@ -30,6 +30,48 @@ test("a Windows path written raw holds no escapes, so its backslashes stay separ
   assert.equal(fires("Quenvik", String.raw`C:\Users\Example\Quenvik\x`), true);
 });
 
+test("a relative path is as raw as an absolute one, and so is one behind a stand-in", () => {
+  // Only the drive-letter form was recognised, so the same misreading came back on the relative forms and
+  // was reported three times on the public tip before anybody read it. Each line below ate the `n` of the
+  // first segment and left the letters after it at the front of a word, inventing a three-letter name.
+  assert.equal(fires("Ytrex", String.raw`if (-not (Test-Path ".\nytrex\.bin\clearotron.cmd"))`), false,
+    "a quoted relative path was read as holding an escaped newline");
+  assert.equal(fires("Ytrex", String.raw`.\nytrex\.bin\x.cmd doctor`), false, "a bare relative path");
+  assert.equal(fires("Ytrex", String.raw`..\nytrex\x`), false, "a parent-relative path");
+  assert.equal(fires("Ytrex", String.raw`a global package at <prefix>\nytrex with`), false,
+    "a path whose first segment is a stand-in, as a comment or a doc writes it");
+  assert.equal(fires("Ytrex", String.raw`%TEMP%\nytrex\x`), false, "a path behind an environment variable");
+
+  // IT MISSED A REAL NAME BY THE SAME MISTAKE, which is the half that would have stayed silent: eating the
+  // `n` destroys a name beginning with one just as readily as it invents one that was never there.
+  assert.equal(fires("Norvale", String.raw`.\clients\norvale\notes.txt`), true,
+    "a name starting with n, after a relative separator, was lost to a newline");
+  assert.equal(fires("Norvale", String.raw`<root>\norvale\notes.txt`), true);
+});
+
+test("a widened anchor must not swallow an escape: an ellipsis, a percent, a redirect", () => {
+  // THESE ARMS EXIST BECAUSE THE FIRST VERSION OF THE ANCHORS FAILED THEM. Recognising a relative path as
+  // `\.{1,2}\\` also read the last two dots of an ellipsis as `..\`, and anchoring on a bare `[>%]` read any
+  // closing angle or percent before an escape as a path. In each the escape was left unescaped, the `n`
+  // stayed glued to the name, and A REAL NAME WENT UNFOUND — the worse of this rule's two directions, and
+  // the one the arms above cannot see, because none of them puts a dot, a percent or an angle before an
+  // escape. Each anchor now matches only the shape its own comment claims.
+  assert.equal(fires("Norvale", "and so on...\\nNorvale Ltd"), true, "an ellipsis was read as a relative path");
+  assert.equal(fires("Norvale", "rose to 50%\\nNorvale Ltd"), true, "a bare percent was read as a path");
+  assert.equal(fires("Norvale", "cmd >\\nNorvale Ltd"), true, "a bare redirect was read as a path");
+
+  // And the shapes the anchors are FOR still hold, so the arms above cannot be satisfied by giving up on
+  // paths altogether.
+  assert.equal(fires("Ytrex", String.raw`..\nytrex\x`), false, "a parent-relative path");
+  assert.equal(fires("Ytrex", String.raw`at <prefix>\nytrex with`), false, "a stand-in for the first segment");
+  assert.equal(fires("Ytrex", String.raw`%TEMP%\nytrex\x`), false, "an environment variable");
+
+  // THE RESIDUE, pinned so a later change has to mean it: a closing HTML tag is indistinguishable by shape
+  // from a stand-in, so an escape straight after one is still read as a path and a name after it is lost.
+  // Recorded rather than fixed — a minimum length inside the angles would cut through real stand-ins.
+  assert.equal(fires("Norvale", "a<b>\\nNorvale Ltd"), false, "the residue changed; say so if deliberately");
+});
+
 test("the escapes the rule exists for are still boundaries", () => {
   assert.equal(fires("Quenvik", String.raw`ownNames:'Harrow Holdings\nQuenvik'`), true, "an escaped newline");
   assert.equal(fires("Quenvik", String.raw`"\\\nQuenvik"`), true, "a backslash pair, then an escaped newline");
