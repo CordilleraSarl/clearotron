@@ -566,7 +566,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
 
-## brace-expansion@1.1.18
+## brace-expansion@1.1.21
 
 - **Licence declared:** `MIT`
 - **Repository:** git://github.com/juliangruber/brace-expansion
@@ -596,7 +596,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-## brace-expansion@2.1.4
+## brace-expansion@2.1.7
 
 - **Licence declared:** `MIT`
 - **Repository:** git://github.com/juliangruber/brace-expansion
