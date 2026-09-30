@@ -70,9 +70,11 @@ test("Signa: the request that goes over the wire is the exact form, with both fi
   const plan = compile(SHORT, PROVIDER_CAPABILITIES.signa);
   for (const e of goodsEntries(plan)) {
     const body = signaWire(e);
-    assert.equal(body.query, SHORT);
+    assert.equal(body.q, SHORT, "the term rides `q` — the register retired `query`");
     assert.equal(body.match, undefined, "`match: contains` is the 400 this change exists to avoid");
-    assert.deepEqual(body.strategies, ["exact"], "the ranked exact shape, whose floor is two characters");
+    // The ranked exact shape, whose floor is two characters. It is expressed as similarity channels now:
+    // the register retired `strategies`, and `exact` asks for identical plus lookalike.
+    assert.deepEqual(body.similarity, ["identical", "lookalike"], "the ranked exact shape, whose floor is two characters");
     assert.deepEqual(body.filters.nice_classes, [9, 42]);
     assert.equal(body.filters.goods_services_text, e.goods_text[0], "the goods word rides the same request");
   }
