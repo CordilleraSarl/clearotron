@@ -627,6 +627,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-job-matched-by-name-elsewhere-keeps-its-name.test.mjs": {
+          "tests": 2,
+          "asserts": 2,
+          "skips": 0,
+          "todos": 0
+        },
         "a-job-on-the-older-goods-spelling-scopes-the-same.test.mjs": {
           "tests": 10,
           "asserts": 23,
