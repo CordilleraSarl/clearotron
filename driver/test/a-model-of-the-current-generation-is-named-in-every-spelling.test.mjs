@@ -27,6 +27,7 @@ import { tmpdir } from "node:os";
 import { driverDir } from "../../shared/driver-dir.mjs";
 import { rollupTokens, servedModels } from "../tokens.mjs";
 import { resolveModel, modelFamily } from "../driver.config.mjs";
+import { claudeModel } from "../engine/anthropic-agent.mjs";
 
 const mkRun = (stages) => {
   const runDir = mkdtempSync(join(tmpdir(), "clearotron-gen-"));
@@ -48,6 +49,62 @@ test("every spelling of the current top-tier model places in the same family", (
   // manufacture a mismatch. It reads the same for the generation before this one, so nothing regressed.
   for (const id of ["us.anthropic.claude-opus-5-5-v1:0", "anthropic.claude-opus-5-5", "us.anthropic.claude-opus-5-v1:0"])
     assert.equal(modelFamily(id), null, `${id} now places a family, which changes what the gateway refuses`);
+});
+
+// ── AND THE SONNET SIDE OF THE SAME GENERATION ────────────────────────────────────────────────────
+//
+// The arms above are written on the top tier, and the sonnet tier is the one a run actually spends most
+// of its turns on. It was covered by one line — two ids, one assertion — so the readers that place a
+// sonnet id were pinned at a fraction of the opus case while every vendor change for this generation
+// lands on both. Measured on this tree before writing them: all three readers already place
+// `claude-sonnet-5-5` correctly in every spelling, so these arms record a behaviour rather than
+// requiring a new one. That is the point — nothing today stops a narrowing that would take it away.
+
+test("every spelling of the current sonnet model places in the same family", () => {
+  for (const id of ["claude-sonnet-5-5", "anthropic/claude-sonnet-5-5", "claude-sonnet-5-5-20260922",
+    "claude-sonnet-5-5[1m]", "CLAUDE-SONNET-5-5"])
+    assert.equal(modelFamily(id), "sonnet", `${id} did not place as sonnet`);
+  // The generation before it, so a change that placed only the newer one is caught here rather than in
+  // a run that quietly stopped comparing.
+  assert.equal(modelFamily("claude-sonnet-5"), "sonnet");
+  // The cloud spellings stay unplaced for sonnet exactly as they do for opus — the same contract, not a
+  // tier-specific gap.
+  for (const id of ["us.anthropic.claude-sonnet-5-5-v1:0", "anthropic.claude-sonnet-5-5"])
+    assert.equal(modelFamily(id), null, `${id} now places a family, which changes what the gateway refuses`);
+});
+
+test("a sonnet id dated and undated resolve to one catalog entry", () => {
+  assert.equal(resolveModel("claude-sonnet-5-5"), "anthropic/claude-sonnet-5-5");
+  assert.equal(resolveModel("claude-sonnet-5-5-20260922"), "anthropic/claude-sonnet-5-5");
+  assert.equal(resolveModel("anthropic/claude-sonnet-5-5"), "anthropic/claude-sonnet-5-5");
+});
+
+test("the client is told the sonnet model that served the turn, in every cloud's spelling", () => {
+  const listed = (rows) => {
+    const runDir = mkRun({ "knockout-frame": rows });
+    try { return servedModels(runDir); } finally { rmSync(runDir, { recursive: true, force: true }); }
+  };
+  assert.deepEqual(listed([attempt({ model: "sonnet", modelActual: "claude-sonnet-5-5" })]), ["claude-sonnet-5-5"]);
+  assert.deepEqual(listed([attempt({ model: "sonnet", modelActual: "us.anthropic.claude-sonnet-5-5-v1:0" })]),
+    ["claude-sonnet-5-5"], "a cloud's spelling of the sonnet model was not read as the model");
+  assert.deepEqual(listed([attempt({ model: "sonnet", modelActual: "claude-sonnet-5-5@20260922" })]),
+    ["claude-sonnet-5-5-20260922"], "the other cloud's spelling was not read as the model");
+  // One model reached two ways is listed once, the sonnet twin of the arm above.
+  assert.deepEqual(listed([attempt({ model: "sonnet", modelActual: "claude-sonnet-5-5" }),
+    attempt({ model: "sonnet", modelActual: "anthropic.claude-sonnet-5-5" })]), ["claude-sonnet-5-5"]);
+  // A deployment name on a sonnet turn is listed as its tier, never as the name.
+  assert.deepEqual(listed([attempt({ model: "sonnet", modelActual: "acme-prod-deployment" })]), ["Sonnet"]);
+});
+
+test("the engine hands a concrete id of this generation to the program as itself", () => {
+  // The pin that makes a pin a pin: a caller naming an exact model must not be silently un-pinned to a
+  // tier alias. Both tiers, because a tier alias resolves at the program and only the concrete id does not.
+  assert.equal(claudeModel("claude-sonnet-5-5"), "claude-sonnet-5-5");
+  assert.equal(claudeModel("anthropic/claude-sonnet-5-5"), "claude-sonnet-5-5");
+  assert.equal(claudeModel("claude-opus-5-5"), "claude-opus-5-5");
+  // A family with no version is the tier, and keeps following it.
+  assert.equal(claudeModel("claude-sonnet"), "sonnet");
+  assert.equal(claudeModel("sonnet"), "sonnet");
 });
 
 test("a dated id and an undated one resolve to one catalog entry, so a total is not split", () => {

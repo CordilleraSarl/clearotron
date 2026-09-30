@@ -86,6 +86,33 @@ const specimen = (r) =>
   ` [#1780 firstByteMs=${r?.firstByteMs} toolCalls=${r?.toolCalls} toolWaitMs=${r?.toolWaitMs}`
   + ` killed=${r?.killed} signals=${JSON.stringify(r?.signals ?? {})}]`;
 
+// ── BOTH SPELLINGS OF A TIER ARE ONE TIER ─────────────────────────────────────────────────────────
+//
+// A tier arrives two ways: the bare word a stage writes ("sonnet"), and the family form an operator
+// types for a cloud deployment ("claude-sonnet"). This function's own comment calls the second one the
+// tier, and today they agree for all four — measured, not assumed.
+//
+// They agree by ACCIDENT rather than by construction: the bare word is looked up in the tier table,
+// and the family form falls out of a different branch that returns the family word it parsed. While
+// every table value equals its key, the two roads end in the same place. The day a tier names a
+// concrete model, they stop: the bare word gets the id and the family form still gets the alias, so one
+// tier means two models and the only sign is a stage quietly running something else.
+//
+// That is not hypothetical — it is what a draft of exactly that change did here, and nothing in this
+// file caught it. So the invariant is asserted as an EQUALITY between the two roads rather than against
+// any particular value, which is what makes it survive whichever way the tier question is ruled.
+test("both spellings of a tier resolve to the same model, whatever that model is", () => {
+  for (const tier of ["opus", "sonnet", "haiku", "fable"]) {
+    const bare = claudeModel(tier);
+    const family = claudeModel(`claude-${tier}`);
+    assert.ok(bare, `the bare tier "${tier}" resolves to nothing`);
+    assert.equal(family, bare,
+      `"claude-${tier}" resolves to ${JSON.stringify(family)} and "${tier}" to ${JSON.stringify(bare)}. `
+      + "One tier, two models: a stage asking for this tier and an operator naming the same tier on a "
+      + "cloud deployment would run different models, and nothing downstream would say so.");
+  }
+});
+
 test("tier/alias → claude model alias; a model claude cannot run REFUSES (#238 corruption 3)", () => {
   // Every tier goes as the vendor's alias: the newest model of the family, and the one a cloud resolves
   // through ANTHROPIC_DEFAULT_*_MODEL. An exact id here was a silent downgrade the day a new model shipped.

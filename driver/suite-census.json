@@ -802,8 +802,8 @@
           "todos": 0
         },
         "a-model-of-the-current-generation-is-named-in-every-spelling.test.mjs": {
-          "tests": 4,
-          "asserts": 13,
+          "tests": 8,
+          "asserts": 29,
           "skips": 0,
           "todos": 0
         },
@@ -946,8 +946,8 @@
           "todos": 0
         },
         "a-program-already-here-is-checked-against-the-floor.test.mjs": {
-          "tests": 9,
-          "asserts": 38,
+          "tests": 12,
+          "asserts": 44,
           "skips": 3,
           "todos": 0
         },
@@ -2962,8 +2962,8 @@
           "todos": 0
         },
         "engine.anthropic.test.mjs": {
-          "tests": 65,
-          "asserts": 248,
+          "tests": 66,
+          "asserts": 250,
           "skips": 1,
           "todos": 0
         },
@@ -3455,7 +3455,7 @@
         },
         "jx-p4-cores.test.mjs": {
           "tests": 14,
-          "asserts": 56,
+          "asserts": 58,
           "skips": 0,
           "todos": 0
         },
@@ -3767,7 +3767,7 @@
         },
         "onboard-wizard.test.mjs": {
           "tests": 77,
-          "asserts": 294,
+          "asserts": 295,
           "skips": 4,
           "todos": 0
         },
@@ -5664,6 +5664,12 @@
         "the-engine-is-given-no-fixed-call-budget.test.mjs": {
           "tests": 1,
           "asserts": 2,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-engine-sets-no-sampling-and-forces-no-tool.test.mjs": {
+          "tests": 6,
+          "asserts": 9,
           "skips": 0,
           "todos": 0
         },

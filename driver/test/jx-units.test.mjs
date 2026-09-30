@@ -111,7 +111,7 @@ test("buildCandidateRequest: ja/ko prompts exist, carry the office framing, and 
     const prompt = body.messages[0].content;
     assert.match(prompt, office);
     assert.match(prompt, /NOVAPULSE/);
-    assert.equal(body.tool_choice.name, "emit_candidates");
+    assert.equal(body.tools[0].name, "emit_candidates");
   }
 });
 
@@ -151,8 +151,8 @@ test("with the table built, every class answers from the office's own data, with
 // ── the completions core (pure) ─────────────────────────────────────────────────────────────────────
 test("core: buildCandidateRequest forces the schema tool; parseCandidates falls back to EMPTY on any shape miss", () => {
   const body = core.buildCandidateRequest({ mark: "NOVAPULSE", productContext: "game software", lane: "zh" });
-  assert.equal(body.tool_choice.type, "tool");
-  assert.equal(body.tool_choice.name, "emit_candidates");
+  assert.equal(body.tools[0].name, "emit_candidates");
+  assert.equal(body.tool_choice, undefined, "a forced choice is refused by the current generation and was never forwarded");
   assert.match(body.messages[0].content, /NOVAPULSE/);
   assert.match(body.messages[0].content, /Han script ONLY/);
   assert.throws(() => core.buildCandidateRequest({ mark: "X", lane: "yy" }), /no prompt for lane/);

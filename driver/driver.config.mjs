@@ -2057,17 +2057,34 @@ export const ENGINE_BINARIES = {
     // newer", with no ceiling. Setup installs it into the engines folder (enginesFolder, below the table)
     // when the reader picks this engine, and the resolver uses it only when the machine has no copy of its
     // own. The package's own `bin` field names the program, so no path inside it is written down here.
-    // 2.1.280 is the floor because it is the oldest release that can run the current generation of this
-    // vendor's top tier: below it the API refuses the model id outright ("version 2.1.280 or newer is
-    // required"), and the tier alias quietly goes on serving the previous generation. Measured 2026-09-22
-    // on 2.1.263 — the alias returned the older model and the pinned id was refused — so a floor that
-    // only asks for a program that starts is a floor that passes a machine this engine cannot run on.
-    package: "@anthropic-ai/claude-code", floor: "2.1.280",
+    // THE FLOOR IS THE OLDEST RELEASE WHOSE TIER ALIASES REACH THE CURRENT MODEL GENERATION, and each
+    // tier crossed on its own release rather than together. Measured 2026-09-30 by driving each version's
+    // `-p` turn at a local recorder and reading the `model` it put on the wire:
+    //
+    //     version   --model opus        --model sonnet
+    //     2.1.277    claude-opus-5       claude-sonnet-5
+    //     2.1.278    claude-opus-5       claude-sonnet-5
+    //     2.1.280    claude-opus-5-5     claude-sonnet-5
+    //     2.1.281    claude-opus-5-5     claude-sonnet-5
+    //     2.1.282    claude-opus-5-5     claude-sonnet-5
+    //     2.1.283    claude-opus-5-5     claude-sonnet-5
+    //     2.1.284    claude-opus-5-5     claude-sonnet-5-5
+    //
+    // So the old floor of 2.1.280 was exactly right for the top tier and left the sonnet tier a
+    // generation behind for four releases, silently: the alias resolves inside the program, the request
+    // is well formed either way, and nothing refuses. The floor moves to the release where the SECOND
+    // tier crosses, because a stage that asks for sonnet is asking for the current sonnet.
+    //
+    // Below the floor the previous behaviour still holds: on 2.1.263 the alias returned the older model
+    // and a pinned id was refused outright ("version 2.1.280 or newer is required"), measured 2026-09-22.
+    // A floor that only asks for a program that starts is a floor that passes a machine this engine
+    // cannot run the current generation on.
+    package: "@anthropic-ai/claude-code", floor: "2.1.284",
     // WHAT THE INSTALL TAKES ON DISK, in MB, which setup states before it asks to install. MEASURED, not
     // declared by the vendor: the engines folder after a fresh install of this package into an empty
     // folder, on npm 10.9.8 and on 11.19.1, 2026-09-14. A later release can be larger or smaller, so setup
     // says "about". Re-measure when the floor moves.
-    installMB: 214,
+    installMB: 233,
     // The licence setup states wherever it tells a reader what they are about to install or use, as the
     // vendor's package declares it: "SEE LICENSE IN README.md", Anthropic's own terms.
     licence: "proprietary third-party software",
