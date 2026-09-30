@@ -115,6 +115,14 @@ function emptyTally() {
     // confused with "the ledger used a name this module doesn't know" again.
     by_tool: {},
     unclassified: 0,
+    // WHICH VENDORS ACTUALLY ANSWERED THIS RUN, read off the rows rather than resolved from the
+    // environment. Every ledger row carries a `provider` discriminator (providers/_shared/ledger.mjs), so
+    // the set of vendors a run used is a fact the ledger already holds — and it is the ONLY place that
+    // holds it per call. A label resolved at publish instead names whichever register happened to be
+    // active then, which is wrong for a run whose register changed part-way; this cannot be, because each
+    // row says who produced it. Empty is a real answer and means the ledger carried no row for this run,
+    // which the four `ledger.*` provenance facts below then explain.
+    providers: [],
     // …and the PROVENANCE of the zeros above. Same house rule, the last place in this module still broken
     // by it: a ledger that is missing, mis-pointed or unreadable returned a clean all-zero tally that was
     // indistinguishable from "the run made no provider calls", and the note line printed `total=0 ((none))`
@@ -163,6 +171,7 @@ export function tallyRegisterCalls(ledgerPath = DEFAULT_LEDGER_PATH, runPrefix) 
   out.ledger.readable = true;
 
   const firstFetchSession = new Map(); // record_fetch target → the session that first (network-)fetched it
+  const providersSeen = new Set();     // the vendors this run's rows name, in the order the ledger names them
 
   for (const line of text.split("\n")) {
     if (!line.trim()) continue;
@@ -178,6 +187,11 @@ export function tallyRegisterCalls(ledgerPath = DEFAULT_LEDGER_PATH, runPrefix) 
     if (row.ok === false) out.errors++;
     const isCacheHit = row.cache_hit === true;
     if (isCacheHit) out.cache_hits++;
+
+    // Collected for EVERY matching row, whatever tool it rode — a count-only run rides `count`-shaped
+    // rows and no record fetch, and that is exactly the run whose register went unrecorded before.
+    const rowProvider = typeof row.provider === "string" ? row.provider.trim().toLowerCase() : "";
+    if (rowProvider) providersSeen.add(rowProvider);
 
     const toolName = typeof row.tool === "string" && row.tool ? row.tool : "(none)";
     out.by_tool[toolName] = (out.by_tool[toolName] ?? 0) + 1;
@@ -221,6 +235,8 @@ export function tallyRegisterCalls(ledgerPath = DEFAULT_LEDGER_PATH, runPrefix) 
       }
     }
   }
+  // Sorted so two runs with the same vendors compare equal whatever order the ledger happened to append in.
+  out.providers = [...providersSeen].sort();
   return out;
 }
 

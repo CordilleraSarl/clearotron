@@ -1222,8 +1222,8 @@
           "todos": 0
         },
         "a-run-records-which-register-served-it.test.mjs": {
-          "tests": 9,
-          "asserts": 22,
+          "tests": 14,
+          "asserts": 30,
           "skips": 0,
           "todos": 0
         },

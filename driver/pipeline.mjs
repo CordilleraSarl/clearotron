@@ -47,7 +47,7 @@ import { readRegisterTaint, readActiveTaintAxes } from "./register-taint.mjs";
 import { parseNamedBand, mergeNamedBands, findCollapsedBands, quarantineUnknownStates, taintQuarantineCleanBlocks, bandRecords } from "./named-band.mjs";
 import { recordOriginsFor } from "./record-origins.mjs";
 import { REGISTER_PROVIDER } from "./driver.config.mjs";
-import { noteRegisterServed, registersServedFrom, providerUsageCaveat } from "./register-served.mjs";   // which register actually served this run, from the resolver the dispatch itself uses
+import { noteRegisterServed, registersServedFrom, providerUsageCaveat } from "./register-served.mjs";   // which registers actually served this run — noted eagerly from the dispatch's own resolver, and reconciled at publish against the ledger rows, which carry the vendor per call
 import { FACTS_FILE as DIGEST_FACTS_FILE, ACCOUNTING_STAMP as DIGEST_ACCOUNTING_STAMP, recordedFindingUris,
   digestAccountingGap, digestBatchBrief, batchesOf } from "./register-digest-record.mjs";   // conversion 11 — the render's facts sidecar and the accounting era stamp
 import { buildBandShape, dominantElementComposites, deriveRegisterPositions, floorTierByMark, floorMarkKey } from "./band-shape.mjs";   // PR-8 — the deterministic reading layer; P2-A — candidates + positions
@@ -15184,6 +15184,23 @@ async function pipelineInner(job, opts = {}) {
       // same record, so the two register fields in one status cannot silently disagree: the served list
       // says two, and this says the tally covers both and could only be filed under one. Splitting the
       // tally by register is a second question and is not answered here.
+      // ── THE LEDGER IS WHAT KNOWS, SO ASK IT BEFORE READING THE RECORD ───────────────────────────
+      //
+      // `registersServed` was written from ONE place: the adapter wrapper the record fetcher, the record
+      // lister and a gated plan executor pass through. A clearance that takes counts and never fetches a
+      // record went through none of them and recorded no register at all — the run could not say which
+      // vendor answered it, and `registersServedFrom` returned [] for a run that had called a register
+      // hundreds of times.
+      //
+      // Every one of those calls wrote a ledger row, and every row carries the vendor that produced it, so
+      // the tally just computed already holds the answer per call. Noting them here is not a second source
+      // of truth competing with the first: it is the same memoised setter, which unions and writes only on
+      // change, so the eager note during the run and this reconciliation at publish cannot disagree.
+      //
+      // WHY NOT `activeProvider()` HERE. That resolves the register active at publish, which is the
+      // confident-and-wrong answer this whole field exists to end — and on a run that changed register it
+      // would name one vendor while the rows name two. The rows are per call; the resolver is per moment.
+      for (const id of usage.providers) noteRegisterServed(run.runDir, id);
       const served = registersServedFrom(readRunStatus(run.runDir));
       const spans = providerUsageCaveat(served);
       runLog(run.runDir, { event: "provider-usage", provider, ...(served.length > 1 ? { spans: served } : {}), ...usage });
