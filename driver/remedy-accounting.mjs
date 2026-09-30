@@ -136,15 +136,40 @@ function material(block) {
  *      `unaccounted` when there is no reason either — a legacy receipt states neither, and inventing
  *      "not dispatched" from silence would be the same guess in a new place);
  *   2. ANY slice that did not land clean ⇒ `dispatch-failed`, naming the first such qid. Every slice
- *      must land, exactly as verifyRegisterDirectiveClose requires of a directive — one convention;
+ *      must land, exactly as verifyRegisterDirectiveClose requires of a directive — one convention. A
+ *      slice the FOLD refused as already-asked is read through the twin it duplicates first, because that
+ *      slice cannot land and the twin is where its question was answered;
  *   3. all landed, ANY slice material ⇒ `found`;
  *   4. all landed, EVERY slice a counted zero ⇒ `searched-empty`;
  *   5. otherwise ⇒ `unaccounted`, with the shape that defeated the join stated.
  * PURE.
  */
-export function classifyRemedyTerm(row, { blocksByQid = new Map(), executedQids = new Set() } = {}) {
+export function classifyRemedyTerm(row, { blocksByQid = new Map(), executedQids = new Set(), foldRefusals = new Map() } = {}) {
   const qids = (Array.isArray(row?.qids) ? row.qids : []).filter(Boolean);
-  const slices = qids.map((q) => sliceRow(q, blocksByQid.get(q), executedQids.has(q)));
+  // — A SLICE THE FOLD REFUSED AS ALREADY-ASKED IS ANSWERED BY THE ROW IT DUPLICATES.
+  //
+  // The fold refuses a minted qid when the plan already holds a row asking the same question, and hands
+  // back the twin's qid. Such a slice can NEVER land: it was never frozen into the plan, and the reopen's
+  // own re-attempt filters it out on purpose. Requiring it to land anyway made rule 2 below fire on it and
+  // return before rules 3-5 could look at the rest, so a term whose question HAD been asked and answered
+  // was recorded `dispatch-failed` — which reads as an engine fault a re-run would fix, where the truth is
+  // that the coverage is already on the plan's own row. Measured on a delivered breadth run: one term, its
+  // twin enumerated with 71 records, the dominant-element gap left open and clamped on that basis.
+  //
+  // ONLY THE DUPLICATE KIND RESOLVES. An identity collision or a malformed term is a genuine fault and
+  // stays `dispatch-failed`: nothing else asked those questions, so nothing else answers them.
+  const resolve = (q) => {
+    const r = foldRefusals.get?.(q);
+    return r && r.kind === "duplicate-question" && r.twin ? String(r.twin) : q;
+  };
+  const landsAs = new Map(qids.map((q) => [q, resolve(q)]));
+  const blockFor = (q) => blocksByQid.get(landsAs.get(q) ?? q);
+  const ranAs = (q) => executedQids.has(landsAs.get(q) ?? q);
+  const slices = qids.map((q) => {
+    const via = landsAs.get(q);
+    const slice = sliceRow(q, blockFor(q), ranAs(q));
+    return via && via !== q ? { ...slice, answered_by: via, refused_at_fold: "duplicate-question" } : slice;
+  });
   if (!qids.length) {
     const reason = String(row?.dispatch_reason ?? "").trim();
     return reason
@@ -152,16 +177,16 @@ export function classifyRemedyTerm(row, { blocksByQid = new Map(), executedQids 
       : { class: "unaccounted", basis: "no-mapping", reason: "the receipt records no slice and no reason for this term — the join cannot say whether it was searched", slices };
   }
   for (const q of qids) {
-    const b = blocksByQid.get(q);
-    if (sliceLanded(b, executedQids.has(q))) continue;
-    const why = !executedQids.has(q) ? "slice-not-landed"
+    const b = blockFor(q);
+    if (sliceLanded(b, ranAs(q))) continue;
+    const why = !ranAs(q) ? "slice-not-landed"
       : !b ? "no-band-block"
         : b.deferred === true ? "capability-gap-deferral"
           : b.error === true ? "provider-error"
             : "collapsed-slice";
     return { class: "dispatch-failed", basis: why, reason: `${why}:${q}${b?.reason ? ` — ${clip(b.reason, 200)}` : ""}`, slices };
   }
-  const blocks = qids.map((q) => blocksByQid.get(q));
+  const blocks = qids.map((q) => blockFor(q));
   if (blocks.some(material)) return { class: "found", basis: "band-block", reason: null, slices };
   if (blocks.every(countedZero)) return { class: "searched-empty", basis: "counted-zero", reason: null, slices };
   const odd = blocks.find((b) => !countedZero(b));
@@ -186,14 +211,18 @@ const emptyTotals = () => {
  * `out_of_scope` carries the directives that have no term unit (source-layer channels), with the reason
  * — counted and named, never silently absent.
  *
+ * `foldRefusals` maps a minted qid the FOLD refused to `{ kind, twin }`, as `foldSupplementalEntries`
+ * recorded it. It is how a term whose slice was refused as already-asked reads through the plan row that
+ * answered it instead of counting as a slice that failed to land.
+ *
  * Deterministic; no timestamps (the caller stamps `ts`), no IO, no judgment. PURE.
  */
-export function accountRemedyTerms({ terms = [], blocksByQid = new Map(), executedQids = new Set(), outOfScope = [] } = {}) {
+export function accountRemedyTerms({ terms = [], blocksByQid = new Map(), executedQids = new Set(), foldRefusals = new Map(), outOfScope = [] } = {}) {
   const totals = emptyTotals();
   const byDirective = {};
   const rows = [];
   for (const t of Array.isArray(terms) ? terms : []) {
-    const c = classifyRemedyTerm(t, { blocksByQid, executedQids });
+    const c = classifyRemedyTerm(t, { blocksByQid, executedQids, foldRefusals });
     const directive = String(t?.directive ?? "");
     totals.terms++;
     totals[key(c.class)]++;

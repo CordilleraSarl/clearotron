@@ -36,17 +36,51 @@ if (p.laid) console.log(`mint-reference-strip-backlog: ${p.laid} tracked path(s)
 const tracked = p.files;
 const minted = censusOf(ROOT, tracked, publishedReader(ROOT, (f) => readFileSync(join(ROOT, f), "utf8")));
 
+// ── EVERY ROW IS EXPLAINED, OR THE TABLE IS A NUMBER NOBODY CAN ACT ON ────────────────────────────
+//
+// A count on its own tells a reader a file has residue in it. It does not tell them whether the line is
+// residue at all — and once the table reached zero, the next row to appear is either a regression to
+// repair or a known-good the scanner cannot tell from one. The first `.js` row is the second kind: an
+// adapter header names a list separator as `(, ; / etc)`, which matches the third signature and is also
+// correct English about punctuation. Without a sentence beside it that row is a number that will never
+// fall, and a floor with one of those in it stops being read.
+//
+// So notes are carried by the minter rather than typed into the artifact: a re-mint keeps the note for a
+// file that still has rows, drops it for a file that no longer does (a repair takes its explanation with
+// it), and says which rows are still unexplained. It never invents one — an unexplained row is reported,
+// and the arm that reads this table refuses it.
+const NOTES = {
+  "providers/clarivate/src/core.js":
+    "NOT residue — the header names a list separator as `(, ; / etc)`. It matches the third signature "
+    + "and is correct English about punctuation, so it is recorded rather than repaired.",
+};
+const notesFor = (files) => Object.fromEntries(
+  Object.keys(files).filter((f) => NOTES[f]).map((f) => [f, NOTES[f]]).sort(([a], [b]) => a < b ? -1 : 1));
+const unexplained = (files) => Object.keys(files).filter((f) => !NOTES[f]).sort();
+
 if (process.argv.includes("--check")) {
   const have = JSON.parse(readFileSync(TABLE, "utf8"));
   const a = JSON.stringify(have.files), b = JSON.stringify(minted.files);
+  if (JSON.stringify(have.notes ?? {}) !== JSON.stringify(notesFor(minted.files))) {
+    console.error("reference-strip backlog: the committed notes do not match this tree's rows.");
+    console.error("  re-mint with: node scripts/mint-reference-strip-backlog.mjs");
+    process.exit(1);
+  }
   if (a !== b || have.total !== minted.total) {
     console.error("reference-strip backlog is STALE against the tree.");
     console.error(`  committed total ${have.total}, tree has ${minted.total}`);
     console.error("  re-mint with: node scripts/mint-reference-strip-backlog.mjs");
     process.exit(1);
   }
-  console.log(`reference-strip backlog: current — ${minted.total} line(s) still to repair`);
+  const open = unexplained(minted.files);
+  const held = Object.keys(minted.files).length - open.length;
+  console.log(`reference-strip backlog: current — ${minted.total} matching line(s); `
+    + `${open.length} file(s) to repair, ${held} recorded as not residue`);
 } else {
-  writeFileSync(TABLE, JSON.stringify({ signatures: SIGNATURES.map((s) => s.name), ...minted }, null, 2) + "\n");
+  writeFileSync(TABLE, JSON.stringify({ signatures: SIGNATURES.map((s) => s.name), ...minted,
+    notes: notesFor(minted.files) }, null, 2) + "\n");
   console.log(`minted ${TABLE}: ${minted.total} line(s) across ${Object.keys(minted.files).length} file(s)`);
+  const open = unexplained(minted.files);
+  if (open.length) console.log(`mint-reference-strip-backlog: ${open.length} file(s) carry rows with no note — `
+    + `each is a line to repair, or a note to add here if it is not residue:\n  ${open.join("\n  ")}`);
 }
