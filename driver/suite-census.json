@@ -7739,6 +7739,12 @@
           "skips": 0,
           "todos": 0
         },
+        "providers/signa/test/the-office-date-comes-first-and-signas-own-is-the-fallback.test.mjs": {
+          "tests": 9,
+          "asserts": 20,
+          "skips": 0,
+          "todos": 0
+        },
         "providers/signa/test/the-screen-speaks-the-shared-verdicts.test.mjs": {
           "tests": 2,
           "asserts": 4,
