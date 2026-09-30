@@ -151,3 +151,61 @@ test("after uninstall the raw printer is not left armed on a dead stream", () =>
   printPreRedacted("");
   assert.equal(leaked, false, "the raw printer still held a reference to the uninstalled stream");
 });
+
+// ── two sibling keys that reduce to one token ────────────────────────────────────────────────────────
+
+test("THE PAYLOAD KEEPS ITS KEY COUNT, at every level", () => {
+  // The arm that was missing: every other arm here asserts what a VALUE became, and none asserted that
+  // the object still has as many fields as it started with.
+  //
+  // WHAT IT DOES AND DOES NOT CATCH, because the distinction matters and the obvious reading is wrong.
+  // Before the collision guard existed, this arm on a COLLIDING payload was what would have caught the
+  // defect — a lost field showed only as a smaller count. It cannot catch it now: a collision refuses,
+  // and a refusal is not a short object. So this arm guards the OTHER way of losing a key — a walk that
+  // drops one for any reason that is not a collision — and the two arms below guard the collision. Saying
+  // so because "the payload keeps its key count" reads like the collision guard and is not.
+  const { redactValue, redactKey } = instruments();
+  const payload = { owner: "Additional Brands AG", additional: 2, rows: [{ mark: "Wrenlow Owner Group", note: "x" }] };
+  const countKeys = (v) => Array.isArray(v) ? v.reduce((n, x) => n + countKeys(x), 0)
+    : v && typeof v === "object" ? Object.keys(v).length + Object.values(v).reduce((n, x) => n + countKeys(x), 0)
+    : 0;
+  assert.equal(countKeys(redactDeep(payload, { redactValue, redactKey })), countKeys(payload),
+    "the walk must not lose a field; a collision is refused separately and cannot be seen here");
+});
+
+test("a collision REFUSES rather than dropping the field that loses", () => {
+  // The matcher tolerates a trailing plural, so a protected name and that name plus `s` both match and
+  // both become one token. Rebuilding key by key, the second write wins and the first field is gone.
+  const { names, prose, derived } = protectedStrings({ reference: REFERENCE });
+  const redactValue = redactor({ names, prose });
+  // `Quillion` is a protected mark in the fixture, so `Quillion` and `Quillions` collide as siblings.
+  const redactKey = authoredRedactor({ names: new Set(["Quillion"]), prose, derived });
+  assert.throws(
+    () => redactDeep({ Quillion: 1, Quillions: 2 }, { redactValue, redactKey }),
+    (e) => e.code === "REDACTED_KEY_COLLISION" && /same token/.test(e.message),
+    "a payload that cannot be rendered addressably must refuse, not be written short");
+});
+
+test("the refusal names the TOKEN and the PATH, never the keys — they are the protected name", () => {
+  // Saying which keys collided would print the very name being withheld: the keys ARE the protected
+  // string, which is why they collided. A reader who needs them asks with --names, where nothing is
+  // withheld and the collision cannot arise.
+  const { prose, derived } = protectedStrings({ reference: REFERENCE });
+  const redactKey = authoredRedactor({ names: new Set(["Quillion"]), prose, derived });
+  let err = null;
+  try { redactDeep({ nested: { Quillion: 1, Quillions: 2 } }, { redactValue: (x) => x, redactKey }); }
+  catch (e) { err = e; }
+  assert.ok(err, "it must throw");
+  assert.ok(!err.message.includes("Quillion"), `the refusal printed the protected name: ${err.message}`);
+  assert.match(err.message, /«name \d+»/, "it names the token instead");
+  assert.match(err.message, /nested/, "and where it happened, so the field is findable");
+  assert.match(err.message, /--names/, "and how to see the keys, which is safe because nothing is withheld there");
+});
+
+test("CONTROL: identity instruments cannot collide, so --names never refuses", () => {
+  // The flag's whole point is that nothing is withheld; if it could refuse, a reader would lose the one
+  // path that shows them the payload.
+  const id = (x) => x;
+  const payload = { Quillion: 1, Quillions: 2 };
+  assert.deepEqual(redactDeep(payload, { redactValue: id, redactKey: id }), payload);
+});

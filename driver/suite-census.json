@@ -5944,8 +5944,8 @@
           "todos": 0
         },
         "the-payload-is-redacted-as-a-structure.test.mjs": {
-          "tests": 11,
-          "asserts": 22,
+          "tests": 15,
+          "asserts": 30,
           "skips": 0,
           "todos": 0
         },
