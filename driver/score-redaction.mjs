@@ -213,7 +213,7 @@ export function protectedStrings(root) {
     }
   }
   // THE FLOOR STAYS AND THE CASE IT MISSES IS NAMED. A fleet decision on an internal page rather than
-  // this file's preference, recorded on tracker issue 1016 as branch B.
+  // this file's preference: keep the floor, and name the case it does not cover.
   //
   // WHAT IT BUYS: a two-character token is cheap to collide with, and every standalone occurrence of one
   // would go — including words of this harness's own vocabulary. Lowering the floor is a real option and
@@ -338,8 +338,7 @@ export function foldForMatching(text) {
  * own, with a plural or possessive, at any width. It does not protect one fused into a longer token,
  * that case is not rare, and the forms it misses are being counted rather than assumed away.
  *
- * A URL IS NOT AN EXEMPTION, and that is a decision rather than a side effect (tracker issue 1007,
- * done-when 3). A locator is not prose, and there was an argument that a name inside one is an address
+ * A URL IS NOT AN EXEMPTION, and that is a decision rather than a side effect. A locator is not prose, and there was an argument that a name inside one is an address
  * rather than a disclosure — it was not taken. A reader who can see the address can fetch it, and what
  * comes back names the party as plainly as the page would have. So a protected name is withheld inside
  * a URL exactly as it is anywhere else: as a path segment, against a hyphen, between slashes, as a

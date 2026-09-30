@@ -308,7 +308,7 @@ test("a single-word name gains nothing and loses nothing", () => {
 // ── the seven the warning used to name ───────────────────────────────────────────────────────────────
 
 test("the seven keys the unclassified warning named are classified, and none reports as unknown", () => {
-  // Each was read at the site that writes it (tracker issue 1005). Four were measured against the real
+  // Each was read at the site that writes it. Four were measured against the real
   // name list one key at a time; three protect on what their producer is FOR, because clean today is not
   // safe. This arm exists so a later edit cannot drop one back into `unclassified` in silence — the
   // warning is loud when it fires, and a key quietly returning to it is the failure it cannot report.
@@ -336,13 +336,13 @@ test("CONTROL: a key nobody has classified still reports — the arm above is no
 // ── the short-name floor, and the case it is known to miss ───────────────────────────────────────────
 
 test("a name under three characters is DELETED from the protected set — a fleet decision, pinned", () => {
-  // Keep the floor, name the case it misses: a fleet decision on an internal page, recorded on tracker
-  // issue 1016 as branch B. This arm is not approval of the behaviour, it is that decision made
-  // enforceable — lowering the floor is a real option whose cost has not been measured, and whoever
-  // lowers it should fail this arm and read why first.
+  // Keep the floor, and name the case it misses. A fleet decision on an internal page, not the owner's.
+  // This arm is not approval of the behaviour, it is that decision made enforceable — lowering the floor
+  // is a real option whose cost has not been measured, and whoever lowers it should fail this arm and
+  // read why first.
   const { names } = protectedStrings({ reference: { ...REFERENCE, register: [{ mark: "MC", owner: "Bracken Holdings AG" }] } });
   assert.ok(![...names].some((n) => n.toLowerCase() === "mc"),
-    "the floor has moved — that is a decision, not a refactor: read the note beside it and tracker issue 1016");
+    "the floor has moved — that is a decision, not a refactor: read the note beside it first");
 });
 
 test("CONTROL: a three-character name IS protected, so the arm above pins a floor and not a hole", () => {
@@ -354,7 +354,7 @@ test("CONTROL: a three-character name IS protected, so the arm above pins a floo
 // ── a URL is not an exemption ────────────────────────────────────────────────────────────────────────
 
 test("a protected name inside a URL is withheld in every shape a locator puts it in", () => {
-  // Decided rather than inherited (tracker issue 1007, done-when 3). A locator is not prose, and there
+  // Decided rather than inherited. A locator is not prose, and there
   // was an argument that a name inside one is an address rather than a disclosure. It was not taken: a
   // reader who can see the address can fetch it, and what comes back names the party as plainly as the
   // page would have. This used to hold by accident of the boundary rule; the arm is here so it holds on
@@ -383,7 +383,7 @@ test("the ONE decline inside a URL is the fused case, and it is the general limi
   const { names, prose } = protectedStrings({ reference: { ...REFERENCE, register: [{ mark: "Wrenlow", owner: "Bracken Holdings AG" }] } });
   const redact = redactor({ names, prose });
   assert.equal(redact("https://example.com/about/Wrenlowgroup"), "https://example.com/about/Wrenlowgroup",
-    "the fused case is a known decline; if this starts passing the boundary has changed and tracker issue 1007 wants re-reading");
+    "the fused case is a known decline; if this starts passing the boundary has changed and the decision not to\n     refine it wants re-reading");
   assert.equal(redact("Wrenlowgroup is the filing name"), "Wrenlowgroup is the filing name",
     "and it declines identically outside a URL, which is what makes it the general limit");
 });

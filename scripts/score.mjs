@@ -530,7 +530,7 @@ function print(id, ref, run, s, delta, refPath) {
   //
   // A path is not authored text. It is furniture with a data-derived segment in the middle of it, and
   // the two cannot be separated by choosing an instrument for the whole line. Both stay on the full
-  // layer until the run directories themselves stop carrying matter (tracker issue 1011).
+  // layer until the run directories themselves stop carrying matter.
   console.log(`reference: ${refPath}`);
   console.log(`           ${ref.source}`);
   console.log(`run:       ${run.dir}`);
