@@ -319,7 +319,14 @@ export function normalizeRecord(rec, officeHint = null) {
     registrationNumber: rec.registration_number ?? rec.ir_number ?? null,
     applicationDate: toIso(rec.filing_date),
     registrationDate: toIso(rec.registration_date),
-    expiryDate: toIso(rec.expiry_date),
+    // — THE OFFICE'S DATE FIRST, THEN SIGNA'S OWN (their 27 September release). That release split what
+    // an office published from what Signa computes: `expiry_date` now carries only the published date and
+    // is EMPTY on USPTO records, where the computed one moved to `derived.expiry_date`. Read one and the
+    // field goes quietly null on every US record — measured on the record bodies of the run that
+    // straddled the release: 4 of 9 US records carried it only under `derived`, and all 4 normalised to
+    // null here. Where both are present they are identical (12 of 12 on that run), so the office's value
+    // first costs nothing and keeps the published date authoritative when there is one.
+    expiryDate: toIso(rec.expiry_date ?? rec.derived?.expiry_date),
     statusClass: statusClassOf(rec),   // live | dead | unknown — authoritative for the gates
     statusText: pickStatusText(rec),
     markText: rec.mark_text ?? null,
