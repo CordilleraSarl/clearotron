@@ -549,6 +549,20 @@ export function normalizeSearchResponse(body, echoQuery) {
     strategies_used: meta.strategies_used ?? [],
     match: meta.match ?? null,
     search_id: meta.search_id ?? null,
+    // ── THE REGISTER'S OWN WARNINGS, CARRIED WHOLE ──────────────────────────────────────────────
+    //
+    // Passed through as the register sent them rather than filtered to the codes we happen to know. A
+    // recorder keyed to a fixed list of codes looks like coverage and is an empty column the day the
+    // register adds one, and there is no way to tell those two apart from the outside. An empty array is
+    // the ordinary case: a clean response carries no `warnings` key at all.
+    //
+    // WHAT THIS DOES NOT BUY, said here because the empty column is the trap. The one code observed live
+    // is emitted on the exact-text filter path and NOT on the ranked path — a ranked query folds
+    // look-alike letters through its own similarity channel instead, and so has nothing to warn about.
+    // Every sweep this connector sends is ranked. So this column will be empty on the searches we
+    // actually make, and an empty warnings list is NOT evidence that a query carried no mixed-script
+    // risk. Whatever guards that risk on the ranked path still has to do it.
+    warnings: Array.isArray(meta.warnings) ? meta.warnings : [],
     // The corpus total when the vendor counted it exactly; null when it did not answer, when the
     // total was not requested, and when the figure it returned is an approximation. NEVER the page
     // size — `data.length` is `count`, and conflating the two is how a page reads as a corpus.
