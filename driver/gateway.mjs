@@ -13,7 +13,7 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, wri
 import { join, dirname, basename } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 import { tmpdir } from "node:os";
-import { config, resolveModel, modelFamily, modelSnapshotKind, envOn, envGateOn, preflightEngineBinary } from "./driver.config.mjs";
+import { config, resolveModel, modelFamily, modelSnapshotKind, envOn, envGateOn, preflightEngineBinary, olderThanFloor, ENGINE_BINARIES } from "./driver.config.mjs";
 import { probeCliVersion } from "./engine/cli-version.mjs";
 import { stageLog, runLog, note, outputMeta } from "./log.mjs";
 // — the closed disposition set has ONE author; this file dictates it and must not retype it.
@@ -1185,8 +1185,30 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     const cli = (() => {
       try {
         const pre = preflightEngineBinary(process.env);
-        return { ...probeCliVersion(pre?.resolved ?? null), source: pre?.source ?? null };
-      } catch (e) { return { version: null, probe: "unreadable", why: String(e?.message ?? e).slice(0, 160), source: null }; }
+        const probed = probeCliVersion(pre?.resolved ?? null);
+        // ── THE FLOOR, COMPARED WHERE THE RUN CAN SEE IT ────────────────────────────────────────
+        //
+        // The build declares a minimum version for each engine's program, and until now nothing
+        // compared a running copy against it. The floor was passed to the installer, so a copy this
+        // product installs cannot land beneath it — but resolution walks PATH first and takes the
+        // first hit, so a copy already on the machine wins and was never measured against anything.
+        // That is the common case, not the edge one: most machines have their own copy. A stage then
+        // runs on a program below the floor and is served whatever that program serves, silently.
+        //
+        // RECORDED, NOT REFUSED. Refusing here would stop every run on any machine whose copy is
+        // behind — including ones already deployed and working — and that is a decision about those
+        // deployments rather than a defect fix. What was missing is the fact, so the fact is what is
+        // written: an operator, and anyone reading the run afterwards, can now see it. Whether it
+        // should also refuse is a separate question and is not answered here.
+        //
+        // THREE-VALUED and written unconditionally, like the model fields below: true, false, or null
+        // when either side names no version this build can compare — an unknown is an unknown, never
+        // an all-clear. The floor itself rides along so the record says what it was measured against
+        // rather than leaving a later reader to guess which build's floor applied.
+        const floor = ENGINE_BINARIES[pre?.engine]?.floor ?? null;
+        const belowFloor = floor ? olderThanFloor(probed?.version ?? null, floor) : null;
+        return { ...probed, source: pre?.source ?? null, floor, belowFloor };
+      } catch (e) { return { version: null, probe: "unreadable", why: String(e?.message ?? e).slice(0, 160), source: null, floor: null, belowFloor: null }; }
     })();
     if (modelActual) lastModelWire = modelActual;                       // — never overwritten with null
     // The comparison is by FAMILY (driver.config modelFamily), because `--model haiku` legitimately comes
@@ -1658,6 +1680,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
         // different from "this record predates the gauge".
         modelActual, modelBasis, modelSnapshot, modelMismatch, providerReported,
         cliVersion: cli.version, cliVersionProbe: cli.probe, ...(cli.why ? { cliVersionWhy: cli.why } : {}), cliSource: cli.source,
+        cliFloor: cli.floor ?? null, cliBelowFloor: cli.belowFloor ?? null,
         // W3 billing telemetry: which engine ran + the RESOLVED billing mode (subscription vs api-key). This
         // records INTENT (the mode the engine was configured to bill under), not independent billing evidence
         // — the actual proof is the provider console (claude's stream also reports apiKeySource; codex does
@@ -1797,6 +1820,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
           // ran. `model` stays the requested resolution (its existing readers); `modelActual` is the wire.
           model: modelRequested, modelActual, modelBasis, modelSnapshot, modelMismatch, providerReported,
           cliVersion: cli.version, cliVersionProbe: cli.probe, ...(cli.why ? { cliVersionWhy: cli.why } : {}), cliSource: cli.source,
+        cliFloor: cli.floor ?? null, cliBelowFloor: cli.belowFloor ?? null,
           wrote, warm: warm || undefined, warmEscalated: attempt === warmEscalatedAt || undefined,
           rescued: rescued ?? undefined, killed: killed || undefined,
           quiescentMs: Number.isFinite(quiescentMs) ? Math.round(quiescentMs) : undefined,   // — see the per-stage row

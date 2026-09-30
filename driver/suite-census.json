@@ -1216,8 +1216,8 @@
           "todos": 0
         },
         "a-run-records-the-tool-that-served-it.test.mjs": {
-          "tests": 13,
-          "asserts": 33,
+          "tests": 16,
+          "asserts": 42,
           "skips": 0,
           "todos": 0
         },
@@ -7754,6 +7754,12 @@
         "providers/signa/test/the-ranked-lane-asks-for-similarity-channels.test.mjs": {
           "tests": 9,
           "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/signa/test/the-registers-own-warnings-reach-the-run.test.mjs": {
+          "tests": 6,
+          "asserts": 9,
           "skips": 0,
           "todos": 0
         },
