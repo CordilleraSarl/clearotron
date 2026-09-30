@@ -78,13 +78,14 @@ test("the three populations stay distinct — term alone, owner alone, and both 
   const owner = buildSearchRequest(planEntry({ owner: OWNER }));
   const both = buildSearchRequest(planEntry({ name: "ZYTHERMO", owner: OWNER }));
 
-  assert.equal(term.query, "ZYTHERMO");
+  assert.equal(term.q, "ZYTHERMO", "the term rides `q` — the register retired `query`");
   assert.equal(term.filters?.owner_name, undefined, "a term-only search must not acquire an owner clause");
 
-  assert.equal("query" in owner, false, "an owner-only request carries no query key at all");
+  assert.equal("q" in owner, false, "an owner-only request carries no term key at all");
+  assert.equal("query" in owner, false, "…and not under the retired spelling either");
   assert.equal(owner.filters?.owner_name, OWNER, "…and it does carry the owner clause, or it searches everything");
 
-  assert.equal(both.query, "ZYTHERMO");
+  assert.equal(both.q, "ZYTHERMO");
   assert.equal(both.filters?.owner_name, OWNER,
     "both clauses ride ONE request — the intersection is a real narrowing, not one clause silently ignored");
 

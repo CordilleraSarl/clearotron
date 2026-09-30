@@ -20,7 +20,10 @@ test("an exact question at or above the floor stays on the ranked lane", () => {
   assert.equal(CAPABILITIES.rankedMinLength, 2);
   for (const query of ["QZ", "Qé", "VELTRIN", "Q Z"]) {
     const body = wire({ query, match_mode: "exact", nice_classes: [9] });
-    assert.deepEqual(body.strategies, ["exact"], `${query} lost the ranked recall`);
+    // The ranked lane is expressed as similarity CHANNELS now, not as a strategy name: the register
+    // retired `strategies`. `exact` is identical+lookalike, and the channels are written out here rather
+    // than imported from the code under test, so a wrong mapping still fails this arm.
+    assert.deepEqual(body.similarity, ["identical", "lookalike"], `${query} lost the ranked recall`);
     assert.equal(body.match, undefined, "both shapes in one request is a refusal at the register");
   }
 });
@@ -29,14 +32,17 @@ test("an exact question below the floor goes deterministic, where it is answered
   for (const query of ["Q", "é", " Q "]) {
     const body = wire({ query, match_mode: "exact", nice_classes: [9] });
     assert.equal(body.match, "exact", `${JSON.stringify(query)} was sent where the register refuses it`);
-    assert.equal(body.strategies, undefined);
+    assert.equal(body.similarity, undefined, "a deterministic match carries no similarity channels");
   }
 });
 
 test("THE CONTROL: the other modes keep their shapes", () => {
+  // Each mode keeps its OWN channels, and they are not the mode's name — `prefix` has no channel of its
+  // own at all, which is exactly the case a rename-shaped migration would have got wrong.
+  const CHANNELS = { phonetic: ["identical", "phonetic"], prefix: ["identical", "embedded"] };
   for (const mode of ["phonetic", "prefix"]) {
     const body = wire({ query: "Q", match_mode: mode });
-    assert.deepEqual(body.strategies, [mode]);
+    assert.deepEqual(body.similarity, CHANNELS[mode]);
     assert.equal(body.match, undefined);
   }
   assert.equal(wire({ query: "VELTRIN", match_mode: "contains" }).match, "contains");
