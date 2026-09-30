@@ -70,7 +70,6 @@ import { rollupTokens, stampTokenRollup } from "./tokens.mjs";
 import { recordRunConsumption } from "./consumption-ledger.mjs";
 import { writeSettleStamp } from "./settle-stamp.mjs";   // — the pool copy's own terminal state
 import { stopReason } from "../shared/stop-reason.mjs";   //
-import { envFrom } from "../shared/env-aliases.mjs";   // — resolves EITHER spelling; names the retired one because that is the live-writable half
 // The scoped owner lookup a promoted register filing is owed. Bounded, deduplicated
 // per owner, and structurally unable to withhold a report.
 import { ownersOwedACheck, runOwnerChecks } from "./owner-use-check.mjs";
@@ -1156,7 +1155,18 @@ export async function knockoutInner(ctx, job, opts = {}) {
     const published = await publishKnockout({
       runId, codename: run.codename, runDir: run.runDir,
       findings: merged, plan, framework: ctx.framework, overall,
-      poolRoot: config.poolRoot, poolUrl: config.poolUrl ?? envFrom(process.env, "CLEAROTRON_REPORTS_URL") ?? null,
+      poolRoot: config.poolRoot,
+      // THE FALLBACK HERE COULD NOT FIRE, AND COULD NOT HAVE HELPED IF IT HAD. It read
+      // `config.poolUrl ?? envFrom(process.env, "CLEAROTRON_REPORTS_URL") ?? null`. Two things were wrong
+      // with it and both were invisible: the getter returns "" when the variable is unset, and `??` only
+      // falls through on null or undefined — so the second operand was unreachable — and that second
+      // operand read the same `process.env` the getter had just read, so reaching it would have returned
+      // the same empty answer. A reader saw a safety net twice over where there was none.
+      //
+      // `|| null` instead, which says the one true thing: no base URL configured, so no link. That is the
+      // state `reportUrlFor` already handles by returning null per report rather than an empty string, and
+      // a null link is what the delivery packet is specified to carry when no pool URL is set.
+      poolUrl: config.poolUrl || null,
       customerKey: ctx.profile?.profileKey ?? "generic",
       // — the frozen profile's delivery overlay decides the confidentiality marking, exactly as it
       // does on the clearance lane. Absent (an unbound run, or a profile silent on the field) is the
