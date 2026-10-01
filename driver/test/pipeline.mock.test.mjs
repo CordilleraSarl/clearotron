@@ -1248,12 +1248,19 @@ test("T3a: persistent BLOCKING after corrective + re-check → the run DELIVERS,
   const report = readFileSync(res.runDir + "/report.md", "utf8");
   assert.doesNotMatch(report, /Reviewer's open questions|did not sign this report off/,
     "the refusal reached the client page as added text");
-  // …AND THE REVIEWING LAWYER READS THEM in the run's email review headline, on a run the firm started.
-  // The path a run takes: the pipeline's record, handed to the email it writes.
+  // …AND THE EMAIL CARRIES NONE OF IT EITHER, on any run (owner ruling 2026-10-01). The 2026-09-24 ruling
+  // took the section off the report page and left it on the cover, gated on whether the run's forwarder was
+  // the client; measured over the thirty days to 2026-10-01, the report carried neither since that ruling
+  // and the email carried both. So the section now reaches no surface that is sent, and the record above is
+  // the whole of where it lives.
   const email = readFileSync(join(res.runDir, "email-body.md"), "utf8");
-  assert.match(email, /did not sign this report off/, "the reviewing lawyer's email does not carry the refusal");
-  assert.match(email, /the summary says the phonetic axis ran; the receipt shows it never did/,
-    "the reviewer's cited defect is not in the reviewing lawyer's email");
+  // The control first: the cover DID compose, so the two absences are about the section and not about an
+  // empty file. It carries the risk label a cover always carries.
+  assert.match(email, /Overall risk/i, "the cover composed nothing, so the absences below prove nothing");
+  assert.doesNotMatch(email, /did not sign this report off/, "the refusal is on the cover again");
+  assert.doesNotMatch(email, /Reviewer's open questions/, "the section heading is on the cover again");
+  assert.doesNotMatch(email, /the summary says the phonetic axis ran; the receipt shows it never did/,
+    "the reviewer's cited defect is on the cover again — it belongs to the record alone");
 
 
   // The corrective ladder is still the fix arm and still runs FIRST: original + blocking re-synth.

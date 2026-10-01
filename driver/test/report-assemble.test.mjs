@@ -116,7 +116,13 @@ test("spec 64 buildOnlyYouSection: time-critical conditions lead; advisories tag
   assert.match(lines[5], /^- \*\*\[Before you can rely\]\*\* Obtain consent from X\.$/);
   assert.match(md, /\*\*We need an answer from you\*\*/);
   assert.match(md, /\*\*Keep an eye on\*\*/);
-  assert.match(md, /\*\*\[Open question\]\*\* Confirm the older filing/);
+  // — THE `[Open question]` ROW NO LONGER RENDERES TO A CLIENT (owner ruling, 2026-10-01): the rows are
+  // non-critical and confuse, so they leave the report and the email. This arm asserted its presence
+  // until that ruling. The register is unchanged — the `client-fact` action is still in the fixture above
+  // and still a valid kind — and the control that this is a removal rather than a broken section is the
+  // three kinds beside it, which must still render with their own tags.
+  assert.doesNotMatch(md, /\[Open question\]/, "the client-fact row is on the client's report again");
+  assert.doesNotMatch(md, /Confirm the older filing/, "its text reached the report under some other tag");
   assert.match(md, /\*\*\[Your decision\]\*\* Decide the coexistence/);
   assert.match(md, /\*\*\[Monitor\]\*\* Watch the pending/);
   // the blocking group comes first, and the reader meets the questions before the watch list
@@ -490,4 +496,32 @@ test("clipToWord: cuts on whitespace, marks the cut, and trims dangling punctuat
   assert.doesNotMatch(clipToWord("alpha beta gamma", 11), /\s…$/, "never 'alpha …'");
   assert.equal(clipToWord("supercalifragilistic", 8), "supercal…", "a single word longer than the budget still gets an ellipsis");
   assert.equal(clipToWord(null, 10), "", "null is empty, not the string 'null'");
+});
+
+test("the removed row stays in the register, and its deadline still counts", () => {
+  // THE RULING TOOK THE ROW OFF THE PAGE, NOT OFF THE RUN. These two arms are the "presence in the record"
+  // half of that, and the second is the one that would fail quietly if somebody moved the filter upstream.
+  //
+  // `actionDates` is built from every action's deadline INCLUDING the advisories, and it suppresses a
+  // finding-level time-critical alert whose date an action already covers. Filter the kind out of that
+  // list instead of out of the rendering, and the date leaves the set, and a duplicate alert line appears
+  // on the client's report — a line nobody asked for, produced by a change about removing a line.
+  const DATE = "2026-11-30";
+  const actions = [
+    { id: 1, kind: "client-fact", text: "Confirm the older filing is your own.", ordinals: [], deadline: { kind: "response", date: DATE } },
+    { id: 2, kind: "monitoring", text: "Watch the pending application.", ordinals: [] },
+  ];
+  const findings = [{ ordinal: 1, mark: "an invented mark", disposition: "live", deadline: { kind: "response", date: DATE } }];
+  const md = buildOnlyYouSection(actions, findings, { nowMs: Date.parse("2026-11-01T00:00:00Z") });
+
+  assert.doesNotMatch(md, /Confirm the older filing/, "the removed row is on the page again");
+  // The control: the section did render, so the absence above is about the kind and not about an empty call.
+  assert.match(md, /\*\*\[Monitor\]\*\* Watch the pending/, "nothing rendered at all — the absence proves nothing");
+  // And the date the removed row carries still counts, so the finding does not get its own alert line.
+  assert.doesNotMatch(md, /\[Time-critical\][^\n]*an invented mark/,
+    "the client-fact deadline left the date set, so a duplicate time-critical line reached the report");
+
+  // The register handed in is unchanged: a renderer that dropped the action would take the fact off the run.
+  assert.equal(actions.length, 2, "the register was mutated by rendering");
+  assert.equal(actions[0].kind, "client-fact", "the action's kind was rewritten rather than left in the record");
 });
