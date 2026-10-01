@@ -2783,7 +2783,7 @@
         },
         "e2e-assertions.test.mjs": {
           "tests": 87,
-          "asserts": 251,
+          "asserts": 253,
           "skips": 1,
           "todos": 0
         },
