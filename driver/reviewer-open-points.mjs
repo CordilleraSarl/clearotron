@@ -18,9 +18,6 @@
 // One module owns the file's name, so the pipeline that writes it and the workbook reader that skips it
 // cannot disagree about where it is, and a reader does not import the pipeline to learn a file name.
 
-import { readFileSync, existsSync } from "node:fs";
-import { driverDir } from "../shared/driver-dir.mjs";
-
 /** The run-record file the reviewer's open points are written to, under the run's `_driver/`. */
 export const REVIEWER_OPEN_QUESTIONS_FILE = "reviewer-open-questions.md";
 
