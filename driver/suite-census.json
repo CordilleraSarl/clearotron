@@ -3947,7 +3947,7 @@
         },
         "pipeline.mock.test.mjs": {
           "tests": 103,
-          "asserts": 863,
+          "asserts": 865,
           "skips": 0,
           "todos": 0
         },
@@ -4648,8 +4648,8 @@
           "todos": 0
         },
         "report-assemble.test.mjs": {
-          "tests": 21,
-          "asserts": 109,
+          "tests": 22,
+          "asserts": 115,
           "skips": 0,
           "todos": 0
         },
@@ -6165,9 +6165,9 @@
           "skips": 0,
           "todos": 0
         },
-        "the-reviewers-open-points-reach-the-reviewing-lawyer-never-a-client.test.mjs": {
+        "the-reviewers-open-points-stay-in-the-run-record.test.mjs": {
           "tests": 6,
-          "asserts": 15,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },

@@ -10,7 +10,7 @@ import { readFileSync, existsSync, mkdirSync, writeFileSync, renameSync, copyFil
 import { createHash } from "node:crypto";
 import { join, dirname, basename, resolve } from "node:path";   // resolve: the resume line must work from any cwd
 import { driverDir, driverRel, ensureDriverDir } from "../shared/driver-dir.mjs";
-import { REVIEWER_OPEN_QUESTIONS_FILE, reviewerOpenPointsForEmail } from "./reviewer-open-points.mjs";   // the run-record file the reviewer's open points go to   // — one definition of where `_driver/` is
+import { REVIEWER_OPEN_QUESTIONS_FILE } from "./reviewer-open-points.mjs";   // the run-record file the reviewer's open points go to, and the only thing that reads them now
 import { goodsOf } from "./queue-markers.mjs";   // — one reading of "does this job name goods", shared with the intake gate
 import { terminalClampDecision, orderClausesForLede, clientConditions, clauseForDefect } from "./terminal-clamp.mjs";   // — deliver and clamp, never withhold
 import { recordSpan } from "./attributed-span.mjs";   // — driver work the decomposition can attribute
@@ -7685,9 +7685,27 @@ export function buildOnlyYouSection(actions, findings, { nowMs = Date.now(), wit
   // addressed TO the reader; monitoring and filing-routine are standing items. Same tags as before, so
   // a reader who knows the old list reads the new one unchanged, one level down.
   const ASK_KINDS = new Set(["client-fact", "commercial-decision"]);
+  // ── THE KINDS THAT DO NOT REACH A CLIENT SURFACE ────────────────────────────────────────────────
+  //
+  // Owner ruling, 2026-10-01, on the clearance emails production sent in the preceding day: the
+  // "[Open question]" rows are non-critical and confuse, and they come OUT of the client's report and
+  // email. They are not reworded and nothing replaces them.
+  //
+  // THE FILTER IS HERE AND NOT ON `advisories` ABOVE, which is the whole care in this change. That list
+  // also feeds `actionDates`, so dropping a kind from it would silently take a declared deadline out of
+  // the date set three predelivery checks key on — a client-facing removal quietly changing a date
+  // check. Filtering at the point of RENDERING removes the rows from the document and touches nothing
+  // else: the register in findings.json is unchanged, the kind stays valid, an advisory still never
+  // conditions reliance, and the verdict and its bound read from the register rather than from these
+  // lines.
+  //
+  // So the row is gone from what the client reads and the fact is still on the run, which is what the
+  // ruling asks for.
+  const NOT_FOR_CLIENT = new Set(["client-fact"]);
   const advisoryLine = (a) => `- **${ADVISORY_TAG[a.kind]}** ${askLine(a)}${a.deadline?.date ? ` (by ${a.deadline.date})` : ""}`;
-  const askLines = advisories.filter((a) => ASK_KINDS.has(a.kind)).map(advisoryLine);
-  const watchLines = advisories.filter((a) => !ASK_KINDS.has(a.kind)).map(advisoryLine);
+  const forClient = (a) => !NOT_FOR_CLIENT.has(a.kind);
+  const askLines = advisories.filter((a) => ASK_KINDS.has(a.kind)).filter(forClient).map(advisoryLine);
+  const watchLines = advisories.filter((a) => !ASK_KINDS.has(a.kind)).filter(forClient).map(advisoryLine);
   const groups = [
     ["Before you can rely on this result", conditionLines],
     ["We need an answer from you", askLines],
@@ -15268,7 +15286,14 @@ async function pipelineInner(job, opts = {}) {
     // rule still forbids is the ENGINE'S OWN WORDS getting there: composeEmailHtml enumerates
     // predelivery-lint's code-owned projection (deliveryFlagLines), never the checks' raw `detail` —
     // this mail is addressed to job.forwarderEmail, which on a client-principal run is the client.
-    emailVerdictOpts.reviewerOpenPointsMd = reviewerOpenPointsForEmail(job, dirname(P.report));   writeFileSync(P.emailBody, composeEmailHtml(P.report, published.url, published.auditFile, emailNames, deliveryForRun(ctx), emailVerdictOpts));
+    // THE REVIEWER'S OPEN POINTS NO LONGER RIDE THE EMAIL (owner ruling, 2026-10-01). This line read them
+    // out of the run record and handed them to the cover, which is how the sentence naming the independent
+    // reviewer reached a client after the 2026-09-24 ruling had already taken it off the report page: the
+    // section stopped being spliced into the body and started being posted to the email instead. Measured
+    // on the last thirty days of production, the report carries neither the heading nor that sentence since
+    // that ruling, and the email carries both. The record is still written beside the report for the
+    // reviewing lawyer; nothing reads it onto a client surface.
+    writeFileSync(P.emailBody, composeEmailHtml(P.report, published.url, published.auditFile, emailNames, deliveryForRun(ctx), emailVerdictOpts));
     // ctx.verdict is set BEFORE the packet is composed, because the packet's copy reads it.
     ctx.verdict = verdict;
     // DELIVERY (Phase 2). The driver writes a self-contained delivery packet and leaves
