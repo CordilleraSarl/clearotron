@@ -26,6 +26,7 @@ import { authorityTrees } from "../authority-trees.mjs";
 import { recordEngineChild, clearEngineChild } from "./child-record.mjs";   //
 import { engineEnv } from "./engine-env.mjs";   // — the program's environment, by list (see spawnEnv)
 import { engineSpawn, spawnsDetached, killWindowsTreeNow } from "./engine-spawn.mjs";   // one answer to how a turn starts and ends, on every platform
+import { newSessionRecord, noteClaudeEvent, sessionSummary, countTool, streamSink } from "./session-record.mjs";   // what the session went through, beside how it ended
 
 // Read per-call (not module-level) so tests can drive a short stall timeout / a mock binary.
 // ONE place knows how to find the program (driver.config.mjs resolveEngineProgram): the explicit setting,
@@ -524,7 +525,7 @@ export const anthropicAgentEngine = {
   // doctrine tree, the profile store and `<runDir>/_driver/` at the moment of the write. That is a real
   // boundary and this engine has it.
   writeBoundary: "enforced",
-  async runTurn({ message, model, thinking, timeoutSec, resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null, stallSec, progressFiles } = {}) {
+  async runTurn({ message, model, thinking, timeoutSec, resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null, stallSec, progressFiles, streamFile = null } = {}) {
     if (!message) throw new Error("anthropic-agent.runTurn: message is required");
     const { args, input, grantNote } = buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites, grantDispatch });
     // the cross-check speaks. Driver stderr is what an operator reads, and it is where the other
@@ -690,6 +691,19 @@ export const anthropicAgentEngine = {
       // ("a completed tool result = the agent loop advanced", below). The gap between them is the turn
       // waiting on tools rather than generating.
       let toolCalls = 0;
+      // …AND THE SAME CALLS BY TOOL NAME, so a tool server's own log can be set against what the model
+      // asked for. A name is the program's identifier for a tool (`Read`, `mcp__band__band_lookup`), never
+      // an input, so it carries no client text. The values sum to `toolCalls` by construction: one fold
+      // per tool_use block, at the one site that counts them.
+      const toolCallsByName = Object.create(null);
+      // WHAT THE SESSION WENT THROUGH, beside how it ended: every result event, every classifier cut,
+      // every refusal and every restart, each with when it arrived. See session-record.mjs; the retry
+      // policy below still reads the LAST result alone, so this records and decides nothing.
+      const session = newSessionRecord();
+      // The raw stream, one file per session beside its dispatch (the caller names it). Opened before the
+      // first byte can arrive; closed in settle(). A sink that could not open is a null writer whose
+      // close() says why.
+      const sink = streamSink(streamFile);
       // HOW MANY OF THOSE ASKED FOR A COMMAND TOOL. The command tools are removed from every stage
       // (COMMAND_TOOLS), so the number a test round expects here is zero, and a count is what proves it: a
       // flag in the argv shows what was asked of the program, this shows what the model did. Still a count
@@ -814,6 +828,7 @@ export const anthropicAgentEngine = {
         let ev;
         try { ev = JSON.parse(line); } catch { return; /* partial/non-json line */ }
         sawAnyEvent = true;
+        noteClaudeEvent(session, ev, Date.now() - t0);
         if (ev.type === "result") resultEvent = ev;
         else if (ev.type === "rate_limit_event") rateLimitEvent = ev;
         else if (ev.type === "system" && ev.subtype === "init") {
@@ -839,7 +854,7 @@ export const anthropicAgentEngine = {
           // classification and no recovery park, or the turn never settles with its watchdog already gone.
           // Same belt-and-braces as the thinking gauge's `?.some?.()` on the line above.
           for (const b of Array.isArray(ev.message?.content) ? ev.message.content : []) {
-            if (b?.type === "tool_use") toolCalls++;   // #1111 — every tool, not only Read; a COUNT, never a name
+            if (b?.type === "tool_use") { toolCalls++; countTool(toolCallsByName, b?.name); }   // #1111 — every tool, not only Read; the count and its split by name
             if (b?.type === "tool_use" && COMMAND_TOOLS.includes(b?.name)) commandToolCalls++;
             if (b?.type === "tool_use" && FILE_WRITE_TOOLS.includes(b?.name) && b?.id != null) writeAsks.add(String(b.id));
             if (b?.type === "tool_use" && b?.name === "Read" && typeof b?.input?.file_path === "string") {
@@ -1052,6 +1067,7 @@ export const anthropicAgentEngine = {
         chunkGapMs = prevChunkAt === null ? 0 : Date.now() - prevChunkAt;
         prevChunkAt = Date.now();
         lastMove = Date.now();   // ANY streamed byte = liveness → resets the stall clock
+        sink.write(d);           // the raw stream, byte for byte, before anything parses it
         buf += d.toString();
         let nl;
         while ((nl = buf.indexOf("\n")) >= 0) { parseLine(buf.slice(0, nl)); buf = buf.slice(nl + 1); }
@@ -1074,7 +1090,7 @@ export const anthropicAgentEngine = {
         if (stderr.length > maxBuffer) { stderr = stderr.slice(0, maxBuffer); overflowKill(); }
       });
       // error + close can BOTH fire for a single failure (Node) → settle EXACTLY once (no double clearInterval/resolve).
-      child.on("error", (e) => { if (settled) return; settled = true; clearInterval(watchdog); resolve(errResult(t0, e, resumeRef)); });
+      child.on("error", (e) => { if (settled) return; settled = true; clearInterval(watchdog); sink.close(); resolve(errResult(t0, e, resumeRef)); });
       child.on("close", (code) => settle(code));
       function settle(code) {
         // the turn is over; the record must not outlive it, and is cleared only if
@@ -1087,6 +1103,7 @@ export const anthropicAgentEngine = {
         try { child.stdout.destroy(); } catch { /* stream gone */ }
         try { child.stderr.destroy(); } catch { /* stream gone */ }
         if (!overflow) { parseLine(buf); }   // B1: flush the final, un-terminated line (the result event) — but NEVER the truncated overflow tail
+        const stream = sink.close();   // after the flush: every byte the program wrote is in it, or the record says why not
         buf = "";
         // ONE SAMPLE OF THE CLOCK, and both quantities below are derived from it. Two `Date.now()` calls
         // a few milliseconds apart are enough to break the identity on the very turn it matters for: on a
@@ -1176,6 +1193,10 @@ export const anthropicAgentEngine = {
           // from this list is unreliable and the consumer must downgrade it to "not observed").
           reads: [...reads], readsTruncated,
           toolCalls, toolWaitMs: settledToolWaitMs,   // #1111 — two integers, no content
+          // The same calls by tool name (values sum to toolCalls), and what the session went through: every
+          // result, cut, refusal and restart (session-record.mjs). `stream` is the raw stream's file and size,
+          // or why it was not kept. Recording only — `failed` above still reads the last result alone.
+          toolCallsByName: { ...toolCallsByName }, session: sessionSummary(session), stream,
           // The two counts a test round reads per stage: calls to a command tool, and calls the program
           // refused. The refusals are the result event's own `permission_denials`, counted; null when the
           // turn settled with no result event, so "not reported" never reads as "none refused".
@@ -1253,6 +1274,8 @@ function errResult(t0, e, resumeRef) {
     // modelWire: null for the opposite reason — no turn ran, so the wire said nothing about a model, and
     // the record must say UNKNOWN rather than inherit the alias that was asked for.
     json: null, usage: null, reads: [], readsTruncated: false, modelWire: null, providerWire: null, sessionRef: resumeRef ?? null,
+    // No session ran, so there is nothing to have been interrupted and no stream: null, never an empty record.
+    toolCallsByName: null, session: null, stream: null,
   };
 }
 
