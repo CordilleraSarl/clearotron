@@ -8407,7 +8407,7 @@ async function pipelineInner(job, opts = {}) {
       //
       // The prior channel is the TRUSTED one and already carries everything needed. Half forms are
       // driver-written, `seatFields(p, row)` carries their rulings by the same `pOk` path, and
-      // gateway.mjs:603 already unions this exact shape — prior-only, `{ rows: null }` submitted — on
+      // syncDispositionForm() in gateway.mjs already unions this exact shape — prior-only, `{ rows: null }` submitted — on
       // every attempt. So this is that mode, not a new one.
       //
       // ONE METRIC MOVES, deliberately: with no submission, `carried` counts every ruled row, because

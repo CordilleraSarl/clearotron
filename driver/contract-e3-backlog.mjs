@@ -300,7 +300,7 @@ export const E3_BACKLOG = [
   // records nobody ordered.
   // ── (a) THE ORIGINAL SUBJECT WAS DELETED BY DESIGN — DISCHARGED, NOT FAILED (conversion 11) ───────
   //
-  // This row quoted the 336-line ```markdown fence at digest.md:11-347 — the whole register-findings.md
+  // This row quoted the 336-line ```markdown fence in the digest manual (since removed) — the whole register-findings.md
   // document skeleton, which the seat was shown in order to type it. Conversion 11 made the document the
   // driver's and the fence went with the dictation: `grep -n '^```' digest.md` now returns nothing, and
   // the E3 surface census records the shrink (digest.md dictated-line-shape 7 → 4). Its `removedByMove`
@@ -596,7 +596,7 @@ export const E3_BACKLOG = [
     // `[on: -]` case went from a value to an ABSENCE — you omit the field — which is the one part a
     // reader could get wrong from the old wording, since there is no value meaning "no finding".
     evidence: "**AND EVERY FLAG CARRIES WHICH FINDING IT IS ABOUT** — the `on` field, an array of ordinals. Same rule as `kind`: you send the values, the driver renders the token.",
-    reparsedBy: "driver/verify.mjs:864 CORRECTION_ON_RE = /\\[on:\\s*([0-9,\\s-]*?)\\s*\\]/i. SKILL-FILE ONLY — the stage message at stages.mjs:1844-1877 never mentions `[on:]`. This is #850's \"the element shape is in the skill file, not the stage message\" in its purest form: an E3 lint reading stages.mjs alone sees the [kind:] token and misses its twin",
+    reparsedBy: "driver/verify.mjs:850 CORRECTION_ON_RE = /\\[on:\\s*([0-9,\\s-]*?)\\s*\\]/i. SKILL-FILE ONLY — the stage message at stages.mjs:1844-1877 never mentions `[on:]`. This is #850's \"the element shape is in the skill file, not the stage message\" in its purest form: an E3 lint reading stages.mjs alone sees the [kind:] token and misses its twin",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
   {
