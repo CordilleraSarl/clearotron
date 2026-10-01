@@ -47,7 +47,8 @@ test("the stage is declared exactly as specced: sonnet, LOW thinking, run-root o
   assert.equal(s.out(P), join("/run", "doubt-closure.md"),
     "the run root, NOT _driver/ — the write boundary denies that tree");
   assert.equal(s.validate, validators.doubtClosure);
-  assert.deepEqual(stageInputs("doubt-closure", P), [P.findings, P.registerFindings, P.registerCoverageLedger],
+  // Step 3's merged decisions stand where the register digest's findings stood (2026-10-01).
+  assert.deepEqual(stageInputs("doubt-closure", P), [P.findings, P.ownerDecisions, P.registerCoverageLedger],
     "the citable set is closed: exactly the three evidence surfaces");
 });
 
@@ -57,7 +58,7 @@ test("the message states the contract: every open doubt (id + birth quote), the 
     assert.ok(msg.includes(d.id), `doubt id ${d.id} rides in the message`);
     assert.ok(msg.includes(d.birth.quote), "the birth quote rides verbatim");
   }
-  assert.ok(msg.includes(P.findings) && msg.includes(P.registerFindings) && msg.includes(P.registerCoverageLedger),
+  assert.ok(msg.includes(P.findings) && msg.includes(P.ownerDecisions) && msg.includes(P.registerCoverageLedger),
     "all three evidence file paths are named");
   // CONVERSION 6: the two dictated line shapes are GONE from the message. The seat sends typed rows and
   // the driver renders the artifact, so a shape asserted here would be a shape nobody types. Asserted

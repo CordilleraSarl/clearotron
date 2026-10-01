@@ -44,12 +44,15 @@
 //                               classifications explaining why a dictation is code-rendered. No
 //                               flag/data pair exists at either site.
 //
-//  DISAGREE (1) — the two ends read different snapshots and nothing converges:
+//  DISAGREE (1, and its pair has since gone) — the two ends read different snapshots and nothing converges:
 //   · verify.mjs           `activeAxes` is basename-derived from a directory listing, so a stray
 //                               `.md` in register-units mints a DRIVER axis row the seat cannot repair
 //                               and the union regenerates every pass. The ladder runs out. verify.mjs
 //                               recorded this itself and asked for "its own token naming the driver" if
-//                               it were ever observed.
+//                               it were ever observed. The enforcement end left with the register
+//                               digest's coverage check (2026-10-01): code now settles every row itself
+//                               each pass, so no seat is judged against a regenerated row, and the stray
+//                               axis is settled deferred with the driver named.
 //
 // ── WHAT CHANGED, AND WHAT DELIBERATELY DID NOT ─────────────────────────────────────────────────────
 //
@@ -100,7 +103,7 @@ function population() {
 // has to stay true is that no file joins the class unruled.
 const RULED = new Set([
   "gateway.mjs", "stages.mjs", "disposition-union.mjs", "disposition-call.mjs",
-  "coverage-form.mjs", "coverage-union.mjs", "verify.mjs",
+  "coverage-form.mjs", "coverage-union.mjs",
   "coverage-form-io.mjs",   // the report for the one disagreement, authored by this change
 ]);
 
@@ -145,9 +148,11 @@ test("an axis minted from a stray unit file is REPORTED, and the driver names it
   assert.match(io, /REGISTER_AXES\.includes/,
     "the report no longer compares against the closed axis set — a second copy of the axis vocabulary is "
     + "how one of them ends up with three entries");
-  const gw = src("gateway.mjs");
-  assert.match(gw, /input\.unknownAxisUnits/, "nothing consumes the report, so it says nothing to anyone");
-  assert.match(gw, /driver fault, not a seat one/,
+  // The consumer moved with the coverage form: code settles it every pass now (pipeline.mjs,
+  // settleCoverageFromFacts), so that is where the report is read and the stray axis kept from a clean.
+  const pl = src("pipeline.mjs");
+  assert.match(pl, /input\.unknownAxisUnits/, "nothing consumes the report, so it says nothing to anyone");
+  assert.match(pl, /This is a driver fault\./,
     "the note no longer names the DRIVER as the faulty party — which is the ask verify.mjs recorded");
 });
 

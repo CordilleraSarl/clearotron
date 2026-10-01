@@ -425,50 +425,6 @@ const RECORDING = Object.freeze({
       + "the dispatch and Read serves them whole), and loses the ambient Bash it used to seek inside those "
       + "same three files (O3c: 72 calls, 9 writes / 16 attempts; re-measured 113 / 19)",
   },
-  // CONVERSION 11 — THE REGISTER FINDINGS DOCUMENT, AND THE WIDEST PARSER SURFACE IN THE RUN.
-  //
-  // `register-findings.md` is read by NINE parsers across driver/, mcp-server/ and driver/publish/, and
-  // the reader count is the argument FOR this conversion rather than against it. Every one of them is a
-  // heading / pipe-table / `/mark/…` uri scanner, and they are written that way because a model wrote
-  // this file: they exist to tolerate freeform prose. A driver render satisfies them by construction.
-  // Measured before the row landed, by feeding the render through the real parsers rather than by
-  // reading them: parseFindingsEndings buckets the Sheet-1 uri as carried and the drop uri as a drop
-  // row, parseCarrySurfaces agrees, findScreenGateParseGaps reports no gaps, and anchor-reader lifts
-  // the owner and both classes out of the rendered table.
-  //
-  // WHY THE WRITER GOES, when register-unit's did not. That stage kept `Write` because its lane-OFF
-  // branch genuinely still hand-writes the named band, so taking the tool away would break a live
-  // configuration. This stage was believed to have the same shape — a no-form arm hand-writing the
-  // `## Coverage ledger` table — and it does not: M6 deleted that arm on 2026-08-14. The belief
-  // came from the stage's own contract-elements table, which still carries a full entry for the deleted
-  // branch, because that table is a register of DECISIONS and its retired rows stay on purpose. One
-  // `writeReturn`, one artifact, no surviving hand-write arm.
-  //
-  // THE COST, STATED, and it is the largest of any conversion so far: thirteen of the stage's twenty
-  // contract elements move, and the seven that stay are the whole of its judgment — the relevance gate,
-  // the opposition read, the instructed-check answers, adopt-or-override on every placement, and the
-  // coverage `status`/`reason` pair that already rides `record_coverage`. What the seat loses is the
-  // retyping of identifier cells, URLs, counts and audit rows out of artifacts the driver holds, plus
-  // the ambient `Write` it used to author the document with. A digest that wants scratch I/O now FAILS
-  // rather than degrading.
-  "register-digest": {
-    seatWrites: false,
-    // MIXED, and declared rather than inferred — O4's partition treats "tooled" and "recording" as
-    // disjoint, and a member that stops holding retrieval fails the reverse arm. This stage reads the
-    // frozen band through band_shape / band_lookup / band_record to judge it, and rating frozen material
-    // is what it reads WITH. It additionally holds `coverage`, which is a separate transport on its own
-    // key and is untouched by this row.
-    keepsRetrieval: true,
-    tools: Object.freeze(["record_register_digest"]),
-    reason: "hands back the findings document as typed rows and prose sections through "
-      + "record_register_digest instead of authoring register-findings.md itself — so the Sheet-1 and "
-      + "Sheet-2 identifier cells, the clickable record URL, the Negative-results provenance fields, the "
-      + "summary counts and the audit trail are rendered FROM the band and the run's own receipts rather "
-      + "than retyped out of them, and a row whose uri the band cannot resolve is refused AT THE CALL "
-      + "instead of shipping as a line of blank cells. KEEPS its band group, deliberately — judging the "
-      + "frozen material is what the stage is for — and keeps `coverage` on its own key: the obligation "
-      + "ledger and the findings document are different statements with different writers",
-  },
   skeptic: {
     seatWrites: false,
     tools: Object.freeze(["record_skeptic", "search_run_artifacts"]),
@@ -626,18 +582,15 @@ const LOCAL = {
   // _driver/reading-log.jsonl (the reading audit). Provider-neutral by construction: it serves driver
   // artifacts and never dials a vendor.
   band:       { script: "band-server.mjs",        tools: ["band_lookup", "band_record", "band_shape"] },
-  // ── COVERAGE: the register-digest typed transport (B's pattern, one lane over) ───────────────────
-  //
-  // ITS OWN KEY, NOT A TOOL ON `band`, and the reason is the RECORDING split's own: `band` is held by
-  // FOUR judgment stages, and a record tool riding that shared entry would be enumerated into every
-  // holder's grant — a synthesis seat handed a writer into the digest's coverage accumulator. The
-  // second-writer disease as an allowlist side effect. One tool, one key, granted by exactly one
-  // stage's group list (toolGroupsForStage below).
-  //
-  // Like `record_dispositions` above this is an allowlist growing by one token on an ALREADY-TOOLED
-  // stage — not a tool-free flip — so no argv-surface transition fires and the RECORDING tables are
-  // untouched.
-  coverage:   { script: "coverage-server.mjs",    tools: ["record_coverage"] },
+  // ── OWNERS: the judging step's tools ─────────────────────────────────────────────────────────────
+  // The run's pile laid out by owner, and the reads behind it (driver/owner-tools.mjs): the owner table
+  // in pages, all records of one owner, the register questions the run ran with their counts, what one
+  // question returned, one full record, the saved web results, and a request for a question the run did
+  // not run, which is recorded and not answered. Every call is logged to the run's reading log, and that
+  // log is what tells an owner a judge saw from one it never did. All reads, except that a full record
+  // the run does not hold is fetched from the active register when a judge opens it. Its own key: no
+  // other stage reads the pile this way, and the judging step holds nothing else.
+  owners:     { script: "owner-server.mjs",       tools: ["owner_table", "owner_records", "register_questions", "register_list", "register_open", "web_results", "register_new_question"] },
   // ── DECLINATION: synthesis's typed transport for what it does NOT deliver ────────────────
   //
   // `coverage`'s shape exactly, and it stays its own key — but READ THE REASON, because the one this
@@ -810,10 +763,10 @@ function resolveGroup(group) {
     // the ACTIVE register — or as a member of the `free-tier` composite above.
     case "register":   return { local: ["register"], bridges: [], extra: [] };
     case "band":       return { local: ["band"], bridges: [], extra: [] };
+    case "owners":     return { local: ["owners"], bridges: [], extra: [] };
     // COVERAGE. `bridges: []` is load-bearing exactly as on the recording group below: this group's
     // one promise is that it widens no retrieval surface — it carries the digest's record tool and
     // nothing else.
-    case "coverage":   return { local: ["coverage"], bridges: [], extra: [] };
     // — `bridges: ` for the same load-bearing reason as its siblings: a bridge is a WILDCARD
     // grant, so an empty array here is where "this key widens no retrieval surface" is actually kept.
     case "declination": return { local: ["declination"], bridges: [], extra: [] };
@@ -880,6 +833,15 @@ function serverEnv({ sessionKey, agent, runDir, recordAxis }) {
   return e;
 }
 
+// THE OWNER TOOLS FETCH FROM THE ACTIVE REGISTER, so their server is told which one: neither engine hands
+// a tool server the setting that names it, and the provider's own server is chosen by name instead. A
+// deployment that names none gets no fetch, and every refused fetch is in the reading log with its cause.
+function ownersEnv(env) {
+  let provider = null;
+  try { provider = requireRegisterProvider(); } catch { /* no register named: a fetch on open is refused, logged */ }
+  return provider ? { ...env, CLEAROTRON_DATABASE: provider } : env;
+}
+
 // Build the mcp-config object for a set of groups. Returns { config: <object>, servers: [...] } or null if
 // the groups need no MCP server (e.g. caselaw-only EUR-Lex via WebFetch needs no server but the bridges do).
 export function buildGatherMcpConfig(groups = [], { sessionKey, agent, runDir, recordAxis } = {}) {
@@ -912,8 +874,12 @@ export function buildGatherMcpConfig(groups = [], { sessionKey, agent, runDir, r
         + "belong to their run, and the box-global ledger is retired. Pass runDir.");
     }
   }
+  // The owner tools read the run they judge, and write a record they fetch to that run's record log.
+  if (localKeys.has("owners") && !runDir) {
+    throw new Error("gather-config: the owner tools serve the run being judged — pass runDir.");
+  }
   const env = serverEnv({ sessionKey, agent, runDir, recordAxis });
-  for (const k of localKeys) mcpServers[k] = { command: NODE, args: [join(MCP_DIR, localEntry(k).script)], env };
+  for (const k of localKeys) mcpServers[k] = { command: NODE, args: [join(MCP_DIR, localEntry(k).script)], env: k === "owners" ? ownersEnv(env) : env };
   // — THE BRIDGES GET THE AUDIT ENV, AND ONLY THAT. Until now they were spawned with no env at
   // all, so a case-law tool call had nowhere to log: `tool-calls.jsonl` recorded server/tool/ok and the
   // bridge could not write what was asked or what came back. That is why a cited authority and an
@@ -959,25 +925,9 @@ export function toolGroupsForStage(name = "") {
   // mint (register_propose_supplemental in a register-unit lane / the escalation re-run), the same
   // door every other new query uses. This also ends the stages.mjs "register tools you hold" mismatch:
   // register-digest's prompt ordered live register checks while this map gave it NO register tools.
-  // B's pattern, one lane over ( transport conversion): the digest additionally holds its OWN
-  // record tool — coverage rulings ride `record_coverage`, never a hand-edited file. The key is the
-  // digest's alone; see the LOCAL entry for why it does not ride the shared `band` key.
   //
-  // ── AND THE SECOND BRANCH THAT RETURNS RETRIEVAL *AND* RECORDING (conversion 11) ─────────────────
-  //
-  // The third key is not optional decoration. This branch RETURNS EARLY, so a conversion that added the
-  // RECORDING row and stopped would never reach the derived branch below, `recording-register-digest`
-  // would never enter the resolved grant, and `recording-agreement` would fail by name at "NO
-  // TOOL_WRITTEN_ARTIFACTS row names a tool this stage holds" — exactly what narrative-refutation's
-  // comment below records happening to it. The key is composed the way the derived branch composes it
-  // (`recording-${stage}`), so the two cannot drift into naming different servers for one stage.
-  //
-  // `coverage` stays beside it, unchanged and separate. The two transports state different things: the
-  // coverage form is the run's obligation ledger, ruled row by row; the digest call is the findings
-  // document. One tool, one key, one holder — and merging them would put a second writer into the
-  // ledger the conversion took a writer out of.
-  if (name.startsWith("register-digest")) return ["band", "coverage", "recording-register-digest"];
-  if (name.startsWith("placement-inquiry")) return ["band"];
+  // The judging step: the owner tools and nothing else (see the LOCAL entry).
+  if (name.startsWith("owner-judgment")) return ["owners"];
   // ── — THE SEED INSTANCE, RESOLVED BY GRANTING RATHER THAN BY DELETING THE ORDER ─────────────
   //
   // The stage held ["band"] while its own doctrine ordered one scoped `perplexity_research` query before
@@ -1312,25 +1262,6 @@ export const RECORDING_TOOLS = Object.freeze({
     "mcp__band__band_shape",
     "mcp__recording-narrative-refutation__record_narrative_refutation",
     "mcp__recording-narrative-refutation__search_run_artifacts",
-  ]),
-  // Conversion 11 — THE THIRD MIXED ROW, and the only one holding a SECOND typed transport beside its
-  // own. BY HAND, like every row here — O1 asserts the resolved grant EQUALS this row, so a derived row
-  // would compare a value with itself, and O1 compares the WHOLE grant, so the retrieval and coverage
-  // tools belong in it: a row naming only the recording half would go red on a correct grant and invite
-  // "fix" by subtraction, which is the blind spot the note above this table warns about.
-  //
-  // `record_coverage` and `record_register_digest` sit side by side ON PURPOSE. They are two statements:
-  // the coverage form is the run's obligation ledger, ruled row by row against the plan-execution
-  // receipt; the digest call is the findings document. Folding them into one key would put a second
-  // writer into the ledger the conversion took a writer out of.
-  //
-  // `Write`/`Edit` are absent, and that is the conversion: the seat hands back rows and prose and the
-  // driver renders register-findings.md.
-  "register-digest": Object.freeze([
-    "Read",
-    "mcp__band__band_lookup", "mcp__band__band_record", "mcp__band__band_shape",
-    "mcp__coverage__record_coverage",
-    "mcp__recording-register-digest__record_register_digest",
   ]),
 });
 

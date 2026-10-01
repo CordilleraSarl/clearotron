@@ -63,8 +63,28 @@ ladder consumes it without knowing which engine produced it ([gateway.mjs](../ga
   stream:     { file, present, bytes, reason? } | null,
                                      // the raw stream, written to the file the caller named
                                      // (the gateway names _driver/streams/<label>.attempt<N>.jsonl)
+  structuredOutput: object | null | absent,      // a CONFINED turn's answer in its form (below);
+  structuredOutputIndex: number | null | absent, // which of the session's results carried it;
+  structuredOutputWhy: string | null | absent,   // why there is none. Absent on every other turn.
 }
 ```
+
+### `confined` — a session given its instructions and nothing else
+
+`runTurn({ …, confined: { instructions, answerForm } })` runs the judging step's session the way the
+bench run that measured it ran one. The instructions are the session's whole instructions: on claude
+`--system-prompt` replaces the program's own and the write discipline is not sent; on codex
+`model_instructions_file` replaces the program's own. The session is offered the tools its stage is
+granted and the program's own tool that starts a helper, and nothing else: no file tool, no command
+tool, no web search, none of the machine's own settings, hooks, memory files or instruction files.
+It answers in `answerForm`, the program's own structured-answer schema (claude `--json-schema`, codex
+`--output-schema`), so a helper holding the same tools cannot write the answer.
+
+The adapter returns the answer as `structuredOutput`: on claude, the last result that came back
+without an error and carried one (a session a helper's report restarted ends on several results); on
+codex, the session's last message. The gateway writes it to the stage's declared output, and never
+resumes, patches or corrects a confined stage: a failed attempt runs again on a fresh session with the
+same message.
 
 ### `session` — what the session went through
 

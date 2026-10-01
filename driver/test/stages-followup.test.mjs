@@ -17,9 +17,10 @@ import { readFileSync, readdirSync } from "node:fs";
 import { STAGES, paths, stageInputs, composeFollowup, resolveSkillReads } from "../stages.mjs";
 import { skillRefsIn } from "../methodology-witness.mjs";
 import { nonEmpty } from "../../shared/vacuous-pass.mjs";
+import { composeMessage as composeJudgeMessage } from "../owner-judgment.mjs";
 
 const P = paths("/tmp/a1-run");
-const FOLLOWUP = "The coverage ledger is missing a disposition row for the DE axis. Add it and re-emit nothing else.";
+const FOLLOWUP = "The findings file is missing a row for the DE axis. Add it and re-emit nothing else.";
 
 // The three profile-aware stages resolve their framework per customer. A profile that names its own
 // framework is the case the static `skillReads` property CANNOT represent.
@@ -45,7 +46,7 @@ test("A-1 — the composed followup carries the methodology pointer for every st
 });
 
 test("A-1 — the instruction survives verbatim and the stage is NOT re-commissioned", () => {
-  const msg = composeFollowup("register-digest", { profile: null, job: {} }, { followup: FOLLOWUP });
+  const msg = composeFollowup("synthesis", { profile: null, job: {} }, { followup: FOLLOWUP });
   assert.ok(msg.includes(FOLLOWUP), "the followup text is the primary content and is passed through unchanged");
   // The whole point of composing rather than re-sending def.message(ctx): the full stage prompt would
   // re-order the task and fight the followup's own "do NOT redo it".
@@ -56,8 +57,8 @@ test("A-1 — the instruction survives verbatim and the stage is NOT re-commissi
 });
 
 test("A-1 — opts.extra survives a followup (it was reachable only on the fresh-message branch)", () => {
-  const extra = "SETTLED DEFERRALS: axis DE — provider capability gap, accepted. Give it an honest deferred row.";
-  const msg = composeFollowup("register-digest", { profile: null, job: {} }, { followup: FOLLOWUP, extra });
+  const extra = "DRIVER-COMPUTED BLOCK: axis DE — provider capability gap, held. State it as a deferral.";
+  const msg = composeFollowup("synthesis", { profile: null, job: {} }, { followup: FOLLOWUP, extra });
   assert.ok(msg.includes(extra), "the driver-computed block reaches the dispatch that needs it");
   assert.ok(msg.indexOf(FOLLOWUP) < msg.indexOf(extra), "the instruction stays ahead of the data it acts on");
 });
@@ -100,10 +101,14 @@ test("A-1 — resolveSkillReads equals what message() emits, for every stage, un
     { label: "pharma matter", ctx: { profile: CUSTOM, job: { classes: ["5"] } } },
   ];
   let rendered = 0;
+  // Step 3's message is composed by runOwnerJudgment from the run's files and handed in on ctx (its own
+  // message() refuses to build without it); composed here the same way, from invented parts.
+  const ownerJudgmentMessage = composeJudgeMessage({ order: "X, class 9", context: "An invented client.",
+    ratingScale: "High / Low", workedExamples: "None.", tablePages: null });
   const withMessage = Object.entries(STAGES).filter(([, d]) => typeof d.message === "function");
   for (const [name, def] of withMessage) {
     for (const { label, ctx } of ctxs) {
-      const emitted = skillRefsIn(def.message({ ...ctx, paths: P, axis: "primary", finding: {}, run: { slug: "s", codename: "c" } }));
+      const emitted = skillRefsIn(def.message({ ...ctx, paths: P, axis: "primary", finding: {}, run: { slug: "s", codename: "c" }, ownerJudgmentMessage }));
       rendered++;
       const resolved = resolveSkillReads(name, ctx);
       for (const s of resolved)

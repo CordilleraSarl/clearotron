@@ -169,12 +169,12 @@ What to know before editing:
 - **Which stage reads what** is dictated solely by each stage message's `reads([...])` in
   `stages.mjs` — read it there rather than trusting this summary. Broadly: matter-frame,
   clearance-variants (+ `transliteration-scripts.md`), blind-frame, clearance-common-law (every grid seat),
-  clearance-register spine + `unit.md` *xor* `digest.md` (mode-routed — a unit must never read
-  digest doctrine and vice versa) + the active provider's `providers/<name>.md`,
-  placement-inquiry, `phase2-execution.md` §skeptic (that one section only), frame-diff,
+  clearance-register spine + `unit.md` + the active provider's `providers/<name>.md` (the register
+  units), `phase2-execution.md` §skeptic (that one section only), frame-diff,
   synthesis (synthesis-rules + per-profile framework + worked examples + conditionally
   `field-doctrine-pharma.md` for pharma-shaped matters — a code predicate), case-law-citation,
-  narrative-refutation, and delivery-contract for the two report stages.
+  narrative-refutation, and delivery-contract for the two report stages. Step 3's judges read no
+  manual: their message carries the company's rating scale and worked examples, read by code.
 - **Force-read vs pointer-read is a real class distinction.** Files named in `reads([...])` load
   every run; files merely *linked* from a SKILL.md ("read as needed") are a model-discretion second
   hop that can silently be skipped — a load-bearing rule that lived in a pointer file once silently

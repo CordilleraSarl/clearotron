@@ -31,7 +31,7 @@
 // or touches a run. That split is what makes the guard able to walk them: a composer that read from disk
 // could only be exercised against a real run, and a guard that cannot be run is a guard nobody runs.
 // `correctionsExtra` keeps its gathering in pipeline.mjs for exactly this reason — the reading of the
-// review, the placement tail and the flag rows stays there, and only the composition moved.
+// review and the flag rows stays there, and only the composition moved.
 //
 // ── HOW A NEW COMPOSER FAILS ────────────────────────────────────────────────────────────────────────
 //
@@ -49,12 +49,10 @@ import { editRepairTail, abbrev } from "./repair-contract.mjs";
 import { correctionHint, gridLedgerNameFor } from "./gateway.mjs";
 import { basename } from "node:path";
 // ── REGISTERED IN PLACE ─────────────────────────────────────────────────────────────────────────────
-// These six are already named, exported, and living beside the subject they repair. Moving them into
+// These are already named, exported, and living beside the subject they repair. Moving them into
 // this file would trade locality for nothing: what was missing was never their location, it was that
 // nothing enumerated them, so the guard could not walk them. They are imported and registered.
 import { buildFrameReopenFollowup, buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenRetryMessage, DECIDE_WAITING_FAMILIES } from "./stages.mjs";
-import { buildReconcileFollowup } from "./recall-reconciliation.mjs";
-import { buildFlushFollowup } from "./digest-queue.mjs";
 
 /**
  * The registry. One entry per bespoke repair composer that reaches a seat.
@@ -150,10 +148,10 @@ export const REPAIR_COMPOSERS = [
     trigger: "corrective",
     stage: "synthesis",
     key: "synthesis:corrective",
-    // THE GATHERING STAYS IN pipeline.mjs. `correctionsExtra(P)` still reads the review, the placement
-    // rulings tail and the flag rows off disk and parses them; what moved here is the composition it
-    // wrapped them in. Splitting at that seam is what lets the guard call this at all.
-    compose: ({ narrative, findings, placement, rulingsTail, scope, worklist, review }) => {
+    // THE GATHERING STAYS IN pipeline.mjs. `correctionsExtra(P)` still reads the review and the flag
+    // rows off disk and parses them; what moved here is the composition it wrapped them in. Splitting at
+    // that seam is what lets the guard call this at all.
+    compose: ({ narrative, findings, scope, worklist, review }) => {
       // — THE SCOPE BLOCK, and it is the whole saving. When every flag declares which finding it
       // is about, the corrective pass is told so and told that nothing else may move. When any flag
       // declares nothing, this is "" and the dispatch is byte-identical to the one before it existed —
@@ -227,12 +225,6 @@ export const REPAIR_COMPOSERS = [
         // while trying to EXPRESS a hold. The contract is closed and every correction is expressible
         // inside it — say so.
         `THE FINDINGS CONTRACT IS CLOSED — MINIMAL CHANGE ONLY: start from the finding objects as you last sent them and change the smallest set of existing fields the flags require; NEVER invent a key, a state, or an enum value (any unknown key fails the file and, repeated, fails the WHOLE RUN). Every correction the reviewer can ask for is expressible with existing fields: an unsourced/confabulated attribution ⇒ that finding gets "disposition":"withdrawn" + "withdrawn_reason", OR its owner/prose is re-attributed to what the sources actually support — an identity that needs the applicant's confirmation is stated in the finding's prose/impact text, NEVER as a new field or note-type; use_check.quality is EXACTLY one of owner-site | independent | register-mirror or omitted; context_notes entries are EXACTLY {"type","mark","owner","context"}. RE-TYPING A DISPOSITION CARRIES ITS FIELDS WITH IT — this is the one case where a minimal edit MUST add a key, and these are the only keys it may add: re-typing a finding TO "off-field" also sets "off_field_ground" (EXACTLY "different-field" — only where that finding's own goods_proximity meter reads "low" — or "no-material-risk"), and re-typing AWAY from "off-field" REMOVES it; any finding that is not "withdrawn" keeps a non-empty "legal_position" and "practical_position", so a re-type that lands on a finding missing either must write both. Nothing else may be added.`,
-        rulingsTail ? lines(
-          `PLACEMENT RULINGS TAIL (verbatim from ${placement}, provided AS DATA — do NOT re-read the placement file; where a flagged correction touches a coverage disposition, a coverage[] row, or a placement call, adjudicate it against these rulings — adopt each ruling or counter-reason it, never silently drop one):`,
-          "```markdown",
-          rulingsTail,
-          "```",
-        ) : "",
         scopeBlock ? lines(scopeBlock, ``) : "",
         worklist ? lines(worklist, ``) : "",
         `The reviewer's flags, verbatim:`,
@@ -245,12 +237,11 @@ export const REPAIR_COMPOSERS = [
     // second: a declared scope narrows the pass, an undeclared one leaves it byte-identical to what it
     // was before that existed. A guard walking only one of them walks half the surface.
     samples: [
-      { name: "no declared scope, no placement tail", tail: "tool",
-        args: { narrative: "narrative.md", findings: "findings.json", placement: "placements.md",
-          rulingsTail: "", scope: { scoped: false, ordinals: [] }, worklist: "", review: "the flags, verbatim" } },
-      { name: "declared scope + placement rulings tail", tail: "tool",
-        args: { narrative: "narrative.md", findings: "findings.json", placement: "placements.md",
-          rulingsTail: "| axis | ruling |", scope: { scoped: true, ordinals: [1, 4] },
+      { name: "no declared scope", tail: "tool",
+        args: { narrative: "narrative.md", findings: "findings.json",
+          scope: { scoped: false, ordinals: [] }, worklist: "", review: "the flags, verbatim" } },
+      { name: "declared scope", tail: "tool",
+        args: { narrative: "narrative.md", findings: "findings.json", scope: { scoped: true, ordinals: [1, 4] },
           worklist: "- #1 correct the owner", review: "the flags, verbatim" } },
     ],
   },
@@ -381,8 +372,7 @@ export const REPAIR_COMPOSERS = [
       // flush, two full re-emissions failed at 1,402 s and 1,506 s and the attempt that PASSED patched, in
       // 578 s — "retyping a 160 KB document IS the latency".
       // The direction is scoped to the two files by name BEFORE the Edit tool is offered, per the hazard
-      // GRID_SCOPED records: the rulings tail below names the placement file precisely to forbid re-reading
-      // it, and an unscoped Edit affordance beside a named path is an invitation to edit it.
+      // GRID_SCOPED records: an unscoped Edit affordance beside a named path is an invitation to edit it.
       `You are RESUMING your own synthesis session — your narrative and inputs are already in your context; do NOT redo the analysis.`,
               `Exactly ${quarantined.length} finding object(s) in ${findings} failed the strict parse. Fix ONLY these objects and change NOTHING else:`,
               ...quarantined.map((q) => `- "${q.mark}" (index ${q.index}): ${String(q.error ?? "invalid shape").slice(0, 160)}`),
@@ -418,28 +408,6 @@ export const REPAIR_COMPOSERS = [
         `Send the corrected entries with \`record_synthesis\` as a PATCH call carrying only "ask_answers" — the complete array with these entries fixed. The driver is holding your findings and re-renders from them; nothing else moves, and there is no file for you to write or edit.`,
       ),
     samples: [{ name: "one malformed ask answer", tail: "tool", args: { findings: "findings.json", bad: [{ index: 1, ask: "check the EU register", error: "answer missing" }] } }],
-  },
-  {
-    trigger: "late-bind",
-    stage: "register-digest",
-    key: "register-digest:late-bind",
-    compose: ({ registerFindings, bind }) => lines(
-        `You are RESUMING your earlier register-digest session — your prior digest and all unit files are already in your context. Do NOT redo it from scratch and do NOT run any new searches.`,
-        `The applicant has been named mid-run: ${bind.customer}.${bind.exclusions.length ? ` Affiliate/exclusion set: ${bind.exclusions.join(", ")}.` : ""}`,
-        `Re-classify your existing findings against this: marks owned by the applicant/exclusion set are the client's OWN rights (not conflicts — move them out of the adverse tiers and note them as own-rights context); any finding previously treated as candidate-self resolves normally. Everything the re-classification does not touch stays as it is.`,
-        // ── CONVERTED (conversion 11). `editRepairTail(registerFindings)` stood here and ordered
-        // targeted Edits of a file whose only writer is now the driver — the superseded path the
-        // golden rule bans, and the exact shape recording-agreement direction (a) refuses by name.
-        //
-        // A WHOLE RE-SEND, not a patch, and the conversion is what makes that the cheap option. Under
-        // the old dictation a re-send meant retyping the entire document, so a targeted Edit was the
-        // only affordable repair. A row is now a uri, a reason and a token: re-sending every row costs
-        // less than the document's Sheet-1 table did, and it removes the failure mode a targeted edit
-        // has here — a re-classification that moves a finding between tiers has to touch two places at
-        // once, and an Edit that lands one of them leaves the document self-contradictory.
-        `Send the RE-CLASSIFIED result with \`record_register_digest\` — the COMPLETE set of rows, not a diff: every findings_row, incumbent_row and negative_row that still belongs, with the ones you moved in their new place. The driver re-renders the document from what you send, so a row you do not re-send is a row you have dropped. There is no file for you to write or edit and nothing you write by hand is read.`,
-      ),
-    samples: [{ name: "an applicant named mid-run, with exclusions", tail: "tool", args: { registerFindings: "register-findings.md", bind: { customer: "Acme SA", exclusions: ["Acme GmbH"] } } }],
   },
   {
     trigger: "connotation-remedy",
@@ -619,28 +587,6 @@ export const REPAIR_COMPOSERS = [
         args: { out: "frame-diff.md", restore: true, outstanding: 1, reason: "framediff_reopen_missing",
           toolWritten: { tool: "record_frame_diff" } } },
     ],
-  },
-  {
-    trigger: "recall-reconcile",
-    stage: "register-digest",
-    key: "register-digest:recall-reconcile",
-    inPlace: "driver/recall-reconciliation.mjs",
-    compose: ({ artifact, registerFindingsPath, hasCoverageForm }) => buildReconcileFollowup(artifact, { registerFindingsPath, hasCoverageForm }),
-    samples: [
-      { name: "no coverage form", tail: "declared-by-the-composer",
-        args: { artifact: "register-findings.md", registerFindingsPath: "register-findings.md", hasCoverageForm: false } },
-      { name: "with a coverage form", tail: "declared-by-the-composer",
-        args: { artifact: "register-findings.md", registerFindingsPath: "register-findings.md", hasCoverageForm: true } },
-    ],
-  },
-  {
-    trigger: "digest-flush",
-    stage: "register-digest",
-    key: "register-digest:digest-flush",
-    inPlace: "driver/digest-queue.mjs",
-    compose: ({ registerFindingsPath, sections }) => buildFlushFollowup({ registerFindingsPath, sections }),
-    samples: [{ name: "one queued section", tail: "declared-by-the-composer",
-      args: { registerFindingsPath: "register-findings.md", sections: ["eu"] } }],
   },
   {
     trigger: "frame-reopen-directive",

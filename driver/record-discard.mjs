@@ -33,10 +33,10 @@
 //
 // ── THE WINNER RULE, because the seams re-run ────────────────────────────────────────────────────────
 //
-// `register-digest` dispatches from at least six triggers and `synthesis` from five, so one record gets
-// several rows at one seam. Append-only rows with no cancellation would read a record that was absent
-// from `placements.json` on pass 1 and present on pass 2 as DROPPED — the shipped defect with its sign
-// flipped, which is not an improvement.
+// Step 3 is re-judged from several triggers and `synthesis` dispatches from five, so one record gets
+// several rows at one seam. Append-only rows with no cancellation would read a record that was set aside
+// on pass 1 and carried on pass 2 as DROPPED — the shipped defect with its sign flipped, which is not an
+// improvement.
 //
 //   **At each seam, the LAST row wins. A later `carried` cancels an earlier `discarded`.**
 //
@@ -65,12 +65,16 @@ export const DISCARD_LEDGER_NAME = "record-discard.jsonl";
 /**
  * The seams that author rows here, in pipeline order.
  *
+ * `judgment` is step 3 (owner-judgment.mjs): one row per record of the pile, carried when its owner was
+ * carried and otherwise discarded with its owner's fate as the reason. It replaced the placement and
+ * digest seams, which a ledger written before that change still carries; those rows are not read.
+ *
  * The SCREEN is deliberately absent. It already authors its own verdict onto the band record
  * (`rec.screen.screen_verdict`, read by `screenVerdict` in record-carry.mjs) at the moment it decides,
  * which is what this module exists to achieve. Re-authoring it into the ledger would be a second copy of
  * one decision, and two copies of a decision are how they come to disagree.
  */
-export const DISCARD_SEAMS = ["placement", "digest", "synthesis"];
+export const DISCARD_SEAMS = ["judgment", "synthesis"];
 
 /** What a pass did with a record. `carried` cancels an earlier `discarded` at the same seam. */
 export const DISCARD_VERDICTS = ["carried", "discarded"];

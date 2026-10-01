@@ -243,7 +243,7 @@ if (membershipBroken.length) {
 
 console.log(`\n${"═".repeat(78)}`);
 console.log(`This measures the BAND SHAPE only, and it is free. It is NOT the noise floor #217 needs.`);
-console.log(`That floor lives in the model-authored placement tier (placement-model.mjs:46) and needs`);
+console.log(`That floor lives in the model-authored judgment of step 3 (owner-judgment.mjs) and needs`);
 console.log(`repeat paid arms on a named run dir with approved spend. Nothing here substitutes for it.`);
 console.log(`Nothing was written. Exit code is 0 either way — this records, it does not judge.\n`);
 process.exit(0);

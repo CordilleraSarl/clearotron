@@ -18,7 +18,6 @@ import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { tmpdir } from "node:os";
 import { runStage, registerEngine } from "../gateway.mjs";
-import { validators as validatorsForEra } from "../verify.mjs";
 
 // Run `fn` with a registered fake engine selected via CLEAROTRON_AI, retry backoff disabled (the D3
 // inter-attempt backoff would add 20s per retry otherwise), and full env restore.
@@ -164,16 +163,16 @@ test("synthesis budget: timeoutSec 2500 with the 900s stall/no-progress ceiling 
   assert.equal(STAGES.synthesis.stallSec, 900, "the stall/no-progress ceiling stays WELL below the wall");
 });
 
-// — same discipline for placement-inquiry, and the number has a derivation rather than a feel.
-// 2026-08-09 R1: attempt 1 walled at 1860s against 1800 and attempt 2 finished in 1844s against the
-// 2700 the ladder's own 1.5x extension had granted it. The first budget is now the one the retry would
-// get, so the run stops paying 31 minutes to discover it. stallSec is deliberately NOT raised with it.
-test("placement budget: timeoutSec 2700 with the 600s stall ceiling left where it was", async () => {
+// — the same discipline for the judges of step 3, and the number has a derivation rather than a feel:
+// three times the longest of 106 bench sessions (nine minutes, the largest pile included), measured in
+// testing 2026-09-28/29. An answer arrives only at the end of a session, so the stall ceiling is what ends
+// a wedge early, and it stays well below the wall.
+test("judge budget: timeoutSec 1800 with the 600s stall ceiling", async () => {
   const { STAGES } = await import("../stages.mjs");
-  const p = STAGES["placement-inquiry"];
-  assert.equal(p.timeoutSec, 2700, "1800 → 2700 — the value runStage's hard-wall retry already grants");
-  assert.equal(p.stallSec, 600, "a silent wedge must still die in ten minutes; only the WORKING budget moved");
-  assert.ok(p.stallSec * 4 <= p.timeoutSec,
+  const p = STAGES["owner-judgment"];
+  assert.equal(p.timeoutSec, 1800, "three times the longest session measured");
+  assert.equal(p.stallSec, 600, "a silent wedge must still die in ten minutes");
+  assert.ok(p.stallSec * 3 <= p.timeoutSec,
     "the stall ceiling must stay well below the wall, or a raised wall just extends a wedge's burn");
 });
 
@@ -505,99 +504,6 @@ test("CLEAROTRON_DISPATCH_RECORD=0 disarms it — the row says null rather than 
   }
 });
 
-// ── — THE R1 INCIDENT, END TO END, AS THE RESCUE NOW SEES IT ─────────────────────────────────────
-//
-// On R1 2026-08-09 the wall rescue looked at a complete, quiescent `placement-recommendations.md` and
-// REFUSED, because `validators.placement` failed `placementmodel_missing` while `placements.json` was
-// absent — and the seat writes the prose first (md at 09:08:58, json at 09:15:50, by attempt 2). 31
-// minutes of finished tiers were discarded and re-derived from nothing.
-//
-// The premise is retired: under the form era the seat never writes placements.json at all — the driver
-// renders it from the accumulator — so the validator does not ask for it, and a quiescent prose-only
-// attempt is exactly the state the rescue exists to accept. This is the assertion that the CURE holds,
-// as opposed to merely that the arm was deleted.
-test("the wall rescue ACCEPTS a quiescent prose-only placement attempt — the R1 discard cannot recur", async () => {
-  const dir = mkdtempSync(join(tmpdir(), "wall-placement-"));
-  const out = join(dir, "placement-recommendations.md");
-  mkdirSync(driverDir(dir), { recursive: true });
-  // The era stamp, exactly as `recordStageContract` writes it at dispatch.
-  writeFileSync(driverDir(dir, "stage-contracts.json"),
-    JSON.stringify({ "placement-inquiry": { structuredPlacements: 1, placementForm: 1 } }));
-  const { validators } = await import("../verify.mjs");
-  try {
-    const r = await withEngine("fake-wall-placement", async ({ timeoutSec }) => {
-      writeFileSync(out, "# Placement recommendations\n\n## Tier 1 — headline candidates\n"
-    + "- NOVAPULSE (Acme SA, US/EU/CH) — sheet 2. Identical word mark, same class, live family "
-    + "across three territories; the owner trades in the same channel and the overlap is direct.\n\n"
-    + "## Tier 2 — sheet 2\n- NOVAPULSAR (Beta KK, JP) — near mark, adjacent goods, no channel overlap "
-    + "on the record read here.\n\n## Band reconciliation\nEvery floor record is placed or named.\n");
-      quiesce(out, 371);            // the incident's own margin, against a 60-second bar
-      return hardWallTurn(timeoutSec);
-    }, () => runStage("placement-inquiry", {
-      agent: "mailagent", sessionKey: "clearotron-test-placement-wall", message: "place them",
-      model: "opus", thinking: "high", timeoutSec: 600, expectFile: out,
-      validate: validators.placement, runDir: dir, maxRetries: 1,
-    }));
-    assert.equal(r.ok, true, "the finished prose IS the stage's truth — no placements.json is owed by the seat");
-    assert.equal(r.attempts, 1, "and the 1.5x cold re-derivation is never paid for");
-    const rows = readFileSync(driverDir(dir, "placement-inquiry.jsonl"), "utf8").trim().split("\n").map(JSON.parse);
-    assert.equal(rows.at(-1).rescued, "timeout");
-    // put the refusal CAUSE on the row. Absent (or null) means the rescue was not refused at all,
-    // which is the whole claim here: the R1 row read `rescued: null` with the artifact complete on disk.
-    assert.ok(rows.at(-1).rescueRefused == null, "nothing refused it — the cause of the R1 refusal is gone");
-    // …and the deliverable is ON DISK, rendered by the driver from the form, at the moment the seat's
-    // work exists rather than once the turn is allowed to finish. That render happens inside
-    // attemptWroteTruth — the rescue's own judgement — which is what closes the gap the kill landed in.
-    assert.ok(existsSync(join(dir, "placements.json")),
-      "the driver rendered the structured deliverable during the rescue's judgement, not after the turn");
-  } finally { rmSync(dir, { recursive: true, force: true }); }
-});
-
-test("with the era stamped, an ABSENT placements.json is not the seat's defect", () => {
-  // The validator arm in isolation, because in a live run the driver's render usually satisfies the old
-  // floor anyway — which would let the deletion of this branch pass unnoticed. The case it governs is the
-  // one that matters: the render did NOT land (a parse-then-land refusal, a full disk) and the seat's
-  // prose is nonetheless complete. Blaming the seat there with `placementmodel_missing` would kill a run
-  // over a driver failure and discard finished work, which is the R1 pathology exactly.
-  const dir = mkdtempSync(join(tmpdir(), "placement-era-"));
-  const out = join(dir, "placement-recommendations.md");
-  mkdirSync(driverDir(dir), { recursive: true });
-  writeFileSync(driverDir(dir, "stage-contracts.json"),
-    JSON.stringify({ "placement-inquiry": { structuredPlacements: 1, placementForm: 1 } }));
-  try {
-    writeFileSync(out, "# Placement recommendations\n\n## Tier 1 — headline candidates\n"
-      + "- NOVAPULSE (Acme SA, US/EU/CH) — sheet 2. Identical word mark, same class, live family "
-      + "across three territories; the owner trades in the same channel and the overlap is direct.\n\n"
-      + "## Tier 2 — sheet 2\n- NOVAPULSAR (Beta KK, JP) — near mark, adjacent goods, no channel overlap "
-      + "on the record read here.\n\n## Band reconciliation\nEvery floor record is placed or named.\n");
-    assert.ok(!existsSync(join(dir, "placements.json")));
-    const v = validatorsForEra.placement(out, readFileSync(out, "utf8"));
-    assert.equal(v.ok, true, "the seat owes prose and a form; it does not owe placements.json");
-  } finally { rmSync(dir, { recursive: true, force: true }); }
-});
-
-test("an ARCHIVED run keeps the old floor — deleting the arm must not re-judge what already shipped", async () => {
-  // The era stamp is the whole guard. A run minted before carries `structuredPlacements` alone, and
-  // for it the absent sibling is still a defect: that run's seat WAS asked for the file. Replay verdicts
-  // over the archive must not flip, which is the rule every contract marker in this driver is written to.
-  const dir = mkdtempSync(join(tmpdir(), "wall-placement-legacy-"));
-  const out = join(dir, "placement-recommendations.md");
-  mkdirSync(driverDir(dir), { recursive: true });
-  writeFileSync(driverDir(dir, "stage-contracts.json"),
-    JSON.stringify({ "placement-inquiry": { structuredPlacements: 1 } }));
-  const { validators } = await import("../verify.mjs");
-  try {
-    writeFileSync(out, "# Placement recommendations\n\n## Tier 1 — headline candidates\n"
-    + "- NOVAPULSE (Acme SA, US/EU/CH) — sheet 2. Identical word mark, same class, live family "
-    + "across three territories; the owner trades in the same channel and the overlap is direct.\n\n"
-    + "## Tier 2 — sheet 2\n- NOVAPULSAR (Beta KK, JP) — near mark, adjacent goods, no channel overlap "
-    + "on the record read here.\n\n## Band reconciliation\nEvery floor record is placed or named.\n");
-    const v = validators.placement(out, readFileSync(out, "utf8"));
-    assert.equal(v.ok, false, "pre-#562 vintage: the seat owed placements.json and did not write it");
-    assert.equal(v.reason, "placementmodel_missing");
-  } finally { rmSync(dir, { recursive: true, force: true }); }
-});
-
 // — THE WALL RESCUE NAMES WHAT IT COULD NOT KEEP. Measured 2026-09-10 on two stages of one run: both
 // killed attempts had written nothing, and both rows read `quiescentMs: -1` and `artifact-unreadable`,
 // a sentinel and a filesystem diagnosis for files that did not exist.
@@ -670,15 +576,15 @@ test("an artifact whose mtime lands after the settle instant measures 0, not a n
 
 test("a timeout row counts THIS dispatch's refusals of its record, and none from an earlier one", async () => {
   const dir = mkdtempSync(join(tmpdir(), "wall-refused-"));
-  const out = join(dir, "register-findings.md");   // tool-written: its transport keeps a per-run refusal journal
-  mkdirSync(driverDir(dir, "register-digest-calls"), { recursive: true });
-  const journal = driverDir(dir, "register-digest-calls", "refusals.jsonl");
+  const out = join(dir, "narrative.md");   // tool-written: its transport keeps a per-run refusal journal
+  mkdirSync(driverDir(dir, "synthesis-calls"), { recursive: true });
+  const journal = driverDir(dir, "synthesis-calls", "refusals.jsonl");
   // an EARLIER attempt's refusal, already in the journal before this dispatch
-  writeFileSync(journal, JSON.stringify({ at: new Date(Date.now() - 3600e3).toISOString(), reason: "registerdigest_unaccounted_records:631 of 685 record(s)" }) + "\n");
-  const lastReason = "registerdigest_unaccounted_records:612 of 685 record(s)";
+  writeFileSync(journal, JSON.stringify({ at: new Date(Date.now() - 3600e3).toISOString(), reason: "synthesis_declination_missing:31 of 85 record(s)" }) + "\n");
+  const lastReason = "synthesis_declination_missing:12 of 85 record(s)";
   try {
     const r = await wallOnce("fake-wall-refused-twice", dir, out, async ({ timeoutSec }) => {
-      for (const reason of ["registerdigest_unaccounted_records:684 of 685 record(s)", lastReason])
+      for (const reason of ["synthesis_declination_missing:84 of 85 record(s)", lastReason])
         writeFileSync(journal, JSON.stringify({ at: new Date().toISOString(), reason }) + "\n", { flag: "a" });
       return hardWallTurn(timeoutSec);
     }, () => ({ ok: false, reason: "never written" }));

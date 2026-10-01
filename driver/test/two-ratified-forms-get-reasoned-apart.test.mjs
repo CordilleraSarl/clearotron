@@ -61,7 +61,7 @@ test("the floors — each dictation is the composition for THIS run", () => {
   assert.ok(SYNTHESIS.length > 5000, `synthesis dictation is ${SYNTHESIS.length} bytes — too short to be the real one`);
   assert.ok(OVERVIEW.length > 2000, `overview dictation is ${OVERVIEW.length} bytes — too short to be the real one`);
   assert.ok(SYNTHESIS.includes(FRAMEWORK.title), "synthesis did not consult the fixture framework");
-  assert.ok(SYNTHESIS.includes(P.registerFindings), "synthesis did not name this run's register findings path");
+  assert.ok(SYNTHESIS.includes(P.ownerDecisions), "synthesis did not name this run's owner decisions path");
   assert.ok(OVERVIEW.includes(P.narrative), "the shell did not name this run's narrative path");
 });
 

@@ -47,7 +47,7 @@ export function blockSearchedClasses(block) {
  * carried ZERO records. The same collapse findCollapsedBands catches at fan-in, and the same one
  * verifyRegisterDirectiveClose refuses a close on (below) — exported so remedy-accounting.mjs can ask
  * the identical question of a per-TERM slice without a second copy of the rule. Two copies of a
- * matcher is how two matchers drift apart (placement-carry.mjs's rule).
+ * matcher is how two matchers drift apart.
  *
  * `Number.isFinite` first, deliberately: the executor writes total_hits NULL for a count it could not
  * take, and `Number(null)` is 0 — so a null total must never be read here as "claimed nothing". PURE.

@@ -111,6 +111,8 @@ export const COUNTED_EVENTS = {
   "knockout-review": [{ kind: REPAIR, when: (e) => e.outcome === "applied" && Number(e.applied) > 0 },
     { kind: FAILED, when: (e) => !["applied", "nothing-flagged"].includes(e.outcome) }],
   "commonlaw-reconciliation": { kind: FAILED, when: (e) => e.state !== "at-or-above-floor" },
+  // step 3 failed as a whole: no judge's answer was taken, or the coverage form it settles was not written
+  "owner-judgment": { kind: FAILED, when: (e) => e.ok === false },
   "engine-turn-probe": { kind: FAILED, when: (e) => e.ok === false },
   // a skeptic flag on a code-side axis re-runs its plan queries through the executor
   "escalation-recheck": [{ kind: REASK, when: (e) => e.dispatched === true },
@@ -161,7 +163,7 @@ export const NOT_COUNTED_EVENTS = {
     "blind-frame-skipped", "case-law-decision", "case-law-trigger", "channel-coverage", "closure-partition",
     "common-law-candidates", "common-law-merged", "common-law-path", "common-law-supp-folded", 
     "commonlaw-channels-added", "connotation-receipts", 
-    "corrective-worklist-source", "coverage-form-written", "coverage-judgment", "coverage-judgment-rows",
+    "corrective-worklist-source", "coverage-form-settled", "coverage-form-written", "coverage-judgment", "coverage-judgment-rows",
     "coverage-ledger-derived", "coverage-ledger-dropped", "coverage-ledger-rendered", "crowd-context", "crowd-context-skips",
     "customer-late-bind", "customer-late-bind-ack", "depth-ladder", "digest-batch-brief",
     "digest-coverage-form-brief", "digest-flush", "digest-queue-noop", "digest-queued", "digest-rulings-tail",
@@ -188,7 +190,7 @@ export const NOT_COUNTED_EVENTS = {
     // The target moved off this line to the run's own, above: the bar is about a run and this span is
     // one stage of it.
     "knockout-sweep-total", "level-scope-note",
-    "named-band-merged", "one-shot-stamp-settled", "order-probe", "output-snapshot", "owner-screen-derived",
+    "named-band-merged", "one-shot-stamp-settled", "order-probe", "output-snapshot", "owner-screen-derived", "owner-table",
     "placement-borderline", "placement-form-written", "plan-execution", "plan-execution-census",
     "plan-execution-refresh", "plan-qids-deferred", "probe-over-cap-undispatched", "profile", "profile-exclusion-seed",
     "profile-resolved", "profile-selection", "provider-usage", "quote",
@@ -243,7 +245,19 @@ export const RETIRED_EVENTS = ["known-conflicts-read", "known-conflicts-upsert",
   "recall-regression", "register-recall-probes", "register-recall-refused",
   // the knockout's second web question, which the grid replaced; a knockout delivered before it still
   // carries the event, and it is still counted above
-  "knockout-in-use-as-unanswered"];
+  "knockout-in-use-as-unanswered",
+  // placement, the register digest and the checks built around them, which step 3's owner judgment
+  // replaced (2026-10-01); a run delivered before it still carries these, and each keeps its class above
+  "coverage-absence-rendered", "coverage-form-written", "coverage-ledger-dropped", "coverage-ledger-quarantined",
+  "coverage-ledger-recovered", "coverage-ledger-render-failed", "coverage-ledger-rendered", "digest-batch-brief",
+  "digest-coverage-form-brief", "digest-flush-timeout", "digest-rulings-tail", "document-coverage-render-failed",
+  "document-coverage-rendered", "floor-duty", "floor-duty-failed", "floor-duty-undischarged", "hit-list-minted", "placement-borderline",
+  "placement-carry", "placement-carry-failed", "placement-form-written", "recall-reconciliation",
+  "recall-reconciliation-failed", "recall-reconciliation-followup-exhausted", "recall-reconciliation-positions-failed",
+  "recall-reconciliation-positions-rederived", "recall-reconciliation-unended", "register-digest-facts-failed",
+  "register-digest-facts-written", "screen-gate-clean", "screen-gate-parse-gap", "screen-gate-postflush",
+  "screen-gate-unnamed-observed", "screen-gate-unresolved", "screen-gate-violation", "silently-lost-findings",
+  "stage-floor-duty-rerun", "stated-divergence-findings"];
 
 // A stage dispatched again says why, on the run log's `stage` event. Counted: a dispatch that exists
 // because an answer was not accepted as it stood.
@@ -261,12 +275,16 @@ export const COUNTED_TRIGGERS = {
   "plan-join": REASK, "plan-join-fresh": REASK, "schema-downlevel": REASK, "stale-repair": REPAIR,
   "stale-repair-entry": REPAIR, "taint-rerun": REASK, "verdict-recheck": REASK,
 };
-// The two reasons built at run time: a recall reconciliation re-asking the digest, and a flush retried.
+// The two reasons built at run time: a recall reconciliation re-asking the digest (retired with the
+// digest; older records carry it), and a flush retried.
 export const TRIGGER_FAMILIES = [[/^recall-reconcile-./, REASK], [/-retry$/, RETRY]];
+// Reasons older records carry that the product no longer writes, so no census can find them: the digest's
+// follow-up composers and its recall reconciliation, retired with the digest (2026-10-01).
+export const RETIRED_TRIGGERS = ["digest-flush", "recall-reconcile", "recall-reconcile-fresh", "settled-coverage-facts"];
 export const NOT_COUNTED_TRIGGERS = {
   "a first dispatch, or one the run makes whatever the first answer was": ["fresh", "skip", "late-bind", "experiment",
     "xcheck-decide"],
-  "the digest folding in re-runs, each counted where it was dispatched": ["settlement-flush", "late-flush"],
+  "step 3 judged again after re-runs, each counted where it was dispatched": ["settlement-flush", "late-flush"],
   "a follow-up message's composer or section, never a dispatch reason": ["digest-flush", "draft-carry", "envelope-close",
     "frame-reopen-directive", "recall-reconcile", "settled-coverage-facts"],
 };

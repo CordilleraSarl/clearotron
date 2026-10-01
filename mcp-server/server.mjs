@@ -554,7 +554,7 @@ const tools = {
         }
       } else {
         const names = scope === "audit" ? ["audit"]
-          : scope === "key-artifacts" ? ["report", "registerFindings", "commonLaw", "narrative"]
+          : scope === "key-artifacts" ? ["report", "registerFindings", "ownerDecisions", "commonLaw", "narrative"]
           : listArtifacts(run).map((x) => x.name);
         for (const name of names) {
           const path = artifactPath(run, name);

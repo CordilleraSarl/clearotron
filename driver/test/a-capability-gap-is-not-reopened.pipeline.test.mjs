@@ -4,11 +4,15 @@
 // THE ENVELOPE NEVER HANDS A SLICE THE RUN ACCEPTED AS A CAPABILITY GAP BACK AS WORK.
 //
 // The envelope re-opens deferred coverage when time permits, and decides what is closeable from the reason
-// the seat wrote on each ledger row. A seat that describes a provider refusal in its own words (the mock
-// seat writes "the active register provider cannot express this slice", which names no gap the split
-// recognises) had the gap offered back to it as work, and on production the model then re-proposed the
-// refused query. The run's own record of the gap now decides, through the coverage form's qid: the row is
-// named to the re-opened unit as not its to close, and an axis whose only open work is such gaps is held.
+// on each ledger row. A seat that described a provider refusal in its own words had the gap offered back to
+// it as work, and on production the model then re-proposed the refused query. The run's own record of the
+// gap now decides, through the coverage form's qid: the row is named to a re-opened unit as not its to
+// close, and an axis whose only open work is such gaps is held.
+//
+// Code now settles every coverage row from the run's facts, so the gap is the axis's only deferred row
+// here and the axis is held. The split inside an axis that also carries closeable work, and the rule
+// against a whole-axis re-run, are pinned on their own (a-capability-gap-is-decided-once-per-run,
+// a-follow-up-re-runs-only-what-is-missing).
 //
 // Driven through the whole mock pipeline, so the envelope's decision is the one a run makes.
 import { test } from "node:test";
@@ -39,8 +43,6 @@ pinEnv(process.env, "CLEAROTRON_CUSTOMERS_DIR", PROFILES);
 const JOB = { id: "test-job", msgId: "<test@x>", forwarder: "jordan", forwarderDomain: "example.com",
   ref: "TMP-2201", markName: "NOVAPULSE", classes: [9, 41], provider: "corsearch" };
 
-const { PLAN_ENTRY_RERUN_RULE } = await import("../stages.mjs");
-
 async function run(env) {
   const root = mkdtempSync(join(tmpdir(), "clearotron-mock-"));
   for (const [k, v] of Object.entries({ CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root,
@@ -59,21 +61,17 @@ test("the envelope never hands an accepted capability gap back as work, whatever
     const decision = JSON.parse(readFileSync(driverDir(res.runDir, "envelope-decision.json"), "utf8"));
     const gaps = (decision.sticky_gaps ?? []).map((g) => g.qid);
     assert.ok(gaps.some((q) => q.includes("+merch")), `the run did not record the gap it accepted: ${JSON.stringify(decision.sticky_gaps)}`);
-    // The axis carries a closeable row as well (the mock seat defers one slice as "not run"), so the envelope
-    // rightly re-opens it. What changes is what the re-opened unit is asked to do.
+    // The gap is the axis's only deferred row, so the envelope HOLDS the axis: no unit is re-opened, and
+    // nothing is dispatched that could hand the gap back as work.
     const gapUnit = "primary-sweep / exact: PROJECT NOVAPULSE [cl 25]";
-    const close = events.filter((e) => e.event === "envelope-close-rows" && e.axis === "primary-sweep");
-    assert.equal(close.length, 1, `the envelope did not re-open the axis, so this arm sees nothing: ${JSON.stringify(events.filter((e) => /envelope/.test(e.event)))}`);
-    assert.ok(!close[0].closeable.includes(gapUnit), `the accepted gap was handed back to the seat as work to close: ${JSON.stringify(close[0])}`);
-    assert.ok(close[0].held.includes(gapUnit), "the unit was not told to leave the gap as it is");
-    assert.ok(close[0].closeable.length >= 1, "the closeable row on the same axis stopped being offered");
-
-    // AND THE RE-OPENED UNIT IS TOLD NOT TO RUN THE WHOLE AXIS AGAIN. Its plan has already run; a
-    // register_execute_plan call without qids asks every entry again and re-fetches every record the axis
-    // holds. Read off the prompt the run actually dispatched, not off the builder.
-    const prompts = readdirSync(driverDir(res.runDir)).filter((f) => /\.dispatch\.txt(\.prev-[0-9a-f]+)?$/.test(f))   // a later dispatch keeps an earlier one as .prev-<hash>
+    const env = events.filter((e) => e.event === "envelope-decision");
+    assert.equal(env.length, 1, `the envelope made no decision: ${JSON.stringify(events.filter((e) => /envelope/.test(e.event)))}`);
+    assert.deepEqual(env[0].held, ["primary-sweep"], "the axis whose only open work is an accepted gap was not held");
+    assert.ok(env[0].held_rows[0].rows.some((r) => r.unit === gapUnit), `the held row is not the accepted gap: ${JSON.stringify(env[0].held_rows)}`);
+    assert.equal(env[0].close, false, "an axis held for a capability gap was closed by time");
+    assert.equal(events.filter((e) => e.event === "envelope-close-rows").length, 0, "a held axis was re-opened");
+    const prompts = readdirSync(driverDir(res.runDir)).filter((f) => /\.dispatch\.txt(\.prev-[0-9a-f]+)?$/.test(f))
       .map((f) => readFileSync(driverDir(res.runDir, f), "utf8")).filter((t) => t.includes("records DEFERRED (planned but never run)"));
-    assert.equal(prompts.length, 1, "the envelope's follow-up was dispatched once, and its text was recorded");
-    assert.ok(prompts[0].includes(PLAN_ENTRY_RERUN_RULE), "the follow-up carries the rule against a whole-axis re-run");
+    assert.equal(prompts.length, 0, "the accepted gap was dispatched back to a unit as work to close");
   } finally { delete process.env.MOCK_PLAN_DEFERRED; }
 });

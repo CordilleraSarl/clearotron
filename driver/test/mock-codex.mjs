@@ -36,7 +36,7 @@
 //   MOCK_WARM_MODE=flake|draft|soft_fail|stubborn — the warm-patch ladder (resume detected via the patch msg)
 import { writeFileSync, mkdirSync, appendFileSync, existsSync, readFileSync, readdirSync, renameSync } from "node:fs";
 import { join, dirname } from "node:path";
-import { applyStageWrites } from "./mock-stage-fixtures.mjs";
+import { applyStageWrites, mockJudgeAnswer } from "./mock-stage-fixtures.mjs";
 
 const argv = process.argv.slice(2);
 
@@ -213,6 +213,17 @@ function completeTurn(text, { noNewline } = {}) {
   const tc = { type: "turn.completed", usage: usageOf() };
   if (noNewline) process.stdout.write(JSON.stringify(tc)); else send(tc);
   process.exit(0);
+}
+
+// ── A CONFINED dispatch (step 3's judges): the answer is the session's last message, which codex also
+// writes to the `-o` file; the engine reads it from there. Built from the run's own facts, as mock-claude
+// does. ──
+if (argv.includes("--output-schema") && !process.env.MOCK_CODEX_FAIL) {
+  const answer = mockJudgeAnswer(process.cwd());
+  const text = answer ? JSON.stringify(answer) : "";
+  const o = argv.indexOf("-o");
+  if (o >= 0 && text) { try { writeFileSync(argv[o + 1], text); } catch { /* the engine reports the absent answer */ } }
+  completeTurn(text || "no answer");
 }
 
 // ── Warm-patch ladder substrate (parity with mock-claude MOCK_WARM_MODE). ──

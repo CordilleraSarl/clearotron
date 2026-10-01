@@ -72,7 +72,7 @@ const stageDeclaringFiles = (root = DRIVER) => {
 // nothing is being skipped. Written as a floor rather than an equality because adding a stage is routine
 // and losing one from the walk is not.
 const TABLES = [
-  { file: "stages.mjs", stages: STAGES, P: paths(RUN), floor: 16 },   // 19 -> 16: the three send stages left with the delivery mode
+  { file: "stages.mjs", stages: STAGES, P: paths(RUN), floor: 14 },   // 19 -> 16: the three send stages left with the delivery mode; 16 -> 14: placement and the digest became step 3, whose confined judges write nothing themselves
   { file: "stages-knockout.mjs", stages: KO_STAGES, P: koPaths(RUN), floor: 2 },
 ];
 
@@ -88,6 +88,10 @@ function writeTargets(table) {
   const targets = [];
   const unresolved = [];
   for (const [name, def] of Object.entries(table.stages)) {
+    // A CONFINED stage's seat writes nothing: its answer arrives on the session's result and the driver
+    // writes `out` (engine CONTRACT.md, `confined`), so the boundary is never asked about it. Step 3's
+    // judges are the one such stage; their seat is offered no file tool at all.
+    if (typeof def?.confined === "function") continue;
     if (typeof def?.out !== "function") {
       // Not skipped. A stage the walk cannot see is the failure this whole file exists to stop, so a
       // stage with no `out()` has to be looked at and given a written exemption, not passed over.

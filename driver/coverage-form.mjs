@@ -930,12 +930,7 @@ export function renderCoverageLedgerSection(rows) {
     "| Coverage unit | Status | Reason | Query id |",
     "|---|---|---|---|",
     ...usable.map((r) => {
-      const detail = [
-        Number.isInteger(r.total_hits) ? `${r.total_hits} hits` : "",
-        r.unaccounted_classes?.length ? `classes unaccounted: ${r.unaccounted_classes.join(", ")}` : "",
-        r.unaccounted_terms?.length ? `terms unaccounted: ${r.unaccounted_terms.join(", ")}` : "",
-        r.receipt_reason ? `receipt: ${r.receipt_reason}` : "",
-      ].filter(Boolean).join("; ");
+      const detail = coverageRowFacts(r);
       const reason = [cell(r.reason), detail ? `(${cell(detail)})` : ""].filter(Boolean).join(" ");
       return `| ${cell(r.unit)} | ${cell(String(r.status).trim().toLowerCase())} | ${reason} | ${cell(r.qid ?? "—")} |`;
     }),
@@ -1013,6 +1008,73 @@ export function renderCoverageLedgerJsonFromForm(rows, classTokens) {
       ...(r.qid ? { qid: String(r.qid) } : {}),
     };
   }));
+}
+
+// ── THE ROWS SETTLED BY CODE, FROM WHAT THE RUN DID ──────────────────────────────────────────────
+//
+// The register digest ruled every row of this form. Step 3 now judges owners and says nothing about
+// coverage (owner-judgment.mjs), so code settles the rows from the facts each row already carries. Measured
+// against the digest's rulings on the saved runs (2026-10-01): every open crowd block and every deferred
+// slice agree, and 14 of 20 axis rows.
+//
+//   · an open crowd block ran and saturated, so it is `coverage-limited` — disclosed, never clamping;
+//   · a deferred slice never ran and nothing can make it run, so it is `deferred` — the status the
+//     verdict clamp reads (decideRegisterGap), so a run with an unsearched slice still cannot read CLEAR;
+//   · an axis is clean only where its slices ran and were read. It is `deferred` when the execution
+//     skeleton contradicts itself about it, when a slice on it never ran (`unexecuted`), when its band
+//     could not be read, or when it is not a register axis at all (a stray file in register-units, which
+//     no search stands behind); `coverage-limited` when any of its blocks or slices is open, or when every entry
+//     on it was skipped behind a crowded parent; and an axis whose every entry is a waiting family takes
+//     the families' own judgment (`withheld-by-judgment` when the reading turn withheld each one, and
+//     `deferred` while any is undecided). These are the never-searched states a clean claim was always
+//     refused over (register-plan.mjs, findUnexecutedCleanClaims);
+//   · a waiting family is the reading turn's to judge: a family it decided arrives settled, and one it did
+//     not stays open, as it always has.
+//
+// A row the form's builder already settled (a waiting family the reading turn withheld) keeps that
+// ruling; every other row is settled here, afresh on every pass, from that pass's facts. The reason is the
+// row's own facts, in the words the ledger already prints beside every row (`coverageRowFacts`): code
+// writes no new sentence about coverage.
+
+/** The facts a row carries, as the ledger prints them: the hit count, what is unaccounted, the receipt. */
+export function coverageRowFacts(r) {
+  return [
+    Number.isInteger(r?.total_hits) ? `${r.total_hits} hits` : "",
+    r?.unaccounted_classes?.length ? `classes unaccounted: ${r.unaccounted_classes.join(", ")}` : "",
+    r?.unaccounted_terms?.length ? `terms unaccounted: ${r.unaccounted_terms.join(", ")}` : "",
+    r?.receipt_reason ? `receipt: ${r.receipt_reason}` : "",
+  ].filter(Boolean).join("; ");
+}
+
+/**
+ * Every row the form carries, settled from its facts by the rule above. `bandsUnreadable` is the form's
+ * own record of the axes whose band would not parse (`generated_from.bands_unreadable`); `unknownAxes`
+ * the unit files that are not register axes (coverage-form-io.mjs, `unknownAxisUnits`). PURE.
+ */
+export function settleCoverageRowsFromFacts(rows, { bandsUnreadable = [], unknownAxes = [] } = {}) {
+  const list = Array.isArray(rows) ? rows : [];
+  const openIn = new Set(list.filter((r) => (r?.kind === "block" || r?.kind === "deferred") && r.open === true).map((r) => r.axis));
+  const key = (a) => String(a ?? "").trim().toLowerCase();
+  const unreadable = new Set([...(bandsUnreadable ?? []), ...(unknownAxes ?? [])].map(key));
+  const axisStatus = (r) => {
+    if (r.open === true) return "deferred";
+    if (r.skeleton_state === "unexecuted" || unreadable.has(key(r.axis))) return "deferred";
+    if (openIn.has(r.axis)) return "coverage-limited";
+    if (r.skeleton_state === "skipped") return "coverage-limited";
+    if (r.skeleton_state === "awaiting-judgment") {
+      const families = list.filter((f) => f?.kind === "family" && f.axis === r.axis);
+      return families.length && families.every((f) => String(f.status ?? "").trim() === "withheld-by-judgment")
+        ? "withheld-by-judgment" : "deferred";
+    }
+    return "confirmed-clean";
+  };
+  return list.map((r) => {
+    if (!r || String(r.status ?? "").trim()) return r;
+    if (r.kind === "block") return { ...r, status: "coverage-limited", reason: coverageRowFacts(r) };
+    if (r.kind === "deferred") return { ...r, status: "deferred", reason: coverageRowFacts(r) };
+    if (r.kind === "axis") return { ...r, status: axisStatus(r), reason: "" };
+    return r;   // a family the reading turn did not decide stays open: its judgment was never this step's
+  });
 }
 
 // ── WHAT THE SEAT IS TOLD ───────────────────────────────────────────────────────────────────────────

@@ -151,7 +151,6 @@ test("the park's artifact list NAMES the form, both copies, under the stamped fo
     const P = paths(dir);
     const list = taintParkJudgmentArtifacts(P, dir);
     assert.deepEqual(list, [
-      P.registerFindings,
       P.registerCoverageLedger,
       coverageFormPaths(dir).seat,
       coverageFormPaths(dir).sidecar,
@@ -161,7 +160,7 @@ test("the park's artifact list NAMES the form, both copies, under the stamped fo
       statuses: ["confirmed-clean", "coverage-limited", "deferred"],
       form_required: true, form_path: "register-coverage-form.v2.json" }));
     const renamed = taintParkJudgmentArtifacts(P, dir);
-    assert.ok(renamed[2].endsWith("register-coverage-form.v2.json"));
-    assert.ok(renamed[3].endsWith(join("_driver", "register-coverage-form.v2.form.json")));   // joined: Windows separates it with a backslash
+    assert.ok(renamed[1].endsWith("register-coverage-form.v2.json"));
+    assert.ok(renamed[2].endsWith(join("_driver", "register-coverage-form.v2.form.json")));   // joined: Windows separates it with a backslash
   } finally { cleanup(dir); }
 });

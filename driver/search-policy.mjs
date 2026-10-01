@@ -117,8 +117,8 @@ export const COMPONENTS = {
 // Owner, verbatim: "on a worldwide search you go deep on what's genuinely in the way, and you record the
 // rest properly. Same judgment, different threshold — which is what a lawyer actually does."
 //
-// EVERY MARK IS STILL retrieved, screened, mechanically classified, given a placement tier and a row in
-// placements.json, judged into findings.json with its complete typed field set, and printed. In all four
+// EVERY MARK IS STILL retrieved, screened, mechanically classified, put in front of step 3's judges with
+// its owner, judged into findings.json with its complete typed field set, and printed. In all four
 // products. Nothing is filtered and no scoring changes. What varies is HOW MUCH PROSE IS WRITTEN about a
 // mark and HOW MANY TIMES a stage comes back to it.
 //
@@ -146,7 +146,7 @@ export const COMPONENTS = {
 //
 // ── AND NEVER KEYED ON THE MECHANICAL TIERS ───────────────────────────────────────────────────────
 //
-// Treatment keys on the two JUDGMENTS (placement, disposition), never on band-shape.mjs's tiers — in
+// Treatment keys on the two JUDGMENTS (step 3's decisions, disposition), never on band-shape.mjs's tiers — in
 // that module's own words "mechanical string classes, never a relevance or materiality judgment". They
 // are the obligation list, not a priority list. (`classifyRecord` returns the FIRST basis that matched,
 // so `basis` under-reports and could not carry the distinction even if we wanted it to.)
@@ -198,14 +198,6 @@ export const PRODUCT_POLICIES = {
       narrativeKeptBandRank: 3,
       narrativeWriteUpWords: 270,
       profileKeptBandRank: 3,              // lever 3 — the driver lists these ordinals to profile
-      // — PARKED, AND NOTHING READS IT. The inquiry directive and its check were deferred:
-      // measurement showed full traces already confined to the kept tier, so a rule would instruct what
-      // the seat already does. The cap stays in the table because the table is the single source for a
-      // product's parameters, and a decision recorded anywhere else is one that gets re-litigated.
-      // An arm asserts nothing consumes it — so if a consumer is ever wired, that arm fires and whoever
-      // wired it takes this off the parked list deliberately rather than by accident.
-      inquiryWriteUpWords: 80,             // pooled p90 75, worldwide (e2e measurement)
-      inquiryTrace: "graded-high",         // placement-inquiry's WRITTEN trace; every candidate still gets a tier + row
       skepticFlagging: "graded-high",      // what is worth flagging; the escalation re-walk itself is NOT graded
       variantManifest: "graded-high",      // the manifest grades itself; the register plan shrinks with it
       groundedProfiles: "adversarial",     // narrative-refutation: which findings earn a grounded profile
@@ -226,8 +218,10 @@ export const PRODUCT_POLICIES = {
       // the cut measured at 0 of 420 and the reason the key moved at all. The words were borrowed from
       // the row that shares the new key; the ruling adopted them rather than leaving them an inference.
       // Pinned with the same provenance in the-doubt-carries-its-placement-tier.test.mjs (RULED_CUTS).
+      //
+      // INERT SINCE STEP 3 JUDGES BY OWNER: no doubt carries a placement tier any more, so every doubt is
+      // keyless and doubt-selection.mjs dispatches all of them — the direction it fails in by design.
       doubtClosure: "headline-candidate",
-      recallFollowupMax: 1,
       envelopeRounds: "one",               // one closing round, not to exhaustion
       coverageClosureRounds: "one",
     },
@@ -249,37 +243,12 @@ export const PRODUCT_POLICIES = {
       narrativeKeptBandRank: 3,
       narrativeWriteUpWords: 330,
       profileKeptBandRank: 3,              // lever 3 — same rank cut as worldwide
-      // PARKED, as worldwide above, and insurance against densification rather than a saving — it must
-      // not be described as one.
-      //
-      // 80, THE SAME AS WORLDWIDE, AND THE 60 THAT SHIPPED HERE FIRST WAS WRONG. It was read off
-      // PER-RUN p90s (63 and 68 on two runs) rather than the pooled distribution. Pooled across every
-      // preserved run the two products are level, with multi-country marginally the LONGER: p90 78
-      // against 75, over 39 and 38 traces. A cap of 60 clips 18% of multi-country traces against the
-      // 3% a p90-shaped cap should clip — so whoever wires the first consumer would wire a rule that
-      // violates on day one, and an 18% violation rate reads as a defect in the seat rather than a cap
-      // set too low.
-      //
-      // The claim that used to sit here — that multi-country traces are ALREADY the shorter of the two
-      // — was the inverted reading of the same per-run numbers. The narrative caps do invert (270/330);
-      // the inquiry traces do not follow them, and nothing required that they should.
-      inquiryWriteUpWords: 80,             // pooled p90 78, multi-country (e2e measurement — see below)
-      inquiryTrace: "graded",
       skepticFlagging: "graded",
       variantManifest: "graded",
       groundedProfiles: "adversarial+partner",  // + `coexistence-partner` / `distinguished`
       //, owner-ruled 2026-08-23 — P3 column of the same `placement-inquiry trace` row, ruled in the
       // same pass as the P2 row above.
       doubtClosure: "headline-candidate+sheet-2",
-      //, owner-ruled: raised 1 → 2, level with the one-country row. The recall gap this closes is a
-      // register-invisible mark that the follow-up had one chance to reach and did not. A round that does
-      // not run is a search that did not happen, and this row was the shortest of the three.
-      //
-      // WORLDWIDE (global-preliminary-search) IS DELIBERATELY LEFT AT 1 and that is now an inversion: the
-      // broader product gets the weaker recall follow-up. The ruling named this product, and widening a
-      // ruling to the most expensive product is not mine to do. Raised as a question rather than
-      // assumed —.
-      recallFollowupMax: 2,
       envelopeRounds: "as-today",
       coverageClosureRounds: "as-today",
     },
@@ -296,12 +265,10 @@ export const PRODUCT_POLICIES = {
     // ONE COUNTRY — every value is TODAY'S BEHAVIOUR, declared. This row is the byte-identical guard.
     depth: {
       narrativeProse: "every-finding",
-      inquiryTrace: "full",
       skepticFlagging: "as-today",
       variantManifest: "as-today",
       groundedProfiles: "every-finding",
       doubtClosure: "every-doubt",
-      recallFollowupMax: 2,                // RECALL_FOLLOWUP_MAX
       envelopeRounds: "as-today",
       coverageClosureRounds: "as-today",
     },

@@ -1,0 +1,41 @@
+{
+  "plan_version": 1,
+  "executed": [
+    {
+      "qid": "primary-sweep:exact:zzmark",
+      "state": "enumerated",
+      "total_hits": 3,
+      "records": null
+    },
+    {
+      "qid": "primary-sweep:default:zzmark",
+      "state": "incomplete",
+      "total_hits": 5000,
+      "records": null
+    },
+    {
+      "qid": "primary-sweep:exact:stack+form",
+      "state": "incomplete",
+      "total_hits": 900,
+      "records": null
+    },
+    {
+      "qid": "supp:primary-sweep:default:zzmark:goods",
+      "state": "enumerated",
+      "total_hits": 0,
+      "records": null
+    },
+    {
+      "qid": "supp:primary-sweep:default:zzmark:late",
+      "state": "enumerated",
+      "total_hits": 1,
+      "records": null
+    },
+    {
+      "qid": "supp:incumbent-class:default:owner-three",
+      "state": "incomplete",
+      "total_hits": 700,
+      "records": null
+    }
+  ]
+}

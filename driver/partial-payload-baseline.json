@@ -20,10 +20,6 @@
       "why": "no fixture yet; single required field"
     },
     {
-      "tool": "record_coverage",
-      "why": "no fixture yet; single required field, accumulating semantics claimed and not yet planted"
-    },
-    {
       "tool": "record_dispositions",
       "why": "no fixture yet; accumulating semantics claimed in the tool description ('Everything already recorded is kept') and not yet planted"
     },
@@ -50,10 +46,6 @@
     {
       "tool": "record_matter_frame",
       "why": "no fixture yet; scope_jurisdictions, excluded_jurisdictions and meaning_angles_none are optional and the transport reads no prior state"
-    },
-    {
-      "tool": "record_register_digest",
-      "why": "CLOSED by mergeDigestPatch, which states a join rule per key — but the plant that proves it belongs here rather than in that module's own test"
     },
     {
       "tool": "record_synthesis",

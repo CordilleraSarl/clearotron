@@ -8,7 +8,6 @@
 import { writeFileSync, mkdirSync, appendFileSync, readFileSync, existsSync } from "node:fs";
 import { dirname, basename, join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
-import { parseCoverageLedgerFull } from "../coverage-ledger.mjs";
 // The PRODUCTION parser for the tool-written meaning receipts — the mock's disposition rows are built from
 // the ledger on disk through the same code the validator's join reads it with (see the prSection block).
 import { parsePrRiskResults, connotationObligations, obligationRows, CONNOTATION_FORM_TOKEN_SRC } from "../connotation-search.mjs";
@@ -28,7 +27,6 @@ import { reconcileGridLedger } from "../../providers/perplexity/src/core.js";   
 // Typed transport — the mock seat records coverage through the SHIPPED tool core, like the disposition
 // mock above it records rulings through recordDispositions. Called, not copied: a mock with its own
 // serialization would go green on a transport the product does not have.
-import { recordCoverage, MAX_ROWS_PER_CALL } from "../coverage-tool.mjs";
 // — blind-frame's model reaches disk ONLY through the production receiver now, so the mock seat calls
 // it rather than writing the file. Same rule as recordDispositions above: called, not copied, so the call
 // capture, the rendered artifact and the tool-call pair all exist exactly as a real compliant turn leaves
@@ -45,19 +43,16 @@ import { recordClearanceVariants } from "../clearance-variants-record.mjs";   //
 import { recordReportOverview } from "../report-overview-record.mjs";  // conversion 4 — the client-read shell
 import { recordReportCard } from "../report-card-record.mjs";          // conversion 5 — the fan-out transport
 import { recordUnitNote } from "../register-unit-record.mjs";           // the unit note — own-key transport, called not copied
-import { recordRegisterDigest, readDigestFacts, joinKey } from "../register-digest-record.mjs";   // conversion 11 — the findings document, called not copied
+import { recordWithheldFamilies, waitingFamiliesOn, releasedFamiliesPath } from "../withheld-families.mjs";   // the reading turn's withheld families, called not copied
 import { recordDeclinations } from "../declination-tool.mjs";   // — the mock declines through the REAL transport
 import { findingUris } from "../record-carry.mjs";
 import { normalizeRecordUri } from "../registry-fidelity.mjs";
 import { recordClosures } from "../doubt-closure-tool.mjs";           // conversion 6 — the closure transport
 import { recordRefutation } from "../narrative-refutation-record.mjs"; // conversion 9 — the reviewer transport
 import { parseManifestVariants } from "../common-law-receipts.mjs";   // the terms the receipts gate joins on
-// ALIASED, NOT RE-USED. `coverage-tool.mjs` exports a MAX_ROWS_PER_CALL too and this file already imports
-// it; the two are separate constants owned by separate tools, equal at 25 today. Chunking the disposition
-// call against the COVERAGE cap would read as correct for exactly as long as they happen to agree.
+// ALIASED so the name says whose cap it is: the disposition call's own, never another tool's.
 import { MAX_ROWS_PER_CALL as MAX_DISPOSITION_ROWS_PER_CALL } from "../disposition-call.mjs";
 import { toolWrittenArtifact } from "../gateway.mjs";   // the one lookup for artifacts a seat must not write
-import { coverageFormStamp, coverageFormPaths, readCoverageForm } from "../coverage-form-io.mjs";
 import { FINDINGS_SCHEMA_VERSION } from "../findings-model.mjs";
 import { kebab } from "../search-policy.mjs";   // — the mock cites what the mark's payload holds
 
@@ -186,170 +181,6 @@ const prResultsArmedFor = (q) => {
   return armed && (armed === "1" || q.includes(armed)) ? [{ ...MOCK_PR_RESULT }] : [];
 };
 
-// P2-A (recall spine): a COMPLIANT digest ends every screened-live dominant-element record somewhere
-// a reader can see — the driver's recall-reconciliation gate blocks delivery otherwise. The mock
-// mirrors that compliant behaviour: read the merged band from the run dir and mint one individually-
-// reasoned Negative-results drop row per surfaced NOVAPULSE record (one record per row, URI cited —
-// the digest.md ending form 2). The result/notes wording deliberately avoids the goods/field tokens
-// screen-gate polices (this is a crowd-membership weighing, not a goods drop). Reading the band at
-// EMIT time keeps re-emits deterministic and lets supplemental-grown bands stay ended on later passes.
-function dominantElementDropRows(dir) {
-  if (!dir) return "";
-  let rows = "";
-  try {
-    const band = JSON.parse(readFileSync(join(dir, "register-named-band.json"), "utf8"));
-    const seen = new Set();
-    for (const r of (band?.enumerated ?? [])) {
-      const sv = String(r?.screen?.screen_verdict ?? r?.screen_verdict ?? "");
-      if (!sv.startsWith("surface:") || !/novapulse/i.test(String(r?.mark_text ?? ""))) continue;
-      if (!r?.record_id || seen.has(r.record_id)) continue;
-      seen.add(r.record_id);
-      rows += `\n| ${r.mark_text} | novapulse (sweep) | weighed — same-element register crowd member | URI ${r.record_id}; screen_verdict=${sv}; class=${(Array.isArray(r.classes) ? r.classes : [r.classes]).filter((c) => c != null).join("/") || "9"}; status=live; identical-element registration weighed individually in the mock payload |`;
-    }
-  } catch { /* no merged band on disk (unit tests without a funnel) — nothing to end */ }
-  return rows;
-}
-
-// ── — THE MOCK SEAT'S PER-SLICE JUDGMENTS, AS SEAT ROWS ON THE DRIVER'S FORM ──────────────────
-//
-// What stood here (deferredDisclosureRows) composed a prose row NAMING each refused qid verbatim, because
-// the deleted disclosure join read exactly that text. Nothing joins on typing now: the driver writes one
-// `deferred` row per refused qid and marks it `open`, and the seat's job on those rows is a status.
-//
-// What the seat still authors is its OWN coverage units — the per-jurisdiction reconciliation, the
-// ring-fenced script group. Those are judgment, they carry no identifier anything
-// joins on, and the ledger a lawyer reads has always had them. They ride as `kind: "seat"` rows.
-function mockCoverageSlices(msg) {
-  const rows = [
-    { axis: "primary-sweep", unit: "primary-sweep / worldwide", status: "confirmed-clean", reason: "full" },
-    /CLOSED their deferred/.test(msg)
-      ? { axis: "primary-sweep", unit: "primary-sweep / NZ (material)", status: "confirmed-clean", reason: "deferred sub-query closed (envelope)" }
-      : { axis: "primary-sweep", unit: "primary-sweep / NZ (material)", status: "deferred", reason: "not run" },
-  ];
-  if (process.env.MOCK_LEDGER_LIMITED)
-    rows.push({ axis: process.env.MOCK_LEDGER_LIMITED, unit: `${process.env.MOCK_LEDGER_LIMITED} / extra script group`,
-      status: "coverage-limited", reason: "yielded to ring-fenced jurisdiction budget" });
-  // — the floor-breach fixture. The axis named by MOCK_SEARCH_FLOOR is DESIGNATED in the typed
-  // manifest call below, and here it comes back `coverage-limited` with a NON-EXECUTION reason: work the
-  // mark's floor obliged, excused rather than done. That is a breach.
-  //
-  // The reason is deliberately interrupted-mid-run and NOT a tool-access one: a tool-absence reason is
-  // relabelled `deferred` by the keystone backstop (coerceToolAbsenceDeferred) and would route via the
-  // deferred path, which is a different mechanism with its own tests. Carried over from the retired
-  // MOCK_STAR_FLOOR fixture, which learned it the hard way.
-  if (process.env.MOCK_SEARCH_FLOOR)
-    rows.push({ axis: process.env.MOCK_SEARCH_FLOOR, unit: `${process.env.MOCK_SEARCH_FLOOR} / exact-phrase storefront sweep`,
-      status: "coverage-limited", reason: "not executed — sweep interrupted mid-run" });
-  const present = new Set(rows.map((r) => r.axis));
-  // AN AXIS THIS MOCK NEVER SAW IS NOT A CLEAN ONE. It filled every missing axis with
-  // `confirmed-clean`, which is the false clean the ledger exists to refuse — and it only ever passed
-  // because every axis used to execute. Now that the wider families WAIT on a crowded identical
-  // question, those axes can legitimately have nothing behind them, and a stand-in for judgment
-  // claiming they came back clean is the one thing judgment may never do.
-  //
-  // `withheld-by-judgment` is what a reading turn writes for a family it did not open: no search is
-  // claimed, the run still delivers, and the reason travels with it.
-  for (const ax of ["saturation-probe", "transliteration-numeric", "incumbent-class"])
-    // …unless the digest judged this axis a DOCUMENTED, ACCEPTED limit, in which case that disclosure
-    // wins. Withheld must never swallow a row with a real gap to report: a withheld row is deliberately
-    // kept off the client's page, so letting it win would delete a disclosure the reader is owed.
-    if (!present.has(ax)) rows.push(ax === process.env.MOCK_LEDGER_LIMITED
-      ? { axis: ax, unit: `${ax} / worldwide`, status: "coverage-limited", reason: "yielded to ring-fenced jurisdiction budget" }
-      : { axis: ax, unit: `${ax} / worldwide`, status: "withheld-by-judgment",
-          reason: "not opened: the identical question is answered and this family would widen it" });
-  return rows;
-}
-
-/**
- * Record the mock seat's coverage judgments THE WAY A COMPLIANT SEAT DOES — through the SHIPPED
- * `recordCoverage` tool core (called, not copied), which validates every row and writes the `_driver/`
- * accumulator itself. The typed-transport conversion killed the seat-facing file, so a mock that edited
- * a run-dir JSON would be exercising a path no live seat can take — and the harness would go green on a
- * transport the product does not have. Returns false when there is no form (a run whose plan apparatus
- * is out of reach — the gate is inactive there and the mock must not invent one).
- *
- * MOCK_NO_COVERAGE_FORM     the seat makes no record_coverage call  ⇒ coverage_no_status
- * MOCK_UNPARSEABLE_LEDGER   ditto — the pre-change spelling of "this digest produced no readable coverage"
- * MOCK_BAD_COVERAGE_FORM    the DRIVER's accumulator is damaged     ⇒ coverage_form_damaged
- *                           (written to the sidecar: the seat holds no writer onto it any more, so this
- *                           knob now simulates the driver-side fault the token names on live runs)
- */
-export function fillCoverageForm(runDir, msg) {
-  const stamp = coverageFormStamp(runDir);
-  const { sidecar } = coverageFormPaths(runDir, stamp.formName);
-  if (!existsSync(sidecar)) return false;
-  if (process.env.MOCK_NO_COVERAGE_FORM || process.env.MOCK_UNPARSEABLE_LEDGER) return false;
-  if (process.env.MOCK_BAD_COVERAGE_FORM) { writeFileSync(sidecar, "{ this is not json"); return true; }
-  const rows = readCoverageForm(runDir, stamp.formName).rows ?? [];
-  // MOCK_LEDGER_LIMITED names an axis the digest judged a DOCUMENTED, accepted limit. A compliant seat
-  // says so on that axis's own rows too — an axis cannot be simultaneously clean and coverage-limited —
-  // and the escalation gate's skip path reads exactly that (skip-if-every-owned-row-is-coverage-limited).
-  const limited = process.env.MOCK_LEDGER_LIMITED;
-
-  // THE STATE IS READ FROM THE SKELETON, BECAUSE THE ROW DOES NOT CARRY IT BACK. `coverage-form.mjs`
-  // stamps `skeleton_state` on the axis rows it BUILDS, and the form as read from disk does not have it
-  // — measured: every row here arrives with `kind: "axis"` and `skeleton_state` undefined. So a guard
-  // written against `r.skeleton_state` reads undefined on every row, never fires, and leaves the false
-  // clean exactly where it was. That is why four corrections to this mapping changed nothing.
-  //
-  // `_driver/plan-execution.json` is the source the VALIDATOR itself reads (verify.mjs → exec.skeleton),
-  // so the filler and the gate now answer from one fact instead of two.
-  //
-  // AND IT CLAIMS CLEAN ONLY WHERE THE AXIS EXECUTED. The states are unexecuted, deferred, incomplete,
-  // skipped and executed; only the last one is a search that ran. Guarding the one state that happens to
-  // fail today would leave the same defect for the next state that stops meaning "ran".
-  let axisState = new Map();
-  try {
-    const exec = JSON.parse(readFileSync(driverDir(runDir, "plan-execution.json"), "utf8"));
-    axisState = new Map((exec?.skeleton ?? [])
-      .map((s) => [String(s?.axis ?? "").trim(), String(s?.state ?? "").trim() || null]));
-  } catch { /* no receipt — the plan gate is inactive, and nothing below claims anything about an axis */ }
-  // A row is never cleaner than the axis it belongs to. An axis with no skeleton entry is one nobody
-  // told us ran, so it is not claimed clean either.
-  const skippedAxis = (r) => (axisState.size ? axisState.get(String(r?.axis ?? "").trim()) !== "executed" : false);
-  const rulings = rows.filter((r) => r.kind !== "seat").map((r) => ({
-    row_id: r.row_id,
-    // A SKIPPED AXIS IS NOT A CLEAN ONE, and a stand-in for judgment must not claim a search nobody
-    // ran. That was true while every axis executed and became a false clean the moment the wider
-    // families began waiting behind a crowded identical question.
-    //
-    // WHERE THE STATE COMES FROM IS THE WHOLE OF IT. `skeleton_state` is stamped on the axis rows
-    // coverage-form.mjs BUILDS and is not carried by the form read back from disk, so a guard written
-    // against `r.skeleton_state` reads undefined on every row and never fires. That was tried in three
-    // places by two people before anyone instrumented it: a guard whose detecting half is dead reads
-    // exactly like a guard that found nothing. `skippedAxis` reads the state from the run's
-    // plan-execution record, which is the source the VALIDATOR reads, so the filler and the gate
-    // answer from one fact rather than two.
-    // ORDER MATTERS, AND WITHHELD GOES LAST OF THE NON-CLEAN STATES. A row can be BOTH: an axis the
-    // skeleton calls skipped and one the digest judged a documented, accepted limit. Testing withheld
-    // first let it swallow the disclosure — and because a withheld family is deliberately kept off the
-    // client report, the net effect was a disclosed gap vanishing from the reader's page.
-    //
-    // Losing a disclosure is the worse of the two errors by a long way. `withheld-by-judgment` says
-    // "we chose not to open this, and that is where the work was spent"; it may only be said about a
-    // row that has nothing else to say. Anything carrying a real disclosure keeps it.
-    // A WAITING FAMILY'S ONLY JUDGMENT IS WITHHELD (withheld-families.mjs): it never ran, so it is
-    // checked before `open`, which every family row carries.
-    status: r.kind === "family" ? "withheld-by-judgment" : r.open ? "deferred"
-      : r.axis === limited ? "coverage-limited" : r.kind === "block" ? "coverage-limited"
-      : skippedAxis(r) ? "withheld-by-judgment" : "confirmed-clean",
-    reason: r.kind === "family" ? "not asked: the identical question is answered and this family would only widen it"
-      : r.open ? "never dispatched — the active register provider cannot express this slice; disclosed as an open question"
-      : r.axis === limited ? "yielded to ring-fenced jurisdiction budget"
-      : r.kind === "block" ? "the band left part of this slice unaccounted — a material gap; ships CONDITIONAL"
-      : skippedAxis(r) ? "not opened: the identical question is answered and this family would only widen it"
-      : "paged to has_more:false",
-  }));
-  const seat = mockCoverageSlices(msg).map((r) => ({ ...r, kind: "seat" }));
-  // Chunked like a compliant seat: MAX_ROWS_PER_CALL bounds one call; every accepted row is kept.
-  const all = [...rulings, ...seat];
-  for (let i = 0; i < all.length; i += MAX_ROWS_PER_CALL) {
-    const r = recordCoverage(runDir, { rows: all.slice(i, i + MAX_ROWS_PER_CALL) });
-    if (!r.ok) return false;
-  }
-  return true;
-}
-
 export function fixture(name, msg, dir = null) {
   // CONVERSION 2 — NO FIXTURE BODY FOR matter-context.md. The seat hands values to `record_matter_frame`
   // and the driver renders the file, so a body here would be the mock taking the path this conversion
@@ -460,36 +291,6 @@ export function fixture(name, msg, dir = null) {
       ].join("\n") + prSection);
     }
     return PAD("# Common-law findings\n\n## Findings — Mark: PROJECT NOVAPULSE\n\n| Finding | Platform | URL | developer_of_record | publisher_of_record |\n|---|---|---|---|---|\n| (none risk-relevant) | - | - | - | - |\n\n### Negative results (per-platform per-variant)\n| Variant | Platform | Result |\n|---|---|---|\n" + matrix + `\n\n### Coverage ledger\n| Coverage unit | Status | Reason |\n|---|---|---|\n| ${storeCount} mandatory platforms | confirmed-clean | ${storeCount}/${storeCount} searched |` + exemptRow + `\n\n### Audit trail\n| Call # | Type | Prompt summary | Results returned |\n|---|---|---|---|\n| 1 | Grid (sandbox) | all variants × ${PLATFORMS.length} platforms | ${variants.length * PLATFORMS.length} cells, 0 gaps |` + prSection);
-  }
-  if (name === "placement-recommendations.md")
-    // The RULINGS TAIL closes the real file (placement-inquiry SKILL contract) and travels as prose —
-    // the driver hands it to a corrective digest dispatch as data (AD-2 A9), so the fixture carries it.
-    return PAD("# Placement recommendations\n\n| candidate | tier | reasoning |\n|---|---|---|\n| LUMENGARDE | headline-candidate | exact-match target class |\nEvery candidate placed at a tier (headline-candidate/sheet-2/watchlist-annex/out-of-scope-filtered).")
-      + "\n\n### Coverage rulings & open questions\n- The class-9 band enumerated to has_more:false; nothing left open.\n\n### Open questions for the client / reviewer\n- Confirm the applicant's own prior filing.\n";
-  if (name === "register-findings.md") {
-    // The driver's screen-gate re-decide followup tells the worker to re-decide on the now-fetched goods.
-    // Detect either the pre-2026-06-18 phrasing ("record_fetch it") or the current "RE-DECIDE EACH …".
-    const refetching = /record_fetch it|RE-DECIDE EACH/.test(msg);
-    const screenDropRow = process.env.MOCK_SCREEN_DROP
-      ? (refetching && process.env.MOCK_SCREEN_DROP !== "persist"
-          ? "\n| KINETIC | kinetic (translit) | dropped — off-field (relevance gate) | URI /mark/cn/88001-42; screen_verdict=drop:off-field-confirmed; class=42; status=live; fetched goods confirm hardware tooling, genuinely off-field |"
-          : "\n| KINETIC | kinetic (translit) | dropped — off-field (relevance gate) | URI /mark/cn/88001-42; screen_verdict=surface:in-scope-live; class=42; status=live; inferred fashion |")
-      : "";
-    // MOCK_SCREEN_DROP=unnamed — the ION/copper-foundry shape (2026-07-22): a NAMED drop that the repair
-    // loop fixes, PLUS a bulk slice-level drop naming no record URI at all. Copied in shape from that run's
-    // real row ("ION (cl 25 slice) … ~58 records (Stæhr Holding, Trinity Chain Holding, …) — apparel/merch,
-    // pulled only as a cross-class squat check"). The driver can never repair the unnamed one (it has no URI
-    // to fetch), so it survives to the post-repair re-check — where observe mode MUST still exclude it.
-    const unnamedDropRow = process.env.MOCK_SCREEN_DROP === "unnamed"
-      ? "\n| LUMENGARDE (cl 25 slice) | exact LUMENGARDE [cl 25] | dropped — off-field (cross-class merch check) | ~58 records (Staehr Holding, Trinity Chain Holding, VANIKIOTI) — apparel/merch, pulled only as a cross-class squat check; no software nexus |"
-      : "";
-    if (process.env.MOCK_UNPARSEABLE_LEDGER)
-      return PAD("# Register findings\n\n## Summary\n- total queries: 12\n\n## Findings — Mark: PROJECT NOVAPULSE\n\n### Risk-relevant (Sheet 1)\n| URI | Mark | Owner | Country | Classes | Status | Filed | Flag reason | Source |\n|---|---|---|---|---|---|---|---|---|\n| /m/1 | LUMENGARDE | Acme | DK | 9 | Registered | 2020-01-01 | exact-match in class | Corsearch |\n\n### Negative results\n| Mark | Search Term / Variant | Result | Notes |\n|---|---|---|---|\n| LUMENGARDE | exact | 0 hits | clean |" + dominantElementDropRows(dir) + "\n\n### Coverage ledger\n\nAll axes were confirmed-clean this run; the table failed to render.\n");
-    // — NO `## Coverage ledger` TABLE. The seat does not write one: it fills in the driver's form
-    // (mockCoverageSlices → fillCoverageForm, side-written in applyStageWrites) and the driver renders
-    // the table from that form after the pass. A fixture that still wrote the table would be testing a
-    // contract the shipped skill no longer states.
-    return PAD("# Register findings\n\n## Summary\n- total queries: 12\n\n## Findings — Mark: PROJECT NOVAPULSE\n\n### Risk-relevant (Sheet 1)\n| URI | Mark | Owner | Country | Classes | Status | Filed | Flag reason | Source |\n|---|---|---|---|---|---|---|---|---|\n| /m/1 | LUMENGARDE | Acme | DK | 9 | Registered | 2020-01-01 | exact-match in class | Corsearch |\n\n### Negative results\n| Mark | Search Term / Variant | Result | Notes |\n|---|---|---|---|\n| LUMENGARDE | exact | 0 hits | clean |" + screenDropRow + unnamedDropRow + dominantElementDropRows(dir) + "\n\n### Audit trail\n| Step | Query / Variant | Result Summary |\n|---|---|---|\n| primary-sweep | LUMENGARDE | completed |\n");
   }
   if (name === "narrative.md") {
     if (process.env.MOCK_CANDSELF) {
@@ -744,37 +545,6 @@ export function malformedAppend(msg, dir = null) {
   return `[${gridLedger(msg, dir)},\n{ "cells": [], "extras": {}, "ps": [] }\n,\n]`;
 }
 
-export function coverageLedger(dir) {
-  if (process.env.MOCK_BAD_COVERAGE_LEDGER)
-    return JSON.stringify([{ axis: "primary-sweep", scope: "worldwide", status: "coverage-limited (count-only, saturated)", reason: "suffixed status — must move into reason" }]);
-  let prose = [];
-  try { prose = parseCoverageLedgerFull(readFileSync(join(dir, "register-findings.md"), "utf8")).rows; } catch { /* no findings yet */ }
-  const rows = prose.map((r) => ({
-    axis: r.axis,
-    scope: r.unit.includes("/") ? r.unit.slice(r.unit.indexOf("/") + 1).trim() : "",
-    status: r.status,
-    reason: r.reason,
-  }));
-  // An axis with no row of its own is one this mock never saw run, and a clean claimed over it is the
-  // false clean the ledger exists to refuse — see the same fix in the coverage-form filler above. It
-  // only ever passed while every axis executed; the wider families now wait on the identical question.
-  for (const ax of ["saturation-probe", "primary-sweep", "transliteration-numeric", "incumbent-class"]) {
-    if (!rows.some((r) => r.axis === ax))
-      rows.push(ax === process.env.MOCK_LEDGER_LIMITED
-        ? { axis: ax, scope: "worldwide", status: "coverage-limited", reason: "yielded to ring-fenced jurisdiction budget" }
-        : { axis: ax, scope: "worldwide", status: "withheld-by-judgment",
-            reason: "not opened: the identical question is answered and this family would only widen it" });
-  }
-  return JSON.stringify(rows);
-}
-export function writeCoverageLedger(dir, saveOnly) {
-  const mode = process.env.MOCK_NO_COVERAGE_LEDGER;
-  if (mode === "2" || (mode === "1" && !saveOnly)) return false;
-  if (process.env.MOCK_UNPARSEABLE_LEDGER) return false;
-  writeFileSync(join(dir, "register-coverage-ledger.json"), coverageLedger(dir));
-  return true;
-}
-
 export function synthesisFindings(runDir = null, msg = "") {
   // Repair-first A4 knob: MOCK_BAD_FINDING — the finding object carries an invented key (a per-finding
   // strict-parse failure, finding_key_unknown), HEALED only when the message is the A4 single-artifact
@@ -1025,6 +795,27 @@ export function reportCardFixture(out) {
  * is now unreachable from the seat's side. The knobs still drive a fail-closed run; what moved is which
  * artifact is missing when it fails, and named-band-missing.test.mjs states that at its arms.
  */
+/**
+ * The mock reading turn's decision on the waiting families of its axis: every one it did not ask is
+ * withheld, with a reason in a lawyer's words, through the production recorder. Only on a dispatch that
+ * orders the decision, as a compliant seat would. Returns how many it withheld.
+ */
+export function mockWithholdWaitingFamilies(runDir, axis, msg = "") {
+  if (!/DECIDE EVERY ONE/.test(msg)) return 0;
+  let plan = null;
+  try { plan = JSON.parse(readFileSync(driverDir(runDir, "register-plan.json"), "utf8")); } catch { return 0; }
+  let supp = [];
+  try { supp = JSON.parse(readFileSync(join(runDir, "register-units", `${axis}-supplemental-plan.json`), "utf8"))?.entries ?? []; } catch { /* none */ }
+  let released = new Set();
+  try { released = new Set(Object.keys(JSON.parse(readFileSync(releasedFamiliesPath(runDir, axis), "utf8"))?.families ?? {})); } catch { /* none */ }
+  const qids = waitingFamiliesOn(plan, axis, supp, released).unasked.map((e) => e.qid);
+  if (!qids.length) return 0;
+  recordMockToolCall(runDir, "record_withheld_families", "unit-note");
+  const r = recordWithheldFamilies(runDir, { axis, families: [{ qids,
+    reason: "not opened: the identical question is answered and this family would only widen it" }] });
+  return r?.recorded?.length ?? 0;
+}
+
 export function mockUnitBandWrite(runDir, axis, msg = "") {
   const bandPath = join(runDir, "register-units", `${axis}-band.json`);
   mkdirSync(dirname(bandPath), { recursive: true });
@@ -1149,8 +940,19 @@ const HARD_ERROR_REASON = "provider error on the count probe (after one in-tool 
   + "HTTP 500: INTERNAL_SERVER_ERROR - Count Failed - IL - Near/Adj queries";
 const planHardError = (qid) => Boolean(process.env.MOCK_PLAN_HARD_ERROR) && String(qid).includes(process.env.MOCK_PLAN_HARD_ERROR);
 
+// MOCK_PLAN_CROWD="<match>" — the provider ANSWERED these slices with more hits than the slice can enumerate:
+// an enumerate block that came back `incomplete`, with no error. The plan join counts it as a crowd, its axis
+// reads `incomplete`, and the coverage form carries an open block row per slice — which code settles
+// `coverage-limited`, a documented limit (coverage-form.mjs, settleCoverageRowsFromFacts). That is the
+// fact the escalation's documented-limit skip and the search floor's hold read; the register digest used
+// to rule it, and MOCK_LEDGER_LIMITED stood in for that ruling.
+const planCrowd = (qid) => Boolean(process.env.MOCK_PLAN_CROWD) && String(qid).includes(process.env.MOCK_PLAN_CROWD);
+
 export function qidBlocks(qid, kind, terms = null) {
   const query = Array.isArray(terms) && terms.length ? `exact ${terms.join(" OR ")}` : qid;
+  if (kind !== "count" && planCrowd(qid))
+    return [{ state: "incomplete", qid, query, total_hits: 2416, fetched: 0, sample: [],
+      reason: "more hits than the slice can enumerate (mock crowd)" }];
   if (planHardError(qid))
     return [{ state: "incomplete", qid, query, total_hits: 0, fetched: 0, sample: [], error: true,
       reason: HARD_ERROR_REASON }];
@@ -1353,6 +1155,30 @@ function mockRegisterRecordWrite(runDir, argv = []) {
 // and the file is at the unescaped path. A Linux path has no backslashes, so there it is unchanged.
 const fromJsonText = (p) => (p == null ? p : p.replace(/\\\\/g, "\\"));
 
+/**
+ * A judge's answer for a CONFINED dispatch (step 3): the program returns it on its result, so no file is
+ * written here. Built from what the driver wrote beside the run — the facts each answer is checked against
+ * (the records the run holds, the client's scale) and the merged band for the owners' names — never typed
+ * here, so a broken facts write reds the pipeline rather than passing it. It carries the first record's
+ * owner, sets the second's aside, and rates with the scale's own top and bottom bands.
+ *   MOCK_JUDGE_ANSWER=<json> — answer exactly this instead; MOCK_JUDGE_NONE=1 — answer nothing.
+ */
+export function mockJudgeAnswer(runDir) {
+  if (process.env.MOCK_JUDGE_NONE) return null;
+  if (process.env.MOCK_JUDGE_ANSWER) return JSON.parse(process.env.MOCK_JUDGE_ANSWER);
+  const facts = JSON.parse(readFileSync(join(runDir, "_driver", "owner-judgment-facts.json"), "utf8"));
+  const bands = (facts.framework?.bands ?? []).map((b) => b.label).filter(Boolean);
+  const top = bands[0] ?? "High";
+  let band = [];
+  try { band = JSON.parse(readFileSync(join(runDir, "register-named-band.json"), "utf8")).enumerated ?? []; } catch { /* no band: no owner names */ }
+  const ownerOf = (id) => band.find((r) => r?.record_id === id)?.owner_name || `the holder of ${id}`;
+  const [first, second] = facts.recordIds ?? [];
+  const considered = [];
+  if (first) considered.push({ owners: [ownerOf(first)], decision: "carry", records: [first], rating: top, reason: "The same mark, live, in the order's classes." });
+  if (second) considered.push({ owners: [ownerOf(second)], decision: "set_aside", records: [second], rating: "", reason: "A different mark for different goods." });
+  return { considered, overall_rating: considered.length ? top : (bands[bands.length - 1] ?? top), advice: "An invented advice for a test run.", questions_wished_for: [] };
+}
+
 export function applyStageWrites(msg, argv) {
   let summary = "mock stage ok";
   // — BLIND-FRAME IS FIRST BECAUSE IT NAMES NO PATH. Every branch below matches an absolute output
@@ -1371,165 +1197,6 @@ export function applyStageWrites(msg, argv) {
   // filed from it. That is not the harness being tidy: `record_unit_note` REFUSES a note over a band that
   // does not exist, because its counts are aggregates over that band. A mock that filed the note first
   // would be modelling a seat the transport rejects.
-  // ── THE FINDINGS DOCUMENT (conversion 11) — ITS OWN BRANCH, BEFORE THE RECORDING BLOCK ───────────
-  //
-  // Not folded into the alternation below, for the opposite reason to unit-note's: this stage IS a
-  // RECORDING stage, but it is the only one whose call must JOIN against the run's own band. Every branch
-  // in that alternation composes a payload out of thin air; this one cannot, because the acceptance
-  // boundary refuses a uri no band record carries.
-  //
-  // THE ROWS ARE DERIVED FROM THE RUN'S OWN FACTS SIDECAR, never hand-written here, and that is the
-  // property this branch exists to preserve. A fixture that typed a uri would go green while the driver's
-  // band read was broken — the harness modelling the thing it is supposed to be proving, which is the
-  // trap the report-card and unit-note branches both name. Reading the sidecar means the mock cites
-  // whatever the driver actually indexed, so a broken facts write reds the pipeline here rather than
-  // three layers downstream.
-  if (/record_register_digest/.test(msg)) {
-    const runDir = runDirFromWiring(argv);
-    if (!runDir) return "mock register-digest: no run dir in the engine wiring — the driver wires CLEAROTRON_BAND_RUN_DIR per run and this branch refuses rather than guessing one";
-    recordMockToolCall(runDir, "record_register_digest", "recording-register-digest");
-    const facts = readDigestFacts(runDir);
-    const recs = [...facts.recordsByUri.values()];
-    const uris = recs.map((r) => r.record_id ?? r.uri).filter(Boolean);
-    // THE DROP MUST BE A RECORD THE SCREEN ACTUALLY SURFACED, and the conversion is what forces that.
-    // The old fixture invented `/mark/cn/88001-42` and typed `screen_verdict=surface:in-scope-live`
-    // beside it; the driver renders that cell from the band now, so a made-up uri has no row to render
-    // and a real record brings its own verdict. `findScreenGateParseGaps` skips any row whose verdict is
-    // not a surfacing one, so a drop chosen without regard to verdict would silently exercise nothing —
-    // the scenario would look driven and check nothing.
-    const SURFACING = /^(surface:in-scope-live|surface:all-class|deepfetch:ambiguous)$/;
-    // The knob's own subject first, then any surfacing record — so the scenario drops the record the
-    // fixtures are written about rather than whichever surfacing one happens to sort first.
-    const isSurfacing = (r) => SURFACING.test(String(r?.screen?.screen_verdict ?? r?.screen_verdict ?? ""));
-    const surfaced = recs.find((r) => String(r?.record_id ?? "") === "/mark/cn/88001-42" && isSurfacing(r))
-      ?? recs.find(isSurfacing);
-    const dropUri = process.env.MOCK_SCREEN_DROP
-      ? (surfaced?.record_id ?? surfaced?.uri ?? uris[1])
-      : uris[1];
-    // ONE SURFACED, ONE DROPPED where the band has two or more; a one-record band surfaces its only
-    // record. An EMPTY band sends no rows at all — the declared-absence path, which is a real run state
-    // (a `skeleton: []` plan) and must be exercised rather than papered over with an invented row.
-    // ── HOW A RE-DECIDE HEALS, AND WHAT CONVERSION 11 TOOK AWAY ──────────────────────────────────
-    //
-    // The old fixture healed this by RETYPING the record's own `screen_verdict` as
-    // `drop:off-field-confirmed`, which takes the row out of the screen gate's scope (the gate reads
-    // surface:* verdicts as in-scope candidates). That was a seat rewriting the screen's provenance to
-    // change how a gate judged its own drop — the exact class of restatement this conversion removes,
-    // and it is not expressible any more: the driver renders that cell from the band record.
-    //
-    // So the re-decide heals the way the driver's own followup words it — "RE-DECIDE EACH on its fetched
-    // goods: KEEP IT AS A CONFLICT/FINDING if in-field". The seat changes its DECISION, not the screen's
-    // record of what it saw: the record leaves negative_rows and takes a Sheet-1 row instead. Same
-    // property under test (a fixable row heals at the flush and stops clamping), reached by a route a
-    // compliant seat can actually take. `persist` still persists, so the unfixable arm is unchanged.
-    const correctedAway = Boolean(process.env.MOCK_SCREEN_DROP)
-      && process.env.MOCK_SCREEN_DROP !== "persist"
-      && /record_fetch it|RE-DECIDE EACH/.test(msg);
-    // Lifted OUT of the object literal so the accounting sweep below can see what is already accounted
-    // for. Same rows as before; only their construction moved.
-    const findingsRows = [
-      ...uris.filter((u) => u !== dropUri).slice(0, 1).map((uri) => ({
-        uri, flag_reason: "exact-match in an instructed class", verify: "no",
-      })),
-      ...(correctedAway && dropUri ? [{
-        uri: dropUri,
-        flag_reason: "re-decided on the fetched goods — in-field after all, carried as a conflict",
-        verify: "no",
-      }] : []),
-    ];
-    const rowsAccountedFor = new Set(findingsRows.map((r) => joinKey(r.uri)));
-    // ── THE ACCOUNTING SWEEP, SPLIT THE WAY THE DOCTRINE SPLITS IT ────────────────────────────────
-    //
-    // Every owed record this call has not yet accounted for needs an exit, or the accounting refusal
-    // fires. WHICH exit is not a free choice, and the first cut got it wrong: it swept everything into
-    // drop rows, which made each one a goods-drop of a record the screen had surfaced and nobody had
-    // fetched — precisely what the screen gate exists to catch. Six arms went red and they were right.
-    //
-    // So the split follows the driver's own followup wording: "RE-DECIDE EACH on its fetched goods —
-    // KEEP IT AS A CONFLICT/FINDING if in-field". A seat that has not fetched a surfaced record cannot
-    // rule its goods out, so it CARRIES it. Only records the screen itself put outside scope leave as
-    // drops, and their grounds come from the band, so the ground can never contradict the verdict.
-    //
-    // The gate's own set, not the wider one used to choose the knob's drop: `deepfetch:ambiguous` is
-    // not an in-scope-live candidate to the gate, so dropping it is honest and gate-safe.
-    const GATE_SURFACING = /^(surface:in-scope-live|surface:all-class)$/;
-    const verdictOf = (uri) => {
-      const r = recs.find((x) => (x.record_id ?? x.uri) === uri);
-      return String(r?.screen?.screen_verdict ?? r?.screen_verdict ?? "");
-    };
-    const sweptUris = (facts.owed ?? []).filter((k) => {
-      if (!facts.recordsByUri.has(k)) return false;                     // unrenderable — no row a seat could send
-      if (dropUri && k === joinKey(dropUri) && !correctedAway) return false;   // the knob already drops it
-      return !rowsAccountedFor.has(k);
-    }).map((k) => facts.recordsByUri.get(k)?.record_id ?? k);
-    const sweptCarried = sweptUris.filter((u) => GATE_SURFACING.test(verdictOf(u)));
-    const sweptDropped = sweptUris.filter((u) => !GATE_SURFACING.test(verdictOf(u)));
-    for (const uri of sweptCarried) {
-      findingsRows.push({ uri, flag_reason: "carried — the screen surfaced it and its goods were not ruled out on a fetched record", verify: "no" });
-    }
-    const rows = {
-      findings_rows: findingsRows,
-      // THE DROP'S SHAPE IS THE KNOB'S, and the DEFAULT must not trip the screen gate. The first cut
-      // always emitted an off-field/relevance-gate reason, which matches GOODS_FIELD_RE and carries no
-      // fetch receipt — so every run, knob or no knob, produced a violating drop row and the
-      // no-violations control could never be clean. A fixture whose default is a violation cannot
-      // witness the absence of one.
-      negative_rows: [
-        ...(dropUri && !correctedAway ? [dropUri] : []),
-        // The accounting sweep's DROP half — records the screen itself put outside scope. The carried
-        // half went into findings_rows above; see the note there for why the split is not a free choice.
-        ...sweptDropped,
-      ].map((uri) => ({
-        uri,
-        drop_reason: process.env.MOCK_SCREEN_DROP
-          ? "dropped — off-field (relevance gate); inferred fashion"
-          : "screened out — dead-status",
-        // The closed ground token, DERIVED FROM THE BAND rather than chosen — which is what a compliant
-        // seat does, and the first cut of this line was not. It labelled the default drop `dead-status`
-        // whatever the record's verdict, and the acceptance boundary refused it by name on a record the
-        // screen had surfaced as a live in-scope candidate. That refusal was correct and the fixture was
-        // wrong: a mock that picks a ground the band contradicts is modelling a seat the transport
-        // rejects, and it would have gone green only by the gate being absent.
-        ground: (() => {
-          const v = String(recs.find((r) => (r.record_id ?? r.uri) === uri)?.screen?.screen_verdict
-            ?? recs.find((r) => (r.record_id ?? r.uri) === uri)?.screen_verdict ?? "");
-          if (v === "drop:dead") return "dead-status";
-          if (v === "drop:out-of-class") return "out-of-class";
-          return "off-field";          // the screen surfaced it ⇒ the drop is the seat's own goods call
-        })(),
-        variant: "default",
-      })),
-      instructed_checks: [],
-      // UNCONDITIONAL, and it used to key on the rulings tail being in the dispatch. That made the mock
-      // emit a DIFFERENT document on a corrective pass from a fresh one — which the old prose fixture
-      // never did, because its body was static. Once the driver renders this artifact, a fixture that
-      // varies its own output across passes changes a file four stages hash for freshness, and the
-      // non-split closure resume then died at delivery on "material that has since changed".
-      //
-      // Nothing asserted this row: the witness that the rulings tail actually reached the seat is the
-      // `mock-rulings-tail.flag` written below and read by operability's arms, which is the better one
-      // anyway — it records what the DISPATCH carried, independently of how the seat answered it.
-      disagreement_resolutions: [{ subject: "LUMENGARDE", decision: "ADOPTED", reason: "the placement's tier stands on its stated reason" }],
-      opposition: "No opposition history surfaced on the frozen band.",
-    };
-    // The dispatch-probe side files keep their meaning: they record what the DISPATCH carried, which is
-    // independent of how the seat answers it.
-    if (/PLACEMENT RULINGS TAIL \(verbatim from/.test(msg)) {
-      mkdirSync(driverDir(runDir), { recursive: true });
-      writeFileSync(driverDir(runDir, "mock-rulings-tail.flag"), "1");
-    }
-    if (/SETTLED COVERAGE FACTS/.test(msg)) {
-      mkdirSync(driverDir(runDir), { recursive: true });
-      appendFileSync(driverDir(runDir, "mock-settled-facts.log"), "carried\n");
-    }
-    // The coverage form is a SEPARATE transport and is filled exactly as before — two calls, two
-    // statements. Folding it in here would model a merged key the grant does not have.
-    fillCoverageForm(runDir, msg);
-    const r = recordRegisterDigest(runDir, rows, { facts });
-    if (r.refused) return `mock register-digest REFUSED by record_register_digest: ${r.refused}`;
-    if (r.write_failed) return `mock register-digest: record_register_digest could not write (${r.write_failed})`;
-    return `mock register-digest recorded through record_register_digest (${r.surfaced} surfaced, ${r.dropped} dropped)`;
-  }
   if (/record_unit_note/.test(msg)) {
     const runDir = runDirFromWiring(argv);
     if (!runDir) return "mock unit-note: no run dir in the engine wiring — the driver wires CLEAROTRON_BAND_RUN_DIR per run and this branch refuses rather than guessing one";
@@ -1561,7 +1228,12 @@ export function applyStageWrites(msg, argv) {
     });
     if (r.refused) return `mock unit-note REFUSED by record_unit_note: ${r.refused}`;
     if (r.write_failed) return `mock unit-note: record_unit_note could not store the note (${r.write_failed})`;
-    return `mock unit-note recorded through record_unit_note (band ${wroteBand ? "written" : "SKIPPED by a MOCK_NO_BAND knob"})`;
+    // THE WAITING FAMILIES, DECIDED AS THE DISPATCH ORDERS (stages.mjs, DECIDE_WAITING_FAMILIES). A compliant
+    // reading turn decides every waiting family on its axis; this one withholds each it did not ask, with its
+    // reason, through the production recorder. The register digest used to rule the families a turn left
+    // undecided; nothing does now, and code settles an axis with an undecided family as never searched.
+    const withheld = mockWithholdWaitingFamilies(runDir, bound, msg);
+    return `mock unit-note recorded through record_unit_note (band ${wroteBand ? "written" : "SKIPPED by a MOCK_NO_BAND knob"}${withheld ? `; ${withheld} waiting famil${withheld === 1 ? "y" : "ies"} withheld` : ""})`;
   }
   if (/record_blind_frame|record_skeptic|record_frame_diff|record_matter_frame|record_clearance_variants|record_report_overview|record_report_card|record_doubt_closure|record_narrative_refutation|record_synthesis/.test(msg)) {
     // — FROM THE ENGINE WIRING, NOT FROM `--add-dir` (runDirFromWiring above). This branch stands in for a RECORDING SERVER's
@@ -2396,52 +2068,12 @@ export function applyStageWrites(msg, argv) {
     // the tool refuses a note filed over a band that does not exist yet.
     // CONVERSION 3 — the side-write is GONE. It existed because the seat wrote the prose and the
     // structured sibling had to appear beside it; the driver serialises both from one call now.
-    // AD-2 A9 probe: did the digest's dispatch actually CARRY placement's rulings tail? Recorded in a
-    // side file so no parsed artifact changes shape.
-    if (basename(out) === "register-findings.md" && /PLACEMENT RULINGS TAIL \(verbatim from/.test(msg)) {
-      mkdirSync(driverDir(dirname(out)), { recursive: true });
-      writeFileSync(driverDir(dirname(out), "mock-rulings-tail.flag"), "1");
-    }
-    // Same idiom, for the settled coverage facts (envelope-settle.mjs → settledDeferralsSection): one
-    // line per digest dispatch that actually CARRIED them. The FLUSH passes are what this proves —
-    // stageOnce drops `extra` on a followup, so a flush is exactly the pass a dispatch hint cannot reach.
-    // — the seat fills in the driver's coverage form on every digest write. The driver renders the
-    // `## Coverage ledger` table and the machine ledger from it after the pass, so the mock never writes
-    // either — which is exactly the contract the shipped skill now states.
-    if (basename(out) === "register-findings.md") fillCoverageForm(dirname(out), msg);
-    if (basename(out) === "register-findings.md" && /SETTLED COVERAGE FACTS/.test(msg)) {
-      mkdirSync(driverDir(dirname(out)), { recursive: true });
-      appendFileSync(driverDir(dirname(out), "mock-settled-facts.log"), "carried\n");
-    }
     //, third conversion — THE SIDE-WRITE IS GONE. This wrote `frame-diff.json` beside the prose
     // whenever the prose was written, which was the mock playing the dictated contract. Both artifacts are
     // the driver's now, off the `record_frame_diff` call in applyStageWrites' recording branch. Leaving
     // this line would have kept every pipeline test green while the real seat's grant no longer allowed
     // the write it emulates — a mock still playing the old contract is how a prompt drifts away from the
     // code with the suite watching.
-    // — THE SEAT FILLS THE FORM AND NEVER WRITES placements.json. It selects a record id the
-    // driver's own fold holds, adds its tier and reason, and the driver renders the deliverable. The
-    // mock plays that contract, because a mock still playing the old one would let the real seat's
-    // prompt drift away from the code with every pipeline test still green.
-    //
-    // The selected id is read from the form the driver wrote before dispatch — which is exactly what the
-    // real seat does, and it means this fixture cannot select something the fold does not hold.
-    // MOCK_PLACEMENT_NO_SIBLING now means "the seat handed back NOTHING", which under the accumulator is
-    // no longer a way to lose work: the prior pass's rows stand and the driver re-renders from them.
-    if (basename(out) === "placement-recommendations.md" && !process.env.MOCK_PLACEMENT_NO_SIBLING) {
-      const dir = dirname(out);
-      let selectable = null;
-      try {
-        const pos = JSON.parse(readFileSync(driverDir(dir, "register-positions.json"), "utf8"));
-        selectable = (pos?.positions ?? []).flatMap((x) => (Array.isArray(x?.records) ? x.records : []))[0] ?? null;
-      } catch { /* no fold in reach — fall through to a seat-authored row, which is the honest shape then */ }
-      const rows = selectable
-        ? [{ select: selectable, tier: "headline-candidate",
-             reason: "Exact match in the target class held by an active same-field filer — the customer base overlaps directly and the registration is live." }]
-        : [{ kind: "seat", mark: "LUMENGARDE", owner: "Acme", jurisdiction: "DK", records: [], tier: "headline-candidate",
-             reason: "Exact match in the target class held by an active same-field filer — the customer base overlaps directly and the registration is live." }];
-      writeFileSync(join(dir, "placement-form.json"), JSON.stringify({ rows }, null, 2) + "\n");
-    }
     if (basename(out) === "narrative.md" && !process.env.MOCK_CANDSELF && !process.env.MOCK_NARRATIVE_RECO) {
       writeFileSync(join(dirname(out), "findings.json"), synthesisFindings(dirname(out), msg));
       mockRegisterRecordWrite(dirname(out), argv);

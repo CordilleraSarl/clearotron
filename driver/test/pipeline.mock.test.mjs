@@ -24,7 +24,6 @@ import { MEANING_SEAT } from "../common-law-receipts.mjs";
 pinEnv(process.env, "CLEAROTRON_REPORTS_URL", envFrom(process.env, "CLEAROTRON_REPORTS_URL") || "https://trademark.test");
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-import { acceptRegisterDigest, emptyFacts } from "../register-digest-record.mjs";   // conversion 11 — the refusal that removed the live unnamed-drop shape
 // A run dir under the archive, with either separator: on Windows the path the pipeline returns is native.
 const ARCHIVED = /[\\/]archive[\\/]/;
 // recursively find the first file named `name` under `root` (best-effort — null if none / unreadable).
@@ -80,7 +79,7 @@ const JOB = {
 async function runPipeline(env, jobPatch = {}, opts = {}) {
   const root = mkdtempSync(join(tmpdir(), "clearotron-mock-"));
   // hermetic: clear the mock knobs so one test's MOCK_* never bleeds into the next (env is process-global).
-  for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_CLAUDE_OVERLOADED", "MOCK_LEDGER_LIMITED", "MOCK_SEARCH_FLOOR", "MOCK_CANDSELF", "MOCK_NO_GRID_LEDGER", "MOCK_CL_SHORT", "MOCK_CL_GAPS", "MOCK_CL_MISSING_QUERIES", "MOCK_NO_COVERAGE_LEDGER", "MOCK_BAD_COVERAGE_LEDGER", "MOCK_UNPARSEABLE_LEDGER", "MOCK_WRITE_RECORD", "MOCK_SCREEN_DROP", "MOCK_FRAME_DIFF", "MOCK_NO_BLIND_MODEL", "MOCK_COVERAGE_INSUFFICIENT", "MOCK_BAND_COLLAPSED", "MOCK_PLAN_DROP_QID", "MOCK_PLAN_DROP_STICKY", "MOCK_PLAN_DEFERRED", "MOCK_PLAN_HARD_ERROR", "MOCK_DEGENERATE_HEALS", "MOCK_VERDICT_DEFECTS", "MOCK_BAD_FINDING", "MOCK_MULTI_LEG", "MOCK_ACTIONS", "MOCK_ASK_ANSWER_BAD", "MOCK_FINDINGS_N", "MOCK_STAGE_TRACE", "MOCK_STAGE_DELAY_MS", "MOCK_MEANING_ANGLES", "MOCK_PR_RESULTS", "MOCK_CL_UNDISPOSED", "MOCK_NARRATIVE_RECO", "MOCK_REPORT_URI", "CLEAROTRON_REGISTER_RECORD_LOG", "CLEAROTRON_REGISTER_CALL_LOG"]) delete process.env[k];
+  for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_CLAUDE_OVERLOADED", "MOCK_PLAN_CROWD", "MOCK_SEARCH_FLOOR", "MOCK_CANDSELF", "MOCK_NO_GRID_LEDGER", "MOCK_CL_SHORT", "MOCK_CL_GAPS", "MOCK_CL_MISSING_QUERIES", "MOCK_NO_COVERAGE_LEDGER", "MOCK_BAD_COVERAGE_LEDGER", "MOCK_UNPARSEABLE_LEDGER", "MOCK_WRITE_RECORD", "MOCK_SCREEN_DROP", "MOCK_FRAME_DIFF", "MOCK_NO_BLIND_MODEL", "MOCK_COVERAGE_INSUFFICIENT", "MOCK_BAND_COLLAPSED", "MOCK_PLAN_DROP_QID", "MOCK_PLAN_DROP_STICKY", "MOCK_PLAN_DEFERRED", "MOCK_PLAN_HARD_ERROR", "MOCK_DEGENERATE_HEALS", "MOCK_VERDICT_DEFECTS", "MOCK_BAD_FINDING", "MOCK_MULTI_LEG", "MOCK_ACTIONS", "MOCK_ASK_ANSWER_BAD", "MOCK_FINDINGS_N", "MOCK_STAGE_TRACE", "MOCK_STAGE_DELAY_MS", "MOCK_MEANING_ANGLES", "MOCK_PR_RESULTS", "MOCK_CL_UNDISPOSED", "MOCK_NARRATIVE_RECO", "MOCK_REPORT_URI", "CLEAROTRON_REGISTER_RECORD_LOG", "CLEAROTRON_REGISTER_CALL_LOG"]) delete process.env[k];
   for (const [k, v] of Object.entries({ CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"), CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_DEFAULT_AGENT: "intake-agent", ...env })) pinEnv(process.env, k, v);
   await opts.seed?.(root);   // config is all getters now (access-time env) — seed INSIDE this run's root
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
@@ -198,8 +197,9 @@ test("happy path: CLEAR verdict → full sequence, delivered + archived", async 
   const idx = (s) => order.findIndex((x) => x.startsWith(s));
   assert.ok(idx("matter-frame") < idx("clearance-variants"), "matter-frame before variants");
   assert.ok(idx("clearance-variants") < idx("common-law"), "variants before gather");
-  assert.ok(idx("register-digest") > idx("placement-inquiry"), "digest after placement");
-  assert.ok(idx("placement-inquiry") > idx("register-unit:primary-sweep"), "placement after units");
+  assert.ok(idx("owner-judgment:1") > idx("register-unit:primary-sweep"), "step 3 judges after the units");
+  assert.ok(idx("owner-judgment:2") > idx("register-unit:primary-sweep"), "…both judges");
+  assert.ok(idx("skeptic") > idx("owner-judgment:1") && idx("skeptic") > idx("owner-judgment:2"), "the sceptic reads the judges' decisions");
   assert.ok(idx("skeptic") < idx("synthesis"), "skeptic before synthesis");
   assert.ok(idx("synthesis") < idx("narrative-refutation"), "synthesis before refutation");
   // delivery (B1): report-overview (LLM shell) + report-card (LLM, one per finding) → assemble/audit/publish
@@ -232,13 +232,16 @@ test("happy path: CLEAR verdict → full sequence, delivered + archived", async 
   assert.ok(!events.some((e) => e.event === "case-law-trigger"), "nothing claims the pass was triggered");
   // verdict event recorded
   assert.ok(events.some((e) => e.event === "verdict" && e.verdict === "CLEAR"));
-  // Spec A3 — the mock ledger carries a deferred NZ row and the job has no deadline ⇒ the envelope rule
-  // closes it in-loop: decision logged, the owning unit re-run warm, and (spec-66 funnel) the re-digest
-  // rides the ONE pre-synthesis settlement flush instead of firing its own pass.
-  assert.ok(events.some((e) => e.event === "envelope-decision" && e.close === true), "envelope decision logged");
-  assert.ok(events.some((e) => e.event === "envelope-closed" && e.axes.includes("primary-sweep")), "deferred floor closed in-loop");
-  assert.ok(events.some((e) => e.event === "digest-queued" && e.trigger === "envelope"), "envelope minted a durable digest receipt");
-  assert.ok(events.some((e) => e.event === "stage" && e.stage === "register-digest" && e.trigger === "settlement-flush"), "the settlement flush paid the receipt down");
+  // Spec A3 — the envelope decides on every run, and records its zero: nothing on this run was deferred
+  // (code settles the ledger from what ran, and every slice ran), so it closes nothing and mints nothing,
+  // and step 3 judges once. The envelope's close-and-flush path is driven where a deferral exists
+  // (a-capability-gap-is-not-reopened, digest-funnel).
+  const env = events.find((e) => e.event === "envelope-decision");
+  assert.ok(env, "envelope decision logged");
+  assert.deepEqual(env.deferredAxes, [], "nothing deferred on a run where every slice ran");
+  assert.equal(env.close, false);
+  assert.ok(!events.some((e) => e.event === "digest-queued"), "no mechanism queued a re-judgement");
+  assert.deepEqual(events.filter((e) => e.event === "owner-judgment").map((e) => e.trigger), ["fresh"], "step 3 judged once");
   // Spec A2 — the pre-delivery lint receipt is ALWAYS written (here: all checks pass, no flags).
   const receipt = JSON.parse(readFileSync(driverDir(res.runDir, "predelivery-lint.json"), "utf8"));
   assert.ok(Array.isArray(receipt.checks) && receipt.checks.length > 0, "lint receipt carries named checks");
@@ -257,10 +260,9 @@ test("happy path: CLEAR verdict → full sequence, delivered + archived", async 
   // gathered evidence with a CLEAN diff (no directives) on the happy path — no reopen, no clamp, CLEAR.
   assert.ok(order.includes("blind-frame"), "blind-frame ran (sibling of the gather)");
   assert.ok(idx("clearance-variants") < idx("blind-frame"), "blind-frame after variants");
-  // the frame settles BEFORE placement dispatches, so placement runs once on the settled frame.
-  assert.ok(idx("frame-diff") < idx("placement-inquiry"), "frame-diff settles the frame before placement");
-  assert.ok(idx("placement-inquiry") < idx("register-digest") && idx("register-digest") < idx("synthesis"),
-    "placement → digest → synthesis order is unchanged below the frame seam");
+  // the frame settles BEFORE step 3's judges dispatch, so they judge once, on the settled frame.
+  assert.ok(idx("frame-diff") < idx("owner-judgment"), "frame-diff settles the frame before the judges");
+  assert.ok(idx("owner-judgment") < idx("synthesis"), "step 3 → synthesis order is unchanged below the frame seam");
   assert.ok(events.some((e) => e.event === "frame-diff" && e.firing === 0), "clean frame-diff: zero firing directives");
   assert.ok(!events.some((e) => e.event === "frame-reopen"), "no reopen on a clean diff");
   assert.ok(!events.some((e) => e.event === "stage" && e.trigger === "frame-reopen"), "no frame-reopen re-digest on a clean diff");
@@ -348,43 +350,42 @@ test("a blind-frame turn that writes no model FAILS by name (missing_file) — t
   assert.ok(existsSync(join(runDir, "report.md")), "delivery is unaffected: the blind pass is a non-fatal sibling");
 });
 
-test("frame-omission: a firing frame-diff fires a supplemental sweep BEFORE placement — ONE placement dispatch, no re-digest; an unclosed dominant-element gap clamps CLEAR→CONDITIONAL", async () => {
+test("frame-omission: a firing frame-diff fires a supplemental sweep BEFORE step 3 — ONE judging pass, no re-judgement; an unclosed dominant-element gap clamps CLEAR→CONDITIONAL", async () => {
   const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FRAME_DIFF: "reopen" });
   assert.equal(res.ok, true, JSON.stringify(res));
   const order = stageOrder(events);
   assert.ok(order.includes("blind-frame") && order.includes("frame-diff"), "blind-frame + frame-diff ran");
   assert.ok(events.some((e) => e.event === "frame-diff" && e.firing >= 1 && e.dominant_element_gap === true), "frame-diff flagged a firing directive + a dominant-element gap");
   assert.ok(events.some((e) => e.event === "frame-reopen" && e.swept >= 1), "frame-reopen swept a directive");
-  // ── THE WHOLE POINT: ONE placement dispatch ─────────────────────────────────────────────────────────────────
-  // Before this issue the reopen regenerated the register band AFTER placement had already run on the
-  // pre-enumeration band, and had to dispatch placement a SECOND time or the delivery-freshness gate
-  // would refuse the report. That second dispatch was 204K output tokens / ~46 min of wall-clock across
-  // two passes on the 2026-08-02 R2 run. The frame now settles first, so placement dispatches once.
-  const placementDispatches = events.filter((e) => e.event === "stage" && e.stage === "placement-inquiry" && e.ok !== false);
-  assert.equal(placementDispatches.length, 1,
-    `placement-inquiry dispatches exactly once on a REOPENING run: ${JSON.stringify(placementDispatches.map((e) => e.trigger ?? null))}`);
-  assert.ok(!events.some((e) => e.event === "stage" && e.stage === "placement-inquiry" && e.trigger === "frame-reopen"),
-    "the frame-reopen placement refresh is gone");
-  assert.ok(!events.some((e) => e.event === "frame-reopen-placement-refresh"), "…and so is its receipt event");
-  // the sweep lands BEFORE placement, which is what makes the second dispatch unnecessary rather than
-  // merely deleted — placement reads the enumerated band on its one and only pass.
+  // ── THE WHOLE POINT: ONE JUDGING PASS ─────────────────────────────────────────────────────────────────────────
+  // Before the frame moved, the reopen regenerated the register band AFTER the step that reads it had
+  // already run, and that step had to be dispatched a SECOND time or the delivery-freshness gate would
+  // refuse the report (204K output tokens / ~46 min of wall-clock across two passes on the 2026-08-02 R2
+  // run, then on placement). The frame settles first, so step 3's judges are each dispatched once.
+  for (const judge of ["owner-judgment:1", "owner-judgment:2"]) {
+    const dispatches = events.filter((e) => e.event === "stage" && e.stage === judge && e.ok !== false);
+    assert.equal(dispatches.length, 1,
+      `${judge} dispatches exactly once on a REOPENING run: ${JSON.stringify(dispatches.map((e) => e.trigger ?? null))}`);
+  }
+  assert.ok(!events.some((e) => e.event === "owner-judgment" && e.trigger === "frame-reopen"),
+    "no frame-reopen re-judgement");
+  assert.ok(!events.some((e) => e.event === "frame-reopen-placement-refresh"), "…and no refresh receipt event");
+  // the sweep lands BEFORE step 3, which is what makes the second dispatch unnecessary rather than merely
+  // deleted — the judges read the enumerated band on their one and only pass.
   const reopenIdx = events.findIndex((e) => e.event === "frame-reopen");
-  const placementIdx = events.findIndex((e) => e.event === "stage" && e.stage === "placement-inquiry");
-  assert.ok(reopenIdx >= 0 && reopenIdx < placementIdx, "the reopen's sweeps land before placement dispatches");
-  // and the reopen buys NO digest pass of its own on a fresh run. The queue is not settled at the frame
-  // seam, because there are no prior findings to reconcile against — the digest has not run yet — and
+  const judgeIdx = events.findIndex((e) => e.event === "stage" && /^owner-judgment:/.test(String(e.stage)));
+  assert.ok(reopenIdx >= 0 && reopenIdx < judgeIdx, "the reopen's sweeps land before the judges dispatch");
+  // and the reopen buys NO re-judgement of its own on a fresh run. The queue is not settled at the frame
+  // seam, because there are no prior decisions to reconcile against — step 3 has not run yet — and
   // settling it there would strand escalation's and envelope's later mints and park the run. Whatever
-  // digest passes this run does spend belong to the mechanisms that own them (here: the envelope's
-  // settlement flush at the standalone seam, unchanged by the single-dispatch change).
+  // re-judgements this run does spend belong to the mechanisms that own them.
   assert.ok(events.some((e) => e.event === "frame-reopen-reconcile-not-needed"),
     "the un-needed reconcile is RECORDED, not silently skipped");
   assert.ok(!events.some((e) => e.event === "digest-queued" && e.trigger === "frame-reopen"),
     "no meaningless reconcile segment is minted on a fresh run");
   for (const f of events.filter((e) => e.event === "digest-flush"))
     assert.ok(!(f.triggers ?? []).includes("frame-reopen"), `no flush carries a frame-reopen section: ${JSON.stringify(f)}`);
-  assert.ok(!events.some((e) => e.event === "stage" && e.stage === "register-digest" && e.trigger === "frame-reopen"),
-    "the legacy inline frame-reopen re-digest is gone");
-  assert.ok(!events.some((e) => e.event === "delivery-stale-blocked"), "delivery is not stale-blocked — placement is fresh vs the enumerated band");
+  assert.ok(!events.some((e) => e.event === "delivery-stale-blocked"), "delivery is not stale-blocked — step 3 is fresh vs the enumerated band");
   // the dominant-element gap was not closed (no dominant-element-severity directive) → clamp CLEAR→CONDITIONAL
   assert.ok(events.some((e) => e.event === "coverage-floor-clamp" && e.frameGap === true), "the unclosed dominant-element gap clamped the verdict");
   assert.equal(res.verdict, "CONDITIONAL", "clamped verdict delivered (never withheld)");
@@ -440,13 +441,13 @@ test("zero semantics: a settled frame, a frame nobody asked about, and a swept r
   assert.notDeepEqual(shape(a), shape(c), "settled ≠ swept");
   assert.notDeepEqual(shape(b), shape(c), "never-asked ≠ swept");
 
-  // …and wherever the question IS asked, it is answered BEFORE the one placement dispatch
+  // …and wherever the question IS asked, it is answered BEFORE step 3's one judging pass
   for (const { events } of [clean, reopened]) {
     const fdIdx = events.findIndex((e) => e.event === "frame-diff");
-    const plIdx = events.findIndex((e) => e.event === "stage" && e.stage === "placement-inquiry");
-    assert.ok(fdIdx >= 0 && plIdx > fdIdx, "the frame settles before placement dispatches");
-    assert.equal(events.filter((e) => e.event === "stage" && e.stage === "placement-inquiry" && e.ok !== false).length, 1,
-      "exactly one placement dispatch");
+    const ojIdx = events.findIndex((e) => e.event === "stage" && /^owner-judgment:/.test(String(e.stage)));
+    assert.ok(fdIdx >= 0 && ojIdx > fdIdx, "the frame settles before the judges dispatch");
+    assert.equal(events.filter((e) => e.event === "stage" && /^owner-judgment:/.test(String(e.stage)) && e.ok !== false).length, 2,
+      "exactly one dispatch per judge");
   }
 });
 
@@ -468,7 +469,7 @@ test("deliver-conditional: a material coverage gap (coverage_judgment.sufficient
   assert.equal(status.verdict, undefined, "the sign-off is still at the top of the run record as `verdict`");
 });
 
-test("skeptic escalation: a flagged axis resumes (defend/adjust, same tier) + re-digest", async () => {
+test("skeptic escalation: a flagged axis resumes (defend/adjust, same tier) + a re-judgement", async () => {
   const { res, events } = await runPipeline({
     MOCK_VERDICT: "CLEAR",
     // structured token drives escalation now — NOT prose. Mention an axis in prose without an ESCALATE line
@@ -478,9 +479,9 @@ test("skeptic escalation: a flagged axis resumes (defend/adjust, same tier) + re
   assert.equal(res.ok, true);
   assert.ok(events.some((e) => e.event === "skeptic-escalation" && e.escalated.includes("primary-sweep")), "escalation recorded");
   assert.ok(!events.some((e) => e.event === "skeptic-escalation" && e.escalated.includes("incumbent-class")), "prose-only mention must NOT escalate");
-  // register-digest should appear twice (original + re-digest)
-  const digests = stageOrder(events).filter((s) => s.startsWith("register-digest"));
-  assert.ok(digests.length >= 2, `expected re-digest, got ${digests.length}`);
+  // step 3 runs twice: the first pass, and the settlement flush the escalation's mint queued
+  const passes = events.filter((e) => e.event === "owner-judgment").map((e) => e.trigger);
+  assert.deepEqual(passes, ["fresh", "settlement-flush"], `expected a re-judgement, got ${JSON.stringify(passes)}`);
 });
 
 // spec-48 D3 — the escalation-risk SHADOW apparatus is deleted; ESCALATE lines still re-run their axes.
@@ -499,61 +500,57 @@ test("escalation (post-D3): ESCALATE lines re-run their axes; no shadow risk tel
 });
 
 test("escalation skipped: an axis whose ledger gap is a documented coverage-limit is NOT re-run (Lever 4)", async () => {
-  // transliteration-numeric gets a `coverage-limited`-ONLY ledger row (MOCK_LEDGER_LIMITED). The skeptic
-  // escalates it — but the gate recognises a documented/accepted limit and skips the warm re-run + re-digest.
+  // Every primary-sweep slice comes back a crowd (MOCK_PLAN_CROWD), so code settles every row on that axis
+  // `coverage-limited`. The skeptic escalates it — but the gate recognises a documented/accepted limit and
+  // skips the warm re-run + re-judgement.
   const { res, events } = await runPipeline({
     MOCK_VERDICT: "CLEAR",
-    MOCK_LEDGER_LIMITED: "transliteration-numeric",
-    MOCK_SKEPTIC: "- transliteration-numeric extra script group looks thin\n\n## Escalation decisions\nESCALATE: transliteration-numeric — re-run the extra script group",
+    MOCK_PLAN_CROWD: "primary-sweep",
+    MOCK_SKEPTIC: "- primary-sweep looks thin\n\n## Escalation decisions\nESCALATE: primary-sweep — re-run the sweep",
   });
-  assert.equal(res.ok, true);
-  assert.ok(events.some((e) => e.event === "escalation-skipped" && e.axis === "transliteration-numeric"), "escalation-skipped recorded");
+  assert.equal(res.ok, true, JSON.stringify(res));
+  assert.ok(events.some((e) => e.event === "escalation-skipped" && e.axis === "primary-sweep"), "escalation-skipped recorded");
   assert.ok(!events.some((e) => e.event === "skeptic-escalation"), "no axis actually escalated (the only flagged one was skipped)");
-  // no SKEPTIC re-digest fired — the only extra digest is the A3 envelope's deferred-NZ close (trigger
-  // "envelope", standing mock fixture), never an escalation one.
-  assert.ok(!events.some((e) => e.event === "stage" && e.stage === "register-digest" && e.trigger === "escalation"),
-    "no escalation re-digest");
-  const digests = events.filter((e) => e.event === "stage" && e.stage === "register-digest");
-  assert.equal(digests.length, 2, `expected fresh + envelope digests only, got ${digests.length}`);
+  assert.ok(!events.some((e) => e.event === "digest-queued" && e.trigger === "escalation"), "no escalation re-judgement queued");
 });
 
-test("escalation NOT skipped: an axis with a `deferred` gap still re-runs even alongside the skip path (floor guard)", async () => {
-  // primary-sweep keeps its `deferred` NZ row (a real closeable gap) while transliteration-numeric is a
-  // documented coverage-limit. Escalating BOTH: only the documented limit is skipped; the deferred axis fires.
+test("escalation NOT skipped: an axis with no documented limit still re-runs alongside the skip path (floor guard)", async () => {
+  // primary-sweep is a documented limit (every slice a crowd); transliteration-numeric is not — its
+  // waiting families were withheld by the reading turn, which is a judgment and not a limit. Escalating
+  // BOTH: only the documented limit is skipped; the other axis fires.
   const { res, events } = await runPipeline({
     MOCK_VERDICT: "CLEAR",
-    MOCK_LEDGER_LIMITED: "transliteration-numeric",
-    MOCK_SKEPTIC: "- two gaps\n\n## Escalation decisions\nESCALATE: primary-sweep — re-run the NZ sub-query\nESCALATE: transliteration-numeric — extra script group",
+    MOCK_PLAN_CROWD: "primary-sweep",
+    MOCK_SKEPTIC: "- two gaps\n\n## Escalation decisions\nESCALATE: primary-sweep — re-run the sweep\nESCALATE: transliteration-numeric — extra script group",
   });
-  assert.equal(res.ok, true);
-  assert.ok(events.some((e) => e.event === "escalation-skipped" && e.axis === "transliteration-numeric"), "documented limit skipped");
-  assert.ok(events.some((e) => e.event === "skeptic-escalation" && e.escalated.includes("primary-sweep")), "deferred axis still escalates");
-  assert.ok(events.some((e) => e.event === "skeptic-escalation" && !e.escalated.includes("transliteration-numeric")), "skipped axis is not in the escalated set");
+  assert.equal(res.ok, true, JSON.stringify(res));
+  assert.ok(events.some((e) => e.event === "escalation-skipped" && e.axis === "primary-sweep"), "documented limit skipped");
+  assert.ok(events.some((e) => e.event === "skeptic-escalation" && e.escalated.includes("transliteration-numeric")), "the other axis still escalates");
+  assert.ok(events.some((e) => e.event === "skeptic-escalation" && !e.escalated.includes("primary-sweep")), "skipped axis is not in the escalated set");
 });
 
 test("THE HOLD — a designated floor axis excused as coverage-limited is NOT skipped, and IS disclosed", async () => {
   // BOTH knobs on the SAME axis, and that is the whole design of this arm rather than belt-and-braces.
   //
-  // The first version designated `primary-sweep`, and it passed while asserting nothing. primary-sweep
-  // carries a `confirmed-clean` row in the standing fixture, so `owned.every(coverage-limited)` is false
-  // AND `openNonDeferred` is true — NEITHER skip branch can fire on that axis whatever the floor term
-  // says. The not-skipped and escalated assertions were inert; only the disclosure half was live, which
+  // The first version designated an axis that also carried a `confirmed-clean` row, and it passed while
+  // asserting nothing: `owned.every(coverage-limited)` is false AND `openNonDeferred` is true there —
+  // NEITHER skip branch can fire on that axis whatever the floor term says. The not-skipped and escalated assertions were inert; only the disclosure half was live, which
   // is why the readFloorAxes plant still redded it and the vacuity survived one round of plants.
   //
-  // `MOCK_LEDGER_LIMITED` is the fixture shape that actually reaches a skip — the CONTROL below proves
-  // it. Pointing both knobs at `transliteration-numeric` makes every row on that axis coverage-limited,
-  // so branch 1 WOULD skip it, and the only thing stopping it is the designation. That is also the
-  // branch this PR extends the term onto, so it is the line most in need of a live arm.
+  // `MOCK_PLAN_CROWD` is the fixture shape that actually reaches a skip — the CONTROL below proves it.
+  // Pointing both knobs at `primary-sweep` makes every row on that axis coverage-limited, so branch 1
+  // WOULD skip it, and the only thing stopping it is the designation. That is also the branch this PR
+  // extends the term onto, so it is the line most in need of a live arm.
   const { res, events } = await runPipeline({
     MOCK_VERDICT: "CLEAR",
-    MOCK_LEDGER_LIMITED: "transliteration-numeric",
-    MOCK_SEARCH_FLOOR: "transliteration-numeric",
-    MOCK_SKEPTIC: "- the extra script group looks thin\n\n## Escalation decisions\nESCALATE: transliteration-numeric — re-run the extra script group",
+    MOCK_PLAN_CROWD: "primary-sweep",
+    MOCK_SEARCH_FLOOR: "primary-sweep",
+    MOCK_SKEPTIC: "- the sweep looks thin\n\n## Escalation decisions\nESCALATE: primary-sweep — re-run the sweep",
   });
-  assert.equal(res.ok, true);
-  assert.ok(!events.some((e) => e.event === "escalation-skipped" && e.axis === "transliteration-numeric"),
+  assert.equal(res.ok, true, JSON.stringify(res));
+  assert.ok(!events.some((e) => e.event === "escalation-skipped" && e.axis === "primary-sweep"),
     "a designated floor axis was skipped — it could not be fully checked and was quietly closed");
-  assert.ok(events.some((e) => e.event === "skeptic-escalation" && e.escalated.includes("transliteration-numeric")),
+  assert.ok(events.some((e) => e.event === "skeptic-escalation" && e.escalated.includes("primary-sweep")),
     "the floor axis was not pursued: `flagged and pursued` is two behaviours and only one happened");
   // …and the other behaviour: FLAGGED. The delivered report has to say the floor is open, in words a
   // client can act on — the disclosure half of the ruling, and the half a reader actually sees.
@@ -569,11 +566,11 @@ test("THE CONTROL — the SAME ledger with no designation still skips, so the ar
   // the failure the build was explicitly conditioned against.
   const { res, events } = await runPipeline({
     MOCK_VERDICT: "CLEAR",
-    MOCK_LEDGER_LIMITED: "transliteration-numeric",
-    MOCK_SKEPTIC: "- thin\n\n## Escalation decisions\nESCALATE: transliteration-numeric — re-run the extra script group",
+    MOCK_PLAN_CROWD: "primary-sweep",
+    MOCK_SKEPTIC: "- thin\n\n## Escalation decisions\nESCALATE: primary-sweep — re-run the sweep",
   });
-  assert.equal(res.ok, true);
-  assert.ok(events.some((e) => e.event === "escalation-skipped" && e.axis === "transliteration-numeric"),
+  assert.equal(res.ok, true, JSON.stringify(res));
+  assert.ok(events.some((e) => e.event === "escalation-skipped" && e.axis === "primary-sweep"),
     "an UNdesignated coverage-limited axis stopped being skippable — the floor is defaulting to on");
 });
 
@@ -585,94 +582,69 @@ test("THE CONTROL — the SAME ledger with no designation still skips, so the ar
 
 // ── WS-A machine coverage ledger e2e (design of record CLEAROTRON-VNEXT-THREE-WORKSTREAM-DESIGN) ─────────
 
-test("WS-A happy path: driver DERIVES the JSON from prose; gates read it; no delivery flag", async () => {
+test("WS-A happy path: the driver DERIVES the JSON from the settled form; gates read it; no delivery flag", async () => {
   const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced" });
   assert.equal(res.ok, true, JSON.stringify(res));
   assert.ok(existsSync(join(res.runDir, "register-coverage-ledger.json")), "JSON derived beside the findings");
-  // Map #3 — the driver code-derives the JSON post-validate (the digest turn wrote only the prose).
-  assert.ok(events.some((e) => e.event === "coverage-ledger-derived"), "driver derived the JSON from the prose");
+  // Map #3 — the driver code-derives the JSON from the form step 3 settles.
+  assert.ok(events.some((e) => e.event === "coverage-ledger-derived"), "driver derived the JSON from the form");
   assert.ok(!events.some((e) => e.event === "coverage-ledger-fallback" || e.event === "coverage-ledger-quarantined"),
     "machine path clean — no fallback/quarantine");
   // the derive populates the JSON inline, so the never-kill save-followup never fires.
   assert.ok(!events.some((e) => e.event === "coverage-ledger-missing"), "no save-followup needed — the driver derived it");
   const report = readFileSync(join(res.runDir, "report.md"), "utf8");
   assert.doesNotMatch(report, /machine_ledger_note/);
-  // the envelope close reconciled the machine ledger (NZ deferred → confirmed-clean), so delivery
-  // states no open floor — pins the machine-path delivery surface.
+  // nothing is deferred on this run, so delivery states no open floor — pins the machine-path delivery surface.
   assert.doesNotMatch(report, /envelope_note:/);
 });
 
-test("WS-A (Map #3): the derived JSON validates as machine-ledger and round-trips the prose rows", async () => {
+test("WS-A: the ledger code derives from the settled form validates as a machine ledger", async () => {
   const { res } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced" });
   assert.equal(res.ok, true, JSON.stringify(res));
   const { parseCoverageLedgerJson } = await import("../coverage-ledger.mjs");
   const raw = readFileSync(join(res.runDir, "register-coverage-ledger.json"), "utf8");
   const rows = parseCoverageLedgerJson(raw);              // throws if the derived JSON is malformed
-  assert.ok(rows.length >= 1, "derived JSON carries the prose rows");
-  // it agrees with the validator's machine path (registerFindings → ok("machine-ledger") when present)
-  const { validators } = await import("../verify.mjs");
-  const v = validators.registerFindings(join(res.runDir, "register-findings.md"), readFileSync(join(res.runDir, "register-findings.md"), "utf8"));
-  assert.deepEqual(v, { ok: true, reason: "machine-ledger" }, "validator accepts the code-derived JSON, no mirror cross-check");
+  assert.ok(rows.length >= 1, "the derived JSON carries the settled rows");
 });
 
-test("spec-49 T3 (H3): a digest that settles NO coverage row → the run FAILS (the D1 ship-as-CONDITIONAL clamp is retired)", async () => {
-  // The doctrine is unchanged: machinery that leaves the coverage-honesty floor unable to run FAILS the
-  // run, and never ships a finished-looking CONDITIONAL (the retired spec-48 D1 behaviour).
-  //
-  // WHERE THIS IS CAUGHT MOVED, AND EARLIER IS BETTER. Before the form, "no readable coverage" meant a
-  // findings file whose Coverage-ledger section carried no parseable table — a shape that passed the
-  // digest's own validator and only died at the pre-verdict floor, after the whole run had been spent.
-  // The seat no longer writes that table: it fills in a form the driver wrote, and a form with no status
-  // on any row is refused BY THE DIGEST'S OWN VALIDATOR (coverage_no_status) through the whole corrective
-  // ladder. The run still fails and still delivers nothing; it fails at the stage that produced the
-  // defect, naming it.
-  const { res } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_UNPARSEABLE_LEDGER: "1" });
-  assert.equal(res.ok, false, "no settled coverage judgment ⇒ no verdict can ship");
-  assert.equal(res.failedStage, "register-digest");
-  assert.match(String(res.reason), /coverage_no_status/, "the failure NAMES the rows that carry no status");
-  assert.ok(!existsSync(join(res.runDir, ".delivered")), "nothing delivered");
-  assert.ok(existsSync(join(res.runDir, ".failed")), "the failure record is written");
-});
+// The run that settles NO coverage now fails at step 3 itself, naming the driver: a form the stamp requires
+// and code did not write is `coverage_form_missing` / `_damaged` / `_empty` (coverage-form-io.mjs,
+// stampedFormFault), pinned in coverage-form-fail-closed.test.mjs. The arm that drove the register
+// digest's own refusal (`coverage_no_status`) went with the digest.
 
-test("WS-A: a forced re-digest DROPS the stale JSON first and the driver re-derives it (escalation)", async () => {
+test("WS-A: an escalation's re-judgement re-settles the coverage and re-derives the ledger from it", async () => {
   const { res, events } = await runPipeline({
     MOCK_VERDICT: "CLEAR",
     MOCK_SKEPTIC: "- gap\n\n## Escalation decisions\nESCALATE: primary-sweep — re-run the NZ sub-query",
   });
   assert.equal(res.ok, true, JSON.stringify(res));
-  assert.ok(events.some((e) => e.event === "digest-queued" && e.trigger === "escalation"), "escalation minted a durable digest receipt");
-  assert.ok(events.some((e) => e.event === "coverage-ledger-dropped" && e.trigger === "settlement-flush"),
-    "stale JSON dropped ahead of the settlement-flush re-digest");
-  assert.ok(existsSync(join(res.runDir, "register-coverage-ledger.json")), "fresh JSON re-derived by the re-digest");
+  assert.ok(events.some((e) => e.event === "digest-queued" && e.trigger === "escalation"), "escalation minted a durable re-judgement receipt");
+  assert.ok(events.some((e) => e.event === "coverage-form-settled" && e.trigger === "settlement-flush"),
+    "the flush pass settled the coverage afresh from the facts as they now stand");
   assert.ok(events.some((e) => e.event === "coverage-ledger-derived" && e.trigger === "settlement-flush"),
-    "the flush pass re-derived the JSON from the re-emitted prose");
+    "…and re-derived the JSON from the settled form");
+  assert.ok(existsSync(join(res.runDir, "register-coverage-ledger.json")), "the ledger is on disk");
   assert.ok(!events.some((e) => e.event === "coverage-ledger-fallback"), "no fallback — the derive populated it");
-  assert.ok(!events.some((e) => e.event === "coverage-ledger-missing" && e.trigger === "settlement-flush"),
-    "no save-followup on the flush pass — the driver derives it");
 });
 
-test("WS-A: --from register-digest re-run drops the stale JSON, then the driver RE-DERIVES it (non-followup forced re-runs)", async () => {
-  // run 1 dies at synthesis (the first FATAL post-digest stage — the skeptic is non-fatal),
-  // leaving a live run dir with a derived JSON beside the findings.
+test("WS-A: --from owner-judgment re-settles the coverage and replaces a stale ledger", async () => {
+  // run 1 dies at synthesis, leaving a live run dir with a derived JSON.
   const { res: r1 } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_FAIL_STAGE: "joint synthesis narrative" });
   assert.equal(r1.ok, false);
   assert.equal(r1.failedStage, "synthesis");
   const ledgerPath = join(r1.runDir, "register-coverage-ledger.json");
   assert.ok(existsSync(ledgerPath), "run 1 derived the JSON before failing");
-  // plant a recognizable STALE-but-valid JSON, as if the prose were about to be rewritten under it
+  // plant a recognizable STALE-but-valid JSON
   const { writeFileSync: wf } = await import("node:fs");
   wf(ledgerPath, JSON.stringify([{ axis: "primary-sweep", scope: "STALE-MARKER", status: "deferred", reason: "stale" }]));
-  // run 2: resume --from register-digest; the drop must still fire (forceFromActive, no followup) and the
-  // driver must RE-DERIVE a fresh JSON from the re-emitted prose (Map #3 — no model save, no save-followup).
+  // run 2: resume --from owner-judgment; step 3 re-judges and code re-settles the form and the ledger.
   delete process.env.MOCK_FAIL_STAGE;
   const codename = r1.runDir.split(/[\\/]/).pop().split("-").slice(3).join("-");
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
-  const r2 = await pipeline(JOB, { codename, fromStage: "register-digest" });
+  const r2 = await pipeline(JOB, { codename, fromStage: "owner-judgment" });
   assert.equal(r2.ok, true, JSON.stringify(r2));
   const events = readFileSync(driverDir(r2.runDir, "run.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l));
-  assert.ok(events.some((e) => e.event === "coverage-ledger-dropped" && e.trigger === "fresh"),
-    "stale JSON dropped on the forced non-followup re-run");
-  assert.ok(events.some((e) => e.event === "coverage-ledger-derived" && e.trigger === "fresh"), "driver re-derived the fresh JSON");
+  assert.ok(events.filter((e) => e.event === "coverage-ledger-derived").length >= 2, "the resumed pass re-derived the ledger");
   const finalLedger = readFileSync(join(r2.runDir, "register-coverage-ledger.json"), "utf8");
   assert.doesNotMatch(finalLedger, /STALE-MARKER/, "the gates never see the stale rows");
   assert.doesNotMatch(readFileSync(join(r2.runDir, "report.md"), "utf8"), /machine_ledger_note/,
@@ -685,7 +657,7 @@ test("Map A e2e: a finding citing a fetched record renders its registry IDs FROM
   // alone is the whole setup. The driver's lint-pass assembleRunRecords materializes
   // _records/us-90000001.json from it, and the publish render must source the registry IDs from that body.
   const root = mkdtempSync(join(tmpdir(), "clearotron-mock-"));
-  for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_CLAUDE_OVERLOADED", "MOCK_LEDGER_LIMITED", "MOCK_SEARCH_FLOOR", "MOCK_CANDSELF", "MOCK_NO_GRID_LEDGER", "MOCK_CL_SHORT", "MOCK_CL_GAPS", "MOCK_CL_MISSING_QUERIES", "MOCK_NO_COVERAGE_LEDGER", "MOCK_BAD_COVERAGE_LEDGER", "MOCK_UNPARSEABLE_LEDGER", "MOCK_WRITE_RECORD", "MOCK_SCREEN_DROP", "MOCK_FRAME_DIFF", "MOCK_NO_BLIND_MODEL", "MOCK_COVERAGE_INSUFFICIENT", "MOCK_BAND_COLLAPSED", "MOCK_PLAN_DROP_QID", "MOCK_PLAN_DROP_STICKY", "MOCK_PLAN_DEFERRED", "MOCK_PLAN_HARD_ERROR", "MOCK_DEGENERATE_HEALS", "MOCK_VERDICT_DEFECTS", "MOCK_BAD_FINDING", "MOCK_MULTI_LEG", "MOCK_ACTIONS", "MOCK_ASK_ANSWER_BAD", "MOCK_FINDINGS_N", "MOCK_STAGE_TRACE", "MOCK_STAGE_DELAY_MS", "MOCK_MEANING_ANGLES", "MOCK_PR_RESULTS", "MOCK_CL_UNDISPOSED", "MOCK_NARRATIVE_RECO", "MOCK_REPORT_URI", "CLEAROTRON_REGISTER_RECORD_LOG", "CLEAROTRON_REGISTER_CALL_LOG"]) delete process.env[k];
+  for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_CLAUDE_OVERLOADED", "MOCK_PLAN_CROWD", "MOCK_SEARCH_FLOOR", "MOCK_CANDSELF", "MOCK_NO_GRID_LEDGER", "MOCK_CL_SHORT", "MOCK_CL_GAPS", "MOCK_CL_MISSING_QUERIES", "MOCK_NO_COVERAGE_LEDGER", "MOCK_BAD_COVERAGE_LEDGER", "MOCK_UNPARSEABLE_LEDGER", "MOCK_WRITE_RECORD", "MOCK_SCREEN_DROP", "MOCK_FRAME_DIFF", "MOCK_NO_BLIND_MODEL", "MOCK_COVERAGE_INSUFFICIENT", "MOCK_BAND_COLLAPSED", "MOCK_PLAN_DROP_QID", "MOCK_PLAN_DROP_STICKY", "MOCK_PLAN_DEFERRED", "MOCK_PLAN_HARD_ERROR", "MOCK_DEGENERATE_HEALS", "MOCK_VERDICT_DEFECTS", "MOCK_BAD_FINDING", "MOCK_MULTI_LEG", "MOCK_ACTIONS", "MOCK_ASK_ANSWER_BAD", "MOCK_FINDINGS_N", "MOCK_STAGE_TRACE", "MOCK_STAGE_DELAY_MS", "MOCK_MEANING_ANGLES", "MOCK_PR_RESULTS", "MOCK_CL_UNDISPOSED", "MOCK_NARRATIVE_RECO", "MOCK_REPORT_URI", "CLEAROTRON_REGISTER_RECORD_LOG", "CLEAROTRON_REGISTER_CALL_LOG"]) delete process.env[k];
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"),
     CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_DEFAULT_AGENT: "intake-agent", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
@@ -708,173 +680,6 @@ test("Map A e2e: a finding citing a fetched record renders its registry IDs FROM
   const html = readFileSync(join(poolRoot, poolDir.name, "report.html"), "utf8");
   assert.match(html, /reg\. 7100200/, "registration number rendered FROM the fetched record body");
   assert.match(html, /registered 2023/, "registration year rendered FROM the record (not model prose)");
-});
-
-// ── screen-gate REPAIR-OR-DISCLOSE, NEVER BLOCK e2e (2026-06-18) ──────────────────────────────────────
-// The gate no longer hard-halts. An in-scope-live goods drop that was never record_fetched triggers a
-// DRIVER code-fetch of THAT URI (deterministic, no model-compliance dependency); the digest re-decides on
-// the now-fetched goods; whatever STILL can't be retrieved is DISCLOSED + clamps the verdict + DELIVERS.
-// (live, 2026-06-17: 3 in-scope marks were genuinely never fetched, the generic re-digest
-// re-ran byte-identical, and the old gate hard-halted a production run twice. A report must always ship.)
-
-test("screen-gate REPAIRS: an in-scope-live goods drop without a record_fetch → DRIVER targeted code-fetch + re-decide on real goods → run PROCEEDS clean", async () => {
-  // The first register-digest drops a live, in-scope (Class 42) mark off-field on a name-inferred goods guess
-  // WITHOUT record_fetching it — a Finding-1 violation (its URI is in no ledger/_records). The driver fetches
-  // THAT URI in code, then the digest re-decides on the REAL goods (the corrected drop:off-field-confirmed
-  // row); the gate clears and the run delivers.
-  const fetched = [];
-  const recordFetcher = async (uri) => { fetched.push(uri); return { ok: false, cause: "mock no-op (re-decide path)" }; };
-  const { res, events } = await runPipeline(
-    { MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_SCREEN_DROP: "1" }, {}, { recordFetcher });
-  assert.equal(res.ok, true, JSON.stringify(res));
-  // the violation was detected and the DRIVER code-fetch chosen (not an immediate hard-halt), targeting the URI
-  assert.ok(events.some((e) => e.event === "screen-gate-violation" && e.action === "driver-refetch"
-    && e.uris.includes("/mark/cn/88001-42")), "first violation → driver-refetch logged for the flagged URI");
-  assert.ok(fetched.includes("/mark/cn/88001-42"), "the driver fetched the EXACT flagged URI (targeted, not a generic re-digest)");
-  // spec-66: the re-decide queues for the settlement flush (durable receipt) instead of firing its own
-  // pass; the mechanism discloses TRANSIENTLY (at gate time the drop is still unexamined) and the
-  // post-flush recheck heals it — sidecar cleared, clamp lifted. A healed gap must not keep clamping.
-  assert.ok(events.some((e) => e.event === "digest-queued" && e.trigger === "screen-gate"), "screen-gate minted a durable digest receipt");
-  assert.ok(events.some((e) => e.event === "stage" && e.stage === "register-digest" && e.trigger === "settlement-flush"),
-    "the settlement flush carried the re-decide");
-  assert.ok(events.some((e) => e.event === "screen-gate-clean" && e.recovered === true), "post-flush gate clean (recovered)");
-  assert.ok(!existsSync(driverDir(res.runDir, "screen-gate-unresolved.json")), "sidecar cleared once the flush healed the gap");
-  assert.ok(!events.some((e) => String(e.action || "").startsWith("hard-halt")), "no hard-halt ever");
-  assert.ok(existsSync(join(res.runDir, ".delivered")) || ARCHIVED.test(res.runDir), "run delivered, not killed");
-});
-
-test("screen-gate DISCLOSE-AND-CONTINUE (owner decision 2026-07-22): an in-scope drop whose record is UNRETRIEVABLE ships as an unexamined disclosure + CONDITIONAL — never a dead run", async () => {
-  // MOCK_SCREEN_DROP=persist — the digest re-emits the SAME surface drop after the re-fetch (the model won't
-  // self-correct) AND the driver code-fetch fails (record 404 / provider error). The gate can neither verify
-  // nor repair the drop. Owner decision 2026-07-22 (reversing doc-41 fix-or-fail, which killed an ION run
-  // over provider 404s that morning): the mark is marked UNEXAMINED — couldn't fetch — NOT failed. The run
-  // continues, the report carries a per-mark coverage row, and the coverage floor clamps CLEAR→CONDITIONAL
-  // so nobody relies on that mark as clean.
-  const fetched = [];
-  const recordFetcher = async (uri) => { fetched.push(uri); return { ok: false, cause: "record 404 (mock — unretrievable)" }; };
-  const { res, events } = await runPipeline(
-    { MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_SCREEN_DROP: "persist" }, {}, { recordFetcher });
-
-  // the run DELIVERS — disclose-and-continue, never a dead run
-  assert.equal(res.ok, true, `an unretrievable in-scope drop must no longer kill the run: ${JSON.stringify(res)}`);
-  assert.ok(!existsSync(join(res.runDir, ".failed")), "no .failed sentinel");
-  assert.ok(existsSync(join(res.runDir, ".delivered")) || ARCHIVED.test(res.runDir), "delivered");
-
-  // the driver STILL attempts the TARGETED code-fetch FIRST (repair before disclosing)
-  assert.ok(fetched.includes("/mark/cn/88001-42"), "driver code-fetched the flagged URI before disclosing");
-  assert.ok(events.some((e) => e.event === "screen-gate-violation" && e.action === "driver-refetch"), "driver-refetch attempted first");
-
-  // the irreducible gap is disclosed (action disclose-clamp), naming the unverifiable URI + cause
-  const unresolved = events.find((e) => e.event === "screen-gate-unresolved" && e.action === "disclose-clamp");
-  assert.ok(unresolved && unresolved.uris.includes("/mark/cn/88001-42"), "screen-gate-unresolved → disclose-clamp for the URI");
-  assert.ok(unresolved.failures.some((f) => f.uri === "/mark/cn/88001-42" && /404/.test(f.cause)), "the fetch failure cause rides the event");
-  assert.ok(!events.some((e) => e.event === "screen-gate-unresolved" && e.action === "fail-loud"), "the fail-loud arm is gone");
-
-  // the durable sidecar carries the disclosure (a crash before delivery must not lose it)
-  const sidecar = JSON.parse(readFileSync(driverDir(res.runDir, "screen-gate-unresolved.json"), "utf8"));
-  assert.equal(sidecar.unresolved.length, 1);
-  assert.equal(sidecar.unresolved[0].mark, "KINETIC");
-  assert.equal(sidecar.unresolved[0].uri, "/mark/cn/88001-42");
-  assert.match(sidecar.unresolved[0].cause, /404/);
-
-  // the coverage floor clamped CLEAR→CONDITIONAL off the disclosure, naming the mark
-  assert.equal(res.verdict, "CONDITIONAL", "verdict clamped — the unexamined mark cannot ship as clean");
-  assert.ok(events.some((e) => e.event === "coverage-floor-clamp" && e.screenGate === 1), "screenGate floor arm fired");
-  const verdictSidecar = JSON.parse(readFileSync(driverDir(res.runDir, "verdict.json"), "utf8"));
-  assert.ok(verdictSidecar.reasons.some((r) => r.includes("KINETIC")), "the clamp reason names the mark");
-  // …IN THE RUN RECORD ONLY (ruled 2026-09-18: cut the clause). The condition's clause is stored as null, so
-  // the client's "conditional on:" list does not carry it, and the delivery check does not report it as a
-  // clause that failed to compose. Nothing is written in its place; the coverage row below still names the mark.
-  const { clientConditions, unrenderableConditions } = await import("../terminal-clamp.mjs");
-  const at = verdictSidecar.reasons.findIndex((r) => /record_fetched/.test(r));
-  assert.ok(at >= 0, "the run record keeps the screen-gate reason");
-  assert.equal(verdictSidecar.clauses[at], null, "its client clause is stored as null — the run record's alone");
-  assert.ok(!clientConditions(verdictSidecar).some((c) => /record_fetched|dropped on goods/.test(c)), "no client condition carries it");
-  assert.deepEqual(unrenderableConditions(verdictSidecar).filter((r) => /record_fetched/.test(r)), [], "and it is not reported as a failed clause");
-
-  // the reader-visible disclosure: one coverage-limited row naming the mark, never a silent pass
-  const findings = JSON.parse(readFileSync(join(res.runDir, "findings.json"), "utf8"));
-  const row = (findings.coverage ?? []).find((c) => String(c.area).includes("KINETIC"));
-  assert.ok(row, "unexamined-drop coverage row injected");
-  assert.equal(row.state, "coverage-limited", "coverage-limited (a disclosed limit — the clamp came from the floor, not this row)");
-  assert.match(row.note, /could not be retrieved/);
-  assert.match(row.note, /verify this record before relying/);
-});
-
-// ── CONVERSION 11 MADE THE UNNAMED DROP UNREACHABLE ON A LIVE RUN ──────────────────────────────────
-//
-// These two arms used to drive observe and enforce mode end to end through MOCK_SCREEN_DROP=unnamed —
-// a goods-drop row naming no record, the ION/copper-foundry shape. That row cannot be produced any
-// more: every `negative_rows` entry resolves a uri against the band or the call refuses
-// `registerdigest_uri_missing`, so a typed digest CANNOT emit one. That is the conversion closing the
-// hole on purpose — an unnamed bulk row is fourteen dismissals wearing one rationale — and it is why
-// these are re-aimed rather than deleted.
-//
-// WHAT STILL PROTECTS THE ION INCIDENT, since none of it may be lost with the driving path:
-//   · the refusal itself, pinned below — if it were ever relaxed, the live shape returns and these
-//     arms should come back with it. Without this pin the unreachability is an accident.
-//   · the mode filter's STRUCTURE, pinned below: one filter, one helper, both call sites. The ION bug
-//     was precisely that the post-repair re-check called the raw helper, so observe mode held at the
-//     first gate and not the second.
-//   · detection of both unnamed classes, in screen-gate.test.mjs, driven over prose documents — which
-//     is also the reachable population now: an ARCHIVED run written under the old dictation, whose
-//     document the validator still parses.
-//   · the disclose-clamp consequence, end to end, in the DISCLOSE-AND-CONTINUE arm above — it drives
-//     the same unresolved path with a named-but-unretrievable record.
-test("screen-gate: a typed digest CANNOT emit an unnamed goods-drop, and the run delivers", async () => {
-  const recordFetcher = async () => ({ ok: false, cause: "mock no-op (re-decide path)" });
-  const { res, events } = await runPipeline(
-    { MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_SCREEN_DROP: "unnamed" }, {}, { recordFetcher });
-
-  // The shape never arises, so the observe-mode ledger has nothing to log. Asserted as an ABSENCE with
-  // its reason stated, never left implicit: a missing event and a rule that stopped running look the
-  // same from here, and the refusal arm below is what tells them apart.
-  assert.equal(events.find((e) => e.event === "screen-gate-unnamed-observed"), undefined,
-    "no unnamed row can reach the gate on a typed run — the transport refuses it at the call");
-  assert.equal(res.ok, true, `the run still delivers: ${JSON.stringify(res)}`);
-  assert.notEqual(res.failedStage, "screen-gate");
-});
-
-test("screen-gate: the transport REFUSES an unnamed drop row by name — the reason the arms above changed", () => {
-  // The pin that makes the unreachability deliberate instead of incidental. Driven, not asserted from
-  // the schema: a row with a drop_reason and a ground but no uri.
-  const v = acceptRegisterDigest(
-    { findings_rows: [], incumbent_rows: [], negative_rows: [{ drop_reason: "bulk slice — off-field", ground: "off-field" }] },
-    emptyFacts());
-  assert.equal(v.ok, false);
-  assert.match(v.reason, /registerdigest_uri_missing:negative_rows/,
-    "a drop row that names no record is refused AT THE CALL — this is what removed the live unnamed shape");
-});
-
-test("screen-gate: one mode filter, one helper, BOTH gate checks — the ION property, pinned at the source", () => {
-  // ION died because observe mode was applied to the FIRST checkScreenGate() and the post-repair
-  // re-check called the helper raw. The cure was structural — every gate read goes through
-  // `enforcedViolations`, which owns the filter — so this asserts the structure rather than a run,
-  // WITH a control that fails if it is reading the wrong text.
-  const SRC = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");
-  const from = SRC.indexOf("const checkScreenGate = ()");
-  // ANCHORED ON THE PROSE, NOT THE SPEC NUMBER. The end marker used to read "// spec-66: AFTER any
-  // settlement/late flush"; the cut strips a spec reference out of a comment and left "//: AFTER any
-  // settlement…", so indexOf returned -1. That is not an error — a negative `to` makes the slice run
-  // backwards and return nothing, and every assertion below would then be reading an empty string. The
-  // isolation control caught it, which is what it is for; the refusals now name which marker went.
-  const to = SRC.indexOf("AFTER any settlement/late flush lands a digest", from);
-  assert.notEqual(from, -1, "pipeline.mjs no longer declares checkScreenGate — the block has no start");
-  assert.notEqual(to, -1, "the settlement/late-flush marker that bounds the screen-gate block is gone");
-  assert.ok(from > 0 && to > from && to - from < 8000,
-    `the screen-gate block was not isolated (${to - from} chars) — every arm here would pass or fail on the wrong text`);
-  const block = SRC.slice(from, to);
-  assert.match(block, /const enforcedViolations = \(\) => \{[\s\S]{0,200}?unnamedArmed \? v : v\.filter\(\(x\) => x\.uri\)/,
-    "the mode filter lives in ONE wrapper, so it cannot be applied at one call site and not the other");
-  // and the raw helper is reached only by the OBSERVATION site, which is not a gate.
-  //
-  // COMMENTS ARE STRIPPED BEFORE COUNTING, and the first cut of this arm was not: the paragraph above
-  // the filter QUOTES `checkScreenGate()` raw while explaining the ION bug, so the count read 3 and the
-  // arm failed on prose. A count over a corpus that includes its own commentary measures the commentary.
-  const code = block.split("\n").filter((l) => !l.trimStart().startsWith("//")).join("\n");
-  const rawUses = [...code.matchAll(/checkScreenGate\(\)/g)].length;
-  assert.equal(rawUses, 2, `expected exactly two raw uses in CODE — the observation ledger and the one `
-    + `inside enforcedViolations; found ${rawUses}, so a third gate read may be bypassing the mode filter`);
 });
 
 // ── WS-B per-customer profiles e2e ───────────────────────────────────────────────────────────────────
@@ -1517,7 +1322,7 @@ test("applicant-unknown e2e: identity-band hit delivered as an ORDINARY finding 
 
 test("B5b e2e: pre-seeded customer-bind.json folds at pre-matter-frame (normal path) + event logged", async () => {
   const root = mkdtempSync(join(tmpdir(), "clearotron-mock-"));
-  for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_CLAUDE_OVERLOADED", "MOCK_LEDGER_LIMITED", "MOCK_SEARCH_FLOOR", "MOCK_CANDSELF", "MOCK_NO_GRID_LEDGER", "MOCK_CL_SHORT", "MOCK_CL_GAPS", "MOCK_CL_MISSING_QUERIES", "MOCK_NO_COVERAGE_LEDGER", "MOCK_BAD_COVERAGE_LEDGER", "MOCK_UNPARSEABLE_LEDGER", "MOCK_WRITE_RECORD", "MOCK_SCREEN_DROP", "MOCK_FRAME_DIFF", "MOCK_NO_BLIND_MODEL", "MOCK_COVERAGE_INSUFFICIENT", "MOCK_BAND_COLLAPSED", "MOCK_PLAN_DROP_QID", "MOCK_PLAN_DROP_STICKY", "MOCK_PLAN_DEFERRED", "MOCK_PLAN_HARD_ERROR", "MOCK_DEGENERATE_HEALS", "MOCK_VERDICT_DEFECTS", "MOCK_BAD_FINDING", "MOCK_MULTI_LEG", "MOCK_ACTIONS", "MOCK_ASK_ANSWER_BAD", "MOCK_FINDINGS_N", "MOCK_STAGE_TRACE", "MOCK_STAGE_DELAY_MS", "MOCK_MEANING_ANGLES", "MOCK_PR_RESULTS", "MOCK_CL_UNDISPOSED", "MOCK_NARRATIVE_RECO", "MOCK_REPORT_URI", "CLEAROTRON_REGISTER_RECORD_LOG", "CLEAROTRON_REGISTER_CALL_LOG"]) delete process.env[k];
+  for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_CLAUDE_OVERLOADED", "MOCK_PLAN_CROWD", "MOCK_SEARCH_FLOOR", "MOCK_CANDSELF", "MOCK_NO_GRID_LEDGER", "MOCK_CL_SHORT", "MOCK_CL_GAPS", "MOCK_CL_MISSING_QUERIES", "MOCK_NO_COVERAGE_LEDGER", "MOCK_BAD_COVERAGE_LEDGER", "MOCK_UNPARSEABLE_LEDGER", "MOCK_WRITE_RECORD", "MOCK_SCREEN_DROP", "MOCK_FRAME_DIFF", "MOCK_NO_BLIND_MODEL", "MOCK_COVERAGE_INSUFFICIENT", "MOCK_BAND_COLLAPSED", "MOCK_PLAN_DROP_QID", "MOCK_PLAN_DROP_STICKY", "MOCK_PLAN_DEFERRED", "MOCK_PLAN_HARD_ERROR", "MOCK_DEGENERATE_HEALS", "MOCK_VERDICT_DEFECTS", "MOCK_BAD_FINDING", "MOCK_MULTI_LEG", "MOCK_ACTIONS", "MOCK_ASK_ANSWER_BAD", "MOCK_FINDINGS_N", "MOCK_STAGE_TRACE", "MOCK_STAGE_DELAY_MS", "MOCK_MEANING_ANGLES", "MOCK_PR_RESULTS", "MOCK_CL_UNDISPOSED", "MOCK_NARRATIVE_RECO", "MOCK_REPORT_URI", "CLEAROTRON_REGISTER_RECORD_LOG", "CLEAROTRON_REGISTER_CALL_LOG"]) delete process.env[k];
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"),
     CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_DEFAULT_AGENT: "intake-agent", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
@@ -1546,7 +1351,7 @@ test("B5b e2e: pre-seeded customer-bind.json folds at pre-matter-frame (normal p
 test("B5b ack: every consumed bind writes the plain-language confirmation packet (event logged)", async () => {
   // piggybacks the bind-fold flow: the ack is a best-effort outbox packet, written by code.
   const root = mkdtempSync(join(tmpdir(), "clearotron-mock-"));
-  for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_CLAUDE_OVERLOADED", "MOCK_LEDGER_LIMITED", "MOCK_SEARCH_FLOOR", "MOCK_CANDSELF", "MOCK_NO_GRID_LEDGER", "MOCK_CL_SHORT", "MOCK_CL_GAPS", "MOCK_CL_MISSING_QUERIES", "MOCK_NO_COVERAGE_LEDGER", "MOCK_BAD_COVERAGE_LEDGER", "MOCK_UNPARSEABLE_LEDGER", "MOCK_WRITE_RECORD", "MOCK_SCREEN_DROP", "MOCK_FRAME_DIFF", "MOCK_NO_BLIND_MODEL", "MOCK_COVERAGE_INSUFFICIENT", "MOCK_BAND_COLLAPSED", "MOCK_PLAN_DROP_QID", "MOCK_PLAN_DROP_STICKY", "MOCK_PLAN_DEFERRED", "MOCK_PLAN_HARD_ERROR", "MOCK_DEGENERATE_HEALS", "MOCK_VERDICT_DEFECTS", "MOCK_BAD_FINDING", "MOCK_MULTI_LEG", "MOCK_ACTIONS", "MOCK_ASK_ANSWER_BAD", "MOCK_FINDINGS_N", "MOCK_STAGE_TRACE", "MOCK_STAGE_DELAY_MS", "MOCK_MEANING_ANGLES", "MOCK_PR_RESULTS", "MOCK_CL_UNDISPOSED", "MOCK_NARRATIVE_RECO", "MOCK_REPORT_URI", "CLEAROTRON_REGISTER_RECORD_LOG", "CLEAROTRON_REGISTER_CALL_LOG"]) delete process.env[k];
+  for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_CLAUDE_OVERLOADED", "MOCK_PLAN_CROWD", "MOCK_SEARCH_FLOOR", "MOCK_CANDSELF", "MOCK_NO_GRID_LEDGER", "MOCK_CL_SHORT", "MOCK_CL_GAPS", "MOCK_CL_MISSING_QUERIES", "MOCK_NO_COVERAGE_LEDGER", "MOCK_BAD_COVERAGE_LEDGER", "MOCK_UNPARSEABLE_LEDGER", "MOCK_WRITE_RECORD", "MOCK_SCREEN_DROP", "MOCK_FRAME_DIFF", "MOCK_NO_BLIND_MODEL", "MOCK_COVERAGE_INSUFFICIENT", "MOCK_BAND_COLLAPSED", "MOCK_PLAN_DROP_QID", "MOCK_PLAN_DROP_STICKY", "MOCK_PLAN_DEFERRED", "MOCK_PLAN_HARD_ERROR", "MOCK_DEGENERATE_HEALS", "MOCK_VERDICT_DEFECTS", "MOCK_BAD_FINDING", "MOCK_MULTI_LEG", "MOCK_ACTIONS", "MOCK_ASK_ANSWER_BAD", "MOCK_FINDINGS_N", "MOCK_STAGE_TRACE", "MOCK_STAGE_DELAY_MS", "MOCK_MEANING_ANGLES", "MOCK_PR_RESULTS", "MOCK_CL_UNDISPOSED", "MOCK_NARRATIVE_RECO", "MOCK_REPORT_URI", "CLEAROTRON_REGISTER_RECORD_LOG", "CLEAROTRON_REGISTER_CALL_LOG"]) delete process.env[k];
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root, CLEAROTRON_REPORTS_DIR: join(root, "pool"),
     CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", CLEAROTRON_DEFAULT_AGENT: "intake-agent", MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
@@ -1651,7 +1456,7 @@ test("the plan-join follow-up hands the tool only the missing qids", async () =>
 // than the coverage skeleton, which marks an axis `deferred` for any single deferral.)
 const DEFERRED_SLICE = "+merch";
 
-test("envelope-settle: a provider-refused slice is DECIDED at the fan-in — before placement, before any digest", async () => {
+test("envelope-settle: a provider-refused slice is DECIDED at the fan-in — before step 3 judges anything", async () => {
   const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
     MOCK_PLAN_DEFERRED: DEFERRED_SLICE });
   assert.equal(res.ok, true, JSON.stringify(res));   // a disclosed gap is delivered, never a halt
@@ -1662,16 +1467,14 @@ test("envelope-settle: a provider-refused slice is DECIDED at the fan-in — bef
   assert.ok(gap.qid.endsWith(DEFERRED_SLICE), "the refusal is qid-stamped");
 
   // THE ORDERING CLAIM. The decision must precede every stage that reads the coverage it decides about.
-  // findIndex takes the FIRST occurrence of each, which is the one that matters: a later frame-reopen can
-  // emit a second placement-inquiry, and the settlement flush a second register-digest.
+  // findIndex takes the FIRST occurrence, which is the one that matters: the settlement flush can dispatch
+  // the judges a second time.
   const iEarly = events.findIndex((e) => e.event === "envelope-decision-early");
-  const iPlacement = events.findIndex((e) => e.event === "stage" && e.stage === "placement-inquiry");
-  const iDigest = events.findIndex((e) => e.event === "stage" && e.stage === "register-digest");
+  const iJudges = events.findIndex((e) => e.event === "stage" && /^owner-judgment:/.test(String(e.stage)));
   assert.ok(iEarly >= 0, "the run decided about its deferrals at all");
   assert.equal(events[iEarly].source, "fan-in", "and decided at the fan-in seam — the moment the receipt exists");
   assert.equal(events[iEarly].deferred, 1);
-  assert.ok(iPlacement >= 0 && iEarly < iPlacement, "decided BEFORE placement-inquiry (626s on the evidence run)");
-  assert.ok(iDigest >= 0 && iEarly < iDigest, "decided BEFORE the first register-digest (810s, doomed at dispatch)");
+  assert.ok(iJudges >= 0 && iEarly < iJudges, "decided BEFORE step 3's judges are dispatched");
 
   // and the decision is honest about WHAT it decided
   const decision = JSON.parse(readFileSync(driverDir(res.runDir, "envelope-decision.json"), "utf8"));
@@ -1685,13 +1488,6 @@ test("envelope-settle: a provider-refused slice is DECIDED at the fan-in — bef
   assert.equal(skeleton.state, "deferred");
   assert.ok(skeleton.executed > 0, "the axis is NOT deferred end to end — the fullyDeferred shortcut is not in play here");
   assert.deepEqual(decision.closed, [], "a capability gap is never retried, so nothing was closed");
-
-  // …and the settled facts reach the FLUSH pass, which is the one a fresh-dispatch hint cannot reach
-  // (stageOnce ignores `extra` when opts.followup is set). The mock records one line per carrying dispatch.
-  assert.ok(events.some((e) => e.event === "stage" && e.stage === "register-digest" && e.trigger === "settlement-flush"),
-    "the run did take a flush pass");
-  const carried = readFileSync(driverDir(res.runDir, "mock-settled-facts.log"), "utf8").trim().split("\n");
-  assert.ok(carried.length >= 1, "at least one digest dispatch carried the settled coverage facts");
 });
 
 test("envelope-settle: the decision artifact records a zero the same way it records a one (all four arrays, always)", async () => {
@@ -1763,8 +1559,6 @@ test("envelope-settle: a run with NO refusal still records the decision — the 
   assert.ok(events.some((e) => e.event === "envelope-decision-early" && e.source === "fan-in" && e.deferred === 0),
     "the fan-in still decided — a run that recorded nothing to decide is not the same as a run nobody asked");
   assert.ok(!events.some((e) => e.event === "unsettled-inputs"), "and no stage was reached on unsettled inputs");
-  assert.ok(!existsSync(driverDir(res.runDir, "mock-settled-facts.log")),
-    "with nothing accepted there is no settled-facts section to carry — the section returns null, never an empty heading");
 });
 
 // ── repair-first A1 (2026-07-05): direct executor dispatch at the fan-in plan join ─────────────────────

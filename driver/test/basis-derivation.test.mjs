@@ -22,7 +22,7 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { unprovableRecordBases, applyDerivedBases, findUnreadRatedSources } from "../recall-reconciliation.mjs";
+import { unprovableRecordBases, applyDerivedBases, findUnreadRatedSources } from "../read-before-rate.mjs";
 
 const URI_A = "/mark/us/USAFI111";
 const URI_B = "/mark/us/USAFI222";

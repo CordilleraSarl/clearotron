@@ -206,47 +206,17 @@ test("WS-A: coverage_* and grid_* JSON defects are warm-eligible (each joined th
 });
 
 // ── D1: coverage_status_offenum — warm-eligible, PROSE-routed (never the JSON sibling) ─────────────────
-test("D1 warm eligibility: coverage_status_offenum warms, and its patch targets the PROSE findings file, never register-coverage-ledger.json", () => {
-  const okJson = { status: "ok" };
-  const fail = "invalid_file:x/register-findings.md:coverage_status_offenum:not-searched (immaterial (axis primary-sweep — the Status cell is EXACTLY one bare token of: confirmed-clean / coverage-limited / deferred; qualifiers move into reason)";
-  assert.equal(warmEligible(fail, okJson), true, "a one-cell prose relabel is exactly the warm shape (43% historic hit-rate would burn a cold digest re-run per hit)");
-  assert.equal(warmEligible(fail, { status: "timeout" }), false, "an incomplete turn still never warms");
-  // the defect lives in the PROSE Coverage ledger — the patch must target the findings file itself,
-  // NOT a register-coverage-ledger.json re-save (that sibling matches by substring: pin the routing)
-  const m = warmPatchMessage(fail, ["/r/clearance-search/x/register-findings.md"]);
-  // ── CONVERSION 11 MOVED THE REPAIR MECHANISM, NOT THE ROUTING ──────────────────────────────────
-  //
-  // This arm used to pin "Your saved …/register-findings.md failed validation" and "TARGETED EDITS …
-  // using the Edit tool". Both were true of a seat that AUTHORED the file, and neither is expressible
-  // now: the driver renders this artifact, so there is no saved file to have failed and no file for the
-  // seat to edit. Re-aimed rather than relaxed — what this arm is FOR is the routing (the defect is in
-  // the prose ledger, so the message must not send the seat at the JSON mirror) and that is unchanged
-  // and still asserted below. The old strings would now pass only by the message drifting back to
-  // telling a seat to edit an artifact it no longer owns.
-  assert.match(m, /What you sent did not pass \(invalid_file:x\/register-findings\.md:/,
-    "the defect is stated against what the seat SENT, not against a file it saved");
-  assert.match(m, /Call `record_register_digest`/, "and the repair is another call, not an edit");
-  assert.match(m, /never by writing or editing any file/,
-    "said outright — a seat that reaches for Edit here would be writing over the driver's render");
-  assert.doesNotMatch(m, /register-coverage-ledger\.json/, "never routed to the JSON mirror sibling");
-  assert.match(m, /EXACTLY one bare token of confirmed-clean \/ coverage-limited \/ deferred/);
-  assert.match(m, /axis primary-sweep/, "the hint names the offending axis");
-});
-
 // ── The write-mode branch (E2E R2): a file that EXISTS is patched; a file never written is written whole ──
 // THE WITNESS MOVED, and the move is the point rather than an adjustment (the same
 // shape recorded for blind-frame). This arm used `narrative.md` to witness the Edit branch. After
 // the writer's conversion no repair may name that file at all: the seat holds no Write and gateway's
 // warm-patch branch sends it back through `record_synthesis`. An arm that kept demanding the hand-write
-// would be defending the path this conversion deleted. `register-findings.md` carries the property now —
-// a real hand-written artifact, the same witness the D1 arm above uses — so the property is unchanged and
-// only its witness moved. The narrative direction is asserted below, in the opposite sense.
+// would be defending the path this conversion deleted. A file the seat still writes carries the property
+// now, so the property is unchanged and only its witness moved. The narrative direction is asserted
+// below, in the opposite sense.
 test("warm patch write-mode: invalid_file patches in place, missing_file still writes the complete file", () => {
-  // THE EDIT-BRANCH WITNESS IS A FILE THE SEAT STILL WRITES. It was `register-findings.md`, which
-  // conversion 11 made tool-written — so this arm was asserting the Edit branch on an artifact that no
-  // longer takes it, and would have gone green again only if the routing regressed. Moved to
-  // `common-law-findings.md`, still seat-authored, and `register-findings.md` joins the tool-written
-  // loop below. Both branches keep a live witness, which is the property this arm exists for.
+  // THE EDIT-BRANCH WITNESS IS A FILE THE SEAT STILL WRITES: `common-law-findings.md`, seat-authored.
+  // Both branches keep a live witness, which is the property this arm exists for.
   const exists = warmPatchMessage("invalid_file:x/common-law-findings.md:use_check_missing:F1", ["/r/clearance-search/x/common-law-findings.md"]);
   assert.match(exists, /TARGETED EDITS/);
   assert.match(exists, /Edit tool/);
@@ -265,8 +235,7 @@ test("warm patch write-mode: invalid_file patches in place, missing_file still w
   // only in the recording-agreement file because THIS is where the two write-mode branches are decided —
   // a re-route that regressed would show up as one of them coming back, and the doesNotMatch pair is
   // what makes that visible. Both directions, so a routing that stopped re-routing cannot read as a pass.
-  for (const [f, tool] of [["narrative.md", "record_synthesis"], ["findings.json", "record_synthesis"],
-                           ["register-findings.md", "record_register_digest"]]) {
+  for (const [f, tool] of [["narrative.md", "record_synthesis"], ["findings.json", "record_synthesis"]]) {
     const routed = warmPatchMessage(`invalid_file:x/${f}:use_check_missing:F1`, [`/r/clearance-search/x/${f}`]);
     assert.match(routed, new RegExp(tool), `${f} is tool-written — the warm patch orders the call`);
     assert.doesNotMatch(routed, /TARGETED EDITS/, `${f}: no Edit branch for a file the seat cannot write`);
@@ -309,29 +278,14 @@ test("connotation defects warm, and the patch orders the TOOL — not the .md, a
 });
 
 test("WS-A: the warm patch for a sibling-JSON defect targets the JSON, never a findings rewrite", () => {
-  // ── THE DIGEST LEFT THIS BRANCH AT CONVERSION 11, AND THE MESSAGE CONTRADICTED ITSELF ──────────
-  //
-  // `register-findings.md` is tool-written now, so the file-veto correctly stops the sibling branch and
-  // the message routes to the tool tail. What did NOT follow was the hint's own prose: it still closed
-  // with "re-save the COMPLETE JSON file" directly above "never by writing or editing any file" — two
-  // opposite orders in one message, which is worse than either alone because a seat obeying the first
-  // breaks the grant. A hint says WHAT is wrong; the caller's tail says HOW to repair it, and the one
-  // clause that has to know is now passed rather than assumed.
-  //
-  // The arm's subject is unchanged: a sibling-JSON defect must still be described against the JSON and
-  // must not order a findings rewrite. Only the repair ACT moved.
-  const m = warmPatchMessage("invalid_file:x:coverage_axis_invalid:satuartion-probe", ["/r/clearance-search/x/register-findings.md"]);
-  assert.match(m, /register-coverage-ledger\.json is a JSON ARRAY/, "still described against the JSON sibling");
-  assert.match(m, /record_register_digest/, "…and repaired by the call, since the findings file is the driver's");
-  assert.doesNotMatch(m, /re-save|Re-save|Write the COMPLETE|TARGETED EDITS/,
-    "NOT ONE write order anywhere in the message — the tail forbids writing, so a hint that orders a "
-    + "save puts two opposite instructions in front of the seat");
-  assert.doesNotMatch(m, /write the COMPLETE corrected file at/, "must not order a findings-file rewrite");
   const g = warmPatchMessage("invalid_file:x:grid_join_missing:novapulse:5/7", ["/r/clearance-search/x/common-law-findings.md"]);
-  assert.match(g, /common-law-grid\.json/);
+  assert.match(g, /common-law-grid\.json/, "described against the JSON sibling");
+  assert.match(g, /do NOT rewrite clearance-search\/x\/common-law-findings\.md/, "and the findings file is left as it passed");
+  assert.doesNotMatch(g, /write the COMPLETE corrected file at/, "must not order a findings-file rewrite");
   // A sibling JSON is small and driver-derived: a clean re-save is cheaper and safer than JSON surgery,
   // so the sibling route deliberately keeps its full re-save while the prose route patches.
-  assert.doesNotMatch(m, /TARGETED EDITS/, "sibling JSON keeps the full re-save");
+  assert.match(g, /Re-save the COMPLETE corrected JSON/, "sibling JSON keeps the full re-save");
+  assert.doesNotMatch(g, /TARGETED EDITS/);
   // non-sibling reasons keep the classic wrapper
   assert.match(warmPatchMessage("missing_file:x/out.md", ["/r/clearance-search/x/out.md"]), /Write the COMPLETE file now/);
 });

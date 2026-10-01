@@ -30,15 +30,10 @@
       "exactly-these-keys": 0,
       "dictated-line-shape": 1
     },
-    "placement-inquiry": {
-      "literal-json-skeleton": 4,
-      "exactly-these-keys": 1,
-      "dictated-line-shape": 1
-    },
-    "register-digest": {
-      "literal-json-skeleton": 1,
+    "owner-judgment": {
+      "literal-json-skeleton": 0,
       "exactly-these-keys": 0,
-      "dictated-line-shape": 2
+      "dictated-line-shape": 0
     },
     "skeptic": {
       "literal-json-skeleton": 0,
@@ -127,16 +122,6 @@
       "exactly-these-keys": 0,
       "dictated-line-shape": 6
     },
-    "skills/placement-inquiry/SKILL.md": {
-      "literal-json-skeleton": 1,
-      "exactly-these-keys": 3,
-      "dictated-line-shape": 1
-    },
-    "skills/clearance-register/digest.md": {
-      "literal-json-skeleton": 1,
-      "exactly-these-keys": 1,
-      "dictated-line-shape": 4
-    },
     "skills/clearance-search/phase2-execution.md": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 0,
@@ -189,7 +174,7 @@
     }
   },
   "totals": {
-    "stages": 45,
-    "files": 64
+    "stages": 36,
+    "files": 53
   }
 }

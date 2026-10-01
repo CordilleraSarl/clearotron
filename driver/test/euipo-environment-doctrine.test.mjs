@@ -75,10 +75,11 @@ test("#1393 every doc that carries the doctrine says the SAME thing — half a f
   const carriers = skillDocs()
     .map((p) => [p, readFileSync(p, "utf8")])
     .filter(([, body]) => PROHIBITION.test(body));
-  assert.ok(carriers.length >= 3,
+  assert.ok(carriers.length >= 2,
     `only ${carriers.length} doc(s) state the prohibition. Three carried this doctrine when it was fixed — `
-    + "clearance-register/SKILL.md, clearance-register/digest.md and providers/euipo.md. A drop means a doc "
-    + "lost the doctrine rather than that the doctrine got smaller.");
+    + "clearance-register/SKILL.md, clearance-register/digest.md and providers/euipo.md — and the digest's "
+    + "manual went with the register digest (2026-10-01). A further drop means a doc lost the doctrine "
+    + "rather than that the doctrine got smaller.");
   for (const [p, body] of carriers) {
     assert.ok(/receipts\.json/.test(body),
       `${rel(p)} states the prohibition without naming _driver/receipts.json. It gives the rule and not `

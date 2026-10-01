@@ -373,7 +373,8 @@ export const COMMAND_TOOLS = Object.freeze(["Bash", "PowerShell", "Monitor"]);
 /** The program's tools that write a file. A result that comes back an error is a write that failed. */
 const FILE_WRITE_TOOLS = Object.freeze(["Write", "Edit", "MultiEdit", "NotebookEdit"]);
 
-export function buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig, allowedTools, maxBudgetUsd, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null }) {
+export function buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig, allowedTools, maxBudgetUsd, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null, confined = null }) {
+  if (confined) return buildConfinedClaudeArgs({ message, model, thinking, mcpConfig, allowedTools, maxBudgetUsd, confined });
   const input = absolutizeSkillRefs(message, skillsDir, resolveSkill);
   const args = ["-p", "--output-format", "stream-json", "--verbose", "--include-partial-messages"];
   const m = claudeModel(model); if (m) args.push("--model", m);
@@ -437,6 +438,50 @@ export function buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig
   args.push("--settings", stageSettings(boundary));
   return { args, input, grantNote: rd.note };
 }
+
+/**
+ * A CONFINED SESSION: its instructions and nothing else, the tools its stage is granted, and an answer in
+ * a form. The judging step runs this way (engine CONTRACT.md §1, `confined`), set up as the bench run
+ * that measured it:
+ *
+ *   - `--system-prompt` is the stage's instructions, whole. The program's own instructions and the write
+ *     discipline above are not sent: the owner ruled the sentences this session reads, and those are all.
+ *   - `--tools Agent`: of the program's own tools, only the one that starts a helper. No file tool, so no
+ *     folder is granted; the stage's tool servers ride `--mcp-config` as on every stage.
+ *   - `--setting-sources ""` and `--disable-slash-commands`: none of this machine's own settings, hooks,
+ *     memory files or commands. Measured: without the first, a hook the account's settings install fired
+ *     inside the session.
+ *   - `--json-schema`: the answer comes back on the result event as `structured_output`, and the gateway
+ *     writes it to the stage's output. A helper cannot write it, which a recording tool would have allowed.
+ *   - `--permission-mode dontAsk`: what `--allowedTools` lists runs, anything else is refused, never asked.
+ *
+ * The command tools stay removed and the read fence stays on, as on every turn. Never resumed: a confined
+ * stage is retried on a fresh session with the same message.
+ */
+export function buildConfinedClaudeArgs({ message, model, thinking, mcpConfig, allowedTools, maxBudgetUsd, confined }) {
+  const instructions = String(confined?.instructions ?? "");
+  if (!instructions.trim()) throw new Error("anthropic-agent: a confined turn needs its instructions");
+  if (!confined?.answerForm || typeof confined.answerForm !== "object") throw new Error("anthropic-agent: a confined turn needs its answer form");
+  const args = ["-p", "--output-format", "stream-json", "--verbose", "--include-partial-messages"];
+  const m = claudeModel(model); if (m) args.push("--model", m);
+  args.push("--effort", effortFor(thinking));
+  args.push("--tools", "Agent");
+  if (mcpConfig) args.push("--mcp-config", mcpConfig, "--strict-mcp-config");
+  const granted = String(allowedTools ?? "").split(/[\s,]+/).filter((t) => t && !FILE_TOOLS.has(t));
+  args.push("--allowedTools", [...new Set([...granted, "Agent"])].join(","));
+  args.push("--permission-mode", "dontAsk");
+  args.push("--setting-sources", "", "--disable-slash-commands");
+  args.push("--system-prompt", instructions);
+  args.push("--json-schema", JSON.stringify(confined.answerForm));
+  args.push("--disallowedTools", COMMAND_TOOLS.join(" "));
+  const cap = maxBudgetUsd ?? (process.env.CLEAROTRON_MAX_BUDGET_USD ? Number(process.env.CLEAROTRON_MAX_BUDGET_USD) : null);
+  if (cap != null && Number.isFinite(cap)) args.push("--max-budget-usd", String(cap));
+  args.push("--settings", stageSettings(null));
+  return { args, input: String(message), grantNote: null };
+}
+
+/** The program's file tools, which a confined session is not offered (`--tools Agent`), so never listed for it. */
+const FILE_TOOLS = new Set(["Read", "Write", "Edit", "MultiEdit", "NotebookEdit", "Glob", "Grep", "LS"]);
 
 /**
  * THE FILE TOOLS READ ONLY THE STAGE'S OWN FOLDERS. Without this, Read, Grep and Glob open any path the
@@ -506,6 +551,27 @@ export function writeBoundarySettings({ skillsRoots = [], profilesDir = null, ru
   });
 }
 
+/** What a confined turn has seen of its answer so far. */
+export function newConfinedAnswer() { return { value: null, index: null, results: 0 }; }
+
+/** Fold one result event: a result without an error that carries an object answer replaces the one held. */
+export function noteConfinedAnswer(answer, ev) {
+  const ordinal = answer.results++;
+  const so = ev?.structured_output;
+  if (ev?.is_error || !so || typeof so !== "object" || Array.isArray(so)) return;
+  answer.value = so;
+  answer.index = Number.isInteger(ev.result_index) ? ev.result_index : ordinal;
+}
+
+/** The tuple's three answer fields. `structuredOutputWhy` says why there is no answer, and only then. */
+export function confinedAnswerFields(answer, lastResult) {
+  if (answer.value) return { structuredOutput: answer.value, structuredOutputIndex: answer.index, structuredOutputWhy: null };
+  const why = !answer.results ? "the session ended without a result"
+    : lastResult?.is_error ? `the session ended on an error (${lastResult.subtype ?? "?"}, ${lastResult.stop_reason ?? lastResult.terminal_reason ?? "no reason given"})`
+    : "the session finished without an answer in its form";
+  return { structuredOutput: null, structuredOutputIndex: null, structuredOutputWhy: why };
+}
+
 // Synthesize the envelope gateway.mjs expects (so all classifiers work unchanged).
 export function synthesizeEnvelope({ resultEvent, usage, killed }) {
   const r = resultEvent;
@@ -525,9 +591,9 @@ export const anthropicAgentEngine = {
   // doctrine tree, the profile store and `<runDir>/_driver/` at the moment of the write. That is a real
   // boundary and this engine has it.
   writeBoundary: "enforced",
-  async runTurn({ message, model, thinking, timeoutSec, resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null, stallSec, progressFiles, streamFile = null } = {}) {
+  async runTurn({ message, model, thinking, timeoutSec, resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites = null, grantDispatch = null, stallSec, progressFiles, streamFile = null, confined = null } = {}) {
     if (!message) throw new Error("anthropic-agent.runTurn: message is required");
-    const { args, input, grantNote } = buildClaudeArgs({ message, model, thinking, resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites, grantDispatch });
+    const { args, input, grantNote } = buildClaudeArgs({ message, model, thinking, resumeRef: confined ? null : resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, seatWrites, grantDispatch, confined });
     // the cross-check speaks. Driver stderr is what an operator reads, and it is where the other
     // drift notices in this engine already land ([ledger], [env-aliases], [queue-watch]).
     if (grantNote) process.stderr.write(`${grantNote}\n`);
@@ -704,6 +770,10 @@ export const anthropicAgentEngine = {
       // first byte can arrive; closed in settle(). A sink that could not open is a null writer whose
       // close() says why.
       const sink = streamSink(streamFile);
+      // A CONFINED TURN'S ANSWER: the last result that came back without an error and carried one. A
+      // session restarted by a helper's report ends on several results (the stream shape is in
+      // session-record.mjs), and the answer is the one it settled on; which result that was is recorded.
+      const answer = confined ? newConfinedAnswer() : null;
       // HOW MANY OF THOSE ASKED FOR A COMMAND TOOL. The command tools are removed from every stage
       // (COMMAND_TOOLS), so the number a test round expects here is zero, and a count is what proves it: a
       // flag in the argv shows what was asked of the program, this shows what the model did. Still a count
@@ -829,7 +899,7 @@ export const anthropicAgentEngine = {
         try { ev = JSON.parse(line); } catch { return; /* partial/non-json line */ }
         sawAnyEvent = true;
         noteClaudeEvent(session, ev, Date.now() - t0);
-        if (ev.type === "result") resultEvent = ev;
+        if (ev.type === "result") { resultEvent = ev; if (answer) noteConfinedAnswer(answer, ev); }
         else if (ev.type === "rate_limit_event") rateLimitEvent = ev;
         else if (ev.type === "system" && ev.subtype === "init") {
           // MODEL GAUGE — the session's configured model, the earliest wire statement of what will run.
@@ -1197,6 +1267,9 @@ export const anthropicAgentEngine = {
           // result, cut, refusal and restart (session-record.mjs). `stream` is the raw stream's file and size,
           // or why it was not kept. Recording only — `failed` above still reads the last result alone.
           toolCallsByName: { ...toolCallsByName }, session: sessionSummary(session), stream,
+          // A confined turn's answer in its form, which result carried it, or why there is none. Absent on
+          // every other turn.
+          ...(answer ? confinedAnswerFields(answer, resultEvent) : {}),
           // The two counts a test round reads per stage: calls to a command tool, and calls the program
           // refused. The refusals are the result event's own `permission_denials`, counted; null when the
           // turn settled with no result event, so "not reported" never reads as "none refused".

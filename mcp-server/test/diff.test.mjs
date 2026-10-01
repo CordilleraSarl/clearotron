@@ -19,33 +19,36 @@ before(async () => {
 
 test("artifactToStage maps canonical names, basenames, and register axes", () => {
   const P = runs.resolveRun(RUN_ID).P;
-  assert.deepEqual(artifacts.artifactToStage(P, "registerFindings"), { stage: "register-digest", axis: null });
-  assert.deepEqual(artifacts.artifactToStage(P, "register-findings.md"), { stage: "register-digest", axis: null });
+  assert.deepEqual(artifacts.artifactToStage(P, "skepticFlags"), { stage: "skeptic", axis: null });
+  assert.deepEqual(artifacts.artifactToStage(P, "skeptic-flags.md"), { stage: "skeptic", axis: null });
   assert.deepEqual(artifacts.artifactToStage(P, "primary-sweep"), { stage: "register-unit", axis: "primary-sweep" });
   assert.equal(artifacts.artifactToStage(P, "nonsense-artifact"), null);
+  // The register digest's findings file names no stage the engine still runs, so it maps to none: an
+  // archived run's copy is read, but there is no stage to compare its versions by.
+  assert.equal(artifacts.artifactToStage(P, "register-findings.md"), null);
 });
 
-test("rich run: registerFindings has a _history version → a real diff", () => {
+test("rich run: the sceptic's flags have a _history version → a real diff", () => {
   const run = runs.resolveRun(RUN_ID2);
-  const versions = artifacts.listArtifactVersions(run.P, run.runDir, "register-digest", null);
+  const versions = artifacts.listArtifactVersions(run.P, run.runDir, "skeptic", null);
   assert.ok(versions.includes("canonical"));
   assert.ok(versions.some((v) => v.startsWith("_history/")), "snapshot listed");
-  const r = driver.compareCmd({ runDir: run.runDir, stage: "register-digest" });
+  const r = driver.compareCmd({ runDir: run.runDir, stage: "skeptic" });
   assert.notEqual(r.aRef, r.bRef);          // canonical vs newest snapshot → there IS something to diff
-  assert.match(r.diff, /Pending/);          // snapshot had Pending
-  assert.match(r.diff, /Live/);             // canonical has Live
+  assert.match(r.diff, /no flags surfaced/); // the snapshot had none
+  assert.match(r.diff, /ESCALATE/);         // canonical escalates
 });
 
 test("normal run: only one version on disk → aRef === bRef (the 'nothing to diff' signal)", () => {
   const run = runs.resolveRun(RUN_ID);
-  assert.deepEqual(artifacts.listArtifactVersions(run.P, run.runDir, "register-digest", null), ["canonical"]);
-  const r = driver.compareCmd({ runDir: run.runDir, stage: "register-digest" });
+  assert.deepEqual(artifacts.listArtifactVersions(run.P, run.runDir, "skeptic", null), ["canonical"]);
+  const r = driver.compareCmd({ runDir: run.runDir, stage: "skeptic" });
   assert.equal(r.aRef, r.bRef);
 });
 
 test("assertDiffRefsSafe: allows canonical + a real snapshot, rejects absolute / .. / cross-run refs (path-escape guard)", () => {
   const run = runs.resolveRun(RUN_ID2);
-  const versions = artifacts.listArtifactVersions(run.P, run.runDir, "register-digest", null);
+  const versions = artifacts.listArtifactVersions(run.P, run.runDir, "skeptic", null);
   const snap = versions.find((v) => v.startsWith("_history/"));
   assert.doesNotThrow(() => artifacts.assertDiffRefsSafe(versions, "canonical", snap));
   assert.doesNotThrow(() => artifacts.assertDiffRefsSafe(versions, undefined, undefined)); // defaults are fine

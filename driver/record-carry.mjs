@@ -14,35 +14,31 @@
 // on R2). A capability that retrieves and cannot deliver is indistinguishable, in the report, from one
 // that was never built — and the two have completely different fixes.
 //
-// WHY THE EXISTING JOINS CANNOT CATCH IT. placement-carry.mjs joins placements.json →
-// register-findings.md, so it starts one seam too late: it can only speak about the 106 candidates
-// placement ALREADY selected. The seam 澜珀 died at is the one before — 5,410 banded records to 106
-// placements — and no artifact in the driver joins those two. recall-reconciliation and
-// presence-reconciliation both key off findings-side endings, so a record that never reached a
-// placement is invisible to them too. This module is the missing left half, and it CONSUMES
-// placement-carry's classes for the right half rather than re-deciding them: one carry vocabulary.
+// WHERE THE SEAMS ARE NOW. Step 3 judges the pile by owner and records the fate of every owner, and
+// with it of every record (`_driver/record-discard.jsonl`, the judgment seam): carried, set aside with
+// the judges' reason, or never put in front of a judge. This module joins that record to the band on one
+// side and to the delivered findings on the other, so a record the judges carried and the report never
+// names is a row with its own reason, and never a gap.
 //
 // WHY THE JOIN IS URI-ONLY. The house text matcher is structurally blind to Han script —
 // `normalizeJoinText("澜珀")` is the EMPTY STRING (it folds every non-[A-Za-z0-9] run to a space), so
 // `hasToken` cannot match it and `distinct` puts it below the floor. A mark-token join would therefore
 // have reported the one record class this issue exists for as unjoinable. Every join here is on the
 // canonical `/mark` uri, which is script-neutral by construction, and every artifact on the register
-// path carries one: band records as `record_id`, placements as `records[]`, findings as
+// path carries one: band records as `record_id`, the discard ledger as `uri`, findings as
 // `owner.registrations[].uri`.
 //
 // WHAT THIS MODULE DOES NOT DO. It never changes what is retrieved and never keeps a record that would
 // otherwise be dropped — improving recall by keeping more is out of scope and is the bug, not the fix.
 // The funnel stays complete and undiscriminating and the judgment stays late; this only writes down
 // where each record stopped and who stopped it. It never decides whether a drop was CORRECT — that is
-// the reviewing lawyer's judgment. And it never gates: annotate, never gate (placement-carry.mjs's
-// rule). On the run that motivated it, a gate would have suppressed a report that shipped.
+// the reviewing lawyer's judgment. And it never gates: annotate, never gate. On the run that motivated
+// it, a gate would have suppressed a report that shipped.
 //
-// PURE (no node imports) like placement-carry.mjs / recall-reconciliation.mjs — the pipeline owns all
-// IO, events and enforcement. Join primitives are IMPORTED, never re-implemented (a local copy of a
-// matcher is how two matchers drift apart).
+// PURE (no node imports) — the pipeline owns all IO, events and enforcement. Join primitives are
+// IMPORTED, never re-implemented (a local copy of a matcher is how two matchers drift apart).
 
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
-import { parseCarrySurfaces, classifyPlacement } from "./placement-carry.mjs";
 import { DISCARD_SEAMS, ledgerEnding, ledgerSpoke } from "./record-discard.mjs";
 
 // v2 — the trace is now the SECOND of two halves and says which basis it ran on. `basis`,
@@ -69,7 +65,7 @@ export const RECORD_CARRY_SCHEMA_VERSION = 4;
 export const TRACE_BASES = ["recorded", "reconstructed"];
 
 /** How far a record got. Ordered; index = distance travelled. */
-export const REACH_STAGES = ["retrieved", "screened", "placed", "findings-surface", "finding"];
+export const REACH_STAGES = ["retrieved", "screened", "carried", "finding"];
 
 /**
  * WHERE THE REASON WAS AUTHORED — the ruling's "weigh where the reason is authored", made a field so a
@@ -86,7 +82,7 @@ export const REACH_STAGES = ["retrieved", "screened", "placed", "findings-surfac
 export const REASON_SOURCES = ["step-structural", "step-stated", "step-silent", "absent"];
 
 /** The seam a record failed to cross. `null` when it became a finding. */
-export const SEAMS = ["screen", "placement", "digest", "synthesis"];
+export const SEAMS = ["screen", "judgment", "synthesis"];
 
 /**
  * WHAT THIS TRACE COVERS AND WHAT IT DOES NOT — carried IN THE ARTIFACT, not just in a PR body.
@@ -99,7 +95,7 @@ export const SEAMS = ["screen", "placement", "digest", "synthesis"];
  * file as the answer. Update this table when a path is instrumented, never silently widen the claim.
  */
 export const TRACE_SCOPE = {
-  instrumented: ["register: named band → placements → register-findings surfaces → findings.json"],
+  instrumented: ["register: named band → step 3's owner decisions → findings.json"],
   uninstrumented: [
     { path: "common-law", reason: "common-law-grid.json → findings is not joined here; a candidate lost on that path emits NO row and this trace can say nothing about it either way" },
     { path: "case-law", reason: "case-law findings are not traced to a record at all" },
@@ -157,7 +153,7 @@ export function traceScopeFor(siblings = []) {
 }
 
 /** The judging stage that owns each seam — the stage whose non-completion makes the drop upstream. */
-const SEAM_STAGE = { placement: "placement-inquiry", digest: "register-digest", synthesis: "synthesis" };
+const SEAM_STAGE = { judgment: "owner-judgment", synthesis: "synthesis" };
 
 // ── stage outcomes ────────────────────────────────────────────────────────────────────────────────
 /**
@@ -183,10 +179,14 @@ export function parseStageOutcomes(runLogText, stages = Object.values(SEAM_STAGE
   for (const ln of String(runLogText ?? "").split("\n")) {
     if (!ln.trim()) continue;
     let e; try { e = JSON.parse(ln); } catch { continue; }   // torn line
-    const s = e?.stage;
+    // Step 3 runs as two judge sessions and one merge, and the merge's own row is the step's outcome: a
+    // judge's session row says how that one session went, never whether the step reached its decisions.
+    const judged = e?.event === "owner-judgment";
+    if (!judged && e?.stage === "owner-judgment") continue;
+    const s = judged ? "owner-judgment" : e?.stage;
     if (!want.has(s)) continue;
     const a = acc[s];
-    if (e.event === "stage") {
+    if (e.event === "stage" || judged) {
       if (e.ok === true) a.completed = true;
       else if (e.ok === false) {
         a.failed++;
@@ -252,27 +252,6 @@ export function findingUris(findings) {
   return out;
 }
 
-/**
- * uri → { placement, carry } for every record a placement names, with `carry` the EXISTING
- * placement-carry class (carried / reasoned-negative / adjudicated / uncarried / unclassified) so the
- * two joins can never disagree about the same candidate. `registerFindingsText` empty ⇒ carry is null
- * and every placed record reads `trace:indeterminate` rather than being guessed either way. PURE.
- */
-export function placementIndex(placements, registerFindingsText) {
-  const surfaces = parseCarrySurfaces(registerFindingsText ?? "");
-  const decidable = String(registerFindingsText ?? "").trim().length > 0;
-  const out = new Map();
-  for (const p of Array.isArray(placements) ? placements : []) {
-    const c = decidable ? classifyPlacement(p, surfaces) : null;
-    for (const r of Array.isArray(p?.records) ? p.records : []) {
-      const u = normalizeRecordUri(r);
-      if (!u || out.has(u)) continue;
-      out.set(u, { tier: String(p?.tier ?? "(untiered)"), mark: String(p?.mark ?? ""), owner: String(p?.owner ?? ""), carry: c?.class ?? null, ended_by: c?.ended_by ?? null });
-    }
-  }
-  return out;
-}
-
 // ── the per-record classification ─────────────────────────────────────────────────────────────────
 /**
  * Classify ONE retrieved record. Returns `{reach, stopped_at, reason, reason_source, detail, ...}`.
@@ -280,37 +259,32 @@ export function placementIndex(placements, registerFindingsText) {
  * FIXED PRECEDENCE, and the order is the correctness condition of the whole module. Reach is decided
  * first (furthest wins), then the reason for the seam it did not cross — and within that,
  * `stage-incomplete` ALWAYS outranks `not-selected`. If "the judging step ran and did not pick it"
- * could swallow "the judging step never finished", then on that run all ten 澜珀 records would
- * read as a judgment call, which is precisely the wrong answer: placement-inquiry never completed.
- *
- * The wording of `stage-incomplete` is deliberate. placements.json on that run holds 106 VALID
- * entries, written by a killed attempt — so the honest claim is not "never considered" but that a
- * record the partial output does not name cannot be distinguished between considered-and-not-selected
- * and never-reached-at-all. PURE.
+ * could swallow "the judging step never finished", a run whose step 3 failed would read as a run whose
+ * judges dismissed everything, which is precisely the wrong answer. PURE.
  */
-export function classifyRecord(rec, { findings, placements, outcomes, ledger } = {}) {
+export function classifyRecord(rec, { findings, outcomes, ledger } = {}) {
   const uri = bandRecordUri(rec);
   const verdict = screenVerdict(rec);
 
   const found = uri ? findings?.get(uri) : null;
   if (found) {
     return { reach: "finding", stopped_at: null, reason: null, reason_source: null, authored_at: "delivered-findings",
-      detail: `finding #${found.ordinal ?? "?"} ${found.mark}${found.disposition ? ` (${found.disposition})` : ""}`, placement: null };
+      detail: `finding #${found.ordinal ?? "?"} ${found.mark}${found.disposition ? ` (${found.disposition})` : ""}` };
   }
 
   // HALF TWO. When a ledger exists, the ending is the one the STEP wrote when it made it, and this
   // function does not get to have an opinion about it. Everything below this block is the reconstruction
-  // path — kept for runs archived before the ledger existed and for the probe, never used when a step
-  // has spoken.
-  if (ledger?.present && uri) return classifyFromLedger(uri, verdict, ledger, placements);
+  // path — for a run whose ledger could not be written, and for the probe — never used when a step has
+  // spoken.
+  if (ledger?.present && uri) return classifyFromLedger(uri, verdict, ledger);
 
-  return { ...classifyReconstructed(uri, verdict, { placements, outcomes }), authored_at: "reconstructed" };
+  return { ...classifyReconstructed(verdict, { outcomes }), authored_at: "reconstructed" };
 }
 
 /**
  * THE ENDING THE STEP ITSELF WROTE. No inference: the row's reason, source and detail are carried through
  * verbatim, because the whole point of half one is that the step held a fact nobody downstream can
- * rebuild. `placement` is decoration here — it names the seat a record sat in and never decides anything.
+ * rebuild.
  *
  * Three outcomes, and the third is the defect the ruling asks to be reported:
  *   a seam discarded it   → that seam's own row is the answer
@@ -320,97 +294,68 @@ export function classifyRecord(rec, { findings, placements, outcomes, ledger } =
  *                           the band record at retrieval), and past that it is `absent`.
  * PURE.
  */
-function classifyFromLedger(uri, verdict, ledger, placements) {
-  const seat = placements?.get(uri) ?? null;
-  const placement = seat ? { tier: seat.tier, mark: seat.mark, owner: seat.owner, carry: seat.carry } : null;
+function classifyFromLedger(uri, verdict, ledger) {
   const end = ledgerEnding(ledger, uri);
   if (end) {
     return {
       reach: REACH_BEFORE_SEAM[end.seam] ?? "retrieved",
       stopped_at: end.seam, reason: end.reason ?? `${end.seam}:not-selected`,
       reason_source: end.reason_source ?? "step-silent",
-      detail: end.detail ?? "", placement,
+      detail: end.detail ?? "",
       authored_at: `${end.stage ?? end.seam}${end.trigger ? `(${end.trigger})` : ""}${Number.isFinite(end.pass) ? ` pass ${end.pass}` : ""}`,
     };
   }
   if (ledgerSpoke(ledger, uri)) {
-    return { reach: "findings-surface", stopped_at: "synthesis", reason: "synthesis:carried-not-delivered",
+    return { reach: "carried", stopped_at: "synthesis", reason: "synthesis:carried-not-delivered",
       reason_source: "absent",
       detail: "every seam that spoke about this record recorded carrying it forward, and no delivered finding names it — the run's own ledger contradicts its own findings",
-      placement, authored_at: "record-discard.jsonl" };
+      authored_at: "record-discard.jsonl" };
   }
   if (/^drop:/i.test(verdict)) {
     return { reach: "retrieved", stopped_at: "screen", reason: `screen:${verdict.slice(5).toLowerCase() || "dropped"}`,
       reason_source: "step-structural", detail: `the in-line record screen returned "${verdict}"`,
-      placement: null, authored_at: "record-screen" };
+      authored_at: "record-screen" };
   }
   return { reach: "retrieved", stopped_at: null, reason: null, reason_source: "absent",
     detail: `no seam recorded a verdict on this record and no delivered finding names it — it was retrieved into the band and then no step (${DISCARD_SEAMS.join(", ")}) wrote down what it did with it`,
-    placement, authored_at: null };
+    authored_at: null };
 }
 
 /** How far a record got when the seam it died at is known. */
-const REACH_BEFORE_SEAM = { placement: "screened", digest: "placed", synthesis: "findings-surface" };
+const REACH_BEFORE_SEAM = { judgment: "screened", synthesis: "carried" };
 
 /**
- * THE PRE- PATH — endings INFERRED by comparing artifacts after the fact. Correct only when the
- * artifacts it compares were all final when it ran, which inside `register-digest` they were not. Kept
- * for runs archived before the ledger existed and for the probe. Never reached when a step has spoken.
- * PURE.
+ * THE ENDING INFERRED WITHOUT A LEDGER — for a run whose ledger could not be written, and for the probe.
+ * Without the ledger nothing says which owners the judges carried, so a record is either the screen's
+ * drop or a drop at the judging seam, whose completion decides which of the two answers it is. Never
+ * reached when a step has spoken. PURE.
  */
-function classifyReconstructed(uri, verdict, { placements, outcomes } = {}) {
-  const placed = uri ? placements?.get(uri) : null;
-  if (placed) {
-    const seat = { tier: placed.tier, mark: placed.mark, owner: placed.owner, carry: placed.carry };
-    // reached a reader surface in register-findings.md, but not the delivered findings list
-    if (placed.carry === "reasoned-negative")
-      return { reach: "findings-surface", stopped_at: "digest", reason: "digest:reasoned-negative", reason_source: "step-stated",
-        detail: `the register digest wrote this candidate a Negative-results drop row: ${placed.ended_by ?? ""}`.trim(), placement: seat };
-    if (placed.carry === "adjudicated")
-      return { reach: "findings-surface", stopped_at: "digest", reason: "digest:adjudicated", reason_source: "step-stated",
-        detail: `the register digest resolved this candidate in a Disagreement-resolutions row: ${placed.ended_by ?? ""}`.trim(), placement: seat };
-    if (placed.carry === "carried")
-      return seamDrop("synthesis", outcomes, seat, "findings-surface",
-        `placed at ${placed.tier} and carried onto a register-findings surface, but no delivered finding names this record`);
-    if (placed.carry === "uncarried")
-      return { reach: "placed", stopped_at: "digest", reason: "digest:silent-drop", reason_source: "absent",
-        detail: `placement placed this candidate at ${placed.tier}; the register digest neither carried it to a findings surface, nor wrote it a Negative-results drop row, nor resolved it in a Disagreement-resolutions row`, placement: seat };
-    return { reach: "placed", stopped_at: "digest", reason: "trace:indeterminate", reason_source: "absent",
-      detail: placed.carry === "unclassified"
-        ? `placement placed this candidate at ${placed.tier}; the carry join offers no join key for it, so no step's verdict on it can be read`
-        : "no register-findings text was available, so the carry of this placed record cannot be decided in either direction", placement: seat };
-  }
-
-  // never placed. The screen is the first judging step and it records its own ground.
+function classifyReconstructed(verdict, { outcomes } = {}) {
   if (/^drop:/i.test(verdict)) {
     return { reach: "retrieved", stopped_at: "screen", reason: `screen:${verdict.slice(5).toLowerCase() || "dropped"}`,
-      reason_source: "step-structural", detail: `the in-line record screen returned "${verdict}"`, placement: null };
+      reason_source: "step-structural", detail: `the in-line record screen returned "${verdict}"` };
   }
   // NO EXPLICIT VERDICT IS NOT A DEFECT. Presence in the enumerated band IS the screen's positive
   // outcome — the band is what the screen emits — so a record carrying no verdict string has still
-  // been screened in, and its drop belongs to the NEXT seam. Reading it as unreasoned here put every
-  // record of a band shape that stamps no verdict into the defect list, which made the count that
-  // matters meaningless. The absence is recorded in the detail instead, where it reads as the
-  // data-quality observation it is rather than as a missing judgment.
-  return seamDrop("placement", outcomes, null, "screened",
+  // been screened in, and its drop belongs to the NEXT seam.
+  return seamDrop("judgment", outcomes, "screened",
     verdict
-      ? `screened "${verdict}" and carried into the band, but no placement names this record`
-      : "carried into the enumerated band (which is the screen's own output) with no verdict string stamped on it, and no placement names this record");
+      ? `screened "${verdict}" and carried into the band, but no recorded decision of the judges names this record`
+      : "carried into the enumerated band (which is the screen's own output) with no verdict string stamped on it, and no recorded decision of the judges names this record");
 }
 
 /** The two answers at a seam whose judging stage is a model stage: did that stage complete or not. */
-function seamDrop(seam, outcomes, placement, reach, what) {
+function seamDrop(seam, outcomes, reach, what) {
   const stage = SEAM_STAGE[seam];
   const o = outcomes?.[stage];
   if (!completed(outcomes, stage)) {
     // the load-bearing claim goes FIRST: this detail is clipped for the artifact, and the one thing a
     // reader must not lose to a truncation is that nothing judged this record
     return { reach, stopped_at: seam, reason: `${seam}:stage-incomplete`, reason_source: "step-structural",
-      detail: `UPSTREAM ABSENCE, NOT JUDGMENT — ${o?.evidence ?? `${stage} never logged ok:true`}, so whatever it left on disk is PARTIAL and a record it does not name cannot be distinguished between considered-and-not-selected and never reached at all. ${what}`,
-      placement };
+      detail: `UPSTREAM ABSENCE, NOT JUDGMENT — ${o?.evidence ?? `${stage} never logged ok:true`}, so nothing judged this record and its drop cannot be read as a decision about it` };
   }
   return { reach, stopped_at: seam, reason: `${seam}:not-selected`, reason_source: "step-silent",
-    detail: `${what} — ${stage} completed, so the decision not to carry it was made; no ground for this record was recorded`, placement };
+    detail: `${what} — ${stage} completed, so the decision not to carry it was made; no ground for this record was recorded` };
 }
 
 // ── the artifact ──────────────────────────────────────────────────────────────────────────────────
@@ -516,24 +461,22 @@ export function untraceableSlices({ crowds = [], planExecution = null } = {}) {
 /**
  * THE TRACE. One row per retrieved register record, plus the untraceable-slice rows.
  *
- * `bandRecords` = register-named-band.json `.enumerated`; `placements` =
- * parsePlacementsJson(...).placements; `findings` = findings.json `.findings`; `outcomes` =
+ * `bandRecords` = register-named-band.json `.enumerated`; `findings` = findings.json `.findings`; `outcomes` =
  * parseStageOutcomes(run.jsonl); `ledger` = foldDiscardLedger(record-discard.jsonl). Deterministic; no
  * timestamps (the caller stamps `ts`), no IO, no judgment about whether any drop was right. PURE.
  *
- * — THE CALLER MUST RUN THIS AFTER `findings.json` EXISTS. That is not a convention: the previous
- * version ran inside `register-digest`, which is before `synthesis` authors that file, so `findings` was
+ * — THE CALLER MUST RUN THIS AFTER `findings.json` EXISTS. That is not a convention: an earlier
+ * version ran inside step 3, which is before `synthesis` authors that file, so `findings` was
  * `[]` and every record that became a finding was reported as dropped. Nothing here can detect that
  * mistake from the inside — an empty findings list is indistinguishable from a run that found nothing —
  * so the ordering is the caller's obligation, and `deriveRecordCarry`'s call sites are the enforcement.
  */
-export function traceRecordCarry({ bandRecords = [], placements = [], registerFindingsText = "",
+export function traceRecordCarry({ bandRecords = [],
   findings = [], outcomes = {}, crowds = [], planExecution = null, ledger = null,
   // — the sibling carry artifacts this run actually produced, so the scope block below states what
   // ran rather than what the constant last said. Absent ⇒ the static table, byte-identical to before.
   siblings = [] } = {}) {
   const fIdx = findingUris(findings);
-  const pIdx = placementIndex(placements, registerFindingsText);
   const basis = ledger?.present ? "recorded" : "reconstructed";
   const byReason = {}, bySource = {}, byReach = {}, bySeam = {}, byAuthor = {};
   const rows = [];
@@ -542,7 +485,7 @@ export function traceRecordCarry({ bandRecords = [], placements = [], registerFi
     const uri = bandRecordUri(rec);
     if (uri && seen.has(uri)) continue;         // the band carries one row per record; belt and braces
     if (uri) seen.add(uri);
-    const c = classifyRecord(rec, { findings: fIdx, placements: pIdx, outcomes, ledger });
+    const c = classifyRecord(rec, { findings: fIdx, outcomes, ledger });
     bump(byReach, c.reach);
     bump(bySeam, c.stopped_at ?? "(none)");
     if (c.reason) bump(byReason, c.reason);
@@ -558,7 +501,7 @@ export function traceRecordCarry({ bandRecords = [], placements = [], registerFi
       // WHO said so, and when. The ruling rejects a reason authored by a later step about an earlier
       // step's decision, and this field is how a reader checks that without re-reading the code.
       authored_at: c.authored_at ?? null,
-      detail: clip(c.detail), placement: c.placement,
+      detail: clip(c.detail),
     });
   }
   const unreasoned = rows.filter((r) => r.reason_source === "absent");
@@ -599,16 +542,16 @@ export function traceRecordCarry({ bandRecords = [], placements = [], registerFi
     // positive evidence that findings exist, and it takes that evidence from two independent places:
     //
     //   the findings handed in are non-empty          — a direct contradiction
-    //   the digest carried records onto a findings     — the digest surfaced candidates for delivery and
-    //   surface and none of them was delivered           the delivered set names none of them
+    //   the judges carried records and none of them    — step 3 handed synthesis candidates for delivery
+    //   was delivered                                    and the delivered set names none of them
     //
     // The second matters because the first CANNOT catch the shipped defect: called too early, the trace
     // is handed `[]`, and from the inside `[]` is indistinguishable from a matter that found nothing.
     // That is exactly how this shipped — so the check that catches it has to key on something the run
     // wrote BEFORE synthesis. This is a claim about the TRACE, never about the run's recall.
-    degenerate: (byReach.finding ?? 0) === 0 && (deliveredFindings > 0 || (byReach["findings-surface"] ?? 0) > 0),
+    degenerate: (byReach.finding ?? 0) === 0 && (deliveredFindings > 0 || (byReach.carried ?? 0) > 0),
     delivered_findings: deliveredFindings,
-    surfaced: byReach["findings-surface"] ?? 0,
+    surfaced: byReach.carried ?? 0,
     // the run's own statement of what it looked at — read this BEFORE reading a zero
     scope: traceScopeFor(siblings),
     totals: {
@@ -675,8 +618,8 @@ export function recordCarryEvent({ trigger = null, artifact = null, reason = nul
  * endings exactly as for every other doubt family, and an OPEN one shipping in the `# Doubt Ledger`
  * is the system working.
  *
- * Bounded (`max`), because this list is unbounded by construction — a wholly failed digest could put
- * every placed record in it and drown the ledger. The artifact always carries the FULL list; the cap
+ * Bounded (`max`), because this list is unbounded by construction — a wholly failed step 3 could put
+ * every record of the pile in it and drown the ledger. The artifact always carries the FULL list; the cap
  * applies to the mint only, and `mintRecordCarryDoubts` reports what it omitted so the truncation is
  * itself visible rather than silent. PURE.
  */
@@ -688,12 +631,9 @@ export function mintRecordCarryDoubts(artifact, { max = 25 } = {}) {
     birth: { place: "record-carry", artifact: "register-named-band.json", quote: clip(`${r.uri} — ${r.mark}${r.owner ? ` (${r.owner})` : ""}`) },
     subject: {
       mark: r.mark, owner: r.owner, uris: r.uri ? [r.uri] : [], terms: [],
-      // — the same key as placement-carry's, reached through the seat this row already carries
-      // (`placement: c.placement`, from `seat = { tier: placed.tier, … }`). NULL IS A RECORD, NOT A GAP:
-      // two of the branches that mint an `unreasoned` row — the in-line record screen and the synthesis
-      // seam — carry `placement: null` because the record never reached placement at all, so those
-      // doubts are keyless by construction. They are dispatched and counted, never dropped.
-      placementTier: r.placement?.tier ?? null,
+      // The frozen subject shape keeps its selection key. No record carries a placement tier since step 3
+      // judges by owner, so it is null, which doubt selection dispatches as keyless: counted, never dropped.
+      placementTier: null,
       text: `this record was retrieved and reached "${r.reach}", then stopped at the ${r.stopped_at} seam with no step recording a ground: ${r.detail}`,
     },
     status: "open",
@@ -714,269 +654,4 @@ export function explainRecords(artifact, needle) {
   const lc = n.toLowerCase();
   return (Array.isArray(artifact?.rows) ? artifact.rows : [])
     .filter((r) => String(r.mark) === n || String(r.mark).includes(n) || String(r.uri).toLowerCase() === lc);
-}
-
-// ── — THE JOIN NOBODY WAS MAKING ──────────────────────────────────────────────
-//
-// Two artifacts in this run are each individually CORRECT and blind together.
-//
-//   `recall-reconciliation.json` measures the DIGEST. On the evidence run it reported `unended: 0`,
-//   and that was true: the digest ended every screened position, and for the mark that went missing it
-//   ended it as a FINDING — in prose AND through an accepted typed `record_register_digest` call.
-//
-//   `record-carry.json` measures REASONS. It reported `unreasoned: 0`, and that was true too, because
-//   `unreasoned` counts `reason_source === "absent"` and nothing else.
-//
-// So a position the digest ended as a FINDING was dropped at placement with `placement:not-selected`
-// and `reason_source: "step-silent"`, and both counters read clean while the client lost the mark.
-//
-// WHAT IS AND IS NOT THE DEFECT, because this is where a naive rule destroys the run. Silent drops are
-// the NORM: placement dropped 690 of 741 records on the evidence run, and on three delivered demo
-// clearances `step-silent` is the MAJORITY disposition (975 of 1455 rows on one of them). A rule that
-// flagged `step-silent` would flag almost everything. The defect is the CONJUNCTION — silence AFTER a
-// step already recorded the record as a finding. Measured across six runs, two matters and four lanes:
-// nine divergences from a digest finding-ending, every one of them `step-stated`, and the single
-// `step-silent` one is the mark this issue was raised on.
-//
-// THE CASE TRAP, and it would have shipped a dead check reporting clean — on an issue about losses that
-// report clean. The two artifacts disagree on URI case: the digest side is upper, the carry side lower.
-// A case-sensitive join matches ZERO rows on every run, and zero matches is indistinguishable from zero
-// silent divergences. So the key is normalised on BOTH sides and `matched` is returned for a caller to
-// insist on: a join that matched nothing has not looked.
-//
-// POPULATION, stated because it is a choice. The finding-ended set is read from the RECONCILIATION
-// artifact's own rows (`ending === "finding"`, expanded over `position_records`), which is the driver's
-// computed answer and is present in-run. It can be derived instead by walking the typed digest calls for
-// record URIs under finding-shaped keys; that reaches the same marks on the runs both were tried on, and
-// is the better cross-check precisely because it shares no code with this one.
-//
-// NOT COMPUTABLE IS NOT A PASS. The knockout lane writes no `record-carry.json` at all, so this join
-// cannot look there and says so by name rather than returning an empty, reassuring list.
-const lc = (u) => String(u ?? "").toLowerCase();
-
-/**
- * Positions the DIGEST ended as findings that did not reach the findings, dropped with NO stated reason.
- * PURE. Returns `computable: false` with a named reason when either side is missing — never a clean [].
- */
-export function silentlyLostFindings({ reconciliation = null, carryRows = null, digestFindingUris = null } = {}) {
-  const no = (reason, crossChecked = false) => ({ computable: false, reason, population_empty: false,
-    cross_checked: crossChecked, checked: 0, matched: 0, lost: [] });
-  if (!reconciliation || reconciliation.computable !== true) {
-    return no("no computable recall-reconciliation — the digest's own endings are the population and there is none");
-  }
-  if (!Array.isArray(carryRows)) {
-    return no("no record-carry rows — the knockout lane writes none, so this join cannot look at that product");
-  }
-  const ended = [];
-  for (const bucket of ["top_slice", "residual"]) {
-    for (const row of reconciliation[bucket] ?? []) {
-      if (row?.ending !== "finding") continue;
-      for (const uri of row.position_records ?? []) ended.push({ uri: lc(uri), mark: row.mark_text ?? null });
-    }
-  }
-  const byUri = new Map();
-  for (const r of carryRows) if (r?.uri) byUri.set(lc(r.uri), r);
-  // ── — A DISJOINT POPULATION IS THE SAME DEFECT AT 1-OF-10 ────────────────────
-  //
-  // Zero is not the only way to look at the wrong set. On one delivered clearance the reconciliation
-  // carried ONE finding-ended position while the digest's own typed calls recorded NINE `findings_rows`,
-  // and the two sets did not intersect at all: this join examined one position the digest never ended as
-  // a finding, examined none of the nine it did, and answered "checked 1, matched 1, lost 0".
-  //
-  // A SHORTFALL IS NOT THE SIGNAL, and reaching for it is how this guard breaks the check it protects.
-  // The reconciliation's population is POSITIONS — collapsed identities over the screened
-  // dominant-element set — so it is NARROWER than the digest's finding rows by construction. Measured:
-  // the run this family was raised from runs 5 against 9, and a second healthy clearance 5 against 8.
-  // Refusing on a shortfall would refuse on the very run the check must fire on.
-  //
-  // OVERLAP is the signal. Both healthy runs share 3 of the reconciliation's 5; the bad one shares none.
-  // So: both populations non-empty AND no intersection ⇒ the reconciliation is looking at a different set
-  // and its answer cannot be trusted. A caller that cannot supply the cross-check population passes null
-  // and the guard stays silent — it never invents a verdict from evidence it does not have.
-  if (Array.isArray(digestFindingUris) && digestFindingUris.length && ended.length) {
-    const digest = new Set(digestFindingUris.map(lc));
-    if (!ended.some((e) => digest.has(e.uri))) {
-      return no(`the reconciliation's ${ended.length} finding-ended position(s) share NOTHING with the `
-        + `${digest.size} finding row(s) the digest's own typed calls recorded — the two populations are `
-        + "disjoint, so this join is examining a different set and its answer cannot be trusted", true);
-    }
-  }
-
-  // A ZERO POPULATION IS A FINDING, NOT A PASS, and this is measured rather than feared. Two of the
-  // seven runs this was validated on carry `computable: true` with ZERO candidates and ZERO positions,
-  // while an independent walk of their typed digest calls names 2 and 1 finding-shaped record URIs
-  // respectively. So on those runs the reconciliation's population is empty and the digest's is not:
-  // this join would look at nothing and report clean, which is the exact shape of the defect it exists
-  // to catch. It is surfaced as its own state so no caller can read it as "checked, and fine".
-  if (!ended.length) {
-    return { computable: true, reason: "the reconciliation carries no finding-ended position — there is "
-      + "no population here, and the digest's typed calls may still name findings on this run",
-      population_empty: true, cross_checked: false, checked: 0, matched: 0, lost: [] };
-  }
-  const seen = ended.filter((e) => byUri.has(e.uri));
-  const lost = [];
-  for (const e of seen) {
-    const row = byUri.get(e.uri);
-    if (row.reach === "finding" || row.reach === "findings-surface") continue;   // arrived, or arrived elsewhere visible
-    if (row.reason_source !== "step-silent") continue;                            // reconsidered AND said why — legitimate
-    lost.push({ uri: e.uri, mark: e.mark ?? row.mark ?? null, reach: row.reach ?? null,
-      stopped_at: row.stopped_at ?? null, reason: row.reason ?? null });
-  }
-  // ── criterion 3 — "NOTHING TO COMPARE" IS NOT "COMPARED AND CLEAN" ───────────
-  //
-  // Caught by the reviewing lane walking this issue's own criteria against the merged code, and it is
-  // the fourth instance of this shape in one night: the fix built to stop an absence reading as a pass
-  // had an absence reading as a pass inside it. Two archived runs recorded NO typed finding rows, so no
-  // cross-check was possible there — and their return was byte-identical to a run that HAD a population
-  // of eight and was genuinely compared. Both said `reason: null, population_empty: false, lost: []`.
-  //
-  // The other two states already carry a reason; this one now does too, and `cross_checked` says plainly
-  // whether the comparison ran. A reader can no longer mistake "could not look" for "looked and found
-  // nothing" — which is the entire subject of this family.
-  const crossChecked = Array.isArray(digestFindingUris) && digestFindingUris.length > 0;
-  return { computable: true,
-    reason: crossChecked ? null
-      : "no cross-check was possible — this run recorded no typed digest finding rows, so the "
-        + "reconciliation's population was not verified against an independent one",
-    population_empty: false, cross_checked: crossChecked,
-    checked: ended.length, matched: seen.length, lost };
-}
-
-/**
- * Positions the DIGEST ended as findings that did not reach the findings, dropped WITH a stated reason.
- *
- * ── THE SIBLING'S BLIND SPOT, AND IT IS THE ONE THAT REACHED A CLIENT ──────────────────────────────
- *
- * `silentlyLostFindings` above is correct and must not be widened to cover this. Its population is
- * `step-silent` — a finding-ending followed by silence — and its own header records why that boundary
- * exists: silent drops are the norm (690 of 741 records on the evidence run), so a rule flagging them
- * broadly would flag almost everything, and the defect it targets is the CONJUNCTION of silence after a
- * finding-ending.
- *
- * It also anticipated this gap in writing: "nine divergences from a digest finding-ending, every one of
- * them `step-stated`". Nine of the shape nothing checked.
- *
- * MEASURED ON A DELIVERED R2 RUN, 2026-09-06. The sibling ran and reported
- * `{checked:5, matched:5, lost:0}` — correctly. On that same delivery two marks from the lawyer's final
- * list, `HALVER KORPHI` and `KORFITY`, one rated HIGH, are absent from `findings.json`. They were dropped
- * WITH a reason, so they sat outside the sibling's population by design:
- *
- *   IMMATERIAL ask:recall:recall-halver-korphi: … — HALVER KORPHI / Halver Diagnostics Limited is
- *   already reasoned on the incumbent sheet in register-findings.md.
- *
- * WHY THE STATED CASE IS THE MORE DANGEROUS ONE. A silent drop leaves a hole. A stated drop leaves a
- * SENTENCE, and the sentence reads as diligence. On that one delivery `doubt-closure.md` carries 92
- * recall asks and 66 rulings of IMMATERIAL. A drop with a reason nobody verifies is not accounted for;
- * it is unexamined with a paper trail.
- *
- * `step-structural` is deliberately NOT in this population: it is a mechanical screen verdict
- * (`the in-line record screen returned "…"`), not a judgment sentence a reader would take on trust.
- * `absent` belongs to the sibling's family, not this one.
- *
- * WHAT THIS DOES NOT DECIDE. Whether any given stated reason is RIGHT. That is a change to what the
- * client receives and is the owner's call; this makes the class visible, which is worth having whichever
- * way that lands, because today nobody would know the closures happened.
- *
- * Same contract as the sibling, deliberately: `computable:false` with a named reason rather than a clean
- * `[]`; `population_empty` as its own state; `cross_checked` so a caller can tell "could not look" from
- * "looked and found nothing"; and `matched` returned so a caller can insist the join actually joined —
- * that field exists because a case-sensitive URI join once matched zero rows on every run and read as
- * zero divergences. PURE.
- */
-export function statedDivergenceFindings({ reconciliation = null, carryRows = null, digestFindingUris = null } = {}) {
-  const no = (reason, crossChecked = false) => ({ computable: false, reason, population_empty: false,
-    cross_checked: crossChecked, checked: 0, matched: 0, diverged: [] });
-  if (!reconciliation || reconciliation.computable !== true) {
-    return no("no computable recall-reconciliation — the digest's own endings are the population and there is none");
-  }
-  if (!Array.isArray(carryRows)) {
-    return no("no record-carry rows — the knockout lane writes none, so this join cannot look at that product");
-  }
-  // ── THE POPULATION IS THE CARRY ROWS, NOT THE RECONCILIATION (corrected 2026-09-07) ─────────────
-  //
-  // The first cut of this function gated on the reconciliation's finding-ended positions, mirroring the
-  // sibling. That inherited the sibling's BLIND SPOT along with its shape, and the check was inert on
-  // the very delivery it was written for. Replayed against that delivery:
-  //
-  //   silentlyLostFindings       checked=5 matched=5 lost=0
-  //   statedDivergenceFindings   checked=5 matched=5 diverged=0   ← should have named two marks
-  //
-  // The reconciliation names five finding-ended positions and they are five OTHER marks — VELTRIN
-  // bioenergetische Kosmetik, KORPHIC HSE, KORPHI, DELPHIN & EMERENCE, KORPHI DIAGNOSTICS. The two that
-  // were lost sit in the CARRY rows and the reconciliation never mentions them:
-  //
-  //   HALVER KORPHI  reach=placed stopped_at=digest reason_source=step-stated reason=digest:reasoned-negative
-  //   KORFITY       reach=placed stopped_at=digest reason_source=step-stated reason=digest:reasoned-negative
-  //
-  // The unit arms all passed because their fixtures put the mark in BOTH populations, which the real run
-  // does not. That is the lesson worth keeping: a fixture that satisfies two joins at once cannot tell
-  // you the joins disagree.
-  //
-  // So the carry rows are the population — they are where a stated drop is RECORDED — and the
-  // reconciliation is demoted to optional corroboration. Measured on that delivery, the correct
-  // population is 70 rows over 34 distinct marks, all `digest:reasoned-negative`, and it contains both.
-  const arrived = new Set(["finding", "findings-surface"]);
-  const population = carryRows.filter((r) => r?.uri
-    && r.reason_source === "step-stated"           // the sibling owns step-silent; step-structural is mechanical
-    && !arrived.has(r.reach));                     // arrived, or arrived somewhere visible, is not a divergence
-
-  // Kept for corroboration only. `ended` no longer gates anything; where the reconciliation DOES name a
-  // position it agrees with, that is recorded on the row so a reader can weigh it.
-  const ended = [];
-  for (const bucket of ["top_slice", "residual"]) {
-    for (const row of reconciliation[bucket] ?? []) {
-      if (row?.ending !== "finding") continue;
-      for (const uri of row.position_records ?? []) ended.push({ uri: lc(uri), mark: row.mark_text ?? null });
-    }
-  }
-  const endedUris = new Set(ended.map((e) => e.uri));
-  const byUri = new Map();
-  for (const r of carryRows) if (r?.uri) byUri.set(lc(r.uri), r);
-
-  // The disjoint-population guard, for the sibling's reason: overlap is the signal, a shortfall is not.
-  if (Array.isArray(digestFindingUris) && digestFindingUris.length && ended.length) {
-    const digest = new Set(digestFindingUris.map(lc));
-    if (!ended.some((e) => digest.has(e.uri))) {
-      return no(`the reconciliation's ${ended.length} finding-ended position(s) share NOTHING with the `
-        + `${digest.size} finding row(s) the digest's own typed calls recorded — the two populations are `
-        + "disjoint, so this join is examining a different set and its answer cannot be trusted", true);
-    }
-  }
-  // A ZERO POPULATION IS ITS OWN STATE. No stated drop recorded is a real answer on a healthy run, and
-  // it must not be reported in the same shape as "there were some and none diverged".
-  if (!population.length) {
-    return { computable: true, reason: "no record-carry row records a stated drop on this run — there is "
-      + "no population here, which is the healthy answer and not a comparison that found nothing",
-      population_empty: true, cross_checked: false, checked: 0, matched: 0, diverged: [] };
-  }
-
-  const diverged = [];
-  for (const row of population) {
-    const e = { uri: lc(row.uri), mark: row.mark ?? null };
-    // NAME THE ARTIFACT THE REASON POINTS AT. The defect this check exists for is an absence discharged
-    // by the WRONG artifact — "already reasoned in register-findings.md" answers a question nobody asked,
-    // because the ask was about the findings. Surfacing the cited artifact is what lets a reader see the
-    // substitution rather than read the sentence as diligence.
-    const reason = row.reason ?? null;
-    const cites = typeof reason === "string" ? (reason.match(/[a-z0-9._-]+\.(?:md|json)\b/gi) ?? []) : [];
-    diverged.push({ uri: e.uri, mark: e.mark ?? row.mark ?? null, reach: row.reach ?? null,
-      stopped_at: row.stopped_at ?? null, reason,
-      cites_artifact: cites.length ? [...new Set(cites.map(String))] : null,
-      // CORROBORATION, NOT A GATE. The reconciliation naming this position is worth a reader knowing;
-      // its SILENCE is not evidence of anything, which is exactly what the first cut got wrong.
-      reconciliation_agrees: endedUris.has(e.uri),
-      why: "this position was dropped with a stated reason and never reached the findings, and the reason "
-        + "given points at a different artifact than the one the absence is about" });
-  }
-  const crossChecked = Array.isArray(digestFindingUris) && digestFindingUris.length > 0;
-  return { computable: true,
-    reason: crossChecked ? null
-      : "no cross-check was possible — this run recorded no typed digest finding rows, so the "
-        + "population was not verified against an independent one",
-    population_empty: false, cross_checked: crossChecked,
-    // `checked` is the population this check actually walked, and `matched` how many of them the
-    // reconciliation ALSO named. On the delivery this was written for those are 70 and 0 — which is the
-    // whole point: a `matched` of zero used to mean "report nothing" and now means "the reconciliation
-    // saw none of them", a fact about the reconciliation rather than about the run.
-    checked: population.length, matched: diverged.filter((d) => d.reconciliation_agrees).length, diverged };
 }

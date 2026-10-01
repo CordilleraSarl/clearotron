@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "plan_version": 1,
+  "provider": "fixture",
+  "nice_classes": [
+    "9",
+    "41"
+  ],
+  "regions": [
+    "AA",
+    "BB",
+    "CC"
+  ],
+  "entries": [
+    {
+      "qid": "primary-sweep:exact:zzmark",
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "ZZMARK",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "AA",
+        "BB",
+        "CC"
+      ]
+    },
+    {
+      "qid": "primary-sweep:default:zzmark",
+      "axis": "primary-sweep",
+      "predicate": "default",
+      "term": "ZZMARK",
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": []
+    },
+    {
+      "qid": "primary-sweep:exact:stack+form",
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "terms": [
+        "ZZMARC",
+        "ZZMARQ"
+      ],
+      "nice_classes": [
+        "9",
+        "41"
+      ],
+      "regions": [
+        "AA",
+        "BB",
+        "CC"
+      ]
+    },
+    {
+      "qid": "supp:primary-sweep:default:zzmark:goods",
+      "axis": "primary-sweep",
+      "predicate": "default",
+      "term": "ZZMARK",
+      "nice_classes": [
+        "9"
+      ],
+      "regions": [
+        "AA"
+      ],
+      "goods_text": "invented goods words",
+      "narrows": "primary-sweep:default:zzmark"
+    },
+    {
+      "qid": "supp:primary-sweep:default:zzmark:late",
+      "axis": "primary-sweep",
+      "predicate": "default",
+      "term": "ZZMARK",
+      "nice_classes": [
+        "9"
+      ],
+      "regions": [
+        "BB"
+      ],
+      "goods_text": "late invented goods"
+    },
+    {
+      "qid": "supp:incumbent-class:default:owner-three",
+      "axis": "incumbent-class",
+      "predicate": "default",
+      "term": "ZZ",
+      "nice_classes": [
+        "9"
+      ],
+      "regions": [],
+      "owner": "Owner Three"
+    },
+    {
+      "qid": "primary-sweep:exact:never-run",
+      "axis": "primary-sweep",
+      "predicate": "exact",
+      "term": "ZZNEVER",
+      "nice_classes": [
+        "9"
+      ],
+      "regions": [
+        "AA"
+      ]
+    }
+  ]
+}

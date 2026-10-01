@@ -1,10 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// surface-duty.mjs — did every record that reached the findings surface get an ANSWER?
+// surface-duty.mjs — did every record the judges carried get an ANSWER?
 //
-// The floors check ( item 2, floor-duty.mjs) asks that question at PLACEMENT. This asks it one
-// stage later, where the same duty has the same hole: a record that survived screening and placement
-// and reached a register-findings surface has already been judged worth a reader's attention. Synthesis
+// A record the judges of step 3 carried has already been judged worth a reader's attention. Synthesis
 // then either delivers it or does not, and when it does not, the run records THAT it did not and cannot
 // say WHY for any single record.
 //
@@ -28,33 +26,24 @@
 //   · The silence is the defect. A record declined without a ground is worth flagging whether or not it
 //     happens to be in someone's answer key; the answer-key mark was the proof, not the population.
 //
-// So the predicate is the issue's own text — reach `findings-surface`, reason_source `step-silent` —
-// and it is computable from the run's own artifacts, on the run, with no external file.
+// So the predicate is a record the judges carried ending with no stated ground, and it is computable
+// from the run's own artifacts, on the run, with no external file.
 //
-// DISCLOSURE ONLY, the same posture as floor-duty and for the same reason: the dictation that makes
-// synthesis state its grounds ships WITH this check, so every run predating it reports its whole
-// findings surface unanswered. That is the correct reading of those runs, not a broken check. It
+// DISCLOSURE ONLY: the dictation that makes synthesis state its grounds ships WITH this check, so every
+// run predating it reports its whole findings surface unanswered. That is the correct reading of those runs, not a broken check. It
 // re-tiers nothing, blocks nothing, and fails no run.
 
 export const SURFACE_DUTY_SCHEMA_VERSION = 1;
 
 /**
- * THE POPULATION: records a judging stage had already accepted. Two reaches, not one.
+ * THE POPULATION: records a judging stage had already accepted — the records the judges carried.
  *
- * THIS WAS `findings-surface` ALONE, AND THAT WAS A BUG THIS CHECK WOULD HAVE HIDDEN. The issue's item 3
- * names that reach because that is where the silence WAS when it was written — 102 records at
- * `synthesis:not-delivered`, every one `step-silent`. `d80a8388` then made synthesis state its grounds,
- * and a fresh reproduction on a later run showed the count at that reach collapsing while **71 records
- * appeared at `digest:silent-drop`, reach `placed`, `reason_source: absent` — with a lawyer-named mark
- * among them.**
- *
- * A tripwire keyed on the old signature would have gone green on that run and reported a cure. That is
- * this issue's own defect committed by the instrument built to detect it: keyed on a surface, it
- * reports that surface's history rather than the run's condition. So the predicate keys on the HARM —
- * a record a stage accepted, ending with no ground stated — and not on the token that expressed it in
- * one round.
+ * KEYED ON THE HARM, NOT ON A TOKEN. The first cut keyed on the one reach where the silence was when it
+ * was written, and a later run showed the silence moving to an earlier seam while the count at the old
+ * reach collapsed: a tripwire keyed on the old signature would have reported a cure. So the predicate is
+ * a record a stage accepted, ending with no ground stated, wherever the run's seams put that acceptance.
  */
-const ANSWERABLE_REACH = new Set(["placed", "findings-surface"]);
+const ANSWERABLE_REACH = new Set(["carried"]);
 
 /**
  * NO GROUND WAS STATED. Both tokens mean it, by different routes, and both leave a reader unable to
@@ -73,7 +62,7 @@ const NO_GROUND = new Set(["step-silent", "absent"]);
 const uriOf = (row) => String(row?.uri ?? row?.record_id ?? "").trim().toLowerCase();
 
 /**
- * Every record that reached the findings surface and carries no stated ground, read off the rows
+ * Every record the judges carried that carries no stated ground, read off the rows
  * `record-carry.json` already produces. PURE — pass it the rows, it reads nothing else.
  *
  * TAKES ROWS, NOT A RUN DIRECTORY, so the arms can construct the states the tree cannot produce. The
@@ -82,7 +71,7 @@ const uriOf = (row) => String(row?.uri ?? row?.record_id ?? "").trim().toLowerCa
  * is already broken.
  *
  * @param {{uri?: string, record_id?: string, reach?: string, reason?: string,
- *          reason_source?: string, mark?: string, placement?: object}[]} rows
+ *          reason_source?: string, mark?: string}[]} rows
  */
 export function reconcileSurfaceDuty({ rows = [] } = {}) {
   const entries = Array.isArray(rows) ? rows : [];
@@ -110,7 +99,6 @@ export function reconcileSurfaceDuty({ rows = [] } = {}) {
         // would have read as progress across the run that motivated this widening.
         reach: String(row?.reach ?? "") || null,
         reason_source: String(row?.reason_source ?? "") || null,
-        tier: row?.placement?.tier ?? null,
       });
     } else {
       totals.answered++;
@@ -137,7 +125,7 @@ export function reconcileSurfaceDuty({ rows = [] } = {}) {
 export function surfaceDutyNote(result) {
   const { silent = 0, surfaced = 0 } = result?.totals ?? {};
   if (!silent) return null;
-  return `[surface-duty] ${silent} of ${surfaced} record(s) reached a findings surface and were not `
+  return `[surface-duty] ${silent} of ${surfaced} record(s) the judges carried were not `
     + `delivered, with no ground recorded for any of them — so "correctly judged irrelevant" and `
     + `"silently dropped" cannot be told apart for these records, and they are opposite repairs`;
 }

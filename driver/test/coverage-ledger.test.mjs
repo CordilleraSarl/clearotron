@@ -10,7 +10,6 @@ import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { tmpdir } from "node:os";
 import { parseCoverageLedgerJson, classTokensFromScopeText, normalizeAxis, REGISTER_AXES, COVERAGE_STATUSES, decideAxes, deriveCoverageStatus, deriveFloorKeys, coerceToolAbsenceDeferred } from "../coverage-ledger.mjs";
-import { validators } from "../verify.mjs";
 import { parseCoverageLedger, parseCoverageLedgerFull, loadCoverageLedger, reopenFetchCeiling } from "../pipeline.mjs";
 import { searchedJurisdictionsFromPlan } from "../register-plan.mjs";
 
@@ -338,34 +337,9 @@ test("D1 parseCoverageLedgerFull: a known-axis row with an off-enum status lands
   assert.equal(dropped.length, 2, "the off-enum row still reaches dropped[] (the prose-fallback surface)");
 });
 
-test("D1 registerFindings: an off-enum status on a known axis fails coverage_status_offenum ONLY under the driver's coverage-enum sentinel (it used to vanish)", () => {
-  const prose = PAD([
-    "## Findings — Mark: X", "",
-    "### Coverage ledger",
-    "| Coverage unit | Status | Reason |",
-    "|---|---|---|",
-    "| primary-sweep / worldwide | confirmed-clean | full sweep |",
-    "| transliteration-numeric / PH | complete | swept |",   // off-enum on a KNOWN axis — silently dropped before D1
-  ].join("\n"));
-  // fresh run — the driver armed _driver/coverage-enum.json before dispatching the digest → fail token-first
-  const dir = runDirWith({ findings: prose, enumSentinel: true });
-  const v = validate(dir, prose);
-  assert.equal(v.ok, false);
-  assert.match(v.reason, /^coverage_status_offenum:complete/);
-  assert.match(v.reason, /transliteration-numeric/);
-  // ARCHIVED run (no sentinel — the receipt-PRESENCE key): the SAME off-enum prose keeps its ok verdict.
-  // Load-bearing D1 invariant pin: 27 of 64 corpus register-findings.md files carry off-enum shapes
-  // ("N/A", "confirmed", "✅", "not-searched (immaterial by design)") — an unkeyed gate mass-flips the
-  // replay harness to NO-GO, and coverage_status_offenum is a cold re-run per live hit besides.
-  const archived = runDirWith({ findings: prose });
-  assert.equal(validate(archived, prose).ok, true, "no sentinel → replay verdict never flips");
-  // the same ledger with the row honestly labelled passes under the sentinel too
-  const clean = prose.replace("| transliteration-numeric / PH | complete | swept |", "| transliteration-numeric / PH | confirmed-clean | swept |");
-  const dir2 = runDirWith({ findings: clean, enumSentinel: true });
-  assert.equal(validate(dir2, clean).ok, true);
-});
-
-// ---- registerFindings dispatch (machine-vs-legacy; validator must NEVER throw) --------------------
+// ---- a run dir carrying the register findings document (archived runs) and, optionally, the machine
+// ledger beside it. The validator that dispatched between them went with the register digest; the
+// loader below still reads both, because an archived run is republished from what it carries. --------
 
 function runDirWith({ json = null, manifest = null, findings = FINDINGS_MD, enumSentinel = false } = {}) {
   const dir = mkdtempSync(join(tmpdir(), "covledger-"));
@@ -378,73 +352,6 @@ function runDirWith({ json = null, manifest = null, findings = FINDINGS_MD, enum
   }
   return dir;
 }
-const validate = (dir, findings = FINDINGS_MD) => validators.registerFindings(join(dir, "register-findings.md"), findings);
-
-// A findings body whose prose ledger has exactly ONE classifiable row (mirror-matches a partial JSON).
-const FINDINGS_MIN = PAD(`# Register findings\n\n## Findings — Mark: X\n\n| URI | Mark |\n|---|---|\n| /m/1 | Y |\n\n### Coverage ledger\n| Coverage unit | Status | Reason |\n|---|---|---|\n| primary-sweep / x | deferred | not run |\n`);
-
-test("dispatch: no JSON beside the findings → legacy prose pass (archived runs; replay must not flip)", () => {
-  const v = validate(runDirWith());
-  assert.equal(v.ok, true);
-  assert.notEqual(v.reason, "machine-ledger");
-});
-
-test("dispatch: valid JSON + manifest → machine path ok (completeness against decideAxes)", () => {
-  // the canonical mirror has no incumbent-class row — use a manifest that does NOT activate it.
-  const manifest = "Archetype: coined. translit variants present. non-latin script.";
-  assert.deepEqual(decideAxes(manifest).sort(), ["primary-sweep", "saturation-probe", "transliteration-numeric"]);
-  const v = validate(runDirWith({ json: JSON.stringify(JSON_LEDGER), manifest }));
-  assert.deepEqual(v, { ok: true, reason: "machine-ledger" });
-});
-
-test("dispatch: invalid JSON → fail(token), and the validator NEVER throws on any malformed input", () => {
-  for (const bad of ["not json {", "[]", JSON.stringify([{ axis: "nope", scope: "", status: "deferred", reason: "" }]),
-    JSON.stringify([{ axis: "primary-sweep", scope: "", status: "clean", reason: "" }])]) {
-    let v;
-    assert.doesNotThrow(() => { v = validate(runDirWith({ json: bad })); });
-    assert.equal(v.ok, false, `must fail closed for: ${bad.slice(0, 40)}`);
-    assert.match(v.reason, /^coverage_/, `token-first reason for: ${bad.slice(0, 40)}`);
-  }
-});
-
-test("dispatch: missing active axis fails closed; unreadable manifest skips completeness only", () => {
-  const partial = JSON.stringify([{ axis: "primary-sweep", scope: "x", status: "deferred", reason: "" }]);
-  // manifest activates all four axes (markers) → partial mirror fails completeness
-  const v1 = validate(runDirWith({ json: partial, manifest: "translit incumbent", findings: FINDINGS_MIN }), FINDINGS_MIN);
-  assert.equal(v1.ok, false);
-  assert.match(v1.reason, /coverage_axis_missing/);
-  // no manifest in reach → completeness skipped (the commonLaw receipt-skip mirror). Map #3: the prose↔JSON
-  // mirror cross-check is RETIRED, so a JSON that carries fewer rows than the prose is no longer rejected on
-  // that basis (the JSON is code-derived from the SAME prose in production, so this can't happen anyway).
-  const v2 = validate(runDirWith({ json: partial, findings: FINDINGS_MIN }), FINDINGS_MIN);
-  assert.equal(v2.ok, true);
-});
-
-test("dispatch (Map #3): mirror cross-check RETIRED — a JSON with FEWER rows than the prose still passes (no coverage_mirror_missing)", () => {
-  // Pre-Map-#3 this failed coverage_mirror_missing (5 prose rows vs 1 JSON row). The JSON is now code-derived
-  // from the same prose, so the cross-check could only false-fail; it is gone. Structural validity still holds.
-  const partial = JSON.stringify([{ axis: "primary-sweep", scope: "worldwide", status: "confirmed-clean", reason: "" }]);
-  const v = validate(runDirWith({ json: partial }));
-  assert.deepEqual(v, { ok: true, reason: "machine-ledger" }, "no mirror cross-check — partial JSON passes structurally");
-  assert.doesNotMatch(JSON.stringify(v), /coverage_mirror_missing/);
-  // — the second half of this test derived the JSON from the prose and re-validated it. That
-  // direction is deleted; the driver renders both the table and the JSON from the coverage form, and the
-  // round-trip is pinned on that renderer (coverage-form.test.mjs, "the machine ledger derives FROM the
-  // form and round-trips through its own strict parser").
-});
-
-test("dispatch: active axes pin to the run's register-units/*.md when present (replay drift immunity)", async () => {
-  const { mkdirSync } = await import("node:fs");
-  // manifest would activate all 4 axes, but the run only spawned primary-sweep — units win.
-  const dir = runDirWith({ json: JSON.stringify([{ axis: "primary-sweep", scope: "x", status: "deferred", reason: "" }]),
-    manifest: "translit incumbent", findings: FINDINGS_MIN });
-  mkdirSync(join(dir, "register-units"));
-  writeFileSync(join(dir, "register-units", "primary-sweep.md"), "unit");
-  assert.equal(validate(dir, FINDINGS_MIN).ok, true, "recorded activation (units) overrides decideAxes");
-});
-
-// ---- loadCoverageLedger (the gate-side reader) ----------------------------------------------------
-
 test("loadCoverageLedger: machine when present, prose (with dropped[]) when not, none when neither", () => {
   const machine = runDirWith({ json: JSON.stringify(JSON_LEDGER) });
   assert.equal(loadCoverageLedger(machine).source, "machine");

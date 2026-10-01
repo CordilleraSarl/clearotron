@@ -60,6 +60,14 @@ function stageEvent(events, label) {
 
 function bareStage(label) { return String(label ?? "").split(":")[0]; }
 
+// The stage that judged the register layer on THIS run: on a run judged by owner, the judge whose dispatch
+// was accepted last (step 3 runs two, `owner-judgment:1` and `:2`); on a run begun before step 3, the digest.
+export function registerStageLabel(events) {   // @internal
+  const judges = events.filter((e) => e.event === "stage" && bareStage(e.stage) === "owner-judgment");
+  if (!judges.length) return "register-digest";
+  return ([...judges].reverse().find((e) => e.ok === true) ?? judges[judges.length - 1]).stage;
+}
+
 // audit-trail rows plausibly tied to a finding (best-effort; the full list is always available separately).
 function relatedAuditRows(auditRows, finding) {
   if (!finding) return [];
@@ -90,7 +98,7 @@ function resolveTarget(run, target, ctx) {
     const f = [...findings.findings, ...findings.negatives, ...findings.audit].find((x) => x.id === id);
     if (f) {
       const sl = String(f.source_layer ?? "").toLowerCase();
-      const stageLabel = sl.includes("common") ? "common-law" : "register-digest";
+      const stageLabel = sl.includes("common") ? "common-law" : registerStageLabel(ctx.events);
       return { kind: "finding", stageLabel, finding: f };
     }
     return { kind: "unknown", stageLabel: null };
@@ -102,14 +110,14 @@ function resolveTarget(run, target, ctx) {
   const asKey = P[t] && typeof P[t] !== "function" ? basename(P[t]) : null;
   const bn = asKey ?? (byBase[t] ? t : (byBase[`${t}.md`] ? `${t}.md` : null));
   if (bn && byStageOut[bn]) return { kind: "artifact", stageLabel: byStageOut[bn], artifact: byBase[bn]?.name ?? bn };
-  if (bn) return { kind: "artifact", stageLabel: bn === "audit.md" ? "register-digest" : null, artifact: byBase[bn]?.name ?? bn, codeBuilt: bn === "audit.md" || bn === "email-body.md" };
+  if (bn) return { kind: "artifact", stageLabel: bn === "audit.md" ? registerStageLabel(ctx.events) : null, artifact: byBase[bn]?.name ?? bn, codeBuilt: bn === "audit.md" || bn === "email-body.md" };
 
   // fuzzy: a finding whose title/owner contains the query
   const low = t.toLowerCase();
   const hit = findings.findings.find((f) => String(f._title ?? "").toLowerCase().includes(low) || String(f.owner ?? "").toLowerCase().includes(low));
   if (hit) {
     const sl = String(hit.source_layer ?? "").toLowerCase();
-    return { kind: "finding", stageLabel: sl.includes("common") ? "common-law" : "register-digest", finding: hit, fuzzy: true };
+    return { kind: "finding", stageLabel: sl.includes("common") ? "common-law" : registerStageLabel(ctx.events), finding: hit, fuzzy: true };
   }
   return { kind: "unknown", stageLabel: null };
 }
@@ -209,7 +217,7 @@ export function trace(run, target, { depth = 2, shallow = false } = {}) {
   if (resolved.kind === "unknown") {
     return {
       runId: run.runId, target,
-      error: `Could not resolve target "${target}". Try a stage (${STAGE_ORDER.join(", ")}), an artifact (report, audit, narrative, registerFindings, commonLaw, placement, …), a finding id (F1, NR1, AT1), or "verdict".`,
+      error: `Could not resolve target "${target}". Try a stage (${STAGE_ORDER.join(", ")}), an artifact (report, audit, narrative, registerFindings, commonLaw, …), a finding id (F1, NR1, AT1), or "verdict".`,
     };
   }
 

@@ -9,7 +9,7 @@
 // runTurn() (engine/CONTRACT.md §1), and everything below classifies the normalized tuple that comes
 // back. Renaming the file is a separate change with its own diff; naming what it is, here, costs
 // nothing and stops the next reader looking for a gateway.
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { join, dirname, basename } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 import { tmpdir } from "node:os";
@@ -37,7 +37,6 @@ import { MATTER_CONTEXT_FILE } from "./matter-frame-record.mjs";
 import { MODEL_FILE as VARIANT_MODEL_FILE, PROSE_FILE as VARIANT_PROSE_FILE } from "./clearance-variants-record.mjs";
 import { PROSE_FILE as REPORT_OVERVIEW_FILE } from "./report-overview-record.mjs";
 import { NARRATIVE_FILE, FINDINGS_FILE, refusalsFor } from "./synthesis-record.mjs";
-import { FINDINGS_FILE as REGISTER_FINDINGS_FILE, refusalsFor as registerDigestRefusalsFor } from "./register-digest-record.mjs";
 
 // artifact basename -> the tool that is now its only writer. A repair for one of these is a CALL, never a
 // file edit, and this table is what the warm patch reads to know that. It grows by one row per conversion,
@@ -126,19 +125,6 @@ export const TOOL_WRITTEN_ARTIFACTS = new Map([
   // reads this on the missing-file branch so the refusal travels with the absence it caused.
   [NARRATIVE_FILE, { tool: "record_synthesis", what: "the narrative and its findings record", refusals: refusalsFor }],
   [FINDINGS_FILE, { tool: "record_synthesis", what: "the narrative and its findings record", refusals: refusalsFor }],
-  // Conversion 11 — the register findings document, and the row with the widest PARSER surface in this
-  // table: nine readers across driver/, mcp-server/ and driver/publish/ scan it for headings, pipe
-  // tables and `/mark/…` uris. Every one of them tolerates freeform prose because a model wrote this
-  // file; from here a render satisfies them by construction. A repair arriving under the old dictation
-  // names this basename, so without the row the write-mode tails would order a hand-write of the
-  // document on a stage whose grant no longer carries `Write`.
-  //
-  // It carries `refusals` for the reason the two rows above it do, and this stage is where that reason
-  // bites hardest: the acceptance boundary REFUSES a row whose uri the band cannot resolve, so a seat
-  // working from a stale uri list can be refused on every call. Without the reader that run reports
-  // `missing_file:register-findings.md` — a stage that never tried — for a stage that tried and was
-  // told no each time, with the reason waiting on disk.
-  [REGISTER_FINDINGS_FILE, { tool: "record_register_digest", what: "the register findings", refusals: registerDigestRefusalsFor }],
 ]);
 
 // ── PER-ORDINAL ARTIFACTS — A DIRECTORY, NOT A BASENAME ( conversion 5) ───────────────────────
@@ -261,11 +247,6 @@ import { witnessStageMethodology, describeMethodologyDrift } from "./methodology
 import { parsePrRiskResults, connotationObligations, parseDispositionForm, rulingsProse, CONNOTATION_FORM_TOKEN_SRC,
   CONNOTATION_UNMATCHED_MARK, CONNOTATION_NO_RESEMBLANCE_MARK, CONNOTATION_FORM_TOKEN_RE } from "./connotation-search.mjs";
 import { unionDispositionForm, formSidecarPath } from "./disposition-union.mjs";
-import { unionCoverageForm } from "./coverage-union.mjs";
-import { coverageFormStamp, readCoverageForm, readCoverageFormInput, writeCoverageForm } from "./coverage-form-io.mjs";
-import { unionPlacementForm } from "./placement-union.mjs";
-import { placementRenderAccount } from "./placement-form.mjs";
-import { placementFormStamp, readPlacementForm, readPlacementFormInput, readSubmittedPlacementForm, readSubmittedPlacementSetAside, writePlacementForm, renderPlacementsFile } from "./placement-form-io.mjs";
 // The register-axis vocabulary, quoted verbatim into the coverage-form axis hint. ONE source: the same
 // constant `rowIsSettled` refuses against, so the hint can never name a set the gate does not accept.
 // Acyclic — coverage-ledger.mjs is PURE (no node imports, no driver imports).
@@ -405,6 +386,27 @@ export function toolGauge(turn) {
  */
 export function attemptOk(fail, turn) {
   return !fail && !anyResultErrored(turn?.session);
+}
+
+/**
+ * Write a confined turn's answer to the stage's declared output, atomically, and say what was written:
+ * `{ written: true, resultIndex }`, or `{ written: false, why }` when the session returned no answer in its
+ * form. Never throws: an answer that cannot be written is an absent file, which the ladder already treats
+ * as a session that answered nothing.
+ */
+export function writeConfinedAnswer(file, turn) {
+  const answer = turn?.structuredOutput;
+  if (!answer || typeof answer !== "object" || Array.isArray(answer)) {
+    return { written: false, why: turn?.structuredOutputWhy ?? "the session returned no answer in its form" };
+  }
+  try {
+    mkdirSync(dirname(file), { recursive: true });
+    writeFileSync(`${file}.tmp`, `${JSON.stringify(answer, null, 2)}\n`);
+    renameSync(`${file}.tmp`, file);
+    return { written: true, resultIndex: Number.isFinite(turn?.structuredOutputIndex) ? turn.structuredOutputIndex : null };
+  } catch (e) {
+    return { written: false, why: `the answer could not be written: ${String(e?.message ?? e).slice(0, 120)}` };
+  }
 }
 
 /**
@@ -696,92 +698,6 @@ export function syncDispositionForm(files) {
   return null;
 }
 
-// The register sibling of syncDispositionForm above, with the same three properties and the same
-// reasons: idempotent and re-entrant (judgeArtifacts is a closure invoked more than once per attempt),
-// never in `files` (or the AD-4 `wrote` gauge would read a DRIVER write as model progress), and the
-// accumulator lives in `_driver/`.
-//
-// SINCE THE TYPED-TRANSPORT CONVERSION THIS READS NO SEAT FILE — there is none to read. Statuses reach
-// the accumulator mid-turn through the `record_coverage` tool (coverage-tool.mjs), so this sync's one
-// remaining job is REGENERATION before judgement: the driver rows are recomputed from the plan, the
-// receipt and the bands as they stand NOW (a settlement-flush or supplemental merge can grow the row
-// set between the seat's last call and the judgement), with everything already settled carried by the
-// union. `submitted: {rows: null}` is the union's said-nothing arm: prior seat rows and statuses are
-// inherited, never retracted by a pass that made no call.
-//
-// ARMED ON THE ERA STAMP, NEVER ON THE FORM'S OWN PRESENCE. `coverageFormStamp` answers "did a driver
-// carrying this code require a form on this run". If it did not — every archived run, and any run whose
-// plan apparatus was out of reach — this is a no-op and no verdict moves. If it did, the union runs and
-// the form is on disk for the validator; and if the WRITE fails, the stamp is already there and the
-// validator fails closed with coverage_form_missing rather than passing over an absence.
-//
-// Returns the union's stats for the attempt row, or null when this stage owns no coverage form.
-export function syncCoverageForm(files) {
-  for (const f of (files ?? [])) {
-    if (basename(String(f)) !== "register-findings.md") continue;
-    const runDir = dirname(String(f));
-    const { required, formName } = coverageFormStamp(runDir);
-    if (!required) return null;
-    const input = readCoverageFormInput(runDir);
-    if (!input) return null;             // the stamp cannot outlive its inputs; nothing to regenerate
-    // — THE DRIVER NAMES ITSELF. An axis minted from a stray file in register-units produces a row
-    // the seat cannot repair and the union regenerates every pass, so the ladder runs out with nothing
-    // saying why. verify.mjs recorded that hazard as unguarded and asked for a driver-named report if it
-    // was ever observed; this is the report. The axis set is UNCHANGED — filtering it would silently
-    // shrink the form, which is worse than the row it would avoid.
-    for (const a of (input.unknownAxisUnits ?? []))
-      note(`[coverage-form] register-units carries ${a}.md, which is not one of the register axes — its row is DRIVER-written and a seat cannot repair it. This is a driver fault, not a seat one.`);
-    const prior = readCoverageForm(runDir, formName).rows;
-    const u = unionCoverageForm({ rows: prior }, { rows: null }, input);
-    // Said out loud on failure rather than swallowed — but UNLIKE this is not the fail-open leg:
-    // the stamp is already armed, so a write that did not land surfaces as coverage_form_missing at the
-    // very next judgement instead of disarming the gate.
-    try { writeCoverageForm(runDir, u.form, formName); }
-    catch (e) { note(`[coverage-form] could not write ${formName}: ${abbrev(String(e.message), 120)} — the gate fails closed on the absence`); }
-    return u;
-  }
-  return null;
-}
-
-// ── — THE PLACEMENT FORM IS UNIONED BEFORE IT IS JUDGED, AND placements.json IS RENDERED ────────
-//
-// The third of its kind, and the one that matters most for wall-clock: `placement-inquiry` was the
-// largest stage on all four of the 2026-08-09 round's clearances, and on R1 half of its 62 minutes was
-// thrown away when a killed attempt's finished tiers were re-derived from nothing.
-//
-// TWO ACTS, IN ORDER, ON EVERY JUDGEMENT. Union the seat's answers into the accumulator, then RENDER
-// placements.json from the accumulator. The render is here rather than at stage exit for the reason the
-// incident teaches: the artifact must exist the moment the seat's work does, not once the turn is allowed
-// to finish. A wall that lands between the two is exactly the gap this closes.
-//
-// ARMED ON THE ERA STAMP, never on the form's own presence — a run whose stamp is absent is every
-// archived run, and this is a no-op on all of them.
-export function syncPlacementForm(files) {
-  for (const f of (files ?? [])) {
-    if (basename(String(f)) !== "placement-recommendations.md") continue;
-    const runDir = dirname(String(f));
-    if (!placementFormStamp(runDir).required) return null;
-    const input = readPlacementFormInput(runDir);
-    const priorForm = readPlacementForm(runDir);
-    const submitted = readSubmittedPlacementForm(runDir);
-    const u = unionPlacementForm({ rows: priorForm.rows, set_aside: priorForm.set_aside },
-      submitted === null ? null : { rows: submitted, set_aside: readSubmittedPlacementSetAside(runDir) }, input);
-    try { writePlacementForm(runDir, u.form); }
-    catch (e) { note(`[placement-form] could not write the form: ${abbrev(String(e.message), 120)} — the render below still runs from the union in hand`); }
-    // PARSE-THEN-LAND, through the gate's own parser, before it replaces anything. A render defect can
-    // never put an unparseable deliverable on disk, and on a throw the previous file is left alone.
-    const r = renderPlacementsFile(runDir, u.form.rows);
-    if (!r.ok) note(`[placement-form] placements.json NOT re-rendered: ${r.error} — the previous file stands and the omission is on the form`);
-    // WHO OWES EACH ROW THE RENDER LEFT OUT — the same account validators.placement judges with, carried onto
-    // the attempt row so an omission is never read without its cause.
-    const a = placementRenderAccount(u.form.rows);
-    const account = { unjudged: a.unjudged.length, registerSelected: a.register_selected,
-      registerRendered: a.register_rendered, registerFacts: a.register_facts };
-    return { ...u, rendered: r.ok ? r.placements : null, render_error: r.error, account };
-  }
-  return null;
-}
-
 /**
  * Run ONE pipeline stage as a blocking gateway agent turn, with file-truth gating + bounded retries.
  *
@@ -854,6 +770,13 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
                         // sweep) — a hard-wall timeout breaks after ONE attempt (a 1.5× extension can't fit
                         // an already-over-budget resume; the caller records the coverage-limited deferral).
     excludeTools, bandSize, derivedLimit = null,   // copper-lattice re-route: tool names dropped from this stage's allowedTools
+    // — A CONFINED STAGE: `{ instructions, answerForm }`. The session is given its instructions and nothing
+    // else of the program's or the machine's, the tools its stage is granted plus the program's own helper
+    // tool, and answers in the form, which the driver writes to the stage's declared output (engine
+    // CONTRACT.md §1, `confined`). Every attempt resends the SAME message on a fresh session: no warm patch,
+    // no corrective text, no in-dispatch form repair — each of those is a sentence the confined session's
+    // instructions do not contain, and the owner rules what it reads.
+    confined = null,
   } = opts;
   if (!message) throw new Error(`runStage(${name}): message is required`);
   if (!sessionKey) throw new Error(`runStage(${name}): sessionKey is required`);
@@ -979,8 +902,6 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
                                 // return). Written onto the attempt row for the journal AND read by the
                                 // veto below — the run's own answer to "did this session rule any of
                                 // its rows?", counted by the gate's own isRuled, never a token name
-  let lastCoverageUnion = null; //: the same, for the register coverage form
-  let lastPlacementUnion = null; //: the same, for the placement form — and it renders placements.json
   //: the seat-facing form the last judgement synced, measured at record time so the row carries the
   // bytes that were on disk when the attempt settled. At most one of the three fires per stage — a stage
   // owns one form or none — and the ?? chain is that fact, not a preference between them.
@@ -1026,7 +947,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // lane: if attempt 2 comes back with rows ruled (`call_partial` — a seat that has now recorded
     // rulings), attempt 3 can still warm, which is the case warm is good at.
     const vetoedResume = vetoResumeRuledNone(attempt, lastUnion);
-    const warm = attempt > 1 && !warmUsed && process.env.CLEAROTRON_WARM_RETRY !== "0" && !vetoedResume && warmEligible(lastFail, lastJson);
+    const warm = !confined && attempt > 1 && !warmUsed && process.env.CLEAROTRON_WARM_RETRY !== "0" && !vetoedResume && warmEligible(lastFail, lastJson);
     if (warm) warmUsed = true;
     else if (vetoedResume && !warmUsed && process.env.CLEAROTRON_WARM_RETRY !== "0" && warmEligible(lastFail, lastJson))
       note(`[${name}] attempt ${attempt - 1} left this stage's meaning population with ZERO ruled rows (${String(lastFail).slice(0, 100)}) — a resumed session re-reads its own output and cannot rule what it did not rule; SKIPPING the warm patch and dispatching attempt ${attempt} FRESH (the warm attempt is not spent: a partial failure later in this ladder still gets it)`);
@@ -1054,7 +975,11 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
       try { const fresh = refreshMessage(attempt); if (typeof fresh === "string" && fresh) base = fresh; }
       catch (e) { note(`[${name}] refreshMessage failed on attempt ${attempt}, dispatching the original text: ${String(e?.message ?? e).slice(0, 120)}`); }
     }
-    const effMessage = warm ? warmPatchMessage(lastFail, files, { supplementalLane }) : correctiveMessage(base, attempt, lastFail, files, { supplementalLane });
+    const effMessage = confined ? base
+      : warm ? warmPatchMessage(lastFail, files, { supplementalLane }) : correctiveMessage(base, attempt, lastFail, files, { supplementalLane });
+    // A confined answer is the driver's file, written from this attempt's answer alone: an earlier
+    // attempt's rejected answer must not stand in for an attempt that returned none.
+    if (confined) for (const f of files) { try { rmSync(f, { force: true }); } catch { /* absent is the point */ } }
     note(`[${name}] attempt ${attempt}/${maxRetries + 1}${warm ? " [warm patch]" : ""} (engine=${engine.name} agent=${agent} model=${model ?? "default"} key=${key} timeout=${effTimeout}s)`);
     // The engine runs ONE turn and returns the normalized tuple. Every adapter returns the same shape
     // (zero change); anthropic-agent = claude -p off-gateway with the stall-watchdog. A warm retry threads
@@ -1103,7 +1028,8 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
       progressFiles: files,   // the no-progress watchdog's artifact-advance signal (anthropic-agent; other adapters ignore it)
       // The raw stream of this session, beside its dispatch record (engine/session-record.mjs). The engines
       // keep it while the disk has room and say on the tuple's `stream` what landed.
-      streamFile: streamFilePath(runDir, name, attempt) });
+      streamFile: streamFilePath(runDir, name, attempt),
+      confined: confined ?? undefined });
     const settledAt = Date.now();   //: zero point of the wall-rescue quiescence clock, read before anything else
     // LOG-ONLY. Nothing here can fail a turn: the claim that the frozen set does not change across a seat
     // turn is READ from the writers' call sites and not yet MEASURED on a running system, and arming an
@@ -1114,6 +1040,10 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
       if (drift) runLog(runDir, drift);
     } catch { /* an integrity check that fails a run by failing itself is worse than no check */ }
     const { code, killed, wall, stderr, laneWaitMs, json, usage } = turn;
+    // THE CONFINED ANSWER LANDS WHERE THE STAGE READS IT, before anything judges it. The engine hands back
+    // the session's answer in its form (the last result that carried one, and which result that was); the
+    // driver writes it, so the stage's validator reads a file exactly as it would for any other stage.
+    const confinedAnswer = confined && files[0] ? writeConfinedAnswer(files[0], turn) : null;
 
     // The artifact judgement, lifted out of the classification chain into ONE function so the
     // write-time form repair below can RE-JUDGE the corrected file with the same code — never with a
@@ -1126,14 +1056,6 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
       // cannot rise. Returns null for every stage that owns no meaning sweep, which is all but one.
       const u = syncDispositionForm(files);
       if (u) lastUnion = u;
-      // — the same treatment for the register coverage form. A status recorded on attempt 1 is
-      // still recorded on attempt 3, and the outstanding count cannot rise.
-      const cu = syncCoverageForm(files);
-      if (cu) lastCoverageUnion = cu;
-      // — and the same for placement, which also RENDERS placements.json from the union. A tier
-      // placed on attempt 1 is on disk, in the deliverable, before attempt 1 is allowed to finish.
-      const pu = syncPlacementForm(files);
-      if (pu) lastPlacementUnion = pu;
       for (const f of files) {
         if (!existsSync(f)) {
           // A TOOL-WRITTEN ARTIFACT IS ABSENT FOR ONE OF TWO REASONS, and they are not the same finding:
@@ -1291,6 +1213,9 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     let formRepairsThisAttempt = 0;
     let repairRef = turn.sessionRef;
     while (fail && failingFile && isFormClassFail(fail)
+           // A confined stage's answer is never patched in place: a failed answer is a session that runs
+           // again on the same message, which is the design it was ruled with (see `confined` above).
+           && !confined
            && formRepairsUsed < MAX_FORM_REPAIRS
            && envGateOn("CLEAROTRON_FORM_REPAIR")
            // A6: an output-ceiling turn's defect is caused by the budget, not by the vocabulary — it
@@ -1445,13 +1370,6 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
       // so the double call on the normal path costs a regeneration and changes nothing.
       const u = syncDispositionForm(files);
       if (u) lastUnion = u;
-      const cu = syncCoverageForm(files);          //, same reason
-      if (cu) lastCoverageUnion = cu;
-      // — and placement. THIS CALL IS THE R1 CURE: the wall rescue asks whether this attempt wrote
-      // a valid artifact, and until the union has run and placements.json has been rendered from it, the
-      // answer for a killed-in-the-gap attempt is no. Idempotent, so the double call costs a regeneration.
-      const pu = syncPlacementForm(files);
-      if (pu) lastPlacementUnion = pu;
       // `why`, when a caller passes one, is told WHICH file failed and on what, so a refusal can name both.
       return files.every((f) => {
         const now = statOf(f);
@@ -1745,6 +1663,8 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
         // What the session went through — every result, classifier cut, refusal and restart, with when —
         // and where its raw stream is, or why it was not kept. null where the engine cannot report.
         session: turn.session ?? null, stream: streamMeta(runDir, turn.stream),
+        // A confined stage: which of the session's results carried the answer the driver wrote, or why none did.
+        answer: confinedAnswer ?? undefined,
         // The engine's claim about itself, KEPT and renamed to say whose claim it is. A self-report is
         // evidence — deleting it would destroy the only record of what the seat believed it had done — and
         // it is not a verdict. Still three-valued (ok | timeout | error). Nothing in the driver reads either
@@ -1765,15 +1685,6 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
         // client surface — but it is the trail the NEXT round reads to ask what a run actually did, and a
         // trail that omits the parks describes a run that decided everything.
         dispositions: lastUnion ? { countable: lastUnion.countable, ruled: lastUnion.ruled, outstanding: lastUnion.outstanding, parked: lastUnion.parked, total: lastUnion.total } : undefined,
-        // — the same field for the register coverage form. Absent on every stage that owns no
-        // coverage form, and on any run whose plan apparatus is out of reach. RECORDING ONLY.
-        coverage: lastCoverageUnion ? { settled: lastCoverageUnion.settled, outstanding: lastCoverageUnion.outstanding, carried: lastCoverageUnion.carried, total: lastCoverageUnion.total } : undefined,
-        // — the placement form's own row. `carried` is the measurement the issue asks for: tiers a
-        // previous attempt placed that this one did not re-submit, i.e. exactly what the R1 discard
-        // destroyed. `unresolved` counts selections the fold does not hold. RECORDING ONLY.
-        placements: lastPlacementUnion ? { settled: lastPlacementUnion.settled, outstanding: lastPlacementUnion.outstanding,
-          carried: lastPlacementUnion.carried, total: lastPlacementUnion.total, seatRows: lastPlacementUnion.seat_rows,
-          unresolved: lastPlacementUnion.unresolved, rendered: lastPlacementUnion.rendered, account: lastPlacementUnion.account } : undefined,
         //: how many in-dispatch form repairs THIS attempt bought (absent = none). Its own rows
         // sit immediately above with the defect each one was dispatched to fix.
         formRepairs: formRepairsThisAttempt || undefined,

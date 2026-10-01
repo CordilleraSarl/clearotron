@@ -11,7 +11,8 @@
 //
 //   record_synthesis         fixed after R2 lost fifteen findings of nineteen
 //   record_register_digest   fixed four hours later, when the same shape was found on the two keys
-//                            that had no natural join key and had taken the cheap branch
+//                            that had no natural join key and had taken the cheap branch (the step
+//                            that served it has since been replaced)
 //
 // Both fixes are correct and both are per-stage. Neither says anything about the other thirteen. This
 // file is the population-level question, and its whole value is that a NEW transport joins it on the
@@ -72,7 +73,7 @@ const BASELINE = JSON.parse(readFileSync(join(DRIVER, "partial-payload-baseline.
 // The servers that carry a RETURN PATH. `band`, `fetch` and the register family are excluded by a
 // stated rule: they hand the seat data, they do not receive the seat's artifact. `search_run_artifacts`
 // is excluded on the same rule — it is a scoped READ served on a recording key.
-const SERVERS = Object.freeze(["recording", "coverage", "dispositions", "unit-note", "declination"]);
+const SERVERS = Object.freeze(["recording", "dispositions", "unit-note", "declination"]);
 const IS_RETURN_PATH = (name) => name.startsWith("record_");
 
 /** Ask a server for its real tools/list. Resolves on the response; a timeout FAILS rather than returning []. */
@@ -332,7 +333,7 @@ test("the population is derived, and it is what the servers actually serve", asy
       .map((t) => t.split("__").pop())
       .filter(IS_RETURN_PATH),
   );
-  const OUTSIDE = ["record_coverage", "record_dispositions", "record_coverage_status", "record_unit_note", "record_withheld_families", "record_released_families", "record_declination"];
+  const OUTSIDE = ["record_dispositions", "record_coverage_status", "record_unit_note", "record_withheld_families", "record_released_families", "record_declination"];
   for (const t of OUTSIDE) granted.add(t);
 
   assert.deepEqual([...served.keys()].sort(), [...granted].sort(),
@@ -605,12 +606,6 @@ const DECLARES_NONE_BY_DESIGN = Object.freeze({
     + "synthesis-record.mjs:628 recordSynthesis detects a partial by that absence and merges it onto the last accepted "
     + "call before acceptSynthesis judges it. Declaring either required would refuse every corrective "
     + "repair-composers.mjs tells the seat to send.",
-  record_register_digest:
-    "Two mechanisms, either one sufficient. A patch merges onto the last accepted model "
-    + "(register-digest-record.mjs:592) and carries only what it corrects. And a run whose band holds no "
-    + "records legitimately sends no rows: registerdigest_nothing_judged "
-    + "(register-digest-record.mjs:565) fires on the band's contents, not on the call's shape, so "
-    + "whether a row is owed is a fact about the run that `required[]` cannot express.",
   record_unit_note:
     "The one field its acceptor demands, `axis`, is never the caller's to send: the driver binds it per "
     + "seat and unit-note-server.mjs injects it, so the seat is told to omit it. Every other field merges "

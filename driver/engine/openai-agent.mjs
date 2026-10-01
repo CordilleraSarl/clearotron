@@ -29,7 +29,7 @@ import { writeSecretFile } from "../../shared/secret-file.mjs";   // the rotated
 import { tmpdir, homedir } from "node:os";
 import { join, dirname, sep } from "node:path";
 import { runStreamingChild, absolutizeSkillRefs, WRITE_DISCIPLINE, buildEnvelope, resolveSpawnCwd } from "./common.mjs";
-import { renderCodexConfigToml } from "./mcp/codex-config.mjs";
+import { renderCodexConfigToml, renderConfinedCodexConfigToml } from "./mcp/codex-config.mjs";
 import { resolveAuthMode } from "./auth.mjs";
 import { engineEnv, codexCommandWithheld } from "./engine-env.mjs";
 import { resolveEngineProgram } from "../driver.config.mjs";   // — the one place that finds the program; it reads every spelling of the setting
@@ -295,6 +295,42 @@ export function buildCodexArgs({ model, thinking, resumeRef, runDir } = {}) {
   base.push("-c", `model_reasoning_effort=${effortFor(thinking)}`);
   if (resumeRef) return { args: [...base, "resume", resumeRef, "-"] };
   return { args: [...base, "-"] };
+}
+
+/**
+ * A CONFINED SESSION's command line (engine CONTRACT.md §1, `confined`), as the bench run that measured
+ * it: no execpolicy rules files, the read-only sandbox (with the shell off there is no command for a
+ * permission profile to hold), the answer form as the output schema, and the last message written to a
+ * file, which is where the answer is read from. Never resumed: a confined stage is retried fresh.
+ */
+export function buildConfinedCodexArgs({ model, thinking, schemaFile, lastMessageFile } = {}) {
+  if (!schemaFile || !lastMessageFile) throw new Error("openai-agent: a confined turn needs its answer form and its answer file");
+  const args = ["exec", "--json", "--skip-git-repo-check", "--ignore-rules", "--sandbox", "read-only"];
+  const m = openaiModel(model); if (m) args.push("-m", m);
+  args.push("-c", `model_reasoning_effort=${effortFor(thinking)}`);
+  args.push("--output-schema", schemaFile, "-o", lastMessageFile, "-");
+  return { args };
+}
+
+/**
+ * A confined turn's answer: the session's last message, which the output schema made an answer in its
+ * form, or why there is none. The tuple's three fields, as the claude adapter returns them.
+ */
+export function codexConfinedAnswer(lastMessageFile, ev) {
+  const results = ev?.session?.results ?? [];
+  const last = results[results.length - 1] ?? null;
+  const none = (why) => ({ structuredOutput: null, structuredOutputIndex: null, structuredOutputWhy: why });
+  let text = null;
+  try { text = readFileSync(lastMessageFile, "utf8"); } catch { /* absent: said below */ }
+  if (!text?.trim()) {
+    if (!results.length) return none("the session ended without a result");
+    if (last?.isError) return none(`the session ended on an error (${last.subtype ?? "?"})`);
+    return none("the session finished without an answer in its form");
+  }
+  let answer;
+  try { answer = JSON.parse(text); } catch { return none("the session's last message was not an answer in its form"); }
+  if (!answer || typeof answer !== "object" || Array.isArray(answer)) return none("the session's last message was not an answer in its form");
+  return { structuredOutput: answer, structuredOutputIndex: Math.max(0, results.length - 1), structuredOutputWhy: null };
 }
 
 // Fold ONE codex --json line into the running event accumulator.
@@ -687,7 +723,7 @@ export const openaiAgentEngine = {
   // `thread/resume failed: no rollout found for thread id ... (code -32600)`, exit 1 — with the control
   // (same id, same binary, its own home) resuming cleanly. So every warm-patch retry and every
   // form-repair sub-turn on the codex arm has been failing.
-  async runTurn({ message, model, thinking, timeoutSec, resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, stallSec, codexHome: providedHome, streamFile = null } = {}) {
+  async runTurn({ message, model, thinking, timeoutSec, resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, stallSec, codexHome: providedHome, streamFile = null, confined = null } = {}) {
     if (!message) throw new Error("openai-agent.runTurn: message is required");
     const t0 = Date.now();
     let codexHome;
@@ -727,14 +763,32 @@ export const openaiAgentEngine = {
       // tool servers, and not the Codex key (engine-env.mjs, `codexCommandWithheld`), with codex's shell
       // snapshot off because it replays them (codex-config.mjs, `commandEnvToml`). With the sandbox on or
       // off, since the bypass builds no fence and a command could otherwise print them.
-      const fence = codexSandboxBypassed() ? null
-        : { runDir, readRoots: [...(skillsGrantRoots?.length ? skillsGrantRoots : [skillsDir]), codexProgramRoot(codexBin())].filter(Boolean) };
-      writeFileSync(join(codexHome, "config.toml"),
-        renderCodexConfigToml({ mcpConfig, allowedTools, developerInstructions: WRITE_DISCIPLINE, toolTimeoutSec: timeoutSec, fence,
-          withheldFromCommands: codexCommandWithheld() }));
+      //
+      // — a CONFINED turn writes its own config instead: its instructions as the program's whole
+      // instructions, its tool servers, the helper tool and nothing else (codex-config.mjs,
+      // `renderConfinedCodexConfigToml`). Its instructions, its answer form and its answer sit in this
+      // turn's own home, which nothing but this turn reads and which is removed after it.
+      const confinedFiles = confined ? {
+        instructions: join(codexHome, "instructions.md"), schema: join(codexHome, "answer-form.json"), answer: join(codexHome, "answer.json"),
+      } : null;
+      if (confined) {
+        if (!String(confined.instructions ?? "").trim() || !confined.answerForm) throw new Error("openai-agent: a confined turn needs its instructions and its answer form");
+        writeFileSync(confinedFiles.instructions, String(confined.instructions));
+        writeFileSync(confinedFiles.schema, JSON.stringify(confined.answerForm));
+        writeFileSync(join(codexHome, "config.toml"),
+          renderConfinedCodexConfigToml({ instructionsFile: confinedFiles.instructions, mcpConfig, allowedTools, toolTimeoutSec: timeoutSec }));
+      } else {
+        const fence = codexSandboxBypassed() ? null
+          : { runDir, readRoots: [...(skillsGrantRoots?.length ? skillsGrantRoots : [skillsDir]), codexProgramRoot(codexBin())].filter(Boolean) };
+        writeFileSync(join(codexHome, "config.toml"),
+          renderCodexConfigToml({ mcpConfig, allowedTools, developerInstructions: WRITE_DISCIPLINE, toolTimeoutSec: timeoutSec, fence,
+            withheldFromCommands: codexCommandWithheld() }));
+      }
 
-      const input = absolutizeSkillRefs(message, skillsDir, resolveSkill);
-      const { args } = buildCodexArgs({ model, thinking, resumeRef, runDir });
+      const input = confined ? String(message) : absolutizeSkillRefs(message, skillsDir, resolveSkill);
+      const { args } = confined
+        ? buildConfinedCodexArgs({ model, thinking, schemaFile: confinedFiles.schema, lastMessageFile: confinedFiles.answer })
+        : buildCodexArgs({ model, thinking, resumeRef, runDir });
       // Stamped HERE, not at function entry: everything above is file writes that can take a moment, and
       // a floor set too early would let a previous turn's rollout back in on a shared home.
       const spawnedAtMs = Date.now();
@@ -761,7 +815,9 @@ export const openaiAgentEngine = {
       // The stream said no model (it never does — see readServedModel); the rollout under THIS run's
       // CODEX_HOME did. Read here, inside the try, because the finally below deletes that dir.
       if (!ev.model) ev.model = readServedModel(codexHome, spawnedAtMs);
-      return settleTuple({ r, ev, resumeRef });
+      // The answer is read here too, before the home it sits in is removed.
+      const tuple = settleTuple({ r, ev, resumeRef });
+      return confined ? { ...tuple, ...codexConfinedAnswer(confinedFiles.answer, ev) } : tuple;
     } finally {
       // BEFORE the home can be deleted, here or by the ladder that owns it. A failed write-back leaves the
       // turn's result as it was; the next turn is seeded from the master either way.

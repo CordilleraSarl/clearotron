@@ -17,7 +17,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { stageCharter } from "../pipeline.mjs";
-import { proseRungDirective, inquiryRungDirective } from "../stages.mjs";
+import { proseRungDirective } from "../stages.mjs";
 import { depthFor } from "../search-policy.mjs";
 
 const SRC = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
@@ -47,7 +47,6 @@ function dispatchesOf(stageName) {
 test("the fixture finds the dispatches at all — a zero here is an instrument fault, not a clean repo", () => {
   assert.ok(dispatchesOf("synthesis").length >= 4,
     `found ${dispatchesOf("synthesis").length} synthesis dispatches; the arms below would pass over an empty list`);
-  assert.ok(dispatchesOf("placement-inquiry").length >= 1, "found no placement-inquiry dispatch");
 });
 
 test("every WARM synthesis dispatch carries the charter", () => {
@@ -62,19 +61,8 @@ test("every WARM synthesis dispatch carries the charter", () => {
     + "reached a client.");
 });
 
-test("every warm PLACEMENT-INQUIRY dispatch carries it too — the family rule has no exceptions list", () => {
-  // Today the inquiry family has no warm dispatch, so this passes vacuously — and it is written anyway,
-  // because the next one added would otherwise inherit the exact defect this issue is about. An
-  // exceptions list is where the next one comes from.
-  const missing = dispatchesOf("placement-inquiry")
-    .filter((d) => /sessionKey\s*:/.test(d.opts))
-    .filter((d) => !/stageCharter\(/.test(d.opts));
-  assert.deepEqual(missing.map((d) => d.opts.slice(0, 90)), []);
-});
-
 test("the charter IS the fresh dispatch's directive — one string, not two that agree today", () => {
   assert.equal(stageCharter("synthesis", depth(WORLDWIDE)).trim(), proseRungDirective(depth(WORLDWIDE)).trim());
-  assert.equal(stageCharter("placement-inquiry", depth(WORLDWIDE)).trim(), inquiryRungDirective(depth(WORLDWIDE)).trim());
   assert.ok(stageCharter("synthesis", depth(WORLDWIDE)).length > 100, "the fixture composed nothing to compare");
 });
 
@@ -82,8 +70,7 @@ test("the UNGRADED product adds nothing, and an unknown stage adds nothing", () 
   // Byte-identical by construction on P4: the charter is empty, so a warm dispatch there sends exactly
   // what it sent before this landed.
   assert.equal(stageCharter("synthesis", depth(ONE)), "");
-  assert.equal(stageCharter("placement-inquiry", depth(ONE)), "");
-  assert.equal(stageCharter("register-digest", depth(WORLDWIDE)), "",
+  assert.equal(stageCharter("owner-judgment", depth(WORLDWIDE)), "",
     "a stage with no graded directive grew one — the charter must not invent prose for a stage the "
     + "architecture table does not grade");
   assert.equal(stageCharter("synthesis", null), "");
@@ -135,7 +122,7 @@ function dispatchSites(src) {
 
 // A dispatch the charter rule can bite on: it resumes a session AND sends a followup, and its stage is
 // one `stageCharter` serves — or is named by a VARIABLE, in which case it may be at run time.
-const GRADED_LITERAL = /^"(synthesis|placement-inquiry)"$/;
+const GRADED_LITERAL = /^"synthesis"$/;
 const chartered = (o) => /stageCharter\(|correctionsExtra\(/.test(o);
 const bitesHere = (s) => hasProp(s.opts, "sessionKey") && hasProp(s.opts, "followup")
   && (!s.name.startsWith('"') || GRADED_LITERAL.test(s.name));
