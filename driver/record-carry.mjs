@@ -902,7 +902,7 @@ export function statedDivergenceFindings({ reconciliation = null, carryRows = nu
   //   statedDivergenceFindings   checked=5 matched=5 diverged=0   ← should have named two marks
   //
   // The reconciliation names five finding-ended positions and they are five OTHER marks — VELTRIN
-  // bioenergetische Kosmetik, KORPHIC HSE, KORPHI, DELPHIN & EMERENCE, KORPHI DIAGNOSTICS. The two that
+  // bioenergetische Kosmetik, KORPHIC HSE, KORPHI, KORPHIN & ACME, KORPHI DIAGNOSTICS. The two that
   // were lost sit in the CARRY rows and the reconciliation never mentions them:
   //
   //   HALVER KORPHI  reach=placed stopped_at=digest reason_source=step-stated reason=digest:reasoned-negative

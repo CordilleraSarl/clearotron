@@ -159,9 +159,9 @@ const recordUriFile = (uri) => String(uri ?? "").toLowerCase().replace(/^\/mark\
 //   /mark/ae/229552                       the bare uri (the only form that resolved) → ae-229552.json
 //   https://tm.corsearch.com/mark/ae/229552   a provider URL (the VENZY join defect's shape)
 //   `/mark/ae/229552`, "…/mark/ae/229552."    a cite carrying markdown/punctuation
-//   /mark/ch/57860  vs  ch-57860-2014.json    the store holds the registration-INSTANCE uri while
-//                                             judgment cites the record (screen-gate.mjs:99 — the
-//                                             DELPHINOL false hard-halt, same fact at a different
+//   /mark/ch/30419  vs  ch-30419-2014.json    the store holds the registration-INSTANCE uri while
+//                                             judgment cites the record (screen-gate.mjs:99 — a
+//                                             false hard-halt, the same fact at a different
 //                                             granularity)
 // So: canonicalise the CITE through normalizeRecordUri (registry-fidelity.mjs) — the canonical form
 // pipeline, recall-reconciliation and presence-reconciliation already join on, and the

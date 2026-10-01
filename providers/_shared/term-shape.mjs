@@ -80,7 +80,7 @@ export function termPredicateIssue(term, predicate) {
 // R2b died at fan-in on a plan carrying its own section headings as search terms:
 //
 //   term="**Core (BIOVELTRIN, BIO VELTRIN, BIO-VELTRIN, etc.)**"    predicate=default
-//   term="**Formative root (VELTRIN, DELPHIN, DELPHINUS, etc.)**"   predicate=default
+//   term="**Formative root (VELTRIN, KORPHIN, KORPHINUS, etc.)**"   predicate=default
 //
 // Twenty minutes earlier the same matter on the same commit delivered clean, and the only difference
 // was those two strings. Both happened to be 6 words, so they tripped the >4-word arm below by luck;

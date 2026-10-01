@@ -596,7 +596,7 @@ test("a duplicate-of-surfaced row names the RECORD, and the plain mark still nam
   const v = acceptRegisterDigest({
     incumbent_rows: [{ uri: REC_KORFITY_CH.record_id, flag_reason: "Watchlist entry on the same owner, carried so the seed is answered across its live positions.", verify: "no" }],
     negative_rows: [
-      { uri: REC_KORFITY_EM.record_id, ground: "duplicate-of-surfaced", variant: "DELF",
+      { uri: REC_KORFITY_EM.record_id, ground: "duplicate-of-surfaced", variant: "KORF",
         drop_reason: "No separate row — the EU leg of the Norvanta KORFITY position already reported on the watch annex." },
       // THE CONTROL, a different ground: this row IS about the record on its own terms and its cell
       // must be untouched, or the change is a blanket rewrite of the column wearing a narrow name.
