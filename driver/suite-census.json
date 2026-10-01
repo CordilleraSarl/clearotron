@@ -1305,6 +1305,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-session-the-classifier-cut-is-not-recorded-as-clean.test.mjs": {
+          "tests": 7,
+          "asserts": 51,
+          "skips": 0,
+          "todos": 0
+        },
         "a-shared-proprietor-is-not-a-bucket-collision.test.mjs": {
           "tests": 6,
           "asserts": 14,

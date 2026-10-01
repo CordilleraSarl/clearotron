@@ -517,15 +517,15 @@ test("an engine that CANNOT REPORT tool time records null, never 0 — silence i
 // that reports nothing reports null for it too: "cannot report" and "measured, nothing unmeasurable"
 // (`[]`) are different answers, which is the whole distinction the field exists to draw.
 const NO_GAUGE = { toolCalls: null, toolWaitMs: null, activeMs: null, toolWaitByTool: null,
-  toolWaitUnmeasurable: null, toolCallsRefused: null, commandToolCalls: null, mcpToolCalls: null };
+  toolWaitUnmeasurable: null, toolCallsRefused: null, commandToolCalls: null, mcpToolCalls: null, toolCallsByName: null };
 
 test("toolGauge — an honest zero survives, and every unmeasurable operand returns null", () => {
-  assert.deepEqual(toolGauge({ toolCalls: 3, toolWaitMs: 5400, activeMs: 12000, toolWaitByTool: { Read: 5400 } }),
+  assert.deepEqual(toolGauge({ toolCalls: 3, toolWaitMs: 5400, activeMs: 12000, toolWaitByTool: { Read: 5400 }, toolCallsByName: { Read: 3 } }),
     { toolCalls: 3, toolWaitMs: 5400, activeMs: 12000, toolWaitByTool: { Read: 5400 },
-      toolWaitUnmeasurable: null, toolCallsRefused: null, commandToolCalls: null, mcpToolCalls: null });
-  assert.deepEqual(toolGauge({ toolCalls: 0, toolWaitMs: 0, activeMs: 0, toolWaitByTool: {} }),
+      toolWaitUnmeasurable: null, toolCallsRefused: null, commandToolCalls: null, mcpToolCalls: null, toolCallsByName: { Read: 3 } });
+  assert.deepEqual(toolGauge({ toolCalls: 0, toolWaitMs: 0, activeMs: 0, toolWaitByTool: {}, toolCallsByName: {} }),
     { toolCalls: 0, toolWaitMs: 0, activeMs: 0, toolWaitByTool: {}, toolWaitUnmeasurable: null,
-      toolCallsRefused: null, commandToolCalls: null, mcpToolCalls: null },
+      toolCallsRefused: null, commandToolCalls: null, mcpToolCalls: null, toolCallsByName: {} },
     "a turn that genuinely called no tools must keep its 0 and its EMPTY map — both are measurements, not silences");
   assert.deepEqual(toolGauge({}), NO_GAUGE, "an engine that reports none of them");
   assert.deepEqual(toolGauge(undefined), NO_GAUGE, "no turn at all");

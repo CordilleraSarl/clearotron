@@ -36,6 +36,18 @@ import { driverDir, labelOfDriverFile } from "../shared/driver-dir.mjs";
 // What no file of the run record holds, stated on every answer. The register's own HTTP retries are
 // written to the provider call log, which is per machine, not per run; and a tool result whose text reports a
 // failure while its call settles ok carries no marker the call log keeps.
+/** One line for what interrupted a session, from its record: counts only, never the program's words. */
+function interruptionOf(session) {
+  const parts = [];
+  const cuts = session?.classifierCuts?.length ?? 0, refusals = session?.refusals?.length ?? 0;
+  const errors = (session?.results ?? []).filter((r) => r?.isError).length, starts = Number(session?.starts) || 0;
+  if (cuts) parts.push(`${cuts} classifier cut${cuts === 1 ? "" : "s"}`);
+  if (refusals) parts.push(`${refusals} refusal${refusals === 1 ? "" : "s"}`);
+  if (errors) parts.push(`${errors} error result${errors === 1 ? "" : "s"}`);
+  if (starts > 1) parts.push(`${starts - 1} restart${starts === 2 ? "" : "s"}`);
+  return parts.length ? `the session went on to deliver after ${parts.join(", ")}` : "the session's record marks it interrupted";
+}
+
 export const NOT_RECORDED = [
   "register calls the provider retried inside one tool call (the call log is per machine, not per run)",
   "a tool result that reports a failure in its text while the call settles ok",
@@ -347,7 +359,10 @@ export function firstTimeRows({ attempts = [], runLog = [], status = {}, markers
       if (prev === undefined || n <= prev) cycles.set(stage, [...(cycles.get(stage) ?? []), { start: n, after: prev ?? null, row }]);
       prevAttempt.set(stage, n);
     }
-    if (row.ok === false) add("failed attempt", stage, n, row.fail ?? "no cause recorded", row);
+    // A session that was cut, refused or restarted and still delivered is not ok and did not fail: it is
+    // named for what happened to it (engine/session-record.mjs), never as a failure with no cause.
+    if (row.ok === false && !row.fail && row.session?.interrupted) add("interrupted session", stage, n, interruptionOf(row.session), row);
+    else if (row.ok === false) add("failed attempt", stage, n, row.fail ?? "no cause recorded", row);
     else if (Number.isFinite(n) && n > 1) add("retry", stage, n, `attempt ${n} succeeded`, row);
     if (row.rescued) add("rescue", stage, n, `rescued: ${row.rescued}`, row);
     if (row.selfReportContradicted === true && row.ok !== false) add("self-report contradicted", stage, n, "the model reported done and its file said otherwise", row);

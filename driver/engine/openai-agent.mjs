@@ -24,6 +24,7 @@
 
 import { mkdtempSync, mkdirSync, writeFileSync, copyFileSync, existsSync, rmSync, readFileSync, readdirSync, statSync, symlinkSync, lstatSync, realpathSync } from "node:fs";
 import { everyToolCallRefused } from "./tool-refusal.mjs";
+import { newSessionRecord, noteCodexEvent, sessionSummary, countTool, streamSink } from "./session-record.mjs";   // what the session went through, beside how it ended
 import { writeSecretFile } from "../../shared/secret-file.mjs";   // the rotated login goes back the way every credential is written
 import { tmpdir, homedir } from "node:os";
 import { join, dirname, sep } from "node:path";
@@ -330,6 +331,7 @@ export function parseCodexEvent(line, ev) {
           ev.commandFailures.push({ command: String(e.item.command ?? ""), output: String(e.item.aggregated_output ?? "") });
       }
       noteMcpToolCall(e.item, ev);
+      noteToolItem(e.item, ev);
       break;
     // ── — AN MCP CALL THAT WAS REFUSED IS NOT A CALL NOBODY MADE ──────────
     //
@@ -352,6 +354,7 @@ export function parseCodexEvent(line, ev) {
     // would double every call.
     case "item.started":
       noteMcpToolCall(e.item, ev);
+      noteToolItem(e.item, ev);
       break;
     default: break;
   }
@@ -375,6 +378,33 @@ export function noteMcpToolCall(item, ev) {
     status: item.status ?? null,
     message: item.error?.message ?? null,
   });
+}
+
+// The item kinds codex reports a tool call as, besides its MCP calls. Its own words, measured on
+// codex-cli 0.150–0.158: a shell command, a file edit, a web search.
+const TOOL_ITEM_KINDS = new Set(["command_execution", "file_change", "web_search"]);
+
+/**
+ * Remember one tool-shaped item by id, for the per-name count. Codex writes each item twice (started,
+ * then its terminal state) under one id, so the id is the unit, exactly as for the MCP gauge.
+ */
+export function noteToolItem(item, ev) {
+  if (!item?.id) return;
+  const name = item.type === "mcp_tool_call" ? `mcp__${item.server ?? "?"}__${item.tool ?? "?"}`
+    : TOOL_ITEM_KINDS.has(item.type) ? item.type : null;
+  if (!name) return;
+  (ev.toolItems ??= new Map()).set(item.id, name);
+}
+
+/**
+ * The turn's tool calls by name, in the shape anthropic-agent records: an MCP call under
+ * `mcp__<server>__<tool>`, and codex's own tool items under its own word for them. Counted once per item
+ * id. An OBJECT is a measurement (`{}` = none observed).
+ */
+export function codexToolCallsByName(ev) {
+  const byName = Object.create(null);
+  for (const name of ev?.toolItems?.values() ?? []) countTool(byName, name);
+  return { ...byName };
 }
 
 /**
@@ -589,6 +619,9 @@ function settleTuple({ r, ev, resumeRef }) {
     // adapter reads its commands only for failures (below), so it reports no command-tool count: null, never zero.
     toolCallsRefused: mcpToolGauge(ev).mcpToolCallsRefused,
     commandToolCalls: null,
+    // The per-name split of the calls codex reports (see codexToolCallsByName), what the session went
+    // through (session-record.mjs: every turn ending and stream error, in order), and the raw stream.
+    toolCallsByName: codexToolCallsByName(ev), session: sessionSummary(ev.session), stream: ev.stream ?? null,
     writesFailed: ev.writesFailed ?? 0,
     commandsFailed: ev.commandsFailed ?? 0,
     commandFailures: ev.commandFailures ?? [],
@@ -624,6 +657,8 @@ function errResult(t0, e, resumeRef) {
     code: 1, killed: false, wall: (Date.now() - t0) / 1000, stdout: "",
     stderr: `openai-agent error: ${e?.message ?? e}`, laneWaitMs: 0,
     json: null, usage: null, modelWire: null, sessionRef: resumeRef ?? null,
+    // No session ran: nothing to have been interrupted, no stream.
+    toolCallsByName: null, session: null, stream: null,
   };
 }
 
@@ -652,7 +687,7 @@ export const openaiAgentEngine = {
   // `thread/resume failed: no rollout found for thread id ... (code -32600)`, exit 1 — with the control
   // (same id, same binary, its own home) resuming cleanly. So every warm-patch retry and every
   // form-repair sub-turn on the codex arm has been failing.
-  async runTurn({ message, model, thinking, timeoutSec, resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, stallSec, codexHome: providedHome } = {}) {
+  async runTurn({ message, model, thinking, timeoutSec, resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, stallSec, codexHome: providedHome, streamFile = null } = {}) {
     if (!message) throw new Error("openai-agent.runTurn: message is required");
     const t0 = Date.now();
     let codexHome;
@@ -703,16 +738,25 @@ export const openaiAgentEngine = {
       // Stamped HERE, not at function entry: everything above is file writes that can take a moment, and
       // a floor set too early would let a previous turn's rollout back in on a shared home.
       const spawnedAtMs = Date.now();
-      const ev = { threadId: null, usage: null, agentText: "", turnCompleted: false, turnFailed: null, streamError: null, model: null, mcpCalls: new Map() };
+      const ev = { threadId: null, usage: null, agentText: "", turnCompleted: false, turnFailed: null, streamError: null, model: null, mcpCalls: new Map(),
+        session: newSessionRecord() };
+      // The raw stream, one file per session beside its dispatch; every line codex wrote on stdout.
+      const sink = streamSink(streamFile);
       const r = await runStreamingChild({
         bin: codexBin(), args, input, runDir,
         // — the run dir, not a shared tmpdir. codex makes cwd a workspace root, writable under the
         // stage's profile, so this tightens the writable surface onto the run rather than widening it.
         cwd: resolveSpawnCwd({ cwd, runDir }),
         env, stallSec, timeoutSec,
-        onStdoutLine: (line) => parseCodexEvent(line, ev),
+        onStdoutLine: (line) => {
+          sink.write(`${line}\n`);
+          parseCodexEvent(line, ev);
+          let e; try { e = JSON.parse(line); } catch { return; }
+          noteCodexEvent(ev.session, e, Date.now() - t0);
+        },
         stderrIsLiveness: true,   // codex streams progress on STDERR → it is liveness for the stall watchdog
       });
+      ev.stream = sink.close();
       if (r.spawnError) return errResult(t0, r.spawnError, resumeRef);
       // The stream said no model (it never does — see readServedModel); the rollout under THIS run's
       // CODEX_HOME did. Read here, inside the try, because the finally below deletes that dir.
