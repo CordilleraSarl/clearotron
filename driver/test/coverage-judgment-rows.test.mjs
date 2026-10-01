@@ -101,15 +101,20 @@ test("the rows are derived from BOTH sources, and a slice that both describe is 
     "incumbent-class / owner probe, cl. 5, GB",
   ], "one row per NOT-confirmed-clean ledger row — a confirmed-clean row IS the absence of a disclosure — and NO second row for the missing qid, whose axis already owns an open row");
 
-  assert.match(rows[0].note, /^coverage-limited — count-only, saturated$/,
-    "the note carries the ledger's own status and its own reason, not a paraphrase of them");
+  assert.equal(rows[0].note, "coverage-limited",
+    "the note carries the ledger's own status, not a paraphrase of it");
+  // The reason stays in the ledger. Code writes it now, as figures for the driver's own checks, and the
+  // workbook prints the note to the lawyer.
+  const figures = coverageJudgmentRows([{ axis: "primary-sweep", unit: "primary-sweep / crowd: VENZ [cl 5]",
+    status: "coverage-limited", reason: "1200 hits; classes unaccounted: 9; receipt: capability-gap: not dispatched" }], RECEIPT);
+  assert.equal(figures[0].note, "coverage-limited", "a code-written reason never reaches the note");
 
   // The missing qid is not dropped, it is NAMED on the row that already describes its axis. Rendered,
   // the un-joined pair read as the same fact twice in two vocabularies — "incumbent-class / owner probe:
   // deferred — the provider produced no band block for this query; incumbent-class:owner:muster: planned
   // and not executed this run — the funnel produced no band block for this query" — which is what the
   // stage's own COVERAGE PROSE rule forbids: state each coverage fact ONCE, in ONE place.
-  assert.match(rows[1].note, /^deferred — .*\(no band block for: incumbent-class:owner:muster\)$/,
+  assert.match(rows[1].note, /^deferred \(no band block for: incumbent-class:owner:muster\)$/,
     "the qid rides VERBATIM on the ledger row for its own axis — every gate joins on it, and a shortened one is a row nobody can match back");
 
   // An axis with NO open ledger row still discloses its missing qid on its own — otherwise nothing
@@ -290,8 +295,8 @@ test("a real delivered run records the stamp's decision in its own journal", asy
   assert.deepEqual(cj.rows, [
     { area: "primary-sweep (entire axis)", areaLabel: "main register sweep (all of it)", note: "coverage-limited" },
     { area: "primary-sweep / exact: PROJECT NOVAPULSE [cl 25]", areaLabel: "main register sweep / exact: PROJECT NOVAPULSE [cl 25]",
-      note: "deferred — receipt: capability-gap: the active register provider cannot express this slice, so it was never dispatched — asking again returns the identical refusal" },
-  ], "the delivered rows are the LEDGER's, verbatim — the derived set survives consolidateFindingsFile and publish intact");
+      note: "deferred" },
+  ], "the delivered rows are the LEDGER's areas and statuses, and none of the figures code wrote as the ledger's reason — the derived set survives consolidateFindingsFile and publish intact");
 
   // The whole-axis row says so. A ledger unit collapses to the bare axis when the row carries no scope,
   // and `projectCoverageJudgment` folds these straight into the coverage reason that render.mjs prints

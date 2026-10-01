@@ -6035,10 +6035,15 @@ export function coverageJudgmentRows(ledgerRows, planExecution) {   // @internal
     // spent — and a row saying otherwise would read to a lawyer as an incomplete job.
     const status = String(r?.status ?? "").toLowerCase();
     if (!r || status === "confirmed-clean" || status === "withheld-by-judgment") continue;
-    const reason = String(r.reason ?? "").replace(/\s+/g, " ").trim().slice(0, 160);
+    // — THE STATUS, AND NOT THE REASON. The reason was the sentence the register digest wrote for the
+    // lawyer. Code settles every row now (coverage-form.mjs settleCoverageRowsFromFacts), and the reason it
+    // writes is figures for the driver's own checks: the hit count, the classes and terms unaccounted, the
+    // receipt's wording. Those stay in the ledger, where the class join and the capability-gap hold read
+    // them. They do not ride the note, because the workbook prints the note and the workbook is for the
+    // lawyer, not a code record (owner, 2026-10-01).
     const axis = String(r.axis ?? "").toLowerCase();
     open.push({ axis, area: coverageRowArea(axis, r.unit), areaLabel: coverageRowAreaLabel(axis, r.unit),
-      note: `${r.status}${reason ? ` — ${reason}` : ""}`, qids: [] });
+      note: String(r.status), qids: [] });
   }
   const skeleton = Array.isArray(planExecution?.skeleton) ? planExecution.skeleton : null;
   const axisOf = new Map();
