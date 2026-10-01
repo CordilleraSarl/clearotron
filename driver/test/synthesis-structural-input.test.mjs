@@ -10,9 +10,9 @@
 // then blocks — had NEITHER, in the prompt or in the staleness map. A grep for either path over the whole
 // synthesis stage block returned zero.
 //
-// On the first delivered clearance that cost a fabricated Biogen enforcement history over a check the grid
-// never dispatched, three named attributions the reviewer deleted, and a blocked first pass. The evidence
-// that the check never ran was on disk before synthesis started.
+// On the first delivered clearance that cost a fabricated enforcement history for a named third party
+// over a check the grid never dispatched, three named attributions the reviewer deleted, and a blocked
+// first pass. The evidence that the check never ran was on disk before synthesis started.
 //
 // Every fixture here is DERIVED by the production derivations (`joinPlanToBands` → `deriveCoverageSkeleton`
 // → the receipt shape `writePlanExecutionReceipt` writes) rather than hand-typed, because a hand-typed
