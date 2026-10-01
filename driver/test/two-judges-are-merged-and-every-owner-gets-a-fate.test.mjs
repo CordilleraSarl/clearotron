@@ -196,7 +196,7 @@ test("the coverage form is settled from each row's own facts, in the ledger's ow
     { kind: "deferred", axis: "phonetic", open: true, receipt_reason: "the provider cannot express it", status: null },
     { kind: "family", axis: "phonetic", open: true, status: null },
     { kind: "family", axis: "phonetic", open: true, status: "withheld-by-judgment", reason: "the list answered it" },
-    { kind: "axis", axis: "translit", open: false, status: null },
+    { kind: "axis", axis: "translit", skeleton_state: "executed", open: false, status: null },
     { kind: "axis", axis: "incumbent", open: true, status: null },
   ];
   const settled = settleCoverageRowsFromFacts(rows);
@@ -235,6 +235,10 @@ test("coverage settled by code: an axis is clean only where its slices ran and w
   // An axis minted from a stray unit file has no search behind it: deferred, never clean.
   const stray = [axis("stray-notes", null)];
   assert.equal(byAxis(settleCoverageRowsFromFacts(stray, { unknownAxes: ["stray-notes"] }))["stray-notes"], "deferred");
+  // A count the plan asked for leaves no open block row, by doctrine, so its axis is clean; and an axis with
+  // no skeleton state is one the plan put no question to, so nothing was owed on it. Neither is a limit.
+  assert.deepEqual(byAxis(settleCoverageRowsFromFacts([axis("counted", "incomplete"), axis("asked-nothing", null)])),
+    { "counted": "confirmed-clean", "asked-nothing": "confirmed-clean" });
 });
 
 test("the audit's register rows: carried owners as findings, set-aside owners as the 'also considered' names", () => {

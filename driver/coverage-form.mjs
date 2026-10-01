@@ -1014,20 +1014,26 @@ export function renderCoverageLedgerJsonFromForm(rows, classTokens) {
 //
 // The register digest ruled every row of this form. Step 3 now judges owners and says nothing about
 // coverage (owner-judgment.mjs), so code settles the rows from the facts each row already carries. Measured
-// against the digest's rulings on the saved runs (2026-10-01): every open crowd block and every deferred
-// slice agree, and 14 of 20 axis rows.
+// against the digest's rulings on the saved runs (2026-10-01): every open crowd block, deferred slice and
+// waiting family agree (99 rows), and 14 of 20 axis rows. Of the other 6, code is stricter on 3, and looser on
+// 3: two planned-count axes and one axis the plan asked nothing of, which the digest called limited.
 //
 //   · an open crowd block ran and saturated, so it is `coverage-limited` — disclosed, never clamping;
 //   · a deferred slice never ran and nothing can make it run, so it is `deferred` — the status the
 //     verdict clamp reads (decideRegisterGap), so a run with an unsearched slice still cannot read CLEAR;
-//   · an axis is clean only where its slices ran and were read. It is `deferred` when the execution
-//     skeleton contradicts itself about it, when a slice on it never ran (`unexecuted`), when its band
-//     could not be read, or when it is not a register axis at all (a stray file in register-units, which
-//     no search stands behind); `coverage-limited` when any of its blocks or slices is open, or when every entry
-//     on it was skipped behind a crowded parent; and an axis whose every entry is a waiting family takes
-//     the families' own judgment (`withheld-by-judgment` when the reading turn withheld each one, and
-//     `deferred` while any is undecided). These are the never-searched states a clean claim was always
-//     refused over (register-plan.mjs, findUnexecutedCleanClaims);
+//   · an axis is `confirmed-clean` when nothing on it is open: every slice listed (`executed`), counted
+//     where the plan asked only for a count (`incomplete` with no open block — a planned count is sanctioned
+//     by doctrine, `openBlocksByAxis()` in register-plan.mjs), or asked nothing at all. The skeleton is
+//     built from the plan's entries, so an axis with no skeleton state is one the plan put no question to
+//     (a mark with no common element has no crowd to probe, a matter with no owner to probe asks no owner
+//     question): nothing was owed, and calling it limited would disclose a limitation that is not one.
+//     It is `deferred` when the execution skeleton contradicts itself about it, when a slice on it never
+//     ran (`unexecuted`), when its band could not be read, or when it is not a register axis at all (a stray
+//     file in register-units, which no search stands behind). It is `coverage-limited` when any of its
+//     blocks or slices is open, or when every entry on it was skipped behind a crowded parent. An axis whose
+//     every entry is a waiting family takes the families' own judgment (`withheld-by-judgment` when the
+//     reading turn withheld each one, and `deferred` while any is undecided). These are the states a clean
+//     claim was always refused over (register-plan.mjs, findUnexecutedCleanClaims);
 //   · a waiting family is the reading turn's to judge: a family it decided arrives settled, and one it did
 //     not stays open, as it always has.
 //
