@@ -262,7 +262,8 @@ export const ARM1_EXEMPTIONS = [
   {
     token: "plan_execution_unreadable",
     stages: ["narrative-refutation"],
-    reason: "The plan-execution receipt is written by the register tool lane, not by the stage (validators.seniorEyeReview in verify.mjs). Unreadable is a tool/driver fault; the stage is only a READER of it.",
+    symbol: { file: "driver/verify.mjs", names: ["seniorEyeReview", "plan_execution_unreadable"] },
+    reason: "The plan-execution receipt is written by the register tool lane, not by the stage (`validators.seniorEyeReview` in verify.mjs). Unreadable is a tool/driver fault; the stage is only a READER of it.",
   },
   {
     token: "grid_spec_unreadable",
