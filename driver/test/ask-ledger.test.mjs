@@ -356,7 +356,7 @@ test("cross-checks: a refused probe surfaces as an OPEN ask with no qid — a si
       refused: [{ qid: "xcheck-mark-core-bioveltrin", markText: "**Core (BIOVELTRIN, BIO VELTRIN, BIO-VELTRIN, etc.)**",
         issue: 'plan row "xcheck-mark-core-bioveltrin" refused AT THE FOLD — never frozen into the plan, never dispatched: markdown emphasis' }] },
     recall: { directives: [], overflow: [],
-      refused: [{ qid: "recall-formative-root", mark_text: "**Formative root (VELTRIN, DELPHIN, DELPHINUS, etc.)**", issue: "markdown emphasis" }] },
+      refused: [{ qid: "recall-formative-root", mark_text: "**Formative root (VELTRIN, KORPHIN, KORPHINUS, etc.)**", issue: "markdown emphasis" }] },
     planExecution: PLAN_EXEC,
   }, { ts: "t" });
   const byId = Object.fromEntries(asks.map((a) => [a.ask_id, a]));
@@ -505,16 +505,16 @@ test("an unreadable findings.json is a could-not-look, not an empty findings set
 });
 
 test("the mark is matched on the findings' own field, never as a substring of the document", () => {
-  // The measurement error this guards against, met while diagnosing 246: `"DELFIN" in JSON.stringify(doc)`
-  // is true when the findings name DELFIN TECHNOLOGIES OY and nothing else. A membership test that matches
+  // The measurement error this guards against, met while diagnosing 246: `"KORFIN" in JSON.stringify(doc)`
+  // is true when the findings name KORFIN TECHNOLOGIES OY and nothing else. A membership test that matches
   // every longer name closes asks whose mark never reached the client — the exact defect, wearing a pass.
   const files = {
     "register-findings.md": "already reasoned on the incumbent sheet",
-    "findings.json": findingsWith("DELFIN TECHNOLOGIES OY"),
+    "findings.json": findingsWith("KORFIN TECHNOLOGIES OY"),
   };
-  const r = applyAskClosure([recallAsk("recall-delfin", "DELFIN")], IMMATERIAL("ask:recall:recall-delfin"), files, { ts: "T" });
-  assert.equal(r.asks[0].ending, undefined, "DELFIN is a substring of a delivered name, not a delivered mark");
-  assert.deepEqual(r.carryIntoFindings.map((c) => c.mark), ["DELFIN"]);
+  const r = applyAskClosure([recallAsk("recall-korfin", "KORFIN")], IMMATERIAL("ask:recall:recall-korfin"), files, { ts: "T" });
+  assert.equal(r.asks[0].ending, undefined, "KORFIN is a substring of a delivered name, not a delivered mark");
+  assert.deepEqual(r.carryIntoFindings.map((c) => c.mark), ["KORFIN"]);
   // …and punctuation/case differences still JOIN, or the guard would reopen marks that did reach the client.
   const r2 = applyAskClosure([recallAsk("recall-korphi-md", "KORPHI·MD")], IMMATERIAL("ask:recall:recall-korphi-md"),
     { ...files, "findings.json": findingsWith("korphi md") }, { ts: "T" });

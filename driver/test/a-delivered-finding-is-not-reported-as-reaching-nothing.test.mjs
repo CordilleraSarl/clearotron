@@ -35,12 +35,12 @@ function runWith({ subjects, arrivals }) {
   return dir;
 }
 
-const COMPOSITE = "Delphinus Medical Technologies — SoftVue breast ultrasound device";
-const SOURCE_URL = "https://clinicaltrials.gov/study/NCT03257839";
+const COMPOSITE = "Korphinus Medical Technologies — AcmeScan breast ultrasound device";
+const SOURCE_URL = "https://example.test/korphinus-trial";
 
 test("the em-dash separates a name from its description, so the entity is a join key", () => {
   const frs = nameFragments(COMPOSITE);
-  assert.ok(frs.includes("Delphinus Medical Technologies"),
+  assert.ok(frs.includes("Korphinus Medical Technologies"),
     `the entity must be testable on its own; got ${JSON.stringify(frs)}`);
   assert.ok(frs.length >= 2, "and the description stays a fragment too — more fragments can only move a row toward ARRIVED");
 });
@@ -50,7 +50,7 @@ test("a delivered common-law finding is not reported as reaching nothing", () =>
   // on the common-law surface. The entity name is what arrives, and it is what must be found.
   const dir = runWith({
     subjects: [{ name: COMPOSITE, url: SOURCE_URL }],
-    arrivals: [{ subject: "Delphinus Medical Technologies", note: "device maker" }],
+    arrivals: [{ subject: "Korphinus Medical Technologies", note: "device maker" }],
   });
   const r = carryThrough(dir);
   assert.equal(r.computable, true);
@@ -69,7 +69,7 @@ test("A REAL DROP IS STILL REPORTED — the fix must not be `stop reporting`", (
       // failure mode this whole issue is about.
       { name: "Kolema Bioscience — contract manufacturer", url: "https://example.test/kolema" },
     ],
-    arrivals: [{ subject: "Delphinus Medical Technologies", note: "device maker" }],
+    arrivals: [{ subject: "Korphinus Medical Technologies", note: "device maker" }],
   });
   const r = carryThrough(dir);
   assert.equal(r.lost.length, 1, "a subject that reached no arrival artifact must still be reported");

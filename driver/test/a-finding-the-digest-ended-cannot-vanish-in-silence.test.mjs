@@ -39,7 +39,7 @@ test("the DISCRIMINATOR — the same divergence with a STATED reason is left alo
   // Nine of these across six runs, all legitimate: a later step reconsidered and said why. A rule that
   // fired on divergence rather than on SILENCE would have flagged every one of them.
   const r = silentlyLostFindings({
-    reconciliation: recon([endedFinding(URI, "DELPHIN & EMERENCE")]),
+    reconciliation: recon([endedFinding(URI, "KORPHIN & ACME")]),
     carryRows: [{ uri: URI.toLowerCase(), reach: "screened", stopped_at: "synthesis",
       reason: "synthesis:declined:not-worth-the-line", reason_source: "step-stated" }],
   });

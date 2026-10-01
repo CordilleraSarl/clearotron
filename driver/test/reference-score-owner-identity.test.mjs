@@ -33,9 +33,9 @@ const SURFACED = { mark: "DG VELTRIN GENETICS", evidence: "register",
 const DIFFERENT_OWNERS = [
   { mark: "Veltrin Pharmaceuticals", evidence: "register", owner: { name: "Veltrin Pharmaceuticals" } },
   { mark: "veltrinsoft", evidence: "register", owner: { name: "Veltrinsoft SA" } },
-  { mark: "Delphia Therapeutics", evidence: "register", owner: { name: "Delphia Therapeutics" } },
+  { mark: "Veltria Therapeutics", evidence: "register", owner: { name: "Veltria Therapeutics" } },
   { mark: "Veltrin Pharma", evidence: "register", owner: { name: "Veltrin Pharma" } },
-  { mark: "DELFI Diagnostics", evidence: "register", owner: { name: "DELFI Diagnostics, Inc." } },
+  { mark: "VELFI Diagnostics", evidence: "register", owner: { name: "VELFI Diagnostics, Inc." } },
 ];
 
 // ── 1. THE PAIRING ───────────────────────────────────────────────────────────────────────────────────
