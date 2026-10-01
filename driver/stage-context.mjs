@@ -123,6 +123,20 @@ export const TOOL_GROUP_EDGES = {
     { path: P.bandShapeMd, why: "band_shape serves band-shape.md (the readable shape, part-paged)" },
     { path: P.registerPositions, why: "the exact-identity projection the shape and the recall join read as one unit" },
     { path: join(P.runDir, "_records"), dir: true, why: "band_record serves the official registry records fetched into this run" },
+    // SEVENTH OCCURRENCE OF THIS TABLE'S OWN SUBJECT, and the arm written to prevent it could not see this
+    // one. `band_record` serves a body from `_records/` OR from this log, and at step 2 the real run served
+    // placement's reads from the log rather than from files. Undeclared, the sandbox copy held no bodies and
+    // every one of those reads failed — measured on five saved runs, where placement opened 31, 32, 2, 2 and
+    // 0 records: in the sandbox as shipped, all of them fail.
+    //
+    // WHY THE GENERIC ARM MISSED IT. That arm derives its population by walking the servers for
+    // `driverDir(runDir, X)` and keeping X when it ends in `.json`. This file ends in `.jsonl`, so it was
+    // never in the population the arm checked, and the floor on that population passed on the four `.json`
+    // reads. Widening the extension is not a one-line fix either — the same walk matches files the servers
+    // WRITE, and all three of those are `.jsonl`, so the arm's apparent completeness rested on an accident
+    // of file extension. That is filed on its own rather than bodged here.
+    { path: driverDir(P.runDir, "register-record-bodies.jsonl"),
+      why: "band_record serves a record body from this log when the run fetched it through the ledger rather than into _records/ (band-server.mjs recordLedgerPath); without it the sandbox's record reads all fail and the re-run sees less than the stage saw" },
   ],
   // ── conversion 11 — THE RECORD TOOL READS A DRIVER-WRITTEN SIDECAR, AND NOTHING DECLARED IT ───────
   //
@@ -200,7 +214,20 @@ const UNDECLARED = {
   // inline and names the `record_coverage` tool), the seat opens no coverage file, and the accumulator
   // the gate judges is declared on VALIDATOR_SIDECARS below. The brief's own read of that accumulator
   // is declared on DISPATCH_EXTRAS.
-  "register-digest": () => [],
+  // THE PROMPT NAMES A FILE THE SANDBOX DID NOT COPY, so a re-run of the digest differed from the real
+  // stage in one input the prompt names, invisibly: the stage passed. The digest's message ("MARK THE LIST")
+  // names the hit list and asks the model to mark lines on it, and `hit-list.mjs` reads those marks back.
+  // Absent from the copy, a marking the model sends lands nowhere and nothing refuses — measured on a bench
+  // plumbing run where the digest completed with owed 7 accounted 7 and the hit list was simply not there.
+  //
+  // DECLARED UNCONDITIONALLY, for the reason the digest's accounting stamp above is: `sandboxGaps` reports a
+  // gap only for something the CANONICAL run holds, so a run that never built a hit list contributes no gap,
+  // and one that built it and lost it in the copy refuses by name. Listing it costs nothing on the first and
+  // is the whole point on the second.
+  "register-digest": (P) => [
+    { path: P.registerHitList,
+      why: "the digest's own message names this file and asks the model to mark lines on it (hit-list.mjs reads the marks back); without it in the copy a marking lands nowhere and the stage passes having been given a different input than the real one" },
+  ],
   // The provider enforcement telemetry: the prompt names the path only when ctx.enforcerSignals is a
   // non-zero count (stages.mjs synthesis message). Undeclared on purpose — it is aim-attention only and
   // must never move a freshness stamp — but a sandbox without it hands a different prompt.
