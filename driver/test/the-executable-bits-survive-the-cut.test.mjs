@@ -48,6 +48,7 @@ const EXECUTABLE = [
   "driver/engine/mcp/gather-config.mjs",
   "driver/engine/mcp/perplexity-server.mjs",
   "driver/engine/mcp/stdio-server.mjs",
+  "driver/test/mock-claude-replay.mjs",
   "driver/test/mock-claude-spew-immune.mjs",
   "driver/test/mock-claude.mjs",
   "driver/test/mock-codex.mjs",
