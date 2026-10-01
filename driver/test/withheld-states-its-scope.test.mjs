@@ -48,7 +48,7 @@ const REFERENCE = [{ mark: "MIRANTHEAA" }, { mark: "KORPHI GENETICS" }];
 const RETRIEVED = [
   { mark: "MIRANTHEAA", record_id: "r1" },
   { mark: "KORPHIC RESEARCH", record_id: "r2" },
-  { mark: "DELPHIN & EMERENCE", record_id: "r3" },
+  { mark: "KORPHIN & ACME", record_id: "r3" },
   { mark: "KORPHIC RESEARCH", record_id: "r4" },   // same mark, second record
 ];
 
@@ -64,7 +64,7 @@ test("THE BLIND SPOT IS REAL: withheld stays 0 while two retrieved marks never r
     "the fixture no longer reproduces the round — withheld rose, so the blind spot is not what is being measured");
   const seen = new Set([...buckets.found, ...buckets.withheld, ...buckets.lost, ...buckets.excluded]
     .map((e) => e.mark ?? e.name));
-  for (const m of ["KORPHIC RESEARCH", "DELPHIN & EMERENCE"])
+  for (const m of ["KORPHIC RESEARCH", "KORPHIN & ACME"])
     assert.equal(seen.has(m), false, `${m} reached a bucket — the loop is no longer reference-driven`);
 });
 

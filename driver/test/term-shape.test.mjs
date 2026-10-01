@@ -22,7 +22,7 @@ import {
 // these; the difference between delivering and dying was a `**` in a term field.
 const INCIDENT = [
   "**Core (BIOVELTRIN, BIO VELTRIN, BIO-VELTRIN, etc.)**",
-  "**Formative root (VELTRIN, DELPHIN, DELPHINUS, etc.)**",
+  "**Formative root (VELTRIN, KORPHIN, KORPHINUS, etc.)**",
 ];
 
 test("hasAnchoredWildcard: anchored stars only — infix stars are legal marks, `?` is never plan syntax", () => {
@@ -115,7 +115,7 @@ test("termMarkupIssue fires on the two incident strings, and on the shapes that 
   assert.match(termMarkupIssue("__VELTRIN__") ?? "", /markdown emphasis/);
   // The enumeration alone, with the emphasis stripped — this is the half that survives a `**` cleanup
   // and still stands for a GROUP no single literal can search.
-  assert.match(termMarkupIssue("Formative root (VELTRIN, DELPHIN, DELPHINUS, etc.)") ?? "", /etc\." enumeration/);
+  assert.match(termMarkupIssue("Formative root (VELTRIN, KORPHIN, KORPHINUS, etc.)") ?? "", /etc\." enumeration/);
   assert.match(termMarkupIssue("WAVO variants, …") ?? "", /etc\." enumeration/);
   assert.match(termMarkupIssue("WAVO variants, ...") ?? "", /etc\." enumeration/);
   // A heading marker — the other way a section title reaches a term field.

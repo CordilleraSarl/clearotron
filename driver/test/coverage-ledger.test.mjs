@@ -89,8 +89,8 @@ test("deriveFloorKeys: carries BOTH the root and the full token; guards a garbag
   assert.deepEqual(deriveFloorKeys({ dominantEl: "VELTRIN", root: "ACME" }), ["veltrin"]);
   // an over-SHORT root (< 3) is dropped → full token alone
   assert.deepEqual(deriveFloorKeys({ dominantEl: "VELTRIN", root: "de" }), ["veltrin"]);
-  // a shared-stem root that is a prefix is accepted (DELPHINUS family → root DELPHIN)
-  assert.deepEqual(deriveFloorKeys({ dominantEl: "DELPHINUS", root: "DELPHIN" }), ["delphinus", "delphin"]);
+  // a shared-stem root that is a prefix is accepted (KORPHINUS family → root KORPHIN)
+  assert.deepEqual(deriveFloorKeys({ dominantEl: "KORPHINUS", root: "KORPHIN" }), ["korphinus", "korphin"]);
 });
 
 // judgment-relocation (2026-06-23): the findFloorShapeGaps test section (the (a) missing-band / (b) per-class /
