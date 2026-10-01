@@ -24,7 +24,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { execFileSync } from "node:child_process";
+import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";
+import { nonEmpty } from "../../shared/vacuous-pass.mjs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildClaudeArgs } from "../engine/anthropic-agent.mjs";
@@ -68,13 +69,26 @@ test("the guard can fail — it is driven against a turn that does carry one", (
  * neither field. Those lines are counted rather than banned, so removing them is free and adding a
  * fourth is not.
  */
-const sourceFiles = () => execFileSync("git", ["-C", ROOT, "ls-files"], { encoding: "utf8", maxBuffer: 1 << 28 })
-  .split("\n").filter(Boolean)
-  .filter((f) => /^(driver|providers)\//.test(f) && /\.(mjs|js)$/.test(f))
-  .filter((f) => !/\.test\.|\/test\/|\/fixtures\//.test(f));
+// IT GOES THROUGH THE SHARED HELPER, NOT THROUGH git DIRECTLY. This spawned `git ls-files` itself, and off
+// a checkout with no git — a source archive, an unpacked tarball — that is not one skip but a wall of
+// assertion failures reading "fatal: not a git repository", which is what a reader of such a tree saw
+// instead of a working suite. The helper turns that into a stated, countable skip. A private guard catches a
+// caller that reintroduces the direct spawn, and public CI cannot see that guard: this arm landed on main
+// before anyone ran the control, which is how it got here.
+const GUARD = "no-sampling-no-tool-choice";
+const sourceFiles = (guard) => {
+  const tracked = trackedFiles(guard, { root: ROOT, pathspec: ["driver", "providers"] });
+  if (tracked === null) return null;
+  return tracked
+    .filter((f) => /^(driver|providers)\//.test(f) && /\.(mjs|js)$/.test(f))
+    .filter((f) => !/\.test\.|\/test\/|\/fixtures\//.test(f));
+};
 
-test("nothing on the anthropic path sets temperature, top_p or top_k", () => {
-  const files = sourceFiles();
+test("nothing on the anthropic path sets temperature, top_p or top_k", (ctx) => {
+  const files = sourceFiles(GUARD);
+  // A VISIBLE, COUNTABLE SKIP rather than a bare return: node:test counts `return;` as a PASS, so a floor
+  // that bails that way reports its whole subject clean having measured none of it.
+  if (files === null) return ctx.skip(skipReason(GUARD));
   // A FLOOR ON THE POPULATION, not a better pattern. An empty walk — a renamed directory, a changed
   // extension, a filter that swallowed everything — reports no offender and reads exactly like a clean
   // tree. The number is a floor rather than a count so ordinary growth does not touch it.
@@ -95,8 +109,9 @@ test("nothing on the anthropic path sets temperature, top_p or top_k", () => {
     + "outright, and the program writes the body — there is nothing here this field can legitimately reach.");
 });
 
-test("no file outside the known, unforwarded set forces a tool choice", () => {
-  const files = sourceFiles();
+test("no file outside the known, unforwarded set forces a tool choice", (ctx) => {
+  const files = sourceFiles(GUARD);
+  if (files === null) return ctx.skip(skipReason(GUARD));
   assert.ok(files.length > 200,
     `the walk found only ${files.length} file(s); this arm is reporting on a tree it did not read`);
   const found = [];
