@@ -1160,7 +1160,8 @@ const fromJsonText = (p) => (p == null ? p : p.replace(/\\\\/g, "\\"));
  * written here. Built from what the driver wrote beside the run — the facts each answer is checked against
  * (the records the run holds, the client's scale) and the merged band for the owners' names — never typed
  * here, so a broken facts write reds the pipeline rather than passing it. It carries the first record's
- * owner, sets the second's aside, and rates with the scale's own top and bottom bands.
+ * owner, sets the second's aside, and rates with the scale's own top and bottom bands; its two reads say the
+ * carried mark and goods are the same and the set-aside ones different.
  *   MOCK_JUDGE_ANSWER=<json> — answer exactly this instead; MOCK_JUDGE_NONE=1 — answer nothing.
  */
 export function mockJudgeAnswer(runDir) {
@@ -1174,8 +1175,8 @@ export function mockJudgeAnswer(runDir) {
   const ownerOf = (id) => band.find((r) => r?.record_id === id)?.owner_name || `the holder of ${id}`;
   const [first, second] = facts.recordIds ?? [];
   const considered = [];
-  if (first) considered.push({ owners: [ownerOf(first)], decision: "carry", records: [first], rating: top, reason: "The same mark, live, in the order's classes." });
-  if (second) considered.push({ owners: [ownerOf(second)], decision: "set_aside", records: [second], rating: "", reason: "A different mark for different goods." });
+  if (first) considered.push({ owners: [ownerOf(first)], decision: "carry", records: [first], rating: top, marks_alike: "same", goods_close: "same", reason: "The same mark, live, in the order's classes." });
+  if (second) considered.push({ owners: [ownerOf(second)], decision: "set_aside", records: [second], rating: "", marks_alike: "different", goods_close: "different", reason: "A different mark for different goods." });
   return { considered, overall_rating: considered.length ? top : (bands[bands.length - 1] ?? top), advice: "An invented advice for a test run.", questions_wished_for: [] };
 }
 

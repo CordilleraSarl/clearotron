@@ -36,7 +36,7 @@ import { join } from "node:path";
 import { STAGES, paths } from "../stages.mjs";
 import { validators } from "../verify.mjs";
 
-// A title no dictation could carry by accident — the floor below asserts the composition consulted it.
+// A key no dictation could carry by accident — the floor below asserts the composition consulted it.
 const FRAMEWORK = Object.freeze({
   framework_key: "fixture-framework",
   title: "Fixture Rating Framework (arm floor)",
@@ -60,7 +60,9 @@ const OVERVIEW = dictationOf("report-overview");
 test("the floors — each dictation is the composition for THIS run", () => {
   assert.ok(SYNTHESIS.length > 5000, `synthesis dictation is ${SYNTHESIS.length} bytes — too short to be the real one`);
   assert.ok(OVERVIEW.length > 2000, `overview dictation is ${OVERVIEW.length} bytes — too short to be the real one`);
-  assert.ok(SYNTHESIS.includes(FRAMEWORK.title), "synthesis did not consult the fixture framework");
+  // The framework's title left synthesis's message with the rating authority (owner, 2026-10-01: the rating
+  // in the decisions is the rating); its key is still dictated, and no other run could carry this one.
+  assert.ok(SYNTHESIS.includes(`"rated_under_framework":"${FRAMEWORK.framework_key}"`), "synthesis did not consult the fixture framework");
   assert.ok(SYNTHESIS.includes(P.ownerDecisions), "synthesis did not name this run's owner decisions path");
   assert.ok(OVERVIEW.includes(P.narrative), "the shell did not name this run's narrative path");
 });

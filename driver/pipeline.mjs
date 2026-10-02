@@ -120,7 +120,7 @@ import { pendingWhatIf, claimWhatIf, finishWhatIf, whatIfRefusal } from "./whati
 import { escalatedAxes } from "./skeptic-record.mjs";   // THE escalation parse — shared with the record_skeptic transport so the rendered shape and this read cannot drift
 // — every placed candidate ends somewhere a reader can see; the ones that do not are counted by name
 
-import { synthesisDutyForRun, synthesisCallPaths, refusalsFor } from "./synthesis-record.mjs";   // — the duty checked against the DELIVERED document
+import { synthesisDutyForRun } from "./synthesis-record.mjs";   // — the duty checked against the DELIVERED document
 import { mergedOverall } from "./decision-ratings.mjs";
 import { RECORD_CARRY_SCHEMA_VERSION, traceRecordCarry, parseStageOutcomes, recordCarryEvent, mintRecordCarryDoubts, findingUris } from "./record-carry.mjs"; import { pickingExits, notesExits, notesPageRows, exitsForLog } from "./hand-off-exits.mjs";
 import { reconcileSurfaceDuty, surfaceDutyNote } from "./surface-duty.mjs";   // item 3 — silence at the findings surface, read off the rows above
@@ -2933,25 +2933,15 @@ async function runOwnerJudgment(ctx, { trigger = "fresh", force = false, model =
 
 /**
  * What the judges' ratings did on this run, for its record: the judges' merged overall rating, the worst
- * band among the findings delivered, whether the two differ, how many synthesis calls were refused for
- * placing a rated owner "off-field", and how many delivered findings read low on both record-based counts.
- * Null on a run with no merged decisions (a run begun before step 3 was judged by owner).
+ * band among the findings delivered, and whether the two differ (owner, 2026-10-02). Null on a run with
+ * no merged decisions (a run begun before step 3 was judged by owner).
  */
 function judgedRatingRecord(runDir, manifest, findings) {
   let decisions;
   try { decisions = JSON.parse(readFileSync(join(runDir, "owner-decisions.json"), "utf8")); } catch { return null; }
   const judgesOverall = mergedOverall(decisions, manifest);
   const worstFinding = manifest ? worstLiveBand(findings, manifest) : null;
-  let placementRefusals = 0, readsBothLow = 0;
-  try {
-    placementRefusals = refusalsFor(runDir).reduce((n, r) => n + (String(r?.reason ?? "").match(/synthesis_placement_contradicts_rating:/g) ?? []).length, 0);
-  } catch { /* no refusals journal: none refused */ }
-  try {
-    const accepted = JSON.parse(readFileSync(synthesisCallPaths(runDir).accepted, "utf8"));
-    readsBothLow = (accepted?.rating_notices ?? []).filter((n) => n?.kind === "reads-both-low").length;
-  } catch { /* no accepted call: none counted */ }
-  return { judgesOverall, worstFinding, differs: Boolean(judgesOverall && worstFinding && judgesOverall !== worstFinding) || (Boolean(judgesOverall) !== Boolean(worstFinding)),
-    placementRefusals, readsBothLow };
+  return { judgesOverall, worstFinding, differs: Boolean(judgesOverall && worstFinding && judgesOverall !== worstFinding) || (Boolean(judgesOverall) !== Boolean(worstFinding)) };
 }
 
 /**

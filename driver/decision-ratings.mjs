@@ -4,13 +4,16 @@
 //
 // ── THE RULING THIS CARRIES OUT ──────────────────────────────────────────────────────────────────────
 //
-// Step 3's two judges rate each owner they carry on the client's scale (owner-judgment.mjs). The owner's
-// rulings of 2026-10-01 and 2026-10-02: the ratings are merged by code — where the judges agree that is
-// the rating, where they differ the higher — and synthesis does not rate again. Synthesis still writes
-// each finding's placement and reads; code stamps its band. A finding is made only for an owner the
-// judges carried, and a rated owner is never placed as awareness only, which carries no band. The
-// overall rating is the judges' overall, merged the same way, and a run records when it differs from the
-// worst finding it delivers.
+// Step 3's two judges rate each owner they carry on the client's scale, and read how alike the marks are
+// and how close the goods are (owner-judgment.mjs). The owner's rulings of 2026-10-01 and 2026-10-02: the
+// ratings are merged by code — where the judges agree that is the rating, where they differ the higher —
+// and synthesis does not rate again; the two reads of the records come from the same judge as the
+// rating, so a finding's rating and reads are one judge's and no rule has to keep them consistent.
+// Synthesis still writes each finding's placement and its two research reads (whether the owner uses the
+// mark, how hard it enforces), which never move the rating; code stamps the band and the two record reads.
+// A finding is made only for an owner the judges carried, and a rated owner is never placed as awareness
+// only, which carries no band — the one contradiction code refuses. The overall rating is the judges'
+// overall, merged the same way, and a run records when it differs from the worst finding it delivers.
 //
 // ── HOW A FINDING IS JOINED TO WHAT THE JUDGES CARRIED ───────────────────────────────────────────────
 //
@@ -21,8 +24,17 @@
 // 13 of 51 common-law findings cite a page the saved web results do not hold, so a link alone would
 // refuse a finding about an owner the judges did carry.
 //
+// ── WHOSE READS ──────────────────────────────────────────────────────────────────────────────────────
+//
+// The reads come with the rating they were given with: from the judge whose rating became the rating, and
+// where several gave that rating, from the lowest-numbered of them — the rule the "also considered" reason
+// keeps. Taking each read at its own highest would give a pair of reads no judge gave. They reach the card
+// as the meter words the report already prints, and as a read rather than a fact taken from a source.
+// Decisions written before the judges were asked for reads carry none; such a finding keeps the reads its
+// writer gave, as a run with no decisions keeps its band.
+//
 // PURE throughout: the findings document, the decisions and the client's scale come in; the stamped
-// document and what was refused or noticed come out.
+// document and what was refused come out.
 
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
 import { ownerKey } from "./owner-table.mjs";
@@ -61,26 +73,43 @@ export function mergedOverall(decisions, manifest) {
   return mergedRating((decisions?.overall_ratings ?? []).map((o) => o?.rating), manifest);
 }
 
+/** The meter word each read reaches the card as: the words the report already prints. */
+export const MARKS_ALIKE_METER = Object.freeze({ same: "high", close: "medium", different: "low" });
+export const GOODS_CLOSE_METER = Object.freeze({ same: "high", overlapping: "medium", different: "low" });
+
 const groupsOf = (decisions, manifest) => (Array.isArray(decisions?.carried) ? decisions.carried : []).map((g) => ({
   rating: mergedRating((g.ratings ?? []).map((r) => r?.rating), manifest),
+  given: (g.ratings ?? []).filter((r) => r && typeof r === "object"),
   records: new Set((g.records ?? []).map(recordKey).filter(Boolean)),
   web: new Set((g.web ?? []).map(webKey).filter(Boolean)),
   owners: [...(g.owners ?? []), ...(g.owners_in_the_pile ?? []).map((o) => o?.owner)].map((o) => ownerKey(o)).filter(Boolean),
 }));
 
 /**
- * Stamp each finding's band from the decisions. A withdrawn finding is left as it is: it renders nowhere.
+ * The two reads that go with a rating: those of the judge who gave `band`, the lowest-numbered where
+ * several did, as meter words. Null when that judge gave no reads (decisions from before the reads).
+ */
+export function readsForRating(given, band, manifest) {
+  const same = (r) => (manifest ? normalizeBand(manifest, r?.rating) : String(r?.rating ?? "").trim()) === band;
+  const from = given.filter(same).sort((a, b) => (Number(a?.judge) || 0) - (Number(b?.judge) || 0))[0];
+  const marks = MARKS_ALIKE_METER[String(from?.marks_alike ?? "").trim()];
+  const goods = GOODS_CLOSE_METER[String(from?.goods_close ?? "").trim()];
+  return marks && goods ? { mark_similarity: marks, goods_proximity: goods } : null;
+}
+
+/**
+ * Stamp each finding's band, and its two record reads, from the decisions. A withdrawn finding is left as
+ * it is: it renders nowhere.
  *
- * Returns `{ doc, refusals, notices }`. `refusals` are the token-first reasons the call is refused for,
- * one per finding: a finding no carried owner matches, and a rated owner placed "off-field". `notices`
- * record each finding whose two record-based reads both read "low" under a stamped band — counted per
- * run, never refused. The stamped band replaces whatever band the call carried, and a band declaration
- * (`borderline_between`) leaves with it: the rating is the judges', so there is nothing left to declare.
+ * Returns `{ doc, refusals }`. `refusals` are the token-first reasons the call is refused for, one per
+ * finding: a finding no carried owner matches, and a rated owner placed "off-field". The stamped band
+ * replaces whatever band the call carried, and a band declaration (`borderline_between`) leaves with it:
+ * the rating is the judges', so there is nothing left to declare. The two record meters are replaced the
+ * same way; the use and enforcement meters stay as the call wrote them.
  */
 export function stampDecidedRatings(doc, decisions, manifest) {
   const groups = groupsOf(decisions, manifest);
   const refusals = [];
-  const notices = [];
   const findings = (Array.isArray(doc?.findings) ? doc.findings : []).map((f) => {
     if (!f || typeof f !== "object" || f.disposition === "withdrawn") return f;
     const regs = (Array.isArray(f.owner?.registrations) ? f.owner.registrations : []).map((r) => recordKey(r?.uri)).filter(Boolean);
@@ -97,14 +126,17 @@ export function stampDecidedRatings(doc, decisions, manifest) {
       refusals.push(`synthesis_placement_contradicts_rating:${f.ordinal} — the judges rated this owner ${band}, and a rated owner is not placed "off-field"`);
       return f;
     }
-    if (f.meters?.mark_similarity?.token === "low" && f.meters?.goods_proximity?.token === "low") {
-      notices.push({ ordinal: f.ordinal, kind: "reads-both-low", band });
-    }
     const out = { ...f, band };
     delete out.borderline_between;
+    const reads = readsForRating(hit.flatMap((g) => g.given), band, manifest);
+    if (reads) {
+      out.meters = { ...(f.meters && typeof f.meters === "object" ? f.meters : {}),
+        mark_similarity: { token: reads.mark_similarity, basis: "inferred-from-signal" },
+        goods_proximity: { token: reads.goods_proximity, basis: "inferred-from-signal" } };
+    }
     return out;
   });
-  return { doc: { ...doc, findings }, refusals, notices };
+  return { doc: { ...doc, findings }, refusals };
 }
 
 /**

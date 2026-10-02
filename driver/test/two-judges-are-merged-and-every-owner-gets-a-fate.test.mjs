@@ -27,8 +27,8 @@ const table = buildOwnerTable(pile);
 const ids = new Set(pile.records.map((r) => r.id));
 const facts = { recordIds: ids, webUrls: new Set(["https://example.invalid/one"]), framework: SCALE };
 
-const carry = (owners, records, rating, reason = "The same mark, live, in the order's classes.") => ({ owners, decision: "carry", records, rating, reason });
-const aside = (owners, records, reason = "Different goods.") => ({ owners, decision: "set_aside", records, rating: "", reason });
+const carry = (owners, records, rating, reason = "The same mark, live, in the order's classes.", reads = { marks_alike: "same", goods_close: "same" }) => ({ owners, decision: "carry", records, rating, ...reads, reason });
+const aside = (owners, records, reason = "Different goods.") => ({ owners, decision: "set_aside", records, rating: "", marks_alike: "close", goods_close: "different", reason });
 const answer = (considered, overall = "High") => ({ considered, overall_rating: overall, advice: "Invented advice.", questions_wished_for: [] });
 const judge = (n, a, { opening = [], looked = [] } = {}) => ({ judge: n, answer: a, opening: new Set(opening), looked: new Set(looked) });
 const fateOf = (merged, key) => merged.fates.find((f) => f.key === key);
@@ -61,8 +61,22 @@ test("the answer form is strict: every field required, nothing else accepted", (
   assert.deepEqual(ANSWER_FORM.required, ["considered", "overall_rating", "advice", "questions_wished_for"]);
   const item = ANSWER_FORM.properties.considered.items;
   assert.equal(item.additionalProperties, false);
-  assert.deepEqual(item.required, ["owners", "decision", "records", "rating", "reason"]);
+  assert.deepEqual(item.required, ["owners", "decision", "records", "rating", "marks_alike", "goods_close", "reason"]);
   assert.deepEqual(item.properties.decision.enum, ["carry", "set_aside"]);
+  // The two reads (owner, 2026-10-02): exactly the values he named, described as `decision` is, by its values.
+  assert.deepEqual(item.properties.marks_alike.enum, ["same", "close", "different"]);
+  assert.deepEqual(item.properties.goods_close.enum, ["same", "overlapping", "different"]);
+  assert.equal(item.properties.marks_alike.description, "`same`, `close` or `different`.");
+  assert.equal(item.properties.goods_close.description, "`same`, `overlapping` or `different`.");
+});
+
+test("the check names a read that is not one of its values, on a carried owner and a set-aside one alike", () => {
+  // Saved and mocked answers never pass the program's schema, so the check is what refuses them.
+  const bad = checkAnswer(answer([
+    carry(["Owner One K.K."], ["/mark/AA/0000-A1"], "High", "The same mark.", { marks_alike: "similar", goods_close: "same" }),
+    { ...aside(["Owner Two GmbH"], ["/mark/CC/0000-C3"]), goods_close: undefined },
+  ]), facts);
+  assert.deepEqual(bad.failures, ["judgment_marks_alike_not_a_choice:1:similar", "judgment_goods_close_not_a_choice:2:"]);
 });
 
 test("carried by either is carried; set aside by both is set aside, with both reasons", () => {
@@ -105,7 +119,8 @@ test("differing ratings are both kept and passed on; agreeing ratings say so", (
     judge(1, answer([carry(["Owner One"], ["/mark/AA/0000-A1"], "High")])),
     judge(2, answer([carry(["Owner One"], ["/mark/BB/0000-B2"], "Medium")])),
   ] });
-  assert.deepEqual(differ.carried[0].ratings, [{ judge: 1, rating: "High" }, { judge: 2, rating: "Medium" }]);
+  assert.deepEqual(differ.carried[0].ratings, [{ judge: 1, rating: "High", marks_alike: "same", goods_close: "same" },
+    { judge: 2, rating: "Medium", marks_alike: "same", goods_close: "same" }], "each judge's two reads travel beside that judge's rating");
   assert.equal(differ.carried[0].agreed, false);
   const agree = mergeJudgments({ table, judges: [
     judge(1, answer([carry(["Owner One"], ["/mark/AA/0000-A1"], "High")])),
@@ -296,6 +311,8 @@ test("the audit's register rows carry the record's facts and nothing a judge wro
   const cells = [...findings, ...negatives].flatMap((row) => Object.values(row)).join(" | ");
   for (const word of ["judge", "High", "Medium", "The same mark", "Expired.", "Lapsed long ago."])
     assert.ok(!cells.includes(word), `a judge's words reached the workbook: ${word}`);
+  for (const row of [...findings, ...negatives])
+    for (const read of ["marks_alike", "goods_close"]) assert.ok(!(read in row), `a judge's read reached the workbook: ${read}`);
   assert.equal(findings[0].dates, "Filed 2020-02-02; Expiry 2031-01-01", "the dates read as the old rows read them");
   assert.equal(findings[0].description, "");
   assert.equal(findings[0].key_factors, "");

@@ -1085,7 +1085,9 @@ test("spec 64: a condition-kind action ships CONDITIONAL even off a CLEAR review
   assert.equal(sidecar.kinds.legalActions, true);
   assert.ok(sidecar.reasons.includes("Obtain consent from Mystery Owner LLC before filing in the US."),
     "the reason IS the action's own client-plain text");
-  assert.match(sidecar.statement, /^High — conditional on: Obtain consent from Mystery Owner LLC/,
+  // The band is the judges' (the rating in the decisions is the rating, owner 2026-10-01): the mock judges
+  // rate the carried owner, and the run overall, at the scale's top band (mock-stage-fixtures mockJudgeAnswer).
+  assert.match(sidecar.statement, /^Very High — conditional on: Obtain consent from Mystery Owner LLC/,
     "THE one risk statement carries band + stance in one sentence");
   assert.equal(sidecar.stance, "conditional", "PR-3: the structured stance rides the sidecar — no consumer regexes the wording");
 });
@@ -1097,7 +1099,7 @@ test("spec 64: advisory-only actions (client-fact) stay CLEAR — an unanswered 
   assert.ok(!events.some((e) => e.event === "coverage-floor-clamp"), "no clamp fired");
   const sidecar = JSON.parse(readFileSync(driverDir(res.runDir, "verdict.json"), "utf8"));
   assert.equal(sidecar.kinds.legalActions, undefined);
-  assert.equal(sidecar.statement, "High — clear to proceed: no conditions beyond ordinary filing.",
+  assert.equal(sidecar.statement, "Very High — clear to proceed: no conditions beyond ordinary filing.",
     "severity and disposition read as ONE labelled sentence, never two bare words");
 });
 
@@ -1109,7 +1111,7 @@ test("spec 64: an already-CONDITIONAL run RECORDS its condition actions — neve
   const sidecar = JSON.parse(readFileSync(driverDir(res.runDir, "verdict.json"), "utf8"));
   assert.equal(sidecar.kinds.legalActions, true);
   assert.ok(sidecar.reasons.length >= 1, "reasons carry the conditions");
-  assert.match(sidecar.statement, /^High — conditional on: /);
+  assert.match(sidecar.statement, /^Very High — conditional on: /);
 });
 
 test("spec 64: a v4 emission omitting actions[] gets ONE warm re-demand, healed in place — the run delivers", async () => {
@@ -1184,7 +1186,7 @@ test("delivered run → status.json delivered, STATUS.md rollup, .delivered reco
   assert.match(s.url, /\/portal\/report\/[^/]+\/$/, "the address a recipient can actually open");
   // STATUS.md (at the stable studio root) shows the delivered run
   const md = readFileSync(join(studioRootOf(res.runDir), "STATUS.md"), "utf8");
-  assert.match(md, /TMP-2201 NOVAPULSE — delivered \(High\)/);
+  assert.match(md, /TMP-2201 NOVAPULSE — delivered \(Very High\)/, "the judges' rating, at the scale's top band in the mock");
   // the delivery sentinel marks the run ready for intake-agent's comms watch to send (handoff mode)
   const delivered = JSON.parse(readFileSync(join(res.runDir, ".delivered"), "utf8"));
   assert.equal(delivered.sendPending, true, "sendPending marker set for intake-agent's comms watch");

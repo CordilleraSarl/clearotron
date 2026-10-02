@@ -373,16 +373,14 @@ export function acceptSynthesis(params, { asks = [], ledger = null, manifest = n
     calibration: n.calibration, askAnswers: doc.ask_answers,
   });
   // ── THE RATING IS THE JUDGES' (owner, 2026-10-01 and 2026-10-02; decision-ratings.mjs). On a run judged
-  // by owner, code stamps each finding's band from the merged decisions before anything reads it, so no
-  // band the call carried survives. A finding no carried owner matches, or a rated owner placed "off-field",
-  // is refused here, where restating is free. The framework's method no longer polices the band either:
-  // reasoning a band is not this seat's work any more.
-  let ratingNotices = [];
+  // by owner, code stamps each finding's band and its two record reads from the merged decisions before
+  // anything reads it, so no band the call carried survives. A finding no carried owner matches, or a rated
+  // owner placed "off-field", is refused here, where restating is free. The framework's method no longer
+  // polices the band either: reasoning a band is not this seat's work any more.
   if (decisions) {
     const stamped = stampDecidedRatings(doc, decisions, manifest);
     if (stamped.refusals.length) return { ok: false, reason: stamped.refusals.join("; ") };
     doc = stamped.doc;
-    ratingNotices = stamped.notices;
     method = undefined;
   }
   let findings = renderFindings(doc);
@@ -430,7 +428,6 @@ export function acceptSynthesis(params, { asks = [], ledger = null, manifest = n
     coverage_rows: (rows ?? []).length,
     findings_count: Array.isArray(doc.findings) ? doc.findings.length : 0,
     coverage_limits_checked: uncarried !== null,
-    rating_notices: ratingNotices,
   };
 }
 
@@ -679,7 +676,6 @@ export function recordSynthesis(runDir, received, opts = {}) {
     writeFileSync(accepted, JSON.stringify({
       _provenance: "the last ACCEPTED call, merged if it arrived as a patch — the base a later repair patches onto",
       acceptedAt: now(), params: call,
-      ...(v.rating_notices?.length ? { rating_notices: v.rating_notices } : {}),
     }, null, 2) + "\n");
   } catch (e) {
     // The call was VALID and we could not store it. That is infrastructure, and it must not read as a

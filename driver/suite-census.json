@@ -989,7 +989,7 @@
         },
         "a-rated-conflict-carries-its-framework-inputs.test.mjs": {
           "tests": 3,
-          "asserts": 21,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
@@ -1901,7 +1901,7 @@
         },
         "band-borderline.test.mjs": {
           "tests": 8,
-          "asserts": 21,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },
@@ -3275,7 +3275,7 @@
         },
         "framework-prompt.test.mjs": {
           "tests": 4,
-          "asserts": 16,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
@@ -5758,8 +5758,8 @@
           "todos": 0
         },
         "the-judges-rate-and-synthesis-does-not.test.mjs": {
-          "tests": 6,
-          "asserts": 17,
+          "tests": 7,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },
@@ -6394,8 +6394,8 @@
           "todos": 0
         },
         "two-judges-are-merged-and-every-owner-gets-a-fate.test.mjs": {
-          "tests": 17,
-          "asserts": 105,
+          "tests": 18,
+          "asserts": 111,
           "skips": 0,
           "todos": 0
         },

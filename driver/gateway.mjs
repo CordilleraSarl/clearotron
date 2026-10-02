@@ -2287,24 +2287,18 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
         `record; it carries no band/registration and never moves the rating.`;
     } else if (/finding_legacy_scale_forbidden/.test(lastFail)) {
       // doc 50 — the reversion repair: years of Composite/Level habit pull the model back to the retired
-      // scale; the fix is stated in the framework's own terms, never as a mapping. Under a framework that
-      // states a method the refusal itself says so, and the retired keys have a home: the framework's own
-      // inputs (framework-method.mjs).
+      // scale; the fix is to delete the retired keys, never a mapping. The band is the judges' (owner,
+      // 2026-10-01), so neither hint tells this stage how to rate.
       extra = /own inputs under "inputs"/.test(lastFail)
-        ? ` SPECIFIC FIX: delete composite/level/dispute_type and record the framework's own inputs under ` +
-          `"inputs", then give the band the framework's table yields for them.`
+        ? ` SPECIFIC FIX: delete composite/level/dispute_type.`
         : ` SPECIFIC FIX: schema_version 4 carries NO composite/level/dispute_type — delete those keys. ` +
-          `The rating is "band": the band WORD your reasoning under the framework you read yields (EXACTLY one of ` +
-          `its band words, as written in the framework). Your reasoning trail stays in the narrative prose.`;
+          `Your reasoning trail stays in the narrative prose.`;
     } else if (/finding_(inputs_[a-z]+|band_off_table|borderline_off_table):/.test(lastFail)) {
       // The framework's method (framework-method.mjs). Each refusal already names its fix — the value list,
       // or the band the table gives — so no addendum: the generic band hint below would point elsewhere.
       extra = "";
     } else if (/finding_band_|findings_rated_under_|finding_disposition_missing/.test(lastFail)) {
-      extra = ` SPECIFIC FIX: every finding carries "disposition"; adversarial / coexistence-partner / ` +
-        `distinguished findings are RATED and carry "band" = EXACTLY one of the framework's band words (as ` +
-        `written in the framework you read — no numbers, no codes, no words from any other scale); off-field ` +
-        `findings are NOT rated and carry NO band. The top level carries "rated_under_framework" = the ` +
+      extra = ` SPECIFIC FIX: every finding carries "disposition". The top level carries "rated_under_framework" = the ` +
         `framework key you were told to rate under, verbatim.`;
     }
     hint = `findings.json is a JSON OBJECT { schema_version, rated_under_framework, findings[], coverage[], context_notes[] } ` +
@@ -2344,9 +2338,8 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       `"off_field_ground" = "different-field" (the goods do not meet — its own goods_proximity meter must then read ` +
       `"low") or "no-material-risk" (a clear win, carrying no field claim). A mark argued apart on sound, rhythm, ` +
       `orthography or connotation is "distinguished", never off-field. ` +
-      `On schema_version 4+ each finding carries "band" (the framework-in-force's band WORD; rated dispositions only — ` +
-      `composite/level/dispute_type are RETIRED and forbidden), owner.registrations[] (ONE entry per ` +
-      `registration — never overwrite or transpose another's facts; a finding with no fetched record → []), the four ` +
+      `On schema_version 4+ each finding carries owner.registrations[] (ONE entry per ` +
+      `registration — never overwrite or transpose another's facts; a finding with no fetched record → []), the ` +
       `meters as {token, basis} (basis = verified-from-record | inferred-from-signal), quadrant {x,y} in [0,1], a ` +
       `typed source, a disposition, and a unique 1-based ordinal. The failed check was: ${tok}.${extra} Fix exactly that, re-save ` +
       `the COMPLETE findings.json, and leave the narrative prose unchanged`;

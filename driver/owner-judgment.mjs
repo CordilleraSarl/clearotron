@@ -48,7 +48,14 @@ export const OPENING_WORDS = [
 // The bench's form, with the field descriptions the owner approved on 2026-10-01 (point b), word for word.
 // It reaches the judge as the program's own structured-answer schema (Claude `--json-schema`, Codex
 // `--output-schema`), as the bench measured it — never as a tool a helper could also call.
+//
+// THE TWO READS (owner, 2026-10-02): how alike the marks are and how close the goods are, each a fixed
+// choice of the values he named, so the rating and the two reads of the records come from one session.
+// Each is described as `decision` is, by its values alone, and is required on every owner, set aside
+// included: the program's schema requires every field on both engines, and neither set has an empty value.
 const text = { type: "string" };
+export const MARKS_ALIKE = Object.freeze(["same", "close", "different"]);
+export const GOODS_CLOSE = Object.freeze(["same", "overlapping", "different"]);
 export const ANSWER_FORM = Object.freeze({
   type: "object",
   additionalProperties: false,
@@ -60,12 +67,14 @@ export const ANSWER_FORM = Object.freeze({
       items: {
         type: "object",
         additionalProperties: false,
-        required: ["owners", "decision", "records", "rating", "reason"],
+        required: ["owners", "decision", "records", "rating", "marks_alike", "goods_close", "reason"],
         properties: {
           owners: { type: "array", items: text, description: "The owner's name exactly as the register or the web gives it; several names only when they are the same owner." },
           decision: { type: "string", enum: ["carry", "set_aside"], description: "`carry` or `set_aside`." },
           records: { type: "array", items: text, description: "The ids of the register records, or the web addresses, this decision relies on; only ids and addresses from this search." },
           rating: { ...text, description: "One band of the client's scale, exactly as the scale names it; empty when set aside." },
+          marks_alike: { type: "string", enum: [...MARKS_ALIKE], description: "`same`, `close` or `different`." },
+          goods_close: { type: "string", enum: [...GOODS_CLOSE], description: "`same`, `overlapping` or `different`." },
           reason: { ...text, description: "Why, from the records." },
         },
       },
@@ -197,6 +206,10 @@ export function checkAnswer(answer, { recordIds, webUrls = new Set(), framework 
     const unheld = records.filter((r) => !held(r));
     if (unheld.length) failures.push(`judgment_record_not_held:${n}:${unheld.slice(0, 3).map((r) => String(r).slice(0, 80)).join(",")}`);
     const rating = String(d?.rating ?? "").trim();
+    for (const [field, values] of [["marks_alike", MARKS_ALIKE], ["goods_close", GOODS_CLOSE]]) {
+      const v = String(d?.[field] ?? "").trim();
+      if (!values.includes(v)) failures.push(`judgment_${field}_not_a_choice:${n}:${v.slice(0, 40)}`);
+    }
     if (d?.decision === "carry") {
       if (!owners.length) failures.push(`judgment_carry_no_owner:${n}`);
       if (!String(d?.reason ?? "").trim()) failures.push(`judgment_carry_no_reason:${n}`);
@@ -270,7 +283,8 @@ const isWebAddress = (s) => /^https?:\/\//i.test(String(s ?? "").trim());
  * Returns `{ carried, setAside, fates, overall, advice, questions }`:
  *   · carried — the carry decisions, joined where they name one owner (a decision naming a crowd joins the
  *     other judge's decisions naming its owners one by one), each with every decision either judge made
- *     about those owners, set-aside ones included, and each judge's rating kept as that judge gave it;
+ *     about those owners, set-aside ones included, and each judge's rating kept as that judge gave it,
+ *     with that judge's two reads beside it;
  *   · setAside — the set-aside decisions about owners nobody carried, joined the same way;
  *   · fates — one row per owner of the pile: carried, set aside, shown and not taken up, or never shown.
  */
@@ -291,6 +305,8 @@ export function mergeJudgments({ table = null, judges = [] } = {}) {
         records: cited.filter((r) => !isWebAddress(r)),
         web: cited.filter(isWebAddress),
         rating: String(d?.rating ?? "").trim(),
+        marks_alike: String(d?.marks_alike ?? "").trim(),
+        goods_close: String(d?.goods_close ?? "").trim(),
         reason: String(d?.reason ?? "").trim(),
         keys: ownersOfDecision(d, { keyOfRecord, tableKeys }),
       });
@@ -314,8 +330,9 @@ export function mergeJudgments({ table = null, judges = [] } = {}) {
     }
     return groups;
   };
+  const readsOf = (e) => ({ ...(e.marks_alike ? { marks_alike: e.marks_alike } : {}), ...(e.goods_close ? { goods_close: e.goods_close } : {}) });
   const decisionOf = (e) => ({ judge: e.judge, decision: e.decision, owners: e.owners, records: e.records, web: e.web,
-    ...(e.rating ? { rating: e.rating } : {}), reason: e.reason });
+    ...(e.rating ? { rating: e.rating } : {}), ...readsOf(e), reason: e.reason });
   const ownersInPile = (keys) => [...keys].filter((k) => table?.byKey?.has(k)).map((k) => {
     const r = table.byKey.get(k);
     return { owner: r.row.owner, closeness: r.row.closeness, records: r.row.records, live_in_the_order_classes: r.row.live_in_the_order_classes };
@@ -325,7 +342,7 @@ export function mergeJudgments({ table = null, judges = [] } = {}) {
   const carried = join(carryEntries).map((g) => {
     const dissent = asideEntries.filter((e) => e.keys.some((k) => g.keys.has(k)));
     const all = [...g.entries, ...dissent].sort((a, b) => a.judge - b.judge || a.n - b.n);
-    const ratings = g.entries.map((e) => ({ judge: e.judge, rating: e.rating }));
+    const ratings = g.entries.map((e) => ({ judge: e.judge, rating: e.rating, ...readsOf(e) }));
     const byJudge = unique(g.entries.map((e) => e.judge));
     return {
       owners: unique(g.entries.flatMap((e) => e.owners)),
