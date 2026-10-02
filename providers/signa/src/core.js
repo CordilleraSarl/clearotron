@@ -571,8 +571,17 @@ export function normalizeSearchResponse(body, echoQuery) {
     // back one row per RECORD instead of one row per MARK — and the register's own note says that
     // inflates the total. The total is what the enumerate ceiling reads to call a band a crowd, so a
     // band can be declared a crowd on a number that counts designations rather than marks. This field
-    // is what makes that visible; it does not yet make it safe.
+    // is what makes that visible; `total_counts` below says it where the total is read.
     warnings: Array.isArray(meta.warnings) ? meta.warnings : [],
+    // ── WHAT THE TOTAL COUNTS, WHEN THE REGISTER SAYS ────────────────────────────────────────────
+    //
+    // `records` when the register flagged `expanded_fallback` on this answer: the total then counts one
+    // row per record, so a mark filed in several countries is counted once per country it covers. The
+    // count stays the register's own number and is never presented as a count of marks (ruled
+    // 2026-10-02: record only, no extra call). Absent when the register said nothing: its grouped view
+    // answered, or the response was not an answer. Keyed on the code the register writes into
+    // `search_meta.warnings`, in the shape measured live and kept by the warnings test beside this file.
+    ...(answered && (Array.isArray(meta.warnings) ? meta.warnings : []).some(isExpandedFallback) ? { total_counts: "records" } : {}),
     // The corpus total when the vendor counted it exactly; null when it did not answer, when the
     // total was not requested, and when the figure it returned is an approximation. NEVER the page
     // size — `data.length` is `count`, and conflating the two is how a page reads as a corpus.
@@ -1097,4 +1106,13 @@ export async function doCountHits(apiKey, base, params, tctx, { mock = false } =
           : "no total in the response; this is a presence probe, not a count"),
     }, null, 2),
   };
+}
+
+/**
+ * The register's own flag that a total counts records rather than marks: the `expanded_fallback` warning,
+ * which it writes into `search_meta.warnings` when its grouped view cannot serve a filter. Matched on the
+ * code, or on a message that opens with it, so a warning reshaped either way is still read. PURE.
+ */
+export function isExpandedFallback(w) {
+  return w?.code === "expanded_fallback" || /^expanded_fallback\b/.test(String(w?.message ?? ""));
 }
