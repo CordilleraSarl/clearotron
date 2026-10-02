@@ -145,8 +145,8 @@ test("mergeVariantFloor marks its own output — the artifact says which side is
 // ── the seed guard: a prose-parse artifact never becomes a 1,736-query neighbourhood ─────────────
 
 test("a swallowed prose clause is REJECTED as a seed and the rejection is recorded, not swallowed", () => {
-  const prose = "Dominant element: HYDRA — the stem a family of marks shares\n";
-  const { seeds, rejected, seededFrom } = floorSeeds(prose, { model: null, mark: "HYDRA" });
+  const prose = "Dominant element: AQUA — the stem a family of marks shares\n";
+  const { seeds, rejected, seededFrom } = floorSeeds(prose, { model: null, mark: "AQUA" });
   assert.ok(!seeds.some((s) => s.element.length > MAX_SEED_LENGTH), "no seed longer than the bound survives");
   assert.ok(rejected.some((r) => /exceeds the 24-character seed bound/.test(r.reason)), "the refusal is a recorded finding");
   assert.match(seededFrom, /^job mark \(FALLBACK/, "and the run still gets a floor, from the mark");

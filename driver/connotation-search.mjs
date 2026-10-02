@@ -300,14 +300,14 @@ export const normText = (s) => foldPunct(String(s ?? "").toLowerCase()).replace(
 
 // (2026-08-04, the terminal R2 run of that round) — LANGUAGE EDITIONS OF ONE DOCUMENT ARE ONE RECEIPT.
 // The recurrence floor demanded the model cite the SAME dictionary lemma twice, under two language editions.
-// Attempts 2, 6 and 8 died on https://fr.wiktionary.org/wiki/δελφίς; the model then cited it verbatim; attempt
-// 9 died on https://en.wiktionary.org/wiki/δελφίς and the run went terminal — ~37 minutes of model work, no
+// Attempts 2, 6 and 8 died on https://fr.wiktionary.org/wiki/βελτρίν; the model then cited it verbatim; attempt
+// 9 died on https://en.wiktionary.org/wiki/βελτρίν and the run went terminal — ~37 minutes of model work, no
 // artifact. Both editions cleared the floor independently (en 8 owning queries, fr 5, floor 4) and their
 // titles diverge before TITLE_PREFIX ("Wiktionary, the free dictionary" / "Wiktionnaire, le dictionnaire
 // libre"), so citing one PROVABLY could not satisfy the other and no attempt could have converged.
 // Folding the leading language-edition host label weakens the compare's contract not at all: the contract is
-// "the model quoted something it could only have got by opening the receipt", and fr.wiktionary.org/wiki/δελφίς
-// proves exactly that for en.wiktionary.org/wiki/δελφίς. BOUNDED two ways — only a leading 2-3 letter (or
+// "the model quoted something it could only have got by opening the receipt", and fr.wiktionary.org/wiki/βελτρίν
+// proves exactly that for en.wiktionary.org/wiki/βελτρίν. BOUNDED two ways — only a leading 2-3 letter (or
 // xx-yy) label, and only when a PATH follows, because folding a BARE host would let any URL on the domain
 // satisfy a demand for one specific page. Measured on the evidence receipts: 274 distinct results → 266,
 // and the load-bearing-by-recurrence set is the same 7, only re-keyed.
@@ -438,7 +438,7 @@ const QUOTE_MIN = 24;
 // that it could not have been produced without reading the snippet. 24 Latin characters buy that. 24
 // HANZI buy several times as much, because a Chinese character carries a morpheme where a Latin
 // character carries a letter — so this constant asked the CJK lane for a passage far longer than the
-// rule requires, and a 克罗玛 row failed on exactly that.
+// rule requires, and a 维尔特林 row failed on exactly that.
 //
 // IT CUT BOTH WAYS, which is why both sites move together or neither does. The same constant decides
 // `usableSnippet` — which rows are ELIGIBLE to be quote-required at all — so a CJK snippet under 24

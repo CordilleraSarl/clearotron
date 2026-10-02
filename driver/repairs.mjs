@@ -708,7 +708,7 @@ export function decideRecovery({ failClass, sig, reason = "", history = [], prio
   // the literal remedy for a provider that is down or refusing, so the second occurrence earns the
   // next rung. Everything else keeps repeat-terminal:
   //   transient-but-wedged — nonzero_exit, unparseable_json, lane_wedge, a stage that times out every
-  //           time: a byte-identical repeat means it is stuck, and three parks is the Wilderness shape
+  //           time: a byte-identical repeat means it is stuck, and three parks is the Open Country shape
   //   stale — the remedy is a deterministic recompute; if the recompute did not settle it, running
   //           it again cannot (the real fix for the observed stale kill is restamping, not retries)
   //   unknown — its one fresh sample already failed identically, so it has disproved itself

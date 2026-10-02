@@ -1161,7 +1161,7 @@ export function qidBlocks(qid, kind, terms = null) {
     ? { state: "incomplete", qid, query, total_hits: 999, fetched: 1, sample: [], reason: "count-only crowd descriptor (dictated)" }
     // `_query` on the RECORD mirrors the real funnel: the merged register-named-band.json keeps records, not
     // blocks, so a block-level `query` does not survive the merge. Production carries the dispatched OR-stack
-    // per record (38 distinct `_query` strings across Racers' 1,549 records) and that is what the form-axis
+    // per record (38 distinct `_query` strings across Drivers Haven's 1,549 records) and that is what the form-axis
     // oracle harvests. Without it every stacked term reads as never-searched.
     : { state: "enumerated", qid, query, total_hits: 1, records: [
         // record_id must be unique PER QID — it was keyed on qid.LENGTH, so the seven chunked form stacks

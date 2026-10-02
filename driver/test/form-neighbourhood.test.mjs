@@ -87,7 +87,7 @@ const KEEPS_ITS_PATTERNS = {
   ZKY: ["zk?", "z*k"],
   DQNY: ["dqn?", "d*n"],
   VELTRIN: ["v?ltr?n", "v*n"],
-  PARADISE: ["p?r?d?s?", "p*s"],
+  HAVENSIDE: ["h?v?ns?d?", "h*d"],
 };
 
 test("no element compiles a wildcard pattern carrying neither * nor ? — the vowel-less class", () => {

@@ -25,20 +25,20 @@ const poolWith = (runs = {}) => {
 
 test("grouping two runs puts them under one named family", () => {
   const root = poolWith({ plus: "demo-brand-owner", max: "demo-brand-owner" });
-  const r = groupRuns(root, { name: "Hydra range", runIds: ["plus", "max"], account: "demo-brand-owner" });
-  assert.equal(r.familyId, "hydra-range");
+  const r = groupRuns(root, { name: "Aqua range", runIds: ["plus", "max"], account: "demo-brand-owner" });
+  assert.equal(r.familyId, "aqua-range");
   assert.equal(r.runs, 2);
 
   const view = familiesView(root, "demo-brand-owner");
-  assert.deepEqual(view.of, { plus: "hydra-range", max: "hydra-range" });
-  assert.equal(view.names["hydra-range"], "Hydra range");
+  assert.deepEqual(view.of, { plus: "aqua-range", max: "aqua-range" });
+  assert.equal(view.names["aqua-range"], "Aqua range");
 });
 
 test("the id is derived from the name, so grouping into it twice MERGES rather than duplicating", () => {
-  // Otherwise a second "Hydra range" would appear as a second heading with the same words on it.
+  // Otherwise a second "Aqua range" would appear as a second heading with the same words on it.
   const root = poolWith({ a: "demo-brand-owner", b: "demo-brand-owner" });
-  groupRuns(root, { name: "Hydra range", runIds: ["a"], account: "demo-brand-owner" });
-  groupRuns(root, { name: "hydra  RANGE", runIds: ["b"], account: "demo-brand-owner" });
+  groupRuns(root, { name: "Aqua range", runIds: ["a"], account: "demo-brand-owner" });
+  groupRuns(root, { name: "aqua  RANGE", runIds: ["b"], account: "demo-brand-owner" });
   const view = familiesView(root, "demo-brand-owner");
   assert.equal(Object.keys(view.names).length, 1, "one family, not two");
   assert.deepEqual(Object.keys(view.of).sort(), ["a", "b"]);
@@ -75,17 +75,17 @@ test("THE SIDECAR SURVIVES A REPUBLISH — this is why it is not in meta.json", 
   // The whole reason for the file. `rerender-all` rewrites every meta.json in the pool; a family flag
   // stored there would be erased by the operation meant to bring old reports up to date.
   const root = poolWith({ plus: "demo-brand-owner" });
-  groupRuns(root, { name: "Hydra range", runIds: ["plus"], account: "demo-brand-owner" });
+  groupRuns(root, { name: "Aqua range", runIds: ["plus"], account: "demo-brand-owner" });
 
   // Simulate the republish: meta.json rewritten from scratch, exactly as publishReport does.
   writeFileSync(join(root, "plus", "meta.json"), JSON.stringify({ runId: "plus", customerKey: "demo-brand-owner" }));
 
-  assert.equal(familiesView(root, "demo-brand-owner").of["plus"], "hydra-range", "the grouping is still there");
+  assert.equal(familiesView(root, "demo-brand-owner").of["plus"], "aqua-range", "the grouping is still there");
 });
 
 test("ungrouping removes the run and drops a family left with nothing in it", () => {
   const root = poolWith({ a: "demo-brand-owner", b: "demo-brand-owner" });
-  groupRuns(root, { name: "Hydra range", runIds: ["a", "b"], account: "demo-brand-owner" });
+  groupRuns(root, { name: "Aqua range", runIds: ["a", "b"], account: "demo-brand-owner" });
 
   ungroupRuns(root, { runIds: ["a"] });
   let view = familiesView(root, "demo-brand-owner");
@@ -122,7 +122,7 @@ test("a run pointing at a family that no longer exists is dropped from the view"
 
 test("writes land atomically — no temp file is left beside the pool", () => {
   const root = poolWith({ a: "demo-brand-owner" });
-  groupRuns(root, { name: "Hydra range", runIds: ["a"], account: "demo-brand-owner" });
+  groupRuns(root, { name: "Aqua range", runIds: ["a"], account: "demo-brand-owner" });
   assert.ok(existsSync(join(root, "family-tags.json")));
   assert.ok(!existsSync(join(root, "family-tags.json.tmp")), "the temp file was renamed, not left behind");
   assert.doesNotThrow(() => JSON.parse(readFileSync(join(root, "family-tags.json"), "utf8")));
@@ -139,16 +139,16 @@ test("run ids that are not one path segment never reach the store", () => {
   // The store is keyed by run id and the id also names a directory elsewhere in the service. Nothing
   // traversal-shaped is written into a file that another reader will trust.
   const root = poolWith({ a: "demo-brand-owner" });
-  const r = groupRuns(root, { name: "Hydra range", runIds: ["../../etc/passwd", "a/b", ".."], account: "demo-brand-owner" });
+  const r = groupRuns(root, { name: "Aqua range", runIds: ["../../etc/passwd", "a/b", ".."], account: "demo-brand-owner" });
   assert.ok(r.error, "nothing valid was left to group");
   assert.deepEqual(familiesView(root, "demo-brand-owner").of, {});
 });
 
 test("familyId folds case, spacing and accents but never collides two real words", () => {
-  assert.equal(familyId("Hydra range"), "hydra-range");
-  assert.equal(familyId("HYDRA  RANGE"), "hydra-range");
+  assert.equal(familyId("Aqua range"), "aqua-range");
+  assert.equal(familyId("AQUA  RANGE"), "aqua-range");
   assert.equal(familyId("Café Line"), "cafe-line");
-  assert.notEqual(familyId("Hydra range"), familyId("Hydra ranger"));
+  assert.notEqual(familyId("Aqua range"), familyId("Aqua ranger"));
 });
 
 // ── the route ────────────────────────────────────────────────────────────────────────────────────────
@@ -190,12 +190,12 @@ test("staff can group and ungroup, and the change is visible on the next read", 
   const root = poolWith({ plus: "demo-brand-owner", max: "demo-brand-owner" });
   const svc = svcOn(root);
 
-  const made = await svc.route("POST", "/portal/admin/families", STAFF, { name: "Hydra range", runIds: ["plus", "max"] });
+  const made = await svc.route("POST", "/portal/admin/families", STAFF, { name: "Aqua range", runIds: ["plus", "max"] });
   assert.equal(made.status, 200);
-  assert.equal(made.json.familyId, "hydra-range");
+  assert.equal(made.json.familyId, "aqua-range");
 
   const seen = await svc.route("GET", "/portal/admin/families", STAFF);
-  assert.deepEqual(seen.json.of, { plus: "hydra-range", max: "hydra-range" });
+  assert.deepEqual(seen.json.of, { plus: "aqua-range", max: "aqua-range" });
 
   await svc.route("POST", "/portal/admin/families", STAFF, { action: "ungroup", runIds: ["plus", "max"] });
   assert.deepEqual((await svc.route("GET", "/portal/admin/families", STAFF)).json, { of: {}, names: {} });

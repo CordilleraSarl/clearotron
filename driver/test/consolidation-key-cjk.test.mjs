@@ -34,7 +34,7 @@ test("TWO DIFFERENT CJK MARKS UNDER ONE OWNER STAY TWO FINDINGS", () => {
 test("A CJK OWNER WITH A CJK MARK DOES NOT KEY TO THE EMPTY STRING", () => {
   // The severe case: before the fix every such finding, across unrelated owners, shared one key.
   const out = consolidateFindings([
-    f("上海炯薇", "澜珀", 1), f("北京华方", "商标", 2), f("株式会社デルフィ", "デルフィ", 3),
+    f("上海炯薇", "澜珀", 1), f("北京维林", "商标", 2), f("株式会社ヴェルトリン", "ヴェルトリン", 3),
   ]);
   assert.equal(out.findings.length, 3, "three unrelated owners, three findings");
   assert.deepEqual(out.merges, []);

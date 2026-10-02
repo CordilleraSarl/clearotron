@@ -294,7 +294,7 @@ const MATCH_SHAPES = [
 // `*` wildcard, and the term extractor must see the word, not the markup.
 const deMarkup = (s) => String(s ?? "").replace(/\*\*|__/g, "");
 
-// Record COUNTS ride along in parentheses — `PARADISE (424)`, `パラダイス (34) / 파라다이스 (20)`. They are
+// Record COUNTS ride along in parentheses — `HAVEN (424)`, `ヘイヴン (34) / 헤이븐 (20)`. They are
 // process exhaust rather than the query, and dropping them first is what lets the rest of the string be
 // recognised as the bare term it is.
 const deCount = (s) => String(s ?? "").replace(/\s*\(\s*~?\s*[\d,]+\s*\)/g, "");
@@ -302,26 +302,26 @@ const deCount = (s) => String(s ?? "").replace(/\s*\(\s*~?\s*[\d,]+\s*\)/g, "");
 // A searched term is recognised three ways, in order, and NOT recognised otherwise:
 //   1. explicitly quoted — `exact "Drivers Haven" (default)`
 //   2. the whole string, when it carries no query scaffolding at all. This is how the common-law sweep
-//      writes them and it is the bulk of the corpus: `레이서스 파라다이스`, `赛车天堂`, `RACERZ`,
-//      `PARADISE WORLD`. Those scripts are caseless, so a capitals rule cannot see them at all.
+//      writes them and it is the bulk of the corpus: `드라이버스 헤이븐`, `车手港湾`, `DRIVERZ`,
+//      `HAVEN WORLD`. Those scripts are caseless, so a capitals rule cannot see them at all.
 //      "No scaffolding" is checked positively: no match-shape keyword, no residual parenthetical, and
 //      none of the structural punctuation the audit uses for anything OTHER than a query (a record path,
 //      a bracketed class list, an em-dash clause, a key: value tail).
-//   3. an ALL-CAPS token — `exact PARADISE`, `*PARADISE / fuzzy`. Two-letter tokens (ZH, JP, DE) are
+//   3. an ALL-CAPS token — `exact HAVEN`, `*HAVEN / fuzzy`. Two-letter tokens (ZH, JP, DE) are
 //      language/jurisdiction codes, not marks, and the register offices above are offices, not marks.
 const SCAFFOLD = /[[\]`:—]|\/mark\//;
 
 // "Does this read as a NAME?" — the property that separates a searched mark from a description of a
 // search. Every alphabetic token must start upper-case or be in a caseless script (CJK, Hangul, Kana,
-// Arabic); a token that is entirely lower-case Latin is prose. So `Racer's Paradise`, `PARADISE WORLD`,
-// `Вензи` and `레이서스 파라다이스` qualify and `national register`, `formative phrases` and
+// Arabic); a token that is entirely lower-case Latin is prose. So `Driver's Haven`, `HAVEN WORLD`,
+// `Вензи` and `드라이버스 헤이븐` qualify and `national register`, `formative phrases` and
 // `one-swap lead-noun neighbours` do not. A property, not a list of banned words — a description nobody
 // anticipated still fails it.
 function looksLikeName(s) {
   const tokens = String(s).split(/\s+/).filter((t) => /\p{L}/u.test(t));
   if (!tokens.length || tokens.length > 5) return false;
   // A lone two-letter capital is a language or jurisdiction code (ZH, DE, JP), never a mark. Caseless
-  // scripts are exempt from the length floor — 天堂 is a whole word in two characters.
+  // scripts are exempt from the length floor — 港湾 is a whole word in two characters.
   const cased = tokens.filter((t) => /\p{Lu}|\p{Ll}/u.test(t));
   if (cased.length && cased.every((t) => t.replace(/[^\p{L}]/gu, "").length <= 2)) return false;
   return tokens.every((t) => !/^\p{Ll}/u.test(t.replace(/^[^\p{L}\p{N}]+/u, "")));
@@ -361,7 +361,7 @@ function extractTerm(raw) {
 const asClasses = (nums) => [...new Set(nums.map(Number).filter((n) => Number.isInteger(n) && n >= 1 && n <= 45))];
 
 // In a SEARCH TERM, classes are read only where they are LABELLED ("cl 9/28/41/42", "cl.25", "class 35") —
-// never from a bare parenthesised number, which in this corpus is a record COUNT ("PARADISE (424)").
+// never from a bare parenthesised number, which in this corpus is a record COUNT ("HAVEN (424)").
 function extractClasses(s) {
   const m = String(s ?? "").match(/\bcl(?:ass(?:es)?)?\.?\s*([\d]{1,2}(?:\s*[/,]\s*\d{1,2})*)/i);
   return m ? asClasses(m[1].split(/[/,]/)) : [];

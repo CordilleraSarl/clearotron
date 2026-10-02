@@ -249,7 +249,7 @@ test("frameworkView: a client sees the whole rating method, minus where the file
     custom: true,
     workedExamples: "skills/clearance-search/worked-examples-zephyr.md",
     manifest: { title: "Zephyr Beverages framework", source_deck: "Zephyr Beverages risk deck",
-                entity_label: "Zephyr Beverages/Alani/Rockstar",
+                entity_label: "Zephyr Beverages/Zephyr Nutrition/Rockstar",
                 bands: [{ label: "Very High", tone: "severe" }, { label: "Manageable", tone: "low" }],
                 structure: { kind: "matrix", axes: ["Legal position", "Practical position"] } },
     bandMeanings: [{ band: "Very High", meaning: "Stop and re-name.", response: "do not proceed" }],

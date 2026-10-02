@@ -18,8 +18,8 @@
 // ── the shape ────────────────────────────────────────────────────────────────────────────────────────
 //
 //   { "schema": 1,
-//     "families": { "hydra-range": { "name": "Hydra range", "account": "foxglade" } },
-//     "of":       { "<runId>": "hydra-range" } }
+//     "families": { "aqua-range": { "name": "Aqua range", "account": "foxglade" } },
+//     "of":       { "<runId>": "aqua-range" } }
 //
 // Keyed by RUN rather than by mark. A mark is not a thing the pool stores — it is a grouping the browser
 // derives from run metadata — so a run id is the only stable handle the two sides already agree on. The
@@ -39,7 +39,7 @@ const FILE = "family-tags.json";
 // Caught by a test asserting a malformed file degrades to no families; it degraded to someone else's.
 const empty = () => ({ schema: 1, families: {}, of: {} });
 
-/** Ids are derived from the name so that grouping into "Hydra range" twice MERGES rather than duplicating. */
+/** Ids are derived from the name so that grouping into "Aqua range" twice MERGES rather than duplicating. */
 export function familyId(name) {
   return String(name ?? "")
     .normalize("NFKD")

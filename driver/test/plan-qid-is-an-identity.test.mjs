@@ -193,12 +193,12 @@ test("a LATIN term's qid is byte-unchanged — the fix must move nothing that al
   // modules (receipts, coverage rows, the band join, the frozen plan on disk, plan-stability's Jaccard),
   // and every stored Latin plan has to keep matching.
   const plan = compileWith([
-    { value: "EVERLITE", category: "phonetic", rationale: "sound-alike" },
-    { value: "EVER LIGHT", category: "visual", rationale: "spacing" },
+    { value: "LUMENGARD", category: "phonetic", rationale: "sound-alike" },
+    { value: "LUMEN GARDE", category: "visual", rationale: "spacing" },
   ]);
-  const everlite = plan.entries.find((e) => e.term === "EVERLITE");
-  assert.ok(everlite, "the Latin variant did not compile");
-  assert.match(everlite.qid, /:everlite(\+|$|#)/, "a Latin term's identity moved — it is the fold, and the fold was already self-describing");
+  const lumengard = plan.entries.find((e) => e.term === "LUMENGARD");
+  assert.ok(lumengard, "the Latin variant did not compile");
+  assert.match(lumengard.qid, /:lumengard(\+|$|#)/, "a Latin term's identity moved — it is the fold, and the fold was already self-describing");
   for (const e of plan.entries) assert.doesNotMatch(e.qid, /q-[0-9a-f]{8}/, "the fingerprint fallback fired on a plan with no non-Latin term");
 });
 
