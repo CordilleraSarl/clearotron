@@ -45,13 +45,13 @@ If you are a unit, run only your assigned axis from the recipe below. See
 
 ## Recipe 1 — Compound tagline (multi-word mark with distinctive element)
 
-**When to use:** mark has 3+ words where 1 element is distinctive and the others are common (e.g., "Dawn: Legends of Lumengarde" — LUMENGARDE distinctive, DAWN + LEGENDS common).
+**When to use:** mark has 3+ words where 1 element is distinctive and the others are common (e.g., "Dusk: Tales of Lumengarde" — LUMENGARDE distinctive, DUSK + TALES common).
 
 **Pattern:**
 
 ```
 1. Crowd descriptor — count-only probe each saturated common element (limit=1, fields=[uri])
-   → name:DAWN classes 9,28,41,42 → write an `incomplete` crowd-descriptor block (count + reason)
+   → name:DUSK classes 9,28,41,42 → write an `incomplete` crowd-descriptor block (count + reason)
    → name:LEGEND classes 9,28,41,42 → write an `incomplete` crowd-descriptor block
    (these enumerate nothing — they describe the crowd for judgment)
 
@@ -59,11 +59,11 @@ If you are a unit, run only your assigned axis from the recipe below. See
    → name:LUMENGARDE classes 9,28,41,42 → enumerated|incomplete block (every record carried forward)
 
 3. ENUMERATE each common element as a named query in the in-scope classes
-   → name:DAWN match=exact classes 9,28,41,42  → register_enumerate (exact-in-class name-list)
+   → name:DUSK match=exact classes 9,28,41,42  → register_enumerate (exact-in-class name-list)
    → name:LEGEND match=exact classes 9,28,41,42 → register_enumerate
 
 4. ENUMERATE the compound phrase
-   → name:"Dawn: Legends of Lumengarde" match=phrase classes 9,28,41,42 → register_enumerate
+   → name:"Dusk: Tales of Lumengarde" match=phrase classes 9,28,41,42 → register_enumerate
 
 5. ENUMERATE a cross-class merch query if any identical match
    → name:<exact mark> match=exact classes 25 → register_enumerate
@@ -167,11 +167,11 @@ For each transliteration variant in the manifest:
 
 ```
 1. Crowd descriptors — count-only probes on the saturated common elements (limit=1, fields=[uri])
-   → name:ELEVATE classes 9/28/41/42 → `incomplete` crowd-descriptor block
-   → name:GAME classes 9/28/41/42 → `incomplete` crowd-descriptor block
+   → name:RAISE classes 9/28/41/42 → `incomplete` crowd-descriptor block
+   → name:PLAY classes 9/28/41/42 → `incomplete` crowd-descriptor block
 
 2. Crowd descriptor — partial-phrase prefix count (the narrative anchor)
-   → phrase:"ELEVATE YOUR" classes <target> limit=1 → `incomplete` block ("234 live ELEVATE YOUR ___")
+   → phrase:"RAISE YOUR" classes <target> limit=1 → `incomplete` block ("234 live RAISE YOUR ___")
 
 3. ENUMERATE the compound phrase, 3 match-modes (register_enumerate each)
    → exact:"RAISE YOUR PLAY" classes <target>   → identical-mark band
@@ -185,12 +185,12 @@ For each transliteration variant in the manifest:
    → ...
 
 5. ENUMERATE wildcard variant queries (per manifest)
-   → name:"Elevate * game" classes <target>     → register_enumerate
-   → name:"Elevate your *"  classes <target>     → register_enumerate
-   → name:"* your game"     classes <target>     → register_enumerate
+   → name:"Raise * play"  classes <target>     → register_enumerate
+   → name:"Raise your *"   classes <target>     → register_enumerate
+   → name:"* your play"     classes <target>     → register_enumerate
 
 6. ENUMERATE each common element's exact-in-class name-list (register_enumerate)
-   → name:ELEVATE match=exact classes <target>  (scope by CLASS + REGION, not a product/goods term)
+   → name:RAISE match=exact classes <target>  (scope by CLASS + REGION, not a product/goods term)
 
 7. ENUMERATE a cross-class merch query if identical match
 ```
