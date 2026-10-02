@@ -110,9 +110,9 @@ export function findingsDocFor(runDir, ordinal) {
 // "jurisdiction"}` — there is no `register` and no `number`, on any record, ever. So both fallbacks
 // fired on every card and the composed bullet read
 //
-//     - Source: [register-euipo · /mark/eu/018575624](https://euipo.europa.eu/…)
+//     - Source: [register-euipo · /mark/eu/099999992](https://euipo.europa.eu/…)
 //
-// where the corpus it replaced reads `- Source: [EUIPO · 018575624](…)`. An internal enum token and an
+// where the corpus it replaced reads `- Source: [EUIPO · 099999992](…)`. An internal enum token and an
 // internal URI path, in the one line of a client-facing card whose job is to say which register holds
 // the record and under what number. publish/index.mjs quotes the correct shape verbatim in a comment of
 // its own, which is what makes the divergence provable rather than a matter of taste.
@@ -122,7 +122,7 @@ export function findingsDocFor(runDir, ordinal) {
 // delivered report.md" — and writing it is what caught this. The guard now lives beside the code it checks, and
 // this is the argument for building the guard an issue asks for even when the code already looks done.
 //
-// THE NUMBER comes off the URI's last segment: `/mark/eu/018575624` → `018575624`. That is a parse, and
+// THE NUMBER comes off the URI's last segment: `/mark/eu/099999992` → `099999992`. That is a parse, and
 // a parse is what this file exists to avoid — but the alternative is a field that does not exist, and
 // the URI's shape is the driver's own (`/mark/<jurisdiction>/<id>`, dictated in gateway.mjs and bound
 // from the fetched record). A URI that does not match it yields NO number rather than a wrong one, and
@@ -136,7 +136,7 @@ export function findingsDocFor(runDir, ordinal) {
 // against evidence that does not exist.
 const REGISTER_OFFICE = Object.freeze({ "register-euipo": "EUIPO" });
 
-/** The registration number inside a driver record URI (`/mark/eu/018575624`), or `""`. PURE. */
+/** The registration number inside a driver record URI (`/mark/eu/099999992`), or `""`. PURE. */
 export function registrationNumber(uri) {
   const m = /^\/mark\/[a-z]{2}\/([A-Za-z0-9._-]+)$/.exec(str(uri));
   return m ? m[1] : "";

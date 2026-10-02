@@ -1945,14 +1945,14 @@ function recordUrlOrigin(value) {
  *. `checkRecordUrlHost` asks whether a link points at the wrong register, and `recordUrlOrigin`
  * returns null for anything with no host — so the host gate returns CLEAN for `#`. That is right for its
  * own purpose and it means nothing in the findings path was asking whether the link is a link. A value of
- * `#` then composes `- Source: [EUIPO · 018575624](#)` — the delivered R5 shape is about, byte for
+ * `#` then composes `- Source: [EUIPO · 099999992](#)` — the delivered R5 shape is about, byte for
  * byte, reached through a path nothing rejected.
  *
  * ABSENT IS NOT DEAD, and the distinction is the whole predicate. `null` and `""` are the sanctioned way
  * to say "this provider publishes no per-record page" — validateSource documents `""` in its own message
  * and renderSourceBullet composes nothing for it. Rejecting those would break the legitimate case this
  * issue exists to protect. Anything else that is not an http(s) URL is a value a seat typed in place of a
- * link: `#`, `#details/trademarks/018575624`, a bare path, or whitespace that only looks like a value.
+ * link: `#`, `#details/trademarks/099999992`, a bare path, or whitespace that only looks like a value.
  *
  * IT ENUMERATES RATHER THAN ASKING "IS THIS AN http(s) URL", and a shipped test is why. ` an
  * unparseable or non-http value is not a host claim and is left to the shape rules` deliberately ACCEPTS

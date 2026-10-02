@@ -85,7 +85,7 @@ test("the same link on the provider that DOES publish it passes", () => {
 
 test("a free-tier run accepts BOTH of its offices' hosts and refuses a third", () => {
   const origins = recordOriginsFor("free-tier");
-  for (const link of ["https://euipo.europa.eu/mark/eu/018553557", "https://tsdr.uspto.gov/mark/us/86264144"]) {
+  for (const link of ["https://euipo.europa.eu/mark/eu/099999991", "https://tsdr.uspto.gov/mark/us/86264144"]) {
     const f = finding({ source: { source_type: "register-vendor", resolved_link: link } });
     assert.equal(parse(f, origins).findings.length, 1, `${link} is legitimate on the free tier`);
   }
@@ -104,7 +104,7 @@ test("a provider that publishes NO record page refuses an absolute link and says
 
 test("registration.uri is gated too — the URL COLUMN is the surface the issue is about", () => {
   const f = finding({
-    owner: { name: "Kolema SA", country: "CH", registrations: [{ uri: "https://tm.corsearch.com/mark/eu/018553557" }] },
+    owner: { name: "Kolema SA", country: "CH", registrations: [{ uri: "https://tm.corsearch.com/mark/eu/099999991" }] },
   });
   assert.throws(() => parse(f, recordOriginsFor("euipo")), /finding_record_url_foreign_host/);
   assert.equal(parse(f, recordOriginsFor("corsearch")).findings.length, 1);
@@ -116,7 +116,7 @@ test("A RELATIVE uri PASSES — the path fragment IS the canonical record identi
   // `/mark/<cc>/<number>` is what this system stores and what the composition rule starts from. Only a
   // value that parses as an absolute http(s) URL is making a host claim worth checking. Refusing the
   // path would break every provider at once, including the ones with no public page at all.
-  const f = finding({ owner: { name: "Kolema SA", country: "CH", registrations: [{ uri: "/mark/eu/018553557" }] } });
+  const f = finding({ owner: { name: "Kolema SA", country: "CH", registrations: [{ uri: "/mark/eu/099999991" }] } });
   // — EVERY provider in the table, so the one added next cannot be the one nobody checked.
   const ids = Object.keys(PROVIDERS);
   assert.ok(ids.length >= 6, `the provider table holds ${ids.length} entries — it did not load`);
