@@ -40,7 +40,7 @@
 //
 // ── PER-STAGE, NEVER GLOBAL ─────────────────────────────────────────────────────────────────────────
 //
-// `too_short` and `missing` come from the shared nonEmpty()/needs() helpers (verify.mjs:121-131) and are
+// `too_short` and `missing` come from the shared nonEmpty()/needs() helpers (verify.mjs:123-133) and are
 // legitimately owned by DIFFERENT elements in matter-frame and clearance-variants. A global
 // token→element map sees several owners for one token and "fixes" a partition that was never violated.
 // Every row therefore carries `stages`, and the partition is computed per (token, stage) pair.
@@ -69,17 +69,17 @@ export const VOCABULARY = [
 
   // ── common-law / common-law-half ───────────────────────────────────────────────────────────────────
   { token: "declared_unavailable", stages: CL, site: "driver/verify.mjs" },
-  { token: "grid_spec_unreadable", stages: CL, site: "driver/verify.mjs:255" },
+  { token: "grid_spec_unreadable", stages: CL, site: "driver/verify.mjs:257" },
   { token: "grid_ledger_missing", stages: CL, site: "driver/verify.mjs commonLawMeaningSeat" },
-  { token: "grid_ledger_unparseable", stages: CL, site: "driver/verify.mjs:264" },
+  { token: "grid_ledger_unparseable", stages: CL, site: "driver/verify.mjs:266" },
   { token: "connotation_query_unrecorded", stages: ["common-law-half"], site: "driver/verify.mjs" },
   { token: "profile_unparseable", stages: ["common-law"], site: "driver/verify.mjs" },
-  { token: "grid_join_missing", stages: CL, site: "driver/verify.mjs:316" },
-  { token: "platform_identity_error", stages: CL, site: "driver/verify.mjs:321" },
-  { token: "platforms_missing", stages: CL, site: "driver/verify.mjs:332" },
+  { token: "grid_join_missing", stages: CL, site: "driver/verify.mjs:318" },
+  { token: "platform_identity_error", stages: CL, site: "driver/verify.mjs:323" },
+  { token: "platforms_missing", stages: CL, site: "driver/verify.mjs:334" },
   { token: "connotation_search_missing", stages: ["common-law"], site: "driver/verify.mjs" },
   { token: "receipts_short", stages: ["common-law"], site: "driver/verify.mjs" },
-  { token: "half_path_unrecognized", stages: ["common-law-half"], site: "driver/verify.mjs:393" },
+  { token: "half_path_unrecognized", stages: ["common-law-half"], site: "driver/verify.mjs:395" },
   { token: "no_coverage_status_row", stages: [...CL], site: "driver/verify.mjs:658 commonLawStructural" },
   // B — `connotation_form_unparseable` and `connotation_form_untouched` are GONE: they
   // were states only a hand-authored document could be in, and the form path is deleted (ruling
@@ -89,8 +89,8 @@ export const VOCABULARY = [
   { token: "connotation_quote_unbound", stages: CL, site: "driver/verify.mjs" },
 
   // ── synthesis ──────────────────────────────────────────────────────────────────────────────────────
-  { token: "framework_manifest_unreadable", stages: ["synthesis"], site: "driver/verify.mjs:689" },
-  { token: "framework_manifest_missing_for_v4", stages: ["synthesis"], site: "driver/verify.mjs:704" },
+  { token: "framework_manifest_unreadable", stages: ["synthesis"], site: "driver/verify.mjs:691" },
+  { token: "framework_manifest_missing_for_v4", stages: ["synthesis"], site: "driver/verify.mjs:706" },
   { token: "framework_method_unreadable", stages: ["synthesis"], site: "driver/verify.mjs" },
   { token: "finding_use_check_source_missing", stages: ["synthesis"], site: "driver/verify.mjs" },
   { token: "finding_own_rights_source_missing", stages: ["synthesis"], site: "driver/verify.mjs" },
@@ -120,7 +120,7 @@ export const VOCABULARY = [
   // ── matter-frame / clearance-variants ──────────────────────────────────────
   { token: "stagecontracts_invalid", stages: ["matter-frame", "clearance-variants", "case-law"], site: "driver/verify.mjs:1533 coverageEntryList, 1170, 1366, 1677" },
   { token: "meaning_angles_missing", stages: ["matter-frame"], site: "driver/verify.mjs" },
-  { token: "frame_scope_missing", stages: ["matter-frame"], site: "driver/verify.mjs:1117" },
+  { token: "frame_scope_missing", stages: ["matter-frame"], site: "driver/verify.mjs:1119" },
   { token: "variantmodel_romanization_missing", stages: ["clearance-variants"], site: "driver/verify.mjs" },
   { token: "variantmodel_family_incomplete", stages: ["clearance-variants"], site: "driver/verify.mjs" },
   { token: "variantmodel_term_markup", stages: ["clearance-variants"], site: "driver/verify.mjs" },
@@ -163,7 +163,7 @@ export const VOCABULARY = [
 
   // ── register-unit ──────────────────────────────────────────────────────────────────────────────────
   { token: "declared_not_executed", stages: ["register-unit"], site: "driver/verify.mjs" },
-  { token: "tool_timeout", stages: ["register-unit"], site: "driver/verify.mjs:1766" },
+  { token: "tool_timeout", stages: ["register-unit"], site: "driver/verify.mjs:1788" },
   { token: "named_band_missing", stages: ["register-unit"], site: "driver/verify.mjs" },
   { token: "named_band_invalid", stages: ["register-unit"], site: "driver/verify.mjs" },
   { token: "named_band_collapsed", stages: ["register-unit"], site: "driver/verify.mjs" },
@@ -172,7 +172,7 @@ export const VOCABULARY = [
 
 
   // ── case-law / narrative-refutation ────────────────────────────────────────────────────────────────
-  { token: "caselaw_ledger_missing", stages: ["case-law"], site: "driver/verify.mjs:1939, 1942" },
+  { token: "caselaw_ledger_missing", stages: ["case-law"], site: "driver/verify.mjs" },
   { token: "caselaw_ledger_unparseable", stages: ["case-law"], site: "driver/verify.mjs" },
   { token: "caselaw_ledger", stages: ["case-law"], site: "driver/verify.mjs validators.caseLaw (caseLawLedgerFail)", family: "driver/case-law-ledger.mjs caseLawLedgerFail (census reasons)", dynamic: "D8" },
   { token: "no_verdict_line", stages: ["narrative-refutation"], site: "driver/verify.mjs" },
@@ -222,7 +222,7 @@ export const ARM1_EXEMPTIONS = [
   {
     token: "stagecontracts_invalid",
     stages: ["matter-frame", "clearance-variants", "case-law"],
-    reason: "The artifact is DRIVER-written (pipeline.mjs recordStageContract → _driver/stage-contracts.json). A corrupt one is a code or filesystem fault, and verify.mjs:1093 says so in its own comment. Pinning it on a model element would be the exact inversion #850 forbids — a mechanical failure wearing a model's name.",
+    reason: "The artifact is DRIVER-written (pipeline.mjs recordStageContract → _driver/stage-contracts.json). A corrupt one is a code or filesystem fault, and verify.mjs:1095 says so in its own comment. Pinning it on a model element would be the exact inversion #850 forbids — a mechanical failure wearing a model's name.",
   },
   // `tool_timeout` was on this list and has been REMOVED: register-unit's tool-written "execute the
   // frozen plan — ONE register_execute_plan call" element declares it, so the token does have an element
@@ -232,17 +232,17 @@ export const ARM1_EXEMPTIONS = [
   {
     token: "missing_file",
     stages: ALL_STAGES,
-    reason: "The gateway's own pre-validation check (gateway.mjs:1024): the declared output does not exist. It speaks about the DISPATCH, not about any element within the output — every stage can emit it and no element owns it.",
+    reason: "The gateway's own pre-validation check (gateway.mjs:1037): the declared output does not exist. It speaks about the DISPATCH, not about any element within the output — every stage can emit it and no element owns it.",
   },
   {
     token: "profile_unparseable",
     stages: ["common-law"],
-    reason: "The run's profile is config the driver loaded before the stage ran (verify.mjs:299). A corrupt profile is a config fault; no element of the common-law contract is about it.",
+    reason: "The run's profile is config the driver loaded before the stage ran (verify.mjs:45 readRunProfile). A corrupt profile is a config fault; no element of the common-law contract is about it.",
   },
   {
     token: "framework_manifest_unreadable",
     stages: ["synthesis"],
-    reason: "The rating framework manifest is driver-loaded config (verify.mjs:689). Unreadable = a config/deploy fault, not a defect in anything synthesis was asked to author.",
+    reason: "The rating framework manifest is driver-loaded config (verify.mjs:691). Unreadable = a config/deploy fault, not a defect in anything synthesis was asked to author.",
   },
   {
     token: "framework_method_unreadable",
@@ -265,12 +265,12 @@ export const ARM1_EXEMPTIONS = [
   {
     token: "grid_spec_unreadable",
     stages: ["common-law", "common-law-half"],
-    reason: "The grid spec is driver-written (_driver/grid-spec.half-<h>.json), and verify.mjs:255-256 makes the ruling in its own failure string: \"(driver-written — this is a bug, not a model defect)\". Corrupt or absent, it is a driver fault.",
+    reason: "The grid spec is driver-written (_driver/grid-spec.half-<h>.json), and verify.mjs:257-258 makes the ruling in its own failure string: \"(driver-written — this is a bug, not a model defect)\". Corrupt or absent, it is a driver fault.",
   },
   {
     token: "half_path_unrecognized",
     stages: ["common-law-half"],
-    reason: "verify.mjs:393 fires when the seat's own output path does not match common-law-findings.half-<seat>.md. The DRIVER names that path when it spawns the seat, so an unrecognised one is a driver fault and no element of the half's contract is about it.",
+    reason: "verify.mjs:395 fires when the seat's own output path does not match common-law-findings.half-<seat>.md. The DRIVER names that path when it spawns the seat, so an unrecognised one is a driver fault and no element of the half's contract is about it.",
   },
 ];
 
@@ -278,7 +278,7 @@ export const ARM1_EXEMPTIONS = [
  * STAGE-UNREACHABLE VALIDATORS — not exemptions, a SCOPE statement.
  *
  * verify.mjs wires four validators no STAGES entry reaches: findings(1661), report(1719), audit(1728),
- * clientSummary(1736). They are NOT dead code — replay-archive.mjs:128 and mcp-server/lib/coverage.mjs:76
+ * clientSummary(1736). They are NOT dead code — replay-archive.mjs:128 replayRun and mcp-server/lib/coverage.mjs `check()`
  * index validators[key] dynamically and the MCP server declares `audit` required — but no stage dispatches
  * them, so their tokens are unaccountable BY CONSTRUCTION with respect to a stage partition. The
  * client-summary STAGE was deleted 2026-08-01 (no line to cite: the stage is gone) and its validator outlived it.
@@ -355,7 +355,7 @@ export const TRIPWIRE_OUT_OF_SCOPE = [
   },
   {
     prefix: "client_",
-    site: "driver/verify.mjs:1753-1785",
+    site: "driver/verify.mjs:1775-1807",
     reason: "Emitted only by validators.clientSummary, which no STAGES entry reaches — the client-summary STAGE was deleted 2026-08-01 (no line to cite: the stage is gone) and its validator outlived it. See STAGE_UNREACHABLE_VALIDATORS.",
   },
   {
@@ -433,7 +433,7 @@ export const INNER_CODES = Object.freeze([
   // THE ONE THAT IS RENAMED, NOT NAMESPACED — and it is the reason this table stores the composite as
   // data rather than deriving it. Every derivation anyone would write is `connotation_` + the code, and
   // for this row that produces `connotation_no_recorded_queries`, which nothing mints and nothing covers.
-  // verify.mjs:910-911 states the ruling: a sweep that did not RUN is a canonical-only decision with its
+  // verify.mjs:912-913 states the ruling: a sweep that did not RUN is a canonical-only decision with its
   // own token and its own remedy, so the projector beside verify.mjs's CORRECTIONS_SECTION_RE deliberately does not handle it.
   { code: "no_recorded_queries", mints: ["driver/connotation-search.mjs:1999"], rollsUpTo: ["connotation_search_missing"],
     why: "RENAMED, not namespaced: verify.mjs emits `connotation_search_missing`. It is excluded from CONNOTATION_FORM_REASONS at connotation-search.mjs for exactly this reason." },

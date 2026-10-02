@@ -5,7 +5,7 @@
 // ── WHAT THIS CATEGORY IS FOR, AND WHY IT IS NOT A RETRIEVAL GRANT ──────────────────────────────────
 //
 // The two-box model conflates "may reach the outside world" with "may hand back structure"
-// (gather-config.mjs:1064-1067). A stage converted to a typed return needs the second and not the first.
+// (gather-config.mjs:1064-1067 RECORDING_STAGES). A stage converted to a typed return needs the second and not the first.
 // This server carries ONLY the second: it writes the calling stage's own artifact into the calling
 // stage's own run directory, and it dials nothing.
 //

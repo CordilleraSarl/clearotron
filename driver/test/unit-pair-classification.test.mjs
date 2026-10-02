@@ -62,7 +62,8 @@
 //   · commonlaw-carry.mjs:386   `completed` folds ALL THREE stage labels from one `outcomes` read and is
 //                               handed to `classifyCandidate` for every candidate in the same call.
 //   · findings-model.mjs:476 actionPartyReferences `boundLost` and `names` both come off the one `index` argument.
-//   · gateway.mjs:1335,1576     the two `wrote` producers — see the disagreement below; both now guard
+//   · gateway.mjs, twice        the two `wrote` producers, the repair row's and the attempt row's — see the
+//                               disagreement below; both now guard
 //                               the empty case, and each reads its own per-turn stat snapshot, which the
 //                               site states.
 //   · grounds-grammar.mjs:89 classifyGroundsNote

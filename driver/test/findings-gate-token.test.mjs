@@ -30,7 +30,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { warmEligible, repairTarget, correctionHint } from "../gateway.mjs";
 
-// The token exactly as validateNetShape throws it, and the wire shape gateway.mjs:512 mints it into:
+// The token exactly as validateNetShape throws it, and the wire shape gateway.mjs:525 mints it into:
 // `invalid_file:<relative path>:<validator reason>`. Anything reaching the ladder any other way — a
 // bespoke StageFailure, a top-level `fail` that is not a validator reason — matches none of the three.
 const TOKEN = "findings_net_chained";
