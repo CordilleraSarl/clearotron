@@ -438,7 +438,7 @@ test("E2 soundness: verify.mjs imports no parser from a source the tripwire does
 });
 
 test("E2 soundness: the wrapper normalisation strips the gateway's variable segments", () => {
-  // gateway.mjs:788 wraps the reason with a VARIABLE file segment; :1113 PREFIXES the whole string.
+  // runStageLadder() in gateway.mjs wraps the reason with a VARIABLE file segment, and also PREFIXES the whole string.
   // A matcher keyed on the bare token misses both and reports a false unattached token.
   assert.equal(normalizeFailToken("invalid_file:common-law-findings.half-m.md:connotation_no_ruling"), "connotation_no_ruling");
   assert.equal(normalizeFailToken("max_tokens_no_output:invalid_file:findings.json:finding_meter_missing"), "finding_meter_missing");
