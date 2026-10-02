@@ -765,6 +765,11 @@ export const anthropicAgentEngine = {
       // an input, so it carries no client text. The values sum to `toolCalls` by construction: one fold
       // per tool_use block, at the one site that counts them.
       const toolCallsByName = Object.create(null);
+      // …AND WHICH OF THEM A TOOL SERVER ANSWERED WITH AN ERROR. A refused call the model then re-made used to
+      // leave the stage row reading ok on one attempt, as though nothing had happened. Each ask's id names its
+      // tool, and its result says whether it came back as an error; nothing else is kept.
+      const toolNameById = new Map();
+      const toolErrorIds = new Set();
       // WHAT THE SESSION WENT THROUGH, beside how it ended: every result event, every classifier cut,
       // every refusal and every restart, each with when it arrived. See session-record.mjs; the retry
       // policy below still reads the LAST result alone, so this records and decides nothing.
@@ -928,6 +933,7 @@ export const anthropicAgentEngine = {
           // Same belt-and-braces as the thinking gauge's `?.some?.()` on the line above.
           for (const b of Array.isArray(ev.message?.content) ? ev.message.content : []) {
             if (b?.type === "tool_use") { toolCalls++; countTool(toolCallsByName, b?.name); }   // #1111 — every tool, not only Read; the count and its split by name
+            if (b?.type === "tool_use" && b?.id != null) toolNameById.set(String(b.id), String(b?.name ?? "?"));
             if (b?.type === "tool_use" && COMMAND_TOOLS.includes(b?.name)) commandToolCalls++;
             if (b?.type === "tool_use" && FILE_WRITE_TOOLS.includes(b?.name) && b?.id != null) writeAsks.add(String(b.id));
             if (b?.type === "tool_use" && b?.name === "Read" && typeof b?.input?.file_path === "string") {
@@ -961,8 +967,10 @@ export const anthropicAgentEngine = {
           progress();
         }
         else if (ev.type === "user") {
-          for (const b of Array.isArray(ev.message?.content) ? ev.message.content : [])
+          for (const b of Array.isArray(ev.message?.content) ? ev.message.content : []) {
             if (b?.type === "tool_result" && b?.is_error === true && writeAsks.has(String(b?.tool_use_id))) writesFailed++;
+            if (b?.type === "tool_result" && b?.is_error === true && b?.tool_use_id != null) toolErrorIds.add(String(b.tool_use_id));
+          }
           // the result of the ask above. Only counted when an ask is outstanding, so a `user`
           // event with no preceding tool_use adds nothing rather than charging the turn for a gap it
           // never spent waiting.
@@ -1278,6 +1286,9 @@ export const anthropicAgentEngine = {
           // turn settled with no result event, so "not reported" never reads as "none refused".
           commandToolCalls, writesFailed,
           toolCallsRefused: Array.isArray(resultEvent?.permission_denials) ? resultEvent.permission_denials.length : null,
+          // The tool-server calls that came back as an error, by tool name: the program sent them and the
+          // server refused or failed them. A call the program itself refused is counted above and not here.
+          toolCallsErroredByName: toolServerErrors(toolErrorIds, toolNameById, resultEvent?.permission_denials),
           // ms from spawn to the child's FIRST byte, or null when it never spoke. RECORDING
           // ONLY: nothing branches on it. A recording field is protected by a test or by nothing, so
           // engine.anthropic.test.mjs pins it — deleting it must red something.
@@ -1351,8 +1362,23 @@ function errResult(t0, e, resumeRef) {
     // the record must say UNKNOWN rather than inherit the alias that was asked for.
     json: null, usage: null, reads: [], readsTruncated: false, modelWire: null, providerWire: null, sessionRef: resumeRef ?? null,
     // No session ran, so there is nothing to have been interrupted and no stream: null, never an empty record.
-    toolCallsByName: null, session: null, stream: null,
+    toolCallsByName: null, toolCallsErroredByName: null, session: null, stream: null,
   };
+}
+
+/**
+ * The tool-server calls of one turn that came back as an error, by tool name: every `mcp__` ask whose
+ * result carried `is_error`, less the asks the program refused itself (`permission_denials`, which
+ * `toolCallsRefused` counts). An OBJECT is a measurement (`{}`: none). PURE.
+ */
+export function toolServerErrors(errorIds, nameById, denials) {
+  const denied = new Set((Array.isArray(denials) ? denials : []).map((d) => String(d?.tool_use_id ?? "")).filter(Boolean));
+  const byName = Object.create(null);
+  for (const id of errorIds ?? []) {
+    const name = nameById?.get(id);
+    if (typeof name === "string" && name.startsWith("mcp__") && !denied.has(id)) countTool(byName, name);
+  }
+  return { ...byName };
 }
 
 /**
