@@ -17,7 +17,7 @@ import { config, resolveModel, modelFamily, modelSnapshotKind, envOn, envGateOn,
 import { probeCliVersion } from "./engine/cli-version.mjs";
 import { stageLog, runLog, note, outputMeta } from "./log.mjs";
 // — the closed disposition set has ONE author; this file dictates it and must not retype it.
-import { DISPOSITIONS, POSITION_REQUIRED_DISPOSITIONS } from "./findings-model.mjs";
+import { DISPOSITIONS, POSITION_REQUIRED_DISPOSITIONS, WRITER_DISPOSITIONS } from "./findings-model.mjs";
 import { frozenSnapshot, describeDrift } from "./run-integrity.mjs";   // — the frozen judged-by set across a seat turn
 import { isCancelled, readCancel, RunCancelled } from "./cancel.mjs";
 import { anthropicAgentEngine } from "./engine/anthropic-agent.mjs";
@@ -2364,16 +2364,17 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       // said, and measured that a field phrased outside its own imperative was written 0 of 9 times
       // against 74 of 74 when it was inside one — dispatch wording is not free to tidy in passing. So the
       // join restores the conjunction rather than settling for the comma `join` produces.
-      `${POSITION_REQUIRED_DISPOSITIONS.join(", ").replace(/, ([^,]+)$/, " AND $1")} alike (only a review-killed ${
+      //
+      // The list itself changed once, deliberately (owner, 2026-10-02): off-field left it with the
+      // awareness-only instructions, so it reads WRITER_DISPOSITIONS. The complement stays computed against
+      // the whole v6 set, because off-field still carries both positions on a run from before.
+      `${WRITER_DISPOSITIONS.join(", ").replace(/, ([^,]+)$/, " AND $1")} alike (only a review-killed ${
         DISPOSITIONS.filter((d) => !POSITION_REQUIRED_DISPOSITIONS.includes(d)).map((d) => `"${d}"`).join(" / ")
       } finding is ` +
-      `outside this, and it carries "withdrawn_reason" instead). An off-field finding additionally carries ` +
-      `"off_field_ground" = "different-field" (the goods do not meet — its own goods_proximity meter must then read ` +
-      `"low") or "no-material-risk" (a clear win, carrying no field claim). A mark argued apart on sound, rhythm, ` +
-      `orthography or connotation is "distinguished", never off-field. ` +
+      `outside this, and it carries "withdrawn_reason" instead). ` +
       `On schema_version 4+ each finding carries owner.registrations[] (ONE entry per ` +
       `registration — never overwrite or transpose another's facts; a finding with no fetched record → []), the ` +
-      `meters as {token, basis} (basis = verified-from-record | inferred-from-signal), quadrant {x,y} in [0,1], a ` +
+      `meters as {token, basis} (basis = verified-from-record | inferred-from-signal), a ` +
       `typed source, a disposition, and a unique 1-based ordinal. The failed check was: ${tok}.${extra} Fix exactly that, re-save ` +
       `the COMPLETE findings.json, and leave the narrative prose unchanged`;
   } else if (/coverage_(ledger_unparseable|ledger_empty|axis_invalid|axis_missing|status_invalid|key_unknown|mirror_missing)/.test(lastFail)) {
