@@ -139,7 +139,7 @@ test("#8 orphan-finding: a register-sourced finding with no grounding registrati
   // register-euipo, registration with no uri → still orphan
   assert.equal(findOrphanVerificationFlags({ findings: [mk({ source: { source_type: "register-euipo" }, owner: { name: "Acme", registrations: [{ uri: "  " }] } })] }).length, 1);
   // register finding WITH a grounding uri → clean
-  assert.equal(findOrphanVerificationFlags({ findings: [mk({ owner: { name: "Acme", registrations: [{ uri: "/mark/eu/018553557" }] } })] }).length, 0);
+  assert.equal(findOrphanVerificationFlags({ findings: [mk({ owner: { name: "Acme", registrations: [{ uri: "/mark/eu/099999991" }] } })] }).length, 0);
   // common-law finding with no registration → legitimate, NOT an orphan
   assert.equal(findOrphanVerificationFlags({ findings: [mk({ source: { source_type: "common-law-marketplace" } })] }).length, 0);
   // case-law finding → not policed here

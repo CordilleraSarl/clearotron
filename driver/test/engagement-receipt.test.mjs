@@ -8,7 +8,7 @@ import assert from "node:assert/strict";
 import { findEngagementReceipts } from "../engagement-receipt.mjs";
 
 const ANCHORS = {
-  owners: ["plesner advokatpartnerselskab"],
+  owners: ["varnholt advokatpartnerselskab"],
   classes: ["9", "41"],
   dominantElements: ["lumengarde", "ever", "light"],
   marks: ["lumengarde"],
@@ -19,8 +19,8 @@ const ANCHORS = {
 
 const NARRATIVE = `# Joint synthesis
 
-## Finding 1 — LUMENGARDE (Plesner)
-**Composite — 4 (High).** The LUMENGARDE registration owned by Plesner in class 9 is the headline conflict.
+## Finding 1 — LUMENGARDE (Varnholt)
+**Composite — 4 (High).** The LUMENGARDE registration owned by Varnholt in class 9 is the headline conflict.
 
 ## Finding 2 — DARKMODE (unrelated)
 **Composite — 3 (Medium).** A generic unrelated mark with no field connection at all.
@@ -39,7 +39,7 @@ test("receipts: Composite≥3 findings only; cites-anchor flagged per finding", 
   const f1 = byOrd["Finding 1"], f2 = byOrd["Finding 2"];
   assert.equal(f1.composite, 4);
   assert.equal(f1.citesOwnAnchor, true);
-  assert.ok(f1.anchorsHit.includes("lumengarde") || f1.anchorsHit.includes("plesner") || f1.anchorsHit.includes("class-mention"));
+  assert.ok(f1.anchorsHit.includes("lumengarde") || f1.anchorsHit.includes("varnholt") || f1.anchorsHit.includes("class-mention"));
   assert.equal(f2.composite, 3);
   assert.equal(f2.citesOwnAnchor, false, "no field anchor cited → flagged for review");
   assert.deepEqual(f2.anchorsHit, []);

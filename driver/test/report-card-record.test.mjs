@@ -26,7 +26,7 @@ import { carriesOwnFrame } from "../card-frame.mjs";
 //
 // The composer PREFERRED `register` and `number`, so against this fixture it looked correct, and against
 // every record the engine has ever written it fell through to the enum token and the URI path and
-// produced `- Source: [register-euipo · /mark/eu/018575624]` in a client-facing card. The unit test
+// produced `- Source: [register-euipo · /mark/eu/099999992]` in a client-facing card. The unit test
 // passed the entire time, because it was measuring a shape that does not exist.
 //
 // A fixture invented to suit the code under test is not evidence about the code. This one is now the

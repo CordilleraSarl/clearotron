@@ -22,9 +22,9 @@ const FINDING = {
   ordinal: 1,
   mark: "LUMENGARDE",
   owner: {
-    name: "Plesner Advokatpartnerselskab", country: "DK",
+    name: "Varnholt Advokatpartnerselskab", country: "DK",
     registrations: [
-      { uri: "/mark/eu/018553557", classes: ["09", "41"], status: "Registered", filed: "2021-09-07", expiry: "2031-09-07", jurisdiction: "EU" },
+      { uri: "/mark/eu/099999991", classes: ["09", "41"], status: "Registered", filed: "2021-09-07", expiry: "2031-09-07", jurisdiction: "EU" },
       { uri: "/mark/eu/018553560", classes: ["25"], status: "Registered", filed: "2004-02-01", expiry: "2034-02-01", jurisdiction: "EU" },
     ],
   },
@@ -40,7 +40,7 @@ const FINDING = {
   // CLEAROTRON_DATABASE=corsearch for every suite, and verify.mjs now refuses a register-sourced
   // link whose host is not one that provider publishes. A fixture citing a host nobody searched is the
   // exact shape the gate exists to catch, so it cannot keep claiming to be one.
-  source: { source_type: "register-vendor", resolved_link: "https://tm.corsearch.com/mark/eu/018553557" },
+  source: { source_type: "register-vendor", resolved_link: "https://tm.corsearch.com/mark/eu/099999991" },
 };
 const DOC = { schema_version: 1, findings: [FINDING], coverage: [{ area: "register / EU", state: "confirmed-clean", note: "" }] };
 const raw = (o) => JSON.stringify(o);
@@ -207,10 +207,10 @@ test("use_check / own_rights: SHAPE throws are token-FIRST (non-object, unknown 
 // ---- A4: optional meter `source` + use_check `quality` (v2 docs without them parse clean) ----
 test("spec-48 A4: a meter may NAME its source; use_check may carry a quality class — both optional, both typed", () => {
   const d = clone(DOC);
-  d.findings[0].meters.mark_similarity.source = "/mark/eu/018553557";
+  d.findings[0].meters.mark_similarity.source = "/mark/eu/099999991";
   d.findings[0].use_check = { source: "https://owner.example/shop", quality: "owner-site" };
   const out = parseFindingsJson(raw(d)).findings[0];
-  assert.equal(out.meters.mark_similarity.source, "/mark/eu/018553557");
+  assert.equal(out.meters.mark_similarity.source, "/mark/eu/099999991");
   assert.equal(out.use_check.quality, "owner-site");
   // legacy DOC (no source / quality anywhere) parses clean — v2/archived runs immune
   assert.equal(parseFindingsJson(raw(DOC)).findings[0].meters.mark_similarity.source, undefined);
@@ -307,7 +307,7 @@ function runDirWith({ findingsJson = null, narrative = "" } = {}) {
   return dir;
 }
 const validate = (dir, narrative = "") => validators.findings(join(dir, "narrative.md"), narrative);
-const NARRATIVE_WITH_MARK = "## Finding 1 — LUMENGARDE (Plesner)\nComposite — 4. The LUMENGARDE mark...";
+const NARRATIVE_WITH_MARK = "## Finding 1 — LUMENGARDE (Varnholt)\nComposite — 4. The LUMENGARDE mark...";
 
 test("dispatch: no findings.json beside the file → legacy pass (archived runs; replay must not flip)", () => {
   const v = validate(runDirWith());
@@ -849,7 +849,7 @@ test("spec 64: sentenceCaseLead — first letter capitalized through markdown/qu
 // `checkRecordUrlHost` asks whether a link points at the WRONG register, and `recordUrlOrigin` returns
 // null for anything with no host — so the host gate returned CLEAN for `#`. Correct for its own purpose,
 // and it meant nothing in the findings path asked whether the link was a link. The value then composed
-// `- Source: [EUIPO · 018575624](#)`: the delivered R5 shape is about, byte for byte.
+// `- Source: [EUIPO · 099999992](#)`: the delivered R5 shape is about, byte for byte.
 import { isDeadRecordLink } from "../findings-model.mjs";
 
 test("a register resolved_link with no host is rejected, under its own reason", () => {
@@ -858,9 +858,9 @@ test("a register resolved_link with no host is rejected, under its own reason", 
   }));
 
   // CONTROL FIRST — the fixture's real link must still validate, or the arm proves nothing.
-  assert.doesNotThrow(() => parseFindingsJson(withLink("https://tm.corsearch.com/mark/eu/018553557")));
+  assert.doesNotThrow(() => parseFindingsJson(withLink("https://tm.corsearch.com/mark/eu/099999991")));
 
-  for (const dead of ["#", "#details/trademarks/018575624", "/mark/eu/018553557", "   "]) {
+  for (const dead of ["#", "#details/trademarks/099999992", "/mark/eu/099999991", "   "]) {
     assert.throws(() => parseFindingsJson(withLink(dead)), (e) => {
       assert.match(e.message, /finding_record_url_not_a_link:/,
         `${JSON.stringify(dead)} must be refused as a dead link`);
@@ -882,7 +882,7 @@ test("isDeadRecordLink does not fire on a real record URL that contains a fragme
   // THE FALSE POSITIVE THAT WOULD HAVE COST MOST: EUIPO's own record URLs are fragment-based. A rule
   // reading "contains #" would refuse every EUIPO finding in every report — a delivery outage wearing
   // a bug fix's clothes. The rule is "has no http(s) host", which these pass.
-  assert.equal(isDeadRecordLink("https://euipo.europa.eu/eSearch/#details/trademarks/018575624"), false);
+  assert.equal(isDeadRecordLink("https://euipo.europa.eu/eSearch/#details/trademarks/099999992"), false);
   assert.equal(isDeadRecordLink("http://tm.corsearch.com/mark/eu/1#x"), false);
   assert.equal(isDeadRecordLink("#"), true);
   assert.equal(isDeadRecordLink("/mark/eu/1"), true);
