@@ -29,7 +29,7 @@ import { groupByOwner, ownerKey, buildOwnerTable, CLOSENESS, LINE_COLUMNS, lineO
 // instead, which a confined model cannot open. An answer longer than ANSWER_CHARS is therefore served in
 // pages or parts. Nothing is dropped: the pages together are the whole answer, and each one says how many
 // there are. Measured on the bench's first run, 2026-09-28: answers of 55,081 characters and more were
-// withheld, 13 of 287; the longest delivered was 39,914.
+// withheld, 13 of 287; the longest answer the model received was 39,914.
 
 export const ANSWER_CHARS = 30000;
 /** Room kept for the fields around a page's items: counts, notes, page numbers. */
