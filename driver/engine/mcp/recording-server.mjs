@@ -385,7 +385,7 @@ serve({
               item: {
                 type: "string",
                 description:
-                  "For a FIRING variant directive this must be a mark-shaped search term (TAKIS, CORAL " +
+                  "For a FIRING variant directive this must be a mark-shaped search term (WAVA, CORAL " +
                   "MAGIC) or carry a remedy. A label — a parenthetical, an enumeration, more than about " +
                   "four words — dispatches as a nil search that reads CLEAN, and is refused here.",
               },

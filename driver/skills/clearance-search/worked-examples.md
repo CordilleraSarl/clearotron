@@ -236,7 +236,7 @@ cannot be excluded.
   sufficient differences to avoid confusion.
 
 *Common-law use*
-- **Manageable** — "Solstrikers" is a game "coming soon" on Steam from indie developer Crobatspr.
+- **Manageable** — "Solstrikers" is a game "coming soon" on Steam from an indie developer.
 
 **Emberstrike — Manageable Risk**
 
@@ -257,7 +257,7 @@ cannot be excluded.
   with a merch store that does not sell hardware/accessories.
 - **Manageable** — Emberstruck: a 2016 Steam game (444 "very positive" reviews) by an indie studio;
   no game published in ~10 years.
-- **Not a rated conflict (clear win)** — A "Emberstrike Set" appears in several Zelda games; not monetised or
+- **Not a rated conflict (clear win)** — A "Emberstrike Set" appears in several games of a long-running adventure series; not monetised or
   prominent.
 - **Not a rated conflict (clear win)** — A studio's co-op shooter "Firestrike" (1,914 "mixed" reviews on Steam).
 
@@ -292,7 +292,7 @@ manageable.
 - **Moderate (register risk; no obvious market overlap)** — a Canadian provincial lottery corporation owns an official Canadian
   registration for CHART YOUR COURSE (all goods/services) used descriptively for self-service lotteries.
   Legal risk, but low practical objection risk — no enforcement history, no commercial overlap with a
-  console tagline. A Canadian application would undoubtedly be blocked; consent from OLC the only route.
+  console tagline. A Canadian application would undoubtedly be blocked; consent from that corporation the only route.
 - **Moderate (register risk; no obvious market overlap)** — A sports broadcaster owns a US registration covering publication of
   physical-fitness games and instruction-sharing websites, for an inactive youth-fitness program. No
   obvious current use. Statement-of-use deadline 27 July 2026 — if not filed (which seems possible),
@@ -301,7 +301,7 @@ manageable.
   via games consoles (among much else), used for a tennis participation campaign and descriptively.
   Revocable for unused goods/services; low confusion with a console tagline; scope likely reducible
   away from gaming services if challenged.
-- **Manageable** — Polish telecom P4 ("Play") owns a Polish registration covering computer game
+- **Manageable** — A Polish telecom owns a Polish registration covering computer game
   software and console game programs; no specific gaming interest; minor use on its careers site;
   low confusion; scope likely reducible away from gaming goods if challenged.
 - **Manageable** — A games-accessory maker holds invalid/lapsed CHART YOUR COURSE filings
@@ -313,11 +313,11 @@ manageable.
 - **Manageable** — "Chart Your Course" platform for sharing love of video games; limited social
   presence.
 - **Manageable** — "Chart Your Course" 2025 mental-health-in-gaming fundraiser (£7,000 raised).
-- **Manageable** — "Chart Your Course" announced as a major update for the game Peak (~127k
+- **Manageable** — "Chart Your Course" announced as a major update for a popular co-op game (~127k
   "overwhelmingly positive" Steam reviews).
 - **Manageable** — "Charting Your Course" arcade-game subscription service.
 - **Not a rated conflict (clear win)** — A third-party Nebula console-streaming app uses "Chart Your Course" descriptively.
-- **Not a rated conflict (clear win)** — PC gaming companion app Wand has minor descriptive use.
+- **Not a rated conflict (clear win)** — A PC gaming companion app has minor descriptive use.
 - **Not a rated conflict (clear win)** — A "Chart Your Course" card-game app and a "Chart My Course" fitness app.
 
 ---
@@ -365,7 +365,7 @@ side-glance at **Classes 35 and 39** (retail pizza store / pizza delivery) and *
   criticised as gambling-style "dark patterns" and increasingly regulated; using "Prize Crate" for a
   gaming-pizza promo could be read as normalising a criticised practice. (Blockvale's natural-chest
   prizes are non-monetised, not a gambling-style system.)
-- *Filings* — **Manageable**: Pence Technology (UK) owns PRIZE CRATE (Stylised) over broad food/beverage
+- *Filings* — **Manageable**: A UK technology company owns PRIZE CRATE (Stylised) over broad food/beverage
   (not pizza); no obvious use; not revocable yet, but low practical objection risk (company inactive).
   Prize Crate Retail (UK) owns PRIZE TRUNK & device over "cardboard pizza boxes" + broad goods; in
   voluntary insolvency, no recent operations, low practical risk. Prize Case (geek subscription boxes)
@@ -381,15 +381,15 @@ side-glance at **Classes 35 and 39** (retail pizza store / pizza delivery) and *
   = pizza), reflected in 370 live SLICE/DICE filings claiming pizza in Class 30 — so analysis focuses on
   marks with both words or another element bringing them closer; "slice and dice" *is* distinctive for
   non-dice computer games; "dice" is not distinctive for board games.
-- *Filings* — **Moderate (low end; settleable overlap, or paper-only if unused)**: Conor Jordan (individual) owns an
+- *Filings* — **Moderate (low end; settleable overlap, or paper-only if unused)**: An individual owns an
   Irish SLICE N DICE registration with a detailed gaming list (Class 28) *and* detailed pizza list
   (Class 30) — notable for that specificity. No use found; an international "board game + pizza" café
   trend uses identical "Slice and Dice" branding, plausibly the intent here. Despite the Blockvale
   context, given the identical mark and highly specific pizza+gaming intersection, **Irish counsel
-  advice is recommended** (ideally with an example of the proposed use). Also **Manageable**: Wymac
-  (Australian gaming-machine maker) SLICE N DICE (AU/US) — vulnerable to cancellation for unused goods,
-  and in-venue machines don't overlap; Seneca (US casino) SLICE-N-DICE for a casino restaurant;
-  Ravensburger DICE AND SLICE for a physical pizza-themed strategy game.
+  advice is recommended** (ideally with an example of the proposed use). Also **Manageable**: an
+  Australian gaming-machine maker's SLICE N DICE (AU/US) — vulnerable to cancellation for unused goods,
+  and in-venue machines don't overlap; a US casino's SLICE-N-DICE for a casino restaurant;
+  a board-game publisher's DICE AND SLICE for a physical pizza-themed strategy game.
 - *Common-law* — **Manageable**: "Slice & Dice" tactical dice roguelike (App Store / Google Play /
   Steam, 1m+ downloads, 2020) — no pizza theme, "dice" refers to the mechanic; confusion unlikely in
   the Blockvale pizza context. Numerous "Slice and Dice"-type pizzerias/bars, some offering tabletop
