@@ -24,7 +24,6 @@ import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { editRepairTail, fullWriteTail } from "../repair-contract.mjs";
-import { digestReemitContract, buildFlushFollowup } from "../digest-queue.mjs";
 import { buildEscalationFollowup, buildEnvelopeCloseFollowup,
   buildFrameReopenFollowup, buildFrameReopenRetryMessage } from "../stages.mjs";
 // — the one registry. Every assertion about repair text below reads what a composer COMPOSES,
@@ -44,7 +43,6 @@ const DIRECTIVES = [
   { layer: "variant", severity: "dominant-element", item: "HALCYON", observation: "the dominant element was never enumerated in class 35" },
   { layer: "field", severity: "class-gap", item: "Cl.35/38", observation: "the class gap was never scoped" },
 ];
-const FINDINGS = "/runs/x/clearance-search/run/register-findings.md";
 
 // What "orders targeted edits" MEANS, asserted once here so every site below can be checked against the
 // same bar rather than each inventing its own phrasing test.
@@ -83,32 +81,6 @@ test("the two tails say opposite things about write mode, and the edit tail neve
   const w = fullWriteTail("/runs/x/out.md");
   assert.match(w, /Write the COMPLETE file now/);
   assert.doesNotMatch(w, /TARGETED EDITS/);
-});
-
-// ── digest-queue: the settlement flush ────────────────────────────────────────────────────────────────
-test("digestReemitContract orders a PATCH CALL, and keeps the reconciliation mandate the flush exists for", () => {
-  // CONVERSION 11 — this asserted `ordersEdits`. register-findings.md's only writer is the driver now, so
-  // an Edit order here would be the superseded path the golden rule bans; the anti-truncation property the
-  // Edit was chosen for is carried by the patch instead (see digest-queue.test.mjs for the full note).
-  const c = digestReemitContract(FINDINGS);
-  assert.match(c, /record_register_digest/, "the flush must name the transport that writes the document");
-  assert.match(c, /patch: true/, "a flush corrects named rows, and a patch is what makes that cheaper than the append it replaced");
-  assert.doesNotMatch(c, EDIT_TAIL, "a file-edit tail on a tool-call repair is the shape #460 closed");
-  assert.match(c, /Coverage ledger/,
-    "WHAT to reconcile is unchanged; only the write mode moved");
-  // The truncation fear the old full-emission contract was justified by is answered, not abandoned: a Write
-  // carrying only the changed sections still destroys what it omits, so the flush must never invite one.
-  const followup = buildFlushFollowup({ registerFindingsPath: FINDINGS, sections: [{ trigger: "escalation", text: "…" }] });
-  assert.ok(followup.trimEnd().endsWith(c), "the consolidated followup still ENDS with the contract");
-  assert.ok(!followup.includes("ONLY those rows corrected"), "never 'emit only the changed sections'");
-});
-
-test("the comment above digestReemitContract states the Write-vs-Edit distinction its old justification missed", () => {
-  const t = src("digest-queue.mjs");
-  const block = t.split("export function digestReemitContract")[0].split("── the consolidated settlement followup")[1];
-  assert.match(block, /A Write REPLACES the file/);
-  assert.match(block, /An Edit PATCHES the bytes it names in place/);
-  assert.match(block, /cannot be truncated/, "the old justification is answered on its own terms, not dropped");
 });
 
 // ── stages.mjs: the register-unit corrective builders ─────────────────────────────────────────────────

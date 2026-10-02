@@ -1,0 +1,12 @@
+{
+  "enumerated": [
+    { "record_id": "/mark/AA/0000-A1", "mark_text": "ZZMARK", "owner_name": "Owner One K.K.", "owner_country": "AA", "office": "AA", "classes": [9], "status": "REGISTERED", "application_date": "2001-01-01", "registration_date": "2002-01-01", "_qid": "primary-sweep:exact:zzmark", "_qids": ["primary-sweep:exact:zzmark"] },
+    { "record_id": "/mark/BB/0000-B2", "mark_text": "ZZMARK", "owner_name": "OWNER ONE", "owner_country": "AA", "office": "BB", "classes": [9, 41], "status": "PENDING", "application_date": "2020-01-01", "registration_date": null, "_qid": "primary-sweep:exact:zzmark", "_qids": ["primary-sweep:exact:zzmark"] },
+    { "record_id": "/mark/CC/0000-C3", "mark_text": "ZZMARK", "owner_name": "Owner Two GmbH", "owner_country": "CC", "office": "CC", "classes": [41], "status": "EXPIRED", "application_date": "1990-01-01", "registration_date": "1991-01-01", "_qid": "primary-sweep:exact:zzmark", "_qids": ["primary-sweep:exact:zzmark"] }
+  ],
+  "crowds": [
+    { "qid": "primary-sweep:default:zzmark", "query": "fixture", "total_hits": 5000, "fetched": 0, "sample": [], "reason": "crowd" },
+    { "qid": "primary-sweep:exact:stack+form", "query": "fixture", "total_hits": 900, "fetched": 0, "sample": [], "reason": "crowd",
+      "term_counts": { "ZZMARC": { "total_hits": 850, "disposition": "crowd" }, "ZZMARQ": { "total_hits": 50, "disposition": "unenumerated" } } }
+  ]
+}

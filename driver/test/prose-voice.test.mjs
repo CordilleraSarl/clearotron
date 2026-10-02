@@ -27,6 +27,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { STAGES, PROSE_VOICE } from "../stages.mjs";
+import { OPENING_WORDS, composeMessage } from "../owner-judgment.mjs";
 
 const SKILLS = join(dirname(fileURLToPath(import.meta.url)), "..", "skills", "clearance-search");
 const skill = (f) => readFileSync(join(SKILLS, f), "utf8");
@@ -45,9 +46,13 @@ test("the house prose contract reaches every stage that writes reader-facing pro
   }
   // …and not the stages that write machine artifacts — the contract governs prose, and a search or
   // digest stage paying for it on every dispatch buys nothing.
-  for (const s of ["matter-frame", "register-digest", "placement-inquiry"]) {
+  for (const s of ["matter-frame"]) {
     assert.ok(!msg(s).includes(PROSE_VOICE), `${s} writes no reader prose and must not carry the contract`);
   }
+  // Step 3's judges answer in a form: their instructions are the opening words and their message is
+  // composed by runOwnerJudgment from the run's files (here from invented parts). Neither carries it.
+  const judge = OPENING_WORDS + composeMessage({ order: "x", context: "x", ratingScale: "x", workedExamples: "x", tablePages: null });
+  assert.ok(!judge.includes(PROSE_VOICE), "the judges write no reader prose and must not carry the contract");
 });
 
 test("the contract carries the word budgets, each-fact-once and the two RULED prohibitions", () => {

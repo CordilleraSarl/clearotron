@@ -3,11 +3,12 @@
 //
 // THE PROVENANCE RULE: a doubt may not be ended by quoting the artifact it was minted out of.
 //
-// The defect these arms pin was not a near-miss. `mintPresenceDoubts` parses the digest's rated rows OUT
-// of register-findings.md and mints a doubt for each row the DELIVERED set cannot account for — and that
-// same file is one of the three CLOSURE_EVIDENCE_FILES the stitch and the seat may cite. So every
+// The defect these arms pin was not a near-miss. `mintPresenceDoubts` parsed the digest's rated rows OUT
+// of register-findings.md and minted a doubt for each row the DELIVERED set could not account for — and
+// that same file was one of the three CLOSURE_EVIDENCE_FILES the stitch and the seat may cite. So every
 // presence doubt was minted from a row still sitting in the haystack that then answered it, and a
-// presence doubt could never ship OPEN. It is a guard that cannot fire.
+// presence doubt could never ship OPEN. It was a guard that could not fire. The digest and its presence
+// mint are gone; the rule stays, for any doubt born of a file the seat may cite.
 //
 // Measured on the delivered run `674db9c7` (2026-08-19): its single presence doubt was settled
 // `code-stitch` against register-findings.md, quoting "- Instructed scope: classes **5, 42, 44**…" — the
@@ -185,44 +186,27 @@ test("CONTROL — that exact plant DOES settle a non-presence doubt", () => {
     + "not on something the fixture got wrong");
 });
 
-test("the family is named ONCE — the mint and the closure rule cannot drift apart", async () => {
-  const { PRESENCE_BIRTH_PLACE } = await import("../doubt-ledger.mjs");
-  const { mintPresenceDoubts } = await import("../presence-reconciliation.mjs");
-  // A RATED SHEET ROW, which is what the mint parses — REGISTER_MD's watchlist line is not one, and
-  // driving this arm with it minted nothing and failed the control rather than passing emptily.
-  const rated = [
-    "## Risk-relevant (CH, cl.9)",
-    "",
-    "| Mark | Owner | Record | Rating |",
-    "| --- | --- | --- | --- |",
-    "| VENTURI | Venturi Labs SA | /mark/ch/switi0001 | H2 on-field |",
-  ].join("\n");
-  const minted = mintPresenceDoubts(rated, { findings: [], coverageRows: [] });
-  assert.ok(minted.length > 0, "the presence mint produced nothing from the fixture, so the arm below "
-    + "would agree with itself over an empty list");
-  for (const d of minted)
-    assert.equal(d.birth.place, PRESENCE_BIRTH_PLACE,
-      "the mint stamps a birth place the closure rule does not recognise — the rule would then be dead "
-      + "code and every presence doubt settleable by a note again");
-});
-
 // ── 4. the call-time courtesy, and the direction it fails in ──────────────────────────────────────
 
+// No minter is born of a citable file today (the arm at the foot of this file pins that), so the call-time
+// arms plant one: a doubt whose birth artifact is the judges' decisions, which the seat may cite.
+const DECISIONS_JSON = JSON.stringify({ carried: [{ owner: "Venturi Labs SA", records: ["/mark/ch/switi0001"] }] });
+const bornOfDecisions = presenceDoubt({ birth: { place: "planted", artifact: "owner-decisions.json", quote: "Venturi Labs SA" } });
 const CALL_CTX = {
   openIds: new Set(["doubt:presence:incumbent-context:1"]),
   allowedFiles: CLOSURE_EVIDENCE_FILES,
-  fileTexts: { "findings.json": "nothing", "register-findings.md": REGISTER_MD, "register-coverage-ledger.json": "{}" },
+  fileTexts: { "findings.json": "nothing", "owner-decisions.json": DECISIONS_JSON, "register-coverage-ledger.json": "{}" },
 };
 const circularRow = {
   kind: "doubt", doubt_id: "doubt:presence:incumbent-context:1", verdict: "settled",
-  file_index: CLOSURE_EVIDENCE_FILES.indexOf("register-findings.md"),
-  quote: "VENTURI — Venturi Labs SA (CH cl.9)", reason: "on the watchlist",
+  file_index: CLOSURE_EVIDENCE_FILES.indexOf("owner-decisions.json"),
+  quote: "Venturi Labs SA", reason: "the judges carried it",
 };
 
 test("acceptClosure refuses the circular row in the seat's own turn, naming the file", () => {
-  const r = acceptClosure(circularRow, { ...CALL_CTX, bornIn: { "doubt:presence:incumbent-context:1": "register-findings.md" } });
+  const r = acceptClosure(circularRow, { ...CALL_CTX, bornIn: { "doubt:presence:incumbent-context:1": "owner-decisions.json" } });
   assert.equal(r.ok, false);
-  assert.match(r.reason, /register-findings\.md/, "the seat is told WHICH file, not just that it failed");
+  assert.match(r.reason, /owner-decisions\.json/, "the seat is told WHICH file, not just that it failed");
   assert.match(r.reason, /verdict:"open"/, "and what to do instead");
 });
 
@@ -232,35 +216,33 @@ test("with no bornIn entry the call is accepted — and applyClosure still refus
   const accepted = acceptClosure(circularRow, { ...CALL_CTX, bornIn: {} });
   assert.equal(accepted.ok, true, "the courtesy has nothing to say without the map");
 
-  const r = applyClosure([presenceDoubt()], [{ verdict: "SETTLED", id: circularRow.doubt_id, file: accepted.row.file, quote: accepted.row.quote, reason: "x" }], { "register-findings.md": REGISTER_MD });
+  const r = applyClosure([bornOfDecisions], [{ verdict: "SETTLED", id: circularRow.doubt_id, file: accepted.row.file, quote: accepted.row.quote, reason: "x" }], { "owner-decisions.json": DECISIONS_JSON });
   assert.equal(r.doubts[0].status, "open", "the authority holds regardless of what the tool let through");
   assert.equal(r.unverified.length, 1);
 });
 
 test("acceptClosure leaves a non-circular citation alone", () => {
   const ok = acceptClosure({ ...circularRow, file_index: CLOSURE_EVIDENCE_FILES.indexOf("findings.json"), quote: "nothing" },
-    { ...CALL_CTX, bornIn: { "doubt:presence:incumbent-context:1": "register-findings.md" } });
+    { ...CALL_CTX, bornIn: { "doubt:presence:incumbent-context:1": "owner-decisions.json" } });
   assert.equal(ok.ok, true, ok.reason);
 });
 
 // ── 5. the growth tripwire — today's population is ONE, and that is the risk ──────────────────────
 
 test("every doubt-minting module is accounted for against the citable set", () => {
-  // Exactly one family is bound by this rule today: presence, born of register-findings.md. A
-  // single-member population exercises no interaction and hides the next gap, so this arm fails when a
-  // module starts minting doubts and nobody has decided whether its birth artifact is citable.
+  // No family is bound by this rule today: the presence family, born of the register findings document,
+  // went with the step that wrote that document, and no minter is born of a citable file. This arm fails
+  // when a module starts minting doubts and nobody has decided whether its birth artifact is citable.
   const DECLARED = {
     "doubt-ledger.mjs": "gather-crosscheck (the search files) + audit-contradiction (audit.md) — neither citable",
-    "presence-reconciliation.mjs": "register-findings.md — CITABLE, and the reason this rule exists",
     "record-carry.mjs": "register-named-band.json — not citable",
-    "placement-carry.mjs": "placements.json — not citable",
     "commonlaw-carry.mjs": "common-law-grid.json — not citable",
     "remedy-accounting.mjs": "_driver/frame-reopen.json — not citable",
   };
   // Keyed on the doubt-record SHAPE — a `birth` block that names its `place` — not on the substring
   // "birth: {". The looser form matched doubt-closure-call.mjs, where the same words appear in a call
   // that constructs no doubt at all, and a tripwire that cries wolf gets an excuse row added to it
-  // rather than a fix. The tolerance spans the multi-line form placement-carry and remedy-accounting use.
+  // rather than a fix. The tolerance spans the multi-line form remedy-accounting uses.
   const MINTS = /birth:\s*\{[\s\S]{0,80}?place:/;
   // RECURSES. A one-level scan would have been a guard that cannot fire — the exact defect this file
   // is about — because a minter added under `engine/` would never be looked at. `test/` and

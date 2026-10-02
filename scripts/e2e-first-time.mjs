@@ -36,6 +36,18 @@ import { driverDir, labelOfDriverFile } from "../shared/driver-dir.mjs";
 // What no file of the run record holds, stated on every answer. The register's own HTTP retries are
 // written to the provider call log, which is per machine, not per run; and a tool result whose text reports a
 // failure while its call settles ok carries no marker the call log keeps.
+/** One line for what interrupted a session, from its record: counts only, never the program's words. */
+function interruptionOf(session) {
+  const parts = [];
+  const cuts = session?.classifierCuts?.length ?? 0, refusals = session?.refusals?.length ?? 0;
+  const errors = (session?.results ?? []).filter((r) => r?.isError).length, starts = Number(session?.starts) || 0;
+  if (cuts) parts.push(`${cuts} classifier cut${cuts === 1 ? "" : "s"}`);
+  if (refusals) parts.push(`${refusals} refusal${refusals === 1 ? "" : "s"}`);
+  if (errors) parts.push(`${errors} error result${errors === 1 ? "" : "s"}`);
+  if (starts > 1) parts.push(`${starts - 1} restart${starts === 2 ? "" : "s"}`);
+  return parts.length ? `the session went on to deliver after ${parts.join(", ")}` : "the session's record marks it interrupted";
+}
+
 export const NOT_RECORDED = [
   "register calls the provider retried inside one tool call (the call log is per machine, not per run)",
   "a tool result that reports a failure in its text while the call settles ok",
@@ -99,6 +111,8 @@ export const COUNTED_EVENTS = {
   "knockout-review": [{ kind: REPAIR, when: (e) => e.outcome === "applied" && Number(e.applied) > 0 },
     { kind: FAILED, when: (e) => !["applied", "nothing-flagged"].includes(e.outcome) }],
   "commonlaw-reconciliation": { kind: FAILED, when: (e) => e.state !== "at-or-above-floor" },
+  // step 3 failed as a whole: no judge's answer was taken, or the coverage form it settles was not written
+  "owner-judgment": { kind: FAILED, when: (e) => e.ok === false },
   "engine-turn-probe": { kind: FAILED, when: (e) => e.ok === false },
   // a skeptic flag on a code-side axis re-runs its plan queries through the executor
   "escalation-recheck": [{ kind: REASK, when: (e) => e.dispatched === true },
@@ -149,13 +163,13 @@ export const NOT_COUNTED_EVENTS = {
     "blind-frame-skipped", "case-law-decision", "case-law-trigger", "channel-coverage", "closure-partition",
     "common-law-candidates", "common-law-merged", "common-law-path", "common-law-supp-folded", 
     "commonlaw-channels-added", "connotation-receipts", 
-    "corrective-worklist-source", "coverage-form-written", "coverage-judgment", "coverage-judgment-rows",
-    "coverage-ledger-derived", "coverage-ledger-dropped", "coverage-ledger-rendered", "crowd-context", "crowd-context-skips",
+    "corrective-worklist-source", "coverage-form-settled", "coverage-form-written", "coverage-judgment", "coverage-judgment-rows",
+    "coverage-ledger-derived", "coverage-ledger-dropped", "coverage-ledger-removed", "coverage-ledger-rendered", "crowd-context", "crowd-context-skips",
     "customer-late-bind", "customer-late-bind-ack", "depth-ladder", "digest-batch-brief",
     "digest-coverage-form-brief", "digest-flush", "digest-queue-noop", "digest-queued", "digest-rulings-tail",
     "doctrine-write", "document-coverage-rendered", "document-growth-trip", "doubt-selection", "doubts", "draft-carry",
     "economics", "engine-build", "envelope-closed", "envelope-decision", "envelope-decision-early",
-    "escalation-skipped", "experiment", "experiment-refused", 
+    "escalation-skipped", "experiment", "experiment-refused", "judged-rating", 
     "form-neighbourhood-derived", "frame-diff", 
     "frame-diff-source-directives-dropped", "frame-reopen-reconcile-not-needed", "frame-reopen-skipped", "frame-web-grid",
     "framework", "grid-ledger-saved", "grid-spec", "grid-split", "grid-split-skipped", "hit-list-minted",
@@ -176,7 +190,7 @@ export const NOT_COUNTED_EVENTS = {
     // The target moved off this line to the run's own, above: the bar is about a run and this span is
     // one stage of it.
     "knockout-sweep-total", "level-scope-note",
-    "named-band-merged", "one-shot-stamp-settled", "order-probe", "output-snapshot", "owner-screen-derived",
+    "named-band-merged", "one-shot-stamp-settled", "order-probe", "output-snapshot", "owner-screen-derived", "owner-table",
     "placement-borderline", "placement-form-written", "plan-execution", "plan-execution-census",
     "plan-execution-refresh", "plan-qids-deferred", "probe-over-cap-undispatched", "profile", "profile-exclusion-seed",
     "profile-resolved", "profile-selection", "provider-usage", "quote",
@@ -231,7 +245,19 @@ export const RETIRED_EVENTS = ["known-conflicts-read", "known-conflicts-upsert",
   "recall-regression", "register-recall-probes", "register-recall-refused",
   // the knockout's second web question, which the grid replaced; a knockout delivered before it still
   // carries the event, and it is still counted above
-  "knockout-in-use-as-unanswered"];
+  "knockout-in-use-as-unanswered",
+  // placement, the register digest and the checks built around them, which step 3's owner judgment
+  // replaced (2026-10-01); a run delivered before it still carries these, and each keeps its class above
+  "coverage-absence-rendered", "coverage-form-written", "coverage-ledger-dropped", "coverage-ledger-quarantined",
+  "coverage-ledger-recovered", "coverage-ledger-render-failed", "coverage-ledger-rendered", "digest-batch-brief",
+  "digest-coverage-form-brief", "digest-flush-timeout", "digest-rulings-tail", "document-coverage-render-failed",
+  "document-coverage-rendered", "floor-duty", "floor-duty-failed", "floor-duty-undischarged", "hit-list-minted", "placement-borderline",
+  "placement-carry", "placement-carry-failed", "placement-form-written", "recall-reconciliation",
+  "recall-reconciliation-failed", "recall-reconciliation-followup-exhausted", "recall-reconciliation-positions-failed",
+  "recall-reconciliation-positions-rederived", "recall-reconciliation-unended", "register-digest-facts-failed",
+  "register-digest-facts-written", "screen-gate-clean", "screen-gate-parse-gap", "screen-gate-postflush",
+  "screen-gate-unnamed-observed", "screen-gate-unresolved", "screen-gate-violation", "silently-lost-findings",
+  "stage-floor-duty-rerun", "stated-divergence-findings"];
 
 // A stage dispatched again says why, on the run log's `stage` event. Counted: a dispatch that exists
 // because an answer was not accepted as it stood.
@@ -249,12 +275,16 @@ export const COUNTED_TRIGGERS = {
   "plan-join": REASK, "plan-join-fresh": REASK, "schema-downlevel": REASK, "stale-repair": REPAIR,
   "stale-repair-entry": REPAIR, "taint-rerun": REASK, "verdict-recheck": REASK,
 };
-// The two reasons built at run time: a recall reconciliation re-asking the digest, and a flush retried.
+// The two reasons built at run time: a recall reconciliation re-asking the digest (retired with the
+// digest; older records carry it), and a flush retried.
 export const TRIGGER_FAMILIES = [[/^recall-reconcile-./, REASK], [/-retry$/, RETRY]];
+// Reasons older records carry that the product no longer writes, so no census can find them: the digest's
+// follow-up composers and its recall reconciliation, retired with the digest (2026-10-01).
+export const RETIRED_TRIGGERS = ["digest-flush", "recall-reconcile", "recall-reconcile-fresh", "settled-coverage-facts"];
 export const NOT_COUNTED_TRIGGERS = {
   "a first dispatch, or one the run makes whatever the first answer was": ["fresh", "skip", "late-bind", "experiment",
     "xcheck-decide"],
-  "the digest folding in re-runs, each counted where it was dispatched": ["settlement-flush", "late-flush"],
+  "step 3 judged again after re-runs, each counted where it was dispatched": ["settlement-flush", "late-flush"],
   "a follow-up message's composer or section, never a dispatch reason": ["digest-flush", "draft-carry", "envelope-close",
     "frame-reopen-directive", "recall-reconcile", "settled-coverage-facts"],
 };
@@ -347,7 +377,10 @@ export function firstTimeRows({ attempts = [], runLog = [], status = {}, markers
       if (prev === undefined || n <= prev) cycles.set(stage, [...(cycles.get(stage) ?? []), { start: n, after: prev ?? null, row }]);
       prevAttempt.set(stage, n);
     }
-    if (row.ok === false) add("failed attempt", stage, n, row.fail ?? "no cause recorded", row);
+    // A session that was cut, refused or restarted and still delivered is not ok and did not fail: it is
+    // named for what happened to it (engine/session-record.mjs), never as a failure with no cause.
+    if (row.ok === false && !row.fail && row.session?.interrupted) add("interrupted session", stage, n, interruptionOf(row.session), row);
+    else if (row.ok === false) add("failed attempt", stage, n, row.fail ?? "no cause recorded", row);
     else if (Number.isFinite(n) && n > 1) add("retry", stage, n, `attempt ${n} succeeded`, row);
     if (row.rescued) add("rescue", stage, n, `rescued: ${row.rescued}`, row);
     if (row.selfReportContradicted === true && row.ok !== false) add("self-report contradicted", stage, n, "the model reported done and its file said otherwise", row);

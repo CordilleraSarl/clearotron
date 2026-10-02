@@ -21,7 +21,8 @@ import { correctionHint } from "../gateway.mjs";
 import { openBlocksByAxis } from "../register-plan.mjs";
 import { progressQuantity } from "../repairs.mjs";
 
-// The live token shape, as verify.coverageFormFail builds it.
+// The token's shape, as the register digest's gate built it: no live gate emits it now, and an archived run's
+// attempts are still read through repairs.mjs, so the census pin below stays.
 const TOKEN = "coverage_no_status:no_status=3;CB-A1B2C3D4 [incumbent-class / owner: GLIMMER [cl 5, 30]],"
   + "CD-E5F6A7B8 [transliteration-numeric / default: ГЛИММЕР [cl 9]] (+1 more)";
 
@@ -35,22 +36,6 @@ test("THE WIRE FORMAT: the census is first, and the appended row list never swal
   // The row list is bracketed and comma-joined AFTER the census, and cannot move it.
   assert.match(TOKEN, /^coverage_no_status:no_status=3;/);
   assert.ok(!/\(/.test(TOKEN.split(";")[0]), "no parenthesis before the census — the merge-gate remedy truncates at the first one");
-});
-
-test("the hint names the rows, not a rule for reproducing identifiers", () => {
-  const h = correctionHint(TOKEN);
-  assert.match(h, /CB-A1B2C3D4/, "the driver's own row id — the string the seat can find without searching");
-  assert.match(h, /confirmed-clean \/ coverage-limited \/ deferred/, "the closed status set");
-  assert.ok(!/verbatim/i.test(h),
-    "nothing is transcribed any more, so nothing is required verbatim — that instruction was the defect");
-  assert.ok(!/standing alone/i.test(h), "the hit-count join is gone with the join");
-  assert.match(h, /open/, "and it still states the one thing an open row may not be");
-});
-
-test("a form_damaged token still produces a usable, non-empty hint", () => {
-  const h = correctionHint("coverage_form_damaged:form_damaged=1;unparseable json Unexpected token");
-  assert.match(h, /rows/);
-  assert.ok(h.length > 80, "no empty hint on the damaged shape");
 });
 
 test("coverage_form_missing tells the truth: this is not the model's to repair", () => {

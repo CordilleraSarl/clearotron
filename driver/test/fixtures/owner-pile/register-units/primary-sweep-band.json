@@ -1,0 +1,75 @@
+[
+  {
+    "qid": "primary-sweep:exact:zzmark",
+    "state": "enumerated",
+    "total_hits": 3,
+    "records": [
+      {
+        "record_id": "/mark/AA/0000-A1",
+        "mark_text": "ZZMARK",
+        "owner_name": "Owner One K.K.",
+        "owner_country": "AA",
+        "office": "AA",
+        "classes": [
+          9
+        ],
+        "status": "REGISTERED",
+        "application_date": "2010-01-01",
+        "registration_date": null
+      }
+    ]
+  },
+  {
+    "qid": "supp:primary-sweep:default:zzmark:late",
+    "state": "enumerated",
+    "total_hits": 1,
+    "records": [
+      {
+        "record_id": "/mark/BB/0000-L9",
+        "mark_text": "ZZMARK",
+        "owner_name": "Owner Late S.A.R.L.",
+        "owner_country": "BB",
+        "office": "BB",
+        "classes": [
+          9
+        ],
+        "status": "REGISTERED",
+        "application_date": "2010-01-01",
+        "registration_date": null
+      }
+    ]
+  },
+  {
+    "qid": "supp:incumbent-class:default:owner-three",
+    "state": "incomplete",
+    "total_hits": 700,
+    "records": [
+      {
+        "record_id": "/mark/AA/0000-S1",
+        "mark_text": "ZZMARK",
+        "owner_name": "Owner Three",
+        "owner_country": "AA",
+        "office": "AA",
+        "classes": [
+          9
+        ],
+        "status": "REGISTERED",
+        "application_date": "2010-01-01",
+        "registration_date": null
+      },
+      {
+        "record_id": "/mark/AA/0000-S2",
+        "mark_text": "ZZMARK",
+        "owner_name": "Owner Three",
+        "owner_country": "AA",
+        "office": "AA",
+        "classes": [
+          9
+        ],
+        "status": "PENDING",
+        "application_date": "2010-01-01",
+        "registration_date": null
+      }
+    ]
+  }
+]

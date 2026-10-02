@@ -17,8 +17,8 @@ import { driverDir } from "../../shared/driver-dir.mjs";
 import { compileRegisterPlan, joinPlanToBands, deriveCoverageSkeleton, awaitsReadingTurn } from "../register-plan.mjs";
 import { PROVIDER_CAPABILITIES } from "../register-capabilities.mjs";
 import { recordWithheldFamilies, readWithheldFamilies } from "../withheld-families.mjs";
-import { coverageFormRows, findCoverageFormViolations, formLedgerRows, renderCoverageLedgerJsonFromForm,
-  renderCoverageLedgerSection, coverageFormBrief } from "../coverage-form.mjs";
+import { coverageFormRows, rowIsSettled, formLedgerRows, renderCoverageLedgerJsonFromForm,
+  renderCoverageLedgerSection } from "../coverage-form.mjs";
 import { unionCoverageForm } from "../coverage-union.mjs";
 import { coverageFormPaths, coverageFormInput } from "../coverage-form-io.mjs";
 import { STAGES } from "../stages.mjs";
@@ -87,12 +87,12 @@ test("the form carries a row per waiting family: settled where the turn judged i
   const judged = family.find((r) => r.qid === waiting[0].qid);
   assert.equal(judged.status, "withheld-by-judgment");
   assert.equal(judged.reason, REASON);
-  const owed = findCoverageFormViolations(family);
-  assert.equal(owed.length, family.length - 1, "the judged family is refused, or an unjudged one passes");
-  assert.ok(owed.every((v) => v.reason === "no_status"));
+  const owed = family.filter((r) => !rowIsSettled(r, r));
+  assert.equal(owed.length, family.length - 1, "the judged family is unsettled, or an unjudged one reads as settled");
+  assert.ok(!owed.includes(judged));
   // THE CONTROL on the status: a waiting family never ran, so no other status judges it.
   for (const status of ["deferred", "coverage-limited", "confirmed-clean"])
-    assert.equal(findCoverageFormViolations([{ ...judged, status }]).length, 1, `a family row settled as ${status}`);
+    assert.equal(rowIsSettled({ ...judged, status }, judged), false, `a family row settled as ${status}`);
 });
 
 test("the form the driver builds from the run carries the receipt's waiting families and the turn's record", () => {
@@ -121,8 +121,6 @@ test("a family's reason is kept out of everything the report is built from", () 
   assert.ok(!formLedgerRows(rows).some((r) => r.reason === REASON));
   assert.ok(!renderCoverageLedgerJsonFromForm(rows).includes(REASON));
   assert.ok(!renderCoverageLedgerSection(rows).includes(REASON));
-  // The digest is shown the row and why it is there.
-  assert.match(coverageFormBrief({ rows }), /A `family` row is a waiting family the reading turn did not ask/);
 });
 
 test("the audit workbook's coverage sheet carries the withheld family and its reason", async () => {

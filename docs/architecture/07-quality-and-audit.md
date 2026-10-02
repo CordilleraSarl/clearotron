@@ -115,9 +115,10 @@ confirmed-clean rows on kill-touched axes.
 
 What makes the coverage statement trustworthy:
 
-- **The machine ledger is code-derived from the model's validated prose** after every digest pass —
-  the model no longer authors the JSON, so prose and JSON agree by construction; a ledger that
-  fails strict validation is quarantined (`.invalid.json`), never shipped.
+- **The machine ledger is code-derived** on every pass of step 3: each row of the coverage form is
+  settled by code from its own facts (the register's count, the classes and terms left unaccounted,
+  the execution receipt), and the ledger is written from the form — no model authors a coverage
+  status; a ledger that fails strict validation is quarantined (`.invalid.json`), never shipped.
 - **The register plan** (`register-plan.mjs`) makes search *reproducible*: the model reasons once
   (variant manifest), code compiles a frozen, class-scoped query program (empty class set is a
   compile error — never an all-class flood), stores it per slug for byte-identical reuse, and
@@ -208,8 +209,8 @@ in `_driver/reasoning-integrity.json` and gate nothing, like every other instrum
 
 Two audit surfaces, two sources — by design:
 
-- **`audit.md`** is built by pure code from the *prose spine* tables (register-findings +
-  common-law-findings), count-guarded (`0 findings parsed` throws) — it replaced an LLM audit step
+- **`audit.md`** is built by pure code from step 3's merged decisions and the common-law findings,
+  count-guarded (`0 findings parsed` throws) — it replaced an LLM audit step
   that produced 47 vs 69 findings on identical input. It guarantees the full list: every candidate,
   every negative result, every drop with its written reason.
 - **The report and Excel workbook** render from `findings.json` (the curated, rated spine), with

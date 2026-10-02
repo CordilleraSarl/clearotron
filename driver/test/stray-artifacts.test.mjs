@@ -40,9 +40,12 @@ const DELIVERED = [
   "skeptic-flags.md", "status.json", "variant-manifest.json", "variant-manifest.md",
 ];
 
-test("the real delivered run dir yields EXACTLY the one stray it actually carried", () => {
+test("the real delivered run dir yields the one stray it actually carried, and the files of a stage since removed", () => {
+  // The listing stays verbatim. Placement wrote its two files when this run was delivered; step 3's owner
+  // judgment replaced placement on 2026-10-01, so nothing dictates them now. The check runs on the run
+  // being delivered, so a run from before is never re-checked; on today's tree those two read as strays.
   const stray = findStrayArtifacts(DELIVERED, DICT, { runDir: RUN });
-  assert.deepEqual(stray.map((s) => s.name), ["COMMON-LAW-FINDINGS.half-a.md"]);
+  assert.deepEqual(stray.map((s) => s.name), ["COMMON-LAW-FINDINGS.half-a.md", "placement-recommendations.md", "placements.json"]);
   assert.match(stray[0].why, /never validated/);
 });
 

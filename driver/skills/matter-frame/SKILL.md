@@ -1,6 +1,6 @@
 ---
 name: matter-frame
-description: Pre-flight reasoning step for trademark searches. Produces a structured matter-context.md naming the client + sector + customer base + channels of trade + materially-matters jurisdictions + off-field sectors + watchlist-owner seeds — before any search runs. Invoke at Phase 0 of clearance-search or a full clearance-search. The downstream workflow consumes this artifact at every step (variants generation, register sweep, placement inquiry, narrative refutation) so the matter's commercial context stops being implicit and starts being load-bearing.
+description: Pre-flight reasoning step for trademark searches. Produces a structured matter-context.md naming the client + sector + customer base + channels of trade + materially-matters jurisdictions + off-field sectors + watchlist-owner seeds — before any search runs. Invoke at Phase 0 of clearance-search or a full clearance-search. The downstream workflow consumes this artifact at every step (variants generation, register sweep, narrative refutation) so the matter's commercial context stops being implicit and starts being load-bearing.
 ---
 
 ## Purpose
@@ -96,9 +96,9 @@ Two scopes live here, and the doctrine is **narrow at citation, never silently a
 ### Off-field sectors
 - Sectors that look class-adjacent (Nice class overlap) but are commercially unrelated
 - For each: brief reason it's off-field for THIS client
-- **For tech / developer-tooling / dev-platform / SaaS marks specifically, AI / vector-database / ML-infrastructure / LLM-tooling / music-AI / pharma-AI / blockchain-platform companies sharing the same token are common false-friend categories** — they share Nice Classes 9 / 42 with many client marks but serve fundamentally different customer bases (ML engineers, drug researchers, blockchain developers). Pre-flag a sector as a likely false friend only when the client's own customer base (per Customer base above) does NOT overlap with that sector's customers. When the proposed mark IS itself an AI / ML / LLM / blockchain product (e.g. an AI assistant, an ML platform, a SaaS infrastructure SKU), do NOT pre-flag — these sectors are on-field competition for that matter and `placement-inquiry` must inquire per candidate without the off-field shortcut. The named list is a checklist of common false-friend categories; the off-field call is always per-matter.
+- **For tech / developer-tooling / dev-platform / SaaS marks specifically, AI / vector-database / ML-infrastructure / LLM-tooling / music-AI / pharma-AI / blockchain-platform companies sharing the same token are common false-friend categories** — they share Nice Classes 9 / 42 with many client marks but serve fundamentally different customer bases (ML engineers, drug researchers, blockchain developers). Pre-flag a sector as a likely false friend only when the client's own customer base (per Customer base above) does NOT overlap with that sector's customers. When the proposed mark IS itself an AI / ML / LLM / blockchain product (e.g. an AI assistant, an ML platform, a SaaS infrastructure SKU), do NOT pre-flag — these sectors are on-field competition for that matter. The named list is a checklist of common false-friend categories; the off-field call is always per-matter.
 - Example for a tech-codename matter: "AI vector-database / LLM-embedding SaaS — Class 9 + 42 overlap, but vector-DB customer base is ML/backend engineers, not the client's customers; channels of trade (pip install / SaaS console) don't intersect with the client's distribution"
-- This list informs `placement-inquiry` placement decisions downstream; concrete reasoning beats taxonomies
+- concrete reasoning beats taxonomies
 
 ### Watchlist-owner seeds
 - 3-7 named owners worth particular attention
@@ -141,7 +141,7 @@ VERBATIM; nothing else asks what the name means:
 
 ## Reasoning posture
 
-- When in doubt about an **off-field / adjacency** decision, INCLUDE rather than exclude — matter-frame should not silently filter a *field*; downstream review (`placement-inquiry`) can deprioritise later with reasoning. **Jurisdiction scope follows its own rule (see *Scope jurisdictions*): search wide, cite narrow.** An instructed-narrow scope is honored; a worldwide or brand-signalled scope widens the SEARCH to the majors + signalled markets; an inferred scope is labelled and disclosed. Do not silently pin a globally-signalling brand to one country (the pinned-scope miss), and do not widen a deliberately-local matter on abstract "the sector is global" reasoning (a wasted sweep).
+- When in doubt about an **off-field / adjacency** decision, INCLUDE rather than exclude — matter-frame should not silently filter a *field*. **Jurisdiction scope follows its own rule (see *Scope jurisdictions*): search wide, cite narrow.** An instructed-narrow scope is honored; a worldwide or brand-signalled scope widens the SEARCH to the majors + signalled markets; an inferred scope is labelled and disclosed. Do not silently pin a globally-signalling brand to one country (the pinned-scope miss), and do not widen a deliberately-local matter on abstract "the sector is global" reasoning (a wasted sweep).
 - Be concrete about WHY for each item. A senior lawyer reading matter-context.md should be able to disagree with specific items and see exactly where your reasoning broke — not just see a conclusion.
 - If you find yourself rating something as in-lane that a senior lawyer would obviously drop, surface the tension rather than smoothing it.
 
@@ -151,7 +151,7 @@ VERBATIM; nothing else asks what the name means:
 - **Don't rate risk.** Risk-rating happens later, against this context.
 - **Don't predict outcomes.** matter-frame is descriptive (what this matter IS), not predictive (what we'll find).
 - **Don't be exhaustive on watchlist owners.** 3-7 named seeds is the right density.
-- **Don't blur the off-field list with the risk list.** Risky-but-on-field findings go through `placement-inquiry`.
+- **Don't blur the off-field list with the risk list.**
 
 ## Length target
 

@@ -1527,6 +1527,12 @@ function evalAssertion(a, runDir, { names = REPORT_NAMES } = {}) {
   // happened, a decision that happened too late, and a run where placement never ran at all (which
   // means this scenario should not be carrying the assert, not that it passed).
   //
+  // STEP 3 IS NOW JUDGED BY OWNER. Placement and the register digest were replaced by the two judges of
+  // `owner-judgment` (2026-10-01), whose stage rows read `owner-judgment:1` and `owner-judgment:2`, so the
+  // stage this assert orders is the first row either judge writes. The op keeps its name because the
+  // scenarios carry it. It no longer looks for placement, which a new run never writes: a log that names
+  // only placement, from a run before the change, reads NOT PROBED.
+  //
   // — A STAGE THE RUN NEVER REACHED IS NOT PROBED, NOT FAILED. The third branch used to return
   // `ok: false` with a message that said, in its own words, that the assert did not belong there
   // ("this assert belongs on a scenario that reaches it"). A check that prints why it should not have
@@ -1535,21 +1541,21 @@ function evalAssertion(a, runDir, { names = REPORT_NAMES } = {}) {
   // and this is it — not reached is not failed.
   //
   // AN EMPTY LOG IS STILL A FAIL, and that is the line that keeps this from being a loosening. A run.jsonl
-  // with no readable rows says nothing about whether placement ran, so the ordering cannot be established
+  // with no readable rows says nothing about whether step 3 ran, so the ordering cannot be established
   // — that is an absence, and an absence is a finding. Only a log that DOES carry rows, none of which is
-  // the placement stage, has positively recorded that the run stopped short.
+  // a judge of step 3, has positively recorded that the run stopped short.
   if (a.op === "settled-before-placement") {
     if (!existsSync(full)) return { ok: false, saw: `${file} absent` };
     const rows = readFileSync(full, "utf8").trim().split("\n").map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
     if (!rows.length) return { ok: false, saw: `${file} has no readable rows — the ordering cannot be established, and an unreadable log is a finding, never a reason to skip a check` };
     const decided = rows.findIndex((r) => r.event === "envelope-decision-early");
-    const placed = rows.findIndex((r) => r.event === "stage" && r.stage === "placement-inquiry");
-    if (placed < 0) return { ok: true, notProbed: true,
-      saw: `NOT PROBED (not a pass — nothing was examined): the run recorded ${rows.length} row(s) and none is the placement-inquiry stage, so it never reached the stage this assert orders. This assert belongs on a scenario that reaches it.` };
+    const judged = rows.findIndex((r) => r.event === "stage" && String(r.stage ?? "").split(":")[0] === "owner-judgment");
+    if (judged < 0) return { ok: true, notProbed: true,
+      saw: `NOT PROBED (not a pass — nothing was examined): the run recorded ${rows.length} row(s) and none is a judge of step 3 (owner-judgment), so it never reached the stage this assert orders. This assert belongs on a scenario that reaches it.` };
     if (decided < 0) return { ok: false, saw: "no envelope-decision-early — the receipt's refusals were never decided" };
-    return { ok: decided < placed, saw: decided < placed
-      ? `decided at row ${decided}, placement at ${placed}`
-      : `placement ran at row ${placed}, BEFORE the decision at ${decided}` };
+    return { ok: decided < judged, saw: decided < judged
+      ? `decided at row ${decided}, step 3 (owner-judgment) at ${judged}`
+      : `step 3 (owner-judgment) ran at row ${judged}, BEFORE the decision at ${decided}` };
   }
   // No attempt of a stage failed on a named validator token. `path` is `_driver/<stage>.jsonl:<token>`.
   // Absence of the log is a FAIL, not a pass: a stage that never wrote its telemetry is exactly the

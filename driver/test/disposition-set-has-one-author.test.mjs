@@ -40,32 +40,33 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { DISPOSITIONS, POSITION_REQUIRED_DISPOSITIONS } from "../findings-model.mjs";
+import { DISPOSITIONS, POSITION_REQUIRED_DISPOSITIONS, WRITER_DISPOSITIONS } from "../findings-model.mjs";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 const gateway = readFileSync(join(DRIVER, "gateway.mjs"), "utf8");
 
 test("the v6 dictation derives its set from the constant, and does not retype it", () => {
-  assert.match(gateway, /POSITION_REQUIRED_DISPOSITIONS\.join\(", "\)/,
+  assert.match(gateway, /WRITER_DISPOSITIONS\.join\(", "\)/,
     "the v6 sentence stopped deriving the set — it is a second author of a closed set again");
   assert.match(gateway, /DISPOSITIONS\.filter\(\(d\) => !POSITION_REQUIRED_DISPOSITIONS\.includes\(d\)\)/,
     "the parenthetical stopped computing the complement. Restating which token is the odd one out is the "
     + "same defect in the same sentence, one clause over");
   // The retired literal must not come back beside the derivation — that is how a "helpful" edit
   // reintroduces the second author while the derivation sits there looking correct.
-  assert.ok(!/adversarial, coexistence-partner, distinguished AND off-field/.test(gateway),
+  assert.ok(!/adversarial, coexistence-partner,? (distinguished )?AND (off-field|distinguished)/.test(gateway),
     "the hand-typed list is back in gateway.mjs");
 });
 
-test("the derived sentence is BYTE-IDENTICAL to the literal it replaced", () => {
+test("the derived sentence is BYTE-IDENTICAL to the literal it replaced, less the token the owner struck", () => {
   // Dispatch wording is not free to tidy in passing: measured a field phrased outside its own
   // imperative written 0 of 9 times, against 74 of 74 when it was inside one. So the join restores the
-  // conjunction rather than settling for the comma `Array.join` produces, and this is the proof.
-  const derived = `${POSITION_REQUIRED_DISPOSITIONS.join(", ").replace(/, ([^,]+)$/, " AND $1")} alike `
+  // conjunction rather than settling for the comma `Array.join` produces, and this is the proof. The one
+  // change is deliberate: off-field left the list with the awareness-only instructions (owner, 2026-10-02).
+  const derived = `${WRITER_DISPOSITIONS.join(", ").replace(/, ([^,]+)$/, " AND $1")} alike `
     + `(only a review-killed ${DISPOSITIONS.filter((d) => !POSITION_REQUIRED_DISPOSITIONS.includes(d))
       .map((d) => `"${d}"`).join(" / ")} finding is `;
   assert.equal(derived,
-    'adversarial, coexistence-partner, distinguished AND off-field alike (only a review-killed "withdrawn" finding is ',
+    'adversarial, coexistence-partner AND distinguished alike (only a review-killed "withdrawn" finding is ',
     "the derivation no longer reproduces the dictation the engine has always sent — the model is being "
     + "told something new, which is a change to make deliberately or not at all");
 });
@@ -84,6 +85,6 @@ test("the derived site in stages.mjs is left alone, and the reason is recorded",
   // The false positive. It is correct code, and a sweep that "fixed" it would be rewriting a derivation
   // into… a derivation, on the say-so of a checker that cannot see interpolation.
   const stages = readFileSync(join(DRIVER, "stages.mjs"), "utf8");
-  assert.match(stages, /POSITION_REQUIRED_DISPOSITIONS\.join\(" \/ "\)/,
+  assert.match(stages, /WRITER_DISPOSITIONS\.join\(" \/ "\)/,
     "stages.mjs stopped deriving its disposition list — that site was the one already doing this right");
 });

@@ -72,9 +72,15 @@ test("the sandbox dispatches on the same label production does — one construct
   }
   assert.equal(dispatchLabel("synthesis", null), "synthesis");
   assert.equal(dispatchLabel("synthesis", undefined), "synthesis");
-  // runExperiment reaches stageOnce through stage(); there is no second dispatch path to diverge.
-  assert.match(src, /const r = await stage\(name, shadowCtx, \{ force: true, model, extra, sessionKey, trigger: "experiment" \}\)/,
+  // runExperiment reaches stageOnce through stage(); there is no second dispatch path to diverge. Step 3's
+  // arm goes through runOwnerJudgment, the one place both judges are dispatched, and that is stage() too.
+  assert.match(src, /: stage\(name, shadowCtx, \{ force: true, model, extra, sessionKey, trigger: "experiment" \}\)\);/,
     "the arm dispatches through stage() — if it ever grows its own runStage call, the wiring can diverge and this test is the warning");
+  assert.match(src, /\? runOwnerJudgment\(shadowCtx, \{ force: true, trigger: "experiment", model \}\)/,
+    "a step-3 arm judges through runOwnerJudgment, as every pass of step 3 does");
+  const owner = src.slice(src.indexOf("async function runOwnerJudgment("), src.indexOf("async function runOwnerJudgment(") + 4000);
+  // Every judge a pass dispatches — both on a first pass, one on a re-run — goes through stage() by its number.
+  assert.match(owner, /stage\("owner-judgment", \{ \.\.\.ctx, axis: String\((?:i \+ 1|n)\)/, "…which dispatches each judge through stage()");
 });
 
 // ══ every stage: arm wiring == production wiring ═════════════════════════════════════════════════

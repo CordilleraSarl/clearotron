@@ -72,6 +72,9 @@ export const PUBLISH_INPUTS = {
   "register-named-band.json": "optional",
   // The instructed scope, read only as the register plan's fallback for the searched-jurisdiction set.
   "_driver/instructed-scope.json": "optional",
+  // Step 3's merged decisions, read only for the judges' reason beside each set-aside owner in "also
+  // considered". Optional: a run begun before step 3 was judged by owner has none, and renders as before.
+  "owner-decisions.json": "optional",
   // The frozen local-language lane decision, and the units the fold wrote. Read to derive how deep that
   // investigation went against what the matter configured — through the engine's own asked-versus-ran
   // reader, not by re-deciding it here. Optional and genuinely so: a plain clearance never runs the

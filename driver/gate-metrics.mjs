@@ -27,7 +27,6 @@
 
 import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
 import { join } from "node:path";
-import { FATES } from "./hit-list.mjs";   // — THE fate set, imported, never re-declared
 import { driverDir } from "../shared/driver-dir.mjs";   //
 import { slugStability, groupByMark } from "./plan-stability.mjs";
 
@@ -127,59 +126,6 @@ export function scoredFetched(runDir) {
   const f = readJson(join(runDir, "findings.json"));
   const scored = (f?.findings ?? []).filter((x) => (x?.composite ?? 0) >= 3 || x?.band != null);
   if (!scored.length) return null;
-  // ── THE FATE CODES, WHERE THE RUN HAS THEM ──────────────────────────────────
-  //
-  // The hit list carries one line per enumerated record and the fate it was given. That is a better
-  // answer to this metric's question than a directory listing ever was: a listing says what is on disk,
-  // the codes say what judgment DID — and F6 asks whether a scored finding rests on a record the run
-  // actually opened.
-  //
-  // THE PICKED FATES ARE ENUMERATED, NOT THRESHOLDED. `fate >= 1` would read a future fate as opened by
-  // arithmetic; naming OPENED_DISMISSED and REPORTED means a new fate is NOT counted as opened until
-  // somebody decides it is. That is the loud direction: excluding it shrinks the numerator and raises
-  // this metric's own alarm, where including it by accident would inflate the numerator and say nothing.
-  //
-  // AND THE SET IS IMPORTED, never re-declared here. Two copies of one question is how the two come to
-  // disagree, and a private threshold in the consumer would keep returning a plausible number after the
-  // producer's set changed under it.
-  //
-  // CASE. Measured on the R14 archive: 1,937 of 1,937 band `record_id`s and 37 of 37 finding uris carry
-  // uppercase. Both sides are lowercased before joining, as the `_records/` path below already does. An
-  // un-normalised join here would miss ALL of them, not some — and a total miss reads as a clean
-  // `fetched: 0`, which is this metric's alert, not its absence.
-  const lines = readJson(join(runDir, "register-hit-list.json"))?.lines;
-  if (Array.isArray(lines)) {
-    // THREE STATES, NOT TWO, and the third is the one an earlier cut of this got wrong. A line the run
-    // deliberately did not open (`NOT_PICKED`) leaves the denominator. A line whose fate this file does
-    // not recognise is NOT that — it is a could-not-look, and lumping it in with a deliberate dismissal
-    // would remove it from the denominator silently, which is the quiet direction this whole rule exists
-    // to refuse. It stays in, and counts as unfetched.
-    const picked = new Set(), notPicked = new Set();
-    for (const l of lines) {
-      const id = String(l?.id ?? "").toLowerCase();
-      if (!id) continue;
-      if (l?.fate === FATES.OPENED_DISMISSED || l?.fate === FATES.REPORTED) picked.add(id);
-      else if (l?.fate === FATES.NOT_PICKED) notPicked.add(id);
-      // anything else: neither set — it stays countable and unfetched, by falling through both.
-    }
-    let total = 0, ok = 0;
-    for (const x of scored) {
-      const uris = (x.owner?.registrations ?? []).map((r) => String(r?.uri ?? "").toLowerCase()).filter(Boolean);
-      if (!uris.length) continue;
-      // ONLY A DELIBERATE DISMISSAL LEAVES THE DENOMINATOR — the seam contract, in one filter. A record
-      // the run chose never to open is not a fetch that failed, and counting it as one would make this
-      // metric fall as the conversion works BETTER. Everything else stays: a citation the list never
-      // enumerated, and a line whose fate this file cannot read, are both claims it cannot vouch for.
-      const countable = uris.filter((u) => !notPicked.has(u));
-      if (!countable.length) continue;
-      total++;
-      if (countable.some((u) => picked.has(u))) ok++;
-    }
-    // Every scored finding cited only unpicked lines: nothing to measure, and `null` says so rather
-    // than reporting a perfect or an empty score.
-    return total ? { total, fetched: ok } : null;
-  }
-
   const recDir = join(runDir, "_records");
   // AN ABSENT PILE IS NO SURFACE, NOT A RUN THAT FETCHED NOTHING.
   //
@@ -196,11 +142,6 @@ export function scoredFetched(runDir) {
   // already handled: the aggregate skips a null outright and `pct()` reports null rather than a false
   // 0%. A present-but-incomplete pile still measures, and must — a cited record that is missing while
   // the pile exists is exactly the fetch failure worth alerting on.
-  //
-  // WHEN FATE CODES LAND this guard is where the derivation moves: the fetched set comes from the codes
-  // rather than from a directory listing, and the denominator narrows to PICKED lines. Under the seam
-  // contract an unpicked line stays out of the denominator entirely, so it can never read as a miss.
-  // Until then, refusing to measure an absent pile is the same answer arrived at from the other side.
   if (!existsSync(recDir)) return null;
   const fetched = new Set();
   for (const file of readdirSync(recDir)) {

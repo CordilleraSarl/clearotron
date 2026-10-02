@@ -29,7 +29,7 @@ const band = [CARRIED, PASSED_OVER, UNSPOKEN].map((record_id) => ({ record_id })
 // did not carry it and `reasonFor` gave no ground — so the fixture cannot drift from the literal the
 // driver actually writes. `UNSPOKEN` is left out of `saw` so no ledger row exists for it.
 const ledger = foldDiscardLedger(seamRows({
-  seam: "placement", stage: "placement-inquiry", completed: true,
+  seam: "judgment", stage: "owner-judgment", completed: true,
   saw: [{ uri: CARRIED }, { uri: PASSED_OVER }],
   carried: [{ uri: CARRIED }],
 }).map((r) => JSON.stringify(r)).join("\n"));
@@ -48,8 +48,8 @@ test("the two classes partition the drops: unreasoned is the absent rows and not
   // class — and cannot pass because a fixture happened to produce the figure a previous draft guessed.
   //
   // My first draft asserted `unreasoned: 1` on a fixture where the carried record also lands `absent`,
-  // because a ledger row saying "carried" is not a finding: the trace needs placements or findings to see
-  // a record go forward. The fixture was wrong, not the count.
+  // because a ledger row saying "carried" is not a finding: the trace needs the findings to see a record
+  // go forward. The fixture was wrong, not the count.
   const t = traceRecordCarry({ bandRecords: band, ledger });
   assert.equal(t.totals.unreasoned, t.by_reason_source.absent ?? 0,
     "unreasoned no longer equals the rows whose source is `absent`");
@@ -74,7 +74,7 @@ test("the passed-over count is NOT folded into unreasoned", () => {
 test("a run with nothing passed over reports zero, not a missing field", () => {
   // An absent key would read as "this run was not asked", which is the shape this module exists to refuse.
   const clean = foldDiscardLedger(seamRows({
-    seam: "placement", stage: "placement-inquiry", completed: true,
+    seam: "judgment", stage: "owner-judgment", completed: true,
     saw: [{ uri: CARRIED }], carried: [{ uri: CARRIED }],
   }).map((r) => JSON.stringify(r)).join("\n"));
   const t = traceRecordCarry({ bandRecords: [{ record_id: CARRIED }], ledger: clean }).totals;

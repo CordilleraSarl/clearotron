@@ -37,8 +37,7 @@
 // that reason and counted — visible, never dropped. Giving them a term class would either invent a
 // term they do not have or manufacture an unaccounted row on every run that fires one.
 //
-// PURE (no node imports) like placement-carry.mjs / recall-reconciliation.mjs — the pipeline owns all
-// IO, events and enforcement. The collapse predicate is IMPORTED from close-verify.mjs rather than
+// PURE (no node imports) — the pipeline owns all IO, events and enforcement. The collapse predicate is IMPORTED from close-verify.mjs rather than
 // re-stated: verifyRegisterDirectiveClose asks the identical question of the same blocks, and two
 // copies of a matcher is how two matchers drift apart.
 

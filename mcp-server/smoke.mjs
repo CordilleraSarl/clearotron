@@ -61,7 +61,7 @@ const sPhrase = await call("search", { runId: RUN_ID2, query: "MYRKUR similar ma
 console.log("search mode=all →", sAll.hits.length, "hit(s); mode=phrase →", sPhrase.hits.length, "hit(s) (expected 0)");
 
 const dt = await call("decision_timeline", { runId: RUN_ID2 });
-console.log("decision_timeline →", dt.timeline.length, "milestones; verdictHistory:", dt.verdictHistory.join("→"), "| riskLadderAvailable:", dt.riskLadderAvailable);
+console.log("decision_timeline →", dt.timeline.length, "milestones; verdictHistory:", dt.verdictHistory.join("→"));
 
 const since = dt.timeline[2].ts;
 const rc = await call("run_changes", { runId: RUN_ID2, since });

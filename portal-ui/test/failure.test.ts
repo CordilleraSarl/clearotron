@@ -39,7 +39,7 @@ test('NO PATH, TEMP DIR, RUN SLUG, STAGE ID, FILE NAME OR ERROR ENUM reaches a r
     ['register-unit:primary-sweep', 'timeout'],
     ['synthesis', 'nonzero_exit_137'],
     ['report-card:4', 'missing_file:_driver/senior-rights.json'],
-    ['register-digest', 'unparseable_json'],
+    ['owner-judgment', 'unparseable_json'],
     ['common-law', 'lane_wedge'],
     ['frame-diff', 'status_429'],
     ['notify', 'embedded_fallback'],
@@ -54,7 +54,7 @@ test('NO PATH, TEMP DIR, RUN SLUG, STAGE ID, FILE NAME OR ERROR ENUM reaches a r
     assert.doesNotMatch(rendered, /\.(md|json|html|jsonl|xlsx)\b/, `a file name reached the status: ${rendered}`)
     assert.doesNotMatch(rendered, /\btmp[a-z0-9]/i, `a temp directory reached the status: ${rendered}`)
     assert.doesNotMatch(rendered, /invalid_file|missing_file|unparseable_json|lane_wedge|nonzero_exit|embedded_fallback|status_\d/, `an error enum reached the status: ${rendered}`)
-    assert.doesNotMatch(rendered, /common-law-half|register-unit|report-card|frame-diff|register-digest|narrative-refutation/, `a stage id reached the status: ${rendered}`)
+    assert.doesNotMatch(rendered, /common-law-half|register-unit|report-card|frame-diff|owner-judgment|narrative-refutation/, `a stage id reached the status: ${rendered}`)
     assert.doesNotMatch(rendered, /:/, `a colon-joined internal token reached the status: ${rendered}`)
   }
 })
@@ -83,15 +83,16 @@ test('THE MAPPING IS NOT SPECIAL-CASED TO ONE ROW: every stage the engine has pr
   assert.ok(from >= 0, 'STAGES not found in driver/stages.mjs — this guard needs updating with it')
   const to = src.indexOf('\nexport ', from + 10)
   const block = src.slice(from, to > 0 ? to : undefined)
-  // Both key forms: a hyphenated stage needs quotes, a bare word does not, and three of the sixteen
+  // Both key forms: a hyphenated stage needs quotes, a bare word does not, and three of the fifteen
   // are bare. Matching only the quoted form silently found 13 and read as a passing guard.
   //
   // 19 -> 16: the three send stages left with the delivery mode that was their only caller.
+  // 16 -> 15: step 3's two stages became one, judged by owner.
   // The floor moves with the population or it stops being a measurement — but note what it is FOR: it
   // catches a truncated PARSE, not a shrinking engine. The bijection below is what catches a stage
   // arriving without a phrase.
   const stages = [...block.matchAll(/^ {2}"?([a-z0-9-]+)"?: \{/gm)].map((m) => m[1])
-  assert.ok(stages.length >= 16, `the stage list looks truncated: ${stages.length} found`)
+  assert.ok(stages.length >= 15, `the stage list looks truncated: ${stages.length} found`)
 
   const phrased = Object.keys(STAGE_PHRASE)
   assert.deepEqual(stages.filter((s) => !phrased.includes(s)), [],

@@ -95,7 +95,7 @@ const STATES = {
   // A card of each kind at once, plus a queue deep enough that its ordinals mean something.
   busy: {
     runs: [
-      run({ runId: 'a', mark: 'CORAL FREEZE', state: 'running', step: 'Register sweeps', stepN: 2, stepTotal: 9, startedAt: ago(96) }),
+      run({ runId: 'a', mark: 'CORAL FREEZE', state: 'running', step: 'Searching registers and common law', stepN: 2, stepTotal: 9, startedAt: ago(96) }),
       run({ runId: 'b', mark: 'KINETIC BLOOM', state: 'paused', pausedKind: 'rate-limit', stepN: 5, stepTotal: 9, resetsAt: new Date(now + 42 * 60_000).toISOString() }),
       run({ runId: 'c', mark: 'NORTHWIND', state: 'queued', queuePos: 1 }),
       run({ runId: 'd', mark: 'EMBER FORGE', state: 'queued', queuePos: 2 }),
@@ -103,7 +103,7 @@ const STATES = {
       ...FINISHED,
     ],
     expectCards: 2, expectQueue: 3, expectFirstCardPips: 9, expectStops: 2,
-    // The design's stop dialog is drawn over this card: CORAL FREEZE, on Register sweeps.
+    // The design's stop dialog is drawn over this card: CORAL FREEZE, on Searching registers and common law.
     stopDialog: 'CORAL FREEZE',
   },
   one: {
@@ -134,7 +134,7 @@ const STATES = {
   // above it crowding the band out.
   bothd: {
     runs: [
-      run({ runId: 'r', mark: 'CORAL FREEZE', state: 'running', step: 'Register sweeps', stepN: 2, stepTotal: 9, startedAt: ago(41) }),
+      run({ runId: 'r', mark: 'CORAL FREEZE', state: 'running', step: 'Searching registers and common law', stepN: 2, stepTotal: 9, startedAt: ago(41) }),
       run({ runId: 'x', mark: 'HALCYON', state: 'failed', date: TODAY, failedStage: 'at register sweeps', reason: 'A register was unreachable. Nothing was delivered.' }),
       ...FINISHED,
     ],
@@ -152,13 +152,13 @@ const STATES = {
   // marketplace" and "registers only" the same string. Kept deliberately as an ARCHIVED run: nothing can
   // be ordered at that slug any more, and a card for a run that WAS must still say what it was.
   longdepth: {
-    runs: [run({ runId: 'L', mark: 'MERIDIAN NORTHSTAR ASSURANCE', state: 'running', product: 'clearance-register-only', step: 'Register sweeps', stepN: 2, stepTotal: 9, startedAt: ago(20) }), ...FINISHED],
+    runs: [run({ runId: 'L', mark: 'MERIDIAN NORTHSTAR ASSURANCE', state: 'running', product: 'clearance-register-only', step: 'Searching registers and common law', stepN: 2, stepTotal: 9, startedAt: ago(20) }), ...FINISHED],
     expectCards: 1, expectQueue: 0, expectFirstCardPips: 9, expectStops: 1,
   },
   // THE CAP IS THE SERVER'S, NOT A LITERAL IN THE UI. It was written in as `2`, which is right today
   // and silently wrong the moment CLEAROTRON_MAX_CONCURRENT_RUNS is set to anything else.
   cap3: {
-    runs: [run({ runId: 'a', mark: 'CORAL FREEZE', state: 'running', step: 'Register sweeps', stepN: 2, stepTotal: 9, startedAt: ago(96) }), ...FINISHED],
+    runs: [run({ runId: 'a', mark: 'CORAL FREEZE', state: 'running', step: 'Searching registers and common law', stepN: 2, stepTotal: 9, startedAt: ago(96) }), ...FINISHED],
     cap: 3,
     expectCards: 1, expectQueue: 0, expectFirstCardPips: 9, expectStops: 1, expectCapNote: /Three runs at once/,
   },
@@ -167,17 +167,17 @@ const STATES = {
   // revise it. Started from the table's own bound rather than a literal, so a ruling that moves the
   // quote moves this state with it instead of silently making it an ordinary card.
   slow: {
-    runs: [run({ runId: 's', mark: 'CORAL FREEZE', state: 'running', step: 'Register sweeps', stepN: 6, stepTotal: 9, startedAt: ago(Math.ceil(TURNAROUND_QUOTE.clearance.highHours * 60) + 11) }), ...FINISHED],
+    runs: [run({ runId: 's', mark: 'CORAL FREEZE', state: 'running', step: 'Searching registers and common law', stepN: 6, stepTotal: 9, startedAt: ago(Math.ceil(TURNAROUND_QUOTE.clearance.highHours * 60) + 11) }), ...FINISHED],
     expectCards: 1, expectQueue: 0, expectFirstCardPips: 9, expectStops: 1,
     expectExpect: '· taking longer than usual',
   },
   // A STOP TAKING EFFECT. Not terminal — the run is still running and the step in flight is finishing —
   // so the card keeps its place in the band and loses its Stop, because there is nothing left to press.
   stopping: {
-    runs: [run({ runId: 'sp', mark: 'GLASSWING', state: 'running', step: 'Register sweeps', stepN: 3, stepTotal: 9, startedAt: ago(22), stopRequestedAt: new Date(now - 30_000).toISOString() }), ...FINISHED],
+    runs: [run({ runId: 'sp', mark: 'GLASSWING', state: 'running', step: 'Searching registers and common law', stepN: 3, stepTotal: 9, startedAt: ago(22), stopRequestedAt: new Date(now - 30_000).toISOString() }), ...FINISHED],
     expectCards: 1, expectQueue: 0, expectFirstCardPips: 9, expectStops: 0,
     expectExpect: '',
-    expectStopNote: 'Stopping — letting Register sweeps finish. No report will be produced. Completed work stays readable through Ask AI.',
+    expectStopNote: 'Stopping — letting Searching registers and common law finish. No report will be produced. Completed work stays readable through Ask AI.',
   },
   quiet: { runs: FINISHED, expectCards: 0, expectQueue: 0, expectFirstCardPips: 0, expectStops: 0 },
   new: { runs: [], expectCards: 0, expectQueue: 0, expectFirstCardPips: 0, expectStops: 0, expectFirstRun: true },
@@ -185,7 +185,7 @@ const STATES = {
   // emptied the moment someone picked one, with no way back.
   firm: {
     runs: [
-      run({ runId: 'a', account: 'coastline', mark: 'CORAL FREEZE', state: 'running', step: 'Register sweeps', stepN: 2, stepTotal: 9, startedAt: ago(96) }),
+      run({ runId: 'a', account: 'coastline', mark: 'CORAL FREEZE', state: 'running', step: 'Searching registers and common law', stepN: 2, stepTotal: 9, startedAt: ago(96) }),
       run({ runId: 'b', account: 'foxglade', mark: 'NORTHWIND', state: 'running', step: 'Framing the matter', stepN: 1, stepTotal: 9, startedAt: ago(6) }),
       run({ runId: 'c', account: 'ridgeform', mark: 'EMBER FORGE', state: 'queued', queuePos: 1 }),
       ...FINISHED,
@@ -735,8 +735,8 @@ for (const [name, spec] of Object.entries(STATES)) {
           `${name}/${theme}: the primary button and "Leave it running" sit side by side, primary first — read ${JSON.stringify(opened.buttons)}`)
         say(/A stopped search cannot be restarted and produces no report\. It stays in Clearances, marked stopped\. Its finished steps stay readable through Ask AI\./.test(opened.text),
           `${name}/${theme}: the stop dialog states the facts of a stop`)
-        say(/Register sweeps finishes first, so its work is kept\. There is no reliable completion estimate for this step\./.test(opened.text)
-          && /Register sweeps is cut off and its work is lost\. Everything recorded before it is kept\./.test(opened.text),
+        say(/Searching registers and common law finishes first, so its work is kept\. There is no reliable completion estimate for this step\./.test(opened.text)
+          && /Searching registers and common law is cut off and its work is lost\. Everything recorded before it is kept\./.test(opened.text),
           `${name}/${theme}: both options name the step in progress`)
         say(!/allowance/i.test(opened.text), `${name}/${theme}: the stop dialog says nothing about the allowance`)
         if (shotDir) await tallShot(`home-stop-dialog-after-step-${theme}.png`)

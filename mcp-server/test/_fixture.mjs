@@ -205,6 +205,10 @@ export function buildRichRun() {
     "| DK | primary-sweep | confirmed-clean |",
   ].join("\n"));
 
+  // …and an older snapshot of the sceptic's flags beside it: a stage the engine still runs, so diff_artifact
+  // has a live stage to compare across versions.
+  writeFileSync(join(histDir, "skeptic-flags.md"), "## Escalation decisions\nno flags surfaced\n");
+
   // run.jsonl — two register-digest events (sha CHANGE on escalation), then BLOCKING → CONDITIONAL → delivered
   const events = [
     { event: "start", agent: "test", job: { id: "job2", slug: "tmpmyrk1-myrkur", codename: "iron-heron" } },

@@ -47,7 +47,8 @@ test("the stage is declared exactly as specced: sonnet, LOW thinking, run-root o
   assert.equal(s.out(P), join("/run", "doubt-closure.md"),
     "the run root, NOT _driver/ — the write boundary denies that tree");
   assert.equal(s.validate, validators.doubtClosure);
-  assert.deepEqual(stageInputs("doubt-closure", P), [P.findings, P.registerFindings, P.registerCoverageLedger],
+  // Step 3's merged decisions stand where the register digest's findings stood (2026-10-01).
+  assert.deepEqual(stageInputs("doubt-closure", P), [P.findings, P.ownerDecisions, P.registerCoverageLedger],
     "the citable set is closed: exactly the three evidence surfaces");
 });
 
@@ -57,7 +58,7 @@ test("the message states the contract: every open doubt (id + birth quote), the 
     assert.ok(msg.includes(d.id), `doubt id ${d.id} rides in the message`);
     assert.ok(msg.includes(d.birth.quote), "the birth quote rides verbatim");
   }
-  assert.ok(msg.includes(P.findings) && msg.includes(P.registerFindings) && msg.includes(P.registerCoverageLedger),
+  assert.ok(msg.includes(P.findings) && msg.includes(P.ownerDecisions) && msg.includes(P.registerCoverageLedger),
     "all three evidence file paths are named");
   // CONVERSION 6: the two dictated line shapes are GONE from the message. The seat sends typed rows and
   // the driver renders the artifact, so a shape asserted here would be a shape nobody types. Asserted
@@ -73,11 +74,9 @@ test("the message states the contract: every open doubt (id + birth quote), the 
   assert.match(msg, /there is no field for a file name/i, "the seat is told a file it was not given cannot be named");
   assert.match(msg, /VERBATIM/, "the quote-must-be-verbatim demand is stated");
   assert.match(msg, /never write new analysis|never search/i, "the stage may only point, never produce");
-  // presence-or-reason (2026-07-22): the ONE additive dictation line — a presence-reconciliation doubt
-  // may be SETTLED by a delivered crowd/coverage disclosure that prices the row's family in (the
-  // anti-flooding valve for crowd-corroboration rows); the verbatim-quote guard applies unchanged.
-  assert.match(msg, /presence-reconciliation doubt[\s\S]*crowd\/coverage disclosure[\s\S]*prices that row's family in/,
-    "the presence-reconciliation settle basis is dictated");
+  // The presence reconciliation was removed with step 3's placement, and its settle basis left this
+  // message with it (owner, 2026-10-01): no run raises such a doubt, so none is told how to settle one.
+  assert.doesNotMatch(msg, /presence-reconciliation/, "the message still dictates a settle basis for a doubt no run raises");
   // NO PATH IN THE DISPATCH — conversion 4's lesson, applied. The seat is handed no artifact path at all,
   // which is what stops it writing the file itself and what stops a MOCK_FAIL_STAGE-style knob keying on
   // a basename that the converted dispatch no longer contains.

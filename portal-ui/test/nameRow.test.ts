@@ -98,7 +98,7 @@ test('the count and the dated line appear TOGETHER, and only when there is somet
   assert.equal(statusCount(settled), null)
   // Under way, but never delivered: "Running" with its stage, no count, no line — there is no report to
   // tell the search apart from.
-  const first = one([run({ runId: 'r', state: 'running', band: null, tone: null, report: null, step: 'Register sweeps' })])
+  const first = one([run({ runId: 'r', state: 'running', band: null, tone: null, report: null, step: 'Searching registers and common law' })])
   assert.equal(shownReport(first), null)
   assert.equal(reportLine(first), null)
   assert.equal(statusCount(first), null)

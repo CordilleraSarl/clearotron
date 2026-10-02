@@ -66,20 +66,6 @@ with ~20–50 findings typically curates to a handful of headline cards. Rating 
 of the framework in force (`risk-framework.md` house default, or the profile-selected
 `risk-framework-<customer>.md`); synthesis discipline follows `synthesis-rules.md`.
 
-**Placement's record — `placements.json` + the rulings tail (B2, 2026-07-31).** `placement-inquiry` writes
-its four tier sections as a structured sibling of `placement-recommendations.md`: `placements.json`, one
-entry per placed candidate, `{mark, owner, jurisdiction, records[], tier, reason}` with `tier` exactly one of
-`headline-candidate` / `sheet-2` / `watchlist-annex` / `out-of-scope-filtered`. When it is present it is the
-**authoritative per-candidate tier record**, and `reason` is placement's own short paragraph — the candidate
-characterisation, the decisive placement ground, any Stage-2 mitigant flag. Every consumer, this one
-included, **adopts or counters each placement BY ENGAGING ITS REASON**: a departure quotes the reason it
-contradicts and says why it does not hold; it is never a silent re-tier, and a caption or an `# Actions`
-emphasis that quietly reverses placement's call without engaging its reason is a delivery defect. The md
-keeps the **rulings tail** (band reconciliation, disagreements, coverage rulings, open questions) as prose —
-it travels verbatim and is adjudicated the same way: adopt each ruling or counter-reason it, never silently
-drop one. A run minted before this contract carries no `placements.json`; the md's tier sections are then the
-record, read the same way.
-
 **Banding by disposition (placement only — never the rating).** Each finding in `findings.json` carries an
 OPTIONAL `disposition` (set by `synthesis`), one of: `adversarial` | `coexistence-partner` | `distinguished` |
 `off-field`. It chooses the report **band** a card renders in — it **never** recomputes the finding's rating
@@ -319,6 +305,5 @@ Same forgiving labelled-block markdown. Three sections:
 ## AT2  …
 ```
 
-Pull Findings/Negatives/Audit-Trail straight from `register-findings.md` + `common-law-findings.md`
-(+ placements). This is re-formatting existing analysis into the block shape — do not re-analyse or
+Pull Findings/Negatives/Audit-Trail straight from `common-law-findings.md`. This is re-formatting existing analysis into the block shape — do not re-analyse or
 re-search. Omit a key if the source doesn't have it; `Mark` defaults to the report's title at render time.

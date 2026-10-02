@@ -46,8 +46,9 @@ reported as "clean". The coverage ledger appears in the report as prose and as J
 gate. A receipt read as a gate is a Goodhart problem, and the reasoning-integrity receipt says so on
 its own face.
 
-**Register-digest** — the condensed register result a downstream stage reads instead of the raw
-records: the same evidence, at the size a model turn can hold.
+**Owner table** — every record the register sweeps retrieved, laid out by code with one line per
+owner. Two judging sessions read it, each alone, and code merges their decisions into the file the
+later stages read.
 
 **Hit list** — one line per enumerated record and the fate it was given. It is not a read: a record
 can be on the hit list and never opened, and the sign-off condition is about documents actually read.

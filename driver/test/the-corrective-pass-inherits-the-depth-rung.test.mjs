@@ -30,11 +30,10 @@ const depth = (p) => depthFor({ product: p });
 function fixtureP() {
   const dir = mkdtempSync(join(tmpdir(), "corrective-rung-"));
   const P = { seniorEyeReview: join(dir, "review.md"), narrative: join(dir, "narrative.md"),
-    findings: join(dir, "findings.json"), placement: join(dir, "placement.md") };
+    findings: join(dir, "findings.json") };
   writeFileSync(P.seniorEyeReview, "## Corrections\n\n1. [kind: fact] [on: 1] Something to fix.\n");
   writeFileSync(P.narrative, "# Narrative\n");
   writeFileSync(P.findings, "{}");
-  writeFileSync(P.placement, "# Placement\n");
   return P;
 }
 

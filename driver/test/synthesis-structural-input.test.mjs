@@ -19,7 +19,7 @@
 // receipt certifies the shape you imagined instead of the one a run produces.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, chmodSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, chmodSync, cpSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname, basename } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
@@ -98,7 +98,7 @@ function fixtureRun() {
 test("synthesis declares EXACTLY its inputs, and the plan-execution receipt + coverage ledger are two of them", () => {
   const P = paths("/RUN");
   const sorted = (a) => [...new Set(a)].sort();
-  const COMMON = [P.registerFindings, P.placement, P.placementModel, P.registerNamedBand, P.matterContext,
+  const COMMON = [P.ownerDecisions, P.registerNamedBand, P.matterContext,
     P.variantManifest, P.skepticFlags, P.frameReopenReceipt, P.crowdContext, P.crowdContextMd,
     P.planExecution, P.registerCoverageLedger];
 
@@ -109,7 +109,7 @@ test("synthesis declares EXACTLY its inputs, and the plan-execution receipt + co
       `stageInputs[synthesis] (registerOnly=${registerOnly}) is the staleness graph AND what --experiment copies`);
   }
 
-  // Named individually so a regression fails by NAME rather than as a count mismatch on a 13-entry list.
+  // Named individually so a regression fails by NAME rather than as a count mismatch on an 11-entry list.
   const declared = stageInputs("synthesis", P, { axes: REGISTER_AXES, registerOnly: false });
   assert.ok(declared.includes(P.planExecution),
     "synthesis must declare the plan-execution receipt — its coverage judgment rules over what actually ran (#447)");
@@ -384,7 +384,7 @@ test("review: the stale-repair re-dispatch of synthesis carries the structural b
   const fresh = readFileSync(driverDir(runDir, "synthesis.attempt1.dispatch.txt"), "utf8");
   // The shape production's blocked delivery pass writes, driven through the production entry point.
   writeFileSync(driverDir(runDir, "delivery-stale.json"), JSON.stringify({
-    ts: new Date().toISOString(), labels: ["synthesis"], changed: { synthesis: ["register-findings.md"] },
+    ts: new Date().toISOString(), labels: ["synthesis"], changed: { synthesis: ["owner-decisions.json"] },
   }, null, 2));
 
   const codename = basename(runDir).replace(/^\d{4}-\d\d-\d\d-/, "");
@@ -399,7 +399,7 @@ test("review: the stale-repair re-dispatch of synthesis carries the structural b
   assert.match(repaired, /DISPATCH RECORD — the REGISTER layer's, authoritative and driver-written/,
     "and its prompt's claim about what it carries is true, exactly as the fresh pass's is");
   // The list of records the seat must answer is re-read from the findings that moved, not left out.
-  const DECLINATIONS = /DECLINATIONS \(MANDATORY\): the register digest carried \d+ record\(s\)/;
+  const DECLINATIONS = /DECLINATIONS \(MANDATORY\): the judges carried \d+ record\(s\)/;
   assert.match(fresh, DECLINATIONS, "the fresh pass carries the list, so the repair owes it too");
   assert.match(repaired, DECLINATIONS, "the repair re-dispatch carries the list the recorder holds it to");
   // The original justification for withholding was that a repair must not carry a different prompt from
@@ -414,22 +414,20 @@ test("review: the stale-repair re-dispatch of synthesis carries the structural b
 // to nothing, the list the earlier pass wrote must go too: the recorder holds the seat to whatever the
 // spec file carries, and a pass whose prompt carries no list must not be bound by an old one.
 test("a findings surface that empties between passes removes the list the earlier pass wrote", () => {
+  // The invented pile the judging tests use: the list is the records the judges carried, joined to it.
   const runDir = mkdtempSync(join(tmpdir(), "emptied-surface-"));
+  cpSync(join(HERE, "fixtures", "owner-pile"), runDir, { recursive: true });
   const P = paths(runDir);
-  writeFileSync(P.placementModel, JSON.stringify({ schema_version: 1, placements: [
-    { mark: "QUILLMERE", owner: "Quill Holdings SA", jurisdiction: "EU", tier: "sheet-2", reason: "Near-identical mark, cl 5, EU, registered", records: ["/mark/eu/tm_quillmere-eu"] },
-  ] }));
-  const carried = "# Register findings\n\n### Incumbent-context (orchestrator: Sheet 2 candidates)\n\n| /mark/eu/tm_quillmere-eu | QUILLMERE | Completes the record. |\n";
-  const dropped = "# Register findings\n\n### Negative results (orchestrator: Sheet \"Negative Results\")\n\n| QUILLMERE | Different goods. | URI /mark/eu/tm_quillmere-eu |\n";
+  const decisions = (carried) => JSON.stringify({ schema_version: 1, carried, set_aside: [] });
   const spec = driverDir(runDir, "declination-spec.json");
   const ctx = {};
 
-  writeFileSync(P.registerFindings, carried);
+  writeFileSync(P.ownerDecisions, decisions([{ owners: ["owner one"], records: ["/mark/AA/0000-A1"], ratings: [{ rating: "High" }] }]));
   PL.prepareDeclinationSpec(ctx, P);
   assert.equal(JSON.parse(readFileSync(spec, "utf8")).rows.length, 1, "CONTROL: a carried record is listed");
   assert.equal(ctx.findingsSurface?.length, 1, "CONTROL: and the prompt is handed it");
 
-  writeFileSync(P.registerFindings, dropped);
+  writeFileSync(P.ownerDecisions, decisions([]));
   PL.prepareDeclinationSpec(ctx, P);
   assert.throws(() => readFileSync(spec, "utf8"), /ENOENT/, "the earlier pass's list no longer binds the seat");
   assert.equal(ctx.findingsSurface, undefined, "and the prompt carries no list");
