@@ -555,6 +555,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-frame-call-with-places-per-name-passes-the-gate.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "a-framework-method-rates-through-its-table.test.mjs": {
           "tests": 5,
           "asserts": 28,
