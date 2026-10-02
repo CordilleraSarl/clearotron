@@ -44,14 +44,14 @@ const MODEL = {
     { value: "DAWN", kind: "common" },
   ],
   variants: [
-    { value: "EVERLITE", category: "phonetic", rationale: "sound-alike" },
-    { value: "ЭВЕРЛАЙТ", category: "transliteration", rationale: "cyrillic" },
+    { value: "LUMENGARD", category: "phonetic", rationale: "sound-alike" },
+    { value: "ЛЮМЕНГАРД", category: "transliteration", rationale: "cyrillic" },
   ],
   incumbent_classes: ["9"],
 };
 const JOB = { jobKey: "TMP9999-lumengarde", classes: ["9", "28"], jurisdictions: ["US", "EU", "CH"] };
 const FORM = { elements: [{ element: "LUMENGARDE", band: {
-  exactQueries: ["AVERLIGHT", "EVERLIGT"], wildcardPatterns: ["EVERLIGH*", "*VERLIGHT"] } }] };
+  exactQueries: ["LOOMENGARDE", "LUMENGRDE"], wildcardPatterns: ["LUMENGAR*", "*UMENGARDE"] } }] };
 
 const manifest = () => parseVariantManifestModel(JSON.stringify(MODEL));
 const compile = (capabilities, { job = JOB, form = FORM } = {}) =>
@@ -484,21 +484,21 @@ test("the kernel seam block is CONSISTENT with the contract it sits in (no secon
 });
 
 test("wildcard is THREE sub-capabilities: the anchoring decides which one is checked", () => {
-  assert.equal(wildcardCapabilityKey("EVERLIGH*"), "wildcardPrefix");
-  assert.equal(wildcardCapabilityKey("*VERLIGHT"), "wildcardSuffix");
-  assert.equal(wildcardCapabilityKey("*VERLIGH*"), "wildcardInfix");
+  assert.equal(wildcardCapabilityKey("LUMENGAR*"), "wildcardPrefix");
+  assert.equal(wildcardCapabilityKey("*UMENGARDE"), "wildcardSuffix");
+  assert.equal(wildcardCapabilityKey("*UMENGAR*"), "wildcardInfix");
   // WHICH ANCHOR, not whether the term is dispatchable. An unanchored term resolves to the infix key
   // because that is what the executor would do with it — this function has, and needs, no opinion on
   // whether the string is a pattern at all. `termPredicateIssue` owns that question; see the arm below.
-  assert.equal(wildcardCapabilityKey("VERLIGHT"), "wildcardInfix");
+  assert.equal(wildcardCapabilityKey("UMENGARDE"), "wildcardInfix");
   const sig = capabilitiesFor("signa");
-  assert.equal(predicateGap("wildcard", "EVERLIGH*", sig), null, "signa anchors a prefix — `starts_with`");
-  assert.equal(predicateGap("wildcard", "*VERLIGHT", sig), null, "…and a suffix, as of #1030 — `ends_with`");
+  assert.equal(predicateGap("wildcard", "LUMENGAR*", sig), null, "signa anchors a prefix — `starts_with`");
+  assert.equal(predicateGap("wildcard", "*UMENGARDE", sig), null, "…and a suffix, as of #1030 — `ends_with`");
   // The INFIX case is the one signa still cannot serve, and it is the one that keeps this test honest:
   // an assertion where every key resolves proves nothing about the gap machinery.
-  assert.match(predicateGap("wildcard", "*VERLIGH*", sig), /wildcard \(wildcardInfix\)/,
+  assert.match(predicateGap("wildcard", "*UMENGAR*", sig), /wildcard \(wildcardInfix\)/,
     "the doubly-anchored pattern has no mapping — `contains` would search the asterisks");
-  assert.match(predicateGap("wildcard", "VERLIGHT", sig), /wildcard \(wildcardInfix\)/,
+  assert.match(predicateGap("wildcard", "UMENGARDE", sig), /wildcard \(wildcardInfix\)/,
     "and so does an unanchored one — same key, same refusal");
   assert.equal(predicateGap("exact", "LUMENGARDE", sig), null);
   assert.equal(predicateGap("owner", "ACME AG", sig), null, "#1030: signa has an owner field now");
@@ -530,8 +530,8 @@ test("wildcardCapabilityKey answers WHICH ANCHOR; termPredicateIssue answers WHE
     ["s*s",    "wildcardInfix",   true,  "anchored on neither end, and a real pattern — infix, dispatched"],
     ["sk?",    "wildcardInfix",   true,  "STARLESS and a real pattern — the generator mints it; must stay dispatchable"],
     ["sms",    "wildcardInfix",   false, "neither * nor ? — the compiler must never emit this at all"],
-    ["everl*", "wildcardPrefix",  true,  "the anchoring reading still works, and differs, on the same inputs"],
-    ["*erlgt", "wildcardSuffix",  true,  "…and in the other direction"],
+    ["lumeng*", "wildcardPrefix", true,  "the anchoring reading still works, and differs, on the same inputs"],
+    ["*ngrde", "wildcardSuffix", true,  "…and in the other direction"],
   ];
   for (const [term, key, wellFormed] of CASES) {
     assert.equal(wildcardCapabilityKey(term), key, `${term}: anchor key`);

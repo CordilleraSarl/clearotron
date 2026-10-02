@@ -56,8 +56,8 @@ test("findGridLedgerViolations: complete ledger ⇒ clean; dropped batch ⇒ nam
 });
 
 test("findGridLedgerViolations: ' / '-packed manifest key satisfied by per-alternate grids", () => {
-  const manifest = `## Variants\n| Variant |\n|---|\n| 丝绸与铁 / 席尔克 |\n`;
-  const ledger = JSON.stringify(batch([...cells("丝绸与铁"), ...cells("席尔克")]));
+  const manifest = `## Variants\n| Variant |\n|---|\n| 缎与钢 / 萨汀 |\n`;
+  const ledger = JSON.stringify(batch([...cells("缎与钢"), ...cells("萨汀")]));
   assert.deepEqual(findGridLedgerViolations(manifest, ledger), []);
 });
 
