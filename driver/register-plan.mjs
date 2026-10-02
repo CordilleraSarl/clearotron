@@ -2359,7 +2359,10 @@ export function joinPlanToBands(plan, bandBlocksByAxis, { released = new Set() }
         // and the report's coverage line claims to: it reads "skipped after a broader search came back
         // crowded", which is true when the parent was `incomplete` and false when the parent FAILED or
         // never ran. The state that decides it is read one line above and was thrown away here.
-        if (parentState !== "enumerated") { skipped.push({ qid: e.qid, guard: e.when.runs_if_enumerated, parent_state: parentState || null }); continue; }
+        // AND WHETHER IT ERRED, because the state cannot say: a band has two states, and the executor writes
+        // every provider error as `incomplete` with `error: true` beside it. Read off the state alone, a
+        // broader search that failed was a broader search that crowded.
+        if (parentState !== "enumerated") { skipped.push({ qid: e.qid, guard: e.when.runs_if_enumerated, parent_state: parentState || null, ...(parent?.error === true ? { parent_error: true } : {}) }); continue; }
       }
     }
     const b = byQid.get(e.qid);
@@ -2404,6 +2407,11 @@ export function joinPlanToBands(plan, bandBlocksByAxis, { released = new Set() }
       state: String(b.state ?? "").toLowerCase(),
       records: recs,
       total_hits: Number.isFinite(hits) ? hits : null,
+      // A SLICE THAT RAN AND COULD NOT BE ANSWERED. The executor stamps `deferred: true` with no error on an
+      // owner sweep whose name the register never resolved: the call ran, so it is executed, and the band
+      // says `incomplete` with no count. The deferral is the only thing that tells it from a listing that
+      // overflowed, so it rides with the row rather than stopping at the block.
+      ...(b.deferred === true ? { deferred: true } : {}),
     });
   }
   const planQids = new Set(plan.entries.map((e) => e.qid));
