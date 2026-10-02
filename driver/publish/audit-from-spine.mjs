@@ -250,46 +250,54 @@ export function recordsNeverDelivered(readingLog) {
  * of everything considered, so the decisions reach it in the shapes the register findings document used
  * to give it: a finding block per carried owner, and a negative result per owner a judge set aside — the
  * rows the report's "also considered" list reads (publish/search-depth.mjs, clearedNames), so that list
- * is now the set-aside owners, its shape unchanged. Every field is copied: the record's own facts from
- * the band, the judges' own reasons and ratings. PURE.
+ * is now the set-aside owners, its shape unchanged.
+ *
+ * EVERY CELL IS ONE THE OLD ROWS HELD, IN THE OLD WORDS (owner, 2026-10-01: nothing new reaches a client
+ * in this phase, and the workbook is readable by a client's account). So the cells carry the record's own
+ * facts from the band and nothing a judge wrote: each judge's reason and rating stays in the run's record
+ * (owner-decisions.json, owner-fates.json), never in the workbook. The dates read "Filed" and "Expiry" as
+ * the old rows did, the Platform cell of a register negative stays empty as it was, and the Notes cell
+ * keeps the old order. A decision resting on web pages alone is no register row: the common-law layer
+ * comes from its own document, as before. PURE.
  *
  * `registerDecisions` is `{ decisions, recordFacts }`: the merged decisions (owner-decisions.json) and
  * the band's facts for a record id (mark, owner, country, office, classes, status, dates, screen verdict).
  */
 export function decisionAuditRows({ decisions, recordFacts = () => null } = {}) {
-  const said = (list, key) => (list ?? []).filter((d) => d?.[key]).map((d) => `judge ${d.judge}: ${String(d[key]).replace(/\s+/g, " ").trim()}`).join(" / ");
-  const findings = (decisions?.carried ?? []).map((g) => {
+  const findings = [];
+  for (const g of decisions?.carried ?? []) {
     const first = (g.records ?? []).map((id) => ({ id, f: recordFacts(id) })).find((x) => x.f) ?? null;
-    const f = first?.f ?? {};
-    return {
+    if (!first) continue;
+    const f = first.f;
+    findings.push({
       title: f.mark || (g.owners ?? [])[0] || "(unnamed finding)",
-      source_layer: first ? "Register" : "Common-law",
+      source_layer: "Register",
       type: "",
       owner: (g.owners ?? []).join("; "),
       owner_country: f.country ?? "",
       classes: Array.isArray(f.classes) ? f.classes.join(", ") : (f.classes ?? ""),
       status: f.status ?? "",
-      dates: [f.filed && `Filed ${f.filed}`, f.registered && `Registered ${f.registered}`].filter(Boolean).join("; "),
-      url: first?.id ?? (g.web ?? [])[0] ?? "",
-      description: said(g.decisions, "reason"),
-      key_factors: (g.ratings ?? []).map((r) => `judge ${r.judge}: ${r.rating}`).join(" / "),
+      dates: [f.filed && `Filed ${f.filed}`, f.expiry && `Expiry ${f.expiry}`].filter(Boolean).join("; "),
+      url: first.id,
+      description: "",
+      key_factors: "",
       source: "",
       search_terms: "",
       verify: "",
-    };
-  });
+    });
+  }
   const negatives = [];
   for (const g of decisions?.set_aside ?? []) {
-    const ids = (g.records ?? []).length ? g.records : [null];
-    for (const id of ids) {
-      const f = id ? (recordFacts(id) ?? {}) : {};
+    for (const id of g.records ?? []) {
+      const f = recordFacts(id) ?? {};
       negatives.push({
         source_layer: "Register",
         search_term: f.mark || (g.owners ?? [])[0] || "",
-        platform: f.office ?? "",
-        result: said(g.decisions, "reason"),
-        notes: id ? [`URI ${id};`, f.screenVerdict ? `screen_verdict=${f.screenVerdict};` : "", f.status ? `status=${f.status};` : "",
-          Array.isArray(f.classes) && f.classes.length ? `class=${f.classes.join(",")};` : ""].filter(Boolean).join(" ") : "",
+        platform: "",
+        result: "",
+        notes: [`URI ${id}`, f.screenVerdict ? `screen_verdict=${f.screenVerdict}` : "",
+          Array.isArray(f.classes) && f.classes.length ? `class=${f.classes.join(", ")}` : "", f.status ? `status=${f.status}` : ""]
+          .filter(Boolean).join("; "),
       });
     }
   }

@@ -79,6 +79,7 @@ export function loadPile(runDir) {
         status: row.status ?? "",
         filed: row.application_date ?? null,
         registered: row.registration_date ?? null,
+        expiry: row.expiry_date ?? null,
         // The screen's own verdict, where the band record carries one (the audit's "also considered"
         // groups a set-aside record by it). Never shown to a judge.
         screenVerdict: String(row.screen?.screen_verdict ?? row.screen_verdict ?? "").trim(),
@@ -287,7 +288,7 @@ export function registerDecisionsFor(runDir, decisionsPath) {
     recordFacts: (id) => {
       const r = pile.recordById.get(String(id));
       return r ? { mark: r.mark, owner: r.owner, country: r.ownerCountry, office: r.office, classes: r.classes,
-        status: r.status, filed: r.filed, registered: r.registered, screenVerdict: r.screenVerdict } : null;
+        status: r.status, filed: r.filed, registered: r.registered, expiry: r.expiry, screenVerdict: r.screenVerdict } : null;
     },
   };
 }

@@ -248,14 +248,12 @@ test("the audit's register rows: carried owners as findings, set-aside owners as
   ]))] });
   const recordFacts = (id) => {
     const r = pile.recordById.get(id);
-    return r ? { mark: r.mark, owner: r.owner, country: r.ownerCountry, office: r.office, classes: r.classes, status: r.status, filed: r.filed, screenVerdict: "drop:dead" } : null;
+    return r ? { mark: r.mark, owner: r.owner, country: r.ownerCountry, office: r.office, classes: r.classes, status: r.status, filed: r.filed, expiry: "2031-01-01", screenVerdict: "drop:dead" } : null;
   };
   const { findings, negatives } = decisionAuditRows({ decisions: { carried: m.carried, set_aside: m.setAside }, recordFacts });
   assert.equal(findings.length, 1);
   assert.equal(findings[0].title, "ZZMARK");
   assert.equal(findings[0].owner, "Owner One K.K.");
-  assert.equal(findings[0].key_factors, "judge 1: High");
-  assert.match(findings[0].description, /^judge 1: The same mark/);
   assert.equal(negatives.length, 1);
   // the shape the report's "also considered" list reads, read back by its own reader
   const audit = `# Negative results\n\n## NR1\n${Object.entries(negatives[0]).filter(([, v]) => v).map(([k, v]) => `- ${k}: ${v}`).join("\n")}\n`;
@@ -263,4 +261,35 @@ test("the audit's register rows: carried owners as findings, set-aside owners as
   assert.equal(cleared.register.length, 1);
   assert.equal(cleared.register[0].uri, "/mark/CC/0000-C3");
   assert.equal(cleared.register[0].group, "dead-filing");
+});
+
+// The workbook is linked from the report and readable by a client's account, and nothing new reaches a
+// client in this phase (owner, 2026-10-01): its rows keep the cells and the words the old register rows
+// had. Each judge's reason and rating stays in the run's record.
+test("the audit's register rows carry the record's facts and nothing a judge wrote, in the old rows' shape", () => {
+  const m = mergeJudgments({ table, judges: [
+    judge(1, answer([carry(["Owner One K.K."], ["/mark/AA/0000-A1"], "High"), aside(["Owner Two GmbH"], ["/mark/CC/0000-C3"], "Expired.")])),
+    judge(2, answer([carry(["Owner One K.K."], ["/mark/AA/0000-A1"], "Medium"), aside(["Owner Two GmbH"], ["/mark/CC/0000-C3"], "Lapsed long ago.")])),
+  ] });
+  const recordFacts = (id) => {
+    const r = pile.recordById.get(id);
+    return r ? { mark: r.mark, owner: r.owner, country: r.ownerCountry, office: r.office, classes: ["9", "42"], status: "REGISTERED", filed: "2020-02-02", registered: "2021-03-03", expiry: "2031-01-01", screenVerdict: "drop:dead" } : null;
+  };
+  const decisions = { carried: m.carried, set_aside: m.setAside };
+  const { findings, negatives } = decisionAuditRows({ decisions, recordFacts });
+  const cells = [...findings, ...negatives].flatMap((row) => Object.values(row)).join(" | ");
+  for (const word of ["judge", "High", "Medium", "The same mark", "Expired.", "Lapsed long ago."])
+    assert.ok(!cells.includes(word), `a judge's words reached the workbook: ${word}`);
+  assert.equal(findings[0].dates, "Filed 2020-02-02; Expiry 2031-01-01", "the dates read as the old rows read them");
+  assert.equal(findings[0].description, "");
+  assert.equal(findings[0].key_factors, "");
+  assert.equal(negatives[0].platform, "", "a register negative's Platform cell stays empty, as the old rows left it");
+  assert.equal(negatives[0].result, "");
+  assert.equal(negatives[0].notes, "URI /mark/CC/0000-C3; screen_verdict=drop:dead; class=9, 42; status=REGISTERED", "the Notes cell in the old order");
+  // A decision resting on web pages alone is no register row, carried or set aside.
+  const web = decisionAuditRows({ decisions: {
+    carried: [{ owners: ["Web Only Ltd"], records: [], web: ["https://example.test/shop"], ratings: [{ judge: 1, rating: "High" }], decisions: [] }],
+    set_aside: [{ owners: ["Web Too Ltd"], records: [], web: ["https://example.test/other"], decisions: [] }],
+  }, recordFacts });
+  assert.deepEqual(web, { findings: [], negatives: [] });
 });
