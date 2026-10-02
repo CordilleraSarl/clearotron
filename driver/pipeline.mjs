@@ -4339,14 +4339,20 @@ export function stageCharter(stageName, depth, framework = null) {   // @interna
  * under the default contract, wearing the corrective pass's name.
  */
 /**
- * The review a post-repair fix pass is handed (owner, ruling 719): the latest accepted review's flags on
- * the findings a repair changed, rendered in the reviewer's own words. Every reader of the review in the
- * corrective body takes this in its place — the message, the removal check, the freshness gate and the
- * applied table — so all four speak of the same flags. null when no flag names a changed finding.
+ * The review a post-repair fix pass is handed: the latest accepted review's points on what a repair
+ * changed, rendered in the reviewer's own words. `reach` is what the saves since the repair began record
+ * they touched — `ordinals`, the findings, and `prose`, whether the narrative's prose was rewritten. A
+ * point on a finding is handed when that finding changed (owner, ruling 719); a point that names no finding
+ * is about the document, and is handed when the prose was rewritten — text no reviewer had read (design,
+ * 2026-10-02, reading 718 and 719 together). A coverage list re-rendered from the record's rows is not a
+ * rewrite. Every reader of the review in the corrective body takes this in its place — the message, the
+ * removal check, the freshness gate and the applied table — so all four speak of the same points. null
+ * when no point is on what the repair changed.
  */
-export function handedReview(P, onlyOrdinals) {   // @internal
+export function handedReview(P, reach) {   // @internal
   const acc = readLastAcceptedRefutation(P.runDir);   // the review the repair re-ran, not the first one
-  const flags = (acc?.flags ?? []).filter((f) => Array.isArray(f?.on) && f.on.some((o) => onlyOrdinals.has(o)));
+  const onFinding = (f) => Array.isArray(f?.on) && f.on.length > 0;
+  const flags = (acc?.flags ?? []).filter((f) => (onFinding(f) ? f.on.some((o) => reach.ordinals.has(o)) : Boolean(reach.prose)));
   return flags.length ? { flags, text: renderRefutation(acc.verdict, flags, acc.planAudit) } : null;
 }
 
@@ -4388,7 +4394,8 @@ export function correctionsExtra(P, depth = null, framework = null, { handed = n
   // asks it to apply the rest.
   if (handed) {
     review = handed.text;
-    rows.splice(0, rows.length, ...handed.flags.map((f, i) => ({ n: i + 1, kind: f.kind, text: f.text, fix: f.fix ?? null, ordinals: f.on })));
+    rows.splice(0, rows.length, ...handed.flags.map((f, i) => ({ n: i + 1, kind: f.kind, text: f.text, fix: f.fix ?? null,
+      ordinals: Array.isArray(f.on) && f.on.length ? f.on : null })));   // a point about the document stays unscoped, as above
   }
   if (P.runDir) {
     try {
@@ -7623,12 +7630,10 @@ export function instructedScopeOf(job) {
 // the record, the rollback on failure, the restore of removals no flag named, the gate that demands the
 // re-emit, and the applied-flags table the report's open points read. The verdict recheck stays with the
 // cycle; the fix pass has none.
-async function applyReviewerCorrections(ctx, P, run, { verdict, synthesisKey, synthesisModel, synthesisThinking, trigger = "corrective", onlyOrdinals = null }) {
+async function applyReviewerCorrections(ctx, P, run, { verdict, synthesisKey, synthesisModel, synthesisThinking, trigger = "corrective", handed = null }) {
+  // `handed`: the post-repair fix pass's review (handedReview); the corrective cycle passes none and reads
+  // the whole review.
   let correctionsApplied = null, evidenceViolations = [], correctionsScope = null, correctiveRollback = null, correctiveRepair = null;
-  // The fix pass is handed only the flags on findings a repair changed (ruling 719); with none of them in
-  // the latest accepted review there is no message to send and no pass at all.
-  const handed = onlyOrdinals ? handedReview(P, onlyOrdinals) : null;
-  if (onlyOrdinals && !handed) return { skipped: true, correctionsApplied, evidenceViolations, correctionsScope, correctiveRollback, correctiveRepair, correctivePass: null };
   const preCorrective = snapshotFindingsForCorrections(P, run.runDir);                     // A1
   // — re-prepared, not reused. The findings surface cannot move between these two passes today
   // (nothing writes placements.json or register-findings.md between them — checked), so this rewrites
@@ -13427,26 +13432,30 @@ async function pipelineInner(job, opts = {}) {
                   reassemble = true;
                 }
                 // ── THE FIX PASS (owner, ruling 718, 2026-10-02) ──────────────────────────────────────────
-                // The review a repair re-runs raised its flags into a document nothing then corrected: 18 and
-                // 11 on two of five saved runs. When it raises a flag about a finding a delivery-check repair
-                // changed, ONE corrective pass applies THOSE flags and no others (ruling 719: the changed
-                // findings read from the saves' own record of what each touched) with the corrective cycle's
-                // own body (applyReviewerCorrections): resuming the session that wrote the record, sending
-                // only the change, rolled back if it fails. The review is not run again; its stamp is settled for the
-                // narrative the pass rewrote. It runs before the overview and the cards (the order above), so
-                // they render once from the fixed record; a card the pass made newly stale joins the queue.
+                // The review a repair re-runs raised its points into a document nothing then corrected: 178
+                // across the 17 saved runs where it re-ran. When it raises a point on what a delivery-check
+                // repair changed, ONE corrective pass applies THOSE points and no others (handedReview: read
+                // from the saves' own record of what each touched) with the corrective cycle's own body
+                // (applyReviewerCorrections): resuming the session that wrote the record, sending only the
+                // change, rolled back if it fails. A point about the document is handed when the repair
+                // rewrote the narrative's prose; on 15 of those 17 runs it changed only the coverage list
+                // rendered from the record, and that is not a rewrite. The review is
+                // not run again; its stamp is settled for the narrative the pass rewrote. It runs before the
+                // overview and the cards (the order above), so they render once from the fixed record; a card
+                // the pass made newly stale joins the queue.
                 if (!fixPassDone) {
-                  const touched = new Set(readTouched(run.runDir).slice(preRepairMark).flatMap((e) => e?.ordinals ?? []));
-                  const aboutTouched = (readLastAcceptedRefutation(run.runDir)?.flags ?? []).filter((f) => Array.isArray(f?.on) && f.on.some((o) => touched.has(o)));
-                  if (aboutTouched.length && synthesisKey) {
+                  const since = readTouched(run.runDir).slice(preRepairMark);
+                  const reach = { ordinals: new Set(since.flatMap((e) => e?.ordinals ?? [])), prose: since.some((e) => e?.prose === true) };
+                  const handed = handedReview(P, reach);
+                  if (handed && synthesisKey) {
                     fixPassDone = true;
-                    note(`stale-repair: the re-run review raised ${aboutTouched.length} flag(s) about finding(s) the repair changed — one corrective pass applies the review's flags`);
+                    note(`stale-repair: the re-run review raised ${handed.flags.length} point(s) on what the repair changed — one corrective pass applies them`);
                     let fx = null;
-                    try { fx = await applyReviewerCorrections(ctx, P, run, { verdict, synthesisKey, synthesisModel, synthesisThinking, trigger: "post-repair-corrective", onlyOrdinals: touched }); }
+                    try { fx = await applyReviewerCorrections(ctx, P, run, { verdict, synthesisKey, synthesisModel, synthesisThinking, trigger: "post-repair-corrective", handed }); }
                     catch (e) { note(`stale-repair: the post-repair corrective pass failed (${String(e?.message ?? e).slice(0, 120)}) — the review's points ship printed`); }
                     const applied = Boolean(fx?.correctivePass?.ok && !fx.correctiveRollback);
-                    runLog(run.runDir, { event: "post-repair-fix-pass", flags: aboutTouched.length, touched: [...touched].sort((a, b) => a - b),
-                      applied, rolledBack: Boolean(fx?.correctiveRollback) });
+                    runLog(run.runDir, { event: "post-repair-fix-pass", flags: handed.flags.length, touched: [...reach.ordinals].sort((a, b) => a - b),
+                      prose: reach.prose, applied, rolledBack: Boolean(fx?.correctiveRollback) });
                     if (applied) {
                       settleOneShotStamp(run.runDir, "narrative-refutation", [P.narrative], "post-repair-fix");
                       readNow = readFindingsForReport(P);

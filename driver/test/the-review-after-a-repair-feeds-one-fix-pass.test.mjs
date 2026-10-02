@@ -9,12 +9,15 @@
 // and nothing applied them. Now, when the re-run review raises a flag about a finding the repair changed,
 // ONE corrective pass applies the review's flags — the corrective cycle's own body, resuming the session
 // that wrote the record — before the overview and the cards are rebuilt, and the review is not run again.
-// A flag about no changed finding triggers nothing, which is what keeps the extra call rare.
+// It is handed the flags on findings the repair changed (ruling 719) and, when the repair rewrote the
+// narrative's prose, the flags about the document, which name no finding (design, 2026-10-02). A flag on a
+// finding the repair left alone triggers nothing.
 //
 // The scenario, from mock knobs: finding 1's write-up is over the cap, so the narrative redo rewrites
 // narrative.md and the review goes stale (MOCK_NARRATIVE_OVER_CAP); that redo also changes finding 1
 // (MOCK_REDO_TOUCHES_FINDING); the re-run review comes back BLOCKING (MOCK_REVIEW_BLOCKS_AFTER_VERDICT),
-// with its flag on finding 1 (MOCK_LATE_REVIEW_ON) or on no finding.
+// with its flag on a finding (MOCK_LATE_REVIEW_ON) or about the document, and a second flag on a finding
+// (MOCK_LATE_REVIEW_EXTRA_ON).
 import { test, after } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, chmodSync, readFileSync, readdirSync, existsSync, rmSync } from "node:fs";
@@ -113,8 +116,23 @@ test("the fix pass ADDS to the corrective cycle's table: an objection the cycle 
   assert.equal(res.ok, true, JSON.stringify(res));
 });
 
-test("CONTROL — a re-run review whose flag names no changed finding triggers no fix pass", async () => {
-  const { res, events } = await runPipeline(SCENARIO);
+test("a point about the document, after the repair rewrote the narrative's prose, gets the pass, and a point on a finding it left alone does not", async () => {
+  const { res, events } = await runPipeline({ ...SCENARIO, MOCK_REDO_TOUCHES_FINDING: "", MOCK_LATE_REVIEW_EXTRA_ON: "2" });
+  const fix = events.filter((e) => e.event === "post-repair-fix-pass");
+  assert.equal(fix.length, 1, `exactly one fix pass, got ${fix.length}`);
+  assert.equal(fix[0].prose, true, "the repair rewrote the narrative's prose (the over-cap write-up sits in the spine)");
+  assert.deepEqual(fix[0].touched, [], "premise: the repair changed no finding");
+  const sent = readdirSync(driverDir(res.runDir)).filter((n) => n.startsWith("synthesis.attempt1."))
+    .map((n) => readFileSync(driverDir(res.runDir, n), "utf8"))
+    .filter((t) => /registration date printed in the narrative contradicts/.test(t));
+  assert.equal(sent.length, 1, `exactly one synthesis dispatch carries the point about the document, found ${sent.length}`);
+  assert.doesNotMatch(sent[0], /a second point about a finding the repair left alone/,
+    "the fix pass was handed a point on a finding the repair did not change");
+  assert.equal(res.ok, true, JSON.stringify(res));
+});
+
+test("CONTROL — a re-run review whose only point is on a finding the repair left alone triggers no fix pass", async () => {
+  const { res, events } = await runPipeline({ ...SCENARIO, MOCK_LATE_REVIEW_ON: "2" });
   assert.ok(events.some((e) => e.event === "stage" && e.stage === "narrative-refutation" && e.trigger === "stale-repair" && e.ok === true),
     "the reviewer re-ran, so a fix pass was possible");
   assert.equal(events.filter((e) => e.event === "post-repair-fix-pass").length, 0, "a fix pass ran for a flag about no changed finding");

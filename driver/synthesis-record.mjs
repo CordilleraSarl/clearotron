@@ -711,7 +711,10 @@ export function recordSynthesis(runDir, received, opts = {}) {
       _provenance: "the last ACCEPTED call, merged if it arrived as a patch — the base a later repair patches onto",
       acceptedAt: now(), params: call,
     }, null, 2) + "\n");
-    try { appendFileSync(touchedRecordPath(runDir), JSON.stringify({ at: now(), ordinals: touchedBetween(before?.findings, call?.findings) }) + "\n"); }
+    try {
+      appendFileSync(touchedRecordPath(runDir), JSON.stringify({ at: now(), ordinals: touchedBetween(before?.findings, call?.findings),
+        prose: proseChanged(before?.narrative, call?.narrative) }) + "\n");
+    }
     catch { /* best-effort — a record that cannot be written leaves the fix pass with nothing to act on, never a failed save */ }
   } catch (e) {
     // The call was VALID and we could not store it. That is infrastructure, and it must not read as a
@@ -733,10 +736,14 @@ export function recordSynthesis(runDir, received, opts = {}) {
 
 // ── WHAT EACH ACCEPTED SAVE CHANGED, RECORDED BY THE SAVE (owner, ruling 719, 2026-10-02) ─────────────
 //
-// The post-repair fix pass applies only the flags on findings a repair changed, "read from the repair's own
+// The post-repair fix pass applies the review's points on what a repair changed, "read from the repair's own
 // record of what it touched". Every synthesis save writes that record at the moment it is accepted: the
-// ordinals whose finding object differs from the accepted record before it, or exists in only one of them.
-// Appended, one line per accepted save; a save that changed no finding records an empty list.
+// ordinals whose finding object differs from the accepted record before it, or exists in only one of them,
+// and whether the narrative's PROSE changed — the sections the writer composes: the verdict, the spine, the
+// coverage read and the calibration answers. The coverage list and the ask answers the narrative also
+// renders are the record's rows, not text the model wrote; on 15 of 17 saved runs a repair changed only
+// that list (design, 2026-10-02). Appended, one line per accepted save; a save that changed no finding
+// records an empty list.
 export const touchedRecordPath = (runDir) => join(synthesisCallPaths(String(runDir ?? "")).dir, "touched.jsonl");
 const findingsByOrdinal = (doc) => new Map((Array.isArray(doc?.findings) ? doc.findings : [])
   .filter((f) => Number.isInteger(f?.ordinal)).map((f) => [f.ordinal, JSON.stringify(f)]));
@@ -744,6 +751,9 @@ export function touchedBetween(prevDoc, nextDoc) {
   const a = findingsByOrdinal(prevDoc), b = findingsByOrdinal(nextDoc);
   return [...new Set([...a.keys(), ...b.keys()])].filter((o) => a.get(o) !== b.get(o)).sort((x, y) => x - y);
 }
+const proseOf = (n) => JSON.stringify([n?.verdict ?? null, n?.spine ?? null, n?.coverage?.read ?? null,
+  (Array.isArray(n?.calibration) ? n.calibration : []).map((c) => [c?.challenge ?? null, c?.answer ?? null])]);
+export const proseChanged = (prev, next) => proseOf(prev) !== proseOf(next);
 /** Every accepted save's touched ordinals, in order. Best-effort: an unreadable record reads as none. */
 export function readTouched(runDir) {
   try {

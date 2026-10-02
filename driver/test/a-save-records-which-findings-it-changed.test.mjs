@@ -4,9 +4,11 @@
 //
 // EVERY ACCEPTED SAVE RECORDS WHICH FINDINGS IT CHANGED (owner, ruling 719, 2026-10-02).
 //
-// The post-repair fix pass applies only the flags on findings a repair changed, "read from the repair's own
+// The post-repair fix pass applies the review's points on what a repair changed, "read from the repair's own
 // record of what it touched". The save writes that record when it accepts a call: the ordinals whose
-// finding differs from the accepted record before it. A refused call changes nothing and records nothing.
+// finding differs from the accepted record before it, and whether the narrative's prose changed — the
+// sections the writer composes. A coverage list re-rendered from the record's rows is not a rewrite. A
+// refused call changes nothing and records nothing.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, rmSync } from "node:fs";
@@ -38,13 +40,26 @@ test("each accepted save appends what it changed; a refused one appends nothing"
     const doc = JSON.parse(synthesisFindings(dir));
     assert.equal(recordSynthesis(dir, { narrative: NARRATIVE, findings: doc }).refused, null);
     assert.deepEqual(readTouched(dir).map((e) => e.ordinals), [[1]], "the first save holds finding 1");
+    assert.equal(readTouched(dir)[0].prose, true, "the first save writes the prose");
 
     const changed = { ...doc.findings[0], legal_position: `${doc.findings[0].legal_position ?? ""} Renewed in the searched class.`.trim() };
     assert.equal(recordSynthesis(dir, { findings_patch: [changed] }).refused, null);
     assert.deepEqual(readTouched(dir).map((e) => e.ordinals), [[1], [1]], "a patch that changed finding 1 records it");
+    assert.equal(readTouched(dir)[1].prose, false, "a patch to a finding's positions left the prose as it was");
 
     assert.equal(recordSynthesis(dir, { actions: doc.actions }).refused, null);
     assert.deepEqual(readTouched(dir).at(-1).ordinals, [], "a save that changed no finding records an empty list");
+
+    const rewritten = recordSynthesis(dir, { narrative: { verdict: `${NARRATIVE.verdict} The earlier owner has used the mark since its filing.` } });
+    assert.equal(rewritten.refused, null, String(rewritten.refused));
+    assert.deepEqual(readTouched(dir).at(-1), { at: readTouched(dir).at(-1).at, ordinals: [], prose: true },
+      "a rewrite of the prose alone records the prose and no finding");
+
+    // the case the two readings part on: the coverage list the narrative renders changes, its prose does not
+    const rows = recordSynthesis(dir, { coverage: [{ ...doc.coverage[0], note: "Read to completeness on the named band." }] });
+    assert.equal(rows.refused, null, String(rows.refused));
+    assert.deepEqual(readTouched(dir).at(-1), { at: readTouched(dir).at(-1).at, ordinals: [], prose: false },
+      "a change to the coverage rows alone was recorded as a rewrite of the prose");
 
     const before = readTouched(dir).length;
     const refused = recordSynthesis(dir, { findings_patch: [{ ...changed, net: "One. Two. Three." }] });
