@@ -11,7 +11,7 @@ const REGISTER = `# Register findings
 ## Risk-relevant marks
 | URI | Mark | Owner | Country | Classes | Status | Filed | Expiry |
 |---|---|---|---|---|---|---|---|
-| /m/1 | LUMENGARDE | Plesner Advokatpartnerselskab | DK | 09, 41 | Registered | 2021 | 2031 |
+| /m/1 | LUMENGARDE | Varnholt Advokatpartnerselskab | DK | 09, 41 | Registered | 2021 | 2031 |
 | /m/2 | LUMENGARD | Acme Lighting Co | US | 11 | Registered | 2019 | 2029 |
 
 ### Coverage ledger
@@ -56,7 +56,7 @@ const MATTER = `# Matter context
 
 test("readAnchors: owners, classes, sector, jurisdictions, elements, marks from the three files", () => {
   const a = readAnchors({ registerFindingsMd: REGISTER, matterContextMd: MATTER, variantManifestMd: MANIFEST });
-  assert.ok(a.owners.includes("plesner advokatpartnerselskab"));
+  assert.ok(a.owners.includes("varnholt advokatpartnerselskab"));
   assert.ok(a.owners.includes("acme lighting co"));
   // classes normalised so 09 / 9 both anchor
   assert.ok(a.classes.includes("9") && a.classes.includes("09"));

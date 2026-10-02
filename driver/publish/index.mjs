@@ -598,7 +598,7 @@ export async function regenSurfaces(poolRoot) {}
  * rather than discovered later.
  *
  * WHAT THIS DOES NOT REACH, so the next reader does not assume it does:
- *   · the run's PROSE. `- Source: [EUIPO · 018575624](https://euipo.europa.eu/…)` is markdown the synthesis
+ *   · the run's PROSE. `- Source: [EUIPO · 099999992](https://euipo.europa.eu/…)` is markdown the synthesis
  *     wrote and renderProse links it like any other markdown. No field distinguishes a prose register
  *     citation from a prose evidence citation, so the only way to catch it is to pattern-match the URL —
  *     which is the move that produced this defect class in the first place.
