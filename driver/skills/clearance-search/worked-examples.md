@@ -367,7 +367,7 @@ side-glance at **Classes 35 and 39** (retail pizza store / pizza delivery) and *
   prizes are non-monetised, not a gambling-style system.)
 - *Filings* — **Manageable**: Pence Technology (UK) owns PRIZE CRATE (Stylised) over broad food/beverage
   (not pizza); no obvious use; not revocable yet, but low practical objection risk (company inactive).
-  Prize Trunk Retail (UK) owns PRIZE TRUNK & device over "cardboard pizza boxes" + broad goods; in
+  Prize Crate Retail (UK) owns PRIZE TRUNK & device over "cardboard pizza boxes" + broad goods; in
   voluntary insolvency, no recent operations, low practical risk. Prize Case (geek subscription boxes)
   owns an international PRIZE CASE portfolio (apparel/paper/toys/retail), not food — no overlap. Numerous
   third-party PRIZE( )CRATE gaming filings — none can block given the term's non-distinctiveness in gaming.
