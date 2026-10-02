@@ -3605,7 +3605,7 @@
         },
         "meter-indeterminate.test.mjs": {
           "tests": 4,
-          "asserts": 18,
+          "asserts": 15,
           "skips": 0,
           "todos": 0
         },
