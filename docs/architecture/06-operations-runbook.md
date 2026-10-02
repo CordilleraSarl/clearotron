@@ -294,7 +294,7 @@ node mcp-server/mint-token.mjs --scope ops --sub <principal-name> \
 
 - `--sub` names the principal, and it rides into every audit line. Two integrations holding ops
   tokens are then distinguishable in the log; one shared token makes them permanently indistinguishable.
-- `--verbs` is a least-privilege allowlist of write tools. A connector minted without `stop_run`
+- `--verbs` is required for an ops token: it lists the write tools the token may call. A connector minted without `stop_run`
   cannot call it — the check sits at the one chokepoint every tool call passes, not in each tool.
 - `--accounts` caps the token to a set of company keys, so a trial integration can start demo
   searches and never a real company's.

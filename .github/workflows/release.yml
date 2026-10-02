@@ -1224,8 +1224,9 @@ jobs:
           # arrive on a tag ref any more, so a check for one would be a check that cannot fire — worse
           # than absent, because it reads as protection.
           DIST_TAG=$(node scripts/release-dist-tag.mjs "$VERSION")
-          # THE CHANNEL AND THE FLAG ARE TWO QUESTIONS, and in pre mode they come apart. `0.1.1-beta.0`
-          # goes to the `latest` CHANNEL by the owner's ruling, and it is still a pre-release. This was
+          # THE CHANNEL AND THE FLAG ARE TWO QUESTIONS, and they once came apart: in the first pre-release
+          # phase `0.1.1-beta.0` went to the `latest` CHANNEL and was still a pre-release. A beta now goes
+          # to `beta` (scripts/release-dist-tag.mjs), and the two answers still come from two places. This was
           # `[ "$DIST_TAG" != "latest" ]` further down, which marks a beta as the stable release on the
           # page a reader opens to find out — so the flag is asked of the VERSION, by the function that
           # exists for it.
@@ -1732,8 +1733,9 @@ jobs:
           # arrive on a tag ref any more, so a check for one would be a check that cannot fire — worse
           # than absent, because it reads as protection.
           DIST_TAG=$(node scripts/release-dist-tag.mjs "$VERSION")
-          # THE CHANNEL AND THE FLAG ARE TWO QUESTIONS, and in pre mode they come apart. `0.1.1-beta.0`
-          # goes to the `latest` CHANNEL by the owner's ruling, and it is still a pre-release. This was
+          # THE CHANNEL AND THE FLAG ARE TWO QUESTIONS, and they once came apart: in the first pre-release
+          # phase `0.1.1-beta.0` went to the `latest` CHANNEL and was still a pre-release. A beta now goes
+          # to `beta` (scripts/release-dist-tag.mjs), and the two answers still come from two places. This was
           # `[ "$DIST_TAG" != "latest" ]` further down, which marks a beta as the stable release on the
           # page a reader opens to find out — so the flag is asked of the VERSION, by the function that
           # exists for it.
