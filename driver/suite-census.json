@@ -717,6 +717,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-run-with-no-method-is-not-offered-inputs.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-whose-counts-all-fail-pays-for-no-owner-lookup.test.mjs": {
           "tests": 3,
           "asserts": 12,
