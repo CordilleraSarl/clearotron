@@ -2858,11 +2858,11 @@ async function runOwnerJudgment(ctx, { trigger = "fresh", force = false, model =
   }
   const tools = makeOwnerTools(pile);
   const table = tools.table;
-  const facts = writeJudgmentFacts(P.ownerJudgmentFacts, { pile, framework: ctx.framework ?? null });
+  const facts = writeJudgmentFacts(P.ownerJudgmentFacts, { pile, framework: ctx.framework ?? null, method: ctx.frameworkMethod ?? null });
   const opening = table ? firstTablePages(tools.serve, MESSAGE_TABLE_CHARS) : { pages: 0, text: "", keysShown: [] };
   const message = composeJudgmentMessage({
     P, profile: ctx.profile, ownNames: ctx.exclusionSeed ?? [],
-    ratingScalePath: frameworkFor(ctx.profile), workedExamplesPath: workedExamplesFor(ctx.profile),
+    ratingScalePath: frameworkFor(ctx.profile), workedExamplesPath: workedExamplesFor(ctx.profile), method: ctx.frameworkMethod ?? null,
     readSkill: (rel) => readFileSync(config.resolveSkillPath(rel), "utf8"),
     tablePages: table ? opening : null,
   });

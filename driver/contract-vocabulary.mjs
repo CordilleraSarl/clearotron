@@ -112,6 +112,12 @@ export const VOCABULARY = [
   { token: "judgment_carry_no_owner", stages: ["owner-judgment"], site: "driver/owner-judgment.mjs checkAnswer" },
   { token: "judgment_record_not_held", stages: ["owner-judgment"], site: "driver/owner-judgment.mjs checkAnswer" },
   { token: "judgment_rating_not_a_band", stages: ["owner-judgment"], site: "driver/owner-judgment.mjs checkAnswer" },
+  // On a framework that states a method: checkRatingInputs's codes (framework-method.mjs), prefixed per judge's entry.
+  { token: "judgment_inputs_missing", stages: ["owner-judgment"], site: "driver/owner-judgment.mjs checkAnswer, via framework-method.mjs checkRatingInputs" },
+  { token: "judgment_inputs_unknown", stages: ["owner-judgment"], site: "driver/owner-judgment.mjs checkAnswer, via framework-method.mjs checkRatingInputs" },
+  { token: "judgment_inputs_invalid", stages: ["owner-judgment"], site: "driver/owner-judgment.mjs checkAnswer, via framework-method.mjs checkRatingInputs" },
+  { token: "judgment_inputs_duplicate", stages: ["owner-judgment"], site: "driver/owner-judgment.mjs checkAnswer, via framework-method.mjs checkRatingInputs" },
+  { token: "judgment_band_off_table", stages: ["owner-judgment"], site: "driver/owner-judgment.mjs checkAnswer, via framework-method.mjs checkRatingInputs" },
   { token: "judgment_carry_no_reason", stages: ["owner-judgment"], site: "driver/owner-judgment.mjs checkAnswer" },
   { token: "judgment_overall_not_a_band", stages: ["owner-judgment"], site: "driver/owner-judgment.mjs checkAnswer" },
   { token: "judgment_facts_missing", stages: ["owner-judgment"], site: "driver/owner-judgment.mjs checkJudgmentFile — driver-written, not a model defect" },
