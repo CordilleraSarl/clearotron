@@ -19,6 +19,7 @@ import { tmpdir } from "node:os";
 import { parseReport } from "../publish/parse.mjs";
 import { renderHtml, homeButton } from "../publish/render.mjs";
 import { EXPORT_TOGGLE, EXPORT_MENU_JS } from "../publish/report-topbar.mjs";
+import { joinEvidenceStatus } from "../registry-fidelity.mjs";
 
 /**
  * The page without its stylesheets, so a match reads the markup the reader sees. Each `<style` runs to
@@ -2148,12 +2149,18 @@ test("spec 64: f.impact renders as a code-built 'If enforced' bullet (structured
 // ── spec 62: per-project disclosure — the project line (both surfaces) + the origin table (internal-only) ──
 // ── 404-card caveat (2026-07-22): a closure-fetch-FAILED citation gets ONE code-owned unverified line ──
 test("404-card caveat: a _recordFetchFailure finding carries the deterministic caveat line; unstamped findings do not", () => {
-  const stamped = FINDINGS.map((f, i) => i === 1
-    ? { ...f, _recordFetchFailure: { uris: ["/mark/us/90333444"], cause: "provider returned 404 (record gone)" } }
-    : f);
+  // Driven through the evidence join, with the cause a fetcher that THREW leaves on the failure list: an
+  // exception's message. The line says the record could not be retrieved; the cause is the record's, and
+  // the stamp keeps it while the card prints none of it.
+  const stamped = FINDINGS.map((f) => structuredClone(f));
+  const uri = "/mark/us/3396572";   // the record id the join keys on; the fixture carries the register's link
+  stamped[0].owner.registrations[0].uri = uri;
+  joinEvidenceStatus(stamped, new Map(), [{ uri, cause: "fetch threw: connect ECONNRESET 10.0.0.7:443" }]);
+  assert.match(String(stamped[0]._recordFetchFailure?.cause), /^fetch threw: connect ECONNRESET/, "premise: the stamp keeps the cause");
   const internal = renderHtml(parsedOf(REPORT), stamped, COVERAGE, { runId: "noref-demo" });
-  assert.match(internal, /Official register record could not be retrieved \(provider returned 404 \(record gone\)\)<\/b> — registry details in this card are unverified\./,
-    "the code-owned caveat line renders with its mechanical cause");
+  assert.match(internal, /Official register record could not be retrieved<\/b> — registry details in this card are unverified\./,
+    "the code-owned caveat line renders, with no cause in brackets");
+  assert.doesNotMatch(internal, /fetch threw|ECONNRESET/, "the exception's message reached the card");
   const stale = renderHtml(parsedOf(REPORT), stamped, COVERAGE, { client: true, runId: "noref-demo" });
   assert.equal(stale, internal, "opts.client is inert — every reader sees the caveat on the one report");
   const clean = renderHtml(parsedOf(REPORT), FINDINGS, COVERAGE, { runId: "noref-demo" });
