@@ -285,6 +285,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-count-that-threw-shows-no-exception-text.test.mjs": {
+          "tests": 4,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "a-court-search-that-did-not-run-reads-as-not-completed.test.mjs": {
           "tests": 4,
           "asserts": 6,
@@ -3521,7 +3527,7 @@
         },
         "knockout-structured-read.test.mjs": {
           "tests": 12,
-          "asserts": 57,
+          "asserts": 58,
           "skips": 0,
           "todos": 0
         },
@@ -4427,7 +4433,7 @@
         },
         "register-count.test.mjs": {
           "tests": 31,
-          "asserts": 198,
+          "asserts": 200,
           "skips": 0,
           "todos": 0
         },
@@ -4559,7 +4565,7 @@
         },
         "render.test.mjs": {
           "tests": 163,
-          "asserts": 681,
+          "asserts": 683,
           "skips": 0,
           "todos": 0
         },
