@@ -583,8 +583,8 @@ export function parseAskClosureLines(text) {
  * could-not-look, and the caller below fails toward leaving the ask OPEN rather than closing it on a
  * file it could not read.
  *
- * ✕ NEVER a substring search of the serialized document. `"DELFIN" in JSON.stringify(findings)` is true
- * when the findings name DELFIN TECHNOLOGIES OY and nothing else — a membership test that matches every
+ * ✕ NEVER a substring search of the serialized document. `"KORFIN" in JSON.stringify(findings)` is true
+ * when the findings name KORFIN TECHNOLOGIES OY and nothing else — a membership test that matches every
  * longer name inflates whatever it is counting and reads as a clean result. The field, or nothing.
  * PURE.
  */

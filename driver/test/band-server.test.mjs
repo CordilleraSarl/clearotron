@@ -164,34 +164,34 @@ test("band_record: the cite resolves in every form the digest actually writes it
     "the audit says the ladder resolved them — an `exact` hit is the model quoting the store's own key");
 });
 
-// The store keys on the registration-INSTANCE uri the fetch logged (/mark/ch/57860/2014) while judgment
-// cites the record (/mark/ch/57860) — the same granularity split screen-gate.mjs:99 fixed for its own
-// membership test after the DELPHINOL false hard-halt, never fixed here.
+// The store keys on the registration-INSTANCE uri the fetch logged (/mark/ch/30419/2014) while judgment
+// cites the record (/mark/ch/30419) — the same granularity split `findScreenGateViolations` in screen-gate.mjs fixed for its own
+// membership test after a false hard-halt, never fixed here.
 test("band_record: a cite at record granularity opens the registration-instance document", async () => {
   const runDir = seedRun();
-  writeFileSync(join(runDir, "_records", "ch-57860-2014.json"),
-    JSON.stringify({ _uri: "/mark/ch/57860/2014", status: "Registered", goods: "class 5 pharmaceutical preparations" }, null, 2) + "\n");
+  writeFileSync(join(runDir, "_records", "ch-30419-2014.json"),
+    JSON.stringify({ _uri: "/mark/ch/30419/2014", status: "Registered", goods: "class 5 pharmaceutical preparations" }, null, 2) + "\n");
   const r = await mcpSession([INIT,
-    call(2, "band_record", { record_id: "/mark/ch/57860" }),        // the record
-    call(3, "band_record", { record_id: "/mark/ch/57860/2014" }),   // the instance, as the store keys it
+    call(2, "band_record", { record_id: "/mark/ch/30419" }),        // the record
+    call(3, "band_record", { record_id: "/mark/ch/30419/2014" }),   // the instance, as the store keys it
   ], ENV(runDir));
   assert.equal(isErr(r, 2), false, "the record-granularity cite opens the instance document");
   assert.match(JSON.parse(textOf(r, 2)).goods, /pharmaceutical/);
   assert.equal(isErr(r, 3), false, "and the exact instance cite still resolves as it always did");
   const log = readLog(runDir);
   assert.equal(log[0].via, "instance");
-  assert.equal(log[0].resolved, "/mark/ch/57860/2014", "the audit records WHICH document the cite resolved to");
+  assert.equal(log[0].resolved, "/mark/ch/30419/2014", "the audit records WHICH document the cite resolved to");
   assert.equal(log[1].via, undefined, "an exact hit carries no resolution note");
 });
 
 test("band_record: one cite over two instance documents is an ANSWERED ambiguity, never a silent pick", async () => {
   const runDir = seedRun();
   for (const yr of ["2014", "2019"])
-    writeFileSync(join(runDir, "_records", `ch-57860-${yr}.json`), JSON.stringify({ _uri: `/mark/ch/57860/${yr}` }, null, 2) + "\n");
-  const r = await mcpSession([INIT, call(2, "band_record", { record_id: "/mark/ch/57860" })], ENV(runDir));
+    writeFileSync(join(runDir, "_records", `ch-30419-${yr}.json`), JSON.stringify({ _uri: `/mark/ch/30419/${yr}` }, null, 2) + "\n");
+  const r = await mcpSession([INIT, call(2, "band_record", { record_id: "/mark/ch/30419" })], ENV(runDir));
   assert.equal(isErr(r, 2), true);
-  assert.match(textOf(r, 2), /\/mark\/ch\/57860\/2014/);
-  assert.match(textOf(r, 2), /\/mark\/ch\/57860\/2019/, "BOTH documents are named, so the next call can be exact");
+  assert.match(textOf(r, 2), /\/mark\/ch\/30419\/2014/);
+  assert.match(textOf(r, 2), /\/mark\/ch\/30419\/2019/, "BOTH documents are named, so the next call can be exact");
   assert.match(textOf(r, 2), /ambiguity, NOT an absence/, "the model is told the documents exist — never a gap to state");
   assert.equal(readLog(runDir)[0].reason, "ambiguous");
 });

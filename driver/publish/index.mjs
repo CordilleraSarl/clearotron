@@ -1712,9 +1712,13 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
   const { fm, secs } = parseReport(reportMdPath);
   const auditUrl = auditUrlFor(url, auditFile);
 
-  // 1) internal review headline — short: the bottom line + any "Reviewer's open questions" already in # Summary.
-  // Heading-neutral match: accept the new "Reviewer's open questions" and the legacy "Open questions for the reviewer".
-  const oq = (secs['Summary'] || '').match(/\*\*(?:Reviewer's open questions|Open questions for the reviewer)[\s\S]*?(?=\n\n[^*\d])/i);
+  // 1) internal review headline — short: the bottom line, and nothing of the reviewer's own notes.
+  //
+  // THE SCRAPE THAT STOOD HERE IS GONE (owner ruling, 2026-10-01). It lifted a "Reviewer's open questions"
+  // block out of the report's own # Summary and reprinted it on the cover. Two ways that reached a client:
+  // a report that still carried an authored section of that name, and any archived report re-rendered
+  // later. Removing the producer is not enough while something downstream goes looking for the text, so
+  // this goes with it.
   // The report link rides HIGH — right under the bottom line in the headline, not buried below the table.
   const reportLink = hrefAttr(url)
     ? `<p style="margin:0 0 10px"><a href="${hrefAttr(url)}" style="color:#1a4fd6;font-weight:bold;font-size:12pt;text-decoration:none">▶ Open the full report</a>`
@@ -1826,8 +1830,10 @@ export function composeEmailHtml(reportMdPath, url, auditFile, names = [], deliv
     // second rung on any shipped build. Nothing renders a failover note into a report.
     // B5b checkpoint 4 — a customer named after the analysis was written ships as a delivery note, never silently.
     + (fm.late_bind_note ? `<p style="margin:0 0 8px;color:#7a2b12"><b>Applicant named mid-run:</b> ${cell(fm.late_bind_note)}</p>` : '')
-    + (oq ? `<div style="margin:0 0 8px">${mdBlock(oq[0])}</div>` : '')   // …and the reviewer's open points from the run record (opts.reviewerOpenPointsMd), never from the report
-    + (opts.reviewerOpenPointsMd ? `<div style="margin:0 0 8px">${mdBlock(String(opts.reviewerOpenPointsMd).replace(/^#+\s*(.+)$/m, '**$1**'))}</div>` : '')
+    // The reviewer's open points stood here, from the run record. They do not ride the cover any more
+    // (owner ruling, 2026-10-01): the sentence naming the independent reviewer reads as a human declining
+    // to sign, and the points themselves are the engine's own vocabulary. Both stay on the run, beside the
+    // report, for the reviewing lawyer. Nothing is reworded and nothing replaces them.
     // wp50: the two-bucket # Actions list no longer rides the email — it renders on the report itself
     // (the single master document); the cover keeps only the headline, link, and surviving flags.
     + `</div>`;

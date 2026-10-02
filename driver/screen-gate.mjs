@@ -99,9 +99,9 @@ function parseVerdict(notes) {
  */
 export function findScreenGateViolations(findingsContent, fetchedUriSet) {
   // URI-granularity normalization: the record_fetch ledger logs the registration-INSTANCE URI (e.g.
-  // /mark/ch/57860/2014) while the gate parses each Notes URI through URI_RE, which stops at the first
-  // SLASH (→ /mark/ch/57860). Reduce BOTH sides through the SAME regex so a slash-separated /<year> (or
-  // other instance) suffix is not a false-negative on the membership test — the DELPHINOL false hard-halt
+  // /mark/ch/30419/2014) while the gate parses each Notes URI through URI_RE, which stops at the first
+  // SLASH (→ /mark/ch/30419). Reduce BOTH sides through the SAME regex so a slash-separated /<year> (or
+  // other instance) suffix is not a false-negative on the membership test — a false hard-halt
   // that blocked a live pharma matter twice on 2026-06-17 (the record WAS fetched, logged as …/2014).
   //
   // …and CASE-FOLD, for the same reason at a different granularity (2026-07-28). The fetched universe is

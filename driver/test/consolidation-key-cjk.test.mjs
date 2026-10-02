@@ -53,7 +53,7 @@ test("A CJK DUPLICATE CONSOLIDATES TOO — the fix is a key, not an exemption", 
 });
 
 test("full-width and half-width forms of one name key ALIKE (NFKC)", () => {
-  const out = consolidateFindings([f("ＤＥＬＦＩ", "デルフィ", 1), f("ＤＥＬＦＩ", "ﾃﾞﾙﾌｨ", 2)]);
+  const out = consolidateFindings([f("ＶＥＬＴＲＩＮ", "ヴェルトリン", 1), f("ＶＥＬＴＲＩＮ", "ｳﾞｪﾙﾄﾘﾝ", 2)]);
   assert.equal(out.findings.length, 1, "compatibility forms of the same characters are the same mark");
 });
 

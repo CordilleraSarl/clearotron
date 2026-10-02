@@ -31,15 +31,15 @@ const DROP_ROW = `## Negative results
 
 | Mark | Owner | Result | Notes |
 | --- | --- | --- | --- |
-| ACME | Acme Co | goods drop | out of field, see /mark/ch/57860 |
+| ACME | Acme Co | goods drop | out of field, see /mark/ch/30419 |
 `;
 
 // An in-scope goods drop that names NO record — a violation only when the unnamed arm is enforcing.
-const UNNAMED_ROW = DROP_ROW.replace("out of field, see /mark/ch/57860", "out of field, no record named");
+const UNNAMED_ROW = DROP_ROW.replace("out of field, see /mark/ch/30419", "out of field, no record named");
 
 test("the fixture really is a drop row — otherwise every test below proves nothing", () => {
   assert.equal(findScreenGateViolations(DROP_ROW, new Set()).length, 1, "fixture stopped parsing as a drop row");
-  assert.equal(findScreenGateViolations(DROP_ROW, new Set(["/mark/ch/57860"])).length, 0, "fixture's URI stopped matching the fetched set");
+  assert.equal(findScreenGateViolations(DROP_ROW, new Set(["/mark/ch/30419"])).length, 0, "fixture's URI stopped matching the fetched set");
 });
 
 test("FINDINGS-ABSENT is not a clean run — the suspected cause, and it had no voice", () => {

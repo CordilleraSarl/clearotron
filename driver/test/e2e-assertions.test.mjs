@@ -1084,7 +1084,7 @@ test("absent: field ops on a missing file still FAIL — the op does not leak ab
 test("the op reports the label row a wildcard/exact check cannot see", () => {
   const incident = { entries: [
     { qid: "primary-sweep:default:core-bioveltrin", predicate: "default", term: "**Core (BIOVELTRIN, BIO VELTRIN, BIO-VELTRIN, etc.)**" },
-    { qid: "primary-sweep:default:formative-root", predicate: "default", term: "**Formative root (VELTRIN, DELPHIN, DELPHINUS, etc.)**" },
+    { qid: "primary-sweep:default:formative-root", predicate: "default", term: "**Formative root (VELTRIN, KORPHIN, KORPHINUS, etc.)**" },
     { qid: "primary-sweep:exact:bioveltrin", predicate: "exact", term: "BIOVELTRIN" },
   ] };
   withRun({ "_driver/register-plan.json": incident }, (dir) => {
