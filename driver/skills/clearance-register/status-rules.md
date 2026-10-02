@@ -143,7 +143,7 @@ The order matters. Specifically:
 | `"PLAYVERSE LEVEL UP GAMING"` | `"Level up together"` | false |
 | `"It's Your Play"` | `"In Your Play"` | false (apostrophe matters) |
 
-These fixtures should be encoded in test cases for any agent or analyzer implementing the rule. Worked example for the "Dawn: Legends of Lumengarde" matter: "Dawn: Legends of Lumengarde" ≡ "DAWN LEGENDS OF LUMENGARDE" ≡ "dawn legends of lumengarde" — all identical. "Dawn of Lumengarde" or "Dawn: Legends" — NOT identical.
+These fixtures should be encoded in test cases for any agent or analyzer implementing the rule. Worked example for the "Dusk: Tales of Lumengarde" matter: "Dusk: Tales of Lumengarde" ≡ "DUSK TALES OF LUMENGARDE" ≡ "dusk tales of lumengarde" — all identical. "Dusk of Lumengarde" or "Dusk: Tales" — NOT identical.
 
 ## Chinese status strings
 

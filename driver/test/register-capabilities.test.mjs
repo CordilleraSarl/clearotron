@@ -37,11 +37,11 @@ import { CLARIVATE_OFFICE_CODES } from "../../providers/clarivate/src/capabiliti
 
 const MODEL = {
   schema_version: 1,
-  mark: "DAWN: LEGENDS OF LUMENGARDE",
+  mark: "DUSK: TALES OF LUMENGARDE",
   dominant_element: "LUMENGARDE",
   elements: [
     { value: "LUMENGARDE", kind: "distinctive" },
-    { value: "DAWN", kind: "common" },
+    { value: "DUSK", kind: "common" },
   ],
   variants: [
     { value: "LUMENGARD", category: "phonetic", rationale: "sound-alike" },

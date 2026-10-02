@@ -15,7 +15,7 @@ test("a relevance-gate drop in the Negative results table reaches # Negative Res
     "### Negative results",
     "| Mark | Search Term / Variant | Result | Notes |",
     "|---|---|---|---|",
-    "| DAWN OF JUSTICE FILMS LLC | dawn (default) | dropped — off-field (relevance gate) | URI /mark/xx/123; DAWN-only hit, film not gaming |",
+    "| DUSK OF VALOR FILMS LLC | dusk (default) | dropped — off-field (relevance gate) | URI /mark/xx/123; DUSK-only hit, film not gaming |",
     "",
     "### Coverage ledger",
     "| Coverage unit | Status | Reason |",
@@ -26,7 +26,7 @@ test("a relevance-gate drop in the Negative results table reaches # Negative Res
   assert.ok(counts.negatives >= 1, "the relevance-gate drop is parsed as a negative result");
   assert.ok(md.includes("# Negative Results"), "audit has a Negative Results section");
   assert.ok(md.includes("/mark/xx/123"), "the dropped candidate's URI survives into the published audit");
-  assert.ok(md.includes("dawn (default)"), "the surfacing variant survives too");
+  assert.ok(md.includes("dusk (default)"), "the surfacing variant survives too");
 });
 
 test("a drop under the old `Relevance-gate drops (audit-only)` heading does NOT reach the audit (the orphaning bug)", () => {
