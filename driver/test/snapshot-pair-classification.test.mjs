@@ -35,9 +35,11 @@
 //                               the register digest, and no validator judges the form now.)
 //   · disposition-union.mjs:113 the anchor is deliberately NOT persisted; only extracted text is durable.
 //   · disposition-call.mjs:637  the same rule stated at the other end, so the pair cannot drift.
-//   · coverage-form.mjs:76      the driver's axis is the driver's: a driver row's axis is derived from the
+//   · coverage-form.mjs "THE DRIVER DOES NOT ASSIGN IT"
+//                               the driver's axis is the driver's: a driver row's axis is derived from the
 //                               plan entry, never chosen.
-//   · coverage-form.mjs:285     determinism, with its mechanism (a fixed axis ordering) beside it.
+//   · coverageFormRows() in coverage-form.mjs
+//                               determinism, with its mechanism (a fixed axis ordering) beside it.
 //   · stages.mjs "Per-script coverage", "Negative-results matrix"
 //                               — NAMED, NOT NUMBERED. These carried line numbers and went stale twice in
 //                               one day as unrelated edits moved the file under them, landing on real
