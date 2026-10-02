@@ -206,6 +206,10 @@ test("the slug is bounded at construction, and no legal name's slug moves a byte
   // EVERY NAME HERE IS INSIDE THE DOOR'S BUDGET, including one exactly at it and three whose kebab is
   // not their own characters — an accent that decomposes, a symbol that decomposes to two letters, and
   // a script that survives kebab whole. Those are the cases a bound on the KEBAB would have moved.
+  //
+  // THE ONE DELIBERATE MOVE: a name whose kebab keeps letters outside ASCII. Its slug made a run id no
+  // route accepts, so its run was delivered with no report link at all; the slug now keeps only the
+  // ASCII part (phase0.mjs, deriveSlug). Every name whose kebab was already ASCII stays byte-identical.
   const legal = [
     "AQUAPLUS",
     "Falcón",
@@ -219,6 +223,10 @@ test("the slug is bounded at construction, and no legal name's slug moves a byte
     assert.ok(name.length <= 120, `${name.slice(0, 20)}… is not inside the budget this arm is about`);
     for (const ref of ["TMP1234", "", "tmp-99/b"]) {
       const j = { id: "j1", ref, marks: [{ name, classes: [9] }] };
+      if (!/^[a-z0-9-]*$/.test(kebab(name))) {
+        assert.match(deriveSlug(j), /^[a-z0-9][a-z0-9-]*$/, `a slug outside ASCII again (name ${JSON.stringify(name.slice(0, 20))})`);
+        continue;
+      }
       assert.equal(deriveSlug(j), asItShipped(j),
         `the slug of a legal name moved — every run directory and report link computed from it is now `
         + `unreachable (name ${JSON.stringify(name.slice(0, 20))}, ref ${JSON.stringify(ref)})`);
