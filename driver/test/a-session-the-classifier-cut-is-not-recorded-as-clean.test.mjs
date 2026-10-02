@@ -285,8 +285,11 @@ test("Codex: a failed turn's own message reaches the record; a reconnect it reco
 });
 
 test("Codex: the failed turn's message is on the envelope the gateway journals, and a healthy turn's is null", async () => {
-  const saved = { path: process.env.CLEAROTRON_CODEX_PATH, fail: process.env.MOCK_CODEX_FAIL };
-  pinEnv(process.env, "CLEAROTRON_CODEX_PATH", join(HERE, "mock-codex.mjs"));
+  // Billing by key, as a-stage-program-starts-with-a-listed-environment.test.mjs does: on the default
+  // (subscription) runTurn refuses before the mock starts wherever no Codex sign-in exists, CI included.
+  const PINNED = { CLEAROTRON_CODEX_PATH: join(HERE, "mock-codex.mjs"), CLEAROTRON_AI_BILLING: "api-key", CODEX_API_KEY: "sk-codex-test" };
+  const saved = { ...Object.fromEntries(Object.keys(PINNED).map((k) => [k, process.env[k]])), fail: process.env.MOCK_CODEX_FAIL };
+  for (const [k, v] of Object.entries(PINNED)) pinEnv(process.env, k, v);
   try {
     process.env.MOCK_CODEX_FAIL = "1";
     const failed = await openaiAgentEngine.runTurn({ message: "reply ok", model: "haiku", thinking: "low", timeoutSec: 60 });
@@ -300,7 +303,7 @@ test("Codex: the failed turn's message is on the envelope the gateway journals, 
     assert.equal(healthy.json?.errorText, null);
     assert.ok(Object.hasOwn(healthy.json ?? {}, "errorText"));
   } finally {
-    pinEnv(process.env, "CLEAROTRON_CODEX_PATH", saved.path);
+    for (const k of Object.keys(PINNED)) { if (saved[k] === undefined) delete process.env[k]; else pinEnv(process.env, k, saved[k]); }
     if (saved.fail === undefined) delete process.env.MOCK_CODEX_FAIL; else process.env.MOCK_CODEX_FAIL = saved.fail;
   }
 });
