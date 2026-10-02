@@ -78,7 +78,7 @@ skipped step must be logged with its reason in the unit's digest audit.
 1. **Macro probes** — one search per element of the compound + one for the full compound phrase (limit=10 each), to establish saturation levels. Minimum 3 searches. SKIP only if all elements are non-common-words (rare).
 2. **Compound-phrase sweeps** — the compound phrase across **three match-modes (exact, phrase, default)**, limit=100 per search. Minimum 3 searches. SKIP only if the phrase is a single word (then it's a single-word funnel, not compound).
 3. **Single-word coverage hunts** — for each element marked "demote to filter" in the manifest, one search with product/industry filters applied (limit=50). Minimum 1 per such element.
-4. **Wildcard reorders** — if the manifest lists word-order variants, at least one wildcard sweep per distinct ordering (e.g. `Elevate * game`, `game * Elevate`).
+4. **Wildcard reorders** — if the manifest lists word-order variants, at least one wildcard sweep per distinct ordering (e.g. `Raise * play`, `play * Raise`).
 5. **Numeric-substitution and transliteration sweeps** — execute every sweep marked ✅ (requires verification) in the variant manifest, UNLESS the manifest classifies the mark as English-only (single-language Recipe 1 pattern). Skipping any ✅ requires a stated reason in the unit's digest audit.
 6. **Material-jurisdiction sub-queries** — a **protected, non-yielding** line item, NOT folded into the sweep budget. Run one scoped sub-query per jurisdiction `matter-context` declares materially-matters (no top-N cap). These outrank within-axis breadth: if budget is tight, an extra script group (step 5) yields and is logged `coverage-limited` — a material jurisdiction is never dropped to fund breadth, and a jurisdiction that genuinely can't run is logged `deferred`, never silent.
 
@@ -360,7 +360,7 @@ the verdict** (the driver decides this in code):
 Runs **ONCE**, after all marks have completed Steps 2–4.5. Review findings across all marks and identify:
 
 1. **Shared findings:** a single entity/finding relevant to more than one proposed mark (e.g., "Prize Crate Retail" is relevant to both "PRIZE CRATE" and "CAVERN CRATES")
-2. **Pattern findings:** recurring themes across marks (e.g., "the 'loot' prefix is crowded across all gaming platforms")
+2. **Pattern findings:** recurring themes across marks (e.g., "the 'prize' prefix is crowded across all gaming platforms")
 3. **Compound risk:** where the combination of marks might amplify risk (e.g., using both "PRIZE CRATE" and "CAVERN CRATES" increases the chance of a dispute with Prize Crate Retail)
 
 For each cross-reference: note which marks are affected, describe the connection, flag any compounding risk. Cross-references appear in the narrative summary and as a note in the Findings sheet.

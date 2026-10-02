@@ -135,8 +135,8 @@ drop can be neither examined nor audited. Batching stays correct for *retrieval*
 enumeration, `_query` attribution); it is only forbidden as a unit of dismissal.
 
 One entry, one record, one reason. A `drop_reason` is the judgment alone — the uri, verdict, class and
-status are rendered beside it: `dropped — off-field (relevance gate): DAWN-only hit; the
-descriptive-compound risk theory retains DAWN-only hits only in gaming, and this is film production`.
+status are rendered beside it: `dropped — off-field (relevance gate): DUSK-only hit; the
+descriptive-compound risk theory retains DUSK-only hits only in gaming, and this is film production`.
 
 ### Dominant-element reconciliation (driver-gated — every screened composite ENDS somewhere)
 
@@ -435,7 +435,7 @@ read. Keep if plausibly on-point; drop only genuine field-irrelevance, or a near
 | Archetype | Keep when | Drop when |
 |---|---|---|
 | **Coined word** | Mark text contains a phonetic/visual neighbour of the coined element; or is the coined element exact-match | Mark text shares only an unrelated real-word token via tokenisation (e.g., searching coined THORNMANTLE and surfacing a mark whose only overlap is a "LIGHT" token) |
-| **Descriptive compound** | Mark contains the distinctive anchor; OR is an identical/near-identical compound-phrase match; OR is a single-element registered mark on a common element with goods/services in the target field | Mark is a 5+ element compound that happens to share one common token (e.g., a film studio's "DAWN OF JUSTICE" filing surfaced when searching "Dawn: Legends of Thornmantle" — DAWN is common, surrounding context unrelated) |
+| **Descriptive compound** | Mark contains the distinctive anchor; OR is an identical/near-identical compound-phrase match; OR is a single-element registered mark on a common element with goods/services in the target field | Mark is a 5+ element compound that happens to share one common token (e.g., a film studio's "DUSK OF VALOR" filing surfaced when searching "Dusk: Tales of Thornmantle" — DUSK is common, surrounding context unrelated) |
 | **Slogan** | Mark matches the slogan structure (same template, same semantic field, family-pattern hit, verb-swap, slang variant, co-brand wildcard); OR is the unique distinctive token of the slogan if any | Single-word hit on a slogan element in an unrelated context (DAWN alone surfaced when searching "DAWN OF NEW DAY" slogan); slogan in a wildly different semantic field with no template overlap |
 | **Acronym / initialism** | Mark text contains the letter string in target classes; OR is the expansion form of the acronym | Random word that happens to contain the letters as a substring of a longer word |
 | **Device-led** (modifier) | Standard tests for primary archetype, plus visual similarity per design-code search | Pure-text noise with no visual signal |
