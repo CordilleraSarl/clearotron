@@ -186,7 +186,7 @@ test('THE FINISHED TAIL IS ROWS, so Home and Clearances cannot disagree about wh
 test('a family on Clearances is a family on Home', () => {
   // A family is a commercial judgment somebody asserted by hand — it is not derivable, so the screen
   // that ignores it is simply the wrong one.
-  const families = { of: { a1: 'fam1', b1: 'fam1' }, names: { fam1: 'Hydra line' } }
+  const families = { of: { a1: 'fam1', b1: 'fam1' }, names: { fam1: 'Aqua line' } }
   const rows = recentlyFinished(
     [
       run({ runId: 'a1', markName: 'AQUAPLUS', state: 'delivered', date: '2026-07-25' }),
@@ -195,7 +195,7 @@ test('a family on Clearances is a family on Home', () => {
     families,
   )
   assert.equal(rows.length, 1)
-  assert.equal(rows[0]!.name, 'Hydra line')
+  assert.equal(rows[0]!.name, 'Aqua line')
   assert.equal(rows[0]!.kind, 'family')
 })
 
@@ -719,7 +719,7 @@ test('a FAMILY carries the precise time of its newest mark', () => {
   // FamilyGroup had `date` and no `issuedAt`, so two families last worked on the same day tied even
   // after the mark-level fix. The family's stamp is the max over its marks, computed beside `date`
   // rather than derived from it.
-  const families = { of: { m1: 'fam1', m2: 'fam1' }, names: { fam1: 'Hydra line' } }
+  const families = { of: { m1: 'fam1', m2: 'fam1' }, names: { fam1: 'Aqua line' } }
   const rows = recentlyFinished(
     [
       run({ runId: 'm1', markName: 'AQUAPLUS', state: 'delivered', date: '2026-08-26', issuedAt: '2026-08-26T08:00:00.000Z' }),

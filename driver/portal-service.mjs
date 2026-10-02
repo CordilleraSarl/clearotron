@@ -3147,7 +3147,7 @@ async function connectorDoorKind(url) {
         //
         // STAFF ONLY, and by construction rather than by filtering: it hangs off /portal/admin, which
         // asserted staffOnly above and 404s for everyone else. That is a decision, not an oversight. A
-        // family name is staff shorthand for a brand line — "Hydra range" can name a launch a client has
+        // family name is staff shorthand for a brand line — "Aqua range" can name a launch a client has
         // not announced — and a grouping a client can see but not edit or explain raises more questions
         // than it answers. Revisit when clients have a reason to care; until then the client's list is
         // exactly the mark list, which is what the browser falls back to when this 404s.

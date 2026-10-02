@@ -166,7 +166,7 @@ export function countMatrixCells(findingsContent) {
 /**
  * The shared shortfall ladder over a `cellsOf(term) → count` accessor. A variant is satisfied by:
  * its own floor; " / "-packed ALTERNATES each meeting the floor (one manifest cell, two renderings —
- * "丝绸与铁 / 席尔克": each alternate is its own search term with its own grid — the copper-conduit worker
+ * "缎与钢 / 萨汀": each alternate is its own search term with its own grid — the copper-conduit worker
  * keyed the split forms with full receipts while the validator demanded the compound key, 2026-06-12);
  * or WORD-BOUNDARY substring coverage (a fully-receipted variant covers a LONGER variant containing it
  * as a whole-word phrase — "Foxglade Legends II: Oak & Ember" ⊃ "Oak & Ember"; a marketplace phrase
