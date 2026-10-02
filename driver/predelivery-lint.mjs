@@ -938,6 +938,9 @@ const sentencesOf = (t, protectedForms = []) => protectNameForms(t, protectedFor
   .split(/(?<=[.!?])\s+(?=[^a-z])|\n+/)
   .map((s) => s.split(SENTINEL).join("."))
   .filter((s) => s.trim());
+// The finding sentence's count at the synthesis call (synthesis-record.mjs) rests on THIS split, which
+// never cuts a name in half, rather than on a second copy of it.
+export const sentencesKeepingNames = sentencesOf;
 export function ownerScreenNegativeChecks({ text, ownerScreen, markVocab = null, surface = "report" }) {
   const owners = (ownerScreen?.owners ?? []).filter((o) => o.state !== "enumerated");
   if (!owners.length || !String(text ?? "").trim()) return [];

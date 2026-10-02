@@ -283,20 +283,21 @@ is earned (see *Volume is not a risk multiplier* and the use-meets-use rule); a 
 
 ### The finding sentence — the shape of the typed `net`
 
-**One sentence. A conclusion, not a chain.** It answers the single question a lawyer asks of this
+**A conclusion, not a chain.** It answers the single question a lawyer asks of this
 finding: *is this a problem for me?*
 
-Worked example:
-
-> Veltra Labs' registered VELTRA is more likely than not to prevail against VELTRA PHARMA in the
-> United States.
+**The finding sentence.** At most two sentences, each at most 25 words, in words a client reads
+without a glossary. The first states the outcome as a likelihood: who would win against whom, for
+what goods, where. *"[Owner]'s earlier [mark] would probably win against [your mark] for [goods] in
+[territory]."* The second, only when the first cannot carry it, states what the earlier right covers:
+*"Their registration covers [goods]."* No "prevail". No semicolon, no arrow, no advice, no band word.
+Every fact that does not fit goes in the legal and practical positions below, never dropped.
 
 **THE RULE, AND THE THREE MARKS IT FORBIDS.** No semicolon-chain. No `→`. No consequence clause
 tacked on the end. If the sentence needs a semicolon or an arrow to hold itself together, it is
 reasoning, and reasoning belongs in `legal_position` / `practical_position` — which the reader opens
 the moment this sentence says yes. **The parser rejects a `net` carrying either mark**
-(`findings_net_chained`), and so does the pre-delivery lint (`net-conclusion-form`). Neither checks
-length: there is no cap here and none is coming.
+(`findings_net_chained`), and so does the pre-delivery lint (`net-conclusion-form`).
 
 **THE REASONING MOVES; IT NEVER DISAPPEARS.** This is a relocation, not a compression. Every clause
 the old chain carried — the territories, the goods paraphrased to the worst overlap, the owner's
@@ -306,11 +307,10 @@ ruling rejects. Write the conclusion here; write everything that earns it there.
 
 **DO NOT RESTATE THE BAND.** The band word is the verdict and it renders as the card's own chip, next
 to this sentence. "A Medium-risk conflict" spends the sentence saying what the reader already sees.
-Say what is true of the world instead: who prevails against whom, where, and on what.
+Say what is true of the world instead.
 
 **WHAT A CONCLUSION LOOKS LIKE.** Name the parties and the territory, and state the outcome as a
-likelihood. *"Veltra Labs' registered VELTRA is more likely than not to prevail against VELTRA PHARMA
-in the United States."* *"Nothing on the German register reaches the applicant's class-9 goods."*
+likelihood. *"Nothing on the German register reaches the applicant's class-9 goods."*
 *"Norvell Instruments — a laboratory-equipment maker — could oppose in the EU but has never asserted
 against a software filer."* Each stands alone, and each is falsifiable.
 
@@ -324,9 +324,6 @@ the positions. A specification runs to 200 words and one phrase of it decides th
 phrase. Where the specification is broad and you have paraphrased to its sharpest edge, the
 scope-limiter is **`(among broad goods)`** — it tells the reader you narrowed and that the rest is
 wider.
-
-**Still no length cap.** A conclusion is short because it is a conclusion, not because it was
-trimmed. Never drop a fact to fit; move it below.
 
 ### The grouped reasoned negative
 
