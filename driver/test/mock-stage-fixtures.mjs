@@ -181,6 +181,12 @@ const prResultsArmedFor = (q) => {
   return armed && (armed === "1" || q.includes(armed)) ? [{ ...MOCK_PR_RESULT }] : [];
 };
 
+
+// MOCK_NARRATIVE_OVER_CAP — the write-up is over the cap until narrative.md exists, so the first re-save
+// heals it. "until-verdict" keeps it over the cap until verdict.json exists, so a corrective cycle's
+// re-save does not heal it and the delivery check still finds it.
+const overCapStill = (dir) => (process.env.MOCK_NARRATIVE_OVER_CAP === "until-verdict"
+  ? !existsSync(driverDir(dir, "verdict.json")) : !existsSync(join(dir, "narrative.md")));
 export function fixture(name, msg, dir = null) {
   // CONVERSION 2 — NO FIXTURE BODY FOR matter-context.md. The seat hands values to `record_matter_frame`
   // and the driver renders the file, so a body here would be the mock taking the path this conversion
@@ -318,7 +324,7 @@ export function fixture(name, msg, dir = null) {
     // gate stales the reviewer and re-runs it — which is the pass whose verdict nothing reads.
     // Keyed on narrative.md not yet existing, so the redo is recognised by run state rather than by
     // matching the repair prompt's wording (which the repair composer is free to change).
-    const overCap = (process.env.MOCK_NARRATIVE_OVER_CAP && dir && !existsSync(join(dir, "narrative.md")))
+    const overCap = (process.env.MOCK_NARRATIVE_OVER_CAP && dir && overCapStill(dir))
       ? " " + "the cited registration covers the identical mark in the searched class and remains material here. ".repeat(40)
       : "";
     return PAD("# Synthesis narrative\n\nDominant-element analysis. Watchlist owner BigCo noted. Overall Level-3 band; flat spread across candidates."
@@ -1371,7 +1377,7 @@ export function applyStageWrites(msg, argv) {
       // Keyed on narrative.md not yet existing, so the redo is recognised by run state rather than by
       // matching the repair prompt's wording, which the composer is free to change. It goes in the
       // SPINE because that is the section the write-up prose renders into.
-      const overCap = (process.env.MOCK_NARRATIVE_OVER_CAP && !existsSync(join(runDir, "narrative.md")))
+      const overCap = (process.env.MOCK_NARRATIVE_OVER_CAP && overCapStill(runDir))
         ? " " + "the cited registration covers the identical mark in the searched class and remains material here. ".repeat(40)
         : "";
       // MOCK_CANDSELF — the applicant-unknown note, on the same condition the fixture used.
@@ -1398,9 +1404,10 @@ export function applyStageWrites(msg, argv) {
           verdict: "The identical registration in the searched class drives the read, and the position is adverse on the current filing.",
           coverage: { read: reco },
       };
-      // MOCK_REDO_TOUCHES_FINDING: the first re-save after the record exists (the lint-repair redo) changes
-      // finding 1, as a repair that moves a finding the reviewer may then flag. Once per run.
-      if (process.env.MOCK_REDO_TOUCHES_FINDING && existsSync(join(runDir, "narrative.md")) && !existsSync(driverDir(runDir, "mock-redo-touched"))) {
+      // MOCK_REDO_TOUCHES_FINDING: the first re-save after the verdict is written (the lint-repair redo; the
+      // corrective cycle's save comes before it) changes finding 1, as a repair that moves a finding the
+      // reviewer may then flag. Once per run.
+      if (process.env.MOCK_REDO_TOUCHES_FINDING && existsSync(driverDir(runDir, "verdict.json")) && !existsSync(driverDir(runDir, "mock-redo-touched"))) {
         const f1 = (doc.findings ?? [])[0];
         if (f1) f1.legal_position = `${f1.legal_position ?? ""} The registration was renewed in the searched class (repair).`.trim();
         writeFileSync(driverDir(runDir, "mock-redo-touched"), "1\n");

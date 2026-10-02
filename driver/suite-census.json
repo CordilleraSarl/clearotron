@@ -543,6 +543,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-fix-pass-reads-only-the-review-it-was-handed.test.mjs": {
+          "tests": 3,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "a-follow-up-re-runs-only-what-is-missing.test.mjs": {
           "tests": 4,
           "asserts": 9,
@@ -6130,8 +6136,8 @@
           "todos": 0
         },
         "the-review-after-a-repair-feeds-one-fix-pass.test.mjs": {
-          "tests": 2,
-          "asserts": 16,
+          "tests": 3,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },

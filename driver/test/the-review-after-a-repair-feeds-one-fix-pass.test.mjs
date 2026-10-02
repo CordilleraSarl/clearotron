@@ -43,7 +43,8 @@ const JOB = {
   ref: "TMP8440", markName: "PROJECT NOVAPULSE", classes: [9, 41], provider: "corsearch",
 };
 const MOCK_KNOBS = ["MOCK_VERDICT", "MOCK_SKEPTIC", "MOCK_REDO_TOUCHES_FINDING",
-  "MOCK_NARRATIVE_OVER_CAP", "MOCK_REVIEW_BLOCKS_AFTER_VERDICT", "MOCK_LATE_REVIEW_ON", "MOCK_LATE_REVIEW_EXTRA_ON"];
+  "MOCK_NARRATIVE_OVER_CAP", "MOCK_REVIEW_BLOCKS_AFTER_VERDICT", "MOCK_LATE_REVIEW_ON", "MOCK_LATE_REVIEW_EXTRA_ON",
+  "MOCK_VERDICT_DEFECTS"];
 
 async function runPipeline(env) {
   const root = tempDir("clearotron-fix-pass-");
@@ -90,10 +91,26 @@ test("a re-run review that flags a finding the repair changed gets ONE correctiv
   assert.equal(sent.length, 1, `exactly one synthesis dispatch carries the late flag, found ${sent.length}`);
   assert.doesNotMatch(sent[0], /a second point about a finding the repair left alone/,
     "the fix pass was handed a flag on a finding the repair did not change");
-  // the open points read the applied table the fix pass wrote, from the review now on disk
+  // the open points read the applied table: it holds the flag the pass was handed, and not the one it
+  // never saw, which would otherwise read as an objection the run tried and could not close
   const applied = JSON.parse(readFileSync(driverDir(res.runDir, "corrections-applied.json"), "utf8"));
-  assert.ok(Array.isArray(applied.rows) && applied.rows.some((r) => /registration date/.test(String(r.text ?? r.flag ?? JSON.stringify(r)))),
+  assert.ok(Array.isArray(applied.rows) && applied.rows.some((r) => /registration date/.test(String(r.text ?? ""))),
     `the applied table is not the late review's: ${JSON.stringify(applied).slice(0, 300)}`);
+  assert.ok(!applied.rows.some((r) => /a second point about a finding the repair left alone/.test(String(r.text ?? ""))),
+    "the table records a flag the fix pass was never handed");
+});
+
+test("the fix pass ADDS to the corrective cycle's table: an objection the cycle could not close stays in the open points", async () => {
+  const { res, events } = await runPipeline({ ...SCENARIO, MOCK_VERDICT: "CONDITIONAL", MOCK_NARRATIVE_OVER_CAP: "until-verdict",
+    MOCK_VERDICT_DEFECTS: "- the narrative misstates the filing route of the earlier mark (mock)", MOCK_LATE_REVIEW_ON: "1" });
+  // CONTROL — the corrective cycle ran on the first review and wrote its table before the repair
+  assert.ok(events.some((e) => e.event === "stage" && e.stage === "synthesis" && e.trigger === "corrective"), "the first review fed no corrective cycle");
+  assert.equal(events.filter((e) => e.event === "post-repair-fix-pass").length, 1, "the fix pass did not run");
+  const rows = JSON.parse(readFileSync(driverDir(res.runDir, "corrections-applied.json"), "utf8")).rows ?? [];
+  assert.ok(rows.some((r) => /misstates the filing route/.test(String(r.text ?? ""))),
+    `the fix pass replaced the cycle's table and its objection left the open points: ${JSON.stringify(rows).slice(0, 300)}`);
+  assert.ok(rows.some((r) => /registration date/.test(String(r.text ?? ""))), "the fix pass's own flag is missing");
+  assert.equal(res.ok, true, JSON.stringify(res));
 });
 
 test("CONTROL — a re-run review whose flag names no changed finding triggers no fix pass", async () => {

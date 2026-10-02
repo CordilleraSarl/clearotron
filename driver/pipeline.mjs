@@ -4338,7 +4338,19 @@ export function stageCharter(stageName, depth, framework = null) {   // @interna
  * A re-emission that is not told the rung is not a repair of the rung's output. It is a fresh write
  * under the default contract, wearing the corrective pass's name.
  */
-export function correctionsExtra(P, depth = null, framework = null, { onlyOrdinals = null } = {}) {   // @internal
+/**
+ * The review a post-repair fix pass is handed (owner, ruling 719): the latest accepted review's flags on
+ * the findings a repair changed, rendered in the reviewer's own words. Every reader of the review in the
+ * corrective body takes this in its place — the message, the removal check, the freshness gate and the
+ * applied table — so all four speak of the same flags. null when no flag names a changed finding.
+ */
+export function handedReview(P, onlyOrdinals) {   // @internal
+  const acc = readLastAcceptedRefutation(P.runDir);   // the review the repair re-ran, not the first one
+  const flags = (acc?.flags ?? []).filter((f) => Array.isArray(f?.on) && f.on.some((o) => onlyOrdinals.has(o)));
+  return flags.length ? { flags, text: renderRefutation(acc.verdict, flags, acc.planAudit) } : null;
+}
+
+export function correctionsExtra(P, depth = null, framework = null, { handed = null } = {}) {   // @internal
   let review = existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "";
   // — THE FLAGS ARRIVE AS A TYPED WORKLIST, not only as a wall of prose. The reviewer already
   // declares each flag's kind and taught it all four; the first run after that deployed came back
@@ -4371,16 +4383,12 @@ export function correctionsExtra(P, depth = null, framework = null, { onlyOrdina
       }))
     : parseCorrections(review);
   // ── ONLY THE FLAGS ON FINDINGS A REPAIR CHANGED (owner, ruling 719) ─────────────────────────────────
-  // The post-repair fix pass applies only those, so the worklist, the scope and the review that rides
-  // below are all narrowed to them: the review is re-rendered from the reviewer's own typed values with
-  // those flags alone, so nothing the pass is handed asks it to apply the rest. Without typed values there
-  // is no honest way to narrow the prose, so there is no message, and the caller runs no pass.
-  if (onlyOrdinals) {
-    const acc = readLastAcceptedRefutation(P.runDir);   // the review the repair re-ran, not the first one
-    const kept = (acc?.flags ?? []).filter((f) => Array.isArray(f?.on) && f.on.some((o) => onlyOrdinals.has(o)));
-    if (!kept.length) return null;
-    review = renderRefutation(acc.verdict, kept, acc.planAudit);
-    rows.splice(0, rows.length, ...kept.map((f, i) => ({ n: i + 1, kind: f.kind, text: f.text, fix: f.fix ?? null, ordinals: f.on })));
+  // The post-repair fix pass applies only those (handedReview), so the worklist, the scope and the review
+  // that rides below are all narrowed to them, in the reviewer's own words: nothing the pass is handed
+  // asks it to apply the rest.
+  if (handed) {
+    review = handed.text;
+    rows.splice(0, rows.length, ...handed.flags.map((f, i) => ({ n: i + 1, kind: f.kind, text: f.text, fix: f.fix ?? null, ordinals: f.on })));
   }
   if (P.runDir) {
     try {
@@ -5232,7 +5240,8 @@ export function restoredFindingsTable(repair) {   // @internal
   ].join("\n");
 }
 
-function correctionNamedOrdinals(P) {
+export function correctionNamedOrdinals(P, handed = null) {   // @internal
+  if (handed) return handed.flags.flatMap((f) => (Array.isArray(f?.on) ? f.on : []));
   const out = [];
   try {
     const typed = readAcceptedFlags(P.runDir);
@@ -5266,9 +5275,9 @@ function correctionNamedOrdinals(P) {
  * table as unresolved. `namesLine` wants the label's shape — "the coverage line for <area>" — so a flag
  * writing "the US coverage note" misses unless it also quoted eight running words of the line.
  */
-function correctionNamedLines(P, doc0) {
+export function correctionNamedLines(P, doc0, reviewText = null) {   // @internal
   try {
-    const review = existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "";
+    const review = reviewText ?? (existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "");
     const lines = reportLines(doc0);
     return [...new Set(parseCorrections(review).flatMap((r) => linesOf(r?.text, lines).map((l) => l.key)))];
   } catch { return []; }   // no review read — every row removal is then unnamed, and restored
@@ -5280,8 +5289,8 @@ function correctionNamedLines(P, doc0) {
  *   removed is not in the post-pass document, so its mark could never be found there and every named
  *   removal would read as unnamed. The repair path passes the PRE-corrective document for that reason.
  */
-function correctionNamedSet(P, doc0 = null) {
-  const review = existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "";
+export function correctionNamedSet(P, doc0 = null, reviewText = null) {   // @internal
+  const review = reviewText ?? (existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "");
   let doc = doc0;
   if (!doc) { try { doc = parseFindingsJsonLenient(readFileSync(P.findings, "utf8")); } catch { return []; } }
   const norm = (s) => String(s ?? "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
@@ -5296,10 +5305,10 @@ function correctionNamedSet(P, doc0 = null) {
   }
   return [...named];
 }
-async function enforceCorrectionsReachFindings(ctx, P, pre, resume) {
+async function enforceCorrectionsReachFindings(ctx, P, pre, resume, reviewText = null) {
   if (!pre) return;                                            // no findings.json before the pass — nothing to enforce
   const { run } = ctx;
-  const named = correctionNamedSet(P);
+  const named = correctionNamedSet(P, null, reviewText);
   const readState = () => {
     let raw = null, corrections = null;
     try { raw = readFileSync(P.findings, "utf8"); } catch { return { stale: false }; }
@@ -7616,10 +7625,10 @@ export function instructedScopeOf(job) {
 // cycle; the fix pass has none.
 async function applyReviewerCorrections(ctx, P, run, { verdict, synthesisKey, synthesisModel, synthesisThinking, trigger = "corrective", onlyOrdinals = null }) {
   let correctionsApplied = null, evidenceViolations = [], correctionsScope = null, correctiveRollback = null, correctiveRepair = null;
-  // The fix pass hands over only the flags on findings a repair changed (ruling 719); with none of them
-  // in the latest accepted review there is no message to send and no pass at all.
-  const flagsOn = (ords) => (readLastAcceptedRefutation(P.runDir)?.flags ?? []).some((f) => Array.isArray(f?.on) && f.on.some((o) => ords.has(o)));
-  if (onlyOrdinals && !flagsOn(onlyOrdinals)) return { skipped: true, correctionsApplied, evidenceViolations, correctionsScope, correctiveRollback, correctiveRepair, correctivePass: null };
+  // The fix pass is handed only the flags on findings a repair changed (ruling 719); with none of them in
+  // the latest accepted review there is no message to send and no pass at all.
+  const handed = onlyOrdinals ? handedReview(P, onlyOrdinals) : null;
+  if (onlyOrdinals && !handed) return { skipped: true, correctionsApplied, evidenceViolations, correctionsScope, correctiveRollback, correctiveRepair, correctivePass: null };
   const preCorrective = snapshotFindingsForCorrections(P, run.runDir);                     // A1
   // — re-prepared, not reused. The findings surface cannot move between these two passes today
   // (nothing writes placements.json or register-findings.md between them — checked), so this rewrites
@@ -7627,7 +7636,7 @@ async function applyReviewerCorrections(ctx, P, run, { verdict, synthesisKey, sy
   // silently: if the surface ever did move, the corrective's `row_index` would point into the previous
   // pass's list and a declination would land on the wrong record.
   prepareDeclinationSpec(ctx, P);
-  const correctivePass = await stage("synthesis", ctx, { force: true, followup: correctionsExtra(P, ctx.depth, ctx.framework, onlyOrdinals ? { onlyOrdinals } : {}), sessionKey: synthesisKey, model: synthesisModel, thinking: synthesisThinking, ...synthResume(ctx), trigger });
+  const correctivePass = await stage("synthesis", ctx, { force: true, followup: correctionsExtra(P, ctx.depth, ctx.framework, { handed }), sessionKey: synthesisKey, model: synthesisModel, thinking: synthesisThinking, ...synthResume(ctx), trigger });
   carrySynthSession(ctx, correctivePass);   // the next correction resumes the session this one ended in
   // half one — the corrective pass rewrites findings.json under a closed minimal-edit contract,
   // so it is the pass most likely to change one record's fate. Its own account, at its own moment; the
@@ -7668,7 +7677,7 @@ async function applyReviewerCorrections(ctx, P, run, { verdict, synthesisKey, sy
     let preDocForNames = null;
     try { preDocForNames = preCorrective ? parseFindingsJsonLenient(preCorrective.raw) : null; } catch { /* fall back to the file */ }
     const repaired = repairUnnamedRemovals(P, run.runDir, preCorrective,
-      correctionNamedOrdinals(P), correctionNamedSet(P, preDocForNames), correctionNamedLines(P, preDocForNames));
+      correctionNamedOrdinals(P, handed), correctionNamedSet(P, preDocForNames, handed?.text), correctionNamedLines(P, preDocForNames, handed?.text));
     correctiveRepair = repaired;   // carried to the reviewer's re-read, which must know these are the DRIVER's
     if (repaired) {
       // A DEFECT SIGNAL, not a success. After the schema fix a corrective pass sends a targeted edit
@@ -7687,7 +7696,7 @@ async function applyReviewerCorrections(ctx, P, run, { verdict, synthesisKey, sy
         + (repaired.leftRemoved.length ? `. ${repaired.leftRemoved.length} removal(s) the reviewer DID name stay removed.` : "")
         + " The reviewer re-reads the repaired document before it ships.");
     }
-    await enforceCorrectionsReachFindings(ctx, P, preCorrective, { synthesisKey, synthesisModel, synthesisThinking });   // A1 freshness gate
+    await enforceCorrectionsReachFindings(ctx, P, preCorrective, { synthesisKey, synthesisModel, synthesisThinking }, handed?.text);   // A1 freshness gate
   }
   // — WHAT THE DRIVER OBSERVED, flag by flag, written before the recheck is dispatched. The
   // recheck's whole cost is re-reading two documents to work out whether its own corrections landed;
@@ -7696,7 +7705,9 @@ async function applyReviewerCorrections(ctx, P, run, { verdict, synthesisKey, sy
   // changed is RIGHT. NEVER-KILL: a table that cannot be built just means the recheck reads as it
   // always did, which is today's behaviour exactly.
   try {
-    const rows = parseCorrections(readFileSync(P.seniorEyeReview, "utf8"));
+    // The fix pass observes only the flags it was handed: a flag it never saw is not one it tried and
+    // could not close.
+    const rows = parseCorrections(handed?.text ?? readFileSync(P.seniorEyeReview, "utf8"));
     const preDoc = preCorrective ? parseFindingsJsonLenient(preCorrective.raw) : null;
     let postDoc = null;
     try { postDoc = parseFindingsJsonLenient(readFileSync(P.findings, "utf8")); } catch { /* shape defects ride the normal ladder */ }
@@ -7740,8 +7751,18 @@ async function applyReviewerCorrections(ctx, P, run, { verdict, synthesisKey, sy
     // whether a knock-on edit was right. `unbound` is the `cite_unbound` shape one gate over and
     // would earn a refusal if it recurs; this round measures whether it does.
     correctionsScope = scopeDrift(rows, preDoc, postDoc);
+    // and ADDS its rows to the corrective cycle's table rather than replacing it, so the open points keep
+    // every objection the cycle could not close. Keyed as the open points dedupe: normalised text.
+    let tableRows = correctionsApplied;
+    if (handed) {
+      const key = (r) => String(r?.text ?? "").trim().replace(/\s+/g, " ").toLowerCase();
+      let prior = [];
+      try { prior = JSON.parse(readFileSync(P.correctionsApplied, "utf8"))?.rows ?? []; } catch { /* the cycle wrote none */ }
+      const mine = new Set(correctionsApplied.map(key));
+      tableRows = [...prior.filter((r) => !mine.has(key(r))), ...correctionsApplied];
+    }
     atomicWrite(P.correctionsApplied, JSON.stringify({ ts: new Date().toISOString(), verdict,
-      scope: correctionsScope, rows: correctionsApplied }, null, 2) + "\n");
+      scope: correctionsScope, rows: tableRows }, null, 2) + "\n");
     const by = correctionsApplied.reduce((a, r) => (a[r.outcome] = (a[r.outcome] ?? 0) + 1, a), {});
     runLog(run.runDir, { event: "corrections-applied", flags: correctionsApplied.length, outcomes: by,
       scoped: correctionsScope.scoped, named: correctionsScope.named.length,
