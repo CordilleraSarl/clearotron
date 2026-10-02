@@ -6477,6 +6477,12 @@
           "skips": 0,
           "todos": 0
         },
+        "two-names-that-differ-only-in-script-letters-are-not-duplicates.test.mjs": {
+          "tests": 5,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
         "two-ratified-forms-get-reasoned-apart.test.mjs": {
           "tests": 7,
           "asserts": 17,
