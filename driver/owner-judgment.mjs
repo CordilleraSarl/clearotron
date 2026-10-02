@@ -182,6 +182,32 @@ export function firstTablePages(serve, chars) {
 // program enforces the form's shape; this enforces the rest, and its tokens name each failure.
 
 /**
+ * A record cited by its bare register id, with no office before it, resolved to the one record the run
+ * holds whose id ends with it; null when none does, or when several different records do. A tool's
+ * answer can show a record that way (a designation inside another record, say), so a judge may cite it
+ * so. The check and the merge both resolve through this, so a citation the check accepts is filed under
+ * the record the check accepted it as.
+ */
+export function bareIdResolver(ids) {
+  const byTail = new Map();
+  for (const raw of ids ?? []) {
+    const id = String(raw ?? "").trim();
+    const at = id.lastIndexOf("/");
+    if (!id.startsWith("/") || at < 0 || at === id.length - 1) continue;
+    const tail = id.slice(at + 1).toLowerCase();
+    const canon = (normalizeRecordUri(id) ?? id).toLowerCase();
+    const seen = byTail.get(tail);
+    if (seen === undefined) byTail.set(tail, { id, canon });
+    else if (seen && seen.canon !== canon) byTail.set(tail, null);   // several records end with it
+  }
+  return (ref) => {
+    const s = String(ref ?? "").trim();
+    if (!s || s.includes("/") || /^https?:/i.test(s)) return null;
+    return byTail.get(s.toLowerCase())?.id ?? null;
+  };
+}
+
+/**
  * Check one answer. `pile` gives the record ids the run holds; `webUrls` the saved web addresses;
  * `framework` the client's scale (its manifest). Returns `{ ok, failures: [token…] }`. PURE.
  */
@@ -190,12 +216,14 @@ export function checkAnswer(answer, { recordIds, webUrls = new Set(), framework 
   if (!answer || typeof answer !== "object" || Array.isArray(answer)) return { ok: false, failures: ["judgment_no_answer"] };
   const considered = Array.isArray(answer.considered) ? answer.considered : null;
   if (!considered) failures.push("judgment_considered_missing");
+  const bare = bareIdResolver(recordIds);
   const held = (ref) => {
     const s = String(ref ?? "").trim();
     if (!s) return false;
     if (recordIds.has(s)) return true;
     const canon = normalizeRecordUri(s);
     if (canon && recordIds.has(canon)) return true;
+    if (bare(s)) return true;
     return webUrls.has(s) || webUrls.has(s.replace(/\/+$/, ""));
   };
   const isBand = (r) => framework ? bandIndex(framework, r) !== -1 : String(r ?? "").trim() !== "";
@@ -294,11 +322,14 @@ export function mergeJudgments({ table = null, judges = [] } = {}) {
   const ownerOfRecord = new Map();
   for (const r of rows) for (const rec of r.records) ownerOfRecord.set(String(rec.id).toLowerCase(), r.key);
   const keyOfRecord = (id) => ownerOfRecord.get(String(id ?? "").toLowerCase()) ?? null;
+  const bare = bareIdResolver(rows.flatMap((r) => r.records.map((rec) => rec.id)));
 
   const entries = [];
   for (const j of judges) {
-    for (const [i, d] of (Array.isArray(j.answer?.considered) ? j.answer.considered : []).entries()) {
-      const cited = (Array.isArray(d?.records) ? d.records : []).map((r) => String(r ?? "").trim()).filter(Boolean);
+    for (const [i, raw] of (Array.isArray(j.answer?.considered) ? j.answer.considered : []).entries()) {
+      // A record cited by its bare id is filed under the record the check accepted it as.
+      const d = { ...raw, records: (Array.isArray(raw?.records) ? raw.records : []).map((r) => bare(r) ?? r) };
+      const cited = d.records.map((r) => String(r ?? "").trim()).filter(Boolean);
       entries.push({
         judge: j.judge, n: i + 1, decision: d?.decision,
         owners: (Array.isArray(d?.owners) ? d.owners : []).map((o) => String(o ?? "").trim()).filter(Boolean),

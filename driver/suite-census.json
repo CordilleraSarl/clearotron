@@ -633,6 +633,12 @@
           "skips": 1,
           "todos": 0
         },
+        "a-judge-may-cite-a-record-by-its-bare-id.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "a-judge-may-cite-a-web-page-the-run-saved.test.mjs": {
           "tests": 2,
           "asserts": 5,
