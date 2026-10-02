@@ -66,7 +66,7 @@ quieter. Continuing silently is not one of the two options.
 
 ## The stage table
 
-All 15 stages, exactly as declared in `stages.mjs` (`STAGES`). Timeouts are
+All 13 stages, exactly as declared in `stages.mjs` (`STAGES`). Timeouts are
 seconds; the engine's hard kill lands at `timeoutSec + 60`. An empty stall
 column means the global watchdog (`CLEAROTRON_STALL_MS`, 120 s) applies. Fatality is what the pipeline
 does after the stage's full retry ladder fails ([03 §5](03-run-lifecycle.md#5--failure-handling)).
