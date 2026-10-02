@@ -240,26 +240,26 @@ cannot be excluded.
 
 **Emberstrike — Manageable Risk**
 
-- 3,060 live FLAME/FLAME-formative filings internationally in the searched classes (640 claim gaming
-  software/hardware/online gaming); analysis focuses on FLAME and FLAME BR___ marks covering gaming.
-- 8,575 live BR(E)AKER(S)/BR(E)AK(E)-formative filings (2,317 claim gaming); analysis focuses on
-  BR(E)AKER(S) and F__ BR(E)AKER(S) marks covering gaming.
+- 3,060 live EMBER/EMBER-formative filings internationally in the searched classes (640 claim gaming
+  software/hardware/online gaming); analysis focuses on EMBER and EMBER ST___ marks covering gaming.
+- 8,575 live STRIKE(S)/STRIK(E)-formative filings (2,317 claim gaming); analysis focuses on
+  STRIKE(S) and E__ STRIKE(S) marks covering gaming.
 
 *Filings*
-- **Manageable** — Numerous FLAME/FLAMES marks claim gaming goods/services; most significant is
-  an international FLAMES portfolio owned by gambling company Euro Games Technology (no apparent current
+- **Manageable** — Numerous EMBER/EMBERS marks claim gaming goods/services; most significant is
+  an international EMBERS portfolio owned by a gambling company (no apparent current
   use).
-- **Manageable** — Numerous BREAKER marks claim gaming goods/services; none appears to have
-  objected to the client's ongoing use of ___ BREAKER for controllers.
+- **Manageable** — Numerous STRIKE marks claim gaming goods/services; none appears to have
+  objected to the client's ongoing use of ___ STRIKE for controllers.
 
 *Common-law use*
 - **Manageable** — EmberstrikeGaming: streamer/YouTube channel (205 videos, 405 subscribers)
   with a merch store that does not sell hardware/accessories.
-- **Manageable** — Flamebreak: a 2016 Steam game (444 "very positive" reviews) by Nimbly Games;
+- **Manageable** — Emberstruck: a 2016 Steam game (444 "very positive" reviews) by an indie studio;
   no game published in ~10 years.
 - **Not a rated conflict (clear win)** — A "Emberstrike Set" appears in several Zelda games; not monetised or
   prominent.
-- **Not a rated conflict (clear win)** — Remedy's co-op shooter "Firebreak" (1,914 "mixed" reviews on Steam).
+- **Not a rated conflict (clear win)** — A studio's co-op shooter "Firestrike" (1,914 "mixed" reviews on Steam).
 
 ---
 
@@ -367,7 +367,7 @@ side-glance at **Classes 35 and 39** (retail pizza store / pizza delivery) and *
   prizes are non-monetised, not a gambling-style system.)
 - *Filings* — **Manageable**: Pence Technology (UK) owns PRIZE CRATE (Stylised) over broad food/beverage
   (not pizza); no obvious use; not revocable yet, but low practical objection risk (company inactive).
-  Prize Trunk Retail (UK) owns PRIZE TRUNK & device over "cardboard pizza boxes" + broad goods; in
+  Prize Crate Retail (UK) owns PRIZE TRUNK & device over "cardboard pizza boxes" + broad goods; in
   voluntary insolvency, no recent operations, low practical risk. Prize Case (geek subscription boxes)
   owns an international PRIZE CASE portfolio (apparel/paper/toys/retail), not food — no overlap. Numerous
   third-party PRIZE( )CRATE gaming filings — none can block given the term's non-distinctiveness in gaming.
@@ -443,7 +443,7 @@ The crowded-field framing drives the whole mark: a register sweep returned rough
 
 **Aqua Dawn — Manageable Risk**
 
-A register sweep returned roughly 1,900 live DAWN / DAWN-formative filings internationally, but only a small fraction touch beverages or supplements, and the single dominant DAWN right sits in an unrelated cleaning-products field. Analysis focuses on DAWN and DAYBR___ marks with any Class 5/30/32 claim, and on the coffee-hybrid space the product actually occupies.
+A register sweep returned roughly 1,900 live DAWN / DAWN-formative filings internationally, but only a small fraction touch beverages or supplements, and the single dominant DAWN right sits in an unrelated cleaning-products field. Analysis focuses on DAWN and SOLSTR___ marks with any Class 5/30/32 claim, and on the coffee-hybrid space the product actually occupies.
 
 *Filings*
 - **Manageable** — Procter & Gamble owns the well-known DAWN house mark, but its registrations sit in Class 3 (dishwashing/cleaning) with no beverage or supplement claim located. Famous mark, but a different field entirely; the dilution-style theory a famous-mark owner might raise is remote against a AQUA-led beverage extension, and there is no goods overlap. Noted because the name is prominent, not because it obstructs.
