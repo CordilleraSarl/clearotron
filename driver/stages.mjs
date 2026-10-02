@@ -3130,7 +3130,7 @@ export const STAGES = {
     // (Independence trade-off: the narrative is opus-authored, so this is opus-refutes-opus; the independence is
     // the input DIET + adversarial posture, not a different family. sonnet@high is the tier-diverse alternative.)
     model: "opus", thinking: "high", timeoutSec: 900, stallSec: 600,
-    skillReads: ["skills/narrative-refutation/SKILL.md"],
+    skillReads: ["skills/narrative-refutation/SKILL.md", "skills/clearance-search/report-prose.md"],   // owner, 2026-10-02: the reviewer reads the prose manual it applies
     out: (P) => P.seniorEyeReview,
     validate: validators.seniorEyeReview,
     // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
@@ -3186,7 +3186,7 @@ export const STAGES = {
       },
     },
     message: ({ paths: P, intakeAsks, job, registerOnly, profileSelection }) => lines(
-      reads(["skills/narrative-refutation/SKILL.md"]),
+      reads(["skills/narrative-refutation/SKILL.md", "skills/clearance-search/report-prose.md"]),
       // lever 3 — WHICH FINDINGS EARN A GROUNDED PROFILE, chosen by the DRIVER and listed by
       // ordinal. The band is on findings.json before this stage is dispatched, so there is nothing for
       // the seat to judge: unlisted work is never asked for. Empty when every finding is profiled —
