@@ -114,15 +114,35 @@ export function selectRange(all, { from, through, except }, distTags = {}) {
     if (!inRange(e)) throw new Error(`the exception ${e} lies outside ${from}..${through}`);
   }
   const picked = all.filter((v) => inRange(v) && !except.includes(v)).sort(compareVersions);
+  return refuseTagged(picked, distTags, "the range");
+}
+
+/**
+ * The published versions below a stable. Throws, before anything is written, when one of them is a
+ * version a dist-tag points at: the same refusal the range mode makes, because the hazard is the same.
+ */
+export function selectBelow(all, below, distTags = {}) {
+  return refuseTagged(all.filter((v) => compareVersions(v, below) < 0), distTags, `the sweep below ${below}`);
+}
+
+/**
+ * ONE CHECK FOR EVERY MODE. `latest` and `beta` are what `npm install` resolves, so deprecating the version
+ * a tag points at warns every installer about the version they were just given. Each mode passes its
+ * selection through here, so a mode added later cannot select versions without it.
+ */
+export function refuseTagged(picked, distTags = {}, what = "the selection") {
   const tagged = Object.entries(distTags).filter(([, v]) => picked.includes(v));
   if (tagged.length) {
-    throw new Error(`the range takes ${tagged.map(([t, v]) => `${v} (${t})`).join(", ")}, which a dist-tag points at; `
+    throw new Error(`${what} takes ${tagged.map(([t, v]) => `${v} (${t})`).join(", ")}, which a dist-tag points at; `
       + "move the tag or hold the version out");
   }
   return picked;
 }
 
 const npm = (...args) => execFileSync("npm", args, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
+
+/** The registry's dist-tags, read in one place so every mode is refused on the same facts. */
+const readDistTags = () => JSON.parse(npm("view", PKG, "dist-tags", "--json"));
 
 /** Every published version, and the deprecation message each carries. Read once, as a list. */
 function published() {
@@ -202,7 +222,12 @@ async function main() {
     return 2;
   }
 
-  const candidates = all.filter((v) => compareVersions(v, below) < 0);
+  let candidates;
+  try { candidates = selectBelow(all, below, readDistTags()); }
+  catch (e) {
+    console.error(`deprecate-below: refusing — ${e.message}. Nothing was written.`);
+    return 2;
+  }
   console.log(`deprecate-below: ${all.length} published version(s); ${candidates.length} below ${below}.`);
 
   let done = 0, skipped = 0, failed = 0;
@@ -262,8 +287,7 @@ async function deprecateRange(spec, DRY) {
     const parsed = parseRangeSpec(spec);
     const all = published();
     if (!all.length) throw new Error("the registry listed no versions");
-    const distTags = JSON.parse(npm("view", PKG, "dist-tags", "--json"));
-    picked = selectRange(all, parsed, distTags);
+    picked = selectRange(all, parsed, readDistTags());
     console.log(`deprecate-below: ${all.length} published version(s); ${picked.length} in ${spec}.`);
   } catch (e) {
     console.error(`deprecate-below: refusing — ${e.message}. Nothing was written.`);
