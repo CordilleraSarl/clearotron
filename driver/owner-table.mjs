@@ -210,3 +210,14 @@ export function buildOwnerTable(pile) {
     }),
   };
 }
+
+/**
+ * The near band, by key and in the table's order: the owners holding a live record in the order's classes
+ * whose closeness is better than a loose match, the first three steps. A lawyer reading a search report
+ * reads all of it, so the judges' opening pages hold all of it, and only what follows it is read by page
+ * (design, 2026-10-02). It is a prefix of the table, since the order puts those owners first. PURE.
+ */
+export function nearBandKeys(table) {
+  const loose = CLOSENESS.indexOf("loose match");
+  return (table?.rows ?? []).filter((r) => r.liveInClasses > 0 && r.step < loose).map((r) => r.key);
+}

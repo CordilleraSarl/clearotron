@@ -25,6 +25,7 @@ import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "
 import { dirname, join } from "node:path";
 import { bandIndex, normalizeBand } from "./framework.mjs";
 import { ownerKey, CLOSENESS, isLive } from "./owner-table.mjs";
+export { nearBandKeys } from "./owner-table.mjs";   // the pipeline reads the band from here, beside firstTablePages
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
 
 // ── THE WORDS THE JUDGES READ ────────────────────────────────────────────────────────────────────────
@@ -155,16 +156,23 @@ export function composeMessage({ order, context, ratingScale, workedExamples, ta
  * answers in the opening message, page after page, so the judge reads in the message exactly what the tool
  * would have given it. `serve` is owner-tools' `serve` (the answer, unlogged: the driver is not a judge).
  * Returns the pages' text and the owners on them, as keys, which every judge was shown.
+ *
+ * THE BUDGET NEVER ENDS THE OPENING INSIDE THE NEAR BAND (design, 2026-10-02). `nearBand` is the band's
+ * keys (owner-table.mjs, nearBandKeys); the pages run on, whole, until every one of them is shown, and only
+ * then may the budget stop them. A band that ends inside the budget leaves the opening as it was. On the run
+ * this was measured on, the budget ended at owner 447 of a band of 562, and a lawyer's entry sat between.
  */
-export function firstTablePages(serve, chars) {
+export function firstTablePages(serve, chars, { nearBand = [] } = {}) {
+  const owed = new Set(nearBand);
   const taken = [];
   let used = 0;
   for (let page = 1; ; page++) {
     const r = serve("owner_table", { page });
     if (r.refused) break;
-    if (taken.length && used + r.text.length > chars) break;
+    if (taken.length && used + r.text.length > chars && !owed.size) break;
     taken.push(r);
     used += r.text.length;
+    for (const k of r.result.keysShown ?? []) owed.delete(k);
     if (page >= r.result.pages) break;
   }
   return {
