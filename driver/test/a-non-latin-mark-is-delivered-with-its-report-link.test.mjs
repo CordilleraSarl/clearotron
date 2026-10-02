@@ -14,7 +14,7 @@ import { kebab as markSlug } from "../search-policy.mjs";
 import { reportRouteFor, auditRouteFor, markReportRouteFor } from "../publish/index.mjs";
 
 const ORIGIN = "https://reports.example.test";
-const runIdFor = (job) => `${deriveSlug(job)}-2026-10-02-amber-falcon`;
+const runIdFor = (job) => `${deriveSlug(job)}-2026-10-02-zz-arm`;
 
 const NON_LATIN = ["ΒΕΛΤΡΙΝ", "ВЕЛТРИН", "维尔特林", "ŁUVEN", "VELTRIN 维尔", "Βέλτριν Café"];
 
