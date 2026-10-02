@@ -1125,6 +1125,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-refused-tool-call-is-classified-and-counted.test.mjs": {
+          "tests": 6,
+          "asserts": 21,
+          "skips": 0,
+          "todos": 0
+        },
         "a-refused-unit-says-what-is-half-started.test.mjs": {
           "tests": 9,
           "asserts": 31,
@@ -3401,7 +3407,7 @@
         },
         "instrumentation-house-rule.test.mjs": {
           "tests": 17,
-          "asserts": 116,
+          "asserts": 118,
           "skips": 0,
           "todos": 0
         },
