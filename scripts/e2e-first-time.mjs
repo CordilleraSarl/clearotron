@@ -257,7 +257,12 @@ export const RETIRED_EVENTS = ["known-conflicts-read", "known-conflicts-upsert",
   "recall-reconciliation-positions-rederived", "recall-reconciliation-unended", "register-digest-facts-failed",
   "register-digest-facts-written", "screen-gate-clean", "screen-gate-parse-gap", "screen-gate-postflush",
   "screen-gate-unnamed-observed", "screen-gate-unresolved", "screen-gate-violation", "silently-lost-findings",
-  "stage-floor-duty-rerun", "stated-divergence-findings"];
+  "stage-floor-duty-rerun", "stated-divergence-findings",
+  // the second framing, its diff, and the territory check that ran inside the reopening, which left with
+  // the mid-run reopening (2026-10-02); a run delivered before it still carries these, and each keeps its
+  // class above
+  "blind-frame-skipped", "frame-diff-skipped", "frame-diff-undispatchable-disclosed", "jurisdiction-scope",
+  "jurisdiction-scope-register-deferred", "searched-jurisdictions", "searched-jurisdictions-unresolved"];
 
 // A stage dispatched again says why, on the run log's `stage` event. Counted: a dispatch that exists
 // because an answer was not accepted as it stood.

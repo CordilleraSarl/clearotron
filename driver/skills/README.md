@@ -20,7 +20,6 @@ instead; and `clearance-search/templates/search-request-form.html`, named only i
 |---|---|
 | `matter-frame` | Phase 0. Writes the matter's commercial context — sector, customer base, channels of trade, jurisdictions that materially matter, off-field sectors, watchlist seeds — before any search runs. `watchlist-reference.md` is enrichment, not authority. |
 | `clearance-variants` | Classifies the mark into one of six archetypes, derives a risk theory from that, emits the variant manifest both execution skills read. Non-Latin scripts: `transliteration-scripts.md`. |
-| `blind-frame`, `frame-diff` | Re-derives the threat model from the raw instruction alone, deliberately starved of the matter frame, then diffs that model against what the run actually scoped and emits reopen directives the driver acts on. Something has to test the frame instead of reasoning inside it. |
 | `clearance-common-law` | The marketplace / web / social sweep, as structured Perplexity research over the platform list the stage dictates. Prompt templates: `perplexity-prompts.md`. |
 | `clearance-register` | Register execution in the two modes a spawn selects: `unit.md` (the funnel — enumerate one axis to completion). Plus `register-recipes.md`, `status-rules.md`, `stealth-filer-indicators.md`, `providers/`. |
 | `case-law-citation` | Grounds risk-relevant findings in precedent fetched in-session, never from memory. One thin adapter per source in `sources/`; `evals.md` defines what working means. |

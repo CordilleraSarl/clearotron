@@ -358,8 +358,9 @@ test("a cited site is a MINT, never a sentence about the code", () => {
     `the worked example regressed off its mint line — ${site} reads: ${mintLine.trim().slice(0, 70)}`);
   // And the filter must not have shrunk the census: a comment-only token would vanish with its coverage
   // obligation, and an absence reads as clean. 307 measured before and after on a22b4fd0; 306 once the
-  // register digest's sources left the census and step 3's judges' family joined it.
-  assert.ok(ex.size >= 306, `the extraction shrank to ${ex.size} — a token lost its coverage obligation silently`);
+  // register digest's sources left the census and step 3's judges' family joined it; 292 once the second
+  // framing's six blindframe_ tokens and the diff's eight framediff_ tokens left with those two stages.
+  assert.ok(ex.size >= 292, `the extraction shrank to ${ex.size} — a token lost its coverage obligation silently`);
 });
 
 test("every citation lands on the line that MINTS the code, not near it", () => {
@@ -639,8 +640,10 @@ test("E3: the backlog is explicit, named, and each entry says which move removes
   // 51 -> 48: the three send stages' dictated-line-shape rows left with the stages themselves.
   // 46 -> 37: placement-inquiry's four rows and register-digest's five left with those two stages when
   // step 3 came to be judged by owner; the judges answer in a form and dictate no structure.
-  assert.equal(E3_BACKLOG.length, 37,
-    `the backlog is ${E3_BACKLOG.length}, pinned at 37. SHRUNK? good — regenerate contract-e3-baseline.json in the same commit so the ceiling drops with it, and say at the entry site what removed it. GROWN? a new dictated structure was registered rather than converted; that is a decision, so make it visible here.`);
+  // 37 -> 34: blind-frame's manual row and frame-diff's message and manual rows left with those two stages
+  // when the mid-run reopening was removed.
+  assert.equal(E3_BACKLOG.length, 34,
+    `the backlog is ${E3_BACKLOG.length}, pinned at 34. SHRUNK? good — regenerate contract-e3-baseline.json in the same commit so the ceiling drops with it, and say at the entry site what removed it. GROWN? a new dictated structure was registered rather than converted; that is a decision, so make it visible here.`);
   for (const e of E3_BACKLOG) {
     assert.ok(e.stage && e.where && e.evidence, "a backlog entry that does not name its site is not a backlog entry");
     assert.ok(E3_BACKLOG_KINDS.includes(e.kind), `unknown E3 kind ${e.kind}`);
@@ -764,12 +767,14 @@ test("an undecidable row is reported as NOT-CHECKED, never absorbed into the pas
   // found by reading the conversion's own diff, not by this arm.
   // 6 -> 5 when step 3 came to be judged by owner: one of the six was a register-digest row, deleted with
   // its dictation — the same shrink by deletion as conversion 10's.
-  assert.deepEqual(byReason, { "anchor-not-found": 5 },
+  // 5 -> 4 when the mid-run reopening left: blind-frame's manual row was one of the five, deleted with its
+  // stage and its manual.
+  assert.deepEqual(byReason, { "anchor-not-found": 4 },
     `the UNDECIDABLE slice moved. It is ${notChecked.length} of ${E3_BACKLOG.length} rows, leaving ` +
     `${E3_BACKLOG.length - notChecked.length} actually checked.\n` +
     "  GREW? a row stopped being checkable — that is coverage lost, not a pass. Say why at the entry.\n" +
     "  SHRANK? good: lower the number here in the same commit.\n" +
-    "  The five anchor-not-found rows were each read by hand on 2026-08-23 and are correct; their\n" +
+    "  The four anchor-not-found rows were each read by hand on 2026-08-23 and are correct; their\n" +
     "  evidence carries ${} interpolation or spans a template line, which is why the anchor cannot\n" +
     "  locate them — the same limit backlogEvidenceMisses records in E3_EVIDENCE_UNRESOLVED.");
   // Every row lands in exactly one bucket: checked-and-clean, checked-and-missed, or not-checked.

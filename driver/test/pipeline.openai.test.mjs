@@ -245,14 +245,15 @@ test("E2(openai): full pipeline runs on the openai-agent engine (CLEAR, delivere
       "gather config carries the wrapped MCP servers under NEUTRAL keys");
 
   // THE ANCHOR, and the only assertion here not derived from the config text it judges. The partition
-  // above classifies a turn by the keys it carries, so on its own it cannot tell "blind-frame mounts its
-  // record server under the neutral key" from "blind-frame mounts nothing" — the second produces one
+  // above classifies a turn by the keys it carries, so on its own it cannot tell "matter-frame mounts its
+  // record server under the neutral key" from "matter-frame mounts nothing" — the second produces one
   // fewer recording turn, not a failure. This names the stage INDEPENDENTLY, by the skill doc only its
-  // own dispatch reads, and then requires the key.
-  const blindFrameTurn = codexCalls.find((c) => /[\\/]driver[\\/]skills[\\/]blind-frame[\\/]SKILL\.md/.test(c.prompt || ""));
-  assert.ok(blindFrameTurn, "blind-frame ran on the openai engine");
-  assert.ok(recordingTurns.includes(blindFrameTurn), "blind-frame's turn mounts a recording server and nothing else");
-  assert.match(blindFrameTurn.configToml, /^\[mcp_servers\.recording-blind-frame\]$/m,
+  // own dispatch reads, and then requires the key. (It named blind-frame until that stage left with the
+  // mid-run reopening.)
+  const matterFrameTurn = codexCalls.find((c) => /[\\/]driver[\\/]skills[\\/]matter-frame[\\/]SKILL\.md/.test(c.prompt || ""));
+  assert.ok(matterFrameTurn, "matter-frame ran on the openai engine");
+  assert.ok(recordingTurns.includes(matterFrameTurn), "matter-frame's turn mounts a recording server and nothing else");
+  assert.match(matterFrameTurn.configToml, /^\[mcp_servers\.recording-matter-frame\]$/m,
     "…under the key recordingKey() mints for it — hyphens, the grant grammar's alphabet");
 
   // Handoff mode: no notify gateway stages, comms did NOT run through the compute engine, packet + sentinel written.

@@ -115,7 +115,7 @@ test("no run dir at all is not a grant and not a disagreement", () => {
 
 // ── PROOF 3 — the population, derived so nobody re-derives ten ──────────────────────────────────────
 
-test("the seat-write-free population is THIRTEEN, read from the frozen table", () => {
+test("the seat-write-free population is ELEVEN, read from the frozen table", () => {
   // A naive grep for `seatWrites: false` returns more hits than the population: some are comment text,
   // one in blind-frame's FIRST OCCUPANT note and one in allowedToolsFor's own paragraph. A fix
   // sized from the grep widens itself by stages that were never in the set — which is why this is
@@ -153,8 +153,9 @@ test("the seat-write-free population is THIRTEEN, read from the frozen table", (
   // tool-free row. This one was born typed, so its declaration records no transition — which makes it
   // the first member for which "the seat writes nothing here" is a property of the design rather than
   // the outcome of removing a Write grant.
+  // 13 -> 11: blind-frame and frame-diff left with the mid-run reopening.
   assert.deepEqual([...SEAT_WRITE_FREE_STAGES], [
-    "blind-frame", "clearance-variants", "doubt-closure", "frame-diff", "knockout-assess",
+    "clearance-variants", "doubt-closure", "knockout-assess",
     "knockout-frame", "knockout-review", "matter-frame", "narrative-refutation",
     "report-card", "report-overview", "skeptic", "synthesis",
   ]);

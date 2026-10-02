@@ -22,7 +22,7 @@
 //
 // ── AND IT DELETES A DERIVATION, WHICH IS THE REAL PRIZE ────────────────────────────────────────────
 //
-// `scope-ledger.json` is read by the frame-diff scope check and by the jurisdiction resolver. Today the
+// `scope-ledger.json` is read by the form-neighbourhood derivation. Today the
 // driver DERIVES it by parsing the `### Scope ledger` MARKDOWN TABLE out of the prose manifest
 // (`renderScopeLedgerJson(readFileSync(P.variantManifest))`). A machine artifact the whole downstream
 // depends on, recovered by re-reading a table a model typed on fixed column positions.
@@ -171,8 +171,7 @@ export function renderClearanceVariants(model, scopeRows) {
  * Assemble and validate through the SHIPPED parser, then the Class 3 acceptance checks.
  *
  * `parseVariantManifestModel` is what `verify.mjs` runs against the artifact, so calling THAT rather than
- * re-checking the shape here is what stops the tool and the validator drifting apart — the frame-diff
- * precedent, and the reason the romanisation and term-shape families come along for free.
+ * re-checking the shape here is what stops the tool and the validator drifting apart — and the reason the romanisation and term-shape families come along for free.
  *
  * Returns `{ok: true, model, scopeRows, content}` or `{ok: false, reason}`, reason token-first. PURE.
  */

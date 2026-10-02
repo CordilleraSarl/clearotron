@@ -74,14 +74,10 @@ tokens, never prose). Deliberately non-fatal: a checker outage must not bin comp
 adds a floor the skeptic cannot bypass: an axis whose every ledger row is `coverage-limited` (an
 accepted limit a re-run cannot close) is skipped; `deferred` and `confirmed-clean` rows escalate.
 
-**The blind pass** rebuilds the threat picture from the raw request alone — its declared inputs are
-*only* the inbound request, enforced down to the `--experiment` sandbox (listing the matter frame
-would leak the run's framing into the one pass that must not see it). The frame diff turns the
-comparison into structured directives; a mechanical **form-neighbourhood oracle** adds
-deterministically-generated near-form gaps (edit-1 exhaustive, phonetic families via
-Double-Metaphone keys) — the model may *add* candidates and rank; it may never define, shrink, or
-filter the mechanical floor. Directives reopen investigation once, bounded, with per-directive
-closure verified by re-running the same detector (`close-verify.mjs` — a byte-changed band with
+**The mechanical form floor**: a **form-neighbourhood oracle** adds deterministically-generated
+near-form gaps (edit-1 exhaustive, phonetic families via Double-Metaphone keys) — the model may *add*
+candidates and rank; it may never define, shrink, or filter the mechanical floor. Gap directives reopen
+investigation once, bounded, with per-directive closure verified by re-running the same detector (`close-verify.mjs` — a byte-changed band with
 only a wrong-scope or empty block closes nothing; that exact false-close shipped once).
 
 **The independent reviewer** (`narrative-refutation`) re-derives conclusions from the evidence and

@@ -199,8 +199,8 @@ and — for every stage whose tool groups resolve non-empty — `--mcp-config` p
 **engine-local stdio MCP servers** (`engine/mcp/`), each wrapping a provider core with its own auth
 inherited from the engine's env (credentials are never written into the config file). The stages in
 `TOOL_FREE_STAGES` (`engine/mcp/gather-config.mjs`) get no MCP config and no tool definitions at
-all; `blind-frame` and `skeptic` hold only their own recording server beside the seeded file tools,
-so a typed hand-back costs them no retrieval surface; and the band-consuming judgment stages hold a
+all; `skeptic` holds only its own recording server beside the seeded file tools, so a typed
+hand-back costs it no retrieval surface; and the band-consuming judgment stages hold a
 read-only grant instead — the `band` group and, on synthesis alone, the web-research tool its
 mandatory use-check runs through. Step 3's two judges are **confined**: each session's whole system
 prompt is the step's six-sentence instruction, it holds the owner tools and nothing else (no file
@@ -285,7 +285,7 @@ All paths relative to [`driver/`](../../driver/). The load-bearing seven are mar
 | `registry-fidelity.mjs` | Record grounding: citation closure, identifier auto-correction from records. |
 | `named-band.mjs` · `register-taint.mjs` · `register-plan.mjs` | Band merge/gates, timeout-taint machinery, plan compilation. |
 | `form-neighbourhood.mjs` · `phonetic-key.mjs` · `connotation-search.mjs` | Mechanical variant floor, phonetic keys, meaning-query dictation. |
-| `blind-frame-model.mjs` · `frame-diff-model.mjs` | Blind re-derivation + diff models. |
+| `frame-diff-model.mjs` | The reopen channel's decision helpers: which directives fire, how each ends. |
 | `rule-shape.mjs` · `reasoning-tripwires.mjs` · `gate-metrics.mjs` | Anti-threshold guard, integrity tripwires (observe-only), gate telemetry. |
 | `predelivery-lint.mjs` · `close-verify.mjs` · `screen-gate.mjs` | Pre-delivery checks, envelope close verification, screen-gate detection. |
 | `common-law-receipts.mjs` · `engagement-receipt.mjs` · `scope-ledger.mjs` | Receipt models for the marketplace grid, engagement, scope. |

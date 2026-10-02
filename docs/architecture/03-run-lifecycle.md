@@ -184,12 +184,11 @@ flowchart TD
     subgraph GATHER["Gather fan-out (concurrency = CLEAROTRON_GATHER_CONCURRENCY)"]
         CL["common-law-half:a/b/m<br/>(two grid halves + the meaning seat)"]
         RU["register-unit:&lt;axis&gt;<br/>(per register axis)"]
-        BF["blind-frame<br/>(non-fatal sibling)"]
     end
     GRID --> GATHER
     GATHER --> FANIN{{"fan-in barrier (code):<br/>quarantines · must() · half-merge ·<br/>named-band gate · taint chain ·<br/>plan⇄band identity join · grid-ledger gate"}}
     FANIN --> CLOSURE["coverage closure pass<br/>(one supplementary sweep, non-fatal)"]
-    CLOSURE --> FD["frame-diff vs blind frame<br/>+ bounded reopen (non-fatal block)"] --> OT["owner table<br/>(code lays the pile out by owner)"]
+    CLOSURE --> FD["form check<br/>+ bounded reopen (non-fatal block)"] --> OT["owner table<br/>(code lays the pile out by owner)"]
     OT --> OJ["owner-judgment:1 ∥ owner-judgment:2<br/>(two judges, each alone)"] --> MERGE["check each answer · merge ·<br/>a fate for every owner (code)"]
     MERGE --> SK["skeptic (non-fatal)"]
     SK --> ESC{"ESCALATE: axis tokens?"}
@@ -231,8 +230,7 @@ Reading order for the phases, with what code decides at each:
    terms at all — a recurrence floor is a property of the whole sweep, so a term-partitioned seat
    could owe an obligation at the merge that neither half could see.
 3. **Gather fan-out** — register units (one per axis, axes decided by code from the variant
-   manifest + plan), the three common-law seats, and `blind-frame` as a non-fatal concurrent sibling
-   that reads *only* the raw instruction.
+   manifest + plan) and the three common-law seats.
 4. **Fan-in barrier** — pure code, and the densest gate cluster in the system
    (`pipeline.mjs`): band-vocabulary quarantine, single-half transient quarantine,
    `must()` on every member, half-merge + canonical re-validation, connotation identity join (a
@@ -243,10 +241,9 @@ Reading order for the phases, with what code decides at each:
    persistent repair ledger (`_driver/repairs.json`) so no ladder is ever bought twice.
 5. **Coverage closure** — one supplementary sweep for closable coverage-limited cells, idempotent
    by receipt; survivors become a front-matter coverage note, not a halt.
-6. **Frame-diff + bounded reopen** — the blind frame is diffed against the run's own framing;
-   directives (including deterministic mechanical form-gap directives) can reopen register and
-   source arms once, under a fetch ceiling (`CLEAROTRON_REOPEN_MAX_FETCH`, default 150), with
-   per-directive closure verification. The whole block is non-fatal; unclosed directives demote to
+6. **Bounded reopen** — deterministic form-gap directives (a generated near-form the sweep never
+   dispatched) can reopen the register arm once, under a fetch ceiling (`CLEAROTRON_REOPEN_MAX_FETCH`,
+   default 150), with per-directive closure verification. The whole block is non-fatal; unclosed directives demote to
    disclosed deferrals that later clamp the verdict.
 7. **Owner-judgment: the pile judged by owner** — fatal when neither judge's answer can be taken. Code lays
    every record of the pile out as one table with a line per owner, in a fixed order (owners holding a
@@ -316,7 +313,7 @@ Reading order for the phases, with what code decides at each:
 *fatal* = the head stages, gather members after quarantine, the fan-in gates, step 3 when neither judge's answer can be taken,
 synthesis, refutation, the verdict terminal, the verdict sidecar, report-overview, the zero-rows
 coverage terminal, the core-artifact gate, and the client gate. *Note-and-continue* = every checker
-and enrichment (blind-frame, frame-diff/reopen, skeptic, case-law, per-card renders, audit build,
+and enrichment (the reopen, skeptic, case-law, per-card renders, audit build,
 closure passes, receipts, rollups, notify). An outage in a checker never destroys completed gather work.
 
 **One report, no second version.** There is no separate summary artifact for outside readers and no

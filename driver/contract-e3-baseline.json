@@ -10,11 +10,6 @@
       "exactly-these-keys": 0,
       "dictated-line-shape": 0
     },
-    "blind-frame": {
-      "literal-json-skeleton": 0,
-      "exactly-these-keys": 1,
-      "dictated-line-shape": 0
-    },
     "common-law": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 2,
@@ -38,11 +33,6 @@
     "skeptic": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 0,
-      "dictated-line-shape": 0
-    },
-    "frame-diff": {
-      "literal-json-skeleton": 0,
-      "exactly-these-keys": 1,
       "dictated-line-shape": 0
     },
     "synthesis": {
@@ -102,11 +92,6 @@
       "exactly-these-keys": 0,
       "dictated-line-shape": 1
     },
-    "skills/blind-frame/SKILL.md": {
-      "literal-json-skeleton": 4,
-      "exactly-these-keys": 2,
-      "dictated-line-shape": 0
-    },
     "skills/clearance-common-law/SKILL.md": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 1,
@@ -126,11 +111,6 @@
       "literal-json-skeleton": 0,
       "exactly-these-keys": 0,
       "dictated-line-shape": 1
-    },
-    "skills/frame-diff/SKILL.md": {
-      "literal-json-skeleton": 4,
-      "exactly-these-keys": 2,
-      "dictated-line-shape": 0
     },
     "skills/clearance-search/synthesis-rules.md": {
       "literal-json-skeleton": 1,
@@ -174,7 +154,7 @@
     }
   },
   "totals": {
-    "stages": 36,
-    "files": 48
+    "stages": 34,
+    "files": 36
   }
 }

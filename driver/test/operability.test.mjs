@@ -791,58 +791,6 @@ test("frontMatterIdentity hands the shell the intake facts, names no file, and s
   assert.equal(ST.frontMatterIdentity(), "");
 });
 
-// A4 (frame-omission): the blind pass MUST stay information-starved — fed ONLY the raw inbound request,
-// never the matter frame (matterContext / variantManifest / any prior analysis). Its independence is the
-// whole value: re-deriving the threat model cold catches the framing the rest of the run inherited. The
-// --experiment sandbox copies exactly stageInputs(), so any leak here would also hand the frame to the
-// blind pass under --experiment. Lock the set to a single input so a future "just add matterContext" edit
-// to stages.mjs fails loudly here instead of silently neutering the blind pass.
-test("A4: blind-frame stageInputs is STARVED — only the raw inbound request, never the matter frame", async () => {
-  const ST = await import("../stages.mjs");
-  const P = ST.paths("/RUN");
-  const ins = ST.stageInputs("blind-frame", P, { axes: ST.REGISTER_AXES });
-  assert.deepEqual(ins, [P.inboundRequest], "blind-frame must read ONLY inbound-request.txt");
-  for (const leaked of [P.matterContext, P.variantManifest, P.registerFindings, P.commonLaw, P.narrative, P.scopeLedger])
-    assert.ok(!ins.includes(leaked), `blind-frame stageInputs leaks the frame: ${leaked} — the blind pass must never see prior analysis`);
-});
-
-// — blind-frame's ONE output is the structured model, and THAT is what makes an absence loud.
-// runStage's file-truth gate reads `out`: point it at prose the stage no longer writes and every turn
-// fails; point it at nothing (`out: undefined`) and `files` is empty, so a turn that wrote NO model
-// reports ok — the absence-reads-as-a-pass shape this codebase has shipped seven times. The validator
-// test in verify.test.mjs proves the content check; this proves the file check exists to reach it.
-test("blind-frame's out() IS blind-frame-model.json, and blind-frame.md is gone from the paths, prompts and inputs", async () => {
-  const ST = await import("../stages.mjs");
-  const P = ST.paths("/RUN");
-  assert.equal(ST.STAGES["blind-frame"].out(P), P.blindFrameModel,
-    "blind-frame must gate on the model itself — an `out` that is undefined or a prose path makes a model-less turn pass");
-  assert.equal(P.blindFrameModel, join("/RUN", "blind-frame-model.json"));
-  assert.ok(ST.STAGES["blind-frame"].validate, "the gated output must still be strict-parsed");
-  assert.ok(!("blindFrame" in P), "the retired prose path constant must not come back as a dead key");
-  // no stage prompt may name a file the engine no longer writes — a prompt pointing at blind-frame.md is
-  // a live defect (the model is told to read or write something that will never exist), not a doc nit.
-  const axes = ST.REGISTER_AXES;
-  const job = { marks: [{ name: "X", classes: [9] }], markName: "X", classes: [9], upfrontInstructions: "x", forwarder: "jordan", msgId: "<m>", ref: "TMP1" };
-  const built = new Set();
-  for (const name of ST.STAGE_ORDER) {
-    const def = ST.STAGES[name];
-    const axis = name === "register-unit" ? "primary-sweep" : null;
-    let msg;
-    try { msg = def.message({ paths: P, job, axes, axis, agent: "mailagent", run: { slug: "s", codename: "c" } }); }
-    catch { continue; }   // a message needing richer ctx — same skip as the stageInputs drift guard above
-    built.add(name);
-    assert.ok(!/blind-frame\.md/.test(String(msg)), `stage ${name}'s prompt still names blind-frame.md, which nothing writes`);
-  }
-  // the skip above must not be what makes this pass: the two stages that ever named the file must be swept
-  for (const name of ["blind-frame", "frame-diff"]) assert.ok(built.has(name), `${name}'s message() did not build — this guard swept nothing`);
-  assert.ok(!ST.stageInputs("frame-diff", P, { axes }).some((f) => /blind-frame\.md$/.test(String(f))),
-    "frame-diff must not declare the retired prose file — --experiment copies exactly stageInputs()");
-  assert.ok(ST.stageInputs("frame-diff", P, { axes }).includes(P.blindFrameModel),
-    "frame-diff still consumes the model");
-  assert.ok(ST.stageOutputs("blind-frame", P, { axes }).includes(P.blindFrameModel),
-    "the dependency graph must still know blind-frame authors the model");
-});
-
 // ---- WS1c — DELETED with the model-failover chain --------------------------------------------
 // It asserted that composeEmailHtml renders a "Model failover:" line from `failover_note` front-matter,
 // by hand-writing front-matter no production run could produce: the chain had one rung, so nothing ever

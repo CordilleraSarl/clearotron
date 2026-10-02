@@ -14,7 +14,7 @@
 //     server, not by the agent — the most-consumed artifact in a run, and it appears in no `reads[]`);
 //   · what is passed INLINE (`report-card` gets its finding as `ctx.finding`; the declaration exists so
 //     the freshness gate can see findings.json move, not because the agent opens it);
-//   · what only SOMETIMES reaches the prompt (`matter-frame` and `blind-frame` name
+//   · what only SOMETIMES reaches the prompt (`matter-frame` names
 //     `inbound-request.txt` only when `job.rawRequest` exists).
 //
 // ── THE ONE RULE THIS MODULE EXISTS TO KEEP ──────────────────────────────────────────────────────────
@@ -62,10 +62,6 @@ const bareStage = (label) => String(label).replace(/:.*$/, "");
 // Keyed on the paths() KEY, not the string, so a path rename cannot silently drop a classification.
 // Anything not named here is `agent-reads-file` — the common case and the one the declaration means.
 const DECLARED_KIND = {
-  "blind-frame": {
-    inboundRequest: ["conditional",
-      "the prompt names it ONLY when job.rawRequest exists (stages.mjs blind-frame message); on a run with no raw forward this edge is a staleness dependency and nothing more"],
-  },
   "report-card": {
     findings: ["passed-inline",
       "the finding's machine record rides the message as ctx.finding (pipeline.mjs dispatches report-card with {axis:String(ordinal), finding:f}); the file is declared so the freshness gate sees findings.json move"],
@@ -186,8 +182,8 @@ function suppGridLedgers(P) {
 
 // ── the edges a declaration cannot carry ─────────────────────────────────────────────────────────────
 const UNDECLARED = {
-  // The verbatim forward is named in the prompt only when job.rawRequest exists — and matter-frame,
-  // unlike blind-frame, never declared it at all (stages.mjs "matter-frame": []).
+  // The verbatim forward is named in the prompt only when job.rawRequest exists — and matter-frame
+  // never declared it at all (stages.mjs "matter-frame": []).
   "matter-frame": (P) => [
     { path: P.inboundRequest, kind: "conditional",
       why: "the prompt names it only when job.rawRequest exists; undeclared because matter-frame has no upstream to go stale against" },
@@ -228,9 +224,8 @@ const UNDECLARED = {
 // covering every stage, and `experiment-context.test.mjs` fails if verify.mjs grows a read that no
 // stage declares.
 //
-// STARVATION SURVIVES BY CONSTRUCTION, not by an exception: `blind-frame`'s validator resolves NO
-// sidecar, so the blind pass's sandbox still holds exactly one file. Widening the sandbox is only safe
-// because this list is a fact about gates rather than a convenience copy of `_driver/`.
+// Widening the sandbox is only safe because this list is a fact about gates rather than a convenience
+// copy of `_driver/`.
 export const VALIDATOR_SIDECARS = {
   "matter-frame": ["instructed-scope.json", "stage-contracts.json"],
   "clearance-variants": ["instructed-scope.json", "stage-contracts.json"],

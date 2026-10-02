@@ -32,8 +32,6 @@ import { parseFindingsJson, parseFindingsJsonLenient, CLIENT_TIER_BY_COMPOSITE, 
 import { parseCaseLawLedger, findCaseLawLedgerViolations, caseLawLedgerFail } from "./case-law-ledger.mjs";
 import { parseFrameworkManifest, aboveLowestBand, normalizeBand } from "./framework.mjs"; import { readFrozenMethod, FROZEN_METHOD_FILE } from "./framework-method.mjs";
 import { parseNamedBand, findCollapsedBands } from "./named-band.mjs";
-import { parseBlindFrameModel } from "./blind-frame-model.mjs";
-import { parseFrameDiff } from "./frame-diff-model.mjs";
 import { parseVariantManifestModel, variantRomanizationGaps, variantCompletenessGaps, variantTermShapeGaps } from "./variant-manifest-model.mjs";
 import { checkJudgmentFile } from "./owner-judgment.mjs";
 
@@ -1217,13 +1215,9 @@ function checkJson(raw, parseFn, okReason) {
   return ok(okReason);
 }
 
-// ---- sibling-JSON check for the frame-diff machine artifact (frame-omission design) ----
-// frame-diff writes prose to its expectFile (validated for non-emptiness) AND a STRUCTURED sibling JSON the
-// pipeline consumes (the reopen directives). The JSON is the load-bearing artifact, so it is REQUIRED here
-// (token-first absence + parse defects → the corrective/warm ladder repairs it). This is REPLAY-SAFE
-// because frame-diff.md is not a FILE_CHECKS target (replay never calls this validator); the stage is
-// NON-FATAL in the pipeline, so a stubborn miss degrades to "no reopen this run" and never kills delivery.
-// blind-frame no longer has a sibling at all: since its structured model IS its output (checkJson).
+// ---- sibling-JSON check: a STRUCTURED JSON written beside a stage's prose expectFile ----
+// The JSON is the load-bearing artifact, so it is REQUIRED (token-first absence + parse defects → the
+// corrective/warm ladder repairs it).
 function checkSiblingJson(p, siblingName, parseFn, okReason, missingToken) {
   let raw = null;
   try { raw = readFileSync(join(dirname(p), siblingName), "utf8"); } catch { /* sibling not written */ }
@@ -1672,22 +1666,6 @@ export const validators = {
     if (existsSync(driverDir(dir, "instructed-scope.json"))) return fail("variantmodel_missing");
     return base;
   },
-  // Property 1 (frame-omission design): the stage's ONE output is the structured model the frame-diff
-  // consumes — `c` IS blind-frame-model.json ( retired the prose twin nothing read). The prose
-  // non-emptiness floor is gone WITH the prose, and the parser is the stronger floor it leaves behind:
-  // it demands a named dominant_element, at least one variant, a closed-enum direction on each, and a
-  // closed-enum ranking_basis. An absent file never reaches here — runStage fails it as
-  // `missing_file:blind-frame-model.json` first. NON-FATAL in the pipeline (no frame-diff that run).
-  // — WHAT A FAILURE HERE NOW MEANS. `acceptBlindFrame` validates through THIS SAME parser before
-  // `recordBlindFrame` writes, so on the live path a parse failure can no longer be the seat's typing: it is
-  // the driver's own serialisation or an fs fault. Kept rather than retired, because archived runs whose
-  // model was hand-written are still judged by it, and because a driver that writes an unparseable artifact
-  // must not deliver. The coverage transport reached the same place and said so in the same words
-  // (coverage_form_damaged, post-conversion, is a driver/fs fault).
-  blindFrame: (p, c) => checkJson(c, parseBlindFrameModel, "blind-frame-model"),
-  // a clean diff is legitimately terse ("no omissions") so the prose floor is low; the sibling JSON (the
-  // reopen directives the pipeline acts on) is REQUIRED and carries the real structure.
-  frameDiff: (p, c) => all(nonEmpty(c, 40), checkSiblingJson(p, "frame-diff.json", parseFrameDiff, "frame-diff", "framediff_model_missing")),
   // judgment-relocation (2026-06-24): the LOAD-BEARING funnel artifact is now the COMPLETE NAMED BAND sibling
   // (register-units/<axis>-band.json) — the enumerated records + crowd descriptors that cross the firewall. The
   // funnel emits NO clearance verdict, so the prose .md is an AUDIT summary (only non-emptiness required); the
@@ -1829,7 +1807,7 @@ export const validators = {
   // table shows no flags for primary-sweep" is an ordinary sentence for this stage — made a file full of
   // flags validate as clean. Nothing needs a substring sentinel now that `renderSkepticFlags` is the only
   // writer: the shape is exact, so the check is exact. A failure here is the driver's render or an fs
-  // fault, not the seat's typing — the same place the coverage and blind-frame transports arrived.
+  // fault, not the seat's typing — the same place the coverage transport arrived.
   skepticFlags: (_p, c) => {
     const text = String(c ?? "");
     // THE RENDERED SHAPE, CHECKED EXACTLY. Every file the driver writes carries the escalation section, so
