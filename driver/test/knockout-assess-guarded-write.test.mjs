@@ -115,6 +115,10 @@ test("NO stage in EITHER lane writes its output into the guarded tree", () => {
   }
   const P = paths(RUN);
   for (const [name, def] of Object.entries(STAGES)) {
+    // A CONFINED stage writes nothing itself: its answer arrives on the session's result and the driver
+    // writes it to `out` (engine CONTRACT.md, `confined`). That is the driver-written transport this
+    // message asks for, so its `out` may sit in the guarded tree. Its seat holds no Write and no Bash.
+    if (typeof def.confined === "function") continue;
     let out = null;
     try { out = typeof def.out === "function" ? def.out(P, "1") : def.out; } catch { /* reported below */ }
     if (out == null) { offenders.push(`${name}: out: did not resolve — NOT CHECKED`); continue; }

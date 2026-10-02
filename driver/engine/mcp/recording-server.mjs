@@ -37,7 +37,6 @@
 // same served-vs-granted delta as the record tools, pinned by the same census.
 import { serve } from "./stdio-server.mjs";
 import { recordSynthesis } from "../../synthesis-record.mjs";   // the writer
-import { recordRegisterDigest } from "../../register-digest-record.mjs";   // conversion 11 — the findings document
 import { FINDING_KEYS_CURRENT, COVERAGE_AREA_STATES } from "../../findings-model.mjs";
 import { recordBlindFrame } from "../../blind-frame-record.mjs";
 import { VARIANT_DIRECTIONS, RANKING_BASES } from "../../blind-frame-model.mjs";
@@ -212,18 +211,6 @@ async function record_doubt_closure(params) {
   try { spec = loadClosureSpec(runDir); }
   catch (e) { return { error: `no readable ${CLOSURE_SPEC} in this run (${String(e?.message ?? e).slice(0, 120)}) — the driver writes it before dispatching this stage` }; }
   return recordClosures(spec, params);
-}
-
-async function record_register_digest(params) {
-  const runDir = String(process.env.CLEAROTRON_BAND_RUN_DIR ?? "");
-  if (!runDir) {
-    return { error: "this server was started without a run — the driver wires it per run; there is no parameter for it and this tool never guesses one" };
-  }
-  // The band index, the record host, the counts and the audit rows are read from the RUN by
-  // `recordRegisterDigest` itself, out of the driver's own facts sidecar. They are not parameters and
-  // there is nothing to thread here: a seat that could hand us its own record index could hand us a
-  // record that is not in the band, which is the one thing the join at the acceptance boundary is for.
-  return recordRegisterDigest(runDir, params);
 }
 
 async function record_synthesis(params) {
@@ -544,142 +531,6 @@ serve({
     // seat used to retype — and three of them (classes, overall_label, overall_badge) were stamped over
     // by the driver after the seat had typed them, which the skill doc annotated in the model's own
     // reading. None of those nine is a field here. What the seat sends is the judgment and nothing else.
-    // ── CONVERSION 11 — THE REGISTER FINDINGS DOCUMENT ───────────────────────────────────────────
-    //
-    // THE SCHEMA IS THE CONVERSION. Thirteen of this stage's twenty contract elements are mechanical,
-    // and the way they leave is by not appearing here: there is no Mark field, no Owner, no Country,
-    // no Classes, no Status, no Filed, no Expiry, no record URL, no summary count and no audit row.
-    // Every one of those is rendered from the band record the `uri` names, or from the run's own
-    // receipts. What a row carries is the uri that identifies it and the judgment about it.
-    //
-    // `uri` IS THE JOIN, AND THE JOIN IS THE CHECK. A uri no band record carries is refused by name at
-    // the call. Under the old dictation the seat retyped the cells beside it, so a mistyped uri
-    // produced a plausible row that failed downstream or nowhere; here it cannot be rendered at all.
-    name: "record_register_digest",
-    description:
-      "Hand back the register findings as VALUES. The driver renders register-findings.md — the title, " +
-      "the summary counts, every identifier cell, the clickable record URL, the Negative-results " +
-      "provenance fields and the audit trail — so you never retype a record's fields, never lay out a " +
-      "table and never save a file. Send the uri of each position that earns a row and WHY, the drops " +
-      "and why, and your prose sections. Coverage rulings do NOT come here: they ride record_coverage, " +
-      "row by row, exactly as before.",
-    inputSchema: {
-      type: "object",
-      properties: {
-        findings_rows: {
-          type: "array",
-          description:
-            "Sheet 1 — one entry per POSITION that earns a row (never one per registration of the same " +
-            "right). Cite any one constituent uri of the position; the driver renders the identifier " +
-            "cells and the clickable URL from the band record it names.",
-          items: {
-            type: "object", required: ["uri", "flag_reason", "verify"],
-            properties: {
-              uri: { type: "string", description: "The record's `/mark/…` uri, as the band carries it. The driver joins on it; a uri the band cannot resolve is refused." },
-              flag_reason: { type: "string", description: "WHY this position is risk-relevant — the judgment the row exists to carry." },
-              verify: { type: "string", enum: ["yes", "no"], description: "EXACTLY one bare token: does this row still need verification against the live register?" },
-            },
-          },
-        },
-        incumbent_rows: {
-          type: "array",
-          description: "Sheet 2 — incumbent-context positions, same shape as findings_rows.",
-          items: {
-            type: "object", required: ["uri", "flag_reason", "verify"],
-            properties: {
-              uri: { type: "string", description: "The record's `/mark/…` uri, as the band carries it." },
-              flag_reason: { type: "string", description: "WHY this position is incumbent context rather than a risk-relevant conflict." },
-              verify: { type: "string", enum: ["yes", "no"], description: "EXACTLY one bare token." },
-            },
-          },
-        },
-        negative_rows: {
-          type: "array",
-          description:
-            "Every candidate screened OUT — one entry per drop. The Notes cell's provenance (uri, " +
-            "screen_verdict, class, status) is rendered from the band record, not typed: a batch-dropped " +
-            "candidate with no entry here vanishes from the published audit, which is a silent recall loss.",
-          items: {
-            type: "object", required: ["uri", "drop_reason"],
-            properties: {
-              uri: { type: "string", description: "The dropped record's `/mark/…` uri." },
-              drop_reason: { type: "string", description: "The one-line WHY — the judgment about THIS record. Never a bare status word." },
-              ground: {
-                type: "string",
-                enum: ["off-field", "goods-distance", "duplicate-of-surfaced", "sign", "dead-status", "out-of-class"],
-                description:
-                  "REQUIRED. EXACTLY one bare token saying under WHICH RULE the drop is made — the prose " +
-                  "in drop_reason says why this record, the token says under which rule. `off-field` " +
-                  "(the relevance gate, on the record's own goods), `goods-distance`, " +
-                  "`duplicate-of-surfaced` (the same right already has a row), `sign` (a near spelling a buyer in " +
-                  "this market could not take for the mark, by sound, by look or by meaning). `dead-status` and " +
-                  "`out-of-class` name the SCREEN's own verdict and are checked against it: a record " +
-                  "the band screened as a live in-scope candidate cannot be dropped on status or class, " +
-                  "and that call is refused — decide it on its goods or its sign, or carry it.",
-              },
-              variant: { type: "string", description: "OPTIONAL — the search term / variant this candidate came back on." },
-            },
-          },
-        },
-        instructed_checks: {
-          type: "array",
-          description:
-            "One entry per requester ask this stage owns, answered from the FROZEN material. The record " +
-            "ids you read are the reading audit's and are rendered for you. A check the frozen material " +
-            "genuinely cannot answer is answered honestly here AND recorded as an open coverage row.",
-          items: {
-            type: "object", required: ["ask", "answer"],
-            properties: {
-              ask: { type: "string", description: "The requester's ask, as dispatched." },
-              answer: { type: "string", description: "Your answer — including the honest \"the frozen material cannot answer this\"." },
-            },
-          },
-        },
-        disagreement_resolutions: {
-          type: "array",
-          description: "One entry per surfaced disagreement and per borderline placement — each ADOPTED or OVERRODE in writing, engaging the reason.",
-          items: {
-            type: "object", required: ["subject", "decision", "reason"],
-            properties: {
-              subject: { type: "string", description: "Which placement — the mark and, where it helps a reader, its uri." },
-              decision: { type: "string", enum: ["ADOPTED", "OVERRODE"], description: "EXACTLY one bare token." },
-              reason: { type: "string", description: "An override QUOTES the reason it contradicts; a kept tier still says why." },
-            },
-          },
-        },
-        batch: {
-          type: "integer",
-          minimum: 1,
-          description:
-            "The batch of records this call accounts for, when the dispatch splits the band into " +
-            "batches. Send one call per batch, carrying its number. Every record in THAT batch must end " +
-            "in this call — a findings row, an incumbent row, a Negative-results drop, or a " +
-            "Disagreement resolution — and the call is refused naming any that end nowhere; the records " +
-            "in every other batch are not this call's business. A batch call MERGES onto what you have " +
-            "already recorded, so earlier batches are kept without re-sending them, and a record ended " +
-            "under one batch cannot be ended again under another. Omit it only when you are sending the " +
-            "whole band in one call, which the dispatch tells you when it is.",
-        },
-        patch: {
-          type: "boolean",
-          description:
-            "OPTIONAL. true MERGES what you send onto what you already sent. Row arrays join on `uri`; " +
-            "`instructed_checks` joins on `ask` and `disagreement_resolutions` on `subject`. An entry " +
-            "you name replaces the one with that key, a new key is appended, and everything you do not " +
-            "name comes back byte-identical — including a whole array you omit. Use it for a correction " +
-            "that ADDS or CHANGES named entries. Omit it (a whole re-send) when the correction is about " +
-            "which entries belong at all — a patch never DELETES anything, because dropping a finding " +
-            "is a decision and it arrives where a reader can see it.",
-        },
-        opposition: { type: "string", description: "OPTIONAL — the opposition-history read, captured verbatim where high-signal." },
-        merch_sweep: { type: "string", description: "OPTIONAL — the cross-class merchandising sweep." },
-        cross_checks: { type: "string", description: "OPTIONAL — the Option-D cross-checks executed (cap N=10)." },
-        open_flags: { type: "string", description: "OPTIONAL — open verification flags." },
-      },
-    },
-    annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
-    handler: record_register_digest,
-  }, {
     name: "record_report_overview",
     description:
       "Hand back the report SHELL as VALUES. The driver renders report-overview.md — the front-matter it " +
@@ -917,7 +768,7 @@ serve({
     // skeptic-search.mjs; this handler only wires the run dir, same contract as the record tools.
     name: "search_run_artifacts",
     description:
-      "Search ONE of this run's own artifacts (e.g. register-findings.md, common-law-findings.md) for " +
+      "Search ONE of this run's own artifacts (e.g. owner-decisions.json, common-law-findings.md) for " +
       "literal substrings — like grep -n -i. `terms` are OR-matched per line, case-insensitive unless " +
       "case_sensitive is true, and are LITERALS, never regex (a dot matches a dot). The answer carries " +
       `1-based line numbers, is capped at ${SEARCH_LIMITS.maxMatches} matches and says when it truncated. ` +
@@ -930,7 +781,7 @@ serve({
       properties: {
         file: {
           type: "string",
-          description: "Path RELATIVE to the run directory, e.g. \"register-findings.md\". One file per call; no listings.",
+          description: "Path RELATIVE to the run directory, e.g. \"owner-decisions.json\". One file per call; no listings.",
         },
         terms: {
           type: "array",

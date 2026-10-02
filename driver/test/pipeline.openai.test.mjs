@@ -37,7 +37,7 @@ async function runOpenaiPipeline(env = {}) {
   const root = mkdtempSync(join(tmpdir(), "clearotron-oai-"));
   lastRoot = root;
   const codexLog = join(root, "codex-calls.jsonl");
-  for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_LEDGER_LIMITED", "MOCK_CANDSELF", "MOCK_NO_GRID_LEDGER", "MOCK_CL_SHORT", "MOCK_NO_COVERAGE_LEDGER", "MOCK_BAD_COVERAGE_LEDGER", "MOCK_UNPARSEABLE_LEDGER", "MOCK_WRITE_RECORD", "MOCK_SCREEN_DROP"]) delete process.env[k];
+  for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_CANDSELF", "MOCK_NO_GRID_LEDGER", "MOCK_CL_SHORT", "MOCK_UNPARSEABLE_LEDGER", "MOCK_WRITE_RECORD", "MOCK_SCREEN_DROP"]) delete process.env[k];
   // — pinEnvAll, not a bare write: a fixture pinned under ONE spelling is displaced by any
   // pin of the other one upstream, and the run then computes against a value this file never chose.
   pinEnvAll(process.env, {
@@ -110,7 +110,16 @@ test("E2(openai): full pipeline runs on the openai-agent engine (CLEAR, delivere
   // Skill refs absolutized in every prompt (codex cwd = tmpdir cannot resolve workspace-relative paths); and
   // each compute turn grants --add-dir on THIS run's dir (the writable root for the stage's output file).
   const BARE_SKILL_REF = /(?<![\w\\/.])skills[\\/][A-Za-z0-9._\\/-]+\.md/;
-  for (const call of codexCalls) {
+  // STEP 3's JUDGES ARE CONFINED: their instructions are the model-instructions file, they answer in the
+  // output schema, and they are granted no folder — the owner tools read the run for them. Asserted on their
+  // own, as on the anthropic engine, so the grant rule below keeps reading every other turn.
+  const confinedCalls = codexCalls.filter((c) => c.argv.includes("--output-schema"));
+  assert.equal(confinedCalls.length, 2, `two judges, one turn each: ${confinedCalls.length}`);
+  for (const call of confinedCalls) {
+    assert.ok(!call.argv.includes("--add-dir"), "a judge is granted no folder");
+    assert.match(call.configToml ?? "", /model_instructions_file/, "a judge's instructions are its own file, not the stage prompt");
+  }
+  for (const call of codexCalls.filter((c) => !confinedCalls.includes(c))) {
     const msg = call.prompt || "";
     assert.ok(!BARE_SKILL_REF.test(msg), `a stage prompt kept a workspace-relative skills ref: ${msg.match(BARE_SKILL_REF)?.[0]}`);
     const addDirs = call.argv.reduce((acc, a, i) => (a === "--add-dir" ? [...acc, call.argv[i + 1]] : acc), []);
@@ -195,7 +204,10 @@ test("E2(openai): full pipeline runs on the openai-agent engine (CLEAR, delivere
   // keeps a legitimate seat write (the lane-off band, live for a matter with no Nice classes) and every
   // RECORDING row declares `seatWrites: false`. Hand-written for the reason stated above: a derived list
   // would have followed the change silently and this fixture would have proved nothing about it.
-  const NEUTRAL_GATHER_KEYS = new Set(["perplexity", "register", "band", "coverage", "declination", "dispositions", "unit-note"]);
+  // — `owners` joins them, step 3's own: the judges' read-only owner tools, no vendor and no live register
+  // behind them (owner-tools.mjs serves the pile the run already holds). `coverage` left with the register
+  // digest's coverage tool. Hand-written for the reason stated above.
+  const NEUTRAL_GATHER_KEYS = new Set(["perplexity", "register", "band", "declination", "dispositions", "unit-note", "owners"]);
   for (const call of mcpTurns) {
     const keys = serverKeysOf(call);
     for (const k of keys)
@@ -229,7 +241,7 @@ test("E2(openai): full pipeline runs on the openai-agent engine (CLEAR, delivere
   // vendor sits behind it. The old regex would have gone green on a build that mounted a vendor-named
   // key, which is the thing gather-config.mjs's own comment forbids.
   for (const call of gatherTurns)
-    assert.match(call.configToml, /mcp_servers\.(perplexity|register|band)\b/,
+    assert.match(call.configToml, /mcp_servers\.(perplexity|register|band|owners)\b/,
       "gather config carries the wrapped MCP servers under NEUTRAL keys");
 
   // THE ANCHOR, and the only assertion here not derived from the config text it judges. The partition

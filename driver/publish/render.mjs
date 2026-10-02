@@ -1067,7 +1067,7 @@ function clearedGroupsHtml(searchDepth, auditFile) {
     // register's own and is not translated.
     const rows = shown.map((c) => `<div class="crow"><span class="cm-mark">${esc(c.mark || c.term || '')}</span><span class="cwho">${
       esc([c.owner, regionName(c.country) || c.country, c.classes ? `Cl. ${c.classes}` : '',
-           c.status ? String(c.status).toLowerCase() : ''].filter(Boolean).join(' \u00b7 '))}</span></div>`).join('');
+           c.status ? String(c.status).toLowerCase() : '', c.reason || ''].filter(Boolean).join(' \u00b7 '))}</span></div>`).join('');
     return `<details class="cgroup"><summary><span class="gname">${esc(CLEARED_GROUP_LABEL[g] || g)}</span><span class="gcount">${
       items.length.toLocaleString('en-GB')} ${items.length === 1 ? 'name' : 'names'}</span></summary><div class="gbody">${rows}${
       items.length > shown.length ? link(items.length) : ''}</div></details>`;

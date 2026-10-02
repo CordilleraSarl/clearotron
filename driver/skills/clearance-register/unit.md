@@ -1,6 +1,6 @@
 # clearance-register — MODE A (UNIT)
 
-> Read `SKILL.md` first (the shared spine: Spawned session, Model, Provider, Tool call budget, the band-block coverage model, Failure fallback). This file is the UNIT-mode procedure only. **Do NOT read `digest.md`** — that is digest-mode judgment a unit must never run.
+> Read `SKILL.md` first (the shared spine: Spawned session, Model, Provider, Tool call budget, the band-block coverage model, Failure fallback). This file is the UNIT-mode procedure only.
 
 # MODE A — UNIT (run one axis → ENUMERATE the named band, OR report honest incompleteness)
 
@@ -26,7 +26,7 @@
 You are the **FUNNEL** — Layer A, the search machine. For every query you run, either **ENUMERATE it to completion**
 (page to `has_more:false`, hand up every record) **or** report **HONEST INCOMPLETENESS** (count + sample +
 why). There is **no third "good enough" state** — no sampling, no top-N, no "narrow to tractable and call it
-clean", no "coverage-limited and move on". The lawyer (Layer B — the digest / synthesis stages downstream)
+clean", no "coverage-limited and move on". The lawyer (Layer B — the synthesis stages downstream)
 reads your **complete named band**.
 
 You were spawned to run exactly ONE axis named in your task. Read the manifest + the `matter-context.md` from Phase 0 + the relevant
@@ -49,7 +49,7 @@ Fifty? Read them all. A few hundred? Sort by the client's goods and markets, rea
 the rest. A thousand or more? The field is crowded: read the identical and live ones for the client's
 goods, tell the client it is crowded, and do not write up the rest. Carry forward only what a lawyer would
 raise with the client. Write down what you set aside and why. This applies to the register's answer, to the
-list of records, to the placements, to the off-register sweep and to the write-up alike.
+list of records, to the off-register sweep and to the write-up alike.
 
 ### Read the identical mark first. Look at the count before you read anything
 
@@ -142,8 +142,7 @@ Two block shapes (no third):
   applicable — <why>"}` so the file always lands and the driver's gate is satisfied.
 
 The funnel ALSO writes `register-units/<axis>.md`, the prose audit note (search count, queries run). **It is
-not optional**: it is this stage's declared output, the driver fails the pass outright when it is absent, and
-the digest worker reads it. What it is not is EVIDENCE — the band JSON is the load-bearing artifact, and the
+not optional**: it is this stage's declared output, the driver fails the pass outright when it is absent. What it is not is EVIDENCE — the band JSON is the load-bearing artifact, and the
 prose carries no clearance verdict and no sufficiency claim. A note narrating a completed sweep while the
 band its plan entries call for is missing is refused as `named_band_missing`.
 
@@ -176,7 +175,7 @@ change what you tell the client. Gate on the *result*, never the label: a token 
 counted whether or not it is the dominant unit. **On a crowd slice, what you WRITE depends on which slice it is:**
 - **the DISTINCTIVE anchor / the exact-or-near-identical named category** (the highest-relevance slice) → write
   the `incomplete` block verbatim; it crosses as a *material* could-not-finish for judgment to weigh (the
-  COLORA→色彩 case — `digest.md`).
+  COLORA→色彩 case).
 - **a COMMON component** the manifest strips as common/descriptive (GREAT / OUTDOORS — *not* the distinctive
   anchor) → do **not** write a second crowd block: `saturation-probe` already counted it and that count
   (immaterial off-field dilution) is the sole signal — a duplicate *primary-sweep* crowd risks mis-reading as a

@@ -478,17 +478,10 @@ const tools = {
   decision_timeline({ runId }) {
     const run = mustRun(runId);
     const { timeline, verdictHistory } = projectTimeline(readEvents(run.runDir), run.P);
-    // Honest: the risk ladder is only recoverable if the DIGEST itself has a prior snapshot;
-    // a generic _history dir for some OTHER stage does not make register-findings diffable.
-    const riskLadderAvailable = listArtifactVersions(run.P, run.runDir, "register-digest", null).length > 1;
     return {
       // The chain narrates the gate's decisions, and every one of them is on the timeline and in
       // `verdictHistory`, which is where they belong. The run's own headline is its BAND (824).
       runId: run.runId, state: run.state, tier: run.tier, verdictHistory, timeline,
-      riskLadderAvailable,
-      note: riskLadderAvailable
-        ? "A prior register-findings (digest) snapshot exists — diff_artifact can show the word-by-word change."
-        : "Per-finding wording across digest versions isn't recoverable on this run: the escalation re-digest / corrective re-synthesis overwrite in place. Milestones + the changedFromPrevious SHA marker show where/when/why a document changed; the prior TEXT is gone.",
     };
   },
   run_changes({ runId, since, kinds }) {
@@ -554,7 +547,7 @@ const tools = {
         }
       } else {
         const names = scope === "audit" ? ["audit"]
-          : scope === "key-artifacts" ? ["report", "registerFindings", "commonLaw", "narrative"]
+          : scope === "key-artifacts" ? ["report", "registerFindings", "ownerDecisions", "commonLaw", "narrative"]
           : listArtifacts(run).map((x) => x.name);
         for (const name of names) {
           const path = artifactPath(run, name);

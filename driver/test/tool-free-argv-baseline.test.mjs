@@ -152,15 +152,6 @@ const CONVERTED_BEFORE = Object.freeze({
   // seeded `Read` grant serves whole, plus 11 housekeeping calls and one attempt's 13-line scratch script
   // that opened those same three files. Nothing it demonstrably used reached outside them.
   "doubt-closure": { groups: 0, allowedTools: false, mcpConfig: false, strictMcpConfig: false },
-  // register-digest, retired by conversion 11 — the THIRD non-zero row, and the first whose BEFORE state
-  // already carried TWO groups of different kinds: `band` (retrieval) and `coverage` (a typed transport
-  // on its own key). Same differential in kind as the two rows above — the flags were already there, and
-  // what changed is INSIDE the allowlist: `Write` and `Edit` left it and one recording key joined, so
-  // `groups` goes 2 -> 3. MEASURED off origin/main's own grant pin at the tip before the conversion
-  // landed (recording-grant-preservation.test.mjs recorded `groups: ["band", "coverage"]` with an
-  // allowlist and a config), never inferred from the current group list — which would read the AFTER
-  // state and call it the before.
-  "register-digest": { groups: 2, allowedTools: true, mcpConfig: true, strictMcpConfig: true },
 });
 
 test("the baseline names EVERY tool-free stage and no others — the list cannot drift out from under it", () => {

@@ -31,8 +31,8 @@ import { engineCommit, engineCommitSource } from "./engine-build.mjs";   // — 
 // two refutation passes) onto a clean forward-only sequence, so the displayed step never jumps backward.
 export const DISPLAY_STEPS = [
   "Framing the matter",     // 1  matter-frame, clearance-variants
-  "Register sweeps",        // 2  common-law + register-unit:* (fan-out + escalation re-runs collapse here)
-  "Placement & digest",     // 3  placement-inquiry, register-digest (+ re-digest)
+  "Searching registers and common law",    // 2  common-law + register-unit:* (fan-out + escalation re-runs collapse here)
+  "Investigating and exploring findings",  // 3  owner-judgment (two judges + the merge; re-judgements collapse here)
   "Skeptic review",         // 4  skeptic
   "Synthesis",              // 5  synthesis (+ corrective re-synthesis)
   "Case law & refutation",  // 6  case-law, narrative-refutation (both passes)
@@ -51,6 +51,9 @@ export const DISPLAY_STEPS = [
 export const STAGE_TO_STEP = {
   "matter-frame": 0, "clearance-variants": 0,
   "common-law": 1, "common-law-half": 1, "register-unit": 1,
+  "owner-judgment": 2,
+  // RETIRED when step 3 came to be judged by owner, and KEPT for the reason client-summary is below:
+  // archived runs carry their rows, and a row whose stage resolves to no step renders as an unlabelled gap.
   "placement-inquiry": 2, "register-digest": 2,
   skeptic: 3,
   synthesis: 4,
@@ -87,6 +90,8 @@ export const NON_STAGE_STEPS = {
   "client-summary": "a RETIRED stage (2026-08-01) kept for ARCHIVED runs' rows — a row whose stage resolves to no step renders as an unlabelled gap",
   notify: "a RETIRED stage (#1014, deleted with the gateway delivery mode) kept for ARCHIVED runs' rows — same reason as client-summary",
   "notify-chat": "a RETIRED stage (#1014, deleted with the gateway delivery mode) kept for ARCHIVED runs' rows — same reason as client-summary",
+  "placement-inquiry": "a RETIRED stage (step 3 now judged by owner) kept for ARCHIVED runs' rows — same reason as client-summary",
+  "register-digest": "a RETIRED stage (step 3 now judged by owner) kept for ARCHIVED runs' rows — same reason as client-summary",
 };
 
 // rawStageKey may carry an axis suffix ("register-unit:primary-sweep") — strip it. Returns null for an

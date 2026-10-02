@@ -158,39 +158,22 @@ const PINNED = Object.freeze({
       + " mcp__unit-note__record_unit_note mcp__unit-note__record_withheld_families mcp__unit-note__record_released_families",
     mcpConfig: `{"mcpServers":{${local("register", "corsearch-server.mjs")},${local("unit-note", "unit-note-server.mjs")}}}`,
   },
-  // THREE groups on one stage — the only row that pins server ORDER inside the config across more than
-  // two, and the coverage key's separation from `band` (a record tool riding the shared key would be
-  // granted to four judgment stages).
-  //
-  // ── CONVERSION 11 MOVED THIS ROW, AND THE MOVE IS A DECLARED ARGV CHANGE ───────────────────────────
-  //
-  // `Write Edit` are GONE from the head and `mcp__recording-register-digest__record_register_digest` is
-  // on the tail: the seat hands back rows and prose and the driver renders register-findings.md. That is
-  // a real change to the bytes the engine is handed for this stage, on a stage no live run has exercised
-  // under the new surface, so it ships `status:merged-awaiting-e2e` — the same treatment the rename
-  // took and for the same reason.
-  //
-  // WHAT DID NOT MOVE IS THE POINT OF THE ROW: `Read` still leads, the three band tools are byte-
-  // identical and in the same order, and `mcp__coverage__record_coverage` is still its own key beside
-  // the new one. Two typed transports on one stage, not one merged key — the obligation ledger and the
-  // findings document are different statements, and merging them would put a second writer into the
-  // ledger took a writer out of.
-  "register-digest": {
-    groups: ["band", "coverage", "recording-register-digest"],
-    allowedTools: "Read mcp__band__band_lookup mcp__band__band_record mcp__band__band_shape"
-      + " mcp__coverage__record_coverage"
-      + " mcp__recording-register-digest__record_register_digest",
-    mcpConfig: `{"mcpServers":{${local("band", "band-server.mjs")},${local("coverage", "coverage-server.mjs")},${local("recording-register-digest", "recording-server.mjs")}}}`,
-  },
-  "placement-inquiry": {
-    groups: ["band"],
-    allowedTools: "Read Write Edit mcp__band__band_lookup mcp__band__band_record mcp__band__band_shape",
-    mcpConfig: `{"mcpServers":{${local("band", "band-server.mjs")}}}`,
+  // STEP 3 — the judges' owner tools, on their own key, with the active register named so register_open
+  // can fetch a record body on open (gather-config.mjs, ownersEnv). It replaced the register digest's three
+  // keys and placement's band grant (2026-10-01): a new row, declared here as the argv change it is. The
+  // `Read Write Edit` seed is the shared table's; a confined turn is never offered the program's file tools
+  // (anthropic-agent.mjs, buildConfinedClaudeArgs: `--tools Agent`), which pipeline.anthropic.test.mjs
+  // asserts on the argv itself.
+  "owner-judgment": {
+    groups: ["owners"],
+    allowedTools: "Read Write Edit mcp__owners__owner_table mcp__owners__owner_records mcp__owners__register_questions"
+      + " mcp__owners__register_list mcp__owners__register_open mcp__owners__web_results mcp__owners__register_new_question",
+    mcpConfig: `{"mcpServers":{"owners":{"command":"<NODE>","args":["<MCP>/owner-server.mjs"],${ENV.slice(0, -1)},"CLEAROTRON_DATABASE":"corsearch"}}}}`,
   },
   // — one token and one server longer, everything before it byte-identical, which is what this
   // file exists to show. `Read Write Edit` still leads: synthesis holds a typed-transport key WITHOUT
   // joining the RECORDING category, so `seatWrites` never enters the calculation and the stage keeps the
-  // trio it needs to author findings.json. That is the `coverage`/register-digest shape, not a recording
+  // trio it needs to author findings.json. That was the `coverage`/register-digest shape, not a recording
   // conversion — the RECORDING rows in this file are untouched by, and that is the assertion.
   //
   // — AND ONE TOKEN SHORTER. `mcp__perplexity__record_dispositions` is gone from this row: it was
@@ -322,14 +305,17 @@ test("the two shared DERIVED structures keep their shape — order and multiplic
   // knockout-frame, the second key from that lane and the last stage on it, so both knockout entries sit
   // here for the same reason every clearance one does — one server module, one key per stage, different
   // tool lists. The lane being finished changes nothing about this pin; a future lane adds more.
+  // The register digest's key left with the digest (2026-10-01), one entry fewer.
   // The multiplicity IS the property: one server module mounted under N per-stage keys, each holding a
   // different tool list. Every future conversion adds one more entry here, and that is the deliberate act.
   assert.deepEqual([...LOCAL_SERVER_SCRIPTS], [
     "perplexity-server.mjs",
     "band-server.mjs",
-    "coverage-server.mjs",
-    // — the second non-recording typed transport, beside `coverage`. It is ONE entry, not one per
-    // stage, because exactly one stage holds it; the recording-server repetitions below are unchanged.
+    // Step 3's owner tools, where the register digest's `coverage` transport stood (2026-10-01). One
+    // entry: one stage holds it, and its two judges share it.
+    "owner-server.mjs",
+    // — the second non-recording typed transport, beside `coverage` (which left with the digest). ONE
+    // entry, not one per stage, because exactly one stage holds it.
     "declination-server.mjs",
     // — the THIRD non-recording typed transport, and the first that arrived by moving a tool off
     // a shared key rather than by adding a new one. One entry: exactly one lane holds it.
@@ -340,7 +326,6 @@ test("the two shared DERIVED structures keep their shape — order and multiplic
     // recording repetitions below because the stage keeps a seat write of its own, which every RECORDING row
     // forbids by declaration. One entry: exactly one stage holds it, per axis or not.
     "unit-note-server.mjs",
-    "recording-server.mjs",
     "recording-server.mjs",
     "recording-server.mjs",
     "recording-server.mjs",

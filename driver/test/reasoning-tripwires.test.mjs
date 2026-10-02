@@ -6,42 +6,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
-  findRecallFloorViolations, findReviewFreshnessViolation, findSeedNeutralityViolations,
+  findReviewFreshnessViolation, findSeedNeutralityViolations,
   findProbativeGradingViolations, findStatusHonestyViolation,
-  findDeadlineUrgencyMiss, findUnresolvedDisagreements, findOrphanVerificationFlags,
+  findDeadlineUrgencyMiss, findOrphanVerificationFlags,
 } from "../reasoning-tripwires.mjs";
-
-const negMatrix = (rows) =>
-  `## Findings\n(none)\n\n### Negative results\n| Mark | Search Term / Variant | Result | Notes |\n|---|---|---|---|\n${rows.join("\n")}\n`;
-
-test("recall-floor: identical-name live in-scope drop not carried → trips", () => {
-  const md = negMatrix([
-    "| NOVAPULSE | NOVAPULSE | dropped (relevance gate / off-field) | URI /mark/us/12345; screen_verdict=surface:in-scope-live; class=9; status=live; crowded |",
-  ]);
-  const v = findRecallFloorViolations(md, { carriedMarks: ["KORVANE NOVAPULSE"], searchedNames: ["NOVAPULSE"], inScopeClasses: ["9"] });
-  assert.equal(v.length, 1, JSON.stringify(v));
-  assert.match(v[0].why, /identical name in the applicant/i);
-});
-
-test("recall-floor: in-scope established by screen verdict when no class list supplied", () => {
-  const md = negMatrix([
-    "| NOVAPULSE | NOVAPULSE | dropped (off-field) | URI /mark/us/1; screen_verdict=surface:all-class; status=live; |",
-  ]);
-  const v = findRecallFloorViolations(md, { carriedMarks: [], searchedNames: ["novapulse"] });
-  assert.equal(v.length, 1);
-});
-
-test("recall-floor: clean cases do NOT trip (carried / dead / out-of-scope / non-identical)", () => {
-  const carried = negMatrix(["| NOVAPULSE | NOVAPULSE | dropped | URI /mark/us/1; screen_verdict=surface:in-scope-live; class=9; status=live; |"]);
-  assert.equal(findRecallFloorViolations(carried, { carriedMarks: ["NOVAPULSE"], searchedNames: ["NOVAPULSE"], inScopeClasses: ["9"] }).length, 0, "carried elsewhere");
-  const dead = negMatrix(["| NOVAPULSE | NOVAPULSE | dropped | URI /mark/us/1; screen_verdict=surface:in-scope-live; class=9; status=dead; |"]);
-  assert.equal(findRecallFloorViolations(dead, { searchedNames: ["NOVAPULSE"], inScopeClasses: ["9"] }).length, 0, "dead");
-  const oos = negMatrix(["| NOVAPULSE | NOVAPULSE | dropped | URI /mark/us/1; screen_verdict=surface:in-scope-live; class=3; status=live; |"]);
-  assert.equal(findRecallFloorViolations(oos, { searchedNames: ["NOVAPULSE"], inScopeClasses: ["9"] }).length, 0, "out of scope class");
-  const other = negMatrix(["| ZEPHYR | NOVAPULSE | dropped | URI /mark/us/1; screen_verdict=surface:in-scope-live; class=9; status=live; |"]);
-  assert.equal(findRecallFloorViolations(other, { searchedNames: ["NOVAPULSE"], inScopeClasses: ["9"] }).length, 0, "different name");
-  assert.equal(findRecallFloorViolations(carried, { searchedNames: [] }).length, 0, "no searched names → no-op");
-});
 
 test("review-freshness: a review with no fresh input trips; a 'Fresh probe:' line or new URL passes", () => {
   assert.equal(findReviewFreshnessViolation("", {}), null, "no review → null");
@@ -114,20 +82,6 @@ test("#6 deadline-urgency: a near-term client deadline trips; far-future / long-
   assert.equal(findDeadlineUrgencyMiss({ findings: [mk({ date: "2026-07-19" })] }, {}).length, 0);
   // unparseable date → left to the reasoning layer
   assert.equal(findDeadlineUrgencyMiss({ findings: [mk({ date: "sometime soon" })] }, { nowMs: NOW }).length, 0);
-});
-
-test("#7 unresolved-disagreement: a Disagreement-resolutions row with no/placeholder resolution trips; a real one passes", () => {
-  const md = (rows) => `## Findings\n\n### Disagreement resolutions\n| Disagreement | Resolution |\n|---|---|\n${rows.join("\n")}\n`;
-  // empty resolution → trip
-  const a = findUnresolvedDisagreements(md(["| placement-inquiry placed AXLEVORN at watchlist, class-match said headline | |"]));
-  assert.equal(a.length, 1, JSON.stringify(a));
-  assert.match(a[0].why, /no resolution/i);
-  // placeholder (pending / tbd) → trip
-  assert.equal(findUnresolvedDisagreements(md(["| X deviated | pending |", "| Y deviated | TBD |"])).length, 2);
-  // a real resolution → pass
-  assert.equal(findUnresolvedDisagreements(md(["| AXLEVORN placement | ADOPTED placement-inquiry — cl.12 auto-parts is off-field |"])).length, 0);
-  // no table at all (legacy / no disagreements) → nothing
-  assert.equal(findUnresolvedDisagreements("## Findings\n(none)\n").length, 0);
 });
 
 test("#8 orphan-finding: a register-sourced finding with no grounding registration trips; grounded / common-law do not", () => {

@@ -116,7 +116,7 @@ so there is **no partial-delivery fallback**:
 
 ## Output — common-law findings file
 
-Markdown (consistent with the variant manifest and the register findings file). Robust to LLM-write mistakes; auditable; manually editable.
+Markdown (consistent with the variant manifest). Robust to LLM-write mistakes; auditable; manually editable.
 
 ### Format
 
@@ -504,7 +504,7 @@ For every Consumer-confusion-risks row that is a **game title** (Steam game, Mic
 - Add the candidate to the Open verification flags section with the specific gap
 - DO NOT GUESS by inferring from prior-frequent gaming companies (Bandai Namco, Tencent, Capcom, Behold Studios, etc.) — even when the title's genre or style suggests a likely publisher, leave the field as `not extracted` rather than confabulating
 
-The downstream orchestrator's `placement-inquiry` (Phase 2 Step 2C) will place any game-title with `developer_of_record: not extracted` at **sheet-2** with a verify-publisher flag — never at headline-candidate. The `narrative-refutation` gate (Phase 2 Step 4.7) will BLOCK delivery if the orchestrator's narrative names a publisher / developer that doesn't trace back to one of these extracted fields.
+The `narrative-refutation` gate (Phase 2 Step 4.7) will BLOCK delivery if the orchestrator's narrative names a publisher / developer that doesn't trace back to one of these extracted fields.
 
 This requirement applies even when the model running this skill is at the Haiku tier (per the live workflow config). Treat `developer_of_record` and `publisher_of_record` as required, unambiguous columns; mark them `not extracted` when uncertain rather than confabulating.
 

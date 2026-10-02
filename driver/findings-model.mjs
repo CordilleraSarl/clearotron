@@ -115,6 +115,11 @@ export const FINDINGS_SCHEMA_VERSION = 7;
 // and re-saves, the file is re-validated, and the model would have to author a legal read for a card it
 // is deleting. See issue comment 2026-08-03.
 export const POSITION_REQUIRED_DISPOSITIONS = ["adversarial", "coexistence-partner", "distinguished", "off-field"];
+// The postures the writing step is offered on a run judged by owner: every one above but off-field. A finding
+// is made only for an owner the judges carried, every carried owner is rated, and a rated owner is never
+// awareness only (decision-ratings.mjs refuses it), so off-field is not offered (owner, 2026-10-02). The
+// parser still accepts it, because runs from before the judges carry it. Derived, never retyped.
+export const WRITER_DISPOSITIONS = Object.freeze(POSITION_REQUIRED_DISPOSITIONS.filter((d) => d !== "off-field"));
 // requirement 2 — off-field's TWO sanctioned grounds, made to declare themselves.
 //
 // `off-field` had been carrying two different claims under one token: "the same token in a different
@@ -215,7 +220,7 @@ export function maxLiveComposite(findings) {
  * Very High matter as the zero-composite "LOW", which is the one catastrophic path this guards.
  * LEGACY (no manifest, composite findings): byte-identical to the pre-doc-50 derivation.
  */
-export function deriveDisplayVerdict({ verdict, reasons, kinds, findings, manifest }) {
+export function deriveDisplayVerdict({ verdict, reasons, kinds, findings, manifest, overallBand = null }) {
   const base = {
     verdict: String(verdict || "").toUpperCase() || null,
     conditions: Array.isArray(reasons) ? reasons.filter(Boolean) : [],
@@ -225,7 +230,10 @@ export function deriveDisplayVerdict({ verdict, reasons, kinds, findings, manife
   if (banded && !manifest)
     throw new Error("findings_band_without_manifest: band-rated findings need the run's frozen framework manifest (_driver/framework.json) — refusing to default a rated matter to LOW");
   if (manifest) {
-    const worst = worstLiveBand(findings, manifest);
+    // A RUN JUDGED BY OWNER RATES THE MARK ONCE, BY CODE (owner, 2026-10-02): the judges' overall rating,
+    // merged like their per-owner ratings, is the run's rating. Every other run keeps the worst live band.
+    const judged = overallBand ? normalizeBand(manifest, overallBand) : null;
+    const worst = judged ?? worstLiveBand(findings, manifest);
     const tone = worst ? bandTone(manifest, worst) : null;
     return {
       ...base,
@@ -1773,7 +1781,7 @@ function validateNet(f, ord, mode) {
 //
 // The name also has to satisfy the two conditions the gateway imposes, both verified in
 // findings-gate-token.test.mjs rather than assumed:
-//   · lowercase-and-underscore after the prefix, or gateway.mjs:3205 WARM_ELIGIBLE_RE
+//   · lowercase-and-underscore after the prefix, or gateway.mjs:3063 WARM_ELIGIBLE_RE
 //     (`findings?_[a-z_]+`) does not admit it and the failure goes cold instead of warm;
 //   · no `coverage_ledger` / `coverage_axis` / `coverage_key` / `coverage_mirror` /
 //     `coverage_status_invalid` substring, because repairSiblingName's ternary tests `coverage_*` BEFORE

@@ -19,7 +19,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 import { traceRecordCarry, parseStageOutcomes, explainRecords } from "../driver/record-carry.mjs";
-import { parsePlacementsJson } from "../driver/placement-model.mjs";
+import { foldDiscardLedger, DISCARD_LEDGER_NAME } from "../driver/record-discard.mjs";
 
 const args = process.argv.slice(2);
 const runDir = args.find((a) => !a.startsWith("--"));
@@ -38,27 +38,24 @@ const readText = (p) => { try { return readFileSync(p, "utf8"); } catch { return
 const band = readJson(join(runDir, "register-named-band.json"));
 if (!band) { console.error(`no readable register-named-band.json under ${runDir} — nothing was retrieved, or this run predates the named band`); process.exit(1); }
 
-let placements = [];
-const pPath = join(runDir, "placements.json");
-if (existsSync(pPath)) {
-  try { placements = parsePlacementsJson(readText(pPath)).placements; }
-  catch (e) { console.error(`WARNING placements.json unparseable (${String(e?.message ?? e).slice(0, 80)}) — every placed record will read trace:indeterminate`); }
-}
+// The endings each step wrote when it made them, where the run has them; without them the trace is
+// reconstructed, and says so in its `basis`.
+const ledgerPath = driverDir(runDir, DISCARD_LEDGER_NAME);
+const ledger = existsSync(ledgerPath) ? foldDiscardLedger(readText(ledgerPath)) : null;
 
 const artifact = traceRecordCarry({
   bandRecords: Array.isArray(band?.enumerated) ? band.enumerated : [],
   crowds: Array.isArray(band?.crowds) ? band.crowds : [],
-  placements,
-  registerFindingsText: readText(join(runDir, "register-findings.md")),
   findings: readJson(join(runDir, "findings.json"))?.findings ?? [],
   outcomes: parseStageOutcomes(readText(driverDir(runDir, "run.jsonl"))),
   planExecution: readJson(driverDir(runDir, "plan-execution.json")),
+  ledger,
 });
 
 if (asJson) { console.log(JSON.stringify(artifact, null, 2)); process.exit(0); }
 
 const t = artifact.totals;
-console.log(`run: ${runDir}`);
+console.log(`run: ${runDir} · basis ${artifact.basis}`);
 console.log(`retrieved ${t.retrieved} record(s) · ${t.finding} became a finding · ${t.dropped} did not · ${t.unreasoned} UNREASONED`);
 console.log("");
 console.log("stage outcomes (a stage counts as completed only on a stage event with ok:true):");

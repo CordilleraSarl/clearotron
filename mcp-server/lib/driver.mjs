@@ -49,6 +49,9 @@ export {
 } from "../../driver/publish/parse.mjs";
 
 export { buildAuditMd } from "../../driver/publish/audit-from-spine.mjs";
+// Step 3's decisions, joined to the pile exactly as the driver joins them for audit.md, so the backstop
+// below rebuilds the same register half the driver writes. pile.mjs reads the run directory with node:fs only.
+export { registerDecisionsFor } from "../../driver/pile.mjs";
 
 export { validators, parseVerdict, hasCoverageLedgerRow } from "../../driver/verify.mjs";
 

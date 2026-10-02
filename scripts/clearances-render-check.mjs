@@ -162,7 +162,7 @@ const RUNS = () => [
   // Stopped on purpose, with nothing delivered.
   run({ runId: 'coral-1', markName: 'CORAL FREEZE', title: 'CORAL FREEZE', date: '2026-09-16', issuedAt: '2026-09-16T07:00:00Z', state: 'cancelled', band: null, tone: null, report: null }),
   // Running, and never finished before.
-  run({ runId: 'tide-1', account: KEY2, markName: 'TIDEGLASS', title: 'TIDEGLASS', date: '2026-09-16', issuedAt: '2026-09-16T09:00:00Z', state: 'running', band: null, tone: null, report: null, step: 'Register sweeps', stepN: 4, stepTotal: 9 }),
+  run({ runId: 'tide-1', account: KEY2, markName: 'TIDEGLASS', title: 'TIDEGLASS', date: '2026-09-16', issuedAt: '2026-09-16T09:00:00Z', state: 'running', band: null, tone: null, report: null, step: 'Searching registers and common law', stepN: 4, stepTotal: 9 }),
 ]
 const FAMILIES = { of: { 'aq-plus-1': FAMILY_ID, 'aq-plus-2': FAMILY_ID, 'aq-plus-3': FAMILY_ID, 'aq-max-1': FAMILY_ID }, names: { [FAMILY_ID]: FAMILY_NAME } }
 
@@ -988,7 +988,7 @@ if (plus && group && aster && coral && tide && max) {
   // Stopped, running, finished.
   ok(coral.status === `Stopped${STOPPED_LINE}` || coral.status === `Stopped ${STOPPED_LINE}`, `CORAL FREEZE reads "${coral.status}"`)
   ok(coral.risk === '—' && !coral.open, `CORAL FREEZE reads risk "${coral.risk}" with ${JSON.stringify(coral.open)}`)
-  ok(tide.status.startsWith('Running') && tide.status.includes('Register sweeps'), `TIDEGLASS reads "${tide.status}"`)
+  ok(tide.status.startsWith('Running') && tide.status.includes('Searching registers and common law'), `TIDEGLASS reads "${tide.status}"`)
   // THE STEP, AND NOT A COUNT OF STEPS. The approved design draws the step alone. The count was the part
   // that could not be honest: the denominator is how many steps THIS run's plan happens to have, so the
   // same search reads "3 of 9" on one account and "3 of 6" on another, and a reader takes it for a

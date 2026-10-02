@@ -1,0 +1,3 @@
+{ "uri": "/mark/AA/0000-A1", "markText": "ZZMARK", "owner": "Owner One K.K.", "ownerCountry": "AA", "office": "AA", "statusText": "Registered", "statusClass": "live", "niceClasses": [9],
+  "goodsServices": [ { "classes": [9], "description": "invented goods in class nine, written at enough length that a first line has to be cut short so the cut flag can be seen to work; invented goods in class nine, written at enough length that a first line has to be cut short so the cut flag can be seen", "language": "en", "translation": null } ],
+  "_raw": { "secret": "never shown" }, "_provenance": {}, "_receipt": {} }

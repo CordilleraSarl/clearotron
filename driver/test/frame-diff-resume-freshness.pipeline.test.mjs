@@ -3,8 +3,8 @@
 // @tier full — drives a mock pipeline run, parks it, and resumes it
 // follow-up — frame-diff must not park a RESUME it cannot be re-dispatched to fix.
 //
-// moved frame-diff above placement-inquiry and re-aimed its declared inputs at the register's
-// primary evidence (the merged named band + the per-axis unit notes + common-law). Three arms that run
+// moved frame-diff above step 3 (then placement-inquiry; now the owner judgment) and re-aimed its declared
+// inputs at the register's primary evidence (the merged named band + the per-axis unit notes + common-law). Three arms that run
 // AFTER the new seam rewrite exactly those artifacts — the escalation-recheck band re-merge, the skeptic
 // escalation's forced register-unit re-runs, and the envelope close's forced register-unit re-runs — and
 // none of them accounted for the rewrite in frame-diff's stamp. frame-diff is ONE-SHOT by contract (no
@@ -32,7 +32,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, chmodSync, readFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, dirname, sep } from "node:path";
+import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -80,18 +80,17 @@ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced",
 // The paths are native, so a separator is matched either way.
 const SANCTIONED = (p) => /(^|[\\/])register-named-band\.json$/.test(p) || /(^|[\\/])register-units[\\/][^\\/]+\.md$/.test(p) || /(^|[\\/])common-law\.md$/.test(p);
 
-// Pass 1 parks on the turn whose message names placement-inquiry's skill. The driver writes that
-// reference as an absolute path joined on this machine, so on Windows it reads `placement-inquiry\SKILL`.
-const PARK_AT_PLACEMENT = `placement-inquiry${sep}SKILL`;
+// Pass 1 parks on the judges' turns: their one message carries this heading, and no other stage's does.
+const PARK_AT_JUDGMENT = "# The client's worked examples";
 
 test("a resume whose frame-diff SKIPS is not parked by the escalation rewriting the band/units it declares", async () => {
-  // ── pass 1: park at placement-inquiry ────────────────────────────────────────────────────────────
-  // The window the defect lives in: frame-diff has RUN (its seam is above placement since) and
-  // narrative.md is absent, so the resume is NOT digest-locked and the escalation/envelope arms fire.
-  const p1 = await runMockPipeline({ MOCK_FAIL_STAGE: PARK_AT_PLACEMENT }, {});
+  // ── pass 1: park at step 3 ───────────────────────────────────────────────────────────────────────
+  // The window the defect lives in: frame-diff has RUN (its seam is above step 3) and narrative.md is
+  // absent, so the resume is NOT digest-locked and the escalation/envelope arms fire.
+  const p1 = await runMockPipeline({ MOCK_FAIL_STAGE: PARK_AT_JUDGMENT }, {});
   assert.equal(p1.res.ok, false, "pass 1 parks");
-  assert.equal(p1.res.failedStage, "placement-inquiry",
-    `pass 1 must park AT placement-inquiry (substring match caught a different turn: ${p1.res.failedStage})`);
+  assert.equal(p1.res.failedStage, "owner-judgment",
+    `pass 1 must park AT step 3 (substring match caught a different turn: ${p1.res.failedStage})`);
   assert.ok(existsSync(join(p1.res.runDir, "frame-diff.md")), "frame-diff RAN in pass 1 — its stamp is what pass 2 inherits");
   assert.ok(!existsSync(join(p1.res.runDir, "narrative.md")), "narrative absent ⇒ the resume is NOT digest-locked");
   assert.ok(p1.events.some((e) => e.event === "stage" && e.stage === "frame-diff"), "frame-diff dispatched in pass 1");
@@ -165,9 +164,9 @@ test("a restamp aimed at a file the stage does NOT declare lands a restamp-miss 
 test("frame-diff still recomputes when a NON-sanctioned input moves (the freshness contract is not blanket-disabled)", async () => {
   // The seam blesses only what the pre-synthesis register arms rewrite. A blind-frame model that moves
   // between passes is new material and must still force the diff — the copper-vault catch, intact.
-  const p1 = await runMockPipeline({ MOCK_FAIL_STAGE: PARK_AT_PLACEMENT }, {});
+  const p1 = await runMockPipeline({ MOCK_FAIL_STAGE: PARK_AT_JUDGMENT }, {});
   assert.equal(p1.res.ok, false, "pass 1 parks");
-  assert.equal(p1.res.failedStage, "placement-inquiry");
+  assert.equal(p1.res.failedStage, "owner-judgment");
 
   // Re-serialise the blind model COMPACTLY: same content, different bytes. It has to stay valid — an
   // invalid model just makes blind-frame re-run and rewrite the canonical bytes back, which is not the

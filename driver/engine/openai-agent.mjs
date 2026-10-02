@@ -24,11 +24,12 @@
 
 import { mkdtempSync, mkdirSync, writeFileSync, copyFileSync, existsSync, rmSync, readFileSync, readdirSync, statSync, symlinkSync, lstatSync, realpathSync } from "node:fs";
 import { everyToolCallRefused } from "./tool-refusal.mjs";
+import { newSessionRecord, noteCodexEvent, sessionSummary, countTool, streamSink, codexEnding } from "./session-record.mjs";   // what the session went through, beside how it ended
 import { writeSecretFile } from "../../shared/secret-file.mjs";   // the rotated login goes back the way every credential is written
 import { tmpdir, homedir } from "node:os";
 import { join, dirname, sep } from "node:path";
 import { runStreamingChild, absolutizeSkillRefs, WRITE_DISCIPLINE, buildEnvelope, resolveSpawnCwd } from "./common.mjs";
-import { renderCodexConfigToml } from "./mcp/codex-config.mjs";
+import { renderCodexConfigToml, renderConfinedCodexConfigToml } from "./mcp/codex-config.mjs";
 import { resolveAuthMode } from "./auth.mjs";
 import { engineEnv, codexCommandWithheld } from "./engine-env.mjs";
 import { resolveEngineProgram } from "../driver.config.mjs";   // — the one place that finds the program; it reads every spelling of the setting
@@ -296,6 +297,42 @@ export function buildCodexArgs({ model, thinking, resumeRef, runDir } = {}) {
   return { args: [...base, "-"] };
 }
 
+/**
+ * A CONFINED SESSION's command line (engine CONTRACT.md §1, `confined`), as the bench run that measured
+ * it: no execpolicy rules files, the read-only sandbox (with the shell off there is no command for a
+ * permission profile to hold), the answer form as the output schema, and the last message written to a
+ * file, which is where the answer is read from. Never resumed: a confined stage is retried fresh.
+ */
+export function buildConfinedCodexArgs({ model, thinking, schemaFile, lastMessageFile } = {}) {
+  if (!schemaFile || !lastMessageFile) throw new Error("openai-agent: a confined turn needs its answer form and its answer file");
+  const args = ["exec", "--json", "--skip-git-repo-check", "--ignore-rules", "--sandbox", "read-only"];
+  const m = openaiModel(model); if (m) args.push("-m", m);
+  args.push("-c", `model_reasoning_effort=${effortFor(thinking)}`);
+  args.push("--output-schema", schemaFile, "-o", lastMessageFile, "-");
+  return { args };
+}
+
+/**
+ * A confined turn's answer: the session's last message, which the output schema made an answer in its
+ * form, or why there is none. The tuple's three fields, as the claude adapter returns them.
+ */
+export function codexConfinedAnswer(lastMessageFile, ev) {
+  const results = ev?.session?.results ?? [];
+  const last = results[results.length - 1] ?? null;
+  const none = (why) => ({ structuredOutput: null, structuredOutputIndex: null, structuredOutputWhy: why });
+  let text = null;
+  try { text = readFileSync(lastMessageFile, "utf8"); } catch { /* absent: said below */ }
+  if (!text?.trim()) {
+    if (!results.length) return none("the session ended without a result");
+    if (last?.isError) return none(`the session ended on an error (${last.subtype ?? "?"})`);
+    return none("the session finished without an answer in its form");
+  }
+  let answer;
+  try { answer = JSON.parse(text); } catch { return none("the session's last message was not an answer in its form"); }
+  if (!answer || typeof answer !== "object" || Array.isArray(answer)) return none("the session's last message was not an answer in its form");
+  return { structuredOutput: answer, structuredOutputIndex: Math.max(0, results.length - 1), structuredOutputWhy: null };
+}
+
 // Fold ONE codex --json line into the running event accumulator.
 export function parseCodexEvent(line, ev) {
   let e; try { e = JSON.parse(line); } catch { return; }
@@ -311,8 +348,10 @@ export function parseCodexEvent(line, ev) {
   switch (e?.type) {
     case "thread.started": if (e.thread_id) ev.threadId = e.thread_id; break;
     case "turn.completed": ev.turnCompleted = true; if (e.usage) ev.usage = e.usage; break;
-    case "turn.failed":    ev.turnFailed = e.error?.message || "turn.failed"; break;
-    case "error":          ev.streamError = e.message || "stream error"; break;
+    // The program's own words are kept apart from the placeholders, so the record never shows a word of
+    // ours where it said nothing (session-record.mjs, codexEnding).
+    case "turn.failed":    ev.turnFailed = e.error?.message || "turn.failed"; ev.turnFailedText = typeof e.error?.message === "string" ? e.error.message : null; break;
+    case "error":          ev.streamError = e.message || "stream error"; ev.streamErrorText = typeof e.message === "string" ? e.message : null; break;
     case "item.completed":
       if (e.item?.type === "agent_message" && typeof e.item.text === "string") ev.agentText = e.item.text;
       // A FILE CHANGE CODEX ITSELF REPORTS AS FAILED. Measured on codex-cli 0.156.1 with its sandbox unable
@@ -330,6 +369,7 @@ export function parseCodexEvent(line, ev) {
           ev.commandFailures.push({ command: String(e.item.command ?? ""), output: String(e.item.aggregated_output ?? "") });
       }
       noteMcpToolCall(e.item, ev);
+      noteToolItem(e.item, ev);
       break;
     // ── — AN MCP CALL THAT WAS REFUSED IS NOT A CALL NOBODY MADE ──────────
     //
@@ -352,6 +392,7 @@ export function parseCodexEvent(line, ev) {
     // would double every call.
     case "item.started":
       noteMcpToolCall(e.item, ev);
+      noteToolItem(e.item, ev);
       break;
     default: break;
   }
@@ -375,6 +416,33 @@ export function noteMcpToolCall(item, ev) {
     status: item.status ?? null,
     message: item.error?.message ?? null,
   });
+}
+
+// The item kinds codex reports a tool call as, besides its MCP calls. Its own words, measured on
+// codex-cli 0.150–0.158: a shell command, a file edit, a web search.
+const TOOL_ITEM_KINDS = new Set(["command_execution", "file_change", "web_search"]);
+
+/**
+ * Remember one tool-shaped item by id, for the per-name count. Codex writes each item twice (started,
+ * then its terminal state) under one id, so the id is the unit, exactly as for the MCP gauge.
+ */
+export function noteToolItem(item, ev) {
+  if (!item?.id) return;
+  const name = item.type === "mcp_tool_call" ? `mcp__${item.server ?? "?"}__${item.tool ?? "?"}`
+    : TOOL_ITEM_KINDS.has(item.type) ? item.type : null;
+  if (!name) return;
+  (ev.toolItems ??= new Map()).set(item.id, name);
+}
+
+/**
+ * The turn's tool calls by name, in the shape anthropic-agent records: an MCP call under
+ * `mcp__<server>__<tool>`, and codex's own tool items under its own word for them. Counted once per item
+ * id. An OBJECT is a measurement (`{}` = none observed).
+ */
+export function codexToolCallsByName(ev) {
+  const byName = Object.create(null);
+  for (const name of ev?.toolItems?.values() ?? []) countTool(byName, name);
+  return { ...byName };
 }
 
 /**
@@ -540,11 +608,16 @@ function settleTuple({ r, ev, resumeRef }) {
   const failed = overflow || killed || !ev.turnCompleted || !!ev.turnFailed;
   const usage = mapUsage(ev.usage);
   const text = ev.agentText || "";
-  const json = buildEnvelope({
-    text, ok: !failed, killed, usage,
-    summary: ev.turnFailed ? "failed" : (ev.turnCompleted ? "success" : undefined),
-    runId: ev.threadId,
-  });
+  const json = {
+    ...buildEnvelope({
+      text, ok: !failed, killed, usage,
+      summary: ev.turnFailed ? "failed" : (ev.turnCompleted ? "success" : undefined),
+      runId: ev.threadId,
+    }),
+    // What ended the turn, in the program's own words when it failed (session-record.mjs, codexEnding):
+    // the same three fields the Claude adapter writes. Recorded only; `ok` above is unchanged.
+    ...codexEnding(ev),
+  };
   const stderrOut = overflow
     ? (r.stderr + `\nopenai-agent output overflow: stdout/stderr exceeded ${r.maxBuffer} chars — killed the tree and failed the turn (truncated tail never parsed)`)
     : (stallKill ? (r.stderr + "\nrequest timed out (openai-agent stall-watchdog: 0 streamed tokens)") : r.stderr);
@@ -589,6 +662,9 @@ function settleTuple({ r, ev, resumeRef }) {
     // adapter reads its commands only for failures (below), so it reports no command-tool count: null, never zero.
     toolCallsRefused: mcpToolGauge(ev).mcpToolCallsRefused,
     commandToolCalls: null,
+    // The per-name split of the calls codex reports (see codexToolCallsByName), what the session went
+    // through (session-record.mjs: every turn ending and stream error, in order), and the raw stream.
+    toolCallsByName: codexToolCallsByName(ev), session: sessionSummary(ev.session), stream: ev.stream ?? null,
     writesFailed: ev.writesFailed ?? 0,
     commandsFailed: ev.commandsFailed ?? 0,
     commandFailures: ev.commandFailures ?? [],
@@ -624,6 +700,8 @@ function errResult(t0, e, resumeRef) {
     code: 1, killed: false, wall: (Date.now() - t0) / 1000, stdout: "",
     stderr: `openai-agent error: ${e?.message ?? e}`, laneWaitMs: 0,
     json: null, usage: null, modelWire: null, sessionRef: resumeRef ?? null,
+    // No session ran: nothing to have been interrupted, no stream.
+    toolCallsByName: null, session: null, stream: null,
   };
 }
 
@@ -652,7 +730,7 @@ export const openaiAgentEngine = {
   // `thread/resume failed: no rollout found for thread id ... (code -32600)`, exit 1 — with the control
   // (same id, same binary, its own home) resuming cleanly. So every warm-patch retry and every
   // form-repair sub-turn on the codex arm has been failing.
-  async runTurn({ message, model, thinking, timeoutSec, resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, stallSec, codexHome: providedHome } = {}) {
+  async runTurn({ message, model, thinking, timeoutSec, resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, stallSec, codexHome: providedHome, streamFile = null, confined = null } = {}) {
     if (!message) throw new Error("openai-agent.runTurn: message is required");
     const t0 = Date.now();
     let codexHome;
@@ -692,32 +770,61 @@ export const openaiAgentEngine = {
       // tool servers, and not the Codex key (engine-env.mjs, `codexCommandWithheld`), with codex's shell
       // snapshot off because it replays them (codex-config.mjs, `commandEnvToml`). With the sandbox on or
       // off, since the bypass builds no fence and a command could otherwise print them.
-      const fence = codexSandboxBypassed() ? null
-        : { runDir, readRoots: [...(skillsGrantRoots?.length ? skillsGrantRoots : [skillsDir]), codexProgramRoot(codexBin())].filter(Boolean) };
-      writeFileSync(join(codexHome, "config.toml"),
-        renderCodexConfigToml({ mcpConfig, allowedTools, developerInstructions: WRITE_DISCIPLINE, toolTimeoutSec: timeoutSec, fence,
-          withheldFromCommands: codexCommandWithheld() }));
+      //
+      // — a CONFINED turn writes its own config instead: its instructions as the program's whole
+      // instructions, its tool servers, the helper tool and nothing else (codex-config.mjs,
+      // `renderConfinedCodexConfigToml`). Its instructions, its answer form and its answer sit in this
+      // turn's own home, which nothing but this turn reads and which is removed after it.
+      const confinedFiles = confined ? {
+        instructions: join(codexHome, "instructions.md"), schema: join(codexHome, "answer-form.json"), answer: join(codexHome, "answer.json"),
+      } : null;
+      if (confined) {
+        if (!String(confined.instructions ?? "").trim() || !confined.answerForm) throw new Error("openai-agent: a confined turn needs its instructions and its answer form");
+        writeFileSync(confinedFiles.instructions, String(confined.instructions));
+        writeFileSync(confinedFiles.schema, JSON.stringify(confined.answerForm));
+        writeFileSync(join(codexHome, "config.toml"),
+          renderConfinedCodexConfigToml({ instructionsFile: confinedFiles.instructions, mcpConfig, allowedTools, toolTimeoutSec: timeoutSec }));
+      } else {
+        const fence = codexSandboxBypassed() ? null
+          : { runDir, readRoots: [...(skillsGrantRoots?.length ? skillsGrantRoots : [skillsDir]), codexProgramRoot(codexBin())].filter(Boolean) };
+        writeFileSync(join(codexHome, "config.toml"),
+          renderCodexConfigToml({ mcpConfig, allowedTools, developerInstructions: WRITE_DISCIPLINE, toolTimeoutSec: timeoutSec, fence,
+            withheldFromCommands: codexCommandWithheld() }));
+      }
 
-      const input = absolutizeSkillRefs(message, skillsDir, resolveSkill);
-      const { args } = buildCodexArgs({ model, thinking, resumeRef, runDir });
+      const input = confined ? String(message) : absolutizeSkillRefs(message, skillsDir, resolveSkill);
+      const { args } = confined
+        ? buildConfinedCodexArgs({ model, thinking, schemaFile: confinedFiles.schema, lastMessageFile: confinedFiles.answer })
+        : buildCodexArgs({ model, thinking, resumeRef, runDir });
       // Stamped HERE, not at function entry: everything above is file writes that can take a moment, and
       // a floor set too early would let a previous turn's rollout back in on a shared home.
       const spawnedAtMs = Date.now();
-      const ev = { threadId: null, usage: null, agentText: "", turnCompleted: false, turnFailed: null, streamError: null, model: null, mcpCalls: new Map() };
+      const ev = { threadId: null, usage: null, agentText: "", turnCompleted: false, turnFailed: null, streamError: null, model: null, mcpCalls: new Map(),
+        session: newSessionRecord() };
+      // The raw stream, one file per session beside its dispatch; every line codex wrote on stdout.
+      const sink = streamSink(streamFile);
       const r = await runStreamingChild({
         bin: codexBin(), args, input, runDir,
         // — the run dir, not a shared tmpdir. codex makes cwd a workspace root, writable under the
         // stage's profile, so this tightens the writable surface onto the run rather than widening it.
         cwd: resolveSpawnCwd({ cwd, runDir }),
         env, stallSec, timeoutSec,
-        onStdoutLine: (line) => parseCodexEvent(line, ev),
+        onStdoutLine: (line) => {
+          sink.write(`${line}\n`);
+          parseCodexEvent(line, ev);
+          let e; try { e = JSON.parse(line); } catch { return; }
+          noteCodexEvent(ev.session, e, Date.now() - t0);
+        },
         stderrIsLiveness: true,   // codex streams progress on STDERR → it is liveness for the stall watchdog
       });
+      ev.stream = sink.close();
       if (r.spawnError) return errResult(t0, r.spawnError, resumeRef);
       // The stream said no model (it never does — see readServedModel); the rollout under THIS run's
       // CODEX_HOME did. Read here, inside the try, because the finally below deletes that dir.
       if (!ev.model) ev.model = readServedModel(codexHome, spawnedAtMs);
-      return settleTuple({ r, ev, resumeRef });
+      // The answer is read here too, before the home it sits in is removed.
+      const tuple = settleTuple({ r, ev, resumeRef });
+      return confined ? { ...tuple, ...codexConfinedAnswer(confinedFiles.answer, ev) } : tuple;
     } finally {
       // BEFORE the home can be deleted, here or by the ladder that owns it. A failed write-back leaves the
       // turn's result as it was; the next turn is seeded from the master either way.

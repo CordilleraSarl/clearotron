@@ -28,8 +28,6 @@ export const REPORTED_ARTIFACTS = {
   matterContext: "required",
   variantManifest: "required",
   commonLaw: "required",
-  placement: "required",
-  registerFindings: "required",
   skepticFlags: "required",
   narrative: "required",
   seniorEyeReview: "required",
@@ -44,6 +42,9 @@ export const REPORTED_ARTIFACTS = {
   frameDiff: "optional",        // written only when the blind pass produced a model to diff
   doubtClosure: "optional",     // condition-only — written only when stitch-open doubts exist
   reportOverview: "optional",   // present on any delivered run; absent on a run that failed before drafting
+  // step 3's merged decisions — OPTIONAL for the reason `findings` is: every run archived before the step
+  // was judged by owner carries none, and must not retro-read as incomplete.
+  ownerDecisions: "optional",
 };
 
 // Validators deliberately NOT on this surface, each with the reason. Without this half the check could
@@ -53,6 +54,7 @@ export const NOT_REPORTED = {
   commonLawHalf: "a per-half intermediate the driver merges into commonLaw in code; downstream never sees a half",
   reportCard: "one file per finding ordinal — a single row cannot say which card is missing; the cards ride list_findings",
   blindFrame: "validates blind-frame-model.json, which has no paths() entry on this surface (an engine-internal frame check, never a client coverage question)",
+  ownerJudgment: "one answer per judge of step 3 — the merged decisions are the step's output, reported as ownerDecisions",
 };
 
 // Load-time gate (the KNOWN_PROFILE_KEYS discipline): every validator must be consciously placed on one
@@ -93,7 +95,10 @@ export function coverage(P) {
     const r = check("registerUnit", path);
     return { axis: ax, present: r.exists, valid: r.valid, reason: r.reason };
   });
-  const regFindings = existsSync(P.registerFindings) ? readFileSync(P.registerFindings, "utf8") : "";
+  // The coverage ledger: the machine ledger step 3 settles by code, or, on a run archived before it, the
+  // digest's own table.
+  const ledgerText = [P.registerCoverageLedger, P.registerFindings]
+    .map((f) => (f && existsSync(f) ? readFileSync(f, "utf8") : "")).join("\n");
   const findings = loadFindings(P);
   const artifacts = artifactStatus(P);
   // "complete" counts the artifacts declared `required` above; the `optional` ones degrade, not block.
@@ -101,7 +106,7 @@ export function coverage(P) {
   // so adding an artifact cannot accidentally make every past run incomplete — or silently non-gating.)
   const required = artifacts.filter((a) => REPORTED_ARTIFACTS[a.name] === "required");
   return {
-    coverageLedgerPresent: hasCoverageLedgerRow(regFindings),
+    coverageLedgerPresent: hasCoverageLedgerRow(ledgerText),
     registerAxes: axes,
     findings: findings.findings.length,
     negativeResults: findings.negatives.length,

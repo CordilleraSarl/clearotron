@@ -76,9 +76,15 @@ const FRESHNESS_GOLDEN = {
   "common-law": ["variant-manifest.md", "matter-context.md"],
   "common-law-half": ["variant-manifest.md", "matter-context.md"],
   "register-unit": ["variant-manifest.md", "matter-context.md"],
-  "placement-inquiry": ["matter-context.md", "common-law-findings.md", "register-named-band.json", "register-units/saturation-probe.md", "register-units/primary-sweep.md", "register-units/transliteration-numeric.md", "register-units/incumbent-class.md"],
-  "register-digest": ["variant-manifest.md", "matter-context.md", "placement-recommendations.md", "placements.json", "register-named-band.json", "register-units/saturation-probe.md", "register-units/primary-sweep.md", "register-units/transliteration-numeric.md", "register-units/incumbent-class.md"],
-  skeptic: ["register-findings.md", "common-law-findings.md", "variant-manifest.md", "matter-context.md", "_driver/plan-execution.json", "register-coverage-ledger.json"],
+  // STEP 3 — the judges read the pile, and the pile is laid out from exactly these: the order, the frozen
+  // plan and its execution, the merged band and each unit's band, the web results, and the client the run
+  // is bound to (owner-judgment-run.mjs, pile.mjs). Not the unit notes and not the common-law prose: the
+  // pile carries neither. It replaced placement-inquiry and register-digest (2026-10-01), whose rows went
+  // with them.
+  "owner-judgment": ["_driver/instructed-scope.json", "_driver/register-plan.json", "_driver/plan-execution.json", "register-named-band.json", "register-units/saturation-probe-band.json", "register-units/primary-sweep-band.json", "register-units/transliteration-numeric-band.json", "register-units/incumbent-class-band.json", "common-law-grid.json", "customer-bind.json"],
+  // The sceptic, synthesis, the review and doubt closure read the judges' decisions where they read the
+  // register findings document: one file renamed for another in each row, nothing widened.
+  skeptic: ["owner-decisions.json", "common-law-findings.md", "variant-manifest.md", "matter-context.md", "_driver/plan-execution.json", "register-coverage-ledger.json"],
   // — MOVED, and this is the golden doing its job. frame-diff now runs BEFORE placement-inquiry and
   // register-digest, so register-findings.md and register-coverage-ledger.json — both digest OUTPUTS — do
   // not exist when it runs. Declaring a later stage's outputs as this stage's inputs is the park mechanism
@@ -97,14 +103,14 @@ const FRESHNESS_GOLDEN = {
   // rather than assumed. What held the identical skeptic declaration back a whole wave was that all four
   // `refreshSupplementalExecution` sites run DOWNSTREAM of the skeptic dispatch — the receipt moved after
   // the stage read it, on most non-trivial runs, with no in-pass arm to repair the staleness. Every one
-  // of those four sites runs UPSTREAM of the synthesis dispatch. The coverage ledger is written by
-  // `runDigest`, which rewrites `register-findings.md` in the same pass; synthesis has always declared
-  // that file, so the ledger is a strict co-mover with an input this stage already stales on. And a
+  // of those four sites runs UPSTREAM of the synthesis dispatch. The coverage ledger is settled by
+  // step 3, which writes the judges' decisions in the same pass; synthesis declares those, so the ledger
+  // is a strict co-mover with an input this stage already stales on. And a
   // stamp written before this ships carries no entry for either path, so `diffFingerprint` — which walks
   // the RECORDED entries — manufactures no staleness on a run already in flight.
-  synthesis: ["register-findings.md", "common-law-findings.md", "placement-recommendations.md", "placements.json", "register-named-band.json", "matter-context.md", "variant-manifest.md", "skeptic-flags.md", "_driver/frame-reopen.json", "_driver/crowd-context.json", "crowd-context.md", "_driver/plan-execution.json", "register-coverage-ledger.json"],
+  synthesis: ["owner-decisions.json", "common-law-findings.md", "register-named-band.json", "matter-context.md", "variant-manifest.md", "skeptic-flags.md", "_driver/frame-reopen.json", "_driver/crowd-context.json", "crowd-context.md", "_driver/plan-execution.json", "register-coverage-ledger.json"],
   "case-law": ["narrative.md"],
-  "narrative-refutation": ["narrative.md", "register-findings.md", "common-law-findings.md", "placement-recommendations.md", "placements.json", "matter-context.md", "skeptic-flags.md", "_driver/frame-reopen.json"],
+  "narrative-refutation": ["narrative.md", "owner-decisions.json", "common-law-findings.md", "matter-context.md", "skeptic-flags.md", "_driver/frame-reopen.json"],
   // — NARROWED from nine to two, deliberately: the stage declared nine and opened two (the 08-02 R2
   // dependency graph), and its prompt asserted grounding in all nine. Declaration and citations now both
   // say narrative.md + findings.json, pinned together by the exact-set guard in operability.test.mjs.
@@ -115,7 +121,7 @@ const FRESHNESS_GOLDEN = {
   // (_driver/verdict.json → displayVerdict), never as a file read.
   "report-overview": ["narrative.md", "findings.json"],
   "report-card": ["case-law-findings.md", "findings.json"],
-  "doubt-closure": ["findings.json", "register-findings.md", "register-coverage-ledger.json"],
+  "doubt-closure": ["findings.json", "owner-decisions.json", "register-coverage-ledger.json"],
 };
 
 test("hazard 1: stageInputs matches the frozen freshness contract, stage for stage", () => {
@@ -132,8 +138,8 @@ test("hazard 1: stageInputs matches the frozen freshness contract, stage for sta
     "precondition: synthesis declares the common-law findings");
   assert.ok(!ST.stageInputs("synthesis", P, { axes: [], registerOnly: true }).some((f) => f.endsWith("common-law-findings.md")),
     "registerOnly still drops the common-law findings (a register-only run wrote none)");
-  assert.deepEqual(ST.stageInputs("register-digest", P, { axes: ["primary-sweep"] }).filter((f) => posixRel(f).includes("register-units/")),
-    [P.registerUnit("primary-sweep")], "the per-axis unit fan-out still follows `axes`");
+  assert.deepEqual(ST.stageInputs("owner-judgment", P, { axes: ["primary-sweep"] }).filter((f) => posixRel(f).includes("register-units/")),
+    [P.registerBand("primary-sweep")], "the per-axis unit fan-out still follows `axes`");
   // An unknown stage must keep returning [] rather than throwing: dependencyOrder swallows throws, so a
   // regression there would be silent, not loud.
   assert.deepEqual(ST.stageInputs("no-such-stage", P, {}), [], "unknown stage still returns []");
@@ -181,10 +187,11 @@ function assertContextByteEqual(stage, canonRunDir, shadowDir) {
     // `shaCanonical` is the sandbox's bytes with the sandbox's own path rewritten back to the run dir.
     // Only the driver-written grid specs differ from `sha` — they name their own output_path, which
     // must point INTO the sandbox; a raw-byte comparison there would flag the rig working correctly.
-    // `_driver/register-positions.json` is the one context artefact the DRIVER stamps with a wall-clock
-    // `ts` as it writes it (pipeline.mjs deriveBandShape). Everything the derivation itself computes is
-    // deterministic, so the comparison strips exactly that one driver-written key and nothing else.
-    if (rel === "_driver/register-positions.json") {
+    // `_driver/register-positions.json` and `_driver/declination-spec.json` are the context artefacts the
+    // DRIVER stamps with a wall-clock `ts` as it writes them (pipeline.mjs deriveBandShape and
+    // prepareDeclinationSpec). Everything the derivations themselves compute is deterministic, so the
+    // comparison strips exactly that one driver-written key and nothing else.
+    if (rel === "_driver/register-positions.json" || rel === "_driver/declination-spec.json") {
       const strip = (p) => { const j = JSON.parse(readFileSync(p, "utf8")); delete j.ts; return JSON.stringify(j); };
       assert.equal(strip(join(shadowDir, e.rel)), strip(canonical), `${stage}: ${e.rel} differs from the canonical run (beyond its driver-written ts stamp)`);
     } else {
@@ -226,23 +233,31 @@ test("--experiment common-law-half — the arm RUNS at all, and its context is b
   console.log(`      common-law-half: ${checked.length} context artefacts byte-equal`);
 });
 
-test("--experiment register-digest — the derived band shape is IN the sandbox and byte-equal", async () => {
+// The band readers were placement, the register digest and synthesis; synthesis is the one left, and it
+// carries the band shape arms the digest used to.
+test("--experiment synthesis — the derived band shape is IN the sandbox and byte-equal", async () => {
   const { job, runDir, codename } = await canonicalRun();
   const P = ST.paths(runDir);
   assert.ok(existsSync(P.bandShape), "the canonical run must carry _driver/band-shape.json");
-  assert.ok(!ST.stageInputs("register-digest", P, { axes: [] }).includes(P.bandShape),
-    "…and it must still be UNDECLARED on register-digest — the freshness list is untouched");
+  assert.ok(!ST.stageInputs("synthesis", P, { axes: [] }).includes(P.bandShape),
+    "…and it must still be UNDECLARED on synthesis — the freshness list is untouched");
 
-  const ex = await PL.runExperiment(job, { codename, experiment: "register-digest", label: "ctx proof" });
-  const checked = assertContextByteEqual("register-digest", runDir, ex.shadowDir);
-  for (const rel of ["_driver/band-shape.json", "band-shape.md", "register-named-band.json"])
-    assert.ok(checked.includes(rel), `${rel} must be in the sandboxed digest's context — it was the artifact all four #217 arms ran without`);
-  console.log(`      register-digest: ${checked.length} context artefacts byte-equal`);
+  const ex = await PL.runExperiment(job, { codename, experiment: "synthesis", label: "ctx proof" });
+  // The band artefacts only, not the whole context: a sandboxed synthesis re-prepares its declination
+  // spec without the order's scope, because the sandbox does not carry _driver/instructed-scope.json for
+  // this stage. That gap predates this arm (measured on the base commit, 2026-10-01) and is filed rather
+  // than fixed here; the band shape is what this arm is about.
+  const receipt = JSON.parse(readFileSync(driverDir(ex.shadowDir, "experiment-context.json"), "utf8"));
+  for (const rel of ["_driver/band-shape.json", "band-shape.md", "register-named-band.json"]) {
+    const e = receipt.edges.find((x) => posixRel(x.rel) === rel);
+    assert.ok(e?.sha, `${rel} must be in the sandboxed writer's context — it was the artifact all four #217 arms ran without`);
+    assert.equal(e.shaCanonical, sha(join(runDir, e.rel)), `${rel} differs BYTE-WISE from what the canonical run held`);
+  }
 });
 
-test("band_shape returns ok:true against a sandboxed register-digest (the tier filter is armed)", async () => {
+test("band_shape returns ok:true against a sandboxed synthesis (the tier filter is armed)", async () => {
   const { job, runDir, codename } = await canonicalRun();
-  const ex = await PL.runExperiment(job, { codename, experiment: "register-digest", label: "band tool" });
+  const ex = await PL.runExperiment(job, { codename, experiment: "synthesis", label: "band tool" });
   // The band MCP server resolves the run it serves from CLEAROTRON_BAND_RUN_DIR, which gateway.mjs sets to
   // the ctx's runDir — the SHADOW dir on an experiment arm. Drive it exactly as the stage's tool call
   // would: a tier-filtered shape read, which is the call that returned ok:false in all four arms.
@@ -335,25 +350,9 @@ test("an --experiment arm writes the order-probe provenance row on its OWN recor
   assert.ok("seed" in bread, "the canonical breadcrumb also records the arm's ordering");
 });
 
-test("a sandboxed register-digest carries the driver-computed prompt blocks runDigest composes", async () => {
-  const { job, codename } = await canonicalRun();
-  const ctx = PL.reconstructCtx(job, { codename });
-  // The extraction is output-identical by construction: this pins the composed string per trigger, so a
-  // future edit to any of the three blocks cannot silently diverge between runDigest and the rig.
-  const fresh = PL.digestDispatchExtra(ctx, { trigger: "fresh", willRun: true });
-  const corrective = PL.digestDispatchExtra(ctx, { trigger: "escalation", willRun: true });
-  assert.notEqual(fresh, corrective,
-    "a corrective digest pass carries the placement RULINGS TAIL and a fresh one does not — if these are equal the trigger gate has stopped working");
-  assert.ok(String(corrective).includes(String(fresh ?? "")) || fresh == null,
-    "the corrective extra COMPOSES with the fresh blocks, it never replaces them");
-  // a skipping pass (willRun false) never carries the tail
-  const skipped = PL.digestDispatchExtra(ctx, { trigger: "escalation", willRun: false });
-  assert.ok(!/PLACEMENT RULINGS TAIL/.test(String(skipped ?? "")), "a pass that will not re-run carries no rulings tail");
-});
-
 test("a sandboxed synthesis is handed the same list of records to answer as the canonical pass", async () => {
   const { job, runDir, codename } = await canonicalRun();
-  const DECLINATIONS = /DECLINATIONS \(MANDATORY\): the register digest carried (\d+) record\(s\)/;
+  const DECLINATIONS = /DECLINATIONS \(MANDATORY\): the judges carried (\d+) record\(s\)/;
   const canonical = readFileSync(driverDir(runDir, "synthesis.attempt1.dispatch.txt"), "utf8").match(DECLINATIONS);
   assert.ok(canonical, "the canonical synthesis pass must carry a list for this to be testing anything");
 
@@ -377,8 +376,10 @@ test("drift guard: every _driver sidecar verify.mjs resolves is declared for som
   for (const m of src.matchAll(/driverDir\([^;\n]*?,\s*(?:`|")([a-z0-9.$~{}-]+)(?:`|")\s*\)/g))
     if (/\.[a-z]+$/.test(m[1])) found.add(m[1]);
   for (const m of src.matchAll(/_driver\/([a-z0-9.-]+\.json)/g)) found.add(m[1]);
-  assert.ok(found.size >= 13,
-    `the sidecar extractor found only ${found.size} names in verify.mjs — it found 13 before #1336. `
+  // 13 until the register digest's validator went (2026-10-01), taking coverage-enum.json and
+  // register-plan.json with it; 11 since.
+  assert.ok(found.size >= 11,
+    `the sidecar extractor found only ${found.size} names in verify.mjs — it found 11 after the digest's validator went. `
     + `A pattern that stops matching the source makes every assertion below vacuous: nothing to compare `
     + `means nothing missing means green.`);
   assert.doesNotMatch(src, /join\([^)]*"_driver"/,
@@ -403,7 +404,7 @@ test("→ #256: an order-SEEDED arm re-executes the band-shape seams instead of 
   const before = process.env.CLEAROTRON_ORDER_PROBE_SEED;
   process.env.CLEAROTRON_ORDER_PROBE_SEED = "7";
   let ex;
-  try { ex = await PL.runExperiment(job, { codename, experiment: "register-digest", label: "seeded" }); }
+  try { ex = await PL.runExperiment(job, { codename, experiment: "synthesis", label: "seeded" }); }
   finally { if (before === undefined) delete process.env.CLEAROTRON_ORDER_PROBE_SEED; else process.env.CLEAROTRON_ORDER_PROBE_SEED = before; }
 
   const receipt = JSON.parse(readFileSync(driverDir(ex.shadowDir, "experiment-context.json"), "utf8"));
@@ -489,96 +490,8 @@ test("x #251: --axis is a per-stage membership test, and a stage that takes none
 
 test("--dispatch-trigger refuses an unknown value rather than composing a quietly different arm", async () => {
   const { job, codename } = await canonicalRun();
-  await assert.rejects(() => PL.runExperiment(job, { codename, experiment: "register-digest", dispatchTrigger: "escalaton" }),
-    /unknown value "escalaton"/, "a typo in the trigger must refuse — it decides which prompt blocks compose");
-});
-
-// ── conversion 11: THE DIGEST'S FACTS SIDECAR IS A DECLARED DERIVATION ───────────────────────────────
-//
-// FOURTH OCCURRENCE of this file's own subject. `writeRegisterDigestFacts` has one call site, inside
-// `runDigest`, and `--experiment` calls `stage()` directly — so a sandboxed digest got no facts sidecar,
-// `readDigestFacts` returned empty facts, and the first seat call refused `registerdigest_uri_unknown`.
-// The transport's fail-closed degradation firing correctly about the wrong cause, with nothing able to
-// say the DRIVER never wrote the file. Found by the replay rig before any model call, 2026-08-27.
-//
-// The arms below are pure — they are about the DECLARATION, which is what was missing. The one that
-// would have caught it is the first: the sidecar must be in the manifest at all, because a derivation's
-// reads are pulled in ONLY IF one of its written paths is already wanted. Declaring the derivation
-// without the tool-group edge would have changed nothing and read as a complete fix.
-test("conversion 11: the digest's facts sidecar and accounting stamp are in its sandbox manifest", () => {
-  const P = ST.paths("/run");
-  const manifest = SC.sandboxManifest("register-digest", P, {});
-  const at = (p) => manifest.find((e) => e.path === p);
-  for (const [what, path] of [["the facts sidecar", driverDir(P.runDir, "register-digest-facts.json")],
-                              ["the accounting era stamp", driverDir(P.runDir, "digest-accounting.json")]]) {
-    assert.ok(at(path), `${what} must be in the sandbox manifest — without it sandboxGaps has no gap to `
-      + "refuse on, and the arm dispatches into a context the driver never built");
-  }
-});
-
-test("conversion 11: the facts derivation is SELECTED for a sandboxed digest, with its whole read set", () => {
-  const P = ST.paths("/run");
-  assert.ok(SC.derivationsFor("register-digest", P, {}).includes("register-digest-facts"),
-    "the rig replays derivations by id — unselected, the sandbox produces no sidecar and reads as complete");
-  const manifest = SC.sandboxManifest("register-digest", P, {});
-  const paths = new Set(manifest.map((e) => e.path));
-  // ALL SIX READS, not the three the writer opens directly. digestSummaryCounts and digestAuditRows are
-  // called from inside it and open three more; a sandbox missing those derives a sidecar with different
-  // counts and audit rows from the canonical one — silently, which is this file's whole subject.
-  for (const [why, path] of [["the band the record index is built from", P.registerNamedBand],
-                             ["which records this run read", P.readingLog],
-                             ["the OWED set the accounting refusal holds the seat to", P.placementModel],
-                             ["the plan-execution receipt both count helpers tabulate", P.planExecution],
-                             ["the findings digestAuditRows returns empty without", P.registerFindings],
-                             ["the coverage-form era stamp", P.coverageEnum],
-                             ["the coverage accumulator the audit rows read", driverDir(P.runDir, "register-coverage-form.form.json")]]) {
-    assert.ok(paths.has(path), `the sandbox must carry ${why} — the facts derivation opens it, so a copy `
-      + "without it derives a DIFFERENT sidecar and nothing says so");
-  }
-});
-
-test("conversion 11: the tool-group edge is keyed on the group the stage is actually granted", () => {
-  // TWO COPIES THAT AGREE TODAY. `TOOL_GROUP_EDGES` is keyed by literal string; the grant is minted by
-  // `recordingKey`, which is not exported. A rename on either side would silently un-declare the sidecar
-  // and every arm above would still pass, because a manifest that never gains the edge simply omits it.
-  assert.ok(toolGroupsForStage("register-digest").includes("recording-register-digest"),
-    "the literal TOOL_GROUP_EDGES key must be a group this stage is granted — otherwise the edge is dead "
-    + "and the facts sidecar leaves the manifest without a single arm going red");
-});
-
-test("conversion 11: the derivation FILLS A GAP and never overwrites the canonical copy", () => {
-  // The inverse of band-shape's rule, and the byte-equality arm above is what forced it. This sidecar
-  // is a projection taken at dispatch time; re-deriving it after the run reads artifacts that did not
-  // exist when the seat saw it (digestAuditRows is empty before the digest writes its findings and
-  // non-empty after), so an overwrite hands the arm a context the canonical run never had.
-  const runDir = mkdtempSync(join(tmpdir(), "clearotron-facts-copy-"));
-  const at = driverDir(runDir, "register-digest-facts.json");
-  mkdirSync(dirname(at), { recursive: true });
-  const canonical = JSON.stringify({ schema_version: 1, records: [], owed: ["/mark/x"] }) + "\n";
-  writeFileSync(at, canonical);
-  // A band IS present, so the only thing stopping a rewrite is the copy-wins rule itself — without it
-  // this arm would go red rather than passing for the wrong reason.
-  writeFileSync(ST.paths(runDir).registerNamedBand, JSON.stringify({ enumerated: [] }) + "\n");
-  const ctx = { paths: ST.paths(runDir), job: {}, run: {} };
-  assert.equal(PL.DERIVATION_RUNNERS["register-digest-facts"](ctx), false,
-    "the canonical copy stands — the derivation reports it did not derive");
-  assert.equal(readFileSync(at, "utf8"), canonical,
-    "…and the copy is byte-identical: a re-derivation here would silently change the arm's context");
-  rmSync(runDir, { recursive: true, force: true });
-});
-
-test("conversion 11: the derivation refuses to claim it derived anything without a band", () => {
-  // KNOWN-BAD DRIVE. With no band the sidecar still WRITES — well-formed, with an empty record index —
-  // and every uri the seat cites then refuses by name. Reporting that as derived hands an arm a file
-  // that is present and useless, which is an absence dressed as a pass one layer below where anyone
-  // would look for it. The runner must return false, not a written file.
-  const runDir = mkdtempSync(join(tmpdir(), "clearotron-facts-noband-"));
-  const ctx = { paths: ST.paths(runDir), job: {}, run: {} };
-  assert.equal(PL.DERIVATION_RUNNERS["register-digest-facts"](ctx), false,
-    "no band ⇒ the derivation reports NOT derived");
-  assert.ok(!existsSync(driverDir(runDir, "register-digest-facts.json")),
-    "…and writes nothing, so a later reader cannot mistake an empty index for a derived one");
-  rmSync(runDir, { recursive: true, force: true });
+  await assert.rejects(() => PL.runExperiment(job, { codename, experiment: "synthesis", dispatchTrigger: "corective" }),
+    /unknown value "corective"/, "a typo in the trigger must refuse — it decides which prompt blocks compose");
 });
 
 test("blind-frame stays STARVED — widening the sandbox did not widen the blind pass", async () => {
@@ -611,7 +524,9 @@ test("blind-frame stays STARVED — widening the sandbox did not widen the blind
 // servers' own outputs, which is not what a declaration means. So each use is classified: a file is a
 // read if any use reads it, a write if every use writes it, and a use the walk cannot classify fails the
 // arm rather than being guessed.
-const WRITERS = /^(appendFileSync|writeFileSync|createWriteStream|atomicWrite)$/;
+// A call whose name begins append or write writes: the node calls, and a server's own logging helper
+// (the judges' server logs every request through `appendRequestLog`).
+const WRITERS = /^(append[A-Z]\w*|write[A-Z]\w*|createWriteStream|atomicWrite)$/;
 const NEUTRAL = /^(mkdirSync|dirname)$/;
 
 /** Each driver-written file a server names, with how the server uses it: read, write, or unclassified. */
@@ -657,7 +572,7 @@ function driverFileUses(src) {
       // whose body returns it), a local name, or the expression itself where it is used inline.
       // A block body counts only where this line RETURNS the path: an arrow that merely reads the file
       // inside its own body (an initialiser, say) hands its callers a value, not a path.
-      const fnHead = (line.match(/const\s+([A-Za-z_$][\w$]*)\s*=\s*\([^)]*\)\s*=>/)
+      const fnHead = (line.match(/const\s+([A-Za-z_$][\w$]*)\s*=\s*\([^)]*\)\s*=>\s*driverDir\(/)
         ?? (/\breturn\b[^;]*driverDir\(/.test(line)
           ? lines.slice(Math.max(0, i - 4), i).reverse().map((l) => l.match(/const\s+([A-Za-z_$][\w$]*)\s*=\s*\([^)]*\)\s*=>\s*\{/)).find(Boolean)
           : null));
@@ -767,32 +682,12 @@ test("the walk tells a read from a write: the logs the servers write are never d
     '  if (!existsSync(p)) return null;',
     '  return readFileSync(p, "utf8");',
     '}',
+    'const log = (row) => appendRequestLog(driverDir(runDir, "d-log.jsonl"), row);',
     'const SPEC = "a-spec.json";',
     'const spec = JSON.parse(readFileSync(driverDir(runDir, SPEC), "utf8"));',
   ].join("\n");
   const kinds = Object.fromEntries(driverFileUses(src).map((u) => [u.name, u.kind]));
-  assert.deepEqual(kinds, { "a-log.jsonl": "write", "b-log.jsonl": "write", "c-log.jsonl": "write",
+  assert.deepEqual(kinds, { "a-log.jsonl": "write", "b-log.jsonl": "write", "c-log.jsonl": "write", "d-log.jsonl": "write",
     "bodies.jsonl": "read", "a-spec.json": "read", "a-policy.json": "read" });
-});
-
-// ── A FILE THE PROMPT NAMES, ASSERTED BY NAME ─────────────────────────────────────────────────────────
-//
-// The band's record log had an arm of its own here while the walk above could not see a `.jsonl` read; the
-// walk holds it now, by the same rule as every other file a server reads. This one stays targeted because
-// no server reads it: the digest's own message names the hit list, so it is outside what that walk covers.
-test("the digest's manifest carries the hit list its own prompt names", () => {
-  const P = ST.paths("/run");
-  const manifest = SC.sandboxManifest("register-digest", P).map((e) => basename(String(e.path)));
-  assert.ok(manifest.includes("register-hit-list.json"),
-    "the digest's message asks the model to mark lines on this list and hit-list.mjs reads the marks back. "
-    + "Absent from the copy, a marking lands nowhere and the stage passes having been given a different input "
-    + "than the real one.");
-  // The control, for the same reason as above: the manifest still carries the digest's other inputs.
-  for (const want of ["register-digest-facts.json", "register-named-band.json"]) {
-    assert.ok(manifest.includes(want), `the digest's manifest stopped carrying ${want}`);
-  }
-  // A floor on the read: a manifest that collapsed to almost nothing would satisfy nothing above by accident.
-  assert.ok(manifest.length >= 10,
-    `the digest's manifest lists only ${manifest.length} entries — the derivation broke, not the declaration`);
 });
 

@@ -20,8 +20,8 @@ these.
 3. **Payload isolation.** Raw result JSON is never pasted into a model's context. The driver
    dictates specs (grids, plans); register/marketplace tooling writes results to disk; judgment
    stages read code-derived digests and reach the frozen named band **only through a narrow
-   read-only grant** (`band_shape`, `band_lookup`, `band_record`, every call appended to the run's
-   reading audit) — never the register funnel's search tools. This is the main token-economy lever
+   read-only grant** (`band_shape`, `band_lookup`, `band_record`, or for step 3's judges the owner
+   tools; every call appended to the run's reading audit) — never the register funnel's search tools. This is the main token-economy lever
    and it is architectural, not a tuning knob.
 4. **Fail loud, fail closed, repair first.** Every failure has a class in a closed taxonomy with
    distinct handling; bounded repairs (warm patches, code re-dispatch, quarantines) run before any
@@ -201,8 +201,11 @@ inherited from the engine's env (credentials are never written into the config f
 `TOOL_FREE_STAGES` (`engine/mcp/gather-config.mjs`) get no MCP config and no tool definitions at
 all; `blind-frame` and `skeptic` hold only their own recording server beside the seeded file tools,
 so a typed hand-back costs them no retrieval surface; and the band-consuming judgment stages hold a
-read-only grant instead — the `band` group, plus `record_coverage` on register-digest and, on
-synthesis alone, the web-research tool its mandatory use-check runs through. None of them is handed
+read-only grant instead — the `band` group and, on synthesis alone, the web-research tool its
+mandatory use-check runs through. Step 3's two judges are **confined**: each session's whole system
+prompt is the step's six-sentence instruction, it holds the owner tools and nothing else (no file
+tools, no settings or project instructions loaded), and it answers in a form whose schema the engine
+enforces; both engines run it that way. None of them is handed
 the register funnel's search tools (payload isolation). Ambient-context suppression — a neutral
 tmpdir cwd (no CLAUDE.md), `--strict-mcp-config`, least-privilege `--add-dir` grants for just the
 skills tree and the run dir — keeps the subprocess from inheriting integrator-platform context that would

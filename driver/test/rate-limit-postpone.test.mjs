@@ -44,7 +44,7 @@ const RESET_ISO = new Date(RESET_EPOCH_SEC * 1000).toISOString();
 
 test("a mid-run register-sweep 429 POSTPONES the run (resumable) — never writes .failed / notify-fail", async () => {
   const root = mkdtempSync(join(tmpdir(), "clearotron-rl-"));
-  for (const k of ["MOCK_FAIL_STAGE", "MOCK_LEDGER_LIMITED", "MOCK_CANDSELF"]) delete process.env[k];
+  for (const k of ["MOCK_FAIL_STAGE", "MOCK_CANDSELF"]) delete process.env[k];
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent",
     CLEAROTRON_CLAUDE_PATH: CLAUDE_MOCK,

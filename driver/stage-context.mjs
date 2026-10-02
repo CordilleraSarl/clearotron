@@ -41,7 +41,7 @@ import { driverDir } from "../shared/driver-dir.mjs";   //
 import { STAGES, stageInputs, REGISTER_AXES } from "./stages.mjs";
 import { withheldFamiliesPath } from "./withheld-families.mjs";
 import { toolGroupsForStage } from "./engine/mcp/gather-config.mjs";
-import { FACTS_FILE as DIGEST_FACTS_FILE, ACCOUNTING_STAMP as DIGEST_ACCOUNTING_STAMP } from "./register-digest-record.mjs";
+import { runRecordLogPath } from "../providers/_shared/ledger-path.mjs";
 
 /**
  * The five ways an artifact reaches a stage. A declaration can express the first one; production uses
@@ -84,19 +84,15 @@ const DECLARED_KIND = {
     registerCoverageLedger: ["driver-side",
       "skepticDeferralExtra reads it via loadCoverageLedger(P.runDir) and emits the axis|unit|status|reason table plus the closeable/not-closeable split"],
   },
-  "register-digest": {
-    registerNamedBand: ["tool-mediated",
-      "opened inside the band MCP server process (CLEAROTRON_BAND_RUN_DIR), never by the agent — band_lookup/band_shape are the reading layer"],
-  },
-  "placement-inquiry": {
-    registerNamedBand: ["tool-mediated", "same — the band tools are this stage's reading layer"],
-    // — the placement form is CONTEXT, and deliberately NOT a freshness input. The driver writes it
-    // before dispatch and rewrites it after every judgement (the union runs on each one), so it is always
-    // newer than the md the seat just wrote — and adding it to stageInputs would make the largest stage in
-    // the run read stale on every resume and re-dispatch itself. That ruling exactly: the fix is a
-    // second view, not a wider freshness list.
-    placementForm: ["driver-side",
-      "written by the driver before dispatch and re-unioned on every judgement; the prompt names the path because the seat writes its selections there"],
+  // Step 3's judges read nothing themselves: the pile is laid out and served by the owner tools, inside
+  // their own server process, and the order rides the message the driver composes.
+  "owner-judgment": {
+    instructedScope: ["driver-side", "the order in the judges' message is composed from it by the driver (owner-judgment-run.mjs)"],
+    customerBind: ["driver-side", "a late-bound client joins the client's context in the judges' message, composed by the driver"],
+    registerPlan: ["tool-mediated", "the owner tools' register questions (pile.mjs loadPile), read inside the owners server process"],
+    planExecution: ["tool-mediated", "the questions that ran and their counts, read inside the owners server process"],
+    registerNamedBand: ["tool-mediated", "the pile, read inside the owners server process (CLEAROTRON_BAND_RUN_DIR)"],
+    commonLawGrid: ["tool-mediated", "web_results serves the saved web results from inside the owners server process"],
   },
   synthesis: {
     registerNamedBand: ["tool-mediated", "same — the band tools are this stage's reading layer"],
@@ -137,35 +133,21 @@ export const TOOL_GROUP_EDGES = {
     { path: driverDir(P.runDir, "register-record-bodies.jsonl"),
       why: "band_record serves a record body from this log when the run fetched it through the ledger rather than into _records/ (band-server.mjs recordLedgerPath); without it the sandbox's record reads all fail and the re-run sees less than the stage saw" },
   ],
-  // ── conversion 11 — THE RECORD TOOL READS A DRIVER-WRITTEN SIDECAR, AND NOTHING DECLARED IT ───────
+  // ── A SERVER THAT OPENS A DRIVER-WRITTEN FILE DECLARES IT HERE ────────────────────────────────────
   //
-  // FOURTH OCCURRENCE OF THE CLASS THE DISPATCH_EXTRAS BANNER BELOW ALREADY RECORDS. `--experiment
-  // register-digest` calls `stage()` directly and never enters `runDigest`, which is the only site that
-  // writes these two files. So a sandboxed arm got neither, `readDigestFacts` returned empty facts, and
-  // the seat's first call refused `registerdigest_uri_unknown` — the transport's documented fail-closed
-  // degradation firing correctly about the wrong thing, because the DRIVER never wrote the file and no
-  // seat-facing error can say so. Measured by the replay rig before any model call, 2026-08-27.
-  //
-  // DECLARED HERE RATHER THAN AS AN UNDECLARED EDGE because it is genuinely tool-mediated: the sidecar
-  // is what lets `record_register_digest` take no record fields at all, so it belongs to the grant, and
-  // any stage ever given this recording group needs it for the same reason.
-  //
-  // THE STAMP IS LISTED THOUGH IT IS CONDITIONALLY WRITTEN. `writeRegisterDigestFacts` writes it only
-  // when the run has an owed population, and `sandboxGaps` reports a gap only for something the
-  // CANONICAL run holds — so a run that legitimately never armed the accounting contributes no gap,
-  // while one that did and lost it in the copy refuses by name. Listing it costs nothing on the first
-  // and is the whole point on the second.
+  // An `--experiment` arm calls `stage()` directly, so a file a server reads that only the driver writes
+  // reaches the sandbox only when it is declared: undeclared, the arm runs over its absence and nothing
+  // refuses. Measured in testing 2026-08-27, on a recording server whose sidecar was declared nowhere.
   // ── FIFTH AND SIXTH OCCURRENCE OF THIS TABLE'S OWN SUBJECT ───────────────────────────────────────
   //
-  // The digest entry below calls its gap "the fourth occurrence of the class". These are the fifth and
-  // sixth, and they were found IN THE TABLE ADDED TO FIX THE FOURTH — because that fix was an entry for
+  // These two were found IN THE TABLE ADDED TO FIX AN EARLIER ONE — because that fix was an entry for
   // one server rather than a rule about all of them. Measured across all fifteen MCP servers: three open
-  // a driver-written file (`band`, `declination`, `recording`) and only `band` and the digest half were
+  // a driver-written file (`band`, `declination`, `recording`) and only `band` and one recording half were
   // declared. Both files below are present on any canonical run that reached synthesis and were ABSENT
   // from its sandbox, so an `--experiment synthesis` arm ran with the declination floor silent and the
   // closure spec missing, and nothing refused because `sandboxGaps` had no gap to refuse on.
   //
-  // NO DERIVATION FOR EITHER, unlike the digest's sidecar: the driver writes both before dispatching the
+  // NO DERIVATION FOR EITHER: the driver writes both before dispatching the
   // stage that reads them, so on any run that reached the stage they exist and the manifest copy is the
   // whole fix. Declared, `sandboxGaps` refuses BY NAME when one is missing instead of dispatching into
   // the silence.
@@ -184,11 +166,22 @@ export const TOOL_GROUP_EDGES = {
   "recording-doubt-closure": (P) => [
     { path: driverDir(P.runDir, "doubt-closure-spec.json"), why: "record_doubt_closure resolves its rows against this spec; without it the tool refuses and the closure verdicts cannot be recorded" },
   ],
-  "recording-register-digest": (P) => [
-    { path: driverDir(P.runDir, DIGEST_FACTS_FILE), why: "record_register_digest resolves every uri the seat cites against this sidecar (readDigestFacts); without it every call refuses registerdigest_uri_unknown" },
-    { path: driverDir(P.runDir, DIGEST_ACCOUNTING_STAMP), why: "the era stamp that arms the digest's accounting refusal — absent, the rule silently does not apply" },
+  // Step 3's owner tools serve the whole pile from the run: every unit's band (a question listed late
+  // reaches no merged band), the full records and the record log behind register_open, and every saved
+  // web ledger. The supplementary web ledgers are named by the run itself, so they are listed off it.
+  owners: (P) => [
+    { path: join(P.runDir, "register-units"), dir: true, why: "pile.mjs loadPile reads every unit's band, the questions listed late included" },
+    { path: join(P.runDir, "_records"), dir: true, why: "register_open serves the full records the run holds" },
+    { path: runRecordLogPath(P.runDir), why: "register_open serves a body from the record log before the run assembles it" },
+    ...suppGridLedgers(P).map((path) => ({ path, why: "web_results joins every supplementary web ledger to the saved results" })),
   ],
 };
+
+/** The supplementary web ledgers the run wrote beside its canonical grid, by name. */
+function suppGridLedgers(P) {
+  try { return readdirSync(P.runDir).filter((n) => /^common-law-grid\.supp-.+\.json$/.test(n)).sort().map((n) => join(P.runDir, n)); }
+  catch { return []; }
+}
 
 // ── the edges a declaration cannot carry ─────────────────────────────────────────────────────────────
 const UNDECLARED = {
@@ -208,31 +201,19 @@ const UNDECLARED = {
     { path: P.gridSpec, kind: "agent-reads-file",
       why: "ctx.gridSpecPath — the prompt hands the canonical spec to perplexity_research as grid_spec_path; derived in pipeline(), declared nowhere" },
   ],
-  //, typed transport — the coverage form's SEAT COPY IS GONE from this map because it is gone
-  // from the run: the prompt names no coverage path any more (coverageFormBrief enumerates the rows
-  // inline and names the `record_coverage` tool), the seat opens no coverage file, and the accumulator
-  // the gate judges is declared on VALIDATOR_SIDECARS below. The brief's own read of that accumulator
-  // is declared on DISPATCH_EXTRAS.
-  // THE PROMPT NAMES A FILE THE SANDBOX DID NOT COPY, so a re-run of the digest differed from the real
-  // stage in one input the prompt names, invisibly: the stage passed. The digest's message ("MARK THE LIST")
-  // names the hit list and asks the model to mark lines on it, and `hit-list.mjs` reads those marks back.
-  // Absent from the copy, a marking the model sends lands nowhere and nothing refuses — measured on a bench
-  // plumbing run where the digest completed with owed 7 accounted 7 and the hit list was simply not there.
-  //
-  // DECLARED UNCONDITIONALLY, for the reason the digest's accounting stamp above is: `sandboxGaps` reports a
-  // gap only for something the CANONICAL run holds, so a run that never built a hit list contributes no gap,
-  // and one that built it and lost it in the copy refuses by name. Listing it costs nothing on the first and
-  // is the whole point on the second.
-  "register-digest": (P) => [
-    { path: P.registerHitList,
-      why: "the digest's own message names this file and asks the model to mark lines on it (hit-list.mjs reads the marks back); without it in the copy a marking lands nowhere and the stage passes having been given a different input than the real one" },
-  ],
   // The provider enforcement telemetry: the prompt names the path only when ctx.enforcerSignals is a
   // non-zero count (stages.mjs synthesis message). Undeclared on purpose — it is aim-attention only and
   // must never move a freshness stamp — but a sandbox without it hands a different prompt.
   synthesis: (P) => [
     { path: P.enforcerSignals, kind: "conditional",
       why: "named in the prompt only when ctx.enforcerSignals > 0; aim-attention telemetry, deliberately outside the freshness map" },
+  ],
+  // The instructing lawyer's own questions ride the order in the judges' message (owner-judgment-run.mjs).
+  // Undeclared on purpose: the questions are frozen at the frame, before step 3, and the file is rewritten
+  // with a fresh timestamp on every pass, so as a freshness input it would re-judge every resume.
+  "owner-judgment": (P) => [
+    { path: P.intakeAsks, kind: "driver-side",
+      why: "the driver composes the order in the judges' message with the questions frozen here; outside the freshness map because every pass rewrites the file's timestamp" },
   ],
 };
 
@@ -254,14 +235,6 @@ export const VALIDATOR_SIDECARS = {
   "clearance-variants": ["instructed-scope.json", "stage-contracts.json"],
   "register-unit": ["instructed-scope.json", "register-plan.json"],
   "common-law": ["grid-spec.json", "profile.json"],
-  // — the DRIVER'S copy of the placement form. Without it in the sandbox an experiment arm would
-  // union against nothing and re-render an empty deliverable — the same class of defect fixed
-  // for the coverage form one line down.
-  "placement-inquiry": ["stage-contracts.json", "placement-form.form.json"],
-  // — `register-coverage-form.form.json` is the DRIVER'S copy of the coverage form and the artifact
-  // validators.registerFindings judges. Without it in the sandbox an experiment arm would judge the
-  // register digest under different rules than production did — the exact defect this table generalises.
-  "register-digest": ["coverage-enum.json", "plan-execution.json", "register-plan.json", "register-coverage-form.form.json"],
   synthesis: ["intake-asks.json", "coverage-closure.json", "framework.json"],
   "narrative-refutation": ["plan-execution.json"],
 };
@@ -311,37 +284,13 @@ export const CONTEXT_DERIVATIONS = [
       { path: P.commonLawHalf("b"), why: "the resumed-unsplit self-disarm" },
     ],
   },
-  {
-    id: "register-digest-facts",
-    // conversion 11 — the sidecar the record tool resolves uris against, plus the era stamp that arms
-    // the accounting refusal. Written by `writeRegisterDigestFacts`, whose only call site is inside
-    // `runDigest`; declaring it here is what lets the `--experiment` rig REPLAY the derivation instead
-    // of dispatching into a context the driver never built.
-    //
-    // THE READ SET IS SIX PATHS AND NOT THE THREE THE WRITER OPENS DIRECTLY. `digestSummaryCounts` and
-    // `digestAuditRows` are called from inside it and open three more — the plan-execution receipt, the
-    // register findings, and the coverage form behind its own era stamp. A read set naming only the
-    // obvious three would let the sandbox derive a sidecar with different counts and audit rows from
-    // the canonical one, silently, which is this registry's whole subject matter one level down.
-    writes: (P) => [driverDir(P.runDir, DIGEST_FACTS_FILE), driverDir(P.runDir, DIGEST_ACCOUNTING_STAMP)],
-    reads: (P) => [
-      { path: P.registerNamedBand, why: "the slim record index — every identifier cell the render prints, keyed by the uri the seat cites" },
-      { path: P.readingLog, why: "readOkRecordUris — which records this run actually read" },
-      { path: P.placementModel, why: "THE OWED SET: the records placement carried in, which is what the accounting refusal holds the seat to" },
-      { path: P.planExecution, why: "digestSummaryCounts and digestAuditRows both tabulate the plan-execution receipt" },
-      { path: P.registerFindings, why: "digestAuditRows returns EMPTY without it — the audit rows would silently vanish from the sandboxed sidecar" },
-      { path: P.coverageEnum, why: "coverageFormStamp — whether this run requires a coverage form at all, which decides whether the audit rows read one" },
-      { path: driverDir(P.runDir, "register-coverage-form.form.json"), why: "readCoverageForm — the accumulator digestAuditRows reads when the stamp says a form is required" },
-    ],
-  },
 ];
 
 // ── the DRIVER-COMPUTED prompt blocks ────────────────────────────────────────────────────────────────
 //
-// `opts.extra` is context the stage receives and no file records. `--experiment register-digest`
-// bypassed `runDigest` entirely, so an arm ran without the deferred-axis hint, the placement rulings
-// tail and the owner-screen receipt — three blocks the production dispatch carries. Declared here with
-// their read sets so the sandbox manifest covers them like any other edge.
+// `opts.extra` is context the stage receives and no file records. An `--experiment` arm calls `stage()`
+// directly, so a block the production dispatch composes is lost to the arm unless it is declared here,
+// with its read set, so the sandbox manifest covers it like any other edge.
 // Where a waiting family's judgment is on record: the reading turn's per-axis files, and the coverage
 // form (with the stamp that names it). planAuditExtra counts a waiting family as withheld from these, so
 // a sandbox without them would count every such family as still awaiting the reading turn's ask.
@@ -353,23 +302,6 @@ const waitingFamilyJudgmentReads = (P) => [
 ];
 
 export const DISPATCH_EXTRAS = [
-  {
-    id: "digest-dispatch-extra", stage: "register-digest",
-    reads: (P) => [
-      //, typed transport — the driver's coverage ACCUMULATOR. coverageFormBrief ENUMERATES its
-      // rows into the dispatch (the seat's only sight of them — the seat-facing copy is dead, statuses
-      // ride record_coverage), so an arm dispatched without it is not measuring its variable — it is
-      // measuring the absence of the rows the stage's whole coverage contract now runs through. The
-      // same file is on VALIDATOR_SIDECARS, because it is also the copy the gate judges.
-      { path: driverDir(P.runDir, "register-coverage-form.form.json"), why: "the accumulator coverageFormBrief enumerates into the dispatch (typed transport)" },
-      { path: P.coverageEnum, why: "the era stamp that says a coverage form is required on this run" },
-      { path: P.planExecution, why: "the coverage form's skeleton + per-qid deferral reasons (was the A8 deferred-axis hint)" },
-      { path: P.registerPlan, why: "the coverage form's unit labels and open-block join come from the frozen plan" },
-      { path: P.placementModel, why: "the borderline-declaration count row" },
-      { path: P.placement, why: "the placement RULINGS TAIL, carried as data on a corrective pass (P5)" },
-      { path: P.ownerScreen, why: "the owner×element screen receipt (P2-B)" },
-    ],
-  },
   {
     id: "skeptic-deferral-extra", stage: "skeptic",
     reads: (P, { axes = [] } = {}) => [

@@ -117,13 +117,16 @@ test("EVERY driver-written form is wired into a writeReturn call", (t) => {
   // B — the dispositions paths are DELIBERATELY excluded: since the typed transport they are path
   // ANCHORS for the tool-written `_driver/` accumulator (dispositions_path in the spec), not files any
   // seat fills, and wiring one into a closing line would tell a seat to write a file nobody reads.
-  // The typed transports shrank this population on purpose: the dispositions paths went with B, and the
+  // The typed transports shrank this population on purpose: the dispositions paths went with B, the
   // coverage form's path went with the register-digest conversion (statuses ride record_coverage into a
-  // `_driver/` accumulator no closing line may name). placement-form is the one seat-filled form left.
-  const declared = [...src.matchAll(/^\s{4}(\w*(?:Form|Dispositions|DispositionsHalf))\s*:/gm)].map((m) => m[1])
+  // `_driver/` accumulator no closing line may name), and placement-form, the last seat-filled form, went
+  // with the placement stage when step 3's owner judgment replaced it. The population is EMPTY today, so
+  // the reader is proven on a probe line instead: an empty result must mean no form, not a broken reader.
+  const reader = (text) => [...text.matchAll(/^\s{4}(\w*(?:Form|Dispositions|DispositionsHalf))\s*:/gm)].map((m) => m[1])
     .filter((f) => !/^commonLawDispositions/.test(f));
-  assert.ok(declared.length >= 1,
-    `expected the declared forms from paths(), found ${JSON.stringify(declared)} — the reader is broken, not the wiring`);
+  assert.deepEqual(reader('    probeForm: p("probe-form.json"),\n'), ["probeForm"],
+    "the reader finds no form in a line that declares one — the reader is broken, not the wiring");
+  const declared = reader(src);
 
   const calls = [...src.matchAll(/writeReturn\([^)]*\)[^)]*\)/g)].map((m) => m[0]);
   // 19 -> 16: the three send stages each closed with a `writeReturn(<their receipt>)`, and all
@@ -140,14 +143,16 @@ test("EVERY driver-written form is wired into a writeReturn call", (t) => {
   // above it are — its dispatch names no output path, because the driver renders the findings document
   // off `record_register_digest`. One conversion, one call, exactly as the paragraph above predicts, and
   // the floor is lowered by that one rather than re-fitted to the current count.
-  assert.ok(calls.length >= 14, `expected every dispatch's closing call, found ${calls.length}`);
+  // 14 -> 13 when step 3's owner judgment replaced placement: `writeReturn(P.placement, [P.placementForm])`
+  // went with the stage, and the judges write nothing themselves.
+  assert.ok(calls.length >= 13, `expected every dispatch's closing call, found ${calls.length}`);
 
   const unwired = declared.filter((f) => !calls.some((c) => c.includes(`P.${f}`)));
   assert.deepEqual(unwired, [],
     `these forms are declared in paths() but reach no dispatch's closing line: ${unwired.join(", ")}`);
 });
 
-test("the form-bearing seats are wired, and the coverage form is UNCONDITIONAL", () => {
+test("the bare seats stay bare, and no dispatch names a retired form", () => {
   const src = readFileSync(join(ROOT, "stages.mjs"), "utf8");
   // B — the meaning seats are NOT form-bearing any more: rulings ride `record_dispositions`, so their
   // closing lines are the BARE shape and must stay it (a form list here would re-teach the dead file).
@@ -155,7 +160,7 @@ test("the form-bearing seats are wired, and the coverage form is UNCONDITIONAL",
   assert.ok(src.includes("writeReturn(P.commonLawHalf(half))"), "meaning lane, halves — bare");
   assert.ok(!src.includes("[P.commonLawDispositions]") && !src.includes("[P.commonLawDispositionsHalf(half)]"),
     "no dispatch may name the retired dispositions file as a checked form");
-  assert.ok(src.includes("writeReturn(P.placement, [P.placementForm])"), "placement seat");
+  assert.ok(!src.includes("P.placementForm"), "the placement seat's form left with the stage, and no dispatch names it");
   // Typed transport (the register-digest coverage conversion — B's pattern one lane over): the digest
   // seat is NOT form-bearing any more. Statuses ride `record_coverage` into the `_driver/` accumulator,
   // the seat-facing form copy is dead, and the closing line is the BARE shape and must stay it — a form

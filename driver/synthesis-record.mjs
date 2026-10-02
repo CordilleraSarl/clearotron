@@ -52,6 +52,7 @@ import { findCoverageRecommendations } from "./verify.mjs";
 import { declinationCallPaths, readDeclinations } from "./declination-tool.mjs";   // — the seat's own declines, read by the driver never asserted by the seat
 import { reconcileDeclinationDuty, declinationDutyRefusal } from "./declination-duty.mjs";
 import { findingUris } from "./record-carry.mjs";   // one derivation of "which records did the findings name", called not copied
+import { stampDecidedRatings } from "./decision-ratings.mjs";
 
 export const NARRATIVE_FILE = "narrative.md";
 export const FINDINGS_FILE = "findings.json";
@@ -268,8 +269,8 @@ export function withoutWithheldRows(rows, ledger) {
   return (Array.isArray(rows) ? rows : []).filter((r) => !namesIn(r?.area).some((n) => withheld.has(n)));
 }
 
-export function acceptSynthesis(params, { asks = [], ledger = null, manifest = null, method = undefined, methodInvalid = null, owed = null, declined = null } = {}) {
-  const doc = params?.findings;
+export function acceptSynthesis(params, { asks = [], ledger = null, manifest = null, method = undefined, methodInvalid = null, owed = null, declined = null, decisions = null } = {}) {
+  let doc = params?.findings;
   if (!doc || typeof doc !== "object" || Array.isArray(doc)) {
     return { ok: false, reason: "synthesis_findings_missing: `findings` must be the findings document object { schema_version, rated_under_framework, findings, coverage, … } — this is the record the report and the workbook are built from, and there is no path that renders without it" };
   }
@@ -371,6 +372,17 @@ export function acceptSynthesis(params, { asks = [], ledger = null, manifest = n
     coverage: { read: n.coverage?.read, rows },
     calibration: n.calibration, askAnswers: doc.ask_answers,
   });
+  // ── THE RATING IS THE JUDGES' (owner, 2026-10-01 and 2026-10-02; decision-ratings.mjs). On a run judged
+  // by owner, code stamps each finding's band and its two record reads from the merged decisions before
+  // anything reads it, so no band the call carried survives. A finding no carried owner matches, or a rated
+  // owner placed "off-field", is refused here, where restating is free. The framework's method no longer
+  // polices the band either: reasoning a band is not this seat's work any more.
+  if (decisions) {
+    const stamped = stampDecidedRatings(doc, decisions, manifest);
+    if (stamped.refusals.length) return { ok: false, reason: stamped.refusals.join("; ") };
+    doc = stamped.doc;
+    method = undefined;
+  }
   let findings = renderFindings(doc);
 
   // ── THE ROUND-TRIP. Rendered bytes → the shipped parsers → exactly what was asked for. ───────────
@@ -542,7 +554,11 @@ export function driverReadsFor(runDir) {
       declined = d.present ? [...d.byUri.keys()] : null;
     }
   } catch { declined = null; }
+  // Step 3's merged decisions, at the run root: on a run judged by owner they rate every finding.
+  let decisions = null;
+  try { decisions = JSON.parse(readFileSync(join(dir0, "owner-decisions.json"), "utf8")); } catch { decisions = null; }
   return {
+    decisions,
     asks: Array.isArray(asksRaw) ? asksRaw : [],
     ledger: readLedger(dir0),
     manifest: read("framework.json"),
@@ -607,7 +623,7 @@ export function recordSynthesis(runDir, received, opts = {}) {
   const auto = driverReadsFor(dir0);
   const { asks = auto.asks, ledger = auto.ledger, manifest = auto.manifest,
     method = auto.method, methodInvalid = auto.methodInvalid ?? null,
-    owed = auto.owed, declined = auto.declined,
+    owed = auto.owed, declined = auto.declined, decisions = auto.decisions,
     now = () => new Date().toISOString() } = opts;
   const { dir, payload, accepted, refusals } = synthesisCallPaths(dir0);
   // Its sibling rule — ONE FILE PER CALL, refusals included. This used to
@@ -643,7 +659,7 @@ export function recordSynthesis(runDir, received, opts = {}) {
     call = merged.merged;
   }
 
-  const v = acceptSynthesis(call, { asks, ledger, manifest, method, methodInvalid, owed, declined });
+  const v = acceptSynthesis(call, { asks, ledger, manifest, method, methodInvalid, owed, declined, decisions });
   if (!v.ok) {
     noteRefusal(v.reason);
     return { written: null, refused: v.reason,

@@ -66,7 +66,7 @@ quieter. Continuing silently is not one of the two options.
 
 ## The stage table
 
-All 16 stages, exactly as declared in `stages.mjs` (`STAGES`). Timeouts are
+All 15 stages, exactly as declared in `stages.mjs` (`STAGES`). Timeouts are
 seconds; the engine's hard kill lands at `timeoutSec + 60`. An empty stall
 column means the global watchdog (`CLEAROTRON_STALL_MS`, 120 s) applies. Fatality is what the pipeline
 does after the stage's full retry ladder fails ([03 §5](03-run-lifecycle.md#5--failure-handling)).
@@ -79,16 +79,15 @@ does after the stage's full retry ladder fails ([03 §5](03-run-lifecycle.md#5--
 | 4 | `common-law` | haiku · low | 2250 / 1100 | `common-law-findings.md` (+ grid ledger, plugin-written) | fatal at fan-in |
 | 5 | `common-law-half` | per seat: `COMMON_LAW_SEAT_TIER` — halves `a`/`b` haiku · low; meaning seat `m` `CLEAROTRON_MEANING_SEAT_MODEL` \|\| haiku · low | 2250 / 1100 | `common-law-findings.half-{a,b,m}.md` (+ per-seat grid ledgers) | fatal at fan-in; one-half transient quarantine allowed |
 | 6 | `register-unit` | per axis: `saturation-probe` haiku · off; sweeps sonnet · adaptive | 1500 / 1100 | `register-units/<axis>.md` + `<axis>-band.json` (plan mode: tool-written, qid-stamped) | fatal at fan-in (after band-vocabulary quarantine / collapsed-band repair) |
-| 7 | `placement-inquiry` | opus · high | 2700 / 600 | `placement-recommendations.md` | fatal |
-| 8 | `register-digest` | opus · **low** (was high until 2026-08-01 — 3.49× wall/output against a 1.03× fixed-effort control, with no detectable effect on which records it tiers; override an arm with `CLEAROTRON_STAGE_THINKING`) | 2400 / 900 | `register-findings.md` (coverage-ledger JSON is code-derived from its prose) | fatal (every digest pass) |
-| 9 | `skeptic` | sonnet · high | 600 / 600 | `skeptic-flags.md` (verbatim `ESCALATE: <axis>` lines) | non-fatal (no escalation on failure) |
-| 10 | `frame-diff` | sonnet · low | 600 / — | `frame-diff.md` + `frame-diff.json` | non-fatal (no reopen) |
-| 11 | `synthesis` | `CLEAROTRON_SYNTHESIS_MODEL` \|\| opus · high | 2500 / 900 | `narrative.md` + **`findings.json`** (schema v7 — `FINDINGS_SCHEMA_VERSION`, interpolated into the contract the stage message dictates: `findings`, `coverage`, `mark_assessment`, `four_answers`, `actions`, `coverage_judgment` and `rated_under_framework`, plus `context_notes` / `ask_answers` where they apply) | quasi-fatal: unrepaired finding defects are terminal; corrective re-synthesis is fatal on failure |
-| 12 | `case-law` | sonnet · adaptive | 900 / — | `case-law-findings.md` | non-fatal; conditional on the PRODUCT — `decideCaseLaw` (`pipeline.mjs`) runs it on **every** `full-country-search`, because the case-law and opposition reading is what that product IS and `policy.caseLaw` is set from the product spec. A narrative that turns on a precedent or an opposition is the second, redundant arm there; on any other product that reading is recorded as `declined`, never run |
-| 13 | `narrative-refutation` | opus · high | 900 / 600 | `senior-eye-review.md` (verdict on first line) | fatal: the STAGE failing to produce a review. Its **verdict** is not — a still-BLOCKING verdict delivers (ruling 2026-08-26), see [03](03-run-lifecycle.md) step 12 |
-| 14 | `report-overview` | sonnet · low | 900 / — | `report-overview.md` (shell only; cards + "Only you can close these" are code-built) | fatal |
-| 15 | `report-card` | sonnet · low | 600 / — | `report-cards/<ord>.md` | non-fatal per card (structured-only fallback) |
-| 16 | `doubt-closure` | sonnet · low | 300 / — | `doubt-closure.md` (dictated `SETTLED`/`IMMATERIAL`/`OPEN` lines; code re-verifies every quote) | non-fatal (the open doubts and asks ship `OPEN`, as they would without the stage) |
+| 7 | `owner-judgment` | opus · high (two sessions, `owner-judgment:1` and `:2`, each alone and confined) | 1800 / 600 | `_driver/owner-judgment-<n>.json` (written by the driver from the session's form; checked against the run's own records and the company's scale), then `owner-decisions.json` and `_driver/owner-fates.json` written by code from the answers taken | fatal only when neither answer can be taken; one judge failing is recorded and the step goes on with the other |
+| 8 | `skeptic` | sonnet · high | 600 / 600 | `skeptic-flags.md` (verbatim `ESCALATE: <axis>` lines) | non-fatal (no escalation on failure) |
+| 9 | `frame-diff` | sonnet · low | 600 / — | `frame-diff.md` + `frame-diff.json` | non-fatal (no reopen) |
+| 10 | `synthesis` | `CLEAROTRON_SYNTHESIS_MODEL` \|\| opus · high | 2500 / 900 | `narrative.md` + **`findings.json`** (schema v7 — `FINDINGS_SCHEMA_VERSION`, interpolated into the contract the stage message dictates: `findings`, `coverage`, `mark_assessment`, `four_answers`, `actions`, `coverage_judgment` and `rated_under_framework`, plus `context_notes` / `ask_answers` where they apply) | quasi-fatal: unrepaired finding defects are terminal; corrective re-synthesis is fatal on failure |
+| 11 | `case-law` | sonnet · adaptive | 900 / — | `case-law-findings.md` | non-fatal; conditional on the PRODUCT — `decideCaseLaw` (`pipeline.mjs`) runs it on **every** `full-country-search`, because the case-law and opposition reading is what that product IS and `policy.caseLaw` is set from the product spec. A narrative that turns on a precedent or an opposition is the second, redundant arm there; on any other product that reading is recorded as `declined`, never run |
+| 12 | `narrative-refutation` | opus · high | 900 / 600 | `senior-eye-review.md` (verdict on first line) | fatal: the STAGE failing to produce a review. Its **verdict** is not — a still-BLOCKING verdict delivers (ruling 2026-08-26), see [03](03-run-lifecycle.md) step 12 |
+| 13 | `report-overview` | sonnet · low | 900 / — | `report-overview.md` (shell only; cards + "Only you can close these" are code-built) | fatal |
+| 14 | `report-card` | sonnet · low | 600 / — | `report-cards/<ord>.md` | non-fatal per card (structured-only fallback) |
+| 15 | `doubt-closure` | sonnet · low | 300 / — | `doubt-closure.md` (dictated `SETTLED`/`IMMATERIAL`/`OPEN` lines; code re-verifies every quote) | non-fatal (the open doubts and asks ship `OPEN`, as they would without the stage) |
 
 Notes that keep maintainers out of trouble (all verified against code):
 
@@ -331,7 +330,6 @@ cannot be read as one list.
 
 | Var | Default | Meaning |
 |---|---|---|
-| `CLEAROTRON_SCREEN_GATE_UNNAMED` | unset (⇒ evidence only) | `enforce` arms the unnamed-row screen gate as terminal. Unset, the run RECORDS whether it enumerated anything under each unnamed row and does not fail — the evidence a decision about the semantics would be built from. Named in `.env.example`; this is the reference row. |
 
 
 ### Credentials and gather services (names only — values live in the deployment `.env`)
@@ -368,7 +366,7 @@ cannot be read as one list.
 |---|---|---|
 | `CLEAROTRON_SYNTHESIS_MODEL` | unset (⇒ opus) | Stage-specific synthesis model override — the live A/B toggle (e.g. `fable`). Alias must be registered in the engine map or the dispatch REFUSES by name (; it used to run sonnet silently and log the alias asked for). Read at module load; effective per fresh oneshot process. |
 | `CLEAROTRON_MEANING_SEAT_MODEL` | unset (⇒ `haiku`) | The common-law MEANING seat's model (`COMMON_LAW_SEAT_TIER[MEANING_SEAT]`, `stages.mjs`). The default moved sonnet → haiku on measured evidence: 2 attempts / 423 s against 1 attempt / 1674 s for the same outcome. **Margin:** sufficient at every load the test suite exercises, but at its densest scenario haiku used the last rung of the retry ladder — suspect this variable first if a dense matter's meaning seat goes terminal. Set`sonnet` to roll back with no code change. The thinking budget is NOT overridable (one variable, by design). |
-| `CLEAROTRON_STAGE_THINKING` | unset (⇒ each stage's declared tier) | Per-stage thinking-tier override, `<stage>=<tier>[,…]` (e.g. `register-digest=high`) — the A/B instrument, so a suite arm needs no code fork or redeploy between runs. Thinking only: models are deliberately not overridable here, so one arm can never move two variables. **The env override is a dev/test instrument**; a permanent change edits the tier in `stages.mjs` and ships. Unknown stage or tier **throws** — `effortFor()` falls back to `medium`, so a typo would otherwise run a stage at a tier nobody chose and every number measured against it would be wrong. Read per call, so an arm can flip mid-process. |
+| `CLEAROTRON_STAGE_THINKING` | unset (⇒ each stage's declared tier) | Per-stage thinking-tier override, `<stage>=<tier>[,…]` (e.g. `skeptic=low`) — the A/B instrument, so a suite arm needs no code fork or redeploy between runs. Thinking only: models are deliberately not overridable here, so one arm can never move two variables. **The env override is a dev/test instrument**; a permanent change edits the tier in `stages.mjs` and ships. Unknown stage or tier **throws** — `effortFor()` falls back to `medium`, so a typo would otherwise run a stage at a tier nobody chose and every number measured against it would be wrong. Read per call, so an arm can flip mid-process. |
 | `CLEAROTRON_DUMP_JSON` | unset | Dump each attempt's raw engine envelope to `_driver/<stage>.attempt<N>.rawjson.json`. Opt-in: any value except `0`/`off`/`false`/`no`/empty arms it. |
 | `CLEAROTRON_DISPATCH_RECORD` | **on** | Write the verbatim message of every stage dispatch to `_driver/<stage>.attempt<N>[.repair<M>].dispatch.txt`, with `{file, sha, bytes, chars, kind}` on the attempt row. **Default ON** — `0`/`off`/`false`/`no` disarms it. Unlike `CLEAROTRON_DUMP_JSON` beside it, this is opt-OUT: the question it answers ("was the model given this?") is asked *after* the run that raised it, so a flag someone had to remember would be off on exactly the run that needed it. The files carry the company's identity verbatim and are deliberately not in the artifact table. |
 | `CLEAROTRON_GATHER_SESSION_KEY` / `CLEAROTRON_GATHER_AGENT` / `CLEAROTRON_GATHER_SESSION_ID` | set per stage | Telemetry attribution into the provider-call ledger (set by the gather config; not operator-set). |

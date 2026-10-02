@@ -23,7 +23,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import { driverDir } from "../shared/driver-dir.mjs";   // the name of `_driver/` lives in ONE file
 import { undeclaredKeys } from "../shared/undeclared-keys.mjs";
 const MCP = new URL("../driver/engine/mcp/", import.meta.url).pathname;
-const SERVERS=["recording-server.mjs","coverage-server.mjs","dispositions-server.mjs","declination-server.mjs","unit-note-server.mjs"];
+const SERVERS=["recording-server.mjs","dispositions-server.mjs","declination-server.mjs","unit-note-server.mjs"];
 const ask=(s)=>new Promise((res)=>{const c=spawn(process.execPath,[join(MCP,s)],{stdio:["pipe","pipe","pipe"],env:{...process.env,PERPLEXITY_API_KEY:"x"}});
  let b="",o=null;const d=()=>{try{c.kill("SIGKILL")}catch{};res(o||[])};const t=setTimeout(d,8000);
  c.stdout.on("data",x=>{b+=x;let n;while((n=b.indexOf("\n"))>=0){const l=b.slice(0,n).trim();b=b.slice(n+1);if(!l)continue;

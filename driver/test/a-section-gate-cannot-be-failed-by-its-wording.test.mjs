@@ -103,7 +103,7 @@ function seatWrittenValidators() {
 const SEAT_WRITTEN = {
   commonLaw: { anchor: "findings", why: "clearance-common-law's findings file, hand-written by the seat — the artifact 129 was filed about" },
   commonLawHalf: { anchor: "findings", why: "the same document per grid half; the meaning seat (half m) is judged on findings + audit-trail alone" },
-  placement: { anchor: "placement-tiers", why: "placements.json is rendered from the form, but the .md is the seat's — stages.mjs's own contract declaration says `missing:placement tiers` checks the md for tier words" },
+  ownerJudgment: { anchor: null, why: "a judge's answer is the session's JSON form, written as it arrived — it has no prose section gate, so there is nothing here to key structurally" },
   caseLaw: { anchor: null, why: "nonEmpty plus sibling-JSON joins only — it has no prose section gate, so there is nothing here to key structurally" },
 };
 
@@ -130,21 +130,21 @@ test("THE CLASS: every declared anchor is routed through needsSection, never thr
     if (!anchor) continue;
     // ON THE TOKEN, never on the call. The first cut of this arm allowed `needsSection(c, [` as an
     // alternative, so ANY needsSection call anywhere in the file satisfied it — and the plant that
-    // put placement's gate back to a bare needs() stayed green. That is the exact defect this file
+    // put a gate back to a bare needs() stayed green. That is the exact defect this file
     // exists to catch, committed inside the arm written to catch it. The anchor is the subject.
     const routed = new RegExp(`needsSection\\(c,\\s*"${anchor}"`).test(VERIFY)
       || VERIFY.includes(`anchor: "${anchor}"`);
     assert.ok(routed,
-      `${name}'s gate must reach its section through needsSection/needsSectionsLabeled so the dictated `
+      `${name}'s gate must reach its section through needsSection so the dictated `
       + `"${anchor}" anchor is what carries it — a bare needs() here is the class reopening`);
   }
 });
 
 test("THE CLASS: a driver-rendered artifact is NOT dragged into the contract", () => {
   // The false-red direction, which costs more than the false-green: an arm that demanded an anchor
-  // everywhere would red on register-findings.md and report-cards/<ord>.md, both correct.
+  // everywhere would red on report-cards/<ord>.md, which is correct.
   const derived = seatWrittenValidators();
-  for (const v of ["registerFindings", "reportCard", "reportOverview", "narrative"]) {
+  for (const v of ["reportCard", "reportOverview", "narrative"]) {
     assert.ok(!derived.has(v),
       `${v} judges an artifact the driver renders — a prose key there is code checking its own render, `
       + "and requiring an anchor would mean the driver writing a token to satisfy itself");
@@ -215,69 +215,6 @@ test("a document with NO anchor is judged exactly as before — archived replays
     "a synonym still fails WITHOUT an anchor — the fallback is unchanged, not widened further");
 });
 
-test("needsSection and needsSectionsLabeled both exist, and the labelled token shape is preserved", () => {
+test("needsSection exists — the single-section form every declared anchor routes through", () => {
   assert.match(VERIFY, /function needsSection\(/, "the single-section form");
-  assert.match(VERIFY, /function needsSectionsLabeled\(/, "the multi-section form for findings+ledger");
-  // correctionHint branches on the label TEXT. A renamed token silently
-  // downgrades the seat's corrective hint to a generic one, which is how a run stalls without saying why.
-  assert.match(VERIFY, /"findings\+ledger"/,
-    "the findings+ledger label must survive verbatim — correctionHint branches on it");
-  assert.match(VERIFY, /which: "coverage-ledger"/,
-    "and the appended member, so the emitted token stays missing:findings+ledger(coverage-ledger)");
-});
-
-// ── PLACEMENT — the member the three-string arm was green through ──────────────────────────────────
-//
-// `placement-recommendations.md` is written by the placement-inquiry seat. Its gate was
-// `needs(c, [/tier|placement|sheet|level/i], "placement tiers")`: four words matched anywhere, which
-// reads as unfailable until a seat words all four dictated tier headings without reaching for one of
-// them. "Top conflicts / Secondary watch / Annex / Filtered out" is a good answer, and it was refused.
-const PLACEMENT_SKILL = readFileSync(join(ROOT, "skills", "placement-inquiry", "SKILL.md"), "utf8");
-const PLACEMENT_PATH = "/nonexistent/placement-recommendations.md";
-const PAD = "Padding so the specimen clears the nonEmpty floor and the structural arm is what decides it.";
-
-const PLACEMENT_DOC = (headings, anchor) => [
-  "# Candidate grouping — TESTMARK", "", "## Band reconciliation", "", PAD, "",
-  `## ${headings[0]}`, anchor ? "<!-- clearotron:section=placement-tiers -->" : "", "", "- ACME (US)", "",
-  ...headings.slice(1).flatMap((h) => [`## ${h}`, "", "- CANDIDATE", ""]), PAD, "",
-].join("\n");
-
-// Tier headings that touch NONE of tier / placement / sheet / level.
-const SYNONYM_TIERS = ["Top conflicts", "Secondary watch", "Annex", "Filtered out"];
-const DICTATED_TIERS = ["Headline candidates", "Sheet 2 / register watch", "Watchlist annex", "Out-of-scope / filtered"];
-
-test("the placement skill dictates the anchor, or the gate accepts a token no seat ever emits", () => {
-  assert.ok(PLACEMENT_SKILL.includes("<!-- clearotron:section=placement-tiers -->"),
-    "placement-inquiry/SKILL.md must dictate the anchor verbatim — a gate keyed on a token nothing "
-    + "writes is the fully-composed-and-unreachable shape, and it reads exactly like a fix");
-  assert.match(PLACEMENT_SKILL, /copy it verbatim/i,
-    "a template line reads as illustrative; the anchor needs an instruction");
-  assert.match(PLACEMENT_SKILL, /Word the headings however reads best/i,
-    "the point of the contract is that wording stops being a failure mode — say so");
-});
-
-test("DRIVEN: synonym tier headings with no anchor are refused, on the token the ladder reads", () => {
-  const r = validators.placement(PLACEMENT_PATH, PLACEMENT_DOC(SYNONYM_TIERS, false));
-  assert.equal(r.ok, false);
-  assert.equal(r.reason, "missing:placement tiers",
-    "this is 129's failure at the site it never named: four correct tier sections, refused for wording");
-});
-
-test("DRIVEN: the same document with the anchor passes, and the dictated wording still passes without one", () => {
-  assert.equal(validators.placement(PLACEMENT_PATH, PLACEMENT_DOC(SYNONYM_TIERS, true)).ok, true,
-    "the anchor must carry headings the prose regex cannot see");
-  assert.equal(validators.placement(PLACEMENT_PATH, PLACEMENT_DOC(DICTATED_TIERS, false)).ok, true,
-    "and an archived run carrying no anchor is judged exactly as before — replay verdicts cannot move");
-});
-
-// THE MEASUREMENT THAT LOOKED LIKE PROOF AND WAS NOT. Kept as an arm because the next reader will
-// otherwise build the same specimen and draw the same wrong conclusion from it.
-test("the anchor token satisfies the OLD regex by coincidence — so the DICTATION is the fix, not the alternation", () => {
-  const OLD = /tier|placement|sheet|level/i;
-  assert.ok(OLD.test("<!-- clearotron:section=placement-tiers -->"),
-    "the token contains the literal words 'placement' and 'tier', so a document carrying it passed the "
-    + "bare regex too — a specimen built to show needsSection working goes green against the pre-change tree");
-  assert.ok(!OLD.test("<!-- clearotron:section=groupings -->"),
-    "which is what routing through needsSection buys: renaming the token to anything without one of the "
-    + "four words in it stops being a silent regression");
 });
