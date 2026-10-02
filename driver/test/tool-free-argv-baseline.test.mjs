@@ -37,7 +37,7 @@ import { STAGES } from "../stages.mjs";
 import { KO_STAGES } from "../stages-knockout.mjs";
 import { readFileSync } from "node:fs";
 
-// The gateway's own resolution (gateway.mjs:667-672), reproduced call for call. Not a paraphrase: if this
+// The gateway's own resolution (gateway.mjs:654-659), reproduced call for call. Not a paraphrase: if this
 // drifts from the gateway the baseline stops describing the engine, so the drift test below pins it.
 function surfaceFor(stage) {
   const groups = toolGroupsForStage(stage);

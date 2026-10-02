@@ -100,8 +100,8 @@ for (const path of Object.keys(PUBLISH_INPUTS)) {
 const KNOCKOUT_FILES = [
   { path: "knockout-findings.json", required: true, why: "report-registry.mjs:66 the batch findings ARE the report source" },
   { path: "knockout-plan.json", why: "report-registry.mjs:77 plan" },
-  { path: "knockout-assessment.md", why: "the merged prose the lane writes (gateway.mjs:184)" },
-  { path: "knockout-frame.md", why: "the batch scope note (gateway.mjs:65)" },
+  { path: "knockout-assessment.md", why: "the merged prose the lane writes (gateway.mjs:174)" },
+  { path: "knockout-frame.md", why: "the batch scope note (gateway.mjs:63)" },
   { path: "email-body.md", why: "the delivery prose the lane writes beside the assessment" },
   { path: "status.json", why: "publish/index.mjs:1028 machineLedgerNote + markName" },
   { path: "audit.md", why: "publish/index.mjs:1022 auditMd, the audit workbook source" },

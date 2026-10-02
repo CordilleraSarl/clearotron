@@ -149,7 +149,7 @@ function nonEmpty(content, min = MIN) {
  * true for only one lane, and put back. Appending keeps every existing matcher matching — they all test
  * substrings — and gives the seat the one word it was missing.
  *
- * It also sharpens `noChange` (`gateway.mjs:1220`, "this attempt's token equals the previous attempt's"):
+ * It also sharpens `noChange` (`gateway.mjs:1207`, "this attempt's token equals the previous attempt's"):
  * a file that starts failing a DIFFERENT member now reads as changed instead of as a stalled retry.
  *
  * `names` is positional against `markers` and optional; a call site that omits it emits exactly the token

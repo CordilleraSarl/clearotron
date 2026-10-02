@@ -1122,7 +1122,7 @@ export const VARIANT_CATEGORY_BRIEF =
 // on an element a move was supposed to discharge is indistinguishable from a relabel.
 //
 // `tokens` lists the validator failure tokens that SPEAK ABOUT that element. PER STAGE, never global:
-// `too_short` and `missing` come from the shared nonEmpty()/needs() helpers (verify.mjs:123-133) and are
+// `too_short` and `missing` come from the shared nonEmpty()/needs() helpers (verify.mjs:121-131) and are
 // legitimately owned by DIFFERENT elements in matter-frame and clearance-variants. A global
 // token→element map sees several owners for one token and "fixes" a partition that was never violated.
 //
@@ -1203,7 +1203,7 @@ export const STAGES = {
       },
       "Applicant's own & affiliated marks — the self-exclusion set (mandatory)": {
         class: "judgment", tokens: [],
-        why: "naming affiliates beyond the seed is judgment; the profile half is already pre-bound — stages.mjs:844 hands the model exclusionSeed verbatim and _driver/instructed-scope.json carries job.customer [citation unverified]",
+        why: "naming affiliates beyond the seed is judgment; the profile half is already pre-bound — stages.mjs:837 hands the model exclusionSeed verbatim and _driver/instructed-scope.json carries job.customer [citation unverified]",
       },
       "Campaign shape (stated) — the intake's campaign facts retyped from the `Stated campaign shape` line the dispatch already carries": {
         class: "mechanical:code-rendered", tokens: [],
@@ -1351,7 +1351,7 @@ export const STAGES = {
       },
       "mark — \"<the mark verbatim>\"": {
         class: "mechanical:pre-bound", tokens: ["variantmodel_mark_missing"],
-        why: "_driver/instructed-scope.json.marks holds it and stage-context.mjs:175 binds that file to this stage. variant-manifest-model.mjs:225-231 already concedes the field is not the model's: it is excluded from the term-shape gate because \"the stage is told to emit it VERBATIM, and it arrives from the job… a value this stage CANNOT restate\" [citation unverified]",
+        why: "_driver/instructed-scope.json.marks holds it and stage-context.mjs:231 binds that file to this stage. variant-manifest-model.mjs:225-231 already concedes the field is not the model's: it is excluded from the term-shape gate because \"the stage is told to emit it VERBATIM, and it arrives from the job… a value this stage CANNOT restate\" [citation unverified]",
       },
       "dominant_element — the distinctive anchor the sweep enumerates": {
         class: "judgment", tokens: ["variantmodel_dominant_element_missing"],
@@ -1371,7 +1371,7 @@ export const STAGES = {
       },
       "variants[].value — the search terms themselves": {
         class: "judgment", tokens: ["variantmodel_term_markup"],
-        why: "the repo forbids code from minting a search term twice over — stages.mjs:771-773 and variant-manifest-model.mjs:387 (\"VALIDATES, NEVER GENERATES… the moment code mints a search term, judgment has moved into the funnel\"). variantmodel_term_markup is therefore a shape rule that stays model-facing BY DESIGN; do not reclassify it mechanical to satisfy E6. It also walks dominant_element and elements[].value (variantTermShapeGaps), which is why they carry no token of their own [citation unverified]",
+        why: "the repo forbids code from minting a search term twice over — stages.mjs:764-766 and variant-manifest-model.mjs:387 (\"VALIDATES, NEVER GENERATES… the moment code mints a search term, judgment has moved into the funnel\"). variantmodel_term_markup is therefore a shape rule that stays model-facing BY DESIGN; do not reclassify it mechanical to satisfy E6. It also walks dominant_element and elements[].value (variantTermShapeGaps), which is why they carry no token of their own [citation unverified]",
       },
       "variants[].category — one of core|phonetic|visual|transliteration|numeric|composite|other": {
         class: "judgment", tokens: [],
@@ -1431,7 +1431,7 @@ export const STAGES = {
       },
       "### Scope ledger rows — {Layer, Item, Status: applied|dropped, Reason, Reopen trigger} across variant / field / source / jurisdiction": {
         class: "judgment", tokens: [],
-        why: "defending an omission with the concrete observation that should reopen it is the whole judgment. The ROW SHAPE is mechanical — scope-ledger.mjs:123-126 parses the table into scope-ledger.json — and the jurisdiction rows are largely a re-carry of the matter frame's own Scope-jurisdictions line [citation unverified]",
+        why: "defending an omission with the concrete observation that should reopen it is the whole judgment. The ROW SHAPE is mechanical — scope-ledger.mjs:122-125 parses the table into scope-ledger.json — and the jurisdiction rows are largely a re-carry of the matter frame's own Scope-jurisdictions line [citation unverified]",
       },
       "Prose variant-table category token — translit-<script>, and for Chinese translit-zh-meaning vs translit-zh-phonetic": {
         class: "judgment", tokens: [],
@@ -1649,7 +1649,7 @@ export const STAGES = {
       },
       "PR / reputational section — the readings the meaning sweep surfaced, per form, each labelled benign or loaded": {
         class: "judgment", tokens: ["connotation_search_missing"],
-        why: "The semantic read of a surfaced passage is the model's. `connotation_search_missing` (verify.mjs:362) fires when the ledger recorded no meaning query at all. [citation unverified]",
+        why: "The semantic read of a surfaced passage is the model's. `connotation_search_missing` (verify.mjs:360) fires when the ledger recorded no meaning query at all. [citation unverified]",
       },
       "`Connotation-search source: <URL | \"perplexity_research — no result\">` line on a clean PR row": {
         class: "mechanical:code-extracted", tokens: ["connotation_search_missing"],
@@ -1968,11 +1968,11 @@ export const STAGES = {
       },
       "named-band block envelope — {state: enumerated|incomplete, query, total_hits, records|fetched+sample+reason}": {
         class: "mechanical:tool-written", tokens: ["named_band_unparseable", "named_band_block_invalid", "named_band_state_invalid", "band_block_unplanned", "named_band_invalid"],
-        why: "#850: M (envelope), tool-written blocks. `band_block_unplanned` (verify.mjs:1297) is the backstop that kills a hand-authored qid-less block — a token that exists only because the legacy lane still offers the duty in the same message. [citation unverified]",
+        why: "#850: M (envelope), tool-written blocks. `band_block_unplanned` (verify.mjs:1291) is the backstop that kills a hand-authored qid-less block — a token that exists only because the legacy lane still offers the duty in the same message. [citation unverified]",
       },
       "enumerated block records carried verbatim — record_id, mark_text, classes, status, owner_name, owner_country, application_date, registration_date, expiry_date, jurisdictions, screen_verdict": {
         class: "mechanical:tool-written", tokens: ["named_band_collapsed"],
-        why: "register_enumerate already returns each record batch-screened; carrying it is transcription. `named_band_collapsed` (verify.mjs:1325, findCollapsedBands) is exactly the recall loss that transcription produces — a slice claiming total_hits with zero records reaching the band. [citation unverified]",
+        why: "register_enumerate already returns each record batch-screened; carrying it is transcription. `named_band_collapsed` (verify.mjs:1319, findCollapsedBands) is exactly the recall loss that transcription produces — a slice claiming total_hits with zero records reaching the band. [citation unverified]",
       },
       "per-axis prose digest — the SHORT AUDIT NOTE at register-units/<axis>.md": {
         class: "judgment", tokens: ["too_short"],
@@ -1984,7 +1984,7 @@ export const STAGES = {
       },
       "axis applicability — decide the axis has no work in this manifest and write a one-line \"not applicable\" band block": {
         class: "judgment", tokens: ["band_block_unplanned"],
-        why: "The applicability call is the model's; the block is not. Under the supplemental lane a seat obeying unit.md:89-91 writes exactly the qid-less block verify.mjs:1297 kills. The skill file and the stage message contradict each other on the one path the skill offers for an empty axis. [citation unverified]",
+        why: "The applicability call is the model's; the block is not. Under the supplemental lane a seat obeying unit.md:89-91 writes exactly the qid-less block verify.mjs:1291 kills. The skill file and the stage message contradict each other on the one path the skill offers for an empty axis. [citation unverified]",
       },
       "reading the band back and judging it — keep proposing until the axis's dangerous named band is covered": {
         class: "judgment", tokens: [],
@@ -2245,11 +2245,11 @@ export const STAGES = {
       },
       "the escalation decision — which register axes carry a material, unresolved, genuinely closeable gap, and the one-line reason for each": {
         class: "judgment", tokens: [],
-        why: "Whether a documented coverage-limited row, a capability-gap deferral or a fresh concern on a confirmed-clean row warrants spending a re-run. The driver hands the coverage/execution truth in as a computed table (stages.mjs:1479; skepticDeferralExtra) precisely so this is a call over data rather than a re-derivation — but the call itself is nobody else's. [citation unverified]",
+        why: "Whether a documented coverage-limited row, a capability-gap deferral or a fresh concern on a confirmed-clean row warrants spending a re-run. The driver hands the coverage/execution truth in as a computed table (stages.mjs:1471; skepticDeferralExtra) precisely so this is a call over data rather than a re-derivation — but the call itself is nobody else's. [citation unverified]",
       },
       "escalation decisions — one {axis, reason} per axis that must be re-run, sent through record_skeptic": {
         class: "mechanical:code-rendered", tokens: [],
-        why: "#850 rules the line shape M: typed rows, code renders. The axis is one of the closed list the driver wrote into the same message (`Valid axes: ${axes}`, stages.mjs:2628), and the parse at skeptic-record.mjs:49-53 recognises only /ESCALATE:\\s*<axis>\\b/i per known axis — the em-dash, the reason, the section title and the literal 'none' are parsed by nothing. NO TOKEN: skepticFlags never inspects these lines, so a malformed ESCALATE line is a silent no-escalation, not a failure. [citation unverified]",
+        why: "#850 rules the line shape M: typed rows, code renders. The axis is one of the closed list the driver wrote into the same message (`Valid axes: ${axes}`, stages.mjs:2460), and the parse at skeptic-record.mjs:49-53 recognises only /ESCALATE:\\s*<axis>\\b/i per known axis — the em-dash, the reason, the section title and the literal 'none' are parsed by nothing. NO TOKEN: skepticFlags never inspects these lines, so a malformed ESCALATE line is a silent no-escalation, not a failure. [citation unverified]",
       },
       "the verbatim ESCALATE string dictated for a `translit-too-generic` unit digest": {
         class: "mechanical:code-rendered", tokens: [],
@@ -2257,7 +2257,7 @@ export const STAGES = {
       },
       "the `risk: <category>` field inside that dictated ESCALATE line": {
         class: "mechanical:code-rendered", tokens: [],
-        why: "IT HAS NO CONSUMER AT ALL. stages.mjs:333-336 records that the risk-category filter was deleted, and pipeline.mjs states 'spec-48 D3 — the escalation-risk SHADOW loop (risk-tag parse + would-skip telemetry for the never-enabled CLEAROTRON_ESCALATION_FILTER) is DELETED' at the parse site (envelopeDecision() in pipeline.mjs). The doc block at envelopeDecision() in pipeline.mjs that describes reading the field is a stale header left standing over envelopeDecision — the function it documented is gone. Classed code-rendered because it is not judgment; the correct move is deletion from the skill file. [citation unverified]",
+        why: "IT HAS NO CONSUMER AT ALL. stages.mjs:326-329 records that the risk-category filter was deleted, and pipeline.mjs states 'spec-48 D3 — the escalation-risk SHADOW loop (risk-tag parse + would-skip telemetry for the never-enabled CLEAROTRON_ESCALATION_FILTER) is DELETED' at the parse site (envelopeDecision() in pipeline.mjs). The doc block at envelopeDecision() in pipeline.mjs that describes reading the field is a stale header left standing over envelopeDecision — the function it documented is gone. Classed code-rendered because it is not judgment; the correct move is deletion from the skill file. [citation unverified]",
       },
       "return payload — a 2-3 line summary; the audit itself rides record_skeptic": {
         class: "mechanical:tool-written", tokens: ["skeptic_"],

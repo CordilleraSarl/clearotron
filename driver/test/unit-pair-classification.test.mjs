@@ -68,7 +68,7 @@
 //                               `familyExplained` beside it (a retrieval pattern the reading turn
 //                               withheld, 2026-09-25) has the same shape: it feeds the returned
 //                               `phoneticFamilyExplained` and the same `complete`, off the same band.
-//   · gateway.mjs:1293,1501     the two `wrote` producers — see the disagreement below; both now guard
+//   · gateway.mjs:1335,1576     the two `wrote` producers — see the disagreement below; both now guard
 //                               the empty case, and each reads its own per-turn stat snapshot, which the
 //                               site states.
 //   · grounds-grammar.mjs:89 classifyGroundsNote
@@ -144,7 +144,7 @@
 //                               pins that cut. (CITED BY SYMBOL AND NO LINE, per CONTRIBUTING.md.)
 //
 //  DISAGREE (1), fixed here:
-//   · gateway.mjs:1293   TWO PRODUCERS OF ONE FIELD, TWO UNITS FOR THE EMPTY CASE. The attempt row
+//   · gateway.mjs:1335   TWO PRODUCERS OF ONE FIELD, TWO UNITS FOR THE EMPTY CASE. The attempt row
 //                        answers `files.length ? files.some(…) : null`; the repair row answered
 //                        `files.some(…)`, and `[].some()` is `false`. A stage declaring no expected
 //                        artifact leaves `files` empty, so the same situation was "wrote nothing" on one

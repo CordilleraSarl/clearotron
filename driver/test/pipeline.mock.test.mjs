@@ -2451,7 +2451,7 @@ test("a legitimate unsplit path is NOT a failure: a pre-split resume still deliv
 // It cannot fire on any path the engine has today (both sides of `agrees` come from the one
 // deriveGridSpec call above it), so there is no live run to assert against — the behaviour under test is
 // that the throw EXISTS and sits AFTER the record is durable. Asserted against the module's own source,
-// on the dependency-repair.test.mjs:76-95 precedent, because the failure being guarded is a future edit
+// on the dependency-repair.test.mjs:74-93 precedent, because the failure being guarded is a future edit
 // quietly demoting it back to a recorded row, not a particular run.
 test("selector/record disagreement FAULTS, and the record is written BEFORE the throw", async () => {
   const src = readFileSync(join(HERE, "..", "pipeline.mjs"), "utf8");

@@ -13,7 +13,7 @@
 // not the mechanism that detects it. That is what makes it a guard rather than a pin of today's
 // implementation: it was written RED against the 2026-08-16 activation branch, where arming
 // `disposition_call_required` moved the failure token out of TOTAL_DEFECT_TOKENS' closed two-member
-// form-path list and the veto silently stood down (gateway.mjs:2508 — no `call_*` token was in the
+// form-path list and the veto silently stood down (gateway.mjs:2992 — no `call_*` token was in the
 // list, so under the tool path the veto had no reachable trigger at all). A veto keyed on the counted
 // rulings state passes this test on every transport; a veto keyed on an enumerated token list fails it
 // the day a new token forgets to enrol.

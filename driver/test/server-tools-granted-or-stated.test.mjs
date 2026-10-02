@@ -5,7 +5,7 @@
 //
 // pins, per stage, whether `--allowedTools` / `--mcp-config` / `--strict-mcp-config` are passed and
 // how many tool groups resolved. It says nothing about WHICH tools a granted server exposes, and the two
-// halves of `allowedToolsFor` (gather-config.mjs:293-302) behave in opposite ways:
+// halves of `allowedToolsFor` (gather-config.mjs:228-237) behave in opposite ways:
 //
 //   LOCAL servers   →  `mcp__<key>__<tool>` for each name in the grant table.  ENUMERATED.
 //                      A tool added to the server MODULE grants nothing until the table names it.
