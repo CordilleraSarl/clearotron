@@ -202,7 +202,7 @@ export const E3_BACKLOG = [
     kind: "literal-json-skeleton",
     where: "driver/skills/clearance-common-law/SKILL.md:123-170",
     surface: "skill-file",
-    evidence: "### Format\\n```markdown\\n# Common-law findings — Dawn: Legends of Thornmantle (2026-05-11)\\n\\n## Summary\\n\\n- Perplexity calls executed: 4 …",
+    evidence: "### Format\\n```markdown\\n# Common-law findings — Dusk: Tales of Thornmantle (2026-05-11)\\n\\n## Summary\\n\\n- Perplexity calls executed: 4 …",
     reparsedBy: "driver/publish/audit-from-spine.mjs:14 parseTables → parseSpineFindingBlocks (audit-from-spine.mjs:123) re-parses the common-law finding tables into audit.md",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },

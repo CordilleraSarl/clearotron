@@ -137,7 +137,7 @@ they render as nothing: no reader ever sees them.
 not need to match the template's wording, and you will not be failed for choosing different words.
 
 ```markdown
-# Common-law findings — Dawn: Legends of Thornmantle (2026-05-11)
+# Common-law findings — Dusk: Tales of Thornmantle (2026-05-11)
 
 ## Summary
 
@@ -146,7 +146,7 @@ not need to match the template's wording, and you will not be failed for choosin
 - Findings surfaced: 12 risk-relevant + 3 competitor intel + 1 PR risk
 - Open verification flags: 2
 
-## Findings — Mark: Dawn: Legends of Thornmantle
+## Findings — Mark: Dusk: Tales of Thornmantle
 <!-- clearotron:section=findings -->
 
 ### Consumer-confusion risks (gaming-industry overlap)
@@ -155,7 +155,7 @@ For game-title rows, the `developer_of_record` and `publisher_of_record` columns
 
 | Finding | Source / Platform | URL | developer_of_record | publisher_of_record | Type | Notes |
 |---|---|---|---|---|---|---|
-| "Chronicles of Ember" | Steam | https://... | Dreamatrix | Topware Interactive | Direct conflict — similar gaming title | "Mostly negative" reviews; commercially active 2013/2015 |
+| "Tales of Dusk" | Steam | https://... | Glimmerhouse | Northgale Interactive | Direct conflict — similar gaming title | "Mostly negative" reviews; commercially active 2013/2015 |
 | "Thornmantle" | itch.io | https://... | Thornfall Games | not extracted | Direct conflict — identical game-title | Single-player adventure, "made for SAE Studio 2 Home Brief"; little online presence; not reviewed in 7 years |
 | "Thornmantle: Of Magic and Power" | Moby Games | https://... | not extracted | not extracted | Direct conflict — historical gaming title | Released 2007; status unavailable; verify-publisher flag set |
 | "Thornmantle" Astragate ARPG | News / web | https://... | Astragate | not extracted | Direct conflict — gaming title | Browser game; appears cancelled |
@@ -165,14 +165,14 @@ For game-title rows, the `developer_of_record` and `publisher_of_record` columns
 
 | Finding | Source / Platform | URL | Notes |
 |---|---|---|---|
-| "Raising Your Play" | HP marketing | https://... | HP uses tagline for gaming hardware; no register protection found (flagged for clearance-register cross-check) |
-| 1,600+ "Dawn" titles on Steam | Steam | https://... | Crowded field — supportive evidence |
+| "Raising Your Play" | Brightwick marketing | https://... | Brightwick uses tagline for gaming hardware; no register protection found (flagged for clearance-register cross-check) |
+| 1,600+ "Dusk" titles on Steam | Steam | https://... | Crowded field — supportive evidence |
 
 ### Competitor intelligence
 
 | Finding | Source / Platform | URL | Notes |
 |---|---|---|---|
-| Sony "Pulse Elevate" portfolio | Sony products | https://... | Sony uses "Elevate" in audio products; flagged for clearance-register cross-check |
+| Veltrona "Pulse Raise" portfolio | Veltrona products | https://... | Veltrona uses "Raise" in audio products; flagged for clearance-register cross-check |
 | Foxglade "Borealis" console "Raise Your Play" tagline (prior usage) | Foxglade Interactive marketing | https://... | Client's own prior use — note as supportive |
 
 ### PR / reputational risk
@@ -187,7 +187,7 @@ means *blackberry*" is context, not a clearance: a connotation reads clean only 
 
 | Finding | Source | Notes |
 |---|---|---|
-| meaning readings surfaced | Urban Dictionary / Wikipedia / news / forums | per form, the readings the search returned + benign/loaded label — e.g. `ELEVATE → ordinary verb "raise" (benign)`; near-forms `RAIZE / RAYSE → no slang/gang/offensive reading`. Write `(None identified)` as the *bottom line* only after the readings are laid out and none is loaded. |
+| meaning readings surfaced | Urban Dictionary / Wikipedia / news / forums | per form, the readings the search returned + benign/loaded label — e.g. `RAISE → ordinary verb "lift" (benign)`; near-forms `RAIZE / RAYSE → no slang/gang/offensive reading`. Write `(None identified)` as the *bottom line* only after the readings are laid out and none is loaded. |
 
 A clean PR/connotation row MUST cite its search — add a `**Connotation-search source:** <URL | "perplexity_research — no result">` line. The driver dictates the meaning sweep into the grid (the matter frame's meaning questions) and the plugin records every query into the ledger's `extras.pr_risk[]`; the `commonLaw` validator rejects a `(None identified)` claim with no recorded queries (`connotation_search_missing`). An empty-results search is a clean receipt; a *missing* search is not.
 
@@ -340,13 +340,13 @@ forms (and the gap form) — this is what the driver's receipt gate counts:
 
 | Variant | Platform | Result |
 |---|---|---|
-| Dawn: Legends of Thornmantle | Steam | No results |
-| Dawn: Legends of Thornmantle | Epic Games Store | No similar listings (6 candidates reviewed) |
-| Dawn: Legends of Thornmantle | Google Play | No results |
-| Dawn: Legends of Thornmantle | Apple App Store | No similar listings (3 candidates reviewed) |
-| Dawn: Legends of Thornmantle | Microsoft Store | No results |
-| Dawn: Legends of Thornmantle | itch.io | Similar listing(s) found — see Findings (2 candidates) |
-| Dawn: Legends of Thornmantle | web | No similar listings (8 candidates reviewed) |
+| Dusk: Tales of Thornmantle | Steam | No results |
+| Dusk: Tales of Thornmantle | Epic Games Store | No similar listings (6 candidates reviewed) |
+| Dusk: Tales of Thornmantle | Google Play | No results |
+| Dusk: Tales of Thornmantle | Apple App Store | No similar listings (3 candidates reviewed) |
+| Dusk: Tales of Thornmantle | Microsoft Store | No results |
+| Dusk: Tales of Thornmantle | itch.io | Similar listing(s) found — see Findings (2 candidates) |
+| Dusk: Tales of Thornmantle | web | No similar listings (8 candidates reviewed) |
 | エバーライト | Steam | not executed — coverage-limited (see ledger) |
 
 ### Coverage ledger (feeds synthesis coverage-honesty + skeptic audit)
@@ -366,8 +366,8 @@ Record the same statuses by calling `record_coverage_status`, passing `grid_spec
 
 | Trigger | Suggested cross-check |
 |---|---|
-| HP appears using "RAISING YOUR PLAY" | Check register: does HP have any elevate-related trademark in target classes? |
-| Sony "Pulse Elevate" portfolio | Check register: any Sony elevate filings in target classes? |
+| Brightwick appears using "RAISING YOUR PLAY" | Check register: does Brightwick have any raise-related trademark in target classes? |
+| Veltrona "Pulse Raise" portfolio | Check register: any Veltrona raise filings in target classes? |
 | Thornfall Games "Thornmantle" (itch.io) | Check register: any Thornfall trademark protection? |
 
 ### Audit trail
@@ -377,8 +377,8 @@ Record the same statuses by calling `record_coverage_status`, passing `grid_spec
 |---|---|---|---|
 | 1 | Grid (sandbox) | Search-as-code grid: 9 variants × 7 platforms + extras | 63 cells, 0 gaps, 487 candidates recorded; 12 risk-relevant after judgment |
 | 2 | Famous-mark | None flagged in manifest | (not run) |
-| 3 | Follow-up | HP gaming portfolio + "raising your play" deeper trace | 3 additional findings |
-| 4 | Follow-up | Sony pulse-elevate portfolio | 2 additional findings |
+| 3 | Follow-up | Brightwick gaming portfolio + "raising your play" deeper trace | 3 additional findings |
+| 4 | Follow-up | Veltrona pulse-raise portfolio | 2 additional findings |
 
 **Grid program receipt** — the executed sandbox program returned by the tool, verbatim:
 
@@ -389,7 +389,7 @@ Record the same statuses by calling `record_coverage_status`, passing `grid_spec
 ### Open verification flags
 
 - Thornfall Games "Thornmantle" itch.io listing — URL needs re-verification (404'd during follow-up call)
-- HP "Raising Your Play" marketing presence in EU — coverage was thin, may need a region-specific follow-up
+- Brightwick "Raising Your Play" marketing presence in EU — coverage was thin, may need a region-specific follow-up
 ```
 
 ## Process

@@ -74,11 +74,11 @@ test("parseManifestVariants: live clearance-variants format — term in the 'Val
 
 | Category | Value | Rationale | Verify? |
 |---|---|---|---|
-| exact-phrase | Dawn: Legends of Thornmantle | full mark | |
+| exact-phrase | Dusk: Tales of Thornmantle | full mark | |
 | exact-element | THORNMANTLE | distinctive anchor | |
 | foreign-transliteration | ソーンマントル | JP reach | ✅ |
 `;
-  assert.deepEqual(parseManifestVariants(live), ["Dawn: Legends of Thornmantle", "THORNMANTLE", "ソーンマントル"]);
+  assert.deepEqual(parseManifestVariants(live), ["Dusk: Tales of Thornmantle", "THORNMANTLE", "ソーンマントル"]);
 });
 
 test("countMatrixCells: counts per-variant rows in the negative-results section only", () => {

@@ -74,11 +74,11 @@ A single file inside the active run-dir: `studio/clearance-search/<slug>/<date>/
 ### Format
 
 ```markdown
-# Variant manifest — Dawn: Legends of Lumengarde (2026-05-11)
+# Variant manifest — Dusk: Tales of Lumengarde (2026-05-11)
 
 ## Request
 
-- **Marks:** Dawn: Legends of Lumengarde
+- **Marks:** Dusk: Tales of Lumengarde
 - **Classes:** 9, 28, 41, 42
 - **Jurisdiction:** worldwide
 - **Industry:** gaming
@@ -89,34 +89,34 @@ A single file inside the active run-dir: `studio/clearance-search/<slug>/<date>/
 
 ## Scope statement
 
-Preliminary clearance for "Dawn: Legends of Lumengarde" as a game title, Classes 9/28/41/42, worldwide. Industry-incumbent parallel sweeps apply for LUMENGARDE (lighting electronics).
+Preliminary clearance for "Dusk: Tales of Lumengarde" as a game title, Classes 9/28/41/42, worldwide. Industry-incumbent parallel sweeps apply for LUMENGARDE (lighting electronics).
 
 ---
 
-## Mark: Dawn: Legends of Lumengarde
+## Mark: Dusk: Tales of Lumengarde
 
 ### Archetype
 
-- **Primary:** Descriptive compound (3-word title; LUMENGARDE distinctive, DAWN + LEGENDS common saturated commons in gaming)
+- **Primary:** Descriptive compound (3-word title; LUMENGARDE distinctive, DUSK + TALES common saturated commons in gaming)
 - **Modifiers:** None
 - **Boundary note:** LUMENGARDE alone would be a coined-word; the compound title shape places it under descriptive-compound. Coined-word axes (phonetic, transliteration, leet) still apply to LUMENGARDE element-solo.
 
 ### Distinctiveness & registrability (advisory — the staff lawyer to assess)
 
-- **Dominant element:** LUMENGARDE (DAWN + LEGENDS are common/descriptive — stripped). Search + conflict-ranking centre here.
+- **Dominant element:** LUMENGARDE (DUSK + TALES are common/descriptive — stripped). Search + conflict-ranking centre here.
 - **Spectrum:** distinctive (LUMENGARDE coined; the compound is arbitrary for gaming). No obvious absolute-grounds problem.
 - **Flags:** none — not descriptive/generic/laudatory/geographic for the goods; not deceptive or offensive.
 
 ### Risk theory
 
-LUMENGARDE is the distinctive anchor — risk concentrates on coined-word axes around that element (phonetic variants, leet, foreign transliteration) plus the Lumengarde Electronics lighting incumbent. DAWN and LEGENDS are saturated commons; risk there is the single-distinctive-word DAWN-alone or LEGENDS-alone filing in gaming, not crowded-field volume. Compound-phrase exact hit is low-probability but high-impact if it surfaces.
+LUMENGARDE is the distinctive anchor — risk concentrates on coined-word axes around that element (phonetic variants, leet, foreign transliteration) plus the Lumengarde Electronics lighting incumbent. DUSK and TALES are saturated commons; risk there is the single-distinctive-word DUSK-alone or TALES-alone filing in gaming, not crowded-field volume. Compound-phrase exact hit is low-probability but high-impact if it surfaces.
 
 ### Elements
 
 | Element | Role | Saturation | Famous-mark | Notes |
 |---|---|---|---|---|
-| DAWN | common-word | high | no | Morning / new beginning; fantasy / adventure |
-| LEGENDS | common-word | very-high | no | Myth / tale; epic / fantasy |
+| DUSK | common-word | high | no | Evening / sunset; fantasy / adventure |
+| TALES | common-word | very-high | no | Story / myth; epic / fantasy |
 | LUMENGARDE | distinctive | low | no | Industry incumbent: **Lumengarde Electronics Co.** (lighting / LED / semiconductors, classes 9 + 11) — triggers parallel sweep |
 
 ### Variants
@@ -140,10 +140,10 @@ silently narrows what was searched, and the deferred row is the honest outcome.
 
 | Category | Value | Rationale | Verify? |
 |---|---|---|---|
-| exact-phrase | Dawn: Legends of Lumengarde | full mark | |
+| exact-phrase | Dusk: Tales of Lumengarde | full mark | |
 | exact-element | LUMENGARDE | distinctive anchor — primary register vector | |
-| exact-element | DAWN | common element — single-word coverage hunt | |
-| exact-element | LEGENDS | common element — single-word coverage hunt | |
+| exact-element | DUSK | common element — single-word coverage hunt | |
+| exact-element | TALES | common element — single-word coverage hunt | |
 | plural-root | LEGEND | tokeniser superset | |
 | phonetic | EVERLITE | homophone, distinctive element | |
 | phonetic | EVRLIGHT | vowel drop | |
@@ -188,7 +188,7 @@ None for this mark.
 
 ### Diligence notes
 
-LUMENGARDE carries coined-word axes (phonetic + transliteration) despite the descriptive-compound primary archetype. Industry-incumbent alert triggers a parallel-class 11 sweep. DAWN and LEGENDS are saturated commons — still generated as single-word vectors; their saturation tells the downstream register search to **narrow** (class-scope the token and enumerate), it is never a reason to skip the vector here or to pre-judge the crowd clean.
+LUMENGARDE carries coined-word axes (phonetic + transliteration) despite the descriptive-compound primary archetype. Industry-incumbent alert triggers a parallel-class 11 sweep. DUSK and TALES are saturated commons — still generated as single-word vectors; their saturation tells the downstream register search to **narrow** (class-scope the token and enumerate), it is never a reason to skip the vector here or to pre-judge the crowd clean.
 
 ---
 
@@ -227,7 +227,7 @@ Pick one **primary** archetype. Pick zero or more **modifiers**. Write a one-lin
 **Worked examples:**
 
 - "LUMENGARDE" (single mark) → Coined word. No modifier. Risk: phonetic, transliteration, leet, coined-word collisions.
-- "Dawn: Legends of Lumengarde" → Descriptive compound (DAWN + LEGENDS commons, LUMENGARDE distinctive anchor). No modifier. Risk concentrates on LUMENGARDE element + compound-phrase hit.
+- "Dusk: Tales of Lumengarde" → Descriptive compound (DUSK + TALES commons, LUMENGARDE distinctive anchor). No modifier. Risk concentrates on LUMENGARDE element + compound-phrase hit.
 - "CHART YOUR COURSE" → Slogan. No modifier. Risk: family patterns (CHART * COURSE, * YOUR COURSE, CHART YOUR *), verb swaps, slang.
 - "Bloodguard Sabatons" → Descriptive compound + famous-element-masked (Sabatons = Swedish metal band). Risk: per-element famous-mark search on Sabatons; descriptive-compound axes on the rest.
 - "RAIZ8" → Acronym/initialism (leet form of RAISE). Risk: letter-collision; expansion-form search on RAISE.
@@ -330,7 +330,7 @@ The `phonetic` / `visual-substitution` / `numeric-substitution` / typographic ro
 
 For multi-word marks where the structure carries meaning (slogans, descriptive compounds), substitute each stem-formative back into the phrase template:
 
-- "RAISE YOUR PLAY" → "ELEVATING YOUR GAME", "RAISE THE PLAY", "RAISING YOUR PLAY", etc.
+- "RAISE YOUR PLAY" → "LIFTING YOUR PLAY", "RAISE THE PLAY", "RAISING YOUR PLAY", etc.
 - "CHART YOUR COURSE" → "CHARTING YOUR COURSE", "CHART MY COURSE", "CHART THE COURSE", "PLOT YOUR COURSE" (verb swap)
 
 Drop ungrammatical or semantically broken strings. Default: generate liberally; macro-count probes filter.
