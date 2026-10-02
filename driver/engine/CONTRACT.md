@@ -36,7 +36,9 @@ ladder consumes it without knowing which engine produced it ([gateway.mjs](../ga
   laneWaitMs: number,
   json:       object | null,         // synthesized envelope in the classifier's shape; every downstream
                                      // classifier (payloadText, status, embedded-fallback, timeout,
-                                     // lane-wedge) reads this and works unchanged across engines
+                                     // lane-wedge) reads this and works unchanged across engines.
+                                     // It also carries how the session ended: terminalReason,
+                                     // apiErrorStatus and errorText (see `session` below)
   usage:      Usage | null,          // canonical shape below; null = no tokens accounted (e.g. stall)
   sessionRef: string | null,         // opaque resume handle (claude session_id | codex thread_id)
   modelWire:  string | null,         // MODEL GAUGE — the served model id this turn observed (§3);
@@ -82,6 +84,21 @@ It carries kinds, codes and times, never the program's words. The retry ladder s
 result alone; the gateway journals the attempt as `ok: false` when any result carried `is_error`, while
 `fail` — what every reader of "did the stage fail" reads — is unchanged. Codex states no cut or refusal
 on its stream, so on that engine `results` lists every `turn.completed`, `turn.failed` and `error`.
+
+How the session ended rides the envelope, and the gateway writes it on every attempt and repair row,
+null where the engine said nothing:
+
+```
+terminalReason   the kind of ending as the program states it (claude `terminal_reason`); null on codex
+apiErrorStatus   the vendor's status when it gave one (claude `api_error_status`); null on codex
+errorText        the program's own words for the error, only when the session ended in one, cut to
+                 300 characters: claude's result text when that result has `is_error`; codex's
+                 `turn.failed` message, or its stream error when the turn never completed
+```
+
+These are the one place the record holds the program's words: an expired sign-in otherwise reads as
+`stop_sequence` and nothing else. `stopReason` stays verbatim beside them, and none of the three moves a
+verdict.
 
 `runStage()` folds that into what the pipeline consumes — `{ok, json, attempts, text, sessionKey, …}` —
 and journals usage/wall/status on the way past.
