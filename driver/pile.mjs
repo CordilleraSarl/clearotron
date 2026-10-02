@@ -145,6 +145,9 @@ export function loadPile(runDir) {
   const bodies = recordBodies(runDir);
   return {
     runDir,
+    // The register this run's plan was compiled for and its records were listed by. A full record is
+    // fetched from it and from no other (owner-server.mjs): the deployment's register may have moved since.
+    provider: typeof plan.provider === "string" && plan.provider.trim() ? plan.provider.trim() : null,
     scopeOffices,
     orderClasses: asArray(scope?.classes).length ? asArray(scope.classes) : asArray(plan.nice_classes),
     orderMarks: marksOf(scope),

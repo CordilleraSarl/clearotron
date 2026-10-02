@@ -76,6 +76,22 @@ export function ownersLookedUp(runDir, { session, window, keyOfRecord }) {
   return keys;
 }
 
+/**
+ * How many full records the judges fetched from the register on this run, and how many came back. One per
+ * call that reached the register (the reading log's `fetch_made`), over every judging pass. Each is a billed
+ * call and there is no cap (owner, 2026-10-01): the count is written in the run's record so the cost per
+ * run can be read off it.
+ */
+export function recordFetchCount(runDir) {
+  let fetches = 0, ok = 0;
+  for (const row of readJsonl(driverDir(runDir, "reading-log.jsonl"))) {
+    if (row?.tool !== "register_open" || row?.fetch_made !== true) continue;
+    fetches++;
+    if (row?.fetched?.ok === true) ok++;
+  }
+  return { fetches, ok, failed: fetches - ok };
+}
+
 /** Record id → owner key, over the table's rows, matching the way the discard ledger normalises ids. */
 export function recordOwnerIndex(table) {
   const byId = new Map();
@@ -114,6 +130,7 @@ export function judgmentSeam(merged, keyOfRecord) {
  */
 export function writeJudgmentFiles(P, merged, { trigger, judges }) {
   const counts = fateCounts(merged.fates);
+  const recordFetches = recordFetchCount(P.runDir);
   const answered = judges.filter((j) => j.ok).map((j) => j.judge);
   atomicWrite(P.ownerDecisions, `${JSON.stringify({
     schema_version: 1,
@@ -127,7 +144,7 @@ export function writeJudgmentFiles(P, merged, { trigger, judges }) {
   }, null, 2)}\n`);
   atomicWrite(P.ownerFates, `${JSON.stringify({
     schema_version: 1, ts: new Date().toISOString(), trigger,
-    judges, counts, fates: merged.fates,
+    judges, counts, record_fetches: recordFetches, fates: merged.fates,
   })}\n`);
-  return counts;
+  return { ...counts, recordFetches };
 }

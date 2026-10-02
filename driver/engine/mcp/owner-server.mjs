@@ -8,9 +8,15 @@
 // the saved web results, and a request for a question this search did not run (recorded, not answered).
 //
 // READS, AND ONE FETCH. Everything is served from the run directory, except a full record the run does not
-// hold yet: that is fetched from the active register WHEN A JUDGE OPENS IT, and not before (owner,
-// 2026-10-01 — fetch on open, never every body first). The fetch is the provider's own `recordFetch`, the
-// call the screen gate and the record closure make, and it writes the body to this run's record log.
+// hold yet: that is fetched WHEN A JUDGE OPENS IT, and not before (owner, 2026-10-01 — fetch on open, never
+// every body first), from the register this run used. The fetch is the provider's own `recordFetch`, the
+// call the record closure makes, and it writes the body to this run's record log.
+//
+// THE RUN'S REGISTER, NEVER THE DEPLOYMENT'S. A record id is the id one register gave it. The frozen plan
+// names the register the run listed its records from, and the deployment may have moved to another since;
+// opened at another register, the same id is another record or none. A run whose register this build does
+// not know, or which fetches no record, has its fetch refused by name — never sent to the active register
+// in its place. Each fetch is a billed call with no cap (owner, 2026-10-01); the run records how many.
 //
 // EVERY REQUEST IS LOGGED to the run's reading log (`_driver/reading-log.jsonl`, the reading audit), with
 // the owners and records it put in front of the judge, under the session that asked. That log is what
@@ -41,7 +47,7 @@ function toolsForRun() {
   try {
     const pile = loadPile(runDir);
     tools = makeOwnerTools(pile, {
-      fetchRecord: (id) => fetchOnOpen(runDir, id),
+      fetchRecord: (id) => fetchOnOpen(runDir, pile.provider, id),
       log: (row) => appendRequestLog(driverDir(runDir, "reading-log.jsonl"), {
         ts: new Date(row.at).toISOString(), ...row, ...(SESSION ? { session: SESSION } : {}), ...(AGENT ? { agent: AGENT } : {}),
       }),
@@ -50,13 +56,15 @@ function toolsForRun() {
   return tools;
 }
 
-async function fetchOnOpen(runDir, id) {
+async function fetchOnOpen(runDir, providerId, id) {
+  if (!providerId) return { ok: false, cause: "this run's plan names no register, so no record is fetched" };
   let provider;
   try {
-    const { activeProvider } = await import("../../driver.config.mjs");
-    provider = activeProvider();
-  } catch (e) { return { ok: false, cause: `no register to fetch from: ${String(e?.message ?? e).slice(0, 120)}` }; }
-  if (typeof provider?.recordFetch !== "function") return { ok: false, cause: `the register ${provider?.id ?? "?"} fetches no record` };
+    const { PROVIDERS } = await import("../../driver.config.mjs");
+    provider = Object.hasOwn(PROVIDERS, providerId) ? PROVIDERS[providerId] : null;
+  } catch (e) { return { ok: false, cause: `the register list could not be read: ${String(e?.message ?? e).slice(0, 120)}` }; }
+  if (!provider) return { ok: false, cause: `the register this run used, ${providerId}, is not one this build knows, so no record is fetched` };
+  if (typeof provider.recordFetch !== "function") return { ok: false, cause: `the register this run used, ${providerId}, fetches no record` };
   const recordLog = process.env.CLEAROTRON_REGISTER_RECORD_LOG || runRecordLogPath(runDir);
   let timer;
   try {

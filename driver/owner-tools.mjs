@@ -236,6 +236,7 @@ export function makeOwnerTools(pile, { fetchRecord = null, log = null, now = () 
   const room = Math.max(200, answerChars - Math.min(ENVELOPE_CHARS, Math.floor(answerChars / 4)));
   const table = buildOwnerTable(pile);
   const fetched = new Map();   // record id → the fetch's answer, asked once per record per session
+  const fetchedNow = new Set();   // record ids whose open on this call reached the register: the log marks that call
 
   // A goods line is kept, never the full record behind it: some records run past a megabyte.
   const lines = new Map();
@@ -381,6 +382,7 @@ export function makeOwnerTools(pile, { fetchRecord = null, log = null, now = () 
             let answer;
             try { answer = await fetchRecord(id); } catch (e) { answer = { ok: false, cause: String(e?.message ?? e).slice(0, 160) }; }
             fetched.set(id, answer ?? { ok: false, cause: "the fetch answered nothing" });
+            fetchedNow.add(id);
             pile.refreshFullRecords?.();
           }
           f = pile.readFullRecord(id);
@@ -481,6 +483,9 @@ export function makeOwnerTools(pile, { fetchRecord = null, log = null, now = () 
           ...(Array.isArray(result?.keysShown) ? { owner_keys_shown: result.keysShown } : {}),
           ...(opened && result.parts ? { part: result.part, parts: result.parts } : {}),
           ...(name === "register_open" && fetched.has(id) ? { fetched: fetched.get(id) } : {}),
+          // THE CALL THAT REACHED THE REGISTER, once per fetch: every later open of the record carries the
+          // answer above, and only this one was a billed call (owner-judgment-run.mjs, recordFetchCount).
+          ...(name === "register_open" && fetchedNow.delete(id) ? { fetch_made: true } : {}),
         });
       } catch { /* a log that cannot be written must never break a read */ }
     }

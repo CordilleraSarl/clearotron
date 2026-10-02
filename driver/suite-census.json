@@ -1017,6 +1017,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-record-is-fetched-from-the-register-the-run-used.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "a-refusal-is-not-a-pass.test.mjs": {
           "tests": 6,
           "asserts": 10,
