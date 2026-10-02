@@ -6359,7 +6359,7 @@
         },
         "two-judges-are-merged-and-every-owner-gets-a-fate.test.mjs": {
           "tests": 13,
-          "asserts": 79,
+          "asserts": 82,
           "skips": 0,
           "todos": 0
         },

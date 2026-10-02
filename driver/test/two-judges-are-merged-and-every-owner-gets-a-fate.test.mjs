@@ -18,6 +18,7 @@ import { seamRows } from "../record-discard.mjs";
 import { settleCoverageRowsFromFacts, coverageRowFacts } from "../coverage-form.mjs";
 import { decisionAuditRows } from "../publish/audit-from-spine.mjs";
 import { clearedNames } from "../publish/search-depth.mjs";
+import { pickingExits } from "../hand-off-exits.mjs";
 
 const PILE = join(dirname(fileURLToPath(import.meta.url)), "fixtures", "owner-pile");
 const SCALE = { bands: [{ label: "High" }, { label: "Medium" }, { label: "Low" }] };
@@ -152,12 +153,20 @@ test("the fate record: one discard row per record, and no record leaves without 
   }
   for (const r of rows.filter((x) => x.verdict === "discarded")) {
     assert.notEqual(r.reason_source, "absent", `${r.uri} left with no reason`);
-    assert.match(r.reason, /^judgment:(set-aside|not-taken-up|never-shown|owner-carried-on-other-records)$/);
+    assert.match(r.reason, /^judgment:(set-aside|seen-not-raised|never-shown|owner-carried-on-other-records)$/);
   }
   const reasons = new Set(rows.filter((x) => x.verdict === "discarded").map((x) => `${x.reason}/${x.reason_source}`));
   assert.ok(reasons.has("judgment:set-aside/step-stated"));
-  assert.ok(reasons.has("judgment:not-taken-up/step-silent"));
+  assert.ok(reasons.has("judgment:seen-not-raised/step-structural"));
   assert.ok(reasons.has("judgment:never-shown/step-structural"));
+  // AN OWNER SEEN AND RAISED BY NEITHER IS A DECISION WITH A REASON, NOT A SILENCE (design ruling,
+  // 2026-10-01): no record leaves the judges with no ground, so the hand-off count of such exits is zero.
+  assert.equal(rows.filter((x) => x.verdict === "discarded" && x.reason_source === "step-silent").length, 0,
+    "a record shown to the judges and raised by neither still leaves as a silence");
+  assert.equal(pickingExits({ rows: rows.map((r) => ({ ...r, stopped_at: r.verdict === "discarded" ? "judgment" : null })) }).exits, 0,
+    "the hand-off count still finds records that left the judges with no ground");
+  const seen = rows.find((x) => x.reason === "judgment:seen-not-raised");
+  assert.match(seen.detail, /^seen by (both judges|judge \d), raised by neither$/);
   assert.equal(judgmentDiscardReason(undefined).reason_source, "absent", "an owner with no fate is the one case that reads as absent");
 });
 

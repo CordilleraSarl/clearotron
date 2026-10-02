@@ -213,10 +213,11 @@ export function checkAnswer(answer, { recordIds, webUrls = new Set(), framework 
 // passed on. Every owner in the pile gets a recorded fate: carried, set aside with the reason, or never
 // put in front of a session (shown in no opening page and looked up by neither)." (design, 2026-10-01)
 //
-// An owner a session WAS shown — on an opening page, or in a tool's answer — and did not take up has no
-// decision of its own. It is set aside, and its reason says so in the code's words: the record keeps the
-// difference between an owner judged and dismissed and an owner seen and passed over, and the report's
-// "also considered" reads only the first (`set_aside`), never the second.
+// An owner a session WAS shown — on an opening page, or in a tool's answer — and that neither judge raised
+// is a decision with a reason of its own (design ruling, 2026-10-01): seen by the judges, raised by
+// neither. It is recorded as that, a ground the step's own record holds, never as a silence. The fate keeps
+// its own name so the record still tells an owner judged and dismissed from one seen and passed over, and
+// the report's "also considered" reads only the first (`set_aside`), never the second.
 
 export const FATES = Object.freeze({
   CARRIED: "carried",
@@ -374,8 +375,9 @@ const clipTo = (s, n) => { const t = String(s ?? "").replace(/\s+/g, " ").trim()
  * Why a record the judging step did not carry left it: its owner's fate, in the step's words where a judge
  * gave them and in the code's where the fate is a fact of what each judge was shown. The reason sources
  * are the discard ledger's (record-carry.mjs, REASON_SOURCES): a judge's stated reason is `step-stated`;
- * an owner shown and passed over is `step-silent` (the decision is attested, its ground is not); an owner
- * never shown is `step-structural` (the table's order and the judges' reading decided it). PURE.
+ * an owner seen by the judges and raised by neither is `step-structural` (what each judge was shown is the
+ * step's own record); an owner never shown is `step-structural` too (the table's order and the judges'
+ * reading decided it). PURE.
  */
 export function judgmentDiscardReason(fate, { cited = true } = {}) {
   if (!fate) return { reason: "judgment:indeterminate", reason_source: "absent", detail: "this record's owner has no recorded fate" };
@@ -390,11 +392,12 @@ export function judgmentDiscardReason(fate, { cited = true } = {}) {
     return { reason: "judgment:set-aside", reason_source: "step-stated", detail: clipTo(`set aside by ${fate.by.length > 1 ? "both judges" : `judge ${fate.by[0]}`} — ${said}`, 300) };
   }
   if (fate.fate === FATES.SHOWN_NOT_TAKEN_UP) {
-    const where = [
-      fate.opening.length ? `on the opening pages given to ${fate.opening.length > 1 ? "both judges" : `judge ${fate.opening[0]}`}` : "",
-      fate.looked.length ? `in a tool's answer to ${fate.looked.length > 1 ? "both judges" : `judge ${fate.looked[0]}`}` : "",
-    ].filter(Boolean).join(" and ");
-    return { reason: "judgment:not-taken-up", reason_source: "step-silent", detail: `this owner was in front of the judges ${where}, and neither carried it nor set it aside` };
+    // A GROUND, NOT A SILENCE: what each judge was shown is the step's own record (the opening pages and the
+    // reading log), so code states it. Read as `step-silent`, every such owner counted as a record that left
+    // the judges with no ground (hand-off-exits.mjs), which is the loss the step exists to end.
+    const seenBy = [...new Set([...(fate.opening ?? []), ...(fate.looked ?? [])])].sort((a, b) => a - b);
+    const who = seenBy.length > 1 ? "both judges" : `judge ${seenBy[0]}`;
+    return { reason: "judgment:seen-not-raised", reason_source: "step-structural", detail: `seen by ${who}, raised by neither` };
   }
   if (fate.fate === FATES.NEVER_SHOWN) {
     return { reason: "judgment:never-shown", reason_source: "step-structural", detail: "this owner was put in front of neither judge: it was on no opening page and neither judge looked it up" };
