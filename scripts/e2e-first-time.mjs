@@ -164,7 +164,7 @@ export const NOT_COUNTED_EVENTS = {
     "common-law-candidates", "common-law-merged", "common-law-path", "common-law-supp-folded", 
     "commonlaw-channels-added", "connotation-receipts", 
     "corrective-worklist-source", "coverage-form-settled", "coverage-form-written", "coverage-judgment", "coverage-judgment-rows",
-    "coverage-ledger-derived", "coverage-ledger-dropped", "coverage-ledger-rendered", "crowd-context", "crowd-context-skips",
+    "coverage-ledger-derived", "coverage-ledger-dropped", "coverage-ledger-removed", "coverage-ledger-rendered", "crowd-context", "crowd-context-skips",
     "customer-late-bind", "customer-late-bind-ack", "depth-ladder", "digest-batch-brief",
     "digest-coverage-form-brief", "digest-flush", "digest-queue-noop", "digest-queued", "digest-rulings-tail",
     "doctrine-write", "document-coverage-rendered", "document-growth-trip", "doubt-selection", "doubts", "draft-carry",
