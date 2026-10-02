@@ -20,7 +20,7 @@
 // once per record and reads the body the fetch wrote.
 
 import { appendFileSync, mkdirSync } from "node:fs";
-import { dirname } from "node:path";
+import { dirname } from "node:path"; import { moreThan } from "../shared/register-floor.mjs";
 import { groupByOwner, ownerKey, buildOwnerTable, CLOSENESS, LINE_COLUMNS, lineOf as ownerLine, isLive } from "./owner-table.mjs";
 
 // ── bounded answers (the bench's `src/bounded.mjs`) ──────────────────────────────────────────────────
@@ -192,7 +192,8 @@ function describeQuestion(q) {
     match: q.match,
     classes: q.classes,
     offices: q.allOfficesInScope ? `every office in the order's scope (${q.offices.length})` : q.offices,
-    count: q.count,
+    // the register's floor, as every page prints it, where it answered "at least N" instead of a count
+    count: q.count ?? (Number.isFinite(q.countFloor) ? moreThan(q.countFloor) : null),
     listed: q.listed,
     records_held: q.recordsHeld,
   };

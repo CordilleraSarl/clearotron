@@ -54,7 +54,7 @@
 import {
   BATCH_SCREEN_CHUNK, chunk, classifyStatus, isAllClass, normalizeBrandRow, screenVerdict,
 } from "./screen.mjs";
-import { makeCountProbe, parseToolText, isToolError } from "./count.mjs";
+import { makeCountProbe, parseToolText, isToolError } from "./count.mjs"; import { floorOf, moreThan } from "../../shared/register-floor.mjs";
 import { guardCountCall, guardToolCall } from "./transport-guard.mjs";
 import { clipProviderText } from "./provider-text.mjs";   // — keep the discriminator
 
@@ -258,8 +258,7 @@ export function makeEnumerate(deps) {
     throw new Error('[enumerate-kernel] capabilities.screenSource === "search-row" requires a rowScreen() dependency');
   }
 
-  const crowdReason = (total, ceiling) =>
-    `total_hits ${total} exceeds the enumerate ceiling ${ceiling} — this is a CROWD, not a named exact/near band. Record it as a count+sample descriptor and hand it up to judgment; the funnel does NOT narrow-and-retry a crowd here. Whether a narrower NAMED enumeration is warranted, and whether this slice is material, is judgment's call (Layer B) — never accept it as clean.`;
+  const crowdReason = (total, ceiling) => `total_hits ${total} exceeds the enumerate ceiling ${ceiling} — ${CROWD_IS}`;
 
   // ── count-first per-term rescue ───────────────────────────────────────────────────────────────────
   // A multi-name OR-stack that crowds over the ceiling used to return ONE blind `incomplete` — a rare
@@ -638,6 +637,16 @@ export function makeEnumerate(deps) {
       // where the "enumerated" verdict is actually minted, so it cannot depend on every future adapter
       // remembering. total_hits rides out NULL — unknown — never a fabricated 0.
       if (countProbe === "cheap" && !Number.isFinite(parsed.total_hits)) {
+        // A FLOOR IS AN ANSWER (ruled 2026-10-02). A register that says "at least 10,000" counted, and gave a
+        // floor instead of a figure: the search ran and is too large to read. So it is a crowd, with the
+        // register's own figure beside a total that stays null. Never a provider error, which would ask it
+        // again for the same answer and write a 0 in its place.
+        const floor = floorOf(parsed);
+        if (floor !== null) {
+          return incomplete(null, results.length + (parsed.results?.length ?? 0), [...results, ...(parsed.results ?? [])],
+            `the register answered "${moreThan(floor)}" for this question: a floor, not a count, so the set is too large to read. ${CROWD_IS[0].toUpperCase()}${CROWD_IS.slice(1)}`,
+            { crowd_basis: "register-floor", total_floor: floor });
+        }
         return incomplete(null, results.length, results,
           `provider error during enumeration (page ${page}): the search response carried no usable total_hits, and on this provider the response IS the count — so the enumerate ceiling could not be tested and this band cannot be read as either a completed enumeration or a sanctioned crowd. The total is UNKNOWN (null, never 0).`);
       }
@@ -811,3 +820,6 @@ export function makeEnumerate(deps) {
 
   return { enumerate, countFirstRescue, classSplitRescue };
 }
+
+// What a crowd is, in the words every crowd's reason ends with: a band the funnel hands up, never a clean.
+const CROWD_IS = "this is a CROWD, not a named exact/near band. Record it as a count+sample descriptor and hand it up to judgment; the funnel does NOT narrow-and-retry a crowd here. Whether a narrower NAMED enumeration is warranted, and whether this slice is material, is judgment's call (Layer B) — never accept it as clean.";

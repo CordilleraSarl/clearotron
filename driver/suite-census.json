@@ -1137,6 +1137,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-register-floor-is-carried-and-never-a-zero.test.mjs": {
+          "tests": 4,
+          "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
         "a-register-manual-states-what-its-provider-declares.test.mjs": {
           "tests": 6,
           "asserts": 13,
@@ -7526,6 +7532,12 @@
         "providers/_shared/test/a-record-is-written-once-per-run.test.mjs": {
           "tests": 5,
           "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/_shared/test/a-register-floor-is-too-many-to-read.test.mjs": {
+          "tests": 3,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },

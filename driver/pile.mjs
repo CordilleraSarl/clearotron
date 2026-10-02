@@ -133,6 +133,8 @@ export function loadPile(runDir) {
       owner: entry.owner ? (typeof entry.owner === "string" ? entry.owner : entry.owner.name ?? JSON.stringify(entry.owner)) : null,
       narrows: entry.narrows ? shortIdByQid.get(entry.narrows) ?? null : null,
       count: Number.isFinite(ran.total_hits) ? ran.total_hits : null,
+      // the register's floor when it answered "at least N" instead of a count; null otherwise
+      countFloor: Number.isFinite(ran.total_floor) ? ran.total_floor : null,
       listed: ran.state === "enumerated",
       recordsHeld: held.length,
     };

@@ -2412,6 +2412,8 @@ export function joinPlanToBands(plan, bandBlocksByAxis, { released = new Set() }
       // says `incomplete` with no count. The deferral is the only thing that tells it from a listing that
       // overflowed, so it rides with the row rather than stopping at the block.
       ...(b.deferred === true ? { deferred: true } : {}),
+      // The register's floor when it answered "at least N" instead of a count: total_hits stays null beside it.
+      ...(Number.isFinite(b.total_floor) ? { total_floor: b.total_floor } : {}),
     });
   }
   const planQids = new Set(plan.entries.map((e) => e.qid));

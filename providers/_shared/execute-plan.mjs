@@ -16,7 +16,7 @@
 
 import { mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
-import { nativeScriptIndexGap } from "./script-form.mjs";
+import { nativeScriptIndexGap } from "./script-form.mjs"; import { floorOf } from "../../shared/register-floor.mjs";
 import { entryTermIssues, goodsTermsList } from "./term-shape.mjs";
 import { awaitsReadingTurn, releasedFamiliesFile } from "./plan-guards.mjs";
 import { faultText, guardToolCall } from "./transport-guard.mjs";
@@ -500,8 +500,12 @@ export function makeExecutePlan(deps) {
           && Number.isFinite(parsed.total_hits) && Number(parsed.total_hits) === 0
           && parsed.owner_resolution != null && !ownerNameResolved(parsed.owner_resolution);
         const counted = !!parsed && !ownerUnverified;
+        // A floor ("at least 10,000") is the register's answer: the total stays null and its figure rides beside
+        // it, never a 0 (ruled 2026-10-02; shared/register-floor.mjs).
+        const floor = floorOf(parsed);
         blocks.push({ state: "incomplete", ...base,
-          total_hits: ownerUnverified ? null : (parsed?.total_hits ?? 0), fetched: parsed?.results?.length ?? 0,
+          total_hits: ownerUnverified || floor !== null ? null : (parsed?.total_hits ?? 0), fetched: parsed?.results?.length ?? 0,
+          ...(floor !== null ? { total_floor: floor, crowd_basis: "register-floor" } : {}),
           sample: (parsed?.results ?? []).slice(0, 5),
           ...(counted ? {} : { error: true }),
           ...(countGap || ownerUnverified ? { deferred: true } : {}),
