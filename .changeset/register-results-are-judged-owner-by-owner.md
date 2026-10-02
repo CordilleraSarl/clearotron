@@ -10,9 +10,13 @@ Now every owner the searches found is laid out in one table, closest marks first
 
 What you will notice:
 - An owner is set aside only when both reviews set it aside.
-- Where the two rate an owner differently, both ratings go forward and the final assessment settles it.
+- Each owner's rating comes from the two reviews: the rating they agree on, or the higher where they differ.
+- The report's overall rating is the reviews' overall rating, taken the same way.
+- How alike the marks are, and how close the goods are, come from the review whose rating was taken.
+- A name the reviews set aside is listed under "Also considered" with their reason.
+- A judged clearance lists no awareness-only items, because every owner the reviews carry is rated.
 - Whether each part of the search was fully covered is now decided by fixed rules, not by the model.
-- Reports keep their layout and wording. A repeated search may name a different set of owners, and some coverage lines may read differently.
+- Reports keep their layout. A repeated search may name a different set of owners, and some coverage lines may read differently.
 
 For operators: every owner a search found now has a recorded outcome in the run's own files, including owners neither review mentioned.
 
