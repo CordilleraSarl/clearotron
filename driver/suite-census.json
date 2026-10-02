@@ -539,7 +539,7 @@
         },
         "a-finding-sentence-is-at-most-two-sentences-of-25-words.test.mjs": {
           "tests": 7,
-          "asserts": 16,
+          "asserts": 17,
           "skips": 0,
           "todos": 0
         },

@@ -292,7 +292,7 @@ export function netLengthRefusal(findings, carried = null) {
     const longest = Math.max(0, ...sentences.map(wordsIn));
     if (sentences.length > NET_MAX_SENTENCES || longest > SENTENCE_WORD_LIMIT) {
       return `synthesis_net_too_long:${f.ordinal} (At most two sentences, each at most 25 words: `
-        + `${sentences.length} sentence${sentences.length === 1 ? "" : "s"}, ${longest} words in the longest)`;
+        + `${sentences.length} sentence${sentences.length === 1 ? "" : "s"}, ${longest} word${longest === 1 ? "" : "s"} in the longest)`;
     }
   }
   return null;

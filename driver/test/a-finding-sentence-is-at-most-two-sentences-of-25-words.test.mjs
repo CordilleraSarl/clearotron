@@ -38,6 +38,9 @@ test("a third sentence, or a sentence of 26 words, is refused with the owner's c
     "synthesis_net_too_long:1 (At most two sentences, each at most 25 words: 1 sentence, 26 words in the longest)");
   // The boundary itself passes: two sentences, the longer of 25 words.
   assert.equal(refusalOf(`${words(25)}. ${words(5)}.`), null);
+  // and a count of one reads as one
+  assert.equal(refusalOf("Won. Lost. Settled."),
+    "synthesis_net_too_long:1 (At most two sentences, each at most 25 words: 3 sentences, 1 word in the longest)");
 });
 
 test("the owner's own shape passes: the outcome, then what the earlier right covers", () => {
