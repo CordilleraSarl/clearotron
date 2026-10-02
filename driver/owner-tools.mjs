@@ -193,6 +193,9 @@ function describeQuestion(q) {
     classes: q.classes,
     offices: q.allOfficesInScope ? `every office in the order's scope (${q.offices.length})` : q.offices,
     count: q.count,
+    // What this count counts, when the register said so (ruled 2026-10-02, in the ruling's words): its total
+    // then counts one row per record, so a mark filed in several countries is counted once for each.
+    ...(q.countCounts === "records" ? { counts: "records, one per country a mark covers" } : {}),
     listed: q.listed,
     records_held: q.recordsHeld,
   };
