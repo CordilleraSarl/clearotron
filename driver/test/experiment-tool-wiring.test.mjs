@@ -79,7 +79,8 @@ test("the sandbox dispatches on the same label production does — one construct
   assert.match(src, /\? runOwnerJudgment\(shadowCtx, \{ force: true, trigger: "experiment", model \}\)/,
     "a step-3 arm judges through runOwnerJudgment, as every pass of step 3 does");
   const owner = src.slice(src.indexOf("async function runOwnerJudgment("), src.indexOf("async function runOwnerJudgment(") + 4000);
-  assert.match(owner, /stage\("owner-judgment", \{ \.\.\.ctx, axis: String\(i \+ 1\)/, "…which dispatches each judge through stage()");
+  // Every judge a pass dispatches — both on a first pass, one on a re-run — goes through stage() by its number.
+  assert.match(owner, /stage\("owner-judgment", \{ \.\.\.ctx, axis: String\((?:i \+ 1|n)\)/, "…which dispatches each judge through stage()");
 });
 
 // ══ every stage: arm wiring == production wiring ═════════════════════════════════════════════════
