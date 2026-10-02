@@ -30,14 +30,10 @@ test("reason-aware hint: a use_check_missing failure tells synthesis to add the 
   assert.match(m, /Use-check source:/);
   assert.match(m, /perplexity_research/);
   assert.match(m, /use_check_missing/);            // the raw reason still rides in
-  // a register-digest STRUCTURAL failure gets the sections hint instead. emits `findings-heading`
-  // on a FORM-armed run (the seat writes no table there) and `findings+ledger` on one with no form —
-  // the floor is armed by the same condition as the gate that replaces it, so BOTH tokens are live and
-  // both must route to a hint that names what is missing.
+  // a STRUCTURAL failure gets the sections hint instead, naming what is missing. (The register digest's
+  // `findings+ledger` label had its own arm; it left with the digest.)
   const d = correctiveMessage("Digest.", 2, "invalid_file:run/register-findings.md:missing:findings-heading", "/x/clearance-search/run/register-findings.md");
   assert.match(d, /a findings heading/);
-  assert.match(correctiveMessage("Digest.", 2, "invalid_file:run/register-findings.md:missing:findings+ledger", "/x/clearance-search/run/register-findings.md"),
-    /Coverage ledger with a status row/, "an unstamped run still owes the table, and the hint says so");
 });
 
 test("WS-A coverage_* tokens get the JSON-mirror hint — NOT the common-law prose-sections hint (collision guard)", () => {
@@ -214,11 +210,12 @@ test("A6: the BARE max_tokens_no_output fault (transport-shaped turn) still gets
 });
 
 // ──: THE DEFERRED SLICES ARE FORM ROWS, NOT A PROSE BLOCK TO RETYPE ───────────────────────────
-test("the dispatch brief names the form; the corrective arm names the rows — neither recites a qid", async () => {
-  const { coverageFormBrief, coverageFormRows } = await import("../coverage-form.mjs");
-  // What the block did, and why it had to: it printed EVERY deferred qid with its own receipt reason
+test("every deferred slice is its own form row, with its own reason — nothing is retyped", async () => {
+  const { coverageFormRows } = await import("../coverage-form.mjs");
+  // What the old block did, and why it had to: it printed EVERY deferred qid with its own receipt reason
   // because the accounting join was on the qid verbatim, so a qid the stage was never shown could never
-  // be named. R1 carried fourteen. That whole economy question disappears when nothing is retyped.
+  // be named. R1 carried fourteen. That whole economy question disappears when nothing is retyped: the
+  // driver writes one row per slice, and code settles it.
   const many = Array.from({ length: 14 }, (_, i) => `primary-sweep:exact:q${i}`);
   const { rows } = coverageFormRows({
     skeleton: [{ axis: "primary-sweep", state: "deferred", deferred: many, missing: [] }],
@@ -227,57 +224,11 @@ test("the dispatch brief names the form; the corrective arm names the rows — n
     bandBlocksByAxis: {},
     deferredReasons: Object.fromEntries(many.map((q, i) => [q, `capability-gap number ${i}`])),
   });
-  // EVERY qid ships as its own row, each carrying ITS OWN reason — the two things the elided hint could not do.
   const owed = rows.filter((r) => r.kind === "deferred");
   assert.equal(owed.length, 14);
   assert.deepEqual(owed.map((r) => r.qid), many, "nothing is elided, because nothing is being read aloud");
   assert.match(owed[13].receipt_reason, /capability-gap number 13/, "the last qid carries its OWN reason, not the first qid's");
   assert.ok(owed.every((r) => r.open === true));
-
-  // The DISPATCH names the TOOL and the two fields, and requires none of the fourteen retyped: the rows
-  // ride the dispatch with driver-minted row_ids, and a status binds by row_id — never by a qid the
-  // seat reproduces (the typed transport kept the economy and removed the file).
-  const brief = coverageFormBrief({ rows });
-  assert.match(brief, /record_coverage/);
-  assert.match(brief, /14 row\(s\) are NEVER-SEARCHED slices/);
-  assert.doesNotMatch(brief, /VERBATIM/, "there is no transcription contract left to state");
-  for (const q of many) assert.ok(!brief.includes(q), `${q} is a join the driver owns; reciting it is the lane this removes`);
-  assert.equal(coverageFormBrief({ rows: [] }), "", "nothing owed ⇒ no block, never an empty and alarming one");
-
-  // The CORRECTIVE arm speaks the same doctrine — kept in step, as the pair always was.
-  const corrective = correctiveMessage(BASE, 2, "invalid_file:run/register-findings.md:coverage_no_status:no_status=14;CD-A1B2C3D4 [primary-sweep / exact: Q0]", FILE);
-  assert.match(corrective, /CD-A1B2C3D4/, "the driver's own row id, so the repair needs nothing else opened");
-  assert.match(corrective, /never a clean negative/);
-  assert.doesNotMatch(corrective, /VERBATIM/);
-  // …and it must NOT tell the model to correct a clean claim: on this failure the row may simply be blank.
-  assert.doesNotMatch(corrective, /yet your findings claim/i);
-});
-
-test("the coverage hint LEADS WITH THE CAUSE — one token, three defects, three openings", () => {
-  // THE 2026-08-05 LESSON, ONE LEVEL IN. `coverage_no_status` fires for a blank status, an off-enum
-  // status, AND an enum-VALID confirmed-clean on a row the driver marked `open` — and the last is the
-  // common one, because it is what a digest does when it believes a slice is fine and the machine knows
-  // it is not. Opening with "row(s) with no status this gate accepts" over a form where every row
-  // carries one orders the seat to do what it has already done, and because this token is warm-eligible
-  // the wasted turn DISPLACES a cold attempt. verify.mjs partitions the census so this arm can tell
-  // them apart; if it could not, all three would read identically.
-  const openClean = correctiveMessage(BASE, 2,
-    "invalid_file:run/register-findings.md:coverage_no_status:open_clean=2;CB-11112222 [primary-sweep / exact: LUMEN]", FILE);
-  assert.match(openClean, /2 row\(s\).*marked "confirmed-clean" over an obligation the DRIVER computed as OPEN/);
-  assert.match(openClean, /Every row already carries a status, so do not go looking for blank ones/);
-
-  const blank = correctiveMessage(BASE, 2,
-    "invalid_file:run/register-findings.md:coverage_no_status:no_status=3;CA-33334444 [primary-sweep]", FILE);
-  assert.match(blank, /row\(s\) of your coverage form carry no status this gate accepts/);
-  assert.doesNotMatch(blank, /Every row already carries a status/);
-
-  // BOTH openings must still carry the block-vs-deferred doctrine, because the status the seat picks
-  // decides the run's verdict: decideRegisterGap clamps CLEAR→CONDITIONAL on `deferred` rows only.
-  for (const m of [openClean, blank]) {
-    assert.match(m, /UNACCOUNTED CROWD BLOCK ran and saturated, so it is "coverage-limited"/);
-    assert.match(m, /clamps this run's verdict to\s+CONDITIONAL/);
-    assert.match(m, /EACH OPEN ROW IS DISCHARGED ONLY BY ITSELF/);
-  }
 });
 
 test("coverage_form_empty is a DRIVER defect, and never reads to the seat as rows it forgot", () => {

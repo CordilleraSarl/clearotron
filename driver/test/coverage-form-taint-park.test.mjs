@@ -28,7 +28,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { unionCoverageForm } from "../coverage-union.mjs";
-import { findCoverageFormViolations } from "../coverage-form.mjs";
+import { rowIsSettled } from "../coverage-form.mjs";
 import { armCoverageForm, coverageFormPaths, coverageFormStamp, readCoverageForm,
   readCoverageFormInput, writeCoverageForm } from "../coverage-form-io.mjs";
 import { taintParkJudgmentArtifacts } from "../pipeline.mjs";
@@ -104,8 +104,8 @@ test("THE LEAK, REPRODUCED: an accumulator that survives the park carries a disc
     assert.match(block.reason, /6,862 hits/,
       "the reason a lawyer reads still describes a band six times smaller than the one the run searched");
     assert.equal(resumed.outstanding, 0, "and the row counts as work already done");
-    assert.deepEqual(findCoverageFormViolations(resumed.form.rows), [],
-      "so the gate has nothing to refuse and the resumed digest never re-rules the slice");
+    assert.ok(resumed.form.rows.every((r) => rowIsSettled(r, r)),
+      "so every row reads as settled and the resumed run never re-rules the slice");
   } finally { cleanup(dir); }
 });
 
@@ -136,8 +136,8 @@ test("THE FIX: parking the accumulator makes the resumed run re-rule the slice",
     assert.equal(block.status, null, "the ruling over the discarded band did NOT survive");
     assert.equal(block.reason, null, "nor the sentence quoting its size");
     assert.ok(resumed.outstanding > 0);
-    assert.ok(findCoverageFormViolations(resumed.form.rows).some((v) => v.row === block.row_id),
-      "the resumed digest is made to rule the slice again — which is what the park is for");
+    assert.equal(rowIsSettled(block, block), false,
+      "the resumed run is made to rule the slice again — which is what the park is for");
   } finally { cleanup(dir); }
 });
 

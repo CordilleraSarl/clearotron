@@ -384,22 +384,16 @@ test("…and WITHOUT the exclusion the same failure keeps the legacy enumerate r
   assert.doesNotMatch(m, /register_propose_supplemental/);
 });
 
-// ──: the register coverage FORM warms; the never-searched class stays cold ─────────────────────
-test("warm eligibility: the coverage-form tokens warm, and the never-searched class does NOT", () => {
+// ──: the never-searched class stays cold ─────────────────────────────────────────────────────────
+test("warm eligibility: the never-searched class does NOT warm, nor do the removed coverage-form tokens", () => {
   const okJson = { status: "ok" };
   const F = (r) => `invalid_file:clearance-search/x/register-findings.md:${r}`;
-  // THE ECONOMIC CASE FOR THE ISSUE. Before this the whole coverage-judgment family was cold-only: not one
-  // `coverage_clean_*` token was in the allowlist, so every retry re-dispatched a fresh session that re-read
-  // a 1.9 MB band and re-derived a 160 KB document. The stage's own measured profile is 105,747 out FAIL →
-  // 137,519 out FAIL → 36,362 out PASS, and the attempt that passed is the one that PATCHED.
-  assert.equal(warmEligible(F("coverage_no_status:no_status=3;CB-A1B2C3D4 [primary-sweep / exact: LUMEN]"), okJson), true);
-  assert.equal(warmEligible(F("coverage_form_damaged:form_damaged=1;unparseable json"), okJson), true);
-  // WHY THEY ARE SAFE: the violation is PROOF the searches ran and were accounted — the rows are the
-  // driver's, built from the frozen plan and the plan-execution receipt. What is missing is a status on a
-  // file already on disk carrying every qid, hit count and receipt reason. A two-field edit, not a re-search.
-  //
-  // THE NEVER-SEARCHED CLASS STAYS COLD, and that separation is what makes warm safe. Their remedies are a
-  // re-run or a relabel of the whole document, not a patch. There was no test pinning this before.
+  // The coverage-form tokens warmed while a seat recorded the form's statuses; that seat was the register
+  // digest, and since it left no live gate emits them, so they warm nothing.
+  assert.equal(warmEligible(F("coverage_no_status:no_status=3;CB-A1B2C3D4 [primary-sweep / exact: LUMEN]"), okJson), false);
+  assert.equal(warmEligible(F("coverage_form_damaged:form_damaged=1;unparseable json"), okJson), false);
+  // THE NEVER-SEARCHED CLASS STAYS COLD. Their remedies are a re-run or a relabel of the whole document,
+  // not a patch.
   for (const cold of ["coverage_clean_unexecuted:primary-sweep", "coverage_clean_skipped:incumbent-class",
     "coverage_clean_tainted:primary-sweep", "coverage_clean_deferred:transliteration-numeric"]) {
     assert.equal(warmEligible(F(cold), okJson), false, `${cold} must not warm`);
@@ -411,27 +405,8 @@ test("warm eligibility: the coverage-form tokens warm, and the never-searched cl
   assert.equal(warmEligible(F("coverage_form_missing:_driver/register-coverage-form.form.json absent"), okJson), false);
   assert.equal(warmEligible("missing_file:x/register-coverage-form.json", okJson), true,
     "…and this is why the token must never be spelled missing_file:");
-  // an incomplete turn still never warms
-  assert.equal(warmEligible(F("coverage_no_status:no_status=1;CB-X"), { status: "timeout" }), false);
+  // an incomplete turn still never warms, even on a token that warms a complete one
+  assert.equal(warmEligible(F("coverage_ledger_unparseable"), okJson), true, "premise: the derived ledger's defect warms");
+  assert.equal(warmEligible(F("coverage_ledger_unparseable"), { status: "timeout" }), false);
 });
 
-test("warm routing, typed transport: the patch orders the record_coverage CALL, and no file at all", () => {
-  // B's rule, one lane over: the seat writes no coverage file, so a warm patch that ordered any file
-  // edit would aim the seat at an artifact it cannot affect — the two halves of one message
-  // disagreeing about where the work lands.
-  const fail = "invalid_file:clearance-search/x/register-findings.md:coverage_no_status:no_status=2;CB-A1B2C3D4 [primary-sweep / exact: LUMEN]";
-  const m = warmPatchMessage(fail, ["/r/clearance-search/x/register-findings.md"]);
-  assert.match(m, /record_coverage/, "the recording route is the tool");
-  assert.match(m, /never by writing or editing any file/);
-  assert.doesNotMatch(m, /register-coverage-form\.json/, "the dead seat-facing copy is never named");
-  assert.doesNotMatch(m, /_driver/, "the seat is never told about the accumulator");
-  assert.doesNotMatch(m, /register-coverage-ledger\.json/,
-    "never the driver-derived machine ledger — the model is told not to write it");
-  assert.doesNotMatch(m, /Re-save the COMPLETE corrected JSON/,
-    "re-authoring a driver-written record retypes every field the seat was told not to touch");
-  assert.match(m, /do NOT re-run any search/i);
-  assert.match(m, /Everything already recorded is kept/);
-  //: a rejected draft carries across a recovery park for exactly the tokens whose repair is a patch.
-  assert.equal(draftCarryEligible(fail), true);
-  assert.equal(draftCarryEligible("invalid_file:x/register-findings.md:coverage_clean_unexecuted:primary-sweep"), false);
-});

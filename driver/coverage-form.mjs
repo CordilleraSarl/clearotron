@@ -80,107 +80,31 @@ const DRIVER_KINDS = new Set(["axis", "block", "deferred", "family"]);
 // exempts `saturation-probe` from the CLEAR→CONDITIONAL clamp, so a material limitation mis-filed there
 // silently drops the clamp. A wrong guess fails OPEN. A model choosing from a set it is shown does not.
 //
-// So the axis is the seat's, and every surface the seat reads carries the four tokens VERBATIM: this
-// form's own `seat_row_contract` (below — the machine writes the allowed set into the file being
-// edited), the dispatch brief, the skill, and the correction hint. A value a model must supply and is
-// never shown is the defect; a value it must supply and is shown on every surface is a choice.
+// So the axis was the seat's, and every surface the seat read carried the four tokens VERBATIM. Those
+// surfaces — the contract written into the form, the dispatch brief and the correction hints — left with
+// the register digest, the one seat that added rows; an archived seat row is still read as it was written.
 //
 // BELT AND BRACES, FREE: the dictated `unit` label is `<axis> / <what you swept>`, the same shape
 // `unitLabel` composes for driver rows, so `normalizeAxis(r.axis, r.unit)` in `seatRows` recovers the
 // axis from the label when a re-emit drops the `axis` cell. That is repair of a lost field, never
-// invention of a missing one — normalizeAxis leaves a genuinely unknown token unchanged and the gate
-// still refuses it.
+// invention of a missing one — normalizeAxis leaves a genuinely unknown token unchanged, and
+// rowIsSettled still refuses it.
 
-/**
- * THE FIELDS A SEAT ROW OWES — the single list every surface that teaches the shape is measured against.
- *
- * THIS IS NOT A DECLARATION, IT IS A MEASUREMENT, and the difference is the whole of round 4. Three
- * rounds of this build each fixed one site where the skill taught a shape the gate refuses; the cure is
- * not a fourth fix but a list the machine can check the skill against. So `skill-contract-enumerations`
- * drops each of these fields IN TURN from an otherwise-compliant seat row, drives it through the live
- * path (union → bytes → validator), and asserts the row is refused or lost. A field that does not
- * belong here fails that test; a field the gate starts requiring and this list omits fails it too. The
- * list cannot drift from the gate without CI saying so, and the skill cannot drift from the list.
- *
- * WHAT EACH ONE COSTS IF OMITTED, measured (not asserted) by that test:
- *   kind    — parseCoverageForm defaults an absent `kind` to "axis", a DRIVER kind, and seatRows drops
- *             driver-kind rows: the row VANISHES from the form, silently, taking its judgment with it.
- *   axis    — rowIsSettled refuses any row outside REGISTER_AXES → `coverage_form_axis_invalid`.
- *   unit    — defaults to the bare axis, which is survivable for a general row and FATAL for the
- *             counted-crowd row below: the crowd token lives in this cell and nowhere else.
- *   status  — refused, `coverage_no_status`.
- *   reason  — refused, `coverage_no_status`. It is also the sentence the lawyer reads.
- */
-export const SEAT_ROW_FIELDS = Object.freeze(["kind", "axis", "unit", "status", "reason"]);
-
-/**
- * WHAT A SEAT ROW OWES, written INTO the accumulator (and told to the seat in the dispatch brief and
- * the tool's own refusals — the seat no longer opens this file). The allowed axis set is not prose
- * about the file, it is a field OF the file: the finding was "a fact obeyed as a failure and
- * ignored as an input", and a closed vocabulary the seat must hit and is never shown is exactly that.
- * PURE data.
- *
- * `fields` and `counted_crowd` are new in round 4. The first makes the required set a value OF the file
- * rather than something reconstructed by counting bullets in prose. The second carries the ONE seat row
- * the digest is compelled to write — the counted dominant-element crowd, whose absence blocks delivery —
- * with the exact cell its count must land in, because that count is read out of `unit` and NOWHERE else.
- */
-export const SEAT_ROW_CONTRACT = Object.freeze({
-  what: "Rows you ADD, for coverage units the plan does not contain — the per-jurisdiction "
-    + "reconciliation, a cross-class merch check, a counted dominant-element crowd. "
-    + "Those are judgment and the ledger a lawyer reads has always carried them.",
-  fields: [...SEAT_ROW_FIELDS],
-  kind: "seat",
-  axis: [...REGISTER_AXES],
-  axis_rule: "REQUIRED on a row you add, and EXACTLY one bare token of the `axis` list above — the "
-    + "vocabulary is CLOSED. Choose the axis whose coverage the row qualifies: a per-jurisdiction "
-    + "reconciliation or a cross-class / cross-check / merch sweep is `primary-sweep`; an owner, "
-    + "incumbent, watchlist-owner or stealth-filer sweep is `incumbent-class`; a counted "
-    + "dominant-element or meaning-token crowd is `saturation-probe`; a transliteration or numeric-form "
-    + "slice is `transliteration-numeric`. Never a jurisdiction, a class, a sweep name or a phrase.",
-  unit: "<axis> / <what you swept> — the same shape the driver's own rows use.",
-  status: [...COVERAGE_STATUSES],
-  reason: "The sentence the lawyer reads.",
-  counted_crowd: {
-    when: "The dominant-element reconciliation left residual POSITIONS you did not end individually. "
-      + "This is the ONE row you are compelled to add, and the only seat row under a delivery-blocking "
-      + "gate: a residual position with no finding row and no drop row is covered ONLY by membership of "
-      + "a ruled, COUNTED crowd, and a position ending nowhere blocks the run.",
-    unit: CROWD_RULING_UNIT_GRAMMAR,
-    token: CROWD_RULING_TOKEN,
-    count_cell: "unit",
-    count_rule: "The member count is read out of the `unit` cell and NOWHERE ELSE — a count that sits "
-      + "in `reason` parses as ZERO, the crowd then covers no position, and delivery blocks over a "
-      + "ruling you did make. Write it as a bare integer in `(<N> members)`, counted in POSITIONS, at "
-      + "least the number of residual positions you did not end individually.",
-  },
-  note: "The axis on a row the DRIVER wrote is the driver's and is regenerated every pass. This "
-    + "contract governs rows YOU add, and nothing else in this file.",
-});
-
-const PROVENANCE = "driver-written form (#476; typed transport). Every field except `status` and "
-  + "`reason` is computed by the driver from the frozen register plan, the plan-execution receipt and "
-  + "the per-axis band files — the same calculation the validator judges with — and is REGENERATED on "
-  + "every pass. The statuses and reasons arrive ONLY through the `record_coverage` tool, validated "
-  + "per row at call time; no seat opens or edits this file, and no hand-written bytes are read. A row "
-  + "marked `open` carries a slice the machine knows was never searched or never accounted for: it "
-  + "cannot be confirmed-clean, and its own `open_because` says which of the two it is — a "
-  + "never-searched slice is `deferred`, a crowd block that ran and saturated is `coverage-limited`. "
-  + "EACH OPEN ROW IS DISCHARGED ONLY BY ITSELF: a status on one row never accounts for another row's "
-  + "slice. Statuses accumulate across attempts: a row settled once stays settled. Seat-added rows "
-  + "(`kind: \"seat\"`) arrive through the same tool — `seat_row_contract` carries their closed axis "
-  + "vocabulary. A `reason` IS PRINTED ON THE CLIENT'S REPORT, so it is refused if it names an engine "
-  + "identifier (primary-sweep, saturation-probe, transliteration-numeric, incumbent-class, "
-  + "crowd-context).";
+const PROVENANCE = "driver-written form. Every field is computed by the driver from the frozen register "
+  + "plan, the plan-execution receipt and the per-axis band files, and is REGENERATED on every pass; code "
+  + "settles each row's status and reason from the run's own facts (settleCoverageRowsFromFacts). A row "
+  + "marked `open` carries a slice the machine knows was never searched or never accounted for: it cannot "
+  + "be confirmed-clean, and its own `open_because` says which of the two it is. EACH OPEN ROW IS "
+  + "DISCHARGED ONLY BY ITSELF: a status on one row never accounts for another row's slice. A `reason` IS "
+  + "PRINTED ON THE CLIENT'S REPORT.";
 
 /**
  * The name of the DRIVER'S copy of the form — since the typed-transport conversion, the ONLY live
  * copy. Two names still resolve (coverage-form-io.coverageFormPaths), and the asymmetry is now the
  * whole story:
  *
- *   · THE SEAT-FACING COPY IS DEAD. The seat records statuses through the `record_coverage` tool and
- *     never opens a coverage file; repairs order tool calls, not file edits (gateway's warm-patch
- *     coverage branch). The name survives only so archived runs' seat copies stay addressable.
+ *   · THE SEAT-FACING COPY IS DEAD. No seat records coverage any more: code settles every row from the
+ *     run's facts. The name survives only so archived runs' seat copies stay addressable.
  *   · THE `_driver/` COPY is the ACCUMULATOR and the ERA STAMP's object. It survives an attempt, a
  *     recovery park and a process restart. And because the seat holds no writer onto `_driver/`, it
  *     can be neither forged nor deleted into a pass.
@@ -665,16 +589,12 @@ export function renderCoverageAbsenceSection({ cause, detail } = {}) {
 }
 
 /**
- * The empty form for a run — every row present, both seat fields null. Written before the digest
- * dispatches and regenerated whenever it is needed again. PURE.
+ * The empty form for a run — every row present, both settled fields null. Written before the step that
+ * settles it, and regenerated whenever it is needed again. PURE.
  */
 export function buildCoverageForm(input) {
   const { rows, derived_from } = coverageFormRows(input);
-  // `seat_row_contract` rides on BOTH builders — here and in unionCoverageForm — or it would appear on
-  // the pre-dispatch form and vanish from every pass after it, i.e. be absent from exactly the file a
-  // corrective attempt opens. parseCoverageForm reads `rows` and ignores every other top-level key, so
-  // it round-trips through the seat's copy untouched.
-  return { _provenance: PROVENANCE, seat_row_contract: SEAT_ROW_CONTRACT, generated_from: derived_from, rows };
+  return { _provenance: PROVENANCE, generated_from: derived_from, rows };
 }
 
 /**
@@ -776,32 +696,6 @@ export function formLedgerRows(rows) {
     }));
 }
 
-// ── THE GATE ────────────────────────────────────────────────────────────────────────────────────────
-//
-// TWO REASONS, CLOSED, EXPORTED. THREE judgment tokens collapse into them —
-// `coverage_clean_unverified_incomplete`, `coverage_deferred_unaccounted` and `coverage_clean_deferred`,
-// the three that carried a disclosure join over text the model typed. What is NOT touched, and still
-// fires: the six-token `coverage_*` STRUCTURE family on the derived JSON (ledger_unparseable /
-// ledger_empty / axis_invalid / axis_missing / key_unknown / status_*, plus classes_invalid), and the
-// three never-searched tokens (`coverage_clean_unexecuted` / `_skipped` / `_tainted`), which mean the
-// slice was never searched rather than never disclosed. `coverage_form_missing` is the driver's own
-// failure and lives in verify.mjs, not here — this gate never reaches a form that is not there.
-// Exported because
-//: an external probe filtered on a string literal that had stopped existing and printed
-// "0 undisposed" over evidence carrying thirteen — a vocabulary nobody can enumerate is one every
-// external reader gets wrong in silence. coverage-form.test.mjs ("the reason vocabulary is CLOSED and
-// matches what the gate can emit") breaks CI if this list drifts from what findCoverageFormViolations
-// can actually put in `reason`.
-export const COVERAGE_REASONS = Object.freeze([
-  "no_status",         // a row carries no status this gate accepts
-  "form_damaged",      // the form does not parse
-  // — the row's REASON carries an engine identifier. A separate reason and not a `no_status`
-  // cause, deliberately: the row's status is fine and the seat has complied with everything
-  // `no_status` asks. Folding it in would produce the unactionable hint this file's own 2026-08-05
-  // block records the cost of — `set a status on every row` to a seat that already has.
-  "engine_vocabulary",
-]);
-
 // The tokens a seat may not put in a reason a client reads. CLOSED, and every member is a HYPHENATED
 // COMPOUND — that is the whole selection rule, not an accident of which ones leaked.
 //
@@ -825,107 +719,6 @@ export function seatBannedTokens(reason) {
     if (re.test(t) && !hits.includes(tok)) hits.push(tok);
   }
   return hits;
-}
-
-/**
- * WHY a `no_status` row was refused. `reason` is what the TOKEN is named after and stays a closed pair
- * above; `cause` discriminates the three defects that share it, and it is why this exists at all.
- *
- * The 2026-08-05 block in verify.mjs records the cost of the alternative: a token that named the axis
- * and nothing else, four identical repair attempts, "THE TOKEN NAMED THE AXIS AND NOTHING ELSE, AND THE
- * AXIS IS NOT THE DEFECT". One reason string over three defects has the same failure mode one level in:
- * the hint opens with "row(s) with no status this gate accepts" and orders the seat to set a status on
- * every row — unactionable when every row already carries one and what is wrong is that a status the
- * enum accepts was put on a row the machine marked `open`. The seat then burns a warm attempt complying
- * with an instruction it has already complied with.
- *
- * These ride the fail token as a MULTI-TERM CAUSE CENSUS (`no_status=2,open_clean=1;…`), which
- * repairs.mjs CENSUS_RE already parses and sums — it accepts comma-joined `<name>=<n>` terms. The terms
- * PARTITION the violations, so the sum is still the exact outstanding count and `progressQuantity`
- * cannot read a converging run as stuck.
- */
-export const COVERAGE_CAUSES = Object.freeze([
-  "no_status",     // no status at all, or one outside the closed enum
-  "open_clean",    // an enum-valid `confirmed-clean` on a row the DRIVER marked `open`
-  "axis_invalid",  // the row's axis is outside the register-axis vocabulary
-]);
-
-/**
- * Which coverage obligations the seat has not settled. TWO CLAUSES, BOTH PER ROW — and the reason there
- * is no third is the whole correction this file carries.
- *
- *   (1) EVERY ROW CARRIES A STATUS the enum accepts and a non-empty reason (rowIsSettled). The form's
- *       own contract; it has NO prose analogue, since no archived run carries a form, so it cannot make
- *       an existing verdict move. It is the `connotation_no_ruling` of this lane.
- *   (2) AN `open` ROW MAY NOT BE CONFIRMED-CLEAN (also rowIsSettled), and `open` now covers BOTH kinds
- *       of undischarged obligation:
- *         · a `deferred` row — the exact analogue of undisclosedDeferredQids, which demanded every
- *           deferred qid appear VERBATIM in a non-clean row on its own axis. The driver writes one row
- *           per deferred qid, so "the row naming that qid is non-clean" is the same requirement with
- *           the typing removed.
- *         · a `block` row — the exact analogue of blockIsDisclosed, which demanded THAT BLOCK'S own
- *           qid or hit count inside the axis's non-clean disclosure text. The driver writes one row per
- *           open crowd block carrying both, so "the row naming that block is non-clean" is, again, the
- *           same requirement with the typing removed.
- *         · the AXIS row of a skeleton contradiction (state `deferred`, no deferred qids), which the
- *           pre-join code fired on with `missing: []` and which must keep firing.
- *       NON-CIRCULAR by construction: a row never discharges itself, and no row discharges another.
- *
- * THE THIRD CLAUSE WAS DELETED, AND NOT BECAUSE IT WAS UNREACHABLE. It read: an axis with open blocks
- * and a clean claim and no non-clean row anywhere on it owes disclosure. Trace it against clause 2 and
- * it fires only when `blocks ≥ 1 ∧ clean ≥ 1 ∧ nonClean === 0` — which, with block rows `open`, means
- * every block row on that axis is either settled-non-clean (so nonClean ≥ 1, and it does not fire) or
- * unsettled (so clause 1 ALREADY fired on it, by row id). It is reachable, and all it can do is add a
- * SECOND violation for a defect already named: inflating the census, inflating `quantity`, and emitting
- * an entry with no row id that degenerates in the fail token to `<axis> [<axis>]` — the axis named
- * twice and the defect named not at all.
- *
- * It was also the clause that made this gate wrong. Scoped to the axis, it discharged every open block
- * on an axis the moment ANY non-clean row existed there — including a row about an unrelated slice. See
- * the block above coverageFormRows: that is the FROSTBERRY hole, and the join it replaced never did it.
- *
- * @param {Array|null} rows        the form's rows (already unioned + re-stamped by the driver)
- * @param {string|null} formError  a named parse defect, or null
- * @returns {Array<{reason:"no_status"|"form_damaged", cause?:string, row?:string, axis?:string,
- *                  unit?:string, detail?:string}>}
- * PURE; never throws.
- */
-export function findCoverageFormViolations(rows, formError = null) {
-  const out = [];
-  // Present-and-unparseable is a NAMED defect, never an absence. Reported once, for the file — not once
-  // per row it could not carry, and never mixed with counts drawn from rows nobody can read.
-  if (formError) return [{ reason: "form_damaged", detail: String(formError).slice(0, 120) }];
-  if (!Array.isArray(rows)) return out;
-  for (const r of rows) {
-    // — checked on SETTLED rows too, and that is the point: an unsettled row is refused by
-    // `no_status` anyway, while a row the seat considers finished is exactly the one whose reason
-    // reaches the page. Reported per row so the seat repairs the sentence it wrote, not "the form".
-    const banned = seatBannedTokens(seatFields(r).reason ?? r?.reason);
-    if (banned.length) out.push({
-      reason: "engine_vocabulary",
-      row: String(r?.row_id ?? ""), axis: String(r?.axis ?? ""), unit: String(r?.unit ?? ""),
-      tokens: banned,
-      detail: `reason names ${banned.join(", ")} — the reader's page prints this sentence; the coverage unit already carries the identifier`,
-    });
-    if (rowIsSettled(r, r)) continue;
-    const { status } = seatFields(r);
-    const axisOk = REGISTER_AXES.includes(String(r?.axis ?? "").trim().toLowerCase());
-    const openClean = axisOk && r?.open === true && STATUS_SET.has(status);
-    out.push({
-      reason: "no_status",
-      cause: !axisOk ? "axis_invalid" : openClean ? "open_clean" : "no_status",
-      row: String(r?.row_id ?? ""), axis: String(r?.axis ?? ""), unit: String(r?.unit ?? ""),
-      // The DRIVER's own sentence for why this row is open, never a generic one: `open` covers a slice
-      // that was never searched AND a crowd block that ran and came back unaccounted, and the seat's
-      // repair differs between them.
-      detail: !axisOk
-        ? `axis "${String(r?.axis ?? "")}" is not one of ${REGISTER_AXES.join(" / ")}`
-        : openClean
-          ? `status "${status}" — ${String(r?.open_because ?? "this row cannot be confirmed-clean").slice(0, 200)}`
-          : (status ? `status "${status}" is not one of ${COVERAGE_STATUSES.join(" / ")}` : "no status"),
-    });
-  }
-  return out;
 }
 
 // ── THE DRIVER RENDERS THE TABLE ────────────────────────────────────────────────────────────────────
@@ -1113,111 +906,4 @@ export function settleCoverageRowsFromFacts(rows, { bandsUnreadable = [], unknow
     if (r.kind === "axis") return { ...r, status: axisStatus(r), reason: "" };
     return r;   // a family the reading turn did not decide stays open: its judgment was never this step's
   });
-}
-
-// ── WHAT THE SEAT IS TOLD ───────────────────────────────────────────────────────────────────────────
-//
-// This replaced gateway.deferredSlicesRequiredRows (: nothing is retyped — the obligations ride as
-// driver rows), and the typed-transport conversion then replaced the OPEN-IT instruction: the seat no
-// longer touches any coverage file. The rows are ENUMERATED HERE, complete, because the dispatch is now
-// the seat's only sight of them (the seat-facing form copy is dead — writeCoverageForm's doc block), and
-// the recording route is the `record_coverage` tool, whose every answer re-lists what is outstanding.
-// B's shape exactly: obligations told in-turn, values sent back, the driver holding the pen.
-
-/** One obligation row, rendered for the dispatch. The row_id leads because it is what the seat sends back. */
-function briefRow(r) {
-  const facts = [
-    Number.isInteger(r.total_hits) ? `${r.total_hits} hits` : "",
-    r.unaccounted_classes?.length ? `classes unaccounted: ${r.unaccounted_classes.join(", ")}` : "",
-    r.unaccounted_terms?.length ? `terms unaccounted: ${r.unaccounted_terms.join(", ")}` : "",
-    r.receipt_reason ? `receipt: ${String(r.receipt_reason).slice(0, 160)}` : "",
-  ].filter(Boolean).join("; ");
-  const settled = String(r.status ?? "").trim() ? ` [settled: ${String(r.status).trim()}]` : "";
-  return `  ${r.row_id}  (${r.kind}) ${r.unit}${facts ? ` — ${facts}` : ""}${r.open === true ? " — OPEN: never confirmed-clean" : ""}${settled}`;
-}
-
-/**
- * The dispatch block carrying the obligations and the recording route. "" when the run has no rows.
- * PURE.
- *
- * THE TWO OPEN SETS ARE DISJOINT HERE, DELIBERATELY. `open` is true on block rows AND on deferred rows,
- * and the two need OPPOSITE instructions: a deferred slice never ran and nothing can make it run
- * (`deferred`), while a crowd block ran and saturated (`coverage-limited`). Describing them together
- * would give one count for two facts and steer half the rows to the wrong status — and the status is
- * not cosmetic: decideRegisterGap clamps the verdict CLEAR→CONDITIONAL on `deferred` rows and leaves
- * `coverage-limited` alone, so mislabelling a saturated crowd downgrades the whole run's verdict.
- */
-export function coverageFormBrief(form) {
-  const rows = form?.rows ?? [];
-  if (!rows.length) return "";
-  const blocks = rows.filter((r) => r.kind === "block");
-  const open = rows.filter((r) => r.open === true && r.kind !== "block");
-  return [
-    "YOUR COVERAGE LEDGER IS A SET OF OBLIGATIONS THE DRIVER HAS ALREADY COMPUTED, LISTED BELOW —",
-    "and you record your judgment on them ONLY by calling the `record_coverage` tool. Never write or",
-    "edit any coverage file and never hand-write a `## Coverage ledger` table: the driver validates each",
-    "row as it arrives, holds the record itself, and renders the table and the coverage JSON from it —",
-    "nothing you write into any file is read.",
-    "",
-    `There are ${rows.length} row(s) — one per axis, one per unaccounted crowd block, one per deferred slice, one per waiting family the reading turn did not ask —`,
-    "and every identifier is computed: the coverage unit, the query id, the hit count, the unaccounted",
-    "classes and terms, and each deferred slice's own receipt reason. This is the complete list: nothing is",
-    "abbreviated, truncated or elided, and there is nothing owed that is not a row below.",
-    "",
-    "For EVERY row, call `record_coverage` with `row_id` (as listed), `status` — exactly one bare token of",
-    "confirmed-clean / coverage-limited / deferred / withheld-by-judgment — and `reason`, the sentence the lawyer reads: a",
-    "lawyer's words, never the engine's (a reason naming primary-sweep, saturation-probe,",
-    "transliteration-numeric, incumbent-class or crowd-context is REFUSED, because the coverage unit",
-    "already carries the identifier and your sentence is printed on the client's report). A call carries a",
-    "batch; refused rows name what to change and the rest of the call is KEPT; statuses accumulate across",
-    "attempts, so a row settled once stays settled. The answer lists every obligation still outstanding.",
-    "",
-    ...(rows.some((r) => r.kind === "family") ? [
-      "A `family` row is a waiting family the reading turn did not ask. It was never searched, so its only",
-      "status is withheld-by-judgment. Most arrive settled with the reading turn's reason; for any that did",
-      "not, record withheld-by-judgment and why it was not asked. That reason goes into the audit workbook, not",
-      "the report.",
-      "",
-    ] : []),
-    "THE ROWS:",
-    ...rows.map(briefRow),
-    "",
-    // The seat-row shape, on the surface the seat reads at DISPATCH. Stating it only in the skill would
-    // leave the one closed-vocabulary value the seat must supply named on a page it may not re-read.
-    "YOU MAY ADD ROWS OF YOUR OWN for coverage units the plan does not contain — the per-jurisdiction",
-    "reconciliation, a cross-class merch check, a counted dominant-element crowd. Send",
-    'each through the same tool as `{"kind":"seat", "axis", "unit", "status", "reason"}` — no row_id; the',
-    'driver mints it. `unit` reads "<axis> / <what you swept>", and `axis` is EXACTLY one bare token of:',
-    `${REGISTER_AXES.join(" / ")}.`,
-    "That vocabulary is CLOSED — a row whose axis is outside it is refused. A per-jurisdiction",
-    "reconciliation or a cross-class / cross-check / merch sweep is `primary-sweep`; an owner, incumbent,",
-    "watchlist-owner or stealth-filer sweep is `incumbent-class`; a counted dominant-element or",
-    "meaning-token crowd is `saturation-probe`; a transliteration or numeric-form slice is",
-    "`transliteration-numeric`. To withdraw a row you added, send `{\"retract\":\"<its row_id>\"}` —",
-    "silence never removes anything.",
-    ...(open.length ? [
-      "",
-      `${open.length} row(s) are NEVER-SEARCHED slices. The active register provider cannot express them at all,`,
-      "so nothing can make them run. They cannot be confirmed-clean: mark each `deferred`, carry the",
-      "SUBSTANCE of its receipt reason IN THE READER'S WORDS — never the receipt's own identifiers, which",
-      "name axes and query ids the reader does not have and which the gate refuses — and treat the gap as",
-      "an OPEN, disclosed question for the lawyer, never a clean negative.",
-    ] : []),
-    ...(blocks.length ? [
-      "",
-      `${blocks.length} row(s) are UNACCOUNTED CROWD BLOCKS: the band left part of that slice neither verified-zero`,
-      "nor individually enumerated nor itself a ruled crowd. That search RAN and saturated, so the honest status",
-      "is `coverage-limited` — NOT `deferred`, which means a slice that could not run at all and which clamps the",
-      "run's verdict to CONDITIONAL. Say in the reason what stayed open.",
-      "",
-      "EACH OF THESE ROWS IS DISCHARGED ONLY BY ITSELF. A coverage-limited row about one slice does NOT account",
-      "for a different slice's block, however plainly it discusses the axis — so set the status on the block's",
-      "OWN row. Rows about slices that genuinely enumerated to has_more:false STAY confirmed-clean: do not",
-      "downgrade those, that trades one false claim for another.",
-    ] : []),
-    "",
-    "The driver renders the `## Coverage ledger` table into your findings file from what the tool records,",
-    "so do not hand-write that table. Your findings, negative-results matrix and audit trail are unchanged",
-    "and yours.",
-  ].join("\n");
 }
