@@ -3196,8 +3196,8 @@
           "todos": 0
         },
         "experiment-context.test.mjs": {
-          "tests": 23,
-          "asserts": 76,
+          "tests": 24,
+          "asserts": 80,
           "skips": 0,
           "todos": 0
         },
@@ -5909,7 +5909,7 @@
         },
         "the-narrative-is-checked-against-its-depth-rules.test.mjs": {
           "tests": 19,
-          "asserts": 70,
+          "asserts": 71,
           "skips": 0,
           "todos": 0
         },
@@ -6474,6 +6474,12 @@
         "two-asks-in-flight-keep-their-own-clocks.test.mjs": {
           "tests": 6,
           "asserts": 25,
+          "skips": 0,
+          "todos": 0
+        },
+        "two-names-that-differ-only-in-script-letters-are-not-duplicates.test.mjs": {
+          "tests": 5,
+          "asserts": 10,
           "skips": 0,
           "todos": 0
         },

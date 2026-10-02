@@ -1165,7 +1165,26 @@ export function countJobMarks(job) {
 // The mark → filesystem-key derivation (research payloads, fixtures). ONE definition — the knockout
 // lane keys per-mark artifacts on it, so two batch marks that collide here ("MOTO X" / "MOTO-X") would
 // silently share a research payload; every door checks collisions with THIS function.
-export const kebab = (s) => String(s ?? "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 60) || "mark";
+//
+// THE KEY IS UNIQUE FOR TWO NAMES THAT DIFFER IN ANY LETTER OR NUMBER, in any script. The readable part
+// keeps only `a-z0-9`, because the key is also a report route segment. It used to be the whole key, so
+// every name written wholly in Greek, Cyrillic or Han keyed as `mark`, and two different names of that
+// kind were refused as duplicates at intake; two Latin names differing only in an accented letter merged
+// the same way. A name whose letters and numbers the readable part does not hold in full now carries a
+// short hash of them, NFKC-folded and lowercased. Spacing, punctuation, symbols and case still change
+// nothing, so a true duplicate still collides. A name the readable part already held in full keys exactly
+// as before, byte for byte: research payloads, published report files and per-name links were keyed on it.
+// SYMBOLS GO BEFORE THE FOLD. NFKC turns ™ into "TM" and ℠ into "SM", which would move "BRAND™" off the key
+// it shares with "BRAND"; symbols are the only class NFKC turns into letters or numbers, so dropping them
+// first leaves the fold acting on letters and numbers alone.
+const asciiKey = (s) => String(s ?? "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+const nameLetters = (s) => String(s ?? "").replace(/\p{S}/gu, "").normalize("NFKC").toLowerCase().replace(/[^\p{L}\p{N}]+/gu, "");
+export const kebab = (s) => {
+  const ascii = asciiKey(s);
+  const letters = nameLetters(s);
+  if (letters === ascii.replace(/-/g, "")) return ascii.slice(0, 60) || "mark";
+  return `${(ascii || "mark").slice(0, 51).replace(/-+$/, "")}-${createHash("sha256").update(letters).digest("hex").slice(0, 8)}`;
+};
 export function kebabCollisions(names) {
   const seen = new Map(); const out = [];
   for (const n of names ?? []) {
