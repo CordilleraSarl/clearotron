@@ -74,11 +74,9 @@ test("the message states the contract: every open doubt (id + birth quote), the 
   assert.match(msg, /there is no field for a file name/i, "the seat is told a file it was not given cannot be named");
   assert.match(msg, /VERBATIM/, "the quote-must-be-verbatim demand is stated");
   assert.match(msg, /never write new analysis|never search/i, "the stage may only point, never produce");
-  // presence-or-reason (2026-07-22): the ONE additive dictation line — a presence-reconciliation doubt
-  // may be SETTLED by a delivered crowd/coverage disclosure that prices the row's family in (the
-  // anti-flooding valve for crowd-corroboration rows); the verbatim-quote guard applies unchanged.
-  assert.match(msg, /presence-reconciliation doubt[\s\S]*crowd\/coverage disclosure[\s\S]*prices that row's family in/,
-    "the presence-reconciliation settle basis is dictated");
+  // The presence reconciliation was removed with step 3's placement, and its settle basis left this
+  // message with it (owner, 2026-10-01): no run raises such a doubt, so none is told how to settle one.
+  assert.doesNotMatch(msg, /presence-reconciliation/, "the message still dictates a settle basis for a doubt no run raises");
   // NO PATH IN THE DISPATCH — conversion 4's lesson, applied. The seat is handed no artifact path at all,
   // which is what stops it writing the file itself and what stops a MOCK_FAIL_STAGE-style knob keying on
   // a basename that the converted dispatch no longer contains.
