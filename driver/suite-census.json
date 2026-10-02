@@ -2573,7 +2573,7 @@
         },
         "digest-funnel.pipeline.test.mjs": {
           "tests": 4,
-          "asserts": 56,
+          "asserts": 57,
           "skips": 0,
           "todos": 0
         },
@@ -6358,8 +6358,8 @@
           "todos": 0
         },
         "two-judges-are-merged-and-every-owner-gets-a-fate.test.mjs": {
-          "tests": 13,
-          "asserts": 82,
+          "tests": 16,
+          "asserts": 98,
           "skips": 0,
           "todos": 0
         },

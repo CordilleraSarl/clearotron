@@ -12,7 +12,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { driverDir } from "../shared/driver-dir.mjs";
 import { atomicWrite } from "./progress.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
-import { composeMessage, orderText, contextText, fateCounts, judgmentDiscardReason, FATES } from "./owner-judgment.mjs";
+import { composeMessage, orderText, contextText, fateCounts, judgmentDiscardReason, FATES, JUDGES } from "./owner-judgment.mjs";
 
 const readJson = (path) => { try { return JSON.parse(readFileSync(path, "utf8")); } catch { return null; } };
 const readJsonl = (path) => {
@@ -38,6 +38,73 @@ export function composeJudgmentMessage({ P, profile, ownNames = [], ratingScaleP
     ratingScale: readSkill(ratingScalePath),
     workedExamples: readSkill(workedExamplesPath),
     tablePages,
+  });
+}
+
+// ── TWO JUDGES ON THE FIRST PASS, ONE ON A RE-RUN; A JUDGE'S LAST ACCEPTED ANSWER STANDS ──────────────────
+//
+// The owner's ruling of 2026-10-01: a pass that re-judges because the pile moved (the settlement flush, a
+// client bound late, a stale repair) runs one judge on the changed table, and its answer is merged with the
+// other judge's last accepted answer. A judge's last accepted answer stands until that judge gives another.
+// It is kept here, beside the stage's output and never in it: the gateway deletes a stage's output before
+// each attempt, so a re-run judge that failed every attempt took its earlier carries with it, and owners
+// only that judge had carried lost "carried".
+
+/** A judge's last accepted answer and the owners that judge was shown, or null when it has none. */
+export function readAcceptedJudgment(P, n) {
+  const a = readJson(P.ownerJudgmentAccepted(String(n)));
+  if (!a || !a.answer || typeof a.answer !== "object") return null;
+  return { ...a, opening: new Set(Array.isArray(a.opening) ? a.opening : []), looked: new Set(Array.isArray(a.looked) ? a.looked : []) };
+}
+
+/** Keep a judge's accepted answer with the owners it was shown, for the passes that do not run that judge. */
+export function writeAcceptedJudgment(P, n, { answer, opening, looked, trigger }) {
+  atomicWrite(P.ownerJudgmentAccepted(String(n)), `${JSON.stringify({
+    schema_version: 1, judge: n, ts: new Date().toISOString(), trigger, answer, opening: [...opening], looked: [...looked],
+  })}\n`);
+}
+
+/**
+ * Which judges a pass dispatches. Every judge on a first pass: the run's first, a resume before any judge
+ * was accepted, an experiment replaying the step. One on a re-run: a judge with no accepted answer first,
+ * else the judge whose accepted answer is oldest, so successive re-runs alternate between them. PURE.
+ */
+export function judgesForPass({ trigger, accepted, judges = JUDGES }) {
+  const all = Array.from({ length: judges }, (_, i) => i + 1);
+  if (trigger === "fresh" || trigger === "experiment" || all.every((n) => !accepted[n - 1])) return all;
+  const without = all.find((n) => !accepted[n - 1]);
+  if (without) return [without];
+  return [[...all].sort((a, b) => String(accepted[a - 1].ts ?? "").localeCompare(String(accepted[b - 1].ts ?? "")) || a - b)[0]];
+}
+
+/**
+ * Each judge's outcome for one pass. A judge this pass dispatched whose answer passed its check gives this
+ * pass's answer, with the owners this pass showed it. Every other judge — not dispatched, dispatched and
+ * lost, or skipped because nothing it reads moved — stands on its last accepted answer, with the owners
+ * that answer's session was shown, or has none. PURE: the stage's results and the readers come in.
+ *
+ *   dispatch   the judges this pass dispatched
+ *   results    judge → the stage's result for a dispatched judge ({ ok, skipped, attempts, fail })
+ *   accepted   judge → its last accepted answer (readAcceptedJudgment), or null
+ *   answerOf   judge → { answer } when its output passed the check, else { fail }
+ *   shownOf    judge → { opening, looked } for this pass's accepted session
+ */
+export function judgeOutcomes({ judges = JUDGES, dispatch, results, accepted, answerOf, shownOf }) {
+  return Array.from({ length: judges }, (_, i) => {
+    const n = i + 1;
+    const kept = accepted(n);
+    const standing = (fields) => ({ judge: n, ...fields, ok: Boolean(kept), answer: kept?.answer ?? null,
+      opening: kept?.opening ?? new Set(), looked: kept?.looked ?? new Set(), answer_from: kept ? "an earlier pass" : null });
+    if (!dispatch.includes(n)) return standing({ ran: false, attempts: null, skipped: false, fail: kept ? null : "judgment_not_run" });
+    const r = results(n) ?? {};
+    const read = r.ok ? answerOf(n) : null;
+    const fail = read?.answer ? null : String(r.fail ?? read?.fail ?? "judgment_no_answer").slice(0, 200);
+    if (fail) return standing({ ran: true, attempts: r.attempts ?? null, skipped: r.skipped === true, fail });
+    // A judge stage freshness skipped answered on an earlier pass; that answer is the one kept.
+    if (r.skipped === true && kept) return standing({ ran: true, attempts: r.attempts ?? null, skipped: true, fail: null });
+    const { opening, looked } = shownOf(n);
+    return { judge: n, ran: true, ok: true, attempts: r.attempts ?? null, skipped: r.skipped === true, fail: null,
+      answer: read.answer, opening, looked, answer_from: r.skipped === true ? "an earlier pass" : "this pass" };
   });
 }
 

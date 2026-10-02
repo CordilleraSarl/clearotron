@@ -73,7 +73,7 @@ import { unionCoverageForm } from "./coverage-union.mjs";
 import { loadPile, registerDecisionsFor } from "./pile.mjs";
 import { makeOwnerTools, MESSAGE_TABLE_CHARS } from "./owner-tools.mjs";
 import { firstTablePages, mergeJudgments, writeJudgmentFacts, checkJudgmentFile, JUDGES } from "./owner-judgment.mjs";
-import { composeJudgmentMessage, acceptedAttemptWindow, ownersLookedUp, recordOwnerIndex, writeJudgmentFiles, judgmentSeam } from "./owner-judgment-run.mjs";
+import { composeJudgmentMessage, acceptedAttemptWindow, ownersLookedUp, recordOwnerIndex, writeJudgmentFiles, judgmentSeam, readAcceptedJudgment, writeAcceptedJudgment, judgesForPass, judgeOutcomes } from "./owner-judgment-run.mjs";
 import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStamp, readCoverageForm, readCoverageFormInput, stampedFormFault, waitingFamilyStates, writeCoverageForm } from "./coverage-form-io.mjs";
 import { releasedFamilyQids, readWithheldFamilies } from "./withheld-families.mjs";   // the waiting families the reading turn released join as dictated entries
 
@@ -2831,9 +2831,12 @@ function deriveCommonLawCarry(ctx, trigger, { slice = "common-law", gridPath = n
 // the first, the re-judgement after the register material moved (the settlement flush), a client bound
 // late, a stale repair — so the message, the facts and the merge cannot differ between them.
 //
-// One judge failing every attempt is recorded and the step goes on with the other; both failing is the
-// step failing. A judge whose files did not move since its accepted answer is not dispatched again (stage
-// freshness, the same rule every stage keeps); `force` re-judges regardless.
+// TWO JUDGES ON THE FIRST PASS, ONE ON A RE-RUN (owner, 2026-10-01; owner-judgment-run.mjs judgesForPass):
+// a re-run judges the changed table with one judge and merges its answer with the other judge's last
+// accepted answer. A judge's last accepted answer stands until that judge gives another, so a judge that
+// fails every attempt of a re-run leaves its earlier answer in the merge rather than its carries out of it.
+// No judge with an answer is the step failing. A judge whose files did not move since its accepted answer
+// is not dispatched again (stage freshness, the same rule every stage keeps); `force` re-judges regardless.
 async function runOwnerJudgment(ctx, { trigger = "fresh", force = false, model = undefined } = {}) {
   const P = ctx.paths;
   // The deferrals the coverage form reads are decided before anything is judged over them, on every pass.
@@ -2859,8 +2862,10 @@ async function runOwnerJudgment(ctx, { trigger = "fresh", force = false, model =
     openingPages: opening.pages, openingOwners: opening.keysShown.length, messageChars: message.length,
     factsRecords: facts.records, factsWeb: facts.web });
 
-  const settled = await Promise.allSettled(Array.from({ length: JUDGES }, (_, i) =>
-    stage("owner-judgment", { ...ctx, axis: String(i + 1), ownerJudgmentMessage: message }, { force, trigger, ...(model ? { model } : {}) })));
+  const accepted = Array.from({ length: JUDGES }, (_, i) => readAcceptedJudgment(P, i + 1));
+  const dispatch = judgesForPass({ trigger, accepted });
+  const settled = await Promise.allSettled(dispatch.map((n) =>
+    stage("owner-judgment", { ...ctx, axis: String(n), ownerJudgmentMessage: message }, { force, trigger, ...(model ? { model } : {}) })));
   // A refusal the stage itself raises (a ceiling, a tier the engine cannot serve) is the run's, not this
   // step's: both sessions have settled by now, so nothing is left running behind it.
   const thrown = settled.find((x) => x.status === "rejected");
@@ -2870,31 +2875,42 @@ async function runOwnerJudgment(ctx, { trigger = "fresh", force = false, model =
   for (const { value: r } of settled) if (!r.ok && r.resetsAt) throw new StageFailure("owner-judgment", r.fail ?? "rate_limited", r.resetsAt);
 
   const keyOfRecord = recordOwnerIndex(table);
-  const judges = settled.map(({ value: r }, i) => {
-    const n = i + 1;
-    const file = P.ownerJudgment(String(n));
-    let content = null;
-    if (r.ok) { try { content = readFileSync(file, "utf8"); } catch { content = null; } }
-    const check = content != null ? checkJudgmentFile(file, content) : null;
-    const ok = Boolean(r.ok && check?.ok);
-    const session = `clearance-${ctx.run.slug}-${ctx.run.codename}-owner-judgment-${n}`;
-    return {
-      judge: n, ok, attempts: r.attempts ?? null, skipped: r.skipped === true,
-      fail: ok ? null : String(r.fail ?? check?.failures?.[0] ?? "judgment_no_answer").slice(0, 200),
-      answer: ok ? JSON.parse(content) : null,
-      opening: new Set(opening.keysShown),
-      looked: ok ? ownersLookedUp(P.runDir, { session, window: acceptedAttemptWindow(P.runDir, `owner-judgment:${n}`), keyOfRecord }) : new Set(),
-    };
+  const ran = new Map(dispatch.map((n, i) => [n, settled[i].value]));
+  const judges = judgeOutcomes({
+    dispatch, results: (n) => ran.get(n), accepted: (n) => accepted[n - 1],
+    answerOf: (n) => {
+      const file = P.ownerJudgment(String(n));
+      let content = null;
+      try { content = readFileSync(file, "utf8"); } catch { content = null; }
+      const check = content != null ? checkJudgmentFile(file, content) : null;
+      return check?.ok ? { answer: JSON.parse(content) } : { fail: check?.failures?.[0] ?? "judgment_no_answer" };
+    },
+    shownOf: (n) => ({ opening: new Set(opening.keysShown),
+      looked: ownersLookedUp(P.runDir, { session: `clearance-${ctx.run.slug}-${ctx.run.codename}-owner-judgment-${n}`,
+        window: acceptedAttemptWindow(P.runDir, `owner-judgment:${n}`), keyOfRecord }) }),
   });
-  const record = judges.map(({ judge, ok, attempts, skipped, fail }) => ({ judge, ok, attempts, skipped, fail }));
+  for (const j of judges) if (j.answer_from === "this pass" || (j.ran && j.ok && j.answer && !accepted[j.judge - 1]))
+    writeAcceptedJudgment(P, j.judge, { answer: j.answer, opening: j.opening, looked: j.looked, trigger });
+  // A JUDGE THIS RE-RUN DID NOT DISPATCH keeps its last accepted answer by the ruling above, so what moved
+  // under it since is accounted for in its stamp. Read as stale, the delivery gate would re-run it, which is
+  // the second judging the ruling removed.
+  for (const j of judges.filter((x) => !x.ran && x.ok)) {
+    let files = [];
+    try { files = stageInputs("owner-judgment", P, { axes: ctx.axes, axis: String(j.judge), registerOnly: ctx.registerOnly }); } catch { files = []; }
+    settleOneShotStamp(P.runDir, `owner-judgment:${j.judge}`, files, "one judge on a re-run: this judge's last accepted answer stands (owner, 2026-10-01)");
+  }
+  const record = judges.map(({ judge, ran: dispatched, ok, attempts, skipped, fail, answer_from }) =>
+    ({ judge, ran: dispatched, ok, attempts, skipped, fail, answer_from }));
   const taken = judges.filter((j) => j.ok);
   if (!taken.length) {
     const fail = `judgment_no_answer_taken:${judges.map((j) => `${j.judge}=${j.fail}`).join(";").slice(0, 200)}`;
     runLog(P.runDir, { event: "owner-judgment", trigger, ok: false, judges: record, fail });
     return { ok: false, fail, judges: record };
   }
-  if (taken.length < judges.length) {
-    note(`[owner-judgment] ${judges.length - taken.length} of ${judges.length} judges returned no answer that passed its check — the step goes on with the other, and the decisions say so`);
+  const lost = judges.filter((j) => j.ran && j.fail);
+  if (lost.length) {
+    note(`[owner-judgment] ${lost.length} of ${dispatch.length} judge(s) dispatched returned no answer that passed its check — `
+      + `${lost.some((j) => j.ok) ? "each one's earlier accepted answer stands, " : ""}the step goes on, and the decisions say so`);
   }
   const merged = mergeJudgments({ table, judges: taken });
   const counts = writeJudgmentFiles(P, merged, { trigger, judges: record });

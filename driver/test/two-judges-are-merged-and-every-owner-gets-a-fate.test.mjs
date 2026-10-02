@@ -13,7 +13,7 @@ import { driverDir } from "../../shared/driver-dir.mjs";
 import { loadPile } from "../pile.mjs";
 import { buildOwnerTable } from "../owner-table.mjs";
 import { checkAnswer, mergeJudgments, fateCounts, judgmentDiscardReason, FATES, ANSWER_FORM } from "../owner-judgment.mjs";
-import { acceptedAttemptWindow, ownersLookedUp, recordOwnerIndex, judgmentSeam } from "../owner-judgment-run.mjs";
+import { acceptedAttemptWindow, ownersLookedUp, recordOwnerIndex, judgmentSeam, judgesForPass, judgeOutcomes } from "../owner-judgment-run.mjs";
 import { seamRows } from "../record-discard.mjs";
 import { settleCoverageRowsFromFacts, coverageRowFacts } from "../coverage-form.mjs";
 import { decisionAuditRows } from "../publish/audit-from-spine.mjs";
@@ -301,4 +301,55 @@ test("the audit's register rows carry the record's facts and nothing a judge wro
     set_aside: [{ owners: ["Web Too Ltd"], records: [], web: ["https://example.test/other"], decisions: [] }],
   }, recordFacts });
   assert.deepEqual(web, { findings: [], negatives: [] });
+});
+
+// ── TWO JUDGES ON THE FIRST PASS, ONE ON A RE-RUN, AND A JUDGE'S LAST ACCEPTED ANSWER STANDS ───────────────
+//
+// The owner's ruling of 2026-10-01. A re-run judges the changed table with one judge and merges it with the
+// other's last accepted answer; a judge that loses every attempt of a re-run keeps its earlier answer in the
+// merge, because the gateway deletes a stage's output before each attempt and the merge used to take only
+// what this pass produced.
+test("a first pass dispatches both judges; a re-run dispatches one, the one without an answer or with the oldest", () => {
+  const at = (ts) => ({ ts, answer: { considered: [] } });
+  assert.deepEqual(judgesForPass({ trigger: "fresh", accepted: [at("2026-01-01T00:00:01Z"), at("2026-01-01T00:00:02Z")] }), [1, 2]);
+  assert.deepEqual(judgesForPass({ trigger: "experiment", accepted: [null, null] }), [1, 2]);
+  assert.deepEqual(judgesForPass({ trigger: "settlement-flush", accepted: [null, null] }), [1, 2], "nothing accepted yet: this is a first pass");
+  assert.deepEqual(judgesForPass({ trigger: "settlement-flush", accepted: [at("2026-01-01T00:00:01Z"), at("2026-01-01T00:00:02Z")] }), [1]);
+  assert.deepEqual(judgesForPass({ trigger: "stale-repair", accepted: [at("2026-01-01T00:00:03Z"), at("2026-01-01T00:00:02Z")] }), [2], "the older answer is the one re-judged");
+  assert.deepEqual(judgesForPass({ trigger: "late-bind", accepted: [at("2026-01-01T00:00:01Z"), null] }), [2], "a judge with no answer comes first");
+});
+
+test("a judge that loses every attempt of a re-run keeps its earlier answer, and the owners only it carried stay carried", () => {
+  const earlier = (n, carries) => ({ ts: "2026-01-01T00:00:00Z", answer: answer(carries), opening: new Set(), looked: new Set([`k${n}`]) });
+  const accepted = {
+    1: earlier(1, [carry(["Owner One K.K."], ["/mark/AA/0000-A1"], "High")]),
+    2: earlier(2, [carry(["Owner Two GmbH"], ["/mark/CC/0000-C3"], "Medium")]),
+  };
+  // The re-run dispatches judge 2 only, and its every attempt fails: the gateway left no output to read.
+  const outcomes = judgeOutcomes({ dispatch: [2], results: () => ({ ok: false, fail: "status_error", attempts: 3 }),
+    accepted: (n) => accepted[n], answerOf: () => ({ fail: "judgment_no_answer" }), shownOf: () => ({ opening: new Set(), looked: new Set() }) });
+  assert.deepEqual(outcomes.map((o) => [o.judge, o.ran, o.ok, o.answer_from, o.fail]),
+    [[1, false, true, "an earlier pass", null], [2, true, true, "an earlier pass", "status_error"]]);
+  const merged = mergeJudgments({ table, judges: outcomes.filter((o) => o.ok) });
+  const carriedOwners = merged.carried.flatMap((g) => g.owners);
+  assert.ok(carriedOwners.includes("Owner Two GmbH"), "the owner only the failed judge had carried lost 'carried'");
+  assert.ok(carriedOwners.includes("Owner One K.K."), "the judge this pass did not run lost its carries");
+  // The same pass, measured the way the merge used to be fed — only the answers this pass produced — drops it.
+  assert.equal(outcomes.filter((o) => o.ran && !o.fail).length, 0, "premise: this pass produced no answer at all");
+});
+
+test("a judge that answers on a re-run gives this pass's answer, with the owners this pass showed it", () => {
+  const kept = { ts: "2026-01-01T00:00:00Z", answer: answer([]), opening: new Set(["old"]), looked: new Set() };
+  const fresh = answer([carry(["Owner One K.K."], ["/mark/AA/0000-A1"], "High")]);
+  const [one, two] = judgeOutcomes({ dispatch: [1], results: () => ({ ok: true, attempts: 1 }), accepted: () => kept,
+    answerOf: () => ({ answer: fresh }), shownOf: () => ({ opening: new Set(["new"]), looked: new Set(["seen"]) }) });
+  assert.equal(one.answer_from, "this pass");
+  assert.deepEqual([...one.opening], ["new"]);
+  assert.equal(two.answer_from, "an earlier pass");
+  assert.deepEqual([...two.opening], ["old"], "a judge this pass did not run is merged with what its own session was shown");
+  // A judge stage freshness skipped stands on the answer it gave before.
+  const [skipped] = judgeOutcomes({ dispatch: [1], results: () => ({ ok: true, skipped: true }), accepted: () => kept,
+    answerOf: () => ({ answer: fresh }), shownOf: () => ({ opening: new Set(["new"]), looked: new Set() }) });
+  assert.equal(skipped.answer, kept.answer);
+  assert.equal(skipped.answer_from, "an earlier pass");
 });

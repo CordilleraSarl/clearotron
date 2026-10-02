@@ -111,8 +111,13 @@ test("settlement: the escalation MINTS, exactly ONE settlement flush re-judges, 
   // The escalation re-ran a unit whose band came back the same, so nothing either judge reads moved:
   // the flush re-merged and re-settled without paying for a second judging.
   assert.equal(judgeDispatches(events).length, 2, "two judges dispatched, on the fresh pass only");
-  assert.deepEqual(judgeSkips(events).map((e) => e.stage).sort(), ["owner-judgment:1", "owner-judgment:2"],
-    "on the flush both judges were fresh and skipped");
+  // ONE JUDGE ON A RE-RUN (owner, 2026-10-01): the flush dispatched one judge, which was fresh and skipped,
+  // and merged the other judge's last accepted answer without dispatching it.
+  assert.equal(judgeSkips(events).length, 1, "the flush dispatched one judge, not both");
+  const flushPass = judgmentPasses(events).find((e) => e.trigger === "settlement-flush");
+  assert.deepEqual(flushPass.judges.map((j) => [j.ran, j.ok, j.answer_from]).sort(),
+    [[false, true, "an earlier pass"], [true, true, "an earlier pass"]],
+    "one judge dispatched and skipped, the other kept on its accepted answer");
 
   // the durable sidecar: the item receipted (flushedAt set) — a resume can never re-fire it.
   const sidecar = JSON.parse(readFileSync(driverDir(res.runDir, "digest-queue.json"), "utf8"));
