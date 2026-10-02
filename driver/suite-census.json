@@ -3657,6 +3657,12 @@
           "skips": 0,
           "todos": 0
         },
+        "no-manual-or-message-names-a-removed-step.test.mjs": {
+          "tests": 2,
+          "asserts": 4,
+          "skips": 0,
+          "todos": 0
+        },
         "no-nul-bytes.test.mjs": {
           "tests": 3,
           "asserts": 7,

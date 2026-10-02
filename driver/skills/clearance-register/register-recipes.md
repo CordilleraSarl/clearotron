@@ -27,8 +27,7 @@ is a **count-only crowd descriptor** (`limit:1`); a recipe step that names a var
 **Execution note:** `clearance-register` now runs as a worker that decomposes these axes into isolated
 search **units** (saturation-probe / primary-sweep / transliteration-numeric / incumbent-class /
 merch-sweep), each executing one axis and writing its named-band array (`register-units/<axis>-band.json`).
-If you are a unit, run only your assigned axis from the recipe below; the judgment worker (Layer B) performs
-the cross-cutting relevance / sufficiency / owner-aggregation / prioritisation over the combined bands. See
+If you are a unit, run only your assigned axis from the recipe below. See
 [SKILL.md](SKILL.md).
 
 ## Contents

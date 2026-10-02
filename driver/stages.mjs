@@ -2113,7 +2113,7 @@ export const STAGES = {
     };
     const romanisedFiling = planEntries.some((e) => romanisedNote(e));
     return lines(
-      `First, read and follow exactly: skills/clearance-register/SKILL.md (the shared spine) then skills/clearance-register/unit.md (MODE A — UNIT). Do NOT read digest.md (digest-mode judgment a unit must never run).`,
+      `First, read and follow exactly: skills/clearance-register/SKILL.md (the shared spine) then skills/clearance-register/unit.md (MODE A — UNIT).`,
       // WHAT THE KEY ALSO CARRIES — COMPOSED, NOT DOCTRINE.
       // `unit.md` used to name three tools flat, and on a deployment withholding two of them the seat was
       // told it holds tools its grant does not carry. The composer derives the list from the same table
@@ -2882,7 +2882,7 @@ export const STAGES = {
       // RATING CALIBRATION CHALLENGE (judgment-not-rules): symmetric self-check answered BEFORE committing each finding's band. The engine's guardrails all police OVER-rating; this adds the missing UNDER-rating probe and forces the band to match the prose, both directions. Not a formula — a question the reasoning must answer.
       `RATING CALIBRATION CHALLENGE — for EACH rated finding, before you commit its band, answer the one that applies (this is symmetric: it catches BOTH over- and under-rating, and the band MUST match your own prose):
       (a) OVER-RATING check — if this finding's own reasoning says the marks are "distinguishable as wholes", or "better-than-even is not reached", or there is no real commercial overlap (the senior's actual use does not meet ours), or the shared dominant element is a heavily-diluted crowded element, then the read belongs in the framework's LOWEST band — or is not a rated conflict at all — never the middle band: a crowded field is a CEILING that lets you reach the client-favoured read, never a FLOOR that parks an over-threshold mark in the middle (synthesis-rules.md → "the band follows the words" posture + "Crowded field analysis"). Do not pull a mark down one band and then stop when the same reasoning carries it lower.
-      (b) UNDER-RATING check — if this finding is an ACTIVE same-field brand operating in the applicant's CORE classes (a live competitor whose own marketplace use actually MEETS ours), it is a genuine conflict ABOVE the lowest band: do NOT hold it at the lowest band on a mark-shape distinction alone (an onset-letter / one-keystroke difference the market would not notice), and do NOT let a "sheet-2 / lower-tier" placement carry it down by default. Set its disposition=adversarial and rate it on the use-meets-use read (typically the framework's middle band) — OR state explicitly, in one line, why the two uses do NOT meet in the market. An active in-field competitor is not diluted away by a crowd.`,
+      (b) UNDER-RATING check — if this finding is an ACTIVE same-field brand operating in the applicant's CORE classes (a live competitor whose own marketplace use actually MEETS ours), it is a genuine conflict ABOVE the lowest band: do NOT hold it at the lowest band on a mark-shape distinction alone (an onset-letter / one-keystroke difference the market would not notice). Set its disposition=adversarial and rate it on the use-meets-use read (typically the framework's middle band) — OR state explicitly, in one line, why the two uses do NOT meet in the market. An active in-field competitor is not diluted away by a crowd.`,
       // WP-56 (VIBRANTE): the calibration checks kept leaking on three evidence bases — the senior's trade
       // dress read the registration down, a remote-jurisdiction crowd diluted a local right, and the (b)
       // escape hatch accepted a sub-occasion read where the registered goods/channels/consumers meet. This
@@ -3478,7 +3478,7 @@ export const STAGES = {
       // the top of this message carries its tier and verdict word. The ordering dependency on
       // `narrative-refutation` is therefore REAL and is NOT created by this declaration list — trimming
       // the list buys no concurrency (see the PR for).
-      `Inputs — the ONLY two files this stage reads: the settled synthesis narrative ${P.narrative} and the machine findings ${P.findings}. Nothing else in the run dir is yours to consult here: every register, common-law, placement and refutation judgment already landed in those two, and the shell restates it — it never re-opens the evidence.`,
+      `Inputs — the ONLY two files this stage reads: the settled synthesis narrative ${P.narrative} and the machine findings ${P.findings}. Nothing else in the run dir is yours to consult here: every register, common-law and refutation judgment already landed in those two, and the shell restates it — it never re-opens the evidence.`,
       registerOnly ? REGISTER_ONLY_NOTE : "",
       `Do NOT write or edit any file. There is no path for you to write to: the driver renders the shell from your values and assembles the report around it, and nothing you hand-write is read.`,
       `When the tool accepts your call, return ONLY a 2-3 line summary of the shell.`,
@@ -3753,7 +3753,6 @@ export const STAGES = {
         `IMMATERIAL is always available and is the terminating move — but only with a real citation. You can NEVER mark an ask executed: execution is computed by code from the plan-execution record, not asserted.`,
       ) : "",
       `The quote must appear VERBATIM in the file you cite. The tool checks it as your call arrives, so you learn in THIS turn; the driver re-checks it afterwards either way and DISCARDS any inexact or invented quote (the row then ships OPEN). An honest OPEN row is a good answer; a stretched citation is a defect that costs you the row.`,
-      `A presence-reconciliation doubt (an on-field-rated register row that reached no delivered surface) MAY be SETTLED by citing a delivered crowd/coverage disclosure that prices that row's family in — same citable files, same verbatim-quote rule.`,
       `You may NOT settle a doubt by quoting the file it was born in — each doubt above names it ("born in …"). That file is what raised the question; quoting it back restates the question instead of answering it. The tool refuses those rows and names the file, so cite a different evidence file or send verdict:"open".`,
       `Send your verdicts by calling the \`record_doubt_closure\` tool. There is no file to write and no line to type: the driver applies your rows to both ledgers and renders the artifact from the same accepted set. Send them in one batch where you can; a refused row never voids its neighbours, and the answer names what was refused and why so you can fix it here.`,
     ),

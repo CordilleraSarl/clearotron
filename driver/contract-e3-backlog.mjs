@@ -218,7 +218,7 @@ export const E3_BACKLOG = [
   {
     stage: "common-law",
     kind: "dictated-line-shape",
-    where: "driver/skills/clearance-common-law/SKILL.md:192 (restated at driver/skills/clearance-search/synthesis-rules.md:394)",
+    where: "driver/skills/clearance-common-law/SKILL.md:192 (restated at driver/skills/clearance-search/synthesis-rules.md:414)",
     surface: "skill-file",
     evidence: "A clean PR/connotation row MUST cite its search — add a `**Connotation-search source:** <URL | \"perplexity_research — no result\">` line.",
     reparsedBy: "driver/connotation-search.mjs — validators.commonLaw rejects a clean claim with no such line (connotation_search_missing); the hint is re-dictated by correctionHint() in gateway.mjs",

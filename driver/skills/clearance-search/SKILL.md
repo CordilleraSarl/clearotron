@@ -31,16 +31,15 @@ This file is the **driver's compute orchestration spec** — it lives in `driver
 This workflow is run by the **deterministic driver** (`driver/`): an intake path (the `enqueue` CLI or the ops-MCP `start_run` tool) enqueues a job and the driver invokes each stage as a standalone compute turn (the `anthropic-agent` engine — a headless `claude -p` process off the gateway; sequencing, fan-in, gating, retries all in code). The judgment content + companion files below are what the stages read; the driver passes each stage its run-dir paths + the job context (email message id, forwarder, instructions, mark names).
 
 Companion files (this skill):
-- [phase2-execution.md](phase2-execution.md) — Phase 2 methodology (variants → gather → Touchpoint 2 placement → digest → skeptic review → cross-pollination → synthesis → Touchpoint 3 narrative refutation → case-law grounding)
+- [phase2-execution.md](phase2-execution.md) — Phase 2 methodology (variants → gather → skeptic review → cross-pollination → synthesis → Touchpoint 3 narrative refutation → case-law grounding)
 - [template-formatting.md](template-formatting.md) — HTML/CSS spec for the report
 - [risk-framework.md](risk-framework.md) — the house-default band ladder (Very High · High · Moderate · Manageable), each band stated as Legal position, Practical position and Potential consequences
 - [synthesis-rules.md](synthesis-rules.md) — how to combine common-law + register findings into a single risk assessment (carries the default-to-senior-lawyer-judgment posture)
 - [worked-examples.md](worked-examples.md) — the analytical depth target
 - [templates/email/](templates/email/) — a RECORD of the retired per-customer email bodies (`generic.md`), kept for history. Nothing selects one and no seat writes from one: `composeEmailHtml` composes the single cover note in code. Do not draft against it
 
-Top-level reusable judgment skills (the three new "touchpoints" — see Phase 2 below):
+Top-level reusable judgment skills (the new "touchpoints" — see Phase 2 below):
 - `matter-frame` — runs **inline** at Phase 0: produces `matter-context.md` naming client + sector + customer base + materially-matters jurisdictions + off-field sectors + watchlist-owner seeds. Strategic foundation the rest of the workflow reasons against. Reusable by `knockout-searches` and future clearance-search.
-- `placement-inquiry` — runs at Phase 2 (after the gather stages, before the register digest): per-candidate structured inquiry producing placement recommendations (`headline-candidate` / `sheet-2` / `watchlist-annex` / `out-of-scope-filtered`) with written reasoning. Reusable.
 - `narrative-refutation` — runs as a **spawned isolated worker** at Phase 2 (between Step 4 synthesis and Phase 3): refutes the narrative against the underlying files; produces `senior-eye-review.md`. Its verdict drives the corrective pass before Phase 3. Reusable.
 
 Sub-skills used during the workflow:
@@ -49,7 +48,7 @@ Sub-skills used during the workflow:
 - `clearance-common-law` — runs as a **spawned isolated worker** (Phase 2 Step 2): Perplexity
   execution against the manifest (produces the common-law findings file with `developer_of_record` / `publisher_of_record` extracted per game-title finding).
 - `clearance-register` — runs as a **spawned isolated worker** (Phase 2 Step 2): register-search
-  execution against the manifest; consumes `matter-context.md` for materially-matters jurisdictions in per-jurisdiction sub-queries; consumes `placement-recommendations.md` (MODE B digest) for per-candidate placements.
+  execution against the manifest; consumes `matter-context.md` for materially-matters jurisdictions in per-jurisdiction sub-queries.
 
 The two gather workers run in their **own isolated sessions** so their raw search payloads
 (Perplexity results, register records) never enter this orchestrator's context. The orchestrator
@@ -78,7 +77,7 @@ The old "exactly one register provider; you will never see both" referred to the
 Model tiers are set **per stage by the deterministic driver** — `driver/stages.mjs` is the
 source of truth. Current tiers: register sweep axes (`primary-sweep` / `transliteration-numeric` /
 `incumbent-class`) = `sonnet` / adaptive; `saturation-probe` = `haiku` / off; `clearance-common-law` = `haiku` /
-low; register digest + `matter-frame` / `clearance-variants` / `placement-inquiry` / synthesis = `opus`; Step-2.6
+low; `matter-frame` / `clearance-variants` / synthesis = `opus`; Step-2.6
 skeptic = `sonnet`; `narrative-refutation` = `opus`. Every stage runs under the
 **forwarding identity** (derived from the queue location); delivery is not an agent capability — it is
 the driver's outbox contract (`../../docs/DELIVERY.md`).
@@ -126,8 +125,6 @@ Three phases, all complete before a single reply is sent to the forwarder.
 **Phase 2 — Research and synthesis** (run by the deterministic driver; methodology in [phase2-execution.md](phase2-execution.md)):
 1. **Variants** — `clearance-variants` produces the variant manifest (consumes `matter-context.md` from Phase 0)
 2. **Gather** — common-law + the applicable register units run as batched stages against the manifest
-3. **Touchpoint 2: placement-inquiry** — structured inquiry per candidate; produces `placement-recommendations.md` (each candidate placed headline / sheet-2 / watchlist / out-of-scope with reasoning)
-4. **Register digest** — combines the unit digests into `register-findings.md`; consumes `placement-recommendations.md`
 5. **Skeptic review** — coverage check against floors; a flagged thin unit is re-run escalated to opus
 6. **Cross-pollination** — Option D deterministic cross-checks (cap N=10) using both layers' findings
 7. **Synthesis** — joint risk analysis using [risk-framework.md](risk-framework.md) and [synthesis-rules.md](synthesis-rules.md)
@@ -173,7 +170,7 @@ with a main layer missing (no "flagged gap" partial delivery).
 
 - **clearance-variants fails or returns empty manifest** → halt; cannot proceed without variants. Surface to user with diagnostic.
 - **clearance-common-law fails** (Perplexity unavailable after plugin retries + one worker retry, zero usable results) → the worker writes **no findings file** and reports the tool failure (see `clearance-common-law/SKILL.md` → *Failure protocol*). The driver re-runs the stage, then fails the run and surfaces it. Incomplete-but-ran coverage is NOT failure — that is honest `coverage-limited` / `deferred` ledger rows in a real findings file.
-- **clearance-register fails** → "fails" here means the register layer made **zero** successful provider tool calls (`register_search` / `register_record_fetch`) in your session. Verify by inspecting your own tool-use history before declaring this. If even ONE provider call returned a non-error result, the register layer DID execute and you MUST write a real `register-findings-<slug>-<date>.md` containing the hits you collected — even if coverage is incomplete relative to the variant manifest. Document the coverage gap inline (e.g. "12 of 25 planned sweeps executed; remaining skipped because <reason>") rather than declaring the entire layer "not executed". In the genuine zero-calls case: write **no findings file** and report the tool failure — the driver re-runs the stage, then fails the run and surfaces it.
+- **clearance-register fails** → "fails" here means the register layer made **zero** successful provider tool calls (`register_search` / `register_record_fetch`) in your session. Verify by inspecting your own tool-use history before declaring this. If even ONE provider call returned a non-error result, the register layer DID execute — even if coverage is incomplete relative to the variant manifest. Document the coverage gap inline (e.g. "12 of 25 planned sweeps executed; remaining skipped because <reason>") rather than declaring the entire layer "not executed". In the genuine zero-calls case: write **no findings file** and report the tool failure — the driver re-runs the stage, then fails the run and surfaces it.
 - **Both fail** → same as either: failed run, surfaced — never a template-only delivery.
 - **Stage re-run** (any stage; triggered by a missing/invalid output file, a non-`ok` result, or a detected embedded-fallback) → the driver re-runs that stage under a fresh session key (bounded retries), then writes a `.failed` sentinel and surfaces it if it still cannot produce a valid output. The failure taxonomy + file-truth gating live in `driver/gateway.mjs`.
 
@@ -198,7 +195,7 @@ On every invocation, before Phase 1:
 
 1. **Generate the run codename** — a random `<adjective>-<noun>` (lowercase, single hyphen; pick freshly, never reuse a prior run's). This fixes your run-dir leaf `<date>-<codename>` for the entire run.
 2. **Create the run-dir by WRITING into it.** The `write` tool creates parent dirs automatically, so your first write (the matter-context.md in step 3, then `register-units/<axis>.md` files as Phase 2 needs them) creates `studio/clearance-search/<slug>/<date>/`. The unique codename already guarantees a clean, collision-free dir, so there is **nothing to inspect** — do not `read` or list a directory to check or create it; track every file by its known path.
-3. **Run `matter-frame` inline** to produce `studio/clearance-search/<slug>/<date>/matter-context.md`. This is the strategic foundation — it names client + sector + customer base + materially-matters jurisdictions + off-field sectors + watchlist-owner seeds. Downstream (Phase 1 variants, Phase 2 register-unit per-jurisdiction sub-queries, Touchpoint 2 placement, Touchpoint 3 refutation) all consume this artifact. Read [matter-frame/SKILL.md](../matter-frame/SKILL.md) and execute it inline; it makes no tool calls and stays cheaply in context.
+3. **Run `matter-frame` inline** to produce `studio/clearance-search/<slug>/<date>/matter-context.md`. This is the strategic foundation — it names client + sector + customer base + materially-matters jurisdictions + off-field sectors + watchlist-owner seeds. Downstream (Phase 1 variants, Phase 2 register-unit per-jurisdiction sub-queries, Touchpoint 3 refutation) all consume this artifact. Read [matter-frame/SKILL.md](../matter-frame/SKILL.md) and execute it inline; it makes no tool calls and stays cheaply in context.
 4. **Per-customer delivery is driven by the RESOLVED CUSTOMER PROFILE, not the sender domain.** The intake
    AI resolves which customer this is for and stamps `profileKey` on the job (email-loop §B3.2a); the driver
    freezes that profile into `_driver/profile.json`, and the deterministic publish code reads its `delivery`
@@ -225,7 +222,7 @@ The report body is authored in Phase 2 synthesis against [delivery-contract.md](
 Phase 2 is **sequenced by the deterministic driver** (`driver/`); the step-by-step
 **methodology** lives in [phase2-execution.md](phase2-execution.md). It covers:
 - **Step 1** — variants (`clearance-variants` writes the variant manifest)
-- **Step 2** — gather (common-law + the applicable register units) → Touchpoint 2 placement-inquiry → register digest
+- **Step 2** — gather (common-law + the applicable register units)
 - **Step 2.6** — skeptic review (fresh-eyes audit before trust)
 - **Step 3** — cross-pollination (Option D, cap N=10)
 - **Step 3.5** — actual-use check (mandatory for Composite 3+ register hits)
@@ -295,13 +292,11 @@ Structure (content shared across templates):
 ### Deliverable 2: Excel workbook
 
 **One Excel workbook per request** (not per mark) — five sheets unified across both layers:
-"Findings", "Negative Results", "Out-of-Scope / Filtered", "Audit Trail", "Methodology", built from the findings files + the touchpoint artifacts (`matter-context.md`, `placement-recommendations.md`, `senior-eye-review.md`) in Phase 3. The **Findings** sheet carries the **Legal Risk** and **Business / Practical Risk** as *separate* columns (never one blended score), plus the per-row coverage status.
+"Findings", "Negative Results", "Out-of-Scope / Filtered", "Audit Trail", "Methodology", built from the findings files + the touchpoint artifacts (`matter-context.md`, `senior-eye-review.md`) in Phase 3. The **Findings** sheet carries the **Legal Risk** and **Business / Practical Risk** as *separate* columns (never one blended score), plus the per-row coverage status.
 
 The **workbook is the driver's, built in code at publish** (`driver/publish/xlsx.mjs`) from the findings files and touchpoint artifacts named above. Its sheets, columns and formatting are fixed there. Nothing in this workflow assembles, formats or routes a workbook — write the artifacts, and the sheets follow.
 
-The **Out-of-Scope / Filtered** sheet is populated from `placement-recommendations.md`'s "Out-of-scope / filtered" section — every candidate `placement-inquiry` placed off-field appears here with its reasoning trace. Nothing disappears silently.
-
-The **Methodology** sheet carries: matter-context summary, search approach, placement-inquiry summary by tier, narrative-refutation verdict, and open verification flags — **plus a coverage-ledger summary line** (`<N> confirmed-clean / <N> coverage-limited / <N> deferred`, with the deferred/limited scopes named) drawn from the findings files' `## Coverage ledger` sections, so the reviewing lawyer sees at a glance what was searched clean vs. what was a coverage gap. Methodology lives in the workbook, never in the client-facing email body.
+The **Methodology** sheet carries: matter-context summary, search approach, narrative-refutation verdict, and open verification flags — **plus a coverage-ledger summary line** (`<N> confirmed-clean / <N> coverage-limited / <N> deferred`, with the deferred/limited scopes named) drawn from the findings files' `## Coverage ledger` sections, so the reviewing lawyer sees at a glance what was searched clean vs. what was a coverage gap. Methodology lives in the workbook, never in the client-facing email body.
 
 **Detail-fetch coverage** (register search-depth floor — kept here, not in the Excel spec, because the Step 2.6 skeptic review depends on it) — rank the union of unique URIs returned across all register searches by signal strength, then detail-fetch as follows:
 
@@ -352,13 +347,10 @@ be audited without touching the engine.
 - [ ] Every finding has an advisory risk assessment (or N/A with reason)
 - [ ] **Dominant-element spine applied:** findings ranked by dominant element + whole-mark confusion; no on-point identical / near-identical-in-class hit dropped; headline driven by top on-point conflicts (not a distinguished mark or unrelated-field noise)
 - [ ] **Proposed-mark registrability read present** (dominant element + spectrum + deceptive/offensive flag, or "plainly distinctive")
-- [ ] **File-truth precondition met:** `register-findings.md` was written under the run-dir and synthesis read from it (not inline / announce text)
 - [ ] **Delivery complete:** report + audit published to the pool; `_driver/delivery.json` + the outbox `delivered` event written (`sendPending` set — the courier sends verbatim and confirms via `mark_sent`); the driver archived the run-dir to `studio/clearance-search/archive/<YYYY-MM>/<slug>/<date>/` and recorded the delivery
 - [ ] **matter-context.md produced at Phase 0** with materially-matters jurisdictions, off-field sectors, watchlist-owner seeds; downstream workers received it as input
-- [ ] **placement-recommendations.md produced at Phase 2 Touchpoint 2** with every candidate placed at headline / sheet-2 / watchlist-annex / out-of-scope-filtered + written reasoning; consumed by digest worker
 - [ ] **senior-eye-review.md produced at Phase 2 Touchpoint 3** with verdict CLEAR / CONDITIONAL / BLOCKING; corrections applied before Phase 3 if CONDITIONAL; if BLOCKING twice, the report delivers with the open points recorded for the reviewing lawyer
 - [ ] **No confabulated game-publisher attributions** — every game-title finding's publisher / developer traces to `developer_of_record` / `publisher_of_record` in common-law-findings, or shows "(developer unverified)"
-- [ ] Register findings include opposition history verbatim when present
 - [ ] Negative results documented for all variant × platform combinations (common-law), the field-scoped general search for collaborated / non-gaming goods, and all variant × class queries that returned no live results (register)
 - [ ] **Coverage ledger honoured:** both findings files carry a `## Coverage ledger`; every `matter-context` material jurisdiction has a row; the variant manifest's `### Scope ledger` section was read as the variants-stage coverage input and any `dropped` variant / field / source surfaced as a recall limitation; no `deferred` / `coverage-limited` ledger row and no `dropped` scope-ledger row is rendered as a clean negative in the narrative (the `narrative-refutation` coverage audit passed — `coverage-overclaim` / `missing-coverage-row` clear)
 - [ ] Audit trail is complete across all layers (variants / common-law / register / cross-pollination)
@@ -398,7 +390,6 @@ Format — one line per phase + each major search category, marked ✅ (done), �
      Numeric-substitution: ✅ <count> OR ⏭ <reason>
      Transliteration: ✅ <count>/<expected> core scripts; ⏭ <skipped scripts> (<reason>)
      Detail-fetch: ✅ <count> URIs OR ⚠ under-25 (<reason>)
-   Touchpoint 2 placement-inquiry: <N> headline / <N> sheet-2 / <N> watchlist-annex / <N> out-of-scope-filtered
    Cross-pollination: <count> executed, <count> cap-overflow flagged
    Synthesis: risk assessments on <count> findings
    Touchpoint 3 narrative-refutation: verdict <CLEAR|CONDITIONAL|BLOCKING>; <count> flags; <count> corrections applied

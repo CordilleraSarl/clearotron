@@ -1,12 +1,11 @@
 ---
 name: clearance-register
-description: Register-side execution for the v3 preliminary trademark search workflow. **Invoked exclusively by the `clearance-search` orchestrator** — do not call directly. Runs in one of two modes the orchestrator selects via the spawn task. **Unit mode (the FUNNEL — Layer A):** execute ONE register search axis (saturation / primary-sweep / transliteration-numeric / incumbent-class) against the variant manifest — ENUMERATE each named query to completion via `register_enumerate` (the completeness primitive that owns the page loop), describe saturation crowds as count-only incomplete descriptors, and write the COMPLETE NAMED BAND (`register-units/<axis>-band.json`) carrying every record with its status; the funnel never samples or self-accepts; only the raw character-noise pile dies in this session. **Digest mode (judgment — Layer B):** read the complete merged band through the band tools (`band_shape` / `band_lookup` / `band_record` — every call on the run's reading audit; never by slicing band files), run the cross-cutting judgment (relevance, identical-match + cross-class merchandising, owner aggregation, watchlists, stealth-filer + Option-D cross-checks, opposition), decide sufficiency, and hand the register-side findings back as typed rows — the driver renders the document the orchestrator synthesises from; the seat writes no file.
+description: Register-side execution for the v3 preliminary trademark search workflow. **Invoked exclusively by the `clearance-search` orchestrator** — do not call directly. **Unit mode (the FUNNEL — Layer A):** execute ONE register search axis (saturation / primary-sweep / transliteration-numeric / incumbent-class) against the variant manifest — ENUMERATE each named query to completion via `register_enumerate` (the completeness primitive that owns the page loop), describe saturation crowds as count-only incomplete descriptors, and write the COMPLETE NAMED BAND (`register-units/<axis>-band.json`) carrying every record with its status; the funnel never samples or self-accepts; only the raw character-noise pile dies in this session.
 ---
 
 ## Spawned session
 
-Invoked from `clearance-search` (the orchestrator) as an **isolated depth-2 worker**, in one of two
-modes. **This skill never spawns sub-agents** — the orchestrator owns all dispatch. (This is
+Invoked from `clearance-search` (the orchestrator) as an **isolated depth-2 worker**. **This skill never spawns sub-agents** — the orchestrator owns all dispatch. (This is
 deliberate: the announce/completion chain supports one nesting level — `main → orchestrator →
 workers` — so every register worker is a flat depth-2 sibling of the common-law worker, not a nested
 sub-tree.)
@@ -20,21 +19,12 @@ Two modes, chosen by the orchestrator and stated in the spawn `task`:
   describes saturation crowds as count-only descriptors, and writes the named-band array
   `register-units/<axis>-band.json`. Only the raw character-noise pile stays in this session;
   the **complete named band + crowd descriptors** cross the firewall as the band JSON.
-- **Digest mode (judgment — Layer B)** — the task gives the paths to the per-axis prose digests (audit
-  summaries) and the manifest; the driver has already MERGED the per-axis bands into the run's complete
-  band. The worker reads that COMPLETE band **through the band tools** (`band_shape` first, then
-  `band_lookup` / `band_record` — every call lands in the reading audit; never by opening or slicing band
-  files), performs all cross-cutting judgment (relevance, owner aggregation, opposition, Option-D),
-  DECIDES SUFFICIENCY, and writes `studio/clearance-search/<slug>/<date>/register-findings.md`.
 
-Reads (both modes): the variant manifest at `studio/clearance-search/<slug>/<date>/variant-manifest.md` (archetype + risk
-theory), the `matter-context.md` at `studio/clearance-search/<slug>/<date>/matter-context.md` (Phase 0 strategic anchor — names materially-matters jurisdictions, watchlist-owner seeds, off-field sectors), the request context, the active **provider**. The **watchlist-owner seeds are enrichment / additive-surfacing context, not a search or priority filter** — an in-class identical/near-identical incumbent surfaces on field-relevance alone whether or not its owner is named (see `digest.md` Step 5).
-
-**Digest mode also reads**: `placement-recommendations.md` at `studio/clearance-search/<slug>/<date>/placement-recommendations.md` (Touchpoint 2 per-candidate placements — informs digest tiering), and its structured mirror `placements.json` beside it (one `{mark, owner, jurisdiction, records, tier, reason}` entry per candidate; when present, the authoritative per-candidate tier record — the md carries the rulings tail as prose).
+Reads: the variant manifest at `studio/clearance-search/<slug>/<date>/variant-manifest.md` (archetype + risk
+theory), the `matter-context.md` at `studio/clearance-search/<slug>/<date>/matter-context.md` (Phase 0 strategic anchor — names materially-matters jurisdictions, watchlist-owner seeds, off-field sectors), the request context, the active **provider**. The **watchlist-owner seeds are enrichment / additive-surfacing context, not a search or priority filter** — an in-class identical/near-identical incumbent surfaces on field-relevance alone whether or not its owner is named.
 
 Writes:
-- Unit mode — TWO artifacts, both gate-checked, neither optional. `studio/clearance-search/<slug>/<date>/register-units/<axis>.md` is the stage's DECLARED OUTPUT: the driver fails the pass outright when it is absent, and the digest worker reads it as an input. `studio/clearance-search/<slug>/<date>/register-units/<axis>-band.json` is the COMPLETE named band — a JSON array of `enumerated` / `incomplete` blocks (see `unit.md` → *Named-band artifact*) — carrying every record and no clearance verdict. The md narrates and proves nothing on its own: an md narrating a completed sweep while the band its plan entries call for is missing is refused as `named_band_missing`. In plan mode `register_execute_plan` writes the band itself and you never hand-write its blocks.
-- Digest mode: `studio/clearance-search/<slug>/<date>/register-findings.md`. Coverage statuses are NOT a file you write: they ride the `record_coverage` tool into a driver-held record, and the driver renders the `## Coverage ledger` table and its JSON mirror from it (see *Coverage ledger* below and `digest.md` → *Coverage ledger*). Optional: `register-details/` snapshots inside the run-dir.
+- Unit mode — TWO artifacts, both gate-checked, neither optional. `studio/clearance-search/<slug>/<date>/register-units/<axis>.md` is the stage's DECLARED OUTPUT: the driver fails the pass outright when it is absent. `studio/clearance-search/<slug>/<date>/register-units/<axis>-band.json` is the COMPLETE named band — a JSON array of `enumerated` / `incomplete` blocks (see `unit.md` → *Named-band artifact*) — carrying every record and no clearance verdict. The md narrates and proves nothing on its own: an md narrating a completed sweep while the band its plan entries call for is missing is refused as `named_band_missing`. In plan mode `register_execute_plan` writes the band itself and you never hand-write its blocks.
 
 Returns to the orchestrator: your **final session message** — a 2–3 line summary (counts + the
 absolute path of the file you wrote). Keep raw character-noise records out of the message and out of any
@@ -50,8 +40,7 @@ Companion files:
 ## Trigger
 
 Called by `clearance-search` after `clearance-variants` has produced the manifest. The orchestrator spawns
-the unit-mode workers and the common-law worker together, then spawns the digest-mode worker once the
-unit digests exist. Not invoked directly by operators.
+the unit-mode workers and the common-law worker together. Not invoked directly by operators.
 
 ## Model
 
@@ -61,12 +50,9 @@ Set by the orchestrator per mode (set `model` explicitly on the spawn — omitti
   three sweep axes (`primary-sweep`, `transliteration-numeric`, `incumbent-class`) → **`sonnet`**,
   adaptive thinking (run the manifest's given searches, detail-fetch, apply the rule-based status
   filter — nuanced rule-following, not open analysis).
-- **Digest mode** — **`opus`**, thinking medium. All the precision-critical judgment lives here
-  (relevance gate, owner clustering, opposition interpretation, Option-D).
 
 The old "register sweep must be Opus or it truncates" lesson came from a *monolithic* single session
-doing searching **and** judgment at once. The work is now split: units execute (cheap tiers), the
-digest worker judges (Opus). If a unit shortcut its axis, the orchestrator's skeptic review catches
+doing searching **and** judgment at once. The work is now split: units execute (cheap tiers). If a unit shortcut its axis, the orchestrator's skeptic review catches
 it and re-spawns it escalated to Opus — that decision belongs to the orchestrator, not here.
 
 ## Provider
@@ -106,7 +92,7 @@ Fifty? Read them all. A few hundred? Sort by the client's goods and markets, rea
 the rest. A thousand or more? The field is crowded: read the identical and live ones for the client's
 goods, tell the client it is crowded, and do not write up the rest. Carry forward only what a lawyer would
 raise with the client. Write down what you set aside and why. This applies to the register's answer, to the
-list of records, to the placements, to the off-register sweep and to the write-up alike.
+list of records, to the off-register sweep and to the write-up alike.
 
 ### Read the identical mark first. Look at the count before you read anything
 
@@ -213,8 +199,7 @@ descriptor's count alongside them.
 The DRIVER merges the per-axis band blocks into the run's complete band (`parseNamedBand` / `mergeNamedBands`
 in `named-band.mjs` — code, not a model). Judgment (Layer B) reads that union **through the band tools**
 (`band_shape` / `band_lookup` / `band_record`; every call on the reading audit — never by reading or slicing
-the band files), reconciles against `matter-context`'s materially-matters list, settles ONE status per
-coverage unit, and **decides sufficiency** there.
+the band files), reconciles against `matter-context`'s materially-matters list, and **decides sufficiency** there.
 Synthesis emits the rolled-up signal in `findings.json` (`coverage_judgment` — `{sufficient, reason}`):
 `sufficient:false` (a material slice not fully cleared) clamps the verdict CLEAR→CONDITIONAL and the named gap
 ships as an open item — the report still delivers. `sufficient:true` → deliver clean. **There is no re-search
@@ -240,33 +225,9 @@ lets judgment decide.
 - **`withheld-by-judgment`** — a waiting family the reading turn chose not to ask, so it was never searched.
   Only a `family` row takes it, and its reason goes into the audit workbook, not the report.
 
-**HOW those statuses are recorded is not yours to assume — the dispatch states it, and it is one route,
-the `record_coverage` tool.** The driver computes the form before every digest dispatch and enumerates
-its rows into the dispatch itself, so the prompt and the gate cannot disagree about what the run owes —
-there is nothing for them to disagree about:
-
-- **Every run has a coverage form, and you never open or edit it.** The driver has already computed one
-  row per coverage unit, every identifier included, and the dispatch lists the rows with their `row_id`s.
-  Record `status` and `reason` on every row by calling `record_coverage` — the driver validates each row
-  as it arrives, holds the record itself, and a row settled once stays settled — and write **no
-  `## Coverage ledger` table at all**: the driver renders that table and its JSON mirror FROM the record
-  after your pass, so a table you type into the findings is erased before anything reads it. Rows you ADD
-  go through the same tool (`kind: "seat"`); the field list and the closed axis vocabulary are stated in
-  the dispatch's coverage block, so read them there rather than from memory.
-- **A form carrying NO rows is still a complete answer, and it is the driver's.** Where the plan apparatus
-  was out of reach there is nothing to compute rows from, so the form carries `rows: []` and an `absence`
-  field naming the cause, and the dispatch carries no coverage block. You are not asked to record anything
-  and you still write no `## Coverage ledger` table: the driver renders the declaration, so the report
-  states what is true about the run rather than a reconstruction of it. A run with no coverage ledger
-  supports no coverage claim anywhere in the findings.
-
-`digest.md` → *Coverage ledger* carries the full per-slice ruling procedure. Nothing else in this spine
-restates the row shape: one copy, told at dispatch beside the rows themselves.
-
 ## Mode router
 
 This skill runs in one of two modes, **selected by the caller**, which states which file to read:
-- **Unit mode (the FUNNEL — Layer A)** → read this spine + [`unit.md`](unit.md). Run ONE axis: ENUMERATE each named query via `register_enumerate`, describe crowds as count-only descriptors, write `register-units/<axis>-band.json` (the complete named band). Do NOT perform digest judgment.
-- **Digest mode (judgment — Layer B)** → read this spine + [`digest.md`](digest.md). Read the complete merged band through the band tools (`band_shape` first, then `band_lookup` / `band_record` — never by slicing band files), apply relevance + sufficiency + prioritisation, hand the findings back through the `record_register_digest` tool (the driver renders the document — see [`digest.md`](digest.md), *What the call takes*), and settle the coverage judgment through the `record_coverage` tool (*Coverage ledger* above). Two transports, two statements, and no file to write in either.
+- **Unit mode (the FUNNEL — Layer A)** → read this spine + [`unit.md`](unit.md). Run ONE axis: ENUMERATE each named query via `register_enumerate`, describe crowds as count-only descriptors, write `register-units/<axis>-band.json` (the complete named band).
 
 Companion references (load as needed): `register-recipes.md`, `status-rules.md`, `stealth-filer-indicators.md`, `providers/<name>.md`.

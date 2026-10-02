@@ -10829,7 +10829,7 @@ async function pipelineInner(job, opts = {}) {
         }
       } else if (closeableAxes.length) {
         ctx.envelopeNote = digestLockedEnv
-          ? `deferred coverage (${closeableAxes.join(", ")}) not closed — resume past synthesis locks the digest (re-running would corrupt the audit spine)`
+          ? `deferred coverage (${closeableAxes.join(", ")}) not closed`
           : `deferred coverage (${closeableAxes.join(", ")}) not closed — ${decision.reason}`;
       }
       // A2 — held axes are DISCLOSED, never silently absent: the note is what the report's front matter
