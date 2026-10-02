@@ -115,11 +115,10 @@ test("THE TOKEN NAMES THE MEMBER, on every multi-marker validator — not just t
 
 test("THE BLAST RADIUS: the group label is PRESERVED, so correctionHint still finds its arm", () => {
   // The obvious fix — emit the failing marker INSTEAD of the label — silently degrades every corrective
-  // hint that branches on the label. `correctionHint` keys one arm on `findings+ledger` and another on
-  // `negative-results|coverage-ledger|audit-trail|findings-heading`, and that first arm was
-  // being removed once on a reading true for only one lane, then put back. Appending keeps them matching.
-  const specific = correctionHint("invalid_file:/run/register-findings.md:missing:findings+ledger(coverage-ledger)");
-  assert.match(specific, /findings heading plus a Coverage ledger/,
+  // hint that branches on the label. `correctionHint` keys an arm on
+  // `negative-results|coverage-ledger|audit-trail|findings-heading`; appending the member keeps it matching.
+  const specific = correctionHint("invalid_file:/run/common-law-findings.md:missing:audit-trail(call-log)");
+  assert.match(specific, /ALL required sections/,
     "the token gained a member name and correctionHint fell through to a generic hint — the seat lost its specific repair");
 
   const sections = correctionHint("invalid_file:/run/register-findings.md:missing:findings-heading");

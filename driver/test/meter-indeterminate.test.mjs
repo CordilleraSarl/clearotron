@@ -52,8 +52,8 @@ const meter = (token, basis = "verified-from-record") => ({ token, basis });
 const FINDING = {
   ordinal: 1,
   mark: "LUMENGARDE",
-  owner: { name: "Plesner Advokatpartnerselskab", country: "DK",
-    registrations: [{ uri: "/mark/eu/018553557", classes: ["09", "41"], status: "Registered", filed: "2021-09-07", expiry: "2031-09-07", jurisdiction: "EU" }] },
+  owner: { name: "Varnholt Advokatpartnerselskab", country: "DK",
+    registrations: [{ uri: "/mark/eu/099999991", classes: ["09", "41"], status: "Registered", filed: "2021-09-07", expiry: "2031-09-07", jurisdiction: "EU" }] },
   composite: 4, level: "B", dispute_type: "register-only",
   meters: {
     mark_similarity: meter("high"),
@@ -62,7 +62,7 @@ const FINDING = {
     enforcer: meter("high"),
   },
   quadrant: { x: 0.72, y: 0.55 },
-  source: { source_type: "register-vendor", resolved_link: "https://tm.example/mark/eu/018553557" },
+  source: { source_type: "register-vendor", resolved_link: "https://tm.example/mark/eu/099999991" },
 };
 const DOC = { schema_version: 1, findings: [FINDING], coverage: [{ area: "register / EU", state: "confirmed-clean", note: "" }] };
 

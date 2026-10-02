@@ -28,7 +28,7 @@ import {
 import { PROVIDER_CAPABILITIES, capabilitiesFor } from "../register-capabilities.mjs";
 import { coerceToolAbsenceDeferred, deriveCoverageStatus, parseCoverageLedgerFull as parseCoverageLedgerFullSync } from "../coverage-ledger.mjs";
 // — the deferred-slice requirement is a driver-written form row, not a prose disclosure join.
-import { coverageFormRows, rowIsSettled, findCoverageFormViolations } from "../coverage-form.mjs";
+import { coverageFormRows, rowIsSettled } from "../coverage-form.mjs";
 import { ENUMERATE_NAMES_CHUNK_DEFAULT } from "../../providers/corsearch/src/core.js";
 import { SIGNA_OFFICES } from "../../providers/signa/src/core.js";
 import { SIGNA_OFFICE_KEYS } from "../../providers/signa/src/capabilities.js";
@@ -1074,7 +1074,7 @@ test("F3 deferred: the axis's OTHER slices keep their clean rows once the refuse
     : { ...r, status: "confirmed-clean", reason: "enumerated to has_more:false" });
   const seat = VENZY_CLEANS.map((c, i) => ({ row_id: `CS-${i}`, axis: c.axis, kind: "seat", unit: c.unit,
     open: false, status: c.status, reason: c.reason }));
-  assert.deepEqual(findCoverageFormViolations([...rows, ...seat]), [],
+  assert.ok([...rows, ...seat].every((r) => rowIsSettled(r, r)),
     "genuinely enumerated slices STAY confirmed-clean — the relabel-everything demand is what made this unclearable");
 });
 
@@ -1082,10 +1082,10 @@ test("F3 deferred: a refused slice claimed CLEAN is still refused, and no other 
   const rows = venzyForm().map((r) => ({ ...r, status: "confirmed-clean", reason: "swept" }));
   const vague = { row_id: "CS-V", axis: "primary-sweep", kind: "seat", open: false,
     unit: "primary-sweep / some limits apply", status: "coverage-limited", reason: "various gaps, not enumerated here" };
-  const v = findCoverageFormViolations([...rows, vague]);
-  assert.equal(v.filter((x) => x.reason === "no_status").length, VENZY_DEFERRED.length,
-    "one violation per refused slice claimed clean — and a non-clean row elsewhere on the axis excuses none of them");
-  for (const x of v) assert.match(x.detail, /never searched/);
+  const open = [...rows, vague].filter((r) => !rowIsSettled(r, r));
+  assert.equal(open.length, VENZY_DEFERRED.length,
+    "one unsettled row per refused slice claimed clean — and a non-clean row elsewhere on the axis excuses none of them");
+  for (const r of open) assert.match(r.open_because, /never searched/);
 });
 
 test("F3 deferred: PARTIAL settlement fires, and names ONLY the row that is still unsettled", () => {
@@ -1093,10 +1093,10 @@ test("F3 deferred: PARTIAL settlement fires, and names ONLY the row that is stil
   const half = rows.map((r, i) => i === rows.length - 1
     ? { ...r, status: null, reason: null }
     : { ...r, status: r.open ? "deferred" : "confirmed-clean", reason: "judged" });
-  const v = findCoverageFormViolations(half);
+  const v = half.filter((r) => !rowIsSettled(r, r));
   assert.equal(v.length, 1, "a half-settled axis is not a settled axis");
-  assert.equal(v[0].row, rows[rows.length - 1].row_id,
-    "the violation names the row alone — not the whole axis, which is what made it unactionable");
+  assert.equal(v[0].row_id, rows[rows.length - 1].row_id,
+    "the row alone stays open — not the whole axis, which is what made it unactionable");
 });
 
 test("F3 deferred: a `deferred` axis carrying no qids is a contradiction and still fires", () => {

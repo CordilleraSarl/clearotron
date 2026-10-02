@@ -2312,18 +2312,6 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       `meters as {token, basis} (basis = verified-from-record | inferred-from-signal), quadrant {x,y} in [0,1], a ` +
       `typed source, a disposition, and a unique 1-based ordinal. The failed check was: ${tok}.${extra} Fix exactly that, re-save ` +
       `the COMPLETE findings.json, and leave the narrative prose unchanged`;
-  } else if (/coverage_status_offenum/.test(lastFail)) {
-    // D1 — the off-enum PROSE Status cell (distinct from coverage_status_invalid, which is the JSON
-    // mirror's token): the defect lives in register-findings.md's own Coverage-ledger table, so the
-    // repair is a one-cell prose relabel — never a JSON re-save. MUST sit above the JSON-mirror
-    // coverage_ branch so the shared substring never routes this to the wrong file.
-    const det = (lastFail.match(/\(axis ([a-z-]+)/) || [])[1] || "";   // the status text itself may carry parens — anchor on the token's own "(axis …" tail
-    hint = `every row of the prose Coverage ledger's Status column is EXACTLY one bare token of ` +
-      `confirmed-clean / coverage-limited / deferred${det ? ` (the off-enum row is on axis ${det})` : ""}. ` +
-      `Relabel the offending Status cell(s) to the honest enum token and move any qualifier or commentary ` +
-      `("N/A", "confirmed", "not-searched (…)", ✅, bolding) into the Reason column — an axis that was not ` +
-      `applicable or not searched is an honest \`deferred\` with the reason stated. Leave every other row ` +
-      `and section unchanged`;
   } else if (/coverage_(ledger_unparseable|ledger_empty|axis_invalid|axis_missing|status_invalid|key_unknown|mirror_missing)/.test(lastFail)) {
     // Map #3 — `mirror_missing` is LEGACY and never fires anymore (the JSON is code-derived from the prose,
     // so the prose↔JSON cross-check was retired); the alternation keeps it only to give a sane hint to any
@@ -2717,102 +2705,12 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       `${PLAN_AUDIT_CLASSES} — flagging a clean claim that rests on class (1), a class (2) fringe ` +
       `claimed searched-clean, and a class (3) slice the narrative shows no materiality reasoning for. ` +
       `Keep the verdict (CLEAR / CONDITIONAL / BLOCKING) on the FIRST line and the rest of your review intact`;
-  } else if (/coverage_no_status/.test(lastFail)) {
-    // — THE HINT NO LONGER EXPLAINS A TRANSCRIPTION REQUIREMENT, BECAUSE THERE IS NOT ONE.
-    // What stood here were two arms (coverage_deferred_unaccounted and coverage_clean_unverified_
-    // incomplete) whose entire content was instructions for reproducing an identifier: "each qid must
-    // appear VERBATIM in a row on its own axis", "the gate recognises the disclosure by exactly two
-    // things and nothing else: the qid written verbatim, or the number N standing alone". Those
-    // sentences existed because the gate joined on the typing. The driver writes the qid, the hit count
-    // and the receipt reason into the row now, so the only thing the seat can still fail to do is form
-    // a judgment — which is the thing it is for. The rows ride in the token so the repair can be acted
-    // on without opening anything else, exactly like the 2026-08-05 block-naming fix asked.
-    //
-    // AND IT LEADS WITH THE CAUSE, BECAUSE ONE TOKEN CARRIES THREE DEFECTS. `coverage_no_status` fires
-    // for a row with no status, a status outside the enum, AND an enum-VALID `confirmed-clean` on a row
-    // the driver marked `open` — and the last is the common one, because it is what a digest does when
-    // it believes a slice is fine and the machine knows it is not. Opening with "row(s) with no status"
-    // over a form where every row carries one is the 2026-08-05 defect one level in: an instruction the
-    // seat has already complied with, burning the warm attempt that displaced a cold one. verify.mjs
-    // emits a partitioned census (`open_clean=2,no_status=1`) precisely so this arm can tell them apart.
-    const census = (lastFail.match(/coverage_no_status:([a-z_]+=\d+(?:,[a-z_]+=\d+)*)/) || [])[1] || "";
-    const n = (name) => Number((census.match(new RegExp(`${name}=(\\d+)`)) || [])[1] || 0);
-    const rows = (lastFail.match(/coverage_no_status:[^;]*;([^\n]*)/) || [])[1] || "";
-    const openClean = n("open_clean"), unset = n("no_status"), badAxis = n("axis_invalid");
-    const lead = openClean
-      ? `${openClean} row(s) of your coverage form are marked "confirmed-clean" over an obligation the DRIVER computed as OPEN. ` +
-        `Every row already carries a status, so do not go looking for blank ones — these statuses are the defect`
-      : unset && !badAxis
-        ? `row(s) of your coverage form carry no status this gate accepts`
-        : `row(s) of your coverage form were refused`;
-    hint = `${lead}: ${abbrev(rows, 200) || "see the failure"}. ` +
-      `The driver computed every obligation and every identifier in it — the coverage unit, the query id, the hit ` +
-      `count, the unaccounted classes and terms, each deferred slice's own receipt reason. Record the named row(s) ` +
-      `through the \`record_coverage\` tool — {"row_id","status","reason"} per row, never by writing or editing any ` +
-      `file: "status" EXACTLY one bare token of confirmed-clean / coverage-limited / deferred / withheld-by-judgment, "reason" the sentence ` +
-      `the lawyer reads (qualifiers go in the reason, never in the status). ` +
-      `A row marked "open" cannot be confirmed-clean, and its own "open_because" says which of the two kinds ` +
-      `it is. A NEVER-SEARCHED slice — the active register provider cannot express it, so nothing can make it run — is ` +
-      `"deferred", quoting its receipt reason. An UNACCOUNTED CROWD BLOCK ran and saturated, so it is "coverage-limited"; ` +
-      `do not call it "deferred", which means a slice that could not run at all and which clamps this run's verdict to ` +
-      `CONDITIONAL. Either way the gap is an OPEN, disclosed question for the lawyer, never a clean negative. ` +
-      `EACH OPEN ROW IS DISCHARGED ONLY BY ITSELF — a status on one row does not account for another row's slice, ` +
-      `however plainly its reason discusses the axis, so record the status on the row that owns the block. Rows about ` +
-      `slices that genuinely enumerated to has_more:false STAY confirmed-clean — do not downgrade them, that trades ` +
-      `one false claim for another. Everything already recorded is kept. Do NOT re-run ` +
-      `searches yourself and do NOT hand-write a Coverage ledger table — the driver renders it from what the tool records`;
-  } else if (/coverage_form_axis_invalid/.test(lastFail)) {
-    // fix round — THE HINT NAMES THE CELL AND QUOTES THE ALLOWED SET, which is the whole of the
-    // 2026-07-30 lesson recorded on the `coverage_axis_invalid` arm above: "the retry was told to redo
-    // the very derivation that failed, so it looped until the attempts ran out … The validator's own
-    // message carries the allowed list; quote it back."
-    //
-    // WHERE THE ALLOWED LIST COMES FROM, and why it is not read out of the token here. That arm parses
-    // "(not in: …)" out of the failure because ITS vocabulary is the RUN's active axes — a set that
-    // varies per run, so the validator is the only thing that knows it. This one is the FULL register
-    // vocabulary, a module constant, so quoting REGISTER_AXES is quoting the same single source rather
-    // than re-deriving a second one. It also keeps the token free of the parentheses that
-    // "(not in: …)" would put before the overflow, which pipeline's merge-gate remedy truncates at.
-    //
-    // PLACEMENT. Nothing above can swallow this: the structure arm needs the substring
-    // `coverage_axis_invalid` and this token spells `coverage_form_axis_invalid`, and every
-    // correctionHint caller passes ONE validator reason (verify returns a single fail object), so no
-    // fail string carries two coverage tokens for an earlier arm to match first.
-    const rows = (lastFail.match(/coverage_form_axis_invalid:[^;]*;([^\n]*)/) || [])[1] || "";
-    hint = `row(s) YOU ADDED to the coverage form carry an "axis" outside the register-axis vocabulary, which ` +
-      `is CLOSED: ${abbrev(rows, 220) || "see the failure"}. Each entry above is the row's id followed by the value ` +
-      `that was rejected — "axis=<empty>" means that row has no "axis" at all. ` +
-      `Re-send each of those rows through the \`record_coverage\` tool — {"kind":"seat","axis","unit","status",` +
-      `"reason"}, with "axis" EXACTLY one bare token of: ${REGISTER_AXES.join(" / ")} — never invent an ` +
-      `axis, never leave it blank, and never put a jurisdiction, a class, a sweep name or a descriptive phrase in ` +
-      `that field. Choose the axis whose coverage the row qualifies: a per-jurisdiction reconciliation or a ` +
-      `cross-class / cross-check / merch sweep is "primary-sweep"; an owner, incumbent, watchlist-owner or ` +
-      `stealth-filer sweep is "incumbent-class"; a counted dominant-element or meaning-token crowd is ` +
-      `"saturation-probe"; a transliteration or numeric-form slice is "transliteration-numeric". Set that ` +
-      `row's "unit" to "<the same axis> / <what you swept>" — the driver's own rows read that way and the axis is ` +
-      `recovered from it if the field is ever lost. A re-sent row with the same unit REPLACES the recorded one; ` +
-      `{"retract":"<row_id>"} withdraws one outright. ` +
-      `The rows the DRIVER wrote already carry a correct axis: do not touch them — every "status" and "reason" ` +
-      `already recorded is kept. Do NOT re-run any search, do NOT write or edit any file, and do NOT hand-write a ` +
-      `Coverage ledger table — the driver renders it from what the tool records`;
-  } else if (/coverage_form_damaged/.test(lastFail)) {
-    // Typed transport: the seat holds no writer onto the accumulator, so a damaged one is the driver's
-    // own serialization or filesystem at fault — never the seat's JSON. The repair is still a tool
-    // call, because record_coverage rewrites the accumulator whole from the regenerated rows plus the
-    // call: statuses in the unreadable copy cannot be carried, so the seat re-sends its rulings.
-    const detail = (lastFail.match(/coverage_form_damaged:form_damaged=\d+;([^\n]*)/) || [])[1] || "";
-    hint = `the driver's coverage accumulator could not be read${detail ? ` (${abbrev(detail, 120)})` : ""} — a ` +
-      `driver-side fault, not your JSON (you never write this file). Re-record your statuses through the ` +
-      `\`record_coverage\` tool — {"row_id","status","reason"} per obligation row — which rewrites the record ` +
-      `from the driver's own rows plus your call. Statuses in the unreadable copy cannot be read, so re-send ` +
-      `every ruling the tool's answer still lists as outstanding. Never write or edit any file`;
   } else if (/coverage_form_(missing|empty)/.test(lastFail)) {
     // Named for readability in the journal, not because a model can act on either: both mean the DRIVER
     // did not write the form it stamped as required — absent in one case, present with no obligations in
     // it in the other. Deliberately out of the warm allowlist, and for the same reason: a resumed seat
     // cannot patch a file it was never told about, and warming it would spend a turn asking a model to
-    // fix a driver bug. `coverage_form_empty` is matched HERE rather than by the `coverage_no_status`
-    // arm above so an empty form never reads to the seat as rows it forgot to fill in.
+    // fix a driver bug.
     const empty = /coverage_form_empty/.test(lastFail);
     hint = `the driver-written coverage form is ${empty ? "present but carries no rows" : "absent"} although this run ` +
       `requires one. This is a DRIVER defect, not something your turn can repair: write your findings as normal and ` +
@@ -2826,7 +2724,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
   // form; a token that can fire with no
   // arm falls to a generic hint, which is the misdirection this whole build is about. COLD, exactly as
   // on main — neither name is in WARM_ELIGIBLE_RE and neither is added to it, so the warm lane is
-  // unchanged and `coverage_(no_status|form_damaged)` cannot match either of these names.
+  // unchanged.
   // `coverage_clean_deferred` gets NO arm: its token is folded into the superset above and nothing emits
   // it any more, and an arm for a token nobody emits is what the closed-vocabulary rule refuses to leave
   // lying around.
@@ -2910,12 +2808,9 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       "the COMPLETE findings file from them; if the tool is genuinely failing after retries, write NO findings file " +
       "at all and report the tool failure with diagnostics in your final message (the driver fails the run — a report " +
       "must never ship without its marketplace layer)";
-  } else if (/findings\+ledger|no_coverage_status_row/.test(lastFail)) {
-    // — `findings+ledger` IS BACK IN THIS ALTERNATION. The first cut of this build removed it on
-    // the reading that the seat never writes a Coverage-ledger table any more; that is true only on a
-    // run the driver stamped as form-required, and the stamp is conditional. On an unstamped run
-    // validators.registerFindings demands the table exactly as it did before and emits this label,
-    // so dropping the arm left the one lane that can still fire it with a generic hint.
+  } else if (/no_coverage_status_row/.test(lastFail)) {
+    // The common-law lane's own refusal (verify.mjs, commonLawStructural). The `findings+ledger` label
+    // this arm also matched came from the register digest's validator, which left with the digest.
     hint = "the file has a findings heading plus a Coverage ledger with a status row (confirmed-clean / coverage-limited / deferred)" + (/common-law-findings/.test(lastFail) ? ", or each ledger row's status is recorded by calling `record_coverage_status` with `grid_spec_path`, the same spec path the grid tool was given" : "");
   } else if (/negative-results|coverage-ledger|audit-trail|findings-heading/.test(lastFail)) {
     hint = "the findings file carries ALL required sections: a findings heading, the Negative results matrix " +
@@ -2931,12 +2826,8 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
 // every qid rather than the first six: "the accounting join is on the qid verbatim, so a qid the stage
 // was never shown can never be named." That is a description of a transcription contract, and
 // removes the contract rather than the elision. The driver writes one form row per deferred qid, with
-// that qid's own receipt reason, and marks it `open`; coverage-form.coverageFormBrief lists the rows in
-// the dispatch and names `record_coverage` as the one route a status takes (the typed transport — the
-// seat opens no file). Nothing is retyped, so nothing can be mistyped.
-//
-// The REQUIREMENT is unchanged and is still enforced in verify.mjs against the same plan-execution
-// receipt: a deferred slice is a row the digest owes, not a disclosure it may offer.
+// that qid's own receipt reason, and marks it `open`; code settles every row from the run's own facts
+// (coverage-form.mjs, settleCoverageRowsFromFacts). Nothing is retyped, so nothing can be mistyped.
 
 // ──: WRITE-TIME FORM REJECTION — the form-class allowlist ─────────────────────────────────────
 // A FORM failure is one where the model wrote something the CONTRACT already forbids by name: a value
@@ -2947,10 +2838,8 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
 // THE ADMISSION CRITERION IS MECHANICAL, so this list can be defended token by token: a token is here
 // only if its check in the strict parser is literally `!ALLOWED.includes(x)` over a closed vocabulary,
 // or a JSON-type/domain assertion on a named field. One parser owns every token below —
-// coverage-ledger.parseCoverageLedgerJson — plus one closed-
-// vocabulary check over the PROSE mirror of the same COVERAGE_STATUSES list (verify.registerFindings'
-// coverage_status_offenum). NO NEW RULE IS ADDED HERE: every one of these already fails the stage
-// today. moves WHEN it is answered, not WHAT is answered.
+// coverage-ledger.parseCoverageLedgerJson. NO NEW RULE IS ADDED HERE: every one of these already fails
+// the stage today. moves WHEN it is answered, not WHAT is answered.
 //
 // THREE OF THESE WERE OBSERVED COSTING A PAID DISPATCH in the 08-02 round: framediff_severity_invalid
 // (a bad enum), coverage_axis_invalid (the literal string "all axes" against a closed four-axis
@@ -2965,17 +2854,6 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
 //   · coverage_ledger_empty / coverage_axis_missing — a missing row is COMPLETENESS: the axis was not
 //     accounted for. Nothing about the vocabulary is wrong.
 //   · findings_* / connotation_* / named_band_* — WORK class by construction ( owns them).
-//   · coverage_form_axis_invalid ( fix round; re-examined at the typed-transport conversion) — AN
-//     OPEN QUESTION, NAMED RATHER THAN ANSWERED. By the criterion above it belongs here: it is a
-//     closed four-token vocabulary, the SAME vocabulary whose prose-era sibling
-//     (`coverage_axis_invalid`, "all axes") is one of the three defects this block records as having
-//     cost a paid dispatch in the 08-02 round. What stops it NOW: a coverage repair is a
-//     `record_coverage` TOOL CALL, and the offline repair-turn mock speaks no MCP at all — an
-//     admission here cannot be tested truthfully; the harness would read its own silence as "the model
-//     could not fix it". The miss behaviour is the safe one: it falls to the ladder, where it is
-//     warm-eligible and its hint names the field, the allowed set and the tool. (The tool also refuses
-//     an off-vocabulary axis AT CALL TIME, so on the live path this token now fires only over rows
-//     recorded before the conversion.) Raise, do not ship an untested admission.
 // Anything NOT on this list — including a form defect nobody has classified yet — falls through to
 // the retry ladder exactly as it does today, visibly. Unknown shape is never "validated fine". That is
 // also why this hand-maintained table needs no self-healing derivation: its MISS behaviour is
@@ -3014,10 +2892,6 @@ const MAX_FORM_REPAIRS = 2;
 // (named_band_collapsed stays cold: a collapsed slice needs a RE-RUN of the search, not a JSON patch.)
 // plan_audit_missing ( T1, J3b): the review is complete except one required section — a warm resume
 // re-emits the review with the section added instead of burning a cold re-refutation.
-// coverage_status_offenum (D1): a single off-enum Status CELL in the prose Coverage ledger on an
-// otherwise-clean digest turn — a one-cell prose relabel (qualifier moves into Reason), exactly the
-// warm-patch shape; the shape fired on ~43% of the archive corpus, so a cold-only ladder would burn
-// a full register-digest re-run per live hit.
 // named_band_missing (2026-07-14, copper-keystone): warm-eligible too — the session completed cleanly (the
 // prose passed), and the repair is ONE tool call from the warm session (see warmPatchMessage's dedicated
 // branch below — never the sibling re-save message, which would instruct the hand-author lane).
@@ -3064,38 +2938,13 @@ const MAX_FORM_REPAIRS = 2;
 // disables the lane, so the fallback in both cases is exactly today's cold ladder.
 // The prose route is deliberate — neither token matches a sibling pattern below, so the patch names the
 // failing half's own .md and never orders a rewrite of the TOOL-written grid ledger the receipts live in.
-// coverage_no_status / coverage_form_damaged: WARM, and this is the whole economic case for the
-// issue. The coverage-judgment family was COLD-ONLY — WARM_ELIGIBLE_RE carried seven coverage STRUCTURE
-// tokens and not one `coverage_clean_*` — so every retry re-dispatched a fresh session that re-read a
-// 1.9 MB band and re-derived a 160 KB document instead of editing it. The stage's own measured profile
-// (repair-contract.mjs:10-18) is 105,747 out FAIL → 137,519 out FAIL → 36,362 out PASS, and the attempt
-// that passed is the one that PATCHED. A cold ladder never patches.
-// WHY THEY ARE SAFE TO WARM, on the same argument made one gate over: findCoverageFormViolations
-// emits both tokens only over rows the DRIVER wrote from the frozen plan and the plan-execution
-// receipt, so a violation is PROOF the searches ran and were accounted. What is missing is a STATUS on
-// obligations the driver already computed with every qid, hit count and receipt reason: one
-// `record_coverage` call, not a re-search (the typed transport — the seat edits no file; the warm patch
-// orders the call). The tokens that mean "the search did not happen" are DIFFERENT and are deliberately
-// kept out — coverage_clean_unexecuted / _skipped / _tainted, whose remedies are a re-run or a relabel.
-// coverage_form_missing is ALSO deliberately absent: a seat cannot patch a file it was never told about
-// (the sidecar lives in `_driver/`), the defect is the driver's, and warming it would spend a resumed
-// turn asking a model to fix a driver bug. It is emitted as `invalid_file:…` and not as `missing_file`
-// precisely so the bare `missing_file` alternation at the head of this literal cannot warm it by accident.
-// coverage_form_axis_invalid ( fix round): WARM, and this is the clearest case in the list. The seat
-// must re-send rows IT added with ONE FIELD corrected — a single `record_coverage` call — and the
-// failure token names the rows and the rejected values. A cold re-dispatch would re-read a 1.9 MB
-// band and re-derive a 160 KB document to retype one word — the exact economics that made the coverage
-// family warm-eligible in the first place. It also cannot mean "the search did not happen": the offending
-// rows are SEAT rows, added on top of a driver form whose existence is proof the plan ran. It is spelled
-// with `form` first so this alternation's own `coverage_axis_invalid` (the derived-JSON structure token,
-// a different file and a different repair) cannot match it and route it to the wrong sibling.
 // — THE CONNOTATION ALTERNATION IS INTERPOLATED FROM THE EXPORTED VOCABULARY, NOT RETYPED. It was
 // retyped at five sites, and a reason added without all five following it matches nothing here: the
 // failure is warm-ineligible in silence, the repair is aimed at the findings document instead of the
 // form, and the ladder spends its attempts on a file the validator never re-reads. Binding to the list
 // is what did one level up, for the same reason. The RE is built from a string for that one splice;
 // nothing else in it changed, and it carries no backslash escapes for the string form to mangle.
-const WARM_ELIGIBLE_RE = new RegExp(`^(missing_file|invalid_file:.*?:(use_check_missing|own_rights_missing|coverage_ledger_unparseable|coverage_ledger_empty|coverage_axis_invalid|coverage_axis_missing|coverage_status_(invalid|offenum)|coverage_key_unknown|coverage_(no_status|form_damaged|form_axis_invalid|form_engine_vocabulary)|grid_join_missing|grid_ledger_unparseable|platforms_missing|${CONNOTATION_FORM_TOKEN_SRC}|findings?_[a-z_]+|named_band_(state_invalid|block_invalid|unparseable|missing)|tool_timeout:[a-z_]+:[a-z0-9-]+|plan_audit_missing|intake_ask_unanswered))`);
+const WARM_ELIGIBLE_RE = new RegExp(`^(missing_file|invalid_file:.*?:(use_check_missing|own_rights_missing|coverage_ledger_unparseable|coverage_ledger_empty|coverage_axis_invalid|coverage_axis_missing|coverage_status_invalid|coverage_key_unknown|grid_join_missing|grid_ledger_unparseable|platforms_missing|${CONNOTATION_FORM_TOKEN_SRC}|findings?_[a-z_]+|named_band_(state_invalid|block_invalid|unparseable|missing)|tool_timeout:[a-z_]+:[a-z0-9-]+|plan_audit_missing|intake_ask_unanswered))`);
 
 // — `tool_timeout` IS ON THAT LIST TO KEEP ROUTING WHERE IT ALREADY IS, not to add a lane.
 //
@@ -3233,13 +3082,8 @@ function repairSiblingName(lastFail, expectFile) {
   const files = (Array.isArray(expectFile) ? expectFile : [expectFile]).filter(Boolean);
   const f = String(lastFail ?? "");
   return /coverage_(ledger|axis|key|mirror|status_invalid)/.test(f) ? "register-coverage-ledger.json"
-    //, typed transport — THE COVERAGE-FORM TOKENS ARE DELIBERATELY ABSENT, exactly like the
-    // connotation tokens below and for the same reason: the seat writes no coverage file, so there is
-    // no sibling a repair could aim at. The remedy is a `record_coverage` call, which
-    // warmPatchMessage's own coverage branch orders BEFORE this function is consulted (its regex, not
-    // this name, is what routes those tokens); the graded artifact falls back to the stage's own .md.
-    // The old arm returned COVERAGE_FORM_NAME — the seat-facing copy, which nothing writes any more —
-    // and a repair aimed at a dead file is the two-halves-disagreeing shape fixed.
+    // THE COVERAGE-FORM TOKENS ARE ABSENT: no seat writes a coverage file, so there is no sibling a
+    // repair could aim at, and since the register digest left nothing emits them to a seat at all.
     // A1 split: the grid ledger is derived from the failing findings file (gridLedgerNameFor) — a half
     // member repairs ITS common-law-grid.half-<h>.json, the file validators.commonLawHalf re-judges;
     // hardcoding the canonical name here would loop the ladder on a file the validator never reads.
@@ -3281,9 +3125,6 @@ export function warmPatchMessage(lastFail, expectFile, { supplementalLane = fals
   // its prose checks — telling the model to rewrite it "in full" on a patch turn risks degrading
   // valid prose (and a prose-structural failure is NOT quarantine-rescuable). Name the SIBLING file
   // that is actually defective and forbid touching the findings.
-  // (coverage_status_offenum is EXCLUDED from the coverage sibling route: it is a PROSE-cell defect in
-  //  register-findings.md itself — the generic full-file patch below is the correct repair, mirroring
-  //  plan_audit_missing / intake_ask_unanswered.)
   // B — A CONNOTATION REPAIR IS A TOOL CALL, NOT A FILE EDIT. The seat writes no dispositions file:
   // rulings reach the driver's accumulator only through `record_dispositions`, so a warm patch that
   // ordered any file edit would aim the seat at an artifact it cannot affect — the two halves of one
@@ -3308,24 +3149,6 @@ export function warmPatchMessage(lastFail, expectFile, { supplementalLane = fals
     return `You are RESUMING your own session for this stage — your prior work and inputs are already in your context. Do NOT redo the sweep and do NOT rewrite ${names || "the findings file"} (its own checks passed).\n` +
       `The meaning-sweep dispositions did not pass (${lastFail}). Fix exactly this: ensure ${correctionHint(lastFail, { gridLedgerName: gridLedgerNameFor(files), supplementalLane })}.\n` +
       `Record rulings ONLY by calling the \`record_dispositions\` tool with grid_spec_path: ${specPath} — never by writing or editing any file. Everything already recorded is kept. ${close}`;
-  }
-  //, carried through the typed transport — A COVERAGE REPAIR IS A TOOL CALL, NOT A FILE EDIT.
-  // The seat writes no coverage file: statuses reach the driver's accumulator only through
-  // `record_coverage`, so a warm patch that ordered any file edit would aim the seat at an artifact it
-  // cannot affect — the exact two-halves-disagreeing shape the connotation branch above closed for B.
-  // The economics are unchanged and are still the point of warming this family: the resumed session
-  // sends the missing rows in one call instead of re-deriving a 160 KB document from a 1.9 MB band.
-  if (/coverage_(no_status|form_damaged|form_axis_invalid)/.test(lastFail ?? "") && files.length) {
-    // THE CLOSING ORDER IS PER TOKEN. "Record every outstanding row" is right for a missing judgment
-    // and WRONG for an off-vocabulary axis — every row there already carries a status, so it orders
-    // work already done. An axis repair closes on the field it is actually about.
-    const axisOnly = /coverage_form_axis_invalid/.test(lastFail ?? "");
-    return `You are RESUMING your own session for this stage — your prior work and inputs are already in your context. Do NOT re-read the band, do NOT re-run any search, and do NOT rewrite ${names || "the findings file"} (its own checks passed).\n` +
-      `The coverage record did not pass (${lastFail}). Fix exactly this: ensure ${correctionHint(lastFail, { gridLedgerName: gridLedgerNameFor(files), supplementalLane })}.\n` +
-      `Record statuses ONLY by calling the \`record_coverage\` tool — never by writing or editing any file. Everything already recorded is kept. ` +
-      (axisOnly
-        ? `Re-send ONLY the seat row(s) the correction names, with a valid "axis"; every other recorded status and reason stands.`
-        : `Do not stop until the tool's answer reports nothing outstanding.`);
   }
   const sibling = repairSiblingName(lastFail, files);
   // ── THE SIBLING BRANCH MUST NOT OUTRANK THE TOOL-WRITTEN ONE (third conversion) ────────────

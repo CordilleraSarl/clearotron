@@ -18,7 +18,7 @@ import { compileRegisterPlan, joinPlanToBands, deriveCoverageSkeleton, awaitsRea
 import { PROVIDER_CAPABILITIES } from "../register-capabilities.mjs";
 import { recordReleasedFamilies, recordWithheldFamilies, readWithheldFamilies, releasedFamilyQids,
   releasedFamiliesPath, splitWaitingFamilies } from "../withheld-families.mjs";
-import { coverageFormRows, findCoverageFormViolations } from "../coverage-form.mjs";
+import { coverageFormRows, rowIsSettled } from "../coverage-form.mjs";
 import { makeExecutePlan } from "../../providers/_shared/execute-plan.mjs";
 import ExcelJS from "exceljs";
 import { buildAudit } from "../publish/xlsx.mjs";
@@ -120,7 +120,7 @@ test("a released family joins as run, a withheld one as withheld, and none is le
     const skeleton = deriveCoverageSkeleton(plan, receipt);
     const family = coverageFormRows({ skeleton, plan, awaiting: onAxis, withheld: readWithheldFamilies(dir) }).rows.filter((r) => r.kind === "family");
     assert.equal(family.length, withheld.length, "a released family was given a waiting family's row");
-    assert.deepEqual(findCoverageFormViolations(family), []);
+    assert.ok(family.every((r) => rowIsSettled(r, r)), "a decided family's row reads as unsettled");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
@@ -136,8 +136,8 @@ test("a family nobody decided holds up delivery", async () => {
     const onAxis = receipt.awaiting.filter((f) => f.axis === AXIS);
     const family = coverageFormRows({ skeleton: deriveCoverageSkeleton(plan, receipt), plan, awaiting: onAxis, withheld: readWithheldFamilies(dir) })
       .rows.filter((r) => r.kind === "family");
-    const owed = findCoverageFormViolations(family);
-    assert.deepEqual(owed.map((v) => v.reason), ["no_status"], "the undecided family did not hold up delivery, or a decided one did");
+    const owed = family.filter((r) => !rowIsSettled(r, r));
+    assert.deepEqual(owed.map((r) => r.qid), [undecided], "the undecided family did not hold up delivery, or a decided one did");
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 

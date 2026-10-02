@@ -27,14 +27,19 @@
 //                               state uses `isRuled`, the predicate the gate judges with.
 //   · disposition-union.mjs:32  PROVENANCE: rows, ids and candidates come from `connotationObligations()`,
 //                               "the same calculation the validator judges with", regenerated every pass.
-//   · coverage-union.mjs:31     PROVENANCE: the same sentence for the coverage form. These two are the
+//   · coverage-union.mjs:28     PROVENANCE: the coverage form's rows are regenerated every pass and code
+//                               settles them from the run's own facts. With disposition-union's it is the
 //                               template in its purest form — the agreement is a property of the
-//                               artifact's own provenance, not an assertion somewhere else.
+//                               artifact's own provenance, not an assertion somewhere else. (It once said
+//                               "the same calculation the validator judges with"; that validator left with
+//                               the register digest, and no validator judges the form now.)
 //   · disposition-union.mjs:113 the anchor is deliberately NOT persisted; only extracted text is durable.
 //   · disposition-call.mjs:637  the same rule stated at the other end, so the pair cannot drift.
-//   · coverage-form.mjs:149     the driver's axis is the driver's; the seat contract governs only rows
-//                               the seat adds.
-//   · coverage-form.mjs:313     determinism, with its mechanism (a fixed axis ordering) beside it.
+//   · coverage-form.mjs "THE DRIVER DOES NOT ASSIGN IT"
+//                               the driver's axis is the driver's: a driver row's axis is derived from the
+//                               plan entry, never chosen.
+//   · coverageFormRows() in coverage-form.mjs
+//                               determinism, with its mechanism (a fixed axis ordering) beside it.
 //   · stages.mjs "Per-script coverage", "Negative-results matrix"
 //                               — NAMED, NOT NUMBERED. These carried line numbers and went stale twice in
 //                               one day as unrelated edits moved the file under them, landing on real
@@ -128,10 +133,12 @@ test("the AGREE sites still state their mechanism, not merely their intent", () 
   assert.match(flat("gateway.mjs"), /same builder, same predicate, same arguments as the tool's own fold/,
     "gateway's union no longer claims to BE the regeneration — the judgement-time bytes and the tool's "
     + "bytes could now differ for identical inputs");
-  for (const f of ["disposition-union.mjs", "coverage-union.mjs"])
-    assert.match(flat(f), /the same calculation the validator judges with/,
-      `${f}'s PROVENANCE no longer says the driver's computation IS the validator's — that sentence is the `
-      + "whole guarantee, stated on the artifact rather than asserted about it");
+  assert.match(flat("disposition-union.mjs"), /the same calculation the validator judges with/,
+    "disposition-union.mjs's PROVENANCE no longer says the driver's computation IS the validator's — that "
+    + "sentence is the whole guarantee, stated on the artifact rather than asserted about it");
+  // The coverage form has no validator now: code settles it, and its provenance says so.
+  assert.match(flat("coverage-union.mjs"), /REGENERATED on every pass; code settles each row's status and reason from the run's own facts/,
+    "coverage-union.mjs's PROVENANCE no longer says who settles the regenerated rows");
   assert.match(flat("disposition-union.mjs"), /The anchor itself does NOT persist/,
     "the anchor's non-persistence is the cure for pointing into a regenerated list");
   assert.match(flat("disposition-call.mjs"), /only the EXTRACTED TEXT is durable/,
