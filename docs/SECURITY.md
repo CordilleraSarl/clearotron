@@ -12,7 +12,7 @@ Each risk on OWASP's two lists for AI systems, and what Clearotron does about it
 
 | Surface | Trust | Guard |
 |---|---|---|
-| stdio MCP (`mcp-server/server.mjs`) | local/full ("ops") | OS user boundary — run it AS the operator account; it is the only surface on which `what_if_run` EXECUTES (`visibleTools` keeps what-if out of the HTTP listing for ops, but the CallTool chokepoint gates on `authorize()` alone, which admits it for any ops token not `--verbs`-scoped) |
+| stdio MCP (`mcp-server/server.mjs`) | local/full ("ops") | OS user boundary — run it AS the operator account; it is the only surface on which `what_if_run` EXECUTES (`visibleTools` keeps what-if out of the HTTP listing for ops, and the CallTool chokepoint refuses any tool the listing hides, so no ops token reaches it over HTTP) |
 | Client MCP (`mcp-server/http-server-client.mjs`) | a company's signed-in person / their access key | `what_if_run` from an `account` principal ENQUEUES rather than executes (ruling 2026-08-27) — it never imports the engine, and `driver/whatif-worker.mjs` spawns the sandbox from an OS service process. A confirmation token is unsigned, so the call must ALSO name its `runId`: the grant check keys on it, and `whatIfEnqueue` refuses a token naming a different run. The `model` argument is refused on this face. |
 | HTTP MCP (`mcp-server/http-server.mjs`) | authenticated remote | auth-BEFORE-data; fail-closed construction; inner scoped tokens |
 | Run-bound keys | a report recipient an operator issues one to | a `user` key from `mint-token.mjs`, read-only and bound to one run; the plain-language report tools (`clientSafe`) only |
@@ -127,8 +127,11 @@ what the mechanism guarantees.*
   principal in every audit line; the `jti` printed at mint time is the revocation handle). Three other callers share the same `mintToken`: `clearotron start` mints the portal's verb-scoped,
 company-capped ops token in memory at every start, and neither prints nor stores it; `clearotron connect`
 and the portal's connect screen each mint a person's key for their own assistant.
-- **Revocation**: denylist file checked on every verification; missing file = nothing revoked (the
-  denylist can never take all auth down). **Rotation**: two-secret window, flag-day-free.
+- **Revocation**: a denylist file is checked on every verification, always. With
+  `TRADEMARK_MCP_TOKEN_DENYLIST` unset it is `~/.config/clearotron/token-denylist`, the file every revoker
+  writes in that case, and that file being absent means nothing has been revoked. A list named in the
+  setting that is missing or unreadable, or a default list that exists but cannot be read, refuses every
+  key. **Rotation**: two-secret window, flag-day-free.
 - **Rate limits**: per-identity bucket on every request plus a separate lower per-principal bucket
   for ops sessions.
 

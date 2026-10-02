@@ -105,9 +105,12 @@ are no root units; everything is `systemd --user`.
     The API-key door is a fourth process (loopback :18812) with **no Access in front** — the trade is
     explicit: a mandatory key replaces the browser sign-in, and the mode refuses to start if anything
     that would weaken that (the dev auth-disable knob, a missing signing secret) is also set.
-  - The staff unit is systemd-hardened (`NoNewPrivileges`, `ProtectSystem=strict` with only the
-    audit-log path writable, `PrivateTmp`); both HTTP faces enforce host allowlists
-    (DNS-rebinding protection), per-identity rate limits, body caps, and auth-before-body-read.
+  - The remote deployment's staff unit (`mcp-server/remote/`) is systemd-hardened (`NoNewPrivileges`,
+    `ProtectSystem=strict` with only the audit-log path writable, `PrivateTmp`). The portal, worker and two
+    assistant-door units an install runs (`driver/systemd/`) set `NoNewPrivileges`, `RestrictSUIDSGID`,
+    `LockPersonality` and `UMask=0007`, and nothing that limits where they write: they can write wherever
+    the install's account can. Both HTTP faces enforce host allowlists (DNS-rebinding protection),
+    per-identity rate limits, body caps, and auth-before-body-read.
 - **Outbound** traffic is enumerated in [What leaves the machine](#what-leaves-the-machine) below.
   No outbound service is given filesystem access: register, research, and case-law calls carry query
   arguments only, and the pool and run dirs are never exposed to them.

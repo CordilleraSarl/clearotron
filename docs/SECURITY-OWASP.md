@@ -57,14 +57,14 @@ retention period, because how long they are held is the operator's policy.
 
 **Here.** A compromised npm package, GitHub Action or engine program.
 
-**What Clearotron does.** Dependabot updates the npm packages and the GitHub Actions. Each release is
-published to npm through trusted publishing, with provenance that ties the package to the commit and the
-build that produced it. A stable release is not published while a code-scanning alert is open. Setup
+**What Clearotron does.** Dependabot updates the npm packages and the GitHub Actions. Every GitHub Action is pinned to a commit
+hash. Each release is published to npm through trusted publishing, with provenance that ties the package
+to the commit and the build that produced it. Each release carries a software bill of materials. A stable release is not published while a code-scanning alert is open. Setup
 installs, and `clearotron doctor` accepts, only an engine program at or above the version this release
 needs.
 
-**Where.** `.github/dependabot.yml`, `.github/workflows/release.yml`,
-`scripts/release-code-scanning-check.mjs`, `driver/driver.config.mjs` (`ENGINE_BINARIES`, each program's
+**Where.** `.github/dependabot.yml`, `.github/workflows/`, `.github/workflows/release.yml`,
+`scripts/release-sbom.mjs`, `scripts/release-code-scanning-check.mjs`, `driver/driver.config.mjs` (`ENGINE_BINARIES`, each program's
 `floor`).
 
 ### LLM04:2025 Data and Model Poisoning
@@ -99,12 +99,14 @@ The common-law search asks the research service to run a search program, on that
 
 **What Clearotron does.** Tools are granted per stage, by name. The case-law stage is the exception: it is granted every tool its two case-law services offer. A Claude
 stage is offered no command tool.
-Register searches beyond the fixed plan go through a proposal that code checks and runs. A key issued for
-automation can be limited to named actions. A what-if requested by a company's people is queued for a
+Register searches beyond the fixed plan go through a proposal that code checks and runs. A new key issued for
+automation must name the actions it may take; keys issued before that rule keep working, and each use of
+one is recorded. No key for automation reaches a what-if over the network. A what-if requested by a company's people is queued for a
 separate process rather than run by the door that received it.
 
 **Where.** `driver/engine/mcp/gather-config.mjs`, `driver/engine/anthropic-agent.mjs`,
-`driver/engine/mcp/supplemental.mjs`, `shared/scope.mjs`, `driver/whatif-worker.mjs`.
+`driver/engine/mcp/supplemental.mjs`, `shared/scope.mjs`, `driver/whatif-worker.mjs`,
+`mcp-server/mint-token.mjs`, `mcp-server/server.mjs`.
 
 **Not covered.** As ASI02: the Claude program also offers a stage built-in tools that act without asking.
 
@@ -189,7 +191,7 @@ remove them.
 **What Clearotron does.** The AI program starts with a named list of settings, and the key that signs
 access keys is not on it. The worker that starts the AI program does not hold that key either, whether
 the install runs in a terminal or under systemd. Access keys are scoped to a run, a company or named
-actions, and one check enforces the scope. On Claude, a stage's file tools can read nothing outside its run folder, its
+actions, and one check enforces the scope. A new key for automation must name its actions. On Claude, a stage's file tools can read nothing outside its run folder, its
 instruction folders and any folder the machine's own Claude settings add. On Codex with its sandbox on, a stage's commands can read nothing outside its run folder, its instruction folders, the temporary
 folders, and the system and program files a command needs to run.
 
@@ -296,3 +298,5 @@ Measured on 2026-09-23 with the GitHub API.
 | Private vulnerability reporting | On |
 | npm provenance | Every release, through trusted publishing |
 | Required checks on `main` | Six; force pushes and branch deletion refused |
+| Actions pinned to a commit hash | All 42, read from the workflow files on 2026-09-24 |
+| Software bill of materials | CycloneDX, attached to every release, read from the release workflow on 2026-09-24 |
