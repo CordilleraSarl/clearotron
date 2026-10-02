@@ -12,7 +12,7 @@ const REGISTER = `# Register findings
 | URI | Mark | Owner | Country | Classes | Status | Filed | Expiry |
 |---|---|---|---|---|---|---|---|
 | /m/1 | LUMENGARDE | Plesner Advokatpartnerselskab | DK | 09, 41 | Registered | 2021 | 2031 |
-| /m/2 | EVERLITE | Acme Lighting Co | US | 11 | Registered | 2019 | 2029 |
+| /m/2 | LUMENGARD | Acme Lighting Co | US | 11 | Registered | 2019 | 2029 |
 
 ### Coverage ledger
 | Coverage unit | Status | Reason |

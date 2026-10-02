@@ -1266,7 +1266,7 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   // this compiler's own equivalence: `norm` and `formKey` both strip separators, so "BIO VELTRIS",
   // "BIOVELTRIS", "BIO-VELTRIS" and "BIO.VELTRIS" are ONE key. The variant loop below already drops a
   // model variant that restates the mark that way, on exactly that test. Dispatching the generated set
-  // would send the mark's own exact entry three more times under a different spelling — the PARADISE
+  // would send the mark's own exact entry three more times under a different spelling — the Drivers Haven
   // shape (five diacritic terms, same 424 hits, the run's record budget gone), re-imported. The family
   // is enumerated and marked in form-neighbourhood.json because it is genuinely mechanical and the
   // surfaces that do NOT fold spacing are real; wiring it to those is not this change.

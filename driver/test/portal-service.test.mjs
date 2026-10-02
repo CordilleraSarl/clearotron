@@ -2968,7 +2968,7 @@ test("a SUCCESSFUL write still audits exactly as before — one row, the specifi
   // (the account resolved from the run, the actor, the run count), so a generic row on top of them would
   // duplicate every write and cost /portal/admin/observed its window for nothing.
   const ok = await service.route("POST", "/portal/admin/families", STAFF,
-    { name: "Hydra range", runIds: ["tmp1-demo-brand-owner-run"] }, { account: "demo-brand-owner" });
+    { name: "Aqua range", runIds: ["tmp1-demo-brand-owner-run"] }, { account: "demo-brand-owner" });
   assert.equal(ok.status, 200);
   assert.deepEqual(audits.map((a) => a.event), ["family-group"],
     "exactly one row, and it is the route's own — a success is not journalled twice");

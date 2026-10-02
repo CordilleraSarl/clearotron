@@ -5,7 +5,7 @@
 // Verbatim from a failed card:
 //
 //     merged half-grids failed the canonical validator (connotation_undisposed:KIN-ZY wikipedia,
-//     VENZ VET meaning slang, Вензи offensive meaning, Κίνζι meaning in english, Венза offensive
+//     VENZ VET meaning slang, Вензи offensive meaning, Βένζι meaning in english, Венза offensive
 //     meaning (+1 more))
 //
 // A stage-internal concept, a validator enum, and six raw search queries in four scripts. The reader

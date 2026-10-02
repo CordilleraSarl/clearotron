@@ -76,9 +76,9 @@ test("parseManifestVariants: live clearance-variants format — term in the 'Val
 |---|---|---|---|
 | exact-phrase | Dawn: Legends of Thornmantle | full mark | |
 | exact-element | THORNMANTLE | distinctive anchor | |
-| foreign-transliteration | エンバーヴェイル | JP reach | ✅ |
+| foreign-transliteration | ソーンマントル | JP reach | ✅ |
 `;
-  assert.deepEqual(parseManifestVariants(live), ["Dawn: Legends of Thornmantle", "THORNMANTLE", "エンバーヴェイル"]);
+  assert.deepEqual(parseManifestVariants(live), ["Dawn: Legends of Thornmantle", "THORNMANTLE", "ソーンマントル"]);
 });
 
 test("countMatrixCells: counts per-variant rows in the negative-results section only", () => {
@@ -591,7 +591,7 @@ test("the dictated meaning queries all go to ONE half — the sibling is asked t
 test("a result recurring across the sweep is now an obligation the OWNING half can see — under the old parity split neither half could", async () => {
   const { connotationObligations: ob, obligationRows: rowsOf } = await import("../connotation-search.mjs");
   // Four dictated queries; one recorded result surfaces on all four. That is the recurrence floor.
-  const queries = ["VENZY wikipedia", "VENZY meaning slang", "Вензи offensive meaning", "Κίνζι meaning in english"];
+  const queries = ["VENZY wikipedia", "VENZY meaning slang", "Вензи offensive meaning", "Βένζι meaning in english"];
   const RECUR = { title: "the shared receipt every query surfaced", url: "https://example.org/venzy-sense" };
   const recorded = queries.map((query) => ({ query, results: [RECUR] }));
   const recurrenceRows = (rec) => rowsOf(ob(rec)).filter((r) => r.kind === "recurrence").length;

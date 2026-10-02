@@ -1929,7 +1929,7 @@ export function deriveFormNeighbourhood(ctx) {   // @internal — exported for i
   } catch { /* scope ledger optional — markets are informational; no ledger ⇒ nothing dropped (fail-open) */ }
   // NOT scoped here: the transliteration SCRIPT set. `markets` is passed through but never narrows
   // SUPPORTED_SCRIPTS, so latin-diacritic/german/nordic/cyrillic/greek run on every matter regardless of the
-  // jurisdictions judgment applied. That is what generated the five PARADISE diacritics — but the fold-dedupe
+  // jurisdictions judgment applied. That is what generated the five Drivers Haven diacritics — but the fold-dedupe
   // in formNeighbourhood removes them at the source, and the surviving cross-script forms (ß→ss, Cyrillic and
   // Greek homoglyphs) are genuinely distinct strings that cost one term each. Deferred deliberately: narrowing
   // scripts by market is a coverage decision, and the harm it was meant to fix is already gone.

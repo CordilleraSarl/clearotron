@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // repairs.mjs — failure signatures, transient/deterministic classification, and the bounded repair
-// ledger (repair-first doctrine, 2026-07-05). The signature tests are seeded from the REAL Wilderness
+// ledger (repair-first doctrine, 2026-07-05). The signature tests are seeded from the REAL Open Country
 // Bound (TMP8729) park reasons: three byte-identical parks must sign identically (the repeat-signature
 // terminal exists exactly for that shape), while genuinely different defects must sign apart.
 import { test } from "node:test";
@@ -14,13 +14,13 @@ import { tmpdir } from "node:os";
 import { normalizeReason, bareStage, failureSignature, classifyFailureReason, createRepairLedger, decideRecovery, countTrailingStageStrikes, recoveryLaneOf, countRecoveryLanes, weatherCeilingFor, TRANSIENT_RE, DETERMINISTIC_RE, fanInMissingEvidence, STRUCTURAL_REFUSAL_RE, retryCannotHelpWith, unnamedStructuredFailure } from "../repairs.mjs";
 
 // The verbatim fan-in reason from the 2026-07-05 teal-causeway .failed sentinel.
-const WILDERNESS_REASON = "register plan unexecuted after followup — 2 dictated qid(s) own no band block: primary-sweep:exact:ailderness+form; primary-sweep:exact:aildernessbound+form (a clean can never ship over a slice the plan dictated and nothing ran)";
+const OPEN_COUNTRY_REASON = "register plan unexecuted after followup — 2 dictated qid(s) own no band block: primary-sweep:exact:ailderness+form; primary-sweep:exact:aildernessbound+form (a clean can never ship over a slice the plan dictated and nothing ran)";
 
 // ---- failureSignature: stability across attempts, separation across defects --------------------------
 
-test("signature: the three byte-identical Wilderness parks sign identically", () => {
-  const a = failureSignature("fan-in", WILDERNESS_REASON);
-  const b = failureSignature("fan-in", WILDERNESS_REASON);
+test("signature: the three byte-identical Open Country parks sign identically", () => {
+  const a = failureSignature("fan-in", OPEN_COUNTRY_REASON);
+  const b = failureSignature("fan-in", OPEN_COUNTRY_REASON);
   assert.equal(a.sig, b.sig);
   assert.match(a.sig, /^fan-in\|[0-9a-f]{12}$/);
 });
@@ -38,8 +38,8 @@ test("signature: volatile tokens (counts, hex ids, paths, timestamps) normalize 
 });
 
 test("signature: different stages and different defects sign apart", () => {
-  const fanIn = failureSignature("fan-in", WILDERNESS_REASON);
-  const other = failureSignature("screen-gate", WILDERNESS_REASON);
+  const fanIn = failureSignature("fan-in", OPEN_COUNTRY_REASON);
+  const other = failureSignature("screen-gate", OPEN_COUNTRY_REASON);
   assert.notEqual(fanIn.sig, other.sig);
   const collapsed = failureSignature("fan-in", "collapsed named band: slice searched but lost (total_hits>0, zero records)");
   assert.notEqual(fanIn.sig, collapsed.sig);
@@ -66,7 +66,7 @@ test("classify: gateway transient fail strings keep the full recovery ladder", (
 });
 
 test("classify: request-shape provider 4xx and the fan-in plan family are deterministic", () => {
-  assert.equal(classifyFailureReason(WILDERNESS_REASON), "deterministic");
+  assert.equal(classifyFailureReason(OPEN_COUNTRY_REASON), "deterministic");
   assert.equal(classifyFailureReason("provider error (after one in-tool retry): ERROR: corsearch_search HTTP 414 for query==name:`ailderness`…"), "deterministic");
   assert.equal(classifyFailureReason("HTTP 404 record not found"), "deterministic");
   assert.equal(classifyFailureReason("collapsed named band: primary-sweep slice searched but lost"), "deterministic");
@@ -171,7 +171,7 @@ test("decideRecovery: deterministic and factual never park — repairs already r
   assert.equal(fact.terminalKind, "factual");
 });
 
-test("decideRecovery: a repeating signature is terminal for every class EXCEPT transient — the Wilderness backstop", () => {
+test("decideRecovery: a repeating signature is terminal for every class EXCEPT transient — the Open Country backstop", () => {
   // CHANGED 2026-07-27 (audit): transient was moved OUT of the unconditional repeat-terminal because
   // waiting is the literal remedy for an outage — see the ladder-rung test above. The backstop the
   // Open Country case actually needs is its CLASS (HTTP 414 → deterministic → budget 0), which
@@ -260,7 +260,7 @@ test("decideRecovery: only OUTAGE-shaped transients may repeat — a wedged stag
   for (const reason of ["provider returned HTTP 503", "HTTP 429 rate limited", "connect ECONNREFUSED 10.0.0.1:443", "socket hang up"]) {
     assert.equal(decideRecovery({ failClass: "transient", sig, reason, history: hist, priorAttempts: 1, recoveryMax: 3 }).recoverable, true, `outage should re-park: ${reason}`);
   }
-  // wedge: it fails identically because it is STUCK — three parks over ~77 min is the Wilderness shape
+  // wedge: it fails identically because it is STUCK — three parks over ~77 min is the Open Country shape
   for (const reason of ["nonzero_exit (exit 1)", "unparseable_json from the turn", "lane_wedge detected", "embedded_fallback transport"]) {
     const d = decideRecovery({ failClass: "transient", sig, reason, history: hist, priorAttempts: 1, recoveryMax: 3 });
     assert.equal(d.recoverable, false, `wedge must stay terminal: ${reason}`);
@@ -294,10 +294,10 @@ test("signature: the reason-drift evasion is closed — a reason LIST that grows
 });
 
 test("signature: empty/absent codes fall back to prose-normalized hashing byte-identically", () => {
-  const plain = failureSignature("fan-in", WILDERNESS_REASON);
-  assert.equal(failureSignature("fan-in", WILDERNESS_REASON, { codes: [] }).sig, plain.sig);
-  assert.equal(failureSignature("fan-in", WILDERNESS_REASON, { codes: undefined }).sig, plain.sig);
-  assert.equal(failureSignature("fan-in", WILDERNESS_REASON, {}).sig, plain.sig);
+  const plain = failureSignature("fan-in", OPEN_COUNTRY_REASON);
+  assert.equal(failureSignature("fan-in", OPEN_COUNTRY_REASON, { codes: [] }).sig, plain.sig);
+  assert.equal(failureSignature("fan-in", OPEN_COUNTRY_REASON, { codes: undefined }).sig, plain.sig);
+  assert.equal(failureSignature("fan-in", OPEN_COUNTRY_REASON, {}).sig, plain.sig);
 });
 
 // ---- A5 (2026-07-28 postmortem): invalid-artifact strikes — trailing consecutive content-shaped failures -------
@@ -604,8 +604,8 @@ test("a quoted transient axis outcome does NOT reach the lane through the text p
 test("DETERMINISTIC_RE already matched this throw's own words — the stamp was overriding a correct guess", () => {
   // Not a behaviour assertion on the fix: it pins WHY the defect was invisible. The text classifier had
   // it right and repairs.mjs's own note says an explicit stamp always wins over it.
-  assert.match(WILDERNESS_REASON, DETERMINISTIC_RE);
-  assert.equal(classifyFailureReason(WILDERNESS_REASON), "deterministic");
+  assert.match(OPEN_COUNTRY_REASON, DETERMINISTIC_RE);
+  assert.equal(classifyFailureReason(OPEN_COUNTRY_REASON), "deterministic");
 });
 
 // ──: a receipt states the outcome it is named for, or says it does not know ──────────────────

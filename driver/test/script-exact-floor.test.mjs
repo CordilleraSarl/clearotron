@@ -58,7 +58,7 @@ test("AN EMPTY SKELETON PULLS NOTHING IN — the failure mode the fix could have
 
 test("full-width and compatibility forms of the SAME characters still match (NFKC)", () => {
   assert.equal(classifyRecord("澜珀", ["澜珀"]).tier, "identical");
-  assert.equal(classifyRecord("ﾃﾞﾙﾌｨ", ["デルフィ"]).tier, "identical", "half-width katakana is the same mark");
+  assert.equal(classifyRecord("ｳﾞｪﾙﾄﾘﾝ", ["ヴェルトリン"]).tier, "identical", "half-width katakana is the same mark");
 });
 
 test("Latin classification is untouched — every existing tier still fires", () => {
@@ -71,7 +71,7 @@ test("Latin classification is untouched — every existing tier still fires", ()
 test("a record in a script with NO matching target is still a declared blind spot", () => {
   // The blind-spot list keeps its job: this fix promotes only what it can prove, and everything else
   // stays visible as a script gap rather than silently becoming `other`.
-  const r = classifyRecord("デルフィ", TARGETS);
+  const r = classifyRecord("ヴェルトリン", TARGETS);
   assert.equal(r.tier, "unclassifiable");
   assert.match(r.basis, /^non-latin-script:/);
 });
