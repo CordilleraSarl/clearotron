@@ -230,7 +230,7 @@ deployment may override (verify live values per deployment).
 | Var | Default | Meaning |
 |---|---|---|
 | `CLEAROTRON_MAX_CONCURRENT_RUNS` | **2** (min 1; re-read at call time) | Global run-slot cap — concurrently executing whole runs, however launched (manual CLI runs included). A deployment's `.env` may set a different value; read the live value rather than this column when you need the one in force. A value that is not a number is refused at the read, by name; the staff status page and the portal report the cap as absent with the reason rather than stating a number nobody chose. |
-| `CLEAROTRON_GATHER_CONCURRENCY` | 7 | Parallel gather members per run (also batches escalation re-runs, the closure fan-out, the envelope close and the frame-reopen sweep). A split gather is three common-law seats + four register units = 7, so the default runs them in one wave; it was 6 before the meaning seat got its own dispatch. Report cards have their own knob, `CLEAROTRON_CARD_CONCURRENCY` (default 8). |
+| `CLEAROTRON_GATHER_CONCURRENCY` | 7 | Parallel gather members per run (also batches escalation re-runs, the closure fan-out and the envelope close). A split gather is three common-law seats + four register units = 7, so the default runs them in one wave; it was 6 before the meaning seat got its own dispatch. Report cards have their own knob, `CLEAROTRON_CARD_CONCURRENCY` (default 8). |
 | `CLEAROTRON_RUN_LOCK_POLL_MS` | 15000 | Run-slot acquire poll cadence. |
 | `CLEAROTRON_ADMISSION_BUDGET_MS` | 7200000 (2 h) | Runner stops claiming new jobs after this per activation; leftovers re-trigger a fresh activation. |
 | `CLEAROTRON_QUEUE_SCAN_MS` | 10000 (min 1000) | Mid-drain re-scan for newly arrived jobs. |
@@ -274,10 +274,8 @@ unrecognised policy value that leaves the default behaviour standing.
 
 | Var | Gates |
 |---|---|
-| `CLEAROTRON_PLAN_DISPATCH` (`0` or `off` disables) | Pure-code provider `executePlan` repairs at fan-in and reopen. **Never silently inert:** every entry in `PROVIDERS` ships an `executePlan` adapter, and `preflightCredentials` refuses the run before any spend under one that does not — a credential is not a capability. §5.4 of [05-config-governance.md](05-config-governance.md) still lists `signa` as the exception to that and has not been updated since its two missing tools were mounted. |
-| `CLEAROTRON_FRAME_REOPEN` (+ `CLEAROTRON_FRAME_REOPEN_MAX`, default 1) | The bounded frame-diff reopen. |
+| `CLEAROTRON_PLAN_DISPATCH` (`0` or `off` disables) | Pure-code provider `executePlan` repairs at fan-in. **Never silently inert:** every entry in `PROVIDERS` ships an `executePlan` adapter, and `preflightCredentials` refuses the run before any spend under one that does not — a credential is not a capability. §5.4 of [05-config-governance.md](05-config-governance.md) still lists `signa` as the exception to that and has not been updated since its two missing tools were mounted. |
 | `CLEAROTRON_REGISTER_GAP_CLAMP` | The registerGap verdict clamp arm. |
-| `CLEAROTRON_REOPEN_MAX_FETCH` (default 150) | Detail-fetch ceiling inside the reopen closure pass. |
 | `CLEAROTRON_UNREACHABLE_SENIOR` (`open-item` \| `clamp`, default `open-item`) | Policy when a verdict-driving senior right can't be retrieved. |
 
 ### Payload ceilings

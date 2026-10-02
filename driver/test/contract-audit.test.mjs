@@ -642,8 +642,10 @@ test("E3: the backlog is explicit, named, and each entry says which move removes
   // step 3 came to be judged by owner; the judges answer in a form and dictate no structure.
   // 37 -> 34: blind-frame's manual row and frame-diff's message and manual rows left with those two stages
   // when the mid-run reopening was removed.
-  assert.equal(E3_BACKLOG.length, 34,
-    `the backlog is ${E3_BACKLOG.length}, pinned at 34. SHRUNK? good — regenerate contract-e3-baseline.json in the same commit so the ceiling drops with it, and say at the entry site what removed it. GROWN? a new dictated structure was registered rather than converted; that is a decision, so make it visible here.`);
+  // 34 -> 33: the re-dispatch builders' state-enum row left with the builders when the reopening's own
+  // sweeps went; the stage message keeps the same sentence under its own row.
+  assert.equal(E3_BACKLOG.length, 33,
+    `the backlog is ${E3_BACKLOG.length}, pinned at 33. SHRUNK? good — regenerate contract-e3-baseline.json in the same commit so the ceiling drops with it, and say at the entry site what removed it. GROWN? a new dictated structure was registered rather than converted; that is a decision, so make it visible here.`);
   for (const e of E3_BACKLOG) {
     assert.ok(e.stage && e.where && e.evidence, "a backlog entry that does not name its site is not a backlog entry");
     assert.ok(E3_BACKLOG_KINDS.includes(e.kind), `unknown E3 kind ${e.kind}`);

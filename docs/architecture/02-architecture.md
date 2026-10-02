@@ -236,8 +236,8 @@ it, not one inherited dormant.
 **required in every environment and has no default** — unset resolves to `null` and every use of it
 throws, so a run refuses at start rather than calling a vendor nobody chose. The clearance pipeline
 consumes two provider verbs directly — `recordFetch` (screen-gate, senior-rights, citation-closure
-code fetches) and `executePlan` (pure-code re-execution of dictated plan slices during fan-in and
-reopen repairs); the knockout lane it dispatches into adds `countHits` and `listRecords`, so four
+code fetches) and `executePlan` (pure-code re-execution of dictated plan slices during fan-in
+repairs); the knockout lane it dispatches into adds `countHits` and `listRecords`, so four
 verbs run with no model in the data path, and every shipped adapter implements all four. On top of
 those sit the gather tools the engine exposes to sweep stages. Adapter anatomy and the verification
 checklist for a new register estate: [08](08-development-guide.md).
@@ -285,9 +285,8 @@ All paths relative to [`driver/`](../../driver/). The load-bearing seven are mar
 | `registry-fidelity.mjs` | Record grounding: citation closure, identifier auto-correction from records. |
 | `named-band.mjs` · `register-taint.mjs` · `register-plan.mjs` | Band merge/gates, timeout-taint machinery, plan compilation. |
 | `form-neighbourhood.mjs` · `phonetic-key.mjs` · `connotation-search.mjs` | Mechanical variant floor, phonetic keys, meaning-query dictation. |
-| `frame-diff-model.mjs` | The reopen channel's decision helpers: which directives fire, how each ends. |
 | `rule-shape.mjs` · `reasoning-tripwires.mjs` · `gate-metrics.mjs` | Anti-threshold guard, integrity tripwires (observe-only), gate telemetry. |
-| `predelivery-lint.mjs` · `close-verify.mjs` · `screen-gate.mjs` | Pre-delivery checks, envelope close verification, screen-gate detection. |
+| `predelivery-lint.mjs` · `screen-gate.mjs` | Pre-delivery checks, screen-gate detection. |
 | `common-law-receipts.mjs` · `engagement-receipt.mjs` · `scope-ledger.mjs` | Receipt models for the marketplace grid, engagement, scope. |
 | `senior-rights.mjs` · `own-rights.mjs` · `use-check.mjs` | Rights closure, self-exclusion, use analysis. |
 | `publish/` | Deterministic publication: HTML render, Excel audit workbook, pool admin, regions. |

@@ -98,9 +98,12 @@ const FRESHNESS_GOLDEN = {
   // is a strict co-mover with an input this stage already stales on. And a
   // stamp written before this ships carries no entry for either path, so `diffFingerprint` — which walks
   // the RECORDED entries — manufactures no staleness on a run already in flight.
-  synthesis: ["owner-decisions.json", "common-law-findings.md", "register-named-band.json", "matter-context.md", "variant-manifest.md", "skeptic-flags.md", "_driver/frame-reopen.json", "_driver/crowd-context.json", "crowd-context.md", "_driver/plan-execution.json", "register-coverage-ledger.json"],
+  synthesis: ["owner-decisions.json", "common-law-findings.md", "register-named-band.json", "matter-context.md", "variant-manifest.md", "skeptic-flags.md", "_driver/crowd-context.json", "crowd-context.md", "_driver/plan-execution.json", "register-coverage-ledger.json"],
   "case-law": ["narrative.md"],
-  "narrative-refutation": ["narrative.md", "owner-decisions.json", "common-law-findings.md", "matter-context.md", "skeptic-flags.md", "_driver/frame-reopen.json"],
+  // — NARROWED by one, the reopen receipt, in both rows (synthesis and this one): the mid-run reopening
+  // that wrote it left the engine. Narrowing is the safe direction: an input a stage no longer declares is
+  // skipped when its stamp is compared (diffFingerprint), so no run in flight reads stale on it.
+  "narrative-refutation": ["narrative.md", "owner-decisions.json", "common-law-findings.md", "matter-context.md", "skeptic-flags.md"],
   // — NARROWED from nine to two, deliberately: the stage declared nine and opened two (the 08-02 R2
   // dependency graph), and its prompt asserted grounding in all nine. Declaration and citations now both
   // say narrative.md + findings.json, pinned together by the exact-set guard in operability.test.mjs.

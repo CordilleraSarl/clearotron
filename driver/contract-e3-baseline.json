@@ -68,7 +68,7 @@
   },
   "files": {
     "stages.mjs#re-dispatch-builders": {
-      "literal-json-skeleton": 3,
+      "literal-json-skeleton": 1,
       "exactly-these-keys": 0,
       "dictated-line-shape": 1
     },
@@ -155,6 +155,6 @@
   },
   "totals": {
     "stages": 34,
-    "files": 36
+    "files": 34
   }
 }

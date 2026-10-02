@@ -293,7 +293,7 @@ export function formNeighbourhood(element, { markets = [], scripts = SUPPORTED_S
   // element itself. Drivers Haven 2026-07-17 dispatched exactly those five as distinct terms; each returned
   // the same 424 hits, together they exhausted the run's record budget, all five stayed `unenumerated`, and
   // `coverage_clean_unverified_incomplete:primary-sweep` then blocked delivery six times on a gate that could
-  // never clear. This is the same equivalence coverageGaps() already compares on, applied at generation.
+  // never clear. This is the equivalence the dispatched-form comparison used, applied at generation.
   // ß→ss and the Cyrillic/Greek homoglyph forms survive: foldDiacritics leaves them genuinely distinct.
   const exactQueries = dedupeOnFold([...edits, ...confs, ...trans], el);
 
@@ -359,36 +359,6 @@ export function dedupeOnFold(terms, element) {
   return out;
 }
 
-// ── The coverage ORACLE (completeness, NEVER sufficiency) ───────────────────────────────────────────────
-// Compares the machine-defined form band against what the register funnel actually DISPATCHED. A generated
-// near-form that was never dispatched (and not explicitly explained) is a COMPLETENESS gap — this is a check
-// that the machine searched its own deterministic set, NOT a judgment about whether the RESULTS were enough
-// (that stays with synthesis/Layer B). Names are compared on the normalized seed so casing/diacritics don't
-// cause false gaps. `explained` carries forms the funnel legitimately could not dispatch (e.g. a wildcard the
-// provider rejected) with the reopen trigger — an explained absence is not a gap, mirroring the scope-ledger.
-export function coverageGaps(band, { dispatched = [], explained = [] } = {}) {
-  const norm = (s) => normalizeElement(s);
-  const have = new Set(dispatched.map(norm));
-  const excused = new Set(explained.map((e) => norm(e?.form ?? e)));
-  const gaps = [];
-  for (const q of band?.exactQueries ?? []) {
-    const n = norm(q);
-    if (!have.has(n) && !excused.has(n)) gaps.push(q);
-  }
-  // the wildcard family + at least one phonetic key must also have been dispatched (the vowel family is not
-  // reachable via exact OR-stacking) — a missing structural-family dispatch is a gap of its own.
-  const familyDispatched = (band?.wildcardPatterns ?? []).some((p) => have.has(norm(p)))
-    || (band?.phoneticKeys ?? []).some((k) => have.has(norm(k)))
-    || dispatched.some((d) => /[?*]/.test(String(d)));
-  // A retrieval pattern the reading turn withheld, with its reason, is an explained absence like any other.
-  const familyExplained = (band?.wildcardPatterns ?? []).some((p) => excused.has(norm(p)));
-  return {
-    complete: gaps.length === 0 && (band?.wildcardPatterns?.length ? familyDispatched || familyExplained : true),
-    missingExact: gaps,
-    phoneticFamilyDispatched: familyDispatched,
-    phoneticFamilyExplained: familyExplained,
-  };
-}
 
 // ── Driver glue: CODE-DERIVE the machine form band FROM the manifest's distinctive element(s) ────────────
 // Mirrors scope-ledger.mjs renderScopeLedgerJson: the model identifies WHICH token is distinctive (judgment
@@ -816,67 +786,4 @@ export function parseFormNeighbourhoodJson(raw) {
     const o = JSON.parse(raw);
     return Array.isArray(o?.elements) ? o.elements.filter((e) => e && e.band && Array.isArray(e.band.exactQueries)) : [];
   } catch { return []; }
-}
-
-// Extract the NAME tokens a register band actually DISPATCHED, tolerant of EVERY band shape: the MERGED
-// register-named-band.json (`{enumerated:[{...,_query,mark_text}], crowds:[{query}]}` from mergeNamedBands), a
-// per-axis block array (`[{state,query,records}]`), or `{blocks:[…]}`. From every query string it pulls the
-// backtick-quoted `name:` value + its `(v1,v2,…)` phonetic-variant tail + any wildcard pattern (`?`/`*`), and it
-// ALSO takes every returned `mark_text` (a record that came back proves its name was IN the searched band). PURE.
-export function dispatchedQueriesFromBand(bandJsonText) {
-  let o;
-  try { o = typeof bandJsonText === "string" ? JSON.parse(bandJsonText) : bandJsonText; }
-  catch { return []; }
-  const queries = [];   // strings to scan for `name:` clauses + wildcard patterns
-  const out = new Set(); // accumulates name tokens (returned mark_text added directly)
-  const harvest = (b) => {
-    if (!b || typeof b !== "object") return;
-    if (b.query) queries.push(String(b.query));
-    if (b._query) queries.push(String(b._query));
-    if (b.mark_text) out.add(String(b.mark_text).trim());
-    for (const r of (Array.isArray(b.records) ? b.records : [])) { if (r?._query) queries.push(String(r._query)); if (r?.mark_text) out.add(String(r.mark_text).trim()); }
-    for (const s of (Array.isArray(b.sample) ? b.sample : [])) { if (typeof s === "string") out.add(s.trim()); else if (s?.mark_text) out.add(String(s.mark_text).trim()); }
-  };
-  if (Array.isArray(o)) o.forEach(harvest);
-  else if (Array.isArray(o?.blocks)) o.blocks.forEach(harvest);
-  else { (Array.isArray(o?.enumerated) ? o.enumerated : []).forEach(harvest); (Array.isArray(o?.crowds) ? o.crowds : []).forEach(harvest); }
-  for (const q of queries) {
-    for (const m of q.matchAll(/name:`([^`]+)`(?:\(([^)]*)\))?/gi)) {
-      if (m[1]) out.add(m[1]);
-      if (m[2]) for (const v of m[2].split(",")) if (v.trim()) out.add(v.trim());
-    }
-    for (const m of q.matchAll(/`([a-z0-9?*]+)`/gi)) if (/[?*]/.test(m[1])) out.add(m[1]);       // backtick-wrapped wildcard
-    for (const m of q.matchAll(/\b([a-z0-9]*[?*][a-z0-9?*]*)\b/gi)) if (/[?*]/.test(m[1])) out.add(m[1]); // bare wildcard in a prose query
-  }
-  return [...out].filter(Boolean);
-}
-
-// Turn the form-neighbourhood band(s) + what was dispatched into frame-diff-compatible `variant` directives —
-// the mechanical regrounding of the form axis. A generated near-form never dispatched fires the SAME
-// supplemental-sweep + clamp channel as the blind frame-diff (no reliance on a peer model to NOTICE it). When
-// MANY are missing (the funnel never searched the machine band at all) we emit ONE systemic directive instead
-// of hundreds. `explained` carries reopen-triggered legitimate non-dispatches. PURE.
-export function formGapDirectives(elements, { dispatched = [], explained = [], maxIndividual = 8 } = {}) {
-  const directives = [];
-  for (const el of elements ?? []) {
-    const g = coverageGaps(el.band, { dispatched, explained });
-    if (g.complete) continue;
-    const miss = g.missingExact;
-    if (miss.length > maxIndividual) {
-      directives.push({
-        layer: "variant", item: `${el.element} form-neighbourhood`, severity: "material",
-        observation: `${miss.length} of the deterministic form near-forms of "${el.element}" were never dispatched (the machine form band was not searched) — e.g. ${miss.slice(0, 6).join(", ")}. Search the complete form-neighbourhood.json band (OR-stacked, count-first).`,
-      });
-    } else {
-      for (const form of miss) directives.push({
-        layer: "variant", item: form, severity: "material",
-        observation: `mechanical form near-form of "${el.element}" (deterministically generated) was not dispatched — search it.`,
-      });
-    }
-    if (!g.phoneticFamilyDispatched && !g.phoneticFamilyExplained && (el.band?.wildcardPatterns?.length)) directives.push({
-      layer: "variant", item: `${el.element} phonetic family`, severity: "material",
-      observation: `the consonant-skeleton wildcard (${el.band.wildcardPatterns.join(" / ")}) / phonetic key was not dispatched — the vowel-family (VYLONA/VILINA-class) is unsearched.`,
-    });
-  }
-  return directives;
 }

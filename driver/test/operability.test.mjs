@@ -713,7 +713,8 @@ test("WS-T/#249: stage context covers every DECLARED-ARTIFACT file each stage me
   // ── the guard's own zero-semantics: prove it swept something ────────────────────────────────────────
   assert.equal(built, ST.STAGE_ORDER.length,
     `only ${built}/${ST.STAGE_ORDER.length} stage messages built — a stage whose message() throws is swept by NOTHING, and a guard that sweeps nothing passes vacuously`);
-  assert.ok(seen.size >= 20, `the guard matched only ${seen.size} artifact references across ${built} stages — the matcher is broken, not the map`);
+  // 19 since the reopen receipt left the two prompts that named it, with the mid-run reopening.
+  assert.ok(seen.size >= 19, `the guard matched only ${seen.size} artifact references across ${built} stages — the matcher is broken, not the map`);
   // The file this guard could not see, named. Once the map is correct, a regression of the matcher back
   // to `.md`-only passes every assertion above — this is the one that catches it.
   assert.ok(seen.has(P.findings),

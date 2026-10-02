@@ -221,16 +221,8 @@ export function fixture(name, msg, dir = null) {
     const gapsActive = gapsMode && (!closing || gapsMode === "persist" || gapsMode === "exempt");
     const gapStore = PLATFORMS[0];
     const gapCell = (v, pl) => gapsActive && v === gapVariant && (pl === gapStore || pl === "web");
-    let matrix = variants.flatMap((v) => PLATFORMS.map((pl) =>
+    const matrix = variants.flatMap((v) => PLATFORMS.map((pl) =>
       gapCell(v, pl) ? `| ${v} | ${pl} | not executed — coverage-limited (see ledger) |` : `| ${v} | ${pl} | No results |`)).join("\n");
-    // A source-channel sweep followup (frame-reopen / closure channel arm) ADDS matrix rows for the
-    // DICTATED variant scope — mirror the real contract so the merged canonical file actually changes
-    // when (and only when) a sweep turn completed. The dictated scope is the explicit "For EACH of
-    // these variants — a; b —" list when present (split arms), else every variant (single member).
-    if (/SOURCE CHANNELS|IN-SCOPE CHANNELS/.test(msg)) {
-      const dictated = msg.match(/For EACH of these variants — ([^—]+) —/)?.[1]?.split(";").map((s) => s.trim()).filter(Boolean);
-      matrix += "\n" + (dictated ?? variants).map((v) => `| ${v} | github.com | No results — supplemental source-channel sweep |`).join("\n");
-    }
     const exemptRow = gapsMode === "exempt"
       ? `\n| non-Latin reach (转码) | coverage-limited | TimeoutError('store cell') on ${gapStore} and web calls |`
       : "";
@@ -757,9 +749,8 @@ export function mockUnitBandWrite(runDir, axis, msg = "") {
   // Real-funnel fidelity: a RESUME re-emits the COMPLETE band "preserving each existing block's qid
   // VERBATIM" (the followup mandate) — the executor merge never drops a dictated slice. A resume followup
   // carries no "- qid …" plan listing, so namedBand alone would regenerate only the base/judgment blocks
-  // and silently drop the dictated-qid blocks; the identity-join (and the Fix-2 frame-reopen receipt
-  // refresh over it) would then read the axis unexecuted. Merge: fresh blocks + any prior QID block this
-  // re-emit did not restamp.
+  // and silently drop the dictated-qid blocks; the identity-join would then read the axis unexecuted.
+  // Merge: fresh blocks + any prior QID block this re-emit did not restamp.
   const fresh = JSON.parse(namedBand(axis, msg));
   const freshQids = new Set(fresh.filter((b) => b && b.qid).map((b) => b.qid));
   let kept = [];
@@ -1949,12 +1940,8 @@ export function applyStageWrites(msg, argv) {
     // below, so a suppressed artifact can never land as the string "null" plus a marker: present-and-
     // invalid is a different failure from absent, and the test is about absent.
     if (content == null) return `mock turn completed without writing ${basename(out)}`;
-    // A frame-reopen resume carries a DISTINCT marker so its re-emit differs from any prior escalation/
-    // envelope re-emit of the same unit (else the byte-diff guard would see no change and skip it).
     if (/RESUMING your own register-unit session/.test(msg) && !process.env.MOCK_ESCALATION_NOOP)
-      content += /frame-INDEPENDENT re-derivation/.test(msg)
-        ? "\n<!-- frame-reopen: supplemental sweep -->\n"
-        : "\n<!-- escalation: revised in place -->\n";
+      content += "\n<!-- escalation: revised in place -->\n";
     writeFileSync(out, content);
     stalefindingsOnLintRepair(dirname(out), msg);
     // register-unit (the funnel) ALSO writes its complete named band — the load-bearing artifact the driver
@@ -1962,9 +1949,8 @@ export function applyStageWrites(msg, argv) {
     // Real-funnel fidelity: a RESUME re-emits the COMPLETE band "preserving each existing block's qid
     // VERBATIM" (the followup mandate) — the executor merge never drops a dictated slice. A resume followup
     // carries no "- qid …" plan listing, so namedBand alone would regenerate only the base/judgment blocks
-    // and silently drop the dictated-qid blocks; the identity-join (and the Fix-2 frame-reopen receipt
-    // refresh over it) would then read the axis unexecuted. Merge: fresh blocks + any prior QID block this
-    // re-emit did not restamp.
+    // and silently drop the dictated-qid blocks; the identity-join would then read the axis unexecuted.
+    // Merge: fresh blocks + any prior QID block this re-emit did not restamp.
     // THE BAND SIDE-WRITE MOVED and this branch is DELETED rather than left behind.
     // It keyed on `out` matching register-units/<axis>.md — the note — and the converted dispatch names no
     // path at all, so this branch could never fire again while reading as though it still covered the band.

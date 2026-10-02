@@ -10,7 +10,7 @@ import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { tmpdir } from "node:os";
 import { parseCoverageLedgerJson, classTokensFromScopeText, normalizeAxis, REGISTER_AXES, COVERAGE_STATUSES, decideAxes, deriveCoverageStatus, deriveFloorKeys, coerceToolAbsenceDeferred } from "../coverage-ledger.mjs";
-import { parseCoverageLedger, parseCoverageLedgerFull, loadCoverageLedger, reopenFetchCeiling } from "../pipeline.mjs";
+import { parseCoverageLedger, parseCoverageLedgerFull, loadCoverageLedger } from "../pipeline.mjs";
 import { searchedJurisdictionsFromPlan } from "../register-plan.mjs";
 
 // ── item 13 — a searched territory traces to an EXECUTED QUERY ──────────────────────────────────────
@@ -172,19 +172,6 @@ test("normalizeAxis: repairs markdown / qualifier / transposition; leaves a genu
   // backstop is NARROW: only a bare 2-letter code; a `digest` cross-check label or a typo still fails.
   assert.equal(normalizeAxis("digest"), "digest");
   assert.equal(normalizeAxis("satuartion-probe"), "satuartion-probe");
-});
-
-test("#5a reopenFetchCeiling: wall-fitting default (spec-49 J2); env override; junk/≤0 → default (no accidental tiny cap)", () => {
-  // T1 (J2): 150, not 500 — 500 detail-fetches cannot fit the 1500s stage wall and drove the
-  // 48% reopen-timeout class; a bounded WRITTEN band beats an exhaustive one killed mid-fetch.
-  assert.equal(reopenFetchCeiling(undefined), 150, "unset → wall-fitting default");
-  assert.equal(reopenFetchCeiling(""), 150, "empty → default");
-  assert.equal(reopenFetchCeiling("800"), 800, "valid override honored (deep closure stays possible)");
-  assert.equal(reopenFetchCeiling("1200"), 1200, "deeper closure allowed");
-  assert.equal(reopenFetchCeiling("0"), 150, "0 is nonsensical → default (never silently caps the pass to nothing)");
-  assert.equal(reopenFetchCeiling("-5"), 150, "negative → default");
-  assert.equal(reopenFetchCeiling("abc"), 150, "junk → default");
-  assert.equal(reopenFetchCeiling("250.9"), 250, "floored to an integer");
 });
 
 test("#3 normalizeAxis: an axis-less DIGEST owner/cross-check row recovers to its owning axis (anti-fail-open kept)", () => {
