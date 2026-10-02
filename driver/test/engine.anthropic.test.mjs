@@ -13,7 +13,7 @@ import { tmpdir } from "node:os";
 import { anthropicAgentEngine, claudeModel, effortFor, mapUsage, buildClaudeArgs, absolutizeSkillRefs, spawnEnv,
   EFFORT_TABLE, CROSS_ENGINE_EFFORT_TIERS } from "../engine/anthropic-agent.mjs";
 import { EFFORT_TABLE as CODEX_EFFORT_TABLE } from "../engine/openai-agent.mjs";
-import { runStage, isTimeout, isLaneWedge, classifyWedge, payloadText, selectEngine, registerEngine } from "../gateway.mjs";
+import { runStage, isTimeout, isLaneWedge, spentBudgetCleanly, classifyWedge, payloadText, selectEngine, registerEngine } from "../gateway.mjs";
 import { failingBin } from "./platform-caps.mjs";
 import { reapPidfile } from "./reap-fixture.mjs";   // #1847 — the owner reaps it, on every exit path
 import { pinEnv } from "../../shared/env-aliases.mjs";   // a fixture pins EVERY spelling
@@ -1169,3 +1169,47 @@ test("every arm that budgets in milliseconds carries the specimen in its message
     `${naked.length} clock-pinning arm(s) are plain \`test\`, so a failure there arrives undiagnosable and `
     + `the next CI red is another wasted specimen. Declare them \`timedTest\`:\n  ${naked.join("\n  ")}`);
 });
+
+// ── AN ATTEMPT THAT SPENT ITS WHOLE BUDGET AND EXITED CLEAN IS NAMED AS SUCH ──────────────────────────
+//
+// Measured on one round: 958.6 seconds against a derived limit of 900, exit 0, no output written, recorded
+// as `missing_file` naming the stage's OWN output. It was working throughout — 35,341 output tokens, 119
+// tool calls. The hard kill is the limit plus 60, so it finished 1.4 seconds under it, and the timeout
+// classifier needs a non-zero exit as well as a wall past the budget. So it is not a timeout, and nothing
+// here argues it should be: the fail class and the retry it earns are untouched. What was wrong is that the
+// row named an artifact, which sends the next reader to look for a path bug, while the two numbers that said
+// otherwise sat on the same row with nobody pointed at them.
+//
+// THESE ARMS HOLD THE RECORD, NOT A POLICY. The question of whether a clean exit at the budget should earn
+// the longer retry a timeout earns is the owner's, and the issue asking for this says so.
+test("a failed attempt that exited 0 having spent its derived budget is recorded as exactly that", () => {
+  assert.equal(spentBudgetCleanly({ fail: "missing_file:x", killed: false, code: 0, wall: 958.562, derivedLimitSec: 900 }), true,
+    "the case measured on the round reads as an ordinary artifact failure again");
+});
+
+test("THE CONTROLS: every neighbouring shape reads false, so the flag names one thing", () => {
+  const base = { fail: "missing_file:x", killed: false, code: 0, wall: 958.562, derivedLimitSec: 900 };
+  assert.equal(spentBudgetCleanly({ ...base, fail: null }), false, "a PASSING attempt must not be flagged");
+  assert.equal(spentBudgetCleanly({ ...base, wall: 400 }), false, "an attempt well inside its budget");
+  assert.equal(spentBudgetCleanly({ ...base, killed: true }), false, "a kill is the timeout path, not this one");
+  assert.equal(spentBudgetCleanly({ ...base, code: 1 }), false,
+    "a dirty exit at the budget is ALREADY a timeout by the classifier above — flagging it here would double-name it");
+  assert.equal(spentBudgetCleanly({ ...base, wall: 900 }), true, "exactly at the budget is spent");
+});
+
+test("an unknown budget is UNKNOWN, never a quiet false", () => {
+  const base = { fail: "missing_file:x", killed: false, code: 0, wall: 958.562, derivedLimitSec: 900 };
+  for (const bad of [undefined, null, 0, -1, NaN, "900"]) {
+    assert.equal(spentBudgetCleanly({ ...base, derivedLimitSec: bad }), null,
+      `a limit of ${JSON.stringify(bad)} must read as unknown — a false here says "it did not spend its budget", which nobody measured`);
+  }
+  assert.equal(spentBudgetCleanly({ ...base, wall: undefined }), null, "an unknown wall is unknown too");
+});
+
+test("it does NOT feed the timeout classifier, so no retry policy moves with it", () => {
+  // The same facts through both: this one says "spent its budget", the other still says "not a timeout".
+  const facts = { killed: false, code: 0, wall: 958.562, stderr: "", timeoutSec: 900 };
+  assert.equal(isTimeout(facts), false, "the timeout classifier changed, which would change which retry this earns");
+  assert.equal(spentBudgetCleanly({ ...facts, fail: "missing_file:x", derivedLimitSec: 900 }), true);
+});
+

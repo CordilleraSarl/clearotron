@@ -291,6 +291,37 @@ export function isTimeout({ killed, code, wall, stderr = "", timeoutSec }) {
 // on a parsed 0-usage object. A slow-but-working model that times out returns a status_timeout envelope WITH
 // usage (admitted) → NOT a wedge. Kept pure + exported so the classifier is unit-tested (it must not misfire on
 // admitted turns, and it MUST fire on the null-usage hard-kill that the production incident actually produced).
+/**
+ * Did this attempt spend its whole derived budget, exit cleanly, and still fail? PURE.
+ *
+ * THE CASE THIS NAMES, measured on one round: an attempt ran 958.6 seconds against a derived limit of 900,
+ * exited 0, wrote nothing, and was recorded as `missing_file` naming its own output. It was working the whole
+ * time — 35,341 output tokens, 119 tool calls, 947.7 seconds of active time. The hard kill is the limit plus
+ * 60, so it finished 1.4 seconds under it.
+ *
+ * WHY THE CLASSIFICATION ABOVE IS RIGHT AND THE RECORD WAS STILL WRONG. `isTimeout`'s third signal needs a
+ * non-zero exit as well as a wall past the budget, and the program exited 0 — so it is not a timeout, and
+ * nothing here argues it should be. The defect is that the row then read `missing_file`, which names an
+ * artifact and sends the next reader to look for a path bug or a race. The two numbers that say otherwise
+ * were both on the row — the wall beside the derived limit — and nobody was pointed at them.
+ *
+ * SO THIS RECORDS A FACT AND MOVES NO POLICY. It does not feed `isTimeout`, it does not change which retry
+ * the attempt earns, and the fail class is untouched. Whether a clean exit at the budget should also earn the
+ * longer retry a timeout earns is a question for the owner, and the issue that asked for this says so
+ * explicitly: it may be right that a clean exit is not a timeout. This is the record it would be decided on.
+ *
+ * Three-valued, like the model fields on the same row: null when the budget is unknown, so "nobody derived a
+ * limit for this stage" stays visibly different from "it did not spend it".
+ */
+export function spentBudgetCleanly({ fail, killed, code, wall, derivedLimitSec }) {
+  if (!fail) return false;                              // a passing attempt is not this shape
+  if (!Number.isFinite(derivedLimitSec) || derivedLimitSec <= 0) return null;
+  if (!Number.isFinite(wall)) return null;
+  if (killed) return false;                             // a kill is the timeout path, not this one
+  if (code !== 0) return false;                         // a dirty exit at the budget IS a timeout already
+  return wall >= derivedLimitSec;
+}
+
 export function isLaneWedge(fail, usage) {
   if (fail !== "timeout") return false;
   const moved = (usage?.input || 0) + (usage?.output || 0) + (usage?.cacheRead || 0) + (usage?.cacheWrite || 0);
@@ -1733,6 +1764,11 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
         // measure" stays visibly different from "this turn called no tools" — see toolGauge.
         ...toolGauge(turn), band: bandSize ?? undefined,
         inputBytes: derivedLimit?.inputBytes ?? undefined, derivedLimitSec: derivedLimit?.sec ?? undefined,
+        // …and whether this attempt spent that limit and exited cleanly anyway. Written UNCONDITIONALLY and
+        // three-valued, beside the two numbers it is about, so a failure that had used its whole budget is
+        // not left looking like an artifact problem. It names a fact; it moves no retry policy. See
+        // `spentBudgetCleanly`.
+        budgetSpentCleanly: spentBudgetCleanly({ fail, killed, code, wall, derivedLimitSec: derivedLimit?.sec }),
         // AD-4 emitted-vs-landed, UNCONDITIONAL (was success-only, which made a failed attempt's mid-write
         // artifact invisible): `output` = what LANDED on disk after this attempt (null when the stage has no
         // expected file); `wrote` = whether THIS attempt emitted it (see the computation above the runDir
@@ -1800,6 +1836,9 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
           // — the spine carries them too, or a round has to join two files to ask why a stage was slow.
           ...toolGauge(turn), band: bandSize ?? undefined,
         inputBytes: derivedLimit?.inputBytes ?? undefined, derivedLimitSec: derivedLimit?.sec ?? undefined,
+        // …and the same fact on this row, because one of the two carrying it records half the runs and
+        // reads as done. Three-valued and beside the numbers it is about. See `spentBudgetCleanly`.
+        budgetSpentCleanly: spentBudgetCleanly({ fail, killed, code, wall, derivedLimitSec: derivedLimit?.sec }),
           formRepairs: formRepairsThisAttempt || undefined,   //, see the stage row above
         });
       } catch { /* telemetry best-effort — never fail a turn over a journal line */ }

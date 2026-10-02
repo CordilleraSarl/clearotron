@@ -77,9 +77,12 @@ export function deriveScopeFacts({ instructedScope = null, plan = null, planExec
   // nothing. This reader took the state and dropped the number, and the coverage line then described a
   // slice that found nothing as one that "returned more records than could be listed in full".
   const hitsByQid = new Map((planExecution?.executed ?? []).map((x) => [x.qid, Number.isFinite(x.total_hits) ? x.total_hits : null]));
+  // A slice that ran and that the executor deferred: the register could not answer it (an owner name it never
+  // resolved), which is positive evidence it was not an overflow. See the producer.
+  const deferredExecutedSet = new Set((planExecution?.executed ?? []).filter((x) => x?.deferred === true).map((x) => x.qid));
   const missingSet = new Set(planExecution?.missing ?? []);
   // The skip's own reason: why the broader search did not enumerate. See the producer.
-  const skippedByQid = new Map((planExecution?.skipped ?? []).map((x) => [x.qid, String(x.parent_state ?? "")]));
+  const skippedByQid = new Map((planExecution?.skipped ?? []).map((x) => [x.qid, { state: String(x.parent_state ?? ""), error: x.parent_error === true }]));
   const skippedSet = new Set(skippedByQid.keys());
   const deferredByQid = new Map((planExecution?.deferred ?? []).map((x) => [x.qid, String(x.reason ?? "")]));
   // A WAITING FAMILY THAT NEVER BECAME A SEARCH OF ITS OWN LEAVES THE COUNT. One the reading turn asked
@@ -131,8 +134,11 @@ export function deriveScopeFacts({ instructedScope = null, plan = null, planExec
         // AN ABSENT STATE IS NOT EVIDENCE, and this is the same trap as the count below: a receipt written
         // before the producer carried the parent's state says nothing about why, and reading its silence as
         // a failure would relabel every archived run's skips. Silence leaves the line as it was.
+        //
+        // AND `incomplete` IS NOT EVIDENCE OF A CROWD ON ITS OWN: the executor writes a provider error as an
+        // `incomplete` band with `error: true` beside it, and the producer now carries that flag with the skip.
         const parent = skippedByQid.get(e.qid);
-        if (parent && parent !== "incomplete") a.skipped_after_failure++;
+        if (parent && (parent.error || (parent.state && parent.state !== "incomplete"))) a.skipped_after_failure++;
         continue;
       }
       if (missingSet.has(e.qid)) { a.missing.push(e.qid); continue; }
@@ -170,7 +176,9 @@ export function deriveScopeFacts({ instructedScope = null, plan = null, planExec
           // rather than too much. Only a MEASURED zero demotes it: a null is a count that could not be
           // taken, which is not evidence either way, and reading absence as evidence is the defect this
           // whole file keeps meeting.
-          if (hitsByQid.get(e.qid) === 0) a.incomplete_found_nothing++;
+          // An owner sweep the executor deferred is the same fact reached another way: the register could not
+          // resolve the name, so the search found nothing to list, and there is no count to measure.
+          if (hitsByQid.get(e.qid) === 0 || deferredExecutedSet.has(e.qid)) a.incomplete_found_nothing++;
         }
       } else {
         // a plan entry in NO execution bucket is UNACCOUNTED — the fail-closed reading is "missing"

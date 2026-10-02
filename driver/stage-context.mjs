@@ -119,6 +119,20 @@ export const TOOL_GROUP_EDGES = {
     { path: P.bandShapeMd, why: "band_shape serves band-shape.md (the readable shape, part-paged)" },
     { path: P.registerPositions, why: "the exact-identity projection the shape and the recall join read as one unit" },
     { path: join(P.runDir, "_records"), dir: true, why: "band_record serves the official registry records fetched into this run" },
+    // SEVENTH OCCURRENCE OF THIS TABLE'S OWN SUBJECT, and the arm written to prevent it could not see this
+    // one. `band_record` serves a body from `_records/` OR from this log, and at step 2 the real run served
+    // placement's reads from the log rather than from files. Undeclared, the sandbox copy held no bodies and
+    // every one of those reads failed — measured on five saved runs, where placement opened 31, 32, 2, 2 and
+    // 0 records: in the sandbox as shipped, all of them fail.
+    //
+    // WHY THE GENERIC ARM MISSED IT. That arm derives its population by walking the servers for
+    // `driverDir(runDir, X)` and keeping X when it ends in `.json`. This file ends in `.jsonl`, so it was
+    // never in the population the arm checked, and the floor on that population passed on the four `.json`
+    // reads. Widening the extension is not a one-line fix either — the same walk matches files the servers
+    // WRITE, and all three of those are `.jsonl`, so the arm's apparent completeness rested on an accident
+    // of file extension. That is filed on its own rather than bodged here.
+    { path: driverDir(P.runDir, "register-record-bodies.jsonl"),
+      why: "band_record serves a record body from this log when the run fetched it through the ledger rather than into _records/ (band-server.mjs recordLedgerPath); without it the sandbox's record reads all fail and the re-run sees less than the stage saw" },
   ],
   // ── A SERVER THAT OPENS A DRIVER-WRITTEN FILE DECLARES IT HERE ────────────────────────────────────
   //

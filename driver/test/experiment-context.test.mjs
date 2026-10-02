@@ -550,3 +550,31 @@ test("every MCP server that reads a driver-written file has a declared tool-grou
     + "to refuse on — so the arm measures the absence of a driver artifact rather than its variable. "
     + "Declare it in TOOL_GROUP_EDGES, keyed on a group the stage is actually granted.");
 });
+
+// ── THE READ A SANDBOX RAN WITHOUT, ASSERTED BY NAME ──────────────────────────────────────────────────────
+//
+// This is a targeted arm and that is deliberate, against this file's own preference for a derived
+// population. The generic walk above derives its population from `driverDir(runDir, X)` where X ends in
+// `.json`, and this file ends in `.jsonl` — so it was never in the population the walk
+// checked, and the floor on that population passed on the four `.json` reads it did see. Widening the
+// extension does not fix the walk either: the same expression matches files the servers WRITE, and all
+// three of those are `.jsonl`, so the walk's apparent completeness rested on an accident of extension.
+// That is filed on its own. Until it is fixed, this arm names the file.
+test("the band tool group declares the record log, so a sandboxed read serves the body the real stage served", () => {
+  const P = ST.paths("/run");
+  const band = (SC.TOOL_GROUP_EDGES.band(P) ?? []).map((e) => basename(String(e.path)));
+  assert.ok(band.includes("register-record-bodies.jsonl"),
+    "band_record serves a body from this log when the run fetched through the ledger rather than into _records/. "
+    + "Undeclared, the sandbox copy holds no bodies, every record read fails, and the quieter result reads as "
+    + "the model's doing rather than as a missing input.");
+  // The control: the group still declares what it declared before, so this is an addition and not a rewrite.
+  for (const want of ["register-named-band.json", "band-shape.json", "register-positions.json", "_records"]) {
+    assert.ok(band.includes(want), `the band group stopped declaring ${want}`);
+  }
+  // …and it reaches a stage granted the band tools, which is the thing the edge exists for. The step that
+  // first needed it was replaced by the judges; synthesis is granted the same group.
+  const manifest = SC.sandboxManifest("synthesis", P).map((e) => basename(String(e.path)));
+  assert.ok(manifest.includes("register-record-bodies.jsonl"),
+    "the edge is declared but synthesis's manifest does not carry it — the grant and the stage disagree");
+});
+
