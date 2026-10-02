@@ -561,6 +561,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-frame-call-with-places-per-name-passes-the-gate.test.mjs": {
+          "tests": 2,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "a-framework-method-rates-through-its-table.test.mjs": {
           "tests": 5,
           "asserts": 28,
@@ -749,7 +755,7 @@
         },
         "a-mark-name-cannot-lie-about-how-it-reads.test.mjs": {
           "tests": 9,
-          "asserts": 37,
+          "asserts": 38,
           "skips": 0,
           "todos": 0
         },
@@ -864,6 +870,12 @@
         "a-next-step-the-model-writes-comes-off-at-publish.test.mjs": {
           "tests": 12,
           "asserts": 28,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-non-latin-mark-is-delivered-with-its-report-link.test.mjs": {
+          "tests": 3,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },
@@ -2980,8 +2992,8 @@
           "todos": 0
         },
         "engine.anthropic.test.mjs": {
-          "tests": 66,
-          "asserts": 250,
+          "tests": 70,
+          "asserts": 260,
           "skips": 1,
           "todos": 0
         },
@@ -3184,8 +3196,8 @@
           "todos": 0
         },
         "experiment-context.test.mjs": {
-          "tests": 21,
-          "asserts": 70,
+          "tests": 23,
+          "asserts": 76,
           "skips": 0,
           "todos": 0
         },
@@ -4972,8 +4984,8 @@
           "todos": 0
         },
         "scope-facts.test.mjs": {
-          "tests": 19,
-          "asserts": 78,
+          "tests": 21,
+          "asserts": 83,
           "skips": 0,
           "todos": 0
         },
@@ -6173,7 +6185,7 @@
         },
         "the-reviewers-open-points-stay-in-the-run-record.test.mjs": {
           "tests": 6,
-          "asserts": 17,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },

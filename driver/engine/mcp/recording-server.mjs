@@ -1392,7 +1392,7 @@ serve({
         },
         batch: {
           type: "object",
-          required: ["productContext", "inUseAs", "places"],
+          required: ["productContext", "inUseAs"],   // places are per name (ruling 570): the batch list is optional, as in the acceptor and the manual
           properties: {
             productContext: { type: "string", description: "One sentence: what the batch is for. Every mark's contextFraming is read against it." },
             inUseAs: { type: "string", description: "The kinds of use off the register that could conflict in this client's field, as one phrase completing \"Is this name already in use as …?\". The places the batch is searched on include the sites where these uses are listed." },
