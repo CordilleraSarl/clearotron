@@ -17,7 +17,7 @@ import { config, resolveModel, modelFamily, modelSnapshotKind, envOn, envGateOn,
 import { probeCliVersion } from "./engine/cli-version.mjs";
 import { stageLog, runLog, note, outputMeta } from "./log.mjs";
 // — the closed disposition set has ONE author; this file dictates it and must not retype it.
-import { DISPOSITIONS, POSITION_REQUIRED_DISPOSITIONS } from "./findings-model.mjs";
+import { DISPOSITIONS, POSITION_REQUIRED_DISPOSITIONS, WRITER_DISPOSITIONS } from "./findings-model.mjs";
 import { frozenSnapshot, describeDrift } from "./run-integrity.mjs";   // — the frozen judged-by set across a seat turn
 import { isCancelled, readCancel, RunCancelled } from "./cancel.mjs";
 import { anthropicAgentEngine } from "./engine/anthropic-agent.mjs";
@@ -2331,7 +2331,11 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       // said, and measured that a field phrased outside its own imperative was written 0 of 9 times
       // against 74 of 74 when it was inside one — dispatch wording is not free to tidy in passing. So the
       // join restores the conjunction rather than settling for the comma `join` produces.
-      `${POSITION_REQUIRED_DISPOSITIONS.filter((d) => d !== "off-field").join(", ").replace(/, ([^,]+)$/, " AND $1")} alike (only a review-killed ${
+      //
+      // The list itself changed once, deliberately (owner, 2026-10-02): off-field left it with the
+      // awareness-only instructions, so it reads WRITER_DISPOSITIONS. The complement stays computed against
+      // the whole v6 set, because off-field still carries both positions on a run from before.
+      `${WRITER_DISPOSITIONS.join(", ").replace(/, ([^,]+)$/, " AND $1")} alike (only a review-killed ${
         DISPOSITIONS.filter((d) => !POSITION_REQUIRED_DISPOSITIONS.includes(d)).map((d) => `"${d}"`).join(" / ")
       } finding is ` +
       `outside this, and it carries "withdrawn_reason" instead). ` +

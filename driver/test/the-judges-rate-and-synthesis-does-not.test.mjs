@@ -79,7 +79,8 @@ test("synthesis is told not to rate: the rating instructions leave its message a
   // deliver, nor the passages that mixed rating into what it writes (owner, 2026-10-02, ruling 710 a and b).
   for (const gone of [`"quadrant"`, "- quadrant:", "- off_field_ground", `"off_field_ground"`, "COMMERCIAL AWARENESS", "RULED-OUT",
     "ON AN OFF-FIELD FINDING", "REASON EACH FORM THROUGH THE FRAMEWORK", "THE SAME rating machinery", "rate it.", "fixed above",
-    "The band is what the framework's own method yields", "high similarity + high goods proximity = HIGH legal risk"])
+    "The band is what the framework's own method yields", "high similarity + high goods proximity = HIGH legal risk",
+    "An OFF-FIELD finding gets NO card", "off-field awareness items carry none", "distinguished AND off-field alike"])
     assert.ok(!message.includes(gone), `synthesis is still told: "${gone}"`);
   assert.match(message, /EXACTLY one bare token of: adversarial \/ coexistence-partner \/ distinguished — /,
     "the disposition values still offer awareness only");

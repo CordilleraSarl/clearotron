@@ -115,6 +115,11 @@ export const FINDINGS_SCHEMA_VERSION = 7;
 // and re-saves, the file is re-validated, and the model would have to author a legal read for a card it
 // is deleting. See issue comment 2026-08-03.
 export const POSITION_REQUIRED_DISPOSITIONS = ["adversarial", "coexistence-partner", "distinguished", "off-field"];
+// The postures the writing step is offered on a run judged by owner: every one above but off-field. A finding
+// is made only for an owner the judges carried, every carried owner is rated, and a rated owner is never
+// awareness only (decision-ratings.mjs refuses it), so off-field is not offered (owner, 2026-10-02). The
+// parser still accepts it, because runs from before the judges carry it. Derived, never retyped.
+export const WRITER_DISPOSITIONS = Object.freeze(POSITION_REQUIRED_DISPOSITIONS.filter((d) => d !== "off-field"));
 // requirement 2 — off-field's TWO sanctioned grounds, made to declare themselves.
 //
 // `off-field` had been carrying two different claims under one token: "the same token in a different

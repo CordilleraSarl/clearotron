@@ -639,8 +639,10 @@ test("E3: the backlog is explicit, named, and each entry says which move removes
   // 51 -> 48: the three send stages' dictated-line-shape rows left with the stages themselves.
   // 46 -> 37: placement-inquiry's four rows and register-digest's five left with those two stages when
   // step 3 came to be judged by owner; the judges answer in a form and dictate no structure.
-  assert.equal(E3_BACKLOG.length, 37,
-    `the backlog is ${E3_BACKLOG.length}, pinned at 37. SHRUNK? good — regenerate contract-e3-baseline.json in the same commit so the ceiling drops with it, and say at the entry site what removed it. GROWN? a new dictated structure was registered rather than converted; that is a decision, so make it visible here.`);
+  // 37 -> 35: synthesis's off_field_ground and quadrant rows left with the two fields' instructions, when
+  // the chart position came to be placed by code and the awareness-only instructions were struck.
+  assert.equal(E3_BACKLOG.length, 35,
+    `the backlog is ${E3_BACKLOG.length}, pinned at 35. SHRUNK? good — regenerate contract-e3-baseline.json in the same commit so the ceiling drops with it, and say at the entry site what removed it. GROWN? a new dictated structure was registered rather than converted; that is a decision, so make it visible here.`);
   for (const e of E3_BACKLOG) {
     assert.ok(e.stage && e.where && e.evidence, "a backlog entry that does not name its site is not a backlog entry");
     assert.ok(E3_BACKLOG_KINDS.includes(e.kind), `unknown E3 kind ${e.kind}`);

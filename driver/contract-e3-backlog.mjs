@@ -786,7 +786,8 @@ export const E3_SURFACE_CENSUS = Object.freeze({
   // same way — the answers are typed entries on the findings record and the driver renders both surfaces.
   // 30 -> 27 and 15 -> 9 when step 3 came to be judged by owner: placement-inquiry's and register-digest's
   // rows left with the two stages and their manuals.
-  "stage-message": 27,
+  // 27 -> 25: synthesis's off_field_ground and quadrant rows, deleted with the instructions they described.
+  "stage-message": 25,
   "tool-response": 1,
   "skill-file": 9,
   "driver-written-form": 0,
