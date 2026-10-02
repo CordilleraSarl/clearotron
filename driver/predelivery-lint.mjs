@@ -1205,29 +1205,25 @@ export function narrativeWriteUpChecks({ narrativeMd, findings, depth, manifest,
     maxWords: depth?.narrativeWriteUpWords ?? null });
   // AN UNGRADED PRODUCT EXAMINES NOTHING, AND THAT IS THE ONLY SILENCE THIS CHECK MAY KEEP.
   if (!r.graded) return [];
-  // — A GRADED NARRATIVE THE PARSER CANNOT KEY IS NOT A COMPLIANT ONE. The old line here was
+  // — A GRADED NARRATIVE WITH NO WRITE-UP BLOCK GETS A ROW, NEVER SILENCE. The old line here was
   // `if (!r.total && !r.violations.length) return []`, which returned the SAME empty array for product
-  // 4's correct inertness and for a graded run whose narrative carries no recognisable write-up block.
-  // 6 of 22 graded runs on the box are the second kind, and every one of them read as compliant.
+  // 4's correct inertness and for a graded run whose narrative carries no write-up block at all.
   //
-  // STRUCTURAL, so it reports without sending a seat to fix it. The depth directive tells the seat
-  // WHICH findings get a prose write-up and HOW LONG it may be. It does not ask for the `Finding N —
-  // <mark>` heading this parser keys on, so a narrative without one breaks no rule the seat was given,
-  // and a warm redo would hand it a correction it has no instruction to satisfy. What is wrong here is
-  // that the DEPTH RULES WENT UNVERIFIED — a coverage fact, stated as one.
+  // AND THE ROW SAYS THE RULE DOES NOT APPLY, because it does not (the owner's ruling of 2026-10-01). The
+  // depth rule governs per-finding write-ups: which findings get one, and how long each may be. A
+  // sectional narrative — the spine, the verdict, coverage, calibration — carries none, measured on 36
+  // of 43 saved clearance narratives, so the rule has nothing to govern there. This row used to fail
+  // every such clearance for a heading the directive never asks for, which put an INVESTIGATE line on
+  // nearly every delivery that nobody could act on. Whether the directive should ask for per-finding
+  // write-ups at all is a separate question, held for the synthesis redesign.
   if (!r.total && !r.violations.length) {
     if (!r.findingsTotal)
       return [check("narrative-write-ups", "narrative-depth", surface, true,
         "no findings on this run, so there is nothing to write up")];
-    return [{ ...check("narrative-write-ups:could-not-read", "narrative-depth", surface, false,
-      `this run has ${r.findingsTotal} finding(s) and the narrative carries NO recognisable prose `
-      + "write-up block, so the depth rules were not verified on it — neither the band-rank cut nor the "
-      + "word cap was applied to anything. This is NOT a fault in the narrative: the depth directive "
-      + "states which findings get a prose write-up and how long it may be, and never asks for the "
-      + "heading this check keys on. It means the rule is unenforced on this run."),
-      // The flag rides the FAILURE, as everywhere else here, and it is what stops a warm redo handing
-      // the seat a correction no directive lets it satisfy.
-      structural: true }];
+    return [check("narrative-write-ups", "narrative-depth", surface, true,
+      `the depth rule does not apply to a sectional narrative: this run has ${r.findingsTotal} finding(s) `
+      + "and the narrative carries no per-finding write-up block, so the band-rank cut and the word cap "
+      + "have nothing to govern")];
   }
   const coverage = r.unjoined
     ? ` (${r.examined} of ${r.total} write-ups joined to a finding; ${r.unjoined} could not be, and were not judged for membership)`
@@ -2631,6 +2627,8 @@ const DELIVERY_LINES = {
   // The sentence states the CONSEQUENCE, in the receipt's own terms: not "a check failed" but "the rule
   // was applied to nothing". Eleven graded runs delivered carrying this, two of them orderable product
   // demos, and the only place it was written was one row of a fifty-odd-row receipt nobody routes.
+  // No new run emits it now (a sectional narrative is a passing row that says the rule does not apply);
+  // the line stays so a republished receipt from before reads as it did.
   "narrative-write-ups:could-not-read":
     "The depth rules for the written-up findings were applied to nothing on this run — the narrative "
     + "carries no block this check can read, so neither the ranking cut nor the length cap was verified.",

@@ -3166,8 +3166,8 @@
           "todos": 0
         },
         "experiment-context.test.mjs": {
-          "tests": 16,
-          "asserts": 63,
+          "tests": 17,
+          "asserts": 67,
           "skips": 0,
           "todos": 0
         },
@@ -5837,7 +5837,7 @@
         },
         "the-narrative-is-checked-against-its-depth-rules.test.mjs": {
           "tests": 19,
-          "asserts": 70,
+          "asserts": 71,
           "skips": 0,
           "todos": 0
         },
@@ -6414,6 +6414,12 @@
         "two-judges-are-merged-and-every-owner-gets-a-fate.test.mjs": {
           "tests": 18,
           "asserts": 111,
+          "skips": 0,
+          "todos": 0
+        },
+        "two-names-that-differ-only-in-script-letters-are-not-duplicates.test.mjs": {
+          "tests": 5,
+          "asserts": 10,
           "skips": 0,
           "todos": 0
         },
