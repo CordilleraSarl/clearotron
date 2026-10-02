@@ -45,10 +45,11 @@ shows the engine's internals to a company's people.
 **What Clearotron does.** Every read passes one authorization check, and a person sees only what their
 grant names. A key bound to one run reads that run and writes nothing. The copy of a report a company
 receives drops the staff-only notes. No real company's data is in this repository; run data lives
-in folders the operator owns. CI scans the tree and the built bundle for secrets.
+in folders the operator owns. CI scans the tree and the built bundle for secrets. A report published
+from 0.4.0 on carries its fonts inside itself, and opening it contacts no other server.
 
 **Where.** [SECURITY.md](SECURITY.md) (the access model), `shared/scope.mjs`, `driver/portal-report.mjs`,
-`.gitleaks.toml`, `.github/workflows/ci.yml`.
+`.gitleaks.toml`, `.github/workflows/ci.yml`, `scripts/report-offline-render-check.mjs`.
 
 **Not covered.** A company's clearances are kept until the operator deletes them: Clearotron sets no
 retention period, because how long they are held is the operator's policy.
@@ -59,12 +60,13 @@ retention period, because how long they are held is the operator's policy.
 
 **What Clearotron does.** Dependabot updates the npm packages and the GitHub Actions. Every GitHub Action is pinned to a commit
 hash. Each release is published to npm through trusted publishing, with provenance that ties the package
-to the commit and the build that produced it. Each release carries a software bill of materials. A stable release is not published while a code-scanning alert is open. Setup
+to the commit and the build that produced it. Each release carries a software bill of materials. On an install from a git
+checkout, `clearotron update` installs with install scripts off. A stable release is not published while a code-scanning alert is open. Setup
 installs, and `clearotron doctor` accepts, only an engine program at or above the version this release
 needs.
 
 **Where.** `.github/dependabot.yml`, `.github/workflows/`, `.github/workflows/release.yml`,
-`scripts/release-sbom.mjs`, `scripts/release-code-scanning-check.mjs`, `driver/driver.config.mjs` (`ENGINE_BINARIES`, each program's
+`scripts/release-sbom.mjs`, `bin/update.mjs`, `scripts/release-code-scanning-check.mjs`, `driver/driver.config.mjs` (`ENGINE_BINARIES`, each program's
 `floor`).
 
 ### LLM04:2025 Data and Model Poisoning
@@ -278,10 +280,12 @@ could not run is listed in the report.
 
 **What Clearotron does.** No agent outlives its stage. Each stage is one process under a watchdog and a
 hard time limit, and the driver stops its whole process group. The driver records every program it
-starts. On the Claude engine a stage cannot write into the instructions it runs from.
+starts. On the Claude engine a stage cannot write into the instructions it runs from. The systemd units
+an install can run in the background start with `NoNewPrivileges`, so nothing a stage starts there can
+gain more than the install's account holds.
 
 **Where.** `driver/engine/anthropic-agent.mjs`, `driver/engine/common.mjs`,
-`driver/engine/child-record.mjs`, `driver/engine/deny-authority-write.mjs`.
+`driver/engine/child-record.mjs`, `driver/engine/deny-authority-write.mjs`, `driver/systemd/`.
 
 **Not covered.** As LLM04: on Codex, no check refuses a stage's write inside its run folder.
 

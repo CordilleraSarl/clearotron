@@ -98,9 +98,9 @@ with access to everything.
   on (`get_coverage`, `search`, `diff_artifact`, `run_changes`, what-if), which are denied by the
   default that an undecided tool is denied.
 - HMAC-signed tokens (`v1.<payload>.<sig>`, node:crypto only). `authorize()` is the single
-  enforcement point for every tool call; `visibleTools()` additionally hides what a session may not
-  call — but it is hygiene on the tool LISTING, not a second gate, and it is the only thing that
-  reads `local`.
+  enforcement point for every tool call; `visibleTools()` decides what a session is offered, and a
+  tool it hides is refused by name at the call, after `authorize()`. `authorize()` never sees `local`,
+  and `visibleTools()` is the only per-call gate that uses it.
 - **User tokens cannot**: enumerate runs, cross to another run (explicit mismatching runId refused;
   omitted runId pinned), reach any write/spend tool, or read internal artifacts — `read_artifact`
   is name-gated to the report alone (`USER_ARTIFACTS`), and `list_findings` to the curated
@@ -110,13 +110,13 @@ with access to everything.
   rides inside a delivered PDF and can be forwarded to anyone, and the ruling was about people the
   operator enrolled. Both sets are gated at the read_artifact tool AND at the Resources surface
   (`resources/list` / `resources/read`), kind for kind — two doors to the same bytes, one rule.
-- **Ops tokens are least-privilege**: an optional `verbs[]` allowlist restricts write tools per
-  principal (an intake connector physically cannot `stop_run`). `what_if_*` is filtered out of the
-  HTTP tool LISTING for every OPS scope (`visibleTools`, keyed on `local` — the `local` test governs
-  the ops branch only, and an `account` principal returns above it). That is hygiene, not a wall:
-  `authorize()` never sees `local` and treats what-if as an ordinary ops write verb, so an ops token
-  minted without `--verbs` can still call it over HTTP — which is why every HTTP ops token should be
-  minted verb-scoped.
+- **Ops tokens are least-privilege**: a new ops token must name its `verbs[]`, the write tools it may
+  call (an intake connector physically cannot `stop_run`), and `mint-token` refuses one without
+  `--verbs`. Tokens issued before that rule keep working, and the audit line marks every call they
+  make. `what_if_plan` and `what_if_run` are left out of the HTTP tool listing for every ops scope
+  (`visibleTools`, keyed on `local`), and a tool the listing hides is refused at the call, so no ops
+  token plans or runs a what-if over HTTP. An `account` principal returns above that branch: its
+  what-if is queued for a separate process, never run by the door.
 
 ## Token lifecycle
 
@@ -138,7 +138,10 @@ and the portal's connect screen each mint a person's key for their own assistant
 ## Audit
 
 Every HTTP tool call appends one line to an append-only JSONL (`TRADEMARK_MCP_AUDIT_LOG`) when the call
-finishes: `{ts, email, sub, method, tool, runId, status, door}`, where `status` is the outcome. It is
+finishes: `{ts, email, sub, kind, method, tool, runId, status, door}`, where `status` is the outcome, plus `query` (its
+first 120 characters) on a search, `uri` on a resource read and `transport` on the local route, and for an
+ops token `namesVerbs`, which says whether the token names its tools (never which tools, and never the
+token). It is
 written after scope resolution, so it names the principal. A request refused before any tool runs is
 written too, with the status `refused`. Writing it is best-effort and never blocks a request.
 

@@ -168,17 +168,17 @@ CLI's built-in `WebFetch` (`engine/mcp/gather-config.mjs`), or the driver's stan
 moment of the call, so no list here can be complete, and a deployment that needs one must enforce it at
 the network layer.
 
-**A published report reaches two font CDNs.** The report HTML links stylesheets on `api.fontshare.com`
-and `fonts.googleapis.com`, with the font files on `cdn.fontshare.com` and `fonts.gstatic.com`
-(`publish/render.mjs`, `publish/render-knockout.mjs`; the served CSP admits exactly
-those hosts at `portal-static.mjs`). The reader's browser fetches them when the report
-opens. The request carries no matter data. Registry links in the report resolve only when a reader
+**A report carries its own fonts.** A report published from 0.4.0 on holds Plus Jakarta Sans and Fira
+Code inside itself (`shared/fonts/`), and opening it contacts no other server, from disk, from an email
+or in the portal. CI records every request a rendered report makes and fails on one that leaves
+(`scripts/report-offline-render-check.mjs`). A report published before 0.4.0 still links its two font
+services when opened from disk. The request carries no matter data. Registry links in the report resolve only when a reader
 clicks one.
 
 **The demo contacts nothing.** `bin/example.mjs` re-publishes artifacts already on disk: no `fetch` in its
 module graph, no MCP server, no engine binary. Its two subprocesses are a `git rev-parse` build stamp
-and the browser opener, and the portal binds `127.0.0.1`. The report it opens loads the two font
-stylesheets above.
+and the browser opener, and the portal binds `127.0.0.1`. The report it opens loads nothing from
+another server.
 
 ## Secrets
 
@@ -231,7 +231,9 @@ today — flag for the buyer's compliance review.
   and the engine-local gather MCP servers add none: each is ~130 lines over a shared 120-line stdio
   scaffolding (`driver/engine/mcp/stdio-server.mjs`) with no MCP SDK. The artifacts read layer does
   use the SDK (`@modelcontextprotocol/sdk`, `jose`). Small surface by design.
-- Deploy installs with `--omit=dev --ignore-scripts`. If your deploy then rebuilds a native addon,
+- On an install from a git checkout, `clearotron update` installs with `npm ci --ignore-scripts`, so no
+  package's install script runs on the host. Development packages are kept there, because the portal is
+  rebuilt from them. If your deploy then rebuilds a native addon,
   make that a named, reviewed step: it is the only place a lifecycle script should run on the host.
 - Run a skill scanner over the skills tree at deploy time and abort on high/critical findings. Two
   things to check on any new host: that the scanner is actually installed (a scanner that is absent
