@@ -49,7 +49,7 @@ const ROOT = mkdtempSync(join(tmpdir(), "clearotron-mock-gap-"));
 const SLUG_DIR = join(ROOT, "workspace-intake-agent", "studio", "clearance-search", "tmp8439-project-novapulse");
 
 async function runPipeline(env, jobPatch = {}, opts = {}) {
-  for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_LEDGER_LIMITED"]) delete process.env[k];
+  for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE"]) delete process.env[k];
   for (const [k, v] of Object.entries({ CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: ROOT, CLEAROTRON_REPORTS_DIR: join(ROOT, "pool"), CLEAROTRON_MAX_RETRIES: "0", CLEAROTRON_RECOVERY_MAX: "0", ...env })) pinEnv(process.env, k, v);
   const { pipeline } = await import(`../pipeline.mjs?bust=${Math.random()}`);
   const res = await pipeline({ ...JOB, ...jobPatch }, opts);

@@ -14558,13 +14558,8 @@ export function reconstructCtx(job, opts) {   // @internal
 
 // Copy a stage's about-to-be-overwritten output (+ its per-stage telemetry) into _history/<ts>-<reason>/ so a
 // prior result is NEVER lost and stays comparable. Returns the snapshot dir (or null if there was no output).
-//
-// STRUCTURED SIBLINGS (B2, review 2026-07-31): a stage may declare `outSibs` — machine artifacts written
-// BESIDE its markdown output that downstream stages treat as authoritative. They are snapshotted with the
-// md and then REMOVED from the run dir, because "the md was regenerated, the JSON was not" is exactly how
-// a consumer ends up joining the previous pass's data while being told not to re-read the prose. The
-// alternative (require sibling mtime ≥ the md's) does not survive an archive restore, where every file
-// lands with a fresh mtime; removal is deterministic and its failure mode is a loud validator miss.
+// It copies and deletes nothing: the one stage that declared sibling files to remove before a re-run was
+// placement, which step 3's judges replaced.
 function snapshotOutputs(ctx, name, reason) {
   const def = STAGES[name];
   const out = def?.out ? def.out(ctx.paths, ctx.axis) : null;
@@ -14573,13 +14568,6 @@ function snapshotOutputs(ctx, name, reason) {
   const dest = join(ctx.paths.runDir, "_history", `${ts}-${reason}`);
   mkdirSync(dest, { recursive: true });
   copyFileSync(out, join(dest, basename(out)));
-  for (const sib of (def.outSibs ? def.outSibs(ctx.paths, ctx.axis) : [])) {
-    if (!sib || !existsSync(sib)) continue;
-    try {
-      copyFileSync(sib, join(dest, basename(sib)));
-      rmSync(sib, { force: true });   // never leave the prior pass's machine record beside a fresh md
-    } catch (e) { note(`[${name}] sibling snapshot/invalidate failed for ${basename(sib)} (${e.message})`); }
-  }
   const label = name + (ctx.axis ? `:${ctx.axis}` : "");
   const tel = driverDir(ctx.paths.runDir, `${label}.jsonl`);
   if (existsSync(tel)) copyFileSync(tel, join(dest, basename(tel)));

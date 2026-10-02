@@ -944,8 +944,8 @@ const planHardError = (qid) => Boolean(process.env.MOCK_PLAN_HARD_ERROR) && Stri
 // an enumerate block that came back `incomplete`, with no error. The plan join counts it as a crowd, its axis
 // reads `incomplete`, and the coverage form carries an open block row per slice — which code settles
 // `coverage-limited`, a documented limit (coverage-form.mjs, settleCoverageRowsFromFacts). That is the
-// fact the escalation's documented-limit skip and the search floor's hold read; the register digest used
-// to rule it, and MOCK_LEDGER_LIMITED stood in for that ruling.
+// fact the escalation's documented-limit skip and the search floor's hold read; code settles it now, where
+// the register digest once ruled it.
 const planCrowd = (qid) => Boolean(process.env.MOCK_PLAN_CROWD) && String(qid).includes(process.env.MOCK_PLAN_CROWD);
 
 export function qidBlocks(qid, kind, terms = null) {
@@ -1334,9 +1334,9 @@ export function applyStageWrites(msg, argv) {
       // THE MOCK CARRIES THE RUN'S OWN LIMITS, because a compliant seat does. The receiver refuses a
       // coverage account that is clean throughout when the register ledger records a slice as less than
       // clean — doctrine, not a new rule: "a unit recorded coverage-limited can never be written as a
-      // clean negative". Driven under MOCK_LEDGER_LIMITED the old fixture claimed clean throughout and
+      // clean negative". Over a ledger with a limited slice the old fixture claimed clean throughout and
       // was refused, correctly. Deriving the carried row from the ledger rather than hardcoding one
-      // keeps the knob meaning what it says: turn the knob, the run carries the limit.
+      // keeps a limit the run recorded a limit the record carries.
       //
       // WHICH ROWS COUNT AS A LIMIT IS THE SHIPPED RULE'S TO DECIDE, not this fixture's. It carried its
       // own copy of the filter, and the copy went stale the moment the ledger gained a fourth status:

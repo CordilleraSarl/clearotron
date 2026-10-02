@@ -2525,7 +2525,7 @@
         },
         "dependency-repair.test.mjs": {
           "tests": 10,
-          "asserts": 44,
+          "asserts": 45,
           "skips": 0,
           "todos": 0
         },

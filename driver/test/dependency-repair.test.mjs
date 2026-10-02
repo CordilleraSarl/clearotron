@@ -28,17 +28,19 @@ test("15c — every stage's authored surface is declared, not just the one file 
   assert.deepEqual(stageOutputs("nope", P), [], "an unknown stage answers empty, never throws");
 });
 
-// THE TRAP the ruling names, and the reason this is a second list rather than an addition to outSibs.
-test("15c — the declaration is NOT the destructive list: nothing deletes from stageOutputs", () => {
+// THE TRAP the ruling names: a list a snapshot deletes from. The one such list left with the placement
+// step that declared it, so a snapshot copies and deletes nothing, and stageOutputs is never a reason to.
+test("15c — the declaration is NOT a destructive list: a snapshot deletes nothing", () => {
   const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
-  const snap = src.slice(src.indexOf("function snapshotOutputs("), src.indexOf("function snapshotOutputs(") + 1200);
-  assert.match(snap, /outSibs/, "snapshotOutputs still drives its deletes off outSibs");
-  assert.ok(!/stageOutputs/.test(snap),
-    "…and never off stageOutputs — findings.json in the destructive list would be deleted before every "
-    + "forced synthesis, and since #188 a corrective pass EDITS, so the edit would land on a file that is gone");
-  // placement was the one stage that declared outSibs, and it is gone: no stage declares a deletion now
+  const start = src.indexOf("function snapshotOutputs(");
+  const snap = src.slice(start, src.indexOf("\n}\n", start));
+  assert.ok(start >= 0 && /copyFileSync/.test(snap), "premise: the snapshot was found, and it copies");
+  assert.ok(!/rmSync|unlinkSync/.test(snap),
+    "a snapshot deletes again — findings.json in a destructive list would be deleted before every "
+    + "forced synthesis, and since a corrective pass EDITS, the edit would land on a file that is gone");
+  assert.ok(!/stageOutputs|outSibs/.test(snap), "the snapshot reads a list of files to act on again");
   const stagesSrc = readFileSync(new URL("../stages.mjs", import.meta.url), "utf8");
-  assert.equal((stagesSrc.match(/outSibs:/g) ?? []).length, 0, "no stage declares outSibs");
+  assert.equal((stagesSrc.match(/outSibs:/g) ?? []).length, 0, "a stage declares files to delete before a re-run");
 });
 
 test("15a — the order is DERIVED from the two maps: a writer precedes every reader of what it writes", () => {

@@ -37,7 +37,7 @@ async function runOpenaiPipeline(env = {}) {
   const root = mkdtempSync(join(tmpdir(), "clearotron-oai-"));
   lastRoot = root;
   const codexLog = join(root, "codex-calls.jsonl");
-  for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_LEDGER_LIMITED", "MOCK_CANDSELF", "MOCK_NO_GRID_LEDGER", "MOCK_CL_SHORT", "MOCK_NO_COVERAGE_LEDGER", "MOCK_BAD_COVERAGE_LEDGER", "MOCK_UNPARSEABLE_LEDGER", "MOCK_WRITE_RECORD", "MOCK_SCREEN_DROP"]) delete process.env[k];
+  for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_CANDSELF", "MOCK_NO_GRID_LEDGER", "MOCK_CL_SHORT", "MOCK_UNPARSEABLE_LEDGER", "MOCK_WRITE_RECORD", "MOCK_SCREEN_DROP"]) delete process.env[k];
   // — pinEnvAll, not a bare write: a fixture pinned under ONE spelling is displaced by any
   // pin of the other one upstream, and the run then computes against a value this file never chose.
   pinEnvAll(process.env, {

@@ -3985,12 +3985,9 @@ export function chainEntries(name, axis = null) {
 // band — and none of that was declared anywhere. Without it "repair in dependency order" has no order to
 // work with: you cannot tell which stale stage feeds which without knowing who WROTE the thing that moved.
 //
-// DELIBERATELY NOT `outSibs`, and this is the trap the ruling names. `outSibs` is the DESTRUCTIVE list:
-// snapshotOutputs COPIES those files to _history and then DELETES them before a forced re-run, so that a
-// prior pass's machine record never sits beside a fresh md. Adding findings.json there would delete it
-// before every forced synthesis — and since a corrective pass EDITS rather than rewrites, so the
-// edit would land on a file that is no longer there. Two different questions, two different lists: this
-// one is declarative and nothing deletes from it.
+// DECLARATIVE, and nothing deletes from it: that is the trap the ruling names. A list a snapshot deletes
+// from before a forced re-run would delete findings.json before every forced synthesis — and since a
+// corrective pass EDITS rather than rewrites, the edit would land on a file that is no longer there.
 //
 // Includes `out()` itself, so a caller has the stage's whole authored surface in one call.
 export function stageOutputs(name, P, { axes = [], axis = null } = {}) {
