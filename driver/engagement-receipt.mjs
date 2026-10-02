@@ -37,7 +37,7 @@ export function isFinding(heading, block) {
 
 // Distinctive word anchors (length ≥4, non-stopword) from the owner / element / goods / sector /
 // jurisdiction / mark vocabulary; multi-word anchors contribute their significant words (so a finding
-// mentioning "Plesner" anchors against owner "Plesner Advokatpartnerselskab").
+// mentioning "Varnholt" anchors against owner "Varnholt Advokatpartnerselskab").
 function anchorTerms(anchors = {}) {
   const raw = [
     ...(anchors.owners ?? []), ...(anchors.dominantElements ?? []), ...(anchors.goodsServices ?? []),
