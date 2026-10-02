@@ -82,7 +82,7 @@ test("PLANT: uncap the fold and the pathological run explodes again", () => {
 const MINTED = [
   "no-resumable-session", "unchanged-after-resume", "not-verified-closed", "source-not-swept",
   "digest-locked-resume", "resume-arm-unverifiable: the warm-resume arm has no deterministic evidence",
-  "proposals-rejected: term 珂萝玛 is not in Latin script",
+  "proposals-rejected: term 维尔特林 is not in Latin script",
   "slice-not-landed:supp:primary-sweep:exact:vibrante:f2df73b9",
   "redigest-fail:timeout", "mechanical-fail:timeout", "mechanical-fail:429",
   "no-code-remedy: a field class-gap with no searchable term×class pair",

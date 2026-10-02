@@ -42,7 +42,7 @@ test("UNICODE, NOT ASCII — the marks the jx lane exists to search must survive
   // An ASCII-only test would refuse every CJK, Cyrillic and Arabic mark: the exact records R1's Chinese
   // registration and the transliteration lane are for. `\p{L}`/`\p{N}` is the difference between a floor
   // and an outage.
-  for (const t of ["デルフィ", "德尔菲", "Дельфи", "دلفي", "Δελφοί", "델피", "2", "٣"])
+  for (const t of ["ヴェルトリン", "维尔特林", "Вельтрин", "فيلترين", "Βελτρίν", "벨트린", "2", "٣"])
     assert.equal(termSubstanceIssue(t), null, `${t} carries searchable content`);
 });
 

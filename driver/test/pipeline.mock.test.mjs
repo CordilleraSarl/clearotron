@@ -1034,7 +1034,7 @@ test("a prior run's plan store is IGNORED — every run mints fresh, so a fixed 
   const allTerms = plan.entries.flatMap((e) => e.terms ?? [e.term]).filter(Boolean);
   assert.ok(!allTerms.some((t) => String(t).startsWith("LEGACY")), "no seeded legacy term survives into the run's plan");
   assert.ok(!allTerms.some((t) => /[^\x00-\x7F]/.test(String(t)) && String(t).startsWith("novapuls")),
-    "no seeded diacritic duplicate survives — the exact Racers shape");
+    "no seeded diacritic duplicate survives — the exact Drivers Haven shape");
   assert.ok(!plan.entries.some((e) => e.qid.includes("poisoned")), "the seeded qid is absent entirely");
   assert.ok(!events.some((e) => e.event === "failed"), "the run completed");
 });
