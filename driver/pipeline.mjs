@@ -15,7 +15,7 @@ import { goodsOf } from "./queue-markers.mjs";   // — one reading of "does thi
 import { terminalClampDecision, orderClausesForLede, clientConditions, clauseForDefect } from "./terminal-clamp.mjs";   // — deliver and clamp, never withhold
 import { recordSpan } from "./attributed-span.mjs";   // — driver work the decomposition can attribute
 import { fileURLToPath } from "node:url";
-import { runStage, correctionHint, gridLedgerNameFor, draftCarryEligible, toolWrittenArtifact, selectEngine } from "./gateway.mjs";
+import { runStage, correctionHint, gridLedgerNameFor, draftCarryEligible, toolWrittenArtifact, selectEngine, releaseStageSession } from "./gateway.mjs";
 // — the arm's TOOL WIRING, for its context receipt. Read through the same two functions the
 // gateway dispatches with, never re-derived: a receipt that described a second computation would be
 // describing a dispatch that did not happen.
@@ -3488,6 +3488,14 @@ function clearedForSeat(runDir, label) {
   catch { return []; }
 }
 
+// ── THE SESSION THAT WROTE THE RECORD, RESUMED BY EVERY CORRECTION OF IT (owner, 2026-10-02) ───────
+// Synthesis keeps its session (gateway.mjs runStage, keepSession); the corrective pass and the repairs of
+// the record resume it on their first attempt and hand back the session they ended in, which the next
+// correction resumes. A resume that fails falls back to today's cold dispatch inside the ladder. The run
+// releases the kept home when it delivers or fails.
+const synthResume = (ctx) => (ctx?.synthSession ? { resume: ctx.synthSession } : {});
+const carrySynthSession = (ctx, r) => { if (ctx && r?.ok && r.session) ctx.synthSession = r.session; return r; };
+
 async function stageOnce(name, ctx, opts = {}) {
   const def = STAGES[name];
   if (!def) throw new Error(`unknown stage ${name}`);
@@ -3669,6 +3677,8 @@ async function stageOnce(name, ctx, opts = {}) {
   const r = await runStage(label, {
     agent: execAgent,
     message,
+    ...(opts.resume ? { resume: opts.resume } : {}),
+    ...(opts.keepSession ? { keepSession: true } : {}),
     model,
     thinking,
     // opts.sessionKey lets a followup RESUME the exact key a prior run won on (winning-key hardening); else
@@ -4152,9 +4162,9 @@ async function quarantineSynth(r, ctx, name) {
           runLog(ctx.paths.runDir, { event: "finding-reemit", stage: name, marks, errors: lenient.quarantined.map((q) => String(q.error ?? "").slice(0, 80)) });
           note(`[${name}] ${marks.length} finding object(s) failed the strict parse — one warm single-artifact re-emit naming exactly those objects`);
           const followup = repairFollowup("synthesis:finding-reemit", { findings: ctx.paths.findings, quarantined: lenient.quarantined });
-          const rr = await stage(name, ctx, { force: true, sessionKey: r.sessionKey, model: r.model,
-            thinking: r.thinking, trigger: "finding-reemit",
-            followup: followup + stageCharter(name, ctx.depth, ctx.framework) });
+          const rr = carrySynthSession(ctx, await stage(name, ctx, { force: true, sessionKey: r.sessionKey, model: r.model,
+            thinking: r.thinking, trigger: "finding-reemit", ...(name === "synthesis" ? synthResume(ctx) : {}),
+            followup: followup + stageCharter(name, ctx.depth, ctx.framework) }));
           ledger.record("finding-corrective-reemit", targetKey, rr.ok ? "ok" : `failed: ${rr.fail}`, { max: reemitMax });
           if (rr.ok) return rr;
         }
@@ -4190,9 +4200,9 @@ async function quarantineSynth(r, ctx, name) {
             kinds: bad.map((q) => q.kind), errors: bad.map((q) => String(q.error ?? "").slice(0, 80)) });
           note(`[${name}] ${bad.length} action object(s) failed the strict parse — one warm single-artifact re-emit naming exactly those objects`);
           const followup = repairFollowup("synthesis:action-reemit", { findings: ctx.paths.findings, bad });
-          const rr = await stage(name, ctx, { force: true, sessionKey: r.sessionKey, model: r.model,
-            thinking: r.thinking, trigger: "action-reemit",
-            followup: followup + stageCharter(name, ctx.depth, ctx.framework) });
+          const rr = carrySynthSession(ctx, await stage(name, ctx, { force: true, sessionKey: r.sessionKey, model: r.model,
+            thinking: r.thinking, trigger: "action-reemit", ...(name === "synthesis" ? synthResume(ctx) : {}),
+            followup: followup + stageCharter(name, ctx.depth, ctx.framework) }));
           ledger.record("action-corrective-reemit", actionKey, rr.ok ? "ok" : `failed: ${rr.fail}`, { max: actionReemitMax });
           if (rr.ok) return rr;
         }
@@ -4220,9 +4230,9 @@ async function quarantineSynth(r, ctx, name) {
             errors: bad.map((q) => String(q.error ?? "").slice(0, 80)) });
           note(`[${name}] ${bad.length} ask_answers object(s) failed the strict parse — one warm single-artifact re-emit naming exactly those objects`);
           const followup = repairFollowup("synthesis:ask-answer-reemit", { findings: ctx.paths.findings, bad });
-          const rr = await stage(name, ctx, { force: true, sessionKey: r.sessionKey, model: r.model,
-            thinking: r.thinking, trigger: "ask-answer-reemit",
-            followup: followup + stageCharter(name, ctx.depth, ctx.framework) });
+          const rr = carrySynthSession(ctx, await stage(name, ctx, { force: true, sessionKey: r.sessionKey, model: r.model,
+            thinking: r.thinking, trigger: "ask-answer-reemit", ...(name === "synthesis" ? synthResume(ctx) : {}),
+            followup: followup + stageCharter(name, ctx.depth, ctx.framework) }));
           ledger.record("ask-answer-corrective-reemit", askKey, rr.ok ? "ok" : `failed: ${rr.fail}`, { max: askReemitMax });
           if (rr.ok) return rr;
         }
@@ -5274,11 +5284,11 @@ async function enforceCorrectionsReachFindings(ctx, P, pre, resume) {
   };
   if (!readState().stale) return;
   note(`[corrections] findings.json unchanged after the corrective pass (review names: ${named.join(", ")}) — demanding the re-emit`);
-  await stage("synthesis", ctx, {
+  carrySynthSession(ctx, await stage("synthesis", ctx, {
     force: true, sessionKey: resume.synthesisKey, model: resume.synthesisModel, thinking: resume.synthesisThinking,
-    trigger: "corrective-findings",
+    trigger: "corrective-findings", ...synthResume(ctx),
     followup: repairFollowup("synthesis:corrective-findings", { findings: P.findings, named }) + stageCharter("synthesis", ctx.depth, ctx.framework),
-  });
+  }));
   if (readState().stale) {
     runLog(run.runDir, { event: "corrective-findings-stale", named });
     note(`[corrections] findings.json STILL stale — internal report ships; client export will hold (corrections-state)`);
@@ -11018,11 +11028,12 @@ async function pipelineInner(job, opts = {}) {
     // dispatch and now composes them, for the reason recorded there.
     prepareDeclinationSpec(ctx, P);   // — the findings-surface list, printed forward and written for the tool
     const { text: synthExtra } = composeDispatchExtra("synthesis", ctx);
-    const synth = await quarantineSynth(await stage("synthesis", ctx, synthExtra ? { extra: synthExtra } : {}), ctx, "synthesis");   // A3: last-resort quarantine instead of must(); A4: one targeted re-emit inside
+    const synth = await quarantineSynth(await stage("synthesis", ctx, { ...(synthExtra ? { extra: synthExtra } : {}), keepSession: true }), ctx, "synthesis");   // A3: last-resort quarantine instead of must(); A4: one targeted re-emit inside
     recordSynthesisSeam(ctx, synth);   // half one — which surfaced records this pass delivered, and which it did not
     // The corrective re-synthesis must RESUME the WINNING attempt — its key AND model/thinking. If synthesis
     // fell over to a cross-provider model, resuming the base key on opus would cold-cache + mismatch the model.
     const synthesisKey = synth.sessionKey, synthesisModel = synth.model, synthesisThinking = synth.thinking;
+    ctx.synthSession = synth.session ?? ctx.synthSession ?? null;   // the session every correction of the record resumes
 
     // A2/A4 — the v3 evidence gates (verified-needs-source, symmetric use-check, client-tier
     // join) key on the schema_version the artifact DECLARES; a down-level emission on a fresh run
@@ -11082,11 +11093,11 @@ async function pipelineInner(job, opts = {}) {
     }
     if (actionsProbe && actionsProbe.sv >= 4 && !actionsProbe.hasActions && !synth.skipped) {
       note(`[findings] actions[] missing — the dictated forward-action register is absent; demanding the re-emit`);
-      await stage("synthesis", ctx, {
+      carrySynthSession(ctx, await stage("synthesis", ctx, {
         force: true, sessionKey: synthesisKey, model: synthesisModel, thinking: synthesisThinking,
-        trigger: "actions-missing",
+        trigger: "actions-missing", ...synthResume(ctx),
         followup: repairFollowup("synthesis:actions-missing", { findings: P.findings }) + stageCharter("synthesis", ctx.depth, ctx.framework),
-      });
+      }));
       const after = readActionsPresence();
       if (after && !after.hasActions) runLog(run.runDir, { event: "findings-actions-absent" });
     }
@@ -11283,7 +11294,8 @@ async function pipelineInner(job, opts = {}) {
       // silently: if the surface ever did move, the corrective's `row_index` would point into the previous
       // pass's list and a declination would land on the wrong record.
       prepareDeclinationSpec(ctx, P);
-      const correctivePass = await stage("synthesis", ctx, { force: true, followup: correctionsExtra(P, ctx.depth, ctx.framework), sessionKey: synthesisKey, model: synthesisModel, thinking: synthesisThinking, trigger: "corrective" });
+      const correctivePass = await stage("synthesis", ctx, { force: true, followup: correctionsExtra(P, ctx.depth, ctx.framework), sessionKey: synthesisKey, model: synthesisModel, thinking: synthesisThinking, ...synthResume(ctx), trigger: "corrective" });
+      carrySynthSession(ctx, correctivePass);   // the next correction resumes the session this one ended in
       // half one — the corrective pass rewrites findings.json under a closed minimal-edit contract,
       // so it is the pass most likely to change one record's fate. Its own account, at its own moment; the
       // winner rule in record-discard.mjs lets this carry cancel an earlier discard.
@@ -13127,10 +13139,11 @@ async function pipelineInner(job, opts = {}) {
           note(`pre-delivery lint: ${failures.length} failed check(s) on ${label} — one warm named-correction redo`);
           const toolWritten = file ? toolWrittenArtifact(file) : null;
           const r = await stage(label, ctx, {
-            force: true, sessionKey: key, model, thinking, trigger: "lint-repair",
+            force: true, sessionKey: key, model, thinking, trigger: "lint-repair", ...(label === "synthesis" ? synthResume(ctx) : {}),
             followup: repairFollowup("*:lint-repair", { label, file, toolWritten, failures })
               + stageCharter(label, ctx.depth, ctx.framework),
           });
+          if (label === "synthesis") carrySynthSession(ctx, r);
           if (r.ok) repaired.push(label);
         };
         const reportFixable = modelFixable(bySurface("report"));
@@ -13937,8 +13950,10 @@ async function pipelineInner(job, opts = {}) {
     // says no reads as a measurement.
     sentinel(archived ?? run.runDir, ".delivered", { verdict, url: published.url, notified: "pending", archived, sendPending: true });
     note(`=== DELIVERED (verdict ${verdict}) → ${published.url}${archived ? ` — archived → ${archived}` : ""} ===\n`);
+    releaseStageSession(ctx.synthSession); ctx.synthSession = null;   // nothing resumes it after delivery
     return { ok: true, verdict, url: published.url, runDir: archived ?? run.runDir };
   } catch (e) {
+    releaseStageSession(ctx.synthSession); ctx.synthSession = null;   // a failed or parked run resumes cold
     // RATE-LIMIT POSTPONE (re-throw): a 429 session-cap is NOT a terminal failure — RE-THROW it so pipeline()'s
     // outer catch parks the run resumable (.postponed, no .failed, no notify-fail) and the runner auto-resumes
     // after the cap window, vs stranding every completed stage and forcing a ~$40 cold re-run. This catch wraps

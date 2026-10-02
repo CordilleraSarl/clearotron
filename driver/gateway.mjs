@@ -759,19 +759,42 @@ export function syncDispositionForm(files) {
 //
 // Anthropic needs none of this: `claude -p --resume` resolves against an ambient store nothing wipes,
 // which is precisely why warm resume worked there and not here.
+// ── A SESSION A LATER LADDER RESUMES ──────────────────────────────────────────────────────────────
+//
+// A stage that asks to `keepSession` hands back `session: { ref, home }` when it succeeds: the engine's
+// session reference and, on codex, the home that session lives in. A later ladder given that handle as
+// `resume` resumes the session on its FIRST attempt — the corrective pass and the repairs of the session
+// that wrote the record, rather than a cold session told it is resuming. codex resolves a resume against
+// its home, so the later ladder BORROWS the kept home instead of making one; the owner of a kept home
+// releases it with releaseStageSession when nothing will resume it again. A failed ladder keeps nothing.
+export function releaseStageSession(session) {
+  try { if (session?.home) rmSync(session.home, { recursive: true, force: true }); } catch { /* best-effort */ }
+}
+
 export async function runStage(name, opts) {
   const engineForHome = selectEngine();
-  let stageCodexHome = null;
-  if (engineForHome?.name === "openai-agent") {
+  const borrowed = engineForHome?.name === "openai-agent" && opts?.resume?.home && existsSync(opts.resume.home)
+    ? opts.resume.home : null;
+  let stageCodexHome = borrowed;
+  if (!stageCodexHome && engineForHome?.name === "openai-agent") {
     try { stageCodexHome = mkdtempSync(join(codexHomesRoot(), `stage-${String(name).replace(/[^a-z0-9-]/gi, "_")}-`)); }
     catch { stageCodexHome = null; }   // fall back to the engine's own per-turn home rather than fail a stage
   }
+  let kept = false;
   try {
-    return await runStageLadder(name, opts, stageCodexHome);
+    const r = await runStageLadder(name, opts, stageCodexHome);
+    // A ladder that keeps its session, or that resumed one, hands back the session it ended in, so the
+    // next correction resumes the latest one. The home is the same one it borrowed, or one it made.
+    if ((opts?.keepSession || opts?.resume) && r?.ok) {
+      kept = true;
+      return { ...r, session: { ref: r.sessionRef ?? null, home: stageCodexHome } };
+    }
+    return r;
   } finally {
-    // Deleted when the LADDER settles — every resume that needed it has happened by then. Best-effort:
-    // a home we cannot remove must never turn a completed stage into a failure.
-    try { if (stageCodexHome) rmSync(stageCodexHome, { recursive: true, force: true }); } catch { /* best-effort */ }
+    // Deleted when the LADDER settles — every resume that needed it has happened by then — unless it was
+    // kept for a later ladder or borrowed from one. Best-effort: a home we cannot remove must never turn a
+    // completed stage into a failure.
+    try { if (stageCodexHome && !kept && !borrowed) rmSync(stageCodexHome, { recursive: true, force: true }); } catch { /* best-effort */ }
   }
 }
 
@@ -797,6 +820,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     validate,
     maxRetries = config.maxRetries,
     runDir,
+    resume = null,      // a kept session ({ ref, home }, see runStage): resumed on the FIRST attempt
     followup = false,   // #5b: this run is a warm-resume / followup (escalation, envelope close, frame-reopen
                         // sweep) — a hard-wall timeout breaks after ONE attempt (a 1.5× extension can't fit
                         // an already-over-budget resume; the caller records the coverage-limited deferral).
@@ -1049,13 +1073,15 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // the snapshot, which only widens the window by their own time: an earlier attempt's refusals all
     // precede its own settle, so they stay outside it.
     const dispatchedAt = Date.now();
+    // A warm retry resumes the failed attempt's session; a first attempt resumes the kept session it was given.
+    const turnResumeRef = warm ? lastSessionRef : (attempt === 1 && resume?.ref) ? resume.ref : undefined;
     for (const line of describeMethodologyDrift(witnessStageMethodology(runDir, name, effMessage, engineResolveSkill)))
       note(`[${name}] ${line}`);
     // — the frozen judged-by set, hashed into THIS PROCESS'S MEMORY before the seat runs. Never
     // written to disk before the comparison, so the thing being watched cannot reach it. See
     // run-integrity.mjs for why it is not a manifest file and why the append-only journals are excluded.
     const integrityBefore = frozenSnapshot(runDir);
-    const turn = await engine.runTurn({ agent, sessionKey: key, message: effMessage, grantDispatch: base, model, thinking, timeoutSec: effTimeout, resumeRef: warm ? lastSessionRef : undefined, codexHome: stageCodexHome, mcpConfig: gatherMcpConfig, allowedTools: gatherAllowedTools, seatWrites: gatherSeatWrites, skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
+    const turn = await engine.runTurn({ agent, sessionKey: key, message: effMessage, grantDispatch: base, model, thinking, timeoutSec: effTimeout, resumeRef: turnResumeRef, codexHome: stageCodexHome, mcpConfig: gatherMcpConfig, allowedTools: gatherAllowedTools, seatWrites: gatherSeatWrites, skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
       progressFiles: files,   // the no-progress watchdog's artifact-advance signal (anthropic-agent; other adapters ignore it)
       // The raw stream of this session, beside its dispatch record (engine/session-record.mjs). The engines
       // keep it while the disk has room and say on the tuple's `stream` what landed.
@@ -1847,13 +1873,20 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // sessionKey = the key that actually SUCCEEDED (attempt 1 = base key; a retry = `${base}-rerunN`). Callers
     // that re-run a stage as a follow-up must resume THIS key, not the base key — else they resume a failed
     // attempt's empty/partial session and lose the warm cache (winning-key hardening).
-    if (!fail) return { ok: true, json, attempts: attempt, modelWire: lastModelWire, modelUsed: lastModelUsed, text: payloadText(json), sessionKey: key, attemptFails: [...attemptFails], warmEscalated: warmEscalatedAt > 0 || undefined, reads, readsTruncated, warm, wrote, formRepairs: formRepairsUsed };
+    if (!fail) return { ok: true, json, attempts: attempt, modelWire: lastModelWire, modelUsed: lastModelUsed, text: payloadText(json), sessionKey: key, sessionRef: repairRef ?? turn.sessionRef ?? null, attemptFails: [...attemptFails], warmEscalated: warmEscalatedAt > 0 || undefined, reads, readsTruncated, warm, wrote, formRepairs: formRepairsUsed };
     attemptFails.push(fail);
     lastFail = fail;
     lastJson = json;
     lastKey = key;
     lastQuantity = quantity;   //: rides the ladder's final return, so the run-level catch stamps the exact count
     lastSessionRef = turn.sessionRef ?? lastSessionRef;   // anthropic warm-resume target for the next attempt
+    // A FIRST ATTEMPT THAT RESUMED A KEPT SESSION AND FAILED is not resumed again: the session may be gone
+    // (expired, or its home removed), and resuming it twice is the same failure twice. The next attempt is
+    // today's cold dispatch, and the run says so once.
+    if (attempt === 1 && resume?.ref) {
+      warmUsed = true;
+      if (runDir) { try { runLog(runDir, { event: "resume-fell-back-cold", stage: name, fail: String(fail).slice(0, 160) }); } catch { /* telemetry best-effort */ } }
+    }
     note(`[${name}] attempt ${attempt} FAILED: ${fail}${quantity === null ? "" : ` (count ${quantity}${noChange ? ", unchanged" : ""})`}`);
 
     // A4 (addendum 2026-07-30): a byte-identical CONTENT failure signature on consecutive attempts is a

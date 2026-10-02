@@ -279,6 +279,12 @@
           "skips": 1,
           "todos": 0
         },
+        "a-correction-resumes-the-session-that-wrote-the-record.test.mjs": {
+          "tests": 3,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
         "a-correction-to-a-line-that-is-not-a-finding-is-observed.test.mjs": {
           "tests": 7,
           "asserts": 33,
