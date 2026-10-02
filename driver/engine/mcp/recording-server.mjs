@@ -54,7 +54,7 @@ import { PROVIDERS, REGISTER_PROVIDER } from "../../driver.config.mjs";
 // already written against them; this conversion is the consumption their headers said was still owed.
 import { recordClosures } from "../../doubt-closure-tool.mjs";
 import { MAX_CLOSURES_PER_CALL, CLOSURE_KINDS } from "../../doubt-closure-call.mjs";
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs"; import { FROZEN_METHOD_FILE } from "../../framework-method.mjs";
 import { join } from "node:path";
 import { driverDir } from "../../../shared/driver-dir.mjs";   //
 import { VARIANT_CATEGORIES } from "../../variant-manifest-model.mjs";
@@ -985,6 +985,9 @@ serve({
     handler: record_synthesis,
   }, {
     name: "record_knockout_assess",
+    // The framework's `inputs` fields are offered only on a run whose framework states a method: a session
+    // offered a field it may not use can fill it, and the check that refuses it runs after the whole step.
+    schemaNow: (schema) => knockoutAssessSchemaFor(schema, process.env.CLEAROTRON_BAND_RUN_DIR),
     description:
       "Hand back THIS CHUNK's rated assessment as VALUES. The driver serializes knockout-assess-<n>.json, " +
       "so you never format JSON and never write the file. WHICH CHUNK IS NOT YOURS TO SAY — the driver " +
@@ -1290,3 +1293,27 @@ serve({
     handler: record_knockout_frame,
   }],
 });
+
+/**
+ * The knockout save tool's schema for the run this server serves. The framework's `inputs` fields are
+ * offered only where the run's framework states a method, which is when its frozen copy
+ * (`_driver/framework-method.json`) exists: a run with no method has none, since the mint removes it. A
+ * session offered a field it may not use can fill it, and the check that refuses it runs only after the
+ * whole step. With no run to read, the schema is the one declared. Read when the tools are listed.
+ */
+export function knockoutAssessSchemaFor(schema, runDir) {
+  if (!runDir || existsSync(driverDir(String(runDir), FROZEN_METHOD_FILE))) return schema;
+  const strip = (s) => {
+    if (Array.isArray(s)) return s.map(strip);
+    if (!s || typeof s !== "object") return s;
+    const out = {};
+    for (const [k, v] of Object.entries(s)) {
+      if (k === "properties" && v && typeof v === "object" && !Array.isArray(v)) {
+        out.properties = Object.fromEntries(Object.entries(v).filter(([name]) => name !== "inputs").map(([name, sub]) => [name, strip(sub)]));
+      } else if (k === "required" && Array.isArray(v)) out.required = v.filter((name) => name !== "inputs");
+      else out[k] = strip(v);
+    }
+    return out;
+  };
+  return strip(schema);
+}
