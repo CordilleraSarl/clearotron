@@ -246,9 +246,10 @@ export function recordBodies(runDir) {
 
 /**
  * The web search results the run saved: the canonical grid and every supplemental ledger beside it.
- * A ledger is one object or an array of per-batch objects; a cell is `{term, platform, status,
- * candidates:[{title,url}]}`. Cells of one word on one place are one cell, their results joined by URL.
- * null when the run saved no web results at all.
+ * A ledger is one object or an array of per-batch objects; a ledger's cell is `{term, platform, status,
+ * candidates:[{title,url}]}`. Each cell RETURNED is `{word, place, status, results:[{title,url}]}`: the
+ * pages are under `results` here, never `candidates`. Cells of one word on one place are one cell, their
+ * results joined by URL. null when the run saved no web results at all.
  */
 export function webCells(runDir) {
   let names;

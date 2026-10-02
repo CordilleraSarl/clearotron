@@ -443,7 +443,7 @@ export const JUDGMENT_FACTS_FILE = "owner-judgment-facts.json";
 export function writeJudgmentFacts(file, { pile, framework }) {
   const webUrls = new Set();
   try {
-    for (const cell of pile.webCells() ?? []) for (const c of cell.candidates ?? []) if (c?.url) webUrls.add(String(c.url).trim());
+    for (const cell of pile.webCells() ?? []) for (const c of cell.results ?? []) if (c?.url) webUrls.add(String(c.url).trim());
   } catch { /* no web results: none to cite */ }
   const facts = { recordIds: pile.records.map((r) => r.id), webUrls: [...webUrls], framework: framework ?? null };
   mkdirSync(dirname(file), { recursive: true });

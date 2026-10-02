@@ -633,6 +633,12 @@
           "skips": 1,
           "todos": 0
         },
+        "a-judge-may-cite-a-web-page-the-run-saved.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "a-judging-session-reads-its-instructions-and-nothing-else.test.mjs": {
           "tests": 6,
           "asserts": 59,
