@@ -26,7 +26,7 @@ import { authorityTrees } from "../authority-trees.mjs";
 import { recordEngineChild, clearEngineChild } from "./child-record.mjs";   //
 import { engineEnv } from "./engine-env.mjs";   // — the program's environment, by list (see spawnEnv)
 import { engineSpawn, spawnsDetached, killWindowsTreeNow } from "./engine-spawn.mjs";   // one answer to how a turn starts and ends, on every platform
-import { newSessionRecord, noteClaudeEvent, sessionSummary, countTool, streamSink } from "./session-record.mjs";   // what the session went through, beside how it ended
+import { newSessionRecord, noteClaudeEvent, sessionSummary, countTool, streamSink, claudeEnding } from "./session-record.mjs";   // what the session went through, beside how it ended
 
 // Read per-call (not module-level) so tests can drive a short stall timeout / a mock binary.
 // ONE place knows how to find the program (driver.config.mjs resolveEngineProgram): the explicit setting,
@@ -581,6 +581,9 @@ export function synthesizeEnvelope({ resultEvent, usage, killed }) {
     status: ok ? "ok" : (killed ? "timeout" : "error"),
     result: { meta: { agentMeta: { usage } }, payloads: [{ text }] },
     summary: r?.subtype, runId: r?.session_id, stopReason: r?.stop_reason,
+    // …and beside the stop reason, what ended the session and, on an error, the program's own words for it
+    // (session-record.mjs, claudeEnding). Recorded only: `ok` above reads exactly what it read before.
+    ...claudeEnding(r),
   };
 }
 

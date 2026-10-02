@@ -233,7 +233,7 @@ import { REGISTER_ENUMERATE_TOOL, SUPPLEMENTAL_LANE_STEERING } from "./stages.mj
 // same rows off disk. Acyclic: register-taint.mjs imports node builtins only.
 import { isTaintRow } from "./register-taint.mjs";
 import { recordDispatch, streamFilePath } from "./dispatch-record.mjs";
-import { anyResultErrored } from "./engine/session-record.mjs";   // a session that reached an error result is not an ok attempt, whatever its last result said
+import { anyResultErrored, endingFields } from "./engine/session-record.mjs";   // a session that reached an error result is not an ok attempt, whatever its last result said
 import { recordBestDraft } from "./best-draft.mjs";
 //: the allowlisted progress-quantity extractor. Acyclic — repairs.mjs imports node builtins only
 // (fs/crypto/path). Used only when the validator did not stamp its own count; never a digit hunt.
@@ -1293,7 +1293,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
           repair: formRepairsUsed, repairOf: MAX_FORM_REPAIRS, repairOutcome: outcome, fail: triggeredBy,
           repairTarget: rel(target),   // the file the repair was AIMED at (often a sibling, not the expectFile)
           dispatch: repairDispatch,    // — the verbatim message this repair turn was given
-          stopReason: rt.json?.stopReason ?? undefined,
+          stopReason: rt.json?.stopReason ?? undefined, ...endingFields(rt.json),   // — and what ended it, in the program's words on an error
           killed: rt.killed || undefined, signals: rt.signals ?? undefined,
           session: rt.session ?? null, stream: streamMeta(runDir, rt.stream),   // — the repair session's own record, as on the attempt row
           warm: true,   // a repair turn always RESUMES the session that wrote the defect
@@ -1691,7 +1691,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
         laneWaitMs,   // WS-C turn-cap queue time — the live overlap validation reads this
         // A6: the provider's stop reason, verbatim — the max_tokens fault line is countable from the
         // rows alone (fail carries the named fault; this field carries the raw discriminator).
-        stopReason: json?.stopReason ?? undefined,
+        stopReason: json?.stopReason ?? undefined, ...endingFields(json),   // — and beside it what ended the session: its kind, the vendor's status, and on an error the program's own words (session-record.mjs)
         // taint durability (copper-lattice): the kill discriminators survive to disk — register-taint.mjs
         // reads these rows across process restarts (--resume), where the in-memory turn object is gone.
         // `followup` matters too: a followup success PATCHES the prior session's output, it never

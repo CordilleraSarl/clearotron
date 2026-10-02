@@ -15,8 +15,9 @@ import { dirname, join } from "node:path";
 import { mkdtempSync, writeFileSync, readFileSync, existsSync, rmSync, readdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { anthropicAgentEngine } from "../engine/anthropic-agent.mjs";
-import { parseCodexEvent, codexToolCallsByName } from "../engine/openai-agent.mjs";
+import { parseCodexEvent, codexToolCallsByName, openaiAgentEngine } from "../engine/openai-agent.mjs";
 import { newSessionRecord, noteClaudeEvent, noteCodexEvent, sessionSummary, streamSink, CLASSIFIER_CUT_RE } from "../engine/session-record.mjs";
+import * as sessionRecord from "../engine/session-record.mjs";   // the ending helpers, read by name so an arm reds alone when one is missing
 import { runStage, attemptOk } from "../gateway.mjs";
 import { lastAttempt } from "../degraded-parts.mjs";
 import { pinEnv } from "../../shared/env-aliases.mjs";
@@ -194,4 +195,112 @@ test("the stream is not written below the disk floor, and the record says why ra
     ok.write("{}\n"); ok.write(Buffer.from("{}\n"));
     assert.deepEqual(ok.close(), { file: join(dir, "_driver", "y.stream.jsonl"), present: true, bytes: 6 });
   } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+// ── HOW A FAILED SESSION ENDED, IN THE PROGRAM'S OWN WORDS ──────────────────────────────────────────────
+//
+// An expired sign-in, measured live on the Claude program: `subtype: "success"`, `is_error: true`,
+// `stop_reason: "stop_sequence"` (the stop of the program's OWN synthetic message, whose model reads
+// `<synthetic>`), `terminal_reason: "api_error"`, and the reason in the result text. The row kept the stop
+// reason alone, so six retries of one stage read `stop_sequence` six times and said nothing about why. The
+// stop reason stays verbatim; the kind of ending, the vendor's status and the program's words go beside it.
+const AUTH_WORDS = "Failed to authenticate: OAuth session expired and could not be refreshed";
+const AUTH_EXPIRED = [
+  init(),
+  { type: "assistant", message: { id: "m-auth", model: "<synthetic>", stop_reason: "stop_sequence", content: [{ type: "text", text: AUTH_WORDS }] } },
+  { type: "result", subtype: "success", is_error: true, stop_reason: "stop_sequence", terminal_reason: "api_error", api_error_status: null,
+    result: AUTH_WORDS, session_id: "s-1", usage: { input_tokens: 0, output_tokens: 0, cache_read_input_tokens: 0, cache_creation_input_tokens: 0 } },
+];
+
+async function gatewayRow(events, { writeOutput = true } = {}) {
+  const dir = scratch();
+  const out = join(dir, "out.md");
+  const saved = { ai: process.env.CLEAROTRON_AI, path: process.env.CLEAROTRON_CLAUDE_PATH, replay: process.env.MOCK_CLAUDE_REPLAY, write: process.env.MOCK_CLAUDE_REPLAY_WRITE };
+  process.env.CLEAROTRON_AI = "anthropic-agent";
+  pinEnv(process.env, "CLEAROTRON_CLAUDE_PATH", REPLAY);
+  process.env.MOCK_CLAUDE_REPLAY = streamFile(dir, events);
+  if (writeOutput) process.env.MOCK_CLAUDE_REPLAY_WRITE = out; else delete process.env.MOCK_CLAUDE_REPLAY_WRITE;
+  try {
+    const r = await runStage("teststage", {
+      agent: "mailagent", sessionKey: "clearotron-test-abc-sessionending", runDir: dir, maxRetries: 0,
+      message: `Do the invented task. Write to the ABSOLUTE path for the stage output: ${out}`,
+      model: "opus", thinking: "high", timeoutSec: 60, expectFile: out, validate: () => ({ ok: true }),
+    });
+    const rows = readFileSync(join(dir, "_driver", "teststage.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l)).filter((x) => x.attempt != null);
+    return { r, row: rows.at(-1) };
+  } finally {
+    for (const [k, v] of [["CLEAROTRON_AI", saved.ai], ["MOCK_CLAUDE_REPLAY", saved.replay], ["MOCK_CLAUDE_REPLAY_WRITE", saved.write]]) { if (v === undefined) delete process.env[k]; else process.env[k] = v; }
+    pinEnv(process.env, "CLEAROTRON_CLAUDE_PATH", saved.path);
+    rmSync(dir, { recursive: true, force: true });
+  }
+}
+
+test("an expired sign-in is recorded as its own kind of ending, in the program's words, on the attempt row", async () => {
+  const { r, row } = await gatewayRow(AUTH_EXPIRED, { writeOutput: false });
+  assert.equal(r.ok, false, "the stage fails exactly as it always did");
+  assert.ok(row.fail, "the attempt is a failure");
+  assert.equal(row.stopReason, "stop_sequence", "the stop reason stays verbatim: rewriting it would be inventing");
+  assert.equal(row.terminalReason, "api_error", "the kind of ending is not on the row, so it says stop_sequence and nothing else");
+  assert.equal(row.apiErrorStatus, null, "the vendor gave no status: null, written, never absent");
+  assert.ok(Object.hasOwn(row, "apiErrorStatus"));
+  assert.equal(row.errorText, AUTH_WORDS, "the program's own reason is discarded again");
+});
+
+test("a session that ended well keeps its words off the row: the answer belongs in the output, not the record", async () => {
+  const { r, row } = await gatewayRow(CUT_AND_CARRIED_ON);
+  assert.equal(r.ok, true);
+  assert.equal(row.errorText, null);
+  assert.ok(Object.hasOwn(row, "errorText"), "written as null, so 'no error text' is never read as 'not recorded'");
+  assert.equal(row.terminalReason, "completed", "the last result's terminal kind, as the program wrote it");
+});
+
+test("the error text is cut to a length a person reads, and kept only when the result declared an error", () => {
+  const long = "x".repeat(5000);
+  const failed = sessionRecord.claudeEnding?.({ is_error: true, result: long, terminal_reason: "api_error", api_error_status: 529 });
+  assert.equal(failed?.errorText?.length, sessionRecord.ERROR_TEXT_CAP);
+  assert.equal(failed?.apiErrorStatus, 529);
+  assert.deepEqual(sessionRecord.claudeEnding?.({ is_error: false, result: "an invented answer", terminal_reason: "completed" }),
+    { terminalReason: "completed", apiErrorStatus: null, errorText: null });
+  assert.deepEqual(sessionRecord.claudeEnding?.(null), { terminalReason: null, apiErrorStatus: null, errorText: null },
+    "a session that never reached a result reports nothing, as null");
+});
+
+// Codex states no terminal kind and no status on its stream, so those read null. Its words are the failed
+// turn's own message, or the stream error when the turn never completed; an `error` the program recovered
+// from (a reconnect, then a completed turn) is not why anything ended.
+test("Codex: a failed turn's own message reaches the record; a reconnect it recovered from does not", () => {
+  const fold = (events) => {
+    const ev = { mcpCalls: new Map(), session: newSessionRecord() };
+    for (const e of events) parseCodexEvent(JSON.stringify(e), ev);
+    return sessionRecord.codexEnding?.(ev);
+  };
+  assert.deepEqual(fold([{ type: "thread.started", thread_id: "th-1" }, { type: "turn.failed", error: { message: "invented failure" } }]),
+    { terminalReason: null, apiErrorStatus: null, errorText: "invented failure" });
+  assert.deepEqual(fold([{ type: "thread.started", thread_id: "th-1" }, { type: "error", message: "invented disconnect" }]),
+    { terminalReason: null, apiErrorStatus: null, errorText: "invented disconnect" }, "the turn never completed, so the stream error is why");
+  assert.deepEqual(fold([{ type: "thread.started", thread_id: "th-1" }, { type: "error", message: "invented reconnect" }, { type: "turn.completed", usage: {} }]),
+    { terminalReason: null, apiErrorStatus: null, errorText: null }, "a reconnect the turn recovered from is not why it ended");
+  assert.deepEqual(fold([{ type: "thread.started", thread_id: "th-1" }, { type: "turn.failed" }]),
+    { terminalReason: null, apiErrorStatus: null, errorText: null }, "a failure that carried no words records none: never a word of ours in their place");
+});
+
+test("Codex: the failed turn's message is on the envelope the gateway journals, and a healthy turn's is null", async () => {
+  const saved = { path: process.env.CLEAROTRON_CODEX_PATH, fail: process.env.MOCK_CODEX_FAIL };
+  pinEnv(process.env, "CLEAROTRON_CODEX_PATH", join(HERE, "mock-codex.mjs"));
+  try {
+    process.env.MOCK_CODEX_FAIL = "1";
+    const failed = await openaiAgentEngine.runTurn({ message: "reply ok", model: "haiku", thinking: "low", timeoutSec: 60 });
+    assert.notEqual(failed.code, 0);
+    assert.equal(failed.json?.errorText, "mock codex turn failure");
+    assert.equal(failed.json?.terminalReason, null);
+    assert.ok(Object.hasOwn(failed.json ?? {}, "terminalReason"));
+    delete process.env.MOCK_CODEX_FAIL;
+    const healthy = await openaiAgentEngine.runTurn({ message: "reply ok", model: "haiku", thinking: "low", timeoutSec: 60 });
+    assert.equal(healthy.code, 0, healthy.stderr);
+    assert.equal(healthy.json?.errorText, null);
+    assert.ok(Object.hasOwn(healthy.json ?? {}, "errorText"));
+  } finally {
+    pinEnv(process.env, "CLEAROTRON_CODEX_PATH", saved.path);
+    if (saved.fail === undefined) delete process.env.MOCK_CODEX_FAIL; else process.env.MOCK_CODEX_FAIL = saved.fail;
+  }
 });

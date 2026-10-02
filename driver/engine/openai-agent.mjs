@@ -24,7 +24,7 @@
 
 import { mkdtempSync, mkdirSync, writeFileSync, copyFileSync, existsSync, rmSync, readFileSync, readdirSync, statSync, symlinkSync, lstatSync, realpathSync } from "node:fs";
 import { everyToolCallRefused } from "./tool-refusal.mjs";
-import { newSessionRecord, noteCodexEvent, sessionSummary, countTool, streamSink } from "./session-record.mjs";   // what the session went through, beside how it ended
+import { newSessionRecord, noteCodexEvent, sessionSummary, countTool, streamSink, codexEnding } from "./session-record.mjs";   // what the session went through, beside how it ended
 import { writeSecretFile } from "../../shared/secret-file.mjs";   // the rotated login goes back the way every credential is written
 import { tmpdir, homedir } from "node:os";
 import { join, dirname, sep } from "node:path";
@@ -348,8 +348,10 @@ export function parseCodexEvent(line, ev) {
   switch (e?.type) {
     case "thread.started": if (e.thread_id) ev.threadId = e.thread_id; break;
     case "turn.completed": ev.turnCompleted = true; if (e.usage) ev.usage = e.usage; break;
-    case "turn.failed":    ev.turnFailed = e.error?.message || "turn.failed"; break;
-    case "error":          ev.streamError = e.message || "stream error"; break;
+    // The program's own words are kept apart from the placeholders, so the record never shows a word of
+    // ours where it said nothing (session-record.mjs, codexEnding).
+    case "turn.failed":    ev.turnFailed = e.error?.message || "turn.failed"; ev.turnFailedText = typeof e.error?.message === "string" ? e.error.message : null; break;
+    case "error":          ev.streamError = e.message || "stream error"; ev.streamErrorText = typeof e.message === "string" ? e.message : null; break;
     case "item.completed":
       if (e.item?.type === "agent_message" && typeof e.item.text === "string") ev.agentText = e.item.text;
       // A FILE CHANGE CODEX ITSELF REPORTS AS FAILED. Measured on codex-cli 0.156.1 with its sandbox unable
@@ -606,11 +608,16 @@ function settleTuple({ r, ev, resumeRef }) {
   const failed = overflow || killed || !ev.turnCompleted || !!ev.turnFailed;
   const usage = mapUsage(ev.usage);
   const text = ev.agentText || "";
-  const json = buildEnvelope({
-    text, ok: !failed, killed, usage,
-    summary: ev.turnFailed ? "failed" : (ev.turnCompleted ? "success" : undefined),
-    runId: ev.threadId,
-  });
+  const json = {
+    ...buildEnvelope({
+      text, ok: !failed, killed, usage,
+      summary: ev.turnFailed ? "failed" : (ev.turnCompleted ? "success" : undefined),
+      runId: ev.threadId,
+    }),
+    // What ended the turn, in the program's own words when it failed (session-record.mjs, codexEnding):
+    // the same three fields the Claude adapter writes. Recorded only; `ok` above is unchanged.
+    ...codexEnding(ev),
+  };
   const stderrOut = overflow
     ? (r.stderr + `\nopenai-agent output overflow: stdout/stderr exceeded ${r.maxBuffer} chars — killed the tree and failed the turn (truncated tail never parsed)`)
     : (stallKill ? (r.stderr + "\nrequest timed out (openai-agent stall-watchdog: 0 streamed tokens)") : r.stderr);

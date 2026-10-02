@@ -28,10 +28,16 @@
 //
 // ── what is NOT recorded ─────────────────────────────────────────────────────────────────────────────
 //
-// No text. The cut message, the refusal's explanation and every result's answer carry the model's or
-// the vendor's words about client matter; a row carries the event's kind, its time and its codes. The
-// raw stream, which does carry the words, goes to its own file in the run directory (streamSink below),
-// where the dispatch text already sits.
+// No text in the session record. The cut message, the refusal's explanation and every result's answer
+// carry the model's or the vendor's words about client matter; a row carries the event's kind, its time
+// and its codes. The raw stream, which does carry the words, goes to its own file in the run directory
+// (streamSink below), where the dispatch text already sits.
+//
+// ONE EXCEPTION, and it sits beside the record rather than in it: when a session ENDED IN AN ERROR, the
+// program's own words for that error go on the attempt row (`errorText`, see "how the session ended"
+// below). An expired sign-in recorded `stop_sequence` six times and nothing else, while the program had
+// said in plain words that the session had expired. On a healthy ending that field is the model's answer
+// and stays off the row.
 
 import { mkdirSync, openSync, writeSync, closeSync, statfsSync } from "node:fs";
 import { dirname } from "node:path";
@@ -127,6 +133,53 @@ export function sessionSummary(rec) {
     classifierCuts: rec.classifierCuts.map((r) => ({ ...r })), refusals: rec.refusals.map((r) => ({ ...r })),
     refusalStops: rec.refusalStops, ...(rec.dropped ? { rowsDropped: rec.dropped } : {}),
   };
+}
+
+// ── how the session ended, in the program's own words ──────────────────────────────────────────────────
+//
+// The stop reason alone misleads on an error. Measured on an expired sign-in: the Claude program reported
+// `subtype: "success"`, `is_error: true`, `stop_reason: "stop_sequence"` (the stop of its OWN synthetic
+// message, whose model reads `<synthetic>`) and `terminal_reason: "api_error"`, with the reason in the
+// result text: "Failed to authenticate: OAuth session expired and could not be refreshed". Six retries of
+// one stage journalled six identical `stop_sequence` rows and said nothing about why. The stop reason stays
+// verbatim, because on an error it describes the program's synthetic message and rewriting it would be
+// inventing; these three go beside it, on both engines:
+//
+//   terminalReason   the kind of ending, as the program states it. null when it states none (Codex never does).
+//   apiErrorStatus   the vendor's status when it gave one. null when it did not, which is not zero.
+//   errorText        the program's words for the error, ONLY when the session ended in one, cut to a length a
+//                    person reads. Never a word of ours in their place: an error that carried none reads null.
+//
+// The verdict does not move: `fail`, the retry ladder and the envelope's status read exactly what they
+// read before. These record; they decide nothing.
+export const ERROR_TEXT_CAP = 300;
+
+const words = (t) => (typeof t === "string" && t.trim() ? t.slice(0, ERROR_TEXT_CAP) : null);
+
+/** Claude: from the session's LAST result event (the one the verdict reads), or nulls when none arrived. */
+export function claudeEnding(resultEvent) {
+  const r = resultEvent && typeof resultEvent === "object" ? resultEvent : null;
+  return {
+    terminalReason: typeof r?.terminal_reason === "string" ? r.terminal_reason : null,
+    apiErrorStatus: r?.api_error_status ?? null,
+    errorText: r?.is_error === true ? words(r.result) : null,
+  };
+}
+
+/**
+ * Codex: no terminal kind and no status on its stream. Its words are the failed turn's own message, or the
+ * stream error when the turn never completed; an `error` it recovered from (a reconnect, then a completed
+ * turn) is not why it ended. Reads the raw messages `parseCodexEvent` keeps, never its placeholders.
+ */
+export function codexEnding(ev) {
+  const failed = ev?.turnFailedText ?? null, stream = ev?.streamErrorText ?? null;
+  const said = ev?.turnFailed ? words(failed) : (ev?.turnCompleted ? null : words(stream));
+  return { terminalReason: null, apiErrorStatus: null, errorText: said };
+}
+
+/** The three as an attempt row carries them: written every time, null where the engine said nothing. */
+export function endingFields(json) {
+  return { terminalReason: json?.terminalReason ?? null, apiErrorStatus: json?.apiErrorStatus ?? null, errorText: json?.errorText ?? null };
 }
 
 /** A per-tool-name call count, folded one name at a time. */
