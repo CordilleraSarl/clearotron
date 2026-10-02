@@ -743,7 +743,7 @@
         },
         "a-mark-name-cannot-lie-about-how-it-reads.test.mjs": {
           "tests": 9,
-          "asserts": 37,
+          "asserts": 38,
           "skips": 0,
           "todos": 0
         },
@@ -858,6 +858,12 @@
         "a-next-step-the-model-writes-comes-off-at-publish.test.mjs": {
           "tests": 12,
           "asserts": 28,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-non-latin-mark-is-delivered-with-its-report-link.test.mjs": {
+          "tests": 3,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },

@@ -76,15 +76,26 @@ const boundName = (s) => String(s).slice(0, PLAN_MAX_NAME_LENGTH);
 // Refless jobs (ref/tmp absent — allowed since the intake relaxation) get `noref<6-hex>-<mark>`: the hash is
 // of job.id, the sanitized email message-id and the queue's dedup key, so the slug stays unique across
 // same-name marks AND stable across webhook re-delivery + resume. Refed jobs are byte-identical to before.
+//
+// THE SLUG IS THE FIRST PART OF THE RUN ID, AND THE RUN ID IS A URL PATH SEGMENT IN ASCII. Every route that
+// serves a run, and every link a delivery carries, spells the run id as `[A-Za-z0-9._-]`
+// (publish/index.mjs RUN_SEGMENT_RE, the portal's own gate), and refuses anything else: a link the portal
+// would refuse is not built at all. `kebab` keeps every Unicode letter, so a mark written in Greek,
+// Cyrillic, Han or with a letter such as Ł gave a run id no route accepts, and its run was delivered with
+// no report link on any surface. So the mark's part of the slug keeps only what the routes accept. A name
+// whose kebab is already ASCII is untouched, byte for byte, which is every run id minted before this; a
+// name with nothing ASCII left reads `mark`, the knockout slug's own word for that case. The reference
+// prefix and the codename keep the run id unique, as they always have: the mark only makes it readable.
+const asciiMark = (slug) => slug.replace(/[^a-z0-9-]+/g, "").replace(/-{2,}/g, "-").replace(/^-+|-+$/g, "") || "mark";
 export function deriveSlug(job) {
   const raw = boundName(String(job.ref ?? job.tmp ?? "").toLowerCase().replace(/[^a-z0-9]/g, ""));
   const mark = kebab(boundName(job.markName ?? job.name ?? job.marks?.[0]?.name ?? "mark"));
   if (!raw) {
     const h = createHash("sha256").update(String(job.id ?? mark)).digest("hex").slice(0, 6);
-    return `noref${h}-${mark}`;
+    return `noref${h}-${asciiMark(mark)}`;
   }
   const tmp = raw.startsWith("tmp") ? raw : `tmp${raw}`;
-  return `${tmp}-${mark}`;
+  return `${tmp}-${asciiMark(mark)}`;
 }
 
 // Calendar date in Europe/Zurich (the firm's timezone), YYYY-MM-DD.
