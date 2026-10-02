@@ -129,12 +129,11 @@ export const TOOL_GROUP_EDGES = {
     // every one of those reads failed — measured on five saved runs, where placement opened 31, 32, 2, 2 and
     // 0 records: in the sandbox as shipped, all of them fail.
     //
-    // WHY THE GENERIC ARM MISSED IT. That arm derives its population by walking the servers for
-    // `driverDir(runDir, X)` and keeping X when it ends in `.json`. This file ends in `.jsonl`, so it was
-    // never in the population the arm checked, and the floor on that population passed on the four `.json`
-    // reads. Widening the extension is not a one-line fix either — the same walk matches files the servers
-    // WRITE, and all three of those are `.jsonl`, so the arm's apparent completeness rested on an accident
-    // of file extension. That is filed on its own rather than bodged here.
+    // WHY THE GENERIC ARM MISSED IT. That arm walked the servers for `driverDir(runDir, X)` and kept X only
+    // when it ended in `.json`; this file ends in `.jsonl`, so it was never in the population the arm
+    // checked. The filter stood in for telling a read from a write, since every file the servers write is
+    // `.jsonl` too. The walk now makes that distinction itself, at any extension (experiment-context.test.mjs,
+    // `driverFileUses`), so this file is held by the same rule as every other read.
     { path: driverDir(P.runDir, "register-record-bodies.jsonl"),
       why: "band_record serves a record body from this log when the run fetched it through the ledger rather than into _records/ (band-server.mjs recordLedgerPath); without it the sandbox's record reads all fail and the re-run sees less than the stage saw" },
   ],
