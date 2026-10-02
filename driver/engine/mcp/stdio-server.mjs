@@ -170,7 +170,7 @@ export function serve({ name, version = "0.1.0", tools = [] }) {
           // interpolate a mark, and this row's own contract is the call and never its content. A row that
           // copied the message would leak the day one of them does; a row that copies `unmet` cannot.
           logToolEvent({ event: "settled", seq, server: name, tool: tool.name, ...(axis ? { axis } : {}), ok: false,
-            reason: `missing_required:${unmet.join(",")}` });
+            failure: "schema", reason: `missing_required:${unmet.join(",")}` });
           return ok(id, { isError: true, content: [{ type: "text", text:
             `${tool.name}_missing_required:${unmet.join(",")} — the schema you were handed declares `
             + `${unmet.length === 1 ? "this field" : "these fields"} REQUIRED and the call did not carry `
@@ -180,13 +180,19 @@ export function serve({ name, version = "0.1.0", tools = [] }) {
         try { out = await tool.handler(params?.arguments || {}); }
         catch (e) {
           // A THROWN tool error SETTLES. It returned an answer — a wrong one, but the model saw it and
-          // could act on it. Recording it as unsettled would attribute a live failure to a timeout.
-          logToolEvent({ event: "settled", seq, server: name, tool: tool.name, ...(axis ? { axis } : {}), ok: false });
+          // could act on it. Recording it as unsettled would attribute a live failure to a timeout. The
+          // row names the error's class and never its message, which can carry whatever the tool was given.
+          logToolEvent({ event: "settled", seq, server: name, tool: tool.name, ...(axis ? { axis } : {}), ok: false,
+            failure: "threw", reason: `threw:${errorClass(e)}` });
           return ok(id, { isError: true, content: [{ type: "text", text: `${tool.name} error: ${e?.message ?? e}` }] });
         }
         const isError = typeof out === "object" && out?.isError === true;
         const text = typeof out === "string" ? out : (out?.text ?? JSON.stringify(out));
-        logToolEvent({ event: "settled", seq, server: name, tool: tool.name, ...(axis ? { axis } : {}), ok: !isError });
+        // A tool that answered with an error rejected the call itself, after the schema let it past. The row
+        // says so, and carries the complaint's own code when the text opens with one, never the text.
+        const code = isError ? complaintCode(text) : null;
+        logToolEvent({ event: "settled", seq, server: name, tool: tool.name, ...(axis ? { axis } : {}), ok: !isError,
+          ...(isError ? { failure: "server", ...(code ? { reason: code } : {}) } : {}) });
         ok(id, { isError: isError || undefined, content: [{ type: "text", text }] });
       } else if (id != null) {
         err(id, -32601, `method not found: ${method}`);
@@ -207,4 +213,33 @@ export function serve({ name, version = "0.1.0", tools = [] }) {
   // Surface fatal startup problems (e.g. missing creds) on stderr; the server still answers the handshake
   // so `claude --mcp-config` reports a connected server whose tool calls return a clear isError.
   process.on("uncaughtException", (e) => { process.stderr.write(`[mcp:${name}] ${e?.stack ?? e}\n`); });
+}
+
+// ── WHAT REFUSED A CALL, as the settled row names it ───────────────────────────────────────────────────
+//
+// (At the end of this file so that adding it moved no line another file cites.)
+//
+// A settled row with `ok: false` carries `failure`, one of three words for where the call stopped:
+//   schema   the call did not carry a field the tool's schema requires; refused before the tool ran
+//   threw    the tool ran and threw
+//   server   the tool ran and answered with an error of its own
+// So a call refused before its tool ever ran is told apart from one the tool rejected without knowing
+// that the first leaves no call file behind. `reason` is never the message: a message can quote what the
+// tool was given. It is the missing fields, the error's class, or the complaint's own code.
+
+/** An error's class name, never its message. PURE. */
+export function errorClass(e) {
+  const n = typeof e?.name === "string" && /^[A-Za-z][A-Za-z0-9]*$/.test(e.name) ? e.name : "";
+  return n || "Error";
+}
+
+/**
+ * The code a tool's complaint opens with, as the acceptors write them (`knockoutframe_classes_plain: …`,
+ * `judgment_record_not_held:1:…`): a lower-case word with at least one underscore, read up to the first
+ * character that is not part of it. `null` when the text opens any other way, so prose never reaches the
+ * row. PURE.
+ */
+export function complaintCode(text) {
+  const m = /^([a-z][a-z0-9]*(?:_[a-z0-9]+)+)(?=$|[^a-z0-9_])/.exec(String(text ?? ""));
+  return m ? m[1] : null;
 }
