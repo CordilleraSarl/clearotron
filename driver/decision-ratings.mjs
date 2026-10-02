@@ -77,6 +77,14 @@ export function mergedOverall(decisions, manifest) {
 export const MARKS_ALIKE_METER = Object.freeze({ same: "high", close: "medium", different: "low" });
 export const GOODS_CLOSE_METER = Object.freeze({ same: "high", overlapping: "medium", different: "low" });
 
+/**
+ * WHERE THE DOT SITS ON THE RISK CHART: the same two reads, drawn on a grid of nine positions, the centre
+ * of each third of each axis (owner, 2026-10-02). The chart is the card's two meters drawn finer, so it is
+ * placed from them: a dot can never sit in one third while the card's meter says another. x is how close
+ * the goods are, y how alike the marks are, as the chart reads them.
+ */
+export const GRID_POSITION = Object.freeze({ low: 0.167, medium: 0.5, high: 0.833 });
+
 const groupsOf = (decisions, manifest) => (Array.isArray(decisions?.carried) ? decisions.carried : []).map((g) => ({
   rating: mergedRating((g.ratings ?? []).map((r) => r?.rating), manifest),
   given: (g.ratings ?? []).filter((r) => r && typeof r === "object"),
@@ -104,8 +112,9 @@ export function readsForRating(given, band, manifest) {
  * Returns `{ doc, refusals }`. `refusals` are the token-first reasons the call is refused for, one per
  * finding: a finding no carried owner matches, and a rated owner placed "off-field". The stamped band
  * replaces whatever band the call carried, and a band declaration (`borderline_between`) leaves with it:
- * the rating is the judges', so there is nothing left to declare. The two record meters are replaced the
- * same way; the use and enforcement meters stay as the call wrote them.
+ * the rating is the judges', so there is nothing left to declare. The two record meters, and the dot on the
+ * risk chart that draws them, are replaced the same way; the use and enforcement meters stay as the call
+ * wrote them.
  */
 export function stampDecidedRatings(doc, decisions, manifest) {
   const groups = groupsOf(decisions, manifest);
@@ -133,6 +142,7 @@ export function stampDecidedRatings(doc, decisions, manifest) {
       out.meters = { ...(f.meters && typeof f.meters === "object" ? f.meters : {}),
         mark_similarity: { token: reads.mark_similarity, basis: "inferred-from-signal" },
         goods_proximity: { token: reads.goods_proximity, basis: "inferred-from-signal" } };
+      out.quadrant = { x: GRID_POSITION[reads.goods_proximity], y: GRID_POSITION[reads.mark_similarity] };
     }
     return out;
   });

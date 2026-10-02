@@ -316,7 +316,7 @@ export const E3_BACKLOG = [
   {
     stage: "synthesis",
     kind: "literal-json-skeleton",
-    where: "driver/stages.mjs:2672",
+    where: "driver/stages.mjs:2676",
     surface: "stage-message",
     evidence: "MACHINE FINDINGS (MANDATORY): … a JSON OBJECT {\"schema_version\":<FINDINGS_SCHEMA_VERSION>,\"rated_under_framework\":\"…\",\"findings\":[...],\"coverage\":[...],\"context_notes\":[...],\"actions\":[...],\"ask_answers\":[...]} … Each finding object has EXACTLY these keys: {\"ordinal\",\"mark\",\"owner\",\"band\",\"net\",\"bor",
     reparsedBy: "driver/findings-model.mjs:848 parseFindingsJson via validators.narrative",
@@ -327,15 +327,10 @@ export const E3_BACKLOG = [
   // .join(" / ")}`; the literal is gone from origin/main and the row survived until this check found it
   // four hours later. Knowing about the stale-row disease did not stop me causing an instance of it,
   // which is the whole argument for the check being mechanical rather than a habit.
-  {
-    stage: "synthesis",
-    kind: "exactly-these-keys",
-    where: "driver/stages.mjs:2704",
-    surface: "stage-message",
-    evidence: "- off_field_ground (MANDATORY on every off-field finding, FORBIDDEN on every other disposition): EXACTLY one bare token of: ${OFF_FIELD_GROUNDS.join(\" / \")}",
-    reparsedBy: "driver/findings-model.mjs validateOffFieldGround — the enum is imported from findings-model.mjs and interpolated back into the prompt, so code already holds the list it asks the model to type",
-    removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
-  },
+  // DELETED 2026-10-02, recorded rather than absorbed — E3's own rule for a shrinking set. The row was
+  // synthesis's off_field_ground field, and that dictation is GONE: on a judged run every finding is an
+  // owner the judges carried and rated, a rated owner is never placed as awareness only, so the owner
+  // struck the awareness-only instructions from the message (ruling of 2026-10-02).
   {
     stage: "synthesis",
     kind: "literal-json-skeleton",
@@ -358,15 +353,9 @@ export const E3_BACKLOG = [
     reparsedBy: "driver/findings-model.mjs:848 parseFindingsJson; driver/verify.mjs:1169 checkFindingsSibling gates meters.*.source; finding_basis_source_missing",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
-  {
-    stage: "synthesis",
-    kind: "literal-json-skeleton",
-    where: "driver/stages.mjs:2709",
-    surface: "stage-message",
-    evidence: "- quadrant: {\"x\",\"y\"} numbers in [0,1]. x = goods/services proximity (0 = distant, 1 = identical). y = mark similarity (0 = distinct, 1 = identical).",
-    reparsedBy: "driver/findings-model.mjs:848 parseFindingsJson",
-    removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
-  },
+  // DELETED 2026-10-02, recorded rather than absorbed. The row was synthesis's quadrant field, and that
+  // dictation is GONE: code places the dot on the chart from the judges' two reads (decision-ratings.mjs,
+  // GRID_POSITION), so the message no longer asks for it (owner's ruling of 2026-10-02).
   {
     stage: "synthesis",
     kind: "literal-json-skeleton",
@@ -433,7 +422,7 @@ export const E3_BACKLOG = [
   {
     stage: "synthesis",
     kind: "literal-json-skeleton",
-    where: "driver/stages.mjs:2650",
+    where: "driver/stages.mjs:2654",
     surface: "stage-message",
     // RE-QUOTED, NOT PARKED. The writer's conversion reworded this dictation — the
     // ask answers ride the findings RECORD now and the driver renders the labelled line into both the
@@ -457,7 +446,7 @@ export const E3_BACKLOG = [
   {
     stage: "synthesis",
     kind: "dictated-line-shape",
-    where: "driver/stages.mjs:2566 (restated at driver/skills/clearance-search/synthesis-rules.md:428)",
+    where: "driver/stages.mjs:2570 (restated at driver/skills/clearance-search/synthesis-rules.md:428)",
     surface: "stage-message",
     evidence: "END that finding's actual-use line with a literal \"- **Use-check source:** <result URL | \"perplexity_research — no result\">\" line",
     reparsedBy: "driver/verify.mjs validators.narrative (spec-11 hard reject); the repair hint re-dictates the literal at driver/gateway.mjs:2140",
@@ -466,7 +455,7 @@ export const E3_BACKLOG = [
   {
     stage: "synthesis",
     kind: "dictated-line-shape",
-    where: "driver/stages.mjs:2579 (restated at driver/skills/clearance-search/synthesis-rules.md:475)",
+    where: "driver/stages.mjs:2583 (restated at driver/skills/clearance-search/synthesis-rules.md:475)",
     surface: "stage-message",
     evidence: "END that finding's reasoning with a literal \"- **Own-rights source:** <record URI(s) | \"no applicant-owned registrations in the searched register material\">\" line",
     reparsedBy: "driver/own-rights.mjs:19-22 — \"This module only requires the 'Own-rights source:' line to exist\"; repair hint at driver/gateway.mjs:2339 (the `own_rights_missing` branch; re-verified 2026-08-29 — the old :1736 predated this branch and pointed into the A4 repeat-signature block)",
@@ -484,7 +473,7 @@ export const E3_BACKLOG = [
   {
     stage: "synthesis",
     kind: "literal-json-skeleton",
-    where: "driver/stages.mjs:2674",
+    where: "driver/stages.mjs:2678",
     surface: "stage-message",
     evidence: "- owner: {\"name\",\"country\",\"registrations\":[...]}. … Each registration: {\"uri\", optionally \"classes\":[\"9\",\"41\"],\"status\",\"filed\",\"expiry\",\"jurisdiction\"}. The \"uri\" is the ONLY field that matters: the driver BINDS classes/status/filed/expiry/jurisdiction AND the owner name from the FETCHED record ke",
     reparsedBy: "driver/findings-model.mjs:848 parseFindingsJson + the record-binding join. Six of the seven keys are stated in the prompt and overwritten by code in the same sentence",
@@ -766,7 +755,8 @@ export const E3_SURFACE_CENSUS = Object.freeze({
   // and manual rows went with the two stages.
   // 26 -> 25 when the reopening's own sweeps left: the re-dispatch builders' state-enum row went with the
   // builders. The stage message keeps the same sentence under its own row.
-  "stage-message": 25,
+  // 25 -> 23: synthesis's off_field_ground and quadrant rows, deleted with the instructions they described.
+  "stage-message": 23,
   "tool-response": 1,
   "skill-file": 7,
   "driver-written-form": 0,

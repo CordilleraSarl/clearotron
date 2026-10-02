@@ -52,15 +52,21 @@ test("VOID CONTROL: the card dispatch composed, and still asks for the half that
 test("synthesis is no longer told the two positions render VERBATIM on the report", () => {
   // They do not, on a rated finding: suppresses them wherever the card carries the read. Leaving
   // the claim in would keep asking a seat for a second client paragraph nobody prints.
-  const text = synthesisText();
-  const claim = /legal_position[\s\S]{0,2000}?these fields render VERBATIM on the report/;
-  assert.equal(claim.test(text), false, "the positions dictation still claims a verbatim render");
+  // Read inside the positions bullet itself. A window counted in characters from the field's name
+  // reached the next bullet once the passages before it were struck, and found `manageable`'s own claim,
+  // which is true: those fields do print as written.
+  const line = synthesisText().split("\n").find((l) => l.trim().startsWith("- legal_position / practical_position")) ?? "";
+  assert.ok(line.length > 200, "the positions bullet is gone from the dispatch — this arm is reading nothing");
+  assert.equal(/render VERBATIM/.test(line), false, "the positions dictation still claims a verbatim render");
 });
 
 test("and it IS told which finding the card speaks for, so the ask is not merely shorter", () => {
+  // The off-field half of this ("there these two fields ARE what the client reads") was struck with the
+  // awareness-only instructions (owner, 2026-10-02): every finding is now an owner the judges rated, and
+  // every rated finding has a card. Its absence is held where the strikes are.
   const text = synthesisText();
   assert.match(text, /WHO READS THEM DEPENDS ON THE FINDING/);
-  assert.match(text, /An OFF-FIELD finding gets NO card, and there these two fields ARE what the client reads/);
+  assert.match(text, /a RATED finding gets a report-card, and that card is the client's single authored wording, written FROM these fields/);
 });
 
 test("VOID CONTROL: the synthesis dispatch composed, and the rules that must NOT move are still in it", () => {

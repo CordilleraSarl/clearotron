@@ -496,29 +496,103 @@ test("--dispatch-trigger refuses an unknown value rather than composing a quietl
 // than a rule about all of them. Four fixes of one class, each written as a fix of the class.
 //
 // So this arm DERIVES the population instead of listing it: every MCP server, every driver-written file
-// it opens, matched against what the tool-group table declares. A new server that reads a spec is caught
-// on the commit that adds it, with no edit here.
+// it opens, matched against what the tool-group table declares. A new server that reads a file the driver
+// writes is caught on the commit that adds it, with no edit here.
+//
+// IT TELLS A READ FROM A WRITE, AND THAT IS WHY IT NO LONGER FILTERS BY EXTENSION. It used to keep a file
+// only when its name ended in `.json`, and that filter was standing in for the real question. Every file
+// a server WRITES happens to end in `.jsonl` (its own call and reading logs), and so did one file a server
+// READS (the band's record log), so excluding `.jsonl` excluded exactly the writes — and that one read,
+// which a sandbox then ran without. Widening the extension alone would demand declarations for the
+// servers' own outputs, which is not what a declaration means. So each use is classified: a file is a
+// read if any use reads it, a write if every use writes it, and a use the walk cannot classify fails the
+// arm rather than being guessed.
+// A call whose name begins append or write writes: the node calls, and a server's own logging helper
+// (the judges' server logs every request through `appendRequestLog`).
+const WRITERS = /^(append[A-Z]\w*|write[A-Z]\w*|createWriteStream|atomicWrite)$/;
+const NEUTRAL = /^(mkdirSync|dirname)$/;
+
+/** Each driver-written file a server names, with how the server uses it: read, write, or unclassified. */
+function driverFileUses(src) {
+  const lines = src.split("\n");
+  const consts = new Map([...src.matchAll(/const\s+([A-Z_]+)\s*=\s*"([^"]+\.[a-z]+)"/g)].map((m) => [m[1], m[2]]));
+  const esc = (x) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  // The call whose FIRST argument is `expr` on this line, or null: `readFileSync(expr`, `appendFileSync(expr`.
+  const callOn = (line, expr) => line.match(new RegExp(`([A-Za-z_$][\\w$]*)\\(\\s*${expr}`))?.[1] ?? null;
+  // What one line does with `expr`: the call it is handed to (a write, a read, or neutral), or else the
+  // local name it is bound to.
+  const useOf = (line, expr) => {
+    const fn = callOn(line, expr);
+    if (fn) return WRITERS.test(fn) ? { write: true } : NEUTRAL.test(fn) ? { neutral: true } : { read: true };
+    const bound = line.match(new RegExp(`(?:const|let)\\s+([A-Za-z_$][\\w$]*)\\s*=\\s*[^;]*${expr}`));
+    return bound ? { bind: bound[1] } : null;
+  };
+  // A local name lives until its function ends: the next line that closes a top-level block or opens a
+  // new top-level declaration. Followed further, one function's `p` would be read as another's.
+  const scopeEnd = (from) => {
+    for (let i = from; i < lines.length; i++) if (/^(\}|(export\s+)?(async\s+)?function\b|const\s)/.test(lines[i])) return i;
+    return lines.length;
+  };
+  // Every use of `expr` from line `from` on, following a local binding through the rest of its scope.
+  const usesFrom = (expr, from, to = lines.length) => {
+    const out = [];
+    for (let i = from; i < to; i++) {
+      if (!new RegExp(expr).test(lines[i])) continue;
+      const u = useOf(lines[i], expr);
+      if (!u) continue;
+      if (u.bind) out.push(...usesFrom(`\\b${esc(u.bind)}\\b`, i + 1, scopeEnd(i + 1)));
+      else out.push(u);
+    }
+    return out;
+  };
+  const found = [];
+  lines.forEach((line, i) => {
+    for (const m of line.matchAll(/driverDir\([^,()]+,\s*([A-Za-z_]+|"[^"]+")\s*\)/g)) {
+      const tok = m[1];
+      const name = tok.startsWith('"') ? tok.slice(1, -1) : consts.get(tok);
+      if (!name) continue;
+      // The handle the rest of the file uses: a path function (`const f = () => driverDir(…)`, or one
+      // whose body returns it), a local name, or the expression itself where it is used inline.
+      // A block body counts only where this line RETURNS the path: an arrow that merely reads the file
+      // inside its own body (an initialiser, say) hands its callers a value, not a path.
+      const fnHead = (line.match(/const\s+([A-Za-z_$][\w$]*)\s*=\s*\([^)]*\)\s*=>\s*driverDir\(/)
+        ?? (/\breturn\b[^;]*driverDir\(/.test(line)
+          ? lines.slice(Math.max(0, i - 4), i).reverse().map((l) => l.match(/const\s+([A-Za-z_$][\w$]*)\s*=\s*\([^)]*\)\s*=>\s*\{/)).find(Boolean)
+          : null));
+      let uses;
+      if (fnHead) uses = usesFrom(`\\b${esc(fnHead[1])}\\(\\)`, 0);
+      else {
+        const inline = esc(m[0]);
+        const u = useOf(line, inline);
+        uses = !u ? [] : u.bind ? usesFrom(`\\b${esc(u.bind)}\\b`, i + 1, scopeEnd(i + 1)) : [u];
+      }
+      const read = uses.some((u) => u.read), write = uses.some((u) => u.write);
+      found.push({ name, kind: read ? "read" : write ? "write" : "unclassified" });
+    }
+  });
+  return found;
+}
+
 test("every MCP server that reads a driver-written file has a declared tool-group edge", () => {
   const MCP = join(HERE, "..", "engine", "mcp");
   const servers = readdirSync(MCP).filter((f) => f.endsWith("-server.mjs"));
   assert.ok(servers.length >= 10,
     `only ${servers.length} server(s) discovered — the walk broke and a clean result below would mean nothing`);
 
-  // A driver-written read is `driverDir(runDir, X)` where X resolves to a literal filename. Both forms
-  // the servers use: the constant, and the string inline.
-  const reads = [];
-  for (const f of servers) {
-    const src = readFileSync(join(MCP, f), "utf8");
-    const consts = new Map([...src.matchAll(/const\s+([A-Z_]+)\s*=\s*"([^"]+\.json)"/g)].map((m) => [m[1], m[2]]));
-    for (const m of src.matchAll(/driverDir\([^,]+,\s*([A-Za-z_]+|"[^"]+")\s*\)/g)) {
-      const tok = m[1];
-      const name = tok.startsWith('"') ? tok.slice(1, -1) : consts.get(tok);
-      if (name && name.endsWith(".json")) reads.push({ server: f, name });
-    }
-  }
-  assert.ok(reads.length >= 3,
+  const uses = servers.flatMap((f) => driverFileUses(readFileSync(join(MCP, f), "utf8")).map((u) => ({ ...u, server: f })));
+  const unclassified = uses.filter((u) => u.kind === "unclassified").map((u) => `${u.name} (${u.server})`);
+  assert.deepEqual(unclassified, [],
+    "the walk found a driver-written file it cannot tell is read or written — it refuses to guess, because a "
+    + "read guessed as a write is exactly the file a sandbox then runs without. Teach driverFileUses the call.");
+  const reads = uses.filter((u) => u.kind === "read");
+  const writes = uses.filter((u) => u.kind === "write");
+  // FLOORS ON BOTH HALVES, and on the extension the old filter hid: a walk that classified nothing, or
+  // classified every `.jsonl` one way, would satisfy the declaration check below by accident.
+  assert.ok(reads.length >= 4,
     `only ${reads.length} driver-written read(s) found across ${servers.length} servers — the matcher stopped `
     + "matching, and an empty result here is exactly the silence this arm exists to refuse");
+  assert.ok(writes.length >= 3, `only ${writes.length} driver-written write(s) found — the read/write split is not being exercised`);
+  assert.ok(reads.some((u) => u.name.endsWith(".jsonl")), "no `.jsonl` read is in the population — the extension is hiding a read again");
 
   // Everything the tool-group table declares, over a probe paths object.
   const P = ST.paths("/run");
@@ -534,30 +608,69 @@ test("every MCP server that reads a driver-written file has a declared tool-grou
     + "Declare it in TOOL_GROUP_EDGES, keyed on a group the stage is actually granted.");
 });
 
-// ── THE READ A SANDBOX RAN WITHOUT, ASSERTED BY NAME ──────────────────────────────────────────────────────
-//
-// This is a targeted arm and that is deliberate, against this file's own preference for a derived
-// population. The generic walk above derives its population from `driverDir(runDir, X)` where X ends in
-// `.json`, and this file ends in `.jsonl` — so it was never in the population the walk
-// checked, and the floor on that population passed on the four `.json` reads it did see. Widening the
-// extension does not fix the walk either: the same expression matches files the servers WRITE, and all
-// three of those are `.jsonl`, so the walk's apparent completeness rested on an accident of extension.
-// That is filed on its own. Until it is fixed, this arm names the file.
-test("the band tool group declares the record log, so a sandboxed read serves the body the real stage served", () => {
+test("every file a tool group declares reaches the sandbox of every stage granted that group", () => {
+  // A declaration is only half the guarantee: the other half is that the stage holding the tools gets the
+  // file in its sandbox copy, or the grant and the stage disagree. Asserted for every group and every stage
+  // granted it, so a new edge, or a new grant, is held to it without an edit here.
   const P = ST.paths("/run");
-  const band = (SC.TOOL_GROUP_EDGES.band(P) ?? []).map((e) => basename(String(e.path)));
-  assert.ok(band.includes("register-record-bodies.jsonl"),
-    "band_record serves a body from this log when the run fetched through the ledger rather than into _records/. "
-    + "Undeclared, the sandbox copy holds no bodies, every record read fails, and the quieter result reads as "
-    + "the model's doing rather than as a missing input.");
-  // The control: the group still declares what it declared before, so this is an addition and not a rewrite.
-  for (const want of ["register-named-band.json", "band-shape.json", "register-positions.json", "_records"]) {
-    assert.ok(band.includes(want), `the band group stopped declaring ${want}`);
+  let pairs = 0;
+  const missing = [];
+  const reached = new Set();
+  for (const stage of Object.keys(ST.STAGES)) {
+    const groups = toolGroupsForStage(stage).filter((g) => SC.TOOL_GROUP_EDGES[g]);
+    if (!groups.length) continue;
+    const manifest = new Set(SC.sandboxManifest(stage, P, { axes: ST.REGISTER_AXES }).map((e) => basename(String(e.path))));
+    for (const g of groups) {
+      for (const e of SC.TOOL_GROUP_EDGES[g](P) ?? []) {
+        pairs++;
+        const name = basename(String(e.path));
+        if (manifest.has(name)) reached.add(name); else missing.push(`${name} (${g}) → ${stage}`);
+      }
+    }
   }
-  // …and it reaches a stage granted the band tools, which is the thing the edge exists for. The step that
-  // first needed it was replaced by the judges; synthesis is granted the same group.
-  const manifest = SC.sandboxManifest("synthesis", P).map((e) => basename(String(e.path)));
-  assert.ok(manifest.includes("register-record-bodies.jsonl"),
-    "the edge is declared but synthesis's manifest does not carry it — the grant and the stage disagree");
+  assert.ok(pairs >= 20, `only ${pairs} declared-file × granted-stage pairs — the derivation broke, not the declarations`);
+  assert.ok(reached.has("register-record-bodies.jsonl"), "the band's record log reaches no granted stage's sandbox");
+  assert.deepEqual(missing, [], "a tool group declares a file that the sandbox of a stage granted that group does not carry");
+});
+
+test("the walk tells a read from a write: the logs the servers write are never demanded as inputs", () => {
+  // THE CONTROL the extension filter never had. Each shape below is one a server uses today: a path
+  // function written to, a local name written to, a path function whose body returns the path, a path
+  // function read through a local name, a read inline, and a read inside an initialiser's own body. A walk that misclassifies any of them either
+  // demands a declaration for an output or misses an input.
+  const src = [
+    'const logPath = () => driverDir(RUN_DIR, "a-log.jsonl");',
+    'function note() { appendFileSync(logPath(), "x"); }',
+    'function other() {',
+    '  const p = driverDir(RUN_DIR, "b-log.jsonl");',
+    '  mkdirSync(dirname(p), { recursive: true });',
+    '  appendFileSync(p, "x");',
+    '}',
+    'const callLog = () => {',
+    '  const dir = process.env.X;',
+    '  return dir ? driverDir(dir, "c-log.jsonl") : null;',
+    '};',
+    'function event(row) {',
+    '  const path = callLog();',
+    '  if (!path) return;',
+    '  appendFileSync(path, row);',
+    '}',
+    'const PRESET = (() => {',
+    '  const p = JSON.parse(readFileSync(driverDir(RUN_DIR, "a-policy.json"), "utf8"));',
+    '  return p.preset;',
+    '})();',
+    'const ledgerPath = () => driverDir(RUN_DIR, "bodies.jsonl");',
+    'function body(uri) {',
+    '  const p = ledgerPath();',
+    '  if (!existsSync(p)) return null;',
+    '  return readFileSync(p, "utf8");',
+    '}',
+    'const log = (row) => appendRequestLog(driverDir(runDir, "d-log.jsonl"), row);',
+    'const SPEC = "a-spec.json";',
+    'const spec = JSON.parse(readFileSync(driverDir(runDir, SPEC), "utf8"));',
+  ].join("\n");
+  const kinds = Object.fromEntries(driverFileUses(src).map((u) => [u.name, u.kind]));
+  assert.deepEqual(kinds, { "a-log.jsonl": "write", "b-log.jsonl": "write", "c-log.jsonl": "write", "d-log.jsonl": "write",
+    "bodies.jsonl": "read", "a-spec.json": "read", "a-policy.json": "read" });
 });
 
