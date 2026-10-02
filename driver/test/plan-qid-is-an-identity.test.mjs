@@ -194,7 +194,7 @@ test("a LATIN term's qid is byte-unchanged — the fix must move nothing that al
   // and every stored Latin plan has to keep matching.
   const plan = compileWith([
     { value: "LUMENGARD", category: "phonetic", rationale: "sound-alike" },
-    { value: "EVER LIGHT", category: "visual", rationale: "spacing" },
+    { value: "LUMEN GARDE", category: "visual", rationale: "spacing" },
   ]);
   const lumengard = plan.entries.find((e) => e.term === "LUMENGARD");
   assert.ok(lumengard, "the Latin variant did not compile");

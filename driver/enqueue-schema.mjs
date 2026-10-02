@@ -730,8 +730,8 @@ export function validateJob(job, { atClaim = false } = {}) {
     warnings.push(...fit.warnings);
   }
   // platforms — marketplaces to sweep IN ADDITION to the account's own. ADDITIVE ONLY, and enforced as
-  // such where the union happens: a client's platforms are a client MANDATE (the 2026-07-18 Racers
-  // Paradise run searched house platforms instead of the client's), so a per-run list can widen the grid
+  // such where the union happens: a client's platforms are a client MANDATE (the 2026-07-18 Drivers
+  // Haven run searched house platforms instead of the client's), so a per-run list can widen the grid
   // and can never shrink it. Same per-entry rules as a profile's, shared via platformEntryErrors.
   if (job.platforms != null) {
     if (!Array.isArray(job.platforms)) errs.push("platforms must be an array of bare store domains (e.g. [\"gnc.com\"]) — they are ADDED to the account's marketplaces, never a replacement for them");

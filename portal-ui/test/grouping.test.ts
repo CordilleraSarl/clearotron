@@ -135,7 +135,7 @@ test('a run predating markName falls back to its title, and still groups with it
 
 // ── families ─────────────────────────────────────────────────────────────────────────────────────────
 
-const FAM: Families = { of: { plus: 'hydra', max: 'hydra' }, names: { hydra: 'Hydra range' } }
+const FAM: Families = { of: { plus: 'aqua', max: 'aqua' }, names: { aqua: 'Aqua range' } }
 
 test('a family collects its marks and nothing else', () => {
   const rows = rowsOf(
@@ -152,7 +152,7 @@ test('a family collects its marks and nothing else', () => {
   assert.equal(rows.length, 2, 'the family plus the unfamilied mark')
   const fam = rows.find((r) => r.kind === 'family')
   assert.ok(fam && fam.kind === 'family')
-  assert.equal(fam.name, 'Hydra range')
+  assert.equal(fam.name, 'Aqua range')
   assert.deepEqual(fam.marks.map((m) => m.name).sort(), ['AquaMax', 'AquaPlus'])
 })
 
@@ -224,9 +224,9 @@ test('with no families at all, the view is exactly the mark list', () => {
 })
 
 test('a family named by nothing falls back to its id rather than rendering blank', () => {
-  const orphan: Families = { of: { plus: 'hydra' }, names: {} }
+  const orphan: Families = { of: { plus: 'aqua' }, names: {} }
   const rows = rowsOf(marksOf([run({ runId: 'plus' })], orphan), orphan)
-  assert.equal(rows[0]!.name, 'hydra')
+  assert.equal(rows[0]!.name, 'aqua')
 })
 
 test('rows keep the order their first member arrived in, so the caller’s sort survives', () => {
@@ -243,7 +243,7 @@ test('rows keep the order their first member arrived in, so the caller’s sort 
     ),
     FAM,
   )
-  assert.deepEqual(rows.map((r) => r.name), ['Venzy', 'Hydra range'], 'the family lands where its first member was')
+  assert.deepEqual(rows.map((r) => r.name), ['Venzy', 'Aqua range'], 'the family lands where its first member was')
 })
 
 test('runsIn flattens either kind of row — what a filter counts and a search matches', () => {
