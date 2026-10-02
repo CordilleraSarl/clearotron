@@ -35,6 +35,14 @@ import { openBlocksByAxis } from "./register-plan.mjs";
 import { territoryLayerReport, unsearchedLayerReason } from "./binding-layers.mjs"; import { goodsTermsList } from "../providers/_shared/term-shape.mjs";
 
 const STATUS_SET = new Set(COVERAGE_STATUSES);
+
+/**
+ * An axis the plan put no question to (owner, 2026-10-01): not asked, never clean. A state of the FORM only,
+ * the run's own record. It is deliberately outside COVERAGE_STATUSES, so every render of the ledger — the
+ * machine ledger, the table synthesis and the sceptic are shown, the workbook's coverage rows — leaves it
+ * out: nothing was owed on the axis, and nothing about it reaches a reader or a model.
+ */
+export const NOT_ASKED = "not-asked";
 const DRIVER_KINDS = new Set(["axis", "block", "deferred", "family"]);
 
 // ── SEAT ROWS — WHAT THE FORM DOES NOT TAKE AWAY ────────────────────────────────────────────────────
@@ -363,10 +371,22 @@ export function coverageFormRows({ skeleton = [], activeAxes = null, plan = null
     .flatMap((e) => (Array.isArray(e?.regions) ? e.regions : []))
     .map((r) => String(r ?? "").toUpperCase()).filter(Boolean))];
 
+  // A COUNT THE PLAN ASKED FOR THAT CAME BACK WITH NO NUMBER. A planned count is sanctioned crowd context, so
+  // it opens no block row, and an axis whose only open question was such a count read clean over a count
+  // that never came back. Each one rides its axis row, so the axis cannot be settled clean on it.
+  const countsNotTaken = (axis) => (plan?.entries ?? [])
+    .filter((e) => e?.axis === axis && e?.expected_kind === "count")
+    .filter((e) => {
+      const b = (bandBlocksByAxis?.[axis] ?? []).find((x) => x && x.qid === e.qid);
+      if (!b || b.error === true) return false;            // no block, or an error: the missing and deferred gates own it
+      return b.total_hits === null || b.total_hits === undefined || !Number.isFinite(Number(b.total_hits));
+    })
+    .map((e) => e.qid);
   const rows = [];
   for (const axis of axes) {
     const s = skel.find((x) => String(x.axis ?? "").trim() === axis) ?? null;
     const state = String(s?.state ?? "").trim() || null;
+    const notTaken = countsNotTaken(axis);
     const deferredQids = Array.isArray(s?.deferred)
       ? s.deferred.filter((q) => typeof q === "string" && q.trim()).map((q) => q.trim()) : [];
     const contradiction = state === "deferred" && !deferredQids.length;
@@ -380,6 +400,7 @@ export function coverageFormRows({ skeleton = [], activeAxes = null, plan = null
       ...(contradiction
         ? { open_because: "the plan-execution skeleton calls this axis deferred and names no deferred qid — a contradiction the builder cannot produce, so this axis cannot be claimed clean" }
         : {}),
+      ...(notTaken.length ? { counts_not_taken: notTaken } : {}),
       status: null, reason: null,
     });
     for (const b of (open[axis] ?? [])) {
@@ -1021,12 +1042,15 @@ export function renderCoverageLedgerJsonFromForm(rows, classTokens) {
 //   · an open crowd block ran and saturated, so it is `coverage-limited` — disclosed, never clamping;
 //   · a deferred slice never ran and nothing can make it run, so it is `deferred` — the status the
 //     verdict clamp reads (decideRegisterGap), so a run with an unsearched slice still cannot read CLEAR;
-//   · an axis is `confirmed-clean` when nothing on it is open: every slice listed (`executed`), counted
-//     where the plan asked only for a count (`incomplete` with no open block — a planned count is sanctioned
-//     by doctrine, `openBlocksByAxis()` in register-plan.mjs), or asked nothing at all. The skeleton is
-//     built from the plan's entries, so an axis with no skeleton state is one the plan put no question to
-//     (a mark with no common element has no crowd to probe, a matter with no owner to probe asks no owner
-//     question): nothing was owed, and calling it limited would disclose a limitation that is not one.
+//   · an axis is `confirmed-clean` only on positive evidence that nothing on it is open: every slice listed
+//     (`executed`), or counted where the plan asked only for a count (`incomplete` with no open block — a
+//     planned count is sanctioned by doctrine, `openBlocksByAxis()` in register-plan.mjs) and every such
+//     count came back with a number. A count that came back with none makes the axis `deferred`. The
+//     skeleton is built from the plan's entries, so an axis with no skeleton state is one the plan put no
+//     question to (a mark with no common element has no crowd to probe, a matter with no owner to probe asks
+//     no owner question): nothing was owed and nothing was searched, so it is `not-asked` (NOT_ASKED) —
+//     never clean, and never a limitation (owner, 2026-10-01). A state this rule does not name is no
+//     evidence, and reads `deferred`.
 //     It is `deferred` when the execution skeleton contradicts itself about it, when a slice on it never
 //     ran (`unexecuted`), when its band could not be read, or when it is not a register axis at all (a stray
 //     file in register-units, which no search stands behind). It is `coverage-limited` when any of its
@@ -1072,7 +1096,15 @@ export function settleCoverageRowsFromFacts(rows, { bandsUnreadable = [], unknow
       return families.length && families.every((f) => String(f.status ?? "").trim() === "withheld-by-judgment")
         ? "withheld-by-judgment" : "deferred";
     }
-    return "confirmed-clean";
+    // A count the plan asked for came back with no number: nothing says what the count was.
+    if (r.counts_not_taken?.length) return "deferred";
+    // An axis with no recorded state is one the plan put no question to. Nothing was owed, and nothing was
+    // searched either: it is NOT ASKED, never clean, and never a limitation.
+    if (r.skeleton_state == null) return NOT_ASKED;
+    // CLEAN ONLY ON POSITIVE EVIDENCE: every slice listed, or counted where the plan asked only for a count
+    // (`incomplete` with no open block). A state this rule does not know is not evidence of anything.
+    if (r.skeleton_state === "executed" || r.skeleton_state === "incomplete") return "confirmed-clean";
+    return "deferred";
   };
   return list.map((r) => {
     if (!r || String(r.status ?? "").trim()) return r;

@@ -2965,7 +2965,7 @@ function recordJudgmentSeam(ctx, { pile, merged, keyOfRecord, trigger }) {
  * to rule these rows; nothing in step 3 does now, and a form left unruled would read to every gate as a
  * run with no gaps.
  */
-function settleCoverageFromFacts(ctx, trigger) {
+export function settleCoverageFromFacts(ctx, trigger) {   // @internal
   const P = ctx.paths;
   try {
     const { input, absent } = coverageFormInput(P.runDir);
@@ -2992,7 +2992,16 @@ function settleCoverageFromFacts(ctx, trigger) {
   } catch (e) { note(`coverage form settle failed: ${e.message} — the stamp is armed first, so the absence is loud rather than silent`); }
   const stamp = coverageFormStamp(P.runDir);
   const cf = stamp.required ? readCoverageForm(P.runDir, stamp.formName) : { rows: null };
-  if (!cf.rows?.length) return;
+  // NO PREVIOUS PASS'S LEDGER SURVIVES A PASS THAT SETTLED NO ROWS. Returning here used to leave the last
+  // pass's machine ledger on disk, so every coverage reader went on reading statuses this pass's facts no
+  // longer stand behind. The absence is the truth of this pass, and it is recorded as one.
+  if (!cf.rows?.length) {
+    if (existsSync(P.registerCoverageLedger)) {
+      try { rmSync(P.registerCoverageLedger, { force: true }); } catch { /* absent is fine */ }
+      runLog(P.runDir, { event: "coverage-ledger-removed", trigger, reason: "this pass settled no coverage rows" });
+    }
+    return;
+  }
   try {
     const json = renderCoverageLedgerJsonFromForm(cf.rows, classTokensFromScopeText);
     parseCoverageLedgerJson(json);   // the strict contract, before it lands: a bad ledger would throw at every read

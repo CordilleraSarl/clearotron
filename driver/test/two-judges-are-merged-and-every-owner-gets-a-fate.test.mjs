@@ -15,7 +15,7 @@ import { buildOwnerTable } from "../owner-table.mjs";
 import { checkAnswer, mergeJudgments, fateCounts, judgmentDiscardReason, FATES, ANSWER_FORM } from "../owner-judgment.mjs";
 import { acceptedAttemptWindow, ownersLookedUp, recordOwnerIndex, judgmentSeam, judgesForPass, judgeOutcomes } from "../owner-judgment-run.mjs";
 import { seamRows } from "../record-discard.mjs";
-import { settleCoverageRowsFromFacts, coverageRowFacts } from "../coverage-form.mjs";
+import { settleCoverageRowsFromFacts, coverageRowFacts, coverageFormRows, renderCoverageLedgerJsonFromForm, NOT_ASKED } from "../coverage-form.mjs";
 import { decisionAuditRows } from "../publish/audit-from-spine.mjs";
 import { clearedNames } from "../publish/search-depth.mjs";
 import { pickingExits } from "../hand-off-exits.mjs";
@@ -244,10 +244,17 @@ test("coverage settled by code: an axis is clean only where its slices ran and w
   // An axis minted from a stray unit file has no search behind it: deferred, never clean.
   const stray = [axis("stray-notes", null)];
   assert.equal(byAxis(settleCoverageRowsFromFacts(stray, { unknownAxes: ["stray-notes"] }))["stray-notes"], "deferred");
-  // A count the plan asked for leaves no open block row, by doctrine, so its axis is clean; and an axis with
-  // no skeleton state is one the plan put no question to, so nothing was owed on it. Neither is a limit.
+  // A count the plan asked for leaves no open block row, by doctrine, so its axis is clean when the count came
+  // back with a number. An axis with no skeleton state is one the plan put no question to: nothing was owed
+  // and nothing was searched, so it is NOT ASKED (owner, 2026-10-01) — never clean, and never a limit.
   assert.deepEqual(byAxis(settleCoverageRowsFromFacts([axis("counted", "incomplete"), axis("asked-nothing", null)])),
-    { "counted": "confirmed-clean", "asked-nothing": "confirmed-clean" });
+    { "counted": "confirmed-clean", "asked-nothing": NOT_ASKED });
+  // CLEAN ONLY ON POSITIVE EVIDENCE. A planned count that came back with no number says nothing about the
+  // crowd it was to count, and a state the rule does not name is no evidence of anything.
+  assert.deepEqual(byAxis(settleCoverageRowsFromFacts([
+    { ...axis("count-not-taken", "incomplete"), counts_not_taken: ["sat:count:1"] },
+    axis("unheard-of", "some-state-no-builder-writes"),
+  ])), { "count-not-taken": "deferred", "unheard-of": "deferred" });
 });
 
 test("the audit's register rows: carried owners as findings, set-aside owners as the 'also considered' names", () => {
@@ -352,4 +359,30 @@ test("a judge that answers on a re-run gives this pass's answer, with the owners
     answerOf: () => ({ answer: fresh }), shownOf: () => ({ opening: new Set(["new"]), looked: new Set() }) });
   assert.equal(skipped.answer, kept.answer);
   assert.equal(skipped.answer_from, "an earlier pass");
+});
+
+test("the axis row carries each planned count that came back with no number, and a not-asked axis reaches no ledger", () => {
+  const plan = { entries: [
+    { qid: "sat:count:1", axis: "saturation-probe", expected_kind: "count", terms: ["ZZ"] },
+    { qid: "sat:count:2", axis: "saturation-probe", expected_kind: "count", terms: ["ZZQ"] },
+    { qid: "ps:exact:1", axis: "primary-sweep", terms: ["ZZ"] },
+  ] };
+  const skeleton = [{ axis: "saturation-probe", state: "incomplete" }, { axis: "primary-sweep", state: "executed" }];
+  const bandBlocksByAxis = {
+    // As the executor writes a count it took, and one that came back with no number.
+    "saturation-probe": [{ qid: "sat:count:1", state: "incomplete", total_hits: 412 }, { qid: "sat:count:2", state: "incomplete", total_hits: null }],
+    "primary-sweep": [{ qid: "ps:exact:1", state: "enumerated", total_hits: 3, records: [] }],
+  };
+  const { rows } = coverageFormRows({ skeleton, plan, bandBlocksByAxis, activeAxes: ["incumbent-class"] });
+  const axisRow = (a) => rows.find((r) => r.kind === "axis" && r.axis === a);
+  assert.deepEqual(axisRow("saturation-probe").counts_not_taken, ["sat:count:2"]);
+  assert.equal(axisRow("primary-sweep").counts_not_taken, undefined, "a sweep that listed its records owes nothing");
+  const settled = settleCoverageRowsFromFacts(rows);
+  const status = (a) => settled.find((r) => r.kind === "axis" && r.axis === a).status;
+  assert.equal(status("saturation-probe"), "deferred", "an axis settled clean over a count that never came back");
+  assert.equal(status("primary-sweep"), "confirmed-clean");
+  assert.equal(status("incumbent-class"), NOT_ASKED, "an axis the plan asked nothing of read as something");
+  // The machine ledger, which every reader of coverage takes, carries no not-asked row.
+  const ledger = JSON.parse(renderCoverageLedgerJsonFromForm(settled, () => []));
+  assert.deepEqual(ledger.map((r) => r.axis).sort(), ["primary-sweep", "saturation-probe"]);
 });

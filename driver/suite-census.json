@@ -885,6 +885,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-pass-that-settles-no-coverage-leaves-no-old-ledger.test.mjs": {
+          "tests": 1,
+          "asserts": 2,
+          "skips": 0,
+          "todos": 0
+        },
         "a-plan-run-that-was-not-answered-is-not-a-drift.test.mjs": {
           "tests": 5,
           "asserts": 16,
@@ -6358,8 +6364,8 @@
           "todos": 0
         },
         "two-judges-are-merged-and-every-owner-gets-a-fate.test.mjs": {
-          "tests": 16,
-          "asserts": 98,
+          "tests": 17,
+          "asserts": 105,
           "skips": 0,
           "todos": 0
         },
