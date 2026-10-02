@@ -2500,13 +2500,20 @@ export function deriveRecordCarry(ctx, trigger, { findings = null } = {}) {   //
       try { deliveredFindings = existsSync(P.findings) ? (parseFindingsJsonLenient(readFileSync(P.findings, "utf8")).findings ?? []) : []; }
       catch { deliveredFindings = []; }
     }
+    const ledger = foldDiscardLedger(safeReadText(driverDir(P.runDir, DISCARD_LEDGER_NAME)));
+    // A RUN FROM BEFORE STEP 3 WAS JUDGED BY OWNER is not traced by the judged step's seams. Its ledger holds
+    // the placement and digest steps' rows, which the fold does not read, so every record those steps set
+    // aside would trace as one no step spoke about: the defect this artifact reports, on a run without it.
+    if (ledger.retired > 0) {
+      return notComputable(`a run from before step 3 was judged by owner: its discard ledger holds ${ledger.retired} row(s) from the placement and digest steps, which this trace does not read`);
+    }
     const artifact = traceRecordCarry({
       bandRecords: Array.isArray(band?.enumerated) ? band.enumerated : [],
       crowds: Array.isArray(band?.crowds) ? band.crowds : [],
       findings: deliveredFindings,
       outcomes: parseStageOutcomes(safeReadText(driverDir(P.runDir, "run.jsonl"))),
       planExecution: safeReadJson(driverDir(P.runDir, "plan-execution.json")),
-      ledger: foldDiscardLedger(safeReadText(driverDir(P.runDir, DISCARD_LEDGER_NAME))),
+      ledger,
       // — read the sibling traces OFF DISK rather than threading state through the run: what is
       // on disk at publish is exactly what this run produced, and a declaration derived from anything
       // else can go stale the way the hand-kept constant did.
