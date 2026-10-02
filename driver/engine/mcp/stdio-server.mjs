@@ -115,8 +115,11 @@ export function serve({ name, version = "0.1.0", tools = [] }) {
   // it must be read-only. Nothing here needs to claim a write is a read to get called, and a
   // `readOnlyHint: true` on a tool that writes a ledger would be a lie told to a sandbox for
   // convenience — the exact thing annotations exist to prevent.
-  const list = tools.map((t) => ({
-    name: t.name, description: t.description, inputSchema: t.inputSchema,
+  // Listed when asked, not at start: a tool may give the schema for the run it serves (`schemaNow`), read
+  // at call time like every per-run read here. A tool without one lists its declared schema, as before.
+  const list = () => tools.map((t) => ({
+    name: t.name, description: t.description,
+    inputSchema: typeof t.schemaNow === "function" ? t.schemaNow(t.inputSchema) : t.inputSchema,
     ...(t.annotations ? { annotations: t.annotations } : {}),
   }));
   const send = (m) => process.stdout.write(JSON.stringify(m) + "\n");
@@ -137,7 +140,7 @@ export function serve({ name, version = "0.1.0", tools = [] }) {
       } else if (method === "ping") {
         ok(id, {});
       } else if (method === "tools/list") {
-        ok(id, { tools: list });
+        ok(id, { tools: list() });
       } else if (method === "tools/call") {
         const tool = byName.get(params?.name);
         if (!tool) return ok(id, { isError: true, content: [{ type: "text", text: `unknown tool: ${params?.name}` }] });
