@@ -308,6 +308,7 @@ export const STORES_WITHOUT_A_PART = {
   "status.json": "the pool's mark name and a machine note, neither of them a part of the report",
   "_driver/search-policy.json": "the product's identity, which no shipped name describes",
   "_driver/profile.json": "the pool's profile stamp, not a part of the report",
+  "owner-decisions.json": "the judges' reason beside each set-aside name under \"also considered\"; without it the names are listed as before, and no shipped name describes the reason alone",
 };
 
 // The record set is a folder, not a named store (publish-inputs.mjs NOT_READ_BY_NAME), and is read as one.
