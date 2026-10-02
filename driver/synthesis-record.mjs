@@ -701,6 +701,7 @@ export function recordSynthesis(runDir, received, opts = {}) {
 
   const findingsAt = join(dir0, FINDINGS_FILE);
   const narrativeAt = join(dir0, NARRATIVE_FILE);
+  const before = lastAcceptedCall(dir0);   // the record this save replaces, for the touched record below
   try {
     writeFileSync(findingsAt, v.findings);
     writeFileSync(narrativeAt, v.narrative);
@@ -710,6 +711,8 @@ export function recordSynthesis(runDir, received, opts = {}) {
       _provenance: "the last ACCEPTED call, merged if it arrived as a patch — the base a later repair patches onto",
       acceptedAt: now(), params: call,
     }, null, 2) + "\n");
+    try { appendFileSync(touchedRecordPath(runDir), JSON.stringify({ at: now(), ordinals: touchedBetween(before?.findings, call?.findings) }) + "\n"); }
+    catch { /* best-effort — a record that cannot be written leaves the fix pass with nothing to act on, never a failed save */ }
   } catch (e) {
     // The call was VALID and we could not store it. That is infrastructure, and it must not read as a
     // rejected call — the two have opposite repairs.
@@ -726,6 +729,26 @@ export function recordSynthesis(runDir, received, opts = {}) {
     coverage_limits_checked: v.coverage_limits_checked,
     captured: closeCapture({ ok: true }), capture_failed: captureFailed,
   };
+}
+
+// ── WHAT EACH ACCEPTED SAVE CHANGED, RECORDED BY THE SAVE (owner, ruling 719, 2026-10-02) ─────────────
+//
+// The post-repair fix pass applies only the flags on findings a repair changed, "read from the repair's own
+// record of what it touched". Every synthesis save writes that record at the moment it is accepted: the
+// ordinals whose finding object differs from the accepted record before it, or exists in only one of them.
+// Appended, one line per accepted save; a save that changed no finding records an empty list.
+export const touchedRecordPath = (runDir) => join(synthesisCallPaths(String(runDir ?? "")).dir, "touched.jsonl");
+const findingsByOrdinal = (doc) => new Map((Array.isArray(doc?.findings) ? doc.findings : [])
+  .filter((f) => Number.isInteger(f?.ordinal)).map((f) => [f.ordinal, JSON.stringify(f)]));
+export function touchedBetween(prevDoc, nextDoc) {
+  const a = findingsByOrdinal(prevDoc), b = findingsByOrdinal(nextDoc);
+  return [...new Set([...a.keys(), ...b.keys()])].filter((o) => a.get(o) !== b.get(o)).sort((x, y) => x - y);
+}
+/** Every accepted save's touched ordinals, in order. Best-effort: an unreadable record reads as none. */
+export function readTouched(runDir) {
+  try {
+    return readFileSync(touchedRecordPath(runDir), "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l));
+  } catch { return []; }
 }
 
 /** Every call this run turned away, in order — the run's own record that a defect was met and corrected. */

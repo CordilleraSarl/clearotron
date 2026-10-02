@@ -1269,6 +1269,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-save-records-which-findings-it-changed.test.mjs": {
+          "tests": 2,
+          "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
         "a-save-that-cannot-commit-says-so.test.mjs": {
           "tests": 4,
           "asserts": 19,
@@ -6120,6 +6126,12 @@
         "the-retired-azure-settings-are-read-by-nothing.test.mjs": {
           "tests": 3,
           "asserts": 14,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-review-after-a-repair-feeds-one-fix-pass.test.mjs": {
+          "tests": 2,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },

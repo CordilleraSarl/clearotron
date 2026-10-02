@@ -34,7 +34,7 @@
 // `n` is the render's, taken from array order. A seat-supplied number is a value that can disagree with
 // the list it labels — duplicated, skipped, or renumbered by a corrective pass — and nothing downstream
 // would notice. Removing the field removes the defect (the doubt-closure `file_index` rule).
-import { writeFileSync, mkdirSync, existsSync, readFileSync } from "node:fs";
+import { writeFileSync, mkdirSync, existsSync, readFileSync, readdirSync } from "node:fs";
 import { captureCall, mergeCapture } from "./call-capture.mjs";
 import { join } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
@@ -274,6 +274,28 @@ export function readAcceptedFlags(runDir) {
   if (doc?.accepted !== true) return null;
   const flags = doc?.params?.flags;
   return Array.isArray(flags) ? flags : null;
+}
+
+/**
+ * The LATEST accepted review's typed values — verdict, flags and plan audit — or `null` when no call was
+ * accepted. Each call is captured to its own numbered file, and readAcceptedFlags reads the first; a review
+ * a repair re-ran is a later one. The post-repair fix pass (ruling 719) hands the corrective pass only that
+ * review's flags on findings a repair changed, re-rendered through renderRefutation: the reviewer's own
+ * words for those flags and nothing written in their place.
+ */
+export function readLastAcceptedRefutation(runDir) {
+  const { dir } = refutationCallPaths(String(runDir ?? ""));
+  let names = [];
+  try { names = readdirSync(dir).filter((n) => /^call-\d+\.json$/.test(n)).sort().reverse(); } catch { return null; }
+  for (const n of names) {
+    let doc;
+    try { doc = JSON.parse(readFileSync(join(dir, n), "utf8")); } catch { continue; }
+    if (doc?.accepted === true && Array.isArray(doc?.params?.flags)) {
+      return { verdict: doc.params.verdict, flags: doc.params.flags,
+        planAudit: Array.isArray(doc.params.plan_audit) ? doc.params.plan_audit : [] };
+    }
+  }
+  return null;
 }
 
 /** Read back what was written — the verdict view of the stored file, through the one parse. */

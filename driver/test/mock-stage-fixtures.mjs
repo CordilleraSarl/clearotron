@@ -1398,6 +1398,13 @@ export function applyStageWrites(msg, argv) {
           verdict: "The identical registration in the searched class drives the read, and the position is adverse on the current filing.",
           coverage: { read: reco },
       };
+      // MOCK_REDO_TOUCHES_FINDING: the first re-save after the record exists (the lint-repair redo) changes
+      // finding 1, as a repair that moves a finding the reviewer may then flag. Once per run.
+      if (process.env.MOCK_REDO_TOUCHES_FINDING && existsSync(join(runDir, "narrative.md")) && !existsSync(driverDir(runDir, "mock-redo-touched"))) {
+        const f1 = (doc.findings ?? [])[0];
+        if (f1) f1.legal_position = `${f1.legal_position ?? ""} The registration was renewed in the searched class (repair).`.trim();
+        writeFileSync(driverDir(runDir, "mock-redo-touched"), "1\n");
+      }
       let r = recordSynthesis(runDir, { findings: doc, narrative: sections });
       // The refusal names the family. Re-derive with that family's heal phrase and restate once —
       // the phrase per knob is the one `synthesisFindings` keys on, so this drives the SAME heal the
@@ -1497,7 +1504,14 @@ export function applyStageWrites(msg, argv) {
           plan_audit: planAudit.length ? planAudit
             : ["Audited the execution receipt — no clean claim rests on a missing/incomplete slice."],
           flags: [{ kind: "fact",
-            text: "the registration date printed in the narrative contradicts the fetched record (mock)" }] });
+            text: "the registration date printed in the narrative contradicts the fetched record (mock)",
+            // MOCK_LATE_REVIEW_ON: the late flag names the finding it is about, as a reviewer that declares
+            // its scope does — the post-repair fix pass acts only on flags about a finding the repair changed.
+            ...(process.env.MOCK_LATE_REVIEW_ON ? { on: [Number(process.env.MOCK_LATE_REVIEW_ON)] } : {}) },
+            // MOCK_LATE_REVIEW_EXTRA_ON: a second late flag, on a finding the repair did not change — the fix
+            // pass must not hand this one over (ruling 719).
+            ...(process.env.MOCK_LATE_REVIEW_EXTRA_ON ? [{ kind: "fact", on: [Number(process.env.MOCK_LATE_REVIEW_EXTRA_ON)],
+              text: "a second point about a finding the repair left alone (mock)" }] : [])] });
         return bad(r) ? `mock reviewer REFUSED by record_narrative_refutation: ${bad(r)}`
           : "mock reviewer recorded a late BLOCKING through record_narrative_refutation";
       }

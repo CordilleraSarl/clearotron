@@ -116,7 +116,7 @@ test("a cold rewrite of the record replaces the handle and releases the old home
 
 test("both cold rewrites of the synthesis record keep their session and hand it to the handle", () => {
   const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
-  assert.match(src, /if \(name === "synthesis"\) return carrySynthSession\(ctx, await stage\(name, ctx, \{ force: true, trigger: "stale-repair", keepSession: true/,
+  assert.match(src, /const keep = name === "synthesis";[^\n]*\n[^\n]*\.\.\.\(keep \? \{ keepSession: true \} : \{\}\)[^\n]*\n\s*return keep \? carrySynthSession\(ctx, r\) : r;/,
     "the stale-input repair of synthesis keeps no session");
   assert.match(src, /carrySynthSession\(ctx, await stage\("synthesis", ctx, \{[^\n]*\n[^\n]*\n\s*trigger: "schema-downlevel", keepSession: true/,
     "the schema migration keeps no session");
