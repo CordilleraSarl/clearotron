@@ -25,7 +25,7 @@ import { mintSupplementalQid, termIdentity, foldSupplementalEntries } from "../r
 import { kebab } from "../phase0.mjs";
 
 // The reproduction this criterion names: four DISTINCT marks that differ only by combining marks.
-const KATAKANA = ["プロパー", "プロパ－", "プロバー", "フロパー"];
+const KATAKANA = ["ペルポー", "ペルポ－", "ペルボー", "ヘルポー"];
 
 // Two ordinary companies whose names share a 40-character prefix. Not contrived: corporate names do this.
 const LATIN_PAIR = [

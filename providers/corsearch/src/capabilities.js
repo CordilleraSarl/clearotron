@@ -38,7 +38,7 @@ export const CAPABILITIES = Object.freeze({
   countStatusFilter: "none",
   // HTTP-414 URI guard: the whole query is a GET query string, so ~80 backtick-quoted names (≈2–4KB
   // encoded) is the safe OR-stack. This MIRRORS the executor's ENUMERATE_NAMES_CHUNK_DEFAULT — the
-  // planner must never dictate an OR-stack the executor would have to chunk-rescue (Wilderness 414).
+  // planner must never dictate an OR-stack the executor would have to chunk-rescue (Open Country 414).
   maxOrWidth: 80,
   // `nice-class` clauses ride the same query string (implicit OR within the field) — one call, no fan-out.
   classFilter: "native",

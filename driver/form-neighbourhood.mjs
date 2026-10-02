@@ -288,8 +288,8 @@ export function formNeighbourhood(element, { markets = [], scripts = SUPPORTED_S
 
   // exactQueries = the strings dispatched as OR-stacked exact/near name searches (deduped, original excluded).
   //
-  // Deduped ON THE DIACRITIC FOLD, not the raw string. The registers fold diacritics, so `paradisè`,
-  // `paradisé`, `paradisê`, `paradisë` and `paradiše` are ONE query, not five — and one already covered by the
+  // Deduped ON THE DIACRITIC FOLD, not the raw string. The registers fold diacritics, so `havensidè`,
+  // `havensidé`, `havensidê`, `havensidë` and `havenšide` are ONE query, not five — and one already covered by the
   // element itself. Drivers Haven 2026-07-17 dispatched exactly those five as distinct terms; each returned
   // the same 424 hits, together they exhausted the run's record budget, all five stayed `unenumerated`, and
   // `coverage_clean_unverified_incomplete:primary-sweep` then blocked delivery six times on a gate that could
@@ -399,8 +399,8 @@ export function coverageGaps(band, { dispatched = [], explained = [] } = {}) {
 // `model` is the VALIDATED variant-manifest.json (variant-manifest-model.mjs). When supplied it is
 // AUTHORITATIVE for the dominant element and the prose is used only for the formative root — because the prose
 // parse is unsafe. `dominantElementFromManifest` captures to the first `.`/`;`/`(`/newline, so a manifest that
-// writes "Dominant element: HYDRA — the stem a family of marks shares" yields the whole clause, which
-// normalizeElement then compacts to `hydrathestemafamilyofmarksshares`. That pseudo-element got a full
+// writes "Dominant element: AQUA — the stem a family of marks shares" yields the whole clause, which
+// normalizeElement then compacts to `aquathestemafamilyofmarksshares`. That pseudo-element got a full
 // exhaustive edit-1 neighbourhood: 1,736 junk exact queries on AquaPlus 2026-07-17, 4,524 on the 07-16 run.
 // Measured 2026-07-18: 10 of 20 recent runs carried one of these. The JSON field is a validated scalar and
 // cannot swallow a sentence.
@@ -478,7 +478,7 @@ export function renderFormNeighbourhoodJson(manifestMd, { markets = [], scripts 
 // line variantCompletenessGaps' per-script floor draws when it says it VALIDATES, NEVER GENERATES.
 
 // A seed longer than this is a prose-parse artifact, not an element. The measured shape is the
-// swallowed clause — "hydrathestemafamilyofmarksshares", 32-36 characters against a 5-char element —
+// swallowed clause — "aquathestemafamilyofmarksshares", 31-35 characters against a 4-char element —
 // which took a full exhaustive edit-1 neighbourhood and put 1,736 junk exact queries on the wire
 // (AquaPlus 2026-07-17). isStemOfNamedElement already rejects that shape for the formative root by
 // measuring it against the named elements; this is the same measure for a seed with nothing to
@@ -691,7 +691,7 @@ export function variantFloorFamilies(elements, { mark = "", droppedAxes = [], mi
       // MEASURED, not assumed (2026-08-03): the register compiler's `norm` and the shared `formKey`
       // both strip separators, so every member of this family keys IDENTICALLY to the mark and is
       // already searched as the mark's own exact entry — which is why compileRegisterPlan does not
-      // re-dispatch them, and why doing so would be the PARADISE shape (five spellings, one result
+      // re-dispatch them, and why doing so would be the Drivers Haven shape (five spellings, one result
       // set, the run's record budget spent). Enumerated here because the family is genuinely
       // mechanical and the surfaces that do NOT fold spacing — the common-law grid, the connotation
       // sweep — are real; those consumers are NOT wired to it by this change.
@@ -794,7 +794,7 @@ export function mergeVariantFloor(floorFamilies, modelVariants, { rejectedSeeds 
 /**
  * Is `root` a plausible formative root, or a prose-parse artifact?
  *
- * A stem is never LONGER than the element it stems from — VOLEM(5) for ZOLEMA(6), HYDR(4) for HYDRA(5),
+ * A stem is never LONGER than the element it stems from — VOLEM(5) for ZOLEMA(6), AQU(3) for AQUA(4),
  * VELTRI(6) for VELTRIN(7). Substring containment is NOT the test: a real root can differ in its leading
  * character (ZOLEMA → VOLEM reaches the VOLEMA family), which is exactly the widening the root exists for.
  * The swallowed-sentence artifacts are always the element PLUS a clause — 32-36 characters against a 5-char
