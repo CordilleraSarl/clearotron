@@ -230,7 +230,7 @@ export function paths(runDir) {
     // session's answer in its form; the facts each answer is checked against, written before the judges
     // run; the merged decisions the sceptic and synthesis read; and the fate of every owner of the pile.
     ownerJudgment: (n) => p(driverRel(`owner-judgment-${n}.json`)), ownerJudgmentAccepted: (n) => p(driverRel(`owner-judgment-${n}.accepted.json`)),
-    ownerJudgmentFacts: p(driverRel("owner-judgment-facts.json")),
+    ownerJudgmentFacts: p(driverRel("owner-judgment-facts.json")), intakeAsks: p(driverRel("intake-asks.json")),
     ownerDecisions: p("owner-decisions.json"),
     ownerFates: p(driverRel("owner-fates.json")),
     registerFindings: p("register-findings.md"),

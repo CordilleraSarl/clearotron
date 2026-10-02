@@ -81,8 +81,13 @@ export const ANSWER_FORM = Object.freeze({
 // The bench's composition: the order and the client's own materials, each unchanged, and the table's
 // first pages. The section headings are the bench's, "saved run" said as "this search".
 
-/** The order, as the bench wrote it from the run's instructed scope: the mark, the classes, the goods, the territory. */
-export function orderText(scope) {
+/**
+ * The order, as the bench wrote it from the run's instructed scope: the mark, the classes, the goods, the
+ * territory. Then the instructing lawyer's own questions from the order, when the order asked any (owner,
+ * 2026-10-01: the judges see them) — the intake asks the run froze at the frame, each as asked.
+ */
+export function orderText(scope, asks = []) {
+  const questions = (Array.isArray(asks) ? asks : []).map((a) => String(a?.ask ?? "").trim()).filter(Boolean);
   const marks = (Array.isArray(scope?.marks) ? scope.marks : scope?.marks ? [scope.marks] : [])
     .map((m) => (typeof m === "string" ? m : m?.name ?? m?.markName ?? "")).filter(Boolean);
   const territory = scope?.geography?.mode === "worldwide" ? "worldwide"
@@ -93,6 +98,7 @@ export function orderText(scope) {
     `Classes: ${(Array.isArray(scope?.classes) ? scope.classes : []).join(", ")}`,
     `Goods and services: ${scope?.goods ?? ""}`,
     `Territory: ${territory}`,
+    ...(questions.length ? ["The instructing lawyer's questions:", ...questions.map((q) => `- ${q}`)] : []),
   ].join("\n") + "\n";
 }
 

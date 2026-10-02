@@ -5739,6 +5739,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-judges-read-the-lawyers-own-questions.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "the-knockout-page-leads-with-the-read.test.mjs": {
           "tests": 39,
           "asserts": 125,

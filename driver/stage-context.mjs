@@ -195,6 +195,13 @@ const UNDECLARED = {
     { path: P.enforcerSignals, kind: "conditional",
       why: "named in the prompt only when ctx.enforcerSignals > 0; aim-attention telemetry, deliberately outside the freshness map" },
   ],
+  // The instructing lawyer's own questions ride the order in the judges' message (owner-judgment-run.mjs).
+  // Undeclared on purpose: the questions are frozen at the frame, before step 3, and the file is rewritten
+  // with a fresh timestamp on every pass, so as a freshness input it would re-judge every resume.
+  "owner-judgment": (P) => [
+    { path: P.intakeAsks, kind: "driver-side",
+      why: "the driver composes the order in the judges' message with the questions frozen here; outside the freshness map because every pass rewrites the file's timestamp" },
+  ],
 };
 
 // ── the sidecars a stage's own VALIDATOR resolves ────────────────────────────────────────────────────

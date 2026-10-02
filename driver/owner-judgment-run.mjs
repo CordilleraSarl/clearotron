@@ -26,14 +26,15 @@ const readJsonl = (path) => {
 };
 
 /**
- * The one message both judges receive: the order, the client's context, the client's rating scale and
- * worked examples — the files the run already holds, unchanged — and the table's first pages. `ownNames`
+ * The one message both judges receive: the order with the instructing lawyer's own questions, the client's
+ * context, the client's rating scale and worked examples — the files the run already holds, unchanged —
+ * and the table's first pages. `ownNames`
  * is the run's list of the client's own owner names (pipeline.mjs, `ctx.exclusionSeed`). `readSkill(rel)` reads an instruction-tree file by its relative path (the framework and the examples
  * resolve in the deployment's tree exactly as every other stage resolves them).
  */
 export function composeJudgmentMessage({ P, profile, ownNames = [], ratingScalePath, workedExamplesPath, readSkill, tablePages }) {
   return composeMessage({
-    order: orderText(readJson(P.instructedScope)),
+    order: orderText(readJson(P.instructedScope), readJson(P.intakeAsks)?.asks ?? []),
     context: contextText(profile, { ownNames, customerBind: readJson(P.customerBind) }),
     ratingScale: readSkill(ratingScalePath),
     workedExamples: readSkill(workedExamplesPath),
