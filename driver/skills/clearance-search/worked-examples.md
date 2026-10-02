@@ -33,7 +33,7 @@ Notice across all three:
 - **The proposed mark's own distinctiveness is assessed *per field*** — and it drives how narrowly any
   third-party right can block (descriptive term → narrow rights → weak block).
 - **Family-of-marks / branded-context is a real mitigant** ("consumers will perceive EMBERSTRIKE as
-  an extension of the Breaker range"; "strong Blockvale branding").
+  an extension of the Strike range"; "strong Blockvale branding").
 - **Use / revocability / enforcement appetite carry the analysis** — a registration with no use, in
   insolvency, or outside the owner's core market is a different risk from an active enforcer.
 - **Executive summary is synthesised prose:** name the primary risk(s), the overall rating, and the
@@ -336,18 +336,18 @@ side-glance at **Classes 35 and 39** (retail pizza store / pizza delivery) and *
 
 ### Executive summary (per mark)
 
-- **PRIZE CRATE — manageable.** Closest entries: UK registrations for PRIZE CRATE (food, not pizza) and LOOT
-  CHEST (cardboard pizza boxes); confusion unlikely in a Blockvale pizza context, practical objection
+- **PRIZE CRATE — manageable.** Closest entries: UK registrations for PRIZE CRATE (food, not pizza) and PRIZE
+  TRUNK (cardboard pizza boxes); confusion unlikely in a Blockvale pizza context, practical objection
   unlikely. Heavy gaming use/registration of PRIZE CRATE but none an immediate obstacle. Note the term's
   specific (often negative) gaming meaning — a PR consideration before use.
 - **CAVERN CRATES — manageable.** Closest is a US application CAVERN CRATE (Class 30, candy); confusion
   unlikely in the Blockvale pizza context, and no obvious use of CAVERN CRATE for candy. Some "Cavern
   Crate" use in a prize-crate context — minor negative-association risk.
-- **COUCH CO-OP MEAL — manageable.** "Couch co-op" = multiple players sharing one screen/console.
+- **LOCAL CO-OP MEAL — manageable.** "Local co-op" = multiple players sharing one screen/console.
   Numerous supermarket CO(-)OP registrations cover pizza and gaming goods, but given the descriptive
-  gaming meaning of "couch co-op" and strong Blockvale branding, confusion is unlikely.
-- **THE HERO'S CHEST: ADVENTURE ESSENTIALS — manageable.**
-- **THE SLICE AND DICE COMBO — moderate (low end).** An international "pizza and board game" venue trend uses
+  gaming meaning of "local co-op" and strong Blockvale branding, confusion is unlikely.
+- **THE RANGER'S SATCHEL: QUEST ESSENTIALS — manageable.**
+- **THE SLICE AND DICE PLATTER — moderate (low end).** An international "pizza and board game" venue trend uses
   "Slice and Dice"-type names (mostly unregistered, low reputation). The moderate rating attaches to an
   Irish registration SLICE N DICE (individual owner) claiming *both* pizza and electronic gaming goods;
   no use found but within the non-use grace period — plausibly a pizza/board-game venture. Given the
@@ -364,19 +364,19 @@ side-glance at **Classes 35 and 39** (retail pizza store / pizza delivery) and *
 - *Potential negative association / PR:* prize crates are tied to "compulsion loop" game design,
   criticised as gambling-style "dark patterns" and increasingly regulated; using "Prize Crate" for a
   gaming-pizza promo could be read as normalising a criticised practice. (Blockvale's natural-chest
-  loot is non-monetised, not a gambling-style system.)
+  prizes are non-monetised, not a gambling-style system.)
 - *Filings* — **Manageable**: Pence Technology (UK) owns PRIZE CRATE (Stylised) over broad food/beverage
   (not pizza); no obvious use; not revocable yet, but low practical objection risk (company inactive).
-  Prize Crate Retail (UK) owns LOOT CHEST & device over "cardboard pizza boxes" + broad goods; in
-  voluntary insolvency, no recent operations, low practical risk. Loot Crate (geek subscription boxes)
-  owns an international LOOT CRATE portfolio (apparel/paper/toys/retail), not food — no overlap. Numerous
-  third-party LOOT( )BOX gaming filings — none can block given the term's non-distinctiveness in gaming.
-  Pepsi owns LOOT / DORITO'S LOOT / EAT. DRINK. GET LOOT. over Class 30 foods (not pizza) — noted only
+  Prize Trunk Retail (UK) owns PRIZE TRUNK & device over "cardboard pizza boxes" + broad goods; in
+  voluntary insolvency, no recent operations, low practical risk. Prize Case (geek subscription boxes)
+  owns an international PRIZE CASE portfolio (apparel/paper/toys/retail), not food — no overlap. Numerous
+  third-party PRIZE( )CRATE gaming filings — none can block given the term's non-distinctiveness in gaming.
+  Crunchmore Foods owns PRIZE / CRUNCHMORE'S PRIZE / EAT. DRINK. GET PRIZE. over Class 30 foods (not pizza) — noted only
   as a large food player; no confusion.
 - *Common-law* — **Manageable**: a virtual unboxing platform "Prize Crate"; "PRIZECRATE Game Store" (card/
-  tabletop games); "Loot Drink" gamer energy-drink powder.
+  tabletop games); "Prize Drink" gamer energy-drink powder.
 
-**THE SLICE AND DICE COMBO — Moderate (low end)**
+**THE SLICE AND DICE PLATTER — Moderate (low end)**
 - *Distinctiveness/context:* "slice"/"dice" are not very distinctive for pizza (knife actions; "slice"
   = pizza), reflected in 370 live SLICE/DICE filings claiming pizza in Class 30 — so analysis focuses on
   marks with both words or another element bringing them closer; "slice and dice" *is* distinctive for
@@ -395,7 +395,7 @@ side-glance at **Classes 35 and 39** (retail pizza store / pizza delivery) and *
   the Blockvale pizza context. Numerous "Slice and Dice"-type pizzerias/bars, some offering tabletop
   gaming — none with reputation enough to confuse. "Slice and Dice" is also the name of a third-party Blockvale mod.
 
-*(Full CAVERN CRATES, COUCH CO-OP MEAL and THE HERO'S CHEST analyses follow the same chain — owner →
+*(Full CAVERN CRATES, LOCAL CO-OP MEAL and THE RANGER'S SATCHEL analyses follow the same chain — owner →
 coverage + distinctiveness → use/revocability → overlap → enforcement → net, in a Blockvale-branded
 promotional context.)*
 

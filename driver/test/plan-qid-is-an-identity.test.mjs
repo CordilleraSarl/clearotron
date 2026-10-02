@@ -135,7 +135,7 @@ test("an OR-stack and an owner sweep are their own questions, never folded into 
 
 const MODEL = (variants) => JSON.stringify({
   schema_version: 1,
-  mark: "DAWN: LEGENDS OF LUMENGARDE",
+  mark: "DUSK: TALES OF LUMENGARDE",
   dominant_element: "LUMENGARDE",
   elements: [{ value: "LUMENGARDE", kind: "distinctive" }],
   variants,
