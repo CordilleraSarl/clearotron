@@ -1171,11 +1171,14 @@ export function countJobMarks(job) {
 // every name written wholly in Greek, Cyrillic or Han keyed as `mark`, and two different names of that
 // kind were refused as duplicates at intake; two Latin names differing only in an accented letter merged
 // the same way. A name whose letters and numbers the readable part does not hold in full now carries a
-// short hash of them, NFKC-folded and lowercased. Spacing, punctuation and case still change nothing, so
-// a true duplicate still collides. A name the readable part already held in full keys exactly as before,
-// byte for byte: research payloads, published report files and per-name links were keyed on it.
+// short hash of them, NFKC-folded and lowercased. Spacing, punctuation, symbols and case still change
+// nothing, so a true duplicate still collides. A name the readable part already held in full keys exactly
+// as before, byte for byte: research payloads, published report files and per-name links were keyed on it.
+// SYMBOLS GO BEFORE THE FOLD. NFKC turns ™ into "TM" and ℠ into "SM", which would move "BRAND™" off the key
+// it shares with "BRAND"; symbols are the only class NFKC turns into letters or numbers, so dropping them
+// first leaves the fold acting on letters and numbers alone.
 const asciiKey = (s) => String(s ?? "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
-const nameLetters = (s) => String(s ?? "").normalize("NFKC").toLowerCase().replace(/[^\p{L}\p{N}]+/gu, "");
+const nameLetters = (s) => String(s ?? "").replace(/\p{S}/gu, "").normalize("NFKC").toLowerCase().replace(/[^\p{L}\p{N}]+/gu, "");
 export const kebab = (s) => {
   const ascii = asciiKey(s);
   const letters = nameLetters(s);

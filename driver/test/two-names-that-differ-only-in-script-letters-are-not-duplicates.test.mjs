@@ -30,7 +30,9 @@ test("two Latin names that differ only in an accented letter are not duplicates 
 });
 
 test("a true duplicate still collides, whatever its script: spacing, punctuation and case are not a new name", () => {
-  for (const [a, b] of [["维尔特林", "维尔 特林"], ["ΒΕΛΤΡΙΝ", "βελτριν"], ["ВЕЛТРИН", "ВЕЛ-ТРИН"], ["Lumèvo", "LUMÈVO"], ["MOTO X", "MOTO-X"]]) {
+  for (const [a, b] of [["维尔特林", "维尔 特林"], ["ΒΕΛΤΡΙΝ", "βελτριν"], ["ВЕЛТРИН", "ВЕЛ-ТРИН"], ["Lumèvo", "LUMÈVO"], ["MOTO X", "MOTO-X"],
+    // A symbol is not a letter: NFKC would read ™ as "TM" and ℠ as "SM" if the symbols were not dropped first.
+    ["VELTRIN™", "VELTRIN"], ["VELTRIN℠", "VELTRIN"], ["VELTRIN®", "VELTRIN"]]) {
     assert.equal(kebab(a), kebab(b), `"${a}" and "${b}" differ only in spacing, punctuation or case and must share one key`);
     assert.equal(kebabCollisions([a, b]).length, 1, `"${a}" and "${b}" were let through as two names`);
     assert.equal(batch(a, b).classify, "clarify", `the batch of "${a}" and "${b}" was not sent back`);
@@ -47,6 +49,7 @@ test("a name the key already read in full keeps its key byte for byte", () => {
   // derivation, so every name it read without dropping a letter must key exactly as it did.
   const before = (s) => String(s ?? "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 60) || "mark";
   const long = "THE LONGEST INVENTED NAME THIS TEST CAN THINK OF FOR A KEY THAT IS CUT AT SIXTY";
-  for (const name of ["QUEUE PROBE", "MOTO-X 3000", "Project Novapulse", "alpha & beta", "  spaced  ", long, ""])
+  for (const name of ["QUEUE PROBE", "MOTO-X 3000", "Project Novapulse", "alpha & beta", "  spaced  ", long, "",
+    "VELTRIN™", "VELTRIN℠", "VELTRIN®", "ZOR™ENDIK", "№ 5 VELTRIN"])
     assert.equal(kebab(name), before(name), `"${name}" moved from ${before(name)} to ${kebab(name)}`);
 });
