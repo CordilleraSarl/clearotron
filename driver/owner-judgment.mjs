@@ -235,7 +235,7 @@ export const FATES = Object.freeze({
 // Two folded names are one owner when they are the same, or one holds the other whole as words — the
 // bench's rule (`second-look.mjs`), with its floor of six letters so a short word never swallows a name.
 const holds = (long, short) => short.length >= 6 && ` ${long} `.includes(` ${short} `);
-const sameOwner = (a, b) => a === b || holds(a, b) || holds(b, a);
+export const sameOwner = (a, b) => a === b || holds(a, b) || holds(b, a);
 
 /**
  * The owners one decision names, as table keys: the names it gives, folded, and the owners of the records

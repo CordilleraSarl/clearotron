@@ -120,7 +120,8 @@ import { pendingWhatIf, claimWhatIf, finishWhatIf, whatIfRefusal } from "./whati
 import { escalatedAxes } from "./skeptic-record.mjs";   // THE escalation parse — shared with the record_skeptic transport so the rendered shape and this read cannot drift
 // — every placed candidate ends somewhere a reader can see; the ones that do not are counted by name
 
-import { synthesisDutyForRun } from "./synthesis-record.mjs";   // — the duty checked against the DELIVERED document
+import { synthesisDutyForRun, synthesisCallPaths, refusalsFor } from "./synthesis-record.mjs";   // — the duty checked against the DELIVERED document
+import { mergedOverall } from "./decision-ratings.mjs";
 import { RECORD_CARRY_SCHEMA_VERSION, traceRecordCarry, parseStageOutcomes, recordCarryEvent, mintRecordCarryDoubts, findingUris } from "./record-carry.mjs"; import { pickingExits, notesExits, notesPageRows, exitsForLog } from "./hand-off-exits.mjs";
 import { reconcileSurfaceDuty, surfaceDutyNote } from "./surface-duty.mjs";   // item 3 — silence at the findings surface, read off the rows above
 import { DISCARD_LEDGER_NAME, seamRows, appendDiscardRows, foldDiscardLedger } from "./record-discard.mjs";
@@ -155,7 +156,7 @@ import { runLint, flagLines, properNameCandidates } from "./predelivery-lint.mjs
 import { readAnchors } from "./anchor-reader.mjs";
 import { findEngagementReceipts } from "./engagement-receipt.mjs";
 import { plainRegisterFlags } from "./plain-register.mjs";
-import { parseFindingsJson, parseFindingsJsonLenient, consolidateFindings, deriveDisplayVerdict, bindRecommendation, compareBlockingPower, inDispositionMode, DISPOSITION_GROUP, deriveActionConditions, cardedParties, actionPartyReferences, quarantinedConditionRows, salvageRepairTargets, riskStatement, verdictStance, remapActionOrdinals, joinAskToAnswer, stripAskLabel, bandBorderlineDeclarations, reasonedNegativeGroups } from "./findings-model.mjs";
+import { parseFindingsJson, parseFindingsJsonLenient, consolidateFindings, deriveDisplayVerdict, worstLiveBand, bindRecommendation, compareBlockingPower, inDispositionMode, DISPOSITION_GROUP, deriveActionConditions, cardedParties, actionPartyReferences, quarantinedConditionRows, salvageRepairTargets, riskStatement, verdictStance, remapActionOrdinals, joinAskToAnswer, stripAskLabel, bandBorderlineDeclarations, reasonedNegativeGroups } from "./findings-model.mjs";
 import { foldCaption, foldCardRead } from "./card-budget.mjs";
 // S2 — the report card's mechanical frame, composed from the record instead of dictated (see below).
 import { carriesOwnFrame, composeCard } from "./card-frame.mjs";
@@ -2928,6 +2929,29 @@ async function runOwnerJudgment(ctx, { trigger = "fresh", force = false, model =
   note(`[owner-judgment] ${taken.length} judge(s) answered: ${counts.carried} owner(s) carried, ${counts.set_aside} set aside, `
     + `${counts.shown_not_taken_up} shown and not taken up, ${counts.never_shown} never shown, of ${counts.owners}`);
   return { ok: true, judges: record, counts };
+}
+
+/**
+ * What the judges' ratings did on this run, for its record: the judges' merged overall rating, the worst
+ * band among the findings delivered, whether the two differ, how many synthesis calls were refused for
+ * placing a rated owner "off-field", and how many delivered findings read low on both record-based counts.
+ * Null on a run with no merged decisions (a run begun before step 3 was judged by owner).
+ */
+function judgedRatingRecord(runDir, manifest, findings) {
+  let decisions;
+  try { decisions = JSON.parse(readFileSync(join(runDir, "owner-decisions.json"), "utf8")); } catch { return null; }
+  const judgesOverall = mergedOverall(decisions, manifest);
+  const worstFinding = manifest ? worstLiveBand(findings, manifest) : null;
+  let placementRefusals = 0, readsBothLow = 0;
+  try {
+    placementRefusals = refusalsFor(runDir).reduce((n, r) => n + (String(r?.reason ?? "").match(/synthesis_placement_contradicts_rating:/g) ?? []).length, 0);
+  } catch { /* no refusals journal: none refused */ }
+  try {
+    const accepted = JSON.parse(readFileSync(synthesisCallPaths(runDir).accepted, "utf8"));
+    readsBothLow = (accepted?.rating_notices ?? []).filter((n) => n?.kind === "reads-both-low").length;
+  } catch { /* no accepted call: none counted */ }
+  return { judgesOverall, worstFinding, differs: Boolean(judgesOverall && worstFinding && judgesOverall !== worstFinding) || (Boolean(judgesOverall) !== Boolean(worstFinding)),
+    placementRefusals, readsBothLow };
 }
 
 /**
@@ -11951,8 +11975,13 @@ async function pipelineInner(job, opts = {}) {
         throw new Error("verdict BLOCKING with no reasons — a blocking decision without its grounds; verdict.json is the artifact whose whole purpose is carrying them");
       // doc 50 — a v4 record derives off the run's FROZEN framework (band words); deriveDisplayVerdict
       // fail-louds if banded findings arrive with no manifest (never silently badge a rated matter LOW).
+      // THE JUDGES' OVERALL IS THE RUN'S RATING on a run judged by owner (owner, 2026-10-02), merged like
+      // their per-owner ratings; the run records each time it differs from the worst finding it delivers,
+      // and how many findings synthesis placed against a stamped rating or read low on both counts.
+      const judgedRecord = sv >= 4 ? judgedRatingRecord(run.runDir, ctx.framework, findingsArr) : null;
       const derived = deriveDisplayVerdict({ verdict, reasons: reasonsOut, kinds: kindsOut, findings: findingsArr,
-        manifest: sv >= 4 ? ctx.framework : null });
+        manifest: sv >= 4 ? ctx.framework : null, overallBand: judgedRecord?.judgesOverall ?? null });
+      if (judgedRecord) runLog(run.runDir, { event: "judged-rating", ...judgedRecord });
       // spec 64 — THE one risk statement: composed ONCE here (band word + stance clause from the same
       // sidecar fields), consumed verbatim by every surface (index / status / report hero / email /
       // xlsx) so severity and disposition can never contradict across pages. PR-3 (report voice): a

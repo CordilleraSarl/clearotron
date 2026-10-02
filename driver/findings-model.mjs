@@ -215,7 +215,7 @@ export function maxLiveComposite(findings) {
  * Very High matter as the zero-composite "LOW", which is the one catastrophic path this guards.
  * LEGACY (no manifest, composite findings): byte-identical to the pre-doc-50 derivation.
  */
-export function deriveDisplayVerdict({ verdict, reasons, kinds, findings, manifest }) {
+export function deriveDisplayVerdict({ verdict, reasons, kinds, findings, manifest, overallBand = null }) {
   const base = {
     verdict: String(verdict || "").toUpperCase() || null,
     conditions: Array.isArray(reasons) ? reasons.filter(Boolean) : [],
@@ -225,7 +225,10 @@ export function deriveDisplayVerdict({ verdict, reasons, kinds, findings, manife
   if (banded && !manifest)
     throw new Error("findings_band_without_manifest: band-rated findings need the run's frozen framework manifest (_driver/framework.json) — refusing to default a rated matter to LOW");
   if (manifest) {
-    const worst = worstLiveBand(findings, manifest);
+    // A RUN JUDGED BY OWNER RATES THE MARK ONCE, BY CODE (owner, 2026-10-02): the judges' overall rating,
+    // merged like their per-owner ratings, is the run's rating. Every other run keeps the worst live band.
+    const judged = overallBand ? normalizeBand(manifest, overallBand) : null;
+    const worst = judged ?? worstLiveBand(findings, manifest);
     const tone = worst ? bandTone(manifest, worst) : null;
     return {
       ...base,

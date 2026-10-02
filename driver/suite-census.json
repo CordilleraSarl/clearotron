@@ -5745,6 +5745,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-judges-rate-and-synthesis-does-not.test.mjs": {
+          "tests": 6,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
         "the-judges-read-the-lawyers-own-questions.test.mjs": {
           "tests": 2,
           "asserts": 6,

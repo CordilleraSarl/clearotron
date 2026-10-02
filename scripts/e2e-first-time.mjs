@@ -169,7 +169,7 @@ export const NOT_COUNTED_EVENTS = {
     "digest-coverage-form-brief", "digest-flush", "digest-queue-noop", "digest-queued", "digest-rulings-tail",
     "doctrine-write", "document-coverage-rendered", "document-growth-trip", "doubt-selection", "doubts", "draft-carry",
     "economics", "engine-build", "envelope-closed", "envelope-decision", "envelope-decision-early",
-    "escalation-skipped", "experiment", "experiment-refused", 
+    "escalation-skipped", "experiment", "experiment-refused", "judged-rating", 
     "form-neighbourhood-derived", "frame-diff", 
     "frame-diff-source-directives-dropped", "frame-reopen-reconcile-not-needed", "frame-reopen-skipped", "frame-web-grid",
     "framework", "grid-ledger-saved", "grid-spec", "grid-split", "grid-split-skipped", "hit-list-minted",
