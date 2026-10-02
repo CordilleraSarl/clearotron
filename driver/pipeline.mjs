@@ -3493,8 +3493,19 @@ function clearedForSeat(runDir, label) {
 // the record resume it on their first attempt and hand back the session they ended in, which the next
 // correction resumes. A resume that fails falls back to today's cold dispatch inside the ladder. The run
 // releases the kept home when it delivers or fails.
+//
+// THE HANDLE IS ALWAYS THE SESSION THAT WROTE THE CURRENT RECORD. A dispatch that rewrites the record cold
+// (the stale-input repair, the schema migration) keeps its own session and replaces the handle, so a later
+// correction never resumes a session holding an older record while its patch merges onto the new one. A
+// replaced handle's codex home is released.
 const synthResume = (ctx) => (ctx?.synthSession ? { resume: ctx.synthSession } : {});
-const carrySynthSession = (ctx, r) => { if (ctx && r?.ok && r.session) ctx.synthSession = r.session; return r; };
+export function carrySynthSession(ctx, r) {   // @internal
+  if (ctx && r?.ok && r.session) {
+    if (ctx.synthSession?.home && ctx.synthSession.home !== r.session.home) releaseStageSession(ctx.synthSession);
+    ctx.synthSession = r.session;
+  }
+  return r;
+}
 
 async function stageOnce(name, ctx, opts = {}) {
   const def = STAGES[name];
@@ -4918,8 +4929,10 @@ export function recordConnotationAudit(run, P) {   // @internal
 //
 // A HELPER RATHER THAN THREE FIXES, because three fixes leave the fourth entry free to repeat it. Stages
 // that declare nothing compose "" and dispatch exactly as before.
-const repairStage = (name) => (ctx) => {
+const repairStage = (name) => async (ctx) => {
   const { text } = composeDispatchExtra(name, ctx);
+  // A cold rewrite of the synthesis record keeps its session and becomes the one corrections resume.
+  if (name === "synthesis") return carrySynthSession(ctx, await stage(name, ctx, { force: true, trigger: "stale-repair", keepSession: true, ...(text ? { extra: text } : {}) }));
   return stage(name, ctx, { force: true, trigger: "stale-repair", ...(text ? { extra: text } : {}) });
 };
 
@@ -11060,15 +11073,15 @@ async function pipelineInner(job, opts = {}) {
       // dispute_type keys come out, and a new top-level field goes in. There is no small set of named lines
       // to patch, so a whole-file emission is the honest shape of the work rather than an expensive way to
       // avoid one. Do not "fix" this to an Edit on a later sweep.
-      await stage("synthesis", ctx, {
+      carrySynthSession(ctx, await stage("synthesis", ctx, {   // a cold whole rewrite: its own session becomes the one corrections resume
         force: true, sessionKey: synthesisKey, model: synthesisModel, thinking: synthesisThinking,
-        trigger: "schema-downlevel",
+        trigger: "schema-downlevel", keepSession: true,
         followup: repairFollowup("synthesis:schema-downlevel", {
           findings: P.findings, declaredSv,
           frameworkKey: ctx.framework?.framework_key ?? "house-default",
           bandLabels: (ctx.framework?.bands ?? []).map((b) => b.label),
         }) + stageCharter("synthesis", ctx.depth, ctx.framework),
-      });
+      }));
       const afterSv = readSchemaVersion();
       if (afterSv !== null && afterSv < 3) runLog(run.runDir, { event: "findings-schema-downlevel", declared: afterSv });
     }

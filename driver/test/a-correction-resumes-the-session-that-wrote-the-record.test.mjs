@@ -97,4 +97,29 @@ test("a ladder that keeps nothing removes its own home, and a failed ladder keep
   assert.equal(existsSync(failed.calls[0].codexHome), false);
 });
 
+// THE HANDLE IS ALWAYS THE SESSION THAT WROTE THE CURRENT RECORD. A cold rewrite (the stale-input repair,
+// the schema migration) replaces it, so a later correction never resumes a session holding an older record
+// while its patch merges onto the new one.
+test("a cold rewrite of the record replaces the handle and releases the old home; a failed one changes nothing", async () => {
+  const { carrySynthSession } = await import("../pipeline.mjs");
+  const oldHome = mkdtempSync(join(ROOT, "old-home-"));
+  const newHome = mkdtempSync(join(ROOT, "new-home-"));
+  const ctx = { synthSession: { ref: "sess-old", home: oldHome } };
+  carrySynthSession(ctx, { ok: false, fail: "boom" });
+  assert.deepEqual(ctx.synthSession, { ref: "sess-old", home: oldHome }, "a failed rewrite left the record as it was, and the handle with it");
+  carrySynthSession(ctx, { ok: true, session: { ref: "sess-cold", home: newHome } });
+  assert.equal(ctx.synthSession.ref, "sess-cold", "the next correction would resume the session holding the older record");
+  assert.equal(existsSync(oldHome), false, "the replaced session's home was left behind");
+  carrySynthSession(ctx, { ok: true, session: { ref: "sess-next", home: newHome } });
+  assert.equal(existsSync(newHome), true, "a correction that resumed in the same home must not lose it");
+});
+
+test("both cold rewrites of the synthesis record keep their session and hand it to the handle", () => {
+  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
+  assert.match(src, /if \(name === "synthesis"\) return carrySynthSession\(ctx, await stage\(name, ctx, \{ force: true, trigger: "stale-repair", keepSession: true/,
+    "the stale-input repair of synthesis keeps no session");
+  assert.match(src, /carrySynthSession\(ctx, await stage\("synthesis", ctx, \{[^\n]*\n[^\n]*\n\s*trigger: "schema-downlevel", keepSession: true/,
+    "the schema migration keeps no session");
+});
+
 test.after(() => rmSync(ROOT, { recursive: true, force: true }));
