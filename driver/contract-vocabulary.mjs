@@ -234,8 +234,8 @@ export const VOCABULARY = [
 /**
  * WRAPPERS — the emitted failure string is not always the bare token.
  *
- *   invalid_file:<rel(gradedArtifact)>:<validator reason>   gateway.mjs:788
- *   max_tokens_no_output:<the whole string above>           gateway.mjs:1113
+ *   invalid_file:<rel(gradedArtifact)>:<validator reason>   runStageLadder() in gateway.mjs
+ *   max_tokens_no_output:<the whole string above>           runStageLadder() in gateway.mjs
  *
  * The file segment is variable and `max_tokens_no_output:` PREFIXES an otherwise ordinary token, so a
  * matcher keyed on the bare token misses the emitted string and reports a false unattached token. These

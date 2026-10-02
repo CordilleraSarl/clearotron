@@ -6,7 +6,8 @@
 // register-coverage-ledger.json) — no client data.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { CAPABILITY_GAP_MARKER } from "../../providers/_shared/execute-plan.mjs";
+import { CAPABILITY_GAP_MARKER, unresolvedOwnerEnumerateReason } from "../../providers/_shared/execute-plan.mjs";
+import { joinPlanToBands } from "../register-plan.mjs";
 import { nativeScriptIndexGap } from "../../providers/_shared/script-form.mjs";
 import { deriveScopeFacts } from "../scope-facts.mjs";
 import { classTokensFromScopeText } from "../coverage-ledger.mjs";
@@ -429,4 +430,53 @@ test("567 R12: a skip after a FAILED broader search is no longer described as a 
   // silence as a failure would relabel every archived run's skips.
   assert.match(line([{ qid: "fam:a", guard: "primary-sweep:exact:mark" }]),
     /1 was skipped after a broader search came back crowded/, "an absent parent state was read as a failure");
+});
+
+// ── THE TWO CAUSES THE PRODUCER DROPPED, DRIVEN THROUGH THE PRODUCER ─────────────────────────────────────
+//
+// The two arms above feed the reader receipt rows by hand, and one of them uses a value no producer
+// writes. These build each band block exactly as the executor writes it and pass it through
+// `joinPlanToBands`, the function that writes the receipt this reader reads, so a cause the producer
+// drops cannot pass here.
+const ownerPlan = (entries) => ({ ...PLAN, entries });
+const lineThrough = (plan, blocks) => deriveScopeFacts({ instructedScope: { ...INSTRUCTED, classes: [5] }, plan,
+  planExecution: joinPlanToBands(plan, { "primary-sweep": blocks }), coverageRows: [] }).coverage_line;
+
+test("947 R4: an owner sweep the register could not resolve reads 'could not be searched', not an overflow", () => {
+  const plan = ownerPlan([
+    { qid: "owner:exact:a", axis: "owner", predicate: "owner", term: "OWNER LTD", nice_classes: ["5"], regions: ["us"] },
+    { qid: "primary-sweep:exact:mark", axis: "primary-sweep", predicate: "exact", term: "MARKNAME", nice_classes: ["5"], regions: ["us"] },
+  ]);
+  const sweep = { qid: "primary-sweep:exact:mark", state: "enumerated", total_hits: 3, records: [] };
+  // As the executor stamps an owner sweep whose name never resolved: incomplete, no count, deferred, no error.
+  const unresolved = { qid: "owner:exact:a", state: "incomplete", total_hits: null, deferred: true,
+    reason: unresolvedOwnerEnumerateReason("OWNER LTD", null) };
+  assert.match(lineThrough(plan, [sweep, unresolved]), /1 could not be searched/,
+    "an owner sweep that never resolved the name is described as one that overflowed its listing");
+  // ITS PAIR: a listing that overflowed, with no count the register gave, keeps its words — a null alone is
+  // not evidence either way, and only the executor's own deferral says the search could not be made.
+  assert.match(lineThrough(plan, [sweep, { qid: "owner:exact:a", state: "incomplete", total_hits: null }]),
+    /1 returned more records than could be listed in full/, "a real overflow stopped saying so");
+});
+
+test("947 R12: a skip after a broader search that errored reads 'could not be searched', not a crowd", () => {
+  const plan = ownerPlan([
+    { qid: "fam:a", axis: "family", predicate: "exact", term: "FAM", nice_classes: ["5"], regions: ["us"],
+      when: { runs_if_enumerated: "primary-sweep:exact:mark" } },
+    { qid: "primary-sweep:exact:mark", axis: "primary-sweep", predicate: "exact", term: "MARKNAME", nice_classes: ["5"], regions: ["us"] },
+  ]);
+  // As the executor writes a provider error: the band state is `incomplete`, the only other state a band
+  // has, and the error rides beside it. Both shapes it writes: retried to the end, and a declared gap.
+  for (const failed of [
+    { qid: "primary-sweep:exact:mark", state: "incomplete", total_hits: 0, fetched: 0, sample: [], error: true, reason: "provider error (invented)" },
+    { qid: "primary-sweep:exact:mark", state: "incomplete", total_hits: 0, fetched: 0, sample: [], error: true, deferred: true, reason: `${CAPABILITY_GAP_MARKER} (invented)` },
+  ]) {
+    // The failed parent is counted in its own bucket, so only the skip's words are asserted.
+    const line = lineThrough(plan, [failed]);
+    assert.doesNotMatch(line, /came back crowded/, `a skip after a broader search that errored is still blamed on a crowd: ${line}`);
+    assert.match(line, /could not be searched/);
+  }
+  // ITS PAIR: the broader search crowded, and the skip keeps the crowd's words.
+  assert.match(lineThrough(plan, [{ qid: "primary-sweep:exact:mark", state: "incomplete", total_hits: 4212 }]),
+    /1 was skipped after a broader search came back crowded/, "a genuine crowd stopped saying so");
 });

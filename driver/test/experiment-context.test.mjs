@@ -637,3 +637,46 @@ test("every MCP server that reads a driver-written file has a declared tool-grou
     + "to refuse on — so the arm measures the absence of a driver artifact rather than its variable. "
     + "Declare it in TOOL_GROUP_EDGES, keyed on a group the stage is actually granted.");
 });
+
+// ── THE TWO READS A SANDBOX RAN WITHOUT, EACH ASSERTED BY NAME ────────────────────────────────────────
+//
+// These are targeted arms and that is deliberate, against this file's own preference for a derived
+// population. The generic walk above derives its population from `driverDir(runDir, X)` where X ends in
+// `.json`, and the first of these two files ends in `.jsonl` — so it was never in the population the walk
+// checked, and the floor on that population passed on the four `.json` reads it did see. Widening the
+// extension does not fix the walk either: the same expression matches files the servers WRITE, and all
+// three of those are `.jsonl`, so the walk's apparent completeness rested on an accident of extension.
+// That is filed on its own. Until it is fixed, these two name the files.
+test("the band tool group declares the record log, so a sandboxed read serves the body the real stage served", () => {
+  const P = ST.paths("/run");
+  const band = (SC.TOOL_GROUP_EDGES.band(P) ?? []).map((e) => basename(String(e.path)));
+  assert.ok(band.includes("register-record-bodies.jsonl"),
+    "band_record serves a body from this log when the run fetched through the ledger rather than into _records/. "
+    + "Undeclared, the sandbox copy holds no bodies, every record read fails, and the quieter result reads as "
+    + "the model's doing rather than as a missing input.");
+  // The control: the group still declares what it declared before, so this is an addition and not a rewrite.
+  for (const want of ["register-named-band.json", "band-shape.json", "register-positions.json", "_records"]) {
+    assert.ok(band.includes(want), `the band group stopped declaring ${want}`);
+  }
+  // …and it reaches the stage that needs it, which is the thing the edge exists for.
+  const manifest = SC.sandboxManifest("placement-inquiry", P).map((e) => basename(String(e.path)));
+  assert.ok(manifest.includes("register-record-bodies.jsonl"),
+    "the edge is declared but placement-inquiry's manifest does not carry it — the grant and the stage disagree");
+});
+
+test("the digest's manifest carries the hit list its own prompt names", () => {
+  const P = ST.paths("/run");
+  const manifest = SC.sandboxManifest("register-digest", P).map((e) => basename(String(e.path)));
+  assert.ok(manifest.includes("register-hit-list.json"),
+    "the digest's message asks the model to mark lines on this list and hit-list.mjs reads the marks back. "
+    + "Absent from the copy, a marking lands nowhere and the stage passes having been given a different input "
+    + "than the real one.");
+  // The control, for the same reason as above: the manifest still carries the digest's other inputs.
+  for (const want of ["register-digest-facts.json", "register-named-band.json"]) {
+    assert.ok(manifest.includes(want), `the digest's manifest stopped carrying ${want}`);
+  }
+  // A floor on the read: a manifest that collapsed to almost nothing would satisfy nothing above by accident.
+  assert.ok(manifest.length >= 10,
+    `the digest's manifest lists only ${manifest.length} entries — the derivation broke, not the declaration`);
+});
+

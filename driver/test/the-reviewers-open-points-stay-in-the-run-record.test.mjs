@@ -16,7 +16,7 @@
 
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync, existsSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { buildReviewerOpenPointsSection } from "../pipeline.mjs";
@@ -109,11 +109,10 @@ test("the reader that fed the email is gone, not left exported with no caller", 
     "the record's file name must still be owned here, or the writer and the readers can disagree about it");
 });
 
-test("the record is removed when the reviewer left nothing open, rather than left stale", () => {
-  const dir = mkdtempSync(join(tmpdir(), "open-points-none-"));
-  try {
-    assert.equal(buildReviewerOpenPointsSection(["SIGNED", "", "## Flags", ""].join("\n")), "",
-      "a signed review with no open flags must build no section at all");
-    assert.equal(existsSync(driverDir(dir, REVIEWER_OPEN_QUESTIONS_FILE)), false);
-  } finally { rmSync(dir, { recursive: true, force: true }); }
+// NOT COVERED HERE: the write site in pipeline.mjs removes a stale record when the reviewer left nothing
+// open. No unit in this file reaches that branch. An assertion that the record is absent from a freshly
+// created directory held by construction and proved nothing, so this arm claims only what it proves.
+test("a signed review with no open flags builds no section", () => {
+  assert.equal(buildReviewerOpenPointsSection(["SIGNED", "", "## Flags", ""].join("\n")), "",
+    "a signed review with no open flags must build no section at all");
 });
