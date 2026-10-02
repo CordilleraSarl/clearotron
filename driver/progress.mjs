@@ -31,8 +31,8 @@ import { engineCommit, engineCommitSource } from "./engine-build.mjs";   // — 
 // two refutation passes) onto a clean forward-only sequence, so the displayed step never jumps backward.
 export const DISPLAY_STEPS = [
   "Framing the matter",     // 1  matter-frame, clearance-variants
-  "Register sweeps",        // 2  common-law + register-unit:* (fan-out + escalation re-runs collapse here)
-  "Placement & digest",     // 3  owner-judgment (two judges + the merge; re-judgements collapse here)
+  "Searching registers and common law",    // 2  common-law + register-unit:* (fan-out + escalation re-runs collapse here)
+  "Investigating and exploring findings",  // 3  owner-judgment (two judges + the merge; re-judgements collapse here)
   "Skeptic review",         // 4  skeptic
   "Synthesis",              // 5  synthesis (+ corrective re-synthesis)
   "Case law & refutation",  // 6  case-law, narrative-refutation (both passes)
