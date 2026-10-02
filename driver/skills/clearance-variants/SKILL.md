@@ -179,7 +179,7 @@ silently narrows what was searched, and the deferred row is the honest outcome.
 ### Watchlists
 
 - **Aggressive enforcers:** Nordwave, Foxglade Interactive
-- **Major brand owners:** Sony, Aureon, Nintendo, HP, Activision, Take-Two, EA
+- **Major brand owners:** Veltrona, Aureon, Pinecrest, Brightwick, Halloway, Duomark, Skyvault
 - **Competitors:** Epic Games, Valve, Unity, Riot Games
 
 ### Famous-mark Perplexity calls needed

@@ -156,10 +156,10 @@ For game-title rows, the `developer_of_record` and `publisher_of_record` columns
 | Finding | Source / Platform | URL | developer_of_record | publisher_of_record | Type | Notes |
 |---|---|---|---|---|---|---|
 | "Tales of Dusk" | Steam | https://... | Glimmerhouse | Northgale Interactive | Direct conflict — similar gaming title | "Mostly negative" reviews; commercially active 2013/2015 |
-| "Thornmantle" | itch.io | https://... | Thornfall Games | not extracted | Direct conflict — identical game-title | Single-player adventure, "made for SAE Studio 2 Home Brief"; little online presence; not reviewed in 7 years |
+| "Thornmantle" | itch.io | https://... | Thornfall Games | not extracted | Direct conflict — identical game-title | Single-player adventure made for a game-design course brief; little online presence; not reviewed in 7 years |
 | "Thornmantle: Of Magic and Power" | Moby Games | https://... | not extracted | not extracted | Direct conflict — historical gaming title | Released 2007; status unavailable; verify-publisher flag set |
-| "Thornmantle" Astragate ARPG | News / web | https://... | Astragate | not extracted | Direct conflict — gaming title | Browser game; appears cancelled |
-| "Ysolde the Thornmantle" | Pathfinder wiki | https://... | N/A | Grimtable Press | Conceptual — deity name in tabletop RPG | Tabletop, not video game; commercial risk in RPG space |
+| "Thornmantle" Starhollow ARPG | News / web | https://... | Starhollow | not extracted | Direct conflict — gaming title | Browser game; appears cancelled |
+| "Ysolde the Thornmantle" | tabletop RPG wiki | https://... | N/A | Grimtable Press | Conceptual — deity name in tabletop RPG | Tabletop, not video game; commercial risk in RPG space |
 
 ### Commercial awareness (identical/similar in unrelated fields)
 

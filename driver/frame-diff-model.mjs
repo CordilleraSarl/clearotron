@@ -70,7 +70,7 @@ export function parseFrameDiff(raw) {
     if (d.remedy != null) out.remedy = parseRemedy(d.remedy);
     // ── THE ASK CONTRACT AT ASK-RAISE (charter P2e) ───────────────────────────────────────────────
     // A firing directive is a REQUEST TO SEARCH SOMETHING. Until now the parser accepted one whose
-    // item was a display label ("TAKIS (famous cpg snack, …)") with no remedy, and the refusal came
+    // item was a display label ("WAVA (famous cpg snack, …)") with no remedy, and the refusal came
     // hours later at reopen — by which time the session that could have restated it had exited. Four
     // of the five directives on the 2026-07-29 run died exactly there: loud (coverage rows, the clamp,
     // the audit trail) but terminal, with the head noun of a perfect one-query term sitting in the
@@ -190,7 +190,7 @@ export function firingDirectivesLenient(rawOrDoc) {
  *
  * SCOPE IS DELIBERATELY THE VARIANT LAYER (plus any layer's own remedy):
  *   * VARIANT — the evidenced class. The directive says "search this near-form", so its item stands
- *     where a mark term stands, and a label there ("TAKIS (famous cpg snack, …)") is the whole defect:
+ *     where a mark term stands, and a label there ("WAVA (famous cpg snack, …)") is the whole defect:
  *     it dispatches as a nil search that reads CLEAN, or it dies unasked at reopen.
  *   * FIELD — untouched. A class-gap directive whose item names no parseable class already has a
  *     principled ending: deriveDirectiveRemedy returns null and the directive is DISCLOSED rather
