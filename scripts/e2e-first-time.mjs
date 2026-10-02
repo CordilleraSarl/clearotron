@@ -214,6 +214,9 @@ export const NOT_COUNTED_EVENTS = {
     "stray-matter", "synthesis-duty-undischarged", "verdict-blocking-delivered",
   ],
   "the twin of an incident counted under another record — its dispatch, its repair, its clamp or its failure": [
+    // the post-repair fix pass (its dispatch counts under `post-repair-corrective`) and a resume that fell
+    // back cold (its failed attempt counts on the stage record)
+    "post-repair-fix-pass", "resume-fell-back-cold",
     "action-reemit", "ask-answer-reemit", "authority-write-denied", "connotation-remedy", "corrections-applied",
     "corrective-cycle-receipt", "corrective-cycle-settled", "corrective-findings-stale", "coverage-absence-rendered",
     "coverage-closure", "coverage-ledger-recovered", "delivery-stale-repair", "envelope-close-rows", "escalation-noop",
@@ -272,7 +275,7 @@ export const COUNTED_TRIGGERS = {
   // the blind frame or the form oracle named what the first frame and sweep missed
   "frame-reopen": REASK,
   "frame-reopen-retry": RETRY, "grid-ledger": REASK, "intake-asks-followup": REASK, "lint-repair": REPAIR,
-  "plan-join": REASK, "plan-join-fresh": REASK, "schema-downlevel": REASK, "stale-repair": REPAIR,
+  "plan-join": REASK, "plan-join-fresh": REASK, "post-repair-corrective": REASK, "schema-downlevel": REASK, "stale-repair": REPAIR,
   "stale-repair-entry": REPAIR, "taint-rerun": REASK, "verdict-recheck": REASK,
 };
 // The two reasons built at run time: a recall reconciliation re-asking the digest (retired with the
