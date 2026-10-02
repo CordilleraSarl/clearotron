@@ -283,7 +283,7 @@ export const E3_BACKLOG = [
   {
     stage: "register-unit",
     kind: "exactly-these-keys",
-    where: "driver/stages.mjs:3879 (the frame-reopen / scoped-retry message builder). A second number stood here and had been stale for some time: it pointed at a contract-element description rather than a builder, at its old line and at every mechanical shift of it. Two candidate builders sit beside 4157 and picking one would be a guess, so the wrong pointer is removed rather than moved a third time — one accurate citation beats one accurate and one invented.",
+    where: "driver/stages.mjs:3878 (the frame-reopen / scoped-retry message builder). A second number stood here and had been stale for some time: it pointed at a contract-element description rather than a builder, at its old line and at every mechanical shift of it. Two candidate builders sit beside 4157 and picking one would be a guess, so the wrong pointer is removed rather than moved a third time — one accurate citation beats one accurate and one invented.",
     surface: "stage-message",
     evidence: "Every block you append MUST carry \"state\":\"enumerated\" (ONLY if paged to has_more:false) or \"state\":\"incomplete\" — EXACTLY those two strings … (re-dispatch builders, which REPLACE def.message)",
     reparsedBy: "driver/named-band.mjs parseNamedBand. Scope warning: these builders replace def.message on every escalation / envelope-close / frame-reopen dispatch, so an E3 lint that walks STAGES[*].message only never sees them",
@@ -363,15 +363,10 @@ export const E3_BACKLOG = [
   // .join(" / ")}`; the literal is gone from origin/main and the row survived until this check found it
   // four hours later. Knowing about the stale-row disease did not stop me causing an instance of it,
   // which is the whole argument for the check being mechanical rather than a habit.
-  {
-    stage: "synthesis",
-    kind: "exactly-these-keys",
-    where: "driver/stages.mjs:2873",
-    surface: "stage-message",
-    evidence: "- off_field_ground (MANDATORY on every off-field finding, FORBIDDEN on every other disposition): EXACTLY one bare token of: ${OFF_FIELD_GROUNDS.join(\" / \")}",
-    reparsedBy: "driver/findings-model.mjs validateOffFieldGround — the enum is imported from findings-model.mjs and interpolated back into the prompt, so code already holds the list it asks the model to type",
-    removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
-  },
+  // DELETED 2026-10-02, recorded rather than absorbed — E3's own rule for a shrinking set. The row was
+  // synthesis's off_field_ground field, and that dictation is GONE: on a judged run every finding is an
+  // owner the judges carried and rated, a rated owner is never placed as awareness only, so the owner
+  // struck the awareness-only instructions from the message (ruling of 2026-10-02).
   {
     stage: "synthesis",
     kind: "literal-json-skeleton",
@@ -394,15 +389,9 @@ export const E3_BACKLOG = [
     reparsedBy: "driver/findings-model.mjs:848 parseFindingsJson; driver/verify.mjs:1171 checkFindingsSibling gates meters.*.source; finding_basis_source_missing",
     removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
   },
-  {
-    stage: "synthesis",
-    kind: "literal-json-skeleton",
-    where: "driver/stages.mjs:2878",
-    surface: "stage-message",
-    evidence: "- quadrant: {\"x\",\"y\"} numbers in [0,1]. x = goods/services proximity (0 = distant, 1 = identical). y = mark similarity (0 = distinct, 1 = identical).",
-    reparsedBy: "driver/findings-model.mjs:848 parseFindingsJson",
-    removedByMove: "NOTHING ON THE #850 PLAN REMOVES THIS",
-  },
+  // DELETED 2026-10-02, recorded rather than absorbed. The row was synthesis's quadrant field, and that
+  // dictation is GONE: code places the dot on the chart from the judges' two reads (decision-ratings.mjs,
+  // GRID_POSITION), so the message no longer asks for it (owner's ruling of 2026-10-02).
   {
     stage: "synthesis",
     kind: "literal-json-skeleton",

@@ -5776,8 +5776,8 @@
           "todos": 0
         },
         "the-judges-rate-and-synthesis-does-not.test.mjs": {
-          "tests": 7,
-          "asserts": 27,
+          "tests": 8,
+          "asserts": 32,
           "skips": 0,
           "todos": 0
         },
@@ -6419,7 +6419,7 @@
         },
         "two-ratified-forms-get-reasoned-apart.test.mjs": {
           "tests": 7,
-          "asserts": 17,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },

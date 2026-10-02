@@ -75,6 +75,26 @@ test("synthesis is told not to rate: the rating instructions leave its message a
     assert.ok(!message.includes(gone), `synthesis is still told to read the marks or the goods: "${gone}"`);
   assert.ok(message.includes("enforcer = high | medium | low | unknown") && message.includes("use = confirmed | not-confirmed | unknown"),
     "the two research reads left with the record reads");
+  // …nor to place the dot on the chart, nor anything about awareness-only items, which a judged run cannot
+  // deliver, nor the passages that mixed rating into what it writes (owner, 2026-10-02, ruling 710 a and b).
+  for (const gone of [`"quadrant"`, "- quadrant:", "- off_field_ground", `"off_field_ground"`, "COMMERCIAL AWARENESS", "RULED-OUT",
+    "ON AN OFF-FIELD FINDING", "REASON EACH FORM THROUGH THE FRAMEWORK", "THE SAME rating machinery", "rate it.", "fixed above",
+    "The band is what the framework's own method yields", "high similarity + high goods proximity = HIGH legal risk"])
+    assert.ok(!message.includes(gone), `synthesis is still told: "${gone}"`);
+  assert.match(message, /EXACTLY one bare token of: adversarial \/ coexistence-partner \/ distinguished — /,
+    "the disposition values still offer awareness only");
+  // …and the one clause of the old framework line that is not about rating is back, verbatim (ruling 710 c).
+  assert.ok(message.includes(`Voice the client side as it does: "${MANIFEST.entity_label}".`), "the client-voice clause was not restored");
+});
+
+test("the dot on the risk chart is placed from the judges' reads, on a grid of nine positions", () => {
+  const dir = run();
+  try {
+    assert.equal(recordSynthesis(dir, { narrative: NARRATIVE, findings: doc(dir, { quadrant: { x: 0.04, y: 0.97 } }) }).refused, null);
+    // Judge 2's reads were taken: marks "same" (high), goods "overlapping" (medium).
+    assert.deepEqual(written(dir)[0].quadrant, { x: 0.5, y: 0.833 },
+      "the dot is not where the card's two meters put it, or the writer's own numbers survived");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
 test("code stamps each finding's band from the judges' merged decisions, the higher where they differ", () => {
