@@ -129,6 +129,8 @@ export function parseNamedBand(raw) {
         // truncate the covered_by pointers with the reason's 400-char cap. Old bands carry neither key.
         ...(b.class_counts && typeof b.class_counts === "object" && !Array.isArray(b.class_counts) ? { class_counts: b.class_counts } : {}),
         ...(Array.isArray(b.covered_by) && b.covered_by.length ? { covered_by: b.covered_by } : {}),
+        // what the total counts, when the register said — carried like the counts it qualifies
+        ...(typeof b.total_counts === "string" ? { total_counts: b.total_counts } : {}),
         // — THE REFUSAL STAMP SURVIVES THE PROJECTION. `execute-plan.mjs` writes an errored slice
         // as `{state:"incomplete", total_hits:0, fetched:0, error:true}` and says why in its own header:
         // "the error:true stamp (a provider error is never confusable with a sanctioned crowd)". The
