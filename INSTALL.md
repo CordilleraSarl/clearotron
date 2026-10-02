@@ -737,7 +737,7 @@ Copy or author the companies, context packs and project overlays you want; assum
    The engine sizes a knockout search at 5 to 10 minutes — which is what this job orders — and a clearance
    at up to 2.5 hours.
    The example run in `demo/` took 2 h 35 m, and it is a clearance, not a knockout. A
-   single stage of a clearance can legitimately run 45 minutes — let it finish.
+   single stage of a clearance can legitimately run 42 minutes — let it finish.
    [How long a run takes](#how-long-a-run-takes) below gives the provenance of each figure.
 
    This run sends the matter off the machine — the mark, its classes, the goods wording, and the
@@ -777,14 +777,14 @@ and runs to 2.5 hours — one range for every clearance, whichever lanes it carr
 native-language lane and a single-territory deep-dive; the delivered walls refuted that, so the adders
 were removed.
 
-**What the stages declare.** Every stage carries a timeout — the longest is 45 minutes, and the 16
-together sum to 5.6 hours (`driver/stages.mjs`). Fan-out members run in parallel and a retry adds to
+**What the stages declare.** Every stage carries a timeout — the longest is 42 minutes, and the 15
+together sum to 4.7 hours (`driver/stages.mjs`). Fan-out members run in parallel and a retry adds to
 the wall, so the sum sizes the stages rather than the run.
 
 What moves the wall is the fan-out: how many search axes the register plan compiles, whether the
 marketplace sweep splits in half, how many findings need cards, and how many registers the product
 sweeps. Every run records its own quote against its actual wall in `status.json`. A stage still going
-after half an hour is not hung — the longest stage timeout is 45 minutes, and the engine hard-kills
+after half an hour is not hung — the longest stage timeout is 42 minutes, and the engine hard-kills
 anything that overruns its own.
 
 ### If a run stops before it delivers
