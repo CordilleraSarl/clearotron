@@ -165,14 +165,18 @@ const GRADED = { narrativeKeptBandRank: 3, narrativeWriteUpWords: 270 };
 const HEADLESS = "## Overview\n\nThe field is crowded but the applicant's position is defensible.\n\n"
   + "## Commentary\n\nSeveral owners hold adjacent rights; none is presently enforcing.\n";
 
-test("a GRADED run whose narrative has no keyable write-up says so — it never returns silence", () => {
-  // THE DEFECT. Both the ungraded product and the unreadable graded run reported `total: 0`, and the
-  // caller could not tell them apart, so 6 of 22 graded runs shipped reading as compliant.
+test("a GRADED run whose narrative is sectional says the rule does not apply — it never returns silence", () => {
+  // THE OLD DEFECT. Both the ungraded product and the graded run with no write-up block reported
+  // `total: 0`, and the caller could not tell them apart. The row still tells them apart; what it says
+  // changed (the owner's ruling of 2026-10-01): a sectional narrative has no per-finding write-up for the
+  // depth rule to govern, so the rule does not apply, and that is a passing row rather than a failure on
+  // every clearance for a heading the directive never asks for.
   const rows = narrativeWriteUpChecks({ narrativeMd: HEADLESS, findings: FINDINGS, depth: GRADED, manifest: MANIFEST });
-  assert.notDeepEqual(rows, [], "a graded run the check could not read returned no row at all");
+  assert.notDeepEqual(rows, [], "a graded run with no write-up block returned no row at all");
   assert.equal(rows.length, 1);
-  assert.equal(rows[0].pass, false, "an unverified depth rule was reported as a passing one");
-  assert.match(rows[0].id, /could-not-read/);
+  assert.equal(rows[0].id, "narrative-write-ups");
+  assert.equal(rows[0].pass, true, "a rule with nothing to govern was reported as failing");
+  assert.match(rows[0].detail, /the depth rule does not apply to a sectional narrative/);
 });
 
 test("the row states the DENOMINATOR it expected and that it recognised nothing", () => {
@@ -181,23 +185,19 @@ test("the row states the DENOMINATOR it expected and that it recognised nothing"
   const [row] = narrativeWriteUpChecks({ narrativeMd: HEADLESS, findings: FINDINGS, depth: GRADED, manifest: MANIFEST });
   assert.match(row.detail, new RegExp(`${FINDINGS.findings.length} finding`),
     "the row does not name how many findings the run holds, which is the denominator it expected");
-  assert.match(row.detail, /NO recognisable prose write-up block/);
-  assert.match(row.detail, /unenforced/, "and it must say what the consequence is, not merely what it saw");
+  assert.match(row.detail, /no per-finding write-up block/);
+  assert.match(row.detail, /nothing to govern/, "and it must say what that means for the rule, not merely what it saw");
 });
 
-test("the row is STRUCTURAL — it reports, and never sends a seat to fix an uninstructed rule", () => {
+test("the row never sends a seat to fix an uninstructed rule", () => {
   // THE CALL AT THE MECHANISM, and it rests on reading the directive rather than on taste.
   // `proseRungDirective` tells the seat WHICH findings get a prose write-up and HOW LONG it may be. It
   // never asks for the `Finding N — <mark>` heading this check keys on. So a narrative without one
   // breaks no rule the seat was given, and a warm redo would hand it a correction no directive lets it
-  // satisfy — one wasted dispatch per affected run, on 42% of multi-country runs.
-  //
-  // What is actually wrong is that the depth rules went UNVERIFIED, which is a coverage fact. Making
-  // the heading mandatory is the cure for the underlying gap, and that is a directive change, not a
-  // lint change — raised rather than taken here.
+  // satisfy. A passing row orders no redo and puts no line on the delivery.
   const [row] = narrativeWriteUpChecks({ narrativeMd: HEADLESS, findings: FINDINGS, depth: GRADED, manifest: MANIFEST });
-  assert.equal(row.structural, true,
-    "the row is routed to the warm redo, which would ask the seat to satisfy a rule it was never given");
+  assert.equal(row.pass, true,
+    "the row fails, which routes it to a redo asking the seat to satisfy a rule it was never given");
 });
 
 test("an UNGRADED product still returns silence — the fix must not make product 4 noisy", () => {
@@ -283,9 +283,9 @@ test("the row is still written, and an ungraded product still emits nothing at a
     manifest: { bands: [{ label: "High" }, { label: "Low" }] },
   });
   assert.equal(graded.length, 1);
-  assert.match(graded[0].id, /could-not-read/, "the graded run still reports it");
-  assert.equal(graded[0].pass, false);
-  assert.equal(graded[0].structural, true, "…and still rides the structural flag, so no warm redo is ordered");
+  assert.equal(graded[0].id, "narrative-write-ups", "the graded run still reports it");
+  assert.match(graded[0].detail, /does not apply to a sectional narrative/);
+  assert.equal(graded[0].pass, true, "…as a passing row, so no delivery line and no redo is ordered");
 
   const ungraded = narrativeWriteUpChecks({
     narrativeMd: "# Report\n\nProse with no recognisable write-up block.\n",
