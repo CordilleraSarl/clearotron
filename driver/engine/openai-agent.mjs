@@ -446,6 +446,20 @@ export function codexToolCallsByName(ev) {
 }
 
 /**
+ * The tool-server calls of this turn that came back as an error, by tool name, in the shape
+ * anthropic-agent records: a call that reached its server and `failed` there, which codex writes with no
+ * `error.message` (a call codex refused itself carries one, and `toolCallsRefused` counts those). Counted
+ * once per item id. An OBJECT is a measurement (`{}`: none). PURE.
+ */
+export function codexToolServerErrors(ev) {
+  const byName = Object.create(null);
+  for (const c of ev?.mcpCalls?.values() ?? []) {
+    if (c.status === "failed" && !c.message) countTool(byName, `mcp__${c.server ?? "?"}__${c.tool ?? "?"}`);
+  }
+  return { ...byName };
+}
+
+/**
  * The MCP tool-call gauge for this turn: what completed, what was REFUSED, and why.
  *
  * ✕ A TOOL THAT RAN AND ERRORED IS NOT A REFUSAL, and the first cut of this conflated them — which
@@ -664,7 +678,8 @@ function settleTuple({ r, ev, resumeRef }) {
     commandToolCalls: null,
     // The per-name split of the calls codex reports (see codexToolCallsByName), what the session went
     // through (session-record.mjs: every turn ending and stream error, in order), and the raw stream.
-    toolCallsByName: codexToolCallsByName(ev), session: sessionSummary(ev.session), stream: ev.stream ?? null,
+    toolCallsByName: codexToolCallsByName(ev), toolCallsErroredByName: codexToolServerErrors(ev),
+    session: sessionSummary(ev.session), stream: ev.stream ?? null,
     writesFailed: ev.writesFailed ?? 0,
     commandsFailed: ev.commandsFailed ?? 0,
     commandFailures: ev.commandFailures ?? [],
@@ -701,7 +716,7 @@ function errResult(t0, e, resumeRef) {
     stderr: `openai-agent error: ${e?.message ?? e}`, laneWaitMs: 0,
     json: null, usage: null, modelWire: null, sessionRef: resumeRef ?? null,
     // No session ran: nothing to have been interrupted, no stream.
-    toolCallsByName: null, session: null, stream: null,
+    toolCallsByName: null, toolCallsErroredByName: null, session: null, stream: null,
   };
 }
 

@@ -3312,11 +3312,15 @@ export function warmPatchMessage(lastFail, expectFile, { supplementalLane = fals
  * calls the program refused (Claude's own denials; Codex's tool-server calls refused before reaching their
  * server). `commandToolCalls`: calls to a tool that runs a command, which no Claude stage is offered, so
  * zero is the expected reading; Codex keeps its shell and reports null. `mcpToolCalls`: the tool-server
- * calls Codex completed, its only count of calls made, since its `toolCalls` stays null. Null, as in
+ * calls Codex completed, its only count of calls made, since its `toolCalls` stays null.
+ * `toolCallsErroredByName`: the tool-server calls that came back as an error, by tool name, so a stage that
+ * had a call refused and made it again says so where its row otherwise reads ok on one attempt. Null, as in
  * `toolGauge`, is "this engine does not report", never zero. RECORDING ONLY. It sits at the end of this
  * file so that adding it moved no line another file cites.
  */
 function toolCallCounts(turn) {
   const n = (v) => (Number.isFinite(v) && v >= 0 ? v : null);
-  return { toolCallsRefused: n(turn?.toolCallsRefused), commandToolCalls: n(turn?.commandToolCalls), mcpToolCalls: n(turn?.mcpToolCalls) };
+  const errored = turn?.toolCallsErroredByName;
+  return { toolCallsRefused: n(turn?.toolCallsRefused), commandToolCalls: n(turn?.commandToolCalls), mcpToolCalls: n(turn?.mcpToolCalls),
+    toolCallsErroredByName: errored && typeof errored === "object" && !Array.isArray(errored) ? { ...errored } : null };
 }

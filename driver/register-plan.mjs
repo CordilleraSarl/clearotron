@@ -2405,6 +2405,9 @@ export function joinPlanToBands(plan, bandBlocksByAxis, { released = new Set() }
       // says `incomplete` with no count. The deferral is the only thing that tells it from a listing that
       // overflowed, so it rides with the row rather than stopping at the block.
       ...(b.deferred === true ? { deferred: true } : {}),
+      // WHAT THE TOTAL COUNTS, when the register said: `records`, one per country a mark covers. Every
+      // reader of this row reads the count as the register's own number (ruled 2026-10-02).
+      ...(typeof b.total_counts === "string" ? { total_counts: b.total_counts } : {}),
     });
   }
   const planQids = new Set(plan.entries.map((e) => e.qid));

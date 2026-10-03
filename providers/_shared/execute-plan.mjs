@@ -509,6 +509,8 @@ export function makeExecutePlan(deps) {
           // the resolution the sweep actually ran on, verbatim — a reader must be able to see WHICH
           // applicant styling was asked for, on a verified zero as much as on an unverified one.
           ...(parsed?.owner_resolution ? { owner_resolution: parsed.owner_resolution } : {}),
+          // what the counted total counts, when the register said (enumerate.mjs, "what the total counts")
+          ...(counted && typeof parsed?.total_counts === "string" ? { total_counts: parsed.total_counts } : {}),
           reason: ownerUnverified ? unresolvedOwnerCountReason(e.term ?? (e.terms ?? [])[0], coveredBy)
             : parsed ? descriptorReason
             : `provider error on the count probe (after one in-tool retry): ${clipProviderText(r?.text ?? "", 100)}` });

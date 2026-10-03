@@ -291,6 +291,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-count-that-threw-shows-no-exception-text.test.mjs": {
+          "tests": 4,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "a-court-search-that-did-not-run-reads-as-not-completed.test.mjs": {
           "tests": 4,
           "asserts": 6,
@@ -729,6 +735,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-knockout-run-with-no-method-is-not-offered-inputs.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "a-knockout-whose-counts-all-fail-pays-for-no-owner-lookup.test.mjs": {
           "tests": 3,
           "asserts": 12,
@@ -1083,6 +1095,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-record-not-held-shows-no-goods-line.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "a-refusal-is-not-a-pass.test.mjs": {
           "tests": 6,
           "asserts": 10,
@@ -1146,6 +1164,12 @@
         "a-refused-search-is-not-a-dropped-one.test.mjs": {
           "tests": 6,
           "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-refused-tool-call-is-classified-and-counted.test.mjs": {
+          "tests": 6,
+          "asserts": 21,
           "skips": 0,
           "todos": 0
         },
@@ -3401,7 +3425,7 @@
         },
         "instrumentation-house-rule.test.mjs": {
           "tests": 17,
-          "asserts": 116,
+          "asserts": 118,
           "skips": 0,
           "todos": 0
         },
@@ -3521,7 +3545,7 @@
         },
         "knockout-structured-read.test.mjs": {
           "tests": 12,
-          "asserts": 57,
+          "asserts": 58,
           "skips": 0,
           "todos": 0
         },
@@ -4427,7 +4451,7 @@
         },
         "register-count.test.mjs": {
           "tests": 31,
-          "asserts": 198,
+          "asserts": 200,
           "skips": 0,
           "todos": 0
         },
@@ -4559,7 +4583,7 @@
         },
         "render.test.mjs": {
           "tests": 163,
-          "asserts": 681,
+          "asserts": 683,
           "skips": 0,
           "todos": 0
         },
@@ -5388,6 +5412,12 @@
         "the-audit-stores-register-presence.test.mjs": {
           "tests": 11,
           "asserts": 32,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-band-record-says-what-its-total-counts.test.mjs": {
+          "tests": 3,
+          "asserts": 9,
           "skips": 0,
           "todos": 0
         },
@@ -7547,6 +7577,12 @@
           "skips": 0,
           "todos": 0
         },
+        "providers/_shared/test/a-total-that-counts-records-says-so-on-every-answer.test.mjs": {
+          "tests": 3,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "providers/_shared/test/absent-body.test.mjs": {
           "tests": 12,
           "asserts": 53,
@@ -7730,6 +7766,12 @@
         "providers/signa/test/an-exact-question-stays-ranked-above-the-floor.test.mjs": {
           "tests": 3,
           "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/signa/test/an-expanded-total-says-it-counts-records.test.mjs": {
+          "tests": 3,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },
