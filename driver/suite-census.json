@@ -5656,8 +5656,8 @@
           "todos": 0
         },
         "the-drivers-writes-are-a-layer-over-the-models-record.test.mjs": {
-          "tests": 8,
-          "asserts": 35,
+          "tests": 9,
+          "asserts": 40,
           "skips": 0,
           "todos": 0
         },

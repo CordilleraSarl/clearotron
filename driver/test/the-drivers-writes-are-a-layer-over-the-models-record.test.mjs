@@ -161,6 +161,26 @@ test("a rollback puts the patch base back with the record: a later patch does no
   } finally { rmSync(r.dir, { recursive: true, force: true }); }
 });
 
+test("a write that throws during a rebuild costs only its own write, and the next stage rebuilds again", () => {
+  const r = run();
+  try {
+    openLayer(r.dir);
+    recordSynthesis(r.dir, { narrative: NARRATIVE, findings: record(TWINS) });
+    noteApplied(r.dir, "meaning-gap", {}, r.P.findings);   // applied earlier in the pass
+    seamFold(r);
+    const changed = { ...record(TWINS).findings[2], legal_position: "The earlier registration was renewed in the searched class." };
+    assert.equal(recordSynthesis(r.dir, { findings_patch: [changed] }).refused, null);
+    // a context the meaning-gap write cannot run with: it throws before its own guard
+    const broken = { paths: r.P, framework: null };
+    assert.equal(reapplyLayer(broken), true);
+    assert.equal(onDisk(r.P).findings.length, 2, "the write that threw stopped the fold after it");
+    const ev = readFileSync(driverDir(r.dir, "run.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l))
+      .filter((e) => e.event === "layer-reapplied").at(-1);
+    assert.deepEqual(ev?.failed?.map((f) => f.name), ["meaning-gap"], "the failed write is not on the run's record");
+    assert.equal(reapplyLayer(broken), true, "a rebuild that lost a write was taken as the layer's record");
+  } finally { rmSync(r.dir, { recursive: true, force: true }); }
+});
+
 test("a fold that cannot be made leaves the record as it is, and its record says why", () => {
   const r = run();
   try {
