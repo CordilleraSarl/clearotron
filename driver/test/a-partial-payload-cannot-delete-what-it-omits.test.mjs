@@ -588,7 +588,7 @@ test("a required field is enforced by the ACCEPTOR, because nothing before it en
 const DECLARES_NONE_BY_DESIGN = Object.freeze({
   record_synthesis:
     "A call omitting `findings` or `narrative` IS the patch path, not an incomplete call — "
-    + "synthesis-record.mjs:676 recordSynthesis detects a partial by that absence and merges it onto the record the "
+    + "synthesis-record.mjs:687 recordSynthesis detects a partial by that absence and merges it onto the record the "
     + "run's last call carried before acceptSynthesis judges it. Declaring either required would refuse every corrective "
     + "repair-composers.mjs tells the seat to send.",
   record_unit_note:
