@@ -1071,6 +1071,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-record-not-held-shows-no-goods-line.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "a-refusal-is-not-a-pass.test.mjs": {
           "tests": 6,
           "asserts": 10,
