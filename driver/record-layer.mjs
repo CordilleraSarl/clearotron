@@ -75,11 +75,14 @@ export function noteApplied(runDir, name, args, findingsPath) {
   } catch { /* best-effort */ }
 }
 
-/** The layer produced this record: the next rebuild is owed only once something else writes it. */
+/**
+ * The layer produced this record: the next rebuild is owed only once something else writes it. A rebuild in
+ * which a write failed produced no record of the layer's (`findingsPath` null), so the next one is owed at once.
+ */
 export function noteProduced(runDir, findingsPath) {
   try {
     const state = readLayer(runDir);
-    if (state) writeLayer(runDir, { ...state, producedSha: shaOfFile(findingsPath) });
+    if (state) writeLayer(runDir, { ...state, producedSha: findingsPath ? shaOfFile(findingsPath) : null });
   } catch { /* best-effort */ }
 }
 
