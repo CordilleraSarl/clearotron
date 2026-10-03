@@ -322,13 +322,20 @@ export function actionsReachabilityChecks({ onlyYouText, actionsRegister, findin
 // Counting consistency (A2): "N live registrations/marks" cited for the same owner must agree across
 // surfaces. Conservative: owner = nearest preceding proper-name within 90 chars.
 export function countingChecks(surfaces, extraVocab = null) {
-  const claims = []; // {owner, n, surface}
+  const claims = []; // {owner, n, surface, at}
+  const reportCards = [];   // the report's cards that carry an ordinal, as spans of the same stripped text
   for (const [surface, text] of Object.entries(surfaces)) {
     const t = stripHtml(text);
+    if (surface === "report") {
+      for (const card of splitCards(t)) {
+        const ord = (card.text.match(/^\s*-\s*ord:\s*(\d+)\s*$/im) || [])[1];
+        if (ord != null) reportCards.push({ ordinal: Number(ord), start: card.start, end: card.end });
+      }
+    }
     for (const m of t.matchAll(/(\d{1,4})\s+(?:live\s+)?(?:registrations?|marks?)\b/gi)) {
       const before = t.slice(Math.max(0, m.index - 90), m.index);
       const owner = properNameCandidates(before, extraVocab).pop() ?? null;
-      if (owner) claims.push({ owner: norm(owner), n: Number(m[1]), surface });
+      if (owner) claims.push({ owner: norm(owner), n: Number(m[1]), surface, at: m.index });
     }
   }
   const byOwner = new Map();
@@ -337,8 +344,24 @@ export function countingChecks(surfaces, extraVocab = null) {
     byOwner.get(c.owner).add(c.n);
   }
   const bad = [...byOwner.entries()].filter(([, ns]) => ns.size > 1);
-  return [check("counting-consistency", "counting", "all", bad.length === 0,
-    bad.length ? bad.map(([o, ns]) => `"${o}" counted differently across surfaces: ${[...ns].join(" vs ")}`).join("; ") : "")];
+  const detail = (owners) => bad.filter(([o]) => owners.has(o))
+    .map(([o, ns]) => `"${o}" counted differently across surfaces: ${[...ns].join(" vs ")}`).join("; ");
+  if (!bad.length) return [check("counting-consistency", "counting", "all", true, "")];
+  // A count that disagrees INSIDE a card is that card's to fix (see routedByCard): each such card is a
+  // failure carrying its ordinal. Anything elsewhere keeps the one cross-surface failure it always had.
+  const badOwners = new Set(bad.map(([o]) => o));
+  const byCard = new Map();
+  let elsewhere = false;
+  for (const c of claims) {
+    if (!badOwners.has(c.owner)) continue;
+    const card = c.surface === "report" ? reportCards.find((k) => c.at >= k.start && c.at < k.end) : null;
+    if (!card) { elsewhere = true; continue; }
+    if (!byCard.has(card.ordinal)) byCard.set(card.ordinal, new Set());
+    byCard.get(card.ordinal).add(c.owner);
+  }
+  const out = [...byCard].map(([ordinal, owners]) => ({ ...check("counting-consistency", "counting", "report", false, detail(owners)), ordinal }));
+  if (elsewhere) out.push(check("counting-consistency", "counting", "all", false, detail(badOwners)));
+  return out;
 }
 
 // Compute-don't-author (PR-4) — the counting-family FLIP: prose carries NO scope/coverage numbers at
@@ -381,11 +404,11 @@ export function scopeNumberProseChecks({ reportMd, clientSummaryMd }) {
   const out = [];
   for (const [surface, text] of [["report", stripFrontMatterBlock(reportMd)], ["client-summary", clientSummaryMd]]) {
     if (!String(text ?? "").trim()) continue;
-    const hits = [...new Set((stripHtml(text).match(SCOPE_NUMBER_RE) ?? []).map((h) => h.replace(/\s+/g, " ").trim()))];
-    out.push(check("scope-numbers-in-prose", "counting", surface, hits.length === 0,
-      hits.length
-        ? `scope/coverage counts are computed from the run record and rendered by code (the coverage_line) — prose must not re-type them (drop the number, keep the substance): ${hits.slice(0, 8).map((h) => `"${h}"`).join(", ")}${hits.length > 8 ? ` (+${hits.length - 8} more)` : ""}`
-        : ""));
+    const hitsOf = (t) => [...new Set((stripHtml(t).match(SCOPE_NUMBER_RE) ?? []).map((h) => h.replace(/\s+/g, " ").trim()))];
+    const detail = (hits) => `scope/coverage counts are computed from the run record and rendered by code (the coverage_line) — prose must not re-type them (drop the number, keep the substance): ${hits.slice(0, 8).map((h) => `"${h}"`).join(", ")}${hits.length > 8 ? ` (+${hits.length - 8} more)` : ""}`;
+    if (surface === "report") { routedRows(out, { id: "scope-numbers-in-prose", family: "counting", surface, text, hitsOf, detail }); continue; }
+    const hits = hitsOf(text);
+    out.push(check("scope-numbers-in-prose", "counting", surface, hits.length === 0, hits.length ? detail(hits) : ""));
   }
   return out;
 }
@@ -524,6 +547,33 @@ function splitCards(md) {
   }
   if (cur) cards.push(cur);
   return cards.map((c) => ({ heading: c.heading, text: c.body.join("\n"), start: c.start, end: c.end }));
+}
+
+// ── A FAULT INSIDE A CARD IS THAT CARD'S TO FIX ─────────────────────────────────────────────────────
+// The lint repair sends a report failure that carries an ordinal to that card's own redo, and one that
+// carries none to the report-overview redo, which writes the shell and cannot edit a card. A prose check
+// that found its fault inside a card and set no ordinal sent the repair to the one pass that could not
+// make it. So each card with hits is a failure of its own, carrying the card's ordinal, and what lies
+// outside every card with an ordinal is one failure for the shell — the routing permissionProseChecks
+// already has. A card with no `- ord:` line cannot be routed, so its text stays with the shell.
+function routedByCard(src, hitsOf) {
+  const text = String(src ?? "");
+  const cards = [];
+  let shell = text;
+  for (const card of splitCards(text)) {
+    const ord = (card.text.match(/^\s*-\s*ord:\s*(\d+)\s*$/im) || [])[1];
+    if (ord == null) continue;
+    shell = shell.slice(0, card.start) + shell.slice(card.start, card.end).replace(/[^\n]/g, " ") + shell.slice(card.end);
+    const hits = hitsOf(`${card.heading}\n${card.text}`);
+    if (hits.length) cards.push({ ordinal: Number(ord), hits });
+  }
+  return { cards, shell: hitsOf(shell) };
+}
+/** One row per card with hits, then the shell's row — or one passing row when nothing was found. */
+function routedRows(out, { id, family, surface, text, hitsOf, detail }) {
+  const { cards, shell } = routedByCard(text, hitsOf);
+  for (const c of cards) out.push({ ...check(id, family, surface, false, detail(c.hits)), ordinal: c.ordinal });
+  if (shell.length || !cards.length) out.push(check(id, family, surface, shell.length === 0, shell.length ? detail(shell) : ""));
 }
 
 export function findingProvenanceChecks({ reportMd, findings }) {
@@ -938,6 +988,9 @@ const sentencesOf = (t, protectedForms = []) => protectNameForms(t, protectedFor
   .split(/(?<=[.!?])\s+(?=[^a-z])|\n+/)
   .map((s) => s.split(SENTINEL).join("."))
   .filter((s) => s.trim());
+// The finding sentence's count at the synthesis call (synthesis-record.mjs) rests on THIS split, which
+// never cuts a name in half, rather than on a second copy of it.
+export const sentencesKeepingNames = sentencesOf;
 export function ownerScreenNegativeChecks({ text, ownerScreen, markVocab = null, surface = "report" }) {
   const owners = (ownerScreen?.owners ?? []).filter((o) => o.state !== "enumerated");
   if (!owners.length || !String(text ?? "").trim()) return [];
@@ -1494,12 +1547,12 @@ export function wipoLanguageChecks({ reportMd, clientSummaryMd }) {
   const out = [];
   for (const [surface, text] of [["report", reportMd], ["client-summary", clientSummaryMd]]) {
     if (!text) continue;
-    const hits = stripHtml(text).split(/(?<=[.!?])\s+|\n+/)
+    const hitsOf = (t) => stripHtml(t).split(/(?<=[.!?])\s+|\n+/)
       .filter((s) => INTL_REG_RE.test(s) && GLOBAL_RIGHTS_RE.test(s) && !/designat/i.test(s));
-    out.push(check("wipo-designation-language", "registry", surface, hits.length === 0,
-      hits.length
-        ? `international-registration prose implies worldwide reach — a WIPO/Madrid registration protects only its designated countries; name them or drop the global language: ${hits.map((s) => s.replace(/\s+/g, " ").trim().slice(0, 100)).join(" | ")}`
-        : ""));
+    const detail = (hits) => `international-registration prose implies worldwide reach — a WIPO/Madrid registration protects only its designated countries; name them or drop the global language: ${hits.map((s) => s.replace(/\s+/g, " ").trim().slice(0, 100)).join(" | ")}`;
+    if (surface === "report") { routedRows(out, { id: "wipo-designation-language", family: "registry", surface, text, hitsOf, detail }); continue; }
+    const hits = hitsOf(text);
+    out.push(check("wipo-designation-language", "registry", surface, hits.length === 0, hits.length ? detail(hits) : ""));
   }
   return out;
 }
@@ -2109,13 +2162,13 @@ export function prescriptionProseChecks({ reportMd, clientSummaryMd, findings, f
   const out = [];
   for (const [surface, text] of zones) {
     if (!String(text).trim()) continue;
-    const hits = [];
-    for (const sentence of String(text).split(/(?<=[.!?])\s+|\n+/)) {
-      const re = PRESCRIPTION_RES.find((r) => r.test(sentence));
-      if (re) hits.push(`"${sentence.trim().replace(/\s+/g, " ").slice(0, 90)}"`);
-    }
-    out.push(check("prescription-prose", "voice", surface, hits.length === 0,
-      hits.length ? `advice-shaped or self-caveating language on a delivered surface — the report states facts that condition, never advice (forward asks live only in the actions register; reliability is decided by the gate, never narrated): ${hits.slice(0, 4).join("; ")}${hits.length > 4 ? `; +${hits.length - 4} more` : ""}` : ""));
+    const hitsOf = (t) => String(t).split(/(?<=[.!?])\s+|\n+/)
+      .filter((sentence) => PRESCRIPTION_RES.some((r) => r.test(sentence)))
+      .map((sentence) => `"${sentence.trim().replace(/\s+/g, " ").slice(0, 90)}"`);
+    const detail = (hits) => `advice-shaped or self-caveating language on a delivered surface — the report states facts that condition, never advice (forward asks live only in the actions register; reliability is decided by the gate, never narrated): ${hits.slice(0, 4).join("; ")}${hits.length > 4 ? `; +${hits.length - 4} more` : ""}`;
+    if (surface === "report") { routedRows(out, { id: "prescription-prose", family: "voice", surface, text, hitsOf, detail }); continue; }
+    const hits = hitsOf(text);
+    out.push(check("prescription-prose", "voice", surface, hits.length === 0, hits.length ? detail(hits) : ""));
   }
   return out;
 }

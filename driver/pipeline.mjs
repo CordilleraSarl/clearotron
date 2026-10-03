@@ -15,7 +15,7 @@ import { goodsOf } from "./queue-markers.mjs";   // — one reading of "does thi
 import { terminalClampDecision, orderClausesForLede, clientConditions, clauseForDefect } from "./terminal-clamp.mjs";   // — deliver and clamp, never withhold
 import { recordSpan } from "./attributed-span.mjs";   // — driver work the decomposition can attribute
 import { fileURLToPath } from "node:url";
-import { runStage, correctionHint, gridLedgerNameFor, draftCarryEligible, toolWrittenArtifact, selectEngine } from "./gateway.mjs";
+import { runStage, correctionHint, gridLedgerNameFor, draftCarryEligible, toolWrittenArtifact, selectEngine, releaseStageSession } from "./gateway.mjs";
 // — the arm's TOOL WIRING, for its context receipt. Read through the same two functions the
 // gateway dispatches with, never re-derived: a receipt that described a second computation would be
 // describing a dispatch that did not happen.
@@ -37,7 +37,7 @@ import { IDENTITY_FILE as REPORT_IDENTITY_FILE } from "./report-overview-record.
 import { dispatchRows, clearedSignatures } from "./seat-attempts.mjs";
 import { CONTEXT_DERIVATIONS, DISPATCH_EXTRAS, INLINE_CONTEXT, sandboxManifest, sandboxGaps, derivationsFor } from "./stage-context.mjs";   // — what a stage is actually handed
 import { parseVerdict, countCitedDefects, parseCorrectionKinds, parseCorrections, validators, findReviewerCoherenceFlags, lateReviewAgainst } from "./verify.mjs";
-import { readAcceptedFlags } from "./narrative-refutation-record.mjs";   // T3b — the typed flags, not the re-parse
+import { readAcceptedFlags, readLastAcceptedRefutation, renderRefutation } from "./narrative-refutation-record.mjs";   // T3b — the typed flags, not the re-parse
 import { evidenceClaimViolations, evidenceClaimTable } from "./evidence-claim-invariant.mjs";   //
 import { buildCorrectionsApplied, correctionsWorklist, correctionsAppliedTable, correctionScope, scopeDrift, unresolvedFlags, reportLines, linesOf, REPORT_LINE_KEY, REPORT_LINE_LABEL } from "./corrections-feedforward.mjs";
 import { parseCoverageLedgerJson, parseCoverageLedgerFull, deriveCoverageStatus, classTokensFromScopeText, coerceToolAbsenceDeferred, applyTaintDeferred, decideRegisterGap, splitDeferredByCloseability, formRowUnitKey, coverageLedgerTableRows, coverageUnitLabel, NON_MATERIAL_AXES, COVERAGE_STATUSES } from "./coverage-ledger.mjs";
@@ -119,7 +119,7 @@ import { pendingWhatIf, claimWhatIf, finishWhatIf, whatIfRefusal } from "./whati
 import { escalatedAxes } from "./skeptic-record.mjs";   // THE escalation parse — shared with the record_skeptic transport so the rendered shape and this read cannot drift
 // — every placed candidate ends somewhere a reader can see; the ones that do not are counted by name
 
-import { synthesisDutyForRun } from "./synthesis-record.mjs";   // — the duty checked against the DELIVERED document
+import { synthesisDutyForRun, readTouched } from "./synthesis-record.mjs";   // — the duty checked against the DELIVERED document
 import { mergedOverall } from "./decision-ratings.mjs";
 import { RECORD_CARRY_SCHEMA_VERSION, traceRecordCarry, parseStageOutcomes, recordCarryEvent, mintRecordCarryDoubts, findingUris } from "./record-carry.mjs"; import { pickingExits, notesExits, notesPageRows, exitsForLog } from "./hand-off-exits.mjs";
 import { reconcileSurfaceDuty, surfaceDutyNote } from "./surface-duty.mjs";   // item 3 — silence at the findings surface, read off the rows above
@@ -3440,6 +3440,25 @@ function clearedForSeat(runDir, label) {
   catch { return []; }
 }
 
+// ── THE SESSION THAT WROTE THE RECORD, RESUMED BY EVERY CORRECTION OF IT (owner, 2026-10-02) ───────
+// Synthesis keeps its session (gateway.mjs runStage, keepSession); the corrective pass and the repairs of
+// the record resume it on their first attempt and hand back the session they ended in, which the next
+// correction resumes. A resume that fails falls back to today's cold dispatch inside the ladder. The run
+// releases the kept home when it delivers or fails.
+//
+// THE HANDLE IS ALWAYS THE SESSION THAT WROTE THE CURRENT RECORD. A dispatch that rewrites the record cold
+// (the stale-input repair, the schema migration) keeps its own session and replaces the handle, so a later
+// correction never resumes a session holding an older record while its patch merges onto the new one. A
+// replaced handle's codex home is released.
+const synthResume = (ctx) => (ctx?.synthSession ? { resume: ctx.synthSession } : {});
+export function carrySynthSession(ctx, r) {   // @internal
+  if (ctx && r?.ok && r.session) {
+    if (ctx.synthSession?.home && ctx.synthSession.home !== r.session.home) releaseStageSession(ctx.synthSession);
+    ctx.synthSession = r.session;
+  }
+  return r;
+}
+
 async function stageOnce(name, ctx, opts = {}) {
   const def = STAGES[name];
   if (!def) throw new Error(`unknown stage ${name}`);
@@ -3621,6 +3640,8 @@ async function stageOnce(name, ctx, opts = {}) {
   const r = await runStage(label, {
     agent: execAgent,
     message,
+    ...(opts.resume ? { resume: opts.resume } : {}),
+    ...(opts.keepSession ? { keepSession: true } : {}),
     model,
     thinking,
     // opts.sessionKey lets a followup RESUME the exact key a prior run won on (winning-key hardening); else
@@ -4104,9 +4125,9 @@ async function quarantineSynth(r, ctx, name) {
           runLog(ctx.paths.runDir, { event: "finding-reemit", stage: name, marks, errors: lenient.quarantined.map((q) => String(q.error ?? "").slice(0, 80)) });
           note(`[${name}] ${marks.length} finding object(s) failed the strict parse — one warm single-artifact re-emit naming exactly those objects`);
           const followup = repairFollowup("synthesis:finding-reemit", { findings: ctx.paths.findings, quarantined: lenient.quarantined });
-          const rr = await stage(name, ctx, { force: true, sessionKey: r.sessionKey, model: r.model,
-            thinking: r.thinking, trigger: "finding-reemit",
-            followup: followup + stageCharter(name, ctx.depth, ctx.framework) });
+          const rr = carrySynthSession(ctx, await stage(name, ctx, { force: true, sessionKey: r.sessionKey, model: r.model,
+            thinking: r.thinking, trigger: "finding-reemit", ...(name === "synthesis" ? synthResume(ctx) : {}),
+            followup: followup + stageCharter(name, ctx.depth, ctx.framework) }));
           ledger.record("finding-corrective-reemit", targetKey, rr.ok ? "ok" : `failed: ${rr.fail}`, { max: reemitMax });
           if (rr.ok) return rr;
         }
@@ -4142,9 +4163,9 @@ async function quarantineSynth(r, ctx, name) {
             kinds: bad.map((q) => q.kind), errors: bad.map((q) => String(q.error ?? "").slice(0, 80)) });
           note(`[${name}] ${bad.length} action object(s) failed the strict parse — one warm single-artifact re-emit naming exactly those objects`);
           const followup = repairFollowup("synthesis:action-reemit", { findings: ctx.paths.findings, bad });
-          const rr = await stage(name, ctx, { force: true, sessionKey: r.sessionKey, model: r.model,
-            thinking: r.thinking, trigger: "action-reemit",
-            followup: followup + stageCharter(name, ctx.depth, ctx.framework) });
+          const rr = carrySynthSession(ctx, await stage(name, ctx, { force: true, sessionKey: r.sessionKey, model: r.model,
+            thinking: r.thinking, trigger: "action-reemit", ...(name === "synthesis" ? synthResume(ctx) : {}),
+            followup: followup + stageCharter(name, ctx.depth, ctx.framework) }));
           ledger.record("action-corrective-reemit", actionKey, rr.ok ? "ok" : `failed: ${rr.fail}`, { max: actionReemitMax });
           if (rr.ok) return rr;
         }
@@ -4172,9 +4193,9 @@ async function quarantineSynth(r, ctx, name) {
             errors: bad.map((q) => String(q.error ?? "").slice(0, 80)) });
           note(`[${name}] ${bad.length} ask_answers object(s) failed the strict parse — one warm single-artifact re-emit naming exactly those objects`);
           const followup = repairFollowup("synthesis:ask-answer-reemit", { findings: ctx.paths.findings, bad });
-          const rr = await stage(name, ctx, { force: true, sessionKey: r.sessionKey, model: r.model,
-            thinking: r.thinking, trigger: "ask-answer-reemit",
-            followup: followup + stageCharter(name, ctx.depth, ctx.framework) });
+          const rr = carrySynthSession(ctx, await stage(name, ctx, { force: true, sessionKey: r.sessionKey, model: r.model,
+            thinking: r.thinking, trigger: "ask-answer-reemit", ...(name === "synthesis" ? synthResume(ctx) : {}),
+            followup: followup + stageCharter(name, ctx.depth, ctx.framework) }));
           ledger.record("ask-answer-corrective-reemit", askKey, rr.ok ? "ok" : `failed: ${rr.fail}`, { max: askReemitMax });
           if (rr.ok) return rr;
         }
@@ -4269,8 +4290,26 @@ export function stageCharter(stageName, depth, framework = null) {   // @interna
  * A re-emission that is not told the rung is not a repair of the rung's output. It is a fresh write
  * under the default contract, wearing the corrective pass's name.
  */
-export function correctionsExtra(P, depth = null, framework = null) {   // @internal
-  const review = existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "";
+/**
+ * The review a post-repair fix pass is handed: the latest accepted review's points on what a repair
+ * changed, rendered in the reviewer's own words. `reach` is what the saves since the repair began record
+ * they touched — `ordinals`, the findings, and `prose`, whether the narrative's prose was rewritten. A
+ * point on a finding is handed when that finding changed (owner, ruling 719); a point that names no finding
+ * is about the document, and is handed when the prose was rewritten — text no reviewer had read (design,
+ * 2026-10-02, reading 718 and 719 together). A coverage list re-rendered from the record's rows is not a
+ * rewrite. Every reader of the review in the corrective body takes this in its place — the message, the
+ * removal check, the freshness gate and the applied table — so all four speak of the same points. null
+ * when no point is on what the repair changed.
+ */
+export function handedReview(P, reach) {   // @internal
+  const acc = readLastAcceptedRefutation(P.runDir);   // the review the repair re-ran, not the first one
+  const onFinding = (f) => Array.isArray(f?.on) && f.on.length > 0;
+  const flags = (acc?.flags ?? []).filter((f) => (onFinding(f) ? f.on.some((o) => reach.ordinals.has(o)) : Boolean(reach.prose)));
+  return flags.length ? { flags, text: renderRefutation(acc.verdict, flags, acc.planAudit) } : null;
+}
+
+export function correctionsExtra(P, depth = null, framework = null, { handed = null } = {}) {   // @internal
+  let review = existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "";
   // — THE FLAGS ARRIVE AS A TYPED WORKLIST, not only as a wall of prose. The reviewer already
   // declares each flag's kind and taught it all four; the first run after that deployed came back
   // with four kinds populated across twelve lines. The raw review still rides below — this is a better
@@ -4301,6 +4340,15 @@ export function correctionsExtra(P, depth = null, framework = null) {   // @inte
         ordinals: Array.isArray(f.on) && f.on.length ? f.on : null,
       }))
     : parseCorrections(review);
+  // ── ONLY THE FLAGS ON FINDINGS A REPAIR CHANGED (owner, ruling 719) ─────────────────────────────────
+  // The post-repair fix pass applies only those (handedReview), so the worklist, the scope and the review
+  // that rides below are all narrowed to them, in the reviewer's own words: nothing the pass is handed
+  // asks it to apply the rest.
+  if (handed) {
+    review = handed.text;
+    rows.splice(0, rows.length, ...handed.flags.map((f, i) => ({ n: i + 1, kind: f.kind, text: f.text, fix: f.fix ?? null,
+      ordinals: Array.isArray(f.on) && f.on.length ? f.on : null })));   // a point about the document stays unscoped, as above
+  }
   if (P.runDir) {
     try {
       runLog(P.runDir, {
@@ -4860,9 +4908,11 @@ export function recordConnotationAudit(run, P) {   // @internal
 //
 // A HELPER RATHER THAN THREE FIXES, because three fixes leave the fourth entry free to repeat it. Stages
 // that declare nothing compose "" and dispatch exactly as before.
-const repairStage = (name) => (ctx) => {
+const repairStage = (name) => async (ctx) => {
   const { text } = composeDispatchExtra(name, ctx);
-  return stage(name, ctx, { force: true, trigger: "stale-repair", ...(text ? { extra: text } : {}) });
+  const keep = name === "synthesis";   // a cold rewrite of the record keeps its session (carrySynthSession)
+  const r = await stage(name, ctx, { force: true, trigger: "stale-repair", ...(keep ? { keepSession: true } : {}), ...(text ? { extra: text } : {}) });
+  return keep ? carrySynthSession(ctx, r) : r;
 };
 
 // Step 3's two judges stale apart or together, and each label repairs through the step's own runner: a
@@ -5143,7 +5193,8 @@ export function restoredFindingsTable(repair) {   // @internal
   ].join("\n");
 }
 
-function correctionNamedOrdinals(P) {
+export function correctionNamedOrdinals(P, handed = null) {   // @internal
+  if (handed) return handed.flags.flatMap((f) => (Array.isArray(f?.on) ? f.on : []));
   const out = [];
   try {
     const typed = readAcceptedFlags(P.runDir);
@@ -5177,9 +5228,9 @@ function correctionNamedOrdinals(P) {
  * table as unresolved. `namesLine` wants the label's shape — "the coverage line for <area>" — so a flag
  * writing "the US coverage note" misses unless it also quoted eight running words of the line.
  */
-function correctionNamedLines(P, doc0) {
+export function correctionNamedLines(P, doc0, reviewText = null) {   // @internal
   try {
-    const review = existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "";
+    const review = reviewText ?? (existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "");
     const lines = reportLines(doc0);
     return [...new Set(parseCorrections(review).flatMap((r) => linesOf(r?.text, lines).map((l) => l.key)))];
   } catch { return []; }   // no review read — every row removal is then unnamed, and restored
@@ -5191,8 +5242,8 @@ function correctionNamedLines(P, doc0) {
  *   removed is not in the post-pass document, so its mark could never be found there and every named
  *   removal would read as unnamed. The repair path passes the PRE-corrective document for that reason.
  */
-function correctionNamedSet(P, doc0 = null) {
-  const review = existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "";
+export function correctionNamedSet(P, doc0 = null, reviewText = null) {   // @internal
+  const review = reviewText ?? (existsSync(P.seniorEyeReview) ? readFileSync(P.seniorEyeReview, "utf8") : "");
   let doc = doc0;
   if (!doc) { try { doc = parseFindingsJsonLenient(readFileSync(P.findings, "utf8")); } catch { return []; } }
   const norm = (s) => String(s ?? "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
@@ -5207,10 +5258,10 @@ function correctionNamedSet(P, doc0 = null) {
   }
   return [...named];
 }
-async function enforceCorrectionsReachFindings(ctx, P, pre, resume) {
+async function enforceCorrectionsReachFindings(ctx, P, pre, resume, reviewText = null) {
   if (!pre) return;                                            // no findings.json before the pass — nothing to enforce
   const { run } = ctx;
-  const named = correctionNamedSet(P);
+  const named = correctionNamedSet(P, null, reviewText);
   const readState = () => {
     let raw = null, corrections = null;
     try { raw = readFileSync(P.findings, "utf8"); } catch { return { stale: false }; }
@@ -5220,11 +5271,11 @@ async function enforceCorrectionsReachFindings(ctx, P, pre, resume) {
   };
   if (!readState().stale) return;
   note(`[corrections] findings.json unchanged after the corrective pass (review names: ${named.join(", ")}) — demanding the re-emit`);
-  await stage("synthesis", ctx, {
+  carrySynthSession(ctx, await stage("synthesis", ctx, {
     force: true, sessionKey: resume.synthesisKey, model: resume.synthesisModel, thinking: resume.synthesisThinking,
-    trigger: "corrective-findings",
+    trigger: "corrective-findings", ...synthResume(ctx),
     followup: repairFollowup("synthesis:corrective-findings", { findings: P.findings, named }) + stageCharter("synthesis", ctx.depth, ctx.framework),
-  });
+  }));
   if (readState().stale) {
     runLog(run.runDir, { event: "corrective-findings-stale", named });
     note(`[corrections] findings.json STILL stale — internal report ships; client export will hold (corrections-state)`);
@@ -7482,6 +7533,163 @@ export function instructedScopeOf(job) {
     // never a missing key.
     geography: job?.geography ?? null,
   };
+}
+
+// ── THE CORRECTIVE PASS, ONE BODY FOR BOTH ITS USES (owner, ruling 718, 2026-10-02) ──────────────────
+// The reviewer's flags are applied by one corrective pass after the first review (the corrective cycle)
+// and after the review a delivery-check repair re-runs (the post-repair fix pass). One body, so the two
+// cannot drift: the snapshot, the re-prepared declinations, the dispatch resuming the session that wrote
+// the record, the rollback on failure, the restore of removals no flag named, the gate that demands the
+// re-emit, and the applied-flags table the report's open points read. The verdict recheck stays with the
+// cycle; the fix pass has none.
+async function applyReviewerCorrections(ctx, P, run, { verdict, synthesisKey, synthesisModel, synthesisThinking, trigger = "corrective", handed = null }) {
+  // `handed`: the post-repair fix pass's review (handedReview); the corrective cycle passes none and reads
+  // the whole review.
+  let correctionsApplied = null, evidenceViolations = [], correctionsScope = null, correctiveRollback = null, correctiveRepair = null;
+  const preCorrective = snapshotFindingsForCorrections(P, run.runDir);                     // A1
+  // — re-prepared, not reused. The findings surface cannot move between these two passes today
+  // (nothing writes placements.json or register-findings.md between them — checked), so this rewrites
+  // the same list. It is here anyway, because the alternative is an invariant a future change breaks
+  // silently: if the surface ever did move, the corrective's `row_index` would point into the previous
+  // pass's list and a declination would land on the wrong record.
+  prepareDeclinationSpec(ctx, P);
+  const correctivePass = await stage("synthesis", ctx, { force: true, followup: correctionsExtra(P, ctx.depth, ctx.framework, { handed }), sessionKey: synthesisKey, model: synthesisModel, thinking: synthesisThinking, ...synthResume(ctx), trigger });
+  carrySynthSession(ctx, correctivePass);   // the next correction resumes the session this one ended in
+  // half one — the corrective pass rewrites findings.json under a closed minimal-edit contract,
+  // so it is the pass most likely to change one record's fate. Its own account, at its own moment; the
+  // winner rule in record-discard.mjs lets this carry cancel an earlier discard.
+  recordSynthesisSeam(ctx, correctivePass, "corrective");
+  // T3b — a corrective pass that cannot produce a valid document no longer kills the run. The
+  // pre-corrective findings come back and the run delivers, with the reviewer's objections printed
+  // by `buildReviewerOpenPointsSection` — which is the other half of the same owner decision and is
+  // what makes this honest rather than quiet. `must` still runs where the rollback declines.
+  correctiveRollback = correctivePass.ok
+    ? null
+    : rollbackCorrectivePass(P, run.runDir, preCorrective, correctivePass);
+  if (correctiveRollback) {
+    runLog(run.runDir, { event: "corrective-rollback", reason: correctiveRollback.reason,
+      restored: correctiveRollback.restored, verdict });
+    note(`[corrections] the corrective pass failed (${correctiveRollback.reason}) — `
+      + `${correctiveRollback.restored ? "findings.json restored to the version the reviewer read" : "findings.json was never changed"}`
+      + `; the run delivers with the reviewer's points printed rather than failing`);
+  } else {
+    must(correctivePass, `synthesis(${verdict.toLowerCase()})`);
+    // ── — THE THIRD BRANCH, AND IT IS ON THE SUCCESS SIDE ON PURPOSE ─────────
+    //
+    // A repair is not a rollback and must never be reached by falling through to one. The rollback
+    // branch above deliberately skips both the corrections-reached-findings gate and the reviewer's
+    // re-read, because what it delivers is the PRE-corrective document — the exact bytes the
+    // reviewer already read, so there is nothing new to re-read. A repaired document is the
+    // opposite: it is a document nobody has seen, assembled by the driver from two sources.
+    //
+    // So it stays here, before the gate, with `correctiveRollback` still null — which is what makes
+    // the reviewer's re-read run over it. That dispatch is guarded on `!correctiveRollback`, so a
+    // repair hung off the rollback side would have inherited the skip silently and shipped a
+    // driver-assembled document no reviewer ever saw. Every check the successful branch runs, the
+    // repair branch runs, on the repaired bytes.
+    //
+    // NAMED AGAINST THE PRE-CORRECTIVE DOCUMENT. A removed finding is absent from the post-pass
+    // file, so matching the review's names against that file would find none of them and call every
+    // named removal unnamed.
+    let preDocForNames = null;
+    try { preDocForNames = preCorrective ? parseFindingsJsonLenient(preCorrective.raw) : null; } catch { /* fall back to the file */ }
+    const repaired = repairUnnamedRemovals(P, run.runDir, preCorrective,
+      correctionNamedOrdinals(P, handed), correctionNamedSet(P, preDocForNames, handed?.text), correctionNamedLines(P, preDocForNames, handed?.text));
+    correctiveRepair = repaired;   // carried to the reviewer's re-read, which must know these are the DRIVER's
+    if (repaired) {
+      // A DEFECT SIGNAL, not a success. After the schema fix a corrective pass sends a targeted edit
+      // and cannot remove a finding at all, so e2e asserts this count is ZERO — a firing reports the
+      // primary fix not holding, never this backstop working.
+      runLog(run.runDir, { event: "corrective-unnamed-removal-repaired", defect: true,
+        restored: repaired.restoredFindings.length, keys: repaired.restoredKeys.length,
+        rows: repaired.restoredRows.length,
+        leftRemoved: repaired.leftRemoved.length,
+        findings: repaired.restoredFindings.map((f) => `${f.ordinal}:${f.mark}`) });
+      note(`[corrections] the corrective pass removed ${repaired.restoredFindings.length} finding(s) `
+        + `no flag named — restored whole from the pre-corrective snapshot: `
+        + `${repaired.restoredFindings.map((f) => `#${f.ordinal} ${f.mark}`).join(", ")}`
+        + (repaired.restoredKeys.length ? `; and ${repaired.restoredKeys.length} top-level register(s): ${repaired.restoredKeys.join(", ")}` : "")
+        + (repaired.restoredRows.length ? `; and ${repaired.restoredRows.length} row(s): ${repaired.restoredRows.map((r) => r.key).join(", ")}` : "")
+        + (repaired.leftRemoved.length ? `. ${repaired.leftRemoved.length} removal(s) the reviewer DID name stay removed.` : "")
+        + " The reviewer re-reads the repaired document before it ships.");
+    }
+    await enforceCorrectionsReachFindings(ctx, P, preCorrective, { synthesisKey, synthesisModel, synthesisThinking }, handed?.text);   // A1 freshness gate
+  }
+  // — WHAT THE DRIVER OBSERVED, flag by flag, written before the recheck is dispatched. The
+  // recheck's whole cost is re-reading two documents to work out whether its own corrections landed;
+  // the driver already holds the pre-corrective findings snapshot and the post-pass file, so it can
+  // answer that from evidence and leave the reviewer the part only it can do — judging whether what
+  // changed is RIGHT. NEVER-KILL: a table that cannot be built just means the recheck reads as it
+  // always did, which is today's behaviour exactly.
+  try {
+    // The fix pass observes only the flags it was handed: a flag it never saw is not one it tried and
+    // could not close.
+    const rows = parseCorrections(handed?.text ?? readFileSync(P.seniorEyeReview, "utf8"));
+    const preDoc = preCorrective ? parseFindingsJsonLenient(preCorrective.raw) : null;
+    let postDoc = null;
+    try { postDoc = parseFindingsJsonLenient(readFileSync(P.findings, "utf8")); } catch { /* shape defects ride the normal ladder */ }
+    correctionsApplied = buildCorrectionsApplied(rows, preDoc, postDoc);
+    // — A CLAIM MAY NOT OUTLIVE ITS EVIDENCE, AND A DEMOTED STAMP MAY NOT COME BACK.
+    //
+    // Same two documents, one more question. The pass that fixes the reviewer's flags is the pass
+    // most likely to break the join between a claim and its support, and on the run this was found
+    // on it did both: four meters lost their basis while the band held (one with a byte-identical
+    // claim, one that GREW by 243 characters as its citation was deleted), and six stamps the
+    // driver had demoted minutes earlier as `record-on-disk-never-read` came back as
+    // `verified-from-record` with no register call in between.
+    //
+    // RECORDED, AND CARRIED TO THE RECHECK — never a refusal here, for the reason the table above
+    // is not one either: the reviewer is about to read both documents and is better placed than a
+    // diff to say whether a change was right. A gate here would also spend a dispatch on the stage
+    // this seam exists to make cheaper. ``'s correct-or-escalate is satisfied by escalating to
+    // the seat that can judge it.
+    try {
+      let demotions = [];
+      try { demotions = JSON.parse(readFileSync(P.basisDerivation, "utf8"))?.rows ?? []; }
+      catch { /* no derivation record — stated below, never inferred as "clean" */ }
+      const ec = evidenceClaimViolations({ before: preDoc?.findings, after: postDoc?.findings, demotions });
+      evidenceViolations = ec.violations;
+      runLog(run.runDir, { event: "evidence-claim-invariant", violations: ec.violations.length,
+        byArm: ec.violations.reduce((a, v) => ({ ...a, [v.arm]: (a[v.arm] ?? 0) + 1 }), {}),
+        snapshots: ec.snapshots });
+      if (ec.violations.length) {
+        atomicWrite(driverDir(run.runDir, "evidence-claim-violations.json"),
+          JSON.stringify({ ts: new Date().toISOString(), ...ec }, null, 2) + "\n");
+        note(`#1557: ${ec.violations.length} claim(s) moved against their own evidence in the corrective pass — `
+          + ec.violations.slice(0, 3).map((v) => `${v.finding}/${v.meter} (${v.arm})`).join("; ")
+          + `${ec.violations.length > 3 ? ` …${ec.violations.length - 3} more` : ""}`);
+      }
+    } catch (e) {
+      runLog(run.runDir, { event: "evidence-claim-invariant", ok: false, why: String(e?.message ?? e).slice(0, 160) });
+    }
+    // — what the DECLARED scope was and whether the pass honoured it. Recorded, never refused:
+    // a gate here costs a whole extra dispatch on the stage this change exists to make cheaper, and
+    // the reviewer is about to read the table anyway — it is better placed than a diff to say
+    // whether a knock-on edit was right. `unbound` is the `cite_unbound` shape one gate over and
+    // would earn a refusal if it recurs; this round measures whether it does.
+    correctionsScope = scopeDrift(rows, preDoc, postDoc);
+    // and ADDS its rows to the corrective cycle's table rather than replacing it, so the open points keep
+    // every objection the cycle could not close. Keyed as the open points dedupe: normalised text.
+    let tableRows = correctionsApplied;
+    if (handed) {
+      const key = (r) => String(r?.text ?? "").trim().replace(/\s+/g, " ").toLowerCase();
+      let prior = [];
+      try { prior = JSON.parse(readFileSync(P.correctionsApplied, "utf8"))?.rows ?? []; } catch { /* the cycle wrote none */ }
+      const mine = new Set(correctionsApplied.map(key));
+      tableRows = [...prior.filter((r) => !mine.has(key(r))), ...correctionsApplied];
+    }
+    atomicWrite(P.correctionsApplied, JSON.stringify({ ts: new Date().toISOString(), verdict,
+      scope: correctionsScope, rows: tableRows }, null, 2) + "\n");
+    const by = correctionsApplied.reduce((a, r) => (a[r.outcome] = (a[r.outcome] ?? 0) + 1, a), {});
+    runLog(run.runDir, { event: "corrections-applied", flags: correctionsApplied.length, outcomes: by,
+      scoped: correctionsScope.scoped, named: correctionsScope.named.length,
+      movedOutsideScope: correctionsScope.moved.length, unboundOrdinals: correctionsScope.unbound.length });
+  } catch (e) {
+    correctionsApplied = null;
+    note(`[corrections] the applied table could not be built (${String(e?.message ?? e).slice(0, 100)}) — the recheck reads both files, as before`);
+    runLog(run.runDir, { event: "corrections-applied-failed", error: String(e?.message ?? e).slice(0, 160) });
+  }
+  return { correctionsApplied, evidenceViolations, correctionsScope, correctiveRollback, correctiveRepair, correctivePass };
 }
 
 async function pipelineInner(job, opts = {}) {
@@ -9984,11 +10192,12 @@ async function pipelineInner(job, opts = {}) {
     // dispatch and now composes them, for the reason recorded there.
     prepareDeclinationSpec(ctx, P);   // — the findings-surface list, printed forward and written for the tool
     const { text: synthExtra } = composeDispatchExtra("synthesis", ctx);
-    const synth = await quarantineSynth(await stage("synthesis", ctx, synthExtra ? { extra: synthExtra } : {}), ctx, "synthesis");   // A3: last-resort quarantine instead of must(); A4: one targeted re-emit inside
+    const synth = await quarantineSynth(await stage("synthesis", ctx, { ...(synthExtra ? { extra: synthExtra } : {}), keepSession: true }), ctx, "synthesis");   // A3: last-resort quarantine instead of must(); A4: one targeted re-emit inside
     recordSynthesisSeam(ctx, synth);   // half one — which surfaced records this pass delivered, and which it did not
     // The corrective re-synthesis must RESUME the WINNING attempt — its key AND model/thinking. If synthesis
     // fell over to a cross-provider model, resuming the base key on opus would cold-cache + mismatch the model.
     const synthesisKey = synth.sessionKey, synthesisModel = synth.model, synthesisThinking = synth.thinking;
+    ctx.synthSession = synth.session ?? ctx.synthSession ?? null;   // the session every correction of the record resumes
 
     // A2/A4 — the v3 evidence gates (verified-needs-source, symmetric use-check, client-tier
     // join) key on the schema_version the artifact DECLARES; a down-level emission on a fresh run
@@ -10015,15 +10224,15 @@ async function pipelineInner(job, opts = {}) {
       // dispute_type keys come out, and a new top-level field goes in. There is no small set of named lines
       // to patch, so a whole-file emission is the honest shape of the work rather than an expensive way to
       // avoid one. Do not "fix" this to an Edit on a later sweep.
-      await stage("synthesis", ctx, {
+      carrySynthSession(ctx, await stage("synthesis", ctx, {   // a cold whole rewrite: its own session becomes the one corrections resume
         force: true, sessionKey: synthesisKey, model: synthesisModel, thinking: synthesisThinking,
-        trigger: "schema-downlevel",
+        trigger: "schema-downlevel", keepSession: true,
         followup: repairFollowup("synthesis:schema-downlevel", {
           findings: P.findings, declaredSv,
           frameworkKey: ctx.framework?.framework_key ?? "house-default",
           bandLabels: (ctx.framework?.bands ?? []).map((b) => b.label),
         }) + stageCharter("synthesis", ctx.depth, ctx.framework),
-      });
+      }));
       const afterSv = readSchemaVersion();
       if (afterSv !== null && afterSv < 3) runLog(run.runDir, { event: "findings-schema-downlevel", declared: afterSv });
     }
@@ -10048,11 +10257,11 @@ async function pipelineInner(job, opts = {}) {
     }
     if (actionsProbe && actionsProbe.sv >= 4 && !actionsProbe.hasActions && !synth.skipped) {
       note(`[findings] actions[] missing — the dictated forward-action register is absent; demanding the re-emit`);
-      await stage("synthesis", ctx, {
+      carrySynthSession(ctx, await stage("synthesis", ctx, {
         force: true, sessionKey: synthesisKey, model: synthesisModel, thinking: synthesisThinking,
-        trigger: "actions-missing",
+        trigger: "actions-missing", ...synthResume(ctx),
         followup: repairFollowup("synthesis:actions-missing", { findings: P.findings }) + stageCharter("synthesis", ctx.depth, ctx.framework),
-      });
+      }));
       const after = readActionsPresence();
       if (after && !after.hasActions) runLog(run.runDir, { event: "findings-actions-absent" });
     }
@@ -10242,136 +10451,8 @@ async function pipelineInner(job, opts = {}) {
     let correctiveRollback = null;   // T3b — set when the corrective pass failed and the last good findings came back
     let correctiveRepair = null;     // — set when the driver put back a removal no flag named
     if (!correctiveCycleSettled && (verdict === "CONDITIONAL" || verdict === "BLOCKING")) {   // T3: the quarantine path is terminal now — the corrective pass always runs
-      const preCorrective = snapshotFindingsForCorrections(P, run.runDir);                     // A1
-      // — re-prepared, not reused. The findings surface cannot move between these two passes today
-      // (nothing writes placements.json or register-findings.md between them — checked), so this rewrites
-      // the same list. It is here anyway, because the alternative is an invariant a future change breaks
-      // silently: if the surface ever did move, the corrective's `row_index` would point into the previous
-      // pass's list and a declination would land on the wrong record.
-      prepareDeclinationSpec(ctx, P);
-      const correctivePass = await stage("synthesis", ctx, { force: true, followup: correctionsExtra(P, ctx.depth, ctx.framework), sessionKey: synthesisKey, model: synthesisModel, thinking: synthesisThinking, trigger: "corrective" });
-      // half one — the corrective pass rewrites findings.json under a closed minimal-edit contract,
-      // so it is the pass most likely to change one record's fate. Its own account, at its own moment; the
-      // winner rule in record-discard.mjs lets this carry cancel an earlier discard.
-      recordSynthesisSeam(ctx, correctivePass, "corrective");
-      // T3b — a corrective pass that cannot produce a valid document no longer kills the run. The
-      // pre-corrective findings come back and the run delivers, with the reviewer's objections printed
-      // by `buildReviewerOpenPointsSection` — which is the other half of the same owner decision and is
-      // what makes this honest rather than quiet. `must` still runs where the rollback declines.
-      correctiveRollback = correctivePass.ok
-        ? null
-        : rollbackCorrectivePass(P, run.runDir, preCorrective, correctivePass);
-      if (correctiveRollback) {
-        runLog(run.runDir, { event: "corrective-rollback", reason: correctiveRollback.reason,
-          restored: correctiveRollback.restored, verdict });
-        note(`[corrections] the corrective pass failed (${correctiveRollback.reason}) — `
-          + `${correctiveRollback.restored ? "findings.json restored to the version the reviewer read" : "findings.json was never changed"}`
-          + `; the run delivers with the reviewer's points printed rather than failing`);
-      } else {
-        must(correctivePass, `synthesis(${verdict.toLowerCase()})`);
-        // ── — THE THIRD BRANCH, AND IT IS ON THE SUCCESS SIDE ON PURPOSE ─────────
-        //
-        // A repair is not a rollback and must never be reached by falling through to one. The rollback
-        // branch above deliberately skips both the corrections-reached-findings gate and the reviewer's
-        // re-read, because what it delivers is the PRE-corrective document — the exact bytes the
-        // reviewer already read, so there is nothing new to re-read. A repaired document is the
-        // opposite: it is a document nobody has seen, assembled by the driver from two sources.
-        //
-        // So it stays here, before the gate, with `correctiveRollback` still null — which is what makes
-        // the reviewer's re-read run over it. That dispatch is guarded on `!correctiveRollback`, so a
-        // repair hung off the rollback side would have inherited the skip silently and shipped a
-        // driver-assembled document no reviewer ever saw. Every check the successful branch runs, the
-        // repair branch runs, on the repaired bytes.
-        //
-        // NAMED AGAINST THE PRE-CORRECTIVE DOCUMENT. A removed finding is absent from the post-pass
-        // file, so matching the review's names against that file would find none of them and call every
-        // named removal unnamed.
-        let preDocForNames = null;
-        try { preDocForNames = preCorrective ? parseFindingsJsonLenient(preCorrective.raw) : null; } catch { /* fall back to the file */ }
-        const repaired = repairUnnamedRemovals(P, run.runDir, preCorrective,
-          correctionNamedOrdinals(P), correctionNamedSet(P, preDocForNames), correctionNamedLines(P, preDocForNames));
-        correctiveRepair = repaired;   // carried to the reviewer's re-read, which must know these are the DRIVER's
-        if (repaired) {
-          // A DEFECT SIGNAL, not a success. After the schema fix a corrective pass sends a targeted edit
-          // and cannot remove a finding at all, so e2e asserts this count is ZERO — a firing reports the
-          // primary fix not holding, never this backstop working.
-          runLog(run.runDir, { event: "corrective-unnamed-removal-repaired", defect: true,
-            restored: repaired.restoredFindings.length, keys: repaired.restoredKeys.length,
-            rows: repaired.restoredRows.length,
-            leftRemoved: repaired.leftRemoved.length,
-            findings: repaired.restoredFindings.map((f) => `${f.ordinal}:${f.mark}`) });
-          note(`[corrections] the corrective pass removed ${repaired.restoredFindings.length} finding(s) `
-            + `no flag named — restored whole from the pre-corrective snapshot: `
-            + `${repaired.restoredFindings.map((f) => `#${f.ordinal} ${f.mark}`).join(", ")}`
-            + (repaired.restoredKeys.length ? `; and ${repaired.restoredKeys.length} top-level register(s): ${repaired.restoredKeys.join(", ")}` : "")
-            + (repaired.restoredRows.length ? `; and ${repaired.restoredRows.length} row(s): ${repaired.restoredRows.map((r) => r.key).join(", ")}` : "")
-            + (repaired.leftRemoved.length ? `. ${repaired.leftRemoved.length} removal(s) the reviewer DID name stay removed.` : "")
-            + " The reviewer re-reads the repaired document before it ships.");
-        }
-        await enforceCorrectionsReachFindings(ctx, P, preCorrective, { synthesisKey, synthesisModel, synthesisThinking });   // A1 freshness gate
-      }
-      // — WHAT THE DRIVER OBSERVED, flag by flag, written before the recheck is dispatched. The
-      // recheck's whole cost is re-reading two documents to work out whether its own corrections landed;
-      // the driver already holds the pre-corrective findings snapshot and the post-pass file, so it can
-      // answer that from evidence and leave the reviewer the part only it can do — judging whether what
-      // changed is RIGHT. NEVER-KILL: a table that cannot be built just means the recheck reads as it
-      // always did, which is today's behaviour exactly.
-      try {
-        const rows = parseCorrections(readFileSync(P.seniorEyeReview, "utf8"));
-        const preDoc = preCorrective ? parseFindingsJsonLenient(preCorrective.raw) : null;
-        let postDoc = null;
-        try { postDoc = parseFindingsJsonLenient(readFileSync(P.findings, "utf8")); } catch { /* shape defects ride the normal ladder */ }
-        correctionsApplied = buildCorrectionsApplied(rows, preDoc, postDoc);
-        // — A CLAIM MAY NOT OUTLIVE ITS EVIDENCE, AND A DEMOTED STAMP MAY NOT COME BACK.
-        //
-        // Same two documents, one more question. The pass that fixes the reviewer's flags is the pass
-        // most likely to break the join between a claim and its support, and on the run this was found
-        // on it did both: four meters lost their basis while the band held (one with a byte-identical
-        // claim, one that GREW by 243 characters as its citation was deleted), and six stamps the
-        // driver had demoted minutes earlier as `record-on-disk-never-read` came back as
-        // `verified-from-record` with no register call in between.
-        //
-        // RECORDED, AND CARRIED TO THE RECHECK — never a refusal here, for the reason the table above
-        // is not one either: the reviewer is about to read both documents and is better placed than a
-        // diff to say whether a change was right. A gate here would also spend a dispatch on the stage
-        // this seam exists to make cheaper. ``'s correct-or-escalate is satisfied by escalating to
-        // the seat that can judge it.
-        try {
-          let demotions = [];
-          try { demotions = JSON.parse(readFileSync(P.basisDerivation, "utf8"))?.rows ?? []; }
-          catch { /* no derivation record — stated below, never inferred as "clean" */ }
-          const ec = evidenceClaimViolations({ before: preDoc?.findings, after: postDoc?.findings, demotions });
-          evidenceViolations = ec.violations;
-          runLog(run.runDir, { event: "evidence-claim-invariant", violations: ec.violations.length,
-            byArm: ec.violations.reduce((a, v) => ({ ...a, [v.arm]: (a[v.arm] ?? 0) + 1 }), {}),
-            snapshots: ec.snapshots });
-          if (ec.violations.length) {
-            atomicWrite(driverDir(run.runDir, "evidence-claim-violations.json"),
-              JSON.stringify({ ts: new Date().toISOString(), ...ec }, null, 2) + "\n");
-            note(`#1557: ${ec.violations.length} claim(s) moved against their own evidence in the corrective pass — `
-              + ec.violations.slice(0, 3).map((v) => `${v.finding}/${v.meter} (${v.arm})`).join("; ")
-              + `${ec.violations.length > 3 ? ` …${ec.violations.length - 3} more` : ""}`);
-          }
-        } catch (e) {
-          runLog(run.runDir, { event: "evidence-claim-invariant", ok: false, why: String(e?.message ?? e).slice(0, 160) });
-        }
-        // — what the DECLARED scope was and whether the pass honoured it. Recorded, never refused:
-        // a gate here costs a whole extra dispatch on the stage this change exists to make cheaper, and
-        // the reviewer is about to read the table anyway — it is better placed than a diff to say
-        // whether a knock-on edit was right. `unbound` is the `cite_unbound` shape one gate over and
-        // would earn a refusal if it recurs; this round measures whether it does.
-        correctionsScope = scopeDrift(rows, preDoc, postDoc);
-        atomicWrite(P.correctionsApplied, JSON.stringify({ ts: new Date().toISOString(), verdict,
-          scope: correctionsScope, rows: correctionsApplied }, null, 2) + "\n");
-        const by = correctionsApplied.reduce((a, r) => (a[r.outcome] = (a[r.outcome] ?? 0) + 1, a), {});
-        runLog(run.runDir, { event: "corrections-applied", flags: correctionsApplied.length, outcomes: by,
-          scoped: correctionsScope.scoped, named: correctionsScope.named.length,
-          movedOutsideScope: correctionsScope.moved.length, unboundOrdinals: correctionsScope.unbound.length });
-      } catch (e) {
-        correctionsApplied = null;
-        note(`[corrections] the applied table could not be built (${String(e?.message ?? e).slice(0, 100)}) — the recheck reads both files, as before`);
-        runLog(run.runDir, { event: "corrections-applied-failed", error: String(e?.message ?? e).slice(0, 160) });
-      }
+      ({ correctionsApplied, evidenceViolations, correctionsScope, correctiveRollback, correctiveRepair } =
+        await applyReviewerCorrections(ctx, P, run, { verdict, synthesisKey, synthesisModel, synthesisThinking }));
     }
     // T3b — NO RECHECK AFTER A ROLLBACK. The document is byte-identical to the one the reviewer just
     // read, so a recheck spends a dispatch to re-derive the verdict it already gave. The entry verdict
@@ -12047,6 +12128,9 @@ async function pipelineInner(job, opts = {}) {
       // (composeEmailHtml opts.verdict, from _driver/verdict.json), the pre-delivery lint below, and
       // the client gate. On the R2 evidence run this ladder was where the cost landed: three
       // byte-identical failures before it exhausted.
+      // Where the delivery-check repairs start in the saves' own record of what each changed. What is
+      // recorded after this mark is what the repairs touched (rulings 718 and 719, the stale-repair loop below).
+      const preRepairMark = readTouched(run.runDir).length;
       if (lint.failures.length) {
         runLog(run.runDir, { event: "predelivery-lint-failed", failures: lint.failures.map((f) => f.id) });
         const bySurface = (s) => lint.failures.filter((f) => f.surface === s || (s === "report" && f.surface === "all"));
@@ -12069,10 +12153,11 @@ async function pipelineInner(job, opts = {}) {
           note(`pre-delivery lint: ${failures.length} failed check(s) on ${label} — one warm named-correction redo`);
           const toolWritten = file ? toolWrittenArtifact(file) : null;
           const r = await stage(label, ctx, {
-            force: true, sessionKey: key, model, thinking, trigger: "lint-repair",
+            force: true, sessionKey: key, model, thinking, trigger: "lint-repair", ...(label === "synthesis" ? synthResume(ctx) : {}),
             followup: repairFollowup("*:lint-repair", { label, file, toolWritten, failures })
               + stageCharter(label, ctx.depth, ctx.framework),
           });
+          if (label === "synthesis") carrySynthSession(ctx, r);
           if (r.ok) repaired.push(label);
         };
         const reportFixable = modelFixable(bySurface("report"));
@@ -12181,6 +12266,11 @@ async function pipelineInner(job, opts = {}) {
       // still stale afterwards blocks at the guard below. Nothing here weakens that guard.
       if (staleStages.length) {
         const ordered = dependencyOrder(staleStages.map((s2) => s2.label), P, { axes: ctx.axes });
+        // The review and its fix pass come right after what they read and before the overview and the cards,
+        // which read neither: the tail then renders once, from the record as the fix pass left it.
+        const reviewAt = ordered.indexOf("narrative-refutation");
+        const firstTail = ordered.findIndex((l) => l === "report-overview" || l.startsWith("report-card:"));
+        if (firstTail >= 0 && reviewAt > firstTail) { ordered.splice(reviewAt, 1); ordered.splice(firstTail, 0, "narrative-refutation"); }
         staleStages = ordered.map((l) => staleStages.find((s2) => s2.label === l)).filter(Boolean);
         const upstreamCount = partitionDeliveryStale(staleStages).upstream.length;
         runLog(run.runDir, { event: "delivery-stale-repair", stages: staleStages.map((s2) => s2.label), upstream: upstreamCount, order: ordered });
@@ -12196,6 +12286,7 @@ async function pipelineInner(job, opts = {}) {
           if (existsSync(P.caseLaw)) caseLawNow = joinCaseLawProfiles(parseCaseLawProfiles(readFileSync(P.caseLaw, "utf8")), findingsNow);
         } catch { /* no case-law layer */ }
         let reassemble = false;
+        let fixPassDone = false;   // ruling 718: at most one post-repair corrective pass
         for (const s2 of staleStages) {
           if (s2.label === "report-overview") {
             const r = await stage("report-overview", { ...ctx, displayVerdict }, { force: true, trigger: "stale-repair" });
@@ -12281,6 +12372,46 @@ async function pipelineInner(job, opts = {}) {
                   try { writeVerdictSidecar(); }
                   catch (e) { throw new StageFailure("verdict", `verdict sidecar write failed (the single label authority): ${String(e.message).slice(0, 120)}`); }
                   reassemble = true;
+                }
+                // ── THE FIX PASS (owner, ruling 718, 2026-10-02) ──────────────────────────────────────────
+                // The review a repair re-runs raised its points into a document nothing then corrected: 178
+                // across the 17 saved runs where it re-ran. When it raises a point on what a delivery-check
+                // repair changed, ONE corrective pass applies THOSE points and no others (handedReview: read
+                // from the saves' own record of what each touched) with the corrective cycle's own body
+                // (applyReviewerCorrections): resuming the session that wrote the record, sending only the
+                // change, rolled back if it fails. A point about the document is handed when the repair
+                // rewrote the narrative's prose; on 15 of those 17 runs it changed only the coverage list
+                // rendered from the record, and that is not a rewrite. The review is
+                // not run again; its stamp is settled for the narrative the pass rewrote. It runs before the
+                // overview and the cards (the order above), so they render once from the fixed record; a card
+                // the pass made newly stale joins the queue.
+                if (!fixPassDone) {
+                  const since = readTouched(run.runDir).slice(preRepairMark);
+                  const reach = { ordinals: new Set(since.flatMap((e) => e?.ordinals ?? [])), prose: since.some((e) => e?.prose === true) };
+                  const handed = handedReview(P, reach);
+                  if (handed && synthesisKey) {
+                    fixPassDone = true;
+                    note(`stale-repair: the re-run review raised ${handed.flags.length} point(s) on what the repair changed — one corrective pass applies them`);
+                    let fx = null;
+                    try { fx = await applyReviewerCorrections(ctx, P, run, { verdict, synthesisKey, synthesisModel, synthesisThinking, trigger: "post-repair-corrective", handed }); }
+                    catch (e) { note(`stale-repair: the post-repair corrective pass failed (${String(e?.message ?? e).slice(0, 120)}) — the review's points ship printed`); }
+                    const applied = Boolean(fx?.correctivePass?.ok && !fx.correctiveRollback);
+                    runLog(run.runDir, { event: "post-repair-fix-pass", flags: handed.flags.length, touched: [...reach.ordinals].sort((a, b) => a - b),
+                      prose: reach.prose, applied, rolledBack: Boolean(fx?.correctiveRollback) });
+                    if (applied) {
+                      settleOneShotStamp(run.runDir, "narrative-refutation", [P.narrative], "post-repair-fix");
+                      readNow = readFindingsForReport(P);
+                      findingsNow = readNow.findings;
+                      ordinalsNow = fullProseOrdinals(findingsNow);
+                      try {
+                        if (existsSync(P.caseLaw)) caseLawNow = joinCaseLawProfiles(parseCaseLawProfiles(readFileSync(P.caseLaw, "utf8")), findingsNow);
+                      } catch { /* no case-law layer */ }
+                      reassemble = true;
+                      const queued = new Set(staleStages.map((x) => x.label));
+                      for (const st of staleOnPath(run.runDir, deliveryPathStages, deliveryInputsFor, { project: projectStageInput }))
+                        if (!queued.has(st.label) && (st.label === "report-overview" || st.label.startsWith("report-card:"))) staleStages.push(st);
+                    }
+                  }
                 }
               }
             } else note(`stale-repair: ${s2.label} re-run failed (${r?.fail}) — stays stale, the guard below decides`);
@@ -12870,8 +13001,10 @@ async function pipelineInner(job, opts = {}) {
     // says no reads as a measurement.
     sentinel(archived ?? run.runDir, ".delivered", { verdict, url: published.url, notified: "pending", archived, sendPending: true });
     note(`=== DELIVERED (verdict ${verdict}) → ${published.url}${archived ? ` — archived → ${archived}` : ""} ===\n`);
+    releaseStageSession(ctx.synthSession); ctx.synthSession = null;   // nothing resumes it after delivery
     return { ok: true, verdict, url: published.url, runDir: archived ?? run.runDir };
   } catch (e) {
+    releaseStageSession(ctx.synthSession); ctx.synthSession = null;   // a failed or parked run resumes cold
     // RATE-LIMIT POSTPONE (re-throw): a 429 session-cap is NOT a terminal failure — RE-THROW it so pipeline()'s
     // outer catch parks the run resumable (.postponed, no .failed, no notify-fail) and the runner auto-resumes
     // after the cap window, vs stranding every completed stage and forcing a ~$40 cold re-run. This catch wraps

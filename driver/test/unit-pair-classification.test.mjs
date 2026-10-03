@@ -53,9 +53,9 @@
 // arrive and contradict. That `quote_required` was exactly this: a flag on a form, met later by
 // candidates that had been rebuilt textless.
 //
-// ── THE RULING, ALL TWENTY AS CLASSIFIED — NINETEEN IN THE SWEEP TODAY, SEE THE CURE BELOW ───────────
+// ── THE RULING, ALL TWENTY-ONE AS CLASSIFIED — TWENTY IN THE SWEEP TODAY, SEE THE CURE BELOW ───────
 //
-//  AGREE (18) — the flag and the data it summarises are written into ONE structure in ONE expression, or
+//  AGREE (19) — the flag and the data it summarises are written into ONE structure in ONE expression, or
 //  consumed inside the pass that computed them, so a reader cannot get one without the other:
 //   · band-shape.mjs:494        `live` is minted in the same object literal as `records`, off the same
 //                               `rs`. A reader holding the position holds both.
@@ -84,6 +84,13 @@
 //                               the citation gate only noticed when an edit above shifted it one line
 //                               onto a lone brace. CONTRIBUTING.md's rule is the fix: cite the symbol,
 //                               which is both correct and the thing that makes a citation checkable.)
+//   · pipeline.mjs the post-repair fix pass's `reach` — `prose`, whether a save since the delivery
+//                               checks' repair began rewrote the narrative's prose, is minted in the same
+//                               object literal as `ordinals`, off the same slice of the touched record
+//                               (`readTouched`), and both are spent by `handedReview` on the next line,
+//                               against the review that re-read that narrative. Its copy on the
+//                               `post-repair-fix-pass` run-log line is a journal entry: nothing reads it
+//                               back and acts.
 //   · publish/render.mjs `hasOnField` sits in the same object as `findings: g` — the group and its
 //                               summary travel together. (CITED BY SYMBOL AND NO LINE, for the reason
 //                               given two entries above: the number here was :372, and on the tree
@@ -220,7 +227,7 @@ const structureSites = () => nonEmpty(sweep(), "travelling-predicates sweep()")
 const RULED = new Map([
   ["band-shape.mjs", 1], ["commonlaw-carry.mjs", 1], ["findings-model.mjs", 1],
   ["gateway.mjs", 2], ["grounds-grammar.mjs", 1],
-  ["pipeline.mjs", 2], ["publish/render.mjs", 1], ["publish/xlsx.mjs", 2],
+  ["pipeline.mjs", 3], ["publish/render.mjs", 1], ["publish/xlsx.mjs", 2],
   ["reference-score.mjs", 3], ["registry-fidelity.mjs", 2],
   ["portal-config-view.mjs", 1], ["publish/search-depth.mjs", 2],
 ]);

@@ -1538,7 +1538,7 @@ function validateNetRequired(f, ord, mode) {
   if (f.ruled_out === true) return;                                      // its ground is ruled_out_reason
   if (!POSITION_REQUIRED_DISPOSITIONS.includes(f.disposition)) return;   // withdrawn — see the const's doc block
   if (typeof f.net === "string" && f.net.trim()) return;
-  throw new Error(`finding_net_missing:${ord} (EVERY finding a reader sees carries the one-clause net — it is the ONLY per-finding summary the report has: the card leads with it, the grouped-negative line states it, the MCP brief lists the finding by it. Name the legal risk driver, then the FACT that conditions it. Length is the renderer's problem, not yours)`);
+  throw new Error(`finding_net_missing:${ord} (EVERY finding a reader sees carries the net — it is the ONLY per-finding summary the report has: the card leads with it, the grouped-negative line states it, the MCP brief lists the finding by it.)`);
 }
 
 // ── requirement 2 — the label follows the argument ───────────────────────────────────────────────
@@ -1738,9 +1738,9 @@ export function netChainMarkers(s) {
 function validateNet(f, ord, mode) {
   if (f.net == null) return;   // absent ⇒ v6 has already thrown; below v6 the card falls back as it always did
   if (typeof f.net !== "string" || !f.net.trim())
-    throw new Error(`finding_net_invalid:${ord} (net is the one-clause read — a non-empty string, or omit it)`);
+    throw new Error(`finding_net_invalid:${ord} (net is a non-empty string, or omit it)`);
   if (PRESCRIPTION_RE.test(f.net))
-    throw new Error(`finding_net_prescriptive:${ord} (the one-clause read carries FACTS AND ASSESSMENT, never an action prescription — the reader is a lawyer who layers their own advice on top; state the risk and the fact that conditions it, and let the typed actions register carry what a human must do)`);
+    throw new Error(`finding_net_prescriptive:${ord} (the read carries FACTS AND ASSESSMENT, never an action prescription — the reader is a lawyer who layers their own advice on top; let the typed actions register carry what a human must do)`);
   validateNetShape(f, ord, mode);
   f.net = f.net.trim();
 }
@@ -1809,7 +1809,7 @@ function validateNetShape(f, ord, mode) {
   if (!POSITION_REQUIRED_DISPOSITIONS.includes(f.disposition)) return;   // withdrawn — see above
   const markers = netChainMarkers(f.net);
   if (!markers.length) return;
-  throw new Error(`findings_net_chained:${ord} (the finding sentence is a CONCLUSION, not a chain — this net carries ${markers.join(" and ")}. Answer the one question a reader asks of this finding: is this a problem for me. Name the parties and the territory and state the outcome as a likelihood ("Veltra Labs' registered VELTRA is more likely than not to prevail against VELTRA PHARMA in the United States."). Then MOVE the chain's clauses — territories, the goods paraphrase, the owner's business, status and use history — into legal_position and practical_position, in full: this is a relocation, never a compression, and a net that got shorter because the reasoning got thinner is the wrong fix. There is no length cap)`);
+  throw new Error(`findings_net_chained:${ord} (the finding sentence is a CONCLUSION, not a chain — this net carries ${markers.join(" and ")}. Answer the one question a reader asks of this finding: is this a problem for me. Name the parties and the territory and state the outcome as a likelihood. Then MOVE the chain's clauses — territories, the goods paraphrase, the owner's business, status and use history — into legal_position and practical_position, in full: this is a relocation, never a compression, and a net that got shorter because the reasoning got thinner is the wrong fix.)`);
 }
 
 // The framework's own inputs, where it states a method. A finding with a band is a rated conflict and

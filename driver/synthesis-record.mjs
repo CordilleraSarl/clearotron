@@ -46,7 +46,9 @@ import { writeFileSync, appendFileSync, mkdirSync, readFileSync, existsSync } fr
 import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join, dirname } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
-import { parseFindingsJson, COVERAGE_AREA_STATES } from "./findings-model.mjs";
+import { parseFindingsJson, COVERAGE_AREA_STATES, POSITION_REQUIRED_DISPOSITIONS } from "./findings-model.mjs";
+import { sentencesKeepingNames } from "./predelivery-lint.mjs";   // the split that never cuts a name in half
+import { SENTENCE_WORD_LIMIT, wordsIn } from "./plain-register.mjs";   // the pinned cap and its word count
 import { readFrozenMethod, FROZEN_METHOD_FILE } from "./framework-method.mjs";
 import { findCoverageRecommendations } from "./verify.mjs";
 import { declinationCallPaths, readDeclinations } from "./declination-tool.mjs";   // — the seat's own declines, read by the driver never asserted by the seat
@@ -269,7 +271,34 @@ export function withoutWithheldRows(rows, ledger) {
   return (Array.isArray(rows) ? rows : []).filter((r) => !namesIn(r?.area).some((n) => withheld.has(n)));
 }
 
-export function acceptSynthesis(params, { asks = [], ledger = null, manifest = null, method = undefined, methodInvalid = null, owed = null, declined = null, decisions = null } = {}) {
+// ── THE FINDING SENTENCE IS AT MOST TWO SENTENCES OF AT MOST 25 WORDS (owner, 2026-10-02) ───────────
+//
+// Refused at the call, where restating is free, and judged only on the findings the call carries: a
+// patch is judged on the findings it sends, so a sentence accepted before this rule is never refused on
+// a pass that did not touch it. Not in parseFindingsJson, because that parse is on the archive republish
+// path and a record delivered under the old rule must republish byte for byte.
+//
+// Counted on the lint's split, which keeps "Inc.", "Ltd.", initials and a mid-sentence "U.S." whole;
+// "No." before a number is not a sentence end either. A false refusal costs a correction round, so the
+// count leans to the fewer sentences. The exemptions are the chain rule's: a withdrawn or ruled-out
+// finding renders no net. The refusal is the owner's clause and the two counts, nothing else.
+export const NET_MAX_SENTENCES = 2;
+export function netLengthRefusal(findings, carried = null) {
+  for (const f of Array.isArray(findings) ? findings : []) {
+    if (!f || typeof f.net !== "string" || !f.net.trim()) continue;
+    if (f.ruled_out === true || !POSITION_REQUIRED_DISPOSITIONS.includes(f.disposition)) continue;
+    if (carried && !carried.has(f.ordinal)) continue;
+    const sentences = sentencesKeepingNames(f.net.replace(/\b(Nos?)\.(?=\s*\d)/g, "$1"));
+    const longest = Math.max(0, ...sentences.map(wordsIn));
+    if (sentences.length > NET_MAX_SENTENCES || longest > SENTENCE_WORD_LIMIT) {
+      return `synthesis_net_too_long:${f.ordinal} (At most two sentences, each at most 25 words: `
+        + `${sentences.length} sentence${sentences.length === 1 ? "" : "s"}, ${longest} word${longest === 1 ? "" : "s"} in the longest)`;
+    }
+  }
+  return null;
+}
+
+export function acceptSynthesis(params, { asks = [], ledger = null, manifest = null, method = undefined, methodInvalid = null, owed = null, declined = null, decisions = null, carried = null } = {}) {
   let doc = params?.findings;
   if (!doc || typeof doc !== "object" || Array.isArray(doc)) {
     return { ok: false, reason: "synthesis_findings_missing: `findings` must be the findings document object { schema_version, rated_under_framework, findings, coverage, … } — this is the record the report and the workbook are built from, and there is no path that renders without it" };
@@ -281,6 +310,8 @@ export function acceptSynthesis(params, { asks = [], ledger = null, manifest = n
   if (!isStr(n.spine)) {
     return { ok: false, reason: "synthesis_spine_missing: `narrative.spine` is the dominant-element spine — the cross-finding read no other artifact on this run holds. It is the core of the product and there is no clean answer that omits it" };
   }
+  const netRefusal = netLengthRefusal(doc.findings, carried);
+  if (netRefusal) return { ok: false, reason: netRefusal };
   if (!isStr(n.verdict)) {
     return { ok: false, reason: "synthesis_verdict_missing: `narrative.verdict` is the verdict prose — what the findings together mean for this client" };
   }
@@ -659,7 +690,9 @@ export function recordSynthesis(runDir, received, opts = {}) {
     call = merged.merged;
   }
 
-  const v = acceptSynthesis(call, { asks, ledger, manifest, method, methodInvalid, owed, declined, decisions });
+  // A patch is judged on the findings it carries; a whole call on every finding (netLengthRefusal).
+  const carried = isPatch ? new Set((Array.isArray(received?.findings_patch) ? received.findings_patch : []).map((r) => r?.ordinal)) : null;
+  const v = acceptSynthesis(call, { asks, ledger, manifest, method, methodInvalid, owed, declined, decisions, carried });
   if (!v.ok) {
     noteRefusal(v.reason);
     return { written: null, refused: v.reason,
@@ -668,6 +701,7 @@ export function recordSynthesis(runDir, received, opts = {}) {
 
   const findingsAt = join(dir0, FINDINGS_FILE);
   const narrativeAt = join(dir0, NARRATIVE_FILE);
+  const before = lastAcceptedCall(dir0);   // the record this save replaces, for the touched record below
   try {
     writeFileSync(findingsAt, v.findings);
     writeFileSync(narrativeAt, v.narrative);
@@ -677,6 +711,11 @@ export function recordSynthesis(runDir, received, opts = {}) {
       _provenance: "the last ACCEPTED call, merged if it arrived as a patch — the base a later repair patches onto",
       acceptedAt: now(), params: call,
     }, null, 2) + "\n");
+    try {
+      appendFileSync(touchedRecordPath(runDir), JSON.stringify({ at: now(), ordinals: touchedBetween(before?.findings, call?.findings),
+        prose: proseChanged(before?.narrative, call?.narrative) }) + "\n");
+    }
+    catch { /* best-effort — a record that cannot be written leaves the fix pass with nothing to act on, never a failed save */ }
   } catch (e) {
     // The call was VALID and we could not store it. That is infrastructure, and it must not read as a
     // rejected call — the two have opposite repairs.
@@ -693,6 +732,33 @@ export function recordSynthesis(runDir, received, opts = {}) {
     coverage_limits_checked: v.coverage_limits_checked,
     captured: closeCapture({ ok: true }), capture_failed: captureFailed,
   };
+}
+
+// ── WHAT EACH ACCEPTED SAVE CHANGED, RECORDED BY THE SAVE (owner, ruling 719, 2026-10-02) ─────────────
+//
+// The post-repair fix pass applies the review's points on what a repair changed, "read from the repair's own
+// record of what it touched". Every synthesis save writes that record at the moment it is accepted: the
+// ordinals whose finding object differs from the accepted record before it, or exists in only one of them,
+// and whether the narrative's PROSE changed — the sections the writer composes: the verdict, the spine, the
+// coverage read and the calibration answers. The coverage list and the ask answers the narrative also
+// renders are the record's rows, not text the model wrote; on 15 of 17 saved runs a repair changed only
+// that list (design, 2026-10-02). Appended, one line per accepted save; a save that changed no finding
+// records an empty list.
+export const touchedRecordPath = (runDir) => join(synthesisCallPaths(String(runDir ?? "")).dir, "touched.jsonl");
+const findingsByOrdinal = (doc) => new Map((Array.isArray(doc?.findings) ? doc.findings : [])
+  .filter((f) => Number.isInteger(f?.ordinal)).map((f) => [f.ordinal, JSON.stringify(f)]));
+export function touchedBetween(prevDoc, nextDoc) {
+  const a = findingsByOrdinal(prevDoc), b = findingsByOrdinal(nextDoc);
+  return [...new Set([...a.keys(), ...b.keys()])].filter((o) => a.get(o) !== b.get(o)).sort((x, y) => x - y);
+}
+const proseOf = (n) => JSON.stringify([n?.verdict ?? null, n?.spine ?? null, n?.coverage?.read ?? null,
+  (Array.isArray(n?.calibration) ? n.calibration : []).map((c) => [c?.challenge ?? null, c?.answer ?? null])]);
+export const proseChanged = (prev, next) => proseOf(prev) !== proseOf(next);
+/** Every accepted save's touched ordinals, in order. Best-effort: an unreadable record reads as none. */
+export function readTouched(runDir) {
+  try {
+    return readFileSync(touchedRecordPath(runDir), "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l));
+  } catch { return []; }
 }
 
 /** Every call this run turned away, in order — the run's own record that a defect was met and corrected. */
