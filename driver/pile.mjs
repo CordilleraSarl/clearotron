@@ -133,6 +133,9 @@ export function loadPile(runDir) {
       owner: entry.owner ? (typeof entry.owner === "string" ? entry.owner : entry.owner.name ?? JSON.stringify(entry.owner)) : null,
       narrows: entry.narrows ? shortIdByQid.get(entry.narrows) ?? null : null,
       count: Number.isFinite(ran.total_hits) ? ran.total_hits : null,
+      // `records` when the register said its total counts one row per record (one per country a mark
+      // covers); null when it said nothing.
+      countCounts: typeof ran.total_counts === "string" ? ran.total_counts : null,
       listed: ran.state === "enumerated",
       recordsHeld: held.length,
     };

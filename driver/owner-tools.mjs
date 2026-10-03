@@ -209,6 +209,9 @@ function describeQuestion(q) {
 }
 
 function goodsLine(full, classes) {
+  // A record this search does not hold has no goods line at all, never an empty one: on a register whose
+  // listing carries no goods wording the blank read as "nothing in common" (design, 2026-10-03).
+  if (!full) return {};
   const entries = Array.isArray(full?.goodsServices) ? full.goodsServices : [];
   const wanted = entries.filter((g) => !classes?.length || (g.classes ?? []).some((c) => classes.includes(Number(c))));
   const text = (wanted.length ? wanted : entries)
