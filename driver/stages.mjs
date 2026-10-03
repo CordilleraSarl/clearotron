@@ -145,13 +145,6 @@ export function paths(runDir) {
     variantManifestModel: p("variant-manifest.json"),
     scopeLedger: p("scope-ledger.json"),           // CODE-DERIVED from the manifest's `### Scope ledger` (frame-omission design)
     formNeighbourhood: p("form-neighbourhood.json"), // CODE-DERIVED mechanical FORM band (edit-1 ∪ phonetic-family ∪ visual-confusable ∪ transliteration ∪ spacing-punctuation) — the model-free variant floor the register funnel searches, plus the `variant_floor` block marking which terms code generated and which the model added
-    // Property 1 — the frame-STARVED cold re-derivation. The STRUCTURED model is the stage's ONLY output
-    //: the prose twin `blind-frame.md` was retired because nothing in the repo ever read it — not
-    // frame-diff, not the driver, not a renderer, on any run type. Archived runs keep their copy on disk;
-    // no code path opens it, so replay over them is unaffected.
-    blindFrameModel: p("blind-frame-model.json"),  // the frame-diff and the reopen gate consume this
-    frameDiff: p("frame-diff.md"),                 // the blind-model-vs-actual-scope diff (prose reasoning)
-    frameDiffModel: p("frame-diff.json"),          // its STRUCTURED reopen directives + dominant_element_gap (CODE consumes this)
     commonLaw: p("common-law-findings.md"),
     commonLawGrid: p("common-law-grid.json"),       // machine receipts — the grid call's stdout JSON, saved verbatim
     // A1 SPLIT — the per-half stage artifacts (half ∈ {"a","b"}): each concurrent half-grid member reads its
@@ -236,7 +229,6 @@ export function paths(runDir) {
     registerFindings: p("register-findings.md"),
     registerCoverageLedger: p("register-coverage-ledger.json"), // WS-A machine contract — derived by code from the coverage form step 3 settles
     skepticFlags: p("skeptic-flags.md"),
-    frameReopenReceipt: p(driverRel("frame-reopen.json")),   // A3 — the reopen receipt is a first-class judgment input
     // (t1cd) — the digest-trigger funnel's durable work queue (digest-queue.mjs): mechanisms
     // mint re-digest work here instead of calling the digest; written atomically on every mint/flush
     // and loaded on resume BEFORE the trigger blocks run, so per-mechanism bounds survive resumes.
@@ -596,7 +588,7 @@ export function proseRungDirective(depth, bandOrder = null) {
 //
 // pipeline.mjs's dispatcher resolves a stage's prompt as `opts.followup ?? opts.freshMessage ??
 // def.message(ctx)` — a followup/freshMessage REPLACES the stage message wholesale. So every
-// re-dispatch path (escalation, envelope close, frame-reopen, the corrective ladder) that re-states
+// re-dispatch path (escalation, envelope close, the corrective ladder) that re-states
 // the lane by hand can drift out of step with the exclusion, and a prompt that names the removed tool
 // teaches the model the absence is a fault. That is exactly how ION's incumbent-class pass reported
 // `register_enumerate` "permission-blocked" in a delivered report. Import these; never re-type them.
@@ -756,7 +748,7 @@ const readsForReference = (skillReads) =>
   `METHODOLOGY (reference — this is a correction to work that already exists, NOT an instruction to redo the stage): this stage is held to ${skillReads.join(", ")}. Re-read whatever the instruction below turns on.`;
 
 // The inputs line. Named "or state why not": every declared input either appears here or is absent from
-// disk, and absence is itself the reason (an optional input — crowdContext, frameReopenReceipt — that this
+// disk, and absence is itself the reason (an optional input — crowdContext — that this
 // run never produced). The composer takes the list ALREADY filtered by the caller so this module stays a
 // pure prompt table with no filesystem reach.
 const inputsForReference = (paths) =>
@@ -1130,7 +1122,7 @@ export const VARIANT_CATEGORY_BRIEF =
 //
 // `tokens` lists the validator failure tokens that SPEAK ABOUT that element. PER STAGE, never global:
 // `too_short` and `missing` come from the shared nonEmpty()/needs() helpers (verify.mjs:123-133) and are
-// legitimately owned by DIFFERENT elements in matter-frame, clearance-variants and frame-diff. A global
+// legitimately owned by DIFFERENT elements in matter-frame and clearance-variants. A global
 // token→element map sees several owners for one token and "fixes" a partition that was never violated.
 //
 // An EMPTY `tokens` array is a finding, not an omission: it says no validator polices that element. 139
@@ -1322,8 +1314,7 @@ export const STAGES = {
       `Do NOT write or edit any file. There is no path for you to write to: the driver renders the frame from what you send, and nothing you hand-write is read.`,
       `When the tool accepts your call, return ONLY a 2-3 line summary of the frame.`,
       // The Class 2 sanctioned equivalent. O3c measured this stage's ambient Bash as `ls`/`find`/`cat`
-      // DISCOVERY over the run dir (21 calls / 15 attempts), which is why it gets a search tool where
-      // frame-diff — whose reads were an enumerable pair — got only the seeded `Read`. Named here because
+      // DISCOVERY over the run dir (21 calls / 15 attempts), which is why it gets a search tool. Named here because
       // a granted tool no instruction mentions is a capability the seat does not know it has, and it then
       // reaches for the one the doctrine does name ( direction (a)).
       `To look inside this run's own files, call \`search_run_artifacts\` — a read-only literal search over the run directory. Use it instead of shell commands; there is no Bash on this stage.`,
@@ -1359,7 +1350,7 @@ export const STAGES = {
       },
       "mark — \"<the mark verbatim>\"": {
         class: "mechanical:pre-bound", tokens: ["variantmodel_mark_missing"],
-        why: "_driver/instructed-scope.json.marks holds it and stage-context.mjs:175 binds that file to this stage. variant-manifest-model.mjs:225-231 already concedes the field is not the model's: it is excluded from the term-shape gate because \"the stage is told to emit it VERBATIM, and it arrives from the job… a value this stage CANNOT restate\" [citation unverified]",
+        why: "_driver/instructed-scope.json.marks holds it and stage-context.mjs:231 VALIDATOR_SIDECARS binds that file to this stage. variant-manifest-model.mjs:345-347 variantTermShapeGaps already concedes the field is not the model's: it is excluded from the term-shape gate because \"the stage is told to emit it VERBATIM, and it arrives from the job… a value this stage CANNOT restate\" [citation unverified]",
       },
       "dominant_element — the distinctive anchor the sweep enumerates": {
         class: "judgment", tokens: ["variantmodel_dominant_element_missing"],
@@ -1439,7 +1430,7 @@ export const STAGES = {
       },
       "### Scope ledger rows — {Layer, Item, Status: applied|dropped, Reason, Reopen trigger} across variant / field / source / jurisdiction": {
         class: "judgment", tokens: [],
-        why: "defending an omission with the concrete observation that should reopen it is the whole judgment, and frame-diff diffs it against the blind re-derivation. The ROW SHAPE is mechanical — scope-ledger.mjs:123-126 parses the table into scope-ledger.json — and the jurisdiction rows are largely a re-carry of the matter frame's own Scope-jurisdictions line [citation unverified]",
+        why: "defending an omission with the concrete observation that should reopen it is the whole judgment. The ROW SHAPE is mechanical — scope-ledger.mjs:122-125 renderScopeLedgerJson parses the table into scope-ledger.json — and the jurisdiction rows are largely a re-carry of the matter frame's own Scope-jurisdictions line [citation unverified]",
       },
       "Prose variant-table category token — translit-<script>, and for Chinese translit-zh-meaning vs translit-zh-phonetic": {
         class: "judgment", tokens: [],
@@ -1478,8 +1469,8 @@ export const STAGES = {
       variantRungDirective(depth),
       `Read the matter frame: ${P.matterContext}.`,
       `Generate the variant manifest (elements, archetype, per-axis searches, per-jurisdiction sub-queries).`,
-      // WS2 (B2) — the STRUCTURED sibling the register-plan compiler consumes (the
-      // blind-frame-model precedent): the model reasons ONCE here; code compiles + freezes the
+      // WS2 (B2) — the STRUCTURED sibling the register-plan compiler consumes: the model reasons
+      // ONCE here; code compiles + freezes the
       // deterministic search plan from this JSON. Dictated keys + closed enums; the validator
       // strict-parses it, so an off-enum token fails the stage (corrective ladder repairs warm).
       // ── CONVERSION 3 — THE LITERAL JSON SKELETON IS GONE ────────────────────────────────────────
@@ -1553,79 +1544,6 @@ export const STAGES = {
       `Send \`scope_ledger\` — one \`{layer, item, status, reason, reopen_trigger}\` per decision, layer from ${SCOPE_LAYERS.join(" | ")} and status from ${SCOPE_STATUSES.join(" | ")}. Every \`dropped\` row carries the concrete observation that should reopen it; a dropped row with no reopen trigger is itself a coverage gap. The driver renders the ledger table and writes scope-ledger.json from these rows; do not format a table.`,
       `Do NOT write or edit any file. There is no path for you to write to: the driver serialises the model, renders the prose manifest and derives the scope ledger, and nothing you hand-write is read.`,
       `When the tool accepts your call, return ONLY a 2-3 line summary of the manifest.`,
-    ),
-  },
-
-  // Property 1 (Independence) — a BLIND re-derivation of the whole frame. STARVED of matter-context (which
-  // already carries the frame), it reads ONLY the raw instruction and re-derives the threat model cold across
-  // four layers, emitting a structured model. Runs IN PARALLEL with the gather (pipeline.mjs) — no tool calls,
-  // so it finishes inside the longest gather member's wall (zero added critical-path latency). NON-FATAL.
-  // Opus: it is a PEER re-derivation of clearance-variants/matter-frame (both opus) — a weaker tier cannot
-  // credibly out-imagine the frame; the independence is the input DIET (starvation), not a different family.
-  "blind-frame": {
-    model: "opus", thinking: "high", timeoutSec: 600, stallSec: 450,
-    skillReads: ["skills/blind-frame/SKILL.md"],
-    // The STRUCTURED model IS the output — not a sibling of one. That is what makes an absence
-    // loud: runStage gates on `out` (missing_file:blind-frame-model.json) and re-judges it through
-    // validators.blindFrame (invalid_file:…:blindframe_*). Point this at prose again, or at nothing, and
-    // the stage can complete having written no model at all.
-    out: (P) => P.blindFrameModel,
-    validate: validators.blindFrame,
-    // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
-    // CONTRACT DECLARATION above STAGES for the enum and the rules; contract-audit.mjs enforces them.
-    contractElements: {
-      "dominant_element — the spine the blind re-derivation locks onto": {
-        class: "judgment", tokens: ["blindframe_dominant_element_missing"],
-        why: "a cold re-derivation of the spine from the raw instruction alone; the whole point is that no artifact may supply it — the run's own answer is deliberately withheld",
-      },
-      "variants[] — {value, direction: add|drop|phonetic|homophone|neighbour|composite, rationale}, neighbours in BOTH directions": {
-        class: "judgment", tokens: ["blindframe_variants_empty"],
-        why: "fresh imagination, starved of the frame. blindframe_direction_invalid and blindframe_variant_key_unknown are enum-spelling and key-set checks owned by the envelope; blindframe_variants_empty is the one content-absence token",
-      },
-      "fields[] — {goods, on_field boolean, rationale} by goods-overlap with the actual product": {
-        class: "judgment", tokens: [],
-        why: "the on-field boundary is the judgment the frame is being tested against. Its two tokens (field_on_field_invalid, field_key_unknown) are a JSON-type check and a key-set check, both owned by the envelope — nothing polices the boundary itself, and fields[] may legitimately be empty",
-      },
-      "sources[] — {channel, rationale} by the product's real channel": {
-        class: "judgment", tokens: [],
-        why: "which channels this product actually lives on. The only token naming it is blindframe_source_key_unknown, a key-set check owned by the envelope",
-      },
-      "ranking_basis — goods-overlap | class-number": {
-        class: "judgment", tokens: [],
-        why: "how to rank a saturated element is a stated position. blindframe_ranking_basis_invalid fires on the enum spelling and is owned by the envelope, so no token speaks about the position",
-      },
-      "Structured envelope — schema_version, EXACTLY the six top-level keys, the variant/field/source key sets, the closed enums, on_field as a JSON boolean, \"no key you were not given\"": {
-        class: "mechanical:tool-written", tokens: ["blindframe_unparseable", "blindframe_key_unknown", "blindframe_variant_key_unknown", "blindframe_field_key_unknown", "blindframe_source_key_unknown", "blindframe_direction_invalid", "blindframe_field_on_field_invalid", "blindframe_ranking_basis_invalid"],
-        why: "#850 rules the envelope M and the content J for this stage; a structured-return tool writes the envelope and the model supplies values only",
-      },
-      "Return shape — hand the model back through record_blind_frame, write NO file, return ONLY a 2-3 line summary": {
-        class: "mechanical:tool-written", tokens: [],
-        why: "CONVERTED (#1092, the register-digest transport's pattern): the seat sends VALUES and the driver writes blind-frame-model.json. The write dictation is DELETED rather than left beside the tool — a superseded path left executable is what the golden rule bans, and e2e measured the consequence: on 2e203b75 the seat obeyed the prose and hand-wrote a 17182B model with no call capture beside it, on a box whose grant already carried the tool. Nothing is pre-bound any more because the seat is handed no path. Owner ruling S4 (2026-08-13) still holds and is now structural: prose stays prose, data moves to structured fields, and the envelope is code's because code is the only writer.",
-      },
-    },
-    message: ({ paths: P, job }) => lines(
-      reads(["skills/blind-frame/SKILL.md"]),
-      `BLIND re-derivation. You are deliberately STARVED of the matter frame so you cannot inherit its conclusions.`,
-      `Re-derive the threat model COLD from ONLY the raw instruction below. Do NOT read the matter frame (matter-context.md), the variant manifest, or ANY prior analysis; do NOT assume the earlier triage was right.`,
-      `Mark(s): ${JSON.stringify(job.marks ?? job.markName ?? job.name)}; classes ${JSON.stringify(job.classes ?? "")}.`,
-      job.goods ? `Goods/services (verbatim): ${job.goods}` : "",
-      job.jurisdictions ? `Stated territories: ${Array.isArray(job.jurisdictions) ? job.jurisdictions.join(", ") : job.jurisdictions}` : "",
-      job.priorUse ? `Stated manner of use: ${job.priorUse}` : "",
-      // P2-C (Round-2 §8a): the same campaign-shape FACTS the matter frame gets — the blind re-derivation
-      // must not re-invent a launch shape the client already stated.
-      job.campaignShape ? `Stated campaign shape (verbatim from intake): ${job.campaignShape}` : "",
-      job.upfrontInstructions ? `Requester instructions (verbatim): ${job.upfrontInstructions}` : "",
-      job.rawRequest ? `The VERBATIM inbound request is archived at ${P.inboundRequest} — read it ONLY for the mark / goods / territories / manner of use; read nothing else.` : "",
-      `Re-derive across the FOUR layers (element + neighbours BOTH directions; field by goods-overlap; sources by real channel; ranking by goods-overlap) per the skill.`,
-      // ONE output: the STRUCTURED model. There is no prose twin — it was written for nobody and
-      // emission is the wall-clock, so the reasoning stays in the turn and only the model lands on disk.
-      // — THE WRITE DICTATION IS GONE, and with it the path. `writeReturn(P.blindFrameModel)` used to
-      // close this dispatch; the seat now hands values to `record_blind_frame` and the driver writes the
-      // model. Deleted rather than kept beside the tool: e2e measured a seat obeying this prose on
-      // 2e203b75 while holding the tool, which is what a superseded path left executable buys.
-      `Hand the threat model back by calling the \`record_blind_frame\` tool — \`dominant_element\`, \`variants\`, \`fields\`, \`sources\` and \`ranking_basis\` as VALUES, with the closed enums the skill names. The driver validates what arrives, holds the record, and writes blind-frame-model.json itself.`,
-      `Do NOT write or edit any file. There is no path for you to write to, nothing you hand-write is read, and a prose companion is read by nobody — your reasoning belongs in this turn and in the \`rationale\` lines.`,
-      `When the tool accepts your model, return ONLY a 2-3 line summary of what you found.`,
     ),
   },
 
@@ -2053,7 +1971,7 @@ export const STAGES = {
       },
       "enumerated block records carried verbatim — record_id, mark_text, classes, status, owner_name, owner_country, application_date, registration_date, expiry_date, jurisdictions, screen_verdict": {
         class: "mechanical:tool-written", tokens: ["named_band_collapsed"],
-        why: "register_enumerate already returns each record batch-screened; carrying it is transcription. `named_band_collapsed` (verify.mjs:1325, findCollapsedBands) is exactly the recall loss that transcription produces — a slice claiming total_hits with zero records reaching the band. [citation unverified]",
+        why: "register_enumerate already returns each record batch-screened; carrying it is transcription. `named_band_collapsed` (verify.mjs:1319, findCollapsedBands) is exactly the recall loss that transcription produces — a slice claiming total_hits with zero records reaching the band. [citation unverified]",
       },
       "per-axis prose digest — the SHORT AUDIT NOTE at register-units/<axis>.md": {
         class: "judgment", tokens: ["too_short"],
@@ -2326,7 +2244,7 @@ export const STAGES = {
       },
       "the escalation decision — which register axes carry a material, unresolved, genuinely closeable gap, and the one-line reason for each": {
         class: "judgment", tokens: [],
-        why: "Whether a documented coverage-limited row, a capability-gap deferral or a fresh concern on a confirmed-clean row warrants spending a re-run. The driver hands the coverage/execution truth in as a computed table (stages.mjs:1479; skepticDeferralExtra) precisely so this is a call over data rather than a re-derivation — but the call itself is nobody else's. [citation unverified]",
+        why: "Whether a documented coverage-limited row, a capability-gap deferral or a fresh concern on a confirmed-clean row warrants spending a re-run. The driver hands the coverage/execution truth in as a computed table (stages.mjs:1470; skepticDeferralExtra) precisely so this is a call over data rather than a re-derivation — but the call itself is nobody else's. [citation unverified]",
       },
       "escalation decisions — one {axis, reason} per axis that must be re-run, sent through record_skeptic": {
         class: "mechanical:code-rendered", tokens: [],
@@ -2350,7 +2268,7 @@ export const STAGES = {
           + "conversion that moved these refusals to the boundary moved them out of the census in the same "
           + "commit, and nothing went red. Attached to this element rather than a new one because this IS the "
           + "typed-envelope element for this stage — the tokens speak about what record_skeptic accepts. "
-          + "ORIGINAL NOTE, still true: CONVERTED (#1092, blind-frame's template one stage over): the seat sends flags and escalations as VALUES and the driver renders skeptic-flags.md through renderSkepticFlags. Nothing is pre-bound because the seat is handed no path — e2e measured the cost of leaving the old order beside the tool: on 2e203b75 the seat hand-wrote a 5693B skeptic-flags.md with no call capture, on a box whose grant already carried record_skeptic. The line shape is now code's alone, which is what #850 asked for.",
+          + "ORIGINAL NOTE, still true: CONVERTED (#1092): the seat sends flags and escalations as VALUES and the driver renders skeptic-flags.md through renderSkepticFlags. Nothing is pre-bound because the seat is handed no path — e2e measured the cost of leaving the old order beside the tool: on 2e203b75 the seat hand-wrote a 5693B skeptic-flags.md with no call capture, on a box whose grant already carried record_skeptic. The line shape is now code's alone, which is what #850 asked for.",
       },
     },
     message: ({ paths: P, axes, registerOnly, depth }) => lines(
@@ -2398,93 +2316,6 @@ export const STAGES = {
       `An EMPTY \`flags\` array IS the clean answer, and an EMPTY \`escalations\` array IS a decision: the driver renders the "no flags surfaced" sentinel and the "none" line from them. Omitting either field is not an answer.`,
       `Do NOT write or edit any file, and do NOT type an ESCALATE line anywhere — the driver renders those from your values, and a token you type inside a flag or a reason is refused.`,
       `When the tool accepts your call, return ONLY a 2-3 line summary.`,
-    ),
-  },
-
-  // Property 1 (the omission detector) — diff the BLIND model against what the run ACTUALLY scoped/searched
-  // and emit STRUCTURED reopen directives. Sonnet/low: a structured comparison, not fresh imagination (that
-  // was spent in blind-frame). CODE consumes frame-diff.json (runSupplementalSweeps + the dominant-element
-  // gap clamp); the DECISION is never the model's. NON-FATAL (a flake just means no reopen this run).
-  "frame-diff": {
-    model: "sonnet", thinking: "low", timeoutSec: 600,
-    skillReads: ["skills/frame-diff/SKILL.md"],
-    out: (P) => P.frameDiff,
-    validate: validators.frameDiff,
-    // E1 — what this stage asks a model for, and what discharges each element. See THE STAGE-
-    // CONTRACT DECLARATION above STAGES for the enum and the rules; contract-audit.mjs enforces them.
-    contractElements: {
-      "The prose reasoning in frame-diff.md — the same directives the JSON already carries": {
-        class: "mechanical:code-rendered", tokens: ["too_short"],
-        why: "CONVERTED (#1092, third conversion). This element was already ruled code-rendered and the ruling has now arrived: the seat is not asked for prose at all, and `renderFrameDiff` projects the file from the same parsed model the JSON is serialized from. So the two artifacts cannot disagree about a directive, and too_short stops being a length floor on a restatement — an artifact the driver writes cannot come back short",
-      },
-      "directives[] — {layer: variant|field|source, item, observation, severity: dominant-element|material|minor}": {
-        class: "judgment", tokens: [],
-        why: "matching by MEANING not string identity, and deciding whether an omission is ON the spine, is the judgment #850 keeps here. Every token naming this array — directives_invalid, directive_key_unknown, layer_invalid, severity_invalid — is an array-shape, key-set or enum-spelling check owned by the envelope, so nothing polices whether the diff found the omissions",
-      },
-      "Dispatchability of a FIRING directive — its item is itself a mark-shaped term, or remedy.terms names the mark-shaped term(s)": {
-        class: "judgment", tokens: ["framediff_directive_undispatchable"],
-        why: "#850 ruled remedy.terms dispatchability J, and it stays J because code must never guess `term: d.item` — deriveDirectiveRemedy() in frame-diff-model.mjs returns null rather than dispatch a label, on the record of the RUN1 false-close. The asker has to say what the search IS. This token also speaks about remedy.terms, declared below",
-      },
-      "remedy — {terms, nice_classes, regions}": {
-        class: "judgment", tokens: [],
-        why: "naming the exact re-search is judgment the driver cannot derive for a variant directive. framediff_remedy_invalid is a key/type check owned by the envelope; the content failure it can suffer — a remedy that is itself a label — is owned by the dispatchability element above",
-      },
-      "dominant_element — bound by the driver from the blind model; the seat is not asked for it": {
-        class: "mechanical:pre-bound", tokens: [],
-        why: "BOUND — the classification is now true rather than aspirational. It read \"echo the blind model's, verbatim\" and was WORSE THAN UNREAD: the driver held two copies and preferred the echo over both, so a transcription slip retargeted applyDominantBackstop's spine test — the gate that forces dominant_element_gap true — with no token speaking about it. Now `boundDominantElement` (frame-diff-record.mjs) reads blind-frame-model.json, falling back to the manifest's `Dominant element:` line, and stamps the value into frame-diff.json; the tool's input schema has NO such property, so the field cannot arrive from a seat at all. The artifact keeps carrying it because the parser, the render and the archive all read it — what changed is who writes it",
-      },
-      "dominant_element_gap — boolean": {
-        class: "judgment", tokens: [],
-        why: "kept J because the model can assert a gap code cannot see — BUT the driver already overrides it in one direction (applyDominantBackstop() in frame-diff-model.mjs forces it true on any firing on-spine directive) and the message says so outright. #850 did not classify this field. The commonest stated case — \"the crowd was capped at top-50 of 257\" — is readable from the merged band's own `incomplete` descriptor, so it is a code-extraction site worth ruling on before this is called settled. framediff_gap_invalid is a JSON-type check owned by the envelope",
-      },
-      "Structured envelope — schema_version, EXACTLY the four top-level keys, the directive and remedy key sets, the closed enums, directives as an ARRAY, the gap as a JSON boolean": {
-        class: "mechanical:tool-written", tokens: ["framediff_model_missing", "framediff_unparseable", "framediff_key_unknown", "framediff_directive_key_unknown", "framediff_layer_invalid", "framediff_severity_invalid", "framediff_directives_invalid", "framediff_gap_invalid", "framediff_remedy_invalid"],
-        why: "a structured-return tool writes the envelope; the model supplies values only. LANDED (#1092, third conversion): `record_frame_diff` types the whole envelope, and most of these tokens are now UNREPRESENTABLE from a typed call rather than merely caught — the schema enums remove layer_invalid and severity_invalid, the JSON boolean removes gap_invalid, and the named keys remove the key-unknown pair. They stay listed because the parser keeps raising them and must: the archive is full of files written under the dictation, and a replay has to be able to fail on them",
-      },
-      "Return shape — hand the diff back through record_frame_diff, write NO file, return ONLY a 2-3 line summary": {
-        class: "mechanical:tool-written", tokens: [],
-        why: "CONVERTED (#1092, third conversion, after blind-frame and skeptic). It read `mechanical:pre-bound` — 'the driver named both paths in the dispatch' — which was true and is now beside the point: there are no paths in the dispatch. The seat sends VALUES and the driver writes BOTH artifacts, so nothing is pre-bound because nothing is handed over to be filled in. First conversion whose single call owns two files",
-      },
-    },
-    message: ({ paths: P, registerOnly, axes }) => lines(
-      reads(["skills/frame-diff/SKILL.md"]),
-      `Diff the BLIND frame model against what this run ACTUALLY scoped and searched, then emit STRUCTURED reopen directives.`,
-      `BLIND model (the frame-starved cold re-derivation): ${P.blindFrameModel}.`,
-      `What the run SCOPED: the Scope ledger ${P.scopeLedger} (or the "### Scope ledger" section of ${P.variantManifest}) + the manifest ${P.variantManifest}.`,
-      // — the searched surface is the EXECUTION record, read before the digest re-narrates it: the
-      // merged band is every query the funnel ran and every record it carried, and the unit notes say what
-      // each axis searched. Same question as before, asked of the primary evidence instead of its summary.
-      `What the run SEARCHED: the register's COMPLETE MERGED BAND ${P.registerNamedBand} (every executed query with its records, or an honest "incomplete" descriptor) + the per-axis unit audit notes (${(axes ?? []).map((a) => P.registerUnit(a)).join(", ")})${registerOnly ? "" : `; common-law ${P.commonLaw}`}.`,
-      registerOnly ? REGISTER_ONLY_NOTE : "",
-      `For each blind-model variant / field / source the run did NOT scope or search, emit one directive {layer, item, observation, severity}. Match by MEANING, not string identity (a drop-S neighbour the run never searched; a field the run off-fielded that shares the product's goods; a channel the run never touched). "observation" = the concrete signal that should reopen it. severity = dominant-element (the omission is ON the spine) | material (a real omission worth a targeted sweep) | minor (already covered, or presentation only).`,
-      // THE ASK CONTRACT, stated at BOTH levels (the two-level prompt rule): the parser REFUSES a firing
-      // variant directive that dictates nothing dispatchable, so the invitation must demand what the code
-      // demands. Stating it only in skills/frame-diff/SKILL.md would leave this line inviting the exact
-      // shape the parse throws on — enforcement without a matching invitation, which is how the
-      // 2026-07-29 run raised four omissions nothing could search.
-      `A FIRING variant directive (severity dominant-element or material) MUST be dispatchable: either its "item" is ITSELF a single mark-shaped search term (WAVA, ORBEXA, CORAL MAGIC), or it carries remedy: {terms:["<mark-shaped term>", …], nice_classes:["<class>", …]} saying WHAT to search. A label — a parenthetical, an enumeration, more than about four words ("WAVA (famous CPG snack, one-keystroke neighbour)") — dispatches as a nil search that reads CLEAN, so the driver REFUSES the file and asks you to restate it in-turn. Every offending directive is named at once: fix them ALL in one re-save. Never delete a directive or downgrade it to "minor" to get past this — a real omission must still be raised, it just has to say what the search IS.`,
-      `field and source directives are NOT under that rule: an un-classed field directive and a source channel are disclosed rather than swept blind, which is a principled ending for those layers. A remedy is welcome on them whenever you know the exact re-search, and any remedy you supply is linted the same way wherever it rides.`,
-      `Set dominant_element_gap true when the dominant element is not fully enumerated (the crowd not yet counted worldwide, a spine neighbour unsearched). The driver holds the dominant element and re-checks this against it — do not rely on it to hide a spine omission.`,
-      //, third conversion — THE WRITE DICTATION AND BOTH PATHS ARE GONE. This dispatch used to end
-      // "Emit BOTH: your prose reasoning to <frame-diff.md>, and the STRUCTURED diff … to
-      // <frame-diff.json>", closed by `writeReturn(P.frameDiff)`. The seat now sends VALUES and the driver
-      // writes the JSON and renders the prose from the same parsed model. Deleted rather than left beside
-      // the tool: a superseded path left executable is what the golden rule bans, and e2e has twice
-      // measured a seat obeying the prose while holding the tool.
-      //
-      // THE PROSE IS NOT ASKED FOR AT ALL any more, and that is the ruling arriving rather than a
-      // side effect: this stage's own contract classifies the prose element `mechanical:code-rendered` —
-      // "the same directives the JSON already carries" — and nothing in the driver reads frame-diff.md.
-      //
-      // EACH FIELD CARRIES ITS OWN IMPERATIVE IN ITS OWN SENTENCE (: a field phrased outside one was
-      // written 0 of 9 times against 74 of 74 when imperative-carried).
-      `Hand the diff back by calling the \`record_frame_diff\` tool. Send \`directives\` — one entry per omission, each with \`layer\`, \`item\`, \`observation\` and \`severity\` from the closed enums the skill names, plus \`remedy\` wherever the item is not itself the search term.`,
-      // — the `dominant_element` echo is GONE from this sentence and from the tool's schema. The
-      // driver binds it from blind-frame-model.json. What is left here is the one field only the seat can
-      // answer.
-      `Send \`dominant_element_gap\` as a JSON boolean — omitting it is not an answer, and an EMPTY \`directives\` array IS the clean answer.`,
-      `Do NOT write or edit any file. There is no path for you to write to: the driver serializes the structured diff and renders the prose from it, and nothing you hand-write is read.`,
-      `When the tool accepts your call, return ONLY a 2-3 line summary of what the diff found.`,
     ),
   },
 
@@ -2815,9 +2646,9 @@ export const STAGES = {
       // word, so a clean claim still needs a source). That shape stays blocked.
       ...synthesisRegisterRecordLines({ dispatchBlocks, paths: P, registerOnly }),
       // A3 (F5/F8) — the machine's own open items are FIRST-CLASS judgment inputs, not telemetry:
-      // every reopen deferral and every skeptic flag must be weighed, and the weighing must LAND somewhere
-      // a reader sees (a coverage[] row or explicit reasoned-immaterial prose) — never silently dropped.
-      `SKEPTIC FLAGS + FRAME-REOPEN DEFERRALS: read ${P.skepticFlags} (the fresh-eyes audit flags) and ${P.frameReopenReceipt} (JSON; its "deferrals" array = search directives the machine declared material but could NOT close this run, each {directive, reason}). Weigh EVERY flag and EVERY deferral into your analysis: each one either (a) lands as a findings.json coverage[] row (state "open" or "not-searched", area naming the unswept item, note carrying the mechanical reason) so the reader sees the gap, or (b) is explicitly reasoned immaterial in the narrative (one line naming it and why). A deferral or flag that appears in neither place is a delivery failure the refutation reviewer will flag. Files absent ⇒ skip this directive.`,
+      // every skeptic flag must be weighed, and the weighing must LAND somewhere a reader sees (a
+      // coverage[] row or explicit reasoned-immaterial prose) — never silently dropped.
+      `SKEPTIC FLAGS: read ${P.skepticFlags} (the fresh-eyes audit flags). Weigh EVERY flag into your analysis: each one either (a) lands as a findings.json coverage[] row (state "open" or "not-searched", area naming the unswept item, note carrying the mechanical reason) so the reader sees the gap, or (b) is explicitly reasoned immaterial in the narrative (one line naming it and why). A flag that appears in neither place is a delivery failure the refutation reviewer will flag. Files absent ⇒ skip this directive.`,
       // A6 — the intake-ask contract: every explicit customer instruction is answered as a
       // LABELLED response, on this and every downstream surface.
       intakeAsks?.length ? `INTAKE ASKS (answer each as a LABELLED response — the four-link contract captured→executed→report→client starts here): the requester explicitly asked for these checks:\n${intakeAsks.map((a, i) => `  ${i + 1}. "${a.ask}" (owner: ${a.owner})`).join("\n")}\nSEND ONE "ask_answers" ENTRY PER ASK, as a TOP-LEVEL field of the findings record you hand to the call (never as a narrative section — the driver renders the labelled line into the narrative from these same entries): {"ask":"<the ask VERBATIM as listed above — the driver joins on it>","answer":"<the ANSWER ALONE — what was found / nothing found / NOT executed this run — <reason> — and nothing else>"}. THE "answer" FIELD IS NOT A LABELLED LINE, and you do not write one: the driver renders "- You asked: <the ask> → " and prints your "answer" straight after it, into the narrative AND into the report's code-built section. An "answer" that repeats the label or restates the ask ships the question to the client twice — "- You asked: EU register only → You asked: 'EU register only.' → Satisfied…" — which is the delivered defect this wording exists to stop, and a label you cannot write is a label you cannot double. Start "answer" at the first word of the answer itself ("Satisfied…", "nothing found", "NOT executed this run — …"). A paraphrased ask no longer matches and breaks the join. An ask that was NOT executed additionally gets a coverage row (state "open", area "intake-ask / <short>") so the verdict carries it. Never fold an ask's answer into generic prose — the typed entry is the contract.` : "",
@@ -3206,8 +3037,8 @@ export const STAGES = {
       // WP-56 — demotion-verification lens (the mirror of the anti-over-rating checks; see the skill section)
       `DEMOTION VERIFICATION (per the skill): for every finding at the framework's lowest band, or disposition "distinguished"/"off-field", whose senior right is same-class and in use, verify the three demotion receipts (a registered-scope comparison with the specification quoted — never the senior's trade dress; any dilution counted in that conflict's jurisdiction × goods lane; a use-meets-use read consistent with the finding's own use-check result) and the response-band reconciliation line. A missing/dishonest receipt on the conflict that would otherwise drive the verdict is BLOCKING; elsewhere a FLAGGED CORRECTION. Where the receipts exist, the demotion STANDS — audit the evidence, never re-decide the band.`,
       // A3/A6 — verify the machine's own open items and the customer's explicit asks were HONOURED,
-      // not narrated away: an unaddressed deferral/flag or an unanswered ask is a flagged correction.
-      `Also verify against ${P.skepticFlags} and ${P.frameReopenReceipt} (JSON "deferrals"): every skeptic flag and every reopen deferral must be either visible as a coverage[]/narrative open item or explicitly reasoned immaterial — one that appears in neither place is a FLAGGED CORRECTION. Files absent ⇒ skip.`,
+      // not narrated away: an unaddressed flag or an unanswered ask is a flagged correction.
+      `Also verify against ${P.skepticFlags}: every skeptic flag must be either visible as a coverage[]/narrative open item or explicitly reasoned immaterial — one that appears in neither place is a FLAGGED CORRECTION. Files absent ⇒ skip.`,
       // RETIRED. This ordered the reviewer to "verify the \"## Answers to your
       // instructions\" section answers EACH of these verbatim intake asks with a labelled line … A missing
       // or evasive answer is a FLAGGED CORRECTION." Every clause of it was true when it was written and
@@ -3222,7 +3053,7 @@ export const STAGES = {
       // reaches a seat, so the next section to become code-built cannot leave its old order behind.
       //
       // What the reviewer still owes on intake asks is unchanged and lives one line up: the skeptic-flag
-      // and reopen-deferral check. The asks themselves are the writer's contract, not the reviewer's.
+      // check. The asks themselves are the writer's contract, not the reviewer's.
       // — the reader-vocabulary lens. The issue asks for "one judgment pass, directly after synthesis
       // or inside the existing review step", and this step already has both mechanisms it names: a
       // first-line verdict and typed corrections traceable to the sentence they rewrite. So the lens needs
@@ -3766,7 +3597,6 @@ export const STAGES = {
 // register_enumerate on runs where the tool had been removed. They live here now, beside the steering
 // constant and the message they replace, so a lane change is one edit and the drift cannot recur.
 
-const directiveLine = (d) => `- [${d.layer}${d.severity === "dominant-element" ? " · DOMINANT-ELEMENT" : ""}] ${d.item} — ${d.observation}`;
 
 // The one line a WARM resume needs about the lane: judgment additions are proposals, not enumerates.
 // (A warm resume re-enters a session whose attempt-1 prompt already carried the full lane brief; this
@@ -3811,74 +3641,6 @@ export function buildEnvelopeCloseFollowup({ paths: P, axis, rows, supplementalL
   );
 }
 
-// Frame-reopen, WARM-RESUME arm: the blind frame-diff found threats the run did not fully scope or search.
-//
-// This arm was one of the two live defects the single-source refactor exposed: it ordered
-// register_enumerate and hand-APPENDED band blocks unconditionally, on a run where the tool is removed
-// and where band_block_unplanned kills a hand-authored block. It is reached on a lane run whenever the
-// code-side dispatch arm above it cannot run (no executePlan adapter for the active provider, or
-// CLEAROTRON_PLAN_DISPATCH=off), so the contradiction was dispatchable, not theoretical.
-export function buildFrameReopenFollowup({ paths: P, axis, directives, reopenFetchCap, supplementalLane = false }) {
-  const dom = (directives ?? []).filter((d) => d.severity === "dominant-element");
-  const other = (directives ?? []).filter((d) => d.severity !== "dominant-element");
-  if (supplementalLane) return lines(
-    `You are RESUMING your own register-unit session for axis "${axis}". Your prior queries, your band artifact (${P.registerBand(axis)}), and your fetched records are already in your context.`,
-    `A blind, frame-INDEPENDENT re-derivation (it never saw this run's framing) found these threats the run did NOT fully scope or search:`,
-    ...(directives ?? []).map(directiveLine),
-    dom.length
-      ? `For the DOMINANT-ELEMENT item(s) this is a CLOSURE pass — PROPOSE the dominant element (and its formative root) via register_propose_supplemental ({"axis": "${axis}", "output_path": ${JSON.stringify(P.registerBand(axis))}, "proposals": […]}): the match_mode-exact NAME-LIST slice AND the contains band, one proposal per material+major in-scope jurisdiction (regions), every proposal pinned to the in-scope classes via nice_classes. The tool runs each proposal through the SAME deterministic executor as the dictated plan and MERGES its qid-stamped block into ${P.registerBand(axis)} ITSELF — it owns the page loop and carries live AND recently-dead records with their status (never date-cut), so there is nothing to sample and nothing to stop at page 0 / top-N. What you must still bound is YOUR OWN per-record detail reading: at most ${reopenFetchCap} records across this whole closure pass, then stop reading detail and reason from the screened band as it stands (a BOUNDED band that is WRITTEN beats an exhaustive one killed at the hard wall that writes NOTHING). A slice the executor cannot exhaust comes back as an "incomplete" block (count + sample + reason) — a descriptor for judgment, NEVER a clean negative. You author NO clearance verdict and NO "confirmed-clean" floor row: the band IS the coverage signal; judgment (Layer B) reads it and decides sufficiency.`
-      : "",
-    other.length ? `For the other item(s), PROPOSE ONLY the narrow additional slice each requires — same register_propose_supplemental call, class-scoped and region-scoped; the tool merges each block into ${P.registerBand(axis)}.` : "",
-    `Then reconcile your account of this axis against the band the tools just wrote — the driver renders ${P.registerUnit(axis)} from your call and takes its counts from that band, so the reconciliation is what you SEND, not a file you re-open. You never author, edit, append to or re-save ${P.registerBand(axis)} yourself — the tools own every block and its qid stamp, and a hand-authored block fails the stage. Hand the reconciled note back with \`record_unit_note\`; you open neither file.`,
-    UNIT_NOTE_REPAIR_TAIL,
-    SUPPLEMENTAL_LANE_STEERING,
-  );
-  return lines(
-    `You are RESUMING your own register-unit session for axis "${axis}". Your prior queries, your band artifact (${P.registerBand(axis)}), and your fetched records are already in your context.`,
-    `A blind, frame-INDEPENDENT re-derivation (it never saw this run's framing) found these threats the run did NOT fully scope or search:`,
-    ...(directives ?? []).map(directiveLine),
-    dom.length
-      ? `For the DOMINANT-ELEMENT item(s) this is a CLOSURE pass — re-ENUMERATE the dominant element (and its formative root) with register_enumerate: the match_mode:exact name-list AND the contains band, region-scoped PER material+major in-scope jurisdiction, filtered to the in-scope classes, carrying live AND recently-dead records (with status — never date-cut). register_enumerate owns the page loop for SCREENING: do NOT sample, do NOT stop at page 0 / top-N while screening the crowd (that batch-screen pass is cheap). BUT BOUND the expensive per-record detail-fetch to at most ${reopenFetchCap} records across this whole closure pass — once ${reopenFetchCap} records have been detail-fetched, STOP fetching and record the remaining screened survivors as an "incomplete" block (count + sample + reason: "detail-fetch ceiling ${reopenFetchCap} reached — bounded to fit the time budget"). A BOUNDED coverage-limited band that is WRITTEN beats an exhaustive one that is killed at the hard wall mid-fetch and writes NOTHING. APPEND each call's result as a block to your ${P.registerBand(axis)} band artifact — an "enumerated" block (EVERY record, with its screening facts) for a band you paged to has_more:false, or an honest "incomplete" block (count + sample + reason) for a band/crowd you genuinely could not exhaust. You author NO clearance verdict and NO "confirmed-clean" floor row — the band IS the coverage signal; judgment (Layer B) reads it and decides sufficiency. An "incomplete" block is a descriptor for judgment, NEVER a clean negative. Every block you append MUST carry "state":"enumerated" (ONLY if paged to has_more:false) or "state":"incomplete" — EXACTLY those two strings; there is no "verified"/"checked"/"complete" state, and any other value fails the stage.`
-      : "",
-    other.length ? `For the other item(s), run ONLY the narrow additional sub-query each requires (via register_enumerate) and APPEND its block(s) to ${P.registerBand(axis)}.` : "",
-    // The band half of this arm was self-contradictory: the paragraph above orders each result APPENDED as
-    // a block, and the sentence here then ordered the whole band artifact re-emitted "with the new blocks
-    // folded in". A re-emission is not an append — it is a rewrite of blocks the model did not author, and
-    // a rewrite is how an existing block's qid gets dropped (the plan-execution receipt joins on qid, so a
-    // dropped one reads as an axis that was never executed). Append + patch is therefore the CORRECT
-    // instruction here, not merely the cheaper one: the blocks the model never touched are never re-typed,
-    // so their qids cannot be lost in transcription.
-    `Your ${P.registerBand(axis)} band artifact GROWS BY APPENDING: add each new block to the array already on disk and leave every block already in it exactly as it stands, each keeping its "qid" field byte-identical — never re-emit the band whole, because a block you re-type is a block whose qid can be lost, and the plan-execution receipt joins on it (a dropped qid corrupts the audit trail and reads as an axis that never ran).`,
-    `Then reconcile the ${P.registerUnit(axis)} digest with the blocks you just appended, preserving everything else.`,
-    UNIT_NOTE_REPAIR_TAIL,
-  );
-}
-
-// Frame-reopen, FRESH scoped retry (doc-44): the warm resume above hit the hard wall, so this is a cold
-// session — it carries no prior context and must state the whole contract itself.
-//
-// BOTH arms below deliberately keep the FULL re-emission while every other corrective builder in this file
-// moved to targeted edits, and the reason is what "cold" means here. A patch is only safe when the file on
-// disk is a trustworthy base and the session that wrote it can say which lines it meant. Neither holds: this
-// session never wrote the digest, and the digest it would be patching was left behind by a resume that died
-// at the hard wall — the kill-torn class the run-level rescue refuses to trust as a base. Re-stating the
-// whole contract and writing the whole file is the honest shape for a session starting from nothing.
-export function buildFrameReopenRetryMessage({ paths: P, axis, directives, reopenFetchCap, supplementalLane = false }) {
-  if (supplementalLane) return lines(
-    `Run a SCOPED register sweep for axis "${axis}" — cover ONLY the near-form threats below. A prior warm resume of this axis TIMED OUT at the hard wall, so start clean; the band artifact for this axis is ${P.registerBand(axis)}.`,
-    ...(directives ?? []).map(directiveLine),
-    `PROPOSE each of them via register_propose_supplemental ({"axis": "${axis}", "output_path": ${JSON.stringify(P.registerBand(axis))}, "proposals": […]}) — one proposal per threat, each pinned to the in-scope classes via nice_classes and region-scoped per material+major in-scope jurisdiction. The tool runs every proposal through the deterministic executor and MERGES its qid-stamped block into the band itself, live AND recently-dead records carried with their status (never date-cut). Screen what comes back in full (that pass is cheap), but BOUND YOUR OWN per-record detail reading to at most ${reopenFetchCap} records; a slice the executor cannot exhaust comes back as an honest "incomplete" block (count + sample + reason). A WRITTEN bounded band beats an exhaustive one killed mid-fetch.`,
-    `Then hand the audit note back with \`record_unit_note\` — there is no digest file to re-emit and nothing you write by hand is read; the driver renders ${P.registerUnit(axis)} from your call and takes its counts from the band, so the note is reconciled against the band by construction rather than by you re-typing it. You never author, edit, append to or re-save band blocks yourself either — the tool owns every block and its qid stamp, and a hand-authored block fails the stage. Author NO clearance verdict: the band is the coverage signal; judgment reads it.`,
-    SUPPLEMENTAL_LANE_STEERING,
-  );
-  return lines(
-    `Run a SCOPED register sweep for axis "${axis}" — cover ONLY the near-form threats below. A prior warm resume of this axis TIMED OUT at the hard wall, so start clean; your band artifact is ${P.registerBand(axis)}.`,
-    ...(directives ?? []).map(directiveLine),
-    `Enumerate each via register_enumerate, region-scoped per material+major in-scope jurisdiction, filtered to the in-scope classes, live AND recently-dead (status carried, never date-cut). Screen the crowd fully (cheap), but BOUND the per-record detail-fetch to at most ${reopenFetchCap} records, then write the remaining screened survivors as an "incomplete" block (count + sample + reason). A WRITTEN bounded band beats an exhaustive one killed mid-fetch.`,
-    `APPEND each result as a block to ${P.registerBand(axis)} — that file is yours on this lane and the full write of it is deliberate, because a warm resume died at the hard wall and what is on disk may be kill-torn. The NOTE is not yours: hand it back with \`record_unit_note\` and the driver renders ${P.registerUnit(axis)} from your call. A torn note needs no repair from you — the next accepted call re-renders it whole. Author NO clearance verdict — the band is the coverage signal; judgment reads it. Every block you append MUST carry "state":"enumerated" (ONLY if paged to has_more:false) or "state":"incomplete" — EXACTLY those two strings; there is no "verified"/"checked"/"complete" state, and any other value fails the stage.`,
-  );
-}
-
 // ---- operability helpers (resume / --from / --experiment / stage model resolution / telemetry) --------
 
 // Canonical forward order of the LLM stages — one entry per stage, with the register-unit fan-out collapsed
@@ -3889,11 +3651,9 @@ export function buildFrameReopenRetryMessage({ paths: P, axis, directives, reope
 // the LLM stages only. doubt-closure is condition-only (it fires only when stitch-open doubts exist) and
 // absent for that reason.
 export const STAGE_ORDER = [
-  // — frame-diff runs AHEAD of step 3 (2026-08-03). The frame settles before the pile is judged, so
-  // the judges run ONCE, on the settled frame. This list is what `--from <stage>` keys on, so it must
-  // track the executed order: `--from frame-diff` forces the judging step too.
-  "matter-frame", "clearance-variants", "blind-frame", "common-law", "common-law-half", "register-unit",
-  "frame-diff", "owner-judgment", "skeptic", "synthesis",
+  // This list is what `--from <stage>` keys on, so it must track the executed order.
+  "matter-frame", "clearance-variants", "common-law", "common-law-half", "register-unit",
+  "owner-judgment", "skeptic", "synthesis",
   "case-law", "narrative-refutation", "report-overview", "report-card",
 ];
 // — the stages deliberately OUTSIDE the forward order, each with the reason. STAGE_ORDER ∪ this map
@@ -3980,7 +3740,7 @@ export function chainEntries(name, axis = null) {
 //
 // The mirror of stageInputs, and the missing half of the dependency graph. Several stages write more
 // than the one file `out()` names — synthesis authors findings.json beside the narrative, the variants
-// stage writes its structured model, frame-diff writes its diff, a register unit writes its
+// stage writes its structured model, a register unit writes its
 // band — and none of that was declared anywhere. Without it "repair in dependency order" has no order to
 // work with: you cannot tell which stale stage feeds which without knowing who WROTE the thing that moved.
 //
@@ -3995,9 +3755,6 @@ export function stageOutputs(name, P, { axes = [], axis = null } = {}) {
   const primary = def.out ? [def.out(P, axis)] : [];
   const extra = {
     "clearance-variants": [P.variantManifestModel, P.scopeLedger],
-    // blind-frame is NOT listed: since its structured model is `out` itself, which this function
-    // already includes. A second entry would claim a sibling the stage does not have.
-    "frame-diff": [P.frameDiffModel],
     // synthesis authors findings.json beside the narrative, and it is the single most-consumed artifact
     // in the run — every report surface, the verdict, the actions register and the delivery gate are
     // keyed to it. It was undeclared, which is exactly how a repair could rebuild a tail from a findings
@@ -4059,28 +3816,6 @@ export function stageInputs(name, P, { axes = [], axis = null, registerOnly = fa
   const map = {
     "matter-frame": [],
     "clearance-variants": [P.matterContext],
-    // STARVED on purpose: ONLY the raw instruction — never matterContext (the --experiment sandbox copies
-    // exactly these inputs, so listing matterContext here would leak the frame the blind pass must not see).
-    "blind-frame": [P.inboundRequest],
-    // — frame-diff now runs BEFORE placement-inquiry and register-digest, so register-findings.md and
-    // register-coverage-ledger.json do not exist yet on a fresh run. They were never the evidence anyway:
-    // they are the digest's RE-NARRATION of what the sweeps did. The searched surface is the merged named
-    // band plus the per-axis unit audit notes, both of which exist at the new seam. Leaving the two digest
-    // outputs declared here would name a LATER stage's outputs as this stage's inputs — they would go
-    // absent→present mid-pass, stale a skipped frame-diff on the delivery path, and park the run (the
-    // mechanism the skeptic note below describes). ONE consequence to know: several arms mutate the band
-    // and the units in-pass, and frame-diff is one-shot by contract (no in-process re-diff), so they
-    // restamp frame-diff against what they moved — same sanctioned-rewrite mechanism the settlement flush
-    // already uses (restampStage).
-    //
-    // 2026-08-04 — THAT LIST IS NOT JUST THE REOPEN, and getting it wrong parks a live run. named the
-    // reopen's own sweeps and stopped there; THREE arms downstream of the frame seam rewrite these same
-    // files (the escalation recheck's band re-merge, the skeptic escalation's forced register-unit
-    // re-runs, the envelope close's forced register-unit re-runs), and the reopen's own source-layer arm
-    // additionally rewrites common-law.md. pipeline.mjs `settleOneShotStamp` covers all of them at two
-    // seams. Anything ADDED to this list must be checked against every arm that runs after frame-diff, or
-    // the next resume-shaped run parks at the delivery gate with nothing able to repair it.
-    "frame-diff": [P.blindFrameModel, P.scopeLedger, P.variantManifest, P.registerNamedBand, ...units, P.commonLaw],
     "common-law": [P.variantManifest, P.matterContext],
     "common-law-half": [P.variantManifest, P.matterContext],   // A1 split — same inputs, half-scoped spec sidecar
     "register-unit": [P.variantManifest, P.matterContext],
@@ -4100,7 +3835,7 @@ export function stageInputs(name, P, { axes = [], axis = null, registerOnly = fa
     // simply has neither, an absent declared input fingerprints as absent, and such a run stays
     // byte-identical.
     skeptic: [P.ownerDecisions, P.commonLaw, P.variantManifest, P.matterContext, P.planExecution, P.registerCoverageLedger],
-    // crowd-context (2026-07-22): OPTIONAL inputs, declared like frameReopenReceipt — absent files
+    // crowd-context (2026-07-22): OPTIONAL inputs — absent files
     // fingerprint as absent (stage-freshness handles that today), so a run without the artifact is
     // byte-identical; present files join the P2 staleness contract like any other declared input.
     // — planExecution + the coverage ledger join this list, and the reason is the same one the
@@ -4118,9 +3853,9 @@ export function stageInputs(name, P, { axes = [], axis = null, registerOnly = fa
     // digest-funnel's settlement flush restamps the skeptic against both files and deliberately does
     // NOT restamp synthesis — "their staleness recompute is the contract" — which is the behaviour
     // this declaration extends, not a new one it introduces.
-    synthesis: [P.ownerDecisions, P.commonLaw, P.registerNamedBand, P.matterContext, P.variantManifest, P.skepticFlags, P.frameReopenReceipt, P.crowdContext, P.crowdContextMd, P.planExecution, P.registerCoverageLedger],   // A3/F8;
+    synthesis: [P.ownerDecisions, P.commonLaw, P.registerNamedBand, P.matterContext, P.variantManifest, P.skepticFlags, P.crowdContext, P.crowdContextMd, P.planExecution, P.registerCoverageLedger],   // A3/F8;
     "case-law": [P.narrative],
-    "narrative-refutation": [P.narrative, P.ownerDecisions, P.commonLaw, P.matterContext, P.skepticFlags, P.frameReopenReceipt],   // A3/F8
+    "narrative-refutation": [P.narrative, P.ownerDecisions, P.commonLaw, P.matterContext, P.skepticFlags],   // A3/F8
     // P2 clause 4 — P.findings joins the declared inputs of every stage that READS it. All three read it
     // today and none declared it, which is exactly how copper-vault's delivery gate came to be evaluated
     // over a findings set that had moved: findings.json is authored by synthesis but rewritten afterwards

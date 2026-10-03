@@ -237,12 +237,11 @@ test("every doubt-minting module is accounted for against the citable set", () =
     "doubt-ledger.mjs": "gather-crosscheck (the search files) + audit-contradiction (audit.md) — neither citable",
     "record-carry.mjs": "register-named-band.json — not citable",
     "commonlaw-carry.mjs": "common-law-grid.json — not citable",
-    "remedy-accounting.mjs": "_driver/frame-reopen.json — not citable",
   };
   // Keyed on the doubt-record SHAPE — a `birth` block that names its `place` — not on the substring
   // "birth: {". The looser form matched doubt-closure-call.mjs, where the same words appear in a call
   // that constructs no doubt at all, and a tripwire that cries wolf gets an excuse row added to it
-  // rather than a fix. The tolerance spans the multi-line form remedy-accounting uses.
+  // rather than a fix. The tolerance spans a birth block written across lines.
   const MINTS = /birth:\s*\{[\s\S]{0,80}?place:/;
   // RECURSES. A one-level scan would have been a guard that cannot fire — the exact defect this file
   // is about — because a minter added under `engine/` would never be looked at. `test/` and

@@ -7,13 +7,12 @@
 // run CONSIDERED and DROPPED (or applied), each carrying the observation that should REOPEN it. The
 // driver CODE-DERIVES scope-ledger.json from that prose (renderScopeLedgerJson, called after
 // clearance-variants validates) so the JSON is authored by the driver, never the model, and matches the
-// prose BY CONSTRUCTION — exactly the coverage-ledger.mjs pattern. The blind frame-diff reads the
-// dropped set + reopen triggers to decide which omissions to escalate.
+// prose BY CONSTRUCTION — exactly the coverage-ledger.mjs pattern.
 //
 // Like coverage-ledger.mjs / common-law-receipts.mjs this module is PURE (no node imports) so it tests
 // offline, and its strict parser THROWS with the offending token FIRST so a corrective-retry hint can
-// key on it. The DERIVE is never-killed by the caller (a malformed prose table → log + skip; the
-// frame-diff degrades to reading the manifest prose directly — the run always delivers).
+// key on it. The DERIVE is never-killed by the caller (a malformed prose table → log + skip — the run
+// always delivers).
 
 // The scope ledger spans the frame layers the blind pass re-derives, PLUS jurisdiction (Round 2 Change 1):
 // the instructed territories the run is scoped to (applied) + any considered and excluded (dropped, with the
@@ -131,7 +130,7 @@ export function renderScopeLedgerJson(md) {
  *
  * ── WHY THIS IS SPLIT OUT ───────────────────────────────────────────────────────────────────────────
  *
- * `scope-ledger.json` is read by the frame-diff scope check and the jurisdiction resolver. Until
+ * `scope-ledger.json` is read by the form-neighbourhood derivation (markets, dropped families). Until
  * conversion 3 the only way to produce it was `renderScopeLedgerJson(md)` — parse the `### Scope ledger`
  * MARKDOWN TABLE back out of a prose manifest a model had typed, on fixed column positions. A machine
  * artifact the downstream depends on, recovered from a table.
@@ -152,20 +151,18 @@ export function scopeLedgerJsonFromRows(rows) {
 
 /**
  * The dominant element the manifest names ("Dominant element: X" / "dominant element is X"), normalized
- * lowercase, or "" when absent. The frame-diff code backstop matches reopen directives against it so a
- * model that under-flags `dominant_element_gap` cannot suppress the gap on the spine. PURE.
+ * lowercase, or "" when absent. The form-neighbourhood floor seeds from it. PURE.
  */
 // Round 2 Change 1 — the run's IN-SCOPE jurisdictions = the `applied` jurisdiction-layer rows (the instructed
 // territories + any the model judged effective-in-them). Normalized upper-case tokens (US, EU, CN…). The
-// register dispatch + the frame-diff jurisdiction selector read this as the authoritative scope. PURE.
+// register dispatch reads this as the authoritative scope. PURE.
 export function scopeJurisdictions(rows) {
   return (rows ?? [])
     .filter((r) => r && String(r.layer).toLowerCase() === "jurisdiction" && String(r.status).toLowerCase() === "applied")
     .map((r) => String(r.item || "").trim().toUpperCase())
     .filter(Boolean);
 }
-// Jurisdictions the matter CONSIDERED and EXCLUDED (dropped jurisdiction rows) — carried so a frame-diff
-// over-reach flag can tell "deliberately excluded, with a reason" from "wandered in unjustified". PURE.
+// Jurisdictions the matter CONSIDERED and EXCLUDED (dropped jurisdiction rows). PURE.
 //
 // NOTE a dropped jurisdiction row is NOT an instruction to skip the territory. The ledger's own language is
 // "coverage-limited, NOT excluded" — it discloses reach, it does not narrow dispatch. Nothing here feeds the

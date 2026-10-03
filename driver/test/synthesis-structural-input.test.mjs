@@ -99,7 +99,7 @@ test("synthesis declares EXACTLY its inputs, and the plan-execution receipt + co
   const P = paths("/RUN");
   const sorted = (a) => [...new Set(a)].sort();
   const COMMON = [P.ownerDecisions, P.registerNamedBand, P.matterContext,
-    P.variantManifest, P.skepticFlags, P.frameReopenReceipt, P.crowdContext, P.crowdContextMd,
+    P.variantManifest, P.skepticFlags, P.crowdContext, P.crowdContextMd,
     P.planExecution, P.registerCoverageLedger];
 
   for (const registerOnly of [false, true]) {
@@ -109,7 +109,7 @@ test("synthesis declares EXACTLY its inputs, and the plan-execution receipt + co
       `stageInputs[synthesis] (registerOnly=${registerOnly}) is the staleness graph AND what --experiment copies`);
   }
 
-  // Named individually so a regression fails by NAME rather than as a count mismatch on an 11-entry list.
+  // Named individually so a regression fails by NAME rather than as a count mismatch on a 10-entry list.
   const declared = stageInputs("synthesis", P, { axes: REGISTER_AXES, registerOnly: false });
   assert.ok(declared.includes(P.planExecution),
     "synthesis must declare the plan-execution receipt — its coverage judgment rules over what actually ran (#447)");

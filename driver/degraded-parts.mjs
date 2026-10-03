@@ -165,15 +165,10 @@ function findingCards(runDir) {
   return { part: "finding-cards", name: PART_NAMES.findings, reason: NOT_COMPLETED, cause: `card stages ended failed: ${failed.join(", ")}` };
 }
 
-// The checks that stand behind the report without appearing in it: the frame's omission check (the blind
-// frame and the frame diff), the reviewer's pass and its re-check, a corrective pass that rolled back, and
+// The checks that stand behind the report without appearing in it: the reviewer's pass and its re-check, a corrective pass that rolled back, and
 // the crowd counts the judgment reads. Each shares the one name, so they are one reader's line.
 function checks(runDir, log) {
   const failed = [];
-  const blind = stageEnded(runDir, "blind-frame");
-  if (blind) failed.push(["the blind frame", blind.fail]);
-  const diff = failedStep(log, "frame-diff", "frame-diff-skipped");
-  if (diff && !blind) failed.push(["the frame diff", diff.reason]);
   const skeptic = stageEnded(runDir, "skeptic");
   if (skeptic) failed.push(["the reviewer's pass", skeptic.fail]);
   const recheck = stageEnded(runDir, "narrative-refutation");

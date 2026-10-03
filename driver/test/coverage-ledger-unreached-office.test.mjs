@@ -21,7 +21,7 @@
 // execute. The reader gets an EU-only clean under a scope the deliverable states as EU+US.
 //
 // That is doctrine rule 2 reached by OMISSION, which is the failure this whole form was built to make
-// structurally impossible, arriving through the fix for a different one. `pipeline.mjs:1830-1837` names
+// structurally impossible, arriving through the fix for a different one. `pipeline.mjs:1807-1814 attachSearchPolicy` names
 // this exact shape — it was closed for the whole-plan coverage-gap case and left open for the office
 // split. `registerDeferredCoverage` does log it and does feed the jurisdiction-scope backstop, but a
 // runLog event and a `note()` are not the artifact a lawyer reads, and that backstop is gated on an LLM

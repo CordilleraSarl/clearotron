@@ -49,7 +49,7 @@ const JOB = {
 // — the resume path the 13-pass defect lives on.
 async function runMockPipeline(env, opts = {}, reuse = null) {
   const root = reuse?.root ?? mkdtempSync(join(tmpdir(), "clearotron-funnel-"));
-  for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_FRAME_DIFF",
+  for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE",
     "MOCK_ESCALATION_NOOP", "MOCK_SEARCH_FLOOR", "MOCK_CLAUDE_CALL_LOG"]) delete process.env[k];
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent", CLEAROTRON_CLAUDE_PATH: CLAUDE, CLEAROTRON_WORK_DIR: root,
@@ -146,91 +146,6 @@ test("resume re-entry: a run parked after the flush resumes without a second flu
   assert.equal(sidecar2.items.length, 1, "no duplicate items across the resume");
   assert.ok(sidecar2.items.every((i) => i.flushedAt), "every receipt flushed");
   assert.ok(existsSync(join(p2.res.runDir, ".delivered")) || p2.res.runDir.includes("/archive/"), "resume delivered");
-});
-
-// ── C2 (PR-6): the digest lock no longer strands a post-synthesis frame-reopen ────────────────────
-// The 2026-07-28 E2E postmortem run: nine directives fired on a resume past synthesis and ALL deferred as
-// digest-locked-resume — the lock protected the audit spine from WARM re-runs, but it also blocked
-// the PURE-CODE dispatch arm that only writes band/plan receipts. Now: the dispatch arm runs UNDER
-// the lock (mint → fold → deterministic executor → per-directive verify), its reconcile is MINTED into
-// the durable queue, and it rides the ONE bounded late flush at the standalone settlement seam; the back
-// half recomputes once, in-pass. Warm arms stay locked.
-test("C2: a digest-locked resume runs the pure-code dispatch arm under the lock; the reconcile rides the late flush; the run delivers with the gap genuinely closed", async () => {
-  // pass 1: clean frame-diff, dies at report-overview — narrative.md exists ⇒ the resume is digest-locked.
-  const p1 = await runMockPipeline({ MOCK_FAIL_STAGE: "record_report_overview" }, {});
-  assert.equal(p1.res.ok, false, "pass 1 dies after synthesis");
-  assert.ok(existsSync(join(p1.res.runDir, "narrative.md")), "narrative exists — the digest is locked on resume");
-  assert.ok(!existsSync(driverDir(p1.res.runDir, "frame-reopen.json")), "clean diff — no reopen receipt to arm the already-attempted guard");
-
-  // Between passes the blind re-derivation surfaces a NEW dominant-element field class-gap (the
-  // post-synthesis-ask shape). Script it on disk AND via the fixture env so the pass-2 frame-diff
-  // parse sees it whether the stage skips or re-runs.
-  const fdPath = join(p1.res.runDir, "frame-diff.json");
-  writeFileSync(fdPath, JSON.stringify({
-    schema_version: 1, dominant_element: "NOVAPULSE",
-    directives: [{ layer: "field", item: "Cl. 35 (retail/online-retail) and Cl. 38 (online comms)",
-      observation: "scope-ledger marks 35/38 applied but no query was ever class-pinned to 35 or 38", severity: "dominant-element" }],
-    dominant_element_gap: true,
-  }));
-
-  // The injected executor IS the dispatch arm's lane (opts.planExecutor beats CLEAROTRON_PLAN_DISPATCH=off):
-  // it lands correctly-scoped enumerated blocks for the minted qids — a genuine close.
-  const dispatches = [];
-  const planExecutor = async ({ outputPath, qids }) => {
-    dispatches.push(qids);
-    const blocks = existsSync(outputPath) ? JSON.parse(readFileSync(outputPath, "utf8")) : [];
-    for (const qid of qids) {
-      const block = { state: "enumerated", qid, query: `exact NOVAPULSE [cl 35,38]`, total_hits: 1,
-        records: [{ record_id: `/mark/us/${qid.slice(-6)}`, mark_text: "NOVAPULSE", classes: [35, 38], status: "Registered", owner_name: "Owner", owner_country: "US", screen_verdict: "surface:in-scope-live" }] };
-      const i = blocks.findIndex((b) => b && b.qid === qid);
-      if (i >= 0) blocks[i] = block; else blocks.push(block);
-    }
-    writeFileSync(outputPath, JSON.stringify(blocks, null, 2) + "\n");
-    return { ok: true, states: {} };
-  };
-
-  const codename = JSON.parse(readFileSync(join(p1.res.runDir, "status.json"), "utf8")).codename;
-  const n1 = p1.events.length;
-  const p2 = await runMockPipeline({ MOCK_FRAME_DIFF: "field-classgap" }, { planExecutor }, { root: p1.root, codename });
-  assert.equal(p2.res.ok, true, JSON.stringify({ ok: p2.res.ok, fail: p2.res.fail, stage: p2.res.failedStage }));
-  const ev2 = p2.events.slice(n1);
-
-  // the dispatch arm RAN under the lock — never the digest-locked-resume blanket deferral
-  const fr = ev2.find((e) => e.event === "frame-reopen");
-  assert.ok(fr, "frame-reopen ran on the locked resume (dispatch arm)");
-  assert.ok(fr.swept >= 1, "the directive was genuinely swept (verified per-directive)");
-  assert.equal(fr.domClosed, true, "the dominant-element gap CLOSED — a locked resume can now end its asks");
-  assert.ok(!ev2.some((e) => e.event === "frame-reopen-skipped" && e.reason === "digest-locked-resume"),
-    "the blanket digest-locked-resume skip is gone when the pure-code lane exists");
-  assert.ok(dispatches.length >= 1, "the deterministic executor dispatched the minted qids");
-
-  // the reconcile segment was MINTED, not inline-flushed — and rode the ONE bounded late flush
-  assert.ok(ev2.some((e) => e.event === "digest-queued" && e.trigger === "frame-reopen"), "the reconcile segment is a durable queue item");
-  const flushes = ev2.filter((e) => e.event === "digest-flush");
-  assert.equal(flushes.length, 1, "exactly one flush on the resume");
-  assert.equal(flushes[0].pass, "late", "…and it is the LATE flush at the standalone settlement seam");
-  assert.ok(flushes[0].triggers.includes("frame-reopen"));
-  // The sweep lands UPSTREAM of step 3, and the band it rewrites is something both judges read, so the
-  // resume's own pass of step 3 re-judges on the settled band; the minted reconcile then rides the late
-  // flush, which finds both judges fresh and dispatches nothing. What must NOT appear here is an inline
-  // pre-synthesis flush under the lock, and it does not.
-  assert.deepEqual(judgmentPasses(ev2).map((e) => e.trigger), ["fresh", "late-flush"],
-    "the freshness-forced pass, then the ONE bounded late flush — never an inline pre-synthesis flush under the lock");
-  assert.equal(judgeDispatches(ev2).length, 2, "the judges were paid for once on the resume, on the settled band");
-  assert.ok(ev2.some((e) => e.event === "stage" && e.stage === "synthesis"), "the back half recomputed once, in-pass, off the re-judged decisions");
-
-  // the receipt carries the ask ledger's substrates: per-directive minted qids (executed is COMPUTED)
-  const receipt = JSON.parse(readFileSync(driverDir(p2.res.runDir, "frame-reopen.json"), "utf8"));
-  const qidLists = Object.values(receipt.directive_qids ?? {});
-  assert.ok(qidLists.length >= 1 && qidLists[0].length >= 1, "the receipt records which qids each directive minted");
-
-  // …and the ask ledger ends the frame ask EXECUTED via the plan-execution join, never by assertion
-  const asksDoc = JSON.parse(readFileSync(driverDir(p2.res.runDir, "asks.json"), "utf8"));
-  const frameAsk = asksDoc.asks.find((a) => a.born.place === "frame-diff");
-  assert.ok(frameAsk, "the frame directive is an ask row");
-  assert.equal(frameAsk.ending?.kind, "executed");
-  assert.equal(frameAsk.ending?.by, "plan-execution-join", "executed is computed from the join");
-  assert.ok(existsSync(join(p2.res.runDir, ".delivered")) || p2.res.runDir.includes("/archive/"), "delivered");
 });
 
 // The C2 FAILURE corner — a late flush that fails after the dispatch arm released its closes — is not

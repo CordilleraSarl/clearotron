@@ -455,7 +455,7 @@ export function stripPunctuation(term) {
 // is the exact false-clean this provider swap exists to prevent, and it is the shape a caller is most
 // likely to read as "nothing out there". The driver's job is to send the romanisation (see
 // driver/jx.mjs); this guard is the backstop for every OTHER path — model-proposed supplementals,
-// frame-diff remedies, a client-supplied mark in Cyrillic.
+// a client-supplied mark in Cyrillic.
 //
 // The DETECTOR now lives in providers/_shared/script-form.mjs — one implementation, four providers.
 // It was clarivate-only, which is exactly how the parity hole opened: the rule was true of an INDEX,
@@ -1970,7 +1970,7 @@ const __executePlan = makeExecutePlan({
   capabilities: CAPABILITIES,
   // regions[] is MANDATORY here (buildSearchRequest throws without it). Several driver lanes mint plan
   // entries with `regions: []` because that is a harmless worldwide sweep on corsearch — the recall
-  // probes, the common-law→register cross-check, frame-diff remedies and model-proposed supplementals.
+  // probes, the common-law→register cross-check and model-proposed supplementals.
   // Under the raw default builder every one of them hard-errored on this provider and was then
   // relabelled a tool-absence coverage row. Backfill from the FROZEN PLAN's own regions (= the matter's
   // scope, already translated to office codes at compile time); with no plan regions either, the

@@ -24,8 +24,8 @@
 
 import { REGION_NAMES } from "./publish/regions.mjs";
 import { PLAIN_FORMS, SENTENCE_WORD_LIMIT, termMatcher } from "./plain-register.mjs";   // the pinned rule, not a fourth copy
-import { canonicalJurisdictionCode } from "./jurisdiction-codes.mjs";   // one spelling of a territory code
-import { searchedCovers } from "./frame-diff-model.mjs";                // one copy of the EU-reach rule
+// one spelling of a territory code, and one copy of the EU-reach rule
+import { canonicalJurisdictionCode, searchedCovers } from "./jurisdiction-codes.mjs";
 import { partyFactSources, partyFactViolations, partyFactMessage, canJudgePartyFacts } from "./party-facts.mjs";   //
 import { writeUpViolations, writeUpMessage } from "./narrative-write-ups.mjs";   //
 

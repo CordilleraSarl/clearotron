@@ -75,8 +75,7 @@ These are the things a well-meaning refactor breaks. Each is enforced somewhere;
    sidecars via the walk-up readers (absent ⇒ legacy off; present-but-corrupt ⇒ fail).
 3. **Wire the call site** in `pipeline.mjs` and *decide its fatality class consciously*:
    `must(stage(...))` for a spine stage, note-and-continue for a checker. Add it to `STAGE_ORDER`
-   (for `--from`) and `stageInputs()` (telemetry + experiment sandboxing — blind-frame's entry
-   deliberately lists only the raw request; keep input diets honest).
+   (for `--from`) and `stageInputs()` (telemetry + experiment sandboxing — keep input diets honest).
 4. **Timeout calibration is documented in place**: the existing entries carry their incident
    history as comments (`stages.mjs` etc.). When you re-calibrate, extend the comment —
    it is the changelog the next maintainer reads.
@@ -168,9 +167,9 @@ What to know before editing:
 
 - **Which stage reads what** is dictated solely by each stage message's `reads([...])` in
   `stages.mjs` — read it there rather than trusting this summary. Broadly: matter-frame,
-  clearance-variants (+ `transliteration-scripts.md`), blind-frame, clearance-common-law (every grid seat),
+  clearance-variants (+ `transliteration-scripts.md`), clearance-common-law (every grid seat),
   clearance-register spine + `unit.md` + the active provider's `providers/<name>.md` (the register
-  units), `phase2-execution.md` §skeptic (that one section only), frame-diff,
+  units), `phase2-execution.md` §skeptic (that one section only),
   synthesis (synthesis-rules + per-profile framework + worked examples + conditionally
   `field-doctrine-pharma.md` for pharma-shaped matters — a code predicate), case-law-citation,
   narrative-refutation, and delivery-contract for the two report stages. Step 3's judges read no
