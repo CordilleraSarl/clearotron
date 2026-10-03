@@ -119,7 +119,7 @@ import { pendingWhatIf, claimWhatIf, finishWhatIf, whatIfRefusal } from "./whati
 import { escalatedAxes } from "./skeptic-record.mjs";   // THE escalation parse — shared with the record_skeptic transport so the rendered shape and this read cannot drift
 // — every placed candidate ends somewhere a reader can see; the ones that do not are counted by name
 
-import { synthesisDutyForRun, readTouched } from "./synthesis-record.mjs";   // — the duty checked against the DELIVERED document
+import { synthesisDutyForRun, readTouched, synthesisCallPaths } from "./synthesis-record.mjs";   // — the duty checked against the DELIVERED document
 import { mergedOverall } from "./decision-ratings.mjs";
 import { RECORD_CARRY_SCHEMA_VERSION, traceRecordCarry, parseStageOutcomes, recordCarryEvent, mintRecordCarryDoubts, findingUris } from "./record-carry.mjs"; import { pickingExits, notesExits, notesPageRows, exitsForLog } from "./hand-off-exits.mjs";
 import { reconcileSurfaceDuty, surfaceDutyNote } from "./surface-duty.mjs";   // item 3 — silence at the findings surface, read off the rows above
@@ -141,7 +141,9 @@ import { tallyRegisterCalls, DEFAULT_LEDGER_PATH, countLaneCalls } from "./provi
 import { runRecordLogPath } from "../providers/_shared/ledger-path.mjs";
 import { beginAnswerMemory, endAnswerMemory } from "../providers/_shared/answer-memory.mjs";
 import { emptyQueue, coerceQueue, mintItem, pendingItems, markFlushed, receiptKeyFor } from "./digest-queue.mjs";   // (t1cd) — the digest-trigger funnel
-import { foldFindingsFile, foldAfterSave, openPass, modelRecordPath, snapshotFold, restoreFold } from "./record-fold.mjs";   // the folded record from the delivery seam on
+import { foldFindingsFile, FOLD_FILE } from "./record-fold.mjs";   // the fold, one of the driver's writes over the model's record
+import { modelRecordPath, readLayer, openLayer, noteApplied, noteProduced, shaOfFile, snapshotFiles, restoreFiles, MODEL_RECORD_FILE, LAYER_FILE }
+  from "./record-layer.mjs";   // the driver's writes are a layer over the model's record
 import { writeStamp, stageStaleness, restamp, restampStage, staleOnPath, reconcileStamps, shaOf } from "./stage-freshness.mjs";
 import { parseManifestVariants, variantsParseFailure, findCoverageLimitedCells, partitionClosableCells, findSimilarListingSignals,
   GRID_HALVES, GRID_SEATS, MEANING_SEAT, splitGridSpec, halfOfTerm, balanceClosureCells, mergeGrids, mergeCommonLawFindings, openChannelRows,
@@ -3867,7 +3869,13 @@ async function stage(name, ctx, opts = {}) {
   let wedgeCycles = 0;
   for (;;) {
     const r = await stageWithChain(name, ctx, opts);
-    if (r.ok || r.fail !== "lane_wedge" || wedgeCycles >= LANE_WEDGE_CHAIN_RETRIES) { sweepStrayArtifacts(ctx, name); return r; }
+    if (r.ok || r.fail !== "lane_wedge" || wedgeCycles >= LANE_WEDGE_CHAIN_RETRIES) {
+      sweepStrayArtifacts(ctx, name);
+      // A synthesis save rewrites the record from the model's own base: the driver's writes this pass has
+      // applied go back over it, in order, before anything reads it (record-layer.mjs, design 2026-10-03).
+      if (name === "synthesis") reapplyLayer(ctx);
+      return r;
+    }
     wedgeCycles++;
     note(`[${name}] command-lane wedge — the stage timed out with zero progress (saturated lane). Waiting ${Math.round(LANE_WEDGE_BACKOFF_MS / 1000)}s for it to clear, then re-dispatching (${wedgeCycles}/${LANE_WEDGE_CHAIN_RETRIES}); full per-attempt timeouts preserved.`);
     try { runLog(ctx.paths.runDir, { event: "lane-wedge-retry", stage: name + (ctx.axis ? `:${ctx.axis}` : ""), cycle: wedgeCycles, max: LANE_WEDGE_CHAIN_RETRIES }); } catch { /* telemetry best-effort */ }
@@ -4963,19 +4971,21 @@ export function partitionDeliveryStale(staleStages) {   // @internal
 // file is byte-unchanged (or every named finding's object is) and no corrections marker landed, fire
 // ONE warm followup demanding the re-emit; a terminal miss NEVER withholds (never-withhold) — it logs,
 // flags the internal review bar, and closes the CLIENT export via _driver/corrections-state.json.
-function snapshotFindingsForCorrections(P, runDir) {
+export function snapshotFindingsForCorrections(P, runDir) {   // @internal
   let raw = null;
   try { raw = readFileSync(P.findings, "utf8"); } catch { /* legacy / not-yet-populated */ }
   if (raw == null) return null;
   const sha = createHash("sha256").update(raw).digest("hex");
   // THE RECORD IN THE MODEL'S NUMBERING, beside the one on disk. The review's flags name findings in the
-  // model's numbering, so the corrective body compares the record the model wrote; once the delivered
-  // record is folded the two differ (record-fold.mjs). The fold is held too, for a rollback to put back.
+  // model's numbering, so the corrective body compares the record the model wrote, which the driver's
+  // layer covers on disk (record-layer.mjs).
   const modelAt = modelRecordPath(runDir, P.findings);
   let modelRaw = raw;
   if (modelAt !== P.findings) { try { modelRaw = readFileSync(modelAt, "utf8"); } catch { modelRaw = raw; } }
   const model = { raw: modelRaw, sha: modelRaw === raw ? sha : createHash("sha256").update(modelRaw).digest("hex") };
-  const fold = snapshotFold(runDir);
+  // AND EVERY FILE A ROLLBACK PUTS BACK: the record, the model's record, the call records the next patch
+  // merges onto, the layer and the fold's map — a file absent now is removed again on a rollback.
+  const files = snapshotFiles(rollbackFilesFor(P, runDir));
   try {
     const tmp = driverDir(runDir, "findings-pre-corrective.json.tmp");
     // PR-4 (snapshot-before-overwrite): store the FULL pre-corrective text, not just its sha — a
@@ -4985,7 +4995,13 @@ function snapshotFindingsForCorrections(P, runDir) {
     writeFileSync(tmp, JSON.stringify({ ts: new Date().toISOString(), sha, text: raw }, null, 2));
     renameSync(tmp, driverDir(runDir, "findings-pre-corrective.json"));
   } catch { /* advisory sidecar */ }
-  return { raw, sha, model, fold };
+  return { raw, sha, model, files };
+}
+/** What a rollback restores: the record and everything the next save or rebuild starts from. */
+function rollbackFilesFor(P, runDir) {
+  const calls = synthesisCallPaths(runDir);
+  return [P.findings, driverDir(runDir, MODEL_RECORD_FILE), calls.accepted, calls.lastReceived,
+    driverDir(runDir, LAYER_FILE), driverDir(runDir, FOLD_FILE)];
 }
 /**
  *, T3b — THE CORRECTIVE PASS FAILED VALIDATION. RESTORE THE LAST GOOD STATE.
@@ -5033,10 +5049,15 @@ export function rollbackCorrectivePass(P, runDir, pre, fail) {   // @internal
     // Atomic, like every other write to this file: a half-restored findings.json is a worse state than
     // either of the two this is choosing between.
     atomicWrite(P.findings, pre.raw);
-    if (pre.fold) restoreFold(runDir, pre.fold);   // the record the model wrote and the map, as they stood
   }
+  // THE PATCH BASE GOES BACK WITH THE RECORD (design, 2026-10-03). The failed pass's calls, accepted or
+  // refused, are no base for anything: since a patch merges onto the last call the run received, a later
+  // repair's patch would otherwise merge onto them and bring back what this rollback discarded. The model's
+  // record, the call records, the layer and the fold go back as the pass found them, even when the pass
+  // changed no byte of findings.json because every one of its calls was refused.
+  const putBack = pre.files ? restoreFiles(pre.files).filter((f) => f !== P.findings) : [];
   const record = { ts: new Date().toISOString(), reason: String(fail?.fail ?? "failed").slice(0, 200),
-    restored: changed, preSha: pre.sha, failedSha: nowSha };
+    restored: changed, preSha: pre.sha, failedSha: nowSha, baseRestored: putBack.length > 0 };
   try { atomicWrite(driverDir(runDir, "corrective-rollback.json"), JSON.stringify(record, null, 2) + "\n"); }
   catch { /* sidecar is best-effort; the runLog event below is the record that decides */ }
   return record;
@@ -5078,13 +5099,56 @@ export function rollbackCorrectivePass(P, runDir, pre, fail) {   // @internal
  */
 export function repairUnnamedRemovals(P, runDir, pre, namedOrdinals, namedMarks, namedLines = []) {   // @internal
   if (!pre?.raw) return null;                                   // nothing held — nothing to compare against
-  // In the model's numbering: the flags name its ordinals, and a folded record renumbers, so a finding
-  // removed from the folded record would shift every ordinal after it (record-fold.mjs).
-  let preDoc = null, postDoc = null, postRaw = null;
+  const named = { namedOrdinals, namedMarks, namedLines };
+  // In the model's numbering: the flags name its ordinals, and the record on disk is the driver's layer over
+  // the model's (record-layer.mjs), folded and renumbered, where a finding removed by name would shift every
+  // ordinal after it.
+  const modelAt = modelRecordPath(runDir, P.findings);
+  let preDoc = null, postDoc = null;
   try { preDoc = JSON.parse(pre.model?.raw ?? pre.raw); } catch { return null; }
-  try { postRaw = readFileSync(modelRecordPath(runDir, P.findings), "utf8"); postDoc = JSON.parse(postRaw); } catch { return null; }
-  if (!preDoc || !postDoc || typeof postDoc !== "object") return null;
+  try { postDoc = JSON.parse(readFileSync(modelAt, "utf8")); } catch { return null; }
+  const r = restoreUnnamed(preDoc, postDoc, named);
+  if (!r) return null;
+  const brief = (f) => ({ ordinal: f?.ordinal ?? null, mark: f?.mark ?? null });
+  const record = {
+    ts: new Date().toISOString(),
+    restoredFindings: r.restoredFindings.map(brief),
+    restoredKeys: r.restoredKeys,
+    restoredRows: r.restoredRows,
+    leftRemoved: r.leftRemoved.map(brief),
+  };
+  // WRITTEN INTO THE MODEL'S BASE, NOT THE RECORD OVER IT (design, 2026-10-03), so the next save keeps it: the
+  // model's record, and the call records the next patch merges onto, each restored from its own copy taken
+  // before the pass — a call record holds what the model sent, not the record the save wrote from it. The
+  // duty check that caught the loss at the next save is a backstop now, not the mechanism. The caller
+  // rebuilds the driver's layer over the restored record.
+  atomicWrite(modelAt, JSON.stringify(r.merged, null, 2) + "\n");
+  restoreUnnamedIntoCalls(runDir, pre, named);
+  try { atomicWrite(driverDir(runDir, "corrective-repair.json"), JSON.stringify(record, null, 2) + "\n"); }
+  catch { /* sidecar is best-effort; the runLog event is the record that decides */ }
+  return record;
+}
 
+/** The call records the next patch merges onto, given back what the pass removed unnamed. Never throws. */
+function restoreUnnamedIntoCalls(runDir, pre, named) {
+  const calls = synthesisCallPaths(runDir);
+  for (const at of [calls.accepted, calls.lastReceived]) {
+    try {
+      const before = pre?.files?.[at];
+      if (before == null || !existsSync(at)) continue;
+      const now = JSON.parse(readFileSync(at, "utf8"));
+      const r = restoreUnnamed(JSON.parse(before)?.params?.findings, now?.params?.findings, named);
+      if (r) atomicWrite(at, JSON.stringify({ ...now, params: { ...now.params, findings: r.merged } }, null, 2) + "\n");
+    } catch { /* best-effort: the duty check still guards the next save */ }
+  }
+}
+
+/**
+ * What a corrective pass removed that no flag named, put back: whole findings, top-level registers and the
+ * rows of a register, in the order the reviewer read them. null when nothing comes back. PURE.
+ */
+export function restoreUnnamed(preDoc, postDoc, { namedOrdinals = [], namedMarks = [], namedLines = [] } = {}) {   // @internal
+  if (!preDoc || !postDoc || typeof preDoc !== "object" || typeof postDoc !== "object") return null;
   const norm = (s) => String(s ?? "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
   const marks = new Set((namedMarks ?? []).map(norm).filter(Boolean));
   const ordinals = new Set((namedOrdinals ?? []).map((o) => String(o)));
@@ -5143,19 +5207,7 @@ export function repairUnnamedRemovals(P, runDir, pre, namedOrdinals, namedMarks,
     merged.findings = [...postList, ...restoredFindings]
       .sort((a, b) => (byOrdinal.get(String(a?.ordinal)) ?? 0) - (byOrdinal.get(String(b?.ordinal)) ?? 0));
   }
-  const brief = (f) => ({ ordinal: f?.ordinal ?? null, mark: f?.mark ?? null });
-  const record = {
-    ts: new Date().toISOString(),
-    restoredFindings: restoredFindings.map(brief),
-    restoredKeys,
-    restoredRows,
-    leftRemoved: leftRemoved.map(brief),
-  };
-  atomicWrite(P.findings, JSON.stringify(merged, null, 2) + "\n");
-  foldAfterSave(runDir, P.findings);   // after the seam the repaired record is folded again, as a save's is
-  try { atomicWrite(driverDir(runDir, "corrective-repair.json"), JSON.stringify(record, null, 2) + "\n"); }
-  catch { /* sidecar is best-effort; the runLog event is the record that decides */ }
-  return record;
+  return { merged, restoredFindings, restoredKeys, restoredRows, leftRemoved };
 }
 
 /**
@@ -5277,7 +5329,7 @@ async function enforceCorrectionsReachFindings(ctx, P, pre, resume, reviewText =
   const named = correctionNamedSet(P, null, reviewText);
   const readState = () => {
     let raw = null, corrections = null;
-    // the record the model wrote: a change the fold hides is still a change it made (record-fold.mjs)
+    // the record the model wrote: a change the driver's layer hides is still a change it made (record-layer.mjs)
     try { raw = readFileSync(modelRecordPath(run.runDir, P.findings), "utf8"); } catch { return { stale: false }; }
     try { corrections = parseFindingsJsonLenient(raw).corrections; } catch { /* shape defects ride the normal ladder */ }
     const sha = createHash("sha256").update(raw).digest("hex");
@@ -6508,15 +6560,67 @@ function enrichFindingDeadlines(P, runDir, note, { nowMs = Date.now(), withinDay
   }
 }
 
-// THE SEAM'S FOLD. From here on every accepted save folds the record again on acceptance, so the record
-// the reviewer, the cards and the delivery read stays folded (record-fold.mjs, design 2026-10-03). doc 50 —
-// on a v4 record the merge base is the WORST BAND by the frozen manifest's order. No duplicates leave the
-// file byte-identical; a folded shape that does not validate keeps the record as written.
+// THE FOLD, one of the driver's writes over the model's record: applied at the seam, and again after every
+// accepted save that follows it (record-layer.mjs, design 2026-10-03). doc 50 — on a v4 record the merge base
+// is the WORST BAND by the frozen manifest's order. No duplicates leave the file byte-identical; a folded shape
+// that does not validate keeps the record as it is.
 function consolidateFindingsFile(P, note, manifest = null) {
-  const { merges, error } = foldFindingsFile(P.runDir, P.findings, manifest, { seam: true });
+  const { merges, error } = foldFindingsFile(P.runDir, P.findings, manifest);
   for (const m of merges)
     note(`[consolidate] ${m.owner} — ${m.mark}: folded ${m.dropped.length} duplicate filing(s) (ord ${m.dropped.join(", ")}) into one card`);
   if (error) note(`[consolidate] skipped: ${error.slice(0, 100)}`);
+}
+
+// ── THE DRIVER'S LAYER OVER THE MODEL'S RECORD (record-layer.mjs, design 2026-10-03) ─────────────────────
+//
+// Every driver write into findings.json is applied through `layerApply`, by name, with whatever it needs to be
+// applied again the same way: the deadline window's clock and the native-language lane's state are fixed when
+// the write is first made, so a rebuild cannot move them. In the pipeline's order: the derived bases after
+// synthesis, the deadlines after the corrective cycle, then at the seam the four coverage writes, the
+// coverage-judgment stamp and the fold, and the derived bases again before delivery.
+const LAYER_WRITERS = {
+  "bases:post-synthesis": (ctx) => settleDerivedBases(ctx, "post-synthesis"),
+  "deadlines": (ctx, a) => enrichFindingDeadlines(ctx.paths, ctx.run.runDir, note, { nowMs: a.nowMs ?? Date.now() }),
+  "meaning-gap": (ctx) => injectMeaningGapCoverage(ctx.paths, ctx.run.runDir, note),
+  "script-scope": (ctx, a) => injectScriptScopeCoverage(ctx.paths, ctx.run.runDir, note,
+    { searchPolicy: ctx.searchPolicy, job: ctx.job, profile: ctx.profile, localLanguage: a.localLanguage ?? null }),
+  "lane-depth": (ctx) => injectLaneDepthCoverage(ctx.paths, ctx.run.runDir, note),
+  "screen-gate": (ctx) => injectScreenGateCoverage(ctx.paths, ctx.run.runDir, note, ctx),
+  "coverage-judgment": (ctx) => stampCoverageJudgmentRows(ctx.paths, ctx.run.runDir, note, ctx),
+  "fold": (ctx) => consolidateFindingsFile(ctx.paths, note, ctx.framework),
+  "bases:pre-delivery": (ctx) => settleDerivedBases(ctx, "pre-delivery"),
+};
+
+/** Apply one of the driver's writes now, and record it in this pass's layer. */
+function layerApply(ctx, name, args = {}) {
+  LAYER_WRITERS[name](ctx, args);
+  noteApplied(ctx.run.runDir, name, args, ctx.paths.findings);
+}
+
+/**
+ * Rebuild findings.json as the driver's layer over the model's record: the record the model's last save
+ * wrote, then every write this pass has applied, whole, in order. Only when something other than the layer
+ * has written the file since the layer last did — a save — so a stage that saved nothing leaves the bytes,
+ * and every stamp that reads them, alone. `force` is for a write to the model's base, which does not touch
+ * findings.json itself. A run whose saves kept no model record is rebuilt in place.
+ */
+export function reapplyLayer(ctx, { force = false } = {}) {   // @internal
+  const P = ctx?.paths;
+  const runDir = ctx?.run?.runDir ?? P?.runDir;
+  if (!runDir || !P?.findings) return false;
+  const layer = readLayer(runDir);
+  const applied = layer?.applied ?? [];
+  // A save leaves findings.json as the model's record already; with no write applied there is nothing to add.
+  if (!force && (!applied.length || shaOfFile(P.findings) === layer.producedSha)) return false;
+  try {
+    const modelAt = modelRecordPath(runDir, P.findings);
+    if (modelAt !== P.findings) atomicWrite(P.findings, readFileSync(modelAt, "utf8"));
+    for (const { name, args } of applied) LAYER_WRITERS[name]?.(ctx, args ?? {});
+  } catch (e) {
+    note(`[layer] rebuild stopped: ${String(e?.message ?? e).replace(/\s+/g, " ").slice(0, 120)}`);
+  } finally { noteProduced(runDir, P.findings); }
+  runLog(runDir, { event: "layer-reapplied", writes: applied.map((w) => w.name) });
+  return true;
 }
 // minor (a): a finding earns a FULL prose card when composite ≥ 3 (on-field) OR level ∈ {A,B} (high legal
 // exposure even at a low practical composite — a mis-rated-low mark must not be reduced to a structured-only row).
@@ -7600,6 +7704,7 @@ async function applyReviewerCorrections(ctx, P, run, { verdict, synthesisKey, sy
       correctionNamedOrdinals(P, handed), correctionNamedSet(P, preDocForNames, handed?.text), correctionNamedLines(P, preDocForNames, handed?.text));
     correctiveRepair = repaired;   // carried to the reviewer's re-read, which must know these are the DRIVER's
     if (repaired) {
+      reapplyLayer(ctx, { force: true });   // the restoration went into the model's base: the record over it is rebuilt
       // A DEFECT SIGNAL, not a success. After the schema fix a corrective pass sends a targeted edit
       // and cannot remove a finding at all, so e2e asserts this count is ZERO — a firing reports the
       // primary fix not holding, never this backstop working.
@@ -7630,6 +7735,10 @@ async function applyReviewerCorrections(ctx, P, run, { verdict, synthesisKey, sy
     const rows = parseCorrections(handed?.text ?? readFileSync(P.seniorEyeReview, "utf8"));
     // The flags name findings in the model's numbering, so both sides are the record the model wrote.
     const preDoc = preCorrective ? parseFindingsJsonLenient(preCorrective.model?.raw ?? preCorrective.raw) : null;
+    // The claim check reads the evidence as the driver had stamped it before the pass against what the model
+    // sent after it: the driver's layer demotes again whatever the model brought back, so the record on disk
+    // after the pass could not show it.
+    const preOnDisk = preCorrective ? parseFindingsJsonLenient(preCorrective.raw) : null;
     let postDoc = null;
     try { postDoc = parseFindingsJsonLenient(readFileSync(modelRecordPath(run.runDir, P.findings), "utf8")); } catch { /* shape defects ride the normal ladder */ }
     correctionsApplied = buildCorrectionsApplied(rows, preDoc, postDoc);
@@ -7651,7 +7760,7 @@ async function applyReviewerCorrections(ctx, P, run, { verdict, synthesisKey, sy
       let demotions = [];
       try { demotions = JSON.parse(readFileSync(P.basisDerivation, "utf8"))?.rows ?? []; }
       catch { /* no derivation record — stated below, never inferred as "clean" */ }
-      const ec = evidenceClaimViolations({ before: preDoc?.findings, after: postDoc?.findings, demotions });
+      const ec = evidenceClaimViolations({ before: preOnDisk?.findings, after: postDoc?.findings, demotions });
       evidenceViolations = ec.violations;
       runLog(run.runDir, { event: "evidence-claim-invariant", violations: ec.violations.length,
         byArm: ec.violations.reduce((a, v) => ({ ...a, [v.arm]: (a[v.arm] ?? 0) + 1 }), {}),
@@ -7971,9 +8080,9 @@ async function pipelineInner(job, opts = {}) {
   // BEFORE doc 50 backfills its framework sidecar from the frozen frameworkPath (deploy-boundary case) so
   // the v4 gates always have vocabulary; a run that already has one reads it verbatim (never re-derived).
   attachFramework(ctx);
-  // A pass opens before the delivery seam: until this pass's seam folds the record, a save writes the
-  // model's record as it is (record-fold.mjs).
-  openPass(ctx.paths.runDir);
+  // A pass opens with no driver write applied: until each one is applied again this pass, a save writes the
+  // model's record as it is (record-layer.mjs).
+  openLayer(ctx.paths.runDir);
 
   // ── (t1cd): the re-judgement FUNNEL ────────────────────────────────────────────────────────
   // The queue (digest-queue.mjs) is the only path to a non-fresh re-judgement of step 3 EXCEPT for the
@@ -10297,7 +10406,7 @@ async function pipelineInner(job, opts = {}) {
     // The rating stays the lawyer's — nothing here re-rates, re-bands or withholds. Only the evidence
     // LABEL moves, and only downward, to what the machine can show. Never-kill: a settle that cannot
     // read its own inputs logs and rides on, exactly as the pass did.
-    settleDerivedBases(ctx, "post-synthesis");
+    layerApply(ctx, "bases:post-synthesis");
 
     let narrative = readFileSync(P.narrative, "utf8");
 
@@ -10614,7 +10723,7 @@ async function pipelineInner(job, opts = {}) {
 
     // The register's own opposition windows reach the findings BEFORE any deadline judgment (the bands
     // are settled by now; the corrective ladder above re-emitted findings last).
-    enrichFindingDeadlines(P, run.runDir, note);
+    layerApply(ctx, "deadlines", { nowMs: Date.now() });   // the window's clock is fixed, so a rebuild cannot move it
 
     // ── — THE TERMINAL GUARDS DELIVER AND CLAMP; THEY DO NOT WITHHOLD ───────────
     //
@@ -11152,7 +11261,7 @@ async function pipelineInner(job, opts = {}) {
     // structured-only). Each stage is file-gated/resumable; per-card sessions feed the lint repair below.
     // C2 — fold same-owner+same-mark duplicate filings into one finding BEFORE the overview + cards read
     // findings.json, so the whole delivery phase (and the published copy) sees the single consolidated set.
-    injectMeaningGapCoverage(P, run.runDir, note);   // meaning searches that did not complete become reader-visible coverage rows first
+    layerApply(ctx, "meaning-gap");   // meaning searches that did not complete become reader-visible coverage rows first
     // qw/cn-scope-honesty — the sibling injection: a CN-family-scope run whose zh lane did not run
     // discloses what the native-language investigation would have searched, and where it is offered
     // (coverage-limited: never clamps, never gates).
@@ -11177,23 +11286,23 @@ async function pipelineInner(job, opts = {}) {
       } catch (e) { note(`jx slice statement skipped (${String(e?.message ?? e).slice(0, 100)}) — never-kill`); }
       try { localLanguage = await localLanguageStateOf(run.runDir); } catch { localLanguage = null; }
     }
-    injectScriptScopeCoverage(P, run.runDir, note, { searchPolicy: ctx.searchPolicy, job, profile: ctx.profile, localLanguage });
+    layerApply(ctx, "script-scope", { localLanguage });
     // — AFTER stateJxSlices, and the order is load-bearing: this reads `fold.depth`, which the call
     // above mints. Before it, every run would look like one that never stated a verdict. Its sibling one
     // line up covers the lane that did not run; this covers the lane that ran short of what was bought.
-    injectLaneDepthCoverage(P, run.runDir, note);
+    layerApply(ctx, "lane-depth");
     // The third sibling: each mark the screen-gate disclosed as unexamined
     // gets its own reader-visible coverage row (guarded on the ctx/sidecar unresolved set; idempotent by
     // mark+uri). The CONDITIONAL clamp came from applyCoverageFloor's screenGateGap arm above, never
     // from these coverage-limited rows.
-    injectScreenGateCoverage(P, run.runDir, note, ctx);
+    layerApply(ctx, "screen-gate");
     // — the fourth sibling, and the one that REPLACES rather than adds: coverage_judgment.rows
     // is derived from the machine ledger and the plan-execution receipt instead of retyped by the seat.
     // Same seam and same reason as injectMeaningGapCoverage above — every synthesis re-run has settled, so
     // a re-emit cannot clobber it; and it lands before report-overview and the cards, which are stamped
     // afterwards and therefore never read it as staleness.
-    stampCoverageJudgmentRows(P, run.runDir, note, ctx);
-    consolidateFindingsFile(P, note, ctx.framework);
+    layerApply(ctx, "coverage-judgment");
+    layerApply(ctx, "fold");
     // T2: consolidation can change the live composite set — re-derive the sidecar so every
     // surface joins the FINAL findings (the sidecar must never describe a superseded set).
     // review fix: consolidation can also surface CONDITIONS the floor never saw (a lenient-
@@ -11984,7 +12093,7 @@ async function pipelineInner(job, opts = {}) {
           } } catch { /* validators.findings owns the unparseable case */ }
         }
         // The narrative's finding headings are in the model's numbering: once the record is folded, its
-        // write-ups join the record the model wrote (record-fold.mjs).
+        // write-ups join the record the model wrote (record-layer.mjs).
         let lintNarrativeFindings = null;
         const lintModelAt = modelRecordPath(run.runDir, P.findings);
         if (lintModelAt !== P.findings) {
@@ -12065,7 +12174,7 @@ async function pipelineInner(job, opts = {}) {
       // delivered findings.json files it measured, the verified-stamp counts came out 35→37, 28→31,
       // 37→38, 41→40. Two stamps entered R1's deliverable AFTER the only pass that checked
       // them. A derivation is cheap enough to run at every seam, so it runs at the last one too.
-      settleDerivedBases(ctx, "pre-delivery");
+      layerApply(ctx, "bases:pre-delivery");
       let lint = lintNow();
       // spec 64 — CODE-FIRST repair for a verdict/actions/statement incoherence: the defect is a
       // derivation/staleness bug (the sidecar disagrees with the final findings), so the fix is to
@@ -12251,7 +12360,21 @@ async function pipelineInner(job, opts = {}) {
         const axis = label.includes(":") ? label.slice(label.indexOf(":") + 1) : null;
         try { return stageInputs(bare, P, { axes: ctx.axes, axis, registerOnly: ctx.registerOnly }); } catch { return []; }
       };
+      // A CARD IS OWED FOR EVERY DELIVERED FINDING (design, 2026-10-03). A finding a save added after the cards
+      // has neither a card nor a stamp, and a card with no stamp is never stale, so it was never built and the
+      // finding shipped in the short form. Each one is owed one card call, as a changed finding gets its rebuild.
+      const owedCards = (listed) => {
+        const have = new Set(listed.map((s2) => s2.label));
+        try {
+          const now = readFindingsForReport(P).findings;
+          return fullProseOrdinals(now)
+            .filter((ord) => formOf(now.find((f) => f.ordinal === ord)) === "full"
+              && !existsSync(P.reportCard(String(ord))) && !have.has(`report-card:${ord}`))
+            .map((ord) => ({ label: `report-card:${ord}`, changed: [{ name: "card", was: null, now: "owed" }] }));
+        } catch { return []; }
+      };
       staleStages = staleOnPath(run.runDir, deliveryPathStages, deliveryInputsFor, { project: projectStageInput });
+      staleStages.push(...owedCards(staleStages));
       // ── AD-2 A1 (E2E-R2, ordering) — repair-owned staleness is re-done IN-PASS, never parked. The
       // pre-delivery repair can move an input under the tail this pass already built (the observed
       // case: the report-overview lint redo rewrote findings.json, staling every report card + the
@@ -12424,6 +12547,7 @@ async function pipelineInner(job, opts = {}) {
                       const queued = new Set(staleStages.map((x) => x.label));
                       for (const st of staleOnPath(run.runDir, deliveryPathStages, deliveryInputsFor, { project: projectStageInput }))
                         if (!queued.has(st.label) && (st.label === "report-overview" || st.label.startsWith("report-card:"))) staleStages.push(st);
+                      staleStages.push(...owedCards(staleStages));
                     }
                   }
                 }
