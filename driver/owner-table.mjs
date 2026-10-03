@@ -212,12 +212,17 @@ export function buildOwnerTable(pile) {
 }
 
 /**
- * The near band, by key and in the table's order: the owners holding a live record in the order's classes
- * whose closeness is better than a loose match, the first three steps. A lawyer reading a search report
- * reads all of it, so the judges' opening pages hold all of it, and only what follows it is read by page
- * (design, 2026-10-02). It is a prefix of the table, since the order puts those owners first. PURE.
+ * The two bands the judges' opening pages are built around, by key and in the table's order, among the
+ * owners holding a live record in the order's classes (design, 2026-10-03):
+ *   floor  the first two closeness steps, the same mark and marks holding it as a word. The old sweep fetched
+ *          these with no cap, since a dangerous live mark in the order's classes must never be paged past;
+ *          the opening holds them whole, always.
+ *   band   the first three, the near band. Its third step follows the floor, fewest letters away first, up to
+ *          a ceiling in pages.
+ * Each is a prefix of the table, since the order puts those owners first. PURE.
  */
-export function nearBandKeys(table) {
-  const loose = CLOSENESS.indexOf("loose match");
-  return (table?.rows ?? []).filter((r) => r.liveInClasses > 0 && r.step < loose).map((r) => r.key);
+export function openingBands(table) {
+  const live = (table?.rows ?? []).filter((r) => r.liveInClasses > 0);
+  const before = (name) => live.filter((r) => r.step < CLOSENESS.indexOf(name)).map((r) => r.key);
+  return { floor: before("another form, asked exactly"), band: before("loose match") };
 }

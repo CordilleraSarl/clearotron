@@ -71,8 +71,8 @@ import { classifyGroundsNote } from "./grounds-grammar.mjs";   // — a charged 
 import { buildCoverageAbsenceForm, coverageAbsenceGaps, renderCoverageLedgerJsonFromForm, settleCoverageRowsFromFacts } from "./coverage-form.mjs";
 import { unionCoverageForm } from "./coverage-union.mjs";
 import { loadPile, registerDecisionsFor } from "./pile.mjs";
-import { makeOwnerTools, MESSAGE_TABLE_CHARS } from "./owner-tools.mjs";
-import { firstTablePages, nearBandKeys, mergeJudgments, writeJudgmentFacts, checkJudgmentFile, JUDGES } from "./owner-judgment.mjs";
+import { makeOwnerTools, MESSAGE_TABLE_CHARS, OPENING_CEILING_PAGES } from "./owner-tools.mjs";
+import { firstTablePages, openingBands, mergeJudgments, writeJudgmentFacts, checkJudgmentFile, JUDGES } from "./owner-judgment.mjs";
 import { composeJudgmentMessage, acceptedAttemptWindow, ownersLookedUp, recordOwnerIndex, writeJudgmentFiles, judgmentSeam, readAcceptedJudgment, writeAcceptedJudgment, judgesForPass, judgeOutcomes } from "./owner-judgment-run.mjs";
 import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStamp, readCoverageForm, readCoverageFormInput, stampedFormFault, waitingFamilyStates, writeCoverageForm } from "./coverage-form-io.mjs";
 import { releasedFamilyQids, readWithheldFamilies } from "./withheld-families.mjs";   // the waiting families the reading turn released join as dictated entries
@@ -2859,7 +2859,7 @@ async function runOwnerJudgment(ctx, { trigger = "fresh", force = false, model =
   const tools = makeOwnerTools(pile);
   const table = tools.table;
   const facts = writeJudgmentFacts(P.ownerJudgmentFacts, { pile, framework: ctx.framework ?? null });
-  const opening = table ? firstTablePages(tools.serve, MESSAGE_TABLE_CHARS, { nearBand: nearBandKeys(table) }) : { pages: 0, text: "", keysShown: [] };
+  const opening = table ? firstTablePages(tools.serve, MESSAGE_TABLE_CHARS, { ...openingBands(table), ceilingPages: OPENING_CEILING_PAGES }) : { pages: 0, text: "", keysShown: [], cut: null };
   const message = composeJudgmentMessage({
     P, profile: ctx.profile, ownNames: ctx.exclusionSeed ?? [],
     ratingScalePath: frameworkFor(ctx.profile), workedExamplesPath: workedExamplesFor(ctx.profile),
@@ -2867,7 +2867,7 @@ async function runOwnerJudgment(ctx, { trigger = "fresh", force = false, model =
     tablePages: table ? opening : null,
   });
   runLog(P.runDir, { event: "owner-table", trigger, records: pile.records.length, owners: table?.rows.length ?? 0,
-    openingPages: opening.pages, openingOwners: opening.keysShown.length, nearBandOwners: table ? nearBandKeys(table).length : 0, messageChars: message.length,
+    openingPages: opening.pages, openingOwners: opening.keysShown.length, floorOwners: table ? openingBands(table).floor.length : 0, nearBandOwners: table ? openingBands(table).band.length : 0, openingCut: opening.cut, messageChars: message.length,
     factsRecords: facts.records, factsWeb: facts.web });
 
   const accepted = Array.from({ length: JUDGES }, (_, i) => readAcceptedJudgment(P, i + 1));

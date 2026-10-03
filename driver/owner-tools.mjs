@@ -36,6 +36,12 @@ export const ANSWER_CHARS = 30000;
 export const ENVELOPE_CHARS = 2000;
 /** The opening message carries the table's first pages up to this many characters; the rest is read by tool. */
 export const MESSAGE_TABLE_CHARS = 60000;
+/**
+ * How many pages the opening may run to for the near band's third step, past the budget above; the floors
+ * always go whole (owner-judgment.mjs firstTablePages). The owner's number. None is set until he gives it,
+ * and with none the third step stops where the budget does.
+ */
+export const OPENING_CEILING_PAGES = null;
 
 /** Cut text into pieces of at most `limit` characters, after "; " or a space where one is near the end. */
 export function splitText(text, limit) {

@@ -25,7 +25,7 @@ import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "
 import { dirname, join } from "node:path";
 import { bandIndex, normalizeBand } from "./framework.mjs";
 import { ownerKey, CLOSENESS, isLive } from "./owner-table.mjs";
-export { nearBandKeys } from "./owner-table.mjs";   // the pipeline reads the band from here, beside firstTablePages
+export { openingBands } from "./owner-table.mjs";   // the pipeline reads the bands from here, beside firstTablePages
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
 
 // ── THE WORDS THE JUDGES READ ────────────────────────────────────────────────────────────────────────
@@ -157,28 +157,35 @@ export function composeMessage({ order, context, ratingScale, workedExamples, ta
  * would have given it. `serve` is owner-tools' `serve` (the answer, unlogged: the driver is not a judge).
  * Returns the pages' text and the owners on them, as keys, which every judge was shown.
  *
- * THE BUDGET NEVER ENDS THE OPENING INSIDE THE NEAR BAND (design, 2026-10-02). `nearBand` is the band's
- * keys (owner-table.mjs, nearBandKeys); the pages run on, whole, until every one of them is shown, and only
- * then may the budget stop them. A band that ends inside the budget leaves the opening as it was. On the run
- * this was measured on, the budget ended at owner 447 of a band of 562, and a lawyer's entry sat between.
+ * THE FLOORS WHOLE, THEN THE NEAR BAND TO A CEILING, AND THE CUT RECORDED (design, 2026-10-03). `floor` and
+ * `band` are the keys owner-table.mjs openingBands gives. The pages run on, whole, until every floor owner is
+ * shown, whatever the budget or the ceiling. Past the budget they run on for the rest of the near band only
+ * while fewer than `ceilingPages` pages are taken; with no ceiling set they do not. The opening is never
+ * smaller than the budget alone makes it. `cut` says where the opening stopped inside the near band: the
+ * rank reached and the band's size, so a cut is a fact on the record; null when the band is whole on it.
  */
-export function firstTablePages(serve, chars, { nearBand = [] } = {}) {
-  const owed = new Set(nearBand);
+export function firstTablePages(serve, chars, { floor = [], band = [], ceilingPages = null } = {}) {
+  const floorOwed = new Set(floor);
+  const bandOwed = new Set(band);
   const taken = [];
   let used = 0;
   for (let page = 1; ; page++) {
     const r = serve("owner_table", { page });
     if (r.refused) break;
-    if (taken.length && used + r.text.length > chars && !owed.size) break;
+    const withinBudget = !taken.length || used + r.text.length <= chars;
+    const underCeiling = Number.isInteger(ceilingPages) && taken.length < ceilingPages;
+    if (!withinBudget && !floorOwed.size && !(bandOwed.size && underCeiling)) break;
     taken.push(r);
     used += r.text.length;
-    for (const k of r.result.keysShown ?? []) owed.delete(k);
+    for (const k of r.result.keysShown ?? []) { floorOwed.delete(k); bandOwed.delete(k); }
     if (page >= r.result.pages) break;
   }
+  const keysShown = taken.flatMap((t) => t.result.keysShown ?? []);
   return {
     pages: taken.length,
     text: taken.map((t) => t.text).join("\n\n"),
-    keysShown: taken.flatMap((t) => t.result.keysShown ?? []),
+    keysShown,
+    cut: bandOwed.size ? { rankReached: keysShown.length, nearBand: band.length } : null,
   };
 }
 
