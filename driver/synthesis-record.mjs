@@ -80,7 +80,7 @@ export function synthesisCallPaths(runDir) {
   // the run said the defect had ever happened. A run that corrects itself silently cannot be audited,
   // and "no defect occurred" and "a defect occurred and was fixed" must not look the same.
   return { dir, payload: join(dir, "call-001.json"), accepted: join(dir, "accepted.json"),
-    refusals: join(dir, "refusals.jsonl") };
+    lastReceived: join(dir, "last-received.json"), refusals: join(dir, "refusals.jsonl") };
 }
 
 const isStr = (s) => typeof s === "string" && s.trim() !== "";
@@ -483,6 +483,23 @@ export function lastAcceptedCall(runDir) {
 }
 
 /**
+ * The record the last call this run received carried, merged if it arrived as a patch, ACCEPTED OR
+ * REFUSED; null when no call has carried one. A patch merges onto it (design, 2026-10-03): a seat refused
+ * for one finding corrects that finding and nothing else, as a lawyer corrects one sentence rather than
+ * retyping the file, and the merged record is then checked whole. Measured on the first run under the
+ * sentence cap: the first save was refused for one sentence of 26 words, the patch the seat sent for that
+ * one finding was refused for want of an accepted base, and the seat resent the whole record, 61,000
+ * characters. A run whose calls predate this file has none, and its patches merge onto the last accepted
+ * call as before.
+ */
+export function lastReceivedCall(runDir) {
+  try {
+    const { lastReceived } = synthesisCallPaths(String(runDir ?? ""));
+    return JSON.parse(readFileSync(lastReceived, "utf8"))?.params ?? null;
+  } catch { return null; }
+}
+
+/**
  * Merge a patch call onto the stored one. PURE.
  *
  * `findings_patch` replaces finding objects BY ORDINAL and touches nothing else; `narrative` fields
@@ -680,8 +697,9 @@ export function recordSynthesis(runDir, received, opts = {}) {
     try { appendFileSync(refusals, JSON.stringify({ at: now(), reason }) + "\n"); } catch { /* best-effort */ }
   };
 
+  const lastAccepted = lastAcceptedCall(dir0);
   if (isPatch) {
-    const merged = mergeSynthesisPatch(lastAcceptedCall(dir0), received);
+    const merged = mergeSynthesisPatch(lastReceivedCall(dir0) ?? lastAccepted, received);
     if (!merged.ok) {
       noteRefusal(merged.reason);
       return { written: null, refused: merged.reason,
@@ -689,9 +707,23 @@ export function recordSynthesis(runDir, received, opts = {}) {
     }
     call = merged.merged;
   }
+  // Every call that carries a record becomes the next patch's base, accepted or refused (lastReceivedCall).
+  // Best-effort: a base that cannot be written leaves the next patch on the last accepted call, as before.
+  if (call && typeof call === "object") {
+    try {
+      writeFileSync(synthesisCallPaths(dir0).lastReceived, JSON.stringify({
+        _provenance: "the last call this run received, merged if it arrived as a patch, accepted or refused — the base the next patch merges onto",
+        receivedAt: now(), params: call,
+      }, null, 2) + "\n");
+    } catch { /* best-effort */ }
+  }
 
-  // A patch is judged on the findings it carries; a whole call on every finding (netLengthRefusal).
-  const carried = isPatch ? new Set((Array.isArray(received?.findings_patch) ? received.findings_patch : []).map((r) => r?.ordinal)) : null;
+  // The sentence cap reads every finding of a whole call. For a patch it reads the findings the patch
+  // sends, and every finding that differs from the last ACCEPTED record, which is all of them when nothing
+  // was accepted yet. So a patch onto a refused record is checked whole, and a record accepted before the
+  // cap still patches finding by finding (netLengthRefusal).
+  const sent = (Array.isArray(received?.findings_patch) ? received.findings_patch : []).map((r) => r?.ordinal);
+  const carried = !isPatch ? null : lastAccepted ? new Set([...sent, ...touchedBetween(lastAccepted.findings, call?.findings)]) : null;
   const v = acceptSynthesis(call, { asks, ledger, manifest, method, methodInvalid, owed, declined, decisions, carried });
   if (!v.ok) {
     noteRefusal(v.reason);
@@ -701,12 +733,13 @@ export function recordSynthesis(runDir, received, opts = {}) {
 
   const findingsAt = join(dir0, FINDINGS_FILE);
   const narrativeAt = join(dir0, NARRATIVE_FILE);
-  const before = lastAcceptedCall(dir0);   // the record this save replaces, for the touched record below
+  const before = lastAccepted;   // the record this save replaces, for the touched record below
   try {
     writeFileSync(findingsAt, v.findings);
     writeFileSync(narrativeAt, v.narrative);
-    // The merge base for the NEXT repair, stored only now — after the values passed. A base written
-    // before validation would let a refused call become what the next patch is built on.
+    // The last ACCEPTED record, stored only now, after the values passed. The touched record compares
+    // against it, and the sentence cap reads changes against it. The next patch merges onto the last call
+    // received instead, refused or not, and falls back to this one for a run that predates that file.
     writeFileSync(accepted, JSON.stringify({
       _provenance: "the last ACCEPTED call, merged if it arrived as a patch — the base a later repair patches onto",
       acceptedAt: now(), params: call,

@@ -951,6 +951,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-patch-merges-onto-the-last-call-received.test.mjs": {
+          "tests": 5,
+          "asserts": 15,
+          "skips": 0,
+          "todos": 0
+        },
         "a-plan-run-that-was-not-answered-is-not-a-drift.test.mjs": {
           "tests": 5,
           "asserts": 16,
