@@ -2,16 +2,17 @@
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // @tier fast — the synthesis save reading a corrective call's shape, on invented records
 //
-// A SAVE THAT CARRIES A PATCH LIST IS A PATCH, WHATEVER ELSE IT CARRIES (design, 2026-10-03).
+// A FINDINGS LIST MAKES A SAVE WHOLE; WITHOUT ONE, A SAVE IS A PATCH ON WHAT IT CARRIES (design, 2026-10-03).
 //
 // On two test runs the corrective pass sent one call with three parts: the narrative, a patch
 // list of the findings it changed, and the record's other sections with no findings list among them. The
 // save read the third part as a whole record holding no findings, so every record the run had carried was
 // unaccounted and the call was refused; the model then resent the whole record, about 54,000 and 68,000
-// characters. Now the patch list patches the findings it names, the sections beside it replace theirs, and every
-// finding it does not name stands. A save carrying a findings list is still a whole record, whatever patch
-// list it carries, and the refusal for unaccounted records still fires on a whole save that drops findings.
-// No line the model reads changes.
+// characters. Three more saves across the test runs sent the record's sections alone, with no patch list at
+// all, and met the same refusal. Now a patch list patches the findings it names, a section carried replaces
+// that section, the narrative likewise, and everything not carried stands. A save carrying a findings list
+// is a whole record, whatever patch list it carries, and the refusal for unaccounted records still fires on
+// a whole save that drops findings. A patch never adds a finding. No line the model reads changes.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync } from "node:fs";
@@ -78,12 +79,37 @@ test("a whole save that drops findings is still refused for unaccounted records,
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test("the record's sections with no findings list and no patch list still read as a whole record, as before", () => {
+test("the record's sections with no findings list and no patch list are a patch on what they carry: every finding stands", () => {
   const { dir, doc } = runWithAcceptedRecord();
   try {
-    const r = recordSynthesis(dir, { narrative: NARRATIVE, findings: sectionsOf(doc) }, DUTY);
-    assert.notEqual(r.refused, null, "a whole save holding no findings was accepted");
-    assert.equal(onDisk(dir).findings.length, 2, "a refused save changed the record on disk");
+    const r = recordSynthesis(dir, { narrative: NARRATIVE, findings: { ...sectionsOf(doc), actions: [] } }, DUTY);
+    assert.equal(r.refused, null, `a save of the record's sections was refused: ${r.refused}`);
+    const after = onDisk(dir);
+    assert.deepEqual(after.findings, doc.findings, "the findings the save did not carry did not stand");
+    assert.deepEqual(after.actions, [], "the section the save carried did not replace its counterpart");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("the corrections note alone is a patch on the note: the findings and the other sections stand", () => {
+  const { dir, doc } = runWithAcceptedRecord();
+  try {
+    const note = { applied: true, note: "The registration date in finding 1 now reads as the record shows." };
+    const r = recordSynthesis(dir, { findings: { corrections: note } }, DUTY);
+    assert.equal(r.refused, null, `the corrections note alone was refused: ${r.refused}`);
+    const after = onDisk(dir);
+    assert.deepEqual(after.corrections, note);
+    assert.deepEqual(after.findings, doc.findings);
+    assert.deepEqual(after.coverage, doc.coverage, "a section the save did not carry did not stand");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("a patch never adds a finding: an ordinal the record does not hold is refused, sections or not", () => {
+  const { dir, doc } = runWithAcceptedRecord();
+  try {
+    const stranger = { ...doc.findings[1], ordinal: 9 };
+    const r = recordSynthesis(dir, { findings: sectionsOf(doc), findings_patch: [stranger] }, DUTY);
+    assert.match(String(r.refused), /^synthesis_patch_ordinal_unknown:9/);
+    assert.equal(onDisk(dir).findings.length, 2);
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
