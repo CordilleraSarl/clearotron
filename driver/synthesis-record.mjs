@@ -499,6 +499,10 @@ export function lastReceivedCall(runDir) {
   } catch { return null; }
 }
 
+/** A `findings` that carries the record's other sections and no findings list. PURE. */
+const carriesSectionsOnly = (findings) => Boolean(findings) && typeof findings === "object" && !Array.isArray(findings)
+  && findings.findings === undefined;
+
 /**
  * Merge a patch call onto the stored one. PURE.
  *
@@ -519,7 +523,15 @@ export function mergeSynthesisPatch(stored, patch) {
   // still arrives here rather than as a first call, because it carries no narrative — and the narrative
   // it is not being asked to redo is the stored one. Without this the rung could not succeed: the call
   // was refused for `synthesis_narrative_missing`, naming sections nobody had asked the seat to resend.
-  if (patch?.findings !== undefined) out.findings = patch.findings;
+  //
+  // A `findings` WITH NO FINDINGS LIST, sent beside a patch list, is the record's OTHER sections: the
+  // coverage rows, the actions, the four answers, the corrections note (design, 2026-10-03). Each replaces
+  // its counterpart and the stored findings stand, for the patch list to correct by ordinal. On the first
+  // synthesis round the corrective pass sent exactly this on both runs; read as a whole record holding no
+  // findings, it was refused for unaccounted records, and the seat resent the whole record, 73,000
+  // characters each time.
+  const sectionsOnly = Array.isArray(patch?.findings_patch) && carriesSectionsOnly(patch?.findings);
+  if (patch?.findings !== undefined) out.findings = sectionsOnly ? { ...out.findings, ...patch.findings } : patch.findings;
   for (const [k, v] of Object.entries(patch?.narrative ?? {})) out.narrative[k] = v;
   const rows = patch?.findings_patch;
   if (rows != null) {
@@ -688,8 +700,12 @@ export function recordSynthesis(runDir, received, opts = {}) {
   // A PARTIAL IS A CALL CARRYING ONLY ONE HALF. Detected by shape rather than by a mode flag: a flag is
   // a second way to say the same thing and the two can disagree. Either half may be the missing one —
   // a corrective sends findings changes with no narrative rewrite, a schema migration re-emits the
-  // whole record and touches no section — and in both cases the half not sent is the stored one.
-  const isPatch = Boolean(received) && (received.findings === undefined || received.narrative === undefined);
+  // whole record and touches no section — and in both cases the half not sent is the stored one. A call
+  // carrying a PATCH LIST beside the record's other sections is a patch too (design, 2026-10-03): the list
+  // corrects the findings it names and the sections replace theirs (mergeSynthesisPatch). A call carrying a
+  // findings list is still a whole record, so the sentence cap still reads every finding it holds.
+  const isPatch = Boolean(received) && (received.findings === undefined || received.narrative === undefined
+    || (Array.isArray(received.findings_patch) && carriesSectionsOnly(received.findings)));
   let call = received;
   // Appended, never overwritten: a turn can be refused more than once and each one is a fact about the
   // run. Best-effort — bookkeeping that can kill a run is worse than bookkeeping that is absent.
