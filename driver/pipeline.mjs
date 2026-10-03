@@ -6612,14 +6612,23 @@ export function reapplyLayer(ctx, { force = false } = {}) {   // @internal
   const applied = layer?.applied ?? [];
   // A save leaves findings.json as the model's record already; with no write applied there is nothing to add.
   if (!force && (!applied.length || shaOfFile(P.findings) === layer.producedSha)) return false;
+  // EACH WRITE ON ITS OWN. One that throws costs its own write and no other: the writes after it still apply,
+  // the failure is on the run's record, and the record is not marked as the layer's, so the next synthesis
+  // stage rebuilds it again. A write this pass recorded that the code no longer has is a failure too.
+  const failed = [];
+  const why = (e) => String(e?.message ?? e).replace(/\s+/g, " ").slice(0, 120);
   try {
     const modelAt = modelRecordPath(runDir, P.findings);
     if (modelAt !== P.findings) atomicWrite(P.findings, readFileSync(modelAt, "utf8"));
-    for (const { name, args } of applied) LAYER_WRITERS[name]?.(ctx, args ?? {});
-  } catch (e) {
-    note(`[layer] rebuild stopped: ${String(e?.message ?? e).replace(/\s+/g, " ").slice(0, 120)}`);
-  } finally { noteProduced(runDir, P.findings); }
-  runLog(runDir, { event: "layer-reapplied", writes: applied.map((w) => w.name) });
+  } catch (e) { failed.push({ name: "model-record", error: why(e) }); }
+  for (const { name, args } of applied) {
+    if (!LAYER_WRITERS[name]) { failed.push({ name, error: "no such write" }); continue; }
+    try { LAYER_WRITERS[name](ctx, args ?? {}); }
+    catch (e) { failed.push({ name, error: why(e) }); }
+  }
+  if (failed.length) note(`[layer] ${failed.length} write(s) not applied again: ${failed.map((f) => `${f.name} (${f.error})`).join("; ")}`);
+  noteProduced(runDir, failed.length ? null : P.findings);
+  runLog(runDir, { event: "layer-reapplied", writes: applied.map((w) => w.name), ...(failed.length ? { failed } : {}) });
   return true;
 }
 // minor (a): a finding earns a FULL prose card when composite ≥ 3 (on-field) OR level ∈ {A,B} (high legal
