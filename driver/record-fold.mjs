@@ -63,7 +63,7 @@ export function readFold(runDir) {
   try { return JSON.parse(readFileSync(driverDir(String(runDir ?? ""), FOLD_FILE), "utf8")); } catch { return null; }
 }
 
-function writeFold(runDir, { seamPassed, map = null, merges = [] }) {
+function writeFold(runDir, { seamPassed, map = null, merges = [], error = null }) {
   const at = driverDir(String(runDir ?? ""), FOLD_FILE);
   mkdirSync(dirname(at), { recursive: true });
   const tmp = `${at}.${process.pid}.tmp`;
@@ -72,6 +72,7 @@ function writeFold(runDir, { seamPassed, map = null, merges = [] }) {
     at: new Date().toISOString(), seamPassed: Boolean(seamPassed), map,
     // ordinals only: the names stay in the record itself
     merges: (merges ?? []).map((m) => ({ kept: m.kept, dropped: m.dropped })),
+    ...(error ? { error } : {}),
   }, null, 2) + "\n");
   renameSync(tmp, at);
 }
@@ -94,6 +95,7 @@ export function foldFindingsFile(runDir, findingsPath, manifest, { seam = false 
   const dir = String(runDir ?? "");
   const state = readFold(dir);
   const unfoldedAt = driverDir(dir, UNFOLDED_FILE);
+  let folded = null;   // the fold, once findings.json holds it
   try {
     if (!seam && state?.seamPassed !== true) {
       if (state?.map) { writeFold(dir, { seamPassed: false }); rmSync(unfoldedAt, { force: true }); }
@@ -113,12 +115,20 @@ export function foldFindingsFile(runDir, findingsPath, manifest, { seam = false 
     parseFindingsJson(JSON.stringify(doc));   // the folded record must still validate; a throw keeps the record as written
     writeAtomic(unfoldedAt, raw);
     writeAtomic(findingsPath, `${JSON.stringify(doc, null, 2)}\n`);
+    folded = { map, merges };
     writeFold(dir, { seamPassed: true, map, merges });
     return { merges };
   } catch (e) {
-    // A fold that cannot be made leaves the record as written. The seam is still passed.
-    if (seam) { try { writeFold(dir, { seamPassed: true }); rmSync(unfoldedAt, { force: true }); } catch { /* best-effort */ } }
-    return { merges: [], error: String(e?.message ?? e).replace(/\s+/g, " ").slice(0, 160) };
+    // A fold that cannot be made leaves the record as the save wrote it, and the state must say so: a map
+    // and a kept record from an earlier fold would send every reader of the model's numbering to a record
+    // this save has replaced. The failure is recorded, because nothing else reads this function's return.
+    const error = String(e?.message ?? e).replace(/\s+/g, " ").slice(0, 160);
+    try {
+      const seamPassed = seam || state?.seamPassed === true;
+      if (folded) writeFold(dir, { seamPassed, ...folded, error });
+      else { rmSync(unfoldedAt, { force: true }); writeFold(dir, { seamPassed, error }); }
+    } catch { /* best-effort */ }
+    return { merges: [], error };
   }
 }
 

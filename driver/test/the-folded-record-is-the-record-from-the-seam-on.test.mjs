@@ -141,6 +141,24 @@ test("a rolled-back pass puts the fold back with the record", () => {
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
+test("a fold that fails after the seam leaves the record as the save wrote it, and says so", () => {
+  const dir = runDir();
+  try {
+    recordSynthesis(dir, { narrative: NARRATIVE, findings: record(THREE) });
+    foldFindingsFile(dir, at(dir), null, { seam: true });
+    assert.ok(readFold(dir).map, "premise: a fold is in force");
+    writeFileSync(at(dir), "{ not a record");   // a record the fold cannot read
+    const r = foldAfterSave(dir, at(dir));
+    assert.ok(r.error, "the failure was not reported");
+    const state = readFold(dir);
+    assert.equal(state.map, null, "the map of an earlier fold still stands");
+    assert.equal(state.seamPassed, true);
+    assert.ok(state.error, "the failure is not on the record");
+    assert.equal(existsSync(driverDir(dir, UNFOLDED_FILE)), false, "the record of an earlier fold is still kept");
+    assert.equal(modelRecordPath(dir, at(dir)), at(dir));
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
 // The removal repair compares the record before a corrective pass with the record after it, and puts
 // back a finding no flag named. A folded record renumbers: compared folded, a finding removed by name
 // would shift the last one down and read as an unnamed removal of it.
