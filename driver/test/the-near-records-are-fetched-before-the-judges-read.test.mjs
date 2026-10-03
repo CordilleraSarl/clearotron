@@ -9,9 +9,9 @@
 // check. Before the judges read, the step now fetches the full record of every record the run does not hold
 // for the owners in scope: the floor, or the floor and the near band. Only the owners the opening shows are
 // fetched for: on a crowded pile the opening's ceiling cuts the near band, and nothing past the cut is
-// fetched. Where the listing carries the goods the run holds them already and nothing is fetched. The scope
-// is the owner's to set and none is set: with none, nothing is fetched first. Every fetch is billed to the
-// run, under its agent and a session key of its own. Every name here is invented.
+// fetched. A record the run already holds whole is not fetched again. The scope is the owner's to set and
+// none is set: with none, nothing is fetched first. Every fetch is billed to the run, under its agent and
+// a session key of its own. Every name here is invented.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -111,7 +111,7 @@ test("a fetch that fails or throws is counted and the step goes on", async () =>
   assert.deepEqual(counts, { scope: "floor", owners: 2, pastTheCut: 0, records: 4, held: 0, asked: 4, ok: 2, failed: 2 });
 });
 
-test("CONTROL — where the listing carries the goods the run holds every record, and nothing is fetched", async () => {
+test("CONTROL — where the run holds every record whole, nothing is fetched", async () => {
   const { counts, asked } = await run(pile({ same: 1, word: 2, near: 3, held: () => true }), "band");
   assert.deepEqual(asked, []);
   assert.equal(counts.asked, 0);

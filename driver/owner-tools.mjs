@@ -44,10 +44,10 @@ export const MESSAGE_TABLE_CHARS = 60000;
 export const OPENING_CEILING_PAGES = null;
 /**
  * Whose records the judged step fetches whole before the judges read, where the run does not hold them yet:
- * "floor" (owner-table.mjs openingBands' floor) or "band" (the floor and the near band). A register whose
- * listing carries the goods holds them already, so nothing is fetched there. Each fetch is a billed call,
- * so the scope is the owner's to set; none is set until he gives it, and with none nothing is fetched first
- * and a record is fetched when a judge opens it, as before.
+ * "floor" (owner-table.mjs openingBands' floor) or "band" (the floor and the near band), on the opening only.
+ * A record the run already holds whole is not fetched again. Each fetch is a billed call, so the scope is
+ * the owner's to set; none is set until he gives it, and with none nothing is fetched first and a record is
+ * fetched when a judge opens it, as before.
  */
 export const OPENING_FETCH_SCOPE = null;
 

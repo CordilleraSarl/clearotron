@@ -223,12 +223,12 @@ export function writeJudgmentFiles(P, merged, { trigger, judges }) {
 // with the full record. The bench's judges had the goods of every record in front of them, and on such a
 // register the step's judges had none, so a conflict could be set aside on a ground they could not check
 // (design, 2026-10-03). So before the judges read, the step fetches the full record of every record of the
-// owners in scope that the run does not hold yet. On a register whose listing carries the goods the run
-// holds them already, and nothing is fetched. The scope is a setting (owner-tools.mjs OPENING_FETCH_SCOPE):
-// with none, nothing is fetched first. Whatever the scope, only the owners the opening shows are fetched for:
-// the records are the ones on the judges' opening pages (design, 2026-10-03), and on a crowded pile the
-// opening's ceiling cuts the near band, so the fetch stops at the cut. A failed fetch is counted and the
-// step goes on; that record is fetched when a judge opens it, as before. The counts go on the run's record.
+// owners in scope that the run does not hold yet; a record the run already holds whole is not fetched
+// again. The scope is a setting (owner-tools.mjs OPENING_FETCH_SCOPE): with none, nothing is fetched first.
+// Whatever the scope, only the owners the opening shows are fetched for: the records are the ones on the
+// judges' opening pages (design, 2026-10-03), and on a crowded pile the opening's ceiling cuts the near
+// band, so the fetch stops at the cut. A failed fetch is counted and the step goes on; that record is
+// fetched when a judge opens it, as before. The counts go on the run log.
 
 /** The fetch-first scope's owners, by key: "floor", "band" (floor and near band), or none. */
 export function fetchScopeOwners(table, scope) {
