@@ -44,7 +44,7 @@ import { CLOSURE_EVIDENCE_FILES } from "./doubt-closure-call.mjs";
 import { caseLawSourceLines } from "./case-law-sources.mjs";   
 import { readAcceptedClosures } from "./doubt-closure-tool.mjs";   //  — what a retry no longer needs to ask   // conversion 6 — file_index is a POSITION into this list
 import { DECLINATION_REASON_TOKENS } from "./declination-call.mjs";   // — the vocabulary is dictated FROM the acceptance boundary, so the order and the refusal cannot disagree
-import { OPENING_WORDS, ANSWER_FORM } from "./owner-judgment.mjs";   // step 3's words and form: the judges read these and nothing else
+import { OPENING_WORDS, answerFormFor } from "./owner-judgment.mjs";   // step 3's words and form: the judges read these and nothing else
 
 // REGISTER_AXES + decideAxes moved to coverage-ledger.mjs (WS-A) so verify.mjs can consume them
 // without a stages⇄verify import cycle; re-exported here so every existing import site keeps working.
@@ -2159,7 +2159,7 @@ export const STAGES = {
   // register digest, which this slot held, in one change.
   //
   // CONFINED: the session's whole instruction is OPENING_WORDS, its tools are the owner tools and the
-  // program's own helper, and it answers in ANSWER_FORM, which the driver writes to `out` (engine
+  // program's own helper, and it answers in its form (answerFormFor), which the driver writes to `out` (engine
   // CONTRACT.md, `confined`). A failed attempt runs again on a fresh session with the same message.
   "owner-judgment": {
     // The tier the judging stages ran at (placement: opus, high), on each engine. 1800s against a measured
@@ -2169,7 +2169,7 @@ export const STAGES = {
     model: "opus", thinking: "high", timeoutSec: 1800, stallSec: 600,
     out: (P, axis) => P.ownerJudgment(axis),
     validate: validators.ownerJudgment,
-    confined: () => ({ instructions: OPENING_WORDS, answerForm: ANSWER_FORM }),
+    confined: (ctx) => ({ instructions: OPENING_WORDS, answerForm: answerFormFor(ctx?.frameworkMethod) }),
     contractElements: {
       "considered — one entry per owner the session considered, carried into the advice or set aside": {
         class: "judgment", tokens: ["judgment_no_answer", "judgment_considered_missing", "judgment_answer_unparseable"],
@@ -2188,8 +2188,8 @@ export const STAGES = {
         why: "The evidence chosen. Every one must be a record or a web address this run holds — checked against the facts the driver wrote before the judges ran.",
       },
       "rating — one band of the client's scale; empty when set aside": {
-        class: "judgment", tokens: ["judgment_rating_not_a_band"],
-        why: "How strong the objection is, on the client's own scale. The check refuses a word that is not one of the scale's bands.",
+        class: "judgment", tokens: ["judgment_rating_not_a_band", "judgment_inputs_missing", "judgment_inputs_unknown", "judgment_inputs_invalid", "judgment_inputs_duplicate", "judgment_band_off_table"],
+        why: "How strong the objection is, on the client's own scale. The check refuses a word that is not one of the scale's bands, and on a framework that states a method, a band its table does not give for the inputs the judge gave.",
       },
       "reason — why, from the records": {
         class: "judgment", tokens: ["judgment_carry_no_reason"],

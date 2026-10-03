@@ -378,7 +378,7 @@ export function acceptSynthesis(params, { asks = [], ledger = null, manifest = n
   // owner placed "off-field", is refused here, where restating is free. The framework's method no longer
   // polices the band either: reasoning a band is not this seat's work any more.
   if (decisions) {
-    const stamped = stampDecidedRatings(doc, decisions, manifest);
+    const stamped = stampDecidedRatings(doc, decisions, manifest, method ?? null);
     if (stamped.refusals.length) return { ok: false, reason: stamped.refusals.join("; ") };
     doc = stamped.doc;
     method = undefined;
