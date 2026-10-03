@@ -4,11 +4,11 @@
 //
 // A SAVE THAT CARRIES A PATCH LIST IS A PATCH, WHATEVER ELSE IT CARRIES (design, 2026-10-03).
 //
-// On the first synthesis round the corrective pass sent one call with three parts: the narrative, a patch
+// On two test runs the corrective pass sent one call with three parts: the narrative, a patch
 // list of the findings it changed, and the record's other sections with no findings list among them. The
 // save read the third part as a whole record holding no findings, so every record the run had carried was
-// unaccounted and the call was refused; the model then resent the whole record, 73,000 characters on each
-// run. Now the patch list patches the findings it names, the sections beside it replace theirs, and every
+// unaccounted and the call was refused; the model then resent the whole record, about 54,000 and 68,000
+// characters. Now the patch list patches the findings it names, the sections beside it replace theirs, and every
 // finding it does not name stands. A save carrying a findings list is still a whole record, whatever patch
 // list it carries, and the refusal for unaccounted records still fires on a whole save that drops findings.
 // No line the model reads changes.

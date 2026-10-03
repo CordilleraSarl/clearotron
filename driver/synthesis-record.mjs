@@ -526,10 +526,9 @@ export function mergeSynthesisPatch(stored, patch) {
   //
   // A `findings` WITH NO FINDINGS LIST, sent beside a patch list, is the record's OTHER sections: the
   // coverage rows, the actions, the four answers, the corrections note (design, 2026-10-03). Each replaces
-  // its counterpart and the stored findings stand, for the patch list to correct by ordinal. On the first
-  // synthesis round the corrective pass sent exactly this on both runs; read as a whole record holding no
-  // findings, it was refused for unaccounted records, and the seat resent the whole record, 73,000
-  // characters each time.
+  // its counterpart and the stored findings stand, for the patch list to correct by ordinal. On two test
+  // runs the corrective pass sent exactly this; read as a whole record holding no findings, it was refused
+  // for unaccounted records, and the seat resent the whole record, about 54,000 and 68,000 characters.
   const sectionsOnly = Array.isArray(patch?.findings_patch) && carriesSectionsOnly(patch?.findings);
   if (patch?.findings !== undefined) out.findings = sectionsOnly ? { ...out.findings, ...patch.findings } : patch.findings;
   for (const [k, v] of Object.entries(patch?.narrative ?? {})) out.narrative[k] = v;
