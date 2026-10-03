@@ -777,8 +777,8 @@ and runs to 2.5 hours — one range for every clearance, whichever lanes it carr
 native-language lane and a single-territory deep-dive; the delivered walls refuted that, so the adders
 were removed.
 
-**What the stages declare.** Every stage carries a timeout — the longest is 42 minutes, and the 15
-together sum to 4.7 hours (`driver/stages.mjs`). Fan-out members run in parallel and a retry adds to
+**What the stages declare.** Every stage carries a timeout — the longest is 42 minutes, and the 13
+together sum to 4.4 hours (`driver/stages.mjs`). Fan-out members run in parallel and a retry adds to
 the wall, so the sum sizes the stages rather than the run.
 
 What moves the wall is the fan-out: how many search axes the register plan compiles, whether the

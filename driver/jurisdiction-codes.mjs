@@ -108,3 +108,18 @@ export function foldJurisdictionCodes(codes) {
   }
   return { codes: out, unknown };
 }
+
+// The EU-wide tokens — EM/EUTM/EUIPO fold to EU in canonicalJurisdictionCode; this set keeps the aliases for
+// any un-folded token that reaches the EU check.
+const EU_TOKENS = new Set(["EU", "EM", "EUTM", "EUIPO"]);
+// does a SEARCHED token mechanically cover a scoped jurisdiction j? (exact, or an EU search covering EU-scope).
+// A member scoped but only EU searched is NOT covered (national rights need a national search) → stays a gap.
+//
+// Read by the delivered-narrative coverage check (predelivery-lint.mjs): "does the prose claim coverage of a
+// territory the run did not search". One copy of the EU-reach rule. Callers pass jurisdiction CODES;
+// normalise with canonicalJurisdictionCode first.
+export function searchedCovers(j, searchedSet) {
+  if (searchedSet.has(j)) return true;
+  if (EU_TOKENS.has(j) && [...searchedSet].some((s) => EU_TOKENS.has(s))) return true;
+  return false;
+}

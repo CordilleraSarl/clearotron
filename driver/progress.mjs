@@ -46,8 +46,8 @@ export const DISPLAY_STEPS = [
 // — this map, STAGE_NO_STEP and NON_STAGE_STEPS below are a CLOSED PARTITION of Object.keys(STAGES),
 // asserted in both directions by progress.test.mjs. "Keys not present here are no-ops for display" was
 // true and unenforced: a stage added to STAGES and forgotten here does not fail, it renders as an
-// UNLABELLED GAP on the stepper the client watches — the run looks stalled while it is working. Three
-// stages were sitting in that state (blind-frame, frame-diff, doubt-closure); each now says so by name.
+// UNLABELLED GAP on the stepper the client watches — the run looks stalled while it is working. Stages
+// were sitting in that state; each now says so by name.
 export const STAGE_TO_STEP = {
   "matter-frame": 0, "clearance-variants": 0,
   "common-law": 1, "common-law-half": 1, "register-unit": 1,
@@ -72,12 +72,6 @@ export const STAGE_TO_STEP = {
 // stepper. A stage in neither this map nor STAGE_TO_STEP fails progress.test.mjs, so the choice is made
 // once, consciously, by whoever adds the stage — never by omission.
 export const STAGE_NO_STEP = {
-  // Both run INSIDE the gather the stepper already shows as "Searching": blind-frame is a sibling of the
-  // gather (it re-derives the frame cold and advances nothing the client waits on), and frame-diff is the
-  // code-consumed reopen check that closes it. Advancing the stepper for either would show the run moving
-  // on while the searches it depends on are still out.
-  "blind-frame": "runs as a sibling of the gather — advancing the stepper would claim progress the searches have not made",
-  "frame-diff": "the code-consumed reopen check inside the gather step, not a phase the client waits on",
   // Condition-only: fires only when stitch-open doubts exist, well after the stepper has passed synthesis.
   "doubt-closure": "condition-only (only when stitch-open doubts exist) — the stepper is already past it",
 };

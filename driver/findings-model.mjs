@@ -1781,7 +1781,7 @@ function validateNet(f, ord, mode) {
 //
 // The name also has to satisfy the two conditions the gateway imposes, both verified in
 // findings-gate-token.test.mjs rather than assumed:
-//   · lowercase-and-underscore after the prefix, or gateway.mjs:3063 WARM_ELIGIBLE_RE
+//   · lowercase-and-underscore after the prefix, or gateway.mjs:2947 WARM_ELIGIBLE_RE
 //     (`findings?_[a-z_]+`) does not admit it and the failure goes cold instead of warm;
 //   · no `coverage_ledger` / `coverage_axis` / `coverage_key` / `coverage_mirror` /
 //     `coverage_status_invalid` substring, because repairSiblingName's ternary tests `coverage_*` BEFORE

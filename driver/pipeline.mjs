@@ -32,8 +32,7 @@ import { rankClusterLegs, verdictDrivingFindings } from "./senior-rights.mjs";
 import { buildRunContext, deriveSlug, kebab } from "./phase0.mjs";
 import { paths, STAGES, axisTier, decideAxes, assertTierSanity, assertEffectiveTier, lines, AGENT_WHATSAPP, whatsappRouting,
   chainEntries, stageOrdinal, stageInputs, stageOutputs, dependencyOrder, REGISTER_AXES, REGISTER_ENUMERATE_TOOL,
-  buildEscalationFollowup, buildEnvelopeCloseFollowup, buildFrameReopenFollowup,
-  buildFrameReopenRetryMessage, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, PROVIDER_META, proseRungDirective } from "./stages.mjs"; import { bandSizeForStage, derivedLimitSec, limitExceedsCeiling, ceilingRefusal } from "./band-size.mjs";
+  buildEscalationFollowup, buildEnvelopeCloseFollowup, thinkingFor, composeFollowup, stampDispatchBlocks, recordEmptyReturn, nothingFound, nothingToRead, PROVIDER_META, proseRungDirective } from "./stages.mjs"; import { bandSizeForStage, derivedLimitSec, limitExceedsCeiling, ceilingRefusal } from "./band-size.mjs";
 import { IDENTITY_FILE as REPORT_IDENTITY_FILE } from "./report-overview-record.mjs";
 import { dispatchRows, clearedSignatures } from "./seat-attempts.mjs";
 import { CONTEXT_DERIVATIONS, DISPATCH_EXTRAS, INLINE_CONTEXT, sandboxManifest, sandboxGaps, derivationsFor } from "./stage-context.mjs";   // — what a stage is actually handed
@@ -87,8 +86,8 @@ import { profileOrdinals } from "./profile-selection.mjs";   // lever 3 — driv
 import { NATIVE_LANGUAGE_REMEDY } from "./products.mjs";
 import { resolveTerritories, defaultTerritoryState } from "./effective-scope.mjs";   // the ONE territory ladder (the geography stamp included) + the stored-defaults reading
 import { acquireSlot, releaseSlot } from "./slot-lock.mjs";
-import { mintSupplementalEntries, withRejected } from "./engine/mcp/supplemental.mjs";
-import { runLog, note, fileMeta, outputMeta, stageLog } from "./log.mjs"; import { plainDirective, deferralCoverageRow } from "./deferral-row.mjs"; import { degradedParts, writeDegradedParts, PART_NAMES, NOT_COMPLETED } from "./degraded-parts.mjs"; import { armProduced, readArmSurfaces, producedNothingLine } from "./experiment-honesty.mjs"; import { correctiveReadiness, correctiveRefusalLine, correctivePassState } from "./corrective-arm.mjs";
+import { withRejected } from "./engine/mcp/supplemental.mjs";
+import { runLog, note, fileMeta, outputMeta, stageLog } from "./log.mjs"; import { deferralCoverageRow } from "./deferral-row.mjs"; import { degradedParts, writeDegradedParts, PART_NAMES, NOT_COMPLETED } from "./degraded-parts.mjs"; import { armProduced, readArmSurfaces, producedNothingLine } from "./experiment-honesty.mjs"; import { correctiveReadiness, correctiveRefusalLine, correctivePassState } from "./corrective-arm.mjs";
 import { deriveScopeFacts } from "./scope-facts.mjs";
 import { documentGrowth } from "./gate-metrics.mjs";
 import { editRepairTail, abbrev } from "./repair-contract.mjs";
@@ -135,7 +134,6 @@ const COMMONLAW_CARRY_FLOOR = (() => {
   try { return JSON.parse(readFileSync(new URL("./commonlaw-carry-floor.json", import.meta.url), "utf8")); }
   catch { return null; }
 })();
-import { accountRemedyTerms, domClosedOverAccounted, remedyAccountingEvent, mintRemedyAccountingDoubts } from "./remedy-accounting.mjs";   // — every remedy term ends accounted (2026-08-03)
 import { tallyRegisterCalls, DEFAULT_LEDGER_PATH, countLaneCalls } from "./provider-usage.mjs";
 // — the run's own record log. Every driver-side register call that can write a record BODY carries
 // this path, because this process runs several runs' pipelines at once and a global address would file
@@ -169,14 +167,8 @@ import { renderScopeLedgerJson, scopeLedgerJsonFromRows, gridChannels, parseScop
 // the lane MACHINERY, not this table. Aliased: scope-ledger.mjs already exports a scopeJurisdictions
 // (rows → markets); this one is (job, profile) → requested territories, the decideJxLanes precedence.
 import { JURISDICTION_ADAPTERS, LANGUAGE_LANES, scopeJurisdictions as jxScopeJurisdictions, zhScopeDepthNotes } from "./jx-lanes.mjs";
-// — the two reads that used to sit inline here (blind model, then the manifest's prose line) moved
-// into boundDominantElementFrom, so the driver's bind and the record tool's bind are ONE body. Neither
-// parseBlindFrameModel nor dominantElementFromManifest is called from this file any more.
-import { boundDominantElementFrom } from "./frame-diff-record.mjs";
 import { recordedScopeLedgerRows } from "./clearance-variants-record.mjs";
-import { parseFrameDiff, applyDominantBackstop, firingDirectives, reopenKey, alreadyAttemptedReopen, partitionFiring, frameResidualGaps, jurisdictionScopeFlags, deriveDirectiveRemedy, firingDirectivesLenient } from "./frame-diff-model.mjs";
-import { verifyRegisterDirectiveClose } from "./close-verify.mjs";
-import { renderFormNeighbourhoodJson, parseFormNeighbourhoodJson, dispatchedQueriesFromBand, formGapDirectives, markText } from "./form-neighbourhood.mjs"; import { loadOrdinaryWords } from "./ordinary-words.mjs";
+import { renderFormNeighbourhoodJson, parseFormNeighbourhoodJson, markText } from "./form-neighbourhood.mjs"; import { loadOrdinaryWords } from "./ordinary-words.mjs";
 import { findReviewFreshnessViolation, findSeedNeutralityViolations, findProbativeGradingViolations, findStatusHonestyViolation, findDeadlineUrgencyMiss, findOrphanVerificationFlags, findUncrossCheckedDemotions } from "./reasoning-tripwires.mjs";
 import { findRuleShapeFlags } from "./rule-shape.mjs";
 import { failureSignature, classifyFailureReason, decideRecovery, createRepairLedger, countTrailingStageStrikes, countRecoveryLanes, weatherCeilingFor, TRANSIENT_RE, REFUSAL_TERMINAL_KIND, fanInMissingEvidence, retryCannotHelpWith, unnamedStructuredFailure, classificationSource, isCapPark, capParkSchedule, capWaitFrom, humanWait } from "./repairs.mjs";
@@ -1441,21 +1433,6 @@ export function decideCaseLaw({ job, narrative, policy } = {}) {   // @internal
   };
 }
 
-// #5a — the detail-fetch ceiling for the frame-reopen "enumerate the dominant-element floor to EXHAUSTION"
-// closure pass. The batch-screen (≤100/call, no detail-fetch) stays UNBOUNDED — it screens the full crowd
-// cheaply; only the expensive per-record detail-fetch is capped, so the pass returns a BOUNDED coverage-limited
-// result instead of grinding every survivor to the hard-wall SIGKILL (which produces NOTHING — the resume is
-// killed mid-fetch, no file written, and the directive logs a deferral with zero new coverage). Generous by
-// design: the default only bites a pathological saturated crowd; a normal reopen fetches far fewer survivors and
-// never sees the ceiling. Env-tunable for the rare matter that needs deeper closure. PURE + exported for test.
-// T1 (J2): default 500→150. 500 detail-fetches cannot fit the 1500s stage wall — the old default
-// contradicted the prompt's own "a bounded WRITTEN band beats an exhaustive one killed mid-fetch" and drove
-// the 48% reopen-timeout class ( F5). 150 fits the wall with margin; env-tunable for deep closure.
-export function reopenFetchCeiling(envVal) {   // @internal
-  const n = Number(envVal);
-  return Number.isFinite(n) && n >= 1 ? Math.floor(n) : 150;
-}
-
 // ── WS-B: the run's frozen profile + the sidecar spine ──────────────────────────────────────────────
 // Resolve the customer profile ONCE and freeze it into _driver/profile.json (temp+rename, BEFORE any
 // validated stage). Resume / --experiment load FROM the sidecar — a profiles/ edit between
@@ -1868,8 +1845,8 @@ function deriveActiveAxes(P) {
 // Frame-omission design — CODE-DERIVE scope-ledger.json from the validated clearance-variants prose
 // `### Scope ledger` table (so the JSON is authored by the driver, not the model, and matches the prose
 // by construction — exactly the deriveCoverageLedgerJson pattern). NEVER-KILL: a manifest with no/unparseable
-// Scope ledger (legacy artifacts, a terse run) logs a note and skips the write; the frame-diff then reads the
-// manifest prose directly. The scope ledger is an optimization for the frame-diff, never a delivery gate.
+// Scope ledger (legacy artifacts, a terse run) logs a note and skips the write. The scope ledger is never a
+// delivery gate.
 function deriveScopeLedgerJson(ctx) {
   const P = ctx.paths;
   if (!existsSync(P.variantManifest)) return;
@@ -1894,7 +1871,7 @@ function deriveScopeLedgerJson(ctx) {
     // are different facts about a run, and a reader of an archived ledger must be able to tell which.
     runLog(P.runDir, { event: "scope-ledger-derived", source: recordedRows ? "typed-call" : "prose-parse" });
   } catch (e) {
-    note(`clearance-variants: scope-ledger derivation skipped (${String(e.message).slice(0, 100)}) — frame-diff reads the manifest prose`);
+    note(`clearance-variants: scope-ledger derivation skipped (${String(e.message).slice(0, 100)})`);
     runLog(P.runDir, { event: "scope-ledger-skipped", reason: `derive_failed:${String(e.message).slice(0, 80)}` });
   }
 }
@@ -1903,8 +1880,8 @@ function deriveScopeLedgerJson(ctx) {
 // is distinctive (judgment — "TRIPHEN" out of "VEL TRIPHEN"); the MACHINE generates that token's COMPLETE form
 // neighbourhood (edit-1 ∪ phonetic-family ∪ visual-confusable ∪ transliteration). This is the model-free FORM
 // floor that fixes the generation lottery (the vendor cannot reach a first-consonant swap — live-verified on the
-// incident where a benign-reading given name sat one consonant off a major street-gang label). Written to form-neighbourhood.json; the register funnel searches it (OR-stacked, count-first)
-// and the form-axis oracle (mechanicalFormGapDirectives) checks every near-form was dispatched. NEVER-KILL
+// incident where a benign-reading given name sat one consonant off a major street-gang label). Written to form-neighbourhood.json; the register funnel searches it (OR-stacked, count-first),
+// and the plan-to-band join at the fan-in holds every planned near-form to a band block. NEVER-KILL
 // (mirrors deriveScopeLedgerJson): no element / unparseable → log + skip; the register degrades to the model's
 // manifest variants — never worse than today.
 // 2026-07-18 — the floor is seeded from the VALIDATED variant-manifest.json and scoped by the variant-layer
@@ -1939,7 +1916,7 @@ export function deriveFormNeighbourhood(ctx) {   // @internal — exported for i
   try { model = parseVariantManifestModel(readFileSync(P.variantManifestModel, "utf8")); } catch { /* prose fallback */ }
   try {
     // The MARK is the floor's fallback seed and the only input to it that is not model output —
-    // resolved exactly as every other job-mark consumer resolves it (stages.mjs blind-frame).
+    // resolved exactly as every other job-mark consumer resolves it.
     const mark = ctx.job.marks ?? ctx.job.markName ?? ctx.job.name ?? "";
     // The active register's own declaration: `false` leaves the mixed-alphabet look-alike spellings out of
     // the band and lists them as not searched, with the reason its index gives. Undeclared changes nothing.
@@ -2277,38 +2254,6 @@ export function registerDeferredCoverage(ctx, plan) {   // @internal
     + `those territories were never searched on the register (searched: ${(plan.regions ?? []).join(", ") || "none"}). `
     + `They are a deferred coverage gap for judgment, never a clean negative.`);
   return ctx.registerDeferredJurisdictions;
-}
-
-// FORM-axis regrounding (Property 1, mechanical): a deterministically-generated form near-form the funnel never
-// DISPATCHED is a completeness gap (NOT a sufficiency call). Emit it as a `variant` frame-diff directive so it
-// rides the SAME supplemental-sweep + clamp channel as the blind frame-diff — the form axis stops depending on a
-// peer model to NOTICE the gap (two LLMs share the same blind spot; the oracle does not). NEVER-KILL: any
-// missing/unparseable artifact → [] (the blind frame-diff still runs).
-export function mechanicalFormGapDirectives(ctx) {   // @internal
-  const P = ctx.paths;
-  try {
-    if (!existsSync(P.formNeighbourhood) || !existsSync(P.registerNamedBand)) return [];
-    const elements = parseFormNeighbourhoodJson(readFileSync(P.formNeighbourhood, "utf8"));
-    if (!elements.length) return [];
-    const bandText = readFileSync(P.registerNamedBand, "utf8");
-    const dispatched = dispatchedQueriesFromBand(bandText);
-    // LENIENCY (bias toward "dispatched" — a false gap only wastes a self-heal sweep / over-clamps; it can
-    // never ship a false clean): a near-form ALSO counts as dispatched if it appears anywhere in the band
-    // artifact — a query the funnel described in prose, or a returned mark_text — so a prose query summary
-    // does not manufacture gaps. Only a near-form that appears NOWHERE (truly unsearched) stays a gap.
-    const lower = bandText.toLowerCase();
-    for (const el of elements) {
-      for (const q of el.band.exactQueries) if (lower.includes(String(q).toLowerCase())) dispatched.push(q);
-      for (const w of (el.band.wildcardPatterns ?? [])) if (lower.includes(String(w).toLowerCase())) dispatched.push(w); // phonetic family dispatched-in-prose
-    }
-    // A WITHHELD FAMILY IS AN EXPLAINED ABSENCE. The reading turn withholds a waiting family with its reason
-    // (withheld-families.mjs), and the wildcard fringe is one. Counted as unsearched, it would be ordered
-    // searched anyway, or clamp the verdict, over a decision the run recorded.
-    const withheld = readWithheldFamilies(P.runDir);
-    const explained = (ctx.registerPlan?.entries ?? []).filter((e) => withheld[e.qid])
-      .flatMap((e) => [e.term, ...(Array.isArray(e.terms) ? e.terms : [])]).filter(Boolean);
-    return formGapDirectives(elements, { dispatched, explained });
-  } catch { return []; }
 }
 
 /**
@@ -2858,11 +2803,11 @@ async function runOwnerJudgment(ctx, { trigger = "fresh", force = false, model =
   }
   const tools = makeOwnerTools(pile);
   const table = tools.table;
-  const facts = writeJudgmentFacts(P.ownerJudgmentFacts, { pile, framework: ctx.framework ?? null });
+  const facts = writeJudgmentFacts(P.ownerJudgmentFacts, { pile, framework: ctx.framework ?? null, method: ctx.frameworkMethod ?? null });
   const opening = table ? firstTablePages(tools.serve, MESSAGE_TABLE_CHARS) : { pages: 0, text: "", keysShown: [] };
   const message = composeJudgmentMessage({
     P, profile: ctx.profile, ownNames: ctx.exclusionSeed ?? [],
-    ratingScalePath: frameworkFor(ctx.profile), workedExamplesPath: workedExamplesFor(ctx.profile),
+    ratingScalePath: frameworkFor(ctx.profile), workedExamplesPath: workedExamplesFor(ctx.profile), method: ctx.frameworkMethod ?? null,
     readSkill: (rel) => readFileSync(config.resolveSkillPath(rel), "utf8"),
     tablePages: table ? opening : null,
   });
@@ -3069,7 +3014,7 @@ export function findFloorBreaches(ledger, floorAxes) {   // @internal
  * `[]`: no manifest, unreadable, unparseable. That is the honest default here and not an absence read as
  * a pass, because the whole mechanism is opt-in — a run with no designation owes no floor, and a run whose
  * manifest cannot be read has no designation to honour. The refusal for an absent or unparseable manifest
- * belongs to the stage that writes it and already exists there — verify.mjs:1335 runs the same parser
+ * belongs to the stage that writes it and already exists there — verify.mjs:1329 connotationViolations runs the same parser
  * through `checkSiblingJson` and fails clearance-variants with `variantmodel_missing`. Checked, because
  * "something else refuses it" is exactly the assumption that turns a swallowed error into a silent pass.
  */
@@ -3786,9 +3731,9 @@ async function stageOnce(name, ctx, opts = {}) {
   // a repair-shaped trigger — lint-repair, the corrective followups, a settlement flush — now instructs the
   // model to patch the lines the correction names and leave every other line byte-identical, so a document
   // that grows past these thresholds under one of them is evidence the edit direction was ignored and the
-  // file retyped whole. That is a regression to alarm on, not the known noise it used to be. The triggers
-  // that legitimately ADD are the stated exception (coverage-closure and the frame-reopen source sweep each
-  // append a Negative-results row per variant × channel) and still read as ordinary growth.
+  // file retyped whole. That is a regression to alarm on, not the known noise it used to be. The trigger
+  // that legitimately ADDS is the stated exception (coverage-closure appends a Negative-results row per
+  // variant × channel) and still reads as ordinary growth.
   if (r.ok && out && priorSize != null && priorSize > 0 && trigger !== "fresh" && trigger !== "skip") {
     try {
       const afterSize = statSync(out).size;
@@ -4406,8 +4351,8 @@ export function correctiveCycleSettledDecision(receipt, current) {   // @interna
 /**
  * follow-up (2026-08-04) — account for a SANCTIONED in-pass rewrite in a ONE-SHOT stage's stamp.
  *
- * A one-shot stage reads its evidence at a fixed seam and has no in-process re-run: frame-diff's own
- * contract says "NO in-process re-diff". When a later arm legitimately rewrites an artifact such a
+ * A one-shot stage reads its evidence at a fixed seam and has no in-process re-run. When a later arm
+ * legitimately rewrites an artifact such a
  * stage declared, there is no repair to schedule — the delivery precondition simply reads it stale and
  * parks the run, which pays a park plus a full re-drive to re-dispatch a stage whose every consumer
  * already ran. `restampStage` is the sanctioned-rewrite mechanism (the settlement flush's own idiom);
@@ -4415,11 +4360,11 @@ export function correctiveCycleSettledDecision(receipt, current) {   // @interna
  *
  * NARROW ON PURPOSE. `files` is the list the calling arm actually rewrote, never "everything this stage
  * declares": blessing the whole declaration would quietly widen the grant every time an input is added,
- * and a blind-frame model or a manifest that moves between passes is NEW MATERIAL that must still force
- * the diff (the copper-vault catch).
+ * and an input that moves between passes is NEW MATERIAL that must still force a re-run (the copper-vault
+ * catch).
  *
  * AND IT IS NOT SILENT WHEN IT MATCHES NOTHING. Every `files` entry is a literal path whose declaration
- * lives in stages.mjs; moved frame-diff's list and turned an existing restamp call into a
+ * lives in stages.mjs; moving a stage's input list once turned an existing restamp call into a
  * guaranteed no-op that nothing recorded. A file this label does not declare now lands a `restamp-miss`
  * row in run.jsonl — the absence becomes a finding, and the next input-list move cannot go unnoticed.
  * Logged rather than thrown: the freshness module is best-effort by contract, and killing a run over
@@ -4952,12 +4897,6 @@ const UPSTREAM_STALE_REPAIR = {
   synthesis: (ctx) => { prepareDeclinationSpec(ctx, ctx.paths); return repairStage("synthesis")(ctx); },
   // — composed NEITHER of its two declared blocks; see the dispatcher comment above.
   "narrative-refutation": repairStage("narrative-refutation"),
-  // frame-diff is DELIBERATELY ABSENT and must stay absent. It is one-shot by contract (no in-process
-  // re-diff), so an entry here would re-dispatch a stage the design says runs once, for a model call
-  // that cannot change anything: nothing declares frame-diff's outputs as a stage input, so by the time
-  // the delivery gate asks, every consumer of the diff — the reopen gate, runSupplementalSweeps, the
-  // dominant-element clamp — has already run. Its answer to a sanctioned in-pass rewrite is
-  // settleOneShotStamp above, not a re-run.
 };
 
 export const DELIVERY_TAIL_LABEL_RE = /^(report-overview|report-card:.+)$/;   // @internal
@@ -5970,10 +5909,6 @@ async function deriveIntakeAsks(ctx) {
   runLog(run.runDir, { event: "intake-asks", count: asks.length, asks: asks.map((a) => a.ask) });
 }
 
-// A3 (F5) — deterministic coverage-row injection from the frame-reopen receipt: whatever the
-// synthesis prompt did with the deferrals, the READER always gets the row. Runs after all synthesis
-// re-runs settle (so a re-emit can't clobber it) and re-validates before writing (the
-// consolidateFindingsFile posture). Never-kill: any defect leaves findings.json untouched.
 // The deferral row and its reader's words live in deferral-row.mjs, so publishing can reuse them.
 export { clipToWord, deferralCoverageRow } from "./deferral-row.mjs";   // @internal — re-exported for their tests
 
@@ -6008,7 +5943,7 @@ export { clipToWord, deferralCoverageRow } from "./deferral-row.mjs";   // @inte
 // invented here — `sufficient` is the lawyer's call and a fabricated one would clamp, or fail to clamp,
 // a verdict on nobody's judgment. The absence is logged instead.
 //
-// RUNS AT THE POST-SYNTHESIS MUTATOR SEAM, for injectDeferralCoverage's stated reason: after every
+// RUNS AT THE POST-SYNTHESIS MUTATOR SEAM, for the coverage injectors' shared reason: after every
 // synthesis re-run has settled, so a re-emit cannot clobber it. Never-kill — any defect leaves
 // findings.json untouched, and the ledger and receipt still reach the reader by their own surfaces.
 // ONE SLICE, ONE ROW. The two sources overlap: an axis whose owner probe produced no band block gets a
@@ -6140,40 +6075,10 @@ export function stampCoverageJudgmentRows(P, runDir, note, ctx) {   // @internal
   }
 }
 
-function injectDeferralCoverage(P, runDir, note) {
-  try {
-    const rp = driverDir(runDir, "frame-reopen.json");
-    if (!existsSync(rp) || !existsSync(P.findings)) return;
-    const deferrals = JSON.parse(readFileSync(rp, "utf8"))?.deferrals ?? [];
-    if (!deferrals.length) return;
-    const doc = JSON.parse(readFileSync(P.findings, "utf8"));
-    // T1 (G8): a findings.json without a coverage array must not silently LOSE the deferral
-    // rows — the reader-visible disclosure is the whole point of "can't close → disclose".
-    if (!Array.isArray(doc.coverage)) doc.coverage = [];
-    const normTxt = (s) => String(s ?? "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
-    const covText = normTxt(doc.coverage.map((c) => `${c.area} ${c.note ?? ""}`).join(" "));
-    let added = 0;
-    for (const d of deferrals) {
-      const directive = String(d?.directive ?? "").trim();
-      if (!directive) continue;
-      const slice = normTxt(directive).split(" ").filter((w) => w.length >= 4).slice(0, 4).join(" ");
-      if (slice && covText.includes(slice)) continue;          // synthesis already weighed it in
-      doc.coverage.push(deferralCoverageRow(directive, d?.reason));   // — word-boundary heading, full directive in the note
-      added++;
-    }
-    if (!added) return;
-    parseFindingsJson(JSON.stringify(doc));                    // re-validate the shape (throws → catch keeps original)
-    atomicWrite(P.findings, `${JSON.stringify(doc, null, 2)}\n`);   // B5 — a crash mid-write must never leave a truncated findings.json
-    note(`[frame-reopen] injected ${added} deferral coverage row(s) — the reader sees every unclosed directive`);
-  } catch (e) {
-    note(`[frame-reopen] coverage injection skipped: ${String(e?.message || e).replace(/\s+/g, " ").slice(0, 100)}`);
-  }
-}
-
 // qw/cn-scope-honesty — the zh candidate lane (Chinese-script semantic/
 // phonetic register candidates) is the native-language investigation, which the offering carries on two
 // of its four products and on neither of the others; a search that does not carry it keeps only its
-// existing basic CN work. This is the HONESTY half of that decision, the injectDeferralCoverage posture
+// existing basic CN work. This is the HONESTY half of that decision, the coverage injectors' posture
 // verbatim: when the run's effective jurisdiction scope touches the zh-lane family
 // (JURISDICTION_ADAPTERS: CN/HK/TW/MO — or an unscoped/worldwide run, which by engine convention sweeps
 // those territories too; see the corsearch absent-region note above) AND the zh lane did NOT run on this
@@ -6317,7 +6222,7 @@ export function zhLaneRanOnRun(runDir, opts = {}) {   // @internal
   return scriptLaneRanOnRun(runDir, "zh", opts);
 }
 
-/** The sibling of injectDeferralCoverage: same call point, same never-kill + re-validate + atomic-write
+/** The sibling of injectMeaningGapCoverage: same call point, same never-kill + re-validate + atomic-write
  *  discipline, same "the reader always gets the row" purpose. Idempotent on resume: the row is keyed
  *  by its area, and a coverage row that already discloses the Stage-1.5 recommendation (a synthesis
  *  that weighed it in on a re-run) suppresses the injection rather than duplicating it. */
@@ -6469,7 +6374,7 @@ export function loadScreenGateUnresolved(runDir, ctx = {}) {   // @internal
 }
 
 /** The reader-visible half of the same disclosure: one coverage row PER unresolved mark, the
- *  injectDeferralCoverage / injectZhScopeCoverage posture verbatim (never-kill, re-validate,
+ *  injectMeaningGapCoverage / injectZhScopeCoverage posture verbatim (never-kill, re-validate,
  *  atomic-write). NOTE the CONDITIONAL clamp does NOT come from these rows — `coverage-limited` never
  *  clamps (decideRegisterGap clamps on `deferred` rows only); the clamp is applyCoverageFloor's
  *  screenGateGap arm reading the same ctx/sidecar set. This function only makes that disclosure
@@ -7859,8 +7764,8 @@ async function pipelineInner(job, opts = {}) {
   // The queue (digest-queue.mjs) is the only path to a non-fresh re-judgement of step 3 EXCEPT for the
   // sites declared in digest-queue.mjs's DIGEST_OWN_PASS_EXEMPTIONS, which an arm censuses. Escalation
   // and the envelope keep their unit-level work but MINT durable queue items instead of re-running step
-  // 3 themselves, and the queue settles in ONE consolidated flush at the frame-reopen seam
-  // (pre-synthesis), plus at most one bounded LATE flush for post-synthesis triggers. The sidecar is
+  // 3 themselves, and the queue settles in ONE consolidated flush at the pre-synthesis seam, plus at
+  // most one bounded LATE flush for post-synthesis triggers. The sidecar is
   // loaded HERE, on every start/resume, BEFORE any trigger block runs: a resumed run re-entering a
   // mechanism re-mints the same receiptKey and no-ops — so per-mechanism "max one" bounds no longer
   // reset on resume, and the staleness recompute of the back half happens once, off one flush.
@@ -7887,17 +7792,16 @@ async function pipelineInner(job, opts = {}) {
     }
     return r.minted;
   };
-  // The settlement flush: ONE re-judgement settles every queued mechanism (plus the frame-reopen, when
-  // that block fired). The judges' message is composed again from the pile as it now stands, so what each
+  // The settlement flush: ONE re-judgement settles every queued mechanism. The judges' message is composed again from the pile as it now stands, so what each
   // mechanism moved reaches them as the pile itself, never as a note about it; a judge whose inputs did not
   // move is not re-run (stage freshness). A flush that fails leaves its items PENDING (durable — the late
   // flush or the next resume's settlement gets one more chance) and the run continues on the decisions it
   // has: the funnel never gates delivery. On success, items are receipted (markFlushed — they can never
   // re-fire) and the envelope's deferred verification runs (ctx.envelopeFlushVerify).
-  const flushDigestQueue = async (pass, { reopen = false } = {}) => {
+  const flushDigestQueue = async (pass) => {
     const pending = pendingItems(ctx.digestQueue);
-    if (!pending.length && !reopen) return { ran: false, ok: true };
-    const triggers = [...new Set([...(reopen ? ["frame-reopen"] : []), ...pending.map((i) => i.trigger)])];
+    if (!pending.length) return { ran: false, ok: true };
+    const triggers = [...new Set(pending.map((i) => i.trigger))];
     const trigger = pass === "late" ? "late-flush" : "settlement-flush";
     const rd = await runOwnerJudgment(ctx, { trigger });
     if (rd.ok) {
@@ -7908,22 +7812,12 @@ async function pipelineInner(job, opts = {}) {
       // stage-freshness interaction: the flush is a SANCTIONED post-audit refinement of the findings
       // (legacy parity — on a fresh run the escalation/envelope re-digests also post-date the skeptic,
       // and the delivery gate accepts it because the stage RAN that pass and reconcileStamps blesses
-      // it). On a RESUMED pass skeptic/frame-diff SKIPPED, so their stamps would read the flush as
+      // it). On a RESUMED pass the skeptic SKIPPED, so its stamp would read the flush as
       // delivery-blocking staleness and park the run into another re-drive cycle — the very cascade
-      // this funnel bounds. Their one-shot receipts (escalation fires once per flag set; the reopen
-      // receipt) forbid a post-settlement re-run anyway, so take the flush as accounted-for in exactly
-      // those two stamps. Synthesis and the back half are deliberately NOT restamped: their staleness
-      // recompute is the contract — and it now happens ONCE, off one flush, instead of once per
-      // mechanism re-digest.
-      //
-      // FRAME-DIFF LEFT THIS LOOP ON 2026-08-04 ( follow-up). It used to ride here for the same
-      // reason the skeptic does, and re-aimed stageInputs["frame-diff"] at the register evidence —
-      // it no longer declares register-findings.md or register-coverage-ledger.json, so the two calls
-      // had become a guaranteed no-op that nothing recorded. Nothing this flush writes is a frame-diff
-      // input (the re-digest rewrites the findings and the coverage ledger; it never touches the band or
-      // the units), so there is nothing here to account for. The rewrites frame-diff DOES need accounted
-      // for happen upstream of this seam, at the settleOneShotStamp call sites. The skeptic still
-      // declares both files, so its half stays exactly as it was.
+      // this funnel bounds. Its one-shot receipt (escalation fires once per flag set) forbids a
+      // post-settlement re-run anyway, so take the flush as accounted-for in that stamp. Synthesis and
+      // the back half are deliberately NOT restamped: their staleness recompute is the contract — and it
+      // now happens ONCE, off one flush, instead of once per mechanism re-digest.
       restampStage(run.runDir, "skeptic", P.ownerDecisions, { project: projectStageInput });
       restampStage(run.runDir, "skeptic", P.registerCoverageLedger, { project: projectStageInput });
       if (ctx.envelopeFlushVerify) {
@@ -7931,26 +7825,10 @@ async function pipelineInner(job, opts = {}) {
         ctx.envelopeFlushVerify = null;
         try { verify(); } catch (e) { note(`envelope post-flush verification failed (non-fatal): ${String(e.message).slice(0, 80)}`); }
       }
-      // the flush landed ⇒ the frame-reopen reconcile (if any was pending) is in the findings — the
-      // demotion hook below is moot; drop it so a LATER flush failure can't demote a reconciled close.
-      ctx.frameReopenFlushDemote = null;
     } else {
       runLog(run.runDir, { event: "digest-flush-failed", pass, fail: String(rd.fail).slice(0, 160),
         items: pending.map((i) => i.receiptKey) });
       note(`digest-funnel: ${pass} flush failed (${rd.fail}) — items stay pending (durable); the run continues on the decisions it has`);
-      // C2 (review fix, 2026-07-29): the LOCKED-path dispatch arm released its verified closes on the
-      // PROMISE of this flush (receipt swept + domClosed + the clamp dropped) — the unlocked path
-      // demotes them when its pre-synthesis flush fails (the redigest-fail demotion invariant), so the
-      // locked path must too. The reopen block registers this hook whenever a frame-reopen reconcile
-      // item is riding the queue; a failed flush demotes every verified-closed directive back to a
-      // disclosed deferral, rewrites the receipt (domClosed:false) and re-arms ctx.frameReopenGap —
-      // the delivered verdict carries the unreconciled gap. Flushes always carry ALL pending items,
-      // so a failure here IS the frame-reopen item's failure. Same envelopeFlushVerify hook shape.
-      if (ctx.frameReopenFlushDemote) {
-        const demote = ctx.frameReopenFlushDemote;
-        ctx.frameReopenFlushDemote = null;
-        try { demote(rd.fail); } catch (e) { note(`frame-reopen post-flush demotion failed (non-fatal): ${String(e.message).slice(0, 80)}`); }
-      }
     }
     return { ran: true, ok: rd.ok, fail: rd.fail, result: rd };
   };
@@ -8168,11 +8046,6 @@ async function pipelineInner(job, opts = {}) {
     }
 
     // Step 2A/2B — fan-out (batched ≤ gatherConcurrency) then the code-side fan-in barrier.
-    // Property 1 (frame-omission design): the BLIND re-derivation runs as a sibling of the WHOLE gather,
-    // not as a gather member — it reads only the raw instruction (no tool calls), so under the turn cap it
-    // slots in as a gather unit frees and finishes inside the slowest gather member's wall (≈ zero added
-    // critical-path latency). NON-FATAL: a flake notes-and-skips (frame-diff then sees no blind model and
-    // is skipped) and never rejects the Promise.all that carries the $40 gather.
     // A1 SPLIT: when armed (ctx.clHalfTerms — flag on + dictated spec + ≥2 terms + not a pre-split
     // resume), the single common-law member becomes TWO concurrent half-grid members (the half id rides
     // the member's axis field, exactly like a register unit's axis). Flag off / self-disarmed keeps the
@@ -8244,17 +8117,10 @@ async function pipelineInner(job, opts = {}) {
     // opt out — their scenarios pre-date the code-side member and script the AGENT path (and an armed
     // real executor lane would dial the provider from a test). Production default is ON.
     const satProbeCodeSide = process.env.CLEAROTRON_SATPROBE_CODESIDE !== "0" && Boolean(planExec && ctx.registerPlan);
-    const [gatherResults, blindRes] = await Promise.all([
-      runBatched(gather, config.gatherConcurrency, (g) =>
-        g.name === "register-unit" && g.axis === "saturation-probe" && satProbeCodeSide
-          ? runSaturationProbeCodeSide({ ...ctx, axis: g.axis }, planExec)
-          : stage(g.name, { ...ctx, axis: g.axis })),
-      stage("blind-frame", ctx).catch((e) => ({ ok: false, fail: String(e?.message ?? e) })),
-    ]);
-    if (!blindRes.ok) {
-      note(`blind-frame failed (non-fatal — no frame-diff/reopen this run): ${blindRes.fail}`);
-      runLog(run.runDir, { event: "blind-frame-skipped", reason: blindRes.fail });
-    }
+    const gatherResults = await runBatched(gather, config.gatherConcurrency, (g) =>
+      g.name === "register-unit" && g.axis === "saturation-probe" && satProbeCodeSide
+        ? runSaturationProbeCodeSide({ ...ctx, axis: g.axis }, planExec)
+        : stage(g.name, { ...ctx, axis: g.axis }));
     // T1 (J1c) — terminal quarantine BEFORE the must barrier: after the stage's own retry
     // ladder (which now carries a warm re-emit demand naming the fix), a run must never die on a
     // model-authored VOCABULARY miss in the band. The driver repairs the band in code (qid-less
@@ -9459,19 +9325,11 @@ async function pipelineInner(job, opts = {}) {
       };
       let { exempt, closable } = cellsOf();
       const cellKey = (c) => `${c.variant} × ${c.platform}`;
-      // doc-35 closure-the-loop: an in-scope SOURCE channel the blind frame-diff flagged as un-swept (a
-      // developer ecosystem / distribution surface marked `applied` in the scope ledger but never gridded —
-      // the github/nuget miss) is a CLOSE target, not a caveat. Fold it into the SAME supplementary common-law
-      // pass (the model resolves the channel's real domains), so a searchable in-scope channel is closed
-      // in-run, never shipped as a "[channel] not searched" item.
-      const sourceChannels = (() => {
-        try {
-          const rp = driverDir(run.runDir, "frame-reopen.json");
-          const rec = existsSync(rp) ? JSON.parse(readFileSync(rp, "utf8")) : null;
-          const defs = Array.isArray(rec?.deferrals) ? rec.deferrals : [];
-          return [...new Set(defs.filter((d) => String(d.layer || "").toLowerCase() === "source" && d.directive).map((d) => String(d.directive)))];
-        } catch { return []; }
-      })();
+      // The un-swept SOURCE channels used to come from the second framing's source directives, which left
+      // the engine with the mid-run reopening; nothing else raises them, so the list is always empty. It is
+      // kept, empty, because the closure receipt's signature carries it and a resumed run compares against
+      // receipts written before.
+      const sourceChannels = [];
       const priorReceipt = existsSync(closureReceiptPath) ? JSON.parse(readFileSync(closureReceiptPath, "utf8")) : null;
       const closureSig = JSON.stringify([closable.map(cellKey).sort(), [...sourceChannels].sort()]);
       const alreadyAttempted = priorReceipt && (priorReceipt.sig === closureSig ||
@@ -9609,882 +9467,6 @@ async function pipelineInner(job, opts = {}) {
       }
     }
 
-    // ── Property 1+2 (frame-omission design): the blind frame-diff + the reopen channel ────────────────
-    // The blind-frame stage re-derived the threat model STARVED of the matter frame (gather, parallel with
-    // the sweeps). Diff that cold model against what the run ACTUALLY scoped/searched (frame-diff), and act
-    // on the gaps: a targeted SUPPLEMENTAL SWEEP of the missing variant/field/source, then ONE warm
-    // re-digest — generalizing the screen-gate's warm-re-digest channel from commission (a drop without a
-    // fetch) to OMISSION (a layer never scoped). Bounded exactly like escalation/envelope/coverage-closure:
-    // an idempotency receipt (set-equality on the firing directives), ONE re-digest per pass, a byte-diff
-    // guard, NO in-process re-diff, one-shot (CLEAROTRON_FRAME_REOPEN_MAX). Same digest-lock as escalation:
-    // never re-fire past synthesis on a resume (the directives still compute + flag + clamp, but the
-    // sweep/re-digest do not run — they would corrupt the audit spine). The whole block is NON-FATAL.
-    //
-    // (2026-08-03): THIS BLOCK MOVED, from below the screen-gate to here — above placement-inquiry and
-    // below coverage-closure. What it does is unchanged; WHEN it runs is the change, and the reason is that
-    // placement used to be dispatched twice (once on the pre-reopen band, once again by the reopen itself).
-    // The frame settles first, placement runs once on the settled frame. It stays BELOW coverage-closure
-    // deliberately: above it, the dormant doc-35 source-channel arm (which reads _driver/frame-reopen.json
-    // and would find it present for the first time) wakes up on every run with an un-swept channel. That is
-    // a real lever and a real behaviour change, and it is a separate decision — kept dead exactly as today.
-    //
-    // ZERO SEMANTICS (the review question this block has lost seven bugs to): after the move, "the reopen
-    // produced no directives" and "the reopen never ran" must not read alike. Every ending below logs, and
-    // they are distinct in run.jsonl: no blind model ⇒ `frame-diff-skipped` reason:"no-blind-model"; the
-    // stage failed ⇒ `frame-diff-skipped` reason:<the failure>; the stage ran and the frame is settled ⇒
-    // `frame-diff` with firing:0 and no reopen event; the reopen ran ⇒ `frame-reopen` (or
-    // `frame-reopen-skipped`) carrying domClosed. An absent `frame-diff` event means the block did not
-    // execute — it never means a clean diff.
-    ctx.frameReopenGap = false;
-    if (!existsSync(P.blindFrameModel)) {
-      // blind-frame failed or was never run: there is no cold model to diff against, so no frame question
-      // is asked this run. Recorded, because the alternative is an artifact set in which "asked and clean"
-      // and "never asked" look identical.
-      runLog(run.runDir, { event: "frame-diff-skipped", reason: "no-blind-model" });
-    }
-    if (existsSync(P.blindFrameModel)) {
-      const fd = await stage("frame-diff", ctx);
-      let parsed = null;
-      if (!fd.ok) {
-        note(`frame-diff failed (non-fatal — no reopen this run): ${fd.fail}`);
-        runLog(run.runDir, { event: "frame-diff-skipped", reason: fd.fail });
-        // P2-B (the ask contract's other half): far less dies silently. frame-diff is non-fatal, so an
-        // exhausted repair ladder used to leave NO trace at all — and when the exhausted defect is
-        // `framediff_directive_undispatchable` the stage was in the middle of raising a real omission
-        // it could not state as a search. That is precisely the ask the lawyer must still see. Write
-        // the reopen receipt with the deferral so the existing disclosure spine picks it up
-        // (frameResidualGaps → the report's material gaps, and the ask ledger's frame-diff lane).
-        //
-        // ONE ROW PER OMISSION (2026-07-31 review round). This wrote a single row scraped out of
-        // `fd.fail` — and `fd.fail` is a 160-char slice (verify.mjs) of a message that may name four
-        // omissions, so three of four vanished: no coverage row, no ask, no trace. Silent recall loss
-        // on the exact path built to prevent it. The offenders are therefore re-derived from the
-        // ARTIFACT the stage last saved, which names all of them and names them untruncated. Chain,
-        // in order: recompute from disk → scrape the (truncated) token → one generic row. The last
-        // two exist because the artifact can be missing or itself unreadable at exhaustion, and a
-        // disclosure that only fires on a well-formed artifact is not a disclosure.
-        //
-        // THE CLAIM'S OWN LIMIT, stated rather than left implied (N3, 2026-07-31 second review round):
-        // this gates on `fd.fail` — the LAST attempt's token. A ladder whose earlier attempts raised
-        // `framediff_directive_undispatchable` but whose final attempt failed for some other reason
-        // (a structural or schema defect on the re-save) leaves this block unentered and discloses
-        // nothing. So "nothing dies silently" would be an overclaim: what is true is that the ONE
-        // ending this branch was built for — the ladder exhausting ON the undispatchable defect — no
-        // longer loses its omissions, and that it loses none of them rather than three of four.
-        // Widening it to any attempt in the ladder means carrying the token forward through
-        // stageOnce's attempt loop, which is a change to the stage contract, not to this branch.
-        if (/framediff_directive_undispatchable/.test(String(fd.fail ?? ""))) {
-          try {
-            const rp = driverDir(run.runDir, "frame-reopen.json");
-            const prior = existsSync(rp) ? JSON.parse(readFileSync(rp, "utf8")) : {};
-            // EVERY firing directive, not only the offenders: when this stage fails, `parsed` stays
-            // null and the whole reopen block below is skipped, so a firing directive that WAS
-            // dispatchable dies here just as silently as one that was not. The 2026-07-29 artifact
-            // has five firing directives and four offenders — disclosing four would still drop one.
-            // The two endings are stamped differently, because they are different facts.
-            let offenders = [];
-            if (existsSync(P.frameDiffModel)) {
-              try { offenders = firingDirectivesLenient(readFileSync(P.frameDiffModel, "utf8")); }
-              catch { /* fall through to the scrape */ }
-            }
-            if (!offenders.length) {
-              // the token carries the items pipe-separated ahead of the " — " (undispatchableThrow),
-              // so even the truncated string usually yields the first two or three by name.
-              const head = (String(fd.fail).match(/framediff_directive_undispatchable:([^\n]*)/) || [, ""])[1].split(" — ")[0];
-              offenders = head.split(" | ").map((s) => s.trim()).filter((s) => s && !/^\+\d+ more$/.test(s)).map((item) => ({ item, why: "x" }));
-            }
-            if (!offenders.length) offenders = [{ item: "frame-diff directive", why: "x" }];
-            atomicWrite(rp, JSON.stringify({
-              ts: new Date().toISOString(), requested: [], swept: [], ...prior,
-              deferrals: [...(Array.isArray(prior.deferrals) ? prior.deferrals : []), ...offenders.map((o) => ({
-                directive: String(o.item || "frame-diff directive").slice(0, 200),
-                reason: o.why
-                  ? "frame-diff could not state this omission as a dispatchable search (undispatchable directive; the repair ladder exhausted) — it is an OPEN question, not a searched clean"
-                  : "frame-diff raised this omission but the stage's repair ladder exhausted before any directive could be dispatched — it is an OPEN question, not a searched clean",
-              }))],
-            }, null, 2) + "\n");
-            runLog(run.runDir, { event: "frame-diff-undispatchable-disclosed", count: offenders.length,
-              undispatchable: offenders.filter((o) => o.why).length, items: offenders.slice(0, 8).map((o) => String(o.item).slice(0, 120)) });
-          } catch (e) { note(`frame-diff undispatchable disclosure failed (non-fatal): ${String(e.message).slice(0, 80)}`); }
-        }
-      } else if (existsSync(P.frameDiffModel)) {
-        try { parsed = parseFrameDiff(readFileSync(P.frameDiffModel, "utf8")); }
-        catch (e) {
-          note(`frame-diff model unparseable post-validate (non-fatal): ${String(e.message).slice(0, 80)}`);
-          // zero semantics: the stage PASSED its validator and its model still would not parse here.
-          // That left a note and nothing machine-readable, so the run recorded a frame question that was
-          // asked, produced nothing, and looked exactly like one that came back clean.
-          runLog(run.runDir, { event: "frame-diff-skipped", reason: `model-unparseable: ${String(e.message).slice(0, 80)}` });
-        }
-      } else if (fd.ok) {
-        // the stage reported success and wrote no structured model at all — the same silence, recorded.
-        runLog(run.runDir, { event: "frame-diff-skipped", reason: "no-frame-diff-model" });
-      }
-      if (parsed) {
-        // The dominant element the spine test runs against — the backstop forces the gap TRUE on any
-        // directive that lands on it (dictate-don't-infer). THE ORDER IS THE FIX:
-        //
-        //   1-2. the driver's OWN copies, via boundDominantElement — blind-frame-model.json, then the
-        //        manifest's "Dominant element:" line.
-        //   3.   the frame-diff document's own field, LAST.
-        //
-        // Rung 3 used to be rung 1, and that was the defect: the seat was told to echo the blind model's
-        // spine verbatim, and the driver then preferred the echo over both copies it already held. A
-        // transcription slip retargeted this test — the gate that can clamp a CLEAR verdict — with no
-        // token speaking about it.
-        //
-        // It survives as the LAST rung rather than being deleted, and only the archive can reach it: the
-        // tool has no `dominant_element` property, so on any run this build dispatches the field in
-        // `parsed` is the driver's own stamp. On a REPLAYED archive written under the dictation it is the
-        // seat's echo, and reading it there is what stops an archived verdict flipping when the run's
-        // other artifacts are missing or unparseable — the anchor rule, a new way in and never a
-        // replacement.
-        let dominantEl = boundDominantElementFrom(P).value;
-        if (!dominantEl) dominantEl = String(parsed.dominant_element ?? "").trim();
-        const { directives: blindDirectives, dominant_element_gap } = applyDominantBackstop(parsed, dominantEl);
-        // FORM-axis regrounding: merge the MECHANICAL form-coverage gaps (a deterministically-generated near-form
-        // the funnel never dispatched) into the SAME directive set as the blind frame-diff. They ride the same
-        // supplemental-sweep + clamp channel — but they are found by the deterministic oracle, not a peer LLM that
-        // shares the generator's blind spot. This is what makes a missing first-consonant-swap neighbour (the
-        // gang-slang near-miss class) fire reliably.
-        const mechDirectives = mechanicalFormGapDirectives(ctx);
-        if (mechDirectives.length) runLog(run.runDir, { event: "form-oracle-gap", missing: mechDirectives.length, items: mechDirectives.slice(0, 6).map((d) => d.item) });
-        const directives = blindDirectives.concat(mechDirectives);
-        // Register-only: source-layer directives are "this channel was never searched" observations, and on
-        // this product NO common-law channel is searched — that is the thing bought, not an omission. They
-        // must not FIRE, because an unswept firing directive becomes a frame DEFERRAL, and a frame deferral
-        // is a CLEAR→CONDITIONAL clamp input: every register-only run would clamp through the back door.
-        // Dropped at the source so the receipt, the coverage rows and the clamp all agree; the absence is
-        // carried by the risk statement's basis clause and the coverage section instead.
-        const firingAll = firingDirectives(directives);
-        const firing = runCommonLaw ? firingAll : firingAll.filter((d) => d.layer !== "source");
-        if (firingAll.length !== firing.length)
-          runLog(run.runDir, { event: "frame-diff-source-directives-dropped", reason: "register-only", dropped: firingAll.length - firing.length });
-        // judgment-relocation (2026-06-23): the auto-forced "bare-exact-anchor enumeration invariant" was REMOVED.
-        // It re-parsed the prose Coverage ledger (findFloorShapeGaps (d)) to FORCE a match_mode:exact reopen when
-        // the dominant element's name-list looked "open" — a sufficiency call the driver made from a label. Under
-        // the band flow the funnel ENUMERATES the named band (or marks it `incomplete`), and the lawyer reads the
-        // COMPLETE band; if a material slice is not fully cleared the run ships CONDITIONAL (coverage_judgment
-        // sufficient:false → the deliver-conditional clamp), never an in-machine reopen. The frame-diff below
-        // still fires for genuine STRUCTURAL omissions (a variant/field/source never scoped at all) — that is an
-        // omission check, not an in-machine "good enough" judgment.
-        runLog(run.runDir, { event: "frame-diff", directives: directives.length, firing: firing.length, dominant_element_gap });
-
-        // Round 2 Change 1d — jurisdiction scope check (CODE backstop, both directions). Scope from the
-        // scope-ledger (applied jurisdiction rows), searched from the coverage-ledger units. A worldwide sweep
-        // covers the in-scope set (no under-coverage) but on a narrow scope is itself over-reach the skill must
-        // bound (1c); a scope-bounded run that misses an in-scope territory → under-coverage (discloses below).
-        try {
-          let scopeJ = [];
-          try { scopeJ = scopeJurisdictions(parseScopeLedgerJson(readFileSync(P.scopeLedger, "utf8"))); } catch { /* no/legacy scope ledger → skip */ }
-          if (scopeJ.length) {
-            // item 13 — SEARCHED TERRITORIES COME FROM THE EXECUTION RECORD, not from ledger prose.
-            //
-            // This read `extractSearchedJurisdictions(...)` over the coverage ledger's text. narrowed
-            // that scan to tokens that ARE known jurisdiction codes, which fixed the mark-fragment case
-            // ("KIN ZY" → ZY) and left the worse half standing: SA, AG, KG, SL and SE are all real
-            // jurisdiction codes AND all ordinary European company suffixes, so an owner written
-            // "… GmbH & Co. KG" still put Kyrgyzstan in the searched set. There is no token list that
-            // separates those readings, because they are the same token.
-            //
-            // A territory is now claimed as searched only when an EXECUTED query names it —
-            // register-plan.json entries carry `regions[]`, plan-execution.json carries `executed[].qid`,
-            // and the join is the whole derivation. Unresolvable (no plan, no receipt) yields the EMPTY
-            // set, so every in-scope territory stays eligible for the underCoverage disclosure: the
-            // failure direction is over-disclosure, which a reader resolves, never a silent clean over a
-            // territory nobody queried.
-            let planDoc = null, execDoc = null;
-            try { planDoc = ctx.registerPlan ?? JSON.parse(readFileSync(P.registerPlan, "utf8")); } catch { /* no plan on this run */ }
-            try { execDoc = JSON.parse(readFileSync(P.planExecution, "utf8")); } catch { /* no receipt on this run */ }
-            const sj = searchedJurisdictionsFromPlan(planDoc, execDoc);
-            const ledgerWorldwide = (() => {
-              // `worldwide` stays a PROSE reading, and only this one: it can only ever WIDEN what the run
-              // claims, and 1c already treats a worldwide claim on a narrow scope as over-reach to bound.
-              // It never marks a specific territory searched, so the collision above cannot ride it.
-              try {
-                return (loadCoverageLedger(run.runDir).rows ?? []).some((r) =>
-                  /\b(worldwide|global|all[- ]?jurisdic)/i.test(`${r?.unit ?? ""} ${r?.scope ?? ""}`));
-              } catch { return false; }
-            })();
-            sj.worldwide = ledgerWorldwide;
-            if (!sj.resolved) {
-              runLog(run.runDir, { event: "searched-jurisdictions-unresolved", scope: scopeJ });
-              note(`jurisdiction-scope: no plan/execution record to trace searched territories to — every in-scope `
-                + `territory stays eligible for the under-coverage disclosure (item 13: unresolvable means unsearched)`);
-            } else {
-              runLog(run.runDir, { event: "searched-jurisdictions", from: "plan-execution", jurisdictions: sj.jurisdictions });
-            }
-            // CODE-DERIVED subtraction (review findings 1/10/14). `sj` is read out of the MODEL's
-            // coverage-ledger prose, which cannot know that the compiler dropped a jurisdiction the
-            // active register provider does not cover — the model was never told. The plan's
-            // `deferred_coverage` is the code's own record of exactly that, so subtract it here and
-            // clear `worldwide`: a sweep that structurally could not reach a territory is not
-            // worldwide, whatever the prose says. Without this the partial-coverage case ships a
-            // clean over a territory that was never queried.
-            const planDeferred = new Set(ctx.registerDeferredJurisdictions ?? []);
-            // both sides are canonical (A12): sj.jurisdictions from the fold above, planDeferred from
-            // registerDeferredCoverage — the subtraction can no longer miss on a UK/GB or EU/EM spelling.
-            const searched = sj.jurisdictions.filter((j) => !planDeferred.has(canonicalJurisdictionCode(j)));
-            const worldwide = sj.worldwide && !planDeferred.size;
-            if (planDeferred.size) runLog(run.runDir, { event: "jurisdiction-scope-register-deferred", deferred: [...planDeferred] });
-            const jflags = worldwide
-              ? { overReach: [], underCoverage: [], worldwide: true }
-              : jurisdictionScopeFlags({ scopeJurisdictions: scopeJ, searched });
-            if (jflags.underCoverage.length || jflags.overReach.length || jflags.worldwide) {
-              ctx.jurisdictionScope = { scope: scopeJ, ...jflags };
-              runLog(run.runDir, { event: "jurisdiction-scope", scope: scopeJ, searched, worldwide: worldwide || undefined, register_deferred: planDeferred.size ? [...planDeferred] : undefined, overReach: jflags.overReach, underCoverage: jflags.underCoverage });
-              if (jflags.underCoverage.length) note(`jurisdiction-scope: in-scope territory(ies) unsearched — ${jflags.underCoverage.join(", ")} (will disclose)`);
-              if (jflags.overReach.length) note(`jurisdiction-scope: out-of-scope territory(ies) searched — ${jflags.overReach.join(", ")} (Change 1c: bound the sweep to scope)`);
-              if (jflags.worldwide && scopeJ.length) note(`jurisdiction-scope: a worldwide sweep ran on a scope of ${scopeJ.join(", ")} — covers recall, but Change 1c bounds the sweep to scope`);
-            }
-          }
-        } catch (e) { note(`jurisdiction-scope check skipped (non-fatal): ${String(e.message).slice(0, 80)}`); }
-
-        const reopenReceiptPath = driverDir(run.runDir, "frame-reopen.json");
-        const priorReceipt = existsSync(reopenReceiptPath) ? JSON.parse(readFileSync(reopenReceiptPath, "utf8")) : null;
-        const already = alreadyAttemptedReopen(priorReceipt, firing);
-        const reopenDisabled = process.env.CLEAROTRON_FRAME_REOPEN === "0" || Number(process.env.CLEAROTRON_FRAME_REOPEN_MAX ?? 1) < 1;
-        const digestLockedReopen = existsSync(P.narrative) && !forceFromActive(ctx, "synthesis");
-        // C2 (PR-6): the digest lock exists to protect the audit spine from a WARM re-run rewriting
-        // register-findings.md past synthesis — it was never a reason to strand a PURE-CODE sweep.
-        // The dispatch arm (structured remedies → mint → fold → deterministic executor → per-directive
-        // verify → placement refresh) only writes the band + plan receipts, which stage-freshness
-        // exists to reconcile — so it runs UNDER the lock, and its reconcile segment rides the
-        // EXISTING bounded late flush instead of an inline pre-synthesis re-digest. The warm arms
-        // (register warm-resume, common-law source sweeps) stay locked, by design.
-        const dispatchArmAvailable = !!(ctx.registerPlan?.contract?.supplemental_lane && axes.includes("primary-sweep") && planExec);
-        let domClosed = false;
-        // 6/7 (ask ledger): the receipt records per-directive minted qids (so "executed" is COMPUTED
-        // from the plan-execution join, never asserted) and which directives the form-oracle injected
-        // (their ask rows are born in form-neighbourhood, not the blind diff).
-        const reopenQids = {};
-        const reopenBorn = {};
-        for (const d of mechDirectives) reopenBorn[reopenKey(d)] = "form-neighbourhood";
-        // — the receipt's per-TERM half. `directive_qids` above records qid STRINGS; `remedy_terms`
-        // records what each term ASKED and what came back, so a term that ran and returned nothing is
-        // distinguishable from one that never ran. Passed in EXPLICITLY rather than computed here: the
-        // demotion paths below rewrite this receipt from a closure decision and have no band blocks in
-        // scope, and a field that silently disappears on one write path is the AD-4 defect
-        // (`x:0` vs `x:null` must differ by value, never by presence). The demote paths carry the SAME
-        // rows forward unchanged, deliberately — a failed re-digest demotes CLOSURE, not searchedness:
-        // a query that ran still ran.
-        const writeReopenReceipt = (swept, deferrals, dom, partials = [], accounting = null) => {
-          try {
-            writeFileSync(reopenReceiptPath, JSON.stringify({
-              ts: new Date().toISOString(), requested: firing.map(reopenKey),
-              swept, deferrals, remaining: deferrals.map((x) => x.directive),
-              ...(partials.length ? { partials } : {}),
-              dominant_element_gap, domClosed: dom,
-              directive_qids: reopenQids, born: reopenBorn,
-              remedy_terms: accounting?.computable === true ? accounting.rows : null,
-              remedy_accounting: accounting?.computable === true
-                ? { schema_version: accounting.schema_version, totals: accounting.totals, out_of_scope: accounting.out_of_scope }
-                : null,
-            }, null, 2) + "\n");
-          } catch (e) { note(`frame-reopen receipt write failed (non-fatal): ${e.message}`); }
-        };
-
-        if (firing.length && !already && !reopenDisabled && (!digestLockedReopen || dispatchArmAvailable)) {
-          const regDirectives = firing.filter((d) => d.layer === "variant" || d.layer === "field");
-          const srcDirectives = firing.filter((d) => d.layer === "source");
-          const changedAxes = [];
-          // #5a: the detail-fetch ceiling for the dominant-element CLOSURE pass (below). Bounds the pass to a
-          // returnable coverage-limited result rather than a hard-wall SIGKILL on a runaway crowd.
-          const reopenFetchCap = reopenFetchCeiling(process.env.CLEAROTRON_REOPEN_MAX_FETCH);
-
-          // CLOSURE-FIRST (register). The dominant-element crowd lives on the register and a Corsearch sweep is
-          // far cheaper than the common-law grid, so by DEFAULT we try to CLOSE it: re-cover the dominant element
-          // and fold the new band blocks into the axis band.json (judgment-relocation: the funnel emits band
-          // blocks, NOT a clearance verdict / floor row). WHICH tool does the covering is the lane's call — the
-          // dispatch arm below is pure code, the warm-resume arm proposes on the lane and enumerates off it.
-          // "Closure" here = the funnel did new work (regChanged) and deriveNamedBand re-merges the fuller band;
-          // whether that band is SUFFICIENT is judgment's call (coverage_judgment), never a floor-row label.
-          let regChanged = false, regMechFail = null, regNoSession = false;
-          // Fix 2 — the register close is now VERIFIED per directive, not swept on a byte-diff. `regArm`
-          // records which arm ran; `regSwept` holds the reopenKeys that a re-run of the dispatch detectors
-          // confirmed genuinely searched (dispatch arm only); `regDeferReason` carries the honest reason a
-          // directive stayed open. The warm-resume arm keeps its axis-level byte-diff (no per-qid mapping).
-          let regArm = null;
-          const regSwept = new Set();
-          const regDeferReason = new Map();
-          // — WHAT THE FOLD REFUSED, AND WHICH KIND OF REFUSAL IT WAS. Read by the remedy accounting
-          // below, which otherwise requires every minted qid to land and so records a term as
-          // dispatch-failed when the fold refused its slice as a duplicate of a question the plan had
-          // already asked and answered. A fold-refused qid can never land, by construction — the
-          // re-attempt above deliberately filters it out — so only the accounting was still waiting
-          // for it. qid -> { kind, twin }.
-          const regFoldRefusals = new Map();
-          // Partial mints must not read as full sweeps: when SOME of a directive's remedy proposals mint
-          // and a sibling is refused by the shape lint, the directive can still verify-closed on the
-          // minted subset — the refusal is disclosed per directive (receipt `partials` row on a close,
-          // folded into the defer reason otherwise), never dropped into the aggregate count alone.
-          const regPartialMint = new Map();
-          // — the per-TERM rows the remedy ledger accounts. One row per remedy term per directive,
-          // recorded at the mint seam (the only place the term→qid mapping exists) so the receipt can
-          // later say what each term asked and what came back. reopenKey → [{term, predicates, qids,
-          // dispatch_reason}].
-          const regTermRows = new Map();
-          // The last plan-execution join the dispatch arm computed ({executedQids, blocksByQid}) — the
-          // SAME join the per-directive verify reads, hoisted so the term ledger below cannot disagree
-          // with it about what executed. Null on every non-dispatch arm.
-          let regLastJoin = null;
-          // copper-lattice re-route (supplemental_lane contract): the blind frame-diff already carries
-          // the TERMS (judgment chose WHAT at the frame layer) — the sweep itself is clerical, so it is
-          // pure code: mint supplemental plan entries from the directives, dispatch the deterministic
-          // executor (count-first, ceiling, error stamping — code writes the band, qids stamped), fold +
-          // refresh the receipt, re-merge the named band. No LLM sweep turn, no session needed, and the
-          // reopenFetchCeiling concern retires with the arm (the executor batch-screens, never
-          // detail-fetches; the enumerate ceiling bounds records). The unit .md prose stays as-is —
-          // audit-only; where it differs from the band, the band wins. The ONE warm re-digest below is
-          // where judgment reasons over the completed band, unchanged.
-          if (regDirectives.length && dispatchArmAvailable) {
-            regArm = "dispatch";
-            const a = "primary-sweep";
-            const inScope = inScopeClassList(job, ctx.profile);
-            // Part A — thread a STRUCTURED remedy per directive rather than guessing term:d.item +
-            // nice_classes:inScope. deriveDirectiveRemedy honours an agent-emitted directive.remedy, else
-            // derives one: a FIELD (class-gap) directive → the dominant element × the classes named in its
-            // item label (RUN1: HALCYON × Cl.35/38); a variant near-form → the near-form × the in-scope
-            // classes (today's behaviour). A field directive with no parseable classes has NO code remedy —
-            // searching the dominant element in the matter's own classes just re-runs the primary sweep, so
-            // it is DISCLOSED (regDeferReason), never minted-and-swept blind.
-            const existingQids = new Set(ctx.registerPlan.entries.map((e) => e.qid));
-            const directiveQids = new Map();       // reopenKey -> [qid]
-            const directiveIntended = new Map();   // reopenKey -> intended nice_classes[]
-            const allMinted = [];
-            const allRejected = [];
-            let rejectedN = 0;
-            for (const d of regDirectives) {
-              const key = reopenKey(d);
-              const remedy = deriveDirectiveRemedy(d, { dominantElement: dominantEl, inScope });
-              if (!remedy || !remedy.terms.length || !remedy.nice_classes.length) {
-                directiveQids.set(key, []);
-                // Per-case wording (A2): the variant fallback now also DISCLOSES a label-shaped item
-                // (term-shape lint) — dispatching the display label verbatim was the 2026-07-28
-                // nil-search class ("Reverse-order WAVO composites (…)" searched as exact → 0 → read
-                // as clean). The remedy contract (SKILL.md) is the fix the wording points at.
-                regDeferReason.set(key, String(d.layer ?? "").toLowerCase() === "field"
-                  ? "no-code-remedy: a field class-gap with no searchable term×class pair (closing it in the matter's own classes only re-runs the primary sweep — disclosed)"
-                  : "no-code-remedy: the directive's item is a label, not a mark-shaped search term (a literal dispatch would be a nil search reading as clean) — disclosed; a directive that knows its terms must carry a structured remedy{terms, nice_classes}");
-                //: a directive with no derivable remedy still NAMED something to search. It gets a
-                // term row carrying its own item, so "the reopen restated this and nothing ran" is on the
-                // record rather than inferable only from a deferral reason.
-                regTermRows.set(key, [{ term: String(d.item ?? ""), predicates: [], qids: [], dispatch_reason: regDeferReason.get(key) }]);
-                continue;
-              }
-              directiveIntended.set(key, remedy.nice_classes);
-              const base = { nice_classes: remedy.nice_classes, regions: remedy.regions, rationale: `frame-reopen ${d.layer}: ${String(d.observation ?? "").slice(0, 120)}` };
-              const proposals = remedy.terms.flatMap((t) => d.severity === "dominant-element"
-                ? [{ ...base, predicate: "exact", term: t }, { ...base, predicate: "default", term: t }]
-                : [{ ...base, predicate: "exact", term: t }]);
-              const { minted, rejected } = mintSupplementalEntries(a, proposals, {
-                existingQids, perCall: proposals.length,
-                axisMax: ctx.registerPlan.entries.length + allMinted.length + proposals.length, existingCount: 0,
-                capabilities: registerCapabilities(), priorityClasses: inScope,
-              });
-              rejectedN += rejected.length;
-              allRejected.push(...rejected);
-              for (const m of minted) existingQids.add(m.qid);
-              directiveQids.set(key, minted.map((m) => m.qid));
-              reopenQids[key] = minted.map((m) => m.qid);
-              allMinted.push(...minted);
-              // Every firing directive must END recorded: a directive whose EVERY proposal the mint
-              // refused (the term-shape ladder) would otherwise fall out of both regSwept and the
-              // defer map — an unrecorded ending, the exact ashen-lattice failure partitionFiring
-              // exists to prevent. Disclose it with the mint's own reason. A PARTIAL refusal (some
-              // proposals minted, a sibling refused) is recorded too — a close on the minted subset
-              // must state what it did NOT search for the directive.
-              if (!minted.length && rejected.length)
-                regDeferReason.set(key, `proposals-rejected: ${String(rejected[0].issue ?? "").slice(0, 200)}`);
-              else if (rejected.length)
-                regPartialMint.set(key, `${minted.length} of ${proposals.length} remedy proposal(s) minted; ${rejected.length} refused at the mint: ${String(rejected[0].issue ?? "").slice(0, 200)}`);
-              // — the term rows. A PARTIAL mint is exactly the case the aggregate counts hide: the
-              // directive can still verify-closed on the terms that minted while a sibling term was
-              // refused and never searched. Per term, the qids it owns (or the mint's own refusal
-              // reason) are recorded here, so that sibling has a row of its own instead of living only
-              // inside a directive-level partials note.
-              regTermRows.set(key, remedy.terms.map((t) => {
-                const mine = minted.filter((m) => String(m.term ?? "") === t);
-                const refused = rejected.filter((r) => String(r?.proposal?.term ?? "") === t);
-                return {
-                  term: t,
-                  predicates: mine.map((m) => String(m.predicate ?? "")),
-                  qids: mine.map((m) => m.qid),
-                  dispatch_reason: mine.length ? null
-                    : refused.length ? `proposals-rejected: ${String(refused[0].issue ?? "").slice(0, 300)}`
-                      : "no supplemental entry minted for this term (the mint returned neither an entry nor a refusal for it)",
-                };
-              }));
-            }
-            if (rejectedN) note(`frame-reopen: ${rejectedN} directive-minted proposal(s) rejected`);
-            // PR-6 (C1 — persist what evaporates): the mint-seam rejections land in the SAME per-axis
-            // supplemental-plan sidecar the propose-tool uses (rejected[] beside entries[]) — the ask
-            // ledger reads them there; nothing lives only in a note line. Best-effort, never a kill.
-            if (allRejected.length) {
-              try {
-                const suppPath = join(run.runDir, "register-units", `${a}-supplemental-plan.json`);
-                let suppDoc = { schema: "register-plan/1", plan_version: 1, derived_from: { job_key: `supplemental:${a}`, variants_fingerprint: "supplemental" }, regions: ctx.registerPlan?.regions ?? [], entries: [] };
-                if (existsSync(suppPath)) {
-                  try { const prior = JSON.parse(readFileSync(suppPath, "utf8")); if (prior && Array.isArray(prior.entries)) suppDoc = prior; } catch { /* torn — rebuilt */ }
-                }
-                suppDoc = withRejected(suppDoc, allRejected, { ts: new Date().toISOString(), origin: "frame-reopen" });
-                mkdirSync(dirname(suppPath), { recursive: true });
-                writeFileSync(`${suppPath}.tmp`, JSON.stringify(suppDoc, null, 2) + "\n");
-                renameSync(`${suppPath}.tmp`, suppPath);
-              } catch (e) { note(`frame-reopen: rejected[] sidecar write failed (non-fatal): ${String(e.message).slice(0, 80)}`); }
-            }
-            note(`frame-reopen: ${regDirectives.length} register omission(s) → ${allMinted.length} supplemental entr${allMinted.length === 1 ? "y" : "ies"} minted (structured remedy), dispatched as pure code (no agent sweep)`);
-            const beforeBand = existsSync(P.registerBand(a)) ? readFileSync(P.registerBand(a), "utf8") : null;
-            if (allMinted.length) {
-              const { plan, added, refused } = foldSupplementalEntries(ctx.registerPlan, allMinted);
-              if (added.length) {
-                writeFileSync(`${P.registerPlan}.tmp`, JSON.stringify(plan, null, 2) + "\n");
-                renameSync(`${P.registerPlan}.tmp`, P.registerPlan);
-                ctx.registerPlan = plan;
-              }
-              // — expected empty: mintSupplementalEntries runs entryTermIssues at the mint and the
-              // rejects are already in the sidecar above. Logged anyway, because "expected empty" is a
-              // belief about two screens agreeing, and the day they stop agreeing this is the only place
-              // that would say so.
-              if (refused.length) {
-                for (const r of refused) if (r?.qid) regFoldRefusals.set(r.qid, { kind: r.kind ?? null, twin: r.twin ?? null });
-                // THE REASON THE FOLD GAVE IS LOGGED, not just the qid it refused. The fold is the only
-                // place that knows WHY, and for a duplicate it knows WHICH plan row already holds the
-                // answer. Logging the qid alone threw that away: recovering it on one run meant
-                // re-deriving the twin from a shared identity hash by hand, and a receipt that cannot
-                // say why a slice is missing reads as an engine fault whatever the cause was.
-                runLog(run.runDir, { event: "frame-reopen-fold-refused", refused: refused.length,
-                  qids: refused.map((r) => r.qid).slice(0, 6),
-                  kinds: refused.reduce((a, r) => { const k = r.kind ?? "unstated"; a[k] = (a[k] ?? 0) + 1; return a; }, {}),
-                  rows: refused.slice(0, 6).map((r) => ({ qid: r.qid, kind: r.kind ?? null, twin: r.twin ?? null, issue: r.issue ?? null })) });
-                // ONE NOTE PER KIND, because they are three different findings and only one of them is a
-                // wiring fault. A duplicate-question refusal is the fold working: the question is already
-                // in the plan and its existing row carries the coverage. An identity collision or a
-                // malformed term IS the mint screen and the fold screen disagreeing, because the mint
-                // runs entryTermIssues and should have caught it.
-                const dupes = refused.filter((r) => r.kind === "duplicate-question");
-                const faults = refused.filter((r) => r.kind !== "duplicate-question");
-                if (dupes.length) note(`frame-reopen: ${dupes.length} minted entr${dupes.length === 1 ? "y" : "ies"} refused at the fold as already-asked — the plan row${dupes.length === 1 ? "" : "s"} ${dupes.map((r) => `"${r.twin ?? "(twin unstated)"}"`).join(", ")} carr${dupes.length === 1 ? "ies" : "y"} that coverage; the term is answered, not unsearched`);
-                if (faults.length) note(`frame-reopen: ${faults.length} minted entr${faults.length === 1 ? "y" : "ies"} REFUSED at the fold (${[...new Set(faults.map((r) => r.kind ?? "unstated"))].join(", ")}) — the mint screen and the fold screen disagree, which is a wiring finding`);
-              }
-              // Dispatch → derive band → VERIFY per directive (qid-landed + non-collapse + class-scope).
-              // A byte-changed band with only a wrong-scope/empty/error block closes NOTHING.
-              const dispatchAndVerify = async (qids) => {
-                const outcome = await dispatchPlanQids(a, qids, "frame-reopen-sweep", 2);
-                refreshSupplementalExecution(ctx);
-                try { deriveNamedBand(ctx); } catch (e) { regMechFail = `named-band:${String(e.message).slice(0, 80)}`; }
-                const bands = readRegisterBands(P, axes);
-                const executedQids = new Set(joinPlanToBands(ctx.registerPlan, bands, { released: releasedFamilyQids(ctx.paths.runDir) }).executed.map((x) => x.qid));
-                const blocksByQid = new Map((bands[a] ?? []).filter((b) => b && b.qid).map((b) => [b.qid, b]));
-                return { outcome, executedQids, blocksByQid };
-              };
-              const verifyOne = (d, ev) => verifyRegisterDirectiveClose({
-                qids: directiveQids.get(reopenKey(d)) ?? [], intendedClasses: directiveIntended.get(reopenKey(d)) ?? [],
-                executedQids: ev.executedQids, blocksByQid: ev.blocksByQid,
-              });
-              const mintedDirectives = regDirectives.filter((d) => (directiveQids.get(reopenKey(d)) ?? []).length);
-              let ev = await dispatchAndVerify(added);
-              regLastJoin = ev;
-              let outcome = ev.outcome;
-              const retryTargets = [];
-              for (const d of mintedDirectives) {
-                const v = verifyOne(d, ev);
-                if (v.closed) regSwept.add(reopenKey(d));
-                else { regDeferReason.set(reopenKey(d), v.reason); retryTargets.push(d); }
-              }
-              // Part B — re-attempt ONCE (owner: re-attempt-once-then-disclose). The remedy carried the
-              // correct scope from attempt 1, so this recovers a transient (an error / collapsed / unlanded
-              // slice), never re-runs a wrong query. dispatchPlanQids' own repair ledger (max 2) refuses a
-              // third — so this cannot loop or thrash the paid pass.
-              //
-              // ONLY THE FAILING DIRECTIVES' OWN ENTRIES GO AGAIN. A directive that verified closed on the first
-              // attempt is not asked twice: re-sending its qids re-fetches records the run already holds, and
-              // on a register that bills per request it pays for them again.
-              if (retryTargets.length) {
-                const retryQids = [...new Set(retryTargets.flatMap((d) => directiveQids.get(reopenKey(d)) ?? []))]
-                  .filter((q) => added.includes(q));
-                note(`frame-reopen: ${retryTargets.length} directive(s) not verified-closed — ONE re-attempt of their own ${retryQids.length} entr${retryQids.length === 1 ? "y" : "ies"} with the same structured remedy`);
-                runLog(run.runDir, { event: "frame-reopen-reattempt", directives: retryTargets.map(reopenKey), qids: retryQids });
-                if (retryQids.length) {
-                  ev = await dispatchAndVerify(retryQids);
-                  regLastJoin = ev;
-                  outcome = ev.outcome ?? outcome;
-                  for (const d of retryTargets) {
-                    const v = verifyOne(d, ev);
-                    if (v.closed) { regSwept.add(reopenKey(d)); regDeferReason.delete(reopenKey(d)); }
-                    else regDeferReason.set(reopenKey(d), v.reason);
-                  }
-                }
-              }
-              const afterBand = existsSync(P.registerBand(a)) ? readFileSync(P.registerBand(a), "utf8") : null;
-              if (afterBand !== beforeBand) changedAxes.push(a);   // the band changed ⇒ re-digest to reconcile
-              if (regSwept.size) regChanged = true;                // ≥1 directive genuinely closed
-              if (outcome !== "ok" && !regMechFail) regMechFail = `dispatch:${String(outcome ?? "unavailable").slice(0, 100)}`;
-              if (!regSwept.size) note(`frame-reopen: ${a} — no register directive verified-closed after the dispatched sweep (deferring the remainder)`);
-            } else {
-              note(`frame-reopen: ${a} — no code-closeable register directive this pass (all disclosed)`);
-            }
-            // — the `&& ctx.digestKey` guard is GONE, and dropping it is required for this arm to
-            // survive the move rather than optional. ctx.digestKey is assigned where register-digest runs,
-            // which is now BELOW this seam, so on a fresh run it is undefined and the condition could never
-            // be true again: every register directive would fall through to `regNoSession`, become a
-            // disclosed deferral, and a dominant-element deferral is a CLEAR→CONDITIONAL clamp input —
-            // verdicts moving on runs that used to ship CLEAR, with no test failing. The guard existed
-            // because this arm's close was only real once a warm re-digest reconciled it, and it needed a
-            // live digest session to resume; after the move there is nothing to reconcile into, because the
-            // digest has not run and will read the swept unit on its first pass. This arm is unreachable on
-            // the dispatch-lane providers (dispatchArmAvailable wins above whenever CLEAROTRON_PLAN_DISPATCH is
-            // on and the provider exposes executePlan, which is production today) — it is the lane for a
-            // provider without an executor and for the offline mock harness.
-          } else if (regDirectives.length && axes.includes("primary-sweep") && unitKey["primary-sweep"]) {
-            regArm = "resume";
-            const a = "primary-sweep";
-            const regDom = regDirectives.filter((d) => d.severity === "dominant-element");
-            const beforeUnit = existsSync(P.registerUnit(a)) ? readFileSync(P.registerUnit(a), "utf8") : null;
-            note(`frame-reopen: ${regDirectives.length} register omission(s) → resuming ${a} to ${regDom.length ? "ENUMERATE the dominant-element floor to exhaustion" : "fold in a targeted supplemental sweep"}`);
-            // Lane flag read from the SAME key the tool exclusion keys on (see the stage dispatcher) —
-            // this arm is reachable on a lane run whenever the code-side dispatch arm above could not
-            // take it (no executePlan adapter, or CLEAROTRON_PLAN_DISPATCH=off).
-            const followup = repairFollowup("register-unit:frame-reopen-directive", { paths: P, axis: a, directives: regDirectives, reopenFetchCap,
-              supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane });
-            const r = await stage("register-unit", { ...ctx, axis: a }, { force: true, followup, sessionKey: unitKey[a], trigger: "frame-reopen" });
-            if (r.ok) {
-              if (readFileSync(P.registerUnit(a), "utf8") !== beforeUnit) { changedAxes.push(a); regChanged = true; }
-              else note(`frame-reopen: ${a} unchanged after the supplemental sweep`);
-            } else {
-              regMechFail = r.fail; note(`frame-reopen: ${a} supplemental sweep failed mechanically (${r.fail})`);
-              // doc-44: a core coverage sweep must NOT be one-shot-then-abandon. On a TIMEOUT (the warm resume hit
-              // the hard wall — a dead session a re-resume can't revive), do ONE fresh, SCOPED re-sweep of the SAME
-              // near-form threats through the normal fallback chain (retries + BACKUP PROVIDER — a warm followup is
-              // single-model and can't cross-provider). Scoped (not the whole axis) + bounded detail-fetch so it
-              // fits the budget. Still fails ⇒ fall through to the deferral exactly as before.
-              if (/timeout/.test(String(regMechFail))) {
-                note(`frame-reopen: ${a} timed out — ONE fresh SCOPED retry through the fallback chain (backup provider + retries)`);
-                const retryMsg = repairFollowup("register-unit:frame-reopen-retry", { paths: P, axis: a, directives: regDirectives, reopenFetchCap,
-                  supplementalLane: !!ctx.registerPlan?.contract?.supplemental_lane });
-                const r2 = await stage("register-unit", { ...ctx, axis: a }, { force: true, freshMessage: retryMsg, sessionKey: `clearance-${ctx.run.slug}-${ctx.run.codename}-register-unit-${a}-reopen-retry`, trigger: "frame-reopen-retry" });
-                if (r2.ok && existsSync(P.registerUnit(a)) && readFileSync(P.registerUnit(a), "utf8") !== beforeUnit) {
-                  changedAxes.push(a); regChanged = true; regMechFail = null;
-                  note(`frame-reopen: ${a} fresh scoped retry closed the gap`);
-                } else if (!r2.ok) {
-                  regMechFail = r2.fail; note(`frame-reopen: ${a} fresh scoped retry also failed (${r2.fail}) — deferring`);
-                } else {
-                  note(`frame-reopen: ${a} fresh scoped retry ran but band unchanged — deferring`);
-                }
-              }
-            }
-          } else if (regDirectives.length) {
-            regNoSession = true;
-            note(`frame-reopen: ${regDirectives.length} register omission(s) — no resumable primary-sweep/digest session in this process`);
-          }
-
-          // SOURCE channels: a warm RESUME is taken when the common-law session is live; with no
-          // resumable session the omission becomes a DISCLOSED DEFERRAL (open coverage row + the
-          // CLEAR→CONDITIONAL clamp) — "can't close → disclose", never a silent drop. There is
-          // deliberately NO fresh-sweep arm: the grid is the expensive (~$40) layer, and a fresh
-          // re-sweep on a dead session is a feature decision to be deployed always-on, not a knob.
-          let srcSwept = false, srcReason = null;
-          // (Register-only never reaches this arm: source-layer directives are dropped before `firing`.)
-          // C2: the source sweeps are WARM arms (model resumes rewriting common-law findings) — they
-          // stay behind the digest lock even when the register dispatch arm ran under it.
-          if (srcDirectives.length && digestLockedReopen) {
-            srcReason = "digest-locked-resume";
-            note(`frame-reopen: ${srcDirectives.length} source-channel omission(s) deferred — digest locked on a resume past synthesis (warm arms stay locked by design)`);
-          } else if (srcDirectives.length && !clSplit) {
-            const canResume = clMember()?.sessionKey && !clMember()?.skipped;
-            if (canResume) {
-              const beforeCl = existsSync(P.commonLaw) ? readFileSync(P.commonLaw, "utf8") : null;
-              note(`frame-reopen: ${srcDirectives.length} source-channel omission(s) → resuming common-law for a supplemental sweep`);
-              // Fix-1: source-channel closure stays PROSE/byte-diff-verified — the channel must be model-
-              // resolved to its real domains (github.com/nuget.org/…), never a spec-shaped grid platform, so
-              // unlike the closable grid cells it does not route through a driver-dictated grid spec. The
-              // append line is DELETED (it corrupted canonical ledgers); the channel receipts land in the
-              // findings prose and `srcSwept` is decided by the byte-diff below, exactly as before.
-              const followup = repairFollowup("common-law:frame-reopen", { findingsFile: P.commonLaw, gridLedger: P.commonLawGrid, directives: srcDirectives });
-              const r = await stage("common-law", ctx, { force: true, followup, sessionKey: clMember()?.sessionKey, trigger: "frame-reopen" });
-              if (r.ok) {
-                if (readFileSync(P.commonLaw, "utf8") !== beforeCl) srcSwept = true;
-                else { srcReason = "unchanged-after-resume"; note(`frame-reopen: common-law unchanged after the supplemental sweep`); }
-              } else { srcReason = `mechanical-fail:${r.fail}`; note(`frame-reopen: common-law supplemental sweep failed mechanically (${r.fail})`); }
-            } else {
-              srcReason = "no-resumable-session";
-              note(`frame-reopen: ${srcDirectives.length} source-channel omission(s) deferred — no resumable common-law session (the grid is the expensive layer; disclose rather than spend)`);
-            }
-          } else if (srcDirectives.length) {
-            // A1 SPLIT — a source-channel sweep spans the WHOLE grid, so the followup goes to EVERY live
-            // half-session (same warm-resume-only doctrine as the single-member arm: skipped/quarantined
-            // halves are not live in this process, and there is deliberately no fresh-sweep arm — the
-            // grid is the expensive layer). Each live half sweeps an EXPLICIT term scope
-            // (routeHalfTermScopes): its own partition terms plus any dead sibling's terms re-routed to
-            // it, so the union of the sweeps is ALWAYS the full manifest — the unsplit contract. SWEPT
-            // requires every routed followup to succeed mechanically AND the merged canonical file to
-            // change; a mechanical failure on ANY half means part of the grid's variants were never
-            // searched on the flagged channels, so the directive stays a DISCLOSED DEFERRAL (open
-            // coverage row + the CLEAR→CONDITIONAL clamp), exactly like the single-member arm's !r.ok
-            // branch — never closed on a partial byte-diff.
-            const live = GRID_HALVES.filter((h) => clHalves[h].sessionKey && !clHalves[h].skipped && !clHalves[h].quarantined);
-            const sweepScopes = routeHalfTermScopes(ctx.clHalfTerms, live);
-            if (live.length) {
-              const beforeCl = existsSync(P.commonLaw) ? readFileSync(P.commonLaw, "utf8") : null;
-              note(`frame-reopen: ${srcDirectives.length} source-channel omission(s) → resuming ${live.length} common-law half-session(s) for a supplemental sweep`);
-              // CONCURRENCY (2026-07-13): the live half followups run CONCURRENTLY (runBatched — each on its
-              // own warm half-session), then ONE re-merge folds the results. First mechanical failure in half
-              // order wins (runBatched preserves input order) — identical to the prior sequential first-fail.
-              const sweepFails = await runBatched(live, config.gatherConcurrency, async (h) => {
-                // Fix-1: same as the single-member arm — channels are model-resolved, not grid platforms, so
-                // this stays prose/byte-diff; the append that corrupted the half ledger is DELETED. The half
-                // findings change (channel rows) drive the merged byte-diff via mergeCommonLawArtifacts below.
-                const followup = repairFollowup("common-law-half:frame-reopen", { findingsFile: P.commonLawHalf(h), gridSpecPath: P.gridSpecHalf(h), gridLedger: P.commonLawGridHalf(h), directives: srcDirectives, scopes: sweepScopes[h] });
-                const r = await stage("common-law-half", { ...ctx, axis: h }, { force: true, followup, sessionKey: clHalves[h].sessionKey, trigger: "frame-reopen" });
-                if (!r.ok) { note(`frame-reopen: common-law half ${h} supplemental sweep failed mechanically (${r.fail})`); return `mechanical-fail:${r.fail}`; }
-                return null;
-              });
-              let mechFail = sweepFails.find(Boolean) ?? null;
-              // Through the connotation-remedy wrapper (one shared round per run): a half re-emit that
-              // dropped its disposition rows gets the routed repair instead of a terminal merge throw.
-              await mergeWithConnotationRemedy();
-              if (mechFail) { srcReason = mechFail; note(`frame-reopen: source-channel omission stays a disclosed deferral — a half sweep failed mechanically, so part of the grid was never searched on the flagged channel(s)`); }
-              else if (readFileSync(P.commonLaw, "utf8") !== beforeCl) srcSwept = true;
-              else { srcReason = "unchanged-after-resume"; note(`frame-reopen: common-law unchanged after the supplemental half sweeps`); }
-            } else {
-              srcReason = "no-resumable-session";
-              note(`frame-reopen: ${srcDirectives.length} source-channel omission(s) deferred — no resumable common-law half-session (the grid is the expensive layer; disclose rather than spend)`);
-            }
-          }
-
-          // The frame settles ABOVE step 3, so on a fresh run there is nothing to refresh: the judges have not
-          // run yet and read the enumerated band on their one dispatch (deriveNamedBand has already
-          // re-merged — the dispatch arm calls it; the warm-resume arm's fold lands in the unit file).
-          //
-          // NOTHING replaces it on a RESUME either, and nothing needs to: a resume whose judges' answers are
-          // inherited-fresh has them declared stale by stage-freshness the moment these sweeps move
-          // register-named-band.json or a register band (stageInputs["owner-judgment"]), and the judges run
-          // again a few lines below because the seam is downstream of the sweep.
-          //
-          // THE QUEUE IS DELIBERATELY NOT SETTLED HERE ON A FRESH RUN. At this seam on a fresh run step 3
-          // has not judged anything yet: it reads the settled band on its first pass, which is what makes a
-          // re-judgement unnecessary rather than merely skipped. Minting here would buy a whole extra pair
-          // of sessions at the standalone flush below; flushing would set ctx.digestSettled over an empty
-          // queue and strand escalation's and envelope's later mints — staleness at the delivery gate, i.e.
-          // a parked run. So both the mint and the flush are gated on step 3 having ALREADY judged, which
-          // is true only on a resume.
-          const judgedAlready = existsSync(P.ownerDecisions);
-          const reopenNeeded = changedAxes.length > 0 && judgedAlready;
-          if (changedAxes.length && !judgedAlready)
-            runLog(run.runDir, { event: "frame-reopen-reconcile-not-needed", axes: changedAxes,
-              reason: "step 3 has not judged yet at this seam — it reads the settled band on its first pass" });
-          if (!judgedAlready) {
-            // nothing to reconcile and nothing to flush: leave ctx.digestSettled false so the standalone
-            // settlement seam (post escalation / envelope) still settles the queue it owns.
-          } else if (digestLockedReopen) {
-            // C2 (PR-6): under the lock the dispatch arm's results are already merged into the band; the
-            // re-judgement cannot run as an inline pre-synthesis flush — synthesis already ran. Mint it as
-            // a durable queue item and ride the EXISTING bounded late flush at the standalone settlement
-            // seam below (at most one per pass; receipts survive resume). A late-flush failure leaves the
-            // item PENDING (durable — the next resume's flush gets one more chance); the residue is
-            // visible: the ask ledger carries the reopen rows and the frameReopenGap clamp stands until
-            // the gap genuinely closes.
-            if (reopenNeeded) mintDigestWork("frame-reopen", firing.map(reopenKey));
-          } else if (reopenNeeded || pendingItems(ctx.digestQueue).length) {
-            //: THE PRE-SYNTHESIS SETTLEMENT FLUSH — the last seam before synthesis, so the settlement
-            // point: ONE re-judgement for the frame-reopen (if any) and every queued mechanism
-            // (escalation / envelope). Failure semantics ride flushDigestQueue.
-            const fr = await flushDigestQueue("pre-synthesis", { reopen: reopenNeeded });
-            ctx.digestSettled = true;
-            const rd = fr.result ?? { ok: true };
-            if (!rd.ok && changedAxes.length) {
-              note(`frame-reopen: re-judgement failed (${rd.fail}) — swept register coverage demoted to deferrals (disclose, never kill the run here)`);
-              runLog(run.runDir, { event: "frame-reopen-redigest-failed", fail: String(rd.fail).slice(0, 120) });
-              regChanged = false;
-              // Fix 2 — the dispatch arm's per-directive closures are only as good as the re-digest that
-              // reconciled them into findings; on a re-digest failure demote every verified-closed directive
-              // back to a disclosed deferral (never a swept-but-unreconciled close).
-              for (const k of [...regSwept]) regDeferReason.set(k, `redigest-fail:${String(rd.fail).slice(0, 60)}`);
-              regSwept.clear();
-              regMechFail = regMechFail || `redigest-fail:${String(rd.fail).slice(0, 80)}`;
-            }
-          }
-
-          // CLOSURE READ — Fix 2 (close-the-loop): a register directive is swept only when the SPECIFIC
-          // re-search VERIFIED (dispatch arm: regSwept holds the per-directive verified-closed keys — the
-          // minted qids landed as executed, non-collapsed, right-scope blocks). A byte-changed band that only
-          // holds a wrong-scope/empty/error block closes nothing → the directive is a disclosed deferral.
-          // WARM-RESUME arm (the un-dispatched providers — clarivate/signa, or CLEAROTRON_PLAN_DISPATCH=off): the
-          // agent owns the sweep and stamps NO deterministic searched-scope evidence (the followup writes no
-          // [cl …] tag), so a byte-diff cannot prove the intended classes were searched. Reading the band's
-          // record classes is NOT proof of scope — the RUN1 dominant element surfaced via 9/28/41/42
-          // CO-CLASSIFICATION, so records carry class 35/38 even when 35/38 were never searched. Therefore a
-          // DOMINANT-ELEMENT directive is UNVERIFIABLE on this arm and stays a disclosed deferral (the clamp
-          // holds — "can't verify → disclose", never a false close). Non-dominant register omissions keep the
-          // axis byte-diff (lower stakes, not a clamp input — broadening them would manufacture false defers).
-          // Whether the now-searched band is COMPLETE enough is judgment's call downstream (coverage_judgment).
-          const { swept, deferrals } = partitionFiring(firing,
-            (d) => d.layer === "source" ? srcSwept
-                 : regArm === "dispatch" ? regSwept.has(reopenKey(d))
-                 : d.severity === "dominant-element" ? false
-                 : regChanged,
-            (d) => {
-              if (d.layer === "source") return srcReason || "source-not-swept";
-              if (regArm === "dispatch") {
-                const base = regDeferReason.get(reopenKey(d)) || "not-verified-closed";
-                const partial = regPartialMint.get(reopenKey(d));
-                return partial ? `${base}; ${partial}` : base;
-              }
-              if (regNoSession) return "no-resumable-session";
-              if (regMechFail) return `mechanical-fail:${regMechFail}`;
-              if (d.severity === "dominant-element" && regChanged)
-                return "resume-arm-unverifiable: the warm-resume arm has no deterministic searched-scope evidence — a bare unit byte-diff cannot confirm the dominant element was searched in the intended classes (disclose, never a false close)";
-              return "unchanged-after-resume";
-            });
-          // — THE REMEDY TERM LEDGER, built before the closure read because the closure read now
-          // depends on it. Every term a firing directive restated ends in one of five named states, and
-          // `searched-empty` carries the executed query and its counted zero — the state that used to
-          // leave no trace anywhere. Non-fatal end to end: a ledger that cannot build leaves the
-          // receipt's fields NULL (never absent) and the closure read falls back to its prior rule,
-          // because a join that could not run is not evidence of a gap.
-          //
-          // Only the DISPATCH arm owns term rows. The warm-resume arm hands the sweep to an agent that
-          // stamps no per-query receipt, so there is nothing to account and saying so is the honest
-          // answer — those directives are listed in `out_of_scope` with the reason, never counted as
-          // searched. (That arm already refuses to close a dominant-element directive at all, so no
-          // closure claim rests on the silence.)
-          let remedyAccounting = null;
-          try {
-            const termRows = regArm === "dispatch"
-              ? regDirectives.flatMap((d) => (regTermRows.get(reopenKey(d)) ?? []).map((r) => ({
-                  directive: reopenKey(d), layer: d.layer, severity: d.severity, ...r })))
-              : [];
-            const outOfScope = [
-              ...srcDirectives.map((d) => ({ directive: reopenKey(d), layer: d.layer,
-                reason: "source-channel directive — the common-law sweep is verified by a prose byte-diff on the findings file, so it has no term unit and no per-query record to account" })),
-              ...(regArm === "dispatch" ? [] : regDirectives.map((d) => ({ directive: reopenKey(d), layer: d.layer,
-                reason: `register directive handled by the ${regArm ?? "no"} arm, which stamps no per-slice execution receipt — no term-level record exists to account` }))),
-            ];
-            remedyAccounting = accountRemedyTerms({
-              terms: termRows,
-              blocksByQid: regLastJoin?.blocksByQid ?? new Map(),
-              executedQids: regLastJoin?.executedQids ?? new Set(),
-              foldRefusals: regFoldRefusals,
-              outOfScope,
-            });
-          } catch (e) {
-            remedyAccounting = null;
-            runLog(run.runDir, { event: "remedy-accounting-failed", error: String(e?.message ?? e).slice(0, 200) });
-          }
-          runLog(run.runDir, remedyAccountingEvent({ trigger: "frame-reopen", artifact: remedyAccounting,
-            reason: remedyAccounting ? null : "the remedy term ledger did not build" }));
-          if (remedyAccounting?.computable) {
-            const t = remedyAccounting.totals;
-            note(`frame-reopen remedy ledger: ${t.terms} term(s) — ${t.found} found, ${t.searched_empty} searched-empty (query + counted zero recorded), ${t.not_dispatched} never dispatched, ${t.dispatch_failed} dispatch-failed, ${t.unaccounted} unaccounted`);
-          }
-          // THE CLOSURE READ —: `domClosed` is computable only over the ACCOUNTED set. A
-          // dominant-element directive must be verified-closed AND every term it restated must be
-          // `found` or `searched-empty`. One term that never ran, or ran into a shape the record cannot
-          // read, and the dominant-element gap is NOT closed — because it demonstrably is not.
-          const domRead = domClosedOverAccounted({ directives, swept, accounting: remedyAccounting, reopenKeyOf: reopenKey });
-          domClosed = domRead.domClosed;
-          if (domRead.blockedBy.length) {
-            runLog(run.runDir, { event: "frame-reopen-dom-unaccounted", blocked_by: domRead.blockedBy });
-            note(`frame-reopen: the dominant-element directive verified-closed but ${domRead.blockedBy.length} of its remedy term(s) are unaccounted (${domRead.blockedBy.map((b) => `${b.term}=${b.class}`).join(", ")}) — domClosed stays FALSE; the clamp holds until the record can show every term ran`);
-          }
-          // A directive verified-closed on a PARTIAL mint carries its refusal into the receipt: the
-          // ending states "closed on N of M remedy proposals; K refused: <reason>", never a bare close.
-          const partials = swept.filter((k) => regPartialMint.has(k))
-            .map((k) => ({ directive: k, note: `verified-closed on the minted subset — ${regPartialMint.get(k)}` }));
-          writeReopenReceipt(swept, deferrals, domClosed, partials, remedyAccounting);
-          runLog(run.runDir, { event: "frame-reopen", requested: firing.length, swept: swept.length, deferred: deferrals.length, remaining: deferrals.length, dominant_element_gap, domClosed, reopenFetchCap: regDirectives.some((d) => d.severity === "dominant-element") ? reopenFetchCap : undefined });
-          // C2 (review fix, 2026-07-29) — the redigest-fail demotion invariant, LOCKED path. The
-          // unlocked path demotes verified-closed directives inline when its pre-synthesis flush
-          // fails (above); under the lock the reconcile rides the LATE flush AFTER this receipt is
-          // written and the clamp released, so the demotion is a hook flushDigestQueue's failure
-          // branch invokes (envelopeFlushVerify shape). It moves every swept key back to a disclosed
-          // deferral (redigest-fail:<reason>), rewrites the receipt with domClosed:false, and re-arms
-          // ctx.frameReopenGap — the CLEAR clamp holds until the enumerated crowd actually reaches
-          // the findings. Registered only when a frame-reopen reconcile item is actually pending
-          // (queue-keyed, so a mint no-op on an already-pending item still gets its demotion).
-          if (digestLockedReopen && swept.length && pendingItems(ctx.digestQueue).some((i) => i.trigger === "frame-reopen")) {
-            const layerByKey = new Map(firing.map((d) => [reopenKey(d), d.layer]));
-            const closedKeys = [...swept];
-            const priorDeferrals = [...deferrals];
-            //: the term ledger rides the demotion UNCHANGED. A failed re-digest demotes CLOSURE,
-            // not searchedness — the queries still ran and their results are still what they were, so
-            // dropping the rows here would delete a true record to reflect a false one. (The sibling
-            // crash-window arm below gets this for free: it rewrites the prior receipt by spread.)
-            const demoteAccounting = remedyAccounting;
-            ctx.frameReopenFlushDemote = (fail) => {
-              const reason = `redigest-fail:${String(fail ?? "late flush failed").slice(0, 60)}`;
-              const demoted = priorDeferrals.concat(closedKeys.map((k) => ({ directive: k, layer: layerByKey.get(k) ?? "variant", reason })));
-              writeReopenReceipt([], demoted, false, [], demoteAccounting);
-              ctx.frameReopenGap = dominant_element_gap;
-              runLog(run.runDir, { event: "frame-reopen-redigest-failed", pass: "late", fail: String(fail ?? "").slice(0, 120), demoted: closedKeys });
-              note(`frame-reopen: the late flush failed — ${closedKeys.length} verified-closed directive(s) demoted to disclosed deferrals (${reason}); the frameReopenGap clamp stands until the reconcile genuinely lands`);
-            };
-          }
-        } else if (firing.length && already && priorReceipt) {
-          // a prior pass already attempted EXACTLY this firing set — its receipt is authoritative for closure.
-          domClosed = priorReceipt.domClosed === true;
-          note(`frame-reopen: ${firing.length} directive(s) — already attempted this set (prior outcome stands: dominant gap ${domClosed ? "closed" : "open"})`);
-          runLog(run.runDir, { event: "frame-reopen-skipped", firing: firing.length, reason: "already-attempted", dominant_element_gap, domClosed });
-          // C2 (review fix, 2026-07-29) — crash-window arm of the redigest-fail demotion: a prior
-          // locked pass verified its closes and wrote the swept receipt, then died BEFORE its late
-          // flush landed (the reconcile item is still pending). This pass trusts the receipt and the
-          // clamp stays released while the flush retries below — so if THAT flush fails too, demote
-          // from the prior receipt exactly as the in-pass hook does (fields preserved; only the
-          // partition and domClosed change). A flush success clears the hook and the prior closes
-          // stand reconciled.
-          if ((priorReceipt.swept ?? []).length && pendingItems(ctx.digestQueue).some((i) => i.trigger === "frame-reopen")) {
-            const layerByKey = new Map(firing.map((d) => [reopenKey(d), d.layer]));
-            ctx.frameReopenFlushDemote = (fail) => {
-              const reason = `redigest-fail:${String(fail ?? "late flush failed").slice(0, 60)}`;
-              const demoted = [...(priorReceipt.deferrals ?? []),
-                ...(priorReceipt.swept ?? []).map((k) => ({ directive: k, layer: layerByKey.get(k) ?? "variant", reason }))];
-              try {
-                writeFileSync(reopenReceiptPath, JSON.stringify({ ...priorReceipt, ts: new Date().toISOString(),
-                  swept: [], deferrals: demoted, remaining: demoted.map((x) => x.directive), domClosed: false }, null, 2) + "\n");
-              } catch (e) { note(`frame-reopen receipt demotion write failed (non-fatal): ${e.message}`); }
-              ctx.frameReopenGap = priorReceipt.dominant_element_gap === true;
-              runLog(run.runDir, { event: "frame-reopen-redigest-failed", pass: "late", fail: String(fail ?? "").slice(0, 120), demoted: priorReceipt.swept });
-              note(`frame-reopen: the late flush failed — ${(priorReceipt.swept ?? []).length} previously verified-closed directive(s) demoted to disclosed deferrals (${reason}); the frameReopenGap clamp re-arms`);
-            };
-          }
-        } else if (firing.length) {
-          // disabled / digest-locked on a resume past synthesis: cannot act this run — every firing directive is
-          // a documented DEFERRAL (it still escalates+discloses below; only the sweep itself cannot run here).
-          const why = reopenDisabled ? "frame-reopen-disabled" : digestLockedReopen ? "digest-locked-resume" : "no-actionable-sweep";
-          const { deferrals } = partitionFiring(firing, () => false, () => why);
-          writeReopenReceipt([], deferrals, false);
-          note(`frame-reopen: ${firing.length} directive(s) not swept — ${why}`);
-          runLog(run.runDir, { event: "frame-reopen-skipped", firing: firing.length, reason: why, dominant_element_gap, domClosed: false });
-        }
-
-        // Property 2 — a dominant-element gap the reopen did NOT close blocks a clean finding (clamp below,
-        // alongside the coverage-honesty floor). This is the gap the register coverage ledger cannot itself
-        // represent (an off-fielded cluster, an unsearched channel) — so it is a SEPARATE clamp input.
-        ctx.frameReopenGap = dominant_element_gap && !domClosed;
-        refreshSupplementalExecution(ctx);   // the reopen arms fold/dispatch supplementals — keep the receipt current
-        if (ctx.frameReopenGap) note(`frame-reopen: dominant-element gap stands (unclosed) — will clamp a CLEAR verdict to CONDITIONAL`);
-        // — the reopen's own sweeps just rewrote the band and the unit notes that frame-diff declares
-        // as inputs, and frame-diff is ONE-SHOT by contract ("NO in-process re-diff"), so it cannot be
-        // re-run to catch up. Without this, a pass that crashed between here and the end-of-pass reconcile
-        // would resume with frame-diff SKIPPED (⇒ on the delivery path via ctx.skippedStages) and STALE
-        // against artifacts its own sweep moved — and frame-diff has no UPSTREAM_STALE_REPAIR entry, so
-        // that parks the run. Best-effort by construction: a miss just leaves the delivery gate as strict
-        // as it is today.
-        //
-        // COMMON-LAW JOINED THIS LIST ON 2026-08-04 ( follow-up). It was missing: the source-layer arm
-        // above resumes the common-law session and re-saves common-law.md (it tracks the rewrite in
-        // `srcSwept`), and frame-diff declares that file too — so a reopen that swept a SOURCE directive
-        // rather than a variant one left exactly the staleness this block exists to prevent. The seam
-        // below covers the arms that run after placement; this one covers the crash window between the
-        // sweeps and that seam.
-        // P.commonLaw unconditionally: stageInputs["frame-diff"] declares it on every run type, and an
-        // absent file fingerprints as absent on both sides — a register-only run is a no-op here.
-        settleOneShotStamp(run.runDir, "frame-diff",
-          [P.registerNamedBand, ...(axes ?? []).map((a) => P.registerUnit(a)), P.commonLaw],
-          "frame-reopen-sweeps");
-      }
-    }
-
     // Step 3 — the pile laid out by owner, judged by two sessions each alone, merged by code
     // (runOwnerJudgment). B5b checkpoint 2: a client bound here reaches the judges' message.
     await checkLateBind("pre-judgment");
@@ -10609,7 +9591,7 @@ async function pipelineInner(job, opts = {}) {
     // (no executor adapter / no frozen plan / repair budget spent) the skip is recorded
     // judged-immaterial WITH its reason, so the escalation has an ending either way. Runs under the
     // same digest lock as the warm escalation arm: past synthesis, a band mutation belongs to the
-    // frame-reopen/digest-queue lanes, not here.
+    // digest-queue lane, not here.
     for (const a of codeSideEscalations) {
       if (digestLocked) {
         runLog(run.runDir, { event: "escalation-recheck", axis: a, dispatched: false, reason: "digest-locked (post-synthesis) — a band mutation here would bypass the digest lock" });
@@ -10864,9 +9846,8 @@ async function pipelineInner(job, opts = {}) {
     }
 
     // ──: STANDALONE SETTLEMENT / LATE FLUSH ───────────────────────────────────────────────────
-    // When the frame-reopen block fired nothing (clean diff, no blind model, receipt-skipped, disabled)
-    // but the queue is non-empty, the settlement flush still runs HERE — the same seam, before synthesis.
-    // Empty queue + no reopen ⇒ zero digest passes at this point.
+    // When the queue is non-empty the settlement flush runs HERE, before synthesis. An empty queue ⇒ zero
+    // digest passes at this point.
     //
     // DIGEST-LOCKED (a resume past synthesis): escalation/envelope never ran (their digestLocked guards
     // stay exactly as today), so any pending item here is a POST-SYNTHESIS trigger — today that is the
@@ -10883,31 +9864,9 @@ async function pipelineInner(job, opts = {}) {
       ctx.digestSettled = true;
     }
 
-    // ── follow-up (2026-08-04): SETTLE THE ONE-SHOT FRAME STAMP ──────────────────────────────────
-    // THE LAST SEAM AT WHICH THE BAND AND THE UNITS CAN STILL MOVE. Three arms between frame-diff's seam
-    // and here rewrite artifacts it declares, and none of them could account for it: the escalation
-    // recheck's deriveNamedBand re-merge (register-named-band.json), the skeptic escalation's forced
-    // register-unit re-runs and the envelope close's forced register-unit re-runs (register-units/*.md).
-    // re-aimed stageInputs["frame-diff"] at exactly those artifacts and re-aimed nothing else, so on
-    // a RESUME that re-enters with frame-diff fresh and narrative.md absent — a recovery park or a
-    // rate-limit postpone anywhere between the frame seam and synthesis — frame-diff SKIPPED (⇒ on the
-    // delivery path via ctx.skippedStages), one of those arms moved its inputs, the delivery precondition
-    // read it stale, and with no UPSTREAM_STALE_REPAIR entry the run PARKED. A fresh run never saw it:
-    // frame-diff RUNS there, so it is never on the delivery path.
-    //
-    // Restamp rather than repair, because a re-diff cannot be the remedy: the stage is one-shot by
-    // contract, and every consumer of its output ran before this line. The rewrites are also the SAFE
-    // direction — the arms close coverage, so a diff taken over the earlier band can only over-report
-    // omissions, never miss one.
-    //
-    // NOT gated on ctx.digestSettled: settling the stamp is idempotent and must happen on every pass that
-    // reaches this seam, including one whose queue was already drained by an earlier pass.
-    settleOneShotStamp(run.runDir, "frame-diff",
-      [P.registerNamedBand, ...(axes ?? []).map((a) => P.registerUnit(a))], "pre-synthesis-register-arms");
-
     // ── crowd-context (2026-07-22): the counts a lawyer closes a crowd doubt with ─────────────────────
-    // Runs at ONE seam — after the frame-reopen block (so the ledger read reflects any reopen re-digest)
-    // and before synthesis (its only consumer). When the coverage ledger holds a MATERIAL slice the
+    // Runs at ONE seam — after the settlement flush (so the ledger read reflects any re-judgement) and
+    // before synthesis (its only consumer). When the coverage ledger holds a MATERIAL slice the
     // funnel could not enumerate to has_more:false (the exact shape the COVERAGE JUDGMENT dictation
     // routes to sufficient:false), the driver gathers the affirmative crowded-field evidence a lawyer
     // closes that doubt with: per-term live counts, the same counts restricted to the in-scope classes,
@@ -11256,7 +10215,7 @@ async function pipelineInner(job, opts = {}) {
     // whose bytes are unchanged skips both legs (`verdict` on such a pass is already the post-recheck
     // verdict — refute() parsed it off the very review the receipt fingerprints). Either file moving
     // re-arms the cycle. findings.json is deliberately NOT keyed: four sanctioned driver-owned
-    // mutators rewrite it after this point on every pass (the restamp class — injectDeferralCoverage /
+    // mutators rewrite it after this point on every pass (the restamp class — injectMeaningGapCoverage /
     // enrichFindingDeadlines / consolidateFindingsFile / the coverage-floor clamp), so keying on it
     // would re-arm the settled cycle on every resume, the exact cost this receipt kills. Whether the
     // corrections REACHED findings.json is enforced inside the cycle (enforceCorrectionsReachFindings
@@ -11489,7 +10448,6 @@ async function pipelineInner(job, opts = {}) {
     //     we neither re-search nor stop — we ship a CONDITIONAL with the lawyer's reason. Safe because the
     //     dangerous named band was enumerated to completeness (fan-in band gate); the conditional covers a
     //     genuine residual, not a hidden miss.
-    //   • frameResidual — a STRUCTURAL omission the blind frame-diff found and the reopen could not close.
     //   • screenGateGap — an in-scope-live mark whose record could not be retrieved (could-not-examine).
     // A GENUINE open judgment (the search IS complete; the legal/commercial call is genuinely arguable) is NOT a
     // clamp — it ships as reasoning in the report (the lawyer's product), never as a status caveat.
@@ -11790,10 +10748,6 @@ async function pipelineInner(job, opts = {}) {
       }
     } catch (e) { note(`common-law downgrade floor skipped (${String(e.message).slice(0, 80)}) — never-kill`); }
     if (entryVerdict === "CLEAR") {
-      const frameGap = ctx.frameReopenGap === true;
-      let frameDeferrals = [];
-      try { const rp = driverDir(run.runDir, "frame-reopen.json"); const rec = existsSync(rp) ? JSON.parse(readFileSync(rp, "utf8")) : null; frameDeferrals = Array.isArray(rec?.deferrals) ? rec.deferrals : []; } catch { /* best-effort */ }
-      const frameResidual = frameGap || frameDeferrals.length > 0;
       // This arm's producer went live (it had none since the initial port):
       // the unresolved set comes from ctx when THIS session's gate disclosed it, else from the durable
       // sidecar (the resume shape — the gate disclosed, the process died, and this pass reached the
@@ -11820,10 +10774,9 @@ async function pipelineInner(job, opts = {}) {
       // clamp input + kinds.artifact are DELETED — a compromised machine artifact now FAILS the run
       // upstream (deriveNamedBand / the register-digest terminals) instead of shipping a
       // finished-looking CONDITIONAL over unreadable receipts. What remains here are the honest
-      // sanctioned clamps: the lawyer's own sufficiency call, a disclosed frame residual, a
-      // could-not-examine record, and an unfinished register slice — CONDITIONAL carries
-      // lawyer-judged/disclosed residue only.
-      if (coverageInsufficient || frameResidual || screenGateGap || seniorGap || registerGap) {
+      // sanctioned clamps: the lawyer's own sufficiency call, a could-not-examine record, and an
+      // unfinished register slice — CONDITIONAL carries lawyer-judged/disclosed residue only.
+      if (coverageInsufficient || screenGateGap || seniorGap || registerGap) {
         // THESE SENTENCES REACH A CLIENT AND THEY ARE NOT OURS TO WRITE (owner, 2026-09-17). One of
         // them — the screen-gate line, which says a mark "could not be record_fetched" — carried an
         // engine identifier into the list a client reads as the conditions on their result, by a route
@@ -11834,15 +10787,13 @@ async function pipelineInner(job, opts = {}) {
         const reasons = [], clauseOf = new Map();   // run-record reason → the client's clause: the same words, with any engine token taken out
         const machinery = (reason, clause = reason) => { reasons.push(reason); clauseOf.set(reason, clause); };
         if (coverageInsufficient) machinery(`the lawyer judged a material slice not fully cleared: ${coverageJudgment.reason || "register coverage gap"}`);
-        if (frameGap) machinery("the blind frame-diff flagged a dominant-element omission the reopen pass did not close");
-        else if (frameDeferrals.length) machinery(`follow-ups left open this run: ${frameDeferrals.map((d) => plainDirective(d.directive)).slice(0, 3).join(", ")}`);
         if (screenGateGap) machinery(`${sgUnresolved.length} in-scope mark(s) dropped on goods could not be record_fetched (unverified): ${sgUnresolved.map((g) => g.mark).join(", ")}`, null);   // run record ONLY: no client clause (ruled 2026-09-18)
         if (seniorGap) machinery(`the oldest registration in a verdict-driving family could not be retrieved (policy: clamp): ${(ctx.seniorRights?.rows ?? []).filter((r) => r.applicable && !r.verified).map((r) => r.mark).join(", ")}`);
         if (registerGap) {
           for (const { reason, clause } of registerGapConditions(regGap)) machinery(reason, clause);
           // (the deferred and cut-down register lines: registerGapConditions, at the end of this file)
         }
-        // ── THE THIRD CLAMP SITE NAMES ITSELF, AND NAMES WHICH OF ITS SIX INPUTS FIRED ────────────────
+        // ── THE THIRD CLAMP SITE NAMES ITSELF, AND NAMES WHICH OF ITS INPUTS FIRED ────────────────
         //
         // All three clamp sites emitted this event under one name with the same from/to, distinguishable
         // only by which optional payload key happened to be present. Two of them fired three milliseconds
@@ -11854,14 +10805,14 @@ async function pipelineInner(job, opts = {}) {
         // was clamped — and something downstream may already count clamps in aggregate. A discriminator is
         // additive; three names would not be.
         //
-        // This site is itself six causes under one name, so it also lists WHICH fired rather than
+        // This site is itself four causes under one name, so it also lists WHICH fired rather than
         // leaving a reader to key on field presence and guess.
         const clampInputs = Object.entries({
-          coverageInsufficient, frameGap, frameDeferred: frameDeferrals.length,
+          coverageInsufficient,
           screenGate: screenGateGap ? sgUnresolved.length : 0, seniorRight: seniorGap,
           registerGap,
         }).filter(([, v]) => Boolean(v)).map(([k]) => k);
-        runLog(run.runDir, { event: "coverage-floor-clamp", cause: "coverage", causes: clampInputs, from: "CLEAR", to: "CONDITIONAL", coverageInsufficient: coverageInsufficient || undefined, frameGap: frameGap || undefined, frameDeferred: frameDeferrals.length || undefined, screenGate: screenGateGap ? sgUnresolved.length : undefined, seniorRight: seniorGap || undefined, registerGap: registerGap ? { deferred: regGap.deferred.length, taint: regGap.taintAxes.length } : undefined });
+        runLog(run.runDir, { event: "coverage-floor-clamp", cause: "coverage", causes: clampInputs, from: "CLEAR", to: "CONDITIONAL", coverageInsufficient: coverageInsufficient || undefined, screenGate: screenGateGap ? sgUnresolved.length : undefined, seniorRight: seniorGap || undefined, registerGap: registerGap ? { deferred: regGap.deferred.length, taint: regGap.taintAxes.length } : undefined });
         note(`deliver-conditional floor: ${reasons.join("; ")} — clamping CLEAR→CONDITIONAL so the delivered status carries the gap (never withheld, never halted).`);
         verdict = "CONDITIONAL";
         // APPEND (dedup by exact text) — the legalActions arm may already have recorded conditions,
@@ -11869,9 +10820,9 @@ async function pipelineInner(job, opts = {}) {
         const freshMachinery = reasons.filter((r) => !clampReasons.includes(r));
         clampClauses.push(...freshMachinery.map((r) => (clauseOf.has(r) ? clauseOf.get(r) : r)));   // the clause is the reason less any engine token; null = the run record's alone
         clampReasons.push(...freshMachinery);
-        // The reason KINDS distinguish coverage/frame/screen-gate/senior-right/register residue for the
+        // The reason KINDS distinguish coverage/screen-gate/senior-right/register residue for the
         // report bound line and the client conditions row (merged — legalActions survives).
-        clampKinds = { ...clampKinds, coverage: coverageInsufficient || undefined, frame: frameResidual || undefined, screenGate: screenGateGap || undefined, seniorRight: seniorGap || undefined, registerGap: registerGap || undefined };
+        clampKinds = { ...clampKinds, coverage: coverageInsufficient || undefined, screenGate: screenGateGap || undefined, seniorRight: seniorGap || undefined, registerGap: registerGap || undefined };
         writeRunStatus(ctx, signoffPatch(verdict));
       }
     }
@@ -12113,7 +11064,7 @@ async function pipelineInner(job, opts = {}) {
     // structured-only). Each stage is file-gated/resumable; per-card sessions feed the lint repair below.
     // C2 — fold same-owner+same-mark duplicate filings into one finding BEFORE the overview + cards read
     // findings.json, so the whole delivery phase (and the published copy) sees the single consolidated set.
-    injectDeferralCoverage(P, run.runDir, note); injectMeaningGapCoverage(P, run.runDir, note);   // A3: unclosed reopen directives, and meaning searches that did not complete, become reader-visible coverage rows first
+    injectMeaningGapCoverage(P, run.runDir, note);   // meaning searches that did not complete become reader-visible coverage rows first
     // qw/cn-scope-honesty — the sibling injection: a CN-family-scope run whose zh lane did not run
     // discloses what the native-language investigation would have searched, and where it is offered
     // (coverage-limited: never clamps, never gates).
@@ -12150,7 +11101,7 @@ async function pipelineInner(job, opts = {}) {
     injectScreenGateCoverage(P, run.runDir, note, ctx);
     // — the fourth sibling, and the one that REPLACES rather than adds: coverage_judgment.rows
     // is derived from the machine ledger and the plan-execution receipt instead of retyped by the seat.
-    // Same seam and same reason as injectDeferralCoverage above — every synthesis re-run has settled, so
+    // Same seam and same reason as injectMeaningGapCoverage above — every synthesis re-run has settled, so
     // a re-emit cannot clobber it; and it lands before report-overview and the cards, which are stamped
     // afterwards and therefore never read it as staleness.
     stampCoverageJudgmentRows(P, run.runDir, note, ctx);
@@ -12538,7 +11489,6 @@ async function pipelineInner(job, opts = {}) {
           reportMd: existsSync(P.report) ? readFileSync(P.report, "utf8") : "",
           escalationState: readJson(driverDir(run.runDir, "escalation-state.json")),
           events: runEvents,
-          frameReopen: readJson(driverDir(run.runDir, "frame-reopen.json")),
           screenGateUnresolved: readJson(driverDir(run.runDir, "screen-gate-unresolved.json"))?.unresolved ?? null,
           supplementalPlans,
           xcheck: readJson(driverDir(run.runDir, "register-xcheck.json")),
@@ -12616,21 +11566,6 @@ async function pipelineInner(job, opts = {}) {
             }
           } catch { /* no common-law pass this run — a register-only matter mints nothing */ }
         }
-        // — the remedy terms the reopen could not put on the record. Read back from the receipt
-        // (unlike the placement carry, which re-derives against the delivered findings): this ledger is
-        // a record of what the EXECUTOR did, and nothing after the reopen can retroactively make an
-        // undispatched term dispatched, so the receipt is the authority and re-deriving would need band
-        // blocks the audit seam has no reason to hold. A `searched-empty` term mints nothing — it is
-        // answered. A run with no reopen, or a legacy receipt with no term rows, mints nothing.
-        try {
-          const fr = JSON.parse(readFileSync(driverDir(run.runDir, "frame-reopen.json"), "utf8"));
-          if (Array.isArray(fr?.remedy_terms)) {
-            doubts.push(...mintRemedyAccountingDoubts(
-              { not_accounted: fr.remedy_terms.filter((r) => !["found", "searched-empty"].includes(r?.class)) },
-              { sourceName: "_driver/frame-reopen.json" },
-            ));
-          }
-        } catch { /* no reopen this run, or an unreadable receipt — the reopen's own arms already disclosed */ }
         runDoubts = stitchDoubts(doubts, {
           findings: { findings: auditRunFindings ?? [], actions: auditRunActions },
           coverageRows, registerFindingsText,
@@ -13450,11 +12385,6 @@ async function pipelineInner(job, opts = {}) {
           findings: parsedFindings != null,
         };
         const carriedMarks = (parsedFindings?.findings ?? []).map((f) => f.mark);
-        // A3 — the frame residual (an unclosed dominant-element crowd + every deferred frame directive) joins
-        // the coverage gaps fed to the status-honesty signal, so the delivered headline cannot read clean while
-        // the dominant-element crowd is unfinished (and the caption is promoted to disclose it, below).
-        let frameReopenReceipt = null;
-        try { const rp = driverDir(run.runDir, "frame-reopen.json"); frameReopenReceipt = existsSync(rp) ? JSON.parse(readFileSync(rp, "utf8")) : null; } catch { /* best-effort */ }
         // copper-lattice net #3 — the cross-check tripwire's substrate (only-if-present)
         let xcheckReceipt = null;
         try { const xp = driverDir(run.runDir, "register-xcheck.json"); xcheckReceipt = existsSync(xp) ? JSON.parse(readFileSync(xp, "utf8")) : null; } catch { /* best-effort */ }
@@ -13464,15 +12394,12 @@ async function pipelineInner(job, opts = {}) {
         // judgment-relocation (2026-06-23): the search-shape gate (findFloorShapeGaps) was DELETED here too —
         // sufficiency is judgment's call (coverage_judgment), not a re-parse of the ledger at the surface. This
         // status-honesty tripwire stays an INTERNAL observability backstop over the genuine ledger gaps
-        // (deferred / coverage-limited rows) + the structural frame residual + an unsearched in-scope jurisdiction
+        // (deferred / coverage-limited rows)
         // — it never clamps the verdict (the verdict clamp above is retired); it only flags the reviewer.
         const materialGaps = deriveCoverageStatus([
           ...regLedgerRows,
           ...(commonLawMd ? findCoverageLimitedCells(commonLawMd).map((c) => ({ axis: "common-law", status: "coverage-limited", unit: `${c.variant} × ${c.platform}` })) : []),
-        ]).materialGaps.concat(frameResidualGaps(frameReopenReceipt))
-          // Round 2 Change 1d — an in-scope jurisdiction the run never searched is a recall gap: it joins the
-          // status-honesty signal + the disclosed caption (escalate + disclose, never withhold), like the frame residual.
-          .concat((ctx.jurisdictionScope?.underCoverage ?? []).map((j) => ({ unit: `in-scope jurisdiction unsearched: ${j}`, status: "frame-gap", reason: "an instructed / effective-in-scope territory was not searched this run" })))
+        ]).materialGaps
           // M6 — A DECLARED ABSENCE IS A MATERIAL GAP, and it has to be added HERE because it is
           // invisible everywhere else: the form carries no rows, so `deriveCoverageStatus` above returns
           // `{complete: true}` over it and the status-honesty surface would see a run with nothing
@@ -13552,8 +12479,7 @@ async function pipelineInner(job, opts = {}) {
       // T4 (H1/H2): the screen_gate_note / frame_reopen_note / machine_ledger_note front-matter
       // injections are DEAD — their only renderer was the retired review bar, and their SUBSTANCE
       // already reaches the reader honestly: the verdict clamp reasons (hero bound line + email
-      // conditions row) carry the screen-gate and frame residues, injectDeferralCoverage puts the
-      // unclosed directives in the coverage rows, and the machine-ledger degrade rides status.json /
+      // conditions row) carry the screen-gate residue, and the machine-ledger degrade rides status.json /
       // the run log / the audit workbook's Review-receipts sheet.
       // Doc-17 C-2: open floors at delivery = deferred rows ∪ surviving ⭐-floor breaches (the label
       // never demotes floor work). Stated with the mechanical cause, never silently shipped.
@@ -15429,7 +14355,7 @@ export function registerGapConditions(regGap) {   // @internal
 // of a drop and of a refusal alike. Telling the two apart on the page
 // would need a sentence nobody has approved, and is not attempted here.
 //
-// The same guard as `injectDeferralCoverage`: a gap synthesis already weighed in is not added twice, and
+// The same guard the coverage injectors share: a gap synthesis already weighed in is not added twice, and
 // a findings.json that fails its own schema after the push is left as it was.
 // THE WORDS ARE CHOSEN, NOT THE CAUSE: of the approved reasons, "nothing in the run's own record confirms it
 // was searched" is true of a search that never came back AND of one the provider refused, and does not

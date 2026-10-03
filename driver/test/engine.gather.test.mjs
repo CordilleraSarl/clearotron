@@ -440,8 +440,9 @@ test("recording server: handshake + the served list pinned + missing-run guard r
     // Conversion 11 added `record_register_digest`, and it went with the register digest: step 3's
     // judges answer in their session's own JSON form and hold no record tool. The list is pinned by NAME
     // so a conversion that lands a tool, or a removal that takes one, cannot do it silently.
-    assert.deepEqual(toolNames(r), ["record_blind_frame", "record_clearance_variants", "record_doubt_closure", "record_frame_diff", "record_knockout_assess", "record_knockout_frame", "record_knockout_review", "record_matter_frame", "record_narrative_refutation", "record_report_card", "record_report_overview", "record_skeptic", "record_synthesis", "search_run_artifacts"]);
-  // The guard answer is a structured {error} payload, same as record_blind_frame's: the server answers
+    // `record_blind_frame` and `record_frame_diff` left with the mid-run reopening's two stages.
+    assert.deepEqual(toolNames(r), ["record_clearance_variants", "record_doubt_closure", "record_knockout_assess", "record_knockout_frame", "record_knockout_review", "record_matter_frame", "record_narrative_refutation", "record_report_card", "record_report_overview", "record_skeptic", "record_synthesis", "search_run_artifacts"]);
+  // The guard answer is a structured {error} payload, same as every record tool's: the server answers
   // rather than erroring, and the text names the contract (per-run wiring, no run_dir parameter).
   const text = r.responses[3]?.result?.content?.[0]?.text ?? "";
   assert.match(text, /started without a run/, "an unset run dir must refuse by name, never guess a run");

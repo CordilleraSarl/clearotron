@@ -352,19 +352,12 @@ test("CENSUS: every server module is accounted for — named in LOCAL, or stated
 //   · every granted tool is actually served (a grant for an unserved tool is a phantom).
 //
 // The per-stage sets are LITERAL, the census's own copy — a loop deriving them from the grant table
-// would be the declaration checking itself. Moving a row here is a deliberate act, per PR:
-//   · blind-frame holds its record tool and nothing else ("exactly one" was the rule while every
-//     recording stage looked like this);
+// would be the declaration checking itself. Moving a row here is a deliberate act, per PR (the
+// blind-frame and frame-diff rows left with the mid-run reopening's two stages):
 //   · skeptic holds its record tool AND search_run_artifacts — the SANCTIONED READ SURFACE, the
 //     ratification-hold unlock: O3c measured the stage's only Bash use as reads over the run's own
 //     artifacts, and this tool is their scoped replacement (read-only, run-dir-bounded, no retrieval).
 const RECORDING_GRANTS = Object.freeze({
-  "blind-frame": Object.freeze(["mcp__recording-blind-frame__record_blind_frame"]),
-  //   · frame-diff holds its record tool and nothing else — its Class 2 reads are ENUMERABLE (it compares
-  //     two named files), so the dictation names them and the seeded Read grant carries them. It gets no
-  //     `search_run_artifacts`: a search tool for a stage whose reads can be listed is exactly what the
-  //     sanctioned-equivalents design refuses.
-  "frame-diff": Object.freeze(["mcp__recording-frame-diff__record_frame_diff"]),
   //   · matter-frame holds BOTH, and it is the second stage to carry the read surface. Its Class 2 reads
   //     are NOT enumerable — O3c measured `ls`/`find`/`cat` DISCOVERY over the run dir (21 calls / 15
   //     attempts) — which is the line the design draws between it and frame-diff above. The key is its

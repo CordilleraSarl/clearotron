@@ -47,9 +47,8 @@ export const BAND_STATES = ["enumerated", "incomplete"];
  * non-numeric. Only the first of those is a measurement.
  *
  * Everything that is not a finite number becomes `null`, which is the FAIL-SAFE direction: an unknown
- * is never read as a clean, and the modules that read the RAW blocks already work this way
- * (`close-verify.mjs`: "the executor writes total_hits NULL for a count it could not [take]";
- * `remedy-accounting.mjs`: "a null total is an uncountable one"). It is only the projections that
+ * is never read as a clean, and the modules that read the RAW blocks already work this way (the
+ * executor writes total_hits NULL for a count it could not take). It is only the projections that
  * guaranteed a number, and only their consumers that were blind. PURE.
  */
 export const countOrNull = (v) => {

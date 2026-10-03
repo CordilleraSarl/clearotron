@@ -39,7 +39,6 @@ export const REPORTED_ARTIFACTS = {
   findings: "optional",
   caseLaw: "optional",          // degrades, never blocks ( D2 — an absent case-law layer is a stated limit)
   clientSummary: "optional",    // RETIRED stage; archived runs still carry it
-  frameDiff: "optional",        // written only when the blind pass produced a model to diff
   doubtClosure: "optional",     // condition-only — written only when stitch-open doubts exist
   reportOverview: "optional",   // present on any delivered run; absent on a run that failed before drafting
   // step 3's merged decisions — OPTIONAL for the reason `findings` is: every run archived before the step
@@ -53,7 +52,6 @@ export const NOT_REPORTED = {
   registerUnit: "reported PER AXIS by coverage() below, against REGISTER_AXES — a single row would hide which axis is missing",
   commonLawHalf: "a per-half intermediate the driver merges into commonLaw in code; downstream never sees a half",
   reportCard: "one file per finding ordinal — a single row cannot say which card is missing; the cards ride list_findings",
-  blindFrame: "validates blind-frame-model.json, which has no paths() entry on this surface (an engine-internal frame check, never a client coverage question)",
   ownerJudgment: "one answer per judge of step 3 — the merged decisions are the step's output, reported as ownerDecisions",
 };
 

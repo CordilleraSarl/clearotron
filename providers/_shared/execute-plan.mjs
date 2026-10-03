@@ -212,7 +212,7 @@ export function queryMarkTerms(e, query) {
   return Array.isArray(e?.terms) ? e.terms : e?.term != null ? [e.term] : [];
 }
 
-// The goods words ride after the class tag (close-verify reads that tag): a goods-narrowed question shares
+// The goods words ride after the class tag: a goods-narrowed question shares
 // predicate, term and classes with the identical one, and without them the two read as the same question.
 export const describePlanEntry = (e) =>
   `${e.predicate} ${e.terms ? e.terms.join(" OR ") : e.term}`
@@ -265,8 +265,8 @@ export function defaultBuildEntryQuery(e, pp) {
  * The buildEntryQuery for a provider whose regions[] is MANDATORY (capabilities.regionsRequired).
  *
  * Review finding 7/14: several lanes mint plan entries with `regions: []` — the cross-run recall
- * probes and the common-law→register cross-check (pipeline.mjs), frame-diff remedies
- * (frame-diff-model.mjs), and model-proposed supplementals (engine/mcp/supplemental.mjs). That shape is
+ * probes and the common-law→register cross-check (pipeline.mjs) and model-proposed supplementals
+ * (engine/mcp/supplemental.mjs). That shape is
  * harmless on corsearch (no region clause = a worldwide sweep) and so it is the natural habit; on a
  * provider that hard-throws without regions it made every one of those lanes fail 100% of the time,
  * MISLABELLED as a provider/tool-absence coverage row ("provider error …" matches coverage-ledger's

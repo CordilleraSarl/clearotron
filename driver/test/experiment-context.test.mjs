@@ -72,7 +72,6 @@ const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const FRESHNESS_GOLDEN = {
   "matter-frame": [],
   "clearance-variants": ["matter-context.md"],
-  "blind-frame": ["inbound-request.txt"],
   "common-law": ["variant-manifest.md", "matter-context.md"],
   "common-law-half": ["variant-manifest.md", "matter-context.md"],
   "register-unit": ["variant-manifest.md", "matter-context.md"],
@@ -85,15 +84,6 @@ const FRESHNESS_GOLDEN = {
   // The sceptic, synthesis, the review and doubt closure read the judges' decisions where they read the
   // register findings document: one file renamed for another in each row, nothing widened.
   skeptic: ["owner-decisions.json", "common-law-findings.md", "variant-manifest.md", "matter-context.md", "_driver/plan-execution.json", "register-coverage-ledger.json"],
-  // — MOVED, and this is the golden doing its job. frame-diff now runs BEFORE placement-inquiry and
-  // register-digest, so register-findings.md and register-coverage-ledger.json — both digest OUTPUTS — do
-  // not exist when it runs. Declaring a later stage's outputs as this stage's inputs is the park mechanism
-  // the message above names: they would go absent→present mid-pass and stale a skipped frame-diff on the
-  // delivery path. They are replaced by the surface the digest was re-narrating: the merged named band and
-  // the per-axis unit notes, which are exactly what placement-inquiry (its new neighbour) already declares.
-  // The set is the same width, so nothing here widens; what changes is WHICH artifacts, and the two coming
-  // out are the two that would park a run.
-  "frame-diff": ["blind-frame-model.json", "scope-ledger.json", "variant-manifest.md", "register-named-band.json", "register-units/saturation-probe.md", "register-units/primary-sweep.md", "register-units/transliteration-numeric.md", "register-units/incumbent-class.md", "common-law-findings.md"],
   // — WIDENED, deliberately, and the golden is doing its job by making that say so out loud. The
   // two files added are the plan-execution receipt and the machine coverage ledger: the run's record of
   // what was and was not searched, which reached the stage's REVIEWER as a driver-computed table and did
@@ -108,9 +98,12 @@ const FRESHNESS_GOLDEN = {
   // is a strict co-mover with an input this stage already stales on. And a
   // stamp written before this ships carries no entry for either path, so `diffFingerprint` — which walks
   // the RECORDED entries — manufactures no staleness on a run already in flight.
-  synthesis: ["owner-decisions.json", "common-law-findings.md", "register-named-band.json", "matter-context.md", "variant-manifest.md", "skeptic-flags.md", "_driver/frame-reopen.json", "_driver/crowd-context.json", "crowd-context.md", "_driver/plan-execution.json", "register-coverage-ledger.json"],
+  synthesis: ["owner-decisions.json", "common-law-findings.md", "register-named-band.json", "matter-context.md", "variant-manifest.md", "skeptic-flags.md", "_driver/crowd-context.json", "crowd-context.md", "_driver/plan-execution.json", "register-coverage-ledger.json"],
   "case-law": ["narrative.md"],
-  "narrative-refutation": ["narrative.md", "owner-decisions.json", "common-law-findings.md", "matter-context.md", "skeptic-flags.md", "_driver/frame-reopen.json"],
+  // — NARROWED by one, the reopen receipt, in both rows (synthesis and this one): the mid-run reopening
+  // that wrote it left the engine. Narrowing is the safe direction: an input a stage no longer declares is
+  // skipped when its stamp is compared (diffFingerprint), so no run in flight reads stale on it.
+  "narrative-refutation": ["narrative.md", "owner-decisions.json", "common-law-findings.md", "matter-context.md", "skeptic-flags.md"],
   // — NARROWED from nine to two, deliberately: the stage declared nine and opened two (the 08-02 R2
   // dependency graph), and its prompt asserted grounding in all nine. Declaration and citations now both
   // say narrative.md + findings.json, pinned together by the exact-set guard in operability.test.mjs.
@@ -492,16 +485,6 @@ test("--dispatch-trigger refuses an unknown value rather than composing a quietl
   const { job, codename } = await canonicalRun();
   await assert.rejects(() => PL.runExperiment(job, { codename, experiment: "synthesis", dispatchTrigger: "corective" }),
     /unknown value "corective"/, "a typo in the trigger must refuse — it decides which prompt blocks compose");
-});
-
-test("blind-frame stays STARVED — widening the sandbox did not widen the blind pass", async () => {
-  const P = ST.paths("/run");
-  const manifest = SC.sandboxManifest("blind-frame", P, { axes: ST.REGISTER_AXES });
-  assert.deepEqual(manifest.map((e) => e.path), [P.inboundRequest],
-    "the blind pass's sandbox is still exactly one file — the raw inbound request and nothing else");
-  const ctxEdges = SC.stageContext("blind-frame", P, {});
-  assert.equal(ctxEdges[0].kind, "conditional",
-    "…and the one edge is CONDITIONAL: the prompt names it only when job.rawRequest exists");
 });
 
 // ── EVERY SERVER THAT OPENS A DRIVER-WRITTEN FILE HAS AN EDGE — the CLASS, not another instance ─────

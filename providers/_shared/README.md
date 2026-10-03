@@ -33,7 +33,7 @@ with `makeEnumerate`, and the free-tier composite runs on `execute-plan` and `le
 vocabularies directly, where the same rule has to hold on both sides of the provider seam —
 [`../../driver/register-plan.mjs`](../../driver/register-plan.mjs) (`term-shape`, `script-form`, `territory-codes`),
 with `scope-rules.mjs`, `territory-tiers.mjs`, `jx-lanes.mjs`, `variant-manifest-model.mjs`,
-`form-neighbourhood.mjs` and `frame-diff-model.mjs` beside it. `register-count.mjs` takes the capability-gap
+`form-neighbourhood.mjs` beside it. `register-count.mjs` takes the capability-gap
 predicate from `execute-plan.mjs`, and `pipeline.mjs`, `pipeline-knockout.mjs`, `provider-usage.mjs` and
 `registry-fidelity.mjs` all resolve their ledger paths through `ledger-path.mjs`.
 

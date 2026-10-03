@@ -21,10 +21,6 @@ seat failing is not the stage failing.
 territories. Everything downstream derives from it, and it is told not to widen past the territories
 the job named.
 
-**Blind frame** — a second reading of the raw request that never sees the matter frame. It runs
-beside the investigation as a non-fatal sibling, so a framing mistake shows up as a disagreement
-rather than propagating quietly.
-
 **Feedforward** — the reviewer's flags reaching the corrective pass as data rather than as prose.
 `corrections-feedforward.mjs` decides which flags count as still open.
 

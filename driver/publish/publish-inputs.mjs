@@ -136,7 +136,7 @@ export const CALLER_SUPPLIED = {
  * publish/index.mjs's source — reading a 1472-line sibling on every import to answer a question that
  * only changes when someone edits the file is the wrong place for it; the dead-key/undeclared-store
  * half runs in publish-input-coverage.test.mjs against the real source, on the
- * dependency-repair.test.mjs:76-95 precedent.
+ * dependency-repair.test.mjs precedent.
  *
  * `tables` is injectable so the gate can be exercised against a partition nobody shipped, which is
  * otherwise unreachable from a test.

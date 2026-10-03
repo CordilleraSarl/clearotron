@@ -104,9 +104,9 @@ test("supplemental_lane contract e2e: a hand-authored (qid-less) band block FAIL
 });
 
 test("the coverage floor names itself, and names which of its inputs fired", async () => {
-  // A material dominant-element omission the reopen does not close is one of the floor's inputs; it
-  // stands in here for all of them, since the event's shape is the same whichever fires.
-  process.env.MOCK_FRAME_DIFF = "reopen";
+  // A material slice the lawyer judged not fully cleared is one of the floor's inputs; it stands in here
+  // for all of them, since the event's shape is the same whichever fires.
+  process.env.MOCK_COVERAGE_INSUFFICIENT = "1";
   try {
     const { res, events } = await runPipeline({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced" },
       { ref: null, id: "frame-gap-floor-scenario" });
@@ -120,7 +120,7 @@ test("the coverage floor names itself, and names which of its inputs fired", asy
     assert.ok(Array.isArray(clamp.causes) && clamp.causes.length >= 1,
       `this floor is six causes under one name, so it lists the ones that fired: ${JSON.stringify(clamp.causes)}`);
     assert.ok(!clamp.causes.includes("deadlineCarry"), "the deadline-carry input went with the recall store");
-  } finally { delete process.env.MOCK_FRAME_DIFF; }
+  } finally { delete process.env.MOCK_COVERAGE_INSUFFICIENT; }
 });
 
 

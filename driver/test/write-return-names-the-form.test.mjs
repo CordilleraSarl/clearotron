@@ -145,7 +145,9 @@ test("EVERY driver-written form is wired into a writeReturn call", (t) => {
   // the floor is lowered by that one rather than re-fitted to the current count.
   // 14 -> 13 when step 3's owner judgment replaced placement: `writeReturn(P.placement, [P.placementForm])`
   // went with the stage, and the judges write nothing themselves.
-  assert.ok(calls.length >= 13, `expected every dispatch's closing call, found ${calls.length}`);
+  // 13 -> 11 when the second framing and its diff left with the mid-run reopening:
+  // `writeReturn(P.blindFrameModel)` and `writeReturn(P.frameDiff)` went with the two stages.
+  assert.ok(calls.length >= 11, `expected every dispatch's closing call, found ${calls.length}`);
 
   const unwired = declared.filter((f) => !calls.some((c) => c.includes(`P.${f}`)));
   assert.deepEqual(unwired, [],

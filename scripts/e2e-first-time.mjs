@@ -257,7 +257,16 @@ export const RETIRED_EVENTS = ["known-conflicts-read", "known-conflicts-upsert",
   "recall-reconciliation-positions-rederived", "recall-reconciliation-unended", "register-digest-facts-failed",
   "register-digest-facts-written", "screen-gate-clean", "screen-gate-parse-gap", "screen-gate-postflush",
   "screen-gate-unnamed-observed", "screen-gate-unresolved", "screen-gate-violation", "silently-lost-findings",
-  "stage-floor-duty-rerun", "stated-divergence-findings"];
+  "stage-floor-duty-rerun", "stated-divergence-findings",
+  // the second framing, its diff, and the territory check that ran inside the reopening, which left with
+  // the mid-run reopening (2026-10-02); a run delivered before it still carries these, and each keeps its
+  // class above
+  "blind-frame-skipped", "frame-diff-skipped", "frame-diff-undispatchable-disclosed", "jurisdiction-scope",
+  "jurisdiction-scope-register-deferred", "searched-jurisdictions", "searched-jurisdictions-unresolved",
+  // the reopening's channel and the near-miss check that fed it, which left with it; same reason
+  "form-oracle-gap", "frame-diff", "frame-diff-source-directives-dropped", "frame-reopen", "frame-reopen-dom-unaccounted",
+  "frame-reopen-fold-refused", "frame-reopen-reattempt", "frame-reopen-reconcile-not-needed", "frame-reopen-redigest-failed",
+  "frame-reopen-skipped", "remedy-accounting", "remedy-accounting-failed"];
 
 // A stage dispatched again says why, on the run log's `stage` event. Counted: a dispatch that exists
 // because an answer was not accepted as it stood.
@@ -280,7 +289,9 @@ export const COUNTED_TRIGGERS = {
 export const TRIGGER_FAMILIES = [[/^recall-reconcile-./, REASK], [/-retry$/, RETRY]];
 // Reasons older records carry that the product no longer writes, so no census can find them: the digest's
 // follow-up composers and its recall reconciliation, retired with the digest (2026-10-01).
-export const RETIRED_TRIGGERS = ["digest-flush", "recall-reconcile", "recall-reconcile-fresh", "settled-coverage-facts"];
+export const RETIRED_TRIGGERS = ["digest-flush", "recall-reconcile", "recall-reconcile-fresh", "settled-coverage-facts",
+  // the reopening's sweeps and their follow-up composers, retired with it (2026-10-02)
+  "frame-reopen", "frame-reopen-directive", "frame-reopen-retry"];
 export const NOT_COUNTED_TRIGGERS = {
   "a first dispatch, or one the run makes whatever the first answer was": ["fresh", "skip", "late-bind", "experiment",
     "xcheck-decide"],

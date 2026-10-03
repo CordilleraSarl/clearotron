@@ -328,8 +328,8 @@
           "todos": 0
         },
         "a-crowd-is-decided-not-a-fixed-stop.test.mjs": {
-          "tests": 3,
-          "asserts": 13,
+          "tests": 2,
+          "asserts": 11,
           "skips": 0,
           "todos": 0
         },
@@ -581,7 +581,7 @@
         },
         "a-goods-slice-and-an-added-class-read-as-themselves.test.mjs": {
           "tests": 5,
-          "asserts": 20,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -1221,6 +1221,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-restamp-aimed-at-an-undeclared-file-is-never-silent.test.mjs": {
+          "tests": 1,
+          "asserts": 7,
+          "skips": 0,
+          "todos": 0
+        },
         "a-retrieval-group-does-not-vote-on-seat-writes.test.mjs": {
           "tests": 5,
           "asserts": 15,
@@ -1386,12 +1392,6 @@
         "a-skipped-question-is-not-an-answer.test.mjs": {
           "tests": 5,
           "asserts": 12,
-          "skips": 0,
-          "todos": 0
-        },
-        "a-slice-the-fold-refused-as-already-asked-is-not-a-dispatch-failure.test.mjs": {
-          "tests": 10,
-          "asserts": 32,
           "skips": 0,
           "todos": 0
         },
@@ -1912,8 +1912,8 @@
           "todos": 0
         },
         "ask-ledger.test.mjs": {
-          "tests": 26,
-          "asserts": 119,
+          "tests": 24,
+          "asserts": 111,
           "skips": 0,
           "todos": 0
         },
@@ -2017,18 +2017,6 @@
           "tests": 4,
           "asserts": 8,
           "skips": 0,
-          "todos": 0
-        },
-        "blind-frame-model.test.mjs": {
-          "tests": 4,
-          "asserts": 10,
-          "skips": 0,
-          "todos": 0
-        },
-        "blind-frame-record.test.mjs": {
-          "tests": 7,
-          "asserts": 25,
-          "skips": 2,
           "todos": 0
         },
         "both-doors-start-on-both-paths.test.mjs": {
@@ -2199,12 +2187,6 @@
           "skips": 0,
           "todos": 0
         },
-        "close-verify.test.mjs": {
-          "tests": 9,
-          "asserts": 18,
-          "skips": 0,
-          "todos": 0
-        },
         "closing-the-terminal-stops-what-start-started.test.mjs": {
           "tests": 2,
           "asserts": 6,
@@ -2260,8 +2242,8 @@
           "todos": 0
         },
         "commonlaw-closure-deterministic.test.mjs": {
-          "tests": 8,
-          "asserts": 45,
+          "tests": 7,
+          "asserts": 40,
           "skips": 0,
           "todos": 0
         },
@@ -2482,8 +2464,8 @@
           "todos": 0
         },
         "coverage-ledger.test.mjs": {
-          "tests": 25,
-          "asserts": 93,
+          "tests": 24,
+          "asserts": 85,
           "skips": 0,
           "todos": 0
         },
@@ -2573,7 +2555,7 @@
         },
         "dependency-repair.test.mjs": {
           "tests": 10,
-          "asserts": 45,
+          "asserts": 43,
           "skips": 0,
           "todos": 0
         },
@@ -2638,8 +2620,8 @@
           "todos": 0
         },
         "digest-funnel.pipeline.test.mjs": {
-          "tests": 4,
-          "asserts": 57,
+          "tests": 3,
+          "asserts": 36,
           "skips": 0,
           "todos": 0
         },
@@ -3196,8 +3178,8 @@
           "todos": 0
         },
         "experiment-context.test.mjs": {
-          "tests": 17,
-          "asserts": 67,
+          "tests": 16,
+          "asserts": 65,
           "skips": 0,
           "todos": 0
         },
@@ -3286,26 +3268,14 @@
           "todos": 0
         },
         "form-neighbourhood.test.mjs": {
-          "tests": 20,
-          "asserts": 89,
+          "tests": 16,
+          "asserts": 70,
           "skips": 0,
           "todos": 0
         },
         "four-transports-keep-what-a-repair-does-not-resend.test.mjs": {
-          "tests": 9,
-          "asserts": 42,
-          "skips": 0,
-          "todos": 0
-        },
-        "frame-diff-dominant-bind.test.mjs": {
-          "tests": 6,
-          "asserts": 25,
-          "skips": 0,
-          "todos": 0
-        },
-        "frame-diff-resume-freshness.pipeline.test.mjs": {
-          "tests": 3,
-          "asserts": 26,
+          "tests": 8,
+          "asserts": 36,
           "skips": 0,
           "todos": 0
         },
@@ -3449,7 +3419,7 @@
         },
         "jurisdiction-codes.test.mjs": {
           "tests": 5,
-          "asserts": 28,
+          "asserts": 27,
           "skips": 0,
           "todos": 0
         },
@@ -3670,8 +3640,8 @@
           "todos": 0
         },
         "mock-write-mandate.test.mjs": {
-          "tests": 6,
-          "asserts": 11,
+          "tests": 5,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },
@@ -3838,8 +3808,8 @@
           "todos": 0
         },
         "operability.test.mjs": {
-          "tests": 29,
-          "asserts": 165,
+          "tests": 27,
+          "asserts": 154,
           "skips": 0,
           "todos": 0
         },
@@ -3946,8 +3916,8 @@
           "todos": 0
         },
         "pipeline.mock.test.mjs": {
-          "tests": 97,
-          "asserts": 811,
+          "tests": 87,
+          "asserts": 700,
           "skips": 0,
           "todos": 0
         },
@@ -4522,8 +4492,8 @@
           "todos": 0
         },
         "register-steering.test.mjs": {
-          "tests": 9,
-          "asserts": 72,
+          "tests": 8,
+          "asserts": 55,
           "skips": 0,
           "todos": 0
         },
@@ -4606,8 +4576,8 @@
           "todos": 0
         },
         "repair-write-mode.test.mjs": {
-          "tests": 13,
-          "asserts": 57,
+          "tests": 11,
+          "asserts": 46,
           "skips": 0,
           "todos": 0
         },
@@ -5817,6 +5787,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-judges-rate-through-the-clients-method.test.mjs": {
+          "tests": 7,
+          "asserts": 30,
+          "skips": 0,
+          "todos": 0
+        },
         "the-judges-read-the-lawyers-own-questions.test.mjs": {
           "tests": 2,
           "asserts": 6,
@@ -6394,8 +6370,8 @@
           "todos": 0
         },
         "tool-free-argv-baseline.test.mjs": {
-          "tests": 16,
-          "asserts": 83,
+          "tests": 15,
+          "asserts": 76,
           "skips": 0,
           "todos": 0
         },
@@ -6712,8 +6688,8 @@
           "todos": 0
         },
         "write-time-form.test.mjs": {
-          "tests": 18,
-          "asserts": 108,
+          "tests": 16,
+          "asserts": 98,
           "skips": 0,
           "todos": 0
         },

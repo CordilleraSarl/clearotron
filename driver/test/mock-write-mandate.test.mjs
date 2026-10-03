@@ -27,7 +27,7 @@ const dir = () => mkdtempSync(join(tmpdir(), "mock-mandate-"));
 // `record_blind_frame`. A test that kept demanding the hand-write would be defending the path this PR
 // deleted — the same shape as the `/anchor/` assertion found one PR ago. `findings.json` carries the
 // property now: it is a.json output with a real fixture, so the property is unchanged, only its
-// witness moved. The blind-frame direction is asserted below, in the opposite sense.
+// witness moved.
 test("a repair tail naming a .json output is written — the JSON-output stage is not silently skipped", () => {
   const out = join(dir(), "findings.json");
   applyStageWrites(`The findings are wrong.\n\n${editRepairTail(out)}`, []);
@@ -40,17 +40,6 @@ test("the append tail carries the same property — both repair shapes name thei
   const out = join(dir(), "findings.json");
   applyStageWrites(`Rows are missing.\n\n${appendRepairTail(out)}`, []);
   assert.ok(existsSync(out));
-});
-
-test("the mock REFUSES to hand-write blind-frame-model.json, loudly — no fixture, no silent markdown", () => {
-  // The conversion's own property, in the direction that matters. If a repair tail ever names this file
-  // again, the mock must not quietly satisfy it: the seat cannot write it, so a mock that could would make
-  // the suite green on a dispatch no real seat could obey. The fall-through guard's throw IS the assertion.
-  const out = join(dir(), "blind-frame-model.json");
-  assert.throws(() => applyStageWrites(`The frame is wrong.\n\n${editRepairTail(out)}`, []),
-    /no fixture for blind-frame-model\.json/,
-    "the mock silently wrote a file only the driver may write");
-  assert.ok(!existsSync(out), "…and wrote nothing on the way to refusing");
 });
 
 test("a markdown target still works — the fix widened the mandate, it did not move it", () => {
@@ -74,12 +63,6 @@ test("a DRIVER-WRITTEN artifact is refused whatever its extension — not only t
     /no fixture for matter-context\.md — the driver writes it, off the `record_matter_frame` call/,
     "the mock hand-wrote an artifact whose only writer is the driver");
   assert.ok(!existsSync(md), "…and wrote nothing on the way to refusing");
-
-  // The markdown twin of an already-converted stage, which was only ever safe because its stage
-  // side-writes. Now it is safe BY NAME.
-  const prose = join(dir(), "frame-diff.md");
-  assert.throws(() => applyStageWrites(`Write your output to this ABSOLUTE path: ${prose}\n`, []),
-    /no fixture for frame-diff\.md/);
 });
 
 test("the mandate is anchored on the path, not on a known extension", () => {

@@ -20,8 +20,6 @@ test("15c — every stage's authored surface is declared, not just the one file 
   assert.deepEqual(named("synthesis"), ["narrative.md", "findings.json"],
     "findings.json is the most-consumed artifact in the run and was undeclared");
   assert.ok(named("clearance-variants").includes("variant-manifest.json"));
-  assert.ok(named("blind-frame").includes("blind-frame-model.json"));
-  assert.ok(named("frame-diff").includes("frame-diff.json"));
   // a judge's pass writes the merged decisions and the settled coverage ledger, and four stages read them
   assert.deepEqual(named("owner-judgment", { axis: "1" }), ["owner-judgment-1.json", "owner-decisions.json", "register-coverage-ledger.json"]);
   assert.ok(named("register-unit", { axis: "primary-sweep" }).some((f) => f.includes("primary-sweep")));

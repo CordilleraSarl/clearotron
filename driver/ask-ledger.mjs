@@ -7,7 +7,7 @@
 // silent deferral — not because the machinery lost them (the receipts existed) but because NOTHING
 // joined the birth records to an ENDING. Some questions never even had a durable birth record
 // (supplemental proposals rejected at the mint seam lived only in a tool response). This module is
-// the deterministic JOIN over the run's ten ask birth-places, and nothing more: it re-reads the
+// the deterministic JOIN over the run's eight ask birth-places, and nothing more: it re-reads the
 // receipts the machinery already writes and computes, per ask, how it ended.
 //
 // SIBLING of doubt-ledger.mjs — deliberately NOT a merge. Doubts are PROSE questions joined to
@@ -184,19 +184,18 @@ function recallEnding(name, qid, join, ts) {
   };
 }
 
-// ── derive: the deterministic join over the ten birth-places ──────────────────────────────────────
+// ── derive: the deterministic join over the eight birth-places ──────────────────────────────────────
 /**
  * Derive the run's ask ledger. Every input is a PARSED artifact (the pipeline owns the reads);
  * every input is optional — an absent artifact simply contributes no rows (legacy/replay-safe).
  *
- * The ten birth-places and their substrates:
+ * The eight birth-places and their substrates (the reopen's two, frame-diff and form-neighbourhood, left
+ * with the mid-run reopening):
  *   1. intake-ask           _driver/intake-asks.json + the report's answer lines
  *   2. skeptic-escalation   _driver/escalation-state.json
  *   3. escalation-skip      run.jsonl `escalation-skipped` events
  *   4. envelope             run.jsonl `envelope-decision` / `envelope-closed` events (+ state.failed)
  *   5. screen-gate          run.jsonl `screen-gate-violation` events + the unresolved sidecar
- *   6. frame-diff           _driver/frame-reopen.json (requested/swept/deferrals + directive_qids)
- *   7. form-neighbourhood   same receipt, rows the receipt's `born` map marks form-oracle-injected
  *   8. supplemental-proposal register-units/<axis>-supplemental-plan.json entries[] + rejected[]
  *   9. cross-check          _driver/register-xcheck.json + _driver/register-recall.json (+ overflow)
  *  10. crowd-context        run.jsonl `crowd-context-skips` / `crowd-context-failed` events
@@ -205,7 +204,7 @@ function recallEnding(name, qid, join, ts) {
 export function deriveAsks({
   intakeAsks = null, reportMd = "",
   escalationState = null, events = null,
-  frameReopen = null, screenGateUnresolved = null,
+  screenGateUnresolved = null,
   supplementalPlans = null, xcheck = null, recall = null,
   planExecution = null,
 } = {}, { ts = null } = {}) {
@@ -326,39 +325,6 @@ export function deriveAsks({
         qids: [],
         ending: mkEnding("recovery", "screen-gate", { reasons: [String(u.cause ?? "record not retrievable")], evidence: "_driver/screen-gate-unresolved.json", ts }),
         handoff: "per-mark unexamined coverage row + the coverage-honesty CONDITIONAL clamp",
-      });
-    }
-  }
-
-  // 6/7 ── frame-diff directives (incl. the form-oracle injections — receipt.born marks those): the
-  // reopen receipt records the partition (swept ∪ deferrals == requested), but "executed" is still
-  // COMPUTED here for any directive whose minted qids the receipt recorded — a receipt claim of
-  // "swept" that the plan-execution record cannot confirm stays OPEN, never a false close.
-  {
-    const fr = frameReopen ?? {};
-    const requested = (fr.requested ?? []).filter((k) => typeof k === "string");
-    const swept = new Set((fr.swept ?? []).filter((k) => typeof k === "string"));
-    const deferrals = new Map((fr.deferrals ?? []).filter((d) => d?.directive).map((d) => [d.directive, d]));
-    const qidsByKey = fr.directive_qids && typeof fr.directive_qids === "object" ? fr.directive_qids : {};
-    const bornByKey = fr.born && typeof fr.born === "object" ? fr.born : {};
-    for (const key of requested) {
-      const qids = (Array.isArray(qidsByKey[key]) ? qidsByKey[key] : []).filter(Boolean);
-      const place = bornByKey[key] === "form-neighbourhood" ? "form-neighbourhood" : "frame-diff";
-      let ending = null, handoff = null;
-      const d = deferrals.get(key);
-      if (d) {
-        ending = mkEnding("recovery", "frame-reopen", { reasons: [String(d.reason ?? "deferred")], evidence: "_driver/frame-reopen.json deferrals", ts });
-        handoff = "open coverage row (frame-gap) + the CLEAR→CONDITIONAL clamp — the report states the unswept omission";
-      } else if (swept.has(key)) {
-        ending = qids.length
-          ? endingForQids(qids, join, ts)   // computed — null (open) when the execution record disagrees
-          : mkEnding("executed", "frame-reopen-receipt", { evidence: "swept per the frame-reopen receipt (warm-resume arm — axis-level verification)", ts });
-      }
-      push({
-        ask_id: `ask:frame:${slug(key)}`,
-        born: { place, artifact: "_driver/frame-reopen.json", ref: key, ts: fr.ts ?? null },
-        ask: { text: `${place === "form-neighbourhood" ? "mechanical form-oracle gap" : "blind frame-diff omission"}: ${key} — sweep it or say why not`, owner: "register", structured: null },
-        qids, ending, handoff,
       });
     }
   }

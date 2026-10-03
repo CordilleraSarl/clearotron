@@ -232,15 +232,10 @@ const PINNED = Object.freeze({
     allowedTools: "Read Write Edit mcp__courtlistener__* mcp__legaldatahunter__* WebFetch",
     mcpConfig: `{"mcpServers":{${bridge("courtlistener")},${bridge("legaldatahunter")}}}`,
   },
-  // ── THE TWO STAGES THE COLLAPSE IS ABOUT ────────────────────────────────────────────────────────
+  // ── THE STAGES THE COLLAPSE IS ABOUT (blind-frame's row left with the stage) ────────────────────────────────────────────────────────
   // — THIS ROW MOVED, deliberately, and it is the only one that may. The seat lost `Write` and `Edit`
   // when the driver became the artifact's writer; every other row in this table is the proof that a change
   // to `allowedToolsFor`'s shared seeding reached this stage and no other.
-  "blind-frame": {
-    groups: ["recording-blind-frame"],
-    allowedTools: "Read mcp__recording-blind-frame__record_blind_frame",
-    mcpConfig: `{"mcpServers":{${local("recording-blind-frame", "recording-server.mjs")}}}`,
-  },
   // Token order is load-bearing here: `record_skeptic` then `search_run_artifacts`, the order the key's
   // tools list is written in. O1 sorts, so a flip is invisible to it and visible here.
   "skeptic": {
@@ -305,7 +300,8 @@ test("the two shared DERIVED structures keep their shape — order and multiplic
   // knockout-frame, the second key from that lane and the last stage on it, so both knockout entries sit
   // here for the same reason every clearance one does — one server module, one key per stage, different
   // tool lists. The lane being finished changes nothing about this pin; a future lane adds more.
-  // The register digest's key left with the digest (2026-10-01), one entry fewer.
+  // The register digest's key left with the digest (2026-10-01), one entry fewer. Two fewer again when
+  // the mid-run reopening's two stages left.
   // The multiplicity IS the property: one server module mounted under N per-stage keys, each holding a
   // different tool list. Every future conversion adds one more entry here, and that is the deliberate act.
   assert.deepEqual([...LOCAL_SERVER_SCRIPTS], [
@@ -326,8 +322,6 @@ test("the two shared DERIVED structures keep their shape — order and multiplic
     // recording repetitions below because the stage keeps a seat write of its own, which every RECORDING row
     // forbids by declaration. One entry: exactly one stage holds it, per axis or not.
     "unit-note-server.mjs",
-    "recording-server.mjs",
-    "recording-server.mjs",
     "recording-server.mjs",
     "recording-server.mjs",
     "recording-server.mjs",
@@ -368,7 +362,7 @@ test("NEGATIVE CONTROL: the comparison rejects a changed grant, a changed order 
     "a REORDERED allowlist passed the comparison — this is the gap O1's sort leaves, and the reason this file compares strings");
   assert.ok(!eq({ ...row, mcpConfig: row.mcpConfig.replace("recording-server.mjs", "band-server.mjs") }, row),
     "a swapped server SCRIPT passed the comparison");
-  assert.ok(!eq({ ...row, groups: ["recording-blind-frame"] }, row),
+  assert.ok(!eq({ ...row, groups: ["recording-matter-frame"] }, row),
     "the wrong stage's group passed the comparison");
 });
 
