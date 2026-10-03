@@ -5853,6 +5853,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-near-records-are-fetched-before-the-judges-read.test.mjs": {
+          "tests": 8,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
         "the-notice-goes-to-whoever-asked.test.mjs": {
           "tests": 10,
           "asserts": 28,

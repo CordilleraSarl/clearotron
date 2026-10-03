@@ -30,13 +30,10 @@ import { serve } from "./stdio-server.mjs";
 import { loadPile } from "../../pile.mjs";
 import { makeOwnerTools, OWNER_TOOLS, appendRequestLog } from "../../owner-tools.mjs";
 import { driverDir } from "../../../shared/driver-dir.mjs";
-import { runRecordLogPath } from "../../../providers/_shared/ledger-path.mjs";
+import { fetchRunRecord, FETCH_MS } from "../../record-fetch.mjs";
 
 const SESSION = process.env.CLEAROTRON_GATHER_SESSION_KEY || "";
 const AGENT = process.env.CLEAROTRON_GATHER_AGENT || "";
-// A fetch that does not answer in this long is answered as a failure: a judge waiting on a hung register
-// is a judge doing nothing, and the record can still be read from the list.
-const FETCH_MS = 90_000;
 
 let tools = null;
 let loadFailure = null;
@@ -47,7 +44,8 @@ function toolsForRun() {
   try {
     const pile = loadPile(runDir);
     tools = makeOwnerTools(pile, {
-      fetchRecord: (id) => fetchOnOpen(runDir, pile.provider, id),
+      fetchRecord: (id) => fetchRunRecord({ runDir, providerId: pile.provider, id, agentId: AGENT, sessionKey: SESSION,
+        recordLog: process.env.CLEAROTRON_REGISTER_RECORD_LOG || null, timeoutMs: FETCH_MS }),
       log: (row) => appendRequestLog(driverDir(runDir, "reading-log.jsonl"), {
         ts: new Date(row.at).toISOString(), ...row, ...(SESSION ? { session: SESSION } : {}), ...(AGENT ? { agent: AGENT } : {}),
       }),
@@ -56,25 +54,6 @@ function toolsForRun() {
   return tools;
 }
 
-async function fetchOnOpen(runDir, providerId, id) {
-  if (!providerId) return { ok: false, cause: "this run's plan names no register, so no record is fetched" };
-  let provider;
-  try {
-    const { PROVIDERS } = await import("../../driver.config.mjs");
-    provider = Object.hasOwn(PROVIDERS, providerId) ? PROVIDERS[providerId] : null;
-  } catch (e) { return { ok: false, cause: `the register list could not be read: ${String(e?.message ?? e).slice(0, 120)}` }; }
-  if (!provider) return { ok: false, cause: `the register this run used, ${providerId}, is not one this build knows, so no record is fetched` };
-  if (typeof provider.recordFetch !== "function") return { ok: false, cause: `the register this run used, ${providerId}, fetches no record` };
-  const recordLog = process.env.CLEAROTRON_REGISTER_RECORD_LOG || runRecordLogPath(runDir);
-  let timer;
-  try {
-    return await Promise.race([
-      provider.recordFetch(id, { agentId: AGENT, sessionKey: SESSION, recordLog }),
-      new Promise((resolve) => { timer = setTimeout(() => resolve({ ok: false, cause: `the register did not answer in ${FETCH_MS / 1000}s` }), FETCH_MS); }),
-    ]);
-  } catch (e) { return { ok: false, cause: `the fetch failed: ${String(e?.message ?? e).slice(0, 120)}` }; }
-  finally { clearTimeout(timer); }
-}
 
 // What each tool does, declared (stdio-server.mjs says why every tool must): all of them read; the one
 // that opens a record may reach the register to fetch it. Logging a request is the audit, not a write.

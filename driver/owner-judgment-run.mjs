@@ -12,7 +12,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { driverDir } from "../shared/driver-dir.mjs";
 import { atomicWrite } from "./progress.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
-import { composeMessage, orderText, contextText, fateCounts, judgmentDiscardReason, FATES, JUDGES } from "./owner-judgment.mjs";
+import { composeMessage, orderText, contextText, fateCounts, judgmentDiscardReason, FATES, JUDGES, openingBands } from "./owner-judgment.mjs";
 
 const readJson = (path) => { try { return JSON.parse(readFileSync(path, "utf8")); } catch { return null; } };
 const readJsonl = (path) => {
@@ -215,4 +215,43 @@ export function writeJudgmentFiles(P, merged, { trigger, judges }) {
     judges, counts, record_fetches: recordFetches, fates: merged.fates,
   })}\n`);
   return { ...counts, recordFetches };
+}
+
+// ── THE RECORDS IN FRONT OF THE JUDGES, FETCHED FIRST WHERE THE LISTING CARRIES NO GOODS ─────────────
+//
+// A register can list a record's mark, owner, classes and status with no goods wording; the goods come only
+// with the full record. The bench's judges had the goods of every record in front of them, and on such a
+// register the step's judges had none, so a conflict could be set aside on a ground they could not check
+// (design, 2026-10-03). So before the judges read, the step fetches the full record of every record of the
+// owners in scope that the run does not hold yet. On a register whose listing carries the goods the run
+// holds them already, and nothing is fetched. The scope is a setting (owner-tools.mjs OPENING_FETCH_SCOPE):
+// with none, nothing is fetched first. A failed fetch is counted and the step goes on; that record is
+// fetched when a judge opens it, as before. The counts go on the run's record.
+
+/** The fetch-first scope's owners, by key: "floor", "band" (floor and near band), or none. */
+export function fetchScopeOwners(table, scope) {
+  if (!scope) return [];
+  const bands = openingBands(table);
+  if (scope === "floor") return bands.floor;
+  if (scope === "band") return bands.band;
+  throw new Error(`the fetch-first scope "${scope}" is not one this step knows (floor, band)`);
+}
+
+/**
+ * Fetch, one at a time, every record of the owners in scope that `pile` does not hold, with `fetch(id)`
+ * resolving to `{ ok }`. Returns the counts the run records: owners and records in scope, how many were
+ * held already, how many were asked for, and how many came back.
+ */
+export async function fetchScopeRecords({ pile, table, scope, fetch }) {
+  const owners = fetchScopeOwners(table, scope);
+  const ids = owners.flatMap((k) => (table.byKey.get(k)?.records ?? []).map((r) => r.id));
+  const asked = ids.filter((id) => !pile.readFullRecord(id));
+  let ok = 0;
+  for (const id of asked) {
+    let answer;
+    try { answer = await fetch(id); } catch { answer = null; }
+    if (answer?.ok) ok += 1;
+  }
+  if (asked.length) pile.refreshFullRecords?.();
+  return { scope: scope ?? null, owners: owners.length, records: ids.length, held: ids.length - asked.length, asked: asked.length, ok, failed: asked.length - ok };
 }

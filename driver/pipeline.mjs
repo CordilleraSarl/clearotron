@@ -71,9 +71,9 @@ import { classifyGroundsNote } from "./grounds-grammar.mjs";   // — a charged 
 import { buildCoverageAbsenceForm, coverageAbsenceGaps, renderCoverageLedgerJsonFromForm, settleCoverageRowsFromFacts } from "./coverage-form.mjs";
 import { unionCoverageForm } from "./coverage-union.mjs";
 import { loadPile, registerDecisionsFor } from "./pile.mjs";
-import { makeOwnerTools, MESSAGE_TABLE_CHARS, OPENING_CEILING_PAGES } from "./owner-tools.mjs";
+import { makeOwnerTools, MESSAGE_TABLE_CHARS, OPENING_CEILING_PAGES, OPENING_FETCH_SCOPE } from "./owner-tools.mjs"; import { fetchRunRecord } from "./record-fetch.mjs";
 import { firstTablePages, openingBands, mergeJudgments, writeJudgmentFacts, checkJudgmentFile, JUDGES } from "./owner-judgment.mjs";
-import { composeJudgmentMessage, acceptedAttemptWindow, ownersLookedUp, recordOwnerIndex, writeJudgmentFiles, judgmentSeam, readAcceptedJudgment, writeAcceptedJudgment, judgesForPass, judgeOutcomes } from "./owner-judgment-run.mjs";
+import { composeJudgmentMessage, fetchScopeRecords, acceptedAttemptWindow, ownersLookedUp, recordOwnerIndex, writeJudgmentFiles, judgmentSeam, readAcceptedJudgment, writeAcceptedJudgment, judgesForPass, judgeOutcomes } from "./owner-judgment-run.mjs";
 import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStamp, readCoverageForm, readCoverageFormInput, stampedFormFault, waitingFamilyStates, writeCoverageForm } from "./coverage-form-io.mjs";
 import { releasedFamilyQids, readWithheldFamilies } from "./withheld-families.mjs";   // the waiting families the reading turn released join as dictated entries
 
@@ -2858,6 +2858,8 @@ async function runOwnerJudgment(ctx, { trigger = "fresh", force = false, model =
   }
   const tools = makeOwnerTools(pile);
   const table = tools.table;
+  const fetchedFirst = table && OPENING_FETCH_SCOPE ? await fetchScopeRecords({ pile, table, scope: OPENING_FETCH_SCOPE, fetch: (id) => fetchRunRecord({ runDir: P.runDir, providerId: pile.provider, id }) }) : null;
+  if (fetchedFirst) runLog(P.runDir, { event: "owner-records-fetched-first", trigger, ...fetchedFirst });   // the billed fetches, counted
   const facts = writeJudgmentFacts(P.ownerJudgmentFacts, { pile, framework: ctx.framework ?? null });
   const opening = table ? firstTablePages(tools.serve, MESSAGE_TABLE_CHARS, { ...openingBands(table), ceilingPages: OPENING_CEILING_PAGES }) : { pages: 0, text: "", keysShown: [], cut: null };
   const message = composeJudgmentMessage({
