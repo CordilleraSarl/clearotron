@@ -26,6 +26,7 @@ import { dirname, join } from "node:path";
 import { bandIndex, normalizeBand } from "./framework.mjs";
 import { ownerKey, CLOSENESS, isLive } from "./owner-table.mjs";
 import { normalizeRecordUri } from "./registry-fidelity.mjs";
+import { methodDictation, checkRatingInputs } from "./framework-method.mjs";
 
 // ── THE WORDS THE JUDGES READ ────────────────────────────────────────────────────────────────────────
 //
@@ -85,6 +86,26 @@ export const ANSWER_FORM = Object.freeze({
   },
 });
 
+/**
+ * The form a judge answers in. On a framework that states a method (framework-method.mjs) every owner
+ * considered also gives the framework's inputs, one field per input under the framework's own label, each
+ * described by its values alone, as the two reads are; the program's schema requires them on every owner,
+ * set aside included, as it does the reads. The table check reads them on a carried owner only (checkAnswer).
+ * With no method this is ANSWER_FORM itself. PURE.
+ */
+export function answerFormFor(method) {
+  if (!method?.inputs?.length) return ANSWER_FORM;
+  const values = (vs) => (vs.length === 1 ? `\`${vs[0]}\`.` : `${vs.slice(0, -1).map((v) => `\`${v}\``).join(", ")} or \`${vs[vs.length - 1]}\`.`);
+  const item = ANSWER_FORM.properties.considered.items;
+  const inputs = {
+    type: "object", additionalProperties: false,
+    required: method.inputs.map((i) => i.label),
+    properties: Object.fromEntries(method.inputs.map((i) => [i.label, { type: "string", enum: [...i.values], description: values(i.values) }])),
+  };
+  return Object.freeze({ ...ANSWER_FORM, properties: { ...ANSWER_FORM.properties,
+    considered: { ...ANSWER_FORM.properties.considered, items: { ...item, required: [...item.required, "inputs"], properties: { ...item.properties, inputs } } } } });
+}
+
 // ── THE MESSAGE ──────────────────────────────────────────────────────────────────────────────────────
 //
 // The bench's composition: the order and the client's own materials, each unchanged, and the table's
@@ -139,12 +160,12 @@ export function contextText(profile, { ownNames = [], customerBind = null } = {}
 }
 
 /** The one message each judge receives. `tablePages` is `{pages, text}` from firstTablePages. PURE. */
-export function composeMessage({ order, context, ratingScale, workedExamples, tablePages = null }) {
+export function composeMessage({ order, context, ratingScale, workedExamples, tablePages = null, method = null }) {
   const section = (title, body) => `# ${title}\n\n${String(body).trim()}\n`;
   return [
     section("The order", order),
     section("The client's context", context),
-    section("The client's rating scale", ratingScale),
+    section("The client's rating scale", method ? `${String(ratingScale).trim()}\n\n${methodDictation(method)}` : ratingScale),
     section("The client's worked examples", workedExamples),
     ...(tablePages ? [section(tablePages.pages > 1 ? `The owners this search found, first ${tablePages.pages} pages` : "The owners this search found, first page", tablePages.text)] : []),
   ].join("\n");
@@ -211,7 +232,7 @@ export function bareIdResolver(ids) {
  * Check one answer. `pile` gives the record ids the run holds; `webUrls` the saved web addresses;
  * `framework` the client's scale (its manifest). Returns `{ ok, failures: [token…] }`. PURE.
  */
-export function checkAnswer(answer, { recordIds, webUrls = new Set(), framework }) {
+export function checkAnswer(answer, { recordIds, webUrls = new Set(), framework, method = null }) {
   const failures = [];
   if (!answer || typeof answer !== "object" || Array.isArray(answer)) return { ok: false, failures: ["judgment_no_answer"] };
   const considered = Array.isArray(answer.considered) ? answer.considered : null;
@@ -242,6 +263,13 @@ export function checkAnswer(answer, { recordIds, webUrls = new Set(), framework 
       if (!owners.length) failures.push(`judgment_carry_no_owner:${n}`);
       if (!String(d?.reason ?? "").trim()) failures.push(`judgment_carry_no_reason:${n}`);
       if (!isBand(rating)) failures.push(`judgment_rating_not_a_band:${n}:${rating.slice(0, 40)}`);
+      // ON A FRAMEWORK THAT STATES A METHOD the rating is read off the client's table from its inputs
+      // (design, 2026-10-02): the judge gives the inputs, and a band the table does not give for them is
+      // refused here, as a record the run does not hold is, and the judge answers again.
+      else if (method) {
+        const r = checkRatingInputs(method, { inputs: d?.inputs, band: framework ? normalizeBand(framework, rating) : rating, rated: true });
+        if (r.issue) failures.push(`judgment_${r.issue.code}:${n}`);
+      }
     } else if (d?.decision === "set_aside") {
       // "empty when set aside" — and a band, if a set-aside entry carries one anyway, is still a band.
       if (rating && !isBand(rating)) failures.push(`judgment_rating_not_a_band:${n}:${rating.slice(0, 40)}`);
@@ -338,6 +366,7 @@ export function mergeJudgments({ table = null, judges = [] } = {}) {
         rating: String(d?.rating ?? "").trim(),
         marks_alike: String(d?.marks_alike ?? "").trim(),
         goods_close: String(d?.goods_close ?? "").trim(),
+        ...(d?.inputs && typeof d.inputs === "object" && !Array.isArray(d.inputs) ? { inputs: d.inputs } : {}),
         reason: String(d?.reason ?? "").trim(),
         keys: ownersOfDecision(d, { keyOfRecord, tableKeys }),
       });
@@ -361,7 +390,7 @@ export function mergeJudgments({ table = null, judges = [] } = {}) {
     }
     return groups;
   };
-  const readsOf = (e) => ({ ...(e.marks_alike ? { marks_alike: e.marks_alike } : {}), ...(e.goods_close ? { goods_close: e.goods_close } : {}) });
+  const readsOf = (e) => ({ ...(e.marks_alike ? { marks_alike: e.marks_alike } : {}), ...(e.goods_close ? { goods_close: e.goods_close } : {}), ...(e.inputs ? { inputs: e.inputs } : {}) });
   const decisionOf = (e) => ({ judge: e.judge, decision: e.decision, owners: e.owners, records: e.records, web: e.web,
     ...(e.rating ? { rating: e.rating } : {}), ...readsOf(e), reason: e.reason });
   const ownersInPile = (keys) => [...keys].filter((k) => table?.byKey?.has(k)).map((k) => {
@@ -471,12 +500,12 @@ export const JUDGES = 2;
 export const JUDGMENT_FACTS_FILE = "owner-judgment-facts.json";
 
 /** Write the facts: every record id the pile holds, every saved web address, and the client's scale. */
-export function writeJudgmentFacts(file, { pile, framework }) {
+export function writeJudgmentFacts(file, { pile, framework, method = null }) {
   const webUrls = new Set();
   try {
     for (const cell of pile.webCells() ?? []) for (const c of cell.results ?? []) if (c?.url) webUrls.add(String(c.url).trim());
   } catch { /* no web results: none to cite */ }
-  const facts = { recordIds: pile.records.map((r) => r.id), webUrls: [...webUrls], framework: framework ?? null };
+  const facts = { recordIds: pile.records.map((r) => r.id), webUrls: [...webUrls], framework: framework ?? null, method: method ?? null };
   mkdirSync(dirname(file), { recursive: true });
   writeFileSync(`${file}.tmp`, JSON.stringify(facts));
   renameSync(`${file}.tmp`, file);
@@ -490,7 +519,7 @@ export function readJudgmentFacts(file) {
     const f = JSON.parse(readFileSync(file, "utf8"));
     const recordIds = new Set();
     for (const id of f.recordIds ?? []) { recordIds.add(String(id)); const canon = normalizeRecordUri(String(id)); if (canon) recordIds.add(canon); }
-    return { recordIds, webUrls: new Set((f.webUrls ?? []).map(String)), framework: f.framework ?? null };
+    return { recordIds, webUrls: new Set((f.webUrls ?? []).map(String)), framework: f.framework ?? null, method: f.method ?? null };
   } catch { return null; }
 }
 

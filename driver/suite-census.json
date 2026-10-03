@@ -5787,6 +5787,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-judges-rate-through-the-clients-method.test.mjs": {
+          "tests": 7,
+          "asserts": 30,
+          "skips": 0,
+          "todos": 0
+        },
         "the-judges-read-the-lawyers-own-questions.test.mjs": {
           "tests": 2,
           "asserts": 6,

@@ -40,6 +40,7 @@ import { normalizeRecordUri } from "./registry-fidelity.mjs";
 import { ownerKey } from "./owner-table.mjs";
 import { sameOwner } from "./owner-judgment.mjs";
 import { bandIndex, normalizeBand } from "./framework.mjs";
+import { checkRatingInputs } from "./framework-method.mjs";
 
 /** A record id as both sides spell it, or "" for none. */
 const recordKey = (id) => String(normalizeRecordUri(String(id ?? "").trim()) ?? id ?? "").trim().toLowerCase();
@@ -116,7 +117,7 @@ export function readsForRating(given, band, manifest) {
  * risk chart that draws them, are replaced the same way; the use and enforcement meters stay as the call
  * wrote them.
  */
-export function stampDecidedRatings(doc, decisions, manifest) {
+export function stampDecidedRatings(doc, decisions, manifest, method = null) {
   const groups = groupsOf(decisions, manifest);
   const refusals = [];
   const findings = (Array.isArray(doc?.findings) ? doc.findings : []).map((f) => {
@@ -137,6 +138,15 @@ export function stampDecidedRatings(doc, decisions, manifest) {
     }
     const out = { ...f, band };
     delete out.borderline_between;
+    // THE INPUTS ARE THE JUDGES' TOO (design, 2026-10-02). On a framework that states a method they come
+    // from the judge whose rating was taken, as the two reads do, written as the framework writes them; the
+    // answer check already held that band to the table. Synthesis never rates, so inputs it sent leave.
+    delete out.inputs;
+    if (method) {
+      const given = inputsForRating(hit.flatMap((g) => g.given), band, manifest);
+      const r = given ? checkRatingInputs(method, { inputs: given, band, rated: true }) : null;
+      if (r?.inputs && !r.issue) out.inputs = r.inputs;
+    }
     const reads = readsForRating(hit.flatMap((g) => g.given), band, manifest);
     if (reads) {
       out.meters = { ...(f.meters && typeof f.meters === "object" ? f.meters : {}),
@@ -173,3 +183,14 @@ export function setAsideReasons(decisions) {
 
 /** A record id as the "also considered" list and the decisions both key it. */
 export const setAsideKey = recordKey;
+
+/**
+ * The framework's inputs that go with a rating: those of the judge who gave `band`, the lowest-numbered
+ * where several did, as that judge gave them. Null when that judge gave none (no method, or decisions from
+ * before the judges rated through one).
+ */
+export function inputsForRating(given, band, manifest) {
+  const same = (r) => (manifest ? normalizeBand(manifest, r?.rating) : String(r?.rating ?? "").trim()) === band;
+  const from = given.filter(same).sort((a, b) => (Number(a?.judge) || 0) - (Number(b?.judge) || 0))[0];
+  return from?.inputs && typeof from.inputs === "object" && !Array.isArray(from.inputs) ? from.inputs : null;
+}
