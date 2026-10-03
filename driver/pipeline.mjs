@@ -2858,10 +2858,13 @@ async function runOwnerJudgment(ctx, { trigger = "fresh", force = false, model =
   }
   const tools = makeOwnerTools(pile);
   const table = tools.table;
-  const fetchedFirst = table && OPENING_FETCH_SCOPE ? await fetchScopeRecords({ pile, table, scope: OPENING_FETCH_SCOPE, fetch: (id) => fetchRunRecord({ runDir: P.runDir, providerId: pile.provider, id }) }) : null;
+  const opening = table ? firstTablePages(tools.serve, MESSAGE_TABLE_CHARS, { ...openingBands(table), ceilingPages: OPENING_CEILING_PAGES }) : { pages: 0, text: "", keysShown: [], cut: null };
+  // Fetched for the owners the opening shows, never past its cut; a fetched record does not move the cut,
+  // since the table's lines carry no goods. Each fetch is billed to this run, as every register call is.
+  const fetchedFirst = table && OPENING_FETCH_SCOPE ? await fetchScopeRecords({ pile, table, scope: OPENING_FETCH_SCOPE, shown: opening.keysShown,
+    fetch: (id) => fetchRunRecord({ runDir: P.runDir, providerId: pile.provider, id, agentId: ctx.agent, sessionKey: `clearance-${ctx.run.slug}-${ctx.run.codename}-owner-records-first` }) }) : null;
   if (fetchedFirst) runLog(P.runDir, { event: "owner-records-fetched-first", trigger, ...fetchedFirst });   // the billed fetches, counted
   const facts = writeJudgmentFacts(P.ownerJudgmentFacts, { pile, framework: ctx.framework ?? null });
-  const opening = table ? firstTablePages(tools.serve, MESSAGE_TABLE_CHARS, { ...openingBands(table), ceilingPages: OPENING_CEILING_PAGES }) : { pages: 0, text: "", keysShown: [], cut: null };
   const message = composeJudgmentMessage({
     P, profile: ctx.profile, ownNames: ctx.exclusionSeed ?? [],
     ratingScalePath: frameworkFor(ctx.profile), workedExamplesPath: workedExamplesFor(ctx.profile),

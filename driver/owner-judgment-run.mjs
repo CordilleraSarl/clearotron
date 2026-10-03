@@ -225,8 +225,10 @@ export function writeJudgmentFiles(P, merged, { trigger, judges }) {
 // (design, 2026-10-03). So before the judges read, the step fetches the full record of every record of the
 // owners in scope that the run does not hold yet. On a register whose listing carries the goods the run
 // holds them already, and nothing is fetched. The scope is a setting (owner-tools.mjs OPENING_FETCH_SCOPE):
-// with none, nothing is fetched first. A failed fetch is counted and the step goes on; that record is
-// fetched when a judge opens it, as before. The counts go on the run's record.
+// with none, nothing is fetched first. Whatever the scope, only the owners the opening shows are fetched for:
+// the records are the ones on the judges' opening pages (design, 2026-10-03), and on a crowded pile the
+// opening's ceiling cuts the near band, so the fetch stops at the cut. A failed fetch is counted and the
+// step goes on; that record is fetched when a judge opens it, as before. The counts go on the run's record.
 
 /** The fetch-first scope's owners, by key: "floor", "band" (floor and near band), or none. */
 export function fetchScopeOwners(table, scope) {
@@ -238,12 +240,15 @@ export function fetchScopeOwners(table, scope) {
 }
 
 /**
- * Fetch, one at a time, every record of the owners in scope that `pile` does not hold, with `fetch(id)`
- * resolving to `{ ok }`. Returns the counts the run records: owners and records in scope, how many were
- * held already, how many were asked for, and how many came back.
+ * Fetch, one at a time, every record of the owners in scope that the opening shows (`shown`, by key) and
+ * that `pile` does not hold, with `fetch(id)` resolving to `{ ok }`. Returns the counts the run records:
+ * the owners fetched for and the owners in scope past the opening's cut, the records of the first, how
+ * many were held already, how many were asked for, and how many came back.
  */
-export async function fetchScopeRecords({ pile, table, scope, fetch }) {
-  const owners = fetchScopeOwners(table, scope);
+export async function fetchScopeRecords({ pile, table, scope, shown, fetch }) {
+  const onOpening = new Set(shown ?? []);
+  const inScope = fetchScopeOwners(table, scope);
+  const owners = inScope.filter((k) => onOpening.has(k));
   const ids = owners.flatMap((k) => (table.byKey.get(k)?.records ?? []).map((r) => r.id));
   const asked = ids.filter((id) => !pile.readFullRecord(id));
   let ok = 0;
@@ -253,5 +258,5 @@ export async function fetchScopeRecords({ pile, table, scope, fetch }) {
     if (answer?.ok) ok += 1;
   }
   if (asked.length) pile.refreshFullRecords?.();
-  return { scope: scope ?? null, owners: owners.length, records: ids.length, held: ids.length - asked.length, asked: asked.length, ok, failed: asked.length - ok };
+  return { scope: scope ?? null, owners: owners.length, pastTheCut: inScope.length - owners.length, records: ids.length, held: ids.length - asked.length, asked: asked.length, ok, failed: asked.length - ok };
 }
