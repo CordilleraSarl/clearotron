@@ -32,7 +32,8 @@ function listTools(runDir) {
     const timer = setTimeout(() => { child.kill(); reject(new Error("no answer from the server")); }, 15000);
     child.stdout.on("data", (d) => {
       buf += d;
-      const line = buf.split("\n").find((l) => l.includes('"id":7'));
+      // Only whole lines: an answer this size arrives in pieces, and a piece is not yet a line.
+      const line = buf.split("\n").slice(0, -1).find((l) => l.includes('"id":7'));
       if (!line) return;
       clearTimeout(timer);
       child.stdin.end();
