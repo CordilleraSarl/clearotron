@@ -1193,8 +1193,8 @@ export function findRegistryArithmeticIssues(text) {
       // most national registers actually do — is TEN YEARS FROM FILING, with registration landing
       // somewhere in between. Two live records from the 2026-07-28 worldwide run, both correct and both
       // failed by the old rule:
-      //   ZA SUPA STICKY  filed 2023-07-12  registered 2025-04-23  expires 2033-07-12  (filing +10)
-      //   PA TAKIS        filed 2023-10-19  registered 2025-04-16  expires 2033-10-19  (filing +10)
+      //   ZA FROSTY GRIP  filed 2023-07-12  registered 2025-04-23  expires 2033-07-12  (filing +10)
+      //   PA WAVA         filed 2023-10-19  registered 2025-04-16  expires 2033-10-19  (filing +10)
       // It blocked delivery of a finished report — "expiry 2033 is not a 10-year cycle from claimed
       // registration 2025" — over data that was right. So the cycle may anchor on EITHER year when both
       // are stated; an expiry that fits neither is still a real arithmetic fault and still fails.

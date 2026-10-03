@@ -83,16 +83,17 @@ test('THE MAPPING IS NOT SPECIAL-CASED TO ONE ROW: every stage the engine has pr
   assert.ok(from >= 0, 'STAGES not found in driver/stages.mjs — this guard needs updating with it')
   const to = src.indexOf('\nexport ', from + 10)
   const block = src.slice(from, to > 0 ? to : undefined)
-  // Both key forms: a hyphenated stage needs quotes, a bare word does not, and three of the fifteen
+  // Both key forms: a hyphenated stage needs quotes, a bare word does not, and two of the thirteen
   // are bare. Matching only the quoted form silently found 13 and read as a passing guard.
   //
   // 19 -> 16: the three send stages left with the delivery mode that was their only caller.
   // 16 -> 15: step 3's two stages became one, judged by owner.
+  // 15 -> 13: the mid-run reopening's two stages left.
   // The floor moves with the population or it stops being a measurement — but note what it is FOR: it
   // catches a truncated PARSE, not a shrinking engine. The bijection below is what catches a stage
   // arriving without a phrase.
   const stages = [...block.matchAll(/^ {2}"?([a-z0-9-]+)"?: \{/gm)].map((m) => m[1])
-  assert.ok(stages.length >= 15, `the stage list looks truncated: ${stages.length} found`)
+  assert.ok(stages.length >= 13, `the stage list looks truncated: ${stages.length} found`)
 
   const phrased = Object.keys(STAGE_PHRASE)
   assert.deepEqual(stages.filter((s) => !phrased.includes(s)), [],

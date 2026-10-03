@@ -27,17 +27,11 @@ import { reconcileGridLedger } from "../../providers/perplexity/src/core.js";   
 // Typed transport — the mock seat records coverage through the SHIPPED tool core, like the disposition
 // mock above it records rulings through recordDispositions. Called, not copied: a mock with its own
 // serialization would go green on a transport the product does not have.
-// — blind-frame's model reaches disk ONLY through the production receiver now, so the mock seat calls
-// it rather than writing the file. Same rule as recordDispositions above: called, not copied, so the call
-// capture, the rendered artifact and the tool-call pair all exist exactly as a real compliant turn leaves
-// them — and the suite exercises the transport e2e measured as never having executed.
-import { recordBlindFrame } from "../blind-frame-record.mjs";
 import { recordKnockoutAssess } from "../knockout-assess-record.mjs";
 import { recordKnockoutFrame } from "../knockout-frame-record.mjs";
 import { recordKnockoutReview } from "../knockout-review-record.mjs";
 import { recordSkeptic } from "../skeptic-record.mjs";   //, same rule: called, not copied
 import { recordSynthesis, uncarriedCoverageLimits } from "../synthesis-record.mjs";
-import { recordFrameDiff } from "../frame-diff-record.mjs";   //, third conversion — same rule again
 import { recordMatterFrame } from "../matter-frame-record.mjs";   // conversion 2 — same rule again
 import { recordClearanceVariants } from "../clearance-variants-record.mjs";   // conversion 3 — same rule again
 import { recordReportOverview } from "../report-overview-record.mjs";  // conversion 4 — the client-read shell
@@ -193,18 +187,6 @@ export function fixture(name, msg, dir = null) {
   // deleted — and it would hide the one thing the conversion is proven by, whether the call was made.
   // The knobs (MOCK_MEANING_ANGLES, MOCK_INTAKE_ASKS) keep their formats and are translated into fields in
   // applyStageWrites' recording branch, which drives the production receiver.
-  // Frame-omission design (PR): the blind re-derivation + the frame-diff prose (frame-diff's structured
-  // sibling is side-written in applyStageWrites). Dominant element NOVAPULSE mirrors the JOB mark.
-  // — NO FIXTURE BODY FOR THE MODEL. blind-frame hands values to `record_blind_frame` and the driver
-  // writes blind-frame-model.json, so a mock that returned a body here would be standing in for a seat
-  // taking the path this PR deleted. The write moved to applyStageWrites' recording branch, which drives
-  // the production receiver. MOCK_NO_BLIND_MODEL keeps its meaning and gains precision: the turn completes
-  // having made no CALL, so the stage still fails `missing_file:blind-frame-model.json` rather than passing
-  // on the silence — and now the absence of the call capture says which of the two happened.
-  //, third conversion — NO FIXTURE BODY FOR EITHER FRAME-DIFF ARTIFACT. The seat hands values to
-  // `record_frame_diff`; the driver serializes frame-diff.json and RENDERS frame-diff.md from the same
-  // parsed model. A fixture body here would be the mock taking the path this conversion deleted, and it
-  // would hide the one thing the conversion is proven by — whether the call was made at all.
   // CONVERSION 3 — NO FIXTURE BODY FOR variant-manifest.md OR .json. The seat hands values to
   // `record_clearance_variants` and the driver writes both, so a body here would be the mock taking the path
   // the conversion deleted. MOCK_STAR_FLOOR went with the ⭐ search floor itself at — the knob, its
@@ -245,16 +227,8 @@ export function fixture(name, msg, dir = null) {
     const gapsActive = gapsMode && (!closing || gapsMode === "persist" || gapsMode === "exempt");
     const gapStore = PLATFORMS[0];
     const gapCell = (v, pl) => gapsActive && v === gapVariant && (pl === gapStore || pl === "web");
-    let matrix = variants.flatMap((v) => PLATFORMS.map((pl) =>
+    const matrix = variants.flatMap((v) => PLATFORMS.map((pl) =>
       gapCell(v, pl) ? `| ${v} | ${pl} | not executed — coverage-limited (see ledger) |` : `| ${v} | ${pl} | No results |`)).join("\n");
-    // A source-channel sweep followup (frame-reopen / closure channel arm) ADDS matrix rows for the
-    // DICTATED variant scope — mirror the real contract so the merged canonical file actually changes
-    // when (and only when) a sweep turn completed. The dictated scope is the explicit "For EACH of
-    // these variants — a; b —" list when present (split arms), else every variant (single member).
-    if (/SOURCE CHANNELS|IN-SCOPE CHANNELS/.test(msg)) {
-      const dictated = msg.match(/For EACH of these variants — ([^—]+) —/)?.[1]?.split(";").map((s) => s.trim()).filter(Boolean);
-      matrix += "\n" + (dictated ?? variants).map((v) => `| ${v} | github.com | No results — supplemental source-channel sweep |`).join("\n");
-    }
     const exemptRow = gapsMode === "exempt"
       ? `\n| non-Latin reach (转码) | coverage-limited | TimeoutError('store cell') on ${gapStore} and web calls |`
       : "";
@@ -704,66 +678,6 @@ function synthesisFindingsInner(runDir = null, badFinding = false, actionsAbsent
   });
 }
 
-// Frame-omission design (PR): the machine artifacts the blind-frame / frame-diff stages emit —
-// blind-frame's is its WHOLE output since, frame-diff's is still a sibling of its prose.
-// blind-frame-model.json mirrors a valid cold re-derivation (dominant element NOVAPULSE = JOB mark).
-export function blindFrameModel() {
-  return JSON.stringify({
-    schema_version: 1, dominant_element: "NOVAPULSE",
-    variants: [
-      { value: "NOVAPULSE", direction: "drop", rationale: "the bare element" },
-      { value: "SAYBEL", direction: "phonetic", rationale: "sound-alike" },
-    ],
-    fields: [{ goods: "game software", on_field: true, rationale: "goods-overlap with the product" }],
-    sources: [{ channel: "developer ecosystem", rationale: "B2D product" }],
-    ranking_basis: "goods-overlap",
-  });
-}
-// NO `dominant_element` IN ANY OF THESE PAYLOADS, and that is the mock obeying the same schema a
-// real seat gets: the tool has no such property, and the driver binds the value from blindFrameModel()
-// above. A mock that kept sending it would be testing a call production can no longer make — which is the
-// one thing a mock seat must never do.
-// frame-diff.json: default = a clean diff (no directives). MOCK_FRAME_DIFF=reopen → one material field
-// directive (fires a register supplemental sweep) + a dominant-element gap (clamps a CLEAR verdict).
-// MOCK_FRAME_DIFF=source → one material SOURCE-CHANNEL omission (fires the common-law supplemental
-// sweep arm — the A1-split routing/deferral tests), no dominant gap.
-export function frameDiffModel() {
-  if (process.env.MOCK_FRAME_DIFF === "source")
-    return JSON.stringify({
-      schema_version: 1,
-      directives: [{ layer: "source", item: "github.com", observation: "applied-but-unsearched developer distribution channel", severity: "material" }],
-      dominant_element_gap: false,
-    });
-  if (process.env.MOCK_FRAME_DIFF === "reopen")
-    return JSON.stringify({
-      schema_version: 1,
-      directives: [{ layer: "field", item: "game software", observation: "off-fielded gaming cluster the blind model held on-field", severity: "material" }],
-      dominant_element_gap: true,
-    });
-  // Fix 2 — a DOMINANT-ELEMENT field class-gap whose item label names the classes (RUN1 project-halcyon
-  // shape: "Cl. 35/38 never class-pinned"). Drives the register CODE-DISPATCH arm (#1): deriveDirectiveRemedy
-  // parses {35,38} from the label and mints NOVAPULSE × [35,38] — never the item STRING × the matter's classes.
-  if (process.env.MOCK_FRAME_DIFF === "field-classgap")
-    return JSON.stringify({
-      schema_version: 1,
-      directives: [{ layer: "field", item: "Cl. 35 (retail/online-retail) and Cl. 38 (online comms)",
-        observation: "scope-ledger marks 35/38 applied but no query was ever class-pinned to 35 or 38 — surfaced only via 9/28/41/42 co-classification", severity: "dominant-element" }],
-      dominant_element_gap: true,
-    });
-  // Two class-gap directives, so a re-attempt can be seen to re-send only the one that failed.
-  if (process.env.MOCK_FRAME_DIFF === "field-classgap-two")
-    return JSON.stringify({
-      schema_version: 1,
-      directives: [
-        { layer: "field", item: "Cl. 35 (retail/online-retail) and Cl. 38 (online comms)",
-          observation: "scope-ledger marks 35/38 applied but no query was ever class-pinned to 35 or 38", severity: "dominant-element" },
-        { layer: "field", item: "Cl. 16 (printed matter)",
-          observation: "scope-ledger marks 16 applied but no query was ever class-pinned to 16", severity: "dominant-element" },
-      ],
-      dominant_element_gap: true,
-    });
-  return JSON.stringify({ schema_version: 1, directives: [], dominant_element_gap: false });
-}
 
 // B1 — one isolated report-card per finding, citing THAT finding's own record URI (so the provenance lint
 // passes). Reads findings.json from the run dir (out is <runDir>/report-cards/<ord>.md) to mirror the real
@@ -841,9 +755,8 @@ export function mockUnitBandWrite(runDir, axis, msg = "") {
   // Real-funnel fidelity: a RESUME re-emits the COMPLETE band "preserving each existing block's qid
   // VERBATIM" (the followup mandate) — the executor merge never drops a dictated slice. A resume followup
   // carries no "- qid …" plan listing, so namedBand alone would regenerate only the base/judgment blocks
-  // and silently drop the dictated-qid blocks; the identity-join (and the Fix-2 frame-reopen receipt
-  // refresh over it) would then read the axis unexecuted. Merge: fresh blocks + any prior QID block this
-  // re-emit did not restamp.
+  // and silently drop the dictated-qid blocks; the identity-join would then read the axis unexecuted.
+  // Merge: fresh blocks + any prior QID block this re-emit did not restamp.
   const fresh = JSON.parse(namedBand(axis, msg));
   const freshQids = new Set(fresh.filter((b) => b && b.qid).map((b) => b.qid));
   let kept = [];
@@ -1242,7 +1155,7 @@ export function applyStageWrites(msg, argv) {
     const withheld = mockWithholdWaitingFamilies(runDir, bound, msg);
     return `mock unit-note recorded through record_unit_note (band ${wroteBand ? "written" : "SKIPPED by a MOCK_NO_BAND knob"}${withheld ? `; ${withheld} waiting famil${withheld === 1 ? "y" : "ies"} withheld` : ""})`;
   }
-  if (/record_blind_frame|record_skeptic|record_frame_diff|record_matter_frame|record_clearance_variants|record_report_overview|record_report_card|record_doubt_closure|record_narrative_refutation|record_synthesis/.test(msg)) {
+  if (/record_skeptic|record_matter_frame|record_clearance_variants|record_report_overview|record_report_card|record_doubt_closure|record_narrative_refutation|record_synthesis/.test(msg)) {
     // — FROM THE ENGINE WIRING, NOT FROM `--add-dir` (runDirFromWiring above). This branch stands in for a RECORDING SERVER's
     // write, and a recording server learns its run from `CLEAROTRON_BAND_RUN_DIR` in the env gather-config
     // hands it (serverEnv() in driver/engine/mcp/gather-config.mjs) — never from the seat's directory
@@ -1257,8 +1170,8 @@ export function applyStageWrites(msg, argv) {
     // …and refuse rather than guess. A wrong dir here writes a run artifact into a source tree, which is
     // the kind of mess a green suite would hide: the stage would fail `missing_file` and the reason would
     // be somewhere else entirely.
-    if (!runDir) return "mock blind-frame: no CLEAROTRON_BAND_RUN_DIR in the engine wiring";
-    if (/(^|\/)(skills|profiles)$/.test(runDir)) return `mock blind-frame: CLEAROTRON_BAND_RUN_DIR is ${runDir}, not a run dir`;
+    if (!runDir) return "mock recording seat: no CLEAROTRON_BAND_RUN_DIR in the engine wiring";
+    if (/(^|\/)(skills|profiles)$/.test(runDir)) return `mock recording seat: CLEAROTRON_BAND_RUN_DIR is ${runDir}, not a run dir`;
     if (/record_skeptic/.test(msg)) {
       // MOCK_SKEPTIC carries the seat's answer in every existing scenario — "no flags surfaced" for a clean
       // audit, otherwise flag text. It is now split into VALUES rather than pasted into a file, which is what
@@ -1748,24 +1661,7 @@ export function applyStageWrites(msg, argv) {
       if (r && (r.error || r.refused)) return `mock matter-frame REFUSED by record_matter_frame: ${r.error ?? r.refused}`;
       return "mock matter-frame recorded through record_matter_frame";
     }
-    if (/record_frame_diff/.test(msg)) {
-      // THE KNOB IS TRANSLATED, NOT REWRITTEN. `MOCK_FRAME_DIFF` already holds exactly the object the seat
-      // used to save — clean / reopen / source / field-classgap, driving four different downstream arms —
-      // so it is parsed and SENT rather than written. Rewriting the scenarios would change what a dozen
-      // tests are about, and `frameDiffModel()` stays the single place their shapes live.
-      recordMockToolCall(runDir, "record_frame_diff", "recording-frame-diff");
-      const r = recordFrameDiff(runDir, JSON.parse(frameDiffModel()));
-      // A REFUSED CALL MUST NOT READ AS A CLEAN TURN — same rule as the skeptic branch. If the mock's
-      // fixture produces something the production parser rejects (an undispatchable firing directive, say),
-      // that is a harness bug and it says so here rather than leaving the stage to fail on a missing file
-      // two steps later with the cause somewhere else.
-      if (r && (r.error || r.refused)) return `mock frame-diff REFUSED by record_frame_diff: ${r.error ?? r.refused}`;
-      return "mock frame-diff recorded through record_frame_diff";
-    }
-    if (process.env.MOCK_NO_BLIND_MODEL) return "mock blind-frame: no call made (MOCK_NO_BLIND_MODEL)";
-    recordMockToolCall(runDir, "record_blind_frame", "recording-blind-frame");
-    recordBlindFrame(runDir, JSON.parse(blindFrameModel()));
-    return "mock blind-frame recorded through record_blind_frame";
+    return "mock recording seat: the message names no record tool this mock answers";
   }
   // ── KNOCKOUT lane: the frame plan + the assess chunks. Both are derived from the DRIVER's
   // own dictated inputs (instructed scope / the chunk's mark list + frozen framework), mirroring what a
@@ -2060,17 +1956,13 @@ export function applyStageWrites(msg, argv) {
       }
     }
     let content = /[\\/]report-cards[\\/]/.test(out) ? reportCardFixture(out) : fixture(basename(out), msg, dirname(out));
-    // A null fixture is a SUPPRESSION knob (MOCK_NO_BLIND_MODEL) — the turn "completes" and writes no
+    // A null fixture is a SUPPRESSION knob — the turn "completes" and writes no
     // file, which is the shape the stage's file-truth gate exists to refuse. Returned BEFORE any append
     // below, so a suppressed artifact can never land as the string "null" plus a marker: present-and-
     // invalid is a different failure from absent, and the test is about absent.
     if (content == null) return `mock turn completed without writing ${basename(out)}`;
-    // A frame-reopen resume carries a DISTINCT marker so its re-emit differs from any prior escalation/
-    // envelope re-emit of the same unit (else the byte-diff guard would see no change and skip it).
     if (/RESUMING your own register-unit session/.test(msg) && !process.env.MOCK_ESCALATION_NOOP)
-      content += /frame-INDEPENDENT re-derivation/.test(msg)
-        ? "\n<!-- frame-reopen: supplemental sweep -->\n"
-        : "\n<!-- escalation: revised in place -->\n";
+      content += "\n<!-- escalation: revised in place -->\n";
     writeFileSync(out, content);
     stalefindingsOnLintRepair(dirname(out), msg);
     // register-unit (the funnel) ALSO writes its complete named band — the load-bearing artifact the driver
@@ -2078,9 +1970,8 @@ export function applyStageWrites(msg, argv) {
     // Real-funnel fidelity: a RESUME re-emits the COMPLETE band "preserving each existing block's qid
     // VERBATIM" (the followup mandate) — the executor merge never drops a dictated slice. A resume followup
     // carries no "- qid …" plan listing, so namedBand alone would regenerate only the base/judgment blocks
-    // and silently drop the dictated-qid blocks; the identity-join (and the Fix-2 frame-reopen receipt
-    // refresh over it) would then read the axis unexecuted. Merge: fresh blocks + any prior QID block this
-    // re-emit did not restamp.
+    // and silently drop the dictated-qid blocks; the identity-join would then read the axis unexecuted.
+    // Merge: fresh blocks + any prior QID block this re-emit did not restamp.
     // THE BAND SIDE-WRITE MOVED and this branch is DELETED rather than left behind.
     // It keyed on `out` matching register-units/<axis>.md — the note — and the converted dispatch names no
     // path at all, so this branch could never fire again while reading as though it still covered the band.

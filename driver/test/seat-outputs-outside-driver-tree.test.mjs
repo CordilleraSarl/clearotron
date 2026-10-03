@@ -72,7 +72,7 @@ const stageDeclaringFiles = (root = DRIVER) => {
 // nothing is being skipped. Written as a floor rather than an equality because adding a stage is routine
 // and losing one from the walk is not.
 const TABLES = [
-  { file: "stages.mjs", stages: STAGES, P: paths(RUN), floor: 14 },   // 19 -> 16: the three send stages left with the delivery mode; 16 -> 14: placement and the digest became step 3, whose confined judges write nothing themselves
+  { file: "stages.mjs", stages: STAGES, P: paths(RUN), floor: 12 },   // 19 -> 16: the three send stages left with the delivery mode; 16 -> 14: placement and the digest became step 3, whose confined judges write nothing themselves; 14 -> 12: the second framing and its diff left with the mid-run reopening
   { file: "stages-knockout.mjs", stages: KO_STAGES, P: koPaths(RUN), floor: 2 },
 ];
 

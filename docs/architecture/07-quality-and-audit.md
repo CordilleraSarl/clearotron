@@ -74,15 +74,11 @@ tokens, never prose). Deliberately non-fatal: a checker outage must not bin comp
 adds a floor the skeptic cannot bypass: an axis whose every ledger row is `coverage-limited` (an
 accepted limit a re-run cannot close) is skipped; `deferred` and `confirmed-clean` rows escalate.
 
-**The blind pass** rebuilds the threat picture from the raw request alone — its declared inputs are
-*only* the inbound request, enforced down to the `--experiment` sandbox (listing the matter frame
-would leak the run's framing into the one pass that must not see it). The frame diff turns the
-comparison into structured directives; a mechanical **form-neighbourhood oracle** adds
-deterministically-generated near-form gaps (edit-1 exhaustive, phonetic families via
-Double-Metaphone keys) — the model may *add* candidates and rank; it may never define, shrink, or
-filter the mechanical floor. Directives reopen investigation once, bounded, with per-directive
-closure verified by re-running the same detector (`close-verify.mjs` — a byte-changed band with
-only a wrong-scope or empty block closes nothing; that exact false-close shipped once).
+**The mechanical form floor**: a **form neighbourhood** of deterministically-generated near-forms
+(edit-1 exhaustive, phonetic families via Double-Metaphone keys) is compiled into the search plan — the
+model may *add* candidates and rank; it may never define, shrink, or filter the mechanical floor. A
+planned near-form that does not run is held to the plan-to-band join at the fan-in, like every planned
+question.
 
 **The independent reviewer** (`narrative-refutation`) re-derives conclusions from the evidence and
 returns a verdict parsed by `parseVerdict` (`verify.mjs`), whose error posture is
@@ -152,10 +148,7 @@ What makes the coverage statement trustworthy:
 
 Register budgets deserve one honest sentence: the per-worker call budgets in the skill prose
 (enumerates, phoneme ≤ 5, image ≤ 10) are **observed, prompt-level budgets, not code-enforced
-quotas** — and so is the reopen detail-fetch ceiling (`CLEAROTRON_REOPEN_MAX_FETCH`, default 150).
-`reopenFetchCeiling` resolves the figure in code, then the reopen prompt builders
-(`buildFrameReopenFollowup`, `buildFrameReopenRetryMessage`) interpolate it into the instruction the
-model reads; nothing counts a run's detail-fetches and nothing refuses the next one. The bound that
+quotas**: nothing counts a run's calls against them and nothing refuses the next one. The bound that
 *is* code is the executor's enumerate resource guard (`CLEAROTRON_ENUMERATE_CEILING`): it owns the page
 loop and returns an honest `incomplete` descriptor for an over-ceiling band rather than a truncated
 one. Calls are metered per run (billing-grade ledger), never hard-capped.

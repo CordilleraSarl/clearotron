@@ -19,7 +19,6 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { coverageFormRows, renderCoverageLedgerJsonFromForm, buildCoverageForm, parseCoverageForm } from "../coverage-form.mjs";
 import { coverageUnitLabel, formRowUnitKey, ledgerUnitKey, parseCoverageLedgerJson } from "../coverage-ledger.mjs";
-import { blockSearchedClasses } from "../close-verify.mjs";
 import { describePlanEntry } from "../../providers/_shared/execute-plan.mjs";
 import { mintSupplementalEntries } from "../engine/mcp/supplemental.mjs";
 import { compileRegisterPlan, joinPlanToBands } from "../register-plan.mjs";
@@ -67,11 +66,10 @@ test("a goods slice's unit names its goods words, in the client's table and in t
   }
 });
 
-test("the executor's query names the goods words after the class tag, and close-verify still reads the classes", () => {
+test("the executor's query names the goods words after the class tag", () => {
   const goods = narrowed();
   const q = describePlanEntry(goods);
   assert.equal(q, "exact VELTRIN [cl 41] goods:entertainment");
-  assert.deepEqual(blockSearchedClasses({ query: q }), ["41"], "the goods words broke the class read-back");
   assert.equal(describePlanEntry(CORE), "exact VELTRIN [cl 41]", "a question with no goods words changed");
 });
 

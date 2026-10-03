@@ -38,7 +38,7 @@ const PROSE_STAGES = ["synthesis", "report-overview", "report-card"];
 // cover-note prose and there is nothing there to hold to a prose standard.
 // Step 3's judges are not listed: their message is composed by runOwnerJudgment (owner-judgment.mjs) and
 // names no skill at all; prose-voice.test.mjs holds them to the same rule.
-const MACHINE_STAGES = ["matter-frame", "clearance-variants", "frame-diff"];
+const MACHINE_STAGES = ["matter-frame", "clearance-variants"];
 
 const P = new Proxy({}, { get: (_t, k) => (k === "reportCard" ? (a) => `/r/card-${String(a)}.md` : `/r/${String(k)}`) });
 const CUSTOM = {

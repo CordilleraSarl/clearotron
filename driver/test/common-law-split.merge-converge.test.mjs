@@ -138,15 +138,15 @@ test("mergeGrids: an honestly-recorded NON-SPEC gap row survives the merge (spec
     "a non-spec gap whose cell got covered is dropped (cells[] still wins)");
 });
 
-// ── (4) e2e convergence: split closure THEN frame-reopen — the concurrent half followups re-merge to a
-//        canonical that CLEARS validators.commonLaw (the reopen/closure re-merge is now gated, not ungated) ──
+// ── (4) e2e convergence: split closure — the concurrent half followups re-merge to a
+//        canonical that CLEARS validators.commonLaw (the closure re-merge is gated, not ungated) ──
 const HERE = dirname(fileURLToPath(import.meta.url));
 const CLAUDE = join(HERE, "mock-claude.mjs");
 const JOB = {
   id: "clconv-job", msgId: "<clconv@x>", forwarder: "requester", forwarderDomain: "example.com",
   ref: "TMP8481", markName: "PROJECT NOVAPULSE", classes: [9, 41], provider: "corsearch",
 };
-const KNOBS = ["MOCK_CL_GAPS", "MOCK_FRAME_DIFF"];
+const KNOBS = ["MOCK_CL_GAPS"];
 
 async function run(env, id) {
   const root = mkdtempSync(join(tmpdir(), "clconv-"));
@@ -166,12 +166,12 @@ async function run(env, id) {
   return { res, events, messages };
 }
 
-test("e2e (split): coverage-closure THEN frame-reopen — the gated re-merge ships a canonical that passes validators.commonLaw", async () => {
+test("e2e (split): coverage-closure — the gated re-merge ships a canonical that passes validators.commonLaw", async () => {
   process.env.CORSEARCH_SESSION_KEY ||= "test-offline";
 // band-truth gate (2026-07-14): OFF in hermetic harnesses — mock runs never dial the provider, so the
 // production call ledger can never evidence their bands; the dedicated band-truth-gate tests turn it ON.
 process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
-  const { res, events, messages } = await run({ MOCK_CL_GAPS: "1", MOCK_FRAME_DIFF: "source" }, "conv");
+  const { res, events, messages } = await run({ MOCK_CL_GAPS: "1" }, "conv");
   assert.equal(res.ok, true, JSON.stringify(res));   // the in-function re-merge gate did NOT false-fail the happy path
   // concurrency: BOTH half followups were dispatched (each targets its own half findings file)
   for (const h of GRID_HALVES)
@@ -179,7 +179,7 @@ process.env.CLEAROTRON_BAND_TRUTH_GATE ||= "0";
       `a half-${h} common-law followup was issued`);
   // the re-merge ran more than once (fan-in + at least one supplementary re-merge), each now gated
   assert.ok(events.filter((e) => e.event === "common-law-merged").length >= 2, "the re-merge fired on a supplementary lane, not only fan-in");
-  // the load-bearing convergence assertion: the FINAL canonical the reopen/closure re-merge wrote is valid
+  // the load-bearing convergence assertion: the FINAL canonical the closure re-merge wrote is valid
   const p = join(res.runDir, "common-law-findings.md");
   const v = validators.commonLaw(p, readFileSync(p, "utf8"));
   assert.equal(v.ok, true, `the merged canonical clears the canonical validator (${v.reason})`);

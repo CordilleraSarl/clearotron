@@ -32,13 +32,14 @@ const readJsonl = (path) => {
  * is the run's list of the client's own owner names (pipeline.mjs, `ctx.exclusionSeed`). `readSkill(rel)` reads an instruction-tree file by its relative path (the framework and the examples
  * resolve in the deployment's tree exactly as every other stage resolves them).
  */
-export function composeJudgmentMessage({ P, profile, ownNames = [], ratingScalePath, workedExamplesPath, readSkill, tablePages }) {
+export function composeJudgmentMessage({ P, profile, ownNames = [], ratingScalePath, workedExamplesPath, readSkill, tablePages, method = null }) {
   return composeMessage({
     order: orderText(readJson(P.instructedScope), readJson(P.intakeAsks)?.asks ?? []),
     context: contextText(profile, { ownNames, customerBind: readJson(P.customerBind) }),
     ratingScale: readSkill(ratingScalePath),
     workedExamples: readSkill(workedExamplesPath),
     tablePages,
+    method,
   });
 }
 

@@ -78,15 +78,11 @@ const BASELINE = Object.freeze({});
 // THE BEFORE HALF OF THE DIFFERENTIAL. A converted stage's row is RETIRED from BASELINE, not deleted —
 // this is what each measured as while tool-free, and a conversion's whole claim is a change against it.
 // skeptic's row was measured on clean main (4508f126) before its conversion, same walk, same values.
+// blind-frame's and frame-diff's rows left with the two stages when the mid-run reopening was removed.
 const CONVERTED_BEFORE = Object.freeze({
-  "blind-frame": { groups: 0, allowedTools: false, mcpConfig: false, strictMcpConfig: false },
   "skeptic": { groups: 0, allowedTools: false, mcpConfig: false, strictMcpConfig: false },
-  // frame-diff's row, RETIRED rather than deleted by the third conversion. Measured on the same walk as
-  // the two above, and identical to them — every tool-free stage is passed no tool arguments at all, which
-  // is the fact the differential below is a change against.
-  "frame-diff": { groups: 0, allowedTools: false, mcpConfig: false, strictMcpConfig: false },
   // matter-frame, retired by conversion 2 — and the FIRST retirement that matters to the differential in
-  // its own right. The three above were already measured at zero Bash or near it; this stage was measured
+  // its own right. The stages converted before it were measured at zero Bash or near it; this stage was measured
   // at 21 calls with a write, so its row is the record of what a genuinely tool-USING stage looked like
   // before it was constrained for the first time.
   "matter-frame": { groups: 0, allowedTools: false, mcpConfig: false, strictMcpConfig: false },
@@ -210,37 +206,6 @@ test("the category holds EXACTLY the stages whose rows were retired, plus the on
   }
   assert.deepEqual(Object.keys(BASELINE).filter((s) => s in RECORDING_STAGES), [],
     "a converted stage is still in BASELINE — its row describes what it WAS, and belongs in CONVERTED_BEFORE");
-});
-
-test("⭐ THE ARGV DIFFERENTIAL — blind-frame gained all three flags, and gained NO retrieval server", () => {
-  // The category's founding comment demands exactly this: "it must be asserted at the argv level, not
-  // inferred from this map." Before and after, measured through the same walk, on the same stage.
-  const before = CONVERTED_BEFORE["blind-frame"];
-  const after = surfaceFor("blind-frame");
-
-  assert.deepEqual(before, { groups: 0, allowedTools: false, mcpConfig: false, strictMcpConfig: false },
-    "the BEFORE record moved; it is a historical measurement and must not be edited to fit");
-  assert.deepEqual(after, { groups: 1, allowedTools: true, mcpConfig: true, strictMcpConfig: true },
-    "blind-frame's argv surface is not what the conversion claims");
-
-  // THE CHANGE IN KIND, stated as the flip it is: a stage that was constrained by NOTHING is now
-  // constrained. That is what removes ambient Bash, and it is the whole safety question O3c answered.
-  assert.equal(before.allowedTools, false);
-  assert.equal(after.allowedTools, true);
-
-  // AND NO RETRIEVAL SERVER — the one promise this category can actually prove. The grant is the stage's
-  // own record tool and the seeded stage I/O, and nothing else; no bridge, no register, no perplexity.
-  const granted = allowedToolsFor(toolGroupsForStage("blind-frame")).split(/\s+/).filter(Boolean);
-  assert.deepEqual(granted.filter((t) => t.startsWith("mcp__")), ["mcp__recording-blind-frame__record_blind_frame"],
-    "blind-frame holds an mcp tool that is not its own record tool — the retrieval surface widened, which is the one thing this category promised not to do");
-  assert.deepEqual(granted.filter((t) => t.endsWith("__*")), [], "…and no wildcard bridge grant");
-
-  // THE NAME ROUND-TRIPS TO THE CONSUMER. contract-dictation-registry.mjs:67 parses grant tokens with
-  // /^mcp__[a-z0-9-]+__([a-z0-9_]+)$/ — the KEY takes hyphens and not underscores, the TOOL the reverse.
-  // A key legal where it is declared and unparseable where it is read grants nothing while reading as
-  // granted, so this asserts the LITERAL argv token against the regex that consumes it.
-  assert.match(granted.find((t) => t.startsWith("mcp__")), /^mcp__[a-z0-9-]+__([a-z0-9_]+)$/,
-    "the resolved grant token does not parse in the registry that reads it — it would read as no grant at all");
 });
 
 test("⭐ THE ARGV DIFFERENTIAL — skeptic gained all three flags, and gained NO retrieval server", () => {

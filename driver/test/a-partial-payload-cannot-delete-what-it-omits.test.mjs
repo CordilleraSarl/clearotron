@@ -40,8 +40,8 @@
 //
 // That is why this file plants BOTH directions. Dropping an OPTIONAL field asks whether the transport
 // deletes what a partial omits. Dropping a REQUIRED one asks whether the acceptor enforces what the
-// schema promises — and the first transport it was asked of said no: `record_blind_frame` declares
-// `fields` required and accepts a call without it.
+// schema promises — and the first transport it was asked of said no: a transport since removed with its
+// stage declared a field required and accepted a call without it.
 //
 // ── THE SCHEMAS ARE ASKED FOR, NOT SCANNED ──────────────────────────────────────────────────────────
 //
@@ -59,7 +59,6 @@ import { fileURLToPath } from "node:url";
 import { RECORDING_TOOLS } from "../engine/mcp/gather-config.mjs";
 import { acceptReportOverview } from "../report-overview-record.mjs";
 import { acceptClearanceVariants } from "../clearance-variants-record.mjs";
-import { acceptBlindFrame } from "../blind-frame-record.mjs";
 import { acceptSkeptic } from "../skeptic-record.mjs";
 import { acceptKnockoutAssess, recordKnockoutAssess } from "../knockout-assess-record.mjs";
 import { acceptKnockoutFrame, recordKnockoutFrame, knockoutFrameFiles } from "../knockout-frame-record.mjs";
@@ -173,20 +172,6 @@ const PLANTED = Object.freeze({
         { layer: "field", item: "game software", status: "applied", reason: "goods-overlap", reopen_trigger: "" },
         { layer: "source", item: "developer ecosystems", status: "dropped", reason: "off-channel for this product", reopen_trigger: "a developer-channel listing surfaces" },
       ],
-    },
-  },
-  record_blind_frame: {
-    expect: "refuses",
-    accept: acceptBlindFrame,
-    full: {
-      dominant_element: "VELTRIN",
-      variants: [
-        { value: "VELTRI", direction: "drop", rationale: "the element without its terminal N" },
-        { value: "VELTRYN", direction: "phonetic", rationale: "same sound, Latin-script respelling" },
-      ],
-      fields: [{ goods: "diagnostic software", on_field: true, rationale: "the actual product" }],
-      sources: [{ channel: "hospital procurement portals", rationale: "where a buyer meets the mark" }],
-      ranking_basis: "goods-overlap",
     },
   },
   // The positive control. Both of skeptic's declared fields are REQUIRED, so it has no partial to

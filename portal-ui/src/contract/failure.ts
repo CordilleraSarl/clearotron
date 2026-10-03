@@ -51,11 +51,9 @@
 export const STAGE_PHRASE: Readonly<Record<string, string>> = {
   'matter-frame': 'while framing the matter',
   'clearance-variants': 'while working out which variants to search',
-  'blind-frame': 'while framing the matter',
   'common-law': 'during the common-law search',
   'common-law-half': 'during the common-law search',
   'register-unit': 'during the register search',
-  'frame-diff': 'while reconciling what the searches found',
   'owner-judgment': 'while reading the register results',
   'skeptic': 'while checking its own reasoning',
   'synthesis': 'while forming the opinion',

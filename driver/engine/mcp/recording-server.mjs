@@ -5,12 +5,9 @@
 // ── WHAT THIS CATEGORY IS FOR, AND WHY IT IS NOT A RETRIEVAL GRANT ──────────────────────────────────
 //
 // The two-box model conflates "may reach the outside world" with "may hand back structure"
-// (gather-config.mjs:246-268). A stage converted to a typed return needs the second and not the first.
+// (gather-config.mjs:1064-1067 RECORDING_STAGES). A stage converted to a typed return needs the second and not the first.
 // This server carries ONLY the second: it writes the calling stage's own artifact into the calling
 // stage's own run directory, and it dials nothing.
-//
-// So the starvation blind-frame exists to have is meant to be preserved by CONSTRUCTION rather than by
-// promise — the stage's mcp config would name this server and nothing else.
 //
 // ✅ THAT IS NOW A MEASURED PROPERTY, and this paragraph used to say the opposite. It read "nothing is
 // wired: this module is granted to nothing and reachable by no stage" — true when written, false from the
@@ -33,15 +30,12 @@
 // path 1): a literal substring search over the calling run's OWN artifact tree, replacing the Bash
 // reads O3c measured the stage using. It still dials nothing and writes nothing — the category's
 // promise is about RETRIEVAL and writes, and a read bounded to CLEAROTRON_BAND_RUN_DIR widens neither.
-// Granted under the `recording-skeptic` key only; blind-frame's process serves it unreachably, the
-// same served-vs-granted delta as the record tools, pinned by the same census.
+// Granted under the `recording-skeptic` key only; every other recording stage's process serves it
+// unreachably, the same served-vs-granted delta as the record tools, pinned by the same census.
 import { serve } from "./stdio-server.mjs";
 import { recordSynthesis } from "../../synthesis-record.mjs";   // the writer
 import { FINDING_KEYS_CURRENT, COVERAGE_AREA_STATES } from "../../findings-model.mjs";
-import { recordBlindFrame } from "../../blind-frame-record.mjs";
-import { VARIANT_DIRECTIONS, RANKING_BASES } from "../../blind-frame-model.mjs";
 import { recordSkeptic } from "../../skeptic-record.mjs";
-import { recordFrameDiff } from "../../frame-diff-record.mjs";
 import { recordMatterFrame, INTAKE_ASK_OWNERS, SCOPE_BASES, MEANING_ANGLE_MAX_CHARS } from "../../matter-frame-record.mjs";
 import { recordClearanceVariants, SCOPE_LAYERS, SCOPE_STATUS } from "../../clearance-variants-record.mjs";
 import { recordReportOverview } from "../../report-overview-record.mjs";
@@ -58,20 +52,11 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { driverDir } from "../../../shared/driver-dir.mjs";   //
 import { VARIANT_CATEGORIES } from "../../variant-manifest-model.mjs";
-import { DIFF_LAYERS, DIFF_SEVERITIES } from "../../frame-diff-model.mjs";
 import { REGISTER_AXES } from "../../coverage-ledger.mjs";
 import { searchRunArtifacts, SEARCH_LIMITS } from "../../skeptic-search.mjs";
 import { recordKnockoutAssess } from "../../knockout-assess-record.mjs";
 import { recordKnockoutFrame } from "../../knockout-frame-record.mjs";
 import { recordKnockoutReview } from "../../knockout-review-record.mjs";
-
-async function record_blind_frame(params) {
-  const runDir = String(process.env.CLEAROTRON_BAND_RUN_DIR ?? "");
-  if (!runDir) {
-    return { error: "this server was started without a run — the driver wires it per run; there is no parameter for it and this tool never guesses one" };
-  }
-  return recordBlindFrame(runDir, params);
-}
 
 async function record_skeptic(params) {
   const runDir = String(process.env.CLEAROTRON_BAND_RUN_DIR ?? "");
@@ -79,14 +64,6 @@ async function record_skeptic(params) {
     return { error: "this server was started without a run — the driver wires it per run; there is no parameter for it and this tool never guesses one" };
   }
   return recordSkeptic(runDir, params);
-}
-
-async function record_frame_diff(params) {
-  const runDir = String(process.env.CLEAROTRON_BAND_RUN_DIR ?? "");
-  if (!runDir) {
-    return { error: "this server was started without a run — the driver wires it per run; there is no parameter for it and this tool never guesses one" };
-  }
-  return recordFrameDiff(runDir, params);
 }
 
 async function record_knockout_assess(params) {
@@ -235,70 +212,11 @@ async function search_run_artifacts(params) {
 serve({
   name: "recording",
   tools: [{
-    name: "record_blind_frame",
-    description:
-      "Hand back your cold threat model as VALUES. The driver serializes it and writes " +
-      "blind-frame-model.json, so you never format JSON and a stray brace cannot cost the run its model. " +
-      "The answer tells you what was stored, or names the exact defect token — in this turn, rather than " +
-      "an attempt later through the corrective ladder.",
-    inputSchema: {
-      type: "object",
-      required: ["dominant_element", "variants", "fields", "ranking_basis"],
-      properties: {
-        dominant_element: {
-          type: "string",
-          description: "The element the mark actually turns on, re-derived from the raw request alone.",
-        },
-        variants: {
-          type: "array",
-          description: "The neighbourhood, BOTH directions. At least one — an empty set is not a model.",
-          items: {
-            type: "object",
-            required: ["value", "direction", "rationale"],
-            properties: {
-              value: { type: "string" },
-              // ENUM, so `blindframe_direction_invalid` cannot arise from a typed call at all. A schema
-              // that cannot express a bad value has removed the defect; a validator that rejects one has
-              // only moved it.
-              direction: { type: "string", enum: [...VARIANT_DIRECTIONS] },
-              rationale: { type: "string", description: "One line. Why this neighbour is reachable." },
-            },
-          },
-        },
-        fields: {
-          type: "array",
-          description: "The field, by GOODS OVERLAP with the actual product — never by class number.",
-          items: {
-            type: "object",
-            required: ["goods", "on_field", "rationale"],
-            properties: {
-              goods: { type: "string" },
-              on_field: { type: "boolean", description: "Whether these goods are on the field of play." },
-              rationale: { type: "string" },
-            },
-          },
-        },
-        sources: {
-          type: "array",
-          description: "Real channels the mark would be met on. Optional.",
-          items: {
-            type: "object",
-            required: ["channel", "rationale"],
-            properties: { channel: { type: "string" }, rationale: { type: "string" } },
-          },
-        },
-        // ENUM for the same reason as `direction`.
-        ranking_basis: { type: "string", enum: [...RANKING_BASES] },
-      },
-    },
-    annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
-    handler: record_blind_frame,
-  }, {
     // ── SECOND OCCUPANT — the skeptic's transport ─────────────────────────────────────────────────
     //
     // Registered on the SAME script, granted under its OWN key (`recording-skeptic`, Shape 2): the
     // server serves every record tool, and the per-key allowlist is what keeps a sibling's tool
-    // uncallable — blind-frame's seat is never handed record_skeptic and vice versa. The census pins
+    // uncallable — no other recording seat is handed record_skeptic, and the skeptic none of theirs. The census pins
     // that mapping (every record tool has exactly one granting stage).
     name: "record_skeptic",
     description:
@@ -339,88 +257,6 @@ serve({
     },
     annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     handler: record_skeptic,
-  }, {
-    // ── THIRD OCCUPANT — frame-diff's transport, and the first to own TWO artifacts ───────────────
-    //
-    // Same Shape 2 as the two above: registered on this one script, granted under its own key
-    // (`recording-frame-diff`), so no sibling seat can call it. What is new is that accepting this call
-    // writes `frame-diff.json` AND renders `frame-diff.md` from the same parsed model — the stage's own
-    // contract already classifies the prose `mechanical:code-rendered`, and nothing in the driver
-    // reads it. See frame-diff-record.mjs for why the render takes the PARSED model rather than the
-    // received params.
-    //
-    // THE ASK CONTRACT RIDES THE REFUSAL, and that is the point of converting this stage rather than a
-    // quieter one. `parseFrameDiff` collects EVERY undispatchable firing directive into one throw; the
-    // seat now meets that list in the turn where restating is free, instead of at reopen with its
-    // session gone. The 2026-07-29 artifact carried four offenders against a three-attempt ladder.
-    name: "record_frame_diff",
-    description:
-      "Hand back the blind-model-vs-actual-scope diff as VALUES. The driver serializes frame-diff.json " +
-      "and renders frame-diff.md from it, so you never format JSON and never write the prose twin. A " +
-      "FIRING directive (severity dominant-element or material) must be dispatchable — its `item` is " +
-      "itself a mark-shaped search term, or `remedy.terms` names one — and the answer names EVERY " +
-      "offending directive at once, in this turn, so one restatement fixes them all. An EMPTY " +
-      "`directives` array IS the clean answer: the blind model matched the actual scope.",
-    inputSchema: {
-      type: "object",
-      // NO `dominant_element`. It was an echo of a value the driver already held two copies of,
-      // and the driver PREFERRED the echo over both — so a transcription slip retargeted the spine test
-      // that forces `dominant_element_gap`. `boundDominantElement` supplies it now, and the property is
-      // REMOVED rather than validated: a field the schema cannot express is a defect that cannot arise.
-      required: ["directives", "dominant_element_gap"],
-      properties: {
-        directives: {
-          type: "array",
-          description:
-            "One entry per omission the diff found. EMPTY is valid and is the clean answer, not a gap.",
-          items: {
-            type: "object",
-            required: ["layer", "item", "observation", "severity"],
-            properties: {
-              // ENUMS, so `framediff_layer_invalid` and `framediff_severity_invalid` cannot arise from a
-              // typed call at all — the doubt-closure-call.mjs rule: a schema that cannot express a bad value has
-              // REMOVED the defect, where a validator that rejects one has only moved it. Both tokens stay
-              // reachable through the dictated path, which the archive is full of.
-              layer: { type: "string", enum: [...DIFF_LAYERS] },
-              item: {
-                type: "string",
-                description:
-                  "For a FIRING variant directive this must be a mark-shaped search term (TAKIS, CORAL " +
-                  "MAGIC) or carry a remedy. A label — a parenthetical, an enumeration, more than about " +
-                  "four words — dispatches as a nil search that reads CLEAN, and is refused here.",
-              },
-              observation: { type: "string", description: "What the blind model saw that the scope did not." },
-              severity: { type: "string", enum: [...DIFF_SEVERITIES] },
-              remedy: {
-                type: "object",
-                description:
-                  "What to search, when the item is not itself the term. Required in effect for a firing " +
-                  "variant directive whose item is a label. The driver never guesses `term: item` — the " +
-                  "asker has to say what the search IS.",
-                properties: {
-                  terms: { type: "array", items: { type: "string" } },
-                  nice_classes: { type: "array", items: { type: "string" } },
-                  regions: { type: "array", items: { type: "string" } },
-                },
-              },
-            },
-          },
-        },
-        // TYPED boolean, which removes `framediff_gap_invalid` the same way the enums remove their pair.
-        // Deliberately REQUIRED and never defaulted: the driver re-checks this against the named dominant
-        // element and forces it true on any firing on-spine directive, so a seat that omits it is making
-        // no claim and must be told, not answered for.
-        dominant_element_gap: {
-          type: "boolean",
-          description:
-            "True when the dominant element is not fully enumerated. The driver holds the dominant "
-            + "element itself (from the blind model) and re-checks this against it — it will not hide a "
-            + "spine omission.",
-        },
-      },
-    },
-    annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
-    handler: record_frame_diff,
   }, {
     // ── CONVERSION 3 — THE VARIANT MANIFEST ───────────────────────────────────────────────────────
     //

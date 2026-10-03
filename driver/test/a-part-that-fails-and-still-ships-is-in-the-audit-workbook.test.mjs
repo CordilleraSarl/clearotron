@@ -77,8 +77,6 @@ test("the checks behind the report are one part, Machine QC, whichever of them d
   const cases = {
     "the reviewer's pass": { "_driver/skeptic.jsonl": jl([attempt(1, false, "missing_file")]) },
     "the review's re-check": { "_driver/narrative-refutation.jsonl": jl([attempt(1, false, "timeout")]) },
-    "the blind frame": { "_driver/blind-frame.jsonl": jl([attempt(1, false, "missing_file")]) },
-    "the frame diff": { "_driver/run.jsonl": jl([{ event: "case-law-decision", run: true }, { event: "frame-diff-skipped", reason: "model-unparseable: x" }]) },
     "the corrective pass, rolled back": { "_driver/run.jsonl": jl([{ event: "case-law-decision", run: true }, { event: "corrective-rollback", reason: "validator" }]) },
     "the crowd counts": { "_driver/run.jsonl": jl([{ event: "case-law-decision", run: true }, { event: "crowd-context-failed", fail: "boom" }]) },
   };

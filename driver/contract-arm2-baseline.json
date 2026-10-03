@@ -11,7 +11,7 @@
     "the baseline tracks named elements, and a rename is a new name. Regenerate rather than work around it.",
     "Measured 139 of 287 declared elements."
   ],
-  "total": 93,
+  "total": 84,
   "byStage": {
     "matter-frame": [
       "### Intake asks line shape — rendered by the driver from intake_asks[]",
@@ -47,12 +47,6 @@
       "variants[].category — one of core|phonetic|visual|transliteration|numeric|composite|other",
       "variants[].rationale — one line per variant",
       "watchlist_owners[] — the NAMED register owners the register must cover"
-    ],
-    "blind-frame": [
-      "Return shape — hand the model back through record_blind_frame, write NO file, return ONLY a 2-3 line summary",
-      "fields[] — {goods, on_field boolean, rationale} by goods-overlap with the actual product",
-      "ranking_basis — goods-overlap | class-number",
-      "sources[] — {channel, rationale} by the product's real channel"
     ],
     "common-law": [
       "BATCHING — split the keys into ceil(N/batch) batches of <=batch variants and concatenate the matrices",
@@ -93,13 +87,6 @@
       "the `risk: <category>` field inside that dictated ESCALATE line",
       "the escalation decision — which register axes carry a material, unresolved, genuinely closeable gap, and the one-line reason for each",
       "the verbatim ESCALATE string dictated for a `translit-too-generic` unit digest"
-    ],
-    "frame-diff": [
-      "Return shape — hand the diff back through record_frame_diff, write NO file, return ONLY a 2-3 line summary",
-      "directives[] — {layer: variant|field|source, item, observation, severity: dominant-element|material|minor}",
-      "dominant_element — bound by the driver from the blind model; the seat is not asked for it",
-      "dominant_element_gap — boolean",
-      "remedy — {terms, nice_classes, regions}"
     ],
     "synthesis": [
       "coverage_judgment.sufficient + reason — the sufficiency-to-sign decision",
