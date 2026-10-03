@@ -55,7 +55,7 @@ import { declinationCallPaths, readDeclinations } from "./declination-tool.mjs";
 import { reconcileDeclinationDuty, declinationDutyRefusal } from "./declination-duty.mjs";
 import { findingUris } from "./record-carry.mjs";   // one derivation of "which records did the findings name", called not copied
 import { stampDecidedRatings } from "./decision-ratings.mjs";
-import { foldAfterSave } from "./record-fold.mjs";   // once the delivery seam is passed, the saved record is folded again
+import { MODEL_RECORD_FILE } from "./record-layer.mjs";   // the model's own record, under the driver's layer
 
 export const NARRATIVE_FILE = "narrative.md";
 export const FINDINGS_FILE = "findings.json";
@@ -752,6 +752,9 @@ export function recordSynthesis(runDir, received, opts = {}) {
   const before = lastAccepted;   // the record this save replaces, for the touched record below
   try {
     writeFileSync(findingsAt, v.findings);
+    // THE MODEL'S OWN RECORD, kept beside findings.json. A save changes only this; the driver's writes are a
+    // layer over it, applied again after the stage that saved (record-layer.mjs, design 2026-10-03).
+    writeFileSync(driverDir(dir0, MODEL_RECORD_FILE), v.findings);
     writeFileSync(narrativeAt, v.narrative);
     // The last ACCEPTED record, stored only now, after the values passed. The touched record compares
     // against it, and the sentence cap reads changes against it. The next patch merges onto the last call
@@ -774,10 +777,6 @@ export function recordSynthesis(runDir, received, opts = {}) {
       captured: closeCapture({ ok: true }), capture_failed: captureFailed,
     };
   }
-  // ONCE THE DELIVERY SEAM IS PASSED, THE RECORD IS FOLDED AGAIN ON ACCEPTANCE (design, 2026-10-03). The
-  // call records above stay the model's own, the base for its next patch; findings.json becomes the folded
-  // record the reviewer, the cards and the delivery read. Before the seam this leaves the record as written.
-  foldAfterSave(dir0, findingsAt);
 
   return {
     written: [findingsAt, narrativeAt], refused: null,

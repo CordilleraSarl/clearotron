@@ -212,6 +212,8 @@ export const NOT_COUNTED_EVENTS = {
     "house-element-not-applied", "owner-screen-absent", "profile-mismatch", "reasonless-exits", "screen-gate-parse-gap",
     "screen-gate-unnamed-observed", "stated-divergence-findings", "stray-artifact",
     "stray-matter", "synthesis-duty-undischarged", "verdict-blocking-delivered",
+    // the driver's writes rebuilt over the model's record after a save (record-layer.mjs)
+    "layer-reapplied",
   ],
   "the twin of an incident counted under another record — its dispatch, its repair, its clamp or its failure": [
     // the post-repair fix pass (its dispatch counts under `post-repair-corrective`) and a resume that fell

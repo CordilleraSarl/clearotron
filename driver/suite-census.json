@@ -5649,6 +5649,18 @@
           "skips": 0,
           "todos": 0
         },
+        "the-drivers-layer-survives-a-repair-after-the-cards.test.mjs": {
+          "tests": 2,
+          "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-drivers-writes-are-a-layer-over-the-models-record.test.mjs": {
+          "tests": 8,
+          "asserts": 35,
+          "skips": 0,
+          "todos": 0
+        },
         "the-dry-run-asks-the-wall.test.mjs": {
           "tests": 5,
           "asserts": 19,
@@ -5718,12 +5730,6 @@
         "the-fold-receipt-names-the-model.test.mjs": {
           "tests": 5,
           "asserts": 11,
-          "skips": 0,
-          "todos": 0
-        },
-        "the-folded-record-is-the-record-from-the-seam-on.test.mjs": {
-          "tests": 9,
-          "asserts": 46,
           "skips": 0,
           "todos": 0
         },

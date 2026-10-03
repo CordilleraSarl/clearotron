@@ -1330,6 +1330,22 @@ export function applyStageWrites(msg, argv) {
         if (f1) f1.legal_position = `${f1.legal_position ?? ""} The registration was renewed in the searched class (repair).`.trim();
         writeFileSync(driverDir(runDir, "mock-redo-touched"), "1\n");
       }
+      // MOCK_REDO_ADDS_FINDING: that same first re-save after the verdict adds a finding the cards were never
+      // built for, a distinct conflict on its own record, as the next clone MOCK_FINDINGS_N would have made.
+      if (process.env.MOCK_REDO_ADDS_FINDING && existsSync(driverDir(runDir, "verdict.json")) && !existsSync(driverDir(runDir, "mock-redo-added"))) {
+        const last = (doc.findings ?? []).at(-1);
+        if (last) {
+          const ord = doc.findings.length + 1;
+          const f = structuredClone(last);
+          f.ordinal = ord;
+          f.mark = `PROJECT NOVAPULSE ${ord}`;
+          f.owner.name = `Mystery Owner ${ord} LLC`;
+          f.owner.registrations[0].uri = `/mark/us/9000000${ord}`;
+          if (f.meters?.mark_similarity) f.meters.mark_similarity.source = f.owner.registrations[0].uri;
+          doc.findings.push(f);
+        }
+        writeFileSync(driverDir(runDir, "mock-redo-added"), "1\n");
+      }
       let r = recordSynthesis(runDir, { findings: doc, narrative: sections });
       // The refusal names the family. Re-derive with that family's heal phrase and restate once —
       // the phrase per knob is the one `synthesisFindings` keys on, so this drives the SAME heal the
