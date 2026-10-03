@@ -579,7 +579,7 @@ test("a required field is enforced by the ACCEPTOR, because nothing before it en
 //
 // READING THE ACCEPTORS SAYS THAT CANNOT BE DONE FOR THESE THREE, and the reason is the same in all
 // three: `required[]` constrains the call as RECEIVED, while each acceptor validates a call MERGED onto
-// what the run already accepted, or judged against facts the run supplies. Those are different objects.
+// what the run already holds, or judged against facts the run supplies. Those are different objects.
 // Declaring the acceptor's demands here would refuse the corrective calls the driver's own dispatch text
 // instructs the seat to make.
 //
@@ -588,8 +588,8 @@ test("a required field is enforced by the ACCEPTOR, because nothing before it en
 const DECLARES_NONE_BY_DESIGN = Object.freeze({
   record_synthesis:
     "A call omitting `findings` or `narrative` IS the patch path, not an incomplete call — "
-    + "synthesis-record.mjs:659 recordSynthesis detects a partial by that absence and merges it onto the last accepted "
-    + "call before acceptSynthesis judges it. Declaring either required would refuse every corrective "
+    + "synthesis-record.mjs:676 recordSynthesis detects a partial by that absence and merges it onto the record the "
+    + "run's last call carried before acceptSynthesis judges it. Declaring either required would refuse every corrective "
     + "repair-composers.mjs tells the seat to send.",
   record_unit_note:
     "The one field its acceptor demands, `axis`, is never the caller's to send: the driver binds it per "
