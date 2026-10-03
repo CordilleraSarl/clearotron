@@ -1330,8 +1330,8 @@
           "todos": 0
         },
         "a-save-carrying-a-patch-list-is-a-patch.test.mjs": {
-          "tests": 4,
-          "asserts": 11,
+          "tests": 6,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
