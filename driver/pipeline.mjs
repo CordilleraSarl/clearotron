@@ -141,6 +141,7 @@ import { tallyRegisterCalls, DEFAULT_LEDGER_PATH, countLaneCalls } from "./provi
 import { runRecordLogPath } from "../providers/_shared/ledger-path.mjs";
 import { beginAnswerMemory, endAnswerMemory } from "../providers/_shared/answer-memory.mjs";
 import { emptyQueue, coerceQueue, mintItem, pendingItems, markFlushed, receiptKeyFor } from "./digest-queue.mjs";   // (t1cd) — the digest-trigger funnel
+import { foldFindingsFile, foldAfterSave, openPass, modelRecordPath, snapshotFold, restoreFold } from "./record-fold.mjs";   // the folded record from the delivery seam on
 import { writeStamp, stageStaleness, restamp, restampStage, staleOnPath, reconcileStamps, shaOf } from "./stage-freshness.mjs";
 import { parseManifestVariants, variantsParseFailure, findCoverageLimitedCells, partitionClosableCells, findSimilarListingSignals,
   GRID_HALVES, GRID_SEATS, MEANING_SEAT, splitGridSpec, halfOfTerm, balanceClosureCells, mergeGrids, mergeCommonLawFindings, openChannelRows,
@@ -154,7 +155,7 @@ import { runLint, flagLines, properNameCandidates } from "./predelivery-lint.mjs
 import { readAnchors } from "./anchor-reader.mjs";
 import { findEngagementReceipts } from "./engagement-receipt.mjs";
 import { plainRegisterFlags } from "./plain-register.mjs";
-import { parseFindingsJson, parseFindingsJsonLenient, consolidateFindings, deriveDisplayVerdict, worstLiveBand, bindRecommendation, compareBlockingPower, inDispositionMode, DISPOSITION_GROUP, deriveActionConditions, cardedParties, actionPartyReferences, quarantinedConditionRows, salvageRepairTargets, riskStatement, verdictStance, remapActionOrdinals, joinAskToAnswer, stripAskLabel, bandBorderlineDeclarations, reasonedNegativeGroups } from "./findings-model.mjs";
+import { parseFindingsJson, parseFindingsJsonLenient, deriveDisplayVerdict, worstLiveBand, bindRecommendation, compareBlockingPower, inDispositionMode, DISPOSITION_GROUP, deriveActionConditions, cardedParties, actionPartyReferences, quarantinedConditionRows, salvageRepairTargets, riskStatement, verdictStance, joinAskToAnswer, stripAskLabel, bandBorderlineDeclarations, reasonedNegativeGroups } from "./findings-model.mjs";
 import { foldCaption, foldCardRead } from "./card-budget.mjs";
 // S2 — the report card's mechanical frame, composed from the record instead of dictated (see below).
 import { carriesOwnFrame, composeCard } from "./card-frame.mjs";
@@ -4967,6 +4968,14 @@ function snapshotFindingsForCorrections(P, runDir) {
   try { raw = readFileSync(P.findings, "utf8"); } catch { /* legacy / not-yet-populated */ }
   if (raw == null) return null;
   const sha = createHash("sha256").update(raw).digest("hex");
+  // THE RECORD IN THE MODEL'S NUMBERING, beside the one on disk. The review's flags name findings in the
+  // model's numbering, so the corrective body compares the record the model wrote; once the delivered
+  // record is folded the two differ (record-fold.mjs). The fold is held too, for a rollback to put back.
+  const modelAt = modelRecordPath(runDir, P.findings);
+  let modelRaw = raw;
+  if (modelAt !== P.findings) { try { modelRaw = readFileSync(modelAt, "utf8"); } catch { modelRaw = raw; } }
+  const model = { raw: modelRaw, sha: modelRaw === raw ? sha : createHash("sha256").update(modelRaw).digest("hex") };
+  const fold = snapshotFold(runDir);
   try {
     const tmp = driverDir(runDir, "findings-pre-corrective.json.tmp");
     // PR-4 (snapshot-before-overwrite): store the FULL pre-corrective text, not just its sha — a
@@ -4976,7 +4985,7 @@ function snapshotFindingsForCorrections(P, runDir) {
     writeFileSync(tmp, JSON.stringify({ ts: new Date().toISOString(), sha, text: raw }, null, 2));
     renameSync(tmp, driverDir(runDir, "findings-pre-corrective.json"));
   } catch { /* advisory sidecar */ }
-  return { raw, sha };
+  return { raw, sha, model, fold };
 }
 /**
  *, T3b — THE CORRECTIVE PASS FAILED VALIDATION. RESTORE THE LAST GOOD STATE.
@@ -5024,6 +5033,7 @@ export function rollbackCorrectivePass(P, runDir, pre, fail) {   // @internal
     // Atomic, like every other write to this file: a half-restored findings.json is a worse state than
     // either of the two this is choosing between.
     atomicWrite(P.findings, pre.raw);
+    if (pre.fold) restoreFold(runDir, pre.fold);   // the record the model wrote and the map, as they stood
   }
   const record = { ts: new Date().toISOString(), reason: String(fail?.fail ?? "failed").slice(0, 200),
     restored: changed, preSha: pre.sha, failedSha: nowSha };
@@ -5068,9 +5078,11 @@ export function rollbackCorrectivePass(P, runDir, pre, fail) {   // @internal
  */
 export function repairUnnamedRemovals(P, runDir, pre, namedOrdinals, namedMarks, namedLines = []) {   // @internal
   if (!pre?.raw) return null;                                   // nothing held — nothing to compare against
+  // In the model's numbering: the flags name its ordinals, and a folded record renumbers, so a finding
+  // removed from the folded record would shift every ordinal after it (record-fold.mjs).
   let preDoc = null, postDoc = null, postRaw = null;
-  try { preDoc = JSON.parse(pre.raw); } catch { return null; }
-  try { postRaw = readFileSync(P.findings, "utf8"); postDoc = JSON.parse(postRaw); } catch { return null; }
+  try { preDoc = JSON.parse(pre.model?.raw ?? pre.raw); } catch { return null; }
+  try { postRaw = readFileSync(modelRecordPath(runDir, P.findings), "utf8"); postDoc = JSON.parse(postRaw); } catch { return null; }
   if (!preDoc || !postDoc || typeof postDoc !== "object") return null;
 
   const norm = (s) => String(s ?? "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
@@ -5140,6 +5152,7 @@ export function repairUnnamedRemovals(P, runDir, pre, namedOrdinals, namedMarks,
     leftRemoved: leftRemoved.map(brief),
   };
   atomicWrite(P.findings, JSON.stringify(merged, null, 2) + "\n");
+  foldAfterSave(runDir, P.findings);   // after the seam the repaired record is folded again, as a save's is
   try { atomicWrite(driverDir(runDir, "corrective-repair.json"), JSON.stringify(record, null, 2) + "\n"); }
   catch { /* sidecar is best-effort; the runLog event is the record that decides */ }
   return record;
@@ -5264,10 +5277,11 @@ async function enforceCorrectionsReachFindings(ctx, P, pre, resume, reviewText =
   const named = correctionNamedSet(P, null, reviewText);
   const readState = () => {
     let raw = null, corrections = null;
-    try { raw = readFileSync(P.findings, "utf8"); } catch { return { stale: false }; }
+    // the record the model wrote: a change the fold hides is still a change it made (record-fold.mjs)
+    try { raw = readFileSync(modelRecordPath(run.runDir, P.findings), "utf8"); } catch { return { stale: false }; }
     try { corrections = parseFindingsJsonLenient(raw).corrections; } catch { /* shape defects ride the normal ladder */ }
     const sha = createHash("sha256").update(raw).digest("hex");
-    return { stale: named.length > 0 && sha === pre.sha && !(corrections && corrections.applied), sha };
+    return { stale: named.length > 0 && sha === (pre.model?.sha ?? pre.sha) && !(corrections && corrections.applied), sha };
   };
   if (!readState().stale) return;
   note(`[corrections] findings.json unchanged after the corrective pass (review names: ${named.join(", ")}) — demanding the re-emit`);
@@ -6494,26 +6508,15 @@ function enrichFindingDeadlines(P, runDir, note, { nowMs = Date.now(), withinDay
   }
 }
 
+// THE SEAM'S FOLD. From here on every accepted save folds the record again on acceptance, so the record
+// the reviewer, the cards and the delivery read stays folded (record-fold.mjs, design 2026-10-03). doc 50 —
+// on a v4 record the merge base is the WORST BAND by the frozen manifest's order. No duplicates leave the
+// file byte-identical; a folded shape that does not validate keeps the record as written.
 function consolidateFindingsFile(P, note, manifest = null) {
-  try {
-    if (!existsSync(P.findings)) return;
-    const doc = JSON.parse(readFileSync(P.findings, "utf8"));
-    if (!doc || !Array.isArray(doc.findings) || doc.findings.length < 2) return;
-    // doc 50 — on a v4 record the merge base is the WORST BAND by the frozen manifest's order
-    const { findings, merges, ordinalMap } = consolidateFindings(doc.findings, (doc.schema_version ?? 1) >= 4 ? manifest : null);
-    if (!merges.length) return;                                  // no duplicates → leave the file byte-identical
-    const next = { ...doc, findings };
-    // spec 64 — actions follow the renumber: a merged-away ordinal remaps to its kept finding's new
-    // ordinal (the action still applies to the consolidated conflict — dropping the reference would
-    // silently un-condition a live demand).
-    if (Array.isArray(doc.actions)) next.actions = remapActionOrdinals(doc.actions, ordinalMap);
-    parseFindingsJson(JSON.stringify(next));                     // re-validate the consolidated shape (throws → catch keeps original)
-    atomicWrite(P.findings, `${JSON.stringify(next, null, 2)}\n`);   // B5 — a crash mid-write must never leave a truncated findings.json
-    for (const m of merges)
-      note(`[consolidate] ${m.owner} — ${m.mark}: folded ${m.dropped.length} duplicate filing(s) (ord ${m.dropped.join(", ")}) into one card`);
-  } catch (e) {
-    note(`[consolidate] skipped: ${String(e?.message || e).replace(/\s+/g, " ").slice(0, 100)}`);
-  }
+  const { merges, error } = foldFindingsFile(P.runDir, P.findings, manifest, { seam: true });
+  for (const m of merges)
+    note(`[consolidate] ${m.owner} — ${m.mark}: folded ${m.dropped.length} duplicate filing(s) (ord ${m.dropped.join(", ")}) into one card`);
+  if (error) note(`[consolidate] skipped: ${error.slice(0, 100)}`);
 }
 // minor (a): a finding earns a FULL prose card when composite ≥ 3 (on-field) OR level ∈ {A,B} (high legal
 // exposure even at a low practical composite — a mis-rated-low mark must not be reduced to a structured-only row).
@@ -7625,9 +7628,10 @@ async function applyReviewerCorrections(ctx, P, run, { verdict, synthesisKey, sy
     // The fix pass observes only the flags it was handed: a flag it never saw is not one it tried and
     // could not close.
     const rows = parseCorrections(handed?.text ?? readFileSync(P.seniorEyeReview, "utf8"));
-    const preDoc = preCorrective ? parseFindingsJsonLenient(preCorrective.raw) : null;
+    // The flags name findings in the model's numbering, so both sides are the record the model wrote.
+    const preDoc = preCorrective ? parseFindingsJsonLenient(preCorrective.model?.raw ?? preCorrective.raw) : null;
     let postDoc = null;
-    try { postDoc = parseFindingsJsonLenient(readFileSync(P.findings, "utf8")); } catch { /* shape defects ride the normal ladder */ }
+    try { postDoc = parseFindingsJsonLenient(readFileSync(modelRecordPath(run.runDir, P.findings), "utf8")); } catch { /* shape defects ride the normal ladder */ }
     correctionsApplied = buildCorrectionsApplied(rows, preDoc, postDoc);
     // — A CLAIM MAY NOT OUTLIVE ITS EVIDENCE, AND A DEMOTED STAMP MAY NOT COME BACK.
     //
@@ -7967,6 +7971,9 @@ async function pipelineInner(job, opts = {}) {
   // BEFORE doc 50 backfills its framework sidecar from the frozen frameworkPath (deploy-boundary case) so
   // the v4 gates always have vocabulary; a run that already has one reads it verbatim (never re-derived).
   attachFramework(ctx);
+  // A pass opens before the delivery seam: until this pass's seam folds the record, a save writes the
+  // model's record as it is (record-fold.mjs).
+  openPass(ctx.paths.runDir);
 
   // ── (t1cd): the re-judgement FUNNEL ────────────────────────────────────────────────────────
   // The queue (digest-queue.mjs) is the only path to a non-fresh re-judgement of step 3 EXCEPT for the
@@ -11976,6 +11983,13 @@ async function pipelineInner(job, opts = {}) {
             lintActions = soft.actions ?? null; lintAskAnswers = soft.askAnswers ?? null; lintFourAnswers = soft.fourAnswers ?? null;
           } } catch { /* validators.findings owns the unparseable case */ }
         }
+        // The narrative's finding headings are in the model's numbering: once the record is folded, its
+        // write-ups join the record the model wrote (record-fold.mjs).
+        let lintNarrativeFindings = null;
+        const lintModelAt = modelRecordPath(run.runDir, P.findings);
+        if (lintModelAt !== P.findings) {
+          try { lintNarrativeFindings = parseFindingsJsonLenient(readFileSync(lintModelAt, "utf8")).findings; } catch { lintNarrativeFindings = null; }
+        }
         // wp50/wi2 — the sidecar tier joins the lint so overall-level prose can't contradict it.
         let lintVerdict = null;
         try { lintVerdict = JSON.parse(readFileSync(driverDir(run.runDir, "verdict.json"), "utf8")); } catch { /* legacy */ }
@@ -11994,7 +12008,7 @@ async function pipelineInner(job, opts = {}) {
           // is presence-gated and simply emits nothing here; they stay alive for replay-archive.mjs,
           // which passes the archived summary.
           reportMd, narrativeMd, auditMd, recordsByUri: assembled.records, searchedNames,
-          fetchFailures: recordFetchFailures, findings: lintFindings, findingsRaw: lintFindingsRaw, actionsRegister: lintActions, verdictDoc: lintVerdict,
+          fetchFailures: recordFetchFailures, findings: lintFindings, narrativeFindings: lintNarrativeFindings, findingsRaw: lintFindingsRaw, actionsRegister: lintActions, verdictDoc: lintVerdict,
           // WP-56 B2 — fresh v4 runs expect the standing mark-assessment (structural banner flag when
           // absent). The replay harness's runLint call never passes this, so archived runs never flip.
           markAssessment: lintMarkAssessment, markAssessmentExpected: lintSv >= 4,

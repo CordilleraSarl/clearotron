@@ -615,13 +615,18 @@ function synthesisFindingsInner(runDir = null, badFinding = false, actionsAbsent
   // A2 (parallel report-cards): MOCK_FINDINGS_N=<n> clones the base finding into n DISTINCT conflicts
   // (own ordinal/mark/owner/URI, so consolidation never folds them; band-rated, so each earns a full-
   // prose card). n=1 (the default) is byte-identical to the historical single-finding fixture.
+  // MOCK_FINDINGS_TWIN=<ordinal> makes that clone a second filing of finding 1 instead: the same owner and
+  // mark on its own record, which consolidation folds into finding 1 before the cards are built.
   const n = Math.max(1, Number(process.env.MOCK_FINDINGS_N || 1));
+  const twin = Number(process.env.MOCK_FINDINGS_TWIN || 0);
   const findings = [baseFinding, ...Array.from({ length: n - 1 }, (_, i) => {
     const ord = i + 2;
     const f = structuredClone(baseFinding);
     f.ordinal = ord;
-    f.mark = `PROJECT NOVAPULSE ${ord}`;
-    f.owner.name = `Mystery Owner ${ord} LLC`;
+    if (ord !== twin) {
+      f.mark = `PROJECT NOVAPULSE ${ord}`;
+      f.owner.name = `Mystery Owner ${ord} LLC`;
+    }
     f.owner.registrations[0].uri = `/mark/us/9000000${ord}`;
     f.meters.mark_similarity.source = f.owner.registrations[0].uri;
     f.source.resolved_link = baseFinding.source.resolved_link ? `https://tm.corsearch.com${f.owner.registrations[0].uri}` : "";

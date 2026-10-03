@@ -55,6 +55,7 @@ import { declinationCallPaths, readDeclinations } from "./declination-tool.mjs";
 import { reconcileDeclinationDuty, declinationDutyRefusal } from "./declination-duty.mjs";
 import { findingUris } from "./record-carry.mjs";   // one derivation of "which records did the findings name", called not copied
 import { stampDecidedRatings } from "./decision-ratings.mjs";
+import { foldAfterSave } from "./record-fold.mjs";   // once the delivery seam is passed, the saved record is folded again
 
 export const NARRATIVE_FILE = "narrative.md";
 export const FINDINGS_FILE = "findings.json";
@@ -773,6 +774,10 @@ export function recordSynthesis(runDir, received, opts = {}) {
       captured: closeCapture({ ok: true }), capture_failed: captureFailed,
     };
   }
+  // ONCE THE DELIVERY SEAM IS PASSED, THE RECORD IS FOLDED AGAIN ON ACCEPTANCE (design, 2026-10-03). The
+  // call records above stay the model's own, the base for its next patch; findings.json becomes the folded
+  // record the reviewer, the cards and the delivery read. Before the seam this leaves the record as written.
+  foldAfterSave(dir0, findingsAt);
 
   return {
     written: [findingsAt, narrativeAt], refused: null,
