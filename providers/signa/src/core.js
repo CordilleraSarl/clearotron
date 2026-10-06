@@ -794,7 +794,39 @@ export async function doSearch(apiKey, base, params, tctx, { mock = false } = {}
       + `asked and is not taken as this search's answer. The register decides this from the term, so asking the same `
       + `search again will be skipped the same way. ${searchTargetLabel(params).slice(0, 120)}` };
   }
+  // A text filter compares letters as written, so a term mixing alphabets matches nothing; see mixedScriptFilters.
+  const unreadable = mixedScriptFilters(r.body, body.filters?.mark_text);
+  if (unreadable.length) {
+    return { type: "text", text: `ERROR: signa_search — the register reports that the term mixes alphabets, and its `
+      + `${unreadable.join(", ")} filter compares letters as written, so it can match nothing. Its zero is not a count `
+      + `of filings and is not taken as this search's answer. ${searchTargetLabel(params).slice(0, 120)}` };
+  }
   return { type: "text", text: JSON.stringify(normalizeSearchResponse(r.body, params.query), null, 2) };
+}
+
+// ── A TEXT FILTER CANNOT READ A TERM THAT MIXES ALPHABETS ─────────────────────────────────────────
+//
+// The text filters compare letters as written. A term mixing Latin with Greek or Cyrillic letters
+// therefore matches no filing, and the register answers 200 with zero rows and an `info`-level
+// `mixed_script` warning naming the filter — in its own words, "a ranked q with the lookalike similarity
+// channel folds look-alike letters". Measured live on an invented term with one Cyrillic letter: the
+// ranked search found 219 filings, the containing filter 0. That zero would be the containing count on the
+// report, an exact zero on a figure the client reads. So the answer is refused, naming the filter, and
+// the count reads as unknown rather than none.
+//
+// Matched on the warning's `affected_filter` (`mark_text_<op>`) against the filter this request sent; a
+// warning that names no filter counts against any text filter the request carried.
+export function mixedScriptFilters(body, markText) {
+  const sent = Object.keys(markText && typeof markText === "object" ? markText : {});
+  if (!sent.length) return [];
+  const warnings = Array.isArray(body?.search_meta?.warnings) ? body.search_meta.warnings : [];
+  const out = [];
+  for (const w of warnings) {
+    if (String(w?.code ?? "") !== "mixed_script") continue;
+    const named = String(w?.affected_filter ?? "").replace(/^mark_text_/, "");
+    for (const op of named ? sent.filter((o) => o === named) : sent) if (!out.includes(op)) out.push(op);
+  }
+  return out;
 }
 
 // ── A CHANNEL THE REGISTER SKIPPED IS A QUESTION IT DID NOT ANSWER ─────────────────────────────────

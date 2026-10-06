@@ -110,3 +110,33 @@ test("CONTROL: a response with no credits header records null, never a free call
   const row = ledgerRows().slice(before).at(-1);
   assert.equal(row.credits_charged, null);
 });
+
+// ── A TERM THAT MIXES ALPHABETS ON A TEXT FILTER ────────────────────────────────────────────────────
+// The text filters compare letters as written, so such a term matches nothing and the register answers
+// zero rows with an `info`-level `mixed_script` warning. That zero would be the containing count.
+const MIXED = "ZYTHЕRMO";   // a Cyrillic capital E among Latin letters
+const mixedAnswer = (filter) => ({ ...answer([{ code: "mixed_script", severity: "info", affected_filter: filter, message: "invented" }]),
+  data: [], pagination: { cursor: null, total_count: 0, total_count_approximate: false } });
+
+test("a containing count on a term that mixes alphabets is not an exact zero", async () => {
+  const reg = await register(() => mixedAnswer("mark_text_contains"));
+  try {
+    const out = await doCountHits("k", reg.base, { query: MIXED, match: "contains" }, null);
+    assert.deepEqual(reg.seen[0].filters?.mark_text, { contains: [MIXED] }, "precondition: the containing filter was sent");
+    assert.match(out.text, /^ERROR/, "the register's zero for a term it cannot read reached the count as a real zero");
+    assert.match(out.text, /contains/);
+  } finally { await reg.close(); }
+});
+
+test("CONTROL: a ranked search is not refused for the same term, and a filter with no warning answers", async () => {
+  const ranked = await register(() => answer(null));
+  try {
+    const out = await doSearch("k", ranked.base, { query: MIXED, strategies: ["exact"] }, null);
+    assert.doesNotMatch(out.text, /^ERROR/);
+  } finally { await ranked.close(); }
+  const plain = await register(() => answer(null));
+  try {
+    const out = await doSearch("k", plain.base, { query: TERM, match: "contains" }, null);
+    assert.doesNotMatch(out.text, /^ERROR/, "a containing search with no warning is an answer");
+  } finally { await plain.close(); }
+});
