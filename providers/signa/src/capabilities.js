@@ -120,9 +120,24 @@ export const CAPABILITIES = Object.freeze({
   // NOTE the key. `filters.status` does not exist and the API rejects unknown filter keys outright
   // (`HTTP 400 Unrecognized key: status`) — which is what core.js was sending until this issue.
   countStatusFilter: "native",
-  // The request carries ONE `query` string. There is no OR-stack surface at all — an N-name band is N
-  // calls, so the planner must emit one term per entry.
+  // The request carries ONE `query` string for every predicate but one, so the general OR width stays 1:
+  // a phonetic, wildcard or owner band is one call per term, and anything that reads this width as
+  // "no OR at all" (the supplemental batch's one-question-per-name split) keeps reading it that way.
   maxOrWidth: 1,
+  // ── THE ONE PREDICATE THAT TAKES A LIST: exact spellings, up to 100 per request ─────────────────
+  //
+  // A list in `q` is a ranked search over every spelling through the channels the request names, and
+  // each record says which spellings found it (`match.terms`). The register takes up to 100 spellings
+  // when the channels are only `identical` and `lookalike` — which is exactly what an exact question
+  // sends — and 10 otherwise. Measured live against one search per spelling, by record id and paged to
+  // exhaustion: the same records on the exact band at 32 and at 100 spellings, look-alike-only records
+  // included, with every record's `match.terms` naming exactly the spellings that found it alone. The
+  // figures are on the tracker. The one documented difference — a list skips the word-by-word fuzzy
+  // retry — belongs to a channel the exact question does not send.
+  //
+  // So the planner stacks an exact spelling band at this width, and the kernel sends each stack as one
+  // request (`namesChunkFor` in core.js); every other predicate stays at `maxOrWidth`.
+  exactOrWidth: 100,
   // filters.nice_classes[] is a top-level OR filter — one call, no fan-out.
   classFilter: "native",
   // ── THE GOODS-AND-SERVICES TEXT FILTER ──────────────────────────────────────────────────────────

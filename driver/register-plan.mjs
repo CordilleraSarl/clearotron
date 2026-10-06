@@ -366,6 +366,15 @@ export const planMaxOrWidth = (capabilities) =>
   Number.isFinite(capabilities?.maxOrWidth) && capabilities.maxOrWidth >= 1
     ? Math.floor(capabilities.maxOrWidth) : PLAN_MAX_OR_WIDTH;
 
+/**
+ * The OR-stack width for an EXACT spelling band. A provider whose general width is narrower than what it
+ * can take for exact spellings declares `exactOrWidth` (signa: one term per request in general, up to 100
+ * exact spellings as one ranked list); every other provider stacks exact spellings at its general width.
+ */
+export const planExactOrWidth = (capabilities) =>
+  Number.isFinite(capabilities?.exactOrWidth) && capabilities.exactOrWidth >= 1
+    ? Math.floor(capabilities.exactOrWidth) : planMaxOrWidth(capabilities);
+
 // The plan emits ONE `wildcard` predicate; the provider contract splits it into three sub-capabilities.
 // Mirrors the executor's planPredicateParams anchoring exactly (trailing * → prefix/starts-with,
 // leading * → suffix/ends-with, both/neither → infix over the raw pattern).
@@ -1471,8 +1480,11 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
     const formTerms = [...formBand.exactQueries];
     const latinFormTerms = formTerms.filter((t) => !isNonLatinTerm(t));
     const nativeFormTerms = formTerms.filter((t) => isNonLatinTerm(t));
-    for (let i = 0; i < latinFormTerms.length; i += maxOrWidth)
-      push({ axis: "primary-sweep", predicate: "exact", terms: latinFormTerms.slice(i, i + maxOrWidth), expected_kind: "enumerate", provenance: "floor", qidSuffix: "+form" });
+    // An exact band stacks at the provider's EXACT width, which is wider than its general one where the
+    // register takes a list of exact spellings in one request (planExactOrWidth).
+    const exactWidth = planExactOrWidth(caps);
+    for (let i = 0; i < latinFormTerms.length; i += exactWidth)
+      push({ axis: "primary-sweep", predicate: "exact", terms: latinFormTerms.slice(i, i + exactWidth), expected_kind: "enumerate", provenance: "floor", qidSuffix: "+form" });
     for (const t of nativeFormTerms)
       push({ axis: "primary-sweep", predicate: "exact", term: t, expected_kind: "enumerate", provenance: "floor", qidSuffix: "+form" });
   }
@@ -2167,7 +2179,8 @@ export function validatePlanFeasibility(plan, { capabilities = null, maxOrWidth 
     if (!PLAN_PREDICATES.includes(e?.predicate)) add("unexecutable", `unknown predicate "${e?.predicate}"`);
     const names = Array.isArray(e?.terms) ? e.terms : e?.term != null ? [e.term] : [];
     if (!names.length || names.some((t) => !String(t ?? "").trim())) add("unexecutable", "empty term(s)");
-    if (Array.isArray(e?.terms) && e.terms.length > maxOrWidth) add("repairable", `OR-stack of ${e.terms.length} names exceeds the executor bound (${maxOrWidth}) — the executor runs it chunked`);
+    const width = e?.predicate === "exact" && capabilities ? Math.max(maxOrWidth, planExactOrWidth(capabilities)) : maxOrWidth;
+    if (Array.isArray(e?.terms) && e.terms.length > width) add("repairable", `OR-stack of ${e.terms.length} names exceeds the executor bound (${width}) — the executor runs it chunked`);
     for (const t of names) if (String(t).length > maxNameLength) add("repairable", `name exceeds ${maxNameLength} chars ("${String(t).slice(0, 40)}…") — provider-side truncation risk only`);
     if ((e?.nice_classes ?? []).some((c) => !Number.isFinite(Number(c)))) add("unexecutable", "non-numeric nice_class");
     if (e?.when && guardParentQid(e.when) != null && !qids.has(guardParentQid(e.when))) add("unexecutable", `when-guard targets unknown qid "${guardParentQid(e.when)}"`);

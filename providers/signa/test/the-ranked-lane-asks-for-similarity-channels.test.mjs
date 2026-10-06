@@ -80,11 +80,18 @@ test("a deterministic match carries no channels, because sending both is refused
   for (const name of RETIRED) assert.equal(name in body, false);
 });
 
-test("a LIST in the term field is refused, because it is a different search wearing the same name", () => {
-  // A scalar term is a ranked query and takes the channels above. A list in the same field ranks all its
-  // terms together, so neither its pages nor its total answer for any one term.
-  assert.throws(() => buildSearchRequest({ query: ["ZYTHERMO", "ZYTHERMA"], strategies: ["exact"] }),
-    /list/i, "a list reached the wire, where it would have narrowed the question silently");
+test("a LIST in the term field is sent only as exact spellings on the exact channels", () => {
+  // A list ranks all its terms together. The register answers it term for term only on the exact
+  // channels, and only up to its list width, so that is the one list sent; every other list is refused.
+  const ok = buildSearchRequest({ query: ["ZYTHERMO", "ZYTHERMA"], strategies: ["exact"] });
+  assert.deepEqual(ok.q, ["ZYTHERMO", "ZYTHERMA"]);
+  assert.deepEqual(ok.similarity, CHANNELS.exact);
+  for (const strategies of [["phonetic"], ["fuzzy"], ["prefix"], ["exact", "phonetic"]])
+    assert.throws(() => buildSearchRequest({ query: ["ZYTHERMO", "ZYTHERMA"], strategies }), /list/i,
+      `a ${strategies.join("+")} list reached the wire`);
+  assert.throws(() => buildSearchRequest({ query: ["ZYTHERMO", "ZYTHERMA"], match: "contains" }), /list/i);
+  assert.throws(() => buildSearchRequest({ query: Array.from({ length: 101 }, (_, i) => `ZYTHERM${i}`), strategies: ["exact"] }), /list/i,
+    "a list past the register's width reached the wire");
 });
 
 test("an owner-only request carries no term field under either spelling", () => {

@@ -317,9 +317,23 @@ export function buildSearchRequest(p) {
   // happens to arrive here.
   //
   // It is refused rather than joined or first-element-picked, for the same reason the stack is.
-  if (Array.isArray(p.query))
-    throw new Error("[signa] `query` reached the request builder as a list. A list in `q` ranks all its terms "
-      + "together, so neither its pages nor its total answer for any one term. Send one term per request.");
+  //
+  // THE ONE LIST THAT IS SENT: exact spellings on the exact channels, which `toSignaParams` builds only
+  // where `exactListable` holds. Anything else arriving as a list is still refused.
+  if (Array.isArray(p.query)) {
+    const channels = similarityFor(p.strategies);
+    const exactChannels = channels.length === 2 && channels[0] === "identical" && channels[1] === "lookalike";
+    const terms = p.query.filter((t) => String(t ?? "").trim());
+    if (p.match || !exactChannels || terms.length < 2 || terms.length > CAPABILITIES.exactOrWidth)
+      throw new Error("[signa] `query` reached the request builder as a list outside the one shape the register "
+        + "answers term for term: exact spellings on the identical and lookalike channels, 2 to "
+        + `${CAPABILITIES.exactOrWidth} of them. Send one term per request.`);
+    body.q = terms;
+    body.similarity = channels;
+    const listFilters = buildFilters(p);
+    if (Object.keys(listFilters).length) body.filters = listFilters;
+    return finishSearchRequest(body, p);
+  }
   const term = String(p.query ?? "").trim() ? p.query : null;
   const match = typeof p.match === "string" ? p.match.trim() : "";
   const filters = buildFilters(p);
@@ -332,8 +346,18 @@ export function buildSearchRequest(p) {
     body.similarity = similarityFor(p.strategies);
   }
   // No term at all is the owner-only shape: the owner filter is the whole question, and `similarity`
-  // "requires q" in the register's reference, so none is sent.
+  // "requires q" in the register's reference, so none is sent. With no owner either, the request would be
+  // an unfiltered listing of the register — a stack of names that could not go as a list arrives here
+  // with no term — so it is refused rather than sent.
+  if (term == null && !(typeof p.owner === "string" && p.owner.trim()))
+    throw new Error("[signa] a search reached the request builder with no term and no owner. A stack of names goes "
+      + "to this register whole only as exact spellings on the exact channels; send one term per request.");
   if (Object.keys(filters).length) body.filters = filters;
+  return finishSearchRequest(body, p);
+}
+
+/** What every search request carries whatever its term: territory layer, paging and the total. */
+function finishSearchRequest(body, p) {
   if (Array.isArray(p.jurisdictions) && p.jurisdictions.length && p.territory_match) {
     // Governs `filters.jurisdictions` ONLY — it has no effect on `filters.offices`, which is always
     // literal. Sent verbatim rather than defaulted here: the vendor's own default is `protection`, and
@@ -895,25 +919,57 @@ export async function doRecordFetch(apiKey, base, params, tctx, { mock = false }
 // speaks the same dialect as the code under test cannot find a dialect mismatch, which is why the one
 // below builds its params the way the kernel does and not the way doSearch prefers.
 //
-// `names` (an OR-stack) is deliberately NOT accepted: `maxOrWidth: 1` — verified against the live
-// specification, which carries no OR array on this endpoint — so a stack must reach here already split
-// by the planner. Silently searching only its first term would be a narrowed query wearing a complete
-// answer, which is this whole track's failure mode.
+// `names` (an OR-stack) goes to the register whole only as exact spellings, as one ranked list (see
+// `exactListable`); every other stack must reach here already split. Silently searching only its first
+// term would be a narrowed query wearing a complete answer, which is this whole track's failure mode.
+// ── WHEN A STACK OF SPELLINGS GOES AS ONE REQUEST ─────────────────────────────────────────────────
+//
+// An exact question over several spellings, each long enough for the ranked search, with no owner
+// clause: the shape the register answers as one ranked list exactly as it answers each spelling alone
+// (see `exactOrWidth` in capabilities.js for the measurement). The list's terms ride a POST body the
+// register caps at 8 KB, so a stack of long spellings is cut to fit with room for the filters.
+const LIST_BODY_BUDGET = 6000;
+const termBytes = (t) => Buffer.byteLength(JSON.stringify(String(t)), "utf8") + 1;
+function exactStackShape(p) {
+  if (String(p?.match_mode ?? "").trim() !== "exact") return null;
+  if (typeof p?.owner === "string" && p.owner.trim()) return null;
+  if (Array.isArray(p?.owners) && p.owners.length) return null;
+  const stack = Array.isArray(p?.names) ? p.names.filter(Boolean) : [];
+  if (stack.length < 2) return null;
+  if (stack.some((t) => foldedLength(t) < CAPABILITIES.rankedMinLength)) return null;
+  return stack;
+}
+/** How many spellings one request carries for this kernel query, or null when it is one per request. */
+export function namesChunkFor(p) {
+  const stack = exactStackShape(p);
+  if (!stack) return null;
+  const widest = Math.max(...stack.map(termBytes));
+  return Math.max(1, Math.min(CAPABILITIES.exactOrWidth, Math.floor(LIST_BODY_BUDGET / widest)));
+}
+/** May this stack go to the register whole, as one ranked list? */
+export function exactListable(p) {
+  const stack = exactStackShape(p);
+  return Boolean(stack) && stack.length <= namesChunkFor(p)
+    && stack.reduce((n, t) => n + termBytes(t), 0) <= LIST_BODY_BUDGET;
+}
+
 export function toSignaParams(p = {}) {
   const out = { ...p };
   if (p.name != null && p.query == null) out.query = p.name;
   // ── A ONE-TERM `names` WINDOW IS A TERM, NOT A STACK ────────────────────────────────────────────
-  // `maxOrWidth: 1` means the kernel CHUNKS a wide names band into windows of one and runs the full
-  // enumerate contract on each — that is what `namesChunkDefault: 1` is for. Every window therefore
+  // Outside an exact spelling stack the kernel CHUNKS a wide names band into windows of one and runs the
+  // full enumerate contract on each — that is what `namesChunkDefault: 1` is for. Every window therefore
   // arrives here as `names: ["one-term"]`, and with no mapping it came back "ERROR: query is
   // required": a names band could not run on this provider AT ALL, and the failure was reported as
   // chunk 1 failing rather than as the adapter refusing a shape the kernel had already split.
   //
-  // Refusing a MULTI-term stack is still right and is the assertion below — picking names[0] there
-  // would be a narrowed query wearing a complete answer. One term is not a choice between terms.
-  if (out.query == null && Array.isArray(p.names) && p.names.filter(Boolean).length === 1) {
-    out.query = p.names.filter(Boolean)[0];
-  }
+  // A MULTI-term stack is never narrowed to names[0] — that would be a narrowed query wearing a complete
+  // answer. It is sent whole, as one ranked list, only where `exactListable` says the register answers
+  // the list exactly as it answers each spelling alone; otherwise it reaches the request builder with no
+  // term and is refused there.
+  const stack = Array.isArray(p.names) ? p.names.filter(Boolean) : [];
+  if (out.query == null && stack.length === 1) out.query = stack[0];
+  else if (out.query == null && stack.length > 1 && exactListable(p)) out.query = stack;
   // ── STAGE 2 — A TERRITORY IS A STACK OF RIGHTS, AND THIS PROVIDER CAN SEARCH THE STACK ─────
   //
   // The plan's `regions` are the territories the matter ordered, already translated into this vendor's
@@ -975,7 +1031,7 @@ export function toSignaParams(p = {}) {
   // identical question relies on. So exact stays ranked from the floor up, and only a term below it
   // goes deterministic, where it is answered rather than refused.
   const mode = String(p.match_mode ?? "").trim();
-  if (mode === "exact" && foldedLength(out.query) < CAPABILITIES.rankedMinLength) out.match = "exact";
+  if (mode === "exact" && !Array.isArray(out.query) && foldedLength(out.query) < CAPABILITIES.rankedMinLength) out.match = "exact";
   else if (mode === "exact" || mode === "phonetic" || mode === "prefix") out.strategies = [mode];
   else if (mode === "starts_with" || mode === "ends_with" || mode === "contains") out.match = mode;
   // ── `default` IS THE COUNT LANE'S WORD FOR THE SAME UNANCHORED QUERY THE PLAN LANE CALLS `{}` ────
@@ -1116,6 +1172,9 @@ const { enumerate: __enumerate } = makeEnumerate({
   missingElementError: MISSING_ELEMENT_ERROR,
   capabilities: { ...CAPABILITIES.kernel },
   ceilingFor: ownerWindowCeiling,
+  // Exact spelling stacks go as one ranked list of up to `exactOrWidth`; every other names band stays at
+  // one term per request (`namesChunkDefault`).
+  namesChunkFor,
   // The kernel's default cheap-probe params are CORSEARCH'S — `{limit:1, fields:["uri"]}` — and `uri`
   // is not a field this vendor has. Its `fields` projection rejects unknown names, so inheriting the
   // default would 400 every count-first rescue while the ordinary search beside it worked. `limit: 1`
