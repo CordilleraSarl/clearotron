@@ -22,7 +22,7 @@ import { parseVariantManifestModel } from "../variant-manifest-model.mjs";
 import { termPredicateIssue } from "../../providers/_shared/term-shape.mjs";
 import {
   compileRegisterPlan, parseRegisterPlan, joinPlanToBands, deriveCoverageSkeleton,
-  validatePlanFeasibility, planMaxOrWidth, predicateGap, resolveRegions, wildcardCapabilityKey,
+  validatePlanFeasibility, planMaxOrWidth, planExactOrWidth, predicateGap, resolveRegions, wildcardCapabilityKey,
   unsupportedPredicateReason, uncoveredJurisdictionReason, PLAN_MAX_OR_WIDTH, findUnexecutedCleanClaims,
 } from "../register-plan.mjs";
 import { PROVIDER_CAPABILITIES, capabilitiesFor } from "../register-capabilities.mjs";
@@ -452,15 +452,18 @@ test("OR-width agreement, PER PROVIDER: the planner's split == the active provid
     assert.equal(planMaxOrWidth(caps), expected[id], `${id}: declared OR-width`);
     const plan = compile(caps, { form: wide });
     const stacks = plan.entries.filter((e) => Array.isArray(e.terms));
-    assert.ok(stacks.every((e) => e.terms.length <= caps.maxOrWidth),
+    // An exact spelling stack is bounded by the provider's EXACT width (signa: up to 100 as one ranked
+    // list, where its general width is 1); every other stack by its general width.
+    assert.ok(stacks.every((e) => e.terms.length <= (e.predicate === "exact" ? planExactOrWidth(caps) : caps.maxOrWidth)),
       `${id}: the planner must never dictate an OR-stack the executor would have to chunk-rescue`);
     assert.equal(stacks.flatMap((e) => e.terms).length, 197, `${id}: no name lost in the split`);
     assert.equal(new Set(stacks.map((e) => e.qid)).size, stacks.length, `${id}: each chunk owns a distinct qid`);
     assert.deepEqual(validatePlanFeasibility(plan, { capabilities: caps }), [],
       `${id}: the split plan is feasible against its OWN bound`);
   }
-  // signa: 197 names → 197 single-term entries (it has no OR surface at all)
-  assert.equal(compile(capabilitiesFor("signa"), { form: wide }).entries.filter((e) => Array.isArray(e.terms)).length, 197);
+  // signa: 197 exact names → stacks of its exact width, 100 and 97 (one ranked list per request), where
+  // its general width is still 1.
+  assert.deepEqual(compile(capabilitiesFor("signa"), { form: wide }).entries.filter((e) => Array.isArray(e.terms)).map((e) => e.terms.length), [100, 97]);
 });
 
 test("the kernel seam block is CONSISTENT with the contract it sits in (no second source of truth)", async () => {

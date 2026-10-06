@@ -25,7 +25,7 @@ import { normalizeSearchResponse } from "../src/core.js";
 const body = (extra = {}) => ({
   object: "list", data: [], has_more: false,
   pagination: { cursor: null, total_count: 0, total_count_approximate: false },
-  search_meta: { search_id: "srch_invented", query: "ZYTHERMO", strategies_used: [], match: "exact", ...extra },
+  search_meta: { search_id: "srch_invented", query: "ZYTHERMO", similarity_applied: ["identical", "lookalike"], ...extra },
   request_id: "req_invented",
 });
 
@@ -81,6 +81,6 @@ test("a malformed warnings field does not become one, and does not throw", () =>
 test("CONTROL: the rest of the normalised response is unchanged by this", () => {
   const out = normalizeSearchResponse(body({ warnings: [{ code: "mixed_script" }] }), "ZYTHERMO");
   assert.equal(out.search_id, "srch_invented");
-  assert.equal(out.match, "exact");
+  assert.deepEqual(out.similarity_applied, ["identical", "lookalike"]);
   assert.equal(out.query, "ZYTHERMO");
 });

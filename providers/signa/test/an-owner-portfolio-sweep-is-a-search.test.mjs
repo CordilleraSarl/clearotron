@@ -78,14 +78,17 @@ test("the three populations stay distinct — term alone, owner alone, and both 
   const owner = buildSearchRequest(planEntry({ owner: OWNER }));
   const both = buildSearchRequest(planEntry({ name: "ZYTHERMO", owner: OWNER }));
 
-  assert.equal(term.q, "ZYTHERMO", "the term rides `q` — the register retired `query`");
+  // An entry with no mode is the plan's unanchored question, which goes to the register as a text filter.
+  assert.deepEqual(term.filters?.mark_text, { contains: ["ZYTHERMO"] }, "the term rides the text filter");
   assert.equal(term.filters?.owner_name, undefined, "a term-only search must not acquire an owner clause");
 
   assert.equal("q" in owner, false, "an owner-only request carries no term key at all");
   assert.equal("query" in owner, false, "…and not under the retired spelling either");
+  assert.equal(owner.filters?.mark_text, undefined, "…nor a text filter");
+  assert.equal("similarity" in owner, false, "the register's channels require a term, and there is none");
   assert.equal(owner.filters?.owner_name, OWNER, "…and it does carry the owner clause, or it searches everything");
 
-  assert.equal(both.q, "ZYTHERMO");
+  assert.deepEqual(both.filters?.mark_text, { contains: ["ZYTHERMO"] });
   assert.equal(both.filters?.owner_name, OWNER,
     "both clauses ride ONE request — the intersection is a real narrowing, not one clause silently ignored");
 

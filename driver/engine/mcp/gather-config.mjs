@@ -107,7 +107,7 @@ export const REGISTER_SERVERS = {
   //     public page, and this provider publishes neither. Read 2026-08-22 across providers/signa/src: no
   //     vienna or figurative field anywhere in the core, the normaliser carries `imageAvailable`
   //     (`rec.has_media`) and nothing else about the mark's figure, `hasPublicRecordUrl: false` and
-  //     `resolved_link: null` with "Signa exposes no per-record public URL". Serving it would return a
+  //     `resolved_link: null` (no page per record of its own). Serving it would return a
   //     bare boolean under a name that promises comparable figurative data. NOT A PROBE: this is a read of
   //     the code and the vendor doc in this repo, and whether the live API has an image endpoint nobody
   //     wired is UNTESTED from here — euipo's `markImage` looked equally absent until `GET

@@ -83,8 +83,24 @@ export function refToOffice(ref) {
 // providers/_shared/answer-memory.mjs. The question is the base address, the method, the path and the
 // whole body, and never the credential; the base is in it so a test server and the register never share
 // an answer. With no memory for the run (the default), this is the plain fetch it always was.
+// ── WHAT EACH CALL COST, AS THE REGISTER STATES IT ──────────────────────────────────────────────
+//
+// The register charges by the credit and says how many on every response, `X-Credits-Charged`, errors
+// included (0). A search page and a record fetch differ tenfold, and the ledger's `tool` names the caller,
+// not the endpoint, so a run's spend could not be added up from the ledger: every figure was a guess. The
+// header is copied onto the ledger row with the endpoint it answered. NULL when the header is absent or
+// unreadable, never 0 — a missing figure is not a free call. A call answered from the run memory sent
+// nothing, so it is a real 0.
+const creditsCharged = (resp) => {
+  const v = resp?.headers?.get?.("x-credits-charged");
+  const n = v == null || String(v).trim() === "" ? NaN : Number(v);
+  return Number.isFinite(n) ? n : null;
+};
+const endpointOf = (method, path) => `${method} ${String(path).split("?")[0].replace(/^(\/v1\/trademarks\/)[^/]+/, "$1{id}")}`;
+
 export async function signaFetch(apiKey, base, path, { method = "GET", body = null, retries = 1, tctx = null } = {}) {
   const url = `${base}${path}`;
+  const endpoint = endpointOf(method, path);
   const headers = { Authorization: `Bearer ${apiKey}`, Accept: "application/json" };
   const init = { method, headers };
   if (body !== null) { headers["Content-Type"] = "application/json"; init.body = JSON.stringify(body); }
@@ -106,7 +122,7 @@ export async function signaFetch(apiKey, base, path, { method = "GET", body = nu
     // cache hit, so the run's usage shows the request was made and was not paid for.
     const { body: parsed, parseError } = parseJsonBody(held.raw);
     const ok = held.status >= 200 && held.status < 300;
-    logCall(tctx, { http_status: held.status, ok, attempts: 0, took_ms: Date.now() - t0, bytes: held.raw.length, cache_hit: true });
+    logCall(tctx, { http_status: held.status, ok, attempts: 0, took_ms: Date.now() - t0, bytes: held.raw.length, cache_hit: true, endpoint, credits_charged: 0 });
     note({ held: true, served: true, status: held.status });
     return { status: held.status, ok, url, body: parsed, raw: held.raw, parseError };
   }
@@ -119,14 +135,14 @@ export async function signaFetch(apiKey, base, path, { method = "GET", body = nu
       await new Promise((r) => setTimeout(r, 1500 * (i + 1)));
     }
   } catch (err) {
-    logCall(tctx, { http_status: 0, ok: false, attempts, took_ms: Date.now() - t0, bytes: 0, cache_hit: false });
+    logCall(tctx, { http_status: 0, ok: false, attempts, took_ms: Date.now() - t0, bytes: 0, cache_hit: false, endpoint, credits_charged: null });
     if (mem) note({ held: Boolean(held), status: 0 });
     throw err;
   }
   const raw = await resp.text();
   // The parse failure travels on `parseError` instead of being swallowed — providers/_shared/http-body.mjs.
   const { body: parsed, parseError } = parseJsonBody(raw);
-  logCall(tctx, { http_status: resp.status, ok: resp.ok, attempts, took_ms: Date.now() - t0, bytes: raw.length, cache_hit: false });
+  logCall(tctx, { http_status: resp.status, ok: resp.ok, attempts, took_ms: Date.now() - t0, bytes: raw.length, cache_hit: false, endpoint, credits_charged: creditsCharged(resp) });
   if (mem) {
     // In `watch` every request reaches this line, held or not, and the line says what the memory would
     // have done. The FIRST answer is the one kept: a later identical request is compared against it
@@ -180,7 +196,24 @@ export function rememberableAnswer(method, status, body, parseError) {
 // `match_mode: "starts_with"` for a trailing-`*` wildcard entry, and with no deterministic shape to
 // put it in, that entry fell through to a plain `exact` — a NARROWER query than the plan asked for,
 // answering as though it were the one requested.
-const DETERMINISTIC_MATCH = new Set(["similar", "exact", "starts_with", "ends_with", "contains"]);
+//
+// ── ON THE WIRE, A DETERMINISTIC MODE IS A TEXT FILTER, NOT `match` ──────────────────────────────
+//
+// The register retired `match` on the same date as `query` and `strategies`, and after that date it
+// refuses the parameter rather than ignoring it. That would take the containing count with it: a
+// refused request is an error, and an error on that band is "not available" on the report. So
+// `match` stays this file's own word for the mode, and the request builder sends the text filter the
+// register maps it to: `filters.mark_text.<op>` with the term as a one-value list, and no `q` and no
+// `similarity`, because a text filter on its own is the plain listing the old `match` was.
+//
+// Compared old form against new for every mode, by record and paged to exhaustion, on neutral terms
+// under one class filter and again with a territory filter: the same records in the same order, and
+// the new form draws no deprecation notice. The register already ran the old form as this filter, so
+// the order it lists in is unchanged; nothing here adds a `sort`. The register's three-character floor
+// on `contains` and `ends_with` refused a shorter term under the old form as well, so a short term
+// fails the same way it always has. `similar` has no filter: the register's word for it is "remove it",
+// because a term on its own is always ranked now, so it is sent as the ranked shape.
+const TEXT_FILTER_FOR = Object.freeze({ exact: "is", starts_with: "starts_with", ends_with: "ends_with", contains: "contains" });
 
 // ── THE RANKED STRATEGIES, AS SIMILARITY CHANNELS ────────────────────────────────────────────────
 //
@@ -273,30 +306,58 @@ export function buildSearchRequest(p) {
   // serializes away anyway, but writing it conditionally is what makes the owner-only shape legible here
   // rather than an accident of JSON.stringify.
   const body = {};
-  // ── `q` CARRIES ONE TERM, AND AN ARRAY HERE WOULD BE A DIFFERENT SEARCH ────────────────────────
+  // ── `q` CARRIES ONE TERM, AND AN ARRAY HERE IS A DIFFERENT SEARCH ──────────────────────────────
   //
-  // A scalar `q` is a RANKED query: the similarity channels below apply to it. A LIST in the same field
-  // is not a wider ranked query — it is an exact-text filter, and the register refuses to combine it with
-  // similarity at all ("a list is an exact-text filter, not a ranked query"). Measured: the ranked form
-  // returns a live mark the register itself tiers `identical` via its lookalike channel, and the list form
-  // does not, because that mark's text does not contain the term. So an array reaching this line would
-  // silently drop look-alike coverage while answering 200 — a narrowed query wearing a complete answer,
-  // the failure this connector already refuses a multi-term stack to prevent.
+  // A list in `q` is a ranked search over every term, and it does not answer the same question as one
+  // request per term. Its results are ranked across the terms, so a page is not complete for any one of
+  // them; its total counts the whole list, so the enumerate ceiling cannot read a per-term crowd off it;
+  // and the register's own reference says a list skips two single-term ranking boosts and the
+  // word-by-word fuzzy retry. Sending several terms in one request is a change to what the engine asks
+  // the register, decided on its own and wired through the planner, never reached by an array that
+  // happens to arrive here.
   //
   // It is refused rather than joined or first-element-picked, for the same reason the stack is.
-  if (Array.isArray(p.query))
-    throw new Error("[signa] `query` reached the request builder as a list. A list in `q` is an exact-text "
-      + "filter on this register and cannot carry the similarity channels a ranked band asks for, so it "
-      + "would drop look-alike matches while answering 200. Send one term per request.");
-  if (String(p.query ?? "").trim()) body.q = p.query;
+  //
+  // THE ONE LIST THAT IS SENT: exact spellings on the exact channels, which `toSignaParams` builds only
+  // where `exactListable` holds. Anything else arriving as a list is still refused.
+  if (Array.isArray(p.query)) {
+    const channels = similarityFor(p.strategies);
+    const exactChannels = channels.length === 2 && channels[0] === "identical" && channels[1] === "lookalike";
+    const terms = p.query.filter((t) => String(t ?? "").trim());
+    if (p.match || !exactChannels || terms.length < 2 || terms.length > CAPABILITIES.exactOrWidth)
+      throw new Error("[signa] `query` reached the request builder as a list outside the one shape the register "
+        + "answers term for term: exact spellings on the identical and lookalike channels, 2 to "
+        + `${CAPABILITIES.exactOrWidth} of them. Send one term per request.`);
+    body.q = terms;
+    body.similarity = channels;
+    const listFilters = buildFilters(p);
+    if (Object.keys(listFilters).length) body.filters = listFilters;
+    return finishSearchRequest(body, p);
+  }
+  const term = String(p.query ?? "").trim() ? p.query : null;
   const match = typeof p.match === "string" ? p.match.trim() : "";
-  if (match && DETERMINISTIC_MATCH.has(match)) {
-    body.match = match;   // sending similarity alongside is a 4xx, not a preference
-  } else {
+  const filters = buildFilters(p);
+  const textOp = TEXT_FILTER_FOR[match];
+  if (textOp && term != null) {
+    // A text filter alone: no `q`, and no `similarity` — the register refuses channels without a `q`.
+    filters.mark_text = { [textOp]: [term] };
+  } else if (term != null) {
+    body.q = term;
     body.similarity = similarityFor(p.strategies);
   }
-  const filters = buildFilters(p);
+  // No term at all is the owner-only shape: the owner filter is the whole question, and `similarity`
+  // "requires q" in the register's reference, so none is sent. With no owner either, the request would be
+  // an unfiltered listing of the register — a stack of names that could not go as a list arrives here
+  // with no term — so it is refused rather than sent.
+  if (term == null && !(typeof p.owner === "string" && p.owner.trim()))
+    throw new Error("[signa] a search reached the request builder with no term and no owner. A stack of names goes "
+      + "to this register whole only as exact spellings on the exact channels; send one term per request.");
   if (Object.keys(filters).length) body.filters = filters;
+  return finishSearchRequest(body, p);
+}
+
+/** What every search request carries whatever its term: territory layer, paging and the total. */
+function finishSearchRequest(body, p) {
   if (Array.isArray(p.jurisdictions) && p.jurisdictions.length && p.territory_match) {
     // Governs `filters.jurisdictions` ONLY — it has no effect on `filters.offices`, which is always
     // literal. Sent verbatim rather than defaulted here: the vendor's own default is `protection`, and
@@ -362,6 +423,11 @@ export function normalizeClasses(rec) {
   return out.length ? Array.from(new Set(out)).sort((a, b) => a - b) : null;
 }
 
+const httpsUrlOrNull = (v) => {
+  if (typeof v !== "string") return null;
+  try { return new URL(v).protocol === "https:" ? v : null; } catch { return null; }
+};
+
 // Map a raw Signa record → the NEUTRAL normalized shape the driver + skill consume. officeHint = the
 // office of the synthetic ref the caller cited (keeps cited==logged); record's jurisdiction_code is the
 // fallback (Signa records carry an ISO jurisdiction_code directly, so no office map is needed).
@@ -397,7 +463,14 @@ export function normalizeRecord(rec, officeHint = null) {
     ownerCountry: owner0?.country_code ?? owner0?.country ?? null,
     representative: atty0?.name ?? null,
     imageAvailable: rec.has_media ?? null,
-    resolved_link: null, // Signa exposes no per-record public URL; renderer shows "verify at office"
+    // Signa publishes no page per record of its own, so no record URL is minted here and the model's
+    // record links stay refused for this register (hasPublicRecordUrl: false).
+    resolved_link: null,
+    // THE OFFICE'S PAGE, AS THE REGISTER GIVES IT: `office_url`, a link to the record on the office's own
+    // site, absent on some records. Carried as data for publish (office-record-links.mjs), which addresses
+    // the office's page from the record's numbers first and falls back to this only where that table
+    // gives no address. Only an https address is kept.
+    officeUrl: httpsUrlOrNull(rec.office_url),
     // ── WHICH LAYER THIS RIGHT SITS ON, carried as data ( →) ──────────────────────────
     // The normalizer read under half the fields a search row carries. Among the ones it dropped were the
     // four that say what KIND of right a record is — and those are not extras, they are the whole
@@ -488,6 +561,10 @@ function normalizeSearchRow(rec) {
     application_date: filed,
     registration_date: toIso(rec.registration_date),
     relevance_score: Number.isInteger(rec.relevance_score) ? rec.relevance_score : null,
+    // Why the register returned this row: `{ tier, via, terms }` — the tier it rates the resemblance,
+    // the channels that found it, and the terms or filter values it matched. It replaced the per-row
+    // `match_explanation` and `matched_terms`, which the register removed on 2026-10-05.
+    match: rec.match && typeof rec.match === "object" ? rec.match : null,
     raw: rec,
   };
 }
@@ -546,8 +623,10 @@ export function normalizeSearchResponse(body, echoQuery) {
   const { total, approximate, floor } = readTotal(body);
   return {
     query: meta.query ?? echoQuery,
-    strategies_used: meta.strategies_used ?? [],
-    match: meta.match ?? null,
+    // The channels the register says it ran. It removed `strategies_used` and `match` from this object
+    // on 2026-10-05 and names this field as their replacement; reading the old two returned `[]` and
+    // `null` on every answer after that date while looking like a report of what ran.
+    similarity_applied: Array.isArray(meta.similarity_applied) ? meta.similarity_applied : null,
     search_id: meta.search_id ?? null,
     // ── THE REGISTER'S OWN WARNINGS, CARRIED WHOLE ──────────────────────────────────────────────
     //
@@ -731,7 +810,72 @@ export async function doSearch(apiKey, base, params, tctx, { mock = false } = {}
   if (!isSearchResponseBody(r.body)) {
     return { type: "text", text: nonAnswerBodyError("signa_search", r, "a search response (no data[] — the key every /v1/trademarks answer carries)", ` ${searchTargetLabel(params).slice(0, 120)}`) };
   }
+  // A 200 that did not run every channel it was asked for answered a narrower question; see skippedChannels.
+  const skipped = skippedChannels(r.body, body.similarity);
+  if (skipped.length) {
+    return { type: "text", text: `ERROR: signa_search — the register skipped the ${skipped.join(", ")} channel`
+      + `${skipped.length > 1 ? "s" : ""} this search asked for, so its answer covers a narrower question than the one `
+      + `asked and is not taken as this search's answer. The register decides this from the term, so asking the same `
+      + `search again will be skipped the same way. ${searchTargetLabel(params).slice(0, 120)}` };
+  }
+  // A text filter compares letters as written, so a term mixing alphabets matches nothing; see mixedScriptFilters.
+  const unreadable = mixedScriptFilters(r.body, body.filters?.mark_text);
+  if (unreadable.length) {
+    return { type: "text", text: `ERROR: signa_search — the register reports that the term mixes alphabets, and its `
+      + `${unreadable.join(", ")} filter compares letters as written, so it can match nothing. Its zero is not a count `
+      + `of filings and is not taken as this search's answer. ${searchTargetLabel(params).slice(0, 120)}` };
+  }
   return { type: "text", text: JSON.stringify(normalizeSearchResponse(r.body, params.query), null, 2) };
+}
+
+// ── A TEXT FILTER CANNOT READ A TERM THAT MIXES ALPHABETS ─────────────────────────────────────────
+//
+// The text filters compare letters as written. A term mixing Latin with Greek or Cyrillic letters
+// therefore matches no filing, and the register answers 200 with zero rows and an `info`-level
+// `mixed_script` warning naming the filter — in its own words, "a ranked q with the lookalike similarity
+// channel folds look-alike letters". Measured live on an invented term with one Cyrillic letter: the
+// ranked search found 219 filings, the containing filter 0. That zero would be the containing count on the
+// report, an exact zero on a figure the client reads. So the answer is refused, naming the filter, and
+// the count reads as unknown rather than none.
+//
+// Matched on the warning's `affected_filter` (`mark_text_<op>`) against the filter this request sent; a
+// warning that names no filter counts against any text filter the request carried.
+export function mixedScriptFilters(body, markText) {
+  const sent = Object.keys(markText && typeof markText === "object" ? markText : {});
+  if (!sent.length) return [];
+  const warnings = Array.isArray(body?.search_meta?.warnings) ? body.search_meta.warnings : [];
+  const out = [];
+  for (const w of warnings) {
+    if (String(w?.code ?? "") !== "mixed_script") continue;
+    const named = String(w?.affected_filter ?? "").replace(/^mark_text_/, "");
+    for (const op of named ? sent.filter((o) => o === named) : sent) if (!out.includes(op)) out.push(op);
+  }
+  return out;
+}
+
+// ── A CHANNEL THE REGISTER SKIPPED IS A QUESTION IT DID NOT ANSWER ─────────────────────────────────
+//
+// The register runs a term through the similarity channels a request names, and when one of them cannot
+// run on that term it says so in `search_meta.warnings` — `<channel>_skipped`, with the channel in
+// `channel` — and answers 200 with what the other channels found. Its migration guide states it in those
+// words. A sound-alike search answered with `phonetic_skipped` has been answered by `identical` alone: the
+// same rows an exact search gives, under the sound-alike question's name, and the band would read as
+// searched. That is the failure this connector refuses everywhere else — a narrower query wearing a
+// complete answer — so it is refused here too, and the band is left incomplete with the channel named.
+//
+// Only a channel the request ASKED for counts. A warning about a channel nobody asked for changes nothing
+// about the answer to the question that was asked. A warning carrying no `channel` is read from its code.
+export function skippedChannels(body, requested) {
+  const asked = new Set(Array.isArray(requested) ? requested : []);
+  const warnings = Array.isArray(body?.search_meta?.warnings) ? body.search_meta.warnings : [];
+  const out = [];
+  for (const w of warnings) {
+    const code = String(w?.code ?? "");
+    if (!code.endsWith("_skipped")) continue;
+    const channel = String(w?.channel ?? code.slice(0, -"_skipped".length)).trim().toLowerCase();
+    if (asked.has(channel) && !out.includes(channel)) out.push(channel);
+  }
+  return out;
 }
 
 // ── Record fetch ─────────────────────────────────────────────────────────────────────────────────
@@ -775,25 +919,57 @@ export async function doRecordFetch(apiKey, base, params, tctx, { mock = false }
 // speaks the same dialect as the code under test cannot find a dialect mismatch, which is why the one
 // below builds its params the way the kernel does and not the way doSearch prefers.
 //
-// `names` (an OR-stack) is deliberately NOT accepted: `maxOrWidth: 1` — verified against the live
-// specification, which carries no OR array on this endpoint — so a stack must reach here already split
-// by the planner. Silently searching only its first term would be a narrowed query wearing a complete
-// answer, which is this whole track's failure mode.
+// `names` (an OR-stack) goes to the register whole only as exact spellings, as one ranked list (see
+// `exactListable`); every other stack must reach here already split. Silently searching only its first
+// term would be a narrowed query wearing a complete answer, which is this whole track's failure mode.
+// ── WHEN A STACK OF SPELLINGS GOES AS ONE REQUEST ─────────────────────────────────────────────────
+//
+// An exact question over several spellings, each long enough for the ranked search, with no owner
+// clause: the shape the register answers as one ranked list exactly as it answers each spelling alone
+// (see `exactOrWidth` in capabilities.js for the measurement). The list's terms ride a POST body the
+// register caps at 8 KB, so a stack of long spellings is cut to fit with room for the filters.
+const LIST_BODY_BUDGET = 6000;
+const termBytes = (t) => Buffer.byteLength(JSON.stringify(String(t)), "utf8") + 1;
+function exactStackShape(p) {
+  if (String(p?.match_mode ?? "").trim() !== "exact") return null;
+  if (typeof p?.owner === "string" && p.owner.trim()) return null;
+  if (Array.isArray(p?.owners) && p.owners.length) return null;
+  const stack = Array.isArray(p?.names) ? p.names.filter(Boolean) : [];
+  if (stack.length < 2) return null;
+  if (stack.some((t) => foldedLength(t) < CAPABILITIES.rankedMinLength)) return null;
+  return stack;
+}
+/** How many spellings one request carries for this kernel query, or null when it is one per request. */
+export function namesChunkFor(p) {
+  const stack = exactStackShape(p);
+  if (!stack) return null;
+  const widest = Math.max(...stack.map(termBytes));
+  return Math.max(1, Math.min(CAPABILITIES.exactOrWidth, Math.floor(LIST_BODY_BUDGET / widest)));
+}
+/** May this stack go to the register whole, as one ranked list? */
+export function exactListable(p) {
+  const stack = exactStackShape(p);
+  return Boolean(stack) && stack.length <= namesChunkFor(p)
+    && stack.reduce((n, t) => n + termBytes(t), 0) <= LIST_BODY_BUDGET;
+}
+
 export function toSignaParams(p = {}) {
   const out = { ...p };
   if (p.name != null && p.query == null) out.query = p.name;
   // ── A ONE-TERM `names` WINDOW IS A TERM, NOT A STACK ────────────────────────────────────────────
-  // `maxOrWidth: 1` means the kernel CHUNKS a wide names band into windows of one and runs the full
-  // enumerate contract on each — that is what `namesChunkDefault: 1` is for. Every window therefore
+  // Outside an exact spelling stack the kernel CHUNKS a wide names band into windows of one and runs the
+  // full enumerate contract on each — that is what `namesChunkDefault: 1` is for. Every window therefore
   // arrives here as `names: ["one-term"]`, and with no mapping it came back "ERROR: query is
   // required": a names band could not run on this provider AT ALL, and the failure was reported as
   // chunk 1 failing rather than as the adapter refusing a shape the kernel had already split.
   //
-  // Refusing a MULTI-term stack is still right and is the assertion below — picking names[0] there
-  // would be a narrowed query wearing a complete answer. One term is not a choice between terms.
-  if (out.query == null && Array.isArray(p.names) && p.names.filter(Boolean).length === 1) {
-    out.query = p.names.filter(Boolean)[0];
-  }
+  // A MULTI-term stack is never narrowed to names[0] — that would be a narrowed query wearing a complete
+  // answer. It is sent whole, as one ranked list, only where `exactListable` says the register answers
+  // the list exactly as it answers each spelling alone; otherwise it reaches the request builder with no
+  // term and is refused there.
+  const stack = Array.isArray(p.names) ? p.names.filter(Boolean) : [];
+  if (out.query == null && stack.length === 1) out.query = stack[0];
+  else if (out.query == null && stack.length > 1 && exactListable(p)) out.query = stack;
   // ── STAGE 2 — A TERRITORY IS A STACK OF RIGHTS, AND THIS PROVIDER CAN SEARCH THE STACK ─────
   //
   // The plan's `regions` are the territories the matter ordered, already translated into this vendor's
@@ -855,7 +1031,7 @@ export function toSignaParams(p = {}) {
   // identical question relies on. So exact stays ranked from the floor up, and only a term below it
   // goes deterministic, where it is answered rather than refused.
   const mode = String(p.match_mode ?? "").trim();
-  if (mode === "exact" && foldedLength(out.query) < CAPABILITIES.rankedMinLength) out.match = "exact";
+  if (mode === "exact" && !Array.isArray(out.query) && foldedLength(out.query) < CAPABILITIES.rankedMinLength) out.match = "exact";
   else if (mode === "exact" || mode === "phonetic" || mode === "prefix") out.strategies = [mode];
   else if (mode === "starts_with" || mode === "ends_with" || mode === "contains") out.match = mode;
   // ── `default` IS THE COUNT LANE'S WORD FOR THE SAME UNANCHORED QUERY THE PLAN LANE CALLS `{}` ────
@@ -996,6 +1172,9 @@ const { enumerate: __enumerate } = makeEnumerate({
   missingElementError: MISSING_ELEMENT_ERROR,
   capabilities: { ...CAPABILITIES.kernel },
   ceilingFor: ownerWindowCeiling,
+  // Exact spelling stacks go as one ranked list of up to `exactOrWidth`; every other names band stays at
+  // one term per request (`namesChunkDefault`).
+  namesChunkFor,
   // The kernel's default cheap-probe params are CORSEARCH'S — `{limit:1, fields:["uri"]}` — and `uri`
   // is not a field this vendor has. Its `fields` projection rejects unknown names, so inheriting the
   // default would 400 every count-first rescue while the ordinary search beside it worked. `limit: 1`

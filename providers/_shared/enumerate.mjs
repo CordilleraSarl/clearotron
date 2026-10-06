@@ -220,6 +220,13 @@ export function makeEnumerate(deps) {
     // against the tuned ceiling below and can only ever narrow it — `CLEAROTRON_ENUMERATE_CEILING` cannot
     // raise a band past a window the vendor answers with an HTTP 400.
     ceilingFor = null,
+    // ── HOW MANY NAMES ONE REQUEST CARRIES, WHEN THAT IS A PROPERTY OF THE QUERY ──────────────────
+    //
+    // `namesChunkDefault` models a provider with one width for every names band. A register can take a
+    // list for one kind of question and not another — signa takes up to 100 exact spellings as one ranked
+    // list, and one term per request for everything else. `(params) => number|null`; `null` means the
+    // shape declares nothing and the default (or `CLEAROTRON_ENUMERATE_NAMES_CHUNK`) stands.
+    namesChunkFor = null,
   } = deps;
 
   // ── the I/O seam: a network REJECTION degrades like a 503, it does not abort the stage ────────────
@@ -513,7 +520,9 @@ export function makeEnumerate(deps) {
     // descriptor total — `count` is the deduped truth); the resource ceiling applies to the RUNNING total
     // so a crowd still returns an incomplete descriptor. ANY chunk error/incomplete makes the WHOLE slice
     // incomplete — a clean can never ship over a partially-executed slice.
-    const namesChunk = envInt("CLEAROTRON_ENUMERATE_NAMES_CHUNK", namesChunkDefault);
+    const shapeChunk = typeof namesChunkFor === "function" ? namesChunkFor(params) : null;
+    const namesChunk = Number.isFinite(shapeChunk) && shapeChunk >= 1
+      ? Math.floor(shapeChunk) : envInt("CLEAROTRON_ENUMERATE_NAMES_CHUNK", namesChunkDefault);
     const allNames = Array.isArray(params[namesKey]) ? params[namesKey].filter(Boolean) : null;
     if (allNames && allNames.length > namesChunk) {
       const merged = new Map();

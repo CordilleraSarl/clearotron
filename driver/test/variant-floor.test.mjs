@@ -187,12 +187,13 @@ test("the spelling band is asked as it compiles, stacked or one a spelling: none
   // turn, it could be withheld before a record existed, and measured runs withheld all of it that way.
   const form = JSON.parse(renderFormNeighbourhoodJson(MANIFEST, { model: MODEL, mark: "BIO VELTRIS" }));
   const shapes = { clarivate: (band) => band.some((e) => (e.terms?.length ?? 1) > 1),
-    signa: (band) => band.every((e) => (e.terms?.length ?? 1) === 1) };
+    // Signa takes up to 100 exact spellings as one ranked list, so its band stacks too.
+    signa: (band) => band.some((e) => (e.terms?.length ?? 1) > 1) };
   for (const [provider, shaped] of Object.entries(shapes)) {
     const plan = compileRegisterPlan({ manifest: MODEL, job: JOB, form, capabilities: capabilitiesFor(provider) });
     const band = plan.entries.filter(isSpellingBandEntry);
     assert.ok(band.length > 0, `guard: the band compiled on ${provider}`);
-    assert.ok(shaped(band), `guard: ${provider} compiles the band ${provider === "clarivate" ? "stacked" : "one question a spelling"}`);
+    assert.ok(shaped(band), `guard: ${provider} compiles the band stacked`);
     assert.deepEqual(band.filter((e) => e.when).map((e) => e.qid), [],
       `${provider}: a band entry waits, so the reading turn could withhold it unasked`);
     assert.ok(plan.entries.some((e) => e.when?.awaits_reading_turn === true && !isSpellingBandEntry(e)),
