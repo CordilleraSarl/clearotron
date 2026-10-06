@@ -791,7 +791,7 @@
         },
         "a-mark-too-short-for-contains-is-asked-exactly.test.mjs": {
           "tests": 12,
-          "asserts": 57,
+          "asserts": 58,
           "skips": 0,
           "todos": 0
         },
@@ -1276,8 +1276,8 @@
           "todos": 0
         },
         "a-run-asks-signa-each-question-once.test.mjs": {
-          "tests": 18,
-          "asserts": 83,
+          "tests": 19,
+          "asserts": 86,
           "skips": 0,
           "todos": 0
         },
@@ -4492,8 +4492,8 @@
           "todos": 0
         },
         "register-findings-link-to-the-office-record.test.mjs": {
-          "tests": 19,
-          "asserts": 61,
+          "tests": 22,
+          "asserts": 67,
           "skips": 0,
           "todos": 0
         },
@@ -7787,15 +7787,27 @@
           "skips": 0,
           "todos": 0
         },
+        "providers/signa/test/a-deterministic-mode-goes-to-the-register-as-a-text-filter.test.mjs": {
+          "tests": 6,
+          "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
         "providers/signa/test/a-search-row-is-a-band-row.test.mjs": {
           "tests": 3,
           "asserts": 14,
           "skips": 0,
           "todos": 0
         },
+        "providers/signa/test/a-skipped-channel-is-a-question-the-register-did-not-answer.test.mjs": {
+          "tests": 6,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "providers/signa/test/an-exact-question-stays-ranked-above-the-floor.test.mjs": {
           "tests": 3,
-          "asserts": 8,
+          "asserts": 10,
           "skips": 0,
           "todos": 0
         },
@@ -7807,13 +7819,13 @@
         },
         "providers/signa/test/an-owner-portfolio-sweep-is-a-search.test.mjs": {
           "tests": 4,
-          "asserts": 18,
+          "asserts": 20,
           "skips": 0,
           "todos": 0
         },
         "providers/signa/test/match-mode-is-not-approximated.test.mjs": {
           "tests": 4,
-          "asserts": 11,
+          "asserts": 12,
           "skips": 0,
           "todos": 0
         },
@@ -7823,9 +7835,15 @@
           "skips": 0,
           "todos": 0
         },
+        "providers/signa/test/the-office-page-the-register-gives-is-kept.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "providers/signa/test/the-ranked-lane-asks-for-similarity-channels.test.mjs": {
           "tests": 9,
-          "asserts": 15,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },

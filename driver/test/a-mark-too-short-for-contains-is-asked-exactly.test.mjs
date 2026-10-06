@@ -72,6 +72,7 @@ test("Signa: the request that goes over the wire is the exact form, with both fi
     const body = signaWire(e);
     assert.equal(body.q, SHORT, "the term rides `q` — the register retired `query`");
     assert.equal(body.match, undefined, "`match: contains` is the 400 this change exists to avoid");
+    assert.equal(body.filters.mark_text, undefined, "…and so is its text filter, which carries the same floor");
     // The ranked exact shape, whose floor is two characters. It is expressed as similarity channels now:
     // the register retired `strategies`, and `exact` asks for identical plus lookalike.
     assert.deepEqual(body.similarity, ["identical", "lookalike"], "the ranked exact shape, whose floor is two characters");
@@ -82,7 +83,8 @@ test("Signa: the request that goes over the wire is the exact form, with both fi
   for (const e of goodsEntries(compile(LONG, PROVIDER_CAPABILITIES.signa))) {
     assert.equal(e.predicate, "default");
     assert.equal(e.contains_substituted, undefined);
-    assert.equal(signaWire(e).match, "contains", "a long mark lost its contains form");
+    // The contains form goes to the register as its text filter: it retired `match`.
+    assert.ok(Array.isArray(signaWire(e).filters?.mark_text?.contains), "a long mark lost its contains form");
   }
 });
 
