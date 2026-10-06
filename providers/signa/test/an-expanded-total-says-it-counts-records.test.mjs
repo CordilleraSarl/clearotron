@@ -15,7 +15,7 @@ import { normalizeSearchResponse } from "../src/core.js";
 const body = (warnings) => ({
   object: "list", data: [], has_more: false,
   pagination: { cursor: null, total_count: 1756, total_count_approximate: false },
-  search_meta: { search_id: "srch_invented", query: "ZYTHERMO", strategies_used: [], match: "exact", ...(warnings ? { warnings } : {}) },
+  search_meta: { search_id: "srch_invented", query: "ZYTHERMO", similarity_applied: ["identical", "lookalike"], ...(warnings ? { warnings } : {}) },
   request_id: "req_invented",
 });
 const EXPANDED = {

@@ -180,7 +180,24 @@ export function rememberableAnswer(method, status, body, parseError) {
 // `match_mode: "starts_with"` for a trailing-`*` wildcard entry, and with no deterministic shape to
 // put it in, that entry fell through to a plain `exact` — a NARROWER query than the plan asked for,
 // answering as though it were the one requested.
-const DETERMINISTIC_MATCH = new Set(["similar", "exact", "starts_with", "ends_with", "contains"]);
+//
+// ── ON THE WIRE, A DETERMINISTIC MODE IS A TEXT FILTER, NOT `match` ──────────────────────────────
+//
+// The register retired `match` on the same date as `query` and `strategies`, and after that date it
+// refuses the parameter rather than ignoring it. That would take the containing count with it: a
+// refused request is an error, and an error on that band is "not available" on the report. So
+// `match` stays this file's own word for the mode, and the request builder sends the text filter the
+// register maps it to: `filters.mark_text.<op>` with the term as a one-value list, and no `q` and no
+// `similarity`, because a text filter on its own is the plain listing the old `match` was.
+//
+// Compared old form against new for every mode, by record and paged to exhaustion, on neutral terms
+// under one class filter and again with a territory filter: the same records in the same order, and
+// the new form draws no deprecation notice. The register already ran the old form as this filter, so
+// the order it lists in is unchanged; nothing here adds a `sort`. The register's three-character floor
+// on `contains` and `ends_with` refused a shorter term under the old form as well, so a short term
+// fails the same way it always has. `similar` has no filter: the register's word for it is "remove it",
+// because a term on its own is always ranked now, so it is sent as the ranked shape.
+const TEXT_FILTER_FOR = Object.freeze({ exact: "is", starts_with: "starts_with", ends_with: "ends_with", contains: "contains" });
 
 // ── THE RANKED STRATEGIES, AS SIMILARITY CHANNELS ────────────────────────────────────────────────
 //
@@ -273,29 +290,33 @@ export function buildSearchRequest(p) {
   // serializes away anyway, but writing it conditionally is what makes the owner-only shape legible here
   // rather than an accident of JSON.stringify.
   const body = {};
-  // ── `q` CARRIES ONE TERM, AND AN ARRAY HERE WOULD BE A DIFFERENT SEARCH ────────────────────────
+  // ── `q` CARRIES ONE TERM, AND AN ARRAY HERE IS A DIFFERENT SEARCH ──────────────────────────────
   //
-  // A scalar `q` is a RANKED query: the similarity channels below apply to it. A LIST in the same field
-  // is not a wider ranked query — it is an exact-text filter, and the register refuses to combine it with
-  // similarity at all ("a list is an exact-text filter, not a ranked query"). Measured: the ranked form
-  // returns a live mark the register itself tiers `identical` via its lookalike channel, and the list form
-  // does not, because that mark's text does not contain the term. So an array reaching this line would
-  // silently drop look-alike coverage while answering 200 — a narrowed query wearing a complete answer,
-  // the failure this connector already refuses a multi-term stack to prevent.
+  // A list in `q` is a ranked search over every term, and it does not answer the same question as one
+  // request per term. Its results are ranked across the terms, so a page is not complete for any one of
+  // them; its total counts the whole list, so the enumerate ceiling cannot read a per-term crowd off it;
+  // and the register's own reference says a list skips two single-term ranking boosts and the
+  // word-by-word fuzzy retry. Sending several terms in one request is a change to what the engine asks
+  // the register, decided on its own and wired through the planner, never reached by an array that
+  // happens to arrive here.
   //
   // It is refused rather than joined or first-element-picked, for the same reason the stack is.
   if (Array.isArray(p.query))
-    throw new Error("[signa] `query` reached the request builder as a list. A list in `q` is an exact-text "
-      + "filter on this register and cannot carry the similarity channels a ranked band asks for, so it "
-      + "would drop look-alike matches while answering 200. Send one term per request.");
-  if (String(p.query ?? "").trim()) body.q = p.query;
+    throw new Error("[signa] `query` reached the request builder as a list. A list in `q` ranks all its terms "
+      + "together, so neither its pages nor its total answer for any one term. Send one term per request.");
+  const term = String(p.query ?? "").trim() ? p.query : null;
   const match = typeof p.match === "string" ? p.match.trim() : "";
-  if (match && DETERMINISTIC_MATCH.has(match)) {
-    body.match = match;   // sending similarity alongside is a 4xx, not a preference
-  } else {
+  const filters = buildFilters(p);
+  const textOp = TEXT_FILTER_FOR[match];
+  if (textOp && term != null) {
+    // A text filter alone: no `q`, and no `similarity` — the register refuses channels without a `q`.
+    filters.mark_text = { [textOp]: [term] };
+  } else if (term != null) {
+    body.q = term;
     body.similarity = similarityFor(p.strategies);
   }
-  const filters = buildFilters(p);
+  // No term at all is the owner-only shape: the owner filter is the whole question, and `similarity`
+  // "requires q" in the register's reference, so none is sent.
   if (Object.keys(filters).length) body.filters = filters;
   if (Array.isArray(p.jurisdictions) && p.jurisdictions.length && p.territory_match) {
     // Governs `filters.jurisdictions` ONLY — it has no effect on `filters.offices`, which is always
@@ -488,6 +509,10 @@ function normalizeSearchRow(rec) {
     application_date: filed,
     registration_date: toIso(rec.registration_date),
     relevance_score: Number.isInteger(rec.relevance_score) ? rec.relevance_score : null,
+    // Why the register returned this row: `{ tier, via, terms }` — the tier it rates the resemblance,
+    // the channels that found it, and the terms or filter values it matched. It replaced the per-row
+    // `match_explanation` and `matched_terms`, which the register removed on 2026-10-05.
+    match: rec.match && typeof rec.match === "object" ? rec.match : null,
     raw: rec,
   };
 }
@@ -546,8 +571,10 @@ export function normalizeSearchResponse(body, echoQuery) {
   const { total, approximate, floor } = readTotal(body);
   return {
     query: meta.query ?? echoQuery,
-    strategies_used: meta.strategies_used ?? [],
-    match: meta.match ?? null,
+    // The channels the register says it ran. It removed `strategies_used` and `match` from this object
+    // on 2026-10-05 and names this field as their replacement; reading the old two returned `[]` and
+    // `null` on every answer after that date while looking like a report of what ran.
+    similarity_applied: Array.isArray(meta.similarity_applied) ? meta.similarity_applied : null,
     search_id: meta.search_id ?? null,
     // ── THE REGISTER'S OWN WARNINGS, CARRIED WHOLE ──────────────────────────────────────────────
     //

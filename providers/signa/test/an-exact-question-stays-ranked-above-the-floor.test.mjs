@@ -31,8 +31,10 @@ test("an exact question at or above the floor stays on the ranked lane", () => {
 test("an exact question below the floor goes deterministic, where it is answered rather than refused", () => {
   for (const query of ["Q", "é", " Q "]) {
     const body = wire({ query, match_mode: "exact", nice_classes: [9] });
-    assert.equal(body.match, "exact", `${JSON.stringify(query)} was sent where the register refuses it`);
+    assert.deepEqual(body.filters?.mark_text, { is: [query] }, `${JSON.stringify(query)} was sent where the register refuses it`);
+    assert.equal("q" in body, false, "a text filter on its own is the deterministic shape; a `q` would rank it");
     assert.equal(body.similarity, undefined, "a deterministic match carries no similarity channels");
+    assert.equal(body.match, undefined, "the register retired `match`; the text filter replaces it");
   }
 });
 
@@ -45,5 +47,5 @@ test("THE CONTROL: the other modes keep their shapes", () => {
     assert.deepEqual(body.similarity, CHANNELS[mode]);
     assert.equal(body.match, undefined);
   }
-  assert.equal(wire({ query: "VELTRIN", match_mode: "contains" }).match, "contains");
+  assert.deepEqual(wire({ query: "VELTRIN", match_mode: "contains" }).filters?.mark_text, { contains: ["VELTRIN"] });
 });

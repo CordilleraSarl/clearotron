@@ -42,8 +42,9 @@ test("the CONTAINING predicate asks this register for a containing search", () =
     "and it must NOT fall through to the ranked lane, which is where the exact count came from");
 
   const body = buildSearchRequest({ ...out, query: "ZYTHERMO" });
-  assert.equal(body.match, "contains");
-  assert.equal(body.strategies, undefined, "`match` and `strategies` are mutually exclusive on the wire");
+  assert.deepEqual(body.filters?.mark_text, { contains: ["ZYTHERMO"] });
+  assert.equal(body.match, undefined, "the register retired `match`; the text filter replaces it");
+  assert.equal(body.similarity, undefined, "a text filter carries no channels: they would rank it");
 });
 
 test("identical and containing build DIFFERENT requests — the equality is the defect", () => {
