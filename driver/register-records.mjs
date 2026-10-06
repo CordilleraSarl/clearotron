@@ -248,6 +248,7 @@ export async function listRegisterRecords({
             classes: scoped, regions, provider, ok, requested: want, fetched,
             total: Number.isFinite(r?.total) ? r.total : null, took_ms: Date.now() - started,
             ...(ok && r?.approximate === true ? { approximate: true, floor: Number.isFinite(r?.floor) ? r.floor : null } : {}),
+            ...(ok && Array.isArray(r?.warnings) && r.warnings.length ? { warnings: r.warnings } : {}),
             ...(ok ? {} : { cause: String(r?.reason ?? "unknown").slice(0, 300) }),
           }) + "\n");
         } catch { /* receipts are best-effort, never fatal */ }
@@ -260,6 +261,9 @@ export async function listRegisterRecords({
         // An approximation is carried as one, exactly as the count lane records it: no number in
         // `total`, the register's floor beside it. Only a provider whose listing states it sets it.
         ...(ok && r?.approximate === true ? { approximate: true, floor: Number.isFinite(r?.floor) ? r.floor : null } : {}),
+        // The register's own notes on this answer, as it sent them — absent when it sent none, which is
+        // not evidence that the answer carried no caveat on a register that sends none at all.
+        ...(ok && Array.isArray(r?.warnings) && r.warnings.length ? { warnings: r.warnings } : {}),
         ...(ok ? {} : { reason: String(r?.reason ?? "the filings could not be fetched").slice(0, 300) }),
       };
     });

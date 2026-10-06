@@ -1337,6 +1337,10 @@ export const PROVIDERS = {
         return { ok: true,
           total: Number.isFinite(p.total_hits) ? p.total_hits : null,
           ...(p.total_approximate === true ? { approximate: true, floor: Number.isFinite(p.total_floor) ? p.total_floor : null } : {}),
+          // The register's own notes on this answer, carried whole as the clearance sweep carries them —
+          // `expanded_fallback` among them, which says the total counts records rather than marks. The
+          // knockout listing dropped them, so a knockout run could not show what a clearance run shows.
+          ...(Array.isArray(p.warnings) && p.warnings.length ? { warnings: p.warnings } : {}),
           records: (Array.isArray(p.results) ? p.results : []).map((row) => {
           const rec = row?.raw && typeof row.raw === "object" ? core.normalizeRecord(row.raw, row.office || null) : null;
           return {

@@ -83,8 +83,24 @@ export function refToOffice(ref) {
 // providers/_shared/answer-memory.mjs. The question is the base address, the method, the path and the
 // whole body, and never the credential; the base is in it so a test server and the register never share
 // an answer. With no memory for the run (the default), this is the plain fetch it always was.
+// ── WHAT EACH CALL COST, AS THE REGISTER STATES IT ──────────────────────────────────────────────
+//
+// The register charges by the credit and says how many on every response, `X-Credits-Charged`, errors
+// included (0). A search page and a record fetch differ tenfold, and the ledger's `tool` names the caller,
+// not the endpoint, so a run's spend could not be added up from the ledger: every figure was a guess. The
+// header is copied onto the ledger row with the endpoint it answered. NULL when the header is absent or
+// unreadable, never 0 — a missing figure is not a free call. A call answered from the run memory sent
+// nothing, so it is a real 0.
+const creditsCharged = (resp) => {
+  const v = resp?.headers?.get?.("x-credits-charged");
+  const n = v == null || String(v).trim() === "" ? NaN : Number(v);
+  return Number.isFinite(n) ? n : null;
+};
+const endpointOf = (method, path) => `${method} ${String(path).split("?")[0].replace(/^(\/v1\/trademarks\/)[^/]+/, "$1{id}")}`;
+
 export async function signaFetch(apiKey, base, path, { method = "GET", body = null, retries = 1, tctx = null } = {}) {
   const url = `${base}${path}`;
+  const endpoint = endpointOf(method, path);
   const headers = { Authorization: `Bearer ${apiKey}`, Accept: "application/json" };
   const init = { method, headers };
   if (body !== null) { headers["Content-Type"] = "application/json"; init.body = JSON.stringify(body); }
@@ -106,7 +122,7 @@ export async function signaFetch(apiKey, base, path, { method = "GET", body = nu
     // cache hit, so the run's usage shows the request was made and was not paid for.
     const { body: parsed, parseError } = parseJsonBody(held.raw);
     const ok = held.status >= 200 && held.status < 300;
-    logCall(tctx, { http_status: held.status, ok, attempts: 0, took_ms: Date.now() - t0, bytes: held.raw.length, cache_hit: true });
+    logCall(tctx, { http_status: held.status, ok, attempts: 0, took_ms: Date.now() - t0, bytes: held.raw.length, cache_hit: true, endpoint, credits_charged: 0 });
     note({ held: true, served: true, status: held.status });
     return { status: held.status, ok, url, body: parsed, raw: held.raw, parseError };
   }
@@ -119,14 +135,14 @@ export async function signaFetch(apiKey, base, path, { method = "GET", body = nu
       await new Promise((r) => setTimeout(r, 1500 * (i + 1)));
     }
   } catch (err) {
-    logCall(tctx, { http_status: 0, ok: false, attempts, took_ms: Date.now() - t0, bytes: 0, cache_hit: false });
+    logCall(tctx, { http_status: 0, ok: false, attempts, took_ms: Date.now() - t0, bytes: 0, cache_hit: false, endpoint, credits_charged: null });
     if (mem) note({ held: Boolean(held), status: 0 });
     throw err;
   }
   const raw = await resp.text();
   // The parse failure travels on `parseError` instead of being swallowed — providers/_shared/http-body.mjs.
   const { body: parsed, parseError } = parseJsonBody(raw);
-  logCall(tctx, { http_status: resp.status, ok: resp.ok, attempts, took_ms: Date.now() - t0, bytes: raw.length, cache_hit: false });
+  logCall(tctx, { http_status: resp.status, ok: resp.ok, attempts, took_ms: Date.now() - t0, bytes: raw.length, cache_hit: false, endpoint, credits_charged: creditsCharged(resp) });
   if (mem) {
     // In `watch` every request reaches this line, held or not, and the line says what the memory would
     // have done. The FIRST answer is the one kept: a later identical request is compared against it
@@ -758,7 +774,40 @@ export async function doSearch(apiKey, base, params, tctx, { mock = false } = {}
   if (!isSearchResponseBody(r.body)) {
     return { type: "text", text: nonAnswerBodyError("signa_search", r, "a search response (no data[] — the key every /v1/trademarks answer carries)", ` ${searchTargetLabel(params).slice(0, 120)}`) };
   }
+  // A 200 that did not run every channel it was asked for answered a narrower question; see skippedChannels.
+  const skipped = skippedChannels(r.body, body.similarity);
+  if (skipped.length) {
+    return { type: "text", text: `ERROR: signa_search — the register skipped the ${skipped.join(", ")} channel`
+      + `${skipped.length > 1 ? "s" : ""} this search asked for, so its answer covers a narrower question than the one `
+      + `asked and is not taken as this search's answer. The register decides this from the term, so asking the same `
+      + `search again will be skipped the same way. ${searchTargetLabel(params).slice(0, 120)}` };
+  }
   return { type: "text", text: JSON.stringify(normalizeSearchResponse(r.body, params.query), null, 2) };
+}
+
+// ── A CHANNEL THE REGISTER SKIPPED IS A QUESTION IT DID NOT ANSWER ─────────────────────────────────
+//
+// The register runs a term through the similarity channels a request names, and when one of them cannot
+// run on that term it says so in `search_meta.warnings` — `<channel>_skipped`, with the channel in
+// `channel` — and answers 200 with what the other channels found. Its migration guide states it in those
+// words. A sound-alike search answered with `phonetic_skipped` has been answered by `identical` alone: the
+// same rows an exact search gives, under the sound-alike question's name, and the band would read as
+// searched. That is the failure this connector refuses everywhere else — a narrower query wearing a
+// complete answer — so it is refused here too, and the band is left incomplete with the channel named.
+//
+// Only a channel the request ASKED for counts. A warning about a channel nobody asked for changes nothing
+// about the answer to the question that was asked. A warning carrying no `channel` is read from its code.
+export function skippedChannels(body, requested) {
+  const asked = new Set(Array.isArray(requested) ? requested : []);
+  const warnings = Array.isArray(body?.search_meta?.warnings) ? body.search_meta.warnings : [];
+  const out = [];
+  for (const w of warnings) {
+    const code = String(w?.code ?? "");
+    if (!code.endsWith("_skipped")) continue;
+    const channel = String(w?.channel ?? code.slice(0, -"_skipped".length)).trim().toLowerCase();
+    if (asked.has(channel) && !out.includes(channel)) out.push(channel);
+  }
+  return out;
 }
 
 // ── Record fetch ─────────────────────────────────────────────────────────────────────────────────

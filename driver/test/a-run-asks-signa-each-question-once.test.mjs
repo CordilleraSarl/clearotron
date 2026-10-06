@@ -386,3 +386,20 @@ test("with the memory switch off the knockout still lists first, and the run hol
   assert.ok(ev.some((e) => e.event === "answer-memory" && e.mode === "off"));
   assert.deepEqual(readdirSync(driverDir(res.runDir)).filter((f) => f.startsWith("register-answer")), []);
 });
+
+test("the knockout listing keeps the register's own warnings, on the term and in the ledger", async () => {
+  // The clearance sweep carried them and the knockout dropped them, so a knockout run could not show
+  // what a clearance run shows — `expanded_fallback` above all, which says a total counts records.
+  const { listRegisterRecords } = await import("../register-records.mjs");
+  const dir = mkdtempSync(join(tmpdir(), "ko-warnings-"));
+  const ledgerPath = join(dir, "records.jsonl");
+  const WARN = [{ code: "expanded_fallback", message: "invented" }];
+  const lister = async (term) => ({ ok: true, records: [], total: 0, ...(term === "COPPER" ? { warnings: WARN } : {}) });
+  const doc = await listRegisterRecords({ marks: [{ name: "COPPER", classes: [9] }], jurisdictions: ["EU"], provider: "signa",
+    capabilities: SIGNA, lister, variantCap: 1, ledgerPath });
+  const terms = doc.marks[0].terms;
+  assert.deepEqual(terms.find((t) => t.term === "COPPER").warnings, WARN);
+  assert.equal("warnings" in terms.find((t) => t.term !== "COPPER"), false, "a term the register sent no warning on carries none");
+  const rows = readFileSync(ledgerPath, "utf8").trim().split("\n").map((l) => JSON.parse(l));
+  assert.deepEqual(rows.find((r) => r.term === "COPPER").warnings, WARN);
+});
