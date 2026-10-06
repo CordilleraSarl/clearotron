@@ -4896,7 +4896,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.**
 ```
 
-## proxy-addr@2.0.7
+## proxy-addr@2.0.8
 
 - **Licence declared:** `MIT`
 - **Repository:** jshttp/proxy-addr
