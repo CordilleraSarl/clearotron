@@ -833,7 +833,7 @@
         },
         "a-mixed-alphabet-look-alike-is-not-sent-where-the-register-drops-its-letters.test.mjs": {
           "tests": 10,
-          "asserts": 45,
+          "asserts": 46,
           "skips": 0,
           "todos": 0
         },

@@ -138,14 +138,18 @@ test("compiled on this register's contract, no plan entry and no request body mi
   const model = modelFor("TIMBER");
   const plan = compileOn(SIGNA, JSON.parse(renderFormNeighbourhoodJson("", { model, mark: "TIMBER", mixedScriptQuery: SIGNA.mixedScriptQuery })), model);
   const formEntries = plan.entries.filter((e) => e.provenance === "floor" && e.predicate === "exact");
-  assert.ok(formEntries.length > 100, `the form band compiled (${formEntries.length} entries); an empty plan would pass every arm below`);
+  // Counted in spellings, not entries: this register's exact band compiles in stacks of up to 100.
+  const formSpellings = formEntries.flatMap(entryTerms).length;
+  assert.ok(formSpellings > 100, `the form band compiled (${formSpellings} spellings); an empty plan would pass every arm below`);
   assert.ok(formEntries.some((e) => entryTerms(e).includes("limber")), "an edit-1 neighbour is on the plan");
   assert.deepEqual(mixed(plan.entries.flatMap(entryTerms)), []);
   // The request the executor builds for each entry, down to the body this register receives.
   const bodies = plan.entries.filter((e) => e.predicate !== "owner")
     .map((e) => buildSearchRequest(toSignaParams(defaultBuildEntryQuery(e, planPredicateParams(e), plan))));
   assert.equal(bodies.length, plan.entries.filter((e) => e.predicate !== "owner").length);
-  assert.deepEqual(mixed(bodies.map((b) => String(b.query ?? ""))), []);
+  // The term rides `q`, a string or — for an exact spelling stack — a list of them.
+  assert.ok(bodies.some((b) => b.q != null), "the bodies carry their terms, or the arm below reads nothing");
+  assert.deepEqual(mixed(bodies.flatMap((b) => [].concat(b.q ?? []).map(String))), []);
   // Control: the same compile from the band as it was carries both, so the arms above can fail.
   const asBefore = compileOn(SIGNA, JSON.parse(renderFormNeighbourhoodJson("", { model, mark: "TIMBER" })), model);
   assert.equal(mixed(asBefore.entries.flatMap(entryTerms)).length, 2);
