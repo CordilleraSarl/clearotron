@@ -1359,6 +1359,9 @@ export const PROVIDERS = {
             filing_route: rec?.filingRoute ?? null,
             // No page per record at Signa (hasPublicRecordUrl: false above), and none is made up here.
             record_url: null,
+            // The office's own page as the register gives it, for publish to fall back on where it cannot
+            // address the office's page from the numbers above (office-record-links.mjs).
+            office_url: rec?.officeUrl ?? null,
           };
         }) };
       } catch (e) { return { ok: false, records: null, reason: `listRecords threw: ${e.message}` }; }

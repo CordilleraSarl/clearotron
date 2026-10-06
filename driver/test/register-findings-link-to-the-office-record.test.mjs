@@ -326,3 +326,27 @@ test("a Compumark card links the US record at TSDR and cites the Chinese one by 
   assert.equal(html.split("CN, JP: we hold no page address for these registers").length - 1, 1, "the reason, once");
   assert.doesNotMatch(html, /<b>\/mark\/(us|em|gb|wo|cn|jp)\//, "a fetched record is never labelled with the handle");
 });
+
+// ── THE REGISTER'S OWN LINK FILLS A GAP AND NEVER REPLACES THE TABLE ─────────────────────────────────
+// A register can hand over the office's page for a record. The table's addresses were each checked against
+// a real record, so they stay first; the register's link is used only where the table gives none.
+const GIVEN = "https://office.invalid/record/12345";
+
+test("where the table gives no address, the register's own https link to the office's page is used", () => {
+  assert.deepEqual(officeRecordLink({ ...SIGNA("sg", "40202012345Y", "40202012345Y"), officeUrl: GIVEN }),
+    { office: "sg", label: "SG 40202012345Y", href: GIVEN, reason: null });
+  const odd = officeRecordLink({ ...SIGNA("us", "not-a-serial", null), officeUrl: GIVEN });
+  assert.equal(odd.href, GIVEN, "a number the address cannot take falls back to the register's link");
+});
+
+test("CONTROL: an address the table builds is never replaced by the register's link", () => {
+  const withGiven = officeRecordLink({ ...SIGNA("us", "97123456", null), officeUrl: GIVEN });
+  const without = officeRecordLink(SIGNA("us", "97123456", null));
+  assert.deepEqual(withGiven, without);
+});
+
+test("CONTROL: the register's link is not used when it is not https, or when there is no number to show", () => {
+  assert.equal(officeRecordLink({ ...SIGNA("sg", "40202012345Y", null), officeUrl: "http://office.invalid/r/1" }).href, null);
+  assert.equal(officeRecordLink({ ...SIGNA("sg", "40202012345Y", null), officeUrl: "javascript:alert(1)" }).href, null);
+  assert.equal(officeRecordLink({ ...SIGNA("sg", null, null), officeUrl: GIVEN }).href, null);
+});

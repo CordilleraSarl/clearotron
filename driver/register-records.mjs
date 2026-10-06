@@ -149,6 +149,9 @@ function toRecord(row, { term, basis, provider }) {
     registrationNumber: row?.registration_number ?? null,
     irNumber: row?.ir_number ?? null,
     filingRoute: row?.filing_route ?? null,
+    // The office's page as the register gave it, where it gave one; publish uses it only when the numbers
+    // above do not address the office's page.
+    officeUrl: row?.office_url ?? null,
     // WHICH QUESTION FOUND IT. Without this a reader cannot tell a filing on the name from a filing on
     // a generated variant, and the two mean very different things to the person deciding on the name.
     matchedForm: term,

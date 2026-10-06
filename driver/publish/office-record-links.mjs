@@ -122,10 +122,25 @@ export function officeRecordLink(rec, uri = "") {
   const page = OFFICE_RECORD_PAGES[office];
   const own = designation ? clean(rec.irNumber) : clean(rec.applicationNumber) || clean(rec.registrationNumber);
   const unlinked = (reason) => ({ office, label: labelOf(office, own), href: null, reason });
+  const a = page?.address ? (designation ? madridMonitor([rec.irNumber]) : page.address(rec)) : null;
+  if (a) return { office, label: labelOf(office, a.number), href: a.href, reason: null };
+  // THE REGISTER'S OWN LINK, ONLY WHERE THE TABLE GIVES NONE. Some registers hand over the office's page
+  // for a record (`officeUrl`). The table above stays first: each of its addresses was checked against a
+  // real record, and on the records measured the register's link pointed at the same office's site in a
+  // different form, or at the designated office's page where the table opens the international
+  // registration. So the register's link fills only a gap — an office with no address here, or a number
+  // the address cannot take — and never replaces an address the table builds. Only an https address, and
+  // only beside a number the reader can be shown.
+  const given = registerGivenUrl(rec.officeUrl);
+  if (given && own) return { office, label: labelOf(office, own), href: given, reason: null };
   if (!page) return unlinked("unknown-office");
   if (!page.address) return unlinked("no-page");
-  const a = designation ? madridMonitor([rec.irNumber]) : page.address(rec);
-  return a ? { office, label: labelOf(office, a.number), href: a.href, reason: null } : unlinked("unaddressable");
+  return unlinked("unaddressable");
+}
+
+function registerGivenUrl(v) {
+  if (typeof v !== "string") return null;
+  try { return new URL(v).protocol === "https:" ? v : null; } catch { return null; }
 }
 
 /**

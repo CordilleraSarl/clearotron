@@ -399,6 +399,11 @@ export function normalizeClasses(rec) {
   return out.length ? Array.from(new Set(out)).sort((a, b) => a - b) : null;
 }
 
+const httpsUrlOrNull = (v) => {
+  if (typeof v !== "string") return null;
+  try { return new URL(v).protocol === "https:" ? v : null; } catch { return null; }
+};
+
 // Map a raw Signa record → the NEUTRAL normalized shape the driver + skill consume. officeHint = the
 // office of the synthetic ref the caller cited (keeps cited==logged); record's jurisdiction_code is the
 // fallback (Signa records carry an ISO jurisdiction_code directly, so no office map is needed).
@@ -434,7 +439,14 @@ export function normalizeRecord(rec, officeHint = null) {
     ownerCountry: owner0?.country_code ?? owner0?.country ?? null,
     representative: atty0?.name ?? null,
     imageAvailable: rec.has_media ?? null,
-    resolved_link: null, // Signa exposes no per-record public URL; renderer shows "verify at office"
+    // Signa publishes no page per record of its own, so no record URL is minted here and the model's
+    // record links stay refused for this register (hasPublicRecordUrl: false).
+    resolved_link: null,
+    // THE OFFICE'S PAGE, AS THE REGISTER GIVES IT: `office_url`, a link to the record on the office's own
+    // site, absent on some records. Carried as data for publish (office-record-links.mjs), which addresses
+    // the office's page from the record's numbers first and falls back to this only where that table
+    // gives no address. Only an https address is kept.
+    officeUrl: httpsUrlOrNull(rec.office_url),
     // ── WHICH LAYER THIS RIGHT SITS ON, carried as data ( →) ──────────────────────────
     // The normalizer read under half the fields a search row carries. Among the ones it dropped were the
     // four that say what KIND of right a record is — and those are not extras, they are the whole
