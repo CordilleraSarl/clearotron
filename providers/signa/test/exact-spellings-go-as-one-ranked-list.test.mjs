@@ -140,6 +140,46 @@ test("through the plan executor, a crowded list's per-spelling counts each ask o
   } finally { await new Promise((r) => server.close(r)); }
 });
 
+test("through the plan executor, a list the register floors is counted spelling by spelling, a spelling's own floor kept", async () => {
+  // The register answers the whole list "at least 10,000" and one spelling the same way; the other two
+  // count. The list is a crowd with a null total and the register's figure, and each spelling is asked
+  // alone: the floored one is itself a crowd with its figure, never an error and never a 0.
+  const seen = [];
+  const server = createServer((req, res) => {
+    let raw = "";
+    req.on("data", (c) => { raw += c; });
+    req.on("end", () => {
+      const body = JSON.parse(raw || "{}");
+      seen.push(body);
+      const floored = Array.isArray(body.q) || body.q === "ZYTHERMA";
+      const total = floored ? 10000 : body.q === "ZYTHERMB" ? 7 : 0;
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ object: "list", has_more: total > 0, data: [],
+        pagination: { cursor: null, total_count: total, total_count_approximate: floored },
+        search_meta: { similarity_applied: body.similarity ?? [] } }));
+    });
+  });
+  await new Promise((r) => server.listen(0, "127.0.0.1", r));
+  const dir = mkdtempSync(join(TMP, "plan-floor-"));
+  try {
+    const names = ["ZYTHERMA", "ZYTHERMB", "ZYTHERMC"];
+    writeFileSync(join(dir, "plan.json"), JSON.stringify({ regions: ["US"], entries: [{ qid: "q-floor", axis: "primary-sweep",
+      predicate: "exact", terms: names, nice_classes: ["9"], regions: ["US"], expected_kind: "enumerate" }] }));
+    await doExecutePlan({ apiKey: "k", base: `http://127.0.0.1:${server.address().port}` },
+      { plan_path: join(dir, "plan.json"), axis: "primary-sweep", output_path: join(dir, "band.json") }, null);
+    assert.deepEqual(seen.map((b) => b.q), [names, ...names], "a spelling's count did not ask that spelling alone");
+    const block = JSON.parse(readFileSync(join(dir, "band.json"), "utf8")).find((b) => b.qid === "q-floor");
+    assert.equal(block.total_hits, null);
+    assert.equal(block.total_floor, 10000);
+    assert.notEqual(block.error, true);
+    assert.deepEqual(block.term_counts, {
+      ZYTHERMA: { total_hits: null, total_floor: 10000, disposition: "crowd" },
+      ZYTHERMB: { total_hits: 7, disposition: "unenumerated" },
+      ZYTHERMC: { total_hits: 0, disposition: "verified-zero" },
+    });
+  } finally { await new Promise((r) => server.close(r)); }
+});
+
 test("a crowded list falls back to one count per spelling, so a rare spelling is not lost in the crowd", async () => {
   const reg = await register({ total: 5000 });
   try {
