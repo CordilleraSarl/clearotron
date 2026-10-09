@@ -8947,7 +8947,7 @@ async function pipelineInner(job, opts = {}) {
   // frame validator compares against THIS file, never against the frame's own paraphrase) —
   // paraphrase drift between the request and the frame is a defect, not a style choice.
   try {
-    writeFileSync(P.instructedScope, JSON.stringify(instructedScopeOf(job), null, 2) + "\n");
+    const scope = instructedScopeToWrite(job, { jobRebuiltFromStatus: opts.jobRebuiltFromStatus, scopeOnDisk: existsSync(P.instructedScope) }); if (scope) writeFileSync(P.instructedScope, JSON.stringify(scope, null, 2) + "\n");
   } catch (e) { note(`instructed-scope write failed (non-fatal): ${e.message}`); }
   // THE STORED DEFAULTS THE ENGINE CANNOT SEARCH — recorded by the run, not only by the plan preview.
   //
@@ -16775,7 +16775,7 @@ if (isEntrypoint(import.meta.url)) void (async () => {
   // rate-limit catch already finds the run to postpone; the same hook lets a THROWN exit name the run.
   const opts = a.experiment
     ? { ...base, codename: a.codename, experiment: a.experiment, model: a.model, instructions: a.instructions, axis: a.axis, label: a.label, dispatchTrigger: a.dispatchTrigger }
-    : { ...base, codename: a.codename, fromStage: a.fromStage };
+    : { ...base, codename: a.codename, fromStage: a.fromStage, ...(a.job ? {} : { jobRebuiltFromStatus: true }) };
   const script = resolve(fileURLToPath(import.meta.url));
   // `jobPath` is null on a rebuilt resume, so the advice composes a command that does not name a file
   // the box does not have — which is the whole defect this path exists to close, and printing it again
@@ -16980,4 +16980,15 @@ function orphanAreaLabel(qid, axis, plan) {
   if (!entry) return {};
   const label = coverageUnitLabel(unitLabel(axis || entry.axis, entry));
   return label && label !== qid ? { areaLabel: label } : {};
+}
+
+/**
+ * The instructed scope this run writes, or null to keep the one already on disk. A resume that rebuilt its
+ * job from status.json holds only the job's identity (id, reference, mark, classes, forwarder), so writing
+ * the scope from it would replace the order's goods, customer and territories with nothing, and every
+ * later reader of the scope would see a narrower matter than was ordered. Such a resume keeps the scope the
+ * run started with. A job read from a file, or a run with no scope yet, writes as before. PURE.
+ */
+export function instructedScopeToWrite(job, { jobRebuiltFromStatus = false, scopeOnDisk = false } = {}) {   // @internal
+  return jobRebuiltFromStatus && scopeOnDisk ? null : instructedScopeOf(job);
 }

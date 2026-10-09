@@ -73,3 +73,20 @@ test("the rebuild refuses each missing identifying field, and names every one", 
   // An empty class list is a recorded answer, not a missing one.
   assert.doesNotMatch(resumeJobRefusal({ ...whole, classes: [] }, "irrelevant") ?? "", /carries no/);
 });
+
+test("a resume rebuilt from status.json keeps the run's instructed scope; a job from a file writes its own", async () => {
+  // The rebuilt job holds the run's identity only, so a scope written from it would drop the order's goods,
+  // customer and territories. The run keeps the scope it started with.
+  const { instructedScopeToWrite, jobFromStatus } = await import("../pipeline.mjs");
+  const rebuilt = jobFromStatus({ id: "job-1", ref: "TMP1", markName: "INVENTED", classes: [9], forwarder: "staff-a" });
+  assert.equal(instructedScopeToWrite(rebuilt, { jobRebuiltFromStatus: true, scopeOnDisk: true }), null, "a rebuilt resume overwrote the run's scope");
+  assert.deepEqual(instructedScopeToWrite(rebuilt, { jobRebuiltFromStatus: true, scopeOnDisk: false })?.marks, ["INVENTED"],
+    "a rebuilt resume with no scope on disk wrote none at all");
+  const fromFile = { ...rebuilt, goods: "invented goods", customer: "Invented Holdings" };
+  assert.equal(instructedScopeToWrite(fromFile, { jobRebuiltFromStatus: false, scopeOnDisk: true })?.goods, "invented goods",
+    "a job read from a file no longer writes its scope");
+  // And the command line marks the rebuild exactly when no --job was given.
+  const src = (await import("node:fs")).readFileSync(PIPELINE, "utf8");
+  assert.match(src, /fromStage: a\.fromStage, \.\.\.\(a\.job \? \{\} : \{ jobRebuiltFromStatus: true \}\)/);
+  assert.match(src, /instructedScopeToWrite\(job, \{ jobRebuiltFromStatus: opts\.jobRebuiltFromStatus, scopeOnDisk: existsSync\(P\.instructedScope\) \}\)/);
+});
