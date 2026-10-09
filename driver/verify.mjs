@@ -16,7 +16,7 @@ import { matterFrameWasRecorded, frameRatifiedForms } from "./matter-frame-recor
 import { findConnotationViolations, parsePrRiskResults, prRiskPopulation,
   CONNOTATION_UNMATCHED_MARK, CONNOTATION_NO_RESEMBLANCE_MARK, MEANING_ANGLES_RE,
   parseDispositionForm, CONNOTATION_UNRULED_REASONS, queryKey } from "./connotation-search.mjs";
-import { formSidecarName, formSidecarPath } from "./disposition-union.mjs"; import { coverageStatusAsData } from "./common-law-coverage-status.mjs";
+import { formSidecarName, formSidecarPath } from "./disposition-union.mjs";
 // B — the transport's own four failure states. The audit reads the run's records; this file locates them.
 import { auditDispositionCalls, CALL_FAILURE_REASONS } from "./disposition-call-audit.mjs";
 import { callRecordPaths } from "./disposition-tool.mjs";
@@ -681,7 +681,7 @@ function commonLawStructural(c, p = null) {
     needsSection(c, "coverage-ledger", [/coverage[\s-]ledger/i], "coverage-ledger"),
     needsSection(c, "audit-trail", [/audit[\s-]trail/i], "audit-trail"),
     needs(c, [/\|/], "platform matrix"),
-    coverageStatusAsData(p) || hasCoverageLedgerRow(c) ? ok() : fail("no_coverage_status_row"),   // the recorded status first, the word as fallback: coverageStatusAsData() in common-law-coverage-status.mjs
+    // no status check here (ruling 2026-10-01): a ledger with no status word and no record passes, and code records what it states — recordStatusesFromFindings() in common-law-coverage-status.mjs
   );
 }
 

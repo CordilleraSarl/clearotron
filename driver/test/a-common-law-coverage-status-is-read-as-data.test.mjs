@@ -11,13 +11,16 @@
 // So the seat now also records its ledger rows' statuses through `record_coverage_status`, the driver
 // writes them, and the gate reads that record first. Four properties, each held below:
 //
-//   1. Data alone passes: no status word in the prose, a recorded status, and the gate accepts it. Without
-//      the record the same document is refused, which is today's behaviour.
+//   1. Data alone passes: no status word in the prose, a recorded status, and the gate accepts it. Since the
+//      owner's ruling of 2026-10-01 a ledger with neither passes as well, rather than spending a full stage
+//      re-run, and code records what the ledger states (property 5).
 //   2. Nothing that passes today stops passing: the prose word still passes on its own, and a record the
 //      gate cannot read as data never turns a passing document into a failing one.
 //   3. The merged canonical file is the halves concatenated, so the halves' records answer for it.
 //   4. The path a run takes: the seat's call reaches the real server, the server writes where the gate
 //      reads, and the manual orders the tool with the values its schema accepts.
+//   5. Code records the statuses a ledger states where the seat made no call: each row's word, else
+//      "not stated", in the file the tool writes, never over a record the seat made itself.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
@@ -30,8 +33,8 @@ import { GRID_HALVES, splitGridTerms, mergeGrids, mergeCommonLawFindings } from 
 import { validators } from "../verify.mjs";
 import { paths } from "../stages.mjs";
 import { correctionHint } from "../gateway.mjs";
-import { recordCoverageStatus, coverageStatusPath, coverageStatusAsData, findingsPathForSpec, COMMON_LAW_COVERAGE_STATUSES }
-  from "../common-law-coverage-status.mjs";
+import { recordCoverageStatus, coverageStatusPath, coverageStatusAsData, findingsPathForSpec, COMMON_LAW_COVERAGE_STATUSES,
+  recordStatusesFromFindings, ledgerStatuses, NOT_STATED } from "../common-law-coverage-status.mjs";
 
 process.env.CLEAROTRON_SATPROBE_CODESIDE ||= "0";
 
@@ -112,12 +115,12 @@ const ROW = [{ unit: "dictated platform grid", status: "confirmed-clean" }];
 // A ledger row whose status cell carries none of the three words: the phrasing that failed on the test box.
 const NO_WORD = "complete";
 
-test("THE CONTROL: with no status word and no record, the canonical file is refused as it is today", () => {
+test("with no status word and no record, the canonical file passes: no re-run is spent on it (ruling 2026-10-01)", () => {
   const r = run(NO_WORD);
   try {
-    const v = validators.commonLaw(r.p, r.findings);
-    assert.equal(v.ok, false);
-    assert.match(v.reason, /no_coverage_status_row/);
+    assert.equal(/confirmed-clean|coverage-limited|deferred/i.test(r.findings), false, "the fixture carries a status word, so this tests nothing");
+    assert.deepEqual(validators.commonLaw(r.p, r.findings), { ok: true, reason: "machine-receipts" },
+      "a ledger with no status was refused, which spends a full stage re-run");
   } finally { r.done(); }
 });
 
@@ -146,7 +149,7 @@ test("an unsplit run's own record answers for its own findings file", () => {
   } finally { r.done(); }
 });
 
-test("a half's own gate reads its own record", () => {
+test("a half's gate no longer stops on a missing status, with or without its record", () => {
   // The half validator checks the prose gate first and the grid after. Past the gate, this fixture has no
   // half ledger, so the next refusal is the ledger's; which refusal comes back says whether the gate passed.
   const r = run(NO_WORD);
@@ -154,11 +157,11 @@ test("a half's own gate reads its own record", () => {
     const p = join(r.dir, "common-law-findings.half-a.md");
     const c = halfDoc("a", splitGridTerms(TERMS).a, NO_WORD);
     writeFileSync(p, c);
-    assert.match(validators.commonLawHalf(p, c).reason, /no_coverage_status_row/, "the control: no record, no word, refused at the gate");
+    const before = validators.commonLawHalf(p, c);
+    assert.doesNotMatch(before.reason, /no_coverage_status_row/, "no record and no word still stopped the half at the gate");
+    assert.match(before.reason, /^grid_ledger_/, `past the gate, the next check refuses: ${before.reason}`);
     assert.equal(recordCoverageStatus(r.spec("a"), { rows: ROW }).ok, true);
-    const v = validators.commonLawHalf(p, c);
-    assert.doesNotMatch(v.reason, /no_coverage_status_row/, "the half's record did not reach its gate");
-    assert.match(v.reason, /^grid_ledger_/, `past the gate, the next check refuses: ${v.reason}`);
+    assert.match(validators.commonLawHalf(p, c).reason, /^grid_ledger_/, "a recorded status changed what the half is refused for");
   } finally { r.done(); }
 });
 
@@ -175,16 +178,55 @@ test("a document that passes today still passes, and a record the gate cannot re
   } finally { r.done(); }
 });
 
-test("a record the gate cannot read as data does not pass a document on its own", () => {
+test("a record the gate cannot read is not data, and refuses nothing", () => {
   const r = run(NO_WORD);
   try {
     for (const bad of ["not json", {}, { coverage_status: {} }, { coverage_status: { grid: "clean" } },
       { coverage_status: { grid: "confirmed-clean", other: "unknown" } }, { coverage_status: ["confirmed-clean"] }]) {
       writeFileSync(coverageStatusPath(r.p), typeof bad === "string" ? bad : JSON.stringify(bad));
       assert.equal(coverageStatusAsData(r.p), false, `${JSON.stringify(bad)} read as a coverage status`);
-      assert.match(validators.commonLaw(r.p, r.findings).reason, /no_coverage_status_row/);
+      assert.deepEqual(validators.commonLaw(r.p, r.findings), { ok: true, reason: "machine-receipts" },
+        `a damaged record (${JSON.stringify(bad)}) refused a document`);
     }
   } finally { r.done(); }
+});
+
+test("code records what a ledger states where the seat made no call: each row's word, else not stated", () => {
+  const r = run(NO_WORD);
+  try {
+    const p = join(r.dir, "common-law-findings.half-a.md");
+    writeFileSync(p, halfDoc("a", splitGridTerms(TERMS).a, NO_WORD));
+    const rec = recordStatusesFromFindings(p, { half: "a", now: () => "2026-10-09T00:00:00.000Z" });
+    assert.deepEqual(rec.coverage_status, { "dictated platform grid": NOT_STATED });
+    assert.equal(rec.source, "findings");
+    assert.deepEqual(JSON.parse(readFileSync(coverageStatusPath(p), "utf8")), rec, "the record was not written where the tool writes");
+    // A later code record follows the latest findings.
+    writeFileSync(p, halfDoc("a", splitGridTerms(TERMS).a, "coverage-limited"));
+    assert.deepEqual(recordStatusesFromFindings(p, { half: "a" }).coverage_status, { "dictated platform grid": "coverage-limited" });
+  } finally { r.done(); }
+});
+
+test("a record the seat made through the tool is never overwritten by code", () => {
+  const r = run(NO_WORD);
+  try {
+    const p = join(r.dir, "common-law-findings.half-b.md");
+    writeFileSync(p, halfDoc("b", splitGridTerms(TERMS).b, NO_WORD));
+    assert.equal(recordCoverageStatus(r.spec("b"), { rows: ROW }).ok, true);
+    const before = readFileSync(coverageStatusPath(p), "utf8");
+    assert.equal(recordStatusesFromFindings(p, { half: "b" }), null);
+    assert.equal(readFileSync(coverageStatusPath(p), "utf8"), before, "code replaced the seat's own record");
+  } finally { r.done(); }
+});
+
+test("the ledger reader takes the first table under the heading, its header and separator skipped", () => {
+  const doc = ["## Findings", "| a | b |", "", "### Coverage ledger", "| Coverage unit | Status | Reason |", "|---|:---:|---|",
+    "| dictated platform grid | confirmed-clean | full sweep |", "| non-Latin reach | Deferred | next pass |", "| app stores | complete | no word |",
+    "", "### Audit trail", "| 1 | deferred | x |"].join("\n");
+  assert.deepEqual(ledgerStatuses(doc), { "dictated platform grid": "confirmed-clean", "non-Latin reach": "deferred", "app stores": NOT_STATED });
+  assert.deepEqual(ledgerStatuses("no ledger here"), { "coverage ledger": NOT_STATED });
+  // A unit named after a status is not that status.
+  assert.deepEqual(ledgerStatuses(["### Coverage ledger", "| Unit | Status |", "|---|---|", "| deferred-cells | n/a |"].join("\n")),
+    { "deferred-cells": NOT_STATED });
 });
 
 test("the tool keeps what validates, refuses the rest by entry, and accumulates", () => {
@@ -247,13 +289,9 @@ test("the manual orders the tool, and names exactly the values its served schema
   assert.equal(served.length, 3);
 });
 
-test("a retry for the missing status names the tool on a common-law file, and only there", () => {
-  for (const f of ["common-law-findings.half-a.md", "common-law-findings.md"]) {
-    const hint = correctionHint(`invalid_file:${f}:no_coverage_status_row`);
-    assert.match(hint, /status row \(confirmed-clean \/ coverage-limited \/ deferred\)/, "the prose route is gone from the hint");
-    assert.match(hint, /calling `record_coverage_status` with `grid_spec_path`/, `the retry for ${f} does not name the tool`);
-  }
-  // The register stage emits the same token and holds no such tool: its hint is unchanged.
-  const register = correctionHint("invalid_file:register-findings.md:no_coverage_status_row");
-  assert.equal(register, "the file has a findings heading plus a Coverage ledger with a status row (confirmed-clean / coverage-limited / deferred)");
+test("the retry text for a missing status no longer names the tool: the common-law lane spends no retry on it", () => {
+  // The register stage still emits the token and keeps its hint; the common-law lane no longer emits it at all.
+  const register = "the file has a findings heading plus a Coverage ledger with a status row (confirmed-clean / coverage-limited / deferred)";
+  for (const f of ["common-law-findings.half-a.md", "common-law-findings.md", "register-findings.md"])
+    assert.equal(correctionHint(`invalid_file:${f}:no_coverage_status_row`), register);
 });
