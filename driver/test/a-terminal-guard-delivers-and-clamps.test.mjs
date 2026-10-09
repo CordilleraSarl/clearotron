@@ -28,6 +28,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { terminalClampDecision, recordNamesDefect, ENGINE_TOKEN_RE, orderClausesForLede } from "../terminal-clamp.mjs";
 import { reconcileDeclinationDuty } from "../declination-duty.mjs";
+import { reconcileFloorDuty, floorDutyBlock } from "../floor-duty.mjs";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -82,8 +83,21 @@ test("an unnamed defect is refused outright rather than delivered quietly", () =
   assert.throws(() => terminalClampDecision({ verdict: "CLEAR", defect: "d:1", reason: "  ", clause: "c" }), /run-record reason/);
 });
 
-test("the real guard produces a defect this decision can carry — driven, not invented", () => {
-  // The floor duty was the second guard, and it left with the placement step it measured.
+test("the two real guards produce defects this decision can carry — driven, not invented", () => {
+  // FLOOR DUTY. A row placed at no tier and named with no ground is undischarged.
+  const floors = [{ record_id: "/mark/us/88888888", mark: "VELTRI DIAGNOSTICS" }];
+  const artifact = reconcileFloorDuty({ floors, placements: [] });
+  const block = floorDutyBlock(artifact, { armed: true });
+  assert.ok(block, "the floor-duty predicate found nothing to block on — this arm would carry an invented defect");
+  const floorDecision = terminalClampDecision({
+    verdict: "CLEAR", defect: `floor_duty_undischarged:${block.undischarged}`,
+    reason: `floor_duty_undischarged:${block.undischarged} of ${block.floors} floor row(s) came back neither placed nor named.`,
+    clause: `${block.undischarged} of the ${block.floors} live registrations identical or near-identical to the mark are not individually addressed in this report.`,
+    detail: { undischarged: block.undischarged, floors: block.floors },
+  });
+  assert.equal(floorDecision.deliver, true);
+  assert.match(floorDecision.record.defect, /^floor_duty_undischarged:\d+$/);
+
   // SYNTHESIS DUTY. A record owed, neither delivered nor declined.
   const duty = reconcileDeclinationDuty({
     owed: [{ uri: "/mark/us/88888888" }, { uri: "/mark/us/99999999", mark: "VELTRYN" }],
@@ -118,12 +132,12 @@ test("an ARCHIVED run is never accused: the declination spec IS the synthesis er
   assert.equal(live.computable, true, "the reconcile could not reach computable:true at all — the archived result above proves nothing");
 });
 
-test("the terminal site throws no more — a regression catch, and it is only that", () => {
+test("neither terminal site throws any more — a regression catch, and it is only that", () => {
   // A SOURCE PIN, and named as one. It cannot tell an armed check from a disarmed one; the arms above
   // do that. What it catches is the specific regression of someone re-adding a throw beside these two
   // tokens, which is the shape this issue exists to remove.
   const src = readFileSync(join(DRIVER, "pipeline.mjs"), "utf8");
-  for (const token of ["synthesis_unaccounted_delivered"]) {
+  for (const token of ["floor_duty_undischarged", "synthesis_unaccounted_delivered"]) {
     const at = src.indexOf(token);
     assert.notEqual(at, -1, `${token} is gone from pipeline.mjs — the defect is no longer named at all, which is worse than blocking on it`);
     const window = src.slice(Math.max(0, at - 700), at + 700);

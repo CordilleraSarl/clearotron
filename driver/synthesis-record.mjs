@@ -46,16 +46,12 @@ import { writeFileSync, appendFileSync, mkdirSync, readFileSync, existsSync } fr
 import { captureCall, stampVerdict } from "./call-capture.mjs";
 import { join, dirname } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";
-import { parseFindingsJson, COVERAGE_AREA_STATES, POSITION_REQUIRED_DISPOSITIONS } from "./findings-model.mjs";
-import { sentencesKeepingNames } from "./predelivery-lint.mjs";   // the split that never cuts a name in half
-import { SENTENCE_WORD_LIMIT, wordsIn } from "./plain-register.mjs";   // the pinned cap and its word count
+import { parseFindingsJson, COVERAGE_AREA_STATES } from "./findings-model.mjs";
 import { readFrozenMethod, FROZEN_METHOD_FILE } from "./framework-method.mjs";
 import { findCoverageRecommendations } from "./verify.mjs";
 import { declinationCallPaths, readDeclinations } from "./declination-tool.mjs";   // — the seat's own declines, read by the driver never asserted by the seat
 import { reconcileDeclinationDuty, declinationDutyRefusal } from "./declination-duty.mjs";
 import { findingUris } from "./record-carry.mjs";   // one derivation of "which records did the findings name", called not copied
-import { stampDecidedRatings } from "./decision-ratings.mjs";
-import { MODEL_RECORD_FILE } from "./record-layer.mjs";   // the model's own record, under the driver's layer
 
 export const NARRATIVE_FILE = "narrative.md";
 export const FINDINGS_FILE = "findings.json";
@@ -81,7 +77,7 @@ export function synthesisCallPaths(runDir) {
   // the run said the defect had ever happened. A run that corrects itself silently cannot be audited,
   // and "no defect occurred" and "a defect occurred and was fixed" must not look the same.
   return { dir, payload: join(dir, "call-001.json"), accepted: join(dir, "accepted.json"),
-    lastReceived: join(dir, "last-received.json"), refusals: join(dir, "refusals.jsonl") };
+    refusals: join(dir, "refusals.jsonl") };
 }
 
 const isStr = (s) => typeof s === "string" && s.trim() !== "";
@@ -272,35 +268,8 @@ export function withoutWithheldRows(rows, ledger) {
   return (Array.isArray(rows) ? rows : []).filter((r) => !namesIn(r?.area).some((n) => withheld.has(n)));
 }
 
-// ── THE FINDING SENTENCE IS AT MOST TWO SENTENCES OF AT MOST 25 WORDS (owner, 2026-10-02) ───────────
-//
-// Refused at the call, where restating is free, and judged only on the findings the call carries: a
-// patch is judged on the findings it sends, so a sentence accepted before this rule is never refused on
-// a pass that did not touch it. Not in parseFindingsJson, because that parse is on the archive republish
-// path and a record delivered under the old rule must republish byte for byte.
-//
-// Counted on the lint's split, which keeps "Inc.", "Ltd.", initials and a mid-sentence "U.S." whole;
-// "No." before a number is not a sentence end either. A false refusal costs a correction round, so the
-// count leans to the fewer sentences. The exemptions are the chain rule's: a withdrawn or ruled-out
-// finding renders no net. The refusal is the owner's clause and the two counts, nothing else.
-export const NET_MAX_SENTENCES = 2;
-export function netLengthRefusal(findings, carried = null) {
-  for (const f of Array.isArray(findings) ? findings : []) {
-    if (!f || typeof f.net !== "string" || !f.net.trim()) continue;
-    if (f.ruled_out === true || !POSITION_REQUIRED_DISPOSITIONS.includes(f.disposition)) continue;
-    if (carried && !carried.has(f.ordinal)) continue;
-    const sentences = sentencesKeepingNames(f.net.replace(/\b(Nos?)\.(?=\s*\d)/g, "$1"));
-    const longest = Math.max(0, ...sentences.map(wordsIn));
-    if (sentences.length > NET_MAX_SENTENCES || longest > SENTENCE_WORD_LIMIT) {
-      return `synthesis_net_too_long:${f.ordinal} (At most two sentences, each at most 25 words: `
-        + `${sentences.length} sentence${sentences.length === 1 ? "" : "s"}, ${longest} word${longest === 1 ? "" : "s"} in the longest)`;
-    }
-  }
-  return null;
-}
-
-export function acceptSynthesis(params, { asks = [], ledger = null, manifest = null, method = undefined, methodInvalid = null, owed = null, declined = null, decisions = null, carried = null } = {}) {
-  let doc = params?.findings;
+export function acceptSynthesis(params, { asks = [], ledger = null, manifest = null, method = undefined, methodInvalid = null, owed = null, declined = null } = {}) {
+  const doc = params?.findings;
   if (!doc || typeof doc !== "object" || Array.isArray(doc)) {
     return { ok: false, reason: "synthesis_findings_missing: `findings` must be the findings document object { schema_version, rated_under_framework, findings, coverage, … } — this is the record the report and the workbook are built from, and there is no path that renders without it" };
   }
@@ -311,8 +280,6 @@ export function acceptSynthesis(params, { asks = [], ledger = null, manifest = n
   if (!isStr(n.spine)) {
     return { ok: false, reason: "synthesis_spine_missing: `narrative.spine` is the dominant-element spine — the cross-finding read no other artifact on this run holds. It is the core of the product and there is no clean answer that omits it" };
   }
-  const netRefusal = netLengthRefusal(doc.findings, carried);
-  if (netRefusal) return { ok: false, reason: netRefusal };
   if (!isStr(n.verdict)) {
     return { ok: false, reason: "synthesis_verdict_missing: `narrative.verdict` is the verdict prose — what the findings together mean for this client" };
   }
@@ -404,17 +371,6 @@ export function acceptSynthesis(params, { asks = [], ledger = null, manifest = n
     coverage: { read: n.coverage?.read, rows },
     calibration: n.calibration, askAnswers: doc.ask_answers,
   });
-  // ── THE RATING IS THE JUDGES' (owner, 2026-10-01 and 2026-10-02; decision-ratings.mjs). On a run judged
-  // by owner, code stamps each finding's band and its two record reads from the merged decisions before
-  // anything reads it, so no band the call carried survives. A finding no carried owner matches, or a rated
-  // owner placed "off-field", is refused here, where restating is free. The framework's method no longer
-  // polices the band either: reasoning a band is not this seat's work any more.
-  if (decisions) {
-    const stamped = stampDecidedRatings(doc, decisions, manifest, method ?? null);
-    if (stamped.refusals.length) return { ok: false, reason: stamped.refusals.join("; ") };
-    doc = stamped.doc;
-    method = undefined;
-  }
   let findings = renderFindings(doc);
 
   // ── THE ROUND-TRIP. Rendered bytes → the shipped parsers → exactly what was asked for. ───────────
@@ -484,27 +440,6 @@ export function lastAcceptedCall(runDir) {
 }
 
 /**
- * The record the last call this run received carried, merged if it arrived as a patch, ACCEPTED OR
- * REFUSED; null when no call has carried one. A patch merges onto it (design, 2026-10-03): a seat refused
- * for one finding corrects that finding and nothing else, as a lawyer corrects one sentence rather than
- * retyping the file, and the merged record is then checked whole. Measured on the first run under the
- * sentence cap: the first save was refused for one sentence of 26 words, the patch the seat sent for that
- * one finding was refused for want of an accepted base, and the seat resent the whole record, 61,000
- * characters. A run whose calls predate this file has none, and its patches merge onto the last accepted
- * call as before.
- */
-export function lastReceivedCall(runDir) {
-  try {
-    const { lastReceived } = synthesisCallPaths(String(runDir ?? ""));
-    return JSON.parse(readFileSync(lastReceived, "utf8"))?.params ?? null;
-  } catch { return null; }
-}
-
-/** A `findings` that carries the record's other sections and no findings list. PURE. */
-const carriesSectionsOnly = (findings) => Boolean(findings) && typeof findings === "object" && !Array.isArray(findings)
-  && findings.findings === undefined;
-
-/**
  * Merge a patch call onto the stored one. PURE.
  *
  * `findings_patch` replaces finding objects BY ORDINAL and touches nothing else; `narrative` fields
@@ -524,15 +459,7 @@ export function mergeSynthesisPatch(stored, patch) {
   // still arrives here rather than as a first call, because it carries no narrative — and the narrative
   // it is not being asked to redo is the stored one. Without this the rung could not succeed: the call
   // was refused for `synthesis_narrative_missing`, naming sections nobody had asked the seat to resend.
-  //
-  // A `findings` WITH NO FINDINGS LIST is the record's OTHER sections: the coverage rows, the actions, the
-  // four answers, the corrections note. Each replaces its counterpart and the stored findings stand, for a
-  // patch list, if one came, to correct by ordinal (design, 2026-10-03: a findings list makes a save whole;
-  // without one, a save is a patch on what it carries). Read as a whole record holding no findings, such a
-  // call was refused for unaccounted records and the model resent the whole record: beside a patch list on
-  // two test runs, about 54,000 and 68,000 characters each, and on its own on three saves across 54 runs.
-  const sectionsOnly = carriesSectionsOnly(patch?.findings);
-  if (patch?.findings !== undefined) out.findings = sectionsOnly ? { ...out.findings, ...patch.findings } : patch.findings;
+  if (patch?.findings !== undefined) out.findings = patch.findings;
   for (const [k, v] of Object.entries(patch?.narrative ?? {})) out.narrative[k] = v;
   const rows = patch?.findings_patch;
   if (rows != null) {
@@ -615,11 +542,7 @@ export function driverReadsFor(runDir) {
       declined = d.present ? [...d.byUri.keys()] : null;
     }
   } catch { declined = null; }
-  // Step 3's merged decisions, at the run root: on a run judged by owner they rate every finding.
-  let decisions = null;
-  try { decisions = JSON.parse(readFileSync(join(dir0, "owner-decisions.json"), "utf8")); } catch { decisions = null; }
   return {
-    decisions,
     asks: Array.isArray(asksRaw) ? asksRaw : [],
     ledger: readLedger(dir0),
     manifest: read("framework.json"),
@@ -684,7 +607,7 @@ export function recordSynthesis(runDir, received, opts = {}) {
   const auto = driverReadsFor(dir0);
   const { asks = auto.asks, ledger = auto.ledger, manifest = auto.manifest,
     method = auto.method, methodInvalid = auto.methodInvalid ?? null,
-    owed = auto.owed, declined = auto.declined, decisions = auto.decisions,
+    owed = auto.owed, declined = auto.declined,
     now = () => new Date().toISOString() } = opts;
   const { dir, payload, accepted, refusals } = synthesisCallPaths(dir0);
   // Its sibling rule — ONE FILE PER CALL, refusals included. This used to
@@ -701,14 +624,8 @@ export function recordSynthesis(runDir, received, opts = {}) {
   // A PARTIAL IS A CALL CARRYING ONLY ONE HALF. Detected by shape rather than by a mode flag: a flag is
   // a second way to say the same thing and the two can disagree. Either half may be the missing one —
   // a corrective sends findings changes with no narrative rewrite, a schema migration re-emits the
-  // whole record and touches no section — and in both cases the half not sent is the stored one. ONE RULE
-  // (design, 2026-10-03): A FINDINGS LIST MAKES A SAVE WHOLE; WITHOUT ONE, A SAVE IS A PATCH ON WHAT IT
-  // CARRIES. A patch list corrects the findings it names, a section carried replaces that section, and the
-  // narrative likewise; what is not carried stands, and the merged record is checked whole
-  // (mergeSynthesisPatch). A call carrying a findings list is a whole record, so the sentence cap reads
-  // every finding it holds and a whole list that drops a finding is still refused for unaccounted records.
-  const isPatch = Boolean(received) && (received.findings === undefined || received.narrative === undefined
-    || carriesSectionsOnly(received.findings));
+  // whole record and touches no section — and in both cases the half not sent is the stored one.
+  const isPatch = Boolean(received) && (received.findings === undefined || received.narrative === undefined);
   let call = received;
   // Appended, never overwritten: a turn can be refused more than once and each one is a fact about the
   // run. Best-effort — bookkeeping that can kill a run is worse than bookkeeping that is absent.
@@ -716,9 +633,8 @@ export function recordSynthesis(runDir, received, opts = {}) {
     try { appendFileSync(refusals, JSON.stringify({ at: now(), reason }) + "\n"); } catch { /* best-effort */ }
   };
 
-  const lastAccepted = lastAcceptedCall(dir0);
   if (isPatch) {
-    const merged = mergeSynthesisPatch(lastReceivedCall(dir0) ?? lastAccepted, received);
+    const merged = mergeSynthesisPatch(lastAcceptedCall(dir0), received);
     if (!merged.ok) {
       noteRefusal(merged.reason);
       return { written: null, refused: merged.reason,
@@ -726,24 +642,8 @@ export function recordSynthesis(runDir, received, opts = {}) {
     }
     call = merged.merged;
   }
-  // Every call that carries a record becomes the next patch's base, accepted or refused (lastReceivedCall).
-  // Best-effort: a base that cannot be written leaves the next patch on the last accepted call, as before.
-  if (call && typeof call === "object") {
-    try {
-      writeFileSync(synthesisCallPaths(dir0).lastReceived, JSON.stringify({
-        _provenance: "the last call this run received, merged if it arrived as a patch, accepted or refused — the base the next patch merges onto",
-        receivedAt: now(), params: call,
-      }, null, 2) + "\n");
-    } catch { /* best-effort */ }
-  }
 
-  // The sentence cap reads every finding of a whole call. For a patch it reads the findings the patch
-  // sends, and every finding that differs from the last ACCEPTED record, which is all of them when nothing
-  // was accepted yet. So a patch onto a refused record is checked whole, and a record accepted before the
-  // cap still patches finding by finding (netLengthRefusal).
-  const sent = (Array.isArray(received?.findings_patch) ? received.findings_patch : []).map((r) => r?.ordinal);
-  const carried = !isPatch ? null : lastAccepted ? new Set([...sent, ...touchedBetween(lastAccepted.findings, call?.findings)]) : null;
-  const v = acceptSynthesis(call, { asks, ledger, manifest, method, methodInvalid, owed, declined, decisions, carried });
+  const v = acceptSynthesis(call, { asks, ledger, manifest, method, methodInvalid, owed, declined });
   if (!v.ok) {
     noteRefusal(v.reason);
     return { written: null, refused: v.reason,
@@ -752,25 +652,15 @@ export function recordSynthesis(runDir, received, opts = {}) {
 
   const findingsAt = join(dir0, FINDINGS_FILE);
   const narrativeAt = join(dir0, NARRATIVE_FILE);
-  const before = lastAccepted;   // the record this save replaces, for the touched record below
   try {
     writeFileSync(findingsAt, v.findings);
-    // THE MODEL'S OWN RECORD, kept beside findings.json. A save changes only this; the driver's writes are a
-    // layer over it, applied again after the stage that saved (record-layer.mjs, design 2026-10-03).
-    writeFileSync(driverDir(dir0, MODEL_RECORD_FILE), v.findings);
     writeFileSync(narrativeAt, v.narrative);
-    // The last ACCEPTED record, stored only now, after the values passed. The touched record compares
-    // against it, and the sentence cap reads changes against it. The next patch merges onto the last call
-    // received instead, refused or not, and falls back to this one for a run that predates that file.
+    // The merge base for the NEXT repair, stored only now — after the values passed. A base written
+    // before validation would let a refused call become what the next patch is built on.
     writeFileSync(accepted, JSON.stringify({
       _provenance: "the last ACCEPTED call, merged if it arrived as a patch — the base a later repair patches onto",
       acceptedAt: now(), params: call,
     }, null, 2) + "\n");
-    try {
-      appendFileSync(touchedRecordPath(runDir), JSON.stringify({ at: now(), ordinals: touchedBetween(before?.findings, call?.findings),
-        prose: proseChanged(before?.narrative, call?.narrative) }) + "\n");
-    }
-    catch { /* best-effort — a record that cannot be written leaves the fix pass with nothing to act on, never a failed save */ }
   } catch (e) {
     // The call was VALID and we could not store it. That is infrastructure, and it must not read as a
     // rejected call — the two have opposite repairs.
@@ -787,33 +677,6 @@ export function recordSynthesis(runDir, received, opts = {}) {
     coverage_limits_checked: v.coverage_limits_checked,
     captured: closeCapture({ ok: true }), capture_failed: captureFailed,
   };
-}
-
-// ── WHAT EACH ACCEPTED SAVE CHANGED, RECORDED BY THE SAVE (owner, ruling 719, 2026-10-02) ─────────────
-//
-// The post-repair fix pass applies the review's points on what a repair changed, "read from the repair's own
-// record of what it touched". Every synthesis save writes that record at the moment it is accepted: the
-// ordinals whose finding object differs from the accepted record before it, or exists in only one of them,
-// and whether the narrative's PROSE changed — the sections the writer composes: the verdict, the spine, the
-// coverage read and the calibration answers. The coverage list and the ask answers the narrative also
-// renders are the record's rows, not text the model wrote; on 15 of 17 saved runs a repair changed only
-// that list (design, 2026-10-02). Appended, one line per accepted save; a save that changed no finding
-// records an empty list.
-export const touchedRecordPath = (runDir) => join(synthesisCallPaths(String(runDir ?? "")).dir, "touched.jsonl");
-const findingsByOrdinal = (doc) => new Map((Array.isArray(doc?.findings) ? doc.findings : [])
-  .filter((f) => Number.isInteger(f?.ordinal)).map((f) => [f.ordinal, JSON.stringify(f)]));
-export function touchedBetween(prevDoc, nextDoc) {
-  const a = findingsByOrdinal(prevDoc), b = findingsByOrdinal(nextDoc);
-  return [...new Set([...a.keys(), ...b.keys()])].filter((o) => a.get(o) !== b.get(o)).sort((x, y) => x - y);
-}
-const proseOf = (n) => JSON.stringify([n?.verdict ?? null, n?.spine ?? null, n?.coverage?.read ?? null,
-  (Array.isArray(n?.calibration) ? n.calibration : []).map((c) => [c?.challenge ?? null, c?.answer ?? null])]);
-export const proseChanged = (prev, next) => proseOf(prev) !== proseOf(next);
-/** Every accepted save's touched ordinals, in order. Best-effort: an unreadable record reads as none. */
-export function readTouched(runDir) {
-  try {
-    return readFileSync(touchedRecordPath(runDir), "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l));
-  } catch { return []; }
 }
 
 /** Every call this run turned away, in order — the run's own record that a defect was met and corrected. */

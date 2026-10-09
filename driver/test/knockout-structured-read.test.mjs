@@ -24,7 +24,6 @@ import { driverDir } from "../../shared/driver-dir.mjs";   //
 
 import { validators, validateMergedFindings, REGISTER_CLAIM_RE, READ_FIELDS } from "../verify-knockout.mjs";
 import { renderKnockoutHtml } from "../publish/render-knockout.mjs";
-import { plainDeferralReason } from "../deferral-row.mjs";
 
 const FW = {
   framework_key: "house-triage",
@@ -236,12 +235,10 @@ test("the register line comes from the SIDECAR, and says a different thing in ea
   assert.equal((cards.match(/3 identical, 41 containing/g) ?? []).length, 0,
     "the numbers are stated once, where they belong");
 
-  // 2 — the probe ran and every figure failed. Told in the cells themselves, each carrying the reader's
-  // line for a count left open; the provider's own words ("HTTP 502") stay in the counts record.
+  // 2 — the probe ran and every figure failed. Told in the cells themselves, each carrying its reason.
   const failed = RENDER([markRow()], { registerCounts: counts({ identical: { total: null, unavailable: "HTTP 502" } }), probeRan: true });
-  assert.match(failed, new RegExp(`class="na" title="${plainDeferralReason("unfinished")}">not available<`),
-    "a figure that failed says so where the number would have been, with the reader's line for it");
-  assert.doesNotMatch(failed, /HTTP 502/, "the provider's own words reached the page");
+  assert.match(failed, /class="na" title="HTTP 502">not available</,
+    "a figure that failed says so where the number would have been, with the reason it failed");
 
   // 3 — the product includes counts and the lane produced no sidecar at all.
   const none = RENDER([markRow()], { registerCounts: null, probeRan: true });

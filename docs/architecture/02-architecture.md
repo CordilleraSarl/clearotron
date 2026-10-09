@@ -20,8 +20,8 @@ these.
 3. **Payload isolation.** Raw result JSON is never pasted into a model's context. The driver
    dictates specs (grids, plans); register/marketplace tooling writes results to disk; judgment
    stages read code-derived digests and reach the frozen named band **only through a narrow
-   read-only grant** (`band_shape`, `band_lookup`, `band_record`, or for step 3's judges the owner
-   tools; every call appended to the run's reading audit) — never the register funnel's search tools. This is the main token-economy lever
+   read-only grant** (`band_shape`, `band_lookup`, `band_record`, every call appended to the run's
+   reading audit) — never the register funnel's search tools. This is the main token-economy lever
    and it is architectural, not a tuning knob.
 4. **Fail loud, fail closed, repair first.** Every failure has a class in a closed taxonomy with
    distinct handling; bounded repairs (warm patches, code re-dispatch, quarantines) run before any
@@ -199,13 +199,10 @@ and — for every stage whose tool groups resolve non-empty — `--mcp-config` p
 **engine-local stdio MCP servers** (`engine/mcp/`), each wrapping a provider core with its own auth
 inherited from the engine's env (credentials are never written into the config file). The stages in
 `TOOL_FREE_STAGES` (`engine/mcp/gather-config.mjs`) get no MCP config and no tool definitions at
-all; `skeptic` holds only its own recording server beside the seeded file tools, so a typed
-hand-back costs it no retrieval surface; and the band-consuming judgment stages hold a
-read-only grant instead — the `band` group and, on synthesis alone, the web-research tool its
-mandatory use-check runs through. Step 3's two judges are **confined**: each session's whole system
-prompt is the step's six-sentence instruction, it holds the owner tools and nothing else (no file
-tools, no settings or project instructions loaded), and it answers in a form whose schema the engine
-enforces; both engines run it that way. None of them is handed
+all; `blind-frame` and `skeptic` hold only their own recording server beside the seeded file tools,
+so a typed hand-back costs them no retrieval surface; and the band-consuming judgment stages hold a
+read-only grant instead — the `band` group, plus `record_coverage` on register-digest and, on
+synthesis alone, the web-research tool its mandatory use-check runs through. None of them is handed
 the register funnel's search tools (payload isolation). Ambient-context suppression — a neutral
 tmpdir cwd (no CLAUDE.md), `--strict-mcp-config`, least-privilege `--add-dir` grants for just the
 skills tree and the run dir — keeps the subprocess from inheriting integrator-platform context that would
@@ -236,8 +233,8 @@ it, not one inherited dormant.
 **required in every environment and has no default** — unset resolves to `null` and every use of it
 throws, so a run refuses at start rather than calling a vendor nobody chose. The clearance pipeline
 consumes two provider verbs directly — `recordFetch` (screen-gate, senior-rights, citation-closure
-code fetches) and `executePlan` (pure-code re-execution of dictated plan slices during fan-in
-repairs); the knockout lane it dispatches into adds `countHits` and `listRecords`, so four
+code fetches) and `executePlan` (pure-code re-execution of dictated plan slices during fan-in and
+reopen repairs); the knockout lane it dispatches into adds `countHits` and `listRecords`, so four
 verbs run with no model in the data path, and every shipped adapter implements all four. On top of
 those sit the gather tools the engine exposes to sweep stages. Adapter anatomy and the verification
 checklist for a new register estate: [08](08-development-guide.md).
@@ -285,8 +282,9 @@ All paths relative to [`driver/`](../../driver/). The load-bearing seven are mar
 | `registry-fidelity.mjs` | Record grounding: citation closure, identifier auto-correction from records. |
 | `named-band.mjs` · `register-taint.mjs` · `register-plan.mjs` | Band merge/gates, timeout-taint machinery, plan compilation. |
 | `form-neighbourhood.mjs` · `phonetic-key.mjs` · `connotation-search.mjs` | Mechanical variant floor, phonetic keys, meaning-query dictation. |
+| `blind-frame-model.mjs` · `frame-diff-model.mjs` | Blind re-derivation + diff models. |
 | `rule-shape.mjs` · `reasoning-tripwires.mjs` · `gate-metrics.mjs` | Anti-threshold guard, integrity tripwires (observe-only), gate telemetry. |
-| `predelivery-lint.mjs` · `screen-gate.mjs` | Pre-delivery checks, screen-gate detection. |
+| `predelivery-lint.mjs` · `close-verify.mjs` · `screen-gate.mjs` | Pre-delivery checks, envelope close verification, screen-gate detection. |
 | `common-law-receipts.mjs` · `engagement-receipt.mjs` · `scope-ledger.mjs` | Receipt models for the marketplace grid, engagement, scope. |
 | `senior-rights.mjs` · `own-rights.mjs` · `use-check.mjs` | Rights closure, self-exclusion, use analysis. |
 | `publish/` | Deterministic publication: HTML render, Excel audit workbook, pool admin, regions. |

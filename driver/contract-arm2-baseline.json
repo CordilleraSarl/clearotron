@@ -11,7 +11,7 @@
     "the baseline tracks named elements, and a rename is a new name. Regenerate rather than work around it.",
     "Measured 139 of 287 declared elements."
   ],
-  "total": 84,
+  "total": 105,
   "byStage": {
     "matter-frame": [
       "### Intake asks line shape — rendered by the driver from intake_asks[]",
@@ -48,6 +48,12 @@
       "variants[].rationale — one line per variant",
       "watchlist_owners[] — the NAMED register owners the register must cover"
     ],
+    "blind-frame": [
+      "Return shape — hand the model back through record_blind_frame, write NO file, return ONLY a 2-3 line summary",
+      "fields[] — {goods, on_field boolean, rationale} by goods-overlap with the actual product",
+      "ranking_basis — goods-overlap | class-number",
+      "sources[] — {channel, rationale} by the product's real channel"
+    ],
     "common-law": [
       "BATCHING — split the keys into ceil(N/batch) batches of <=batch variants and concatenate the matrices",
       "Grid program receipt — paste the SANDBOX PROGRAM block from the tool result verbatim into the audit trail",
@@ -78,15 +84,36 @@
       "supplemental proposals — WHICH queries the manifest/frame warrant beyond the dictated set",
       "the dictated entry list — qid, predicate, terms, owner, nice_classes, regions, when-guard, expected_kind, covered_by"
     ],
-    "owner-judgment": [
-      "advice — the advice to the client, in prose",
-      "questions_wished_for — register questions the search did not run"
+    "placement-inquiry": [
+      "retract: <row_id> — withdrawing a seat row already on the form",
+      "return payload — the absolute output path plus a 2-3 line summary",
+      "select — one record URI of the register candidate being placed",
+      "the 7-point structured inquiry trace per enumerated record (what the applicant does, customer, channels, overlap, convergence, enforcement posture, registration status)",
+      "the identifier half of each `cleared:` / `material-gap:` line — the axis, the named slice and its count"
+    ],
+    "register-digest": [
+      "## Summary counts — total queries executed (search + detail-fetch), enumerated records across N axes, crowd-descriptor count, candidates past the gate, surfaced count, open-verification-flag count",
+      "Audit trail — per-unit search/detail-fetch counts, per-jurisdiction `_query` attribution",
+      "return payload — the absolute output path plus a 2-3 line summary (counts + the path of the file written)",
+      "rolled-up coverage judgment — `sufficient: <true|false>`",
+      "source attribution — the register name tagged on each record, plus the EUIPO `environment` word",
+      "the compulsory dominant-element crowd row's `unit` cell — the dictated grammar `<axis> / dominant-element crowd (<N> members): <label>` and the bare integer N",
+      "the full clickable record URL, composed from providers/<name>.md 'Record base host' plus the record `uri`",
+      "the record ids read while answering each instructed check",
+      "the rolled-up one-line `reason` naming the material slice"
     ],
     "skeptic": [
       "escalation decisions — one {axis, reason} per axis that must be re-run, sent through record_skeptic",
       "the `risk: <category>` field inside that dictated ESCALATE line",
       "the escalation decision — which register axes carry a material, unresolved, genuinely closeable gap, and the one-line reason for each",
       "the verbatim ESCALATE string dictated for a `translit-too-generic` unit digest"
+    ],
+    "frame-diff": [
+      "Return shape — hand the diff back through record_frame_diff, write NO file, return ONLY a 2-3 line summary",
+      "directives[] — {layer: variant|field|source, item, observation, severity: dominant-element|material|minor}",
+      "dominant_element — bound by the driver from the blind model; the seat is not asked for it",
+      "dominant_element_gap — boolean",
+      "remedy — {terms, nice_classes, regions}"
     ],
     "synthesis": [
       "coverage_judgment.sufficient + reason — the sufficiency-to-sign decision",

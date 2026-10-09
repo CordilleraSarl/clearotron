@@ -17,17 +17,16 @@ const carryRow = (uri, owner, stopped_at, reason_source, reason) => ({ uri, owne
 
 test("the picking step counts a record that left with no ground, and the owners those records belong to", () => {
   const rc = { rows: [
-    carryRow("/mark/jp/1", "Owner A", "judgment", "step-silent", "judgment:not-taken-up"),
-    carryRow("/mark/us/2", "Owner A", "judgment", "step-silent", "judgment:not-taken-up"),
-    carryRow("/mark/us/3", "Owner B", "judgment", "absent", "judgment:indeterminate"),
-    carryRow("/mark/eu/4", "Owner C", "judgment", "step-structural", "judgment:stage-incomplete"),
-    carryRow("/mark/eu/5", "Owner D", "judgment", "step-stated", "judgment:set-aside"),
-    carryRow("/mark/eu/7", "Owner F", "judgment", "step-structural", "judgment:never-shown"),
+    carryRow("/mark/jp/1", "Owner A", "placement", "step-silent", "placement:not-selected"),
+    carryRow("/mark/us/2", "Owner A", "placement", "step-silent", "placement:not-selected"),
+    carryRow("/mark/us/3", "Owner B", "placement", "absent", "placement:not-selected"),
+    carryRow("/mark/eu/4", "Owner C", "placement", "step-structural", "placement:stage-incomplete"),
+    carryRow("/mark/eu/5", "Owner D", "digest", "step-stated", "digest:reasoned-negative"),
     { uri: "/mark/eu/6", owner: "Owner E", reach: "finding" },
   ] };
   const e = pickingExits(rc);
   assert.equal(e.computable, true);
-  assert.equal(e.exits, 3, "silent and absent exits at the judges; a structural stop states its cause, and a set-aside states the judges' reason");
+  assert.equal(e.exits, 3, "silent and absent exits at placement; a structural stop states its cause");
   assert.equal(e.owners, 2, "one ground may cover an owner's set, so owners are the grounds owed");
   assert.deepEqual(e.rows.map((r) => r.uri), ["/mark/jp/1", "/mark/us/2", "/mark/us/3"]);
 });
@@ -42,7 +41,7 @@ test("a missing trace is not computable, never zero", () => {
 });
 
 test("the run-log line carries counts and reasons, never a row", () => {
-  const line = exitsForLog({ picking: pickingExits({ rows: [carryRow("/mark/jp/1", "A", "judgment", "step-silent")] }),
+  const line = exitsForLog({ picking: pickingExits({ rows: [carryRow("/mark/jp/1", "A", "placement", "step-silent")] }),
     notes: notesExits(null, []) });
   assert.deepEqual(line, { picking: { computable: true, exits: 1, owners: 1 },
     notes: { computable: false, reason: line.notes.reason } });

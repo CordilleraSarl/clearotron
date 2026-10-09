@@ -122,7 +122,7 @@ search. The queue-side `.duplicate.reason` explains the match and the `dupOverri
 `{ ts, kind: "late-bind-ack", runId, agent, forwarder, forwarderEmail, msgId, customer,
 action, whatsappTo, text }` — confirmation that a mid-run applicant binding (`feed_context` /
 `customer-bind.json`) was received and what was done with it (`action`:
-`fold-job`, `judgment-message`, `re-judge` or `front-matter-note`).
+`warm-redigest` variants or `front-matter-note`).
 
 ## The PURE-MCP integrator loop (no filesystem access needed)
 

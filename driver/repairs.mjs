@@ -396,15 +396,17 @@ const PROGRESS_TOKENS = [
   // the position is free; it sits with its family because a token added away from them is a token added
   // without this comment in view.
   { token: "connotation_quote_unbound", count: undisposedCount },    //, live
-  // — the register coverage form, same census shape and the same reason. These were the register
-  // digest's ladder, and they are kept, like the two archived connotation tokens below, so an archived
-  // run's attempts still read as converging: without an entry progressQuantity returns null, `progress.kind`
-  // becomes "unknown", and a run that converged 4 → 2 → 0 reads as stuck. No live gate emits them since the
-  // digest left. `coverage_form_axis_invalid` leads the two below it because FIRST MATCH WINS on `indexOf`
-  // and its name CONTAINS neither of theirs.
-  { token: "coverage_form_axis_invalid", count: undisposedCount },   // archived runs only
-  { token: "coverage_no_status", count: undisposedCount },           // archived runs only
-  { token: "coverage_form_damaged", count: undisposedCount },        // archived runs only
+  // — the register coverage form, same census shape and the same reason. Without an entry here the
+  // register-digest ladder's residual is invisible: progressQuantity returns null, `progress.kind`
+  // becomes "unknown", and a run converging 4 → 2 → 0 reads as stuck. That is the defect exists to
+  // prevent, and this stage is the one whose ladder it costs the most.
+  // `coverage_form_axis_invalid` leads the two below it because FIRST MATCH WINS on `indexOf` and its
+  // name CONTAINS neither of theirs — order is not load-bearing here, but keeping the three adjacent is:
+  // a form token added without an entry in this table is invisible to the convergence ledger, which is
+  // the silent failure the block above describes.
+  { token: "coverage_form_axis_invalid", count: undisposedCount },   // fix round, live
+  { token: "coverage_no_status", count: undisposedCount },           //, live
+  { token: "coverage_form_damaged", count: undisposedCount },        //, live
   { token: "connotation_undisposed", count: undisposedCount },       // pre-, archived runs only
   { token: "connotation_recurrent_uncited", count: recurrentCount }, // pre-, archived runs only
 ];

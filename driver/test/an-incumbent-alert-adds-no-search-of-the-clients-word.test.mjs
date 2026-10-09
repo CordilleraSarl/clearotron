@@ -66,13 +66,15 @@ test("no register recipe asks for the client's word in the incumbent's classes",
 test("no manual or tool the engine reads asks for a competitor's or an enforcer's register because it is one", () => {
   const read = (...rel) => readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", ...rel), "utf8");
   const recipes = read("skills", "clearance-register", "register-recipes.md");
-  // The register digest's manual went with the digest; the owner judges search nothing.
+  const digest = read("skills", "clearance-register", "digest.md");
   const orchestrator = read("skills", "clearance-search", "SKILL.md");
   const tools = read("engine", "mcp", "recording-server.mjs");
-  assert.ok(recipes.includes("## Recipe 6 — Multi-word descriptive tagline")
+  assert.ok(recipes.includes("## Recipe 6 — Multi-word descriptive tagline") && digest.includes("### Step 4 —")
     && orchestrator.includes("**Competitor intelligence:**") && tools.includes("watchlist_owners"), "guard: each file was read");
   assert.doesNotMatch(recipes, /owner-bound competitor queries|owner:<each competitor>|\+ competitor portfolio/,
     "a recipe asks for every competitor's register");
+  assert.doesNotMatch(digest, /carries the owner lane|run one owner-bound search|Competitor \+ enforcer owner-bound sweep/,
+    "the digest is told to run an owner lane the plan no longer compiles, with no register tool to run it");
   assert.doesNotMatch(orchestrator, /competitor portfolios in target classes/, "the old orchestrator manual asks for competitor portfolios");
   assert.doesNotMatch(tools, /compiles owner lanes/, "the variants tool says the plan compiles owner lanes from the watchlist");
 });

@@ -161,10 +161,8 @@ test("the shipped manual carries the words the model reads, not only the config 
       `${f} does not carry the rule that applies at every moment`);
     assert.match(src, /On every matter the identical mark, in the instructed classes, is the first thing you read/,
       `${f} does not say the identical mark is read first on EVERY matter`);
-    // The placement step was removed and its mention with it (owner, 2026-10-01), so four moments remain.
-    assert.match(src, /This applies to the register's answer, to the\s+list of records, to the off-register sweep and to the write-up alike/,
-      `${f} does not name the four moments the rule applies at`);
-    assert.doesNotMatch(src, /to the placements/, `${f} still names the placement step, which no longer runs`);
+    assert.match(src, /to the placements, to the off-register sweep and to the write-up alike/,
+      `${f} does not name the five moments the rule applies at`);
     // The decision after reading carries no crowd precondition: it is what the reading turn does with the
     // list it has, whatever the count was. The owner's sentence, character for character, and no fixed stop.
     assert.ok(src.includes("Having read the list, ask whether looking wider would change what you tell the client: who could object, how weak the word is in this market, and what the client should do. If it would, widen one step and read. Stop only when you can say what more searching would not change, and write that down. Either way, record which questions you did not ask and why."), f);

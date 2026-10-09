@@ -31,9 +31,9 @@ const RUNS = [
   { state: "running", runId: "r1", slug: "aura", codename: "x", agent: "intake-agent", markName: "AURA", stepN: 5, stepTotal: 9, stepLabel: "Synthesis", startedAt: "2026-06-16T10:00:00Z", updatedAt: "2026-06-16T10:12:00Z" },
   { state: "delivered", runId: "r2", slug: "myr", codename: "y", verdict: "clearance", url: "https://x/r2/report.html", deliveredAt: "2026-06-15T09:00:00Z", updatedAt: "2026-06-15T09:00:00Z" },
   { state: "failed", runId: "r3", slug: "fire", codename: "z", failedStage: "synthesis", reason: "timeout", updatedAt: "2026-06-14T08:00:00Z" },
-  { state: "postponed", runId: "r4", slug: "nova-pulse", codename: "quartz-vault", agent: "intake-agent", markName: "PROJECT NOVA PULSE", stepN: 2, stepTotal: 9, stepLabel: "Searching registers and common law", resetsAt: "2026-06-16T11:30:00Z", updatedAt: "2026-06-16T10:30:00Z" },
+  { state: "postponed", runId: "r4", slug: "nova-pulse", codename: "quartz-vault", agent: "intake-agent", markName: "PROJECT NOVA PULSE", stepN: 2, stepTotal: 9, stepLabel: "Register sweeps", resetsAt: "2026-06-16T11:30:00Z", updatedAt: "2026-06-16T10:30:00Z" },
   // auto-recovery park (2026-07-29 hardening): paused-but-alive, backing off — same bucket as postponed
-  { state: "recovering", runId: "r6", slug: "ember-arc", codename: "v", agent: "intake-agent", markName: "EMBER ARC", stepN: 4, stepTotal: 9, stepLabel: "Searching registers and common law", resetsAt: "2026-06-16T10:32:00Z", updatedAt: "2026-06-16T10:30:00Z" },
+  { state: "recovering", runId: "r6", slug: "ember-arc", codename: "v", agent: "intake-agent", markName: "EMBER ARC", stepN: 4, stepTotal: 9, stepLabel: "Register sweeps", resetsAt: "2026-06-16T10:32:00Z", updatedAt: "2026-06-16T10:30:00Z" },
   // presentation-retired (2026-07-06): hidden from EVERY surface bucket, reversibly (status.retired flag)
   { state: "failed", runId: "r5", slug: "old-test", codename: "w", failedStage: "fan-in", reason: "e2e noise", updatedAt: "2026-06-13T08:00:00Z", status: { retired: true } },
 ];

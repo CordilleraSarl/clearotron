@@ -186,42 +186,6 @@ export function renderCodexConfigToml({ mcpConfig, allowedTools, developerInstru
   return lines.join("\n").trimEnd() + "\n";
 }
 
-// ── a confined session: its instructions, its tool servers, a helper, and nothing else ──────────────
-// The judging step's session (engine CONTRACT.md §1, `confined`), set up as the bench run that measured
-// it on codex 0.156.1. Its instructions are the stage's and no others: `model_instructions_file` replaces
-// the program's own, where every other stage only adds `developer_instructions` to them. No web search, no
-// instruction file from any folder, and every feature that would offer the model a tool beside its servers
-// is off, except `multi_agent`, the tool that starts a helper. The servers are the stage's, written exactly
-// as for any stage (`renderCodexConfigToml`, below the head), with no permission profile: with the shell
-// off there is no command for one to hold, and the command line asks for the read-only sandbox instead.
-export const CONFINED_FEATURES_OFF = Object.freeze([
-  "shell_tool", "unified_exec", "shell_snapshot", "apps", "browser_use", "browser_use_external",
-  "browser_use_full_cdp_access", "computer_use", "image_generation", "view_image", "plugins", "remote_plugin",
-  "plugin_sharing", "skill_search", "skill_mcp_dependency_install", "tool_suggest", "goals", "sleep_tool",
-  "hooks", "worktrees", "workspace_dependencies", "memories",
-]);
-// The program cuts what one step hands the model past this many tokens. The model makes several requests
-// in one step and is handed their answers together, so the room is for several answers, not one. Measured
-// in testing, 2026-09-28: at 25,000 a step of four list pages was cut and the part lost held two entries
-// the lawyer's sheet lists.
-export const CONFINED_STEP_TOKENS = 60000;
-
-export function renderConfinedCodexConfigToml({ instructionsFile, stepTokens = CONFINED_STEP_TOKENS, ...servers } = {}) {
-  if (!instructionsFile) throw new Error("codex-config: a confined session needs its instructions file");
-  const head = [
-    `model_instructions_file = ${tomlString(instructionsFile)}`,
-    `web_search = "disabled"`,
-    "project_doc_max_bytes = 0",
-    `tool_output_token_limit = ${Math.floor(Number(stepTokens)) || CONFINED_STEP_TOKENS}`,
-    "",
-    "[features]",
-    ...CONFINED_FEATURES_OFF.map((f) => `${f} = false`),
-    "multi_agent = true",
-    "",
-  ];
-  return `${head.join("\n")}\n${renderCodexConfigToml({ ...servers, developerInstructions: null, fence: null, withheldFromCommands: [] })}`;
-}
-
 // ── what the stage's shell commands inherit ─────────────────────────────────────────────────────────
 // Codex hands a command its own whole environment by default: `inherit` is `all`, and it keeps names
 // containing KEY, SECRET or TOKEN unless told otherwise (the vendor's Advanced Configuration page). The

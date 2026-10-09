@@ -21,7 +21,7 @@
 // execute. The reader gets an EU-only clean under a scope the deliverable states as EU+US.
 //
 // That is doctrine rule 2 reached by OMISSION, which is the failure this whole form was built to make
-// structurally impossible, arriving through the fix for a different one. `pipeline.mjs:1810-1817 attachSearchPolicy` names
+// structurally impossible, arriving through the fix for a different one. `pipeline.mjs:1830-1837 attachSearchPolicy` names
 // this exact shape — it was closed for the whole-plan coverage-gap case and left open for the office
 // split. `registerDeferredCoverage` does log it and does feed the jurisdiction-scope backstop, but a
 // runLog event and a `note()` are not the artifact a lawyer reads, and that backstop is gated on an LLM
@@ -33,7 +33,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { coverageFormRows, formRowKey, rowIsSettled } from "../coverage-form.mjs";
+import { coverageFormRows, formRowKey, rowIsSettled, findCoverageFormViolations } from "../coverage-form.mjs";
 import { compileRegisterPlan, joinPlanToBands, deriveCoverageSkeleton } from "../register-plan.mjs";
 import { parseVariantManifestModel } from "../variant-manifest-model.mjs";
 import { capabilitiesFor } from "../register-capabilities.mjs";
@@ -285,14 +285,18 @@ test("the office row survives the union, and a seat cannot clear it by clearing 
   const usAfter = after.rows.filter((r) => r.kind === "deferred" && /US register/.test(r.unit));
   assert.equal(usAfter.length, 2, "still there — nothing removes an open driver row");
 
-  // The submitted WORDS are carried onto the row — deliberately, so a reader sees what was claimed
-  // rather than a blank. What a claim cannot do is make it STICK: the row stays unsettled, and its own
-  // sentence says why.
+  // The seat's WORDS are carried onto the row — deliberately, so a reader sees what was claimed rather
+  // than a blank. What the seat cannot do is make the claim STICK. The gate is where that is refused,
+  // and it refuses per row with the DRIVER's own sentence, so the repair instruction is specific.
+  const violations = findCoverageFormViolations(after.rows);
   for (const r of usAfter) {
-    assert.equal(rowIsSettled(r, r), false, `${r.unit} reads as settled — a clean claim over an unsearched register stuck`);
-    assert.match(r.open_because, /never searched/, "the row's own reason says what is wrong with the claim");
+    const v = violations.find((x) => x.row === r.row_id);
+    assert.ok(v, `no violation raised for ${r.unit} — a clean claim over an unsearched register stuck`);
+    assert.equal(v.cause, "open_clean");
+    assert.match(v.detail, /never searched/,
+      "the refusal quotes the row's own open_because, so the seat is told what it actually did wrong");
   }
-  assert.ok(after.rows.filter((r) => r.kind === "axis").every((r) => rowIsSettled(r, r)),
-    "and the axis rows legitimately settled read as settled — a check that holds everything open "
+  assert.ok(after.rows.filter((r) => r.kind === "axis").every((r) => !violations.some((x) => x.row === r.row_id)),
+    "and the axis rows the seat legitimately settled are NOT flagged — a gate that fires on everything "
     + "teaches a reader to clear the whole form");
 });

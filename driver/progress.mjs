@@ -31,8 +31,8 @@ import { engineCommit, engineCommitSource } from "./engine-build.mjs";   // — 
 // two refutation passes) onto a clean forward-only sequence, so the displayed step never jumps backward.
 export const DISPLAY_STEPS = [
   "Framing the matter",     // 1  matter-frame, clearance-variants
-  "Searching registers and common law",    // 2  common-law + register-unit:* (fan-out + escalation re-runs collapse here)
-  "Investigating and exploring findings",  // 3  owner-judgment (two judges + the merge; re-judgements collapse here)
+  "Register sweeps",        // 2  common-law + register-unit:* (fan-out + escalation re-runs collapse here)
+  "Placement & digest",     // 3  placement-inquiry, register-digest (+ re-digest)
   "Skeptic review",         // 4  skeptic
   "Synthesis",              // 5  synthesis (+ corrective re-synthesis)
   "Case law & refutation",  // 6  case-law, narrative-refutation (both passes)
@@ -46,14 +46,11 @@ export const DISPLAY_STEPS = [
 // — this map, STAGE_NO_STEP and NON_STAGE_STEPS below are a CLOSED PARTITION of Object.keys(STAGES),
 // asserted in both directions by progress.test.mjs. "Keys not present here are no-ops for display" was
 // true and unenforced: a stage added to STAGES and forgotten here does not fail, it renders as an
-// UNLABELLED GAP on the stepper the client watches — the run looks stalled while it is working. Stages
-// were sitting in that state; each now says so by name.
+// UNLABELLED GAP on the stepper the client watches — the run looks stalled while it is working. Three
+// stages were sitting in that state (blind-frame, frame-diff, doubt-closure); each now says so by name.
 export const STAGE_TO_STEP = {
   "matter-frame": 0, "clearance-variants": 0,
   "common-law": 1, "common-law-half": 1, "register-unit": 1,
-  "owner-judgment": 2,
-  // RETIRED when step 3 came to be judged by owner, and KEPT for the reason client-summary is below:
-  // archived runs carry their rows, and a row whose stage resolves to no step renders as an unlabelled gap.
   "placement-inquiry": 2, "register-digest": 2,
   skeptic: 3,
   synthesis: 4,
@@ -72,6 +69,12 @@ export const STAGE_TO_STEP = {
 // stepper. A stage in neither this map nor STAGE_TO_STEP fails progress.test.mjs, so the choice is made
 // once, consciously, by whoever adds the stage — never by omission.
 export const STAGE_NO_STEP = {
+  // Both run INSIDE the gather the stepper already shows as "Searching": blind-frame is a sibling of the
+  // gather (it re-derives the frame cold and advances nothing the client waits on), and frame-diff is the
+  // code-consumed reopen check that closes it. Advancing the stepper for either would show the run moving
+  // on while the searches it depends on are still out.
+  "blind-frame": "runs as a sibling of the gather — advancing the stepper would claim progress the searches have not made",
+  "frame-diff": "the code-consumed reopen check inside the gather step, not a phase the client waits on",
   // Condition-only: fires only when stitch-open doubts exist, well after the stepper has passed synthesis.
   "doubt-closure": "condition-only (only when stitch-open doubts exist) — the stepper is already past it",
 };
@@ -84,8 +87,6 @@ export const NON_STAGE_STEPS = {
   "client-summary": "a RETIRED stage (2026-08-01) kept for ARCHIVED runs' rows — a row whose stage resolves to no step renders as an unlabelled gap",
   notify: "a RETIRED stage (#1014, deleted with the gateway delivery mode) kept for ARCHIVED runs' rows — same reason as client-summary",
   "notify-chat": "a RETIRED stage (#1014, deleted with the gateway delivery mode) kept for ARCHIVED runs' rows — same reason as client-summary",
-  "placement-inquiry": "a RETIRED stage (step 3 now judged by owner) kept for ARCHIVED runs' rows — same reason as client-summary",
-  "register-digest": "a RETIRED stage (step 3 now judged by owner) kept for ARCHIVED runs' rows — same reason as client-summary",
 };
 
 // rawStageKey may carry an axis suffix ("register-unit:primary-sweep") — strip it. Returns null for an

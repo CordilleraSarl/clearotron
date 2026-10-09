@@ -6,8 +6,8 @@ import { termPredicateIssue } from "../../providers/_shared/term-shape.mjs";
 import {
   normalizeElement, foldDiacritics, radiusFor, editNeighbourhood, consonantSkeleton,
   skeletonPatterns, visualConfusables, confusableSkeleton, transliterations,
-  formNeighbourhood, SUPPORTED_SCRIPTS,
-  renderFormNeighbourhoodJson, parseFormNeighbourhoodJson,
+  formNeighbourhood, coverageGaps, SUPPORTED_SCRIPTS,
+  renderFormNeighbourhoodJson, parseFormNeighbourhoodJson, dispatchedQueriesFromBand, formGapDirectives,
 } from "../form-neighbourhood.mjs";
 
 test("normalizeElement folds diacritics + special letters, strips non-alnum, lowercases", () => {
@@ -120,8 +120,18 @@ test("an empty phonetic family reads as COMPLETE and is disclosed, never as an u
   // search — a false gap in a client's report.
   const bandX = formNeighbourhood("X");
   assert.deepEqual(bandX.wildcardPatterns, []);
-  // The control: an element that DOES emit patterns emits them, so the empty list above is a result.
-  assert.ok(formNeighbourhood("ZOLEMA").wildcardPatterns.length > 0);
+  const gX = coverageGaps(bandX, { dispatched: [...bandX.exactQueries] });
+  assert.equal(gX.complete, true, "no pattern to dispatch ⇒ the axis cannot be incomplete");
+  assert.deepEqual(formGapDirectives([{ element: "X", band: bandX }], { dispatched: [...bandX.exactQueries] }), []);
+
+  // AND THE INSTRUMENT IS NOT BLIND. An element that DOES emit patterns, with none of them dispatched,
+  // still fires the unreached-family directive — so the pass above is a result, not a guard that never
+  // speaks. Without this the arm would pass equally if coverage had stopped reading the axis at all.
+  const bandZ = formNeighbourhood("ZOLEMA");
+  assert.ok(bandZ.wildcardPatterns.length > 0);
+  const gZ = coverageGaps(bandZ, { dispatched: [...bandZ.exactQueries] });
+  assert.equal(gZ.complete, false);
+  assert.equal(formGapDirectives([{ element: "ZOLEMA", band: bandZ }], { dispatched: [...bandZ.exactQueries] }).length, 1);
 
   // NOTHING GOES QUIET: the ledger row says the axis produced no pattern, in the voice it uses for an
   // axis judgment dropped, and says the metaphone keys still verify — rather than reading as ordinary.
@@ -178,6 +188,21 @@ test("formNeighbourhood: machine-defined band, model-free, with a disclosed ledg
   assert.deepEqual(formNeighbourhood("zolema", { markets: [] }).exactQueries, band.exactQueries);
 });
 
+test("coverageGaps: completeness (NOT sufficiency) — a generated near-form never dispatched is a gap", () => {
+  const band = formNeighbourhood("ZOLEMA");
+  // dispatch everything EXCEPT kolema → kolema is an open completeness gap
+  const dispatched = band.exactQueries.filter((q) => q !== "kolema").concat(band.wildcardPatterns);
+  const g = coverageGaps(band, { dispatched });
+  assert.ok(g.missingExact.includes("kolema"));
+  assert.equal(g.complete, false);
+  // dispatch all + the family ⇒ clean
+  const full = coverageGaps(band, { dispatched: band.exactQueries.concat(band.wildcardPatterns) });
+  assert.equal(full.complete, true);
+  // an EXPLAINED absence (reopen-triggered) is not a gap
+  const excused = coverageGaps(band, { dispatched: dispatched, explained: [{ form: "kolema", reopen: "provider rejected the OR-batch" }] });
+  assert.equal(excused.complete, true);
+});
+
 const SAMPLE_MANIFEST = `
 ## Matter
 ### Distinctiveness & registrability
@@ -208,6 +233,53 @@ test("parseFormNeighbourhoodJson round-trips and is tolerant of garbage", () => 
   const els = parseFormNeighbourhoodJson(renderFormNeighbourhoodJson(SAMPLE_MANIFEST));
   assert.ok(els.length >= 1 && els[0].band.exactQueries.length > 0);
   assert.deepEqual(parseFormNeighbourhoodJson("{not json"), []);
+});
+
+test("dispatchedQueriesFromBand extracts searched names + phonetic variants + wildcards", () => {
+  const band = JSON.stringify([
+    { state: "enumerated", query: "=name:`KOLEMA` nice-class:`9`", total_hits: 3, records: [] },
+    { state: "enumerated", query: "*name:`ZOLEMA`(zilima,zyloma) nice-class:`9`", total_hits: 5, records: [] },
+    { state: "incomplete", query: "name:`s?r?n?` nice-class:`9`", total_hits: 9000 },
+  ]);
+  const d = dispatchedQueriesFromBand(band).map((s) => s.toLowerCase());
+  assert.ok(d.includes("kolema") && d.includes("zolema") && d.includes("zilima") && d.includes("zyloma"));
+  assert.ok(d.includes("s?r?n?"), "wildcard pattern retained");
+  assert.deepEqual(dispatchedQueriesFromBand("{bad"), []);
+});
+
+test("formGapDirectives: a generated near-form never dispatched becomes a variant directive (the regrounding)", () => {
+  const els = parseFormNeighbourhoodJson(renderFormNeighbourhoodJson(SAMPLE_MANIFEST));
+  // dispatched everything except KOLEMA + the family → a targeted variant directive for KOLEMA
+  const all = els[0].band.exactQueries;
+  const dispatched = all.filter((q) => q !== "kolema").concat(els[0].band.wildcardPatterns);
+  const dirs = formGapDirectives(els, { dispatched });
+  assert.ok(dirs.some((d) => d.layer === "variant" && d.item === "kolema" && d.severity === "material"));
+  // dispatch nothing → a SYSTEMIC directive per element, not hundreds
+  const systemic = formGapDirectives(els, { dispatched: [] });
+  assert.ok(systemic.length < 12, "systemic non-dispatch collapses to a summary, never floods");
+  assert.ok(systemic.some((d) => /form-neighbourhood|phonetic family/.test(d.item)));
+  // full dispatch across ALL elements (dominant + formative-root) → no directives
+  const allEls = els.flatMap((e) => e.band.exactQueries.concat(e.band.wildcardPatterns));
+  assert.deepEqual(formGapDirectives(els, { dispatched: allEls }), []);
+});
+
+test("REGRESSION: oracle reads the MERGED {enumerated,crowds} band shape; a complete run fires NO phantom gap", () => {
+  const els = parseFormNeighbourhoodJson(renderFormNeighbourhoodJson(SAMPLE_MANIFEST));
+  const allExact = els.flatMap((e) => e.band.exactQueries);
+  const allWild = els.flatMap((e) => e.band.wildcardPatterns);
+  // the funnel OR-stacked the full exact band into one enumerated `_query` and ran each skeleton wildcard as a crowd
+  const orStacked = allExact.map((n) => `name:\`${n}\``).join(" ") + " nice-class:`9`";
+  const merged = JSON.stringify({
+    enumerated: [{ record_id: "/x/1", mark_text: "KOLEMA", _query: orStacked }],
+    crowds: allWild.map((w) => ({ query: `name:\`${w}\` nice-class:\`9\``, total_hits: 9000, fetched: 1, sample: [], reason: "crowd" })),
+  });
+  const dispatched = dispatchedQueriesFromBand(merged);
+  assert.ok(dispatched.map((s) => s.toLowerCase()).includes("kolema"), "merged-shape `_query` name clauses extracted");
+  assert.ok(dispatched.some((d) => /[?*]/.test(d)), "the s?r?n? family was extracted from crowds[] (this is the bug that fired phantom gaps)");
+  assert.deepEqual(formGapDirectives(els, { dispatched }), [], "a COMPLETE run produces zero directives — no phantom CONDITIONAL clamp");
+  // a returned mark_text counts as dispatched even when it is not echoed in any query text
+  const viaMarkText = dispatchedQueriesFromBand(JSON.stringify({ enumerated: [{ mark_text: "ZOLEMA", _query: "name:`x`" }], crowds: [] }));
+  assert.ok(viaMarkText.map((s) => s.toLowerCase()).includes("zolema"), "a returned mark_text proves its name was in the searched band");
 });
 
 test("held-out generality (NOT ZOLEMA): the mechanism surfaces differently-shaped neighbours, no word-list", () => {

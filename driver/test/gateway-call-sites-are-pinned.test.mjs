@@ -157,7 +157,7 @@ test("the recording engine's homes are real, distinct paths per ladder — the a
 // `CLEAROTRON_FORM_REPAIR` on. The repair then happens INSIDE the dispatch — "the retry ladder is not
 // charged" — which is why no amount of retry/recovery tuning could have reached it.
 
-const FORM_FAIL = "coverage_status_invalid";   // matches FORM_CLASS_RE; anything outside it never enters the loop
+const FORM_FAIL = "framediff_severity_invalid";   // matches FORM_CLASS_RE; anything outside it never enters the loop
 
 // The failure reaches FORM_CLASS_RE as `invalid_file:<absolute path>:<reason>`, and the pattern reads the
 // reason after the first colon past `invalid_file:`. A Windows path has a colon after its drive letter,
@@ -165,7 +165,7 @@ const FORM_FAIL = "coverage_status_invalid";   // matches FORM_CLASS_RE; anythin
 
 async function runWithFormRepair(tag, onTurn) {
   const runDir = freshRun(tag);
-  const out = join(runDir, "register-findings.md");
+  const out = join(runDir, "frame-diff.md");
   const seen = { homes: [], turns: 0 };
   GW.registerEngine({ name: CODEX,
     async runTurn(opts) {
@@ -177,10 +177,10 @@ async function runWithFormRepair(tag, onTurn) {
   let judged = 0;
   await withEnv({ CLEAROTRON_AI: CODEX, CLEAROTRON_MAX_RETRIES: "1", CLEAROTRON_RECOVERY_MAX: "0",
     CLEAROTRON_FORM_REPAIR: "1", CLEAROTRON_DISPATCH_RECORD: "1" }, () =>
-    GW.runStage("test-stage", { agent: "mailagent", message: "go", model: "haiku",
+    GW.runStage("frame-diff", { agent: "mailagent", message: "go", model: "haiku",
       sessionKey: `clearance-${tag}`, timeoutSec: 30, runDir, expectFile: [out],
       validate: () => { judged++; return judged <= 2 ? { ok: false, reason: FORM_FAIL } : { ok: true }; } }));
-  return { runDir, seen, rows: rows(runDir, "test-stage") };
+  return { runDir, seen, rows: rows(runDir, "frame-diff") };
 }
 
 test("the FORM-REPAIR dispatch receives the ladder's codexHome too", async () => {

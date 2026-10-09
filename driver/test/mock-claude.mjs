@@ -54,7 +54,7 @@
 //                               detected via the engine-agnostic patch message ("RESUMING your own session").
 import { writeFileSync, mkdirSync, appendFileSync, existsSync, readFileSync, writeSync } from "node:fs";
 import { dirname } from "node:path";
-import { applyStageWrites, mockJudgeAnswer } from "./mock-stage-fixtures.mjs";
+import { applyStageWrites } from "./mock-stage-fixtures.mjs";
 
 const argv = process.argv.slice(2);
 
@@ -179,17 +179,6 @@ if (process.env.MOCK_BARRIER_FILE && /matter-context\.md/.test(msg)) {
 if (process.env.MOCK_FAIL_STAGE && process.env.MOCK_FAIL_STAGE.split("&&").every((part) => msg.includes(part))) {
   process.stderr.write("mock forced failure\n");
   process.exit(1);
-}
-
-// A CONFINED dispatch (step 3's judges): the program answers in the form it was handed (`--json-schema`),
-// on the result as `structured_output`, and writes no file. The answer is built from the run's own facts
-// (mock-stage-fixtures.mjs, mockJudgeAnswer); the spawn cwd is the run, as the engine sets it.
-if (argv.includes("--json-schema") && !process.env.MOCK_CLAUDE_FAIL) {
-  const answer = mockJudgeAnswer(process.cwd());
-  send({ type: "result", subtype: "success", is_error: false, duration_ms: 5, num_turns: 1, result: "judged", result_index: 0,
-    stop_reason: "end_turn", session_id: session, total_cost_usd: 0.001, ...(answer ? { structured_output: answer } : {}),
-    usage: { input_tokens: 10, output_tokens: 5, cache_read_input_tokens: 0, cache_creation_input_tokens: 0 } });
-  process.exit(0);
 }
 
 // Warm-patch ladder substrate (ported from the retired gateway warm mock). Each MOCK_WARM_MODE case fully handles the turn

@@ -27,19 +27,14 @@
 //                               state uses `isRuled`, the predicate the gate judges with.
 //   · disposition-union.mjs:32  PROVENANCE: rows, ids and candidates come from `connotationObligations()`,
 //                               "the same calculation the validator judges with", regenerated every pass.
-//   · coverage-union.mjs:28     PROVENANCE: the coverage form's rows are regenerated every pass and code
-//                               settles them from the run's own facts. With disposition-union's it is the
+//   · coverage-union.mjs:31     PROVENANCE: the same sentence for the coverage form. These two are the
 //                               template in its purest form — the agreement is a property of the
-//                               artifact's own provenance, not an assertion somewhere else. (It once said
-//                               "the same calculation the validator judges with"; that validator left with
-//                               the register digest, and no validator judges the form now.)
+//                               artifact's own provenance, not an assertion somewhere else.
 //   · disposition-union.mjs:113 the anchor is deliberately NOT persisted; only extracted text is durable.
 //   · disposition-call.mjs:637  the same rule stated at the other end, so the pair cannot drift.
-//   · coverage-form.mjs "THE DRIVER DOES NOT ASSIGN IT"
-//                               the driver's axis is the driver's: a driver row's axis is derived from the
-//                               plan entry, never chosen.
-//   · coverageFormRows() in coverage-form.mjs
-//                               determinism, with its mechanism (a fixed axis ordering) beside it.
+//   · coverage-form.mjs:149 SEAT_ROW_CONTRACT     the driver's axis is the driver's; the seat contract governs only rows
+//                               the seat adds.
+//   · coverage-form.mjs:313 blockOpenBecause     determinism, with its mechanism (a fixed axis ordering) beside it.
 //   · stages.mjs "Per-script coverage", "Negative-results matrix"
 //                               — NAMED, NOT NUMBERED. These carried line numbers and went stale twice in
 //                               one day as unrelated edits moved the file under them, landing on real
@@ -49,15 +44,12 @@
 //                               classifications explaining why a dictation is code-rendered. No
 //                               flag/data pair exists at either site.
 //
-//  DISAGREE (1, and its pair has since gone) — the two ends read different snapshots and nothing converges:
+//  DISAGREE (1) — the two ends read different snapshots and nothing converges:
 //   · verify.mjs           `activeAxes` is basename-derived from a directory listing, so a stray
 //                               `.md` in register-units mints a DRIVER axis row the seat cannot repair
 //                               and the union regenerates every pass. The ladder runs out. verify.mjs
 //                               recorded this itself and asked for "its own token naming the driver" if
-//                               it were ever observed. The enforcement end left with the register
-//                               digest's coverage check (2026-10-01): code now settles every row itself
-//                               each pass, so no seat is judged against a regenerated row, and the stray
-//                               axis is settled deferred with the driver named.
+//                               it were ever observed.
 //
 // ── WHAT CHANGED, AND WHAT DELIBERATELY DID NOT ─────────────────────────────────────────────────────
 //
@@ -108,7 +100,7 @@ function population() {
 // has to stay true is that no file joins the class unruled.
 const RULED = new Set([
   "gateway.mjs", "stages.mjs", "disposition-union.mjs", "disposition-call.mjs",
-  "coverage-form.mjs", "coverage-union.mjs",
+  "coverage-form.mjs", "coverage-union.mjs", "verify.mjs",
   "coverage-form-io.mjs",   // the report for the one disagreement, authored by this change
 ]);
 
@@ -133,12 +125,10 @@ test("the AGREE sites still state their mechanism, not merely their intent", () 
   assert.match(flat("gateway.mjs"), /same builder, same predicate, same arguments as the tool's own fold/,
     "gateway's union no longer claims to BE the regeneration — the judgement-time bytes and the tool's "
     + "bytes could now differ for identical inputs");
-  assert.match(flat("disposition-union.mjs"), /the same calculation the validator judges with/,
-    "disposition-union.mjs's PROVENANCE no longer says the driver's computation IS the validator's — that "
-    + "sentence is the whole guarantee, stated on the artifact rather than asserted about it");
-  // The coverage form has no validator now: code settles it, and its provenance says so.
-  assert.match(flat("coverage-union.mjs"), /REGENERATED on every pass; code settles each row's status and reason from the run's own facts/,
-    "coverage-union.mjs's PROVENANCE no longer says who settles the regenerated rows");
+  for (const f of ["disposition-union.mjs", "coverage-union.mjs"])
+    assert.match(flat(f), /the same calculation the validator judges with/,
+      `${f}'s PROVENANCE no longer says the driver's computation IS the validator's — that sentence is the `
+      + "whole guarantee, stated on the artifact rather than asserted about it");
   assert.match(flat("disposition-union.mjs"), /The anchor itself does NOT persist/,
     "the anchor's non-persistence is the cure for pointing into a regenerated list");
   assert.match(flat("disposition-call.mjs"), /only the EXTRACTED TEXT is durable/,
@@ -155,11 +145,9 @@ test("an axis minted from a stray unit file is REPORTED, and the driver names it
   assert.match(io, /REGISTER_AXES\.includes/,
     "the report no longer compares against the closed axis set — a second copy of the axis vocabulary is "
     + "how one of them ends up with three entries");
-  // The consumer moved with the coverage form: code settles it every pass now (pipeline.mjs,
-  // settleCoverageFromFacts), so that is where the report is read and the stray axis kept from a clean.
-  const pl = src("pipeline.mjs");
-  assert.match(pl, /input\.unknownAxisUnits/, "nothing consumes the report, so it says nothing to anyone");
-  assert.match(pl, /This is a driver fault\./,
+  const gw = src("gateway.mjs");
+  assert.match(gw, /input\.unknownAxisUnits/, "nothing consumes the report, so it says nothing to anyone");
+  assert.match(gw, /driver fault, not a seat one/,
     "the note no longer names the DRIVER as the faulty party — which is the ask verify.mjs recorded");
 });
 

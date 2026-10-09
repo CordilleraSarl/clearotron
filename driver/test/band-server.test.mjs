@@ -165,8 +165,8 @@ test("band_record: the cite resolves in every form the digest actually writes it
 });
 
 // The store keys on the registration-INSTANCE uri the fetch logged (/mark/ch/30419/2014) while judgment
-// cites the record (/mark/ch/30419) — the same granularity split the screen gate (since removed) fixed
-// for its own membership test after a false hard-halt, never fixed here.
+// cites the record (/mark/ch/30419) — the same granularity split `findScreenGateViolations` in screen-gate.mjs fixed for its own
+// membership test after a false hard-halt, never fixed here.
 test("band_record: a cite at record granularity opens the registration-instance document", async () => {
   const runDir = seedRun();
   writeFileSync(join(runDir, "_records", "ch-30419-2014.json"),

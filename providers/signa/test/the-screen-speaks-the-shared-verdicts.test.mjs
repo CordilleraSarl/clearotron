@@ -7,8 +7,7 @@
 // No check reads them. The gate that refuses dropping a live, in-class record nobody opened acts only on
 // `surface:*`, so on this register a live filing could be dropped on its goods unread. A dead or
 // out-of-class drop must match `drop:dead` or `drop:out-of-class`, so every drop on the screen's own
-// ground was refused. The screen gate itself left with the register digest; the verdicts still feed the
-// band's shape, the record ledgers and the audit, which key on the same closed set.
+// ground was refused.
 //
 // NO VENDOR MEASUREMENTS AND NO REAL MARK OR OWNER live here. The strings are invented.
 import { test } from "node:test";
@@ -16,6 +15,7 @@ import assert from "node:assert/strict";
 
 import { normalizeSearchResponse, rowScreen } from "../src/core.js";
 import { SCREEN_VERDICTS } from "../../_shared/result-shape.mjs";
+import { findScreenGateViolations } from "../../../driver/screen-gate.mjs";
 
 const vendorRow = (status, classes) => ({
   id: "a1", mark_text: "VELTRANO", jurisdiction_code: "US", office_code: "US",
@@ -41,4 +41,17 @@ test("every verdict is one of the shared set, landing where the other registers 
     assert.ok(SCREEN_VERDICTS.includes(v), `${v} is outside the shared set`);
     assert.equal(v, want, JSON.stringify({ status, classes, scope }));
   }
+});
+
+test("a live in-class record dropped on its goods, never opened, is caught by the gate on this register", () => {
+  const verdict = screenOf(LIVE, [9], [9]).screen_verdict;
+  const findings = [
+    "### Negative results",
+    "| Mark | Source | Result | Notes |",
+    "|---|---|---|---|",
+    `| VELTRANO | register | off-field | /mark/us/a1 screen_verdict=${verdict} |`,
+  ].join("\n");
+  const violations = findScreenGateViolations(findings, new Set());
+  assert.equal(violations.length, 1, `the gate let the drop through with screen_verdict=${verdict}`);
+  assert.equal(violations[0].uri, "/mark/us/a1");
 });

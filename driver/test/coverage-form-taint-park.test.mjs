@@ -28,7 +28,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { unionCoverageForm } from "../coverage-union.mjs";
-import { rowIsSettled } from "../coverage-form.mjs";
+import { findCoverageFormViolations } from "../coverage-form.mjs";
 import { armCoverageForm, coverageFormPaths, coverageFormStamp, readCoverageForm,
   readCoverageFormInput, writeCoverageForm } from "../coverage-form-io.mjs";
 import { taintParkJudgmentArtifacts } from "../pipeline.mjs";
@@ -104,8 +104,8 @@ test("THE LEAK, REPRODUCED: an accumulator that survives the park carries a disc
     assert.match(block.reason, /6,862 hits/,
       "the reason a lawyer reads still describes a band six times smaller than the one the run searched");
     assert.equal(resumed.outstanding, 0, "and the row counts as work already done");
-    assert.ok(resumed.form.rows.every((r) => rowIsSettled(r, r)),
-      "so every row reads as settled and the resumed run never re-rules the slice");
+    assert.deepEqual(findCoverageFormViolations(resumed.form.rows), [],
+      "so the gate has nothing to refuse and the resumed digest never re-rules the slice");
   } finally { cleanup(dir); }
 });
 
@@ -136,8 +136,8 @@ test("THE FIX: parking the accumulator makes the resumed run re-rule the slice",
     assert.equal(block.status, null, "the ruling over the discarded band did NOT survive");
     assert.equal(block.reason, null, "nor the sentence quoting its size");
     assert.ok(resumed.outstanding > 0);
-    assert.equal(rowIsSettled(block, block), false,
-      "the resumed run is made to rule the slice again — which is what the park is for");
+    assert.ok(findCoverageFormViolations(resumed.form.rows).some((v) => v.row === block.row_id),
+      "the resumed digest is made to rule the slice again — which is what the park is for");
   } finally { cleanup(dir); }
 });
 
@@ -151,6 +151,7 @@ test("the park's artifact list NAMES the form, both copies, under the stamped fo
     const P = paths(dir);
     const list = taintParkJudgmentArtifacts(P, dir);
     assert.deepEqual(list, [
+      P.registerFindings,
       P.registerCoverageLedger,
       coverageFormPaths(dir).seat,
       coverageFormPaths(dir).sidecar,
@@ -160,7 +161,7 @@ test("the park's artifact list NAMES the form, both copies, under the stamped fo
       statuses: ["confirmed-clean", "coverage-limited", "deferred"],
       form_required: true, form_path: "register-coverage-form.v2.json" }));
     const renamed = taintParkJudgmentArtifacts(P, dir);
-    assert.ok(renamed[1].endsWith("register-coverage-form.v2.json"));
-    assert.ok(renamed[2].endsWith(join("_driver", "register-coverage-form.v2.form.json")));   // joined: Windows separates it with a backslash
+    assert.ok(renamed[2].endsWith("register-coverage-form.v2.json"));
+    assert.ok(renamed[3].endsWith(join("_driver", "register-coverage-form.v2.form.json")));   // joined: Windows separates it with a backslash
   } finally { cleanup(dir); }
 });

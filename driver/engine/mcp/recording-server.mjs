@@ -5,9 +5,12 @@
 // ── WHAT THIS CATEGORY IS FOR, AND WHY IT IS NOT A RETRIEVAL GRANT ──────────────────────────────────
 //
 // The two-box model conflates "may reach the outside world" with "may hand back structure"
-// (gather-config.mjs:1064-1067 RECORDING_STAGES). A stage converted to a typed return needs the second and not the first.
+// (gather-config.mjs:246-268 RECORDING). A stage converted to a typed return needs the second and not the first.
 // This server carries ONLY the second: it writes the calling stage's own artifact into the calling
 // stage's own run directory, and it dials nothing.
+//
+// So the starvation blind-frame exists to have is meant to be preserved by CONSTRUCTION rather than by
+// promise — the stage's mcp config would name this server and nothing else.
 //
 // ✅ THAT IS NOW A MEASURED PROPERTY, and this paragraph used to say the opposite. It read "nothing is
 // wired: this module is granted to nothing and reachable by no stage" — true when written, false from the
@@ -30,12 +33,16 @@
 // path 1): a literal substring search over the calling run's OWN artifact tree, replacing the Bash
 // reads O3c measured the stage using. It still dials nothing and writes nothing — the category's
 // promise is about RETRIEVAL and writes, and a read bounded to CLEAROTRON_BAND_RUN_DIR widens neither.
-// Granted under the `recording-skeptic` key only; every other recording stage's process serves it
-// unreachably, the same served-vs-granted delta as the record tools, pinned by the same census.
+// Granted under the `recording-skeptic` key only; blind-frame's process serves it unreachably, the
+// same served-vs-granted delta as the record tools, pinned by the same census.
 import { serve } from "./stdio-server.mjs";
 import { recordSynthesis } from "../../synthesis-record.mjs";   // the writer
+import { recordRegisterDigest } from "../../register-digest-record.mjs";   // conversion 11 — the findings document
 import { FINDING_KEYS_CURRENT, COVERAGE_AREA_STATES } from "../../findings-model.mjs";
+import { recordBlindFrame } from "../../blind-frame-record.mjs";
+import { VARIANT_DIRECTIONS, RANKING_BASES } from "../../blind-frame-model.mjs";
 import { recordSkeptic } from "../../skeptic-record.mjs";
+import { recordFrameDiff } from "../../frame-diff-record.mjs";
 import { recordMatterFrame, INTAKE_ASK_OWNERS, SCOPE_BASES, MEANING_ANGLE_MAX_CHARS } from "../../matter-frame-record.mjs";
 import { recordClearanceVariants, SCOPE_LAYERS, SCOPE_STATUS } from "../../clearance-variants-record.mjs";
 import { recordReportOverview } from "../../report-overview-record.mjs";
@@ -48,15 +55,24 @@ import { PROVIDERS, REGISTER_PROVIDER } from "../../driver.config.mjs";
 // already written against them; this conversion is the consumption their headers said was still owed.
 import { recordClosures } from "../../doubt-closure-tool.mjs";
 import { MAX_CLOSURES_PER_CALL, CLOSURE_KINDS } from "../../doubt-closure-call.mjs";
-import { readFileSync, existsSync } from "node:fs"; import { FROZEN_METHOD_FILE } from "../../framework-method.mjs";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { driverDir } from "../../../shared/driver-dir.mjs";   //
 import { VARIANT_CATEGORIES } from "../../variant-manifest-model.mjs";
+import { DIFF_LAYERS, DIFF_SEVERITIES } from "../../frame-diff-model.mjs";
 import { REGISTER_AXES } from "../../coverage-ledger.mjs";
 import { searchRunArtifacts, SEARCH_LIMITS } from "../../skeptic-search.mjs";
 import { recordKnockoutAssess } from "../../knockout-assess-record.mjs";
 import { recordKnockoutFrame } from "../../knockout-frame-record.mjs";
 import { recordKnockoutReview } from "../../knockout-review-record.mjs";
+
+async function record_blind_frame(params) {
+  const runDir = String(process.env.CLEAROTRON_BAND_RUN_DIR ?? "");
+  if (!runDir) {
+    return { error: "this server was started without a run — the driver wires it per run; there is no parameter for it and this tool never guesses one" };
+  }
+  return recordBlindFrame(runDir, params);
+}
 
 async function record_skeptic(params) {
   const runDir = String(process.env.CLEAROTRON_BAND_RUN_DIR ?? "");
@@ -64,6 +80,14 @@ async function record_skeptic(params) {
     return { error: "this server was started without a run — the driver wires it per run; there is no parameter for it and this tool never guesses one" };
   }
   return recordSkeptic(runDir, params);
+}
+
+async function record_frame_diff(params) {
+  const runDir = String(process.env.CLEAROTRON_BAND_RUN_DIR ?? "");
+  if (!runDir) {
+    return { error: "this server was started without a run — the driver wires it per run; there is no parameter for it and this tool never guesses one" };
+  }
+  return recordFrameDiff(runDir, params);
 }
 
 async function record_knockout_assess(params) {
@@ -190,6 +214,18 @@ async function record_doubt_closure(params) {
   return recordClosures(spec, params);
 }
 
+async function record_register_digest(params) {
+  const runDir = String(process.env.CLEAROTRON_BAND_RUN_DIR ?? "");
+  if (!runDir) {
+    return { error: "this server was started without a run — the driver wires it per run; there is no parameter for it and this tool never guesses one" };
+  }
+  // The band index, the record host, the counts and the audit rows are read from the RUN by
+  // `recordRegisterDigest` itself, out of the driver's own facts sidecar. They are not parameters and
+  // there is nothing to thread here: a seat that could hand us its own record index could hand us a
+  // record that is not in the band, which is the one thing the join at the acceptance boundary is for.
+  return recordRegisterDigest(runDir, params);
+}
+
 async function record_synthesis(params) {
   const runDir = String(process.env.CLEAROTRON_BAND_RUN_DIR ?? "");
   if (!runDir) {
@@ -212,11 +248,70 @@ async function search_run_artifacts(params) {
 serve({
   name: "recording",
   tools: [{
+    name: "record_blind_frame",
+    description:
+      "Hand back your cold threat model as VALUES. The driver serializes it and writes " +
+      "blind-frame-model.json, so you never format JSON and a stray brace cannot cost the run its model. " +
+      "The answer tells you what was stored, or names the exact defect token — in this turn, rather than " +
+      "an attempt later through the corrective ladder.",
+    inputSchema: {
+      type: "object",
+      required: ["dominant_element", "variants", "fields", "ranking_basis"],
+      properties: {
+        dominant_element: {
+          type: "string",
+          description: "The element the mark actually turns on, re-derived from the raw request alone.",
+        },
+        variants: {
+          type: "array",
+          description: "The neighbourhood, BOTH directions. At least one — an empty set is not a model.",
+          items: {
+            type: "object",
+            required: ["value", "direction", "rationale"],
+            properties: {
+              value: { type: "string" },
+              // ENUM, so `blindframe_direction_invalid` cannot arise from a typed call at all. A schema
+              // that cannot express a bad value has removed the defect; a validator that rejects one has
+              // only moved it.
+              direction: { type: "string", enum: [...VARIANT_DIRECTIONS] },
+              rationale: { type: "string", description: "One line. Why this neighbour is reachable." },
+            },
+          },
+        },
+        fields: {
+          type: "array",
+          description: "The field, by GOODS OVERLAP with the actual product — never by class number.",
+          items: {
+            type: "object",
+            required: ["goods", "on_field", "rationale"],
+            properties: {
+              goods: { type: "string" },
+              on_field: { type: "boolean", description: "Whether these goods are on the field of play." },
+              rationale: { type: "string" },
+            },
+          },
+        },
+        sources: {
+          type: "array",
+          description: "Real channels the mark would be met on. Optional.",
+          items: {
+            type: "object",
+            required: ["channel", "rationale"],
+            properties: { channel: { type: "string" }, rationale: { type: "string" } },
+          },
+        },
+        // ENUM for the same reason as `direction`.
+        ranking_basis: { type: "string", enum: [...RANKING_BASES] },
+      },
+    },
+    annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+    handler: record_blind_frame,
+  }, {
     // ── SECOND OCCUPANT — the skeptic's transport ─────────────────────────────────────────────────
     //
     // Registered on the SAME script, granted under its OWN key (`recording-skeptic`, Shape 2): the
     // server serves every record tool, and the per-key allowlist is what keeps a sibling's tool
-    // uncallable — no other recording seat is handed record_skeptic, and the skeptic none of theirs. The census pins
+    // uncallable — blind-frame's seat is never handed record_skeptic and vice versa. The census pins
     // that mapping (every record tool has exactly one granting stage).
     name: "record_skeptic",
     description:
@@ -257,6 +352,88 @@ serve({
     },
     annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     handler: record_skeptic,
+  }, {
+    // ── THIRD OCCUPANT — frame-diff's transport, and the first to own TWO artifacts ───────────────
+    //
+    // Same Shape 2 as the two above: registered on this one script, granted under its own key
+    // (`recording-frame-diff`), so no sibling seat can call it. What is new is that accepting this call
+    // writes `frame-diff.json` AND renders `frame-diff.md` from the same parsed model — the stage's own
+    // contract already classifies the prose `mechanical:code-rendered`, and nothing in the driver
+    // reads it. See frame-diff-record.mjs for why the render takes the PARSED model rather than the
+    // received params.
+    //
+    // THE ASK CONTRACT RIDES THE REFUSAL, and that is the point of converting this stage rather than a
+    // quieter one. `parseFrameDiff` collects EVERY undispatchable firing directive into one throw; the
+    // seat now meets that list in the turn where restating is free, instead of at reopen with its
+    // session gone. The 2026-07-29 artifact carried four offenders against a three-attempt ladder.
+    name: "record_frame_diff",
+    description:
+      "Hand back the blind-model-vs-actual-scope diff as VALUES. The driver serializes frame-diff.json " +
+      "and renders frame-diff.md from it, so you never format JSON and never write the prose twin. A " +
+      "FIRING directive (severity dominant-element or material) must be dispatchable — its `item` is " +
+      "itself a mark-shaped search term, or `remedy.terms` names one — and the answer names EVERY " +
+      "offending directive at once, in this turn, so one restatement fixes them all. An EMPTY " +
+      "`directives` array IS the clean answer: the blind model matched the actual scope.",
+    inputSchema: {
+      type: "object",
+      // NO `dominant_element`. It was an echo of a value the driver already held two copies of,
+      // and the driver PREFERRED the echo over both — so a transcription slip retargeted the spine test
+      // that forces `dominant_element_gap`. `boundDominantElement` supplies it now, and the property is
+      // REMOVED rather than validated: a field the schema cannot express is a defect that cannot arise.
+      required: ["directives", "dominant_element_gap"],
+      properties: {
+        directives: {
+          type: "array",
+          description:
+            "One entry per omission the diff found. EMPTY is valid and is the clean answer, not a gap.",
+          items: {
+            type: "object",
+            required: ["layer", "item", "observation", "severity"],
+            properties: {
+              // ENUMS, so `framediff_layer_invalid` and `framediff_severity_invalid` cannot arise from a
+              // typed call at all — the doubt-closure-call.mjs rule: a schema that cannot express a bad value has
+              // REMOVED the defect, where a validator that rejects one has only moved it. Both tokens stay
+              // reachable through the dictated path, which the archive is full of.
+              layer: { type: "string", enum: [...DIFF_LAYERS] },
+              item: {
+                type: "string",
+                description:
+                  "For a FIRING variant directive this must be a mark-shaped search term (WAVA, CORAL " +
+                  "MAGIC) or carry a remedy. A label — a parenthetical, an enumeration, more than about " +
+                  "four words — dispatches as a nil search that reads CLEAN, and is refused here.",
+              },
+              observation: { type: "string", description: "What the blind model saw that the scope did not." },
+              severity: { type: "string", enum: [...DIFF_SEVERITIES] },
+              remedy: {
+                type: "object",
+                description:
+                  "What to search, when the item is not itself the term. Required in effect for a firing " +
+                  "variant directive whose item is a label. The driver never guesses `term: item` — the " +
+                  "asker has to say what the search IS.",
+                properties: {
+                  terms: { type: "array", items: { type: "string" } },
+                  nice_classes: { type: "array", items: { type: "string" } },
+                  regions: { type: "array", items: { type: "string" } },
+                },
+              },
+            },
+          },
+        },
+        // TYPED boolean, which removes `framediff_gap_invalid` the same way the enums remove their pair.
+        // Deliberately REQUIRED and never defaulted: the driver re-checks this against the named dominant
+        // element and forces it true on any firing on-spine directive, so a seat that omits it is making
+        // no claim and must be told, not answered for.
+        dominant_element_gap: {
+          type: "boolean",
+          description:
+            "True when the dominant element is not fully enumerated. The driver holds the dominant "
+            + "element itself (from the blind model) and re-checks this against it — it will not hide a "
+            + "spine omission.",
+        },
+      },
+    },
+    annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+    handler: record_frame_diff,
   }, {
     // ── CONVERSION 3 — THE VARIANT MANIFEST ───────────────────────────────────────────────────────
     //
@@ -367,6 +544,142 @@ serve({
     // seat used to retype — and three of them (classes, overall_label, overall_badge) were stamped over
     // by the driver after the seat had typed them, which the skill doc annotated in the model's own
     // reading. None of those nine is a field here. What the seat sends is the judgment and nothing else.
+    // ── CONVERSION 11 — THE REGISTER FINDINGS DOCUMENT ───────────────────────────────────────────
+    //
+    // THE SCHEMA IS THE CONVERSION. Thirteen of this stage's twenty contract elements are mechanical,
+    // and the way they leave is by not appearing here: there is no Mark field, no Owner, no Country,
+    // no Classes, no Status, no Filed, no Expiry, no record URL, no summary count and no audit row.
+    // Every one of those is rendered from the band record the `uri` names, or from the run's own
+    // receipts. What a row carries is the uri that identifies it and the judgment about it.
+    //
+    // `uri` IS THE JOIN, AND THE JOIN IS THE CHECK. A uri no band record carries is refused by name at
+    // the call. Under the old dictation the seat retyped the cells beside it, so a mistyped uri
+    // produced a plausible row that failed downstream or nowhere; here it cannot be rendered at all.
+    name: "record_register_digest",
+    description:
+      "Hand back the register findings as VALUES. The driver renders register-findings.md — the title, " +
+      "the summary counts, every identifier cell, the clickable record URL, the Negative-results " +
+      "provenance fields and the audit trail — so you never retype a record's fields, never lay out a " +
+      "table and never save a file. Send the uri of each position that earns a row and WHY, the drops " +
+      "and why, and your prose sections. Coverage rulings do NOT come here: they ride record_coverage, " +
+      "row by row, exactly as before.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        findings_rows: {
+          type: "array",
+          description:
+            "Sheet 1 — one entry per POSITION that earns a row (never one per registration of the same " +
+            "right). Cite any one constituent uri of the position; the driver renders the identifier " +
+            "cells and the clickable URL from the band record it names.",
+          items: {
+            type: "object", required: ["uri", "flag_reason", "verify"],
+            properties: {
+              uri: { type: "string", description: "The record's `/mark/…` uri, as the band carries it. The driver joins on it; a uri the band cannot resolve is refused." },
+              flag_reason: { type: "string", description: "WHY this position is risk-relevant — the judgment the row exists to carry." },
+              verify: { type: "string", enum: ["yes", "no"], description: "EXACTLY one bare token: does this row still need verification against the live register?" },
+            },
+          },
+        },
+        incumbent_rows: {
+          type: "array",
+          description: "Sheet 2 — incumbent-context positions, same shape as findings_rows.",
+          items: {
+            type: "object", required: ["uri", "flag_reason", "verify"],
+            properties: {
+              uri: { type: "string", description: "The record's `/mark/…` uri, as the band carries it." },
+              flag_reason: { type: "string", description: "WHY this position is incumbent context rather than a risk-relevant conflict." },
+              verify: { type: "string", enum: ["yes", "no"], description: "EXACTLY one bare token." },
+            },
+          },
+        },
+        negative_rows: {
+          type: "array",
+          description:
+            "Every candidate screened OUT — one entry per drop. The Notes cell's provenance (uri, " +
+            "screen_verdict, class, status) is rendered from the band record, not typed: a batch-dropped " +
+            "candidate with no entry here vanishes from the published audit, which is a silent recall loss.",
+          items: {
+            type: "object", required: ["uri", "drop_reason"],
+            properties: {
+              uri: { type: "string", description: "The dropped record's `/mark/…` uri." },
+              drop_reason: { type: "string", description: "The one-line WHY — the judgment about THIS record. Never a bare status word." },
+              ground: {
+                type: "string",
+                enum: ["off-field", "goods-distance", "duplicate-of-surfaced", "sign", "dead-status", "out-of-class"],
+                description:
+                  "REQUIRED. EXACTLY one bare token saying under WHICH RULE the drop is made — the prose " +
+                  "in drop_reason says why this record, the token says under which rule. `off-field` " +
+                  "(the relevance gate, on the record's own goods), `goods-distance`, " +
+                  "`duplicate-of-surfaced` (the same right already has a row), `sign` (a near spelling a buyer in " +
+                  "this market could not take for the mark, by sound, by look or by meaning). `dead-status` and " +
+                  "`out-of-class` name the SCREEN's own verdict and are checked against it: a record " +
+                  "the band screened as a live in-scope candidate cannot be dropped on status or class, " +
+                  "and that call is refused — decide it on its goods or its sign, or carry it.",
+              },
+              variant: { type: "string", description: "OPTIONAL — the search term / variant this candidate came back on." },
+            },
+          },
+        },
+        instructed_checks: {
+          type: "array",
+          description:
+            "One entry per requester ask this stage owns, answered from the FROZEN material. The record " +
+            "ids you read are the reading audit's and are rendered for you. A check the frozen material " +
+            "genuinely cannot answer is answered honestly here AND recorded as an open coverage row.",
+          items: {
+            type: "object", required: ["ask", "answer"],
+            properties: {
+              ask: { type: "string", description: "The requester's ask, as dispatched." },
+              answer: { type: "string", description: "Your answer — including the honest \"the frozen material cannot answer this\"." },
+            },
+          },
+        },
+        disagreement_resolutions: {
+          type: "array",
+          description: "One entry per surfaced disagreement and per borderline placement — each ADOPTED or OVERRODE in writing, engaging the reason.",
+          items: {
+            type: "object", required: ["subject", "decision", "reason"],
+            properties: {
+              subject: { type: "string", description: "Which placement — the mark and, where it helps a reader, its uri." },
+              decision: { type: "string", enum: ["ADOPTED", "OVERRODE"], description: "EXACTLY one bare token." },
+              reason: { type: "string", description: "An override QUOTES the reason it contradicts; a kept tier still says why." },
+            },
+          },
+        },
+        batch: {
+          type: "integer",
+          minimum: 1,
+          description:
+            "The batch of records this call accounts for, when the dispatch splits the band into " +
+            "batches. Send one call per batch, carrying its number. Every record in THAT batch must end " +
+            "in this call — a findings row, an incumbent row, a Negative-results drop, or a " +
+            "Disagreement resolution — and the call is refused naming any that end nowhere; the records " +
+            "in every other batch are not this call's business. A batch call MERGES onto what you have " +
+            "already recorded, so earlier batches are kept without re-sending them, and a record ended " +
+            "under one batch cannot be ended again under another. Omit it only when you are sending the " +
+            "whole band in one call, which the dispatch tells you when it is.",
+        },
+        patch: {
+          type: "boolean",
+          description:
+            "OPTIONAL. true MERGES what you send onto what you already sent. Row arrays join on `uri`; " +
+            "`instructed_checks` joins on `ask` and `disagreement_resolutions` on `subject`. An entry " +
+            "you name replaces the one with that key, a new key is appended, and everything you do not " +
+            "name comes back byte-identical — including a whole array you omit. Use it for a correction " +
+            "that ADDS or CHANGES named entries. Omit it (a whole re-send) when the correction is about " +
+            "which entries belong at all — a patch never DELETES anything, because dropping a finding " +
+            "is a decision and it arrives where a reader can see it.",
+        },
+        opposition: { type: "string", description: "OPTIONAL — the opposition-history read, captured verbatim where high-signal." },
+        merch_sweep: { type: "string", description: "OPTIONAL — the cross-class merchandising sweep." },
+        cross_checks: { type: "string", description: "OPTIONAL — the Option-D cross-checks executed (cap N=10)." },
+        open_flags: { type: "string", description: "OPTIONAL — open verification flags." },
+      },
+    },
+    annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+    handler: record_register_digest,
+  }, {
     name: "record_report_overview",
     description:
       "Hand back the report SHELL as VALUES. The driver renders report-overview.md — the front-matter it " +
@@ -604,7 +917,7 @@ serve({
     // skeptic-search.mjs; this handler only wires the run dir, same contract as the record tools.
     name: "search_run_artifacts",
     description:
-      "Search ONE of this run's own artifacts (e.g. owner-decisions.json, common-law-findings.md) for " +
+      "Search ONE of this run's own artifacts (e.g. register-findings.md, common-law-findings.md) for " +
       "literal substrings — like grep -n -i. `terms` are OR-matched per line, case-insensitive unless " +
       "case_sensitive is true, and are LITERALS, never regex (a dot matches a dot). The answer carries " +
       `1-based line numbers, is capped at ${SEARCH_LIMITS.maxMatches} matches and says when it truncated. ` +
@@ -617,7 +930,7 @@ serve({
       properties: {
         file: {
           type: "string",
-          description: "Path RELATIVE to the run directory, e.g. \"owner-decisions.json\". One file per call; no listings.",
+          description: "Path RELATIVE to the run directory, e.g. \"register-findings.md\". One file per call; no listings.",
         },
         terms: {
           type: "array",
@@ -821,9 +1134,6 @@ serve({
     handler: record_synthesis,
   }, {
     name: "record_knockout_assess",
-    // The framework's `inputs` fields are offered only on a run whose framework states a method: a session
-    // offered a field it may not use can fill it, and the check that refuses it runs after the whole step.
-    schemaNow: (schema) => knockoutAssessSchemaFor(schema, process.env.CLEAROTRON_BAND_RUN_DIR),
     description:
       "Hand back THIS CHUNK's rated assessment as VALUES. The driver serializes knockout-assess-<n>.json, " +
       "so you never format JSON and never write the file. WHICH CHUNK IS NOT YOURS TO SAY — the driver " +
@@ -1129,27 +1439,3 @@ serve({
     handler: record_knockout_frame,
   }],
 });
-
-/**
- * The knockout save tool's schema for the run this server serves. The framework's `inputs` fields are
- * offered only where the run's framework states a method, which is when its frozen copy
- * (`_driver/framework-method.json`) exists: a run with no method has none, since the mint removes it. A
- * session offered a field it may not use can fill it, and the check that refuses it runs only after the
- * whole step. With no run to read, the schema is the one declared. Read when the tools are listed.
- */
-export function knockoutAssessSchemaFor(schema, runDir) {
-  if (!runDir || existsSync(driverDir(String(runDir), FROZEN_METHOD_FILE))) return schema;
-  const strip = (s) => {
-    if (Array.isArray(s)) return s.map(strip);
-    if (!s || typeof s !== "object") return s;
-    const out = {};
-    for (const [k, v] of Object.entries(s)) {
-      if (k === "properties" && v && typeof v === "object" && !Array.isArray(v)) {
-        out.properties = Object.fromEntries(Object.entries(v).filter(([name]) => name !== "inputs").map(([name, sub]) => [name, strip(sub)]));
-      } else if (k === "required" && Array.isArray(v)) out.required = v.filter((name) => name !== "inputs");
-      else out[k] = strip(v);
-    }
-    return out;
-  };
-  return strip(schema);
-}

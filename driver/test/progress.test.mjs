@@ -112,7 +112,7 @@ test("rollupStatus hides retired runs — and a retired row never costs a live r
   });
   mk("tmp9-livemark/2026-07-15-teal-spire", {
     runId: "tmp9-livemark-2026-07-15-teal-spire", ref: "TMP9001", markName: "LIVEMARK",
-    state: "running", stepN: 2, stepTotal: 9, stepLabel: "Searching registers and common law",
+    state: "running", stepN: 2, stepTotal: 9, stepLabel: "Register sweeps",
     updatedAt: "2026-07-15T09:00:00Z",
   });
 
@@ -310,7 +310,7 @@ test("lineFor: recovering reads recoveryResumesAt (resetsAt only as the pre-spli
   assert.match(lineFor(rec), /resumes 2026-07-28 15:00 UTC/);
   const legacy = { ...rec, recoveryResumesAt: undefined, resetsAt: "2026-07-28T16:00:00.000Z" };
   assert.match(lineFor(legacy), /resumes 2026-07-28 16:00 UTC/, "a pre-split run still shows its clock");
-  const parked = { ref: "TMP9", markName: "VENZY", state: "parked-for-human", parkedKind: "grace-exit", lastStage: "register-digest", stepN: 3, stepTotal: 9, stepLabel: "Investigating and exploring findings" };
+  const parked = { ref: "TMP9", markName: "VENZY", state: "parked-for-human", parkedKind: "grace-exit", lastStage: "register-digest", stepN: 3, stepTotal: 9, stepLabel: "Placement & digest" };
   const line = lineFor(parked);
   assert.match(line, /PARKED/);
   assert.match(line, /runner stopped mid-run: grace-exit/);

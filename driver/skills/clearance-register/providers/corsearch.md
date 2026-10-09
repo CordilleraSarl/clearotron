@@ -89,7 +89,7 @@ register_search({
 })
 ```
 
-Owner matching is fuzzy on free-text. Try both the formal name (`"Aureon Interactive Entertainment Inc."`) and common variants (`"Aureon Interactive Entertainment"`, `"Aureon Computer Entertainment"`, `"SCE"`).
+Owner matching is fuzzy on free-text. Try both the formal name (`"Aureon Interactive Entertainment Inc."`) and common variants (`"Aureon Interactive Entertainment"`, `"Aureon Computer Entertainment"`, `"SCE"`). The owner-aggregation step in digest mode normalises hits later.
 
 ## Pagination
 
@@ -153,7 +153,7 @@ When `onomaticsOppositions[]` is populated, the entries are gold. Each entry con
 - `oppositionIdentifier` — unique ID
 - `onomaticsOfficialOppositionUri` — link to official record
 
-Capture VERBATIM. Don't paraphrase — the reviewing lawyer relies on the actual filing details.
+Capture VERBATIM in the register findings file's "Opposition history" section. Don't paraphrase — the reviewing lawyer relies on the actual filing details.
 
 ## Phoneme expansion availability
 

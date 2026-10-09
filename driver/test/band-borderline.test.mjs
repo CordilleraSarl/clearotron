@@ -99,18 +99,14 @@ test("item 10 — the doctrine is a DECLARATION, never a criterion, at both prom
   assert.match(level2, /declaration, not a criterion/i, "the level-2 file says so in as many words");
 });
 
-test("item 10 — the synthesis dictation no longer asks for the declaration: the band is the judges'", () => {
-  // The rating in the decisions is the rating (owner, 2026-10-01): a declaration of an undecided band is
-  // part of rating, and it left synthesis's message with the rest. The manuals synthesis reads stay as they
-  // are in this phase (design read, 2026-10-01), so the level-2 file above keeps its text.
+test("item 10 — the synthesis dictation names the optional key (two-level rule: change one level, change both)", () => {
   const P = paths("/r");
   const msg = STAGES.synthesis.message({
     paths: P, job: {}, profile: null,
     framework: { title: "T", framework_key: "house-default", entity_label: "the company", bands: MANIFEST.bands },
   });
-  assert.ok(msg.includes("The rating in the decisions is the rating. Do not rate again."), "premise: the judged message was built");
-  assert.ok(!msg.includes("borderline_between"), "the prompt still names the field");
-  assert.ok(!msg.includes("DECLARE A BAND YOUR FRAMEWORK DOES NOT DECIDE"), "the prompt still carries the shared note");
+  assert.ok(msg.includes("borderline_between"), "the level-1 prompt names the field");
+  assert.ok(msg.includes("DECLARE A BAND YOUR FRAMEWORK DOES NOT DECIDE"), "…via the shared note, not a re-typed sentence");
 });
 
 // The check the ruling asked for, kept as a test so it cannot rot: a new findings field must not be able

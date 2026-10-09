@@ -72,7 +72,7 @@ const noteField = (notes, key) => (notes.match(new RegExp(`${key}=([^;]+)`)) || 
  * @param {string} auditMd            the run's `audit.md`
  * @param {Record<string, object>} recordIndex  fetched records by URI, for the fuller mark and owner
  */
-export function clearedNames(auditMd, recordIndex = {}, setAsideReasonOf = null) {
+export function clearedNames(auditMd, recordIndex = {}) {
   const out = { register: [], web: [] };
   for (const block of String(auditMd ?? "").split(/^## /m).slice(1)) {
     const title = block.split("\n")[0].trim();
@@ -92,8 +92,6 @@ export function clearedNames(auditMd, recordIndex = {}, setAsideReasonOf = null)
         status: rec.statusText || status,
         group: groupForCleared({ screenVerdict, status: rec.statusText || status }),
         uri,
-        // The judges' reason, on a run judged by owner (owner, 2026-10-02). Absent everywhere else.
-        ...(typeof setAsideReasonOf === "function" && setAsideReasonOf(uri) ? { reason: setAsideReasonOf(uri) } : {}),
       });
     } else if (!/^NR\d+/.test(title) && /common-law/i.test(layer) && !/^\(none/i.test(title)) {
       // ── A NAME IS A NAME AT A PLACE. THE READINGS ARE NOT NAMES ─────────────────────────────────
@@ -350,7 +348,7 @@ export function localScriptSearched(registerPlan) {
  *
  * @returns {{schemaVersion: number, cleared: object, counts: object}}
  */
-export function searchDepthRecord({ auditMd = "", recordIndex = {}, setAsideReasonOf = null, recordFileNames = [], bandRecordIds = null, commonLawGrid = null, caseLawText = "", caseLawRecord = null, registerPlan = null, laneDepthVerdicts = null, noMarketplacesPicked = false } = {}) {
+export function searchDepthRecord({ auditMd = "", recordIndex = {}, recordFileNames = [], bandRecordIds = null, commonLawGrid = null, caseLawText = "", caseLawRecord = null, registerPlan = null, laneDepthVerdicts = null, noMarketplacesPicked = false } = {}) {
   // `recordFileNames: null` travels all the way to the page — see recordsByCountry. The default stays `[]`
   // because that is "the caller said nothing", not "the store is absent"; only the publish path knows the
   // difference and it is the one producer.
@@ -360,7 +358,7 @@ export function searchDepthRecord({ auditMd = "", recordIndex = {}, setAsideReas
   // the band is what was read: counted by record, filed by office. Without it a run that read 785 register
   // records reported "cannot say" and the report carried no register row and no country at all.
   if (recordFileNames === null && Array.isArray(bandRecordIds)) recordFileNames = recordNamesFromIds(bandRecordIds);
-  const cleared = clearedNames(auditMd, recordIndex, setAsideReasonOf);
+  const cleared = clearedNames(auditMd, recordIndex);
   const groups = {};
   for (const key of CLEARED_GROUPS) groups[key] = 0;
   for (const c of cleared.register) groups[c.group] += 1;

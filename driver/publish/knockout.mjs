@@ -15,7 +15,7 @@ import { riskTier, TONE_TIER, regenIndex, regenSurfaces, auditRouteFor, markRepo
 import { runKnockoutLint, deliveryFlagLines } from '../predelivery-lint.mjs';
 import { note } from '../log.mjs';
 import { addSheet } from './xlsx.mjs';
-import { COUNT_PREDICATES, COUNT_BASIS, countsForMark, countLine, countedMarks, variantFormsLine, disclosedFloor, moreThan, countNote } from '../register-count.mjs';
+import { COUNT_PREDICATES, COUNT_BASIS, countsForMark, countLine, countedMarks, variantFormsLine, disclosedFloor, moreThan } from '../register-count.mjs';
 import { RECORD_BASIS, recordsForMark, recordsLine, listedMarks, normalizeRegisterRecordLinks } from '../register-records.mjs';
 import { reportIdentityFor, productCoverageNote, kebab } from '../search-policy.mjs';
 import { batchMarkName } from '../mark-name.mjs';
@@ -235,11 +235,10 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
       row['Close variation forms'] = variantFormsLine(e) ?? 'not recorded — this run predates the close-variation column';
       row['Register'] = registerCounts.providerLabel ?? registerCounts.provider ?? '';
       row['Basis'] = COUNT_BASIS;
-      // The reader's line for anything missing. The provider's own reason, or an exception's message, stays
-      // in the counts record where it was written (register-count.mjs, countNote).
+      // The verbatim provider reason for anything missing — the auditable half of "not available".
       row['Notes'] = COUNT_PREDICATES
         .filter((p) => !Number.isFinite(e?.counts?.[p.key]?.total) && disclosedFloor(e?.counts?.[p.key]) === null)
-        .map((p) => `${p.label}: ${countNote(e?.counts?.[p.key]) ?? 'no count recorded'}`)
+        .map((p) => `${p.label}: ${e?.counts?.[p.key]?.unavailable ?? 'no count recorded'}`)
         .join(' · ');
       return row;
     });

@@ -118,8 +118,7 @@ test("the charging branch cannot fire today, and the bound is why it exists", ()
   // invariant is ever relaxed the refund does not silently become unbounded with it. This arm pins the
   // invariant that makes the branch unreachable, so whoever relaxes it is told the branch just went live.
   assert.match(GATEWAY_SRC, /let warmUsed = false;/);
-  // A confined judging session never warm-resumes (it starts fresh each attempt), which only narrows this.
-  assert.match(GATEWAY_SRC, /const warm = !confined && attempt > 1 && !warmUsed &&/,
+  assert.match(GATEWAY_SRC, /const warm = attempt > 1 && !warmUsed &&/,
     "the one-warm-per-ladder invariant moved — the charging branch may now be reachable, and it needs a real arm");
   assert.match(GATEWAY_SRC, /if \(warm\) warmUsed = true;/);
   // The bound itself stays one line to change, which is the form it was routed in.

@@ -122,7 +122,7 @@ test("a ROUTINE write is still silent — the existing argument for silence is u
   const real = process.stderr.write.bind(process.stderr);
   process.stderr.write = (chunk) => { seen.push(String(chunk)); return true; };
   try {
-    writeRunStatus(null, { stepIndex: 3, stepLabel: "Searching registers and common law" });
+    writeRunStatus(null, { stepIndex: 3, stepLabel: "Register sweeps" });
     writeRunStatus(null, {});
   } finally { process.stderr.write = real; }
   assert.equal(seen.join("").match(/NO RUN DIRECTORY/g), null,
