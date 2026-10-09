@@ -22,7 +22,7 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { STAGES } from "../stages.mjs";
-import { DISPOSITIONS, POSITION_REQUIRED_DISPOSITIONS, WRITER_DISPOSITIONS } from "../findings-model.mjs";
+import { DISPOSITIONS, POSITION_REQUIRED_DISPOSITIONS } from "../findings-model.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SRC = readFileSync(join(HERE, "..", "stages.mjs"), "utf8");
@@ -42,43 +42,30 @@ test("the dictated disposition list IS the constant — not a copy of it", () =>
   const text = synthesisText();
   const line = text.split("\n").find((l) => /^- disposition:/.test(l.trim()));
   assert.ok(line, "the disposition bullet is gone from the dictation — the seat is told nothing about the field");
-  // The posture tokens the writer is offered, in the constant's own order. A hardcoded list that happens
-  // to match today would pass this — which is why the SOURCE checks below are the ones that bind.
-  assert.ok(line.includes(`token of: ${WRITER_DISPOSITIONS.join(" / ")} —`),
-    `the dictated list does not match WRITER_DISPOSITIONS — seat told: ${line.slice(0, 160)}`);
+  // The four posture tokens, in the constant's own order. A hardcoded list that happens to match today
+  // would pass this — which is why the SOURCE check below is the one that binds.
+  assert.ok(line.includes(POSITION_REQUIRED_DISPOSITIONS.join(" / ")),
+    `the dictated list does not match POSITION_REQUIRED_DISPOSITIONS — seat told: ${line.slice(0, 160)}`);
 });
 
 test("…and it is INTERPOLATED, so a change to the constant cannot leave the dictation behind", () => {
   // The binding, and the reason this file exists. A matching hardcoded list is exactly what shipped:
   // correct on the day it was typed, silently wrong the moment the vocabulary moved.
-  assert.match(SRC, /EXACTLY one bare token of: \$\{WRITER_DISPOSITIONS\.join\(" \/ "\)\}/,
-    "the disposition list is hardcoded in stages.mjs again — interpolate the constant, as FINDINGS_SCHEMA_VERSION already is");
-  // …and the constant interpolated is itself derived from the parser's set, never a second list.
-  const MODEL = readFileSync(join(HERE, "..", "findings-model.mjs"), "utf8");
-  assert.match(MODEL, /export const WRITER_DISPOSITIONS = Object\.freeze\(POSITION_REQUIRED_DISPOSITIONS\.filter\(/,
-    "WRITER_DISPOSITIONS is typed out instead of derived from POSITION_REQUIRED_DISPOSITIONS");
+  assert.match(SRC, /EXACTLY one bare token of: \$\{POSITION_REQUIRED_DISPOSITIONS\.join\(" \/ "\)\}/,
+    "the disposition list is hardcoded in stages.mjs again — interpolate the constant, as FINDINGS_SCHEMA_VERSION and OFF_FIELD_GROUNDS already are");
 });
 
 test("every token the PARSER accepts is accounted for in what the seat is told", () => {
   // The defect in one assertion. `withdrawn` is not a posture, so it is not in the EXACTLY-one list —
   // but a vocabulary the parser accepts and the dictation never mentions is a token the seat cannot
   // reach, and this one is how a wrong finding gets killed.
-  //
-  // One token is withheld on purpose, and the withholding is asserted rather than tolerated: off-field
-  // was struck from the writer with the awareness-only instructions (owner, 2026-10-02), because a
-  // finding is made only for an owner the judges rated and a rated owner is never awareness only. The
-  // parser keeps it for runs from before; the disposition line must not offer it.
   const text = synthesisText();
-  const line = text.split("\n").find((l) => /^- disposition:/.test(l.trim())) ?? "";
-  assert.ok(!/\boff-field\b/.test(line), `the disposition line offers off-field again: ${line.slice(0, 160)}`);
-  const withheld = POSITION_REQUIRED_DISPOSITIONS.filter((d) => !WRITER_DISPOSITIONS.includes(d));
-  assert.deepEqual(withheld, ["off-field"], "the writer's list now withholds something other than off-field — re-read this guard");
-  const unmentioned = DISPOSITIONS.filter((d) => !withheld.includes(d) && !line.includes(d));
+  const unmentioned = DISPOSITIONS.filter((d) => !text.includes(d));
   assert.deepEqual(unmentioned, [],
     `the parser accepts ${unmentioned.join(", ")} and the dictation never names ${unmentioned.length === 1 ? "it" : "them"} — the seat cannot reach a token it was never told exists`);
 });
 
-test("withdrawn is named as a CORRECTIVE act, not offered as one more posture", () => {
+test("the fifth token is named as a CORRECTIVE act, not offered as a fifth posture", () => {
   // Both halves matter. Silence made it unreachable; listing it beside the four would invite a first-pass
   // seat to file a finding as already-killed, which renders nowhere and can never resurrect.
   const text = synthesisText();
@@ -86,8 +73,8 @@ test("withdrawn is named as a CORRECTIVE act, not offered as one more posture", 
   assert.equal(fifth.length, 1, "the posture/non-posture split changed — this guard's premise needs rereading");
   const line = text.split("\n").find((l) => /^- disposition:/.test(l.trim())) ?? "";
   assert.ok(line.includes(fifth[0]), `${fifth[0]} is not mentioned in the disposition bullet`);
-  assert.ok(!line.includes(`${WRITER_DISPOSITIONS.join(" / ")} / ${fifth[0]}`),
-    `${fifth[0]} is listed as one more posture — it is a corrective act and must be named separately`);
+  assert.ok(!line.includes(`${POSITION_REQUIRED_DISPOSITIONS.join(" / ")} / ${fifth[0]}`),
+    `${fifth[0]} is listed as a fifth posture — it is a corrective act and must be named separately`);
 });
 
 // ── VOID CONTROL ────────────────────────────────────────────────────────────────────────────────────

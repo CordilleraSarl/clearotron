@@ -5,11 +5,11 @@
 //
 // WS2 (F2 — reproducible search): the model reasons ONCE about what to search (elements,
 // variants, transliterations, incumbent context) and emits this structured sibling alongside its
-// prose manifest. CODE then compiles the deterministic
+// prose manifest — the blind-frame-model.json precedent. CODE then compiles the deterministic
 // register plan from it (register-plan.mjs): same manifest ⇒ byte-identical plan ⇒ reproducible
 // recall. The prose manifest stays the human/audit surface; THIS is the machine contract.
 //
-// PURE (no node imports) → tests offline. Mirrors findings-model.mjs:
+// PURE (no node imports) → tests offline. Mirrors blind-frame-model.mjs / findings-model.mjs:
 // strict key allowlists, closed enums, token-FIRST throws the corrective/warm ladder keys on.
 
 // The script vocabulary the register plan and the register providers share — a non-Latin variant is

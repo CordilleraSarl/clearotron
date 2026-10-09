@@ -53,7 +53,7 @@ function world(jobs, { live = [], pool = [], order = null } = {}) {
     mkdirSync(driverDir(dir), { recursive: true });
     writeFileSync(join(dir, "status.json"), JSON.stringify({
       runId: r.id, slug: r.slug, codename: "code", date: "2026-07-28",
-      markName: r.mark ?? r.id, state: r.state ?? "running", stepLabel: "Searching registers and common law", stepN: 4, stepTotal: 9,
+      markName: r.mark ?? r.id, state: r.state ?? "running", stepLabel: "Register sweeps", stepN: 4, stepTotal: 9,
       updatedAt: "2026-07-28T10:00:00Z",
     }));
     writeFileSync(driverDir(dir, "profile.json"), JSON.stringify({ profileKey: r.account }));

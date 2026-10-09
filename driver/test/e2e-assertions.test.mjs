@@ -820,46 +820,37 @@ test("a measured cost always states a wall, so `run` can never print an empty nu
 const writeRun = (dir, rows) =>
   writeFileSync(driverDir(dir, "run.jsonl"), rows.map((r) => JSON.stringify(r)).join("\n") + "\n");
 
-test("settled-before-placement: passes only when the decision precedes step 3's judges, and names each way it fails", () => {
+test("settled-before-placement: passes only when the decision precedes placement, and names each way it fails", () => {
   const dir = mkdtempSync(join(tmpdir(), "e2e-settled-"));
   mkdirSync(driverDir(dir), { recursive: true });
   const decision = { event: "envelope-decision-early", source: "fan-in", deferred: 3, accepted: 3, closed: 0, close_failed: 0 };
-  const judge = { event: "stage", stage: "owner-judgment:1", ok: true };
+  const placement = { event: "stage", stage: "placement-inquiry", ok: true };
 
-  writeRun(dir, [{ event: "plan-execution", executed: 128 }, decision, judge]);
+  writeRun(dir, [{ event: "plan-execution", executed: 128 }, decision, placement]);
   assert.equal(evalAssertion({ op: "settled-before-placement", path: "_driver/run.jsonl" }, dir).ok, true);
 
-  // the second judge's row orders the run as well as the first's
-  writeRun(dir, [{ event: "plan-execution", executed: 128 }, { ...judge, stage: "owner-judgment:2" }, decision]);
-  assert.equal(evalAssertion({ op: "settled-before-placement", path: "_driver/run.jsonl" }, dir).ok, false);
-
-  // the 2026-07-30 shape: step 3 ran first, the decision came 44 minutes later
-  writeRun(dir, [{ event: "plan-execution", executed: 128 }, judge, decision]);
+  // the 2026-07-30 shape: placement ran first, the decision came 44 minutes later
+  writeRun(dir, [{ event: "plan-execution", executed: 128 }, placement, decision]);
   const late = evalAssertion({ op: "settled-before-placement", path: "_driver/run.jsonl" }, dir);
   assert.equal(late.ok, false);
   assert.match(late.saw, /BEFORE the decision/);
 
   // never decided at all — must fail, never read as "nothing to decide"
-  writeRun(dir, [{ event: "plan-execution", executed: 128 }, judge]);
+  writeRun(dir, [{ event: "plan-execution", executed: 128 }, placement]);
   const never = evalAssertion({ op: "settled-before-placement", path: "_driver/run.jsonl" }, dir);
   assert.equal(never.ok, false);
   assert.match(never.saw, /never decided/);
 
-  // a scenario that never reaches step 3 is NOT PROBED, not FAIL. It must still not pass
+  // a scenario that never reaches placement is NOT PROBED, not FAIL. It must still not pass
   // silently, and the third state is what makes that possible: the check declines out loud, is counted
   // and printed under NOT PROBED, and never enters INVESTIGATE. It used to return `ok: false` with a
   // message that said in its own words that the assert did not belong there, which scored an ordering
   // defect against a run that never reached the ordering.
   writeRun(dir, [{ event: "plan-execution", executed: 1 }, decision]);
-  const notReached = evalAssertion({ op: "settled-before-placement", path: "_driver/run.jsonl" }, dir);
-  assert.equal(notReached.notProbed, true);
-  assert.match(notReached.saw, /NOT PROBED/);
-  assert.match(notReached.saw, /never reached the stage/);
-
-  // placement, which step 3's judges replaced, no longer stands in for them: a log from before the
-  // change that names only placement has no row this assert orders
-  writeRun(dir, [{ event: "plan-execution", executed: 128 }, decision, { event: "stage", stage: "placement-inquiry", ok: true }]);
-  assert.equal(evalAssertion({ op: "settled-before-placement", path: "_driver/run.jsonl" }, dir).notProbed, true);
+  const noPlacement = evalAssertion({ op: "settled-before-placement", path: "_driver/run.jsonl" }, dir);
+  assert.equal(noPlacement.notProbed, true);
+  assert.match(noPlacement.saw, /NOT PROBED/);
+  assert.match(noPlacement.saw, /never reached the stage/);
 
   // an absent log is a failure, not an absence of evidence
   rmSync(driverDir(dir, "run.jsonl"));

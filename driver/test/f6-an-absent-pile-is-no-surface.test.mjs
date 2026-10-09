@@ -68,19 +68,3 @@ test("the AGGREGATE stops taking a denominator from runs with nothing to measure
   assert.equal(old.total + measured.total, 4,
     "if this stops being 4, the old shape changed and this arm's comparison is stale");
 });
-
-test("the JOIN survives the case the real data carries", () => {
-  // UPPERCASE ON PURPOSE. Measured on an archived round: every band record id and every finding uri
-  // carried uppercase. A fixture written in lowercase would pass while the product failed, because the
-  // join would be comparing already-matching strings.
-  const d = mkdtempSync(join(tmpdir(), "f6-case-"));
-  writeFileSync(join(d, "findings.json"), JSON.stringify({ findings: [
-    { band: "High", owner: { registrations: [{ uri: "/mark/US/AAA111" }] } },
-    { band: "Medium", owner: { registrations: [{ uri: "/mark/US/BBB222" }] } },
-  ] }));
-  mkdirSync(join(d, "_records"), { recursive: true });
-  for (const uri of ["/mark/US/AAA111", "/mark/us/bbb222"])
-    writeFileSync(join(d, "_records", uri.replace(/^\/mark\//, "").replace(/\//g, "-").toLowerCase() + ".json"), JSON.stringify({ _uri: uri }));
-  assert.deepEqual(scoredFetched(d), { total: 2, fetched: 2 },
-    "both records are in the pile; a zero here is an un-normalised join, which misses all of them, not some");
-});

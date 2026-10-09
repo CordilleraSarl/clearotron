@@ -1,2 +1,0 @@
-{ "uri": "/mark/BB/0000-B2", "markText": "ZZMARK", "owner": "OWNER ONE", "ownerCountry": "AA", "office": "BB", "statusText": "Pending", "statusClass": "live", "niceClasses": [9, 41],
-  "goodsServices": [ { "classes": [9], "description": "bens inventados", "language": "pt", "translation": "invented goods" }, { "classes": [41], "description": "servicos inventados", "language": "pt", "translation": "invented services" } ] }

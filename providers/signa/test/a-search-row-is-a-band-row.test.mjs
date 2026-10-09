@@ -12,23 +12,17 @@
 // none of them while reporting success. Measured on three archived runs on this register: the fold held an
 // owner on 0 of 785, 0 of 1,448 and 0 of 2,266 positions; on the other register, on every position.
 //
-// The last arm drives the whole seam the defect crossed, to where the run now reads it — vendor body →
-// search row → positions fold → the band file → the pile → the owner table the judges are shown — because
-// each link is individually "correct" and only the chain fails.
+// The last arm drives the whole seam the defect crossed — vendor body → search row → positions fold →
+// placement form → rendered file — because each link is individually "correct" and only the chain fails.
 //
 // NO VENDOR MEASUREMENTS AND NO REAL MARK OR OWNER live here. The strings are invented.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
-
 import { normalizeSearchResponse } from "../src/core.js";
 import { deriveRegisterPositions } from "../../../driver/band-shape.mjs";
-import { loadPile } from "../../../driver/pile.mjs";
-import { buildOwnerTable } from "../../../driver/owner-table.mjs";
-import { driverDir } from "../../../shared/driver-dir.mjs";
+import { unionPlacementForm } from "../../../driver/placement-union.mjs";
+import { renderPlacementsJson } from "../../../driver/placement-form.mjs";
 
 // The vendor's own shape: owner as a list of entities, classes under `classifications`, no flat owner_name.
 const vendorRow = (id, markText, owner, office = "US") => ({
@@ -61,29 +55,21 @@ test("a record the vendor gives no owner for reads as null, never as a borrowed 
   assert.equal(row.owner, null);
 });
 
-test("vendor body → band → positions → the pile → the owner table: a register record reaches the judges under its owner", () => {
+test("vendor body → band → positions → placement form → placements.json: a tiered register record renders", () => {
   const band = normalizeSearchResponse(BODY, "veltrano").results;
   const { positions } = deriveRegisterPositions(band);
   const family = positions.find((p) => p.records.length === 2);
   assert.ok(family, "the two same-owner records fold to one position, which needs the owner to happen at all");
   assert.deepEqual(family.owners, ["Invented Holdings SA"]);
 
-  // The band file the run writes, read back as the run reads it: one table line per owner.
-  const run = mkdtempSync(join(tmpdir(), "signa-owner-table-"));
-  try {
-    mkdirSync(driverDir(run), { recursive: true });
-    writeFileSync(driverDir(run, "instructed-scope.json"), JSON.stringify({ marks: ["VELTRANO"], classes: [9] }));
-    writeFileSync(driverDir(run, "register-plan.json"), JSON.stringify({ regions: ["US", "GB"], nice_classes: ["9"],
-      entries: [{ qid: "q1", axis: "primary-sweep", predicate: "exact", term: "VELTRANO", regions: ["US", "GB"], nice_classes: ["9"] }] }));
-    writeFileSync(driverDir(run, "plan-execution.json"), JSON.stringify({ executed: [{ qid: "q1", state: "enumerated", total_hits: 3 }] }));
-    writeFileSync(join(run, "register-named-band.json"), JSON.stringify({ enumerated: band.map((r) => ({ ...r, _qid: "q1" })), crowds: [] }));
-    const table = buildOwnerTable(loadPile(run));
-    const line = table.rows.find((r) => r.records.some((x) => x.id === band[0].record_id));
-    assert.ok(line, "the register record reaches the owner table");
-    assert.equal(line.row.owner, "Invented Holdings SA");
-    assert.equal(line.records.length, 2, "both of the owner's records sit on its one line");
-    const nameless = table.rows.find((r) => r.records.some((x) => x.id === band[2].record_id));
-    assert.match(nameless.row.owner, /^\(no owner recorded\)/,
-      "the record the register gives no owner for is a line of its own, named by its record, never merged into another owner's");
-  } finally { rmSync(run, { recursive: true, force: true }); }
+  const u = unionPlacementForm(null, [
+    { select: band[0].record_id, tier: "headline-candidate", reason: "identical mark, same classes, live in both offices" },
+    { select: band[2].record_id, tier: "watchlist-annex", reason: "one-letter variant, no owner on the register record" },
+  ], { floors: [], positions });
+  const doc = renderPlacementsJson(u.form.rows);
+  const placed = doc.placements.find((p) => p.records.includes(band[0].record_id));
+  assert.ok(placed, "the tiered register candidate reaches the rendered file");
+  assert.equal(placed.owner, "Invented Holdings SA");
+  assert.equal(doc.placements.length, 1,
+    "the record the register gives no owner for is still refused by the parser — counted by the gate, not rendered");
 });

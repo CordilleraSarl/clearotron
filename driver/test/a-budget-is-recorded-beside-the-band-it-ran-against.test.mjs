@@ -29,8 +29,8 @@ test("the declared band-reading stages are exactly the stages whose dispatch rea
   const derived = derivedBandStages();
   // A FLOOR ON THE POPULATION, not just a pattern: a derivation that matched nothing would otherwise
   // agree with an empty declaration and both would look correct.
-  assert.ok(derived.size >= 1,
-    `no stage derived as band-reading — the derivation is broken, not the table`);
+  assert.ok(derived.size >= 3,
+    `only ${derived.size} stage(s) derived as band-reading — the derivation is broken, not the table`);
   // MEMBERS, never counts: two sets of the same size can disagree about which stages they hold, and
   // that is exactly the failure a total hides.
   assert.deepEqual([...BAND_READING_STAGES].sort(), [...derived].sort());

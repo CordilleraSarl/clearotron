@@ -36,7 +36,6 @@ import { validators } from "./verify.mjs";
 import { runLint, clientSummaryShape } from "./predelivery-lint.mjs";
 import { config } from "./driver.config.mjs";
 import { GRID_HALVES } from "./common-law-receipts.mjs";
-import { JUDGES } from "./owner-judgment.mjs";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";   // — one entry-point test, all spellings
 
 // Artifact filename → verify.mjs validator key. notify receipts are trivial and skipped.
@@ -44,7 +43,8 @@ const FILE_CHECKS = {
   "matter-context.md": "matterContext",
   "variant-manifest.md": "variantManifest",
   "common-law-findings.md": "commonLaw",           // includes the receipts gate (manifest auto-read)
-  "owner-decisions.json": "ownerDecisions",
+  "placement-recommendations.md": "placement",
+  "register-findings.md": "registerFindings",
   "skeptic-flags.md": "skepticFlags",
   "narrative.md": "narrative",
   "case-law-findings.md": "caseLaw",
@@ -154,16 +154,6 @@ export function replayRun(runDir) {
     try { v = validators.commonLawHalf(p, readFileSync(p, "utf8")); }
     catch (e) { v = { ok: false, reason: `validator_threw:${e.message}` }; }
     out[`commonLawHalf:${h}`] = verdict(v);
-  }
-  // Step 3's judges (one verdict per judge's answer), keyed like the halves above so two judges cannot
-  // collide on one key.
-  for (let n = 1; n <= JUDGES; n++) {
-    const p = driverDir(runDir, `owner-judgment-${n}.json`);
-    if (!existsSync(p)) continue;
-    let v;
-    try { v = validators.ownerJudgment(p, readFileSync(p, "utf8")); }
-    catch (e) { v = { ok: false, reason: `validator_threw:${e.message}` }; }
-    out[`ownerJudgment:${n}`] = verdict(v);
   }
   // register units (one verdict per axis file)
   const unitsDir = join(runDir, "register-units");

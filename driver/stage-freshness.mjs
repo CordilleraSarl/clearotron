@@ -18,8 +18,8 @@
 // building a second, hand-maintained graph.
 //
 // WHAT THIS IS NOT. It is not the register-taint chain (register-taint.mjs: was THIS stage's own band
-// touched by a kill-class attempt?). That is an intra-stage integrity mechanism and says nothing about
-// consumers.
+// touched by a kill-class attempt?) and not close-verify (close-verify.mjs: did the SAME detector's gap
+// actually close?). Both are intra-stage integrity mechanisms and neither says anything about consumers.
 // Cross-stage staleness was uncovered ground.
 //
 // CRASH-RESUME IS PRESERVED, and that is the point of keying on CONTENT rather than mtime: a crash

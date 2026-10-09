@@ -5,9 +5,8 @@
 //
 // OUT, and it stays out (2026-09-25). The hand-off lines were added to the rating step and taken out
 // again after the one knockout run that carried them rated three of four marks a band LOWER on identical
-// evidence. So sentence 6 stayed in the clearance, where it closed the picking step's promotion question
-// (that step and its manual were replaced by the owner judgment on 2026-10-01, and the sentence went with
-// them), and the rating step's own dispatch names no page list and no cite-or-set-aside rule. Nothing counts the
+// evidence. So sentence 6 stays in the clearance, where it closes the picking step's promotion question,
+// and the rating step's own dispatch names no page list and no cite-or-set-aside rule. Nothing counts the
 // knockout's pages: a ground is owed for a candidate the web notes marked, never for a page read.
 //
 // IN (2026-09-26). Nothing the search FOUND leaves the record without a reason, so the rater records a
@@ -60,7 +59,7 @@ test("the knockout's rating instructions carry no page list and no set-aside rul
   } finally { rmSync(runDir, { recursive: true, force: true }); }
 });
 
-test("sentence 6 is out of the knockout manual, which records a set-aside without it", () => {
+test("sentence 6 stays in the clearance's picking step; the knockout manual records a set-aside without it", () => {
   const md = readFileSync(join(DRIVER, "skills", "knockout-assess", "SKILL.md"), "utf8");
   assert.ok(md.includes("## Per mark — the mandatory sequence"), "guard: the knockout manual was read");
   assert.equal(md.includes(SENTENCE_6), false, "sentence 6 is out of the knockout manual");
@@ -73,6 +72,8 @@ test("sentence 6 is out of the knockout manual, which records a set-aside withou
   // accounting paragraph could be added beside the section and pass all of them.
   assert.doesNotMatch(md, /EACH MARK'S PAGES/, "the page list stays out of the manual too, not only out of the dispatch");
   assert.ok(md.includes("**Both are optional, and omitting them is always safe.**"), "the filing lines read as before");
+  const placement = readFileSync(join(DRIVER, "skills", "placement-inquiry", "SKILL.md"), "utf8");
+  assert.equal(placement.split(SENTENCE_6).length - 1, 1, "and it stays, once, in the clearance's picking step");
 
   // AND THE SET-ASIDE THE LATER RULING ADDED, with the two sentences that keep it a record rather than a
   // rating rule. Asserted by their text, not by the field's name: a section that dropped either sentence

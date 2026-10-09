@@ -18,7 +18,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { trackedFiles } from "../../shared/tracked-files.mjs";
 import {
-  classOfEvent, classOfTrigger, COUNTED_EVENTS, NOT_COUNTED_EVENTS, RETIRED_EVENTS, RETIRED_TRIGGERS, COUNTED_TRIGGERS,
+  classOfEvent, classOfTrigger, COUNTED_EVENTS, NOT_COUNTED_EVENTS, RETIRED_EVENTS, COUNTED_TRIGGERS,
   NOT_COUNTED_TRIGGERS, TRIGGER_FAMILIES,
 } from "../../scripts/e2e-first-time.mjs";
 
@@ -34,13 +34,17 @@ const EVENT_SITES = {
 };
 // Trigger values that are not a quoted literal. A pass-through carries a name some literal already wrote.
 const TRIGGER_SITES = {
+  "`recall-reconcile-${trigger}`": ["recall-reconcile-fresh"],   // the recall-reconcile family
+  "`${trigger}-retry`": ["settlement-flush-retry", "late-flush-retry"],   // the -retry family
   'opts.trigger ?? "fresh"': [],
+  'opts.dispatchTrigger ?? "fresh"': [],
   "opts.dispatchTrigger ?? null": [],
+  "i.trigger": [],   // a flush message section's composer name
   "t.trigger ?? null": [],   // a reader
   "e.trigger ?? null": [],   // a reader
   "e.trigger": [],   // a reader
   'ev?.trigger ?? (ev?.event === "skip" ? "skip" : null)': [],   // a reader
-  "String(trigger)": [],   // a queued re-judgement's name
+  "String(trigger)": [],   // a queued digest receipt's name
   "caseLaw.trigger": [],   // the case-law doctrine's trigger word, never a dispatch reason
   "m ? m[0].toLowerCase() : null": [],   // the same word, read from the matter
   "reason": [],   // an output snapshot's reason
@@ -145,7 +149,7 @@ test("every event name and dispatch reason the product writes is classed, and ev
   // THE FLOOR. A reader that read nothing would report every name classed.
   assert.ok(pop.files.length > 300, `the census read ${pop.files.length} source files — too few to be the product`);
   assert.ok(pop.events.size > 300, `the census found ${pop.events.size} event names — too few to be the run log's`);
-  for (const n of ["connotation-reissue", "commonlaw-carry", "depth-ladder", "commonlaw-reconciliation-bug", "repair-attempted", "form-repair"])
+  for (const n of ["connotation-reissue", "commonlaw-carry", "depth-ladder", "coverage-absence-rendered", "repair-attempted", "form-repair"])
     assert.ok(pop.events.has(n), `the census missed "${n}", which the product writes — through a helper, a ternary or another module`);
   for (const n of ["verdict-recheck", "envelope", "settlement-flush", "late-flush"])
     assert.ok(pop.triggers.has(n), `the census missed the dispatch reason "${n}"`);
@@ -165,9 +169,9 @@ test("every event name and dispatch reason the product writes is classed, and ev
 
   const classedEvents = [...Object.keys(COUNTED_EVENTS), ...Object.values(NOT_COUNTED_EVENTS).flat()];
   const stale = [...classedEvents.filter((n) => !events.has(n) && !RETIRED_EVENTS.includes(n)).map((n) => `event "${n}"`),
-    ...[...Object.keys(COUNTED_TRIGGERS), ...Object.values(NOT_COUNTED_TRIGGERS).flat()].filter((n) => !triggers.has(n) && !RETIRED_TRIGGERS.includes(n)).map((n) => `dispatch reason "${n}"`)];
+    ...[...Object.keys(COUNTED_TRIGGERS), ...Object.values(NOT_COUNTED_TRIGGERS).flat()].filter((n) => !triggers.has(n)).map((n) => `dispatch reason "${n}"`)];
   assert.deepEqual(stale, [], "a class names something the product no longer writes: remove it, or list it as retired");
   const twice = classedEvents.filter((n, i) => classedEvents.indexOf(n) !== i);
   assert.deepEqual(twice, [], "a name is classed twice");
-  for (const [re] of TRIGGER_FAMILIES) assert.ok([...triggers, ...RETIRED_TRIGGERS].some((n) => re.test(n)), `the dispatch family ${re} matches nothing the product builds, or older records carry`);
+  for (const [re] of TRIGGER_FAMILIES) assert.ok([...triggers].some((n) => re.test(n)), `the dispatch family ${re} matches nothing the product builds`);
 });

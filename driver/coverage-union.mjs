@@ -23,16 +23,19 @@
 // preserved a status the gate would refuse, or dropped one it would accept, would make the outstanding
 // count mean two different things in two places, which is the defect exactly.
 
-import { coverageFormRows, rowIsSettled, seatFields, formRowKey, seatRows } from "./coverage-form.mjs";
+import { coverageFormRows, rowIsSettled, seatFields, formRowKey, seatRows, SEAT_ROW_CONTRACT } from "./coverage-form.mjs";
 
-const PROVENANCE = "driver-written form. Axes, coverage units, open crowd blocks with their query ids and "
-  + "hit counts, and deferred slices with their receipt reasons are computed by the driver from the frozen "
-  + "register plan, the plan-execution receipt and the per-axis bands, and are REGENERATED on every pass; "
-  + "code settles each row's status and reason from the run's own facts. A row marked `open` carries an "
-  + "obligation the machine computed and that cannot be confirmed-clean; its own `open_because` says which "
-  + "— a slice that was never searched is `deferred`, an unaccounted crowd block that ran and saturated is "
-  + "`coverage-limited`. EACH OPEN ROW IS DISCHARGED ONLY BY ITSELF: a status on one row never accounts for "
-  + "another row's slice. Statuses accumulate across passes: a row settled once stays settled.";
+const PROVENANCE = "driver-written form (#476; typed transport). Axes, coverage units, open crowd blocks "
+  + "with their query ids and hit counts, and deferred slices with their receipt reasons are computed by "
+  + "the driver from the frozen register plan, the plan-execution receipt and the per-axis bands — the "
+  + "same calculation the validator judges with — and are REGENERATED on every pass. Statuses and "
+  + "reasons arrive ONLY through the `record_coverage` tool; no seat opens or edits this file. A row "
+  + "marked `open` carries an obligation the machine computed and the seat cannot call confirmed-clean; "
+  + "its own `open_because` says which — a slice that was never searched is `deferred`, an unaccounted "
+  + "crowd block that ran and saturated is `coverage-limited`. EACH OPEN ROW IS DISCHARGED ONLY BY "
+  + "ITSELF: a status on one row never accounts for another row's slice. Statuses accumulate across "
+  + "attempts: a row settled once stays settled. Seat-added rows arrive through the same tool — see "
+  + "`seat_row_contract` for their closed axis vocabulary.";
 
 /**
  * Index a submitted/prior row list by driver row id AND by obligation key — see the gate's own lookup.
@@ -82,7 +85,7 @@ export function unionCoverageForm(prior, submitted, input, { parkedIds = null } 
   // writeCoverageForm puts in BOTH copies from the second pass onwards, so a contract carried only by
   // buildCoverageForm would be missing from precisely the file a corrective attempt opens — the surface
   // that has to carry the closed axis vocabulary is the one the repair reads.
-  const form = { _provenance: PROVENANCE, generated_from: derived_from, rows };
+  const form = { _provenance: PROVENANCE, seat_row_contract: SEAT_ROW_CONTRACT, generated_from: derived_from, rows };
   const findPrior = indexRows(prior);
   const findSubmitted = indexRows(submitted);
   // ── / — A PARKED ROW IS ITS OWN OUTCOME, NEITHER SETTLED NOR STILL OWED ─────────────────

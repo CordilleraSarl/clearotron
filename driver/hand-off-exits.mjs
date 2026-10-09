@@ -8,10 +8,9 @@
 // records: the number of grounds a run owes is the number of owners, not the number of filings.
 //
 // TWO HAND-OFFS, ONE QUESTION.
-//   picking   record-carry.json — a record that stopped at step 3's judges with no ground: shown to a
-//             judge and neither carried nor set aside (`step-silent`), or `absent` where no ledger spoke.
-//             A structural stop (the step did not complete, or the owner was never put in front of a
-//             judge) states its cause and is not counted.
+//   picking   record-carry.json — a record that stopped at placement with no step recording why
+//             (`step-silent`, or `absent` where no ledger spoke). A structural stop (the stage did not
+//             complete) states its cause and is not counted.
 //   notes     common-law-findings.md against the delivered findings — a page the web notes marked as a
 //             candidate or conflict that no delivered finding cites and synthesis did not decline. The grid
 //             trace ends where the notes begin, so a page the notes called a conflict and the findings then
@@ -34,7 +33,7 @@ export function pickingExits(recordCarry) {
     return notComputable("no record-carry trace — nothing records how the register's records left the picking step");
   }
   const rows = recordCarry.rows
-    .filter((r) => r?.stopped_at === "judgment" && (r.reason_source === "step-silent" || r.reason_source === "absent"))
+    .filter((r) => r?.stopped_at === "placement" && (r.reason_source === "step-silent" || r.reason_source === "absent"))
     .map((r) => ({ uri: r.uri ?? null, mark: r.mark ?? null, owner: r.owner ?? null }));
   // A record that names no owner is its own set: one ground covers it and nothing else, so it is owed its
   // own. Folded into one shared blank owner, every ownerless exit read as a single ground owed.

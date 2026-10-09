@@ -89,9 +89,9 @@ const withEnv = async (vars, fn) => {
 
 test("corruption 1 (closed by #236): every run-dir path the SHADOW PROMPT names is on disk in the sandbox", async () => {
   const { job, runDir, codename } = await canonicalRun();
-  // Two stages with fat, path-dense prompts and different context shapes: the sceptic, which reads
+  // Two stages with fat, path-dense prompts and different context shapes: a register funnel that reads
   // driver-computed blocks, and a grid half whose spec sidecar is derived rather than declared.
-  for (const [stage, opts] of [["skeptic", {}], ["common-law-half", { axis: "b" }]]) {
+  for (const [stage, opts] of [["register-digest", {}], ["common-law-half", { axis: "b" }]]) {
     const ex = await PL.runExperiment(job, { codename, experiment: stage, label: "prompt paths", ...opts });
     assert.ok(ex.shadowDir, `${stage}: no shadow dir`);
     const ctx = PL.reconstructCtx(job, { codename });
@@ -294,7 +294,7 @@ test("corruption 3, THE HEADLINE: `--experiment --model gemini` refuses instead 
   const { job, codename } = await canonicalRun();
   for (const dead of ["gemini", "deepseek-v4-pro"]) {
     await assert.rejects(
-      () => PL.runExperiment(job, { codename, experiment: "synthesis", model: dead, label: "substitution" }),
+      () => PL.runExperiment(job, { codename, experiment: "register-digest", model: dead, label: "substitution" }),
       /no claude model mapped/,
       `--model ${dead} must refuse by name at the CLI, not substitute an anthropic model and report the alias`);
   }

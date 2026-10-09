@@ -142,7 +142,7 @@ export const CAPABILITIES = Object.freeze({
   // corsearch, where an absent region clause is simply a worldwide sweep. Declared so the shared
   // execute-plan seam can backfill an entry that carries none from the FROZEN PLAN's own regions
   // (the matter's scope) instead of hard-erroring: several internally-minted lanes (recall probes,
-  // common-law→register cross-checks, model-proposed supplementals) mint
+  // common-law→register cross-checks, frame-diff remedies, model-proposed supplementals) mint
   // `regions: []` because that is harmless on corsearch. See providers/_shared/execute-plan.mjs.
   regionsRequired: true,
 

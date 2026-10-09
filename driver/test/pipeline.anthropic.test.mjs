@@ -37,7 +37,7 @@ const JOB = {
 async function runAnthropicPipeline(env = {}) {
   const root = mkdtempSync(join(tmpdir(), "clearotron-anth-"));
   const claudeLog = join(root, "claude-calls.jsonl");
-  for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_CANDSELF", "MOCK_NO_GRID_LEDGER", "MOCK_CL_SHORT", "MOCK_UNPARSEABLE_LEDGER", "MOCK_WRITE_RECORD", "MOCK_SCREEN_DROP"]) delete process.env[k];
+  for (const k of ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_LEDGER_LIMITED", "MOCK_CANDSELF", "MOCK_NO_GRID_LEDGER", "MOCK_CL_SHORT", "MOCK_NO_COVERAGE_LEDGER", "MOCK_BAD_COVERAGE_LEDGER", "MOCK_UNPARSEABLE_LEDGER", "MOCK_WRITE_RECORD", "MOCK_SCREEN_DROP"]) delete process.env[k];
   for (const [k, v] of Object.entries({
     CLEAROTRON_AI: "anthropic-agent",       // stage compute on claude -p (mocked)
     CLEAROTRON_CLAUDE_PATH: CLAUDE_MOCK,
@@ -113,18 +113,7 @@ test("E2: full pipeline runs on the anthropic-agent engine (CLEAR, delivered, al
   // cwd=tmpdir cannot resolve workspace-relative paths; that was the matter-frame blocker).
   const BARE_SKILL_REF = /(?<![\w\\/.])skills[\\/][A-Za-z0-9._\\/-]+\.md/;
   const RUN_DIR_RE = /[\\/]studio[\\/]clearance-search[\\/]/;
-  // STEP 3's JUDGES ARE CONFINED, and that is a different argv by design: their whole instruction is the
-  // system prompt, their one file-free tool is the program's helper, they answer in the JSON form, and
-  // they are granted no folder — the owner tools read the run for them. Asserted on their own, so the
-  // grant rules below keep reading every other turn.
-  const confinedCalls = claudeCalls.filter((c) => c.argv.includes("--json-schema"));
-  assert.equal(confinedCalls.length, 2, `two judges, one turn each: ${confinedCalls.length}`);
-  for (const call of confinedCalls) {
-    assert.equal(call.argv[call.argv.indexOf("--tools") + 1], "Agent", "a judge holds the program's helper and no file tool");
-    assert.ok(call.argv.includes("--system-prompt"), "a judge's instructions are its system prompt");
-    assert.ok(!call.argv.includes("--add-dir"), "a judge is granted no folder");
-  }
-  for (const call of claudeCalls.filter((c) => !confinedCalls.includes(c))) {
+  for (const call of claudeCalls) {
     const msg = call.prompt || "";
     assert.ok(!BARE_SKILL_REF.test(msg), `a stage prompt kept a workspace-relative skills ref: ${msg.match(BARE_SKILL_REF)?.[0]}`);
     const addDirs = call.argv.reduce((acc, a, i) => (a === "--add-dir" ? [...acc, call.argv[i + 1]] : acc), []);
@@ -255,32 +244,33 @@ test("PR-8 e2e: band tools wired per stage, register dropped from synthesis, sha
   const mcpOf = (c) => { const i = c.argv.indexOf("--mcp-config"); return i >= 0 ? JSON.parse(c.argv[i + 1]) : null; };
   const allowedOf = (c) => { const i = c.argv.indexOf("--allowedTools"); return i >= 0 ? (c.argv[i + 1] || "") : ""; };
 
+  const digest = stageCall(/register DIGEST mode/);
+  const placement = stageCall(/placement-inquiry[\\/]SKILL\.md/);
   const synthesis = stageCall(/MACHINE FINDINGS \(MANDATORY\)/);
   const refutation = stageCall(/Adversarially refute the narrative/);
-  const judges = claudeCalls.filter((c) => c.argv.includes("--json-schema"));
-  assert.ok(synthesis && refutation && judges.length === 2, "the band readers and both judges ran");
+  assert.ok(digest && placement && synthesis && refutation, "all four band-consuming stages ran");
 
-  // grants: refutation = band + perplexity; synthesis = perplexity + band. NO live register on either —
-  // that is the invariant this block protects. Placement and the register digest held the band only;
-  // step 3's judges, which replaced them, hold their owner tools and nothing else.
+  // grants: digest/placement = band only; refutation = band + perplexity since; synthesis =
+  // perplexity + band. NO live register on any of them — that is the invariant this block protects, and
+  // it is asserted for every one of the four rather than folded into the "band only" phrasing.
   //
   // — narrative-refutation moved out of the band-only set. Its served doctrine orders one scoped
   // `perplexity_research` probe, and on a delivered production run it ran nineteen minutes unable to make
   // the call, with nothing recording a denial. Third place this grant was pinned; the other two are
   // engine.gather.test.mjs and contract-dictation.test.mjs. All three read the same grant table.
-  for (const [name, c] of [["narrative-refutation", refutation]]) {
+  const BAND_ONLY = new Set(["register-digest", "placement-inquiry"]);
+  for (const [name, c] of [["register-digest", digest], ["placement-inquiry", placement], ["narrative-refutation", refutation]]) {
     const cfg = mcpOf(c);
     assert.ok(cfg?.mcpServers?.band, `${name} mounts the band server`);
     assert.ok(!cfg.mcpServers.register, `${name} must not mount the live register server`);
-    assert.ok(cfg.mcpServers.perplexity, `${name}: perplexity is mounted, for the probe its doctrine orders (#865)`);
+    assert.equal(Boolean(cfg.mcpServers.perplexity), !BAND_ONLY.has(name),
+      `${name}: perplexity is mounted exactly for the stages whose doctrine orders a probe (#865)`);
     // res.runDir is the ARCHIVED path (the run moved after delivery); the live run dir shares its
     // <slug>/<date-codename> leaf — that identity is what proves the server served THIS run.
     const leaf = res.runDir.split(/[\\/]/).slice(-2);
     assert.deepEqual(cfg.mcpServers.band.env.CLEAROTRON_BAND_RUN_DIR.split(/[\\/]/).slice(-2), leaf, `${name}'s band server serves THIS run (${leaf.join("/")})`);
     assert.match(allowedOf(c), /mcp__band__band_lookup/, `${name} allow-lists the band tools`);
   }
-  for (const j of judges)
-    assert.deepEqual(Object.keys(mcpOf(j)?.mcpServers ?? {}), ["owners"], "a judge mounts its owner tools and no other server");
   const synthCfg = mcpOf(synthesis);
   assert.ok(synthCfg?.mcpServers?.band && synthCfg?.mcpServers?.perplexity, "synthesis mounts perplexity + band");
   assert.ok(!synthCfg.mcpServers.register && !synthCfg.mcpServers.euipo,
@@ -309,10 +299,13 @@ test("PR-8 e2e: band tools wired per stage, register dropped from synthesis, sha
 
   // prompts stopped naming the raw band path (it stays a declared stage INPUT for freshness/machine
   // checks — but judgment is never pointed at the file again); they teach the band tools instead
-  for (const [name, c] of [["synthesis", synthesis]]) {
+  for (const [name, c] of [["register-digest", digest], ["placement-inquiry", placement], ["synthesis", synthesis]]) {
     assert.ok(!(c.prompt || "").includes("register-named-band.json"), `${name} prompt no longer names the raw band path`);
     assert.match(c.prompt || "", /band_shape/, `${name} prompt teaches the band tools`);
   }
+  assert.ok(!/register tools you hold/.test(digest.prompt || ""), "the postmortem prompt/grant mismatch line is gone");
+  // (the INSTRUCTED CHECKS → supplemental-mint routing needs a register-owned intake ask; asserted
+  // on the message builder directly in the unit test below — this mock job carries no asks)
 
   // the shape is derived on disk (after the fan-in re-merge) + the floors carry the mock's identical mark
   const shape = JSON.parse(readFileSync(driverDir(res.runDir, "band-shape.json"), "utf8"));
@@ -329,3 +322,18 @@ test("PR-8 e2e: band tools wired per stage, register dropped from synthesis, sha
   assert.match(audit, /no band lookups recorded this run/, "an unread band is disclosed, never hidden");
 });
 
+// PR-8 unit: with a register-owned intake ask, the digest dictation answers from the BAND and routes
+// any genuinely new register query through the supplemental mint — never "the register tools you hold"
+// (the stage holds none; that line ordered live searches from a tool-less stage).
+test("PR-8: register-digest INSTRUCTED CHECKS answer from the band and route new queries via the mint", async () => {
+  const { STAGES, paths } = await import("../stages.mjs");
+  const P = paths("/r");
+  const msg = STAGES["register-digest"].message({ paths: P, axes: ["primary-sweep"],
+    intakeAsks: [{ ask: "check the owner's EU portfolio", owner: "register" }] });
+  assert.match(msg, /INSTRUCTED CHECKS/);
+  assert.match(msg, /band_shape \/ band_lookup \/ band_record/, "answers come from the frozen material");
+  assert.match(msg, /supplemental mint/, "a check needing a new register query rides the mint (escalation lane)");
+  assert.match(msg, /NO live register tools here — that is by design, never an outage/);
+  assert.ok(!msg.includes("register tools you hold"), "the mismatch wording is dead");
+  assert.ok(!msg.includes(P.registerNamedBand), "the raw band path is never named to the model");
+});

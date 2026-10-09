@@ -28,7 +28,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { openBlocksByAxis, findUnverifiedIncompleteCleanClaims } from "../register-plan.mjs";
-import { coverageFormRows, rowIsSettled, renderCoverageLedgerSection, spliceCoverageLedger } from "../coverage-form.mjs";
+import { coverageFormRows, findCoverageFormViolations, renderCoverageLedgerSection, spliceCoverageLedger } from "../coverage-form.mjs";
 
 /** The (axis, qid) pairs the PROSE gate refuses: C1 ∧ … ∧ C7 ∧ ¬C8, over the model's own rows. */
 function proseRefused(rows, skeleton, bands, plan) {
@@ -74,9 +74,8 @@ function formRefused(scenario, skeleton, bands, plan) {
   // what let the loose build report "the axis fired" and lose which block it fired about.
   const blockById = new Map(driverRows.filter((r) => r.kind === "block").map((r) => [r.row_id, r]));
   const out = new Set();
-  for (const r of [...driverRows, ...seat]) {
-    if (rowIsSettled(r, r)) continue;
-    const b = blockById.get(r.row_id);
+  for (const v of findCoverageFormViolations([...driverRows, ...seat])) {
+    const b = blockById.get(v.row);
     if (b) out.add(`${b.axis}|${b.qid}`);
   }
   return out;

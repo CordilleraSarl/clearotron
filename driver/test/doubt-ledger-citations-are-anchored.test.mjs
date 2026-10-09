@@ -50,9 +50,7 @@ test("the corpus is still there — a matcher that stopped matching would pass e
   const w = whyStrings();
   assert.ok(w.length > 200, `only ${w.length} why strings found — the extractor broke, this is not a clean tree`);
   const syms = w.flatMap((r) => [...r.text.matchAll(SYMBOL_CITE)]);
-  // The floor fell with the placement and register digest stages, whose contract rows went with them
-  // (2026-10-01: 37 symbol citations to 28, and 22 markers to 18). A further fall is the conversion undone.
-  assert.ok(syms.length >= 24, `only ${syms.length} symbol citations — the conversion has been undone, not merely edited`);
+  assert.ok(syms.length >= 30, `only ${syms.length} symbol citations — the conversion has been undone, not merely edited`);
 });
 
 test("no `why` string cites a LINE in code unless its entry is marked unverified", () => {
@@ -108,6 +106,6 @@ test("the marker is spelled ONE way, so it can be found and worked off", () => {
   const distinct = [...new Set(variants)];
   assert.deepEqual(distinct, [MARKER],
     `one spelling only, or the backlog cannot be counted: ${distinct.join(" | ")}`);
-  assert.ok(variants.length >= 16,
+  assert.ok(variants.length >= 20,
     `${variants.length} markers — if this has fallen sharply, check the work was done rather than deleted`);
 });

@@ -13,17 +13,17 @@
 // The seam recorder could not have said why. `recordSynthesisSeam` passed `seamRows` a ZERO-ARITY
 // constant callback — `reasonFor: () => ({ reason: "synthesis:not-delivered", reason_source:
 // "step-silent" })` — so every record it discarded got the same sentence whatever it was. The sibling
-// seam one stage earlier did the right thing: the register digest's recorder passed `(rec, uri) =>` and
-// read the digest's OWN output, returning `step-stated` where the digest spoke and `absent` where it
+// seam one stage earlier already does the right thing: `recordDigestSeam` passes `(rec, uri) =>` and
+// reads the digest's OWN output, returning `step-stated` where the digest spoke and `absent` where it
 // did not. The shape was in the file; synthesis just had nothing to read.
 //
 // So this is what synthesis writes, and it is a CALL rather than a document on purpose.
 //
-// ── WHY NOT A PROSE SECTION, WHICH IS WHAT THE REGISTER DIGEST DID ──────────────────────────────────
+// ── WHY NOT A PROSE SECTION, WHICH IS WHAT THE DIGEST DOES ──────────────────────────────────────────
 //
-// The register digest stated its declines in a `Negative-results` section of its findings document,
-// and the placement index parsed them back out. That was the precedent, and it is precisely the one that
-// must not be extended: the standing transport ruling is that no model hand-authors machine-parsed content.
+// The digest states its declines in a `Negative-results` section of `register-findings.md`, and
+// `placementIndex` parses them back out. That is the precedent, and it is precisely the one that must
+// not be extended: the standing transport ruling is that no model hand-authors machine-parsed content.
 // The disposition form failed to parse and produced a loud token; `parseClosureLines` failed to parse
 // and produced NOTHING, which is worse. A declination lost in transit is byte-identical to a record the
 // stage looked at and delivered — and both of those are byte-identical to today's silence.
@@ -298,8 +298,8 @@ export function seamReasonFor(declined, uri) {
     reason: "synthesis:not-delivered",
     reason_source: "absent",
     detail: declined?.present
-      ? "the judges carried this record onto the findings surface, synthesis recorded declination decisions for this run, and NONE of them names this record — so it was neither delivered nor declined, and nothing states why"
-      : "the judges carried this record onto the findings surface and this synthesis pass delivered no finding naming it and recorded no declination for any record — no ground exists for this drop anywhere in the run",
+      ? "the register digest carried this record onto a findings surface, synthesis recorded declination decisions for this run, and NONE of them names this record — so it was neither delivered nor declined, and nothing states why"
+      : "the register digest carried this record onto a findings surface and this synthesis pass delivered no finding naming it and recorded no declination for any record — no ground exists for this drop anywhere in the run",
   };
 }
 

@@ -59,10 +59,9 @@ test("item 9a — FACTS AND ASSESSMENT, never an action prescription", () => {
   assert.throws(() => parse({ net: 42 }), /finding_net_invalid/);
 });
 
-test("item 9a — the parser sets NO length maximum: a delivered record republishes byte for byte", () => {
-  // The length rule (owner, 2026-10-02: at most two sentences of at most 25 words) is refused at the
-  // synthesis CALL, not here. This parse is on the archive republish path, so a record delivered under
-  // the old rule still parses, stored in full.
+test("item 9a — the validator sets NO length maximum: brevity is the renderer's problem", () => {
+  // A model told to be brief writes a shorter sentence and drops a fact. A renderer folding a long one
+  // loses nothing the reader wanted, because the full reasoning is in the card body directly below it.
   const long = `The legal risk is an identical prior right in class 5 held by the same corporate group as an active enforcer, ${"and the specification covers the company's exact goods, ".repeat(6)}and no coexistence terms are on record.`;
   assert.ok(long.length > 400);
   assert.equal(parse({ net: long }).findings[0].net, long, "stored in full — nothing upstream truncates a judgment sentence");
@@ -96,21 +95,24 @@ test("item 9a — one author, every surface: the client cut and the MCP brief bo
     "the brief prefers the typed field and keeps the parsed line as the archived-run fallback");
 });
 
-test("item 9a — the stage that writes it is told the owner's paragraph, verbatim, and nothing that contradicts it", async () => {
+test("item 9a / #469 — the stage that writes it is told what it is, and told NOT to shorten it", async () => {
   const { STAGES, paths } = await import("../stages.mjs");
   const msg = STAGES.synthesis.message({
     paths: paths("/r"), job: {}, profile: null,
     framework: { title: "T", framework_key: "house-default", entity_label: "the company", bands: MANIFEST.bands },
   });
-  // The owner's paragraph (2026-10-02), word for word, and it is the whole of the net's line.
-  const OWNER = readFileSync(new URL("./fixtures/the-finding-sentence.txt", import.meta.url), "utf8").trim();
-  assert.ok(msg.includes(`- net: ${OWNER}`), "the net's line is the owner's paragraph, verbatim and alone");
-  assert.ok(readFileSync(new URL("../skills/clearance-search/synthesis-rules.md", import.meta.url), "utf8")
-    .replace(/\s+/g, " ").includes(OWNER.replace(/\s+/g, " ")), "the manual carries the same paragraph");
-  // Nothing beside it says otherwise: the retired chain shape, the old example, the old no-cap promise.
+  assert.match(msg, /THE FINDING SENTENCE/);
+  assert.match(msg, /NEVER AN ACTION PRESCRIPTION/);
+  // the dictation used to restate the retired chain shape here IN FULL ("semicolon-chained …
+  // the consequence after '→'"), so rewriting synthesis-rules.md alone would have left the prompt
+  // teaching the shape the parser now refuses. These pin the join, not the wording of the section.
+  assert.match(msg, /IT IS A CONCLUSION, NOT A CHAIN/);
+  assert.match(msg, /NO SEMICOLON-CHAIN, NO "→", NO CONSEQUENCE CLAUSE/);
   assert.doesNotMatch(msg, /semicolon-chained/i, "the retired shape is never re-taught — a superseded contract in the prompt is a gate silently switched off");
-  assert.doesNotMatch(msg, /more likely than not to prevail/, "the old worked example left with its paragraph");
-  assert.doesNotMatch(msg, /NO length cap|none is coming|one-clause/i, "a promise the owner's rule reverses");
+  assert.match(msg, /THE REASONING MOVES, IT NEVER DISAPPEARS/,
+    "relocation, not compression: a net that got shorter because the reasoning got thinner is the rewrite the ruling rejects");
+  assert.match(msg, /There is NO length cap and none is coming/,
+    "the budget was never the validator's and is no longer the renderer's — nothing asks the model to be brief");
 });
 
 // ── the finding sentence is a CONCLUSION, and the gate that says so ────────────────────────────

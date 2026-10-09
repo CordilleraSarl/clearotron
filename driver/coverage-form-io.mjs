@@ -29,7 +29,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 
 import { join, dirname, basename } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 import { COVERAGE_STATUSES, COVERAGE_FORM_NAME, REGISTER_AXES } from "./coverage-ledger.mjs";
-import { coverageFormSidecarName, parseCoverageForm, coverageFormAbsence, COVERAGE_ABSENCE_CAUSES } from "./coverage-form.mjs";
+import { coverageFormSidecarName, parseCoverageForm } from "./coverage-form.mjs";
 import { capabilitiesFor } from "./register-capabilities.mjs";
 import { readWithheldFamilies, splitWaitingFamilies } from "./withheld-families.mjs";
 
@@ -188,31 +188,6 @@ export function readCoverageForm(runDir, formName = COVERAGE_FORM_NAME) {
   // the same bytes twice is how two answers to one question get into a codebase.
   const { rows, error, parsed } = parseCoverageForm(raw);
   return { rows, error: error ? `${basename(sidecar)} ${error}` : null, present: true, parsed };
-}
-
-/**
- * What is wrong with a form the stamp requires, as a refusal token, or null. Code writes the form now
- * (pipeline.mjs, settleCoverageFromFacts), so each of the three states is a driver bug, and each is named
- * as one rather than read as a run with no coverage gaps:
- *   · ABSENT  — the stamp says a form was required and none is on disk (a failed write: a full disk fails
- *               as "artifact absent", not as a disk error);
- *   · DAMAGED — present and unusable; reading it as absent would drop every status in it;
- *   · EMPTY   — parsed, carrying no rows, and declaring no cause the vocabulary carries: an empty form is
- *               an absence of coverage, never a complete one, and every gate would read it as complete.
- * A run whose stamp requires nothing (an archived run) has no fault here.
- */
-export function stampedFormFault(runDir) {
-  const stamp = coverageFormStamp(runDir);
-  if (!stamp.required) return null;
-  const name = `_driver/${coverageFormSidecarName(stamp.formName)}`;
-  const cf = readCoverageForm(runDir, stamp.formName);
-  if (!cf.present)
-    return `coverage_form_missing:${name} absent while _driver/coverage-enum.json requires it (driver-written — this is a bug, not a model defect)`;
-  if (cf.error || !Array.isArray(cf.rows))
-    return `coverage_form_damaged:${name} ${String(cf.error ?? "unparseable").slice(0, 120)} (driver-written — this is a bug, not a model defect)`;
-  if (!cf.rows.length && !coverageFormAbsence(cf.parsed))
-    return `coverage_form_empty:${name} carries NO rows and declares no cause the vocabulary carries (${COVERAGE_ABSENCE_CAUSES.join(" / ")}) (driver-written — this is a bug, not a model defect)`;
-  return null;
 }
 
 /**

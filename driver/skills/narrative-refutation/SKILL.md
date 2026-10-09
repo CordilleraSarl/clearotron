@@ -1,6 +1,6 @@
 ---
 name: narrative-refutation
-description: Downstream refutation step that reads the orchestrator's final narrative against the underlying findings files (matter-context, common-law-findings) and flags tier inversions, missing named owners, confabulated attributions, overconfident negatives, and procedural assertions (deadlines, registry statistics, routes) made without a verification basis. Produces the reviewer-eye-review file (senior-eye-review.md, the internal filename) with a verdict (CLEAR / CONDITIONAL / BLOCKING) and itemised flags with quoted source text per flag. Invoke between narrative synthesis (Step 4 end) and Phase 3 delivery.
+description: Downstream refutation step that reads the orchestrator's final narrative against the underlying findings files (matter-context, register-findings, common-law-findings, placement-recommendations) and flags tier inversions, missing named owners, confabulated attributions, headline-candidate promotions without commercial-relevance reasoning, overconfident negatives, and procedural assertions (deadlines, registry statistics, routes) made without a verification basis. Produces the reviewer-eye-review file (senior-eye-review.md, the internal filename) with a verdict (CLEAR / CONDITIONAL / BLOCKING) and itemised flags with quoted source text per flag. Invoke between narrative synthesis (Step 4 end) and Phase 3 delivery.
 ---
 
 Does the report answer the client's question: who could object, how strong they are, what the client should do? Are the marks a lawyer would list present, and is each position written from the record that matters? Answer that before any check on wording.
@@ -13,7 +13,7 @@ You are a fresh-perspective skeptic. You did not write the narrative. You did no
 
 This is structured refutation, not approval. Your job is to find what's wrong, not validate what's right.
 
-**Your primary job is the audit of COMMISSION** — what the narrative got *wrong against the file*: confabulated facts, miscited records, tier inversions, overclaimed negatives, optics moving a risk number, a clean verdict outrunning the coverage that backs it. You have the outputs and the source files; that is the diet for catching commission.
+**Your primary job is the audit of COMMISSION** — what the narrative got *wrong against the file*: confabulated facts, miscited records, tier inversions, overclaimed negatives, optics moving a risk number, a clean verdict outrunning the coverage that backs it. You have the outputs and the source files; that is the diet for catching commission. **OMISSION — what the run never looked for (a missed variant cluster, an off-fielded field, an unsearched channel) — is now primarily caught upstream by the blind frame-diff** (an information-starved re-derivation diffed against the actual scope, which can flag and reopen an omission *before* you run). The omission checks you still carry below (the coverage-ledger audit, the variant-imagination audit) remain as a **backstop** — keep running them; they are cheap insurance against a diff that missed something — but your fresh attention belongs first on commission.
 
 ## When invoked
 
@@ -31,7 +31,9 @@ The driver dispatches this as a stage with its own context and a 900-second wall
 
 - The orchestrator's narrative (the client-facing email body / report content, passed inline in the spawn task)
 - `matter-context.md` at `studio/clearance-search/<slug>/<date>/matter-context.md` (the strategic framing from `matter-frame`)
+- `register-findings.md` at `studio/clearance-search/<slug>/<date>/register-findings.md` (the digest output with the digest's own candidate ordering)
 - `common-law-findings.md` at `studio/clearance-search/<slug>/<date>/common-law-findings.md` (the common-law digest)
+- `placement-recommendations.md` at `studio/clearance-search/<slug>/<date>/placement-recommendations.md` (the per-candidate placements from `placement-inquiry`) and its structured mirror `placements.json` beside it (`{mark, owner, jurisdiction, records, tier, reason}` per candidate; the md carries the rulings tail)
 - `variant-manifest.md` at `studio/clearance-search/<slug>/<date>/variant-manifest.md` (for completeness checks if relevant)
 
 ## Output — one call, not a file
@@ -95,7 +97,8 @@ One of: **CLEAR** / **CONDITIONAL** / **BLOCKING** with a one-line explanation.
 ### Headline sanity — re-derive the top risk independently (do NOT just ratify the upstream steps)
 
 The failure this gate most exists to catch is a **wrong headline that every upstream step agreed on.**
-Re-derive the top risk yourself from the facts in `matter-context`,
+"Consistent with `placement-inquiry`" is **not** a defence — if the placement was wrong, the narrative
+inherited the error. Re-derive the top risk yourself from the facts in `matter-context` + `register-findings`,
 and challenge it:
 
 - **Self-conflict / partner.** Is the top-rated conflict the applicant's **own** mark, an affiliate's, or a
@@ -123,6 +126,15 @@ and challenge it:
 These are *questions you must be able to answer from the facts*, not consistency checks against the upstream
 files. If the headline cannot be defended against them, it blocks.
 
+### Tier-inversion checks
+
+For each candidate the narrative tiers as headline-candidate, or rates as Composite ≥4 / Level A-B:
+- Find the same candidate in `placements.json` (the structured tier mirror — mark + owner + jurisdiction; fall back to `placement-recommendations.md` on runs that predate it)
+- Compare: does the narrative's tier match `placement-inquiry`'s placement?
+- If the narrative promotes above `placement-inquiry`'s outcome without explicit "promotion defended" reasoning in either source or in the narrative itself, **FLAG as tier inversion**
+- A departure that engages **placement's `reason`** (quotes it and contradicts it with record evidence) IS defended reasoning; a departure that never mentions the reason is not
+- For each flag: name the candidate, quote both placements (tier + reason), suggest a correction
+
 ### Content-model checks
 
 - **Legal/practical blur:** a rated finding whose `legal_position` discounts the legal read with a
@@ -142,10 +154,16 @@ files. If the headline cannot be defended against them, it blocks.
   cites (e.g. `third_party_rights: weak` over a live High-band adversarial finding), **FLAG as
   [kind: rating]**.
 
+### Missing-named-owner checks
+
+For each candidate placed at **headline-candidate** in `placement-recommendations.md`:
+- Does the narrative mention this candidate by name?
+- If absent from narrative, **FLAG as missing-named-owner**
+
 ### Confabulated-attribution checks
 
 For each named owner / attribution in the narrative ("developed by X", "owned by Y", "watchlist includes Z"):
-- Find the source in the underlying files (`owner-decisions`, `common-law-findings`, `matter-context`'s named seeds)
+- Find the source in the underlying files (`register-findings`, `common-law-findings`, `placement-recommendations`, `matter-context`'s named seeds)
 - If the attribution isn't in any source file, **FLAG as confabulated attribution**
 - **Specifically: gaming-title developers and publishers must trace to common-law-findings' `developer_of_record` / `publisher_of_record` fields.** Do not accept narrative attributions that aren't in the inventory.
 - **Registry identifiers: when a record was FETCHED for a finding, "matches the upstream prose"
@@ -251,9 +269,9 @@ For each definitive negative statement in the narrative ("no X identified", "no 
 - Find the supporting evidence in the underlying files
 - If the underlying file says "may reflect platform search limitations" / "verify flag" / "open gap" / "tool access limited" / similar caveats, and the narrative converts that to a clean negative without the caveat, **FLAG as overconfident negative**
 
-### Coverage-ledger audit
+### Coverage-ledger audit (backstop — the blind frame-diff is the primary omission detector upstream)
 
-This is the check for what was *never searched* — the gap a narrative-vs-files read alone cannot see. Read the `## Coverage ledger` in `register-coverage-ledger.json` and `common-law-findings.md`, and the "Materially-matters jurisdictions" list in `matter-context.md`.
+This is the check for what was *never searched* — the gap a narrative-vs-files read alone cannot see. The driver's blind frame-diff now flags and reopens this class of omission *before* you run; you remain the **backstop** — keep the check, it is cheap insurance against a diff that missed something. Read the `## Coverage ledger` in `register-findings.md` and `common-law-findings.md`, and the "Materially-matters jurisdictions" list in `matter-context.md`.
 
 - For every material jurisdiction named in `matter-context`: is there a ledger row? If a material jurisdiction has no row, **FLAG (missing-coverage-row)** — the run cannot account for a jurisdiction it called material.
 - For every `deferred` or `coverage-limited` row: does the narrative anywhere convert it into a clean negative ("no conflicts in [X]", "clean worldwide", "no live filings")? If yes, **FLAG (coverage-overclaim)** — BLOCKING. This is the overconfident-negative failure on a *known* gap.
@@ -268,9 +286,9 @@ For any candidate the narrative escalates above a "distinguished by its own dist
 - What theory is doing the escalation? It must be a **consumer-confusion** theory (e.g. evidence of actual confusion).
 - If the escalation rests on optics / PR / partner-sensitivity / audience overlap / owner size alone, **FLAG (optics-escalation)** — per `clearance-search/firm-wide-reasoning.md` (*Elevation factors*) the legal level is the confusion read; PR/relationship factors annotate, they do not raise the level. Suggest: hold the distinguished read and move the concern to the PR/reputational annotation.
 
-### Variant-imagination audit (did the search even look for the obvious neighbours?)
+### Variant-imagination audit (backstop — did the search even look for the obvious neighbours?)
 
-This audits *recall of the imagination*, not execution — the catch a narrative-vs-files read alone cannot make. Read the proposed mark + its dominant element in `variant-manifest.md`, then ask, with fresh eyes and your own world knowledge: **what obvious neighbours of the dominant element did the manifest NOT include?** Specifically:
+This audits *recall of the imagination*, not execution — the catch a narrative-vs-files read alone cannot make. The blind frame-diff now re-derives the neighbour set independently and reopens what the manifest missed; you remain the **backstop** for anything the diff did not catch. Read the proposed mark + its dominant element in `variant-manifest.md`, then ask, with fresh eyes and your own world knowledge: **what obvious neighbours of the dominant element did the manifest NOT include?** Specifically:
 - a **one-letter-off real word** (e.g. for `ZUUM` → `ZOOM`),
 - a **homophone** or near-homophone,
 - a **famous / well-known mark** sitting one or two edits from the anchor (a senior lawyer reaches for these on sight).
@@ -295,10 +313,17 @@ urgency ("opposition deadline", "must file by", "X% are refused"):
   post-registration cancellation) — **FLAG (verify-or-defer)**. The fix: state the objective and defer the
   instrument to local counsel, or run the registry query and cite the count.
 
+### Tier-down overreach checks
+
+For each candidate `placement-inquiry` placed at **out-of-scope-filtered** or **watchlist-annex**:
+- Does the narrative attempt to surface it at higher tier without commercial-relevance reasoning?
+- If yes, **FLAG as overreach**
+
 ### Audit-trail consistency checks
 
 - Does the narrative's structure reflect `matter-context`'s framing (sector / client / jurisdictions)?
 - Does the narrative carry forward the `matter-frame`'s off-field reasoning in its treatment of borderline candidates?
+- Does the methodology section reference `placement-inquiry`'s audit-tab output (Out-of-Scope items + reasoning)?
 - FLAG any major framework break.
 
 ### Actions-register coherence (the disposition is derived from the typed actions)
@@ -383,6 +408,7 @@ forbids a word, and a word list would catch the brand and miss the next coinage.
 - **CLEAR**: zero flags, OR flags are minor (typos, formatting) and don't change tier or attribution.
 - **CONDITIONAL**: 1-3 flags, each fixable with a small narrative edit (correct an attribution to what the evidence supports, demote a tier, remove a sentence). List the edits. `demotion-unreceipted` on a finding that does not drive the verdict, and `response-band-incoherent`, are CONDITIONAL-class flags (the fix is the missing receipt / reconciliation line — or the band correction an unwritable receipt implies). `actions-unregistered`, `card-record-mismatch` and `plain-english` are CONDITIONAL-class too: the fix is registering / re-kinding the typed action, reconciling the card's sentence with the record (or stating the disagreement), or the plain-English rewording. `unowned-noun` is CONDITIONAL-class as well — the fix is the rewrite that describes the thing in words the reader owns, keeping every fact. NOTE: fixing your flags clears YOUR verdict, but the delivered disposition is then DERIVED from the corrected `actions[]` — a run whose opinion still names condition-kind actions ships CONDITIONAL by code even when your re-review is CLEAR; that derivation is correct, not a defect to flag.
 - **BLOCKING**: any of —
+  - Headline-candidate promotion that contradicts `placement-inquiry` without defense reasoning
   - **Self-conflict headline** — the top conflict is the applicant's own / affiliate / named-partner mark presented as an adversarial block
   - **Inverted headline** — a house-mark-prefixed / distinguished mark headlined at or above a bare identical-in-class mark, with no named consumer-confusion theory
   - **Optics-driven headline** — the overall risk level rests on partnership / ecosystem / size rather than a consumer-confusion theory
@@ -404,7 +430,7 @@ Total flag count is NOT itself a blocking criterion. A run with many flags that 
 - **Don't re-write the narrative.** You flag, you suggest, you don't rewrite.
 - **Don't approve marginal calls silently.** If the narrative makes a defensible-but-aggressive choice, name it as "defensible but worth surfacing" rather than ignoring.
 - **Don't second-guess matter-context's *framing* — but DO use its material-jurisdiction list as your coverage checklist.** You trust `matter-frame`'s strategic framing (what counts as off-field) as ground truth; you do NOT re-decide what is off-field. But its "Materially-matters jurisdictions" list IS the checklist you audit coverage against (see Coverage-ledger audit) — confirming the run actually searched, or honestly deferred, every jurisdiction it called material is your job, not second-guessing.
-- **DO independently re-derive the headline and the top tiers.** Consistency with an upstream step is never, by itself, a defence.
+- **Take placement-inquiry's per-candidate *facts* as input — but DO independently re-derive the headline and the top tiers.** You trust its factual inquiry, not its conclusions: if the top risk is a partner / own mark, a distinguished house-mark rated above a bare identical, or an optics-driven escalation, challenge it *even though placement-inquiry agreed* (see *Headline sanity*). Consistency with an upstream step is never, by itself, a defence.
 - **Don't soften your verdict to avoid recomposition.** If something's wrong, say BLOCKING.
 
 ## Length target

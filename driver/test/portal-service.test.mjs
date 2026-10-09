@@ -3386,11 +3386,11 @@ test("the searches payload names the wired register, and omits the name rather t
 // name the stage it last ENTERED now, a step back included, and a finished run keeps its terminal step.
 test("a live run's row names the stage it is in now, a step back included; a finished one keeps its step", async () => {
   const { stageNow } = await import("../progress.mjs");
-  assert.deepEqual(stageNow({ lastStage: "placement-inquiry", stepLabel: "Searching registers and common law", stepN: 2, stepTotal: 9 }),
-    { step: "Investigating and exploring findings", stepN: 3, stepTotal: 9 }, "the run entered placement; the card still said the register step");
+  assert.deepEqual(stageNow({ lastStage: "placement-inquiry", stepLabel: "Register sweeps", stepN: 2, stepTotal: 9 }),
+    { step: "Placement & digest", stepN: 3, stepTotal: 9 }, "the run entered placement; the card still said register sweeps");
   assert.deepEqual(stageNow({ lastStage: "synthesis", stepLabel: "Case law & refutation", stepN: 6, stepTotal: 9 }),
     { step: "Synthesis", stepN: 5, stepTotal: 9 }, "a correction pass back into synthesis must read as synthesis");
-  assert.equal(stageNow({ lastStage: "register-unit:primary-sweep", stepLabel: "Framing the matter", stepN: 1, stepTotal: 9 }).step, "Searching registers and common law",
+  assert.equal(stageNow({ lastStage: "register-unit:primary-sweep", stepLabel: "Framing the matter", stepN: 1, stepTotal: 9 }).step, "Register sweeps",
     "a fan-out axis names its stage");
   assert.deepEqual(stageNow({ lastStage: "doubt-closure", stepLabel: "Case law & refutation", stepN: 6, stepTotal: 9 }),
     { step: "Case law & refutation", stepN: 6, stepTotal: 9 }, "a stage with no display step keeps the furthest step");

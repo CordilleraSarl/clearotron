@@ -17,8 +17,9 @@ import assert from "node:assert/strict";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { coverageFormRows, renderCoverageLedgerJsonFromForm, buildCoverageForm, parseCoverageForm } from "../coverage-form.mjs";
+import { coverageFormRows, renderCoverageLedgerJsonFromForm, buildCoverageForm, parseCoverageForm, coverageFormBrief } from "../coverage-form.mjs";
 import { coverageUnitLabel, formRowUnitKey, ledgerUnitKey, parseCoverageLedgerJson } from "../coverage-ledger.mjs";
+import { blockSearchedClasses } from "../close-verify.mjs";
 import { describePlanEntry } from "../../providers/_shared/execute-plan.mjs";
 import { mintSupplementalEntries } from "../engine/mcp/supplemental.mjs";
 import { compileRegisterPlan, joinPlanToBands } from "../register-plan.mjs";
@@ -50,13 +51,12 @@ test("a goods slice's unit names its goods words, in the client's table and in t
   assert.equal(row(CORE.qid).unit, "primary-sweep / exact: VELTRIN [cl 41]");
   // The client's coverage table prints the reader label of the same unit.
   assert.equal(coverageUnitLabel(row(goods.qid).unit), "main register sweep / exact: VELTRIN [cl 41] goods: entertainment");
-  // The form the driver writes carries the same unit through a write and a read, so what settles it reads
-  // which slice is the goods one.
-  const written = parseCoverageForm(JSON.stringify(buildCoverageForm(input))).rows;
-  const unitOf = (qid) => written.find((r) => r.row_id === row(qid).row_id)?.unit ?? "";
-  assert.ok(unitOf(goods.qid).includes("goods: entertainment"), `the written form lost which slice this is: ${unitOf(goods.qid)}`);
-  assert.ok(!unitOf(CORE.qid).includes("goods:"), "the core question was described as narrowed");
-  assert.ok(unitOf(CORE.qid).length > 0, "the core question's row is missing from the written form");
+  // The digest is shown the same unit, so it reads which slice is the goods one.
+  const brief = coverageFormBrief(parseCoverageForm(JSON.stringify(buildCoverageForm(input))));
+  const line = (qid) => brief.split("\n").find((l) => l.includes(row(qid).row_id)) ?? "";
+  assert.ok(line(goods.qid).includes("goods: entertainment"), `the digest is not told which slice this is:\n${line(goods.qid)}`);
+  assert.ok(!line(CORE.qid).includes("goods:"), "the core question was described as narrowed");
+  assert.ok(line(CORE.qid).length > 0, "the core question's row is missing from the brief");
   // The ledger join key follows: two slices, two keys, and each ledger row finds its own form row.
   assert.notEqual(formRowUnitKey(row(goods.qid)), formRowUnitKey(row(CORE.qid)), "the goods slice and the core question share a join key");
   const settled = rows.map((r) => ({ ...r, status: "deferred", reason: "the register refused it" }));
@@ -66,10 +66,11 @@ test("a goods slice's unit names its goods words, in the client's table and in t
   }
 });
 
-test("the executor's query names the goods words after the class tag", () => {
+test("the executor's query names the goods words after the class tag, and close-verify still reads the classes", () => {
   const goods = narrowed();
   const q = describePlanEntry(goods);
   assert.equal(q, "exact VELTRIN [cl 41] goods:entertainment");
+  assert.deepEqual(blockSearchedClasses({ query: q }), ["41"], "the goods words broke the class read-back");
   assert.equal(describePlanEntry(CORE), "exact VELTRIN [cl 41]", "a question with no goods words changed");
 });
 

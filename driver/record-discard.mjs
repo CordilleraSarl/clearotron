@@ -33,10 +33,10 @@
 //
 // ── THE WINNER RULE, because the seams re-run ────────────────────────────────────────────────────────
 //
-// Step 3 is re-judged from several triggers and `synthesis` dispatches from five, so one record gets
-// several rows at one seam. Append-only rows with no cancellation would read a record that was set aside
-// on pass 1 and carried on pass 2 as DROPPED — the shipped defect with its sign flipped, which is not an
-// improvement.
+// `register-digest` dispatches from at least six triggers and `synthesis` from five, so one record gets
+// several rows at one seam. Append-only rows with no cancellation would read a record that was absent
+// from `placements.json` on pass 1 and present on pass 2 as DROPPED — the shipped defect with its sign
+// flipped, which is not an improvement.
 //
 //   **At each seam, the LAST row wins. A later `carried` cancels an earlier `discarded`.**
 //
@@ -65,20 +65,12 @@ export const DISCARD_LEDGER_NAME = "record-discard.jsonl";
 /**
  * The seams that author rows here, in pipeline order.
  *
- * `judgment` is step 3 (owner-judgment.mjs): one row per record of the pile, carried when its owner was
- * carried and otherwise discarded with its owner's fate as the reason. It replaced the placement and
- * digest seams, which a ledger written before that change still carries; those rows are not read, and
- * the fold counts them so the trace can decline such a run rather than misread it.
- *
  * The SCREEN is deliberately absent. It already authors its own verdict onto the band record
  * (`rec.screen.screen_verdict`, read by `screenVerdict` in record-carry.mjs) at the moment it decides,
  * which is what this module exists to achieve. Re-authoring it into the ledger would be a second copy of
  * one decision, and two copies of a decision are how they come to disagree.
  */
-export const DISCARD_SEAMS = ["judgment", "synthesis"];
-
-/** The seams step 3 replaced. A ledger written before that change holds them; the fold counts them as `retired`. */
-export const RETIRED_DISCARD_SEAMS = ["placement", "digest"];
+export const DISCARD_SEAMS = ["placement", "digest", "synthesis"];
 
 /** What a pass did with a record. `carried` cancels an earlier `discarded` at the same seam. */
 export const DISCARD_VERDICTS = ["carried", "discarded"];
@@ -176,13 +168,12 @@ export function foldDiscardLedger(ledgerText) {
   const byUri = new Map();
   const seams = new Set();
   const passes = new Map();
-  let rows = 0, torn = 0, retired = 0;
+  let rows = 0, torn = 0;
   for (const ln of text.split("\n")) {
     if (!ln.trim()) continue;
     let e; try { e = JSON.parse(ln); } catch { torn++; continue; }
     const uri = normalizeRecordUri(e?.uri);
     const seam = String(e?.seam ?? "");
-    if (RETIRED_DISCARD_SEAMS.includes(seam)) { retired++; continue; }
     if (!uri || !DISCARD_SEAMS.includes(seam)) continue;
     rows++;
     seams.add(seam);
@@ -192,7 +183,7 @@ export function foldDiscardLedger(ledgerText) {
     if (!m) { m = {}; byUri.set(uri, m); }
     m[seam] = e;   // THE WINNER RULE: last row at this seam wins, so a later carry cancels a discard
   }
-  return { present: rows > 0, rows, torn, retired, byUri, seams: [...seams], passes: passes.size };
+  return { present: rows > 0, rows, torn, byUri, seams: [...seams], passes: passes.size };
 }
 
 /**

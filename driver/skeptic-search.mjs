@@ -71,7 +71,7 @@ export function searchRunArtifacts(runDir, params, { limits = SEARCH_LIMITS } = 
 
   const file = params?.file;
   if (typeof file !== "string" || !file.trim()) {
-    return { refused: "search_file_missing: `file` must name one artifact, RELATIVE to the run directory — e.g. \"owner-decisions.json\"" };
+    return { refused: "search_file_missing: `file` must name one artifact, RELATIVE to the run directory — e.g. \"register-findings.md\"" };
   }
   // eslint-disable-next-line no-control-regex
   if (/[\0\r\n]/.test(file)) {

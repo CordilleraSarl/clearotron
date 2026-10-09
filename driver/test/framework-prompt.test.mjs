@@ -1,12 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// doc 50 — per-framework prompt assembly, end to end: the synthesis dictation carries the framework in
-// force's key, demands the schema version this driver dictates (FINDINGS_SCHEMA_VERSION — named by number
-// below so a bump has to be deliberate), and never resurrects the retired universal scale (the
-// anti-resurrection grep — years of Composite/Level habit in the prompt corpus is exactly what the
-// token-first parser forbid exists to catch; the prompt must not re-teach it). It no longer teaches the
-// framework's ladder: the rating in the decisions is the rating (owner, 2026-10-01), so the rating
-// authority left synthesis's message and the judges read the client's scale instead.
+// doc 50 — per-framework prompt assembly, end to end: the synthesis dictation speaks the framework in
+// force's OWN vocabulary (band labels, entity, framework key), demands the schema version this driver
+// dictates (FINDINGS_SCHEMA_VERSION — named by number below so a bump has to be deliberate), and never
+// resurrects the retired universal scale (the anti-resurrection grep — years of Composite/Level habit in
+// the prompt corpus is exactly what the token-first parser forbid exists to catch; the prompt must not
+// re-teach it).
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { STAGES } from "../stages.mjs";
@@ -28,19 +27,21 @@ const ctxFor = (key) => {
   return { paths: P, job: {}, profile, framework };
 };
 
-test("synthesis dictation carries the framework in force's key and the v7 demand, and no longer its ladder", () => {
+test("synthesis dictation speaks the framework in force: zephyr words, entity, key, v7 demand", () => {
   const msg = STAGES.synthesis.message(ctxFor("zephyr"));
-  assert.doesNotMatch(msg, /FRAMEWORK IN FORCE/, "the rating authority is still dictated to synthesis");
-  assert.doesNotMatch(msg, /Very High \/ High \/ Medium \/ Manageable/, "the zephyr ladder is still taught to synthesis");
+  assert.match(msg, /FRAMEWORK IN FORCE .*Zephyr Beverages risk framework/);
+  assert.match(msg, /Very High \/ High \/ Medium \/ Manageable/, "the zephyr ladder, verbatim");
+  assert.match(msg, /Zephyr\/Volt\/Kaskade/, "the entity voice line");
   assert.match(msg, /"schema_version":7/, "v7 dictated (#469 — the finding sentence is a conclusion, not a chain; armed with #470)");
   assert.match(msg, /"rated_under_framework":"zephyr"/, "the tripwire key dictated verbatim");
   assert.match(msg, /composite\/level\/dispute_type keys are FORBIDDEN/i);
 });
 
-test("house default (generic/petcary) dictation: the house-default key, and no ladder", () => {
+test("house default (generic/petcary) dictation: Moderate ladder, 'the company', house-default key", () => {
   const msg = STAGES.synthesis.message(ctxFor(null));
-  assert.doesNotMatch(msg, /Very High \/ High \/ Moderate \/ Manageable/, "the house ladder is still taught to synthesis");
+  assert.match(msg, /Very High \/ High \/ Moderate \/ Manageable/, "the house ladder");
   assert.match(msg, /"rated_under_framework":"house-default"/);
+  assert.match(msg, /the company/, "the house entity");
 });
 
 test("anti-resurrection: the retired universal scale is never re-taught by the prompts", () => {
@@ -50,14 +51,14 @@ test("anti-resurrection: the retired universal scale is never re-taught by the p
     assert.doesNotMatch(msg, /composite: integer 1-5/, "the old composite dictation is dead");
     assert.doesNotMatch(msg, /level: one of A B C D E/, "the old level dictation is dead");
     assert.doesNotMatch(msg, /"schema_version":[3456]/, "v3-v6 are never dictated — a superseded contract re-taught is a gate silently switched off (v6 joined the list when #470 armed v7: dictating 6 would disengage validateNetShape)");
-    assert.ok(msg.includes("The rating in the decisions is the rating. Do not rate again."),
-      "the judges' rating replaces every ceiling and matrix synthesis was once taught");
+    assert.match(msg, /Where the framework states ceilings or matrix mappings, honour them exactly as written/i,
+      "framework-agnostic ceiling honouring replaces the hardcoded matrix");
   }
 });
 
-test("demo dictation carries its key, and none of its five bands as a ladder to rate on", () => {
+test("demo dictation carries ITS five bands incl. Low (the matrix deck's own output words)", () => {
   const msg = STAGES.synthesis.message(ctxFor("demo-brand-owner"));
-  assert.doesNotMatch(msg, /Very High \/ High \/ Medium \/ Manageable \/ Low/);
+  assert.match(msg, /Very High \/ High \/ Medium \/ Manageable \/ Low/);
   assert.match(msg, /"rated_under_framework":"demo"/);
 });
 

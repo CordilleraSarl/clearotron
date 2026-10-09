@@ -8,16 +8,19 @@
 // under the ceiling, so a crowd stopped it with no reason written.
 //
 // Now the unit decides on a crowd as on the identical mark's, and the fringe waits for the reading turn
-// like every other widening: released, or withheld with its reason.
+// like every other widening: released, or withheld with its reason. A withheld fringe is an explained
+// absence to the form oracle, never an unsearched family ordered searched over the turn's decision.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { compileRegisterPlan, awaitsReadingTurn } from "../register-plan.mjs";
 import { PROVIDER_CAPABILITIES } from "../register-capabilities.mjs";
 import { formNeighbourhood } from "../form-neighbourhood.mjs";
 import { STAGES } from "../stages.mjs";
+import { mechanicalFormGapDirectives } from "../pipeline.mjs";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 const read = (rel) => readFileSync(join(DRIVER, rel), "utf8");
@@ -60,4 +63,22 @@ test("the unit's manual and dispatch decide on a crowd, and point at the order t
   // The fringe is listed to the turn as a family it decides.
   const fringeLine = dispatch.split("\n").find((l) => /: wildcard "/.test(l)) ?? "";
   assert.match(fringeLine, /WAITING FOR YOU/, `the fringe is not handed to the turn: ${fringeLine}`);
+});
+
+test("a fringe the reading turn withheld is an explained absence to the form oracle, not an unsearched family", (t) => {
+  const run = mkdtempSync(join(tmpdir(), "crowd-decided-"));
+  t.after(() => rmSync(run, { recursive: true, force: true }));
+  mkdirSync(join(run, "_driver"), { recursive: true });
+  const plan = compile("clarivate");
+  const fringe = plan.entries.filter((e) => e.predicate === "wildcard" && e.provenance === "floor");
+  // Every exact near-form of the band was dispatched; the wildcard fringe was not.
+  const P = { runDir: run, formNeighbourhood: join(run, "form-neighbourhood.json"), registerNamedBand: join(run, "register-named-band.json") };
+  writeFileSync(P.formNeighbourhood, JSON.stringify(form));
+  writeFileSync(P.registerNamedBand, JSON.stringify({ blocks: form.elements[0].band.exactQueries.map((q) => ({ state: "enumerated", query: `name:\`${q}\``, records: [] })) }));
+  const ctx = { paths: P, registerPlan: plan };
+  const family = (ds) => ds.filter((d) => /phonetic family$/.test(d.item));
+  assert.equal(family(mechanicalFormGapDirectives(ctx)).length, 1, "control: an undecided, unsearched fringe is ordered searched");
+  writeFileSync(join(run, "_driver", "withheld-families-primary-sweep.json"), JSON.stringify({ axis: "primary-sweep",
+    families: Object.fromEntries(fringe.map((e) => [e.qid, { reason: "The identical mark's list already answers who could object here." }])) }));
+  assert.deepEqual(family(mechanicalFormGapDirectives(ctx)), [], "a fringe withheld with its reason was ordered searched over the turn's decision");
 });

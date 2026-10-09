@@ -142,7 +142,8 @@ these eleven, an unmapped region abandons the translation, and a territory the v
 not reachable by asking the question a different way. A Madrid designation of Germany is found only when
 Germany is the territory searched, and it cannot be. For any matter jurisdiction outside this set, give
 that slice a `deferred` coverage-form row (the register sweep **cannot reach** it on Signa — a closeable
-gap a different provider or a manual check can cover, never an accepted limit) so the skeptic can escalate. This follows the keystone doctrine
+gap a different provider or a manual check can cover, never an accepted limit) so the digest + synthesis
+surface it and the skeptic can escalate. This follows the keystone doctrine
 in `../SKILL.md` → *Coverage ledger*: a could-not-reach gap is **`deferred`** (escalate + disclose),
 never `coverage-limited` (a searched-but-unexhausted DATA limit a re-run cannot close).
 

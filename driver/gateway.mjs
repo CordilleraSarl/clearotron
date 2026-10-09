@@ -9,7 +9,7 @@
 // runTurn() (engine/CONTRACT.md §1), and everything below classifies the normalized tuple that comes
 // back. Renaming the file is a separate change with its own diff; naming what it is, here, costs
 // nothing and stops the next reader looking for a gateway.
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { join, dirname, basename } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 import { tmpdir } from "node:os";
@@ -17,7 +17,7 @@ import { config, resolveModel, modelFamily, modelSnapshotKind, envOn, envGateOn,
 import { probeCliVersion } from "./engine/cli-version.mjs";
 import { stageLog, runLog, note, outputMeta } from "./log.mjs";
 // — the closed disposition set has ONE author; this file dictates it and must not retype it.
-import { DISPOSITIONS, POSITION_REQUIRED_DISPOSITIONS, WRITER_DISPOSITIONS } from "./findings-model.mjs";
+import { DISPOSITIONS, POSITION_REQUIRED_DISPOSITIONS } from "./findings-model.mjs";
 import { frozenSnapshot, describeDrift } from "./run-integrity.mjs";   // — the frozen judged-by set across a seat turn
 import { isCancelled, readCancel, RunCancelled } from "./cancel.mjs";
 import { anthropicAgentEngine } from "./engine/anthropic-agent.mjs";
@@ -30,11 +30,14 @@ import { resolveAuthMode } from "./engine/auth.mjs";
 import { editRepairTail, fullWriteTail, failingTarget, abbrev } from "./repair-contract.mjs";
 // — the artifact names come from their WRITERS, so the warm-patch branch below carries no second copy
 // of either. Each file is written by its receiver and by nothing else.
+import { MODEL_FILE as BLIND_FRAME_MODEL_FILE } from "./blind-frame-record.mjs";
 import { FLAGS_FILE as SKEPTIC_FLAGS_FILE } from "./skeptic-record.mjs";
+import { MODEL_FILE as FRAME_DIFF_MODEL_FILE, PROSE_FILE as FRAME_DIFF_PROSE_FILE } from "./frame-diff-record.mjs";
 import { MATTER_CONTEXT_FILE } from "./matter-frame-record.mjs";
 import { MODEL_FILE as VARIANT_MODEL_FILE, PROSE_FILE as VARIANT_PROSE_FILE } from "./clearance-variants-record.mjs";
 import { PROSE_FILE as REPORT_OVERVIEW_FILE } from "./report-overview-record.mjs";
 import { NARRATIVE_FILE, FINDINGS_FILE, refusalsFor } from "./synthesis-record.mjs";
+import { FINDINGS_FILE as REGISTER_FINDINGS_FILE, refusalsFor as registerDigestRefusalsFor } from "./register-digest-record.mjs";
 
 // artifact basename -> the tool that is now its only writer. A repair for one of these is a CALL, never a
 // file edit, and this table is what the warm patch reads to know that. It grows by one row per conversion,
@@ -50,8 +53,8 @@ export const TOOL_WRITTEN_ARTIFACTS = new Map([
   // hand-write on a stage whose failure ships quietly, so the wrong path would never announce itself.
   ["doubt-closure.md", { tool: "record_doubt_closure", what: "your closure verdicts" }],
   // TWO BASENAMES, ONE TOOL — the knockout lane's frame ( item C), and the second
-  // conversion in this table whose call writes more than one artifact. Both rows are needed because
-  // the stage's `out` is the PLAN, so a repair aimed at the stage arrives
+  // conversion in this table whose call writes more than one artifact. Both rows are needed for the same
+  // reason frame-diff's pair is: the stage's `out` is the PLAN, so a repair aimed at the stage arrives
   // naming knockout-plan.json, while the scope note arrives under its own name from the surfaces that
   // key on the document rather than the stage. A table carrying only the plan would hand a note repair
   // the write-tool form, at a seat whose grant no longer carries Write.
@@ -69,15 +72,23 @@ export const TOOL_WRITTEN_ARTIFACTS = new Map([
   // hand-write it cannot perform, on a stage whose failure is deliberately quiet.
   ["knockout-review.json", { tool: "record_knockout_review", what: "your rewrites of the lines a reader sees first",
     refusals: (runDir) => knockoutReviewRefusalsFor(runDir) }],
+  [BLIND_FRAME_MODEL_FILE, { tool: "record_blind_frame", what: "the threat model" }],
   [SKEPTIC_FLAGS_FILE, { tool: "record_skeptic", what: "your flags and escalation decisions" }],
   ["senior-eye-review.md", { tool: "record_narrative_refutation", what: "your verdict and typed flags" }],
-  // Conversion 2. ONE basename, and the stage's `out` is that same file, so there is no
+  // TWO BASENAMES, ONE TOOL — the first conversion whose call writes more than one artifact. The stage's
+  // `out` is the prose, so a repair aimed at the stage arrives naming `frame-diff.md`; the JSON is what
+  // every framediff_* token is about and arrives naming `frame-diff.json`. Both are the driver's now, and
+  // both repair to the same call, so both need a row: a table that carried only the JSON would hand the
+  // prose-shaped repair back to the write-mode tails, which is the branch this table exists to skip.
+  [FRAME_DIFF_MODEL_FILE, { tool: "record_frame_diff", what: "the structured diff" }],
+  [FRAME_DIFF_PROSE_FILE, { tool: "record_frame_diff", what: "the structured diff" }],
+  // Conversion 2. ONE basename, and the stage's `out` is that same file, so unlike frame-diff there is no
   // second row — but this is the first row whose artifact has READERS: twelve downstream dispatches hand
   // a seat this path. The row is what turns a matter-frame repair into a CALL; without it the repair
   // tails would order a hand-write of a file whose only writer is now the driver, on a stage whose grant
   // no longer carries `Write`.
   [MATTER_CONTEXT_FILE, { tool: "record_matter_frame", what: "the matter frame" }],
-  // Conversion 3 — two basenames, one tool: the stage's `out`
+  // Conversion 3 — two basenames again (the frame-diff shape), and for the same reason: the stage's `out`
   // is the prose, so a repair aimed at the STAGE arrives naming the .md, while every `variantmodel_*`
   // token is about the .json and arrives naming that. Both are the driver's now and both repair to the
   // same call, so a table carrying only one would hand the other's repair to the write-mode tails.
@@ -93,8 +104,8 @@ export const TOOL_WRITTEN_ARTIFACTS = new Map([
   // to the write-mode tails would order a hand-write of the shell of a lawyer's deliverable, on a stage
   // whose grant no longer carries `Write`.
   [REPORT_OVERVIEW_FILE, { tool: "record_report_overview", what: "the report shell" }],
-  // THE WRITER — two basenames, one tool, and the pair is not two renderings of one structure even though
-  // it looks like it: here they are two
+  // THE WRITER — two basenames, one tool, and the pair is not the frame-diff shape even though it looks
+  // like it. There the .md and the .json are two renderings of one structure; here they are two
   // different artifacts of one judgment: `narrative.md` is what a lawyer reads and `findings.json` is
   // what the report, the workbook and the portal are built from. Both are the driver's now and both
   // repair to the same call, so both need a row — a table carrying only one would hand the other's
@@ -115,6 +126,19 @@ export const TOOL_WRITTEN_ARTIFACTS = new Map([
   // reads this on the missing-file branch so the refusal travels with the absence it caused.
   [NARRATIVE_FILE, { tool: "record_synthesis", what: "the narrative and its findings record", refusals: refusalsFor }],
   [FINDINGS_FILE, { tool: "record_synthesis", what: "the narrative and its findings record", refusals: refusalsFor }],
+  // Conversion 11 — the register findings document, and the row with the widest PARSER surface in this
+  // table: nine readers across driver/, mcp-server/ and driver/publish/ scan it for headings, pipe
+  // tables and `/mark/…` uris. Every one of them tolerates freeform prose because a model wrote this
+  // file; from here a render satisfies them by construction. A repair arriving under the old dictation
+  // names this basename, so without the row the write-mode tails would order a hand-write of the
+  // document on a stage whose grant no longer carries `Write`.
+  //
+  // It carries `refusals` for the reason the two rows above it do, and this stage is where that reason
+  // bites hardest: the acceptance boundary REFUSES a row whose uri the band cannot resolve, so a seat
+  // working from a stale uri list can be refused on every call. Without the reader that run reports
+  // `missing_file:register-findings.md` — a stage that never tried — for a stage that tried and was
+  // told no each time, with the reason waiting on disk.
+  [REGISTER_FINDINGS_FILE, { tool: "record_register_digest", what: "the register findings", refusals: registerDigestRefusalsFor }],
 ]);
 
 // ── PER-ORDINAL ARTIFACTS — A DIRECTORY, NOT A BASENAME ( conversion 5) ───────────────────────
@@ -222,18 +246,25 @@ import { REGISTER_ENUMERATE_TOOL, SUPPLEMENTAL_LANE_STEERING } from "./stages.mj
 // same thing to the exit-1 rescue below as it does to the register taint chain that reads the very
 // same rows off disk. Acyclic: register-taint.mjs imports node builtins only.
 import { isTaintRow } from "./register-taint.mjs";
-import { recordDispatch, streamFilePath } from "./dispatch-record.mjs";
-import { anyResultErrored, endingFields } from "./engine/session-record.mjs";   // a session that reached an error result is not an ok attempt, whatever its last result said
+import { recordDispatch } from "./dispatch-record.mjs";
 import { recordBestDraft } from "./best-draft.mjs";
 //: the allowlisted progress-quantity extractor. Acyclic — repairs.mjs imports node builtins only
 // (fs/crypto/path). Used only when the validator did not stamp its own count; never a digit hunt.
 import { progressQuantity } from "./repairs.mjs";
+// The ask contract's enumeration (PURE, node-free — acyclic). The undispatchable hint reads the
+// SIBLING ARTIFACT rather than the fail string, because the fail string is cut at 160 chars.
+import { undispatchableFiringDirectives } from "./frame-diff-model.mjs";
 import { witnessStageMethodology, describeMethodologyDrift } from "./methodology-witness.mjs";
 // — the meaning-sweep form and its accumulator. Both PURE and acyclic: connotation-search.mjs
 // imports nothing, disposition-union.mjs imports only it, and neither reaches back here.
 import { parsePrRiskResults, connotationObligations, parseDispositionForm, rulingsProse, CONNOTATION_FORM_TOKEN_SRC,
   CONNOTATION_UNMATCHED_MARK, CONNOTATION_NO_RESEMBLANCE_MARK, CONNOTATION_FORM_TOKEN_RE } from "./connotation-search.mjs";
 import { unionDispositionForm, formSidecarPath } from "./disposition-union.mjs";
+import { unionCoverageForm } from "./coverage-union.mjs";
+import { coverageFormStamp, readCoverageForm, readCoverageFormInput, writeCoverageForm } from "./coverage-form-io.mjs";
+import { unionPlacementForm } from "./placement-union.mjs";
+import { placementRenderAccount } from "./placement-form.mjs";
+import { placementFormStamp, readPlacementForm, readPlacementFormInput, readSubmittedPlacementForm, readSubmittedPlacementSetAside, writePlacementForm, renderPlacementsFile } from "./placement-form-io.mjs";
 // The register-axis vocabulary, quoted verbatim into the coverage-form axis hint. ONE source: the same
 // constant `rowIsSettled` refuses against, so the hint can never name a set the gate does not accept.
 // Acyclic — coverage-ledger.mjs is PURE (no node imports, no driver imports).
@@ -389,54 +420,7 @@ export function toolGauge(turn) {
     // engine cannot report", the same distinction toolWaitByTool draws one line up. RECORDING ONLY:
     // toolWaitMs and the per-tool split are exactly what they were, because the kill clock reads them.
     toolWaitUnmeasurable: Array.isArray(turn?.toolWaitUnmeasurable) ? [...turn.toolWaitUnmeasurable] : null, ...toolCallCounts(turn),
-    // The calls by tool name, beside the total, so a tool server's own log can be set against what the
-    // model asked for. An OBJECT is a measurement (`{}`: none); null is "this engine cannot report".
-    toolCallsByName: turn?.toolCallsByName && typeof turn.toolCallsByName === "object" && !Array.isArray(turn.toolCallsByName)
-      ? { ...turn.toolCallsByName } : null,
   };
-}
-
-/**
- * Whether the attempt is OK: the driver's verdict (`fail`) AND no result event of the session carried
- * `is_error`. A session the vendor refused and a restart recovered ends in a successful LAST result, so
- * the retry ladder (which reads that last result, unchanged) accepts it; the record says what happened.
- * Readers that ask "did the stage fail" read `fail`, which this does not touch. PURE.
- */
-export function attemptOk(fail, turn) {
-  return !fail && !anyResultErrored(turn?.session);
-}
-
-/**
- * Write a confined turn's answer to the stage's declared output, atomically, and say what was written:
- * `{ written: true, resultIndex }`, or `{ written: false, why }` when the session returned no answer in its
- * form. Never throws: an answer that cannot be written is an absent file, which the ladder already treats
- * as a session that answered nothing.
- */
-export function writeConfinedAnswer(file, turn) {
-  const answer = turn?.structuredOutput;
-  if (!answer || typeof answer !== "object" || Array.isArray(answer)) {
-    return { written: false, why: turn?.structuredOutputWhy ?? "the session returned no answer in its form" };
-  }
-  try {
-    mkdirSync(dirname(file), { recursive: true });
-    writeFileSync(`${file}.tmp`, `${JSON.stringify(answer, null, 2)}\n`);
-    renameSync(`${file}.tmp`, file);
-    return { written: true, resultIndex: Number.isFinite(turn?.structuredOutputIndex) ? turn.structuredOutputIndex : null };
-  } catch (e) {
-    return { written: false, why: `the answer could not be written: ${String(e?.message ?? e).slice(0, 120)}` };
-  }
-}
-
-/**
- * The stream record as a row carries it: the file relative to the run, as the dispatch record names its
- * file, and the size — or why it was not kept. null when the engine kept none or ran no session. PURE.
- */
-export function streamMeta(runDir, stream) {
-  if (!stream || typeof stream !== "object" || !stream.file) return null;
-  const dir = String(runDir ?? "");
-  const file = dir && String(stream.file).startsWith(dir) ? String(stream.file).slice(dir.length).replace(/^[\\/]+/, "") : String(stream.file);
-  return { file, present: stream.present === true, bytes: Number.isFinite(stream.bytes) ? stream.bytes : null,
-    ...(stream.reason ? { reason: stream.reason } : {}) };
 }
 
 export function tokensPerSec(usage, wall) {
@@ -716,6 +700,92 @@ export function syncDispositionForm(files) {
   return null;
 }
 
+// The register sibling of syncDispositionForm above, with the same three properties and the same
+// reasons: idempotent and re-entrant (judgeArtifacts is a closure invoked more than once per attempt),
+// never in `files` (or the AD-4 `wrote` gauge would read a DRIVER write as model progress), and the
+// accumulator lives in `_driver/`.
+//
+// SINCE THE TYPED-TRANSPORT CONVERSION THIS READS NO SEAT FILE — there is none to read. Statuses reach
+// the accumulator mid-turn through the `record_coverage` tool (coverage-tool.mjs), so this sync's one
+// remaining job is REGENERATION before judgement: the driver rows are recomputed from the plan, the
+// receipt and the bands as they stand NOW (a settlement-flush or supplemental merge can grow the row
+// set between the seat's last call and the judgement), with everything already settled carried by the
+// union. `submitted: {rows: null}` is the union's said-nothing arm: prior seat rows and statuses are
+// inherited, never retracted by a pass that made no call.
+//
+// ARMED ON THE ERA STAMP, NEVER ON THE FORM'S OWN PRESENCE. `coverageFormStamp` answers "did a driver
+// carrying this code require a form on this run". If it did not — every archived run, and any run whose
+// plan apparatus was out of reach — this is a no-op and no verdict moves. If it did, the union runs and
+// the form is on disk for the validator; and if the WRITE fails, the stamp is already there and the
+// validator fails closed with coverage_form_missing rather than passing over an absence.
+//
+// Returns the union's stats for the attempt row, or null when this stage owns no coverage form.
+export function syncCoverageForm(files) {
+  for (const f of (files ?? [])) {
+    if (basename(String(f)) !== "register-findings.md") continue;
+    const runDir = dirname(String(f));
+    const { required, formName } = coverageFormStamp(runDir);
+    if (!required) return null;
+    const input = readCoverageFormInput(runDir);
+    if (!input) return null;             // the stamp cannot outlive its inputs; nothing to regenerate
+    // — THE DRIVER NAMES ITSELF. An axis minted from a stray file in register-units produces a row
+    // the seat cannot repair and the union regenerates every pass, so the ladder runs out with nothing
+    // saying why. verify.mjs recorded that hazard as unguarded and asked for a driver-named report if it
+    // was ever observed; this is the report. The axis set is UNCHANGED — filtering it would silently
+    // shrink the form, which is worse than the row it would avoid.
+    for (const a of (input.unknownAxisUnits ?? []))
+      note(`[coverage-form] register-units carries ${a}.md, which is not one of the register axes — its row is DRIVER-written and a seat cannot repair it. This is a driver fault, not a seat one.`);
+    const prior = readCoverageForm(runDir, formName).rows;
+    const u = unionCoverageForm({ rows: prior }, { rows: null }, input);
+    // Said out loud on failure rather than swallowed — but UNLIKE this is not the fail-open leg:
+    // the stamp is already armed, so a write that did not land surfaces as coverage_form_missing at the
+    // very next judgement instead of disarming the gate.
+    try { writeCoverageForm(runDir, u.form, formName); }
+    catch (e) { note(`[coverage-form] could not write ${formName}: ${abbrev(String(e.message), 120)} — the gate fails closed on the absence`); }
+    return u;
+  }
+  return null;
+}
+
+// ── — THE PLACEMENT FORM IS UNIONED BEFORE IT IS JUDGED, AND placements.json IS RENDERED ────────
+//
+// The third of its kind, and the one that matters most for wall-clock: `placement-inquiry` was the
+// largest stage on all four of the 2026-08-09 round's clearances, and on R1 half of its 62 minutes was
+// thrown away when a killed attempt's finished tiers were re-derived from nothing.
+//
+// TWO ACTS, IN ORDER, ON EVERY JUDGEMENT. Union the seat's answers into the accumulator, then RENDER
+// placements.json from the accumulator. The render is here rather than at stage exit for the reason the
+// incident teaches: the artifact must exist the moment the seat's work does, not once the turn is allowed
+// to finish. A wall that lands between the two is exactly the gap this closes.
+//
+// ARMED ON THE ERA STAMP, never on the form's own presence — a run whose stamp is absent is every
+// archived run, and this is a no-op on all of them.
+export function syncPlacementForm(files) {
+  for (const f of (files ?? [])) {
+    if (basename(String(f)) !== "placement-recommendations.md") continue;
+    const runDir = dirname(String(f));
+    if (!placementFormStamp(runDir).required) return null;
+    const input = readPlacementFormInput(runDir);
+    const priorForm = readPlacementForm(runDir);
+    const submitted = readSubmittedPlacementForm(runDir);
+    const u = unionPlacementForm({ rows: priorForm.rows, set_aside: priorForm.set_aside },
+      submitted === null ? null : { rows: submitted, set_aside: readSubmittedPlacementSetAside(runDir) }, input);
+    try { writePlacementForm(runDir, u.form); }
+    catch (e) { note(`[placement-form] could not write the form: ${abbrev(String(e.message), 120)} — the render below still runs from the union in hand`); }
+    // PARSE-THEN-LAND, through the gate's own parser, before it replaces anything. A render defect can
+    // never put an unparseable deliverable on disk, and on a throw the previous file is left alone.
+    const r = renderPlacementsFile(runDir, u.form.rows);
+    if (!r.ok) note(`[placement-form] placements.json NOT re-rendered: ${r.error} — the previous file stands and the omission is on the form`);
+    // WHO OWES EACH ROW THE RENDER LEFT OUT — the same account validators.placement judges with, carried onto
+    // the attempt row so an omission is never read without its cause.
+    const a = placementRenderAccount(u.form.rows);
+    const account = { unjudged: a.unjudged.length, registerSelected: a.register_selected,
+      registerRendered: a.register_rendered, registerFacts: a.register_facts };
+    return { ...u, rendered: r.ok ? r.placements : null, render_error: r.error, account };
+  }
+  return null;
+}
+
 /**
  * Run ONE pipeline stage as a blocking gateway agent turn, with file-truth gating + bounded retries.
  *
@@ -746,42 +816,19 @@ export function syncDispositionForm(files) {
 //
 // Anthropic needs none of this: `claude -p --resume` resolves against an ambient store nothing wipes,
 // which is precisely why warm resume worked there and not here.
-// ── A SESSION A LATER LADDER RESUMES ──────────────────────────────────────────────────────────────
-//
-// A stage that asks to `keepSession` hands back `session: { ref, home }` when it succeeds: the engine's
-// session reference and, on codex, the home that session lives in. A later ladder given that handle as
-// `resume` resumes the session on its FIRST attempt — the corrective pass and the repairs of the session
-// that wrote the record, rather than a cold session told it is resuming. codex resolves a resume against
-// its home, so the later ladder BORROWS the kept home instead of making one; the owner of a kept home
-// releases it with releaseStageSession when nothing will resume it again. A failed ladder keeps nothing.
-export function releaseStageSession(session) {
-  try { if (session?.home) rmSync(session.home, { recursive: true, force: true }); } catch { /* best-effort */ }
-}
-
 export async function runStage(name, opts) {
   const engineForHome = selectEngine();
-  const borrowed = engineForHome?.name === "openai-agent" && opts?.resume?.home && existsSync(opts.resume.home)
-    ? opts.resume.home : null;
-  let stageCodexHome = borrowed;
-  if (!stageCodexHome && engineForHome?.name === "openai-agent") {
+  let stageCodexHome = null;
+  if (engineForHome?.name === "openai-agent") {
     try { stageCodexHome = mkdtempSync(join(codexHomesRoot(), `stage-${String(name).replace(/[^a-z0-9-]/gi, "_")}-`)); }
     catch { stageCodexHome = null; }   // fall back to the engine's own per-turn home rather than fail a stage
   }
-  let kept = false;
   try {
-    const r = await runStageLadder(name, opts, stageCodexHome);
-    // A ladder that keeps its session, or that resumed one, hands back the session it ended in, so the
-    // next correction resumes the latest one. The home is the same one it borrowed, or one it made.
-    if ((opts?.keepSession || opts?.resume) && r?.ok) {
-      kept = true;
-      return { ...r, session: { ref: r.sessionRef ?? null, home: stageCodexHome } };
-    }
-    return r;
+    return await runStageLadder(name, opts, stageCodexHome);
   } finally {
-    // Deleted when the LADDER settles — every resume that needed it has happened by then — unless it was
-    // kept for a later ladder or borrowed from one. Best-effort: a home we cannot remove must never turn a
-    // completed stage into a failure.
-    try { if (stageCodexHome && !kept && !borrowed) rmSync(stageCodexHome, { recursive: true, force: true }); } catch { /* best-effort */ }
+    // Deleted when the LADDER settles — every resume that needed it has happened by then. Best-effort:
+    // a home we cannot remove must never turn a completed stage into a failure.
+    try { if (stageCodexHome) rmSync(stageCodexHome, { recursive: true, force: true }); } catch { /* best-effort */ }
   }
 }
 
@@ -807,18 +854,10 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     validate,
     maxRetries = config.maxRetries,
     runDir,
-    resume = null,      // a kept session ({ ref, home }, see runStage): resumed on the FIRST attempt
     followup = false,   // #5b: this run is a warm-resume / followup (escalation, envelope close, frame-reopen
                         // sweep) — a hard-wall timeout breaks after ONE attempt (a 1.5× extension can't fit
                         // an already-over-budget resume; the caller records the coverage-limited deferral).
     excludeTools, bandSize, derivedLimit = null,   // copper-lattice re-route: tool names dropped from this stage's allowedTools
-    // — A CONFINED STAGE: `{ instructions, answerForm }`. The session is given its instructions and nothing
-    // else of the program's or the machine's, the tools its stage is granted plus the program's own helper
-    // tool, and answers in the form, which the driver writes to the stage's declared output (engine
-    // CONTRACT.md §1, `confined`). Every attempt resends the SAME message on a fresh session: no warm patch,
-    // no corrective text, no in-dispatch form repair — each of those is a sentence the confined session's
-    // instructions do not contain, and the owner rules what it reads.
-    confined = null,
   } = opts;
   if (!message) throw new Error(`runStage(${name}): message is required`);
   if (!sessionKey) throw new Error(`runStage(${name}): sessionKey is required`);
@@ -944,6 +983,8 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
                                 // return). Written onto the attempt row for the journal AND read by the
                                 // veto below — the run's own answer to "did this session rule any of
                                 // its rows?", counted by the gate's own isRuled, never a token name
+  let lastCoverageUnion = null; //: the same, for the register coverage form
+  let lastPlacementUnion = null; //: the same, for the placement form — and it renders placements.json
   //: the seat-facing form the last judgement synced, measured at record time so the row carries the
   // bytes that were on disk when the attempt settled. At most one of the three fires per stage — a stage
   // owns one form or none — and the ?? chain is that fact, not a preference between them.
@@ -989,7 +1030,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // lane: if attempt 2 comes back with rows ruled (`call_partial` — a seat that has now recorded
     // rulings), attempt 3 can still warm, which is the case warm is good at.
     const vetoedResume = vetoResumeRuledNone(attempt, lastUnion);
-    const warm = !confined && attempt > 1 && !warmUsed && process.env.CLEAROTRON_WARM_RETRY !== "0" && !vetoedResume && warmEligible(lastFail, lastJson);
+    const warm = attempt > 1 && !warmUsed && process.env.CLEAROTRON_WARM_RETRY !== "0" && !vetoedResume && warmEligible(lastFail, lastJson);
     if (warm) warmUsed = true;
     else if (vetoedResume && !warmUsed && process.env.CLEAROTRON_WARM_RETRY !== "0" && warmEligible(lastFail, lastJson))
       note(`[${name}] attempt ${attempt - 1} left this stage's meaning population with ZERO ruled rows (${String(lastFail).slice(0, 100)}) — a resumed session re-reads its own output and cannot rule what it did not rule; SKIPPING the warm patch and dispatching attempt ${attempt} FRESH (the warm attempt is not spent: a partial failure later in this ladder still gets it)`);
@@ -1017,11 +1058,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
       try { const fresh = refreshMessage(attempt); if (typeof fresh === "string" && fresh) base = fresh; }
       catch (e) { note(`[${name}] refreshMessage failed on attempt ${attempt}, dispatching the original text: ${String(e?.message ?? e).slice(0, 120)}`); }
     }
-    const effMessage = confined ? base
-      : warm ? warmPatchMessage(lastFail, files, { supplementalLane }) : correctiveMessage(base, attempt, lastFail, files, { supplementalLane });
-    // A confined answer is the driver's file, written from this attempt's answer alone: an earlier
-    // attempt's rejected answer must not stand in for an attempt that returned none.
-    if (confined) for (const f of files) { try { rmSync(f, { force: true }); } catch { /* absent is the point */ } }
+    const effMessage = warm ? warmPatchMessage(lastFail, files, { supplementalLane }) : correctiveMessage(base, attempt, lastFail, files, { supplementalLane });
     note(`[${name}] attempt ${attempt}/${maxRetries + 1}${warm ? " [warm patch]" : ""} (engine=${engine.name} agent=${agent} model=${model ?? "default"} key=${key} timeout=${effTimeout}s)`);
     // The engine runs ONE turn and returns the normalized tuple. Every adapter returns the same shape
     // (zero change); anthropic-agent = claude -p off-gateway with the stall-watchdog. A warm retry threads
@@ -1060,20 +1097,14 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // the snapshot, which only widens the window by their own time: an earlier attempt's refusals all
     // precede its own settle, so they stay outside it.
     const dispatchedAt = Date.now();
-    // A warm retry resumes the failed attempt's session; a first attempt resumes the kept session it was given.
-    const turnResumeRef = warm ? lastSessionRef : (attempt === 1 && resume?.ref) ? resume.ref : undefined;
     for (const line of describeMethodologyDrift(witnessStageMethodology(runDir, name, effMessage, engineResolveSkill)))
       note(`[${name}] ${line}`);
     // — the frozen judged-by set, hashed into THIS PROCESS'S MEMORY before the seat runs. Never
     // written to disk before the comparison, so the thing being watched cannot reach it. See
     // run-integrity.mjs for why it is not a manifest file and why the append-only journals are excluded.
     const integrityBefore = frozenSnapshot(runDir);
-    const turn = await engine.runTurn({ agent, sessionKey: key, message: effMessage, grantDispatch: base, model, thinking, timeoutSec: effTimeout, resumeRef: turnResumeRef, codexHome: stageCodexHome, mcpConfig: gatherMcpConfig, allowedTools: gatherAllowedTools, seatWrites: gatherSeatWrites, skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
-      progressFiles: files,   // the no-progress watchdog's artifact-advance signal (anthropic-agent; other adapters ignore it)
-      // The raw stream of this session, beside its dispatch record (engine/session-record.mjs). The engines
-      // keep it while the disk has room and say on the tuple's `stream` what landed.
-      streamFile: streamFilePath(runDir, name, attempt),
-      confined: confined ?? undefined });
+    const turn = await engine.runTurn({ agent, sessionKey: key, message: effMessage, grantDispatch: base, model, thinking, timeoutSec: effTimeout, resumeRef: warm ? lastSessionRef : undefined, codexHome: stageCodexHome, mcpConfig: gatherMcpConfig, allowedTools: gatherAllowedTools, seatWrites: gatherSeatWrites, skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
+      progressFiles: files });   // the no-progress watchdog's artifact-advance signal (anthropic-agent; other adapters ignore it)
     const settledAt = Date.now();   //: zero point of the wall-rescue quiescence clock, read before anything else
     // LOG-ONLY. Nothing here can fail a turn: the claim that the frozen set does not change across a seat
     // turn is READ from the writers' call sites and not yet MEASURED on a running system, and arming an
@@ -1084,10 +1115,6 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
       if (drift) runLog(runDir, drift);
     } catch { /* an integrity check that fails a run by failing itself is worse than no check */ }
     const { code, killed, wall, stderr, laneWaitMs, json, usage } = turn;
-    // THE CONFINED ANSWER LANDS WHERE THE STAGE READS IT, before anything judges it. The engine hands back
-    // the session's answer in its form (the last result that carried one, and which result that was); the
-    // driver writes it, so the stage's validator reads a file exactly as it would for any other stage.
-    const confinedAnswer = confined && files[0] ? writeConfinedAnswer(files[0], turn) : null;
 
     // The artifact judgement, lifted out of the classification chain into ONE function so the
     // write-time form repair below can RE-JUDGE the corrected file with the same code — never with a
@@ -1100,6 +1127,14 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
       // cannot rise. Returns null for every stage that owns no meaning sweep, which is all but one.
       const u = syncDispositionForm(files);
       if (u) lastUnion = u;
+      // — the same treatment for the register coverage form. A status recorded on attempt 1 is
+      // still recorded on attempt 3, and the outstanding count cannot rise.
+      const cu = syncCoverageForm(files);
+      if (cu) lastCoverageUnion = cu;
+      // — and the same for placement, which also RENDERS placements.json from the union. A tier
+      // placed on attempt 1 is on disk, in the deliverable, before attempt 1 is allowed to finish.
+      const pu = syncPlacementForm(files);
+      if (pu) lastPlacementUnion = pu;
       for (const f of files) {
         if (!existsSync(f)) {
           // A TOOL-WRITTEN ARTIFACT IS ABSENT FOR ONE OF TWO REASONS, and they are not the same finding:
@@ -1257,9 +1292,6 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     let formRepairsThisAttempt = 0;
     let repairRef = turn.sessionRef;
     while (fail && failingFile && isFormClassFail(fail)
-           // A confined stage's answer is never patched in place: a failed answer is a session that runs
-           // again on the same message, which is the design it was ruled with (see `confined` above).
-           && !confined
            && formRepairsUsed < MAX_FORM_REPAIRS
            && envGateOn("CLEAROTRON_FORM_REPAIR")
            // A6: an output-ceiling turn's defect is caused by the budget, not by the vocabulary — it
@@ -1269,8 +1301,8 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
       formRepairsUsed++; formRepairsThisAttempt++;
       const triggeredBy = fail;
       // THE FILE THE REPAIR MESSAGE ACTUALLY AIMS AT — not necessarily the rejected expectFile. Every
-      // coverage_ token routes its repair to a SIBLING (register-coverage-ledger.json)
-      // and tells the model NOT to touch the .md, so watching the .md
+      // framediff_/coverage_ token routes its repair to a SIBLING (frame-diff.json,
+      // register-coverage-ledger.json) and tells the model NOT to touch the .md, so watching the .md
       // would read a compliant model's correct answer as "wrote nothing". repairTarget is the same
       // derivation warmPatchMessage uses to compose the instruction — one rule, two readers.
       const target = repairTarget(triggeredBy, files);
@@ -1293,7 +1325,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
       const rt = await engine.runTurn({ agent, sessionKey: key, message: repairMessage, model, thinking,
         timeoutSec: effTimeout, resumeRef: repairRef, codexHome: stageCodexHome, mcpConfig: gatherMcpConfig, allowedTools: gatherAllowedTools,
         skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
-        progressFiles: files, streamFile: streamFilePath(runDir, name, attempt, formRepairsUsed + 1) });
+        progressFiles: files });
       repairRef = rt.sessionRef ?? repairRef;
       // A KILLED REPAIR TURN'S BYTES ARE NOT STAGE TRUTH. Same doctrine as the exit-1 rescue below: a
       // stage validator is a SHAPE check, not a completeness proof, and a torn draft can pass its own
@@ -1337,9 +1369,8 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
           repair: formRepairsUsed, repairOf: MAX_FORM_REPAIRS, repairOutcome: outcome, fail: triggeredBy,
           repairTarget: rel(target),   // the file the repair was AIMED at (often a sibling, not the expectFile)
           dispatch: repairDispatch,    // — the verbatim message this repair turn was given
-          stopReason: rt.json?.stopReason ?? undefined, ...endingFields(rt.json),   // — and what ended it, in the program's words on an error
+          stopReason: rt.json?.stopReason ?? undefined,
           killed: rt.killed || undefined, signals: rt.signals ?? undefined,
-          session: rt.session ?? null, stream: streamMeta(runDir, rt.stream),   // — the repair session's own record, as on the attempt row
           warm: true,   // a repair turn always RESUMES the session that wrote the defect
           runId: rt.json?.runId, engineSummary: rt.json?.summary, usage: rt.usage,
           selfReportContradicted: (outcome !== "repaired" && rt.json?.status === "ok") || undefined,   //
@@ -1414,6 +1445,13 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
       // so the double call on the normal path costs a regeneration and changes nothing.
       const u = syncDispositionForm(files);
       if (u) lastUnion = u;
+      const cu = syncCoverageForm(files);          //, same reason
+      if (cu) lastCoverageUnion = cu;
+      // — and placement. THIS CALL IS THE R1 CURE: the wall rescue asks whether this attempt wrote
+      // a valid artifact, and until the union has run and placements.json has been rendered from it, the
+      // answer for a killed-in-the-gap attempt is no. Idempotent, so the double call costs a regeneration.
+      const pu = syncPlacementForm(files);
+      if (pu) lastPlacementUnion = pu;
       // `why`, when a caller passes one, is told WHICH file failed and on what, so a refusal can name both.
       return files.every((f) => {
         const now = statOf(f);
@@ -1700,15 +1738,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
         // attempt produce what the stage exists to produce". Sixty report-card attempts on round 892dd88e
         // journalled status:"ok", summary:"success", code:0, wrote:true and output.present:true beside a
         // populated `fail`, and a watcher keyed on the headline saw sixty successes.
-        // — AND NOT WHEN THE SESSION REACHED AN ERROR RESULT, whatever its last result said: a refusal a
-        // restart recovered is a session that was refused (engine/session-record.mjs). `fail` is unchanged,
-        // so the ladder and every reader asking "did the stage fail" read exactly what they read before.
-        ok: attemptOk(fail, turn),
-        // What the session went through — every result, classifier cut, refusal and restart, with when —
-        // and where its raw stream is, or why it was not kept. null where the engine cannot report.
-        session: turn.session ?? null, stream: streamMeta(runDir, turn.stream),
-        // A confined stage: which of the session's results carried the answer the driver wrote, or why none did.
-        answer: confinedAnswer ?? undefined,
+        ok: !fail,
         // The engine's claim about itself, KEPT and renamed to say whose claim it is. A self-report is
         // evidence — deleting it would destroy the only record of what the seat believed it had done — and
         // it is not a verdict. Still three-valued (ok | timeout | error). Nothing in the driver reads either
@@ -1729,13 +1759,22 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
         // client surface — but it is the trail the NEXT round reads to ask what a run actually did, and a
         // trail that omits the parks describes a run that decided everything.
         dispositions: lastUnion ? { countable: lastUnion.countable, ruled: lastUnion.ruled, outstanding: lastUnion.outstanding, parked: lastUnion.parked, total: lastUnion.total } : undefined,
+        // — the same field for the register coverage form. Absent on every stage that owns no
+        // coverage form, and on any run whose plan apparatus is out of reach. RECORDING ONLY.
+        coverage: lastCoverageUnion ? { settled: lastCoverageUnion.settled, outstanding: lastCoverageUnion.outstanding, carried: lastCoverageUnion.carried, total: lastCoverageUnion.total } : undefined,
+        // — the placement form's own row. `carried` is the measurement the issue asks for: tiers a
+        // previous attempt placed that this one did not re-submit, i.e. exactly what the R1 discard
+        // destroyed. `unresolved` counts selections the fold does not hold. RECORDING ONLY.
+        placements: lastPlacementUnion ? { settled: lastPlacementUnion.settled, outstanding: lastPlacementUnion.outstanding,
+          carried: lastPlacementUnion.carried, total: lastPlacementUnion.total, seatRows: lastPlacementUnion.seat_rows,
+          unresolved: lastPlacementUnion.unresolved, rendered: lastPlacementUnion.rendered, account: lastPlacementUnion.account } : undefined,
         //: how many in-dispatch form repairs THIS attempt bought (absent = none). Its own rows
         // sit immediately above with the defect each one was dispatched to fix.
         formRepairs: formRepairsThisAttempt || undefined,
         laneWaitMs,   // WS-C turn-cap queue time — the live overlap validation reads this
         // A6: the provider's stop reason, verbatim — the max_tokens fault line is countable from the
         // rows alone (fail carries the named fault; this field carries the raw discriminator).
-        stopReason: json?.stopReason ?? undefined, ...endingFields(json),   // — and beside it what ended the session: its kind, the vendor's status, and on an error the program's own words (session-record.mjs)
+        stopReason: json?.stopReason ?? undefined,
         // taint durability (copper-lattice): the kill discriminators survive to disk — register-taint.mjs
         // reads these rows across process restarts (--resume), where the in-memory turn object is gone.
         // `followup` matters too: a followup success PATCHES the prior session's output, it never
@@ -1812,9 +1851,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
       // from "retries not recorded here"). Best-effort like every telemetry write.
       try {
         runLog(runDir, {
-          event: "attempt", stage: name, attempt, of: maxRetries + 1, ok: attemptOk(fail, turn), fail: fail ?? null,
-          // The spine carries the one-word answer and the pointer; the per-stage row carries the record.
-          interrupted: turn.session?.interrupted ?? null, stream: streamMeta(runDir, turn.stream)?.file ?? null,
+          event: "attempt", stage: name, attempt, of: maxRetries + 1, ok: !fail, fail: fail ?? null,
           //: the spine carries the same pair as the per-stage log, or the two disagree about what
           // ran. `model` stays the requested resolution (its existing readers); `modelActual` is the wire.
           model: modelRequested, modelActual, modelBasis, modelSnapshot, modelMismatch, providerReported,
@@ -1860,20 +1897,13 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // sessionKey = the key that actually SUCCEEDED (attempt 1 = base key; a retry = `${base}-rerunN`). Callers
     // that re-run a stage as a follow-up must resume THIS key, not the base key — else they resume a failed
     // attempt's empty/partial session and lose the warm cache (winning-key hardening).
-    if (!fail) return { ok: true, json, attempts: attempt, modelWire: lastModelWire, modelUsed: lastModelUsed, text: payloadText(json), sessionKey: key, sessionRef: repairRef ?? turn.sessionRef ?? null, attemptFails: [...attemptFails], warmEscalated: warmEscalatedAt > 0 || undefined, reads, readsTruncated, warm, wrote, formRepairs: formRepairsUsed };
+    if (!fail) return { ok: true, json, attempts: attempt, modelWire: lastModelWire, modelUsed: lastModelUsed, text: payloadText(json), sessionKey: key, attemptFails: [...attemptFails], warmEscalated: warmEscalatedAt > 0 || undefined, reads, readsTruncated, warm, wrote, formRepairs: formRepairsUsed };
     attemptFails.push(fail);
     lastFail = fail;
     lastJson = json;
     lastKey = key;
     lastQuantity = quantity;   //: rides the ladder's final return, so the run-level catch stamps the exact count
     lastSessionRef = turn.sessionRef ?? lastSessionRef;   // anthropic warm-resume target for the next attempt
-    // A FIRST ATTEMPT THAT RESUMED A KEPT SESSION AND FAILED is not resumed again: the session may be gone
-    // (expired, or its home removed), and resuming it twice is the same failure twice. The next attempt is
-    // today's cold dispatch, and the run says so once.
-    if (attempt === 1 && resume?.ref) {
-      warmUsed = true;
-      if (runDir) { try { runLog(runDir, { event: "resume-fell-back-cold", stage: name, fail: String(fail).slice(0, 160) }); } catch { /* telemetry best-effort */ } }
-    }
     note(`[${name}] attempt ${attempt} FAILED: ${fail}${quantity === null ? "" : ` (count ${quantity}${noChange ? ", unchanged" : ""})`}`);
 
     // A4 (addendum 2026-07-30): a byte-identical CONTENT failure signature on consecutive attempts is a
@@ -2195,7 +2225,7 @@ export function correctiveMessage(baseMessage, attempt, lastFail, expectFile, { 
       `\n\nCORRECTION: ${budget}${requiredFileClause(inner, { names, toolWritten })}`;
   return baseMessage +
     `\n\nCORRECTION: your previous attempt failed file validation (${inner}). ${budget}Re-do the task and make sure ` +
-    `${correctionHint(inner, { gridLedgerName: gridLedgerNameFor(expectFile), supplementalLane })}. ` +
+    `${correctionHint(inner, { gridLedgerName: gridLedgerNameFor(expectFile), supplementalLane, undispatchable: frameDiffUndispatchable(expectFile, inner) })}. ` +
     requiredFileClause(inner, { names, toolWritten });
 }
 
@@ -2237,11 +2267,29 @@ export function gridLedgerNameFor(expectFile) {
   return m ? `common-law-grid.half-${m[1]}.json` : "common-law-grid.json";
 }
 
+// The ask contract's offenders, read off the SIBLING artifact the failing stage saved — the same
+// derive-from-the-out-file shape as gridLedgerNameFor above and warmPatchMessage's named_band branch.
+// The stage's out file is <run>/frame-diff.md; its structured sibling is <run>/frame-diff.json. This
+// exists because the fail string CANNOT carry the list: verify.mjs slices a parse error to 160 chars,
+// which is less than one offender's name plus reason. Never throws — an unreadable artifact yields []
+// and the hint falls back to scraping the (truncated) token, which still names one.
+export function frameDiffUndispatchable(expectFile, lastFail = "framediff_directive_undispatchable") {
+  if (!/framediff_directive_undispatchable/.test(String(lastFail ?? ""))) return [];   // no stat on every other corrective turn
+  const files = (Array.isArray(expectFile) ? expectFile : [expectFile]).filter(Boolean);
+  if (!files.length) return [];
+  try { return undispatchableFiringDirectives(readFileSync(join(dirname(String(files[0])), "frame-diff.json"), "utf8")); }
+  catch { return []; }
+}
+
 // Reason-aware hint: the validator's reason rides inside lastFail — translate the known ones to a concrete fix
 // so the retry knows what to change (default covers any other content failure). opts.gridLedgerName: the
 // ledger the grid hints name (gridLedgerNameFor — the canonical file, or the failing half member's own).
 // opts.supplementalLane: the failing stage's toolset had register_enumerate removed (derived in runStage
 // from excludeTools) — the hints that name a repair TOOL branch on it.
+// opts.undispatchable: [{item, why}] read off the saved frame-diff.json (frameDiffUndispatchable) — the
+// ask contract's offenders, because the fail string is truncated to 160 chars and can only name the first.
+// Trailing + optional exactly like supplementalLane, so every positional caller is unchanged; an empty
+// list falls back to scraping the token, which still beats naming nothing.
 // B — connotation hints name the `record_dispositions` TOOL, never a file: the seat writes no
 // dispositions file, and the one thing R6's three dead attempts were never told was where the gate was
 // counting. Under the typed transport the answer is the tool, and every connotation arm names it.
@@ -2255,7 +2303,7 @@ export function gridLedgerNameFor(expectFile) {
  * — the routing was already correct, the prose was not. So the closing clause is the one part of a hint
  * that has to know, and it is passed rather than guessed.
  */
-export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.json", supplementalLane = false, toolWritten = null } = {}) {
+export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.json", supplementalLane = false, undispatchable = [], toolWritten = null } = {}) {
   // The repair act, for the hints that name one. Kept to a single sentence and a single decision so a
   // new hint has one thing to append rather than a branch to reproduce.
   const resaveClause = toolWritten
@@ -2289,18 +2337,24 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
         `record; it carries no band/registration and never moves the rating.`;
     } else if (/finding_legacy_scale_forbidden/.test(lastFail)) {
       // doc 50 — the reversion repair: years of Composite/Level habit pull the model back to the retired
-      // scale; the fix is to delete the retired keys, never a mapping. The band is the judges' (owner,
-      // 2026-10-01), so neither hint tells this stage how to rate.
+      // scale; the fix is stated in the framework's own terms, never as a mapping. Under a framework that
+      // states a method the refusal itself says so, and the retired keys have a home: the framework's own
+      // inputs (framework-method.mjs).
       extra = /own inputs under "inputs"/.test(lastFail)
-        ? ` SPECIFIC FIX: delete composite/level/dispute_type.`
+        ? ` SPECIFIC FIX: delete composite/level/dispute_type and record the framework's own inputs under ` +
+          `"inputs", then give the band the framework's table yields for them.`
         : ` SPECIFIC FIX: schema_version 4 carries NO composite/level/dispute_type — delete those keys. ` +
-          `Your reasoning trail stays in the narrative prose.`;
+          `The rating is "band": the band WORD your reasoning under the framework you read yields (EXACTLY one of ` +
+          `its band words, as written in the framework). Your reasoning trail stays in the narrative prose.`;
     } else if (/finding_(inputs_[a-z]+|band_off_table|borderline_off_table):/.test(lastFail)) {
       // The framework's method (framework-method.mjs). Each refusal already names its fix — the value list,
       // or the band the table gives — so no addendum: the generic band hint below would point elsewhere.
       extra = "";
     } else if (/finding_band_|findings_rated_under_|finding_disposition_missing/.test(lastFail)) {
-      extra = ` SPECIFIC FIX: every finding carries "disposition". The top level carries "rated_under_framework" = the ` +
+      extra = ` SPECIFIC FIX: every finding carries "disposition"; adversarial / coexistence-partner / ` +
+        `distinguished findings are RATED and carry "band" = EXACTLY one of the framework's band words (as ` +
+        `written in the framework you read — no numbers, no codes, no words from any other scale); off-field ` +
+        `findings are NOT rated and carry NO band. The top level carries "rated_under_framework" = the ` +
         `framework key you were told to rate under, verbatim.`;
     }
     hint = `findings.json is a JSON OBJECT { schema_version, rated_under_framework, findings[], coverage[], context_notes[] } ` +
@@ -2333,19 +2387,31 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       // said, and measured that a field phrased outside its own imperative was written 0 of 9 times
       // against 74 of 74 when it was inside one — dispatch wording is not free to tidy in passing. So the
       // join restores the conjunction rather than settling for the comma `join` produces.
-      //
-      // The list itself changed once, deliberately (owner, 2026-10-02): off-field left it with the
-      // awareness-only instructions, so it reads WRITER_DISPOSITIONS. The complement stays computed against
-      // the whole v6 set, because off-field still carries both positions on a run from before.
-      `${WRITER_DISPOSITIONS.join(", ").replace(/, ([^,]+)$/, " AND $1")} alike (only a review-killed ${
+      `${POSITION_REQUIRED_DISPOSITIONS.join(", ").replace(/, ([^,]+)$/, " AND $1")} alike (only a review-killed ${
         DISPOSITIONS.filter((d) => !POSITION_REQUIRED_DISPOSITIONS.includes(d)).map((d) => `"${d}"`).join(" / ")
       } finding is ` +
-      `outside this, and it carries "withdrawn_reason" instead). ` +
-      `On schema_version 4+ each finding carries owner.registrations[] (ONE entry per ` +
-      `registration — never overwrite or transpose another's facts; a finding with no fetched record → []), the ` +
-      `meters as {token, basis} (basis = verified-from-record | inferred-from-signal), a ` +
+      `outside this, and it carries "withdrawn_reason" instead). An off-field finding additionally carries ` +
+      `"off_field_ground" = "different-field" (the goods do not meet — its own goods_proximity meter must then read ` +
+      `"low") or "no-material-risk" (a clear win, carrying no field claim). A mark argued apart on sound, rhythm, ` +
+      `orthography or connotation is "distinguished", never off-field. ` +
+      `On schema_version 4+ each finding carries "band" (the framework-in-force's band WORD; rated dispositions only — ` +
+      `composite/level/dispute_type are RETIRED and forbidden), owner.registrations[] (ONE entry per ` +
+      `registration — never overwrite or transpose another's facts; a finding with no fetched record → []), the four ` +
+      `meters as {token, basis} (basis = verified-from-record | inferred-from-signal), quadrant {x,y} in [0,1], a ` +
       `typed source, a disposition, and a unique 1-based ordinal. The failed check was: ${tok}.${extra} Fix exactly that, re-save ` +
       `the COMPLETE findings.json, and leave the narrative prose unchanged`;
+  } else if (/coverage_status_offenum/.test(lastFail)) {
+    // D1 — the off-enum PROSE Status cell (distinct from coverage_status_invalid, which is the JSON
+    // mirror's token): the defect lives in register-findings.md's own Coverage-ledger table, so the
+    // repair is a one-cell prose relabel — never a JSON re-save. MUST sit above the JSON-mirror
+    // coverage_ branch so the shared substring never routes this to the wrong file.
+    const det = (lastFail.match(/\(axis ([a-z-]+)/) || [])[1] || "";   // the status text itself may carry parens — anchor on the token's own "(axis …" tail
+    hint = `every row of the prose Coverage ledger's Status column is EXACTLY one bare token of ` +
+      `confirmed-clean / coverage-limited / deferred${det ? ` (the off-enum row is on axis ${det})` : ""}. ` +
+      `Relabel the offending Status cell(s) to the honest enum token and move any qualifier or commentary ` +
+      `("N/A", "confirmed", "not-searched (…)", ✅, bolding) into the Reason column — an axis that was not ` +
+      `applicable or not searched is an honest \`deferred\` with the reason stated. Leave every other row ` +
+      `and section unchanged`;
   } else if (/coverage_(ledger_unparseable|ledger_empty|axis_invalid|axis_missing|status_invalid|key_unknown|mirror_missing)/.test(lastFail)) {
     // Map #3 — `mirror_missing` is LEGACY and never fires anymore (the JSON is code-derived from the prose,
     // so the prose↔JSON cross-check was retired); the alternation keeps it only to give a sane hint to any
@@ -2507,6 +2573,78 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       "or state the honest SCOPED negative (never a portfolio-wide 'no registrations found' — the frozen material covers only this " +
       "matter's dispatched slices), adjust the reasoning to stand without the crutch, and record the missing owner query as an open " +
       "Coverage/open-item row for the escalation lane; the affiliate-exclusion mandate covers CONFLICTS, never this supporting evidence";
+  } else if (/blindframe_/.test(lastFail)) {
+    // Property 1 (frame-omission design): the blind-frame stage's STRUCTURED MODEL, which since is
+    // the stage's whole output — there is no prose companion to leave alone. A JSON-defect repair on a
+    // clean turn: warm-eligible (WARM_ELIGIBLE_RE), and warmPatchMessage aims it at the file itself
+    // through the generic invalid_file branch (failingTarget resolves the single-file stage's output).
+    const tok = (lastFail.match(/blindframe_[a-z_]+(?::[^\s)]*)?/) || ["blind-frame model defect"])[0];
+    // — THE REPAIR RIDES THE TYPED TOOL, because the seat no longer holds Write or Edit. This used to
+    // end "Correct it in place — the file is the stage's only output", which after the conversion orders an
+    // act the grant denies: a failure on obedience, mid-round, on the first repair rung that fires. Same
+    // shape as the ten anchor sites, caught before it shipped rather than after. The one-change
+    // invariant covers a dictation AND the ladder that corrects it.
+    hint = `the model is a set of VALUES you hand to the \`record_blind_frame\` tool: dominant_element, ` +
+      `variants[] (each {value, direction (add|drop|phonetic|homophone|neighbour|composite), rationale}), ` +
+      `fields[] (each {goods, on_field — a JSON boolean, rationale}), sources[] (each {channel, rationale}) ` +
+      `and ranking_basis (goods-overlap | class-number). The failed check was: ${tok}. Call ` +
+      `\`record_blind_frame\` again with the corrected values — everything that already validated can be ` +
+      `sent as it was. Do not write or edit any file: blind-frame-model.json is the driver's to write`;
+  } else if (/framediff_directive_undispatchable/.test(lastFail)) {
+    // P2-B (charter P2e — the ask contract). This is the ONE frame-diff defect whose repair is not
+    // "re-save the JSON": a firing directive named a thing to search in words nothing can dispatch.
+    // The refusal used to arrive hours later at reopen, after this session had exited — so it arrives
+    // here instead, in-turn, where a restatement is free. The hint quotes the parser's own reason and
+    // asks for the remedy, never for the directive to be deleted: dropping it would silently close a
+    // real omission, which is the failure this whole channel exists to prevent.
+    //
+    // PLURAL, and enumerated from the ARTIFACT — not from the fail string. verify.mjs slices a parse
+    // error to 160 characters, so `lastFail` cannot carry more than the first offender's name and
+    // half its reason. A singular hint over a plural defect made the ladder count DIRECTIVES instead
+    // of attempts: the 2026-07-29 artifact carries four undispatchable firing directives, a
+    // compliant model repairs the one the hint quoted, and the 3-attempt ladder exhausts with the
+    // reopen pass lost. The offenders are therefore re-derived from the saved frame-diff.json, so
+    // ONE corrective turn can satisfy the whole contract.
+    const offenders = undispatchable.length ? undispatchable
+      : [{ item: (lastFail.match(/framediff_directive_undispatchable:([^—\n]*)/) || [, ""])[1].trim(), why: "" }].filter((o) => o.item);
+    const enumerated = offenders.length
+      // — the model is told to RESTATE these items, so the item and its reason are values it must
+      // reproduce; both were cut with no marker. Same class as the recurrence receipt.
+      ? offenders.map((o, i) => `  ${i + 1}. "${abbrev(String(o.item), 120)}" — ${abbrev(String(o.why || "not dispatchable as written"), 260)}`).join("\n")
+      : `  (the saved frame-diff.json could not be re-read — re-check EVERY firing directive yourself)`;
+    hint = `${offenders.length || "one or more"} of your FIRING directives (severity dominant-element or material) ask for a search the driver cannot dispatch. ` +
+      `EVERY ONE of them is listed here, and ALL of them must be fixed in ONE re-save — the repair ladder counts ATTEMPTS, not directives, ` +
+      `so fixing only the first will exhaust it and lose the whole reopen pass:\n${enumerated}\n` +
+      //, third conversion — THE ORDER IS A CALL, NOT A RE-SAVE. This read "re-save the COMPLETE
+      // frame-diff.json" and closed with "leave your prose reasoning unchanged", which after the
+      // conversion is two impossible instructions in one sentence: the seat holds no `Write`, and the
+      // prose is rendered by the driver from the very values this hint is asking it to correct.
+      `Fix them ALL and send them in ONE \`record_frame_diff\` call: add a structured remedy to each — ` +
+      `remedy: {terms: ["<the mark-shaped term(s) to search>"], nice_classes: ["<class>", …], regions: []} — saying WHAT to search, ` +
+      `not what the omission is called. A field (class-gap) directive may instead name its classes in the item ("Cl. 35 and Cl. 38"), ` +
+      `and the dominant element is then the term. Do NOT delete any directive and do NOT downgrade one to "minor" to make this pass: ` +
+      `a real omission that cannot be searched must still be raised — but it has to say what the search IS. Send the whole diff again, ` +
+      `not only the corrected directives — the call replaces the stored model`;
+  } else if (/framediff_/.test(lastFail)) {
+    const tok = (lastFail.match(/framediff_[a-z_]+(?::[^\s)]*)?/) || ["frame-diff defect"])[0];
+    //, third conversion — the shape hint stays (it is what the values must satisfy) and the ORDER
+    // changes. The seat sends `directives[]` and `dominant_element_gap` as values; the driver serializes
+    // the object this paragraph describes. Most of these tokens are now unreachable from a typed call at
+    // all — the schema's enums and boolean removed layer/severity/gap, and the named keys removed the
+    // key-unknown family — so a live one on this stage means the DICTATED path produced it, which is what
+    // the archive is full of and what a replay must still be able to fail on.
+    //
+    // — `dominant_element` is NOT named as a value to send. It is the driver's, bound from the blind
+    // model, and a repair hint is a served surface like any other: a hint still asking for it would order
+    // the field back into existence one rung down from the dispatch that stopped asking. This is the third
+    // repair surface a frame-diff change has had to sweep; see recording-agreement.mjs on why the sweep is
+    // never optional.
+    hint = `the structured diff is { schema_version, directives[], ` +
+      `dominant_element_gap (a JSON boolean) } — send directives:[] for a clean diff. Each directive is ` +
+      `{layer (variant|field|source), item, observation, severity (dominant-element|material|minor)}. ` +
+      `The dominant element itself is the driver's — it is bound from the blind model, not sent by you. ` +
+      `The failed check was: ${tok}. Send the corrected diff in one \`record_frame_diff\` call — the driver ` +
+      `writes frame-diff.json and renders the prose from it, so there is nothing for you to save`;
   } else if (/receipts_short/.test(lastFail)) {
     const shorts = (lastFail.match(/receipts_short:([^\s]+)/) || [])[1] || "";
     hint = `the Negative-results matrix accounts for EVERY (variant × platform) grid cell — these variants are ` +
@@ -2739,12 +2877,102 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       `${PLAN_AUDIT_CLASSES} — flagging a clean claim that rests on class (1), a class (2) fringe ` +
       `claimed searched-clean, and a class (3) slice the narrative shows no materiality reasoning for. ` +
       `Keep the verdict (CLEAR / CONDITIONAL / BLOCKING) on the FIRST line and the rest of your review intact`;
+  } else if (/coverage_no_status/.test(lastFail)) {
+    // — THE HINT NO LONGER EXPLAINS A TRANSCRIPTION REQUIREMENT, BECAUSE THERE IS NOT ONE.
+    // What stood here were two arms (coverage_deferred_unaccounted and coverage_clean_unverified_
+    // incomplete) whose entire content was instructions for reproducing an identifier: "each qid must
+    // appear VERBATIM in a row on its own axis", "the gate recognises the disclosure by exactly two
+    // things and nothing else: the qid written verbatim, or the number N standing alone". Those
+    // sentences existed because the gate joined on the typing. The driver writes the qid, the hit count
+    // and the receipt reason into the row now, so the only thing the seat can still fail to do is form
+    // a judgment — which is the thing it is for. The rows ride in the token so the repair can be acted
+    // on without opening anything else, exactly like the 2026-08-05 block-naming fix asked.
+    //
+    // AND IT LEADS WITH THE CAUSE, BECAUSE ONE TOKEN CARRIES THREE DEFECTS. `coverage_no_status` fires
+    // for a row with no status, a status outside the enum, AND an enum-VALID `confirmed-clean` on a row
+    // the driver marked `open` — and the last is the common one, because it is what a digest does when
+    // it believes a slice is fine and the machine knows it is not. Opening with "row(s) with no status"
+    // over a form where every row carries one is the 2026-08-05 defect one level in: an instruction the
+    // seat has already complied with, burning the warm attempt that displaced a cold one. verify.mjs
+    // emits a partitioned census (`open_clean=2,no_status=1`) precisely so this arm can tell them apart.
+    const census = (lastFail.match(/coverage_no_status:([a-z_]+=\d+(?:,[a-z_]+=\d+)*)/) || [])[1] || "";
+    const n = (name) => Number((census.match(new RegExp(`${name}=(\\d+)`)) || [])[1] || 0);
+    const rows = (lastFail.match(/coverage_no_status:[^;]*;([^\n]*)/) || [])[1] || "";
+    const openClean = n("open_clean"), unset = n("no_status"), badAxis = n("axis_invalid");
+    const lead = openClean
+      ? `${openClean} row(s) of your coverage form are marked "confirmed-clean" over an obligation the DRIVER computed as OPEN. ` +
+        `Every row already carries a status, so do not go looking for blank ones — these statuses are the defect`
+      : unset && !badAxis
+        ? `row(s) of your coverage form carry no status this gate accepts`
+        : `row(s) of your coverage form were refused`;
+    hint = `${lead}: ${abbrev(rows, 200) || "see the failure"}. ` +
+      `The driver computed every obligation and every identifier in it — the coverage unit, the query id, the hit ` +
+      `count, the unaccounted classes and terms, each deferred slice's own receipt reason. Record the named row(s) ` +
+      `through the \`record_coverage\` tool — {"row_id","status","reason"} per row, never by writing or editing any ` +
+      `file: "status" EXACTLY one bare token of confirmed-clean / coverage-limited / deferred / withheld-by-judgment, "reason" the sentence ` +
+      `the lawyer reads (qualifiers go in the reason, never in the status). ` +
+      `A row marked "open" cannot be confirmed-clean, and its own "open_because" says which of the two kinds ` +
+      `it is. A NEVER-SEARCHED slice — the active register provider cannot express it, so nothing can make it run — is ` +
+      `"deferred", quoting its receipt reason. An UNACCOUNTED CROWD BLOCK ran and saturated, so it is "coverage-limited"; ` +
+      `do not call it "deferred", which means a slice that could not run at all and which clamps this run's verdict to ` +
+      `CONDITIONAL. Either way the gap is an OPEN, disclosed question for the lawyer, never a clean negative. ` +
+      `EACH OPEN ROW IS DISCHARGED ONLY BY ITSELF — a status on one row does not account for another row's slice, ` +
+      `however plainly its reason discusses the axis, so record the status on the row that owns the block. Rows about ` +
+      `slices that genuinely enumerated to has_more:false STAY confirmed-clean — do not downgrade them, that trades ` +
+      `one false claim for another. Everything already recorded is kept. Do NOT re-run ` +
+      `searches yourself and do NOT hand-write a Coverage ledger table — the driver renders it from what the tool records`;
+  } else if (/coverage_form_axis_invalid/.test(lastFail)) {
+    // fix round — THE HINT NAMES THE CELL AND QUOTES THE ALLOWED SET, which is the whole of the
+    // 2026-07-30 lesson recorded on the `coverage_axis_invalid` arm above: "the retry was told to redo
+    // the very derivation that failed, so it looped until the attempts ran out … The validator's own
+    // message carries the allowed list; quote it back."
+    //
+    // WHERE THE ALLOWED LIST COMES FROM, and why it is not read out of the token here. That arm parses
+    // "(not in: …)" out of the failure because ITS vocabulary is the RUN's active axes — a set that
+    // varies per run, so the validator is the only thing that knows it. This one is the FULL register
+    // vocabulary, a module constant, so quoting REGISTER_AXES is quoting the same single source rather
+    // than re-deriving a second one. It also keeps the token free of the parentheses that
+    // "(not in: …)" would put before the overflow, which pipeline's merge-gate remedy truncates at.
+    //
+    // PLACEMENT. Nothing above can swallow this: the structure arm needs the substring
+    // `coverage_axis_invalid` and this token spells `coverage_form_axis_invalid`, and every
+    // correctionHint caller passes ONE validator reason (verify returns a single fail object), so no
+    // fail string carries two coverage tokens for an earlier arm to match first.
+    const rows = (lastFail.match(/coverage_form_axis_invalid:[^;]*;([^\n]*)/) || [])[1] || "";
+    hint = `row(s) YOU ADDED to the coverage form carry an "axis" outside the register-axis vocabulary, which ` +
+      `is CLOSED: ${abbrev(rows, 220) || "see the failure"}. Each entry above is the row's id followed by the value ` +
+      `that was rejected — "axis=<empty>" means that row has no "axis" at all. ` +
+      `Re-send each of those rows through the \`record_coverage\` tool — {"kind":"seat","axis","unit","status",` +
+      `"reason"}, with "axis" EXACTLY one bare token of: ${REGISTER_AXES.join(" / ")} — never invent an ` +
+      `axis, never leave it blank, and never put a jurisdiction, a class, a sweep name or a descriptive phrase in ` +
+      `that field. Choose the axis whose coverage the row qualifies: a per-jurisdiction reconciliation or a ` +
+      `cross-class / cross-check / merch sweep is "primary-sweep"; an owner, incumbent, watchlist-owner or ` +
+      `stealth-filer sweep is "incumbent-class"; a counted dominant-element or meaning-token crowd is ` +
+      `"saturation-probe"; a transliteration or numeric-form slice is "transliteration-numeric". Set that ` +
+      `row's "unit" to "<the same axis> / <what you swept>" — the driver's own rows read that way and the axis is ` +
+      `recovered from it if the field is ever lost. A re-sent row with the same unit REPLACES the recorded one; ` +
+      `{"retract":"<row_id>"} withdraws one outright. ` +
+      `The rows the DRIVER wrote already carry a correct axis: do not touch them — every "status" and "reason" ` +
+      `already recorded is kept. Do NOT re-run any search, do NOT write or edit any file, and do NOT hand-write a ` +
+      `Coverage ledger table — the driver renders it from what the tool records`;
+  } else if (/coverage_form_damaged/.test(lastFail)) {
+    // Typed transport: the seat holds no writer onto the accumulator, so a damaged one is the driver's
+    // own serialization or filesystem at fault — never the seat's JSON. The repair is still a tool
+    // call, because record_coverage rewrites the accumulator whole from the regenerated rows plus the
+    // call: statuses in the unreadable copy cannot be carried, so the seat re-sends its rulings.
+    const detail = (lastFail.match(/coverage_form_damaged:form_damaged=\d+;([^\n]*)/) || [])[1] || "";
+    hint = `the driver's coverage accumulator could not be read${detail ? ` (${abbrev(detail, 120)})` : ""} — a ` +
+      `driver-side fault, not your JSON (you never write this file). Re-record your statuses through the ` +
+      `\`record_coverage\` tool — {"row_id","status","reason"} per obligation row — which rewrites the record ` +
+      `from the driver's own rows plus your call. Statuses in the unreadable copy cannot be read, so re-send ` +
+      `every ruling the tool's answer still lists as outstanding. Never write or edit any file`;
   } else if (/coverage_form_(missing|empty)/.test(lastFail)) {
     // Named for readability in the journal, not because a model can act on either: both mean the DRIVER
     // did not write the form it stamped as required — absent in one case, present with no obligations in
     // it in the other. Deliberately out of the warm allowlist, and for the same reason: a resumed seat
     // cannot patch a file it was never told about, and warming it would spend a turn asking a model to
-    // fix a driver bug.
+    // fix a driver bug. `coverage_form_empty` is matched HERE rather than by the `coverage_no_status`
+    // arm above so an empty form never reads to the seat as rows it forgot to fill in.
     const empty = /coverage_form_empty/.test(lastFail);
     hint = `the driver-written coverage form is ${empty ? "present but carries no rows" : "absent"} although this run ` +
       `requires one. This is a DRIVER defect, not something your turn can repair: write your findings as normal and ` +
@@ -2758,7 +2986,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
   // form; a token that can fire with no
   // arm falls to a generic hint, which is the misdirection this whole build is about. COLD, exactly as
   // on main — neither name is in WARM_ELIGIBLE_RE and neither is added to it, so the warm lane is
-  // unchanged.
+  // unchanged and `coverage_(no_status|form_damaged)` cannot match either of these names.
   // `coverage_clean_deferred` gets NO arm: its token is folded into the superset above and nothing emits
   // it any more, and an arm for a token nobody emits is what the closed-vocabulary rule refuses to leave
   // lying around.
@@ -2842,9 +3070,12 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
       "the COMPLETE findings file from them; if the tool is genuinely failing after retries, write NO findings file " +
       "at all and report the tool failure with diagnostics in your final message (the driver fails the run — a report " +
       "must never ship without its marketplace layer)";
-  } else if (/no_coverage_status_row/.test(lastFail)) {
-    // The common-law lane's own refusal (verify.mjs, commonLawStructural). The `findings+ledger` label
-    // this arm also matched came from the register digest's validator, which left with the digest.
+  } else if (/findings\+ledger|no_coverage_status_row/.test(lastFail)) {
+    // — `findings+ledger` IS BACK IN THIS ALTERNATION. The first cut of this build removed it on
+    // the reading that the seat never writes a Coverage-ledger table any more; that is true only on a
+    // run the driver stamped as form-required, and the stamp is conditional. On an unstamped run
+    // validators.registerFindings demands the table exactly as it did before and emits this label,
+    // so dropping the arm left the one lane that can still fire it with a generic hint.
     hint = "the file has a findings heading plus a Coverage ledger with a status row (confirmed-clean / coverage-limited / deferred)" + (/common-law-findings/.test(lastFail) ? ", or each ledger row's status is recorded by calling `record_coverage_status` with `grid_spec_path`, the same spec path the grid tool was given" : "");
   } else if (/negative-results|coverage-ledger|audit-trail|findings-heading/.test(lastFail)) {
     hint = "the findings file carries ALL required sections: a findings heading, the Negative results matrix " +
@@ -2860,8 +3091,12 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
 // every qid rather than the first six: "the accounting join is on the qid verbatim, so a qid the stage
 // was never shown can never be named." That is a description of a transcription contract, and
 // removes the contract rather than the elision. The driver writes one form row per deferred qid, with
-// that qid's own receipt reason, and marks it `open`; code settles every row from the run's own facts
-// (coverage-form.mjs, settleCoverageRowsFromFacts). Nothing is retyped, so nothing can be mistyped.
+// that qid's own receipt reason, and marks it `open`; coverage-form.coverageFormBrief lists the rows in
+// the dispatch and names `record_coverage` as the one route a status takes (the typed transport — the
+// seat opens no file). Nothing is retyped, so nothing can be mistyped.
+//
+// The REQUIREMENT is unchanged and is still enforced in verify.mjs against the same plan-execution
+// receipt: a deferred slice is a row the digest owes, not a disclosure it may offer.
 
 // ──: WRITE-TIME FORM REJECTION — the form-class allowlist ─────────────────────────────────────
 // A FORM failure is one where the model wrote something the CONTRACT already forbids by name: a value
@@ -2871,9 +3106,11 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
 //
 // THE ADMISSION CRITERION IS MECHANICAL, so this list can be defended token by token: a token is here
 // only if its check in the strict parser is literally `!ALLOWED.includes(x)` over a closed vocabulary,
-// or a JSON-type/domain assertion on a named field. One parser owns every token below —
-// coverage-ledger.parseCoverageLedgerJson. NO NEW RULE IS ADDED HERE: every one of these already fails
-// the stage today. moves WHEN it is answered, not WHAT is answered.
+// or a JSON-type/domain assertion on a named field. Two parsers own every token below —
+// frame-diff-model.parseFrameDiff and coverage-ledger.parseCoverageLedgerJson — plus one closed-
+// vocabulary check over the PROSE mirror of the same COVERAGE_STATUSES list (verify.registerFindings'
+// coverage_status_offenum). NO NEW RULE IS ADDED HERE: every one of these already fails the stage
+// today. moves WHEN it is answered, not WHAT is answered.
 //
 // THREE OF THESE WERE OBSERVED COSTING A PAID DISPATCH in the 08-02 round: framediff_severity_invalid
 // (a bad enum), coverage_axis_invalid (the literal string "all axes" against a closed four-axis
@@ -2882,26 +3119,46 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
 //
 // DELIBERATELY EXCLUDED, each for a reason, because admitting one would put a WORK failure in the
 // cheap lane — the one thing this change must not do:
-//   · coverage_ledger_unparseable — a file that will not parse is usually
+//   · framediff_unparseable / coverage_ledger_unparseable — a file that will not parse is usually
 //     TRUNCATED, and the existing hint (correctionHint's grid_ledger_unparseable arm) says so: the
 //     turn's output exceeded its budget and needs a re-run split smaller. That is capacity, not form.
 //   · coverage_ledger_empty / coverage_axis_missing — a missing row is COMPLETENESS: the axis was not
 //     accounted for. Nothing about the vocabulary is wrong.
+//   · blindframe_* — same token SHAPE as framediff_* (closed enums on direction / ranking_basis) and
+//     they would very likely qualify. They are OUT because blind-frame's output is JSON, and the
+//     offline repair-turn path for a JSON-output stage cannot be tested truthfully until  is
+//     fixed (the mock's TARGETED-EDITS write mandate is `.md`-only, so the repair turn writes nothing
+//     and the harness reads its own silence as "the model could not fix it"). Naming the gap rather
+//     than shipping an untested admission.
 //   · findings_* / connotation_* / named_band_* — WORK class by construction ( owns them).
+//   · coverage_form_axis_invalid ( fix round; re-examined at the typed-transport conversion) — AN
+//     OPEN QUESTION, NAMED RATHER THAN ANSWERED. By the criterion above it belongs here: it is a
+//     closed four-token vocabulary, the SAME vocabulary whose prose-era sibling
+//     (`coverage_axis_invalid`, "all axes") is one of the three defects this block records as having
+//     cost a paid dispatch in the 08-02 round. What stops it NOW: a coverage repair is a
+//     `record_coverage` TOOL CALL, and the offline repair-turn mock speaks no MCP at all — an
+//     admission here cannot be tested truthfully; the harness would read its own silence as "the model
+//     could not fix it". The miss behaviour is the safe one: it falls to the ladder, where it is
+//     warm-eligible and its hint names the field, the allowed set and the tool. (The tool also refuses
+//     an off-vocabulary axis AT CALL TIME, so on the live path this token now fires only over rows
+//     recorded before the conversion.) Raise, do not ship an untested admission.
 // Anything NOT on this list — including a form defect nobody has classified yet — falls through to
 // the retry ladder exactly as it does today, visibly. Unknown shape is never "validated fine". That is
 // also why this hand-maintained table needs no self-healing derivation: its MISS behaviour is
 // already the safe one — a token nobody added costs what it costs today and is never swallowed.
 // Kill-switch: CLEAROTRON_FORM_REPAIR=0 (or off/false/no — it reads through envGateOn,) restores
 // today's behaviour exactly.
-const FORM_CLASS_RE = /^invalid_file:.*?:(coverage_(key_unknown|axis_invalid|status_invalid|status_offenum|classes_invalid))\b/;
+const FORM_CLASS_RE = /^invalid_file:.*?:(framediff_(key_unknown|directive_key_unknown|directives_invalid|layer_invalid|severity_invalid|gap_invalid|remedy_invalid|directive_undispatchable)|coverage_(key_unknown|axis_invalid|status_invalid|status_offenum|classes_invalid))\b/;
 export function isFormClassFail(fail) {
   return FORM_CLASS_RE.test(fail ?? "");
 }
-// How many in-dispatch repairs one stage run may buy. TWO, and the number has a cause: a FAIL-FAST
-// parser throws on its first defect, so ONE artifact carrying two defects surfaces them SEQUENTIALLY —
-// measured on the 08-02 round, on a stage that has since been removed (the first defect on a1, the
-// second on a2) — and a cap of 1 would have handed the second one straight back to the ladder.
+// How many in-dispatch repairs one stage run may buy. TWO, and the number has a cause: parseFrameDiff
+// is FAIL-FAST — it throws on the first bad severity (frame-diff-model.mjs:66 parseFrameDiff) before it ever collects
+// the undispatchable directives (:100) — so ONE artifact carrying both defects surfaces them
+// SEQUENTIALLY. That is exactly what the 08-02 frame-diff ladder did (severity on a1, undispatchable
+// on a2), and a cap of 1 would have handed the second one straight back to the ladder. The codebase
+// already learned this lesson once at directive granularity: undispatchableThrow batches ALL offenders
+// into ONE throw precisely because "the ladder is 3 attempts and a per-directive throw spends one".
 // A form chain DEEPER than two still reaches the ladder — visibly, and that is the honest outcome.
 const MAX_FORM_REPAIRS = 2;
 
@@ -2921,11 +3178,18 @@ const MAX_FORM_REPAIRS = 2;
 // Map #3 — coverage_mirror_missing was REMOVED from the warm allowlist: it can no longer fire (the JSON is
 // code-derived from the prose, so the mirror cross-check is retired). The coverage_* STRUCTURE tokens stay
 // (they fire on a malformed derived JSON); the warm sibling-JSON path is still valid for them.
+// blindframe_* / framediff_* : the frame-omission design's structured siblings — a JSON-defect repair on a
+// turn that completed cleanly (the prose passed), exactly the warm-patch shape; the sibling dispatch in
+// warmPatchMessage names the JSON to fix and forbids touching the prose.
 // named_band_state_invalid / _block_invalid / _unparseable ( T1, J1b): a JSON-defect repair of the
 // model's OWN qid-less judgment block on a turn that completed cleanly — exactly the warm-patch shape.
 // (named_band_collapsed stays cold: a collapsed slice needs a RE-RUN of the search, not a JSON patch.)
 // plan_audit_missing ( T1, J3b): the review is complete except one required section — a warm resume
 // re-emits the review with the section added instead of burning a cold re-refutation.
+// coverage_status_offenum (D1): a single off-enum Status CELL in the prose Coverage ledger on an
+// otherwise-clean digest turn — a one-cell prose relabel (qualifier moves into Reason), exactly the
+// warm-patch shape; the shape fired on ~43% of the archive corpus, so a cold-only ladder would burn
+// a full register-digest re-run per live hit.
 // named_band_missing (2026-07-14, copper-keystone): warm-eligible too — the session completed cleanly (the
 // prose passed), and the repair is ONE tool call from the warm session (see warmPatchMessage's dedicated
 // branch below — never the sibling re-save message, which would instruct the hand-author lane).
@@ -2972,13 +3236,38 @@ const MAX_FORM_REPAIRS = 2;
 // disables the lane, so the fallback in both cases is exactly today's cold ladder.
 // The prose route is deliberate — neither token matches a sibling pattern below, so the patch names the
 // failing half's own .md and never orders a rewrite of the TOOL-written grid ledger the receipts live in.
+// coverage_no_status / coverage_form_damaged: WARM, and this is the whole economic case for the
+// issue. The coverage-judgment family was COLD-ONLY — WARM_ELIGIBLE_RE carried seven coverage STRUCTURE
+// tokens and not one `coverage_clean_*` — so every retry re-dispatched a fresh session that re-read a
+// 1.9 MB band and re-derived a 160 KB document instead of editing it. The stage's own measured profile
+// (repair-contract.mjs, 'WHY THIS EXISTS') is 105,747 out FAIL → 137,519 out FAIL → 36,362 out PASS, and the attempt
+// that passed is the one that PATCHED. A cold ladder never patches.
+// WHY THEY ARE SAFE TO WARM, on the same argument made one gate over: findCoverageFormViolations
+// emits both tokens only over rows the DRIVER wrote from the frozen plan and the plan-execution
+// receipt, so a violation is PROOF the searches ran and were accounted. What is missing is a STATUS on
+// obligations the driver already computed with every qid, hit count and receipt reason: one
+// `record_coverage` call, not a re-search (the typed transport — the seat edits no file; the warm patch
+// orders the call). The tokens that mean "the search did not happen" are DIFFERENT and are deliberately
+// kept out — coverage_clean_unexecuted / _skipped / _tainted, whose remedies are a re-run or a relabel.
+// coverage_form_missing is ALSO deliberately absent: a seat cannot patch a file it was never told about
+// (the sidecar lives in `_driver/`), the defect is the driver's, and warming it would spend a resumed
+// turn asking a model to fix a driver bug. It is emitted as `invalid_file:…` and not as `missing_file`
+// precisely so the bare `missing_file` alternation at the head of this literal cannot warm it by accident.
+// coverage_form_axis_invalid ( fix round): WARM, and this is the clearest case in the list. The seat
+// must re-send rows IT added with ONE FIELD corrected — a single `record_coverage` call — and the
+// failure token names the rows and the rejected values. A cold re-dispatch would re-read a 1.9 MB
+// band and re-derive a 160 KB document to retype one word — the exact economics that made the coverage
+// family warm-eligible in the first place. It also cannot mean "the search did not happen": the offending
+// rows are SEAT rows, added on top of a driver form whose existence is proof the plan ran. It is spelled
+// with `form` first so this alternation's own `coverage_axis_invalid` (the derived-JSON structure token,
+// a different file and a different repair) cannot match it and route it to the wrong sibling.
 // — THE CONNOTATION ALTERNATION IS INTERPOLATED FROM THE EXPORTED VOCABULARY, NOT RETYPED. It was
 // retyped at five sites, and a reason added without all five following it matches nothing here: the
 // failure is warm-ineligible in silence, the repair is aimed at the findings document instead of the
 // form, and the ladder spends its attempts on a file the validator never re-reads. Binding to the list
 // is what did one level up, for the same reason. The RE is built from a string for that one splice;
 // nothing else in it changed, and it carries no backslash escapes for the string form to mangle.
-const WARM_ELIGIBLE_RE = new RegExp(`^(missing_file|invalid_file:.*?:(use_check_missing|own_rights_missing|coverage_ledger_unparseable|coverage_ledger_empty|coverage_axis_invalid|coverage_axis_missing|coverage_status_invalid|coverage_key_unknown|grid_join_missing|grid_ledger_unparseable|platforms_missing|${CONNOTATION_FORM_TOKEN_SRC}|findings?_[a-z_]+|named_band_(state_invalid|block_invalid|unparseable|missing)|tool_timeout:[a-z_]+:[a-z0-9-]+|plan_audit_missing|intake_ask_unanswered))`);
+const WARM_ELIGIBLE_RE = new RegExp(`^(missing_file|invalid_file:.*?:(use_check_missing|own_rights_missing|coverage_ledger_unparseable|coverage_ledger_empty|coverage_axis_invalid|coverage_axis_missing|coverage_status_(invalid|offenum)|coverage_key_unknown|coverage_(no_status|form_damaged|form_axis_invalid|form_engine_vocabulary)|grid_join_missing|grid_ledger_unparseable|platforms_missing|${CONNOTATION_FORM_TOKEN_SRC}|findings?_[a-z_]+|blindframe_[a-z_]+|framediff_[a-z_]+|named_band_(state_invalid|block_invalid|unparseable|missing)|tool_timeout:[a-z_]+:[a-z0-9-]+|plan_audit_missing|intake_ask_unanswered))`);
 
 // — `tool_timeout` IS ON THAT LIST TO KEEP ROUTING WHERE IT ALREADY IS, not to add a lane.
 //
@@ -3067,7 +3356,7 @@ export function vetoResumeRuledNone(attempt, state) {
 // ── WHICH FILE A REPAIR TURN IS TOLD TO WRITE ───────────────────────────────────────────────────────
 // warmPatchMessage does NOT always aim at the stage's expectFile. For a whole family of tokens it aims
 // at a SIBLING and says, in the same breath, "do NOT rewrite <the expectFile> (it already passed
-// validation)": coverage_* → register-coverage-ledger.json, findings_*
+// validation)": framediff_* → frame-diff.json, coverage_* → register-coverage-ledger.json, findings_*
 // → findings.json, grid_* → the failing half's own ledger, named_band_* → <axis>-band.json.
 //
 // That in-dispatch repair has to know that, because it decides whether a repair LANDED by looking at
@@ -3116,8 +3405,13 @@ function repairSiblingName(lastFail, expectFile) {
   const files = (Array.isArray(expectFile) ? expectFile : [expectFile]).filter(Boolean);
   const f = String(lastFail ?? "");
   return /coverage_(ledger|axis|key|mirror|status_invalid)/.test(f) ? "register-coverage-ledger.json"
-    // THE COVERAGE-FORM TOKENS ARE ABSENT: no seat writes a coverage file, so there is no sibling a
-    // repair could aim at, and since the register digest left nothing emits them to a seat at all.
+    //, typed transport — THE COVERAGE-FORM TOKENS ARE DELIBERATELY ABSENT, exactly like the
+    // connotation tokens below and for the same reason: the seat writes no coverage file, so there is
+    // no sibling a repair could aim at. The remedy is a `record_coverage` call, which
+    // warmPatchMessage's own coverage branch orders BEFORE this function is consulted (its regex, not
+    // this name, is what routes those tokens); the graded artifact falls back to the stage's own .md.
+    // The old arm returned COVERAGE_FORM_NAME — the seat-facing copy, which nothing writes any more —
+    // and a repair aimed at a dead file is the two-halves-disagreeing shape fixed.
     // A1 split: the grid ledger is derived from the failing findings file (gridLedgerNameFor) — a half
     // member repairs ITS common-law-grid.half-<h>.json, the file validators.commonLawHalf re-judges;
     // hardcoding the canonical name here would loop the ladder on a file the validator never reads.
@@ -3130,6 +3424,10 @@ function repairSiblingName(lastFail, expectFile) {
     // remedy is a `record_dispositions` call, which warmPatchMessage's own connotation branch orders;
     // the graded artifact falls back to the stage's own.md exactly as it did before.
     : /findings?_/.test(f) ? "findings.json"   // Phase-0 contract sibling (dormant until Phase 1)
+    // blindframe_ is deliberately ABSENT: blind-frame-model.json is no longer a sibling, it is the
+    // stage's expectFile. Routing it here would hand the model a message that forbids rewriting the very
+    // file it then orders re-saved. The generic invalid_file branch aims the patch correctly.
+    : /framediff_/.test(f) ? "frame-diff.json"
     : null;
 }
 
@@ -3159,6 +3457,9 @@ export function warmPatchMessage(lastFail, expectFile, { supplementalLane = fals
   // its prose checks — telling the model to rewrite it "in full" on a patch turn risks degrading
   // valid prose (and a prose-structural failure is NOT quarantine-rescuable). Name the SIBLING file
   // that is actually defective and forbid touching the findings.
+  // (coverage_status_offenum is EXCLUDED from the coverage sibling route: it is a PROSE-cell defect in
+  //  register-findings.md itself — the generic full-file patch below is the correct repair, mirroring
+  //  plan_audit_missing / intake_ask_unanswered.)
   // B — A CONNOTATION REPAIR IS A TOOL CALL, NOT A FILE EDIT. The seat writes no dispositions file:
   // rulings reach the driver's accumulator only through `record_dispositions`, so a warm patch that
   // ordered any file edit would aim the seat at an artifact it cannot affect — the two halves of one
@@ -3184,12 +3485,31 @@ export function warmPatchMessage(lastFail, expectFile, { supplementalLane = fals
       `The meaning-sweep dispositions did not pass (${lastFail}). Fix exactly this: ensure ${correctionHint(lastFail, { gridLedgerName: gridLedgerNameFor(files), supplementalLane })}.\n` +
       `Record rulings ONLY by calling the \`record_dispositions\` tool with grid_spec_path: ${specPath} — never by writing or editing any file. Everything already recorded is kept. ${close}`;
   }
+  //, carried through the typed transport — A COVERAGE REPAIR IS A TOOL CALL, NOT A FILE EDIT.
+  // The seat writes no coverage file: statuses reach the driver's accumulator only through
+  // `record_coverage`, so a warm patch that ordered any file edit would aim the seat at an artifact it
+  // cannot affect — the exact two-halves-disagreeing shape the connotation branch above closed for B.
+  // The economics are unchanged and are still the point of warming this family: the resumed session
+  // sends the missing rows in one call instead of re-deriving a 160 KB document from a 1.9 MB band.
+  if (/coverage_(no_status|form_damaged|form_axis_invalid)/.test(lastFail ?? "") && files.length) {
+    // THE CLOSING ORDER IS PER TOKEN. "Record every outstanding row" is right for a missing judgment
+    // and WRONG for an off-vocabulary axis — every row there already carries a status, so it orders
+    // work already done. An axis repair closes on the field it is actually about.
+    const axisOnly = /coverage_form_axis_invalid/.test(lastFail ?? "");
+    return `You are RESUMING your own session for this stage — your prior work and inputs are already in your context. Do NOT re-read the band, do NOT re-run any search, and do NOT rewrite ${names || "the findings file"} (its own checks passed).\n` +
+      `The coverage record did not pass (${lastFail}). Fix exactly this: ensure ${correctionHint(lastFail, { gridLedgerName: gridLedgerNameFor(files), supplementalLane })}.\n` +
+      `Record statuses ONLY by calling the \`record_coverage\` tool — never by writing or editing any file. Everything already recorded is kept. ` +
+      (axisOnly
+        ? `Re-send ONLY the seat row(s) the correction names, with a valid "axis"; every other recorded status and reason stands.`
+        : `Do not stop until the tool's answer reports nothing outstanding.`);
+  }
   const sibling = repairSiblingName(lastFail, files);
   // ── THE SIBLING BRANCH MUST NOT OUTRANK THE TOOL-WRITTEN ONE (third conversion) ────────────
   //
-  // This branch orders "Re-save the COMPLETE corrected JSON at <sibling>", which is a hand-write. On a
-  // stage whose sibling IS the tool-written artifact the sibling branch is the wrong answer for EVERY
-  // token, not an edge case. It ran first and won, and the seat holds no `Write`.
+  // This branch orders "Re-save the COMPLETE corrected JSON at <sibling>", which is a hand-write. For
+  // frame-diff the sibling IS the tool-written artifact — `frame-diff.json`, with `frame-diff.md` as the
+  // stage's `out` — so on this stage the sibling branch is the wrong answer for EVERY token, not an edge
+  // case. It ran first and won, and the seat holds no `Write`.
   //
   // Caught by the agreement guard while this conversion was half-built, but only after the guard was
   // widened: its write-order markers matched `writeReturn`, the two repair tails and the max-tokens
@@ -3231,10 +3551,10 @@ export function warmPatchMessage(lastFail, expectFile, { supplementalLane = fals
       ? `Do NOT redo the work from scratch. This stage's own output is the driver's — it is rendered from your \`${outIsToolWritten.tool}\` call and you hold no tool that writes it, so there is nothing there for you to rewrite or protect.`
       : `Do NOT redo the work from scratch, and do NOT rewrite ${names || "the findings file"} (it already passed validation).`;
     return `You are RESUMING your own session for this stage — your prior work and inputs are already in your context. ${standsClause}\n` +
-      `Your saved ${sibling} failed validation (${lastFail}). Fix exactly this: ensure ${correctionHint(lastFail, { gridLedgerName: gridLedgerNameFor(files), supplementalLane })}.\n` +
+      `Your saved ${sibling} failed validation (${lastFail}). Fix exactly this: ensure ${correctionHint(lastFail, { gridLedgerName: gridLedgerNameFor(files), supplementalLane, undispatchable: frameDiffUndispatchable(files, lastFail) })}.\n` +
       `Re-save the COMPLETE corrected JSON at ${sib}. Do not stop until it exists and is valid.`;
   }
-  // — A REPAIR ON A TOOL-WRITTEN ARTIFACT IS A TOOL CALL, NOT A FILE WRITE, and this branch is what stops the two
+  // — A BLIND-FRAME REPAIR IS A TOOL CALL, NOT A FILE WRITE, and this branch is what stops the two
   // write-mode branches below from ordering an act the grant now denies. The seat holds no Write and no
   // Edit after the conversion, so `fullWriteTail`'s "Write the COMPLETE file now … with the Write tool" and
   // `editRepairTail`'s "TARGETED EDITS … using the Edit tool" would both fail on obedience, mid-round, on
@@ -3244,7 +3564,7 @@ export function warmPatchMessage(lastFail, expectFile, { supplementalLane = fals
   //
   // BOTH DIRECTIONS, because after the conversion they are the same fault. `missing_file` no longer means
   // "the turn wrote nothing" — the driver writes the file, so an absent model means the TOOL WAS NEVER
-  // CALLED. An `invalid_file` token means the call arrived and its values failed the parser. One remedy: call it.
+  // CALLED. `blindframe_*` means the call arrived and its values failed the parser. One remedy: call it.
   //
   // THE TOKEN-FAMILY LIST IS GONE (third conversion), and its removal is the root-cause half. It
   // read `/blindframe_|skeptic_/`, which is a second authoring of "which stages are converted" — one that
@@ -3253,6 +3573,9 @@ export function warmPatchMessage(lastFail, expectFile, { supplementalLane = fals
   // ARTIFACT has a writer other than the driver, and `TOOL_WRITTEN_ARTIFACTS` already answers it. After a
   // conversion the seat cannot write the file at all, so NO token about it can be repaired by a write.
   //
+  // The sibling is consulted too: frame-diff's `out` is the prose and every `framediff_*` token is about
+  // the JSON beside it, so a lookup on `files[0]` alone would miss the artifact the failure is actually
+  // about.
   // ── AND THE SIBLING'S TOOL IS NEVER ADOPTED ACROSS A STAGE BOUNDARY ────────
   //
   // This read `toolWrittenArtifact(files[0]) ?? sibIsToolWritten`, so a stage whose OWN output has no
@@ -3264,14 +3587,23 @@ export function warmPatchMessage(lastFail, expectFile, { supplementalLane = fals
   // have been handed a repair it could not perform, which is the two-halves-disagreeing shape this
   // whole routing exists to prevent, arriving from the one direction nobody had had to think about.
   //
-  // The fallback was covering a case that no longer exists and exposing one that now does.
+  // frame-diff is unaffected and was the reason the fallback was written: BOTH its basenames carry
+  // rows, so the `files[0]` lookup already answers for it. The fallback was covering a case that no
+  // longer exists and exposing one that now does.
   const toolWritten = files.length ? toolWrittenArtifact(files[0]) : null;
   if (toolWritten) {
     const never = /^missing_file/.test(lastFail ?? "");
     return `You are RESUMING your own session for this stage — your prior work and inputs are already in your context. Do NOT redo the work.\n` +
       (never
         ? `Your previous turn completed but ${toolWritten.what} never reached the driver (${lastFail}) — the \`${toolWritten.tool}\` tool was never called, and nothing you may have written by hand is read.\n`
-        : `What you sent did not pass (${lastFail}). Fix exactly this: ensure ${correctionHint(lastFail, { supplementalLane, toolWritten: toolWritten.tool })}.\n`) +
+        // `undispatchable` IS PASSED HERE TOO, and leaving it out was a regression this branch introduced
+        // the moment frame-diff started routing through it. P2-B's whole property is that the hint
+        // enumerates EVERY offending directive, read off the artifact rather than off the 160-char fail
+        // string — a warm patch that named one of four would make the three-attempt ladder count
+        // DIRECTIVES again, which is the 2026-07-29 reopen loss. Caught by frame-diff-model.test.mjs's
+        // cardinality pin, which asserts the warm path carries the full list without the caller passing
+        // anything.
+        : `What you sent did not pass (${lastFail}). Fix exactly this: ensure ${correctionHint(lastFail, { supplementalLane, undispatchable: frameDiffUndispatchable(files, lastFail), toolWritten: toolWritten.tool })}.\n`) +
       `Call \`${toolWritten.tool}\` with the values from the work already in your context — never by writing or editing any file. ` +
       `Do not stop until the tool accepts the call.`;
   }
@@ -3291,7 +3623,7 @@ export function warmPatchMessage(lastFail, expectFile, { supplementalLane = fals
   }
   const defective = failingTarget(lastFail, files) ?? files[0] ?? null;
   return `You are RESUMING your own session for this stage — your prior work and inputs are already in your context. Do NOT redo the work from scratch.\n` +
-    `Your saved ${defective ? rel(defective) : names || "output"} failed validation (${lastFail}). Fix exactly this: ensure ${correctionHint(lastFail, { gridLedgerName: gridLedgerNameFor(files), supplementalLane })}.\n` +
+    `Your saved ${defective ? rel(defective) : names || "output"} failed validation (${lastFail}). Fix exactly this: ensure ${correctionHint(lastFail, { gridLedgerName: gridLedgerNameFor(files), supplementalLane, undispatchable: frameDiffUndispatchable(files, lastFail) })}.\n` +
     editRepairTail(defective || names || "the stage output");
 }
 
@@ -3312,15 +3644,11 @@ export function warmPatchMessage(lastFail, expectFile, { supplementalLane = fals
  * calls the program refused (Claude's own denials; Codex's tool-server calls refused before reaching their
  * server). `commandToolCalls`: calls to a tool that runs a command, which no Claude stage is offered, so
  * zero is the expected reading; Codex keeps its shell and reports null. `mcpToolCalls`: the tool-server
- * calls Codex completed, its only count of calls made, since its `toolCalls` stays null.
- * `toolCallsErroredByName`: the tool-server calls that came back as an error, by tool name, so a stage that
- * had a call refused and made it again says so where its row otherwise reads ok on one attempt. Null, as in
+ * calls Codex completed, its only count of calls made, since its `toolCalls` stays null. Null, as in
  * `toolGauge`, is "this engine does not report", never zero. RECORDING ONLY. It sits at the end of this
  * file so that adding it moved no line another file cites.
  */
 function toolCallCounts(turn) {
   const n = (v) => (Number.isFinite(v) && v >= 0 ? v : null);
-  const errored = turn?.toolCallsErroredByName;
-  return { toolCallsRefused: n(turn?.toolCallsRefused), commandToolCalls: n(turn?.commandToolCalls), mcpToolCalls: n(turn?.mcpToolCalls),
-    toolCallsErroredByName: errored && typeof errored === "object" && !Array.isArray(errored) ? { ...errored } : null };
+  return { toolCallsRefused: n(turn?.toolCallsRefused), commandToolCalls: n(turn?.commandToolCalls), mcpToolCalls: n(turn?.mcpToolCalls) };
 }

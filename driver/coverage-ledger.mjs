@@ -104,8 +104,10 @@ export const NON_MATERIAL_AXES = ["saturation-probe"];
 // write, and the only one under a delivery-blocking gate (recall-reconciliation.mjs's position join:
 // a residual position with no individual ending is covered ONLY by membership of a ruled, counted
 // crowd). It lives HERE, with the rest of the coverage vocabulary, for the reason COVERAGE_FORM_NAME
-// does: coverage-form.mjs, which carries the same token into the form's `seat_row_contract`, is pure by
-// contract and reads it from here. One literal, no second copy.
+// does: the parser that reads it (parseCrowdRulings) sits in an IMPURE module, and coverage-form.mjs —
+// which must carry the same token into the `seat_row_contract` written into the file the seat edits —
+// is pure by contract and cannot import it from there. One literal, two readers, no second copy.
+// recall-reconciliation.mjs re-exports this name, so every existing import site is unchanged.
 export const CROWD_RULING_TOKEN = "dominant-element crowd";
 
 // The count a crowd ruling declares is read out of the coverage-unit CELL and nowhere else — see

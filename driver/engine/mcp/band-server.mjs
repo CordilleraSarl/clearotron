@@ -160,12 +160,13 @@ const recordUriFile = (uri) => String(uri ?? "").toLowerCase().replace(/^\/mark\
 //   https://tm.corsearch.com/mark/ae/229552   a provider URL (the VENZY join defect's shape)
 //   `/mark/ae/229552`, "…/mark/ae/229552."    a cite carrying markdown/punctuation
 //   /mark/ch/30419  vs  ch-30419-2014.json    the store holds the registration-INSTANCE uri while
-//                                             judgment cites the record (the same fact at a
-//                                             different granularity, which once halted a run
-//                                             falsely)
+//                                             judgment cites the record (`findScreenGateViolations` in screen-gate.mjs — a
+//                                             false hard-halt, the same fact at a different
+//                                             granularity)
 // So: canonicalise the CITE through normalizeRecordUri (registry-fidelity.mjs) — the canonical form
-// the pipeline already joins on — then resolve it against the directory. Another copy of that idea is
-// the last thing this defect class needs. The FILENAME
+// pipeline, recall-reconciliation and presence-reconciliation already join on, and the
+// same idea screen-gate.mjs re-implements as its own `toGateUri` fold — then resolve it against the
+// directory. A fifth copy of that idea is the last thing this defect class needs. The FILENAME
 // transform stays local and stays asymmetric to the writer's (the A3 note above); what is shared is the
 // uri canonicaliser, which is a pure string function — no vendor call and no vendor-shaped path enters
 // the reading layer through it, so the server stays provider-neutral by construction.

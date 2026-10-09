@@ -64,7 +64,7 @@ if (!/^\d+$/.test(String(opts.seed)) || Number(opts.seed) <= 0)
 
 // ── the inputs deriveBandShape uses, read the same way it reads them ─────────────────────────────────
 //
-// Deliberately mirrors driver/pipeline.mjs:436-485 mergeRegisterBands rather than inventing a gathering step. If the two
+// Deliberately mirrors driver/pipeline.mjs:441-490 mergeRegisterBands rather than inventing a gathering step. If the two
 // diverge, this probe measures a shape the run never had.
 
 const runDir = opts.run;
@@ -243,7 +243,7 @@ if (membershipBroken.length) {
 
 console.log(`\n${"═".repeat(78)}`);
 console.log(`This measures the BAND SHAPE only, and it is free. It is NOT the noise floor #217 needs.`);
-console.log(`That floor lives in the model-authored judgment of step 3 (owner-judgment.mjs) and needs`);
+console.log(`That floor lives in the model-authored placement tier (placement-model.mjs:46 PLACEMENT_TIERS) and needs`);
 console.log(`repeat paid arms on a named run dir with approved spend. Nothing here substitutes for it.`);
 console.log(`Nothing was written. Exit code is 0 either way — this records, it does not judge.\n`);
 process.exit(0);

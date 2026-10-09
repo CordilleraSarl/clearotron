@@ -1800,11 +1800,7 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // A comment edit moves these bytes too, so this constant moves with it.
 // Advanced again by the break recorded above the FROZEN constant: a framework's own inputs beside the band.
 // Not licence-only, so this constant moves with the other one.
-// Advanced again by the break recorded above the FROZEN constant: the judges' reason beside a set-aside
-// owner. Not licence-only, so this constant moves with the other one.
-// Advanced again by the break recorded above the FROZEN constant: no cause in brackets on the card's
-// could-not-be-retrieved line. Not licence-only, so this constant moves with the other one.
-const FROZEN_BEFORE_SPDX = "6a9272deb66c3378a1d51dc9424b88a1531ba87f18aa61c0a4daf32c1c471d01";
+const FROZEN_BEFORE_SPDX = "a4728c8f6b9ed2b7cc32b120e23b6d87ef8aa724a3702f415fc52cf7f85f7458";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2721,40 +2717,7 @@ const FROZEN_BEFORE_SPDX = "6a9272deb66c3378a1d51dc9424b88a1531ba87f18aa61c0a4da
 //      modes (212,751 and 212,604 bytes).
 //   2. Could it live in report.css or brand.mjs? No: it is the chip's text, not its look.
 //   3. Why it had to move here: the chip is composed in this file and nowhere else.
-// ── BREAK (2026-10-02 — the judges' reason beside a set-aside owner) ──────────────────────────────────
-//
-// WHAT MOVED: one line of the "also considered" list. Each name's caption (owner · country · classes ·
-// status) takes the judges' reason as its last part when the record carries one: `c.reason`, set by
-// search-depth.mjs from the run's merged decisions. A name with no reason joins exactly as before, because
-// the empty part is filtered out with the others.
-//
-// WHY. The owner ruled (2026-10-02) that an owner the judges set aside appears under "also considered"
-// with the judges' reason.
-//
-// THE THREE QUESTIONS.
-//   1. Reachable from republish? Yes, and it renders the same bytes for every run that has no merged
-//      decisions, which is every run before step 3 was judged by owner. Measured by rendering the same
-//      list through main's file and this one: with no reason, identical (202,085 bytes, same hash); with a
-//      reason, only this file prints it.
-//   2. Could it live in report.css or brand.mjs? No: it is the caption's text, not its look.
-//   3. Why it had to move here: the caption is composed in this file and nowhere else.
-// ── BREAK (2026-10-02 — no cause in brackets on the could-not-be-retrieved line) ──────────────────────
-//
-// WHAT MOVED: the card line for a cited record the closure fetch could not retrieve. It printed the
-// failure's cause in brackets, and the cause can be an exception's message (`fetch threw: …`). It now
-// reads "Official register record could not be retrieved — registry details in this card are
-// unverified." The cause stays where it was written: the persisted failure list and the card's stamp.
-//
-// WHY. Nothing a client reads carries engineering wording, and an exception tells a client nothing they
-// can act on. The bracket is dropped and nothing is written in its place.
-//
-// THE THREE QUESTIONS.
-//   1. Reachable from republish? Yes, on a card with a fetch-failure stamp, and only there. Measured by
-//      rendering the demo matter through main's file and this one: with no stamp, identical (211,572
-//      bytes, same hash); with a stamp, only this line differs, by its bracket.
-//   2. Could it live in report.css or brand.mjs? No: it is the line's text, not its look.
-//   3. Why it had to move here: the line is composed in this file and nowhere else.
-const FROZEN = "ff0ea09c56d5320c0379334ac832a56740d738b0d79bea2fc4ad96b6c8ce970e";
+const FROZEN = "4c19e303c7e08f6dbb50e59c47e4c67b4be32393d9593920eb4b6ffdb9af6714";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));

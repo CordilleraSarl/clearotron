@@ -15,11 +15,13 @@ import { fileURLToPath } from "node:url";
 const skill = (rel) => readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "skills", rel), "utf8");
 
 test("no manual lets a watchlist carry a finding, or an off-field sector exclude one", () => {
-  // The register digest's manual went with the digest; the register reading is now the owner judges', whose
-  // words are pinned on their own (owner-judgment.mjs) and carry no watchlist rule.
+  const digest = skill("clearance-register/digest.md");
   const synthesis = skill("clearance-search/synthesis-rules.md");
   const frame = skill("matter-frame/SKILL.md");
-  assert.ok(synthesis.includes("## Watchlist findings") && frame.includes("### Off-field sectors"), "guard: the manuals were read");
+  assert.ok(digest.includes("### Step 5 — Apply watchlists") && synthesis.includes("## Watchlist findings")
+    && frame.includes("### Off-field sectors"), "guard: the manuals were read");
+  for (const carried of [/always include/, /regardless of relevance-gate/, /override the gate/, /can only ever ADD a finding/, /exists to \*guarantee\*/])
+    assert.doesNotMatch(digest, carried, `the digest lets a watchlist carry a finding: ${carried}`);
   for (const carried of [/automatic inclusion/, /regardless of legal-test/])
     assert.doesNotMatch(synthesis, carried, `synthesis lets a watchlist carry a finding: ${carried}`);
   assert.doesNotMatch(frame, /categorically excluded from headline risk/, "the frame lets an off-field sector exclude a finding");

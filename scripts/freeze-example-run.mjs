@@ -58,24 +58,24 @@ const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 // Every entry cites the read that puts it here. `required` means publish cannot render without it.
 const FROZEN_FILES = [
   // publish/index.mjs — parseReport(reportMd), the one mandatory input
-  { path: "report.md", required: true, why: "publish/index.mjs:653 parseReport" },
+  { path: "report.md", required: true, why: "publish/index.mjs:650 parseReport" },
   { path: "audit.md", why: "publish/index.mjs:1022 auditMd, the audit workbook source" },
-  { path: "findings.json", why: "publish/index.mjs:718 readStore, the per-finding machine contract" },
-  { path: "status.json", why: "publish/index.mjs:1028 machineLedgerNote + markName" },
+  { path: "findings.json", why: "publish/index.mjs:715 readStore, the per-finding machine contract" },
+  { path: "status.json", why: "publish/index.mjs:913 machineLedgerNote + markName" },
   { path: "case-law-findings.md", why: "`clPath` declared in index.mjs, the case-law section" },
   { path: "common-law-grid.json", why: "`commonLawJoinedTerms` declared in index.mjs, common-law coverage" },
   // publish/index.mjs — the _driver sidecars it reads by name
-  { path: "_driver/receipts.json", why: "publish/index.mjs:764 fetchReceipts" },
-  { path: "_driver/senior-rights.json", why: "publish/index.mjs:790 seniorRights" },
-  { path: "_driver/verdict.json", why: "publish/index.mjs:795 verdictInfo" },
+  { path: "_driver/receipts.json", why: "publish/index.mjs:761 fetchReceipts" },
+  { path: "_driver/senior-rights.json", why: "publish/index.mjs:787 seniorRights" },
+  { path: "_driver/verdict.json", why: "publish/index.mjs:792 verdictInfo" },
   { path: "_driver/framework.json", why: "publish/index.mjs, the frozen band vocabulary the run was rated under" },
-  { path: "_driver/register-plan.json", why: "publish/index.mjs:914 scopeBasis" },
-  { path: "_driver/instructed-scope.json", why: "publish/index.mjs:915 searchedJurisdictions, the fallback for register-plan" },
+  { path: "_driver/register-plan.json", why: "publish/index.mjs:910 scopeBasis" },
+  { path: "_driver/instructed-scope.json", why: "publish/index.mjs:914 searchedJurisdictions, the fallback for register-plan" },
   { path: "_driver/enforcer-signals.json", why: "`esPath` declared in index.mjs" },
-  { path: "_driver/predelivery-lint.json", why: "publish/index.mjs:173 lintSink" },
-  { path: "_driver/escalation-state.json", why: "publish/index.mjs:174 escSink" },
+  { path: "_driver/predelivery-lint.json", why: "publish/index.mjs:172 lintSink" },
+  { path: "_driver/escalation-state.json", why: "publish/index.mjs:173 escSink" },
   { path: "_driver/reasoning-integrity.json", why: "`integritySink` declared in index.mjs" },
-  { path: "_driver/corrections-state.json", why: "publish/index.mjs:175 correctionsSink" },
+  { path: "_driver/corrections-state.json", why: "publish/index.mjs:174 correctionsSink" },
   { path: "_driver/search-policy.json", why: "`searchPolicy` declared in index.mjs, level + stage label" },
   { path: "_driver/profile.json", why: "publish/index.mjs reads the frozen profile; report-registry.mjs:42 republishRun, customer key" },
 ];
@@ -100,25 +100,25 @@ for (const path of Object.keys(PUBLISH_INPUTS)) {
 const KNOCKOUT_FILES = [
   { path: "knockout-findings.json", required: true, why: "report-registry.mjs:66 the batch findings ARE the report source" },
   { path: "knockout-plan.json", why: "report-registry.mjs:77 plan" },
-  { path: "knockout-assessment.md", why: "the merged prose the lane writes (gateway.mjs:174 TOOL_WRITTEN_PATTERNS)" },
-  { path: "knockout-frame.md", why: "the batch scope note (gateway.mjs:63 TOOL_WRITTEN_ARTIFACTS)" },
+  { path: "knockout-assessment.md", why: "the merged prose the lane writes (gateway.mjs:184 TOOL_WRITTEN_PATTERNS)" },
+  { path: "knockout-frame.md", why: "the batch scope note (gateway.mjs:65 TOOL_WRITTEN_ARTIFACTS)" },
   { path: "email-body.md", why: "the delivery prose the lane writes beside the assessment" },
-  { path: "status.json", why: "publish/index.mjs:1028 machineLedgerNote + markName" },
+  { path: "status.json", why: "publish/index.mjs:913 machineLedgerNote + markName" },
   { path: "audit.md", why: "publish/index.mjs:1022 auditMd, the audit workbook source" },
   // The _driver sidecars publishKnockout reads by name. framework.json is REQUIRED and says so at its
   // call site: a knockout re-rendered under today's bands would silently restate its verdict.
   { path: "_driver/framework.json", required: true, why: "report-registry.mjs:68 the bands it was rated under" },
   { path: "_driver/search-policy.json", why: "report-registry.mjs:71 level + stage label" },
   { path: "_driver/profile.json", why: "report-registry.mjs:72 customer key and the delivery overlay" },
-  { path: "_driver/verdict.json", why: "publish/index.mjs:795 verdictInfo" },
-  { path: "_driver/receipts.json", why: "publish/index.mjs:764 fetchReceipts" },
+  { path: "_driver/verdict.json", why: "publish/index.mjs:792 verdictInfo" },
+  { path: "_driver/receipts.json", why: "publish/index.mjs:761 fetchReceipts" },
   // THE COUNT SIDECARS, AND THE PROOF IS WHAT FOUND THEM. Without register-counts.json the republished
   // meta carries `registerCounts: undefined` where the source carried the provider, the taken-at stamp
   // and the per-mark counts — so the workbook's Register column and every counted figure in the
   // knockout report render empty (`buildKnockoutWorkbook` in publish/knockout.mjs). Named by `koPaths` in stages-knockout.mjs.
   { path: "_driver/register-counts.json", why: "buildKnockoutWorkbook in publish/knockout.mjs: counted figures + the Register column" },
   { path: "_driver/register-records.json", why: "koPaths in stages-knockout.mjs: the terms behind the close-variation axis" },
-  { path: "_driver/instructed-scope.json", why: "publish/index.mjs:915 searchedJurisdictions, the fallback for register-plan" },
+  { path: "_driver/instructed-scope.json", why: "publish/index.mjs:914 searchedJurisdictions, the fallback for register-plan" },
 ];
 
 /** The allowlist for a template. One place, so a new template cannot half-exist. */
@@ -174,7 +174,7 @@ const SCRUB = [
 // hides the next real difference.
 const VOLATILE = [
   { id: "issued", re: /\d{4}-\d{2}-\d{2} · \d{2}:\d{2} [A-Z]{2,5}/g, sub: "<issued>", why: "publish/index.mjs, the generation stamp in the firm locale" },
-  { id: "iso-timestamp", re: /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z/g, sub: "<ts>", why: "publish/index.mjs:669 asOf" },
+  { id: "iso-timestamp", re: /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z/g, sub: "<ts>", why: "publish/index.mjs:668 asOf" },
 ];
 
 // ── REWRITES — what is CHANGED on the way out, as opposed to what is refused ───────────────────────

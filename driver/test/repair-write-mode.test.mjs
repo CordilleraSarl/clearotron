@@ -24,7 +24,9 @@ import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { editRepairTail, fullWriteTail } from "../repair-contract.mjs";
-import { buildEscalationFollowup, buildEnvelopeCloseFollowup } from "../stages.mjs";
+import { digestReemitContract, buildFlushFollowup } from "../digest-queue.mjs";
+import { buildEscalationFollowup, buildEnvelopeCloseFollowup,
+  buildFrameReopenFollowup, buildFrameReopenRetryMessage } from "../stages.mjs";
 // — the one registry. Every assertion about repair text below reads what a composer COMPOSES,
 // never a window of pipeline.mjs source.
 import { REPAIR_COMPOSERS } from "../repair-composers.mjs";
@@ -38,6 +40,11 @@ const P = {
   registerUnit: (a) => `/runs/x/clearance-search/run/register-units/${a}.md`,
 };
 const UNIT = P.registerUnit(AXIS);
+const DIRECTIVES = [
+  { layer: "variant", severity: "dominant-element", item: "HALCYON", observation: "the dominant element was never enumerated in class 35" },
+  { layer: "field", severity: "class-gap", item: "Cl.35/38", observation: "the class gap was never scoped" },
+];
+const FINDINGS = "/runs/x/clearance-search/run/register-findings.md";
 
 // What "orders targeted edits" MEANS, asserted once here so every site below can be checked against the
 // same bar rather than each inventing its own phrasing test.
@@ -78,6 +85,32 @@ test("the two tails say opposite things about write mode, and the edit tail neve
   assert.doesNotMatch(w, /TARGETED EDITS/);
 });
 
+// ── digest-queue: the settlement flush ────────────────────────────────────────────────────────────────
+test("digestReemitContract orders a PATCH CALL, and keeps the reconciliation mandate the flush exists for", () => {
+  // CONVERSION 11 — this asserted `ordersEdits`. register-findings.md's only writer is the driver now, so
+  // an Edit order here would be the superseded path the golden rule bans; the anti-truncation property the
+  // Edit was chosen for is carried by the patch instead (see digest-queue.test.mjs for the full note).
+  const c = digestReemitContract(FINDINGS);
+  assert.match(c, /record_register_digest/, "the flush must name the transport that writes the document");
+  assert.match(c, /patch: true/, "a flush corrects named rows, and a patch is what makes that cheaper than the append it replaced");
+  assert.doesNotMatch(c, EDIT_TAIL, "a file-edit tail on a tool-call repair is the shape #460 closed");
+  assert.match(c, /Coverage ledger/,
+    "WHAT to reconcile is unchanged; only the write mode moved");
+  // The truncation fear the old full-emission contract was justified by is answered, not abandoned: a Write
+  // carrying only the changed sections still destroys what it omits, so the flush must never invite one.
+  const followup = buildFlushFollowup({ registerFindingsPath: FINDINGS, sections: [{ trigger: "escalation", text: "…" }] });
+  assert.ok(followup.trimEnd().endsWith(c), "the consolidated followup still ENDS with the contract");
+  assert.ok(!followup.includes("ONLY those rows corrected"), "never 'emit only the changed sections'");
+});
+
+test("the comment above digestReemitContract states the Write-vs-Edit distinction its old justification missed", () => {
+  const t = src("digest-queue.mjs");
+  const block = t.split("export function digestReemitContract")[0].split("── the consolidated settlement followup")[1];
+  assert.match(block, /A Write REPLACES the file/);
+  assert.match(block, /An Edit PATCHES the bytes it names in place/);
+  assert.match(block, /cannot be truncated/, "the old justification is answered on its own terms, not dropped");
+});
+
 // ── stages.mjs: the register-unit corrective builders ─────────────────────────────────────────────────
 test("the escalation followup orders the unit-note CALL, on both lanes, with the concerns still dictated", () => {
   for (const lane of [false, true]) {
@@ -99,13 +132,75 @@ test("the envelope-close followup orders the unit-note CALL and still names the 
   }
 });
 
-// 2 -> 0, and then no home at all. Both occurrences were the cold retry's note re-emission, and the note
-// is a call now. The arm used to assert CONTAINMENT — wherever the phrase appears, it is inside the one
-// builder entitled to it. That builder was the mid-run reopening's cold retry, and it left the engine with
-// the reopening, so no builder in stages.mjs is entitled to a full-write order and any occurrence is one.
-test("stages.mjs holds no full-write wording — the one builder entitled to it left the engine", () => {
-  const total = [...src("stages.mjs").matchAll(/full file, not a diff/g)].length;
-  assert.equal(total, 0, `${total} full-write order(s) in stages.mjs, and no builder there is entitled to one`);
+test("frame-reopen WARM resume orders the digest CALL — and the band prohibition survives the Edit it qualified", () => {
+  const lane = buildFrameReopenFollowup({ paths: P, axis: AXIS, directives: DIRECTIVES, reopenFetchCap: 120, supplementalLane: true });
+  ordersTheCall(lane, UNIT, "frame-reopen warm (lane)");
+  // Introducing the Edit tool into a prompt whose band is TOOL-OWNED is the one new hazard this conversion
+  // creates: "you may edit" must not read as "you may edit the band". The scope is stated in the sentence
+  // immediately before the tail, where it is read as a qualification of it.
+  assert.match(lane, /never author, edit, append to or re-save \/runs\/x\/clearance-search\/run\/register-units\/primary-sweep-band\.json yourself/);
+  // THE SCOPE SENTENCE OUTLIVED THE HAZARD IT QUALIFIED, and that is why it stays. It existed because
+  // introducing the Edit tool into a prompt whose band is TOOL-OWNED risked reading as "you may edit the
+  // band". There is no Edit direction here now — the digest is a call — so the sentence no longer
+  // qualifies anything, but the band prohibition it carries is the live half and is asserted above.
+  assert.doesNotMatch(lane, /the edit direction below covers the DIGEST only/,
+    "the qualification survived the direction it qualified — a sentence pointing at nothing teaches a "
+    + "seat that an edit direction is somewhere below");
+
+  const legacy = buildFrameReopenFollowup({ paths: P, axis: AXIS, directives: DIRECTIVES, reopenFetchCap: 120, supplementalLane: false });
+  ordersTheCall(legacy, UNIT, "frame-reopen warm (legacy)");
+  // On the legacy lane the model owns its own band, and this arm used to order "APPEND each call's result
+  // as a block" and then, three lines later, a COMPLETE re-emission of the band "with the new blocks folded
+  // in". An append and a re-emission are not the same act, and the re-emission is the one that re-types
+  // blocks the model never authored — which is how a qid gets dropped. Correctness, not cost.
+  assert.match(legacy, /APPEND each call's result as a block/, "the append order is untouched");
+  assert.match(legacy, /GROWS BY APPENDING/);
+  assert.match(legacy, /keeping its "qid" field byte-identical/);
+  assert.match(legacy, /never re-emit the band whole/);
+  assert.doesNotMatch(legacy, /re-emit the COMPLETE updated \S+ digest .* AND your \S+ band artifact/,
+    "the self-contradictory band re-emission is gone");
+});
+
+// — THE EXEMPTION'S PURPOSE SURVIVES AND ITS MECHANISM MOVED, which is a different
+// thing from the exemption being retired. It existed because a FRESH session dispatched after a warm
+// resume died at the hard wall has no context to patch FROM, and the artifact on disk may be kill-torn —
+// so the digest had to be re-emitted whole rather than edited. Both halves still hold, and neither is a
+// dictation any more: `record_unit_note` renders the note WHOLE on every accepted call, so a torn note is
+// repaired by the next call by construction, and there is no patch instruction to be exempt from. The BAND
+// half of the legacy lane is untouched — that file is still the seat's on that lane, and it still appends.
+test("frame-reopen COLD retry orders the note CALL, and the kill-torn reasoning is still stated", () => {
+  for (const lane of [false, true]) {
+    const m = buildFrameReopenRetryMessage({ paths: P, axis: AXIS, directives: DIRECTIVES, reopenFetchCap: 90, supplementalLane: lane });
+    ordersTheCall(m, UNIT, `cold retry (lane=${lane})`);
+    // WHY the session is fresh at all, restated as an assertion so the reasoning is not folklore.
+    assert.match(m, /TIMED OUT at the hard wall, so start clean/);
+    assert.match(m, /kill-torn|re-renders it whole|renders \S+ from your call/,
+      `cold retry (lane=${lane}) — says why a torn artifact needs no repair from the seat`);
+  }
+  // The LEGACY lane still owns its band, and the append order there is untouched by the note conversion.
+  const legacy = buildFrameReopenRetryMessage({ paths: P, axis: AXIS, directives: DIRECTIVES, reopenFetchCap: 90, supplementalLane: false });
+  assert.match(legacy, /APPEND each result as a block/, "the legacy lane's band order is not the note's");
+  // and the source says the same thing to the next reader, so a consistency sweep does not "fix" it
+  const t = src("stages.mjs");
+  const why = t.split("export function buildFrameReopenRetryMessage")[0].split("// Frame-reopen, FRESH scoped retry")[1];
+  assert.match(why, /kill-torn/);
+});
+
+// 2 -> 0. Both occurrences were the cold retry's note re-emission, and the note is
+// a call now. THE ARM KEEPS ITS SHAPE rather than becoming `assert.equal(total, 0)`, because a count pinned
+// at zero is true by construction and would go green over a tree where the wording came back somewhere
+// worse. What it asserts is the CONTAINMENT — wherever the phrase appears, it is inside the one builder
+// entitled to it — which is a statement that can still fail, and the count is reported beside it so a
+// reappearance is visible rather than merely permitted.
+test("stages.mjs holds the full-write wording ONLY inside the cold-retry builder", () => {
+  const t = src("stages.mjs");
+  const total = [...t.matchAll(/full file, not a diff/g)].length;
+  const cold = t.split("export function buildFrameReopenRetryMessage")[1].split("// ---- operability helpers")[0];
+  const inside = [...cold.matchAll(/full file, not a diff/g)].length;
+  assert.equal(inside, total,
+    `${total} full-write order(s) in stages.mjs and ${inside} of them inside the cold-retry builder — the `
+    + "phrase reached a builder that is not entitled to it. The count is 0 today: the note conversion took "
+    + "both of the cold retry's, because the driver renders that file whole on every accepted call.");
 });
 
 // ── pipeline.mjs: the inline followups, checked at the source ─────────────────────────────────────────
@@ -130,8 +225,7 @@ test("a composer's declared tail matches the text it composes — in BOTH direct
   const all = composedSamples();
   // FLOOR. A walk that stopped finding composers would assert nothing and read as a pass — the absence
   // that reads as a green tick, in the check whose whole job is to stop exactly that.
-  // 27 since the mid-run reopening's four composers and their five samples left the engine with it.
-  assert.ok(all.length >= 27, `only ${all.length} composed sample(s) — the registry walk has gone stale`);
+  assert.ok(all.length >= 30, `only ${all.length} composed sample(s) — the registry walk has gone stale`);
 
   let edits = 0, refusals = 0;
   for (const s of all) {
@@ -149,9 +243,7 @@ test("a composer's declared tail matches the text it composes — in BOTH direct
   // floor exists so this arm cannot go vacuous, so it tracks the population rather than holding a number
   // the population has left — but it is lowered by the ONE row that moved, never re-derived from the
   // current count, which would ratify any future silent drop.
-  // LOWERED BY TWO when the mid-run reopening left the engine: its two common-law composers each declared
-  // `edit`, and they left with it. Its register-unit composers declared their tails per sample.
-  assert.ok(edits >= 5, `only ${edits} sample(s) declare the edit tail`);
+  assert.ok(edits >= 7, `only ${edits} sample(s) declare the edit tail`);
   assert.ok(refusals >= 4, `only ${refusals} sample(s) declare tool/none`);
 });
 
@@ -190,8 +282,7 @@ test("a composer that names a tool-owned ledger scopes the Edit direction BEFORE
     assert.ok(scope >= 0, `${s.key} / ${s.name} — names a tool-owned ledger and offers the Edit tool with no scoping sentence`);
     assert.ok(scope < tailAt, `${s.key} / ${s.name} — the scope must be read BEFORE the direction it qualifies`);
   }
-  // Two since the reopening's own pair left the engine with it; the coverage closure's pair remains.
-  assert.equal(scoped, 2, `${scoped} composer(s) exercised this — the coverage closure's single-member and split-half arms are two`);
+  assert.equal(scoped, 4, `${scoped} composer(s) exercised this — the single-member and split-half arms of both lanes are four`);
 });
 
 test("the report-card lint repair is a COLD re-render and keeps its full write — patching it would defeat it", () => {
@@ -215,13 +306,13 @@ test("no composer carries a whole-file re-emission order except the two that exp
   // EXPLICIT: the cold-retry builder's full write used to be "somewhere else in the tree", and is now a
   // named exception with its reason beside it.
   const all = composedSamples();
-  assert.ok(all.length >= 27, `only ${all.length} composed sample(s) — the walk has gone stale`);
+  assert.ok(all.length >= 30, `only ${all.length} composed sample(s) — the walk has gone stale`);
 
   // (a) the full-file order. Its ONE legitimate home is the cold retry: a session with no context has
   // nothing to patch, so a targeted-edit order there would be an instruction to edit from memory.
   //
   // EMPTY SINCE, and the emptiness is not what makes this pass. The assertion runs over
-  // the 27+ composed samples above, so it fails the moment any composer starts ordering a full-file write
+  // the 30+ composed samples above, so it fails the moment any composer starts ordering a full-file write
   // — which is the property, and it is unaffected by the population happening to be zero right now. The
   // last holder was the cold retry, and it left because the note it re-emitted is rendered by the driver
   // whole on every accepted call: the guarantee the order existed to give is now structural.
@@ -259,7 +350,7 @@ test("the document-growth tripwire now reads a repair-shaped trip as a regressio
   assert.match(comment, /leave every other line byte-identical/, "it says WHY a trip means the direction was ignored");
   // …and it does not overclaim: the triggers that legitimately ADD rows are named as the exception, or the
   // comment is wrong the first time a wide channel sweep trips it.
-  assert.match(comment, /coverage-closure appends a Negative-results row/);
+  assert.match(comment, /coverage-closure and the frame-reopen source sweep/);
   // the tripwire ITSELF is untouched — thresholds and posture are not part of this change
   const code = t.split("if (r.ok && out && priorSize")[1].slice(0, 700);
   assert.match(code, /growthBytes > 20 \* 1024 \|\| growthPct > 35/);
