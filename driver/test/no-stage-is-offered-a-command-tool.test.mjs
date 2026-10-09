@@ -104,12 +104,30 @@ test("a Claude turn reports how many command-tool calls it made and how many cal
   assert.equal(busy.toolCallsRefused, 2);
 });
 
-test("a Codex turn reports its refused calls under the same name, and no command-tool count", async () => {
+test("a Codex turn reports its refused calls under the same name, and the commands it ran", async () => {
   const { openaiAgentEngine } = await import("../engine/openai-agent.mjs");
   const t = await turnWith(openaiAgentEngine, { CLEAROTRON_CODEX_PATH: join(HERE, "mock-codex.mjs"),
     CLEAROTRON_AI_BILLING: "api-key", CODEX_API_KEY: "sk-codex-test", MOCK_CODEX_MCP_REFUSED: "2" });
   assert.equal(t.code, 0, t.stderr);
   assert.equal(t.toolCallsRefused, 2);
   assert.equal(t.toolCallsRefused, t.mcpToolCallsRefused);
-  assert.equal(t.commandToolCalls, null, "codex keeps its shell and does not count it: null, never zero");
+  assert.equal(t.commandToolCalls, 0, "a codex turn that ran no command reports zero, not nothing");
+});
+
+test("a Codex turn counts each command it ran once, a failed one included", async () => {
+  // As codex 0.162.0 writes them: each item twice, started then finished, under one id.
+  const { parseCodexEvent, codexCommandCalls } = await import("../engine/openai-agent.mjs");
+  const ev = {};
+  const item = (id, type, status, extra = {}) => [
+    { type: "item.started", item: { id, type, status: "in_progress", ...extra } },
+    { type: "item.completed", item: { id, type, status, ...extra } },
+  ];
+  for (const e of [
+    ...item("cmd_1", "command_execution", "completed", { command: "/bin/bash -lc 'ls'", exit_code: 0 }),
+    ...item("cmd_2", "command_execution", "failed", { command: "/bin/bash -lc 'cat missing'", exit_code: 1 }),
+    ...item("mcp_1", "mcp_tool_call", "completed", { server: "band", tool: "read" }),
+    ...item("fc_1", "file_change", "completed", { changes: [] }),
+  ]) parseCodexEvent(JSON.stringify(e), ev);
+  assert.equal(codexCommandCalls(ev), 2, "a command counted twice, a failed one dropped, or a tool-server call counted");
+  assert.equal(codexCommandCalls({}), 0);
 });
