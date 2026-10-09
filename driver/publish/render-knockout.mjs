@@ -51,7 +51,7 @@ import { SUMMARY_BLOCK_LINE, parseSummaryBlocks } from '../../shared/summary-blo
 const STRIP = Object.freeze([
   ['summary', 'Summary'], ['findings', 'Findings'], ['filings', 'Also considered'], ['next', 'Next steps'],
 ]);
-import { COUNT_BASIS, COUNT_PREDICATES, countsForMark, countLine, variantFormsLine, disclosedFloor, moreThan } from '../register-count.mjs';
+import { COUNT_BASIS, COUNT_PREDICATES, countsForMark, countLine, variantFormsLine, disclosedFloor, moreThan, countNote } from '../register-count.mjs';
 import { RECORD_BASIS, recordsForMark, recordsLine } from '../register-records.mjs';
 import { officeLinkSentences } from './office-record-links.mjs';
 import { knockoutFindingViews, splitKnockoutNotes } from '../findings-model.mjs';
@@ -573,7 +573,7 @@ function countsSection(marks, registerCounts, positions = '') {
       // archived run re-rendering through today's renderer has no close-variation cell because the
       // column did not exist when it was counted, and "no count recorded" would read as a defect in a
       // report that has none. The hover says which.
-      const why = c?.unavailable ?? (c
+      const why = countNote(c) ?? (c
         ? 'no count recorded'
         : 'not counted on this run — it predates this column, and an archived report re-renders as what it was');
       if (Number.isFinite(c?.total)) return `<td class="num">${esc(String(c.total))}</td>`;

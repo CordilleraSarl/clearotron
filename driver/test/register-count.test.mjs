@@ -579,7 +579,12 @@ test("the workbook grows a fourth sheet only when counts exist, and never a blan
   assert.equal(sim[3], "not available", "a cell can never be blank — blank reads as none found");
   assert.equal(sim[4], "not available");
   assert.equal(sim[5], "not available", "…the close column included");
-  assert.match(String(sim[9]), /multi-word/, "the auditable reason travels with the missing figure");
+  // The reader's line travels with the missing figure; the refusal itself ("capability-gap: multi-word")
+  // is engine wording and stays in the counts record, which the next assertion reads.
+  assert.match(String(sim[9]), new RegExp(plainDeferralReason("unfinished")), "the reader's line travels with the missing figure");
+  assert.doesNotMatch(String(sim[9]), /capability-gap|multi-word/, "the engine's refusal reached the lawyer's workbook");
+  assert.match(String(doc.marks.find((m) => m.name === "SIM PRAXIS").counts.identical.unavailable), /capability-gap: multi-word/,
+    "…and the record keeps it as written");
 });
 
 // ── A DISCLOSED APPROXIMATION IS AN ANSWER, NOT AN UNREACHABLE REGISTER ────────────────────────────
