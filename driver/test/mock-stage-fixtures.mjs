@@ -47,6 +47,7 @@ import { recordReportCard } from "../report-card-record.mjs";          // conver
 import { recordUnitNote } from "../register-unit-record.mjs";           // the unit note — own-key transport, called not copied
 import { recordRegisterDigest, readDigestFacts, joinKey } from "../register-digest-record.mjs";   // conversion 11 — the findings document, called not copied
 import { recordDeclinations } from "../declination-tool.mjs";   // — the mock declines through the REAL transport
+import { contradictionFor } from "../declination-call.mjs";      // — and reads the refusal it would meet, rather than guessing
 import { findingUris } from "../record-carry.mjs";
 import { normalizeRecordUri } from "../registry-fidelity.mjs";
 import { recordClosures } from "../doubt-closure-tool.mjs";           // conversion 6 — the closure transport
@@ -1772,15 +1773,23 @@ export function applyStageWrites(msg, argv) {
           const spec = JSON.parse(readFileSync(driverDir(runDir, "declination-spec.json"), "utf8"));
           const delivered = new Set([...findingUris(Array.isArray(doc?.findings) ? doc.findings : []).keys()]);
           const rows = Array.isArray(spec?.rows) ? spec.rows : [];
+          const scope = spec?.scope ?? {};
+          // A MARK IDENTICAL TO THE APPLIED-FOR ONE, LIVE AND IN AN INSTRUCTED CLASS, IS NEVER DECLINED ON A
+          // DISCRETIONARY GROUND, and the transport refuses it. The seat's dictation names the routes that stay
+          // open, and this fixture's one finding is the identical registration, so the compliant answer is to
+          // consolidate the other registrations of that mark under it. Before the instructed scope listed a
+          // lone `markName`, this rule never fired on the mock's own job, and every row could be declined as
+          // unrelated goods.
           const declinations = rows.map((row, i) => ({ row, i }))
             .filter(({ row }) => !delivered.has(normalizeRecordUri(row?.uri)))
-            .map(({ i }) => ({
-              row_index: i,
-              reason: "unrelated-goods",
-              grounds: "The goods sit in a different field from the instructed classes and the overlap is "
-                + "retail-shelf only, so this record does not earn a line in the opinion.",
-            }));
-          if (declinations.length) recordDeclinations({ runDir, rows, scope: spec?.scope ?? {} }, { declinations });
+            .map(({ row, i }) => (contradictionFor("unrelated-goods", row, scope)
+              ? { row_index: i, reason: "duplicate-of-delivered",
+                grounds: "The identical registration is already delivered as finding 1, so this one is consolidated "
+                  + "under it rather than listed twice." }
+              : { row_index: i, reason: "unrelated-goods",
+                grounds: "The goods sit in a different field from the instructed classes and the overlap is "
+                  + "retail-shelf only, so this record does not earn a line in the opinion." }));
+          if (declinations.length) recordDeclinations({ runDir, rows, scope }, { declinations });
         } catch { /* the restate below stands; its refusal is what a seat would see */ }
         r = recordSynthesis(runDir, { findings: doc, narrative: sections });
         // THE RECORDER ASKS FOR THE DECLINES BEFORE IT PARSES THE FINDINGS, so a seat owed records AND
