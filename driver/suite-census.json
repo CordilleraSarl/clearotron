@@ -196,8 +196,8 @@
           "todos": 0
         },
         "a-client-cell-carries-no-raw-engine-words.test.mjs": {
-          "tests": 4,
-          "asserts": 13,
+          "tests": 5,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
@@ -532,8 +532,8 @@
           "todos": 0
         },
         "a-failed-run-resumes-from-the-command-line.test.mjs": {
-          "tests": 3,
-          "asserts": 9,
+          "tests": 4,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
@@ -664,8 +664,8 @@
           "todos": 0
         },
         "a-job-on-the-older-goods-spelling-scopes-the-same.test.mjs": {
-          "tests": 10,
-          "asserts": 23,
+          "tests": 11,
+          "asserts": 28,
           "skips": 0,
           "todos": 0
         },
@@ -762,6 +762,12 @@
         "a-late-review-that-softens-is-recorded-not-adopted.test.mjs": {
           "tests": 3,
           "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-late-synthesis-save-keeps-the-seams-writes.test.mjs": {
+          "tests": 2,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },
@@ -1174,8 +1180,8 @@
           "todos": 0
         },
         "a-register-floor-is-carried-and-never-a-zero.test.mjs": {
-          "tests": 6,
-          "asserts": 15,
+          "tests": 7,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -1320,7 +1326,7 @@
         "a-screenshot-of-an-error-page-is-not-a-report.test.mjs": {
           "tests": 21,
           "asserts": 55,
-          "skips": 4,
+          "skips": 5,
           "todos": 0
         },
         "a-script-is-asked-once-per-market-that-files-in-it.test.mjs": {
@@ -2074,8 +2080,8 @@
           "todos": 0
         },
         "both-doors-start-on-both-paths.test.mjs": {
-          "tests": 26,
-          "asserts": 61,
+          "tests": 27,
+          "asserts": 64,
           "skips": 0,
           "todos": 0
         },
@@ -2136,7 +2142,7 @@
         "case-law-credential-state.test.mjs": {
           "tests": 8,
           "asserts": 26,
-          "skips": 0,
+          "skips": 1,
           "todos": 0
         },
         "case-law-join.test.mjs": {
@@ -2525,7 +2531,7 @@
         },
         "coverage-judgment-rows.test.mjs": {
           "tests": 9,
-          "asserts": 40,
+          "asserts": 45,
           "skips": 0,
           "todos": 0
         },
@@ -2584,8 +2590,8 @@
           "todos": 0
         },
         "declination-is-stated-not-inferred.test.mjs": {
-          "tests": 24,
-          "asserts": 69,
+          "tests": 25,
+          "asserts": 73,
           "skips": 0,
           "todos": 0
         },
@@ -3256,8 +3262,8 @@
           "todos": 0
         },
         "experiment-context.test.mjs": {
-          "tests": 24,
-          "asserts": 80,
+          "tests": 26,
+          "asserts": 86,
           "skips": 0,
           "todos": 0
         },
@@ -4168,8 +4174,8 @@
           "todos": 0
         },
         "portal-service.test.mjs": {
-          "tests": 132,
-          "asserts": 715,
+          "tests": 133,
+          "asserts": 718,
           "skips": 1,
           "todos": 0
         },
@@ -4620,7 +4626,7 @@
         "register-record-log-run-scoped.test.mjs": {
           "tests": 9,
           "asserts": 21,
-          "skips": 0,
+          "skips": 1,
           "todos": 0
         },
         "register-review-fixes.test.mjs": {
@@ -7172,6 +7178,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-handshake-reports-the-package-version.test.mjs": {
+          "tests": 1,
+          "asserts": 3,
+          "skips": 0,
+          "todos": 0
+        },
         "the-plugin-folder-is-what-the-directory-installs.test.mjs": {
           "tests": 3,
           "asserts": 17,
@@ -7675,7 +7687,7 @@
         },
         "providers/_shared/test/a-register-floor-is-too-many-to-read.test.mjs": {
           "tests": 8,
-          "asserts": 44,
+          "asserts": 47,
           "skips": 0,
           "todos": 0
         },
@@ -7741,7 +7753,7 @@
         },
         "providers/_shared/test/owner-count-verification.test.mjs": {
           "tests": 13,
-          "asserts": 51,
+          "asserts": 52,
           "skips": 0,
           "todos": 0
         },
@@ -7902,8 +7914,8 @@
           "todos": 0
         },
         "providers/signa/test/exact-spellings-go-as-one-ranked-list.test.mjs": {
-          "tests": 9,
-          "asserts": 31,
+          "tests": 11,
+          "asserts": 39,
           "skips": 0,
           "todos": 0
         },

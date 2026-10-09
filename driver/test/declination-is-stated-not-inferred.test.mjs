@@ -133,6 +133,27 @@ test("an identical, live, in-class mark cannot be declined on a discretionary gr
   assert.match(r.refused[0].why, /own-right|duplicate-of-delivered/, "the refusal must name the routes that ARE open, or it reads as 'you may never decline this'");
 });
 
+test("a scope that names the mark as one string refuses exactly as a listed one does", () => {
+  // A job that named its mark only as `markName` wrote the instructed marks as a bare string, and a run
+  // recorded before the writer listed it still carries one. Read as no mark at all, it switched the
+  // identical-mark refusal off on exactly those runs: `unrelated-goods` over a live, identical, in-class
+  // record went through. Invented names.
+  const listed = { marks: ["ZORVIL"], classes: [9, 42] };
+  const bare = { marks: "ZORVIL", classes: [9, 42] };
+  const row = { uri: "/mark/ch/z1", mark: "Zorvil", owner: "An Invented Filer", classes: [9], status: "REGISTERED" };
+  for (const reason of ["unrelated-goods", "off-field-not-major"]) {
+    assert.notEqual(contradictionFor(reason, row, listed), "",
+      `precondition: ${reason} over an identical, live, in-class mark is refused when the scope lists the mark`);
+    assert.equal(contradictionFor(reason, row, bare), contradictionFor(reason, row, listed),
+      `${reason}: a scope naming the mark as one string must refuse exactly as the listed scope does`);
+  }
+  const r = acceptDeclinationCall({ runDir: "/nowhere", rows: [row], scope: bare }, { declinations: [
+    { row_index: 0, reason: "unrelated-goods", grounds: ground("the goods on this record sit far from the matter's own") },
+  ] });
+  assert.equal(r.accepted.length, 0, "a bare-string scope let an identical, live, in-class mark be declined");
+  assert.match(r.refused[0].why, /IDENTICAL/);
+});
+
 test("…and the same record IS declinable on a bookkeeping ground — the refusal is not a ban", () => {
   const r = acceptDeclinationCall(spec("/nowhere"), { declinations: [
     { row_index: 3, reason: "own-right", grounds: ground("the proprietor is the applicant's own subsidiary, named in the matter frame") },

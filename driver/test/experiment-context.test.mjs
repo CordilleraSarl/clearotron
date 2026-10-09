@@ -361,6 +361,48 @@ test("a sandboxed synthesis is handed the same list of records to answer as the 
   const arm = readFileSync(driverDir(ex.shadowDir, "synthesis.attempt1.dispatch.txt"), "utf8").match(DECLINATIONS);
   assert.ok(arm, "the arm's dispatch carries no list: it replays a synthesis production never runs");
   assert.equal(arm[1], canonical[1], "and the list is the canonical pass's, record for record");
+
+  // …AND THE REFUSALS REST ON THE SAME FACTS. The tool's two refusals read the spec's scope, which the
+  // sandbox rebuilds from the job's instructed scope. Without that file the arm's scope came back with no
+  // marks and no classes, and both refusals were off while the canonical pass had them on.
+  const scopeOf = (dir) => JSON.parse(readFileSync(driverDir(dir, "declination-spec.json"), "utf8")).scope;
+  assert.ok((scopeOf(runDir).classes ?? []).length, "precondition: the canonical spec carries the matter's classes");
+  assert.deepEqual(scopeOf(ex.shadowDir), scopeOf(runDir), "the arm's declination refusals rest on a different scope than the canonical pass's");
+});
+
+test("synthesis's sandbox declares the job's scope and the Chinese-evidence flags", () => {
+  const P = ST.paths("/RUN");
+  const held = new Map(SC.sandboxManifest("synthesis", P, { axes: [] }).map((e) => [e.path, e]));
+  assert.equal(held.get(P.instructedScope)?.kind, "driver-side",
+    "the declination spec's scope is rebuilt from the instructed scope; a sandbox without it refuses nothing");
+  assert.equal(held.get(driverDir("/RUN", "jx", "aim-attention.json"))?.kind, "conditional",
+    "the prompt names the aim-attention flags when the run carries them, so the sandbox must hold the file");
+});
+
+test("a synthesis arm on a run whose pass carried Chinese-evidence flags carries the block and the file", async () => {
+  // The cold pass sets the aim count before synthesis, and the prompt names the flags file only when it is
+  // set. reconstructCtx never set it, so an arm on such a run dispatched without the block. The canonical
+  // mock run has no zh lane, so the lane and one flag are planted for this arm and taken out after it.
+  const { job, runDir, codename } = await canonicalRun();
+  const policyPath = driverDir(runDir, "search-policy.json");
+  const aimPath = driverDir(runDir, "jx", "aim-attention.json");
+  const policyBefore = readFileSync(policyPath, "utf8");
+  const hadJxDir = existsSync(dirname(aimPath));
+  try {
+    const policy = JSON.parse(policyBefore);
+    writeFileSync(policyPath, JSON.stringify({ ...policy, components: { ...(policy.components ?? {}), jxLanes: true } }, null, 2) + "\n");
+    mkdirSync(dirname(aimPath), { recursive: true });
+    writeFileSync(aimPath, JSON.stringify({ items: [{ uri: "/mark/cn/qzxv-1", severity_hint: "low" }] }) + "\n");
+    const ex = await PL.runExperiment(job, { codename, experiment: "synthesis", label: "jx-aim" });
+    const sent = readFileSync(driverDir(ex.shadowDir, "synthesis.attempt1.dispatch.txt"), "utf8");
+    assert.match(sent, /CHINESE-EVIDENCE FLAGS \(aim-attention only\): _driver\/jx\/aim-attention\.json carries 1 structured flag/,
+      "the arm dispatched without the block the run's own pass would have carried");
+    assert.ok(existsSync(driverDir(ex.shadowDir, "jx", "aim-attention.json")), "the arm's prompt names a file its sandbox does not hold");
+  } finally {
+    writeFileSync(policyPath, policyBefore);
+    if (hadJxDir) rmSync(aimPath, { force: true });
+    else rmSync(dirname(aimPath), { recursive: true, force: true });
+  }
 });
 
 // ── 5. THE DECLARATION CANNOT DRIFT AWAY FROM verify.mjs ─────────────────────────────────────────────

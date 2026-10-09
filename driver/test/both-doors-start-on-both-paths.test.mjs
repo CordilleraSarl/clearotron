@@ -89,6 +89,21 @@ test("the summary names BOTH doors, their ports, and who each is for", () => {
     "the not-running branch must read child.exitCode, which the runtime sets when the process is reaped");
 });
 
+test("the summary names the client door as running only after the door has answered", () => {
+  // ALIVE IS NOT LISTENING. The banner was composed the moment the door was spawned, so it announced an
+  // address that refused connections for the half second the door spent loading. Measured in a container
+  // and on a host: a request sent as the banner printed got no connection. The engine door and the portal
+  // were already awaited before the banner; the client door now is too, with the same probe.
+  const spawned = START_SRC.indexOf('start("the client door", "mcp-server/http-server-client.mjs"');
+  const awaited = START_SRC.search(/const clientDoorAnswered = clientDoor \? await healthy\(`http:\/\/\$\{HOST\}:\$\{ports\.client\}\/healthz`, clientDoor\) : false;/);
+  const announced = START_SRC.indexOf("Client door  http://");
+  assert.ok(spawned > 0 && awaited > 0 && announced > 0, "anti-vacuity: the spawn, the wait and the banner line are all in start.mjs");
+  assert.ok(spawned < awaited && awaited < announced,
+    "the banner must wait for the door it names: the probe has to sit between the spawn and the line that announces it");
+  assert.match(START_SRC, /const doorRunning = adoptedClientDoor \|\| \(clientDoor\?\.child\?\.exitCode === null && clientDoorAnswered\)/,
+    "a spawned door that has not answered must take the NOT RUNNING branch, not the one that hands out its address");
+});
+
 // A PORT THE KERNEL SAYS IS FREE, from `withFreePorts`: bind :0, read what was assigned, release it, and
 // start again on a fresh number when the door says it was taken. A hardcoded port is not a race but a
 // standing appointment, held for as long as any other lane's copy of this suite runs. Where an arm can
@@ -454,6 +469,6 @@ test("an adopted door is reported as RUNNING, not as the failure whose output do
   // The banner reads `clientDoor?.child?.exitCode === null`, and an adopted door spawns no child. Left
   // alone it printed "NOT RUNNING … its output above says why" about a door that is up and serving,
   // and pointed the reader at output that was never written.
-  assert.match(START_SRC, /const doorRunning = adoptedClientDoor \|\| clientDoor\?\.child\?\.exitCode === null/,
+  assert.match(START_SRC, /const doorRunning = adoptedClientDoor \|\| \(clientDoor\?\.child\?\.exitCode === null/,
     "the summary judges the door by a child that adoption never spawns, so it reports a healthy door as dead");
 });

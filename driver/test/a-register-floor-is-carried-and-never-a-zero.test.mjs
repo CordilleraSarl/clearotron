@@ -13,11 +13,16 @@
 // clean.
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { mkdtempSync, writeFileSync, readFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { joinPlanToBands, openBlocksByAxis } from "../register-plan.mjs";
 import { parseNamedBand } from "../named-band.mjs";
 import { deriveOwnerScreen, ownerScreenNegative } from "../owner-screen.mjs";
 import { deriveScopeFacts } from "../scope-facts.mjs";
 import { moreThan } from "../register-count.mjs";
+import { buildBandShape } from "../band-shape.mjs";
+import { makeExecutePlan } from "../../providers/_shared/execute-plan.mjs";
 
 const PLAN = { plan_version: 1, regions: ["us"], nice_classes: ["9"], entries: [
   { qid: "q-floor", axis: "primary-sweep", predicate: "default", term: "QZXV", nice_classes: ["9"], regions: ["us"] },
@@ -69,4 +74,37 @@ test("the coverage form keeps a floor's row open: a floor is never a clean", () 
 
 test("the knockout prints a floor as it always has", () => {
   assert.equal(moreThan(10000), "more than 10,000");
+});
+
+// ── A COUNT THE REGISTER DID NOT GIVE IS A SIZE NOBODY KNOWS ───────────────────────────────────────
+//
+// A count-only question answered with neither a total nor a floor was written down as a counted 0. The band
+// shape then read an empty field: its uncountable-slice reading keys on a null total, so the 0 hid the one
+// statement written for this case. Driven through the real executor's count arm against a register that
+// answers without a number, then through the merged band into the shape the reading seats are served.
+test("a count-only question answered with no total reaches the band shape as a size nobody knows", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "count-no-total-"));
+  try {
+    const entry = { qid: "q-count", axis: "primary-sweep", predicate: "default", term: "QZXV",
+      nice_classes: ["9"], regions: ["us"], expected_kind: "count" };
+    const planPath = join(dir, "register-plan.json");
+    const outPath = join(dir, "band.json");
+    writeFileSync(planPath, JSON.stringify({ regions: ["us"], entries: [entry] }));
+    const executePlan = makeExecutePlan({
+      search: async () => ({ type: "text", text: JSON.stringify({ total_hits: null, total_approximate: false, total_floor: null, results: [], has_more: false }) }),
+      enumerate: async () => { throw new Error("a count-only question must never enumerate"); },
+      capabilities: { id: "stand-in" }, countParams: { limit: 1 },
+    });
+    await executePlan("auth", { plan_path: planPath, axis: "primary-sweep", output_path: outPath }, {});
+    const band = JSON.parse(readFileSync(outPath, "utf8"));
+    const blocks = Array.isArray(band) ? band : band.blocks;
+    const block = blocks.find((b) => b.qid === "q-count");
+    assert.equal(block.total_hits, null, "the count the register did not give was written down as a number");
+    assert.notEqual(block.error, true, "the call was answered; it is not a provider error");
+    const { shape } = buildBandShape(parseNamedBand(blocks), { inScopeClasses: ["9"] });
+    const unknown = (shape.blind_spots ?? []).find((s) => s.kind === "uncountable-slice");
+    assert.ok(unknown, `the band shape states no uncountable slice: ${JSON.stringify((shape.blind_spots ?? []).map((s) => s.kind))}`);
+    assert.ok(unknown.zones.some((z) => z.query === block.query),
+      "the uncountable slice does not name the count that came back without a number");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
 });

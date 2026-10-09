@@ -197,7 +197,7 @@ export const NOT_COUNTED_EVENTS = {
     "register-plan-variant-dropped", "register-positions-derived", "register-presence",
     "register-presence-skipped", "register-xcheck", "register-xcheck-decided", "run-integrity",
     "scope-facts", "scope-frontmatter", "scope-ledger-derived", "scope-ledger-skipped", "screen-gate-clean",
-    "search-policy", "searched-jurisdictions", "senior-rights", "skip",
+    "seam-reapplied", "search-policy", "searched-jurisdictions", "senior-rights", "skip",
     "stage-contract", "stage-limit-derived", "stage-stamps-reconciled", "start", "supplemental-fold", "token-rollup",
     "turnaround-reconciliation", "verdict", "verdict-conditions-recorded", "verdict-frontmatter",
     "whatif-settled-on-archive", "write-up-forms",

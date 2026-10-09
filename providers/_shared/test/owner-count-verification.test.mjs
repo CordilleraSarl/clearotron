@@ -214,9 +214,10 @@ test("FAIL-HONEST FLOOR: a count probe that never answered still stamps error:tr
 test("a probe that ANSWERED but counted nothing is not read as a counted zero", async () => {
   // total_hits null is "we could not count", and `Number(null)` is 0. Reading that as a counted zero
   // would hang the owner-styling story on a probe that counted nothing — the right stamp for the wrong
-  // reason. It keeps the shape it already had.
+  // reason. The total it carries stays what the register said: unknown, and not a provider error.
   const { block } = await runOwnerCount({ total_hits: null, results: [], owner_resolution: note({ resolved: [] }) });
   assert.doesNotMatch(String(block.reason), /UNVERIFIED/);
   assert.match(block.reason, /count-only crowd descriptor/);
-  assert.equal(block.total_hits, 0, "the pre-existing `?? 0` floor for a null total is untouched by this change");
+  assert.equal(block.total_hits, null, "an answered count with no total was written down as the number zero");
+  assert.notEqual(block.error, true, "the call was answered, so it is not a provider error");
 });
