@@ -5,7 +5,7 @@
 // verdict, and never parks (there is no LLM continuation decision anywhere). CLI: `node pipeline.mjs --job <file.json>`.
 
 import "../shared/env-local.mjs";   // side effect: apply <repo>/.env when THIS file is the CLI entry (never on library import)
-import "./engine/mcp/http-dispatcher.mjs";   // side effect: raise undici headersTimeout (code-side fetches)
+import "./engine/mcp/http-dispatcher.mjs"; import { recordStatusesFromFindings } from "./common-law-coverage-status.mjs";   // side effect: raise undici headersTimeout (code-side fetches); the second records a common-law ledger's statuses in code
 import { readFileSync, existsSync, mkdirSync, writeFileSync, renameSync, copyFileSync, readdirSync, rmSync, statSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join, dirname, basename, resolve } from "node:path";   // resolve: the resume line must work from any cwd
@@ -9217,7 +9217,7 @@ async function pipelineInner(job, opts = {}) {
           : stage(g.name, { ...ctx, axis: g.axis })),
       stage("blind-frame", ctx).catch((e) => ({ ok: false, fail: String(e?.message ?? e) })),
     ]);
-    if (!blindRes.ok) {
+    if (!clSplit && clMember()?.ok) recordStatusesFromFindings(P.commonLaw); if (!blindRes.ok) {
       note(`blind-frame failed (non-fatal — no frame-diff/reopen this run): ${blindRes.fail}`);
       runLog(run.runDir, { event: "blind-frame-skipped", reason: blindRes.fail });
     }
@@ -9345,7 +9345,7 @@ async function pipelineInner(job, opts = {}) {
     // synthesis, replay) reads exactly the artifacts a single-member run would have written. Re-run after
     // every routed half followup (closure / frame-reopen) — the half files stay the source of truth and
     // the canonical pair is always derived, which also makes the merge resume-idempotent.
-    const mergeCommonLawArtifacts = !clSplit ? null : ({ discloseUnfinished = false } = {}) => {
+    const mergeCommonLawArtifacts = !clSplit ? null : ({ discloseUnfinished = false } = {}) => { for (const h of GRID_HALVES) recordStatusesFromFindings(P.commonLawHalf(h), { half: h });   // each half's ledger statuses, recorded by code where the seat made no call (ruling 2026-10-01)
       // Each half's coverage truth = its plugin-written main ledger FOLDED with any plugin-written
       // supplementary sibling(s) the closure lane produced. Returns the batches as an ARRAY (mergeGrids'
       // batchesOf flattens it, cells union across all of them); a missing/corrupt main leaves its cells to

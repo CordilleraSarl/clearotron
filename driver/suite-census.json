@@ -232,8 +232,8 @@
           "todos": 0
         },
         "a-common-law-coverage-status-is-read-as-data.test.mjs": {
-          "tests": 11,
-          "asserts": 42,
+          "tests": 14,
+          "asserts": 50,
           "skips": 0,
           "todos": 0
         },
