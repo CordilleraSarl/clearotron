@@ -100,18 +100,38 @@ export function bindingLayersFor(territory) {
     layers.push({ layer: "national", office: BX_OFFICE,
       why: `${t} has no separate national register — Benelux (BX) is the national register for it` });
   } else if (t === WO_OFFICE) {
-    // The international register ORDERED AS a territory. Same shape as the EU below: there is no
-    // national layer to miss, because the Madrid register IS the order. Without this a matter listing
+    // The international register ORDERED AS a territory. There is no national layer to miss, because
+    // the Madrid register IS the order. Without this a matter listing
     // "International" (territory-codes.mjs normalizes it to WO) discloses a missing national register
     // that does not exist — a limitation on a register the plan searched, which is the kind a reader
     // learns to skim.
     layers.push({ layer: "international", office: WO_OFFICE, why: "the international register, ordered directly" });
     return Object.freeze(layers.map(Object.freeze));
-  } else if (t === EU_OFFICE || t === "EU") {
-    // The EU ordered AS a territory. There is no national layer to miss; the EU register IS the order.
-    layers.push({ layer: "regional", office: EU_OFFICE, why: "the EU-wide register, ordered directly" });
+  } else if (t === EU_OFFICE) {
+    // The EU-wide register named by its OFFICE code, which is how a plan that is already resolved
+    // carries it. It names that register, not the territory: resolving a France plan's ["FR", "EM",
+    // "WO"] again must not turn it into a search of every member state. An EU ORDER arrives as "EU"
+    // (normalizeTerritory folds "European Union", EUTM and EUIPO there) and takes the branch below.
+    layers.push({ layer: "regional", office: EU_OFFICE, why: "the EU-wide register, named by its office code" });
     layers.push({ layer: "international", office: WO_OFFICE,
       why: "international registrations designating the EU bind it without a separate EU filing" });
+    return Object.freeze(layers.map(Object.freeze));
+  } else if (t === "EU") {
+    // The EU ordered AS a territory: the EU-wide register, EVERY member state's national register, and
+    // international registrations designating the EU or a member. A national right blocks use in its own
+    // member state without appearing in the EU-wide register, so an EU order that searched only EUIPO and
+    // Madrid cleared none of the countries inside it — measured 2026-10-09 on both live providers: an
+    // EU-scoped search returns no member state's national filings, and listing the members in the same
+    // request reaches them. The owner's ruling of the same day: an EU order searches the national
+    // registers too, on every provider. Benelux is one national register for three members, listed once.
+    layers.push({ layer: "regional", office: EU_OFFICE, why: "the EU-wide register, ordered directly" });
+    for (const office of new Set(EU_MEMBERS.map((m) => (BENELUX_MEMBERS.includes(m) ? BX_OFFICE : m)))) {
+      layers.push({ layer: "national", office, why: office === BX_OFFICE
+        ? "Benelux (BX) is the national register of three EU members"
+        : `a national right in ${office} blocks use there without appearing in the EU-wide register` });
+    }
+    layers.push({ layer: "international", office: WO_OFFICE,
+      why: "an international registration designating the EU or a member state binds it without a separate filing" });
     return Object.freeze(layers.map(Object.freeze));
   } else {
     layers.push({ layer: "national", office: t, why: `the national register of ${t}` });
@@ -215,7 +235,9 @@ export function unsearchedLayerReason(report) {
     regional: "EU-wide rights",
     international: "international registrations designating it",
   };
-  const missing = report.unsearched.map((u) => names[u.layer] ?? u.layer);
+  // One name per KIND of register: an EU order carries a national layer per member state, and a provider
+  // that reaches only some of them would otherwise list "the national register" once per member missed.
+  const missing = [...new Set(report.unsearched.map((u) => names[u.layer] ?? u.layer))];
   const list = missing.length === 1 ? missing[0]
     : `${missing.slice(0, -1).join(", ")} and ${missing[missing.length - 1]}`;
   return `Not a complete clearance for ${report.territory}: ${list} ${missing.length === 1 ? "was" : "were"} `

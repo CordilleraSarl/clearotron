@@ -246,7 +246,8 @@ import { REGISTER_ENUMERATE_TOOL, SUPPLEMENTAL_LANE_STEERING } from "./stages.mj
 // same thing to the exit-1 rescue below as it does to the register taint chain that reads the very
 // same rows off disk. Acyclic: register-taint.mjs imports node builtins only.
 import { isTaintRow } from "./register-taint.mjs";
-import { recordDispatch } from "./dispatch-record.mjs";
+import { recordDispatch, streamFilePath } from "./dispatch-record.mjs";
+import { anyResultErrored, endingFields } from "./engine/session-record.mjs";   // a session that reached an error result is not an ok attempt, whatever its last result said
 import { recordBestDraft } from "./best-draft.mjs";
 //: the allowlisted progress-quantity extractor. Acyclic — repairs.mjs imports node builtins only
 // (fs/crypto/path). Used only when the validator did not stamp its own count; never a digit hunt.
@@ -420,7 +421,33 @@ export function toolGauge(turn) {
     // engine cannot report", the same distinction toolWaitByTool draws one line up. RECORDING ONLY:
     // toolWaitMs and the per-tool split are exactly what they were, because the kill clock reads them.
     toolWaitUnmeasurable: Array.isArray(turn?.toolWaitUnmeasurable) ? [...turn.toolWaitUnmeasurable] : null, ...toolCallCounts(turn),
+    // The calls by tool name, beside the total, so a tool server's own log can be set against what the
+    // model asked for. An OBJECT is a measurement (`{}`: none); null is "this engine cannot report".
+    toolCallsByName: turn?.toolCallsByName && typeof turn.toolCallsByName === "object" && !Array.isArray(turn.toolCallsByName)
+      ? { ...turn.toolCallsByName } : null,
   };
+}
+
+/**
+ * Whether the attempt is OK: the driver's verdict (`fail`) AND no result event of the session carried
+ * `is_error`. A session the vendor refused and a restart recovered ends in a successful LAST result, so
+ * the retry ladder (which reads that last result, unchanged) accepts it; the record says what happened.
+ * Readers that ask "did the stage fail" read `fail`, which this does not touch. PURE.
+ */
+export function attemptOk(fail, turn) {
+  return !fail && !anyResultErrored(turn?.session);
+}
+
+/**
+ * The stream record as a row carries it: the file relative to the run, as the dispatch record names its
+ * file, and the size — or why it was not kept. null when the engine kept none or ran no session. PURE.
+ */
+export function streamMeta(runDir, stream) {
+  if (!stream || typeof stream !== "object" || !stream.file) return null;
+  const dir = String(runDir ?? "");
+  const file = dir && String(stream.file).startsWith(dir) ? String(stream.file).slice(dir.length).replace(/^[\\/]+/, "") : String(stream.file);
+  return { file, present: stream.present === true, bytes: Number.isFinite(stream.bytes) ? stream.bytes : null,
+    ...(stream.reason ? { reason: stream.reason } : {}) };
 }
 
 export function tokensPerSec(usage, wall) {
@@ -1104,7 +1131,10 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
     // run-integrity.mjs for why it is not a manifest file and why the append-only journals are excluded.
     const integrityBefore = frozenSnapshot(runDir);
     const turn = await engine.runTurn({ agent, sessionKey: key, message: effMessage, grantDispatch: base, model, thinking, timeoutSec: effTimeout, resumeRef: warm ? lastSessionRef : undefined, codexHome: stageCodexHome, mcpConfig: gatherMcpConfig, allowedTools: gatherAllowedTools, seatWrites: gatherSeatWrites, skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
-      progressFiles: files });   // the no-progress watchdog's artifact-advance signal (anthropic-agent; other adapters ignore it)
+      progressFiles: files,   // the no-progress watchdog's artifact-advance signal (anthropic-agent; other adapters ignore it)
+      // The raw stream of this session, beside its dispatch record (engine/session-record.mjs). The engines
+      // keep it while the disk has room and say on the tuple's `stream` what landed.
+      streamFile: streamFilePath(runDir, name, attempt) });
     const settledAt = Date.now();   //: zero point of the wall-rescue quiescence clock, read before anything else
     // LOG-ONLY. Nothing here can fail a turn: the claim that the frozen set does not change across a seat
     // turn is READ from the writers' call sites and not yet MEASURED on a running system, and arming an
@@ -1325,7 +1355,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
       const rt = await engine.runTurn({ agent, sessionKey: key, message: repairMessage, model, thinking,
         timeoutSec: effTimeout, resumeRef: repairRef, codexHome: stageCodexHome, mcpConfig: gatherMcpConfig, allowedTools: gatherAllowedTools,
         skillsDir: engineSkillsDir, skillsGrantRoots: engineSkillsGrantRoots, profilesDir: profilesStoreDir, resolveSkill: engineResolveSkill, runDir, stallSec,
-        progressFiles: files });
+        progressFiles: files, streamFile: streamFilePath(runDir, name, attempt, formRepairsUsed + 1) });
       repairRef = rt.sessionRef ?? repairRef;
       // A KILLED REPAIR TURN'S BYTES ARE NOT STAGE TRUTH. Same doctrine as the exit-1 rescue below: a
       // stage validator is a SHAPE check, not a completeness proof, and a torn draft can pass its own
@@ -1369,8 +1399,9 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
           repair: formRepairsUsed, repairOf: MAX_FORM_REPAIRS, repairOutcome: outcome, fail: triggeredBy,
           repairTarget: rel(target),   // the file the repair was AIMED at (often a sibling, not the expectFile)
           dispatch: repairDispatch,    // — the verbatim message this repair turn was given
-          stopReason: rt.json?.stopReason ?? undefined,
+          stopReason: rt.json?.stopReason ?? undefined, ...endingFields(rt.json),   // — and what ended it, in the program's words on an error
           killed: rt.killed || undefined, signals: rt.signals ?? undefined,
+          session: rt.session ?? null, stream: streamMeta(runDir, rt.stream),   // — the repair session's own record, as on the attempt row
           warm: true,   // a repair turn always RESUMES the session that wrote the defect
           runId: rt.json?.runId, engineSummary: rt.json?.summary, usage: rt.usage,
           selfReportContradicted: (outcome !== "repaired" && rt.json?.status === "ok") || undefined,   //
@@ -1738,7 +1769,13 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
         // attempt produce what the stage exists to produce". Sixty report-card attempts on round 892dd88e
         // journalled status:"ok", summary:"success", code:0, wrote:true and output.present:true beside a
         // populated `fail`, and a watcher keyed on the headline saw sixty successes.
-        ok: !fail,
+        // — AND NOT WHEN THE SESSION REACHED AN ERROR RESULT, whatever its last result said: a refusal a
+        // restart recovered is a session that was refused (engine/session-record.mjs). `fail` is unchanged,
+        // so the ladder and every reader asking "did the stage fail" read exactly what they read before.
+        ok: attemptOk(fail, turn),
+        // What the session went through — every result, classifier cut, refusal and restart, with when —
+        // and where its raw stream is, or why it was not kept. null where the engine cannot report.
+        session: turn.session ?? null, stream: streamMeta(runDir, turn.stream),
         // The engine's claim about itself, KEPT and renamed to say whose claim it is. A self-report is
         // evidence — deleting it would destroy the only record of what the seat believed it had done — and
         // it is not a verdict. Still three-valued (ok | timeout | error). Nothing in the driver reads either
@@ -1774,7 +1811,7 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
         laneWaitMs,   // WS-C turn-cap queue time — the live overlap validation reads this
         // A6: the provider's stop reason, verbatim — the max_tokens fault line is countable from the
         // rows alone (fail carries the named fault; this field carries the raw discriminator).
-        stopReason: json?.stopReason ?? undefined,
+        stopReason: json?.stopReason ?? undefined, ...endingFields(json),   // — and beside it what ended the session: its kind, the vendor's status, and on an error the program's own words (session-record.mjs)
         // taint durability (copper-lattice): the kill discriminators survive to disk — register-taint.mjs
         // reads these rows across process restarts (--resume), where the in-memory turn object is gone.
         // `followup` matters too: a followup success PATCHES the prior session's output, it never
@@ -1851,7 +1888,9 @@ async function runStageLadder(name, opts, stageCodexHome = null) {
       // from "retries not recorded here"). Best-effort like every telemetry write.
       try {
         runLog(runDir, {
-          event: "attempt", stage: name, attempt, of: maxRetries + 1, ok: !fail, fail: fail ?? null,
+          event: "attempt", stage: name, attempt, of: maxRetries + 1, ok: attemptOk(fail, turn), fail: fail ?? null,
+          // The spine carries the one-word answer and the pointer; the per-stage row carries the record.
+          interrupted: turn.session?.interrupted ?? null, stream: streamMeta(runDir, turn.stream)?.file ?? null,
           //: the spine carries the same pair as the per-stage log, or the two disagree about what
           // ran. `model` stays the requested resolution (its existing readers); `modelActual` is the wire.
           model: modelRequested, modelActual, modelBasis, modelSnapshot, modelMismatch, providerReported,
@@ -3076,7 +3115,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
     // run the driver stamped as form-required, and the stamp is conditional. On an unstamped run
     // validators.registerFindings demands the table exactly as it did before and emits this label,
     // so dropping the arm left the one lane that can still fire it with a generic hint.
-    hint = "the file has a findings heading plus a Coverage ledger with a status row (confirmed-clean / coverage-limited / deferred)" + (/common-law-findings/.test(lastFail) ? ", or each ledger row's status is recorded by calling `record_coverage_status` with `grid_spec_path`, the same spec path the grid tool was given" : "");
+    hint = "the file has a findings heading plus a Coverage ledger with a status row (confirmed-clean / coverage-limited / deferred)";   // the common-law clause went with that lane's status gate (ruling 2026-10-01)
   } else if (/negative-results|coverage-ledger|audit-trail|findings-heading/.test(lastFail)) {
     hint = "the findings file carries ALL required sections: a findings heading, the Negative results matrix " +
       "(every variant × platform row), the Coverage ledger with a status row, and the Audit trail call log";
@@ -3644,11 +3683,15 @@ export function warmPatchMessage(lastFail, expectFile, { supplementalLane = fals
  * calls the program refused (Claude's own denials; Codex's tool-server calls refused before reaching their
  * server). `commandToolCalls`: calls to a tool that runs a command, which no Claude stage is offered, so
  * zero is the expected reading; Codex keeps its shell and reports null. `mcpToolCalls`: the tool-server
- * calls Codex completed, its only count of calls made, since its `toolCalls` stays null. Null, as in
+ * calls Codex completed, its only count of calls made, since its `toolCalls` stays null.
+ * `toolCallsErroredByName`: the tool-server calls that came back as an error, by tool name, so a stage that
+ * had a call refused and made it again says so where its row otherwise reads ok on one attempt. Null, as in
  * `toolGauge`, is "this engine does not report", never zero. RECORDING ONLY. It sits at the end of this
  * file so that adding it moved no line another file cites.
  */
 function toolCallCounts(turn) {
   const n = (v) => (Number.isFinite(v) && v >= 0 ? v : null);
-  return { toolCallsRefused: n(turn?.toolCallsRefused), commandToolCalls: n(turn?.commandToolCalls), mcpToolCalls: n(turn?.mcpToolCalls) };
+  const errored = turn?.toolCallsErroredByName;
+  return { toolCallsRefused: n(turn?.toolCallsRefused), commandToolCalls: n(turn?.commandToolCalls), mcpToolCalls: n(turn?.mcpToolCalls),
+    toolCallsErroredByName: errored && typeof errored === "object" && !Array.isArray(errored) ? { ...errored } : null };
 }

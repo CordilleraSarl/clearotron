@@ -111,3 +111,55 @@ export function recordCoverageStatus(spec, received, { now = () => new Date().to
   if (refused.length) lines.push("Refused — send these again, corrected:", ...refused.map((x) => `- ${x}`));
   return { ok: refused.length === 0, text: lines.join("\n") };
 }
+
+/** The status code records for a ledger row whose findings gave none of the three words. */
+export const NOT_STATED = "not stated";
+
+/**
+ * THE STATUSES A FINDINGS FILE STATES, RECORDED BY CODE (Krzys, 2026-10-01). A seat whose findings carry
+ * a coverage ledger but made no `record_coverage_status` call is accepted, not re-run: a re-run for this
+ * was a full stage re-run, and nothing is added to what the model reads. Each ledger row's status is read
+ * from the row as the findings wrote it — one of the three words, else "not stated" — and recorded in the
+ * same file the tool writes, marked `source: "findings"`. A record the seat made through the tool is never
+ * overwritten; a record code made earlier is replaced, so it follows the latest findings after a re-run.
+ * Returns the record written, or null when nothing was written. Never throws.
+ */
+export function recordStatusesFromFindings(findingsPath, { half = null, now = () => new Date().toISOString() } = {}) {
+  if (!findingsPath) return null;
+  const file = coverageStatusPath(findingsPath);
+  let existing = null;
+  try { existing = JSON.parse(readFileSync(file, "utf8")); } catch { existing = null; }
+  if (existing && existing.source !== "findings") return null;   // the seat recorded its own statuses
+  let text;
+  try { text = readFileSync(String(findingsPath), "utf8"); } catch { return null; }
+  const record = { coverage_status: ledgerStatuses(text), half, source: "findings", recorded_at: now() };
+  try {
+    mkdirSync(dirname(file), { recursive: true });
+    writeFileSync(file, JSON.stringify(record, null, 2) + "\n");
+  } catch { return null; }
+  return record;
+}
+
+/**
+ * Each coverage-ledger row's unit and status, as the findings file wrote them: the first table under the
+ * Coverage ledger heading, its header and separator rows skipped. A row with none of the three words
+ * reads "not stated"; a ledger with no rows reads as one unit, "coverage ledger", not stated. PURE.
+ */
+export function ledgerStatuses(text) {
+  const lines = String(text ?? "").split("\n");
+  const at = lines.findIndex((l) => /^#{1,4}\s+[^\n]*coverage[\s-]ledger/i.test(l));
+  const isSeparator = (l) => /^\|?(\s*:?-{2,}:?\s*\|)+\s*:?-{0,}:?\s*\|?$/.test(String(l ?? "").trim());
+  const out = {};
+  if (at >= 0) {
+    for (let i = at + 1; i < lines.length; i++) {
+      const l = lines[i].trim();
+      if (/^#{1,6}\s/.test(l)) break;
+      if (!l.startsWith("|")) { if (Object.keys(out).length) break; continue; }
+      if (isSeparator(l) || isSeparator(lines[i + 1])) continue;   // the separator, and the header above it
+      const unit = l.replace(/^\|/, "").split("|")[0].trim();
+      if (!unit) continue;
+      out[unit] = COMMON_LAW_COVERAGE_STATUSES.find((s) => new RegExp(`(^|[^a-z-])${s}([^a-z-]|$)`, "i").test(l)) ?? NOT_STATED;
+    }
+  }
+  return Object.keys(out).length ? out : { "coverage ledger": NOT_STATED };
+}

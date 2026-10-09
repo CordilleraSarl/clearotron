@@ -53,10 +53,34 @@ test("Benelux is the NATIONAL register for its members, never an extra regional 
   }
 });
 
-test("the EU ordered AS a territory has no national layer to miss", () => {
-  const eu = bindingLayersFor("EU");
-  assert.deepEqual(eu.map((l) => l.layer), ["regional", "international"]);
+test("the EU ordered AS a territory binds every member state's national register too", () => {
+  // An EU-scoped search returns no member state's national filings on either live provider (measured
+  // 2026-10-09), and a national right blocks use in its member state. So the EU's layers are the EU-wide
+  // register, each member's national register — Benelux once, for three members — and Madrid.
+  for (const code of ["EU"]) {
+    const eu = bindingLayersFor(code);
+    assert.equal(eu[0].layer, "regional", `${code}: the EU-wide register leads`);
+    assert.equal(eu[0].office, "EM");
+    assert.equal(eu.at(-1).layer, "international", `${code}: Madrid closes the list`);
+    const national = eu.filter((l) => l.layer === "national").map((l) => l.office);
+    assert.equal(national.length, 25, `${code}: 27 members, with NL, BE and LU sharing one register`);
+    assert.equal(new Set(national).size, national.length, `${code}: a national register is listed twice`);
+    for (const m of ["FR", "DE", "SE", "BX"]) assert.ok(national.includes(m), `${code}: ${m} is missing`);
+    for (const m of ["NL", "BE", "LU"]) assert.ok(!national.includes(m), `${code}: ${m} has no register of its own; BX stands for it`);
+  }
+});
+
+test("the EU-wide register's office code names that register, not the EU, so a resolved plan does not grow", () => {
+  // A resolved France plan carries ["FR", "EM", "WO"]. Resolving it again must leave it a France plan.
   assert.deepEqual(bindingLayersFor("EM").map((l) => l.layer), ["regional", "international"]);
+});
+
+test("a provider that reaches only some member registers names the national layer once", () => {
+  const report = { territory: "EU", unsearched: [
+    { layer: "national", office: "DE" }, { layer: "national", office: "IT" }, { layer: "national", office: "BX" }] };
+  const reason = unsearchedLayerReason(report);
+  assert.equal(reason.match(/the national register/g)?.length, 1, "the same register kind is listed once per member missed");
+  assert.match(reason, /the national register was not searched/);
 });
 
 test("an empty territory throws rather than binding nothing", () => {

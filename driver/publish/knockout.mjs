@@ -15,7 +15,7 @@ import { riskTier, TONE_TIER, regenIndex, regenSurfaces, auditRouteFor, markRepo
 import { runKnockoutLint, deliveryFlagLines } from '../predelivery-lint.mjs';
 import { note } from '../log.mjs';
 import { addSheet } from './xlsx.mjs';
-import { COUNT_PREDICATES, COUNT_BASIS, countsForMark, countLine, countedMarks, variantFormsLine, disclosedFloor, moreThan } from '../register-count.mjs';
+import { COUNT_PREDICATES, COUNT_BASIS, countsForMark, countLine, countedMarks, variantFormsLine, disclosedFloor, moreThan, countNote } from '../register-count.mjs';
 import { RECORD_BASIS, recordsForMark, recordsLine, listedMarks, normalizeRegisterRecordLinks } from '../register-records.mjs';
 import { reportIdentityFor, productCoverageNote, kebab } from '../search-policy.mjs';
 import { batchMarkName } from '../mark-name.mjs';
@@ -235,10 +235,11 @@ export async function buildKnockoutWorkbook(findings, receipts, outPath, registe
       row['Close variation forms'] = variantFormsLine(e) ?? 'not recorded — this run predates the close-variation column';
       row['Register'] = registerCounts.providerLabel ?? registerCounts.provider ?? '';
       row['Basis'] = COUNT_BASIS;
-      // The verbatim provider reason for anything missing — the auditable half of "not available".
+      // The reader's line for anything missing. The provider's own reason, or an exception's message, stays
+      // in the counts record where it was written (register-count.mjs, countNote).
       row['Notes'] = COUNT_PREDICATES
         .filter((p) => !Number.isFinite(e?.counts?.[p.key]?.total) && disclosedFloor(e?.counts?.[p.key]) === null)
-        .map((p) => `${p.label}: ${e?.counts?.[p.key]?.unavailable ?? 'no count recorded'}`)
+        .map((p) => `${p.label}: ${countNote(e?.counts?.[p.key]) ?? 'no count recorded'}`)
         .join(' · ');
       return row;
     });
@@ -369,7 +370,7 @@ export function composeKnockoutEmail({ findings, framework, overall, reports = [
   // says how to read the list instead: a "full report" link on a batch could only be one name standing
   // for all of them. A single-mark run keeps its head link exactly as before — same bytes, same place.
   const only = n === 1 ? urlByMark.get((findings.marks ?? [])[0]?.name) ?? null : null;
-  const head = `<p style="${FONT}">Knockout trademark review${job?.ref ? ` — ${esc(job.ref)}` : ''}: <b>${n} mark${n === 1 ? '' : 's'}</b>, worst band <b style="color:${t.txt}">${esc(overall ?? '')}</b>.`
+  const head = `<p style="${FONT}">Knockout trademark review${job?.ref ? ` — ${esc(job.ref)}` : ''}: <b>${n} mark${n === 1 ? '' : 's'}</b>, ${n === 1 ? 'rating' : 'highest rating'} <b style="color:${t.txt}">${esc(overall ?? '')}</b>.`
     + (only ? ` <a href="${esc(only)}">Open the full report</a>${auditUrl ? ` · <a href="${esc(auditUrl)}">audit workbook</a>` : ''}.` : '')
     + (!only && n > 1 ? ` One report per name below${auditUrl ? `, and one <a href="${esc(auditUrl)}">audit workbook</a> for the batch` : ''}.` : '') + `</p>`;
   // — THE FIRST NON-BLANK, never element 0. `?? fallback` catches null and undefined

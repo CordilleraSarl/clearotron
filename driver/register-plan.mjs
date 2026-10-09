@@ -1120,26 +1120,31 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   //     anywhere: the exact silent-wrong-query false-clean class this carriage fix exists to kill,
   //     quieter than the loud deferral it replaced. formKey now strips accents from LATIN bases only
   //     and preserves every non-Latin combining mark (width still folds via NFKD).
-  //   - and if two variants STILL share a key while dictating different romanisations (the model
-  //     contradicting itself about one term), the key is poisoned rather than resolved by position:
-  //     those entries compile BARE, and the romanisation-index provider's refusal turns the
-  //     contradiction into a loud disclosed deferral — never into whichever answer came first.
+  //   - and two variants that share a key while dictating DIFFERENT romanisations carry EVERY one of
+  //     them, on every entry for that key. One string of characters can have two readings: the same
+  //     Han characters are read one way in Chinese and another in Japanese, and the manifest lists the
+  //     string once per reading. This rule used to read that as the model contradicting itself and
+  //     compile the key bare, so the romanisation-index provider refused it and the slice reached the
+  //     client as "not searched" — while the model, seeing the refusal, searched both readings as
+  //     supplementals and got its answer (a delivered report, 2026-10-08). Carrying every reading still never
+  //     resolves by position, and never sends a sibling's form in place of the dictated one: each
+  //     reading is asked, in the same request, and a reading that is simply wrong costs one spelling.
   const romanByValue = new Map();
   for (const v of manifest.variants) {
     if (!v.romanization) continue;
     const key = formKey(v.value);
-    const prior = romanByValue.get(key);
-    if (prior === undefined) romanByValue.set(key, v.romanization);
-    else if (prior !== null && romanizationSpellings(prior)[0] !== romanizationSpellings(v.romanization)[0])
-      romanByValue.set(key, null);   // conflicting dictates ⇒ stamp NOTHING for this key (loud backstop)
+    const readings = romanByValue.get(key) ?? [];
+    const reading = romanizationSpellings(v.romanization)[0];
+    if (reading && !readings.some((r) => romanizationSpellings(r)[0].toUpperCase() === reading.toUpperCase()))
+      readings.push(v.romanization);
+    romanByValue.set(key, readings);
   }
   const romanStamp = (e) => {
     // An owner NAME is not mark text and rides its own field (the executor drops the carrier on an
     // owner query anyway). An OR-stack is chunked, not substituted — one non-Latin member must never
     // silently replace a whole chunk's names, so a `terms[]` entry never carries the field.
     if (e.predicate === "owner" || Array.isArray(e.terms)) return {};
-    const roman = romanByValue.get(formKey(e.term));
-    const spellings = roman ? romanizationSpellings(roman) : [];
+    const spellings = [...new Set((romanByValue.get(formKey(e.term)) ?? []).flatMap(romanizationSpellings))];
     return spellings.length ? { romanizedTerms: spellings } : {};
   };
 
@@ -2425,6 +2430,9 @@ export function joinPlanToBands(plan, bandBlocksByAxis, { released = new Set() }
       // says `incomplete` with no count. The deferral is the only thing that tells it from a listing that
       // overflowed, so it rides with the row rather than stopping at the block.
       ...(b.deferred === true ? { deferred: true } : {}),
+      // WHAT THE TOTAL COUNTS, when the register said: `records`, one per country a mark covers. Every
+      // reader of this row reads the count as the register's own number (ruled 2026-10-02).
+      ...(typeof b.total_counts === "string" ? { total_counts: b.total_counts } : {}),
     });
   }
   const planQids = new Set(plan.entries.map((e) => e.qid));
@@ -2634,9 +2642,30 @@ export function deriveCoverageSkeleton(plan, join) {
   const deferredQids = new Set((join.deferred ?? []).map((x) => x.qid));
   const awaitingQids = new Set((join.awaiting ?? []).map((x) => x.qid));
   const askedQids = new Set((join.asked ?? []).map((x) => x.qid));
+  // ── A COUNT THE PLAN ALSO READ IN FULL IS NOT A CROWD ──────────────────────────────────────────
+  // A count-only descriptor (the saturation probe's shape) sizes a question and reads none of its
+  // records, so it lands `incomplete` and its axis reads as a crowd. Where another entry asked the
+  // IDENTICAL question — predicate, term, classes, territories, owner and goods — and listed every
+  // record of the same total, nothing the count describes is unread. Leaving the axis `incomplete` told
+  // the reading seat a set was unreviewed that had been read in full, and a delivered report made its
+  // verdict conditional on reviewing it (2026-10-08). Anything short of that stays a crowd.
+  const entryByQid = new Map(plan.entries.map((e) => [e.qid, e]));
+  const question = (e) => (!e || Array.isArray(e.terms) ? null : JSON.stringify([
+    String(e.predicate ?? ""), formKey(String(e.term ?? "")),
+    [...(e.nice_classes ?? [])].map(String).sort(), [...(e.regions ?? [])].map(String).sort(),
+    String(e.owner ?? ""), goodsTermsList(e)]));
+  const readInFull = new Map();
+  for (const x of join.executed) {
+    if (x.state !== "enumerated" || !Number.isInteger(x.total_hits) || x.records !== x.total_hits) continue;
+    const q = question(entryByQid.get(x.qid));
+    if (q) readInFull.set(q, x.total_hits);
+  }
+  const totalByQid = new Map(join.executed.map((x) => [x.qid, x.total_hits]));
+  const readElsewhere = (e) => e.expected_kind === "count" && Number.isInteger(totalByQid.get(e.qid))
+    && readInFull.get(question(e)) === totalByQid.get(e.qid);
   const axes = new Map();
   for (const e of plan.entries) {
-    if (!axes.has(e.axis)) axes.set(e.axis, { axis: e.axis, entries: 0, executed: 0, crowds: 0, missing: [], skipped: 0, deferred: [], awaiting: 0, asked: 0 });
+    if (!axes.has(e.axis)) axes.set(e.axis, { axis: e.axis, entries: 0, executed: 0, crowds: 0, missing: [], skipped: 0, deferred: [], awaiting: 0, asked: 0, readElsewhere: 0 });
     const a = axes.get(e.axis);
     a.entries++;
     // COUNTED BEFORE `skipped`, and separately from it. With the families waiting on every matter this is the ordinary state of
@@ -2652,7 +2681,10 @@ export function deriveCoverageSkeleton(plan, join) {
     // a capability gap is NOT executed — it is a disclosed hole in the axis
     if (deferredQids.has(e.qid)) { a.deferred.push(e.qid); continue; }
     a.executed++;
-    if (stateByQid.get(e.qid) === "incomplete") a.crowds++;
+    if (stateByQid.get(e.qid) === "incomplete") {
+      if (readElsewhere(e)) a.readElsewhere++;
+      else a.crowds++;
+    }
   }
   return [...axes.values()].map((a) => ({
     axis: a.axis,
@@ -2676,6 +2708,7 @@ export function deriveCoverageSkeleton(plan, join) {
     entries: a.entries, executed: a.executed, crowds: a.crowds, skipped: a.skipped, missing: a.missing,
     ...(a.awaiting ? { awaiting: a.awaiting } : {}),
     ...(a.asked ? { asked: a.asked } : {}),
+    ...(a.readElsewhere ? { read_elsewhere: a.readElsewhere } : {}),
     ...(a.deferred.length ? { deferred: a.deferred } : {}),
   }));
 }

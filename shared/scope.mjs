@@ -792,6 +792,12 @@ function tenantStamp(scope, asked) {
   throw new Error(`name the organisation whose Generic this is (tenant) — your access covers ${orgs.length}`);
 }
 
+// The install's organisation when the grants file holds exactly one; null with several, none, or no file.
+function soleOrganisation() {
+  const orgs = Object.keys(loadGrants()?.tenants ?? {});
+  return orgs.length === 1 ? orgs[0] : null;
+}
+
 // True iff `email`'s domain (the part after the final '@') is one of firmDomains. PURE (no jose), so the HTTP
 // handler can derive firm-staff-ness from the already-verified CF identity without pulling the auth lib. The
 // `internal` (read-all) grant rests on THIS positive check — NOT on which CF app admitted the caller — so a
@@ -1016,8 +1022,18 @@ export function authorize(scope, toolName, args = {}) {
     // paid run whose delivery packet routes nowhere. A refusal naming the missing field is the cheaper
     // failure by far, and it is not the "accepted then quietly narrower" shape: the preview describes a
     // job stamped from the verified identity, and start_run says plainly which field to add.
-    if (toolName === "plan_run") return stampForwarder(scope, args);
-    return args;
+    //
+    // WHICH ORGANISATION'S GENERIC. An ops token names no person, so there is nobody's reach to read the
+    // organisation from — and passed through bare, every Generic run a connector started was filed under
+    // no organisation, where the Generic filter on Clearances can never find it. On an install that holds
+    // exactly one organisation there is nothing to guess, so the job takes it: the same answer the
+    // person-scoped branch gives a person who sees that one organisation. A named tenant passes as it
+    // stands, and with several organisations (or none) the job is left as it was.
+    const placed = (toolName === "start_run" || toolName === "plan_run") && (args?.profileKey ?? "generic") === "generic"
+      && !(typeof args?.tenant === "string" && args.tenant.trim()) ? soleOrganisation() : null;
+    const routed = placed ? { ...args, tenant: placed } : args;
+    if (toolName === "plan_run") return stampForwarder(scope, routed);
+    return routed;
   }
   // kind === "account": a signed-in CLIENT, across their OWN account(s). Reads the client layer on any of
   // their runs, and drives the run lifecycle for them. Run OWNERSHIP is not checked here — it is enforced

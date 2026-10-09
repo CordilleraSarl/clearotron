@@ -47,7 +47,7 @@
         },
         "a-bare-territory-per-provider.test.mjs": {
           "tests": 4,
-          "asserts": 7,
+          "asserts": 9,
           "skips": 0,
           "todos": 0
         },
@@ -232,8 +232,8 @@
           "todos": 0
         },
         "a-common-law-coverage-status-is-read-as-data.test.mjs": {
-          "tests": 11,
-          "asserts": 42,
+          "tests": 14,
+          "asserts": 50,
           "skips": 0,
           "todos": 0
         },
@@ -282,6 +282,18 @@
         "a-correction-to-a-line-that-is-not-a-finding-is-observed.test.mjs": {
           "tests": 7,
           "asserts": 33,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-count-that-threw-shows-no-exception-text.test.mjs": {
+          "tests": 4,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-count-the-plan-also-read-in-full-is-not-a-crowd.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
           "skips": 0,
           "todos": 0
         },
@@ -543,6 +555,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-finding-is-checked-by-its-rungs-risk-not-its-place-on-the-ladder.test.mjs": {
+          "tests": 3,
+          "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
         "a-finding-the-digest-ended-cannot-vanish-in-silence.test.mjs": {
           "tests": 11,
           "asserts": 30,
@@ -714,6 +732,12 @@
         "a-knockout-part-that-failed-as-a-whole-is-in-its-audit-workbook.test.mjs": {
           "tests": 7,
           "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-knockout-run-with-no-method-is-not-offered-inputs.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
           "skips": 0,
           "todos": 0
         },
@@ -965,7 +989,7 @@
         },
         "a-program-already-here-is-checked-against-the-floor.test.mjs": {
           "tests": 12,
-          "asserts": 44,
+          "asserts": 45,
           "skips": 3,
           "todos": 0
         },
@@ -1131,6 +1155,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-refused-tool-call-is-classified-and-counted.test.mjs": {
+          "tests": 6,
+          "asserts": 21,
+          "skips": 0,
+          "todos": 0
+        },
         "a-refused-unit-says-what-is-half-started.test.mjs": {
           "tests": 9,
           "asserts": 31,
@@ -1194,6 +1224,12 @@
         "a-removed-control-does-not-delete-the-setting-behind-it.test.mjs": {
           "tests": 6,
           "asserts": 19,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-repair-after-the-cards-keeps-the-record-folded.test.mjs": {
+          "tests": 1,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },
@@ -1320,6 +1356,12 @@
         "a-section-the-skill-spells-two-ways-is-not-a-missing-section.test.mjs": {
           "tests": 4,
           "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-session-the-classifier-cut-is-not-recorded-as-clean.test.mjs": {
+          "tests": 12,
+          "asserts": 77,
           "skips": 0,
           "todos": 0
         },
@@ -1773,6 +1815,12 @@
           "skips": 0,
           "todos": 0
         },
+        "an-eu-order-asks-the-member-registers-in-the-same-requests.test.mjs": {
+          "tests": 5,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "an-evidence-demand-that-cannot-be-met.test.mjs": {
           "tests": 9,
           "asserts": 21,
@@ -1996,8 +2044,8 @@
           "todos": 0
         },
         "binding-layers.test.mjs": {
-          "tests": 19,
-          "asserts": 68,
+          "tests": 21,
+          "asserts": 76,
           "skips": 0,
           "todos": 0
         },
@@ -3455,7 +3503,7 @@
         },
         "instrumentation-house-rule.test.mjs": {
           "tests": 17,
-          "asserts": 116,
+          "asserts": 118,
           "skips": 0,
           "todos": 0
         },
@@ -3575,7 +3623,7 @@
         },
         "knockout-structured-read.test.mjs": {
           "tests": 12,
-          "asserts": 57,
+          "asserts": 58,
           "skips": 0,
           "todos": 0
         },
@@ -3640,8 +3688,8 @@
           "todos": 0
         },
         "machine-receipts.test.mjs": {
-          "tests": 8,
-          "asserts": 18,
+          "tests": 9,
+          "asserts": 22,
           "skips": 0,
           "todos": 0
         },
@@ -3858,6 +3906,12 @@
         "one-rule-decides-whether-an-absent-drainer-is-a-fault.test.mjs": {
           "tests": 16,
           "asserts": 54,
+          "skips": 0,
+          "todos": 0
+        },
+        "one-string-read-two-ways-is-searched-both-ways.test.mjs": {
+          "tests": 3,
+          "asserts": 8,
           "skips": 0,
           "todos": 0
         },
@@ -4487,13 +4541,13 @@
         },
         "register-capabilities.test.mjs": {
           "tests": 34,
-          "asserts": 272,
+          "asserts": 274,
           "skips": 0,
           "todos": 0
         },
         "register-count.test.mjs": {
           "tests": 31,
-          "asserts": 198,
+          "asserts": 200,
           "skips": 0,
           "todos": 0
         },
@@ -4631,7 +4685,7 @@
         },
         "render.test.mjs": {
           "tests": 163,
-          "asserts": 681,
+          "asserts": 683,
           "skips": 0,
           "todos": 0
         },
@@ -5469,6 +5523,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-band-record-says-what-its-total-counts.test.mjs": {
+          "tests": 2,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "the-bands-box-shows-the-whole-band.test.mjs": {
           "tests": 9,
           "asserts": 22,
@@ -5751,6 +5811,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-folded-record-is-the-record-from-the-seam-on.test.mjs": {
+          "tests": 9,
+          "asserts": 46,
+          "skips": 0,
+          "todos": 0
+        },
         "the-form-offers-what-the-registers-search.test.mjs": {
           "tests": 5,
           "asserts": 13,
@@ -5862,6 +5928,12 @@
         "the-investigate-line-names-its-claim-by-location.test.mjs": {
           "tests": 20,
           "asserts": 57,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-knockout-names-every-ordered-territory.test.mjs": {
+          "tests": 3,
+          "asserts": 5,
           "skips": 0,
           "todos": 0
         },
@@ -6776,6 +6848,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-connector-generic-run-is-filed-under-the-sole-organisation.test.mjs": {
+          "tests": 5,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "a-key-has-one-door-and-it-is-not-the-network.test.mjs": {
           "tests": 13,
           "asserts": 33,
@@ -7589,6 +7667,12 @@
           "skips": 0,
           "todos": 0
         },
+        "providers/_shared/test/a-total-that-counts-records-says-so-on-every-answer.test.mjs": {
+          "tests": 3,
+          "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
         "providers/_shared/test/absent-body.test.mjs": {
           "tests": 12,
           "asserts": 53,
@@ -7784,6 +7868,12 @@
         "providers/signa/test/an-exact-question-stays-ranked-above-the-floor.test.mjs": {
           "tests": 3,
           "asserts": 10,
+          "skips": 0,
+          "todos": 0
+        },
+        "providers/signa/test/an-expanded-total-says-it-counts-records.test.mjs": {
+          "tests": 3,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },

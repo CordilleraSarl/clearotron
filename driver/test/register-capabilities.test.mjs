@@ -50,6 +50,10 @@ const MODEL = {
   incumbent_classes: ["9"],
 };
 const JOB = { jobKey: "TMP9999-lumengarde", classes: ["9", "28"], jurisdictions: ["US", "EU", "CH"] };
+// The member states' own registers an EU order reaches, Benelux once for its three members, in the order
+// the territory table lists them: an EU order searches them too (owner's ruling, 2026-10-09).
+const EU_NATIONALS = ["AT", "BX", "BG", "CY", "CZ", "DE", "DK", "EE", "ES", "FI", "FR", "GR", "HR", "HU", "IE",
+  "IT", "LT", "LV", "MT", "PL", "PT", "RO", "SE", "SI", "SK"];
 const FORM = { elements: [{ element: "LUMENGARDE", band: {
   exactQueries: ["LOOMENGARDE", "LUMENGRDE"], wildcardPatterns: ["LUMENGAR*", "*UMENGARDE"] } }] };
 
@@ -312,15 +316,17 @@ test("office translation: clarivate spells the EUIPO EM (never EU); signa uses l
 test("resolveRegions translates then coverage-checks, and defers what the provider does not reach", () => {
   const r1 = resolveRegions(["US", "EU", "CH"], capabilitiesFor("clarivate"));
   // WO is the international layer of all three, and clarivate's own codes are the only thing that
-  // decides whether it can be reached. EM is already here because the EU was ordered.
-  assert.deepEqual(r1.regions, ["US", "EM", "CH", "WO"]);
+  // decides whether it can be reached. EM is already here because the EU was ordered, and so are the
+  // member states' own registers.
+  assert.deepEqual(r1.regions, ["US", "EM", "CH", "WO", ...EU_NATIONALS]);
   assert.deepEqual(r1.deferred, []);
 
-  // signa adds nothing, and that is the point of reading the contract rather than appending a code:
-  // its offices declare all three layers `returns` (territory_match: "protection" makes ONE France
-  // query return the EU and Madrid rights protecting France), so the expansion stays out of the way.
+  // signa adds no EU or Madrid register, and that is the point of reading the contract rather than
+  // appending a code: its offices declare all three layers `returns` (territory_match: "protection"
+  // makes ONE France query return the EU and Madrid rights protecting France). What it adds is the EU
+  // members' own registers it covers, France and Sweden; the others are disclosed, not claimed.
   const r2 = resolveRegions(["US", "EU", "JP"], capabilitiesFor("signa"));
-  assert.deepEqual(r2.regions, ["uspto", "euipo"]);
+  assert.deepEqual(r2.regions, ["uspto", "euipo", "inpi-fr", "prv"]);
   assert.equal(r2.deferred.length, 1);
   assert.equal(r2.deferred[0].jurisdiction, "JP");
   assert.match(r2.deferred[0].reason, /not covered by the active register provider \(signa\)/);
@@ -349,8 +355,8 @@ test("resolveRegions expands an ordered territory to the registers that BIND it"
   // layer is matched BY OFFICE, so the expansion adds it rather than reading `NL` as covering it.
   assert.deepEqual(resolveRegions(["NL"], capabilitiesFor("clarivate")).regions, ["BX", "EM", "WO"]);
   assert.deepEqual(resolveRegions(["NL"], capabilitiesFor("corsearch")).regions, ["NL", "BX", "EU", "WO"]);
-  // The EU ordered AS a territory: there is no national layer to miss.
-  assert.deepEqual(resolveRegions(["EU"], capabilitiesFor("clarivate")).regions, ["EM", "WO"]);
+  // The EU ordered AS a territory: the EU-wide register, every member state's own, and Madrid.
+  assert.deepEqual(resolveRegions(["EU"], capabilitiesFor("clarivate")).regions, ["EM", ...EU_NATIONALS, "WO"]);
 
   // A DEFERRED territory contributes no layers. Otherwise a matter whose every named territory fell
   // outside the provider's coverage would acquire a non-empty region list, and compileRegisterPlan's
@@ -379,6 +385,13 @@ test("the coverage form stops disclosing a layer the plan now searches", async (
       const { regions, deferred } = resolveRegions([t], caps);
       if (deferred.length) continue;         // uncovered here — that IS a disclosure, and a correct one
       const report = territoryLayerReport(t, regions, caps);
+      if (id === "signa" && t === "EU") {
+        // Signa covers two of the EU members' own registers. The rest are disclosed, every one a
+        // national register, and the two it covers are not among them.
+        assert.ok(!report.complete && report.unsearched.every((u) => u.layer === "national"), `${id}/${t}: ${JSON.stringify(report.unsearched)}`);
+        assert.ok(!report.unsearched.some((u) => ["FR", "SE"].includes(u.office)), `${id}/${t}: a covered member register reads as unsearched`);
+        continue;
+      }
       assert.equal(report.complete, true,
         `${id}/${t}: every binding layer reached — ${JSON.stringify(regions)}`);
     }
@@ -409,7 +422,7 @@ test("REGRESSION FLOOR: a corsearch compile adds binding registers and changes N
   // be dropped, renamed or reordered, no entry may gain or lose a key, and the ONLY permitted
   // difference is extra binding-register codes on `regions`. That is stricter than "it changed
   // somehow" and it still fails on the rewrite F2 cares about.
-  const BINDING_ADDITIONS = new Set(["EM", "EU", "WO", "BX"]);
+  const BINDING_ADDITIONS = new Set(["EM", "EU", "WO", "BX", ...EU_NATIONALS]);
   const strip = (plan) => ({ ...plan, regions: null, entries: plan.entries.map((e) => ({ ...e, regions: null })) });
   assert.deepEqual(strip(withoutProviderStamp), strip(bare),
     "no entry may gain a key and no field but `regions` may move — F2 store reuse depends on it");
@@ -427,7 +440,7 @@ test("REGRESSION FLOOR: a corsearch compile adds binding registers and changes N
     assert.equal(e.unsupported_reason, undefined);
   }
   assert.equal(withCaps.deferred_coverage, undefined, "a fully-covered plan carries no deferred rows");
-  assert.deepEqual(withCaps.regions, ["US", "EU", "CH", "WO"]);
+  assert.deepEqual(withCaps.regions, ["US", "EU", "CH", "WO", ...EU_NATIONALS]);
 });
 
 test("OR-width agreement, PER PROVIDER: the planner's split == the active provider's executor bound", () => {
@@ -620,15 +633,15 @@ test("a jurisdiction outside the provider's coverage becomes a deferred row, nev
   assert.ok(none.entries.every((e) => /not covered by the active register provider/.test(e.unsupported_reason)));
 
   // clarivate translates EU→EM and covers all three, so nothing defers — and WO joins them as the
-  // international layer every one of the three is bound by.
+  // international layer every one of the three is bound by, with the EU members' own registers.
   const cla = compile(capabilitiesFor("clarivate"));
-  assert.deepEqual(cla.regions, ["US", "EM", "CH", "WO"]);
+  assert.deepEqual(cla.regions, ["US", "EM", "CH", "WO", ...EU_NATIONALS]);
   assert.equal(cla.deferred_coverage, undefined);
   assert.ok(cla.entries.every((e) => e.unsupported === undefined),
     "clarivate maps every plan predicate — nothing defers on capability grounds");
   // Every entry carries the plan's own region list — the executor's scope comes from here, so an entry
   // that kept the pre-change three would search fewer registers than the plan claims to have covered.
-  assert.ok(cla.entries.every((e) => JSON.stringify(e.regions) === JSON.stringify(["US", "EM", "CH", "WO"])));
+  assert.ok(cla.entries.every((e) => JSON.stringify(e.regions) === JSON.stringify(["US", "EM", "CH", "WO", ...EU_NATIONALS])));
 });
 
 // ── mechanism A: the ledger relabel (coverage-limited → deferred) ─────────────────────────────────

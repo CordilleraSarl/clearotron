@@ -16,7 +16,7 @@ import { matterFrameWasRecorded, frameRatifiedForms } from "./matter-frame-recor
 import { findConnotationViolations, parsePrRiskResults, prRiskPopulation,
   CONNOTATION_UNMATCHED_MARK, CONNOTATION_NO_RESEMBLANCE_MARK, MEANING_ANGLES_RE,
   parseDispositionForm, CONNOTATION_UNRULED_REASONS, queryKey } from "./connotation-search.mjs";
-import { formSidecarName, formSidecarPath } from "./disposition-union.mjs"; import { coverageStatusAsData } from "./common-law-coverage-status.mjs";
+import { formSidecarName, formSidecarPath } from "./disposition-union.mjs";
 // B — the transport's own four failure states. The audit reads the run's records; this file locates them.
 import { auditDispositionCalls, CALL_FAILURE_REASONS } from "./disposition-call-audit.mjs";
 import { callRecordPaths } from "./disposition-tool.mjs";
@@ -37,7 +37,7 @@ import { registerPlanCallKilled } from "./tool-calls.mjs";   // — did the dict
 import { parseFindingsJson, parseFindingsJsonLenient, CLIENT_TIER_BY_COMPOSITE, isUnconditionalProceed, joinFindingToBlock, parseBlockOrd } from "./findings-model.mjs";
 import { parsePlacementsJson } from "./placement-model.mjs"; import { placementFormSidecarName, parsePlacementForm, placementRenderAccount } from "./placement-form.mjs";
 import { parseCaseLawLedger, findCaseLawLedgerViolations, caseLawLedgerFail } from "./case-law-ledger.mjs";
-import { parseFrameworkManifest, aboveLowestBand, normalizeBand } from "./framework.mjs"; import { readFrozenMethod, FROZEN_METHOD_FILE } from "./framework-method.mjs";
+import { parseFrameworkManifest, materialBand, normalizeBand } from "./framework.mjs"; import { readFrozenMethod, FROZEN_METHOD_FILE } from "./framework-method.mjs";
 import { parseNamedBand, findCollapsedBands } from "./named-band.mjs";
 import { parseBlindFrameModel } from "./blind-frame-model.mjs";
 import { parseFrameDiff } from "./frame-diff-model.mjs";
@@ -681,7 +681,7 @@ function commonLawStructural(c, p = null) {
     needsSection(c, "coverage-ledger", [/coverage[\s-]ledger/i], "coverage-ledger"),
     needsSection(c, "audit-trail", [/audit[\s-]trail/i], "audit-trail"),
     needs(c, [/\|/], "platform matrix"),
-    coverageStatusAsData(p) || hasCoverageLedgerRow(c) ? ok() : fail("no_coverage_status_row"),   // the recorded status first, the word as fallback: coverageStatusAsData() in common-law-coverage-status.mjs
+    // no status check here (ruling 2026-10-01): a ledger with no status word and no record passes, and code records what it states — recordStatusesFromFindings() in common-law-coverage-status.mjs
   );
 }
 
@@ -1203,9 +1203,9 @@ function checkFindingsSibling(p, c) {
   const v4 = (parsed.schemaVersion ?? 1) >= 4;
   if (v4 && !fw.manifest) return fail("framework_manifest_missing_for_v4: schema_version 4 findings need the frozen _driver/framework.json to judge band words");
   const v3 = (parsed.schemaVersion ?? 1) >= 3;   // gates key on schema_version — v2/archived runs and replay never flip
-  // "material finding" — the line the receipt gates key on: composite>=3 on the legacy scale; on v4,
-  // banded ABOVE the framework's lowest band (judgment-free re-expression of the same line).
-  const material = (f) => v4 ? (f.band != null && aboveLowestBand(fw.manifest, f.band)) : f.composite >= 3;
+  // "material finding" — the line the receipt gates key on: composite>=3 on the legacy scale; on v4, banded on
+  // a rung whose own tone is medium risk or higher (materialBand — by tone, never by position on the ladder).
+  const material = (f) => v4 ? (f.band != null && materialBand(fw.manifest, f.band)) : f.composite >= 3;
   for (const f of parsed.findings) {
     if (material(f) && f.use_check != null && !String(f.use_check.source ?? "").trim())
       return fail(`finding_use_check_source_missing:${f.ordinal}`);

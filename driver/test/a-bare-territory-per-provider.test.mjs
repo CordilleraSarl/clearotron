@@ -87,6 +87,15 @@ test("THE PLAN AND THE DISCLOSURE AGREE — every binding layer reads as searche
       const { regions } = resolveRegions([territory], caps);
       const report = territoryLayerReport(territory, regions, caps);
       checked++;
+      if (name === "signa" && territory === "EU") {
+        // An EU order binds every member's national register, and signa's register covers two of them.
+        // The others are disclosed, not claimed: every unsearched layer is a national one the provider
+        // does not cover, and the two it does cover are searched.
+        assert.ok(report.unsearched.length > 0 && report.unsearched.every((u) => u.layer === "national"),
+          `signa orders EU and reports ${JSON.stringify(report.unsearched.map((u) => u.layer))} as unsearched`);
+        for (const m of ["FR", "SE"]) assert.ok(!report.unsearched.some((u) => u.office === m), `signa covers ${m} and still reports it unsearched`);
+        continue;
+      }
       assert.equal(report.complete, true,
         `${name} orders ${territory}, resolves ${JSON.stringify(regions)}, and still reports `
         + `${JSON.stringify(report.unsearched.map((u) => u.layer))} as unsearched. The coverage form writes `

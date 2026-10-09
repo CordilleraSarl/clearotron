@@ -24,6 +24,7 @@
 
 import { mkdtempSync, mkdirSync, writeFileSync, copyFileSync, existsSync, rmSync, readFileSync, readdirSync, statSync, symlinkSync, lstatSync, realpathSync } from "node:fs";
 import { everyToolCallRefused } from "./tool-refusal.mjs";
+import { newSessionRecord, noteCodexEvent, sessionSummary, countTool, streamSink, codexEnding } from "./session-record.mjs";   // what the session went through, beside how it ended
 import { writeSecretFile } from "../../shared/secret-file.mjs";   // the rotated login goes back the way every credential is written
 import { tmpdir, homedir } from "node:os";
 import { join, dirname, sep } from "node:path";
@@ -38,11 +39,28 @@ import { resolveEngineProgram } from "../driver.config.mjs";   // — the one pl
 const codexBin = () => { const r = resolveEngineProgram("openai-agent"); return r.resolved ?? r.bin; };
 
 // tier/alias → codex `-m` model id. opus/sonnet/haiku are the driver's abstract tiers (CONTRACT §3). The
-// GPT ids are ENV-OVERRIDABLE and default to three DISTINCT rungs of the codex ladder — `gpt-5.6-sol`,
-// `gpt-5.6-terra`, `gpt-5.6-luna`, all present in the codex CLI as installed — so an out-of-the-box run
+// GPT ids are ENV-OVERRIDABLE and default to the vendor's current models — `gpt-6.1-sol` for the judgment
+// and sweep tiers, `gpt-6-luna` for the cheap tier (the GPT-6 ladder, below) — so an out-of-the-box run
 // uses REAL, current ids rather than invented guesses, and a stage's declared tier means the same thing
-// on both engines. `sol` remains what codex itself reports as its own default (live-probed 2026-07-27:
-// `model: gpt-5.6-sol, provider: openai`), which is why the judgment tier keeps it.
+// on both engines. Until 2026-10-09 they were `gpt-5.6-sol`, `gpt-5.6-terra` and `gpt-5.6-luna`; `sol`
+// was what codex itself reported as its own default (live-probed 2026-07-27: `model: gpt-5.6-sol,
+// provider: openai`), which is why the judgment tier kept it.
+//
+// ── THE GPT-6 LADDER (ruling 2026-10-09) ────────────────────────────────────────────────────────────────
+//
+// The owner asked for the latest models on both engines, cheaper and faster. The vendor's price list,
+// read 2026-10-09 (standard tier, per million tokens in / out): `gpt-6.1-sol` $2 / $10, `gpt-6-luna`
+// $0.10 / $0.50, `gpt-6-astra` $10 / $50. The 5.6 ladder it replaces was sol $4 / $20, terra $2 / $12,
+// luna $0.20 / $1.20. There is no GPT-6 middle model and Sol 6.1 costs less than Terra 5.6, so the sweep
+// tier takes Sol as well; Astra is the premium model, neither cheaper nor faster, and is not a rung.
+//
+// THE CODEX FLOOR MOVED WITH IT. On ChatGPT-account sign-in (subscription billing) codex 0.156.1, 0.157.0
+// and 0.158.0 refuse `gpt-6.1-sol` with a 400 — "not supported when using Codex with a ChatGPT account" —
+// and 0.159.0 to 0.162.0 accept it; `gpt-6-luna` is accepted from 0.156.1. Measured 2026-10-09 with
+// one-word turns on the test box. Below 0.159.0 the judgment tier stops at its first stage, so the floor
+// in ENGINE_BINARIES (driver.config.mjs) is 0.159.0.
+//
+// The August measurement below still names the symptom to watch for when a tier moves to a cheaper model.
 //
 // ── THE THREE TIERS MAP ONTO THE CODEX LADDER (ruling 2026-09-02,) ──────────────────────────
 //
@@ -89,9 +107,9 @@ const codexBin = () => { const r = resolveEngineProgram("openai-agent"); return 
 // runs SOMETHING is worse than one that refuses: the arm still produces a number and the number is a
 // story. They fall through to the throw below, which is where they always should have been. Concrete
 // gpt-*/o* ids still pass through.
-const JUDGMENT = process.env.CLEAROTRON_OPENAI_MODEL_JUDGMENT || "gpt-5.6-sol";     // opus   — unchanged
-const SWEEP    = process.env.CLEAROTRON_OPENAI_MODEL_SWEEP    || "gpt-5.6-terra";   // sonnet — was sol
-const CHEAP    = process.env.CLEAROTRON_OPENAI_MODEL_CHEAP    || "gpt-5.6-luna";    // haiku  — was sol
+const JUDGMENT = process.env.CLEAROTRON_OPENAI_MODEL_JUDGMENT || "gpt-6.1-sol";   // opus   — was gpt-5.6-sol
+const SWEEP    = process.env.CLEAROTRON_OPENAI_MODEL_SWEEP    || "gpt-6.1-sol";   // sonnet — was gpt-5.6-terra
+const CHEAP    = process.env.CLEAROTRON_OPENAI_MODEL_CHEAP    || "gpt-6-luna";    // haiku  — was gpt-5.6-luna
 const OPENAI_MODEL = { opus: JUDGMENT, sonnet: SWEEP, haiku: CHEAP };
 export function openaiModel(model) {
   if (!model) return undefined;
@@ -311,8 +329,10 @@ export function parseCodexEvent(line, ev) {
   switch (e?.type) {
     case "thread.started": if (e.thread_id) ev.threadId = e.thread_id; break;
     case "turn.completed": ev.turnCompleted = true; if (e.usage) ev.usage = e.usage; break;
-    case "turn.failed":    ev.turnFailed = e.error?.message || "turn.failed"; break;
-    case "error":          ev.streamError = e.message || "stream error"; break;
+    // The program's own words are kept apart from the placeholders, so the record never shows a word of
+    // ours where it said nothing (session-record.mjs, codexEnding).
+    case "turn.failed":    ev.turnFailed = e.error?.message || "turn.failed"; ev.turnFailedText = typeof e.error?.message === "string" ? e.error.message : null; break;
+    case "error":          ev.streamError = e.message || "stream error"; ev.streamErrorText = typeof e.message === "string" ? e.message : null; break;
     case "item.completed":
       if (e.item?.type === "agent_message" && typeof e.item.text === "string") ev.agentText = e.item.text;
       // A FILE CHANGE CODEX ITSELF REPORTS AS FAILED. Measured on codex-cli 0.156.1 with its sandbox unable
@@ -330,6 +350,7 @@ export function parseCodexEvent(line, ev) {
           ev.commandFailures.push({ command: String(e.item.command ?? ""), output: String(e.item.aggregated_output ?? "") });
       }
       noteMcpToolCall(e.item, ev);
+      noteToolItem(e.item, ev);
       break;
     // ── — AN MCP CALL THAT WAS REFUSED IS NOT A CALL NOBODY MADE ──────────
     //
@@ -352,6 +373,7 @@ export function parseCodexEvent(line, ev) {
     // would double every call.
     case "item.started":
       noteMcpToolCall(e.item, ev);
+      noteToolItem(e.item, ev);
       break;
     default: break;
   }
@@ -375,6 +397,47 @@ export function noteMcpToolCall(item, ev) {
     status: item.status ?? null,
     message: item.error?.message ?? null,
   });
+}
+
+// The item kinds codex reports a tool call as, besides its MCP calls. Its own words, measured on
+// codex-cli 0.150–0.158: a shell command, a file edit, a web search.
+const TOOL_ITEM_KINDS = new Set(["command_execution", "file_change", "web_search"]);
+
+/**
+ * Remember one tool-shaped item by id, for the per-name count. Codex writes each item twice (started,
+ * then its terminal state) under one id, so the id is the unit, exactly as for the MCP gauge.
+ */
+export function noteToolItem(item, ev) {
+  if (!item?.id) return;
+  const name = item.type === "mcp_tool_call" ? `mcp__${item.server ?? "?"}__${item.tool ?? "?"}`
+    : TOOL_ITEM_KINDS.has(item.type) ? item.type : null;
+  if (!name) return;
+  (ev.toolItems ??= new Map()).set(item.id, name);
+}
+
+/**
+ * The turn's tool calls by name, in the shape anthropic-agent records: an MCP call under
+ * `mcp__<server>__<tool>`, and codex's own tool items under its own word for them. Counted once per item
+ * id. An OBJECT is a measurement (`{}` = none observed).
+ */
+export function codexToolCallsByName(ev) {
+  const byName = Object.create(null);
+  for (const name of ev?.toolItems?.values() ?? []) countTool(byName, name);
+  return { ...byName };
+}
+
+/**
+ * The tool-server calls of this turn that came back as an error, by tool name, in the shape
+ * anthropic-agent records: a call that reached its server and `failed` there, which codex writes with no
+ * `error.message` (a call codex refused itself carries one, and `toolCallsRefused` counts those). Counted
+ * once per item id. An OBJECT is a measurement (`{}`: none). PURE.
+ */
+export function codexToolServerErrors(ev) {
+  const byName = Object.create(null);
+  for (const c of ev?.mcpCalls?.values() ?? []) {
+    if (c.status === "failed" && !c.message) countTool(byName, `mcp__${c.server ?? "?"}__${c.tool ?? "?"}`);
+  }
+  return { ...byName };
 }
 
 /**
@@ -540,11 +603,16 @@ function settleTuple({ r, ev, resumeRef }) {
   const failed = overflow || killed || !ev.turnCompleted || !!ev.turnFailed;
   const usage = mapUsage(ev.usage);
   const text = ev.agentText || "";
-  const json = buildEnvelope({
-    text, ok: !failed, killed, usage,
-    summary: ev.turnFailed ? "failed" : (ev.turnCompleted ? "success" : undefined),
-    runId: ev.threadId,
-  });
+  const json = {
+    ...buildEnvelope({
+      text, ok: !failed, killed, usage,
+      summary: ev.turnFailed ? "failed" : (ev.turnCompleted ? "success" : undefined),
+      runId: ev.threadId,
+    }),
+    // What ended the turn, in the program's own words when it failed (session-record.mjs, codexEnding):
+    // the same three fields the Claude adapter writes. Recorded only; `ok` above is unchanged.
+    ...codexEnding(ev),
+  };
   const stderrOut = overflow
     ? (r.stderr + `\nopenai-agent output overflow: stdout/stderr exceeded ${r.maxBuffer} chars — killed the tree and failed the turn (truncated tail never parsed)`)
     : (stallKill ? (r.stderr + "\nrequest timed out (openai-agent stall-watchdog: 0 streamed tokens)") : r.stderr);
@@ -589,6 +657,10 @@ function settleTuple({ r, ev, resumeRef }) {
     // adapter reads its commands only for failures (below), so it reports no command-tool count: null, never zero.
     toolCallsRefused: mcpToolGauge(ev).mcpToolCallsRefused,
     commandToolCalls: null,
+    // The per-name split of the calls codex reports (see codexToolCallsByName), what the session went
+    // through (session-record.mjs: every turn ending and stream error, in order), and the raw stream.
+    toolCallsByName: codexToolCallsByName(ev), toolCallsErroredByName: codexToolServerErrors(ev),
+    session: sessionSummary(ev.session), stream: ev.stream ?? null,
     writesFailed: ev.writesFailed ?? 0,
     commandsFailed: ev.commandsFailed ?? 0,
     commandFailures: ev.commandFailures ?? [],
@@ -624,6 +696,8 @@ function errResult(t0, e, resumeRef) {
     code: 1, killed: false, wall: (Date.now() - t0) / 1000, stdout: "",
     stderr: `openai-agent error: ${e?.message ?? e}`, laneWaitMs: 0,
     json: null, usage: null, modelWire: null, sessionRef: resumeRef ?? null,
+    // No session ran: nothing to have been interrupted, no stream.
+    toolCallsByName: null, toolCallsErroredByName: null, session: null, stream: null,
   };
 }
 
@@ -652,7 +726,7 @@ export const openaiAgentEngine = {
   // `thread/resume failed: no rollout found for thread id ... (code -32600)`, exit 1 — with the control
   // (same id, same binary, its own home) resuming cleanly. So every warm-patch retry and every
   // form-repair sub-turn on the codex arm has been failing.
-  async runTurn({ message, model, thinking, timeoutSec, resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, stallSec, codexHome: providedHome } = {}) {
+  async runTurn({ message, model, thinking, timeoutSec, resumeRef, mcpConfig, allowedTools, cwd, skillsDir, skillsGrantRoots, profilesDir, resolveSkill, runDir, stallSec, codexHome: providedHome, streamFile = null } = {}) {
     if (!message) throw new Error("openai-agent.runTurn: message is required");
     const t0 = Date.now();
     let codexHome;
@@ -703,16 +777,25 @@ export const openaiAgentEngine = {
       // Stamped HERE, not at function entry: everything above is file writes that can take a moment, and
       // a floor set too early would let a previous turn's rollout back in on a shared home.
       const spawnedAtMs = Date.now();
-      const ev = { threadId: null, usage: null, agentText: "", turnCompleted: false, turnFailed: null, streamError: null, model: null, mcpCalls: new Map() };
+      const ev = { threadId: null, usage: null, agentText: "", turnCompleted: false, turnFailed: null, streamError: null, model: null, mcpCalls: new Map(),
+        session: newSessionRecord() };
+      // The raw stream, one file per session beside its dispatch; every line codex wrote on stdout.
+      const sink = streamSink(streamFile);
       const r = await runStreamingChild({
         bin: codexBin(), args, input, runDir,
         // — the run dir, not a shared tmpdir. codex makes cwd a workspace root, writable under the
         // stage's profile, so this tightens the writable surface onto the run rather than widening it.
         cwd: resolveSpawnCwd({ cwd, runDir }),
         env, stallSec, timeoutSec,
-        onStdoutLine: (line) => parseCodexEvent(line, ev),
+        onStdoutLine: (line) => {
+          sink.write(`${line}\n`);
+          parseCodexEvent(line, ev);
+          let e; try { e = JSON.parse(line); } catch { return; }
+          noteCodexEvent(ev.session, e, Date.now() - t0);
+        },
         stderrIsLiveness: true,   // codex streams progress on STDERR → it is liveness for the stall watchdog
       });
+      ev.stream = sink.close();
       if (r.spawnError) return errResult(t0, r.spawnError, resumeRef);
       // The stream said no model (it never does — see readServedModel); the rollout under THIS run's
       // CODEX_HOME did. Read here, inside the try, because the finally below deletes that dir.

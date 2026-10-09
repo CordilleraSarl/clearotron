@@ -48,6 +48,11 @@ const SERVERS = Object.freeze(["recording", "coverage", "dispositions", "unit-no
 // Where an order can be composed. Not the doctrine files: those are shared, and the proximity rule
 // above is what replaces reading them.
 const ORDER_SOURCES = Object.freeze(["repair-composers.mjs", "gateway.mjs", "stages.mjs"]);
+// A transport whose only order is its stage's manual. `record_coverage_status` was also ordered by the
+// retry text for `no_coverage_status_row`; Krzys ruled on 2026-10-01 that no retry is spent on that token
+// and the retry text goes, so the manual's line under the Coverage ledger is now its one order, and the
+// census reads it there rather than reporting a stage that lost its dispatch.
+const MANUAL_ORDERS = Object.freeze({ record_coverage_status: "skills/clearance-common-law/SKILL.md" });
 
 const IDENT = /\\?`([a-z][a-z0-9]*(?:_[a-z0-9]+)+)\\?`/g;
 const QUOTED = /(?:carrying only|send|sending|with)\s+\\?"([a-z][a-z0-9_]*)\\?"/g;
@@ -135,7 +140,7 @@ function orderedFieldsFor(tool) {
   // THE WHOLE NAME, never a substring: `record_coverage` is a prefix of `record_coverage_status`, and a
   // substring match read an order for the second as an order for the first.
   const named = new RegExp(`(?<![a-z0-9_])${tool}(?![a-z0-9_])`);
-  for (const file of ORDER_SOURCES) {
+  for (const file of [...ORDER_SOURCES, ...(MANUAL_ORDERS[tool] ? [MANUAL_ORDERS[tool]] : [])]) {
     const src = readFileSync(join(DRIVER, file), "utf8");
     src.split("\n").forEach((line, i) => {
       if (!named.test(line)) return;
@@ -163,7 +168,7 @@ test("every field an order names for a transport is a field that transport can e
     // A transport no live order names is a could-not-look, not a clean row. Every one of the fifteen is
     // named today; a conversion that stops naming its own tool in any order should say so here.
     assert.ok(orderLines > 0,
-      `no non-comment line in ${ORDER_SOURCES.join(", ")} names ${tool} — this census cannot see its orders, `
+      `no non-comment line in ${[...ORDER_SOURCES, ...(MANUAL_ORDERS[tool] ? [MANUAL_ORDERS[tool]] : [])].join(", ")} names ${tool} — this census cannot see its orders, `
       + "which is a finding about the scan or about a stage that lost its dispatch, not a pass");
     toolsWithOrders++;
 
