@@ -68,7 +68,7 @@ function standIn() {
   mkdirSync(project);
   plantNpx(bin, "stand-in.mjs", STAND_IN);
   plantNpx(project, "decoy.mjs", DECOY);
-  const env = { ...process.env, STAND_IN_PIDS: join(tmp, "pids.json"), DECOY_RAN: join(tmp, "decoy-ran") };
+  const env = { ...process.env, npm_config_offline: "true", STAND_IN_PIDS: join(tmp, "pids.json"), DECOY_RAN: join(tmp, "decoy-ran") };
   const key = Object.keys(env).find((k) => k.toUpperCase() === "PATH") ?? "PATH";
   env[key] = [bin, dirname(process.execPath), env[key] ?? ""].join(delimiter);
   return { tmp, project, env, cleanup: () => rmSync(tmp, { recursive: true, force: true }) };
@@ -172,7 +172,7 @@ test("the server ends when its input closes, though the launcher was killed firs
 test("the real npx starts through the launcher", async () => {
   const s = standIn();
   try {
-    const env = { ...process.env };
+    const env = { ...process.env, npm_config_offline: "true" };   // npx --version needs no registry
     const run = startAsClaudeCodeDoes({ project: s.project, env }, [ENTRY.args[0], "--version"]);
     run.child.stdin.end();
     const { code, stdout, stderr } = await within(run.done, 60_000, () => "npx --version never ended");
