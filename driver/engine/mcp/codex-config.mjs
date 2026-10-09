@@ -235,13 +235,18 @@ export function commandEnvToml(withheld = []) {
 // this profile never names. Not a refusal of their names inside the temp folder: codex scans a folder
 // before it applies a wildcard refusal there, and in a shared temp folder one entry the account cannot
 // read fails the whole turn (measured, 0.156.1).
+//
+// THE DRIVER'S OWN RECORDS INSIDE THE RUN FOLDER ARE READ-ONLY. `_driver/` holds the run's trace and the
+// files the gates judge from, so a stage's command may read them and never write them. The narrower line
+// wins over the run folder's: measured on codex 0.162.0 with this profile, a write into the run folder
+// succeeded, a read of `_driver/` succeeded, and a write or an append there was refused.
 export const FENCE_PROFILE = "clearotron-stage";
 export function fenceToml({ runDir = null, readRoots = [] } = {}) {
   const key = (p) => tomlString(p);
   const out = [`[permissions.${FENCE_PROFILE}.filesystem]`,
     `":minimal" = "read"`, `":tmpdir" = "write"`, `":slash_tmp" = "write"`];
   for (const r of [...new Set(readRoots.filter(Boolean))]) out.push(`${key(r)} = "read"`);
-  if (runDir) out.push(`${key(runDir)} = "write"`);
+  if (runDir) out.push(`${key(runDir)} = "write"`, `${key(join(runDir, "_driver"))} = "read"`);
   out.push("", `[permissions.${FENCE_PROFILE}.filesystem.":workspace_roots"]`, `"." = "write"`, "");
   return out;
 }
