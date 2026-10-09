@@ -102,7 +102,8 @@ test("an inherited _records/ artifact satisfies the guard — the fork case", ()
   assert.equal(r.fetchedWithoutRecord, 0);
 });
 
-test("losing the WITNESS is its own finding — an unreadable call ledger is reported", () => {
+test("losing the WITNESS is its own finding — an unreadable call ledger is reported",
+  { skip: process.getuid?.() === 0 && "root reads a mode-000 file — the unreadable call ledger cannot be built, so its read error is not checked here" }, () => {
   // Without this the guard is worthless in exactly the situation it exists for: no readable call ledger
   // means no fetch rows, which means `fetchedWithoutRecord === 0` on every run it could ever fail.
   const { runDir } = scaffold({ records: "" });
