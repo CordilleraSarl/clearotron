@@ -104,8 +104,13 @@ test("the marker is spelled ONE way, so it can be found and worked off", () => {
   const src = readFileSync(STAGES_SRC, "utf8");
   const variants = [...src.matchAll(/\[[^\]]*\bunverified\b[^\]]*\]/g)].map((m) => m[0]);
   const distinct = [...new Set(variants)];
-  assert.deepEqual(distinct, [MARKER],
+  assert.deepEqual(distinct.filter((v) => v !== MARKER), [],
     `one spelling only, or the backlog cannot be counted: ${distinct.join(" | ")}`);
-  assert.ok(variants.length >= 20,
-    `${variants.length} markers — if this has fallen sharply, check the work was done rather than deleted`);
+  // THE BACKLOG IS WORKED OFF, 2026-10-09: every marked entry's citation was resolved from what the entry
+  // quotes and rewritten as a symbol, so no marker is left and the floor that stood here (at least twenty)
+  // has nothing to protect. Dropping a marker without doing the work still fails the arm above that refuses
+  // a line citation in an unmarked `why`. What remains here is the instrument check: the matcher must find
+  // the one spelling, or an empty result would say only that the pattern broke.
+  assert.equal(`x ${MARKER} y`.match(/\[[^\]]*\bunverified\b[^\]]*\]/)?.[0], MARKER,
+    "the variant matcher no longer finds the marker itself, so an empty backlog proves nothing");
 });

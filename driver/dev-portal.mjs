@@ -380,7 +380,8 @@ export function startPortal({ poolRoot = null, port = 18899, host = "127.0.0.1",
         // "knockout" enqueued a job naming no product at all and ran whatever the account default or the
         // request's own territories named — a silent product substitution at a live door, from a control
         // that said otherwise. The menu is gone; refusing the field as well is what stops a stale tab, a
-        // bookmarked script or a copied curl from doing it quietly. products.mjs:293 states the rule.
+        // bookmarked script or a copied curl from doing it quietly.
+        // SEARCH_LEVEL_NOT_A_REQUEST declared in products.mjs states the rule.
         //
         // THE SENTENCE IS NO LONGER WRITTEN HERE. This door had the only searchLevel refusal in the
         // system, in its own words — so the same request was refused here and accepted at the other

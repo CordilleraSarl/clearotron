@@ -175,7 +175,8 @@ test("EUIPO does not cover Germany — an EU trade mark is not a national regist
 });
 
 test("corsearch declares null and it must survive as null, all the way", async () => {
-  // providers/corsearch/src/capabilities.js:66-68 — "Never read as 'covers nothing'". A global
+  // the `covered` entry of CAPABILITIES in providers/corsearch/src/capabilities.js — "Never read as
+  // 'covers nothing'". A global
   // aggregator has no enumerable covered set, and an enumeration invented here would silently drop any
   // territory added to the composer afterwards.
   assert.equal(await coveredTerritoryNames(capabilitiesFor("corsearch")), null);
