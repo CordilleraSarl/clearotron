@@ -58,10 +58,10 @@ const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 // Every entry cites the read that puts it here. `required` means publish cannot render without it.
 const FROZEN_FILES = [
   // publish/index.mjs — parseReport(reportMd), the one mandatory input
-  { path: "report.md", required: true, why: "publish/index.mjs:650 parseReport" },
-  { path: "audit.md", why: "publish/index.mjs:1022 auditMd, the audit workbook source" },
-  { path: "findings.json", why: "publish/index.mjs:715 readStore, the per-finding machine contract" },
-  { path: "status.json", why: "publish/index.mjs:913 machineLedgerNote + markName" },
+  { path: "report.md", required: true, why: "parseReport, called by publishReport() in index.mjs" },
+  { path: "audit.md", why: "publishReport() in index.mjs reads its `auditMd` argument, the audit workbook source" },
+  { path: "findings.json", why: "readStore, called by publishReport() in index.mjs, the per-finding machine contract" },
+  { path: "status.json", why: "publishReport() in index.mjs reads machineLedgerNote + markName" },
   { path: "case-law-findings.md", why: "`clPath` declared in index.mjs, the case-law section" },
   { path: "common-law-grid.json", why: "`commonLawJoinedTerms` declared in index.mjs, common-law coverage" },
   // publish/index.mjs — the _driver sidecars it reads by name
@@ -99,15 +99,15 @@ for (const path of Object.keys(PUBLISH_INPUTS)) {
 // Cited the same way the clearance list is: every entry names the read that puts it here.
 const KNOCKOUT_FILES = [
   { path: "knockout-findings.json", required: true, why: "report-registry.mjs:66 the batch findings ARE the report source" },
-  { path: "knockout-plan.json", why: "report-registry.mjs:77 plan" },
+  { path: "knockout-plan.json", why: "republishRun() in report-registry.mjs, plan" },
   { path: "knockout-assessment.md", why: "the merged prose the lane writes (gateway.mjs:184 TOOL_WRITTEN_PATTERNS)" },
   { path: "knockout-frame.md", why: "the batch scope note (gateway.mjs:65 TOOL_WRITTEN_ARTIFACTS)" },
   { path: "email-body.md", why: "the delivery prose the lane writes beside the assessment" },
-  { path: "status.json", why: "publish/index.mjs:913 machineLedgerNote + markName" },
-  { path: "audit.md", why: "publish/index.mjs:1022 auditMd, the audit workbook source" },
+  { path: "status.json", why: "publishReport() in index.mjs reads machineLedgerNote + markName" },
+  { path: "audit.md", why: "publishReport() in index.mjs reads its `auditMd` argument, the audit workbook source" },
   // The _driver sidecars publishKnockout reads by name. framework.json is REQUIRED and says so at its
   // call site: a knockout re-rendered under today's bands would silently restate its verdict.
-  { path: "_driver/framework.json", required: true, why: "report-registry.mjs:68 the bands it was rated under" },
+  { path: "_driver/framework.json", required: true, why: "republishRun() in report-registry.mjs, the bands it was rated under" },
   { path: "_driver/search-policy.json", why: "report-registry.mjs:71 level + stage label" },
   { path: "_driver/profile.json", why: "report-registry.mjs:72 customer key and the delivery overlay" },
   { path: "_driver/verdict.json", why: "publish/index.mjs:792 verdictInfo" },

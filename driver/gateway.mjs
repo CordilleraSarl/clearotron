@@ -445,7 +445,7 @@ export function attemptOk(fail, turn) {
 export function streamMeta(runDir, stream) {
   if (!stream || typeof stream !== "object" || !stream.file) return null;
   const dir = String(runDir ?? "");
-  const file = dir && String(stream.file).startsWith(dir) ? String(stream.file).slice(dir.length).replace(/^[\\/]+/, "") : String(stream.file);
+  const file = dir && String(stream.file).startsWith(dir) ? String(stream.file).slice(dir.length).replace(/^[\\/]+/, "").replace(/\\/g, "/") : String(stream.file);   // forward slashes, as every record path is, on Windows too
   return { file, present: stream.present === true, bytes: Number.isFinite(stream.bytes) ? stream.bytes : null,
     ...(stream.reason ? { reason: stream.reason } : {}) };
 }
@@ -3192,8 +3192,8 @@ export function isFormClassFail(fail) {
   return FORM_CLASS_RE.test(fail ?? "");
 }
 // How many in-dispatch repairs one stage run may buy. TWO, and the number has a cause: parseFrameDiff
-// is FAIL-FAST — it throws on the first bad severity (frame-diff-model.mjs:66 parseFrameDiff) before it ever collects
-// the undispatchable directives (:100) — so ONE artifact carrying both defects surfaces them
+// is FAIL-FAST — it throws on the first bad severity (parseFrameDiff() in frame-diff-model.mjs) before it ever collects
+// the undispatchable directives — so ONE artifact carrying both defects surfaces them
 // SEQUENTIALLY. That is exactly what the 08-02 frame-diff ladder did (severity on a1, undispatchable
 // on a2), and a cap of 1 would have handed the second one straight back to the ladder. The codebase
 // already learned this lesson once at directive granularity: undispatchableThrow batches ALL offenders

@@ -22,7 +22,7 @@ import { fileURLToPath } from "node:url";
 import { buildGatherMcpConfig, allowedToolsFor, toolGroupsForStage, PER_AXIS_STAGES, PER_CHUNK_STAGES } from "../engine/mcp/gather-config.mjs";
 import { buildClaudeArgs, READ_FENCE } from "../engine/anthropic-agent.mjs";
 import { probeToolConfig } from "../engine/probe.mjs";
-import { FENCE_PROFILE } from "../engine/mcp/codex-config.mjs";
+import { FENCE_PROFILE } from "../engine/mcp/codex-config.mjs"; import { driverDir } from "../../shared/driver-dir.mjs";
 import { STAGES } from "../stages.mjs";
 import { KO_STAGES } from "../stages-knockout.mjs";
 import { pinEnv } from "../../shared/env-aliases.mjs";
@@ -141,8 +141,9 @@ test("codex, sandbox on: the config selects the stage's profile, and no --sandbo
   // The stand-in is a loose program, so its own folder is the program root the profile reads.
   assert.deepEqual(rules, {
     ":minimal": "read", ":tmpdir": "write", ":slash_tmp": "write",
-    [trees[0]]: "read", [trees[1]]: "read", [dirname(realpathSync(join(HERE, "mock-codex.mjs")))]: "read", [runDir]: "write", ".": "write",
-  }, "the profile grants something other than the instruction trees, codex's own programs, the run folder, the working folder and the temp folders");
+    [trees[0]]: "read", [trees[1]]: "read", [dirname(realpathSync(join(HERE, "mock-codex.mjs")))]: "read", [runDir]: "write",
+    [driverDir(runDir)]: "read", ".": "write",
+  }, "the profile grants something other than the instruction trees, codex's own programs, the run folder with its driver records read-only, the working folder and the temp folders");
   assert.match(profile, new RegExp(`^\\[permissions\\.${FENCE_PROFILE}\\.filesystem\\.":workspace_roots"\\]\\n"\\." = "write"$`, "m"));
 });
 

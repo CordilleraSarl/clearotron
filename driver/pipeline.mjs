@@ -3934,7 +3934,7 @@ export function findFloorBreaches(ledger, floorAxes) {   // @internal
  * `[]`: no manifest, unreadable, unparseable. That is the honest default here and not an absence read as
  * a pass, because the whole mechanism is opt-in — a run with no designation owes no floor, and a run whose
  * manifest cannot be read has no designation to honour. The refusal for an absent or unparseable manifest
- * belongs to the stage that writes it and already exists there — verify.mjs:1335 CALL_REASON_SET runs the same parser
+ * belongs to the stage that writes it and already exists there — validators.variantManifest in verify.mjs runs the same parser
  * through `checkSiblingJson` and fails clearance-variants with `variantmodel_missing`. Checked, because
  * "something else refuses it" is exactly the assumption that turns a swallowed error into a silent pass.
  */
@@ -4803,7 +4803,7 @@ async function stage(name, ctx, opts = {}) {
   let wedgeCycles = 0;
   for (;;) {
     const r = await stageWithChain(name, ctx, opts);
-    if (r.ok || r.fail !== "lane_wedge" || wedgeCycles >= LANE_WEDGE_CHAIN_RETRIES) { sweepStrayArtifacts(ctx, name); return r; }
+    if (r.ok || r.fail !== "lane_wedge" || wedgeCycles >= LANE_WEDGE_CHAIN_RETRIES) { sweepStrayArtifacts(ctx, name); await afterLateSynthesisSave(name, ctx, r); return r; }
     wedgeCycles++;
     note(`[${name}] command-lane wedge — the stage timed out with zero progress (saturated lane). Waiting ${Math.round(LANE_WEDGE_BACKOFF_MS / 1000)}s for it to clear, then re-dispatching (${wedgeCycles}/${LANE_WEDGE_CHAIN_RETRIES}); full per-attempt timeouts preserved.`);
     try { runLog(ctx.paths.runDir, { event: "lane-wedge-retry", stage: name + (ctx.axis ? `:${ctx.axis}` : ""), cycle: wedgeCycles, max: LANE_WEDGE_CHAIN_RETRIES }); } catch { /* telemetry best-effort */ }
@@ -7150,7 +7150,7 @@ function injectDeferralCoverage(P, runDir, note) {
 // the two constants below BYTE-FOR-BYTE, which is why they stay exported and are asserted against the
 // derivation in the tests.
 //
-// SERP_LANES is deliberately untouched: zh-only there is the shipped design (jx-lanes.mjs:72-74), not
+// SERP_LANES is deliberately untouched: zh-only there is the shipped design (SERP_LANES declared in jx-lanes.mjs), not
 // drift, and generalising the platform grid is a different piece of work.
 //
 // ── THE REMEDY CLAUSE NAMES A PRODUCT, AND FOR A WHILE IT NAMED A DELETED ONE ───────────────────────
@@ -7245,7 +7245,7 @@ export function scriptLaneRanOnRun(runDir, lane, { searchPolicy = null, env = pr
   //   zh  — shipped the full Phase-4 deepening: the SERP platform grid and the native read. Either
   //         unit running IS the lane running (they gate independently; one on and one off still
   //         searched in Chinese), so the legs stay exactly as they were.
-  //   ja/ko — shipped as slice-1 CANDIDATE lanes only (jx-lanes.mjs:32-35): no SERP_LANES entry, so
+  //   ja/ko — shipped as slice-1 CANDIDATE lanes only (LANGUAGE_LANES declared in jx-lanes.mjs): no SERP_LANES entry, so
   //         runJxSerpGrid hard-refuses them and neither unit flag can ever describe them. The only
   //         work these lanes do is the candidate fold, so "ran" is the fold having ACCEPTED
   //         candidates — a frozen lane decision with an empty fold searched nothing and owes the row.
@@ -8947,7 +8947,7 @@ async function pipelineInner(job, opts = {}) {
   // frame validator compares against THIS file, never against the frame's own paraphrase) —
   // paraphrase drift between the request and the frame is a defect, not a style choice.
   try {
-    writeFileSync(P.instructedScope, JSON.stringify(instructedScopeOf(job), null, 2) + "\n");
+    const scope = instructedScopeToWrite(job, { jobRebuiltFromStatus: opts.jobRebuiltFromStatus, scopeOnDisk: existsSync(P.instructedScope) }); if (scope) writeFileSync(P.instructedScope, JSON.stringify(scope, null, 2) + "\n");
   } catch (e) { note(`instructed-scope write failed (non-fatal): ${e.message}`); }
   // THE STORED DEFAULTS THE ENGINE CANNOT SEARCH — recorded by the run, not only by the plan preview.
   //
@@ -9436,7 +9436,7 @@ async function pipelineInner(job, opts = {}) {
       //
       // The prior channel is the TRUSTED one and already carries everything needed. Half forms are
       // driver-written, `seatFields(p, row)` carries their rulings by the same `pOk` path, and
-      // gateway.mjs:630 selectEngine already unions this exact shape — prior-only, `{ rows: null }` submitted — on
+      // syncDispositionForm() in gateway.mjs already unions this exact shape — prior-only, `{ rows: null }` submitted — on
       // every attempt. So this is that mode, not a new one.
       //
       // ONE METRIC MOVES, deliberately: with no submission, `carried` counts every ruled row, because
@@ -13485,6 +13485,9 @@ async function pipelineInner(job, opts = {}) {
     // structured-only). Each stage is file-gated/resumable; per-card sessions feed the lint repair below.
     // C2 — fold same-owner+same-mark duplicate filings into one finding BEFORE the overview + cards read
     // findings.json, so the whole delivery phase (and the published copy) sees the single consolidated set.
+    // THE SEAM'S WRITES ARE ONE CLOSURE, so they can run again: a synthesis save after this point rewrites
+    // findings.json from the seat's own call, and every write below went with it (`stage()` re-runs them).
+    const seamWrites = async () => {
     injectDeferralCoverage(P, run.runDir, note); injectMeaningGapCoverage(P, run.runDir, note);   // A3: unclosed reopen directives, and meaning searches that did not complete, become reader-visible coverage rows first
     // qw/cn-scope-honesty — the sibling injection: a CN-family-scope run whose zh lane did not run
     // discloses what the native-language investigation would have searched, and where it is offered
@@ -13540,6 +13543,15 @@ async function pipelineInner(job, opts = {}) {
       try { writeVerdictSidecar(); }
       catch (e2) { throw new StageFailure("verdict", `verdict sidecar refresh failed after consolidation: ${String(e2.message).slice(0, 120)}`); }
     }
+    };
+    await seamWrites();
+    // Every write above is idempotent: each injection skips a row the record already carries, the stamp
+    // replaces its rows, and the fold leaves a folded record as it is.
+    ctx.afterSynthesisSave = async () => {
+      note(`[seam] a synthesis save after the seam rewrote findings.json — re-applying the seam's writes`);
+      runLog(run.runDir, { event: "seam-reapplied", after: "synthesis-save" });
+      await seamWrites();
+    };
     // wp50/wi2 — the overview PROSE must speak the derived tier (VENZY: caption said "High risk" while
     // every code surface said VERY HIGH). Thread the just-refreshed sidecar into the stage prompt; the
     // deterministic backstop is predelivery-lint's overallTierChecks.
@@ -16088,6 +16100,7 @@ export async function repairStale(job, opts = {}) {   // @internal
   const labels = Array.isArray(rec?.labels) ? rec.labels : [];
   if (!labels.length) return null;
   attachFramework(ctx, { write: true });
+  await attachJxAim(ctx);   // the aim count the cold pass sets, as --experiment sets it on its rebuilt context
   // RE-DERIVE THE ORDER rather than trusting the file's. The recorded order was right when it was
   // written, and a code change since could have moved an edge — the file names WHAT, the live graph says
   // WHEN. (the file names WHAT, the live graph says WHEN)
@@ -16763,7 +16776,7 @@ if (isEntrypoint(import.meta.url)) void (async () => {
   // rate-limit catch already finds the run to postpone; the same hook lets a THROWN exit name the run.
   const opts = a.experiment
     ? { ...base, codename: a.codename, experiment: a.experiment, model: a.model, instructions: a.instructions, axis: a.axis, label: a.label, dispatchTrigger: a.dispatchTrigger }
-    : { ...base, codename: a.codename, fromStage: a.fromStage };
+    : { ...base, codename: a.codename, fromStage: a.fromStage, ...(a.job ? {} : { jobRebuiltFromStatus: true }) };
   const script = resolve(fileURLToPath(import.meta.url));
   // `jobPath` is null on a rebuilt resume, so the advice composes a command that does not name a file
   // the box does not have — which is the whole defect this path exists to close, and printing it again
@@ -16945,6 +16958,17 @@ export function injectMeaningGapCoverage(P, runDir, note) {   // @internal — e
 }
 
 /**
+ * A SYNTHESIS SAVE AFTER THE SEAM (the pre-delivery narrative redo, the in-pass stale repair) rewrites
+ * findings.json from the seat's own call, and the seam's writes go with it: the coverage-judgment rows, the
+ * injected coverage rows, the fold. The seam leaves them on the run's context, and they run again here,
+ * before anything downstream reads the record. Before the seam there is nothing on the context, so nothing
+ * runs. It sits at the end of this file so that adding it moved no line another file cites.
+ */
+async function afterLateSynthesisSave(name, ctx, r) {
+  if (r?.ok && !r.skipped && name === "synthesis" && typeof ctx?.afterSynthesisSave === "function") await ctx.afterSynthesisSave();
+}
+
+/**
  * The reader's name for a planned search that never ran and that no open ledger row on its axis claims —
  * the orphan row of `coverageJudgmentRows`. Its area is the plan's qid, which a lawyer cannot read; the
  * label is composed the way the workbook's released-family rows compose theirs (publish/index.mjs
@@ -16957,4 +16981,15 @@ function orphanAreaLabel(qid, axis, plan) {
   if (!entry) return {};
   const label = coverageUnitLabel(unitLabel(axis || entry.axis, entry));
   return label && label !== qid ? { areaLabel: label } : {};
+}
+
+/**
+ * The instructed scope this run writes, or null to keep the one already on disk. A resume that rebuilt its
+ * job from status.json holds only the job's identity (id, reference, mark, classes, forwarder), so writing
+ * the scope from it would replace the order's goods, customer and territories with nothing, and every
+ * later reader of the scope would see a narrower matter than was ordered. Such a resume keeps the scope the
+ * run started with. A job read from a file, or a run with no scope yet, writes as before. PURE.
+ */
+export function instructedScopeToWrite(job, { jobRebuiltFromStatus = false, scopeOnDisk = false } = {}) {   // @internal
+  return jobRebuiltFromStatus && scopeOnDisk ? null : instructedScopeOf(job);
 }

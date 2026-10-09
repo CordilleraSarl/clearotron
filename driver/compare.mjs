@@ -212,7 +212,7 @@ export function compareCmd(opts) {
 if (isEntrypoint(import.meta.url)) {
   let a;
   //: the refusal must print the usage, or "unknown flag --experiement" leaves the reader guessing
-  // which spelling was wanted. Same wiring as enqueue.mjs:155.
+  // which spelling was wanted. Same wiring as main() in enqueue.mjs.
   try { a = parseArgv(process.argv.slice(2)); }
   catch (e) { console.error(`error: ${e.message}\n\n${USAGE}`); process.exit(2); }
   try {

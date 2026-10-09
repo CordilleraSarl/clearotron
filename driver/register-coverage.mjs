@@ -32,7 +32,7 @@
 // ── AND WHY IT DELEGATES TO resolveRegions RATHER THAN RE-IMPLEMENTING IT ───────────────────────────
 //
 // Five vocabularies sit between a display name and a covered office: display → `normalizeTerritory` →
-// `canonicalJurisdictionCode` → `offices.translate` → `covered.has`. `register-plan.mjs:206-216` records
+// `canonicalJurisdictionCode` → `offices.translate` → `covered.has`. resolveRegions() in register-plan.mjs records
 // the copper-bastion incident from re-implementing that chain — the composer submitted display names,
 // corsearch's ISO-passthrough translate sent them to the wire verbatim, the vendor answered 500 rather
 // than 400, and recovery burned its park budget re-sending a query that could never succeed.

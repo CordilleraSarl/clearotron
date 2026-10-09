@@ -532,8 +532,8 @@
           "todos": 0
         },
         "a-failed-run-resumes-from-the-command-line.test.mjs": {
-          "tests": 3,
-          "asserts": 9,
+          "tests": 4,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
@@ -762,6 +762,12 @@
         "a-late-review-that-softens-is-recorded-not-adopted.test.mjs": {
           "tests": 3,
           "asserts": 12,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-late-synthesis-save-keeps-the-seams-writes.test.mjs": {
+          "tests": 2,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },
@@ -1320,7 +1326,7 @@
         "a-screenshot-of-an-error-page-is-not-a-report.test.mjs": {
           "tests": 21,
           "asserts": 55,
-          "skips": 4,
+          "skips": 5,
           "todos": 0
         },
         "a-script-is-asked-once-per-market-that-files-in-it.test.mjs": {
@@ -1366,8 +1372,8 @@
           "todos": 0
         },
         "a-session-the-classifier-cut-is-not-recorded-as-clean.test.mjs": {
-          "tests": 12,
-          "asserts": 77,
+          "tests": 13,
+          "asserts": 80,
           "skips": 0,
           "todos": 0
         },
@@ -2074,8 +2080,8 @@
           "todos": 0
         },
         "both-doors-start-on-both-paths.test.mjs": {
-          "tests": 26,
-          "asserts": 61,
+          "tests": 27,
+          "asserts": 64,
           "skips": 0,
           "todos": 0
         },
@@ -2136,7 +2142,7 @@
         "case-law-credential-state.test.mjs": {
           "tests": 8,
           "asserts": 26,
-          "skips": 0,
+          "skips": 1,
           "todos": 0
         },
         "case-law-join.test.mjs": {
@@ -4168,8 +4174,8 @@
           "todos": 0
         },
         "portal-service.test.mjs": {
-          "tests": 132,
-          "asserts": 715,
+          "tests": 133,
+          "asserts": 718,
           "skips": 1,
           "todos": 0
         },
@@ -4620,7 +4626,7 @@
         "register-record-log-run-scoped.test.mjs": {
           "tests": 9,
           "asserts": 21,
-          "skips": 0,
+          "skips": 1,
           "todos": 0
         },
         "register-review-fixes.test.mjs": {
@@ -5416,8 +5422,8 @@
           "todos": 0
         },
         "synthesis-structural-input.test.mjs": {
-          "tests": 10,
-          "asserts": 67,
+          "tests": 11,
+          "asserts": 69,
           "skips": 0,
           "todos": 0
         },
@@ -7172,6 +7178,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-handshake-reports-the-package-version.test.mjs": {
+          "tests": 1,
+          "asserts": 3,
+          "skips": 0,
+          "todos": 0
+        },
         "the-portal-can-tell-who-has-connected-an-assistant.test.mjs": {
           "tests": 12,
           "asserts": 35,
@@ -7896,8 +7908,8 @@
           "todos": 0
         },
         "providers/signa/test/exact-spellings-go-as-one-ranked-list.test.mjs": {
-          "tests": 9,
-          "asserts": 31,
+          "tests": 11,
+          "asserts": 39,
           "skips": 0,
           "todos": 0
         },

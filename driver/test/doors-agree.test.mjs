@@ -655,7 +655,7 @@ test("the native-language toggle is judged on the RESOLVED product, not only on 
   // THE ACCEPT-AND-DROP BLOCKER. `nativeLanguage: true` was judged only when the request NAMED a
   // product: omit it and the toggle was accepted, priced as nothing, and dropped — the resolver reported
   // nativeRequested:true with jxLanes:false, and the routing rule, gated on the component, stayed
-  // silent. products.mjs:293 states the doctrine this broke, about caseLaw, in as many words.
+  // silent. CASE_LAW_NOT_A_REQUEST declared in products.mjs states the doctrine this broke, about caseLaw, in as many words.
   const said = await driveAll({ worldwide: true, nativeLanguage: true });
   assertAllRefuse("native language with no product named (resolves worldwide)", said,
     checkNativeLanguage({ product: "global-preliminary-search" }).message);
