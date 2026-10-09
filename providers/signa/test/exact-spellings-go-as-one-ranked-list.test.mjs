@@ -80,6 +80,37 @@ test("a sound-alike band goes as lists of 10 on the sound-alike channels", async
   } finally { await reg.close(); }
 });
 
+test("a list the register refuses as too complex is asked again one spelling at a time, never left unsearched", async () => {
+  // Which lists the register refuses depends on the spellings, so a refused list costs one free refusal and
+  // then the searches one spelling at a time would have made: the band is answered either way.
+  const seen = [];
+  const server = createServer((req, res) => {
+    let raw = "";
+    req.on("data", (c) => { raw += c; });
+    req.on("end", () => {
+      const body = JSON.parse(raw || "{}");
+      seen.push(body);
+      if (Array.isArray(body.q)) {
+        res.writeHead(400, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: { detail: "The search query is too complex to run." } }));
+        return;
+      }
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ object: "list", has_more: false,
+        data: [{ id: `tm_${body.q}`, jurisdiction_code: "US", mark_text: body.q, status: { primary: "active" } }],
+        pagination: { cursor: null, total_count: 1, total_count_approximate: false }, search_meta: { similarity_applied: body.similarity ?? [] } }));
+    });
+  });
+  await new Promise((r) => server.listen(0, "127.0.0.1", r));
+  try {
+    const names = spellings(3);
+    const out = JSON.parse((await doEnumerate("k", `http://127.0.0.1:${server.address().port}`, { names, match_mode: "phonetic", nice_classes: [9] }, null)).text);
+    assert.deepEqual(seen.map((b) => b.q), [names, ...names], "the refused list was not asked again one spelling at a time");
+    assert.equal(out.state, "enumerated", `the band was left unsearched: ${out.reason ?? ""}`);
+    assert.equal(out.records.length, 3);
+  } finally { await new Promise((r) => server.close(r)); }
+});
+
 test("CONTROL: a typo band and a starts-with band stay one term per request", async () => {
   for (const shape of [{ strategies: ["fuzzy"] }, { match_mode: "prefix" }]) {
     const reg = await register();
