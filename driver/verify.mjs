@@ -37,7 +37,7 @@ import { registerPlanCallKilled } from "./tool-calls.mjs";   // — did the dict
 import { parseFindingsJson, parseFindingsJsonLenient, CLIENT_TIER_BY_COMPOSITE, isUnconditionalProceed, joinFindingToBlock, parseBlockOrd } from "./findings-model.mjs";
 import { parsePlacementsJson } from "./placement-model.mjs"; import { placementFormSidecarName, parsePlacementForm, placementRenderAccount } from "./placement-form.mjs";
 import { parseCaseLawLedger, findCaseLawLedgerViolations, caseLawLedgerFail } from "./case-law-ledger.mjs";
-import { parseFrameworkManifest, aboveLowestBand, normalizeBand } from "./framework.mjs"; import { readFrozenMethod, FROZEN_METHOD_FILE } from "./framework-method.mjs";
+import { parseFrameworkManifest, materialBand, normalizeBand } from "./framework.mjs"; import { readFrozenMethod, FROZEN_METHOD_FILE } from "./framework-method.mjs";
 import { parseNamedBand, findCollapsedBands } from "./named-band.mjs";
 import { parseBlindFrameModel } from "./blind-frame-model.mjs";
 import { parseFrameDiff } from "./frame-diff-model.mjs";
@@ -1203,9 +1203,9 @@ function checkFindingsSibling(p, c) {
   const v4 = (parsed.schemaVersion ?? 1) >= 4;
   if (v4 && !fw.manifest) return fail("framework_manifest_missing_for_v4: schema_version 4 findings need the frozen _driver/framework.json to judge band words");
   const v3 = (parsed.schemaVersion ?? 1) >= 3;   // gates key on schema_version — v2/archived runs and replay never flip
-  // "material finding" — the line the receipt gates key on: composite>=3 on the legacy scale; on v4,
-  // banded ABOVE the framework's lowest band (judgment-free re-expression of the same line).
-  const material = (f) => v4 ? (f.band != null && aboveLowestBand(fw.manifest, f.band)) : f.composite >= 3;
+  // "material finding" — the line the receipt gates key on: composite>=3 on the legacy scale; on v4, banded on
+  // a rung whose own tone is medium risk or higher (materialBand — by tone, never by position on the ladder).
+  const material = (f) => v4 ? (f.band != null && materialBand(fw.manifest, f.band)) : f.composite >= 3;
   for (const f of parsed.findings) {
     if (material(f) && f.use_check != null && !String(f.use_check.source ?? "").trim())
       return fail(`finding_use_check_source_missing:${f.ordinal}`);
