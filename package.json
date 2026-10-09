@@ -1,5 +1,6 @@
 {
   "name": "clearotron",
+  "mcpName": "io.github.CordilleraSarl/clearotron",
   "type": "module",
   "version": "0.4.1-beta.0",
   "license": "AGPL-3.0-only",

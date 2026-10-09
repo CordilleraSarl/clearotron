@@ -3003,6 +3003,12 @@
           "skips": 0,
           "todos": 0
         },
+        "each-stable-npm-serves-is-listed-in-the-mcp-registry.test.mjs": {
+          "tests": 11,
+          "asserts": 61,
+          "skips": 0,
+          "todos": 0
+        },
         "effective-scope.test.mjs": {
           "tests": 15,
           "asserts": 44,
