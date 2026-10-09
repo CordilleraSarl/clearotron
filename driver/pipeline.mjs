@@ -4803,7 +4803,7 @@ async function stage(name, ctx, opts = {}) {
   let wedgeCycles = 0;
   for (;;) {
     const r = await stageWithChain(name, ctx, opts);
-    if (r.ok || r.fail !== "lane_wedge" || wedgeCycles >= LANE_WEDGE_CHAIN_RETRIES) { sweepStrayArtifacts(ctx, name); return r; }
+    if (r.ok || r.fail !== "lane_wedge" || wedgeCycles >= LANE_WEDGE_CHAIN_RETRIES) { sweepStrayArtifacts(ctx, name); await afterLateSynthesisSave(name, ctx, r); return r; }
     wedgeCycles++;
     note(`[${name}] command-lane wedge — the stage timed out with zero progress (saturated lane). Waiting ${Math.round(LANE_WEDGE_BACKOFF_MS / 1000)}s for it to clear, then re-dispatching (${wedgeCycles}/${LANE_WEDGE_CHAIN_RETRIES}); full per-attempt timeouts preserved.`);
     try { runLog(ctx.paths.runDir, { event: "lane-wedge-retry", stage: name + (ctx.axis ? `:${ctx.axis}` : ""), cycle: wedgeCycles, max: LANE_WEDGE_CHAIN_RETRIES }); } catch { /* telemetry best-effort */ }
@@ -13479,6 +13479,9 @@ async function pipelineInner(job, opts = {}) {
     // structured-only). Each stage is file-gated/resumable; per-card sessions feed the lint repair below.
     // C2 — fold same-owner+same-mark duplicate filings into one finding BEFORE the overview + cards read
     // findings.json, so the whole delivery phase (and the published copy) sees the single consolidated set.
+    // THE SEAM'S WRITES ARE ONE CLOSURE, so they can run again: a synthesis save after this point rewrites
+    // findings.json from the seat's own call, and every write below went with it (`stage()` re-runs them).
+    const seamWrites = async () => {
     injectDeferralCoverage(P, run.runDir, note); injectMeaningGapCoverage(P, run.runDir, note);   // A3: unclosed reopen directives, and meaning searches that did not complete, become reader-visible coverage rows first
     // qw/cn-scope-honesty — the sibling injection: a CN-family-scope run whose zh lane did not run
     // discloses what the native-language investigation would have searched, and where it is offered
@@ -13534,6 +13537,15 @@ async function pipelineInner(job, opts = {}) {
       try { writeVerdictSidecar(); }
       catch (e2) { throw new StageFailure("verdict", `verdict sidecar refresh failed after consolidation: ${String(e2.message).slice(0, 120)}`); }
     }
+    };
+    await seamWrites();
+    // Every write above is idempotent: each injection skips a row the record already carries, the stamp
+    // replaces its rows, and the fold leaves a folded record as it is.
+    ctx.afterSynthesisSave = async () => {
+      note(`[seam] a synthesis save after the seam rewrote findings.json — re-applying the seam's writes`);
+      runLog(run.runDir, { event: "seam-reapplied", after: "synthesis-save" });
+      await seamWrites();
+    };
     // wp50/wi2 — the overview PROSE must speak the derived tier (VENZY: caption said "High risk" while
     // every code surface said VERY HIGH). Thread the just-refreshed sidecar into the stage prompt; the
     // deterministic backstop is predelivery-lint's overallTierChecks.
@@ -16921,4 +16933,15 @@ export function injectMeaningGapCoverage(P, runDir, note) {   // @internal — e
   } catch (e) {
     note(`[common-law] meaning-gap coverage skipped: ${String(e?.message || e).replace(/\s+/g, " ").slice(0, 100)}`);
   }
+}
+
+/**
+ * A SYNTHESIS SAVE AFTER THE SEAM (the pre-delivery narrative redo, the in-pass stale repair) rewrites
+ * findings.json from the seat's own call, and the seam's writes go with it: the coverage-judgment rows, the
+ * injected coverage rows, the fold. The seam leaves them on the run's context, and they run again here,
+ * before anything downstream reads the record. Before the seam there is nothing on the context, so nothing
+ * runs. It sits at the end of this file so that adding it moved no line another file cites.
+ */
+async function afterLateSynthesisSave(name, ctx, r) {
+  if (r?.ok && !r.skipped && name === "synthesis" && typeof ctx?.afterSynthesisSave === "function") await ctx.afterSynthesisSave();
 }
