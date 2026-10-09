@@ -1155,6 +1155,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-refused-tool-call-is-classified-and-counted.test.mjs": {
+          "tests": 6,
+          "asserts": 21,
+          "skips": 0,
+          "todos": 0
+        },
         "a-refused-unit-says-what-is-half-started.test.mjs": {
           "tests": 9,
           "asserts": 31,
@@ -1344,6 +1350,12 @@
         "a-section-the-skill-spells-two-ways-is-not-a-missing-section.test.mjs": {
           "tests": 4,
           "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-session-the-classifier-cut-is-not-recorded-as-clean.test.mjs": {
+          "tests": 12,
+          "asserts": 77,
           "skips": 0,
           "todos": 0
         },
@@ -3485,7 +3497,7 @@
         },
         "instrumentation-house-rule.test.mjs": {
           "tests": 17,
-          "asserts": 116,
+          "asserts": 118,
           "skips": 0,
           "todos": 0
         },

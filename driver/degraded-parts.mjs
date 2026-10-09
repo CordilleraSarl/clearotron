@@ -69,7 +69,14 @@ const readJsonl = (p) => {
   } catch { return []; }
 };
 
-/** The stage's own last attempt row, or null when the stage wrote none. */
+/**
+ * The stage's own last attempt row, or null when the stage wrote none.
+ *
+ * A PART IS DEGRADED WHEN ITS STAGE FAILED, and that is the row's `fail`, never its `ok`. The two said the
+ * same thing until the attempt row learned to record a session that reached an error result and was
+ * recovered (engine/session-record.mjs): such an attempt is not ok, and its stage still delivered. Whether
+ * that should reach a client's report is a ruling nobody has made, so this reads what it always meant.
+ */
 export function lastAttempt(runDir, stage) {
   const rows = readJsonl(driverDir(runDir, `${stage}.jsonl`))
     .filter((r) => Number.isFinite(Number(r?.attempt)) && typeof r.ok === "boolean");
@@ -93,7 +100,7 @@ function courtDecisions(runDir, log) {
   if (lastEvent(log, ["case-law-decision"])?.run !== true) return null;
   const last = lastAttempt(runDir, "case-law");
   const part = { part: "court-decisions", name: PART_NAMES.courtDecisions };
-  if (last?.ok === false) return { ...part, reason: reasonFor(last.fail), cause: `the case-law stage ended failed: ${last.fail ?? "no cause recorded"}` };
+  if (last?.fail) return { ...part, reason: reasonFor(last.fail), cause: `the case-law stage ended failed: ${last.fail}` };
   let text;
   try { text = readFileSync(join(runDir, "case-law-findings.md"), "utf8"); } catch { text = null; }
   if (text === null) return { ...part, reason: NOT_COMPLETED, cause: "case-law-findings.md is absent" };
@@ -119,7 +126,7 @@ const failedStep = (log, ok, failed) => {
 };
 const stageEnded = (runDir, stage) => {
   const last = lastAttempt(runDir, stage);
-  return last?.ok === false ? last : null;
+  return last?.fail ? last : null;
 };
 
 // The register's own steps, each of which the run survives without: the band's shape (the floors and the

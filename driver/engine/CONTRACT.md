@@ -36,7 +36,9 @@ ladder consumes it without knowing which engine produced it ([gateway.mjs](../ga
   laneWaitMs: number,
   json:       object | null,         // synthesized envelope in the classifier's shape; every downstream
                                      // classifier (payloadText, status, embedded-fallback, timeout,
-                                     // lane-wedge) reads this and works unchanged across engines
+                                     // lane-wedge) reads this and works unchanged across engines.
+                                     // It also carries how the session ended: terminalReason,
+                                     // apiErrorStatus and errorText (see `session` below)
   usage:      Usage | null,          // canonical shape below; null = no tokens accounted (e.g. stall)
   sessionRef: string | null,         // opaque resume handle (claude session_id | codex thread_id)
   modelWire:  string | null,         // MODEL GAUGE — the served model id this turn observed (§3);
@@ -57,8 +59,46 @@ ladder consumes it without knowing which engine produced it ([gateway.mjs](../ga
                                      // opened; [] = recorded "read nothing"; key absent = engine cannot
                                      // observe reads (openai-agent) → gateway journals `reads: null`
   readsTruncated: boolean | absent,  // true = the path cap dropped at least one further distinct file
+  toolCallsByName: object | null,    // the turn's tool calls by tool name; an MCP call is
+                                     // `mcp__<server>__<tool>` on both engines; null = no session ran
+  session:    Session | null,        // what the session went through (below); null = no session ran
+  stream:     { file, present, bytes, reason? } | null,
+                                     // the raw stream, written to the file the caller named
+                                     // (the gateway names _driver/streams/<label>.attempt<N>.jsonl)
 }
 ```
+
+### `session` — what the session went through
+
+Both engines used to keep only the LAST result of a session, so a session the vendor's classifier cut
+off mid-answer, or refused and a restart recovered, ended in a successful result and was recorded as
+clean. `session` keeps every event of that kind, as the program wrote it, with milliseconds since the
+spawn ([engine/session-record.mjs](session-record.mjs)):
+
+```
+Session { interrupted, starts, results: [{atMs, index, subtype, isError, stopReason, terminalReason, origin}],
+          classifierCuts: [{atMs, synthetic}], refusals: [{atMs, category, model}], refusalStops }
+```
+
+It carries kinds, codes and times, never the program's words. The retry ladder still reads the last
+result alone; the gateway journals the attempt as `ok: false` when any result carried `is_error`, while
+`fail` — what every reader of "did the stage fail" reads — is unchanged. Codex states no cut or refusal
+on its stream, so on that engine `results` lists every `turn.completed`, `turn.failed` and `error`.
+
+How the session ended rides the envelope, and the gateway writes it on every attempt and repair row,
+null where the engine said nothing:
+
+```
+terminalReason   the kind of ending as the program states it (claude `terminal_reason`); null on codex
+apiErrorStatus   the vendor's status when it gave one (claude `api_error_status`); null on codex
+errorText        the program's own words for the error, only when the session ended in one, cut to
+                 300 characters: claude's result text when that result has `is_error`; codex's
+                 `turn.failed` message, or its stream error when the turn never completed
+```
+
+These are the one place the record holds the program's words: an expired sign-in otherwise reads as
+`stop_sequence` and nothing else. `stopReason` stays verbatim beside them, and none of the three moves a
+verdict.
 
 `runStage()` folds that into what the pipeline consumes — `{ok, json, attempts, text, sessionKey, …}` —
 and journals usage/wall/status on the way past.
