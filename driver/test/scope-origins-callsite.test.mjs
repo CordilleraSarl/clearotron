@@ -5,9 +5,9 @@
 //
 // `resolveEffectiveScope` decides whether to say "this project" or "the account's default classes" by
 // reading `profile.origins`. `resolveEffectiveProfile` returned `origins` BESIDE the profile and no
-// caller bridged the two — run-quote.mjs:59, resolve-request.mjs:44,47 and scope-rules.mjs:107 all pass
-// the profile alone. Both `=== "project"` tests were therefore permanently false and the FROM.project
-// branch was dead code.
+// caller bridged the two — quoteForJob() in run-quote.mjs, resolveRequest() in resolve-request.mjs
+// (twice) and checkClearanceScopeRules() in scope-rules.mjs all pass the profile alone. Both
+// `=== "project"` tests were therefore permanently false and the FROM.project branch was dead code.
 //
 // WHY IT PASSED ANYWAY, and why this file exists: every existing test in effective-scope.test.mjs builds
 // its own profile object with `origins` written in by hand — `{ ...PROFILE, origins: { defaultJurisdictions:

@@ -99,7 +99,7 @@ export function checkClearanceScopeRules({ job = null, profile = null, resolved 
   //
   // Everything a CLIENT reads quotes `named`. This module was the one caller that discarded the
   // originals, so the wall refused a two-country Full country search naming "GB", "FR" while the door
-  // refused the identical request naming "United Kingdom", "France" — products.mjs:141 states exactly
+  // refused the identical request naming "United Kingdom", "France" — tally() in products.mjs states exactly
   // that failure ("a refusal that quotes \"EU\" at someone who typed \"European Union\" sends them
   // hunting for a value they never used") and territory-tiers.mjs restates it for partitionTerritories.
   // The COUNT is the same either way: canonicalize dedups on code and products.mjs `tally` dedups on
@@ -131,7 +131,7 @@ export function checkClearanceScopeRules({ job = null, profile = null, resolved 
   // `nativeLanguage: true` over a knockout base) and through any account whose defaultProduct does not
   // carry it.
   //
-  // That is the shape products.mjs:293 refuses `caseLaw` for in as many words — "a flag accepted and
+  // That is the shape CASE_LAW_NOT_A_REQUEST declared in products.mjs refuses `caseLaw` for in as many words — "a flag accepted and
   // dropped is the worst available shape: whoever sent it believes they bought the deep reading, and
   // nothing anywhere disagrees" — and it was this build's own doctrine broken by this build's own code.
   //
