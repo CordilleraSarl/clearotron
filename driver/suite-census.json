@@ -47,7 +47,7 @@
         },
         "a-bare-territory-per-provider.test.mjs": {
           "tests": 4,
-          "asserts": 7,
+          "asserts": 9,
           "skips": 0,
           "todos": 0
         },
@@ -288,6 +288,12 @@
         "a-count-that-threw-shows-no-exception-text.test.mjs": {
           "tests": 4,
           "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-count-the-plan-also-read-in-full-is-not-a-crowd.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
           "skips": 0,
           "todos": 0
         },
@@ -1785,6 +1791,12 @@
           "skips": 0,
           "todos": 0
         },
+        "an-eu-order-asks-the-member-registers-in-the-same-requests.test.mjs": {
+          "tests": 5,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "an-evidence-demand-that-cannot-be-met.test.mjs": {
           "tests": 9,
           "asserts": 21,
@@ -2008,8 +2020,8 @@
           "todos": 0
         },
         "binding-layers.test.mjs": {
-          "tests": 19,
-          "asserts": 68,
+          "tests": 21,
+          "asserts": 76,
           "skips": 0,
           "todos": 0
         },
@@ -3873,6 +3885,12 @@
           "skips": 0,
           "todos": 0
         },
+        "one-string-read-two-ways-is-searched-both-ways.test.mjs": {
+          "tests": 3,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "operability.test.mjs": {
           "tests": 30,
           "asserts": 177,
@@ -4499,7 +4517,7 @@
         },
         "register-capabilities.test.mjs": {
           "tests": 34,
-          "asserts": 272,
+          "asserts": 274,
           "skips": 0,
           "todos": 0
         },
@@ -5874,6 +5892,12 @@
         "the-investigate-line-names-its-claim-by-location.test.mjs": {
           "tests": 20,
           "asserts": 57,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-knockout-names-every-ordered-territory.test.mjs": {
+          "tests": 3,
+          "asserts": 5,
           "skips": 0,
           "todos": 0
         },
