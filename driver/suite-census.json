@@ -532,8 +532,8 @@
           "todos": 0
         },
         "a-failed-run-resumes-from-the-command-line.test.mjs": {
-          "tests": 3,
-          "asserts": 9,
+          "tests": 4,
+          "asserts": 14,
           "skips": 0,
           "todos": 0
         },
