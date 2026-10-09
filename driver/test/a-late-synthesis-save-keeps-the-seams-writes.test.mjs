@@ -99,7 +99,10 @@ async function deliver(overCap) {
   if (overCap) assert.ok(firstCard >= 0 && lintRepair && lintRepair.i > firstCard && lintRepair.i > stampIdx,
     "premise: a synthesis lint-repair ran after the stamp and after the first card");
   else assert.ok(!lintRepair, "control premise: no lint-repair synthesis save");
-  return { report, stamp, events, lintRepair, coverage: (doc.coverage ?? []).map((c) => String(c.area)).sort() };
+  // What the client receives: the published report pages, read for the coverage rows the seam injects.
+  const pages = poolFiles.filter((p) => /report\.(md|html)$/.test(p)).map((p) => readFileSync(p, "utf8")).join("\n");
+  const scriptRowsOnPage = (pages.match(/register equivalents/g) ?? []).length;
+  return { report, stamp, events, lintRepair, scriptRowsOnPage, coverage: (doc.coverage ?? []).map((c) => String(c.area)).sort() };
 }
 let control;
 test("CONTROL: with no late save, the seam's rows reach the record, the pool copy and the workbook", async () => {
@@ -107,14 +110,18 @@ test("CONTROL: with no late save, the seam's rows reach the record, the pool cop
   assert.equal(control.report.deliveredCj.rows, control.stamp.rows);
   assert.equal(control.report.poolCjRows, control.stamp.rows);
   assert.equal(control.report.workbookHasSlicesBlock, true);
+  // The premise the coverage arm rests on: the seam injected rows a client reads, and they reached the page.
+  assert.ok(control.coverage.some((a) => /register equivalents/.test(a)), "premise: the seam injected no coverage row to lose");
+  assert.ok(control.scriptRowsOnPage > 0, "premise: the injected rows never reached the published report");
 });
 
 test("a narrative redo after the cards keeps the seam's rows and its coverage rows", async () => {
   const late = await deliver(true);
+  for (const area of control?.coverage ?? []) assert.ok(late.coverage.includes(area), `a coverage row the seam writes was lost: ${area}`);
+  assert.equal(late.scriptRowsOnPage, control.scriptRowsOnPage, "the published report lost coverage rows the seam injects");
   assert.equal(late.report.deliveredCj.rows, late.stamp.rows, "the delivered record lost the coverage-judgment rows to the late save");
   assert.equal(late.report.poolCjRows, late.stamp.rows, "the pool copy lost the coverage-judgment rows");
   assert.equal(late.report.workbookHasSlicesBlock, true, "the audit workbook lost its slices-considered block");
   const reapplied = late.events.findIndex((e) => e.event === "seam-reapplied");
   assert.ok(reapplied > late.lintRepair.i, "the seam's writes did not run again after the late save");
-  for (const area of control?.coverage ?? []) assert.ok(late.coverage.includes(area), `a coverage row the seam writes was lost: ${area}`);
 });
