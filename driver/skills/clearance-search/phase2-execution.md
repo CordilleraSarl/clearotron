@@ -16,7 +16,7 @@
   - [Variant execution strategy (register layer)](#variant-execution-strategy-register-layer)
 - [Step 2.6 — Skeptic review](#step-26--skeptic-review-a-fresh-eyes-self-audit-before-you-trust-the-findings)
 - [Step 3 — Cross-pollination (Option D — deterministic cross-checks, cap N=10)](#step-3--cross-pollination-option-d--deterministic-cross-checks-cap-n10)
-- [Step 3.5 — Actual-use check (mandatory for Medium/High/Very High register hits)](#step-35--actual-use-check-mandatory-for-mediumhighvery-high-register-hits)
+- [Step 3.5 — Actual-use and enforcement check (mandatory for register hits rated medium risk or higher)](#step-35--actual-use-and-enforcement-check-mandatory-for-register-hits-rated-medium-risk-or-higher)
 - [Step 3.6 — Owner workup (mandatory for high-risk findings)](#step-36--owner-workup-mandatory-for-high-risk-findings)
 - [Step 4 — Joint synthesis](#step-4--joint-synthesis)
 - [Step 4.5 — Case-law grounding](#step-45--case-law-grounding)
@@ -210,9 +210,9 @@ Cap-overflow MUST be flagged in the deliverable audit trail with a specific reas
 
 Every cross-check (including "checked, found nothing") logged in the unified audit trail as proof-of-work. The collaborator value-add (vs assistant) is in this section: synthesis can be decisive ("HP uses, does not register → Level 2 B") rather than tentative ("recommend the staff lawyer check HP register").
 
-## Step 3.5 — Actual-use check (mandatory for register hits above the framework's lowest band)
+## Step 3.5 — Actual-use and enforcement check (mandatory for register hits rated medium risk or higher)
 
-Before synthesis, for **every register finding** advisory-rated **above the framework's lowest band**, run a marketplace check via `perplexity_research` to determine whether the registered mark is **actually being used in the marketplace within the scope of the current search** (i.e. for the goods/services and field this clearance targets).
+Before synthesis, for **every register finding** advisory-rated on a rung **the framework rates medium risk or higher** (the stage message names those rungs; a rung below that is not checked, on any client's ladder), run a marketplace check via `perplexity_research` to determine whether the registered mark is **actually being used in the marketplace within the scope of the current search** (i.e. for the goods/services and field this clearance targets). **The same query also asks for the owner's enforcement record:** whether the owner has opposed, disputed or sued over this mark or a similar one.
 
 Example: a JELLY register hit owned by Jellycat (a toy company) for Class 9 video game software — check whether Jellycat actually sells or markets video games under JELLY. If they don't (their commercial use is toys), note the filed-vs-used distinction in Key Factors and weigh it as a Stage-2 factor together with revocation-vulnerability — no automatic downgrade (see `synthesis-rules.md` → *Actual-use assessment results*).
 
@@ -224,6 +224,7 @@ Example: a JELLY register hit owned by Jellycat (a toy company) for Class 9 vide
 - If actual use in the relevant field is **not found** (despite the filing), do **NOT** automatically downgrade — weigh the lack of field use as a Stage-2 factor together with revocation-vulnerability (`synthesis-rules.md` → *Actual-use assessment results* / *Rule on downgrade quantum*), and note in Key Factors: "Register filing claims [field] but no marketplace use identified — filed-vs-used noted; weighed with revocability."
 - This check measures *use in the field*, not registry status: a renewal / re-registration / "Registered" status is administrative upkeep, not marketplace use, and does not satisfy the actual-use check or defeat a non-use mitigant (see `synthesis-rules.md` → "Administrative liveness is not market use").
 - Owner-portfolio-bound common-law checks already counted in this step count toward the Option D cap (Step 3).
+- **Enforcement the query finds is a lead, not a verified authority** (the ENFORCEMENT AUTHORITY rule in the stage message): it informs the enforcer meter with basis `inferred-from-signal`, and its URL is cited inline in the finding's prose. If the query finds no enforcement record, the enforcer is `low` with basis `inferred-from-signal`, and the finding says the search found none. The enforcer stays `unknown`, and nothing is claimed, only when the query could not run.
 
 **Output contract — ENFORCED by the driver (spec 11), not optional.** For every Composite 3+ finding whose
 mitigant or verdict turns on the **absence** of use (it says the mark is "not in actual use" / "unused" / has

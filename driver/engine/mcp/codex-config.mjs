@@ -254,7 +254,7 @@ export function commandEnvToml(withheld = []) {
 // ── the stage's permission profile: what its shell commands may read and write ──────────────────────
 // codex's `workspace-write` sandbox confines where a command WRITES and lets it read the whole disk, the
 // install's settings files and the program's own sign-in included. A permission profile confines reading
-// too (the vendor's Permissions guide, a beta feature since 0.138.0; the floor is 0.154.0): a stage's
+// too (the vendor's Permissions guide, a beta feature since 0.138.0; the floor was 0.154.0 when this was written and is 0.159.0 now, for the judgment tier's model — driver.config.mjs): a stage's
 // commands read the platform's own paths, the instruction trees and the temp folders, and write the run
 // folder, their working folder and the temp folders. Nothing else is readable, so a page a stage fetched
 // cannot get a command to print the account's files. The temp folders stay writable because

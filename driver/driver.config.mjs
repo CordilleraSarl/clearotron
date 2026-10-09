@@ -2086,12 +2086,31 @@ export const ENGINE_BINARIES = {
     // and a pinned id was refused outright ("version 2.1.280 or newer is required"), measured 2026-09-22.
     // A floor that only asks for a program that starts is a floor that passes a machine this engine
     // cannot run the current generation on.
-    package: "@anthropic-ai/claude-code", floor: "2.1.284",
+    //
+    // THE HAIKU TIER CROSSED LATER, when Claude Haiku 5.5 joined the generation. Measured 2026-10-09 by a
+    // one-word `-p` turn per version on the test box's own sign-in, reading the model the turn reports in
+    // `modelUsage`:
+    //
+    //     version   --model haiku
+    //     2.1.285    claude-haiku-4-5-20251001
+    //     2.1.287    claude-haiku-4-5-20251001
+    //     2.1.288    claude-haiku-4-5-20251001
+    //     2.1.289    claude-haiku-4-5-20251001
+    //     2.1.290    claude-haiku-4-5-20251001
+    //     2.1.292    claude-haiku-4-5-20251001
+    //     2.1.293    claude-haiku-5-5
+    //     2.1.294    claude-haiku-5-5
+    //     2.1.295    claude-haiku-5-5
+    //
+    // 2.1.295 still serves claude-opus-5-5 and claude-sonnet-5-5. The floor moves to 2.1.293 for the reason
+    // it moved to 2.1.284: a stage that asks for haiku is asking for the current haiku.
+    package: "@anthropic-ai/claude-code", floor: "2.1.293",
     // WHAT THE INSTALL TAKES ON DISK, in MB, which setup states before it asks to install. MEASURED, not
     // declared by the vendor: the engines folder after a fresh install of this package into an empty
-    // folder, on npm 10.9.8 and on 11.19.1, 2026-09-14. A later release can be larger or smaller, so setup
-    // says "about". Re-measure when the floor moves.
-    installMB: 233,
+    // folder. Re-measured when the floor moved to 2.1.293: 242 MB for a fresh install of 2.1.293 itself,
+    // on npm 10.9.9, 2026-10-09. A later release can be larger or smaller, so setup says "about".
+    // Re-measure when the floor moves.
+    installMB: 242,
     // The licence setup states wherever it tells a reader what they are about to install or use, as the
     // vendor's package declares it: "SEE LICENSE IN README.md", Anthropic's own terms.
     licence: "proprietary third-party software",
@@ -2117,8 +2136,15 @@ export const ENGINE_BINARIES = {
     vendor: "OpenAI",
     product: "Codex",
     env: "CLEAROTRON_CODEX_PATH", fallback: "codex",
-    package: "@openai/codex", floor: "0.154.0",
-    installMB: 324,   // measured the same way and on the same day as Claude's, above
+    // THE FLOOR IS THE OLDEST RELEASE THAT ACCEPTS THE JUDGMENT TIER'S MODEL on a ChatGPT sign-in, which
+    // is how a subscription bills. Measured 2026-10-09 with a one-word `codex exec` turn per version on the
+    // test box: `gpt-6.1-sol` is refused with a 400 on 0.156.1, 0.157.0 and 0.158.0 ("not supported when
+    // using Codex with a ChatGPT account") and accepted on 0.159.0, 0.160.0, 0.161.0 and 0.162.0;
+    // `gpt-6-luna` is accepted from 0.156.1. Below the floor every clearance stops at its first
+    // judgment-tier stage (the tiers are in engine/openai-agent.mjs). The old floor, 0.154.0, was the
+    // permissions feature's (engine/mcp/codex-config.mjs).
+    package: "@openai/codex", floor: "0.159.0",
+    installMB: 424,   // re-measured the same way as Claude's, above: a fresh install of 0.159.0 itself, 2026-10-09
     licence: "third-party software under the Apache-2.0 licence",   // the package's own "license" field
     label: "OpenAI — each stage runs as a headless `codex exec` turn",
     module: "engine/openai-agent.mjs", adapter: "openaiAgentEngine",

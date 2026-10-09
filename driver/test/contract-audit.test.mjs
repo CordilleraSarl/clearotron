@@ -359,8 +359,10 @@ test("a cited site is a MINT, never a sentence about the code", () => {
   // And the filter must not have shrunk the census: a comment-only token would vanish with its coverage
   // obligation, and an absence reads as clean. 307 measured before and after on a22b4fd0; 306 once the
   // register digest's sources left the census and step 3's judges' family joined it; 292 once the second
-  // framing's six blindframe_ tokens and the diff's eight framediff_ tokens left with those two stages.
-  assert.ok(ex.size >= 292, `the extraction shrank to ${ex.size} — a token lost its coverage obligation silently`);
+  // framing's six blindframe_ tokens and the diff's eight framediff_ tokens left with those two stages;
+  // 291 once the common-law gate stopped refusing a ledger with no status (ruling 2026-10-01), which took
+  // `no_coverage_status_row`'s last mint on this line: the register digest that also minted it is gone.
+  assert.ok(ex.size >= 291, `the extraction shrank to ${ex.size} — a token lost its coverage obligation silently`);
 });
 
 test("every citation lands on the line that MINTS the code, not near it", () => {

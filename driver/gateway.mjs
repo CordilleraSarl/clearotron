@@ -2845,7 +2845,7 @@ export function correctionHint(lastFail, { gridLedgerName = "common-law-grid.jso
   } else if (/no_coverage_status_row/.test(lastFail)) {
     // The common-law lane's own refusal (verify.mjs, commonLawStructural). The `findings+ledger` label
     // this arm also matched came from the register digest's validator, which left with the digest.
-    hint = "the file has a findings heading plus a Coverage ledger with a status row (confirmed-clean / coverage-limited / deferred)" + (/common-law-findings/.test(lastFail) ? ", or each ledger row's status is recorded by calling `record_coverage_status` with `grid_spec_path`, the same spec path the grid tool was given" : "");
+    hint = "the file has a findings heading plus a Coverage ledger with a status row (confirmed-clean / coverage-limited / deferred)";   // the common-law clause went with that lane's status gate (ruling 2026-10-01)
   } else if (/negative-results|coverage-ledger|audit-trail|findings-heading/.test(lastFail)) {
     hint = "the findings file carries ALL required sections: a findings heading, the Negative results matrix " +
       "(every variant × platform row), the Coverage ledger with a status row, and the Audit trail call log";

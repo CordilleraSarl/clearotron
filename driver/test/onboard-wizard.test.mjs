@@ -1243,7 +1243,7 @@ test("each engine's install offer states its measured size and how to remove it"
     // obligation to re-measure lives; this keeps the other one pinned, which the derivation would
     // otherwise have quietly dropped.
     if (eng === ENGINE_BINARIES["openai-agent"])
-      assert.equal(eng.installMB, 324, "the openai install size moved; re-measure it and say so here");
+      assert.equal(eng.installMB, 424, "the openai install size moved; re-measure it and say so here");   // 0.159.0, measured 2026-10-09
     assert.ok(Number.isInteger(eng.installMB) && eng.installMB > 0,
       `${id} carries no measured install size beside its package, so the offer cannot say what it takes`);
   }

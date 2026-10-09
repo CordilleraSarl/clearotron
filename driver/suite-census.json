@@ -47,7 +47,7 @@
         },
         "a-bare-territory-per-provider.test.mjs": {
           "tests": 4,
-          "asserts": 7,
+          "asserts": 9,
           "skips": 0,
           "todos": 0
         },
@@ -232,8 +232,8 @@
           "todos": 0
         },
         "a-common-law-coverage-status-is-read-as-data.test.mjs": {
-          "tests": 11,
-          "asserts": 42,
+          "tests": 14,
+          "asserts": 50,
           "skips": 0,
           "todos": 0
         },
@@ -294,6 +294,12 @@
         "a-count-that-threw-shows-no-exception-text.test.mjs": {
           "tests": 4,
           "asserts": 13,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-count-the-plan-also-read-in-full-is-not-a-crowd.test.mjs": {
+          "tests": 2,
+          "asserts": 5,
           "skips": 0,
           "todos": 0
         },
@@ -540,6 +546,12 @@
         "a-famous-mark-element-is-searched-on-the-general-web.test.mjs": {
           "tests": 7,
           "asserts": 38,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-finding-is-checked-by-its-rungs-risk-not-its-place-on-the-ladder.test.mjs": {
+          "tests": 3,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },
@@ -989,7 +1001,7 @@
         },
         "a-program-already-here-is-checked-against-the-floor.test.mjs": {
           "tests": 12,
-          "asserts": 44,
+          "asserts": 45,
           "skips": 3,
           "todos": 0
         },
@@ -1845,6 +1857,12 @@
           "skips": 0,
           "todos": 0
         },
+        "an-eu-order-asks-the-member-registers-in-the-same-requests.test.mjs": {
+          "tests": 5,
+          "asserts": 9,
+          "skips": 0,
+          "todos": 0
+        },
         "an-evidence-demand-that-cannot-be-met.test.mjs": {
           "tests": 9,
           "asserts": 21,
@@ -2062,8 +2080,8 @@
           "todos": 0
         },
         "binding-layers.test.mjs": {
-          "tests": 19,
-          "asserts": 68,
+          "tests": 21,
+          "asserts": 76,
           "skips": 0,
           "todos": 0
         },
@@ -3861,6 +3879,12 @@
           "skips": 0,
           "todos": 0
         },
+        "one-string-read-two-ways-is-searched-both-ways.test.mjs": {
+          "tests": 3,
+          "asserts": 8,
+          "skips": 0,
+          "todos": 0
+        },
         "operability.test.mjs": {
           "tests": 27,
           "asserts": 154,
@@ -4469,7 +4493,7 @@
         },
         "register-capabilities.test.mjs": {
           "tests": 34,
-          "asserts": 272,
+          "asserts": 274,
           "skips": 0,
           "todos": 0
         },
@@ -5865,6 +5889,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-knockout-names-every-ordered-territory.test.mjs": {
+          "tests": 3,
+          "asserts": 5,
+          "skips": 0,
+          "todos": 0
+        },
         "the-knockout-page-leads-with-the-read.test.mjs": {
           "tests": 39,
           "asserts": 125,
@@ -6791,6 +6821,12 @@
         "a-company-created-after-the-door-starts-is-listed.test.mjs": {
           "tests": 6,
           "asserts": 16,
+          "skips": 0,
+          "todos": 0
+        },
+        "a-connector-generic-run-is-filed-under-the-sole-organisation.test.mjs": {
+          "tests": 5,
+          "asserts": 6,
           "skips": 0,
           "todos": 0
         },

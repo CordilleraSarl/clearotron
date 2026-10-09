@@ -66,6 +66,7 @@ import { makeClassifyStatus, isAllClass } from '../../providers/_shared/screen.m
 import { saysSomethingNew } from '../../shared/says-something-new.mjs';
 import { isNextStepHeading } from '../knockout-next-step.mjs';
 import OFFERED from '../../shared/offered-territories.json' with { type: 'json' };   // the order form's own territory names
+import { normalizeTerritory } from '../../providers/_shared/territory-codes.mjs';   // a territory as written → its code
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
@@ -490,6 +491,17 @@ const orderedTerritoryName = (code) => {
   const c = String(code ?? '').trim().toUpperCase();
   // EM is the European Union register's own code, and some records carry it for an EU order.
   return ORDER_FORM_NAMES.get(c === 'EM' ? 'EU' : c) ?? '';
+};
+
+/**
+ * A territory as the order wrote it, as a code. An order carries a code ("EU", "UK") or a country's name
+ * ("Norway"), and both name lookups on this page take codes: a name reached them unconverted, came back
+ * empty and left the page without a trace (a delivered knockout, 2026-10-08, named two of the four
+ * territories it searched). The shared normaliser turns a name into its code; UK is the order form's GB.
+ */
+const orderCode = (t) => {
+  const c = normalizeTerritory(t) || String(t ?? '').trim().toUpperCase();
+  return c === 'UK' ? 'GB' : c;
 };
 
 /** "a, b and c" — the reader's list, not a join on commas. */
@@ -1252,7 +1264,7 @@ function ownerCheckFor(ownerChecks, recordId) {
 function aboutRequestBlock(scope, requestNotes, depthNote = '', productContext = '', searched = '', registerCounts = null) {
   const goods = String(scope?.goods ?? '').trim();
   const classes = (Array.isArray(scope?.classes) ? scope.classes : []).filter((c) => c || c === 0);
-  const jx = (Array.isArray(scope?.jurisdictions) ? scope.jurisdictions : []).map((t) => territoryName(t)).filter(Boolean);
+  const jx = (Array.isArray(scope?.jurisdictions) ? scope.jurisdictions : []).map((t) => territoryName(orderCode(t))).filter(Boolean);
   const asked = goods;
   const classLine = classes.length ? classes.join(', ') : '';
   const where = jx.length ? listWords(jx) : '';
@@ -1279,9 +1291,9 @@ function aboutRequestBlock(scope, requestNotes, depthNote = '', productContext =
   // a territory nothing was counted in.
   const on = provider ? `, on ${provider}` : '';
   const sc = registerCounts?.scope ?? {};
-  const deferred = new Set((sc.deferredJurisdictions ?? []).map((c) => String(c ?? '').trim().toUpperCase()));
+  const deferred = new Set((sc.deferredJurisdictions ?? []).map(orderCode));
   const ordered = [...new Set((sc.jurisdictions ?? [])
-    .filter((c) => !deferred.has(String(c ?? '').trim().toUpperCase())).map(orderedTerritoryName))];
+    .filter((c) => !deferred.has(orderCode(c))).map((c) => orderedTerritoryName(orderCode(c))))];
   const namesTheOrder = sc.worldwide !== true && !(sc.unreachableOffices ?? []).length
     && ordered.length > 0 && ordered.every(Boolean);
   const counted = namesTheOrder ? `${listWords(ordered)}${on}.`

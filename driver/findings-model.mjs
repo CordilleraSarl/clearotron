@@ -1788,7 +1788,7 @@ function validateNet(f, ord, mode) {
 //     `findings?_` and would aim the repair turn at register-coverage-ledger.json — forbidding the model
 //     to rewrite the only file that could fix it.
 // It reaches the wire as a validator `reason` (verify.mjs checkFindingsSibling), which is the only shape
-// gateway.mjs:525 mints as `invalid_file:<path>:<token>`; a bespoke throw would match nothing.
+// gateway.mjs:1135 judgeArtifacts mints as `invalid_file:<path>:<token>`; a bespoke throw would match nothing.
 // The precedent is one line up the file: findings_mark_assessment_* was named plural for the same
 // routing reason.
 //

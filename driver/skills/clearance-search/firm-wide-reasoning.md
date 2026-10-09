@@ -229,12 +229,13 @@ sensitivity, or a commercial partnership cannot lift a finding past what the fra
 they only change *whether they'd win* or the *character* of the dispute, and the framework then produces
 the band.
 
-### Enforcer profiling — mandatory for findings above the lowest band
+### Enforcer profiling — mandatory for findings rated medium risk or higher
 
 Assess: Is this a portfolio brand? TTAB/UDRP history? Institutional vs individual filer? "No large brands
 or assertive enforcers" is a practical factor the staff lawyer weights heavily. *(`courtlistener__search` covers US
 federal courts incl. CAFC trademark-appeal opinions — NOT raw TTAB proceedings. For TTAB direct
-(oppositions, cancellations, ex parte), source is TTABVUE — separate integration, not yet wired.)*
+(oppositions, cancellations, ex parte), source is TTABVUE — separate integration, not yet wired.)* The Step 3.5 query (`phase2-execution.md`) asks for
+the owner's enforcement record; what it finds is a lead, cited inline, never a verified authority.
 
 Profiling informs the **business / practical read only — it never raises the legal read** (the read is the
 confusion comparison; see *The consumer confusion test*). When the signals cut both ways — a broad

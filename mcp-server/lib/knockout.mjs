@@ -388,7 +388,7 @@ export function traceKnockout(run, target, events = []) {
     kind: "verdict",
     verdict: doc?.batch?.overall ?? runVerdictFromEvents(events) ?? null,
     marks: marksOf(doc).map((m) => ({ mark: m.name, band: m.rating ?? null, basis: m.basis ?? null })),
-    note: "A Knockout verdict is the batch's worst band across its marks; each mark's own band and the "
+    note: "A Knockout verdict is the highest rating across the batch's marks; each mark's own rating and the "
       + "one-sentence ground for it are listed here.",
   });
 
