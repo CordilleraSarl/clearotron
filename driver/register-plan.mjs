@@ -1120,26 +1120,31 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
   //     anywhere: the exact silent-wrong-query false-clean class this carriage fix exists to kill,
   //     quieter than the loud deferral it replaced. formKey now strips accents from LATIN bases only
   //     and preserves every non-Latin combining mark (width still folds via NFKD).
-  //   - and if two variants STILL share a key while dictating different romanisations (the model
-  //     contradicting itself about one term), the key is poisoned rather than resolved by position:
-  //     those entries compile BARE, and the romanisation-index provider's refusal turns the
-  //     contradiction into a loud disclosed deferral — never into whichever answer came first.
+  //   - and two variants that share a key while dictating DIFFERENT romanisations carry EVERY one of
+  //     them, on every entry for that key. One string of characters can have two readings: the same
+  //     Han characters are read one way in Chinese and another in Japanese, and the manifest lists the
+  //     string once per reading. This rule used to read that as the model contradicting itself and
+  //     compile the key bare, so the romanisation-index provider refused it and the slice reached the
+  //     client as "not searched" — while the model, seeing the refusal, searched both readings as
+  //     supplementals and got its answer (a delivered report, 2026-10-08). Carrying every reading still never
+  //     resolves by position, and never sends a sibling's form in place of the dictated one: each
+  //     reading is asked, in the same request, and a reading that is simply wrong costs one spelling.
   const romanByValue = new Map();
   for (const v of manifest.variants) {
     if (!v.romanization) continue;
     const key = formKey(v.value);
-    const prior = romanByValue.get(key);
-    if (prior === undefined) romanByValue.set(key, v.romanization);
-    else if (prior !== null && romanizationSpellings(prior)[0] !== romanizationSpellings(v.romanization)[0])
-      romanByValue.set(key, null);   // conflicting dictates ⇒ stamp NOTHING for this key (loud backstop)
+    const readings = romanByValue.get(key) ?? [];
+    const reading = romanizationSpellings(v.romanization)[0];
+    if (reading && !readings.some((r) => romanizationSpellings(r)[0].toUpperCase() === reading.toUpperCase()))
+      readings.push(v.romanization);
+    romanByValue.set(key, readings);
   }
   const romanStamp = (e) => {
     // An owner NAME is not mark text and rides its own field (the executor drops the carrier on an
     // owner query anyway). An OR-stack is chunked, not substituted — one non-Latin member must never
     // silently replace a whole chunk's names, so a `terms[]` entry never carries the field.
     if (e.predicate === "owner" || Array.isArray(e.terms)) return {};
-    const roman = romanByValue.get(formKey(e.term));
-    const spellings = roman ? romanizationSpellings(roman) : [];
+    const spellings = [...new Set((romanByValue.get(formKey(e.term)) ?? []).flatMap(romanizationSpellings))];
     return spellings.length ? { romanizedTerms: spellings } : {};
   };
 
