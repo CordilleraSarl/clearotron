@@ -989,7 +989,7 @@
         },
         "a-program-already-here-is-checked-against-the-floor.test.mjs": {
           "tests": 12,
-          "asserts": 44,
+          "asserts": 45,
           "skips": 3,
           "todos": 0
         },
