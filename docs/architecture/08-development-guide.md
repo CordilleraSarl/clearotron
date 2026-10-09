@@ -10,7 +10,9 @@ How to work on the driver without breaking the properties that make it trustwort
 
 - **Node ≥ 22** (every workspace `package.json` declares it; CI pins 22.23.2). The repo is an npm
   workspace — `npm ci` at the root installs `driver`, `mcp-server`, `providers/oauth-mcp-bridge`
-  and `portal-ui` together. Production deploys install with `--omit=dev --ignore-scripts`.
+  and `portal-ui` together. An install from a git checkout updates with `npm ci --ignore-scripts` and
+  keeps development packages, because the portal is rebuilt from them. A packaged install updates
+  through `npm install --global`.
 - **Tests**: `npm test` in the driver dir runs the *contributor* tier
   (`scripts/test-run.mjs` → `scripts/test-fast.mjs` over `test/*.test.mjs`), which leaves out the
   slowest end-to-end files so a first run finishes in minutes. `npm run test:full` is the
