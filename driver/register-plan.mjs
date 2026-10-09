@@ -2433,6 +2433,8 @@ export function joinPlanToBands(plan, bandBlocksByAxis, { released = new Set() }
       // WHAT THE TOTAL COUNTS, when the register said: `records`, one per country a mark covers. Every
       // reader of this row reads the count as the register's own number (ruled 2026-10-02).
       ...(typeof b.total_counts === "string" ? { total_counts: b.total_counts } : {}),
+      // The register's floor when it answered "at least N" instead of a count: total_hits stays null beside it.
+      ...(Number.isFinite(b.total_floor) ? { total_floor: b.total_floor } : {}),
     });
   }
   const planQids = new Set(plan.entries.map((e) => e.qid));
@@ -2831,8 +2833,10 @@ export function openBlocksByAxis(skeleton, bandBlocksByAxis, plan) {
       // under the deleted prose join (the qid, or this number standalone). Both are now written INTO the
       // form's row by the driver, so the equivalence the join had to test for is structural — see
       // coverage-form.mjs. The field stays because the row, the render and the failure token all carry it.
+      // A null total stays off the row: `Number(null)` is 0, which printed "(0 counted)" for a register's floor
+      // ("at least 10,000") and for a count the register refused to give.
       unverified.push({ qid: e.qid,
-        ...(Number.isInteger(Number(b.total_hits)) ? { total_hits: Number(b.total_hits) } : {}),
+        ...(b.total_hits != null && Number.isInteger(Number(b.total_hits)) ? { total_hits: Number(b.total_hits) } : {}),
         ...(unaccounted.length ? { unaccounted: unaccounted.slice(0, 8) } : {}),
         ...(unaccountedClasses.length ? { unaccounted_classes: unaccountedClasses.slice(0, 8) } : {}) });
     }

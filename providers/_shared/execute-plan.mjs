@@ -16,7 +16,7 @@
 
 import { mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
-import { nativeScriptIndexGap } from "./script-form.mjs";
+import { nativeScriptIndexGap } from "./script-form.mjs"; import { floorOf, moreThan } from "../../shared/register-floor.mjs";
 import { entryTermIssues, goodsTermsList } from "./term-shape.mjs";
 import { awaitsReadingTurn, releasedFamiliesFile } from "./plan-guards.mjs";
 import { faultText, guardToolCall } from "./transport-guard.mjs";
@@ -500,8 +500,12 @@ export function makeExecutePlan(deps) {
           && Number.isFinite(parsed.total_hits) && Number(parsed.total_hits) === 0
           && parsed.owner_resolution != null && !ownerNameResolved(parsed.owner_resolution);
         const counted = !!parsed && !ownerUnverified;
+        // A floor ("at least 10,000") is the register's answer: the total stays null and its figure rides beside
+        // it, never a 0 (ruled 2026-10-02; shared/register-floor.mjs).
+        const floor = floorOf(parsed);
         blocks.push({ state: "incomplete", ...base,
-          total_hits: ownerUnverified ? null : (parsed?.total_hits ?? 0), fetched: parsed?.results?.length ?? 0,
+          total_hits: ownerUnverified || floor !== null ? null : (parsed?.total_hits ?? 0), fetched: parsed?.results?.length ?? 0,
+          ...(floor !== null ? { total_floor: floor, crowd_basis: "register-floor" } : {}),
           sample: (parsed?.results ?? []).slice(0, 5),
           ...(counted ? {} : { error: true }),
           ...(countGap || ownerUnverified ? { deferred: true } : {}),
@@ -645,7 +649,8 @@ export function makeExecutePlan(deps) {
     // EACH SPELLING'S COUNT, IN THE REPLY. A crowded stack comes back counted and unread, and the reading
     // step decides which spellings to read, narrow or leave (ruled 2026-09-26), so it is handed the counts
     // here rather than left to find them in the band file: a number for a spelling counted and not read,
-    // 0 for a verified zero, "crowd N" for one over the ceiling, "error" for a count that failed.
+    // 0 for a verified zero, "crowd N" for one over the ceiling, "error" for a count that failed. A spelling the
+    // register answered with a floor reads "crowd more than 10,000", its figure as every page prints it.
     //
     // THE GATE IS "ANYTHING LEFT TO DECIDE", not one disposition, and that is the whole of this block's
     // correctness. Keyed on `unenumerated` alone it dropped the two stacks the rule exists for: one where
@@ -661,7 +666,7 @@ export function makeExecutePlan(deps) {
     const spellingCounts = Object.fromEntries(blocks
       .filter((b) => b?.term_counts && Object.values(b.term_counts).some(isUnresolvedCount))
       .map((b) => [b.qid, Object.fromEntries(Object.entries(b.term_counts).map(([t, v]) => [t,
-        v?.disposition === "crowd" ? `crowd ${v.total_hits}` : v?.disposition === "error" ? "error" : (v?.total_hits ?? "error")]))]));
+        v?.disposition === "crowd" ? `crowd ${Number.isFinite(v.total_floor) ? moreThan(v.total_floor) : v.total_hits}` : v?.disposition === "error" ? "error" : (v?.total_hits ?? "error")]))]));
     return { type: "text", text: JSON.stringify({
       written: outPath, blocks: blocks.length + preserved.length, executed: blocks.length, preserved: preserved.length, skipped,
       states: Object.fromEntries([...stateByQid].filter(([q]) => !seeded.has(q))),

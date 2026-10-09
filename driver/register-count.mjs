@@ -90,7 +90,7 @@
 import { existsSync, readFileSync, appendFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { kebab } from "./search-policy.mjs";
+import { kebab } from "./search-policy.mjs"; import { moreThan } from "../shared/register-floor.mjs";
 import { resolveRegions } from "./register-plan.mjs";
 import { reachableRegions } from "./register-availability.mjs";   // — pure; the env binding is injected
 import { variantForms, VARIANT_RULES, VARIANT_CAP } from "./register-variants.mjs";
@@ -592,7 +592,7 @@ export function disclosedFloor(c) {
 }
 
 /** A floor as every page prints it: the register's own figure, and no sentence around it. */
-export const moreThan = (floor) => `more than ${floor.toLocaleString("en-US")}`;
+export { moreThan } from "../shared/register-floor.mjs";
 
 /**
  * THE READER'S LINE FOR A COUNT THAT DID NOT LAND. A count's `unavailable` text is the counts record's: it
