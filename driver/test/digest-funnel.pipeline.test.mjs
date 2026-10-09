@@ -83,7 +83,7 @@ const digestStageEvents = (events) => events.filter((e) => e.event === "stage" &
 //
 //   1. the screen-gate mechanism never minted. A real defect in the pipeline.
 //   2. it minted and was DEDUPLICATED. mintDigestWork is idempotent by receiptKey
-//      (`screen-gate:<uri-set-hash>`, pipeline.mjs:7427-7409) and the dedup path emits `digest-queue-noop`
+//      (`screen-gate:<uri-set-hash>`, pipeline.mjs:7427 injectScreenGateCoverage) and the dedup path emits `digest-queue-noop`
 //      instead of `digest-queued`. The queue is correct and THIS ASSERTION is wrong.
 //
 // Those want opposite fixes. The discriminator — which of the two happened — exists on disk in the

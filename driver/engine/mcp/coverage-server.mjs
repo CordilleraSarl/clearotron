@@ -19,7 +19,7 @@
 // wired per run by the driver; there is no parameter for it and this tool never guesses one
 // (recording-server.mjs's record_doubt_closure records why the parameter must not exist). The form name comes off the run's own
 // era stamp, the row ids are the driver's, and every other identifier is computed. Read at CALL TIME,
-// never captured at module load (stdio-server.mjs:29-33 states why for exactly this variable).
+// never captured at module load (stdio-server.mjs:29-33 toolLogPath states why for exactly this variable).
 import { serve } from "./stdio-server.mjs";
 import { recordCoverage } from "../../coverage-tool.mjs";
 import { MAX_ROWS_PER_CALL } from "../../coverage-call.mjs";

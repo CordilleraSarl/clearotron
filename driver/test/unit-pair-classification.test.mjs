@@ -68,7 +68,7 @@
 //                               `familyExplained` beside it (a retrieval pattern the reading turn
 //                               withheld, 2026-09-25) has the same shape: it feeds the returned
 //                               `phoneticFamilyExplained` and the same `complete`, off the same band.
-//   · gateway.mjs:1293,1501     the two `wrote` producers — see the disagreement below; both now guard
+//   · gateway.mjs:1293 gradedFormMeta,1501     the two `wrote` producers — see the disagreement below; both now guard
 //                               the empty case, and each reads its own per-turn stat snapshot, which the
 //                               site states.
 //   · grounds-grammar.mjs:89 classifyGroundsNote

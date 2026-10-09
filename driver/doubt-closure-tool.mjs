@@ -119,8 +119,8 @@ export function captureCall(runDir, seq, received, { now = () => new Date().toIS
 //
 // THAT PREMISE IS WHY THIS IS SAFE, SO CHECK IT BEFORE MOVING THE SPEC WRITE. Five of the six
 // doubt-minting sites build an id from an ordinal over a FILTERED list
-// (`presence-reconciliation.mjs:182` mints `doubt:presence:<sheet>:<n>` after three `continue` filters,
-// with `status: "open"` hardcoded beside it); `doubt-ledger.mjs:232` is the exception and the template,
+// (`presence-reconciliation.mjs:182 mintPresenceDoubts` mints `doubt:presence:<sheet>:<n>` after three `continue` filters,
+// with `status: "open"` hardcoded beside it); `doubt-ledger.mjs:232 mintContradictionDoubts` is the exception and the template,
 // putting the candidate name in the id and using the ordinal only as a tiebreaker. If the spec is ever
 // minted per attempt instead of per stage, those ordinals can shift between attempts and this serve
 // starts handing back a verdict about a different subject. Nothing else in this file would notice.

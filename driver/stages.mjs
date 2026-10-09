@@ -1436,7 +1436,7 @@ export const STAGES = {
       },
       "mark — \"<the mark verbatim>\"": {
         class: "mechanical:pre-bound", tokens: ["variantmodel_mark_missing"],
-        why: "_driver/instructed-scope.json.marks holds it and stage-context.mjs:175 binds that file to this stage. variant-manifest-model.mjs:225-231 already concedes the field is not the model's: it is excluded from the term-shape gate because \"the stage is told to emit it VERBATIM, and it arrives from the job… a value this stage CANNOT restate\" [citation unverified]",
+        why: "_driver/instructed-scope.json.marks holds it and stage-context.mjs:175 TOOL_GROUP_EDGES binds that file to this stage. variant-manifest-model.mjs:225-231 parseVariantManifestModel already concedes the field is not the model's: it is excluded from the term-shape gate because \"the stage is told to emit it VERBATIM, and it arrives from the job… a value this stage CANNOT restate\" [citation unverified]",
       },
       "dominant_element — the distinctive anchor the sweep enumerates": {
         class: "judgment", tokens: ["variantmodel_dominant_element_missing"],
@@ -1516,7 +1516,7 @@ export const STAGES = {
       },
       "### Scope ledger rows — {Layer, Item, Status: applied|dropped, Reason, Reopen trigger} across variant / field / source / jurisdiction": {
         class: "judgment", tokens: [],
-        why: "defending an omission with the concrete observation that should reopen it is the whole judgment, and frame-diff diffs it against the blind re-derivation. The ROW SHAPE is mechanical — scope-ledger.mjs:123-126 parses the table into scope-ledger.json — and the jurisdiction rows are largely a re-carry of the matter frame's own Scope-jurisdictions line [citation unverified]",
+        why: "defending an omission with the concrete observation that should reopen it is the whole judgment, and frame-diff diffs it against the blind re-derivation. The ROW SHAPE is mechanical — scope-ledger.mjs:123-126 renderScopeLedgerJson parses the table into scope-ledger.json — and the jurisdiction rows are largely a re-carry of the matter frame's own Scope-jurisdictions line [citation unverified]",
       },
       "Prose variant-table category token — translit-<script>, and for Chinese translit-zh-meaning vs translit-zh-phonetic": {
         class: "judgment", tokens: [],
@@ -2372,7 +2372,7 @@ export const STAGES = {
       },
       "select — one record URI of the register candidate being placed": {
         class: "mechanical:code-extracted", tokens: [],
-        why: "buildSelectionIndex() in placement-form.mjs already holds every selectable record, built from _driver/register-positions.json plus the band shape's floors, and resolves any URI of a family to the canonical row. #850 M1: the model should return the 1-based index into that driver-written list; code resolves index→id. WHICH candidate to place stays judgment — the row existing at all is the judgment; only the pointing token is mechanical. NO VALIDATOR TOKEN speaks about it: an unresolved select is recorded on the form as `unresolved[]` (placement-union.mjs:134) and handed back in the next dispatch, never a fail. [citation unverified]",
+        why: "buildSelectionIndex() in placement-form.mjs already holds every selectable record, built from _driver/register-positions.json plus the band shape's floors, and resolves any URI of a family to the canonical row. #850 M1: the model should return the 1-based index into that driver-written list; code resolves index→id. WHICH candidate to place stays judgment — the row existing at all is the judgment; only the pointing token is mechanical. NO VALIDATOR TOKEN speaks about it: an unresolved select is recorded on the form as `unresolved[]` (placement-union.mjs:134 pushSelection) and handed back in the next dispatch, never a fail. [citation unverified]",
       },
       "seat rows for candidates the register does not hold — mark / owner / jurisdiction / records: [] written in full": {
         class: "judgment", tokens: ["placement_mark_missing", "placement_owner_missing", "placement_jurisdiction_invalid", "placement_records_invalid"],
@@ -2384,7 +2384,7 @@ export const STAGES = {
       },
       "the identifier half of each `cleared:` / `material-gap:` line — the axis, the named slice and its count": {
         class: "mechanical:code-extracted", tokens: [],
-        why: "The band's `incomplete` crowd descriptor carries query, total_hits, fetched and reason, and the driver already writes one coverage-form row per unaccounted crowd block with the qid, hit count and unaccounted classes/terms computed (coverage-form.mjs; digest.md:196-201). The MATERIALITY CALL is judgment and stays in the element above; the descriptor's identity and count are transcription of the driver's own numbers.",
+        why: "The band's `incomplete` crowd descriptor carries query, total_hits, fetched and reason, and the driver already writes one coverage-form row per unaccounted crowd block with the qid, hit count and unaccounted classes/terms computed (coverage-form.mjs; digest.md, 'Coverage ledger'). The MATERIALITY CALL is judgment and stays in the element above; the descriptor's identity and count are transcription of the driver's own numbers.",
       },
       "the md's four tier sections — one per-candidate entry restating that candidate's tier and reasoning": {
         class: "mechanical:code-rendered", tokens: ["missing", "too_short"],
@@ -2404,7 +2404,7 @@ export const STAGES = {
       },
       "retract: <row_id> — withdrawing a seat row already on the form": {
         class: "judgment", tokens: [],
-        why: "Whether a placed candidate should come off is a call only the model makes. The row_id it names is driver-assigned (shortId 'PS'/'PR', placement-form.mjs:205/273), so the HANDLE is code-assigned even though the act is judgment. [citation unverified]",
+        why: "Whether a placed candidate should come off is a call only the model makes. The row_id it names is driver-assigned (shortId 'PS'/'PR', placement-form.mjs:205 renderEntry/273), so the HANDLE is code-assigned even though the act is judgment. [citation unverified]",
       },
       "return payload — the absolute output path plus a 2-3 line summary": {
         class: "mechanical:pre-bound", tokens: [],
@@ -2490,7 +2490,7 @@ export const STAGES = {
       },
       "seat-added coverage rows — the decision to add one, and the axis it is filed under (expressed in the `unit` label)": {
         class: "judgment", tokens: ["coverage_form_axis_invalid"],
-        why: "The shipped code rules it judgment in its own words: 'THE AXIS IS PART OF THE JUDGMENT, and on a SEAT row it is the one identifier the seat still supplies' and normalizeAxis 'repair[s] formatting, never invent[s] an axis' (coverage-form.mjs:519-524). The driver cannot know which axis a coverage unit it never planned belongs under. [citation unverified]",
+        why: "The shipped code rules it judgment in its own words: 'THE AXIS IS PART OF THE JUDGMENT, and on a SEAT row it is the one identifier the seat still supplies' and normalizeAxis 'repair[s] formatting, never invent[s] an axis' (coverage-form.mjs:519-524 coverageFormRows). The driver cannot know which axis a coverage unit it never planned belongs under. [citation unverified]",
       },
       "the seat row's duplicate `axis` cell (the same token already typed as the leading segment of `unit`)": {
         class: "mechanical:code-extracted", tokens: ["coverage_form_axis_invalid"],
@@ -2502,7 +2502,7 @@ export const STAGES = {
       },
       "the compulsory dominant-element crowd row's `unit` cell — the dictated grammar `<axis> / dominant-element crowd (<N> members): <label>` and the bare integer N": {
         class: "mechanical:code-rendered", tokens: [],
-        why: "The driver computes the denominator: it groups screened-live dominant-element records by _driver/register-positions.json, counts the positions the digest did not individually end, verifies N and re-verifies after every rewrite (digest.md:132-164). The model is asked to retype a number the driver already checks it against — the frame_scope_missing loop restated. The RULING (why crowd membership ends this residual class) is judgment and lives in `reason`. No verify.mjs token: the reconciliation gate is a delivery block in pipeline.mjs, not this stage's validator.",
+        why: "The driver computes the denominator: it groups screened-live dominant-element records by _driver/register-positions.json, counts the positions the digest did not individually end, verifies N and re-verifies after every rewrite (digest.md, 'Dominant-element reconciliation'). The model is asked to retype a number the driver already checks it against — the frame_scope_missing loop restated. The RULING (why crowd membership ends this residual class) is judgment and lives in `reason`. No verify.mjs token: the reconciliation gate is a delivery block in pipeline.mjs, not this stage's validator.",
       },
       "rolled-up coverage judgment — `sufficient: <true|false>`": {
         class: "mechanical:code-extracted", tokens: [],
@@ -2542,7 +2542,7 @@ export const STAGES = {
       },
       "Audit trail — per-unit search/detail-fetch counts, per-jurisdiction `_query` attribution": {
         class: "mechanical:tool-written", tokens: [],
-        why: "CONVERTED (conversion 11): the driver renders the Audit trail table from the same artifacts as the Summary counts, plus `_query` which digest.md:388 says 'the driver stamps at merge' — carrying that forward was transcription of a driver stamp. The judgment half — flagging a unit that shortcut its axis — stays in the findings-prose element.",
+        why: "CONVERTED (conversion 11): the driver renders the Audit trail table from the same artifacts as the Summary counts, plus `_query` which digest.md says 'the driver stamps at merge' — carrying that forward was transcription of a driver stamp. The judgment half — flagging a unit that shortcut its axis — stays in the findings-prose element.",
       },
       "INSTRUCTED CHECKS — the answer to each requester ask the register owns": {
         class: "judgment", tokens: ["registerdigest_instructed_incomplete"],

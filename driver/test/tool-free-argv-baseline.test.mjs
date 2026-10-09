@@ -244,7 +244,7 @@ test("⭐ THE ARGV DIFFERENTIAL — blind-frame gained all three flags, and gain
     "blind-frame holds an mcp tool that is not its own record tool — the retrieval surface widened, which is the one thing this category promised not to do");
   assert.deepEqual(granted.filter((t) => t.endsWith("__*")), [], "…and no wildcard bridge grant");
 
-  // THE NAME ROUND-TRIPS TO THE CONSUMER. contract-dictation-registry.mjs:67 parses grant tokens with
+  // THE NAME ROUND-TRIPS TO THE CONSUMER. contract-dictation-registry.mjs:67 bareTools parses grant tokens with
   // /^mcp__[a-z0-9-]+__([a-z0-9_]+)$/ — the KEY takes hyphens and not underscores, the TOOL the reverse.
   // A key legal where it is declared and unparseable where it is read grants nothing while reading as
   // granted, so this asserts the LITERAL argv token against the regex that consumes it.

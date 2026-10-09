@@ -3933,7 +3933,7 @@ export function findFloorBreaches(ledger, floorAxes) {   // @internal
  * `[]`: no manifest, unreadable, unparseable. That is the honest default here and not an absence read as
  * a pass, because the whole mechanism is opt-in — a run with no designation owes no floor, and a run whose
  * manifest cannot be read has no designation to honour. The refusal for an absent or unparseable manifest
- * belongs to the stage that writes it and already exists there — verify.mjs:1335 runs the same parser
+ * belongs to the stage that writes it and already exists there — verify.mjs:1335 CALL_REASON_SET runs the same parser
  * through `checkSiblingJson` and fails clearance-variants with `variantmodel_missing`. Checked, because
  * "something else refuses it" is exactly the assumption that turns a swallowed error into a silent pass.
  */
@@ -9424,7 +9424,7 @@ async function pipelineInner(job, opts = {}) {
       //
       // The prior channel is the TRUSTED one and already carries everything needed. Half forms are
       // driver-written, `seatFields(p, row)` carries their rulings by the same `pOk` path, and
-      // gateway.mjs:603 already unions this exact shape — prior-only, `{ rows: null }` submitted — on
+      // gateway.mjs:603 selectEngine already unions this exact shape — prior-only, `{ rows: null }` submitted — on
       // every attempt. So this is that mode, not a new one.
       //
       // ONE METRIC MOVES, deliberately: with no submission, `carried` counts every ruled row, because

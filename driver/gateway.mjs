@@ -3153,7 +3153,7 @@ export function isFormClassFail(fail) {
   return FORM_CLASS_RE.test(fail ?? "");
 }
 // How many in-dispatch repairs one stage run may buy. TWO, and the number has a cause: parseFrameDiff
-// is FAIL-FAST — it throws on the first bad severity (frame-diff-model.mjs:66) before it ever collects
+// is FAIL-FAST — it throws on the first bad severity (frame-diff-model.mjs:66 parseFrameDiff) before it ever collects
 // the undispatchable directives (:100) — so ONE artifact carrying both defects surfaces them
 // SEQUENTIALLY. That is exactly what the 08-02 frame-diff ladder did (severity on a1, undispatchable
 // on a2), and a cap of 1 would have handed the second one straight back to the ladder. The codebase
@@ -3240,7 +3240,7 @@ const MAX_FORM_REPAIRS = 2;
 // issue. The coverage-judgment family was COLD-ONLY — WARM_ELIGIBLE_RE carried seven coverage STRUCTURE
 // tokens and not one `coverage_clean_*` — so every retry re-dispatched a fresh session that re-read a
 // 1.9 MB band and re-derived a 160 KB document instead of editing it. The stage's own measured profile
-// (repair-contract.mjs:10-18) is 105,747 out FAIL → 137,519 out FAIL → 36,362 out PASS, and the attempt
+// (repair-contract.mjs, 'WHY THIS EXISTS') is 105,747 out FAIL → 137,519 out FAIL → 36,362 out PASS, and the attempt
 // that passed is the one that PATCHED. A cold ladder never patches.
 // WHY THEY ARE SAFE TO WARM, on the same argument made one gate over: findCoverageFormViolations
 // emits both tokens only over rows the DRIVER wrote from the frozen plan and the plan-execution
