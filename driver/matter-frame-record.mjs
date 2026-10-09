@@ -424,7 +424,7 @@ export function acceptMatterFrame(params, { instructedScope = null } = {}) {
   // analysis is about. The engine planned thirty-six.
   //
   // WHY THE FIELD IS NAMED `candidate`, AND WHY THE NAME IS LOAD-BEARING. This frame CANNOT verify
-  // ownership: `BAND_READING_STAGES` is placement-inquiry, register-digest and synthesis, and the band
+  // ownership: `BAND_READING_STAGES` holds stages that run after the band is built, and the band
   // does not exist yet when the frame runs. So everything here is the seat's reading of the matter, and
   // an exclusion taken on a seat's say-so is an unsearched element justified by an assertion — a clean
   // report over ground nobody swept, which is the one failure that reaches a client as a wrong answer

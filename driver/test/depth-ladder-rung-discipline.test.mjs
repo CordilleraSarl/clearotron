@@ -42,7 +42,6 @@ const CONVERTED = {
 /** The depth field each rung reads, derived from its own name: proseRungDirective → narrativeProse. */
 const FIELD_OF = {
   proseRungDirective: "narrativeProse",
-  inquiryRungDirective: "inquiryTrace",
   skepticRungDirective: "skepticFlagging",
   variantRungDirective: "variantManifest",
   profileRungDirective: "groundedProfiles",
@@ -72,8 +71,8 @@ test("every rung is CALLED by a stage — a defined-but-unwired rung grades noth
 });
 
 test("the rung family is DISCOVERABLE and non-empty — a zero here is a broken instrument", () => {
-  assert.ok(RUNGS.length >= 5,
-    `found ${RUNGS.length} rung directive(s) in stages.mjs. Five rungs ship today; a collapse means `
+  assert.ok(RUNGS.length >= 4,
+    `found ${RUNGS.length} rung directive(s) in stages.mjs. Four rungs ship today; a collapse means `
     + "the naming convention moved and every rung below is now unguarded, not that the ladder got simpler.");
   for (const { name } of RUNGS) {
     assert.ok(FIELD_OF[name],

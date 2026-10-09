@@ -19,7 +19,6 @@ test("the web and register manuals set no call budget", () => {
     "clearance-common-law/SKILL.md": skill("clearance-common-law/SKILL.md"),
     "clearance-common-law/perplexity-prompts.md": skill("clearance-common-law/perplexity-prompts.md"),
     "clearance-register/SKILL.md": skill("clearance-register/SKILL.md"),
-    "clearance-register/digest.md": skill("clearance-register/digest.md"),
   };
   // THE SENTINEL CANNOT BE A STRING THIS ARM EXISTS TO SEE REMOVED. It used to be the register manual's
   // per-unit table of calls — one of the numbers the ruling takes out — so deleting that table turned a

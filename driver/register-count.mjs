@@ -95,7 +95,7 @@ import { resolveRegions } from "./register-plan.mjs";
 import { reachableRegions } from "./register-availability.mjs";   // — pure; the env binding is injected
 import { variantForms, VARIANT_RULES, VARIANT_CAP } from "./register-variants.mjs";
 import { isCapabilityGap } from "../providers/_shared/execute-plan.mjs";
-import { plainDeferralReason } from "./deferral-row.mjs";   // — the reader's line for a count left open
+import { plainDeferralReason, plainCause } from "./deferral-row.mjs";   // — the reader's line for a count left open
 
 /** The three questions, in report order. `matchMode` is the provider-neutral predicate name.
  *
@@ -593,6 +593,23 @@ export function disclosedFloor(c) {
 
 /** A floor as every page prints it: the register's own figure, and no sentence around it. */
 export const moreThan = (floor) => `more than ${floor.toLocaleString("en-US")}`;
+
+/**
+ * THE READER'S LINE FOR A COUNT THAT DID NOT LAND. A count's `unavailable` text is the counts record's: it
+ * can carry the provider's own refusal, or an exception's message (`count threw: …`), and that text
+ * belongs to the record, never to a cell a client reads. Two lines the counter writes for a reader stay as
+ * they are: a name with no near-form, and how many of the close-variation forms went uncounted (without the
+ * raw causes that follow it). Anything else reads as the shipped line for a count left open
+ * (deferral-row.mjs, plainCause). `null` when the cell has no text. PURE.
+ */
+export function countNote(cell) {
+  const t = String(cell?.unavailable ?? "").trim();
+  if (!t) return null;
+  if (/^no close-variation forms could be generated from ".*" — the name has no near-form under any rule in the table, so there was nothing to count$/.test(t)) return t;
+  const partial = /^\d+ of \d+ variant form\(s\) could not be counted, so the total would understate(?= — |$)/.exec(t);
+  if (partial) return partial[0];
+  return plainCause(t);
+}
 
 export function countLine(entry) {
   if (!entry?.counts) return null;

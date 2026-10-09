@@ -144,7 +144,7 @@ test("V4-7 e2e: two concurrent pipeline() launches across DIFFERENT queues run s
 // its own (the WS-B spine under WS-C concurrency — the validators of each run read only their own
 // run dir's floor/platform values).
 test("WS-C: two concurrent pipelines run under cap 3; per-run profile sidecars stay isolated", async () => {
-  for (const k of ["MOCK_CL_GAPS", "MOCK_NARRATIVE_RECO", "MOCK_CL_SHORT", "MOCK_REPORT_URI", "MOCK_NO_GRID_LEDGER", "MOCK_NO_COVERAGE_LEDGER", "MOCK_BAD_COVERAGE_LEDGER"]) delete process.env[k];
+  for (const k of ["MOCK_CL_GAPS", "MOCK_NARRATIVE_RECO", "MOCK_CL_SHORT", "MOCK_REPORT_URI", "MOCK_NO_GRID_LEDGER"]) delete process.env[k];
   for (const [k, v] of Object.entries({
     CLEAROTRON_RUN_LOCK_DIR: join(ROOT, "locks-wsc"), CLEAROTRON_MAX_CONCURRENT_RUNS: "3", CLEAROTRON_RUN_LOCK_POLL_MS: "50",
   })) pinEnv(process.env, k, v);
@@ -185,7 +185,7 @@ test("WS-C: two concurrent pipelines run under cap 3; per-run profile sidecars s
 // CONCURRENTLY (pre-Phase-4 the slot tag serialized them — the gateway-era heartbeat safety, moot now that
 // compute is off-gateway). DIFFERENT matters (distinct refs) so the runner's matter-dedup is not in play.
 test("Phase-4: two concurrent SAME-AGENT pipelines overlap (per-agent slot admission lifted)", async () => {
-  for (const k of ["MOCK_CL_GAPS", "MOCK_NARRATIVE_RECO", "MOCK_CL_SHORT", "MOCK_REPORT_URI", "MOCK_NO_GRID_LEDGER", "MOCK_NO_COVERAGE_LEDGER", "MOCK_BAD_COVERAGE_LEDGER"]) delete process.env[k];
+  for (const k of ["MOCK_CL_GAPS", "MOCK_NARRATIVE_RECO", "MOCK_CL_SHORT", "MOCK_REPORT_URI", "MOCK_NO_GRID_LEDGER"]) delete process.env[k];
   for (const [k, v] of Object.entries({
     CLEAROTRON_RUN_LOCK_DIR: join(ROOT, "locks-sameagent"), CLEAROTRON_MAX_CONCURRENT_RUNS: "2", CLEAROTRON_RUN_LOCK_POLL_MS: "50",
   })) pinEnv(process.env, k, v);

@@ -1,0 +1,2 @@
+{ "cells": [ { "term": "ZZMARK", "platform": "web", "status": "hit", "candidates": [ { "title": "An invented page", "url": "https://example.invalid/one" } ] },
+             { "term": "ZZMARK", "platform": "store.example.invalid", "status": "hit", "candidates": [] } ], "extras": {}, "gaps": [] }

@@ -68,7 +68,7 @@ export const MAX_CLOSURES_PER_CALL = 40;
 // like a settlement pointing at the right one. So both sides import this, and neither writes its own list.
 export const CLOSURE_EVIDENCE_FILES = Object.freeze([
   "findings.json",
-  "register-findings.md",
+  "owner-decisions.json",
   "register-coverage-ledger.json",
 ]);
 

@@ -7,7 +7,7 @@
 // failure mode). The two gate-critical validators are precise: the refutation verdict line (drives the
 // CLEAR/CONDITIONAL/BLOCKING branch) and the register coverage-ledger (drives coverage honesty).
 
-import { readFileSync, existsSync, readdirSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { dirname, join, basename } from "node:path";
 import { driverDir } from "../shared/driver-dir.mjs";   //
 import { findReceiptViolations, findGridLedgerViolations, findUnranDictatedCells, findPlatformIdentityViolations, parsePrRiskQueries, MEANING_SEAT, erroredConnotationQueriesAmong } from "./common-law-receipts.mjs";
@@ -27,22 +27,13 @@ import { callRecordPaths } from "./disposition-tool.mjs";
 // be taught honestly. See record-origins.mjs's header.
 import { activeRecordOrigins } from "./record-origins.mjs";
 import { abbrev } from "./repair-contract.mjs";
-import { parseCoverageLedgerJson, parseCoverageLedgerFull, decideAxes, COVERAGE_STATUSES } from "./coverage-ledger.mjs";
-import { findUnaccountedDeferredSlices, findUnexecutedCleanClaims, findUnverifiedIncompleteCleanClaims,
-  parseRegisterPlan } from "./register-plan.mjs";
-import { findCoverageFormViolations, formLedgerRows, coverageFormSidecarName, coverageFormAbsence, COVERAGE_ABSENCE_CAUSES } from "./coverage-form.mjs";
-import { coverageFormStamp, readCoverageForm } from "./coverage-form-io.mjs";
-import { readUnacknowledgedTaintAxes } from "./register-taint.mjs";
 import { registerPlanCallKilled } from "./tool-calls.mjs";   // — did the dictated call return?
 import { parseFindingsJson, parseFindingsJsonLenient, CLIENT_TIER_BY_COMPOSITE, isUnconditionalProceed, joinFindingToBlock, parseBlockOrd } from "./findings-model.mjs";
-import { parsePlacementsJson } from "./placement-model.mjs"; import { placementFormSidecarName, parsePlacementForm, placementRenderAccount } from "./placement-form.mjs";
 import { parseCaseLawLedger, findCaseLawLedgerViolations, caseLawLedgerFail } from "./case-law-ledger.mjs";
 import { parseFrameworkManifest, aboveLowestBand, normalizeBand } from "./framework.mjs"; import { readFrozenMethod, FROZEN_METHOD_FILE } from "./framework-method.mjs";
 import { parseNamedBand, findCollapsedBands } from "./named-band.mjs";
-import { parseBlindFrameModel } from "./blind-frame-model.mjs";
-import { parseFrameDiff } from "./frame-diff-model.mjs";
 import { parseVariantManifestModel, variantRomanizationGaps, variantCompletenessGaps, variantTermShapeGaps } from "./variant-manifest-model.mjs";
-import { digestAccountingGap } from "./register-digest-record.mjs";
+import { checkJudgmentFile } from "./owner-judgment.mjs";
 
 // ── WS-B: the run-scoped profile sidecar ────────────────────────────────────────────────────────────
 // _driver/profile.json carries the run's frozen customer values (floor, platform list) for these
@@ -213,23 +204,6 @@ function needsSection(content, name, proseMarkers, label) {
   const c = content ?? "";
   if (SECTION_ANCHOR_RE(name).test(c)) return ok();
   return needs(c, proseMarkers, label);
-}
-
-/**
- * The multi-marker form, for a gate whose label covers several sections at once
- * (`findings+ledger`). Emits a token BYTE-IDENTICAL to the `needs(..., label, names)` it replaces —
- * `missing:findings+ledger(coverage-ledger)` — because correctionHint branches on both the label and
- * the appended member, and a renamed token silently downgrades the seat's hint to a generic one.
- * `anchor` is the dictated section token; `which` is the name that rides the emitted failure. PURE.
- */
-function needsSectionsLabeled(content, specs, label) {
-  const c = content ?? "";
-  for (const spec of specs) {
-    if (SECTION_ANCHOR_RE(spec.anchor).test(c)) continue;
-    if (spec.re.test(c)) continue;
-    return fail(`missing:${label}${spec.which ? `(${spec.which})` : ""}`);
-  }
-  return ok();
 }
 
 function all(...checks) {
@@ -1241,13 +1215,9 @@ function checkJson(raw, parseFn, okReason) {
   return ok(okReason);
 }
 
-// ---- sibling-JSON check for the frame-diff machine artifact (frame-omission design) ----
-// frame-diff writes prose to its expectFile (validated for non-emptiness) AND a STRUCTURED sibling JSON the
-// pipeline consumes (the reopen directives). The JSON is the load-bearing artifact, so it is REQUIRED here
-// (token-first absence + parse defects → the corrective/warm ladder repairs it). This is REPLAY-SAFE
-// because frame-diff.md is not a FILE_CHECKS target (replay never calls this validator); the stage is
-// NON-FATAL in the pipeline, so a stubborn miss degrades to "no reopen this run" and never kills delivery.
-// blind-frame no longer has a sibling at all: since its structured model IS its output (checkJson).
+// ---- sibling-JSON check: a STRUCTURED JSON written beside a stage's prose expectFile ----
+// The JSON is the load-bearing artifact, so it is REQUIRED (token-first absence + parse defects → the
+// corrective/warm ladder repairs it).
 function checkSiblingJson(p, siblingName, parseFn, okReason, missingToken) {
   let raw = null;
   try { raw = readFileSync(join(dirname(p), siblingName), "utf8"); } catch { /* sibling not written */ }
@@ -1509,153 +1479,6 @@ export function connotationDispositionFail(conn) {
   };
 }
 
-// ---- — the register coverage-form failure tokens ----
-// Projects findCoverageFormViolations' output to the bounded fail token the corrective ladder consumes.
-// Built to the SAME three consumer constraints as connotationDispositionFail above, because they are the
-// same three consumers and each fails SILENTLY on a mismatch:
-//   - THE CAUSE CENSUS IS FRONT-LOADED, `no_status=<n>`, before any named list. repairs.mjs CENSUS_RE is
-//     anchored at `^` of the tail and sums exactly that; a token whose census is absent or not first
-//     makes progressQuantity return null, `progress.kind` becomes "unknown", and a CONVERGING run reads
-//     as stuck. That is what  exists to prevent, and it is why `coverage_no_status:<axis>` — the
-//     bare shape the design sketched — is not the shape shipped.
-//   - NO PARENTHESES before the overflow (pipeline's merge-gate remedy truncates at the first "("), hence
-//     TOKEN_SAFE and the bracketed row label.
-//   - `quantity` rides as the validator's OWN exact integer and always wins over the text parse.
-// THREE TOKENS, AND THEY STAY NAMESPACED. `coverage_form_damaged`, never a bare `form_damaged`: the
-// meaning-sweep form emits `connotation_form_damaged` for the same class of defect, and repairSiblingName
-// routes on the token pattern to decide WHICH FILE to patch — two families emitting a bare `form_damaged`
-// would be indistinguishable there and the repair would rewrite the wrong form. The third,
-// `coverage_form_axis_invalid`, is namespaced against a family in the SAME lane — see its own block below.
-// THE ENTRY LIST IS THE REASON THERE ARE THREE TOKENS AND NOT TWO. Each entry is `<row id> [<label>]`
-// and carries NO cause label — deliberately, because the token is bounded and a per-entry cause would
-// cost more characters than the row ids it names. That is affordable only while every entry in one
-// token needs the SAME edit. `axis_invalid` does not: its rows need the `axis` cell set, while
-// `no_status` / `open_clean` rows need the `status` cell set. Folded together, the hint gets a flat list
-// it cannot attribute — "these rows are wrong, and for two different reasons, work out which" — which is
-// the 2026-08-05 defect (a token that named the axis and nothing else) restated one level in.
-//
-// `labelOf` is per-token because WHAT identifies the offending thing differs: for a status defect it is
-// the coverage unit the row is about; for an axis defect it is the REJECTED VALUE, which the seat has to
-// see to know which cell it typed wrong. `abbrev` MARKS a cut with `…` (never a paren — a "(" before the
-// overflow is truncated away by pipeline's merge-gate remedy, which matches `coverage_[^)]*`).
-const coverageEntryList = (violations, labelOf, cap = 150) => {
-  const entries = [];
-  let listed = 0, len = 0;
-  for (const v of violations) {
-    const label = labelOf(v);
-    const e = `${TOKEN_SAFE(v.row) || TOKEN_SAFE(v.axis)}${label ? ` [${label}]` : ""}`;
-    if (len + e.length > cap && listed) break;
-    entries.push(e);
-    listed += 1;
-    len += e.length + 1;
-  }
-  const overflow = violations.length - listed;
-  return `${entries.join(",")}${overflow > 0 ? ` (+${overflow} more)` : ""}`;
-};
-const coverageUnitLabel = (v) => abbrev(TOKEN_SAFE(v.unit || v.axis || ""), 60);
-// The rejected value FIRST and named as the cell it came from. `<empty>` is not decoration: an axis the
-// seat never wrote is the COMMON shape here (a seat row added with no `axis` key at all), and a token
-// that rendered it as nothing would say "this row's axis is wrong" while showing no axis — the
-// contentless lead this change exists to delete. `<`/`>` survive TOKEN_SAFE and are inert everywhere the
-// token is rendered (the journal, the hint, the merge-gate remedy).
-const coverageAxisLabel = (v) =>
-  `axis=${abbrev(TOKEN_SAFE(v.axis), 40) || "<empty>"} ${abbrev(TOKEN_SAFE(v.unit || ""), 50)}`.trim();
-
-function coverageFormFail(cov) {
-  const damaged = cov.filter((v) => v.reason === "form_damaged");
-  if (damaged.length) {
-    return {
-      ...fail(`coverage_form_damaged:form_damaged=${damaged.length};${TOKEN_SAFE(damaged[0].detail ?? "unparseable")}`
-        + (damaged.length > 1 ? ` (+${damaged.length - 1} more)` : "")),
-      quantity: damaged.length,
-    };
-  }
-  // ── `coverage_form_axis_invalid` — ITS OWN TOKEN FAMILY, AND THE NAME IS LOAD-BEARING TWICE ────────
-  //
-  // WHY IT IS NOT FOLDED INTO `coverage_no_status`. See coverageEntryList above: one token can carry one
-  // instruction, and this one's instruction is a different CELL. Emitted BEFORE the status token for the
-  // same reason `form_damaged` is: a row whose axis is outside the vocabulary is a row every coverage
-  // consumer below drops, so its status is not yet a question worth asking.
-  //
-  // WHY IT IS NOT CALLED `coverage_axis_invalid`, which is the name the defect deserves. That name is
-  // TAKEN, by the DERIVED-JSON structure family, and taking it back would misroute the repair twice:
-  //   · repairSiblingName's FIRST branch is /coverage_(ledger|axis|key|mirror|status_invalid)/ and aims
-  //     at register-coverage-ledger.json — a driver-derived artifact the seat is told never to write. A
-  //     form defect routed there orders a rewrite of the wrong file.
-  //   · pipeline.mjs isCoverageLedgerFail is /coverage_(ledger|axis|key|mirror|status|classes)_/ and
-  //     MIRROR-QUARANTINES what it matches: the run would proceed with the machine ledger dropped and a
-  //     note saying the coverage gates read the prose — over a judgment the seat has not made. That is a
-  //     silent fail-open, and it is why `coverage_form_axis_invalid` is spelled with `form` first: it
-  //     matches neither regex, and it matches the form's own sibling route.
-  // A near-miss worth leaving written down, because the obvious name is the dangerous one.
-  //
-  // NOT DISCRIMINATED BY ROW KIND. A DRIVER row cannot carry a bad axis by any path this build can
-  // reach, but `activeAxes` is basename-derived (readCoverageFormInput: readdirSync(register-units)
-  // filtered to `.md`), so a stray `.md` there would mint a driver axis row the seat cannot repair —
-  // the union regenerates it every pass — and the ladder would run out. That is not a regression this
-  // change introduces (the folded token had the same exposure) and it has never been observed; if it
-  // ever is, it is a DRIVER defect and it needs its own token naming the driver, on the
-  // `coverage_form_missing` model. Recorded here rather than half-built.
-  // ── — `coverage_form_engine_vocabulary` ────────────────────────────────────────────────────
-  //
-  // Emitted BEFORE the status tokens, on the `form_damaged`/`axis_invalid` argument: it is a defect in
-  // the sentence a CLIENT reads, and a run that ships it has shipped it whether or not a status cell is
-  // also wrong. `form` is first in the name for the reason spelled out at length below — it must match
-  // neither repairSiblingName's ledger branch nor isCoverageLedgerFail's mirror-quarantine, and the two
-  // regexes that would misroute it both key on `coverage_<word>_`.
-  //
-  // THE TOKENS ARE THE CLOSED HYPHENATED SET (coverage-form.SEAT_BANNED_TOKENS). A bare noun like
-  // `slice` is NOT refused here: a refusal that cannot tell engine vocabulary from a mark would block a
-  // clearance on the mark SLICE, which is restated one level in.
-  const engineVocab = cov.filter((v) => v.reason === "engine_vocabulary");
-  if (engineVocab.length) {
-    return {
-      ...fail(`coverage_form_engine_vocabulary:engine_vocabulary=${engineVocab.length};`
-        + coverageEntryList(engineVocab, (v) => abbrev(TOKEN_SAFE((v.tokens ?? []).join(" ")), 60))),
-      quantity: engineVocab.length,
-    };
-  }
-  const badAxis = cov.filter((v) => v.reason === "no_status" && v.cause === "axis_invalid");
-  if (badAxis.length) {
-    return {
-      ...fail(`coverage_form_axis_invalid:axis_invalid=${badAxis.length};${coverageEntryList(badAxis, coverageAxisLabel)}`),
-      quantity: badAxis.length,
-    };
-  }
-  // EVERY REMAINING VIOLATION IS A STATUS-CELL DEFECT, because `axis_invalid` left above. The census
-  // therefore partitions over TWO causes, not three, and every row this token names needs the same edit.
-  const unset = cov.filter((v) => v.reason === "no_status");
-  if (!unset.length) return null;
-  // THE CENSUS IS DISCRIMINATED, and this is the 2026-08-05 lesson applied one level in. `no_status` is
-  // one token over two different defects — a row with no status or a status outside the enum, and an
-  // enum-VALID confirmed-clean on a row the driver marked `open` — and the second is the common one,
-  // since it is what a digest does when it believes a slice is fine and the machine knows it is not. A
-  // single undifferentiated count made the hint open with "row(s) with no status this gate accepts" and
-  // close with "do not stop until every row carries a status", both unactionable on a form where every
-  // row already carries one. The seat then spends a warm attempt complying with what it has already done.
-  //
-  // repairs.mjs CENSUS_RE accepts comma-joined `<name>=<n>` terms and SUMS them, so the terms must
-  // PARTITION the violations — they do, `cause` is assigned once per row. The sum stays the exact
-  // outstanding count, `progressQuantity` still reads a converging run as converging, and `quantity`
-  // below rides as the validator's own integer and wins over any text parse.
-  const CAUSE_ORDER = ["open_clean", "no_status"];
-  const byCause = new Map();
-  for (const v of unset) {
-    const c = CAUSE_ORDER.includes(v.cause) ? v.cause : "no_status";
-    byCause.set(c, (byCause.get(c) ?? 0) + 1);
-  }
-  const census = CAUSE_ORDER.filter((c) => byCause.has(c)).map((c) => `${c}=${byCause.get(c)}`).join(",");
-  // ONE SAMPLE LIST, bounded, DOMINANT CAUSE FIRST — a repair aimed at the defect that accounts for most
-  // of the rows converges fastest, and the seat sees the shape it has to fix in the first entry. Each
-  // entry names the driver's own row id (the string the seat can find in the form without searching for
-  // it) and the coverage unit that row is about.: `abbrev` MARKS a cut rather than silently slicing.
-  const ordered = CAUSE_ORDER.flatMap((c) => unset.filter((v) => (CAUSE_ORDER.includes(v.cause) ? v.cause : "no_status") === c));
-  return {
-    ...fail(`coverage_no_status:${census};${coverageEntryList(ordered, coverageUnitLabel)}`),
-    quantity: unset.length,
-  };
-}
-
 // ---- per-stage validators: (path, content) => {ok, reason} ----
 export const validators = {
   // WS2 (B4) — the verbatim-scope bind: with the driver-written _driver/instructed-scope.json
@@ -1843,22 +1666,6 @@ export const validators = {
     if (existsSync(driverDir(dir, "instructed-scope.json"))) return fail("variantmodel_missing");
     return base;
   },
-  // Property 1 (frame-omission design): the stage's ONE output is the structured model the frame-diff
-  // consumes — `c` IS blind-frame-model.json ( retired the prose twin nothing read). The prose
-  // non-emptiness floor is gone WITH the prose, and the parser is the stronger floor it leaves behind:
-  // it demands a named dominant_element, at least one variant, a closed-enum direction on each, and a
-  // closed-enum ranking_basis. An absent file never reaches here — runStage fails it as
-  // `missing_file:blind-frame-model.json` first. NON-FATAL in the pipeline (no frame-diff that run).
-  // — WHAT A FAILURE HERE NOW MEANS. `acceptBlindFrame` validates through THIS SAME parser before
-  // `recordBlindFrame` writes, so on the live path a parse failure can no longer be the seat's typing: it is
-  // the driver's own serialisation or an fs fault. Kept rather than retired, because archived runs whose
-  // model was hand-written are still judged by it, and because a driver that writes an unparseable artifact
-  // must not deliver. The coverage transport reached the same place and said so in the same words
-  // (coverage_form_damaged, post-conversion, is a driver/fs fault).
-  blindFrame: (p, c) => checkJson(c, parseBlindFrameModel, "blind-frame-model"),
-  // a clean diff is legitimately terse ("no omissions") so the prose floor is low; the sibling JSON (the
-  // reopen directives the pipeline acts on) is REQUIRED and carries the real structure.
-  frameDiff: (p, c) => all(nonEmpty(c, 40), checkSiblingJson(p, "frame-diff.json", parseFrameDiff, "frame-diff", "framediff_model_missing")),
   // judgment-relocation (2026-06-24): the LOAD-BEARING funnel artifact is now the COMPLETE NAMED BAND sibling
   // (register-units/<axis>-band.json) — the enumerated records + crowd descriptors that cross the firewall. The
   // funnel emits NO clearance verdict, so the prose .md is an AUDIT summary (only non-emptiness required); the
@@ -1974,362 +1781,24 @@ export const validators = {
   // stamp (splitGridSpec spreads the canonical spec's connotation object verbatim — receipt-presence,
   // the D1 pattern), so unstamped/pre-P2-C artifacts never flip on replay or resume.
   commonLawHalf: (p, c) => declaredUnavailableGate(p, c, commonLawHalfEvidence(p, c)),
-  // B2 (charter 2026-07-31) — placement's tier sections gain a STRUCTURED sibling, placements.json
-  // ({mark, owner, jurisdiction, records[], tier, reason} — reason a short paragraph; the rulings tail
-  // stays prose in the md). The sibling requirement is gated on PROMPT VINTAGE via the stage-contract
-  // marker (the recordStageContract pattern above at variantManifest — written at DISPATCH only), so:
-  // replay over archives never flips (no marker ⇒ legacy rules), a crash-resume keeps a pre-B2
-  // artifact passing, and a fresh dispatch under this code is held to the new floor. A sibling that
-  // EXISTS is parsed strictly regardless of vintage (present-and-malformed is always a defect).
-  placement: (p, c) => {
-    // THE LAST PROSE-KEYED GATE ON A SEAT-WRITTEN ARTIFACT.
-    //
-    // 129 named three sites and all three had stopped being members before it was filed: conversions 5
-    // and 11 moved report-cards/<ord>.md and register-findings.md to driver renders, and audit.md was
-    // always built by buildAuditMd — a prose key on a document the driver itself writes is code
-    // checking its own render, which no model's phrasing can reach. THIS one the issue never named.
-    // placements.json is rendered from the form (renderPlacementsJson), but the .md is still the
-    // seat's, and stages.mjs's own contract declaration says so: "`missing:placement tiers` is the
-    // token that checks the md for tier words."
-    //
-    // Four alternatives matched anywhere is a wide net, and that is exactly what made it survive three
-    // censuses: it is unfailable UNTIL a seat words all four dictated tier headings without reaching
-    // for "tier", "placement", "sheet" or "level" — "Top conflicts / Secondary watch / Annex /
-    // Filtered out" is a perfectly good answer that this gate refuses, driven and confirmed. That is
-    // 129's failure verbatim: rejected for wording on a document written correctly.
-    //
-    // WHAT FIXES THAT IS THE DICTATION, NOT THIS LINE, and the distinction is worth writing down
-    // because the measurement that first looked like proof was not one. The anchor string contains the
-    // literal words "placement" and "tier", so a document carrying it passes the BARE regex too — the
-    // old gate accepted the anchor by substring coincidence, and a specimen built to show the
-    // alternation working goes green against the pre-change tree. The behaviour change in this PR is
-    // the skill telling the seat to emit a stable token; the change on this line makes the anchor
-    // load-bearing BY CONTRACT rather than by that coincidence, so renaming the token to anything
-    // without one of the four words in it (`groupings`, `conflict-groups`) stops being a silent
-    // regression. Verdict-identical today, on every input, by construction.
-    //
-    // The alternation is strictly more permissive than the regex it wraps, so no archived run's replay
-    // verdict moves, and the token is unchanged (`missing:placement tiers`) because the corrective
-    // ladder reads it.
-    const base = all(nonEmpty(c), needsSection(c, "placement-tiers", [/tier|placement|sheet|level/i], "placement tiers"));
-    if (!base.ok) return base;
-    const dir = dirname(String(p ?? ""));
-    const sib = existsSync(join(dir, "placements.json")) ? checkSiblingJson(p, "placements.json", parsePlacementsJson, "placement-model", "placementmodel_missing") : null;
-    if (sib) return sib.ok && placementAccountArmed(dir) ? placementAccountVerdict(dir) : sib;   // placementAccount: see the block at the end of this file
-    let structured = false;
-    let formEra = false;
-    const marker = driverDir(dir, "stage-contracts.json");
-    // ABSENT marker = not minted under the B2 prompt — pre-B2 rules apply (every archive). PRESENT but
-    // unparseable is a different fact (post-merge audit 2 (c), the convention set for the
-    // variantManifest twin above): the marker is DRIVER-written (pipeline.mjs recordStageContract), so a
-    // corrupt one is a code/fs bug, and reading it as "no marker" would silently disarm the WHOLE B2
-    // floor on exactly the runs the floor governs. Fail closed, with a name.
-    if (existsSync(marker)) {
-      try {
-        const m = JSON.parse(readFileSync(marker, "utf8"))?.["placement-inquiry"];
-        structured = Boolean(m?.structuredPlacements);
-        formEra = m?.placementForm === 1;
-      } catch { return fail("stagecontracts_invalid"); }
-    }
-    // — UNDER THE FORM ERA THE SEAT DOES NOT WRITE placements.json AT ALL. The driver renders it from
-    // the accumulator, so its absence at the moment this validator reads the seat's prose is the ordinary
-    // state and demanding it here is what caused the R1 discard: attempt 1 had written a complete, valid
-    // placement-recommendations.md, lay quiescent 371 s against a 60 s bar, and the wall rescue
-    // looked, asked this validator, was told `placementmodel_missing`, and refused — throwing 31 minutes
-    // of finished work away over a file the seat was never going to write next.
-    //
-    // What replaces the floor is stronger, not weaker: the tiers live in a driver-held accumulator that a
-    // kill cannot reach, and the rendered file is parse-then-land through this same strict parser before
-    // it is allowed on disk. Archived runs carry no `placementForm` key and keep the old floor exactly.
-    if (formEra) return placementAccountArmed(dir) ? placementAccountVerdict(dir) : base;
-    return structured ? fail("placementmodel_missing") : base;
+  // Step 3's judges (owner-judgment.mjs): the answer the driver wrote from the session's form, checked
+  // against the facts written before the judges ran — every record cited is one the run holds, every
+  // rating a band of the client's scale, every carried decision names an owner and gives a reason. The
+  // first failure names itself; how many more there were rides beside it.
+  ownerJudgment: (p, c) => {
+    const r = checkJudgmentFile(p, c);
+    return r.ok ? ok() : fail(r.failures[0] + (r.failures.length > 1 ? ` (+${r.failures.length - 1} more)` : ""));
   },
-  // The opus digest legitimately splits the section ("## On-field findings" / "## Off-field findings"), so the
-  // marker is a heading that CONTAINS "findings", not the literal "## Findings". The real structural anchors are
-  // the Coverage ledger heading + a status row (these still reject truncated / wrong-stage output).
-  //
-  // MACHINE COVERAGE LEDGER (WS-A, Map #3): register-coverage-ledger.json is CODE-DERIVED by the
-  // driver (runDigest) from THIS prose,
-  // so when present it is validated STRICTLY for STRUCTURE only — dictated keys, full-axes enum, bare-token
-  // statuses, every active axis owns ≥1 row (active axes from the run's register-units/*.md, else decideAxes
-  // over the sibling manifest; neither readable ⇒ completeness skipped, mirroring the commonLaw receipt-check
-  // skip). The prose↔JSON mirror cross-check is RETIRED — the JSON matches the prose by construction. No file
-  // ⇒ legacy prose path (every archived run; replay verdicts must not flip). The parser's throw is CONVERTED
-  // to a fail here — a validator must never throw (runStage calls it bare) — and its token-first reason drives
-  // the corrective/warm retry ladder.
-  registerFindings: (p, c) => {
-    // ── — ONE BRANCH, ON THE ERA STAMP, AND EVERY COVERAGE FLOOR HANGS OFF IT ──────────────────
-    //
-    // NEVER DELETE A FLOOR UNCONDITIONALLY WHILE ITS REPLACEMENT IS CONDITIONAL. The first cut of this
-    // build dropped the structural `## Coverage ledger` requirement (and the prose disclosure joins)
-    // outright, while arming the form CONDITIONALLY — `readCoverageFormInput` returns null whenever the
-    // plan apparatus is out of reach. On every such run the seat had been told not to write a table, no
-    // form existed to judge, `parseCoverageLedgerFull` found no rows, and `deriveCoverageStatus([])`
-    // answered `{complete:true}`: ZERO ROWS READING AS COMPLETE COVERAGE, on the validator whose whole
-    // job is coverage honesty. The replay corpus measured the same hole from the other side — three
-    // preserved runs flipped from `coverage_deferred_unaccounted` to ok.
-    //
-    // So the old floor and the new gate are armed by the SAME condition, and it is this one:
-    //   stamped   ⇒ the driver wrote a form, the seat was told not to write a table, and the form is the
-    //               whole coverage judgement (below).
-    //   unstamped ⇒ every pre-change check applies unchanged, and stages.mjs — reading THIS SAME STAMP —
-    //               tells the seat to write the prose table. The two cannot disagree about which
-    //               document the run owes.
-    //
-    // ── M6 (2026-08-14): THE UNSTAMPED ARM IS NOW ARCHIVE-ONLY, AND IT STAYS ───────────────────
-    //
-    // The driver arms unconditionally from M6, inside the same `willRun` gate that dispatches the
-    // digest and before it — so NO LIVE RUN reaches here unstamped, and stages.mjs no longer has a
-    // second arm to tell a seat to write the prose table. The prose floor below, and the prose-era
-    // joins it feeds (findUnaccountedDeferredSlices, findUnverifiedIncompleteCleanClaims), are
-    // therefore DEAD FOR LIVE RUNS and LOAD-BEARING FOR REPLAY: an archived pre-change run carries no
-    // stamp at all, and its coverage verdict is judged by exactly this arm.
-    //
-    // DO NOT DELETE THEM AS DEAD CODE. Removing them does not change any live run's answer; it changes
-    // what an ARCHIVED run replays to — and replay verdicts are quoted. That is a records mutation
-    // nobody ordered, and no code revert un-quotes a verdict once it has been read.
-    const stamp = coverageFormStamp(dirname(p));
-    const structural = stamp.required
-      ? all(nonEmpty(c), needs(c, [/^#{1,4}\s+[^\n]*\bfindings\b/im], "findings-heading"))
-      : all(nonEmpty(c), needsSectionsLabeled(c, [
-          { anchor: "findings", which: "findings-heading", re: /^#{1,4}\s+[^\n]*\bfindings\b/im },
-          { anchor: "coverage-ledger", which: "coverage-ledger", re: /Coverage ledger/i },
-        ], "findings+ledger"),
-        hasCoverageLedgerRow(c) ? ok() : fail("no_coverage_status_row"));
-    if (!structural.ok) return structural;
-    // ── EVERY RECORD THE RUN CARRIED IN ENDS SOMEWHERE — CHECKED AT THE EXIT, NOT ONLY AT THE CALL ──
-    //
-    // The call-time refusal is scoped to the batch it judges, which is what lets a dense band be
-    // recorded at all: a 1,161-record band does not fit in one turn, and the stage failed on one for 35
-    // minutes without writing a document. It buys that at a price, and this is where the price is paid.
-    // Once batch 1 is accepted the findings document EXISTS, so a seat that stopped after batch 6 no
-    // longer fails as a missing artifact — it ships a document holding half the band, with every call it
-    // made reading as accepted. Nothing else would notice: this stage's other arms read the document's
-    // shape, and half a band is the same shape as a whole one.
-    //
-    // ARMED BY THE SAME ERA STAMP as the call-time rule, so an archived run carries no stamp and replays
-    // to the verdict it always had. A STAMPED run whose transport stored no model is a driver fault and
-    // is named as one, on `coverage_form_missing`'s precedent below and for its reason: an absent
-    // artifact must never read as a satisfied one. A throw fails closed for the same reason — this gate
-    // going quiet is indistinguishable from a complete digest, which is the state it exists to refuse.
-    {
-      let gap;
-      try { gap = digestAccountingGap(dirname(p)); }
-      catch (e) { return fail(`registerdigest_accounting_unreadable:${short(String(e?.message ?? e))} (driver-written — this is a bug, not a model defect)`.slice(0, 200)); }
-      if (gap.armed && gap.unaccounted === null)
-        return fail("registerdigest_accounting_unreadable: stamped for per-record accounting with no owed list in the driver's facts (driver-written — this is a bug, not a model defect)");
-      if (gap.armed && gap.no_model)
-        return fail("registerdigest_model_missing: stamped for per-record accounting and the typed transport stored no model, while the findings document exists (driver-written — this is a bug, not a model defect)");
-      if (gap.armed && gap.unaccounted.length)
-        return fail(`registerdigest_unaccounted_records:${gap.unaccounted.length} of ${gap.owed.length} — ${gap.unaccounted.slice(0, 6).join(",")}${gap.unaccounted.length > 6 ? ` (+${gap.unaccounted.length - 6} more)` : ""}`.slice(0, 200));
-    }
-    // ── THE COVERAGE FORM, AND THE FOUR STATES THAT ARE NOT THE SAME FACT ──────────────────────────
-    //   not required        — no era stamp: EVERY ARCHIVED RUN, and nothing else since  M6. A run
-    //                         whose plan apparatus is out of reach used to land here too; it now gets a
-    //                         form declaring that, with its cause. The form arm is OFF and the PROSE
-    //                         arm above and below is on, for replay.
-    //   required + absent   — THE DRIVER DID NOT WRITE WHAT IT STAMPED AS REQUIRED. A named FAIL, and
-    //                         named as a driver bug: the precedent is grid_spec_unreadable /
-    //                         grid_ledger_missing below. This is the one case  gets wrong — its
-    //                         dispositionForm returns {rows:null,error:null} for a missing sidecar and
-    //                         findConnotationViolations returns no violations over it, so an absent form
-    //                         is byte-for-byte indistinguishable from a fully ruled one and the run
-    //                         PASSES. That is reachable (a full disk fails as "artifact absent", not as
-    //                         a disk error), and this validator must not reproduce it.
-    //   required + damaged  — present and unusable. A NAMED defect (coverage_form_damaged), never read
-    //                         as absent: reading it as absent would silently drop every status in it.
-    //   required + EMPTY    — present, parsed, and carrying NO ROWS. ASK WHAT THE ZERO MEANS. It is
-    //                         reachable: `readCoverageFormInput` accepts a `skeleton: []` receipt and an
-    //                         `entries: []` plan, so a run that executed nothing stamps a form with no
-    //                         obligations in it. findCoverageFormViolations([]) is [], formLedgerRows([])
-    //                         is [], and `[]` is not nullish — so the prose fallback below never engages,
-    //                         the F3 and taint gates see nothing, and the run passes having judged no
-    //                         coverage at all. That is `{rows:null,error:null}` one step over: the exact
-    //                         shape this build set out to refuse, reproduced in the artifact it replaced
-    //                         it with. Fail closed, and name the driver.
-    //   required + parsed   — judged against the rows the driver regenerated at the last judgement.
-    let coverageRows = null;
-    if (stamp.required) {
-      const cf = readCoverageForm(dirname(p), stamp.formName);
-      if (!cf.present)
-        return fail(`coverage_form_missing:_driver/${coverageFormSidecarName(stamp.formName)} absent while _driver/coverage-enum.json requires it — the driver writes it before the digest dispatches and unions it before every judgement (driver-written — this is a bug, not a model defect)`);
-      const covFail = coverageFormFail(findCoverageFormViolations(cf.rows, cf.error));
-      if (covFail) return covFail;
-      // ── M6 — THE ONE EXCEPTION TO THE EMPTY-FORM REFUSAL, AND WHY IT IS SAFE (2026-08-14) ──────
-      //
-      // A zero-row form stays what it has always been: an absence of coverage judgement that every gate
-      // below would read as a complete one. M6 does not soften that. It adds exactly one case — a form
-      // that SAYS why it is empty, in a cause the closed vocabulary contains — because after M6 the
-      // driver always arms and always writes, so a run whose plan apparatus was out of reach now
-      // reaches here with a real artifact instead of no stamp at all.
-      //
-      // The declaration is checked, not trusted. `coverageFormAbsence` returns null for a missing
-      // `absence`, a cause outside COVERAGE_ABSENCE_CAUSES, or anything that is not an object — so an
-      // empty form wearing a made-up excuse falls through to the refusal below, and a driver that wrote
-      // an empty form by accident cannot acquire an alibi by writing a word into it.
-      const declared = coverageFormAbsence(cf.parsed);
-      if (!cf.rows.length && declared) {
-        coverageRows = [];
-      } else if (!cf.rows.length) {
-        return fail(`coverage_form_empty:_driver/${coverageFormSidecarName(stamp.formName)} parsed and carries NO rows while _driver/coverage-enum.json requires a form, and declares no cause the vocabulary carries (${COVERAGE_ABSENCE_CAUSES.join(" / ")}) — an empty form is an ABSENCE of coverage judgement, never a complete one, and every gate below would read it as complete (driver-written — this is a bug, not a model defect)`);
-      } else {
-        coverageRows = formLedgerRows(cf.rows);
-      }
-    }
-    // D1 fail-closed — an off-enum Status on a REAL axis row must fail, not vanish: the prose parser
-    // drops unclassifiable rows, so a `primary-sweep | complete` row would exit every downstream gate
-    // (deriveCoverageStatus, the plan/taint joins) as if it never existed. Junk/prose lines whose axis
-    // is not a known register axis never fire. Keyed on the driver-written _driver/coverage-enum.json
-    // sentinel (receipt PRESENCE — the D1 invariant): the driver arms it right before every digest
-    // pass it dispatches (runDigest), so the corrective ladder repairs live rows, while ARCHIVED runs
-    // never carry it and replay verdicts never flip — off-enum shapes ("N/A", "confirmed", "✅",
-    // "not-searched (immaterial by design)") sit in 27 of 64 corpus register-findings.md files,
-    // including July-2026 runs, so an unkeyed gate would mass-flip the replay harness to NO-GO.
-    if (existsSync(driverDir(dirname(p), "coverage-enum.json"))) {
-      const offEnum = parseCoverageLedgerFull(c).offEnum;
-      if (offEnum.length)
-        return fail(`coverage_status_offenum:${short(offEnum[0].status)} (axis ${offEnum[0].axis}${offEnum.length > 1 ? ` +${offEnum.length - 1} more` : ""} — the Status cell is EXACTLY one bare token of: ${COVERAGE_STATUSES.join(" / ")}; qualifiers move into reason)`);
-    }
-    // ── THE COVERAGE ROWS EVERY GATE BELOW READS ──────────────────────────────────────────────────
-    // On a FORM run they are the form's settled rows: the driver wrote the axis and the seat wrote the
-    // status, so this is the same fact the prose table used to carry and it is available BEFORE the
-    // driver renders that table. Reading the prose here instead would disarm the three gates below on
-    // attempt 1 of every fresh run, because the seat no longer writes a Coverage ledger.
-    // On an ARCHIVED run there is no form and parseCoverageLedgerFull is the reader — which is the ONLY
-    // job it still has. No gate parses that table on a live run any more.
-    const ledgerRows = coverageRows ?? parseCoverageLedgerFull(c).rows;
-    // WS2 (B4 — the F3 gate): with a plan-execution receipt on disk (plan-mode fresh runs;
-    // archived/replay runs lack it ⇒ inactive), a `confirmed-clean` claim over an axis whose code-derived
-    // skeleton says "unexecuted" is a hard fail — the claim is checked against what RAN, not against what
-    // the digest asserts. D1 fail-closed: the read and the parse are SPLIT — absence keeps the gate
-    // inactive (replay never flips), but a receipt PRESENT and unparseable (or of the wrong shape) fails
-    // loud: the sidecar is DRIVER-written, so a corrupt one is a bug, and the old whole-block catch
-    // silently disabled every F3 gate over exactly that bug.
-    //
-    // — THE `deferred` ARM AND THE `incomplete` ARM ARE ERA-SCOPED, NOT DELETED. Both carried a
-    // disclosure join over text the model typed (findUnaccountedDeferredSlices /
-    // findUnverifiedIncompleteCleanClaims' C8), and on a FORM run the form replaces both: the driver
-    // writes one row per deferred qid and one per open crowd block, each `open`, and
-    // findCoverageFormViolations above refuses a clean claim on any of them. On a run with NO form there
-    // is nothing to replace them WITH, so they run exactly as they did before this build — same order,
-    // same tokens, byte-identical construction, because the replay corpus compares verdict STRINGS.
-    // `unexecuted` and `skipped` never had a join, so findUnexecutedCleanClaims runs on BOTH paths.
-    let planExecRaw = null;
-    try { planExecRaw = readFileSync(driverDir(dirname(p), "plan-execution.json"), "utf8"); } catch { /* no receipt — plan gate inactive (legacy/replay) */ }
-    if (planExecRaw != null) {
-      let exec = null;
-      try { exec = JSON.parse(planExecRaw); } catch { /* falls through to the shape fail below */ }
-      if (exec == null || typeof exec !== "object" || (exec.skeleton != null && !Array.isArray(exec.skeleton)))
-        return fail("plan_execution_unreadable: _driver/plan-execution.json is corrupt (driver-written — this is a bug, not a model defect)");
-      if (!stamp.required) {
-        // — the DEFERRED-SLICE ACCOUNTING requirement, ahead of the clean-claim gate because it is the
-        // superset: a slice the plan recorded as unsearchable owes a row whether or not anything on its axis
-        // claims clean. Until this ran, a ledger that never mentioned the slice at all passed, and the only
-        // thing that caught a deferred axis was the digest volunteering a clean claim over it first.
-        const unaccounted = findUnaccountedDeferredSlices(parseCoverageLedgerFull(c).rows, exec.skeleton);
-        if (unaccounted.length)
-          return fail(`${unaccounted[0].token}:${unaccounted[0].missing.join(",")}`.replace(/\s+/g, " ").slice(0, 160)
-            + (unaccounted.length > 1 ? ` (+${unaccounted.length - 1} more axes)` : ""));
-      }
-      const violations = findUnexecutedCleanClaims(ledgerRows, exec.skeleton);
-      if (violations.length)
-        return fail(`${violations[0].token}${violations.length > 1 ? ` (+${violations.length - 1} more)` : ""}`);
-      if (!stamp.required) {
-        // The discriminated `incomplete` sibling (copper-lattice): a clean claim over a plan-joined
-        // multi-term enumerate crowd lacking full per-term accounting (term_counts, the count-first
-        // truth). Sanctioned crowds (count-kind, single-term saturated) never fire — crowd = dilution
-        // stays judgment's call. Needs the run-dir plan + bands; either unreadable ⇒ inactive.
-        try {
-          const plan = parseRegisterPlan(readFileSync(driverDir(dirname(p), "register-plan.json"), "utf8"));
-          const bands = {};
-          for (const s of (exec.skeleton ?? [])) {
-            try {
-              const parsed = JSON.parse(readFileSync(join(dirname(p), "register-units", `${s.axis}-band.json`), "utf8"));
-              bands[s.axis] = Array.isArray(parsed) ? parsed : (Array.isArray(parsed?.blocks) ? parsed.blocks : []);
-            } catch { /* band unreadable — parse defects are the unit validator's */ }
-          }
-          const v2 = findUnverifiedIncompleteCleanClaims(parseCoverageLedgerFull(c).rows, exec.skeleton, bands, plan);
-          if (v2.length) {
-            // Deduped by AXIS: the gate emits one violation per confirmed-clean row, so ION's single
-            // undisclosed OR-stack read as "primary-sweep (+5 more)" — which looks like six problems on
-            // six axes and hid that every one was the same axis. Count the axes, not the rows.
-            const axes = [...new Set(v2.map((v) => v.axis))];
-            // ── 2026-08-05: THE TOKEN NAMED THE AXIS AND NOTHING ELSE, AND THE AXIS IS NOT THE DEFECT ──
-            // R2 @7ce4f27 died here on `repeat-signature` after four identical attempts. The gate had
-            // found ONE unaccounted class — class 5, `unenumerated`, in block
-            // supp:incumbent-class:owner:abbvie-inc:f5137d37 (703 hits) — among 91 blocks on that axis. The
-            // token said only `:incumbent-class`, so correctionHint could only speak in generalities, and its
-            // generality was drawn from the TERM shape: it told the model to find "a multi-term OR-stack whose
-            // per-term accounting is incomplete" and to name "which terms are unaccounted". Every block on
-            // that axis had term_counts ABSENT and zero unaccounted terms. The model was sent to find
-            // something that did not exist, so no honest digest could clear the gate — the ION unclearable
-            // shape again, one gate over.
-            //
-            // The gate has always computed the qid, the unaccounted classes/terms and total_hits. Both of the
-            // things that can DISCLOSE the block (blockIsDisclosed: the qid, or total_hits standalone) were in
-            // hand and thrown away. So the token carries them now. The FIRING CONDITION IS UNTOUCHED — this
-            // gate refuses exactly what it refused before; it just says what it refused.
-            //
-            // Shape order matters: the axis stays first and space-separated, because correctionHint's
-            // `coverage_clean_unverified_incomplete:([^\s)]+)` capture would otherwise swallow the detail.
-            const b0 = (v2[0].blocks ?? [])[0];
-            const detail = b0
-              ? [
-                ` qid=${b0.qid}`,
-                Number.isInteger(b0.total_hits) ? ` hits=${b0.total_hits}` : "",
-                b0.unaccounted_classes?.length ? ` classes=${b0.unaccounted_classes.join(",")}` : "",
-                b0.unaccounted?.length ? ` terms=${b0.unaccounted.map((t) => abbrev(TOKEN_SAFE(t), 40)).join(",")}` : "",
-                (v2[0].blocks ?? []).length > 1 ? ` (+${v2[0].blocks.length - 1} more blocks on this axis)` : "",
-              ].join("")
-              : "";
-            return fail(`${v2[0].token}${detail}${axes.length > 1 ? ` (+${axes.length - 1} more axes: ${axes.slice(1).join(", ")})` : ""}`);
-          }
-        } catch { /* no plan in reach — gate inactive */ }
-      }
-    }
-    // Timeout-taint gate (copper-lattice 2026-07-08): a `confirmed-clean` prose claim on an axis whose
-    // winning register-unit pass was kill-touched (per-attempt jsonl: SIGKILL/timeout inside the winning
-    // ladder — register-taint.mjs) is a self-report the machine must not trust. Token-first fail; the
-    // corrective hint tells the digest to relabel the row `deferred` with the honest reason. Receipt-aware:
-    // a resolved/disclosed axis (fan-in recovered it, or the late-resume disclose path holds the client
-    // gate) never re-fails — only UNACKNOWLEDGED taint fires. No jsonl at all ⇒ inactive (offline tests).
-    // Deliberately replay-ACTIVE: the archived copper-lattice run carries the timeout row + the clean
-    // claim on disk today — that flip IS the regression pin; a clean-passes run (teal-lattice) is
-    // untouched. The live chain had a kill switch and this shared it; both are gone, because nothing
-    // set it anywhere and an off-path nothing exercises is not a rollback, it is untested code.
-    {
-      try {
-        const cleanAxes = [...new Set(ledgerRows.filter((r) => r.status === "confirmed-clean").map((r) => String(r.axis)))];
-        if (cleanAxes.length) {
-          const unack = new Set(readUnacknowledgedTaintAxes(dirname(p)));
-          const bad = cleanAxes.filter((a) => unack.has(a));
-          if (bad.length) return fail(`coverage_clean_tainted:${bad.join(",")}`.slice(0, 160));
-        }
-      } catch { /* unreadable ledger rows are owned by the structural checks above */ }
-    }
-    let ledgerRaw = null;
-    try { ledgerRaw = readFileSync(join(dirname(p), "register-coverage-ledger.json"), "utf8"); } catch { /* legacy run */ }
-    if (ledgerRaw == null) return ok();
-    // Active axes = the units the run actually spawned (register-units/*.md is the per-run activation
-    // record — immune to future decideAxes vocabulary drift retro-flipping archived-run replays);
-    // fallback: decideAxes over the sibling manifest; neither readable ⇒ completeness skipped.
-    let activeAxes = null;
-    try {
-      const units = readdirSync(join(dirname(p), "register-units")).filter((f) => f.endsWith(".md")).map((f) => f.replace(/\.md$/, ""));
-      if (units.length) activeAxes = units;
-    } catch { /* no units dir in reach */ }
-    if (activeAxes == null) {
-      try { activeAxes = decideAxes(readFileSync(join(dirname(p), "variant-manifest.md"), "utf8")); } catch { /* offline/unit contexts */ }
-    }
-    // — the JSON is CODE-DERIVED FROM THE COVERAGE FORM (renderCoverageLedgerJsonFromForm, called in
-    // the driver's runDigest), exactly as the `## Coverage ledger` table above it is. Map #3 derived it
-    // from the model's prose, which left a model-authored table as the source of truth for every coverage
-    // gate; the form is the source now and both are renders of it, so they agree BY CONSTRUCTION and the
-    // old prose↔JSON mirror cross-check stays retired. Structural validity is still enforced (parse +
-    // activeAxes completeness) so a malformed derived JSON still surfaces as a token-first defect.
-    try { parseCoverageLedgerJson(ledgerRaw, { activeAxes }); }
-    catch (e) { return fail(String(e.message).replace(/\s+/g, " ").slice(0, 160)); }
-    return ok("machine-ledger");
+  // Step 3's merged decisions (owner-judgment-run.mjs, writeJudgmentFiles): written by code from the
+  // answers that passed their check, never by a session, so this is the shape the sceptic and synthesis
+  // read and nothing more.
+  ownerDecisions: (_p, c) => {
+    let d;
+    try { d = JSON.parse(String(c ?? "")); } catch { return fail("owner_decisions_not_json"); }
+    if (d?.schema_version !== 1) return fail(`owner_decisions_schema:${JSON.stringify(d?.schema_version ?? null)}`);
+    for (const k of ["carried", "set_aside", "overall_ratings"]) if (!Array.isArray(d[k])) return fail(`owner_decisions_no_${k}`);
+    if (!Array.isArray(d.judges?.answered) || !d.judges.answered.length) return fail("owner_decisions_no_judge_answered");
+    return ok();
   },
   // "no flags surfaced" (17 chars) is the canonical clean result — accept it regardless of length;
   // otherwise require a non-trivial flag list.
@@ -2338,7 +1807,7 @@ export const validators = {
   // table shows no flags for primary-sweep" is an ordinary sentence for this stage — made a file full of
   // flags validate as clean. Nothing needs a substring sentinel now that `renderSkepticFlags` is the only
   // writer: the shape is exact, so the check is exact. A failure here is the driver's render or an fs
-  // fault, not the seat's typing — the same place the coverage and blind-frame transports arrived.
+  // fault, not the seat's typing — the same place the coverage transport arrived.
   skepticFlags: (_p, c) => {
     const text = String(c ?? "");
     // THE RENDERED SHAPE, CHECKED EXACTLY. Every file the driver writes carries the escalation section, so
@@ -2627,59 +2096,6 @@ function checkClientSummaryJoin(p, c) {
   return ok("client-summary-join");
 }
 const short = (v) => String(v ?? "").replace(/\s+/g, " ").trim().slice(0, 40);
-
-// ── A PLACEMENT PASS THAT DID NOT RECORD ITS ANSWERS HAS NOT SUCCEEDED ──────────────────────────────────
-//
-// THE DEFECT, measured 2026-09-18. A pass tiered 141 in-class identical and near-identical register records;
-// every tier and reason sat in the driver's form; not one reached placements.json, because every register
-// row was refused on an owner the fold never carried. The render dropped them as it is written to — an
-// unsettled row is OMITTED rather than emitted half-formed — and this validator, which only parsed the file
-// that was left, passed six common-law rows as a completed pass. The client received a report silent on
-// the register over eighty-one identical live registrations.
-//
-// TWO REFUSALS, and the line between them was measured rather than chosen. Replayed over every archived
-// form-era run (25): three carry the discard-all and would refuse; twenty-two healthy runs would not. A
-// stricter "any outstanding row refuses" was measured too and it refuses five of those twenty-two — each
-// over a handful of single records at offices that publish no owner, a real and ordinary register fact
-// that no corrective turn can supply. Those are counted in the run record, not refused.
-//
-//   placement_unjudged=N           a row the SEAT owes is not finished — the corrective turn can finish it.
-//   placement_register_unrendered  register candidates were selected and NONE renders — a lost register.
-//
-// ARMED ON ITS OWN STAMP KEY (`placementAccount: 1`), written at dispatch like every other key in the
-// marker, so an archived run replays to exactly the verdict it was minted under. A marker that will not
-// parse leaves this arm OFF here rather than failing: both call sites already had an answer for that case
-// before this arm existed, and this must not change it.
-function placementAccountArmed(dir) {
-  try {
-    return JSON.parse(readFileSync(driverDir(dir, "stage-contracts.json"), "utf8"))?.["placement-inquiry"]?.placementAccount === 1;
-  } catch { return false; }
-}
-function placementAccountVerdict(dir) {
-  const sidecar = driverDir(dir, placementFormSidecarName());
-  let raw = null;
-  try { raw = readFileSync(sidecar, "utf8"); } catch { raw = null; }
-  // The form is written BEFORE the seat is dispatched and re-unioned before every judgement, so under this
-  // stamp its absence is the recording apparatus failing — the class this arm exists for — never "no rows".
-  if (raw === null) return fail("placement_form_unreadable (the driver's placement form is absent — nothing this pass placed can be accounted for)");
-  const { rows, error } = parsePlacementForm(raw);
-  if (rows === null) return fail(`placement_form_unreadable (the driver's placement form ${error})`);
-  const a = placementRenderAccount(rows);
-  if (a.unjudged.length) {
-    const named = a.unjudged.slice(0, 8).map((u) => `${u.row_id ?? u.select ?? "?"} (${u.cause})`).join(", ");
-    return fail(`placement_unjudged=${a.unjudged.length}: ${named}${a.unjudged.length > 8 ? ", …" : ""} — each of these rows is `
-      + "in placement-form.json and its own judgement will not render: a selected row owes a `tier` from the closed set and a `reason` "
-      + "stating the ground; a row you wrote in full owes mark, owner and jurisdiction too. Finish these rows in the form; "
-      + "every other row stands.");
-  }
-  if (a.register_selected > 0 && a.register_rendered === 0) {
-    const causes = Object.entries(a.register_facts).map(([t, n]) => `${t} ×${n}`).join(", ") || "no cause recorded";
-    return fail(`placement_register_unrendered=${a.register_selected}: every register candidate this pass selected and tiered `
-      + `is refused on a fact the driver copies from the register's own records (${causes}) — not one reaches placements.json. `
-      + "This is not a judgement the seat can repair: those fields are machine-copied and anything typed into them is ignored.");
-  }
-  return ok();
-}
 
 // THE VARIANTS STAGE WAS RENAMED, AND A RUN'S MARKER IS KEYED BY STAGE NAME. A run dispatched on an earlier
 // build stamped its manifest floors under `prelim-variants`; read under the new name alone, a resumed run

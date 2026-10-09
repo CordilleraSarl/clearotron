@@ -21,10 +21,6 @@ seat failing is not the stage failing.
 territories. Everything downstream derives from it, and it is told not to widen past the territories
 the job named.
 
-**Blind frame** — a second reading of the raw request that never sees the matter frame. It runs
-beside the investigation as a non-fatal sibling, so a framing mistake shows up as a disagreement
-rather than propagating quietly.
-
 **Feedforward** — the reviewer's flags reaching the corrective pass as data rather than as prose.
 `corrections-feedforward.mjs` decides which flags count as still open.
 
@@ -46,8 +42,9 @@ reported as "clean". The coverage ledger appears in the report as prose and as J
 gate. A receipt read as a gate is a Goodhart problem, and the reasoning-integrity receipt says so on
 its own face.
 
-**Register-digest** — the condensed register result a downstream stage reads instead of the raw
-records: the same evidence, at the size a model turn can hold.
+**Owner table** — every record the register sweeps retrieved, laid out by code with one line per
+owner. Two judging sessions read it, each alone, and code merges their decisions into the file the
+later stages read.
 
 **Hit list** — one line per enumerated record and the fate it was given. It is not a read: a record
 can be on the hit list and never opened, and the sign-off condition is about documents actually read.

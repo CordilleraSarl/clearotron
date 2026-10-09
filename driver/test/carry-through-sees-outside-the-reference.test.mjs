@@ -193,3 +193,29 @@ test("CONTROL — the same fixture with the subject ARRIVING reports nothing", (
   assert.ok(out.carry_through.subjects >= 2,
     "the control must still have CHECKED the subjects — zero lost out of zero checked is not a pass");
 });
+
+// ── A RUN JUDGED BY OWNER ────────────────────────────────────────────────────────────────────────────
+// It carries no register findings document: its register subjects are the records step 3's judges
+// carried. Measured on the invented pile the judging tests use, directly through the measure.
+test("a run judged by owner: a carried record that reaches no arrival artifact is reported, and one that does is not", async () => {
+  const { cpSync } = await import("node:fs");
+  const { carryThrough } = await import("../carry-through.mjs");
+  const run = mkdtempSync(join(tmpdir(), "carry-through-judged-"));
+  try {
+    cpSync(join(REPO, "driver", "test", "fixtures", "owner-pile"), run, { recursive: true });
+    writeFileSync(join(run, "owner-decisions.json"), JSON.stringify({ schema_version: 1, judges: { asked: 2, answered: [1] },
+      overall_ratings: [], set_aside: [], advice: [], questions_wished_for: [],
+      carried: [{ owners: ["Owner One K.K."], records: ["/mark/AA/0000-A1"], ratings: [{ rating: "High" }], reason: "Same mark, live." }] }));
+    writeFileSync(join(run, "narrative.md"), "# Narrative\nNothing register-side reached the opinion.\n");
+    const lost = carryThrough(run);
+    assert.ok(lost.surfaces.includes("owner-decisions.json"), "the judges' decisions are a subject surface");
+    assert.equal(lost.subjects, 1);
+    assert.deepEqual(lost.lost.map((l) => [l.surface, l.identifier]), [["owner-decisions.json", "/mark/AA/0000-A1"]],
+      "the carried record reached no arrival artifact, so it is lost");
+    // CONTROL: the same record, delivered.
+    writeFileSync(join(run, "findings.json"), JSON.stringify({ findings: [{ mark: "ZZMARK", owner: { registrations: [{ uri: "/mark/AA/0000-A1" }] } }] }));
+    const arrived = carryThrough(run);
+    assert.equal(arrived.subjects, 1, "the control still checked the subject");
+    assert.deepEqual(arrived.lost, [], "a carried record that reaches findings.json is not lost");
+  } finally { rmSync(run, { recursive: true, force: true }); }
+});

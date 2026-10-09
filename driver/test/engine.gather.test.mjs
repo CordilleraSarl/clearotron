@@ -115,20 +115,11 @@ test("every stage either holds tool groups or is DECLARED tool-free — nothing 
 // DROPS the live register group (new register work enters only through the supplemental mint in a
 // register-unit lane — a live search from the judgment seat is the un-frozen query the plan freeze
 // retired). This also ends the register-digest "register tools you hold" prompt/grant mismatch.
-test("PR-8 grants: digest/placement/refutation → band; synthesis → perplexity+band, NO live register", () => {
-  // Typed transport: the digest additionally holds its OWN record tool on its OWN key — coverage
-  // rulings ride record_coverage; the key is deliberately not on the shared `band` group (a record
-  // tool riding a shared key would be enumerated into every holder's grant — the second-writer
-  // disease as an allowlist side effect, the RECORDING split's own warning).
-  //, conversion 11 — …and it has now GAINED its recording key too, so this stage
-  // holds retrieval, its coverage transport AND its record tool: three keys, three distinct statements.
-  // The enumeration moves by exactly one token and the assertion stays an EXACT set, for the reason the
-  // two rows below give — both claims this test exists to make survive it, because the retrieval half is
-  // unchanged and there is still no live register group. `coverage` deliberately does NOT merge into the
-  // new key: the obligation ledger and the findings document are different artifacts with different
-  // writers, and merging them would put a second writer into the ledger took one out of.
-  assert.deepEqual(toolGroupsForStage("register-digest"), ["band", "coverage", "recording-register-digest"]);
-  assert.deepEqual(toolGroupsForStage("placement-inquiry"), ["band"]);
+test("PR-8 grants: refutation → band; synthesis → perplexity+band, NO live register; the judges → their owner tools only", () => {
+  // The register digest and placement held the band tools; step 3 replaced both, and its judges hold the
+  // owner tools alone (owner-tools.mjs) — no band group, no live register group, no recording key: a
+  // judge's answer is its session's JSON form, written by the driver.
+  assert.deepEqual(toolGroupsForStage("owner-judgment"), ["owners"]);
   // — narrative-refutation GAINED perplexity. PR-8's contract is about the LIVE REGISTER group, and
   // that is untouched: a reading-layer stage holding perplexity was already the design (synthesis, one
   // line down). Its own served doctrine ordered one scoped `perplexity_research` probe while the grant
@@ -425,7 +416,7 @@ test("recording server: handshake + the served list pinned + missing-run guard r
   const call = { jsonrpc: "2.0", id: 3, method: "tools/call", params: { name: "record_skeptic", arguments: { flags: [], escalations: [] } } };
   // The read surface must hold the SAME no-run contract as the record tools: a search with no run wired
   // is a refusal by name, never a guess at a directory (the lesson, applied to the read path too).
-  const searchCall = { jsonrpc: "2.0", id: 4, method: "tools/call", params: { name: "search_run_artifacts", arguments: { file: "register-findings.md", terms: ["x"] } } };
+  const searchCall = { jsonrpc: "2.0", id: 4, method: "tools/call", params: { name: "search_run_artifacts", arguments: { file: "owner-decisions.json", terms: ["x"] } } };
   const r = await mcpSession("recording-server.mjs", [INIT, LIST, call, searchCall], { CLEAROTRON_BAND_RUN_DIR: "" });
   assert.equal(r.responses[1]?.result?.serverInfo?.name, "recording");
   //, third conversion — `record_frame_diff` joins the served list. The list is pinned by NAME and
@@ -446,12 +437,12 @@ test("recording server: handshake + the served list pinned + missing-run guard r
     // retrieval groups, so it is also the first whose stage holds a live source to check its record
     // against. Both were merged from separate branches; the list is alphabetical and neither is "the
     // ninth" any more, which is why the count is stated and not the ordinal.
-    // Conversion 11 adds `record_register_digest` — the findings document, and the widest PARSER
-    // surface of any converted artifact (nine readers). Served is not granted: this list is every tool
-    // the one recording module exposes, and `toolGroupsForStage` is what decides which stage may call
-    // which. The list is pinned by NAME so a conversion that lands a tool cannot land it silently.
-    assert.deepEqual(toolNames(r), ["record_blind_frame", "record_clearance_variants", "record_doubt_closure", "record_frame_diff", "record_knockout_assess", "record_knockout_frame", "record_knockout_review", "record_matter_frame", "record_narrative_refutation", "record_register_digest", "record_report_card", "record_report_overview", "record_skeptic", "record_synthesis", "search_run_artifacts"]);
-  // The guard answer is a structured {error} payload, same as record_blind_frame's: the server answers
+    // Conversion 11 added `record_register_digest`, and it went with the register digest: step 3's
+    // judges answer in their session's own JSON form and hold no record tool. The list is pinned by NAME
+    // so a conversion that lands a tool, or a removal that takes one, cannot do it silently.
+    // `record_blind_frame` and `record_frame_diff` left with the mid-run reopening's two stages.
+    assert.deepEqual(toolNames(r), ["record_clearance_variants", "record_doubt_closure", "record_knockout_assess", "record_knockout_frame", "record_knockout_review", "record_matter_frame", "record_narrative_refutation", "record_report_card", "record_report_overview", "record_skeptic", "record_synthesis", "search_run_artifacts"]);
+  // The guard answer is a structured {error} payload, same as every record tool's: the server answers
   // rather than erroring, and the text names the contract (per-run wiring, no run_dir parameter).
   const text = r.responses[3]?.result?.content?.[0]?.text ?? "";
   assert.match(text, /started without a run/, "an unset run dir must refuse by name, never guess a run");

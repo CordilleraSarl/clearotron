@@ -11,19 +11,17 @@ export const plainDirective = (s) => String(s ?? "").replace(/\b(source|variant|
 // ── — TRANSLATE AT THE BOUNDARY, NEVER FILTER ──────────────────────────────────────────────────
 //
 // This switch is a CODE-MINTED, CODE-ENUMERATED set of reason prefixes, not a dictionary. Every token
-// it matches is minted by this same file (`regDeferReason`) and written to _driver/frame-reopen.json;
-// none of it is ever authored by a model, and none of it comes from client prose or the register. That is the whole distinction drew — the `mechanical-fail:*` arms below
+// it matches was minted by the driver's own code; none of it is ever authored by a model, and none of it comes from client prose or the register. That is the whole distinction drew — the `mechanical-fail:*` arms below
 // have sat here since wp50/wi9 and nobody called them a ban list, because a switch over your own
 // output is not a find-and-replace over somebody else's.
 //
 // DROPPING THE SENTENCE IS NOT AN OPTION. Adding `no-code-remedy:` to parse.mjs's ENGINE_INTERNAL_RE
 // would delete the whole sentence (that filter drops per sentence) and with it the disclosure the row
-// exists to make — injectDeferralCoverage's own contract is that "the reader-visible disclosure is the
+// exists to make — the coverage injectors' own contract is that "the reader-visible disclosure is the
 // whole point of 'can't close → disclose'". A reader who is told nothing about an unsearched slice is
 // worse off than one told about it in engine words. So: translate, never filter.
 //
-// The engine wording is KEPT on the internal record — regTermRows' `dispatch_reason` and the
-// frame-reopen.json `reason` are unchanged, so remedy-accounting and the audit still read the token.
+// The engine wording is KEPT on the internal record, so the audit still reads the token.
 export const plainDeferralReason = (r) => {
   const t = String(r ?? "unclosed").trim();
   if (/mechanical-fail:timeout/i.test(t)) return "the source timed out this run";

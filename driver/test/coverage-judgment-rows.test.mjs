@@ -101,15 +101,20 @@ test("the rows are derived from BOTH sources, and a slice that both describe is 
     "incumbent-class / owner probe, cl. 5, GB",
   ], "one row per NOT-confirmed-clean ledger row — a confirmed-clean row IS the absence of a disclosure — and NO second row for the missing qid, whose axis already owns an open row");
 
-  assert.match(rows[0].note, /^coverage-limited — count-only, saturated$/,
-    "the note carries the ledger's own status and its own reason, not a paraphrase of them");
+  assert.equal(rows[0].note, "coverage-limited",
+    "the note carries the ledger's own status, not a paraphrase of it");
+  // The reason stays in the ledger. Code writes it now, as figures for the driver's own checks, and the
+  // workbook prints the note to the lawyer.
+  const figures = coverageJudgmentRows([{ axis: "primary-sweep", unit: "primary-sweep / crowd: VENZ [cl 5]",
+    status: "coverage-limited", reason: "1200 hits; classes unaccounted: 9; receipt: capability-gap: not dispatched" }], RECEIPT);
+  assert.equal(figures[0].note, "coverage-limited", "a code-written reason never reaches the note");
 
   // The missing qid is not dropped, it is NAMED on the row that already describes its axis. Rendered,
   // the un-joined pair read as the same fact twice in two vocabularies — "incumbent-class / owner probe:
   // deferred — the provider produced no band block for this query; incumbent-class:owner:muster: planned
   // and not executed this run — the funnel produced no band block for this query" — which is what the
   // stage's own COVERAGE PROSE rule forbids: state each coverage fact ONCE, in ONE place.
-  assert.match(rows[1].note, /^deferred — .*\(no band block for: incumbent-class:owner:muster\)$/,
+  assert.match(rows[1].note, /^deferred \(no band block for: incumbent-class:owner:muster\)$/,
     "the qid rides VERBATIM on the ledger row for its own axis — every gate joins on it, and a shortened one is a row nobody can match back");
 
   // An axis with NO open ledger row still discloses its missing qid on its own — otherwise nothing
@@ -262,12 +267,14 @@ test("a real delivered run records the stamp's decision in its own journal", asy
   // delivered coverage_judgment carries no `rows` key at all — so the per-row loop below ran ZERO
   // times and asserted nothing. The one test in either new file that drives a real delivery, and the
   // one the build report nominates as load-bearing, was pinning the call site and nothing else.
-  process.env.MOCK_LEDGER_LIMITED = "incumbent-class";
+  // A slice the provider cannot express is a fact code settles as `deferred`, and its axis as
+  // `coverage-limited` (coverage-form.mjs, settleCoverageRowsFromFacts).
+  process.env.MOCK_PLAN_DEFERRED = "+merch";
   const job = { id: "job-TMP447CJ", msgId: "<tmp447cj@x>", forwarder: "jordan", forwarderDomain: "example.com",
     ref: "TMP447CJ", markName: "MARK TMP447CJ", classes: [9, 41], provider: "corsearch" };
   const res = await PL.pipeline(job);
   delete process.env.MOCK_COVERAGE_INSUFFICIENT;
-  delete process.env.MOCK_LEDGER_LIMITED;
+  delete process.env.MOCK_PLAN_DEFERRED;
   assert.equal(res.ok, true, "the mock run must deliver for this to be reading a delivered findings.json");
 
   const dir = res.archiveDir ?? res.runDir;
@@ -286,18 +293,17 @@ test("a real delivered run records the stamp's decision in its own journal", asy
   // what every gate joins on; the label is what the page prints, emitted by the driver at the one place
   // the area is minted, so no client-facing string is ever rewritten by pattern.
   assert.deepEqual(cj.rows, [
-    { area: "incumbent-class (entire axis)", areaLabel: "owner portfolio sweep (all of it)",
-      note: "coverage-limited — yielded to ring-fenced jurisdiction budget" },
-    { area: "incumbent-class / extra script group", areaLabel: "owner portfolio sweep / extra script group",
-      note: "coverage-limited — yielded to ring-fenced jurisdiction budget" },
-  ], "the delivered rows are the LEDGER's, verbatim — the derived set survives consolidateFindingsFile and publish intact");
+    { area: "primary-sweep (entire axis)", areaLabel: "main register sweep (all of it)", note: "coverage-limited" },
+    { area: "primary-sweep / exact: PROJECT NOVAPULSE [cl 25]", areaLabel: "main register sweep / exact: PROJECT NOVAPULSE [cl 25]",
+      note: "deferred" },
+  ], "the delivered rows are the LEDGER's areas and statuses, and none of the figures code wrote as the ledger's reason — the derived set survives consolidateFindingsFile and publish intact");
 
   // The whole-axis row says so. A ledger unit collapses to the bare axis when the row carries no scope,
   // and `projectCoverageJudgment` folds these straight into the coverage reason that render.mjs prints
   // in report.html — so a lone engine token there is what a client reads.
-  assert.ok(cj.rows.some((r) => r.area === "incumbent-class (entire axis)"),
+  assert.ok(cj.rows.some((r) => r.area === "primary-sweep (entire axis)"),
     "a scopeless ledger row names its scope rather than collapsing to a bare axis token");
-  assert.ok(!cj.rows.some((r) => r.area === "incumbent-class"),
+  assert.ok(!cj.rows.some((r) => r.area === "primary-sweep"),
     "and the bare token is not what ships");
 
   // AND ON THE RENDERED SURFACE. Every other assertion in this file stops at findings.json, so a change
@@ -318,26 +324,26 @@ test("a real delivered run records the stamp's decision in its own journal", asy
 
   const { projectCoverageJudgment } = await import("../findings-model.mjs");
   const folded = JSON.stringify(projectCoverageJudgment(cj));
-  assert.match(folded, /owner portfolio sweep \(all of it\): coverage-limited/,
+  assert.match(folded, /main register sweep \(all of it\): coverage-limited/,
     "the whole-axis row reaches the fold saying it is the whole thing, not as a bare engine token");
-  assert.match(folded, /owner portfolio sweep \/ extra script group: coverage-limited/,
+  assert.match(folded, /main register sweep \/ exact: PROJECT NOVAPULSE \[cl 25\]: deferred/,
     "and a scoped row keeps the scope the ledger gave it");
 
   assert.ok(!/Coverage read \(internal\)/.test(html),
     "the internal coverage read is back on the delivered page — if it is, this arm is measuring a surface that was removed");
-  assert.ok(!/incumbent-class/.test(folded),
+  assert.ok(!/primary-sweep/.test(folded),
     "…and the engine identifier that scope was derived from is not in what the fold produces");
 
   // WHAT THIS ARM NO LONGER CLAIMS, said out loud rather than narrowed in silence. The version before
   // this one asserted the identifier was absent from the COVERAGE READ LINE, and I widened it to the
-  // whole page — which failed, correctly: `incumbent-class` is on the page and always was, in a coverage
+  // whole page — which failed, correctly: the axis identifier is on the page and always was, in a coverage
   // CELL, because a cell prints the ledger row's `area` while the fold printed the driver's `areaLabel`.
   // The cells are explicitly out of scope for the change that removed the read.
   //
   // So the plain label's only appearance on the page has gone with the block that carried it, and the
   // identifier's has not. That is a consequence of this change and not a regression in it — the cell
   // said the same thing before — and it is filed rather than fixed here.
-  assert.match(html, /Register \/ incumbent-class/,
+  assert.match(html, /Register \/ primary-sweep/,
     "the coverage cell still prints the ledger's area — if this stops being true the cell has changed, "
     + "and the note above it about which surface prints which field is stale");
 });

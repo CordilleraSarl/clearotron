@@ -240,17 +240,17 @@ test("CENSUS_TABLES names every table whose rows carry a citation", () => {
   }
 });
 
-test("the 21 are decided BY NAME, and every decision carries a mint and a reason", () => {
+test("the 19 are decided BY NAME, and every decision carries a mint and a reason", () => {
   // By name, never by count. A count arm stays green while the set underneath it changes — the failure
   // this file has now been bitten by twice.
   const MEASURED = [
     "call_never_made", "call_truncated", "call_schema_violation", "call_partial", "no_recorded_queries",
     "form_damaged", "quote_unbound", "token_absent", "cite_absent", "no_ruling",
     "no_queries", "query_no_text", "query_no_jurisdiction", "citation_no_proceeding", "citation_no_url",
-    "citation_read_state", "no_citations", "dive_unread", "no_status", "engine_vocabulary",
+    "citation_read_state", "no_citations", "dive_unread",
     "accepted_not_folded",
   ];
-  assert.equal(MEASURED.length, 21);
+  assert.equal(MEASURED.length, 19);
   for (const code of MEASURED) {
     const inner = innerCodeFor(code);
     const scoped = outOfScopeRuleFor(code);
@@ -346,19 +346,21 @@ test("a cited site is a MINT, never a sentence about the code", () => {
   assert.deepEqual(fromComment, [],
     "a token's cited site is a comment line, so any ruling written from it cites a sentence about the "
     + "code rather than the line that mints it");
-  // The line number moves whenever anything above it in coverage-form.mjs does — it shifted +8 when the
-  // park fields were added to `parseCoverageForm`'s projection. What the arm PINS is not the
-  // number but the property: the cited site must be the line that WRITES `reason: "no_status"`, not the
-  // JSDoc `@returns` seventeen lines above it, which is where it used to point.
-  const noStatusSite = ex.get("no_status");
-  assert.match(noStatusSite, /^coverage-form\.mjs:\d+$/);
-  const mintLine = readFileSync(join(DRIVER, "coverage-form.mjs"), "utf8")
-    .split("\n")[Number(noStatusSite.split(":")[1]) - 1] ?? "";
-  assert.match(mintLine, /reason:\s*"no_status"/,
-    `the worked example regressed off its mint line — ${noStatusSite} reads: ${mintLine.trim().slice(0, 70)}`);
+  // The line number moves whenever anything above it does. What the arm PINS is not the number but the
+  // property: the cited site must be the line that WRITES the code. The first worked example was
+  // `no_status`, which left the census with the register digest's coverage form; `quote_unbound` is
+  // minted the same way, as a `reason:` on a record.
+  const site = ex.get("quote_unbound");
+  assert.match(site, /^connotation-search\.mjs:\d+$/);
+  const mintLine = readFileSync(join(DRIVER, "connotation-search.mjs"), "utf8")
+    .split("\n")[Number(site.split(":")[1]) - 1] ?? "";
+  assert.match(mintLine, /reason:\s*"quote_unbound"/,
+    `the worked example regressed off its mint line — ${site} reads: ${mintLine.trim().slice(0, 70)}`);
   // And the filter must not have shrunk the census: a comment-only token would vanish with its coverage
-  // obligation, and an absence reads as clean. 307 measured before and after on a22b4fd0.
-  assert.ok(ex.size >= 307, `the extraction shrank to ${ex.size} — a token lost its coverage obligation silently`);
+  // obligation, and an absence reads as clean. 307 measured before and after on a22b4fd0; 306 once the
+  // register digest's sources left the census and step 3's judges' family joined it; 292 once the second
+  // framing's six blindframe_ tokens and the diff's eight framediff_ tokens left with those two stages.
+  assert.ok(ex.size >= 292, `the extraction shrank to ${ex.size} — a token lost its coverage obligation silently`);
 });
 
 test("every citation lands on the line that MINTS the code, not near it", () => {
@@ -636,8 +638,16 @@ test("E3: the backlog is explicit, named, and each entry says which move removes
   // diff as this conversion's proof would be reading the wrong instrument. The pin moving by exactly
   // four, with each row named at its retirement site, is the proof.
   // 51 -> 48: the three send stages' dictated-line-shape rows left with the stages themselves.
-  assert.equal(E3_BACKLOG.length, 46,
-    `the backlog is ${E3_BACKLOG.length}, pinned at 46. SHRUNK? good — regenerate contract-e3-baseline.json in the same commit so the ceiling drops with it, and say at the entry site what removed it. GROWN? a new dictated structure was registered rather than converted; that is a decision, so make it visible here.`);
+  // 46 -> 37: placement-inquiry's four rows and register-digest's five left with those two stages when
+  // step 3 came to be judged by owner; the judges answer in a form and dictate no structure.
+  // 37 -> 34: blind-frame's manual row and frame-diff's message and manual rows left with those two stages
+  // when the mid-run reopening was removed.
+  // 34 -> 33: the re-dispatch builders' state-enum row left with the builders when the reopening's own
+  // sweeps went; the stage message keeps the same sentence under its own row.
+  // 33 -> 31: synthesis's off_field_ground and quadrant rows left with the two fields' instructions, when
+  // the chart position came to be placed by code and the awareness-only instructions were struck.
+  assert.equal(E3_BACKLOG.length, 31,
+    `the backlog is ${E3_BACKLOG.length}, pinned at 31. SHRUNK? good — regenerate contract-e3-baseline.json in the same commit so the ceiling drops with it, and say at the entry site what removed it. GROWN? a new dictated structure was registered rather than converted; that is a decision, so make it visible here.`);
   for (const e of E3_BACKLOG) {
     assert.ok(e.stage && e.where && e.evidence, "a backlog entry that does not name its site is not a backlog entry");
     assert.ok(E3_BACKLOG_KINDS.includes(e.kind), `unknown E3 kind ${e.kind}`);
@@ -759,12 +769,16 @@ test("an undecidable row is reported as NOT-CHECKED, never absorbed into the pas
   // was already un-anchorable is INVISIBLE in this bucket, because the bucket's stated meaning is
   // "un-anchorable quote over a live dictation". Nothing here can tell those two apart; the deletion was
   // found by reading the conversion's own diff, not by this arm.
-  assert.deepEqual(byReason, { "anchor-not-found": 6 },
+  // 6 -> 5 when step 3 came to be judged by owner: one of the six was a register-digest row, deleted with
+  // its dictation — the same shrink by deletion as conversion 10's.
+  // 5 -> 4 when the mid-run reopening left: blind-frame's manual row was one of the five, deleted with its
+  // stage and its manual.
+  assert.deepEqual(byReason, { "anchor-not-found": 4 },
     `the UNDECIDABLE slice moved. It is ${notChecked.length} of ${E3_BACKLOG.length} rows, leaving ` +
     `${E3_BACKLOG.length - notChecked.length} actually checked.\n` +
     "  GREW? a row stopped being checkable — that is coverage lost, not a pass. Say why at the entry.\n" +
     "  SHRANK? good: lower the number here in the same commit.\n" +
-    "  The five anchor-not-found rows were each read by hand on 2026-08-23 and are correct; their\n" +
+    "  The four anchor-not-found rows were each read by hand on 2026-08-23 and are correct; their\n" +
     "  evidence carries ${} interpolation or spans a template line, which is why the anchor cannot\n" +
     "  locate them — the same limit backlogEvidenceMisses records in E3_EVIDENCE_UNRESOLVED.");
   // Every row lands in exactly one bucket: checked-and-clean, checked-and-missed, or not-checked.

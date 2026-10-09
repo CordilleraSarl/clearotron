@@ -10,11 +10,6 @@
       "exactly-these-keys": 0,
       "dictated-line-shape": 0
     },
-    "blind-frame": {
-      "literal-json-skeleton": 0,
-      "exactly-these-keys": 1,
-      "dictated-line-shape": 0
-    },
     "common-law": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 2,
@@ -30,24 +25,14 @@
       "exactly-these-keys": 0,
       "dictated-line-shape": 1
     },
-    "placement-inquiry": {
-      "literal-json-skeleton": 4,
-      "exactly-these-keys": 1,
-      "dictated-line-shape": 1
-    },
-    "register-digest": {
-      "literal-json-skeleton": 1,
-      "exactly-these-keys": 0,
-      "dictated-line-shape": 2
-    },
-    "skeptic": {
+    "owner-judgment": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 0,
       "dictated-line-shape": 0
     },
-    "frame-diff": {
+    "skeptic": {
       "literal-json-skeleton": 0,
-      "exactly-these-keys": 1,
+      "exactly-these-keys": 0,
       "dictated-line-shape": 0
     },
     "synthesis": {
@@ -83,7 +68,7 @@
   },
   "files": {
     "stages.mjs#re-dispatch-builders": {
-      "literal-json-skeleton": 3,
+      "literal-json-skeleton": 1,
       "exactly-these-keys": 0,
       "dictated-line-shape": 1
     },
@@ -107,11 +92,6 @@
       "exactly-these-keys": 0,
       "dictated-line-shape": 1
     },
-    "skills/blind-frame/SKILL.md": {
-      "literal-json-skeleton": 4,
-      "exactly-these-keys": 2,
-      "dictated-line-shape": 0
-    },
     "skills/clearance-common-law/SKILL.md": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 1,
@@ -120,36 +100,21 @@
     "skills/clearance-register/SKILL.md": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 0,
-      "dictated-line-shape": 4
+      "dictated-line-shape": 3
     },
     "skills/clearance-register/unit.md": {
       "literal-json-skeleton": 5,
       "exactly-these-keys": 0,
       "dictated-line-shape": 6
     },
-    "skills/placement-inquiry/SKILL.md": {
-      "literal-json-skeleton": 1,
-      "exactly-these-keys": 3,
-      "dictated-line-shape": 1
-    },
-    "skills/clearance-register/digest.md": {
-      "literal-json-skeleton": 1,
-      "exactly-these-keys": 1,
-      "dictated-line-shape": 4
-    },
     "skills/clearance-search/phase2-execution.md": {
       "literal-json-skeleton": 0,
       "exactly-these-keys": 0,
-      "dictated-line-shape": 3
-    },
-    "skills/frame-diff/SKILL.md": {
-      "literal-json-skeleton": 4,
-      "exactly-these-keys": 2,
-      "dictated-line-shape": 0
+      "dictated-line-shape": 1
     },
     "skills/clearance-search/synthesis-rules.md": {
       "literal-json-skeleton": 1,
-      "exactly-these-keys": 1,
+      "exactly-these-keys": 0,
       "dictated-line-shape": 2
     },
     "skills/clearance-search/firm-wide-reasoning.md": {
@@ -184,12 +149,12 @@
     },
     "skills/clearance-search/delivery-contract.md": {
       "literal-json-skeleton": 0,
-      "exactly-these-keys": 1,
+      "exactly-these-keys": 0,
       "dictated-line-shape": 1
     }
   },
   "totals": {
-    "stages": 45,
-    "files": 64
+    "stages": 34,
+    "files": 34
   }
 }

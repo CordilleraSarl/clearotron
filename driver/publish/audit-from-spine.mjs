@@ -245,12 +245,76 @@ export function recordsNeverDelivered(readingLog) {
     .sort((a, b) => b.misses - a.misses || a.record_id.localeCompare(b.record_id));
 }
 
-export function buildAuditMd(registerMd, commonLawMd, { findings: runFindings = null, doubts = null, asks = null, readingLog = null, commonLawGrid = null, doubtTruncations = null, registerPresence = null } = {}) {
+/**
+ * THE REGISTER ROWS OF A RUN JUDGED BY OWNER (owner-judgment.mjs). The audit is the defensibility record
+ * of everything considered, so the decisions reach it in the shapes the register findings document used
+ * to give it: a finding block per carried owner, and a negative result per owner a judge set aside — the
+ * rows the report's "also considered" list reads (publish/search-depth.mjs, clearedNames), so that list
+ * is now the set-aside owners, its shape unchanged.
+ *
+ * EVERY CELL IS ONE THE OLD ROWS HELD, IN THE OLD WORDS (owner, 2026-10-01: nothing new reaches a client
+ * in this phase, and the workbook is readable by a client's account). So the cells carry the record's own
+ * facts from the band and nothing a judge wrote: each judge's reason and rating stays in the run's record
+ * (owner-decisions.json, owner-fates.json), never in the workbook. The dates read "Filed" and "Expiry" as
+ * the old rows did, the Platform cell of a register negative stays empty as it was, and the Notes cell
+ * keeps the old order. A decision resting on web pages alone is no register row: the common-law layer
+ * comes from its own document, as before. PURE.
+ *
+ * `registerDecisions` is `{ decisions, recordFacts }`: the merged decisions (owner-decisions.json) and
+ * the band's facts for a record id (mark, owner, country, office, classes, status, dates, screen verdict).
+ */
+export function decisionAuditRows({ decisions, recordFacts = () => null } = {}) {
+  const findings = [];
+  for (const g of decisions?.carried ?? []) {
+    const first = (g.records ?? []).map((id) => ({ id, f: recordFacts(id) })).find((x) => x.f) ?? null;
+    if (!first) continue;
+    const f = first.f;
+    findings.push({
+      title: f.mark || (g.owners ?? [])[0] || "(unnamed finding)",
+      source_layer: "Register",
+      type: "",
+      owner: (g.owners ?? []).join("; "),
+      owner_country: f.country ?? "",
+      classes: Array.isArray(f.classes) ? f.classes.join(", ") : (f.classes ?? ""),
+      status: f.status ?? "",
+      dates: [f.filed && `Filed ${f.filed}`, f.expiry && `Expiry ${f.expiry}`].filter(Boolean).join("; "),
+      url: first.id,
+      description: "",
+      key_factors: "",
+      source: "",
+      search_terms: "",
+      verify: "",
+    });
+  }
+  const negatives = [];
+  for (const g of decisions?.set_aside ?? []) {
+    for (const id of g.records ?? []) {
+      const f = recordFacts(id) ?? {};
+      negatives.push({
+        source_layer: "Register",
+        search_term: f.mark || (g.owners ?? [])[0] || "",
+        platform: "",
+        result: "",
+        notes: [`URI ${id}`, f.screenVerdict ? `screen_verdict=${f.screenVerdict}` : "",
+          Array.isArray(f.classes) && f.classes.length ? `class=${f.classes.join(", ")}` : "", f.status ? `status=${f.status}` : ""]
+          .filter(Boolean).join("; "),
+      });
+    }
+  }
+  return { findings, negatives };
+}
+
+export function buildAuditMd(registerMd, commonLawMd, { findings: runFindings = null, doubts = null, asks = null, readingLog = null, commonLawGrid = null, doubtTruncations = null, registerPresence = null, registerDecisions = null } = {}) {
   const reg = parseTables(registerMd);
   const cl = parseTables(commonLawMd);
 
   // FINDINGS: register risk-relevant + watchlist annex + common-law finding tables (exclude meta tables).
-  const findings = parseSpineFindingBlocks(registerMd, commonLawMd);
+  // A run judged by owner carries no register findings document: its register findings are the owners
+  // the judges carried (`registerDecisions`, decisionAuditRows below), in the same block shape.
+  const decided = registerDecisions ? decisionAuditRows(registerDecisions) : null;
+  const findings = decided
+    ? [...decided.findings, ...parseSpineFindingBlocks("", commonLawMd)]
+    : parseSpineFindingBlocks(registerMd, commonLawMd);
 
   // NEGATIVE RESULTS: the "Negative results" table(s). Tag each row by which spine FILE it came from —
   // the register spine's rows are Register, the common-law spine's rows are Common-law. (The heading-regex
@@ -286,7 +350,7 @@ export function buildAuditMd(registerMd, commonLawMd, { findings: runFindings = 
   // That is not a fallback masking a defect — those runs have no machine record to read.
   const clNegRows = gridNegativeRows(commonLawGrid);
   const negRows = [
-    ...negBlock(tablesUnder(reg, /negative result/i), "Register"),
+    ...(decided ? decided.negatives : negBlock(tablesUnder(reg, /negative result/i), "Register")),
     ...(clNegRows ?? negBlock(tablesUnder(cl, /negative/i), "Common-law")),
   ];
 

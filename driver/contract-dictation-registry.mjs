@@ -119,20 +119,14 @@ export function grantedToolsFor(stage) {
 // holds exactly its own record tool — still no retrieval tool, so its entries below reproduce
 // unchanged. Each of the three is currently served a document telling it to run a lookup.
 //
+// The register digest's three rows, and the unit lane's two rows for the digest's own recording tools,
+// left with the digest when step 3's judges replaced it: the stage, its manual and the orders are gone.
+//
 // Resolution is per pair and is doctrine judgment: grant the tool, drop the order, or scope the
 // sentence to the seat that holds it. owns that call and says so; E12's job is that the list can
 // only shrink. The test asserts every entry still reproduces, so a pair fixed in fails CI here
 // until its line is deleted.
 export const TOOL_ORDER_BACKLOG = [
-  { stage: "register-digest", tool: "register_enumerate", site: "driver/skills/clearance-register/SKILL.md",
-    closes: "#865 — shared doctrine: SKILL.md is served to register-unit (holds register) and register-digest "
-      + "(holds band only, since the plan freeze retired live search from the judgment seat)." },
-  { stage: "register-digest", tool: "register_execute_plan", site: "driver/skills/clearance-register/SKILL.md",
-    closes: "#865 — same shared file, same split grant." },
-  { stage: "register-digest", tool: "register_batch_screen", site: "driver/skills/clearance-register/digest.md",
-    closes: "#865 — the digest's OWN doctrine, not a shared file: this one is the stage being told to "
-      + "batch-screen with a tool its grant does not carry. gather-config.mjs:196 RECORDING already records that "
-      + "this stage's prompt once ordered live register checks; the order outlived the note." },
   { stage: "register-unit", tool: "band_record", site: "driver/skills/clearance-register/SKILL.md",
     closes: "#865 — same shared file, same split grant." },
   { stage: "register-unit", tool: "band_shape", site: "driver/skills/clearance-register/SKILL.md",
@@ -142,21 +136,6 @@ export const TOOL_ORDER_BACKLOG = [
   { stage: "register-unit", tool: "band_lookup", site: "driver/skills/clearance-register/SKILL.md",
     closes: "#865 — the mirror image: the band tools are the judgment stages', and the unit lane holds "
       + "register instead." },
-  { stage: "register-unit", tool: "record_coverage", site: "driver/skills/clearance-register/SKILL.md",
-    closes: "#865 — same shared-spine split as the band tools above, minted by the typed coverage "
-      + "transport: the spine's Coverage-ledger section (mode-scoped to DIGEST in its own words) orders "
-      + "`record_coverage`, which only register-digest's grant carries — the unit lane must never hold a "
-      + "writer into judgment's coverage record. Resolved the day the spine's coverage doctrine moves "
-      + "wholly into digest.md, or #865 scopes shared-spine text per seat." },
-  { stage: "register-unit", tool: "record_register_digest", site: "driver/skills/clearance-register/SKILL.md",
-    closes: "#865 — the SAME shared-spine split as record_coverage above, minted by conversion 11's typed "
-      + "findings transport. The spine's mode list names the tool inside its **Digest mode (judgment — "
-      + "Layer B)** bullet, which is the sentence that already names record_coverage and the band tools; "
-      + "register-unit reads the spine and is dispatched as the FUNNEL, so it is ordered a tool only the "
-      + "digest grant carries. It resolves on the same condition as record_coverage's row — the day the "
-      + "spine's digest doctrine moves wholly into digest.md, or #865 scopes shared-spine text per seat — "
-      + "and NOT by granting it: the funnel must never hold a writer into judgment's findings document, "
-      + "which is the same rule that keeps record_coverage off its grant." },
   { stage: "skeptic", tool: "perplexity_research", site: "driver/skills/clearance-search/phase2-execution.md",
     closes: "#865 — skeptic holds NO retrieval tool ('new search work enters via the escalation lane, never "
       + "from this seat' — it converted to the RECORDING category, gaining record_skeptic plus the "

@@ -24,8 +24,8 @@
 
 import { REGION_NAMES } from "./publish/regions.mjs";
 import { PLAIN_FORMS, SENTENCE_WORD_LIMIT, termMatcher } from "./plain-register.mjs";   // the pinned rule, not a fourth copy
-import { canonicalJurisdictionCode } from "./jurisdiction-codes.mjs";   // one spelling of a territory code
-import { searchedCovers } from "./frame-diff-model.mjs";                // one copy of the EU-reach rule
+// one spelling of a territory code, and one copy of the EU-reach rule
+import { canonicalJurisdictionCode, searchedCovers } from "./jurisdiction-codes.mjs";
 import { partyFactSources, partyFactViolations, partyFactMessage, canJudgePartyFacts } from "./party-facts.mjs";   //
 import { writeUpViolations, writeUpMessage } from "./narrative-write-ups.mjs";   //
 
@@ -322,13 +322,20 @@ export function actionsReachabilityChecks({ onlyYouText, actionsRegister, findin
 // Counting consistency (A2): "N live registrations/marks" cited for the same owner must agree across
 // surfaces. Conservative: owner = nearest preceding proper-name within 90 chars.
 export function countingChecks(surfaces, extraVocab = null) {
-  const claims = []; // {owner, n, surface}
+  const claims = []; // {owner, n, surface, at}
+  const reportCards = [];   // the report's cards that carry an ordinal, as spans of the same stripped text
   for (const [surface, text] of Object.entries(surfaces)) {
     const t = stripHtml(text);
+    if (surface === "report") {
+      for (const card of splitCards(t)) {
+        const ord = (card.text.match(/^\s*-\s*ord:\s*(\d+)\s*$/im) || [])[1];
+        if (ord != null) reportCards.push({ ordinal: Number(ord), start: card.start, end: card.end });
+      }
+    }
     for (const m of t.matchAll(/(\d{1,4})\s+(?:live\s+)?(?:registrations?|marks?)\b/gi)) {
       const before = t.slice(Math.max(0, m.index - 90), m.index);
       const owner = properNameCandidates(before, extraVocab).pop() ?? null;
-      if (owner) claims.push({ owner: norm(owner), n: Number(m[1]), surface });
+      if (owner) claims.push({ owner: norm(owner), n: Number(m[1]), surface, at: m.index });
     }
   }
   const byOwner = new Map();
@@ -337,8 +344,24 @@ export function countingChecks(surfaces, extraVocab = null) {
     byOwner.get(c.owner).add(c.n);
   }
   const bad = [...byOwner.entries()].filter(([, ns]) => ns.size > 1);
-  return [check("counting-consistency", "counting", "all", bad.length === 0,
-    bad.length ? bad.map(([o, ns]) => `"${o}" counted differently across surfaces: ${[...ns].join(" vs ")}`).join("; ") : "")];
+  const detail = (owners) => bad.filter(([o]) => owners.has(o))
+    .map(([o, ns]) => `"${o}" counted differently across surfaces: ${[...ns].join(" vs ")}`).join("; ");
+  if (!bad.length) return [check("counting-consistency", "counting", "all", true, "")];
+  // A count that disagrees INSIDE a card is that card's to fix (see routedByCard): each such card is a
+  // failure carrying its ordinal. Anything elsewhere keeps the one cross-surface failure it always had.
+  const badOwners = new Set(bad.map(([o]) => o));
+  const byCard = new Map();
+  let elsewhere = false;
+  for (const c of claims) {
+    if (!badOwners.has(c.owner)) continue;
+    const card = c.surface === "report" ? reportCards.find((k) => c.at >= k.start && c.at < k.end) : null;
+    if (!card) { elsewhere = true; continue; }
+    if (!byCard.has(card.ordinal)) byCard.set(card.ordinal, new Set());
+    byCard.get(card.ordinal).add(c.owner);
+  }
+  const out = [...byCard].map(([ordinal, owners]) => ({ ...check("counting-consistency", "counting", "report", false, detail(owners)), ordinal }));
+  if (elsewhere) out.push(check("counting-consistency", "counting", "all", false, detail(badOwners)));
+  return out;
 }
 
 // Compute-don't-author (PR-4) — the counting-family FLIP: prose carries NO scope/coverage numbers at
@@ -381,11 +404,11 @@ export function scopeNumberProseChecks({ reportMd, clientSummaryMd }) {
   const out = [];
   for (const [surface, text] of [["report", stripFrontMatterBlock(reportMd)], ["client-summary", clientSummaryMd]]) {
     if (!String(text ?? "").trim()) continue;
-    const hits = [...new Set((stripHtml(text).match(SCOPE_NUMBER_RE) ?? []).map((h) => h.replace(/\s+/g, " ").trim()))];
-    out.push(check("scope-numbers-in-prose", "counting", surface, hits.length === 0,
-      hits.length
-        ? `scope/coverage counts are computed from the run record and rendered by code (the coverage_line) — prose must not re-type them (drop the number, keep the substance): ${hits.slice(0, 8).map((h) => `"${h}"`).join(", ")}${hits.length > 8 ? ` (+${hits.length - 8} more)` : ""}`
-        : ""));
+    const hitsOf = (t) => [...new Set((stripHtml(t).match(SCOPE_NUMBER_RE) ?? []).map((h) => h.replace(/\s+/g, " ").trim()))];
+    const detail = (hits) => `scope/coverage counts are computed from the run record and rendered by code (the coverage_line) — prose must not re-type them (drop the number, keep the substance): ${hits.slice(0, 8).map((h) => `"${h}"`).join(", ")}${hits.length > 8 ? ` (+${hits.length - 8} more)` : ""}`;
+    if (surface === "report") { routedRows(out, { id: "scope-numbers-in-prose", family: "counting", surface, text, hitsOf, detail }); continue; }
+    const hits = hitsOf(text);
+    out.push(check("scope-numbers-in-prose", "counting", surface, hits.length === 0, hits.length ? detail(hits) : ""));
   }
   return out;
 }
@@ -524,6 +547,33 @@ function splitCards(md) {
   }
   if (cur) cards.push(cur);
   return cards.map((c) => ({ heading: c.heading, text: c.body.join("\n"), start: c.start, end: c.end }));
+}
+
+// ── A FAULT INSIDE A CARD IS THAT CARD'S TO FIX ─────────────────────────────────────────────────────
+// The lint repair sends a report failure that carries an ordinal to that card's own redo, and one that
+// carries none to the report-overview redo, which writes the shell and cannot edit a card. A prose check
+// that found its fault inside a card and set no ordinal sent the repair to the one pass that could not
+// make it. So each card with hits is a failure of its own, carrying the card's ordinal, and what lies
+// outside every card with an ordinal is one failure for the shell — the routing permissionProseChecks
+// already has. A card with no `- ord:` line cannot be routed, so its text stays with the shell.
+function routedByCard(src, hitsOf) {
+  const text = String(src ?? "");
+  const cards = [];
+  let shell = text;
+  for (const card of splitCards(text)) {
+    const ord = (card.text.match(/^\s*-\s*ord:\s*(\d+)\s*$/im) || [])[1];
+    if (ord == null) continue;
+    shell = shell.slice(0, card.start) + shell.slice(card.start, card.end).replace(/[^\n]/g, " ") + shell.slice(card.end);
+    const hits = hitsOf(`${card.heading}\n${card.text}`);
+    if (hits.length) cards.push({ ordinal: Number(ord), hits });
+  }
+  return { cards, shell: hitsOf(shell) };
+}
+/** One row per card with hits, then the shell's row — or one passing row when nothing was found. */
+function routedRows(out, { id, family, surface, text, hitsOf, detail }) {
+  const { cards, shell } = routedByCard(text, hitsOf);
+  for (const c of cards) out.push({ ...check(id, family, surface, false, detail(c.hits)), ordinal: c.ordinal });
+  if (shell.length || !cards.length) out.push(check(id, family, surface, shell.length === 0, shell.length ? detail(shell) : ""));
 }
 
 export function findingProvenanceChecks({ reportMd, findings }) {
@@ -938,6 +988,9 @@ const sentencesOf = (t, protectedForms = []) => protectNameForms(t, protectedFor
   .split(/(?<=[.!?])\s+(?=[^a-z])|\n+/)
   .map((s) => s.split(SENTINEL).join("."))
   .filter((s) => s.trim());
+// The finding sentence's count at the synthesis call (synthesis-record.mjs) rests on THIS split, which
+// never cuts a name in half, rather than on a second copy of it.
+export const sentencesKeepingNames = sentencesOf;
 export function ownerScreenNegativeChecks({ text, ownerScreen, markVocab = null, surface = "report" }) {
   const owners = (ownerScreen?.owners ?? []).filter((o) => o.state !== "enumerated");
   if (!owners.length || !String(text ?? "").trim()) return [];
@@ -1494,12 +1547,12 @@ export function wipoLanguageChecks({ reportMd, clientSummaryMd }) {
   const out = [];
   for (const [surface, text] of [["report", reportMd], ["client-summary", clientSummaryMd]]) {
     if (!text) continue;
-    const hits = stripHtml(text).split(/(?<=[.!?])\s+|\n+/)
+    const hitsOf = (t) => stripHtml(t).split(/(?<=[.!?])\s+|\n+/)
       .filter((s) => INTL_REG_RE.test(s) && GLOBAL_RIGHTS_RE.test(s) && !/designat/i.test(s));
-    out.push(check("wipo-designation-language", "registry", surface, hits.length === 0,
-      hits.length
-        ? `international-registration prose implies worldwide reach — a WIPO/Madrid registration protects only its designated countries; name them or drop the global language: ${hits.map((s) => s.replace(/\s+/g, " ").trim().slice(0, 100)).join(" | ")}`
-        : ""));
+    const detail = (hits) => `international-registration prose implies worldwide reach — a WIPO/Madrid registration protects only its designated countries; name them or drop the global language: ${hits.map((s) => s.replace(/\s+/g, " ").trim().slice(0, 100)).join(" | ")}`;
+    if (surface === "report") { routedRows(out, { id: "wipo-designation-language", family: "registry", surface, text, hitsOf, detail }); continue; }
+    const hits = hitsOf(text);
+    out.push(check("wipo-designation-language", "registry", surface, hits.length === 0, hits.length ? detail(hits) : ""));
   }
   return out;
 }
@@ -1712,8 +1765,7 @@ export function contentModelChecks({ findings, fourAnswers, expected }) {
 // (registry-record-match, registry-arithmetic, correction-consistency:*, …) and these are not on it,
 // so they cannot suppress or delay the artifact. They ship to the reviewing lawyer on the receipt.
 //
-// ABSENT ⇒ SILENT. `fourAnswers` null/absent emits NOTHING, exactly as placementsChecks gates on
-// Array.isArray. Every archived run carries `four_answers: null`, so an ungated check would grow a new
+// ABSENT ⇒ SILENT. `fourAnswers` null/absent emits NOTHING. Every archived run carries `four_answers: null`, so an ungated check would grow a new
 // failure across the whole replay corpus and flip verdicts the corpus depends on.
 export function fourAnswersCoherenceChecks({ fourAnswers, findings, verdictDoc }) {
   if (!fourAnswers || typeof fourAnswers !== "object") return [];
@@ -1774,13 +1826,6 @@ export function fourAnswersCoherenceChecks({ fourAnswers, findings, verdictDoc }
   return out;
 }
 
-// ── B2 (review 2026-07-31) — placements.json presence-of-content flag ──────────────────────────────────
-// The parser used to THROW on `placements: []`, which made a zero-candidate run an unrepairable
-// fail-closed: the model cannot conjure candidates the funnel never surfaced, so the corrective ladder
-// burned attempts on the most expensive stage in the cycle. The empty mirror is a fact a human should
-// see, not a run-killer — so it lands here, flag-only and structural (never load-blocking), beside its
-// content-model siblings. `placements` null/absent (every archived run, and any run whose sibling is
-// legitimately pre-B2) emits NOTHING, so the replay corpus can never grow a failure from this.
 // ── — the retrieval→findings record trace's two reportable defects ────────────────────────────
 // The ruling: "A drop with no recorded reason is itself a defect the run reports." Two facts qualify
 // and they are NEVER merged, because they have opposite fixes:
@@ -1792,8 +1837,7 @@ export function fourAnswersCoherenceChecks({ fourAnswers, findings, verdictDoc }
 //                   then SKIPPED on the partial artifact a killed attempt had left. Read as judgment,
 //                   that run looks like a lawyer's call; read correctly it is a stage that never ran.
 //
-// FLAG-ONLY and never load-blocking, like its placements sibling above: this is disclosure, and the
-// run that motivated it delivered a report a human needed to see. `recordCarry` null/absent (every
+// FLAG-ONLY and never load-blocking: this is disclosure, and the run that motivated it delivered a report a human needed to see. `recordCarry` null/absent (every
 // archived run, and any register-less matter) emits NOTHING, so the replay corpus cannot grow a
 // failure from this. A NON-computable trace is itself flagged — an absence is a finding, and a trace
 // that could not run must not read the same as a trace that found nothing.
@@ -1801,7 +1845,7 @@ export function recordCarryChecks({ recordCarry }) {
   if (!recordCarry || typeof recordCarry !== "object") return [];
   const out = [];
   if (recordCarry.computable !== true) {
-    const c = check("record-carry-computable", "content-model", "register-digest", false,
+    const c = check("record-carry-computable", "content-model", "owner-judgment", false,
       `the retrieval→findings record trace could not be computed (${String(recordCarry.reason ?? "no reason recorded")}) — so this run can say nothing about whether a retrieved record became a finding, which is not the same as saying none were dropped`);
     c.structural = true;
     return [c];
@@ -1816,25 +1860,25 @@ export function recordCarryChecks({ recordCarry }) {
   // fields, so an archived run reads `undefined` and neither arm fires. An absence is a finding for a
   // FRESH run, and on a fresh run these fields are always written.
   if (recordCarry.degenerate === true) {
-    const d = check("record-carry-degenerate", "content-model", "register-digest", false,
+    const d = check("record-carry-degenerate", "content-model", "owner-judgment", false,
       `the trace says NOT ONE of ${retrieved} retrieved register record(s) became a finding, and findings.json names ${Number(recordCarry.delivered_findings ?? 0) || 0}. Those are statements about the same records, so the TRACE is wrong — do not read this as a recall failure and do not quote its drop counts. This is the #420 shape: a join evaluated before the thing it joins against exists`);
     d.structural = true;
     out.push(d);
   }
   if (recordCarry.basis === "reconstructed") {
-    const r = check("record-carry-basis-recorded", "content-model", "register-digest", false,
+    const r = check("record-carry-basis-recorded", "content-model", "owner-judgment", false,
       "every ending in this trace was INFERRED by comparing artifacts after the fact, because no per-seam discard ledger (_driver/record-discard.jsonl) was present. Inference is what reported a clean run as a total loss in #420. Expected on a run archived before that fix; on a fresh run it means no seam recorded what it did");
     r.structural = true;
     out.push(r);
   }
 
-  const a = check("record-carry-unreasoned", "content-model", "register-digest", unreasoned === 0,
+  const a = check("record-carry-unreasoned", "content-model", "owner-judgment", unreasoned === 0,
     unreasoned ? `${unreasoned} of ${retrieved} retrieved register record(s) were dropped with NO step recording a ground — every retrieved record either becomes a finding or carries a reason it did not, and these carry neither. Named per record in _driver/record-carry.json .unreasoned; each also ships as an OPEN doubt` : "");
   if (!a.pass) a.structural = true;
   out.push(a);
 
   const stages = Array.isArray(recordCarry.incomplete_stages) ? recordCarry.incomplete_stages : [];
-  const b = check("record-carry-upstream-absent", "content-model", "register-digest", upstream === 0,
+  const b = check("record-carry-upstream-absent", "content-model", "owner-judgment", upstream === 0,
     upstream ? `${upstream} of ${retrieved} retrieved register record(s) were dropped because an upstream stage never completed (${stages.join(", ") || "unnamed"}) — NOT because any judgment step rejected them. Whatever those stages left on disk is PARTIAL, so a record they do not name cannot be read as considered-and-not-selected. Filter _driver/record-carry.json .rows on reason ending :stage-incomplete` : "");
   if (!b.pass) b.structural = true;
   out.push(b);
@@ -1877,7 +1921,7 @@ export function commonLawCarryChecks({ carries }) {
     // The artifact names its own slice; falling back keeps a v1 artifact from producing a bare id.
     const slice = String(carry.slice ?? carry.unit ?? "common-law").trim() || "common-law";
     if (carry.computable !== true) {
-      const c = check(`commonlaw-carry-computable:${slice}`, "content-model", "register-digest", false,
+      const c = check(`commonlaw-carry-computable:${slice}`, "content-model", "owner-judgment", false,
         `the retrieval→findings trace for the ${slice} lane could not be computed (${String(carry.reason ?? "no reason recorded")}) — so this run can say nothing about whether a retrieved candidate became a finding, which is not the same as saying none were dropped`);
       c.structural = true;
       out.push(c);
@@ -1887,39 +1931,11 @@ export function commonLawCarryChecks({ carries }) {
       const t = carry.totals ?? {};
       const retrieved = Number(t.retrieved ?? 0) || 0;
       const urls = Number(carry.findings_urls ?? 0) || 0;
-      const d = check(`commonlaw-carry-degenerate:${slice}`, "content-model", "register-digest", false,
+      const d = check(`commonlaw-carry-degenerate:${slice}`, "content-model", "owner-judgment", false,
         `the ${slice} trace says NOT ONE of ${retrieved} retrieved candidate(s) reached a finding, and the findings name ${urls} URL(s) from this lane. Those are statements about the same candidates, so the TRACE is wrong — do not read this as a recall failure and do not quote its drop counts`);
       d.structural = true;
       out.push(d);
     }
-  }
-  return out;
-}
-
-export function placementsChecks({ placements }) {
-  if (!Array.isArray(placements)) return [];
-  const c = check("placements-empty", "content-model", "placement", placements.length > 0,
-    placements.length ? "" : "placements.json carries no entries — placement normally places EVERY surfaced candidate (even a barren band carries out-of-scope-filtered rows), so either the funnel surfaced nothing this pass or placement's structured mirror was written empty; confirm which before delivery");
-  if (!c.pass) c.structural = true;
-  const out = [c];
-
-  // — DISCLOSURE, NOT A DEFECT, and the distinction is the whole point of the row.
-  //
-  // A placement row with no `records[]` is CONTRACTUAL for a common-law candidate (stages.mjs dictates
-  // `records: []`). It is also, per this driver's own note in placement-carry.mjs, the class every
-  // URI-keyed carry gate is blind to: recall-reconciliation's parseFindingsEndings,
-  // presence-reconciliation's parseRatedRows (`if (!uris.length) continue`) and band-shape's
-  // dominantElementComposites all key on a `/mark` URI, so a row without one is in no band and reaches
-  // none of them. Those are exactly the entities the sandboxed arms lost — company-shaped names that
-  // only ever existed as a placement — and their absence read as a clean pass on all three.
-  //
-  // So this NEVER blocks and is never structural. It states the boundary, so a zero from a URI-keyed
-  // gate is not read wider than it was measured. Only failing checks' `detail` reaches a reader, which
-  // is why it is written to flag on presence rather than to pass quietly with a count nobody renders.
-  const withoutUri = placements.filter((e) => !(Array.isArray(e?.records) && e.records.length)).length;
-  if (placements.length && withoutUri) {
-    out.push(check("placement-rows-without-uri", "content-model", "placement", false,
-      `${withoutUri} of ${placements.length} placement row(s) name no record URI. This is expected for a common-law candidate (records: [] by contract) and is NOT a defect — it is a COVERAGE BOUNDARY: every URI-keyed carry gate in this driver is silent about these rows rather than clearing them, so a clean result from those gates says nothing about this ${withoutUri}. placement-carry's own join is what covers them; read its classes before treating any of this as carried.`));
   }
   return out;
 }
@@ -2146,13 +2162,13 @@ export function prescriptionProseChecks({ reportMd, clientSummaryMd, findings, f
   const out = [];
   for (const [surface, text] of zones) {
     if (!String(text).trim()) continue;
-    const hits = [];
-    for (const sentence of String(text).split(/(?<=[.!?])\s+|\n+/)) {
-      const re = PRESCRIPTION_RES.find((r) => r.test(sentence));
-      if (re) hits.push(`"${sentence.trim().replace(/\s+/g, " ").slice(0, 90)}"`);
-    }
-    out.push(check("prescription-prose", "voice", surface, hits.length === 0,
-      hits.length ? `advice-shaped or self-caveating language on a delivered surface — the report states facts that condition, never advice (forward asks live only in the actions register; reliability is decided by the gate, never narrated): ${hits.slice(0, 4).join("; ")}${hits.length > 4 ? `; +${hits.length - 4} more` : ""}` : ""));
+    const hitsOf = (t) => String(t).split(/(?<=[.!?])\s+|\n+/)
+      .filter((sentence) => PRESCRIPTION_RES.some((r) => r.test(sentence)))
+      .map((sentence) => `"${sentence.trim().replace(/\s+/g, " ").slice(0, 90)}"`);
+    const detail = (hits) => `advice-shaped or self-caveating language on a delivered surface — the report states facts that condition, never advice (forward asks live only in the actions register; reliability is decided by the gate, never narrated): ${hits.slice(0, 4).join("; ")}${hits.length > 4 ? `; +${hits.length - 4} more` : ""}`;
+    if (surface === "report") { routedRows(out, { id: "prescription-prose", family: "voice", surface, text, hitsOf, detail }); continue; }
+    const hits = hitsOf(text);
+    out.push(check("prescription-prose", "voice", surface, hits.length === 0, hits.length ? detail(hits) : ""));
   }
   return out;
 }
@@ -2196,7 +2212,7 @@ export function cardBudgetChecks({ cardFolds }) {
     `assembly folded ${folds.length} surface(s) to the level budgets (moved, never deleted): ${folds.map((f) => `${f.surface} → +${f.movedSentences} sentence(s)/${f.movedWords} word(s) into depth`).join("; ")}`)];
 }
 
-export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, reportMd, clientSummaryMd, narrativeMd, auditMd, recordsByUri, searchedNames, headerName, ratedNames, actionsText, fetchFailures, extraPlatformNames, findings, findingsRaw, actionsRegister, actionsExpected, intakeAsks, askAnswers, cardFolds, verdictDoc, manifest, seniorRights, seniorRightsExpected, markAssessment, markAssessmentExpected, fourAnswers, contentModelExpected, findingsSchemaVersion, placements, ownerScreen, recordCarry, commonLawCarries, searchedJurisdictions = null }) {
+export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, reportMd, clientSummaryMd, narrativeMd, auditMd, recordsByUri, searchedNames, headerName, ratedNames, actionsText, fetchFailures, extraPlatformNames, findings, narrativeFindings = null, findingsRaw, actionsRegister, actionsExpected, intakeAsks, askAnswers, cardFolds, verdictDoc, manifest, seniorRights, seniorRightsExpected, markAssessment, markAssessmentExpected, fourAnswers, contentModelExpected, findingsSchemaVersion, ownerScreen, recordCarry, commonLawCarries, searchedJurisdictions = null }) {
   // WS-B: the run's profile platforms join the vocabulary for this run. Profiles carry store
   // DOMAINS by contract, so derive the name tokens a report would actually print: the raw norm
   // ("thomasnetcom"), the separator-spaced phrase ("thomasnet com" / "made in china com"), and the
@@ -2286,7 +2302,9 @@ export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, 
   if (clientSummaryMd) checks.push(...permissionProseChecks({ text: clientSummaryMd, surface: "client-summary", idSuffix: ":client" }));
   if (narrativeMd) checks.push(...permissionProseChecks({ text: narrativeMd, surface: "narrative", idSuffix: ":narrative", structural: true }));
   // — the narrative's own depth rules, on the narrative surface so they route to the synthesis redo.
-  if (narrativeMd) checks.push(...narrativeWriteUpChecks({ narrativeMd, findings, depth, manifest }));
+  // Its finding headings are in the model's numbering, so they join the record the model wrote when the
+  // delivered record is folded (`narrativeFindings`), and the delivered record otherwise.
+  if (narrativeMd) checks.push(...narrativeWriteUpChecks({ narrativeMd, findings: narrativeFindings ?? findings, depth, manifest }));
   // — the same rule on both surfaces the client's words come from. The narrative is where the
   // shipped defect was authored; the report is what a client reads, and a repair to one that left the
   // other standing is how this family's previous cures kept being re-applied by hand.
@@ -2314,7 +2332,6 @@ export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, 
   // meant a down-level file switched off the check that reports a down-level file.
   checks.push(...schemaVersionChecks({ schemaVersion: findingsSchemaVersion }));   // — the declared contract version
   checks.push(...fourAnswersCoherenceChecks({ fourAnswers, findings, verdictDoc }));   // P5 review — the four answers must not contradict the verdict or the findings (flag-only, absent ⇒ silent)
-  checks.push(...placementsChecks({ placements }));   // B2 — an empty structured mirror is a flag a human reads, never an unrepairable validator kill
   checks.push(...recordCarryChecks({ recordCarry }));   // — a retrieved record dropped with no recorded ground, and a drop that is really an incomplete stage
   checks.push(...commonLawCarryChecks({ carries: commonLawCarries }));   // — the same self-check on the common-law and jx carries, which no arm read at all
   checks.push(...countingChecks({ report: reportMd ?? "", "client-summary": clientSummaryMd ?? "" }, extraVocab));

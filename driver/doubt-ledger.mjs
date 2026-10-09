@@ -70,8 +70,8 @@ export function normalizeJoinText(s) {
 const norm = normalizeJoinText;
 
 /** Word-bounded exact containment on NORMALIZED text — the ONLY match verb in this module. Exported
- *  (like normalizeJoinText / distinct above) so placement-carry.mjs matches with the SAME verb rather
- *  than a local copy — one matcher, never two that drift. PURE. */
+ *  (like normalizeJoinText / distinct above) so another module matches with the SAME verb rather than
+ *  a local copy — one matcher, never two that drift. PURE. */
 export const hasToken = (hay, needle) => !!needle && ` ${norm(hay)} `.includes(` ${norm(needle)} `);
 
 // DISTINCTIVENESS FLOOR — "NEVER guess" made mechanical. A join term must be ≥2 tokens, or a single
@@ -519,9 +519,9 @@ export const squash = (s) => String(s ?? "").replace(/\\"/g, '"').replace(/\s+/g
  * otherwise read identically to anyone reading the events.
  */
 /**
- * The birth place of the presence-or-reason family. Defined HERE, in the module that imports nothing, and
- * imported by presence-reconciliation.mjs — a family this file's closure rule turns on cannot be named by
- * a string literal at each end, because the two ends would then be free to drift apart silently.
+ * The birth place of the presence-or-reason family. Defined HERE, in the module that imports nothing. The
+ * presence reconciliation that minted the family left with the old step 3; ledgers archived before then
+ * still carry it, and this file's closure rule still turns on it.
  */
 export const PRESENCE_BIRTH_PLACE = "presence-reconciliation";
 

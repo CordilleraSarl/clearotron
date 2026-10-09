@@ -20,10 +20,8 @@ instead; and `clearance-search/templates/search-request-form.html`, named only i
 |---|---|
 | `matter-frame` | Phase 0. Writes the matter's commercial context — sector, customer base, channels of trade, jurisdictions that materially matter, off-field sectors, watchlist seeds — before any search runs. `watchlist-reference.md` is enrichment, not authority. |
 | `clearance-variants` | Classifies the mark into one of six archetypes, derives a risk theory from that, emits the variant manifest both execution skills read. Non-Latin scripts: `transliteration-scripts.md`. |
-| `blind-frame`, `frame-diff` | Re-derives the threat model from the raw instruction alone, deliberately starved of the matter frame, then diffs that model against what the run actually scoped and emits reopen directives the driver acts on. Something has to test the frame instead of reasoning inside it. |
 | `clearance-common-law` | The marketplace / web / social sweep, as structured Perplexity research over the platform list the stage dictates. Prompt templates: `perplexity-prompts.md`. |
-| `clearance-register` | Register execution in the two modes a spawn selects: `unit.md` (the funnel — enumerate one axis to completion) and `digest.md` (judgment over the merged band). Plus `register-recipes.md`, `status-rules.md`, `stealth-filer-indicators.md`, `providers/`. |
-| `placement-inquiry` | Applies commercial relevance per candidate — headline-candidate / sheet-2 / watchlist-annex / out-of-scope-filtered — before any tiering runs. |
+| `clearance-register` | Register execution in the two modes a spawn selects: `unit.md` (the funnel — enumerate one axis to completion). Plus `register-recipes.md`, `status-rules.md`, `stealth-filer-indicators.md`, `providers/`. |
 | `case-law-citation` | Grounds risk-relevant findings in precedent fetched in-session, never from memory. One thin adapter per source in `sources/`; `evals.md` defines what working means. |
 | `narrative-refutation` | Reads the finished narrative against the underlying findings files and returns CLEAR / CONDITIONAL / BLOCKING with itemised flags. |
 | `clearance-search` | The doctrine the synthesis and delivery stages are held to: `synthesis-rules.md`, the `risk-framework*.md` ladders with their `.manifest.json` band vocabularies, `delivery-contract.md`, `report-prose.md`, `worked-examples.md`, `phase2-execution.md`, `field-doctrine-pharma.md`. |
@@ -54,7 +52,7 @@ every register server registering only `register_*`, under the MCP name `registe
 the matcher requires `<vendor>_` and cannot see camelCase, so no test fails on one, and
 `clearance-register/status-rules.md` still instructs off Corsearch's own field names (`corsearchStatusCode`,
 `onomaticsJurisdictionsStatuses`, the `owners[0].*` owner chain), plus one line of `register-recipes.md` off
-`onomaticsOppositions[]`. `clearance-register/SKILL.md`, `unit.md`, `digest.md` and everything under `clearance-search/`
+`onomaticsOppositions[]`. `clearance-register/SKILL.md`, `unit.md` and everything under `clearance-search/`
 are clean. The authoring rules and the empirical-verification checklist a new provider doc must pass sit in
 `clearance-register/providers/README.md`.
 
@@ -62,7 +60,7 @@ are clean. The authoring rules and the empirical-verification checklist a new pr
 
 `clearance-search/SKILL.md` — the orchestrator's own skill, and the one file describing the whole workflow end to end.
 Then `clearance-register/SKILL.md`, the more elaborated of the two execution skills: a spine plus per-mode files
-(`unit.md`, `digest.md`) and per-provider files (`providers/`). The other, `clearance-common-law`, is one spine plus
+(`unit.md`) and per-provider files (`providers/`). The other, `clearance-common-law`, is one spine plus
 `perplexity-prompts.md`, its two grid modes (deterministic `grid_spec_path` dispatch vs. the legacy authored
 program) being sections inside it — the per-mode split and `providers/` are register-only, not a shape every
 execution skill shares. `clearance-search/phase2-execution.md` is methodology, not sequencing — the pipeline is

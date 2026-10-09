@@ -20,30 +20,33 @@ test("15c — every stage's authored surface is declared, not just the one file 
   assert.deepEqual(named("synthesis"), ["narrative.md", "findings.json"],
     "findings.json is the most-consumed artifact in the run and was undeclared");
   assert.ok(named("clearance-variants").includes("variant-manifest.json"));
-  assert.ok(named("blind-frame").includes("blind-frame-model.json"));
-  assert.ok(named("frame-diff").includes("frame-diff.json"));
-  assert.ok(named("placement-inquiry").includes("placements.json"));
-  assert.ok(named("register-digest").includes("register-coverage-ledger.json"));
+  // a judge's pass writes the merged decisions and the settled coverage ledger, and four stages read them
+  assert.deepEqual(named("owner-judgment", { axis: "1" }), ["owner-judgment-1.json", "owner-decisions.json", "register-coverage-ledger.json"]);
   assert.ok(named("register-unit", { axis: "primary-sweep" }).some((f) => f.includes("primary-sweep")));
   assert.deepEqual(stageOutputs("nope", P), [], "an unknown stage answers empty, never throws");
 });
 
-// THE TRAP the ruling names, and the reason this is a second list rather than an addition to outSibs.
-test("15c — the declaration is NOT the destructive list: nothing deletes from stageOutputs", () => {
+// THE TRAP the ruling names: a list a snapshot deletes from. The one such list left with the placement
+// step that declared it, so a snapshot copies and deletes nothing, and stageOutputs is never a reason to.
+test("15c — the declaration is NOT a destructive list: a snapshot deletes nothing", () => {
   const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
-  const snap = src.slice(src.indexOf("function snapshotOutputs("), src.indexOf("function snapshotOutputs(") + 1200);
-  assert.match(snap, /outSibs/, "snapshotOutputs still drives its deletes off outSibs");
-  assert.ok(!/stageOutputs/.test(snap),
-    "…and never off stageOutputs — findings.json in the destructive list would be deleted before every "
-    + "forced synthesis, and since #188 a corrective pass EDITS, so the edit would land on a file that is gone");
-  // only placement declares outSibs, as before — this change added no deletions anywhere
+  const start = src.indexOf("function snapshotOutputs(");
+  const snap = src.slice(start, src.indexOf("\n}\n", start));
+  assert.ok(start >= 0 && /copyFileSync/.test(snap), "premise: the snapshot was found, and it copies");
+  assert.ok(!/rmSync|unlinkSync/.test(snap),
+    "a snapshot deletes again — findings.json in a destructive list would be deleted before every "
+    + "forced synthesis, and since a corrective pass EDITS, the edit would land on a file that is gone");
+  assert.ok(!/stageOutputs|outSibs/.test(snap), "the snapshot reads a list of files to act on again");
   const stagesSrc = readFileSync(new URL("../stages.mjs", import.meta.url), "utf8");
-  assert.equal((stagesSrc.match(/outSibs:/g) ?? []).length, 1, "outSibs is still declared by exactly one stage");
+  assert.equal((stagesSrc.match(/outSibs:/g) ?? []).length, 0, "a stage declares files to delete before a re-run");
 });
 
 test("15a — the order is DERIVED from the two maps: a writer precedes every reader of what it writes", () => {
-  assert.deepEqual(dependencyOrder(["report-card:1", "synthesis", "report-overview", "register-digest"], P),
-    ["register-digest", "synthesis", "report-card:1", "report-overview"]);
+  assert.deepEqual(dependencyOrder(["report-card:1", "synthesis", "report-overview", "owner-judgment:1"], P),
+    ["owner-judgment:1", "synthesis", "report-card:1", "report-overview"]);
+  // the decisions ARE the edge for the judges: their pass writes them, and the sceptic and the review read them
+  assert.deepEqual(dependencyOrder(["narrative-refutation", "skeptic", "owner-judgment:2"], P),
+    ["owner-judgment:2", "skeptic", "narrative-refutation"]);
   // …and it holds however the input is shuffled — the relation decides, not the incoming order
   assert.deepEqual(dependencyOrder(["report-overview", "synthesis"], P), ["synthesis", "report-overview"]);
   assert.deepEqual(dependencyOrder(["synthesis", "report-overview"], P), ["synthesis", "report-overview"]);
@@ -77,9 +80,9 @@ test("15a — mixed staleness is repaired, not suppressed: the guard's own parti
 test("15a — the upstream repair map is the honest scope statement", () => {
   const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
   const map = src.slice(src.indexOf("// item 15a — the UPSTREAM repair arms"), src.indexOf("export const DELIVERY_TAIL_LABEL_RE"));
-  for (const label of ["register-digest", "synthesis", "narrative-refutation", "skeptic"])
+  for (const label of ["owner-judgment:1", "owner-judgment:2", "synthesis", "narrative-refutation", "skeptic"])
     assert.ok(map.includes(`"${label}"`) || map.includes(`${label}:`), `${label} has a repair arm`);
-  assert.match(map, /runDigest\(ctx/, "register-digest routes through runDigest, never a bare stage() — else the old machine ledger outvotes the rewritten prose");
+  assert.match(src, /const rejudgeStale = \(ctx\) => runOwnerJudgment\(ctx,/, "the judges route through runOwnerJudgment, never a bare stage() — else the decisions and the ledger stay as the last pass wrote them");
   assert.match(map, /WILL NOT REPAIR/, "…and the map says in place what a missing entry means");
 });
 
@@ -103,31 +106,6 @@ test("A-4 — the skeptic declares what it consumes, and has an arm to be repair
   const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
   const map = src.slice(src.indexOf("const UPSTREAM_STALE_REPAIR = {"), src.indexOf("export const DELIVERY_TAIL_LABEL_RE"));
   assert.match(map, /skeptic:/, "…and the arm that makes declaring it safe, which is why it waited for Wave D");
-});
-
-// — placement can be stale on the delivery path, and now has an arm to be repaired by.
-// It declares register-named-band.json and the per-axis register-units/*.md; the escalation recheck,
-// the skeptic escalation and the envelope close rewrite those after it. On a resume where placement
-// skips as legitimately fresh it joins deliveryPathStages, and with no entry the run parked with no
-// in-pass remedy. Ruled to option 1: pay one placement dispatch on affected resumes.
-test("placement-inquiry declares the band material, and has a stale-repair arm; its stamp is never blessed", () => {
-  const inputs = stageInputs("placement-inquiry", P).map((f) => basename(f));
-  assert.ok(inputs.includes("register-named-band.json"),
-    "the declaration is why it can go stale — narrowing it instead would be the gate lying");
-  const src = readFileSync(new URL("../pipeline.mjs", import.meta.url), "utf8");
-  const map = src.slice(src.indexOf("const UPSTREAM_STALE_REPAIR = {"), src.indexOf("export const DELIVERY_TAIL_LABEL_RE"));
-  assert.match(map, /"placement-inquiry":/, "the arm exists");
-  assert.match(map, /"placement-inquiry": \(ctx\) => stage\("placement-inquiry", ctx, \{ force: true/,
-    "it re-runs the stage — a repair that did not force would skip on the artifact it is repairing");
-  // frame-diff's remedy must NOT transfer: placement's outputs are declared inputs of three stages that
-  // run after the mutation, so blessing its stamp would hide staleness with live consumers.
-  for (const consumer of ["register-digest", "synthesis", "narrative-refutation"]) {
-    const consumed = stageInputs(consumer, P).map((f) => basename(f));
-    assert.ok(consumed.some((f) => /^placements?\.(md|json)$/.test(f)),
-      `${consumer} reads placement's output, so settleOneShotStamp would hide staleness from it`);
-  }
-  assert.ok(!/settleOneShotStamp\([^)]*placement/.test(src),
-    "placement's stamp is never blessed — same defect shape as frame-diff, opposite correct answer");
 });
 
 // ── — A RE-DISPATCH THAT DROPS THE STAGE'S DRIVER-COMPUTED BLOCKS ────────────────────────────────

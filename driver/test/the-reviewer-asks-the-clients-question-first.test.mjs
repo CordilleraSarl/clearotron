@@ -21,6 +21,9 @@ import { absolutizeSkillRefs } from "../engine/anthropic-agent.mjs";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
 const MANUAL = "skills/narrative-refutation/SKILL.md";
+// The prose manual the reviewer applies, read after its own (owner, 2026-10-02). Its own manual stays
+// FIRST, so the owner's question still leads the brief.
+const PROSE = "skills/clearance-search/report-prose.md";
 
 // The owner's sentence, as ruled. A difference of one character here is a new ruling, not a fix.
 const FIRST_QUESTION = "Does the report answer the client's question: who could object, how strong they are, "
@@ -38,7 +41,7 @@ function reviewerMessage() {
 
 test("the reviewer's dispatch opens by ordering its manual read, before any instruction of its own", () => {
   const first = reviewerMessage().split("\n").find((l) => l.trim());
-  assert.equal(first, `First, read and follow exactly: ${MANUAL}.`,
+  assert.equal(first, `First, read and follow exactly: ${MANUAL}, ${PROSE}.`,
     "an instruction placed ahead of the manual would lead the brief instead of the owner's question");
 });
 
@@ -54,7 +57,7 @@ test("both engines resolve the manual order to the same file", () => {
   const skillsDir = "/store/skills";
   const resolved = absolutizeSkillRefs(reviewerMessage(), skillsDir);
   // Joined with this machine's `join`, so a Windows prompt names the file with its own separator.
-  assert.ok(resolved.includes(`First, read and follow exactly: ${join("/store", MANUAL)}.`), resolved);
+  assert.ok(resolved.includes(`First, read and follow exactly: ${join("/store", MANUAL)}, ${join("/store", PROSE)}.`), resolved);
   for (const engine of ["anthropic-agent.mjs", "openai-agent.mjs"]) {
     const src = readFileSync(join(DRIVER, "engine", engine), "utf8");
     assert.match(src, /absolutizeSkillRefs\(message, skillsDir, resolveSkill\)/,

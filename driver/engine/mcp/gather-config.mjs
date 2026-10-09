@@ -188,75 +188,10 @@ export const REGISTER_SERVERS = {
 // (server-tools-granted-or-stated.test.mjs: every record tool has exactly one granting stage).
 const RECORDING_SERVER = "recording-server.mjs";
 const RECORDING = Object.freeze({
-  // FIRST OCCUPANT — blind-frame (the transport, wired by, dictation deleted by).
-  //
-  // `seatWrites: false` is the half, and it is the only thing that closes the regression door BY
-  // CONSTRUCTION rather than by prose. Once the driver writes blind-frame-model.json, nothing this stage is
-  // ASKED to produce needs `Write` or `Edit` — and a grant that keeps carrying the hand-write tool leaves
-  // the old path executable with only the prompt holding it shut, which is what e2e measured on 2e203b75:
-  // a 17182B hand-written model, no call capture, on a box whose grant already carried the tool.
-  //
-  // THE EVIDENCE, and the cost, both stated. O3c (e2e's record, 15 attempts of this stage): 0 Bash calls,
-  // and `Read`×12 / `Write`×12 — the Write being the artifact itself, which is now the driver's. `Read`
-  // stays because the dispatch tells the seat to read its own skill doc. The cost: a blind-frame that ever
-  // legitimately needs scratch I/O now FAILS rather than degrading. Chosen deliberately on the one stage
-  // whose measured Bash use is zero, and it is the loud direction — a refusal it can see beats a silent
-  // second writer.
-  "blind-frame": {
-    seatWrites: false,
-    tools: Object.freeze(["record_blind_frame"]),
-    reason: "hands back its cold threat model through record_blind_frame instead of writing "
-      + "blind-frame-model.json itself; gains NO retrieval server, and loses the ambient Bash it was "
-      + "measured never to use (O3c: 0 calls / 15 attempts)",
-  },
-  // SECOND — skeptic, same shape ( is the template). Its OWN key, so blind-frame's seat is never
-  // handed record_skeptic and skeptic is never handed record_blind_frame.
-  //
-  // skeptic's key carries a SECOND tool: search_run_artifacts, the sanctioned read surface (the
-  // ratification hold, unlock path 1). A READ over the run's own tree, not retrieval — it dials nothing,
-  // writes nothing, and is bounded to CLEAROTRON_BAND_RUN_DIR by construction (skeptic-search.mjs). It
-  // replaces the artifact half of the Bash reads O3c measured; the skill-doc half was already the seeded
-  // Read grant's. Skeptic-only: blind-frame's key does not carry it, and the census pins that.
-  //
-  // TOOL ORDER IS THE ARGV'S ORDER. `allowedToolsFor` enumerates this array into the --allowedTools
-  // string, so a flip here changes the bytes the engine is handed. O1 sorts before comparing and would
-  // not see it; recording-grant-preservation.test.mjs compares the string and does.
-  //, second conversion — the row flipped in the same diff that deleted its dictation, which is the
-  // rule the previous version of this comment stated. O3c (15 attempts of blind-frame, 11 of this stage):
-  // skeptic made 7 Bash calls and ZERO writes, every one a read, and those reads have their sanctioned
-  // equivalent on this same key (`search_run_artifacts`) plus the seeded `Read` for skill docs. So nothing
-  // this stage does needs a writer once the driver renders skeptic-flags.md — and e2e measured what leaving
-  // one buys: a hand-written file on 2e203b75 with no call capture beside it.
-  // THIRD — frame-diff, and the first conversion under the sanctioned-equivalents design rather than as
-  // a repair of an existing skew. Its equivalence class is 2 (run-artifact reads) and the design's ruling
-  // for this stage is that the class needs no new surface here: the read set is CLOSED AND KNOWN — the
-  // stage compares two files — so the dictation names the exact paths and the seeded `Read` grant carries
-  // them. A `search_run_artifacts` grant would be handing a search tool to a stage whose reads are
-  // enumerable, which the design forbids in as many words.
-  //
-  // THE COST, STATED. O3c measured 20 Bash calls with 2 WRITES across 12 attempts. The writes are the two
-  // artifacts, which are now the driver's. The reads are the two input files, which `Read` serves. What
-  // this stage loses that it demonstrably used is therefore nothing — but the two writes are the first
-  // measured non-zero write count to convert, so an attempt that wants scratch I/O now FAILS rather than
-  // degrading, and that is a first observation, not a regression.
-  //
-  // TWO ARTIFACTS ON ONE CALL, which no earlier row has. `frame-diff.json` is serialized and
-  // `frame-diff.md` is RENDERED from the same parsed model — the stage's own contract already classifies
-  // the prose `mechanical:code-rendered`, and nothing in the driver reads it.
-  "frame-diff": {
-    seatWrites: false,
-    tools: Object.freeze(["record_frame_diff"]),
-    reason: "hands back the blind-model-vs-actual-scope diff through record_frame_diff instead of writing "
-      + "frame-diff.json and restating it in frame-diff.md; the driver serializes the model and renders the "
-      + "prose from it. Gains NO retrieval server, and loses the ambient Bash it used to read its two input "
-      + "files (O3c: 20 calls, 2 writes / 12 attempts) — those reads are enumerable and the seeded Read "
-      + "grant serves them, which is why this stage gets no search tool",
-  },
-  // FOURTH — matter-frame, conversion 2 of the six the sanctioned-equivalents design rules. Its
-  // equivalence class is 2 (run-artifact reads) and, unlike frame-diff, the reads are NOT enumerable:
-  // O3c measured 21 Bash calls with 1 write across 15 attempts and the shape is `ls`/`find`/`cat` over
-  // the run dir — DISCOVERY, not a known pair of files. That is exactly the line the design draws, so
-  // this stage gets `search_run_artifacts` on its own key where frame-diff got only the seeded `Read`.
+  // matter-frame, a conversion under the sanctioned-equivalents design. Its equivalence class is 2
+  // (run-artifact reads) and the reads are NOT enumerable: O3c measured 21 Bash calls with 1 write across
+  // 15 attempts and the shape is `ls`/`find`/`cat` over the run dir — DISCOVERY, not a known pair of
+  // files. That is exactly the line the design draws, so this stage gets `search_run_artifacts` on its own key.
   //
   // THE HARDEST ARTIFACT IN THE RUN TO CONVERT, and the reason is the reader count rather than the
   // writer. `matter-context.md` is parsed by six consumers (channelsFromMatterContext,
@@ -272,8 +207,8 @@ const RECORDING = Object.freeze({
       + "angles, intake asks, scope — through record_matter_frame instead of hand-typing matter-context.md "
       + "to a dictated shape four parsers then re-read; the driver stamps the instructed-scope section it "
       + "already holds and renders the rest. Gains search_run_artifacts because its measured reads are "
-      + "DISCOVERY over the run dir (O3c: 21 calls, 1 write / 15 attempts, `ls`/`find`/`cat`), not the "
-      + "enumerable pair frame-diff's Read grant covers",
+      + "DISCOVERY over the run dir (O3c: 21 calls, 1 write / 15 attempts, `ls`/`find`/`cat`), not an "
+      + "enumerable set the seeded Read grant covers",
   },
   // FIFTH — clearance-variants, conversion 3. Classes 3 + 2, and the CLASS 3 half is what makes it
   // different from every conversion before it: O3c measured 9 Bash calls with 4 WRITES across 15
@@ -286,7 +221,7 @@ const RECORDING = Object.freeze({
   // NO `search_run_artifacts`, and the design says why in as many words: this stage's inputs are
   // enumerable — it derives the manifest from material already on disk that the dictation names — so the
   // seeded `Read` grant carries them. Granting a search tool to a stage whose reads can be listed is
-  // what the sanctioned-equivalents design refuses. Same ruling as frame-diff, opposite to matter-frame.
+  // what the sanctioned-equivalents design refuses. The opposite ruling to matter-frame's.
   "clearance-variants": {
     seatWrites: false,
     tools: Object.freeze(["record_clearance_variants"]),
@@ -320,7 +255,7 @@ const RECORDING = Object.freeze({
   // NO `search_run_artifacts`: the dictation names this stage's ONLY two inputs — the settled narrative
   // and findings.json — and already trimmed its declared reads to exactly those two. A read set that
   // short is enumerable by definition, and the design forbids handing a search tool to a stage whose
-  // reads can be listed. Same ruling as frame-diff and clearance-variants.
+  // reads can be listed. Same ruling as clearance-variants.
   "report-overview": {
     seatWrites: false,
     tools: Object.freeze(["record_report_overview"]),
@@ -382,7 +317,7 @@ const RECORDING = Object.freeze({
   //               same three files: a grep substitute over the closed evidence set, not new reach.
   //   the rest    mkdir/ls/find x11 — housekeeping, not evidence access.
   //
-  // So nothing it demonstrably uses reaches outside the three files. That is frame-diff's case (reads
+  // So nothing it demonstrably uses reaches outside the three files. That is clearance-variants' case (reads
   // CLOSED AND KNOWN -> seeded `Read`, search tool forbidden), not matter-frame's (ls/find DISCOVERY ->
   // search_run_artifacts), and skeptic's row already ruled the seeking half: "section lookups in a file
   // the seeded Read grant serves whole". THE COST, STATED: the seat loses grep over a 48KB findings.json
@@ -425,50 +360,24 @@ const RECORDING = Object.freeze({
       + "the dispatch and Read serves them whole), and loses the ambient Bash it used to seek inside those "
       + "same three files (O3c: 72 calls, 9 writes / 16 attempts; re-measured 113 / 19)",
   },
-  // CONVERSION 11 — THE REGISTER FINDINGS DOCUMENT, AND THE WIDEST PARSER SURFACE IN THE RUN.
+  // skeptic. Its OWN key, so no other recording seat is handed record_skeptic and skeptic is handed no
+  // other stage's record tool.
   //
-  // `register-findings.md` is read by NINE parsers across driver/, mcp-server/ and driver/publish/, and
-  // the reader count is the argument FOR this conversion rather than against it. Every one of them is a
-  // heading / pipe-table / `/mark/…` uri scanner, and they are written that way because a model wrote
-  // this file: they exist to tolerate freeform prose. A driver render satisfies them by construction.
-  // Measured before the row landed, by feeding the render through the real parsers rather than by
-  // reading them: parseFindingsEndings buckets the Sheet-1 uri as carried and the drop uri as a drop
-  // row, parseCarrySurfaces agrees, findScreenGateParseGaps reports no gaps, and anchor-reader lifts
-  // the owner and both classes out of the rendered table.
+  // skeptic's key carries a SECOND tool: search_run_artifacts, the sanctioned read surface (the
+  // ratification hold, unlock path 1). A READ over the run's own tree, not retrieval — it dials nothing,
+  // writes nothing, and is bounded to CLEAROTRON_BAND_RUN_DIR by construction (skeptic-search.mjs). It
+  // replaces the artifact half of the Bash reads O3c measured; the skill-doc half was already the seeded
+  // Read grant's. Only the keys that name it carry it, and the census pins which those are.
   //
-  // WHY THE WRITER GOES, when register-unit's did not. That stage kept `Write` because its lane-OFF
-  // branch genuinely still hand-writes the named band, so taking the tool away would break a live
-  // configuration. This stage was believed to have the same shape — a no-form arm hand-writing the
-  // `## Coverage ledger` table — and it does not: M6 deleted that arm on 2026-08-14. The belief
-  // came from the stage's own contract-elements table, which still carries a full entry for the deleted
-  // branch, because that table is a register of DECISIONS and its retired rows stay on purpose. One
-  // `writeReturn`, one artifact, no surviving hand-write arm.
-  //
-  // THE COST, STATED, and it is the largest of any conversion so far: thirteen of the stage's twenty
-  // contract elements move, and the seven that stay are the whole of its judgment — the relevance gate,
-  // the opposition read, the instructed-check answers, adopt-or-override on every placement, and the
-  // coverage `status`/`reason` pair that already rides `record_coverage`. What the seat loses is the
-  // retyping of identifier cells, URLs, counts and audit rows out of artifacts the driver holds, plus
-  // the ambient `Write` it used to author the document with. A digest that wants scratch I/O now FAILS
-  // rather than degrading.
-  "register-digest": {
-    seatWrites: false,
-    // MIXED, and declared rather than inferred — O4's partition treats "tooled" and "recording" as
-    // disjoint, and a member that stops holding retrieval fails the reverse arm. This stage reads the
-    // frozen band through band_shape / band_lookup / band_record to judge it, and rating frozen material
-    // is what it reads WITH. It additionally holds `coverage`, which is a separate transport on its own
-    // key and is untouched by this row.
-    keepsRetrieval: true,
-    tools: Object.freeze(["record_register_digest"]),
-    reason: "hands back the findings document as typed rows and prose sections through "
-      + "record_register_digest instead of authoring register-findings.md itself — so the Sheet-1 and "
-      + "Sheet-2 identifier cells, the clickable record URL, the Negative-results provenance fields, the "
-      + "summary counts and the audit trail are rendered FROM the band and the run's own receipts rather "
-      + "than retyped out of them, and a row whose uri the band cannot resolve is refused AT THE CALL "
-      + "instead of shipping as a line of blank cells. KEEPS its band group, deliberately — judging the "
-      + "frozen material is what the stage is for — and keeps `coverage` on its own key: the obligation "
-      + "ledger and the findings document are different statements with different writers",
-  },
+  // TOOL ORDER IS THE ARGV'S ORDER. `allowedToolsFor` enumerates this array into the --allowedTools
+  // string, so a flip here changes the bytes the engine is handed. O1 sorts before comparing and would
+  // not see it; recording-grant-preservation.test.mjs compares the string and does.
+  //, second conversion — the row flipped in the same diff that deleted its dictation, which is the
+  // rule the previous version of this comment stated. O3c (11 attempts of this stage):
+  // skeptic made 7 Bash calls and ZERO writes, every one a read, and those reads have their sanctioned
+  // equivalent on this same key (`search_run_artifacts`) plus the seeded `Read` for skill docs. So nothing
+  // this stage does needs a writer once the driver renders skeptic-flags.md — and e2e measured what leaving
+  // one buys: a hand-written file on 2e203b75 with no call capture beside it.
   skeptic: {
     seatWrites: false,
     tools: Object.freeze(["record_skeptic", "search_run_artifacts"]),
@@ -626,18 +535,15 @@ const LOCAL = {
   // _driver/reading-log.jsonl (the reading audit). Provider-neutral by construction: it serves driver
   // artifacts and never dials a vendor.
   band:       { script: "band-server.mjs",        tools: ["band_lookup", "band_record", "band_shape"] },
-  // ── COVERAGE: the register-digest typed transport (B's pattern, one lane over) ───────────────────
-  //
-  // ITS OWN KEY, NOT A TOOL ON `band`, and the reason is the RECORDING split's own: `band` is held by
-  // FOUR judgment stages, and a record tool riding that shared entry would be enumerated into every
-  // holder's grant — a synthesis seat handed a writer into the digest's coverage accumulator. The
-  // second-writer disease as an allowlist side effect. One tool, one key, granted by exactly one
-  // stage's group list (toolGroupsForStage below).
-  //
-  // Like `record_dispositions` above this is an allowlist growing by one token on an ALREADY-TOOLED
-  // stage — not a tool-free flip — so no argv-surface transition fires and the RECORDING tables are
-  // untouched.
-  coverage:   { script: "coverage-server.mjs",    tools: ["record_coverage"] },
+  // ── OWNERS: the judging step's tools ─────────────────────────────────────────────────────────────
+  // The run's pile laid out by owner, and the reads behind it (driver/owner-tools.mjs): the owner table
+  // in pages, all records of one owner, the register questions the run ran with their counts, what one
+  // question returned, one full record, the saved web results, and a request for a question the run did
+  // not run, which is recorded and not answered. Every call is logged to the run's reading log, and that
+  // log is what tells an owner a judge saw from one it never did. All reads, except that a full record
+  // the run does not hold is fetched from the active register when a judge opens it. Its own key: no
+  // other stage reads the pile this way, and the judging step holds nothing else.
+  owners:     { script: "owner-server.mjs",       tools: ["owner_table", "owner_records", "register_questions", "register_list", "register_open", "web_results", "register_new_question"] },
   // ── DECLINATION: synthesis's typed transport for what it does NOT deliver ────────────────
   //
   // `coverage`'s shape exactly, and it stays its own key — but READ THE REASON, because the one this
@@ -810,10 +716,10 @@ function resolveGroup(group) {
     // the ACTIVE register — or as a member of the `free-tier` composite above.
     case "register":   return { local: ["register"], bridges: [], extra: [] };
     case "band":       return { local: ["band"], bridges: [], extra: [] };
+    case "owners":     return { local: ["owners"], bridges: [], extra: [] };
     // COVERAGE. `bridges: []` is load-bearing exactly as on the recording group below: this group's
     // one promise is that it widens no retrieval surface — it carries the digest's record tool and
     // nothing else.
-    case "coverage":   return { local: ["coverage"], bridges: [], extra: [] };
     // — `bridges: ` for the same load-bearing reason as its siblings: a bridge is a WILDCARD
     // grant, so an empty array here is where "this key widens no retrieval surface" is actually kept.
     case "declination": return { local: ["declination"], bridges: [], extra: [] };
@@ -880,6 +786,15 @@ function serverEnv({ sessionKey, agent, runDir, recordAxis }) {
   return e;
 }
 
+// THE OWNER TOOLS FETCH FROM THE ACTIVE REGISTER, so their server is told which one: neither engine hands
+// a tool server the setting that names it, and the provider's own server is chosen by name instead. A
+// deployment that names none gets no fetch, and every refused fetch is in the reading log with its cause.
+function ownersEnv(env) {
+  let provider = null;
+  try { provider = requireRegisterProvider(); } catch { /* no register named: a fetch on open is refused, logged */ }
+  return provider ? { ...env, CLEAROTRON_DATABASE: provider } : env;
+}
+
 // Build the mcp-config object for a set of groups. Returns { config: <object>, servers: [...] } or null if
 // the groups need no MCP server (e.g. caselaw-only EUR-Lex via WebFetch needs no server but the bridges do).
 export function buildGatherMcpConfig(groups = [], { sessionKey, agent, runDir, recordAxis } = {}) {
@@ -912,8 +827,12 @@ export function buildGatherMcpConfig(groups = [], { sessionKey, agent, runDir, r
         + "belong to their run, and the box-global ledger is retired. Pass runDir.");
     }
   }
+  // The owner tools read the run they judge, and write a record they fetch to that run's record log.
+  if (localKeys.has("owners") && !runDir) {
+    throw new Error("gather-config: the owner tools serve the run being judged — pass runDir.");
+  }
   const env = serverEnv({ sessionKey, agent, runDir, recordAxis });
-  for (const k of localKeys) mcpServers[k] = { command: NODE, args: [join(MCP_DIR, localEntry(k).script)], env };
+  for (const k of localKeys) mcpServers[k] = { command: NODE, args: [join(MCP_DIR, localEntry(k).script)], env: k === "owners" ? ownersEnv(env) : env };
   // — THE BRIDGES GET THE AUDIT ENV, AND ONLY THAT. Until now they were spawned with no env at
   // all, so a case-law tool call had nowhere to log: `tool-calls.jsonl` recorded server/tool/ok and the
   // bridge could not write what was asked or what came back. That is why a cited authority and an
@@ -959,25 +878,9 @@ export function toolGroupsForStage(name = "") {
   // mint (register_propose_supplemental in a register-unit lane / the escalation re-run), the same
   // door every other new query uses. This also ends the stages.mjs "register tools you hold" mismatch:
   // register-digest's prompt ordered live register checks while this map gave it NO register tools.
-  // B's pattern, one lane over ( transport conversion): the digest additionally holds its OWN
-  // record tool — coverage rulings ride `record_coverage`, never a hand-edited file. The key is the
-  // digest's alone; see the LOCAL entry for why it does not ride the shared `band` key.
   //
-  // ── AND THE SECOND BRANCH THAT RETURNS RETRIEVAL *AND* RECORDING (conversion 11) ─────────────────
-  //
-  // The third key is not optional decoration. This branch RETURNS EARLY, so a conversion that added the
-  // RECORDING row and stopped would never reach the derived branch below, `recording-register-digest`
-  // would never enter the resolved grant, and `recording-agreement` would fail by name at "NO
-  // TOOL_WRITTEN_ARTIFACTS row names a tool this stage holds" — exactly what narrative-refutation's
-  // comment below records happening to it. The key is composed the way the derived branch composes it
-  // (`recording-${stage}`), so the two cannot drift into naming different servers for one stage.
-  //
-  // `coverage` stays beside it, unchanged and separate. The two transports state different things: the
-  // coverage form is the run's obligation ledger, ruled row by row; the digest call is the findings
-  // document. One tool, one key, one holder — and merging them would put a second writer into the
-  // ledger the conversion took a writer out of.
-  if (name.startsWith("register-digest")) return ["band", "coverage", "recording-register-digest"];
-  if (name.startsWith("placement-inquiry")) return ["band"];
+  // The judging step: the owner tools and nothing else (see the LOCAL entry).
+  if (name.startsWith("owner-judgment")) return ["owners"];
   // ── — THE SEED INSTANCE, RESOLVED BY GRANTING RATHER THAN BY DELETING THE ORDER ─────────────
   //
   // The stage held ["band"] while its own doctrine ordered one scoped `perplexity_research` query before
@@ -1182,7 +1085,7 @@ export function recordAxisFor(name = "") {
 // gains `--mcp-config`, `--strict-mcp-config` AND `--allowedTools` where it previously had none. That is
 // a change in KIND and the right one — these stages become constrained for the first time — but it must
 // be asserted at the argv level, not inferred from this map.
-// FIRST OCCUPANT — blind-frame (the transport, wired here). SECOND — skeptic.
+// FIRST OCCUPANT — blind-frame (converted first; the stage itself has since left the engine). SECOND — skeptic.
 //
 // The safety basis is a SAMPLE and is stated as one: O3c measured blind-frame at 0 Bash calls across 15
 // attempts, alone among the eleven tool-free stages. That is why it converted first. On attempt 16 a
@@ -1226,10 +1129,6 @@ export const RECORDING_STAGES = Object.freeze(Object.fromEntries(
 // INDEPENDENT expectation is the only kind a pin can be, so a new recording stage adds a row here BY HAND
 // and O1's missing-row assertion is what makes forgetting loud.
 export const RECORDING_TOOLS = Object.freeze({
-  // — `Edit` and `Write` are GONE from this row, and the row is the pin that makes it visible. The
-  // driver writes blind-frame-model.json now, so the seat holds `Read` (its skill doc) and its record tool
-  // and nothing else. This is the first row in this table that is not the unconditional built-in trio.
-  "blind-frame": Object.freeze(["Read", "mcp__recording-blind-frame__record_blind_frame"]),
   // BY HAND, like every row here (see the block above): O1 compares the resolved grant against this row,
   // so deriving it would compare a value with itself. matter-frame carries the search tool for the same
   // reason skeptic does, on its OWN key — a shared key would hand skeptic a writer into the frame.
@@ -1240,11 +1139,6 @@ export const RECORDING_TOOLS = Object.freeze({
     "mcp__recording-matter-frame__search_run_artifacts"]),
   skeptic: Object.freeze(["Read", "mcp__recording-skeptic__record_skeptic",
     "mcp__recording-skeptic__search_run_artifacts"]),
-  // That third conversion. `Read` and its one record tool: the stage's reads are its two named input
-  // files, which the seeded grant serves, and it gets no search tool because a stage with an enumerable
-  // read set does not need one. BY HAND, like every row here — deriving it from the registry would make
-  // O1 compare a value with itself.
-  "frame-diff": Object.freeze(["Read", "mcp__recording-frame-diff__record_frame_diff"]),
   // Conversion 4. BY HAND, like every row here — O1 asserts the resolved grant EQUALS this row, so a
   // derived row would compare a value with itself. `Read` and its one record tool: this stage's declared
   // reads are the two files the dispatch names ( trimmed them to exactly those), which the seeded
@@ -1313,25 +1207,6 @@ export const RECORDING_TOOLS = Object.freeze({
     "mcp__recording-narrative-refutation__record_narrative_refutation",
     "mcp__recording-narrative-refutation__search_run_artifacts",
   ]),
-  // Conversion 11 — THE THIRD MIXED ROW, and the only one holding a SECOND typed transport beside its
-  // own. BY HAND, like every row here — O1 asserts the resolved grant EQUALS this row, so a derived row
-  // would compare a value with itself, and O1 compares the WHOLE grant, so the retrieval and coverage
-  // tools belong in it: a row naming only the recording half would go red on a correct grant and invite
-  // "fix" by subtraction, which is the blind spot the note above this table warns about.
-  //
-  // `record_coverage` and `record_register_digest` sit side by side ON PURPOSE. They are two statements:
-  // the coverage form is the run's obligation ledger, ruled row by row against the plan-execution
-  // receipt; the digest call is the findings document. Folding them into one key would put a second
-  // writer into the ledger the conversion took a writer out of.
-  //
-  // `Write`/`Edit` are absent, and that is the conversion: the seat hands back rows and prose and the
-  // driver renders register-findings.md.
-  "register-digest": Object.freeze([
-    "Read",
-    "mcp__band__band_lookup", "mcp__band__band_record", "mcp__band__band_shape",
-    "mcp__coverage__record_coverage",
-    "mcp__recording-register-digest__record_register_digest",
-  ]),
 });
 
 // ── A6: THESE STRINGS NOW STATE WHAT IS ENFORCED, NOT WHAT IS HOPED ───────────────────────────────
@@ -1346,7 +1221,7 @@ export const RECORDING_TOOLS = Object.freeze({
 //
 // So each row now says what the driver DOES (mounts no retrieval server) and, separately, what the seat
 // can still reach anyway — a reader can tell an enforced constraint from a dictated one without leaving
-// the line. `blind-frame` and `skeptic` are gone from here entirely: they are in RECORDING_STAGES above.
+// the line. `skeptic` is gone from here entirely: it is in RECORDING_STAGES above.
 export const TOOL_FREE_STAGES = {
   // report-overview's row RETIRED at conversion 4 — its reason moved to RECORDING, the same move
   // skeptic's row made. The stage is no longer tool-free: it holds `Read` and its record tool, and the

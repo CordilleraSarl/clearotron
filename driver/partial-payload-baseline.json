@@ -4,10 +4,6 @@
   "_issue": "tracker 1992",
   "unpinned": [
     {
-      "tool": "record_frame_diff",
-      "why": "no fixture yet; both declared fields are required, so the shape is safe by construction and the plant is a formality"
-    },
-    {
       "tool": "record_report_card",
       "why": "no fixture yet; both declared fields are required"
     },
@@ -18,10 +14,6 @@
     {
       "tool": "record_declination",
       "why": "no fixture yet; single required field"
-    },
-    {
-      "tool": "record_coverage",
-      "why": "no fixture yet; single required field, accumulating semantics claimed and not yet planted"
     },
     {
       "tool": "record_dispositions",
@@ -52,10 +44,6 @@
       "why": "no fixture yet; scope_jurisdictions, excluded_jurisdictions and meaning_angles_none are optional and the transport reads no prior state"
     },
     {
-      "tool": "record_register_digest",
-      "why": "CLOSED by mergeDigestPatch, which states a join rule per key — but the plant that proves it belongs here rather than in that module's own test"
-    },
-    {
       "tool": "record_synthesis",
       "why": "CLOSED by mergeSynthesisPatch plus synthesis_patch_without_base — pinned by the-repair-order-and-the-tool-schema-agree.test.mjs, not re-planted here"
     }
@@ -79,23 +67,9 @@
         "watchlist_owners"
       ],
       "why": "a partial silently empties the register-axis search floor, narrowing the run's own definition of coverage. `goods_words` joins them for the same reason and one worse: an emptied goods list reads as \"this matter named no goods\" rather than as a partial call, so the crowded sweep it exists to narrow goes back to returning more filings than anyone can read, and nothing says why. The MERGE preserves all four (mergeClearanceVariantsCall, keep-if-absent) — these rows record that the ACCEPTOR alone does not."
-    },
-    {
-      "tool": "record_blind_frame",
-      "fields": [
-        "sources"
-      ],
-      "why": "found BY this census rather than by hand: a partial omitting `sources` is accepted and the cold threat model ships with no source channels, which is the half frame-diff compares the actual scope against"
     }
   ],
   "required_not_enforced": [
-    {
-      "tool": "record_blind_frame",
-      "fields": [
-        "fields"
-      ],
-      "why": "the schema the seat is handed declares `fields` REQUIRED and acceptBlindFrame takes a call without it — the goods/on-field half of the cold threat model"
-    },
     {
       "tool": "record_clearance_variants",
       "fields": [

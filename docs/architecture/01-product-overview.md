@@ -106,7 +106,7 @@ mechanism in the code, not a policy statement — the pointers go to the chapter
 | Crowding must be earned | A crowded-field mitigation requires the counted, filtered field on the record | [07](07-quality-and-audit.md) |
 | Unsearched never means clean | Coverage ledger + coverage clamp; unsearched markets reported as unassessed | [07](07-quality-and-audit.md) |
 | No dangling caveats | Closable gaps are closed in-run; time-critical facts promoted to structured actions | [03](03-run-lifecycle.md) |
-| A second reader that didn't do the work | Independent refutation stage + blind re-derivation + frame diff | [07](07-quality-and-audit.md) |
+| A second reader that didn't do the work | Independent refutation stage | [07](07-quality-and-audit.md) |
 | No fact without a record | Record grounding: identifiers copied from fetched records; fidelity auto-correct; citation closure | [07](07-quality-and-audit.md) |
 
 Beneath all nine sit two engineering properties: **judgment on rails** (the deterministic pipeline,
@@ -140,11 +140,9 @@ Terms used throughout this pack and the code. The code's names win over prose de
 | **Run** | One execution of the pipeline for a matter; lives in one run directory. |
 | **Stage** | One pipeline step. Judgment stages are single isolated model turns; code stages are pure Node. |
 | **File truth** | A stage counts as done only if its declared output file exists and passes its structural validator. |
-| **Gather** | The investigation fan-out: register sweeps and the common-law grid, run concurrently. The blind frame runs beside the whole fan-out as a non-fatal concurrent sibling, never as a member of it. |
+| **Gather** | The investigation fan-out: register sweeps and the common-law grid, run concurrently. |
 | **Fan-in barrier** | The code point where all gather members must have valid outputs before reasoning proceeds. |
 | **Skeptic** | The checking stage that re-examines gather output and can trigger code-decided escalation re-runs. |
-| **Blind frame** | A threat picture rebuilt from the raw request alone, never seeing the run's own framing. |
-| **Frame diff** | The code+model comparison of blind frame vs run frame; can trigger a bounded reopen of investigation. |
 | **Verdict gate** | The code gate that parses and validates the verdict; failure triggers corrective re-synthesis. |
 | **Coverage clamp** | The code step that forces the report's coverage claims down to what was actually searched. |
 | **Coverage honesty** | The doctrine that unsearched is unassessed, never clean; depth follows risk. |

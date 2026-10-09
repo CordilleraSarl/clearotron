@@ -115,6 +115,10 @@ test("NO stage in EITHER lane writes its output into the guarded tree", () => {
   }
   const P = paths(RUN);
   for (const [name, def] of Object.entries(STAGES)) {
+    // A CONFINED stage writes nothing itself: its answer arrives on the session's result and the driver
+    // writes it to `out` (engine CONTRACT.md, `confined`). That is the driver-written transport this
+    // message asks for, so its `out` may sit in the guarded tree. Its seat holds no Write and no Bash.
+    if (typeof def.confined === "function") continue;
     let out = null;
     try { out = typeof def.out === "function" ? def.out(P, "1") : def.out; } catch { /* reported below */ }
     if (out == null) { offenders.push(`${name}: out: did not resolve — NOT CHECKED`); continue; }
@@ -128,7 +132,8 @@ test("VOID CONTROL: that sweep really did examine both lanes", () => {
   // Every assertion above is an absence. If either lane resolved to nothing, the offenders list would be
   // empty and the guard would read as a pass while checking nothing at all.
   assert.ok(Object.keys(KO_STAGES).length >= 2, `the knockout lane has ${Object.keys(KO_STAGES).length} stages`);
-  assert.ok(Object.keys(STAGES).length >= 15, `the main lane has ${Object.keys(STAGES).length} stages`);
+  // 15 -> 13 when the second framing and its diff left the engine with the mid-run reopening.
+  assert.ok(Object.keys(STAGES).length >= 13, `the main lane has ${Object.keys(STAGES).length} stages`);
   // …and the guard can fail: a synthetic stage pointed at the guarded tree must be caught by the same test.
   const planted = join(driverDir(resolve(RUN)), "planted.json");
   assert.ok(planted.startsWith(driverDir(resolve(RUN)) + sep), "the predicate the sweep uses must match a guarded path");

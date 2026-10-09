@@ -3,15 +3,15 @@
 // reasoning-tripwires.mjs — the v5 "Appendix A" mechanical net under the recall/coverage/honesty
 // PRINCIPLES (the reasoning holds the principle holistically in skills/*; these tripwires catch the
 // principle's MISSES). CODE ONLY, pure (no node imports → tests offline). Each function reads only the
-// run's own MECHANICAL artifacts (register-findings.md negative-results matrix, findings.json, the
-// coverage ledger, the review file, matter-context/placement) — NEVER the headline-verdict reviewer,
+// run's own MECHANICAL artifacts (findings.json, the coverage ledger, the review file, the matter
+// context, step 3's decisions) — NEVER the headline-verdict reviewer,
 // which is empirically noisy. A trip never withholds delivery (the lint's standing posture); it forces
 // the delivered status to carry the gap.
 //
 // Brittleness lives here in the net, never in the reasoning: each check is a tight mechanical pattern
-// that catches a catastrophic miss the holistic principle alone cannot guarantee against (an
-// identical-name in-class hit culled from a large pull; a "clear" headline over an un-run material
-// layer; a review that only re-read its own inputs; a seed pre-graded as the answer; a risk-raising
+// that catches a catastrophic miss the holistic principle alone cannot guarantee against (a "clear"
+// headline over an un-run material layer; a review that only re-read its own inputs; a seed pre-graded
+// as the answer; a risk-raising
 // fact with no "why it bears on this conflict").
 
 // Normalisation shared with the rest of the lint family: fold diacritics, "&"≡"and", case-insensitive,
@@ -20,68 +20,6 @@ const norm = (s) => String(s ?? "").normalize("NFD").replace(/[̀-ͯ]/g, "")
   .toLowerCase().replace(/&amp;/g, "&").replace(/\band\b/g, "&")
   .replace(/[^a-z0-9& ]/g, " ").replace(/\s+/g, " ").trim();
 
-// ── Negative-results drop-row parsing (FROZEN schema, shared with screen-gate.mjs) ─────────────────────
-//   | Mark | Search Term / Variant | Result | Notes |
-// Notes carries `URI <uri>; screen_verdict=<verdict>; class=<n>; status=<live|dead>; <reason>`.
-function parseDropRows(registerFindingsMd) {
-  const rows = [];
-  let inNeg = false;
-  for (const ln of (registerFindingsMd || "").split("\n")) {
-    const h = ln.match(/^#{1,6}\s+(.*)/);
-    if (h) { inNeg = /negative results/i.test(h[1]); continue; }
-    if (!inNeg || !ln.trimStart().startsWith("|")) continue;
-    const cells = ln.replace(/^\s*\|/, "").replace(/\|\s*$/, "").split("|").map((s) => s.trim());
-    if (cells.length < 4) continue;
-    const mark = cells[0];
-    if (/^mark$/i.test(mark) || /^[-:\s]+$/.test(mark)) continue;       // header / separator
-    const notes = cells.slice(3).join(" | ");
-    const verdict = (notes.match(/screen_verdict\s*=\s*([\w:-]+)/i) || [])[1]?.toLowerCase() ?? null;
-    const klass = (notes.match(/class\s*=\s*([\dA-Za-z,;/ -]+)/i) || [])[1]?.trim() ?? null;
-    const live = /status\s*=\s*live/i.test(notes);
-    const uri = (notes.match(/\/mark\/[a-z]{2,6}\/[\w-]+/i) || [])[0] ?? null;
-    rows.push({ mark, result: cells[2], notes, verdict, klass, live, uri });
-  }
-  return rows;
-}
-
-const SURFACE_VERDICTS = new Set(["surface:in-scope-live", "surface:all-class", "deepfetch:ambiguous"]);
-const classTokens = (s) => String(s ?? "").split(/[^\dA-Za-z]+/).map((t) => t.trim().toLowerCase()).filter(Boolean);
-
-/**
- * S1 — Recall floor. The catastrophic miss: a live registration whose NAME is identical to the proposed
- * mark (or one of its searched variants), in the applicant's own in-scope class, that the run DROPPED
- * (appears in the negative-results population) and did NOT carry as a finding. "An identical name in the
- * applicant's actual goods is always recorded" — crowding/filer-size never license dropping it. Conservative
- * on purpose (the brittleness is in the net): IDENTICAL normalized name only; near-identical is left to the
- * reasoning layer. In-scope is established by the run's own signal — an explicit in-scope class match, or
- * (when no class list is supplied) the screen's own surface:* verdict.
- *
- * @param {string} registerFindingsMd
- * @param {{carriedMarks?:string[], searchedNames?:string[], inScopeClasses?:string[]}} ctx
- * @returns {Array<{mark:string, klass:string|null, uri:string|null, why:string}>}
- */
-export function findRecallFloorViolations(registerFindingsMd, { carriedMarks = [], searchedNames = [], inScopeClasses = [] } = {}) {
-  const searched = new Set((searchedNames ?? []).map(norm).filter(Boolean));
-  if (!searched.size) return [];                                          // nothing to compare names against
-  const carried = new Set((carriedMarks ?? []).map(norm).filter(Boolean));
-  const scope = new Set((inScopeClasses ?? []).flatMap(classTokens));
-  const out = [];
-  for (const r of parseDropRows(registerFindingsMd)) {
-    const markN = norm(r.mark);
-    if (!searched.has(markN)) continue;                                   // not an identical-name conflict
-    if (!r.live) continue;                                                // dead/expired drops are authoritative
-    if (carried.has(markN)) continue;                                     // the same-name mark IS carried elsewhere
-    const inScope = scope.size
-      ? classTokens(r.klass).some((c) => scope.has(c))
-      : (r.verdict ? SURFACE_VERDICTS.has(r.verdict) : false);            // no class list ⇒ trust the screen's own verdict
-    if (!inScope) continue;
-    out.push({
-      mark: r.mark, klass: r.klass, uri: r.uri,
-      why: `dropped live in-scope mark "${r.mark}" shares the proposed mark's name but was not carried as a finding — an identical name in the applicant's goods is always recorded (recall floor)`,
-    });
-  }
-  return out;
-}
 
 /**
  * U2 — Self-check freshness. A real review brings in an input the run did not already consume. With the
@@ -222,39 +160,6 @@ export function findDeadlineUrgencyMiss(parsedFindings = {}, { nowMs = 0, within
       ordinal: f.ordinal, mark: f.mark, kind, date: d.date, daysUntil: days,
       why: `"${f.mark}" carries a ${kind} ${when} (${d.date}) — surface it as a time-critical ACTION/alert at the top of the deliverable, not only inside the risk narrative`,
     });
-  }
-  return out;
-}
-
-/**
- * #7 — Unresolved placement disagreement. The digest (MODE B) consumes placement-inquiry's "Disagreements /
- * flags surfaced to downstream" and must EXPLICITLY adopt or override-with-reasoning each one (digest.md). The
- * miss it guards: a disagreement that neither resolved — it just vanished. The digest authors a STRUCTURED
- * `### Disagreement resolutions` table (`| Disagreement | Resolution |`); this parses it (a frozen-schema
- * table read, NOT a loose prose regex — same shape as parseDropRows) and trips on any row whose Resolution is
- * empty or a non-answer (tbd / pending / open). No table (legacy / no disagreements) → nothing. Non-blocking.
- *
- * @param {string} registerFindingsMd
- * @returns {Array<{disagreement:string, why:string}>}
- */
-export function findUnresolvedDisagreements(registerFindingsMd) {
-  const out = [];
-  let inSec = false;
-  for (const ln of String(registerFindingsMd ?? "").split("\n")) {
-    const h = ln.match(/^#{1,6}\s+(.*)/);
-    if (h) { inSec = /disagreement/i.test(h[1]); continue; }
-    if (!inSec || !ln.trimStart().startsWith("|")) continue;
-    const cells = ln.replace(/^\s*\|/, "").replace(/\|\s*$/, "").split("|").map((s) => s.trim());
-    if (cells.length < 2) continue;
-    const item = cells[0];
-    if (/^disagreement/i.test(item) || /^[-:\s]+$/.test(item)) continue;     // header / separator row
-    const resolution = cells[cells.length - 1];
-    if (!resolution || /^(tbd|n\/?a|—|–|-|pending|open|unresolved|\?)$/i.test(resolution)) {
-      out.push({
-        disagreement: item.slice(0, 120),
-        why: `the placement disagreement "${item.slice(0, 80)}" carries no resolution — every disagreement surfaced between placement-inquiry and the digest must be explicitly adopted or overridden-with-reasoning, never left open`,
-      });
-    }
   }
   return out;
 }

@@ -58,6 +58,7 @@ import { PROVIDER_CONDITIONAL_MARKERS,
 // it the only way to reach a seat at all.
 import { REPAIR_COMPOSERS } from "../repair-composers.mjs";
 import { CODE_BUILT_SECTIONS } from "../pipeline.mjs";
+import { composeMessage as composeJudgeMessage } from "../owner-judgment.mjs";
 
 const DRIVER = fileURLToPath(new URL("../", import.meta.url));
 
@@ -70,6 +71,10 @@ const CTX = Object.freeze({
   // report clean on a stage whose whole risk is 26 files instead of one ( conversion 5).
   paths: P, profile: {}, intakeAsks: [], framework: null, axes: [], axis: "1",
   job: { marks: ["PROBEMARK"], markName: "PROBEMARK", classes: [9], goods: "probe goods", rawRequest: "probe" },
+  // Step 3's message is composed by runOwnerJudgment from the run's files and handed in on the context
+  // (its own message() refuses to build without it); composed here the same way, from invented parts.
+  ownerJudgmentMessage: composeJudgeMessage({ order: "PROBEMARK, class 9", context: "An invented client.",
+    ratingScale: "High / Low", workedExamples: "None.", tablePages: null }),
 });
 
 // ── THE SECOND LANE ( item B) ──────────────────────────────────────────────────────
@@ -201,6 +206,10 @@ function artifactsFor(stage, held) {
 function unionFor(stage, artifacts) {
   const lane = laneFor(stage);
   const union = [{ surface: lane.surface, kind: INSTRUCTION, phase: ATTEMPT_1, text: lane.table[stage].message(lane.ctx) }];
+  // A CONFINED stage's instructions are its system prompt, not its message: the judges of step 3 are told
+  // which tool does what there (owner-judgment.mjs, OPENING_WORDS), and nowhere else.
+  if (typeof lane.table[stage].confined === "function")
+    union.push({ surface: `confined:${stage}`, kind: INSTRUCTION, phase: ATTEMPT_1, text: lane.table[stage].confined(lane.ctx).instructions });
 
   for (const rel of skillReadsFor(stage)) {
     union.push({ surface: `skill:driver/${rel}`, kind: INSTRUCTION, phase: ATTEMPT_1, text: readFileSync(join(DRIVER, rel), "utf8") });
@@ -302,7 +311,7 @@ test("the population is the RECORDING category itself — a conversion enters th
   const stages = Object.keys(RECORDING_STAGES);
   assert.ok(stages.length >= 2,
     "fewer than two recording stages — this file is asserting about a category that lost its members, "
-    + "not passing. blind-frame (#1148) and skeptic (#1154) are both converted on this base.");
+    + "not passing. skeptic (#1154) and the conversions after it are all on this base.");
   // The three tables that must agree on membership, so no stage can be half-converted and unwatched.
   assert.deepEqual(Object.keys(RECORDING_TOOLS).sort(), stages.sort(),
     "RECORDING_TOOLS and RECORDING_STAGES disagree on membership — one of them is not describing the category");
@@ -613,7 +622,7 @@ test("PLANT (a): a granted tool no instruction names is caught, per stage", () =
 test("PLANT (a) CONTROL: naming it in a SURFACE is not naming it in an instruction", () => {
   // The vacuity this direction would have if the mounted tool schema counted. A granted tool is always in
   // the schema, so a check that read it would pass for every tool in every grant, forever.
-  const p = plantBase("blind-frame");
+  const p = plantBase("skeptic");
   p.granted = new Set(["Read", "record_probe", "search_probe"]);
   p.union.push({ surface: "tool-schema:probe", kind: SURFACE, text: "search_probe searches this run's artifacts." });
   assert.deepEqual(agreementFindings(p).map((x) => x.tool), ["search_probe"],
@@ -641,7 +650,7 @@ test("⭐ PLANT (a) #1190: a tool named ONLY in a repair rung is still granted-b
 
 test("PLANT (a) #1190 CONTROL: the SAME text on an attempt-1 surface does satisfy (a)", () => {
   // Without this, the arm above is satisfied by a direction (a) that has stopped working altogether.
-  const p = plantBase("blind-frame");
+  const p = plantBase("skeptic");
   p.granted = new Set(["Read", "record_probe", "search_probe"]);
   p.union.push({ surface: "skill:probe", kind: INSTRUCTION, phase: ATTEMPT_1,
     text: "Call `search_probe` to find what you already recorded, then patch it." });
@@ -653,7 +662,7 @@ test("PLANT (a) #1190 CONTROL: the SAME text on an attempt-1 surface does satisf
 test("PLANT (a) #1190: an INSTRUCTION member with no phase is REFUSED, never defaulted", () => {
   // Either default picks a side silently, so the union must say. A throw and not a finding: findings are
   // claims about the engine, and an unphased member is a bug in whatever assembled the union.
-  const p = plantBase("blind-frame");
+  const p = plantBase("skeptic");
   p.union.push({ surface: "mystery:probe", kind: INSTRUCTION, text: "Call `record_probe`." });
   assert.throws(() => agreementFindings(p), /mystery:probe.*attempt-1 or repair|phase/s,
     "an unphased instruction member was accepted — one of the two defaults would then be chosen for it");
@@ -714,7 +723,7 @@ test("PLANT (c) CONTROL: a backlog row for ANOTHER stage does not excuse this on
 test("PLANT: a tool named as a SUBSTRING is not a tool named", () => {
   // `record_probe` inside `record_probe_extra` is a different identifier. Without the word boundaries,
   // direction (a) would read a longer name as satisfying a shorter one and go green on nothing.
-  const p = plantBase("blind-frame");
+  const p = plantBase("skeptic");
   p.granted = new Set(["Read", "record_probe"]);
   p.union = [{ surface: "dispatch:probe", kind: INSTRUCTION, phase: ATTEMPT_1, text: "Call `record_probe_extra` with your values." }];
   assert.deepEqual(agreementFindings(p).map((x) => [x.direction, x.tool]), [["granted-but-never-ordered", "record_probe"]],
@@ -822,7 +831,9 @@ test("the tool-written rows carry a refusal reader, and it reads a real journal"
 const EVERY_STAGE = Object.keys(STAGES);
 
 test("directions (a) and (c) hold for EVERY stage, not only the recording category", () => {
-  assert.ok(EVERY_STAGE.length >= 16,
+  // 16 until placement and the register digest became step 3's one stage (2026-10-01); 15 until the
+  // mid-run reopening's two stages left.
+  assert.ok(EVERY_STAGE.length >= 13,
     `only ${EVERY_STAGE.length} stage(s) — the table is not being read, and a walk over a short list is `
     + "how this arm would report clean without covering anything");
 
@@ -950,26 +961,15 @@ test("a tool named in a multi-reader doc is granted to every reader of it", () =
   //
   // A row LEAVING this list is good news and still wants the entry removed in the same commit, or the
   // list slowly becomes a licence rather than a record.
+  // The seven clearance-register/SKILL.md rows left with the register digest (2026-10-01): register-unit
+  // is that document's one reader now, so it is no longer a shared document at all.
   const MODE_SCOPED = [
-    "skills/clearance-register/SKILL.md names band_lookup, not held by: register-unit",
-    "skills/clearance-register/SKILL.md names band_record, not held by: register-unit",
-    "skills/clearance-register/SKILL.md names band_shape, not held by: register-unit",
-    "skills/clearance-register/SKILL.md names record_coverage, not held by: register-unit",
-    // Conversion 11 — the TENTH row, and it is the same mode-scoped shape as the four above it rather
-    // than the finding this list was left open for. The mention sits in SKILL.md's **Digest mode
-    // (judgment — Layer B)** bullet, the same sentence that already names `record_coverage` and the band
-    // tools; register-unit reads the shared spine and is dispatched as the FUNNEL, which that bullet is
-    // explicitly not addressing. Scoping it further is not available — the spine is one file by design,
-    // and the section labels are the scoping.
-    "skills/clearance-register/SKILL.md names record_register_digest, not held by: register-unit",
-    "skills/clearance-register/SKILL.md names register_enumerate, not held by: register-digest",
-    "skills/clearance-register/SKILL.md names register_execute_plan, not held by: register-digest",
     "skills/clearance-search/synthesis-rules.md names band_lookup, not held by: report-overview",
     "skills/clearance-search/synthesis-rules.md names band_record, not held by: report-overview",
     "skills/clearance-search/synthesis-rules.md names perplexity_research, not held by: report-overview",
   ];
   assert.deepEqual(offenders.sort(), [...MODE_SCOPED].sort(),
-    "a shared document names a tool that some of its readers cannot call, and it is not one of the ten "
+    "a shared document names a tool that some of its readers cannot call, and it is not one of the "
     + "mode-scoped rows recorded above. Every reader is ORDERED by that document, so the call is "
     + "impossible for the ones without the grant and the shortfall reads as a model that chose not to. "
     + "Scope the sentence to the seat that holds the tool, grant it to the others, or drop the name — and "

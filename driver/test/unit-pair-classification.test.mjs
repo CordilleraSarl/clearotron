@@ -53,22 +53,17 @@
 // arrive and contradict. That `quote_required` was exactly this: a flag on a form, met later by
 // candidates that had been rebuilt textless.
 //
-// ── THE RULING, ALL TWENTY-FOUR AS CLASSIFIED — TWENTY-THREE IN THE SWEEP TODAY, SEE THE CURE BELOW ──
+// ── THE RULING, ALL TWENTY-ONE AS CLASSIFIED — TWENTY IN THE SWEEP TODAY, SEE THE CURE BELOW ───────
 //
-//  AGREE (22) — the flag and the data it summarises are written into ONE structure in ONE expression, or
+//  AGREE (19) — the flag and the data it summarises are written into ONE structure in ONE expression, or
 //  consumed inside the pass that computed them, so a reader cannot get one without the other:
 //   · band-shape.mjs:494        `live` is minted in the same object literal as `records`, off the same
 //                               `rs`. A reader holding the position holds both.
 //   · commonlaw-carry.mjs:386   `completed` folds ALL THREE stage labels from one `outcomes` read and is
 //                               handed to `classifyCandidate` for every candidate in the same call.
 //   · findings-model.mjs:476 actionPartyReferences `boundLost` and `names` both come off the one `index` argument.
-//   · `familyDispatched` declared in `form-neighbourhood.mjs`  feeds BOTH the returned
-//                               `phoneticFamilyDispatched` and the `complete` verdict beside it — the
-//                               good shape: two ends, one computation, no second derivation to drift.
-//                               `familyExplained` beside it (a retrieval pattern the reading turn
-//                               withheld, 2026-09-25) has the same shape: it feeds the returned
-//                               `phoneticFamilyExplained` and the same `complete`, off the same band.
-//   · gateway.mjs:1293 gradedFormMeta,1501     the two `wrote` producers — see the disagreement below; both now guard
+//   · gateway.mjs, twice        the two `wrote` producers, the repair row's and the attempt row's — see the
+//                               disagreement below; both now guard
 //                               the empty case, and each reads its own per-turn stat snapshot, which the
 //                               site states.
 //   · grounds-grammar.mjs:89 classifyGroundsNote
@@ -89,6 +84,13 @@
 //                               the citation gate only noticed when an edit above shifted it one line
 //                               onto a lone brace. CONTRIBUTING.md's rule is the fix: cite the symbol,
 //                               which is both correct and the thing that makes a citation checkable.)
+//   · pipeline.mjs the post-repair fix pass's `reach` — `prose`, whether a save since the delivery
+//                               checks' repair began rewrote the narrative's prose, is minted in the same
+//                               object literal as `ordinals`, off the same slice of the touched record
+//                               (`readTouched`), and both are spent by `handedReview` on the next line,
+//                               against the review that re-read that narrative. Its copy on the
+//                               `post-repair-fix-pass` run-log line is a journal entry: nothing reads it
+//                               back and acts.
 //   · publish/render.mjs `hasOnField` sits in the same object as `findings: g` — the group and its
 //                               summary travel together. (CITED BY SYMBOL AND NO LINE, for the reason
 //                               given two entries above: the number here was :372, and on the tree
@@ -144,7 +146,7 @@
 //                               pins that cut. (CITED BY SYMBOL AND NO LINE, per CONTRIBUTING.md.)
 //
 //  DISAGREE (1), fixed here:
-//   · gateway.mjs:1293   TWO PRODUCERS OF ONE FIELD, TWO UNITS FOR THE EMPTY CASE. The attempt row
+//   · gateway.mjs:1335   TWO PRODUCERS OF ONE FIELD, TWO UNITS FOR THE EMPTY CASE. The attempt row
 //                        answers `files.length ? files.some(…) : null`; the repair row answered
 //                        `files.some(…)`, and `[].some()` is `false`. A stage declaring no expected
 //                        artifact leaves `files` empty, so the same situation was "wrote nothing" on one
@@ -224,8 +226,8 @@ const structureSites = () => nonEmpty(sweep(), "travelling-predicates sweep()")
 // header; this is what the tree may not exceed without a re-read.
 const RULED = new Map([
   ["band-shape.mjs", 1], ["commonlaw-carry.mjs", 1], ["findings-model.mjs", 1],
-  ["form-neighbourhood.mjs", 4], ["gateway.mjs", 2], ["grounds-grammar.mjs", 1],
-  ["pipeline.mjs", 2], ["publish/render.mjs", 1], ["publish/xlsx.mjs", 2],
+  ["gateway.mjs", 2], ["grounds-grammar.mjs", 1],
+  ["pipeline.mjs", 3], ["publish/render.mjs", 1], ["publish/xlsx.mjs", 2],
   ["reference-score.mjs", 3], ["registry-fidelity.mjs", 2],
   ["portal-config-view.mjs", 1], ["publish/search-depth.mjs", 2],
 ]);

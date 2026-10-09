@@ -174,12 +174,12 @@ export function bareGrant(granted) {
  * @param {string} a.stage
  * @param {Set<string>|string[]} a.granted   bare tool names the seat holds (see bareGrant)
  * @param {string[]|Set<string>} a.artifacts  every basename the typed tool now owns. USUALLY one, and it
- *   was exactly one for the two stages this guard shipped with — frame-diff is the first conversion whose
- *   single call writes two files (`frame-diff.json`, plus `frame-diff.md` rendered from the same parsed
- *   model), and it is what showed the singular was a generalisation from n=2 rather than a property. Both
- *   its basenames reach a repair: the stage's `out` is the prose, so a stage-shaped repair names the
- *   prose, while every `framediff_*` token names the JSON. A direction (b) that checked one of them would
- *   be silent on whichever repair path it did not happen to hold.
+ *   was exactly one for the two stages this guard shipped with — the first conversion whose single call
+ *   wrote two files (a JSON plus the prose rendered from the same parsed model, on a stage since removed)
+ *   showed the singular was a generalisation from n=2 rather than a property. Both basenames of such a
+ *   call reach a repair: a stage-shaped repair names the prose, while a token about the JSON names the
+ *   JSON. A direction (b) that checked one of them would be silent on whichever repair path it did not
+ *   happen to hold.
  * @param {Array<{surface:string, kind:string, text:string}>} a.union
  * @param {string[]} a.toolUniverse          every tool name that exists anywhere, for direction (c)
  * @param {Array<{stage:string, tool:string}>} [a.backlog]  the named, excused members — ONE list, read

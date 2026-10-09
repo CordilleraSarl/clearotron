@@ -46,6 +46,25 @@ export function dispatchFileName(stage, attempt, repair = 0) {
   return `${stage}.attempt${attempt}${repair ? `.repair${repair}` : ""}.${DISPATCH_SUFFIX}`;
 }
 
+export const STREAMS_DIR = "streams";
+
+/**
+ * `_driver/streams/<label>.attempt<N>.jsonl` (or `…repair<M>…`): the raw stream of the session that
+ * dispatch started, named as its dispatch record is. The engines write it (engine/session-record.mjs,
+ * `streamSink`); this is the one place the name is made. Absolute, through `driverDir`, so a label's
+ * colon is written the way the platform can hold it.
+ *
+ * IN ITS OWN FOLDER, NEVER BESIDE THE JOURNALS. Every `*.jsonl` directly under `_driver/` is read as a
+ * stage's attempt journal by name: the token rollup sums its usage rows, the degraded-parts check reads
+ * its label off the file name, the integrity check leaves it out as append-only. A raw stream there
+ * would be counted as a stage and its usage summed twice. One folder down, no reader of `_driver/`
+ * lists it, and the integrity snapshot reads files only.
+ */
+export function streamFilePath(runDir, stage, attempt, repair = 0) {
+  if (!runDir) return null;
+  return join(driverDir(runDir), STREAMS_DIR, driverFileName(`${stage}.attempt${attempt}${repair ? `.repair${repair}` : ""}.jsonl`));
+}
+
 const shaOf = (buf) => createHash("sha256").update(buf).digest("hex").slice(0, 12);
 
 // ── — WHAT THE STAGE WAS GRANTED, BESIDE THE SHA THAT PROVES WHAT IT WAS ASKED ────────────────

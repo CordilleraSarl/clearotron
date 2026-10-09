@@ -30,12 +30,16 @@ import { join } from "node:path";
 
 import { allowedToolsFor, toolGroupsForStage, REGISTER_SERVERS, LOCAL_SERVER_SCRIPTS, RECORDING_STAGES, RECORDING_STAGES_KEEPING_RETRIEVAL } from "../engine/mcp/gather-config.mjs";
 import { STAGES } from "../stages.mjs";
+import { OWNER_TOOL_NAMES } from "../owner-tools.mjs";
 import { pinEnv } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling
 
 const MCP = fileURLToPath(new URL("../engine/mcp/", import.meta.url));
 
 /** The tool NAMES a server script registers, read from its `tools:` declaration. */
 function toolsRegisteredBy(script) {
+  // The owner server serves the tool list its module declares (owner-tools.mjs, OWNER_TOOLS), so its
+  // source names no tool; that list is the one it registers.
+  if (script === "owner-server.mjs") return [...OWNER_TOOL_NAMES];
   const src = readFileSync(join(MCP, script), "utf8");
   const at = src.indexOf("tools:");
   assert.notEqual(at, -1, `${script}: no tools: declaration found — this scan broke, it did not find an empty server`);
@@ -80,10 +84,11 @@ const SERVERS_GRANTED_TO_NOTHING = Object.freeze({
 const UNGRANTED_ON_PURPOSE = Object.freeze({});
 
 test("LOCAL servers: every registered tool is granted, or its absence is a written choice", () => {
-  const granted = new Set(allowedToolsFor(["perplexity", "band", "coverage"]).split(/\s+/).filter(Boolean));
+  // Step 3's owner tools replaced the register digest's coverage transport here (2026-10-01); their key is
+  // `owners`, which is not the script's stem, so each row names its key.
+  const granted = new Set(allowedToolsFor(["perplexity", "band", "owners"]).split(/\s+/).filter(Boolean));
   const surprises = [];
-  for (const [script, stated] of [["perplexity-server.mjs", UNGRANTED_ON_PURPOSE["perplexity-server.mjs"]], ["band-server.mjs", {}], ["coverage-server.mjs", {}]]) {
-    const key = script.replace("-server.mjs", "");
+  for (const [script, key, stated] of [["perplexity-server.mjs", "perplexity", UNGRANTED_ON_PURPOSE["perplexity-server.mjs"]], ["band-server.mjs", "band", {}], ["owner-server.mjs", "owners", {}]]) {
     const registered = toolsRegisteredBy(script);
     assert.ok(registered.length > 0, `${script}: registered no tools — the scan broke`);
     for (const t of registered) {
@@ -293,7 +298,7 @@ test("no stage holds a bridge without this file naming it", () => {
 });
 
 test("the server scripts this file reads actually exist — an absent file is not an empty server", () => {
-  for (const script of ["perplexity-server.mjs", "band-server.mjs", "coverage-server.mjs"]) {
+  for (const script of ["perplexity-server.mjs", "band-server.mjs", "owner-server.mjs"]) {
     assert.ok(existsSync(join(MCP, script)), `${script} is gone; this file is asserting about a server that no longer exists`);
   }
 });
@@ -347,19 +352,12 @@ test("CENSUS: every server module is accounted for — named in LOCAL, or stated
 //   · every granted tool is actually served (a grant for an unserved tool is a phantom).
 //
 // The per-stage sets are LITERAL, the census's own copy — a loop deriving them from the grant table
-// would be the declaration checking itself. Moving a row here is a deliberate act, per PR:
-//   · blind-frame holds its record tool and nothing else ("exactly one" was the rule while every
-//     recording stage looked like this);
+// would be the declaration checking itself. Moving a row here is a deliberate act, per PR (the
+// blind-frame and frame-diff rows left with the mid-run reopening's two stages):
 //   · skeptic holds its record tool AND search_run_artifacts — the SANCTIONED READ SURFACE, the
 //     ratification-hold unlock: O3c measured the stage's only Bash use as reads over the run's own
 //     artifacts, and this tool is their scoped replacement (read-only, run-dir-bounded, no retrieval).
 const RECORDING_GRANTS = Object.freeze({
-  "blind-frame": Object.freeze(["mcp__recording-blind-frame__record_blind_frame"]),
-  //   · frame-diff holds its record tool and nothing else — its Class 2 reads are ENUMERABLE (it compares
-  //     two named files), so the dictation names them and the seeded Read grant carries them. It gets no
-  //     `search_run_artifacts`: a search tool for a stage whose reads can be listed is exactly what the
-  //     sanctioned-equivalents design refuses.
-  "frame-diff": Object.freeze(["mcp__recording-frame-diff__record_frame_diff"]),
   //   · matter-frame holds BOTH, and it is the second stage to carry the read surface. Its Class 2 reads
   //     are NOT enumerable — O3c measured `ls`/`find`/`cat` DISCOVERY over the run dir (21 calls / 15
   //     attempts) — which is the line the design draws between it and frame-diff above. The key is its
@@ -441,18 +439,6 @@ const RECORDING_GRANTS = Object.freeze({
   skeptic: Object.freeze([
     "mcp__recording-skeptic__record_skeptic",
     "mcp__recording-skeptic__search_run_artifacts",
-  ]),
-  // Conversion 11 — the only row here carrying TWO typed transports beside its retrieval group. They are
-  // two statements and they keep two keys: `record_coverage` rules the run's obligation ledger row by
-  // row, `record_register_digest` renders the findings document. The arm below asserts every SERVED tool
-  // is granted to exactly one stage, so a merged key would show up here as one stage holding another
-  // stage's writer — which is the disease this census exists to catch.
-  "register-digest": Object.freeze([
-    "mcp__band__band_lookup",
-    "mcp__band__band_record",
-    "mcp__band__band_shape",
-    "mcp__coverage__record_coverage",
-    "mcp__recording-register-digest__record_register_digest",
   ]),
   // The knockout lane's reviewing pass: its record tool alone, and deliberately nothing else. No
   // retrieval and no register tools — the pass rewrites lines that are already rated, and a grant that

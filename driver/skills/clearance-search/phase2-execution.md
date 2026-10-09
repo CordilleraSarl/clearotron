@@ -11,9 +11,8 @@
 ## Contents
 
 - [Step 1 — Variants](#step-1--variants)
-- [Step 2 — Gather (register units + common-law) → placement → digest](#step-2--gather-register-units--common-law--placement--digest)
+- [Step 2 — Gather (register units + common-law)](#step-2--gather-register-units--common-law)
   - [Step 2A — The applicable register units](#step-2a--the-applicable-register-units)
-  - [Step 2C — Touchpoint 2: placement-inquiry](#step-2c--touchpoint-2-placement-inquiry)
   - [Variant execution strategy (register layer)](#variant-execution-strategy-register-layer)
 - [Step 2.6 — Skeptic review](#step-26--skeptic-review-a-fresh-eyes-self-audit-before-you-trust-the-findings)
 - [Step 3 — Cross-pollination (Option D — deterministic cross-checks, cap N=10)](#step-3--cross-pollination-option-d--deterministic-cross-checks-cap-n10)
@@ -31,10 +30,9 @@ classes, jurisdiction scope, product description, industry, and manner of use. T
 (Elements populated; Variants has rows; Watchlists present); if empty or malformed the run halts — there is no
 usable strategy. The manifest drives the gather stage.
 
-## Step 2 — Gather (register units + common-law) → placement → digest
+## Step 2 — Gather (register units + common-law)
 
-The driver runs the register search-axis units and the common-law worker as a batched gather fan-out, then
-placement-inquiry, then the register digest — each reading the shared manifest + `matter-context.md` from the
+The driver runs the register search-axis units and the common-law worker as a batched gather fan-out — each reading the shared manifest + `matter-context.md` from the
 run-dir at `studio/clearance-search/<slug>/<date>/`.
 
 ### Step 2A — The applicable register units
@@ -51,21 +49,6 @@ variant manifest path, the request context, the **active register provider** (se
 [SKILL.md → Register sources](SKILL.md#register-sources--the-vendor-is-the-source-of-truth-euipo-is-a-free-eu-cross-check)),
 the sub-budget and its output path (`register-units/<axis>.md`). `clearance-common-law` runs
 alongside the units against the same manifest.
-
-### Step 2C — Touchpoint 2: placement-inquiry
-
-After the gather units complete, run `placement-inquiry` (read [skills/placement-inquiry/SKILL.md](../placement-inquiry/SKILL.md)).
-
-**Inputs**:
-- `studio/clearance-search/<slug>/<date>/matter-context.md` (the strategic anchor from Phase 0)
-- Each `studio/clearance-search/<slug>/<date>/register-units/<axis>.md` (raw candidate inventory per axis)
-- `studio/clearance-search/<slug>/<date>/common-law-findings.md` (common-law candidate inventory)
-
-**Output**: `studio/clearance-search/<slug>/<date>/placement-recommendations.md` with every surfaced candidate placed at `headline-candidate` / `sheet-2` / `watchlist-annex` / `out-of-scope-filtered`, each with the structured-inquiry trace and written reasoning. The "Disagreements / flags surfaced to downstream" section captures cases where the placement deviates from a strict reading of the candidate's class-match or differs from `matter-context`'s framing.
-
-`placement-recommendations.md` feeds the digest — the digest consumes the placements as informed reasoning, can override with its own counter-reasoning, and carries the per-candidate placements through to `register-findings.md`. Overrides MUST be recorded in the digest's audit trail with the counter-reasoning.
-
-*(Why this lives between gather and digest: the digest would otherwise tier candidates by class-match-as-proxy, surfacing class-overlapping but commercially-off-field candidates at the headline tier. The placement-inquiry inquiry — "what does the applicant actually do, who's their customer, do customer bases overlap" — is the commercial-relevance gate that prevents the class-match overreach. See [matter-frame/SKILL.md](../matter-frame/SKILL.md) for the matter-context's off-field framing.)*
 
 ### Variant execution strategy (register layer)
 
@@ -157,8 +140,7 @@ is not a reason to skip it, and "the rule said so" is not an answer.
 - Are these the results expected for a mark like this — and if it's thin, is that because a
   sweep was missed, or because the field is genuinely clear?
 - Register-specific: are the audit trail + negative-results matrix present, do the per-unit counts
-  reconcile, **and did the register-findings file actually get written (file-truth precondition — synthesis must read the file,
-  not inline output)?** Common-law-specific: are the dictated platforms **plus the field-scoped general search for any collaborated / non-gaming goods** and any
+  reconcile? Common-law-specific: are the dictated platforms **plus the field-scoped general search for any collaborated / non-gaming goods** and any
   famous-mark flags covered, with a negative-results matrix?
 - **Self-conflict / partner:** is any headline or high-rated conflict the applicant's **own** mark, an
   affiliate's, or a named **partner** in `matter-context`? A partner / own mark is a coexistence-or-business
@@ -190,12 +172,10 @@ session** (the driver sends the skeptic's concerns as a follow-up under the unit
 records — and is asked to **defend its finding from that evidence or run only the narrow missing sub-query and
 revise**, then re-emit its file. It does **not** redo the search from scratch, and it is **not** switched to a
 fresh `opus` session (that would cold-cache the whole thread — cache is model-specific — for no quality gain over
-arguing from the evidence already in hand; opus judgment happens once, at the re-digest). **A `deferred`
+arguing from the evidence already in hand). **A `deferred`
 coverage-ledger row on a material jurisdiction is exactly this kind of documented-reason gap** — the owning unit
 resumes and runs the missing per-jurisdiction sub-query (its ring-fenced budget makes room). This is the
-recall-recovery loop: a *visible* deferral is recoverable; a silent one is not. **If a register unit is re-run,
-the register digest is re-run** (also a resume of its own session) over the refreshed unit digests (the prior
-digest consumed the stale set); if the flag is about the digest's own judgment, re-run the digest alone.
+recall-recovery loop: a *visible* deferral is recoverable; a silent one is not.
 
 A worker that did the work properly and validly found little is **not** re-run — thinness alone is a question, not
 a quota; never manufacture make-work to hit a number. At most one re-run per worker; if still short, proceed but
@@ -285,7 +265,7 @@ practical-likelihood question for this owner.
 
 **Reuse the register half; add the marketplace half.** The owner's portfolio under owner-name variants and
 the enforcement-appetite signals are already in hand from the register layer — owner aggregation across name
-variants and the owner-bound sweep (`clearance-register/digest.md` Steps 3–4) plus the prosecution-history and
+variants and the owner-bound sweep plus the prosecution-history and
 revocability reads (`synthesis-rules.md`). This step adds what the register layer cannot see: the
 **marketplace** half — the owner's *own use of the term*, site, and socials.
 
@@ -307,8 +287,6 @@ privately too.
 For **each finding** in the combined findings set (common-law + register, both layers' rows), provide an advisory risk assessment using [risk-framework.md](risk-framework.md) and [synthesis-rules.md](synthesis-rules.md).
 
 **Rank and select before you rate.** Apply the dominant-element spine first — [synthesis-rules.md](synthesis-rules.md) → "Conflict ranking & selection" — centred on the proposed mark's **dominant element** and gated by the consumer-confusion test ([risk-framework.md](risk-framework.md) → "The consumer confusion test — the governing gate"). The headline/overall risk is driven by the highest-ranked **on-point** conflicts (bare dominant element in the target field), not by a distinguished mark (e.g. a house-mark-prefixed filing) or by unrelated-field noise. Never let an on-point identical / near-identical-in-class hit drop out.
-
-**Source of truth (file-truth precondition).** Build every Findings row from `studio/clearance-search/<slug>/<date>/register-findings.md` and `studio/clearance-search/<slug>/<date>/common-law-findings.md`. Do **NOT** assemble the Findings sheet / Excel from inline digest output — if the register-findings file is not present the synthesis is not ready (the driver re-runs the digest). *(Prior-incident anchor: a run where the register layer found an identical-mark registration, but with no register-findings file written it never reached the deliverable — the deliverable is built from files, not inline payloads.)*
 
 Every assessment must be labeled: **Advisory — preliminary assessment for the reviewing lawyer.**
 
@@ -335,8 +313,7 @@ to ground, supply:
 The result is a **grounded profile** per finding (on-point authorities with court / date / one-line holding /
 stable id, or an explicit "no on-point precedent found"), optionally written to
 `studio/clearance-search/<slug>/<date>/case-law-findings.md`. Fold the grounded profiles into Key Factors + the
-narrative. Do NOT ground every finding — it is cost-prohibitive and low-signal — but DO ground watchlist hits
-unless the digest's own evidence already grounds them concretely (e.g. opposition data pulled directly).
+narrative. Do NOT ground every finding — it is cost-prohibitive and low-signal — but DO ground watchlist hits.
 
 **Integrity gate:** case-law citation is the highest-stakes hallucination surface in the workflow. If a grounded
 profile cites anything not fetched this session, or invents a holding, the run is treated as failed and the
