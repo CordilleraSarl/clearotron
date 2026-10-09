@@ -72,7 +72,7 @@ import { classifyGroundsNote } from "./grounds-grammar.mjs";   // — a charged 
 // — the register coverage form: the driver writes it before the digest dispatches, renders the
 // `## Coverage ledger` table and the machine ledger FROM it after the pass, and unions it across passes.
 import { documentCoverage, renderDocumentCoverageSection, spliceDocumentCoverage } from "./document-coverage.mjs";   //
-import { buildCoverageAbsenceForm, coverageAbsenceGaps, coverageFormAbsence, coverageFormBrief, renderCoverageAbsenceSection, renderCoverageLedgerSection, spliceCoverageLedger, renderCoverageLedgerJsonFromForm } from "./coverage-form.mjs";
+import { buildCoverageAbsenceForm, coverageAbsenceGaps, coverageFormAbsence, coverageFormBrief, renderCoverageAbsenceSection, renderCoverageLedgerSection, spliceCoverageLedger, renderCoverageLedgerJsonFromForm, unitLabel } from "./coverage-form.mjs";
 import { unionCoverageForm } from "./coverage-union.mjs";
 import { armCoverageForm, coverageFormInput, coverageFormPaths, coverageFormStamp, readCoverageForm, readCoverageFormInput, waitingFamilyStates, writeCoverageForm } from "./coverage-form-io.mjs";
 import { releasedFamilyQids, readWithheldFamilies } from "./withheld-families.mjs";   // the waiting families the reading turn released join as dictated entries
@@ -4803,7 +4803,7 @@ async function stage(name, ctx, opts = {}) {
   let wedgeCycles = 0;
   for (;;) {
     const r = await stageWithChain(name, ctx, opts);
-    if (r.ok || r.fail !== "lane_wedge" || wedgeCycles >= LANE_WEDGE_CHAIN_RETRIES) { sweepStrayArtifacts(ctx, name); return r; }
+    if (r.ok || r.fail !== "lane_wedge" || wedgeCycles >= LANE_WEDGE_CHAIN_RETRIES) { sweepStrayArtifacts(ctx, name); await afterLateSynthesisSave(name, ctx, r); return r; }
     wedgeCycles++;
     note(`[${name}] command-lane wedge — the stage timed out with zero progress (saturated lane). Waiting ${Math.round(LANE_WEDGE_BACKOFF_MS / 1000)}s for it to clear, then re-dispatching (${wedgeCycles}/${LANE_WEDGE_CHAIN_RETRIES}); full per-attempt timeouts preserved.`);
     try { runLog(ctx.paths.runDir, { event: "lane-wedge-retry", stage: name + (ctx.axis ? `:${ctx.axis}` : ""), cycle: wedgeCycles, max: LANE_WEDGE_CHAIN_RETRIES }); } catch { /* telemetry best-effort */ }
@@ -7028,7 +7028,7 @@ export function coverageRowAreaLabel(axis, unit) {   // @internal
   return coverageRowAreaFrom(axis, unit, labelled, "(all of it)");
 }
 
-export function coverageJudgmentRows(ledgerRows, planExecution) {   // @internal
+export function coverageJudgmentRows(ledgerRows, planExecution, plan = null) {   // @internal
   const open = [];
   for (const r of ledgerRows ?? []) {
     // `withheld-by-judgment` joins `confirmed-clean` in NOT reaching the reader, and for the opposite
@@ -7054,13 +7054,13 @@ export function coverageJudgmentRows(ledgerRows, planExecution) {   // @internal
     const host = axisOf.has(q) ? open.find((o) => o.axis === axisOf.get(q)) : null;
     if (host) { host.qids.push(q); claimed.add(q); }
   }
-  // The qid rides VERBATIM wherever it lands. It is the identifier the plan, the receipt and every gate
-  // join on, and a shortened one is a row nobody can match back to the query that did not run.
+  // A claimed qid is printed nowhere: the plan-execution receipt keeps it for every gate to join on, and a
+  // row a lawyer reads names its slice, never an engine identifier (ruled 2026-10-01). One row per slice.
   const rows = open.map((o) => ({ area: o.area, ...(o.areaLabel ? { areaLabel: o.areaLabel } : {}),
-    note: o.qids.length ? `${o.note} (no band block for: ${o.qids.join(", ")})` : o.note }));
+    note: o.note }));
   for (const qid of Array.isArray(planExecution?.missing) ? planExecution.missing : []) {
     const q = String(qid ?? "").trim();
-    if (q && !claimed.has(q)) rows.push({ area: q, note: "planned and not executed this run — the funnel produced no band block for this query" });
+    if (q && !claimed.has(q)) rows.push({ area: q, ...orphanAreaLabel(q, axisOf.get(q), plan), note: "planned and not executed this run" });
   }
   return rows.filter((r) => r.area && r.note);
 }
@@ -7074,7 +7074,7 @@ export function stampCoverageJudgmentRows(P, runDir, note, ctx) {   // @internal
       runLog(runDir, { event: "coverage-judgment-rows", judgment: false, reason: "synthesis emitted no coverage_judgment — none is invented here" });
       return;
     }
-    const rows = coverageJudgmentRows(loadCoverageLedger(runDir).rows, readPlanExecution(ctx));
+    const rows = coverageJudgmentRows(loadCoverageLedger(runDir).rows, readPlanExecution(ctx), ctx?.registerPlan ?? null);
     const discarded = Array.isArray(cj.rows) ? cj.rows.length : 0;
     const next = { ...doc, coverage_judgment: { ...cj } };
     if (rows.length) next.coverage_judgment.rows = rows;
@@ -8498,9 +8498,15 @@ function postponeRun(e, run, meta = {}) {
  * PURE: a job in, a plain object out, no IO.
  */
 export function instructedScopeOf(job) {
-  const markNames = Array.isArray(job?.marks)
-    ? job.marks.map((m) => (typeof m === "string" ? m : m?.name)).filter(Boolean)
-    : (job?.markName ?? job?.name ?? null);
+  // THE MARKS ARE ALWAYS A LIST. A job that names its mark only as `markName` — a queue file written by
+  // hand or by a forwarding agent, a resume rebuilt from status.json — recorded the bare string, and the
+  // declination tool's identical-mark refusal reads a list, so on those runs it saw no mark and never
+  // fired. An array that names no mark falls back the same way the intake gate does; null when nothing
+  // names one.
+  const named = Array.isArray(job?.marks)
+    ? job.marks.map((m) => (typeof m === "string" ? m : m?.name)).filter(Boolean) : [];
+  const single = job?.markName ?? job?.name ?? null;
+  const markNames = named.length ? named : (single ? [single] : null);
   return {
     marks: markNames,
     classes: job?.classes ?? null,
@@ -8941,7 +8947,7 @@ async function pipelineInner(job, opts = {}) {
   // frame validator compares against THIS file, never against the frame's own paraphrase) —
   // paraphrase drift between the request and the frame is a defect, not a style choice.
   try {
-    writeFileSync(P.instructedScope, JSON.stringify(instructedScopeOf(job), null, 2) + "\n");
+    const scope = instructedScopeToWrite(job, { jobRebuiltFromStatus: opts.jobRebuiltFromStatus, scopeOnDisk: existsSync(P.instructedScope) }); if (scope) writeFileSync(P.instructedScope, JSON.stringify(scope, null, 2) + "\n");
   } catch (e) { note(`instructed-scope write failed (non-fatal): ${e.message}`); }
   // THE STORED DEFAULTS THE ENGINE CANNOT SEARCH — recorded by the run, not only by the plan preview.
   //
@@ -13479,6 +13485,9 @@ async function pipelineInner(job, opts = {}) {
     // structured-only). Each stage is file-gated/resumable; per-card sessions feed the lint repair below.
     // C2 — fold same-owner+same-mark duplicate filings into one finding BEFORE the overview + cards read
     // findings.json, so the whole delivery phase (and the published copy) sees the single consolidated set.
+    // THE SEAM'S WRITES ARE ONE CLOSURE, so they can run again: a synthesis save after this point rewrites
+    // findings.json from the seat's own call, and every write below went with it (`stage()` re-runs them).
+    const seamWrites = async () => {
     injectDeferralCoverage(P, run.runDir, note); injectMeaningGapCoverage(P, run.runDir, note);   // A3: unclosed reopen directives, and meaning searches that did not complete, become reader-visible coverage rows first
     // qw/cn-scope-honesty — the sibling injection: a CN-family-scope run whose zh lane did not run
     // discloses what the native-language investigation would have searched, and where it is offered
@@ -13534,6 +13543,15 @@ async function pipelineInner(job, opts = {}) {
       try { writeVerdictSidecar(); }
       catch (e2) { throw new StageFailure("verdict", `verdict sidecar refresh failed after consolidation: ${String(e2.message).slice(0, 120)}`); }
     }
+    };
+    await seamWrites();
+    // Every write above is idempotent: each injection skips a row the record already carries, the stamp
+    // replaces its rows, and the fold leaves a folded record as it is.
+    ctx.afterSynthesisSave = async () => {
+      note(`[seam] a synthesis save after the seam rewrote findings.json — re-applying the seam's writes`);
+      runLog(run.runDir, { event: "seam-reapplied", after: "synthesis-save" });
+      await seamWrites();
+    };
     // wp50/wi2 — the overview PROSE must speak the derived tier (VENZY: caption said "High risk" while
     // every code surface said VERY HIGH). Thread the just-refreshed sidecar into the stage prompt; the
     // deterministic backstop is predelivery-lint's overallTierChecks.
@@ -16015,6 +16033,20 @@ export function reconstructCtx(job, opts) {   // @internal
   return ctx;
 }
 
+/**
+ * The aim count the cold pass sets before synthesis (`ctx.jxAim`), set on a reconstructed context from the
+ * same function and behind the same gate. It lives here rather than in reconstructCtx because the lane
+ * module is only ever imported lazily and reconstructCtx is synchronous. Without it a synthesis arm on a run
+ * whose pass carried the Chinese-evidence block dispatched without it. Returns the count it set, or null.
+ */
+export async function attachJxAim(ctx) {   // @internal
+  if (!ctx?.searchPolicy?.components?.jxLanes) return null;
+  const { jxAimForSynthesis } = await import("./jx-units.mjs");
+  const aim = jxAimForSynthesis(ctx.paths.runDir);
+  if (aim) ctx.jxAim = aim.count;
+  return aim ? aim.count : null;
+}
+
 // Copy a stage's about-to-be-overwritten output (+ its per-stage telemetry) into _history/<ts>-<reason>/ so a
 // prior result is NEVER lost and stays comparable. Returns the snapshot dir (or null if there was no output).
 //
@@ -16068,6 +16100,7 @@ export async function repairStale(job, opts = {}) {   // @internal
   const labels = Array.isArray(rec?.labels) ? rec.labels : [];
   if (!labels.length) return null;
   attachFramework(ctx, { write: true });
+  await attachJxAim(ctx);   // the aim count the cold pass sets, as --experiment sets it on its rebuilt context
   // RE-DERIVE THE ORDER rather than trusting the file's. The recorded order was right when it was
   // written, and a code change since could have moved an edge — the file names WHAT, the live graph says
   // WHEN. (the file names WHAT, the live graph says WHEN)
@@ -16211,6 +16244,7 @@ async function runExperimentInner(job, opts) {
   if (opts.dispatchTrigger != null && !DISPATCH_TRIGGERS.includes(opts.dispatchTrigger))
     throw new Error(`--dispatch-trigger: unknown value "${opts.dispatchTrigger}" — it decides which production pass the arm reproduces, so a typo would compose a quietly different prompt. One of: ${DISPATCH_TRIGGERS.join(", ")}`);
   const ctx = reconstructCtx(job, opts);
+  await attachJxAim(ctx);   // read off the canonical run, as the cold pass reads it; the file itself is a sandbox edge
   const model = opts.model ?? (axis ? axisTier(axis).model : STAGES[name].model);
   const ts = new Date().toISOString().replace(/[:.]/g, "-");
   const tag = [name, axis, opts.label ? kebab(opts.label) : null].filter(Boolean).join("-");
@@ -16742,7 +16776,7 @@ if (isEntrypoint(import.meta.url)) void (async () => {
   // rate-limit catch already finds the run to postpone; the same hook lets a THROWN exit name the run.
   const opts = a.experiment
     ? { ...base, codename: a.codename, experiment: a.experiment, model: a.model, instructions: a.instructions, axis: a.axis, label: a.label, dispatchTrigger: a.dispatchTrigger }
-    : { ...base, codename: a.codename, fromStage: a.fromStage };
+    : { ...base, codename: a.codename, fromStage: a.fromStage, ...(a.job ? {} : { jobRebuiltFromStatus: true }) };
   const script = resolve(fileURLToPath(import.meta.url));
   // `jobPath` is null on a rebuilt resume, so the advice composes a command that does not name a file
   // the box does not have — which is the whole defect this path exists to close, and printing it again
@@ -16921,4 +16955,41 @@ export function injectMeaningGapCoverage(P, runDir, note) {   // @internal — e
   } catch (e) {
     note(`[common-law] meaning-gap coverage skipped: ${String(e?.message || e).replace(/\s+/g, " ").slice(0, 100)}`);
   }
+}
+
+/**
+ * A SYNTHESIS SAVE AFTER THE SEAM (the pre-delivery narrative redo, the in-pass stale repair) rewrites
+ * findings.json from the seat's own call, and the seam's writes go with it: the coverage-judgment rows, the
+ * injected coverage rows, the fold. The seam leaves them on the run's context, and they run again here,
+ * before anything downstream reads the record. Before the seam there is nothing on the context, so nothing
+ * runs. It sits at the end of this file so that adding it moved no line another file cites.
+ */
+async function afterLateSynthesisSave(name, ctx, r) {
+  if (r?.ok && !r.skipped && name === "synthesis" && typeof ctx?.afterSynthesisSave === "function") await ctx.afterSynthesisSave();
+}
+
+/**
+ * The reader's name for a planned search that never ran and that no open ledger row on its axis claims —
+ * the orphan row of `coverageJudgmentRows`. Its area is the plan's qid, which a lawyer cannot read; the
+ * label is composed the way the workbook's released-family rows compose theirs (publish/index.mjs
+ * releasedFamilyRows): the plan entry's unit in the coverage form's grammar, its axis head in the reader's
+ * words. `{}` when the frozen plan does not carry the entry, so the row keeps the identifier and nothing is
+ * invented in its place. PURE.
+ */
+function orphanAreaLabel(qid, axis, plan) {
+  const entry = (Array.isArray(plan?.entries) ? plan.entries : []).find((e) => e?.qid === qid);
+  if (!entry) return {};
+  const label = coverageUnitLabel(unitLabel(axis || entry.axis, entry));
+  return label && label !== qid ? { areaLabel: label } : {};
+}
+
+/**
+ * The instructed scope this run writes, or null to keep the one already on disk. A resume that rebuilt its
+ * job from status.json holds only the job's identity (id, reference, mark, classes, forwarder), so writing
+ * the scope from it would replace the order's goods, customer and territories with nothing, and every
+ * later reader of the scope would see a narrower matter than was ordered. Such a resume keeps the scope the
+ * run started with. A job read from a file, or a run with no scope yet, writes as before. PURE.
+ */
+export function instructedScopeToWrite(job, { jobRebuiltFromStatus = false, scopeOnDisk = false } = {}) {   // @internal
+  return jobRebuiltFromStatus && scopeOnDisk ? null : instructedScopeOf(job);
 }

@@ -422,6 +422,9 @@ export const CAPABILITIES = Object.freeze({
     pageGuard: 60,
     ceilingDefault: 600,
     namesChunkDefault: 1,
+    // A ranked list the register will not run (HTTP 400, "The search query is too complex to run."). Which
+    // lists it refuses depends on the spellings, so a refused one is asked again one spelling at a time.
+    listRefusal: /too complex to run/i,
     providerWindow: "cursor window; exact total via options.include_total (approximate totals saturate at 10000 and are reported UNKNOWN, never as a count)",
   }),
 });

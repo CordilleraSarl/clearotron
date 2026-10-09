@@ -256,6 +256,10 @@ export function makeEnumerate(deps) {
     // error on the count probe rather than as a countable total. Optional: a provider that does not
     // declare one keeps the previous behaviour exactly.
     cardinalityRefusal = null,
+    // — the provider's own words for refusing a LIST of spellings it would answer one by one (a ranked list
+    // judged too complex to run). Such a list is asked again one spelling at a time, as it was before lists
+    // were sent at all, never reported as a search that could not be made. Optional: absent, nothing changes.
+    listRefusal = null,
   } = capabilities;
 
   if (countProbe === "endpoint" && typeof count !== "function") {
@@ -486,7 +490,7 @@ export function makeEnumerate(deps) {
     return stampTotalCounts(await enumerateQuestion(auth, params, tctx, opts, said), said.totalCounts);
   }
 
-  async function enumerateQuestion(auth, params, tctx, { split = true } = {}, said = { totalCounts: null }) {
+  async function enumerateQuestion(auth, params, tctx, { split = true, oneByOne = false } = {}, said = { totalCounts: null }) {
     if (!hasAnyElement(params)) return { type: "text", text: missingElementError };
     const hear = (p) => { if (typeof p?.total_counts === "string") said.totalCounts = p.total_counts; };
 
@@ -522,7 +526,7 @@ export function makeEnumerate(deps) {
     // descriptor total — `count` is the deduped truth); the resource ceiling applies to the RUNNING total
     // so a crowd still returns an incomplete descriptor. ANY chunk error/incomplete makes the WHOLE slice
     // incomplete — a clean can never ship over a partially-executed slice.
-    const shapeChunk = typeof namesChunkFor === "function" ? namesChunkFor(params) : null;
+    const shapeChunk = oneByOne ? 1 : typeof namesChunkFor === "function" ? namesChunkFor(params) : null;
     const namesChunk = Number.isFinite(shapeChunk) && shapeChunk >= 1
       ? Math.floor(shapeChunk) : envInt("CLEAROTRON_ENUMERATE_NAMES_CHUNK", namesChunkDefault);
     const allNames = Array.isArray(params[namesKey]) ? params[namesKey].filter(Boolean) : null;
@@ -657,6 +661,9 @@ export function makeEnumerate(deps) {
     for (let page = 0; ; page += 1) {
       const r = await search(auth, { ...params, ...pageParams(page, pageSize, prevParsed) }, tctx);
       if (isToolError(r)) {
+        if (page === 0 && !oneByOne && allNames && allNames.length > 1 && listRefusal?.test(String(r.text ?? ""))) {
+          return enumerateQuestion(auth, params, tctx, { split, oneByOne: true }, said);
+        }
         if (splittable && isGatewayTimeout(r.text)) return regionHalves(auth, params, tctx, { ceiling, incomplete, cause: String(r.text), hear });
         return incomplete(total, results.length, results, `provider error during enumeration (page ${page}): ${String(r.text ?? "")}`, timeoutMark(r.text));
       }
