@@ -31,7 +31,7 @@
 //
 // PURE (no node imports) so it tests offline, like coverage-ledger.mjs / named-band.mjs.
 
-import { recordQids } from "./named-band.mjs";
+import { recordQids } from "./named-band.mjs"; import { moreThan } from "../shared/register-floor.mjs";
 
 /** Owner-slice states. `enumerated` is the only one that can carry a negative. */
 export const OWNER_SLICE_STATES = ["enumerated", "crowd", "not-run", "missing"];
@@ -95,7 +95,9 @@ export function deriveOwnerScreen(planEntries, blocks, bandRecords, {
       terms: Array.isArray(e.terms) ? e.terms.map(str) : (e.term != null ? [str(e.term)] : []),
       nice_classes: (e.nice_classes ?? []).map(str),
       state,
-      total_hits: Number(block?.total_hits) || 0,
+      // a register's floor ("at least N") is no count: the total stays null and the floor rides beside it
+      total_hits: Number.isFinite(block?.total_floor) ? null : Number(block?.total_hits) || 0,
+      ...(Number.isFinite(block?.total_floor) ? { total_floor: block.total_floor } : {}),
       records: recs.length,
       record_ids: recs.slice(0, recordCap).map((r) => str(r.record_id)).filter(Boolean),
       reason: sliceReason(e, block, deferred.get(qid) ?? null, capabilities),
@@ -103,7 +105,8 @@ export function deriveOwnerScreen(planEntries, blocks, bandRecords, {
       // executor's own descriptor says so, and the screen keeps them apart on the same row.
       portfolio: countEntry ? {
         qid: str(countEntry.qid),
-        total_hits: Number(countBlock?.total_hits) || 0,
+        total_hits: Number.isFinite(countBlock?.total_floor) ? null : Number(countBlock?.total_hits) || 0,
+        ...(Number.isFinite(countBlock?.total_floor) ? { total_floor: countBlock.total_floor } : {}),
         counted: !!countBlock && countBlock.error !== true,
       } : null,
     });
@@ -173,7 +176,7 @@ export function ownerScreenNegative(screen) {
   ];
   if (hit.length) parts.push(`Enumerated WITH records: ${hit.map((o) => `${name(o)} — ${o.records} record(s)`).join("; ")}.`);
   if (zero.length) parts.push(`Enumerated with zero records — a negative may be stated for these owners and ONLY these: ${zero.map(name).join("; ")}.`);
-  if (crowd.length) parts.push(`Count-only (NOT a clean — the slice was never enumerated): ${crowd.map((o) => `${name(o)} — ${o.total_hits} hit(s)`).join("; ")}.`);
+  if (crowd.length) parts.push(`Count-only (NOT a clean — the slice was never enumerated): ${crowd.map((o) => `${name(o)} — ${Number.isFinite(o.total_floor) ? moreThan(o.total_floor) : o.total_hits} hit(s)`).join("; ")}.`);
   if (notRun.length) parts.push(`NOT RUN — no negative may be stated for these owners; the gap is disclosed, never a clean: ${notRun.map((o) => `${name(o)}: ${o.reason ?? "capability absent"}`).join("; ")}.`);
   if (missing.length) parts.push(`Unaccounted for: ${missing.map(name).join("; ")}.`);
   return parts.join(" ");

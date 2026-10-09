@@ -152,7 +152,9 @@ test("a clean zero releases the families — a fully resolved stack is a complet
   const src = readFileSync(join(ROOT, "providers", "_shared", "enumerate.mjs"), "utf8");
   assert.doesNotMatch(src, /unresolved === 0 && records\.length > 0/,
     "a fully resolved stack with no records still falls through to incomplete — a clean zero reads as unanswered");
-  assert.equal((src.match(/if \(unresolved === 0\) \{/g) ?? []).length, 2,
+  // The one exception is a stack the register answered with a floor ("at least 10,000"): it is never a
+  // complete zero, whatever its members' counts say, so that guard rides the same line.
+  assert.equal((src.match(/if \(unresolved === 0(?: && floor === null)?\) \{/g) ?? []).length, 2,
     "both rescue paths must treat a fully resolved stack as a complete band");
 
   // …and the crowd gate itself still releases on the state a parent can actually hold.

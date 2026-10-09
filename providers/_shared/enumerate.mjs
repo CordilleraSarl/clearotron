@@ -54,7 +54,7 @@
 import {
   BATCH_SCREEN_CHUNK, chunk, classifyStatus, isAllClass, normalizeBrandRow, screenVerdict,
 } from "./screen.mjs";
-import { makeCountProbe, parseToolText, isToolError } from "./count.mjs";
+import { makeCountProbe, parseToolText, isToolError } from "./count.mjs"; import { floorOf, moreThan } from "../../shared/register-floor.mjs";
 import { guardCountCall, guardToolCall } from "./transport-guard.mjs";
 import { clipProviderText } from "./provider-text.mjs";   // — keep the discriminator
 
@@ -265,8 +265,7 @@ export function makeEnumerate(deps) {
     throw new Error('[enumerate-kernel] capabilities.screenSource === "search-row" requires a rowScreen() dependency');
   }
 
-  const crowdReason = (total, ceiling) =>
-    `total_hits ${total} exceeds the enumerate ceiling ${ceiling} — this is a CROWD, not a named exact/near band. Record it as a count+sample descriptor and hand it up to judgment; the funnel does NOT narrow-and-retry a crowd here. Whether a narrower NAMED enumeration is warranted, and whether this slice is material, is judgment's call (Layer B) — never accept it as clean.`;
+  const crowdReason = (total, ceiling) => `total_hits ${total} exceeds the enumerate ceiling ${ceiling} — ${CROWD_IS}`;
 
   // ── count-first per-term rescue ───────────────────────────────────────────────────────────────────
   // A multi-name OR-stack that crowds over the ceiling used to return ONE blind `incomplete` — a rare
@@ -296,13 +295,15 @@ export function makeEnumerate(deps) {
   // exactly: a term whose probe failed is dispositioned `error`, never `verified-zero`.
   const countHits = makeCountProbe({ search, count, capabilities: { countProbe }, cheapCountParams });
 
-  async function countFirstRescue(auth, params, names, ceiling, stackTotal, tctx, incomplete) {
+  // `floor` is the register's "at least N" when it answered the whole stack with one instead of a count
+  // (shared/register-floor.mjs): the stack's total then stays null and the figure rides beside it.
+  async function countFirstRescue(auth, params, names, ceiling, stackTotal, tctx, incomplete, floor = null) {
     const term_counts = {};
     for (const t of names) {
       const probe = await countHits(auth, { ...params, [namesKey]: [t] }, tctx);
       const n = probe.ok ? probe.total : null;
       const said = countsOf(probe);   // what this spelling's own count counts, when the register said
-      if (n == null) { term_counts[t] = { total_hits: null, disposition: "error" }; continue; }
+      if (n == null) { term_counts[t] = floorCount(probe) ?? { total_hits: null, disposition: "error" }; continue; }
       if (n === 0) term_counts[t] = { total_hits: 0, disposition: "verified-zero", ...said };
       else if (n > ceiling) term_counts[t] = { total_hits: n, disposition: "crowd", ...said };
       else term_counts[t] = { total_hits: n, disposition: "unenumerated", ...said };
@@ -322,13 +323,14 @@ export function makeEnumerate(deps) {
     // the identical question, that is the best case a matter can have (a mark nobody has registered)
     // producing a run that searches almost nothing. The ordinary search path has always returned
     // `enumerated` for a zero-record answer; this rescue path was the one place that did not.
-    if (unresolved === 0) {
+    // A stack the register answered with a floor is never a complete zero, whatever its spellings say.
+    if (unresolved === 0 && floor === null) {
       // every term verified zero ⇒ nobody has filed any of these names: a complete band whose answer is zero.
       return { type: "text", text: JSON.stringify({ state: "enumerated", total_hits: stackTotal, count: records.length, records, term_counts }, null, 2) };
     }
-    return incomplete(stackTotal, records.length, records,
-      `stack total_hits ${stackTotal} exceeds the enumerate ceiling ${ceiling}; each spelling was counted and none was read (${names.length} terms: ${tally["verified-zero"]} verified-zero, ${tally.unenumerated} counted and not read, ${tally.crowd} crowd, ${tally.error} error). term_counts carries each spelling's count: which to read, narrow or leave is the reading step's decision, and a populated term is never recorded 0.`,
-      { term_counts, records });
+    return incomplete(floor === null ? stackTotal : null, records.length, records,
+      `stack total_hits ${floor === null ? stackTotal : moreThan(floor)} exceeds the enumerate ceiling ${ceiling}; each spelling was counted and none was read (${names.length} terms: ${tally["verified-zero"]} verified-zero, ${tally.unenumerated} counted and not read, ${tally.crowd} crowd, ${tally.error} error). term_counts carries each spelling's count: which to read, narrow or leave is the reading step's decision, and a populated term is never recorded 0.`,
+      { term_counts, records, ...floorStamp(floor) });
   }
 
   // ── count-first per-CLASS rescue ──────────────────────────────────────────────────────────────────
@@ -343,14 +345,14 @@ export function makeEnumerate(deps) {
   // a populated class can never be recorded 0 — it is in `class_counts`, and if tractable its records
   // are carried. NOTE a record filed in several classes sits in each leg's enumeration; the merge
   // dedupes it, so per-class totals may legitimately sum past the stack total.
-  async function classSplitRescue(auth, params, classes, ceiling, stackTotal, tctx, incomplete) {
+  async function classSplitRescue(auth, params, classes, ceiling, stackTotal, tctx, incomplete, floor = null) {
     const class_counts = {};
     const tractable = [];
     for (const c of classes) {
       const probe = await countHits(auth, { ...params, nice_classes: [c] }, tctx);
       const n = probe.ok ? probe.total : null;
       const said = countsOf(probe);   // what this class's own count counts, when the register said (ruling 712)
-      if (n == null) { class_counts[c] = { total_hits: null, disposition: "error" }; continue; }
+      if (n == null) { class_counts[c] = floorCount(probe) ?? { total_hits: null, disposition: "error" }; continue; }
       if (n === 0) class_counts[c] = { total_hits: 0, disposition: "verified-zero", ...said };
       else if (n > ceiling) class_counts[c] = { total_hits: n, disposition: "crowd", ...said };
       else tractable.push({ c, n, said });
@@ -380,14 +382,14 @@ export function makeEnumerate(deps) {
     const unresolved = Object.values(class_counts).filter(isUnresolvedCount).length;
     // Same rule, same reason, same correction as the OR-stack rescue above: a stack in which every class
     // came back a verified zero is a complete band whose answer is zero, not a question nobody answered.
-    if (unresolved === 0) {
+    if (unresolved === 0 && floor === null) {
       // every class resolved to verified-zero or fully-enumerated ⇒ the union of per-class enumerations
       // IS the complete stack (every record carries ≥1 in-filter class) — a true band, the class rescue.
       return { type: "text", text: JSON.stringify({ state: "enumerated", total_hits: stackTotal, count: records.length, records, class_counts }, null, 2) };
     }
-    return incomplete(stackTotal, records.length, records,
-      `owner-scoped total_hits ${stackTotal} exceeds the enumerate ceiling ${ceiling}; count-first per-CLASS rescue ran (${classes.length} classes: ${tally["verified-zero"]} verified-zero, ${tally.enumerated} enumerated with records carried, ${tally.crowd} crowd, ${tally.unenumerated} unenumerated on budget, ${tally.error} error). Saturated class legs stay a CROWD descriptor for judgment; class_counts is the per-class truth — a populated class leg is never recorded 0 and never "unopened".`,
-      { class_counts, records });
+    return incomplete(floor === null ? stackTotal : null, records.length, records,
+      `owner-scoped total_hits ${floor === null ? stackTotal : moreThan(floor)} exceeds the enumerate ceiling ${ceiling}; count-first per-CLASS rescue ran (${classes.length} classes: ${tally["verified-zero"]} verified-zero, ${tally.enumerated} enumerated with records carried, ${tally.crowd} crowd, ${tally.unenumerated} unenumerated on budget, ${tally.error} error). Saturated class legs stay a CROWD descriptor for judgment; class_counts is the per-class truth — a populated class leg is never recorded 0 and never "unopened".`,
+      { class_counts, records, ...floorStamp(floor) });
   }
 
   // ── A QUESTION SLOWER THAN THE REGISTER'S GATEWAY WAITS IS ASKED AGAIN IN REGION HALVES ───────────────
@@ -530,6 +532,9 @@ export function makeEnumerate(deps) {
       const rescueNotes = [];           // per-window rescue summaries for the final descriptor
       const enumeratedWindowTerms = []; // terms whose whole window enumerated cleanly (per-term truth by superset)
       let totalSum = 0;
+      // The largest floor a window answered with ("at least N"): the slice's total is then unknown, never a
+      // sum that leaves the floor out, and the figure rides as the slice's own floor.
+      let floorMax = null;
       const chunks = Math.ceil(allNames.length / namesChunk);
       const mergeRecs = (recs) => {
         for (const rec of (recs ?? [])) {
@@ -551,6 +556,7 @@ export function makeEnumerate(deps) {
           // A rescued window (term_counts attached) carries its per-term truth — aggregate and CONTINUE so
           // the remaining windows still get their accounting; the slice stays incomplete either way, but a
           // partial abort here would leave later windows' terms unaccounted and the clean-gate blind.
+          if (Number.isFinite(parsed.total_floor)) floorMax = Math.max(floorMax ?? 0, parsed.total_floor);
           if (countFirst && parsed.term_counts && typeof parsed.term_counts === "object") {
             Object.assign(termCounts, parsed.term_counts);
             totalSum += parsed.total_hits ?? 0;
@@ -558,9 +564,10 @@ export function makeEnumerate(deps) {
             rescueNotes.push(`chunk ${i + 1}/${chunks}: ${String(parsed.reason ?? "").slice(0, 140)}`);
             continue;
           }
-          return incomplete(totalSum + (parsed.total_hits ?? 0), merged.size + (parsed.fetched ?? 0),
+          return incomplete(floorMax === null ? totalSum + (parsed.total_hits ?? 0) : null, merged.size + (parsed.fetched ?? 0),
             [...merged.values(), ...(parsed.sample ?? [])],
-            `chunk ${i + 1}/${chunks} (${part.length} names) ${parsed.state}: ${String(parsed.reason ?? "").slice(0, 180)}`);
+            `chunk ${i + 1}/${chunks} (${part.length} names) ${parsed.state}: ${String(parsed.reason ?? "").slice(0, 180)}`,
+            floorStamp(floorMax));
         }
         totalSum += parsed.total_hits ?? 0;
         mergeRecs(parsed.records);
@@ -579,9 +586,9 @@ export function makeEnumerate(deps) {
         for (const t of enumeratedWindowTerms) {
           if (!(t in termCounts)) termCounts[t] = { total_hits: null, disposition: "enumerated" };
         }
-        return incomplete(totalSum, merged.size, [...merged.values()],
+        return incomplete(floorMax === null ? totalSum : null, merged.size, [...merged.values()],
           `count-first per-term rescue ran in ${rescueNotes.length}/${chunks} name chunks — saturated terms stay CROWD descriptors for judgment; term_counts is the per-term truth (a populated term is never recorded 0). ${rescueNotes.join(" · ")}`.slice(0, 900),
-          { term_counts: termCounts, records: [...merged.values()] });
+          { term_counts: termCounts, records: [...merged.values()], ...floorStamp(floorMax) });
       }
       return { type: "text", text: JSON.stringify({ state: "enumerated", total_hits: totalSum, count: merged.size, records: [...merged.values()], ...(Object.keys(termCounts).length ? { term_counts: termCounts } : {}) }, null, 2) };
     }
@@ -664,6 +671,24 @@ export function makeEnumerate(deps) {
       // where the "enumerated" verdict is actually minted, so it cannot depend on every future adapter
       // remembering. total_hits rides out NULL — unknown — never a fabricated 0.
       if (countProbe === "cheap" && !Number.isFinite(parsed.total_hits)) {
+        // A FLOOR IS AN ANSWER (ruled 2026-10-02). A register that says "at least 10,000" counted, and gave a
+        // floor instead of a figure: the search ran and is too large to read. So it is a crowd, with the
+        // register's own figure beside a total that stays null. Never a provider error, which would ask it
+        // again for the same answer and write a 0 in its place.
+        const floor = floorOf(parsed);
+        if (floor !== null) {
+          // AS FOR ANY CROWD OVER THE CEILING (the page-0 branch below): a stack of spellings, or an owner's
+          // classes, is counted part by part first, so a rare spelling never vanishes inside the floor.
+          if (page === 0 && countFirst && allNames && allNames.length > 1) {
+            return countFirstRescue(auth, params, allNames, ceiling, null, tctx, incomplete, floor);
+          }
+          if (page === 0 && countFirst && splitClasses.length > 1) {
+            return classSplitRescue(auth, params, splitClasses, ceiling, null, tctx, incomplete, floor);
+          }
+          return incomplete(null, results.length + (parsed.results?.length ?? 0), [...results, ...(parsed.results ?? [])],
+            `the register answered "${moreThan(floor)}" for this question: a floor, not a count, so the set is too large to read. ${CROWD_IS[0].toUpperCase()}${CROWD_IS.slice(1)}`,
+            floorStamp(floor));
+        }
         return incomplete(null, results.length, results,
           `provider error during enumeration (page ${page}): the search response carried no usable total_hits, and on this provider the response IS the count — so the enumerate ceiling could not be tested and this band cannot be read as either a completed enumeration or a sanctioned crowd. The total is UNKNOWN (null, never 0).`);
       }
@@ -838,6 +863,16 @@ export function makeEnumerate(deps) {
   return { enumerate, countFirstRescue, classSplitRescue };
 }
 
+/** The stamps a crowd carries when the register answered with a floor: the figure, and why the total is null. */
+function floorStamp(floor) {
+  return floor === null ? {} : { crowd_basis: "register-floor", total_floor: floor };
+}
+
+/** A part the register answered with a floor is itself a crowd with the register's figure, never an error. */
+function floorCount(probe) {
+  return Number.isFinite(probe?.floor) ? { total_hits: null, total_floor: probe.floor, disposition: "crowd" } : null;
+}
+
 /** `{ total_counts }` from a probe or a parsed answer that carries it, else nothing to spread. PURE. */
 function countsOf(p) {
   return typeof p?.total_counts === "string" ? { total_counts: p.total_counts } : {};
@@ -850,3 +885,6 @@ function stampTotalCounts(r, totalCounts) {
   if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return r;
   return { ...r, text: JSON.stringify({ ...parsed, total_counts: totalCounts }, null, 2) };
 }
+
+// What a crowd is, in the words every crowd's reason ends with: a band the funnel hands up, never a clean.
+const CROWD_IS = "this is a CROWD, not a named exact/near band. Record it as a count+sample descriptor and hand it up to judgment; the funnel does NOT narrow-and-retry a crowd here. Whether a narrower NAMED enumeration is warranted, and whether this slice is material, is judgment's call (Layer B) — never accept it as clean.";
