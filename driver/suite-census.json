@@ -7172,6 +7172,12 @@
           "skips": 0,
           "todos": 0
         },
+        "the-plugin-folder-is-what-the-directory-installs.test.mjs": {
+          "tests": 3,
+          "asserts": 17,
+          "skips": 0,
+          "todos": 0
+        },
         "the-portal-can-tell-who-has-connected-an-assistant.test.mjs": {
           "tests": 12,
           "asserts": 35,

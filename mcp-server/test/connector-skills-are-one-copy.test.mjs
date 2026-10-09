@@ -41,8 +41,10 @@ test("each connector skill is discoverable: frontmatter, a name that matches its
 });
 
 test("the plugin manifest exists and is the thing that makes them install as one unit", () => {
-  const p = join(ROOT, ".claude-plugin", "plugin.json");
-  assert.ok(existsSync(p), ".claude-plugin/plugin.json is gone — the three packs go back to being copied by hand");
+  // The plugin is its own folder, the one Claude's plugin directory installs; the skills it carries are
+  // byte copies of skills/, which scripts/mint-plugin-folder.mjs --check holds identical.
+  const p = join(ROOT, "plugin", ".claude-plugin", "plugin.json");
+  assert.ok(existsSync(p), "plugin/.claude-plugin/plugin.json is gone — the three packs go back to being copied by hand");
   const j = JSON.parse(readFileSync(p, "utf8"));
   assert.equal(j.name, "clearotron");
   assert.ok(j.description?.length > 30, "a plugin nobody can tell apart from another is not installable in practice");

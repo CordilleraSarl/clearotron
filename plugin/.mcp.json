@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "trademark-artifacts": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "clearotron@0.4.1",
+        "mcp"
+      ]
+    }
+  }
+}
