@@ -295,19 +295,17 @@ export function makeEnumerate(deps) {
   // asks a register "how many", so the two can never drift. `null` on any failure is preserved
   // exactly: a term whose probe failed is dispositioned `error`, never `verified-zero`.
   const countHits = makeCountProbe({ search, count, capabilities: { countProbe }, cheapCountParams });
-  const probeTermCount = async (auth, params, term, tctx) => {
-    const c = await countHits(auth, { ...params, [namesKey]: [term] }, tctx);
-    return c.ok ? c.total : null;
-  };
 
   async function countFirstRescue(auth, params, names, ceiling, stackTotal, tctx, incomplete) {
     const term_counts = {};
     for (const t of names) {
-      const n = await probeTermCount(auth, params, t, tctx);
+      const probe = await countHits(auth, { ...params, [namesKey]: [t] }, tctx);
+      const n = probe.ok ? probe.total : null;
+      const said = countsOf(probe);   // what this spelling's own count counts, when the register said
       if (n == null) { term_counts[t] = { total_hits: null, disposition: "error" }; continue; }
-      if (n === 0) term_counts[t] = { total_hits: 0, disposition: "verified-zero" };
-      else if (n > ceiling) term_counts[t] = { total_hits: n, disposition: "crowd" };
-      else term_counts[t] = { total_hits: n, disposition: "unenumerated" };
+      if (n === 0) term_counts[t] = { total_hits: 0, disposition: "verified-zero", ...said };
+      else if (n > ceiling) term_counts[t] = { total_hits: n, disposition: "crowd", ...said };
+      else term_counts[t] = { total_hits: n, disposition: "unenumerated", ...said };
     }
     const records = [];
     const tally = { "verified-zero": 0, enumerated: 0, crowd: 0, unenumerated: 0, error: 0 };
@@ -351,20 +349,21 @@ export function makeEnumerate(deps) {
     for (const c of classes) {
       const probe = await countHits(auth, { ...params, nice_classes: [c] }, tctx);
       const n = probe.ok ? probe.total : null;
+      const said = countsOf(probe);   // what this class's own count counts, when the register said (ruling 712)
       if (n == null) { class_counts[c] = { total_hits: null, disposition: "error" }; continue; }
-      if (n === 0) class_counts[c] = { total_hits: 0, disposition: "verified-zero" };
-      else if (n > ceiling) class_counts[c] = { total_hits: n, disposition: "crowd" };
-      else tractable.push({ c, n });
+      if (n === 0) class_counts[c] = { total_hits: 0, disposition: "verified-zero", ...said };
+      else if (n > ceiling) class_counts[c] = { total_hits: n, disposition: "crowd", ...said };
+      else tractable.push({ c, n, said });
     }
     tractable.sort((a, b) => a.n - b.n); // cheapest first — maximizes fully-enumerated legs under the budget
     const merged = new Map();
-    for (const { c, n } of tractable) {
-      if (merged.size + n > ceiling) { class_counts[c] = { total_hits: n, disposition: "unenumerated" }; continue; }
+    for (const { c, n, said } of tractable) {
+      if (merged.size + n > ceiling) { class_counts[c] = { total_hits: n, disposition: "unenumerated", ...said }; continue; }
       const r = await enumerate(auth, { ...params, nice_classes: [c] }, tctx);
       const parsed = isToolError(r) ? null : parseToolText(r);
-      if (!parsed) { class_counts[c] = { total_hits: n, disposition: "error" }; continue; }
+      if (!parsed) { class_counts[c] = { total_hits: n, disposition: "error", ...said }; continue; }
       if (parsed.state === "enumerated") {
-        class_counts[c] = { total_hits: n, disposition: "enumerated" };
+        class_counts[c] = { total_hits: n, disposition: "enumerated", ...said };
         for (const rec of (parsed.records ?? [])) {
           const k = recordKeyOf(rec);
           if (!merged.has(k)) merged.set(k, rec);
@@ -372,7 +371,7 @@ export function makeEnumerate(deps) {
       } else {
         // drifted past the probe count (provider re-count) or hit the provider window — honest per-leg state
         const m = parsed.total_hits ?? n;
-        class_counts[c] = { total_hits: m, disposition: m > ceiling ? "crowd" : "error" };
+        class_counts[c] = { total_hits: m, disposition: m > ceiling ? "crowd" : "error", ...(Number.isFinite(parsed.total_hits) ? countsOf(parsed) : said) };
       }
     }
     const records = [...merged.values()];
@@ -406,7 +405,7 @@ export function makeEnumerate(deps) {
   // half's own reason, as a names window does: a clean never ships over a part that did not run.
   // `region_split` rides the answer, naming the timeout that started it and the size of every part that
   // answered, so a reader can see the question was asked in pieces and where.
-  async function regionHalves(auth, params, tctx, { ceiling, incomplete, cause }) {
+  async function regionHalves(auth, params, tctx, { ceiling, incomplete, cause, hear = () => {} }) {
     const regions = params.regions;
     const mid = Math.ceil(regions.length / 2);
     const halves = [regions.slice(0, mid), regions.slice(mid)];
@@ -442,9 +441,10 @@ export function makeEnumerate(deps) {
       // A half that timed out while its sibling answered is the one place fewer regions may help: it is
       // halved in turn, under the same rule.
       const r = timedOut({ r: first })
-        ? await regionHalves(auth, { ...params, regions: half }, tctx, { ceiling, incomplete, cause: parseToolText(first)?.reason ?? cause })
+        ? await regionHalves(auth, { ...params, regions: half }, tctx, { ceiling, incomplete, cause: parseToolText(first)?.reason ?? cause, hear })
         : first;
       const parsed = isToolError(r) ? null : parseToolText(r);
+      hear(parsed);
       const which = `the ${half.length}-region half ${half[0]}${half.length > 1 ? `…${half[half.length - 1]}` : ""}`;
       // A stall from a deeper split keeps its own reason, stall first, so the executor reads it however
       // deep the split went and however short the reason is later cut.
@@ -471,8 +471,22 @@ export function makeEnumerate(deps) {
       ...(screenLift ? { screen_lift: screenLift } : {}), region_split: { cause, parts } }, null, 2) };
   }
 
-  async function enumerate(auth, params, tctx, { split = true } = {}) {
+  // ── WHAT THE TOTAL COUNTS, STATED ONCE FOR THE WHOLE ANSWER ────────────────────────────────────────
+  //
+  // A register can say that a total counts records, one per country a mark covers, rather than marks
+  // (`total_counts` on a provider's parsed answer). The answer to the question states it, whichever of the
+  // exits below produced it: the page loop, the name windows, the region halves and the rescues each tell
+  // the question what they heard, and it is stamped here, on the one way out. Recorded only: the ceiling
+  // still reads the register's own number (ruled 2026-10-02). An answer with no `total_counts` is one whose
+  // register said nothing about it, never a count of marks.
+  async function enumerate(auth, params, tctx, opts = {}) {
+    const said = { totalCounts: null };
+    return stampTotalCounts(await enumerateQuestion(auth, params, tctx, opts, said), said.totalCounts);
+  }
+
+  async function enumerateQuestion(auth, params, tctx, { split = true } = {}, said = { totalCounts: null }) {
     if (!hasAnyElement(params)) return { type: "text", text: missingElementError };
+    const hear = (p) => { if (typeof p?.total_counts === "string") said.totalCounts = p.total_counts; };
 
     // The tuned ceiling, then narrowed by any window the QUERY SHAPE imposes. Min, never max:
     // a shape window is a vendor limit, and a band that pages past it does not return more records, it
@@ -527,6 +541,7 @@ export function makeEnumerate(deps) {
         const part = allNames.slice(i * namesChunk, (i + 1) * namesChunk);
         const r = await enumerate(auth, { ...params, [namesKey]: part }, tctx);
         const parsed = parseToolText(r);
+        hear(parsed);
         if (isToolError(r) || !parsed) {
           return incomplete(totalSum, merged.size, [...merged.values()],
             `chunk ${i + 1}/${chunks} (${part.length} names) failed: ${String(r?.text ?? "unparseable").slice(0, 140)}`,
@@ -608,10 +623,11 @@ export function makeEnumerate(deps) {
             + `Provider's own words: ${clipProviderText(c?.reason ?? "", COUNT_PROBE_BUDGET)}`,
             { crowd_basis: "provider-refused-count", count_unavailable: true });
         }
-        if (splittable && isGatewayTimeout(c?.reason)) return regionHalves(auth, params, tctx, { ceiling, incomplete, cause: String(c.reason) });
+        if (splittable && isGatewayTimeout(c?.reason)) return regionHalves(auth, params, tctx, { ceiling, incomplete, cause: String(c.reason), hear });
         return incomplete(0, 0, [],
           `provider error on the count probe before enumeration: ${String(c?.reason ?? "count unavailable")}`, timeoutMark(c?.reason));
       }
+      hear(c);
       total = Number.isFinite(c.total) ? c.total : 0;
       probeTotal = total;
       if (total > ceiling) {
@@ -634,11 +650,12 @@ export function makeEnumerate(deps) {
     for (let page = 0; ; page += 1) {
       const r = await search(auth, { ...params, ...pageParams(page, pageSize, prevParsed) }, tctx);
       if (isToolError(r)) {
-        if (splittable && isGatewayTimeout(r.text)) return regionHalves(auth, params, tctx, { ceiling, incomplete, cause: String(r.text) });
+        if (splittable && isGatewayTimeout(r.text)) return regionHalves(auth, params, tctx, { ceiling, incomplete, cause: String(r.text), hear });
         return incomplete(total, results.length, results, `provider error during enumeration (page ${page}): ${String(r.text ?? "")}`, timeoutMark(r.text));
       }
       const parsed = parseToolText(r);
       if (!parsed) return incomplete(total, results.length, results, `unparseable search response during enumeration (page ${page})`);
+      hear(parsed);
       // ── the number the completeness claim rests on must BE a number ────────────────────────────────
       // On the "cheap" seam the page response IS the count — the ceiling is tested off `total_hits` and
       // nothing else. A response that parsed but carries no usable total therefore cannot support a
@@ -819,4 +836,17 @@ export function makeEnumerate(deps) {
   }
 
   return { enumerate, countFirstRescue, classSplitRescue };
+}
+
+/** `{ total_counts }` from a probe or a parsed answer that carries it, else nothing to spread. PURE. */
+function countsOf(p) {
+  return typeof p?.total_counts === "string" ? { total_counts: p.total_counts } : {};
+}
+
+/** The answer with what its total counts stated on it; an error, or nothing heard, passes unchanged. */
+function stampTotalCounts(r, totalCounts) {
+  if (!totalCounts || isToolError(r)) return r;
+  const parsed = parseToolText(r);
+  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return r;
+  return { ...r, text: JSON.stringify({ ...parsed, total_counts: totalCounts }, null, 2) };
 }

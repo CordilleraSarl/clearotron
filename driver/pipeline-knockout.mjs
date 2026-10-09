@@ -1209,7 +1209,7 @@ export async function knockoutInner(ctx, job, opts = {}) {
       // ONE LINE, N LINKS. This said "Report: <one url>" and on a batch that url is now null, which would
       // have read "Report: null" — the fail-visible shape doing its job, and still not a line to send. A
       // batch names every report it produced, in the order the names were ordered.
-      whatsappText: `✅ Knockout screen${refTag} of ${nMarks} mark(s) is done — worst band ${overall}. `
+      whatsappText: `✅ Knockout screen${refTag} of ${nMarks} mark(s) is done — ${nMarks === 1 ? "rating" : "highest rating"} ${overall}. `
         + (published.reports.length === 1
           ? `Report: ${published.reports[0].url}`
           : `Reports: ${published.reports.map((r) => `${r.mark} ${r.url}`).join(" · ")}`),

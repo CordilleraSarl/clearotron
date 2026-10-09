@@ -370,7 +370,7 @@ export function composeKnockoutEmail({ findings, framework, overall, reports = [
   // says how to read the list instead: a "full report" link on a batch could only be one name standing
   // for all of them. A single-mark run keeps its head link exactly as before — same bytes, same place.
   const only = n === 1 ? urlByMark.get((findings.marks ?? [])[0]?.name) ?? null : null;
-  const head = `<p style="${FONT}">Knockout trademark review${job?.ref ? ` — ${esc(job.ref)}` : ''}: <b>${n} mark${n === 1 ? '' : 's'}</b>, worst band <b style="color:${t.txt}">${esc(overall ?? '')}</b>.`
+  const head = `<p style="${FONT}">Knockout trademark review${job?.ref ? ` — ${esc(job.ref)}` : ''}: <b>${n} mark${n === 1 ? '' : 's'}</b>, ${n === 1 ? 'rating' : 'highest rating'} <b style="color:${t.txt}">${esc(overall ?? '')}</b>.`
     + (only ? ` <a href="${esc(only)}">Open the full report</a>${auditUrl ? ` · <a href="${esc(auditUrl)}">audit workbook</a>` : ''}.` : '')
     + (!only && n > 1 ? ` One report per name below${auditUrl ? `, and one <a href="${esc(auditUrl)}">audit workbook</a> for the batch` : ''}.` : '') + `</p>`;
   // — THE FIRST NON-BLANK, never element 0. `?? fallback` catches null and undefined
