@@ -375,6 +375,11 @@ export const planExactOrWidth = (capabilities) =>
   Number.isFinite(capabilities?.exactOrWidth) && capabilities.exactOrWidth >= 1
     ? Math.floor(capabilities.exactOrWidth) : planMaxOrWidth(capabilities);
 
+/** The OR-stack width for a SOUND-ALIKE band, by the same rule: `phoneticOrWidth` where a provider declares one. */
+export const planPhoneticOrWidth = (capabilities) =>
+  Number.isFinite(capabilities?.phoneticOrWidth) && capabilities.phoneticOrWidth >= 1
+    ? Math.floor(capabilities.phoneticOrWidth) : planMaxOrWidth(capabilities);
+
 // The plan emits ONE `wildcard` predicate; the provider contract splits it into three sub-capabilities.
 // Mirrors the executor's planPredicateParams anchoring exactly (trailing * → prefix/starts-with,
 // leading * → suffix/ends-with, both/neither → infix over the raw pattern).
@@ -2190,7 +2195,9 @@ export function validatePlanFeasibility(plan, { capabilities = null, maxOrWidth 
     if (!PLAN_PREDICATES.includes(e?.predicate)) add("unexecutable", `unknown predicate "${e?.predicate}"`);
     const names = Array.isArray(e?.terms) ? e.terms : e?.term != null ? [e.term] : [];
     if (!names.length || names.some((t) => !String(t ?? "").trim())) add("unexecutable", "empty term(s)");
-    const width = e?.predicate === "exact" && capabilities ? Math.max(maxOrWidth, planExactOrWidth(capabilities)) : maxOrWidth;
+    const width = !capabilities ? maxOrWidth
+      : e?.predicate === "exact" ? Math.max(maxOrWidth, planExactOrWidth(capabilities))
+        : e?.predicate === "phonetic" ? Math.max(maxOrWidth, planPhoneticOrWidth(capabilities)) : maxOrWidth;
     if (Array.isArray(e?.terms) && e.terms.length > width) add("repairable", `OR-stack of ${e.terms.length} names exceeds the executor bound (${width}) — the executor runs it chunked`);
     for (const t of names) if (String(t).length > maxNameLength) add("repairable", `name exceeds ${maxNameLength} chars ("${String(t).slice(0, 40)}…") — provider-side truncation risk only`);
     if ((e?.nice_classes ?? []).some((c) => !Number.isFinite(Number(c)))) add("unexecutable", "non-numeric nice_class");
