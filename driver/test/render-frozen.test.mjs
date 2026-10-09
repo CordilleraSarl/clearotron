@@ -1800,7 +1800,9 @@ const sha256 = (buf) => createHash("sha256").update(buf).digest("hex");
 // A comment edit moves these bytes too, so this constant moves with it.
 // Advanced again by the break recorded above the FROZEN constant: a framework's own inputs beside the band.
 // Not licence-only, so this constant moves with the other one.
-const FROZEN_BEFORE_SPDX = "a4728c8f6b9ed2b7cc32b120e23b6d87ef8aa724a3702f415fc52cf7f85f7458";
+// Advanced again by the break recorded above the FROZEN constant: no cause in brackets on the card's
+// could-not-be-retrieved line. Not licence-only, so this constant moves with the other one.
+const FROZEN_BEFORE_SPDX = "1052908ba0933f011ac3c10b9ffa46999ff75bce6fd71bcd389a279b19aa14fc";
 // FIFTH BREAK (2026-08-26 — a client surface must not follow the OS).
 //
 // NOT code motion. A behaviour change, and the smallest one that fixes a live client-facing defect: the
@@ -2717,7 +2719,24 @@ const FROZEN_BEFORE_SPDX = "a4728c8f6b9ed2b7cc32b120e23b6d87ef8aa724a3702f415fc5
 //      modes (212,751 and 212,604 bytes).
 //   2. Could it live in report.css or brand.mjs? No: it is the chip's text, not its look.
 //   3. Why it had to move here: the chip is composed in this file and nowhere else.
-const FROZEN = "4c19e303c7e08f6dbb50e59c47e4c67b4be32393d9593920eb4b6ffdb9af6714";
+// ── BREAK (2026-10-02 — no cause in brackets on the could-not-be-retrieved line) ──────────────────────
+//
+// WHAT MOVED: the card line for a cited record the closure fetch could not retrieve. It printed the
+// failure's cause in brackets, and the cause can be an exception's message (`fetch threw: …`). It now
+// reads "Official register record could not be retrieved — registry details in this card are
+// unverified." The cause stays where it was written: the persisted failure list and the card's stamp.
+//
+// WHY. Nothing a client reads carries engineering wording, and an exception tells a client nothing they
+// can act on. The bracket is dropped and nothing is written in its place.
+//
+// THE THREE QUESTIONS.
+//   1. Reachable from republish? Yes, on a card with a fetch-failure stamp, and only there. Measured on
+//      2026-10-02 against the renderer of that day: with no stamp, identical bytes; with a stamp, only this
+//      line differs, by its bracket. Brought to the 0.4 line on 2026-10-09, where the renderer's diff is
+//      this line and its comment alone.
+//   2. Could it live in report.css or brand.mjs? No: it is the line's text, not its look.
+//   3. Why it had to move here: the line is composed in this file and nowhere else.
+const FROZEN = "e6691f9e3a04e66ddf1de44d359a965c4a8064cf129f4118d2b8decacb77beaf";
 
 test("render.mjs is frozen at its post-recolor content hash", () => {
   const actual = sha256(readFileSync(at("../publish/render.mjs")));
