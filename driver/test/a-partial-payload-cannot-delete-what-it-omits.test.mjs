@@ -607,9 +607,9 @@ const DECLARES_NONE_BY_DESIGN = Object.freeze({
     + "repair-composers.mjs tells the seat to send.",
   record_register_digest:
     "Two mechanisms, either one sufficient. A patch merges onto the last accepted model "
-    + "(register-digest-record.mjs:592 DIGEST_DROP_REASONS) and carries only what it corrects. And a run whose band holds no "
+    + "(recordRegisterDigest() in register-digest-record.mjs) and carries only what it corrects. And a run whose band holds no "
     + "records legitimately sends no rows: registerdigest_nothing_judged "
-    + "(register-digest-record.mjs:565 findingRow) fires on the band's contents, not on the call's shape, so "
+    + "(acceptRegisterDigest() in register-digest-record.mjs) fires on the band's contents, not on the call's shape, so "
     + "whether a row is owed is a fact about the run that `required[]` cannot express.",
   record_unit_note:
     "The one field its acceptor demands, `axis`, is never the caller's to send: the driver binds it per "

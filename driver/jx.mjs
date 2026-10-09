@@ -59,7 +59,7 @@ export const jxFoldLaneRecord = ({ cause = null, ...rest } = {}) => ({
 // silent in the fold. One record spoke and the other could not.
 //
 // TWO FIELDS, BECAUSE ONE CANNOT CARRY BOTH JOBS.
-//   `executes` is a SCALAR STRING, because reference-score.mjs:1103 routes it into the same slot as the
+//   `executes` is a SCALAR STRING, because readJxLanes() in reference-score.mjs routes it into the same slot as the
 //   per-lane `executes` string and scripts/score.mjs interpolates it bare — an object prints
 //   [object Object] there. It names the slices that RAN, "+"-joined, and is NEVER "" (the e2e `exists`
 //   op passes on an empty string, so an all-failed run would have gone green on a statement of nothing).

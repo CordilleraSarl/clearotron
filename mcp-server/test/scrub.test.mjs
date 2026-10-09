@@ -274,7 +274,7 @@ describe("scrub: document shape", () => {
 describe("scrub: #903 withdrawn_reason", () => {
   test("withdrawn_reason is STRIPPED from a curated card — it has no client-meaningful residue", () => {
     // now drops the whole block when it is marked withdrawn, so the KEY strip is tested on the
-    // shape that can still reach a client: an ORPHANED withdrawn_reason. findings-model.mjs:1258 calls
+    // shape that can still reach a client: an ORPHANED withdrawn_reason. validateFinding() in findings-model.mjs calls
     // that a shape error ("withdrawn_reason is only valid when disposition is withdrawn") and throws on
     // it at the source — which is exactly why the scrub keeps its own arm. Defence in depth: if the
     // stamp is ever absent while the reason is present, the block drop cannot fire and this must.
@@ -354,7 +354,7 @@ describe("scrub: #903 withdrawn_reason", () => {
 // exactly the set we removed, so it read as live.
 //
 // The ruling did not need a new product decision, because the product had already made it:
-// driver/publish/report-data.mjs:74 (`const live`) filters to live findings only, "a withdrawn finding
+// clearanceReportData() in report-data.mjs (`const live`) filters to live findings only, "a withdrawn finding
 // renders nowhere — it does not exist here either". Two client surfaces, one question, two answers. Option 1:
 // they agree by construction.
 //

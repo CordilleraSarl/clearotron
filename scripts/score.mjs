@@ -33,7 +33,7 @@
 // ── which directory to point it at ───────────────────────────────────────────────────────────────────
 //
 // The agent WORKSPACE archive dir, never the published pool dir. The pool keeps report.md and
-// findings.json but not `_driver/` or `_records/` — see driver/publish/pool-admin.mjs:145. Without
+// findings.json but not `_driver/` or `_records/` — see doRepublish() in pool-admin.mjs. Without
 // `_driver/` there is no band and no reconciliation, so `withheld` cannot be computed at all, and a
 // scorer that silently reported every withheld mark as `lost` would send every fix to the wrong place.
 // So a run dir with no `_driver/` says so and declines to guess.

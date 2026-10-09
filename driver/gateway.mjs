@@ -3192,8 +3192,8 @@ export function isFormClassFail(fail) {
   return FORM_CLASS_RE.test(fail ?? "");
 }
 // How many in-dispatch repairs one stage run may buy. TWO, and the number has a cause: parseFrameDiff
-// is FAIL-FAST — it throws on the first bad severity (frame-diff-model.mjs:66 parseFrameDiff) before it ever collects
-// the undispatchable directives (:100) — so ONE artifact carrying both defects surfaces them
+// is FAIL-FAST — it throws on the first bad severity (parseFrameDiff() in frame-diff-model.mjs) before it ever collects
+// the undispatchable directives — so ONE artifact carrying both defects surfaces them
 // SEQUENTIALLY. That is exactly what the 08-02 frame-diff ladder did (severity on a1, undispatchable
 // on a2), and a cap of 1 would have handed the second one straight back to the ladder. The codebase
 // already learned this lesson once at directive granularity: undispatchableThrow batches ALL offenders

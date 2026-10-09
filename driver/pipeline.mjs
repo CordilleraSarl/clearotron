@@ -3934,7 +3934,7 @@ export function findFloorBreaches(ledger, floorAxes) {   // @internal
  * `[]`: no manifest, unreadable, unparseable. That is the honest default here and not an absence read as
  * a pass, because the whole mechanism is opt-in — a run with no designation owes no floor, and a run whose
  * manifest cannot be read has no designation to honour. The refusal for an absent or unparseable manifest
- * belongs to the stage that writes it and already exists there — verify.mjs:1335 CALL_REASON_SET runs the same parser
+ * belongs to the stage that writes it and already exists there — validators.variantManifest in verify.mjs runs the same parser
  * through `checkSiblingJson` and fails clearance-variants with `variantmodel_missing`. Checked, because
  * "something else refuses it" is exactly the assumption that turns a swallowed error into a silent pass.
  */
@@ -7150,7 +7150,7 @@ function injectDeferralCoverage(P, runDir, note) {
 // the two constants below BYTE-FOR-BYTE, which is why they stay exported and are asserted against the
 // derivation in the tests.
 //
-// SERP_LANES is deliberately untouched: zh-only there is the shipped design (jx-lanes.mjs:72-74), not
+// SERP_LANES is deliberately untouched: zh-only there is the shipped design (SERP_LANES declared in jx-lanes.mjs), not
 // drift, and generalising the platform grid is a different piece of work.
 //
 // ── THE REMEDY CLAUSE NAMES A PRODUCT, AND FOR A WHILE IT NAMED A DELETED ONE ───────────────────────
@@ -7245,7 +7245,7 @@ export function scriptLaneRanOnRun(runDir, lane, { searchPolicy = null, env = pr
   //   zh  — shipped the full Phase-4 deepening: the SERP platform grid and the native read. Either
   //         unit running IS the lane running (they gate independently; one on and one off still
   //         searched in Chinese), so the legs stay exactly as they were.
-  //   ja/ko — shipped as slice-1 CANDIDATE lanes only (jx-lanes.mjs:32-35): no SERP_LANES entry, so
+  //   ja/ko — shipped as slice-1 CANDIDATE lanes only (LANGUAGE_LANES declared in jx-lanes.mjs): no SERP_LANES entry, so
   //         runJxSerpGrid hard-refuses them and neither unit flag can ever describe them. The only
   //         work these lanes do is the candidate fold, so "ran" is the fold having ACCEPTED
   //         candidates — a frozen lane decision with an empty fold searched nothing and owes the row.
@@ -9430,7 +9430,7 @@ async function pipelineInner(job, opts = {}) {
       //
       // The prior channel is the TRUSTED one and already carries everything needed. Half forms are
       // driver-written, `seatFields(p, row)` carries their rulings by the same `pOk` path, and
-      // gateway.mjs:630 selectEngine already unions this exact shape — prior-only, `{ rows: null }` submitted — on
+      // syncDispositionForm() in gateway.mjs already unions this exact shape — prior-only, `{ rows: null }` submitted — on
       // every attempt. So this is that mode, not a new one.
       //
       // ONE METRIC MOVES, deliberately: with no submission, `carried` counts every ruled row, because
