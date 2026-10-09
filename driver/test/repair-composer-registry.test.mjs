@@ -69,8 +69,7 @@ test("no repair instruction is composed at its dispatch site — every one goes 
   const bespoke = sites.filter((s) => s.kind === "bespoke");
 
   // FLOOR FIRST. Without it every assertion below is satisfied by a scan that found nothing.
-  // 25 -> 21 when the mid-run reopening left: its four composers' call sites went with it.
-  assert.ok(registered.length >= 21,
+  assert.ok(registered.length >= 25,
     `only ${registered.length} registered composing site(s) found in pipeline.mjs — the scan has gone stale, `
     + "and a scan that finds nothing reports no unregistered composers and reads as a pass");
 
@@ -119,7 +118,7 @@ test("repairFollowup REFUSES an unregistered key at runtime, not only in CI", ()
 // ── THE SAMPLES, WHICH ARE WHAT THE GUARD WALKS ────────────────────────────────────────────────
 
 test("every composer composes, and every branch that can emit a tail has a sample that does", () => {
-  assert.ok(REPAIR_COMPOSERS.length >= 21, `only ${REPAIR_COMPOSERS.length} composers registered`);   // 25 -> 21 with the reopening's four
+  assert.ok(REPAIR_COMPOSERS.length >= 25, `only ${REPAIR_COMPOSERS.length} composers registered`);
   for (const c of REPAIR_COMPOSERS) {
     assert.ok(c.samples?.length >= 1, `${c.key} — no sample; the guard has nothing to walk it with`);
     for (const s of c.samples) {

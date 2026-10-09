@@ -40,7 +40,7 @@ const PL = await import("../pipeline.mjs");
 const CMP = await import("../compare.mjs");
 const { composeEmailHtml } = await import("../publish/index.mjs");
 
-const KNOBS = ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_SOFT_FAIL_STAGE", "MOCK_SOFT_FAIL_STATUS", "MOCK_ESCALATION_NOOP"];
+const KNOBS = ["MOCK_VERDICT", "MOCK_PERMISSION_PROSE", "MOCK_SKEPTIC", "MOCK_FAIL_STAGE", "MOCK_SOFT_FAIL_STAGE", "MOCK_SOFT_FAIL_STATUS", "MOCK_ESCALATION_NOOP", "MOCK_PLACEMENT_NO_SIBLING"];
 function setKnobs(env = {}) { for (const k of KNOBS) delete process.env[k]; for (const [k, v] of Object.entries(env)) pinEnv(process.env, k, v); }
 const jobFor = (ref) => ({ id: `job-${ref}`, msgId: `<${ref}@x>`, forwarder: "jordan", forwarderDomain: "example.com", ref, markName: `MARK ${ref}`, classes: [9, 41], provider: "corsearch" });
 const events = (runDir) => readFileSync(driverDir(runDir, "run.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l));
@@ -103,7 +103,7 @@ test("WS1b-core: resume reuses the run-dir — upstream stages SKIP, only synthe
   assert.equal(r2.ok, true, JSON.stringify(r2));
   const ev2 = sinceLastStart(events(r2.runDir));
   const skipped = ev2.filter((e) => e.event === "skip").map((e) => e.stage);
-  for (const up of ["matter-frame", "clearance-variants", "common-law", "owner-judgment:1", "owner-judgment:2", "skeptic"])
+  for (const up of ["matter-frame", "clearance-variants", "common-law", "placement-inquiry", "register-digest", "skeptic"])
     assert.ok(skipped.some((s) => s.startsWith(up)), `${up} SKIPPED on resume`);
   const ran = ev2.filter((e) => e.event === "stage" && e.ok).map((e) => e.stage);
   assert.ok(ran.includes("synthesis"), "synthesis re-ran on resume");
@@ -217,7 +217,7 @@ test("P2 crash-resume: a crash changes no input bytes, so the resume stays as ch
   assert.deepEqual(stale.map((e) => e.stage), [], "a pure crash-resume invalidates nothing");
   assert.equal(ev2.filter((e) => e.event === "delivery-stale-blocked").length, 0, "and never blocks delivery");
   const skipped = ev2.filter((e) => e.event === "skip").map((e) => e.stage);
-  for (const up of ["matter-frame", "clearance-variants", "owner-judgment:1", "owner-judgment:2"])
+  for (const up of ["matter-frame", "clearance-variants", "placement-inquiry", "register-digest"])
     assert.ok(skipped.some((x) => x.startsWith(up)), `${up} still SKIPPED — no cost regression`);
 });
 
@@ -532,26 +532,26 @@ test("WS1b (Drop 1.1 fix): skeptic escalation does NOT re-fire on a resume past 
   assert.ok(underDir(r2.runDir, "archive"), "resume delivered");
 });
 
-test("WS4: escalation queues no re-judgement when the unit is defended in place (unchanged), mints one when it changes", async () => {
+test("WS4: escalation skips the Opus re-digest when the unit is defended in place (unchanged), fires when it changes", async () => {
   // NOOP: escalate primary-sweep but force the warm re-run to re-emit a BYTE-IDENTICAL unit. The driver must
-  // detect no change and queue no (provably wasted) re-judgement — logging escalation-noop, no skeptic-escalation.
+  // detect no change and SKIP the (provably wasted) Opus re-digest — logging escalation-noop, no skeptic-escalation.
   setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "flag\n\n## Escalation decisions\nESCALATE: primary-sweep — re-run", MOCK_ESCALATION_NOOP: "1" });
   const rNoop = await PL.pipeline(jobFor("TMPWS4N"));
   assert.equal(rNoop.ok, true, JSON.stringify(rNoop));
   const evN = events(rNoop.runDir);
   assert.ok(evN.some((e) => e.event === "escalation-noop" && e.axis === "primary-sweep"), "logged escalation-noop for the unchanged axis");
-  assert.ok(!evN.some((e) => e.event === "skeptic-escalation"), "re-judgement SKIPPED (no skeptic-escalation event)");
-  assert.ok(!evN.some((e) => e.event === "digest-queued" && e.trigger === "escalation"), "nothing queued for step 3");
+  assert.ok(!evN.some((e) => e.event === "skeptic-escalation"), "re-digest SKIPPED (no skeptic-escalation event)");
+  assert.ok(!evN.some((e) => e.event === "stage" && e.stage === "register-digest" && e.trigger === "escalation"), "no Opus register-digest re-run");
 
-  // Control: same escalation, default mock → the re-run CHANGES the unit → a re-judgement is queued (floor preserved).
+  // Control: same escalation, default mock → the re-run CHANGES the unit → the re-digest DOES fire (floor preserved).
   setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "flag\n\n## Escalation decisions\nESCALATE: primary-sweep — re-run" });
   const rFire = await PL.pipeline(jobFor("TMPWS4F"));
   assert.equal(rFire.ok, true, JSON.stringify(rFire));
   const evF = events(rFire.runDir);
-  assert.ok(evF.some((e) => e.event === "skeptic-escalation"), "control: the escalation FIRES when the unit changes");
+  assert.ok(evF.some((e) => e.event === "skeptic-escalation"), "control: re-digest FIRES when the unit changes");
   // funnel: the changed unit mints a durable receipt and the ONE settlement flush pays it down.
-  assert.ok(evF.some((e) => e.event === "digest-queued" && e.trigger === "escalation"), "control: escalation minted a re-judgement receipt");
-  assert.ok(evF.some((e) => e.event === "owner-judgment" && e.trigger === "settlement-flush"), "control: the settlement flush re-judged");
+  assert.ok(evF.some((e) => e.event === "digest-queued" && e.trigger === "escalation"), "control: escalation minted a digest receipt");
+  assert.ok(evF.some((e) => e.event === "stage" && e.stage === "register-digest" && e.trigger === "settlement-flush"), "control: the settlement flush re-digested");
 });
 
 // ---- WS-T — telemetry + compare ----------------------------------------------------------------------
@@ -643,7 +643,6 @@ test("WS-T/#249: stage context covers every DECLARED-ARTIFACT file each stage me
   const ST = await import("../stages.mjs");
   const SC = await import("../stage-context.mjs");
   const { GRID_HALVES } = await import("../common-law-receipts.mjs");
-  const { composeMessage: composeJudgeMessage } = await import("../owner-judgment.mjs");
   const RUN = "/RUN";
   const P = ST.paths(RUN);
 
@@ -668,7 +667,7 @@ test("WS-T/#249: stage context covers every DECLARED-ARTIFACT file each stage me
   // `report-cards/null.md`) and hides the reference the guard exists to check. The old guard special-cased
   // register-unit alone and swept the other two parameterized stages with a null they do not accept.
   const axes = ST.REGISTER_AXES;
-  const PARAM_FOR = { "register-unit": axes[0], "common-law-half": GRID_HALVES[0], "report-card": 1, "owner-judgment": "1" };
+  const PARAM_FOR = { "register-unit": axes[0], "common-law-half": GRID_HALVES[0], "report-card": 1 };
   for (const name of ST.STAGE_ORDER)
     if ((ST.STAGES[name].out?.length ?? 0) > 1)
       assert.ok(name in PARAM_FOR, `stage "${name}" is axis-parameterized (its out() takes a second argument) but this guard has no value for it — add one, else it sweeps with null and sees nothing real`);
@@ -679,11 +678,7 @@ test("WS-T/#249: stage context covers every DECLARED-ARTIFACT file each stage me
   for (const name of ST.STAGE_ORDER) {
     const def = ST.STAGES[name];
     const axis = PARAM_FOR[name] ?? null;
-    // Step 3's message is composed by runOwnerJudgment from the run's files and handed in on ctx (its own
-    // message() refuses to build without it); composed here the same way, from invented parts.
-    const ownerJudgmentMessage = composeJudgeMessage({ order: "X, class 9", context: "An invented client.",
-      ratingScale: "High / Low", workedExamples: "None.", tablePages: null });
-    const base = { paths: P, job, axes, axis, agent: "mailagent", run: { slug: "s", codename: "c" }, ownerJudgmentMessage };
+    const base = { paths: P, job, axes, axis, agent: "mailagent", run: { slug: "s", codename: "c" } };
     // The second shape: common-law names the canonical grid spec only when the driver wrote one
     // (ctx.gridSpecPath), so under the minimal ctx that whole branch — and its file reference — is
     // invisible. Both shapes are swept and their references unioned.
@@ -713,8 +708,7 @@ test("WS-T/#249: stage context covers every DECLARED-ARTIFACT file each stage me
   // ── the guard's own zero-semantics: prove it swept something ────────────────────────────────────────
   assert.equal(built, ST.STAGE_ORDER.length,
     `only ${built}/${ST.STAGE_ORDER.length} stage messages built — a stage whose message() throws is swept by NOTHING, and a guard that sweeps nothing passes vacuously`);
-  // 19 since the reopen receipt left the two prompts that named it, with the mid-run reopening.
-  assert.ok(seen.size >= 19, `the guard matched only ${seen.size} artifact references across ${built} stages — the matcher is broken, not the map`);
+  assert.ok(seen.size >= 20, `the guard matched only ${seen.size} artifact references across ${built} stages — the matcher is broken, not the map`);
   // The file this guard could not see, named. Once the map is correct, a regression of the matcher back
   // to `.md`-only passes every assertion above — this is the one that catches it.
   assert.ok(seen.has(P.findings),
@@ -749,9 +743,8 @@ test("report-overview declares EXACTLY the two files it reads, and its prompt ci
   const EXPECTED = [P.narrative, P.findings];
   const sorted = (a) => [...new Set(a)].sort();
 
-  // The retired files, named so a re-add fails by NAME rather than by a count mismatch. (Placement's two
-  // files left with the stage; step 3's decisions file stands in their place.)
-  const RETIRED = { registerFindings: P.registerFindings, commonLaw: P.commonLaw, ownerDecisions: P.ownerDecisions, seniorEyeReview: P.seniorEyeReview, matterContext: P.matterContext, caseLaw: P.caseLaw };
+  // The retired seven, named so a re-add fails by NAME rather than by a count mismatch.
+  const RETIRED = { registerFindings: P.registerFindings, commonLaw: P.commonLaw, placement: P.placement, placementModel: P.placementModel, seniorEyeReview: P.seniorEyeReview, matterContext: P.matterContext, caseLaw: P.caseLaw };
 
   for (const registerOnly of [false, true]) {
     const declared = ST.stageInputs("report-overview", P, { axes, registerOnly });
@@ -792,27 +785,145 @@ test("frontMatterIdentity hands the shell the intake facts, names no file, and s
   assert.equal(ST.frontMatterIdentity(), "");
 });
 
+// A4 (frame-omission): the blind pass MUST stay information-starved — fed ONLY the raw inbound request,
+// never the matter frame (matterContext / variantManifest / any prior analysis). Its independence is the
+// whole value: re-deriving the threat model cold catches the framing the rest of the run inherited. The
+// --experiment sandbox copies exactly stageInputs(), so any leak here would also hand the frame to the
+// blind pass under --experiment. Lock the set to a single input so a future "just add matterContext" edit
+// to stages.mjs fails loudly here instead of silently neutering the blind pass.
+test("A4: blind-frame stageInputs is STARVED — only the raw inbound request, never the matter frame", async () => {
+  const ST = await import("../stages.mjs");
+  const P = ST.paths("/RUN");
+  const ins = ST.stageInputs("blind-frame", P, { axes: ST.REGISTER_AXES });
+  assert.deepEqual(ins, [P.inboundRequest], "blind-frame must read ONLY inbound-request.txt");
+  for (const leaked of [P.matterContext, P.variantManifest, P.registerFindings, P.commonLaw, P.narrative, P.scopeLedger])
+    assert.ok(!ins.includes(leaked), `blind-frame stageInputs leaks the frame: ${leaked} — the blind pass must never see prior analysis`);
+});
+
+// — blind-frame's ONE output is the structured model, and THAT is what makes an absence loud.
+// runStage's file-truth gate reads `out`: point it at prose the stage no longer writes and every turn
+// fails; point it at nothing (`out: undefined`) and `files` is empty, so a turn that wrote NO model
+// reports ok — the absence-reads-as-a-pass shape this codebase has shipped seven times. The validator
+// test in verify.test.mjs proves the content check; this proves the file check exists to reach it.
+test("blind-frame's out() IS blind-frame-model.json, and blind-frame.md is gone from the paths, prompts and inputs", async () => {
+  const ST = await import("../stages.mjs");
+  const P = ST.paths("/RUN");
+  assert.equal(ST.STAGES["blind-frame"].out(P), P.blindFrameModel,
+    "blind-frame must gate on the model itself — an `out` that is undefined or a prose path makes a model-less turn pass");
+  assert.equal(P.blindFrameModel, join("/RUN", "blind-frame-model.json"));
+  assert.ok(ST.STAGES["blind-frame"].validate, "the gated output must still be strict-parsed");
+  assert.ok(!("blindFrame" in P), "the retired prose path constant must not come back as a dead key");
+  // no stage prompt may name a file the engine no longer writes — a prompt pointing at blind-frame.md is
+  // a live defect (the model is told to read or write something that will never exist), not a doc nit.
+  const axes = ST.REGISTER_AXES;
+  const job = { marks: [{ name: "X", classes: [9] }], markName: "X", classes: [9], upfrontInstructions: "x", forwarder: "jordan", msgId: "<m>", ref: "TMP1" };
+  const built = new Set();
+  for (const name of ST.STAGE_ORDER) {
+    const def = ST.STAGES[name];
+    const axis = name === "register-unit" ? "primary-sweep" : null;
+    let msg;
+    try { msg = def.message({ paths: P, job, axes, axis, agent: "mailagent", run: { slug: "s", codename: "c" } }); }
+    catch { continue; }   // a message needing richer ctx — same skip as the stageInputs drift guard above
+    built.add(name);
+    assert.ok(!/blind-frame\.md/.test(String(msg)), `stage ${name}'s prompt still names blind-frame.md, which nothing writes`);
+  }
+  // the skip above must not be what makes this pass: the two stages that ever named the file must be swept
+  for (const name of ["blind-frame", "frame-diff"]) assert.ok(built.has(name), `${name}'s message() did not build — this guard swept nothing`);
+  assert.ok(!ST.stageInputs("frame-diff", P, { axes }).some((f) => /blind-frame\.md$/.test(String(f))),
+    "frame-diff must not declare the retired prose file — --experiment copies exactly stageInputs()");
+  assert.ok(ST.stageInputs("frame-diff", P, { axes }).includes(P.blindFrameModel),
+    "frame-diff still consumes the model");
+  assert.ok(ST.stageOutputs("blind-frame", P, { axes }).includes(P.blindFrameModel),
+    "the dependency graph must still know blind-frame authors the model");
+});
+
 // ---- WS1c — DELETED with the model-failover chain --------------------------------------------
 // It asserted that composeEmailHtml renders a "Model failover:" line from `failover_note` front-matter,
 // by hand-writing front-matter no production run could produce: the chain had one rung, so nothing ever
 // set the field. A passing test of a fiction. The renderer block is gone; the pin that it stays gone is
 // a source assertion in audit-grid-log.test.mjs, not a fixture here.
 
-// ── the stale-repair entry point re-judges step 3 ────────────────────────────────────────────────────
-// A stale judge on the delivery path is repaired in place by re-judging the whole step (pipeline.mjs,
-// rejudgeStale → runOwnerJudgment). `_driver/delivery-stale.json` is written for real by a blocked
-// delivery pass; the shape here is that writer's, so the entry point is driven as production drives it.
-test("the stale-repair entry point re-judges step 3 through runOwnerJudgment", async () => {
+// ── — THE STALE-SIBLING HOLE IS CLOSED BY AUTHORSHIP, NOT BY DELETION ──────────────────────────
+//
+// The hole: placements.json is the AUTHORITATIVE per-candidate tier record and the digest is told not to
+// re-read the md on a corrective pass, so a forced re-dispatch that rewrote the md but not the JSON left
+// the previous pass's tiers on disk, joined against a re-enumerated crowd band. The answer used to be
+// the destructive snapshot step — take the sibling with the md and DELETE it, so a pass that failed to
+// re-emit it failed loudly. That is also what discarded 31 minutes of finished work on R1: the file was
+// deleted at dispatch, the seat wrote its prose, the wall landed in the gap, and the rescue refused
+// because the JSON was missing.
+//
+// The seat no longer writes that file at all. The driver renders it from a form regenerated against the
+// current fold on every pass, so a stale-tier file is UNREACHABLE rather than deleted — and a pass that
+// hands back nothing loses nothing, because the accumulator still holds every tier already placed.
+test("a forced placement re-run cannot present a prior pass's tiers, and a silent pass loses none", async () => {
+  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FAIL_STAGE: "delivery-contract" });
+  const job = jobFor("TMPSIB1");
+  const r1 = await PL.pipeline(job);
+  const codename = codenameOf(r1.runDir);
+  const sibPath = join(r1.runDir, "placements.json");
+  const before = JSON.parse(readFileSync(sibPath, "utf8"));
+  assert.equal(before.placements.length, 1, "the driver rendered the seat's placement");
+  assert.match(before.placements[0].tier, /headline-candidate/);
+
+  // The re-dispatch hands back NOTHING — the shape that used to destroy the record.
+  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FAIL_STAGE: "delivery-contract", MOCK_PLACEMENT_NO_SIBLING: "1" });
+  const rr = await PL.pipeline(job, { codename, fromStage: "placement-inquiry" });
+  assert.notEqual(rr.failedStage, "placement-inquiry",
+    "a silent pass is no longer a failed pass — the seat does not owe a file the driver writes");
+  const after = JSON.parse(readFileSync(sibPath, "utf8"));
+  assert.deepEqual(after.placements, before.placements,
+    "and the tier the FIRST pass placed is still in the deliverable, rendered from the accumulator");
+
+  // The ordinary path is unaffected: a re-run that DOES answer re-renders over it.
+  setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FAIL_STAGE: "delivery-contract" });
+  const rr2 = await PL.pipeline(job, { codename, fromStage: "placement-inquiry" });
+  assert.equal(rr2.failedStage, "report-overview", "placement re-ran clean — the run reached the armed delivery failure");
+  assert.ok(existsSync(sibPath), "the deliverable is there, and it is the driver's");
+});
+
+// ── AD-2 A9 (E2E-R2) + the P5 review — the digest's corrective pass GETS the rulings tail ───────────
+// The digest is told not to re-read the whole placement file on a corrective/repair pass (its tiers are
+// in placements.json), but the rulings tail (band reconciliation, disagreements, coverage rulings, open
+// questions) lives ONLY in the md. Leaving it to model discretion is the loss A9 names, and the named
+// backstop does not cover it: findUnresolvedDisagreements only flags disagreement rows that EXIST, so a
+// table that vanished entirely yields zero flags. The tail therefore rides the corrective dispatch as
+// DATA (the extractRulingsTail, the same extraction the synthesis corrective pass uses).
+//
+// A-2 widened it: the gate used to read `trigger !== "fresh" && !opts.followup`, so a FOLLOWUP digest —
+// the settlement flush, the largest re-digest surface in a run — was the one dispatch denied the tail,
+// on the reasoning that "a warm followup carries its own message and is untouched". A followup is not
+// warm (A-1: attempt 1 of a fresh session), and its message now COMPOSES with `extra` rather than
+// replacing it. So the dispatch least able to reconstruct the tail is no longer the one refused it.
+test("AD-2 A9 + A-2: every non-fresh digest dispatch carries placement's rulings tail as data — the FLUSH included; a fresh pass does not", async () => {
   setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced", MOCK_FAIL_STAGE: "delivery-contract" });
   const job = jobFor("TMPTAIL1");
   const r1 = await PL.pipeline(job);
   const codename = codenameOf(r1.runDir);
+  const inRun = events(r1.runDir).filter((e) => e.event === "digest-rulings-tail");
+  assert.ok(!inRun.some((e) => e.trigger === "fresh"), "a FRESH digest reads the md itself — no injection");
+  // …and the run's own followup digest DOES get it now. Asserted positively rather than left as an
+  // absence: this is the behaviour A-2 exists to produce, and an absence would read as success if the
+  // whole block were deleted.
+  assert.deepEqual(inRun.map((e) => e.trigger), ["settlement-flush"],
+    "the settlement flush is a followup dispatch and now carries the tail");
+  assert.ok(inRun[0].chars > 0);
+  assert.ok(existsSync(driverDir(r1.runDir, "mock-rulings-tail.flag")),
+    "…and it reached the dispatched MESSAGE, not just the log — under the old guard this flag was absent for the whole run");
+
+  // …and so does a stale-repair re-digest — the production in-place forced re-dispatch. Its
+  // `_driver/delivery-stale.json` is written for real by the blocked delivery pass (pipeline.mjs ~8162);
+  // the shape here is that writer's, so the entry point is driven exactly as production drives it.
   setKnobs({ MOCK_VERDICT: "CLEAR", MOCK_SKEPTIC: "no flags surfaced" });
   writeFileSync(driverDir(r1.runDir, "delivery-stale.json"), JSON.stringify({
-    ts: new Date().toISOString(), labels: ["owner-judgment:1"], changed: { "owner-judgment:1": ["register-named-band.json"] },
+    ts: new Date().toISOString(), labels: ["register-digest"], changed: { "register-digest": ["primary-sweep.md"] },
   }, null, 2));
   const rep = await PL.repairStale(job, { codename });
-  assert.deepEqual(rep, { ok: true, repaired: ["owner-judgment:1"], failed: [] }, "the stale-repair entry point re-judged");
-  const passes = events(r1.runDir).filter((e) => e.event === "owner-judgment").map((e) => e.trigger);
-  assert.equal(passes.at(-1), "stale-repair", "…as one pass of step 3, merged and recorded like every other");
+  assert.deepEqual(rep, { ok: true, repaired: ["register-digest"], failed: [] }, "the stale-repair entry point re-digested");
+  const ev = events(r1.runDir).filter((e) => e.event === "digest-rulings-tail");
+  assert.deepEqual(ev.map((e) => e.trigger), ["settlement-flush", "stale-repair"],
+    "the run's own flush and the stale-repair re-digest BOTH log the injection");
+  assert.ok(ev[0].chars > 0);
+  assert.ok(existsSync(driverDir(r1.runDir, "mock-rulings-tail.flag")),
+    "and the tail actually reached the dispatched message, not just the log");
 });

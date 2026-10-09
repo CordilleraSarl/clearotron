@@ -427,7 +427,7 @@ test("TEETH — two genuine admissions still read as 'it ran more than once'", (
 // ── a stage the run never reached ─────────────────────────────────────────────────────────────────────
 
 const DECISION = { event: "envelope-decision-early", source: "fan-in", deferred: 3, accepted: 3 };
-const JUDGE = { event: "stage", stage: "owner-judgment:1", ok: true };   // step 3's first judge
+const PLACEMENT = { event: "stage", stage: "placement-inquiry", ok: true };
 
 function withRunLog(rows, fn) {
   return scratch((root) => {
@@ -437,7 +437,7 @@ function withRunLog(rows, fn) {
   });
 }
 
-test("a run that never reached step 3 is NOT PROBED — the assert said so in its own message and failed anyway", () => {
+test("a run that never reached placement is NOT PROBED — the assert said so in its own message and failed anyway", () => {
   withRunLog([{ event: "plan-execution", executed: 1 }, DECISION], (dir) => {
     const r = evalAssertion({ op: "settled-before-placement", path: "_driver/run.jsonl" }, dir);
     assert.equal(r.notProbed, true);
@@ -448,13 +448,13 @@ test("a run that never reached step 3 is NOT PROBED — the assert said so in it
 });
 
 test("TEETH — every way this assert genuinely fails, it still fails", () => {
-  // step 3 ran, decision came after it — the 2026-07-30 shape that cost 1,436s
-  withRunLog([JUDGE, DECISION], (dir) => {
+  // placement ran, decision came after it — the 2026-07-30 shape that cost 1,436s
+  withRunLog([PLACEMENT, DECISION], (dir) => {
     const r = evalAssertion({ op: "settled-before-placement", path: "_driver/run.jsonl" }, dir);
     assert.equal(r.ok, false); assert.ok(!r.notProbed); assert.match(r.saw, /BEFORE the decision/);
   });
-  // step 3 ran and nothing was ever decided
-  withRunLog([JUDGE], (dir) => {
+  // placement ran and nothing was ever decided
+  withRunLog([PLACEMENT], (dir) => {
     const r = evalAssertion({ op: "settled-before-placement", path: "_driver/run.jsonl" }, dir);
     assert.equal(r.ok, false); assert.ok(!r.notProbed); assert.match(r.saw, /never decided/);
   });
@@ -468,11 +468,11 @@ test("TEETH — every way this assert genuinely fails, it still fails", () => {
     writeFileSync(driverDir(root, "run.jsonl"), "\n");
     const r = evalAssertion({ op: "settled-before-placement", path: "_driver/run.jsonl" }, root);
     assert.equal(r.ok, false);
-    assert.ok(!r.notProbed, "zero rows says nothing about whether step 3 ran — it must not decline, it must flag");
+    assert.ok(!r.notProbed, "zero rows says nothing about whether placement ran — it must not decline, it must flag");
     assert.match(r.saw, /no readable rows/);
   });
   // and the ordering it exists to check still passes
-  withRunLog([DECISION, JUDGE], (dir) => {
+  withRunLog([DECISION, PLACEMENT], (dir) => {
     assert.equal(evalAssertion({ op: "settled-before-placement", path: "_driver/run.jsonl" }, dir).ok, true);
   });
 });

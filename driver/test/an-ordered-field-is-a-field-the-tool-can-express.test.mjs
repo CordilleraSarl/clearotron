@@ -44,7 +44,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const DRIVER = join(dirname(fileURLToPath(import.meta.url)), "..");
-const SERVERS = Object.freeze(["recording", "dispositions", "unit-note", "declination"]);
+const SERVERS = Object.freeze(["recording", "coverage", "dispositions", "unit-note", "declination"]);
 // Where an order can be composed. Not the doctrine files: those are shared, and the proximity rule
 // above is what replaces reading them.
 const ORDER_SOURCES = Object.freeze(["repair-composers.mjs", "gateway.mjs", "stages.mjs"]);

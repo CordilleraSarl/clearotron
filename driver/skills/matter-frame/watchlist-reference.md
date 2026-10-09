@@ -10,7 +10,8 @@ here is surfaced anyway when the matter warrants it (in-class incumbents in
 particular surface independently of whether they appear below).
 
 Every entry carries its named context inline — why this owner is worth a second
-look and on which token / family. A context-free name is useless, so do not add one.
+look and on which token / family. A context-free name is useless to downstream
+placement, so do not add one.
 
 **Applicant-exclusion still applies.** If an entry below IS the matter's
 applicant (or an affiliate / subsidiary of it), drop it — it is never a conflict

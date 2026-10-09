@@ -27,15 +27,12 @@
 //   · `unknown` never sits inside a 3-band meter's set   → break: recombine the sentence, arm 3
 //   · the missing-meter message names each meter's set   → break: restore "use unknown", arm 2
 //   · the closed sets themselves are unchanged           → break: admit unknown, arm 4
-// Since 2026-10-02 the judges make the two 3-band reads as fixed choices and synthesis is asked for
-// neither, so arms 3 and 4 hold the instruction to that and the judges' choices to no indeterminate word.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { METERS, METER_TOKENS, parseFindingsJson } from "../findings-model.mjs";
-import { MARKS_ALIKE, GOODS_CLOSE } from "../owner-judgment.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const STAGES = readFileSync(join(HERE, "..", "stages.mjs"), "utf8");
@@ -105,23 +102,29 @@ test("arm 2 — the MISSING-meter message no longer orders the token that fails"
 
 test("arm 3 — `unknown` never sits inside a 3-band meter's stated set in the instruction", () => {
   // The exact shape that produced it: three meters stated as one set, `unknown` legalised for one of
-  // them in a trailing parenthetical. Since 2026-10-02 the two 3-band meters are not in the instruction
-  // at all: the judges read how alike the marks are and how close the goods are, as fixed choices, and
-  // code stamps both meters (decision-ratings.mjs). So no set of theirs can sit beside the word.
-  for (const meter of CLOSED_3)
-    assert.ok(!STAGES.includes(`${meter} = `), `the instruction states ${meter}'s set again: synthesis is asked for a read the judges make`);
+  // them in a trailing parenthetical. Each set is now stated on its own, so the word is never adjacent
+  // to a meter it is illegal on.
+  for (const meter of CLOSED_3) {
+    const at = STAGES.indexOf(`${meter} = `);
+    assert.ok(at > 0, `the instruction no longer states ${meter}'s own closed set`);
+    const stated = STAGES.slice(at, STAGES.indexOf(".", at));
+    assert.ok(!/unknown/.test(stated),
+      `"unknown" appears inside ${meter}'s own stated set: ${stated}`);
+    for (const tok of METER_TOKENS[meter])
+      assert.ok(stated.includes(tok), `${meter}'s set omits its own legal token ${tok}`);
+  }
   // enforcer DOES carry it, and must keep saying so — this is a split, not a blanket ban.
   const enf = STAGES.slice(STAGES.indexOf("enforcer = "), STAGES.indexOf(".", STAGES.indexOf("enforcer = ")));
   assert.match(enf, /unknown/, "enforcer lost its indeterminate value — the split went one meter too far");
 });
 
-test("arm 4 — the judges' two reads offer no indeterminate word, and the closed sets are unchanged", () => {
-  // The reads are fixed choices on the judges' form now, which the program's schema enforces and the
-  // check refuses outside: no word for "cannot say" is a choice, so the honest answer for an open
-  // specification is the closest of three, as the struck instruction once told synthesis to pick.
-  for (const choices of [MARKS_ALIKE, GOODS_CLOSE])
-    for (const word of INDETERMINATE) assert.ok(!choices.includes(word), `the judges may answer "${word}" for a read`);
-  // The meter is preserved: the remedy was never the enum.
+test("arm 4 — the instruction forbids the word by name and leaves the closed sets unchanged", () => {
+  for (const word of INDETERMINATE)
+    assert.ok(STAGES.includes(`"${word}"`),
+      `the instruction does not name "${word}" — a closed set stated positively is what produced this`);
+  assert.match(STAGES, /goods proximity is genuinely open/,
+    "the indeterminate case has no legal move in the instruction, so the honest answer is still unwritable");
+  // The remedy is the PROMPT, not the enum (option 1 on the issue): the meter is preserved.
   assert.deepEqual(METER_TOKENS.goods_proximity, ["high", "medium", "low"]);
   assert.deepEqual(METER_TOKENS.mark_similarity, ["high", "medium", "low"]);
   assert.deepEqual(METER_TOKENS.enforcer, ["high", "medium", "low", "unknown"]);

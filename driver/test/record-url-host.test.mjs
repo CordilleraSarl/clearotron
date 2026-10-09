@@ -172,9 +172,9 @@ test("every doc the seat reads names the FIELD and the VALUE, not just \"compose
 
   // The neutral contract files load on EVERY register run, and the provider docs load for the vendor
   // actually searched. The seat can reach the decision through any of them, so all of them must answer.
-  // (The register digest's manual carried it too, and went with the digest.)
   const mustSay = [
     join(SKILLS, "status-rules.md"),
+    join(SKILLS, "digest.md"),
     ...noPublicPage.map((id) => join(SKILLS, "providers", `${id}.md`)),
   ];
   for (const file of mustSay) {
@@ -220,7 +220,7 @@ test("the record-URL rule is in a file the SYNTHESIS stage actually reads", asyn
 
 test("and the register seat keeps it too — this was an addition, not a move", () => {
   const SKILLS = join(dirname(dirname(fileURLToPath(import.meta.url))), "skills");
-  for (const rel of ["clearance-register/status-rules.md"]) {
+  for (const rel of ["clearance-register/status-rules.md", "clearance-register/digest.md"]) {
     assert.match(readFileSync(join(SKILLS, rel), "utf8"), /`source\.resolved_link` is `""`/,
       `${rel} lost the rule. The register seat composes these links and needs it as much as synthesis does; `
       + "moving prose from one reader to another trades one silent failure for a different one.");

@@ -6,11 +6,13 @@ How the orchestrator turns two findings files (one per layer) into a single risk
 
 Across the synthesis, two postures are load-bearing:
 
-1. **If the orchestrator rates a candidate higher than the staff lawyer's calibration would**, it MUST defend the promotion explicitly with reasoning rooted in `matter-context.md`. Divergences require defense, not assumption.
+1. **If the orchestrator rates a candidate higher than the staff lawyer's calibration would** (e.g. promoting a sheet-2 candidate to client-facing headline), it MUST defend the promotion explicitly with reasoning rooted in `matter-context.md` and placement's own record — the structured `placements.json` (tier **and its stated reason**, per candidate) plus the rulings tail in `placement-recommendations.md`. A defence ENGAGES the reason placement gave: quote it and say why it does not hold. Divergences require defense, not assumption. The Touchpoint 3 (`narrative-refutation`) gate enforces this at delivery: a promotion above `placement-inquiry`'s placement without "promotion defended" reasoning is a BLOCKING flag.
 
-2. **Carry forward matter-context.** Synthesis reads `matter-context.md` (the strategic anchor produced at Phase 0 by `matter-frame`). The off-field reasoning, the named jurisdictions, the watchlist seeds are inputs to synthesis — not optional context. Disagreements MUST be surfaced explicitly ("matter-context flagged X as off-field; this candidate may warrant re-evaluation because Y"), not silently reframed.
+2. **Carry forward matter-context and placement-recommendations.** Synthesis reads `matter-context.md` (the strategic anchor produced at Phase 0 by `matter-frame`) and `placement-recommendations.md` (the per-candidate placements produced at Phase 2 Step 2C by `placement-inquiry`). The off-field reasoning, the named jurisdictions, the watchlist seeds, and the per-candidate placements are inputs to synthesis — not optional context. Disagreements with either MUST be surfaced explicitly ("matter-context flagged X as off-field; this candidate may warrant re-evaluation because Y"), not silently reframed.
 
-   3. **Optics is annotation, not a rating.** Partner-relationship, channel-conflict, PR, and reputational concerns — however prominently `matter-context` or the manifest raise them — are surfaced as client-facing annotations (the separate PR / reputational section below; a "relationship-level heads-up"). PR is a separate category, **never rated on the framework's bands**, and an existing business relationship is an *either-way* practical factor, not a band multiplier. The rating answers what the framework in force asks — anchored in *if this party sued us, would they win?*, set by the consumer-confusion read (mark-as-whole × G&S). Never let optics/PR/partner/size move the band; annotate beside it.
+   **`placements.json` — the structured tier record (B2, 2026-07-31).** When it is on disk beside `placement-recommendations.md`, it is the **authoritative per-candidate tier record**: one entry per placed candidate, `{mark, owner, jurisdiction, records[], tier, reason}`, `tier` exactly one of `headline-candidate` / `sheet-2` / `watchlist-annex` / `out-of-scope-filtered`. `reason` is placement's own short paragraph — the candidate characterisation, the decisive placement ground, any Stage-2 mitigant flag. **Adopt or counter each placement BY ENGAGING ITS REASON**: an override quotes the reason it contradicts and says what is wrong with it (never a silent re-tier), and a kept tier may still tighten the label while reusing the reason. The md keeps the **rulings tail** (band reconciliation, disagreements, coverage rulings, open questions) as prose — it travels verbatim and is adjudicated the same way: adopt each ruling or counter-reason it, never silently drop one. A run minted before this contract has no `placements.json`; the md's tier sections are then the record, read the same way.
+
+3. **Optics is annotation, not a rating.** Partner-relationship, channel-conflict, PR, and reputational concerns — however prominently `matter-context` or the manifest raise them — are surfaced as client-facing annotations (the separate PR / reputational section below; a "relationship-level heads-up"). PR is a separate category, **never rated on the framework's bands**, and an existing business relationship is an *either-way* practical factor, not a band multiplier. The rating answers what the framework in force asks — anchored in *if this party sued us, would they win?*, set by the consumer-confusion read (mark-as-whole × G&S). Never let optics/PR/partner/size move the band; annotate beside it.
 
 4. **The framework in force rates the matter (doc 50).** Every run reads exactly one risk framework — **the customer's own framework if the profile has one on file, else the house default. Nothing in between.** That framework is the customer's own legal judgment written down: reason each conflict *with* it — its band definitions (Legal position × Practical position × Potential outcomes), or its matrix where it states one — and state the rating as **its band word, verbatim**. It is a reasoning authority, never a lookup table: no numeric thresholds, no score-to-band mapping, no vocabulary borrowed from another framework. **The band follows the words** — state the likelihood in plain words first (*"the prior owner is likely to win, though credible defences exist"*), then give the band those words require under the framework's own definitions; the prose read and the band are one judgment and may not disagree. Where the framework states **ceilings or matrix mappings, honour them exactly as written** — they are that framework's own anti-escalation mechanism, and no practical or optics factor lifts a rating past what its stated method yields. A conflict the client **clearly wins with no material risk is not a rated conflict at all** (most frameworks' lowest band still describes *real* residual risk — nuisance claims, weak strategic complaints, registration obstacles — never clear wins): surface it unrated as commercial awareness if worth knowing, else omit it. Voice the client side as the framework's **entity** names it (*"the company"*, *"Coastline/Nimbus/Kestrel"*, *"Foxglade Interactive"*). The three-question discipline stays: **legal risk** (*would they win?* — the confusion read net of merits defences), **practical risk** (*would they act?* — enforcement reality), and **impact** (*if they did, what follows?*). The framework's band definitions integrate the first two — reason both, in that order, through its own terms. **Impact stays client-surfaced, never rating-moving**: name the consequences for the client to weigh (we do not conclude acceptability), beside the band, exactly as before.
 
@@ -47,7 +49,7 @@ Cross-references in this file:
 A negative is only as good as the search behind it. **Before writing any "clean" / "no findings" /
 "no live filings" / "nothing surfaced in [X]" statement, read all three coverage inputs:**
 
-1. **the register coverage ledger — as DATA in your dispatch, not from the prose.** The driver composes the machine ledger (`register-coverage-ledger.json`) and the plan-execution receipt (`_driver/plan-execution.json`) into tables in the dispatch message itself: every axis, unit, status and reason, plus every dictated query that produced no band block. Those tables are the register answer — do **not** reconstruct the ledger, and do not re-type their numbers into yours. (The same reconstruction one stage upstream burned 28,592 thinking tokens, 95% of that stage's emission, and still got the answer wrong.) The files are named in the dispatch and remain yours to read directly. **If the dispatch says no register record was composed this run, there is no table and the register layer has no driver-computed record at all — that is the absence of a record, never a clean register.**
+1. **the register coverage ledger — as DATA in your dispatch, not from the prose.** The driver composes the machine ledger (`register-coverage-ledger.json`) and the plan-execution receipt (`_driver/plan-execution.json`) into tables in the dispatch message itself: every axis, unit, status and reason, plus every dictated query that produced no band block. Those tables are the register answer — do **not** reconstruct the ledger by reading the `## Coverage ledger` prose in `register-findings.md`, and do not re-type their numbers into yours. (The same reconstruction one stage upstream burned 28,592 thinking tokens, 95% of that stage's emission, and still got the answer wrong.) The files are named in the dispatch and remain yours to read directly; the prose ledger is a rendering of the same data, and where they differ the machine ledger governs. **If the dispatch says no register record was composed this run, there is no table and the register layer has no driver-computed record at all — that is the absence of a record, never a clean register.**
 2. the `## Coverage ledger` section in `common-law-findings.md` (common-law platforms). **This one is read in ONE direction only.** That file is the common-law stage's own narrative, so nothing in it is proof a check ran: its ledger CONSTRAINS you — a unit recorded `coverage-limited` or `deferred` can never be written as a clean negative — and it LICENSES nothing, because a `confirmed-clean` row there is that stage's word about its own work. A clean common-law statement still needs a source you read and can cite, exactly like every other off-register fact.
 3. the variant manifest's **`### Scope ledger`** section (the variants-stage coverage statement, spanning the variant / field / source layers — see [clearance-variants/SKILL.md](../clearance-variants/SKILL.md#scope-ledger)).
 
@@ -168,7 +170,9 @@ Before rating individual findings, **rank and select them by the consumer-confus
    a revocation DEFENCE, never an injunction shield (spec-48 C5): a registered right can support an
    injunction without the owner's own use (country-dependent; grace periods run ~5 years). Never reason
    "no use → procedural risk only / no injunction exposure" — the registration is enforceable today;
-   non-use only shapes the Stage-2 practical read and a possible counterclaim.**
+   non-use only shapes the Stage-2 practical read and a possible counterclaim.** (This is also
+   why the file-truth precondition matters: a prior run found an identical-mark registration but dropped
+   it from the deliverable because the register-findings file never reached the orchestrator.)
    **This holds regardless of filer profile.** A tail-market individual or single-class small-entity
    filer of an in-class identical / near-identical mark is a real paper conflict — surface it,
    characterise the owner (individual / tail-market / small entity), and apply revocation-vulnerability
@@ -204,7 +208,7 @@ For each material finding, document (in the Findings sheet's Key Factors column)
 4. **The BAND — reasoned through the framework in force.** Take the legal read (item 2) and the practical read (item 3) through the framework's own band definitions — its Legal position / Practical position / Potential outcomes per band, or its Level × Dispute Type matrix where it states one, recording the framework's inputs on the finding — and state the band **word**, verbatim from that framework. The two reads move the framework's *inputs*; its stated method yields the band, honouring any ceilings it states — a practical or optics factor never lifts the band past what the framework's method produces. A clear win with no material risk yields **no band** (not a rated conflict — Reasoning posture 4), and so does a conflict whose proprietor you could not identify on the record searched: with no party there is no legal read to take through the framework, so it is carried as an open item naming the identification step, never rated.
 5. **Elevation / mitigation factors observed** (if any) — tag each as bearing on the legal read or the business read (the factor lists live under *Firm-wide reasoning discipline* below).
 6. **Source-layer note:** which layer(s) surfaced this; whether cross-pollination ran for it
-7. **Client prior-use adjacency check:** examine the request form's "Manner of Use" and "Additional Information" fields for evidence of prior use of the proposed mark by the client. If found, apply the *client prior-use rule* (under Firm-wide reasoning discipline below; adjacency tiers — same/adjacent-goods/adjacent-industry/none) to weigh the applicant's prior-use defence on the **business** read. When same-goods or adjacent-goods prior use exists, headline-frame it in the narrative summary's scope statement (not just in the per-finding Key Factors). Example framing: "the applicant may own common-law rights in the mark for [its prior goods], or at least a right to continued use for those goods and highly similar ones." **When a senior conflict makes priority live, resolve the *filing* branch instead of punting it:** state the client's own filing/footprint position as a **separate "client's own prior rights" note** (e.g. "no prior client filing predating [conflict] was found" or "the client holds earlier filing [X] covering [Y]"). This note is **never a conflict / Findings-sheet row, never gates or down-rates the conflict sweep, and never feeds the rating** — it surfaces as an own-rights note / `# Actions` line (per `delivery-contract.md`). The *internal / undocumented-use* branch is invisible to any external search, so leave it as a one-line client question, framed as such ("confirm any unregistered prior use of the mark by the client").
+7. **Client prior-use adjacency check:** examine the request form's "Manner of Use" and "Additional Information" fields for evidence of prior use of the proposed mark by the client. If found, apply the *client prior-use rule* (under Firm-wide reasoning discipline below; adjacency tiers — same/adjacent-goods/adjacent-industry/none) to weigh the applicant's prior-use defence on the **business** read. When same-goods or adjacent-goods prior use exists, headline-frame it in the narrative summary's scope statement (not just in the per-finding Key Factors). Example framing: "the applicant may own common-law rights in the mark for [its prior goods], or at least a right to continued use for those goods and highly similar ones." **When a senior conflict makes priority live, resolve the *filing* branch instead of punting it:** consume the applicant own-rights sweep (`clearance-register/digest.md` Step 4 — rows tagged `applicant_own_rights`) and state the client's own filing/footprint position as a **separate "client's own prior rights" note** (e.g. "no prior client filing predating [conflict] was found" or "the client holds earlier filing [X] covering [Y]"). This note is **never a conflict / Findings-sheet row, never gates or down-rates the conflict sweep, and never feeds the rating** — it surfaces as an own-rights note / `# Actions` line (per `delivery-contract.md`). The *internal / undocumented-use* branch is invisible to any external search, so leave it as a one-line client question, framed as such ("confirm any unregistered prior use of the mark by the client").
 8. **Impact / consequences (surfaced for the client to weigh — never moves the rating):** for each material finding, name the practical consequences *if* the rights-holder enforced — injunction scope, damages / account of profits, reputational harm, legal costs — and tie them to the client's actual use as the matter states it (a brand printed on physical stock already shipping vs. a removable app listing; the scale and reversibility of the use). State these as **information for the client's own risk-acceptance decision, not a conclusion we draw**: we often lack the client's internal exposure data, so name the *kind* of exposure honestly rather than quantifying what we cannot see. Impact is **client-specific** and **must never move the band** — the band is what the framework in force's method yields; it is surfaced *beside* the rating, in the narrative and the report, the way the PR / reputational note is (see Reasoning posture 4 and *PR / reputational risk* below). Where the matter gives no usable signal on the client's exposure, say so in one line rather than inventing it.
 
 Every assessment must be labeled:
@@ -224,7 +228,8 @@ rules govern it:
   named: the declaration records that the criteria left the question open, never that you declined to
   answer it. **Declaring one is a correct professional outcome**; what is a failure is a confident band
   on a record the framework does not decide. Omit the key entirely when the criteria *do* decide — the
-  ordinary case. It is **internal** routing and audit data between stages and runs: it never travels into the client's report as hedge language, and it never
+  ordinary case. It is **internal** routing and audit data between stages and runs, exactly like
+  placement's `borderline`: it never travels into the client's report as hedge language, and it never
   softens the prose. **This is a declaration, not a criterion.** Nothing here tells you how to choose
   between two bands — that is the framework's own doctrine and it stays the framework's; a rule of ours
   that decided one band from another would be our doctrine wearing the customer's vocabulary.
@@ -283,21 +288,20 @@ is earned (see *Volume is not a risk multiplier* and the use-meets-use rule); a 
 
 ### The finding sentence — the shape of the typed `net`
 
-**A conclusion, not a chain.** It answers the single question a lawyer asks of this
+**One sentence. A conclusion, not a chain.** It answers the single question a lawyer asks of this
 finding: *is this a problem for me?*
 
-**The finding sentence.** At most two sentences, each at most 25 words, in words a client reads
-without a glossary. The first states the outcome as a likelihood: who would win against whom, for
-what goods, where. *"[Owner]'s earlier [mark] would probably win against [your mark] for [goods] in
-[territory]."* The second, only when the first cannot carry it, states what the earlier right covers:
-*"Their registration covers [goods]."* No "prevail". No semicolon, no arrow, no advice, no band word.
-Every fact that does not fit goes in the legal and practical positions below, never dropped.
+Worked example:
+
+> Veltra Labs' registered VELTRA is more likely than not to prevail against VELTRA PHARMA in the
+> United States.
 
 **THE RULE, AND THE THREE MARKS IT FORBIDS.** No semicolon-chain. No `→`. No consequence clause
 tacked on the end. If the sentence needs a semicolon or an arrow to hold itself together, it is
 reasoning, and reasoning belongs in `legal_position` / `practical_position` — which the reader opens
 the moment this sentence says yes. **The parser rejects a `net` carrying either mark**
-(`findings_net_chained`), and so does the pre-delivery lint (`net-conclusion-form`).
+(`findings_net_chained`), and so does the pre-delivery lint (`net-conclusion-form`). Neither checks
+length: there is no cap here and none is coming.
 
 **THE REASONING MOVES; IT NEVER DISAPPEARS.** This is a relocation, not a compression. Every clause
 the old chain carried — the territories, the goods paraphrased to the worst overlap, the owner's
@@ -307,10 +311,11 @@ ruling rejects. Write the conclusion here; write everything that earns it there.
 
 **DO NOT RESTATE THE BAND.** The band word is the verdict and it renders as the card's own chip, next
 to this sentence. "A Medium-risk conflict" spends the sentence saying what the reader already sees.
-Say what is true of the world instead.
+Say what is true of the world instead: who prevails against whom, where, and on what.
 
 **WHAT A CONCLUSION LOOKS LIKE.** Name the parties and the territory, and state the outcome as a
-likelihood. *"Nothing on the German register reaches the applicant's class-9 goods."*
+likelihood. *"Veltra Labs' registered VELTRA is more likely than not to prevail against VELTRA PHARMA
+in the United States."* *"Nothing on the German register reaches the applicant's class-9 goods."*
 *"Norvell Instruments — a laboratory-equipment maker — could oppose in the EU but has never asserted
 against a software filer."* Each stands alone, and each is falsifiable.
 
@@ -324,6 +329,9 @@ the positions. A specification runs to 200 words and one phrase of it decides th
 phrase. Where the specification is broad and you have paraphrased to its sharpest edge, the
 scope-limiter is **`(among broad goods)`** — it tells the reader you narrowed and that the rest is
 wider.
+
+**Still no length cap.** A conclusion is short because it is a conclusion, not because it was
+trimmed. Never drop a fact to fit; move it below.
 
 ### The grouped reasoned negative
 
@@ -375,7 +383,8 @@ A finding sourced from a register (`source_type` = `register-vendor` / `register
 one grounding `owner.registrations[]` entry with a real record URI — it is the record the conflict rests on. A
 mark known only from general knowledge — a famous one-keystroke neighbour with **no** fetched register record —
 is **never** emitted as a register finding (an empty/fabricated registration is rejected by the findings
-contract); it travels as a typed `context_notes[]` entry (`famous-neighbour-ungrounded`). A register finding with no grounding registration is an **orphan** —
+contract); it travels as a typed `context_notes[]` entry (`famous-neighbour-ungrounded`), exactly as
+`clearance-register/digest.md` (A1) dictates. A register finding with no grounding registration is an **orphan** —
 the driver's grading tripwire flags it; the cure is to ground it in the fetched record or move it to a context
 note, never to ship it ungrounded.
 
@@ -556,6 +565,7 @@ For every common-law game-title finding (Steam title, Microsoft Store title, App
 **When the attribution is missing:**
 - Narrative: write "(developer unverified)" or "(publisher unverified)" inline, rather than guessing
 - Excel Findings sheet: leave the Owner column blank or write "Unverified" — never populate with an inferred name
+- `placement-inquiry` will have placed any unverified-publisher game-title at sheet-2 with a verify-publisher flag; synthesis carries that forward, never promotes to headline without attribution
 
 The `narrative-refutation` gate (Phase 2 Step 4.7) blocks delivery if the narrative contains a named publisher / developer not traceable to `common-law-findings.md`'s extraction.
 
@@ -565,7 +575,7 @@ The `narrative-refutation` gate (Phase 2 Step 4.7) blocks delivery if the narrat
 
 Same anti-laundering discipline as common-law attribution above, applied to **register records**: a registration fact is **copied verbatim from the fetched record, never restated from memory.** This covers the **registration number, application/serial number, filing date, registration date, expiry date, Nice classes, and live/dead status.**
 
-For every register finding, these fields MUST come from the fetched record. **Do NOT generate, paraphrase, infer, or "round" them.** Re-typing a reg number, nudging a filing year, or assuming a 10-year expiry cycle is exactly the failure the `registry-record-match` guard catches — and on a verifiable numeric field the driver will now **overwrite your value with the record's true value and log the correction**, so a restated figure is both wrong and visibly so.
+For every register finding, these fields MUST come from the fetched record as captured in `register-findings.md` (the normalised record fields the register layer extracted). **Do NOT generate, paraphrase, infer, or "round" them.** Re-typing a reg number, nudging a filing year, or assuming a 10-year expiry cycle is exactly the failure the `registry-record-match` guard catches — and on a verifiable numeric field the driver will now **overwrite your value with the record's true value and log the correction**, so a restated figure is both wrong and visibly so.
 
 **When the record does not carry a field:** mark it **`(unverified)`** inline — never fill it in. The record is the *only* permitted source for a registry identifier; if a card cites a record URI the run never fetched, its registry values are unverified by construction.
 
@@ -644,4 +654,4 @@ Inconsistency between narrative and Findings sheet is a delivery failure — che
 
 ### Consistency contract — one record, one composed URL, everywhere
 
-Every owner/mark mention in the deliverable that corresponds to a **register finding** MUST resolve to the **same register record** as that finding's row in the structured deliverable — the narrative bullet, the Findings-sheet row, and any other surface all point at one record, never at divergent ones. The single shared link target is the **composed record URL** from the **record-URL contract** (see [clearance-register/status-rules.md → Record-URL contract](../clearance-register/status-rules.md#record-url-contract)): the configured provider record **base-host** + the record's `uri` (`/mark/<cc>/<number>`) path. There is **exactly one URL per record**, composed from `uri` — no separately-maintained link sets, no per-surface URL variants, and no URL drift between the narrative and the sheet. If the narrative names a register conflict, the URL behind that name is the same composed URL carried in that conflict's findings row; a mismatch is a consistency failure the `narrative-refutation` gate flags.
+Every owner/mark mention in the deliverable that corresponds to a **register finding** MUST resolve to the **same register record** as that finding's row in the structured deliverable — the narrative bullet, the Findings-sheet row, and any other surface all point at one record, never at divergent ones. The single shared link target is the **composed record URL** from the **record-URL contract** (see [clearance-register/status-rules.md → Record-URL contract](../clearance-register/status-rules.md#record-url-contract) and the digest's findings format): the configured provider record **base-host** + the record's `uri` (`/mark/<cc>/<number>`) path. There is **exactly one URL per record**, composed from `uri` — no separately-maintained link sets, no per-surface URL variants, and no URL drift between the narrative and the sheet. If the narrative names a register conflict, the URL behind that name is the same composed URL carried in that conflict's findings row; a mismatch is a consistency failure the `narrative-refutation` gate flags.

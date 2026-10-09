@@ -10,13 +10,14 @@
 //     never inspects term characters on a literal predicate, so the provider searched the star as a
 //     character, found nothing, and the band recorded state:"enumerated", total_hits:0 — a
 //     schema-level confident clean over a slice that was never really searched.
-//   * LABEL-AS-TERM: a directive's display label ("Reverse-order WAVO composites
+//   * LABEL-AS-TERM: a frame-diff directive's display label ("Reverse-order WAVO composites
 //     (TROPICAL WAVO, ISLAND WAVO)") was dispatched verbatim as a mark term. Structured transport,
 //     prose value — same nil search, same false clean.
 //
-// This module is the shared detector the seams call: the plan freeze-lint (register-plan.mjs
-// validatePlanFeasibility), the proposal mint (engine/mcp/supplemental.mjs rejected[] ladder) and the
-// executor's defence-in-depth (execute-plan.mjs plan-defect refusal).
+// This module is the shared detector all four seams call: the plan freeze-lint
+// (register-plan.mjs validatePlanFeasibility), the proposal mint (engine/mcp/supplemental.mjs
+// rejected[] ladder), the executor's defence-in-depth (execute-plan.mjs plan-defect refusal), and the
+// frame-diff variant fallback (frame-diff-model.mjs deriveDirectiveRemedy → disclose).
 //
 // PROVIDER-AGNOSTIC BY CONSTRUCTION: these checks operate at the PLAN PREDICATE level, above any
 // capability mapping — whether a provider maps `wildcard` to starts_with/ends_with or to a native `*`
@@ -108,7 +109,7 @@ const MARKUP_ARMS = [
  * Is the string MARKUP or an enumeration rather than a mark term? Returns the plain-English issue,
  * or null. Fires at any word count, on any predicate but `owner` (the caller exempts that).
  *
- * The message is written in a remedy shape — name the row, name what is wrong,
+ * The message is written in the frame-diff guard's remedy shape — name the row, name what is wrong,
  * then say WHAT TO SEARCH — because the stage that authored the string is the one that has to
  * restate it, and "invalid term" tells it nothing it can act on.
  */

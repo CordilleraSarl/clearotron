@@ -115,7 +115,7 @@ test("no run dir at all is not a grant and not a disagreement", () => {
 
 // ── PROOF 3 — the population, derived so nobody re-derives ten ──────────────────────────────────────
 
-test("the seat-write-free population is ELEVEN, read from the frozen table", () => {
+test("the seat-write-free population is FOURTEEN, read from the frozen table", () => {
   // A naive grep for `seatWrites: false` returns more hits than the population: some are comment text,
   // one in blind-frame's FIRST OCCUPANT note and one in allowedToolsFor's own paragraph. A fix
   // sized from the grep widens itself by stages that were never in the set — which is why this is
@@ -131,8 +131,7 @@ test("the seat-write-free population is ELEVEN, read from the frozen table", () 
   // judgment. It is the SECOND mixed member, so `narrative-refutation` above is no longer the sole
   // witness that a retrieval group does not vote on seat writes — a single-member population is exactly
   // what makes a predicate look like a law.
-  // Conversion 11 — register-digest joined as the ELEVENTH (and left with the digest, 2026-10-01; step 3's
-  // judges are confined and are not in this table — they are offered no file tool at all), and it was the THIRD mixed member: it kept
+  // Conversion 11 — register-digest joins as the ELEVENTH, and it is the THIRD mixed member: it keeps
   // `band` (judging frozen material is what it reads with) AND `coverage` (a separate typed transport on
   // its own key). Three members now hold retrieval alongside their record tool, so the predicate this
   // pair guards is no longer resting on one or two witnesses — which is the whole reason the note above
@@ -153,10 +152,9 @@ test("the seat-write-free population is ELEVEN, read from the frozen table", () 
   // tool-free row. This one was born typed, so its declaration records no transition — which makes it
   // the first member for which "the seat writes nothing here" is a property of the design rather than
   // the outcome of removing a Write grant.
-  // 13 -> 11: blind-frame and frame-diff left with the mid-run reopening.
   assert.deepEqual([...SEAT_WRITE_FREE_STAGES], [
-    "clearance-variants", "doubt-closure", "knockout-assess",
-    "knockout-frame", "knockout-review", "matter-frame", "narrative-refutation",
+    "blind-frame", "clearance-variants", "doubt-closure", "frame-diff", "knockout-assess",
+    "knockout-frame", "knockout-review", "matter-frame", "narrative-refutation", "register-digest",
     "report-card", "report-overview", "skeptic", "synthesis",
   ]);
 });

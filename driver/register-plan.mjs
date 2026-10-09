@@ -1456,7 +1456,8 @@ export function compileRegisterPlan({ manifest, job, form = null, skillVersion =
     }
   }
   // — EVERY seeded band, not just the dominant element's (see bandsFor). The wildcard fringe stays
-  // on the dominant band alone, and the dominant's fringe reaches the family for all seeds.
+  // on the dominant band alone. The oracle does not ask for more — coverageGaps' family arm counts ANY
+  // dispatched wildcard as the family being reached, so the dominant's fringe answers it for all seeds.
   for (const formBand of bandsFor(form, manifest.dominant_element).map((e) => e.band)) {
   if (formBand?.exactQueries?.length) {
     // Repair-first D: split the form OR-stack into ≤PLAN_MAX_OR_WIDTH entries at COMPILE time — the
@@ -1752,9 +1753,10 @@ function bandFor(form, element) {
  * `bandFor` returned ONE band and the compiler dispatched only that one — but the form artifact has
  * carried a second element since 2026-07-18 (the formative root) and now carries every distinctive
  * element the manifest names. Those bands were generated and never searched, which is worse than not
- * generating them: the form check of the time walked EVERY element in the artifact, so each undispatched
- * band fired a systemic gap on every run that had a formative root — the check correctly reporting a gap
- * the compiler was creating. Dispatching all of them closes the gap at the end that was actually wrong.
+ * generating them: `formGapDirectives` walks EVERY element in the artifact, so each undispatched band
+ * fired a systemic `material` variant directive ("N of the deterministic form near-forms of X were
+ * never dispatched") on every run that had a formative root — the oracle correctly reporting a gap the
+ * compiler was creating. Dispatching all of them closes the gap at the end that was actually wrong.
  *
  * Deduped on the normalized element so the same seed reaching the artifact twice compiles once. PURE.
  */
@@ -2089,7 +2091,7 @@ export function foldSupplementalEntries(plan, entries) {
     const eTerm = String(e.term ?? e.terms?.[0] ?? "");
     if (inBatch.has(e.qid) && inBatch.get(e.qid) === eTerm) continue;   // the same row twice — one refusal
     if (inBatch.has(e.qid)) {
-      refused.push({ qid: e.qid, term: String(e.term ?? e.terms?.[0] ?? ""),
+      refused.push({ qid: e.qid, term: String(e.term ?? e.terms?.[0] ?? ""), kind: "identity-collision",
         issue: planRowRefusal({ qid: e.qid, issue:
           `a different term ("${inBatch.get(e.qid)}") already minted this identity in the same batch, so `
           + `one of the two would be dropped with nothing recorded. Two DIFFERENT terms sharing one qid is `
@@ -2108,7 +2110,7 @@ export function foldSupplementalEntries(plan, entries) {
     e = kept;
     const issues = entryTermIssues(e);
     if (issues.length) {
-      refused.push({ qid: e.qid, term: String(e.term ?? e.terms?.[0] ?? ""),
+      refused.push({ qid: e.qid, term: String(e.term ?? e.terms?.[0] ?? ""), kind: "malformed-term",
         issue: planRowRefusal({ qid: e.qid, issue: issues[0].issue }) });
       continue;
     }
@@ -2117,7 +2119,11 @@ export function foldSupplementalEntries(plan, entries) {
     const key = entryQuestionKey(e, plan);
     const twin = key ? asked.get(key) : undefined;
     if (twin) {
-      refused.push({ qid: e.qid, term: String(e.term ?? e.terms?.[0] ?? ""),
+      // THE TWIN IS A FIELD, NOT ONLY A PHRASE IN THE PROSE. This row is the only place that knows the
+      // question is already asked, and by which plan row. A reader could parse it back out of the
+      // sentence; a caller cannot be asked to. The remedy accounting reads it to tell a duplicate
+      // refusal (answered elsewhere) from the other two kinds (genuinely unasked).
+      refused.push({ qid: e.qid, term: String(e.term ?? e.terms?.[0] ?? ""), kind: "duplicate-question", twin,
         issue: planRowRefusal({ qid: e.qid, issue:
           `it asks the same question as plan row "${twin}" once regions are resolved (an entry with no `
           + `regions of its own inherits the plan's, so an empty list is the WIDEST scope, not a narrower `
@@ -2396,8 +2402,8 @@ export function joinPlanToBands(plan, bandBlocksByAxis, { released = new Set() }
     // nothing. `_driver/register-recall.json` holds the difference and is purged with the run dir, so
     // on 19 delivered runs the population that a rule would key on is not derivable at all.
     //
-    // THREE-VALUED, and that is the whole point rather than a nicety: the executor writes total_hits
-    // NULL for a count it could not take, and `Number(null)` is 0.
+    // THREE-VALUED, and that is the whole point rather than a nicety. close-verify.mjs already records
+    // why: "the executor writes total_hits NULL for a count it could not take, and `Number(null)` is 0".
     // A two-valued count would read an untaken count as "returned nothing" and re-create the exact
     // confusion this exists to remove — a probe whose count failed is not a probe that found nothing.
     // So each field is a number or NULL, never a zero standing in for an absence.
@@ -2405,6 +2411,7 @@ export function joinPlanToBands(plan, bandBlocksByAxis, { released = new Set() }
     // `Number.isFinite(0)` is true, so coercing before testing turns "no count could be taken" into
     // "counted zero" — the precise confusion this block exists to remove, re-created inside the fix.
     // Written the wrong way round first and caught by its own arm, which is why that arm exists.
+    // (close-verify.mjs coerces the same field safely, because it only ever asks `> 0`.)
     const recs = Array.isArray(b.records) ? b.records.length : null;
     const rawHits = b?.total_hits;
     const hits = rawHits === null || rawHits === undefined ? NaN : Number(rawHits);
@@ -2418,9 +2425,6 @@ export function joinPlanToBands(plan, bandBlocksByAxis, { released = new Set() }
       // says `incomplete` with no count. The deferral is the only thing that tells it from a listing that
       // overflowed, so it rides with the row rather than stopping at the block.
       ...(b.deferred === true ? { deferred: true } : {}),
-      // WHAT THE TOTAL COUNTS, when the register said: `records`, one per country a mark covers. Every
-      // reader of this row reads the count as the register's own number (ruled 2026-10-02).
-      ...(typeof b.total_counts === "string" ? { total_counts: b.total_counts } : {}),
     });
   }
   const planQids = new Set(plan.entries.map((e) => e.qid));

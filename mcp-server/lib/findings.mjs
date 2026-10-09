@@ -8,7 +8,7 @@
 // (on-field / off-field / out-of-scope) lives on the report cards, so we expose those separately. Read-only.
 
 import { existsSync, readFileSync } from "node:fs";
-import { parseAudit, parseReport, parseBlocks, parseFront, parseSections, buildAuditMd, registerDecisionsFor } from "./driver.mjs";
+import { parseAudit, parseReport, parseBlocks, parseFront, parseSections, buildAuditMd } from "./driver.mjs";
 
 // id-stamp the three block lists so callers (get_finding / trace) can address a single record.
 function idStamp(lists) {
@@ -51,12 +51,7 @@ export function loadFindings(P) {
   try {
     const reg = existsSync(P.registerFindings) ? readFileSync(P.registerFindings, "utf8") : "";
     const cl = existsSync(P.commonLaw) ? readFileSync(P.commonLaw, "utf8") : "";
-    // A run judged by owner carries no register findings document: its register half is step 3's
-    // decisions, read the way the driver reads them for audit.md. Unreadable decisions leave that half
-    // empty, as they do in the driver.
-    let registerDecisions = null;
-    try { registerDecisions = registerDecisionsFor(P.runDir, P.ownerDecisions); } catch { registerDecisions = null; }
-    if (reg || cl || registerDecisions) {
+    if (reg || cl) {
       // — THE BACKSTOP GETS THE FINDINGS SET, because without it this rebuild is a DIFFERENT
       // document from the one the driver writes. audit-from-spine.mjs says so in its own words: the
       // resolution and withdrawn stamps are applied only "if (Array.isArray(runFindings))", and
@@ -69,7 +64,7 @@ export function loadFindings(P) {
       //
       // Best-effort by construction: an unreadable or absent findings.json yields undefined, which is
       // exactly the no-op this path already had. It can only add fidelity, never remove it.
-      const { md } = buildAuditMd(reg, cl, { findings: readRunFindings(P), registerDecisions });
+      const { md } = buildAuditMd(reg, cl, { findings: readRunFindings(P) });
       return { ...idStamp(parseAuditText(md)), source: "rebuilt-from-spine" };
     }
   } catch { /* fall through */ }

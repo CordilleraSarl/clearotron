@@ -41,11 +41,11 @@ For each mark, three bullet lists:
 [MARK NAME]
 
 Direct conflicts (consumer-confusion risks):
-- [Finding 1 — 1-2 sentences with owner, jurisdiction, classes, Stage-2 mitigants]
+- [Finding 1 from placement-recommendations headline-candidates — 1-2 sentences with owner, jurisdiction, classes, Stage-2 mitigants]
 - [Finding 2 ...]
 
 Commercial context (lower-tier register findings, watchlist items):
-- [1 sentence each]
+- [From sheet-2 + watchlist-annex placements — 1 sentence each]
 
 PR / reputational:
 - [Findings, or "None identified" if clean]
@@ -74,11 +74,11 @@ PR / reputational:
 - Closing
 
 **Excel (the Generic Excel template):**
-- Findings sheet (full structured candidates)
+- Findings sheet (full structured candidates per `placement-recommendations`)
 - Negative Results
 - Out-of-Scope / Filtered (carries matter-context off-field reasoning)
 - Audit Trail (full search log + touchpoint reasoning)
-- Methodology (matter-context summary + search approach + narrative-refutation verdict + open verification flags)
+- Methodology (matter-context summary + search approach + placement-inquiry summary + narrative-refutation verdict + open verification flags)
 
 ## Recipients
 

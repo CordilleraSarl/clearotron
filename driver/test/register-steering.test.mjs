@@ -21,7 +21,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { STAGES, REGISTER_ENUMERATE_TOOL, SUPPLEMENTAL_LANE_STEERING, OWNER_SWEEP_STEERING,
-  supplementalLaneResumeLine, buildEscalationFollowup, buildEnvelopeCloseFollowup } from "../stages.mjs";
+  supplementalLaneResumeLine, buildEscalationFollowup, buildEnvelopeCloseFollowup,
+  buildFrameReopenFollowup, buildFrameReopenRetryMessage } from "../stages.mjs";
 import { correctiveMessage } from "../gateway.mjs";
 import { allowedToolsFor, toolGroupsForStage } from "../engine/mcp/gather-config.mjs";
 
@@ -34,6 +35,10 @@ const P = {
 const JOB = { classes: [9, 42] };
 const LANE_PLAN = { contract: { supplemental_lane: 1 }, entries: [] };
 const LEGACY_PLAN = { entries: [] };
+const DIRECTIVES = [
+  { layer: "variant", severity: "dominant-element", item: "HALCYON", observation: "the dominant element was never enumerated in class 35" },
+  { layer: "field", severity: "class-gap", item: "Cl.35/38", observation: "the class gap was never scoped" },
+];
 const COLLAPSED = "invalid_file:run/register-units/primary-sweep.md:named_band_collapsed:exact HALCYON~412";
 const BAD_STATE = "invalid_file:run/register-units/primary-sweep.md:named_band_state_invalid:verified (one of: enumerated, incomplete)";
 const UNIT_FILE = "/x/clearance-search/run/register-units/primary-sweep.md";
@@ -61,6 +66,16 @@ const STEERING_SITES = [
     id: "deadline-envelope close followup",
     build: (lane) => buildEnvelopeCloseFollowup({ paths: P, axis: AXIS, rows: "| u | deferred | r |", supplementalLane: lane }),
     legacyMustNot: [/register_propose_supplemental/, /BY DESIGN/],
+  },
+  {
+    id: "frame-reopen warm resume",
+    build: (lane) => buildFrameReopenFollowup({ paths: P, axis: AXIS, directives: DIRECTIVES, reopenFetchCap: 120, supplementalLane: lane }),
+    legacyMust: [/re-ENUMERATE the dominant element .* with register_enumerate/, /APPEND each call's result as a block/],
+  },
+  {
+    id: "frame-reopen fresh scoped retry",
+    build: (lane) => buildFrameReopenRetryMessage({ paths: P, axis: AXIS, directives: DIRECTIVES, reopenFetchCap: 120, supplementalLane: lane }),
+    legacyMust: [/Enumerate each via register_enumerate/, /APPEND each result as a block/],
   },
   {
     id: "named_band_collapsed corrective hint (rides the stage message itself)",
@@ -98,6 +113,40 @@ test("every supplemental-lane prompt names the replacement and calls the absence
     const stripped = m.split(supplementalLaneResumeLine(P, AXIS)).join("").split(SUPPLEMENTAL_LANE_STEERING).join("");
     assert.doesNotMatch(stripped, /register_enumerate/, `${site.id} — names the removed tool outside a prohibition`);
   }
+});
+
+test("the diagnosis survives the lane branch — a lane prompt still says WHAT to cover, not just what not to call", () => {
+  // The failure mode this guards: "fix" a contradictory prompt by deleting the offending sentence, which
+  // leaves the unit banned from the old path and invited to nothing (the ION shape exactly).
+  const reopen = buildFrameReopenFollowup({ paths: P, axis: AXIS, directives: DIRECTIVES, reopenFetchCap: 120, supplementalLane: true });
+  assert.match(reopen, /HALCYON/, "the directive still names the threat");
+  assert.match(reopen, /Cl\.35\/38/);
+  assert.match(reopen, /DOMINANT-ELEMENT item\(s\) this is a CLOSURE pass/);
+  assert.match(reopen, /nice_classes/, "class scoping still lands");
+  assert.match(reopen, /regions/, "region scoping still lands");
+  assert.match(reopen, /120 records/, "the fetch bound survives");
+  assert.match(reopen, /"incomplete" block \(count \+ sample \+ reason\)/, "incomplete-descriptor honesty survives");
+  // — THE DIGEST IS A CALL, so the reconciliation is what the seat SENDS rather than a
+  // file it re-opens, and the three assertions that pinned the Edit direction go with it. The one that
+  // scoped the Edit ("covers the DIGEST only") existed to stop "you may edit" reading as "you may edit the
+  // band"; there is no edit direction now, so a sentence qualifying one would point at nothing and teach a
+  // seat that a direction is somewhere below it. The band prohibition it carried is the live half and is
+  // asserted below, unchanged.
+  assert.match(reopen, /reconcile your account of this axis against the band the tools just wrote/,
+    "the reconciliation is what the seat sends, not a file it re-opens");
+  assert.match(reopen, /record_unit_note/, "the digest is handed back by the call that owns it");
+  assert.doesNotMatch(reopen, /TARGETED EDITS/, "no Edit direction for a file the seat cannot write");
+  assert.doesNotMatch(reopen, /the edit direction below covers the DIGEST only/,
+    "the qualification outlived the direction it qualified");
+  // …and the band contract inverts: the tool writes it, the model does not
+  assert.match(reopen, /never author, edit, append to or re-save/);
+  assert.doesNotMatch(reopen, /"state":"enumerated"/, "the hand-author state enum is dropped on the lane");
+
+  const retry = buildFrameReopenRetryMessage({ paths: P, axis: AXIS, directives: DIRECTIVES, reopenFetchCap: 90, supplementalLane: true });
+  assert.match(retry, /TIMED OUT at the hard wall/, "a fresh session still gets the whole contract");
+  assert.match(retry, /HALCYON/);
+  assert.match(retry, /90 records/);
+  assert.doesNotMatch(retry, /"state":"enumerated"/);
 });
 
 test("legacy (no contract flag) prompts keep the enumerate lane VERBATIM — a frozen pre-flag resume must not be re-steered", () => {

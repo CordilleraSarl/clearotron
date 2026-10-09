@@ -8,12 +8,12 @@
 // A transport that writes its artifact WHOLESALE, and whose schema makes a content field OPTIONAL,
 // accepts a call carrying only part of the document and silently deletes the rest. Five of the fifteen
 // return-path transports were measured with it. report-overview was fixed first and alone, as the
-// pattern; these were the other four. The fourth, record_blind_frame, left with its stage when the
-// mid-run reopening was removed, so three remain here.
+// pattern; these are the other four.
 //
 // What each one loses, measured before the fix:
 //
 //   record_clearance_variants   incumbent_classes, watchlist_owners, search_floor
+//   record_blind_frame       sources
 //   record_matter_frame      scope_jurisdictions, excluded_jurisdictions
 //   record_unit_note         null_result, note
 //
@@ -37,6 +37,7 @@ import { spawn } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { recordClearanceVariants, lastAcceptedClearanceVariants, mergeClearanceVariantsCall, refuseUndeclared as refuseVariants } from "../clearance-variants-record.mjs";
+import { recordBlindFrame, lastAcceptedBlindFrame, mergeBlindFrameCall, refuseUndeclared as refuseBlindFrame } from "../blind-frame-record.mjs";
 import { recordMatterFrame, lastAcceptedMatterFrame, mergeMatterFrameCall, refuseUndeclared as refuseMatterFrame } from "../matter-frame-record.mjs";
 import { recordUnitNote, lastAcceptedUnitNote, mergeUnitNoteCall, refuseUndeclared as refuseUnitNote, unitPaths } from "../register-unit-record.mjs";
 
@@ -56,6 +57,14 @@ const VARIANTS_FULL = Object.freeze({
   elements: [{ value: "NOVAPULSE", kind: "distinctive" }, { value: "PROJECT", kind: "common" }],
   variants: [{ value: "NOVAPULSE", category: "core", rationale: "the mark itself" }, { value: "NOVAPULZE", category: "phonetic", rationale: "sound-alike" }],
   incumbent_classes: ["9"], watchlist_owners: ["BigCo Interactive"], search_floor: ["primary-sweep"], scope_ledger: SCOPE_ROWS,
+});
+
+const BLIND_FULL = Object.freeze({
+  dominant_element: "VELTRIN",
+  variants: [{ value: "VELTRI", direction: "drop", rationale: "the element without its terminal N" }],
+  fields: [{ goods: "diagnostic software", on_field: true, rationale: "the actual product" }],
+  sources: [{ channel: "hospital procurement portals", rationale: "where a buyer meets the mark" }],
+  ranking_basis: "goods-overlap",
 });
 
 const MATTER_FULL = Object.freeze({
@@ -102,6 +111,18 @@ test("clearance-variants: a partial keeps the search floor, the watchlist and th
   assert.deepEqual(base.incumbent_classes, ["9"], "the incumbent classes did not survive a partial");
 });
 
+test("blind-frame: a partial keeps the source channels the cold model is compared against", () => {
+  const d = runDir();
+  assert.equal(recordBlindFrame(d, BLIND_FULL).refused, null);
+  const partial = { ...BLIND_FULL }; delete partial.sources;
+  const r = recordBlindFrame(d, partial);
+  assert.equal(r.refused, null, `the partial was refused (${r.refused})`);
+  const model = JSON.parse(readFileSync(join(d, "blind-frame-model.json"), "utf8"));
+  assert.equal((model.sources ?? []).length, 1,
+    "the source channels did not survive a partial — that is the half frame-diff compares the actual scope against, "
+    + "so losing it makes the comparison quietly narrower with nothing saying so");
+});
+
 test("matter-frame: a partial keeps the matter's territorial scope, both directions", () => {
   const d = runDir();
   assert.equal(recordMatterFrame(d, MATTER_FULL).refused, null);
@@ -135,11 +156,12 @@ test("unit-note: a partial keeps the seat's observation and its null-result clai
     "a TRUE null-result claim was silently dropped to false by a partial — that disarms the contradiction guard built to check it");
 });
 
-test("a LEGITIMATE field in the WRONG object is refused BY PATH, on all three", () => {
+test("a LEGITIMATE field in the WRONG object is refused BY PATH, on all four", () => {
   // Each of these is a real field of its own tool, placed in a typed sub-object that does not declare
   // it. That is the shape, and a top-level-only unknown-key check passes on every one.
   const cases = [
     ["clearance-variants", () => refuseVariants({ ...VARIANTS_FULL, elements: [{ value: "X", kind: "distinctive", search_floor: ["primary-sweep"] }] }), /variantmodel_undeclared_field:elements\.search_floor/],
+    ["blind-frame", () => refuseBlindFrame({ ...BLIND_FULL, variants: [{ value: "X", direction: "drop", rationale: "r", ranking_basis: "goods-overlap" }] }), /blindframe_undeclared_field:variants\.ranking_basis/],
     ["matter-frame", () => refuseMatterFrame({ ...MATTER_FULL, intake_asks: [{ ask: "a", owner: "register", scope_basis: "instructed" }] }), /matterframe_undeclared_field:intake_asks\.scope_basis/],
   ];
   for (const [label, run, expected] of cases) {
@@ -157,9 +179,10 @@ test("a LEGITIMATE field in the WRONG object is refused BY PATH, on all three", 
     "unit-note refused a top-level key — it has no sub-objects, so it should police nothing here");
 });
 
-test("a refused call does not become the base a later repair builds on, on all three", () => {
+test("a refused call does not become the base a later repair builds on, on all four", () => {
   const checks = [
     ["clearance-variants", runDir(), (d) => recordClearanceVariants(d, VARIANTS_FULL), (d) => recordClearanceVariants(d, { ...VARIANTS_FULL, elements: [{ value: "X", kind: "distinctive", search_floor: ["x"] }] }), (d) => lastAcceptedClearanceVariants(d)],
+    ["blind-frame", runDir(), (d) => recordBlindFrame(d, BLIND_FULL), (d) => recordBlindFrame(d, { ...BLIND_FULL, variants: [{ value: "X", direction: "drop", rationale: "r", ranking_basis: "wrong object" }] }), (d) => lastAcceptedBlindFrame(d)],
     ["matter-frame", runDir(), (d) => recordMatterFrame(d, MATTER_FULL), (d) => recordMatterFrame(d, { ...MATTER_FULL, intake_asks: [{ ask: "a", owner: "register", scope_basis: "wrong object" }] }), (d) => lastAcceptedMatterFrame(d)],
     ["unit-note", unitRun(), (d) => recordUnitNote(d, UNIT_FULL), (d) => recordUnitNote(d, { ...UNIT_FULL, note: "two blank lines\n\n\nis not one observation" }), (d) => lastAcceptedUnitNote(d, "primary-sweep")],
   ];
@@ -180,11 +203,13 @@ test("an omitted key is 'unchanged'; a deliberately EMPTY one is 'there is none'
   // to clear a field.
   assert.deepEqual(mergeClearanceVariantsCall({ search_floor: ["primary-sweep"] }, { mark: "M" }).search_floor, ["primary-sweep"], "an OMITTED list must be kept");
   assert.deepEqual(mergeClearanceVariantsCall({ search_floor: ["primary-sweep"] }, { mark: "M", search_floor: [] }).search_floor, [], "a deliberately EMPTY list must be honoured");
+  assert.deepEqual(mergeBlindFrameCall({ sources: [{ channel: "c" }] }, {}).sources, [{ channel: "c" }]);
+  assert.deepEqual(mergeBlindFrameCall({ sources: [{ channel: "c" }] }, { sources: [] }).sources, []);
   assert.deepEqual(mergeMatterFrameCall({ excluded_jurisdictions: ["CN"] }, {}).excluded_jurisdictions, ["CN"]);
   assert.equal(mergeUnitNoteCall({ null_result: true }, { axis: "a" }).null_result, true, "an omitted null_result must keep the stored claim");
   assert.equal(mergeUnitNoteCall({ null_result: true }, { axis: "a", null_result: false }).null_result, false, "an explicit false must overwrite a stored true");
   // With no base at all, a first call is itself.
-  assert.equal(mergeClearanceVariantsCall(null, { mark: "M" }).mark, "M");
+  assert.equal(mergeBlindFrameCall(null, { dominant_element: "VELTRIN" }).dominant_element, "VELTRIN");
 });
 
 test("each acceptor polices the shape its server actually serves", async () => {
@@ -214,6 +239,7 @@ test("each acceptor polices the shape its server actually serves", async () => {
 
   const CHECKS = [
     ["record_clearance_variants", refuseVariants],
+    ["record_blind_frame", refuseBlindFrame],
     ["record_matter_frame", refuseMatterFrame],
   ];
   for (const [name, refuse] of CHECKS) {
@@ -229,13 +255,14 @@ test("each acceptor polices the shape its server actually serves", async () => {
   }
 });
 
-test("an unknown TOP-LEVEL key is TOLERATED on all three — the regression CI caught and these arms did not", () => {
+test("an unknown TOP-LEVEL key is TOLERATED on all four — the regression CI caught and these arms did not", () => {
   // The first cut refused any undeclared key at ANY depth, and that killed the clearance-variants stage on
   // a long-standing mock: the fixture spreads the parsed MODEL into the CALL, so it carries
   // `schema_version`, which acceptClearanceVariants ignores because it writes its own. Inert for as long
   // as it has existed — and strict, it became fatal. 63 arms went red in CI; every arm here was green,
   // because they checked that DECLARED fields are accepted and never that an undeclared one survives.
   assert.equal(refuseVariants({ ...VARIANTS_FULL, schema_version: 5 }), null, "clearance-variants refused an inert envelope key");
+  assert.equal(refuseBlindFrame({ ...BLIND_FULL, schema_version: 5 }), null, "blind-frame refused an inert envelope key");
   assert.equal(refuseMatterFrame({ ...MATTER_FULL, schema_version: 5 }), null, "matter-frame refused an inert envelope key");
   assert.equal(refuseUnitNote({ ...UNIT_FULL, schema_version: 5 }), null, "unit-note refused an inert envelope key");
 

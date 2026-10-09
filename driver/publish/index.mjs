@@ -32,7 +32,6 @@ import { engineCommit } from '../engine-build.mjs';
 import { WARM_ROOT, WARM_ROOT_DARK, WARM_ROOT_DARK_EXPLICIT, THEME_INIT, THEME_INIT_EXPLICIT, FAVICON_LINK, BRAND } from '../../shared/brand.mjs'; import { TEXT_FONT_STYLE } from '../../shared/brand-fonts.mjs';   // the text face, carried in the page rather than fetched
 import { NAV_CSS, siteNav, siteFab } from '../../shared/site-nav.mjs';
 import { anonAssets, anonClient, anonMark } from '../../shared/anon-overlay.mjs';
-import { setAsideReasons, setAsideKey } from '../decision-ratings.mjs';
 
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const escAttr = s => esc(s).replace(/"/g, '&quot;');   // attribute sink — esc alone is quote-blind
@@ -1234,11 +1233,7 @@ export async function publishReport({ runId, codename, reportMd, auditMd, findin
     const recDir = join(runBase, '_records');
     const rdText = (p2) => { try { return readFileSync(p2, 'utf8'); } catch { return ''; } };
     const rdJson = (p2) => { try { return JSON.parse(readFileSync(p2, 'utf8')); } catch { return null; } };
-    // A run judged by owner names each set-aside owner in "also considered" with the judges' reason
-    // (owner, 2026-10-02); a run with no merged decisions renders exactly as it did.
-    const judgedReasons = (() => { const d = rdJson(join(runBase, 'owner-decisions.json')); return d ? setAsideReasons(d) : null; })();
     searchDepth = searchDepthRecord({
-      setAsideReasonOf: judgedReasons ? (uri) => judgedReasons.get(setAsideKey(uri)) ?? null : null,
       auditMd: (auditMd && existsSync(auditMd)) ? rdText(auditMd) : '',
       recordIndex: recordsByUri ?? {},
       // null, NOT []: a run whose provider archives no records has no `_records/` at all, and an empty

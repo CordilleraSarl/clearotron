@@ -98,7 +98,7 @@ test("requiredAbsent: only a store ruled `required` closes, and today that set i
 
 // ── The dead-key / undeclared-store half, against the real source ────────────────────────────────────
 //
-// On the driver/test/dependency-repair.test.mjs precedent (asserting on a module's own source
+// On the driver/test/dependency-repair.test.mjs:76-95 precedent (asserting on a module's own source
 // text). It answers two questions the load-time gate deliberately does not: does the table name a store
 // publish/index.mjs no longer reads, and does publish/index.mjs read a store the table does not name.
 //

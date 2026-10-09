@@ -36,7 +36,7 @@ import { join } from "node:path";
 import { STAGES, paths } from "../stages.mjs";
 import { validators } from "../verify.mjs";
 
-// A key no dictation could carry by accident — the floor below asserts the composition consulted it.
+// A title no dictation could carry by accident — the floor below asserts the composition consulted it.
 const FRAMEWORK = Object.freeze({
   framework_key: "fixture-framework",
   title: "Fixture Rating Framework (arm floor)",
@@ -60,23 +60,26 @@ const OVERVIEW = dictationOf("report-overview");
 test("the floors — each dictation is the composition for THIS run", () => {
   assert.ok(SYNTHESIS.length > 5000, `synthesis dictation is ${SYNTHESIS.length} bytes — too short to be the real one`);
   assert.ok(OVERVIEW.length > 2000, `overview dictation is ${OVERVIEW.length} bytes — too short to be the real one`);
-  // The framework's title left synthesis's message with the rating authority (owner, 2026-10-01: the rating
-  // in the decisions is the rating); its key is still dictated, and no other run could carry this one.
-  assert.ok(SYNTHESIS.includes(`"rated_under_framework":"${FRAMEWORK.framework_key}"`), "synthesis did not consult the fixture framework");
-  assert.ok(SYNTHESIS.includes(P.ownerDecisions), "synthesis did not name this run's owner decisions path");
+  assert.ok(SYNTHESIS.includes(FRAMEWORK.title), "synthesis did not consult the fixture framework");
+  assert.ok(SYNTHESIS.includes(P.registerFindings), "synthesis did not name this run's register findings path");
   assert.ok(OVERVIEW.includes(P.narrative), "the shell did not name this run's narrative path");
 });
 
-// ARMS 1 AND 2 ARE INVERTED (owner, 2026-10-02). Reasoning each ratified form through the framework is
-// rating it, and the rating is the judges': the clause left synthesis's message with the other passages
-// that mixed rating into what it writes. The shell's half (arms 4 and 5) is unchanged.
-test("arm 1 — synthesis is no longer told to rate each ratified form on its own", () => {
-  for (const gone of [/RATIFIED MORE THAN ONE FORM/, /REASON EACH FORM THROUGH THE FRAMEWORK/, /which conflicts move between them and why/])
-    assert.doesNotMatch(SYNTHESIS, gone, "synthesis is still told to reason each form through the framework");
+test("arm 1 — synthesis is told to reason each ratified form on its own", () => {
+  // The CONDITION and the ORDER are pinned separately. Planting proved why: dropping the order while
+  // keeping the condition left a green suite, because the condition clause is the half that is easy
+  // to match and the useless half to hold.
+  assert.match(SYNTHESIS, /RATIFIED MORE THAN ONE FORM/,
+    "synthesis lost the condition that names a two-form matter");
+  assert.match(SYNTHESIS, /REASON EACH FORM THROUGH THE FRAMEWORK/,
+    "synthesis names a two-form matter but no longer orders each form reasoned on its own");
+  assert.match(SYNTHESIS, /which conflicts move between them and why/,
+    "synthesis asks for per-form reads but not for what moves between them");
 });
 
-test("arm 2 — nor to assert that the reads are alike, which was the same clause's other half", () => {
-  assert.doesNotMatch(SYNTHESIS, /the reads are the same for both forms/);
+test("arm 2 — reading alike must be ASSERTED, so silence is not an option", () => {
+  assert.match(SYNTHESIS, /the reads are the same for both forms/,
+    "synthesis lost the stated-alike alternative; a silent narrative would then be indistinguishable from an unexamined one");
 });
 
 test("arm 3 — no second band is ordered: the renderer is untouched", () => {
@@ -85,6 +88,7 @@ test("arm 3 — no second band is ordered: the renderer is untouched", () => {
     assert.ok(!/band per form|per-form band|a band for each form|one band per ratified form/i.test(text),
       `${name} orders a per-form band — the ruling is one overall band as today`);
   }
+  assert.match(SYNTHESIS, /one overall band as today/, "synthesis no longer states the layout is unchanged");
 });
 
 test("arm 4 — the shell carries the per-form read through instead of flattening it", () => {

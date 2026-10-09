@@ -13,8 +13,8 @@
 //     resume of a CONDITIONAL/BLOCKING run, re-emitting narrative + findings and staling the whole
 //     delivery tail behind them. Fix: a completion receipt keyed on the exact review + narrative
 //     bytes; an unchanged resume skips the settled cycle.
-//   A9: the corrective dispatch carried placement's rulings tail AS DATA. Placement is gone, and with it
-//     the tail; what the dispatch still carries in front of the review is the reviewer's flags, typed.
+//   A9: the corrective dispatch carries placement's rulings tail AS DATA (computed things reach the
+//     next stage as data, not prose) and never asks the repair pass to re-read placement.
 import { test, after } from "node:test";
 import { pinEnv, envFrom } from "../../shared/env-aliases.mjs";   // — a fixture pins EVERY spelling; the default is taken only when NO spelling holds one
 import assert from "node:assert/strict";
@@ -66,19 +66,74 @@ const readEvents = (runDir) => readFileSync(driverDir(runDir, "run.jsonl"), "utf
 
 // ── the pure helpers ────────────────────────────────────────────────────────────────────────────────
 
-test("the corrective dispatch carries the reviewer's flags typed, in front of the review they index", async () => {
+// The section shapes come from the placement-inquiry SKILL contract: `### Coverage rulings & open
+// questions` and `### Open questions for the client / reviewer` CLOSE the file — the "rulings tail".
+const PLACEMENT_MD = [
+  "# Placement recommendations",
+  "",
+  "## Band reconciliation",
+  "Expectation vs band checked — one mismatch noted below.",
+  "",
+  "## Headline candidates",
+  "- LUMENGARDE — Acme (DK, cl. 9)",
+  "",
+  "## Disagreements / flags surfaced to downstream",
+  "- none",
+  "",
+  "### Coverage rulings & open questions",
+  "- cleared: saturation-probe crowd descriptor — immaterial noise off the dangerous band (confirmed-clean)",
+  "- material-gap: named band for transliteration-numeric absent — search output did not cross; cannot judge this axis",
+  "",
+  "### Open questions for the client / reviewer",
+  "- whether the DK incumbent's use genuinely meets the applicant's channel",
+  "",
+].join("\n");
+
+test("AD-2 A9: extractRulingsTail — heading→EOF verbatim; absent-safe; the cap cuts on a line boundary and says so", async () => {
+  const { extractRulingsTail } = await import(`../pipeline.mjs?bust=${Math.random()}`);
+  const tail = extractRulingsTail(PLACEMENT_MD);
+  assert.ok(tail.startsWith("### Coverage rulings & open questions"), "the tail starts at the rulings heading");
+  assert.match(tail, /material-gap: named band for transliteration-numeric absent/, "rulings travel verbatim");
+  assert.match(tail, /### Open questions for the client \/ reviewer/, "the whole TAIL travels — open questions included");
+  assert.ok(!tail.includes("Headline candidates"), "nothing above the heading rides along");
+  // absent-safe: no heading / empty / null ⇒ "" (a legacy or register-less run costs the dispatch nothing)
+  assert.equal(extractRulingsTail("# Placement\n\n## Headline candidates\n- X\n"), "");
+  assert.equal(extractRulingsTail(""), "");
+  assert.equal(extractRulingsTail(null), "");
+  // the cap: line-boundary cut + an explicit truncation note, never a silent mid-row chop
+  const long = "### Coverage rulings & open questions\n" + Array.from({ length: 400 }, (_, i) => `- cleared: crowd descriptor ${i} — immaterial noise`).join("\n");
+  const capped = extractRulingsTail(long, { cap: 500 });
+  assert.ok(capped.includes("[rulings tail truncated at 500 chars"), "the cut is disclosed");
+  const body = capped.slice(0, capped.indexOf("\n\n[rulings tail truncated"));
+  const rows = body.split("\n").slice(1);   // [0] is the heading; every kept RULING row must be whole
+  assert.ok(rows.length >= 1 && rows.every((l) => /immaterial noise$/.test(l)),
+    `every kept line is whole, never mid-chopped: ${JSON.stringify(rows.slice(-1))}`);
+});
+
+test("AD-2 A9: the corrective dispatch carries the rulings tail AS DATA and forbids a placement re-read", async () => {
   const { correctionsExtra } = await import(`../pipeline.mjs?bust=${Math.random()}`);
   const dir = tempDir("adc-a9-");
+  writeFileSync(join(dir, "placement-recommendations.md"), PLACEMENT_MD);
   writeFileSync(join(dir, "senior-eye-review.md"), "CONDITIONAL\n\n- FLAGGED CORRECTION: coverage row for transliteration-numeric reads clean [kind: coverage-disposition]\n");
-  const P = { seniorEyeReview: join(dir, "senior-eye-review.md"), narrative: join(dir, "narrative.md"), findings: join(dir, "findings.json") };
+  const P = { placement: join(dir, "placement-recommendations.md"), seniorEyeReview: join(dir, "senior-eye-review.md"),
+    narrative: join(dir, "narrative.md"), findings: join(dir, "findings.json") };
   const msg = correctionsExtra(P);
-  assert.match(msg, /FLAGGED CORRECTION: coverage row/, "the review rides the dispatch unchanged");
-  // The flags arrive TYPED first, as a worklist, with the raw review still below it. The ordering is the
-  // claim: an index is only useful in front of the thing it indexes.
+  assert.match(msg, /PLACEMENT RULINGS TAIL/, "the dispatch carries the tail explicitly");
+  assert.match(msg, /do NOT re-read the placement file/, "the repair pass is never asked to re-read placement");
+  assert.match(msg, /material-gap: named band for transliteration-numeric absent/, "the rulings arrive verbatim, as data");
+  assert.ok(msg.indexOf("PLACEMENT RULINGS TAIL") < msg.indexOf("The reviewer's flags, verbatim:"), "the tail is in hand BEFORE the flags it adjudicates");
+  assert.match(msg, /FLAGGED CORRECTION: coverage row/, "the review still rides the dispatch unchanged");
+  // — and the flags now arrive TYPED first, as a worklist, with the raw review still below it. The
+  // ordering is the claim: an index is only useful in front of the thing it indexes.
   assert.match(msg, /THE FLAGS, TYPED \(1/, "the typed worklist rides the corrective dispatch");
   assert.match(msg, /coverage-disposition \(1\):/, "grouped by the reviewer's own declared kind");
   assert.ok(msg.indexOf("THE FLAGS, TYPED") < msg.indexOf("The reviewer's flags, verbatim:"),
     "the worklist precedes the prose it indexes");
+  // no placement file ⇒ no block, and the dispatch is otherwise unchanged (legacy / register-less runs)
+  const P2 = { ...P, placement: join(dir, "no-such-file.md") };
+  const msg2 = correctionsExtra(P2);
+  assert.ok(!msg2.includes("PLACEMENT RULINGS TAIL"), "an absent placement costs the dispatch nothing");
+  assert.match(msg2, /The reviewer's flags, verbatim:/);
 });
 
 test("AD-2 A1: partitionDeliveryStale — tail vs upstream, exactly the stages the delivery pass generates", async () => {
@@ -86,14 +141,14 @@ test("AD-2 A1: partitionDeliveryStale — tail vs upstream, exactly the stages t
   const stale = [
     { label: "report-card:1", changed: [] }, { label: "report-card:12", changed: [] },
     { label: "report-overview", changed: [] },
-    { label: "synthesis", changed: [] }, { label: "owner-judgment:1", changed: [] },
+    { label: "synthesis", changed: [] }, { label: "register-digest:primary-sweep", changed: [] },
   ];
   const { tail, upstream } = partitionDeliveryStale(stale);
   assert.deepEqual(tail.map((s) => s.label), ["report-card:1", "report-card:12", "report-overview"]);
   // `client-summary` is a RETIRED stage (2026-08-01): the label can never appear in a stale set,
   // so the tail alternation no longer carries it.
   assert.ok(!DELIVERY_TAIL_LABEL_RE.test("client-summary"), "the retired stage is not a delivery-tail label");
-  assert.deepEqual(upstream.map((s) => s.label), ["synthesis", "owner-judgment:1"]);
+  assert.deepEqual(upstream.map((s) => s.label), ["synthesis", "register-digest:primary-sweep"]);
   assert.deepEqual(partitionDeliveryStale([]), { tail: [], upstream: [] });
   assert.deepEqual(partitionDeliveryStale(null), { tail: [], upstream: [] });
   // a bare "report-card" (no ordinal) is NOT a tail label — nothing to re-render without an ordinal
@@ -135,7 +190,7 @@ test("AD-2 A1 ordering: a lint repair that moves findings.json re-does ONLY the 
   // and the tail repair fires for exactly the card built from it.
   assert.ok(!events.some((e) => e.event === "stage" && String(e.stage).startsWith("report-card:") && e.trigger === "stale-repair"),
     "no card is re-rendered for a change to material no card reads");
-  assert.ok(!events.some((e) => e.event === "stage" && e.trigger === "stale-repair" && /^(owner-judgment|synthesis|narrative-refutation|matter-frame|common-law)/.test(String(e.stage))),
+  assert.ok(!events.some((e) => e.event === "stage" && e.trigger === "stale-repair" && /^(register-digest|synthesis|narrative-refutation|matter-frame|common-law)/.test(String(e.stage))),
     "and never an upstream stage, never a pipeline restart");
   const receipt = JSON.parse(readFileSync(driverDir(res.runDir, "predelivery-lint.json"), "utf8"));
   assert.equal(receipt.staleStages.length, 0, "nothing left stale in the receipt — freshness restored in-pass");

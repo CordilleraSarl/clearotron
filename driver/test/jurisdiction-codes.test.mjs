@@ -7,8 +7,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
-  canonicalJurisdictionCode, isKnownJurisdictionCode, foldJurisdictionCodes, JURISDICTION_CODE_FOLD, searchedCovers,
+  canonicalJurisdictionCode, isKnownJurisdictionCode, foldJurisdictionCodes, JURISDICTION_CODE_FOLD,
 } from "../jurisdiction-codes.mjs";
+import { jurisdictionScopeFlags, effectiveInScope } from "../frame-diff-model.mjs";
 import { registrationSystem, partitionBySystem, marketplaceScopeDirective } from "../jurisdiction-systems.mjs";
 
 test("the fold: UK→GB, EM/EUTM/EUIPO→EU; canonical codes pass through; case/whitespace normalized", () => {
@@ -43,15 +44,18 @@ test("foldJurisdictionCodes: dedupes across spellings, keeps order, surfaces unk
   assert.deepEqual(unknown, ["XQ"], "the unknown is named for the caller to surface loudly");
 });
 
-test("the EU-reach rule (searchedCovers): an EU search covers an EU claim however spelled; a national one needs its own", () => {
-  // The rule the delivered-narrative coverage check asks of a claimed territory. Callers fold codes first;
-  // the EU aliases are covered here too, so a provider's EM still answers a scope spelled EU.
-  assert.equal(searchedCovers("EU", new Set(["EM"])), true);
-  assert.equal(searchedCovers("GB", new Set(["GB"])), true);
-  // a genuinely unsearched territory stays a gap — the rule must never paper over one
-  assert.equal(searchedCovers("US", new Set(["GB"])), false);
-  // a member state scoped while only the EU was searched is NOT covered: national rights need a national search
-  assert.equal(searchedCovers("DE", new Set(["EU"])), false);
+test("scope diff (frame-diff-model): UK-vs-GB and EU-vs-EM can no longer read as different territories", () => {
+  // pre-A12 both directions false-flagged: scope UK / searched GB was under-coverage AND over-reach
+  assert.deepEqual(jurisdictionScopeFlags({ scopeJurisdictions: ["UK"], searched: ["GB"] }),
+    { overReach: [], underCoverage: [] });
+  assert.deepEqual(jurisdictionScopeFlags({ scopeJurisdictions: ["EU"], searched: ["EM"] }),
+    { overReach: [], underCoverage: [] });
+  // a genuinely unsearched in-scope territory still flags — the fold must never paper over a real gap
+  const real = jurisdictionScopeFlags({ scopeJurisdictions: ["UK", "US"], searched: ["GB"] });
+  assert.deepEqual(real.underCoverage, ["US"]);
+  // an EUTM right reaches a scope spelled with the provider's EM
+  assert.equal(effectiveInScope("EUTM", ["EM"]), true);
+  assert.equal(effectiveInScope("DE", ["EM"]), true, "a member-state right sits inside the scoped EU, however spelled");
 });
 
 test("registration systems: both spellings of one territory label identically; partitions dedupe", () => {

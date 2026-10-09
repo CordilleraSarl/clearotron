@@ -11,24 +11,63 @@
 // field — it can only tell me my fixture has it.
 import test from "node:test";
 import assert from "node:assert/strict";
+import { reconcilePlacementCarry, mintPlacementCarryDoubts } from "../placement-carry.mjs";
 import { mintRecordCarryDoubts } from "../record-carry.mjs";
 import { doubtsForClosure, doubtSelectionNote, keptTiersFor, cutStateFor } from "../doubt-selection.mjs";
+import { placementsChecks } from "../predelivery-lint.mjs";
+import { PLACEMENT_TIERS } from "../placement-model.mjs";
 
-// ── 1. the producers ────────────────────────────────────────────────────────────────────────────────
-//
-// The placement tier came from the placement step's carry artifact and through it onto record-carry's
-// rows. Step 3 now judges by owner and no record carries a tier, so the one producer left stamps null —
-// which the selection dispatches as keyless: counted, never dropped.
+const placement = (mark, tier, extra = {}) => ({
+  mark, owner: `${mark} Holdings SA`, jurisdiction: "CH", records: [`/mark/ch/${mark.toLowerCase()}`],
+  tier, reason: "placed by the inquiry", ...extra,
+});
 
-test("record-carry's doubts carry no placement tier, and the selection dispatches them as keyless", () => {
-  const { doubts } = mintRecordCarryDoubts({ unreasoned: [
-    { uri: "/mark/ch/voltmax", mark: "VOLTMAX", owner: "VOLTMAX Holdings SA", reach: "carried",
-      stopped_at: "synthesis", detail: "carried by the judges and delivered nowhere" },
+// register-findings.md that mentions NONE of the marks below, so every placement lands `uncarried`
+// and the mint has something to mint. Asserted, not assumed — see the control arm.
+const CARRIES_NOTHING = "# Register findings\n\n## Risk-relevant\n\n(nothing this pass)\n";
+
+const doubtsFor = (placements) =>
+  mintPlacementCarryDoubts(reconcilePlacementCarry({ placements, registerFindingsText: CARRIES_NOTHING }));
+
+// ── 1. the producers stamp the key they were already holding ────────────────────────────────────────
+
+test("CONTROL — the placement mint actually mints, or every arm below is vacuous", () => {
+  const d = doubtsFor([placement("VOLTMAX", "headline-candidate")]);
+  assert.ok(d.length > 0, "reconcilePlacementCarry + mintPlacementCarryDoubts produced NO doubts on a "
+    + "placement no findings text mentions — the fixture stopped reaching the uncarried class, and every "
+    + "assertion below would pass over an empty list");
+});
+
+test("placement-carry writes the tier as a FIELD, not only into the prose", () => {
+  for (const tier of PLACEMENT_TIERS) {
+    const [d] = doubtsFor([placement("VOLTMAX", tier)]);
+    assert.equal(d.subject.placementTier, tier,
+      `a ${tier} placement minted a doubt with placementTier=${JSON.stringify(d?.subject?.placementTier)}. `
+      + "The tier is in `subject.text` either way, which is exactly the failure: prose the selection cannot read.");
+  }
+});
+
+test("an entry that declared NO tier carries the producer's own sentinel, not a second name for it", () => {
+  const [d] = doubtsFor([{ ...placement("VOLTMAX", undefined), tier: undefined }]);
+  assert.equal(d.subject.placementTier, "(untiered)",
+    "reconcilePlacementCarry already writes `(untiered)` for an entry with no tier. Folding it to null "
+    + "here would give one absence two names, and two readers a way to disagree about it");
+});
+
+test("record-carry stamps the tier through the seat, and NULL where the record never reached placement", () => {
+  const withSeat = mintRecordCarryDoubts({ unreasoned: [
+    { uri: "/mark/ch/voltmax", mark: "VOLTMAX", owner: "VOLTMAX Holdings SA", reach: "placed",
+      stopped_at: "digest", detail: "silent drop", placement: { tier: "sheet-2", mark: "VOLTMAX", owner: "", carry: "uncarried" } },
   ] });
-  assert.equal(doubts[0].subject.placementTier, null);
-  const sel = doubtsForClosure({ doubts: doubts.map((d) => ({ ...d, status: "open" })), doubtClosure: "headline-candidate" });
-  assert.equal(sel.ids, null, "a keyless doubt is asked about under a live cut, so nothing was selected away");
-  assert.equal(sel.keyless, 1);
+  assert.equal(withSeat.doubts[0].subject.placementTier, "sheet-2");
+
+  const noSeat = mintRecordCarryDoubts({ unreasoned: [
+    { uri: "/mark/ch/other", mark: "OTHER", owner: "", reach: "retrieved", stopped_at: null,
+      detail: "no ground recorded", placement: null },
+  ] });
+  assert.equal(noSeat.doubts[0].subject.placementTier, null,
+    "the in-line screen and the synthesis seam carry `placement: null` because the record never reached "
+    + "placement. That is a fact about the record, and it must read as keyless rather than as a gap");
 });
 
 // ── 2. the selection, and the direction it fails in ─────────────────────────────────────────────────
@@ -173,7 +212,28 @@ test("every cut word the depth table allows is one the selection can act on", as
     assert.ok(Array.isArray(kept) && kept.length,
       `the depth table allows "${w}" and doubt-selection.mjs does not recognise it, so a product row set `
       + "to it would silently dispatch every doubt while the table claims it is graded");
+    for (const t of kept)
+      assert.ok(PLACEMENT_TIERS.includes(t), `"${w}" keeps "${t}", which is not a placement tier`);
   }
+});
+
+// ── 5. the lint row — a disclosure that must not read as a defect ───────────────────────────────────
+
+test("the zero-URI disclosure fires on presence, names the count, and NEVER blocks", () => {
+  const rows = [placement("VOLTMAX", "headline-candidate"), { ...placement("NOVA", "sheet-2"), records: [] }];
+  const c = placementsChecks({ placements: rows }).find((x) => x.id === "placement-rows-without-uri");
+  assert.ok(c, "no placement-rows-without-uri row was produced for a placements set that contains one");
+  assert.equal(c.pass, false, "only a failing check's detail reaches a reader, so a disclosure has to flag");
+  assert.notEqual(c.structural, true, "this must never block delivery — records: [] is CONTRACTUAL for a "
+    + "common-law candidate, and a row that blocks on correct data gets an ignore-list within a week");
+  assert.match(c.detail, /1 of 2 placement row\(s\)/);
+  assert.match(c.detail, /NOT a defect/);
+});
+
+test("the disclosure is SILENT when every row names a record — it is not an always-on banner", () => {
+  const c = placementsChecks({ placements: [placement("VOLTMAX", "headline-candidate")] })
+    .find((x) => x.id === "placement-rows-without-uri");
+  assert.equal(c, undefined, "a set where every row carries a URI has no boundary to disclose");
 });
 
 // ── 6. the CALL SITE, which the arms above do not reach ─────────────────────────────────────────────

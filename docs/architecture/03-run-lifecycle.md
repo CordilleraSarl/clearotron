@@ -184,24 +184,24 @@ flowchart TD
     subgraph GATHER["Gather fan-out (concurrency = CLEAROTRON_GATHER_CONCURRENCY)"]
         CL["common-law-half:a/b/m<br/>(two grid halves + the meaning seat)"]
         RU["register-unit:&lt;axis&gt;<br/>(per register axis)"]
+        BF["blind-frame<br/>(non-fatal sibling)"]
     end
     GRID --> GATHER
     GATHER --> FANIN{{"fan-in barrier (code):<br/>quarantines · must() · half-merge ·<br/>named-band gate · taint chain ·<br/>plan⇄band identity join · grid-ledger gate"}}
     FANIN --> CLOSURE["coverage closure pass<br/>(one supplementary sweep, non-fatal)"]
-    CLOSURE --> OT["owner table<br/>(code lays the pile out by owner)"]
-    OT --> OJ["owner-judgment:1 ∥ owner-judgment:2<br/>(two judges, each alone)"] --> MERGE["check each answer · merge ·<br/>a fate for every owner (code)"]
-    MERGE --> SK["skeptic (non-fatal)"]
+    CLOSURE --> FD["frame-diff vs blind frame<br/>+ bounded reopen (non-fatal block)"] --> PI[placement-inquiry] --> RD[register-digest]
+    RD --> SK["skeptic (non-fatal)"]
     SK --> ESC{"ESCALATE: axis tokens?"}
-    ESC -- yes --> RERUN["re-run flagged axes warm ·<br/>byte-diff · queue one re-judgement"] --> ENV
+    ESC -- yes --> RERUN["re-run flagged axes warm ·<br/>byte-diff · one re-digest"] --> ENV
     ESC -- no --> ENV["deadline envelope:<br/>close deferred floors if time allows"]
-    ENV --> FLUSH["settlement flush:<br/>step 3 judged again once, if anything queued"]
-    FLUSH --> SYN[synthesis]
+    ENV --> SG{{"screen-gate: dropped LIVE mark<br/>without fetched record?<br/>fetch → re-digest → else FATAL"}}
+    SG --> SYN[synthesis]
     SYN --> PAR["case-law ∥ narrative-refutation<br/>(case-law non-fatal)"]
     PAR --> VG{"verdict gate:<br/>parseVerdict(review)"}
     VG -- "CONDITIONAL / BLOCKING" --> CORR["corrective re-synthesis (fatal) ·<br/>corrections freshness gate ·<br/>verdict re-check (warm)"] --> VG2{"still BLOCKING?"}
     VG2 -- yes --> DELIV["report DELIVERS (ruling 2026-08-26) ·<br/>runLog verdict-blocking-delivered ·<br/>open points recorded beside the review,<br/>for the reviewing lawyer (ruling 2026-09-24)"] --> CLAMP
     VG2 -- no --> CLAMP
-    VG -- CLEAR --> CLAMP["code clamps (raise-only):<br/>legal actions · coverage · frame residual ·<br/>register gap · deadline gap"]
+    VG -- CLEAR --> CLAMP["code clamps (raise-only):<br/>legal actions · coverage · frame residual ·<br/>screen gate · register gap · deadline gap"]
     CLAMP --> VS["verdict sidecar _driver/verdict.json<br/>(single label authority; write failure = fatal)"]
     VS --> REP["report-overview (fatal) ·<br/>report-card fan-out (per-card non-fatal)"]
     REP --> AUD["audit build from findings spine<br/>(code, count-guarded, non-fatal)"]
@@ -211,7 +211,7 @@ flowchart TD
     PUB --> HANDOFF["delivery packet _driver/delivery.json ·<br/>outbox <runId>.pending · .delivered · archive"]
 
     classDef fatal stroke:#c0392b,stroke-width:2px
-    class MF,PV,MERGE,SYN,VS,CG fatal
+    class MF,PV,PI,RD,SYN,VS,CG fatal
 ```
 
 Reading order for the phases, with what code decides at each:
@@ -230,7 +230,8 @@ Reading order for the phases, with what code decides at each:
    terms at all — a recurrence floor is a property of the whole sweep, so a term-partitioned seat
    could owe an obligation at the merge that neither half could see.
 3. **Gather fan-out** — register units (one per axis, axes decided by code from the variant
-   manifest + plan) and the three common-law seats.
+   manifest + plan), the three common-law seats, and `blind-frame` as a non-fatal concurrent sibling
+   that reads *only* the raw instruction.
 4. **Fan-in barrier** — pure code, and the densest gate cluster in the system
    (`pipeline.mjs`): band-vocabulary quarantine, single-half transient quarantine,
    `must()` on every member, half-merge + canonical re-validation, connotation identity join (a
@@ -241,42 +242,33 @@ Reading order for the phases, with what code decides at each:
    persistent repair ledger (`_driver/repairs.json`) so no ladder is ever bought twice.
 5. **Coverage closure** — one supplementary sweep for closable coverage-limited cells, idempotent
    by receipt; survivors become a front-matter coverage note, not a halt.
-6. **Owner-judgment: the pile judged by owner** — fatal when neither judge's answer can be taken. Code lays
-   every record of the pile out as one table with a line per owner, in a fixed order (owners holding a
-   live record in the ordered classes first, then by how close the owner's closest mark is to the
-   ordered mark). Two sessions judge it, each alone (`owner-judgment:1`, `owner-judgment:2`), on the
-   same engine and tier as the run's other judging stages. Each session receives the order, the
-   company's context, the company's rating scale and worked examples, and the table's first pages; it
-   reads the rest through tools (the table in pages, one owner's records, the register's questions
-   with their counts, one question's list, one full record — fetched when the session opens it — and
-   the saved web results). Its instruction is six sentences and nothing else, and it answers in a
-   form. Code checks each answer (every record it cites is one the run holds, every rating is a band
-   of the company's scale, every carried decision names an owner and gives a reason) and a session
-   that fails a check runs again, up to three attempts. Code then merges the two answers: carried by
-   either is carried, set aside by both is set aside, and differing ratings are both kept. Every
-   owner in the pile gets a recorded fate — carried, set aside with the reason, shown and not taken
-   up, or never put in front of a judge — in `_driver/owner-fates.json`, and every record of the pile
-   gets a row in `_driver/record-discard.jsonl`. The merged decisions (`owner-decisions.json`) are
-   what the skeptic and synthesis read. The coverage ledger is settled by code from each row's own
-   facts on the same pass. Every pass of step 3 — fresh, settlement flush, late flush, late bind,
-   stale repair — goes through the single `runOwnerJudgment` chokepoint.
-7. **Skeptic + escalation** — the skeptic is deliberately non-fatal (a checker outage must not bin
+6. **Frame-diff + bounded reopen** — the blind frame is diffed against the run's own framing;
+   directives (including deterministic mechanical form-gap directives) can reopen register and
+   source arms once, under a fetch ceiling (`CLEAROTRON_REOPEN_MAX_FETCH`, default 150), with
+   per-directive closure verification. The whole block is non-fatal; unclosed directives demote to
+   disclosed deferrals that later clamp the verdict.
+7. **Placement → register-digest** — both fatal. Every digest pass (fresh, escalation, envelope,
+   late-bind, stale-repair) goes through the single `runDigest` chokepoint, which drops stale ledgers,
+   renders the coverage ledger from the driver-written coverage form the seat submits through
+   `record_coverage` — the prose `## Coverage ledger` table and the machine-readable JSON are both
+   renders of that one form, so neither can be the thing that drifts (prose parsing survives only as
+   the fallback when the derivation throws) — and quarantines rather than ships a ledger that fails
+   its validator.
+8. **Skeptic + escalation** — the skeptic is deliberately non-fatal (a checker outage must not bin
    a completed gather). Escalation is triggered only by structured `ESCALATE: <axis>` tokens; an
    axis whose every owned ledger row is `coverage-limited` is skipped (documented accepted limit);
    flagged axes re-run warm on their winning session keys, byte-diff guards skip unchanged units,
-   and the change is queued for one re-judgement of step 3. A lock forbids escalation after
-   synthesis exists on a resume.
-8. **Deadline envelope** — pure arithmetic: if the deadline leaves room after an estimated close
+   then exactly one re-digest. A digest lock forbids escalation after synthesis exists on a resume.
+9. **Deadline envelope** — pure arithmetic: if the deadline leaves room after an estimated close
    cost plus a one-hour delivery reserve, deferred floors get one warm close attempt, verified by
    re-running the detectors; unverifiable closes are disclosed, never claimed.
-9. **Settlement flush** — everything the escalation and the envelope queued is settled by ONE
-    re-judgement of step 3, composed again from the pile as it then stands; a judge whose inputs did
-    not move is not run again. A flush that fails leaves its items queued and the run carries on with
-    the decisions it has.
-10. **Synthesis** — fatal. Malformed findings get one warm re-emit naming exactly the defective
+10. **Screen-gate** — an in-scope *live* mark dropped on goods/field grounds without a fetched
+    record is repaired (code fetches the record, one warm re-digest) or the run dies: an
+    unexaminable drop is not shippable.
+11. **Synthesis** — fatal. Malformed findings get one warm re-emit naming exactly the defective
     objects; still-malformed findings after the ladder are terminal (the old quarantine-and-continue
     is retired). Schema and actions[] upgrades are demanded warm on runs where synthesis actually ran.
-11. **Case-law ∥ narrative-refutation** — concurrent; case-law non-fatal. The reviewer receives
+12. **Case-law ∥ narrative-refutation** — concurrent; case-law non-fatal. The reviewer receives
     code-computed registry-fidelity probes and an unconditional plan-execution check demand. Its
     verdict is parsed by code; a parse failure is **BLOCKING** (fail-safe). CONDITIONAL/BLOCKING
     triggers corrective re-synthesis (fatal if it fails), a freshness gate proving the named
@@ -287,29 +279,29 @@ Reading order for the phases, with what code decides at each:
     where the points go: reviewer notes never reach the client page, and a report the reviewer
     still refuses ships with its rating and nothing added — the open points are recorded beside
     the review in the run record, for the reviewing lawyer.
-12. **Code clamps** — the coverage floor (`applyCoverageFloor`) only ever *raises* CLEAR to
+13. **Code clamps** — the coverage floor (`applyCoverageFloor`) only ever *raises* CLEAR to
     CONDITIONAL: typed condition actions, the lawyer's explicit `coverage_judgment.sufficient ===
-    false`, frame residuals, register gaps (from the taint-relabelled ledger).
+    false`, frame residuals, screen-gate gaps, register gaps (from the taint-relabelled ledger).
     Execution facts clamp in code regardless of the model's self-report. The
     **verdict sidecar** (`_driver/verdict.json`) then becomes the single verdict authority for
     everything downstream; failing to write it is fatal.
-13. **Delivery phase** — report overview (fatal), per-finding report cards (fan-out, individually
+14. **Delivery phase** — report overview (fatal), per-finding report cards (fan-out, individually
     non-fatal, assembled by code with a code-built "Only you can close these" section), the
     audit workbook from the findings spine (code, count-guarded, non-fatal), then the pre-delivery
     lint block: registry-record closure (every cited register URI owes a fetched record — absentees
     are code-fetched), lint checks, registry identifier auto-correction *from the record*, one warm
     redo ladder for repairable lint failures, the always-written lint receipt, and the
     reasoning-integrity receipt (observability only, never a gate — an explicit Goodhart guard).
-14. **Client-gate + publish + handoff** — the client gate is evaluated fail-closed *before*
+15. **Client-gate + publish + handoff** — the client gate is evaluated fail-closed *before*
     anything touches the pool. Publish is deterministic code, idempotent via `.published`. Then the
     delivery handoff (§4), `status.json` flip to `delivered`,
     archive (the run dir is renamed into the archive tree), and the `.delivered` sentinel.
 
 **Fatal vs note-and-continue.** The full lists live in `pipeline.mjs` (the outer catch), but the shape is:
-*fatal* = the head stages, gather members after quarantine, the fan-in gates, step 3 when neither judge's answer can be taken,
+*fatal* = the head stages, gather members after quarantine, the fan-in gates, digest passes,
 synthesis, refutation, the verdict terminal, the verdict sidecar, report-overview, the zero-rows
 coverage terminal, the core-artifact gate, and the client gate. *Note-and-continue* = every checker
-and enrichment (skeptic, case-law, per-card renders, audit build,
+and enrichment (blind-frame, frame-diff/reopen, skeptic, case-law, per-card renders, audit build,
 closure passes, receipts, rollups, notify). An outage in a checker never destroys completed gather work.
 
 **One report, no second version.** There is no separate summary artifact for outside readers and no
@@ -333,10 +325,10 @@ any notify, and both halves are idempotent.
   one — the deliverer re-derives everything from the packet and the sentinels.
 
 **Late-bind** deserves a note: a job forwarded for an unknown company runs on the generic profile
-with four code checkpoints (`pre-matter-frame`, `pre-judgment`, `pre-synthesis`, `pre-delivery`)
+with four code checkpoints (`pre-matter-frame`, `pre-digest`, `pre-synthesis`, `pre-delivery`)
 polling for a `customer-bind.json` dropped by the operator; each checkpoint applies the strongest
-still-safe action its phase allows (`lateBindAction`: fold the job, ride the judges' message,
-judge step 3 again, or a front-matter note) and acknowledges as a `late-bind-ack` outbox packet
+still-safe action its phase allows (`lateBindAction`: fold the job, ride the digest message,
+re-digest warm, or a front-matter note) and acknowledges as a `late-bind-ack` outbox packet
 (`<runId>.bindack`). There is one lane: since the packet IS the acknowledgement.
 
 ## 5 — Failure handling
@@ -453,8 +445,7 @@ node pipeline.mjs --resume <codename> --experiment <stage> [--label <t>]        
   delivered run would reset `.sent` and re-send); clears stale `.failed`/`.postponed`; reads the
   run date off disk. Frozen profile/framework/plan sidecars win over re-derivation.
 - **`--from`** forces stages at or after the named ordinal even if their outputs validate; earlier
-  stages still skip. A `--from synthesis` fork deliberately does *not* take the lock that forbids
-  escalation once synthesis exists, because synthesis is about to run again.
+  stages still skip. A `--from synthesis` fork deliberately does *not* lock the digest.
 - **`--experiment`** runs one stage in a shadow dir (`_experiments/<ts>-<tag>/`) on copies of its
   inputs, under a `clearance-exp-…` session key that is excluded from the run's provider-usage
   attribution. The canonical run is untouched.
@@ -478,7 +469,7 @@ needs is in it:
 │   ├── coverage-enum.json · plan-execution.json               # fail-closed enum sentinel · execution receipt
 │   ├── register-xcheck.json                                   # cross-check receipt (a run before 2026-09-24 may also carry register-recall.json, its recall-search receipt)
 │   ├── register-taint.json · escalation-state.json            # taint chain · escalation/envelope outcome
-│   ├── coverage-closure.json                                  # closure receipt
+│   ├── coverage-closure.json · frame-reopen.json              # closure + reopen receipts
 │   ├── intake-asks.json · instructed-scope.json               # intake derivations (code-authoritative scope)
 │   ├── verdict.json                                           # THE verdict authority (tier, badge, statement)
 │   ├── senior-rights.json · deadline-enrich.json              # rights closure · deadline injection receipts

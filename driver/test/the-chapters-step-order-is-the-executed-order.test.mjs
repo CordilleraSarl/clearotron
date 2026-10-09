@@ -53,10 +53,9 @@ function positions(steps) {
   return out;
 }
 
-// FIVE, and it is recorded rather than derived, for the reason in the header: a derived count cannot notice
+// SIX, and it is recorded rather than derived, for the reason in the header: a derived count cannot notice
 // itself falling. Raise it deliberately when a title starts naming its stage; lower it only with the reason.
-// 6 -> 5: frame-diff's step left the chapter with the stage (the mid-run reopening was removed).
-const NAMED_IN_A_TITLE = 5;
+const NAMED_IN_A_TITLE = 6;
 
 test("the chapter is parsed at all — a numbered list this finds nothing in would pass every arm below", () => {
   const steps = documentedSteps();

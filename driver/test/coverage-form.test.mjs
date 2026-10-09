@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// — the register coverage form: what the driver writes, and which rows stay unsettled. The register
-// digest that once filled it, and the gate that refused its rows, left with step 3's replacement; code
-// settles the rows now, and `rowIsSettled` is the one definition of a settled row both then and now.
+// — the register-digest coverage form: what the driver writes, what the seat owes, what the gate
+// refuses.
 //
 // The gate this replaces asked whether a sentence the model TYPED contained a query id, or a crowd
 // block's exact hit count as a standalone number. Both accept-forms were substring matches against the
@@ -14,9 +13,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
-  buildCoverageForm, coverageFormRows, parseCoverageForm, rowIsSettled,
+  buildCoverageForm, coverageFormRows, parseCoverageForm, rowIsSettled, findCoverageFormViolations,
   formLedgerRows, renderCoverageLedgerSection, spliceCoverageLedger, renderCoverageLedgerJsonFromForm,
-  coverageFormSidecarName, formRowKey, seatRows, SEAT_BANNED_TOKENS, seatBannedTokens } from "../coverage-form.mjs";
+  coverageFormBrief, coverageFormSidecarName, formRowKey, seatRows, COVERAGE_REASONS, COVERAGE_CAUSES, SEAT_BANNED_TOKENS } from "../coverage-form.mjs";
 import { parseCoverageLedgerJson, classTokensFromScopeText } from "../coverage-ledger.mjs";
 
 // ── THE FIXTURE ────────────────────────────────────────────────────────────────────────────────────
@@ -54,8 +53,6 @@ const INPUT = { skeleton: SKELETON, plan: PLAN, bandBlocksByAxis: BANDS, deferre
 const build = () => buildCoverageForm(INPUT);
 const rowOf = (form, kind, qid = null) =>
   form.rows.find((r) => r.kind === kind && (qid == null || r.qid === qid));
-// The rows a form still holds open, by row id: the one question the removed gate asked of every row.
-const unsettled = (rows) => (rows ?? []).filter((r) => !rowIsSettled(r, r)).map((r) => r.row_id);
 const settle = (form, status = "confirmed-clean", reason = "judged") => {
   for (const r of form.rows) { r.status = status; r.reason = reason; }
   return form;
@@ -128,34 +125,42 @@ test("an unreadable band is RECORDED on the form, not swallowed", () => {
 
 // ── WHAT THE GATE REFUSES ──────────────────────────────────────────────────────────────────────────
 
-test("a fully settled form holds nothing unsettled", () => {
+test("a fully settled form is refused nothing", () => {
   const f = build();
   for (const r of f.rows) {
     r.status = r.open ? "deferred" : "confirmed-clean";
     r.reason = "judged";
   }
+  // The two open-block axes need a non-clean row (clause 3) — give each one a seat row.
   f.rows.push({ row_id: "CS-1", axis: "primary-sweep", kind: "seat", unit: "primary-sweep / OR-stack",
     open: false, status: "coverage-limited", reason: "one term of the stack stayed open" });
   f.rows.push({ row_id: "CS-2", axis: "incumbent-class", kind: "seat", unit: "incumbent-class / owner slice",
     open: false, status: "coverage-limited", reason: "class 30 counted, not enumerated" });
-  assert.deepEqual(unsettled(f.rows), []);
+  assert.deepEqual(findCoverageFormViolations(f.rows), []);
 });
-test("FAIL-CLOSED ON EMPTY: a row with no status is unsettled, and discharges nothing", () => {
+
+test("FAIL-CLOSED ON EMPTY: a row with no status is refused, and discharges nothing", () => {
   // §2 property 4. blockIsDisclosed returned false on empty text; an unfilled row is the form's empty
   // text, and it must never default to disclosed.
   const f = build();
-  assert.deepEqual(unsettled(f.rows), f.rows.map((r) => r.row_id), "every unfilled row stays unsettled");
+  const v = findCoverageFormViolations(f.rows);
+  assert.ok(v.length >= f.rows.length, "every unfilled row is a violation");
+  assert.ok(v.every((x) => x.reason === "no_status"));
 });
+
 test("NON-CIRCULARITY: a clean claim over an open row never discharges it", () => {
   // §2 property 1, and disclosureTextByAxis' own rule: "letting it supply its own disclosure would be
-  // circular". A form that let a clean row discharge its own obligation would never hold anything open.
-  // Every open row stays unsettled BY ROW ID — one per obligation, never one per axis.
+  // circular". A form that let a clean row discharge its own obligation would make the gate never fire.
+  // Every open row is refused BY ROW ID — one violation per obligation, never one per axis.
   const f = settle(build(), "confirmed-clean");
+  const v = findCoverageFormViolations(f.rows);
   const openRows = f.rows.filter((r) => r.open === true);
   assert.ok(openRows.length >= 3, "the fixture carries two open blocks and one deferred slice");
-  assert.deepEqual(unsettled(f.rows).sort(), openRows.map((r) => r.row_id).sort(),
-    "exactly the open rows stay unsettled, each by its own row id");
+  assert.deepEqual(v.map((x) => x.row).sort(), openRows.map((r) => r.row_id).sort(),
+    "exactly the open rows fire, each named by its own row id");
+  assert.ok(v.every((x) => x.cause === "open_clean"));
 });
+
 test("BLOCK SCOPE: a disclosure about one slice does NOT discharge another slice's block", () => {
   // THE BLOCKER. The design of record said the opposite until 2026-08-07 — "axis scope, not block
   // scope … binding disclosure to a specific block would be stricter" — and the first cut of this build
@@ -180,13 +185,14 @@ test("BLOCK SCOPE: a disclosure about one slice does NOT discharge another slice
     open: false, status: "coverage-limited", reason: "CH yield ring-fenced" });
   rows.push({ row_id: "CS-8", axis: "incumbent-class", kind: "seat", unit: "incumbent-class / owner",
     open: false, status: "deferred", reason: "owner surface absent" });
-  assert.deepEqual(unsettled(rows).sort(), psBlocks.map((r) => r.row_id).concat(
+  const v = findCoverageFormViolations(rows);
+  assert.deepEqual(v.map((x) => x.row).sort(), psBlocks.map((r) => r.row_id).concat(
     rows.filter((r) => r.kind === "block" && r.axis === "incumbent-class").map((r) => r.row_id)).sort(),
-    "every open block stays unsettled on its OWN row — the unrelated disclosure discharges none of them");
+    "every open block is refused on its OWN row — the unrelated disclosure discharges none of them");
   // And the cure is per block: settle THAT block's row and only THAT block clears.
   const target = psBlocks[0];
   target.status = "coverage-limited"; target.reason = "the OR-stack saturated; GLIMMR was never enumerated";
-  const after = unsettled(rows);
+  const after = findCoverageFormViolations(rows).map((x) => x.row);
   assert.ok(!after.includes(target.row_id), "the block whose own row was settled clears");
   assert.ok(after.includes(psBlocks[1].row_id), "its sibling on the same axis does not");
 });
@@ -198,22 +204,26 @@ test("an `open` row cannot be confirmed-clean, whatever else the axis says", () 
   const f = settle(build(), "confirmed-clean");
   const d = rowOf(f, "deferred", "tn:translit:glimmer+cyr");
   assert.equal(rowIsSettled(d, d), false);
-  assert.ok(unsettled(f.rows).includes(d.row_id));
-  assert.match(d.open_because, /never searched/);
+  const v = findCoverageFormViolations(f.rows).filter((x) => x.row === d.row_id);
+  assert.equal(v.length, 1);
+  assert.match(v[0].detail, /never searched/);
 });
-test("`open` carries TWO facts and the row says which — a block is not a never-searched slice", () => {
+
+test("`open` carries TWO facts and the detail says which — a block is not a never-searched slice", () => {
   // The repair differs: a never-searched slice is `deferred` and nothing can make it run; a crowd block
   // RAN and saturated, so it is `coverage-limited` — and calling it `deferred` clamps the run's verdict
-  // to CONDITIONAL (decideRegisterGap clamps on deferred rows only). Each open row's own reason says
-  // which, so nothing that reads the row has to guess.
-  const f = build();
-  const block = rowOf(f, "block", "ps:exact:glimmer+form");
-  const def = rowOf(f, "deferred", "tn:translit:glimmer+cyr");
-  assert.match(block.open_because, /the search RAN/);
-  assert.doesNotMatch(block.open_because, /never searched/);
-  assert.match(def.open_because, /never searched/);
-  assert.doesNotMatch(def.open_because, /the search RAN/);
+  // to CONDITIONAL (decideRegisterGap clamps on deferred rows only). A single generic "never searched"
+  // detail over both would steer half the open rows to the status that misreports the run.
+  const f = settle(build(), "confirmed-clean");
+  const v = findCoverageFormViolations(f.rows);
+  const blockV = v.find((x) => x.row === rowOf(f, "block", "ps:exact:glimmer+form").row_id);
+  const defV = v.find((x) => x.row === rowOf(f, "deferred", "tn:translit:glimmer+cyr").row_id);
+  assert.match(blockV.detail, /the search RAN/);
+  assert.doesNotMatch(blockV.detail, /never searched/);
+  assert.match(defV.detail, /never searched/);
+  assert.doesNotMatch(defV.detail, /the search RAN/);
 });
+
 test("the skeleton contradiction still fires: state `deferred` with no qids", () => {
   // undisclosedDeferredQids returned [] (fire, naming nothing) rather than null for this shape, and its
   // doc block called silently passing it "the one way this join could turn a gate into a hole". The
@@ -224,7 +234,53 @@ test("the skeleton contradiction still fires: state `deferred` with no qids", ()
   const ax = rows.find((r) => r.kind === "axis");
   assert.equal(ax.open, true);
   ax.status = "confirmed-clean"; ax.reason = "clean";
-  assert.deepEqual(unsettled(rows), [ax.row_id]);
+  assert.equal(findCoverageFormViolations(rows).length, 1);
+});
+
+test("a damaged form is ONE named defect, never an absence and never a per-row count", () => {
+  const v = findCoverageFormViolations(null, "register-coverage-form.form.json unparseable json (x)");
+  assert.deepEqual(v.map((x) => x.reason), ["form_damaged"]);
+  assert.match(v[0].detail, /unparseable json/);
+});
+
+test("the reason vocabulary is CLOSED and matches what the gate can emit", () => {
+  //: an external probe filtered on a string literal that had stopped existing and printed
+  // "0 undisposed" over evidence carrying thirteen.
+  // added `engine_vocabulary` — the row's status is fine and its REASON carries an engine
+  // identifier the client would read. A third reason and not a fourth `no_status` cause, because the
+  // seat has already complied with everything `no_status` asks and a hint that repeats that demand is
+  // the unactionable shape the 2026-08-05 block records the cost of.
+  assert.deepEqual([...COVERAGE_REASONS].sort(), ["engine_vocabulary", "form_damaged", "no_status"]);
+  const emitted = new Set([
+    ...findCoverageFormViolations(build().rows).map((v) => v.reason),
+    ...findCoverageFormViolations(null, "damaged").map((v) => v.reason),
+    ...findCoverageFormViolations([{ row_id: "CS-9", axis: "primary-sweep", kind: "seat",
+      unit: "primary-sweep / EU", open: false, status: "confirmed-clean",
+      reason: "the primary-sweep enumerated to zero" }]).map((v) => v.reason),
+  ]);
+  for (const r of emitted) assert.ok(COVERAGE_REASONS.includes(r), `${r} is not in the closed vocabulary`);
+});
+
+test("the CAUSE vocabulary is closed too, and every cause is reachable", () => {
+  // `reason` names the token; `cause` discriminates the three defects that share it, and the fail token
+  // carries them as a partitioned census so the corrective hint can lead with the right one. A cause
+  // nobody can reach is a hint branch nobody can trigger; a cause the list does not name is a census
+  // term repairs.mjs sums without anyone having declared it.
+  assert.deepEqual([...COVERAGE_CAUSES].sort(), ["axis_invalid", "no_status", "open_clean"]);
+  const causesOf = (rows) => findCoverageFormViolations(rows).map((v) => v.cause);
+  // no status at all
+  assert.ok(causesOf(build().rows).every((c) => c === "no_status"));
+  // an off-enum status is the same cause — the seat wrote something, the enum refuses it
+  assert.ok(causesOf(settle(build(), "clean-ish").rows).every((c) => c === "no_status"));
+  // an enum-VALID clean on a row the driver marked open
+  assert.ok(causesOf(settle(build(), "confirmed-clean").rows).every((c) => c === "open_clean"));
+  // an axis outside the register vocabulary
+  assert.deepEqual(causesOf([{ row_id: "CS-1", axis: "made-up-axis", kind: "seat", unit: "x",
+    open: false, status: "confirmed-clean", reason: "r" }]), ["axis_invalid"]);
+  // and the closed list is exactly what the gate can put there
+  const all = new Set([...causesOf(build().rows), ...causesOf(settle(build(), "confirmed-clean").rows),
+    ...causesOf([{ row_id: "CS-1", axis: "made-up-axis", kind: "seat", unit: "x", open: false, status: "confirmed-clean", reason: "r" }])]);
+  for (const c of all) assert.ok(COVERAGE_CAUSES.includes(c), `${c} is not in the closed cause vocabulary`);
 });
 
 // ── PARSING, SEAT ROWS, RENDERING ──────────────────────────────────────────────────────────────────
@@ -308,6 +364,28 @@ test("the sidecar name is derived from the seat-facing path and from nothing els
   assert.equal(coverageFormSidecarName(""), "");
 });
 
+test("the dispatch brief names the TOOL and the two fields, and recites no qid", () => {
+  // Typed transport: the brief names no file — the rows are enumerated INTO the dispatch (the seat's
+  // only sight of them) and the recording route is the record_coverage call.
+  const brief = coverageFormBrief(build());
+  assert.match(brief, /record_coverage/);
+  assert.ok(!brief.includes("register-coverage-form.json"), "no coverage file is named to the seat");
+  assert.match(brief, /THE ROWS:/);
+  assert.match(brief, /`status`/);
+  assert.match(brief, /`reason`/);
+  assert.ok(!brief.includes("ps:exact:glimmer+form"),
+    "the qids are IN the form; reciting them into the dispatch is the transcription lane this build removes");
+  // THE TWO OPEN SETS ARE DISJOINT AND COUNTED SEPARATELY. Block rows are `open` too now, so a single
+  // "N rows are marked open" line would count them twice and describe both with the never-searched
+  // wording — which is false for a crowd block and steers it to `deferred`, the status that clamps the
+  // verdict. One deferred slice, two crowd blocks, two paragraphs.
+  assert.match(brief, /1 row\(s\) are NEVER-SEARCHED slices/);
+  assert.match(brief, /2 row\(s\) are UNACCOUNTED CROWD BLOCKS/);
+  assert.match(brief, /is `coverage-limited` — NOT `deferred`/);
+  assert.match(brief, /EACH OF THESE ROWS IS DISCHARGED ONLY BY ITSELF/);
+  assert.equal(coverageFormBrief({ rows: [] }, "/x.json"), "", "no form ⇒ no block, never an empty alarming one");
+});
+
 // ── — THE SEAT IS REFUSED THE ENGINE'S WORDS WHERE IT WRITES THEM ───────────────────────────────
 //
 // fixed this at the render seam with find-and-replace over the client's page, and is what
@@ -315,24 +393,33 @@ test("the sidecar name is derived from the seat-facing path and from nothing els
 // on the report that was clearing AXIS. The ban list and the trademark register overlap.
 //
 // A refusal has neither failure mode, because it goes to the thing that can rewrite the sentence.
-test("a reason that carries an engine identifier is detected, with the token named", () => {
-  // The detector the withheld-family reasons are checked with (withheld-families.mjs): a reason a client
-  // reads may not name the engine's own axis words.
-  assert.deepEqual(seatBannedTokens("all fifteen primary-sweep queries enumerated to zero"), ["primary-sweep"]);
+test("the seat's reason may not carry an engine identifier — refused per row, with the token named", () => {
+  const row = (reason) => ({ row_id: "CS-1", axis: "primary-sweep", kind: "seat",
+    unit: "primary-sweep / EU", open: false, status: "confirmed-clean", reason });
+  const v = findCoverageFormViolations([row("all fifteen primary-sweep queries enumerated to zero")]);
+  assert.deepEqual(v.map((x) => x.reason), ["engine_vocabulary"]);
+  assert.deepEqual(v[0].tokens, ["primary-sweep"]);
+  assert.equal(v[0].row, "CS-1", "the seat repairs the sentence it wrote, not 'the form'");
+  assert.match(v[0].detail, /the coverage unit already carries the identifier/);
   // every closed token, and the spaced spelling of each
   for (const tok of SEAT_BANNED_TOKENS) {
-    assert.deepEqual(seatBannedTokens(`x ${tok} y`), [tok], `${tok} must be detected`);
-    assert.deepEqual(seatBannedTokens(`x ${tok.replace(/-/g, " ")} y`), [tok], `${tok} spelled with spaces must be detected too`);
+    assert.equal(findCoverageFormViolations([row(`x ${tok} y`)]).length, 1, `${tok} must be refused`);
+    assert.equal(findCoverageFormViolations([row(`x ${tok.replace(/-/g, " ")} y`)]).length, 1,
+      `${tok} spelled with spaces must be refused too`);
   }
-  assert.deepEqual(seatBannedTokens("the EU leg enumerated completely and returned no live marks"), []);
+  // a clean sentence passes, and a SETTLED row is still checked — that is the row whose reason ships
+  assert.deepEqual(findCoverageFormViolations([row("the EU leg enumerated completely and returned no live marks")]), []);
 });
+
 test("the ban list is HYPHENATED COMPOUNDS ONLY — a one-word mark is never refused", () => {
   // The selection rule, asserted rather than described. A refusal that cannot tell engine vocabulary
   // from a mark would block a clearance on the mark SLICE, which is one level in. Every banned
-  // token must be a compound; the bare nouns are NOT enforced.
+  // token must be a compound; the bare nouns are taught in the dictation and NOT enforced.
   for (const tok of SEAT_BANNED_TOKENS)
     assert.match(tok, /-/, `${tok} is a single word and could be a trademark`);
+  const row = (reason) => ({ row_id: "CS-2", axis: "primary-sweep", kind: "seat",
+    unit: "primary-sweep / EU", open: false, status: "confirmed-clean", reason });
   for (const mark of ["AXIS", "Axis", "axis", "SLICE", "Slice", "slice", "GROUP", "sweep"])
-    assert.deepEqual(seatBannedTokens(`${mark} enumerated to zero on the EU leg`), [],
+    assert.deepEqual(findCoverageFormViolations([row(`${mark} enumerated to zero on the EU leg`)]), [],
       `the mark ${mark} must survive a reason the client reads`);
 });

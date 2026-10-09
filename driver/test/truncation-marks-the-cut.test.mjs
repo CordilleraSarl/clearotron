@@ -59,13 +59,12 @@ test("arm 2 — every site the issue names marks its cut", () => {
   };
   for (const [file, want] of Object.entries(SITES))
     assert.match(live(file), want, `${file} truncates an operator-facing message without marking the cut`);
-  // The site that reports a form the driver could not write — the only account of a write that did not
-  // happen, so a message cut mid-path is a message that names no file. (The coverage and placement
-  // forms' sites left with the stages that wrote them.)
+  // The three sites that report a form the driver could not write — each one is the only account of a
+  // write that did not happen, so a message cut mid-path is a message that names no file.
   const gw = live("gateway.mjs");
   // B — the disposition tag follows its machinery: the seat-facing form died, and the write this line
   // reports is the ACCUMULATOR's (syncDispositionForm's one write).
-  for (const form of ["disposition-accumulator"])
+  for (const form of ["disposition-accumulator", "coverage-form", "placement-form"])
     assert.match(gw, new RegExp(`\\[${form}\\] could not write[^\`]*\\$\\{abbrev\\(`), `${form}'s write failure is cut without a marker`);
   // And no bare slice survives on the reasons this issue is about.
   const pl = live("pipeline.mjs");

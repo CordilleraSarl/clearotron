@@ -72,9 +72,6 @@ export const PUBLISH_INPUTS = {
   "register-named-band.json": "optional",
   // The instructed scope, read only as the register plan's fallback for the searched-jurisdiction set.
   "_driver/instructed-scope.json": "optional",
-  // Step 3's merged decisions, read only for the judges' reason beside each set-aside owner in "also
-  // considered". Optional: a run begun before step 3 was judged by owner has none, and renders as before.
-  "owner-decisions.json": "optional",
   // The frozen local-language lane decision, and the units the fold wrote. Read to derive how deep that
   // investigation went against what the matter configured — through the engine's own asked-versus-ran
   // reader, not by re-deciding it here. Optional and genuinely so: a plain clearance never runs the
@@ -136,7 +133,7 @@ export const CALLER_SUPPLIED = {
  * publish/index.mjs's source — reading a 1472-line sibling on every import to answer a question that
  * only changes when someone edits the file is the wrong place for it; the dead-key/undeclared-store
  * half runs in publish-input-coverage.test.mjs against the real source, on the
- * dependency-repair.test.mjs precedent.
+ * dependency-repair.test.mjs:76-95 precedent.
  *
  * `tables` is injectable so the gate can be exercised against a partition nobody shipped, which is
  * otherwise unreachable from a test.

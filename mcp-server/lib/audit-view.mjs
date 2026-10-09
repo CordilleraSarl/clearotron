@@ -290,10 +290,11 @@ const TIMELINE_FIELDS = ["ts", "seq", "kind", "phase", "stage", "decision", "tri
 // rating of Medium reported the run as delivered BLOCKING. The gate's decisions are not lost — every one
 // of them is a timeline entry and a `verdictHistory` row, which is what this surface exists to narrate.
 //
-// Nothing about `diff_artifact` travels: it is sealed, and a flag about a tool the caller cannot call is
-// the dangling pointer this file refuses at trace's `refutationFile` — it names a capability and invites a
-// call that refuses. (The operator's timeline once carried such a flag, read from the register digest's
-// snapshots; it left with the digest.)
+// `riskLadderAvailable` and `note` do NOT, together and for one reason: the flag exists only to say
+// whether `diff_artifact` could show the word-by-word change, and `diff_artifact` is sealed. A flag
+// about a tool the caller cannot call is the dangling pointer this file refuses at trace's
+// `refutationFile` — it names a capability and invites a call that refuses. Reopen them together if
+// diff_artifact is ever ruled on.
 export function accountTimeline(result, { brandName = "The firm" } = {}) {
   if (!result || typeof result !== "object") return result;
   const entry = (t) => {

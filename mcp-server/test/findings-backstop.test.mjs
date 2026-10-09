@@ -18,10 +18,9 @@
 
 import { test, describe, before } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, cpSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
 
 let loadFindings, driver, scrubCards;
 before(async () => {
@@ -127,27 +126,6 @@ describe("the rebuilt-from-spine backstop", () => {
     try {
       const { findings } = loadFindings(driver.paths(dir));
       assert.equal(findings.filter((f) => f.disposition === "withdrawn").length, 1);
-    } finally { rmSync(dir, { recursive: true, force: true }); }
-  });
-});
-
-describe("the backstop on a run judged by owner", () => {
-  // The driver's invented pile (owners and marks made up for its own tests), with step 3's decisions and
-  // no register findings document: the register half must come from the decisions, as audit.md's does.
-  const PILE = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "driver", "test", "fixtures", "owner-pile");
-
-  test("rebuilds the register half from step 3's decisions", () => {
-    const dir = mkdtempSync(join(tmpdir(), "ta-findings-backstop-judged-"));
-    try {
-      cpSync(PILE, dir, { recursive: true });
-      writeFileSync(join(dir, "owner-decisions.json"), JSON.stringify({ schema_version: 1,
-        judges: { asked: 2, answered: [1, 2] }, overall_ratings: [],
-        carried: [{ owners: ["Owner One K.K."], records: ["/mark/AA/0000-A1"], ratings: [{ rating: "High" }], reason: "The same mark, live, in the order's classes." }],
-        set_aside: [], advice: [], questions_wished_for: [] }));
-      const { findings, source } = loadFindings(driver.paths(dir));
-      assert.equal(source, "rebuilt-from-spine", "premise: no audit.md, so the backstop ran");
-      assert.ok(findings.some((f) => /ZZMARK/.test(JSON.stringify(f))),
-        `the carried owner's record is not among the rebuilt findings: ${JSON.stringify(findings).slice(0, 400)}`);
     } finally { rmSync(dir, { recursive: true, force: true }); }
   });
 });

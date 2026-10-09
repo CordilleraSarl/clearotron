@@ -2,10 +2,9 @@
 // Copyright 2026 Cordillera Sarl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
 // - ONE REPEAT DETECTOR, THREE RECEIVERS, AND THE ONE OF THEM WHOSE KEY IS A POSITION.
 //
-// doubt-closure, coverage and declination could each be handed a batch they had already been sent. Three
+// doubt-closure, coverage and declination can each be handed a batch they have already been sent. Three
 // hand-written copies of that check is the dictated-shape-in-N-places defect this tree keeps paying for,
-// so the detector lives in `call-repeat.mjs` and each receiver supplies what genuinely differs. The
-// coverage receiver went with the register digest's coverage tool (2026-10-01); two remain.
+// so the detector lives in `call-repeat.mjs` and each receiver supplies what genuinely differs.
 //
 // The load-bearing asymmetry: coverage's `row_id` is CONTENT-DERIVED and doubt-closure's `doubt_id` is
 // frozen for the life of the stage, so neither needs a generation key. Declination identifies rows by
@@ -63,11 +62,11 @@ test("listGeneration is CONTENT-derived, so a rewrite of the identical list does
 
 // -- the wiring: one implementation, three receivers ------------------------------------------------
 
-test("every receiver uses the SHARED detector - no second copy of the shape", () => {
+test("all three receivers use the SHARED detector - no second copy of the shape", () => {
   // The reason this module exists. A receiver that grows its own `createHash` over an id list is the
   // third copy arriving, and it would drift from the other two without anything failing.
   const offenders = [];
-  for (const f of ["doubt-closure-tool.mjs", "declination-tool.mjs"]) {
+  for (const f of ["doubt-closure-tool.mjs", "coverage-tool.mjs", "declination-tool.mjs"]) {
     const src = readFileSync(join(HERE, "..", f), "utf8");
     if (!/from "\.\/call-repeat\.mjs"/.test(src)) offenders.push(`${f} does not import the shared detector`);
     if (/createHash\(/.test(src)) offenders.push(`${f} hashes on its own - a second copy of the detector`);
@@ -88,4 +87,7 @@ test("the positional receiver passes a generation and the others deliberately do
   assert.equal(bare, 0, `${bare} declination hash site(s) use the positional key with NO generation`);
   assert.match(decl, /listGeneration\(spec\?\.rows\)/,
     "declination's generation is no longer derived from the spec row list its positions index into");
+
+  const cov = readFileSync(join(HERE, "..", "coverage-tool.mjs"), "utf8");
+  assert.match(cov, /idField: "row_id"/, "coverage stopped keying on its content-derived row id");
 });

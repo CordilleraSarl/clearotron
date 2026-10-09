@@ -155,7 +155,7 @@ test("it never claims to be the noise floor #217 needs", () => {
   try {
     const { out } = run(["--run", d]);
     assert.match(out, /NOT the noise floor/);
-    assert.match(out, /owner-judgment\.mjs/, "and it names where the real floor lives");
+    assert.match(out, /placement-model\.mjs:46/, "and it names where the real floor lives");
     assert.match(out, /Nothing was written/);
   } finally { rmSync(d, { recursive: true, force: true }); }
 });

@@ -15,6 +15,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+import { trackedFiles, skipReason } from "../../shared/tracked-files.mjs";
 import { depthFor, PRODUCT_POLICIES } from "../search-policy.mjs";
 
 /** The clearance products the ladder governs. Product 1 (knockout) is out of scope by the spec. */
@@ -27,6 +30,7 @@ const GRADED_PRODUCTS = ["global-preliminary-search", "multi-country-focus-searc
  */
 const VOCAB = {
   narrativeProse: ["every-finding", "adversarial+floors", "adversarial"],
+  inquiryTrace: ["full", "graded", "graded-high"],
   skepticFlagging: ["as-today", "graded", "graded-high"],
   variantManifest: ["as-today", "graded", "graded-high"],
   // The spec writes these "band 1 / band 2"; its own definition table maps them to DISPOSITIONS, and a
@@ -51,10 +55,12 @@ const VOCAB = {
  */
 const ONE_COUNTRY_TODAY = Object.freeze({
   narrativeProse: "every-finding",
+  inquiryTrace: "full",
   skepticFlagging: "as-today",
   variantManifest: "as-today",
   groundedProfiles: "every-finding",
   doubtClosure: "every-doubt",
+  recallFollowupMax: 2,
   envelopeRounds: "as-today",
   coverageClosureRounds: "as-today",
 });
@@ -73,7 +79,21 @@ test("the one-country row is TODAY'S behaviour, value by value — this is the b
 // The narrative directive is emitted only when both are present, so a one-country row carrying them
 // would emit a directive and end the byte-identical guarantee. Listed here rather than derived, because
 // the whole point is that the two row shapes are deliberately different.
-const GRADED_ONLY = ["narrativeKeptBandRank", "narrativeWriteUpWords", "profileKeptBandRank"];
+const GRADED_ONLY = ["narrativeKeptBandRank", "narrativeWriteUpWords", "profileKeptBandRank", "inquiryWriteUpWords"];
+
+/**
+ * Parameters that are DELIBERATELY UNREAD — a decision recorded in the table, with no consumer yet.
+ *
+ * `inquiryWriteUpWords`: the inquiry directive and its check were deferred, because measurement showed
+ * full traces already confined to the kept tier and a rule would instruct what the seat already does.
+ * The number stays because the table is the single source for a product's parameters.
+ *
+ * A VALUE NOTHING READS IS A DEFECT CLASS, not a neutral placeholder — it drifts, and the first
+ * consumer wired to it inherits whatever it drifted to. So the deadness is asserted rather than
+ * assumed: wire a consumer and the arm below fires, and whoever wired it takes the name off this list
+ * on purpose instead of discovering later that two products were silently graded.
+ */
+const PARKED_UNREAD = ["inquiryWriteUpWords"];
 
 // `GRADED_PRODUCTS` above means "has a row in the ladder table", and one-country has one — its row
 // states today's behaviour explicitly, which is what makes the table complete. The two products that are
@@ -115,6 +135,8 @@ test("every value is in its field's closed vocabulary — a typo cannot mean 'as
         + "An unrecognised value is read as 'as today' by a defaulting consumer, so a typo here un-grades "
         + "a product and reports nothing.");
     }
+    assert.ok(Number.isInteger(depth.recallFollowupMax) && depth.recallFollowupMax >= 1,
+      `${p}.depth.recallFollowupMax must be a positive integer, got ${JSON.stringify(depth.recallFollowupMax)}`);
   }
 });
 
@@ -199,4 +221,49 @@ test("a KNOWN but ungraded product names itself, and runs at one-country depth",
   assert.deepEqual(values, { ...ONE_COUNTRY_TODAY },
     "an ungraded product resolved to something other than AS TODAY. Falling back to anything but the "
     + "one-country column is the ladder grading a product nobody graded.");
+});
+
+const PARKED_GUARD = "#1503 parked-parameter";
+
+test("a PARKED parameter is read by nothing — and that is asserted, not assumed", (ctx) => {
+  // The whole point of parking a value in the table is that the decision is recorded where the other
+  // parameters live. The risk is that it half-activates: someone wires a consumer, two products start
+  // being graded by a number nobody re-derived, and the only symptom is shorter output.
+  //
+  // THROUGH THE HELPER, not `git ls-files`: off a checkout a direct spawn is a wall of "fatal: not a
+  // git repository" where a stated skip belongs, which is the rule test-tiers enforces.
+  const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+  const listed = trackedFiles(PARKED_GUARD, { root, pathspec: ["driver/*.mjs", "driver/**/*.mjs",
+    "shared/*.mjs", "scripts/*.mjs", "bin/*.mjs"] });
+  if (listed === null) return ctx.skip(skipReason(PARKED_GUARD));
+  const files = listed.filter((f) => f.endsWith(".mjs") && !f.includes("/test/") && !f.endsWith("search-policy.mjs"));
+  assert.ok(files.length > 50, `only ${files.length} source files enumerated — the instrument is broken, not the table`);
+  for (const name of PARKED_UNREAD) {
+    const readers = files.filter((f) => readFileSync(join(root, f), "utf8").includes(name));
+    assert.deepEqual(readers, [],
+      `${name} is parked in the per-product table with no consumer, and ${readers.join(", ")} reads it. `
+      + "Either it is live — take it off PARKED_UNREAD and give it arms that check what it does — or the "
+      + "read is accidental. It cannot be both parked and consumed.");
+  }
+});
+
+test("the multi-country inquiry cap is not set BELOW worldwide's", () => {
+  // These numbers shipped once at 80 / 60, annotated "p90 of full traces (measured)". The 60 was read
+  // off PER-RUN p90s (63, 68) rather than the pooled distribution; pooled, the two products are level
+  // with multi-country marginally the longer — 78 against 75 — so 60 clipped 18% of traces where a
+  // p90-shaped cap clips 3%. Nothing red, because the value is parked and nothing reads it.
+  //
+  // THE PARKED ARM ABOVE CANNOT CATCH THIS. It asserts no consumer exists, which stayed true while the
+  // number and its stated justification drifted apart. A parked value is exactly where a wrong number
+  // survives: there is no behaviour to contradict it, so an arm is the only thing that can.
+  const worldwide = depthFor({ level: "global-preliminary-search" });
+  const multi = depthFor({ level: "multi-country-focus-search" });
+  // THE RULE, NOT THE NUMBER. Pinning `80` here would convert a figure this login cannot re-derive
+  // (the archive is mode 0750) into one the next person has to argue with a test to correct. The
+  // relationship below is defensible from the two rows themselves and is what actually went wrong.
+  assert.ok(multi.inquiryWriteUpWords >= worldwide.inquiryWriteUpWords,
+    "multi-country's inquiry cap is below worldwide's — the inverted reading that clipped 18% of traces");
+  assert.ok(multi.narrativeWriteUpWords > worldwide.narrativeWriteUpWords,
+    "the NARRATIVE caps genuinely do invert; if that stopped being true the comment beside the inquiry "
+    + "caps explaining why they do not follow is describing a contrast that no longer exists");
 });

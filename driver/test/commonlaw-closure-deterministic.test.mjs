@@ -39,7 +39,7 @@ const JOB = {
 // between setting it and clearing it leaked a rigged synthesis into the next two tests, which failed
 // with `failedStage: "synthesis"` and nothing in their own setup to explain it. Clearing at the START
 // of every run is the only placement a throwing fixture cannot skip.
-const KNOBS = ["MOCK_CL_GAPS", "MOCK_CL_APPEND_MALFORMED", "MOCK_FAIL_STAGE"];
+const KNOBS = ["MOCK_CL_GAPS", "MOCK_CL_APPEND_MALFORMED", "MOCK_FRAME_DIFF", "MOCK_FAIL_STAGE"];
 
 async function run(env, id) {
   const root = mkdtempSync(join(tmpdir(), "clfix-"));
@@ -201,6 +201,24 @@ test("e2e (non-split): the new code fold yields a {cells,extras,gaps} canonical 
   assert.deepEqual(findCoverageLimitedCells("", raw), [], "no coverage-limited cells survive the fold");
   assert.ok(parsePrRiskQueries(raw) >= 1, "the connotation receipts survive the fold (identity join intact)");
   assert.equal(clValid(res.runDir), true, "the folded canonical passes the common-law validator");
+});
+
+// ── the incident's exact mechanism: closure THEN frame-reopen on the same split run ────────────────────
+// RUN2 was the interaction, not either lane alone: coverage-closure had closed cells, then a frame-reopen
+// re-dispatch ran and the corrupt hand-appended half ledger re-derived the closed cells as gaps → re-fire →
+// thrash. Here the supp-closure ledger persists on disk and readHalfLedger re-reads it on EVERY merge, so
+// the frame-reopen re-merge must keep the closed cells closed.
+test("e2e (split): coverage-closure THEN frame-reopen source — closed cells STAY closed through the reopen re-merge", async () => {
+  const { res, events } = await run({ MOCK_CL_GAPS: "1", MOCK_FRAME_DIFF: "source", MOCK_CL_APPEND_MALFORMED: "1" }, "closure-then-reopen");
+  assert.equal(res.ok, true, JSON.stringify(res));
+  assert.ok(!hasUnparseable(events), "no unparseable-ledger event across the combined lanes");
+  const closure = events.find((e) => e.event === "coverage-closure");
+  assert.deepEqual({ closed: closure.closed, remaining: closure.remaining }, { closed: 2, remaining: 0 }, "coverage-closure closed the cells");
+  const reopen = events.find((e) => e.event === "frame-reopen");
+  assert.ok(reopen && reopen.swept >= 1, "the frame-reopen source directive swept (re-dispatched the halves)");
+  // the load-bearing assertion: the frame-reopen re-merge did NOT re-open the cells coverage-closure closed
+  const grid = JSON.parse(readFileSync(join(res.runDir, "common-law-grid.json"), "utf8"));
+  assert.equal(grid.gaps.length, 0, "the reopen re-merge preserved the closed cells (supp-closure re-read each merge) — no re-open, no re-thrash");
 });
 
 // ── false-clean guard: a cell the supp did NOT return stays a disclosed plugin-recorded gap ─────────────

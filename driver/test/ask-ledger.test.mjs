@@ -113,6 +113,36 @@ test("screen-gate: a flagged URI absent from the unresolved sidecar was cleared 
   assert.match(bad.handoff, /CONDITIONAL clamp/);
 });
 
+// ── birth-places 6+7: frame-diff directives; executed is COMPUTED, never taken from the receipt ───
+test("frame receipt: a swept directive with recorded qids is executed ONLY when the plan-execution join confirms; an unconfirmed sweep claim stays OPEN", () => {
+  const frameReopen = {
+    requested: ["field:cl 35 retail", "variant:frostberri", "variant:frost phonetic family"],
+    swept: ["field:cl 35 retail", "variant:frostberri"],
+    deferrals: [{ directive: "variant:frost phonetic family", layer: "variant", reason: "no-code-remedy: display label — disclosed, never swept blind" }],
+    directive_qids: {
+      "field:cl 35 retail": ["supp:primary-sweep:exact:frostberry:abcd1234"],
+      "variant:frostberri": ["supp:primary-sweep:exact:iceberry:beef5678"],   // receipt claims swept; join says missing
+    },
+    born: { "variant:frost phonetic family": "form-neighbourhood" },
+  };
+  const asks = deriveAsks({ frameReopen, planExecution: PLAN_EXEC }, { ts: "t" });
+  const byRef = Object.fromEntries(asks.map((a) => [a.born.ref, a]));
+  const confirmed = byRef["field:cl 35 retail"];
+  assert.equal(confirmed.ending.kind, "executed");
+  assert.equal(confirmed.ending.by, "plan-execution-join", "executed is computed from the join, never asserted");
+  assert.equal(byRef["variant:frostberri"].ending, null, "a swept claim the execution record cannot confirm stays a question");
+  const deferred = byRef["variant:frost phonetic family"];
+  assert.equal(deferred.born.place, "form-neighbourhood", "the receipt's born map routes the form-oracle injection to its own birth place");
+  assert.equal(deferred.ending.kind, "recovery");
+  assert.match(deferred.handoff, /CLEAR→CONDITIONAL clamp/);
+});
+
+test("frame receipt: a swept directive with NO recorded qids (warm-resume arm) ends executed on the receipt's own verification", () => {
+  const asks = deriveAsks({ frameReopen: { requested: ["variant:frostberri"], swept: ["variant:frostberri"], deferrals: [] } }, { ts: "t" });
+  assert.equal(asks[0].ending.kind, "executed");
+  assert.equal(asks[0].ending.by, "frame-reopen-receipt");
+});
+
 // ── birth-place 8: supplemental proposals + the persisted rejected[] rows ─────────────────────────
 test("supplemental: entries end via the qid join (executed / capability-gap recovery / open); an unsuperseded rejection — cap or shape — stays OPEN", () => {
   const asks = deriveAsks({
@@ -302,6 +332,7 @@ test("determinism + purity: same inputs ⇒ deeply equal output; inputs never mu
     intakeAsks: [{ ask: "check the FROSTBERRY domain portfolio", owner: "register" }],
     reportMd: "- You asked us to check the FROSTBERRY domain portfolio → nothing found",
     events: [{ event: "escalation-skipped", axis: "saturation-probe", reason: "code-side unit (no session)" }],
+    frameReopen: { requested: ["variant:x"], swept: [], deferrals: [{ directive: "variant:x", layer: "variant", reason: "digest-locked-resume" }] },
     planExecution: PLAN_EXEC,
   };
   const frozen = JSON.stringify(inputs);

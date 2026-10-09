@@ -35,14 +35,9 @@
 // defect count — and `joinedOn` records which join answered, so a reader can see how much of the
 // result rests on the weaker one. `joinBasis` reports each surface's identifier carry rate, because a
 // surface where almost no identifier reaches the artifacts is itself worth knowing.
-//
-// A RUN JUDGED BY OWNER carries no register findings document. Its register subjects are the records step
-// 3's judges carried (`owner-decisions.json`), each with its record id as the identifier and its mark,
-// read from the pile, as the name — the same subjects the writer was handed.
 
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
-import { registerDecisionsFor } from "./pile.mjs";
 
 const readText = (p) => { try { return readFileSync(p, "utf8"); } catch { return ""; } };
 const readJson = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
@@ -126,28 +121,14 @@ const nameArrives = (frag, text) => CJK.test(frag)
   ? text.includes(frag)
   : new RegExp(`(?<![A-Za-z0-9])${frag.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?![A-Za-z0-9])`, "i").test(text);
 
-const DECISIONS = "owner-decisions.json";
-/** The records step 3's judges carried, as subject rows; null on a run with no decisions or none readable. */
-function decisionRows(runDir) {
-  let d = null;
-  try { d = registerDecisionsFor(runDir, join(runDir, DECISIONS)); } catch { return null; }
-  if (!d) return null;
-  const rows = [];
-  for (const g of Array.isArray(d.decisions?.carried) ? d.decisions.carried : [])
-    for (const id of Array.isArray(g?.records) ? g.records : [])
-      rows.push({ name: String(d.recordFacts(id)?.mark ?? ""), identCell: "", ids: [String(id)], heading: "carried", expectedToArrive: true });
-  return rows;
-}
-const surfaceRows = (runDir, surface) => (surface === DECISIONS ? decisionRows(runDir) ?? [] : subjectRows(readText(join(runDir, surface))));
-
 /**
  * @returns {{computable: boolean, reason: string|null, surfaces: string[], subjects: number,
  *            lost: object[], unmeasurable: object[], nameOnly: number, notExpected: number}}
  */
 export function carryThrough(runDir) {
-  const surfaces = ["register-findings.md", DECISIONS, "common-law-findings.md"].filter((f) => existsSync(join(runDir, f)));
+  const surfaces = ["register-findings.md", "common-law-findings.md"].filter((f) => existsSync(join(runDir, f)));
   if (!surfaces.length) {
-    return { computable: false, reason: "none of register-findings.md, owner-decisions.json or common-law-findings.md is present, so this run carries no subject list to check",
+    return { computable: false, reason: "neither register-findings.md nor common-law-findings.md is present, so this run carries no subject list to check",
       surfaces: [], joinBasis: {}, subjects: 0, lost: [], unmeasurable: [], nameOnly: 0, notExpected: 0, distinct: 0, rawRows: 0 };
   }
   const texts = ARRIVAL_ARTIFACTS.map((f) => ({ f, t: readText(join(runDir, f)) }));
@@ -161,19 +142,19 @@ export function carryThrough(runDir) {
   const seen = new Set(), lost = [], unmeasurable = [], joinBasis = {};
   let subjects = 0, nameOnly = 0, notExpected = 0, rawRows = 0;
   for (const surface of surfaces) {
-    const rows = surfaceRows(runDir, surface);
+    const rows = subjectRows(readText(join(runDir, surface)));
     rawRows += rows.length;
     // REPORTED, NOT ACTED ON. How much of a surface's identifier space reaches the artifacts is worth
     // knowing — one of these two surfaces carries almost none downstream — but it does not switch the
     // join. Switching on it needs a threshold, and no defensible number separates "2 of 9" from "3 of
     // 22". The per-row rule below needs no threshold at all.
-    const allIds = [...new Set(rows.flatMap((r) => r.ids ?? identifiersOf(r.identCell)))];
+    const allIds = [...new Set(rows.flatMap((r) => identifiersOf(r.identCell)))];
     const idsCarried = allIds.filter((i) => present.some(({ t }) => t.includes(i))).length;
     joinBasis[surface] = allIds.length
       ? `${idsCarried} of ${allIds.length} identifier(s) reach an arrival artifact`
       : "this surface records no identifiers; name join only";
     for (const row of rows) {
-      const ids = row.ids ?? identifiersOf(row.identCell);
+      const ids = identifiersOf(row.identCell);
       // An identifier is unique, so the same record listed in two sections is ONE subject and dedups
       // globally. A name is not: keying a no-identifier row on the bare name merged rows that sit in
       // different sections — measured at 3 such merges on one preserved run, each one a row silently

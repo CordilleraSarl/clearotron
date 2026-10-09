@@ -115,11 +115,6 @@ export const FINDINGS_SCHEMA_VERSION = 7;
 // and re-saves, the file is re-validated, and the model would have to author a legal read for a card it
 // is deleting. See issue comment 2026-08-03.
 export const POSITION_REQUIRED_DISPOSITIONS = ["adversarial", "coexistence-partner", "distinguished", "off-field"];
-// The postures the writing step is offered on a run judged by owner: every one above but off-field. A finding
-// is made only for an owner the judges carried, every carried owner is rated, and a rated owner is never
-// awareness only (decision-ratings.mjs refuses it), so off-field is not offered (owner, 2026-10-02). The
-// parser still accepts it, because runs from before the judges carry it. Derived, never retyped.
-export const WRITER_DISPOSITIONS = Object.freeze(POSITION_REQUIRED_DISPOSITIONS.filter((d) => d !== "off-field"));
 // requirement 2 — off-field's TWO sanctioned grounds, made to declare themselves.
 //
 // `off-field` had been carrying two different claims under one token: "the same token in a different
@@ -220,7 +215,7 @@ export function maxLiveComposite(findings) {
  * Very High matter as the zero-composite "LOW", which is the one catastrophic path this guards.
  * LEGACY (no manifest, composite findings): byte-identical to the pre-doc-50 derivation.
  */
-export function deriveDisplayVerdict({ verdict, reasons, kinds, findings, manifest, overallBand = null }) {
+export function deriveDisplayVerdict({ verdict, reasons, kinds, findings, manifest }) {
   const base = {
     verdict: String(verdict || "").toUpperCase() || null,
     conditions: Array.isArray(reasons) ? reasons.filter(Boolean) : [],
@@ -230,10 +225,7 @@ export function deriveDisplayVerdict({ verdict, reasons, kinds, findings, manife
   if (banded && !manifest)
     throw new Error("findings_band_without_manifest: band-rated findings need the run's frozen framework manifest (_driver/framework.json) — refusing to default a rated matter to LOW");
   if (manifest) {
-    // A RUN JUDGED BY OWNER RATES THE MARK ONCE, BY CODE (owner, 2026-10-02): the judges' overall rating,
-    // merged like their per-owner ratings, is the run's rating. Every other run keeps the worst live band.
-    const judged = overallBand ? normalizeBand(manifest, overallBand) : null;
-    const worst = judged ?? worstLiveBand(findings, manifest);
+    const worst = worstLiveBand(findings, manifest);
     const tone = worst ? bandTone(manifest, worst) : null;
     return {
       ...base,
@@ -1538,7 +1530,7 @@ function validateNetRequired(f, ord, mode) {
   if (f.ruled_out === true) return;                                      // its ground is ruled_out_reason
   if (!POSITION_REQUIRED_DISPOSITIONS.includes(f.disposition)) return;   // withdrawn — see the const's doc block
   if (typeof f.net === "string" && f.net.trim()) return;
-  throw new Error(`finding_net_missing:${ord} (EVERY finding a reader sees carries the net — it is the ONLY per-finding summary the report has: the card leads with it, the grouped-negative line states it, the MCP brief lists the finding by it.)`);
+  throw new Error(`finding_net_missing:${ord} (EVERY finding a reader sees carries the one-clause net — it is the ONLY per-finding summary the report has: the card leads with it, the grouped-negative line states it, the MCP brief lists the finding by it. Name the legal risk driver, then the FACT that conditions it. Length is the renderer's problem, not yours)`);
 }
 
 // ── requirement 2 — the label follows the argument ───────────────────────────────────────────────
@@ -1738,9 +1730,9 @@ export function netChainMarkers(s) {
 function validateNet(f, ord, mode) {
   if (f.net == null) return;   // absent ⇒ v6 has already thrown; below v6 the card falls back as it always did
   if (typeof f.net !== "string" || !f.net.trim())
-    throw new Error(`finding_net_invalid:${ord} (net is a non-empty string, or omit it)`);
+    throw new Error(`finding_net_invalid:${ord} (net is the one-clause read — a non-empty string, or omit it)`);
   if (PRESCRIPTION_RE.test(f.net))
-    throw new Error(`finding_net_prescriptive:${ord} (the read carries FACTS AND ASSESSMENT, never an action prescription — the reader is a lawyer who layers their own advice on top; let the typed actions register carry what a human must do)`);
+    throw new Error(`finding_net_prescriptive:${ord} (the one-clause read carries FACTS AND ASSESSMENT, never an action prescription — the reader is a lawyer who layers their own advice on top; state the risk and the fact that conditions it, and let the typed actions register carry what a human must do)`);
   validateNetShape(f, ord, mode);
   f.net = f.net.trim();
 }
@@ -1781,7 +1773,7 @@ function validateNet(f, ord, mode) {
 //
 // The name also has to satisfy the two conditions the gateway imposes, both verified in
 // findings-gate-token.test.mjs rather than assumed:
-//   · lowercase-and-underscore after the prefix, or gateway.mjs:2947 WARM_ELIGIBLE_RE
+//   · lowercase-and-underscore after the prefix, or gateway.mjs:3205 WARM_ELIGIBLE_RE
 //     (`findings?_[a-z_]+`) does not admit it and the failure goes cold instead of warm;
 //   · no `coverage_ledger` / `coverage_axis` / `coverage_key` / `coverage_mirror` /
 //     `coverage_status_invalid` substring, because repairSiblingName's ternary tests `coverage_*` BEFORE
@@ -1809,7 +1801,7 @@ function validateNetShape(f, ord, mode) {
   if (!POSITION_REQUIRED_DISPOSITIONS.includes(f.disposition)) return;   // withdrawn — see above
   const markers = netChainMarkers(f.net);
   if (!markers.length) return;
-  throw new Error(`findings_net_chained:${ord} (the finding sentence is a CONCLUSION, not a chain — this net carries ${markers.join(" and ")}. Answer the one question a reader asks of this finding: is this a problem for me. Name the parties and the territory and state the outcome as a likelihood. Then MOVE the chain's clauses — territories, the goods paraphrase, the owner's business, status and use history — into legal_position and practical_position, in full: this is a relocation, never a compression, and a net that got shorter because the reasoning got thinner is the wrong fix.)`);
+  throw new Error(`findings_net_chained:${ord} (the finding sentence is a CONCLUSION, not a chain — this net carries ${markers.join(" and ")}. Answer the one question a reader asks of this finding: is this a problem for me. Name the parties and the territory and state the outcome as a likelihood ("Veltra Labs' registered VELTRA is more likely than not to prevail against VELTRA PHARMA in the United States."). Then MOVE the chain's clauses — territories, the goods paraphrase, the owner's business, status and use history — into legal_position and practical_position, in full: this is a relocation, never a compression, and a net that got shorter because the reasoning got thinner is the wrong fix. There is no length cap)`);
 }
 
 // The framework's own inputs, where it states a method. A finding with a band is a rated conflict and

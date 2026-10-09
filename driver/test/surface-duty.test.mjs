@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright 2026 Cordillera Sàrl. Additional terms under section 7 of the AGPL-3.0 apply — see ADDITIONAL-TERMS.md
-// item 3 — the silence tripwire on the records the judges carried.
+// item 3 — the findings-surface silence tripwire.
 //
 // EVERY ARM IS CONSTRUCTED, and that is not laziness. The state this check exists to reward — a
 // surfaced record carrying a STATED ground — does not exist on any archived run, because nothing has
@@ -11,7 +11,7 @@ import assert from "node:assert/strict";
 import { reconcileSurfaceDuty, surfaceDutyNote, SURFACE_DUTY_SCHEMA_VERSION } from "../surface-duty.mjs";
 
 const surfaced = (uri, reason_source, extra = {}) =>
-  ({ uri, reach: "carried", reason: "synthesis:not-selected", reason_source, ...extra });
+  ({ uri, reach: "findings-surface", reason: "synthesis:not-delivered", reason_source, ...extra });
 
 test("the defect shape: surfaced, not delivered, no ground — tripped", () => {
   const r = reconcileSurfaceDuty({ rows: [surfaced("rec-1", "step-silent", { mark: "ALPHA" })] });
@@ -40,10 +40,10 @@ test("ONE silent decline trips it — there is no threshold to tune", () => {
 });
 
 test("a record no stage accepted is a DIFFERENT duty and is not counted here", () => {
-  // `screened` is the judges' own population (the picking exits count it). `finding` was delivered.
-  // Counting either would double-report records already answered under another name.
+  // `screened` is the floors check's population (item 2) and the issue's own item 2. `finding` was
+  // delivered. Counting either would double-report records already answered under another name.
   const rows = [
-    { uri: "p", reach: "screened", reason: "judgment:not-taken-up", reason_source: "step-silent" },
+    { uri: "p", reach: "screened", reason: "placement:not-selected", reason_source: "step-silent" },
     { uri: "r", reach: "finding", reason: null, reason_source: null },
   ];
   const r = reconcileSurfaceDuty({ rows });
@@ -51,18 +51,20 @@ test("a record no stage accepted is a DIFFERENT duty and is not counted here", (
   assert.equal(r.tripped, false);
 });
 
-test("a record the judges carried and the ledger never ended says WHERE it went silent", () => {
-  // The trace writes `synthesis:carried-not-delivered`, source `absent`, for a record every seam carried
-  // that no finding names. That is this check's population too, and the row must carry the reach and
-  // the source so a reader can see where the silence sits when one producer is fixed and it moves.
+test("THE SILENCE MOVED, and the check follows it — digest:silent-drop at reach `placed`", () => {
+  // THE REGRESSION ARM FOR THIS CHECK'S OWN BLIND SPOT. Keyed on `findings-surface` + `step-silent`
+  // alone — the issue's literal words, written when the silence was at synthesis — this returns
+  // "clean" for the run below. After d80a8388 made synthesis state its grounds, a fresh reproduction
+  // found 71 records at exactly this shape with a lawyer-named mark among them. An instrument that
+  // goes green when the defect moves is the defect this issue is about.
   const rows = [
-    { uri: "gold", reach: "carried", reason: "synthesis:carried-not-delivered", reason_source: "absent", mark: "ALPHA" },
-    { uri: "ok", reach: "carried", reason: "synthesis:declined:unrelated-goods", reason_source: "step-stated" },
+    { uri: "gold", reach: "placed", reason: "digest:silent-drop", reason_source: "absent", mark: "ALPHA" },
+    { uri: "ok", reach: "findings-surface", reason: "synthesis:declined:unrelated-goods", reason_source: "step-stated" },
   ];
   const r = reconcileSurfaceDuty({ rows });
-  assert.equal(r.tripped, true);
+  assert.equal(r.tripped, true, "the silence moved one door down and this check must still see it");
   assert.equal(r.totals.silent, 1);
-  assert.equal(r.silent[0].reach, "carried", "the row must say WHERE the silence is");
+  assert.equal(r.silent[0].reach, "placed", "the row must say WHERE the silence is, or a reader cannot see it moved");
   assert.equal(r.silent[0].reason_source, "absent");
 });
 
@@ -84,7 +86,7 @@ test("both silence tokens count, because both leave the reader unable to tell", 
 
 test("a surfaced row with NO record id is counted, never dropped", () => {
   // Dropping it would shrink the denominator and make a data defect read as a better ratio.
-  const r = reconcileSurfaceDuty({ rows: [{ reach: "carried", reason_source: "step-silent" }] });
+  const r = reconcileSurfaceDuty({ rows: [{ reach: "findings-surface", reason_source: "step-silent" }] });
   assert.equal(r.totals.surfaced, 1);
   assert.equal(r.totals.silent, 1);
   assert.equal(r.silent[0].uri, null, "the missing id is reported as missing, not invented");

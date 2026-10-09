@@ -78,17 +78,17 @@ const card = (findings, frameworkMethod) => {
   finally { rmSync(dir, { recursive: true, force: true }); }
 };
 
-test("the writer is no longer told the framework's inputs: rating through them is the judges' work", () => {
-  // The rating in the decisions is the rating (owner, 2026-10-01): the inputs are how a writer reasoned its
-  // own band, and they left synthesis's message with the rest of the rating instructions, with or without
-  // a stated method. A run begun before the judges still has its inputs checked (the arm below).
+test("the writer is told the framework's inputs, in its order and words, only where the framework states them", () => {
   const P = paths("/r");
-  for (const frameworkMethod of [METHOD, undefined]) {
-    const msg = STAGES.synthesis.message({ paths: P, job: {}, profile: null, framework: MANIFEST, frameworkMethod });
-    assert.ok(msg.includes("The rating in the decisions is the rating. Do not rate again."), "premise: the judged message was built");
-    for (const s of [methodDictation(METHOD), "rates through its inputs", '"inputs" (rated findings only)', "- inputs:", "from the inputs you recorded"])
-      assert.ok(!msg.includes(s), `the writer is still told to rate through the inputs: "${s}"`);
-  }
+  const withMethod = STAGES.synthesis.message({ paths: P, job: {}, profile: null, framework: MANIFEST, frameworkMethod: METHOD });
+  assert.ok(withMethod.includes(methodDictation(METHOD)), "the dictation names the inputs");
+  assert.ok(withMethod.includes("This framework rates through its inputs, in this order: Claim Grade (P / Q / R), then Conflict Kind (Orchard / Harbour)."));
+  assert.ok(withMethod.includes('- inputs: {"Claim Grade": "<value>", "Conflict Kind": "<value>"}'), "the inputs key is dictated in the framework's labels");
+  assert.ok(withMethod.includes("the band is what its stated method produces from the inputs you recorded"));
+
+  const without = STAGES.synthesis.message({ paths: P, job: {}, profile: null, framework: MANIFEST });
+  for (const s of ["rates through its inputs", '"inputs" (rated findings only)', "- inputs:", "from the inputs you recorded"])
+    assert.ok(!without.includes(s), `a framework with no method reads no "${s}"`);
 });
 
 test("under a framework with a method, a rated finding is recorded only with its inputs and the band the table gives", () => {

@@ -22,7 +22,7 @@ test("projectTimeline orders milestones, stamps a monotonic seq, groups by phase
   assert.equal(timeline[0].kind, "start");
   timeline.forEach((t, i) => assert.equal(t.seq, i));
   const digest = timeline.find((t) => t.stage === "register-digest");
-  assert.equal(digest.phase, "Investigating and exploring findings");
+  assert.equal(digest.phase, "Placement & digest");
   assert.equal(digest.changedFromPrevious, null); // first sighting of the stage
 });
 

@@ -14,7 +14,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { deriveCoverageSkeleton, findUnverifiedIncompleteCleanClaims } from "../register-plan.mjs";
-import { coverageFormRows, rowIsSettled } from "../coverage-form.mjs";
+import { coverageFormRows, rowIsSettled, findCoverageFormViolations } from "../coverage-form.mjs";
 
 const CROWD = { qid: "primary-sweep:exact:lanternwick", axis: "primary-sweep", predicate: "exact",
   term: "LANTERNWICK", nice_classes: ["9"], regions: [], expected_kind: "enumerate" };
@@ -51,11 +51,11 @@ test("that row cannot be claimed clean, and settles only as what it is: counted 
     reason: "5,412 filings of the identical name were counted worldwide; the name was read in class 9 in seven markets, and the rest was set aside" }, r), true);
 });
 
-test("calling the whole search clean leaves that row unsettled, and the row says why", () => {
+test("the digest calling the whole search clean is refused on that row", () => {
   const rows = form().map((x) => ({ ...x, status: "confirmed-clean", reason: "judged" }));
-  const row = rows.find((x) => x.row_id === crowdRow().row_id);
-  assert.equal(rowIsSettled(row, row), false);
-  assert.match(row.open_because, /counted more than it read/);
+  const v = findCoverageFormViolations(rows).filter((x) => x.row === crowdRow().row_id);
+  assert.equal(v.length, 1);
+  assert.match(v[0].detail, /counted more than it read/);
 });
 
 test("an archived run that called the same crowd clean is refused by the prose gate too", () => {
