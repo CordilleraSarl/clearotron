@@ -131,7 +131,7 @@ const INSTALL_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const READ_OFF_NOTE = "Reading a brief is not available on this instance — set the search up below.";
 import { basename, dirname, join, resolve as pathResolve } from "node:path"; import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
 import { driverDir } from "../shared/driver-dir.mjs";   //
-import { createHmac, timingSafeEqual } from "node:crypto";
+import { createHmac, timingSafeEqual, randomBytes } from "node:crypto";
 import { makePrincipal, assertPrincipal, genericOrgOf, mayReadRun, reachCovers, principalView, seesEverything, mayRun,
   PortalDeny } from "./portal-access.mjs";
 // — the THIRD identity source (after the CF Access edge and, until, the deleted bypass). It
@@ -220,7 +220,7 @@ export function jobHashOf(job) {
   })).digest("base64url");
 }
 export function mintConfirmation({ secret, account, email, jobHash, now = Date.now(), ttlMs = 10 * 60 * 1000 }) {
-  const jti = createHmac("sha256", secret).update(`${account}|${jobHash}|${now}|${Math.random()}`).digest("base64url").slice(0, 24);
+  const jti = createHmac("sha256", secret).update(`${account}|${jobHash}|${now}|${randomBytes(16).toString("hex")}`).digest("base64url").slice(0, 24);
   const payload = { account, email, jobHash, jti, exp: now + ttlMs };
   const body = Buffer.from(canonical(payload)).toString("base64url");
   const sig = createHmac("sha256", secret).update(body).digest("base64url");
