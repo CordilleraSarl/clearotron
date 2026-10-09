@@ -11,7 +11,7 @@
 // The spellings are invented.
 import test from "node:test";
 import assert from "node:assert/strict";
-import { compileRegisterPlan, planExactOrWidth, planMaxOrWidth, validatePlanFeasibility } from "../register-plan.mjs";
+import { compileRegisterPlan, planExactOrWidth, planMaxOrWidth, planPhoneticOrWidth, validatePlanFeasibility } from "../register-plan.mjs";
 import { PROVIDER_CAPABILITIES } from "../register-capabilities.mjs";
 
 const MARK = "ZYTHERMO";
@@ -33,12 +33,18 @@ test("CONTROL: Signa's general width is still 1, and a provider with no exact wi
   assert.equal(planMaxOrWidth(PROVIDER_CAPABILITIES.signa), 1);
   assert.equal(planExactOrWidth(PROVIDER_CAPABILITIES.signa), 100);
   assert.equal(planExactOrWidth(PROVIDER_CAPABILITIES.clarivate), planMaxOrWidth(PROVIDER_CAPABILITIES.clarivate));
+  assert.equal(planPhoneticOrWidth(PROVIDER_CAPABILITIES.signa), 10);
+  assert.equal(planPhoneticOrWidth(PROVIDER_CAPABILITIES.clarivate), planMaxOrWidth(PROVIDER_CAPABILITIES.clarivate));
 });
 
-test("the feasibility check reads an exact stack against the exact width, and other stacks against the general one", () => {
+test("the feasibility check reads an exact stack against the exact width, a sound-alike stack against its own, and others against the general one", () => {
   const plan = compile(PROVIDER_CAPABILITIES.signa);
   const issues = validatePlanFeasibility(plan, { capabilities: PROVIDER_CAPABILITIES.signa });
   assert.equal(issues.filter((i) => /OR-stack/.test(i.issue)).length, 0, "a 100-spelling exact stack was flagged as over the bound");
-  const phonetic = { entries: [{ qid: "p", predicate: "phonetic", terms: ["ZYTHERMO", "ZYTHERMA"], nice_classes: [9] }] };
-  assert.equal(validatePlanFeasibility(phonetic, { capabilities: PROVIDER_CAPABILITIES.signa }).filter((i) => /OR-stack/.test(i.issue)).length, 1);
+  const stackOf = (predicate, n) => ({ entries: [{ qid: "p", predicate, nice_classes: [9],
+    terms: Array.from({ length: n }, (_, k) => `ZYTHERM${String.fromCharCode(65 + k)}`) }] });
+  const flagged = (plan) => validatePlanFeasibility(plan, { capabilities: PROVIDER_CAPABILITIES.signa }).filter((i) => /OR-stack/.test(i.issue)).length;
+  assert.equal(flagged(stackOf("phonetic", 10)), 0, "a sound-alike list of 10 was flagged as over the bound");
+  assert.equal(flagged(stackOf("phonetic", 11)), 1);
+  assert.equal(flagged(stackOf("wildcard", 2)), 1);
 });

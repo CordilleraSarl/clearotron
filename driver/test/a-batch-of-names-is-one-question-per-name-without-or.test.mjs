@@ -64,6 +64,26 @@ test("the names of a batch spend one slot of each cap between them, in this call
   assert.deepEqual(late.rejected, []);
 });
 
+test("a sound-alike batch goes as lists of 10 where the register takes one; a spelling too short for a list goes alone", () => {
+  assert.equal(SIGNA.phoneticOrWidth, 10, "the fixture register takes no sound-alike list — this arm asserts nothing");
+  const names = Array.from({ length: 12 }, (_, k) => `VELTRIN${String.fromCharCode(65 + k)}`);
+  const { minted, rejected } = mintSupplementalEntries("primary-sweep", [batch(["Q", ...names], { predicate: "phonetic" })], { capabilities: SIGNA });
+  assert.deepEqual(rejected, []);
+  assert.deepEqual(minted.map((e) => e.terms ?? e.term), ["Q", names.slice(0, 10), names.slice(10)]);
+  assert.equal(new Set(minted.map((e) => e.split_of)).size, 1, "the lists do not name their batch");
+  assert.equal(supplementalSlots(minted), 1);
+  // A list keeps to the register's word budget: ten three-word spellings fit, a fourth word on each does not.
+  const long = names.slice(0, 10).map((n) => `${n} ${n} ${n}`);
+  assert.deepEqual(mintSupplementalEntries("primary-sweep", [batch(long, { predicate: "phonetic" })], { capabilities: SIGNA }).minted.map((e) => (e.terms ?? [e.term]).length), [10]);
+  const longer = long.map((n) => `${n} X`);
+  assert.deepEqual(mintSupplementalEntries("primary-sweep", [batch(longer, { predicate: "phonetic" })], { capabilities: SIGNA }).minted.map((e) => (e.terms ?? [e.term]).length), [7, 3]);
+});
+
+test("THE CONTROL: an exact batch on the same register is still one question per name", () => {
+  const { minted } = mintSupplementalEntries("primary-sweep", [batch(NAMES)], { capabilities: SIGNA });
+  assert.deepEqual(minted.map((e) => e.term), NAMES);
+});
+
 test("a waiting family the reading turn asked inside a batch is recorded as asked", () => {
   const manifest = {
     schema_version: 1, mark: "VELTRIS", dominant_element: "VELTRIS", elements: [{ value: "VELTRIS", kind: "distinctive" }],
