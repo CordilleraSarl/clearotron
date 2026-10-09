@@ -121,8 +121,10 @@ test("three counts per mark, class-scoped, with the scope each figure was taken 
   assert.deepEqual(forMark("IRONWHISK")[0].classes, [8, 21], "the mark's own classes win");
   assert.deepEqual(forMark("CLUVENDRA")[0].classes, [35], "…and the batch's are the fallback");
   // WO rides along because an ordered territory is a STACK of registers: a Madrid registration
-  // designating the US or the EU binds them, and the counts lane asks the same scope the search does.
-  assert.deepEqual(forMark("IRONWHISK")[0].regions, ["US", "EU", "WO"],
+  // designating the US or the EU binds them, and the counts lane asks the same scope the search does —
+  // the EU's members' own registers included, Benelux once (owner's ruling, 2026-10-09).
+  assert.deepEqual(forMark("IRONWHISK")[0].regions, ["US", "EU", "WO", "AT", "BX", "BG", "CY", "CZ", "DE", "DK", "EE",
+    "ES", "FI", "FR", "GR", "HR", "HU", "IE", "IT", "LT", "LV", "MT", "PL", "PT", "RO", "SE", "SI", "SK"],
     "display names never reach a provider adapter, and every binding layer is asked about");
   // The variant probes inherit the SAME class and territory scope as the two simple predicates — an
   // all-classes close-variation figure beside a class-scoped identical one would be two scopes in one row.
