@@ -1372,8 +1372,8 @@
           "todos": 0
         },
         "a-session-the-classifier-cut-is-not-recorded-as-clean.test.mjs": {
-          "tests": 12,
-          "asserts": 77,
+          "tests": 13,
+          "asserts": 80,
           "skips": 0,
           "todos": 0
         },

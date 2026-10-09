@@ -18,7 +18,7 @@ import { anthropicAgentEngine } from "../engine/anthropic-agent.mjs";
 import { parseCodexEvent, codexToolCallsByName, openaiAgentEngine } from "../engine/openai-agent.mjs";
 import { newSessionRecord, noteClaudeEvent, noteCodexEvent, sessionSummary, streamSink, CLASSIFIER_CUT_RE } from "../engine/session-record.mjs";
 import * as sessionRecord from "../engine/session-record.mjs";   // the ending helpers, read by name so an arm reds alone when one is missing
-import { runStage, attemptOk } from "../gateway.mjs";
+import { runStage, attemptOk, streamMeta } from "../gateway.mjs";
 import { lastAttempt } from "../degraded-parts.mjs";
 import { pinEnv } from "../../shared/env-aliases.mjs";
 
@@ -306,4 +306,16 @@ test("Codex: the failed turn's message is on the envelope the gateway journals, 
     for (const k of Object.keys(PINNED)) { if (saved[k] === undefined) delete process.env[k]; else pinEnv(process.env, k, saved[k]); }
     if (saved.fail === undefined) delete process.env.MOCK_CODEX_FAIL; else process.env.MOCK_CODEX_FAIL = saved.fail;
   }
+});
+
+// THE STREAM'S PATH IN THE RECORD IS THE SAME ON EVERY MACHINE. A record names its files relative to the run,
+// with forward slashes, as the dispatch record does (`_driver/<name>`). A Windows run's stream path arrives
+// with backslashes, and a record carrying them names a file no other machine can open from that text.
+test("the stream's path in a row is run-relative with forward slashes, whatever the platform wrote", () => {
+  assert.deepEqual(streamMeta("C:\\runs\\r1", { file: "C:\\runs\\r1\\_driver\\streams\\teststage.attempt1.jsonl", present: true, bytes: 9 }),
+    { file: "_driver/streams/teststage.attempt1.jsonl", present: true, bytes: 9 });
+  assert.deepEqual(streamMeta("/runs/r1", { file: "/runs/r1/_driver/streams/teststage.attempt1.jsonl", present: true, bytes: 9 }),
+    { file: "_driver/streams/teststage.attempt1.jsonl", present: true, bytes: 9 });
+  assert.equal(streamMeta("/runs/r1", { file: "/elsewhere/x.jsonl", present: false }).file, "/elsewhere/x.jsonl",
+    "a file outside the run keeps the path it came with");
 });
