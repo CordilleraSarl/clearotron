@@ -6776,6 +6776,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-connector-generic-run-is-filed-under-the-sole-organisation.test.mjs": {
+          "tests": 5,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "a-key-has-one-door-and-it-is-not-the-network.test.mjs": {
           "tests": 13,
           "asserts": 33,
