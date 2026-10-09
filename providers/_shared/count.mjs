@@ -112,6 +112,9 @@ export function makeCountProbe(deps) {
       return { ok: false, total: null, probe: "cheap",
         reason: "the search response carried no usable total_hits, so nothing was counted — the number is UNKNOWN, which is not the same as none" };
     }
-    return { ok: true, total: parsed.total_hits, probe: "cheap", reason: null };
+    // What the total counts rides with it when the register said (a provider's `total_counts`, see
+    // enumerate.mjs): a per-class or per-spelling count keeps the register's number and says so.
+    return { ok: true, total: parsed.total_hits, probe: "cheap", reason: null,
+      ...(typeof parsed.total_counts === "string" ? { total_counts: parsed.total_counts } : {}) };
   };
 }
