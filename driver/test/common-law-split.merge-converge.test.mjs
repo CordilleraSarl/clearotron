@@ -115,14 +115,14 @@ test("findDroppedConnotationQueries: the re-merge's connotation half-gate catche
 // ── (3) UNION non-spec gap rows: the spec-only gap recompute no longer erases an honestly-recorded gap ────
 test("mergeGrids: an honestly-recorded NON-SPEC gap row survives the merge (spec-only recompute no longer erases it)", () => {
   const { a, b } = baseHalves();
-  // half a honestly records a gap for a cell OUTSIDE the canonical spec: a re-keyed variant ("chr0m4", not in
+  // half a honestly records a gap for a cell OUTSIDE the canonical spec: a re-keyed variant ("t3stv4r", not in
   // SPEC.terms) and an extra platform ("nuget.org", not in SPEC.platforms) it legitimately swept-and-missed.
   const aWithNonSpec = { ...a, gaps: [
-    "chr0m4 | nuget.org | HTTP 503 — could not complete",           // non-spec term AND platform
+    "t3stv4r | nuget.org | HTTP 503 — could not complete",           // non-spec term AND platform
     { term: "novapulse", platform: "npmjs.org", error: "rate-limited" }, // spec term, non-spec platform (object form)
   ] };
   const merged = mergeGrids([aWithNonSpec], [b], { spec: SPEC });
-  const nonSpec1 = merged.gaps.find((g) => g.term === "chr0m4" && g.platform === "nuget.org");
+  const nonSpec1 = merged.gaps.find((g) => g.term === "t3stv4r" && g.platform === "nuget.org");
   const nonSpec2 = merged.gaps.find((g) => g.term === "novapulse" && g.platform === "npmjs.org");
   assert.ok(nonSpec1, "the non-spec (term × platform) gap row survives the merge");
   assert.match(nonSpec1.error, /HTTP 503/, "it carries the half's honestly-recorded program error");
@@ -130,11 +130,11 @@ test("mergeGrids: an honestly-recorded NON-SPEC gap row survives the merge (spec
   assert.match(nonSpec2.error, /rate-limited/);
   // the spec cells still recompute exactly as before (a full grid → no spec gaps), so the union only ADDS
   const specKeys = new Set(SPEC.terms.flatMap((t) => SPEC_PLATFORMS.map((p) => `${t}|${p}`)));
-  assert.ok(merged.gaps.every((g) => g.term === "chr0m4" || g.platform === "npmjs.org" || specKeys.has(`${g.term}|${g.platform}`)),
+  assert.ok(merged.gaps.every((g) => g.term === "t3stv4r" || g.platform === "npmjs.org" || specKeys.has(`${g.term}|${g.platform}`)),
     "no phantom spec gap invented");
   // a NON-spec gap whose cell IS present in cells[] must still drop (a stale gap a supp closed), same as spec cells
-  const closed = mergeGrids([{ ...aWithNonSpec, cells: [...a.cells, { term: "chr0m4", platform: "nuget.org", status: "no_hit", results: [] }] }], [b], { spec: SPEC });
-  assert.ok(!closed.gaps.some((g) => g.term === "chr0m4" && g.platform === "nuget.org"),
+  const closed = mergeGrids([{ ...aWithNonSpec, cells: [...a.cells, { term: "t3stv4r", platform: "nuget.org", status: "no_hit", results: [] }] }], [b], { spec: SPEC });
+  assert.ok(!closed.gaps.some((g) => g.term === "t3stv4r" && g.platform === "nuget.org"),
     "a non-spec gap whose cell got covered is dropped (cells[] still wins)");
 });
 
