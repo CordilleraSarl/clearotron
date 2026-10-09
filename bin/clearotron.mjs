@@ -65,6 +65,7 @@ export const VERBS = {
   passphrase: ["bin/passphrase.mjs"],
   sync:    ["bin/uspto-sync.mjs"],
   update:  ["bin/update.mjs"],
+  mcp:     ["bin/mcp.mjs"],
 };
 
 export const SUMMARY = {
@@ -87,6 +88,7 @@ export const SUMMARY = {
   passphrase: "report or RESET the portal's local sign-in — the recovery for a lost passphrase",
   sync:    "build or update the free US register index (a large download, and hours of ingest)",
   update:  "bring this install up to date — and REFUSE to do it over the top of your own configuration",
+  mcp:     "serve this install's searches to an assistant over MCP, or the demo's where there is no install",
 };
 
 /**
