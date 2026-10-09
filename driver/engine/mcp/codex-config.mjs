@@ -5,7 +5,7 @@
 // exact server/tool wiring. Two inputs, both produced today by the gateway gather block:
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { tomlString } from "../../../shared/toml-string.mjs";
+import { tomlString } from "../../../shared/toml-string.mjs"; import { driverDir } from "../../../shared/driver-dir.mjs";
 
 //   • mcpConfig     — the claude-shaped JSON string `{mcpServers:{name:{command,args,env,connectionTimeoutMs?}}}`
 //                     (buildGatherMcpConfig → JSON.stringify)
@@ -246,7 +246,7 @@ export function fenceToml({ runDir = null, readRoots = [] } = {}) {
   const out = [`[permissions.${FENCE_PROFILE}.filesystem]`,
     `":minimal" = "read"`, `":tmpdir" = "write"`, `":slash_tmp" = "write"`];
   for (const r of [...new Set(readRoots.filter(Boolean))]) out.push(`${key(r)} = "read"`);
-  if (runDir) out.push(`${key(runDir)} = "write"`, `${key(join(runDir, "_driver"))} = "read"`);
+  if (runDir) out.push(`${key(runDir)} = "write"`, `${key(driverDir(runDir))} = "read"`);
   out.push("", `[permissions.${FENCE_PROFILE}.filesystem.":workspace_roots"]`, `"." = "write"`, "");
   return out;
 }
