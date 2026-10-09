@@ -38,11 +38,28 @@ import { resolveEngineProgram } from "../driver.config.mjs";   // — the one pl
 const codexBin = () => { const r = resolveEngineProgram("openai-agent"); return r.resolved ?? r.bin; };
 
 // tier/alias → codex `-m` model id. opus/sonnet/haiku are the driver's abstract tiers (CONTRACT §3). The
-// GPT ids are ENV-OVERRIDABLE and default to three DISTINCT rungs of the codex ladder — `gpt-5.6-sol`,
-// `gpt-5.6-terra`, `gpt-5.6-luna`, all present in the codex CLI as installed — so an out-of-the-box run
+// GPT ids are ENV-OVERRIDABLE and default to the vendor's current models — `gpt-6.1-sol` for the judgment
+// and sweep tiers, `gpt-6-luna` for the cheap tier (the GPT-6 ladder, below) — so an out-of-the-box run
 // uses REAL, current ids rather than invented guesses, and a stage's declared tier means the same thing
-// on both engines. `sol` remains what codex itself reports as its own default (live-probed 2026-07-27:
-// `model: gpt-5.6-sol, provider: openai`), which is why the judgment tier keeps it.
+// on both engines. Until 2026-10-09 they were `gpt-5.6-sol`, `gpt-5.6-terra` and `gpt-5.6-luna`; `sol`
+// was what codex itself reported as its own default (live-probed 2026-07-27: `model: gpt-5.6-sol,
+// provider: openai`), which is why the judgment tier kept it.
+//
+// ── THE GPT-6 LADDER (ruling 2026-10-09) ────────────────────────────────────────────────────────────────
+//
+// The owner asked for the latest models on both engines, cheaper and faster. The vendor's price list,
+// read 2026-10-09 (standard tier, per million tokens in / out): `gpt-6.1-sol` $2 / $10, `gpt-6-luna`
+// $0.10 / $0.50, `gpt-6-astra` $10 / $50. The 5.6 ladder it replaces was sol $4 / $20, terra $2 / $12,
+// luna $0.20 / $1.20. There is no GPT-6 middle model and Sol 6.1 costs less than Terra 5.6, so the sweep
+// tier takes Sol as well; Astra is the premium model, neither cheaper nor faster, and is not a rung.
+//
+// THE CODEX FLOOR MOVED WITH IT. On ChatGPT-account sign-in (subscription billing) codex 0.156.1, 0.157.0
+// and 0.158.0 refuse `gpt-6.1-sol` with a 400 — "not supported when using Codex with a ChatGPT account" —
+// and 0.159.0 to 0.162.0 accept it; `gpt-6-luna` is accepted from 0.156.1. Measured 2026-10-09 with
+// one-word turns on the test box. Below 0.159.0 the judgment tier stops at its first stage, so the floor
+// in ENGINE_BINARIES (driver.config.mjs) is 0.159.0.
+//
+// The August measurement below still names the symptom to watch for when a tier moves to a cheaper model.
 //
 // ── THE THREE TIERS MAP ONTO THE CODEX LADDER (ruling 2026-09-02,) ──────────────────────────
 //
@@ -89,9 +106,9 @@ const codexBin = () => { const r = resolveEngineProgram("openai-agent"); return 
 // runs SOMETHING is worse than one that refuses: the arm still produces a number and the number is a
 // story. They fall through to the throw below, which is where they always should have been. Concrete
 // gpt-*/o* ids still pass through.
-const JUDGMENT = process.env.CLEAROTRON_OPENAI_MODEL_JUDGMENT || "gpt-5.6-sol";     // opus   — unchanged
-const SWEEP    = process.env.CLEAROTRON_OPENAI_MODEL_SWEEP    || "gpt-5.6-terra";   // sonnet — was sol
-const CHEAP    = process.env.CLEAROTRON_OPENAI_MODEL_CHEAP    || "gpt-5.6-luna";    // haiku  — was sol
+const JUDGMENT = process.env.CLEAROTRON_OPENAI_MODEL_JUDGMENT || "gpt-6.1-sol";   // opus   — was gpt-5.6-sol
+const SWEEP    = process.env.CLEAROTRON_OPENAI_MODEL_SWEEP    || "gpt-6.1-sol";   // sonnet — was gpt-5.6-terra
+const CHEAP    = process.env.CLEAROTRON_OPENAI_MODEL_CHEAP    || "gpt-6-luna";    // haiku  — was gpt-5.6-luna
 const OPENAI_MODEL = { opus: JUDGMENT, sonnet: SWEEP, haiku: CHEAP };
 export function openaiModel(model) {
   if (!model) return undefined;
