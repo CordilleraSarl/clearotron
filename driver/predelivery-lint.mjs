@@ -2196,7 +2196,7 @@ export function cardBudgetChecks({ cardFolds }) {
     `assembly folded ${folds.length} surface(s) to the level budgets (moved, never deleted): ${folds.map((f) => `${f.surface} → +${f.movedSentences} sentence(s)/${f.movedWords} word(s) into depth`).join("; ")}`)];
 }
 
-export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, reportMd, clientSummaryMd, narrativeMd, auditMd, recordsByUri, searchedNames, headerName, ratedNames, actionsText, fetchFailures, extraPlatformNames, findings, findingsRaw, actionsRegister, actionsExpected, intakeAsks, askAnswers, cardFolds, verdictDoc, manifest, seniorRights, seniorRightsExpected, markAssessment, markAssessmentExpected, fourAnswers, contentModelExpected, findingsSchemaVersion, placements, ownerScreen, recordCarry, commonLawCarries, searchedJurisdictions = null }) {
+export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, reportMd, clientSummaryMd, narrativeMd, auditMd, recordsByUri, searchedNames, headerName, ratedNames, actionsText, fetchFailures, extraPlatformNames, findings, narrativeFindings = null, findingsRaw, actionsRegister, actionsExpected, intakeAsks, askAnswers, cardFolds, verdictDoc, manifest, seniorRights, seniorRightsExpected, markAssessment, markAssessmentExpected, fourAnswers, contentModelExpected, findingsSchemaVersion, placements, ownerScreen, recordCarry, commonLawCarries, searchedJurisdictions = null }) {
   // WS-B: the run's profile platforms join the vocabulary for this run. Profiles carry store
   // DOMAINS by contract, so derive the name tokens a report would actually print: the raw norm
   // ("thomasnetcom"), the separator-spaced phrase ("thomasnet com" / "made in china com"), and the
@@ -2286,7 +2286,9 @@ export function runLint({ depth, commonLawGrid, matterContext, clientPartyName, 
   if (clientSummaryMd) checks.push(...permissionProseChecks({ text: clientSummaryMd, surface: "client-summary", idSuffix: ":client" }));
   if (narrativeMd) checks.push(...permissionProseChecks({ text: narrativeMd, surface: "narrative", idSuffix: ":narrative", structural: true }));
   // — the narrative's own depth rules, on the narrative surface so they route to the synthesis redo.
-  if (narrativeMd) checks.push(...narrativeWriteUpChecks({ narrativeMd, findings, depth, manifest }));
+  // Its finding headings are in the model's numbering, so they join the record the model wrote when the
+  // delivered record is folded (`narrativeFindings`), and the delivered record otherwise.
+  if (narrativeMd) checks.push(...narrativeWriteUpChecks({ narrativeMd, findings: narrativeFindings ?? findings, depth, manifest }));
   // — the same rule on both surfaces the client's words come from. The narrative is where the
   // shipped defect was authored; the report is what a client reads, and a repair to one that left the
   // other standing is how this family's previous cures kept being re-applied by hand.

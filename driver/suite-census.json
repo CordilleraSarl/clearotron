@@ -1227,6 +1227,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-repair-after-the-cards-keeps-the-record-folded.test.mjs": {
+          "tests": 1,
+          "asserts": 6,
+          "skips": 0,
+          "todos": 0
+        },
         "a-repair-may-narrow-a-claim-and-never-broaden-it.test.mjs": {
           "tests": 5,
           "asserts": 13,
@@ -5802,6 +5808,12 @@
         "the-fold-receipt-names-the-model.test.mjs": {
           "tests": 5,
           "asserts": 11,
+          "skips": 0,
+          "todos": 0
+        },
+        "the-folded-record-is-the-record-from-the-seam-on.test.mjs": {
+          "tests": 9,
+          "asserts": 46,
           "skips": 0,
           "todos": 0
         },
