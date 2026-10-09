@@ -3814,8 +3814,8 @@
           "todos": 0
         },
         "no-stage-is-offered-a-command-tool.test.mjs": {
-          "tests": 6,
-          "asserts": 17,
+          "tests": 7,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
