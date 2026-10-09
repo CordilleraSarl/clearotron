@@ -196,8 +196,8 @@
           "todos": 0
         },
         "a-client-cell-carries-no-raw-engine-words.test.mjs": {
-          "tests": 4,
-          "asserts": 13,
+          "tests": 5,
+          "asserts": 18,
           "skips": 0,
           "todos": 0
         },
@@ -664,8 +664,8 @@
           "todos": 0
         },
         "a-job-on-the-older-goods-spelling-scopes-the-same.test.mjs": {
-          "tests": 10,
-          "asserts": 23,
+          "tests": 11,
+          "asserts": 28,
           "skips": 0,
           "todos": 0
         },
@@ -1180,8 +1180,8 @@
           "todos": 0
         },
         "a-register-floor-is-carried-and-never-a-zero.test.mjs": {
-          "tests": 6,
-          "asserts": 15,
+          "tests": 7,
+          "asserts": 19,
           "skips": 0,
           "todos": 0
         },
@@ -2531,7 +2531,7 @@
         },
         "coverage-judgment-rows.test.mjs": {
           "tests": 9,
-          "asserts": 40,
+          "asserts": 45,
           "skips": 0,
           "todos": 0
         },
@@ -2590,8 +2590,8 @@
           "todos": 0
         },
         "declination-is-stated-not-inferred.test.mjs": {
-          "tests": 24,
-          "asserts": 69,
+          "tests": 25,
+          "asserts": 73,
           "skips": 0,
           "todos": 0
         },
@@ -3262,8 +3262,8 @@
           "todos": 0
         },
         "experiment-context.test.mjs": {
-          "tests": 24,
-          "asserts": 80,
+          "tests": 26,
+          "asserts": 86,
           "skips": 0,
           "todos": 0
         },
@@ -7681,7 +7681,7 @@
         },
         "providers/_shared/test/a-register-floor-is-too-many-to-read.test.mjs": {
           "tests": 8,
-          "asserts": 44,
+          "asserts": 47,
           "skips": 0,
           "todos": 0
         },
@@ -7747,7 +7747,7 @@
         },
         "providers/_shared/test/owner-count-verification.test.mjs": {
           "tests": 13,
-          "asserts": 51,
+          "asserts": 52,
           "skips": 0,
           "todos": 0
         },

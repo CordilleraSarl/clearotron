@@ -2179,7 +2179,7 @@ export function projectCoverageJudgment(cj) {
   const rows = Array.isArray(cj.rows) ? cj.rows : [];
   if (!rows.length) return cj;
   // — the READER's name leads, and falls back to the identifier when the driver had nothing to
-  // add. This string is printed on report.html ("Coverage read"), which is why it reads the label.
+  // add. renderHtml receives this string and leaves it off report.html, so no page prints it; the label leads anyway.
   const shown = rows.slice(0, COVERAGE_JUDGMENT_ROW_CAP);
   const hidden = rows.length - shown.length;
   const rowText = shown.map((r) => `${trimDot(r.areaLabel || r.area)}: ${trimDot(r.note)}`).join("; ");
