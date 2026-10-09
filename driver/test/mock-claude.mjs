@@ -68,7 +68,7 @@ const argv = process.argv.slice(2);
 // on the machine against that floor, so a mock advertising an older build is reported as too old and
 // every arm that drives a healthy install goes red for a reason that is about this string. Held by an
 // arm in a-program-already-here-is-checked-against-the-floor.test.mjs, which names this line.
-if (argv.includes("--version")) { process.stdout.write("2.1.284 (Claude Code)\n"); process.exit(0); }
+if (argv.includes("--version")) { process.stdout.write("2.1.293 (Claude Code)\n"); process.exit(0); }
 
 // The engine now pipes the prompt on STDIN (no `-p` positional) — read it to EOF. Fallback to a positional
 // after `-p` for any direct-CLI caller / TTY (a token starting with `-` is the NEXT flag, not the prompt).

@@ -161,7 +161,7 @@ structural, or dev seam); [dev] = dev/test seam, never set in prod.
 `CLEAROTRON_AI` (anthropic-agent | openai-agent; default anthropic-agent), `CLEAROTRON_AI_BILLING`
 (subscription|api-key|cloud; cloud is Claude only), `CLEAROTRON_CODEX_PATH`,
 `CLEAROTRON_OPENAI_AUTH_FILE`, `CLEAROTRON_OPENAI_MODEL_JUDGMENT` / `CLEAROTRON_OPENAI_MODEL_SWEEP` /
-`CLEAROTRON_OPENAI_MODEL_CHEAP` (all gpt-5.6-sol),
+`CLEAROTRON_OPENAI_MODEL_CHEAP` (gpt-6.1-sol / gpt-6.1-sol / gpt-6-luna),
 `CLEAROTRON_CLAUDE_PATH` (claude on PATH, then the copy Clearotron installed),
 `CLEAROTRON_SYNTHESIS_MODEL` (opus), `CLEAROTRON_KNOCKOUT_MODEL` (opus),
 `CLEAROTRON_MAX_BUDGET_USD` (unset).

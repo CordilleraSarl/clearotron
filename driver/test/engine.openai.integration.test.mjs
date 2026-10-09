@@ -112,6 +112,6 @@ test("telemetry stamp: the stage row records engine + authMode (provable billing
     assert.equal(row.engine, "openai-agent");
     assert.equal(row.authMode, "api-key");
     assert.equal(row.apiBilled, true);
-    assert.equal(row.modelUsed, "gpt-5.6-sol");   // honest provenance: the GPT id, not an anthropic id
+    assert.equal(row.modelUsed, "gpt-6.1-sol");   // honest provenance: the GPT id, not an anthropic id
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });

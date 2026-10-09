@@ -221,11 +221,14 @@ test("setup, driven in a terminal, shows the fix for an old copy when that engin
 
 // ── WHAT THE FLOOR IS FOR, AND WHY IT IS THIS NUMBER ──────────────────────────────────────────────
 //
-// The floor is the oldest release whose tier ALIASES reach the current model generation, and the two
+// The floor is the oldest release whose tier ALIASES reach the current model generation, and the
 // tiers crossed on different releases. Measured 2026-09-30 by driving each version's `-p` turn at a
 // local recorder and reading the `model` it put on the wire: opus crossed at 2.1.280 and sonnet only at
 // 2.1.284, so for four releases a stage asking for sonnet was served a generation behind — silently,
-// because the alias resolves inside the program and the request is well formed either way.
+// because the alias resolves inside the program and the request is well formed either way. Haiku
+// crossed last, when Claude Haiku 5.5 joined the generation: measured 2026-10-09 with a one-word turn
+// per version reading the model the turn reported, 2.1.285 to 2.1.292 still served Haiku 4.5 and 2.1.293
+// was the first to serve claude-haiku-5-5.
 //
 // NOTHING HERE ASSERTS THE PROGRAM'S BEHAVIOUR. That is the vendor's and it is not ours to pin; the
 // measurement is recorded beside the floor in the engine table. What these arms hold is that the floor
@@ -234,30 +237,34 @@ test("setup, driven in a terminal, shows the fix for an old copy when that engin
 const ALIAS_BOUNDARY = Object.freeze({
   opusCrossedAt: "2.1.280",     // opus reached the current generation here
   sonnetCrossedAt: "2.1.284",   // sonnet only here — four releases later
+  haikuCrossedAt: "2.1.293",    // haiku last, when Haiku 5.5 joined the generation
 });
 
 test("the floor is the release where the LATER tier crossed, not the earlier one", () => {
-  assert.equal(CLAUDE.floor, ALIAS_BOUNDARY.sonnetCrossedAt,
-    "the floor no longer matches the release where the sonnet tier reached the current generation. If a "
-    + "newer release moved it again, move this with it and re-measure; if it was lowered to the top "
-    + "tier's crossing, that leaves every sonnet stage a generation behind with nothing refusing.");
-  // And the earlier crossing is BELOW the floor, which is the whole point of moving it.
+  assert.equal(CLAUDE.floor, ALIAS_BOUNDARY.haikuCrossedAt,
+    "the floor no longer matches the release where the last tier, haiku, reached the current generation. "
+    + "If a newer release moved it again, move this with it and re-measure; if it was lowered to an earlier "
+    + "tier's crossing, that leaves every haiku stage a generation behind with nothing refusing.");
+  // And the earlier crossings are BELOW the floor, which is the whole point of moving it.
   assert.equal(olderThanFloor(ALIAS_BOUNDARY.opusCrossedAt, CLAUDE.floor), true,
     "the release where only the top tier crossed must not satisfy this floor");
+  assert.equal(olderThanFloor(ALIAS_BOUNDARY.sonnetCrossedAt, CLAUDE.floor), true,
+    "the release where haiku had not yet crossed must not satisfy this floor");
 });
 
 test("every version measured below the boundary is refused, and the boundary itself is not", () => {
-  for (const v of ["2.1.263", "2.1.277", "2.1.278", "2.1.280", "2.1.281", "2.1.282", "2.1.283"])
+  for (const v of ["2.1.263", "2.1.277", "2.1.278", "2.1.280", "2.1.281", "2.1.282", "2.1.283", "2.1.284",
+    "2.1.285", "2.1.287", "2.1.288", "2.1.289", "2.1.290", "2.1.292"])
     assert.equal(olderThanFloor(v, CLAUDE.floor), true, `${v} was measured below the floor and is accepted`);
-  assert.equal(olderThanFloor("2.1.284", CLAUDE.floor), false);
-  assert.equal(olderThanFloor("2.1.290", CLAUDE.floor), false, "a newer release must still satisfy the floor");
+  assert.equal(olderThanFloor("2.1.293", CLAUDE.floor), false);
+  assert.equal(olderThanFloor("2.1.295", CLAUDE.floor), false, "a newer release must still satisfy the floor");
 });
 
 test("the recorded install size moved with the floor, as the table says it must", () => {
   // The engine table says to re-measure when the floor moves, because setup states this figure to a
-  // reader before it installs. Measured 2026-09-30 on a fresh install of the floor version into an empty
-  // folder: 233 MB, against 214 recorded for the previous floor.
-  assert.equal(CLAUDE.installMB, 233,
+  // reader before it installs. Measured 2026-10-09 on a fresh install of the floor version into an empty
+  // folder: 242 MB for 2.1.293, against 233 recorded for 2.1.284 and 214 for the floor before that.
+  assert.equal(CLAUDE.installMB, 242,
     "the install size is the one recorded for an earlier floor; re-measure it or setup tells a reader a "
     + "number that was true for a different release");
 });
