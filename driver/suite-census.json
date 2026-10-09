@@ -7186,8 +7186,14 @@
         },
         "the-plugin-folder-is-what-the-directory-installs.test.mjs": {
           "tests": 3,
-          "asserts": 17,
+          "asserts": 18,
           "skips": 0,
+          "todos": 0
+        },
+        "the-plugin-starts-npx-through-the-shell-on-windows.test.mjs": {
+          "tests": 8,
+          "asserts": 24,
+          "skips": 1,
           "todos": 0
         },
         "the-portal-can-tell-who-has-connected-an-assistant.test.mjs": {

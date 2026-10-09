@@ -10,9 +10,10 @@
 //   - the three connector skills, byte for byte from `skills/`, which stays the one copy the server
 //     briefs from and the published package ships;
 //   - the licence and its additional terms, byte for byte from the root.
-// Written by hand and not derived: `plugin/README.md`, the manifest, and `plugin/.mcp.json`, which names
-// the exact stable version the server is started from. A stable cut moves that version and the
-// manifest's together; between stables the package is a beta and the folder still names the last stable.
+// Written by hand and not derived: `plugin/README.md`, the manifest, `plugin/scripts/npx.mjs`, the
+// launcher that starts npx on every platform, and `plugin/.mcp.json`, which names the exact stable
+// version the server is started from. A stable cut moves that version and the manifest's together;
+// between stables the package is a beta and the folder still names the last stable.
 //
 //   node scripts/mint-plugin-folder.mjs           write the copies
 //   node scripts/mint-plugin-folder.mjs --check   exit 1 if any copy differs from its source, naming it

@@ -215,6 +215,33 @@ jobs:
           }
           "stopped: Ctrl-C ended start and all $($tree.Count) programs it had running"
 
+      # THE PLUGIN'S LAUNCHER, ON THE ONE PLATFORM IT EXISTS FOR. Claude Code starts a plugin's server with
+      # no shell, and npx is a batch file here, so the plugin starts node on `plugin/scripts/npx.mjs`,
+      # which starts npx through the command shell. Its arms start the plugin's own entry as Claude Code
+      # does, against a stand-in npx, offline. The ones Windows needs must have run here and passed, since
+      # a skipped arm reads as a pass: the bare entry failing, the round trip, the decoy npx in the project
+      # folder, the stop through the server's input, and the real npx.
+      - name: The plugin's launcher starts npx through the shell
+        working-directory: mcp-server
+        run: |
+          $log = Join-Path $env:RUNNER_TEMP 'plugin-launcher.log'
+          node ../scripts/test-run.mjs node --test --test-reporter=tap test/the-plugin-starts-npx-through-the-shell-on-windows.test.mjs *> $log
+          $status = $LASTEXITCODE
+          Get-Content $log | Select-String -Pattern '^(not ok|# (tests|pass|fail|skipped|cancelled) )' | ForEach-Object { $_.Line }
+          if ($status -ne 0) { Get-Content $log -Tail 120; throw "the launcher's tests exited $status" }
+          foreach ($name in @('a bare npx entry does not start on Windows, which is the failure the launcher exists for',
+                              'the launcher hands the server its input and output unchanged, and the exit code of npx back',
+                              'an npx in the project folder is never the one started',
+                              'the server ends when its input closes, though the launcher was killed first',
+                              'the real npx starts through the launcher')) {
+            $line = Select-String -Path $log -SimpleMatch "- $name" | Select-Object -First 1
+            if (-not $line -or $line.Line -notmatch '^\s*ok ' -or $line.Line -match '# SKIP') {
+              throw "the Windows arm '$name' did not run and pass: $($line.Line)"
+            }
+            $line.Line
+          }
+          "every Windows arm of the plugin's launcher ran and passed"
+
   # A WHOLE CLEARANCE ON EACH ENGINE, against the stand-in programs the adapter tests use: every stage is
   # started as Windows starts it, from the program setup would find, and the stand-in replays what the
   # vendor program sends. Around it: the write boundary refusing a write into a protected tree, the

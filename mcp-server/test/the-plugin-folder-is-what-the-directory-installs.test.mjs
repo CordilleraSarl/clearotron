@@ -37,7 +37,8 @@ test("the server starts from npm at one exact stable version, and the manifest s
   const servers = Object.values(mcp.mcpServers ?? {});
   assert.equal(servers.length, 1);
   const [server] = servers;
-  assert.equal(server.command, "npx");
+  assert.equal(server.command, "node");
+  assert.equal(server.args[0], "${CLAUDE_PLUGIN_ROOT}/scripts/npx.mjs", "the server is not started through the launcher, which Windows needs");
   const pins = server.args.filter((a) => /^clearotron@/.test(a));
   assert.equal(pins.length, 1, "the pin is not in exactly one place, so one rewrite cannot move it");
   const version = pins[0].slice("clearotron@".length);
