@@ -8,7 +8,7 @@ import { mkdtempSync, writeFileSync, mkdirSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { driverDir } from "../../shared/driver-dir.mjs";   //
 import { tmpdir } from "node:os";
-import { parseGridLedger, findGridLedgerViolations, MIN_CELLS_PER_VARIANT } from "../common-law-receipts.mjs";
+import { parseGridLedger, parseManifestVariants, findGridLedgerViolations, findPlatformIdentityViolations, MIN_CELLS_PER_VARIANT } from "../common-law-receipts.mjs";
 import { validators } from "../verify.mjs";
 
 const PLATFORMS = ["store.steampowered.com", "store.epicgames.com", "play.google.com", "apps.apple.com", "gog.com", "itch.io", "web"];
@@ -55,10 +55,36 @@ test("findGridLedgerViolations: complete ledger ⇒ clean; dropped batch ⇒ nam
     [{ variant: "转码", cells: 0, expected: MIN_CELLS_PER_VARIANT }]);
 });
 
-test("findGridLedgerViolations: ' / '-packed manifest key satisfied by per-alternate grids", () => {
-  const manifest = `## Variants\n| Variant |\n|---|\n| 缎与钢 / 萨汀 |\n`;
-  const ledger = JSON.stringify(batch([...cells("缎与钢"), ...cells("萨汀")]));
-  assert.deepEqual(findGridLedgerViolations(manifest, ledger), []);
+// A PACKED KEY, IN A TABLE THE PARSER READS. These arms once built a one-column table, which the parser
+// reads as no variants at all, so the check had nothing to judge and passed whatever the alternate split
+// did. This is the live manifest's own table shape, and the first assertion says the key was read.
+const PACKED = `# Variant manifest
+
+## Variants
+| Category | Value | Rationale | Verify? |
+|---|---|---|---|
+| translit-zh | 缎与钢 / 萨汀 | two renderings of one mark in one row | no |
+`;
+
+test("findGridLedgerViolations: a ' / '-packed manifest key is met by a full grid for each alternate, and short when one has none", () => {
+  assert.deepEqual(parseManifestVariants(PACKED), ["缎与钢 / 萨汀"], "premise: the parser reads the packed key");
+  const both = JSON.stringify(batch([...cells("缎与钢"), ...cells("萨汀")]));
+  assert.deepEqual(findGridLedgerViolations(PACKED, both), []);
+  const one = JSON.stringify(batch(cells("缎与钢")));
+  assert.deepEqual(findGridLedgerViolations(PACKED, one),
+    [{ variant: "缎与钢 / 萨汀", cells: 0, expected: MIN_CELLS_PER_VARIANT }]);
+});
+
+test("findPlatformIdentityViolations: a packed key's platforms are the union of its alternates' rows", () => {
+  const want = PLATFORMS.slice(0, 4);
+  const rows = (term, platforms) => platforms.map((platform) => ({ term, platform, status: "no_hit", results: [] }));
+  // The four wanted platforms split between the two alternates: together they hold all four.
+  const split = JSON.stringify(batch([...rows("缎与钢", want.slice(0, 2)), ...rows("萨汀", want.slice(2))]));
+  assert.deepEqual(findPlatformIdentityViolations(PACKED, split, want), []);
+  // Together they still miss one, which is named against the packed key. Neither alternate alone reaches
+  // the four platforms the check counts to, so only the union can see the gap.
+  const gap = JSON.stringify(batch([...rows("缎与钢", [want[0], want[1], "web"]), ...rows("萨汀", [want[2], "itch.io"])]));
+  assert.deepEqual(findPlatformIdentityViolations(PACKED, gap, want), [{ variant: "缎与钢 / 萨汀", missing: [want[3]] }]);
 });
 
 test("validators.commonLaw: machine path joins the sibling ledger (ok / short / unparseable)", () => {
