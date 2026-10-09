@@ -202,7 +202,11 @@ export function contradictionFor(reason, row, scope) {
   const spec = DECLINATION_REASONS[reason];
   if (!spec || !spec.discretionary) return "";
   const shared = sharedClasses(row?.classes, scope?.classes);
-  const marks = Array.isArray(scope?.marks) ? scope.marks : [];
+  // A scope written for a job that named its mark only as `markName` carries the mark as one string, and
+  // every run recorded before the writer listed it still does. It is the applied-for mark either way, so it
+  // is read as a one-mark list, the way verify-knockout.mjs reads the same field. Read as no list at all,
+  // it switched the identical-mark refusal below off on exactly those runs.
+  const marks = Array.isArray(scope?.marks) ? scope.marks : (scope?.marks ? [scope.marks] : []);
 
   if (isIdenticalToAppliedMark(row?.mark, marks) && isLive(row?.status) && shared.length) {
     return `this record's mark is IDENTICAL to the applied-for mark under the house normalizer, its `

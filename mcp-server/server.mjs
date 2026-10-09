@@ -1116,7 +1116,7 @@ export function makeServer({ scope = null, local = null, readonly = false } = {}
   // pack was previously a file no connecting client ever saw. Guidance only; never a substitute for the
   // authorize()/scrub gates. Staff and ops get no instructions (see lib/instructions.mjs).
   const server = new Server(
-    { name: NS, version: "0.1.0" },
+    { name: NS, version: productIdentity().version ?? "unknown" },   // the package's own version, the one server_info reports
     // `prompts` is declared for every kind; promptsFor() returns [] for the audiences that get none, so
     // an ops client sees an empty list rather than a protocol error on a capability we did not announce.
     { capabilities: { tools: {}, resources: {}, prompts: {} }, instructions: instructionsFor(eff) },

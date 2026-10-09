@@ -137,7 +137,8 @@ test("the screenshot's proof of being a report is not a tag every page has", () 
 // home it is given, and a test must not write into the home of whoever runs the suite.
 const chromeHere = spawnSync("google-chrome", ["--version"], { encoding: "utf8", env: browserEnv(browserTempRoot()) }).status === 0;
 
-test("THE DRIVE — an unreadable report exits non-zero and says the page is not one", (ctx) => {
+test("THE DRIVE — an unreadable report exits non-zero and says the page is not one",
+  { skip: process.getuid?.() === 0 && "root reads a mode-000 file — the unreadable report cannot be built, so the refusal of chrome's error page is not driven here" }, (ctx) => {
   if (!chromeHere) return ctx.skip("google-chrome is not on this box, so the door cannot be driven here");
   const dir = mkdtempSync(join(tmpdir(), "shot-227-"));
   try {
