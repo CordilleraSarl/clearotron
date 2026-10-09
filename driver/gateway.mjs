@@ -445,7 +445,7 @@ export function attemptOk(fail, turn) {
 export function streamMeta(runDir, stream) {
   if (!stream || typeof stream !== "object" || !stream.file) return null;
   const dir = String(runDir ?? "");
-  const file = dir && String(stream.file).startsWith(dir) ? String(stream.file).slice(dir.length).replace(/^[\\/]+/, "") : String(stream.file);
+  const file = dir && String(stream.file).startsWith(dir) ? String(stream.file).slice(dir.length).replace(/^[\\/]+/, "").replace(/\\/g, "/") : String(stream.file);   // forward slashes, as every record path is, on Windows too
   return { file, present: stream.present === true, bytes: Number.isFinite(stream.bytes) ? stream.bytes : null,
     ...(stream.reason ? { reason: stream.reason } : {}) };
 }
