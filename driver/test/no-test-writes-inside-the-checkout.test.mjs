@@ -373,7 +373,8 @@ test("a symlink is recorded by its OWN identity, never by what it points at", ()
 });
 
 test("a directory that cannot be read is recorded, never quietly skipped", {
-  skip: process.platform === "win32" && "mode bits: chmod 000 does not make a Windows folder unreadable, so there is no closed directory to record",
+  skip: (process.platform === "win32" && "mode bits: chmod 000 does not make a Windows folder unreadable, so there is no closed directory to record")
+    || (process.getuid?.() === 0 && "root reads through a mode-000 directory — there is no closed directory to record, so the UNREADABLE stamp is not checked here"),
 }, () => {
   // An absence is a finding. A run that removed read permission from a directory must not look
   // identical to a run that did nothing.

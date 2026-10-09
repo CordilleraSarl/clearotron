@@ -131,7 +131,7 @@ export const TOOL_ORDER_BACKLOG = [
     closes: "#865 — same shared file, same split grant." },
   { stage: "register-digest", tool: "register_batch_screen", site: "driver/skills/clearance-register/digest.md",
     closes: "#865 — the digest's OWN doctrine, not a shared file: this one is the stage being told to "
-      + "batch-screen with a tool its grant does not carry. gather-config.mjs:196 RECORDING already records that "
+      + "batch-screen with a tool its grant does not carry. toolGroupsForStage() in gather-config.mjs already records that "
       + "this stage's prompt once ordered live register checks; the order outlived the note." },
   { stage: "register-unit", tool: "band_record", site: "driver/skills/clearance-register/SKILL.md",
     closes: "#865 — same shared file, same split grant." },

@@ -501,10 +501,14 @@ export function makeExecutePlan(deps) {
           && parsed.owner_resolution != null && !ownerNameResolved(parsed.owner_resolution);
         const counted = !!parsed && !ownerUnverified;
         // A floor ("at least 10,000") is the register's answer: the total stays null and its figure rides beside
-        // it, never a 0 (ruled 2026-10-02; shared/register-floor.mjs).
+        // it, never a 0 (ruled 2026-10-02; shared/register-floor.mjs). An answer that carried no number at all
+        // keeps a null total as well. `?? 0` wrote it down as a counted zero, which read as an empty field and
+        // hid it from the band shape's uncountable-slice reading. A call that failed keeps the 0 it always had
+        // beside error:true, the placeholder every refused slice carries.
         const floor = floorOf(parsed);
+        const untotalled = counted && !Number.isFinite(parsed.total_hits);
         blocks.push({ state: "incomplete", ...base,
-          total_hits: ownerUnverified || floor !== null ? null : (parsed?.total_hits ?? 0), fetched: parsed?.results?.length ?? 0,
+          total_hits: ownerUnverified || floor !== null || untotalled ? null : (parsed?.total_hits ?? 0), fetched: parsed?.results?.length ?? 0,
           ...(floor !== null ? { total_floor: floor, crowd_basis: "register-floor" } : {}),
           sample: (parsed?.results ?? []).slice(0, 5),
           ...(counted ? {} : { error: true }),

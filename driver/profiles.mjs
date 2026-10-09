@@ -1107,9 +1107,10 @@ export function resolveEffectiveProfile(job, { profiles = loadProfiles(), projec
   //
   // `resolveEffectiveScope` decides whether to tell an approver "this project" or "the account's default
   // classes" by reading `profile.origins`. It was returned HERE as a sibling and no caller bridged the
-  // two — checked on origin/main: run-quote.mjs:59, resolve-request.mjs:44,47 and scope-rules.mjs:107
-  // all pass the profile alone. So both `=== "project"` tests were permanently false and the whole
-  // FROM.project branch was dead code: a project that REPLACES its customer's classes ran on the
+  // two — checked on origin/main: quoteForJob() in run-quote.mjs, resolveRequest() in resolve-request.mjs
+  // (twice) and checkClearanceScopeRules() in scope-rules.mjs all pass the profile alone. So both
+  // `=== "project"` tests were permanently false and the whole FROM.project branch was dead code: a
+  // project that REPLACES its customer's classes ran on the
   // project's list and told the approver those were the account's defaults. The number was right; the
   // reason given for it was wrong, and it pointed at the wrong place to go and change it.
   //

@@ -104,13 +104,14 @@ test("the rows are derived from BOTH sources, and a slice that both describe is 
   assert.match(rows[0].note, /^coverage-limited — count-only, saturated$/,
     "the note carries the ledger's own status and its own reason, not a paraphrase of them");
 
-  // The missing qid is not dropped, it is NAMED on the row that already describes its axis. Rendered,
-  // the un-joined pair read as the same fact twice in two vocabularies — "incumbent-class / owner probe:
-  // deferred — the provider produced no band block for this query; incumbent-class:owner:muster: planned
-  // and not executed this run — the funnel produced no band block for this query" — which is what the
-  // stage's own COVERAGE PROSE rule forbids: state each coverage fact ONCE, in ONE place.
-  assert.match(rows[1].note, /^deferred — .*\(no band block for: incumbent-class:owner:muster\)$/,
-    "the qid rides VERBATIM on the ledger row for its own axis — every gate joins on it, and a shortened one is a row nobody can match back");
+  // The missing qid is not dropped, it is CLAIMED by the row that already describes its axis. Un-joined,
+  // the pair read as the same fact twice in two vocabularies, which the stage's own COVERAGE PROSE rule
+  // forbids: state each coverage fact ONCE, in ONE place. The qid itself is not printed on that row. The
+  // workbook a lawyer reads names slices, never engine identifiers, and the plan-execution receipt keeps
+  // the qid for every gate that joins on it.
+  assert.equal(rows[1].note, "deferred — the provider produced no band block for this query",
+    "the claiming row carries its own status and reason and nothing appended");
+  assert.ok(rows.every((r) => !String(r.note).includes(MISSING_QID)), "a row's note prints the engine's qid");
 
   // An axis with NO open ledger row still discloses its missing qid on its own — otherwise nothing
   // would, which is the silence exists to end.
@@ -118,7 +119,15 @@ test("the rows are derived from BOTH sources, and a slice that both describe is 
     [{ axis: "primary-sweep", unit: "primary-sweep / all", status: "confirmed-clean", reason: "full" }], RECEIPT);
   assert.deepEqual(orphan.map((r) => r.area), [MISSING_QID],
     "a missing qid whose axis carries no open row gets a row of its own");
-  assert.match(orphan[0].note, /planned and not executed this run/);
+  assert.equal(orphan[0].note, "planned and not executed this run", "the orphan's note says what happened and nothing about the machinery");
+  assert.equal("areaLabel" in orphan[0], false, "with no plan to read, nothing is invented in the identifier's place");
+
+  // With the frozen plan in hand the orphan is named in the reader's words, composed as the workbook's
+  // released-family rows compose theirs: the plan entry's unit, its axis head in the reader's label.
+  const [labelled] = coverageJudgmentRows(
+    [{ axis: "primary-sweep", unit: "primary-sweep / all", status: "confirmed-clean", reason: "full" }], RECEIPT, PLAN);
+  assert.equal(labelled.area, MISSING_QID, "the identifier the gates join on stays where it was");
+  assert.equal(labelled.areaLabel, "owner portfolio sweep / owner: Muster Handels GmbH & Co. KG [cl 5]");
 
   // The join is the RECEIPT'S OWN axis map, never a guess off the qid string: `supp:` and `xcheck-`
   // entries carry prefixes that are not axes, so a prefix split would host them under nothing.
@@ -148,8 +157,10 @@ test("model-authored rows are replaced wholesale, and the result still parses st
   assert.deepEqual(out.coverage_judgment.rows.map((r) => r.area),
     ["primary-sweep / VENZ* wildcard, cl. 5, US", "incumbent-class / owner probe, cl. 5, GB"],
     "the authored rows are gone and the derived ones are in their place");
-  assert.ok(JSON.stringify(out.coverage_judgment.rows).includes(MISSING_QID),
-    "and the qid that never ran is still on the record, named on its own axis's row");
+  assert.ok(!JSON.stringify(out.coverage_judgment.rows).includes(MISSING_QID),
+    "the rows a lawyer reads carry no engine qid; the row on its own axis claims it");
+  assert.ok(JSON.parse(readFileSync(driverDir(runDir, "plan-execution.json"), "utf8")).missing.includes(MISSING_QID),
+    "and the qid that never ran is still on the record, in the plan-execution receipt every gate joins on");
   assert.ok(!JSON.stringify(out.coverage_judgment.rows).includes("searched clean"),
     "a claim the ledger contradicts does not survive the stamp");
 

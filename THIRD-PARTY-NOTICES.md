@@ -110,7 +110,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-## @modelcontextprotocol/sdk@1.31.0
+## @modelcontextprotocol/sdk@1.32.1
 
 - **Licence declared:** `MIT`
 - **Repository:** https://github.com/modelcontextprotocol/typescript-sdk

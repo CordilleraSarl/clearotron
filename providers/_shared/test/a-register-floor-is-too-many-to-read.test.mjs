@@ -8,7 +8,8 @@
 // and written down as 0 hits. Now it is a crowd too large to read, carrying the register's own figure,
 // through both doors a question takes: a listing (the enumerate kernel) and a count-only question (the
 // executor's count descriptor). No second call, no error stamp, no zero. An answer with no total and no
-// floor is still what it was: a provider error, unknown, never a zero.
+// floor is still a provider error on a listing; on a count-only question it is a total the register did
+// not give. Unknown either way, never a zero.
 //
 // A floor takes the doors any crowd over the ceiling takes. A stack of spellings is counted spelling by
 // spelling, so a rare spelling never vanishes inside the floor; an owner's sweep across several classes is
@@ -90,6 +91,12 @@ test("CONTROL — an answer with no total and no floor still takes today's path:
   assert.match(String(b.reason), /provider error/i);
   assert.equal(listings(asked).length, 2, "the in-tool retry no longer runs for a real non-answer");
   assert.equal("total_floor" in b, false);
+  // The count-only question met the same answer. It is a count the register did not give: unknown, never
+  // the number zero, and not a provider error either, because the call was answered.
+  const c = at(COUNT.qid);
+  assert.equal(c.total_hits, null, "a count-only question answered with no total was written down as a counted 0");
+  assert.notEqual(c.error, true, "an answered count with no total was stamped a provider error");
+  assert.equal("total_floor" in c, false, "no floor was given, so none may be carried");
 });
 
 test("CONTROL — an exact total over the ceiling keeps today's crowd sentence, byte for byte, and carries no floor", async () => {

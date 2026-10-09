@@ -131,7 +131,7 @@ const INSTALL_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const READ_OFF_NOTE = "Reading a brief is not available on this instance — set the search up below.";
 import { basename, dirname, join, resolve as pathResolve } from "node:path"; import { studioDirFor } from "../shared/pre-rename-spellings.mjs";
 import { driverDir } from "../shared/driver-dir.mjs";   //
-import { createHmac, timingSafeEqual } from "node:crypto";
+import { createHmac, timingSafeEqual, randomBytes } from "node:crypto";
 import { makePrincipal, assertPrincipal, genericOrgOf, mayReadRun, reachCovers, principalView, seesEverything, mayRun,
   PortalDeny } from "./portal-access.mjs";
 // — the THIRD identity source (after the CF Access edge and, until, the deleted bypass). It
@@ -220,7 +220,7 @@ export function jobHashOf(job) {
   })).digest("base64url");
 }
 export function mintConfirmation({ secret, account, email, jobHash, now = Date.now(), ttlMs = 10 * 60 * 1000 }) {
-  const jti = createHmac("sha256", secret).update(`${account}|${jobHash}|${now}|${Math.random()}`).digest("base64url").slice(0, 24);
+  const jti = createHmac("sha256", secret).update(`${account}|${jobHash}|${now}|${randomBytes(16).toString("hex")}`).digest("base64url").slice(0, 24);
   const payload = { account, email, jobHash, jti, exp: now + ttlMs };
   const body = Buffer.from(canonical(payload)).toString("base64url");
   const sig = createHmac("sha256", secret).update(body).digest("base64url");
@@ -1395,7 +1395,7 @@ export function makePortalService({
       //
       // DISPLAY NAMES, computed server-side, because five vocabularies sit between a name on the form
       // and an office code (display → normalizeTerritory → canonicalJurisdictionCode → offices.translate
-      // → covered.has) and register-plan.mjs:206-216 records what re-implementing that chain cost.
+      // → covered.has) and resolveRegions() in register-plan.mjs records what re-implementing that chain cost.
       //
       // THE FIELD IS OMITTED, not nulled, when the snapshot does not say. `null` is a real answer here
       // ("no declared restriction") and the browser must be able to tell it from "this deployment has
@@ -4620,7 +4620,8 @@ const PORT = PORT_CHOICE.port;
   // stays fail-closed — an empty array would be truthy and open it.
   const AUD = accessAudience(envFrom(process.env, "CLEAROTRON_OIDC_AUDIENCE"));
   // item 1 — THE SAME FOUR VALUES THE STAFF MCP FACE ALREADY READS, under portal-side names
-  // (mcp-server/http-server.mjs:92-95). `makeAccessVerifier` has always accepted them; the portal simply
+  // (OIDC_ISSUER declared in http-server.mjs, and the three read beside it). `makeAccessVerifier` has
+  // always accepted them; the portal simply
   // never passed them, which is how one product shipped a provider-agnostic API face and a
   // Cloudflare-only web portal. Unset ⇒ the CF Access shapes derived from CF_ACCESS_TEAM, exactly as
   // before.
