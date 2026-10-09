@@ -139,6 +139,28 @@ export function aboveLowestBand(manifest, label) {
   return i !== -1 && i < manifest.bands.length - 1;
 }
 
+/** The tones of the rungs whose findings are "material": medium risk or higher. A rung's tone is its own
+ *  statement of its risk, so the line holds on any client's ladder. A line drawn by POSITION ("above the
+ *  lowest band") did not: the bottom rung is "low" on a four-rung ladder and "minimal" on a five-rung one,
+ *  so one client's low-risk rung was checked and another's was not (owner's ruling, 2026-10-09). */
+export const MATERIAL_TONES = Object.freeze(["severe", "high", "medium"]);
+
+/** True when the label is a band whose tone is medium risk or higher — the "material finding" predicate. */
+export function materialBand(manifest, label) {
+  return MATERIAL_TONES.includes(bandTone(manifest, label));
+}
+
+/** The material bands' labels, highest first: what a dispatch names when it says which findings a check covers. */
+export const materialBandLabels = (manifest) => (manifest?.bands ?? [])
+  .filter((b) => MATERIAL_TONES.includes(b?.tone)).map((b) => b.label);
+
+/** The material bands as a reader's list — "Very High, High or Moderate" — or null when the ladder names none. */
+export function materialBandPhrase(manifest) {
+  const xs = materialBandLabels(manifest);
+  if (!xs.length) return null;
+  return xs.length === 1 ? xs[0] : `${xs.slice(0, -1).join(", ")} or ${xs[xs.length - 1]}`;
+}
+
 /** The most severe band label among the given labels (unknown labels ignored); null when none are bands. */
 export function worstBand(manifest, labels) {
   let best = -1;
