@@ -767,7 +767,7 @@
         },
         "a-late-synthesis-save-keeps-the-seams-writes.test.mjs": {
           "tests": 2,
-          "asserts": 13,
+          "asserts": 16,
           "skips": 0,
           "todos": 0
         },
