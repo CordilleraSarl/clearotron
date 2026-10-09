@@ -228,7 +228,7 @@ export function triggerLaneVerdict({ url = null, hasToken = false, verbs = null,
   // false the moment the door finishes binding, which is seconds later.
   //
   // It is also false as a prediction, and that is the worse half. The submit path makes a FRESH upstream
-  // call per request inside its own try/catch (`driver/portal-service.mjs:1770-1798`) and never consults
+  // call per request inside its own try/catch (the `trigger` call inside makePortalService() in portal-service.mjs) and never consults
   // this verdict. So nothing about a boot-time refusal determines what a clearance does.
   //
   // IT COST A DIAGNOSTIC DETOUR during the 0.1.6 production upgrade, and it prints on every reboot. The

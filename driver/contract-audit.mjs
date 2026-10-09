@@ -158,14 +158,14 @@ const ARROW_TOKEN_RE = /=>\s*[`"']([a-z][a-z0-9]*(?:_[a-z0-9]+)+)/g;
 const REASON_TOKEN_RE = /reason:\s*[`"']([a-z][a-z0-9]*(?:_[a-z0-9]+)+)/g;
 
 // A CITED SITE MUST BE A MINT. The extractor records the FIRST line a pattern matched, and the
-// patterns read comment text as readily as code: `no_status` was cited at coverage-form.mjs:802, the
-// JSDoc `@returns {Array<{reason:"no_status"|"form_damaged", …` annotation seventeen lines above the line
-// that writes it. Every such ruling cites its mint, so a citation drawn from a sentence about the code
-// is a ruling about a sentence.
+// patterns read comment text as readily as code: `no_status` was cited at the JSDoc `@returns
+// {Array<{reason:"no_status"|"form_damaged", …` annotation of findCoverageFormViolations() in coverage-form.mjs,
+// seventeen lines above the line that writes it. Every such ruling cites its mint, so a citation drawn
+// from a sentence about the code is a ruling about a sentence.
 //
 // Comment-ONLY lines, never a trailing `//` after code — a token minted on a line that also carries a
 // comment is still minted there. Measured before it was trusted: across all 30 covered sources this moves
-// exactly one citation (coverage-form.mjs:802 -> :828) and loses NO token, so the census does not shrink.
+// exactly one citation (`no_status`'s, annotation -> mint) and loses NO token, so the census does not shrink.
 // That measurement is the load-bearing half: a filter that quietly dropped a comment-only token would
 // take its coverage obligation with it, and the tripwire would read the absence as clean.
 const COMMENT_ONLY_LINE = /^\s*(?:\/\/|\*|\/\*)/;
@@ -265,7 +265,7 @@ export const E3_KINDS = ["literal-json-skeleton", "exactly-these-keys", "dictate
  *
  *   other — the dictate is not in the text being linted. Two shapes found: a stage message that
  *           DELEGATES its whole envelope to a skill file ("dictated keys + closed enums per the skill",
- *           stages.mjs:974 for blind-frame — a lint reading the message sees nothing and the skeleton
+ *           blind-frame's message until 2026-08-17 — a lint reading the message sees nothing and the skeleton
  *           escapes); and a field DICTATED THEN OVERWRITTEN, where the instruction annotates its own
  *           fields as driver-replaced in the model's own reading (delivery-contract.md:34-37).
  *

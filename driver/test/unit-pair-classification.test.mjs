@@ -57,7 +57,7 @@
 //
 //  AGREE (22) — the flag and the data it summarises are written into ONE structure in ONE expression, or
 //  consumed inside the pass that computed them, so a reader cannot get one without the other:
-//   · band-shape.mjs:494        `live` is minted in the same object literal as `records`, off the same
+//   · deriveRegisterPositions() in band-shape.mjs  `live` is minted in the same object literal as `records`, off the same
 //                               `rs`. A reader holding the position holds both.
 //   · commonlaw-carry.mjs:386   `completed` folds ALL THREE stage labels from one `outcomes` read and is
 //                               handed to `classifyCandidate` for every candidate in the same call.
@@ -68,7 +68,7 @@
 //                               `familyExplained` beside it (a retrieval pattern the reading turn
 //                               withheld, 2026-09-25) has the same shape: it feeds the returned
 //                               `phoneticFamilyExplained` and the same `complete`, off the same band.
-//   · gateway.mjs:1323 gradedFormMeta,1501     the two `wrote` producers — see the disagreement below; both now guard
+//   · runStageLadder() in gateway.mjs     the two `wrote` producers — see the disagreement below; both now guard
 //                               the empty case, and each reads its own per-turn stat snapshot, which the
 //                               site states.
 //   · grounds-grammar.mjs:89 classifyGroundsNote
@@ -98,9 +98,9 @@
 //                               symbol and pointed at unrelated prose on the same tree, so it is gone
 //                               rather than renumbered — a line nobody can check is what this block
 //                               exists to argue against.)
-//   · publish/xlsx.mjs:319,587  `anyHit` and `commonLawUnlogged` are derived from the exact rows the
+//   · publish/xlsx.mjs `searchRows`, `buildAudit`  `anyHit` and `commonLawUnlogged` are derived from the exact rows the
 //                               sheet then writes, in the same builder.
-//   · reference-score.mjs:430,861,1538  all three only select WORDING — an excluded-reason string, a
+//   · reference-score.mjs `scoreRecall`, `receiptOutcome`, `scoreCounts`  all three only select WORDING — an excluded-reason string, a
 //                               receipt `detail`, a `missingArtifact` note. A flag that chooses a
 //                               sentence has no satisfaction side to disagree with.
 //   · claimsLive declared in registry-fidelity.mjs, with claimsDead beside it, is built on `scoped`
@@ -144,7 +144,7 @@
 //                               pins that cut. (CITED BY SYMBOL AND NO LINE, per CONTRIBUTING.md.)
 //
 //  DISAGREE (1), fixed here:
-//   · gateway.mjs:1323   TWO PRODUCERS OF ONE FIELD, TWO UNITS FOR THE EMPTY CASE. The attempt row
+//   · runStageLadder() in gateway.mjs   TWO PRODUCERS OF ONE FIELD, TWO UNITS FOR THE EMPTY CASE. The attempt row
 //                        answers `files.length ? files.some(…) : null`; the repair row answered
 //                        `files.some(…)`, and `[].some()` is `false`. A stage declaring no expected
 //                        artifact leaves `files` empty, so the same situation was "wrote nothing" on one

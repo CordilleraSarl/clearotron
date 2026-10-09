@@ -227,7 +227,7 @@ test("CENSUS_TABLES names every table whose rows carry a citation", () => {
     assert.ok(Array.isArray(rows) && rows.length, `${name} is empty or not an array — the arms walk nothing`);
     // NOT every table carries its citation in a `site:` field, and this arm found that out rather than
     // assuming it: ARM1_EXEMPTIONS has no `site` at all — all ten rows cite inside the `reason` PROSE
-    // ("...driver-loaded config (verify.mjs:691)..."). That is the shape CONTRIBUTING.md's convention is
+    // ("...verify.mjs:2155 registerFindings says it in the failure string..."). That is the shape CONTRIBUTING.md's convention is
     // aimed at and the one no arm can check without parsing sentences, so what is asserted here is that a
     // row cites SOMETHING, and the symbol arm covers the rows that have moved to an anchor.
     // A SYMBOL ANCHOR COUNTS AS A CITATION — it is the better one, and this predicate said otherwise on
@@ -334,8 +334,9 @@ test("an exact out-of-scope rule excuses its own name and no neighbour", () => {
 
 test("a cited site is a MINT, never a sentence about the code", () => {
   // Every ruling cites its mint, and the census's own citation could not be used for one of them:
-  // `no_status` was reported at coverage-form.mjs:802, the JSDoc `@returns` annotation seventeen lines
-  // above the line that writes it. Asserted as the general invariant rather than that one case.
+  // `no_status` was reported at the JSDoc `@returns` annotation of
+  // findCoverageFormViolations() in coverage-form.mjs, seventeen lines above the line that writes it.
+  // Asserted as the general invariant rather than that one case.
   const ex = extractStaticTokens(DRIVER);
   const fromComment = [];
   for (const [token, site] of ex) {
