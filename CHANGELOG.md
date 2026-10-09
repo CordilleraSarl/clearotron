@@ -4,6 +4,30 @@ What changed in each release of Clearotron, in plain English.
 
 Install or upgrade with `npm install -g clearotron`.
 
+## 0.4.1-beta.0
+
+### Before you upgrade
+
+- if you installed Codex yourself, update it to 0.159.0 or newer first. Older copies cannot use GPT-6.1 Sol, and searches on the OpenAI engine would stop at their first step.
+
+### New
+
+- Searches now use the latest models: Claude Haiku 5.5, Sonnet 5.5 and Opus 5.5, and OpenAI's GPT-6.1 Sol and GPT-6 Luna. Installing or updating Clearotron brings the Claude and Codex programs up to versions that can use them.
+
+### Fixed
+
+- A connection library is updated to close a reported weakness in how sign-in details could be sent.
+- A clearance started from a connected assistant under the Generic default now appears on Clearances when you choose Generic. Before, it showed only under All companies.
+- A register count or record that could not be fetched no longer shows the program's error message to a client. This covers the knockout workbook's count notes, the knockout report and a clearance finding card. Each shows the line the report already uses for something left open.
+- A knockout's completion message and email now give its rating, or the highest rating when several names were screened. They no longer use the term 'worst band'.
+- A client whose mark is written in another script, such as Greek, Cyrillic or Chinese, now receives the link to the report. Before, the email arrived without one.
+- In rare cases, a report repaired just before delivery listed one conflict as two findings. Its last finding also lost its full write-up. The conflict now stays one finding, and every finding keeps its write-up.
+- Reports no longer say a search "did not finish and must be re-run" when a name's non-Latin form was in fact searched. They no longer make a conclusion depend on reviewing records the search had already read in full. Knockout reports now list every territory you ordered.
+- The audit workbook no longer warns that the depth rules were applied to nothing on a clearance whose narrative is written in sections. Those rules govern per-finding write-ups, and such a narrative has none.
+- An order for the European Union now also searches each member state's own trade mark register, at no extra search cost. A national registration — in France, for example — is now found by an EU search.
+- Two different names written in Greek, Cyrillic or Chinese characters, or differing only in an accented letter, can now be screened in one knockout. Before, they were refused as duplicates.
+- Findings rated medium risk or higher are now checked for the owner's actual use in the same way on every company's risk ladder. That same search looks for the owner's record of oppositions and disputes, so "Likely to enforce" carries a rating instead of "not checked".
+
 ## 0.4.0
 
 ### Before you upgrade
