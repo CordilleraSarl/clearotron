@@ -16100,6 +16100,7 @@ export async function repairStale(job, opts = {}) {   // @internal
   const labels = Array.isArray(rec?.labels) ? rec.labels : [];
   if (!labels.length) return null;
   attachFramework(ctx, { write: true });
+  await attachJxAim(ctx);   // the aim count the cold pass sets, as --experiment sets it on its rebuilt context
   // RE-DERIVE THE ORDER rather than trusting the file's. The recorded order was right when it was
   // written, and a code change since could have moved an edge — the file names WHAT, the live graph says
   // WHEN. (the file names WHAT, the live graph says WHEN)

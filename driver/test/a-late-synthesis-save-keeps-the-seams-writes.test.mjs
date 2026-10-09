@@ -18,7 +18,7 @@ import { test, after } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, chmodSync, readFileSync, readdirSync, rmSync, existsSync, statSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, dirname } from "node:path";
+import { join, dirname, basename } from "node:path";
 import { fileURLToPath } from "node:url";
 import { pinEnv, envFrom } from "../../shared/env-aliases.mjs";
 import { driverDir } from "../../shared/driver-dir.mjs";
@@ -70,7 +70,7 @@ async function deliver(overCap) {
   // what the pool received: the published findings.json copy and the audit workbook
   const pool = join(root, "pool");
   const poolFiles = existsSync(pool) ? walk(pool) : [];
-  const poolFindings = poolFiles.find((p) => p.endsWith("/findings.json"));
+  const poolFindings = poolFiles.find((p) => basename(p) === "findings.json");
   const poolCj = poolFindings ? JSON.parse(readFileSync(poolFindings, "utf8")).coverage_judgment : undefined;
   const xlsx = poolFiles.find((p) => p.endsWith(".xlsx"));
   let workbookHasSlices = null;

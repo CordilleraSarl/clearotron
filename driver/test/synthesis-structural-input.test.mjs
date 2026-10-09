@@ -408,6 +408,38 @@ test("review: the stale-repair re-dispatch of synthesis carries the structural b
     `the repair prompt is no longer the thinner one — fresh ${fresh.length}, repair ${repaired.length}`);
 });
 
+// The cold pass sets the Chinese-evidence aim count before synthesis, and the prompt names the flags file
+// only when it is set. The repair rebuilds its context as --experiment does, so like it, it must set the
+// count again, or a repaired synthesis on such a run goes out without the block. The mock run has no
+// Chinese lane, so the lane and one flag are planted before the repair.
+test("the stale-repair re-dispatch of synthesis carries the Chinese-evidence flags the cold pass set", async () => {
+  process.env.MOCK_VERDICT = "CLEAR";
+  process.env.MOCK_SKEPTIC = "no flags surfaced";
+  process.env.MOCK_FAIL_STAGE = "delivery-contract";   // fail LATE so the run stays live and repairable
+  const job = { id: "job-TMPJXAIM", msgId: "<tmpjxaim@x>", forwarder: "jordan", forwarderDomain: "example.com",
+    ref: "TMPJXAIM", markName: "MARK TMPJXAIM", classes: [9, 41], provider: "corsearch" };
+  const res = await PL.pipeline(job);
+  delete process.env.MOCK_FAIL_STAGE;
+
+  const runDir = res.runDir;
+  const policyPath = driverDir(runDir, "search-policy.json");
+  const policy = JSON.parse(readFileSync(policyPath, "utf8"));
+  writeFileSync(policyPath, JSON.stringify({ ...policy, components: { ...(policy.components ?? {}), jxLanes: true } }, null, 2) + "\n");
+  const aimPath = driverDir(runDir, "jx", "aim-attention.json");
+  mkdirSync(dirname(aimPath), { recursive: true });
+  writeFileSync(aimPath, JSON.stringify({ items: [{ uri: "/mark/cn/qzxv-1", severity_hint: "low" }] }) + "\n");
+  writeFileSync(driverDir(runDir, "delivery-stale.json"), JSON.stringify({
+    ts: new Date().toISOString(), labels: ["synthesis"], changed: { synthesis: ["register-findings.md"] },
+  }, null, 2));
+
+  const codename = basename(runDir).replace(/^\d{4}-\d\d-\d\d-/, "");
+  const rep = await PL.repairStale(job, { codename });
+  assert.deepEqual(rep.repaired, ["synthesis"], "the repair must actually re-dispatch synthesis for this to be testing anything");
+  const repaired = readFileSync(driverDir(runDir, "synthesis.attempt1.dispatch.txt"), "utf8");
+  assert.match(repaired, /CHINESE-EVIDENCE FLAGS \(aim-attention only\): _driver\/jx\/aim-attention\.json carries 1 structured flag/,
+    "the repair dispatched synthesis without the block the run's own pass would have carried");
+});
+
 // ── AN EMPTIED FINDINGS SURFACE TAKES ITS LIST AWAY ──────────────────────────────────────────────────
 //
 // A repair or corrective pass re-prepares the list because the findings may have moved. When they moved

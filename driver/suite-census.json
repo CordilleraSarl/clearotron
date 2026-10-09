@@ -5422,8 +5422,8 @@
           "todos": 0
         },
         "synthesis-structural-input.test.mjs": {
-          "tests": 10,
-          "asserts": 67,
+          "tests": 11,
+          "asserts": 69,
           "skips": 0,
           "todos": 0
         },
