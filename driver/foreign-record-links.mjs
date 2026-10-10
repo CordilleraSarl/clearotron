@@ -21,7 +21,6 @@ import { activeRecordOrigins } from "./record-origins.mjs";
 import { runLog } from "./log.mjs";
 
 export const FOREIGN_HOST_TOKEN = "finding_record_url_foreign_host";
-export const BLANKED_EVENT = "foreign-record-links-blanked";
 export const BLANKED_FILE = "foreign-record-links.json";
 
 /** The gate's list of record hosts: the caller's when it names one, else the run's register. */
@@ -45,7 +44,7 @@ export function recordBlanking(runDir, { stage, layer, blanked, kept, fail = nul
       JSON.stringify({ stage, layer, ...(fail ? { fail: String(fail).slice(0, 300) } : {}), blanked, kept }, null, 2) + "\n");
   } catch { /* the file is forensics; the run-log row below is the record */ }
   try {
-    runLog(runDir, { event: BLANKED_EVENT, stage, layer, blanked: blanked.length, kept: kept.length,
+    runLog(runDir, { event: "foreign-record-links-blanked", stage, layer, blanked: blanked.length, kept: kept.length,
       ordinals: [...new Set(blanked.map((b) => b.ordinal))] });
   } catch { /* a log that cannot be written must not stop the record it describes */ }
 }
