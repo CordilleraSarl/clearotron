@@ -272,7 +272,7 @@ export function reviewEvidence(merged, about = {}) {
     if (at?.engineOwned || !Object.hasOwn(ADDRESSABLE, at?.field)) continue;
     const flags = plainRegisterFlags(text, about);
     if (!flags.length) continue;
-    rows.push({ at, where, says: flags.map((f) => f.say) });
+    rows.push({ at: offeredAddress(at), where, says: flags.map((f) => f.say) });
   }
   const marks = (about.marks ?? []).filter(Boolean), owners = (about.owners ?? []).filter(Boolean);
   const ownerNote = owners.length ? ` The ${owners.length} owner name(s) from the record were also removed.` : "";
@@ -285,6 +285,60 @@ export function reviewEvidence(merged, about = {}) {
 /** The addresses the driver offered this run, for the seat to quote back. One line each. */
 export function reviewEvidenceLines({ rows }) {
   return rows.map(({ at, where, says }) => `- ${where} — address ${JSON.stringify(at)} — ${says.join(" ")}`);
+}
+
+/**
+ * The lines a reader meets first, each one the pass may write, with the address that names it.
+ *
+ * Handed to the reviewer on a record the driver's read flagged nowhere (owner ruling 2026-10-10). Its
+ * first question is the client's, and it can rewrite toward that answer, or decline, only at an address
+ * it was given: the tool refuses a composed one. The set is the one the flagged table is drawn from,
+ * without the flag, so the engine's own caveats and any field the applier cannot write stay out here too.
+ */
+export function reviewFirstReadRows(merged) {
+  return knockoutVisibleProse(merged)
+    .filter(({ at }) => !at?.engineOwned && Object.hasOwn(ADDRESSABLE, at?.field))
+    .map(({ at, where }) => ({ at: offeredAddress(at), where }));
+}
+
+/**
+ * An address as the seat is told to copy it: the field and the keys that field takes, nothing else.
+ *
+ * The walk marks a standing caveat with `engineOwned`, true or false, to decide what is offered at all.
+ * The grammar refuses any key a field does not take, so an offered address that carried the mark would
+ * be refused when copied verbatim, as the tool tells the seat to copy it.
+ */
+export function offeredAddress(at) {
+  const out = { field: at.field };
+  for (const k of ADDRESSABLE[at.field] ?? []) if (at[k] !== undefined) out[k] = at[k];
+  return out;
+}
+
+/** One line each, the address quoted for the seat to copy back. */
+export function reviewFirstReadLines(rows) {
+  return rows.map(({ at, where }) => `- ${where} — address ${JSON.stringify(at)}`);
+}
+
+/**
+ * What the reviewing pass hands the reviewer, decided before any turn is spent. PURE.
+ *
+ * EVERY KNOCKOUT IS REVIEWED. Flagged lines go as the measured table. A record flagged nowhere hands
+ * over its first-read lines instead, so the client's question is put on every record. Only a record with
+ * no such line at all is not dispatched, because there would be nothing to read and no address to answer.
+ */
+export function reviewDispatch(merged, plan) {
+  const about = reviewAbout(merged, plan);
+  const evidence = reviewEvidence(merged, about);
+  const firstRead = evidence.rows.length ? [] : reviewFirstReadRows(merged);
+  return {
+    about, evidence, flagged: evidence.rows.length, listed: firstRead.length,
+    dispatch: evidence.rows.length > 0 || firstRead.length > 0,
+    msgCtx: {
+      evidenceLines: reviewEvidenceLines(evidence),
+      firstReadLines: reviewFirstReadLines(firstRead),
+      exclusionNote: evidence.exclusionNote,
+    },
+  };
 }
 
 /**
