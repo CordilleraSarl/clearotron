@@ -15,6 +15,7 @@ import { homedir } from "node:os";
 import { join } from "node:path";
 import { parseEnv } from "node:util";
 import { isEntrypoint } from "../shared/is-entrypoint.mjs";
+import { demoMode } from "../mcp-server/demo-mode.mjs";
 
 /** The two settings the install's own connect lines hand the server: where runs are, and where reports are. */
 export const INSTALL_FOLDERS = Object.freeze(["CLEAROTRON_WORK_DIR", "CLEAROTRON_REPORTS_DIR"]);
@@ -66,7 +67,7 @@ async function main() {
     process.env.CLEAROTRON_WORK_DIR = workspace;
     // The door's access log too, which would otherwise open the install's own telemetry folder.
     if (!set(process.env.TRADEMARK_MCP_AUDIT_LOG)) process.env.TRADEMARK_MCP_AUDIT_LOG = join(demoBase(), "telemetry", "trademark-mcp-access.jsonl");
-    process.env.CLEAROTRON_MCP_DEMO = "1";
+    demoMode.on = true;
   } else {
     for (const [k, v] of Object.entries(target.env)) if (!set(process.env[k])) process.env[k] = v;
   }

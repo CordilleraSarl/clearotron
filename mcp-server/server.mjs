@@ -33,6 +33,7 @@ import { fileURLToPath } from "node:url";
 
 import { enumerateRuns, resolveRun, runAccountKey, runOrganisation, runProfileFacts, productIdentityFor, unreadableRunsReason } from "./lib/runs.mjs";
 import { ORDERABLE_PRODUCTS } from "../driver/search-policy.mjs";
+import { demoMode } from "./demo-mode.mjs";
 import { PRODUCTS } from "../driver/products.mjs";
 
 // The offering writes its own schema prose. A hand-typed "up to 20 names" beside a wall that refuses at
@@ -183,7 +184,6 @@ function getStages(runDir) {
 // and an assistant reading a row must not take a sample for one of the person's own searches.
 export const DEMO_LABEL = "Real engine output for the fictional mark VENQORI, captured against Clarivate Compumark. "
   + "It is an example, not advice.";
-const DEMO = process.env.CLEAROTRON_MCP_DEMO === "1";
 
 /** The code a folder's read fails with, or null where it reads. */
 function readError(dir) {
@@ -200,7 +200,7 @@ function runSummary(run) {
   // field is what made the list unanswerable in the first place.
   const facts = runProfileFacts(run);
   return {
-    ...(DEMO ? { demo: DEMO_LABEL } : {}),
+    ...(demoMode.on ? { demo: DEMO_LABEL } : {}),
     runId: run.runId, slug: run.slug, codename: run.codename, date: run.date, agent: run.agent,
     client: facts.known
       ? { key: facts.account, name: facts.clientName }
