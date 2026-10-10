@@ -585,6 +585,12 @@
           "skips": 0,
           "todos": 0
         },
+        "a-foreign-record-link-is-named-once-and-blanked-at-salvage.test.mjs": {
+          "tests": 8,
+          "asserts": 31,
+          "skips": 0,
+          "todos": 0
+        },
         "a-frame-call-with-places-per-name-passes-the-gate.test.mjs": {
           "tests": 2,
           "asserts": 7,

@@ -883,6 +883,11 @@ function synthesisFindingsInner(runDir = null, badFinding = false, actionsAbsent
     f.source.resolved_link = baseFinding.source.resolved_link ? `https://tm.corsearch.com${f.owner.registrations[0].uri}` : "";
     return f;
   })];
+  // MOCK_FOREIGN_LINK — a seat that copies an office's own page into every register link, and keeps doing
+  // it on every attempt (the R2 shape on 0.4.1-beta.1). Never heals: only the driver's salvage can deliver.
+  if (process.env.MOCK_FOREIGN_LINK && process.env.MOCK_FOREIGN_LINK !== "file") {
+    for (const f of findings) f.source.resolved_link = `https://www.swissreg.ch/database-client/register/detail/trademark/${f.ordinal}`;
+  }
   return JSON.stringify({
     schema_version: FINDINGS_SCHEMA_VERSION,
     rated_under_framework: fwKey,
@@ -1266,6 +1271,26 @@ function stalefindingsOnLintRepair(dir, msg) {
 //
 // NO `--add-dir` FALLBACK, deliberately. That is what this replaced, and a fallback would restore exactly
 // the coupling — the mock would go on working while the channel it claims to read had gone silent.
+/** The run's register as the driver hands it to a local server (gather-config serverEnv), or null. */
+function registerFromWiring(argv) {
+  const ci = argv.indexOf("--mcp-config");
+  if (ci >= 0 && argv[ci + 1]) {
+    try {
+      for (const srv of Object.values(JSON.parse(argv[ci + 1])?.mcpServers ?? {})) {
+        if (srv?.env?.CLEAROTRON_DATABASE) return String(srv.env.CLEAROTRON_DATABASE);
+      }
+    } catch { /* malformed → try the next channel */ }
+  }
+  const home = process.env.CODEX_HOME;
+  if (home) {
+    try {
+      const m = readFileSync(join(home, "config.toml"), "utf8").match(/CLEAROTRON_DATABASE\s*=\s*"([^"]*)"/);
+      if (m) return m[1];
+    } catch { /* no config */ }
+  }
+  return null;
+}
+
 function runDirFromWiring(argv) {
   const ci = argv.indexOf("--mcp-config");
   if (ci >= 0 && argv[ci + 1]) {
@@ -1719,6 +1744,11 @@ export function applyStageWrites(msg, argv) {
         ? "Non-Latin marketplace coverage remains open; a targeted re-run before client sign-off is the next step."
         : "The instructed registers were enumerated to completeness on the named band.";
       recordMockToolCall(runDir, "record_synthesis", "recording-synthesis");
+      // THE SERVER'S OWN ENVIRONMENT. record_synthesis runs in a server the driver hands the run's register
+      // (gather-config serverEnv), and the transport gates record links on it. This seat calls the transport
+      // in its own process, so it takes the register from the same wiring the server would.
+      const wiredRegister = registerFromWiring(argv);
+      if (wiredRegister) process.env.CLEAROTRON_DATABASE = wiredRegister; else delete process.env.CLEAROTRON_DATABASE;
       const sections = {
           // THE SUBSTANCE IS THE OLD FIXTURE'S, and it has to be: downstream reads the narrative TEXT —
           // the deterministic registry check runs findRegistryArithmeticIssues / findRegistryViolations
@@ -1802,6 +1832,16 @@ export function applyStageWrites(msg, argv) {
       // The side-write the old narrative.md branch carried. Same guard it had — CANDSELF and the
       // reco knob both suppressed it there, and both still do.
       if (!process.env.MOCK_CANDSELF && !process.env.MOCK_NARRATIVE_RECO) mockRegisterRecordWrite(runDir, argv);
+      // MOCK_FOREIGN_LINK=file — the links reach the saved file WITHOUT the transport, as a write outside
+      // record_synthesis would: the accepted file is rewritten with an office page in every register link.
+      if (process.env.MOCK_FOREIGN_LINK === "file") {
+        const at = join(runDir, "findings.json");
+        const saved = JSON.parse(readFileSync(at, "utf8"));
+        for (const f of saved.findings ?? []) {
+          if (String(f?.source?.source_type ?? "").startsWith("register")) f.source.resolved_link = `https://www.swissreg.ch/database-client/register/detail/trademark/${f.ordinal}`;
+        }
+        writeFileSync(at, JSON.stringify(saved, null, 2) + "\n");
+      }
       return "mock synthesis recorded through record_synthesis";
     }
     if (/record_narrative_refutation/.test(msg)) {
